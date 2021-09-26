@@ -2,183 +2,178 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A8341885B
-	for <lists+linux-ext4@lfdr.de>; Sun, 26 Sep 2021 13:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1FC8418B85
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 Sep 2021 00:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbhIZLgl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 26 Sep 2021 07:36:41 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:11871 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230200AbhIZLgj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 26 Sep 2021 07:36:39 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HHNqQ15JSz8yqW;
-        Sun, 26 Sep 2021 19:30:26 +0800 (CST)
-Received: from dggema766-chm.china.huawei.com (10.1.198.208) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Sun, 26 Sep 2021 19:35:01 +0800
-Received: from [10.174.177.210] (10.174.177.210) by
- dggema766-chm.china.huawei.com (10.1.198.208) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Sun, 26 Sep 2021 19:35:01 +0800
-Message-ID: <715f636e-ff1b-301f-38a9-602437fdd95a@huawei.com>
-Date:   Sun, 26 Sep 2021 19:35:01 +0800
+        id S230368AbhIZWiq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 26 Sep 2021 18:38:46 -0400
+Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:48333 "EHLO
+        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230331AbhIZWip (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 26 Sep 2021 18:38:45 -0400
+Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
+        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 4810C82C75F;
+        Mon, 27 Sep 2021 08:37:00 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1mUclW-00H5s5-TN; Mon, 27 Sep 2021 08:36:58 +1000
+Date:   Mon, 27 Sep 2021 08:36:58 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     David Howells <dhowells@redhat.com>, hch@lst.de,
+        trond.myklebust@primarydata.com, Theodore Ts'o <tytso@mit.edu>,
+        linux-block@vger.kernel.org, ceph-devel@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Anna Schumaker <anna.schumaker@netapp.com>, linux-mm@kvack.org,
+        Bob Liu <bob.liu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Seth Jennings <sjenning@linux.vnet.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-cifs@vger.kernel.org, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Steve French <sfrench@samba.org>, NeilBrown <neilb@suse.de>,
+        Dan Magenheimer <dan.magenheimer@oracle.com>,
+        linux-nfs@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
+        linux-btrfs@vger.kernel.org, viro@zeniv.linux.org.uk,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH v3 0/9] mm: Use DIO for swap and fix NFS swapfiles
+Message-ID: <20210926223658.GE1756565@dread.disaster.area>
+References: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
+ <20210925234243.GA1756565@dread.disaster.area>
+ <YU/ks7Sfw5Wj0K1p@casper.infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] ext4: if zeroout fails fall back to splitting the extent
- node
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>
-CC:     <yukuai3@huawei.com>
-References: <YRaNKc2PvM+Eyzmp@mit.edu> <20210813212701.366447-1-tytso@mit.edu>
-From:   yangerkun <yangerkun@huawei.com>
-In-Reply-To: <20210813212701.366447-1-tytso@mit.edu>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.210]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema766-chm.china.huawei.com (10.1.198.208)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YU/ks7Sfw5Wj0K1p@casper.infradead.org>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0
+        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
+        a=kj9zAlcOel0A:10 a=7QKq2e-ADPsA:10 a=7-415B0cAAAA:8
+        a=bMojAixK84Ma9oYoJFgA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
-
-Rethink about this problem. Should we consider other place which call 
-ext4_issue_zeroout? Maybe it can trigger the problem too(in theory, not 
-really happened)...
-
-How about include follow patch which not only transfer ENOSPC to EIO. 
-But also stop to overwrite the error return by ext4_ext_insert_extent in 
-ext4_split_extent_at.
-
-Besides, 308c57ccf431 ("ext4: if zeroout fails fall back to splitting 
-the extent node") can work together with this patch.
-
-
-
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index c0de30f25185..66767ede235f 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -3218,16 +3218,18 @@ static int ext4_split_extent_at(handle_t *handle,
-                 goto out;
-
-         if (EXT4_EXT_MAY_ZEROOUT & split_flag) {
-+               int ret = 0;
-+
-                 if (split_flag & 
-(EXT4_EXT_DATA_VALID1|EXT4_EXT_DATA_VALID2)) {
-                         if (split_flag & EXT4_EXT_DATA_VALID1) {
--                               err = ext4_ext_zeroout(inode, ex2);
-+                               ret = ext4_ext_zeroout(inode, ex2);
-                                 zero_ex.ee_block = ex2->ee_block;
-                                 zero_ex.ee_len = cpu_to_le16(
- 
-ext4_ext_get_actual_len(ex2));
-                                 ext4_ext_store_pblock(&zero_ex,
- 
-ext4_ext_pblock(ex2));
-                         } else {
--                               err = ext4_ext_zeroout(inode, ex);
-+                               ret = ext4_ext_zeroout(inode, ex);
-                                 zero_ex.ee_block = ex->ee_block;
-                                 zero_ex.ee_len = cpu_to_le16(
- 
-ext4_ext_get_actual_len(ex));
-@@ -3235,7 +3237,7 @@ static int ext4_split_extent_at(handle_t *handle,
-                                                       ext4_ext_pblock(ex));
-                         }
-                 } else {
--                       err = ext4_ext_zeroout(inode, &orig_ex);
-+                       ret = ext4_ext_zeroout(inode, &orig_ex);
-                         zero_ex.ee_block = orig_ex.ee_block;
-                         zero_ex.ee_len = cpu_to_le16(
- 
-ext4_ext_get_actual_len(&orig_ex));
-@@ -3243,7 +3245,7 @@ static int ext4_split_extent_at(handle_t *handle,
-                                               ext4_ext_pblock(&orig_ex));
-                 }
-
--               if (!err) {
-+               if (!ret) {
-                         /* update the extent length and mark as 
-initialized */
-                         ex->ee_len = cpu_to_le16(ee_len);
-                         ext4_ext_try_to_merge(handle, inode, path, ex);
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index d18852d6029c..95b970581864 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -427,6 +427,9 @@ int ext4_issue_zeroout(struct inode *inode, 
-ext4_lblk_t lblk, ext4_fsblk_t pblk,
-         if (ret > 0)
-                 ret = 0;
-
-+       if (ret == -ENOSPC)
-+               ret = -EIO;
-+
-         return ret;
-  }
-
-
-
-在 2021/8/14 5:27, Theodore Ts'o 写道:
-> If the underlying storage device is using thin-provisioning, it's
-> possible for a zeroout operation to return ENOSPC.
+On Sun, Sep 26, 2021 at 04:10:43AM +0100, Matthew Wilcox wrote:
+> On Sun, Sep 26, 2021 at 09:42:43AM +1000, Dave Chinner wrote:
+> > Ok, so if the filesystem is doing block mapping in the IO path now,
+> > why does the swap file still need to map the file into a private
+> > block mapping now?  i.e all the work that iomap_swapfile_activate()
+> > does for filesystems like XFS and ext4 - it's this completely
+> > redundant now that we are doing block mapping during swap file IO
+> > via iomap_dio_rw()?
 > 
-> Commit df22291ff0fd ("ext4: Retry block allocation if we have free blocks
-> left") added logic to retry block allocation since we might get free block
-> after we commit a transaction. But the ENOSPC from thin-provisioning
-> will confuse ext4, and lead to an infinite loop.
+> Hi Dave,
 > 
-> Since using zeroout instead of splitting the extent node is an
-> optimization, if it fails, we might as well fall back to splitting the
-> extent node.
+> Thanks for bringing up all these points.  I think they all deserve to go
+> into the documentation as "things to consider" for people implementing
+> ->swap_rw for their filesystem.
 > 
-> Reported-by: yangerkun <yangerkun@huawei.com>
-> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-> ---
+> Something I don't think David perhaps made sufficiently clear is that
+> regular DIO from userspace gets handled by ->read_iter and ->write_iter.
+> This ->swap_rw op is used exclusive for, as the name suggests, swap DIO.
+> So filesystems don't have to handle swap DIO and regular DIO the same
+> way, and can split the allocation work between ->swap_activate and the
+> iomap callback as they see fit (as long as they can guarantee the lack
+> of deadlocks under memory pressure).
+
+I understand this completely.
+
+The point is that the implementation of ->swap_rw is to call
+iomap_dio_rw() with the same ops as the normal DIO read/write path
+uses. IOWs, apart from the IOCB_SWAP flag, there is no practical
+difference between the "swap DIO" and "normal DIO" I/O paths.
+
+> There are several advantages to using the DIO infrastructure for
+> swap:
 > 
-> I've run this through my battery of tests, and it doesn't cause any
-> regressions.  Yangerkun, can you test this and see if this works for
-> you?
+>  - unify block & net swap paths
+>  - allow filesystems to _see_ swap IOs instead of being bypassed
+>  - get rid of the swap extent rbtree
+>  - allow writing compound pages to swap files instead of splitting
+>    them
+>  - allow ->readpage to be synchronous for better error reporting
+>  - remove page_file_mapping() and page_file_offset()
 > 
->   fs/ext4/extents.c | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index 92ad64b89d9b..501516cadc1b 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -3569,7 +3569,7 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
->   				split_map.m_len - ee_block);
->   			err = ext4_ext_zeroout(inode, &zero_ex1);
->   			if (err)
-> -				goto out;
-> +				goto fallback;
->   			split_map.m_len = allocated;
->   		}
->   		if (split_map.m_lblk - ee_block + split_map.m_len <
-> @@ -3583,7 +3583,7 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
->   						      ext4_ext_pblock(ex));
->   				err = ext4_ext_zeroout(inode, &zero_ex2);
->   				if (err)
-> -					goto out;
-> +					goto fallback;
->   			}
->   
->   			split_map.m_len += split_map.m_lblk - ee_block;
-> @@ -3592,6 +3592,7 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
->   		}
->   	}
->   
-> +fallback:
->   	err = ext4_split_extent(handle, inode, ppath, &split_map, split_flag,
->   				flags);
->   	if (err > 0)
-> 
+> I suspect there are several problems with this patchset, but I'm not
+> likely to have a chance to read it closely for a few days.  If you
+> have time to give the XFS parts a good look, that would be fantastic.
+
+That's what I've already done, and all the questions I've raised are
+from asking a simple question: what happens if a transaction is
+required to complete the iomap_dio_rw() swap write operation?
+
+I mean, this is similar to the problems with IOCB_NOWAIT - we're
+supposed to return -EAGAIN if we might block during IO submission,
+and one of those situations we have to consider is "do we need to
+run a transaction". If we get it wrong (and we do!), then the worst
+thing that happens is that there is a long latency for IO
+submission. It's a minor performance issue, not the end of the
+world.
+
+The difference with IOCB_SWAP is that "don't do transactions during
+iomap_dio_rw()" is a _hard requirement_ on both IO submission and
+completion. That means, from now and forever, we will have to
+guarantee a path through iomap_dio_rw() that will never run
+transactions on an IO. That requirement needs to be enforced in
+every block mapping callback into each filesystem, as this is
+something the iomap infrastructure cannot enforce. Hence we'll have
+to plumb IOCB_SWAP into a new IOMAP_SWAP iterator flag to pass to
+the ->iomap_begin() DIO methods to ensure they do the right thing.
+
+And then the question becomes: what happens if the filesystem cannot
+do the right thing? Can the swap code handle an error? e.g. the
+first thing that xfs_direct_write_iomap_begin() and
+xfs_read_iomap_begin() do is check if the filesystem is shut down
+and returns -EIO in that case. IOWs, we've now got normal filesystem
+"reject all IO" corruption protection mechanisms in play. Using
+iomap_dio_rw() as it stands means that _all swapfile IO will fail_
+if the filesystem shuts down.
+
+Right now the swap file IO can keep going blissfully unaware of the
+filesystem failure status. The open swapfile will prevent the
+filesystem from being unmounted. Hence to unmount the shutdown
+filesystem to correct the problem, first the swap file has to be
+turned off, which means we have a fail-safe behaviour. Using the
+iomap_dio_rw() path means that swapfile IO _can and will fail_.
+
+AFAICT, swap IO errors are pretty much thrown away by the mm code;
+the swap_writepage() return value is ignored or placed on the swap
+cache address space and ignored. And it looks like the new read path
+just sets PageError() and leaves it to callers to detect and deal
+with a swapin failure because swap_readpage() is now void...
+
+So it seems like there's a whole new set of failure cases using the
+DIO path introduces into the swap IO path that haven't been
+considered here. I can't see why we wouldn't be able to solve them,
+but these considerations lead me to think that use of the DIO is
+based on an incorrect assumption - DIO is not a "simple low level
+IO" interface.
+
+Hence I suspect that we'd be much better off with a new
+iomap_swap_rw() implementation that just does what swap needs
+without any of the complexity of the DIO API. Internally iomap can
+share what it needs to share with the DIO path, but at this point
+I'm not sure we should be overloading the iomap_dio_rw() path with
+the semantics required by swap.
+
+e.g. we limit iomap_swap_rw() to only accept written or unwritten
+block mappings within file size on inodes with clean metadata (i.e.
+pure overwrite to guarantee no modification transactions), and then
+the fs provided ->iomap_begin callback can ignore shutdown state,
+elide inode level locking, do read-only mappings, etc without adding
+extra overhead to the existing DIO code path...
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
