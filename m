@@ -2,111 +2,129 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C405941962E
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 Sep 2021 16:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B007D419FC7
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 Sep 2021 22:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234709AbhI0OYX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 27 Sep 2021 10:24:23 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:22182 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234770AbhI0OYX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 27 Sep 2021 10:24:23 -0400
-Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HJ4ZG2ZrJz1DGkp;
-        Mon, 27 Sep 2021 22:21:26 +0800 (CST)
-Received: from [10.174.178.134] (10.174.178.134) by
- dggeme752-chm.china.huawei.com (10.3.19.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Mon, 27 Sep 2021 22:22:42 +0800
-Message-ID: <206dc2db-f642-022c-6c2c-5647a45e398b@huawei.com>
-Date:   Mon, 27 Sep 2021 22:22:42 +0800
+        id S236786AbhI0UJJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 27 Sep 2021 16:09:09 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:39998 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236733AbhI0UJG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 27 Sep 2021 16:09:06 -0400
+Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
+        by smtp-out2.suse.de (Postfix) with ESMTP id AE35B1FF7C;
+        Mon, 27 Sep 2021 20:07:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1632773245;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kxAIhH1YVtxRZIYXNVbyWMpsZD18tjPURBL8yhlODKY=;
+        b=rqCL/ZfaKLBBJ11Lvyjkmko7G0IT9x86WIcCx9OduTjm1NgsLZkg1W4/Fe1cCG/Qk9Yn8S
+        4UptkV/P2rPm+amFEtaKPN0FQNf0vfitqRtoMdyT/aUQpEjjB27ybGR9tRkeTK0IWi6EvT
+        6Aqpa+pvsMRplJz18xNNO1ZRkBSH1D8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1632773245;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kxAIhH1YVtxRZIYXNVbyWMpsZD18tjPURBL8yhlODKY=;
+        b=QEbbg8qe4mXGT8/Upe6yCLvS822wAxZpuHOGT5K9AL53fjW4hFZgMNlgvVQ4RqvbLrzxR0
+        6bmSu51+HcRz6eCA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay1.suse.de (Postfix) with ESMTP id 389D425D42;
+        Mon, 27 Sep 2021 20:07:24 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 862D3DA799; Mon, 27 Sep 2021 22:07:08 +0200 (CEST)
+Date:   Mon, 27 Sep 2021 22:07:08 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     David Howells <dhowells@redhat.com>
+Cc:     willy@infradead.org, hch@lst.de, trond.myklebust@primarydata.com,
+        Theodore Ts'o <tytso@mit.edu>, linux-block@vger.kernel.org,
+        ceph-devel@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Anna Schumaker <anna.schumaker@netapp.com>, linux-mm@kvack.org,
+        Bob Liu <bob.liu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Seth Jennings <sjenning@linux.vnet.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-cifs@vger.kernel.org, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Steve French <sfrench@samba.org>, NeilBrown <neilb@suse.de>,
+        Dan Magenheimer <dan.magenheimer@oracle.com>,
+        linux-nfs@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
+        linux-btrfs@vger.kernel.org, viro@zeniv.linux.org.uk,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH v3 0/9] mm: Use DIO for swap and fix NFS swapfiles
+Message-ID: <20210927200708.GI9286@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, David Howells <dhowells@redhat.com>,
+        willy@infradead.org, hch@lst.de, trond.myklebust@primarydata.com,
+        Theodore Ts'o <tytso@mit.edu>, linux-block@vger.kernel.org,
+        ceph-devel@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Anna Schumaker <anna.schumaker@netapp.com>, linux-mm@kvack.org,
+        Bob Liu <bob.liu@oracle.com>, "Darrick J. Wong" <djwong@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Seth Jennings <sjenning@linux.vnet.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-cifs@vger.kernel.org, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, Minchan Kim <minchan@kernel.org>,
+        Steve French <sfrench@samba.org>, NeilBrown <neilb@suse.de>,
+        Dan Magenheimer <dan.magenheimer@oracle.com>,
+        linux-nfs@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
+        linux-btrfs@vger.kernel.org, viro@zeniv.linux.org.uk,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
+References: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [RFC PATCH 0/3] ext4: enhance extent consistency check
-Content-Language: en-US
-To:     <linux-ext4@vger.kernel.org>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-        <yukuai3@huawei.com>
-References: <20210908120850.4012324-1-yi.zhang@huawei.com>
-From:   Zhang Yi <yi.zhang@huawei.com>
-In-Reply-To: <20210908120850.4012324-1-yi.zhang@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.134]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggeme752-chm.china.huawei.com (10.3.19.98)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Gentle ping.
+On Fri, Sep 24, 2021 at 06:17:52PM +0100, David Howells wrote:
+> 
+> Hi Willy, Trond, Christoph,
+> 
+> Here's v3 of a change to make reads and writes from the swapfile use async
+> DIO, adding a new ->swap_rw() address_space method, rather than readpage()
+> or direct_IO(), as requested by Willy.  This allows NFS to bypass the write
+> checks that prevent swapfiles from working, plus a bunch of other checks
+> that may or may not be necessary.
+> 
+> Whilst trying to make this work, I found that NFS's support for swapfiles
+> seems to have been non-functional since Aug 2019 (I think), so the first
+> patch fixes that.  Question is: do we actually *want* to keep this
+> functionality, given that it seems that no one's tested it with an upstream
+> kernel in the last couple of years?
+> 
+> There are additional patches to get rid of noop_direct_IO and replace it
+> with a feature bitmask, to make btrfs, ext4, xfs and raw blockdevs use the
+> new ->swap_rw method and thence remove the direct BIO submission paths from
+> swap.
+> 
+> I kept the IOCB_SWAP flag, using it to enable REQ_SWAP.  I'm not sure if
+> that's necessary, but it seems accounting related.
+> 
+> The synchronous DIO I/O code on NFS, raw blockdev, ext4 swapfile and xfs
+> swapfile all seem to work fine.  Btrfs refuses to swapon because the file
+> might be CoW'd.  I've tried doing "chattr +C", but that didn't help.
 
-On 2021/9/8 20:08, Zhang Yi wrote:
-> Now that in the error patch of extent updating procedure cannot handle
-> error and roll-back partial updates properly, so we could access the
-> left inconsistent extent buffer later and lead to BUGON in
-> errors=continue mode. For example, we could get below BUGON if we
-> update leaf extent but failed to update index extent in
-> ext4_ext_insert_extent() and try to alloc block again.
-> 
->   kernel BUG at fs/ext4/mballoc.c:4085!
->   invalid opcode: 0000 [#1] SMP PTI
->   CPU: 30 PID: 1177 Comm: xfs_io Not tainted 5.14.0-00006-g555c93b65a81 #543
->   RIP: 0010:ext4_mb_normalize_request.constprop.0+0x72c/0x8a0
->   RSP: 0018:ffffb398c0abb8d8 EFLAGS: 00010202
->   RAX: 0000000000000000 RBX: ffff8d79d3125000 RCX: 0000000000001500
->   RDX: 0000000000001500 RSI: 0000000000000000 RDI: ffffb398c0abba50
->   RBP: 0000000000001500 R08: 0000000000000001 R09: 00000000000015c0
->   R10: 0000000000660000 R11: ffff8d79e21212d8 R12: ffff8d79e21215b8
->   R13: 0000000000001500 R14: ffffb398c0abba50 R15: ffff8d79e21215b8
->   FS:  00007f1bf519f800(0000) GS:ffff8d80e5d80000(0000) knlGS:0000000000000000
->   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->   CR2: 0000560c5b96d000 CR3: 000000010f170000 CR4: 00000000000006e0
->   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->   Call Trace:
->    ext4_mb_new_blocks+0x8f3/0x1c90
->    ? __read_extent_tree_block+0x20a/0x260
->    ext4_ext_map_blocks+0xb7c/0x1d30
->    ext4_map_blocks+0x15d/0xa30
->    ? __cond_resched+0x1d/0x50
->    ? kmem_cache_alloc+0x206/0x400
->    _ext4_get_block+0xa8/0x170
->    ext4_get_block+0x1a/0x30
->    ext4_block_write_begin+0x179/0x8c0
->    ? ext4_get_block_unwritten+0x20/0x20
->    ? __ext4_journal_start_sb+0x179/0x1d0
->    ext4_write_begin+0x42d/0x910
->    ext4_da_write_begin+0x2eb/0x750
->    generic_perform_write+0xcb/0x280
->    ext4_buffered_write_iter+0xc3/0x1e0
->    ext4_file_write_iter+0x70/0xac0
->    ? _raw_spin_unlock+0x12/0x30
->    ? __handle_mm_fault+0x13e1/0x2520
->    new_sync_write+0x166/0x220
->    vfs_write+0x1d7/0x3b0
->    ksys_pwrite64+0x85/0xf0
->    __x64_sys_pwrite64+0x22/0x30
->    do_syscall_64+0x3b/0x90
->    entry_SYSCALL_64_after_hwframe+0x44/0xae
->   RIP: 0033:0x7f1bf5760378
-> 
-> This patch set address to enhance extent check in __ext4_ext_check() and
-> force check buffer again through clear buffer's verified bit if we
-> breaks off extent updating.
-> 
-> Thanks,
-> Yi.
-> 
-> 
-> Zhang Yi (3):
->   ext4: check for out-of-order index extents in
->     ext4_valid_extent_entries()
->   ext4: check for inconsistent extents between index and leaf block
->   ext4: prevent partial update of the extent blocks
-> 
->  fs/ext4/extents.c | 95 +++++++++++++++++++++++++++++++----------------
->  1 file changed, 64 insertions(+), 31 deletions(-)
-> 
+There was probably some step missing. The file must not have holes, so
+either do 'dd' to the right size or use fallocate (which is recommended
+in manual page btrfs(5) SWAPFILE SUPPORT). There are some fstests
+exercising swapfile (grep -l _format_swapfile tests/generic/*) so you
+could try that without having to set up the swapfile manually.
