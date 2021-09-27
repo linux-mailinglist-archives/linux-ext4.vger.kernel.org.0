@@ -2,178 +2,225 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1FC8418B85
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 Sep 2021 00:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3E841926A
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 Sep 2021 12:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbhIZWiq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 26 Sep 2021 18:38:46 -0400
-Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:48333 "EHLO
-        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230331AbhIZWip (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 26 Sep 2021 18:38:45 -0400
-Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
-        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 4810C82C75F;
-        Mon, 27 Sep 2021 08:37:00 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1mUclW-00H5s5-TN; Mon, 27 Sep 2021 08:36:58 +1000
-Date:   Mon, 27 Sep 2021 08:36:58 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     David Howells <dhowells@redhat.com>, hch@lst.de,
-        trond.myklebust@primarydata.com, Theodore Ts'o <tytso@mit.edu>,
-        linux-block@vger.kernel.org, ceph-devel@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Anna Schumaker <anna.schumaker@netapp.com>, linux-mm@kvack.org,
-        Bob Liu <bob.liu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Seth Jennings <sjenning@linux.vnet.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-cifs@vger.kernel.org, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Steve French <sfrench@samba.org>, NeilBrown <neilb@suse.de>,
-        Dan Magenheimer <dan.magenheimer@oracle.com>,
-        linux-nfs@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
-        linux-btrfs@vger.kernel.org, viro@zeniv.linux.org.uk,
-        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH v3 0/9] mm: Use DIO for swap and fix NFS swapfiles
-Message-ID: <20210926223658.GE1756565@dread.disaster.area>
-References: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
- <20210925234243.GA1756565@dread.disaster.area>
- <YU/ks7Sfw5Wj0K1p@casper.infradead.org>
+        id S233863AbhI0Kpn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 27 Sep 2021 06:45:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233839AbhI0Kpn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 27 Sep 2021 06:45:43 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B5CBC061575
+        for <linux-ext4@vger.kernel.org>; Mon, 27 Sep 2021 03:44:05 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id g2so11346189pfc.6
+        for <linux-ext4@vger.kernel.org>; Mon, 27 Sep 2021 03:44:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=sZ3MDzrW2f3mMQC47L1Sr+6RlesnLaSjD9S2sXFnpYg=;
+        b=ZxuxBjRLqBL7FomnBl6k0fk+qDw6AxJhU9x3im4l2oBBo7ODo808Pd96gej6qR4RFo
+         CGs1pqSFq94rfLLZwaliSGmYFJbIi0LgWS/hD6zBGXChMujsRNYaMdB+LKx7gbRk6t7m
+         02Pt4eaj70yKLJEXiti5WvPHuG+A2t5xA25dQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=sZ3MDzrW2f3mMQC47L1Sr+6RlesnLaSjD9S2sXFnpYg=;
+        b=dXSsvQzBYZvIPbpUDJ/xbenMHMyTvD4VAbUeLq9s+7wIQEu49nc30RqKfrFOT9xkv9
+         iqDbeyYJlJc/00XcdX8hSPDvSma+tuqg8mFV1Rm+KZ071Xs4gkc871eU4VnhyOA8YELk
+         koZtl400r/EC45vtliMx6bTjjGPahQkr1HEDMZSXHtgIWFx8HqS0egsnQh7+gW14WquR
+         CaFKOt1hO++pLwt72S0CIsroruIukKqGDXQQN+43g655VSgZSqaLxtnSeiKGGIc9AOIP
+         Vs0aP7PuElgV7frxvuusfVXuUVzWvPRrMZGqz1j2QApW24E27o2Q3Q7ICuyl44Y8sJ+u
+         l4Sg==
+X-Gm-Message-State: AOAM531Sr04tI82yU04U5h2xrxwr0O7FevIA/Yk+dyxbZW/W0LXQ2pst
+        yvdEji1EHOeQ7Lleb/OdQsAJHlk/BRsHGA==
+X-Google-Smtp-Source: ABdhPJxiSkaIIlP/UC+bSPCYYCJgt5tanAKn9ORkz7N3c2a8VD4POTHHk8snyovh9XeQaUvbNid/gA==
+X-Received: by 2002:a62:19d4:0:b0:43d:1bb7:13ae with SMTP id 203-20020a6219d4000000b0043d1bb713aemr22728242pfz.63.1632739444722;
+        Mon, 27 Sep 2021 03:44:04 -0700 (PDT)
+Received: from sarthakkukreti-glaptop.hsd1.ca.comcast.net ([2601:647:4200:b5b0::a7b9])
+        by smtp.gmail.com with ESMTPSA id mv6sm15468952pjb.16.2021.09.27.03.44.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 03:44:04 -0700 (PDT)
+From:   Sarthak Kukreti <sarthakkukreti@chromium.org>
+To:     linux-ext4@vger.kernel.org
+Cc:     adilger@dilger.ca, gwendal@chromium.org, tytso@mit.edu,
+        okiselev@amazon.com
+Subject: [PATCH v2] mke2fs: Add extended option for prezeroed storage devices
+Date:   Mon, 27 Sep 2021 03:39:10 -0700
+Message-Id: <20210927103910.341417-1-sarthakkukreti@chromium.org>
+X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
+In-Reply-To: <C5A2A75B-F767-40AC-B500-C99D484E9E30@dilger.ca>
+References: <C5A2A75B-F767-40AC-B500-C99D484E9E30@dilger.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YU/ks7Sfw5Wj0K1p@casper.infradead.org>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0
-        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
-        a=kj9zAlcOel0A:10 a=7QKq2e-ADPsA:10 a=7-415B0cAAAA:8
-        a=bMojAixK84Ma9oYoJFgA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, Sep 26, 2021 at 04:10:43AM +0100, Matthew Wilcox wrote:
-> On Sun, Sep 26, 2021 at 09:42:43AM +1000, Dave Chinner wrote:
-> > Ok, so if the filesystem is doing block mapping in the IO path now,
-> > why does the swap file still need to map the file into a private
-> > block mapping now?  i.e all the work that iomap_swapfile_activate()
-> > does for filesystems like XFS and ext4 - it's this completely
-> > redundant now that we are doing block mapping during swap file IO
-> > via iomap_dio_rw()?
-> 
-> Hi Dave,
-> 
-> Thanks for bringing up all these points.  I think they all deserve to go
-> into the documentation as "things to consider" for people implementing
-> ->swap_rw for their filesystem.
-> 
-> Something I don't think David perhaps made sufficiently clear is that
-> regular DIO from userspace gets handled by ->read_iter and ->write_iter.
-> This ->swap_rw op is used exclusive for, as the name suggests, swap DIO.
-> So filesystems don't have to handle swap DIO and regular DIO the same
-> way, and can split the allocation work between ->swap_activate and the
-> iomap callback as they see fit (as long as they can guarantee the lack
-> of deadlocks under memory pressure).
+This patch adds an extended option "assume_storage_prezeroed" to
+mke2fs. When enabled, this option acts as a hint to mke2fs that
+the underlying block device was zeroed before mke2fs was called.
+This allows mke2fs to optimize out the zeroing of the inode
+table and the journal, which speeds up the filesystem creation
+time.
 
-I understand this completely.
+Additionally, on thinly provisioned storage devices (like Ceph,
+dm-thin, newly created sparse loopback files), reads on unmapped extents
+return zero. This property allows mke2fs (with assume_storage_prezeroed)
+to avoid pre-allocating metadata space for inode tables for the entire
+filesystem and saves space that would normally be preallocated
+for zero inode tables.
 
-The point is that the implementation of ->swap_rw is to call
-iomap_dio_rw() with the same ops as the normal DIO read/write path
-uses. IOWs, apart from the IOCB_SWAP flag, there is no practical
-difference between the "swap DIO" and "normal DIO" I/O paths.
+Tests
+-----
+1) Running 'mke2fs -t ext4' on 10G sparse files on an ext4
+filesystem drops the time taken by mke2fs from 0.09s to 0.04s
+and reduces the initial metadata space allocation (stat on
+sparse file) from 139736 blocks (545M) to 8672 blocks (34M).
 
-> There are several advantages to using the DIO infrastructure for
-> swap:
-> 
->  - unify block & net swap paths
->  - allow filesystems to _see_ swap IOs instead of being bypassed
->  - get rid of the swap extent rbtree
->  - allow writing compound pages to swap files instead of splitting
->    them
->  - allow ->readpage to be synchronous for better error reporting
->  - remove page_file_mapping() and page_file_offset()
-> 
-> I suspect there are several problems with this patchset, but I'm not
-> likely to have a chance to read it closely for a few days.  If you
-> have time to give the XFS parts a good look, that would be fantastic.
+2) On ChromeOS (running linux kernel 4.19) with dm-thin
+and 200GB thin logical volumes using 'mke2fs -t ext4 <dev>':
 
-That's what I've already done, and all the questions I've raised are
-from asking a simple question: what happens if a transaction is
-required to complete the iomap_dio_rw() swap write operation?
+- Time taken by mke2fs drops from 1.07s to 0.08s.
+- Avoiding zeroing out the inode table and journal reduces the
+  initial metadata space allocation from 0.48% to 0.01%.
+- Lazy inode table zeroing results in a further 1.45% of logical
+  volume space getting allocated for inode tables, even if no file
+  data is added to the filesystem. With assume_storage_prezeroed,
+  the metadata allocation remains at 0.01%.
 
-I mean, this is similar to the problems with IOCB_NOWAIT - we're
-supposed to return -EAGAIN if we might block during IO submission,
-and one of those situations we have to consider is "do we need to
-run a transaction". If we get it wrong (and we do!), then the worst
-thing that happens is that there is a long latency for IO
-submission. It's a minor performance issue, not the end of the
-world.
+Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
+--
+Changes in v2: Added regression test, fixed indentation.
+---
+ misc/mke2fs.8.in                        |  7 ++++++
+ misc/mke2fs.c                           | 21 ++++++++++++++++-
+ tests/m_assume_storage_prezeroed/expect |  2 ++
+ tests/m_assume_storage_prezeroed/script | 31 +++++++++++++++++++++++++
+ 4 files changed, 60 insertions(+), 1 deletion(-)
+ create mode 100644 tests/m_assume_storage_prezeroed/expect
+ create mode 100644 tests/m_assume_storage_prezeroed/script
 
-The difference with IOCB_SWAP is that "don't do transactions during
-iomap_dio_rw()" is a _hard requirement_ on both IO submission and
-completion. That means, from now and forever, we will have to
-guarantee a path through iomap_dio_rw() that will never run
-transactions on an IO. That requirement needs to be enforced in
-every block mapping callback into each filesystem, as this is
-something the iomap infrastructure cannot enforce. Hence we'll have
-to plumb IOCB_SWAP into a new IOMAP_SWAP iterator flag to pass to
-the ->iomap_begin() DIO methods to ensure they do the right thing.
-
-And then the question becomes: what happens if the filesystem cannot
-do the right thing? Can the swap code handle an error? e.g. the
-first thing that xfs_direct_write_iomap_begin() and
-xfs_read_iomap_begin() do is check if the filesystem is shut down
-and returns -EIO in that case. IOWs, we've now got normal filesystem
-"reject all IO" corruption protection mechanisms in play. Using
-iomap_dio_rw() as it stands means that _all swapfile IO will fail_
-if the filesystem shuts down.
-
-Right now the swap file IO can keep going blissfully unaware of the
-filesystem failure status. The open swapfile will prevent the
-filesystem from being unmounted. Hence to unmount the shutdown
-filesystem to correct the problem, first the swap file has to be
-turned off, which means we have a fail-safe behaviour. Using the
-iomap_dio_rw() path means that swapfile IO _can and will fail_.
-
-AFAICT, swap IO errors are pretty much thrown away by the mm code;
-the swap_writepage() return value is ignored or placed on the swap
-cache address space and ignored. And it looks like the new read path
-just sets PageError() and leaves it to callers to detect and deal
-with a swapin failure because swap_readpage() is now void...
-
-So it seems like there's a whole new set of failure cases using the
-DIO path introduces into the swap IO path that haven't been
-considered here. I can't see why we wouldn't be able to solve them,
-but these considerations lead me to think that use of the DIO is
-based on an incorrect assumption - DIO is not a "simple low level
-IO" interface.
-
-Hence I suspect that we'd be much better off with a new
-iomap_swap_rw() implementation that just does what swap needs
-without any of the complexity of the DIO API. Internally iomap can
-share what it needs to share with the DIO path, but at this point
-I'm not sure we should be overloading the iomap_dio_rw() path with
-the semantics required by swap.
-
-e.g. we limit iomap_swap_rw() to only accept written or unwritten
-block mappings within file size on inodes with clean metadata (i.e.
-pure overwrite to guarantee no modification transactions), and then
-the fs provided ->iomap_begin callback can ignore shutdown state,
-elide inode level locking, do read-only mappings, etc without adding
-extra overhead to the existing DIO code path...
-
-Cheers,
-
-Dave.
+diff --git a/misc/mke2fs.8.in b/misc/mke2fs.8.in
+index c0b53245..5c6ea5ec 100644
+--- a/misc/mke2fs.8.in
++++ b/misc/mke2fs.8.in
+@@ -365,6 +365,13 @@ small risk if the system crashes before the journal has been overwritten
+ entirely one time.  If the option value is omitted, it defaults to 1 to
+ enable lazy journal inode zeroing.
+ .TP
++.B assume_storage_prezeroed\fR[\fB= \fI<0 to disable, 1 to enable>\fR]
++If enabled,
++.BR mke2fs
++assumes that the storage device has been prezeroed, skips zeroing the journal
++and inode tables, and annotates the block group flags to signal that the inode
++table has been zeroed.
++.TP
+ .B no_copy_xattrs
+ Normally
+ .B mke2fs
+diff --git a/misc/mke2fs.c b/misc/mke2fs.c
+index 04b2fbce..24c69966 100644
+--- a/misc/mke2fs.c
++++ b/misc/mke2fs.c
+@@ -95,6 +95,7 @@ int	journal_size;
+ int	journal_flags;
+ int	journal_fc_size;
+ static int	lazy_itable_init;
++static int	assume_storage_prezeroed;
+ static int	packed_meta_blocks;
+ int		no_copy_xattrs;
+ static char	*bad_blocks_filename = NULL;
+@@ -1012,6 +1013,11 @@ static void parse_extended_opts(struct ext2_super_block *param,
+ 				lazy_itable_init = strtoul(arg, &p, 0);
+ 			else
+ 				lazy_itable_init = 1;
++		} else if (!strcmp(token, "assume_storage_prezeroed")) {
++			if (arg)
++				assume_storage_prezeroed = strtoul(arg, &p, 0);
++			else
++				assume_storage_prezeroed = 1;
+ 		} else if (!strcmp(token, "lazy_journal_init")) {
+ 			if (arg)
+ 				journal_flags |= strtoul(arg, &p, 0) ?
+@@ -1115,7 +1121,8 @@ static void parse_extended_opts(struct ext2_super_block *param,
+ 			"\tnodiscard\n"
+ 			"\tencoding=<encoding>\n"
+ 			"\tencoding_flags=<flags>\n"
+-			"\tquotatype=<quota type(s) to be enabled>\n\n"),
++			"\tquotatype=<quota type(s) to be enabled>\n"
++			"\tassume_storage_prezeroed=<0 to disable, 1 to enable>\n\n"),
+ 			badopt ? badopt : "");
+ 		free(buf);
+ 		exit(1);
+@@ -3095,6 +3102,18 @@ int main (int argc, char *argv[])
+ 		io_channel_set_options(fs->io, opt_string);
+ 	}
+ 
++	if (assume_storage_prezeroed) {
++		if (verbose)
++			printf("%s",
++			       _("Assuming the storage device is prezeroed "
++			       "- skipping inode table and journal wipe\n"));
++
++		lazy_itable_init = 1;
++		itable_zeroed = 1;
++		zero_hugefile = 0;
++		journal_flags |= EXT2_MKJOURNAL_LAZYINIT;
++	}
++
+ 	/* Can't undo discard ... */
+ 	if (!noaction && discard && dev_size && (io_ptr != undo_io_manager)) {
+ 		retval = mke2fs_discard_device(fs);
+diff --git a/tests/m_assume_storage_prezeroed/expect b/tests/m_assume_storage_prezeroed/expect
+new file mode 100644
+index 00000000..2ca3784a
+--- /dev/null
++++ b/tests/m_assume_storage_prezeroed/expect
+@@ -0,0 +1,2 @@
++2384
++336
+diff --git a/tests/m_assume_storage_prezeroed/script b/tests/m_assume_storage_prezeroed/script
+new file mode 100644
+index 00000000..0745fb28
+--- /dev/null
++++ b/tests/m_assume_storage_prezeroed/script
+@@ -0,0 +1,31 @@
++test_description="test prezeroed storage metadata allocation"
++FILE_SIZE=16M
++
++LOG=$test_name.log
++OUT=$test_name.out
++EXP=$test_dir/expect
++
++dd if=/dev/zero of=$TMPFILE.1 bs=1 count=0 seek=$FILE_SIZE >> $LOG 2>&1
++dd if=/dev/zero of=$TMPFILE.2 bs=1 count=0 seek=$FILE_SIZE >> $LOG 2>&1
++
++$MKE2FS -o Linux -t ext4 -O has_journal $TMPFILE.1 >> $LOG 2>&1
++stat -c "%b" $TMPFILE.1 > $OUT
++
++$MKE2FS -o Linux -t ext4 -O has_journal -E assume_storage_prezeroed=1 $TMPFILE.2 >> $LOG 2>&1
++stat -c "%b" $TMPFILE.2 >> $OUT
++
++rm -f $TMPFILE.1 $TMPFILE.2
++
++cmp -s $OUT $EXP
++status=$?
++
++if [ "$status" = 0 ] ; then
++	echo "$test_name: $test_description: ok"
++	touch $test_name.ok
++else
++	echo "$test_name: $test_description: failed"
++	cat $LOG > $test_name.failed
++	diff $EXP $OUT >> $test_name.failed
++fi
++
++unset LOG OUT EXP FILE_SIZE
+\ No newline at end of file
 -- 
-Dave Chinner
-david@fromorbit.com
+2.31.0
+
