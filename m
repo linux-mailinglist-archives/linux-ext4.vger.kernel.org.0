@@ -2,38 +2,38 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1EC41A865
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Sep 2021 08:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1878E41A867
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Sep 2021 08:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239609AbhI1GE3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 28 Sep 2021 02:04:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48780 "EHLO mail.kernel.org"
+        id S239065AbhI1GEd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 28 Sep 2021 02:04:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239869AbhI1GCs (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 28 Sep 2021 02:02:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 12A59613AC;
-        Tue, 28 Sep 2021 05:57:38 +0000 (UTC)
+        id S238929AbhI1GCu (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 28 Sep 2021 02:02:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F6D7613CF;
+        Tue, 28 Sep 2021 05:57:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632808658;
-        bh=27whueOksSIGYwWBQXzhOYss4ziLaN09BDh/OORgVbU=;
+        s=k20201202; t=1632808664;
+        bh=DiC/iphoatt/a+XEjILF60jpiyxJAzAikHTj84ook+8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OFr88ypFHpL1XibGPINm878L5F3mVRI0GkviwT47PWcHX666OIW2Ts1TXvJia4R2V
-         En69wxmay/2fjPW1B6wbU0LApAciW/icUmKzqrGYBRlOLx3ldVszhJ1iq+E119v/Dw
-         agMgVPhcmJGCT6fcMfP5c7tvqRmptHIp4Ll+zazttm/Y8P7Ky5UBNR5uB/0+IPx1oA
-         7CWXEYFTf7CfdOM9/ZR1TCe01a2heWM0Iu599O0tmFcszlbhd/MTaZMhGhDSu8QRjL
-         1M6AcroNVOqukMvtcI7ODBvJynm5oZQIcSeR66ePYiDehBoPrU0MCdh7u3gMhxsmNe
-         8pL0GCljhSgRg==
+        b=b8WM0iq3q4DIhDQrKVu26tuCBP32hx3wjaAaR9544LbZpX0gSYqQntLnPS7cXAFNq
+         oqwuwKUpwPMRLUoyZpxnO+lHEvU7PWb8mlyMXXEdr4S7tEMYE5nQ5ukXj87ZRUq53V
+         CStMuWy04LrBuO2nZNr6QPbdl6CjMLOgQLXCtvGHrgqAaivjgu9MmWYCQtiduRng+O
+         t5uoePRAyowW9ghcdgtCodaGmZRqdsK3jNsK1SXp90/omLwUH4dGJO0NjTSVVcPtz4
+         nMXbQ8whFw9gm+x2H9CaoUARc8wA9FM4QqVfUZwUvRjVsGfyU5+DYZvJPAeKt7+eG8
+         8hnmJA00SI96g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Dan Carpenter <dan.carpenter@oracle.com>, Jan Kara <jack@suse.cz>,
         Sasha Levin <sashal@kernel.org>, jack@suse.com,
         linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 4/6] ext2: fix sleeping in atomic bugs on error
-Date:   Tue, 28 Sep 2021 01:57:32 -0400
-Message-Id: <20210928055734.173182-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 3/5] ext2: fix sleeping in atomic bugs on error
+Date:   Tue, 28 Sep 2021 01:57:39 -0400
+Message-Id: <20210928055741.173265-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210928055734.173182-1-sashal@kernel.org>
-References: <20210928055734.173182-1-sashal@kernel.org>
+In-Reply-To: <20210928055741.173265-1-sashal@kernel.org>
+References: <20210928055741.173265-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -65,7 +65,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 6 insertions(+), 8 deletions(-)
 
 diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
-index 4c40c0786e16..bd32140bdfee 100644
+index 9f9992b37924..2e4747e0aaf0 100644
 --- a/fs/ext2/balloc.c
 +++ b/fs/ext2/balloc.c
 @@ -46,10 +46,9 @@ struct ext2_group_desc * ext2_get_group_desc(struct super_block * sb,
