@@ -2,96 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FA541A5E4
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Sep 2021 05:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C89F41A762
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Sep 2021 07:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238813AbhI1DNY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 27 Sep 2021 23:13:24 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:35268 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238748AbhI1DNX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 27 Sep 2021 23:13:23 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 95E6C222DF;
-        Tue, 28 Sep 2021 03:11:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1632798701; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k1irZcE6GgE63UfMaZ69q7wFQxdxy8PkJV1UDRuOwDA=;
-        b=Af8PPYiGG/KoV03reINXBzNVPccmiyHVMrwNt2UIFxlU1jhXBp5nI2Gka9opvfla6EYXOa
-        u9dubE+5BF4AwBJlVzPfA+nwLlAQkhckDkag+FkKT+kBsnwd6qmqqlWA/pOjn0C1Ffe5V9
-        HYSxfFfncwL3S6Y8kijKplmMugjgsEE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1632798701;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k1irZcE6GgE63UfMaZ69q7wFQxdxy8PkJV1UDRuOwDA=;
-        b=rvEM/v30W6HdMnLZksiPaBfoRjZ8iPYI6P23HeASJG7DpSxpqPRoywlWfOvhpMFCEARX9U
-        W3t0wcFCENMdaDDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C1463132D4;
-        Tue, 28 Sep 2021 03:11:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id HD3CH+SHUmHafwAAMHmgww
-        (envelope-from <neilb@suse.de>); Tue, 28 Sep 2021 03:11:32 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        id S238944AbhI1F5N (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 28 Sep 2021 01:57:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47654 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238950AbhI1F5L (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 28 Sep 2021 01:57:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 604E66120D;
+        Tue, 28 Sep 2021 05:55:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632808532;
+        bh=5Y/E7/1Pihv7RM07/Ul/WtSQVHQxh+kSXuhOnwJwQhM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=poYxVDSTYnuMZR9imTcU4333S4HpZ+irKMGddpM+NrZBDIJ0T3SmqouLQ17KI1xjl
+         5nFfc7ITZ0i6VJ2806X6d7NTN66Nw2lh//cdBCg5Voh2XeeTyUHDU46STe/Eyen+GX
+         z+/0qrdchY2U7X8T2jf3cLmAsAlBZZii1AKwlWVpfRFc8w/4sQMAv0JWKgRPJGGrQR
+         o0vLidA/sEjQrB6zXAr0jHFfLoVVpfa8y1e4uN7luvW7Hb0IhKTS9IOfYy1pvMXQLe
+         DI1jvidm2K9E/9O+Y9tvcNP4XAJql0cbz1il/Cd86Uqoew7nLDRs2T3dzy8GGRw1iM
+         vGLoj9Kc9XCdg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>, Jan Kara <jack@suse.cz>,
+        Sasha Levin <sashal@kernel.org>, jack@suse.com,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.14 13/40] ext2: fix sleeping in atomic bugs on error
+Date:   Tue, 28 Sep 2021 01:54:57 -0400
+Message-Id: <20210928055524.172051-13-sashal@kernel.org>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210928055524.172051-1-sashal@kernel.org>
+References: <20210928055524.172051-1-sashal@kernel.org>
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "David Howells" <dhowells@redhat.com>
-Cc:     willy@infradead.org, hch@lst.de, trond.myklebust@primarydata.com,
-        "Theodore Ts'o" <tytso@mit.edu>, linux-block@vger.kernel.org,
-        ceph-devel@vger.kernel.org,
-        "Trond Myklebust" <trond.myklebust@hammerspace.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        "Jeff Layton" <jlayton@kernel.org>,
-        "Andreas Dilger" <adilger.kernel@dilger.ca>,
-        "Anna Schumaker" <anna.schumaker@netapp.com>, linux-mm@kvack.org,
-        "Bob Liu" <bob.liu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "Josef Bacik" <josef@toxicpanda.com>,
-        "Seth Jennings" <sjenning@linux.vnet.ibm.com>,
-        "Jens Axboe" <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-cifs@vger.kernel.org, "Chris Mason" <clm@fb.com>,
-        "David Sterba" <dsterba@suse.com>,
-        "Minchan Kim" <minchan@kernel.org>,
-        "Steve French" <sfrench@samba.org>,
-        "Dan Magenheimer" <dan.magenheimer@oracle.com>,
-        linux-nfs@vger.kernel.org, "Ilya Dryomov" <idryomov@gmail.com>,
-        linux-btrfs@vger.kernel.org, dhowells@redhat.com,
-        viro@zeniv.linux.org.uk, torvalds@linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH v3 0/9] mm: Use DIO for swap and fix NFS swapfiles
-In-reply-to: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
-References: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
-Date:   Tue, 28 Sep 2021 13:11:29 +1000
-Message-id: <163279868982.18792.10448745714922373194@noble.neil.brown.name>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, 25 Sep 2021, David Howells wrote:
-> Whilst trying to make this work, I found that NFS's support for swapfiles
-> seems to have been non-functional since Aug 2019 (I think), so the first
-> patch fixes that.  Question is: do we actually *want* to keep this
-> functionality, given that it seems that no one's tested it with an upstream
-> kernel in the last couple of years?
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-SUSE definitely want to keep this functionality.  We have customers
-using it.
-I agree it would be good if it was being tested somewhere....
+[ Upstream commit 372d1f3e1bfede719864d0d1fbf3146b1e638c88 ]
 
-Thanks,
-NeilBrown
+The ext2_error() function syncs the filesystem so it sleeps.  The caller
+is holding a spinlock so it's not allowed to sleep.
+
+   ext2_statfs() <- disables preempt
+   -> ext2_count_free_blocks()
+      -> ext2_get_group_desc()
+
+Fix this by using WARN() to print an error message and a stack trace
+instead of using ext2_error().
+
+Link: https://lore.kernel.org/r/20210921203233.GA16529@kili
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/ext2/balloc.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
+
+diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
+index 1f3f4326bf3c..c17ccc19b938 100644
+--- a/fs/ext2/balloc.c
++++ b/fs/ext2/balloc.c
+@@ -48,10 +48,9 @@ struct ext2_group_desc * ext2_get_group_desc(struct super_block * sb,
+ 	struct ext2_sb_info *sbi = EXT2_SB(sb);
+ 
+ 	if (block_group >= sbi->s_groups_count) {
+-		ext2_error (sb, "ext2_get_group_desc",
+-			    "block_group >= groups_count - "
+-			    "block_group = %d, groups_count = %lu",
+-			    block_group, sbi->s_groups_count);
++		WARN(1, "block_group >= groups_count - "
++		     "block_group = %d, groups_count = %lu",
++		     block_group, sbi->s_groups_count);
+ 
+ 		return NULL;
+ 	}
+@@ -59,10 +58,9 @@ struct ext2_group_desc * ext2_get_group_desc(struct super_block * sb,
+ 	group_desc = block_group >> EXT2_DESC_PER_BLOCK_BITS(sb);
+ 	offset = block_group & (EXT2_DESC_PER_BLOCK(sb) - 1);
+ 	if (!sbi->s_group_desc[group_desc]) {
+-		ext2_error (sb, "ext2_get_group_desc",
+-			    "Group descriptor not loaded - "
+-			    "block_group = %d, group_desc = %lu, desc = %lu",
+-			     block_group, group_desc, offset);
++		WARN(1, "Group descriptor not loaded - "
++		     "block_group = %d, group_desc = %lu, desc = %lu",
++		      block_group, group_desc, offset);
+ 		return NULL;
+ 	}
+ 
+-- 
+2.33.0
+
