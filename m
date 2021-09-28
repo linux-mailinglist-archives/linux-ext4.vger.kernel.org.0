@@ -2,38 +2,38 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E62341A84E
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Sep 2021 08:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1EC41A865
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Sep 2021 08:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239150AbhI1GDg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 28 Sep 2021 02:03:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49182 "EHLO mail.kernel.org"
+        id S239609AbhI1GE3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 28 Sep 2021 02:04:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239726AbhI1GBl (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 28 Sep 2021 02:01:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4268B613A7;
-        Tue, 28 Sep 2021 05:57:30 +0000 (UTC)
+        id S239869AbhI1GCs (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 28 Sep 2021 02:02:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 12A59613AC;
+        Tue, 28 Sep 2021 05:57:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632808650;
-        bh=8Dc+tYHawXAr+9oRqHJPFic6Thsbxr2opZw1UiJ7zhk=;
+        s=k20201202; t=1632808658;
+        bh=27whueOksSIGYwWBQXzhOYss4ziLaN09BDh/OORgVbU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q3m9jwQUXVY3vhRm3rLeFuCXzFhxFmm5cKSPpdg3p7O4OUQm7AT+FtTWZy0nPfMMy
-         1OO7rHH7fkVtS/IAsq+u1ryJFiz65LeKIGq8aKIa28tIkz4T4ffkvtbvpK5L1Tt3lh
-         sXtjFDOu4NitpeUNZAFicv7oqhix/WxKbmNpArsJ/qMC/UQ4NY3ZOqLu4yo7I7826+
-         3ZeGDAqHNT/eNNiOAPu8q0zsn882/C6ma9FUZc5qxavvev73Q6K2pC2TZvGlj1szLy
-         qJ7xS+Vnr/hNLh6aAmy8J/JHF6j87quR/f4iZ5js1eAfd2DhEQ2WTFUKDUlzlxdO0E
-         lc9nA96IgpGbA==
+        b=OFr88ypFHpL1XibGPINm878L5F3mVRI0GkviwT47PWcHX666OIW2Ts1TXvJia4R2V
+         En69wxmay/2fjPW1B6wbU0LApAciW/icUmKzqrGYBRlOLx3ldVszhJ1iq+E119v/Dw
+         agMgVPhcmJGCT6fcMfP5c7tvqRmptHIp4Ll+zazttm/Y8P7Ky5UBNR5uB/0+IPx1oA
+         7CWXEYFTf7CfdOM9/ZR1TCe01a2heWM0Iu599O0tmFcszlbhd/MTaZMhGhDSu8QRjL
+         1M6AcroNVOqukMvtcI7ODBvJynm5oZQIcSeR66ePYiDehBoPrU0MCdh7u3gMhxsmNe
+         8pL0GCljhSgRg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Dan Carpenter <dan.carpenter@oracle.com>, Jan Kara <jack@suse.cz>,
         Sasha Levin <sashal@kernel.org>, jack@suse.com,
         linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 4/8] ext2: fix sleeping in atomic bugs on error
-Date:   Tue, 28 Sep 2021 01:57:22 -0400
-Message-Id: <20210928055727.173078-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 4/6] ext2: fix sleeping in atomic bugs on error
+Date:   Tue, 28 Sep 2021 01:57:32 -0400
+Message-Id: <20210928055734.173182-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210928055727.173078-1-sashal@kernel.org>
-References: <20210928055727.173078-1-sashal@kernel.org>
+In-Reply-To: <20210928055734.173182-1-sashal@kernel.org>
+References: <20210928055734.173182-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -65,10 +65,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 6 insertions(+), 8 deletions(-)
 
 diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
-index e1b3724bebf2..ccd5a7016c19 100644
+index 4c40c0786e16..bd32140bdfee 100644
 --- a/fs/ext2/balloc.c
 +++ b/fs/ext2/balloc.c
-@@ -48,10 +48,9 @@ struct ext2_group_desc * ext2_get_group_desc(struct super_block * sb,
+@@ -46,10 +46,9 @@ struct ext2_group_desc * ext2_get_group_desc(struct super_block * sb,
  	struct ext2_sb_info *sbi = EXT2_SB(sb);
  
  	if (block_group >= sbi->s_groups_count) {
@@ -82,7 +82,7 @@ index e1b3724bebf2..ccd5a7016c19 100644
  
  		return NULL;
  	}
-@@ -59,10 +58,9 @@ struct ext2_group_desc * ext2_get_group_desc(struct super_block * sb,
+@@ -57,10 +56,9 @@ struct ext2_group_desc * ext2_get_group_desc(struct super_block * sb,
  	group_desc = block_group >> EXT2_DESC_PER_BLOCK_BITS(sb);
  	offset = block_group & (EXT2_DESC_PER_BLOCK(sb) - 1);
  	if (!sbi->s_group_desc[group_desc]) {
