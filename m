@@ -2,55 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5577941A8B7
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Sep 2021 08:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF07E41BC14
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Sep 2021 03:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238815AbhI1GWU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 28 Sep 2021 02:22:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50094 "EHLO
+        id S243590AbhI2BOJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 28 Sep 2021 21:14:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234207AbhI1GWT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Sep 2021 02:22:19 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ACDEC061575;
-        Mon, 27 Sep 2021 23:20:41 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id om12-20020a17090b3a8c00b0019eff43daf5so1931479pjb.4;
-        Mon, 27 Sep 2021 23:20:41 -0700 (PDT)
+        with ESMTP id S242636AbhI2BOJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Sep 2021 21:14:09 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21482C06161C;
+        Tue, 28 Sep 2021 18:12:29 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id m26so536874pff.3;
+        Tue, 28 Sep 2021 18:12:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id;
-        bh=1NgwWizDvquhA1vHirCNXX1aD4SPaNDoUx3U2uDuBao=;
-        b=Y3WAGLAaZb0+mw36CzoCwxiMxlidxyfTXTNQwI0tTXqTNsvWSiow9P3RpacyvV9esE
-         pPMOJDUn8BDW4gRJPUs4o1m8LhSZQks8iQWzpGer1YXDrc3YoB3bxJCMu7uJQ/Q6FkbY
-         JaHsmZRqzGBrEClOf/WWyYge4ut3y9Oz0mVrYI7KXBO8oiyjaAw/2TudsLUenkgvACdz
-         36BQCFBwReqPAWS+MrdkhTKNGRRGXF/ie4JYlXQYCMPh0g1yC17JH9dsWsG6hoVnzbcV
-         aqqaJvcSSQsGcmRJxYBsSJtlIof2tzkd1aCZFGnJJrsDRjyl7qMuh9vfNH50anIdvtF6
-         rWRw==
+        bh=2MMge1Bbq+tVQ9rbGODc1DW+eqgqDcqIYZ/e7PNWRJ8=;
+        b=hJt7l/Nx3YuJhIWSgBGOMyYXYeJcasI5vMI4eyFg9qYN8M46vT7Afzvq8gTmos8YBs
+         3Y3yjKsKm/uwI+Yb5hgDaQu1Bw8/Cla3GxHOxtpW8iAHX6eUqfeBOpD06XG5WVbiBvIa
+         vBLy+ttQvZly+ewCC28UsECIOrIH6C5pOxCW5zJuxSlpAngz04cMvgOj/361i9T4b8cu
+         cTN6hOVBhBmPUjjEEvlL1vWrs4tmhmf5hhJQdJ9g4hlEw0tv8bCcoJarYXIm6oYpgID3
+         td7AHKYgLRECWmSJnbmvyAtAJvLVHuhIX9BZwY20f2iIg7XICw8uH9ce9DR+aRTULrlA
+         acuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=1NgwWizDvquhA1vHirCNXX1aD4SPaNDoUx3U2uDuBao=;
-        b=f+879kZD9ZRBZtaO/aFP07bEY/vwhS2EIOQ5KzoFyKz1SJolOtGZRDpIJgoYIuxYif
-         6h3xI9Rj+hIdHS2PF9KadzjqT7SO8CaOs1DuP9YMsEoXLKw4WQiZ6toixZgaRj0gkP6U
-         0WIb9pKuAqb4BP4y9ANpslyFITiDnQO458frOvPLYI+1i/kcva9P25iZBMc3pla+xoFY
-         p4pK637emfar9rHnwMN7YsrLP1fPxphA6N4qWK8O6ezFeN3HK28s21lSejjVyJH4jPPL
-         D6JQFovg9Plqas0Je1HHxTSuYryP1kBr5v8L84sM6rxspsak/e1qFG9ELmeMYDlxplN/
-         LckQ==
-X-Gm-Message-State: AOAM5312YpcLShBdw7LfSYroQAXLSzuTcklAl49D9cyzs6IjzLE1kj+t
-        xLk4BzXaf7flK5lGhKQBqX3JkXODt0mLgGrg
-X-Google-Smtp-Source: ABdhPJzeJwb5L+mq3sUpv0Gb1D3eHgRjgwMGpKgGpwq8h4+NA8WaMpD6I225TRr2hdaCniPWf2qlhw==
-X-Received: by 2002:a17:90a:7892:: with SMTP id x18mr3431485pjk.95.1632810040531;
-        Mon, 27 Sep 2021 23:20:40 -0700 (PDT)
+        bh=2MMge1Bbq+tVQ9rbGODc1DW+eqgqDcqIYZ/e7PNWRJ8=;
+        b=ech1dBiPZM2WIzw0CNcKShkJaky1/zYKv+t2KLGvA/iTp3+wf9fk0vt8OSaYXIiyip
+         8p2ro1Wal4immmZHIC58sUuni5hYudpxFGHE5cmHArrDbtnR+5yY8EeBlEBfMU++Xzp9
+         aaDX727ft5toi5zdegozYpURdclshdrPxpaV+bPqQFB7n8/OdF0xMD+kWVor0MbZHeBU
+         oqkBMnSNwKmFW5zXb/xfAO2arZZRDo1Ku/3w6RncQbED0w3iKy5LypPAvFmDuR5Q6jGB
+         GqGn3jtRvMKjIp7y8uYMdsnKRDeGRL0yIQCZ6kTVhMs7DIf1AXSZ2WPU0FdB5Xr7v6GA
+         NwuA==
+X-Gm-Message-State: AOAM533OfVkK1+68gy6H/+ZKAK9Cq+51Cp+hW4c+YCWdyAzwqAfo1cny
+        KP0GS/kYbFwyABfHcMZekjrxbp2PN2so4jJ0
+X-Google-Smtp-Source: ABdhPJwLpaCidMAUcGRjIWsl0VRTMQ4Bib7rHc6tQRJYRt6cWUdLnWCDL6ecDaYQ+cPgpKjfxb6O6Q==
+X-Received: by 2002:aa7:9718:0:b0:43e:ee6:fd94 with SMTP id a24-20020aa79718000000b0043e0ee6fd94mr691187pfg.73.1632877948576;
+        Tue, 28 Sep 2021 18:12:28 -0700 (PDT)
 Received: from VM-0-3-centos.localdomain ([101.32.213.191])
-        by smtp.gmail.com with ESMTPSA id c9sm18923542pfi.212.2021.09.27.23.20.37
+        by smtp.gmail.com with ESMTPSA id n3sm908078pjv.15.2021.09.28.18.12.27
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 27 Sep 2021 23:20:38 -0700 (PDT)
+        Tue, 28 Sep 2021 18:12:28 -0700 (PDT)
 From:   brookxu <brookxu.cn@gmail.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca
 Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ext4: fix a possible ABBA deadlock dued to busy PA
-Date:   Tue, 28 Sep 2021 14:20:36 +0800
-Message-Id: <1632810036-18005-1-git-send-email-brookxu.cn@gmail.com>
+Subject: [PATCH v2] ext4: fix a possible ABBA deadlock dued to busy PA
+Date:   Wed, 29 Sep 2021 09:12:25 +0800
+Message-Id: <1632877945-18526-1-git-send-email-brookxu.cn@gmail.com>
 X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
@@ -100,11 +100,13 @@ better than the cost.
 
 Signed-off-by: Chunguang Xu <brookxu@tencent.com>
 ---
- fs/ext4/mballoc.c | 33 ++++++++++++++-------------------
- 1 file changed, 14 insertions(+), 19 deletions(-)
+v2: reset busy to zero before goto repeat.
+
+ fs/ext4/mballoc.c | 35 ++++++++++++++++-------------------
+ 1 file changed, 16 insertions(+), 19 deletions(-)
 
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 72bfac2..4ebcda6 100644
+index 72bfac2..72de6c1 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
 @@ -4814,7 +4814,7 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
@@ -168,7 +170,7 @@ index 72bfac2..4ebcda6 100644
  }
  
  /*
-@@ -5455,15 +5443,22 @@ static int ext4_mb_discard_preallocations(struct super_block *sb, int needed)
+@@ -5455,13 +5443,22 @@ static int ext4_mb_discard_preallocations(struct super_block *sb, int needed)
  {
  	ext4_group_t i, ngroups = ext4_get_groups_count(sb);
  	int ret;
@@ -185,14 +187,14 @@ index 72bfac2..4ebcda6 100644
  		freed += ret;
  		needed -= ret;
 +		cond_resched();
++	}
++
++	if (needed > 0 && busy && retry < 3) {
++		busy = 0;
++		goto repeat;
  	}
  
-+	if (needed > 0 && busy && retry < 3)
-+		goto repeat;
-+
  	return freed;
- }
- 
 -- 
 1.8.3.1
 
