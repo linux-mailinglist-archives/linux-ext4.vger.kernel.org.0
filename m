@@ -2,93 +2,93 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3090741C7C9
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Sep 2021 17:02:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F1B41C8AA
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Sep 2021 17:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344999AbhI2PEi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 29 Sep 2021 11:04:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344991AbhI2PEh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 29 Sep 2021 11:04:37 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F5CC06161C
-        for <linux-ext4@vger.kernel.org>; Wed, 29 Sep 2021 08:02:56 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id t4so1753457plo.0
-        for <linux-ext4@vger.kernel.org>; Wed, 29 Sep 2021 08:02:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=dsdxzT5iGWx+lIyIOgmQsDnKiuxVvfsgCi38fv6uSAE=;
-        b=YvCyOdT0nFOWQEZc3bXo46W2q2Gkyvd7d2VuY2HOad6sW0pqggdHeowsqLdSduMw5z
-         rSRuZzLiXtWt2cJsUfyqnB9keKJss3s2hae75JSZb/+B7gsl6oIsnUyjkNFV31lSeRTG
-         jwmBmYp2I6Y+I3xH75M3bB5FOae6b3Vn25Sa+Jumuw43XKxCFSDB8ivLymV7PBNgoWIp
-         Rf+PQZ1wfQbMEYWdpk/SMmcJv+8NoO0kpI77ICXuVsKm+5DNGOk7ecQLmEv+yw7cRVQ9
-         zsB8ktR9/e0mAjRBiXdSjr3gKRo+XU1GPvWO/XdnGoY3sg0HOJZjSMk68V3eaW6BYg73
-         fmeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=dsdxzT5iGWx+lIyIOgmQsDnKiuxVvfsgCi38fv6uSAE=;
-        b=sJkAfv5S7+DbXJmaibhDSdLRBhCExUCJdipWJT2xlR5b+gXmQ+2QrG6tXPjAGH9V3a
-         FV8SrJVBJJViWRPqIRyqkWMhlg84aLqVCxQfmjpehAJUcoe1ZvdImCqmQ4eit38lSZXX
-         HtwZg/jyESsi10eat1MQIDN+2bfid6AFHDyp4U02Lg9sBOES0FDP3kE3CL3j7meQzulc
-         fciRK3d2X13m/aUKCjZusj864aH3IhbyIpYp9+EMViMEUWtTpuXbJOhYX7mZhKifrVw3
-         Z4H42vVvddDj+ZfelYGpfSSfMTK+8soDYx1knH2RUYhJU2MkV01ypzU+3qlf7/Xd8z31
-         G1Dg==
-X-Gm-Message-State: AOAM532AhFRvrl0w3qPNSPs+imkeorwSKQkUym1UBPQjzy9GcJEuwcim
-        aa9miEYHJYTQLCRbq44d5gAeNP4Umj9t3Yvr/bg=
-X-Google-Smtp-Source: ABdhPJzjIAO2SATSdA34rZ7/S+8M0Exs5BIGQ5/Z9eiB4DbQMuDFxNnSCUnMq5ekx7s13Bo/9xMPDVy1K8EH3zkd+ks=
-X-Received: by 2002:a17:90a:4594:: with SMTP id v20mr433272pjg.156.1632927775249;
- Wed, 29 Sep 2021 08:02:55 -0700 (PDT)
+        id S1345382AbhI2Pq7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 29 Sep 2021 11:46:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39132 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245638AbhI2Pqv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 29 Sep 2021 11:46:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632930309;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YD/JzDwhuk7rGKkEzFS8gH/oiqrA2eu324rL5fdp0h4=;
+        b=JHWSxY2TsFsxf4kceHPwC6BVWFUHkyy9dGFyRZgFflSIy9eAGO7RjD7NHDJz3/VZAEVW6R
+        hRWnyWQ/TIbvYWewRR3GAbmZEihf+7rhE/N5sKgZDCluq4+eoOAdo5GCVHGRUeVbzPGM+G
+        RCZ/b3021Ar8Jhp7OrvyBBRRPesVxYc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-169-RydRWjxQMwK58uTqWu6Ekw-1; Wed, 29 Sep 2021 11:45:08 -0400
+X-MC-Unique: RydRWjxQMwK58uTqWu6Ekw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00CAB1006AA3;
+        Wed, 29 Sep 2021 15:45:06 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 51DD86A900;
+        Wed, 29 Sep 2021 15:45:03 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210927200708.GI9286@twin.jikos.cz>
+References: <20210927200708.GI9286@twin.jikos.cz> <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
+To:     dsterba@suse.cz
+Cc:     dhowells@redhat.com
+Cc:     willy@infradead.org, Chris Mason <clm@fb.com>,
+        linux-block@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        Ilya Dryomov <idryomov@gmail.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH v3 0/9] mm: Use DIO for swap and fix NFS swapfiles
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:3203:0:0:0:0 with HTTP; Wed, 29 Sep 2021 08:02:54
- -0700 (PDT)
-Reply-To: gaboritlaurent423@yahoo.com
-From:   Laurent Gaborit <regionalacsazoneafriqdirecteur@gmail.com>
-Date:   Wed, 29 Sep 2021 17:02:54 +0200
-Message-ID: <CANZzqXxUMBZkxY9a4SBVVD-j3H6mqhWKWvnXQmx+dUK=MdjjEg@mail.gmail.com>
-Subject: =?UTF-8?Q?Offre_de_cr=C3=A9dit?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <4005661.1632930302.1@warthog.procyon.org.uk>
 Content-Transfer-Encoding: quoted-printable
+Date:   Wed, 29 Sep 2021 16:45:02 +0100
+Message-ID: <4005662.1632930302@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Salut,
-Vous avez besoin de pr=C3=AAts de tr=C3=A9sorerie entre particuliers pour v=
-ous
-aider =C3=A0 faire face =C3=A0 des difficult=C3=A9s financi=C3=A8res et sor=
-tir enfin de
-l'impasse bancaire provoqu=C3=A9e par le rejet de votre dossier de demande
-de pr=C3=AAt ?
-Je suis de nationalit=C3=A9 fran=C3=A7aise et je peux vous accorder un pr=
-=C3=AAt de 5
-000 euros =C3=A0 2 000 000 euros avec un taux d'int=C3=A9r=C3=AAt de 2% et =
-des
-conditions qui vous faciliteront la vie. Voici les domaines dans
-lesquels je peux vous aider
-Aider:
-* Financi=C3=A8rement
-* Pr=C3=AAts immobiliers
-* Pr=C3=AAt investissement
-* Pr=C3=AAt de voiture
-* Dette de consolidation
-* Ligne de credit
-* Deuxi=C3=A8me hypoth=C3=A8que
-* Rachat de cr=C3=A9dits
-* Pr=C3=AAts personnels
-Vous =C3=AAtes pi=C3=A9g=C3=A9, banni et non pr=C3=A9f=C3=A9r=C3=A9 des ban=
-ques, ou mieux encore,
-vous avez un projet et avez besoin de financement, de mauvais rapports
-de cr=C3=A9dit, d'argent pour payer des factures, d'argent pour investir
-dans des affaires.
-Donc, si vous avez besoin d'avances de fonds, n'h=C3=A9sitez pas =C3=A0 me
-contacter par e-mail : laurentgaborit747@yahoo.com pour plus
-d'informations sur mes bonnes conditions.
-NB : Ce n'est pas une personne s=C3=A9rieuse =C3=A0 s'abstenir
-Meilleurs v=C5=93ux ...
-Laurent GABORIT.
+David Sterba <dsterba@suse.cz> wrote:
+
+> > There are additional patches to get rid of noop_direct_IO and replace =
+it
+> > with a feature bitmask, to make btrfs, ext4, xfs and raw blockdevs use=
+ the
+> > new ->swap_rw method and thence remove the direct BIO submission paths=
+ from
+> > swap.
+> > =
+
+> > I kept the IOCB_SWAP flag, using it to enable REQ_SWAP.  I'm not sure =
+if
+> > that's necessary, but it seems accounting related.
+>
+> There was probably some step missing. The file must not have holes, so
+> either do 'dd' to the right size or use fallocate (which is recommended
+> in manual page btrfs(5) SWAPFILE SUPPORT). There are some fstests
+> exercising swapfile (grep -l _format_swapfile tests/generic/*) so you
+> could try that without having to set up the swapfile manually.
+
+Yeah.  As advised elsewhere, I removed the file and recreated it, doing th=
+e
+chattr before extending the file.  At that point swapon worked.  It didn't
+work though, and various userspace programs started dying.  I'm guessing m=
+y
+btrfs_swap_rw() is wrong somehow.
+
+David
+
