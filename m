@@ -2,75 +2,113 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73EED41D7D3
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Sep 2021 12:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F9B41DE1B
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Sep 2021 17:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350021AbhI3Kfr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 30 Sep 2021 06:35:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36422 "EHLO
+        id S1346946AbhI3P43 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 30 Sep 2021 11:56:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350019AbhI3Kfi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 30 Sep 2021 06:35:38 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A34CEC06176C
-        for <linux-ext4@vger.kernel.org>; Thu, 30 Sep 2021 03:33:54 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id r18so20043601edv.12
-        for <linux-ext4@vger.kernel.org>; Thu, 30 Sep 2021 03:33:54 -0700 (PDT)
+        with ESMTP id S1346577AbhI3P42 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 30 Sep 2021 11:56:28 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C0AC06176A;
+        Thu, 30 Sep 2021 08:54:45 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id i4so27713049lfv.4;
+        Thu, 30 Sep 2021 08:54:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=ptsNAlDnx2IPZW6KXkEDsVtLPPD0orqeGHqL0Dz3UNs=;
-        b=iUTwQwBCChlXpLw7Ylas3PRYovSMQzSs/nq5nVY2jv9OdIZ1S/iI82/8Jy+vicj+Uf
-         ZTbsWudyu+9aGyICYosNCAzTkEuV65sD9YiY7TrhTdsyoDcqFQVHHfeWDRTsCY2+gxRz
-         X7iHQZ0knmYfX4ibGAKAhhjDXv1yI062G8itY8gXpvLy/d886YTaa3eKFO9xxREk8viW
-         6yHxGcdisPy2hbdysPwuV1n/gBGo0A4KGYh+hhgvErGJIKevJ353rP41ihyGUDiwNnKV
-         kAAxqviM3T2W5ch7RFUEU9EDK3fWeNmp0/4kCIkrOeeAjuCNqnr9c1ndLrvnTQ9tZBsF
-         m4TQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8LuCj9+8GFiHaMYgM8A65UudQg+qoOQQ2QUvcQ4XJ6s=;
+        b=PXKNBxqcRYxhwIV2v2X64yZJayzFfGuPEaFJcRpO4WCNqMpCZwI1df/zPBhLNhmRG9
+         7YWtoaofqurtGMdx0tYBEI6UfndHKtDaw4PBX49q9qi3J9QTKWYVNSDazJnLhCwGhWpW
+         sQyH53wtu7PQHWXKpw0IKJFLkzoLewsXUWMxyWUFA0GoZc/geWBr365BCc9DFKmEuqTx
+         QD1UXjg8vOB88FTGI55O4xvrqxi80eDmibsD2swnwubvtT8jN+7r24raClw1eWxICIMn
+         Xqc+xF7xzZT7TnBUA1RA5nmOrLjD64wC+WGfBcYeYx3rm7565L5ZdR6xyKgYS9WfGChU
+         NdlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=ptsNAlDnx2IPZW6KXkEDsVtLPPD0orqeGHqL0Dz3UNs=;
-        b=NjGu9KTmU8wQbEXz57tpjhxf+ArgFJVu57VKBB400e5ZKpUwxNBByO4q0dj9MJSv5e
-         ZroLc2oBUB+WOU2KE6Z/aJ63Q0UU3BCZXW0CarcuRQIcbPaGYG7WexStHLubi6ArbZLn
-         p3lEER1vI6x+E0fIkbq2TdV5ssRFzzIKiPbqNW5+b1XO+RexIFIPLEyBMPxgJm2FTnzS
-         GUtCldFXcXXTQns9OuerGEq8iOr7bcUHdmhuzK0tILFZc067iLSnST1y6NsLbPErC4De
-         BXD+dPvS+JEmOAq6pBqhVuSg7EIljb+0MvEqmMYpBTdLdnTw7cjrdxQx1kDbLooGhuAp
-         SW5g==
-X-Gm-Message-State: AOAM532G++8j1uB0aUbBDGDuhpeaZVYk0KQssjmITGoLnxDZq006U/0j
-        Fl9GFYOOdmV5hLxXnHhL98BaYEA8ReIrB2AhzRs=
-X-Google-Smtp-Source: ABdhPJzWcW3hU71H3RJ+7XnA5ALBfPUtr8gxPJ4ufQYb3DQI1OsOhHm94USujOfEYvXuFdJ08tWJn/iagK6HUgMyNzo=
-X-Received: by 2002:a17:906:3181:: with SMTP id 1mr6086202ejy.388.1632998033052;
- Thu, 30 Sep 2021 03:33:53 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8LuCj9+8GFiHaMYgM8A65UudQg+qoOQQ2QUvcQ4XJ6s=;
+        b=XbBmZKylOYkv9SoXviPKr9BWXkZnTMEhN/fJ51HYr7LvZ50SCBNVHrOfV5SWpjYM2r
+         Y2qiC9CZ/lZsMRA6GQqL2/yNfuvwmt01k+raQ/914z/0iuApGZgUMbKUALfvCbUniGRI
+         gSalxO6Z+kngZPgLhCAU9cS1ehUiZTvEswwuJASnjNdOIUR0Z+riW4QpL82Pr+TXguTS
+         2fDK3wKyn6cI/dVyVPlz5oC6323Y0CaVOJqjzh8gwILnBViU/sGrMjSLtCdVqkbFx6bt
+         8hDoqhoj9aXS9t5aF9sa3JGdoOav5Q8f/6EcjMIWu/mSG6lZ8XF7xAHIVtuMFICV5S9y
+         uQUg==
+X-Gm-Message-State: AOAM530xbUXEPedn3z2RSBSh4SRFgiu7yX3y79mfdsl/iauHJLStOASh
+        TzYK5mmp8+9+DBjHeQ/cTbqVveEdVpYvTtbgkUjRp9WQ
+X-Google-Smtp-Source: ABdhPJyOHnVmMylaeGdsSDUQCs/a7NstziQ8gAm3Iq6Rldf9w/4qe7wGWECjl3a+7RS3TZsUTx6/zgFOVy33MH5VI2M=
+X-Received: by 2002:a05:6512:32c5:: with SMTP id f5mr7091563lfg.234.1633017283958;
+ Thu, 30 Sep 2021 08:54:43 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a17:906:3db1:0:0:0:0 with HTTP; Thu, 30 Sep 2021 03:33:52
- -0700 (PDT)
-Reply-To: mrmichelduku@outlook.com
-From:   Michel <michaeldung001@gmail.com>
-Date:   Thu, 30 Sep 2021 10:33:52 +0000
-Message-ID: <CAFj68Qpr3o=9xFjdf4UA3z-v4sFpP5ByM4NTpEu8E12Ks2vEZw@mail.gmail.com>
-Subject: Please Respond Urgently
-To:     undisclosed-recipients:;
+References: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
+ <163279868982.18792.10448745714922373194@noble.neil.brown.name>
+In-Reply-To: <163279868982.18792.10448745714922373194@noble.neil.brown.name>
+From:   Steve French <smfrench@gmail.com>
+Date:   Thu, 30 Sep 2021 10:54:32 -0500
+Message-ID: <CAH2r5msHO9HTQGeO6MoR2_U76B9kLeoFS=FRbMuiNsh=YeFdWg@mail.gmail.com>
+Subject: Re: [RFC][PATCH v3 0/9] mm: Use DIO for swap and fix NFS swapfiles
+To:     NeilBrown <neilb@suse.de>
+Cc:     David Howells <dhowells@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Trond Myklebust <trond.myklebust@primarydata.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, linux-block@vger.kernel.org,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        linux-mm <linux-mm@kvack.org>, Bob Liu <bob.liu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Seth Jennings <sjenning@linux.vnet.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Steve French <sfrench@samba.org>,
+        Dan Magenheimer <dan.magenheimer@oracle.com>,
+        linux-nfs <linux-nfs@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Greetings,
+On Mon, Sep 27, 2021 at 10:12 PM NeilBrown <neilb@suse.de> wrote:
+>
+> On Sat, 25 Sep 2021, David Howells wrote:
+> > Whilst trying to make this work, I found that NFS's support for swapfiles
+> > seems to have been non-functional since Aug 2019 (I think), so the first
+> > patch fixes that.  Question is: do we actually *want* to keep this
+> > functionality, given that it seems that no one's tested it with an upstream
+> > kernel in the last couple of years?
+>
+> SUSE definitely want to keep this functionality.  We have customers
+> using it.
+> I agree it would be good if it was being tested somewhere....
+>
 
-I know that this mail will come to you as a surprise as we have never
-met before, but never mind i have decided to make this contact with
-you as I believe that you can be of great assistance to me. I need
-your assistance in transferring the sum of $11.3million to your
-private account Where this money can be shared between us.
+I am trying to work through the testing of swap over SMB3 mounts
+since there are use cases where you need to expand the swap
+space to remote storage and so this requirement comes up.  The main difficulty
+I run into is forgetting to mount with the mount options (to store mode bits)
+(so swap file has the right permissions) and debugging some of the
+xfstests relating to swap can be a little confusing.
 
-The money has been here in our Bank lying dormant for years now
-without anybody coming for the claim. I want to release the money to
-you as the relative to our deceased customer (the account owner) who
-died in a plane crash with his family since October 2005.
+-- 
+Thanks,
 
-By indicating your interest I will send you the full details on how
-the business will be executed.
-
-Best Regards,
-Mr.Michel Duku.
+Steve
