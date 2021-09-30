@@ -2,113 +2,118 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F9B41DE1B
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Sep 2021 17:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5755B41DE75
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Sep 2021 18:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346946AbhI3P43 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 30 Sep 2021 11:56:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346577AbhI3P42 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 30 Sep 2021 11:56:28 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C0AC06176A;
-        Thu, 30 Sep 2021 08:54:45 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id i4so27713049lfv.4;
-        Thu, 30 Sep 2021 08:54:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8LuCj9+8GFiHaMYgM8A65UudQg+qoOQQ2QUvcQ4XJ6s=;
-        b=PXKNBxqcRYxhwIV2v2X64yZJayzFfGuPEaFJcRpO4WCNqMpCZwI1df/zPBhLNhmRG9
-         7YWtoaofqurtGMdx0tYBEI6UfndHKtDaw4PBX49q9qi3J9QTKWYVNSDazJnLhCwGhWpW
-         sQyH53wtu7PQHWXKpw0IKJFLkzoLewsXUWMxyWUFA0GoZc/geWBr365BCc9DFKmEuqTx
-         QD1UXjg8vOB88FTGI55O4xvrqxi80eDmibsD2swnwubvtT8jN+7r24raClw1eWxICIMn
-         Xqc+xF7xzZT7TnBUA1RA5nmOrLjD64wC+WGfBcYeYx3rm7565L5ZdR6xyKgYS9WfGChU
-         NdlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8LuCj9+8GFiHaMYgM8A65UudQg+qoOQQ2QUvcQ4XJ6s=;
-        b=XbBmZKylOYkv9SoXviPKr9BWXkZnTMEhN/fJ51HYr7LvZ50SCBNVHrOfV5SWpjYM2r
-         Y2qiC9CZ/lZsMRA6GQqL2/yNfuvwmt01k+raQ/914z/0iuApGZgUMbKUALfvCbUniGRI
-         gSalxO6Z+kngZPgLhCAU9cS1ehUiZTvEswwuJASnjNdOIUR0Z+riW4QpL82Pr+TXguTS
-         2fDK3wKyn6cI/dVyVPlz5oC6323Y0CaVOJqjzh8gwILnBViU/sGrMjSLtCdVqkbFx6bt
-         8hDoqhoj9aXS9t5aF9sa3JGdoOav5Q8f/6EcjMIWu/mSG6lZ8XF7xAHIVtuMFICV5S9y
-         uQUg==
-X-Gm-Message-State: AOAM530xbUXEPedn3z2RSBSh4SRFgiu7yX3y79mfdsl/iauHJLStOASh
-        TzYK5mmp8+9+DBjHeQ/cTbqVveEdVpYvTtbgkUjRp9WQ
-X-Google-Smtp-Source: ABdhPJyOHnVmMylaeGdsSDUQCs/a7NstziQ8gAm3Iq6Rldf9w/4qe7wGWECjl3a+7RS3TZsUTx6/zgFOVy33MH5VI2M=
-X-Received: by 2002:a05:6512:32c5:: with SMTP id f5mr7091563lfg.234.1633017283958;
- Thu, 30 Sep 2021 08:54:43 -0700 (PDT)
+        id S1348688AbhI3QMS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 30 Sep 2021 12:12:18 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:43172 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348067AbhI3QMR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 30 Sep 2021 12:12:17 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 62842225DD;
+        Thu, 30 Sep 2021 16:10:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1633018234; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XpddWotJDEB20/Y8A/qQAdI2vVsD5aWSl/LVh8iF40Q=;
+        b=AQpU9JqLN/6kfwXY/TPDPw/NKaapn93qDicLYPiHxZyG74b/weHuUemBVpuOJblhXYXjCb
+        YIi0hPhJX8+hKB7on/HpM6rL3GN0Igfk4kPFQbQEZpjzJYjur/ws36wGt0/zdda2bf/nKV
+        661upQ5LxQe9nx2W4/i9RxepvsCPXPQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1633018234;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XpddWotJDEB20/Y8A/qQAdI2vVsD5aWSl/LVh8iF40Q=;
+        b=lE5GxDlFwdD/mmUGdzFoqUOZLj02OkCHLkdAY0FwZVi04dfngCUg0dKxbL5WzY0YMPT4D9
+        52AhZz4dAvKHiEDA==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id 4D1AFA3B81;
+        Thu, 30 Sep 2021 16:10:34 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id DC0781F2BA4; Thu, 30 Sep 2021 18:10:30 +0200 (CEST)
+Date:   Thu, 30 Sep 2021 18:10:30 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     yangerkun <yangerkun@huawei.com>
+Cc:     tytso@mit.edu, jack@suse.cz, linux-ext4@vger.kernel.org,
+        yukuai3@huawei.com
+Subject: Re: [PATCH 1/3] ext4: correct the left/middle/right debug message
+ for binsearch
+Message-ID: <20210930161030.GA17404@quack2.suse.cz>
+References: <20210903062748.4118886-1-yangerkun@huawei.com>
+ <20210903062748.4118886-2-yangerkun@huawei.com>
 MIME-Version: 1.0
-References: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
- <163279868982.18792.10448745714922373194@noble.neil.brown.name>
-In-Reply-To: <163279868982.18792.10448745714922373194@noble.neil.brown.name>
-From:   Steve French <smfrench@gmail.com>
-Date:   Thu, 30 Sep 2021 10:54:32 -0500
-Message-ID: <CAH2r5msHO9HTQGeO6MoR2_U76B9kLeoFS=FRbMuiNsh=YeFdWg@mail.gmail.com>
-Subject: Re: [RFC][PATCH v3 0/9] mm: Use DIO for swap and fix NFS swapfiles
-To:     NeilBrown <neilb@suse.de>
-Cc:     David Howells <dhowells@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Trond Myklebust <trond.myklebust@primarydata.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, linux-block@vger.kernel.org,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        linux-mm <linux-mm@kvack.org>, Bob Liu <bob.liu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Seth Jennings <sjenning@linux.vnet.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Steve French <sfrench@samba.org>,
-        Dan Magenheimer <dan.magenheimer@oracle.com>,
-        linux-nfs <linux-nfs@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210903062748.4118886-2-yangerkun@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 10:12 PM NeilBrown <neilb@suse.de> wrote:
->
-> On Sat, 25 Sep 2021, David Howells wrote:
-> > Whilst trying to make this work, I found that NFS's support for swapfiles
-> > seems to have been non-functional since Aug 2019 (I think), so the first
-> > patch fixes that.  Question is: do we actually *want* to keep this
-> > functionality, given that it seems that no one's tested it with an upstream
-> > kernel in the last couple of years?
->
-> SUSE definitely want to keep this functionality.  We have customers
-> using it.
-> I agree it would be good if it was being tested somewhere....
->
+On Fri 03-09-21 14:27:46, yangerkun wrote:
+> The debuginfo for binsearch want to show the left/middle/right extent
+> while the process search for the goal block. However we show this info
+> after we change right or left.
+> 
+> Signed-off-by: yangerkun <yangerkun@huawei.com>
 
-I am trying to work through the testing of swap over SMB3 mounts
-since there are use cases where you need to expand the swap
-space to remote storage and so this requirement comes up.  The main difficulty
-I run into is forgetting to mount with the mount options (to store mode bits)
-(so swap file has the right permissions) and debugging some of the
-xfstests relating to swap can be a little confusing.
+Looks good. Feel free to add:
 
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/ext4/extents.c | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index c33e0a2cb6c3..7ae32078b48f 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -713,13 +713,14 @@ ext4_ext_binsearch_idx(struct inode *inode,
+>  	r = EXT_LAST_INDEX(eh);
+>  	while (l <= r) {
+>  		m = l + (r - l) / 2;
+> +		ext_debug(inode, "%p(%u):%p(%u):%p(%u) ", l,
+> +			  le32_to_cpu(l->ei_block), m, le32_to_cpu(m->ei_block),
+> +			  r, le32_to_cpu(r->ei_block));
+> +
+>  		if (block < le32_to_cpu(m->ei_block))
+>  			r = m - 1;
+>  		else
+>  			l = m + 1;
+> -		ext_debug(inode, "%p(%u):%p(%u):%p(%u) ", l,
+> -			  le32_to_cpu(l->ei_block), m, le32_to_cpu(m->ei_block),
+> -			  r, le32_to_cpu(r->ei_block));
+>  	}
+>  
+>  	path->p_idx = l - 1;
+> @@ -781,13 +782,14 @@ ext4_ext_binsearch(struct inode *inode,
+>  
+>  	while (l <= r) {
+>  		m = l + (r - l) / 2;
+> +		ext_debug(inode, "%p(%u):%p(%u):%p(%u) ", l,
+> +			  le32_to_cpu(l->ee_block), m, le32_to_cpu(m->ee_block),
+> +			  r, le32_to_cpu(r->ee_block));
+> +
+>  		if (block < le32_to_cpu(m->ee_block))
+>  			r = m - 1;
+>  		else
+>  			l = m + 1;
+> -		ext_debug(inode, "%p(%u):%p(%u):%p(%u) ", l,
+> -			  le32_to_cpu(l->ee_block), m, le32_to_cpu(m->ee_block),
+> -			  r, le32_to_cpu(r->ee_block));
+>  	}
+>  
+>  	path->p_ext = l - 1;
+> -- 
+> 2.31.1
+> 
 -- 
-Thanks,
-
-Steve
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
