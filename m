@@ -2,164 +2,150 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4721B41DECC
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Sep 2021 18:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E74141DF6A
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Sep 2021 18:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350093AbhI3QXT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 30 Sep 2021 12:23:19 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:44630 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350072AbhI3QXT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 30 Sep 2021 12:23:19 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id BEE7021AC1;
-        Thu, 30 Sep 2021 16:21:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1633018895; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SFPwd309wb72bOIcAzCmQZn2zLy+zYKHQPu1UkTz3Ew=;
-        b=vRlMEYTie6IYyt5Yvda8e9TwjLAr3EmphcuFt81iOgJTa0oW+2uuAv0OSMO9mxLsXzqoPi
-        SWpH3c6kpTH/5+BCYEFTbmOHbAIqIhjLlXTYBKkXiVY34eN06UtjZ4/QTJysCQ0k9EF9qW
-        PrCT9h70Tdb0jWREo1HGcsPRx80FnKQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1633018895;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SFPwd309wb72bOIcAzCmQZn2zLy+zYKHQPu1UkTz3Ew=;
-        b=K6Zs8xemcJiaoxwSMVCjObrOtrXKI7sfGWSqGjuOwtFjz6Aw5W+VB84aC8x1AOd5LJrgfv
-        pTi595Fv6rd+3IDw==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id ABE5BA3B83;
-        Thu, 30 Sep 2021 16:21:35 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 7EAFF1F2BA4; Thu, 30 Sep 2021 18:21:35 +0200 (CEST)
-Date:   Thu, 30 Sep 2021 18:21:35 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     yangerkun <yangerkun@huawei.com>
-Cc:     tytso@mit.edu, jack@suse.cz, linux-ext4@vger.kernel.org,
-        yukuai3@huawei.com
-Subject: Re: [PATCH 2/3] ext4: ensure enough credits in
- ext4_ext_shift_path_extents
-Message-ID: <20210930162135.GB17404@quack2.suse.cz>
-References: <20210903062748.4118886-1-yangerkun@huawei.com>
- <20210903062748.4118886-3-yangerkun@huawei.com>
+        id S1352253AbhI3Qoj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 30 Sep 2021 12:44:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352257AbhI3Qoi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 30 Sep 2021 12:44:38 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD16C061774
+        for <linux-ext4@vger.kernel.org>; Thu, 30 Sep 2021 09:42:55 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id 188so8213068vsv.0
+        for <linux-ext4@vger.kernel.org>; Thu, 30 Sep 2021 09:42:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=/T9drlD1s9vO6lHEMs4LJzmDo2MKXEHBXvFYaWoQWpk=;
+        b=e/UXzsfuMGIOVlEbRTLr+LyiVLu+rk+C86Y8q3wW3py4w/E1lywchmha62s+vfDZU/
+         lDQlChCZPR0Za0O6XXqtSxHBkfDknZqHefn4JFrkJFXhtuUvXTNIb7ZXsWI1pIEy9aKF
+         J+djW1pExW+Vz85wenMcmdbvW0bRnZDuP+wBc22G8Whb+0otHmzIHD67VnaqAJJUyu2N
+         hp4Za3TRZCMM+8F1AYe4GrnZp3bXTXub14cfh+ybnoNZRNie6weSCM9l03xMOWyM6gUq
+         cOWLOgcQaxZV3c17cAG9jP+Q1Y80xOUJKYUrvTJKkS/GdFi05lMHEwckwq/k9WX3uZHS
+         4nOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=/T9drlD1s9vO6lHEMs4LJzmDo2MKXEHBXvFYaWoQWpk=;
+        b=RfA+6cb8oqExZAxKanp+ConlG8WiXBbhJ1X/WxIEtuZIohABmX60bZ5Hd+n+NHoOoR
+         CbKtNUgPK3gSVp97WY76hUnmagJgzkStKBCcnBhSlbTTGVlCQGAR+oOhAXnaDfPm0I/L
+         /2tHTAnJTyeMj5ayDmddBtuNRlFguTPvHSJUWgmFYxQtF45+NgIptLQX4P+SAtAqwZI/
+         tlVAFwaRPzLLw9S9/Ev9SP5EsmXbDtdV9BlTpPhopCkfzBdP9fUUpuaRuMRzKHDlGndH
+         oyF9IR9RP8HDGTmnLsVb4hQVKVFgWZDllY7jJOPPSyX42h+zGNq3RblDkHQf6w1Vcor4
+         1A5Q==
+X-Gm-Message-State: AOAM532sQMAKQMk63FHIwbHXUclTWqdOa1sOig5cpivjcUaoD8/tDZww
+        HUkwF45+3vBq6d+7DemmMZ+yke5gDj3xPuJlIYc=
+X-Google-Smtp-Source: ABdhPJy7YLP+m8kssI0cTAGZRObkTi7kloVEv0tm4oNDkoblCKkCMeQNyi2yuMCtLxU0suy9Uh8HC/qWBrEk3sGZi/s=
+X-Received: by 2002:a67:ce14:: with SMTP id s20mr160974vsl.34.1633020174218;
+ Thu, 30 Sep 2021 09:42:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210903062748.4118886-3-yangerkun@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:a59:ab2e:0:b0:22d:7f44:603a with HTTP; Thu, 30 Sep 2021
+ 09:42:53 -0700 (PDT)
+Reply-To: irenezakari24@gmail.com
+From:   Irene zakari <irenezakari88@gmail.com>
+Date:   Thu, 30 Sep 2021 09:42:53 -0700
+Message-ID: <CAFT8PFEiwji_tfJHzDxnx3mKwhExLN5n90A8Y-61JNL4AkCEFw@mail.gmail.com>
+Subject: PLEASE I NEED YOUR HELP
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 03-09-21 14:27:47, yangerkun wrote:
-> Like ext4_ext_rm_leaf, we can ensure enough credits before every call
-> that will consume credits. This can remove ext4_access_path which only
-> used in ext4_ext_shift_path_extents. It's a prepare patch for the next
-> bugfix patch.
-> 
-> Signed-off-by: yangerkun <yangerkun@huawei.com>
+Hello   ..
 
-Looks good. Feel free to add:
+How do you do over there? I hope you are doing well?
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+My name is Irene. (24 years), i am single, from Gambia, the only child
+of late Eng. Bernard Bakary Zakaria. the Director of Bajam Enterprise
+(Building Construction Company in The Gambia) also the CEO of Bernard
+Import and Export (GAMBIA).
 
-								Honza
+As a matter of fact my mother died when i was barely 4 years old
+according to my late father and because of the type of love he had for
+my mother made him to remain UN-married till he left the ghost..
 
-> ---
->  fs/ext4/extents.c | 49 +++++++++++++++--------------------------------
->  1 file changed, 15 insertions(+), 34 deletions(-)
-> 
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index 7ae32078b48f..a6fb0350f062 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -4974,36 +4974,6 @@ int ext4_get_es_cache(struct inode *inode, struct fiemap_extent_info *fieinfo,
->  	return ext4_fill_es_cache_info(inode, start_blk, len_blks, fieinfo);
->  }
->  
-> -/*
-> - * ext4_access_path:
-> - * Function to access the path buffer for marking it dirty.
-> - * It also checks if there are sufficient credits left in the journal handle
-> - * to update path.
-> - */
-> -static int
-> -ext4_access_path(handle_t *handle, struct inode *inode,
-> -		struct ext4_ext_path *path)
-> -{
-> -	int credits, err;
-> -
-> -	if (!ext4_handle_valid(handle))
-> -		return 0;
-> -
-> -	/*
-> -	 * Check if need to extend journal credits
-> -	 * 3 for leaf, sb, and inode plus 2 (bmap and group
-> -	 * descriptor) for each block group; assume two block
-> -	 * groups
-> -	 */
-> -	credits = ext4_writepage_trans_blocks(inode);
-> -	err = ext4_datasem_ensure_credits(handle, inode, 7, credits, 0);
-> -	if (err < 0)
-> -		return err;
-> -
-> -	err = ext4_ext_get_access(handle, inode, path);
-> -	return err;
-> -}
-> -
->  /*
->   * ext4_ext_shift_path_extents:
->   * Shift the extents of a path structure lying between path[depth].p_ext
-> @@ -5018,6 +4988,7 @@ ext4_ext_shift_path_extents(struct ext4_ext_path *path, ext4_lblk_t shift,
->  	int depth, err = 0;
->  	struct ext4_extent *ex_start, *ex_last;
->  	bool update = false;
-> +	int credits, restart_credits;
->  	depth = path->p_depth;
->  
->  	while (depth >= 0) {
-> @@ -5027,13 +4998,23 @@ ext4_ext_shift_path_extents(struct ext4_ext_path *path, ext4_lblk_t shift,
->  				return -EFSCORRUPTED;
->  
->  			ex_last = EXT_LAST_EXTENT(path[depth].p_hdr);
-> +			/* leaf + sb + inode */
-> +			credits = 3;
-> +			if (ex_start == EXT_FIRST_EXTENT(path[depth].p_hdr)) {
-> +				update = true;
-> +				/* extent tree + sb + inode */
-> +				credits = depth + 2;
-> +			}
->  
-> -			err = ext4_access_path(handle, inode, path + depth);
-> +			restart_credits = ext4_writepage_trans_blocks(inode);
-> +			err = ext4_datasem_ensure_credits(handle, inode, credits,
-> +					restart_credits, 0);
->  			if (err)
->  				goto out;
->  
-> -			if (ex_start == EXT_FIRST_EXTENT(path[depth].p_hdr))
-> -				update = true;
-> +			err = ext4_ext_get_access(handle, inode, path + depth);
-> +			if (err)
-> +				goto out;
->  
->  			while (ex_start <= ex_last) {
->  				if (SHIFT == SHIFT_LEFT) {
-> @@ -5064,7 +5045,7 @@ ext4_ext_shift_path_extents(struct ext4_ext_path *path, ext4_lblk_t shift,
->  		}
->  
->  		/* Update index too */
-> -		err = ext4_access_path(handle, inode, path + depth);
-> +		err = ext4_ext_get_access(handle, inode, path + depth);
->  		if (err)
->  			goto out;
->  
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+So after the death of my father as a result of assassinate, his brother (My
+Uncle) who is the purchasing and marketing sale manager of my late
+fathers company named (Mr. James Tokunbo Oriade Zakaria) wanted to
+convert all the properties and resources of my late father into his
+which i quarreled with him and it made him to lay his anger on me to
+the extent of hiring an assassins to kill me but to God be the glory i
+succeeded by making a way to Burkina faso for my dear life.
+Honestly i do live a fearful life even here in Burkina faso because of
+those Assassins coming after me .
+
+I would want to live and study in your country for my better future.
+because my father same blood brother wanted to force me into undecided
+marriage, just for me to leave my father home and went and live with
+another man I never know as he want to occupied all my father home
+and maybe to sold it as my father no longer alive, I'm the only child
+daughter my father born, '' but he don't know that i am not
+interesting in any of my father properties or early marriage for now,
+because i still have future to think about and to focus on my studies
+first as i was doing my first year in the University before the death
+of my father.
+
+Actually what I want to discuss with you is about my personal issue
+concern funds my late father deposited in a bank outside my country,
+worth $4.5 million united state dollars. i need your assistance to
+receive and invest this funds in your country.
+
+Please help me, I am sincere to you and I want to be member of your
+family as well if you wouldn't mind to accept me and lead me to better
+future in your country.
+
+All the documents the bank issue to my father during time of deposit
+is with me now.
+I already notify the bank on phone about the death of my father and
+they are surprise for the news and accept that my father is their good
+customer.
+I will be happy if this money can be invested in any business of your
+choice and it will be under your control till i finished my education,
+also I'm assuring you good relationship and I am ready to discuss the
+amount of money to give you from this money for your help.
+
+Therefore, I shall give you the bank contact and other necessary
+information in my next email if you will only promise me that you will
+not/never betray and disclosed this matter to anybody, because, this
+money is the only hope i have for survival on earth since I have lost
+my parents.
+
+Moreover I have the FUND PLACEMENT CERTIFICATE and the DEATH
+CERTIFICATE here with me, but before I give you further information, i
+will like to know your full data
+
+1. Full Name: ........................
+2. Address: ..................
+3. Nationality: ........... Sex................
+4. Age:........... Date of Birth:................
+5. Occupation:...................
+.....
+6. Phone: ........... Fax:.........................
+7. State of Origin: .......Country:..............
+8. Occupation:...................
+................
+9. Marital status........... E-mail address's: ............
+10. Scan copy of your ID card or Driving License/Photo:............
+DECLARATION:
+
+so that i will be fully sure that i am not trusting the wrong person.
+and it will also give me the mind to send you the bank contact for you
+to communicate with them for more verification about this money. and
+to know you more better.
+
+Meanwhile, you can reach me through my pastor,his name is Pastor Paul
+any time you call, tell him that you want to speak with me because
+right now i am living in the church here in Burkina faso and i don't
+want to stay here any longer,
+send for me to speak with you his phone number is this(+226 75213646)
+
+I will stop here and i will be waiting for your reply and feel free
+ask any thing you want to know about me.
+Please help me, I would be highly appreciated
+Have nice day.
+From Irene
