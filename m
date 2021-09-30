@@ -2,93 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F1B41C8AA
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Sep 2021 17:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73EED41D7D3
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Sep 2021 12:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345382AbhI2Pq7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 29 Sep 2021 11:46:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39132 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245638AbhI2Pqv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 29 Sep 2021 11:46:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632930309;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YD/JzDwhuk7rGKkEzFS8gH/oiqrA2eu324rL5fdp0h4=;
-        b=JHWSxY2TsFsxf4kceHPwC6BVWFUHkyy9dGFyRZgFflSIy9eAGO7RjD7NHDJz3/VZAEVW6R
-        hRWnyWQ/TIbvYWewRR3GAbmZEihf+7rhE/N5sKgZDCluq4+eoOAdo5GCVHGRUeVbzPGM+G
-        RCZ/b3021Ar8Jhp7OrvyBBRRPesVxYc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-169-RydRWjxQMwK58uTqWu6Ekw-1; Wed, 29 Sep 2021 11:45:08 -0400
-X-MC-Unique: RydRWjxQMwK58uTqWu6Ekw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00CAB1006AA3;
-        Wed, 29 Sep 2021 15:45:06 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 51DD86A900;
-        Wed, 29 Sep 2021 15:45:03 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210927200708.GI9286@twin.jikos.cz>
-References: <20210927200708.GI9286@twin.jikos.cz> <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
-To:     dsterba@suse.cz
-Cc:     dhowells@redhat.com
-Cc:     willy@infradead.org, Chris Mason <clm@fb.com>,
-        linux-block@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        Ilya Dryomov <idryomov@gmail.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH v3 0/9] mm: Use DIO for swap and fix NFS swapfiles
+        id S1350021AbhI3Kfr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 30 Sep 2021 06:35:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350019AbhI3Kfi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 30 Sep 2021 06:35:38 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A34CEC06176C
+        for <linux-ext4@vger.kernel.org>; Thu, 30 Sep 2021 03:33:54 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id r18so20043601edv.12
+        for <linux-ext4@vger.kernel.org>; Thu, 30 Sep 2021 03:33:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=ptsNAlDnx2IPZW6KXkEDsVtLPPD0orqeGHqL0Dz3UNs=;
+        b=iUTwQwBCChlXpLw7Ylas3PRYovSMQzSs/nq5nVY2jv9OdIZ1S/iI82/8Jy+vicj+Uf
+         ZTbsWudyu+9aGyICYosNCAzTkEuV65sD9YiY7TrhTdsyoDcqFQVHHfeWDRTsCY2+gxRz
+         X7iHQZ0knmYfX4ibGAKAhhjDXv1yI062G8itY8gXpvLy/d886YTaa3eKFO9xxREk8viW
+         6yHxGcdisPy2hbdysPwuV1n/gBGo0A4KGYh+hhgvErGJIKevJ353rP41ihyGUDiwNnKV
+         kAAxqviM3T2W5ch7RFUEU9EDK3fWeNmp0/4kCIkrOeeAjuCNqnr9c1ndLrvnTQ9tZBsF
+         m4TQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=ptsNAlDnx2IPZW6KXkEDsVtLPPD0orqeGHqL0Dz3UNs=;
+        b=NjGu9KTmU8wQbEXz57tpjhxf+ArgFJVu57VKBB400e5ZKpUwxNBByO4q0dj9MJSv5e
+         ZroLc2oBUB+WOU2KE6Z/aJ63Q0UU3BCZXW0CarcuRQIcbPaGYG7WexStHLubi6ArbZLn
+         p3lEER1vI6x+E0fIkbq2TdV5ssRFzzIKiPbqNW5+b1XO+RexIFIPLEyBMPxgJm2FTnzS
+         GUtCldFXcXXTQns9OuerGEq8iOr7bcUHdmhuzK0tILFZc067iLSnST1y6NsLbPErC4De
+         BXD+dPvS+JEmOAq6pBqhVuSg7EIljb+0MvEqmMYpBTdLdnTw7cjrdxQx1kDbLooGhuAp
+         SW5g==
+X-Gm-Message-State: AOAM532G++8j1uB0aUbBDGDuhpeaZVYk0KQssjmITGoLnxDZq006U/0j
+        Fl9GFYOOdmV5hLxXnHhL98BaYEA8ReIrB2AhzRs=
+X-Google-Smtp-Source: ABdhPJzWcW3hU71H3RJ+7XnA5ALBfPUtr8gxPJ4ufQYb3DQI1OsOhHm94USujOfEYvXuFdJ08tWJn/iagK6HUgMyNzo=
+X-Received: by 2002:a17:906:3181:: with SMTP id 1mr6086202ejy.388.1632998033052;
+ Thu, 30 Sep 2021 03:33:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4005661.1632930302.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 29 Sep 2021 16:45:02 +0100
-Message-ID: <4005662.1632930302@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Received: by 2002:a17:906:3db1:0:0:0:0 with HTTP; Thu, 30 Sep 2021 03:33:52
+ -0700 (PDT)
+Reply-To: mrmichelduku@outlook.com
+From:   Michel <michaeldung001@gmail.com>
+Date:   Thu, 30 Sep 2021 10:33:52 +0000
+Message-ID: <CAFj68Qpr3o=9xFjdf4UA3z-v4sFpP5ByM4NTpEu8E12Ks2vEZw@mail.gmail.com>
+Subject: Please Respond Urgently
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-David Sterba <dsterba@suse.cz> wrote:
+Greetings,
 
-> > There are additional patches to get rid of noop_direct_IO and replace =
-it
-> > with a feature bitmask, to make btrfs, ext4, xfs and raw blockdevs use=
- the
-> > new ->swap_rw method and thence remove the direct BIO submission paths=
- from
-> > swap.
-> > =
+I know that this mail will come to you as a surprise as we have never
+met before, but never mind i have decided to make this contact with
+you as I believe that you can be of great assistance to me. I need
+your assistance in transferring the sum of $11.3million to your
+private account Where this money can be shared between us.
 
-> > I kept the IOCB_SWAP flag, using it to enable REQ_SWAP.  I'm not sure =
-if
-> > that's necessary, but it seems accounting related.
->
-> There was probably some step missing. The file must not have holes, so
-> either do 'dd' to the right size or use fallocate (which is recommended
-> in manual page btrfs(5) SWAPFILE SUPPORT). There are some fstests
-> exercising swapfile (grep -l _format_swapfile tests/generic/*) so you
-> could try that without having to set up the swapfile manually.
+The money has been here in our Bank lying dormant for years now
+without anybody coming for the claim. I want to release the money to
+you as the relative to our deceased customer (the account owner) who
+died in a plane crash with his family since October 2005.
 
-Yeah.  As advised elsewhere, I removed the file and recreated it, doing th=
-e
-chattr before extending the file.  At that point swapon worked.  It didn't
-work though, and various userspace programs started dying.  I'm guessing m=
-y
-btrfs_swap_rw() is wrong somehow.
+By indicating your interest I will send you the full details on how
+the business will be executed.
 
-David
-
+Best Regards,
+Mr.Michel Duku.
