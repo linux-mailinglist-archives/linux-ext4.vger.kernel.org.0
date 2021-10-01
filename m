@@ -2,71 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3F6C41F240
-	for <lists+linux-ext4@lfdr.de>; Fri,  1 Oct 2021 18:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B52B41F4D4
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 Oct 2021 20:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354635AbhJAQl5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 1 Oct 2021 12:41:57 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:42743 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232133AbhJAQl5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 1 Oct 2021 12:41:57 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 191Ge5bq022341
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 1 Oct 2021 12:40:06 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 9BD4515C34A8; Fri,  1 Oct 2021 12:40:05 -0400 (EDT)
-Date:   Fri, 1 Oct 2021 12:40:05 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Lukas Czerner <lczerner@redhat.com>
-Cc:     Andreas Dilger <adilger@dilger.ca>,
-        Alok Jain <jain.alok103@gmail.com>, linux-ext4@vger.kernel.org
-Subject: Re: Issue with extension of ext4 filesystem on Rhel7
-Message-ID: <YVc55cplzHvPwL00@mit.edu>
-References: <CAG-6nk9DKKw2RHiXx_kWN1B5xcTrctTCypUPaicaaW1Ag0jDzw@mail.gmail.com>
- <81899623-90FE-4AFA-AAB6-5ABB21903CBB@dilger.ca>
- <YVcOqNktN4GgFFab@mit.edu>
- <20211001144239.fgizeucgzhingeio@work>
+        id S1355693AbhJASSe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 1 Oct 2021 14:18:34 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:48506 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229755AbhJASSe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 1 Oct 2021 14:18:34 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 4FC621F42460
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Shreeya Patel <shreeya.patel@collabora.com>
+Cc:     tytso@mit.edu, viro@zeniv.linux.org.uk, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCH 0/2] Handle a soft hang and the inconsistent name issue
+Organization: Collabora
+References: <cover.1632909358.git.shreeya.patel@collabora.com>
+Date:   Fri, 01 Oct 2021 14:16:45 -0400
+In-Reply-To: <cover.1632909358.git.shreeya.patel@collabora.com> (Shreeya
+        Patel's message of "Wed, 29 Sep 2021 16:23:37 +0530")
+Message-ID: <87ee94625u.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211001144239.fgizeucgzhingeio@work>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 04:42:39PM +0200, Lukas Czerner wrote:
-> 
-> as others have already mentioned, unfortunatelly your file system does
-> not have 64-bit feature enabled and so you won't be able to simply
-> resize past 16TB. This feature was made default after RHEL7 GA, but sadly
-> it was likely too late for you, sorry about that.
-> 
-> You can try the advice given here, or you can contact RH support as they
-> might have some solution for you. However I am affraid it will always
-> involve backup for the reasons already mentioned.
+Shreeya Patel <shreeya.patel@collabora.com> writes:
 
-It should also be noted that if you are using an enterprise linux
-distro, something like a "Linux 3.10" or an "e2fsprogs 1.42.9" from an
-enterprise linux has so many backports that it's going to be quite
-different from an upstream version.  As a result, you're probably
-going to be better off seeking help from the enterprise linux's
-support desk, since they will be set up to help you much better than
-usptream developers.
+> When d_add_ci is called from the fs layer, we face a soft hang which is
+> caused by the deadlock in d_alloc_parallel. First patch in the series
+> tries to resolve it by doing a case-exact match instead of the
+> case-inexact match done by d_same_name function.
 
-Also, there is a big difference between what an enterprise linux might
-support and a community distro.  For example, even though Fedora has
-defaulted to btrfs, Red Hat Enterprise Linux has not decided to
-support btrfs.  It was a techniolgy preview in RHEL 6 and 7, but it
-was fully removed in RHEL 8.
+Hi Shreeya,
 
-So again, if you are using an Enterprise Linux distribution, you
-should really ask their support folks so you can get their advice, and
-find out what they will actually support.
+I understand what you are trying to solve here, but this could use some
+clarification.
 
-Cheers,
+There is no such deadlock in the upstream code base, since d_add_ci is
+never called by a file system with a d_compare hook that causes the
+issue.  Patch 02/02 will be the first to include such path, to address
+the /proc/self/cwd leakage, therefore, Patch 01/02 is done in
+preparation of that patch.  That needs to be clearly stated here.
 
-					- Ted
+Originally, the 'native', per-directory case-insensitive implementation
+merged in ext4/f2fs stores the case of the first lookup on the dcache,
+regardless of the disk exact file name case.  This is intended as an
+internal implementation detail, that shouldn't be leaked to
+userspace. Whenever the kernel returns a name to userspace it should be
+the exact name, as written on disk.  But, on /proc/self/cwd, the
+internal name is leaked to userspace.  The goal of the series is
+*solely* to fix the leakage of this implementation detail to userspace.
+
+I think the solution is in the right direction, but I see some
+issues on the implementation I'm discussing inline.
+
+> The second patch resolves the inconsistent name that is exposed by
+>/proc/self/cwd in case of a case-insensitive filesystem.
+>/proc/self/cwd uses the dentry name stored in dcache. Since the dcache
+>is populated only on the first lookup, with the string used in that
+>lookup, cwd will have an unexpected case, depending on how the data was
+>first looked-up in a case-insesitive filesystem.
+>
+>
+> Shreeya Patel (2):
+>   fs: dcache: Handle case-exact lookup in d_alloc_parallel
+>   fs: ext4: Fix the inconsistent name exposed by /proc/self/cwd
+>
+>  fs/dcache.c     | 20 ++++++++++++++++++--
+>  fs/ext4/namei.c | 13 +++++++++++++
+>  2 files changed, 31 insertions(+), 2 deletions(-)
+
+-- 
+Gabriel Krisman Bertazi
