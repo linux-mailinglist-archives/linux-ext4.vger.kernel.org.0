@@ -2,23 +2,23 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42C8B41E582
-	for <lists+linux-ext4@lfdr.de>; Fri,  1 Oct 2021 02:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98FA041E5D0
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 Oct 2021 03:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351144AbhJAAa3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 30 Sep 2021 20:30:29 -0400
-Received: from mail-mw2nam12on2059.outbound.protection.outlook.com ([40.107.244.59]:7009
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        id S1351294AbhJABeB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 30 Sep 2021 21:34:01 -0400
+Received: from mail-dm6nam11on2059.outbound.protection.outlook.com ([40.107.223.59]:25152
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230172AbhJAAa2 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 30 Sep 2021 20:30:28 -0400
+        id S230256AbhJABeA (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 30 Sep 2021 21:34:00 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oYU8Ng+ZU81OKXKRcEFTd8teuc5oKYAn/xZ9yyxP/g+oRjykxxwysCZ+Hc9OJXNQdyX8D187cgZZrKDRspcPCwEerNUDvTovAQY4cRFDomDNUDKqp0KMaoZMvSAPTfYo653XHErG1U5W7KlnTtc4QmnTEAIIFH3AqxBi3anCX9ov4Pkaw+GgMeI8CQi0N8n+NKZoCCSrNWQ5TDU0LOCE+Aj8CgavMJCkEP6/qOEd0oEcR91W47sxMf5hAe8jYuU+psu5QNyl3GwYed1VO2jtwXZDutnydMmDONWdebqVur+fZToYPQmiripOIl1bSKrr+ps3r7tEOZdVkS5Zlymv+g==
+ b=cBmmDRBwLMojijJizPh/gA3nuTSCqS68keyrQ6p0tqhTGee1SAc+Cv97tV9C1tjx6iAJur+MAEsg29kZbdNdIyO7/TNAZcro4tkVbdBP98pyjW+OWG7VgDmWz0miIUUMwJD+XJL3z7FCm02AuvaEu4n9qta44QVyZVhnL6sZTTN130YK96/PJOXJBTGyGGZ5AW3tMhZYpeqpKgJka/zSfJETG7V4XmlaLdiybDRmT0fn9RSLIbTcJbwkrZSw+v6QoDylYBnTwS1InNp2cVdvrC1DAUP9u0FEs63bEFIOwAz1hsb2Maoa7ebaS7iYV3LTon/wSDEJr9cKg4kBcuO7pQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=adOK+0NP9k8+yumGlRX0jNce62EZ/yMR9tdT0UrW+Nc=;
- b=byyHwIYqUH/3OGZDojwjZulyBQTg0d3EIquKcTL89h58sJBA0S+iuhyZfje7M3w2KLlUdtitGN+xOu08NUaqj+0K5BPX4oXENbc3vVtjbPe+6QSXgEMQLrelrWcD57R5p/N56yShi+MVb+b4OAKV+r94XUTQU+SYusuyndBhE8YdpBQ/XH0BpxNvz4lz46zAHQgBDCZLN76qkaUPL/71Wy/CGMxAPBIlpwwDqi0DSGsoe5F9Brql/z1bJp3P2cE/gnkkZY3zOKgvML12juLE/vNwgzXAENEPH/8qHeq0HC9kkEjAMyWT+ummCrcssSaTcgYgHKNNvLMdzGyVpSJeiQ==
+ bh=jj86CJdHIDnudpjJ2FYNKAZU0t+8WVAzl1pRkPrdY3o=;
+ b=OP5By3G7FsC792jgB6aPLRleyoaFn3AVDNXsbg1GfAaHWwt9lMj53pkNLmc9mjWRXCYF/Ry+Vc+PaI3XndF/7ajXHRURLoG3psXbvwGug0IYWnkFBGL2bOLabSAEZGP2RlYibq0yB5noH8zU1ZYttHL0DM3Dd1sYL1SeTj38UHqob9sGm0BnSxOs9u+CWskDLBeB3bHVPbbQxAXXA1UpwkmGc+R8SLuYdHzXsgquWue9YE31FeDah0KSrokzO0C7YHJSLgH340+odlZl8KKOoTD6oaFnrvjljJfpnZ6MUGfTyRRNvjkyuwGn5MvM6+YM75cDgT/ckmUmdT+1XE//2g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.112.34) smtp.rcpttodomain=lists.freedesktop.org
  smtp.mailfrom=nvidia.com; dmarc=pass (p=quarantine sp=none pct=100)
@@ -26,18 +26,17 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=adOK+0NP9k8+yumGlRX0jNce62EZ/yMR9tdT0UrW+Nc=;
- b=WstwwbJ9rn82ut02caZuzrcnYK5e9d0mWlQSDpVNT41uovf3jdytL0lxn873Of/+Fx/guZlZI4VpNrqi7Jt+pFrt48MNKCT9R4aUaRYC/9DH2xjAGKLh1kHkyVQhrAwVCjtMALTFy9JqCj+TfuOIEXFb9tMVuqP2rcQ79//2UJIxjxPdePfnfJyKJavM03sQFSLFTJStJArtHuilQYP3reUxoMVZk8XKW0dQCOsNGjzFv9BhWSxbifVJHIczpPdzdhK0oESu55Xf+nqXrTQnF0FXyDarfnrhP1kKWv3SfbL3f0EGsNaj0OskPz+KbwJ7qKsXX43DZuGhiSeG7vTwdg==
-Received: from BN6PR2001CA0023.namprd20.prod.outlook.com
- (2603:10b6:404:b4::33) by SN6PR12MB4752.namprd12.prod.outlook.com
- (2603:10b6:805:e9::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14; Fri, 1 Oct
- 2021 00:28:42 +0000
-Received: from BN8NAM11FT061.eop-nam11.prod.protection.outlook.com
- (2603:10b6:404:b4:cafe::40) by BN6PR2001CA0023.outlook.office365.com
- (2603:10b6:404:b4::33) with Microsoft SMTP Server (version=TLS1_2,
+ bh=jj86CJdHIDnudpjJ2FYNKAZU0t+8WVAzl1pRkPrdY3o=;
+ b=YOItHHaw0ucRutkTxTm0m8s9TtD4OeJstBEoVbVVVKCJGhEXYavyq9oMmHMhv8zXr9u1OPxwSvW+O5Ss6gBwWpFVsVVvr/Crbn9Bpa/ZvuImZ20TOK3A01siwrIjwGvdE48PeVkOJ6zwzeJPSBlSZiiHc9imnFBJUFWSxTbCw4RFosbmvWutLQVaAZzFmp+e+xmisDckU8KH8kiDgf0yQ3GF+DyibqXDpWc7Z+XaJ5v8P1c5JSPWLqxi93+XlZDxo5kgMJTYcIk7PmQw6VHca10tEQWO9amr48a2TImtwcVGQidvw9IhJdjW9UaGPoG4eQKUpiS1xH7nCh4jY/kBYw==
+Received: from DM5PR18CA0091.namprd18.prod.outlook.com (2603:10b6:3:3::29) by
+ CH0PR12MB5315.namprd12.prod.outlook.com (2603:10b6:610:d6::24) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4566.14; Fri, 1 Oct 2021 01:32:15 +0000
+Received: from DM6NAM11FT046.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:3:cafe::d8) by DM5PR18CA0091.outlook.office365.com
+ (2603:10b6:3:3::29) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend
- Transport; Fri, 1 Oct 2021 00:28:42 +0000
+ Transport; Fri, 1 Oct 2021 01:32:15 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
  smtp.mailfrom=nvidia.com; lists.freedesktop.org; dkim=none (message not
  signed) header.d=none;lists.freedesktop.org; dmarc=pass action=none
@@ -46,313 +45,416 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.112.34 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.112.34; helo=mail.nvidia.com;
 Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT061.mail.protection.outlook.com (10.13.177.144) with Microsoft SMTP
+ DM6NAM11FT046.mail.protection.outlook.com (10.13.172.121) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4566.14 via Frontend Transport; Fri, 1 Oct 2021 00:28:42 +0000
-Received: from nvdebian.localnet (172.20.187.6) by HQMAIL107.nvidia.com
+ 15.20.4566.14 via Frontend Transport; Fri, 1 Oct 2021 01:32:14 +0000
+Received: from nvdebian.localnet (172.20.187.5) by HQMAIL107.nvidia.com
  (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 1 Oct
- 2021 00:28:38 +0000
+ 2021 01:32:09 +0000
 From:   Alistair Popple <apopple@nvidia.com>
 To:     <akpm@linux-foundation.org>, <Felix.Kuehling@amd.com>,
         <linux-mm@kvack.org>, <rcampbell@nvidia.com>,
         <linux-ext4@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        "Sierra Guiza, Alejandro (Alex)" <alex.sierra@amd.com>
+        Alex Sierra <alex.sierra@amd.com>
 CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
         <hch@lst.de>, <jgg@nvidia.com>, <jglisse@redhat.com>
-Subject: Re: [PATCH v2 09/12] lib: test_hmm add module param for zone device type
-Date:   Fri, 1 Oct 2021 10:28:36 +1000
-Message-ID: <5733707.7NG8XZRkRI@nvdebian>
-In-Reply-To: <30468c52-62b6-1af8-07dd-e9be766b6b77@amd.com>
-References: <20210913161604.31981-1-alex.sierra@amd.com> <2161903.HsYN06obEU@nvdebian> <30468c52-62b6-1af8-07dd-e9be766b6b77@amd.com>
+Subject: Re: [PATCH v2 10/12] lib: add support for device public type in test_hmm
+Date:   Fri, 1 Oct 2021 11:32:07 +1000
+Message-ID: <5085060.BnOf7i5VvV@nvdebian>
+In-Reply-To: <20210913161604.31981-11-alex.sierra@amd.com>
+References: <20210913161604.31981-1-alex.sierra@amd.com> <20210913161604.31981-11-alex.sierra@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
  HQMAIL107.nvidia.com (172.20.187.13)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7b18f2f1-9d81-4fb9-b374-08d984726c11
-X-MS-TrafficTypeDiagnostic: SN6PR12MB4752:
-X-Microsoft-Antispam-PRVS: <SN6PR12MB4752C3AE08E37E5628C895EEDFAB9@SN6PR12MB4752.namprd12.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 603276db-c836-4cf9-1db1-08d9847b4c41
+X-MS-TrafficTypeDiagnostic: CH0PR12MB5315:
+X-Microsoft-Antispam-PRVS: <CH0PR12MB5315A8B2B7275CF1044A9041DFAB9@CH0PR12MB5315.namprd12.prod.outlook.com>
 X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8tl/mPGYUIe/w9Ywkui8vgvS5ssA63kw+AFd3V+2OyscyrW18qSClhCSVGtbB+9Awy6wf4Uz64nbD7s2TRx3JfGG6GBl2Eo6ZQmWaiBEUPQxlCgwYD2hrHctVNTp1CRNV94c0KF/0XN6QYiWMHbjH8nzGkT6WR2KsxPPw55XYZT6ii28Jp1Hs4Cxyhl6nx+3nHZVlVD+3VXiefhnxejU7GMzdx15iN0edBe608mi7ovP09ABzLM34NqF0t5ikorpw+onDrEtlKIPBEF6F9Dx6EiyIg3B4i3DnkiZNFz6TgYgBwdOb/YQdLSgJNkLiNb/AL+OQcyWFzSATSo5R9JGHGz51XGwr91Xl/2OcOJ8Rz3n5vKfNsflRnqlEiLpk2sl62PmB6YDB9GkZtxEFNim+zhm4/SnJV6CGwcATCjq795UEeWugdb7bhhyyYmp+0HVXy0fuxnQP6TVHeDq5OaviM4wc+pxjN9ms/5f94xxPZnJ/nNY9wspy2p6MhpBS22h22DkXfoguYKzAqkniVENVKgQkEOQeF4NGvBk+LUrffSQGRH93OSgg1EOBs9jEoyEfHrYmpoI1TFQ4Th7Edau9mW4E096fvzFSkCaMMfDCUDxNo8eAgd+5hsBYdzE9r5uVSnsPmZaBiujXYQpS4ILmC0yiWyyi0V/73qJ3Yx4OehDWmUi6U7FuXTbVTaCLxe1p/tsXAYOw2+7e+pdtBagOPtWtnjKfNOtssTWL1pvY+g=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(336012)(4326008)(7416002)(36860700001)(47076005)(33716001)(9576002)(9686003)(426003)(356005)(86362001)(53546011)(7636003)(26005)(5660300002)(8676002)(83380400001)(54906003)(186003)(70586007)(70206006)(508600001)(8936002)(16526019)(2906002)(316002)(82310400003)(110136005)(39026012);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: rJh/mCd3a48+DtC6TUWh2LtSjuOcyFX198jCOvkTeJgnlLGAXMF59MvemX0ULvUbnejod/1LZQ7lhT8iyof1YIJlwMT1tODEaCbKZ1p0ZWIM6ycFLAwaxxfZxw/g4fwoMoTJTBCugRLk5b7u11tMdMFemLBqeR8pWX0OwxIWp8CU7HrMky9EfgANS90gj0Wul8BVHHPRSoGjzvVGTly1Pl9xG9XFVUtPsaf+MJkrw2+zpMRraj8B7PQfVwohc80clzGVqBndsG6iHDPJYwHzWBbwJ0XfhlB6OZV2s0j6qVn1ItHEFe53TZ32ZtYa44RmCkjpBXBlZqGhw95aWysYjc7nMlizxBlyjQwQB04ETrjv2h3/e6jizhdveP77wUityPjZpelIRqb0VIBDig8NLie4h2W7Ipe6/E5qCzksVc/mf0HJBro7B80EWbNa7ukm4I5ALtcIpadtTeMpc9HzKWUI19McMEUPQH4Dv8HqmQ2AYyXHNC4zhDUA6iYpMZQsP15apBxGZiQoKQS+SRIr3nkCvPeU3hQY9oyQFZqPhIf0SnYLaNR6LDyU1MNmdo5ovsTD87+DZWHC1ubB1HJFlJP10InJkIkP2aIS8/pDOyZLniOVcFA+QhXbL1jUuqjo/UGVnxNisz8A/Im3D0O74jrF/7sQlN1q4atOrZxtifr+JTWOu48AJqGdmvDmKl1DiYQr8w6z58OYPu8NpoR8UEdhZjz2aIDGOHDFBPZOAcQ=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(26005)(426003)(186003)(2906002)(5660300002)(9686003)(7636003)(9576002)(82310400003)(8936002)(70586007)(83380400001)(508600001)(33716001)(70206006)(16526019)(316002)(36860700001)(30864003)(110136005)(54906003)(7416002)(86362001)(8676002)(336012)(4326008)(356005)(47076005)(39026012);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Oct 2021 00:28:42.1624
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Oct 2021 01:32:14.3346
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7b18f2f1-9d81-4fb9-b374-08d984726c11
+X-MS-Exchange-CrossTenant-Network-Message-Id: 603276db-c836-4cf9-1db1-08d9847b4c41
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT061.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT046.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB4752
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5315
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Friday, 24 September 2021 1:52:47 AM AEST Sierra Guiza, Alejandro (Alex)=
- wrote:
->=20
-> On 9/21/2021 12:14 AM, Alistair Popple wrote:
-> > On Tuesday, 21 September 2021 6:05:30 AM AEST Sierra Guiza, Alejandro (=
-Alex) wrote:
-> >> On 9/20/2021 3:53 AM, Alistair Popple wrote:
-> >>> On Tuesday, 14 September 2021 2:16:01 AM AEST Alex Sierra wrote:
-> >>>> In order to configure device public in test_hmm, two module paramete=
-rs
-> >>>> should be passed, which correspond to the SP start address of each
-> >>>> device (2) spm_addr_dev0 & spm_addr_dev1. If no parameters are passe=
-d,
-> >>>> private device type is configured.
-> >>> It's a pity that testing this seems to require some amount of special=
- setup to
-> >>> test. Is there a way this could be made to work on a more standard se=
-tup
-> >>> similar to how DEVICE_PRIVATE is tested?
-> >> Hi Alistair
-> >> We tried to do it as simpler as possible. Unfortunately, there are two=
- main
-> >> requirements to register dev memory as DEVICE_PUBLIC type. This memory=
- must
-> >> NOT be accessed by any memory allocator (SLAB, SLOB, SLUB) plus, it has
-> >> to be
-> >> CPU coherently accessed.  We also want to avoid aliasing the same PFNs=
- for
-> >> different page types (regular system memory and DEVICE_PUBLIC). So we =
-don't
-> >> want the reserved memory to be part of the kernel's memory map before =
-we
-> >> call
-> >> memremap_pages. A transparent way of doing it, without any special HW,=
- was
-> >> setting a portion of system memory as SPM (Special purpose memory). An=
-d use
-> >> this as our =E2=80=9Cdevice fake=E2=80=9D memory.
-> > Ok, I think it's great that we can test this without special HW but the=
- boot
-> > time configuration is still a bit annoying. Would it be possible to all=
-ocate
-> > memory fitting the above requirements by hot unplugging it with somethi=
-ng like
-> > offline_and_remove_memory()?
-> > I also don't see why the DEVICE_PRIVATE and DEVICE_PUBLIC testing shoul=
-d be
-> > mutually exclusive - why can't we test both without reloading the modul=
-e?
-> You could do both DEVICE_PRIVATE and DEVICE_PUBLIC tests by running the=20
-> test_hmm_sh
-> script twice, just passing the proper parameters. Even when you booted=20
-> with fake EFI SP
-> regions. If spm_address_dev0/1 parameters are passed, the module gets=20
-> configured with
-> DEVICE_PUBLIC type. Otherwise DEVICE_PRIVATE type is set. Technically=20
-> the only
-> complication in testing DEVICE_PUBLIC is the fake SPM boot parameter.
+On Tuesday, 14 September 2021 2:16:02 AM AEST Alex Sierra wrote:
+> Device Public type uses device memory that is coherently accesible by
+> the CPU. This could be shown as SP (special purpose) memory range
+> at the BIOS-e820 memory enumeration. If no SP memory is supported in
+> system, this could be faked by setting CONFIG_EFI_FAKE_MEMMAP.
+> 
+> Currently, test_hmm only supports two different SP ranges of at least
+> 256MB size. This could be specified in the kernel parameter variable
+> efi_fake_mem. Ex. Two SP ranges of 1GB starting at 0x100000000 &
+> 0x140000000 physical address. Ex.
+> efi_fake_mem=1G@0x100000000:0x40000,1G@0x140000000:0x40000
+> 
+> Signed-off-by: Alex Sierra <alex.sierra@amd.com>
+> ---
+>  lib/test_hmm.c      | 166 +++++++++++++++++++++++++++-----------------
+>  lib/test_hmm_uapi.h |  10 ++-
+>  2 files changed, 113 insertions(+), 63 deletions(-)
+> 
+> diff --git a/lib/test_hmm.c b/lib/test_hmm.c
+> index ef27e355738a..e346a48e2509 100644
+> --- a/lib/test_hmm.c
+> +++ b/lib/test_hmm.c
+> @@ -469,6 +469,7 @@ static int dmirror_allocate_chunk(struct dmirror_device *mdevice,
+>  	unsigned long pfn_first;
+>  	unsigned long pfn_last;
+>  	void *ptr;
+> +	int ret = -ENOMEM;
+>  
+>  	devmem = kzalloc(sizeof(*devmem), GFP_KERNEL);
+>  	if (!devmem)
+> @@ -551,7 +552,7 @@ static int dmirror_allocate_chunk(struct dmirror_device *mdevice,
+>  	}
+>  	spin_unlock(&mdevice->lock);
+>  
+> -	return true;
+> +	return 0;
+>  
+>  err_release:
+>  	mutex_unlock(&mdevice->devmem_lock);
+> @@ -560,7 +561,7 @@ static int dmirror_allocate_chunk(struct dmirror_device *mdevice,
+>  err_devmem:
+>  	kfree(devmem);
+>  
+> -	return false;
+> +	return ret;
+>  }
+>  
+>  static struct page *dmirror_devmem_alloc_page(struct dmirror_device *mdevice)
+> @@ -569,8 +570,10 @@ static struct page *dmirror_devmem_alloc_page(struct dmirror_device *mdevice)
+>  	struct page *rpage;
+>  
+>  	/*
+> -	 * This is a fake device so we alloc real system memory to store
+> -	 * our device memory.
+> +	 * For ZONE_DEVICE private type, this is a fake device so we alloc real
+> +	 * system memory to store our device memory.
+> +	 * For ZONE_DEVICE public type we use the actual dpage to store the data
+> +	 * and ignore rpage.
+>  	 */
+>  	rpage = alloc_page(GFP_HIGHUSER);
+>  	if (!rpage)
+> @@ -603,7 +606,7 @@ static void dmirror_migrate_alloc_and_copy(struct migrate_vma *args,
+>  					   struct dmirror *dmirror)
+>  {
+>  	struct dmirror_device *mdevice = dmirror->mdevice;
+> -	const unsigned long *src = args->src;
+> +	unsigned long *src = args->src;
+>  	unsigned long *dst = args->dst;
+>  	unsigned long addr;
+>  
+> @@ -621,12 +624,18 @@ static void dmirror_migrate_alloc_and_copy(struct migrate_vma *args,
+>  		 * unallocated pte_none() or read-only zero page.
+>  		 */
+>  		spage = migrate_pfn_to_page(*src);
+> -
+> +		if (spage && is_zone_device_page(spage)) {
+> +			pr_debug("page already in device spage pfn: 0x%lx\n",
+> +				  page_to_pfn(spage));
+> +			*src &= ~MIGRATE_PFN_MIGRATE;
 
-Or you could just have the test specify what sort of memory it wants to use
-(DEVICE_PRIVATE or DEVICE_GENERIC). That seems preferable to requiring a mo=
-dule
-reload. A module reload also makes it impossible to test interactions betwe=
-en
-DEVICE_PRIVATE and DEVICE_GENERIC memory.
+I don't think this is quite correct, callers shouldn't modify the src array. To
+mark a page as not migrating callers need to set *dst = 0.
+
+However I think this should be considered a test failure anyway. If we are
+migrating from system to device memory we would have set
+MIGRATE_VMA_SELECT_SYSTEM meaning no device private pages should be returned.
+Therefore I don't think we can reach this unless there is a bug right?
+
+> +			continue;
+> +		}
+>  		dpage = dmirror_devmem_alloc_page(mdevice);
+>  		if (!dpage)
+>  			continue;
+>  
+> -		rpage = dpage->zone_device_data;
+> +		rpage = is_device_private_page(dpage) ? dpage->zone_device_data :
+> +							dpage;
+>  		if (spage)
+>  			copy_highpage(rpage, spage);
+>  		else
+> @@ -638,8 +647,10 @@ static void dmirror_migrate_alloc_and_copy(struct migrate_vma *args,
+>  		 * the simulated device memory and that page holds the pointer
+>  		 * to the mirror.
+>  		 */
+> +		rpage = dpage->zone_device_data;
+>  		rpage->zone_device_data = dmirror;
+> -
+> +		pr_debug("migrating from sys to dev pfn src: 0x%lx pfn dst: 0x%lx\n",
+> +			 page_to_pfn(spage), page_to_pfn(dpage));
+>  		*dst = migrate_pfn(page_to_pfn(dpage)) |
+>  			    MIGRATE_PFN_LOCKED;
+>  		if ((*src & MIGRATE_PFN_WRITE) ||
+> @@ -673,10 +684,13 @@ static int dmirror_migrate_finalize_and_map(struct migrate_vma *args,
+>  			continue;
+>  
+>  		/*
+> -		 * Store the page that holds the data so the page table
+> -		 * doesn't have to deal with ZONE_DEVICE private pages.
+> +		 * For ZONE_DEVICE private pages we store the page that
+> +		 * holds the data so the page table doesn't have to deal it.
+> +		 * For ZONE_DEVICE public pages we store the actual page, since
+> +		 * the CPU has coherent access to the page.
+>  		 */
+> -		entry = dpage->zone_device_data;
+> +		entry = is_device_private_page(dpage) ? dpage->zone_device_data :
+> +							dpage;
+>  		if (*dst & MIGRATE_PFN_WRITE)
+>  			entry = xa_tag_pointer(entry, DPT_XA_TAG_WRITE);
+>  		entry = xa_store(&dmirror->pt, pfn, entry, GFP_ATOMIC);
+> @@ -690,6 +704,47 @@ static int dmirror_migrate_finalize_and_map(struct migrate_vma *args,
+>  	return 0;
+>  }
+>  
+> +static vm_fault_t dmirror_devmem_fault_alloc_and_copy(struct migrate_vma *args,
+> +						      struct dmirror *dmirror)
+> +{
+> +	unsigned long *src = args->src;
+> +	unsigned long *dst = args->dst;
+> +	unsigned long start = args->start;
+> +	unsigned long end = args->end;
+> +	unsigned long addr;
+> +
+> +	for (addr = start; addr < end; addr += PAGE_SIZE,
+> +				       src++, dst++) {
+> +		struct page *dpage, *spage;
+> +
+> +		spage = migrate_pfn_to_page(*src);
+> +		if (!spage || !(*src & MIGRATE_PFN_MIGRATE))
+> +			continue;
+> +		if (is_device_private_page(spage)) {
+> +			spage = spage->zone_device_data;
+> +		} else {
+> +			pr_debug("page already in system or SPM spage pfn: 0x%lx\n",
+> +				  page_to_pfn(spage));
+> +			*src &= ~MIGRATE_PFN_MIGRATE;
+
+Same comment as above - shouldn't touch *src and also shouldn't be able to get
+here anyway.
+
+> +			continue;
+> +		}
+> +		dpage = alloc_page_vma(GFP_HIGHUSER_MOVABLE, args->vma, addr);
+> +		if (!dpage)
+> +			continue;
+> +		pr_debug("migrating from dev to sys pfn src: 0x%lx pfn dst: 0x%lx\n",
+> +			 page_to_pfn(spage), page_to_pfn(dpage));
+> +
+> +		lock_page(dpage);
+> +		xa_erase(&dmirror->pt, addr >> PAGE_SHIFT);
+> +		copy_highpage(dpage, spage);
+> +		*dst = migrate_pfn(page_to_pfn(dpage)) | MIGRATE_PFN_LOCKED;
+> +		if (*src & MIGRATE_PFN_WRITE)
+> +			*dst |= MIGRATE_PFN_WRITE;
+> +	}
+> +	return 0;
+> +}
+> +
+> +
+>  static int dmirror_migrate(struct dmirror *dmirror,
+>  			   struct hmm_dmirror_cmd *cmd)
+>  {
+> @@ -731,33 +786,46 @@ static int dmirror_migrate(struct dmirror *dmirror,
+>  		args.start = addr;
+>  		args.end = next;
+>  		args.pgmap_owner = dmirror->mdevice;
+> -		args.flags = MIGRATE_VMA_SELECT_SYSTEM;
+> +		args.flags = (!cmd->alloc_to_devmem &&
+> +			     dmirror->mdevice->zone_device_type ==
+> +			     HMM_DMIRROR_MEMORY_DEVICE_PRIVATE) ?
+> +			     MIGRATE_VMA_SELECT_DEVICE_PRIVATE :
+> +			     MIGRATE_VMA_SELECT_SYSTEM;
+>  		ret = migrate_vma_setup(&args);
+>  		if (ret)
+>  			goto out;
+>  
+> -		dmirror_migrate_alloc_and_copy(&args, dmirror);
+> +		if (cmd->alloc_to_devmem) {
+> +			pr_debug("Migrating from sys mem to device mem\n");
+> +			dmirror_migrate_alloc_and_copy(&args, dmirror);
+> +		} else {
+> +			pr_debug("Migrating from device mem to sys mem\n");
+> +			dmirror_devmem_fault_alloc_and_copy(&args, dmirror);
+> +		}
+>  		migrate_vma_pages(&args);
+> -		dmirror_migrate_finalize_and_map(&args, dmirror);
+> +		if (cmd->alloc_to_devmem)
+> +			dmirror_migrate_finalize_and_map(&args, dmirror);
+>  		migrate_vma_finalize(&args);
+>  	}
+>  	mmap_read_unlock(mm);
+>  	mmput(mm);
+>  
+> -	/* Return the migrated data for verification. */
+> -	ret = dmirror_bounce_init(&bounce, start, size);
+> -	if (ret)
+> -		return ret;
+> -	mutex_lock(&dmirror->mutex);
+> -	ret = dmirror_do_read(dmirror, start, end, &bounce);
+> -	mutex_unlock(&dmirror->mutex);
+> -	if (ret == 0) {
+> -		if (copy_to_user(u64_to_user_ptr(cmd->ptr), bounce.ptr,
+> -				 bounce.size))
+> -			ret = -EFAULT;
+> +	/* Return the migrated data for verification. only for pages in device zone */
+> +	if (cmd->alloc_to_devmem) {
+> +		ret = dmirror_bounce_init(&bounce, start, size);
+> +		if (ret)
+> +			return ret;
+> +		mutex_lock(&dmirror->mutex);
+> +		ret = dmirror_do_read(dmirror, start, end, &bounce);
+> +		mutex_unlock(&dmirror->mutex);
+> +		if (ret == 0) {
+> +			if (copy_to_user(u64_to_user_ptr(cmd->ptr), bounce.ptr,
+> +					 bounce.size))
+> +				ret = -EFAULT;
+> +		}
+> +		cmd->cpages = bounce.cpages;
+> +		dmirror_bounce_fini(&bounce);
+>  	}
+> -	cmd->cpages = bounce.cpages;
+> -	dmirror_bounce_fini(&bounce);
+>  	return ret;
+
+Rather than passing a flag (alloc_to_devmem) can you split this into two
+functions - one to migrate to device memory and one to migrate to system
+memory?
+
+>  out:
+> @@ -781,9 +849,15 @@ static void dmirror_mkentry(struct dmirror *dmirror, struct hmm_range *range,
+>  	}
+>  
+>  	page = hmm_pfn_to_page(entry);
+> -	if (is_device_private_page(page)) {
+> -		/* Is the page migrated to this device or some other? */
+> -		if (dmirror->mdevice == dmirror_page_to_device(page))
+> +	if (is_device_page(page)) {
+> +		/* Is page ZONE_DEVICE public? */
+> +		if (!is_device_private_page(page))
+> +			*perm = HMM_DMIRROR_PROT_DEV_PUBLIC;
+> +		/*
+> +		 * Is page ZONE_DEVICE private migrated to
+> +		 * this device or some other?
+> +		 */
+> +		else if (dmirror->mdevice == dmirror_page_to_device(page))
+>  			*perm = HMM_DMIRROR_PROT_DEV_PRIVATE_LOCAL;
+>  		else
+>  			*perm = HMM_DMIRROR_PROT_DEV_PRIVATE_REMOTE;
+> @@ -1030,38 +1104,6 @@ static void dmirror_devmem_free(struct page *page)
+>  	spin_unlock(&mdevice->lock);
+>  }
+>  
+> -static vm_fault_t dmirror_devmem_fault_alloc_and_copy(struct migrate_vma *args,
+> -						      struct dmirror *dmirror)
+> -{
+> -	const unsigned long *src = args->src;
+> -	unsigned long *dst = args->dst;
+> -	unsigned long start = args->start;
+> -	unsigned long end = args->end;
+> -	unsigned long addr;
+> -
+> -	for (addr = start; addr < end; addr += PAGE_SIZE,
+> -				       src++, dst++) {
+> -		struct page *dpage, *spage;
+> -
+> -		spage = migrate_pfn_to_page(*src);
+> -		if (!spage || !(*src & MIGRATE_PFN_MIGRATE))
+> -			continue;
+> -		spage = spage->zone_device_data;
+> -
+> -		dpage = alloc_page_vma(GFP_HIGHUSER_MOVABLE, args->vma, addr);
+> -		if (!dpage)
+> -			continue;
+> -
+> -		lock_page(dpage);
+> -		xa_erase(&dmirror->pt, addr >> PAGE_SHIFT);
+> -		copy_highpage(dpage, spage);
+> -		*dst = migrate_pfn(page_to_pfn(dpage)) | MIGRATE_PFN_LOCKED;
+> -		if (*src & MIGRATE_PFN_WRITE)
+> -			*dst |= MIGRATE_PFN_WRITE;
+> -	}
+> -	return 0;
+> -}
+> -
+>  static vm_fault_t dmirror_devmem_fault(struct vm_fault *vmf)
+>  {
+>  	struct migrate_vma args;
+> diff --git a/lib/test_hmm_uapi.h b/lib/test_hmm_uapi.h
+> index 00259d994410..b6cb8a7d2470 100644
+> --- a/lib/test_hmm_uapi.h
+> +++ b/lib/test_hmm_uapi.h
+> @@ -17,8 +17,12 @@
+>   * @addr: (in) user address the device will read/write
+>   * @ptr: (in) user address where device data is copied to/from
+>   * @npages: (in) number of pages to read/write
+> + * @alloc_to_devmem: (in) desired allocation destination during migration.
+> + * True if allocation is to device memory.
+> + * False if allocation is to system memory.
+>   * @cpages: (out) number of pages copied
+>   * @faults: (out) number of device page faults seen
+> + * @zone_device_type: (out) zone device memory type
+>   */
+>  struct hmm_dmirror_cmd {
+>  	__u64		addr;
+> @@ -26,7 +30,8 @@ struct hmm_dmirror_cmd {
+>  	__u64		npages;
+>  	__u64		cpages;
+>  	__u64		faults;
+> -	__u64		zone_device_type;
+> +	__u32		zone_device_type;
+> +	__u32		alloc_to_devmem;
+
+Similar comment here. Rather than add a boolean flag to every command could you
+rename the existing command to HMM_DMIRROR_MIGRATE_TO_DEV and add another
+(HMM_DMIRROR_MIGRATE_TO_SYS) for this new operation? I think that would end up
+being a bit cleaner and matches how this actually gets used in hmm-test.c where
+you end up defining hmm_migrate_sys_to_dev() and hmm_migrate_to_dev_sys()
+anyway.
 
  - Alistair
 
-> Alex Sierra
-> >
-> >   - Alistair
-> >
-> >> Regards,
-> >> Alex Sierra
-> >>
-> >>>> Signed-off-by: Alex Sierra <alex.sierra@amd.com>
-> >>>> ---
-> >>>> v5:
-> >>>> Remove devmem->pagemap.type =3D MEMORY_DEVICE_PRIVATE at
-> >>>> dmirror_allocate_chunk that was forcing to configure pagemap.type
-> >>>> to MEMORY_DEVICE_PRIVATE
-> >>>>
-> >>>> v6:
-> >>>> Check for null pointers for resource and memremap references
-> >>>> at dmirror_allocate_chunk
-> >>>>
-> >>>> v7:
-> >>>> Due to patch dropped from these patch series "kernel: resource:
-> >>>> lookup_resource as exported symbol", lookup_resource was not longer a
-> >>>> callable function. This was used in public device configuration, to
-> >>>> get start and end addresses, to create pgmap->range struct. This
-> >>>> information is now taken directly from the spm_addr_devX parameters =
-and
-> >>>> the fixed size DEVMEM_CHUNK_SIZE.
-> >>>> ---
-> >>>>    lib/test_hmm.c      | 66 +++++++++++++++++++++++++++++++---------=
-=2D----
-> >>>>    lib/test_hmm_uapi.h |  1 +
-> >>>>    2 files changed, 47 insertions(+), 20 deletions(-)
-> >>>>
-> >>>> diff --git a/lib/test_hmm.c b/lib/test_hmm.c
-> >>>> index 3cd91ca31dd7..ef27e355738a 100644
-> >>>> --- a/lib/test_hmm.c
-> >>>> +++ b/lib/test_hmm.c
-> >>>> @@ -33,6 +33,16 @@
-> >>>>    #define DEVMEM_CHUNK_SIZE		(256 * 1024 * 1024U)
-> >>>>    #define DEVMEM_CHUNKS_RESERVE		16
-> >>>>   =20
-> >>>> +static unsigned long spm_addr_dev0;
-> >>>> +module_param(spm_addr_dev0, long, 0644);
-> >>>> +MODULE_PARM_DESC(spm_addr_dev0,
-> >>>> +		"Specify start address for SPM (special purpose memory) used for =
-device 0. By setting this Generic device type will be used. Make sure spm_a=
-ddr_dev1 is set too");
-> >>>> +
-> >>>> +static unsigned long spm_addr_dev1;
-> >>>> +module_param(spm_addr_dev1, long, 0644);
-> >>>> +MODULE_PARM_DESC(spm_addr_dev1,
-> >>>> +		"Specify start address for SPM (special purpose memory) used for =
-device 1. By setting this Generic device type will be used. Make sure spm_a=
-ddr_dev0 is set too");
-> >>>> +
-> >>>>    static const struct dev_pagemap_ops dmirror_devmem_ops;
-> >>>>    static const struct mmu_interval_notifier_ops dmirror_min_ops;
-> >>>>    static dev_t dmirror_dev;
-> >>>> @@ -450,11 +460,11 @@ static int dmirror_write(struct dmirror *dmirr=
-or, struct hmm_dmirror_cmd *cmd)
-> >>>>    	return ret;
-> >>>>    }
-> >>>>   =20
-> >>>> -static bool dmirror_allocate_chunk(struct dmirror_device *mdevice,
-> >>>> +static int dmirror_allocate_chunk(struct dmirror_device *mdevice,
-> >>>>    				   struct page **ppage)
-> >>>>    {
-> >>>>    	struct dmirror_chunk *devmem;
-> >>>> -	struct resource *res;
-> >>>> +	struct resource *res =3D NULL;
-> >>>>    	unsigned long pfn;
-> >>>>    	unsigned long pfn_first;
-> >>>>    	unsigned long pfn_last;
-> >>>> @@ -462,17 +472,29 @@ static bool dmirror_allocate_chunk(struct dmir=
-ror_device *mdevice,
-> >>>>   =20
-> >>>>    	devmem =3D kzalloc(sizeof(*devmem), GFP_KERNEL);
-> >>>>    	if (!devmem)
-> >>>> -		return false;
-> >>>> +		return -ENOMEM;
-> >>>>   =20
-> >>>> -	res =3D request_free_mem_region(&iomem_resource, DEVMEM_CHUNK_SIZE,
-> >>>> -				      "hmm_dmirror");
-> >>>> -	if (IS_ERR(res))
-> >>>> -		goto err_devmem;
-> >>>> +	if (!spm_addr_dev0 && !spm_addr_dev1) {
-> >>>> +		res =3D request_free_mem_region(&iomem_resource, DEVMEM_CHUNK_SIZ=
-E,
-> >>>> +					      "hmm_dmirror");
-> >>>> +		if (IS_ERR_OR_NULL(res))
-> >>>> +			goto err_devmem;
-> >>>> +		devmem->pagemap.range.start =3D res->start;
-> >>>> +		devmem->pagemap.range.end =3D res->end;
-> >>>> +		devmem->pagemap.type =3D MEMORY_DEVICE_PRIVATE;
-> >>>> +		mdevice->zone_device_type =3D HMM_DMIRROR_MEMORY_DEVICE_PRIVATE;
-> >>>> +	} else if (spm_addr_dev0 && spm_addr_dev1) {
-> >>>> +		devmem->pagemap.range.start =3D MINOR(mdevice->cdevice.dev) ?
-> >>>> +							spm_addr_dev0 :
-> >>>> +							spm_addr_dev1;
-> >>>> +		devmem->pagemap.range.end =3D devmem->pagemap.range.start +
-> >>>> +					    DEVMEM_CHUNK_SIZE - 1;
-> >>>> +		devmem->pagemap.type =3D MEMORY_DEVICE_PUBLIC;
-> >>>> +		mdevice->zone_device_type =3D HMM_DMIRROR_MEMORY_DEVICE_PUBLIC;
-> >>>> +	} else {
-> >>>> +		pr_err("Both spm_addr_dev parameters should be set\n");
-> >>>> +	}
-> >>>>   =20
-> >>>> -	mdevice->zone_device_type =3D HMM_DMIRROR_MEMORY_DEVICE_PRIVATE;
-> >>>> -	devmem->pagemap.type =3D MEMORY_DEVICE_PRIVATE;
-> >>>> -	devmem->pagemap.range.start =3D res->start;
-> >>>> -	devmem->pagemap.range.end =3D res->end;
-> >>>>    	devmem->pagemap.nr_range =3D 1;
-> >>>>    	devmem->pagemap.ops =3D &dmirror_devmem_ops;
-> >>>>    	devmem->pagemap.owner =3D mdevice;
-> >>>> @@ -493,10 +515,14 @@ static bool dmirror_allocate_chunk(struct dmir=
-ror_device *mdevice,
-> >>>>    		mdevice->devmem_capacity =3D new_capacity;
-> >>>>    		mdevice->devmem_chunks =3D new_chunks;
-> >>>>    	}
-> >>>> -
-> >>>>    	ptr =3D memremap_pages(&devmem->pagemap, numa_node_id());
-> >>>> -	if (IS_ERR(ptr))
-> >>>> +	if (IS_ERR_OR_NULL(ptr)) {
-> >>>> +		if (ptr)
-> >>>> +			ret =3D PTR_ERR(ptr);
-> >>>> +		else
-> >>>> +			ret =3D -EFAULT;
-> >>>>    		goto err_release;
-> >>>> +	}
-> >>>>   =20
-> >>>>    	devmem->mdevice =3D mdevice;
-> >>>>    	pfn_first =3D devmem->pagemap.range.start >> PAGE_SHIFT;
-> >>>> @@ -529,7 +555,8 @@ static bool dmirror_allocate_chunk(struct dmirro=
-r_device *mdevice,
-> >>>>   =20
-> >>>>    err_release:
-> >>>>    	mutex_unlock(&mdevice->devmem_lock);
-> >>>> -	release_mem_region(devmem->pagemap.range.start, range_len(&devmem-=
->pagemap.range));
-> >>>> +	if (res)
-> >>>> +		release_mem_region(devmem->pagemap.range.start, range_len(&devmem=
-=2D>pagemap.range));
-> >>>>    err_devmem:
-> >>>>    	kfree(devmem);
-> >>>>   =20
-> >>>> @@ -1097,10 +1124,8 @@ static int dmirror_device_init(struct dmirror=
-_device *mdevice, int id)
-> >>>>    	if (ret)
-> >>>>    		return ret;
-> >>>>   =20
-> >>>> -	/* Build a list of free ZONE_DEVICE private struct pages */
-> >>>> -	dmirror_allocate_chunk(mdevice, NULL);
-> >>>> -
-> >>>> -	return 0;
-> >>>> +	/* Build a list of free ZONE_DEVICE struct pages */
-> >>>> +	return dmirror_allocate_chunk(mdevice, NULL);
-> >>>>    }
-> >>>>   =20
-> >>>>    static void dmirror_device_remove(struct dmirror_device *mdevice)
-> >>>> @@ -1113,8 +1138,9 @@ static void dmirror_device_remove(struct dmirr=
-or_device *mdevice)
-> >>>>    				mdevice->devmem_chunks[i];
-> >>>>   =20
-> >>>>    			memunmap_pages(&devmem->pagemap);
-> >>>> -			release_mem_region(devmem->pagemap.range.start,
-> >>>> -					   range_len(&devmem->pagemap.range));
-> >>>> +			if (devmem->pagemap.type =3D=3D MEMORY_DEVICE_PRIVATE)
-> >>>> +				release_mem_region(devmem->pagemap.range.start,
-> >>>> +						   range_len(&devmem->pagemap.range));
-> >>>>    			kfree(devmem);
-> >>>>    		}
-> >>>>    		kfree(mdevice->devmem_chunks);
-> >>>> diff --git a/lib/test_hmm_uapi.h b/lib/test_hmm_uapi.h
-> >>>> index ee88701793d5..00259d994410 100644
-> >>>> --- a/lib/test_hmm_uapi.h
-> >>>> +++ b/lib/test_hmm_uapi.h
-> >>>> @@ -65,6 +65,7 @@ enum {
-> >>>>    enum {
-> >>>>    	/* 0 is reserved to catch uninitialized type fields */
-> >>>>    	HMM_DMIRROR_MEMORY_DEVICE_PRIVATE =3D 1,
-> >>>> +	HMM_DMIRROR_MEMORY_DEVICE_PUBLIC,
-> >>>>    };
-> >>>>   =20
-> >>>>    #endif /* _LIB_TEST_HMM_UAPI_H */
-> >>>>
-> >>>
-> >>>
-> >
-> >
-> >
->=20
+>  };
+>  
+>  /* Expose the address space of the calling process through hmm device file */
+> @@ -49,6 +54,8 @@ struct hmm_dmirror_cmd {
+>   *					device the ioctl() is made
+>   * HMM_DMIRROR_PROT_DEV_PRIVATE_REMOTE: Migrated device private page on some
+>   *					other device
+> + * HMM_DMIRROR_PROT_DEV_PUBLIC: Migrate device public page on the device
+> + *				 the ioctl() is made
+>   */
+>  enum {
+>  	HMM_DMIRROR_PROT_ERROR			= 0xFF,
+> @@ -60,6 +67,7 @@ enum {
+>  	HMM_DMIRROR_PROT_ZERO			= 0x10,
+>  	HMM_DMIRROR_PROT_DEV_PRIVATE_LOCAL	= 0x20,
+>  	HMM_DMIRROR_PROT_DEV_PRIVATE_REMOTE	= 0x30,
+> +	HMM_DMIRROR_PROT_DEV_PUBLIC		= 0x40,
+>  };
+>  
+>  enum {
+> 
 
 
 
