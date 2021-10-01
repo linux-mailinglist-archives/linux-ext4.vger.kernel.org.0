@@ -2,96 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64BBE41EF28
-	for <lists+linux-ext4@lfdr.de>; Fri,  1 Oct 2021 16:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 031B941EFDA
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 Oct 2021 16:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238222AbhJAOLH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 1 Oct 2021 10:11:07 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41626 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231702AbhJAOLH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 1 Oct 2021 10:11:07 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 191E9BA1015444
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 1 Oct 2021 10:09:13 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 4784415C34A8; Fri,  1 Oct 2021 10:09:11 -0400 (EDT)
-Date:   Fri, 1 Oct 2021 10:09:11 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Jan Kara <jack@suse.cz>
-Cc:     yangerkun <yangerkun@huawei.com>, linux-ext4@vger.kernel.org,
-        yukuai3@huawei.com
-Subject: Re: [PATCH 2/2] ext4: check magic even the extent block bh is
- verified
-Message-ID: <YVcWh6KqzJQytiSJ@mit.edu>
-References: <20210904044946.2102404-1-yangerkun@huawei.com>
- <20210904044946.2102404-3-yangerkun@huawei.com>
- <20211001091833.GB28799@quack2.suse.cz>
+        id S1354602AbhJAOoc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 1 Oct 2021 10:44:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38700 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231679AbhJAOob (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 1 Oct 2021 10:44:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633099367;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2bbccypBfCl5grM4ulXy/1PBqbZWvw/APc7+0O/bpNI=;
+        b=DR0lfw8+XcbWwnhsPLdXRNcjBavgDWM2/Ug4UWUXB6r10H0pdYLH6WMNoYGfE7V6q6BrAf
+        6+w917lTTd+reKymaa9tAOGDFC8ylKPb1kgkJIiFvEVL0jfjCWCSlkndvUQoT38V1uMwW6
+        /LqxNE8PQG8VviAvE0OJz7c/+LO+JJM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-479-JGm3cxasMZqlTjXzgzYCDw-1; Fri, 01 Oct 2021 10:42:46 -0400
+X-MC-Unique: JGm3cxasMZqlTjXzgzYCDw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 23ECCDF8A6;
+        Fri,  1 Oct 2021 14:42:45 +0000 (UTC)
+Received: from work (unknown [10.40.194.14])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 026FC5F91D;
+        Fri,  1 Oct 2021 14:42:43 +0000 (UTC)
+Date:   Fri, 1 Oct 2021 16:42:39 +0200
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Andreas Dilger <adilger@dilger.ca>,
+        Alok Jain <jain.alok103@gmail.com>, linux-ext4@vger.kernel.org
+Subject: Re: Issue with extension of ext4 filesystem on Rhel7
+Message-ID: <20211001144239.fgizeucgzhingeio@work>
+References: <CAG-6nk9DKKw2RHiXx_kWN1B5xcTrctTCypUPaicaaW1Ag0jDzw@mail.gmail.com>
+ <81899623-90FE-4AFA-AAB6-5ABB21903CBB@dilger.ca>
+ <YVcOqNktN4GgFFab@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211001091833.GB28799@quack2.suse.cz>
+In-Reply-To: <YVcOqNktN4GgFFab@mit.edu>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 11:18:33AM +0200, Jan Kara wrote:
-> > 
-> > Digging deep and we found it's actually a xattr block which can happened
-> > with follow steps:
-> > 
-> > 1. extent update for file1 and will remove a leaf extent block(block A)
-> > 2. we need update the idx extent block too
-> > 3. block A has been allocated as a xattr block and will set verified
-> > 3. io error happened for this idx block and will the buffer has been
-> >    released late
-> > 4. extent find for file1 will read the idx block and see block A again
-> > 5. since the buffer of block A is already verified, we will use it
-> >    directly, which can lead the upper OOB
-> > 
-> > Same as __ext4_xattr_check_block, we can check magic even the buffer is
-> > verified to fix the problem.
-> > 
-> > Signed-off-by: yangerkun <yangerkun@huawei.com>
+On Fri, Oct 01, 2021 at 09:35:36AM -0400, Theodore Ts'o wrote:
+> On Thu, Sep 30, 2021 at 11:52:20PM -0600, Andreas Dilger wrote:
+> > On Sep 30, 2021, at 23:43, Alok Jain <jain.alok103@gmail.com> wrote:
+> > > 
+> > > I have a problem while extending the ext4 filesystem on my block
+> > > device which was 12Tb now extended to 32tb. I uses growpart then
+> > > e2fsck followed by resize which failed, Any idea how to address
+> > > this?
+> > > 
+> > > [root@prod-dev1 ~]# resize2fs /dev/sdj1
+> > > 
+> > > resize2fs 1.42.9 (28-Dec-2013)
+> > > 
+> > > resize2fs: New size too large to be expressed in 32 bits
+
+Hi,
+
+as others have already mentioned, unfortunatelly your file system does
+not have 64-bit feature enabled and so you won't be able to simply
+resize past 16TB. This feature was made default after RHEL7 GA, but sadly
+it was likely too late for you, sorry about that.
+
+You can try the advice given here, or you can contact RH support as they
+might have some solution for you. However I am affraid it will always
+involve backup for the reasons already mentioned.
+
 > 
-> Honestly, I'm not sure if this is worth it. What you suggest will work if
-> the magic is overwritten but if we reallocate the block for something else
-> but the magic happens to stay intact, we have a problem. The filesystem is
-> corrupted at that point with metadata blocks being multiply claimed and
-> that's very difficult to deal with. Maybe we should start ignoring
-> buffer_verified() bit once the fs is known to have errors and recheck the
-> buffer contents on each access? Sure it will be slow but I have little
-> sympathy towards people running filesystems with errors... What do people
-> think?
+> Finally, in addtion to e2fsprogs 1.42.9 being Very, Very Old, if you
+> are using such a prehistoric version of e2fsprogs, it's likely that
+> the Linux kernel, and other portions of your Linux userspace, are
+> antedeluvian as well.  That means not only are you missing bug fixes,
+> you are likely missing many security bug fixes as well.
 
-At some point, if we transition away from using buffer_heads for the
-jbd2 layer, and use our own ext4_metadata_buf structure which
-incorporates the journal_head and buffer_head fields, this will allow
-us to control our own writeback, and allow us to have our own error
-callbacks so we can do things like declare an inode to be bad and not
-to be referenced again.  This would allow us to have a metadata type
-field, so we could know that a buffer had been verified as an inode
-table block, or bitmap block, or an xattr block.
+As I am sure you know RH is regularly fixing bugs and security bugs
+especially and supporting RHEL releases for a very long time. As long as
+10 years or even longer with ELS, that's much longer than say meager 3
+years.
 
-However, I think the bigger issue is that even if we had a metadata
-type field in the buffer_head (or ext4_metadata_buf), we should be
-using the metadata validation, and buffer_verified bit, as a backup.
-It should not be the primary line of defense.
+You can find more details here
+https://access.redhat.com/support/policy/updates/errata/#Life_Cycle_Dates
 
-So what I would suggest doing is preventing the out of bounds
-reference in ext4_find_extent() in the first place.  I note we're not
-sanity checking the values of EXT4_{FIRST,LAST}_{EXTENT,INDEX} used in
-ext4_ext_binsearch() and ext4_ext_binsearch_idx(), and that's probably
-how we triggered the out of bounds read in the first place.  The cost
-of making sure that pointers returned by
-EXT4_{FIRST,LAST}_{EXTENT,INDEX} don't exceed the bounds of the extent
-tree node would be minimal, and it would be an additional cross check
-which would protect us against the buffer getting corrupted while in
-memory (bit flips, or wild pointer dereferences).
+-Lukas
 
-Cheers,
-
-						- Ted
