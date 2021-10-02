@@ -2,63 +2,83 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8012941F91D
-	for <lists+linux-ext4@lfdr.de>; Sat,  2 Oct 2021 03:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B68CB41FB53
+	for <lists+linux-ext4@lfdr.de>; Sat,  2 Oct 2021 14:00:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232135AbhJBBX0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 1 Oct 2021 21:23:26 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57991 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230255AbhJBBXZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 1 Oct 2021 21:23:25 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1921LXju001968
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 1 Oct 2021 21:21:34 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id BB75015C34AA; Fri,  1 Oct 2021 21:21:33 -0400 (EDT)
-Date:   Fri, 1 Oct 2021 21:21:33 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     Shreeya Patel <shreeya.patel@collabora.com>,
-        viro@zeniv.linux.org.uk, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com
-Subject: Re: [PATCH 2/2] fs: ext4: Fix the inconsistent name exposed by
- /proc/self/cwd
-Message-ID: <YVe0HS8HM48LDUDS@mit.edu>
-References: <cover.1632909358.git.shreeya.patel@collabora.com>
- <8402d1c99877a4fcb152de71005fa9cfb25d86a8.1632909358.git.shreeya.patel@collabora.com>
- <YVdWW0uyRqYWSgVP@mit.edu>
- <8735pk5zml.fsf@collabora.com>
+        id S232887AbhJBMBs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 2 Oct 2021 08:01:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232925AbhJBMBr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 2 Oct 2021 08:01:47 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ADA6C0613EF
+        for <linux-ext4@vger.kernel.org>; Sat,  2 Oct 2021 05:00:02 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id d11so13313856ilc.8
+        for <linux-ext4@vger.kernel.org>; Sat, 02 Oct 2021 05:00:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=nsZbpm1YBoHMpWTnzHLuE/zYZ0yg4jBiKD5Q7oCTPBE=;
+        b=QDHrJ39sMEu8BMYvZU3NCP2xVWJ3apqATlyWIgxLdN63Ytc/PmCEkUySQqDTKjki/+
+         5+tA3YRUJpZ7nDn3GJ1h0RwhhEcKvOi3Jmra6PuIdyfDp0ZSwqg9Gc2GOh0sdkdn+k0z
+         ypW5PoHh4/FmqiTV8LbbhggOTY+ppcY4Ft7Ej01n4FCqYB/VStkUn4kU/W0rZhFzOsMj
+         8iF+xGJ0SyRhCV7Q5lZGfs6YFI3ufLtHnmr29Yt22Rj0y6hyFaAzJjx5nDupaC0gEv+I
+         ZPq6a66zWvReHMJ4QKugue+wFdCNqdgameLCp+MC/PvUXTgUZoO/b5ETB2ZgVRXQPN9U
+         E7Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=nsZbpm1YBoHMpWTnzHLuE/zYZ0yg4jBiKD5Q7oCTPBE=;
+        b=MCPUlrGohk2QnJEb7hLQkLysCgEy1P4OZ3f2RIIPfgPaZfWxDRNbf5rgZEzR5eqjG2
+         uv2MhT5ASUIINafvcwohLMgfvxru4GnZCmyj+rCn0m0YuenRgIzWjhp5j1AtuDBpqoP6
+         D+QlfEu/Kum8Ny82+Dzf5KYLnRKVyEDZRps3PO5hnscm0pCep5BHF4eQj1tAs/BY0mJh
+         7MWTduUlDFi3bX8QVTGHfEViFtYu8SNxjZW4RxlJtH8xWljAqPhKHr6raz+PugdPIGut
+         OBnFl4W7jEhbo2b8S9Xw2zYwaxv+K4PKF+NNtBDV2FMWZnBfqqCCPu2pRrwWQhirh57p
+         pVPg==
+X-Gm-Message-State: AOAM531qiGMJY3qkMANifiN58cqnN7SsX4Ue6OxW3DwEtBqOWgkk9bDj
+        TIXxGQvdsmNpr8LdIGF5xhhErWB+aXJvGOV4740=
+X-Google-Smtp-Source: ABdhPJxOmjBAVMW2nYT5fvETxLNTAYr9I/JWo+U6VNRy1Lo7vz+8FCkgFUADts0lkCMV8QaEg6eYPcMHcMN2R9RGo3E=
+X-Received: by 2002:a92:ca06:: with SMTP id j6mr2320577ils.42.1633176001719;
+ Sat, 02 Oct 2021 05:00:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8735pk5zml.fsf@collabora.com>
+Received: by 2002:a4f:f90d:0:0:0:0:0 with HTTP; Sat, 2 Oct 2021 05:00:01 -0700 (PDT)
+Reply-To: unitednnation0@gmail.com
+From:   "U.n" <wadebaye33@gmail.com>
+Date:   Sat, 2 Oct 2021 00:00:01 -1200
+Message-ID: <CACE0T5XG4wnU7HGqhPD1kVCXttsusQLOaVTrByP4PnaAUtY=Zg@mail.gmail.com>
+Subject: Attention
+To:     unitednnation0@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 03:11:30PM -0400, Gabriel Krisman Bertazi wrote:
-> 
-> The dcache name is exposed in more places, like /proc/mounts.  We have a
-> bug reported against flatpak where its initialization code bind mounts a
-> directory that was previously touched with a different case combination,
-> and then checks /proc/mounts in a case-sensitive way to see if the mount
-> succeeded.  This code now regresses on CI directories because the name
-> it asked to bind mount is not found in /proc/mounts.
+--=20
 
-Ah, thanks for the context.  That makes sense.
 
-> I think the more reasonable approach is to save the disk exact name on
-> the dcache, because that is the only version that doesn't change based
-> on who won the race for the first lookup.
+Attention Sir/Madam
+This is the United Nation (UN). We the United Nations (UN) Globally
+has approved (US$2.500,000)( two Million Five hundred thousand
+dollars) compensation as part of our responsibilities for humanitarian
+Aid for fighting against CoronaVirus and you are among the lucky ones.
 
-What about the alternative of storing the casefolded name?  The
-advantage of using the casefolded name is that we can always casefold
-the name, where as in the case of a negative dentry, there is no disk
-exact name to use (since by definition there is no on-disk name).
 
-      	      	  	    	       - Ted
+This compensation is for the most affected countries, communities and
+families across the global. Your funds were deposited with Bank in USA
+to transfer your funds to you via Internet Banking. You have to send
+your full details as state below:with this email Address
+  ( unitednnation0@gmail.com )
+Your full names:
+Address:
+Telephone:
+Occupation:
+
+
+
+Yours Sincerely
+Mr. Ant=C3=B3nio Guterres
+United Nations (UN).
