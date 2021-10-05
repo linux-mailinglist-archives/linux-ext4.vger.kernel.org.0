@@ -2,98 +2,126 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C15422766
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 Oct 2021 15:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1275D422856
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 Oct 2021 15:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234835AbhJENL4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 5 Oct 2021 09:11:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233365AbhJENLz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 5 Oct 2021 09:11:55 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73265C061749;
-        Tue,  5 Oct 2021 06:10:05 -0700 (PDT)
-Received: from [IPv6:2401:4900:1c20:6ff1:a04:f397:fd5d:ecb8] (unknown [IPv6:2401:4900:1c20:6ff1:a04:f397:fd5d:ecb8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: shreeya)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 1FE401F43751;
-        Tue,  5 Oct 2021 14:10:03 +0100 (BST)
-Subject: Re: [PATCH 1/2] fs: dcache: Handle case-exact lookup in
- d_alloc_parallel
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, krisman@collabora.com,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com
-References: <cover.1632909358.git.shreeya.patel@collabora.com>
- <0b8fd2677b797663bfcb97f6aa108193fedf9767.1632909358.git.shreeya.patel@collabora.com>
- <YVmyYP25kgGq9uEy@zeniv-ca.linux.org.uk>
-From:   Shreeya Patel <shreeya.patel@collabora.com>
-Message-ID: <589db4cf-5cab-2d1f-10ce-3a5009685948@collabora.com>
-Date:   Tue, 5 Oct 2021 18:39:59 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235274AbhJENwO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 5 Oct 2021 09:52:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58678 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235085AbhJENwN (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 5 Oct 2021 09:52:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B402361244;
+        Tue,  5 Oct 2021 13:50:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633441822;
+        bh=a1Qbzr8/zB02DQWjCUA31GrFzN2vH4OUkEx92NYCYQM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kzNOIpDuG6B+GB5IGl41l0ABg4LEW5KqPPjMyi3WULPMUXyTvx7mT5kX7n0/pr1f1
+         tJo428opHW+SbjNYr5h/sXR21prF6f6bIebz9U2BjWu64OpWyyqdpEvnEF2SCINm9D
+         BgFYdVqxQ76x+ew8klWnW35bzADIuq588n31dtlcAd5VzVd72YuE5J9++RxulYQI0P
+         PCXMY3Iz/b7RJ8w9CMcqiUmZbbGXsOn0oFimzOCdjHX5O88HsFX7zv0BUJRCDUKQKr
+         MKTaexeQANAjCHW+aOoMsY7k7tdNIOJdwUwrp8PJmSpoC+TK0u7lB4ADIbJbOkiRYE
+         bHzu/8eCuEe4g==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Zhang Yi <yi.zhang@huawei.com>, Jan Kara <jack@suse.cz>,
+        Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.14 01/40] ext4: check and update i_disksize properly
+Date:   Tue,  5 Oct 2021 09:49:40 -0400
+Message-Id: <20211005135020.214291-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <YVmyYP25kgGq9uEy@zeniv-ca.linux.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+From: Zhang Yi <yi.zhang@huawei.com>
 
-On 03/10/21 7:08 pm, Al Viro wrote:
-> On Wed, Sep 29, 2021 at 04:23:38PM +0530, Shreeya Patel wrote:
->> There is a soft hang caused by a deadlock in d_alloc_parallel which
->> waits up on lookups to finish for the dentries in the parent directory's
->> hash_table.
->> In case when d_add_ci is called from the fs layer's lookup functions,
->> the dentry being looked up is already in the hash table (created before
->> the fs lookup function gets called). We should not be processing the
->> same dentry that is being looked up, hence, in case of case-insensitive
->> filesystems we are making it a case-exact match to prevent this from
->> happening.
-> NAK.  What you are doing would lead to parallel calls of ->lookup() in the
-> same directory for names that would compare as equal.  Which violates
-> all kinds of assumptions in the analysis of dentry tree locking.
->
-> d_add_ci() is used to force the "exact" spelling of the name on lookup -
-> that's the whole point of that thing.  What are you trying to achieve,
-> and what's the point of mixing that with non-trivial ->d_compare()?
->
-Sending again as plain text...
+[ Upstream commit 4df031ff5876d94b48dd9ee486ba5522382a06b2 ]
 
-Hi Al Viro,
+After commit 3da40c7b0898 ("ext4: only call ext4_truncate when size <=
+isize"), i_disksize could always be updated to i_size in ext4_setattr(),
+and we could sure that i_disksize <= i_size since holding inode lock and
+if i_disksize < i_size there are delalloc writes pending in the range
+upto i_size. If the end of the current write is <= i_size, there's no
+need to touch i_disksize since writeback will push i_disksize upto
+i_size eventually. So we can switch to check i_size instead of
+i_disksize in ext4_da_write_end() when write to the end of the file.
+we also could remove ext4_mark_inode_dirty() together because we defer
+inode dirtying to generic_write_end() or ext4_da_write_inline_data_end().
 
-This patch was added to resolve some of the issues faced in patch 02/02 
-of the series.
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Link: https://lore.kernel.org/r/20210716122024.1105856-2-yi.zhang@huawei.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/ext4/inode.c | 34 ++++++++++++++++++----------------
+ 1 file changed, 18 insertions(+), 16 deletions(-)
 
-Originally, the 'native', per-directory case-insensitive implementation
-merged in ext4/f2fs stores the case of the first lookup on the dcache,
-regardless of the disk exact file name case. This gets reflected in symlink
-returned by /proc/self/cwd.
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index d8de607849df..dca8e3810443 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3084,35 +3084,37 @@ static int ext4_da_write_end(struct file *file,
+ 	end = start + copied - 1;
+ 
+ 	/*
+-	 * generic_write_end() will run mark_inode_dirty() if i_size
+-	 * changes.  So let's piggyback the i_disksize mark_inode_dirty
+-	 * into that.
++	 * Since we are holding inode lock, we are sure i_disksize <=
++	 * i_size. We also know that if i_disksize < i_size, there are
++	 * delalloc writes pending in the range upto i_size. If the end of
++	 * the current write is <= i_size, there's no need to touch
++	 * i_disksize since writeback will push i_disksize upto i_size
++	 * eventually. If the end of the current write is > i_size and
++	 * inside an allocated block (ext4_da_should_update_i_disksize()
++	 * check), we need to update i_disksize here as neither
++	 * ext4_writepage() nor certain ext4_writepages() paths not
++	 * allocating blocks update i_disksize.
++	 *
++	 * Note that we defer inode dirtying to generic_write_end() /
++	 * ext4_da_write_inline_data_end().
+ 	 */
+ 	new_i_size = pos + copied;
+-	if (copied && new_i_size > EXT4_I(inode)->i_disksize) {
++	if (copied && new_i_size > inode->i_size) {
+ 		if (ext4_has_inline_data(inode) ||
+-		    ext4_da_should_update_i_disksize(page, end)) {
++		    ext4_da_should_update_i_disksize(page, end))
+ 			ext4_update_i_disksize(inode, new_i_size);
+-			/* We need to mark inode dirty even if
+-			 * new_i_size is less that inode->i_size
+-			 * bu greater than i_disksize.(hint delalloc)
+-			 */
+-			ret = ext4_mark_inode_dirty(handle, inode);
+-		}
+ 	}
+ 
+ 	if (write_mode != CONVERT_INLINE_DATA &&
+ 	    ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA) &&
+ 	    ext4_has_inline_data(inode))
+-		ret2 = ext4_da_write_inline_data_end(inode, pos, len, copied,
++		ret = ext4_da_write_inline_data_end(inode, pos, len, copied,
+ 						     page);
+ 	else
+-		ret2 = generic_write_end(file, mapping, pos, len, copied,
++		ret = generic_write_end(file, mapping, pos, len, copied,
+ 							page, fsdata);
+ 
+-	copied = ret2;
+-	if (ret2 < 0)
+-		ret = ret2;
++	copied = ret;
+ 	ret2 = ext4_journal_stop(handle);
+ 	if (unlikely(ret2 && !ret))
+ 		ret = ret2;
+-- 
+2.33.0
 
-To solve this we are calling d_add_ci from the fs lookup function to 
-store the
-disk exact name in the dcache even if an inexact-match string is used on 
-the FIRST lookup.
-But this caused a soft hang since there was a deadlock in d_wait_lookup 
-called from d_alloc_parallel.
-
-The reason for the hang is that d_same_name uses d_compare which does a
-case-insensitive match and is able to find the dentry name in the 
-secondary hash table
-leading it to d_wait_lookup which would wait for the lookup to finish on 
-that dentry
-causing a deadlock.
-
-To avoid the hang, we are doing a case-sensitive match using dentry_cmp 
-here.
-
-
-Thanks
-
-> If it's "force to exact spelling on lookup, avoid calling ->lookup() on
-> aliases", d_add_ci() is simply not a good match.
