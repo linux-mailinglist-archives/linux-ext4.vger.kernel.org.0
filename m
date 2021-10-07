@@ -2,57 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB66542553F
-	for <lists+linux-ext4@lfdr.de>; Thu,  7 Oct 2021 16:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A046425569
+	for <lists+linux-ext4@lfdr.de>; Thu,  7 Oct 2021 16:28:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242013AbhJGOXk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 7 Oct 2021 10:23:40 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37124 "EHLO
+        id S242077AbhJGOan (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 7 Oct 2021 10:30:43 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:38419 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S241042AbhJGOXk (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Oct 2021 10:23:40 -0400
+        with ESMTP id S242060AbhJGOam (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Oct 2021 10:30:42 -0400
 Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 197ELfBE021443
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 197ESeS4024772
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 7 Oct 2021 10:21:41 -0400
+        Thu, 7 Oct 2021 10:28:41 -0400
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 1635015C34DF; Thu,  7 Oct 2021 10:21:41 -0400 (EDT)
+        id CDF5415C3E70; Thu,  7 Oct 2021 10:28:40 -0400 (EDT)
+Date:   Thu, 7 Oct 2021 10:28:40 -0400
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     adilger.kernel@dilger.ca, Shaoying Xu <shaoyi@amazon.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, benh@amazon.com
-Subject: Re: [PATCH 0/1] [RESEND] ext4: fix lazy initialization next schedule time computation in more granular unit
-Date:   Thu,  7 Oct 2021 10:21:34 -0400
-Message-Id: <163361646350.569327.18128912303237466845.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210902164412.9994-1-shaoyi@amazon.com>
-References: <20210902164412.9994-1-shaoyi@amazon.com>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH 1/2] ext4: docs: switch away from list-table
+Message-ID: <YV8EGFcPtM9u+ihl@mit.edu>
+References: <20210902220854.198850-1-corbet@lwn.net>
+ <20210902220854.198850-2-corbet@lwn.net>
+ <20210916095455.GE10610@quack2.suse.cz>
+ <877df9tt5d.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877df9tt5d.fsf@meer.lwn.net>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 2 Sep 2021 16:44:11 +0000, Shaoying Xu wrote:
-> Description
-> ===========
-> Ext4 FS has inappropriate implementations on the next schedule time calculation
-> that use jiffies to measure the time for one request to zero out inode table. This
-> actually makes the wait time effectively dependent on CONFIG_HZ, which is
-> undesirable. We have observed on server systems with 100HZ some fairly long delays
-> in initialization as a result. Therefore, we propose to use more granular unit to
-> calculate the next schedule time.
+On Tue, Sep 21, 2021 at 05:18:06PM -0600, Jonathan Corbet wrote:
+> Jan Kara <jack@suse.cz> writes:
 > 
-> [...]
+> > On Thu 02-09-21 16:08:53, Jonathan Corbet wrote:
+> >> Commit 3a6541e97c03 (Add documentation about the orphan file feature) added
+> >> a new document on orphan files, which is great.  But the use of
+> >> "list-table" results in documents that are absolutely unreadable in their
+> >> plain-text form.  Switch this file to the regular RST table format instead;
+> >> the rendered (HTML) output is identical.
+> >> 
+> >> Signed-off-by: Jonathan Corbet <corbet@lwn.net>
+> >
+> > Thanks! Definitely looks more readable :). You can add:
+> >
+> > Reviewed-by: Jan Kara <jack@suse.cz>
+> 
+> Thanks for having a look!  I'll ahead and apply these, then.
 
-Applied, thanks!
+Hey Jon,
 
-[1/1] ext4: fix lazy initialization next schedule time computation in more granular unit
-      commit: 3782027982881d2c1105ffe058aecb69cc780dfa
+I don't see these patches in linux-next.  I'm guessing because you
+were busy with some silly thing like LPC.  :-)
 
-Best regards,
--- 
-Theodore Ts'o <tytso@mit.edu>
+Do you want to take them, or I can take them through the ext4 tree.
+
+	       	       	    	       	   - Ted
