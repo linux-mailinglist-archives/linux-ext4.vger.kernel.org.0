@@ -2,94 +2,123 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53042425501
-	for <lists+linux-ext4@lfdr.de>; Thu,  7 Oct 2021 16:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE2A42551F
+	for <lists+linux-ext4@lfdr.de>; Thu,  7 Oct 2021 16:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241910AbhJGOIg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 7 Oct 2021 10:08:36 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55786 "EHLO
+        id S241937AbhJGORT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 7 Oct 2021 10:17:19 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:56752 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240542AbhJGOIf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Oct 2021 10:08:35 -0400
+        with ESMTP id S233867AbhJGORR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Oct 2021 10:17:17 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 0A09422536;
-        Thu,  7 Oct 2021 14:06:41 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 0144222536;
+        Thu,  7 Oct 2021 14:15:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1633615601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1633616123; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Xka3Ua8GP8dwpZVcT+jCR5YGpMzAvZ9aMTAX/ErpUZs=;
-        b=hw3U+6Xwd56vOSZN6W22mge/JpjzKqf/YAYWubamVh6NwMP2LawE8jDeFf4kj+mF6L7fT5
-        /2q3mo/J1gY4aJBOe72NuN88JmoHiAp/Iggxb+EWsOssYCprIkgsxKrVFUbHmVFsefrvwF
-        4Ug2Tct0IQoBbO6sU0npabl8Dq6nfW0=
+        bh=tFMJH9cjoNNkanu2nS+bPYZOud1m0KHzHexWhpyQvEs=;
+        b=yonKk2B3+rCxghzoRgDE0fup5nfkd1Drw3MOB6Y9xCf22dcg1ggq2EH3JtkEt47WHlMNz5
+        d0s/yuKQ+qvo40BO2Oj7C/D2bcL9u9VcIvs2YU/T8ZqujLYLuV2b2sIQ15IY402gYsSQSD
+        F/BhzprGq8uAV6pdqETmP7f+5UIAv5Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1633615601;
+        s=susede2_ed25519; t=1633616123;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Xka3Ua8GP8dwpZVcT+jCR5YGpMzAvZ9aMTAX/ErpUZs=;
-        b=bJHonUxGlYgQaI/vYqrrLwLs7fLB23cTO2UGXojcwD70xA0olKouIvYPHv1uLdPgU0g5kH
-        BX+zPyXRlkoN6LAw==
+        bh=tFMJH9cjoNNkanu2nS+bPYZOud1m0KHzHexWhpyQvEs=;
+        b=hK5A9VRlN9LYhNf7mIOs7pU99Jv+mTfBhG1o+Xcl7ULyoI4kwVoAXYZz97mfECTDLptWZx
+        2Hln5Q67UPlxTKCg==
 Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 9C5A7A3B81;
-        Thu,  7 Oct 2021 14:06:40 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id E5F64A3B85;
+        Thu,  7 Oct 2021 14:15:22 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 621641F2C96; Thu,  7 Oct 2021 16:06:40 +0200 (CEST)
-Date:   Thu, 7 Oct 2021 16:06:40 +0200
+        id C86BA1F2C96; Thu,  7 Oct 2021 16:15:22 +0200 (CEST)
+Date:   Thu, 7 Oct 2021 16:15:22 +0200
 From:   Jan Kara <jack@suse.cz>
 To:     Chenyuan Mi <cymi20@fudan.edu.cn>
 Cc:     yuanxzhang@fudan.edu.cn, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
         Xin Tan <tanxin.ctf@gmail.com>, Theodore Ts'o <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: Fix handle refcount leak in ext4_write_begin()
-Message-ID: <20211007140640.GA2670@quack2.suse.cz>
-References: <20210908070640.7135-1-cymi20@fudan.edu.cn>
+Subject: Re: [PATCH] ext4: Fix refcount leak bug in __ext4_new_inode()
+Message-ID: <20211007141522.GB2670@quack2.suse.cz>
+References: <20210908024605.16857-1-cymi20@fudan.edu.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210908070640.7135-1-cymi20@fudan.edu.cn>
+In-Reply-To: <20210908024605.16857-1-cymi20@fudan.edu.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 08-09-21 15:06:40, Chenyuan Mi wrote:
-> The reference counting issue happens when ret is zero,
-> the function forgets to decrease the refcount of handle
-> increased by ext4_journal_start().
+On Wed 08-09-21 10:46:05, Chenyuan Mi wrote:
+> After successfully creating handle by __ext4_journal_start_sb(),
+> the function forgets to decrease the refcount of handle in several
+> paths, causing refcount leak.
 > 
-> Fix this issue by using ext4_journal_stop() to decrease
-> the refcount of handle.
+> Fix this issue by recording a flag when successfully getting handle
+> by __ext4_journal_start_sb(), and decrease the refcount of handle
+> when exiting this function if holding the flag.
 > 
 > Signed-off-by: Chenyuan Mi <cymi20@fudan.edu.cn>
 > Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 > Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 
-Yes, but that is deliberate. We want to keep the transaction running until
-the write is done - i.e., until ->write_end() callback where we call
-ext4_journal_stop(). As a side note, please test your patches. You clearly
-didn't test this patch because if you did, you would notice that your patch
-breaks writing to ext4.
+I'm sorry but this patch is wrong. We are expected to return with handle
+running from __ext4_new_inode(). Please have a look into callers of
+ext4_new_inode() and ext4_new_inode_start_handle() how they use and then
+stop the handle. And similarly as for the second patch I'd note that even a
+small amount of testing would show you that this patch does not work.
 
                                                                 Honza
 
-> ---
->  fs/ext4/inode.c | 1 +
->  1 file changed, 1 insertion(+)
 > 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index d18852d6029c..90c57d8e3de1 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -1249,6 +1249,7 @@ static int ext4_write_begin(struct file *file, struct address_space *mapping,
->  		put_page(page);
->  		return ret;
+> ---
+>  fs/ext4/ialloc.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
+> index f73e5eb43eae..7563b892c64f 100644
+> --- a/fs/ext4/ialloc.c
+> +++ b/fs/ext4/ialloc.c
+> @@ -944,6 +944,7 @@ struct inode *__ext4_new_inode(struct user_namespace *mnt_userns,
+>  	ext4_group_t flex_group;
+>  	struct ext4_group_info *grp = NULL;
+>  	bool encrypt = false;
+> +	bool create_handle = false;
+>  
+>  	/* Cannot create files in a deleted directory */
+>  	if (!dir || !dir->i_nlink)
+> @@ -1085,6 +1086,7 @@ struct inode *__ext4_new_inode(struct user_namespace *mnt_userns,
+>  				ext4_std_error(sb, err);
+>  				goto out;
+>  			}
+> +			create_handle = true;
+>  		}
+>  		BUFFER_TRACE(inode_bitmap_bh, "get_write_access");
+>  		err = ext4_journal_get_write_access(handle, sb, inode_bitmap_bh,
+> @@ -1345,7 +1347,8 @@ struct inode *__ext4_new_inode(struct user_namespace *mnt_userns,
+>  		ext4_std_error(sb, err);
+>  		goto fail_free_drop;
 >  	}
-> +	ext4_journal_stop(handle);
->  	*pagep = page;
->  	return ret;
->  }
+> -
+> +	if (create_handle)
+> +		ext4_journal_stop(handle);
+>  	ext4_debug("allocating inode %lu\n", inode->i_ino);
+>  	trace_ext4_allocate_inode(inode, dir, mode);
+>  	brelse(inode_bitmap_bh);
+> @@ -1357,6 +1360,8 @@ struct inode *__ext4_new_inode(struct user_namespace *mnt_userns,
+>  	clear_nlink(inode);
+>  	unlock_new_inode(inode);
+>  out:
+> +	if (create_handle)
+> +		ext4_journal_stop(handle);
+>  	dquot_drop(inode);
+>  	inode->i_flags |= S_NOQUOTA;
+>  	iput(inode);
 > -- 
 > 2.17.1
 > 
