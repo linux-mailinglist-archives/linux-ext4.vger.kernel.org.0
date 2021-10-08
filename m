@@ -2,41 +2,41 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16ECB426278
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Oct 2021 04:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53EC3426352
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Oct 2021 05:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236389AbhJHCka (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 7 Oct 2021 22:40:30 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:27963 "EHLO
+        id S242760AbhJHDvI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 7 Oct 2021 23:51:08 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:28897 "EHLO
         szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229606AbhJHCk3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Oct 2021 22:40:29 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HQXM42gKtzbn1L;
-        Fri,  8 Oct 2021 10:34:08 +0800 (CST)
+        with ESMTP id S231658AbhJHDvI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Oct 2021 23:51:08 -0400
+Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HQYwb3nyHzbmlD;
+        Fri,  8 Oct 2021 11:44:47 +0800 (CST)
 Received: from [10.174.178.185] (10.174.178.185) by
  dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Fri, 8 Oct 2021 10:38:31 +0800
-Subject: Re: [PATCH -next v2 2/6] ext4: introduce last_check_time record
- previous check time
+ 15.1.2308.8; Fri, 8 Oct 2021 11:49:11 +0800
+Subject: Re: [PATCH -next v2 6/6] ext4: fix possible store wrong check
+ interval value in disk when umount
 To:     Jan Kara <jack@suse.cz>
 References: <20210911090059.1876456-1-yebin10@huawei.com>
- <20210911090059.1876456-3-yebin10@huawei.com>
- <20211007123100.GG12712@quack2.suse.cz> <615FA55B.5070404@huawei.com>
+ <20210911090059.1876456-7-yebin10@huawei.com>
+ <20211007131207.GJ12712@quack2.suse.cz>
 CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
         <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 From:   yebin <yebin10@huawei.com>
-Message-ID: <615FAF27.8070000@huawei.com>
-Date:   Fri, 8 Oct 2021 10:38:31 +0800
+Message-ID: <615FBFB6.9030208@huawei.com>
+Date:   Fri, 8 Oct 2021 11:49:10 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
  Thunderbird/38.1.0
 MIME-Version: 1.0
-In-Reply-To: <615FA55B.5070404@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211007131207.GJ12712@quack2.suse.cz>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.174.178.185]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  dggeme754-chm.china.huawei.com (10.3.19.100)
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -45,107 +45,70 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 
 
-On 2021/10/8 9:56, yebin wrote:
->
->
-> On 2021/10/7 20:31, Jan Kara wrote:
->> On Sat 11-09-21 17:00:55, Ye Bin wrote:
->>> kmmpd:
->>> ...
->>>      diff = jiffies - last_update_time;
->>>      if (diff > mmp_check_interval * HZ) {
->>> ...
->>> As "mmp_check_interval = 2 * mmp_update_interval", 'diff' always little
->>> than 'mmp_update_interval', so there will never trigger detection.
->>> Introduce last_check_time record previous check time.
->>>
->>> Signed-off-by: Ye Bin <yebin10@huawei.com>
->> I think the check is there only for the case where write_mmp_block() +
->> sleep took longer than mmp_check_interval. I agree that should rarely
->> happen but on a really busy system it is possible and in that case we 
->> would
->> miss updating mmp block for too long and so another node could have 
->> started
->> using the filesystem. I actually don't see a reason why kmmpd should be
->> checking the block each mmp_check_interval as you do - 
->> mmp_check_interval
->> is just for ext4_multi_mount_protect() to know how long it should wait
->> before considering mmp block stale... Am I missing something?
+On 2021/10/7 21:12, Jan Kara wrote:
+> On Sat 11-09-21 17:00:59, Ye Bin wrote:
+>> Test follow steps:
+>> 1. mkfs.ext4 /dev/sda -O mmp
+>> 2. mount /dev/sda  /mnt
+>> 3. wait for about 1 minute
+>> 4. umount mnt
+>> 5. debugfs /dev/sda
+>> 6. dump_mmp
+>> 7. fsck.ext4 /dev/sda
 >>
->>                                 Honza
-> I'm sorry, I didn't understand the detection mechanism here before. 
-> Now I understand
-> the detection mechanism here.
-> As you said, it's just an abnormal protection. There's really no problem.
+>> I found 'check_interval' is range in [5, 10]. And sometime run fsck
+>> print "MMP interval is 10 seconds and total wait time is 42 seconds.
+>> Please wait...".
+>> kmmpd:
+>> ...
+>> 	if (diff < mmp_update_interval * HZ)
+>> 		schedule_timeout_interruptible(mmp_update_interval * HZ - diff);
+>> 	 diff = jiffies - last_update_time;
+>> ...
+>> 	mmp_check_interval = max(min(EXT4_MMP_CHECK_MULT * diff / HZ,
+>> 				EXT4_MMP_MAX_CHECK_INTERVAL),
+>> 			        EXT4_MMP_MIN_CHECK_INTERVAL);
+>> 	mmp->mmp_check_interval = cpu_to_le16(mmp_check_interval);
+>> ...
+>> We will call ext4_stop_mmpd to stop kmmpd kthread when umount, and
+>> schedule_timeout_interruptible will be interrupted, so 'diff' maybe
+>> little than mmp_update_interval. Then mmp_check_interval will range
+>> in [EXT4_MMP_MAX_CHECK_INTERVAL, EXT4_MMP_CHECK_MULT * diff / HZ].
+>> To solve this issue, if 'diff' little then mmp_update_interval * HZ
+>> just break loop, don't update check interval.
+>>
+>> Signed-off-by: Ye Bin <yebin10@huawei.com>
+>> ---
+>>   fs/ext4/mmp.c | 8 ++++++++
+>>   1 file changed, 8 insertions(+)
+>>
+>> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
+>> index a0d47a906faa..f39e1fa0c6db 100644
+>> --- a/fs/ext4/mmp.c
+>> +++ b/fs/ext4/mmp.c
+>> @@ -205,6 +205,14 @@ static int kmmpd(void *data)
+>>   			schedule_timeout_interruptible(mmp_update_interval *
+>>   						       HZ - diff);
+>>   			diff = jiffies - last_update_time;
+>> +			/* If 'diff' little 'than mmp_update_interval * HZ', it
+>> +			 * means someone call ext4_stop_mmpd to stop kmmpd
+>> +			 * kthread. We don't need to update mmp_check_interval
+>> +			 * any more, as 'diff' is not exact value.
+>> +			 */
+>> +			if (unlikely(diff < mmp_update_interval * HZ &&
+>> +			    kthread_should_stop()))
+>> +				break;
+>>   		}
+> So in this case, mmp_check_interval would be EXT4_MMP_MIN_CHECK_INTERVAL. I
+> don't quite understand what the practical problem is - the fsck message?
+> That will happen anytime mmp_check_interval is >= 10 AFAICT and I don't
+> quite see how that is connected to this condition... Can you explain a bit
+> more please?
 >
-Yeah, i did test as following steps
-hostA                        hostB
-    mount
-      ext4_multi_mount_protect  -> seq == EXT4_MMP_SEQ_CLEAN
-         delay 5s after label "skip" so hostB will see seq is 
-EXT4_MMP_SEQ_CLEAN
-                        mount
-                        ext4_multi_mount_protect -> seq == 
-EXT4_MMP_SEQ_CLEAN
-                                run  kmmpd
-     run kmmpd
-
-Actually，in this  situation kmmpd will not detect  confliction.
-In  ext4_multi_mount_protect  function we write mmp data fisrt and wait 
-'wait_time * HZ'  seconds,
-read mmp data do check.Most of the time, If 'wait_time' is zero, it can 
-pass check.
->>> ---
->>>   fs/ext4/mmp.c | 14 +++++++++-----
->>>   1 file changed, 9 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
->>> index 12af6dc8457b..c781b09a78c9 100644
->>> --- a/fs/ext4/mmp.c
->>> +++ b/fs/ext4/mmp.c
->>> @@ -152,6 +152,7 @@ static int kmmpd(void *data)
->>>       int mmp_update_interval = le16_to_cpu(es->s_mmp_update_interval);
->>>       unsigned mmp_check_interval;
->>>       unsigned long last_update_time;
->>> +    unsigned long last_check_time;
->>>       unsigned long diff;
->>>       int retval = 0;
->>>   @@ -170,6 +171,7 @@ static int kmmpd(void *data)
->>>         memcpy(mmp->mmp_nodename, init_utsname()->nodename,
->>>              sizeof(mmp->mmp_nodename));
->>> +    last_check_time = jiffies;
->>>         while (!kthread_should_stop() && !sb_rdonly(sb)) {
->>>           if (!ext4_has_feature_mmp(sb)) {
->>> @@ -198,17 +200,18 @@ static int kmmpd(void *data)
->>>           }
->>>             diff = jiffies - last_update_time;
->>> -        if (diff < mmp_update_interval * HZ)
->>> +        if (diff < mmp_update_interval * HZ) {
->>> schedule_timeout_interruptible(mmp_update_interval *
->>>                                  HZ - diff);
->>> +            diff = jiffies - last_update_time;
->>> +        }
->>>             /*
->>>            * We need to make sure that more than mmp_check_interval
->>> -         * seconds have not passed since writing. If that has happened
->>> -         * we need to check if the MMP block is as we left it.
->>> +         * seconds have not passed since check. If that has happened
->>> +         * we need to check if the MMP block is as we write it.
->>>            */
->>> -        diff = jiffies - last_update_time;
->>> -        if (diff > mmp_check_interval * HZ) {
->>> +        if (jiffies - last_check_time > mmp_check_interval * HZ) {
->>>               struct buffer_head *bh_check = NULL;
->>>               struct mmp_struct *mmp_check;
->>>   @@ -234,6 +237,7 @@ static int kmmpd(void *data)
->>>                   goto wait_to_exit;
->>>               }
->>>               put_bh(bh_check);
->>> +            last_check_time = jiffies;
->>>           }
->>>              /*
->>> -- 
->>> 2.31.1
->>>
->
+> 								Honza
+I just think 'mmp_check_interval' is not reflect real check interval, 
+and also sometime run fsck
+print "MMP interval is 10 seconds and total wait time is 42 seconds. 
+Please wait...", but
+sometime not.
 
