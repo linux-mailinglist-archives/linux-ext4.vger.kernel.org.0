@@ -2,117 +2,181 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73EC7426357
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Oct 2021 05:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F090426389
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Oct 2021 06:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242809AbhJHDyn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 7 Oct 2021 23:54:43 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:24176 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbhJHDyn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Oct 2021 23:54:43 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HQZ442HyFz1DHXS;
-        Fri,  8 Oct 2021 11:51:16 +0800 (CST)
-Received: from [10.174.178.185] (10.174.178.185) by
- dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Fri, 8 Oct 2021 11:52:46 +0800
-Subject: Re: [PATCH -next v2 4/6] ext4: avoid to re-read mmp check data get
- from page cache
-To:     Jan Kara <jack@suse.cz>
-References: <20210911090059.1876456-1-yebin10@huawei.com>
- <20210911090059.1876456-5-yebin10@huawei.com>
- <20211007124422.GI12712@quack2.suse.cz>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-From:   yebin <yebin10@huawei.com>
-Message-ID: <615FC08E.3060301@huawei.com>
-Date:   Fri, 8 Oct 2021 11:52:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+        id S231145AbhJHEHY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 8 Oct 2021 00:07:24 -0400
+Received: from mga12.intel.com ([192.55.52.136]:13167 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229719AbhJHEHX (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 8 Oct 2021 00:07:23 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="206548232"
+X-IronPort-AV: E=Sophos;i="5.85,356,1624345200"; 
+   d="scan'208";a="206548232"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 21:05:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,356,1624345200"; 
+   d="scan'208";a="489295872"
+Received: from lkp-server01.sh.intel.com (HELO 72c3bd3cf19c) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 07 Oct 2021 21:05:27 -0700
+Received: from kbuild by 72c3bd3cf19c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mYh8Q-00081I-Rh; Fri, 08 Oct 2021 04:05:26 +0000
+Date:   Fri, 08 Oct 2021 12:05:04 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:dev] BUILD SUCCESS
+ d56aaa1fa17ff4b45383c8beb36bb6a1cf835e22
+Message-ID: <615fc370.m9QUdVgEck9Z6ywZ%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20211007124422.GI12712@quack2.suse.cz>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.185]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggeme754-chm.china.huawei.com (10.3.19.100)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: d56aaa1fa17ff4b45383c8beb36bb6a1cf835e22  ext4: refresh the ext4_ext_path struct after dropping i_data_sem.
 
+elapsed time: 724m
 
-On 2021/10/7 20:44, Jan Kara wrote:
-> On Sat 11-09-21 17:00:57, Ye Bin wrote:
->> As call read_mmp_block pass bh_check which value is NULL, then call
->> sb_getblk to get buffer_head. But mmp_block's buffer_head is already exist
->>   which also is uptodate. Lead to compare the same data.
->>
->> Signed-off-by: Ye Bin <yebin10@huawei.com>
-> This looks good, except that read_mmp_block() also releases bh it is passed
-> in case of error. So it can free buffer head which is still referenced from
-> EXT4_SB(sb)->s_mmp_bh and cause use-after-free issues.
->
-> I guess I would just get rid of sb_getblk() in read_mmp_block() and always
-> expect valid bh passed. The only place that passes NULL bh after this
-> patch is one case in ext4_multi_mount_protect() and that can call
-> sb_getblk() on its own. That way we can also simplify read_mmp_block()
-> prototype to:
->
-> static int read_mmp_block(struct super_block *sb, struct buffer_head *bh);
->
-> 								Honza
-> Yeah, I will refactor 'read_mmp_block'.
->> ---
->>   fs/ext4/mmp.c | 17 ++++++-----------
->>   1 file changed, 6 insertions(+), 11 deletions(-)
->>
->> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
->> index 4433fe7e9e86..007bde3c12b8 100644
->> --- a/fs/ext4/mmp.c
->> +++ b/fs/ext4/mmp.c
->> @@ -213,10 +213,7 @@ static int kmmpd(void *data)
->>   		 * we need to check if the MMP block is as we write it.
->>   		 */
->>   		if (jiffies - last_check_time > mmp_check_interval * HZ) {
->> -			struct buffer_head *bh_check = NULL;
->> -			struct mmp_struct *mmp_check;
->> -
->> -			retval = read_mmp_block(sb, &bh_check, mmp_block);
->> +			retval = read_mmp_block(sb, &bh, mmp_block);
->>   			if (retval) {
->>   				ext4_error_err(sb, -retval,
->>   					       "error reading MMP data: %d",
->> @@ -224,20 +221,18 @@ static int kmmpd(void *data)
->>   				goto wait_to_exit;
->>   			}
->>   
->> -			mmp_check = (struct mmp_struct *)(bh_check->b_data);
->> -			if (seq != mmp_check->mmp_seq ||
->> -			    memcmp(nodename, mmp_check->mmp_nodename,
->> -				   sizeof(mmp->mmp_nodename))) {
->> -				dump_mmp_msg(sb, mmp_check,
->> +			mmp = (struct mmp_struct *)(bh->b_data);
->> +			if (seq != le32_to_cpu(mmp->mmp_seq) ||
->> +			    memcmp(nodename, mmp->mmp_nodename,
->> +				    sizeof(nodename))) {
->> +				dump_mmp_msg(sb, mmp,
->>   					     "Error while updating MMP info. "
->>   					     "The filesystem seems to have been"
->>   					     " multiply mounted.");
->>   				ext4_error_err(sb, EBUSY, "abort");
->> -				put_bh(bh_check);
->>   				retval = -EBUSY;
->>   				goto wait_to_exit;
->>   			}
->> -			put_bh(bh_check);
->>   			last_check_time = jiffies;
->>   		}
->>   
->> -- 
->> 2.31.1
->>
+configs tested: 123
+configs skipped: 3
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                   motionpro_defconfig
+arc                 nsimosci_hs_smp_defconfig
+m68k                          atari_defconfig
+powerpc                      ppc40x_defconfig
+powerpc                     stx_gp3_defconfig
+m68k                          multi_defconfig
+sh                           se7722_defconfig
+sparc                            allyesconfig
+sh                           sh2007_defconfig
+arm                         orion5x_defconfig
+sh                          landisk_defconfig
+sh                         microdev_defconfig
+powerpc                       ppc64_defconfig
+mips                          ath25_defconfig
+arm                          collie_defconfig
+s390                       zfcpdump_defconfig
+m68k                       m5475evb_defconfig
+sparc                            alldefconfig
+sparc                       sparc64_defconfig
+sh                        sh7757lcr_defconfig
+arc                          axs101_defconfig
+sh                          kfr2r09_defconfig
+mips                        maltaup_defconfig
+mips                      loongson3_defconfig
+powerpc                         ps3_defconfig
+h8300                            allyesconfig
+powerpc                      pcm030_defconfig
+powerpc                      pasemi_defconfig
+powerpc64                           defconfig
+mips                       capcella_defconfig
+arm                          moxart_defconfig
+arm                           sama5_defconfig
+arc                     nsimosci_hs_defconfig
+m68k                        stmark2_defconfig
+arm                     davinci_all_defconfig
+sh                          polaris_defconfig
+xtensa                          iss_defconfig
+arm                       multi_v4t_defconfig
+powerpc                     ksi8560_defconfig
+mips                        bcm63xx_defconfig
+x86_64               randconfig-c001-20211003
+i386                 randconfig-c001-20211003
+arm                  randconfig-c002-20211003
+x86_64               randconfig-c001-20211004
+i386                 randconfig-c001-20211004
+arm                  randconfig-c002-20211004
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nios2                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+xtensa                           allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+s390                                defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+sparc                               defconfig
+i386                                defconfig
+i386                             allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                           allnoconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+x86_64               randconfig-a015-20211004
+x86_64               randconfig-a012-20211004
+x86_64               randconfig-a016-20211004
+x86_64               randconfig-a014-20211004
+x86_64               randconfig-a013-20211004
+x86_64               randconfig-a011-20211004
+i386                 randconfig-a013-20211004
+i386                 randconfig-a016-20211004
+i386                 randconfig-a014-20211004
+i386                 randconfig-a011-20211004
+i386                 randconfig-a012-20211004
+i386                 randconfig-a015-20211004
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a003-20211004
+x86_64               randconfig-a005-20211004
+x86_64               randconfig-a001-20211004
+x86_64               randconfig-a002-20211004
+x86_64               randconfig-a004-20211004
+x86_64               randconfig-a006-20211004
+i386                 randconfig-a001-20211004
+i386                 randconfig-a003-20211004
+i386                 randconfig-a005-20211004
+i386                 randconfig-a002-20211004
+i386                 randconfig-a004-20211004
+i386                 randconfig-a006-20211004
+hexagon              randconfig-r045-20211007
+hexagon              randconfig-r041-20211007
+s390                 randconfig-r044-20211007
+riscv                randconfig-r042-20211007
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
