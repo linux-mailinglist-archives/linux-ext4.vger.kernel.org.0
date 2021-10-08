@@ -2,123 +2,135 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8422426192
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Oct 2021 03:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 157C842621C
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Oct 2021 03:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237207AbhJHBI7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 7 Oct 2021 21:08:59 -0400
-Received: from mga01.intel.com ([192.55.52.88]:12072 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229606AbhJHBI7 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 7 Oct 2021 21:08:59 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="249659991"
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
-   d="scan'208";a="249659991"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 12:13:18 -0700
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
-   d="scan'208";a="489135500"
-Received: from roliveir-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.41.10])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 12:13:15 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Jonathan Corbet <corbet@lwn.net>, Theodore Ts'o <tytso@mit.edu>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
-        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH 1/2] ext4: docs: switch away from list-table
-In-Reply-To: <20210902220854.198850-2-corbet@lwn.net>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210902220854.198850-1-corbet@lwn.net> <20210902220854.198850-2-corbet@lwn.net>
-Date:   Thu, 07 Oct 2021 22:13:10 +0300
-Message-ID: <87czogy7g9.fsf@intel.com>
+        id S231137AbhJHBkb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 7 Oct 2021 21:40:31 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:24175 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229509AbhJHBka (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Oct 2021 21:40:30 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HQW5D3Yj7z1DHdZ;
+        Fri,  8 Oct 2021 09:37:04 +0800 (CST)
+Received: from dggema766-chm.china.huawei.com (10.1.198.208) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Fri, 8 Oct 2021 09:38:32 +0800
+Received: from [10.174.177.210] (10.174.177.210) by
+ dggema766-chm.china.huawei.com (10.1.198.208) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Fri, 8 Oct 2021 09:38:32 +0800
+Message-ID: <2627cb7a-b552-4cf3-fabe-3600535329ff@huawei.com>
+Date:   Fri, 8 Oct 2021 09:38:32 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH 2/2] ext4: check magic even the extent block bh is
+ verified
+To:     Jan Kara <jack@suse.cz>
+CC:     <tytso@mit.edu>, <linux-ext4@vger.kernel.org>, <yukuai3@huawei.com>
+References: <20210904044946.2102404-1-yangerkun@huawei.com>
+ <20210904044946.2102404-3-yangerkun@huawei.com>
+ <20211001091833.GB28799@quack2.suse.cz>
+From:   yangerkun <yangerkun@huawei.com>
+In-Reply-To: <20211001091833.GB28799@quack2.suse.cz>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.210]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema766-chm.china.huawei.com (10.1.198.208)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 02 Sep 2021, Jonathan Corbet <corbet@lwn.net> wrote:
-> Commit 3a6541e97c03 (Add documentation about the orphan file feature) added
-> a new document on orphan files, which is great.  But the use of
-> "list-table" results in documents that are absolutely unreadable in their
-> plain-text form.  Switch this file to the regular RST table format instead;
-> the rendered (HTML) output is identical.
->
-> Signed-off-by: Jonathan Corbet <corbet@lwn.net>
-> ---
->  Documentation/filesystems/ext4/orphan.rst | 32 ++++++++---------------
->  1 file changed, 11 insertions(+), 21 deletions(-)
->
-> diff --git a/Documentation/filesystems/ext4/orphan.rst b/Documentation/filesystems/ext4/orphan.rst
-> index bb19ecd1b626..d096fe0ba19e 100644
-> --- a/Documentation/filesystems/ext4/orphan.rst
-> +++ b/Documentation/filesystems/ext4/orphan.rst
-> @@ -21,27 +21,17 @@ in heavy creation of orphan inodes. When orphan file feature
->  (referenced from the superblock through s\_orphan_file_inum) with several
->  blocks. Each of these blocks has a structure:
->  
-> -.. list-table::
-> -   :widths: 8 8 24 40
-> -   :header-rows: 1
-> -
-> -   * - Offset
-> -     - Type
-> -     - Name
-> -     - Description
-> -   * - 0x0
-> -     - Array of \_\_le32 entries
-> -     - Orphan inode entries
-> -     - Each \_\_le32 entry is either empty (0) or it contains inode number of
-> -       an orphan inode.
-> -   * - blocksize - 8
-> -     - \_\_le32
-> -     - ob\_magic
-> -     - Magic value stored in orphan block tail (0x0b10ca04)
-> -   * - blocksize - 4
-> -     - \_\_le32
-> -     - ob\_checksum
-> -     - Checksum of the orphan block.
-> +============= ================ =============== ===============================
-> +Offset        Type             Name            Description
-> +============= ================ =============== ===============================
-> +0x0           Array of         Orphan inode    Each \_\_le32 entry is either
-> +              \_\_le32 entries entries         empty (0) or it contains
-> +	                                       inode number of an orphan
-> +					       inode.
-> +blocksize-8   \_\_le32         ob\_magic       Magic value stored in orphan
-> +                                               block tail (0x0b10ca04)
-> +blocksize-4   \_\_le32         ob\_checksum    Checksum of the orphan block.
-> +============= ================ =============== ===============================
->  
->  When a filesystem with orphan file feature is writeably mounted, we set
->  RO\_COMPAT\_ORPHAN\_PRESENT feature in the superblock to indicate there may
-
-As a third alternative, the csv-table directive [1] is sometimes a good
-choice. Picking | as the delim makes it look more like a table in the
-source, and you don't have to worry about aligning everything (the
-spaces before and after the delim are ignored by default). But it does
-require some boilerplate and you can't wrap the lines.
-
-The same table as an example:
-
-.. csv-table:: Block Structure
-   :delim: |
-   :header-rows: 1
-   :widths: auto
-
-   Offset        | Type                    | Name                 | Description
-   0x0           | Array of __le32 entries | Orphan inode entries | Each __le32 entry is either empty (0) or it contains inode number of an orphan inode.
-   blocksize-8   | __le32                  | ob_magic             | Magic value stored in orphan block tail (0x0b10ca04)
-   blocksize-4   | __le32                  | ob_checksum          | Checksum of the orphan block.
-
-Obviously not the best choice for this particular table, but just so you
-are aware of an alternative.
 
 
-BR,
-Jani.
+在 2021/10/1 17:18, Jan Kara 写道:
+> On Sat 04-09-21 12:49:46, yangerkun wrote:
+>> Our stress testing with IO error can trigger follow OOB with a very low
+>> probability.
+>>
+>> [59898.282466] BUG: KASAN: slab-out-of-bounds in ext4_find_extent+0x2e4/0x480
+>> ...
+>> [59898.287162] Call Trace:
+>> [59898.287575]  dump_stack+0x8b/0xb9
+>> [59898.288070]  print_address_description+0x73/0x280
+>> [59898.289903]  ext4_find_extent+0x2e4/0x480
+>> [59898.290553]  ext4_ext_map_blocks+0x125/0x1470
+>> [59898.295481]  ext4_map_blocks+0x5ee/0x940
+>> [59898.315984]  ext4_mpage_readpages+0x63c/0xdb0
+>> [59898.320231]  read_pages+0xe6/0x370
+>> [59898.321589]  __do_page_cache_readahead+0x233/0x2a0
+>> [59898.321594]  ondemand_readahead+0x157/0x450
+>> [59898.321598]  generic_file_read_iter+0xcb2/0x1550
+>> [59898.328828]  __vfs_read+0x233/0x360
+>> [59898.328840]  vfs_read+0xa5/0x190
+>> [59898.330126]  ksys_read+0xa5/0x150
+>> [59898.331405]  do_syscall_64+0x6d/0x1f0
+>> [59898.331418]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>
+>> Digging deep and we found it's actually a xattr block which can happened
+>> with follow steps:
+>>
+>> 1. extent update for file1 and will remove a leaf extent block(block A)
+>> 2. we need update the idx extent block too
+>> 3. block A has been allocated as a xattr block and will set verified
+>> 3. io error happened for this idx block and will the buffer has been
+>>     released late
+>> 4. extent find for file1 will read the idx block and see block A again
+>> 5. since the buffer of block A is already verified, we will use it
+>>     directly, which can lead the upper OOB
+>>
+>> Same as __ext4_xattr_check_block, we can check magic even the buffer is
+>> verified to fix the problem.
+>>
+>> Signed-off-by: yangerkun <yangerkun@huawei.com>
+> 
+> Honestly, I'm not sure if this is worth it. What you suggest will work if
+> the magic is overwritten but if we reallocate the block for something else
+> but the magic happens to stay intact, we have a problem. The filesystem is
+> corrupted at that point with metadata blocks being multiply claimed and
+> that's very difficult to deal with. Maybe we should start ignoring
+> buffer_verified() bit once the fs is known to have errors and recheck the
+> buffer contents on each access? Sure it will be slow but I have little
+> sympathy towards people running filesystems with errors... What do people
+> think?
+
+What you means was that something like a extent block for inode A has
+been reallocate as a extent block for inode B? Ignoring buffer_verified
+seems useless for this case since extent check will pass. Maybe we
+should first try to prevent the OOB...
 
 
-[1] https://docutils.sourceforge.io/docs/ref/rst/directives.html#csv-table
-
--- 
-Jani Nikula, Intel Open Source Graphics Center
+> 
+> 								Honza
+> 
+>> ---
+>>   fs/ext4/extents.c | 8 ++++++++
+>>   1 file changed, 8 insertions(+)
+>>
+>> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+>> index 8559e288472f..d2e2ae90bc4a 100644
+>> --- a/fs/ext4/extents.c
+>> +++ b/fs/ext4/extents.c
+>> @@ -506,6 +506,14 @@ __read_extent_tree_block(const char *function, unsigned int line,
+>>   			goto errout;
+>>   	}
+>>   	if (buffer_verified(bh)) {
+>> +		if (unlikely(ext_block_hdr(bh)->eh_magic != EXT4_EXT_MAGIC)) {
+>> +			err = -EFSCORRUPTED;
+>> +			ext4_error_inode(inode, function, line, 0,
+>> +				"invalid magic for verified extent block %llu",
+>> +				(unsigned long long)bh->b_blocknr);
+>> +			goto errout;
+>> +		}
+>> +
+>>   		if (!(flags & EXT4_EX_FORCE_CACHE))
+>>   			return bh;
+>>   	} else {
+>> -- 
+>> 2.31.1
+>>
