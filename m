@@ -2,178 +2,450 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5CBF42936C
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Oct 2021 17:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A3D34294A3
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Oct 2021 18:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238419AbhJKPcv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 11 Oct 2021 11:32:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59330 "EHLO
+        id S232465AbhJKQcL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 11 Oct 2021 12:32:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239042AbhJKPcu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 11 Oct 2021 11:32:50 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E77C061570
-        for <linux-ext4@vger.kernel.org>; Mon, 11 Oct 2021 08:30:49 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id y12so56414024eda.4
-        for <linux-ext4@vger.kernel.org>; Mon, 11 Oct 2021 08:30:49 -0700 (PDT)
+        with ESMTP id S232441AbhJKQcI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 11 Oct 2021 12:32:08 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B692C06161C
+        for <linux-ext4@vger.kernel.org>; Mon, 11 Oct 2021 09:30:08 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id i24so74104291lfj.13
+        for <linux-ext4@vger.kernel.org>; Mon, 11 Oct 2021 09:30:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deitcher-net.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=aCpHVpWC34pJGJa6tpTEGjNdWXNTd1kl/nCjqNRhfxU=;
-        b=jSB2PK9fdAQ4VgNRa/qrsEH3vtpTZO406IRIayetf+OYou0C4ouPdKJ+B0Ukimm2pa
-         Q8sYkDg9d4BzXo+MjzTSeNQjslHgGhXYkfdN06/de9lj37Rgxo7BLWnUvOvOgR3HthW3
-         Qg8IwaDJcTKX+DSC4MSVxsFqHRMNVc1Rkg2naiDhmyDQXlCkp0yjCahaJGrXLON3OfCQ
-         QW6VQWof1YRjBFF0d4MjmZo/bIkjBDMWd5ZHOzNebFizoQbf6Ig9W35vmpnlaskVgAgB
-         LCsEVV1IIajnTR9g7OVNSXkea2U33FjigrHRUGb4KGH5m68Qr0tcLvmzthHjVVt9F2Ej
-         zX7w==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=WjF4jOgRAOdw7qdoEDb6kd188Tj+FPN9VBXfsfsuXPM=;
+        b=oJQfj9xOIeG2cZnytxN+0p223DwGSUXQS9uXTcruEmGOBkk1qGgVOVnguA95fsUgrw
+         NmPS5tKk3C0mm84gQatCmBcKXOdvGXWCy+T8FwCzMsXxvxqP4bwsIyRCTD13ND4eyhF6
+         tJRwCk+2e0+wHAJR9VhAJS+Hxr2tuxH7DUTz1unGF2fUsVcDVn6njWXFb3/sWcrNYCgr
+         LWAtRgygbANhzFxAP8LuU+u7fdl0yvMD5qlgIqgueYUogrR87wLw1ZHA1I9MB09aML3y
+         ZTlAh7jUrUP3QKRHrWc0c/Z/hFx2R4d3/Crg01aYXmOcTyCnBQvoQuqlU+qXUNdLOO2G
+         Jv6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=aCpHVpWC34pJGJa6tpTEGjNdWXNTd1kl/nCjqNRhfxU=;
-        b=fWqKi506B47X9lHBDVQxPyjrkvL6NVN2YS7t4cFwFBudggRxbzPCDmVCCkwQbu2VTw
-         zCJYXtThVgWESzG/6ZasDLkctfvp4KdXgj+4UQxLLZepxE0SfHx8hX7EoPFhraeY/jFT
-         eyIWiCyuZ3UaXpoY2Em1ahovPXn1GzTEOstil3EX7OxSW2wJyuVxUmJu37kGLKIDzJjv
-         +jFTpwm9+AbR4vNXt8bM8saPYA8V+mkxuT1w4CYjcldzN41ccU7GrUfuopBFoOxXfRXB
-         +u9vBQ//Kx2AbzTZrvwx9b0sT0X70qvfJYDlStzFz76bYXrD6OoTyw0OyWlqCpgGGqIe
-         p/0g==
-X-Gm-Message-State: AOAM531tm9TH4g6hYzLQCihDxN0qx6Wd46A4BkDkaJ320fk0YgrmFvi8
-        V1CUWu2YUbpSUduma96dsSnt1cJqVdINpZ/8MSas/jB0+zBs/EPs
-X-Google-Smtp-Source: ABdhPJw9fkSkR8t8ir5XzAnbJx3tLAM2NszL9UC5/1PUEHUXLK0B5uI4m+v1uIwjt3ia4z353XAS66X/SXQ0uQwetUc=
-X-Received: by 2002:a17:906:c009:: with SMTP id e9mr26624590ejz.509.1633966247796;
- Mon, 11 Oct 2021 08:30:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAF1vpkgPAy3FJ9mN22OVQ41jQAYoRdoCdqzYwRYYPXD4uucdpg@mail.gmail.com>
- <3A493D20-568A-4D63-A575-5DEEBFAAF41A@dilger.ca> <CAF1vpkigHMdKphnNjDm7=rR6TTxViHGGHi3bb64rsHG7KbqYzQ@mail.gmail.com>
-In-Reply-To: <CAF1vpkigHMdKphnNjDm7=rR6TTxViHGGHi3bb64rsHG7KbqYzQ@mail.gmail.com>
-From:   Avi Deitcher <avi@deitcher.net>
-Date:   Mon, 11 Oct 2021 08:30:36 -0700
-Message-ID: <CAF1vpkhwSOfGfErUUrp0YU5hSt58TtykTECiJXTcgqDtG0WVVg@mail.gmail.com>
-Subject: Re: algorithm for half-md4 used in htree directories
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=WjF4jOgRAOdw7qdoEDb6kd188Tj+FPN9VBXfsfsuXPM=;
+        b=dMBLbaWob0j0O7t6bgzHEQyrxwvH87+H3Yo0HsuBWU6/1YMli6WzluO81gWbo7r8Tz
+         eJRHJKiaO0r7bAtdQPo/QeNV+GFs0TybSfNgzc/NPZCciLOOGijkLurQVQQXacNt4EMF
+         HzOld/8f224L42mhtk5WTuaAl/VAKlbGaKV+bMV7k6UaiTKnUsYNxJ8/L3FF2v3dUZog
+         u+8tkHUqrjvaBURNtMPMSWhQi4ignp902yGVVqsafoTr/Jru3xfeSemyTT4jjlOLP15x
+         SDRPibkXwjiVqS6Loy1N1A8Q89hN+FH8ukd1WKpqAVeAADAxPM9M7wqzC+tZ59DAGcwH
+         hEYQ==
+X-Gm-Message-State: AOAM533yuTLt7CMmzgzYVGyT+MjpO5/tM46wCQ8Kgqmu2LTLDhrjZNva
+        Qzb42awAFh0Qv4D3YCnGNqnug8olgGXUS6/k
+X-Google-Smtp-Source: ABdhPJx4q+EhZUpRaVzCGvuUhDGULKZGosJEjE8UqbRHhQpRtmlJRCi06GJ5IOwYCorZK7QbfKV1Zg==
+X-Received: by 2002:a2e:85d0:: with SMTP id h16mr14753767ljj.322.1633969805739;
+        Mon, 11 Oct 2021 09:30:05 -0700 (PDT)
+Received: from localhost.localdomain ([62.33.81.195])
+        by smtp.gmail.com with ESMTPSA id m17sm542401ljo.118.2021.10.11.09.30.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 09:30:05 -0700 (PDT)
+From:   Artem Blagodarenko <artem.blagodarenko@gmail.com>
 To:     linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Cc:     adilger.kernel@dilger.ca,
+        Alexey Lyashkov <alexey.lyashkov@hpe.com>,
+        Artem Blagodarenko <artem.blagodarenko@hpe.com>
+Subject: [PATCH v6] e2image: add option to ignore fs errors
+Date:   Sat,  9 Oct 2021 10:23:00 -0400
+Message-Id: <20211009142300.107262-1-artem.blagodarenko@gmail.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Does someone know how this is constructed and used?
+From: Alexey Lyashkov <alexey.lyashkov@hpe.com>
 
-On Mon, Oct 4, 2021 at 12:57 AM Avi Deitcher <avi@deitcher.net> wrote:
->
-> Hi Andreas,
->
-> I had looked in __ext4fs_dirhash(). Yes, it does reference the seed -
-> and create a default if none is there at the filesystem level - but it
-> doesn't appear to use it, in that function. hinfo is populated in the
-> function - hash, minor-hash, seed - but it never uses the seed to
-> manipulate the hash.
->
-> Are you saying that it is at a higher level? i.e. __ext4fs_dirhash()
-> is the *first* step, and there is further processing to get the actual
-> hash? I did walk up the stack, but couldn't figure out.
->
-> Thanks for stepping in
-> Avi
->
-> On Sun, Oct 3, 2021 at 7:43 PM Andreas Dilger <adilger@dilger.ca> wrote:
-> >
-> > On Oct 3, 2021, at 06:47, Avi Deitcher <avi@deitcher.net> wrote:
-> > >
-> > > =EF=BB=BFI can narrow down the question further. In my live sample, o=
-ne of the
-> > > entries in the tree is for a directory named "dir155".
-> > >
-> > > If I run "dx_hash dir155", I get:
-> > >
-> > > # debugfs -R "dx_hash dir155" /var/lib/file.img
-> > > debugfs 1.46.2 (28-Feb-2021)
-> > > Hash of dir155 is 0x16279534 (minor 0x0)
-> > >
-> > > If I look in the tree with "htree_dump", I get:
-> > >
-> > > # debugfs -R "htree_dump /testdir" /var/lib/file.img
-> > > debugfs 1.46.2 (28-Feb-2021)
-> > > ....
-> > > Entry #0: Hash 0x00000000, block 1
-> > > Reading directory block 1, phys 6459
-> > > 168 0x00d11d98-b9b6b16b (16) dir155   332 0x009edafe-77de7d72 (16) di=
-r319
-> > >
-> > > That hash for dir155 does not match what dx_hash gave. If I try to
-> > > take the code from fs/ext4/hash.c and build a small program to
-> > > calculate the hash, I get:
-> > >
-> > > $ ./md4 dir155
-> > > MD4: d90278a1 25182ac7 a02e56be c3f30f04
-> > > hash: 0x25182ac6
-> > > minor: 0xa02e56be
-> > >
-> > > Clearly that isn't what is in the tree. What basic am I missing?
-> >
-> > One important factor is that the directory hash has an initial seed
-> > to prevent pathological cases where the user can construct thousands
-> > of directory entries that have a hash collision.
-> >
-> > Looking at the code explains this in the comment for __ext4fs_dirhash()=
-.
-> > The seed itself comes from sbi->s_hash_seed and is stored in the
-> > per-directory hinfo.seed to be used when counting the filename hash.
-> > In theory there could be a per-directory hash, but it appears to be a
-> > constant for the whole filesystem.
-> >
-> > Cheers, Andreas
-> >
-> > >
-> > >> On Fri, Oct 1, 2021 at 2:49 PM Avi Deitcher <avi@deitcher.net> wrote=
-:
-> > >>
-> > >> Hi,
-> > >>
-> > >> I have been trying to understand the algorithm used for the "half-md=
-4"
-> > >> in htree-structured directories. Going through the code (and trying
-> > >> not to get into reverse engineering), it looks like it is part of md=
-4
-> > >> but not entirely? Yet any subset I take doesn't quite line up with
-> > >> what I see in an actual sample.
-> > >>
-> > >> What is the algorithm it is using to turn an entry of, e.g., "file12=
-5"
-> > >> into the appropriate hash. I did run a live sample, and try to get
-> > >> some form of correlation between the actual md4 hash (16 bytes) of t=
-he
-> > >> above to the actual entry (4 bytes) shown by debugfs, without much
-> > >> luck.
-> > >>
-> > >> What basic thing am I missing?
-> > >>
-> > >> Separately, how does the seed play into it?
-> > >>
-> > >> Thanks
-> > >> Avi
-> > >
-> > >
-> > >
-> > > --
-> > > Avi Deitcher
-> > > avi@deitcher.net
-> > > Follow me http://twitter.com/avideitcher
-> > > Read me http://blog.atomicinc.com
->
->
->
-> --
-> Avi Deitcher
-> avi@deitcher.net
-> Follow me http://twitter.com/avideitcher
-> Read me http://blog.atomicinc.com
+Add extended "-E ignore_errors" option to be more tolerant
+to fs errors while scanning inode extents.
 
+Signed-off-by: Alexey Lyashkov <alexey.lyashkov@hpe.com>
+Signed-off-by: Artem Blagodarenko <artem.blagodarenko@hpe.com>
+Cray-bug-id: LUS-1922
+Change-Id: Ib79300656726839b1d3b7ee1dd0793c60679d296
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+---
 
+Changes since preveious version:
+- The option is called ignore_error now
+- Fixed typos
 
---=20
-Avi Deitcher
-avi@deitcher.net
-Follow me http://twitter.com/avideitcher
-Read me http://blog.atomicinc.com
+ lib/support/Makefile.in          |  4 +++
+ lib/support/mvstring.c           | 25 +++++++++++++++
+ lib/support/mvstring.h           |  1 +
+ misc/e2image.8.in                | 15 ++++++++-
+ misc/e2image.c                   | 53 +++++++++++++++++++++++++++++---
+ misc/e2initrd_helper.c           | 16 +---------
+ tests/i_error_tolerance/expect.1 | 23 ++++++++++++++
+ tests/i_error_tolerance/expect.2 |  7 +++++
+ tests/i_error_tolerance/script   | 47 ++++++++++++++++++++++++++++
+ 9 files changed, 171 insertions(+), 20 deletions(-)
+ create mode 100644 lib/support/mvstring.c
+ create mode 100644 lib/support/mvstring.h
+ create mode 100644 tests/i_error_tolerance/expect.1
+ create mode 100644 tests/i_error_tolerance/expect.2
+ create mode 100644 tests/i_error_tolerance/script
+
+diff --git a/lib/support/Makefile.in b/lib/support/Makefile.in
+index f3c7981e..c29b0a71 100644
+--- a/lib/support/Makefile.in
++++ b/lib/support/Makefile.in
+@@ -14,6 +14,7 @@ MKDIR_P = @MKDIR_P@
+ all::
+ 
+ OBJS=		cstring.o \
++		mvstring.o \
+ 		mkquota.o \
+ 		plausible.o \
+ 		profile.o \
+@@ -27,6 +28,7 @@ OBJS=		cstring.o \
+ 
+ SRCS=		$(srcdir)/argv_parse.c \
+ 		$(srcdir)/cstring.c \
++		$(srcdir)/mvstring.c \
+ 		$(srcdir)/mkquota.c \
+ 		$(srcdir)/parse_qtype.c \
+ 		$(srcdir)/plausible.c \
+@@ -106,6 +108,8 @@ argv_parse.o: $(srcdir)/argv_parse.c $(top_builddir)/lib/config.h \
+  $(top_builddir)/lib/dirpaths.h $(srcdir)/argv_parse.h
+ cstring.o: $(srcdir)/cstring.c $(top_builddir)/lib/config.h \
+  $(top_builddir)/lib/dirpaths.h $(srcdir)/cstring.h
++mvstring.o: $(srcdir)/mvstring.c $(top_builddir)/lib/config.h \
++ $(srcdir)/mvstring.h
+ mkquota.o: $(srcdir)/mkquota.c $(top_builddir)/lib/config.h \
+  $(top_builddir)/lib/dirpaths.h $(top_srcdir)/lib/ext2fs/ext2_fs.h \
+  $(top_builddir)/lib/ext2fs/ext2_types.h $(top_srcdir)/lib/ext2fs/ext2fs.h \
+diff --git a/lib/support/mvstring.c b/lib/support/mvstring.c
+new file mode 100644
+index 00000000..1ed2fd67
+--- /dev/null
++++ b/lib/support/mvstring.c
+@@ -0,0 +1,25 @@
++#include "config.h"
++#ifdef HAVE_STDLIB_H
++#include <stdlib.h>
++#endif
++#include <ctype.h>
++#include <string.h>
++#include "mvstring.h"
++
++
++/*
++ * fstab parsing code
++ */
++char *string_copy(const char *s)
++{
++	char	*ret;
++
++	if (!s)
++		return 0;
++	ret = malloc(strlen(s)+1);
++	if (ret)
++		strcpy(ret, s);
++	return ret;
++}
++
++
+diff --git a/lib/support/mvstring.h b/lib/support/mvstring.h
+new file mode 100644
+index 00000000..94590d56
+--- /dev/null
++++ b/lib/support/mvstring.h
+@@ -0,0 +1 @@
++extern char *string_copy(const char *s);
+diff --git a/misc/e2image.8.in b/misc/e2image.8.in
+index 90ea0c27..dfe53bc7 100644
+--- a/misc/e2image.8.in
++++ b/misc/e2image.8.in
+@@ -50,7 +50,10 @@ and
+ by using the
+ .B \-i
+ option to those programs.  This can assist an expert in recovering
+-catastrophically corrupted file systems.
++catastrophically corrupted file systems. If you going to grab an
++image from a corrupted FS
++.B \-E ignore_errors
++option to ignore fs errors, allows to grab fs image from a corrupted fs.
+ .PP
+ It is a very good idea to create image files for all file systems on a
+ system and save the partition layout (which can be generated using the
+@@ -137,6 +140,16 @@ useful if the file system is being cloned to a flash-based storage device
+ (where reads are very fast and where it is desirable to avoid unnecessary
+ writes to reduce write wear on the device).
+ .TP
++.BI \-E " extended_options"
++Set e2image extended options.  Extended options are comma separated, and
++may take an argument using the equals ('=') sign.  The following options
++are supported:
++.RS 1.2i
++.TP
++.BI ignore_error
++Grab an image from a corrupted FS and ignore fs errors.
++.RE
++.TP
+ .B \-f
+ Override the read-only requirement for the source file system when saving
+ the image file using the
+diff --git a/misc/e2image.c b/misc/e2image.c
+index 2c1f3db3..45b8c2d5 100644
+--- a/misc/e2image.c
++++ b/misc/e2image.c
+@@ -53,6 +53,7 @@ extern int optind;
+ #include "support/nls-enable.h"
+ #include "support/plausible.h"
+ #include "support/quotaio.h"
++#include "support/mvstring.h"
+ #include "../version.h"
+ 
+ #define QCOW_OFLAG_COPIED     (1ULL << 63)
+@@ -79,6 +80,7 @@ static char move_mode;
+ static char show_progress;
+ static char *check_buf;
+ static int skipped_blocks;
++static int ignore_errors = 0;
+ 
+ static blk64_t align_offset(blk64_t offset, unsigned int n)
+ {
+@@ -106,7 +108,7 @@ static int get_bits_from_size(size_t size)
+ static void usage(void)
+ {
+ 	fprintf(stderr, _("Usage: %s [ -r|-Q ] [ -f ] [ -b superblock ] [ -B blocksize ] "
+-			  "device image-file\n"),
++			  "[-E extended-options] device image-file\n"),
+ 		program_name);
+ 	fprintf(stderr, _("       %s -I device image-file\n"), program_name);
+ 	fprintf(stderr, _("       %s -ra [ -cfnp ] [ -o src_offset ] "
+@@ -1379,7 +1381,8 @@ static void write_raw_image_file(ext2_filsys fs, int fd, int type, int flags,
+ 				com_err(program_name, retval,
+ 					_("while iterating over inode %u"),
+ 					ino);
+-				exit(1);
++				if (ignore_errors == 0)
++					exit(1);
+ 			}
+ 		} else {
+ 			if ((inode.i_flags & EXT4_EXTENTS_FL) ||
+@@ -1392,7 +1395,8 @@ static void write_raw_image_file(ext2_filsys fs, int fd, int type, int flags,
+ 				if (retval) {
+ 					com_err(program_name, retval,
+ 					_("while iterating over inode %u"), ino);
+-					exit(1);
++					if (ignore_errors == 0)
++						exit(1);
+ 				}
+ 			}
+ 		}
+@@ -1486,6 +1490,40 @@ static struct ext2_qcow2_hdr *check_qcow2_image(int *fd, char *name)
+ 	return qcow2_read_header(*fd);
+ }
+ 
++static void parse_extended_opts(const char *opts)
++{
++	char	*buf, *token, *next, *p;
++	int	ea_ver;
++	int	extended_usage = 0;
++	unsigned long long reada_kb;
++
++	buf = string_copy(opts);
++	for (token = buf; token && *token; token = next) {
++		p = strchr(token, ',');
++		next = 0;
++		if (p) {
++			*p = 0;
++			next = p+1;
++		}
++		if (strcmp(token, "ignore_errors") == 0) {
++			ignore_errors = 1;
++			continue;
++		} else {
++			fprintf(stderr, _("Unknown extended option: %s\n"),
++				token);
++			extended_usage++;
++		}
++	}
++	free(buf);
++
++	if (extended_usage) {
++		fputs(_("\nExtended options are separated by commas. "
++		       "Valid extended options are:\n\n"), stderr);
++		fputs("\tignore_errors\n", stderr);
++		exit(1);
++	}
++}
++
+ int main (int argc, char ** argv)
+ {
+ 	int c;
+@@ -1506,6 +1544,7 @@ int main (int argc, char ** argv)
+ 	struct stat st;
+ 	blk64_t superblock = 0;
+ 	int blocksize = 0;
++	char	*extended_opts = 0;
+ 
+ #ifdef ENABLE_NLS
+ 	setlocale(LC_MESSAGES, "");
+@@ -1519,7 +1558,7 @@ int main (int argc, char ** argv)
+ 	if (argc && *argv)
+ 		program_name = *argv;
+ 	add_error_table(&et_ext2_error_table);
+-	while ((c = getopt(argc, argv, "b:B:nrsIQafo:O:pc")) != EOF)
++	while ((c = getopt(argc, argv, "b:B:E:nrsIQafo:O:pc")) != EOF)
+ 		switch (c) {
+ 		case 'b':
+ 			superblock = strtoull(optarg, NULL, 0);
+@@ -1527,6 +1566,9 @@ int main (int argc, char ** argv)
+ 		case 'B':
+ 			blocksize = strtoul(optarg, NULL, 0);
+ 			break;
++		case 'E':
++			extended_opts = optarg;
++			break;
+ 		case 'I':
+ 			flags |= E2IMAGE_INSTALL_FLAG;
+ 			break;
+@@ -1609,6 +1651,9 @@ int main (int argc, char ** argv)
+ 		exit(1);
+ 	}
+ 
++	if (extended_opts)
++		parse_extended_opts(extended_opts);
++
+ 	if (img_type && !ignore_rw_mount &&
+ 	    (mount_flags & EXT2_MF_MOUNTED) &&
+ 	   !(mount_flags & EXT2_MF_READONLY)) {
+diff --git a/misc/e2initrd_helper.c b/misc/e2initrd_helper.c
+index 436aab8c..ab5991a4 100644
+--- a/misc/e2initrd_helper.c
++++ b/misc/e2initrd_helper.c
+@@ -36,6 +36,7 @@ extern char *optarg;
+ #include "ext2fs/ext2fs.h"
+ #include "blkid/blkid.h"
+ #include "support/nls-enable.h"
++#include "support/mvstring.h"
+ 
+ #include "../version.h"
+ 
+@@ -151,21 +152,6 @@ static int mem_file_eof(struct mem_file *file)
+ 	return (file->ptr >= file->size);
+ }
+ 
+-/*
+- * fstab parsing code
+- */
+-static char *string_copy(const char *s)
+-{
+-	char	*ret;
+-
+-	if (!s)
+-		return 0;
+-	ret = malloc(strlen(s)+1);
+-	if (ret)
+-		strcpy(ret, s);
+-	return ret;
+-}
+-
+ static char *skip_over_blank(char *cp)
+ {
+ 	while (*cp && isspace(*cp))
+diff --git a/tests/i_error_tolerance/expect.1 b/tests/i_error_tolerance/expect.1
+new file mode 100644
+index 00000000..e8d64954
+--- /dev/null
++++ b/tests/i_error_tolerance/expect.1
+@@ -0,0 +1,23 @@
++Pass 1: Checking inodes, blocks, and sizes
++Inode 12 has illegal block(s).  Clear? yes
++
++Illegal indirect block (1000000) in inode 12.  CLEARED.
++Inode 12, i_blocks is 34, should be 24.  Fix? yes
++
++Pass 2: Checking directory structure
++Pass 3: Checking directory connectivity
++Pass 4: Checking reference counts
++Pass 5: Checking group summary information
++Block bitmap differences:  -(31--34) -41
++Fix? yes
++
++Free blocks count wrong for group #0 (158, counted=163).
++Fix? yes
++
++Free blocks count wrong (158, counted=163).
++Fix? yes
++
++
++test_filesys: ***** FILE SYSTEM WAS MODIFIED *****
++test_filesys: 12/24 files (8.3% non-contiguous), 37/200 blocks
++Exit status is 1
+diff --git a/tests/i_error_tolerance/expect.2 b/tests/i_error_tolerance/expect.2
+new file mode 100644
+index 00000000..d9fcc327
+--- /dev/null
++++ b/tests/i_error_tolerance/expect.2
+@@ -0,0 +1,7 @@
++Pass 1: Checking inodes, blocks, and sizes
++Pass 2: Checking directory structure
++Pass 3: Checking directory connectivity
++Pass 4: Checking reference counts
++Pass 5: Checking group summary information
++test_filesys: 12/24 files (8.3% non-contiguous), 37/200 blocks
++Exit status is 0
+diff --git a/tests/i_error_tolerance/script b/tests/i_error_tolerance/script
+new file mode 100644
+index 00000000..315569c7
+--- /dev/null
++++ b/tests/i_error_tolerance/script
+@@ -0,0 +1,47 @@
++if ! test -x $E2IMAGE_EXE; then
++	echo "$test_name: $test_description: skipped (no e2image)"
++	return 0
++fi
++if ! test -x $DEBUGFS_EXE; then
++	echo "$test_name: $test_description: skipped (no debugfs)"
++	return 0
++fi
++
++SKIP_GUNZIP="true"
++
++TEST_DATA="$test_name.tmp"
++dd if=/dev/urandom of=$TEST_DATA bs=1k count=16 > /dev/null 2>&1 
++
++dd if=/dev/zero of=$TMPFILE bs=1k count=200 > /dev/null 2>&1
++$MKE2FS -Ft ext4 -O ^extents $TMPFILE > /dev/null 2>&1
++$DEBUGFS -w $TMPFILE << EOF  > /dev/null 2>&1
++write $TEST_DATA testfile
++set_inode_field testfile block[IND] 1000000
++q
++EOF
++
++$E2IMAGE -r $TMPFILE $TMPFILE.back
++
++if [ $? = 0 ] ; then
++	echo "Image expected to be broken"
++	echo "$test_name: $test_description: fail"
++	touch $test_name.failed
++	return 0
++fi
++
++$E2IMAGE -r -E ignore_errors $TMPFILE $TMPFILE.back
++
++if [ $? = 1 ] ; then
++	echo "Can not get image even with ignore_errors"
++	echo "$test_name: $test_description: fail"
++	touch $test_name.failed
++	return 0
++fi
++
++mv $TMPFILE.back $TMPFILE
++
++. $cmd_dir/run_e2fsck
++
++rm -f $TEST_DATA
++
++unset E2FSCK_TIME TEST_DATA
+-- 
+2.18.4
+
