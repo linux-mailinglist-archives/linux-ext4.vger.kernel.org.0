@@ -2,65 +2,160 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFF49427856
-	for <lists+linux-ext4@lfdr.de>; Sat,  9 Oct 2021 11:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63581427905
+	for <lists+linux-ext4@lfdr.de>; Sat,  9 Oct 2021 12:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244379AbhJIJQT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 9 Oct 2021 05:16:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244344AbhJIJQS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 9 Oct 2021 05:16:18 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71BB0C061762
-        for <linux-ext4@vger.kernel.org>; Sat,  9 Oct 2021 02:14:22 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id i65so7228714pfe.12
-        for <linux-ext4@vger.kernel.org>; Sat, 09 Oct 2021 02:14:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Up0euE0T7PDAvcflpiaUZY3A6bcvHprIyA15lwDbsnE=;
-        b=aKBi1/MIgp1xQ8ADbqDXsKA2gWVW74kG5/HIk51wUTUMJ1ACoNOyh2/8+nZpOUWsrB
-         l/9F5dFgAUsDNp8lJzpeA1UrsFTWnHnbz4vZRTdUzebOWfTMZLqo+e+3acmfudZRZ7Lv
-         cj1rJ4iEPEcJYkeO2WQmBAI2IznT52NTqaL7H/W4fi+HvrXCDUDzlOrpKYa901uAwMCQ
-         JDAtlxewINIdOE4DEBeRA86xoU9n+APfnL2DMyLK+9YEYsmrynL9s5m7Q6vB2/YA28Na
-         n2Tq1+LmVoLTq4elHT5WGhpMaevCczLDlY+nAAzFeogO9O7XFiucmntFEr+LSDMIf0c+
-         JPFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Up0euE0T7PDAvcflpiaUZY3A6bcvHprIyA15lwDbsnE=;
-        b=xbzqVdTYyL1DJvfIRodegzwV2yIrFMY+GFGb5hb/xyh2Y1S5FUF8Mcl239it+rAV9S
-         vP2vo/7zY3udgwFhOE4w7qVxm1aIceI6NcS4p2DBbATZFRfOGewKG/i/1agZRqWS0sWX
-         qvLjrNfmWmsI4ZtKP0mn2nP8W+T+tnnfIy1gjiRZnXjrkf79ooSeC0AZ94iGf05fm+js
-         BILD0SUsLrz3Hot2cEjt+ryBhYmMYAE5pwzCFQ4XyHz01+gmXa2v3X6yel+NL4R6vPSS
-         Bo4vHf2s2ayJNZ/mS8KnrG04GSa6EJwV6tQSHN3G4THTf7cTwfc8SlYzexOjsR7mljmy
-         otOg==
-X-Gm-Message-State: AOAM530WyWq8spSspddMAACxCyC+1hI6Fi+e7Jpu3uiLdAO6tnpTajgw
-        qvDJwdllnZx+86AUiEj/eyc1jbMYwfewwM1tRek=
-X-Google-Smtp-Source: ABdhPJylsg7qTfS1S53EduM5YaWlb+xEBAa2paoFkhC3mtMe6rE4E4L7USAq9ibPrnoFAvP9n4fCI1NVxR1lDSAhbXI=
-X-Received: by 2002:a05:6a00:1312:b0:44c:becf:b329 with SMTP id
- j18-20020a056a00131200b0044cbecfb329mr13730330pfu.5.1633770861912; Sat, 09
- Oct 2021 02:14:21 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a05:6a06:1891:b0:46b:b1a1:af94 with HTTP; Sat, 9 Oct 2021
- 02:14:21 -0700 (PDT)
-Reply-To: lydiawright836@gmail.com
-From:   LYDIA WRIGHT <harrydav828@gmail.com>
-Date:   Sat, 9 Oct 2021 12:14:21 +0300
-Message-ID: <CAKKtfnLPUxDx6fEdC8SFKRTGcW+J0q3+6Mwy7oy8TMPGq5=jRA@mail.gmail.com>
-Subject: Hello friend
-To:     undisclosed-recipients:;
+        id S231546AbhJIKZm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 9 Oct 2021 06:25:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41310 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229760AbhJIKZm (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sat, 9 Oct 2021 06:25:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 7EB3960F6B
+        for <linux-ext4@vger.kernel.org>; Sat,  9 Oct 2021 10:23:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633775025;
+        bh=1MRK+LR2V3QOisa+W5K4tzODskvnbFTY5Ym5JABMBCA=;
+        h=From:To:Subject:Date:From;
+        b=uu/LVcIkREwlwSNUawjaa0y2CkSrnL3tq+BWspZ2qTf1wphEsrSj2RSJDGEfZyfYG
+         G54TnraMs2PFhFo3/SPTSESG9KmcQ3L2/y3TotwHQh/V/L7SsHpOGEllnu1Sl959lV
+         wtGtgp1iDSacbEvW/pwcLpAxj8uY4EXmMTWI/f2zh0NtxTt01hl19DB53KsvfcYN4L
+         vibHJ3wWK6cSwi02kfe4axRcHap4b1GQBb/HGj5jja2iDdkIEKZBxgqH9kYDBOYS30
+         /BAYycEHHZKgEyGjVXH3SG4azc5htYtTdo0BABjf5sMu4pee8zbiS4kFNXOwDHpwPv
+         ItnDhOdxTF6oQ==
+Received: by pdx-korg-bugzilla-2.web.codeaurora.org (Postfix, from userid 48)
+        id 6E40460EE0; Sat,  9 Oct 2021 10:23:45 +0000 (UTC)
+From:   bugzilla-daemon@bugzilla.kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 214665] New: security bug:using "truncate" bypass disk quotas
+ limit
+Date:   Sat, 09 Oct 2021 10:23:45 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: new
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: 1157599735@qq.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_id short_desc product version
+ cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
+ priority component assigned_to reporter cf_regression
+Message-ID: <bug-214665-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Greetings dear,
-I intend to donate funds to a charity in your country with your
-help... Please respond for additional information here.
-(lydiawright836@gmail.com),if you are interested.
-regards
-Mrs. Lydia A. Wright
-Akron, Ohio, U.S.A
+https://bugzilla.kernel.org/show_bug.cgi?id=3D214665
+
+            Bug ID: 214665
+           Summary: security bug:using "truncate" bypass disk quotas limit
+           Product: File System
+           Version: 2.5
+    Kernel Version: 3.10.0-1160.36.2.el7.x86_64
+          Hardware: All
+                OS: Linux
+              Tree: Mainline
+            Status: NEW
+          Severity: normal
+          Priority: P1
+         Component: ext4
+          Assignee: fs_ext4@kernel-bugs.osdl.org
+          Reporter: 1157599735@qq.com
+        Regression: No
+
+* Overview
+
+  system user can bypass "disk quota limit" using "truncate -s 10T id" comm=
+and
+(that can create a file whose size is 10T).
+
+* Steps to Reproduce
+
+  1. create a user and setup a disk quota for this user
+
+    create user "test"
+    ```
+    useradd test
+    ```
+
+    create filesystem
+    ```
+    [root@vm10-50-0-18 ~]# dd if=3D/dev/zero of=3Dext4 bs=3D1G count=3D1
+    [root@vm10-50-0-18 ~]# mkfs.ext4 ext4
+    [root@vm10-50-0-18 ~]# mkdir -p /tmp/test && chmod -R 777 /tmp/test &&
+mount -o usrquota,grpquota ext4 /tmp/test
+    ```
+
+    setup disk quota
+    ```
+    [root@vm10-50-0-18 ~]# quotacheck -u /tmp/test/       # create
+"aquota.user" file
+    [root@vm10-50-0-18 ~]# edquota -u test
+    [root@vm10-50-0-18 ~]# quotaon /tmp/test/ -u    # open quota service
+    ```
+
+    the quota setting is like below: user "test" can not use disk space whi=
+ch
+size exceed 10K.
+    ```
+    Disk quotas for user test (uid 1000):
+    Filesystem                   blocks       soft       hard     inodes=20=
+=20=20=20
+soft     hard
+    /dev/loop0                        0          10          10          0=
+=20=20=20=20=20
+  0        0
+    ```
+
+  2. verify the quota limit using "dd"
+
+    ```
+    [root@vm10-50-0-18 ~]# su - test
+    =E4=B8=8A=E4=B8=80=E6=AC=A1=E7=99=BB=E5=BD=95=EF=BC=9A=E5=85=AD 10=E6=
+=9C=88  9 18:14:31 CST 2021pts/1 =E4=B8=8A
+    [test@vm10-50-0-18 ~]$ dd if=3D/dev/zero of=3D/tmp/test/id bs=3D20K cou=
+nt=3D1
+    loop0: write failed, user block limit reached.            # yes,this li=
+mit
+is as expected
+    dd: error writing =E2=80=98/tmp/test/id=E2=80=99: Disk quota exceeded
+    1+0 records in
+    0+0 records out
+    8192 bytes (8.2 kB) copied, 0.000221445 s, 37.0 MB/s
+    ```
+
+    this result is as expected: "test" user can not write file whose size is
+more than 10K.
+
+  3. verify the quota limit using "truncate"
+
+    ```
+    [test@vm10-50-0-18 test]$ truncate -s 10T id
+    [test@vm10-50-0-18 test]$ ll -h id
+    -rw-rw-r-- 1 test test 10T Oct  9 17:16 id
+    ```
+
+    actual results is: "test" user can create file whose size is 10T, larger
+more than 10K
+
+    expected result is: like "dd result" above,  "test" user can not write =
+file
+whose size is more than 10K.
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
