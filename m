@@ -2,70 +2,178 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B4542927E
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Oct 2021 16:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5CBF42936C
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Oct 2021 17:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238993AbhJKOtf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 11 Oct 2021 10:49:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59848 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238914AbhJKOtc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:49:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id E5E0460551
-        for <linux-ext4@vger.kernel.org>; Mon, 11 Oct 2021 14:47:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633963651;
-        bh=7FWx50tjTjjXxK7o/5o31b8RwDsgXFEd9gOSN0gdqi4=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=f6pRtXNvvCkXcJI0y94S69q7y3JkSR8cP/vQLBjcxj77DT1mqaL0jLut6cwxI44KR
-         KvVPGl50mcR8miEI3CHx2KLv1CdS0e9TD4t9NnKY+5Mw24ZGQ/61MalhyGJL//mHN/
-         L0uV3uURAYS1egGkBuW95aI5bzmBjx/73AT22yy/QDxU5Ox6h60lCCuVGrtp+HbMHI
-         qVrVFGhq4XLFMlyKmAVXNA82MpDLa2HQ1+GncseiSaCfbDHM/jGUKynSNm74MAN8+6
-         eNpsxGj8/8aNwPtQtyr7ijfP/1uaxwhJMv2b0556tnDW6eT7t+wywyb9wHr2H75Hy5
-         UYJ84jC5A+mYw==
-Received: by pdx-korg-bugzilla-2.web.codeaurora.org (Postfix, from userid 48)
-        id DA74D60ED3; Mon, 11 Oct 2021 14:47:31 +0000 (UTC)
-From:   bugzilla-daemon@bugzilla.kernel.org
+        id S238419AbhJKPcv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 11 Oct 2021 11:32:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239042AbhJKPcu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 11 Oct 2021 11:32:50 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E77C061570
+        for <linux-ext4@vger.kernel.org>; Mon, 11 Oct 2021 08:30:49 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id y12so56414024eda.4
+        for <linux-ext4@vger.kernel.org>; Mon, 11 Oct 2021 08:30:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deitcher-net.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=aCpHVpWC34pJGJa6tpTEGjNdWXNTd1kl/nCjqNRhfxU=;
+        b=jSB2PK9fdAQ4VgNRa/qrsEH3vtpTZO406IRIayetf+OYou0C4ouPdKJ+B0Ukimm2pa
+         Q8sYkDg9d4BzXo+MjzTSeNQjslHgGhXYkfdN06/de9lj37Rgxo7BLWnUvOvOgR3HthW3
+         Qg8IwaDJcTKX+DSC4MSVxsFqHRMNVc1Rkg2naiDhmyDQXlCkp0yjCahaJGrXLON3OfCQ
+         QW6VQWof1YRjBFF0d4MjmZo/bIkjBDMWd5ZHOzNebFizoQbf6Ig9W35vmpnlaskVgAgB
+         LCsEVV1IIajnTR9g7OVNSXkea2U33FjigrHRUGb4KGH5m68Qr0tcLvmzthHjVVt9F2Ej
+         zX7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=aCpHVpWC34pJGJa6tpTEGjNdWXNTd1kl/nCjqNRhfxU=;
+        b=fWqKi506B47X9lHBDVQxPyjrkvL6NVN2YS7t4cFwFBudggRxbzPCDmVCCkwQbu2VTw
+         zCJYXtThVgWESzG/6ZasDLkctfvp4KdXgj+4UQxLLZepxE0SfHx8hX7EoPFhraeY/jFT
+         eyIWiCyuZ3UaXpoY2Em1ahovPXn1GzTEOstil3EX7OxSW2wJyuVxUmJu37kGLKIDzJjv
+         +jFTpwm9+AbR4vNXt8bM8saPYA8V+mkxuT1w4CYjcldzN41ccU7GrUfuopBFoOxXfRXB
+         +u9vBQ//Kx2AbzTZrvwx9b0sT0X70qvfJYDlStzFz76bYXrD6OoTyw0OyWlqCpgGGqIe
+         p/0g==
+X-Gm-Message-State: AOAM531tm9TH4g6hYzLQCihDxN0qx6Wd46A4BkDkaJ320fk0YgrmFvi8
+        V1CUWu2YUbpSUduma96dsSnt1cJqVdINpZ/8MSas/jB0+zBs/EPs
+X-Google-Smtp-Source: ABdhPJw9fkSkR8t8ir5XzAnbJx3tLAM2NszL9UC5/1PUEHUXLK0B5uI4m+v1uIwjt3ia4z353XAS66X/SXQ0uQwetUc=
+X-Received: by 2002:a17:906:c009:: with SMTP id e9mr26624590ejz.509.1633966247796;
+ Mon, 11 Oct 2021 08:30:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAF1vpkgPAy3FJ9mN22OVQ41jQAYoRdoCdqzYwRYYPXD4uucdpg@mail.gmail.com>
+ <3A493D20-568A-4D63-A575-5DEEBFAAF41A@dilger.ca> <CAF1vpkigHMdKphnNjDm7=rR6TTxViHGGHi3bb64rsHG7KbqYzQ@mail.gmail.com>
+In-Reply-To: <CAF1vpkigHMdKphnNjDm7=rR6TTxViHGGHi3bb64rsHG7KbqYzQ@mail.gmail.com>
+From:   Avi Deitcher <avi@deitcher.net>
+Date:   Mon, 11 Oct 2021 08:30:36 -0700
+Message-ID: <CAF1vpkhwSOfGfErUUrp0YU5hSt58TtykTECiJXTcgqDtG0WVVg@mail.gmail.com>
+Subject: Re: algorithm for half-md4 used in htree directories
 To:     linux-ext4@vger.kernel.org
-Subject: [Bug 214665] security bug:using "truncate" bypass disk quotas limit
-Date:   Mon, 11 Oct 2021 14:47:31 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: tytso@mit.edu
-X-Bugzilla-Status: RESOLVED
-X-Bugzilla-Resolution: INVALID
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-214665-13602-1S4sZ0Y8ZE@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-214665-13602@https.bugzilla.kernel.org/>
-References: <bug-214665-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
-MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D214665
+Does someone know how this is constructed and used?
 
---- Comment #5 from Theodore Tso (tytso@mit.edu) ---
-Correction to #4:
+On Mon, Oct 4, 2021 at 12:57 AM Avi Deitcher <avi@deitcher.net> wrote:
+>
+> Hi Andreas,
+>
+> I had looked in __ext4fs_dirhash(). Yes, it does reference the seed -
+> and create a default if none is there at the filesystem level - but it
+> doesn't appear to use it, in that function. hinfo is populated in the
+> function - hash, minor-hash, seed - but it never uses the seed to
+> manipulate the hash.
+>
+> Are you saying that it is at a higher level? i.e. __ext4fs_dirhash()
+> is the *first* step, and there is further processing to get the actual
+> hash? I did walk up the stack, but couldn't figure out.
+>
+> Thanks for stepping in
+> Avi
+>
+> On Sun, Oct 3, 2021 at 7:43 PM Andreas Dilger <adilger@dilger.ca> wrote:
+> >
+> > On Oct 3, 2021, at 06:47, Avi Deitcher <avi@deitcher.net> wrote:
+> > >
+> > > =EF=BB=BFI can narrow down the question further. In my live sample, o=
+ne of the
+> > > entries in the tree is for a directory named "dir155".
+> > >
+> > > If I run "dx_hash dir155", I get:
+> > >
+> > > # debugfs -R "dx_hash dir155" /var/lib/file.img
+> > > debugfs 1.46.2 (28-Feb-2021)
+> > > Hash of dir155 is 0x16279534 (minor 0x0)
+> > >
+> > > If I look in the tree with "htree_dump", I get:
+> > >
+> > > # debugfs -R "htree_dump /testdir" /var/lib/file.img
+> > > debugfs 1.46.2 (28-Feb-2021)
+> > > ....
+> > > Entry #0: Hash 0x00000000, block 1
+> > > Reading directory block 1, phys 6459
+> > > 168 0x00d11d98-b9b6b16b (16) dir155   332 0x009edafe-77de7d72 (16) di=
+r319
+> > >
+> > > That hash for dir155 does not match what dx_hash gave. If I try to
+> > > take the code from fs/ext4/hash.c and build a small program to
+> > > calculate the hash, I get:
+> > >
+> > > $ ./md4 dir155
+> > > MD4: d90278a1 25182ac7 a02e56be c3f30f04
+> > > hash: 0x25182ac6
+> > > minor: 0xa02e56be
+> > >
+> > > Clearly that isn't what is in the tree. What basic am I missing?
+> >
+> > One important factor is that the directory hash has an initial seed
+> > to prevent pathological cases where the user can construct thousands
+> > of directory entries that have a hash collision.
+> >
+> > Looking at the code explains this in the comment for __ext4fs_dirhash()=
+.
+> > The seed itself comes from sbi->s_hash_seed and is stored in the
+> > per-directory hinfo.seed to be used when counting the filename hash.
+> > In theory there could be a per-directory hash, but it appears to be a
+> > constant for the whole filesystem.
+> >
+> > Cheers, Andreas
+> >
+> > >
+> > >> On Fri, Oct 1, 2021 at 2:49 PM Avi Deitcher <avi@deitcher.net> wrote=
+:
+> > >>
+> > >> Hi,
+> > >>
+> > >> I have been trying to understand the algorithm used for the "half-md=
+4"
+> > >> in htree-structured directories. Going through the code (and trying
+> > >> not to get into reverse engineering), it looks like it is part of md=
+4
+> > >> but not entirely? Yet any subset I take doesn't quite line up with
+> > >> what I see in an actual sample.
+> > >>
+> > >> What is the algorithm it is using to turn an entry of, e.g., "file12=
+5"
+> > >> into the appropriate hash. I did run a live sample, and try to get
+> > >> some form of correlation between the actual md4 hash (16 bytes) of t=
+he
+> > >> above to the actual entry (4 bytes) shown by debugfs, without much
+> > >> luck.
+> > >>
+> > >> What basic thing am I missing?
+> > >>
+> > >> Separately, how does the seed play into it?
+> > >>
+> > >> Thanks
+> > >> Avi
+> > >
+> > >
+> > >
+> > > --
+> > > Avi Deitcher
+> > > avi@deitcher.net
+> > > Follow me http://twitter.com/avideitcher
+> > > Read me http://blog.atomicinc.com
+>
+>
+>
+> --
+> Avi Deitcher
+> avi@deitcher.net
+> Follow me http://twitter.com/avideitcher
+> Read me http://blog.atomicinc.com
 
-There are plenty of other ways that an *inexperienced* sysadmin might shoot
-themselves in the foot....
+
 
 --=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+Avi Deitcher
+avi@deitcher.net
+Follow me http://twitter.com/avideitcher
+Read me http://blog.atomicinc.com
