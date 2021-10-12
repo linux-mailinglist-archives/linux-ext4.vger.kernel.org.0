@@ -2,128 +2,118 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE494429BAD
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Oct 2021 04:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 852EB42A043
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Oct 2021 10:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231755AbhJLDAP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 11 Oct 2021 23:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231742AbhJLDAO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 11 Oct 2021 23:00:14 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F43C061570
-        for <linux-ext4@vger.kernel.org>; Mon, 11 Oct 2021 19:58:13 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id i20so58699422edj.10
-        for <linux-ext4@vger.kernel.org>; Mon, 11 Oct 2021 19:58:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deitcher-net.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6T6KYczfNTjmbcvmUpgVA8bO93YXtTlfRBkczo21+Ls=;
-        b=12Wo0VIRo5OPSdJHADChq9o98V1LHTKZLvYi6yvETsT4rA/Q+3kU1EDFY2F6Yc8K4M
-         GqK+XxguZ48pQ+zHm3KpXYJbZOSHK0aATYfdej1qgzrDFI3ICz//c/ijUEAQyC4PndQO
-         njdxLflt1zq2ntnlUV7ZPhE28QEbSr5G9LdCrSAJxw6t4lyJ2SP1GQyP1kvW3Gz/70ut
-         Wx2rJzMaeqT4irlrCXPpvxsih4gd/jVhFt3R8RaENzmk5pcEjcavGhMwpv38jWGwcXqv
-         +RmUrEu6gFryPlfZnYLDPcF9v3/RHIsb97TrDvHOcu2XoJE2gjrRw3s2xWYT+3hTy7AL
-         ZV2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6T6KYczfNTjmbcvmUpgVA8bO93YXtTlfRBkczo21+Ls=;
-        b=uC7u0z8KkG1W1JgoWhtXUyvDXksHPz09hJr32+s743ztyLV+ZJvhJ7BVw7xAf6JgjU
-         zxvFE9GpRVlPGjvmL3aYQCrSMHK8hc/C/G5py0o0jU4c29wFI0tJ2RflMU2zh7O7YxCX
-         U6X4arbIOfkmqwiveND4hCrNYzXwVZIkdKC6EQ2jv5rOMIIc8S2AyAlp5BvbZXDl/UzE
-         bjSdM8lDfiU8xaHORVjPNeMed6Lni9poSKeMk5FcWQCPAqmvgfG6+T7gj+Wd9gbqmgiA
-         pqr/7NNh+TeDF8tCQOpLjtxBmVvCq9IY8cvEmATxY1cjLxfXNonEyvPsksqCAA3g3nX4
-         kDlw==
-X-Gm-Message-State: AOAM531l0VBLFx9dUq9q9b5LkvoLya2SH5jc9vjPXFqH7VaiS+UjTKCr
-        KlgB3JEHQ7tnY8KovVfMAhZ3ZKX8KHlVtjkMaatoyMHh5wc=
-X-Google-Smtp-Source: ABdhPJy/XsV0Q4Bgi++7vk96sWaehsDlxrrvtvw5rmL4A2TvxVtAU/+qadDiFBTnDwmDzH3fE9k4sUpN7KG5FOpMPB8=
-X-Received: by 2002:a50:e108:: with SMTP id h8mr47488905edl.42.1634007491817;
- Mon, 11 Oct 2021 19:58:11 -0700 (PDT)
+        id S235175AbhJLItb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 12 Oct 2021 04:49:31 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:44740 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235423AbhJLIta (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 12 Oct 2021 04:49:30 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 06FDC21FAC;
+        Tue, 12 Oct 2021 08:47:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634028448; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1H9U6FZdTMLg0N90m1o6mLcfzhK9dGZJ71HH3rnxZXg=;
+        b=0/zM0CyoZVl6slnTaJ8guNPB+tPsoONS7QulTscas9O52uPAXO/P74CbsWP6t2QmZ7mjOO
+        yBZpDuJIxKjau+7DqC/wiDQHzCCsiKS6PC+H65k4MeQXd5+eUxAsntyZlpbAaEWU9QSDTM
+        oywsMOL8YPr5OEbwctdoXT9pOv6SWcw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634028448;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1H9U6FZdTMLg0N90m1o6mLcfzhK9dGZJ71HH3rnxZXg=;
+        b=h8hk2o8uMmL2kEjW6zhLNDHLdNKBvDKi6YGFFxAt1TRLJ5hZGHwS3eOSgSX+grWXVS3mrl
+        9NiPp+YqvMfqakCw==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id ADE23A3B95;
+        Tue, 12 Oct 2021 08:47:27 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 760561E1409; Tue, 12 Oct 2021 10:47:27 +0200 (CEST)
+Date:   Tue, 12 Oct 2021 10:47:27 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     yebin <yebin10@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next v2 2/6] ext4: introduce last_check_time record
+ previous check time
+Message-ID: <20211012084727.GF9697@quack2.suse.cz>
+References: <20210911090059.1876456-1-yebin10@huawei.com>
+ <20210911090059.1876456-3-yebin10@huawei.com>
+ <20211007123100.GG12712@quack2.suse.cz>
+ <615FA55B.5070404@huawei.com>
+ <615FAF27.8070000@huawei.com>
 MIME-Version: 1.0
-References: <CAF1vpkgPAy3FJ9mN22OVQ41jQAYoRdoCdqzYwRYYPXD4uucdpg@mail.gmail.com>
- <3A493D20-568A-4D63-A575-5DEEBFAAF41A@dilger.ca> <CAF1vpkigHMdKphnNjDm7=rR6TTxViHGGHi3bb64rsHG7KbqYzQ@mail.gmail.com>
- <CAF1vpkhwSOfGfErUUrp0YU5hSt58TtykTECiJXTcgqDtG0WVVg@mail.gmail.com> <YWSck57bsX/LqAKr@mit.edu>
-In-Reply-To: <YWSck57bsX/LqAKr@mit.edu>
-From:   Avi Deitcher <avi@deitcher.net>
-Date:   Mon, 11 Oct 2021 19:58:00 -0700
-Message-ID: <CAF1vpkiKx3jArgjNBrid9-MSHBweGsFL0zu0UgDX_dq_hrkUgw@mail.gmail.com>
-Subject: Re: algorithm for half-md4 used in htree directories
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <615FAF27.8070000@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Aha. I missed that the seed is injected into buf before passing it
-into half_md4_transform. I was looking at it as just the empty buffer
-before the first iteration of the loop (or, in my case, since I was
-testing with a 6 char filename, the only iteration).
+On Fri 08-10-21 10:38:31, yebin wrote:
+> On 2021/10/8 9:56, yebin wrote:
+> > On 2021/10/7 20:31, Jan Kara wrote:
+> > > On Sat 11-09-21 17:00:55, Ye Bin wrote:
+> > > > kmmpd:
+> > > > ...
+> > > >      diff = jiffies - last_update_time;
+> > > >      if (diff > mmp_check_interval * HZ) {
+> > > > ...
+> > > > As "mmp_check_interval = 2 * mmp_update_interval", 'diff' always little
+> > > > than 'mmp_update_interval', so there will never trigger detection.
+> > > > Introduce last_check_time record previous check time.
+> > > > 
+> > > > Signed-off-by: Ye Bin <yebin10@huawei.com>
+> > > I think the check is there only for the case where write_mmp_block() +
+> > > sleep took longer than mmp_check_interval. I agree that should rarely
+> > > happen but on a really busy system it is possible and in that case
+> > > we would
+> > > miss updating mmp block for too long and so another node could have
+> > > started
+> > > using the filesystem. I actually don't see a reason why kmmpd should be
+> > > checking the block each mmp_check_interval as you do -
+> > > mmp_check_interval
+> > > is just for ext4_multi_mount_protect() to know how long it should wait
+> > > before considering mmp block stale... Am I missing something?
+> > > 
+> > >                                 Honza
+> > I'm sorry, I didn't understand the detection mechanism here before. Now
+> > I understand
+> > the detection mechanism here.
+> > As you said, it's just an abnormal protection. There's really no problem.
+> > 
+> Yeah, i did test as following steps
+> hostA                        hostB
+>    mount
+>      ext4_multi_mount_protect  -> seq == EXT4_MMP_SEQ_CLEAN
+>         delay 5s after label "skip" so hostB will see seq is
+> EXT4_MMP_SEQ_CLEAN
+>                        mount
+>                        ext4_multi_mount_protect -> seq == EXT4_MMP_SEQ_CLEAN
+>                                run  kmmpd
+>     run kmmpd
+> 
+> Actually，in this  situation kmmpd will not detect  confliction.
+> In ext4_multi_mount_protect function we write mmp data first and wait
+> 'wait_time * HZ'  seconds,
+> read mmp data do check. Most of the time, If 'wait_time' is zero, it can pass
+> check.
 
-I will repeat my experiment with that and see if I can tease it out.
+But how can be wait_time zero? As far as I'm reading the code, wait_time
+must be at least EXT4_MMP_MIN_CHECK_INTERVAL...
 
-Thanks, Ted!
-
-On Mon, Oct 11, 2021 at 1:20 PM Theodore Ts'o <tytso@mit.edu> wrote:
->
-> On Mon, Oct 11, 2021 at 08:30:36AM -0700, Avi Deitcher wrote:
-> > Does someone know how this is constructed and used?
-> >
-> > On Mon, Oct 4, 2021 at 12:57 AM Avi Deitcher <avi@deitcher.net> wrote:
-> > >
-> > > Hi Andreas,
-> > >
-> > > I had looked in __ext4fs_dirhash(). Yes, it does reference the seed -
-> > > and create a default if none is there at the filesystem level - but it
-> > > doesn't appear to use it, in that function. hinfo is populated in the
-> > > function - hash, minor-hash, seed - but it never uses the seed to
-> > > manipulate the hash.
->
-> The seed is used to initialize the buf array, so long as the seed is
-> not all zero's.  If it is all zeros, then the default seed is used
-> instead (right above this bit of code:
->
->         if (hinfo->seed) {
->                 for (i = 0; i < 4; i++) {
->                         if (hinfo->seed[i]) {
->                                 memcpy(buf, hinfo->seed, sizeof(buf));
->                                 break;
->                         }
->                 }
->         }
->
-> The legacy hash doesn't use the seed, yes.  But for the other hash
-> types (hash_version), they mix the filename (in different ways
-> depending on the hash type.  For example, for half md4:
->
->         case DX_HASH_HALF_MD4:
->                 p = name;
->                 while (len > 0) {
->                         (*str2hashbuf)(p, len, in, 8);
->                         half_md4_transform(buf, in);
->                                            ^^^
->                         len -= 32;
->                         p += 32;
->                 }
->                 minor_hash = buf[2];
->                 hash = buf[1];
->                 break;
->
-> When the hash seed is different, that means the initial state of the
-> buf array will different, and this influences the resulting hash.
->
-> Cheers,
->
->                                         - Ted
-
-
+								Honza
 
 -- 
-Avi Deitcher
-avi@deitcher.net
-Follow me http://twitter.com/avideitcher
-Read me http://blog.atomicinc.com
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
