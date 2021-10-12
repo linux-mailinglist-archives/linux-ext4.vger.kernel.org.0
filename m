@@ -2,110 +2,83 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1922B42ACEB
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Oct 2021 21:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B9642AC3E
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Oct 2021 20:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233988AbhJLTFk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 12 Oct 2021 15:05:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232502AbhJLTFj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 12 Oct 2021 15:05:39 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86EF8C061745;
-        Tue, 12 Oct 2021 12:03:37 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f194200eaffd58d18ef125f.dip0.t-ipconnect.de [IPv6:2003:ec:2f19:4200:eaff:d58d:18ef:125f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2D4C41EC047E;
-        Tue, 12 Oct 2021 20:39:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1634063993;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=8Sp+eleeSlkMveboN9yGLXRy3+zpBsRKI2ycgGcwO+c=;
-        b=Dm89jgCV6WyVafkaKnSrbYeHME2ZlsVKpzn3pepunFErqUQj/DXUAmY733EhvfF85Z//tP
-        RYfWJqiFoAUJ4IDFwSavTIVHKru40OpOvQ36Wi8K1yoSd6tJ6NKgpj6apo02zXgFEdR/eZ
-        AtDinE3Ab/7tVUiJpMA/GUateh9TiqY=
-Date:   Tue, 12 Oct 2021 20:39:50 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Eric Whitney <enwlinux@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Subject: Re: kernel BUG at fs/ext4/inode.c:1721!
-Message-ID: <YWXWdlut+IW9eh8B@zn.tnic>
-References: <YWANK0HchPv9m6hA@zn.tnic>
- <20211008173305.GA28198@localhost.localdomain>
- <YWCL2OXaz8/OnBiF@zn.tnic>
- <20211011231124.GB17897@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211011231124.GB17897@localhost.localdomain>
+        id S234916AbhJLSmO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 12 Oct 2021 14:42:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50428 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234947AbhJLSmJ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 12 Oct 2021 14:42:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A60DA60EDF;
+        Tue, 12 Oct 2021 18:40:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1634064001;
+        bh=4NlzI4dFxtFWsmK4HNOLFkn2j8KfMJnWPwZWKJPEPAI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=aLV8P7/TA7iQMJF0qaKt5ZKy+gE2TiiPu2nZqetOP9YyyAcsJo/jiZgNVzTU1lkT+
+         2W/4JR9XszN9+PCKAd86SS6HZy4Utp+IQoI/3t8eWWfSQ4e0sZiWOtAYA0TYppiR0t
+         YJo2Ed+MK8pToXyv2626yPlvlXLxExtGRpdF1Mv4=
+Date:   Tue, 12 Oct 2021 11:39:57 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Alex Sierra <alex.sierra@amd.com>
+Cc:     <Felix.Kuehling@amd.com>, <linux-mm@kvack.org>,
+        <rcampbell@nvidia.com>, <linux-ext4@vger.kernel.org>,
+        <linux-xfs@vger.kernel.org>, <amd-gfx@lists.freedesktop.org>,
+        <dri-devel@lists.freedesktop.org>, <hch@lst.de>, <jgg@nvidia.com>,
+        <jglisse@redhat.com>, <apopple@nvidia.com>
+Subject: Re: [PATCH v1 00/12] MEMORY_DEVICE_COHERENT for CPU-accessible
+ coherent device memory
+Message-Id: <20211012113957.53f05928dd60f3686331fede@linux-foundation.org>
+In-Reply-To: <20211012171247.2861-1-alex.sierra@amd.com>
+References: <20211012171247.2861-1-alex.sierra@amd.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 07:11:24PM -0400, Eric Whitney wrote:
-> I've tried numerous kernel builds with -rc4 and rerun the full set of xfstests
-> we use when regressing ext4 each rc using a kernel that doesn't enable
-> FS_ENCRYPTION (I normally run with that) without luck.  The code that caused
-> the splat you saw is new and would run when an assertion is violated,
-> suggesting that there may be an unsuspected bug elsewhere in ext4.
+On Tue, 12 Oct 2021 12:12:35 -0500 Alex Sierra <alex.sierra@amd.com> wrote:
 
-Hmm.
-
-> Do you recall having seen any evidence of ENOMEM or ENOSPC conditions prior
-> to the failure?
-
-I don't see anything of the sorts in the dmesg I've saved.
-
-> If you're willing to share, please send along your kernel config file and I'll
-> try working with that as well.
-
-Sure, I'll send you the config I used and the dmesg I caught privately -
-you might see something I've missed. Stuff like this, for example:
-
-[   10.254952] Adding 15721468k swap on /dev/nvme0n1p1.  Priority:-2 extents:1 across:15721468k SS
-[   10.275365] EXT4-fs (nvme0n1p2): re-mounted. Opts: errors=remount-ro. Quota mode: disabled.
-[   10.417820] device-mapper: ioctl: 4.45.0-ioctl (2021-03-22) initialised: dm-devel@redhat.com
-[   10.595392] loop: module loaded
-[   10.661742] EXT4-fs (sdc1): mounted filesystem with ordered data mode. Opts: (null). Quota mode: disabled.
-[   10.758774] EXT4-fs (sda1): mounted filesystem with ordered data mode. Opts: (null). Quota mode: disabled.
-[   10.930331] r8169 0000:18:00.0 eth0: Link is Up - 100Mbps/Full - flow control rx/tx
-[   10.939298] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
-[   13.306747] EXT4-fs (sdb1): recovery complete
-[   13.325960] EXT4-fs (sdb1): mounted filesystem with ordered data mode. Opts: (null). Quota mode: disabled.
-[   13.353624] EXT4-fs (nvme1n1p1): mounted filesystem with ordered data mode. Opts: (null). Quota mode: disabled.
-[  191.896690] loop0: detected capacity change from 0 to 2048
-[  191.941350] EXT4-fs (dm-0): mounting ext2 file system using the ext4 subsystem
-[  191.948773] EXT4-fs (dm-0): mounted filesystem without journal. Opts: (null). Quota mode: disabled.
-[  282.932355] fuse: init (API version 7.34)
-[ 3159.620840] loop1: detected capacity change from 0 to 4194304
-[ 3160.125963] EXT4-fs (dm-1): mounting ext3 file system using the ext4 subsystem
-[ 3160.203143] EXT4-fs (dm-1): mounted filesystem with ordered data mode. Opts: (null). Quota mode: disabled.
-
-Dunno if using ext4 to mount ext2 and ext3 filesystems would be
-relevant.
-
-> In the meantime, should this bug get in your way, just revert the following
-> patch and you should be able to run without further trouble:
+> This patch series introduces MEMORY_DEVICE_COHERENT, a type of memory
+> owned by a device that can be mapped into CPU page tables like
+> MEMORY_DEVICE_GENERIC and can also be migrated like MEMORY_DEVICE_PRIVATE.
+> With MEMORY_DEVICE_COHERENT, we isolate the new memory type from other
+> subsystems as far as possible, though there are some small changes to
+> other subsystems such as filesystem DAX, to handle the new memory type
+> appropriately.
 > 
-> 948ca5f30e1d "ext4: enforce buffer head state assertion in ext4_da_map_blocks"
+> We use ZONE_DEVICE for this instead of NUMA so that the amdgpu
+> allocator can manage it without conflicting with core mm for non-unified
+> memory use cases.
 > 
-> I'll likely be posting a patch to revert this shortly, since it's going to
-> take some time to sort out what's going on without a reproducer.
+> How it works: The system BIOS advertises the GPU device memory (aka VRAM)
+> as SPM (special purpose memory) in the UEFI system address map.
+> The amdgpu driver registers the memory with devmap as
+> MEMORY_DEVICE_COHERENT using devm_memremap_pages.
+> 
+> The initial user for this hardware page migration capability will be
+> the Frontier supercomputer project.
 
-Gotcha.
+To what other uses will this infrastructure be put?
 
-> Thanks again for your help,
+Because I must ask: if this feature is for one single computer which
+presumably has a custom kernel, why add it to mainline Linux?
 
-Thanks too for taking a look.
+> Our nodes in the lab have .5 TB of
+> system memory plus 256 GB of device memory split across 4 GPUs, all in
+> the same coherent address space. Page migration is expected to improve
+> application efficiency significantly. We will report empirical results
+> as they become available.
+> 
+> This includes patches originally by Ralph Campbell to change ZONE_DEVICE
+> reference counting as requested in previous reviews of this patch series
+> (see https://patchwork.freedesktop.org/series/90706/). We extended
+> hmm_test to cover migration of MEMORY_DEVICE_COHERENT. This patch set
+> builds on HMM and our SVM memory manager already merged in 5.14.
+> We would like to complete review and merge this migration patchset for
+> 5.16.
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
