@@ -2,162 +2,108 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BABB42AA72
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Oct 2021 19:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 007F742AA9E
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Oct 2021 19:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232238AbhJLRPS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 12 Oct 2021 13:15:18 -0400
-Received: from mail-bn8nam12on2089.outbound.protection.outlook.com ([40.107.237.89]:17568
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232041AbhJLRPO (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 12 Oct 2021 13:15:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MidAhIUk94iimxJrp5a4ElPHGPX0p+HYvsliDBIOykluI5unwxEYCInu0oC+5+CDFpYbQOaVxZCZt0jTM513qLPnU988vUsNcuGCzNHvERsN3s6bwZBAxjhKgEpLqwncPp9chndz0xVMy6uR0HlJsakf8NTALUqI9wnhrTnEnGdPUzoFipgEnqNZlaE4BaC6tihqwL3pio33Pvld1Hyol91zfIHL+NEAV9tQroc9CwDf0AA85STPGqWwE0gQvj3osJy3Mu8nC4stGQbcJfl4+Nxn1uiWOpf32hE8LH+GPOvKrc5dVaB6uecN/l/8qSJZp58dPm4E1tWCrY4qSJ3/6w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wsrkpUVi3WNypHl5pcq6GxPYH8jyCkc8S9h4vZu1cNY=;
- b=Ozba9FL0hIgpChSvfQvNj0aXwwEUIShKoirtd/aGOJSDnUpWDb+apR6UCpv3NaasBOD3Q9ozf8CEs9QLOwTotVNOrB/9nQieUSETlhDKaVgjHtyq/umUIVlbraFdLMt8izfVYVvA77MvfbrNtWtm8k2Y60M1nIsJC9UgVeHjsNnFtRUgmct47kHNqsslqBey9YUpke5TqHySxexLsFAilEuUXm1HUxscf1lL42bzjjk2MSkxAHH7foEUVic1RaHnfF0MOL68zI32FN1qKFiZlU3bHZNPd06lw74cQTAcz+GwDbW+OvI2S58sSl3VLXcuMfHHQP4Y3BBiDfLpOGP3Nw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linux-foundation.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wsrkpUVi3WNypHl5pcq6GxPYH8jyCkc8S9h4vZu1cNY=;
- b=fOxFy4A0+aSEk8/U8WSquGzLWQXv6yRSo43ZZQEveGU5S92Ad6liZ2KZu06KUSfgmOr68R5DsLmeBw1g3MeYtTEdJsn1OJxRf2N4DQrnTo0OxAVFU64ogTdsNPRwx8l6jM0MtPLMZ0I5Lay3noa8IOnAf85qC9eDs5eYladLmcA=
-Received: from MWHPR14CA0008.namprd14.prod.outlook.com (2603:10b6:300:ae::18)
- by BYAPR12MB3478.namprd12.prod.outlook.com (2603:10b6:a03:ad::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Tue, 12 Oct
- 2021 17:13:09 +0000
-Received: from CO1NAM11FT018.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:ae:cafe::84) by MWHPR14CA0008.outlook.office365.com
- (2603:10b6:300:ae::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.14 via Frontend
- Transport; Tue, 12 Oct 2021 17:13:09 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=pass action=none
- header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1NAM11FT018.mail.protection.outlook.com (10.13.175.16) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4587.18 via Frontend Transport; Tue, 12 Oct 2021 17:13:08 +0000
-Received: from alex-MS-7B09.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Tue, 12 Oct
- 2021 12:13:06 -0500
-From:   Alex Sierra <alex.sierra@amd.com>
-To:     <akpm@linux-foundation.org>, <Felix.Kuehling@amd.com>,
-        <linux-mm@kvack.org>, <rcampbell@nvidia.com>,
-        <linux-ext4@vger.kernel.org>, <linux-xfs@vger.kernel.org>
-CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <hch@lst.de>, <jgg@nvidia.com>, <jglisse@redhat.com>,
-        <apopple@nvidia.com>
-Subject: [PATCH v1 12/12] tools: update test_hmm script to support SP config
-Date:   Tue, 12 Oct 2021 12:12:47 -0500
-Message-ID: <20211012171247.2861-13-alex.sierra@amd.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211012171247.2861-1-alex.sierra@amd.com>
-References: <20211012171247.2861-1-alex.sierra@amd.com>
+        id S232148AbhJLRVS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 12 Oct 2021 13:21:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231826AbhJLRVP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 12 Oct 2021 13:21:15 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4844FC061570
+        for <linux-ext4@vger.kernel.org>; Tue, 12 Oct 2021 10:19:13 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id r15so11890664qkp.8
+        for <linux-ext4@vger.kernel.org>; Tue, 12 Oct 2021 10:19:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fCRzp1RgT4JqmbH2IXSQy9EiMJO+5AFpK34h77OLMek=;
+        b=O8dZSfcClMDMMenpJ6SmYrDjKzxdppWK2qW9woh4IxjrGYtsfZjrflwEbSypQB0jRQ
+         WpDCVSNoT/zwUqStxG77XK3TkBdtQBz+kXYz+Yz4M2gIxJekR2tt23g/RxdUayGnVtJm
+         v2t3kbU3ERJvH9frDQZeiEyoSv1ZFsESpr6STOlqhv2g8IHx/eepbwjhUHb9yYVT266n
+         kAqPPujAV5xZX4qHKJ8UV8nhYfOH4b1UEjLsAKXhKd0mHzb2MYnGBEVFMFGXfaVeGpO3
+         zyntWR5Ya0bWbb9E0pZOLuzBZbcQQ/1cGF2hEhjxCJKxSq7FASj8lN32xmUwWDmP+h4D
+         P7xQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fCRzp1RgT4JqmbH2IXSQy9EiMJO+5AFpK34h77OLMek=;
+        b=117Wagy0DFuZyqzwW7MPHwwybbKApFV3oszqFTJY8PrWx6ETPxTt/B/AhQ5+wh3QoZ
+         2l7nTLHmhHvt5YZH2CQcoWCleIkTwSz7W5vq+atGdYT2T18Z2ZZ8xXaUYrnSnLlT2b6/
+         OQPPgPGPrjm4BgzVYQj1RJQKuG60WpB6KlAy9pkHEO4UjbV4I8Fk1VXLbBedeUI+FJd7
+         Ygnz1N84WUmj7sWzPuGTONYq37Zx6xP6oAFaHBxdQvFCY1/+Yw84WYo2i6ijj0OKeGzy
+         T23TCeQyMdvyPvlx6s5camYPbvHKlZ05DwfD1+kdMMCIu3ijNyADmknQdHO1bCbCCSRd
+         8TGA==
+X-Gm-Message-State: AOAM53277mRSuYNFtK4Eltg4pIskO1B9jpglfHT6znFcMgxNNeER8b78
+        U688kKbodzYxFPfGaY0IybG4olAtr7U=
+X-Google-Smtp-Source: ABdhPJyh5LH7UMyzqOfD9yZuaBl/8zLYgagt3e6qiMd9M5suq5c7tm5kJLJtXvI6zkZz7Y2hT7w4tg==
+X-Received: by 2002:a37:9d04:: with SMTP id g4mr20699482qke.212.1634059152209;
+        Tue, 12 Oct 2021 10:19:12 -0700 (PDT)
+Received: from localhost.localdomain (c-73-60-226-25.hsd1.nh.comcast.net. [73.60.226.25])
+        by smtp.gmail.com with ESMTPSA id f15sm7037135qtf.66.2021.10.12.10.19.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 10:19:11 -0700 (PDT)
+From:   Eric Whitney <enwlinux@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, Eric Whitney <enwlinux@gmail.com>
+Subject: [PATCH] Revert "ext4: enforce buffer head state assertion in ext4_da_map_blocks"
+Date:   Tue, 12 Oct 2021 13:19:01 -0400
+Message-Id: <20211012171901.5352-1-enwlinux@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 21cc2f9c-b1c4-43ae-9b9a-08d98da39024
-X-MS-TrafficTypeDiagnostic: BYAPR12MB3478:
-X-Microsoft-Antispam-PRVS: <BYAPR12MB3478750E3AE99C7C4BD5D636FDB69@BYAPR12MB3478.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: H/DkEskfCZ8WEoSjwiYli78ny/x0BlU3QJ8N8RYZ+/TzPfDy6KVOo4vlq3ZJHyEvSHDdBs9VT+/4U7KMsast4Eg+qbwj7B8sNj4A/vGTGy718i7Jwro243sYk5YBTuwlaskvi8YST19LWTClDR1HJgfcev59sDKuQ/oXIZ/5MlT3COWp3UydMaQofJyxw23V9CNfa8q9ER2ELU0TjAiHb4ZR1bqmlJ3Bn7ZHbGLVInAKXAifdzcODry56gpuVWqJlO6+v+KPZ4SssF2Rau1aRN9HxT8oxR0SIcIpdCgRJidNmIqJ4c447NFtELTjXzy2ZbrZX1gJlCrXkjHM7CkEclQgPeENZo2k9bE0qgeG+ROCksRE5mEdFWB6uHEPIDEX2keBSWz9SHOaGiiOS168WMx+0yhzKt19U+o3XZrTjgVchYOS9zEQrkCiFXoNr3NJpStRyFvYQTZrMGxfWh4s2JioJomkLAQZuxCGGObHTIqVaPaKbfweYe7VLMCDBjPpEBAyKAxiXqCYNS6Vdb7NldtrUBzCDrVQoN1C5OjOJWjwML8m/J0hj/gvrlX8XyBwysJtcHa+TuuqxDPYnc1TckfkYurAjqOmzQspgWCIf8UCxEBSKglJyG14PGfhz+cR+g16JxK14e0PfJrrNObqMuUHIjdOV4P8qupdpPpp4tSmu6R9AErxyQNs6KP/DJcEvZyWP5TaD/YpWT0poaDx0O2KjY4V5G4J8+k9FJEQCAs=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(82310400003)(426003)(86362001)(1076003)(5660300002)(2616005)(7696005)(4326008)(7416002)(110136005)(36756003)(2906002)(8676002)(54906003)(70206006)(16526019)(70586007)(6666004)(83380400001)(8936002)(336012)(44832011)(316002)(508600001)(26005)(81166007)(47076005)(36860700001)(186003)(356005)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2021 17:13:08.5472
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 21cc2f9c-b1c4-43ae-9b9a-08d98da39024
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT018.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3478
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Add two more parameters to set spm_addr_dev0 & spm_addr_dev1
-addresses. These two parameters configure the start SP
-addresses for each device in test_hmm driver.
-Consequently, this configures zone device type as coherent.
+This reverts commit 948ca5f30e1df0c11eb5b0f410b9ceb97fa77ad9.
 
-Signed-off-by: Alex Sierra <alex.sierra@amd.com>
+Two crash reports from users running variations on 5.15-rc4 kernels
+suggest that it is premature to enforce the state assertion in the
+original commit.  Both crashes were triggered by BUG calls in that
+code, indicating that under some rare circumstance the buffer head
+state did not match a delayed allocated block at the time the
+block was written out.  No reproducer is available.  Resolving this
+problem will require more time than remains in the current release
+cycle, so reverting the original patch for the time being is necessary
+to avoid any instability it may cause.
+
+Signed-off-by: Eric Whitney <enwlinux@gmail.com>
 ---
- tools/testing/selftests/vm/test_hmm.sh | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
+ fs/ext4/inode.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
-diff --git a/tools/testing/selftests/vm/test_hmm.sh b/tools/testing/selftests/vm/test_hmm.sh
-index 0647b525a625..3eeabe94399f 100755
---- a/tools/testing/selftests/vm/test_hmm.sh
-+++ b/tools/testing/selftests/vm/test_hmm.sh
-@@ -40,7 +40,18 @@ check_test_requirements()
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 0f06305167d5..9097fccdc688 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -1711,16 +1711,13 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
+ 		}
  
- load_driver()
- {
--	modprobe $DRIVER > /dev/null 2>&1
-+	if [ $# -eq 0 ]; then
-+		modprobe $DRIVER > /dev/null 2>&1
-+	else
-+		if [ $# -eq 2 ]; then
-+			modprobe $DRIVER spm_addr_dev0=$1 spm_addr_dev1=$2
-+				> /dev/null 2>&1
-+		else
-+			echo "Missing module parameters. Make sure pass"\
-+			"spm_addr_dev0 and spm_addr_dev1"
-+			usage
-+		fi
-+	fi
- 	if [ $? == 0 ]; then
- 		major=$(awk "\$2==\"HMM_DMIRROR\" {print \$1}" /proc/devices)
- 		mknod /dev/hmm_dmirror0 c $major 0
-@@ -58,7 +69,7 @@ run_smoke()
- {
- 	echo "Running smoke test. Note, this test provides basic coverage."
+ 		/*
+-		 * the buffer head associated with a delayed and not unwritten
+-		 * block found in the extent status cache must contain an
+-		 * invalid block number and have its BH_New and BH_Delay bits
+-		 * set, reflecting the state assigned when the block was
+-		 * initially delayed allocated
++		 * Delayed extent could be allocated by fallocate.
++		 * So we need to check it.
+ 		 */
+-		if (ext4_es_is_delonly(&es)) {
+-			BUG_ON(bh->b_blocknr != invalid_block);
+-			BUG_ON(!buffer_new(bh));
+-			BUG_ON(!buffer_delay(bh));
++		if (ext4_es_is_delayed(&es) && !ext4_es_is_unwritten(&es)) {
++			map_bh(bh, inode->i_sb, invalid_block);
++			set_buffer_new(bh);
++			set_buffer_delay(bh);
+ 			return 0;
+ 		}
  
--	load_driver
-+	load_driver $1 $2
- 	$(dirname "${BASH_SOURCE[0]}")/hmm-tests
- 	unload_driver
- }
-@@ -75,6 +86,9 @@ usage()
- 	echo "# Smoke testing"
- 	echo "./${TEST_NAME}.sh smoke"
- 	echo
-+	echo "# Smoke testing with SPM enabled"
-+	echo "./${TEST_NAME}.sh smoke <spm_addr_dev0> <spm_addr_dev1>"
-+	echo
- 	exit 0
- }
- 
-@@ -84,7 +98,7 @@ function run_test()
- 		usage
- 	else
- 		if [ "$1" = "smoke" ]; then
--			run_smoke
-+			run_smoke $2 $3
- 		else
- 			usage
- 		fi
 -- 
-2.32.0
+2.20.1
 
