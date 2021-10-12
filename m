@@ -2,546 +2,175 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB93742A332
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Oct 2021 13:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0555D42A393
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Oct 2021 13:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236193AbhJLL1i (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 12 Oct 2021 07:27:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236129AbhJLL1h (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 12 Oct 2021 07:27:37 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11838C061570;
-        Tue, 12 Oct 2021 04:25:36 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2804:14c:124:8a08::1007])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: krisman)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id F1EEF1F436F2;
-        Tue, 12 Oct 2021 12:25:33 +0100 (BST)
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Shreeya Patel <shreeya.patel@collabora.com>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH 10/11] unicode: Add utf8-data module
-Organization: Collabora
-References: <20210915070006.954653-1-hch@lst.de>
-        <20210915070006.954653-11-hch@lst.de>
-Date:   Tue, 12 Oct 2021 08:25:23 -0300
-In-Reply-To: <20210915070006.954653-11-hch@lst.de> (Christoph Hellwig's
-        message of "Wed, 15 Sep 2021 09:00:05 +0200")
-Message-ID: <87wnmipjrw.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S234934AbhJLLs3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 12 Oct 2021 07:48:29 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:13726 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232665AbhJLLs2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 12 Oct 2021 07:48:28 -0400
+Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HTDNc6jYCzVflZ;
+        Tue, 12 Oct 2021 19:44:48 +0800 (CST)
+Received: from [10.174.178.185] (10.174.178.185) by
+ dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Tue, 12 Oct 2021 19:46:24 +0800
+Subject: Re: [PATCH -next v2 2/6] ext4: introduce last_check_time record
+ previous check time
+To:     Jan Kara <jack@suse.cz>
+References: <20210911090059.1876456-1-yebin10@huawei.com>
+ <20210911090059.1876456-3-yebin10@huawei.com>
+ <20211007123100.GG12712@quack2.suse.cz> <615FA55B.5070404@huawei.com>
+ <615FAF27.8070000@huawei.com> <20211012084727.GF9697@quack2.suse.cz>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From:   yebin <yebin10@huawei.com>
+Message-ID: <61657590.2050407@huawei.com>
+Date:   Tue, 12 Oct 2021 19:46:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20211012084727.GF9697@quack2.suse.cz>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.185]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme754-chm.china.huawei.com (10.3.19.100)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Christoph Hellwig <hch@lst.de> writes:
 
-> utf8data.h contains a large database table which is an auto-generated
-> decodification trie for the unicode normalization functions.
+
+On 2021/10/12 16:47, Jan Kara wrote:
+> On Fri 08-10-21 10:38:31, yebin wrote:
+>> On 2021/10/8 9:56, yebin wrote:
+>>> On 2021/10/7 20:31, Jan Kara wrote:
+>>>> On Sat 11-09-21 17:00:55, Ye Bin wrote:
+>>>>> kmmpd:
+>>>>> ...
+>>>>>       diff = jiffies - last_update_time;
+>>>>>       if (diff > mmp_check_interval * HZ) {
+>>>>> ...
+>>>>> As "mmp_check_interval = 2 * mmp_update_interval", 'diff' always little
+>>>>> than 'mmp_update_interval', so there will never trigger detection.
+>>>>> Introduce last_check_time record previous check time.
+>>>>>
+>>>>> Signed-off-by: Ye Bin <yebin10@huawei.com>
+>>>> I think the check is there only for the case where write_mmp_block() +
+>>>> sleep took longer than mmp_check_interval. I agree that should rarely
+>>>> happen but on a really busy system it is possible and in that case
+>>>> we would
+>>>> miss updating mmp block for too long and so another node could have
+>>>> started
+>>>> using the filesystem. I actually don't see a reason why kmmpd should be
+>>>> checking the block each mmp_check_interval as you do -
+>>>> mmp_check_interval
+>>>> is just for ext4_multi_mount_protect() to know how long it should wait
+>>>> before considering mmp block stale... Am I missing something?
+>>>>
+>>>>                                  Honza
+>>> I'm sorry, I didn't understand the detection mechanism here before. Now
+>>> I understand
+>>> the detection mechanism here.
+>>> As you said, it's just an abnormal protection. There's really no problem.
+>>>
+>> Yeah, i did test as following steps
+>> hostA                        hostB
+>>     mount
+>>       ext4_multi_mount_protect  -> seq == EXT4_MMP_SEQ_CLEAN
+>>          delay 5s after label "skip" so hostB will see seq is
+>> EXT4_MMP_SEQ_CLEAN
+>>                         mount
+>>                         ext4_multi_mount_protect -> seq == EXT4_MMP_SEQ_CLEAN
+>>                                 run  kmmpd
+>>      run kmmpd
+>>
+>> Actually，in this  situation kmmpd will not detect  confliction.
+>> In ext4_multi_mount_protect function we write mmp data first and wait
+>> 'wait_time * HZ'  seconds,
+>> read mmp data do check. Most of the time, If 'wait_time' is zero, it can pass
+>> check.
+> But how can be wait_time zero? As far as I'm reading the code, wait_time
+> must be at least EXT4_MMP_MIN_CHECK_INTERVAL...
 >
-> Allow building it into a separate module.
->
-> Based on a patch from Shreeya Patel <shreeya.patel@collabora.com>.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  fs/unicode/Kconfig                            | 13 ++++-
->  fs/unicode/Makefile                           | 13 ++---
->  fs/unicode/mkutf8data.c                       | 24 ++++++++--
->  fs/unicode/utf8-core.c                        | 35 +++++++++++---
->  fs/unicode/utf8-norm.c                        | 48 ++++---------------
->  fs/unicode/utf8-selftest.c                    | 16 +++----
->  ...{utf8data.h_shipped => utf8data.c_shipped} | 22 +++++++--
->  fs/unicode/utf8n.h                            | 40 ++++++++--------
->  include/linux/unicode.h                       |  2 +
->  9 files changed, 123 insertions(+), 90 deletions(-)
->  rename fs/unicode/{utf8data.h_shipped => utf8data.c_shipped} (99%)
->
-> diff --git a/fs/unicode/Kconfig b/fs/unicode/Kconfig
-> index 2c27b9a5cd6ce..610d7bc05d6e3 100644
-> --- a/fs/unicode/Kconfig
-> +++ b/fs/unicode/Kconfig
-> @@ -8,7 +8,16 @@ config UNICODE
->  	  Say Y here to enable UTF-8 NFD normalization and NFD+CF casefolding
->  	  support.
->  
-> +config UNICODE_UTF8_DATA
-> +	tristate "UTF-8 normalization and casefolding tables"
-> +	depends on UNICODE
-> +	default UNICODE
-> +	help
-> +	  This contains a large table of case foldings, which can be loaded as
-> +	  a separate module if you say M here.  To be on the safe side stick
-> +	  to the default of Y.  Saying N here makes no sense, if you do not want
-> +	  utf8 casefolding support, disable CONFIG_UNICODE instead.
-> +
->  config UNICODE_NORMALIZATION_SELFTEST
->  	tristate "Test UTF-8 normalization support"
-> -	depends on UNICODE
-> -	default n
-> +	depends on UNICODE_UTF8_DATA
-> diff --git a/fs/unicode/Makefile b/fs/unicode/Makefile
-> index b88aecc865502..2f9d9188852b5 100644
-> --- a/fs/unicode/Makefile
-> +++ b/fs/unicode/Makefile
-> @@ -2,14 +2,15 @@
->  
->  obj-$(CONFIG_UNICODE) += unicode.o
->  obj-$(CONFIG_UNICODE_NORMALIZATION_SELFTEST) += utf8-selftest.o
-> +obj-$(CONFIG_UNICODE_UTF8_DATA) += utf8data.o
->  
->  unicode-y := utf8-norm.o utf8-core.o
->  
-> -$(obj)/utf8-norm.o: $(obj)/utf8data.h
-> +$(obj)/utf8-data.o: $(obj)/utf8data.c
->  
-> -# In the normal build, the checked-in utf8data.h is just shipped.
-> +# In the normal build, the checked-in utf8data.c is just shipped.
->  #
-> -# To generate utf8data.h from UCD, put *.txt files in this directory
-> +# To generate utf8data.c from UCD, put *.txt files in this directory
->  # and pass REGENERATE_UTF8DATA=1 from the command line.
->  ifdef REGENERATE_UTF8DATA
->  
-> @@ -24,15 +25,15 @@ quiet_cmd_utf8data = GEN     $@
->  		-t $(srctree)/$(src)/NormalizationTest.txt \
->  		-o $@
->  
-> -$(obj)/utf8data.h: $(obj)/mkutf8data $(filter %.txt, $(cmd_utf8data)) FORCE
-> +$(obj)/utf8data.c: $(obj)/mkutf8data $(filter %.txt, $(cmd_utf8data)) FORCE
->  	$(call if_changed,utf8data)
->  
->  else
->  
-> -$(obj)/utf8data.h: $(src)/utf8data.h_shipped FORCE
-> +$(obj)/utf8data.c: $(src)/utf8data.c_shipped FORCE
->  	$(call if_changed,shipped)
->  
->  endif
->  
-> -targets += utf8data.h
-> +targets += utf8data.c
->  hostprogs += mkutf8data
-> diff --git a/fs/unicode/mkutf8data.c b/fs/unicode/mkutf8data.c
-> index ff2025ac5a325..bc1a7c8b5c8df 100644
-> --- a/fs/unicode/mkutf8data.c
-> +++ b/fs/unicode/mkutf8data.c
-> @@ -3287,12 +3287,10 @@ static void write_file(void)
->  		open_fail(utf8_name, errno);
->  
->  	fprintf(file, "/* This file is generated code, do not edit. */\n");
-> -	fprintf(file, "#ifndef __INCLUDED_FROM_UTF8NORM_C__\n");
-> -	fprintf(file, "#error Only nls_utf8-norm.c should include this file.\n");
-> -	fprintf(file, "#endif\n");
->  	fprintf(file, "\n");
-> -	fprintf(file, "static const unsigned int utf8vers = %#x;\n",
-> -		unicode_maxage);
-> +	fprintf(file, "#include <linux/module.h>\n");
-> +	fprintf(file, "#include <linux/kernel.h>\n");
-> +	fprintf(file, "#include \"utf8n.h\"\n");
->  	fprintf(file, "\n");
->  	fprintf(file, "static const unsigned int utf8agetab[] = {\n");
->  	for (i = 0; i != ages_count; i++)
-> @@ -3339,6 +3337,22 @@ static void write_file(void)
->  		fprintf(file, "\n");
->  	}
->  	fprintf(file, "};\n");
-> +	fprintf(file, "\n");
-> +	fprintf(file, "struct utf8data_table utf8_data_table = {\n");
-> +	fprintf(file, "\t.utf8agetab = utf8agetab,\n");
-> +	fprintf(file, "\t.utf8agetab_size = ARRAY_SIZE(utf8agetab),\n");
-> +	fprintf(file, "\n");
-> +	fprintf(file, "\t.utf8nfdicfdata = utf8nfdicfdata,\n");
-> +	fprintf(file, "\t.utf8nfdicfdata_size = ARRAY_SIZE(utf8nfdicfdata),\n");
-> +	fprintf(file, "\n");
-> +	fprintf(file, "\t.utf8nfdidata = utf8nfdidata,\n");
-> +	fprintf(file, "\t.utf8nfdidata_size = ARRAY_SIZE(utf8nfdidata),\n");
-> +	fprintf(file, "\n");
-> +	fprintf(file, "\t.utf8data = utf8data,\n");
-> +	fprintf(file, "};\n");
-> +	fprintf(file, "EXPORT_SYMBOL_GPL(utf8_data_table);");
-> +	fprintf(file, "\n");
-> +	fprintf(file, "MODULE_LICENSE(\"GPL v2\");\n");
->  	fclose(file);
->  }
->  
-> diff --git a/fs/unicode/utf8-core.c b/fs/unicode/utf8-core.c
-> index d9f713d38c0ad..38ca824f10158 100644
-> --- a/fs/unicode/utf8-core.c
-> +++ b/fs/unicode/utf8-core.c
-> @@ -160,25 +160,45 @@ int utf8_normalize(const struct unicode_map *um, const struct qstr *str,
->  }
->  EXPORT_SYMBOL(utf8_normalize);
->  
-> +static const struct utf8data *find_table_version(const struct utf8data *table,
-> +		size_t nr_entries, unsigned int version)
-> +{
-> +	size_t i = nr_entries - 1;
-> +
-> +	while (version < table[i].maxage)
-> +		i--;
-> +	if (version > table[i].maxage)
-> +		return NULL;
-> +	return &table[i];
-> +}
-> +
->  struct unicode_map *utf8_load(unsigned int version)
->  {
->  	struct unicode_map *um;
->  
-> -	if (!utf8version_is_supported(version))
-> -		return ERR_PTR(-EINVAL);
-> -
->  	um = kzalloc(sizeof(struct unicode_map), GFP_KERNEL);
->  	if (!um)
->  		return ERR_PTR(-ENOMEM);
->  	um->version = version;
-> -	um->ntab[UTF8_NFDI] = utf8nfdi(version);
-> -	if (!um->ntab[UTF8_NFDI])
-> +
-> +	um->tables = symbol_request(utf8_data_table);
-> +	if (!um->tables)
->  		goto out_free_um;
-> -	um->ntab[UTF8_NFDICF] = utf8nfdicf(version);
-> +
-> +	if (!utf8version_is_supported(um, version))
-> +		goto out_symbol_put;
-> +	um->ntab[UTF8_NFDI] = find_table_version(um->tables->utf8nfdidata,
-> +			um->tables->utf8nfdidata_size, um->version);
-> +	if (!um->ntab[UTF8_NFDI])
-> +		goto out_symbol_put;
-> +	um->ntab[UTF8_NFDICF] = find_table_version(um->tables->utf8nfdicfdata,
-> +			um->tables->utf8nfdicfdata_size, um->version);
->  	if (!um->ntab[UTF8_NFDICF])
-> -		goto out_free_um;
-> +		goto out_symbol_put;
->  	return um;
->  
-> +out_symbol_put:
-> +	symbol_put(um->tables);
->  out_free_um:
->  	kfree(um);
->  	return ERR_PTR(-EINVAL);
-> @@ -187,6 +207,7 @@ EXPORT_SYMBOL(utf8_load);
->  
->  void utf8_unload(struct unicode_map *um)
->  {
-> +	symbol_put(utf8_data_table);
+> 								Honza
+  int ext4_multi_mount_protect(struct super_block *sb,
+                                      ext4_fsblk_t mmp_block)
+  {
+          struct ext4_super_block *es = EXT4_SB(sb)->s_es;
+          struct buffer_head *bh = NULL;
+          struct mmp_struct *mmp = NULL;
+          u32 seq;
+          unsigned int mmp_check_interval = 
+le16_to_cpu(es->s_mmp_update_interval);
+          unsigned int wait_time = 0;                    --> wait_time 
+is equal with zero
+          int retval;
 
-This triggers a BUG_ON if the symbol isn't loaded/loadable,
-i.e. ext4_fill_super fails early.  I'm not sure how to fix it, though.
+          if (mmp_block < le32_to_cpu(es->s_first_data_block) ||
+              mmp_block >= ext4_blocks_count(es)) {
+                  ext4_warning(sb, "Invalid MMP block in superblock");
+                  goto failed;
+          }
 
+          retval = read_mmp_block(sb, &bh, mmp_block);
+          if (retval)
+                  goto failed;
 
- Failed to find symbol utf8_data_table
- ------------[ cut here ]------------
- kernel BUG at kernel/module.c:1022!
- invalid opcode: 0000 [#1] SMP
- CPU: 1 PID: 387 Comm: mount Not tainted 5.15.0-rc4-for-next_5.15 #5
- Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
- RIP: 0010:__symbol_put+0x88/0x90
- Code: 84 c0 74 26 48 8b 7c 24 10 e8 44 f9 ff ff 65 ff 0d 1d 44 ea 7e 48 8b 44 24 30 65 48 33 04 25 28 00 00 00 75 07 48 83 c4 38 c3 <0f> 0b e8 51 ca a9 00 90 0f 1f 44 00 00 48 63 46 04 48 8d 74
+          mmp = (struct mmp_struct *)(bh->b_data);
 
- RSP: 0018:ffffc90000623cc0 EFLAGS: 00010246
- RAX: 0000000000000000 RBX: ffff888102e91490 RCX: 0000000000000000
- RDX: 0000000000000000 RSI: ffff88813b9d7860 RDI: ffff88813b9d7868
- RBP: ffffc90000623de0 R08: 0000000000000000 R09: c0000000ffffefff
- R10: ffffc900006239d8 R11: ffffc900006239d0 R12: 00000000ffffffea
- R13: 0000000000000000 R14: ffff888102e94000 R15: ffff888102e91000
- FS:  00007efcab508800(0000) GS:ffff88813b800000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 00007ff08eec56f4 CR3: 0000000102f31000 CR4: 00000000000006e0
- DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
- DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
- Call Trace:
-  ext4_fill_super+0x289/0x32b0
-  ? bdev_name.isra.7+0x53/0xd0
-  ? vsnprintf+0x379/0x520
-  ? ext4_enable_quotas+0x260/0x260
-  ? mount_bdev+0x18a/0x1c0
-  ? ext4_enable_quotas+0x260/0x260
-  mount_bdev+0x18a/0x1c0
-  legacy_get_tree+0x30/0x50
-  vfs_get_tree+0x23/0x90
-  ? ns_capable_common+0x2b/0x50
-  path_mount+0x6da/0xa50
-  ? kmem_cache_free+0xf4/0x140
-  do_mount+0x75/0x90
-  __x64_sys_mount+0xc4/0xe0
-  do_syscall_64+0x3a/0xb0
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
- RIP: 0033:0x7efcab71f6ba
- Code: 48 8b 0d b1 f7 0b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 7e f7 0b 00 f7 d8 64 89
+          if (mmp_check_interval < EXT4_MMP_MIN_CHECK_INTERVAL)
+                  mmp_check_interval = EXT4_MMP_MIN_CHECK_INTERVAL;
 
- RSP: 002b:00007ffefb824338 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
- RAX: ffffffffffffffda RBX: 00007efcab873264 RCX: 00007efcab71f6ba
- RDX: 000055a2867dad10 RSI: 000055a2867d40f0 RDI: 000055a2867d40d0
- RBP: 000055a2867d3ea0 R08: 0000000000000000 R09: 000055a2867d3010
- R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
- R13: 000055a2867d40d0 R14: 000055a2867dad10 R15: 000055a2867d3ea0
- Modules linked in:
- ---[ end trace abcd43d820168730 ]---
+          /*
+           * If check_interval in MMP block is larger, use that instead of
+           * update_interval from the superblock.
+           */
+          if (le16_to_cpu(mmp->mmp_check_interval) > mmp_check_interval)
+                  mmp_check_interval = le16_to_cpu(mmp->mmp_check_interval);
 
+          seq = le32_to_cpu(mmp->mmp_seq);
+          if (seq == EXT4_MMP_SEQ_CLEAN)   --> If hostA and hostB mount 
+the same block device at the same time,
+--> HostA and hostB  maybe get 'seq' with the same value 
+EXT4_MMP_SEQ_CLEAN.
+                  goto skip;
+...
+skip:
+         /*
+          * write a new random sequence number.
+          */
+         seq = mmp_new_seq();
+         mmp->mmp_seq = cpu_to_le32(seq);
 
+         retval = write_mmp_block(sb, bh);
+         if (retval)
+                 goto failed;
 
->  	kfree(um);
->  }
->  EXPORT_SYMBOL(utf8_unload);
-> diff --git a/fs/unicode/utf8-norm.c b/fs/unicode/utf8-norm.c
-> index 7c1f28ab31a80..829c7e2ad764a 100644
-> --- a/fs/unicode/utf8-norm.c
-> +++ b/fs/unicode/utf8-norm.c
-> @@ -6,21 +6,12 @@
->  
->  #include "utf8n.h"
->  
-> -struct utf8data {
-> -	unsigned int maxage;
-> -	unsigned int offset;
-> -};
-> -
-> -#define __INCLUDED_FROM_UTF8NORM_C__
-> -#include "utf8data.h"
-> -#undef __INCLUDED_FROM_UTF8NORM_C__
-> -
-> -int utf8version_is_supported(unsigned int version)
-> +int utf8version_is_supported(const struct unicode_map *um, unsigned int version)
->  {
-> -	int i = ARRAY_SIZE(utf8agetab) - 1;
-> +	int i = um->tables->utf8agetab_size - 1;
->  
-> -	while (i >= 0 && utf8agetab[i] != 0) {
-> -		if (version == utf8agetab[i])
-> +	while (i >= 0 && um->tables->utf8agetab[i] != 0) {
-> +		if (version == um->tables->utf8agetab[i])
->  			return 1;
->  		i--;
->  	}
-> @@ -161,7 +152,7 @@ typedef const unsigned char utf8trie_t;
->   * underlying datatype: unsigned char.
->   *
->   * leaf[0]: The unicode version, stored as a generation number that is
-> - *          an index into utf8agetab[].  With this we can filter code
-> + *          an index into ->utf8agetab[].  With this we can filter code
->   *          points based on the unicode version in which they were
->   *          defined.  The CCC of a non-defined code point is 0.
->   * leaf[1]: Canonical Combining Class. During normalization, we need
-> @@ -313,7 +304,7 @@ static utf8leaf_t *utf8nlookup(const struct unicode_map *um,
->  		enum utf8_normalization n, unsigned char *hangul, const char *s,
->  		size_t len)
->  {
-> -	utf8trie_t	*trie = utf8data + um->ntab[n]->offset;
-> +	utf8trie_t	*trie = um->tables->utf8data + um->ntab[n]->offset;
->  	int		offlen;
->  	int		offset;
->  	int		mask;
-> @@ -404,7 +395,8 @@ ssize_t utf8nlen(const struct unicode_map *um, enum utf8_normalization n,
->  		leaf = utf8nlookup(um, n, hangul, s, len);
->  		if (!leaf)
->  			return -1;
-> -		if (utf8agetab[LEAF_GEN(leaf)] > um->ntab[n]->maxage)
-> +		if (um->tables->utf8agetab[LEAF_GEN(leaf)] >
-> +		    um->ntab[n]->maxage)
->  			ret += utf8clen(s);
->  		else if (LEAF_CCC(leaf) == DECOMPOSE)
->  			ret += strlen(LEAF_STR(leaf));
-> @@ -520,7 +512,7 @@ int utf8byte(struct utf8cursor *u8c)
->  
->  		ccc = LEAF_CCC(leaf);
->  		/* Characters that are too new have CCC 0. */
-> -		if (utf8agetab[LEAF_GEN(leaf)] >
-> +		if (u8c->um->tables->utf8agetab[LEAF_GEN(leaf)] >
->  		    u8c->um->ntab[u8c->n]->maxage) {
->  			ccc = STOPPER;
->  		} else if (ccc == DECOMPOSE) {
-> @@ -597,25 +589,3 @@ int utf8byte(struct utf8cursor *u8c)
->  	}
->  }
->  EXPORT_SYMBOL(utf8byte);
-> -
-> -const struct utf8data *utf8nfdi(unsigned int maxage)
-> -{
-> -	int i = ARRAY_SIZE(utf8nfdidata) - 1;
-> -
-> -	while (maxage < utf8nfdidata[i].maxage)
-> -		i--;
-> -	if (maxage > utf8nfdidata[i].maxage)
-> -		return NULL;
-> -	return &utf8nfdidata[i];
-> -}
-> -
-> -const struct utf8data *utf8nfdicf(unsigned int maxage)
-> -{
-> -	int i = ARRAY_SIZE(utf8nfdicfdata) - 1;
-> -
-> -	while (maxage < utf8nfdicfdata[i].maxage)
-> -		i--;
-> -	if (maxage > utf8nfdicfdata[i].maxage)
-> -		return NULL;
-> -	return &utf8nfdicfdata[i];
-> -}
-> diff --git a/fs/unicode/utf8-selftest.c b/fs/unicode/utf8-selftest.c
-> index cfa3832b75f42..eb2bbdd688d71 100644
-> --- a/fs/unicode/utf8-selftest.c
-> +++ b/fs/unicode/utf8-selftest.c
-> @@ -255,21 +255,21 @@ static void check_utf8_comparisons(struct unicode_map *table)
->  	}
->  }
->  
-> -static void check_supported_versions(void)
-> +static void check_supported_versions(struct unicode_map *um)
->  {
->  	/* Unicode 7.0.0 should be supported. */
-> -	test(utf8version_is_supported(UNICODE_AGE(7, 0, 0)));
-> +	test(utf8version_is_supported(um, UNICODE_AGE(7, 0, 0)));
->  
->  	/* Unicode 9.0.0 should be supported. */
-> -	test(utf8version_is_supported(UNICODE_AGE(9, 0, 0)));
-> +	test(utf8version_is_supported(um, UNICODE_AGE(9, 0, 0)));
->  
->  	/* Unicode 1x.0.0 (the latest version) should be supported. */
-> -	test(utf8version_is_supported(UTF8_LATEST));
-> +	test(utf8version_is_supported(um, UTF8_LATEST));
->  
->  	/* Next versions don't exist. */
-> -	test(!utf8version_is_supported(UNICODE_AGE(13, 0, 0)));
-> -	test(!utf8version_is_supported(UNICODE_AGE(0, 0, 0)));
-> -	test(!utf8version_is_supported(UNICODE_AGE(-1, -1, -1)));
-> +	test(!utf8version_is_supported(um, UNICODE_AGE(13, 0, 0)));
-> +	test(!utf8version_is_supported(um, UNICODE_AGE(0, 0, 0)));
-> +	test(!utf8version_is_supported(um, UNICODE_AGE(-1, -1, -1)));
->  }
->  
->  static int __init init_test_ucd(void)
-> @@ -285,7 +285,7 @@ static int __init init_test_ucd(void)
->  		return PTR_ERR(um);
->  	}
->  
-> -	check_supported_versions();
-> +	check_supported_versions(um);
->  	check_utf8_nfdi(um);
->  	check_utf8_nfdicf(um);
->  	check_utf8_comparisons(um);
-> diff --git a/fs/unicode/utf8data.h_shipped b/fs/unicode/utf8data.c_shipped
-> similarity index 99%
-> rename from fs/unicode/utf8data.h_shipped
-> rename to fs/unicode/utf8data.c_shipped
-> index 76e4f0e1b0891..d9b62901aa96b 100644
-> --- a/fs/unicode/utf8data.h_shipped
-> +++ b/fs/unicode/utf8data.c_shipped
-> @@ -1,9 +1,8 @@
->  /* This file is generated code, do not edit. */
-> -#ifndef __INCLUDED_FROM_UTF8NORM_C__
-> -#error Only nls_utf8-norm.c should include this file.
-> -#endif
->  
-> -static const unsigned int utf8vers = 0xc0100;
-> +#include <linux/module.h>
-> +#include <linux/kernel.h>
-> +#include "utf8n.h"
->  
->  static const unsigned int utf8agetab[] = {
->  	0,
-> @@ -4107,3 +4106,18 @@ static const unsigned char utf8data[64256] = {
->  	0x52,0x04,0x00,0x00,0x11,0x04,0x00,0x00,0x02,0x00,0xcf,0x86,0xcf,0x06,0x02,0x00,
->  	0x81,0x80,0xcf,0x86,0x85,0x84,0xcf,0x86,0xcf,0x06,0x02,0x00,0x00,0x00,0x00,0x00
->  };
-> +
-> +struct utf8data_table utf8_data_table = {
-> +	.utf8agetab = utf8agetab,
-> +	.utf8agetab_size = ARRAY_SIZE(utf8agetab),
-> +
-> +	.utf8nfdicfdata = utf8nfdicfdata,
-> +	.utf8nfdicfdata_size = ARRAY_SIZE(utf8nfdicfdata),
-> +
-> +	.utf8nfdidata = utf8nfdidata,
-> +	.utf8nfdidata_size = ARRAY_SIZE(utf8nfdidata),
-> +
-> +	.utf8data = utf8data,
-> +};
-> +EXPORT_SYMBOL_GPL(utf8_data_table);
-> +MODULE_LICENSE("GPL v2");
-> diff --git a/fs/unicode/utf8n.h b/fs/unicode/utf8n.h
-> index 206c89f0dbf71..bd00d587747a7 100644
-> --- a/fs/unicode/utf8n.h
-> +++ b/fs/unicode/utf8n.h
-> @@ -13,25 +13,7 @@
->  #include <linux/module.h>
->  #include <linux/unicode.h>
->  
-> -int utf8version_is_supported(unsigned int version);
-> -
-> -/*
-> - * Look for the correct const struct utf8data for a unicode version.
-> - * Returns NULL if the version requested is too new.
-> - *
-> - * Two normalization forms are supported: nfdi and nfdicf.
-> - *
-> - * nfdi:
-> - *  - Apply unicode normalization form NFD.
-> - *  - Remove any Default_Ignorable_Code_Point.
-> - *
-> - * nfdicf:
-> - *  - Apply unicode normalization form NFD.
-> - *  - Remove any Default_Ignorable_Code_Point.
-> - *  - Apply a full casefold (C + F).
-> - */
-> -extern const struct utf8data *utf8nfdi(unsigned int maxage);
-> -extern const struct utf8data *utf8nfdicf(unsigned int maxage);
-> +int utf8version_is_supported(const struct unicode_map *um, unsigned int version);
->  
->  /*
->   * Determine the length of the normalized from of the string,
-> @@ -78,4 +60,24 @@ int utf8ncursor(struct utf8cursor *u8c, const struct unicode_map *um,
->   */
->  extern int utf8byte(struct utf8cursor *u8c);
->  
-> +struct utf8data {
-> +	unsigned int maxage;
-> +	unsigned int offset;
-> +};
-> +
-> +struct utf8data_table {
-> +	const unsigned int *utf8agetab;
-> +	int utf8agetab_size;
-> +
-> +	const struct utf8data *utf8nfdicfdata;
-> +	int utf8nfdicfdata_size;
-> +
-> +	const struct utf8data *utf8nfdidata;
-> +	int utf8nfdidata_size;
-> +
-> +	const unsigned char *utf8data;
-> +};
-> +
-> +extern struct utf8data_table utf8_data_table;
-> +
->  #endif /* UTF8NORM_H */
-> diff --git a/include/linux/unicode.h b/include/linux/unicode.h
-> index 526ca8b8391a5..4d39e6e11a950 100644
-> --- a/include/linux/unicode.h
-> +++ b/include/linux/unicode.h
-> @@ -6,6 +6,7 @@
->  #include <linux/dcache.h>
->  
->  struct utf8data;
-> +struct utf8data_table;
->  
->  #define UNICODE_MAJ_SHIFT		16
->  #define UNICODE_MIN_SHIFT		8
-> @@ -49,6 +50,7 @@ enum utf8_normalization {
->  struct unicode_map {
->  	unsigned int version;
->  	const struct utf8data *ntab[UTF8_NMAX];
-> +	const struct utf8data_table *tables;
->  };
->  
->  int utf8_validate(const struct unicode_map *um, const struct qstr *str);
+         /*
+          * wait for MMP interval and check mmp_seq.
+          */
+         if (schedule_timeout_interruptible(HZ * wait_time) != 0) 
+{        --> If seq is equal with EXT4_MMP_SEQ_CLEAN, wait_time is zero.
+                 ext4_warning(sb, "MMP startup interrupted, failing mount");
+                 goto failed;
+         }
 
--- 
-Gabriel Krisman Bertazi
+         retval = read_mmp_block(sb, &bh, mmp_block); -->We may get the 
+same data with which we wrote, so we can't detect conflict at here.
+         if (retval)
+                 goto failed;
+         mmp = (struct mmp_struct *)(bh->b_data);
+         if (seq != le32_to_cpu(mmp->mmp_seq)) {
+                 dump_mmp_msg(sb, mmp,
+                              "Device is already active on another node.");
+                 goto failed;
+         }
+...
+}
+
