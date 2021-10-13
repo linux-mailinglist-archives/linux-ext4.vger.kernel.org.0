@@ -2,236 +2,133 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7546942B390
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Oct 2021 05:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37B8C42B472
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Oct 2021 07:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237282AbhJMDbJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 12 Oct 2021 23:31:09 -0400
-Received: from mail-eopbgr1300092.outbound.protection.outlook.com ([40.107.130.92]:38720
-        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237640AbhJMDbC (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 12 Oct 2021 23:31:02 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jURnHz1XU82+ByJTY772iUvxzDaEG+Llfgx0T5AMSWWA8UIWrvssDvmc0/RRtuC1dKnQl0c9IxLtB7IXzeQgTcBEK60YX5FzIFtSGFAg8aOcRJYX0u7mVg48zm9QtFT8uL5le5cFJpHtro8ts5GDbiukVj7kYdKdRIyv9urpPzq2RJR7W0Mfsuv2qF95WRTEplD63goI8fui/5oi40b5XyMOk3/w9pmx6sLOUi93Se7TLVYbmMc3E+kzI66TYmvUJBIiiQT/U5ao1Jq9b8VhrtiVKZApyjV8XsBMuTmf3HPC1ogEbKUOZ4NvXxrO71ZbtH0BcGTvltYkOE5V+19q9g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZL2NhNS1E+BsCLaQ4i6Ql1gFAysxIMHF5fTTmSB1Lu8=;
- b=MqcuP6GMQGMUs1g755gQLateW+JMAOVPB40Lb0mt5fixvlFP5J9eKHXKpKFwjLyt/C3gwfZU7x4nXbWeMlwwewTQZCpAEzzwx5ImPCQDi7IDRVAlfj1DIll/vM8clWQz79+kYkrOYfLtxofHA4mparUnweWrOEi/bbZwxR47m62uX2FXwYEqwW3SewKyOWSgwWcz2bnr3t/1e8UgXDoPBJ/p+YtGHT43r6H8to1fN2KxGFrgiZKgxicIM2f68aBECrcqimzON7xcUiZnnzII3/YgSQOzzYcme3JMEc3+/X/VHXahFUg1AkMrqDzG/2AcIHqEKVkMfcF0D3U/P7Fi1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZL2NhNS1E+BsCLaQ4i6Ql1gFAysxIMHF5fTTmSB1Lu8=;
- b=LH3SNwmdHmIP3A3iHWkxfyHwGyF2c5cv6dHQVSmLKIxX+/49U2geKK916y7vNdZY5L9OGUSlAGbV48cnt8740syWUufy3ClLl6OJa+f1GP44xxCVPpz1AS3UFnjcOf1CPGifyO94Di+H0VU2gyjzCHYZI3jG7uXJrb7n7QU9+zo=
-Authentication-Results: mit.edu; dkim=none (message not signed)
- header.d=none;mit.edu; dmarc=none action=none header.from=vivo.com;
-Received: from SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17)
- by SL2PR06MB2955.apcprd06.prod.outlook.com (2603:1096:100:3d::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Wed, 13 Oct
- 2021 03:28:58 +0000
-Received: from SL2PR06MB3082.apcprd06.prod.outlook.com
- ([fe80::4c9b:b71f:fb67:6414]) by SL2PR06MB3082.apcprd06.prod.outlook.com
- ([fe80::4c9b:b71f:fb67:6414%6]) with mapi id 15.20.4587.024; Wed, 13 Oct 2021
- 03:28:58 +0000
-From:   Qing Wang <wangqing@vivo.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Qing Wang <wangqing@vivo.com>
-Subject: [PATCH] ext4: replace snprintf in show functions with sysfs_emit
-Date:   Tue, 12 Oct 2021 20:28:51 -0700
-Message-Id: <1634095731-4528-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR0401CA0015.apcprd04.prod.outlook.com
- (2603:1096:202:2::25) To SL2PR06MB3082.apcprd06.prod.outlook.com
- (2603:1096:100:37::17)
+        id S231494AbhJMFP3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 13 Oct 2021 01:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229514AbhJMFP2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 13 Oct 2021 01:15:28 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C2BC061570;
+        Tue, 12 Oct 2021 22:13:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=ocvXC+DvSauKdmmvS3p+BxJi5u95doUk5KlK23wKtqo=; b=lKRpM4ZXjdzEAs+vZHMan9ZhwK
+        q3qA9dd5QajFA+KsuGdVyTH2p+oZZPEv/z2NSgSxTwIMMwqmktOR+s0Mrd19t1c1Y/TakGT40A9Wj
+        fXHJiNb6NQJwkxlZ/5iLycWCBNdMTLXRP1g8wuFiwK5UhTbY4DE7tpL0AHanppMBRE/m1Ine/XAEK
+        um2dw0LVt4/UjLCyOHoVNjJK0jpXEaLw+w3Q6MwnUfqPKIR8hZ7XIOjLGS/AwhJhnrAzptzhgIYv3
+        k508G2hmAkGrCbErzCtBLkTxM5WVEpuUuduXQQzcasviJArvc73oNwcMB0CSLN98PutjOV+1MzU1W
+        3RwzUyhQ==;
+Received: from 089144212063.atnat0021.highway.a1.net ([89.144.212.63] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1maWXM-0075tt-3G; Wed, 13 Oct 2021 05:10:57 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Coly Li <colyli@suse.de>, Mike Snitzer <snitzer@redhat.com>,
+        Song Liu <song@kernel.org>, David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Kees Cook <keescook@chromium.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Jan Kara <jack@suse.com>, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, drbd-dev@lists.linbit.com,
+        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
+        linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev,
+        reiserfs-devel@vger.kernel.org
+Subject: don't use ->bd_inode to access the block device size
+Date:   Wed, 13 Oct 2021 07:10:13 +0200
+Message-Id: <20211013051042.1065752-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Received: from ubuntu.localdomain (218.213.202.189) by HK2PR0401CA0015.apcprd04.prod.outlook.com (2603:1096:202:2::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4608.15 via Frontend Transport; Wed, 13 Oct 2021 03:28:57 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 436aabe1-402f-446f-432e-08d98df997a8
-X-MS-TrafficTypeDiagnostic: SL2PR06MB2955:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SL2PR06MB295518A18EB2DAF7449A32F9BDB79@SL2PR06MB2955.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:178;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: A2KnVJOa+9nmGAGmZp07f1gnA0v5Q9A2IpXqO9rzm0txXLrAsJ2TkiY6hEcMTkI456p7iuK2DQdHF4n1jkiXZedVbvR3fTI8SIcPZDu8ItRqe1/CUZjlzIN8yteY3LY9cQisxS/GyJ3/Q7pbqCTOwMCbY4s42510mDbwSmzjjP5DJyrwwW1w2QbOk6uXM3BbTxBCXZPUcJpg5MBEku5f6VqLtf1N6PCcM7HjaD3ElJ0QpJFvalVXR96Pl6+Vx7FUJehdsdiUce4YTpbpANXW74un2QrHba45g2iC6XrWnAE+EaoZVY3Pr8PatM4CbT8ZegwrdIdvs5DRHyuZyJb540AiefuJga2wjtLO3cwf5qQUITVUDdJgb7NaQh3tQlqcuI0YBU0GSc0ZTr2uun0OYtTJvFrGQauqVUBtIiSRkxKWyi0AejfKZfunyaKUnreAIQ3BEdmCevMGNCCFgnURQdV/vRqAmJk4zOyYcrZLU0IHLXV2juZPJ8Hd7Yj1p3pe6zPQwrydDdz84rEc3QYMwK2cDHkFUb4m3dzMgkPhuHjbqtkikoYEOvLjHafje54CTAoPkywKb/Q3oQeoOZ456HGM82i+umGXKt8LwaBCPnrqkXz8d/vixiMLO3DCdWIhEcBMvuzHJY5vDVvEnQeRwzT7fmlxa57GAACOCBHoZJSEHscGAqtCTMFtjd49l1uCHroE2vkq44bYqVvfx4l5lg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(956004)(508600001)(186003)(6666004)(107886003)(66476007)(66556008)(8936002)(66946007)(110136005)(26005)(2906002)(6486002)(2616005)(36756003)(83380400001)(4326008)(52116002)(6512007)(6506007)(86362001)(8676002)(316002)(38350700002)(5660300002)(38100700002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3n5lj139VYls+o6EVTyIgr0RaASrgwIm5yRpJfbK5ZMzvF95yqsK8Bjhfmfz?=
- =?us-ascii?Q?MAbY/fRtfwBP9g9UIies9fJAt5mBiEeH+2cL/5DL+DCEo+SF/QXqvjaN2bes?=
- =?us-ascii?Q?o3RbPA30+KGb9cRxwTOsuIlK7RKfAg9qXW5y78KQBr7lc0GJlZYF92yI12qO?=
- =?us-ascii?Q?JBOjPsVa4m0pcoJT5veLV2fH+lsdmqYxKzT8Doc9lfQ2FkVE9bcqq4AxEaE3?=
- =?us-ascii?Q?LmPiqVND56WIOhljs6aZ1a3ZZg6xI0JEO+REIfd4BUhLj3QQb77yaLF+jNvy?=
- =?us-ascii?Q?Uai4XeijbRVuvrQMgVFtyaVK9MAtp8lFaUxJGCWDq4rVF3Jc8slN9N9VZ/ES?=
- =?us-ascii?Q?TI2WQgPPX9yTcrogbQOnnU4Xgz1l066VnJEycUSWduwnBGdkxlrSc6hp7r9r?=
- =?us-ascii?Q?LkyTk0CbJW/qhCN7lu7vR2bsXk+lXrGYGCtoa/pivjFuWEwuXtKMu/mFt0Fk?=
- =?us-ascii?Q?HR7Q/ovvOTC5yAkLWTp+sillJxBLSMPB4g3989Z4FhnAdAuMBucV3rERDvVS?=
- =?us-ascii?Q?QpyGTHxsivJYyFEr17X1ECS+w0v8KMHHFa2LQd3+X0GE9ueNDlyDnYsUvzXw?=
- =?us-ascii?Q?PshTcKJDWJSq8QWyvx+cAoFVDV57grNnJKnfIF3DRx5oAbcTLs6Uj/OdgvgI?=
- =?us-ascii?Q?qQeoOKtcsm8INBcdtcJUApoCMi2rWmBgcVhhcvYx/yw2stXw2Get3p3ac8qM?=
- =?us-ascii?Q?LkMYO2OWwfYQ6VQ+fvIuJo7dzYEf3I0VFOBh8hmZTXOiSFfqONWar7kx5ELb?=
- =?us-ascii?Q?rgT8gNitR1evQI5nrAlkUqM3bDXJzqcZdP1yReCk6qoZdMavEtKTKE/eUtHT?=
- =?us-ascii?Q?PfCUqg7nn5yPZR4VDQGDSffIbD2d/fBJGUhtnR+3rg5ahEN4PyEAuMblKooP?=
- =?us-ascii?Q?d6iaBIL/XLAgkh+Fl6hf66DG/IFLMGa5FMIN2wt9ZU+AUF03DTCJCcq/wPeb?=
- =?us-ascii?Q?4+aGqP394lERWVRnRD3b9NwUkwcLDA0rHQlQhmERuagG8UN06kCkqqrh9a3B?=
- =?us-ascii?Q?Gd1uSZ/tBOXpS+3Lp3XeSyXrLBrqLppYFfFP95tmltW9evURC0t3kuRvMvPV?=
- =?us-ascii?Q?jkYTFSK/zYfurrZHhY9OwIRykSaWbnI2Iq2xE7wnGaZ67AZBIO7ZzdUwXRwR?=
- =?us-ascii?Q?jtdzmk1uSHk5qx/FhU/CaAFvM/4eUIihb/heBXRxvOR/LqV0ITw1P8qK1TeW?=
- =?us-ascii?Q?Hzv9xTnS2MiHeG4c0kgHsLgahnTJ/HOj2ZQhnbd+2TJ8bkrdPDiUGbCKqhPB?=
- =?us-ascii?Q?wpevz3jQiakugzd30CcfC+OTS/wkHYqGQ6pUZWs7jDy3TujQN7GwrgRea5lk?=
- =?us-ascii?Q?iSKzfGJsfyIiuLBVxo1fCz1F?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 436aabe1-402f-446f-432e-08d98df997a8
-X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3082.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2021 03:28:58.1405
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fsMbJ9KxM/pyjYDrg8+YsEmrcHug8khG1rKFNwVF/k1Ev2S42u1VLr/ELB/v/ZanLA9FSzF0jllzkAVWD+dDwQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB2955
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-coccicheck complains about the use of snprintf() in sysfs show functions.
+Hi Jens,
 
-Fix the coccicheck warning:
-WARNING: use scnprintf or sprintf.
+various drivers currently poke directy at the block device inode, which
+is a bit of a mess.  This series cleans up the places that read the
+block device size to use the proper helpers.  I have separate patches
+for many of the other bd_inode uses, but this series is already big
+enough as-is,
 
-Use sysfs_emit instead of scnprintf or sprintf makes more sense.
+I wondered about adding a helper for looking at the size in byte units
+to avoid the SECTOR_SHIFT shifts in various places.  But given that
+I could not come up with a good name and block devices fundamentally
+work in sector size granularity I decided against that.
 
-Signed-off-by: Qing Wang <wangqing@vivo.com>
----
- fs/ext4/sysfs.c | 34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
-
-diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-index 2314f74..2a4ae3d 100644
---- a/fs/ext4/sysfs.c
-+++ b/fs/ext4/sysfs.c
-@@ -63,7 +63,7 @@ static ssize_t session_write_kbytes_show(struct ext4_sb_info *sbi, char *buf)
- {
- 	struct super_block *sb = sbi->s_buddy_cache->i_sb;
- 
--	return snprintf(buf, PAGE_SIZE, "%lu\n",
-+	return sysfs_emit(buf, "%lu\n",
- 			(part_stat_read(sb->s_bdev, sectors[STAT_WRITE]) -
- 			 sbi->s_sectors_written_start) >> 1);
- }
-@@ -72,7 +72,7 @@ static ssize_t lifetime_write_kbytes_show(struct ext4_sb_info *sbi, char *buf)
- {
- 	struct super_block *sb = sbi->s_buddy_cache->i_sb;
- 
--	return snprintf(buf, PAGE_SIZE, "%llu\n",
-+	return sysfs_emit(buf, "%llu\n",
- 			(unsigned long long)(sbi->s_kbytes_written +
- 			((part_stat_read(sb->s_bdev, sectors[STAT_WRITE]) -
- 			  EXT4_SB(sb)->s_sectors_written_start) >> 1)));
-@@ -130,8 +130,8 @@ static ssize_t trigger_test_error(struct ext4_sb_info *sbi,
- static ssize_t journal_task_show(struct ext4_sb_info *sbi, char *buf)
- {
- 	if (!sbi->s_journal)
--		return snprintf(buf, PAGE_SIZE, "<none>\n");
--	return snprintf(buf, PAGE_SIZE, "%d\n",
-+		return sysfs_emit(buf, "<none>\n");
-+	return sysfs_emit(buf, "%d\n",
- 			task_pid_vnr(sbi->s_journal->j_task));
- }
- 
-@@ -357,7 +357,7 @@ static void *calc_ptr(struct ext4_attr *a, struct ext4_sb_info *sbi)
- 
- static ssize_t __print_tstamp(char *buf, __le32 lo, __u8 hi)
- {
--	return snprintf(buf, PAGE_SIZE, "%lld\n",
-+	return sysfs_emit(buf, "%lld\n",
- 			((time64_t)hi << 32) + le32_to_cpu(lo));
- }
- 
-@@ -374,7 +374,7 @@ static ssize_t ext4_attr_show(struct kobject *kobj,
- 
- 	switch (a->attr_id) {
- 	case attr_delayed_allocation_blocks:
--		return snprintf(buf, PAGE_SIZE, "%llu\n",
-+		return sysfs_emit(buf, "%llu\n",
- 				(s64) EXT4_C2B(sbi,
- 		       percpu_counter_sum(&sbi->s_dirtyclusters_counter)));
- 	case attr_session_write_kbytes:
-@@ -382,11 +382,11 @@ static ssize_t ext4_attr_show(struct kobject *kobj,
- 	case attr_lifetime_write_kbytes:
- 		return lifetime_write_kbytes_show(sbi, buf);
- 	case attr_reserved_clusters:
--		return snprintf(buf, PAGE_SIZE, "%llu\n",
-+		return sysfs_emit(buf, "%llu\n",
- 				(unsigned long long)
- 				atomic64_read(&sbi->s_resv_clusters));
- 	case attr_sra_exceeded_retry_limit:
--		return snprintf(buf, PAGE_SIZE, "%llu\n",
-+		return sysfs_emit(buf, "%llu\n",
- 				(unsigned long long)
- 			percpu_counter_sum(&sbi->s_sra_exceeded_retry_limit));
- 	case attr_inode_readahead:
-@@ -394,42 +394,42 @@ static ssize_t ext4_attr_show(struct kobject *kobj,
- 		if (!ptr)
- 			return 0;
- 		if (a->attr_ptr == ptr_ext4_super_block_offset)
--			return snprintf(buf, PAGE_SIZE, "%u\n",
-+			return sysfs_emit(buf, "%u\n",
- 					le32_to_cpup(ptr));
- 		else
--			return snprintf(buf, PAGE_SIZE, "%u\n",
-+			return sysfs_emit(buf, "%u\n",
- 					*((unsigned int *) ptr));
- 	case attr_pointer_ul:
- 		if (!ptr)
- 			return 0;
--		return snprintf(buf, PAGE_SIZE, "%lu\n",
-+		return sysfs_emit(buf, "%lu\n",
- 				*((unsigned long *) ptr));
- 	case attr_pointer_u8:
- 		if (!ptr)
- 			return 0;
--		return snprintf(buf, PAGE_SIZE, "%u\n",
-+		return sysfs_emit(buf, "%u\n",
- 				*((unsigned char *) ptr));
- 	case attr_pointer_u64:
- 		if (!ptr)
- 			return 0;
- 		if (a->attr_ptr == ptr_ext4_super_block_offset)
--			return snprintf(buf, PAGE_SIZE, "%llu\n",
-+			return sysfs_emit(buf, "%llu\n",
- 					le64_to_cpup(ptr));
- 		else
--			return snprintf(buf, PAGE_SIZE, "%llu\n",
-+			return sysfs_emit(buf, "%llu\n",
- 					*((unsigned long long *) ptr));
- 	case attr_pointer_string:
- 		if (!ptr)
- 			return 0;
--		return snprintf(buf, PAGE_SIZE, "%.*s\n", a->attr_size,
-+		return sysfs_emit(buf, "%.*s\n", a->attr_size,
- 				(char *) ptr);
- 	case attr_pointer_atomic:
- 		if (!ptr)
- 			return 0;
--		return snprintf(buf, PAGE_SIZE, "%d\n",
-+		return sysfs_emit(buf, "%d\n",
- 				atomic_read((atomic_t *) ptr));
- 	case attr_feature:
--		return snprintf(buf, PAGE_SIZE, "supported\n");
-+		return sysfs_emit(buf, "supported\n");
- 	case attr_first_error_time:
- 		return print_tstamp(buf, sbi->s_es, s_first_error_time);
- 	case attr_last_error_time:
--- 
-2.7.4
-
+Diffstat:
+ block/fops.c                        |    2 +-
+ drivers/block/drbd/drbd_int.h       |    3 +--
+ drivers/md/bcache/super.c           |    2 +-
+ drivers/md/bcache/util.h            |    4 ----
+ drivers/md/bcache/writeback.c       |    2 +-
+ drivers/md/dm-bufio.c               |    2 +-
+ drivers/md/dm-cache-metadata.c      |    2 +-
+ drivers/md/dm-cache-target.c        |    2 +-
+ drivers/md/dm-clone-target.c        |    2 +-
+ drivers/md/dm-dust.c                |    5 ++---
+ drivers/md/dm-ebs-target.c          |    2 +-
+ drivers/md/dm-era-target.c          |    2 +-
+ drivers/md/dm-exception-store.h     |    2 +-
+ drivers/md/dm-flakey.c              |    3 +--
+ drivers/md/dm-integrity.c           |    6 +++---
+ drivers/md/dm-linear.c              |    3 +--
+ drivers/md/dm-log-writes.c          |    4 ++--
+ drivers/md/dm-log.c                 |    2 +-
+ drivers/md/dm-mpath.c               |    2 +-
+ drivers/md/dm-raid.c                |    6 +++---
+ drivers/md/dm-switch.c              |    2 +-
+ drivers/md/dm-table.c               |    3 +--
+ drivers/md/dm-thin-metadata.c       |    2 +-
+ drivers/md/dm-thin.c                |    2 +-
+ drivers/md/dm-verity-target.c       |    3 +--
+ drivers/md/dm-writecache.c          |    2 +-
+ drivers/md/dm-zoned-target.c        |    2 +-
+ drivers/md/md.c                     |   26 +++++++++++---------------
+ drivers/mtd/devices/block2mtd.c     |    5 +++--
+ drivers/nvme/target/io-cmd-bdev.c   |    4 ++--
+ drivers/target/target_core_iblock.c |    5 +++--
+ fs/affs/super.c                     |    2 +-
+ fs/btrfs/dev-replace.c              |    2 +-
+ fs/btrfs/disk-io.c                  |    3 ++-
+ fs/btrfs/ioctl.c                    |    4 ++--
+ fs/btrfs/volumes.c                  |    7 ++++---
+ fs/buffer.c                         |    4 ++--
+ fs/cramfs/inode.c                   |    2 +-
+ fs/ext4/super.c                     |    2 +-
+ fs/fat/inode.c                      |    5 +----
+ fs/hfs/mdb.c                        |    2 +-
+ fs/hfsplus/wrapper.c                |    2 +-
+ fs/jfs/resize.c                     |    5 ++---
+ fs/jfs/super.c                      |    5 ++---
+ fs/nfs/blocklayout/dev.c            |    4 ++--
+ fs/nilfs2/ioctl.c                   |    2 +-
+ fs/nilfs2/super.c                   |    2 +-
+ fs/nilfs2/the_nilfs.c               |    3 ++-
+ fs/ntfs/super.c                     |    8 +++-----
+ fs/ntfs3/super.c                    |    3 +--
+ fs/pstore/blk.c                     |    4 ++--
+ fs/reiserfs/super.c                 |    7 ++-----
+ fs/squashfs/super.c                 |    5 +++--
+ fs/udf/lowlevel.c                   |    5 ++---
+ fs/udf/super.c                      |    9 +++------
+ include/linux/genhd.h               |    6 ++++++
+ 56 files changed, 100 insertions(+), 117 deletions(-)
