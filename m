@@ -2,196 +2,140 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 043CD42C01A
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Oct 2021 14:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D713F42C17F
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Oct 2021 15:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232772AbhJMMfv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 13 Oct 2021 08:35:51 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:28934 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232366AbhJMMfu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 13 Oct 2021 08:35:50 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HTsKT5TrKzbn2T;
-        Wed, 13 Oct 2021 20:29:17 +0800 (CST)
-Received: from [10.174.178.185] (10.174.178.185) by
- dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Wed, 13 Oct 2021 20:33:45 +0800
-Subject: Re: [PATCH -next v2 2/6] ext4: introduce last_check_time record
- previous check time
-To:     Jan Kara <jack@suse.cz>
-References: <20210911090059.1876456-1-yebin10@huawei.com>
- <20210911090059.1876456-3-yebin10@huawei.com>
- <20211007123100.GG12712@quack2.suse.cz> <615FA55B.5070404@huawei.com>
- <615FAF27.8070000@huawei.com> <20211012084727.GF9697@quack2.suse.cz>
- <61657590.2050407@huawei.com> <20211013093847.GB19200@quack2.suse.cz>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-From:   yebin <yebin10@huawei.com>
-Message-ID: <6166D229.80809@huawei.com>
-Date:   Wed, 13 Oct 2021 20:33:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+        id S235412AbhJMNg6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 13 Oct 2021 09:36:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235564AbhJMNgz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 13 Oct 2021 09:36:55 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51ABDC061765
+        for <linux-ext4@vger.kernel.org>; Wed, 13 Oct 2021 06:34:49 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id r18so8500276wrg.6
+        for <linux-ext4@vger.kernel.org>; Wed, 13 Oct 2021 06:34:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=miQRTp5hbRC1OCVn4QsRcT9kmnoc0mnhrgOilHbNn1g=;
+        b=F0E4EuXR+3flbL7Xzl8XisBhT8qIwH7MG0zDDrByvsqJ7u0MvCbJ+Jdk27g1cp2SlZ
+         9eUPMq4/iImU+0GtvR6R8lhPuCXmipsVTsAD3q7rkP21TldlzL8k+m7OPM4caW0UvsC2
+         7EcztkwWSBS0RIOzrl5QE35wqRU+YUSNac2QE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=miQRTp5hbRC1OCVn4QsRcT9kmnoc0mnhrgOilHbNn1g=;
+        b=dmxDu+PNXn+udFjmq7e6u5pLO9fafsOOXeXSzVi4Fs68QqsslUlTvLFh22uVMLnK9I
+         SQYEOOVB7DQ/YFURBb0AsEvqo+qrfk+5NdxiDxeLcKNl1xHEJSD8arXrmlwFJjwvnWwb
+         naZLos0AInmwggjyWlKn3PTj/KqC4Q93XdqPRFm8MeFJS94oBVUpnz23rkiqtr5UbYed
+         y0FLj4OwrsnAOdMOcnn8vR7ZmDnS2pul4wOxOx6On+Q5r39pcf3ltoUkmJL3x/nroZn4
+         tUzdFUIuINNV6r5jUlOkngr4Ax6C96/A3+Ugi9WrQpG6wGJkoSVb5x1YIchsL6A0A/27
+         Eydg==
+X-Gm-Message-State: AOAM533BoJC7bkDtOiDyLjoYbGp6ufjBMdC+Vo7HmaNrgGSYd0sb3qoo
+        8h0IrQGa+rjDZk3hlNLhaZ9dmw==
+X-Google-Smtp-Source: ABdhPJyPnoPCgju2Szs7ixA3PwCFFi3lyPyAvuULHAdCBT2PI9V1y8J8yrCa0Gufzb/wqCsDI8QXUQ==
+X-Received: by 2002:a05:600c:4ecb:: with SMTP id g11mr12644285wmq.67.1634132087950;
+        Wed, 13 Oct 2021 06:34:47 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id w1sm5376300wmc.19.2021.10.13.06.34.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 06:34:47 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 15:34:45 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alex Sierra <alex.sierra@amd.com>, Felix.Kuehling@amd.com,
+        linux-mm@kvack.org, rcampbell@nvidia.com,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        hch@lst.de, jglisse@redhat.com, apopple@nvidia.com
+Subject: Re: [PATCH v1 00/12] MEMORY_DEVICE_COHERENT for CPU-accessible
+ coherent device memory
+Message-ID: <YWbgdXJBtupdy1qs@phenom.ffwll.local>
+Mail-Followup-To: Jason Gunthorpe <jgg@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alex Sierra <alex.sierra@amd.com>, Felix.Kuehling@amd.com,
+        linux-mm@kvack.org, rcampbell@nvidia.com,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        hch@lst.de, jglisse@redhat.com, apopple@nvidia.com
+References: <20211012171247.2861-1-alex.sierra@amd.com>
+ <20211012113957.53f05928dd60f3686331fede@linux-foundation.org>
+ <20211012185629.GZ2744544@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20211013093847.GB19200@quack2.suse.cz>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.185]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggeme754-chm.china.huawei.com (10.3.19.100)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211012185629.GZ2744544@nvidia.com>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Tue, Oct 12, 2021 at 03:56:29PM -0300, Jason Gunthorpe wrote:
+> On Tue, Oct 12, 2021 at 11:39:57AM -0700, Andrew Morton wrote:
+> > On Tue, 12 Oct 2021 12:12:35 -0500 Alex Sierra <alex.sierra@amd.com> wrote:
+> > 
+> > > This patch series introduces MEMORY_DEVICE_COHERENT, a type of memory
+> > > owned by a device that can be mapped into CPU page tables like
+> > > MEMORY_DEVICE_GENERIC and can also be migrated like MEMORY_DEVICE_PRIVATE.
+> > > With MEMORY_DEVICE_COHERENT, we isolate the new memory type from other
+> > > subsystems as far as possible, though there are some small changes to
+> > > other subsystems such as filesystem DAX, to handle the new memory type
+> > > appropriately.
+> > > 
+> > > We use ZONE_DEVICE for this instead of NUMA so that the amdgpu
+> > > allocator can manage it without conflicting with core mm for non-unified
+> > > memory use cases.
+> > > 
+> > > How it works: The system BIOS advertises the GPU device memory (aka VRAM)
+> > > as SPM (special purpose memory) in the UEFI system address map.
+> > > The amdgpu driver registers the memory with devmap as
+> > > MEMORY_DEVICE_COHERENT using devm_memremap_pages.
+> > > 
+> > > The initial user for this hardware page migration capability will be
+> > > the Frontier supercomputer project.
+> > 
+> > To what other uses will this infrastructure be put?
+> > 
+> > Because I must ask: if this feature is for one single computer which
+> > presumably has a custom kernel, why add it to mainline Linux?
+> 
+> Well, it certainly isn't just "one single computer". Overall I know of
+> about, hmm, ~10 *datacenters* worth of installations that are using
+> similar technology underpinnings.
+> 
+> "Frontier" is the code name for a specific installation but as the
+> technology is proven out there will be many copies made of that same
+> approach.
+> 
+> The previous program "Summit" was done with NVIDIA GPUs and PowerPC
+> CPUs and also included a very similar capability. I think this is a
+> good sign that this coherently attached accelerator will continue to
+> be a theme in computing going foward. IIRC this was done using out of
+> tree kernel patches and NUMA localities.
+> 
+> Specifically with CXL now being standardized and on a path to ubiquity
+> I think we will see an explosion in deployments of coherently attached
+> accelerator memory. This is the high end trickling down to wider
+> usage.
+> 
+> I strongly think many CXL accelerators are going to want to manage
+> their on-accelerator memory in this way as it makes universal sense to
+> want to carefully manage memory access locality to optimize for
+> performance.
 
+Yeah with CXL this will be used by a lot more drivers/devices, not
+even including nvidia's blob.
 
-On 2021/10/13 17:38, Jan Kara wrote:
-> On Tue 12-10-21 19:46:24, yebin wrote:
->> On 2021/10/12 16:47, Jan Kara wrote:
->>> On Fri 08-10-21 10:38:31, yebin wrote:
->>>> On 2021/10/8 9:56, yebin wrote:
->>>>> On 2021/10/7 20:31, Jan Kara wrote:
->>>>>> On Sat 11-09-21 17:00:55, Ye Bin wrote:
->>>>>>> kmmpd:
->>>>>>> ...
->>>>>>>        diff = jiffies - last_update_time;
->>>>>>>        if (diff > mmp_check_interval * HZ) {
->>>>>>> ...
->>>>>>> As "mmp_check_interval = 2 * mmp_update_interval", 'diff' always little
->>>>>>> than 'mmp_update_interval', so there will never trigger detection.
->>>>>>> Introduce last_check_time record previous check time.
->>>>>>>
->>>>>>> Signed-off-by: Ye Bin <yebin10@huawei.com>
->>>>>> I think the check is there only for the case where write_mmp_block() +
->>>>>> sleep took longer than mmp_check_interval. I agree that should rarely
->>>>>> happen but on a really busy system it is possible and in that case
->>>>>> we would
->>>>>> miss updating mmp block for too long and so another node could have
->>>>>> started
->>>>>> using the filesystem. I actually don't see a reason why kmmpd should be
->>>>>> checking the block each mmp_check_interval as you do -
->>>>>> mmp_check_interval
->>>>>> is just for ext4_multi_mount_protect() to know how long it should wait
->>>>>> before considering mmp block stale... Am I missing something?
->>>>>>
->>>>>>                                   Honza
->>>>> I'm sorry, I didn't understand the detection mechanism here before. Now
->>>>> I understand
->>>>> the detection mechanism here.
->>>>> As you said, it's just an abnormal protection. There's really no problem.
->>>>>
->>>> Yeah, i did test as following steps
->>>> hostA                        hostB
->>>>      mount
->>>>        ext4_multi_mount_protect  -> seq == EXT4_MMP_SEQ_CLEAN
->>>>           delay 5s after label "skip" so hostB will see seq is
->>>> EXT4_MMP_SEQ_CLEAN
->>>>                          mount
->>>>                          ext4_multi_mount_protect -> seq == EXT4_MMP_SEQ_CLEAN
->>>>                                  run  kmmpd
->>>>       run kmmpd
->>>>
->>>> Actually，in this  situation kmmpd will not detect  confliction.
->>>> In ext4_multi_mount_protect function we write mmp data first and wait
->>>> 'wait_time * HZ'  seconds,
->>>> read mmp data do check. Most of the time, If 'wait_time' is zero, it can pass
->>>> check.
->>> But how can be wait_time zero? As far as I'm reading the code, wait_time
->>> must be at least EXT4_MMP_MIN_CHECK_INTERVAL...
->>>
->>> 								Honza
->>   int ext4_multi_mount_protect(struct super_block *sb,
->>                                       ext4_fsblk_t mmp_block)
->>   {
->>           struct ext4_super_block *es = EXT4_SB(sb)->s_es;
->>           struct buffer_head *bh = NULL;
->>           struct mmp_struct *mmp = NULL;
->>           u32 seq;
->>           unsigned int mmp_check_interval =
->> le16_to_cpu(es->s_mmp_update_interval);
->>           unsigned int wait_time = 0;                    --> wait_time is
->> equal with zero
->>           int retval;
->>
->>           if (mmp_block < le32_to_cpu(es->s_first_data_block) ||
->>               mmp_block >= ext4_blocks_count(es)) {
->>                   ext4_warning(sb, "Invalid MMP block in superblock");
->>                   goto failed;
->>           }
->>
->>           retval = read_mmp_block(sb, &bh, mmp_block);
->>           if (retval)
->>                   goto failed;
->>
->>           mmp = (struct mmp_struct *)(bh->b_data);
->>
->>           if (mmp_check_interval < EXT4_MMP_MIN_CHECK_INTERVAL)
->>                   mmp_check_interval = EXT4_MMP_MIN_CHECK_INTERVAL;
->>
->>           /*
->>            * If check_interval in MMP block is larger, use that instead of
->>            * update_interval from the superblock.
->>            */
->>           if (le16_to_cpu(mmp->mmp_check_interval) > mmp_check_interval)
->>                   mmp_check_interval = le16_to_cpu(mmp->mmp_check_interval);
->>
->>           seq = le32_to_cpu(mmp->mmp_seq);
->>           if (seq == EXT4_MMP_SEQ_CLEAN)   --> If hostA and hostB mount the
->> same block device at the same time,
->> --> HostA and hostB  maybe get 'seq' with the same value EXT4_MMP_SEQ_CLEAN.
->>                   goto skip;
-> Oh, I see. Thanks for explanation.
->
->> ...
->> skip:
->>          /*
->>           * write a new random sequence number.
->>           */
->>          seq = mmp_new_seq();
->>          mmp->mmp_seq = cpu_to_le32(seq);
->>
->>          retval = write_mmp_block(sb, bh);
->>          if (retval)
->>                  goto failed;
->>
->>          /*
->>           * wait for MMP interval and check mmp_seq.
->>           */
->>          if (schedule_timeout_interruptible(HZ * wait_time) != 0) {
->> --> If seq is equal with EXT4_MMP_SEQ_CLEAN, wait_time is zero.
->>                  ext4_warning(sb, "MMP startup interrupted, failing mount");
->>                  goto failed;
->>          }
->>
->>          retval = read_mmp_block(sb, &bh, mmp_block); -->We may get the same
->> data with which we wrote, so we can't detect conflict at here.
-> OK, I see. So the race in ext4_multi_mount_protect() goes like:
->
-> hostA				hostB
->
-> read_mmp_block()		read_mmp_block()
-> - sees EXT4_MMP_SEQ_CLEAN	- sees EXT4_MMP_SEQ_CLEAN
-> write_mmp_block()
-> wait_time == 0 -> no wait
-> read_mmp_block()
->    - all OK, mount
-> 				write_mmp_block()
-> 				wait_time == 0 -> no wait
-> 				read_mmp_block()
-> 				  - all OK, mount
-Yes, that's what i mean.
->
-> Do I get it right? Actually, if we passed seq we wrote in
-> ext4_multi_mount_protect() to kmmpd (probably in sb), then kmmpd would
-> notice the conflict on its first invocation but still that would be a bit
-> late because there would be a time window where hostA and hostB would be
-> both using the fs.
->
-> We could reduce the likelyhood of this race by always waiting in
-> ext4_multi_mount_protect() between write & read but I guess that is
-> undesirable as it would slow down all clean mounts. Ted?
->
-> 								Honza
-
+I guess if you want make sure get an ack on this from CXL folks, so that
+we don't end up with a mess.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
