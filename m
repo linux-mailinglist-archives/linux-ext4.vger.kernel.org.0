@@ -2,274 +2,236 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1CF42B2AA
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Oct 2021 04:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7546942B390
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Oct 2021 05:29:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233656AbhJMCel (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 12 Oct 2021 22:34:41 -0400
-Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:35514 "EHLO
-        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233316AbhJMCel (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 12 Oct 2021 22:34:41 -0400
-Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
-        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id 89ADC104FAB;
-        Wed, 13 Oct 2021 13:32:32 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1maU4F-005boy-4E; Wed, 13 Oct 2021 13:32:31 +1100
-Date:   Wed, 13 Oct 2021 13:32:31 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     NeilBrown <neilb@suse.de>, Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Theodore Ts'o <tytso@mit.edu>,
+        id S237282AbhJMDbJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 12 Oct 2021 23:31:09 -0400
+Received: from mail-eopbgr1300092.outbound.protection.outlook.com ([40.107.130.92]:38720
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237640AbhJMDbC (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 12 Oct 2021 23:31:02 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jURnHz1XU82+ByJTY772iUvxzDaEG+Llfgx0T5AMSWWA8UIWrvssDvmc0/RRtuC1dKnQl0c9IxLtB7IXzeQgTcBEK60YX5FzIFtSGFAg8aOcRJYX0u7mVg48zm9QtFT8uL5le5cFJpHtro8ts5GDbiukVj7kYdKdRIyv9urpPzq2RJR7W0Mfsuv2qF95WRTEplD63goI8fui/5oi40b5XyMOk3/w9pmx6sLOUi93Se7TLVYbmMc3E+kzI66TYmvUJBIiiQT/U5ao1Jq9b8VhrtiVKZApyjV8XsBMuTmf3HPC1ogEbKUOZ4NvXxrO71ZbtH0BcGTvltYkOE5V+19q9g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZL2NhNS1E+BsCLaQ4i6Ql1gFAysxIMHF5fTTmSB1Lu8=;
+ b=MqcuP6GMQGMUs1g755gQLateW+JMAOVPB40Lb0mt5fixvlFP5J9eKHXKpKFwjLyt/C3gwfZU7x4nXbWeMlwwewTQZCpAEzzwx5ImPCQDi7IDRVAlfj1DIll/vM8clWQz79+kYkrOYfLtxofHA4mparUnweWrOEi/bbZwxR47m62uX2FXwYEqwW3SewKyOWSgwWcz2bnr3t/1e8UgXDoPBJ/p+YtGHT43r6H8to1fN2KxGFrgiZKgxicIM2f68aBECrcqimzON7xcUiZnnzII3/YgSQOzzYcme3JMEc3+/X/VHXahFUg1AkMrqDzG/2AcIHqEKVkMfcF0D3U/P7Fi1Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZL2NhNS1E+BsCLaQ4i6Ql1gFAysxIMHF5fTTmSB1Lu8=;
+ b=LH3SNwmdHmIP3A3iHWkxfyHwGyF2c5cv6dHQVSmLKIxX+/49U2geKK916y7vNdZY5L9OGUSlAGbV48cnt8740syWUufy3ClLl6OJa+f1GP44xxCVPpz1AS3UFnjcOf1CPGifyO94Di+H0VU2gyjzCHYZI3jG7uXJrb7n7QU9+zo=
+Authentication-Results: mit.edu; dkim=none (message not signed)
+ header.d=none;mit.edu; dmarc=none action=none header.from=vivo.com;
+Received: from SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17)
+ by SL2PR06MB2955.apcprd06.prod.outlook.com (2603:1096:100:3d::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Wed, 13 Oct
+ 2021 03:28:58 +0000
+Received: from SL2PR06MB3082.apcprd06.prod.outlook.com
+ ([fe80::4c9b:b71f:fb67:6414]) by SL2PR06MB3082.apcprd06.prod.outlook.com
+ ([fe80::4c9b:b71f:fb67:6414%6]) with mapi id 15.20.4587.024; Wed, 13 Oct 2021
+ 03:28:58 +0000
+From:   Qing Wang <wangqing@vivo.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Jonathan Corbet <corbet@lwn.net>,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH 2/6] MM: improve documentation for __GFP_NOFAIL
-Message-ID: <20211013023231.GV2361455@dread.disaster.area>
-References: <163184741778.29351.16920832234899124642.stgit@noble.brown>
- <b680fb87-439b-0ba4-cf9f-33d729f27941@suse.cz>
- <YVwyhDnE/HEnoLAi@dhcp22.suse.cz>
- <eba04a07-99da-771a-ab6b-36de41f9f120@suse.cz>
- <20211006231452.GF54211@dread.disaster.area>
- <YV7G7gyfZkmw7/Ae@dhcp22.suse.cz>
- <163364854551.31063.4377741712039731672@noble.neil.brown.name>
- <YV/31+qXwqEgaxJL@dhcp22.suse.cz>
- <20211008223649.GJ54211@dread.disaster.area>
- <YWQmsESyyiea0zle@dhcp22.suse.cz>
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Qing Wang <wangqing@vivo.com>
+Subject: [PATCH] ext4: replace snprintf in show functions with sysfs_emit
+Date:   Tue, 12 Oct 2021 20:28:51 -0700
+Message-Id: <1634095731-4528-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: HK2PR0401CA0015.apcprd04.prod.outlook.com
+ (2603:1096:202:2::25) To SL2PR06MB3082.apcprd06.prod.outlook.com
+ (2603:1096:100:37::17)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWQmsESyyiea0zle@dhcp22.suse.cz>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.4 cv=epq8cqlX c=1 sm=1 tr=0 ts=61664544
-        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
-        a=kj9zAlcOel0A:10 a=8gfv0ekSlNoA:10 a=7-415B0cAAAA:8
-        a=neU_OqogJPR7JUYaiz0A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+Received: from ubuntu.localdomain (218.213.202.189) by HK2PR0401CA0015.apcprd04.prod.outlook.com (2603:1096:202:2::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4608.15 via Frontend Transport; Wed, 13 Oct 2021 03:28:57 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 436aabe1-402f-446f-432e-08d98df997a8
+X-MS-TrafficTypeDiagnostic: SL2PR06MB2955:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SL2PR06MB295518A18EB2DAF7449A32F9BDB79@SL2PR06MB2955.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:178;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: A2KnVJOa+9nmGAGmZp07f1gnA0v5Q9A2IpXqO9rzm0txXLrAsJ2TkiY6hEcMTkI456p7iuK2DQdHF4n1jkiXZedVbvR3fTI8SIcPZDu8ItRqe1/CUZjlzIN8yteY3LY9cQisxS/GyJ3/Q7pbqCTOwMCbY4s42510mDbwSmzjjP5DJyrwwW1w2QbOk6uXM3BbTxBCXZPUcJpg5MBEku5f6VqLtf1N6PCcM7HjaD3ElJ0QpJFvalVXR96Pl6+Vx7FUJehdsdiUce4YTpbpANXW74un2QrHba45g2iC6XrWnAE+EaoZVY3Pr8PatM4CbT8ZegwrdIdvs5DRHyuZyJb540AiefuJga2wjtLO3cwf5qQUITVUDdJgb7NaQh3tQlqcuI0YBU0GSc0ZTr2uun0OYtTJvFrGQauqVUBtIiSRkxKWyi0AejfKZfunyaKUnreAIQ3BEdmCevMGNCCFgnURQdV/vRqAmJk4zOyYcrZLU0IHLXV2juZPJ8Hd7Yj1p3pe6zPQwrydDdz84rEc3QYMwK2cDHkFUb4m3dzMgkPhuHjbqtkikoYEOvLjHafje54CTAoPkywKb/Q3oQeoOZ456HGM82i+umGXKt8LwaBCPnrqkXz8d/vixiMLO3DCdWIhEcBMvuzHJY5vDVvEnQeRwzT7fmlxa57GAACOCBHoZJSEHscGAqtCTMFtjd49l1uCHroE2vkq44bYqVvfx4l5lg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(956004)(508600001)(186003)(6666004)(107886003)(66476007)(66556008)(8936002)(66946007)(110136005)(26005)(2906002)(6486002)(2616005)(36756003)(83380400001)(4326008)(52116002)(6512007)(6506007)(86362001)(8676002)(316002)(38350700002)(5660300002)(38100700002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3n5lj139VYls+o6EVTyIgr0RaASrgwIm5yRpJfbK5ZMzvF95yqsK8Bjhfmfz?=
+ =?us-ascii?Q?MAbY/fRtfwBP9g9UIies9fJAt5mBiEeH+2cL/5DL+DCEo+SF/QXqvjaN2bes?=
+ =?us-ascii?Q?o3RbPA30+KGb9cRxwTOsuIlK7RKfAg9qXW5y78KQBr7lc0GJlZYF92yI12qO?=
+ =?us-ascii?Q?JBOjPsVa4m0pcoJT5veLV2fH+lsdmqYxKzT8Doc9lfQ2FkVE9bcqq4AxEaE3?=
+ =?us-ascii?Q?LmPiqVND56WIOhljs6aZ1a3ZZg6xI0JEO+REIfd4BUhLj3QQb77yaLF+jNvy?=
+ =?us-ascii?Q?Uai4XeijbRVuvrQMgVFtyaVK9MAtp8lFaUxJGCWDq4rVF3Jc8slN9N9VZ/ES?=
+ =?us-ascii?Q?TI2WQgPPX9yTcrogbQOnnU4Xgz1l066VnJEycUSWduwnBGdkxlrSc6hp7r9r?=
+ =?us-ascii?Q?LkyTk0CbJW/qhCN7lu7vR2bsXk+lXrGYGCtoa/pivjFuWEwuXtKMu/mFt0Fk?=
+ =?us-ascii?Q?HR7Q/ovvOTC5yAkLWTp+sillJxBLSMPB4g3989Z4FhnAdAuMBucV3rERDvVS?=
+ =?us-ascii?Q?QpyGTHxsivJYyFEr17X1ECS+w0v8KMHHFa2LQd3+X0GE9ueNDlyDnYsUvzXw?=
+ =?us-ascii?Q?PshTcKJDWJSq8QWyvx+cAoFVDV57grNnJKnfIF3DRx5oAbcTLs6Uj/OdgvgI?=
+ =?us-ascii?Q?qQeoOKtcsm8INBcdtcJUApoCMi2rWmBgcVhhcvYx/yw2stXw2Get3p3ac8qM?=
+ =?us-ascii?Q?LkMYO2OWwfYQ6VQ+fvIuJo7dzYEf3I0VFOBh8hmZTXOiSFfqONWar7kx5ELb?=
+ =?us-ascii?Q?rgT8gNitR1evQI5nrAlkUqM3bDXJzqcZdP1yReCk6qoZdMavEtKTKE/eUtHT?=
+ =?us-ascii?Q?PfCUqg7nn5yPZR4VDQGDSffIbD2d/fBJGUhtnR+3rg5ahEN4PyEAuMblKooP?=
+ =?us-ascii?Q?d6iaBIL/XLAgkh+Fl6hf66DG/IFLMGa5FMIN2wt9ZU+AUF03DTCJCcq/wPeb?=
+ =?us-ascii?Q?4+aGqP394lERWVRnRD3b9NwUkwcLDA0rHQlQhmERuagG8UN06kCkqqrh9a3B?=
+ =?us-ascii?Q?Gd1uSZ/tBOXpS+3Lp3XeSyXrLBrqLppYFfFP95tmltW9evURC0t3kuRvMvPV?=
+ =?us-ascii?Q?jkYTFSK/zYfurrZHhY9OwIRykSaWbnI2Iq2xE7wnGaZ67AZBIO7ZzdUwXRwR?=
+ =?us-ascii?Q?jtdzmk1uSHk5qx/FhU/CaAFvM/4eUIihb/heBXRxvOR/LqV0ITw1P8qK1TeW?=
+ =?us-ascii?Q?Hzv9xTnS2MiHeG4c0kgHsLgahnTJ/HOj2ZQhnbd+2TJ8bkrdPDiUGbCKqhPB?=
+ =?us-ascii?Q?wpevz3jQiakugzd30CcfC+OTS/wkHYqGQ6pUZWs7jDy3TujQN7GwrgRea5lk?=
+ =?us-ascii?Q?iSKzfGJsfyIiuLBVxo1fCz1F?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 436aabe1-402f-446f-432e-08d98df997a8
+X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3082.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2021 03:28:58.1405
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fsMbJ9KxM/pyjYDrg8+YsEmrcHug8khG1rKFNwVF/k1Ev2S42u1VLr/ELB/v/ZanLA9FSzF0jllzkAVWD+dDwQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB2955
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 01:57:36PM +0200, Michal Hocko wrote:
-> On Sat 09-10-21 09:36:49, Dave Chinner wrote:
-> > On Fri, Oct 08, 2021 at 09:48:39AM +0200, Michal Hocko wrote:
-> > > > > > Even the API constaints of kvmalloc() w.r.t. only doing the vmalloc
-> > > > > > fallback if the gfp context is GFP_KERNEL - we already do GFP_NOFS
-> > > > > > kvmalloc via memalloc_nofs_save/restore(), so this behavioural
-> > > > > > restriction w.r.t. gfp flags just makes no sense at all.
-> > > > > 
-> > > > > GFP_NOFS (without using the scope API) has the same problem as NOFAIL in
-> > > > > the vmalloc. Hence it is not supported. If you use the scope API then
-> > > > > you can GFP_KERNEL for kvmalloc. This is clumsy but I am not sure how to
-> > > > > define these conditions in a more sensible way. Special case NOFS if the
-> > > > > scope api is in use? Why do you want an explicit NOFS then?
-> > 
-> > Exactly my point - this is clumsy and a total mess. I'm not asking
-> > for an explicit GFP_NOFS, just pointing out that the documented
-> > restrictions that "vmalloc can only do GFP_KERNEL allocations" is
-> > completely wrong.
-> > 
-> > vmalloc()
-> > {
-> > 	if (!(gfp_flags &  __GFP_FS))
-> > 		memalloc_nofs_save();
-> > 	p = __vmalloc(gfp_flags | GFP_KERNEL)
-> > 	if (!(gfp_flags &  __GFP_FS))
-> > 		memalloc_nofs_restore();
-> > }
-> > 
-> > Yup, that's how simple it is to support GFP_NOFS support in
-> > vmalloc().
-> 
-> Yes, this would work from the functionality POV but it defeats the
-> philosophy behind the scope API. Why would you even need this if the
-> scope was defined by the caller of the allocator?
+coccicheck complains about the use of snprintf() in sysfs show functions.
 
-Who actually cares that vmalloc might be using the scoped API
-internally to implement GFP_NOFS or GFP_NOIO? Nobody at all.
-It is far more useful (and self documenting!) for one-off allocations
-to pass a GFP_NOFS flag than it is to use a scope API...
+Fix the coccicheck warning:
+WARNING: use scnprintf or sprintf.
 
-> The initial hope was
-> to get rid of the NOFS abuse that can be seen in many filesystems. All
-> allocations from the scope would simply inherit the NOFS semantic so
-> an explicit NOFS shouldn't be really necessary, right?
+Use sysfs_emit instead of scnprintf or sprintf makes more sense.
 
-Yes, but I think you miss my point entirely: that the vmalloc
-restrictions on what gfp flags can be passed without making it
-entirely useless are completely arbitrary and non-sensical.
+Signed-off-by: Qing Wang <wangqing@vivo.com>
+---
+ fs/ext4/sysfs.c | 34 +++++++++++++++++-----------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
 
-> > This goes along with the argument that "it's impossible to do
-> > GFP_NOFAIL with vmalloc" as I addressed above. These things are not
-> > impossible, but we hide behind "we don't want people to use vmalloc"
-> > as an excuse for having shitty behaviour whilst ignoring that
-> > vmalloc is *heavily used* by core subsystems like filesystems
-> > because they cannot rely on high order allocations succeeding....
-> 
-> I do not think there is any reason to discourage anybody from using
-> vmalloc these days. 32b is dying out and vmalloc space is no longer a
-> very scarce resource.
-
-We are still discouraged from doing high order allocations and
-should only use pages directly. Not to mention that the API doesn't
-make it simple to use vmalloc as a direct replacement for high order
-kmalloc tends to discourage new users...
-
-> > It also points out that the scope API is highly deficient.
-> > We can do GFP_NOFS via the scope API, but we can't
-> > do anything else because *there is no scope API for other GFP
-> > flags*.
-> > 
-> > Why don't we have a GFP_NOFAIL/__GFP_RETRY_FOREVER scope API?
-> 
-> NO{FS,IO} where first flags to start this approach. And I have to admit
-> the experiment was much less successful then I hoped for. There are
-> still thousands of direct NOFS users so for some reason defining scopes
-> is not an easy thing to do.
-> 
-> I am not against NOFAIL scopes in principle but seeing the nofs
-> "success" I am worried this will not go really well either and it is
-> much more tricky as NOFAIL has much stronger requirements than NOFS.
-> Just imagine how tricky this can be if you just call a library code
-> that is not under your control within a NOFAIL scope. What if that
-> library code decides to allocate (e.g. printk that would attempt to do
-> an optimistic NOWAIT allocation).
-
-I already asked you that _exact_ question earlier in the thread
-w.r.t.  kvmalloc(GFP_NOFAIL) using optimistic NOWAIT kmalloc
-allocation. I asked you as a MM expert to define *and document* the
-behaviour that should result, not turn around and use the fact that
-it is undefined behaviour as a "this is too hard" excuse for not
-changing anything.
-
-THe fact is that the scope APIs are only really useful for certain
-contexts where restrictions are set by higher level functionality.
-For one-off allocation constraints the API sucks and we end up with
-crap like this (found in btrfs):
-
-                /*                                                               
-                 * We're holding a transaction handle, so use a NOFS memory      
-                 * allocation context to avoid deadlock if reclaim happens.      
-                 */                                                              
-                nofs_flag = memalloc_nofs_save();                                
-                value = kmalloc(size, GFP_KERNEL);                               
-                memalloc_nofs_restore(nofs_flag);                                
-
-But also from btrfs, this pattern is repeated in several places:
-
-        nofs_flag = memalloc_nofs_save();                                        
-        ctx = kvmalloc(struct_size(ctx, chunks, num_chunks), GFP_KERNEL);        
-        memalloc_nofs_restore(nofs_flag);                                        
-
-This needs to use the scoped API because vmalloc doesn't support
-GFP_NOFS. So the poor "vmalloc needs scoped API" pattern is bleeding
-over into other code that doesn't have the problems vmalloc does. Do
-you see how this leads to poorly written code now?
-
-Or perhaps I should just point at ceph?
-
-/*
- * kvmalloc() doesn't fall back to the vmalloc allocator unless flags are
- * compatible with (a superset of) GFP_KERNEL.  This is because while the
- * actual pages are allocated with the specified flags, the page table pages
- * are always allocated with GFP_KERNEL.
- *
- * ceph_kvmalloc() may be called with GFP_KERNEL, GFP_NOFS or GFP_NOIO.
- */
-void *ceph_kvmalloc(size_t size, gfp_t flags)
-{
-        void *p;
-
-        if ((flags & (__GFP_IO | __GFP_FS)) == (__GFP_IO | __GFP_FS)) {
-                p = kvmalloc(size, flags);
-        } else if ((flags & (__GFP_IO | __GFP_FS)) == __GFP_IO) {
-                unsigned int nofs_flag = memalloc_nofs_save();
-                p = kvmalloc(size, GFP_KERNEL);
-                memalloc_nofs_restore(nofs_flag);
-        } else {
-                unsigned int noio_flag = memalloc_noio_save();
-                p = kvmalloc(size, GFP_KERNEL);
-                memalloc_noio_restore(noio_flag);
-        }
-
-        return p;
-}
-
-IOWs, a large number of the users of the scope API simply make
-[k]vmalloc() provide GFP_NOFS behaviour. ceph_kvmalloc() is pretty
-much a wrapper that indicates how all vmalloc functions should
-behave. Honour GFP_NOFS and GFP_NOIO by using the scope API
-internally.
-
-> > That
-> > would save us a lot of bother in XFS. What about GFP_DIRECT_RECLAIM?
-> > I'd really like to turn that off for allocations in the XFS
-> > transaction commit path (as noted already in this thread) because
-> > direct reclaim that can make no progress is actively harmful (as
-> > noted already in this thread)
-> 
-> As always if you have reasonable usecases then it is best to bring them
-> up on the MM list and we can discuss them.
-
-They've been pointed out many times in the past, and I've pointed
-them out again in this thread. Telling me to "bring them up on the
-mm list" when that's exactly what I'm doing right now is not a
-helpful response.
-
-> > Like I said - this is more than just bad documentation - the problem
-> > is that the whole allocation API is an inconsistent mess of control
-> > mechanisms to begin with...
-> 
-> I am not going to disagree. There is a lot of historical baggage and
-> it doesn't help that any change is really hard to review because this
-> interface is used throughout the kernel. I have tried to change some
-> most obvious inconsistencies and I can tell this has always been a
-> frustrating experience with a very small "reward" in the end because
-> there are so many other problems.
-
-Technical debt in the mm APIs is something the mm developers need to
-address, not the people who tell you it's a problem for them.
-Telling the messenger "do my job for me because I find it too
-frustrating to make progress myself" doesn't help anyone make
-progress. If you find it frustrating trying to get mm code changed,
-imagine what it feels like for someone on the outside asking for
-relatively basic things like a consistent control API....
-
-> That being said, I would more than love to have a consistent and well
-> defined interface and if you want to spend a lot of time on that then be
-> my guest.
-
-My point exactly: saying "fix it yourself" is not a good response....
-
-> > > > It would seem to make sense for kvmalloc to WARN_ON if it is passed
-> > > > flags that does not allow it to use vmalloc.
-> > > 
-> > > vmalloc is certainly not the hottest path in the kernel so I wouldn't be
-> > > opposed.
-> > 
-> > kvmalloc is most certainly becoming one of the hottest paths in XFS.
-> > IOWs, arguments that "vmalloc is not a hot path" are simply invalid
-> > these days because they are simply untrue. e.g. the profiles I
-> > posted in this thread...
-> 
-> Is it such a hot path that a check for compatible flags would be visible
-> in profiles though?
-
-No, that doesn't even show up as noise - the overhead of global
-spinlock contention and direct reclaim are the elephants that
-profiles point to, not a couple of flag checks on function
-parameters...
-
-Cheers,
-
-Dave.
+diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
+index 2314f74..2a4ae3d 100644
+--- a/fs/ext4/sysfs.c
++++ b/fs/ext4/sysfs.c
+@@ -63,7 +63,7 @@ static ssize_t session_write_kbytes_show(struct ext4_sb_info *sbi, char *buf)
+ {
+ 	struct super_block *sb = sbi->s_buddy_cache->i_sb;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%lu\n",
++	return sysfs_emit(buf, "%lu\n",
+ 			(part_stat_read(sb->s_bdev, sectors[STAT_WRITE]) -
+ 			 sbi->s_sectors_written_start) >> 1);
+ }
+@@ -72,7 +72,7 @@ static ssize_t lifetime_write_kbytes_show(struct ext4_sb_info *sbi, char *buf)
+ {
+ 	struct super_block *sb = sbi->s_buddy_cache->i_sb;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%llu\n",
++	return sysfs_emit(buf, "%llu\n",
+ 			(unsigned long long)(sbi->s_kbytes_written +
+ 			((part_stat_read(sb->s_bdev, sectors[STAT_WRITE]) -
+ 			  EXT4_SB(sb)->s_sectors_written_start) >> 1)));
+@@ -130,8 +130,8 @@ static ssize_t trigger_test_error(struct ext4_sb_info *sbi,
+ static ssize_t journal_task_show(struct ext4_sb_info *sbi, char *buf)
+ {
+ 	if (!sbi->s_journal)
+-		return snprintf(buf, PAGE_SIZE, "<none>\n");
+-	return snprintf(buf, PAGE_SIZE, "%d\n",
++		return sysfs_emit(buf, "<none>\n");
++	return sysfs_emit(buf, "%d\n",
+ 			task_pid_vnr(sbi->s_journal->j_task));
+ }
+ 
+@@ -357,7 +357,7 @@ static void *calc_ptr(struct ext4_attr *a, struct ext4_sb_info *sbi)
+ 
+ static ssize_t __print_tstamp(char *buf, __le32 lo, __u8 hi)
+ {
+-	return snprintf(buf, PAGE_SIZE, "%lld\n",
++	return sysfs_emit(buf, "%lld\n",
+ 			((time64_t)hi << 32) + le32_to_cpu(lo));
+ }
+ 
+@@ -374,7 +374,7 @@ static ssize_t ext4_attr_show(struct kobject *kobj,
+ 
+ 	switch (a->attr_id) {
+ 	case attr_delayed_allocation_blocks:
+-		return snprintf(buf, PAGE_SIZE, "%llu\n",
++		return sysfs_emit(buf, "%llu\n",
+ 				(s64) EXT4_C2B(sbi,
+ 		       percpu_counter_sum(&sbi->s_dirtyclusters_counter)));
+ 	case attr_session_write_kbytes:
+@@ -382,11 +382,11 @@ static ssize_t ext4_attr_show(struct kobject *kobj,
+ 	case attr_lifetime_write_kbytes:
+ 		return lifetime_write_kbytes_show(sbi, buf);
+ 	case attr_reserved_clusters:
+-		return snprintf(buf, PAGE_SIZE, "%llu\n",
++		return sysfs_emit(buf, "%llu\n",
+ 				(unsigned long long)
+ 				atomic64_read(&sbi->s_resv_clusters));
+ 	case attr_sra_exceeded_retry_limit:
+-		return snprintf(buf, PAGE_SIZE, "%llu\n",
++		return sysfs_emit(buf, "%llu\n",
+ 				(unsigned long long)
+ 			percpu_counter_sum(&sbi->s_sra_exceeded_retry_limit));
+ 	case attr_inode_readahead:
+@@ -394,42 +394,42 @@ static ssize_t ext4_attr_show(struct kobject *kobj,
+ 		if (!ptr)
+ 			return 0;
+ 		if (a->attr_ptr == ptr_ext4_super_block_offset)
+-			return snprintf(buf, PAGE_SIZE, "%u\n",
++			return sysfs_emit(buf, "%u\n",
+ 					le32_to_cpup(ptr));
+ 		else
+-			return snprintf(buf, PAGE_SIZE, "%u\n",
++			return sysfs_emit(buf, "%u\n",
+ 					*((unsigned int *) ptr));
+ 	case attr_pointer_ul:
+ 		if (!ptr)
+ 			return 0;
+-		return snprintf(buf, PAGE_SIZE, "%lu\n",
++		return sysfs_emit(buf, "%lu\n",
+ 				*((unsigned long *) ptr));
+ 	case attr_pointer_u8:
+ 		if (!ptr)
+ 			return 0;
+-		return snprintf(buf, PAGE_SIZE, "%u\n",
++		return sysfs_emit(buf, "%u\n",
+ 				*((unsigned char *) ptr));
+ 	case attr_pointer_u64:
+ 		if (!ptr)
+ 			return 0;
+ 		if (a->attr_ptr == ptr_ext4_super_block_offset)
+-			return snprintf(buf, PAGE_SIZE, "%llu\n",
++			return sysfs_emit(buf, "%llu\n",
+ 					le64_to_cpup(ptr));
+ 		else
+-			return snprintf(buf, PAGE_SIZE, "%llu\n",
++			return sysfs_emit(buf, "%llu\n",
+ 					*((unsigned long long *) ptr));
+ 	case attr_pointer_string:
+ 		if (!ptr)
+ 			return 0;
+-		return snprintf(buf, PAGE_SIZE, "%.*s\n", a->attr_size,
++		return sysfs_emit(buf, "%.*s\n", a->attr_size,
+ 				(char *) ptr);
+ 	case attr_pointer_atomic:
+ 		if (!ptr)
+ 			return 0;
+-		return snprintf(buf, PAGE_SIZE, "%d\n",
++		return sysfs_emit(buf, "%d\n",
+ 				atomic_read((atomic_t *) ptr));
+ 	case attr_feature:
+-		return snprintf(buf, PAGE_SIZE, "supported\n");
++		return sysfs_emit(buf, "supported\n");
+ 	case attr_first_error_time:
+ 		return print_tstamp(buf, sbi->s_es, s_first_error_time);
+ 	case attr_last_error_time:
 -- 
-Dave Chinner
-david@fromorbit.com
+2.7.4
+
