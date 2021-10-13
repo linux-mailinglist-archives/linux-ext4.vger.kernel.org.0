@@ -2,130 +2,274 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7703942B293
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Oct 2021 04:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1CF42B2AA
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Oct 2021 04:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233316AbhJMCWq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 12 Oct 2021 22:22:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbhJMCWp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 12 Oct 2021 22:22:45 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E859FC061570
-        for <linux-ext4@vger.kernel.org>; Tue, 12 Oct 2021 19:20:42 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id t16so3583466eds.9
-        for <linux-ext4@vger.kernel.org>; Tue, 12 Oct 2021 19:20:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deitcher-net.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NVb8uzOEJl/dvmfXFPAbbPAo09twHNWLDn/FZoojfhA=;
-        b=ZZH1YgQmunHzo/dcoDe9nC3CJTL9JlG7Zy0qWLiTSMVFkIFsyFOfMwf7DD6ZF1pGgF
-         hOAxkvaVSS1chixUvlQNbi08mH44+OIF6LLUm7pZ//+3g3lrnWEa0EUOZeCglnc9sKud
-         OP0Pp9ugGf9hsJ2b8gxUdaDbPDxBAKme0UAOEdcE4alsBTmAQIvNWr3wkOMzkbYEG91d
-         6cuGcpu3pgK5Gx4HWvZYZeWiQREpz0OyUDDJ8lNrfG5/nSWFmNg3qU1d7obn4SUvxF8N
-         VArrObDYi8ruR3jBCBTyvedSp0wcMbkm2WROMxqYEz5SgFlT23/ZmnlLiUy2hQDjzIgu
-         jutw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NVb8uzOEJl/dvmfXFPAbbPAo09twHNWLDn/FZoojfhA=;
-        b=DGS4UhpwK62a/f6lzsRXyxzqAKC97Zo64b6tuffDJVIVga2Nd82zW1fzQLeeUpncsz
-         nQVNlVVk8/K7iFngukV5CWvOb6rydgO+oUFNKQEGvzXo9BVQrAxg3NVEhwkwVENKos9P
-         b2OXThhO8EZs/679K3qC80WXTd98LbwncN4DpOAoDtiLz6E30DcQGKFCQLVnhRE7TGiD
-         hko1KtswEFV5d8P14iVhFM/ep42nUNtbHgumJbetnkTd39Ryo7SOjYALlwlfAd54pkBX
-         NrTyw7pf1oFIxzSH4JIDVAQaTVRMNcmQKzPGPeKrpKc3WxvB295O2DvdI0qmEIWU6eey
-         u8Pw==
-X-Gm-Message-State: AOAM531mVX++NCOKgU0/66o1xanan5SSJRLLoNqEyfE98hLPLHEloC1Q
-        jA8F27FA49jVLEd09qpWKlonDKQ7wfX4cz2UQYYYe+5rdDJ7wg==
-X-Google-Smtp-Source: ABdhPJwjd4A7gt06fL6QEJ9qjqmMNk8+mZwRcxemMNDn6jztOxjgcJJX5HhxqlnBSF+kTf8AwDyO9g0kPRQLSN4KS3c=
-X-Received: by 2002:a17:906:684e:: with SMTP id a14mr32432040ejs.142.1634091638338;
- Tue, 12 Oct 2021 19:20:38 -0700 (PDT)
+        id S233656AbhJMCel (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 12 Oct 2021 22:34:41 -0400
+Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:35514 "EHLO
+        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233316AbhJMCel (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 12 Oct 2021 22:34:41 -0400
+Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
+        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id 89ADC104FAB;
+        Wed, 13 Oct 2021 13:32:32 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1maU4F-005boy-4E; Wed, 13 Oct 2021 13:32:31 +1100
+Date:   Wed, 13 Oct 2021 13:32:31 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     NeilBrown <neilb@suse.de>, Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Jonathan Corbet <corbet@lwn.net>,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH 2/6] MM: improve documentation for __GFP_NOFAIL
+Message-ID: <20211013023231.GV2361455@dread.disaster.area>
+References: <163184741778.29351.16920832234899124642.stgit@noble.brown>
+ <b680fb87-439b-0ba4-cf9f-33d729f27941@suse.cz>
+ <YVwyhDnE/HEnoLAi@dhcp22.suse.cz>
+ <eba04a07-99da-771a-ab6b-36de41f9f120@suse.cz>
+ <20211006231452.GF54211@dread.disaster.area>
+ <YV7G7gyfZkmw7/Ae@dhcp22.suse.cz>
+ <163364854551.31063.4377741712039731672@noble.neil.brown.name>
+ <YV/31+qXwqEgaxJL@dhcp22.suse.cz>
+ <20211008223649.GJ54211@dread.disaster.area>
+ <YWQmsESyyiea0zle@dhcp22.suse.cz>
 MIME-Version: 1.0
-References: <CAF1vpkgPAy3FJ9mN22OVQ41jQAYoRdoCdqzYwRYYPXD4uucdpg@mail.gmail.com>
- <3A493D20-568A-4D63-A575-5DEEBFAAF41A@dilger.ca> <CAF1vpkigHMdKphnNjDm7=rR6TTxViHGGHi3bb64rsHG7KbqYzQ@mail.gmail.com>
- <CAF1vpkhwSOfGfErUUrp0YU5hSt58TtykTECiJXTcgqDtG0WVVg@mail.gmail.com>
- <YWSck57bsX/LqAKr@mit.edu> <CAF1vpkiKx3jArgjNBrid9-MSHBweGsFL0zu0UgDX_dq_hrkUgw@mail.gmail.com>
- <YWXGRgfxJZMe9iut@mit.edu>
-In-Reply-To: <YWXGRgfxJZMe9iut@mit.edu>
-From:   Avi Deitcher <avi@deitcher.net>
-Date:   Tue, 12 Oct 2021 19:20:26 -0700
-Message-ID: <CAF1vpkidOGm0OmRac+OqaXcnJptn1O22OLHXJZoPfEbhxb3Ttw@mail.gmail.com>
-Subject: Re: algorithm for half-md4 used in htree directories
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWQmsESyyiea0zle@dhcp22.suse.cz>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=epq8cqlX c=1 sm=1 tr=0 ts=61664544
+        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
+        a=kj9zAlcOel0A:10 a=8gfv0ekSlNoA:10 a=7-415B0cAAAA:8
+        a=neU_OqogJPR7JUYaiz0A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Yep, right here
-https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/tree/lib/ext2fs/dirhash.c
+On Mon, Oct 11, 2021 at 01:57:36PM +0200, Michal Hocko wrote:
+> On Sat 09-10-21 09:36:49, Dave Chinner wrote:
+> > On Fri, Oct 08, 2021 at 09:48:39AM +0200, Michal Hocko wrote:
+> > > > > > Even the API constaints of kvmalloc() w.r.t. only doing the vmalloc
+> > > > > > fallback if the gfp context is GFP_KERNEL - we already do GFP_NOFS
+> > > > > > kvmalloc via memalloc_nofs_save/restore(), so this behavioural
+> > > > > > restriction w.r.t. gfp flags just makes no sense at all.
+> > > > > 
+> > > > > GFP_NOFS (without using the scope API) has the same problem as NOFAIL in
+> > > > > the vmalloc. Hence it is not supported. If you use the scope API then
+> > > > > you can GFP_KERNEL for kvmalloc. This is clumsy but I am not sure how to
+> > > > > define these conditions in a more sensible way. Special case NOFS if the
+> > > > > scope api is in use? Why do you want an explicit NOFS then?
+> > 
+> > Exactly my point - this is clumsy and a total mess. I'm not asking
+> > for an explicit GFP_NOFS, just pointing out that the documented
+> > restrictions that "vmalloc can only do GFP_KERNEL allocations" is
+> > completely wrong.
+> > 
+> > vmalloc()
+> > {
+> > 	if (!(gfp_flags &  __GFP_FS))
+> > 		memalloc_nofs_save();
+> > 	p = __vmalloc(gfp_flags | GFP_KERNEL)
+> > 	if (!(gfp_flags &  __GFP_FS))
+> > 		memalloc_nofs_restore();
+> > }
+> > 
+> > Yup, that's how simple it is to support GFP_NOFS support in
+> > vmalloc().
+> 
+> Yes, this would work from the functionality POV but it defeats the
+> philosophy behind the scope API. Why would you even need this if the
+> scope was defined by the caller of the allocator?
 
-Hey, that's your name on it, Ted!
+Who actually cares that vmalloc might be using the scoped API
+internally to implement GFP_NOFS or GFP_NOIO? Nobody at all.
+It is far more useful (and self documenting!) for one-off allocations
+to pass a GFP_NOFS flag than it is to use a scope API...
 
-I am close, must be messing it up somehow. I literally copied the
-majority of that (actually, some slight variant, but basically the
-same) into a standalone main.c, removed any library dependencies by
-copying those in so I can get a standalone, and I still am not quite
-getting it. Maybe I am messing up the seed?
+> The initial hope was
+> to get rid of the NOFS abuse that can be seen in many filesystems. All
+> allocations from the scope would simply inherit the NOFS semantic so
+> an explicit NOFS shouldn't be really necessary, right?
 
-dump2fs of the superblock shows:
+Yes, but I think you miss my point entirely: that the vmalloc
+restrictions on what gfp flags can be passed without making it
+entirely useless are completely arbitrary and non-sensical.
 
-Default directory hash:   half_md4
-Directory Hash Seed:      d64563bc-ea93-4aaf-a943-4657711ed153
+> > This goes along with the argument that "it's impossible to do
+> > GFP_NOFAIL with vmalloc" as I addressed above. These things are not
+> > impossible, but we hide behind "we don't want people to use vmalloc"
+> > as an excuse for having shitty behaviour whilst ignoring that
+> > vmalloc is *heavily used* by core subsystems like filesystems
+> > because they cannot rely on high order allocations succeeding....
+> 
+> I do not think there is any reason to discourage anybody from using
+> vmalloc these days. 32b is dying out and vmalloc space is no longer a
+> very scarce resource.
 
-and debugfs of the hash tree shows:
+We are still discouraged from doing high order allocations and
+should only use pages directly. Not to mention that the API doesn't
+make it simple to use vmalloc as a direct replacement for high order
+kmalloc tends to discourage new users...
 
-Root node dump:
-         Reserved zero: 0
-         Hash Version: 1
-         Info length: 8
-         Indirect levels: 1
-         Flags: 0
-Number of entries (count): 2
-Number of entries (limit): 123
-Checksum: 0x49f0afdc
-Entry #0: Hash 0x00000000, block 124
-Entry #1: Hash 0x78b6e3b8, block 128
+> > It also points out that the scope API is highly deficient.
+> > We can do GFP_NOFS via the scope API, but we can't
+> > do anything else because *there is no scope API for other GFP
+> > flags*.
+> > 
+> > Why don't we have a GFP_NOFAIL/__GFP_RETRY_FOREVER scope API?
+> 
+> NO{FS,IO} where first flags to start this approach. And I have to admit
+> the experiment was much less successful then I hoped for. There are
+> still thousands of direct NOFS users so for some reason defining scopes
+> is not an easy thing to do.
+> 
+> I am not against NOFAIL scopes in principle but seeing the nofs
+> "success" I am worried this will not go really well either and it is
+> much more tricky as NOFAIL has much stronger requirements than NOFS.
+> Just imagine how tricky this can be if you just call a library code
+> that is not under your control within a NOFAIL scope. What if that
+> library code decides to allocate (e.g. printk that would attempt to do
+> an optimistic NOWAIT allocation).
 
-Entry #0: Hash 0x00000000, block 124
-Number of entries (count): 113
-Number of entries (limit): 126
-Checksum: 0x78407270
-Entry #0: Hash 0x00000000, block 1
-Entry #1: Hash 0x00f48688, block 193
-...
+I already asked you that _exact_ question earlier in the thread
+w.r.t.  kvmalloc(GFP_NOFAIL) using optimistic NOWAIT kmalloc
+allocation. I asked you as a MM expert to define *and document* the
+behaviour that should result, not turn around and use the fact that
+it is undefined behaviour as a "this is too hard" excuse for not
+changing anything.
 
-So it has the hash version correct (I also gdb-ed through my little
-program. Maybe I am getting the u32 order wrong in the seed? Or the
-endianness?
+THe fact is that the scope APIs are only really useful for certain
+contexts where restrictions are set by higher level functionality.
+For one-off allocation constraints the API sucks and we end up with
+crap like this (found in btrfs):
 
-I should just create a gist with this, shouldn't I?
+                /*                                                               
+                 * We're holding a transaction handle, so use a NOFS memory      
+                 * allocation context to avoid deadlock if reclaim happens.      
+                 */                                                              
+                nofs_flag = memalloc_nofs_save();                                
+                value = kmalloc(size, GFP_KERNEL);                               
+                memalloc_nofs_restore(nofs_flag);                                
 
-On Tue, Oct 12, 2021 at 10:30 AM Theodore Ts'o <tytso@mit.edu> wrote:
->
-> On Mon, Oct 11, 2021 at 07:58:00PM -0700, Avi Deitcher wrote:
-> > Aha. I missed that the seed is injected into buf before passing it
-> > into half_md4_transform. I was looking at it as just the empty buffer
-> > before the first iteration of the loop (or, in my case, since I was
-> > testing with a 6 char filename, the only iteration).
-> >
-> > I will repeat my experiment with that and see if I can tease it out.
->
-> BTW, if you are looking for a userspace implementation of the hash,
-> it's available in libext2fs in e2fsprogs.
->
-> Cheers,
->
->                                         - Ted
+But also from btrfs, this pattern is repeated in several places:
 
+        nofs_flag = memalloc_nofs_save();                                        
+        ctx = kvmalloc(struct_size(ctx, chunks, num_chunks), GFP_KERNEL);        
+        memalloc_nofs_restore(nofs_flag);                                        
 
+This needs to use the scoped API because vmalloc doesn't support
+GFP_NOFS. So the poor "vmalloc needs scoped API" pattern is bleeding
+over into other code that doesn't have the problems vmalloc does. Do
+you see how this leads to poorly written code now?
 
+Or perhaps I should just point at ceph?
+
+/*
+ * kvmalloc() doesn't fall back to the vmalloc allocator unless flags are
+ * compatible with (a superset of) GFP_KERNEL.  This is because while the
+ * actual pages are allocated with the specified flags, the page table pages
+ * are always allocated with GFP_KERNEL.
+ *
+ * ceph_kvmalloc() may be called with GFP_KERNEL, GFP_NOFS or GFP_NOIO.
+ */
+void *ceph_kvmalloc(size_t size, gfp_t flags)
+{
+        void *p;
+
+        if ((flags & (__GFP_IO | __GFP_FS)) == (__GFP_IO | __GFP_FS)) {
+                p = kvmalloc(size, flags);
+        } else if ((flags & (__GFP_IO | __GFP_FS)) == __GFP_IO) {
+                unsigned int nofs_flag = memalloc_nofs_save();
+                p = kvmalloc(size, GFP_KERNEL);
+                memalloc_nofs_restore(nofs_flag);
+        } else {
+                unsigned int noio_flag = memalloc_noio_save();
+                p = kvmalloc(size, GFP_KERNEL);
+                memalloc_noio_restore(noio_flag);
+        }
+
+        return p;
+}
+
+IOWs, a large number of the users of the scope API simply make
+[k]vmalloc() provide GFP_NOFS behaviour. ceph_kvmalloc() is pretty
+much a wrapper that indicates how all vmalloc functions should
+behave. Honour GFP_NOFS and GFP_NOIO by using the scope API
+internally.
+
+> > That
+> > would save us a lot of bother in XFS. What about GFP_DIRECT_RECLAIM?
+> > I'd really like to turn that off for allocations in the XFS
+> > transaction commit path (as noted already in this thread) because
+> > direct reclaim that can make no progress is actively harmful (as
+> > noted already in this thread)
+> 
+> As always if you have reasonable usecases then it is best to bring them
+> up on the MM list and we can discuss them.
+
+They've been pointed out many times in the past, and I've pointed
+them out again in this thread. Telling me to "bring them up on the
+mm list" when that's exactly what I'm doing right now is not a
+helpful response.
+
+> > Like I said - this is more than just bad documentation - the problem
+> > is that the whole allocation API is an inconsistent mess of control
+> > mechanisms to begin with...
+> 
+> I am not going to disagree. There is a lot of historical baggage and
+> it doesn't help that any change is really hard to review because this
+> interface is used throughout the kernel. I have tried to change some
+> most obvious inconsistencies and I can tell this has always been a
+> frustrating experience with a very small "reward" in the end because
+> there are so many other problems.
+
+Technical debt in the mm APIs is something the mm developers need to
+address, not the people who tell you it's a problem for them.
+Telling the messenger "do my job for me because I find it too
+frustrating to make progress myself" doesn't help anyone make
+progress. If you find it frustrating trying to get mm code changed,
+imagine what it feels like for someone on the outside asking for
+relatively basic things like a consistent control API....
+
+> That being said, I would more than love to have a consistent and well
+> defined interface and if you want to spend a lot of time on that then be
+> my guest.
+
+My point exactly: saying "fix it yourself" is not a good response....
+
+> > > > It would seem to make sense for kvmalloc to WARN_ON if it is passed
+> > > > flags that does not allow it to use vmalloc.
+> > > 
+> > > vmalloc is certainly not the hottest path in the kernel so I wouldn't be
+> > > opposed.
+> > 
+> > kvmalloc is most certainly becoming one of the hottest paths in XFS.
+> > IOWs, arguments that "vmalloc is not a hot path" are simply invalid
+> > these days because they are simply untrue. e.g. the profiles I
+> > posted in this thread...
+> 
+> Is it such a hot path that a check for compatible flags would be visible
+> in profiles though?
+
+No, that doesn't even show up as noise - the overhead of global
+spinlock contention and direct reclaim are the elephants that
+profiles point to, not a couple of flag checks on function
+parameters...
+
+Cheers,
+
+Dave.
 -- 
-Avi Deitcher
-avi@deitcher.net
-Follow me http://twitter.com/avideitcher
-Read me http://blog.atomicinc.com
+Dave Chinner
+david@fromorbit.com
