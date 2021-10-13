@@ -2,53 +2,83 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E3042CB4F
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Oct 2021 22:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58DD542CC97
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Oct 2021 23:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbhJMUsg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 13 Oct 2021 16:48:36 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:59876 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229496AbhJMUsf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 13 Oct 2021 16:48:35 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 19DKkM9b003484
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Oct 2021 16:46:22 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 230C115C00CA; Wed, 13 Oct 2021 16:46:22 -0400 (EDT)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, Xin Tan <tanxin.ctf@gmail.com>,
-        yuanxzhang@fudan.edu.cn
-Subject: Re: [PATCH] ext4: Convert from atomic_t to refcount_t on ext4_io_end->count
-Date:   Wed, 13 Oct 2021 16:46:15 -0400
-Message-Id: <163415796177.214938.11748904502433521688.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <1626674355-55795-1-git-send-email-xiyuyang19@fudan.edu.cn>
-References: <1626674355-55795-1-git-send-email-xiyuyang19@fudan.edu.cn>
+        id S230129AbhJMVQu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 13 Oct 2021 17:16:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44862 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230111AbhJMVQt (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 13 Oct 2021 17:16:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCD7761139;
+        Wed, 13 Oct 2021 21:14:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634159685;
+        bh=SlbEmP0SftpYg5Qzgl+3uhbNwtKN42MS1eJbqRVvz8o=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hiKscGct16rhTAVFUvB8ulUGFNYX0XJpF+2YqPKF0No0/OTxa8B+FbCYvPeznM3IT
+         o7+9DVjPYoKAxa50QdWsJ1gL4J+4wBU1jNZrm6P/FvNKQ8G7E2qrXO9VM2GBzVJvw8
+         S/gFZjYpmMou1VruRE19i94wuylZi24lJbQ6yAN6OeRqXntYIE5B0JYh+T/uz9ctke
+         L86OtKTf7XCkJxLOyXfeIFv5kZLrR3s6zlWx8Mcxq8cYKDBsASwSQxb8GUZPcnzqgT
+         VFHmPHbz4NrsEHQ/qmk1iEmYL+m9W0ImnKdxKKKAOXKE+hMXaoTAVCJomjq0s1kTjo
+         7pgsY+NMeWiSg==
+Received: by mail-lf1-f54.google.com with SMTP id u18so17428163lfd.12;
+        Wed, 13 Oct 2021 14:14:45 -0700 (PDT)
+X-Gm-Message-State: AOAM532FXiGs1sCaGxNpzsJmeQlJzE+mAIiSokLdcbxAMrOP9h09k+b9
+        RNkm7JcYnOu/qJ5EjWa83slixpHkeaKf2YthUvI=
+X-Google-Smtp-Source: ABdhPJy4PwudaFsA5k7zIKbmlSW7M8/j3iWHJKEthDYdjnMO754KPa3JLlK+wmXJkye7TEJ2vXHzCCixulymuZnDiqk=
+X-Received: by 2002:a2e:6e0b:: with SMTP id j11mr1736234ljc.527.1634159683768;
+ Wed, 13 Oct 2021 14:14:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20211013051042.1065752-1-hch@lst.de> <20211013051042.1065752-5-hch@lst.de>
+ <202110122311.B43459E21@keescook>
+In-Reply-To: <202110122311.B43459E21@keescook>
+From:   Song Liu <song@kernel.org>
+Date:   Wed, 13 Oct 2021 14:14:32 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6MFRmKfpUxLL3=TRAgNTuTMFySc=_-NA7YOWDAvYAxyQ@mail.gmail.com>
+Message-ID: <CAPhsuW6MFRmKfpUxLL3=TRAgNTuTMFySc=_-NA7YOWDAvYAxyQ@mail.gmail.com>
+Subject: Re: [PATCH 04/29] md: use bdev_nr_sectors instead of open coding it
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Coly Li <colyli@suse.de>, Mike Snitzer <snitzer@redhat.com>,
+        David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Jan Kara <jack@suse.com>, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, drbd-dev@lists.linbit.com,
+        linux-bcache@vger.kernel.org,
+        linux-raid <linux-raid@vger.kernel.org>,
+        linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        ntfs3@lists.linux.dev, reiserfs-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, 19 Jul 2021 13:59:14 +0800, Xiyu Yang wrote:
-> refcount_t type and corresponding API can protect refcounters from
-> accidental underflow and overflow and further use-after-free situations.
-> 
-> 
+On Tue, Oct 12, 2021 at 11:12 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Wed, Oct 13, 2021 at 07:10:17AM +0200, Christoph Hellwig wrote:
+> > Use the proper helper to read the block device size.
+> >
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+>
+> I think it might make sense, as you suggest earlier, to add a "bytes"
+> helper. This is the first user in the series needing:
+>
+>         bdev_nr_sectors(...bdev) << SECTOR_SHIFT
+>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Applied, thanks!
-
-[1/1] ext4: Convert from atomic_t to refcount_t on ext4_io_end->count
-      commit: 6333c4e6167b01a27a6d13bd7bbeb9451d4067c1
-
-Best regards,
--- 
-Theodore Ts'o <tytso@mit.edu>
+Acked-by: Song Liu <song@kernel.org>
