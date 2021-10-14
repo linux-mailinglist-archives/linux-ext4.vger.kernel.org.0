@@ -2,81 +2,180 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5FCD42E0C4
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Oct 2021 20:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61EDA42E18C
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Oct 2021 20:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233833AbhJNSJB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 14 Oct 2021 14:09:01 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:48429 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233836AbhJNSJB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 14 Oct 2021 14:09:01 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R381e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Urv6T5V_1634234813;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Urv6T5V_1634234813)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 15 Oct 2021 02:06:54 +0800
-Date:   Fri, 15 Oct 2021 02:06:52 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     "Rantala, Tommi T. (Nokia - FI/Espoo)" <tommi.t.rantala@nokia.com>
-Cc:     "jefflexu@linux.alibaba.com" <jefflexu@linux.alibaba.com>,
-        "enwlinux@gmail.com" <enwlinux@gmail.com>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: Inode 2885482 (000000008e814f64): i_reserved_data_blocks (2) not
- cleared!
-Message-ID: <YWhxvOf5EoHMFxtl@B-P7TQMD6M-0146.local>
-References: <767ea5bb27e31cc58bea15cd2aec492946679bde.camel@nokia.com>
+        id S231316AbhJNSqe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 14 Oct 2021 14:46:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230384AbhJNSqd (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Oct 2021 14:46:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 880DEC061570;
+        Thu, 14 Oct 2021 11:44:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1/IU3zzvNtZ8I2cOxrDjZM+5f1zuXePR+7Z+lyREdJs=; b=BM9dmieAAA8LE4gmJ0k+mXHUvl
+        +wvMf0d1KWjAXoRhtD87kn6N/ii/WDzd32yi2jIQXv741l0o2NmgJhQIWSllMrpHsikcO1M9/t8OC
+        ivjYqf+UACw/tUWnQKua+AAJy1Wf+jtOoO71EjCAVQdX2J+uTX9NRLpDQuQk5kXN7Cpo7FBaScrXv
+        FjiTLrMrPT97C1e2L+ov9yOBuQJ6nXqY06zN8UCRtm52yVv/fbvEA+Ea7m2QXGzqLAbz75jezONPd
+        0s9t4qFrCKlUm9FQz9GvcC0xqc9vcJ9kiyYY0vLQZonDO0enCltv/6iQjmQhLxDG7v5dEpQSSkLKT
+        GS1klIBw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mb5h6-008WfV-3P; Thu, 14 Oct 2021 18:43:30 +0000
+Date:   Thu, 14 Oct 2021 19:43:08 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Alex Sierra <alex.sierra@amd.com>, akpm@linux-foundation.org,
+        Felix.Kuehling@amd.com, linux-mm@kvack.org, rcampbell@nvidia.com,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        hch@lst.de, jglisse@redhat.com, apopple@nvidia.com,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>, nvdimm@lists.linux.dev
+Subject: Re: [PATCH v1 2/2] mm: remove extra ZONE_DEVICE struct page refcount
+Message-ID: <YWh6PL7nvh4DqXCI@casper.infradead.org>
+References: <20211014153928.16805-1-alex.sierra@amd.com>
+ <20211014153928.16805-3-alex.sierra@amd.com>
+ <20211014170634.GV2744544@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <767ea5bb27e31cc58bea15cd2aec492946679bde.camel@nokia.com>
+In-Reply-To: <20211014170634.GV2744544@nvidia.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 12:54:14PM +0000, Rantala, Tommi T. (Nokia - FI/Espoo) wrote:
-> Hi,
-> 
-> I'm seeing these i_reserved_data_blocks not cleared! messages when using ext4
-> with nodelalloc, message added in:
-> 
->   commit 6fed83957f21eff11c8496e9f24253b03d2bc1dc
->   Author: Jeffle Xu <jefflexu@linux.alibaba.com>
->   Date:   Mon Aug 23 14:13:58 2021 +0800
-> 
->       ext4: fix reserved space counter leakage
-> 
-> I can quickly reproduce in 5.15.0-rc5-00041-g348949d9a444 by doing some
-> filesystem I/O while toggling delalloc:
-> 
-> 
-> while true; do mount -o remount,nodelalloc /; sleep 1; mount -o remount,delalloc /; sleep 1; done &
-> git clone linux xxx; rm -rf xxx
 
-If I understand correctly, switching such option implies
-sync inodes to write back exist delayed allocation blocks.
+It would probably help if you cc'd Dan on this.
+As far as I know he's the only person left who cares about GUP on DAX.
 
-At a glance I don't find it. Yet no test actually.
-
-Thanks,
-Gao Xiang
-
+On Thu, Oct 14, 2021 at 02:06:34PM -0300, Jason Gunthorpe wrote:
+> On Thu, Oct 14, 2021 at 10:39:28AM -0500, Alex Sierra wrote:
+> > From: Ralph Campbell <rcampbell@nvidia.com>
+> > 
+> > ZONE_DEVICE struct pages have an extra reference count that complicates the
+> > code for put_page() and several places in the kernel that need to check the
+> > reference count to see that a page is not being used (gup, compaction,
+> > migration, etc.). Clean up the code so the reference count doesn't need to
+> > be treated specially for ZONE_DEVICE.
+> > 
+> > Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+> > Signed-off-by: Alex Sierra <alex.sierra@amd.com>
+> > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> > ---
+> > v2:
+> > AS: merged this patch in linux 5.11 version
+> > 
+> > v5:
+> > AS: add condition at try_grab_page to check for the zone device type, while
+> > page ref counter is checked less/equal to zero. In case of device zone, pages
+> > ref counter are initialized to zero.
+> > 
+> > v7:
+> > AS: fix condition at try_grab_page added at v5, is invalid. It supposed
+> > to fix xfstests/generic/413 test, however, there's a known issue on
+> > this test where DAX mapped area DIO to non-DAX expect to fail.
+> > https://patchwork.kernel.org/project/fstests/patch/1489463960-3579-1-git-send-email-xzhou@redhat.com
+> > This condition was removed after rebase over patch series
+> > https://lore.kernel.org/r/20210813044133.1536842-4-jhubbard@nvidia.com
+> > ---
+> >  arch/powerpc/kvm/book3s_hv_uvmem.c     |  2 +-
+> >  drivers/gpu/drm/nouveau/nouveau_dmem.c |  2 +-
+> >  fs/dax.c                               |  4 +-
+> >  include/linux/dax.h                    |  2 +-
+> >  include/linux/memremap.h               |  7 +--
+> >  include/linux/mm.h                     | 11 ----
+> >  lib/test_hmm.c                         |  2 +-
+> >  mm/internal.h                          |  8 +++
+> >  mm/memcontrol.c                        |  6 +--
+> >  mm/memremap.c                          | 69 +++++++-------------------
+> >  mm/migrate.c                           |  5 --
+> >  mm/page_alloc.c                        |  3 ++
+> >  mm/swap.c                              | 45 ++---------------
+> >  13 files changed, 46 insertions(+), 120 deletions(-)
 > 
-> [  222.928341] EXT4-fs (vdb1): re-mounted. Opts: delalloc. Quota mode: disabled.
-> [  223.932516] EXT4-fs (vdb1): re-mounted. Opts: nodelalloc. Quota mode: disabled.
-> [  224.183741] EXT4-fs (vdb1): Inode 2885482 (000000008e814f64): i_reserved_data_blocks (2) not cleared!
-> [  224.185064] EXT4-fs (vdb1): Inode 2885478 (00000000862b48ad): i_reserved_data_blocks (2) not cleared!
-> [  224.186434] EXT4-fs (vdb1): Inode 2885474 (00000000a20bdd95): i_reserved_data_blocks (7) not cleared!
-> [  224.187649] EXT4-fs (vdb1): Inode 2885476 (00000000028005e1): i_reserved_data_blocks (2) not cleared!
-> [  224.189016] EXT4-fs (vdb1): Inode 2885475 (0000000025d9617d): i_reserved_data_blocks (2) not cleared!
-> [  224.190370] EXT4-fs (vdb1): Inode 2885480 (00000000d0722d90): i_reserved_data_blocks (7) not cleared!
-> [  224.191732] EXT4-fs (vdb1): Inode 2885481 (000000009b50d6cb): i_reserved_data_blocks (1) not cleared!
-> [  224.193093] EXT4-fs (vdb1): Inode 2885472 (00000000fe907f54): i_reserved_data_blocks (1) not cleared!
-> [  227.946984] EXT4-fs: 9213 callbacks suppressed
-> [  227.946989] EXT4-fs (vdb1): re-mounted. Opts: nodelalloc. Quota mode: disabled.
+> Has anyone tested this with FSDAX? Does get_user_pages() on fsdax
+> backed memory still work?
 > 
+> What refcount value does the struct pages have when they are installed
+> in the PTEs? Remember a 0 refcount will make all the get_user_pages()
+> fail.
 > 
-> -Tommi
+> I'm looking at the call path starting in ext4_punch_hole() and I would
+> expect to see something manipulating the page ref count before
+> the ext4_break_layouts() call path gets to the dax_page_unused() test.
 > 
+> All I see is we go into unmap_mapping_pages() - that would normally
+> put back the page references held by PTEs but insert_pfn() has this:
+> 
+> 	if (pfn_t_devmap(pfn))
+> 		entry = pte_mkdevmap(pfn_t_pte(pfn, prot));
+> 
+> And:
+> 
+> static inline pte_t pte_mkdevmap(pte_t pte)
+> {
+> 	return pte_set_flags(pte, _PAGE_SPECIAL|_PAGE_DEVMAP);
+> }
+> 
+> Which interacts with vm_normal_page():
+> 
+> 		if (pte_devmap(pte))
+> 			return NULL;
+> 
+> To disable that refcounting?
+> 
+> So... I have a feeling this will have PTEs pointing to 0 refcount
+> pages? Unless FSDAX is !pte_devmap which is not the case, right?
+> 
+> This seems further confirmed by this comment:
+> 
+> 	/*
+> 	 * If we race get_user_pages_fast() here either we'll see the
+> 	 * elevated page count in the iteration and wait, or
+> 	 * get_user_pages_fast() will see that the page it took a reference
+> 	 * against is no longer mapped in the page tables and bail to the
+> 	 * get_user_pages() slow path.  The slow path is protected by
+> 	 * pte_lock() and pmd_lock(). New references are not taken without
+> 	 * holding those locks, and unmap_mapping_pages() will not zero the
+> 	 * pte or pmd without holding the respective lock, so we are
+> 	 * guaranteed to either see new references or prevent new
+> 	 * references from being established.
+> 	 */
+> 
+> Which seems to explain this scheme relies on unmap_mapping_pages() to
+> fence GUP_fast, not on GUP_fast observing 0 refcounts when it should
+> stop.
+> 
+> This seems like it would be properly fixed by using normal page
+> refcounting for PTEs - ie stop using special for these pages?
+> 
+> Does anyone know why devmap is pte_special anyhow?
+> 
+> > +void free_zone_device_page(struct page *page)
+> > +{
+> > +	switch (page->pgmap->type) {
+> > +	case MEMORY_DEVICE_PRIVATE:
+> > +		free_device_page(page);
+> > +		return;
+> > +	case MEMORY_DEVICE_FS_DAX:
+> > +		/* notify page idle */
+> > +		wake_up_var(&page->_refcount);
+> > +		return;
+> 
+> It is not for this series, but I wonder if we should just always call
+> ops->page_free and have free_device_page() logic in that callback for
+> the non-fs-dax cases?
+> 
+> For instance where is the mem_cgroup_charge() call to pair with the
+> mem_cgroup_uncharge() in free_device_page()?
+> 
+> Isn't cgroup charging (or not) the responsibility of the "allocator"
+> eg the pgmap_ops owner?
+> 
+> Jason
