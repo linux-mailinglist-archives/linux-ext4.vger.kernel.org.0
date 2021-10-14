@@ -2,232 +2,128 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E08642E022
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Oct 2021 19:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78FAE42E0B1
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Oct 2021 20:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233067AbhJNRhg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 14 Oct 2021 13:37:36 -0400
-Received: from mail-co1nam11on2056.outbound.protection.outlook.com ([40.107.220.56]:37120
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        id S233801AbhJNSDn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 14 Oct 2021 14:03:43 -0400
+Received: from mail-bn1nam07on2061.outbound.protection.outlook.com ([40.107.212.61]:34949
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232389AbhJNRhf (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 14 Oct 2021 13:37:35 -0400
+        id S233793AbhJNSDm (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 14 Oct 2021 14:03:42 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cT/wXuK05mbOCnBeLElg7Id8BAP+FDW2bGG+u6JuhOngeJXv3fwIFAiJsZgQL8RRnVdYmkDC71AVl9Ft9g1adGgOEBa4jXtb1zaEeEfouCHixzWmuxLMF7+V0mfJnMbj+XiU238x55V7M4YmDZak2eN37U13jARPhh5RGmq1wvpGQp5IiEVp/vykL3zu+5ZP6ZeWsb3sflmSXSHV7ni5PHNMLw2R4Sylr/ycjrKQaR3eGVEpbEjFNWknrcrav0YG8FE+RJazE/lpRMPrMjTUkxPn+Hunne0bU1TdwFdS/9CTO10sGRfGE5lcZpesfMsgJ4NM7XinrOQfaZmfk3Uu6A==
+ b=mgmJ5HRlS4ylOQbQcw1ULWD2QjMdcDZW1ledq4gCrs7j4TmY21eYIaZM+7ws79hwJdk6HHz/aPUt0k0o8mKHDKqOm3gBgaWzkgGjNIVBvJk0Iy4WMXO7A0ySgGRzKp7nJ8Wy5lRh5FnpFmX3YwhoIBILHpwirnGdihL/y8LTk9qCglbnLOvx0BkDNyNQhpOqSmrbdKwY4Jr0S/uQD4eFtFQHJw0zsjbyf8en1V9Cwe07RWOPEyGLXKnG5Nv6rdpmF81vTqZ4Ajzp0QiZeqyilpK4tjHO1EkU5BbXxNo9XCydDvcAOlTTGuJYZ0WmsYYMxPd3uluymgQIdAwV5AMrvw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dWvb25JkDfMpg3JxqpciD0ArRBV2EnzgM1d7p/8xxTI=;
- b=FLHQ9ovUjEFw+LMDid1WT2+3gGUcgrjoWgYwsDEJXvpAdLOLZ7K/1E2C4c+fWGaahD87FA1o0Kz9pN4g4UP/pghHYEZ10MUCOFYFjNDNVeYLZ8Gc0vvAX1p69gGGz4FOoA7cgb0I1KNnX551bz1NA6iYoNemR2Onp3SpnBlmKvNxhIIVnskTr84aIUfJOcoBIygvIRDYHpUqssySOf2O0Ddv2uDhaZ8ixEIDCzkwH3gAbczEXkOwS2scx4CvANzFv4HGApcPEfezdkrmh/kvJ+48iPV47MKAlVdT0yi9EIssYtq4aEAQviuzxmUOprbraYEohIY2zMNel8MFqFfAmg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.32) smtp.rcpttodomain=kvack.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
+ bh=pTWeaN6k/Bpt+VIU1uOGBAwXLCiqUfRLhPyU/tj/XHg=;
+ b=UAY5ql79CeoPWrA8/Hv+8AK3Mnmvxitl4MSUVs0ZD8m8G7eCn8mk4lFa6ciDALxxH/9tP1k76/DYL0IR3BCHMMpqx7WFcypBLOxtLK05XIytylXAPI4bYSK2xtGt6qTTInkeA+fPMSwiVpz6IHzSgxH4MQig57hGndXQ5Z8bGBhPcKEqu+l4I0GUx0Gu5Gip0vFeU1QDRaMYm2xGva1w1Gwpc0lkx/HsIrXp/E8eztRTTfW+c3nd2TOXEhSoS2n//+JRkSCkza7+XHg449Y3j5KvFmDWezpTsl9uV6nmvmz2WgY2bZEhc9cnfGrLlBwBfSk1x2aJcL2BZV6lOXISsw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dWvb25JkDfMpg3JxqpciD0ArRBV2EnzgM1d7p/8xxTI=;
- b=g768QAHuDw0Ng2zLQE5QDPZNedGanyXZng4H/fI08unqpVuzSnXOtWWBcMr58ilohwO1V0aE4CDxGNu6w+H7jUvUSLcpXlFmi+rSqdU2ZMxQ89QAgL6G4IzmYjuRAeiJkFWNc82D7wcWkPD3AmdypJfmjhSydg4JTUOtUQAo0VDqX8D2sahdL3RpfMevBJ5OBAOr7lMOUfjCrjg5JgmuUDci164FhR6pZweEnEu/h1neOzJGwAyoPpC8aHd1JVIpda4vqQCmML6gs5gL46exSjoUsbHCdD8kGOsJ2oSrXTTvClV6Sj6Ga5P8toa4J/An7PGUH/t/GKWBHWag25qXKA==
-Received: from DM3PR08CA0006.namprd08.prod.outlook.com (2603:10b6:0:52::16) by
- DM6PR12MB4265.namprd12.prod.outlook.com (2603:10b6:5:211::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4587.20; Thu, 14 Oct 2021 17:35:29 +0000
-Received: from DM6NAM11FT019.eop-nam11.prod.protection.outlook.com
- (2603:10b6:0:52:cafe::aa) by DM3PR08CA0006.outlook.office365.com
- (2603:10b6:0:52::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15 via Frontend
- Transport; Thu, 14 Oct 2021 17:35:29 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
- smtp.mailfrom=nvidia.com; kvack.org; dkim=none (message not signed)
- header.d=none;kvack.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.32; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.32) by
- DM6NAM11FT019.mail.protection.outlook.com (10.13.172.172) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4608.15 via Frontend Transport; Thu, 14 Oct 2021 17:35:28 +0000
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 14 Oct
- 2021 10:35:27 -0700
-Received: from rcampbell-test.nvidia.com (172.20.187.6) by mail.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.18 via Frontend
- Transport; Thu, 14 Oct 2021 17:35:27 +0000
+ bh=pTWeaN6k/Bpt+VIU1uOGBAwXLCiqUfRLhPyU/tj/XHg=;
+ b=g4d3Q+zZ4tXudjsV7dNhuHoG2pD4vVWvUzfwlRy+3oWTCvfuo8rbS8YvWVbpwtwMRRyk/tLe+db13G05aJ6NOG6R76KW1HhBuqVHx5RjovzZpLImfQX23lwntIB1WzfAjFiBBdZqzZmdh95oTc0Eiw5Fvtkp3IPDHaeb1TMWcGo9kjJLtMSm1U823yPxcsYrIz+KPNTXIZjC8v1EZzMh3Hnbvefhjh+3Abnh+vW/YVSxBK42fiIC00Ix9KaxeAuv2wJZcWHNTJ6kAuHMHrsjwHcehd/BUsNAu9fCvjGxI3z/olmr1LoQneg7O7u9UgkSDkSkzD01K4w7o0ECLMic4w==
+Authentication-Results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5349.namprd12.prod.outlook.com (2603:10b6:208:31f::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Thu, 14 Oct
+ 2021 18:01:33 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%6]) with mapi id 15.20.4608.017; Thu, 14 Oct 2021
+ 18:01:33 +0000
+Date:   Thu, 14 Oct 2021 15:01:32 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     Alex Sierra <alex.sierra@amd.com>, akpm@linux-foundation.org,
+        Felix.Kuehling@amd.com, linux-mm@kvack.org,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        hch@lst.de, jglisse@redhat.com, apopple@nvidia.com,
+        willy@infradead.org
 Subject: Re: [PATCH v1 2/2] mm: remove extra ZONE_DEVICE struct page refcount
-To:     Jason Gunthorpe <jgg@nvidia.com>, Alex Sierra <alex.sierra@amd.com>
-CC:     <akpm@linux-foundation.org>, <Felix.Kuehling@amd.com>,
-        <linux-mm@kvack.org>, <linux-ext4@vger.kernel.org>,
-        <linux-xfs@vger.kernel.org>, <amd-gfx@lists.freedesktop.org>,
-        <dri-devel@lists.freedesktop.org>, <hch@lst.de>,
-        <jglisse@redhat.com>, <apopple@nvidia.com>, <willy@infradead.org>
+Message-ID: <20211014180132.GA3567687@nvidia.com>
 References: <20211014153928.16805-1-alex.sierra@amd.com>
  <20211014153928.16805-3-alex.sierra@amd.com>
  <20211014170634.GV2744544@nvidia.com>
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <eafbccb5-f94b-0ddd-bb46-7ee92ed36ee8@nvidia.com>
-Date:   Thu, 14 Oct 2021 10:35:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ <eafbccb5-f94b-0ddd-bb46-7ee92ed36ee8@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <eafbccb5-f94b-0ddd-bb46-7ee92ed36ee8@nvidia.com>
+X-ClientProxiedBy: MN2PR16CA0064.namprd16.prod.outlook.com
+ (2603:10b6:208:234::33) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-In-Reply-To: <20211014170634.GV2744544@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EOPAttributedMessage: 0
+Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR16CA0064.namprd16.prod.outlook.com (2603:10b6:208:234::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16 via Frontend Transport; Thu, 14 Oct 2021 18:01:33 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mb52q-00F0Gn-G3; Thu, 14 Oct 2021 15:01:32 -0300
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d3b98879-206f-4164-4711-08d98f3903d8
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4265:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4265133C80AC57DCE4C93BE6C2B89@DM6PR12MB4265.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Office365-Filtering-Correlation-Id: 67f71548-4169-45a7-d721-08d98f3ca84e
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5349:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB534938FADF618AD8F90B7974C2B89@BL1PR12MB5349.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1443;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YPqtKOkWVoOdxIrOIlGmhwpjBfOMas1PkaxppOZ7ozZi2CJk8eVO0I+wQ8Y2YEIdfdD+7X3mlnQJwfET6ftctNHlRS4cnslfshH11HWhhE4tBW9dH25hL7Kugh7zq/tDCZIuUDUEFAvMDRqBu8Bb5T0I0g0QrAF7C4wGZaCoy1hSQK84I5KFHOfAnAwsht4qgnPub3fQ7l9Et4asl3qB74ju48zS0WiXbm/1Yp0uPMDbHMDP6KZxERkgQuhU/xvpEPSrMQSDdfSQ2Gf9qRBSDXF7qInCXFU3yiSaFRYZIy1liDeu9lxzee9k/ld+8zDTMO2JzIwLscx6e0rhJafjoo2yZuWu3aZFAmyYCcaWR1+JoORLG8cFqqJOkRaU4PPrytSIUH9cq8/z/92un1PiwcXLKX324X4ZCEDAYDBMyDzav+FclTLV2vAg6NLIN60ecbZGD71ElD56/dRMWoyqYOCztMjvZBm0GifwmmmNKHnSnSIo6BdiX8/SNHqrBOrrdVZsHQDoLDwBM0pA9EtZxeI4w1SY4B+o6ZvqhBTNihd7fscTvnVTtlHrZg02GD7dXu9Dkvmhl9yxOl1Pn4V2unOHXEfuJJWXlO2MdiHSoUyJtKCzlluDM+BFTOjOpHeMzgo6Hl/Bmg1xKFZf4fCWB6CcOHt1NvevSZbXuk4mfbYvpTg0SAINyIA7ymsECSpQGcrwXwFUAIgAVjfYILEYhDyk4JFq+tm/c1+SDL6QSujGO/NVwKew4pVkDbkH7ccYBwVIsUtBkoWylKU4pOivJ9MbaKG2Y+g9/LEVZwqfg4RFwdZVqMjX+WDN4XvUlzafPVZsBkSjSmYD2jEJzjhpEz4kfOX5qbDvZyozEG7EMf4=
-X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(7416002)(4326008)(31686004)(53546011)(8676002)(8936002)(7696005)(70586007)(70206006)(426003)(47076005)(83380400001)(2616005)(508600001)(7636003)(336012)(356005)(2906002)(316002)(186003)(31696002)(36860700001)(966005)(5660300002)(54906003)(36756003)(82310400003)(110136005)(26005)(86362001)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: TAx7q8UJaBbAeNdGpDcObsMuPlCQB561ARegScjE0sDb0xzRaJD+jCwHrW8/jtkK3WmgizXJ6nXPNKc4dwEr8ZAEFwYIoH7ctNDUL+cSAMLOLyugg7qMYCjjrVEXZ4HmmMSFcmMFdXsIj+nnf6C9exFcaMTXcPSgWiOnYbqQOZmfztOJ4sOETxJqQ3I7W5kh7eeOB8owxb3JszjCGjHwk3LG3iYV/2ok55Lyf3HIVhyi0pJ4JvmWfACiRdyI1Bmkv52DArK9AZT+DKakSop1umMNGsRRjh731DHkTg0TwY+1jowHC58mZOGMjOyJwvOGnyne0nBZHxgn7jr31t+CNqCHSDYTqzibJZil5qMNeIzj6T7r2tF20s6VhwxPHFNUyo8s8lcDsKZOxqySboE8BfNs83oijaGK8PGKQJCJU3KD05bWlki9Sf14OtaYolSDAi1Yfc3IccCdRHWwPDazVxGKkLG/p2bC04S1LVh3pZCjuL/S6QZHoJP8JaCvxoCT4IyC47mtct8EiVDJeoVIimeT4cuuz/YzV5eKH94TWNYINRmB0dPnX0YvUf8L6Vsu8LztIR4PyhV+Ahrzh7kXaBzrDBBXvVzwRz+IMCa9CtuSqMj7VDxI0dP1S8hT3N3Ii9ScJLyes0g0rOxrwEfWjA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(2906002)(426003)(8936002)(2616005)(508600001)(7416002)(9786002)(9746002)(38100700002)(1076003)(6862004)(4744005)(5660300002)(4326008)(6636002)(316002)(66476007)(36756003)(66946007)(8676002)(66556008)(186003)(33656002)(26005)(37006003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?As3jK/DyNCazXR6k/je9X5gZkXzkw1b60WjA67ZCPZm6zc+/CRQi4FeFEK0W?=
+ =?us-ascii?Q?uCX+sZEUoFMZpJg8xxfJgu26f9LsM6urVJGYVUPUGaG2oeknmRKU4ZSr/4TH?=
+ =?us-ascii?Q?qp+ENGwHY/TSFifyw+uecz5ibM69MqLkev4RqZEHMqdoUDar6bW8fTQoeiNw?=
+ =?us-ascii?Q?R5P/2z/jSqg5EMnkonfbiu8I3XmHETLIbgdry9M0/L5X4bMLeVSUIn9iB8Ya?=
+ =?us-ascii?Q?PzrYkJO4ngo+gzrUBf29zCJBzWKi5lcb2mdTKFC0+J1Y4EJ/QKC1kjJqshk8?=
+ =?us-ascii?Q?1yMz/0oOyodUDS42rxfg0UrcsiRTZaF1/wGJxhOX9fq62TiSIQvpdglXqSZz?=
+ =?us-ascii?Q?rO/x1rZbRbkQKUJb0d3HtUolLuPTIbBfyfsGadEBmQGQ9LwHviRiH77QYq6g?=
+ =?us-ascii?Q?8uA8NWG9ZYU+HW+GbDjyGasDu/BuTik6LhnUUFTt+q7A7vqvQn4m7vHZTGiB?=
+ =?us-ascii?Q?TSi1SjOo0y3cP7VtP/pxlbEahN/P50WtQVCRwAvt1qupBIFdExjEOKsPGGVB?=
+ =?us-ascii?Q?VpmVVjNIbAQ2Q/BtEOg8PLXuZhA2bSe4qqp6ZcsfADEFI2hSoVV25KL+pFDw?=
+ =?us-ascii?Q?VN7i43p3eJYhGvjuowzVbi+3FJkSKqA6UZN6rNImmBVL66pJUeJ+mQk3lhf3?=
+ =?us-ascii?Q?Y+6nsUWXwyFWNA63z5FdlH3s2H+f9C+6zbanFgEKhbuVy/5kTjNbnEDu+RsB?=
+ =?us-ascii?Q?/dXFCa51S6gQk8UFQU6nfZ9d7sOxXWehVabrcM1PShM6+UqZR42Bona7J8x+?=
+ =?us-ascii?Q?Rls2ueLdk+qkArnUavymr3yoBX5ncfQ+1lra8XG03lZ6m9sY2zdolaGRFe9J?=
+ =?us-ascii?Q?Cn+72AKMJHMfu0FKkra7jPIo6v9Lep3BieFUxq8hj2n2TJMEUysMLyrWBuhE?=
+ =?us-ascii?Q?MQNqZXjNmpzcPw+v8h8/zXJbLPzlZK9SMB5PTU9eCzOPRy18Y/K5y9Mu6twj?=
+ =?us-ascii?Q?2l2pccGerShzMBo4w1Ukr1CLlRLsJzOcR8pRFi7ADk/dDP0iHa6CUa7O/BgD?=
+ =?us-ascii?Q?DnLNmvj7ndV0WPZiiKFp88l/mP0Xv+klxwTSXYZw+k4AowYkBQchObAgOHpv?=
+ =?us-ascii?Q?FuupqoDCbvahTCoDfAgkDgFT9q2iee9P+g2RQfy7F/lIcjVJFcLtrz+JANYS?=
+ =?us-ascii?Q?gjvhe4r1aR9h/yzJbH/F+PKQTITUfDlvoF2z9FjSYP/AdkRwAfP2S0DSgnHJ?=
+ =?us-ascii?Q?19DhkTElrMy57w1EmTG2Fal+x85jvhE2jEiil4OKOf3Yc9BcjAquS3lEF+7n?=
+ =?us-ascii?Q?/B/rYxy/S+2/iE2eRoH+rxU6CFY/ak9eRuv2OTCfxhj+EIsMBhQR1+JQAlAG?=
+ =?us-ascii?Q?zp3h/mpEwgSaZY+M3N9M+uxSfPpswRJkJu5VIGrCT+jP2Q=3D=3D?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2021 17:35:28.9049
+X-MS-Exchange-CrossTenant-Network-Message-Id: 67f71548-4169-45a7-d721-08d98f3ca84e
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2021 18:01:33.6683
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d3b98879-206f-4164-4711-08d98f3903d8
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT019.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4265
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7iCqo0/S//TRdR9g3NtiuEnxK/vF5jpwAkJ+fCktAWXkxrcf1zuaqtO/ZZpBRIJk
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5349
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Thu, Oct 14, 2021 at 10:35:27AM -0700, Ralph Campbell wrote:
 
-On 10/14/21 10:06 AM, Jason Gunthorpe wrote:
-> On Thu, Oct 14, 2021 at 10:39:28AM -0500, Alex Sierra wrote:
->> From: Ralph Campbell <rcampbell@nvidia.com>
->>
->> ZONE_DEVICE struct pages have an extra reference count that complicates the
->> code for put_page() and several places in the kernel that need to check the
->> reference count to see that a page is not being used (gup, compaction,
->> migration, etc.). Clean up the code so the reference count doesn't need to
->> be treated specially for ZONE_DEVICE.
->>
->> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
->> Signed-off-by: Alex Sierra <alex.sierra@amd.com>
->> Reviewed-by: Christoph Hellwig <hch@lst.de>
->> ---
->> v2:
->> AS: merged this patch in linux 5.11 version
->>
->> v5:
->> AS: add condition at try_grab_page to check for the zone device type, while
->> page ref counter is checked less/equal to zero. In case of device zone, pages
->> ref counter are initialized to zero.
->>
->> v7:
->> AS: fix condition at try_grab_page added at v5, is invalid. It supposed
->> to fix xfstests/generic/413 test, however, there's a known issue on
->> this test where DAX mapped area DIO to non-DAX expect to fail.
->> https://patchwork.kernel.org/project/fstests/patch/1489463960-3579-1-git-send-email-xzhou@redhat.com
->> This condition was removed after rebase over patch series
->> https://lore.kernel.org/r/20210813044133.1536842-4-jhubbard@nvidia.com
->> ---
->>   arch/powerpc/kvm/book3s_hv_uvmem.c     |  2 +-
->>   drivers/gpu/drm/nouveau/nouveau_dmem.c |  2 +-
->>   fs/dax.c                               |  4 +-
->>   include/linux/dax.h                    |  2 +-
->>   include/linux/memremap.h               |  7 +--
->>   include/linux/mm.h                     | 11 ----
->>   lib/test_hmm.c                         |  2 +-
->>   mm/internal.h                          |  8 +++
->>   mm/memcontrol.c                        |  6 +--
->>   mm/memremap.c                          | 69 +++++++-------------------
->>   mm/migrate.c                           |  5 --
->>   mm/page_alloc.c                        |  3 ++
->>   mm/swap.c                              | 45 ++---------------
->>   13 files changed, 46 insertions(+), 120 deletions(-)
-> Has anyone tested this with FSDAX? Does get_user_pages() on fsdax
-> backed memory still work?
+> I ran xfstests-dev using the kernel boot option to "fake" a pmem device
+> when I first posted this patch. The tests ran OK (or at least the same
+> tests passed with and without my patch). 
 
-I ran xfstests-dev using the kernel boot option to "fake" a pmem device
-when I first posted this patch. The tests ran OK (or at least the same
-tests passed with and without my patch). However, I could never really
-convince myself the changes were "OK" for fsdax since I didn't understand
-the code that well. I would still like to see a xfsdax maintainer or
-expert ACK this change.
+Hmm. I know nothing of xfstests but 
 
-https://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git
+tests/generic/413
 
-> What refcount value does the struct pages have when they are installed
-> in the PTEs? Remember a 0 refcount will make all the get_user_pages()
-> fail.
->
-> I'm looking at the call path starting in ext4_punch_hole() and I would
-> expect to see something manipulating the page ref count before
-> the ext4_break_layouts() call path gets to the dax_page_unused() test.
->
-> All I see is we go into unmap_mapping_pages() - that would normally
-> put back the page references held by PTEs but insert_pfn() has this:
->
-> 	if (pfn_t_devmap(pfn))
-> 		entry = pte_mkdevmap(pfn_t_pte(pfn, prot));
->
-> And:
->
-> static inline pte_t pte_mkdevmap(pte_t pte)
-> {
-> 	return pte_set_flags(pte, _PAGE_SPECIAL|_PAGE_DEVMAP);
-> }
->
-> Which interacts with vm_normal_page():
->
-> 		if (pte_devmap(pte))
-> 			return NULL;
->
-> To disable that refcounting?
->
-> So... I have a feeling this will have PTEs pointing to 0 refcount
-> pages? Unless FSDAX is !pte_devmap which is not the case, right?
->
-> This seems further confirmed by this comment:
->
-> 	/*
-> 	 * If we race get_user_pages_fast() here either we'll see the
-> 	 * elevated page count in the iteration and wait, or
-> 	 * get_user_pages_fast() will see that the page it took a reference
-> 	 * against is no longer mapped in the page tables and bail to the
-> 	 * get_user_pages() slow path.  The slow path is protected by
-> 	 * pte_lock() and pmd_lock(). New references are not taken without
-> 	 * holding those locks, and unmap_mapping_pages() will not zero the
-> 	 * pte or pmd without holding the respective lock, so we are
-> 	 * guaranteed to either see new references or prevent new
-> 	 * references from being established.
-> 	 */
->
-> Which seems to explain this scheme relies on unmap_mapping_pages() to
-> fence GUP_fast, not on GUP_fast observing 0 refcounts when it should
-> stop.
->
-> This seems like it would be properly fixed by using normal page
-> refcounting for PTEs - ie stop using special for these pages?
->
-> Does anyone know why devmap is pte_special anyhow?
->
->> +void free_zone_device_page(struct page *page)
->> +{
->> +	switch (page->pgmap->type) {
->> +	case MEMORY_DEVICE_PRIVATE:
->> +		free_device_page(page);
->> +		return;
->> +	case MEMORY_DEVICE_FS_DAX:
->> +		/* notify page idle */
->> +		wake_up_var(&page->_refcount);
->> +		return;
-> It is not for this series, but I wonder if we should just always call
-> ops->page_free and have free_device_page() logic in that callback for
-> the non-fs-dax cases?
->
-> For instance where is the mem_cgroup_charge() call to pair with the
-> mem_cgroup_uncharge() in free_device_page()?
->
-> Isn't cgroup charging (or not) the responsibility of the "allocator"
-> eg the pgmap_ops owner?
->
-> Jason
+Looks kind of like it might cover this situation?
+
+Did it run for you?
+
+Jason
