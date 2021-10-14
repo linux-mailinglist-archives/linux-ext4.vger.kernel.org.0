@@ -2,107 +2,106 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2A742D692
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Oct 2021 11:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBFD442D792
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Oct 2021 12:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229912AbhJNJ7E (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 14 Oct 2021 05:59:04 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:44426 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhJNJ7D (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Oct 2021 05:59:03 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 37C7E21A7B;
-        Thu, 14 Oct 2021 09:56:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634205418; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JHEZWtjIFaYGa2u7VcBpTpqyUvSnrIxCc/PVAzBXk8s=;
-        b=mrfOUtPr9c2M6Zwb8A5goWY9bju+0hxdI3E4ORE6i3U3TvCOIqfR8m5bash0mmontOvzJk
-        oFhXPY4p2SWzGuUTm2df+aYUkmRFrCamFstvK+TS2EdZHUxlEGNkAvaBuTtKvF4zSutCXz
-        UlhRCzJNX1GHpetVP13SfFTYBhZClsc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634205418;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JHEZWtjIFaYGa2u7VcBpTpqyUvSnrIxCc/PVAzBXk8s=;
-        b=KxI37cx/XSINxH22eNzdu3ysxFD52yYq1Xk+5XIzHtiOmR17W54iiuEcqXm17sVDJa/DzL
-        zp6ON+rTrj1B3jBA==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 28BEDA3B83;
-        Thu, 14 Oct 2021 09:56:58 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id E9E0F1E0C03; Thu, 14 Oct 2021 11:56:57 +0200 (CEST)
-Date:   Thu, 14 Oct 2021 11:56:57 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Shaoying Xu <shaoyi@amazon.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        fllinden@amazon.com, benh@amazon.com
-Subject: Re: [PATCH 1/1] ext4: fix lazy initialization next schedule time
- computation in more granular unit
-Message-ID: <20211014095657.GE15931@quack2.suse.cz>
-References: <20210817225654.30487-1-shaoyi@amazon.com>
- <20210817225654.30487-2-shaoyi@amazon.com>
+        id S230156AbhJNK7n (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 14 Oct 2021 06:59:43 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:25186 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230272AbhJNK7n (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Oct 2021 06:59:43 -0400
+Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HVRCx2MG1z8tdd;
+        Thu, 14 Oct 2021 18:56:29 +0800 (CST)
+Received: from [10.174.178.134] (10.174.178.134) by
+ dggeme752-chm.china.huawei.com (10.3.19.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Thu, 14 Oct 2021 18:57:37 +0800
+Message-ID: <969acc43-f42f-ec61-6963-c2a9145241d5@huawei.com>
+Date:   Thu, 14 Oct 2021 18:57:36 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210817225654.30487-2-shaoyi@amazon.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v5 0/3] ext4: fix a inode checksum error
+Content-Language: en-US
+To:     <tytso@mit.edu>
+CC:     <adilger.kernel@dilger.ca>, <jack@suse.cz>, <yukuai3@huawei.com>,
+        <linux-ext4@vger.kernel.org>
+References: <20210901020955.1657340-1-yi.zhang@huawei.com>
+From:   Zhang Yi <yi.zhang@huawei.com>
+In-Reply-To: <20210901020955.1657340-1-yi.zhang@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.134]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggeme752-chm.china.huawei.com (10.3.19.98)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 17-08-21 22:56:54, Shaoying Xu wrote:
-> Ext4 file system has default lazy inode table initialization setup once
-> it is mounted. However, it has issue on computing the next schedule time
-> that makes the timeout same amount in jiffies but different real time in
-> secs if with various HZ values. Therefore, fix by measuring the current
-> time in a more granular unit nanoseconds and make the next schedule time
-> independent of the HZ value.
+Hi, Ted. Do you consider to merge this remaining patch set?
+
+Thanks,
+Yi.
+
+On 2021/9/1 10:09, Zhang Yi wrote:
+> We find a checksum error and a inode corruption problem while doing
+> stress test, this 3 patches address to fix them. The first two patches
+> are prepare to do the fix, the last patch fix these two issue.
 > 
-> Fixes: bfff68738f1c ("ext4: add support for lazy inode table initialization")
-> Signed-off-by: Shaoying Xu <shaoyi@amazon.com>
-> Cc: stable@vger.kernel.org
-
-Thanks for the patch. It seems to have fallen through the cracks. It looks
-good just some nits: The timeout will be still dependent on the HZ value
-because we use jiffie-granular timer.  But yes, I guess it is unnecessary
-to make the imprecision 10x worse when we know we are likely dealing with
-small numbers. 
-
-> @@ -3460,14 +3460,13 @@ static int ext4_run_li_request(struct ext4_li_request *elr)
->  		ret = 1;
->  
->  	if (!ret) {
-
-Please add a comment here so that we don't forget. Like:
-		/* Use ns-granular time as init can be really fast */
-
-With this feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-> -		timeout = jiffies;
-> +		start_time = ktime_get_real_ns();
->  		ret = ext4_init_inode_table(sb, group,
->  					    elr->lr_timeout ? 0 : 1);
->  		trace_ext4_lazy_itable_init(sb, group);
->  		if (elr->lr_timeout == 0) {
-> -			timeout = (jiffies - timeout) *
-> -				EXT4_SB(elr->lr_super)->s_li_wait_mult;
-> -			elr->lr_timeout = timeout;
-> +			elr->lr_timeout = nsecs_to_jiffies((ktime_get_real_ns() - start_time) *
-> +				EXT4_SB(elr->lr_super)->s_li_wait_mult);
->  		}
->  		elr->lr_next_sched = jiffies + elr->lr_timeout;
->  		elr->lr_next_group = group + 1;
-
-
-								Honza
-
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>  - Checksum error
+> 
+>     EXT4-fs error (device sda): ext4_lookup:1784: inode #131074: comm cat: iget: checksum invalid
+> 
+>  - Inode corruption
+> 
+>     e2fsck 1.46.0 (29-Jan-2020)
+>     Pass 1: Checking inodes, blocks, and sizes
+>     Pass 2: Checking directory structure
+>     Entry 'foo' in / (2) has deleted/unused inode 17.  Clear<y>? yes
+>     Pass 3: Checking directory connectivity
+>     Pass 4: Checking reference counts
+>     Pass 5: Checking group summary information
+>     Inode bitmap differences:  -17
+>     Fix<y>? yes
+>     Free inodes count wrong for group #0 (32750, counted=32751).
+>     Fix<y>? yes
+>     Free inodes count wrong (32750, counted=32751).
+>     Fix<y>? yes
+> 
+> Changes since v4:
+>  - Drop first three already applied patches.
+>  - Remove 'in_mem' parameter passing __ext4_get_inode_loc() in the last
+>    patch.
+> 
+> Changes since v3:
+>  - Postpone initialization to ext4_do_update_inode() may cause zeroout
+>    newly set xattr entry. So switch to do initialization in
+>    __ext4_get_inode_loc().
+> 
+> Changes since v2:
+>  - Instead of using WARN_ON_ONCE to prevent ext4_do_update_inode()
+>    return before filling the inode buffer, keep the error and postpone
+>    the report after the updating in the third patch.
+>  - Fix some language mistacks in the last patch.
+> 
+> Changes since v1:
+>  - Add a patch to prevent ext4_do_update_inode() return before filling
+>    the inode buffer.
+>  - Do not use BH_New flag to indicate the empty buffer, postpone the
+>    zero and uptodate logic into ext4_do_update_inode() before filling
+>    the inode buffer.
+> 
+> Thanks,
+> Yi.
+> 
+> Zhang Yi (3):
+>   ext4: factor out ext4_fill_raw_inode()
+>   ext4: move ext4_fill_raw_inode() related functions
+>   ext4: prevent getting empty inode buffer
+> 
+>  fs/ext4/inode.c | 316 +++++++++++++++++++++++++-----------------------
+>  1 file changed, 165 insertions(+), 151 deletions(-)
+> 
