@@ -2,194 +2,191 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33CC542E423
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Oct 2021 00:28:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E666542E48D
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Oct 2021 01:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234186AbhJNWad (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 14 Oct 2021 18:30:33 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:51220 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229768AbhJNWab (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Oct 2021 18:30:31 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C3A5A1FD37;
-        Thu, 14 Oct 2021 22:28:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1634250504; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XamiXsFb6RQH4eKb4WeCOhk32Zh5qQsoE1V0O9eGBfc=;
-        b=nWjnsuhqzJKhcayDHGPSKVhGlxwOGc1FYOYAIGXOxXi+KmMZ6G3bzFhb35Mrx5ahaR7jZa
-        PWr6UUzOXGL755IhAqhMAkhrgHR9yJnBRad9O7EQTfHSHon1T8eEmBl5qXiJpziDYPszuN
-        WAG3Jp8f1UqTXeD6J2dkg4YKUMAFDi4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1634250504;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XamiXsFb6RQH4eKb4WeCOhk32Zh5qQsoE1V0O9eGBfc=;
-        b=/068GKy8+Es6V00efq8CtbnWkMwkStq+NFkGkSd+LYhmyfVgvIxiSKpOP3WZrHB9q3ZUem
-        aG9MPOMP0uI9AQBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8EEC313B3A;
-        Thu, 14 Oct 2021 22:28:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id swtxDgKvaGHoPAAAMHmgww
-        (envelope-from <neilb@suse.de>); Thu, 14 Oct 2021 22:28:18 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        id S233939AbhJNXIP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 14 Oct 2021 19:08:15 -0400
+Received: from mail-mw2nam08on2065.outbound.protection.outlook.com ([40.107.101.65]:26035
+        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230503AbhJNXIO (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 14 Oct 2021 19:08:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ecBH+2d8bj1fyejjzq5O3zXpC3cToIpHbcW0k8U7fMFAAJEaHUErRQuRG6ww1fk65vBD9saPS97elTaI9HiDhYU2FmXpDAogON2wbApl9ez50QN9diMPH0RfTLm26eUM904DpymdV8DzeTiHZlOlYuKRfWI5FZpssWCXACsW/ic4twUSP1FcwXkeJlofJm+4Rd1ynt1y8eow4Pm+uSeQc0DJFobvZsfaxWQins6Uk6ZoB7ehtEt1nq2Q+NxzzGUGNLcuWYDbnSr+QVuP3Wg7aRLljs0DwwnPgM/ORMRl0PlhS3PPK8LXndKwqBecrt6ANFBkSVDecZttXYBLyQoicg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eus5i0ybzaExcOKrGblhnaRvjEHuS6RHtijRiymB9Ec=;
+ b=mh8VIQoRTwWWpceEZen/8k49fyNAm4NVWBtXAuTlQFYDD7SD/HIiKC/k9VEkYW0/k2SqiO/MrLXh0Fg8o1pRcCl5hXahaTYnfn3eu8hRIag8mF1AcMLWkEqbSAkdFPhit1F9ymvoHgUD2fEmCI+iZPXlvC8Mwl4Vim+sCqIuyZF1o+V8CzOlRTIYUhgrr/a90Awr0iWQULJco8hJuRFxBkLTlE+tiNl6I7bWbNcRjoGolXxEHLfUb5JhVDmXo00UROnRs/A+RwqxsUKB+NelJghZIEIWqX/EYWDFSl4okXuKikODBGbL4v+2DjzremKyiKvraTLBwrWtn6suvhIz+A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eus5i0ybzaExcOKrGblhnaRvjEHuS6RHtijRiymB9Ec=;
+ b=OYcR36KdDtAtoW/Sb68r4UtUkly4Rj8VBgNdwXy5RF2Lhe5tUTB3SxyCMj5jNBIOgFzRhsquYuZcQY3i4npfCWWuUSHLpNohWxua16ro0mkmMGIXGccCw8kajt0GeMqBqu28+l6FjzoqTB0tg8a2Slj4qrAMFuR7ZfK9xyB7BRvFQJjmVSuUXnfYZAHTJHer5adqpZvko0DxAAOc2Xt0NVY65n407syE3IsJzeL3W+vJ1kLy3SBVRMYKCpAXhEHSHmttZKbjNdl8jkZNjN4o7QA+uCyUpwh8CkJgjjjZIE6ZHUUniWMyHY/0iS787pvZvMdV6WVs/GvGj5EhPVLuGQ==
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5191.namprd12.prod.outlook.com (2603:10b6:208:318::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.24; Thu, 14 Oct
+ 2021 23:06:07 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%6]) with mapi id 15.20.4608.017; Thu, 14 Oct 2021
+ 23:06:07 +0000
+Date:   Thu, 14 Oct 2021 20:06:06 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Alex Sierra <alex.sierra@amd.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, Christoph Hellwig <hch@lst.de>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Linux NVDIMM <nvdimm@lists.linux.dev>
+Subject: Re: [PATCH v1 2/2] mm: remove extra ZONE_DEVICE struct page refcount
+Message-ID: <20211014230606.GZ2744544@nvidia.com>
+References: <20211014153928.16805-1-alex.sierra@amd.com>
+ <20211014153928.16805-3-alex.sierra@amd.com>
+ <20211014170634.GV2744544@nvidia.com>
+ <YWh6PL7nvh4DqXCI@casper.infradead.org>
+ <CAPcyv4hBdSwdtG6Hnx9mDsRXiPMyhNH=4hDuv8JZ+U+Jj4RUWg@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4hBdSwdtG6Hnx9mDsRXiPMyhNH=4hDuv8JZ+U+Jj4RUWg@mail.gmail.com>
+X-ClientProxiedBy: MN2PR14CA0020.namprd14.prod.outlook.com
+ (2603:10b6:208:23e::25) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Michal Hocko" <mhocko@suse.com>
-Cc:     "Dave Chinner" <david@fromorbit.com>,
-        "Vlastimil Babka" <vbabka@suse.cz>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        "Andreas Dilger" <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        "Mel Gorman" <mgorman@suse.de>, "Jonathan Corbet" <corbet@lwn.net>,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH 2/6] MM: improve documentation for __GFP_NOFAIL
-In-reply-to: <YWQmsESyyiea0zle@dhcp22.suse.cz>
-References: <163184698512.29351.4735492251524335974.stgit@noble.brown>,
- <163184741778.29351.16920832234899124642.stgit@noble.brown>,
- <b680fb87-439b-0ba4-cf9f-33d729f27941@suse.cz>,
- <YVwyhDnE/HEnoLAi@dhcp22.suse.cz>,
- <eba04a07-99da-771a-ab6b-36de41f9f120@suse.cz>,
- <20211006231452.GF54211@dread.disaster.area>,
- <YV7G7gyfZkmw7/Ae@dhcp22.suse.cz>,
- <163364854551.31063.4377741712039731672@noble.neil.brown.name>,
- <YV/31+qXwqEgaxJL@dhcp22.suse.cz>,
- <20211008223649.GJ54211@dread.disaster.area>,
- <YWQmsESyyiea0zle@dhcp22.suse.cz>
-Date:   Tue, 12 Oct 2021 08:49:46 +1100
-Message-id: <163398898675.17149.16715168325131099480@noble.neil.brown.name>
+Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR14CA0020.namprd14.prod.outlook.com (2603:10b6:208:23e::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.14 via Frontend Transport; Thu, 14 Oct 2021 23:06:07 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mb9na-00F5NO-6d; Thu, 14 Oct 2021 20:06:06 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a430f7e5-f0ec-4631-e937-08d98f673470
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5191:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB51915B84E92675E0FC9A77EEC2B89@BL1PR12MB5191.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: FVefM7EwS6nwmox1ftGOja2NGJWuBwgWa2splR0suw8QWu9BNFmF0zYd0n9rH+HogFIEPLGyfYRXZrrdMvd7DOtSBezNhWzsAiUDOYJ0cGozuf/J4PQl+Dx1mEtwgAQFWVds3SpAshzCJmQWmNTiSBtsMiCAfh7Px1Tst03NqLRiS+Tzi/+LOVJLzh46O/9Vc+s5+w5a1zUHioe2q+urG7fZ3cbaw0zpoiWwd25eE7NRfOYlmQ9zmoJcvKpBGWLOAJMrMXrEcPE72c7OdFQe7HxE5rBxZAW7wyVxPNxpPFPbogL3IVFKRbHrdAqyH4/W3FBzDhOZGtePy1tEUyOIO5B5HkQKrzHa1enb4LG3zavtNNz0FmdHkZePD6Z5QkIzcax2DoyuNXwovBy7ITeEx8BWa5FYjcvJhwRbBSl+ya2whZTkwkZjcpXlzcB8X5yH7WFOcGuyCRfqagaET1nx+Aah4nZd6G1p0iS9twQypI3OzRQ6Jk0888hRmhG2ZqxFf0JiKv6AMQHdDu4UO90Ug4D/i7h+jOqDoySnTkVVZNV04BODABfSccoXUztQJiE2kbsyU2r3Ha8BKt2nDJlRBZO3Z/wOOPFBXKebbOpHOhWdCZN1+qh3nPKUiyZkDD5AEjYfXlQB2JO4eoOK0Rx9Md6oz89MROsU2sMuF0FNxlL4rlG4UiSMyJflHPSAu+LtoyHUHRLtt9J5PYa92NZF990pipo7eRnfs/A4F4n1qTDO7jTEVahZF+xM9If0BMamz+KaU3SVrayvcguvLZ4MjA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(9786002)(316002)(9746002)(7416002)(66476007)(8936002)(83380400001)(66946007)(86362001)(4326008)(54906003)(26005)(33656002)(2616005)(36756003)(426003)(1076003)(966005)(66556008)(6916009)(5660300002)(508600001)(38100700002)(2906002)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?BpFYrVf7lzO5u5Ac42S3SXWHokieeDy7FzsMISryOxDmFDCxxxwX1aUzalTL?=
+ =?us-ascii?Q?23qdZkdeJIVxPa8k7dSCZRnddY4RQaDJ3XcfqRVOg7e9QsdVRe6KvKX4XYOC?=
+ =?us-ascii?Q?n+LGuMa8BpXHtKsO5FYS0nMaQQ55Sic2pt4jVssqS4c+29hlLsmZg4aMwkA9?=
+ =?us-ascii?Q?qWe0LNN+7kONeuPGIke4QUN6ghMEg9T6MJUUucvYzhJYTpfhHkNY6nrmdvf0?=
+ =?us-ascii?Q?0b0u+t5qPzJwca97rdljxryvQY9tskns6Hpo+HcYXVE+8FQdWwMkzWdQNqnf?=
+ =?us-ascii?Q?NMiC6mYj2qZBtHAKHLg0WfhJw1+hu1dGZW0goyo/5vk9XXM7fYcTaKA0GPgg?=
+ =?us-ascii?Q?NrxO1S/+SsqddV14sf9qyTQ3HtxlO4izPHYtPcGrhJ0OSkujeWn1HQHpwcQ2?=
+ =?us-ascii?Q?aGWtbjvIxoIYP0e6M3NLNcSK940uGhC+70tcN4oxmR+CjJLxlkicW0c1KaMD?=
+ =?us-ascii?Q?wNT4dSA3H7cPQvxW+c+Keq7A4jrI4ZXOvrrQ6o3r4AgtlZQPgzRzvEangdxz?=
+ =?us-ascii?Q?n1IJRnh7iryILz0ulLImElxnvAI6RzbAYNNAdbCo+Vi8lzkeYExtuSpvTXvO?=
+ =?us-ascii?Q?qrVou79Ec8ymHdKD6TRR1UWM41jAbdnX47Vx0C9Kf5ZnQPuwLLsesmePTuuP?=
+ =?us-ascii?Q?O4Ry9b/9PfS8fJf2nl4MfAT5SNCMFm1aETJnvxOzA8nqlg06HOT6TWFvr6nU?=
+ =?us-ascii?Q?N/XvsN8Y7dFu+aaoykHGKY9TDyeftXa1xm6+lRFy8n3ljMA5buiY+CJOZgr/?=
+ =?us-ascii?Q?LApttLYzcksmEDOMYBJ3kh9fIb03t3WXwfVrGwMHtBQlbQNGraqvKbyhKOTd?=
+ =?us-ascii?Q?BkrwFFYtV17f/iUYqzmdSrGqQfAXv5Y7OFuyIMCQgFidfD0jvaFPiEibm2wL?=
+ =?us-ascii?Q?N2WnEZ4l4A4U7fUcn/AS8JMZ50pNT5EPEJxxrZqh6O8Mc6tqsmOs0+1YKZkS?=
+ =?us-ascii?Q?j0MyvTClO/04KFWhT7ZaRjKVOhixQ55C++e89yxNOabvv1Uqv9YYNaFwDgJ4?=
+ =?us-ascii?Q?NltxR334ztqs1PFsKEz8D6ClhflYSXAhA/SI5tQ2G9pqZzbAuHPywDKi+g4w?=
+ =?us-ascii?Q?8MfOjhuxoiu5dUm0tLQ6Svl3nIpZ9HNYreVJ62yE/b3FbmjWxcyp99IMUtAQ?=
+ =?us-ascii?Q?BF1o8rDGw5pCou26ECfKjkC5IEW5P3PgXpdZVo6QsmIcpO1vYnHuRXJKEYVT?=
+ =?us-ascii?Q?Gvftrv/ZLE7DiuULV8yBCRTkAmEajbZbVlpD0FVo/c4X/VTaKpiS9c9gjKgF?=
+ =?us-ascii?Q?oRwj4avpVyZ6AFqpzMpGMl1eZE67J9Y0cmRVbKRzr+90giAN0IpC65UJKNAd?=
+ =?us-ascii?Q?UIOm5A6qzUUmiId7hJEz9+0Z6YohRtM49vlAqaT/xhCpTg=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a430f7e5-f0ec-4631-e937-08d98f673470
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2021 23:06:07.6582
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5JBlmbqrGVJSWIk4776Kp8B0Eg5TA2GC0045Oo/VHQxnNoL+0idR+ABHYhrAMjwX
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5191
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, 11 Oct 2021, Michal Hocko wrote:
-> On Sat 09-10-21 09:36:49, Dave Chinner wrote:
-> > 
-> > Put simply, we want "retry forever" semantics to match what
-> > production kernels have been doing for the past couple of decades,
-> > but all we've been given are "never fail" semantics that also do
-> > something different and potentially much more problematic.
-> > 
-> > Do you see the difference here? __GFP_NOFAIL is not what we
-> > need in the vast majority of cases where it is used. We don't want
-> > the failing allocations to drive the machine hard into critical
-> > reserves, we just want the allocation to -eventually succeed- and if
-> > it doesn't, that's our problem to handle, not kmalloc()....
+On Thu, Oct 14, 2021 at 12:01:14PM -0700, Dan Williams wrote:
+> > > Does anyone know why devmap is pte_special anyhow?
 > 
-> I can see your point. I do have a recollection that there were some
-> instance involved where an emergency access to memory reserves helped
-> in OOM situations.
-
-It might have been better to annotate those particular calls with
-__GFP_ATOMIC or similar rather then change GFP_NOFAIL for everyone.
-Too late to fix that now though I think.  Maybe the best way forward is
-to discourage new uses of GFP_NOFAIL.  We would need a well-documented
-replacement.
-
+> It does not need to be special as mentioned here:
 > 
-> Anway as I've tried to explain earlier that this all is an
-> implementation detail users of the flag shouldn't really care about. If
-> this heuristic is not doing any good then it should be removed.
+> https://lore.kernel.org/all/CAPcyv4iFeVDVPn6uc=aKsyUvkiu3-fK-N16iJVZQ3N8oT00hWA@mail.gmail.com/
 
-Maybe users shouldn't care about implementation details, but they do
-need to care about semantics and costs.
-We need to know when it is appropriate to use GFP_NOFAIL, and when it is
-not.  And what alternatives there are when it is not appropriate.
-Just saying "try to avoid using it" and "requires careful analysis"
-isn't acceptable.  Sometimes it is unavoidable and analysis can only be
-done with a clear understanding of costs.  Possibly analysis can only be
-done with a clear understanding of the internal implementation details.
+I added a remark there
 
+Not special means more to me, it means devmap should do the refcounts
+properly like normal memory pages.
+
+It means vm_normal_page should return !NULL and it means insert_page,
+not insert_pfn should be used to install them in the PTE. VMAs should
+not be MIXED MAP, but normal struct page maps.
+
+I think this change alone would fix all the refcount problems
+everwhere in DAX and devmap.
+
+> The refcount dependencies also go away after this...
 > 
-> > It also points out that the scope API is highly deficient.
-> > We can do GFP_NOFS via the scope API, but we can't
-> > do anything else because *there is no scope API for other GFP
-> > flags*.
-> > 
-> > Why don't we have a GFP_NOFAIL/__GFP_RETRY_FOREVER scope API?
+> https://lore.kernel.org/all/161604050866.1463742.7759521510383551055.stgit@dwillia2-desk3.amr.corp.intel.com/
+>
+> ...but you can see that patches 1 and 2 in that series depend on being
+> able to guarantee that all mappings are invalidated when the undelying
+> device that owns the pgmap goes away.
+
+If I have put everything together right this is because of what I
+pointed to here. FS-DAX is installing 0 refcount pages into PTEs and
+expecting that to work sanely. 
+
+This means the page map cannot be removed until all the PTEs are fully
+flushed, which buggily doesn't happen because of the missing unplug.
+
+However, this is all because nobody incrd a refcount to represent the
+reference in the PTE and since this ment that 0 refcount pages were
+wrongly stuffed into PTEs then devmap used the refcount == 1 hack to
+unbreak GUP?
+
+So.. Is there some reason why devmap pages are trying so hard to avoid
+sane refcounting???
+
+If the PTE itself holds the refcount (by not being special) then there
+is no need for the pagemap stuff in GUP. pagemap already waits for
+refs to go to 0 so the missing shootdown during nvdimm unplug will
+cause pagemap to block until the address spaces are invalidated. IMHO
+this is already better than the current buggy situation of allowing
+continued PTE reference to memory that is now removed from the system.
+
+> For that to happen there needs to be communication back to the FS for
+> device-gone / failure events. That work is in progress via this
+> series:
 > 
-> NO{FS,IO} where first flags to start this approach. And I have to admit
-> the experiment was much less successful then I hoped for. There are
-> still thousands of direct NOFS users so for some reason defining scopes
-> is not an easy thing to do.
+> https://lore.kernel.org/all/20210924130959.2695749-1-ruansy.fnst@fujitsu.com/
 
-I'm not certain your conclusion is valid.  It could be that defining
-scopes is easy enough, but no one feels motivated to do it.
-We need to do more than provide functionality.  We need to tell people. 
-Repeatedly.  And advertise widely.  And propose patches to make use of
-the functionality.  And... and... and...
+This is fine, but I don't think it should block fixing the mm side -
+the end result here still cannot be 0 ref count pages installed in
+PTEs.
 
-I think changing to the scope API is a good change, but it is
-conceptually a big change.  It needs to be driven.
+Fixing that does not depend on shootdown during device removal, right?
 
-> 
-> I am not against NOFAIL scopes in principle but seeing the nofs
-> "success" I am worried this will not go really well either and it is
-> much more tricky as NOFAIL has much stronger requirements than NOFS.
-> Just imagine how tricky this can be if you just call a library code
-> that is not under your control within a NOFAIL scope. What if that
-> library code decides to allocate (e.g. printk that would attempt to do
-> an optimistic NOWAIT allocation).
-
-__GFP_NOMEMALLOC holds a lesson worth learning here.  PF_MEMALLOC
-effectively adds __GFP_MEMALLOC to all allocations, but some call sites
-need to over-ride that because there are alternate strategies available.
-This need-to-over-ride doesn't apply to NOFS or NOIO as that really is a
-thread-wide state.  But MEMALLOC and NOFAIL are different.  Some call
-sites can reasonably handle failure locally.
-
-I imagine the scope-api would say something like "NO_ENOMEM".  i.e.
-memory allocations can fail as long as ENOMEM is never returned.
-Any caller that sets __GFP_RETRY_MAYFAIL or __GFP_NORETRY or maybe some
-others which not be affected by the NO_ENOMEM scope.  But a plain
-GFP_KERNEL would.
-
-Introducing the scope api would be a good opportunity to drop the
-priority boost and *just* block until success.  Priority boosts could
-then be added (possibly as a scope) only where they are measurably needed.
-
-I think we have 28 process flags in use.  So we can probably afford one
-more for PF_MEMALLOC_NO_ENOMEM.  What other scope flags might be useful?
-PF_MEMALLOC_BOOST which added __GFP_ATOMIC but not __GFP_MEMALLOC ??
-PF_MEMALLOC_NORECLAIM ??
-
-> 
-> > That
-> > would save us a lot of bother in XFS. What about GFP_DIRECT_RECLAIM?
-> > I'd really like to turn that off for allocations in the XFS
-> > transaction commit path (as noted already in this thread) because
-> > direct reclaim that can make no progress is actively harmful (as
-> > noted already in this thread)
-> 
-> As always if you have reasonable usecases then it is best to bring them
-> up on the MM list and we can discuss them.
-
-We are on the MM lists now... let's discuss :-)
-
-Dave: How would you feel about an effort to change xfs to stop using
-GFP_NOFS, and to use memalloc_nofs_save/restore instead? Having a major
-filesystem make the transition would be a good test-case, and could be
-used to motivate other filesystems to follow.
-We could add and use memalloc_no_enomem_save() too.
+It requires holding refcounts while pages are installed into address
+spaces - and this lack is a direct cause of making the PTEs all
+special and using insert_pfn and MIXED_MAP.
 
 Thanks,
-NeilBrown
+Jason
