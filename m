@@ -2,106 +2,138 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBFD442D792
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Oct 2021 12:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D137842D83B
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Oct 2021 13:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbhJNK7n (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 14 Oct 2021 06:59:43 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:25186 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhJNK7n (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Oct 2021 06:59:43 -0400
-Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HVRCx2MG1z8tdd;
-        Thu, 14 Oct 2021 18:56:29 +0800 (CST)
-Received: from [10.174.178.134] (10.174.178.134) by
- dggeme752-chm.china.huawei.com (10.3.19.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Thu, 14 Oct 2021 18:57:37 +0800
-Message-ID: <969acc43-f42f-ec61-6963-c2a9145241d5@huawei.com>
-Date:   Thu, 14 Oct 2021 18:57:36 +0800
+        id S230438AbhJNLed (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 14 Oct 2021 07:34:33 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:54992 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230328AbhJNLec (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Oct 2021 07:34:32 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 9EA0C2198B;
+        Thu, 14 Oct 2021 11:32:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634211146;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/RwKkctM2kYfnsQns9zuzmOBOyPsbRBTF9oUmtbr7Ms=;
+        b=dpiQAn/loFlbz4yWiqf186W/BaqzQq9wvfy5P7pQQ1YrtwhY4ufluqbf2MexpVoslqCG8e
+        MnM3sydeHKUdJc1AbzfqBMzsGW6Ly1Sg+PmPpNgdc7AyB5L6z7/AA6K8BPr3qyzHz+iPBb
+        TP9uHMHgprnT9qOl8YvF76iMrdiV2+g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634211146;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/RwKkctM2kYfnsQns9zuzmOBOyPsbRBTF9oUmtbr7Ms=;
+        b=8EZMvlC6qiw4OcFd+TAafSCyudqB11qMFpd0Qesz9Y+PPuSVxGlI/40rwudPGqcnOs/NrS
+        swhsaH/NDSrcMhBA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 7593FA3B81;
+        Thu, 14 Oct 2021 11:32:26 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id CAC6DDA7A3; Thu, 14 Oct 2021 13:32:01 +0200 (CEST)
+Date:   Thu, 14 Oct 2021 13:32:01 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Dave Chinner <david@fromorbit.com>, NeilBrown <neilb@suse.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Jonathan Corbet <corbet@lwn.net>,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH 2/6] MM: improve documentation for __GFP_NOFAIL
+Message-ID: <20211014113201.GA19582@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Michal Hocko <mhocko@suse.com>,
+        Dave Chinner <david@fromorbit.com>, NeilBrown <neilb@suse.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>, Mel Gorman <mgorman@suse.de>,
+        Jonathan Corbet <corbet@lwn.net>, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+References: <YVwyhDnE/HEnoLAi@dhcp22.suse.cz>
+ <eba04a07-99da-771a-ab6b-36de41f9f120@suse.cz>
+ <20211006231452.GF54211@dread.disaster.area>
+ <YV7G7gyfZkmw7/Ae@dhcp22.suse.cz>
+ <163364854551.31063.4377741712039731672@noble.neil.brown.name>
+ <YV/31+qXwqEgaxJL@dhcp22.suse.cz>
+ <20211008223649.GJ54211@dread.disaster.area>
+ <YWQmsESyyiea0zle@dhcp22.suse.cz>
+ <20211013023231.GV2361455@dread.disaster.area>
+ <YWaYUsXgXS6GXM+M@dhcp22.suse.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v5 0/3] ext4: fix a inode checksum error
-Content-Language: en-US
-To:     <tytso@mit.edu>
-CC:     <adilger.kernel@dilger.ca>, <jack@suse.cz>, <yukuai3@huawei.com>,
-        <linux-ext4@vger.kernel.org>
-References: <20210901020955.1657340-1-yi.zhang@huawei.com>
-From:   Zhang Yi <yi.zhang@huawei.com>
-In-Reply-To: <20210901020955.1657340-1-yi.zhang@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.134]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggeme752-chm.china.huawei.com (10.3.19.98)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWaYUsXgXS6GXM+M@dhcp22.suse.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi, Ted. Do you consider to merge this remaining patch set?
+On Wed, Oct 13, 2021 at 10:26:58AM +0200, Michal Hocko wrote:
+> > crap like this (found in btrfs):
+> > 
+> >                 /*                                                               
+> >                  * We're holding a transaction handle, so use a NOFS memory      
+> >                  * allocation context to avoid deadlock if reclaim happens.      
+> >                  */                                                              
+> >                 nofs_flag = memalloc_nofs_save();                                
+> >                 value = kmalloc(size, GFP_KERNEL);                               
+> >                 memalloc_nofs_restore(nofs_flag);                                
+> 
+> Yes this looks wrong indeed! If I were to review such a code I would ask
+> why the scope cannot match the transaction handle context. IIRC jbd does
+> that.
 
-Thanks,
-Yi.
+Adding the transaction start/end as the NOFS scope is a long term plan
+and going on for years, because it's not a change we would need in
+btrfs, but rather a favor to MM to switch away from "GFP_NOFS everywhere
+because it's easy".
 
-On 2021/9/1 10:09, Zhang Yi wrote:
-> We find a checksum error and a inode corruption problem while doing
-> stress test, this 3 patches address to fix them. The first two patches
-> are prepare to do the fix, the last patch fix these two issue.
-> 
->  - Checksum error
-> 
->     EXT4-fs error (device sda): ext4_lookup:1784: inode #131074: comm cat: iget: checksum invalid
-> 
->  - Inode corruption
-> 
->     e2fsck 1.46.0 (29-Jan-2020)
->     Pass 1: Checking inodes, blocks, and sizes
->     Pass 2: Checking directory structure
->     Entry 'foo' in / (2) has deleted/unused inode 17.  Clear<y>? yes
->     Pass 3: Checking directory connectivity
->     Pass 4: Checking reference counts
->     Pass 5: Checking group summary information
->     Inode bitmap differences:  -17
->     Fix<y>? yes
->     Free inodes count wrong for group #0 (32750, counted=32751).
->     Fix<y>? yes
->     Free inodes count wrong (32750, counted=32751).
->     Fix<y>? yes
-> 
-> Changes since v4:
->  - Drop first three already applied patches.
->  - Remove 'in_mem' parameter passing __ext4_get_inode_loc() in the last
->    patch.
-> 
-> Changes since v3:
->  - Postpone initialization to ext4_do_update_inode() may cause zeroout
->    newly set xattr entry. So switch to do initialization in
->    __ext4_get_inode_loc().
-> 
-> Changes since v2:
->  - Instead of using WARN_ON_ONCE to prevent ext4_do_update_inode()
->    return before filling the inode buffer, keep the error and postpone
->    the report after the updating in the third patch.
->  - Fix some language mistacks in the last patch.
-> 
-> Changes since v1:
->  - Add a patch to prevent ext4_do_update_inode() return before filling
->    the inode buffer.
->  - Do not use BH_New flag to indicate the empty buffer, postpone the
->    zero and uptodate logic into ext4_do_update_inode() before filling
->    the inode buffer.
-> 
-> Thanks,
-> Yi.
-> 
-> Zhang Yi (3):
->   ext4: factor out ext4_fill_raw_inode()
->   ext4: move ext4_fill_raw_inode() related functions
->   ext4: prevent getting empty inode buffer
-> 
->  fs/ext4/inode.c | 316 +++++++++++++++++++++++++-----------------------
->  1 file changed, 165 insertions(+), 151 deletions(-)
-> 
+The first step was to convert the easy cases. Almost all safe cases
+switching GFP_NOFS to GFP_KERNEL have happened. Another step is to
+convert GFP_NOFS to memalloc_nofs_save/GFP_KERNEL/memalloc_nofs_restore
+in contexts where we know we'd rely on the transaction NOFS scope in the
+future. Once this is implemented, the memalloc_nofs_* calls are deleted
+and it works as expected.  Now you may argue that the switch could be
+changing GFP_NOFS to GFP_KERNEL at that time but that is not that easy
+to review or reason about in the whole transaction context in all
+allocations.
+
+This leads to code that was found in __btrfs_set_acl and called crap
+or wrong, because perhaps the background and the bigger plan is not
+immediately obvious. I hope the explanation above it puts it to the
+right perspective.
+
+The other class of scoped NOFS protection is around vmalloc-based
+allocations but that's for a different reason, would be solved by the
+same transaction start/end conversion as well.
+
+I'm working on that from time to time but this usually gets pushed down
+in the todo list. It's changing a lot of code, from what I've researched
+so far cannot be done at once and would probably introduce bugs hard to
+hit because of the external conditions (allocator, system load, ...).
+
+I have a plan to do that incrementally, adding assertions and converting
+functions in small batches to be able to catch bugs early, but I'm not
+exactly thrilled to start such endeavour in addition to normal
+development bug hunting.
+
+To get things moving again, I've refreshed the patch adding stubs and
+will try to find the best timing for merg to avoid patch conflicts, but
+no promises.
