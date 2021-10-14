@@ -2,98 +2,120 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A79F942D600
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Oct 2021 11:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8735242D678
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Oct 2021 11:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230117AbhJNJ3B (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 14 Oct 2021 05:29:01 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42212 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbhJNJ3B (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Oct 2021 05:29:01 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id B7F171FD32;
-        Thu, 14 Oct 2021 09:26:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634203615; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tLQfy3ZoLS8x7LVZfGiK17ZJGdZMf8tJTi8CNsmBbGc=;
-        b=HC2eecZaTsxlqi59jaw4MBqyE8yDAIIyAvt+ycvez0HJBKnwN6ry/3xkQ3Ck7QUeQLefJn
-        LHhnJr6wWPtHtC+sqFzfSAjuAwOsd+oh+YkVOqh3AIVPwyTHVg5N5mWeB2PnF1Yj1Phbd5
-        ukvL03vskvIBOSnQG4ICLDf1+jfhVjo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634203615;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tLQfy3ZoLS8x7LVZfGiK17ZJGdZMf8tJTi8CNsmBbGc=;
-        b=U6iw6WWGTBX585/HJKi6+urU9ZKc7GZJ1qBO+EETg9xNw5bfa7YQtjTIn8P5saBBxIC0Cb
-        o5Bz/YWVkTETjrBw==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 74F67A3B87;
-        Thu, 14 Oct 2021 09:26:55 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 5EF411E0C03; Thu, 14 Oct 2021 11:26:55 +0200 (CEST)
-Date:   Thu, 14 Oct 2021 11:26:55 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     CGEL <cgel.zte@gmail.com>
-Cc:     tytso@mit.edu, Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH linux-next] ext4:namei: fix boolreturn.cocci warnings
-Message-ID: <20211014092655.GD15931@quack2.suse.cz>
-References: <20210824055543.58718-1-deng.changcheng@zte.com.cn>
+        id S230051AbhJNJzR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Thu, 14 Oct 2021 05:55:17 -0400
+Received: from mgw-01.mpynet.fi ([82.197.21.90]:60924 "EHLO mgw-01.mpynet.fi"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229468AbhJNJzQ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 14 Oct 2021 05:55:16 -0400
+X-Greylist: delayed 1139 seconds by postgrey-1.27 at vger.kernel.org; Thu, 14 Oct 2021 05:55:13 EDT
+Received: from pps.filterd (mgw-01.mpynet.fi [127.0.0.1])
+        by mgw-01.mpynet.fi (8.16.0.43/8.16.0.43) with SMTP id 19E9Pj42091529;
+        Thu, 14 Oct 2021 12:32:59 +0300
+Received: from ex13.tuxera.com (ex13.tuxera.com [178.16.184.72])
+        by mgw-01.mpynet.fi with ESMTP id 3bphjf80v4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 14 Oct 2021 12:32:59 +0300
+Received: from tuxera-exch.ad.tuxera.com (10.20.48.11) by
+ tuxera-exch.ad.tuxera.com (10.20.48.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Thu, 14 Oct 2021 12:32:59 +0300
+Received: from tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789]) by
+ tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789%12]) with mapi id
+ 15.00.1497.023; Thu, 14 Oct 2021 12:32:59 +0300
+From:   Anton Altaparmakov <anton@tuxera.com>
+To:     Christoph Hellwig <hch@lst.de>
+CC:     Jens Axboe <axboe@kernel.dk>, Coly Li <colyli@suse.de>,
+        Mike Snitzer <snitzer@redhat.com>, Song Liu <song@kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        "Konstantin Komarov" <almaz.alexandrovich@paragon-software.com>,
+        Kees Cook <keescook@chromium.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Jan Kara <jack@suse.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
+        "linux-bcache@vger.kernel.org" <linux-bcache@vger.kernel.org>,
+        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "jfs-discussion@lists.sourceforge.net" 
+        <jfs-discussion@lists.sourceforge.net>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-nilfs@vger.kernel.org" <linux-nilfs@vger.kernel.org>,
+        "linux-ntfs-dev@lists.sourceforge.net" 
+        <linux-ntfs-dev@lists.sourceforge.net>,
+        "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>,
+        "reiserfs-devel@vger.kernel.org" <reiserfs-devel@vger.kernel.org>
+Subject: Re: don't use ->bd_inode to access the block device size
+Thread-Topic: don't use ->bd_inode to access the block device size
+Thread-Index: AQHXv/D8RnQWsWSgAkyxOdAYku+41KvR10wAgAAzeIA=
+Date:   Thu, 14 Oct 2021 09:32:58 +0000
+Message-ID: <3AB8052D-DD45-478B-85F2-BFBEC1C7E9DF@tuxera.com>
+References: <20211013051042.1065752-1-hch@lst.de>
+ <20211014062844.GA25448@lst.de>
+In-Reply-To: <20211014062844.GA25448@lst.de>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [109.154.241.177]
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <F1129580E148624C920474BEC9F515C5@ex13.tuxera.com>
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210824055543.58718-1-deng.changcheng@zte.com.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-ORIG-GUID: itBrsNbhZ2FR6MA_DlXhPV1L0UjW3zcs
+X-Proofpoint-GUID: itBrsNbhZ2FR6MA_DlXhPV1L0UjW3zcs
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.425,18.0.790
+ definitions=2021-10-14_02:2021-10-14,2021-10-14 signatures=0
+X-Proofpoint-Spam-Details: rule=mpy_notspam policy=mpy score=0 spamscore=0 mlxlogscore=453 bulkscore=0
+ malwarescore=0 phishscore=0 mlxscore=0 adultscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110140057
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 23-08-21 22:55:43, CGEL wrote:
-> From: Jing Yangyang <jing.yangyang@zte.com.cn>
-> 
-> Return statements in functions returning bool should use true/false
-> instead of 1/0.
-> 
-> ./fs/ext4/namei.c:1441:12-13:WARNING:return of 0/1 in function
-> 'ext4_match' with return type bool
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
+Hi Christoph,
 
-This seems to have fallen through the cracks. The fix looks good to me.
-Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/ext4/namei.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> On 14 Oct 2021, at 07:28, Christoph Hellwig <hch@lst.de> wrote:
 > 
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index f3bbcd4..b5cb32d 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -1438,7 +1438,7 @@ static bool ext4_match(struct inode *parent,
->  					fname->hinfo.minor_hash !=
->  						EXT4_DIRENT_MINOR_HASH(de)) {
->  
-> -					return 0;
-> +					return false;
->  				}
->  			}
->  			return !ext4_ci_compare(parent, &cf, de->name,
-> -- 
-> 1.8.3.1
+> On Wed, Oct 13, 2021 at 07:10:13AM +0200, Christoph Hellwig wrote:
+>> I wondered about adding a helper for looking at the size in byte units
+>> to avoid the SECTOR_SHIFT shifts in various places.  But given that
+>> I could not come up with a good name and block devices fundamentally
+>> work in sector size granularity I decided against that.
 > 
-> 
+> So it seems like the biggest review feedback is that we should have
+> such a helper.  I think the bdev_size name is the worst as size does
+> not imply a particular unit.  bdev_nr_bytes is a little better but I'm
+> not too happy.  Any other suggestions or strong opinions?
+
+bdev_byte_size() would seem to address your concerns?
+
+bdev_nr_bytes() would work though - it is analogous to bdev_nr_sectors() after all.
+
+No strong opinion here but I do agree with you that bdev_size() is a bad choice for sure.  It is bound to cause bugs down the line when people forget what unit it is in.
+
+Best regards,
+
+	Anton
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Anton Altaparmakov <anton at tuxera.com> (replace at with @)
+Lead in File System Development, Tuxera Inc., http://www.tuxera.com/
+Linux NTFS maintainer
+
