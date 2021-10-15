@@ -2,55 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D8242EAC2
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Oct 2021 09:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3806242EB2A
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Oct 2021 10:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236440AbhJOH64 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 15 Oct 2021 03:58:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49194 "EHLO
+        id S232242AbhJOIN3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 15 Oct 2021 04:13:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236437AbhJOH64 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 15 Oct 2021 03:58:56 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24FC1C061570;
-        Fri, 15 Oct 2021 00:56:50 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id d125so6754766iof.5;
-        Fri, 15 Oct 2021 00:56:50 -0700 (PDT)
+        with ESMTP id S235069AbhJOINQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 15 Oct 2021 04:13:16 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB90C061570;
+        Fri, 15 Oct 2021 01:11:10 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id w10so6247379ilc.13;
+        Fri, 15 Oct 2021 01:11:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=asgAoD7hEKzJ/qZ9adq8sS5MAkVz4meEm7kJkZ4qRQ0=;
-        b=DbvTNxlFUL0liJKp8+U3zMfWOBHnbXl0UxWxAHf/tOlhMaTsgzaAgUuAT3kkePjfT+
-         5Tf4VvebcpTc0qYSMIp3YYi8Sv+ORgWs72h1/jSWwhqO5nUcsUMXcijT9r9JkDEQm+El
-         viWfQ11oHOmWRu5zKIO5uQ7CI3n25PLpCthK40RtxJ1QDwB8petMa0Q3tmt86XiJFkuy
-         Tb3LevaNQ8fwS72mtKhvhuAZpFtEi0m1oyS5sgCQjgkksddI0kyXEEvA5aauZ0qxHgtO
-         Uijw2B1U7GjGNA63Y4nXUYRy8Azzmk6Z1skcVdxVn8Inz9eCbNC0kH8jagXVIbI3PE3m
-         QWgQ==
+        bh=zApZgTuclfrPVli+p5QDQmHfsbBsDrrid6Gn/lN1tuY=;
+        b=CjGZWw6YWA8jHk+TNgeXu36l/6b36+Oj4GcknbPbMbwjgfHG47TLVXbBnpcGgMjUqo
+         Rht3dnD7k+TF9dc8hH3GlOC/K2v4m5TB4a8kbLgNU9WnTtx3M4+kfH4EgcwZCqn8Oih0
+         GGLCrJ6+tvi0lz6ZYXSN/F7nTpN20Go2oBrITreXiHYXSjKLK1OwLlBmqm8OzJY3F7qt
+         aUtBEtt3wiL7iU1COvMW6Ae/3vaox/xDEbuEdgAR83tMudE0s26sv9IcGPnY/nAvLw77
+         RgPeH0m5Ay1LfHRJcwkwJUrjxymfFjJL50Cw1L5T7xdZhnWAYXCo/saEVLoWxnwMZU7N
+         qkwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=asgAoD7hEKzJ/qZ9adq8sS5MAkVz4meEm7kJkZ4qRQ0=;
-        b=e7xlGj1jZSbH+/GkJsf+oewoC/NqncwDu1MY/hugalpUR0bolzgflUWpx7bY6lUmSW
-         LMtGZGnpzLwRDND2ufIapDMRXTPcYgUocqbdK0VnFeGbIPwDpBNYw++38x+oqWjt6gX/
-         ZXbA/3ZoV/Sgdq85Ir5Skx3eC8+tdPspuFa491BOvxe8un7riIly+ufj/gkfa9Gm6G2t
-         p26vxCqKYEn244DLUK2lk6ei0KJ+JHMJ5gZZfg1T+i1bpcGYTdGGEqvQIT27L4DSXO2A
-         pjg5/mj7+O4MRQM+TmIJA+r3+hz/nBk5bXZvRMS74OGb+ZFdAIVnWOLkklMe8s7YmQ8J
-         uWsA==
-X-Gm-Message-State: AOAM5307sUEouPKf6A+VcQrEvprUWPpLcpdyVNS/LlECAEQ/zK5jiX5A
-        8kEOUYEtw+9Fr7m5JCrDFYuVnmEw2jg7n8YMPhc=
-X-Google-Smtp-Source: ABdhPJzYO+7e40VLm5hw5NcGBzYEkTKv7xdDBCRbDcbAzMpl90wvynQegBiSUaxxtuyO2NoEMpqtiEpFm9tCSVZ5bp0=
-X-Received: by 2002:a5d:9e0e:: with SMTP id h14mr2823548ioh.196.1634284609585;
- Fri, 15 Oct 2021 00:56:49 -0700 (PDT)
+        bh=zApZgTuclfrPVli+p5QDQmHfsbBsDrrid6Gn/lN1tuY=;
+        b=R0g7RpX0TWh0YWCk1UEHpuBZrmOQtdobkWcGznLvS5JEwpvRgMNqMIecGrNTb6FkaE
+         YnDH6NTPu/+p/RUso3yvQhsmAmmRY48WFWMI6dPrIuge30hWJz5LtjQsZ4BQGcup7EhA
+         X5kAcNLP7FC1cTCVT0E1B4vIHaArVjElu/d14cynjpNA0X3I3Q8uRBGHCQyFKi5GoA0Y
+         Uf/yQKfrZjh6+qoMiIHjKcQunEfj5i6YwjvQcj30SJCstaTRhHaloUf3gcKeOdIm3hwA
+         zChex1y6rO0RiJUkYD3Rg85oBl6HilAwfW4gyAX45qrudF5PH4fkY7dy84yJLzvVjzD2
+         qqAA==
+X-Gm-Message-State: AOAM531bFsIAZnvGeiYZVScjj+CqPZCTM4SOS5GIJIawbg8KjrS0crqa
+        kRINSRTqruNneiBiZ4f41HPT7VTUacQZ2X9r1/E=
+X-Google-Smtp-Source: ABdhPJyJtUo7icQo/KbCREbaARV5bBPGUXdH8jjaHJw4xTtWd8iPC16ATh9+uMrvnPACbFmn106IsOyn87hfVwJXJ/E=
+X-Received: by 2002:a05:6e02:160e:: with SMTP id t14mr2952690ilu.107.1634285469904;
+ Fri, 15 Oct 2021 01:11:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211014213646.1139469-1-krisman@collabora.com> <20211014213646.1139469-24-krisman@collabora.com>
-In-Reply-To: <20211014213646.1139469-24-krisman@collabora.com>
+References: <20211014213646.1139469-1-krisman@collabora.com> <20211014213646.1139469-23-krisman@collabora.com>
+In-Reply-To: <20211014213646.1139469-23-krisman@collabora.com>
 From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Fri, 15 Oct 2021 10:56:38 +0300
-Message-ID: <CAOQ4uxgR9jGSyGoHvDEPpSpMVHGssnkXJJ5a8HRKD6nxMyMLmA@mail.gmail.com>
-Subject: Re: [PATCH v7 23/28] fanotify: Report fid info for file related file
- system errors
+Date:   Fri, 15 Oct 2021 11:10:58 +0300
+Message-ID: <CAOQ4uxjD6CpnDcg3jhVXT5adVJTk-RgiSCayELeTeqJLdWFKOw@mail.gmail.com>
+Subject: Re: [PATCH v7 22/28] fanotify: Report FID entry even for zero-length file_handle
 To:     Gabriel Krisman Bertazi <krisman@collabora.com>
 Cc:     Jan Kara <jack@suse.com>, "Darrick J. Wong" <djwong@kernel.org>,
         Theodore Tso <tytso@mit.edu>,
@@ -68,101 +67,123 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 On Fri, Oct 15, 2021 at 12:39 AM Gabriel Krisman Bertazi
 <krisman@collabora.com> wrote:
 >
-> Plumb the pieces to add a FID report to error records.  Since all error
-> event memory must be pre-allocated, we pre-allocate the maximum file
-> handle size possible, such that it should always fit.
+> Non-inode errors will reported with an empty file_handle.  In
+> preparation for that, allow some events to print the FID record even if
+> there isn't any file_handle encoded
 >
-> For errors that don't expose a file handle report it with an invalid
-> FID.
+> Even though FILEID_ROOT is used internally, make zero-length file
+> handles be reported as FILEID_INVALID.
 >
 > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
->
 > ---
-> Changes since v6:
->   - pass fsid from handle_events
-> Changes since v5:
->   - Use preallocated MAX_HANDLE_SZ FH buffer
->   - Report superblock errors with a zerolength INVALID FID (jan, amir)
-> ---
->  fs/notify/fanotify/fanotify.c | 15 +++++++++++++++
->  fs/notify/fanotify/fanotify.h |  8 ++++++++
->  2 files changed, 23 insertions(+)
+>  fs/notify/fanotify/fanotify_user.c | 23 ++++++++++++++++++-----
+>  1 file changed, 18 insertions(+), 5 deletions(-)
 >
-> diff --git a/fs/notify/fanotify/fanotify.c b/fs/notify/fanotify/fanotify.c
-> index 7032083df62a..8a60c96f5fb2 100644
-> --- a/fs/notify/fanotify/fanotify.c
-> +++ b/fs/notify/fanotify/fanotify.c
-> @@ -611,7 +611,9 @@ static struct fanotify_event *fanotify_alloc_error_event(
->  {
->         struct fs_error_report *report =
->                         fsnotify_data_error_report(data, data_type);
-> +       struct inode *inode = report->inode;
->         struct fanotify_error_event *fee;
-> +       int fh_len;
+> diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
+> index 5324890500fc..39cf8ba4a6ce 100644
+> --- a/fs/notify/fanotify/fanotify_user.c
+> +++ b/fs/notify/fanotify/fanotify_user.c
+> @@ -127,6 +127,16 @@ static int fanotify_fid_info_len(int fh_len, int name_len)
+>                        FANOTIFY_EVENT_ALIGN);
+>  }
 >
->         if (WARN_ON(!report))
->                 return NULL;
-> @@ -622,6 +624,19 @@ static struct fanotify_event *fanotify_alloc_error_event(
->
->         fee->fae.type = FANOTIFY_EVENT_TYPE_FS_ERROR;
->         fee->err_count = 1;
-> +       fee->fsid = *fsid;
-> +
-> +       fh_len = fanotify_encode_fh_len(inode);
-> +       if (WARN_ON(fh_len > MAX_HANDLE_SZ)) {
-
-WARN_ON_ONCE please and I rather that this sanity check is moved inside
-fanotify_encode_fh_len() where it will return 0 for encoding failure.
-
-> +               /*
-> +                * Fallback to reporting the error against the super
-> +                * block.  It should never happen.
-> +                */
-> +               inode = NULL;
-> +               fh_len = fanotify_encode_fh_len(NULL);
+> +static bool fanotify_event_allows_empty_fh(struct fanotify_event *event)
+> +{
+> +       switch (event->type) {
+> +       case FANOTIFY_EVENT_TYPE_FS_ERROR:
+> +               return true;
+> +       default:
+> +               return false;
 > +       }
+> +}
 > +
-> +       fanotify_encode_fh(&fee->object_fh, inode, fh_len, NULL, 0);
+>  static size_t fanotify_event_len(unsigned int info_mode,
+>                                  struct fanotify_event *event)
+>  {
+> @@ -157,7 +167,7 @@ static size_t fanotify_event_len(unsigned int info_mode,
+>         if (info_mode & FAN_REPORT_PIDFD)
+>                 event_len += FANOTIFY_PIDFD_INFO_HDR_LEN;
 >
->         *hash ^= fanotify_hash_fsid(fsid);
+> -       if (fh_len)
+> +       if (fh_len || fanotify_event_allows_empty_fh(event))
+>                 event_len += fanotify_fid_info_len(fh_len, dot_len);
 >
-> diff --git a/fs/notify/fanotify/fanotify.h b/fs/notify/fanotify/fanotify.h
-> index 2b032b79d5b0..b58400926f92 100644
-> --- a/fs/notify/fanotify/fanotify.h
-> +++ b/fs/notify/fanotify/fanotify.h
-> @@ -202,6 +202,10 @@ struct fanotify_error_event {
->         u32 err_count; /* Suppressed errors count */
+>         return event_len;
+> @@ -338,9 +348,6 @@ static int copy_fid_info_to_user(__kernel_fsid_t *fsid, struct fanotify_fh *fh,
+>         pr_debug("%s: fh_len=%zu name_len=%zu, info_len=%zu, count=%zu\n",
+>                  __func__, fh_len, name_len, info_len, count);
 >
->         __kernel_fsid_t fsid; /* FSID this error refers to. */
-> +       /* object_fh must be followed by the inline handle buffer. */
-> +       struct fanotify_fh object_fh;
-> +       /* Reserve space in object_fh.buf[] - access with fanotify_fh_buf() */
-> +       unsigned char _inline_fh_buf[MAX_HANDLE_SZ];
->  };
+> -       if (!fh_len)
+> -               return 0;
+> -
+>         if (WARN_ON_ONCE(len < sizeof(info) || len > count))
+>                 return -EFAULT;
+>
+> @@ -375,6 +382,11 @@ static int copy_fid_info_to_user(__kernel_fsid_t *fsid, struct fanotify_fh *fh,
+>
+>         handle.handle_type = fh->type;
+>         handle.handle_bytes = fh_len;
+> +
+> +       /* Mangle handle_type for bad file_handle */
+> +       if (!fh_len)
+> +               handle.handle_type = FILEID_INVALID;
+> +
+>         if (copy_to_user(buf, &handle, sizeof(handle)))
+>                 return -EFAULT;
+>
+> @@ -467,7 +479,8 @@ static int copy_info_records_to_user(struct fanotify_event *event,
+>                 total_bytes += ret;
+>         }
+>
+> -       if (fanotify_event_object_fh_len(event)) {
+> +       if (fanotify_event_object_fh_len(event) ||
+> +           fanotify_event_allows_empty_fh(event)) {
+>                 const char *dot = NULL;
+>                 int dot_len = 0;
+>
 
-This struct duplicates most of struct fanotify_fid_event.
-How about:
+I don't like this fanotify_event_allows_empty_fh() implementation so much.
 
-#define FANOTIFY_ERROR_FH_LEN \
-             (MAX_HANDLE_SZ - FANOTIFY_INLINE_FH_LEN)
+How about this instead:
 
-struct fanotify_error_event {
-         u32 err_count; /* Suppressed errors count */
-         struct fanotify_event ffe;
-         /* Reserve space in ffe.object_fh.buf[] - access with
-fanotify_fh_buf() */
-         unsigned char _fh_buf[FANOTIFY_ERROR_FH_LEN];
+static inline struct fanotify_fh *fanotify_event_object_fh(
+                                                struct fanotify_event *event)
+{
+        struct fanotify_fh *fh = NULL;
+
+        /* An error event encodes (a FILEID_INVAL) fh for an empty fh */
+        if (event->type == FANOTIFY_EVENT_TYPE_FS_ERROR)
+                return &FANOTIFY_EE(event)->object_fh;
+        else if (event->type == FANOTIFY_EVENT_TYPE_FID)
+                fh = &FANOTIFY_FE(event)->object_fh;
+        else if (event->type == FANOTIFY_EVENT_TYPE_FID_NAME)
+                fh = fanotify_info_file_fh(&FANOTIFY_NE(event)->info);
+
+        if (!fh && !fh->len)
+                return NULL;
+
+        return fh;
 }
 
-Or leaving out the struct padding and passing
-FANOTIFY_ERROR_EVENT_SIZE as mempool object size?
+        struct fanotify_fh *object_fh = fanotify_event_object_fh(event);
+...
 
-#define FANOTIFY_ERROR_EVENT_SIZE \
-            (sizeof(struct fanotify_error_event) + FANOTIFY_ERROR_FH_LEN)
+-       if (fanotify_event_object_fh_len(event)) {
++       if (object_fh) {
+                const char *dot = NULL;
+...
+                ret = copy_fid_info_to_user(fanotify_event_fsid(event),
+-                                           fanotify_event_object_fh(event),
++                                          object_fh,
+                                            info_type, dot, dot_len,
+                                            buf, count);
+...
 
-You do not have to make this change - it is a proposal that can have
-supporters and objectors, so let's wait to see what you and other reviewers
-have to say.
+And similar change to fanotify_event_len()
+
+This way, the logic of whether to report fh or not is encoded in
+fanotify_event_object_fh() and fanotify_event_object_fh_len()
+goes back to being a property of the the fh report.
 
 Thanks,
 Amir.
