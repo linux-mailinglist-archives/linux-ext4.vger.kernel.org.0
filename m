@@ -2,83 +2,121 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A15A042FD01
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Oct 2021 22:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B309B4300E5
+	for <lists+linux-ext4@lfdr.de>; Sat, 16 Oct 2021 09:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238545AbhJOUck (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 15 Oct 2021 16:32:40 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:60811 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S242451AbhJOUcj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 15 Oct 2021 16:32:39 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 19FKUSeW022631
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Oct 2021 16:30:29 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 5E5DA15C00CA; Fri, 15 Oct 2021 16:30:28 -0400 (EDT)
-Date:   Fri, 15 Oct 2021 16:30:28 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Avi Deitcher <avi@deitcher.net>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: algorithm for half-md4 used in htree directories
-Message-ID: <YWnk5K5+h/Ddd4Rr@mit.edu>
-References: <CAF1vpkgPAy3FJ9mN22OVQ41jQAYoRdoCdqzYwRYYPXD4uucdpg@mail.gmail.com>
- <3A493D20-568A-4D63-A575-5DEEBFAAF41A@dilger.ca>
- <CAF1vpkigHMdKphnNjDm7=rR6TTxViHGGHi3bb64rsHG7KbqYzQ@mail.gmail.com>
- <CAF1vpkhwSOfGfErUUrp0YU5hSt58TtykTECiJXTcgqDtG0WVVg@mail.gmail.com>
- <YWSck57bsX/LqAKr@mit.edu>
- <CAF1vpkiKx3jArgjNBrid9-MSHBweGsFL0zu0UgDX_dq_hrkUgw@mail.gmail.com>
- <YWXGRgfxJZMe9iut@mit.edu>
- <CAF1vpkggQpYrg7Z2VVK69pPBo0rSjDUsm8nB8dyES27cmDEf2g@mail.gmail.com>
- <YWnSMXcR5anaYTEU@mit.edu>
- <CAF1vpki7HqHgXxWsTwMEo4yz592agzZ9c=F09o-1py+jtJpLSw@mail.gmail.com>
+        id S243804AbhJPHmV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 16 Oct 2021 03:42:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243801AbhJPHmU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 16 Oct 2021 03:42:20 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B080CC061765;
+        Sat, 16 Oct 2021 00:40:12 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id n8so51503793lfk.6;
+        Sat, 16 Oct 2021 00:40:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yeYbTALLt+81wu8WFfyKx0a33Kod/SnDLZRAl1Frm5U=;
+        b=cVnZ6+l+2XB64KtPGPsew2EuurYnsOpcBevvm/IVGVDWp/Lr378D4lUZAb7Ldqn1aU
+         Nechfd+nevnKJt8FFrjsUkhQRsZN4OdAe+y/4UgENJDxkcBm3bvvsqVp0+i7kz/ncskC
+         VTNCGAMRL2zXauGox8hUYH0e6cLX9YNzHMmZx68OgeqDdd/IPTSNwVgM/hhe43XfbD/A
+         Rsr2ngeAq8MwLS8wYqIQpA7q0jGrbmoIHsnPPXNshCS3yofpN7y1D6hLbuTi/3aHu8Hg
+         WHPyyYAgwzwuGQtuqb861mn1fmCGJ4Gxolg4kHeKn8eV14e/nwAYLFHNCnrx2jzkQiPm
+         sdiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yeYbTALLt+81wu8WFfyKx0a33Kod/SnDLZRAl1Frm5U=;
+        b=1huJ5oysI05xJ1aHtwvlAGyBBPx/KuQAWKBT2mbRy2s/c41Q02EyXPqdoYas7YhLiw
+         aZbl36IYg9/w54HDTlWv4uwV92L/19zz/n+atRnkd5JmwAh2kzomA4aCed4ye4XkwNfx
+         WSvvvAgkB150U5+i7Eleh8RUEYD9u6cQzCrK4rStxxrWjDru8KdQqpcNhWPGLiUUTwg+
+         wFdr2niwD0jSxq5jXhK6t+Vyn/l4eCZUNNNBvs0UsPCami3Ng9vjevcxUAMLmUYIxA3I
+         zf7WZo/4dERpFEWwK9wv8SsuuczE/In0WD4P7RWskmZW1k6qwQKdX2O4YuO2x5Jzxjn8
+         gCMQ==
+X-Gm-Message-State: AOAM532mdIbON8UzZvjWjFYsfzqBlgByhpATVexRGrMZcPUC8hVnqM5c
+        KdHF7iq0yktmgbV/ThcmIrV6DO5XAhPEQA==
+X-Google-Smtp-Source: ABdhPJz42JllLibAuMU4PSsWo9d4pmXBI6FidoZzBNe3/Oe9MjVOfwHK8qKnrFH4pZzBziLDXJNmxQ==
+X-Received: by 2002:a05:6512:3190:: with SMTP id i16mr9019031lfe.224.1634370011048;
+        Sat, 16 Oct 2021 00:40:11 -0700 (PDT)
+Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id a19sm827633ljb.3.2021.10.16.00.40.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Oct 2021 00:40:10 -0700 (PDT)
+Date:   Sat, 16 Oct 2021 10:40:08 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Coly Li <colyli@suse.de>,
+        Mike Snitzer <snitzer@redhat.com>, Song Liu <song@kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Kees Cook <keescook@chromium.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Jan Kara <jack@suse.com>, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, drbd-dev@lists.linbit.com,
+        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        ntfs3@lists.linux.dev, reiserfs-devel@vger.kernel.org
+Subject: Re: [PATCH 20/30] ntfs3: use bdev_nr_bytes instead of open coding it
+Message-ID: <20211016074008.o6wl7uy3vsrz4v3b@kari-VirtualBox>
+References: <20211015132643.1621913-1-hch@lst.de>
+ <20211015132643.1621913-21-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAF1vpki7HqHgXxWsTwMEo4yz592agzZ9c=F09o-1py+jtJpLSw@mail.gmail.com>
+In-Reply-To: <20211015132643.1621913-21-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 12:43:33PM -0700, Avi Deitcher wrote:
-> Thanks, Ted, I will try yours and step through it to figure out what is off.
+On Fri, Oct 15, 2021 at 03:26:33PM +0200, Christoph Hellwig wrote:
+> Use the proper helper to read the block device size.
 > 
-> You ask a fair question: other than madness, why would someone want to
-> recreate the exact algorithm?
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  fs/ntfs3/super.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> I have had a number of cases where I have needed to manipulate disks,
-> filesystems, partition tables, etc. from within a non-C-source
-> program. The options have been: fork/exec to some external program;
-> run a VM where I can mount the fs and manipulate content as needed.
-> Those both work, but have had issues in various environments.
+> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+> index 55bbc9200a10e..7ed2cb5e8b1d9 100644
+> --- a/fs/ntfs3/super.c
+> +++ b/fs/ntfs3/super.c
+> @@ -918,7 +918,6 @@ static int ntfs_fill_super(struct super_block *sb, void *data, int silent)
+>  	int err;
+>  	struct ntfs_sb_info *sbi;
+>  	struct block_device *bdev = sb->s_bdev;
+> -	struct inode *bd_inode = bdev->bd_inode;
+
+Linus merged latest ntfs3 stuff and this temp variable is not anymore in
+upstream. So this patch will conflict. Just so that you know.
+
+>  	struct request_queue *rq = bdev_get_queue(bdev);
+>  	struct inode *inode = NULL;
+>  	struct ntfs_inode *ni;
+> @@ -967,7 +966,7 @@ static int ntfs_fill_super(struct super_block *sb, void *data, int silent)
+>  
+>  	/* Parse boot. */
+>  	err = ntfs_init_from_boot(sb, rq ? queue_logical_block_size(rq) : 512,
+> -				  bd_inode->i_size);
+> +				  bdev_nr_bytes(bdev));
+>  	if (err)
+>  		goto out;
+>  
+> -- 
+> 2.30.2
 > 
-> I made the mistake of saying, "well, all of this is just manipulating
-> bytes on a disk image or block device; how hard could it be?" :-)
-> So understanding the algorithm actually becomes important.
-
-I think once you take a look at all of the "byte manipulation" that is
-needed for any kind of non-trivial file system operation, you're
-probably better off trying to figure out how to link the library in.
-
-> I probably could link the library in if I am working on languages that
-> support it (go, rust), but not all do, and there are reasons that is
-> more difficult for the target use case.
-
-Have you looked at SWIG?  SWIG suppotrs a *lot* of lanaguages,
-including Tcl, Python, Perl, Guile, Java, Ruby, Mzscheme, PHP, OCaml,
-C#, Lua, R, Octave, Go, D, Javascript, Scilab, etc.  If you end up
-writing the equivalent of libext2fs for one language, it's really not
-going to help you all that much for another language.
-
-I also note you've not really been specific about "the target use
-case".  Is that something you'd be willing to say more about?
-
-In any case, if you're interested in implementing SWIG bindings for
-libext2fs, that is certainly something we could discuss integrating
-into e2fsprogs, so that other people could also benefit from that
-work.  Let me know if you're interested!
-
-						- Ted
+> 
