@@ -2,230 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 320AB430B87
-	for <lists+linux-ext4@lfdr.de>; Sun, 17 Oct 2021 20:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2A1D430C4A
+	for <lists+linux-ext4@lfdr.de>; Sun, 17 Oct 2021 23:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233541AbhJQShy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 17 Oct 2021 14:37:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36402 "EHLO
+        id S233357AbhJQVSh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 17 Oct 2021 17:18:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344438AbhJQShx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 17 Oct 2021 14:37:53 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC7B1C061765
-        for <linux-ext4@vger.kernel.org>; Sun, 17 Oct 2021 11:35:43 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d9so5775158pfl.6
-        for <linux-ext4@vger.kernel.org>; Sun, 17 Oct 2021 11:35:43 -0700 (PDT)
+        with ESMTP id S232561AbhJQVSh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 17 Oct 2021 17:18:37 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A55C06161C
+        for <linux-ext4@vger.kernel.org>; Sun, 17 Oct 2021 14:16:26 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id y74-20020a1c7d4d000000b00322f53b9bbfso2948980wmc.3
+        for <linux-ext4@vger.kernel.org>; Sun, 17 Oct 2021 14:16:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rTrtVmXKl1vzKe1HSo0iCrTyx41Q80sb+HkeZuxUbms=;
-        b=1gLtUPZrIll93Lk0DRWWAADIP7tBPsv0/oiYOGA0bFsBuRjeHRumkgSna9zJTneZUF
-         3DSw4C1pqxk86MXEubQFxK6sLuu2ip8/omjM4E72LaAQywpQ7y9Cz8sENXd9n7mW3t3z
-         6rTdt7sLIak5AkFlx8olY6NWV6x8777Ldqv2eWTYpIft3lHQk6jniiTBjQ+0xKlzpL17
-         mDTOwU3RxVXgVCh5zCg5nl77kpch4MUQRq+0cYICimQUnu2bb/zJyJR1KDC6Uo7JFEYO
-         cIzKBanykJKjnf+YWHWeKml1+/7Ato6hjP4gcjM3D7zw6NzCVAvX7HCQ75G/nsnxhP7p
-         mmeQ==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=tdVE2a8510+ecH7NgHJAGAocypiBhgiXrxDc0OfOSbs=;
+        b=nXJemJhcgGrMMnCH4rWDxu2FcY+c7hLwiRna8UeMHIynB1yAJGUK67zzIlEWfRvuHm
+         EBUgiTe4DhH5XofmWgW9BkQLVtmVorRvD+0WBcLiYkepRVORAF7x6mYLd+UeqSJ45Ve7
+         hzmob/9rRQoiSQpBYnXt3xYYC3TAMhScydnGBLY23f+qwZuxbX+CPLNtzi+7JXJqIrNt
+         KELdLt82tV4qjbWIYtcDvJ5rNApUmCXYDwvFzMwynqoTblvqXj1dkEYiwCe11SnWVGrB
+         nlgE7HfzG/lJgQeHGDGtkeG6lcBGcxK2zYnrWvFuvnl6eWb2BPKd5CR0wqL6LxkprrJH
+         Zxgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rTrtVmXKl1vzKe1HSo0iCrTyx41Q80sb+HkeZuxUbms=;
-        b=EsLPxWhy67tod1nuIe4rgEK2sP3+rbZc2r6tpSALnS/Z3IbSFbE6fpfPtSIXT/sp/D
-         sFrFiMpNavOod/C0b4oCpIRXM9FMnk+buFbLzUQ86YgW4zYUz60frjf9sgdz+Gb6H4jI
-         aUHp95SArr/c0b2N0RMij2zyXIyCPGfBAhBw/tszVR3cOtqc8Vh6WRawYaB+nuNbo57W
-         AVQEfDtwvMuv9+FDuDL0Wp/iDg9OwjqiNrU4cqfOKueTYjsN976Aa8dMPWXUexjI9egz
-         ZzgpF8aRuraYzh1axObB6YEbxZHoiiF0jG7kauHtX8awOE9LgD04Q1l+IXiigSKnILhw
-         g4Ug==
-X-Gm-Message-State: AOAM533Ekh5j1Qb7qA26XM1fK45oRQG2Jk2V+ntl0JI7Rjn43NjJRzxr
-        jacNVvpbh6YZ3hC614CQxyUg/f6IEoQNWSUz15MREQ==
-X-Google-Smtp-Source: ABdhPJwJM7+IqZd5nnQXXYL4Qb9udjK5XcqDYKSTkol29IdGjGnxP1SxcddyehIQsKSeVah5exCVcaqjhhHWy7v1hMQ=
-X-Received: by 2002:a63:1e0e:: with SMTP id e14mr19210587pge.5.1634495743329;
- Sun, 17 Oct 2021 11:35:43 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=tdVE2a8510+ecH7NgHJAGAocypiBhgiXrxDc0OfOSbs=;
+        b=H4WaWetntloekq/tjBEaAcXu0QrDIVJHoZR32VQLavQhlSs9lyLS7MrJXyQLotCLgo
+         5kZBCperosTOiu8002AsCxq2MsvGutevwlEGQ/7HyS2kNyJB06wi9RwpiNxq8MTnZiZM
+         NgTaH7XBstq9O940NeDeRZ8cfM6zQjTKPznXRDGXKm+MH4N1+8MdxjVaukXC3Q8sjadR
+         7EwYyd1dU28JaMtxpuwJVQt9slGl3Sx+IKQuoVTJfXl0YzccHWr1RlyydjF0XoQS6xWg
+         SucMo/pieT6CTvnr96WuoCfwkyyzBoC7gth9gcTn+ekH7l7+0tZK9OfjBgq3kyOncdDU
+         k7BQ==
+X-Gm-Message-State: AOAM532Mhvsvn2uNBTpAspadvZKk7GYKHvYBoEhzSjuP8zMNUPQ12bas
+        51wAx79UcfaXPyYiFAnC5oiuXgNCP2Z7KE2E0wk=
+X-Google-Smtp-Source: ABdhPJxcXhhNrOEBPCzlAGXlhdD19kzpqbBRiDMjccnqlvqQwIp4nNMWITMUo+rhaxtoqHQTn9stsnSdCeqQOQVMI3U=
+X-Received: by 2002:a05:600c:1c1b:: with SMTP id j27mr25587187wms.1.1634505385104;
+ Sun, 17 Oct 2021 14:16:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211014153928.16805-1-alex.sierra@amd.com> <20211014153928.16805-3-alex.sierra@amd.com>
- <20211014170634.GV2744544@nvidia.com> <YWh6PL7nvh4DqXCI@casper.infradead.org>
- <CAPcyv4hBdSwdtG6Hnx9mDsRXiPMyhNH=4hDuv8JZ+U+Jj4RUWg@mail.gmail.com>
- <20211014230606.GZ2744544@nvidia.com> <CAPcyv4hC4qxbO46hp=XBpDaVbeh=qdY6TgvacXRprQ55Qwe-Dg@mail.gmail.com>
- <20211016154450.GJ2744544@nvidia.com>
-In-Reply-To: <20211016154450.GJ2744544@nvidia.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Sun, 17 Oct 2021 11:35:35 -0700
-Message-ID: <CAPcyv4j0kHREAOG6_07E2foz6e4FP8D72mZXH6ivsiUBu_8c6g@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] mm: remove extra ZONE_DEVICE struct page refcount
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Alex Sierra <alex.sierra@amd.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, Christoph Hellwig <hch@lst.de>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        David Hildenbrand <david@redhat.com>
+Received: by 2002:a1c:a90c:0:0:0:0:0 with HTTP; Sun, 17 Oct 2021 14:16:24
+ -0700 (PDT)
+Reply-To: pomtfoundation1@gmail.com
+From:   Peace Of Mind Trust <dr.okorospelltemple01@gmail.com>
+Date:   Mon, 18 Oct 2021 00:16:24 +0300
+Message-ID: <CAKFBkNiJ5jp+6GFNbi432hXjGyKqLT_W1oBwy7woqTAW2DKMoA@mail.gmail.com>
+Subject: =?UTF-8?Q?Wohlt=C3=A4tigkeitsspende_f=C3=BCr_Covid=2D19?=
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Oct 16, 2021 at 8:45 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> On Thu, Oct 14, 2021 at 06:37:35PM -0700, Dan Williams wrote:
-> > On Thu, Oct 14, 2021 at 4:06 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
-> > >
-> > > On Thu, Oct 14, 2021 at 12:01:14PM -0700, Dan Williams wrote:
-> > > > > > Does anyone know why devmap is pte_special anyhow?
-> > > >
-> > > > It does not need to be special as mentioned here:
-> > > >
-> > > > https://lore.kernel.org/all/CAPcyv4iFeVDVPn6uc=aKsyUvkiu3-fK-N16iJVZQ3N8oT00hWA@mail.gmail.com/
-> > >
-> > > I added a remark there
-> > >
-> > > Not special means more to me, it means devmap should do the refcounts
-> > > properly like normal memory pages.
-> > >
-> > > It means vm_normal_page should return !NULL and it means insert_page,
-> > > not insert_pfn should be used to install them in the PTE. VMAs should
-> > > not be MIXED MAP, but normal struct page maps.
-> > >
-> > > I think this change alone would fix all the refcount problems
-> > > everwhere in DAX and devmap.
-> > >
-> > > > The refcount dependencies also go away after this...
-> > > >
-> > > > https://lore.kernel.org/all/161604050866.1463742.7759521510383551055.stgit@dwillia2-desk3.amr.corp.intel.com/
-> > > >
-> > > > ...but you can see that patches 1 and 2 in that series depend on being
-> > > > able to guarantee that all mappings are invalidated when the undelying
-> > > > device that owns the pgmap goes away.
-> > >
-> > > If I have put everything together right this is because of what I
-> > > pointed to here. FS-DAX is installing 0 refcount pages into PTEs and
-> > > expecting that to work sanely.
-> > >
-> > > This means the page map cannot be removed until all the PTEs are fully
-> > > flushed, which buggily doesn't happen because of the missing unplug.
-> > >
-> > > However, this is all because nobody incrd a refcount to represent the
-> > > reference in the PTE and since this ment that 0 refcount pages were
-> > > wrongly stuffed into PTEs then devmap used the refcount == 1 hack to
-> > > unbreak GUP?
-> > >
-> > > So.. Is there some reason why devmap pages are trying so hard to avoid
-> > > sane refcounting???
-> >
-> > I wouldn't put it that way. It's more that the original sin of
-> > ZONE_DEVICE that sought to reuse the lru field space, by never having
-> > a zero recount, then got layered upon and calcified in malignant ways.
-> > In the meantime surrounding infrastructure got decrustified. Work like
-> > the 'struct page' cleanup among other things, made it clearer and
-> > clearer over time that the original design choice needed to be fixed.
->
-> So, there used to be some reason, but with the current code
-> arrangement it is not the case? This is why it looks so strange when
-> reading it..
->
-> AFIACT we are good on the LRU stuff now? Eg release_pages() does not
-> use page->lru for is_zone_device_page()?
+--=20
+Hallo, lieber Beg=C3=BCnstigter
+Sie haben eine Spende von 2.000.000,00 =E2=82=AC aus dem Frieden von Mind
+Trust Foundation (PMT).
+Bitte kontaktieren Sie uns =C3=BCber: pomtfoundation1@gmail.com Weitere
+Informationen zum Anhalten dieser Spendenfonds
 
-Yes, the lru collision was fixed by the 'struct page' cleanup.
-
->
-> > The MIXED_MAP and insert_pfn were a holdover from page-less DAX, but
-> > now that we have page-available DAX, yes, we can skip the FS
-> > notification and just rely on typical refcounting and hanging until
-> > the FS has a chance to uninstall the PTEs. You're right, the FS
-> > notification is an improvement to the conversion, not a requirement.
->
-> It all sounds so simple. I looked at this for a good long time and the
-> first major roadblock is huge pages.
->
-> The mm side is designed around THP which puts a single high order page
-> into the PUD/PMD such that the mm only has to juggle one page. This a
-> very sane and reasonable thing to do.
->
-> DAX is stuffing arrays of 4k pages into the PUD/PMDs. Aligning with
-> THP would make using normal refconting much simpler. I looked at
-> teaching the mm core to deal with page arrays - it is certainly
-> doable, but it is quite inefficient and ugly mm code.
-
-THP does not support PUD, and neither does FSDAX, so it's only PMDs we
-need to worry about.
-
->
-> So, can we fix DAX and TTM - the only uses of PUD/PMDs I could find?
->
-> Joao has a series that does this to device-dax:
->
-> https://lore.kernel.org/all/20210827145819.16471-1-joao.m.martins@oracle.com/
-
-That assumes there's never any need to fracture a huge page which
-FSDAX could not support unless the filesystem was built with 2MB block
-size.
-
-> TTM is kind of broken already but does have a struct page, and it is
-> probably already a high order one. Maybe it is OK? I will ask Thomas
->
-> That leaves FSDAX. Can this be fixed? I know nothing of filesystems or
-> fsdax to guess. Sounds like folios to me ..
-
-My thought here is to assemble a compound page on the fly when
-establishing the FSDAX PMD mapping.
-
-> Assuming changing FSDAX is hard.. How would DAX people feel about just
-> deleting the PUD/PMD support until it can be done with compound pages?
-
-There are end users that would notice the PMD regression, and I think
-FSDAX PMDs with proper compound page metadata is on the same order of
-work as fixing the refcount.
-
-> Doing so would allow fixing the lifecycle, cleaning up gup and
-> basically delete a huge wack of slow DAX and devmap specific code from
-> the mm. It also opens the door to removing the PTE flag and thus
-> allowing DAX on more architectures.
->
-> > However, there still needs to be something in the gup-fast path to
-> > indicate that GUP_LONGTERM is not possible because the PTE
-> > represents
->
-> It looks easy now:
->
-> 1) We know the pfn has a struct page * because it isn't pfn special
->
-> 2) We can get a valid ref on the struct page *:
->
->       head = try_grab_compound_head(page, 1, flags);
->
->    Holding a ref ensures that head->pgmap is valid.
->
-> 3) Then check the page type directly:
->
->      if ((flags & FOLL_LONGTERM) && is_zone_device_page(head))
->
->    This tells us we can access the ZONE_DEVICE struct in the union
->
-> 4) Ask what the pgmap owner wants to do:
->
->     if (head->pgmap->deny_foll_longterm)
->           return FAIL
-
-The pgmap itself does not know, but the "holder" could specify this
-policy. Which is in line with the 'dax_holder_ops' concept being
-introduced for reverse mapping support. I.e. when the FS claims the
-dax-device it can specify at that point that it wants to forbid
-longterm.
-
-> Cost is only paied if FOLL_LONGTERM is given
-
-Yeah, that does naturally fall out from no longer needing to take an
-explicit dev_pagemap reference and assuming a page is always there.
+mit bestem Gru=C3=9F
+Peace Of Mind Trust (PMT)
