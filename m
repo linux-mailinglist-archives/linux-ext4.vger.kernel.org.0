@@ -2,105 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD6D430E74
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 Oct 2021 05:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC141430F00
+	for <lists+linux-ext4@lfdr.de>; Mon, 18 Oct 2021 06:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229456AbhJRD4r (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 17 Oct 2021 23:56:47 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:51673 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229445AbhJRD4r (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 17 Oct 2021 23:56:47 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UsUGbVe_1634529274;
-Received: from admindeMacBook-Pro-2.local(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0UsUGbVe_1634529274)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 18 Oct 2021 11:54:34 +0800
-Subject: Re: Inode 2885482 (000000008e814f64): i_reserved_data_blocks (2) not
- cleared!
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>
-Cc:     "Rantala, Tommi T. (Nokia - FI/Espoo)" <tommi.t.rantala@nokia.com>,
-        "enwlinux@gmail.com" <enwlinux@gmail.com>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <767ea5bb27e31cc58bea15cd2aec492946679bde.camel@nokia.com>
- <YWhxvOf5EoHMFxtl@B-P7TQMD6M-0146.local> <YWinzKvlbx0XlJKJ@mit.edu>
-From:   JeffleXu <jefflexu@linux.alibaba.com>
-Message-ID: <389353b8-f1f0-1b73-92b9-f1b00644eaf6@linux.alibaba.com>
-Date:   Mon, 18 Oct 2021 11:54:34 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S229600AbhJREnS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 18 Oct 2021 00:43:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229470AbhJREnR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Oct 2021 00:43:17 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B6D5C06161C;
+        Sun, 17 Oct 2021 21:41:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=5FVSqxmInxZpxLfquTYTWo3aHtcI6RxpSGZW6UNZj6o=; b=RWsnrEN/AN21+3N1QS/sVzo/pA
+        KUprhD61JwCSOViB6cCzwYWYPy8xO6eWNrrG8XEt0LTqvix7ajoUiGCskUDEIh+XmHUnJyX/tgDJj
+        Esl/uNdX1ly5Yy9ZBHbYr6yKuDS9X5SLz4ZAngrPtzD/0A2qwFx8g8P1chEP+4L6TG/G9DEqtaDJ6
+        jW1vIyTNr2TebDqfs2jg2FxBFf/f/gWdoiabUqKvxpvOm2M2Nvc85QefHdxbJPv9Dys7AN5jmyANn
+        iuh0ImYfAhQwPFWqmpyXU78hqF4KUrq+0TQ/4jRUyILMGOEhgr5OTDCogwtAbPD6vKEUBlPEk3aPn
+        umppEHQg==;
+Received: from 089144211028.atnat0020.highway.a1.net ([89.144.211.28] helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mcKSH-00E3Et-TF; Mon, 18 Oct 2021 04:40:58 +0000
+From:   Christoph Hellwig <hch@lst.de>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>, dm-devel@redhat.com,
+        linux-xfs@vger.kernel.org, nvdimm@lists.linux.dev,
+        linux-s390@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: futher decouple DAX from block devices
+Date:   Mon, 18 Oct 2021 06:40:43 +0200
+Message-Id: <20211018044054.1779424-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <YWinzKvlbx0XlJKJ@mit.edu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Hi Dan,
 
+this series cleans up and simplifies the association between DAX and block
+devices in preparation of allowing to mount file systems directly on DAX
+devices without a detour through block devices.
 
-On 10/15/21 5:57 AM, Theodore Ts'o wrote:
-> On Fri, Oct 15, 2021 at 02:06:52AM +0800, Gao Xiang wrote:
->> On Thu, Oct 14, 2021 at 12:54:14PM +0000, Rantala, Tommi T. (Nokia - FI/Espoo) wrote:
->>> Hi,
->>>
->>> I'm seeing these i_reserved_data_blocks not cleared! messages when using ext4
->>> with nodelalloc, message added in:
->>>
->>>   commit 6fed83957f21eff11c8496e9f24253b03d2bc1dc
->>>   Author: Jeffle Xu <jefflexu@linux.alibaba.com>
->>>   Date:   Mon Aug 23 14:13:58 2021 +0800
->>>
->>>       ext4: fix reserved space counter leakage
->>>
->>> I can quickly reproduce in 5.15.0-rc5-00041-g348949d9a444 by doing some
->>> filesystem I/O while toggling delalloc:
->>>
->>>
->>> while true; do mount -o remount,nodelalloc /; sleep 1; mount -o remount,delalloc /; sleep 1; done &
->>> git clone linux xxx; rm -rf xxx
->>
->> If I understand correctly, switching such option implies
->> sync inodes to write back exist delayed allocation blocks.
-> 
-> Well, no.  What it implies is that all writes after the remount into
-> an unallocated portion of the file will be allocated at the time when
-> the page is dirtied, instead of when the page is written back.  It's
-> possible for some pages to be written using delayed allocation, and
-> some other pages in the legacy "allocate on page dirty" mechanism.
-> This can happen when the file system is remounted; it can also happen
-> when the file system starts getting close to 100% full.  See the
-> comment in ext4_nonda_switch:
-> 
-> 	/*
-> 	 * switch to non delalloc mode if we are running low
-> 	 * on free block. The free block accounting via percpu
-> 	 * counters can get slightly wrong with percpu_counter_batch getting
-> 	 * accumulated on each CPU without updating global counters
-> 	 * Delalloc need an accurate free block accounting. So switch
-> 	 * to non delalloc when we are near to error range.
-> 	 */
-> 
-
-So it seems possible that s_dirtyclusters_counter/i_reserved_data_blocks
-counters are not maintained anymore when filesystem gets remounted from
-'delalloc' to 'nodelalloc', even when you're writing back a (previously)
-delay allocated page cache (when it's still mounted as 'delalloc'). Thus
-it is possible that s_dirtyclusters_counter/i_reserved_data_blocks
-counters are non-zero when the inode is finally evicted and destroyed.
-
-IMHO I think this inconsistency is problematic. For example, when
-filesystem gets remounted from 'delalloc' to 'nodelalloc' and then runs
-for a period, s_dirtyclusters_counter/i_reserved_data_blocks counters
-already gets inconsistent. Then it's remounted back to 'delalloc', in
-which case s_dirtyclusters_counter/i_reserved_data_blocks counters are
-already incorrect.
-
-
-
--- 
-Thanks,
-Jeffle
+Diffstat:
+ drivers/dax/Kconfig          |    4 
+ drivers/dax/bus.c            |    2 
+ drivers/dax/super.c          |  220 +++++--------------------------------------
+ drivers/md/dm-linear.c       |   51 +++------
+ drivers/md/dm-log-writes.c   |   44 +++-----
+ drivers/md/dm-stripe.c       |   65 +++---------
+ drivers/md/dm-table.c        |   22 ++--
+ drivers/md/dm-writecache.c   |    2 
+ drivers/md/dm.c              |   29 -----
+ drivers/md/dm.h              |    4 
+ drivers/nvdimm/Kconfig       |    2 
+ drivers/nvdimm/pmem.c        |    9 -
+ drivers/s390/block/Kconfig   |    2 
+ drivers/s390/block/dcssblk.c |   12 +-
+ fs/dax.c                     |   13 ++
+ fs/erofs/super.c             |   11 +-
+ fs/ext2/super.c              |    6 -
+ fs/ext4/super.c              |    9 +
+ fs/fuse/Kconfig              |    2 
+ fs/fuse/virtio_fs.c          |    2 
+ fs/xfs/xfs_super.c           |   54 +++++-----
+ include/linux/dax.h          |   30 ++---
+ 22 files changed, 185 insertions(+), 410 deletions(-)
