@@ -2,68 +2,127 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A1D430C4A
-	for <lists+linux-ext4@lfdr.de>; Sun, 17 Oct 2021 23:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E07C8430D43
+	for <lists+linux-ext4@lfdr.de>; Mon, 18 Oct 2021 03:09:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233357AbhJQVSh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 17 Oct 2021 17:18:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43154 "EHLO
+        id S1344909AbhJRBL3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 17 Oct 2021 21:11:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232561AbhJQVSh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 17 Oct 2021 17:18:37 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A55C06161C
-        for <linux-ext4@vger.kernel.org>; Sun, 17 Oct 2021 14:16:26 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id y74-20020a1c7d4d000000b00322f53b9bbfso2948980wmc.3
-        for <linux-ext4@vger.kernel.org>; Sun, 17 Oct 2021 14:16:26 -0700 (PDT)
+        with ESMTP id S236350AbhJRBL2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 17 Oct 2021 21:11:28 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A4E3C06161C;
+        Sun, 17 Oct 2021 18:09:18 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id k3so13195012ilu.2;
+        Sun, 17 Oct 2021 18:09:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=tdVE2a8510+ecH7NgHJAGAocypiBhgiXrxDc0OfOSbs=;
-        b=nXJemJhcgGrMMnCH4rWDxu2FcY+c7hLwiRna8UeMHIynB1yAJGUK67zzIlEWfRvuHm
-         EBUgiTe4DhH5XofmWgW9BkQLVtmVorRvD+0WBcLiYkepRVORAF7x6mYLd+UeqSJ45Ve7
-         hzmob/9rRQoiSQpBYnXt3xYYC3TAMhScydnGBLY23f+qwZuxbX+CPLNtzi+7JXJqIrNt
-         KELdLt82tV4qjbWIYtcDvJ5rNApUmCXYDwvFzMwynqoTblvqXj1dkEYiwCe11SnWVGrB
-         nlgE7HfzG/lJgQeHGDGtkeG6lcBGcxK2zYnrWvFuvnl6eWb2BPKd5CR0wqL6LxkprrJH
-         Zxgg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WfeOjNSr14+hr9YL9DUQsshVwCDugysEM+0F+xx1LNs=;
+        b=LCWXoLiFeq/6CvXKyYDIpZX75/Z6HSNEQHQN/yKd8EwdLAyfQpzjX21S4UryzIOWgz
+         463zMzy/5GqP2+tE4lOB1gD+tSGH2qoq8YlF84mKq46+CRxF2RpSBpqt6z1eTCchUV9e
+         B6fwq8W2z1PBKaFIvHtGCK5L1OQTd7QxksM+soX9Iso8Eg1SrU1oeS7Z+8QOlCSdzuLp
+         YNcE1FFJ6hWp1KTJNUC4aTRpW3z160myslZknXu/ZWm7vIxZRfP21FU1VQygI0ynL3cP
+         OZq8cYCK2L5CCiE1MnmI5Tmf4zdtxRpdgF3j7IIy5JVHhu2A87tFa2DC6n9DnUjUyPXt
+         NG1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=tdVE2a8510+ecH7NgHJAGAocypiBhgiXrxDc0OfOSbs=;
-        b=H4WaWetntloekq/tjBEaAcXu0QrDIVJHoZR32VQLavQhlSs9lyLS7MrJXyQLotCLgo
-         5kZBCperosTOiu8002AsCxq2MsvGutevwlEGQ/7HyS2kNyJB06wi9RwpiNxq8MTnZiZM
-         NgTaH7XBstq9O940NeDeRZ8cfM6zQjTKPznXRDGXKm+MH4N1+8MdxjVaukXC3Q8sjadR
-         7EwYyd1dU28JaMtxpuwJVQt9slGl3Sx+IKQuoVTJfXl0YzccHWr1RlyydjF0XoQS6xWg
-         SucMo/pieT6CTvnr96WuoCfwkyyzBoC7gth9gcTn+ekH7l7+0tZK9OfjBgq3kyOncdDU
-         k7BQ==
-X-Gm-Message-State: AOAM532Mhvsvn2uNBTpAspadvZKk7GYKHvYBoEhzSjuP8zMNUPQ12bas
-        51wAx79UcfaXPyYiFAnC5oiuXgNCP2Z7KE2E0wk=
-X-Google-Smtp-Source: ABdhPJxcXhhNrOEBPCzlAGXlhdD19kzpqbBRiDMjccnqlvqQwIp4nNMWITMUo+rhaxtoqHQTn9stsnSdCeqQOQVMI3U=
-X-Received: by 2002:a05:600c:1c1b:: with SMTP id j27mr25587187wms.1.1634505385104;
- Sun, 17 Oct 2021 14:16:25 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WfeOjNSr14+hr9YL9DUQsshVwCDugysEM+0F+xx1LNs=;
+        b=heROTjJOdfqd0pTquSJk5rKla9Kdxd0CWas2tSWSsVc/VGNLKbRqk07oMa9/jlhAXT
+         ub3QlEuwnGTanr1wlDe6BFR8SzlASxfCLNygJdT9EG0pTjI46T9PXQdbMCQaBCAPzRmE
+         RHkIfi0Jr5eU+sGD7QudfOsuGh5YCItnR97AU1l4tWOeOz/1lfKq7KdkYo6tCEHN1DnW
+         lSEdQTshmbMVESS8K0osNVrkDVLmk4ZQeydOzVAMVENuzaa/yG6Nj6W5c6xGzzeX6QV9
+         AC1eHxOJ5lutO/wq7ScdyT91RgjQAXKUy99xmM49xu/DZfO87MP1dSi2Fqn3ml+R9Chh
+         7p3g==
+X-Gm-Message-State: AOAM531Pdylh768U8xdXXnVo/mXZaXIcnPNdb+yuCQ9tNQgLg0uiGwo2
+        aCDsavHgnwmvC3w0JXrYUab4ZZDrJHVlGf5jOi8=
+X-Google-Smtp-Source: ABdhPJyZSh3itSF+VXrY4OH3OZp6AdtHKiAionYTGWjW2Fk28B/StczyWg2y7en5AEMUGL5dW5S27vz4XCBz1ck8+ws=
+X-Received: by 2002:a05:6e02:19c9:: with SMTP id r9mr3302469ill.98.1634519358012;
+ Sun, 17 Oct 2021 18:09:18 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a1c:a90c:0:0:0:0:0 with HTTP; Sun, 17 Oct 2021 14:16:24
- -0700 (PDT)
-Reply-To: pomtfoundation1@gmail.com
-From:   Peace Of Mind Trust <dr.okorospelltemple01@gmail.com>
-Date:   Mon, 18 Oct 2021 00:16:24 +0300
-Message-ID: <CAKFBkNiJ5jp+6GFNbi432hXjGyKqLT_W1oBwy7woqTAW2DKMoA@mail.gmail.com>
-Subject: =?UTF-8?Q?Wohlt=C3=A4tigkeitsspende_f=C3=BCr_Covid=2D19?=
-To:     undisclosed-recipients:;
+References: <CAOOPZo52azGXN-BzWamA38Gu=EkqZScLufM1VEgDuosPoH6TWA@mail.gmail.com>
+In-Reply-To: <CAOOPZo52azGXN-BzWamA38Gu=EkqZScLufM1VEgDuosPoH6TWA@mail.gmail.com>
+From:   Zhengyuan Liu <liuzhengyuang521@gmail.com>
+Date:   Mon, 18 Oct 2021 09:09:06 +0800
+Message-ID: <CAOOPZo4ZycbV8W2w48oD+bM8a1+WqejSjjYuheZPyxm2uE-=rA@mail.gmail.com>
+Subject: Re: Problem with direct IO
+To:     viro@zeniv.linux.org.uk, akpm@linux-foundation.org, tytso@mit.edu
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        mysql@lists.mysql.com, linux-ext4@vger.kernel.org,
+        =?UTF-8?B?5YiY5LqR?= <liuyun01@kylinos.cn>,
+        Zhengyuan Liu <liuzhengyuan@kylinos.cn>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
---=20
-Hallo, lieber Beg=C3=BCnstigter
-Sie haben eine Spende von 2.000.000,00 =E2=82=AC aus dem Frieden von Mind
-Trust Foundation (PMT).
-Bitte kontaktieren Sie uns =C3=BCber: pomtfoundation1@gmail.com Weitere
-Informationen zum Anhalten dieser Spendenfonds
+Ping.
 
-mit bestem Gru=C3=9F
-Peace Of Mind Trust (PMT)
+I think this problem is serious and someone may  also encounter it in
+the future.
+
+
+On Wed, Oct 13, 2021 at 9:46 AM Zhengyuan Liu
+<liuzhengyuang521@gmail.com> wrote:
+>
+> Hi, all
+>
+> we are encounting following Mysql crash problem while importing tables :
+>
+>     2021-09-26T11:22:17.825250Z 0 [ERROR] [MY-013622] [InnoDB] [FATAL]
+>     fsync() returned EIO, aborting.
+>     2021-09-26T11:22:17.825315Z 0 [ERROR] [MY-013183] [InnoDB]
+>     Assertion failure: ut0ut.cc:555 thread 281472996733168
+>
+> At the same time , we found dmesg had following message:
+>
+>     [ 4328.838972] Page cache invalidation failure on direct I/O.
+>     Possible data corruption due to collision with buffered I/O!
+>     [ 4328.850234] File: /data/mysql/data/sysbench/sbtest53.ibd PID:
+>     625 Comm: kworker/42:1
+>
+> Firstly, we doubled Mysql has operating the file with direct IO and
+> buffered IO interlaced, but after some checking we found it did only
+> do direct IO using aio. The problem is exactly from direct-io
+> interface (__generic_file_write_iter) itself.
+>
+> ssize_t __generic_file_write_iter()
+> {
+> ...
+>         if (iocb->ki_flags & IOCB_DIRECT) {
+>                 loff_t pos, endbyte;
+>
+>                 written = generic_file_direct_write(iocb, from);
+>                 /*
+>                  * If the write stopped short of completing, fall back to
+>                  * buffered writes.  Some filesystems do this for writes to
+>                  * holes, for example.  For DAX files, a buffered write will
+>                  * not succeed (even if it did, DAX does not handle dirty
+>                  * page-cache pages correctly).
+>                  */
+>                 if (written < 0 || !iov_iter_count(from) || IS_DAX(inode))
+>                         goto out;
+>
+>                 status = generic_perform_write(file, from, pos = iocb->ki_pos);
+> ...
+> }
+>
+> From above code snippet we can see that direct io could fall back to
+> buffered IO under certain conditions, so even Mysql only did direct IO
+> it could interleave with buffered IO when fall back occurred. I have
+> no idea why FS(ext3) failed the direct IO currently, but it is strange
+> __generic_file_write_iter make direct IO fall back to buffered IO, it
+> seems  breaking the semantics of direct IO.
+>
+> The reproduced  environment is:
+> Platform:  Kunpeng 920 (arm64)
+> Kernel: V5.15-rc
+> PAGESIZE: 64K
+> Mysql:  V8.0
+> Innodb_page_size: default(16K)
+>
+> Thanks,
