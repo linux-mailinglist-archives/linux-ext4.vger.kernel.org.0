@@ -2,146 +2,140 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A6C4312D4
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 Oct 2021 11:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B91BB43143E
+	for <lists+linux-ext4@lfdr.de>; Mon, 18 Oct 2021 12:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231422AbhJRJOE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 18 Oct 2021 05:14:04 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:43582 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231411AbhJRJOC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Oct 2021 05:14:02 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 2B77521966;
-        Mon, 18 Oct 2021 09:11:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634548310; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eF2Rifqt8ucpeEBozDyQtYsm3MGnDcqBDObeOW5swFI=;
-        b=VfG3XmwopjYLNY8uBIcOV1d5y0rNa6FkQ78ZS2K03/S2kxmcE69Uf+TpXYbfSNbEdlzeTS
-        ExOOFwy9jEP8pe8idUu39zP7Ri48YGgwOApDRrt393B0MAdwqITqK8CuElxlZMRSMRykMF
-        fRoxQ389Ul0CJH9kaxRl5AVy4WIvg+k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634548310;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eF2Rifqt8ucpeEBozDyQtYsm3MGnDcqBDObeOW5swFI=;
-        b=E/APmor9UmV+NfDwuczHe7pgy2f2mu/Uff+FJI3QBkWZSNSMLw5bJiKI6rX6l/1HYjHBQ8
-        09USThLyr6QTCfCw==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 11FD4A3B81;
-        Mon, 18 Oct 2021 09:11:50 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id F0D301E0875; Mon, 18 Oct 2021 11:11:48 +0200 (CEST)
-Date:   Mon, 18 Oct 2021 11:11:48 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     jack@suse.com, amir73il@gmail.com, djwong@kernel.org,
-        tytso@mit.edu, dhowells@redhat.com, khazhy@google.com,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-api@vger.kernel.org, repnop@google.com, kernel@collabora.com
-Subject: Re: [PATCH v7 02/28] fsnotify: pass dentry instead of inode data
-Message-ID: <20211018091148.GB29715@quack2.suse.cz>
-References: <20211014213646.1139469-1-krisman@collabora.com>
- <20211014213646.1139469-3-krisman@collabora.com>
+        id S230137AbhJRKOE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 18 Oct 2021 06:14:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229581AbhJRKOD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Oct 2021 06:14:03 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3396BC061714;
+        Mon, 18 Oct 2021 03:11:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=XEauwBeyle229Q9YGjw8X73gVoQGpNTHUdJ6d3ufcSY=; b=OPyMmGmlhYqRTyBq1xysZRbGz+
+        4FdOau0hna6c1i4ag1CGi2DKKpsXddty9p0sFjlrqRziwmbkNyV7e7UOi9BElxioDEozNZ+pQBXP5
+        s6bIy3U2NhCphJhPcL1sYOi0up1FJ4SmKjnMiv8+6awRaPgIW6gjimONq4E2b+uLeXVG70W5jjudH
+        NEaekXB87lL4qQpQMAaXI+J7xErv1an4Is7hU4Ea34/FNhsGWy64rpszdidrWAdzhx6MJL34xcMOa
+        j6hOszoE3Evw74AMK55enAdcSU9yDd/sGcJguy6adxGflR+1TbLqRDN48cGsnBHeqR7rT5F7A3RZA
+        iorHKJlg==;
+Received: from [2001:4bb8:199:73c5:c70:4a89:bc61:2] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mcPcD-00EtyD-1s; Mon, 18 Oct 2021 10:11:33 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Coly Li <colyli@suse.de>, Mike Snitzer <snitzer@redhat.com>,
+        Song Liu <song@kernel.org>, David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Kees Cook <keescook@chromium.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Jan Kara <jack@suse.com>, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, drbd-dev@lists.linbit.com,
+        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        ntfs3@lists.linux.dev, reiserfs-devel@vger.kernel.org
+Subject: don't use ->bd_inode to access the block device size v3
+Date:   Mon, 18 Oct 2021 12:11:00 +0200
+Message-Id: <20211018101130.1838532-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211014213646.1139469-3-krisman@collabora.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 14-10-21 18:36:20, Gabriel Krisman Bertazi wrote:
-> From: Amir Goldstein <amir73il@gmail.com>
-> 
-> Define a new data type to pass for event - FSNOTIFY_EVENT_DENTRY.
-> Use it to pass the dentry instead of it's ->d_inode where available.
-> 
-> Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+Hi Jens,
 
-Looks good. Feel free to add:
+various drivers currently poke directy at the block device inode, which
+is a bit of a mess.  This series cleans up the places that read the
+block device size to use the proper helpers.  I have separate patches
+for many of the other bd_inode uses, but this series is already big
+enough as-is,
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Changes since v2:
+ - bdev_nr_bytes should return loff_t
+ - fix a commit message typo
+ - drop a redundant note in a commit message
 
-								Honza
+Changes since v1:
+ - move SECTOR_SIZE & co
+ - use SECTOR_SHIFT in sb_bdev_nr_blocks
+ - add a bdev_nr_bytes helper
+ - reuse a variable in the SCSI target code
+ - drop the block2mtd patch, a bigger rewrite for that code is pending
 
-> ---
->  include/linux/fsnotify.h         |  5 ++---
->  include/linux/fsnotify_backend.h | 16 ++++++++++++++++
->  2 files changed, 18 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/fsnotify.h b/include/linux/fsnotify.h
-> index d1144d7c3536..df0fa4687a18 100644
-> --- a/include/linux/fsnotify.h
-> +++ b/include/linux/fsnotify.h
-> @@ -39,8 +39,7 @@ static inline int fsnotify_name(__u32 mask, const void *data, int data_type,
->  static inline void fsnotify_dirent(struct inode *dir, struct dentry *dentry,
->  				   __u32 mask)
->  {
-> -	fsnotify_name(mask, d_inode(dentry), FSNOTIFY_EVENT_INODE,
-> -		      dir, &dentry->d_name, 0);
-> +	fsnotify_name(mask, dentry, FSNOTIFY_EVENT_DENTRY, dir, &dentry->d_name, 0);
->  }
->  
->  static inline void fsnotify_inode(struct inode *inode, __u32 mask)
-> @@ -87,7 +86,7 @@ static inline int fsnotify_parent(struct dentry *dentry, __u32 mask,
->   */
->  static inline void fsnotify_dentry(struct dentry *dentry, __u32 mask)
->  {
-> -	fsnotify_parent(dentry, mask, d_inode(dentry), FSNOTIFY_EVENT_INODE);
-> +	fsnotify_parent(dentry, mask, dentry, FSNOTIFY_EVENT_DENTRY);
->  }
->  
->  static inline int fsnotify_file(struct file *file, __u32 mask)
-> diff --git a/include/linux/fsnotify_backend.h b/include/linux/fsnotify_backend.h
-> index 1ce66748a2d2..a2db821e8a8f 100644
-> --- a/include/linux/fsnotify_backend.h
-> +++ b/include/linux/fsnotify_backend.h
-> @@ -248,6 +248,7 @@ enum fsnotify_data_type {
->  	FSNOTIFY_EVENT_NONE,
->  	FSNOTIFY_EVENT_PATH,
->  	FSNOTIFY_EVENT_INODE,
-> +	FSNOTIFY_EVENT_DENTRY,
->  };
->  
->  static inline struct inode *fsnotify_data_inode(const void *data, int data_type)
-> @@ -255,6 +256,8 @@ static inline struct inode *fsnotify_data_inode(const void *data, int data_type)
->  	switch (data_type) {
->  	case FSNOTIFY_EVENT_INODE:
->  		return (struct inode *)data;
-> +	case FSNOTIFY_EVENT_DENTRY:
-> +		return d_inode(data);
->  	case FSNOTIFY_EVENT_PATH:
->  		return d_inode(((const struct path *)data)->dentry);
->  	default:
-> @@ -262,6 +265,19 @@ static inline struct inode *fsnotify_data_inode(const void *data, int data_type)
->  	}
->  }
->  
-> +static inline struct dentry *fsnotify_data_dentry(const void *data, int data_type)
-> +{
-> +	switch (data_type) {
-> +	case FSNOTIFY_EVENT_DENTRY:
-> +		/* Non const is needed for dget() */
-> +		return (struct dentry *)data;
-> +	case FSNOTIFY_EVENT_PATH:
-> +		return ((const struct path *)data)->dentry;
-> +	default:
-> +		return NULL;
-> +	}
-> +}
-> +
->  static inline const struct path *fsnotify_data_path(const void *data,
->  						    int data_type)
->  {
-> -- 
-> 2.33.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Diffstat:
+ block/fops.c                        |    2 +-
+ drivers/block/drbd/drbd_int.h       |    3 +--
+ drivers/md/bcache/super.c           |    2 +-
+ drivers/md/bcache/util.h            |    4 ----
+ drivers/md/bcache/writeback.c       |    2 +-
+ drivers/md/dm-bufio.c               |    2 +-
+ drivers/md/dm-cache-metadata.c      |    2 +-
+ drivers/md/dm-cache-target.c        |    2 +-
+ drivers/md/dm-clone-target.c        |    2 +-
+ drivers/md/dm-dust.c                |    5 ++---
+ drivers/md/dm-ebs-target.c          |    2 +-
+ drivers/md/dm-era-target.c          |    2 +-
+ drivers/md/dm-exception-store.h     |    2 +-
+ drivers/md/dm-flakey.c              |    3 +--
+ drivers/md/dm-integrity.c           |    6 +++---
+ drivers/md/dm-linear.c              |    3 +--
+ drivers/md/dm-log-writes.c          |    4 ++--
+ drivers/md/dm-log.c                 |    2 +-
+ drivers/md/dm-mpath.c               |    2 +-
+ drivers/md/dm-raid.c                |    6 +++---
+ drivers/md/dm-switch.c              |    2 +-
+ drivers/md/dm-table.c               |    3 +--
+ drivers/md/dm-thin-metadata.c       |    2 +-
+ drivers/md/dm-thin.c                |    2 +-
+ drivers/md/dm-verity-target.c       |    3 +--
+ drivers/md/dm-writecache.c          |    2 +-
+ drivers/md/dm-zoned-target.c        |    2 +-
+ drivers/md/md.c                     |   26 +++++++++++---------------
+ drivers/nvme/target/io-cmd-bdev.c   |    4 ++--
+ drivers/target/target_core_iblock.c |    4 ++--
+ fs/affs/super.c                     |    2 +-
+ fs/btrfs/dev-replace.c              |    3 +--
+ fs/btrfs/disk-io.c                  |    2 +-
+ fs/btrfs/ioctl.c                    |    4 ++--
+ fs/btrfs/volumes.c                  |    8 ++++----
+ fs/buffer.c                         |    4 ++--
+ fs/cramfs/inode.c                   |    2 +-
+ fs/ext4/super.c                     |    2 +-
+ fs/fat/inode.c                      |    5 +----
+ fs/hfs/mdb.c                        |    2 +-
+ fs/hfsplus/wrapper.c                |    2 +-
+ fs/jfs/resize.c                     |    5 ++---
+ fs/jfs/super.c                      |    5 ++---
+ fs/nfs/blocklayout/dev.c            |    4 ++--
+ fs/nilfs2/ioctl.c                   |    2 +-
+ fs/nilfs2/super.c                   |    2 +-
+ fs/nilfs2/the_nilfs.c               |    2 +-
+ fs/ntfs/super.c                     |    8 +++-----
+ fs/ntfs3/super.c                    |    3 +--
+ fs/pstore/blk.c                     |    8 +++-----
+ fs/reiserfs/super.c                 |    8 ++------
+ fs/squashfs/super.c                 |    5 +++--
+ fs/udf/lowlevel.c                   |    5 ++---
+ fs/udf/super.c                      |    9 +++------
+ include/linux/blk_types.h           |   17 +++++++++++++++++
+ include/linux/blkdev.h              |   17 -----------------
+ include/linux/genhd.h               |   13 ++++++++++++-
+ 57 files changed, 118 insertions(+), 139 deletions(-)
