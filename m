@@ -2,127 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E07C8430D43
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 Oct 2021 03:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CD6D430E74
+	for <lists+linux-ext4@lfdr.de>; Mon, 18 Oct 2021 05:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344909AbhJRBL3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 17 Oct 2021 21:11:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236350AbhJRBL2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 17 Oct 2021 21:11:28 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A4E3C06161C;
-        Sun, 17 Oct 2021 18:09:18 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id k3so13195012ilu.2;
-        Sun, 17 Oct 2021 18:09:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WfeOjNSr14+hr9YL9DUQsshVwCDugysEM+0F+xx1LNs=;
-        b=LCWXoLiFeq/6CvXKyYDIpZX75/Z6HSNEQHQN/yKd8EwdLAyfQpzjX21S4UryzIOWgz
-         463zMzy/5GqP2+tE4lOB1gD+tSGH2qoq8YlF84mKq46+CRxF2RpSBpqt6z1eTCchUV9e
-         B6fwq8W2z1PBKaFIvHtGCK5L1OQTd7QxksM+soX9Iso8Eg1SrU1oeS7Z+8QOlCSdzuLp
-         YNcE1FFJ6hWp1KTJNUC4aTRpW3z160myslZknXu/ZWm7vIxZRfP21FU1VQygI0ynL3cP
-         OZq8cYCK2L5CCiE1MnmI5Tmf4zdtxRpdgF3j7IIy5JVHhu2A87tFa2DC6n9DnUjUyPXt
-         NG1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WfeOjNSr14+hr9YL9DUQsshVwCDugysEM+0F+xx1LNs=;
-        b=heROTjJOdfqd0pTquSJk5rKla9Kdxd0CWas2tSWSsVc/VGNLKbRqk07oMa9/jlhAXT
-         ub3QlEuwnGTanr1wlDe6BFR8SzlASxfCLNygJdT9EG0pTjI46T9PXQdbMCQaBCAPzRmE
-         RHkIfi0Jr5eU+sGD7QudfOsuGh5YCItnR97AU1l4tWOeOz/1lfKq7KdkYo6tCEHN1DnW
-         lSEdQTshmbMVESS8K0osNVrkDVLmk4ZQeydOzVAMVENuzaa/yG6Nj6W5c6xGzzeX6QV9
-         AC1eHxOJ5lutO/wq7ScdyT91RgjQAXKUy99xmM49xu/DZfO87MP1dSi2Fqn3ml+R9Chh
-         7p3g==
-X-Gm-Message-State: AOAM531Pdylh768U8xdXXnVo/mXZaXIcnPNdb+yuCQ9tNQgLg0uiGwo2
-        aCDsavHgnwmvC3w0JXrYUab4ZZDrJHVlGf5jOi8=
-X-Google-Smtp-Source: ABdhPJyZSh3itSF+VXrY4OH3OZp6AdtHKiAionYTGWjW2Fk28B/StczyWg2y7en5AEMUGL5dW5S27vz4XCBz1ck8+ws=
-X-Received: by 2002:a05:6e02:19c9:: with SMTP id r9mr3302469ill.98.1634519358012;
- Sun, 17 Oct 2021 18:09:18 -0700 (PDT)
+        id S229456AbhJRD4r (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 17 Oct 2021 23:56:47 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:51673 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229445AbhJRD4r (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 17 Oct 2021 23:56:47 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UsUGbVe_1634529274;
+Received: from admindeMacBook-Pro-2.local(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0UsUGbVe_1634529274)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 18 Oct 2021 11:54:34 +0800
+Subject: Re: Inode 2885482 (000000008e814f64): i_reserved_data_blocks (2) not
+ cleared!
+To:     Theodore Ts'o <tytso@mit.edu>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>
+Cc:     "Rantala, Tommi T. (Nokia - FI/Espoo)" <tommi.t.rantala@nokia.com>,
+        "enwlinux@gmail.com" <enwlinux@gmail.com>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <767ea5bb27e31cc58bea15cd2aec492946679bde.camel@nokia.com>
+ <YWhxvOf5EoHMFxtl@B-P7TQMD6M-0146.local> <YWinzKvlbx0XlJKJ@mit.edu>
+From:   JeffleXu <jefflexu@linux.alibaba.com>
+Message-ID: <389353b8-f1f0-1b73-92b9-f1b00644eaf6@linux.alibaba.com>
+Date:   Mon, 18 Oct 2021 11:54:34 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <CAOOPZo52azGXN-BzWamA38Gu=EkqZScLufM1VEgDuosPoH6TWA@mail.gmail.com>
-In-Reply-To: <CAOOPZo52azGXN-BzWamA38Gu=EkqZScLufM1VEgDuosPoH6TWA@mail.gmail.com>
-From:   Zhengyuan Liu <liuzhengyuang521@gmail.com>
-Date:   Mon, 18 Oct 2021 09:09:06 +0800
-Message-ID: <CAOOPZo4ZycbV8W2w48oD+bM8a1+WqejSjjYuheZPyxm2uE-=rA@mail.gmail.com>
-Subject: Re: Problem with direct IO
-To:     viro@zeniv.linux.org.uk, akpm@linux-foundation.org, tytso@mit.edu
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        mysql@lists.mysql.com, linux-ext4@vger.kernel.org,
-        =?UTF-8?B?5YiY5LqR?= <liuyun01@kylinos.cn>,
-        Zhengyuan Liu <liuzhengyuan@kylinos.cn>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YWinzKvlbx0XlJKJ@mit.edu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Ping.
-
-I think this problem is serious and someone may  also encounter it in
-the future.
 
 
-On Wed, Oct 13, 2021 at 9:46 AM Zhengyuan Liu
-<liuzhengyuang521@gmail.com> wrote:
->
-> Hi, all
->
-> we are encounting following Mysql crash problem while importing tables :
->
->     2021-09-26T11:22:17.825250Z 0 [ERROR] [MY-013622] [InnoDB] [FATAL]
->     fsync() returned EIO, aborting.
->     2021-09-26T11:22:17.825315Z 0 [ERROR] [MY-013183] [InnoDB]
->     Assertion failure: ut0ut.cc:555 thread 281472996733168
->
-> At the same time , we found dmesg had following message:
->
->     [ 4328.838972] Page cache invalidation failure on direct I/O.
->     Possible data corruption due to collision with buffered I/O!
->     [ 4328.850234] File: /data/mysql/data/sysbench/sbtest53.ibd PID:
->     625 Comm: kworker/42:1
->
-> Firstly, we doubled Mysql has operating the file with direct IO and
-> buffered IO interlaced, but after some checking we found it did only
-> do direct IO using aio. The problem is exactly from direct-io
-> interface (__generic_file_write_iter) itself.
->
-> ssize_t __generic_file_write_iter()
-> {
-> ...
->         if (iocb->ki_flags & IOCB_DIRECT) {
->                 loff_t pos, endbyte;
->
->                 written = generic_file_direct_write(iocb, from);
->                 /*
->                  * If the write stopped short of completing, fall back to
->                  * buffered writes.  Some filesystems do this for writes to
->                  * holes, for example.  For DAX files, a buffered write will
->                  * not succeed (even if it did, DAX does not handle dirty
->                  * page-cache pages correctly).
->                  */
->                 if (written < 0 || !iov_iter_count(from) || IS_DAX(inode))
->                         goto out;
->
->                 status = generic_perform_write(file, from, pos = iocb->ki_pos);
-> ...
-> }
->
-> From above code snippet we can see that direct io could fall back to
-> buffered IO under certain conditions, so even Mysql only did direct IO
-> it could interleave with buffered IO when fall back occurred. I have
-> no idea why FS(ext3) failed the direct IO currently, but it is strange
-> __generic_file_write_iter make direct IO fall back to buffered IO, it
-> seems  breaking the semantics of direct IO.
->
-> The reproduced  environment is:
-> Platform:  Kunpeng 920 (arm64)
-> Kernel: V5.15-rc
-> PAGESIZE: 64K
-> Mysql:  V8.0
-> Innodb_page_size: default(16K)
->
-> Thanks,
+On 10/15/21 5:57 AM, Theodore Ts'o wrote:
+> On Fri, Oct 15, 2021 at 02:06:52AM +0800, Gao Xiang wrote:
+>> On Thu, Oct 14, 2021 at 12:54:14PM +0000, Rantala, Tommi T. (Nokia - FI/Espoo) wrote:
+>>> Hi,
+>>>
+>>> I'm seeing these i_reserved_data_blocks not cleared! messages when using ext4
+>>> with nodelalloc, message added in:
+>>>
+>>>   commit 6fed83957f21eff11c8496e9f24253b03d2bc1dc
+>>>   Author: Jeffle Xu <jefflexu@linux.alibaba.com>
+>>>   Date:   Mon Aug 23 14:13:58 2021 +0800
+>>>
+>>>       ext4: fix reserved space counter leakage
+>>>
+>>> I can quickly reproduce in 5.15.0-rc5-00041-g348949d9a444 by doing some
+>>> filesystem I/O while toggling delalloc:
+>>>
+>>>
+>>> while true; do mount -o remount,nodelalloc /; sleep 1; mount -o remount,delalloc /; sleep 1; done &
+>>> git clone linux xxx; rm -rf xxx
+>>
+>> If I understand correctly, switching such option implies
+>> sync inodes to write back exist delayed allocation blocks.
+> 
+> Well, no.  What it implies is that all writes after the remount into
+> an unallocated portion of the file will be allocated at the time when
+> the page is dirtied, instead of when the page is written back.  It's
+> possible for some pages to be written using delayed allocation, and
+> some other pages in the legacy "allocate on page dirty" mechanism.
+> This can happen when the file system is remounted; it can also happen
+> when the file system starts getting close to 100% full.  See the
+> comment in ext4_nonda_switch:
+> 
+> 	/*
+> 	 * switch to non delalloc mode if we are running low
+> 	 * on free block. The free block accounting via percpu
+> 	 * counters can get slightly wrong with percpu_counter_batch getting
+> 	 * accumulated on each CPU without updating global counters
+> 	 * Delalloc need an accurate free block accounting. So switch
+> 	 * to non delalloc when we are near to error range.
+> 	 */
+> 
+
+So it seems possible that s_dirtyclusters_counter/i_reserved_data_blocks
+counters are not maintained anymore when filesystem gets remounted from
+'delalloc' to 'nodelalloc', even when you're writing back a (previously)
+delay allocated page cache (when it's still mounted as 'delalloc'). Thus
+it is possible that s_dirtyclusters_counter/i_reserved_data_blocks
+counters are non-zero when the inode is finally evicted and destroyed.
+
+IMHO I think this inconsistency is problematic. For example, when
+filesystem gets remounted from 'delalloc' to 'nodelalloc' and then runs
+for a period, s_dirtyclusters_counter/i_reserved_data_blocks counters
+already gets inconsistent. Then it's remounted back to 'delalloc', in
+which case s_dirtyclusters_counter/i_reserved_data_blocks counters are
+already incorrect.
+
+
+
+-- 
+Thanks,
+Jeffle
