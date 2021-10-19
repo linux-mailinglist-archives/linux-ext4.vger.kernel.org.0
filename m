@@ -2,55 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A8B432DD2
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Oct 2021 08:07:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 150FD432DE3
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Oct 2021 08:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234350AbhJSGJ6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Oct 2021 02:09:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33556 "EHLO
+        id S233969AbhJSGMA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Oct 2021 02:12:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234297AbhJSGJk (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Oct 2021 02:09:40 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 026C8C061775;
-        Mon, 18 Oct 2021 23:07:17 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id d125so19065585iof.5;
-        Mon, 18 Oct 2021 23:07:16 -0700 (PDT)
+        with ESMTP id S229649AbhJSGMA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Oct 2021 02:12:00 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E2EC06161C;
+        Mon, 18 Oct 2021 23:09:48 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id 188so19018781iou.12;
+        Mon, 18 Oct 2021 23:09:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=OJPnE53wDyw02nOZlJ76Hqx6u6J9KEzgtWn7Df9CAAI=;
-        b=giPgNCUAm5DSjZ2U+HWQSSU+UpwWS02/Xog9QldoFnm/LHkmiM4bGI1LBd+YPk48ZL
-         RR4acYiTNdWzPcbMeqkDg7UlvOzCbOSowC8lxOSCrnmevFdoDdyCtNBkF6CZpXeI7CzW
-         65HYY9/YK5tclFq4rDP38kURAhUHIF0C0jQYoOP4agFM3RyEjIF6rZHUV5qh3AXDgHWN
-         UJksna0Q5aNtfT5endGY8x5r5NJbkUHzGJDlCI4zVClra7UdLmO30TWDFuKYdgOD1KGW
-         E0jRmNXvYpaBaPFEaVZrngrGb1p5sqgfViSiDzFM4N7GIzKX0wAEea0ixhREdUtUcDmM
-         R6tw==
+        bh=X5rJyZ7oh6ui19udFyfoWTO4pqqrSsGWtbBgzoa5u3E=;
+        b=jKJiL1ZfL/peN/qWwz0YQ6+deNz5DWrDJY/DYE5b+aWemC4lprUzoIbkrdXponTq2D
+         bwdsS7JuaH6yh/ogGMNU76+K9++qcgV/kC1rJ3BySbwRh4dhBkbLtExAnH0Uf0lNnyGz
+         RCbKp9nySjfYytQFZH4UmkGJLujTU8j37D1wqz3d0UMbCU8DQ3qEAmd7dXGdNEUq050+
+         M4FpyZZayQqazLYHobheAutKXydBiFrArqHZNc6KjkppyzgLbkk2sl3ATaCkiV0KLwnY
+         avdW6I/FfD24Xem73UT2Vu6m3Gly/3JHLki5yJa4iJIkrZpGsPx/z4xfS2t3vfUSI5lc
+         R03Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=OJPnE53wDyw02nOZlJ76Hqx6u6J9KEzgtWn7Df9CAAI=;
-        b=OH1J/3r/ADn842oyS7g1Emv9+m25+030RADvAa2YYjOywyMMDFOnxkS7AAu8OYgrkM
-         Sst5miZ16Z7dcXvHyD0A5qU07qxnSxaJFxnJTrZ10+hJxOYExRz3QpTwIXzmSc/iWR6z
-         4XtRUmQff6GrGaGM1sPKyBi+Iv/L5QAPmc33434aXD/Hq+eNjwIgE4CCJdimZIKso1/t
-         yU5klTdggyasYUqk/r2z2cpJK0uLAyF4hPwt14OFdCuPn74hd1bVf/PFm2w4aGdwXtHB
-         3NtAJ5i/wLPlRA+9xy87s0G4WMljCLblVVY7L+ndcpSztsBigDOzPVv1/a/al5Bcg3OE
-         V71A==
-X-Gm-Message-State: AOAM531oI1wVJZSIQchX7Bs+MVcUzlI6vNZFbxJ88Ym4MhT6H7I4qwsv
-        WfvRVwFhT5SO3iM/JMtrryJBZPRYw7/tvWOsQjbvXAUC4I4=
-X-Google-Smtp-Source: ABdhPJx4ccelib8vlLM4qPixkaASw6oYPSIM6qKaP0qyu1l0IRUYulcWwEH5x4dNznBKB1kk7NLxf0O0wtcCYJ/JB10=
-X-Received: by 2002:a05:6638:39c:: with SMTP id y28mr2803433jap.47.1634623635626;
- Mon, 18 Oct 2021 23:07:15 -0700 (PDT)
+        bh=X5rJyZ7oh6ui19udFyfoWTO4pqqrSsGWtbBgzoa5u3E=;
+        b=ORAtG6TjgMMYl7GChR9v0gp30Pgs0ZN+t0V8JGCeN3nOwres5vc6HRXxtw3xZREgB4
+         0LHs8k2wO8W+N7DmHoptTgl9z1sbAqWthIoYHBQ4tacCdF2d1PBXHjWEVXXnRKidBBrD
+         AuABR2qPIf4QEZuB+NI/cciy5kNj02HxtGPvvVeYkQNwR1kbRZeVSVsrHgWKAtnwta7g
+         QBDZx5S5iG+tbOC1wEU5zY8Z/p92j7F1S75n6+Cex96QL62/9k/pB1yvLUVDdnRlaQS9
+         njtAUShx5t7OrPO4BzDuA/EPoRNIIJElRBJWhZtMUGgnPYtr5OnahI9lwXuR70mySt8K
+         CtGw==
+X-Gm-Message-State: AOAM532kXDowqyYY52u4AbNGfu44zEbLlnrxzEitD4lRItN8wbOqtfmO
+        /V4auBc1t8axRJ5AXAGvY4rk4G0B3vxOrg2F6ymRQH1F6+o=
+X-Google-Smtp-Source: ABdhPJz0ZPGfWbmNLYA+lHTH9bCVq9WLqLu7l8RSRR6bY8LX4YMj+HO5y+4m8Lg52esVNCpB+XZT8Lip4iftkBR3tYM=
+X-Received: by 2002:a02:270c:: with SMTP id g12mr2744605jaa.75.1634623787541;
+ Mon, 18 Oct 2021 23:09:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211019000015.1666608-1-krisman@collabora.com> <20211019000015.1666608-28-krisman@collabora.com>
-In-Reply-To: <20211019000015.1666608-28-krisman@collabora.com>
+References: <20211019000015.1666608-1-krisman@collabora.com> <20211019000015.1666608-24-krisman@collabora.com>
+In-Reply-To: <20211019000015.1666608-24-krisman@collabora.com>
 From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Tue, 19 Oct 2021 09:07:04 +0300
-Message-ID: <CAOQ4uxjm_106b-KDS09MEa9tUdzywh2P5HCCfWxRZMuy3XM8xw@mail.gmail.com>
-Subject: Re: [PATCH v8 27/32] fanotify: Report fid info for file related file
- system errors
+Date:   Tue, 19 Oct 2021 09:09:36 +0300
+Message-ID: <CAOQ4uxhh-qMLnHWJKwxZ3PZqCNq13tM9c++2W8hCAegW_Vt7Tw@mail.gmail.com>
+Subject: Re: [PATCH v8 23/32] fanotify: Wrap object_fh inline space in a
+ creator macro
 To:     Gabriel Krisman Bertazi <krisman@collabora.com>
 Cc:     Jan Kara <jack@suse.com>, "Darrick J. Wong" <djwong@kernel.org>,
         Theodore Tso <tytso@mit.edu>,
@@ -59,84 +59,70 @@ Cc:     Jan Kara <jack@suse.com>, "Darrick J. Wong" <djwong@kernel.org>,
         Khazhismel Kumykov <khazhy@google.com>,
         linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Ext4 <linux-ext4@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>, kernel@collabora.com
+        Linux API <linux-api@vger.kernel.org>, kernel@collabora.com,
+        Jan Kara <jack@suse.cz>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 3:04 AM Gabriel Krisman Bertazi
+On Tue, Oct 19, 2021 at 3:03 AM Gabriel Krisman Bertazi
 <krisman@collabora.com> wrote:
 >
-> Plumb the pieces to add a FID report to error records.  Since all error
-> event memory must be pre-allocated, we pre-allocate the maximum file
-> handle size possible, such that it should always fit.
+> fanotify_error_event would duplicate this sequence of declarations that
+> already exist elsewhere with a slight different size.  Create a helper
+> macro to avoid code duplication.
 >
-> For errors that don't expose a file handle report it with an invalid
-> FID.
->
+> Suggested-by: Jan Kara <jack@suse.cz>
 > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 >
+
 Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 
-with minor nit below..
+with minor nit
 
 > ---
-> Changes since v7:
->   - Move WARN_ON to separate patch (Amir)
->   - Avoid duplication in the structure definition (Amir)
-> Changes since v6:
->   - pass fsid from handle_events
-> Changes since v5:
->   - Use preallocated MAX_HANDLE_SZ FH buffer
->   - Report superblock errors with a zerolength INVALID FID (jan, amir)
+> Among the suggestions, I think this is simpler because it avoids
+> deep nesting the variable-sized attribute, which would have been hidden
+> inside fee->ffe->object_fh.buf.
+>
+> It also avoids touching the allocators, which are nicely hidden inside
+> helper KMEM_CACHE() macros that hides several parameters.
+
+I like this option best as well.
+
 > ---
->  fs/notify/fanotify/fanotify.c | 10 ++++++++++
->  fs/notify/fanotify/fanotify.h | 11 +++++++++++
->  2 files changed, 21 insertions(+)
+>  fs/notify/fanotify/fanotify.h | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
 >
-> diff --git a/fs/notify/fanotify/fanotify.c b/fs/notify/fanotify/fanotify.c
-> index 45df610debbe..335ce8f88eb8 100644
-> --- a/fs/notify/fanotify/fanotify.c
-> +++ b/fs/notify/fanotify/fanotify.c
-> @@ -609,7 +609,9 @@ static struct fanotify_event *fanotify_alloc_error_event(
->  {
->         struct fs_error_report *report =
->                         fsnotify_data_error_report(data, data_type);
-> +       struct inode *inode = report->inode;
->         struct fanotify_error_event *fee;
-> +       int fh_len;
->
->         if (WARN_ON_ONCE(!report))
->                 return NULL;
-> @@ -622,6 +624,14 @@ static struct fanotify_event *fanotify_alloc_error_event(
->         fee->err_count = 1;
->         fee->fsid = *fsid;
->
-> +       fh_len = fanotify_encode_fh_len(inode);
-> +
-> +       /* Bad fh_len. Fallback to using an invalid fh. Should never happen. */
-> +       if (!fh_len && inode)
-> +               inode = NULL;
-> +
-> +       fanotify_encode_fh(&fee->object_fh, inode, fh_len, NULL, 0);
-> +
->         *hash ^= fanotify_hash_fsid(fsid);
->
->         return &fee->fae;
 > diff --git a/fs/notify/fanotify/fanotify.h b/fs/notify/fanotify/fanotify.h
-> index bdf01ad4f9bf..4246a34667b5 100644
+> index 2b032b79d5b0..a5e81d759f65 100644
 > --- a/fs/notify/fanotify/fanotify.h
 > +++ b/fs/notify/fanotify/fanotify.h
-> @@ -209,6 +209,9 @@ struct fanotify_error_event {
->         u32 err_count; /* Suppressed errors count */
+> @@ -171,12 +171,19 @@ static inline void fanotify_init_event(struct fanotify_event *event,
+>         event->pid = NULL;
+>  }
 >
->         __kernel_fsid_t fsid; /* FSID this error refers to. */
+> +#define FANOTIFY_INLINE_FH(size)                                       \
+> +struct {                                                               \
+> +       struct fanotify_fh object_fh;                                   \
+> +       /* Space for object_fh.buf[] - access with fanotify_fh_buf() */ \
+> +       unsigned char _inline_fh_buf[(size)];                           \
+> +}
+> +
+>  struct fanotify_fid_event {
+>         struct fanotify_event fae;
+>         __kernel_fsid_t fsid;
+> -       struct fanotify_fh object_fh;
+> -       /* Reserve space in object_fh.buf[] - access with fanotify_fh_buf() */
+> -       unsigned char _inline_fh_buf[FANOTIFY_INLINE_FH_LEN];
 > +
 > +       /* This must be the last element of the structure. */
-> +       FANOTIFY_INLINE_FH(MAX_HANDLE_SZ);
+> +       FANOTIFY_INLINE_FH(FANOTIFY_INLINE_FH_LEN);
+>  };
 
-Does not really have to be last but certainly doesn't hurt
+It's not true that is must be the last element.
+this is only true for struct fanotify_fh with zero size buf[].
 
 Thanks,
 Amir.
