@@ -2,282 +2,156 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 894ED433B18
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Oct 2021 17:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4F06433B7E
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Oct 2021 18:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbhJSPvi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Oct 2021 11:51:38 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:57622 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbhJSPvh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Oct 2021 11:51:37 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id DFBC2219D0;
-        Tue, 19 Oct 2021 15:49:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634658563; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AuFXMWgPNu/ob1w45v2bwC1eTYwhpFz8+Ou6HJ1sINc=;
-        b=jI8mBT9NN3CJ98e8TRrBe6+W4IX9QJHhQVVEKnl3en/oUgwXJ1BtjxKiiFkWwgj9VIseiX
-        T6qtord8tZ7xDsvRJGxPWnmadejJJpLBcmyDH1ASV21xRAuFOoTHhuO2Q+aN+0HjYC0TeU
-        RoIu5cPOyMzZsNgD6DpIFmTLpD/TZLc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634658563;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AuFXMWgPNu/ob1w45v2bwC1eTYwhpFz8+Ou6HJ1sINc=;
-        b=+hXA1ubFurqb0bbuOQkaDlB7NFuBhX15D2Rqr0TyPRZda1n6LcfRhIwECdaOHILJn/cbn7
-        7km0z2ZAp5KnwzBw==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id C3672A3B85;
-        Tue, 19 Oct 2021 15:49:23 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id A80B01E0983; Tue, 19 Oct 2021 17:49:20 +0200 (CEST)
-Date:   Tue, 19 Oct 2021 17:49:20 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     jack@suse.com, amir73il@gmail.com, djwong@kernel.org,
-        tytso@mit.edu, david@fromorbit.com, dhowells@redhat.com,
-        khazhy@google.com, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-api@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCH v8 31/32] samples: Add fs error monitoring example
-Message-ID: <20211019154920.GS3255@quack2.suse.cz>
-References: <20211019000015.1666608-1-krisman@collabora.com>
- <20211019000015.1666608-32-krisman@collabora.com>
+        id S233499AbhJSQDw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Oct 2021 12:03:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233052AbhJSQDv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Oct 2021 12:03:51 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A220C06161C
+        for <linux-ext4@vger.kernel.org>; Tue, 19 Oct 2021 09:01:38 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id k29so248578qve.6
+        for <linux-ext4@vger.kernel.org>; Tue, 19 Oct 2021 09:01:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3BGJn1dXdpzUd3tv3q+EmhfGtbVhe0Qd67sISQeDnw4=;
+        b=D3VIbh9ttclotZ84lKsDn3X7RfkFlngL41uIfucxHeTNtiYydE1whz/r7jFojWxJzr
+         IwRCHVsSlqyCKuylJCeriD2Qefn+j1/fvnIlM3d65YZUJrz7ZL7fl9tLcXBW9mYUvhqy
+         5xpDPE/RU9PMih7sDjXvMU0edSmFgIV+++/zaNE2J4zW5uztqyyYAkJzV/1C4A3U+gyW
+         U6b9VBKLc/Ca1IxjKLG5lhBNp9XrN8Hu+qrhLy38rNdpoUl7KOZ4xReT8hcKkCZ0/Hu/
+         Yc6EMXS7JJJ0dd4WHusGYr40To/zWTF7J1Xh5LlZnFmkNu7G/b+P57DnWMN0taZYehmd
+         AKkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3BGJn1dXdpzUd3tv3q+EmhfGtbVhe0Qd67sISQeDnw4=;
+        b=WXZ7oWZnXnTUvOuI+68NR3X2mLkbE4dWv5Ms5Ql0QKgbmwCQOCSdGKOlF6tNnqE40F
+         5CrP1xiBUhr1C0yAOOUNso4aJCdT8Ifclb7ZbXjXab0kSD5yPdzJdqmlYHgzyAJTQAOy
+         Sxa/MLDlrXvzTgOEuyjfZQGYx2AejizZlgOsoInH/ePETSIVwp/2K4uDhCVoa8GcE9Vm
+         Yum5jiW5g1RNk0rvtNk0sbfzz7B81s2Nh/Fw4CCD4tvU1AHWIK2t+avXKB+OSKamAVQD
+         TTyHWISactUgR7Wsz70OSqOmn8HJKXrdlCkSKAJ96goo7ptGezyGltmQbVLT11udCWO8
+         eO3g==
+X-Gm-Message-State: AOAM533upR92VCichv6X6sWWydTXmv+osj/8hZhE1a5XHVvg6FEJ7GpK
+        84/XVDafK+zgUFVFX09n76vIMw==
+X-Google-Smtp-Source: ABdhPJwvk+8tFb6J3QISFF+F14Y7KiyXAV1U8RUSPAMtZ9qpPCQT16Z2pmMVxiVutxUbz+C+YTG/ZA==
+X-Received: by 2002:ad4:4725:: with SMTP id l5mr651407qvz.3.1634659297591;
+        Tue, 19 Oct 2021 09:01:37 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id d6sm8054384qkj.11.2021.10.19.09.01.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 09:01:37 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mcrYW-00GjRc-GQ; Tue, 19 Oct 2021 13:01:36 -0300
+Date:   Tue, 19 Oct 2021 13:01:36 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Joao Martins <joao.m.martins@oracle.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alex Sierra <alex.sierra@amd.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, Christoph Hellwig <hch@lst.de>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Linux NVDIMM <nvdimm@lists.linux.dev>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH v1 2/2] mm: remove extra ZONE_DEVICE struct page refcount
+Message-ID: <20211019160136.GH3686969@ziepe.ca>
+References: <YWh6PL7nvh4DqXCI@casper.infradead.org>
+ <CAPcyv4hBdSwdtG6Hnx9mDsRXiPMyhNH=4hDuv8JZ+U+Jj4RUWg@mail.gmail.com>
+ <20211014230606.GZ2744544@nvidia.com>
+ <CAPcyv4hC4qxbO46hp=XBpDaVbeh=qdY6TgvacXRprQ55Qwe-Dg@mail.gmail.com>
+ <20211016154450.GJ2744544@nvidia.com>
+ <CAPcyv4j0kHREAOG6_07E2foz6e4FP8D72mZXH6ivsiUBu_8c6g@mail.gmail.com>
+ <20211018182559.GC3686969@ziepe.ca>
+ <CAPcyv4jvZjeMcKLVuOEQ_gXRd87i3NUX5D=MmsJ++rWafnK-NQ@mail.gmail.com>
+ <20211018230614.GF3686969@ziepe.ca>
+ <499043a0-b3d8-7a42-4aee-84b81f5b633f@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211019000015.1666608-32-krisman@collabora.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <499043a0-b3d8-7a42-4aee-84b81f5b633f@oracle.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 18-10-21 21:00:14, Gabriel Krisman Bertazi wrote:
-> Introduce an example of a FAN_FS_ERROR fanotify user to track filesystem
-> errors.
+On Tue, Oct 19, 2021 at 04:13:34PM +0100, Joao Martins wrote:
+> On 10/19/21 00:06, Jason Gunthorpe wrote:
+> > On Mon, Oct 18, 2021 at 12:37:30PM -0700, Dan Williams wrote:
+> > 
+> >>> device-dax uses PUD, along with TTM, they are the only places. I'm not
+> >>> sure TTM is a real place though.
+> >>
+> >> I was setting device-dax aside because it can use Joao's changes to
+> >> get compound-page support.
+> > 
+> > Ideally, but that ideas in that patch series have been floating around
+> > for a long time now..
+> >  
+> The current status of the series misses a Rb on patches 6,7,10,12-14.
+> Well, patch 8 too should now drop its tag, considering the latest
+> discussion.
 > 
-> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-
-Looks good. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
-> Changes since v4:
->   - Protect file_handle defines with ifdef guards
+> If it helps moving things forward I could split my series further into:
 > 
-> Changes since v1:
->   - minor fixes
-> ---
->  samples/Kconfig               |   9 +++
->  samples/Makefile              |   1 +
->  samples/fanotify/Makefile     |   5 ++
->  samples/fanotify/fs-monitor.c | 142 ++++++++++++++++++++++++++++++++++
->  4 files changed, 157 insertions(+)
->  create mode 100644 samples/fanotify/Makefile
->  create mode 100644 samples/fanotify/fs-monitor.c
+> 1) the compound page introduction (patches 1-7) of my aforementioned series
+> 2) vmemmap deduplication for memory gains (patches 9-14)
+> 3) gup improvements (patch 8 and gup-slow improvements)
+
+I would split it, yes..
+
+I think we can see a general consensus that making compound_head/etc
+work consistently with how THP uses it will provide value and
+opportunity for optimization going forward.
+
+> Whats the benefit between preventing longterm at start
+> versus only after mounting the filesystem? Or is the intended future purpose
+> to pass more context into an holder potential future callback e.g. nack longterm
+> pins on a page basis?
+
+I understood Dan's remark that the device-dax path allows
+FOLL_LONGTERM and the FSDAX path does not ?
+
+Which, IIRC, today is signaled basd on vma properties and in all cases
+fast-gup is denied.
+
+> Maybe we can start by at least not add any flags and just prevent
+> FOLL_LONGTERM on fsdax -- which I guess was the original purpose of
+> commit 7af75561e171 ("mm/gup: add FOLL_LONGTERM capability to GUP fast").
+> This patch (which I can formally send) has a sketch of that (below scissors mark):
 > 
-> diff --git a/samples/Kconfig b/samples/Kconfig
-> index b0503ef058d3..88353b8eac0b 100644
-> --- a/samples/Kconfig
-> +++ b/samples/Kconfig
-> @@ -120,6 +120,15 @@ config SAMPLE_CONNECTOR
->  	  with it.
->  	  See also Documentation/driver-api/connector.rst
->  
-> +config SAMPLE_FANOTIFY_ERROR
-> +	bool "Build fanotify error monitoring sample"
-> +	depends on FANOTIFY
-> +	help
-> +	  When enabled, this builds an example code that uses the
-> +	  FAN_FS_ERROR fanotify mechanism to monitor filesystem
-> +	  errors.
-> +	  See also Documentation/admin-guide/filesystem-monitoring.rst.
-> +
->  config SAMPLE_HIDRAW
->  	bool "hidraw sample"
->  	depends on CC_CAN_LINK && HEADERS_INSTALL
-> diff --git a/samples/Makefile b/samples/Makefile
-> index 087e0988ccc5..931a81847c48 100644
-> --- a/samples/Makefile
-> +++ b/samples/Makefile
-> @@ -5,6 +5,7 @@ subdir-$(CONFIG_SAMPLE_AUXDISPLAY)	+= auxdisplay
->  subdir-$(CONFIG_SAMPLE_ANDROID_BINDERFS) += binderfs
->  obj-$(CONFIG_SAMPLE_CONFIGFS)		+= configfs/
->  obj-$(CONFIG_SAMPLE_CONNECTOR)		+= connector/
-> +obj-$(CONFIG_SAMPLE_FANOTIFY_ERROR)	+= fanotify/
->  subdir-$(CONFIG_SAMPLE_HIDRAW)		+= hidraw
->  obj-$(CONFIG_SAMPLE_HW_BREAKPOINT)	+= hw_breakpoint/
->  obj-$(CONFIG_SAMPLE_KDB)		+= kdb/
-> diff --git a/samples/fanotify/Makefile b/samples/fanotify/Makefile
-> new file mode 100644
-> index 000000000000..e20db1bdde3b
-> --- /dev/null
-> +++ b/samples/fanotify/Makefile
-> @@ -0,0 +1,5 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +userprogs-always-y += fs-monitor
-> +
-> +userccflags += -I usr/include -Wall
-> +
-> diff --git a/samples/fanotify/fs-monitor.c b/samples/fanotify/fs-monitor.c
-> new file mode 100644
-> index 000000000000..a0e44cd31e6f
-> --- /dev/null
-> +++ b/samples/fanotify/fs-monitor.c
-> @@ -0,0 +1,142 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright 2021, Collabora Ltd.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include <errno.h>
-> +#include <err.h>
-> +#include <stdlib.h>
-> +#include <stdio.h>
-> +#include <fcntl.h>
-> +#include <sys/fanotify.h>
-> +#include <sys/types.h>
-> +#include <unistd.h>
-> +#include <sys/types.h>
-> +
-> +#ifndef FAN_FS_ERROR
-> +#define FAN_FS_ERROR		0x00008000
-> +#define FAN_EVENT_INFO_TYPE_ERROR	5
-> +
-> +struct fanotify_event_info_error {
-> +	struct fanotify_event_info_header hdr;
-> +	__s32 error;
-> +	__u32 error_count;
-> +};
-> +#endif
-> +
-> +#ifndef FILEID_INO32_GEN
-> +#define FILEID_INO32_GEN	1
-> +#endif
-> +
-> +#ifndef FILEID_INVALID
-> +#define	FILEID_INVALID		0xff
-> +#endif
-> +
-> +static void print_fh(struct file_handle *fh)
-> +{
-> +	int i;
-> +	uint32_t *h = (uint32_t *) fh->f_handle;
-> +
-> +	printf("\tfh: ");
-> +	for (i = 0; i < fh->handle_bytes; i++)
-> +		printf("%hhx", fh->f_handle[i]);
-> +	printf("\n");
-> +
-> +	printf("\tdecoded fh: ");
-> +	if (fh->handle_type == FILEID_INO32_GEN)
-> +		printf("inode=%u gen=%u\n", h[0], h[1]);
-> +	else if (fh->handle_type == FILEID_INVALID && !fh->handle_bytes)
-> +		printf("Type %d (Superblock error)\n", fh->handle_type);
-> +	else
-> +		printf("Type %d (Unknown)\n", fh->handle_type);
-> +
-> +}
-> +
-> +static void handle_notifications(char *buffer, int len)
-> +{
-> +	struct fanotify_event_metadata *event =
-> +		(struct fanotify_event_metadata *) buffer;
-> +	struct fanotify_event_info_header *info;
-> +	struct fanotify_event_info_error *err;
-> +	struct fanotify_event_info_fid *fid;
-> +	int off;
-> +
-> +	for (; FAN_EVENT_OK(event, len); event = FAN_EVENT_NEXT(event, len)) {
-> +
-> +		if (event->mask != FAN_FS_ERROR) {
-> +			printf("unexpected FAN MARK: %llx\n", event->mask);
-> +			goto next_event;
-> +		}
-> +
-> +		if (event->fd != FAN_NOFD) {
-> +			printf("Unexpected fd (!= FAN_NOFD)\n");
-> +			goto next_event;
-> +		}
-> +
-> +		printf("FAN_FS_ERROR (len=%d)\n", event->event_len);
-> +
-> +		for (off = sizeof(*event) ; off < event->event_len;
-> +		     off += info->len) {
-> +			info = (struct fanotify_event_info_header *)
-> +				((char *) event + off);
-> +
-> +			switch (info->info_type) {
-> +			case FAN_EVENT_INFO_TYPE_ERROR:
-> +				err = (struct fanotify_event_info_error *) info;
-> +
-> +				printf("\tGeneric Error Record: len=%d\n",
-> +				       err->hdr.len);
-> +				printf("\terror: %d\n", err->error);
-> +				printf("\terror_count: %d\n", err->error_count);
-> +				break;
-> +
-> +			case FAN_EVENT_INFO_TYPE_FID:
-> +				fid = (struct fanotify_event_info_fid *) info;
-> +
-> +				printf("\tfsid: %x%x\n",
-> +				       fid->fsid.val[0], fid->fsid.val[1]);
-> +				print_fh((struct file_handle *) &fid->handle);
-> +				break;
-> +
-> +			default:
-> +				printf("\tUnknown info type=%d len=%d:\n",
-> +				       info->info_type, info->len);
-> +			}
-> +		}
-> +next_event:
-> +		printf("---\n\n");
-> +	}
-> +}
-> +
-> +int main(int argc, char **argv)
-> +{
-> +	int fd;
-> +
-> +	char buffer[BUFSIZ];
-> +
-> +	if (argc < 2) {
-> +		printf("Missing path argument\n");
-> +		return 1;
-> +	}
-> +
-> +	fd = fanotify_init(FAN_CLASS_NOTIF|FAN_REPORT_FID, O_RDONLY);
-> +	if (fd < 0)
-> +		errx(1, "fanotify_init");
-> +
-> +	if (fanotify_mark(fd, FAN_MARK_ADD|FAN_MARK_FILESYSTEM,
-> +			  FAN_FS_ERROR, AT_FDCWD, argv[1])) {
-> +		errx(1, "fanotify_mark");
-> +	}
-> +
-> +	while (1) {
-> +		int n = read(fd, buffer, BUFSIZ);
-> +
-> +		if (n < 0)
-> +			errx(1, "read");
-> +
-> +		handle_notifications(buffer, n);
-> +	}
-> +
-> +	return 0;
-> +}
-> -- 
-> 2.33.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> https://lore.kernel.org/linux-mm/6a18179e-65f7-367d-89a9-d5162f10fef0@oracle.com/
+
+Yes, basically, whatever test we want for 'deny fast gup foll
+longterm' is fine. 
+
+Personally I'd like to see us move toward a set of flag specifying
+each special behavior and not a collection of types that imply special
+behaviors.
+
+Eg we have at least:
+ - Block gup fast on foll_longterm
+ - Capture the refcount ==1 and use the pgmap free hook
+   (confusingly called page_is_devmap_managed())
+ - Always use a swap entry
+ - page->index/mapping are used in the usual file based way?
+
+Probably more things..
+
+Jason
