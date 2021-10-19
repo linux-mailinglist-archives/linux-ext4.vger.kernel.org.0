@@ -2,111 +2,107 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B1A432DF4
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Oct 2021 08:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BBB4432E66
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Oct 2021 08:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233540AbhJSGQV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Oct 2021 02:16:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbhJSGQV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Oct 2021 02:16:21 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E6EC06161C;
-        Mon, 18 Oct 2021 23:14:08 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id z69so15942662iof.9;
-        Mon, 18 Oct 2021 23:14:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xQz7pPJ5LCEpoqmh45rJ065Eda8sosjGcwwBJFpRNZw=;
-        b=I390vrS52uYaWWn8uJzOsuNyHTbthmLJP9J8F6E6EOqWFV/rlDalOWKTavRrqe4QTQ
-         RMosSuziATFWtHeQ2/y70+sOZw4scIssI7fqd3c9kFHYcc5gWjLa/XQ/oRyCTizBDFqV
-         j+UMpXe0WeF/eWnSFCb19sYeWa7e1JGwGB45KtiYjTgv94o6OM1W4JXkBRnRdfzanSoU
-         7kY+oliJ0InnzEyEjv6rHhQB8vHEW9R4WOfI3u0xivdgpSUbMKLMXyJqco8Y/2AN2c9x
-         7stSGkR6opFib2onVumq0AjcaOqSGP1nPa+CdWHpfolqr6PrHuv3R1RWpFkfNWn93fxo
-         WZGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xQz7pPJ5LCEpoqmh45rJ065Eda8sosjGcwwBJFpRNZw=;
-        b=5WVdMiPkK9jlWQ0O7jHJAsob3JxXH2Ah2mpTkysca95M5tlFqzPdDPhDaV80oXrX+y
-         Phd3cEFtRsvC6wsrwlluiv2yVOoEUNFqrodXqbA9KQduygucLFK4b/i86MB14sRj+cwc
-         hhoWtjsCIAA6D/fTtP8OOxDrQ/2CjsbFbLsOeFGvbdGxH+xGVU5rnIRSuugEEM8QNa5x
-         x83/5RZwvhWrXSyqdPfdkOC3DZEn3dr9XOXg4LlgUrJ+BQ+KvVjN4ZY99rGuSt5QdA+U
-         W+rFrsygN+AX8d3pHa2tjz3Sbjvv+jQNTZH7nA98irW5WfhGPwVB3jkF+qz13oyv09sR
-         wtNQ==
-X-Gm-Message-State: AOAM532oCNwslX4I8O/KByxiC0mwGEO02P028pFrFAygBdrDg3rAkC1D
-        KRYlS/22HWzT6PPCEJwS8ZClSS7OSkPcTPGI3Qg=
-X-Google-Smtp-Source: ABdhPJzjqRuD8Yh40wU8JHXkyRwkUGvauW1Hn3EMJyXde5oDETyoXVCRbhaTqwYzFJ7bcNBDM90Rm63R3FetL3Ursoo=
-X-Received: by 2002:a05:6602:26d2:: with SMTP id g18mr17017756ioo.70.1634624048360;
- Mon, 18 Oct 2021 23:14:08 -0700 (PDT)
+        id S234125AbhJSGjk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Oct 2021 02:39:40 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:25166 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229649AbhJSGjj (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Oct 2021 02:39:39 -0400
+Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HYPBh51Zfz1DHkm;
+        Tue, 19 Oct 2021 14:35:40 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggeme754-chm.china.huawei.com
+ (10.3.19.100) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Tue, 19
+ Oct 2021 14:37:25 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
+        Ye Bin <yebin10@huawei.com>
+Subject: [PATCH -next v3 0/5] Fix some issues about mmp
+Date:   Tue, 19 Oct 2021 14:49:54 +0800
+Message-ID: <20211019064959.625557-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20211019000015.1666608-1-krisman@collabora.com> <20211019000015.1666608-26-krisman@collabora.com>
-In-Reply-To: <20211019000015.1666608-26-krisman@collabora.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Tue, 19 Oct 2021 09:13:57 +0300
-Message-ID: <CAOQ4uxgd42EW0KGVMjaG4RdLQHOaMMMZ7+0XY5+we4jRs1Nggg@mail.gmail.com>
-Subject: Re: [PATCH v8 25/32] fanotify: Report fid entry even for zero-length file_handle
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     Jan Kara <jack@suse.com>, "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Tso <tytso@mit.edu>,
-        Dave Chinner <david@fromorbit.com>,
-        David Howells <dhowells@redhat.com>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>, kernel@collabora.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme754-chm.china.huawei.com (10.3.19.100)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 3:03 AM Gabriel Krisman Bertazi
-<krisman@collabora.com> wrote:
->
-> Non-inode errors will reported with an empty file_handle.  In
-> preparation for that, allow some events to print the FID record even if
-> there isn't any file_handle encoded
->
-> Even though FILEID_ROOT is used internally, make zero-length file
-> handles be reported as FILEID_INVALID.
->
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+I test mmp function as follow steps:
+1. Inject delay 5s in ext4_multi_mount_protect function after
+"skip:" label.
+2. Share HostA block device(sda) with HostB(nbd0) by NBD.
+3. Enable mmp feature when mkfs.ext4 sda.
+4. Mount sda and nbd0 at the same time.
 
-> ---
->  fs/notify/fanotify/fanotify_user.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
->
-> diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-> index ae848306a017..cd962deefeb7 100644
-> --- a/fs/notify/fanotify/fanotify_user.c
-> +++ b/fs/notify/fanotify/fanotify_user.c
-> @@ -339,9 +339,6 @@ static int copy_fid_info_to_user(__kernel_fsid_t *fsid, struct fanotify_fh *fh,
->         pr_debug("%s: fh_len=%zu name_len=%zu, info_len=%zu, count=%zu\n",
->                  __func__, fh_len, name_len, info_len, count);
->
-> -       if (!fh_len)
-> -               return 0;
-> -
->         if (WARN_ON_ONCE(len < sizeof(info) || len > count))
->                 return -EFAULT;
->
-> @@ -376,6 +373,11 @@ static int copy_fid_info_to_user(__kernel_fsid_t *fsid, struct fanotify_fh *fh,
->
->         handle.handle_type = fh->type;
->         handle.handle_bytes = fh_len;
-> +
-> +       /* Mangle handle_type for bad file_handle */
-> +       if (!fh_len)
-> +               handle.handle_type = FILEID_INVALID;
-> +
->         if (copy_to_user(buf, &handle, sizeof(handle)))
->                 return -EFAULT;
->
-> --
-> 2.33.0
->
+I found kmmpd never trigger detect multi-mount. Reason is as follow:
+1. Kmmpd init seq with 0, if two host have same nodename, will lead to
+detect confliction very slow, even never detect confliction.
+2. When detect confliction in kmmpd, we get 'check_bh' is same with 'bh'.
+so we compare data with itself.
+3. We only trigger detect when ”diff > mmp_check_interval * HZ“,
+'mmp_check_interval' is double of 'mmp_update_interval', 'diff' is
+about 'mmp_update_interval'. So 'diff' is little than 'mmp_check_interval * HZ'
+normaly. As Jan Kara explain as follows:
+"I think the check is there only for the case where write_mmp_block() +
+sleep took longer than mmp_check_interval. I agree that should rarely
+happen but on a really busy system it is possible and in that case we would
+miss updating mmp block for too long and so another node could have started
+using the filesystem. "
+
+v1->v2:
+Fix 'last_check_time' not initialized before checking.
+
+v3->v2:
+1. drop commit "ext4: introduce last_check_time record previous check time"
+As Ted explain as follows:
+"I'd like Andreas to comment here.  My understanding is that MMP
+originally intended as a safety mechanism which would be used as part
+of a primary/backup high availability system, but not as the *primary*
+system where you might try to have two servers simultaneously try to
+mount the file system and use MMP as the "election" mechanism to
+decide which server is going to be the primary system, and which would
+be the backup system.
+
+The cost of being able to handle this particular race is it would slow
+down the mounts of cleanly unmounted systems.
+
+There *are* better systems to implement leader elections[1] than using
+MMP.  Most of these more efficient leader elections assume that you
+have a working IP network, and so if you have a separate storage
+network (including a shared SCSI bus) from your standard IP network,
+then MMP is a useful failsafe in the face of a network partition of
+your IP network.  The question is whether MMP should be useful for
+more than that.  And if it isn't, then we should probably document
+what MMP is and isn't good for, and give advice in the form of an
+application note for how MMP should be used in the context of a larger
+system."
+2. drop commit "ext4: fix possible store wrong check interval value in disk when umount"
+3. simplify read_mmp_block fucntion to avoid UAF
+
+
+Ye Bin (5):
+  ext4: init 'seq' with the value which set in
+    'ext4_multi_mount_protect'
+  ext4: compare to local seq and nodename when check conflict
+  ext4: get buffer head before read_mmp_block
+  ext4: simplify read_mmp_block fucntion
+  ext4: avoid to re-read mmp check data get from page cache
+
+ fs/ext4/ext4.h |  5 +++-
+ fs/ext4/mmp.c  | 67 ++++++++++++++++++++++----------------------------
+ 2 files changed, 33 insertions(+), 39 deletions(-)
+
+-- 
+2.31.1
+
