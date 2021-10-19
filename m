@@ -2,153 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 913E3433552
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Oct 2021 14:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 787F74335E4
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Oct 2021 14:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbhJSMFe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Oct 2021 08:05:34 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:45804 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235431AbhJSMFd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Oct 2021 08:05:33 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id CCFA91FD2D;
-        Tue, 19 Oct 2021 12:03:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634644999; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AOx0YP1UeYYzT4mYlA9g3w+LktMDzaz68AOx+gTw7qw=;
-        b=Al9IiWidJ4t78Vu1mCC9HkCEVzoWENJ2ZN4dhIL0wdB7EGKNzjhvYGeSYTeaWDyUv9lIie
-        25BPUi0XQH4fTtkKt1H8gK2FLJ1FRdRMJD0UFnVA/+DXPqe+QcKKFUJwaPKVfKcPpqdcrM
-        cF+qAmWgTVuqHx0tLnPNNlXLGyiMIl4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634644999;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AOx0YP1UeYYzT4mYlA9g3w+LktMDzaz68AOx+gTw7qw=;
-        b=u1TPYVZyLyWZr3mebAn/kNtq5LptGoPutV5Age3+pxvEvAJmXG0/LrGDG4l3F130YrEPRx
-        vJnj+OoLL63c0zBw==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id B7C0EA3B9A;
-        Tue, 19 Oct 2021 12:03:19 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 953751E0983; Tue, 19 Oct 2021 14:03:16 +0200 (CEST)
-Date:   Tue, 19 Oct 2021 14:03:16 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Jan Kara <jack@suse.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Tso <tytso@mit.edu>,
-        Dave Chinner <david@fromorbit.com>,
-        David Howells <dhowells@redhat.com>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>, kernel@collabora.com
-Subject: Re: [PATCH v8 20/32] fanotify: Dynamically resize the FAN_FS_ERROR
- pool
-Message-ID: <20211019120316.GI3255@quack2.suse.cz>
-References: <20211019000015.1666608-1-krisman@collabora.com>
- <20211019000015.1666608-21-krisman@collabora.com>
- <CAOQ4uxi3C7MQxGPc1fD8ZyRTkyJZQac3_M-0aGYzPKbJ6AK8Jg@mail.gmail.com>
+        id S234316AbhJSM3M (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Oct 2021 08:29:12 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:24358 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230267AbhJSM3L (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Oct 2021 08:29:11 -0400
+Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HYXtm2XD8zbd5C;
+        Tue, 19 Oct 2021 20:22:24 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggeme754-chm.china.huawei.com
+ (10.3.19.100) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Tue, 19
+ Oct 2021 20:26:56 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
+        Ye Bin <yebin10@huawei.com>
+Subject: [PATCH -next v4 0/3] Fix some issues about mmp
+Date:   Tue, 19 Oct 2021 20:39:28 +0800
+Message-ID: <20211019123931.1545295-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxi3C7MQxGPc1fD8ZyRTkyJZQac3_M-0aGYzPKbJ6AK8Jg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggeme754-chm.china.huawei.com (10.3.19.100)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 19-10-21 08:50:23, Amir Goldstein wrote:
-> On Tue, Oct 19, 2021 at 3:03 AM Gabriel Krisman Bertazi
-> <krisman@collabora.com> wrote:
-> >
-> > Allow the FAN_FS_ERROR group mempool to grow up to an upper limit
-> > dynamically, instead of starting already at the limit.  This doesn't
-> > bother resizing on mark removal, but next time a mark is added, the slot
-> > will be either reused or resized.  Also, if several marks are being
-> > removed at once, most likely the group is going away anyway.
-> >
-> > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-> > ---
-> >  fs/notify/fanotify/fanotify_user.c | 26 +++++++++++++++++++++-----
-> >  include/linux/fsnotify_backend.h   |  1 +
-> >  2 files changed, 22 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-> > index f77581c5b97f..a860c286e885 100644
-> > --- a/fs/notify/fanotify/fanotify_user.c
-> > +++ b/fs/notify/fanotify/fanotify_user.c
-> > @@ -959,6 +959,10 @@ static int fanotify_remove_mark(struct fsnotify_group *group,
-> >
-> >         removed = fanotify_mark_remove_from_mask(fsn_mark, mask, flags,
-> >                                                  umask, &destroy_mark);
-> > +
-> > +       if (removed & FAN_FS_ERROR)
-> > +               group->fanotify_data.error_event_marks--;
-> > +
-> >         if (removed & fsnotify_conn_mask(fsn_mark->connector))
-> >                 fsnotify_recalc_mask(fsn_mark->connector);
-> >         if (destroy_mark)
-> > @@ -1057,12 +1061,24 @@ static struct fsnotify_mark *fanotify_add_new_mark(struct fsnotify_group *group,
-> >
-> >  static int fanotify_group_init_error_pool(struct fsnotify_group *group)
-> >  {
-> > -       if (mempool_initialized(&group->fanotify_data.error_events_pool))
-> > -               return 0;
-> > +       int ret;
-> > +
-> > +       if (group->fanotify_data.error_event_marks >=
-> > +           FANOTIFY_DEFAULT_MAX_FEE_POOL)
-> > +               return -ENOMEM;
-> >
-> > -       return mempool_init_kmalloc_pool(&group->fanotify_data.error_events_pool,
-> > -                                        FANOTIFY_DEFAULT_MAX_FEE_POOL,
-> > -                                        sizeof(struct fanotify_error_event));
-> > +       if (!mempool_initialized(&group->fanotify_data.error_events_pool))
-> > +               ret = mempool_init_kmalloc_pool(
-> > +                               &group->fanotify_data.error_events_pool,
-> > +                                1, sizeof(struct fanotify_error_event));
-> > +       else
-> > +               ret = mempool_resize(&group->fanotify_data.error_events_pool,
-> > +                                    group->fanotify_data.error_event_marks + 1);
-> > +
-> > +       if (!ret)
-> > +               group->fanotify_data.error_event_marks++;
-> > +
-> > +       return ret;
-> >  }
-> 
-> This is not what I had in mind.
-> I was thinking start with ~32 and double each time limit is reached.
+I test mmp function as follow steps:
+1. Inject delay 5s in ext4_multi_mount_protect function after
+"skip:" label.
+2. Share HostA block device(sda) with HostB(nbd0) by NBD.
+3. Enable mmp feature when mkfs.ext4 sda.
+4. Mount sda and nbd0 at the same time.
 
-Do you mean when number of FS_ERROR marks reaches the number of preallocated
-events? We could do that but note that due to mempool implementation limits
-there cannot be more than 255 preallocated events, also mempool_resize()
-will only update number of slots for preallocated events but these slots
-will be empty. You have to manually allocate and free events to fill these
-slots with preallocated events.
+I found kmmpd never trigger detect multi-mount. Reason is as follow:
+1. Kmmpd init seq with 0, if two host have same nodename, will lead to
+detect confliction very slow, even never detect confliction.
+2. When detect confliction in kmmpd, we get 'check_bh' is same with 'bh'.
+so we compare data with itself.
+3. We only trigger detect when ”diff > mmp_check_interval * HZ“,
+'mmp_check_interval' is double of 'mmp_update_interval', 'diff' is
+about 'mmp_update_interval'. So 'diff' is little than 'mmp_check_interval * HZ'
+normaly. As Jan Kara explain as follows:
+"I think the check is there only for the case where write_mmp_block() +
+sleep took longer than mmp_check_interval. I agree that should rarely
+happen but on a really busy system it is possible and in that case we would
+miss updating mmp block for too long and so another node could have started
+using the filesystem. "
 
-> And also, this code grows the pool to infinity with add/remove mark loop.
+v1->v2:
+Fix 'last_check_time' not initialized before checking.
 
-I see a cap at FANOTIFY_DEFAULT_MAX_FEE_POOL in the code there. But I don't
-think there's a good enough reason to hard-limit number of FS_ERROR marks
-at 128. As I explained in the previous version of the series, in vast
-majority of cases we will not use even a single preallocated event...
+v2->v3:
+1. drop commit "ext4: introduce last_check_time record previous check time"
+As Ted explain as follows:
+"I'd like Andreas to comment here.  My understanding is that MMP
+originally intended as a safety mechanism which would be used as part
+of a primary/backup high availability system, but not as the *primary*
+system where you might try to have two servers simultaneously try to
+mount the file system and use MMP as the "election" mechanism to
+decide which server is going to be the primary system, and which would
+be the backup system.
 
-> Anyway, since I clearly did not understand how mempool works and
-> Jan had some different ideas I would leave it to Jan to explain
-> how he wants the mempool init limit and resize to be implemented.
+The cost of being able to handle this particular race is it would slow
+down the mounts of cleanly unmounted systems.
 
-Honestly, I'm for keeping it simple for now. Just 32 preallocated events
-and try to come up with something more clever only if someone actually
-complains.
+There *are* better systems to implement leader elections[1] than using
+MMP.  Most of these more efficient leader elections assume that you
+have a working IP network, and so if you have a separate storage
+network (including a shared SCSI bus) from your standard IP network,
+then MMP is a useful failsafe in the face of a network partition of
+your IP network.  The question is whether MMP should be useful for
+more than that.  And if it isn't, then we should probably document
+what MMP is and isn't good for, and give advice in the form of an
+application note for how MMP should be used in the context of a larger
+system."
+2. drop commit "ext4: fix possible store wrong check interval value in disk when umount"
+3. simplify read_mmp_block fucntion to avoid UAF
 
-								Honza
+v3->v4:
+1. drop commit "ext4: init 'seq' with the value which set in 'ext4_multi_mount_protect'"
+2. merge "ext4: get buffer head before read_mmp_block" to
+"ext4: simplify read_mmp_block fucntion"
+3. rename "ext4: avoid to re-read mmp check data get from page cache" to
+"ext4: remove useless bh_check variable"
+4. reorder "ext4: remove useless bh_check variable" and 
+"ext4: simplify read_mmp_block fucntion"
+
+Ye Bin (3):
+  ext4: compare to local seq and nodename when check conflict
+  ext4: remove useless bh_check variable
+  ext4: simplify read_mmp_block fucntion
+
+ fs/ext4/ext4.h |  5 +++-
+ fs/ext4/mmp.c  | 64 +++++++++++++++++++++-----------------------------
+ 2 files changed, 31 insertions(+), 38 deletions(-)
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.31.1
+
