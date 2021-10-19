@@ -2,96 +2,125 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D024331E7
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Oct 2021 11:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 520C6433309
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Oct 2021 12:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234511AbhJSJOb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Oct 2021 05:14:31 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:38420 "EHLO
+        id S234955AbhJSKDU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Oct 2021 06:03:20 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:45712 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231652AbhJSJOa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Oct 2021 05:14:30 -0400
+        with ESMTP id S235105AbhJSKDU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Oct 2021 06:03:20 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 59BA421976;
-        Tue, 19 Oct 2021 09:12:17 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id A0AC521985;
+        Tue, 19 Oct 2021 10:01:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634634737; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1634637666; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=PNviG73W5CXxu7k+Hr5pl6wFnyxtJHN8JrkqiiHK7LA=;
-        b=XrPg5jT+DCKoaG2k5ocQTEfHGkSppHT1XVgCQNLxJhXX+T9JbVG+nr0+BMbX5+Hlp4c2ic
-        nAlcRclPn7O2+VB/BCfj7dEl/XNA89DzSyzoDvwNccFk6hKGIUUvdhiuOICEnApyvz1LX1
-        f0PQXTnBp2zF/y+eFqFdiCiisycfQo8=
+        bh=vHKiN0to6awHSGK/Z0uxe/7akzcjpjOz12RCGHIpgSg=;
+        b=lXBDhtOEFUq3cI3E2ynyRLSnyrJbF3R+RoBSlTwO/TcWfTXX2o/5CIRAAn5n62/i3yrSwk
+        dGcWocY+2Ar2OQGK/BfxlAANtWGm2Y7SyeU/s+XIr6yL5VRPMpsdU1KhWzmnwouHThsE7D
+        m6M837MDmnKegsFKj4GV68oEDoQrexU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634634737;
+        s=susede2_ed25519; t=1634637666;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=PNviG73W5CXxu7k+Hr5pl6wFnyxtJHN8JrkqiiHK7LA=;
-        b=jIx8pGNL+vHQm7rncO/9sNPXnIpk/ya0K95ryK6YnHjP/cwwDtHvsCfEJLySgzI4b8IPPi
-        /Cxj+PTxEGefy2DQ==
+        bh=vHKiN0to6awHSGK/Z0uxe/7akzcjpjOz12RCGHIpgSg=;
+        b=rReX5y3wmXZR7MLAWm/ywru97rmPPttTeCIGKc0/rwp/77Ed3X1rp1R/4BUYS3K+bpyCgD
+        n+OVJURUNWSARgDg==
 Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 3F203A3B8B;
-        Tue, 19 Oct 2021 09:12:17 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 897CAA3B84;
+        Tue, 19 Oct 2021 10:01:06 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 001101E0BE5; Tue, 19 Oct 2021 11:12:16 +0200 (CEST)
-Date:   Tue, 19 Oct 2021 11:12:16 +0200
+        id 609081E0BE5; Tue, 19 Oct 2021 12:01:06 +0200 (CEST)
+Date:   Tue, 19 Oct 2021 12:01:06 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Ye Bin <yebin10@huawei.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jack@suse.cz
-Subject: Re: [PATCH -next v3 3/5] ext4: get buffer head before read_mmp_block
-Message-ID: <20211019091216.GD3255@quack2.suse.cz>
-References: <20211019064959.625557-1-yebin10@huawei.com>
- <20211019064959.625557-4-yebin10@huawei.com>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Jan Kara <jack@suse.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Tso <tytso@mit.edu>,
+        Dave Chinner <david@fromorbit.com>,
+        David Howells <dhowells@redhat.com>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>, kernel@collabora.com
+Subject: Re: [PATCH v8 11/32] fsnotify: Protect fsnotify_handle_inode_event
+ from no-inode events
+Message-ID: <20211019100106.GG3255@quack2.suse.cz>
+References: <20211019000015.1666608-1-krisman@collabora.com>
+ <20211019000015.1666608-12-krisman@collabora.com>
+ <CAOQ4uxhyW1O6tEKsEvnyV9ovmM=On0KWoe9Oq-HZou7MdR0GaA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211019064959.625557-4-yebin10@huawei.com>
+In-Reply-To: <CAOQ4uxhyW1O6tEKsEvnyV9ovmM=On0KWoe9Oq-HZou7MdR0GaA@mail.gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 19-10-21 14:49:57, Ye Bin wrote:
-> There is only pass NULL 'bh' in ext4_multi_mount_protect,
-> So just call sb_getblk get buffer head fisrt, and we will
-> simplify read_mmp_block function.
+On Tue 19-10-21 08:34:41, Amir Goldstein wrote:
+> On Tue, Oct 19, 2021 at 3:01 AM Gabriel Krisman Bertazi
+> <krisman@collabora.com> wrote:
+> >
+> > FAN_FS_ERROR allows events without inodes - i.e. for file system-wide
+> > errors.  Even though fsnotify_handle_inode_event is not currently used
+> > by fanotify, this patch protects this path to handle this new case.
+> >
+> > Suggested-by: Amir Goldstein <amir73il@gmail.com>
+> > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> > ---
+> >  fs/notify/fsnotify.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/fs/notify/fsnotify.c b/fs/notify/fsnotify.c
+> > index fde3a1115a17..47f931fb571c 100644
+> > --- a/fs/notify/fsnotify.c
+> > +++ b/fs/notify/fsnotify.c
+> > @@ -252,6 +252,9 @@ static int fsnotify_handle_inode_event(struct fsnotify_group *group,
+> >         if (WARN_ON_ONCE(!ops->handle_inode_event))
+> >                 return 0;
+> >
+> > +       if (!inode)
+> > +               return 0;
+> > +
 > 
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> Sigh.. the plot thickens.
+> There are three in-tree backends that implement the ->handle_inode_event()
+> interface.
+> 
+> inotify and dnotify can take NULL inode and the above will make the CREATE
+> events on kernfs vanish, so we cannot do that.
+> Sorry for not noticing this earlier when I asked for this change.
+> 
+> nfsd_file_fsnotify_handle_event() can most certainly not take NULL inode,
+> but nfsd does not watch for CREATE events.
 
-I don't think there's a need to separate this into a special patch. Just
-fold this change into patch 4. With that feel free to add:
+And furthermore you cannot really export kernfs :)
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+> I think what we need to do is (Jan please correct me if you think otherwise):
+> 1. Document the handle_inode_event() interface that either inode or dir
+>     must be non-NULL
+> 2. WARN_ON_ONCE(!inode && !dir) instead of just (!inode) above
 
-The combined change looks good to me.
+Yeah, like:
+	if (WARN_ON_ONCE(!inode && !dir))
+		return 0;
+
+> 3. Add WARN_ON_ONCE(!inode) before trace_nfsd_file_fsnotify_handle_event()
+>     in nfsd_file_fsnotify_handle_event()
+
+And:
+	if (WARN_ON_ONCE(!inode))
+		return 0;
+
+Sounds like a good plan to me.
 
 								Honza
-
-> ---
->  fs/ext4/mmp.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-> index 4af8b99ade84..6ac6aacd8fa5 100644
-> --- a/fs/ext4/mmp.c
-> +++ b/fs/ext4/mmp.c
-> @@ -295,6 +295,10 @@ int ext4_multi_mount_protect(struct super_block *sb,
->  		goto failed;
->  	}
->  
-> +	bh = sb_getblk(sb, mmp_block);
-> +	if (bh)
-> +		goto failed;
-> +
->  	retval = read_mmp_block(sb, &bh, mmp_block);
->  	if (retval)
->  		goto failed;
-> -- 
-> 2.31.1
-> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
