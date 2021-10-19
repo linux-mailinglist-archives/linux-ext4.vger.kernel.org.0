@@ -2,95 +2,86 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B460A432E6C
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Oct 2021 08:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF87A433195
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Oct 2021 10:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234304AbhJSGjs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Oct 2021 02:39:48 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:13954 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234178AbhJSGjl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Oct 2021 02:39:41 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HYPBk4ZH1zZcNP;
-        Tue, 19 Oct 2021 14:35:42 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggeme754-chm.china.huawei.com
- (10.3.19.100) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Tue, 19
- Oct 2021 14:37:27 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
-        Ye Bin <yebin10@huawei.com>
-Subject: [PATCH -next v3 5/5] ext4: avoid to re-read mmp check data get from page cache
-Date:   Tue, 19 Oct 2021 14:49:59 +0800
-Message-ID: <20211019064959.625557-6-yebin10@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211019064959.625557-1-yebin10@huawei.com>
+        id S234561AbhJSIzg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Oct 2021 04:55:36 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:36424 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229930AbhJSIzg (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Oct 2021 04:55:36 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id B7C2F21976;
+        Tue, 19 Oct 2021 08:53:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634633602; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pNpsq4NsKdsuszVjnOWf6lOfRc7G2Uj70dG+9GIT678=;
+        b=YoqhmWZJ86W4GQIb9BxQ9HFmaRfMGgp7ueky+L4VYRu345ZWaXx2zoPO41PrTZh3a6kq6h
+        xvq5YXq/CfyeZsGYdsTGVip3sMfqwAD/+/GC3XbMg9hFxnrAQmkRoQlJ6/ueeyEhsHlDRH
+        e+YZgpvCWB4ipZ39O6zAXa7fGXrx1jM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634633602;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pNpsq4NsKdsuszVjnOWf6lOfRc7G2Uj70dG+9GIT678=;
+        b=80LI+dl7ODiu/mjq1eH2FqnDye4Pv5GPeqhnM4qcq3EWFTcwXtzMlLnXY1YywA/Ta5/x3Y
+        hmDN1DN452ORZBCA==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id 66472A3B84;
+        Tue, 19 Oct 2021 08:53:22 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 2B12D1E0BE5; Tue, 19 Oct 2021 10:53:19 +0200 (CEST)
+Date:   Tue, 19 Oct 2021 10:53:19 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ye Bin <yebin10@huawei.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jack@suse.cz
+Subject: Re: [PATCH -next v3 1/5] ext4: init 'seq' with the value which set
+ in 'ext4_multi_mount_protect'
+Message-ID: <20211019085319.GA3255@quack2.suse.cz>
 References: <20211019064959.625557-1-yebin10@huawei.com>
+ <20211019064959.625557-2-yebin10@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggeme754-chm.china.huawei.com (10.3.19.100)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211019064959.625557-2-yebin10@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-As call read_mmp_block pass bh_check which value is NULL, then call
-sb_getblk to get buffer_head. But mmp_block's buffer_head is already exist
- which also is uptodate. Lead to compare the same data.
+On Tue 19-10-21 14:49:55, Ye Bin wrote:
+> If two host have the same nodename, and seq start from 0, May cause the
+> detection mechanism to fail.
+> So init 'seq' with the value which set in 'ext4_multi_mount_protect' to
+> accelerate conflict detection.
+> 
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
 
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- fs/ext4/mmp.c | 17 ++++++-----------
- 1 file changed, 6 insertions(+), 11 deletions(-)
+...
 
-diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-index 61c765c249b9..8018f6fb6ac2 100644
---- a/fs/ext4/mmp.c
-+++ b/fs/ext4/mmp.c
-@@ -186,10 +186,7 @@ static int kmmpd(void *data)
- 		 */
- 		diff = jiffies - last_update_time;
- 		if (diff > mmp_check_interval * HZ) {
--			struct buffer_head *bh_check = NULL;
--			struct mmp_struct *mmp_check;
--
--			retval = read_mmp_block(sb, bh_check);
-+			retval = read_mmp_block(sb, bh);
- 			if (retval) {
- 				ext4_error_err(sb, -retval,
- 					       "error reading MMP data: %d",
-@@ -197,20 +194,18 @@ static int kmmpd(void *data)
- 				goto wait_to_exit;
- 			}
- 
--			mmp_check = (struct mmp_struct *)(bh_check->b_data);
--			if (seq != mmp_check->mmp_seq ||
--			    memcmp(nodename, mmp_check->mmp_nodename,
--				   sizeof(mmp->mmp_nodename))) {
--				dump_mmp_msg(sb, mmp_check,
-+			mmp = (struct mmp_struct *)(bh->b_data);
-+			if (seq != le32_to_cpu(mmp->mmp_seq) ||
-+			    memcmp(nodename, mmp->mmp_nodename,
-+				    sizeof(nodename))) {
-+				dump_mmp_msg(sb, mmp,
- 					     "Error while updating MMP info. "
- 					     "The filesystem seems to have been"
- 					     " multiply mounted.");
- 				ext4_error_err(sb, EBUSY, "abort");
--				put_bh(bh_check);
- 				retval = -EBUSY;
- 				goto wait_to_exit;
- 			}
--			put_bh(bh_check);
- 		}
- 
- 		 /*
+> @@ -143,6 +143,7 @@ static int kmmpd(void *data)
+>  	mmp_block = le64_to_cpu(es->s_mmp_block);
+>  	mmp = (struct mmp_struct *)(bh->b_data);
+>  	mmp->mmp_time = cpu_to_le64(ktime_get_real_seconds());
+> +	seq = le32_to_cpu(mmp->mmp_seq);
+>  	/*
+>  	 * Start with the higher mmp_check_interval and reduce it if
+>  	 * the MMP block is being updated on time.
+
+Thanks for the patch. After discussing what MMP guards against and what it
+does not protect, I don't think this change is actually needed. Under
+normal conditions we expect kmmpd() to only write to MMP block, checking of
+MMP block is done only in ext4_multi_mount_protect(). And for checking
+there to trigger, using 'seq' starting from 1 in kmmpd is enough...
+
+								Honza
+
 -- 
-2.31.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
