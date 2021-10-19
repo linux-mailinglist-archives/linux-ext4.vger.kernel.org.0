@@ -2,156 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4F06433B7E
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Oct 2021 18:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B4D433B82
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Oct 2021 18:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233499AbhJSQDw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Oct 2021 12:03:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233052AbhJSQDv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Oct 2021 12:03:51 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A220C06161C
-        for <linux-ext4@vger.kernel.org>; Tue, 19 Oct 2021 09:01:38 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id k29so248578qve.6
-        for <linux-ext4@vger.kernel.org>; Tue, 19 Oct 2021 09:01:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3BGJn1dXdpzUd3tv3q+EmhfGtbVhe0Qd67sISQeDnw4=;
-        b=D3VIbh9ttclotZ84lKsDn3X7RfkFlngL41uIfucxHeTNtiYydE1whz/r7jFojWxJzr
-         IwRCHVsSlqyCKuylJCeriD2Qefn+j1/fvnIlM3d65YZUJrz7ZL7fl9tLcXBW9mYUvhqy
-         5xpDPE/RU9PMih7sDjXvMU0edSmFgIV+++/zaNE2J4zW5uztqyyYAkJzV/1C4A3U+gyW
-         U6b9VBKLc/Ca1IxjKLG5lhBNp9XrN8Hu+qrhLy38rNdpoUl7KOZ4xReT8hcKkCZ0/Hu/
-         Yc6EMXS7JJJ0dd4WHusGYr40To/zWTF7J1Xh5LlZnFmkNu7G/b+P57DnWMN0taZYehmd
-         AKkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3BGJn1dXdpzUd3tv3q+EmhfGtbVhe0Qd67sISQeDnw4=;
-        b=WXZ7oWZnXnTUvOuI+68NR3X2mLkbE4dWv5Ms5Ql0QKgbmwCQOCSdGKOlF6tNnqE40F
-         5CrP1xiBUhr1C0yAOOUNso4aJCdT8Ifclb7ZbXjXab0kSD5yPdzJdqmlYHgzyAJTQAOy
-         Sxa/MLDlrXvzTgOEuyjfZQGYx2AejizZlgOsoInH/ePETSIVwp/2K4uDhCVoa8GcE9Vm
-         Yum5jiW5g1RNk0rvtNk0sbfzz7B81s2Nh/Fw4CCD4tvU1AHWIK2t+avXKB+OSKamAVQD
-         TTyHWISactUgR7Wsz70OSqOmn8HJKXrdlCkSKAJ96goo7ptGezyGltmQbVLT11udCWO8
-         eO3g==
-X-Gm-Message-State: AOAM533upR92VCichv6X6sWWydTXmv+osj/8hZhE1a5XHVvg6FEJ7GpK
-        84/XVDafK+zgUFVFX09n76vIMw==
-X-Google-Smtp-Source: ABdhPJwvk+8tFb6J3QISFF+F14Y7KiyXAV1U8RUSPAMtZ9qpPCQT16Z2pmMVxiVutxUbz+C+YTG/ZA==
-X-Received: by 2002:ad4:4725:: with SMTP id l5mr651407qvz.3.1634659297591;
-        Tue, 19 Oct 2021 09:01:37 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id d6sm8054384qkj.11.2021.10.19.09.01.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 09:01:37 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mcrYW-00GjRc-GQ; Tue, 19 Oct 2021 13:01:36 -0300
-Date:   Tue, 19 Oct 2021 13:01:36 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Joao Martins <joao.m.martins@oracle.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alex Sierra <alex.sierra@amd.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, Christoph Hellwig <hch@lst.de>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH v1 2/2] mm: remove extra ZONE_DEVICE struct page refcount
-Message-ID: <20211019160136.GH3686969@ziepe.ca>
-References: <YWh6PL7nvh4DqXCI@casper.infradead.org>
- <CAPcyv4hBdSwdtG6Hnx9mDsRXiPMyhNH=4hDuv8JZ+U+Jj4RUWg@mail.gmail.com>
- <20211014230606.GZ2744544@nvidia.com>
- <CAPcyv4hC4qxbO46hp=XBpDaVbeh=qdY6TgvacXRprQ55Qwe-Dg@mail.gmail.com>
- <20211016154450.GJ2744544@nvidia.com>
- <CAPcyv4j0kHREAOG6_07E2foz6e4FP8D72mZXH6ivsiUBu_8c6g@mail.gmail.com>
- <20211018182559.GC3686969@ziepe.ca>
- <CAPcyv4jvZjeMcKLVuOEQ_gXRd87i3NUX5D=MmsJ++rWafnK-NQ@mail.gmail.com>
- <20211018230614.GF3686969@ziepe.ca>
- <499043a0-b3d8-7a42-4aee-84b81f5b633f@oracle.com>
+        id S231750AbhJSQEH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Oct 2021 12:04:07 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:58914 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229789AbhJSQEG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Oct 2021 12:04:06 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id BF6E221981;
+        Tue, 19 Oct 2021 16:01:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634659312; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8hIx4eb8RNDvqpfcSYXsTTz8oiHfDvbCGCZib+Ictaw=;
+        b=PpiTBGbBw0Mz+wxjp3SLGi553EsrgcRkICcmK0CqwPPepfUkV/PdHKAJ8qLFFgkcOIMJM8
+        iJnqVEBJg1Ama7ybduuDV5zdzQbH9dQzgQeRF6lzIe1t3hUYBbIULHT9i52HJ2S/zhVeuE
+        nkYKeUfyqB0AsLf+vCA2lO9PjxoCchc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634659312;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8hIx4eb8RNDvqpfcSYXsTTz8oiHfDvbCGCZib+Ictaw=;
+        b=8bzN2S5Q8vMJhRL9+u61e0yYLZSymEmRUfnEEFU4nwv26As/HmzWbyqtRrzrndJzY8EmhX
+        QCxjlpFles6rxLDQ==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id AA05AA3B8C;
+        Tue, 19 Oct 2021 16:01:52 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 7AF771E0983; Tue, 19 Oct 2021 18:01:52 +0200 (CEST)
+Date:   Tue, 19 Oct 2021 18:01:52 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     jack@suse.com, amir73il@gmail.com, djwong@kernel.org,
+        tytso@mit.edu, david@fromorbit.com, dhowells@redhat.com,
+        khazhy@google.com, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-api@vger.kernel.org,
+        kernel@collabora.com
+Subject: Re: [PATCH v8 30/32] ext4: Send notifications on error
+Message-ID: <20211019160152.GT3255@quack2.suse.cz>
+References: <20211019000015.1666608-1-krisman@collabora.com>
+ <20211019000015.1666608-31-krisman@collabora.com>
+ <20211019154426.GR3255@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <499043a0-b3d8-7a42-4aee-84b81f5b633f@oracle.com>
+In-Reply-To: <20211019154426.GR3255@quack2.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 04:13:34PM +0100, Joao Martins wrote:
-> On 10/19/21 00:06, Jason Gunthorpe wrote:
-> > On Mon, Oct 18, 2021 at 12:37:30PM -0700, Dan Williams wrote:
+On Tue 19-10-21 17:44:26, Jan Kara wrote:
+> On Mon 18-10-21 21:00:13, Gabriel Krisman Bertazi wrote:
+> > Send a FS_ERROR message via fsnotify to a userspace monitoring tool
+> > whenever a ext4 error condition is triggered.  This follows the existing
+> > error conditions in ext4, so it is hooked to the ext4_error* functions.
 > > 
-> >>> device-dax uses PUD, along with TTM, they are the only places. I'm not
-> >>> sure TTM is a real place though.
-> >>
-> >> I was setting device-dax aside because it can use Joao's changes to
-> >> get compound-page support.
+> > It also follows the current dmesg reporting in the format.  The
+> > filesystem message is composed mostly by the string that would be
+> > otherwise printed in dmesg.
 > > 
-> > Ideally, but that ideas in that patch series have been floating around
-> > for a long time now..
-> >  
-> The current status of the series misses a Rb on patches 6,7,10,12-14.
-> Well, patch 8 too should now drop its tag, considering the latest
-> discussion.
+> > A new ext4 specific record format is exposed in the uapi, such that a
+> > monitoring tool knows what to expect when listening errors of an ext4
+> > filesystem.
+> > 
+> > Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+> > Reviewed-by: Theodore Ts'o <tytso@mit.edu>
+> > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 > 
-> If it helps moving things forward I could split my series further into:
+> Looks good to me. Feel free to add:
 > 
-> 1) the compound page introduction (patches 1-7) of my aforementioned series
-> 2) vmemmap deduplication for memory gains (patches 9-14)
-> 3) gup improvements (patch 8 and gup-slow improvements)
+> Reviewed-by: Jan Kara <jack@suse.cz>
 
-I would split it, yes..
+Hum, I actually retract this because the code doesn't match what is written
+in the documentation and I'm not 100% sure what is correct. In particular:
 
-I think we can see a general consensus that making compound_head/etc
-work consistently with how THP uses it will provide value and
-opportunity for optimization going forward.
+> > @@ -759,6 +760,8 @@ void __ext4_error(struct super_block *sb, const char *function,
+> >  		       sb->s_id, function, line, current->comm, &vaf);
+> >  		va_end(args);
+> >  	}
+> > +	fsnotify_sb_error(sb, NULL, error);
+> > +
 
-> Whats the benefit between preventing longterm at start
-> versus only after mounting the filesystem? Or is the intended future purpose
-> to pass more context into an holder potential future callback e.g. nack longterm
-> pins on a page basis?
+E.g. here you pass the 'error' to fsnotify. This will be just standard
+'errno' number, not ext4 error code as described in the documentation. Also
+note that frequently 'error' will be 0 which gets magically transformed to
+EFSCORRUPTED in save_error_info() in the ext4 error handling below. So
+there's clearly some more work to do...
 
-I understood Dan's remark that the device-dax path allows
-FOLL_LONGTERM and the FSDAX path does not ?
-
-Which, IIRC, today is signaled basd on vma properties and in all cases
-fast-gup is denied.
-
-> Maybe we can start by at least not add any flags and just prevent
-> FOLL_LONGTERM on fsdax -- which I guess was the original purpose of
-> commit 7af75561e171 ("mm/gup: add FOLL_LONGTERM capability to GUP fast").
-> This patch (which I can formally send) has a sketch of that (below scissors mark):
-> 
-> https://lore.kernel.org/linux-mm/6a18179e-65f7-367d-89a9-d5162f10fef0@oracle.com/
-
-Yes, basically, whatever test we want for 'deny fast gup foll
-longterm' is fine. 
-
-Personally I'd like to see us move toward a set of flag specifying
-each special behavior and not a collection of types that imply special
-behaviors.
-
-Eg we have at least:
- - Block gup fast on foll_longterm
- - Capture the refcount ==1 and use the pgmap free hook
-   (confusingly called page_is_devmap_managed())
- - Always use a swap entry
- - page->index/mapping are used in the usual file based way?
-
-Probably more things..
-
-Jason
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
