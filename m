@@ -2,43 +2,304 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F0D4364E4
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Oct 2021 17:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB65436775
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Oct 2021 18:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231256AbhJUPCX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 21 Oct 2021 11:02:23 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:60623 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230331AbhJUPCX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Oct 2021 11:02:23 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 19LExhHt028260
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Oct 2021 10:59:46 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id B33E815C00CE; Thu, 21 Oct 2021 10:59:43 -0400 (EDT)
-Date:   Thu, 21 Oct 2021 10:59:43 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Zhang Yi <yi.zhang@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
-        yukuai3@huawei.com
-Subject: Re: [RFC PATCH 0/3] ext4: enhance extent consistency check
-Message-ID: <YXGAX0HpHZx8Smip@mit.edu>
-References: <20210908120850.4012324-1-yi.zhang@huawei.com>
+        id S231533AbhJUQUu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 21 Oct 2021 12:20:50 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:45884 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229702AbhJUQUt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Oct 2021 12:20:49 -0400
+Received: by mail-io1-f70.google.com with SMTP id k9-20020a5d91c9000000b005dc4a740599so802411ior.12
+        for <linux-ext4@vger.kernel.org>; Thu, 21 Oct 2021 09:18:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=8fxKRX1/Ot1SJYCAdTP2vq9TuZkX9W23D3UD+NW2AIc=;
+        b=xsE/0JMXZiiTlH4/Gd3kWo/1APHh7R2Z/e6QOTPuk7U7oiXc/8drhLSCKKSx52i7z+
+         ZyiXQwm5TWQcUK6TbHTUwT2Fpi5Y6/XVf1uNiykRDPJy10j7iCAi+XXNSyeiJdcNTaOn
+         9FcHpQwmC3HbXtn9QH/oKfrJ+btHBQ8sw6wRpV28wreq2PEvo+5A0G6nwp+NF/LeohRh
+         LE5L20ONC9/HK7Q3i1KNHrIY3pK/Hg+2GPISeciK40wp6qBI0hiddOco2ZBZ68rsXlFe
+         zpVTaRIsM6/XKdSvOqaNwtnbQ8V011e8Q2Foi1LwJb2OU5jUH0CqDzCdP9G82uo6s8Ld
+         eEkg==
+X-Gm-Message-State: AOAM531FBKD9Ty8Vn6iI5nauvmiL7u12uXEXhiscSDEDGROMulEDbr0I
+        Y94EqPTGnWlgGSzrHeg2dcNnCEhLdKe6FfPqbpcSwPa5t3ye
+X-Google-Smtp-Source: ABdhPJwwUeMbDb3A1+A+GOtAARX13DZt8qTL/N/M/KVcZl0hiJAoDl/lEIPxTmSqqs7Z1WKnnvvBS4EFP5KyMXsbPV5SWRawZTPq
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210908120850.4012324-1-yi.zhang@huawei.com>
+X-Received: by 2002:a05:6e02:1a67:: with SMTP id w7mr4194606ilv.203.1634833113223;
+ Thu, 21 Oct 2021 09:18:33 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 09:18:33 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fb187b05cedf3ec0@google.com>
+Subject: [syzbot] INFO: task can't die in ext4_stop_mmpd
+From:   syzbot <syzbot+305a8d683b017bc30c3d@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks, I've applied this patch series.  You're right, we are always
-updating the index node.  There is a comment that we might try to skip
-updating the index in some cases, but it's probably better to always
-update the index node since we can count on knowing what logical
-blocks could be mentioned in the leaf nodes.
+Hello,
 
-       	     		     	      - Ted
+syzbot found the following issue on:
+
+HEAD commit:    7c832d2f9b95 Add linux-next specific files for 20211015
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=122ad4c8b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f6ac42766a768877
+dashboard link: https://syzkaller.appspot.com/bug?extid=305a8d683b017bc30c3d
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=123dd8dcb00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17e0c9ccb00000
+
+Bisection is inconclusive: the issue happens on the oldest tested release.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13cd6f68b00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=102d6f68b00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17cd6f68b00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+305a8d683b017bc30c3d@syzkaller.appspotmail.com
+
+INFO: task syz-executor128:9281 can't die for more than 143 seconds.
+task:syz-executor128 state:D stack:27824 pid: 9281 ppid:  6538 flags:0x00004004
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:4965 [inline]
+ __schedule+0xa9a/0x4940 kernel/sched/core.c:6246
+ schedule+0xd2/0x260 kernel/sched/core.c:6319
+ schedule_timeout+0x1db/0x2a0 kernel/time/timer.c:1857
+ do_wait_for_common kernel/sched/completion.c:85 [inline]
+ __wait_for_common kernel/sched/completion.c:106 [inline]
+ wait_for_common kernel/sched/completion.c:117 [inline]
+ wait_for_completion+0x174/0x270 kernel/sched/completion.c:138
+ kthread_stop+0x17a/0x710 kernel/kthread.c:648
+ ext4_stop_mmpd+0x47/0xd0 fs/ext4/mmp.c:255
+ ext4_fill_super+0x892d/0xd750 fs/ext4/super.c:5060
+ mount_bdev+0x34d/0x410 fs/super.c:1368
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:610
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1498
+ do_new_mount fs/namespace.c:2988 [inline]
+ path_mount+0x1320/0x1fa0 fs/namespace.c:3318
+ do_mount fs/namespace.c:3331 [inline]
+ __do_sys_mount fs/namespace.c:3539 [inline]
+ __se_sys_mount fs/namespace.c:3516 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3516
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7ffb61e58d3a
+RSP: 002b:00007ffb61e03078 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffb61e030d0 RCX: 00007ffb61e58d3a
+RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007ffb61e03090
+RBP: 000000000000000b R08: 00007ffb61e030d0 R09: 00007ffb61e036bc
+R10: 0000000000000000 R11: 0000000000000202 R12: 00007ffb61e03090
+R13: 0000000020000308 R14: 0000000000000004 R15: 0000000000000005
+ </TASK>
+INFO: task syz-executor128:9281 blocked for more than 143 seconds.
+      Not tainted 5.15.0-rc5-next-20211015-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor128 state:D stack:27824 pid: 9281 ppid:  6538 flags:0x00004004
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:4965 [inline]
+ __schedule+0xa9a/0x4940 kernel/sched/core.c:6246
+ schedule+0xd2/0x260 kernel/sched/core.c:6319
+ schedule_timeout+0x1db/0x2a0 kernel/time/timer.c:1857
+ do_wait_for_common kernel/sched/completion.c:85 [inline]
+ __wait_for_common kernel/sched/completion.c:106 [inline]
+ wait_for_common kernel/sched/completion.c:117 [inline]
+ wait_for_completion+0x174/0x270 kernel/sched/completion.c:138
+ kthread_stop+0x17a/0x710 kernel/kthread.c:648
+ ext4_stop_mmpd+0x47/0xd0 fs/ext4/mmp.c:255
+ ext4_fill_super+0x892d/0xd750 fs/ext4/super.c:5060
+ mount_bdev+0x34d/0x410 fs/super.c:1368
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:610
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1498
+ do_new_mount fs/namespace.c:2988 [inline]
+ path_mount+0x1320/0x1fa0 fs/namespace.c:3318
+ do_mount fs/namespace.c:3331 [inline]
+ __do_sys_mount fs/namespace.c:3539 [inline]
+ __se_sys_mount fs/namespace.c:3516 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3516
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7ffb61e58d3a
+RSP: 002b:00007ffb61e03078 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffb61e030d0 RCX: 00007ffb61e58d3a
+RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007ffb61e03090
+RBP: 000000000000000b R08: 00007ffb61e030d0 R09: 00007ffb61e036bc
+R10: 0000000000000000 R11: 0000000000000202 R12: 00007ffb61e03090
+R13: 0000000020000308 R14: 0000000000000004 R15: 0000000000000005
+ </TASK>
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/27:
+ #0: ffffffff8bb82ea0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6458
+1 lock held by systemd-udevd/2978:
+1 lock held by in:imklog/6232:
+3 locks held by kworker/1:0/6527:
+ #0: ffff888010c64d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888010c64d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic_long_set include/linux/atomic/atomic-long.h:41 [inline]
+ #0: ffff888010c64d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/linux/atomic/atomic-instrumented.h:1198 [inline]
+ #0: ffff888010c64d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:634 [inline]
+ #0: ffff888010c64d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:661 [inline]
+ #0: ffff888010c64d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x896/0x1690 kernel/workqueue.c:2268
+ #1: ffffc90001a8fdb0 ((work_completion)(&pwq->unbound_release_work)){+.+.}-{0:0}, at: process_one_work+0x8ca/0x1690 kernel/workqueue.c:2272
+ #2: ffffffff8bb8c228 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:290 [inline]
+ #2: ffffffff8bb8c228 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x4fa/0x620 kernel/rcu/tree_exp.h:839
+2 locks held by systemd-udevd/6575:
+ #0: ffff88801ac02918 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev.part.0+0x9b/0xb60 block/bdev.c:817
+ #1: ffff888146e0a3f8 (&lo->lo_mutex){+.+.}-{3:3}, at: lo_open+0x75/0x120 drivers/block/loop.c:2040
+2 locks held by kworker/1:3/6581:
+ #0: ffff888010c66538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888010c66538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: arch_atomic_long_set include/linux/atomic/atomic-long.h:41 [inline]
+ #0: ffff888010c66538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: atomic_long_set include/linux/atomic/atomic-instrumented.h:1198 [inline]
+ #0: ffff888010c66538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:634 [inline]
+ #0: ffff888010c66538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:661 [inline]
+ #0: ffff888010c66538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: process_one_work+0x896/0x1690 kernel/workqueue.c:2268
+ #1: ffffc900028ffdb0 ((work_completion)(&rew.rew_work)){+.+.}-{0:0}, at: process_one_work+0x8ca/0x1690 kernel/workqueue.c:2272
+2 locks held by systemd-udevd/6728:
+ #0: ffff88801ab30918 (&disk->open_mutex
+){+.+.}-{3:3}, at: blkdev_get_by_dev.part.0+0x9b/0xb60 block/bdev.c:817
+ #1: ffff88801ab1e3f8 (&lo->lo_mutex){+.+.}-{3:3}, at: lo_open+0x75/0x120 drivers/block/loop.c:2040
+1 lock held by syz-executor128/9281:
+ #0: ffff88801e23e0e0 (&type->s_umount_key#27/1){+.+.}-{3:3}, at: alloc_super+0x1dd/0xac0 fs/super.c:229
+3 locks held by kworker/1:6/16911:
+ #0: ffff888010c64d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888010c64d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic_long_set include/linux/atomic/atomic-long.h:41 [inline]
+ #0: ffff888010c64d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/linux/atomic/atomic-instrumented.h:1198 [inline]
+ #0: ffff888010c64d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:634 [inline]
+ #0: ffff888010c64d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:661 [inline]
+ #0: ffff888010c64d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x896/0x1690 kernel/workqueue.c:2268
+ #1: ffffc9000a257db0 ((work_completion)(&pwq->unbound_release_work)){+.+.}-{0:0}, at: process_one_work+0x8ca/0x1690 kernel/workqueue.c:2272
+ #2: ffffffff8bb8c228 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:322 [inline]
+ #2: ffffffff8bb8c228 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x2d5/0x620 kernel/rcu/tree_exp.h:839
+1 lock held by syz-executor128/25260:
+ #0: ffff8880770940e0 (&type->s_umount_key#27/1){+.+.}-{3:3}, at: alloc_super+0x1dd/0xac0 fs/super.c:229
+1 lock held by syz-executor128/1607:
+ #0: ffff888146e0a3f8 (&lo->lo_mutex){+.+.}-{3:3}, at: __loop_clr_fd+0xaf/0x15e0 drivers/block/loop.c:1350
+1 lock held by syz-executor128/1608:
+ #0: ffff88801ab1e3f8 (&lo->lo_mutex){+.+.}-{3:3}, at: __loop_clr_fd+0xaf/0x15e0 drivers/block/loop.c:1350
+1 lock held by syz-executor128/1621:
+ #0: ffff88801ab1b3f8 (&lo->lo_mutex){+.+.}-{3:3}, at: __loop_clr_fd+0xaf/0x15e0 drivers/block/loop.c:1350
+1 lock held by syz-executor128/1630:
+ #0: ffff88801ab3c3f8 (&lo->lo_mutex){+.+.}-{3:3}, at: __loop_clr_fd+0xaf/0x15e0 drivers/block/loop.c:1350
+
+=============================================
+
+NMI backtrace for cpu 0
+CPU: 0 PID: 27 Comm: khungtaskd Not tainted 5.15.0-rc5-next-20211015-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ nmi_cpu_backtrace.cold+0x47/0x144 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1ae/0x220 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:254 [inline]
+ watchdog+0xcb7/0xed0 kernel/hung_task.c:339
+ kthread+0x405/0x4f0 kernel/kthread.c:327
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+ </TASK>
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 2968 Comm: systemd-journal Not tainted 5.15.0-rc5-next-20211015-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:preempt_count arch/x86/include/asm/preempt.h:27 [inline]
+RIP: 0010:check_kcov_mode kernel/kcov.c:166 [inline]
+RIP: 0010:__sanitizer_cov_trace_pc+0x0/0x60 kernel/kcov.c:200
+Code: 48 89 ef 5d e9 41 f4 45 00 5d be 03 00 00 00 e9 f6 80 60 02 66 0f 1f 44 00 00 48 8b be b0 01 00 00 e8 b4 ff ff ff 31 c0 c3 90 <65> 8b 05 69 0b 8b 7e 89 c1 48 8b 34 24 81 e1 00 01 00 00 65 48 8b
+RSP: 0018:ffffc90000dc0c38 EFLAGS: 00000006
+RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000003
+RDX: 0000000000000000 RSI: ffff88807ad0ba00 RDI: 0000000000000003
+RBP: 00000000ffffffff R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff84087dd5 R11: 0000000000000000 R12: 0000000000000001
+R13: ffffed10173a4f0d R14: 0000000000000002 R15: 0000000000000001
+FS:  00007f37549478c0(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f3752224648 CR3: 000000002248c000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ __ffs arch/x86/include/asm/bitops.h:235 [inline]
+ find_next_bit include/linux/find.h:41 [inline]
+ cpumask_next lib/cpumask.c:22 [inline]
+ cpumask_next_wrap+0x6c/0x1b0 lib/cpumask.c:82
+ select_idle_cpu kernel/sched/fair.c:6281 [inline]
+ select_idle_sibling kernel/sched/fair.c:6452 [inline]
+ select_task_rq_fair+0xccf/0x3b50 kernel/sched/fair.c:6929
+ select_task_rq kernel/sched/core.c:3400 [inline]
+ try_to_wake_up+0x38b/0x15a0 kernel/sched/core.c:4082
+ hrtimer_wakeup+0x43/0x60 kernel/time/hrtimer.c:1939
+ __run_hrtimer kernel/time/hrtimer.c:1685 [inline]
+ __hrtimer_run_queues+0x609/0xe50 kernel/time/hrtimer.c:1749
+ hrtimer_interrupt+0x31c/0x790 kernel/time/hrtimer.c:1811
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1086 [inline]
+ __sysvec_apic_timer_interrupt+0x146/0x530 arch/x86/kernel/apic/apic.c:1103
+ sysvec_apic_timer_interrupt+0x8e/0xc0 arch/x86/kernel/apic/apic.c:1097
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+RIP: 0010:access_override_creds fs/open.c:358 [inline]
+RIP: 0010:do_faccessat+0x4e2/0x850 fs/open.c:415
+Code: 25 40 70 02 00 49 8d be 20 08 00 00 48 89 fa 89 45 30 48 c1 ea 03 48 b8 00 00 00 00 00 fc ff df 80 3c 02 00 0f 85 fd 02 00 00 <4d> 8b b6 20 08 00 00 48 b8 00 00 00 00 00 fc ff df 49 8d 7e 34 48
+RSP: 0018:ffffc90001b0fe88 EFLAGS: 00000246
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 1ffff1100f5a1844 RSI: ffffffff81c7a325 RDI: ffff88807ad0c220
+RBP: ffff88801a435500 R08: 0000000043736564 R09: ffff888010db4ab3
+R10: ffffffff814e5de9 R11: 0000000000000000 R12: 0000000000000001
+R13: ffff88801a435514 R14: ffff88807ad0ba00 R15: 0000000000000000
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f3753c029c7
+Code: 83 c4 08 48 3d 01 f0 ff ff 73 01 c3 48 8b 0d c8 d4 2b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 b8 15 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d a1 d4 2b 00 f7 d8 64 89 01 48
+RSP: 002b:00007fff031591e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000015
+RAX: ffffffffffffffda RBX: 00007fff0315c100 RCX: 00007f3753c029c7
+RDX: 00007f3754673a00 RSI: 0000000000000000 RDI: 000056048df759a3
+RBP: 00007fff03159220 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000069 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fff0315c100 R15: 00007fff03159710
+ </TASK>
+INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.212 msecs
+----------------
+Code disassembly (best guess):
+   0:	48 89 ef             	mov    %rbp,%rdi
+   3:	5d                   	pop    %rbp
+   4:	e9 41 f4 45 00       	jmpq   0x45f44a
+   9:	5d                   	pop    %rbp
+   a:	be 03 00 00 00       	mov    $0x3,%esi
+   f:	e9 f6 80 60 02       	jmpq   0x260810a
+  14:	66 0f 1f 44 00 00    	nopw   0x0(%rax,%rax,1)
+  1a:	48 8b be b0 01 00 00 	mov    0x1b0(%rsi),%rdi
+  21:	e8 b4 ff ff ff       	callq  0xffffffda
+  26:	31 c0                	xor    %eax,%eax
+  28:	c3                   	retq
+  29:	90                   	nop
+* 2a:	65 8b 05 69 0b 8b 7e 	mov    %gs:0x7e8b0b69(%rip),%eax        # 0x7e8b0b9a <-- trapping instruction
+  31:	89 c1                	mov    %eax,%ecx
+  33:	48 8b 34 24          	mov    (%rsp),%rsi
+  37:	81 e1 00 01 00 00    	and    $0x100,%ecx
+  3d:	65                   	gs
+  3e:	48                   	rex.W
+  3f:	8b                   	.byte 0x8b
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
