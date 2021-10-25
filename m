@@ -2,244 +2,531 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BBE5438E43
-	for <lists+linux-ext4@lfdr.de>; Mon, 25 Oct 2021 06:26:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C574390D6
+	for <lists+linux-ext4@lfdr.de>; Mon, 25 Oct 2021 10:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229790AbhJYE2Y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 25 Oct 2021 00:28:24 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37284 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229678AbhJYE2Y (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 25 Oct 2021 00:28:24 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 19P4PtUo031509
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Oct 2021 00:25:55 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 0124015C34DD; Mon, 25 Oct 2021 00:25:54 -0400 (EDT)
-Date:   Mon, 25 Oct 2021 00:25:54 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
-Cc:     linux-ext4@vger.kernel.org, adilger@dilger.ca,
-        gwendal@chromium.org, okiselev@amazon.com
-Subject: Re: [PATCH v2] mke2fs: Add extended option for prezeroed storage
- devices
-Message-ID: <YXYx0iL8Pn/tbxBP@mit.edu>
-References: <C5A2A75B-F767-40AC-B500-C99D484E9E30@dilger.ca>
- <20210927103910.341417-1-sarthakkukreti@chromium.org>
+        id S231221AbhJYIJ3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 25 Oct 2021 04:09:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:50798 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231173AbhJYIJ0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 25 Oct 2021 04:09:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635149224;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u0pSYdVJlqgi/5SUwcHHMWDUbJR4+YeGDAQvzsjQgCQ=;
+        b=di/y5IMnRwZQWu7rixBG7ntLXn4SSRSPhuxsJ/M62eBEGY4Fn6J/4h1BAdQ2GqYYxSiLPg
+        Y/HExfvrV4ntcQtpfkelUO4o1QCbNUnEolRW8fe5zp1xWE8WkdZEzUL5pf377rD+DK7R3v
+        MJjFzQnS6bcxqz+BrlXGJLXKqTQA1BY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-127-OZjZD23lNve4zrm3LJHGYg-1; Mon, 25 Oct 2021 04:07:02 -0400
+X-MC-Unique: OZjZD23lNve4zrm3LJHGYg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D95B18026AD;
+        Mon, 25 Oct 2021 08:07:00 +0000 (UTC)
+Received: from work (unknown [10.40.192.132])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9B0505C1A1;
+        Mon, 25 Oct 2021 08:06:59 +0000 (UTC)
+Date:   Mon, 25 Oct 2021 10:06:57 +0200
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     Eryu Guan <guan@eryu.me>
+Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v2] ext4: add test for all ext4/ext3/ext2 mount options
+Message-ID: <20211025080657.kenrcvlykkysmsm5@work>
+References: <20211018130001.6440-1-lczerner@redhat.com>
+ <20211020121226.15236-1-lczerner@redhat.com>
+ <YXWKYG7gluz62MNb@desktop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210927103910.341417-1-sarthakkukreti@chromium.org>
+In-Reply-To: <YXWKYG7gluz62MNb@desktop>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-I tried running the regression test, and it was failing for me; it
-showed that even with -E assume_stoarge_prezeroed, the size of the
-$TMPFILE.1 and $TMPFILE.2 was the same.  Looking into this, it was
-because in lib/ext2fs/unix_io.c, when the file is a plain file
-io_channel_discard_zeroes_data() returns true, since it assumes that
-we can use PUNCH_HOLE to implement unix_io_discard(), which is
-guaranteed to work.
+On Mon, Oct 25, 2021 at 12:31:28AM +0800, Eryu Guan wrote:
+> On Wed, Oct 20, 2021 at 02:12:26PM +0200, Lukas Czerner wrote:
+> > Add test to validate that all the ext4, ext3 and ext2 are properly
+> > recognized, validate and applied to avoid regressions as ext4 moves to
+> > the new mount API.
+> > 
+> > Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+> > ---
+> > v2: Move minimum kernel version requirement up to 5.12
+> >     Rewrite kernel_gte() to work correctly
+> 
+> fstests doesn't do version check but only actually try it and see if the
+> wanted feature is supported, so I want to avoid this kernel version
+> check as much as possible.
+> 
+> OTOH, I understand that there's no good way to tell if a mount option is
+> supported by current kernel, and it's not clear a mount failure is
+> caused by a regression or an unsupported mount option.
 
-So I had to change the regression test to use losetup, which also
-meant that the test had to run as root....
+I understand that fstests doesn't do version checking and. But
+the fact of the matter is that it is needed for this test for the
+reasons you mentioned.
 
-Anyway, this is what I've checked into e2fsprogs.
+> 
+> I'd like to see if anyone else has better ideas/suggestions.
 
-      	       	    	       	  - Ted
+So what's the goal here. Am I going to have to wait until someone comes
+up with a better suggestion ?
 
-commit bd2e72c5c5521b561d20a881c843a64a5832721a
-Author: Sarthak Kukreti <sarthakkukreti@chromium.org>
-Date:   Mon Sep 27 03:39:10 2021 -0700
+> 
+> Some minor issues below.
+> 
+> > +_mnt() {
+> 
+> Local functions don't need the _ prefix, that's for common helpers.
 
-    mke2fs: add extended option for prezeroed storage devices
-    
-    This patch adds an extended option "assume_storage_prezeroed" to
-    mke2fs. When enabled, this option acts as a hint to mke2fs that the
-    underlying block device was zeroed before mke2fs was called.  This
-    allows mke2fs to optimize out the zeroing of the inode table and the
-    journal, which speeds up the filesystem creation time.
-    
-    Additionally, on thinly provisioned storage devices (like Ceph,
-    dm-thin, newly created sparse loopback files), reads on unmapped
-    extents return zero. This property allows mke2fs (with
-    assume_storage_prezeroed) to avoid pre-allocating metadata space for
-    inode tables for the entire filesystem and saves space that would
-    normally be preallocated for zero inode tables.
-    
-    Tests
-    -----
-    1) Running 'mke2fs -t ext4' on 10G sparse files on an ext4
-    filesystem drops the time taken by mke2fs from 0.09s to 0.04s
-    and reduces the initial metadata space allocation (stat on
-    sparse file) from 139736 blocks (545M) to 8672 blocks (34M).
-    
-    2) On ChromeOS (running linux kernel 4.19) with dm-thin
-    and 200GB thin logical volumes using 'mke2fs -t ext4 <dev>':
-    
-    - Time taken by mke2fs drops from 1.07s to 0.08s.
-    - Avoiding zeroing out the inode table and journal reduces the
-      initial metadata space allocation from 0.48% to 0.01%.
-    - Lazy inode table zeroing results in a further 1.45% of logical
-      volume space getting allocated for inode tables, even if no file
-      data is added to the filesystem. With assume_storage_prezeroed,
-      the metadata allocation remains at 0.01%.
-    
-    [ Fixed regression test to work on newer versions of e2fsprogs -- TYT ]
-    
-    Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
-    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Ok, I can rename it.
 
-diff --git a/misc/mke2fs.8.in b/misc/mke2fs.8.in
-index b378e4d7..30f97bb5 100644
---- a/misc/mke2fs.8.in
-+++ b/misc/mke2fs.8.in
-@@ -365,6 +365,13 @@ small risk if the system crashes before the journal has been overwritten
- entirely one time.  If the option value is omitted, it defaults to 1 to
- enable lazy journal inode zeroing.
- .TP
-+.B assume_storage_prezeroed\fR[\fB= \fI<0 to disable, 1 to enable>\fR]
-+If enabled,
-+.BR mke2fs
-+assumes that the storage device has been prezeroed, skips zeroing the journal
-+and inode tables, and annotates the block group flags to signal that the inode
-+table has been zeroed.
-+.TP
- .B no_copy_xattrs
- Normally
- .B mke2fs
-diff --git a/misc/mke2fs.c b/misc/mke2fs.c
-index c955b318..76b8b8c6 100644
---- a/misc/mke2fs.c
-+++ b/misc/mke2fs.c
-@@ -96,6 +96,7 @@ int	journal_flags;
- int	journal_fc_size;
- static e2_blkcnt_t	orphan_file_blocks;
- static int	lazy_itable_init;
-+static int	assume_storage_prezeroed;
- static int	packed_meta_blocks;
- int		no_copy_xattrs;
- static char	*bad_blocks_filename = NULL;
-@@ -1013,6 +1014,11 @@ static void parse_extended_opts(struct ext2_super_block *param,
- 				lazy_itable_init = strtoul(arg, &p, 0);
- 			else
- 				lazy_itable_init = 1;
-+		} else if (!strcmp(token, "assume_storage_prezeroed")) {
-+			if (arg)
-+				assume_storage_prezeroed = strtoul(arg, &p, 0);
-+			else
-+				assume_storage_prezeroed = 1;
- 		} else if (!strcmp(token, "lazy_journal_init")) {
- 			if (arg)
- 				journal_flags |= strtoul(arg, &p, 0) ?
-@@ -1131,7 +1137,8 @@ static void parse_extended_opts(struct ext2_super_block *param,
- 			"\tnodiscard\n"
- 			"\tencoding=<encoding>\n"
- 			"\tencoding_flags=<flags>\n"
--			"\tquotatype=<quota type(s) to be enabled>\n\n"),
-+			"\tquotatype=<quota type(s) to be enabled>\n"
-+			"\tassume_storage_prezeroed=<0 to disable, 1 to enable>\n\n"),
- 			badopt ? badopt : "");
- 		free(buf);
- 		exit(1);
-@@ -3125,6 +3132,18 @@ int main (int argc, char *argv[])
- 		io_channel_set_options(fs->io, opt_string);
- 	}
- 
-+	if (assume_storage_prezeroed) {
-+		if (verbose)
-+			printf("%s",
-+			       _("Assuming the storage device is prezeroed "
-+			       "- skipping inode table and journal wipe\n"));
-+
-+		lazy_itable_init = 1;
-+		itable_zeroed = 1;
-+		zero_hugefile = 0;
-+		journal_flags |= EXT2_MKJOURNAL_LAZYINIT;
-+	}
-+
- 	/* Can't undo discard ... */
- 	if (!noaction && discard && dev_size && (io_ptr != undo_io_manager)) {
- 		retval = mke2fs_discard_device(fs);
-diff --git a/tests/m_assume_storage_prezeroed/expect b/tests/m_assume_storage_prezeroed/expect
-new file mode 100644
-index 00000000..b735e242
---- /dev/null
-+++ b/tests/m_assume_storage_prezeroed/expect
-@@ -0,0 +1,2 @@
-+> 10000
-+224
-diff --git a/tests/m_assume_storage_prezeroed/script b/tests/m_assume_storage_prezeroed/script
-new file mode 100644
-index 00000000..1a8d8463
---- /dev/null
-+++ b/tests/m_assume_storage_prezeroed/script
-@@ -0,0 +1,63 @@
-+test_description="test prezeroed storage metadata allocation"
-+FILE_SIZE=16M
-+
-+LOG=$test_name.log
-+OUT=$test_name.out
-+EXP=$test_dir/expect
-+
-+if test "$(id -u)" -ne 0 ; then
-+    echo "$test_name: $test_description: skipped (not root)"
-+elif ! command -v losetup >/dev/null ; then
-+    echo "$test_name: $test_description: skipped (no losetup)"
-+else
-+    dd if=/dev/zero of=$TMPFILE.1 bs=1 count=0 seek=$FILE_SIZE >> $LOG 2>&1
-+    dd if=/dev/zero of=$TMPFILE.2 bs=1 count=0 seek=$FILE_SIZE >> $LOG 2>&1
-+
-+    LOOP1=$(losetup --show --sector-size 4096 -f $TMPFILE.1)
-+    if [ ! -b "$LOOP1" ]; then
-+        echo "$test_name: $DESCRIPTION: skipped (no loop devices)"
-+        rm -f $TMPFILE.1 $TMPFILE.2
-+        exit 0
-+    fi
-+    LOOP2=$(losetup --show --sector-size 4096 -f $TMPFILE.2)
-+    if [ ! -b "$LOOP2" ]; then
-+        echo "$test_name: $DESCRIPTION: skipped (no loop devices)"
-+        rm -f $TMPFILE.1 $TMPFILE.2
-+	losetup -d $LOOP1
-+        exit 0
-+    fi
-+
-+    echo $MKE2FS -o Linux -t ext4 $LOOP1 >> $LOG 2>&1
-+    $MKE2FS -o Linux -t ext4 $LOOP1 >> $LOG 2>&1
-+    sync
-+    stat $TMPFILE.1 >> $LOG 2>&1
-+    SZ=$(stat -c "%b" $TMPFILE.1)
-+    if test $SZ -gt 10000 ; then
-+	echo "> 10000" > $OUT
-+    else
-+	echo "$SZ" > $OUT
-+    fi
-+
-+    echo $MKE2FS -o Linux -t ext4 -E assume_storage_prezeroed=1 $LOOP2 >> $LOG 2>&1
-+    $MKE2FS -o Linux -t ext4 -E assume_storage_prezeroed=1 $LOOP2 >> $LOG 2>&1
-+    sync
-+    stat $TMPFILE.2 >> $LOG 2>&1
-+    stat -c "%b" $TMPFILE.2 >> $OUT
-+
-+    losetup -d $LOOP1
-+    losetup -d $LOOP2
-+    rm -f $TMPFILE.1 $TMPFILE.2
-+
-+    cmp -s $OUT $EXP
-+    status=$?
-+
-+    if [ "$status" = 0 ] ; then
-+	echo "$test_name: $test_description: ok"
-+	touch $test_name.ok
-+    else
-+	echo "$test_name: $test_description: failed"
-+	cat $LOG > $test_name.failed
-+	diff $EXP $OUT >> $test_name.failed
-+    fi
-+fi
-+unset LOG OUT EXP FILE_SIZE LOOP1 LOOP2
+-Lukas
+
+> 
+> > +	print_log "mounting $fstype \"$1\" "
+> > +	do_mnt $@
+> > +	if [ $? -ne 0 ]; then
+> > +		fail
+> > +	else
+> > +		ok
+> > +	fi
+> > +}
+> > +
+> > +mnt() {
+> > +	# Do we need to run the tune2fs mount option test ?
+> > +	t2fs=0
+> > +	if [ "$1" == "-t" ]; then
+> > +		t2fs=1
+> > +		shift
+> > +	fi
+> > +
+> > +	_mnt $*
+> > +	$UMOUNT_PROG $SCRATCH_MNT 2> /dev/null
+> > +
+> > +	[ "$t2fs" -eq 0 ] && return
+> > +
+> > +	op_set=$1
+> > +	if [ $# -eq 1 ]; then
+> > +		check=$1
+> > +	elif [ $# -eq 2 ]; then
+> > +		check=$2
+> > +	else
+> > +		return 0
+> > +	fi
+> > +
+> > +	# some options need translation for tune2fs
+> > +	op_set=$(echo $op_set | sed -e 's/data=journal/journal_data/' \
+> > +				    -e 's/data=ordered/journal_data_ordered/' \
+> > +				    -e 's/data=writeback/journal_data_writeback/')
+> > +	$TUNE2FS_PROG -o $op_set $SCRATCH_DEV > /dev/null 2>&1
+> > +	_mnt "defaults" $check
+> > +	$UMOUNT_PROG $SCRATCH_MNT 2> /dev/null
+> > +	if [ "$op_set" = ^* ]; then
+> > +		op_set=${op_set#^}
+> > +	else
+> > +		op_set="^${op_set}"
+> > +	fi
+> > +	$TUNE2FS_PROG -o $op_set $SCRATCH_DEV > /dev/null 2>&1
+> > +}
+> > +
+> > +# $1 - options to mount with
+> > +# $2 - options to remount with
+> > +remount() {
+> > +	# First do this specifying both dev and mnt
+> > +	print_log "mounting $fstype \"$1\" "
+> > +	do_mnt $1
+> > +	[ $? -ne 0 ] && fail && return
+> > +	print_log "remounting \"$2\" "
+> > +	do_mnt remount,$2 $3
+> > +	if [ $? -ne 0 ]; then
+> > +		fail
+> > +		$UMOUNT_PROG $SCRATCH_MNT 2> /dev/null
+> > +		return
+> > +	else
+> > +		ok
+> > +	fi
+> > +	$UMOUNT_PROG $SCRATCH_MNT 2> /dev/null
+> > +
+> > +	# Now just specify mnt
+> > +	print_log "mounting $fstype \"$1\" "
+> > +	do_mnt $1
+> > +	[ $? -ne 0 ] && fail && return
+> > +	print_log "remounting (MNT ONLY) \"$2\" "
+> > +	do_mnt -n remount,$2 $3
+> > +	if [ $? -ne 0 ]; then
+> > +		fail
+> > +	else
+> > +		ok
+> > +	fi
+> > +
+> > +	$UMOUNT_PROG $SCRATCH_MNT 2> /dev/null
+> > +}
+> > +
+> > +# $1 - options to mount with, or -r argument
+> > +# $2 - options to remount with
+> > +_not_remount() {
+> 
+> Same here.
+> 
+> Thanks,
+> Eryu
+> 
+> > +	remount_only=0
+> > +	# If -r is specified we're going to do remount only
+> > +	if [ "$1" == "-r" ]; then
+> > +		remount_only=1
+> > +		# Dont need shift since first argument would
+> > +		# have been consumed by mount anyway
+> > +	fi
+> > +
+> > +	if [ $remount_only -eq 0 ]; then
+> > +		print_log "mounting $fstype \"$1\" "
+> > +		do_mnt $1
+> > +		[ $? -ne 0 ] && fail && return
+> > +	fi
+> > +	print_log "SHOULD FAIL remounting $fstype \"$2\" "
+> > +	do_mnt remount,$2 $3
+> > +	if [ $? -eq 0 ]; then
+> > +		fail
+> > +	else
+> > +		ok
+> > +	fi
+> > +
+> > +	# Now just specify mnt
+> > +	print_log "SHOULD FAIL remounting $fstype (MNT ONLY) \"$2\" "
+> > +	do_mnt -n remount,$2 $3
+> > +	if [ $? -eq 0 ]; then
+> > +		fail
+> > +	else
+> > +		ok
+> > +	fi
+> > +}
+> > +
+> > +not_remount() {
+> > +	_not_remount $*
+> > +	$UMOUNT_PROG $SCRATCH_MNT 2> /dev/null
+> > +}
+> > +
+> > +
+> > +do_mkfs() {
+> > +	$MKE2FS_PROG -T $fstype -Fq $* >> $seqres.full 2>&1 ||
+> > +	_fail "mkfs failed - $MKFS_EXT4_PROG -Fq $* $SCRATCH_DEV"
+> > +}
+> > +
+> > +not_ext2() {
+> > +	if [[ $fstype == "ext2" ]]; then
+> > +		not_$*
+> > +	else
+> > +		$*
+> > +	fi
+> > +}
+> > +
+> > +only_ext4() {
+> > +	if [[ $fstype == "ext4" ]]; then
+> > +		$*
+> > +	else
+> > +		not_$*
+> > +	fi
+> > +}
+> > +
+> > +# Create logdev for external journal
+> > +LOOP_IMG=$tmp.logdev
+> > +truncate -s ${LOGSIZE}k $LOOP_IMG
+> > +LOOP_LOGDEV=`_create_loop_device $LOOP_IMG`
+> > +majmin=`stat -c "%t:%T" $LOOP_LOGDEV`
+> > +LOGDEV_DEVNUM=`echo "${majmin%:*}*2^8 + ${majmin#*:}" | bc`
+> > +
+> > +# Test all the extN file system supported by ext4 driver
+> > +fstype=
+> > +for fstype in ext2 ext3 ext4; do
+> > +
+> > +	$UMOUNT_PROG $SCRATCH_MNT 2> /dev/null
+> > +	$UMOUNT_PROG $SCRATCH_DEV 2> /dev/null
+> > +
+> > +	do_mkfs $SCRATCH_DEV ${SIZE}k
+> > +
+> > +	# do we have fstype support ?
+> > +	do_mnt
+> > +	if [ $? -ne 0 ]; then
+> > +		print_log "$fstype not supported. Skipping..."
+> > +		ok
+> > +		continue
+> > +	fi
+> > +	if [ ! -f /proc/fs/ext4/$(_short_dev $SCRATCH_DEV)/options ]; then
+> > +		print_log "$fstype not supported. Skipping..."
+> > +		ok
+> > +		continue
+> > +	fi
+> > +
+> > +	$UMOUNT_PROG $SCRATCH_MNT 2> /dev/null
+> > +
+> > +	not_mnt failme
+> > +	mnt
+> > +	mnt bsddf
+> > +	mnt minixdf
+> > +	mnt grpid
+> > +	mnt -t bsdgroups grpid
+> > +	mnt nogrpid
+> > +	mnt sysvgroups nogrpid
+> > +	mnt resgid=1001
+> > +	mnt resuid=1001
+> > +	mnt sb=131072
+> > +	mnt errors=continue
+> > +	mnt errors=panic
+> > +	mnt errors=remount-ro
+> > +	mnt nouid32
+> > +	mnt debug
+> > +	mnt oldalloc removed
+> > +	mnt orlov removed
+> > +	mnt -t user_xattr
+> > +	mnt nouser_xattr
+> > +	mnt -t acl
+> > +	not_ext2 mnt noload norecovery
+> > +	mnt bh removed
+> > +	mnt nobh removed
+> > +	not_ext2 mnt commit=7
+> > +	mnt min_batch_time=200
+> > +	mnt max_batch_time=10000
+> > +	only_ext4 mnt journal_checksum
+> > +	only_ext4 mnt nojournal_checksum
+> > +	only_ext4 mnt journal_async_commit,data=writeback
+> > +	mnt abort ignored
+> > +	not_ext2 mnt -t data=journal
+> > +	not_ext2 mnt -t data=ordered
+> > +	not_ext2 mnt -t data=writeback
+> > +	not_ext2 mnt data_err=abort
+> > +	not_ext2 mnt data_err=ignore ignored
+> > +	mnt usrjquota=aquota.user,jqfmt=vfsv0
+> > +	not_mnt usrjquota=aquota.user
+> > +	mnt usrjquota= ignored
+> > +	mnt grpjquota=aquota.group,jqfmt=vfsv0
+> > +	not_mnt grpjquota=aquota.group
+> > +	mnt grpjquota= ignored
+> > +	mnt jqfmt=vfsold
+> > +	mnt jqfmt=vfsv0
+> > +	mnt jqfmt=vfsv1
+> > +	mnt grpquota
+> > +	mnt quota
+> > +	mnt noquota
+> > +	mnt usrquota
+> > +	mnt grpquota
+> > +	mnt barrier
+> > +	mnt barrier=0 nobarrier
+> > +	mnt barrier=1 barrier
+> > +	mnt barrier=99 barrier
+> > +	mnt -t nobarrier
+> > +	mnt i_version
+> > +	mnt stripe=512
+> > +	only_ext4 mnt delalloc
+> > +	only_ext4 mnt -t nodelalloc
+> > +	mnt warn_on_error
+> > +	mnt nowarn_on_error
+> > +	not_mnt debug_want_extra_isize=512
+> > +	mnt debug_want_extra_isize=32 ignored
+> > +	mnt mblk_io_submit removed
+> > +	mnt nomblk_io_submit removed
+> > +	mnt -t block_validity
+> > +	mnt noblock_validity
+> > +	mnt inode_readahead_blks=16
+> > +	not_ext2 mnt journal_ioprio=6 ignored
+> > +	mnt auto_da_alloc=0 noauto_da_alloc
+> > +	mnt auto_da_alloc=1 auto_da_alloc
+> > +	mnt auto_da_alloc=95 auto_da_alloc
+> > +	mnt auto_da_alloc
+> > +	mnt noauto_da_alloc
+> > +	only_ext4 mnt dioread_nolock
+> > +	only_ext4 mnt nodioread_nolock
+> > +	only_ext4 mnt dioread_lock nodioread_nolock
+> > +	mnt -t discard
+> > +	mnt nodiscard
+> > +	mnt init_itable=20
+> > +	mnt init_itable
+> > +	mnt init_itable=0
+> > +	mnt noinit_itable
+> > +	mnt max_dir_size_kb=4096
+> > +	mnt test_dummy_encryption
+> > +	mnt test_dummy_encryption=v1
+> > +	mnt test_dummy_encryption=v2
+> > +	not_mnt test_dummy_encryption=v3
+> > +	not_mnt test_dummy_encryption=
+> > +	mnt inlinecrypt
+> > +	mnt prefetch_block_bitmaps removed
+> > +	mnt no_prefetch_block_bitmaps
+> > +	# We don't currently have a way to know that the option has been
+> > +	# applied, so comment it out for now. This should be fixed in the
+> > +	# future.
+> > +	#mnt mb_optimize_scan=0
+> > +	#mnt mb_optimize_scan=1
+> > +	#not_mnt mb_optimize_scan=9
+> > +	#not_mnt mb_optimize_scan=
+> > +	mnt nombcache
+> > +	mnt no_mbcache nombcache
+> > +	mnt check=none removed
+> > +	mnt nocheck removed
+> > +	mnt reservation removed
+> > +	mnt noreservation removed
+> > +	mnt journal=20 ignored
+> > +	not_mnt nonsenseoption
+> > +	not_mnt nonsenseoption=value
+> > +
+> > +	# generic mount options
+> > +	mnt lazytime
+> > +	mnt nolazytime ^lazytime
+> > +	mnt noatime
+> > +	mnt nodiratime
+> > +	mnt noexec
+> > +	mnt nosuid
+> > +	mnt ro
+> > +
+> > +	# generic remount check
+> > +	remount barrier nobarrier
+> > +	remount nobarrier barrier
+> > +	remount discard nodiscard
+> > +	remount nodiscard discard
+> > +
+> > +	# dax mount options
+> > +	simple_mount -o dax=always $SCRATCH_DEV $SCRATCH_MNT > /dev/null 2>&1
+> > +	if [ $? -eq 0 ]; then
+> > +		$UMOUNT_PROG $SCRATCH_MNT 2> /dev/null
+> > +		mnt dax
+> > +		mnt dax=always
+> > +		mnt dax=never
+> > +		mnt dax=inode
+> > +
+> > +		not_remount lazytime dax
+> > +		not_remount dax=always dax=never
+> > +
+> > +		if [[ $fstype != "ext2" ]]; then
+> > +			not_remount data=journal dax
+> > +			not_remount data=journal dax=always
+> > +			not_remount data=journal dax=never
+> > +			not_remount data=journal dax=inode
+> > +		fi
+> > +	fi
+> > +
+> > +	# Quota remount check
+> > +	remount grpquota usrquota
+> > +	remount usrquota quota
+> > +	remount usrquota usrjquota=q.u,jqfmt=vfsv0
+> > +	remount grpquota grpjquota=q.g,jqfmt=vfsv0
+> > +
+> > +	not_remount usrquota grpjquota=q.g,jqfmt=vfsv0
+> > +	not_remount grpquota usrjquota=q.u,jqfmt=vfsv0
+> > +
+> > +	remount quota usrjquota=q.u,jqfmt=vfsv0
+> > +	not_remount quota grpjquota=q.g,jqfmt=vfsv0
+> > +
+> > +	remount usrjquota=q.u,jqfmt=vfsv0 grpjquota=q.g
+> > +	not_remount usrjquota=q.u,jqfmt=vfsv0 usrjquota=q.ua
+> > +	not_remount grpjquota=q.g,jqfmt=vfsv0 grpjquota=q.ga
+> > +
+> > +	remount usrjquota=q.u,jqfmt=vfsv0 usrquota usrjquota=q.u,jqfmt=vfsv0
+> > +	remount grpjquota=q.g,jqfmt=vfsv0 grpquota grpjquota=q.g,jqfmt=vfsv0
+> > +	not_remount usrjquota=q.u,jqfmt=vfsv0 grpquota
+> > +	not_remount grpjquota=q.g,jqfmt=vfsv0 usrquota
+> > +
+> > +	remount grpjquota=q.g,jqfmt=vfsv0 grpjquota= ^grpjquota=
+> > +	remount usrjquota=q.u,jqfmt=vfsv0 usrjquota= ^usrjquota=
+> > +	remount grpjquota=q.g,usrjquota=q.u,jqfmt=vfsv0 grpjquota=,usrjquota= ^grpjquota=,^usrjquota=
+> > +
+> > +	remount jqfmt=vfsv0 grpjquota=q.g
+> > +	remount jqfmt=vfsv0 usrjquota=q.u
+> > +
+> > +	if [[ $fstype != "ext2" ]]; then
+> > +		remount noload data=journal norecovery
+> > +		not_remount data=ordered data=journal
+> > +		not_remount data=journal data=writeback
+> > +		not_remount data=writeback data=ordered
+> > +	fi
+> > +
+> > +	do_mkfs -O journal_dev $LOOP_LOGDEV ${LOGSIZE}k
+> > +	do_mkfs -J device=$LOOP_LOGDEV $SCRATCH_DEV ${SIZE}k
+> > +	mnt defaults
+> > +	mnt journal_path=$LOOP_LOGDEV ignored
+> > +	mnt journal_dev=$LOGDEV_DEVNUM ignored
+> > +	not_mnt journal_path=${LOOP_LOGDEV}_nonexistent ignored
+> > +	not_mnt journal_dev=123456 ignored
+> > +	not_mnt journal_dev=999999999999999 ignored
+> > +
+> > +	do_mkfs -E quotatype=prjquota $SCRATCH_DEV ${SIZE}k
+> > +	mnt prjquota
+> > +
+> > +	# test clearing/changing journalled quota when enabled
+> > +	echo "== Testing active journalled quota" >> $seqres.full
+> > +	_mnt prjquota,grpjquota=aquota.group,usrjquota=aquota.user,jqfmt=vfsv0
+> > +
+> > +	# Prepare and enable quota
+> > +	quotacheck -vugm $SCRATCH_MNT >> $seqres.full 2>&1
+> > +	quotaon -vug $SCRATCH_MNT >> $seqres.full 2>&1
+> > +
+> > +	_not_remount -r grpjquota=
+> > +	_not_remount -r usrjquota=aaquota.user
+> > +	_not_remount -r grpjquota=aaquota.group
+> > +	_not_remount -r jqfmt=vfsv1
+> > +	_not_remount -r noquota
+> > +	_mnt remount,usrquota,grpquota ^usrquota,^grpquota
+> > +	$UMOUNT_PROG $SCRATCH_MNT > /dev/null 2>&1
+> > +
+> > +	# test clearing/changing quota when enabled
+> > +	do_mkfs -E quotatype=^prjquota $SCRATCH_DEV ${SIZE}k
+> > +	not_mnt prjquota
+> > +	echo "== Testing active non-journalled quota" >> $seqres.full
+> > +	_mnt grpquota,usrquota
+> > +
+> > +	# Prepare and enable quota
+> > +	quotacheck -vugm $SCRATCH_MNT >> $seqres.full 2>&1
+> > +	quotaon -vug $SCRATCH_MNT >> $seqres.full 2>&1
+> > +
+> > +	_not_remount -r noquota
+> > +	_not_remount -r usrjquota=aquota.user
+> > +	_not_remount -r grpjquota=aquota.group
+> > +	_not_remount -r jqfmt=vfsv1
+> > +	_mnt remount,grpjquota= grpquota,^grpjquota
+> > +	_mnt remount,usrjquota= usrquota,^usrjquota
+> > +	_mnt remount,usrquota,grpquota usrquota,grpquota
+> > +	quotaoff -f $SCRATCH_MNT >> $seqres.full 2>&1
+> > +	_mnt remount,noquota ^usrquota,^grpquota,quota
+> > +	$UMOUNT_PROG $SCRATCH_MNT > /dev/null 2>&1
+> > +
+> > +	# Quota feature
+> > +	echo "== Testing quota feature " >> $seqres.full
+> > +	do_mkfs -O quota -E quotatype=prjquota $SCRATCH_DEV ${SIZE}k
+> > +	mnt usrjquota=aquota.user,jqfmt=vfsv0 ^usrjquota=
+> > +	mnt grpjquota=aquota.user,jqfmt=vfsv0 ^grpjquota=
+> > +	mnt jqfmt=vfsv1 ^jqfmt=
+> > +	mnt prjquota
+> > +	mnt usrquota
+> > +	mnt grpquota
+> > +	not_remount defaults usrjquota=aquota.user
+> > +	not_remount defaults grpjquota=aquota.user
+> > +	not_remount defaults jqfmt=vfsv1
+> > +	remount defaults grpjquota=,usrjquota= ignored
+> > +
+> > +done #for fstype in ext2 ext3 ext4; do
+> > +
+> > +$UMOUNT_PROG $SCRATCH_MNT > /dev/null 2>&1
+> > +echo "$ERR errors encountered" >> $seqres.full
+> > +
+> > +status=$ERR
+> > +exit
+> > diff --git a/tests/ext4/053.out b/tests/ext4/053.out
+> > new file mode 100644
+> > index 00000000..d58db7e4
+> > --- /dev/null
+> > +++ b/tests/ext4/053.out
+> > @@ -0,0 +1,2 @@
+> > +QA output created by 053
+> > +Silence is golden.
+> > -- 
+> > 2.31.1
+> 
 
