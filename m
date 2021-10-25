@@ -2,21 +2,24 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E032043A0DB
-	for <lists+linux-ext4@lfdr.de>; Mon, 25 Oct 2021 21:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03CF443A3E9
+	for <lists+linux-ext4@lfdr.de>; Mon, 25 Oct 2021 22:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235255AbhJYTf6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 25 Oct 2021 15:35:58 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:58816 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236128AbhJYTdh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 25 Oct 2021 15:33:37 -0400
+        id S235541AbhJYUKb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 25 Oct 2021 16:10:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240198AbhJYUKN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 25 Oct 2021 16:10:13 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E55C03AFF1;
+        Mon, 25 Oct 2021 12:27:58 -0700 (PDT)
 Received: from localhost (unknown [IPv6:2804:14c:124:8a08::1002])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
         (Authenticated sender: krisman)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 6D2681F43463;
-        Mon, 25 Oct 2021 20:31:13 +0100 (BST)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 390DC1F430A9;
+        Mon, 25 Oct 2021 20:27:55 +0100 (BST)
 From:   Gabriel Krisman Bertazi <krisman@collabora.com>
 To:     amir73il@gmail.com, jack@suse.com
 Cc:     djwong@kernel.org, tytso@mit.edu, david@fromorbit.com,
@@ -24,232 +27,125 @@ Cc:     djwong@kernel.org, tytso@mit.edu, david@fromorbit.com,
         linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
         linux-ext4@vger.kernel.org,
         Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel@collabora.com, Jan Kara <jack@suse.cz>
-Subject: [PATCH v9 30/31] samples: Add fs error monitoring example
-Date:   Mon, 25 Oct 2021 16:27:45 -0300
-Message-Id: <20211025192746.66445-31-krisman@collabora.com>
+        kernel@collabora.com
+Subject: [PATCH v9 00/31] file system-wide error monitoring
+Date:   Mon, 25 Oct 2021 16:27:15 -0300
+Message-Id: <20211025192746.66445-1-krisman@collabora.com>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211025192746.66445-1-krisman@collabora.com>
-References: <20211025192746.66445-1-krisman@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Introduce an example of a FAN_FS_ERROR fanotify user to track filesystem
-errors.
+Hi,
 
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+This is the 9th version of this patch series.  Thank you, Amir, Jan and
+Ted, for the feedback in the previous versions.
 
----
-Changes since v4:
-  - Protect file_handle defines with ifdef guards
+The main difference in this version is that the pool is no longer
+resizeable nor limited in number of marks, even though we only
+pre-allocate 32 slots.  In addition, ext4 was modified to always return
+non-zero errno, and the documentation was fixed accordingly (No longer
+suggests we return EXT4_ERR* values.
 
-Changes since v1:
-  - minor fixes
----
- samples/Kconfig               |   9 +++
- samples/Makefile              |   1 +
- samples/fanotify/Makefile     |   5 ++
- samples/fanotify/fs-monitor.c | 142 ++++++++++++++++++++++++++++++++++
- 4 files changed, 157 insertions(+)
+I also droped the Reviewed-by tags from the ext4 patch, due to the
+changes above.
+
+Please let me know what you think.
+
+This was tested with LTP for regressions and also using the sample code
+on the last patch, with a corrupted image.  I wrote a new ltp test for
+this feature which is being reviewed and is available at:
+
+  https://gitlab.collabora.com/krisman/ltp  -b fan-fs-error
+
+In addition, I wrote a man-page that can be pulled from:
+
+  https://gitlab.collabora.com/krisman/man-pages.git -b fan-fs-error
+
+And is being reviewed at the list.
+
+I also pushed this full series to:
+
+  https://gitlab.collabora.com/krisman/linux -b fanotify-notifications-v8
+
+Thank you
+
+Cc: Darrick J. Wong <djwong@kernel.org>
+Cc: Theodore Ts'o <tytso@mit.edu>
+Cc: Dave Chinner <david@fromorbit.com>
+Cc: jack@suse.com
+To: amir73il@gmail.com
+Cc: dhowells@redhat.com
+Cc: khazhy@google.com
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-ext4@vger.kernel.org
+Cc: linux-api@vger.kernel.org
+Cc: linux-api@vger.kernel.org
+
+Amir Goldstein (3):
+  fsnotify: pass data_type to fsnotify_name()
+  fsnotify: pass dentry instead of inode data
+  fsnotify: clarify contract for create event hooks
+
+Gabriel Krisman Bertazi (28):
+  fsnotify: Don't insert unmergeable events in hashtable
+  fanotify: Fold event size calculation to its own function
+  fanotify: Split fsid check from other fid mode checks
+  inotify: Don't force FS_IN_IGNORED
+  fsnotify: Add helper to detect overflow_event
+  fsnotify: Add wrapper around fsnotify_add_event
+  fsnotify: Retrieve super block from the data field
+  fsnotify: Protect fsnotify_handle_inode_event from no-inode events
+  fsnotify: Pass group argument to free_event
+  fanotify: Support null inode event in fanotify_dfid_inode
+  fanotify: Allow file handle encoding for unhashed events
+  fanotify: Encode empty file handle when no inode is provided
+  fanotify: Require fid_mode for any non-fd event
+  fsnotify: Support FS_ERROR event type
+  fanotify: Reserve UAPI bits for FAN_FS_ERROR
+  fanotify: Pre-allocate pool of error events
+  fanotify: Support enqueueing of error events
+  fanotify: Support merging of error events
+  fanotify: Wrap object_fh inline space in a creator macro
+  fanotify: Add helpers to decide whether to report FID/DFID
+  fanotify: Report fid entry even for zero-length file_handle
+  fanotify: WARN_ON against too large file handles
+  fanotify: Report fid info for file related file system errors
+  fanotify: Emit generic error info for error event
+  fanotify: Allow users to request FAN_FS_ERROR events
+  ext4: Send notifications on error
+  samples: Add fs error monitoring example
+  docs: Document the FAN_FS_ERROR event
+
+ .../admin-guide/filesystem-monitoring.rst     |  74 +++++++++
+ Documentation/admin-guide/index.rst           |   1 +
+ fs/ext4/super.c                               |   8 +
+ fs/nfsd/filecache.c                           |   3 +
+ fs/notify/fanotify/fanotify.c                 | 117 +++++++++++--
+ fs/notify/fanotify/fanotify.h                 |  54 +++++-
+ fs/notify/fanotify/fanotify_user.c            | 156 +++++++++++++-----
+ fs/notify/fsnotify.c                          |  10 +-
+ fs/notify/group.c                             |   2 +-
+ fs/notify/inotify/inotify_fsnotify.c          |   5 +-
+ fs/notify/inotify/inotify_user.c              |   6 +-
+ fs/notify/notification.c                      |  14 +-
+ include/linux/fanotify.h                      |   9 +-
+ include/linux/fsnotify.h                      |  58 +++++--
+ include/linux/fsnotify_backend.h              |  96 ++++++++++-
+ include/uapi/linux/fanotify.h                 |   8 +
+ kernel/audit_fsnotify.c                       |   3 +-
+ kernel/audit_watch.c                          |   3 +-
+ samples/Kconfig                               |   9 +
+ samples/Makefile                              |   1 +
+ samples/fanotify/Makefile                     |   5 +
+ samples/fanotify/fs-monitor.c                 | 142 ++++++++++++++++
+ 22 files changed, 685 insertions(+), 99 deletions(-)
+ create mode 100644 Documentation/admin-guide/filesystem-monitoring.rst
  create mode 100644 samples/fanotify/Makefile
  create mode 100644 samples/fanotify/fs-monitor.c
 
-diff --git a/samples/Kconfig b/samples/Kconfig
-index b0503ef058d3..88353b8eac0b 100644
---- a/samples/Kconfig
-+++ b/samples/Kconfig
-@@ -120,6 +120,15 @@ config SAMPLE_CONNECTOR
- 	  with it.
- 	  See also Documentation/driver-api/connector.rst
- 
-+config SAMPLE_FANOTIFY_ERROR
-+	bool "Build fanotify error monitoring sample"
-+	depends on FANOTIFY
-+	help
-+	  When enabled, this builds an example code that uses the
-+	  FAN_FS_ERROR fanotify mechanism to monitor filesystem
-+	  errors.
-+	  See also Documentation/admin-guide/filesystem-monitoring.rst.
-+
- config SAMPLE_HIDRAW
- 	bool "hidraw sample"
- 	depends on CC_CAN_LINK && HEADERS_INSTALL
-diff --git a/samples/Makefile b/samples/Makefile
-index 087e0988ccc5..931a81847c48 100644
---- a/samples/Makefile
-+++ b/samples/Makefile
-@@ -5,6 +5,7 @@ subdir-$(CONFIG_SAMPLE_AUXDISPLAY)	+= auxdisplay
- subdir-$(CONFIG_SAMPLE_ANDROID_BINDERFS) += binderfs
- obj-$(CONFIG_SAMPLE_CONFIGFS)		+= configfs/
- obj-$(CONFIG_SAMPLE_CONNECTOR)		+= connector/
-+obj-$(CONFIG_SAMPLE_FANOTIFY_ERROR)	+= fanotify/
- subdir-$(CONFIG_SAMPLE_HIDRAW)		+= hidraw
- obj-$(CONFIG_SAMPLE_HW_BREAKPOINT)	+= hw_breakpoint/
- obj-$(CONFIG_SAMPLE_KDB)		+= kdb/
-diff --git a/samples/fanotify/Makefile b/samples/fanotify/Makefile
-new file mode 100644
-index 000000000000..e20db1bdde3b
---- /dev/null
-+++ b/samples/fanotify/Makefile
-@@ -0,0 +1,5 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+userprogs-always-y += fs-monitor
-+
-+userccflags += -I usr/include -Wall
-+
-diff --git a/samples/fanotify/fs-monitor.c b/samples/fanotify/fs-monitor.c
-new file mode 100644
-index 000000000000..a0e44cd31e6f
---- /dev/null
-+++ b/samples/fanotify/fs-monitor.c
-@@ -0,0 +1,142 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright 2021, Collabora Ltd.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <errno.h>
-+#include <err.h>
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <fcntl.h>
-+#include <sys/fanotify.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+#include <sys/types.h>
-+
-+#ifndef FAN_FS_ERROR
-+#define FAN_FS_ERROR		0x00008000
-+#define FAN_EVENT_INFO_TYPE_ERROR	5
-+
-+struct fanotify_event_info_error {
-+	struct fanotify_event_info_header hdr;
-+	__s32 error;
-+	__u32 error_count;
-+};
-+#endif
-+
-+#ifndef FILEID_INO32_GEN
-+#define FILEID_INO32_GEN	1
-+#endif
-+
-+#ifndef FILEID_INVALID
-+#define	FILEID_INVALID		0xff
-+#endif
-+
-+static void print_fh(struct file_handle *fh)
-+{
-+	int i;
-+	uint32_t *h = (uint32_t *) fh->f_handle;
-+
-+	printf("\tfh: ");
-+	for (i = 0; i < fh->handle_bytes; i++)
-+		printf("%hhx", fh->f_handle[i]);
-+	printf("\n");
-+
-+	printf("\tdecoded fh: ");
-+	if (fh->handle_type == FILEID_INO32_GEN)
-+		printf("inode=%u gen=%u\n", h[0], h[1]);
-+	else if (fh->handle_type == FILEID_INVALID && !fh->handle_bytes)
-+		printf("Type %d (Superblock error)\n", fh->handle_type);
-+	else
-+		printf("Type %d (Unknown)\n", fh->handle_type);
-+
-+}
-+
-+static void handle_notifications(char *buffer, int len)
-+{
-+	struct fanotify_event_metadata *event =
-+		(struct fanotify_event_metadata *) buffer;
-+	struct fanotify_event_info_header *info;
-+	struct fanotify_event_info_error *err;
-+	struct fanotify_event_info_fid *fid;
-+	int off;
-+
-+	for (; FAN_EVENT_OK(event, len); event = FAN_EVENT_NEXT(event, len)) {
-+
-+		if (event->mask != FAN_FS_ERROR) {
-+			printf("unexpected FAN MARK: %llx\n", event->mask);
-+			goto next_event;
-+		}
-+
-+		if (event->fd != FAN_NOFD) {
-+			printf("Unexpected fd (!= FAN_NOFD)\n");
-+			goto next_event;
-+		}
-+
-+		printf("FAN_FS_ERROR (len=%d)\n", event->event_len);
-+
-+		for (off = sizeof(*event) ; off < event->event_len;
-+		     off += info->len) {
-+			info = (struct fanotify_event_info_header *)
-+				((char *) event + off);
-+
-+			switch (info->info_type) {
-+			case FAN_EVENT_INFO_TYPE_ERROR:
-+				err = (struct fanotify_event_info_error *) info;
-+
-+				printf("\tGeneric Error Record: len=%d\n",
-+				       err->hdr.len);
-+				printf("\terror: %d\n", err->error);
-+				printf("\terror_count: %d\n", err->error_count);
-+				break;
-+
-+			case FAN_EVENT_INFO_TYPE_FID:
-+				fid = (struct fanotify_event_info_fid *) info;
-+
-+				printf("\tfsid: %x%x\n",
-+				       fid->fsid.val[0], fid->fsid.val[1]);
-+				print_fh((struct file_handle *) &fid->handle);
-+				break;
-+
-+			default:
-+				printf("\tUnknown info type=%d len=%d:\n",
-+				       info->info_type, info->len);
-+			}
-+		}
-+next_event:
-+		printf("---\n\n");
-+	}
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	int fd;
-+
-+	char buffer[BUFSIZ];
-+
-+	if (argc < 2) {
-+		printf("Missing path argument\n");
-+		return 1;
-+	}
-+
-+	fd = fanotify_init(FAN_CLASS_NOTIF|FAN_REPORT_FID, O_RDONLY);
-+	if (fd < 0)
-+		errx(1, "fanotify_init");
-+
-+	if (fanotify_mark(fd, FAN_MARK_ADD|FAN_MARK_FILESYSTEM,
-+			  FAN_FS_ERROR, AT_FDCWD, argv[1])) {
-+		errx(1, "fanotify_mark");
-+	}
-+
-+	while (1) {
-+		int n = read(fd, buffer, BUFSIZ);
-+
-+		if (n < 0)
-+			errx(1, "read");
-+
-+		handle_notifications(buffer, n);
-+	}
-+
-+	return 0;
-+}
 -- 
 2.33.0
 
