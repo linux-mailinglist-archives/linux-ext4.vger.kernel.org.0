@@ -2,115 +2,179 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 556E8439459
-	for <lists+linux-ext4@lfdr.de>; Mon, 25 Oct 2021 12:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 421E743948D
+	for <lists+linux-ext4@lfdr.de>; Mon, 25 Oct 2021 13:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232560AbhJYK7w (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 25 Oct 2021 06:59:52 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:40823 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232625AbhJYK7t (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 25 Oct 2021 06:59:49 -0400
-Received: by mail-io1-f71.google.com with SMTP id t1-20020a5d81c1000000b005de76e9e20cso5474809iol.7
-        for <linux-ext4@vger.kernel.org>; Mon, 25 Oct 2021 03:57:27 -0700 (PDT)
+        id S232720AbhJYLO6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 25 Oct 2021 07:14:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55068 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230232AbhJYLO5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 25 Oct 2021 07:14:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635160355;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vnbzxjZbHVjgrTYdokrc0WiK6M6NmcDLgA4GDSVOsCU=;
+        b=Odn2K2AiJgHG2tRR/CPRJAIj/WLz+Hgt0jld2Z+1LTDxg/KESjRNsv3OvdZOthG5FhtqcU
+        C2yZrVhew9OJVbp3RGrVCJ+R+EUcer9ENmJ7zqaEuVmHYbMWXArw4pZ5cGWZTC8r47EhoJ
+        jcX1GtEM03LXa/lF+K9noo5rjgaXjx8=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-270-0bmSvUK2Neyu-abpgQwzUA-1; Mon, 25 Oct 2021 07:12:34 -0400
+X-MC-Unique: 0bmSvUK2Neyu-abpgQwzUA-1
+Received: by mail-wm1-f70.google.com with SMTP id c5-20020a05600c0ac500b0030dba7cafc9so3514770wmr.5
+        for <linux-ext4@vger.kernel.org>; Mon, 25 Oct 2021 04:12:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=skC0MN0LWJsv8NJPLncPz/C6ZTXW9VvQmWkmzfnaU0s=;
-        b=4TEFL+3j8Fhs8tAkfhmDITijerUZA0G4sxbVB54DMklehi9+QmWGfudwIRDnnNlghU
-         WBwAumadArkGtk0M9XP42+9txqvI0bOOVCduevsUfjLCSxTvU5uEm9Sru9pQJdlt+7X0
-         R8n0q1ESQGPgGNxX2fuP2FhGyNjTdreV1f7H117Lso92f9ePGhHhgi8FDb49iCfzTFsL
-         yWRN/FVxUT8/EWvFGE/p33M82A+CC/nlK2BCsGAeyWg4d63gVs4ZvJqQyfNfp+E7lTFp
-         +X/JjRDWISBtOp8B2WOUB+BgWpmGC1vMiEDmJUsMeIN2KdLV0XUBD9zk2TfvQBk+ia2P
-         /u5Q==
-X-Gm-Message-State: AOAM532rvBuqaPZOkeGZNJh/Zv+oSR7/3N/aqZc+u6mkbpi6owO2iJ+0
-        t6VTDZ5t0kwxrk/Yw/Xc2yz+JZ1SkVmNvjCZMTjef+obsxge
-X-Google-Smtp-Source: ABdhPJzntQm6t/PLaUFKDFZbQaUp5/czZN0OoWsKqVNxOIhOgGwqaBnqVojfufLe30KPKsCHhLJpksRUW6BIsM39WpYtQvlJ4gDZ
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=vnbzxjZbHVjgrTYdokrc0WiK6M6NmcDLgA4GDSVOsCU=;
+        b=VCamAMCQG2rxfiwLkZ22Sn23k4XhqbAHF38bPYnBhsUVct9z9Af49qe9+NYz/4Idp+
+         YYL1ym3+Mqc12+fh70n4iCqfS8bQykphLQ4jk1oUQbT0laqygjr056+Vc8oLOasB1ALG
+         bmxhLpY03N2XNLqFs7Zrh+bL4AdS8kTN7u3dH7l6xrLKITlmTrygZux21KPcM9DokzZ7
+         /SdcIAv01J5rOiEP24kCeX53GvX4fHZ1LNVpvDtK+yAqBd9yNqyXamY6OziBvnzlUk/F
+         CIixjET+VXtNi7+CFbOUI/VvN71c9xfku1esE0BFRf1DTry3iou22eVezE46+wX8NYfH
+         kGGg==
+X-Gm-Message-State: AOAM532MXVrFUHdeY+++GtpfySOJxeGv8W2hHjgSIpriDilcfd3ZYdtK
+        F7b+J5Bms6SO3KpwsW8VBsWgG2ZZ57Q/H5ATaWnaVv9OTZ7e0kc1A5BjwJH7xKOtSAuR7AeZ/zO
+        wyGmZY/COYzAsysJ2C1jiog==
+X-Received: by 2002:a05:600c:3393:: with SMTP id o19mr49404648wmp.66.1635160352920;
+        Mon, 25 Oct 2021 04:12:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzMdO6lF0IB2SndxFlrRFBxLuV5+EhlabE63dVX6Dw6ZRWMLdNgP1jbUsplCPNyPYtMn7J5RQ==
+X-Received: by 2002:a05:600c:3393:: with SMTP id o19mr49404621wmp.66.1635160352647;
+        Mon, 25 Oct 2021 04:12:32 -0700 (PDT)
+Received: from andromeda.lan (ip4-46-39-172-19.cust.nbox.cz. [46.39.172.19])
+        by smtp.gmail.com with ESMTPSA id l5sm16293511wru.24.2021.10.25.04.12.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 04:12:32 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 13:12:29 +0200
+From:   Carlos Maiolino <cmaiolino@redhat.com>
+To:     Lukas Czerner <lczerner@redhat.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        linux-fsdevel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH v3 01/13] fs_parse: allow parameter value to be empty
+Message-ID: <20211025111229.zvk6np675v5fip2j@andromeda.lan>
+Mail-Followup-To: Lukas Czerner <lczerner@redhat.com>,
+        linux-ext4@vger.kernel.org, tytso@mit.edu,
+        linux-fsdevel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>
+References: <20211021114508.21407-1-lczerner@redhat.com>
+ <20211021114508.21407-2-lczerner@redhat.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cda3:: with SMTP id g3mr8925898ild.103.1635159447424;
- Mon, 25 Oct 2021 03:57:27 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 03:57:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000003d49d05cf2b3a9e@google.com>
-Subject: [syzbot] KCSAN: data-race in ext4_mark_iloc_dirty / ext4_mark_iloc_dirty
-From:   syzbot <syzbot+900324b91168c395f1a2@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021114508.21407-2-lczerner@redhat.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    9c0c4d24ac00 Merge tag 'block-5.15-2021-10-22' of git://gi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15418e52b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6339b6ea86d89fd7
-dashboard link: https://syzkaller.appspot.com/bug?extid=900324b91168c395f1a2
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+900324b91168c395f1a2@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KCSAN: data-race in ext4_mark_iloc_dirty / ext4_mark_iloc_dirty
-
-write to 0xffff888104bdf5c8 of 4 bytes by task 505 on cpu 0:
- ext4_update_inode_fsync_trans fs/ext4/ext4_jbd2.h:445 [inline]
- ext4_do_update_inode fs/ext4/inode.c:5114 [inline]
- ext4_mark_iloc_dirty+0x156a/0x1700 fs/ext4/inode.c:5683
- ext4_orphan_del+0x593/0x730 fs/ext4/orphan.c:297
- ext4_evict_inode+0xb1e/0xdb0 fs/ext4/inode.c:318
- evict+0x1c8/0x3c0 fs/inode.c:588
- iput_final fs/inode.c:1664 [inline]
- iput+0x430/0x580 fs/inode.c:1690
- do_unlinkat+0x2d4/0x540 fs/namei.c:4176
- __do_sys_unlink fs/namei.c:4217 [inline]
- __se_sys_unlink fs/namei.c:4215 [inline]
- __x64_sys_unlink+0x2c/0x30 fs/namei.c:4215
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x44/0xa0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-write to 0xffff888104bdf5c8 of 4 bytes by task 6959 on cpu 1:
- ext4_update_inode_fsync_trans fs/ext4/ext4_jbd2.h:445 [inline]
- ext4_do_update_inode fs/ext4/inode.c:5114 [inline]
- ext4_mark_iloc_dirty+0x156a/0x1700 fs/ext4/inode.c:5683
- __ext4_mark_inode_dirty+0x4ec/0x5c0 fs/ext4/inode.c:5879
- ext4_evict_inode+0x95e/0xdb0 fs/ext4/inode.c:280
- evict+0x1c8/0x3c0 fs/inode.c:588
- iput_final fs/inode.c:1664 [inline]
- iput+0x430/0x580 fs/inode.c:1690
- dentry_unlink_inode+0x273/0x290 fs/dcache.c:376
- d_delete+0x78/0xe0 fs/dcache.c:2505
- vfs_rmdir+0x2e6/0x300 fs/namei.c:3984
- do_rmdir+0x18d/0x330 fs/namei.c:4032
- __do_sys_rmdir fs/namei.c:4051 [inline]
- __se_sys_rmdir fs/namei.c:4049 [inline]
- __x64_sys_rmdir+0x2c/0x30 fs/namei.c:4049
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x44/0xa0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-value changed: 0x0000c326 -> 0x0000c327
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 1 PID: 6959 Comm: syz-executor.2 Tainted: G        W         5.15.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-==================================================================
+On Thu, Oct 21, 2021 at 01:44:56PM +0200, Lukas Czerner wrote:
+> Allow parameter value to be empty by spcifying fs_param_can_be_empty
+					^ specifying
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Other than that, the patch looks fine:
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Reviewed-by: Carlos Maiolino <cmaiolino@redhat.com>
+
+
+> +	if (!*param->string && (p->flags & fs_param_can_be_empty))
+
+> +		return 0;
+>  	b = lookup_constant(bool_names, param->string, -1);
+>  	if (b == -1)
+>  		return fs_param_bad_value(log, param);
+> @@ -211,8 +213,11 @@ int fs_param_is_u32(struct p_log *log, const struct fs_parameter_spec *p,
+>  		    struct fs_parameter *param, struct fs_parse_result *result)
+>  {
+>  	int base = (unsigned long)p->data;
+> -	if (param->type != fs_value_is_string ||
+> -	    kstrtouint(param->string, base, &result->uint_32) < 0)
+> +	if (param->type != fs_value_is_string)
+> +		return fs_param_bad_value(log, param);
+> +	if (!*param->string && (p->flags & fs_param_can_be_empty))
+> +		return 0;
+> +	if (kstrtouint(param->string, base, &result->uint_32) < 0)
+>  		return fs_param_bad_value(log, param);
+>  	return 0;
+>  }
+> @@ -221,8 +226,11 @@ EXPORT_SYMBOL(fs_param_is_u32);
+>  int fs_param_is_s32(struct p_log *log, const struct fs_parameter_spec *p,
+>  		    struct fs_parameter *param, struct fs_parse_result *result)
+>  {
+> -	if (param->type != fs_value_is_string ||
+> -	    kstrtoint(param->string, 0, &result->int_32) < 0)
+> +	if (param->type != fs_value_is_string)
+> +		return fs_param_bad_value(log, param);
+> +	if (!*param->string && (p->flags & fs_param_can_be_empty))
+> +		return 0;
+> +	if (kstrtoint(param->string, 0, &result->int_32) < 0)
+>  		return fs_param_bad_value(log, param);
+>  	return 0;
+>  }
+> @@ -231,8 +239,11 @@ EXPORT_SYMBOL(fs_param_is_s32);
+>  int fs_param_is_u64(struct p_log *log, const struct fs_parameter_spec *p,
+>  		    struct fs_parameter *param, struct fs_parse_result *result)
+>  {
+> -	if (param->type != fs_value_is_string ||
+> -	    kstrtoull(param->string, 0, &result->uint_64) < 0)
+> +	if (param->type != fs_value_is_string)
+> +		return fs_param_bad_value(log, param);
+> +	if (!*param->string && (p->flags & fs_param_can_be_empty))
+> +		return 0;
+> +	if (kstrtoull(param->string, 0, &result->uint_64) < 0)
+>  		return fs_param_bad_value(log, param);
+>  	return 0;
+>  }
+> @@ -244,6 +255,8 @@ int fs_param_is_enum(struct p_log *log, const struct fs_parameter_spec *p,
+>  	const struct constant_table *c;
+>  	if (param->type != fs_value_is_string)
+>  		return fs_param_bad_value(log, param);
+> +	if (!*param->string && (p->flags & fs_param_can_be_empty))
+> +		return 0;
+>  	c = __lookup_constant(p->data, param->string);
+>  	if (!c)
+>  		return fs_param_bad_value(log, param);
+> @@ -255,7 +268,8 @@ EXPORT_SYMBOL(fs_param_is_enum);
+>  int fs_param_is_string(struct p_log *log, const struct fs_parameter_spec *p,
+>  		       struct fs_parameter *param, struct fs_parse_result *result)
+>  {
+> -	if (param->type != fs_value_is_string || !*param->string)
+> +	if (param->type != fs_value_is_string ||
+> +	    (!*param->string && !(p->flags & fs_param_can_be_empty)))
+>  		return fs_param_bad_value(log, param);
+>  	return 0;
+>  }
+> @@ -275,7 +289,8 @@ int fs_param_is_fd(struct p_log *log, const struct fs_parameter_spec *p,
+>  {
+>  	switch (param->type) {
+>  	case fs_value_is_string:
+> -		if (kstrtouint(param->string, 0, &result->uint_32) < 0)
+> +		if ((!*param->string && !(p->flags & fs_param_can_be_empty)) ||
+> +		    kstrtouint(param->string, 0, &result->uint_32) < 0)
+>  			break;
+>  		if (result->uint_32 <= INT_MAX)
+>  			return 0;
+> diff --git a/include/linux/fs_parser.h b/include/linux/fs_parser.h
+> index aab0ffc6bac6..f103c91139d4 100644
+> --- a/include/linux/fs_parser.h
+> +++ b/include/linux/fs_parser.h
+> @@ -42,7 +42,7 @@ struct fs_parameter_spec {
+>  	u8			opt;	/* Option number (returned by fs_parse()) */
+>  	unsigned short		flags;
+>  #define fs_param_neg_with_no	0x0002	/* "noxxx" is negative param */
+> -#define fs_param_neg_with_empty	0x0004	/* "xxx=" is negative param */
+> +#define fs_param_can_be_empty	0x0004	/* "xxx=" is allowed */
+>  #define fs_param_deprecated	0x0008	/* The param is deprecated */
+>  	const void		*data;
+>  };
+> -- 
+> 2.31.1
+> 
+
+-- 
+Carlos
+
