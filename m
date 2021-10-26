@@ -2,41 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED43A43AD75
-	for <lists+linux-ext4@lfdr.de>; Tue, 26 Oct 2021 09:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B64C543AEBA
+	for <lists+linux-ext4@lfdr.de>; Tue, 26 Oct 2021 11:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231448AbhJZHrg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 26 Oct 2021 03:47:36 -0400
-Received: from verein.lst.de ([213.95.11.211]:60790 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229940AbhJZHrf (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 26 Oct 2021 03:47:35 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 9C3906732D; Tue, 26 Oct 2021 09:45:09 +0200 (CEST)
-Date:   Tue, 26 Oct 2021 09:45:09 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Shreeya Patel <shreeya.patel@collabora.com>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH 10/11] unicode: Add utf8-data module
-Message-ID: <20211026074509.GA594@lst.de>
-References: <20210915070006.954653-1-hch@lst.de> <20210915070006.954653-11-hch@lst.de> <87wnmipjrw.fsf@collabora.com> <20211012124904.GB9518@lst.de> <87sfx6papz.fsf@collabora.com>
+        id S234722AbhJZJMA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 26 Oct 2021 05:12:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234847AbhJZJLy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 26 Oct 2021 05:11:54 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C35FAC061227;
+        Tue, 26 Oct 2021 02:09:30 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id l13so4702148ilh.3;
+        Tue, 26 Oct 2021 02:09:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y5xNIVDKeqDoV8AwrzbKcuLQV4d4coDlOBkR+lZh6ZI=;
+        b=Q/R7Asu5XLz/o07GRexotBWO7tgOVQg/eiz/IAbuae24HMCb1OGHuxy1ZfkFRDVXqs
+         CEqxj//xvt68QMTRXS5hGUNTpUD2OWZznSqalWkkMNdQEUGZdtJiBbzUqM8TMRPUWy0m
+         FLe4JEQnHmfxx8nFRDi3cddp5z9PjH+4hCShr6Io1je2l1Ylk1gpVOQKnXAdMWrfCqJQ
+         Of1CreYii0GmFWx6ETh5a+wc36xwBThkFTUb2wecrwWOwyMVTUx99iMcBbMKDQT7dJRO
+         e9B0htEFnQaWJBtZCeXoinXM4nY84pg9caLgRiZIMT0G/LCZsqUWkMt23V7bN0RzNDvo
+         mciw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y5xNIVDKeqDoV8AwrzbKcuLQV4d4coDlOBkR+lZh6ZI=;
+        b=2kuDeiVF02nHZR/pXC+ZnRyJhZa8qM+zPPnRXbjhS0/yuzp3VIV8xKVfswW2rc1xXA
+         vsVbnMnaq1kra4s3t1Qe8JYUIqG9LBdOi0vl1eK9QxKGMAQ2fa996FBmQFraSx7jW0hF
+         LRJUYFUgGXlkhpH7DXeTODWChPcpUDjQD098NXCqWiBbdusFN7adC5kV2quuTAZf1TkX
+         xhWSHMpWwOTGPmxNG6gBVoglr18C45sxkRlGmQERX6AzFy1E6iX2msLjs9lp5U1BrAvh
+         kLJrHGh09FsCC6vXqh3pKBTXd1Bt0f9f2Qu4kSO4hgbxsi4woMcCePmeOmZcinDPPphR
+         e8jA==
+X-Gm-Message-State: AOAM532MPYYrbfpj41dCKKvQpNFFE7vNJehC5BQvnOhQ0abKPSJueruM
+        rr1HWEEScEGdcGa4zE4WiSAhvLMQtuceCVFTuyE=
+X-Google-Smtp-Source: ABdhPJzdTOif9GahJ20jd3JAMV4etjfOEln78c3hkiEv8e8znUjjStaO1WOc6yAe+RaKWlGiCOOnU8O1y/GeMYoUgOA=
+X-Received: by 2002:a05:6e02:214f:: with SMTP id d15mr12867052ilv.24.1635239370166;
+ Tue, 26 Oct 2021 02:09:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87sfx6papz.fsf@collabora.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <20211025192746.66445-1-krisman@collabora.com> <20211025192746.66445-25-krisman@collabora.com>
+In-Reply-To: <20211025192746.66445-25-krisman@collabora.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 26 Oct 2021 12:09:19 +0300
+Message-ID: <CAOQ4uxhCsCPNN=Xb6Xo9VpW+rYCkMUy-1zEXO41d1D4vN74GcA@mail.gmail.com>
+Subject: Re: [PATCH v9 24/31] fanotify: Report fid entry even for zero-length file_handle
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     Jan Kara <jack@suse.com>, "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Tso <tytso@mit.edu>,
+        Dave Chinner <david@fromorbit.com>,
+        David Howells <dhowells@redhat.com>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com,
+        Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 11:40:56AM -0300, Gabriel Krisman Bertazi wrote:
-> > Does this fix it?
-> 
-> Yes, it does.
-> 
-> I  will fold this into the original patch and queue this series for 5.16.
+On Mon, Oct 25, 2021 at 10:30 PM Gabriel Krisman Bertazi
+<krisman@collabora.com> wrote:
+>
+> Non-inode errors will reported with an empty file_handle.  In
+> preparation for that, allow some events to print the FID record even if
+> there isn't any file_handle encoded
+>
+> Even though FILEID_ROOT is used internally, make zero-length file
+> handles be reported as FILEID_INVALID.
+>
+> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+>
+> ---
+> Changes since v8:
+>   - Move fanotify_event_has_object_fh check here (jan)
 
-This series still doesn't seem to be queued up.
+Logically, this move is wrong, because after this patch,
+copy_fid_info_to_user() can theoretically be called with NULL fh in the
+existing construct of:
+  if (fanotify_event_has_object_fh(event)) {
+  ...
+    ret = copy_fid_info_to_user(fanotify_event_fsid(event),
+
+fanotify_event_object_fh(event),
+
+The thing that prevents this case in effect is that FAN_FS_ERROR
+is not yet wired, but I am not sure if leaving this theoretic bisect
+issue is a good idea.
+
+Anyway, that's a very minor theoretic issue and I am sure Jan can
+decide whether to deal with it and how (no need to post v10 IMO).
+
+Thanks,
+Amir.
