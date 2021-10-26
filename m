@@ -2,84 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F45043B605
-	for <lists+linux-ext4@lfdr.de>; Tue, 26 Oct 2021 17:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 574D543B839
+	for <lists+linux-ext4@lfdr.de>; Tue, 26 Oct 2021 19:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237076AbhJZPvA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 26 Oct 2021 11:51:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50898 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237075AbhJZPvA (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 26 Oct 2021 11:51:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D543160EFE;
-        Tue, 26 Oct 2021 15:48:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635263314;
-        bh=2+3VUKf/vfToAgnI/bI7hDWfTWfhxBk06YKhqrMekpk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N9UJUjU3qrxIBg7uUkGgiJRyM3tIoImsPaBaU6CfqzHnz3obYg8pskuAiI4ZbWWw5
-         AGjBRThWSeawlqQGAUz8cCLjcmgYEIWmO/92w30NUKt60GaQNsQh0JpFN9YPnSh6Y2
-         1RyZLpKaNQAE3ZcCDA5+bYN6an2K2GPqd7BoE3qWP6bHrLfenLrHEkHNjlXqzT28PU
-         4aACq+U34GVdjaSs0RATNUSnRiOEY4omYbHhgd61XFofH6ZYekvgJzaOmf5z8NCpZC
-         46kLmaJP6FA79KfizeMEuICrTY2QThx5w3nNLuyeQkllsrjNtNVsK+wvkfCehuDtDX
-         TJiRI+xW1EMyw==
-Date:   Tue, 26 Oct 2021 08:48:34 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     JeffleXu <jefflexu@linux.alibaba.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>, adilger.kernel@dilger.ca,
-        ira.weiny@intel.com, linux-xfs@vger.kernel.org,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, dan.j.williams@intel.com,
-        Vivek Goyal <vgoyal@redhat.com>, Christoph Hellwig <hch@lst.de>
-Subject: Re: [Question] ext4/xfs: Default behavior changed after per-file DAX
-Message-ID: <20211026154834.GB24307@magnolia>
-References: <26ddaf6d-fea7-ed20-cafb-decd63b2652a@linux.alibaba.com>
+        id S230316AbhJZRfm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 26 Oct 2021 13:35:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237835AbhJZRfh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 26 Oct 2021 13:35:37 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBD8CC061745
+        for <linux-ext4@vger.kernel.org>; Tue, 26 Oct 2021 10:33:13 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2804:14c:124:8a08::1002])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: krisman)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id E70C91F43A0C;
+        Tue, 26 Oct 2021 18:33:11 +0100 (BST)
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     tytso@mit.edu
+Cc:     linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel@collabora.com
+Subject: [PATCH] ext4: Fix error code saved on super block during file system abort
+Date:   Tue, 26 Oct 2021 14:33:02 -0300
+Message-Id: <20211026173302.84000-1-krisman@collabora.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <26ddaf6d-fea7-ed20-cafb-decd63b2652a@linux.alibaba.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 10:12:17PM +0800, JeffleXu wrote:
-> Hi,
-> 
-> Recently I'm working on supporting per-file DAX for virtiofs [1]. Vivek
-> Goyal and I are interested [2] why the default behavior has changed
-> since introduction of per-file DAX on ext4 and xfs [3][4].
-> 
-> That is, before the introduction of per-file DAX, when user doesn't
-> specify '-o dax', DAX is disabled for all files. After supporting
-> per-file DAX, when neither '-o dax' nor '-o dax=always|inode|never' is
-> specified, it actually works in a '-o dax=inode' way if the underlying
-> blkdev is DAX capable, i.e. depending on the persistent inode flag. That
-> is, the default behavior has changed from user's perspective.
-> 
-> We are not sure if this is intentional or not. Appreciate if anyone
-> could offer some hint.
+ext4_abort will eventually call ext4_errno_to_code, which translates the
+errno to an EXT4_ERR specific error.  This means that ext4_abort expects
+an errno.  By using EXT4_ERR_ here, it gets misinterpreted (as an errno),
+and ends up saving EXT4_ERR_EBUSY on the superblock during an abort,
+which makes no sense.
 
-Yes, that was an intentional change to all three filesystems to make the
-steps we expose to sysadmins/users consistent and documented officially:
+ESHUTDOWN will get properly translated to EXT4_ERR_SHUTDOWN, so use that
+instead.
 
-https://lore.kernel.org/linux-fsdevel/20200429043328.411431-1-ira.weiny@intel.com/
+Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+---
+ fs/ext4/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-(This was the first step; ext* were converted as separate series around
-the same time.)
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 1a766c68a55e..cc158007c5dd 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5829,7 +5829,7 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+ 	}
+ 
+ 	if (ext4_test_mount_flag(sb, EXT4_MF_FS_ABORTED))
+-		ext4_abort(sb, EXT4_ERR_ESHUTDOWN, "Abort forced by user");
++		ext4_abort(sb, ESHUTDOWN, "Abort forced by user");
+ 
+ 	sb->s_flags = (sb->s_flags & ~SB_POSIXACL) |
+ 		(test_opt(sb, POSIX_ACL) ? SB_POSIXACL : 0);
+-- 
+2.33.0
 
---D
-
-> 
-> 
-> [1] https://lore.kernel.org/all/YW2Oj4FrIB8do3zX@redhat.com/T/
-> [2]
-> https://lore.kernel.org/all/YW2Oj4FrIB8do3zX@redhat.com/T/#mf067498887ca2023c64c8b8f6aec879557eb28f8
-> [3] 9cb20f94afcd2964944f9468e38da736ee855b19 ("fs/ext4: Make DAX mount
-> option a tri-state")
-> [4] 02beb2686ff964884756c581d513e103542dcc6a ("fs/xfs: Make DAX mount
-> option a tri-state")
-> 
-> 
-> -- 
-> Thanks,
-> Jeffle
