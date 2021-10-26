@@ -2,192 +2,111 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC9243BBEF
-	for <lists+linux-ext4@lfdr.de>; Tue, 26 Oct 2021 22:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1A4343BCD6
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Oct 2021 00:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239334AbhJZVAB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 26 Oct 2021 17:00:01 -0400
-Received: from mga17.intel.com ([192.55.52.151]:35285 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231396AbhJZVAA (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 26 Oct 2021 17:00:00 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="210795343"
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="210795343"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 13:57:33 -0700
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="486357039"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 13:57:31 -0700
-Date:   Tue, 26 Oct 2021 13:57:31 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        JeffleXu <jefflexu@linux.alibaba.com>,
-        Theodore Ts'o <tytso@mit.edu>, adilger.kernel@dilger.ca,
-        linux-xfs@vger.kernel.org,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, dan.j.williams@intel.com,
-        Christoph Hellwig <hch@lst.de>,
-        Dave Chinner <dchinner@redhat.com>
-Subject: Re: [Question] ext4/xfs: Default behavior changed after per-file DAX
-Message-ID: <20211026205730.GI3465596@iweiny-DESK2.sc.intel.com>
-References: <26ddaf6d-fea7-ed20-cafb-decd63b2652a@linux.alibaba.com>
- <20211026154834.GB24307@magnolia>
- <YXhWP/FCkgHG/+ou@redhat.com>
+        id S239842AbhJZWGp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 26 Oct 2021 18:06:45 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:55517 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239906AbhJZWEi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 26 Oct 2021 18:04:38 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hf5QW5Hptz4xby;
+        Wed, 27 Oct 2021 09:02:11 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635285733;
+        bh=SK8GWLv/CoVRrpGWXO+u29Nlyt3+4mB21BnZlcosbsE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=s9ONVChh7b5Z1UZL6CBJ4dl0CrEZAb2+xgFIXA5Etk9C2Ob0Aggau8iCFjs6vV78O
+         DpDew0LfYLkDAFZ1SMglvSPa6TxUttFYGuvA7udKdSaFwWAEftaW7cBLVyDCM0RSxF
+         ElSxx13PfGnNu0SbPdEYUP1JW7XH1ySudnmMlGL5bZ7KMVV3vDbdbBF/zg1yWE2Weq
+         CcQXw67ylKS9elSxIu8hh0RV+uhPtulwt4dKldaMh0ft9wIJp0rFWVCNm0JuxMuqr0
+         wI+usUvrw2dV3raQSEQ1fR6va52lcErDcQn8mByfB7YHTPR0LWxVq8h7u8C1bkl3b7
+         De32l9SwXvraQ==
+Date:   Wed, 27 Oct 2021 09:02:08 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Shreeya Patel <shreeya.patel@collabora.com>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH 10/11] unicode: Add utf8-data module
+Message-ID: <20211027090208.70e88aab@canb.auug.org.au>
+In-Reply-To: <87mtmvevp7.fsf@collabora.com>
+References: <20210915070006.954653-1-hch@lst.de>
+        <20210915070006.954653-11-hch@lst.de>
+        <87wnmipjrw.fsf@collabora.com>
+        <20211012124904.GB9518@lst.de>
+        <87sfx6papz.fsf@collabora.com>
+        <20211026074509.GA594@lst.de>
+        <87mtmvevp7.fsf@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXhWP/FCkgHG/+ou@redhat.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Type: multipart/signed; boundary="Sig_/zpAG6xHoBv_D/DEo5Opsu+k";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 03:25:51PM -0400, Vivek Goyal wrote:
-> On Tue, Oct 26, 2021 at 08:48:34AM -0700, Darrick J. Wong wrote:
-> > On Tue, Oct 26, 2021 at 10:12:17PM +0800, JeffleXu wrote:
-> > > Hi,
-> > > 
-> > > Recently I'm working on supporting per-file DAX for virtiofs [1]. Vivek
-> > > Goyal and I are interested [2] why the default behavior has changed
-> > > since introduction of per-file DAX on ext4 and xfs [3][4].
-> > > 
-> > > That is, before the introduction of per-file DAX, when user doesn't
-> > > specify '-o dax', DAX is disabled for all files. After supporting
-> > > per-file DAX, when neither '-o dax' nor '-o dax=always|inode|never' is
-> > > specified, it actually works in a '-o dax=inode' way if the underlying
-> > > blkdev is DAX capable, i.e. depending on the persistent inode flag. That
-> > > is, the default behavior has changed from user's perspective.
-> > > 
-> > > We are not sure if this is intentional or not. Appreciate if anyone
-> > > could offer some hint.
-> > 
-> > Yes, that was an intentional change to all three filesystems to make the
-> > steps we expose to sysadmins/users consistent and documented officially:
-> > 
-> > https://lore.kernel.org/linux-fsdevel/20200429043328.411431-1-ira.weiny@intel.com/
-> 
-> Ok, so basically new dax options semantics are different from old "-o dax".
-> 
-> - dax=inode is default. This is change of behavior from old "-o dax" where
->   default was *no dax* at all.
+--Sig_/zpAG6xHoBv_D/DEo5Opsu+k
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Again I think this is debatable.  The file system will still work and all files
-will, by default, _not_ use DAX.  Specifying '-o dax' or future proof '-o
-dax=always' will override this just like it did before.
+Hi Gabriel,
 
-> 
-> - I tried xfs and mount does not fail even if user mounted with
->   "-o dax=inode" and underlying block device does not support dax.
->   That's little strange. Some users might expect a failure if certain
->   mount option can't be enabled.
+On Tue, 26 Oct 2021 10:56:20 -0300 Gabriel Krisman Bertazi <krisman@collabo=
+ra.com> wrote:
+>
+> Christoph Hellwig <hch@lst.de> writes:
+>=20
+> > On Tue, Oct 12, 2021 at 11:40:56AM -0300, Gabriel Krisman Bertazi wrote=
+: =20
+> >> > Does this fix it? =20
+> >>=20
+> >> Yes, it does.
+> >>=20
+> >> I  will fold this into the original patch and queue this series for 5.=
+16. =20
+> >
+> > This series still doesn't seem to be queued up. =20
+>=20
+> Hm, I'm keeping it here:
+>=20
+> https://git.kernel.org/pub/scm/linux/kernel/git/krisman/unicode.git/log/?=
+h=3Dfor-next_5.16
+>=20
+> Sorry, but I'm not sure what is the process to get tracked by
+> linux-next.  I'm Cc'ing Stephen to hopefully help me figure it out.
 
-But the mount option _is_ enabled.  It is just that the files can't be used in
-DAX mode.  The files can still have their inode flag set.  This was
-specifically discussed to support backing up file systems on devices which did
-not support DAX.  This allows you to restore that file system with all the
-proper inode flags in place.
+You just need to send me a git URL for your tree/branch (not a cgit or
+gitweb URL, please), plus some idea of what the tree include and how it
+is sent to Linus (directly or via another tree).  The branch should
+have a generic name (i.e. not including a version) as I will continuet
+to fetch that branch every day until you tell me to stop.  When your
+code is ready to be included in linux-next, all you have to do is
+update that branch to include the new code.
 
-If a DAX file is on a non-DAX device the file will not be in DAX mode when
-opened.  A statx() call can determine this.
+--=20
+Cheers,
+Stephen Rothwell
 
-> 
->   So in general, what's the expected behavior with filesystem mount
->   options. If user passes a mount option and it can't be enabled,
->   should filesystem return error and force user to try again without
->   the certain mount option or silently fallback to something else.
+--Sig_/zpAG6xHoBv_D/DEo5Opsu+k
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-But it is enabled.
+-----BEGIN PGP SIGNATURE-----
 
-> 
->   I think in the past I have come across overlayfs users which demanded
->   that mount fails if certain overlayfs option they have passed in
->   can't be honored. They want to know about it so that they can either
->   fix the configuration or change mount option.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF4euAACgkQAVBC80lX
+0GwceQgAi6W1qvH8e/YEFcP2VS6b/2KY5DJKr3QEo0s7wxM+T4f+jxvWcAlJ0LFk
+uewS5xgi5RcGUj4HLU517ONP2w3grK5ZCKmg7XAUop+t1YX97EUZa2dNzv4Q35PC
+Fmb/DOTE2i7DIs5/cIipcWqtwewutnDAHFWM1ZmnERWLeKhys3ekgTXPfIypcgxz
+qVDUqUSXhPmda4FugFRfSu5OF4VGk/LmvXca2gwcXjgnrQN4LsjkrbwuQKLDhczc
+A1qyzs8+g7WFGgf1KvEbcHwj5dGwIDgHg/PCxvjf5Q2dUHlELDrCrZ6kxz2f9r/C
+mulbXoc/7UhUjeyrGzi/d+ZJ/YzFjg==
+=a/+i
+-----END PGP SIGNATURE-----
 
-I understand how this is a bit convoluted.  However, for 99% of the users out
-there who are using DAX on DAX devices this is not going to change anything for
-them.  (Especially since they are all probably using '-o dax').
-
-> 
-> - With xfs, I mounted /dev/pmem0 with "-o dax=inode" and checked
->   /proc/mounts and I don't see "dax=inode" there. Is that intentional?
-
-Yes absolutely.  I originally implemented it to show dax=inode and was told
-that default mount options were not to be shown.  After thinking about it I
-agreed.  It is intractable to print out all the mount options which are
-defaulted.  The user can read what the defaults are an know what the file
-system is using for options which are not overridden.
-
-> 
-> I am just trying to wrap my head around the new semantics as we are
-> trying to implement those for virtiofs.
-> 
-> So following is the side affects of behavior change.
-> 
-> A. If somebody wrote scripts and scanned for mount flags to decide whehter
->    dax is enabled or not, these will not work anymore. scripts will have
->    to be changed to stat() every file in filesystem and look for
->    STATX_ATTR_DAX flag to determine dax status.
-
-Why would you need to stat() 'every' file?  Why, and to who, is it important
-that every file in the file system is in dax mode?  I was getting the feeling
-that it was important to the client to know this on the server but you last
-email in the other thread has confused me on that point.[1]
-
-
-> 
-> I would have thought to not make dax=inode default and let user opt-in
-> for that using "dax=inode" mount option. But I guess people liked 
-> dax=inode default better.
-
-Yes, because it gives the _end_ user (not the sys-admin) the control on their
-individual files.
-
-> 
-> Anway, I guess if we want to keep the behavior of virtiofs in-line with
-> ext4/xfs, we might have to make dax=inode default (atleast in client).
-
-Yes, I think we should make dax=inode the default.
-
-> Server default might be different because querying the state of
-> FS_XFLAG_DAX is extra ioctl() call on each LOOKUP and GETATTR call and
-> those who don't want to use DAX, might not want to pay this cost.
-
-I've not responded on the other thread because I feel like I've reached the
-depth of my virtiofs knowledge.  From your email:
-
-	"In general, there is no connection between DAX in guest and device on
-	host enabling DAX."[1]
-
-But then you say:
-
-	"... if server does not support DAX and client asks for DAX, mount will
-	fail. (As it should fail)."[1]
-
-So I decided I need to review the virtiofs code a bit to better understand this
-relationship.  Because I'm confused.
-
-As to the subject of having a file based policy; any such policy is not the
-kernels job.  If users want to have different policies based on file size they
-are free to do that with dax=inode.  I don't see how that works with the other
-2 mount options.
-
-Furthermore, performance of different files may be device specific and moving a
-file from one device to another may result in the user wanting to change the
-mode, which dax=inode allows.
-
-All of this this supports dax=inode as a better default.
-
-I get the feeling that your most concerned with the admin user being able to
-see if the entire file system is in DAX mode.  Is that true?  And I can't argue
-that indeed that is different.  But I'm failing to see the use case for that
-being a requirement.
-
-Is the biggest issue the lack of visibility to see if the device supports DAX?
-
-Ira
-
-[1] https://lore.kernel.org/linux-fsdevel/YXgGlrlv9VBFVt2U@redhat.com/
+--Sig_/zpAG6xHoBv_D/DEo5Opsu+k--
