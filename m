@@ -2,57 +2,56 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E47FC43D31B
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Oct 2021 22:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 404DE43D33F
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Oct 2021 22:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240632AbhJ0UtK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Oct 2021 16:49:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46430 "EHLO
+        id S244108AbhJ0U4A (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 Oct 2021 16:56:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237100AbhJ0UtJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Oct 2021 16:49:09 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C805C061767
-        for <linux-ext4@vger.kernel.org>; Wed, 27 Oct 2021 13:46:43 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id h193so4186207pgc.1
-        for <linux-ext4@vger.kernel.org>; Wed, 27 Oct 2021 13:46:43 -0700 (PDT)
+        with ESMTP id S244097AbhJ0Uz7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Oct 2021 16:55:59 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC55C061767
+        for <linux-ext4@vger.kernel.org>; Wed, 27 Oct 2021 13:53:33 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id y1-20020a17090a134100b001a27a7e9c8dso5756055pjf.3
+        for <linux-ext4@vger.kernel.org>; Wed, 27 Oct 2021 13:53:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=intel-com.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=sJa1X8Nq9O3Y4Jpn6QiA74FKvcIV+C24z8IRQUjGGE0=;
-        b=TxZcat++g2F8swI/guncdG9/17Z/6RCDj0O4DaP3V2lEJrBjGy6sZkL1oaiVAPUX7i
-         ibRs8fV27ZpLTrAbifA8zRst6y+Kk83j+VEjhNI+Vbneg5PK76uFu3Pt51HYTeEaMMd/
-         OOX5Fw0eevNVN84NzUSIfUo21BQoeHWua4n8iiMA5hViXFqIkNINp7tTwt6Va0lJxObQ
-         XbAdy+YG2LtzHKedjvpvUxc4S7WGprooI9+nPgi9DghDQrCCLYP8qAZgeT7medHBfAJw
-         WFVgaDdPI0CXvVHu3YcuEB3ai43LJghhdT9dLcGlj4W6soszGfdT20P58PyL1vt7VaVP
-         hqmw==
+        bh=JF27tid0jnJ4Lv4ojsqdS1ywAxF2Yh/rXBicw2Nx/Bg=;
+        b=1isnZNLrwmgFC3LXRliYMUrYtu55I8EQQ7pQxVF+w9vAU0wMFXPxuqqMaEfcBFZxXg
+         qcnLJVTOmdX1rGsKPaKzFF9Qu8Ee1ZOBQ182Hw4pibX9D4X5BrxrW8qLlaMVoa3uA3Tk
+         KGDMGjWdaecMTrVHOCSpZJWK2sZUzx48BP4iJpaAETHGMQ4UeJfwWrv7HXh9aCqjIq+2
+         9ALeonJXxoVD6TAd61eVgIdGSZeRVRycG+QFqApL/sPZtYnF3KhgHnv0ssu3/ANRUj/4
+         POtGkuO11AqaPuPuXfXiiUY+Tsb2EtZLFRQXaHjr8SeP+pOqWQy14Q9lU0490jcBhr1l
+         CXAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=sJa1X8Nq9O3Y4Jpn6QiA74FKvcIV+C24z8IRQUjGGE0=;
-        b=LraLke5jPg+MYuY+bzoiNGTKE/TYwtKRVSDf08zgyWl61hPO4ksgdzM5AkhsK4kkVb
-         pCjVo9S/kk7FZU2Jyzoi1ZTM13pOGujNVCf3dbgXexmx4eeNhAA/+Ta5KOObSrJas2K2
-         q6PKVqWiXdmM4Hq+lO19QRCDcbxzFVfR93qKgjo1iRkIOht8hxLpXjYMelHlhn4qUaN4
-         0ZMyHAVv1ewNqkOym6x+bt3HGsn64xadDPUxjf+c694CWTEQSXsHj1S8EXfrocCmvGry
-         ppBqFGbP1nY+Qfi6xYm0TbcItSuwrc3WdhpuuiwROCsXqIkDVwX4D8FpSkLb54T8QaBp
-         LCxA==
-X-Gm-Message-State: AOAM532NkyW02V6hri0xPCOIrl8zH7kMCytQaxG8E9beXH8P+CeDleUc
-        iPC2JJUZBREKpX/dr/LynehZBHLtF3+/NCIqFf4GvsWH2TLg7Q==
-X-Google-Smtp-Source: ABdhPJzuYcyzIFqC2QDapdBCh3wTfdWUrlublr2aq9P2i1Emub6ylFDIqTcshjHDL5pSUpWP0gXhlJZ+k6Puz+OdoJE=
-X-Received: by 2002:a05:6a00:1348:b0:47c:e8f1:69a3 with SMTP id
- k8-20020a056a00134800b0047ce8f169a3mr433025pfu.86.1635367603066; Wed, 27 Oct
- 2021 13:46:43 -0700 (PDT)
+        bh=JF27tid0jnJ4Lv4ojsqdS1ywAxF2Yh/rXBicw2Nx/Bg=;
+        b=f25IFWhdU03OPbiv9sIZYM1zWWt0bfS3DV9sFHxeonYIBVBO0tnfk0FYyh8qBexMvn
+         eqXT/lfdLspQ1sjLzndlA6K2AO8OtQbm2pZ3u3zlksfxAyEGkgne3iwQAyt9nDIlRgGh
+         BMNRugRDHyx4m3bXWUJECQFLpCW0r16PFjYGBgntUM0gNzfqgojFbRvaxJrYxUEP9MyS
+         LG2JUwVdB+FoboZnqJLMdqnvbMYqx83xf4JPhzbosjThqwfjVbJjdT0SDarAHfH4mQiL
+         IDXWmTsIfQMPQGY5K9/u7m9OyPyXpff/yCFlu//g7RD5VAu7Y1nSqLuv3Cy6/DuRvz9M
+         si9w==
+X-Gm-Message-State: AOAM530G/qvcoTfLlbYfCusMoczp8NyeCYz6MI85qt+RVVCBw6bfd+rX
+        6UhIjFWRFifqg4/VgXSK3EdaxmaevSnxgCrg9KtD0Q==
+X-Google-Smtp-Source: ABdhPJzghlFw+zkjpuNy8dyEqDgjwZ/Nb0+yCd5621faImzBOeUtIgX/3CShbYonbAi1vtWBePJ7pkat1hh6sB8QXRU=
+X-Received: by 2002:a17:90b:3b88:: with SMTP id pc8mr3618pjb.93.1635368012904;
+ Wed, 27 Oct 2021 13:53:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211018044054.1779424-1-hch@lst.de>
-In-Reply-To: <20211018044054.1779424-1-hch@lst.de>
+References: <20211018044054.1779424-1-hch@lst.de> <20211018044054.1779424-2-hch@lst.de>
+In-Reply-To: <20211018044054.1779424-2-hch@lst.de>
 From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 27 Oct 2021 13:46:31 -0700
-Message-ID: <CAPcyv4iEt78-XSsKjTWcpy71zaduXyyigTro6f3fmRqqFOG98Q@mail.gmail.com>
-Subject: Re: futher decouple DAX from block devices
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Mike Snitzer <snitzer@redhat.com>, Ira Weiny <ira.weiny@intel.com>,
+Date:   Wed, 27 Oct 2021 13:53:21 -0700
+Message-ID: <CAPcyv4hrEPizMOH-XhCqh=23EJDG=W6VwvQ1pVstfe-Jm-AsiQ@mail.gmail.com>
+Subject: Re: [PATCH 01/11] dm: make the DAX support dependend on CONFIG_FS_DAX
+To:     Christoph Hellwig <hch@lst.de>, Mike Snitzer <snitzer@redhat.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
         device-mapper development <dm-devel@redhat.com>,
         linux-xfs <linux-xfs@vger.kernel.org>,
         Linux NVDIMM <nvdimm@lists.linux.dev>,
@@ -60,61 +59,131 @@ Cc:     Mike Snitzer <snitzer@redhat.com>, Ira Weiny <ira.weiny@intel.com>,
         linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         linux-erofs@lists.ozlabs.org,
         linux-ext4 <linux-ext4@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
+        virtualization@lists.linux-foundation.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-[ add sfr ]
-
 On Sun, Oct 17, 2021 at 9:41 PM Christoph Hellwig <hch@lst.de> wrote:
 >
-> Hi Dan,
->
-> this series cleans up and simplifies the association between DAX and block
-> devices in preparation of allowing to mount file systems directly on DAX
-> devices without a detour through block devices.
+> The device mapper DAX support is all hanging off a block device and thus
+> can't be used with device dax.  Make it depend on CONFIG_FS_DAX instead
+> of CONFIG_DAX_DRIVER.  This also means that bdev_dax_pgoff only needs to
+> be built under CONFIG_FS_DAX now.
 
-So I notice that this is based on linux-next while libnvdimm-for-next
-is based on v5.15-rc4. Since I'm not Andrew I went ahead and rebased
-these onto v5.15-rc4, tested that, and then merged with linux-next to
-resolve the conflicts and tested again.
+Looks good.
 
-My merge resolution is here [1]. Christoph, please have a look. The
-rebase and the merge result are both passing my test and I'm now going
-to review the individual patches. However, while I do that and collect
-acks from DM and EROFS folks, I want to give Stephen a heads up that
-this is coming. Primarily I want to see if someone sees a better
-strategy to merge this, please let me know, but if not I plan to walk
-Stephen and Linus through the resolution.
-
-[1]: https://git.kernel.org/pub/scm/linux/kernel/git/djbw/nvdimm.git/commit/?id=c3894cf6eb8f
-
+Mike, can I get an ack to take this through nvdimm.git? (you'll likely
+see me repeat this question on subsequent patches in this series).
 
 >
-> Diffstat:
->  drivers/dax/Kconfig          |    4
->  drivers/dax/bus.c            |    2
->  drivers/dax/super.c          |  220 +++++--------------------------------------
->  drivers/md/dm-linear.c       |   51 +++------
->  drivers/md/dm-log-writes.c   |   44 +++-----
->  drivers/md/dm-stripe.c       |   65 +++---------
->  drivers/md/dm-table.c        |   22 ++--
->  drivers/md/dm-writecache.c   |    2
->  drivers/md/dm.c              |   29 -----
->  drivers/md/dm.h              |    4
->  drivers/nvdimm/Kconfig       |    2
->  drivers/nvdimm/pmem.c        |    9 -
->  drivers/s390/block/Kconfig   |    2
->  drivers/s390/block/dcssblk.c |   12 +-
->  fs/dax.c                     |   13 ++
->  fs/erofs/super.c             |   11 +-
->  fs/ext2/super.c              |    6 -
->  fs/ext4/super.c              |    9 +
->  fs/fuse/Kconfig              |    2
->  fs/fuse/virtio_fs.c          |    2
->  fs/xfs/xfs_super.c           |   54 +++++-----
->  include/linux/dax.h          |   30 ++---
->  22 files changed, 185 insertions(+), 410 deletions(-)
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/dax/super.c        | 6 ++----
+>  drivers/md/dm-linear.c     | 2 +-
+>  drivers/md/dm-log-writes.c | 2 +-
+>  drivers/md/dm-stripe.c     | 2 +-
+>  drivers/md/dm-writecache.c | 2 +-
+>  drivers/md/dm.c            | 2 +-
+>  6 files changed, 7 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/dax/super.c b/drivers/dax/super.c
+> index b882cf8106ea3..e20d0cef10a18 100644
+> --- a/drivers/dax/super.c
+> +++ b/drivers/dax/super.c
+> @@ -63,7 +63,7 @@ static int dax_host_hash(const char *host)
+>         return hashlen_hash(hashlen_string("DAX", host)) % DAX_HASH_SIZE;
+>  }
+>
+> -#ifdef CONFIG_BLOCK
+> +#if defined(CONFIG_BLOCK) && defined(CONFIG_FS_DAX)
+>  #include <linux/blkdev.h>
+>
+>  int bdev_dax_pgoff(struct block_device *bdev, sector_t sector, size_t size,
+> @@ -80,7 +80,6 @@ int bdev_dax_pgoff(struct block_device *bdev, sector_t sector, size_t size,
+>  }
+>  EXPORT_SYMBOL(bdev_dax_pgoff);
+>
+> -#if IS_ENABLED(CONFIG_FS_DAX)
+>  /**
+>   * dax_get_by_host() - temporary lookup mechanism for filesystem-dax
+>   * @host: alternate name for the device registered by a dax driver
+> @@ -219,8 +218,7 @@ bool dax_supported(struct dax_device *dax_dev, struct block_device *bdev,
+>         return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(dax_supported);
+> -#endif /* CONFIG_FS_DAX */
+> -#endif /* CONFIG_BLOCK */
+> +#endif /* CONFIG_BLOCK && CONFIG_FS_DAX */
+>
+>  enum dax_device_flags {
+>         /* !alive + rcu grace period == no new operations / mappings */
+> diff --git a/drivers/md/dm-linear.c b/drivers/md/dm-linear.c
+> index 679b4c0a2eea1..32fbab11bf90c 100644
+> --- a/drivers/md/dm-linear.c
+> +++ b/drivers/md/dm-linear.c
+> @@ -163,7 +163,7 @@ static int linear_iterate_devices(struct dm_target *ti,
+>         return fn(ti, lc->dev, lc->start, ti->len, data);
+>  }
+>
+> -#if IS_ENABLED(CONFIG_DAX_DRIVER)
+> +#if IS_ENABLED(CONFIG_FS_DAX)
+>  static long linear_dax_direct_access(struct dm_target *ti, pgoff_t pgoff,
+>                 long nr_pages, void **kaddr, pfn_t *pfn)
+>  {
+> diff --git a/drivers/md/dm-log-writes.c b/drivers/md/dm-log-writes.c
+> index d93a4db235124..6d694526881d0 100644
+> --- a/drivers/md/dm-log-writes.c
+> +++ b/drivers/md/dm-log-writes.c
+> @@ -903,7 +903,7 @@ static void log_writes_io_hints(struct dm_target *ti, struct queue_limits *limit
+>         limits->io_min = limits->physical_block_size;
+>  }
+>
+> -#if IS_ENABLED(CONFIG_DAX_DRIVER)
+> +#if IS_ENABLED(CONFIG_FS_DAX)
+>  static int log_dax(struct log_writes_c *lc, sector_t sector, size_t bytes,
+>                    struct iov_iter *i)
+>  {
+> diff --git a/drivers/md/dm-stripe.c b/drivers/md/dm-stripe.c
+> index 6660b6b53d5bf..f084607220293 100644
+> --- a/drivers/md/dm-stripe.c
+> +++ b/drivers/md/dm-stripe.c
+> @@ -300,7 +300,7 @@ static int stripe_map(struct dm_target *ti, struct bio *bio)
+>         return DM_MAPIO_REMAPPED;
+>  }
+>
+> -#if IS_ENABLED(CONFIG_DAX_DRIVER)
+> +#if IS_ENABLED(CONFIG_FS_DAX)
+>  static long stripe_dax_direct_access(struct dm_target *ti, pgoff_t pgoff,
+>                 long nr_pages, void **kaddr, pfn_t *pfn)
+>  {
+> diff --git a/drivers/md/dm-writecache.c b/drivers/md/dm-writecache.c
+> index 18320444fb0a9..4c3a6e33604d3 100644
+> --- a/drivers/md/dm-writecache.c
+> +++ b/drivers/md/dm-writecache.c
+> @@ -38,7 +38,7 @@
+>  #define BITMAP_GRANULARITY     PAGE_SIZE
+>  #endif
+>
+> -#if IS_ENABLED(CONFIG_ARCH_HAS_PMEM_API) && IS_ENABLED(CONFIG_DAX_DRIVER)
+> +#if IS_ENABLED(CONFIG_ARCH_HAS_PMEM_API) && IS_ENABLED(CONFIG_FS_DAX)
+>  #define DM_WRITECACHE_HAS_PMEM
+>  #endif
+>
+> diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+> index 7870e6460633f..79737aee516b1 100644
+> --- a/drivers/md/dm.c
+> +++ b/drivers/md/dm.c
+> @@ -1783,7 +1783,7 @@ static struct mapped_device *alloc_dev(int minor)
+>         md->disk->private_data = md;
+>         sprintf(md->disk->disk_name, "dm-%d", minor);
+>
+> -       if (IS_ENABLED(CONFIG_DAX_DRIVER)) {
+> +       if (IS_ENABLED(CONFIG_FS_DAX)) {
+>                 md->dax_dev = alloc_dax(md, md->disk->disk_name,
+>                                         &dm_dax_ops, 0);
+>                 if (IS_ERR(md->dax_dev))
+> --
+> 2.30.2
+>
