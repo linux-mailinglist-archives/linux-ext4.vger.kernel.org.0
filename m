@@ -2,55 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F3943C30C
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Oct 2021 08:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5D843C325
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Oct 2021 08:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238502AbhJ0GgV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Oct 2021 02:36:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47500 "EHLO
+        id S238307AbhJ0GqW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 Oct 2021 02:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230342AbhJ0GgU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Oct 2021 02:36:20 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E71DC061570
-        for <linux-ext4@vger.kernel.org>; Tue, 26 Oct 2021 23:33:55 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id w15so1845671ilv.5
-        for <linux-ext4@vger.kernel.org>; Tue, 26 Oct 2021 23:33:55 -0700 (PDT)
+        with ESMTP id S230342AbhJ0GqT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Oct 2021 02:46:19 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 804AFC061570
+        for <linux-ext4@vger.kernel.org>; Tue, 26 Oct 2021 23:43:54 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id f9so2308080ioo.11
+        for <linux-ext4@vger.kernel.org>; Tue, 26 Oct 2021 23:43:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=NIqGrm4WaQz+Kb4+hu8wwNjJh4Ob0G8KE2322BysY6Y=;
-        b=CGVJlKtBzxO0vkAtdjDzjIeb0QmgxeXaBg6tRVZ+fBTIerOIyYZLPHaVhD3DhaejHH
-         KmUU2Z+ns3hRvKYQljSOxnqiSOPE2tbGJ4vchFEtfrzC/Jm8dsgEcJK6sCgs1MKDeF9g
-         d/Gaf6jf1beENcFoOXCsEzjHGB14w67Xkx1PF7zYPm4FOSqEyxIXZO72Ah7iTzrrLSrP
-         b2QPoAvD5Rb2N30V2G0v484XJLqQ3lKHr8AQB8aZ3qwgtzu3ontEfxvZsBld8Vnb2UhD
-         hmMOZ15ZXMmNHbwE8/QzrNrNubuZkMOh0xLH/x/2apfAwpvQGtfyeO/DgwxyQv4eicJw
-         UctQ==
+        bh=u0tjnH7cGTMnJZzZdMCwY+OSK2Wv5tgvwfL8n26UIvo=;
+        b=UF1qxaetdU5AaUk6+ECLYk0yoLF0rVQNlSxRSaZjonb0cHU4UmqxlzN61h2XEl1JG3
+         HJEozkQZCGaozcHP6nknXZ5Jph0k8dFd+ByJJlTqxpCupwtJ67c2smndLzwQNBu47hRh
+         w30tTahJs1BApnSgchFtILE5TnIUJxKhYQsq8DS3eKY3jQfKi/0gVnVMLO65mP0cNslp
+         k4G947RCPezqUI+dfsErFF4MJLyDkHKZvzuWKH33Pa7KGt2Fv95zLS7LIN8H1zUdbk2E
+         /XgiTZ3jHyR7H97UlB1q5X2NhYuqzwTQsMDUqH9o+frjsv94dnqc7onNjyp9RZumvVnT
+         s85w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NIqGrm4WaQz+Kb4+hu8wwNjJh4Ob0G8KE2322BysY6Y=;
-        b=RKBC45VgokAfAfolYcoGPqixLcSFpDaOmC7SiUV/+MUm3aNG3jbuVlfaPTs6OjNnTL
-         CdLWPpp8BivNi9vfO9I6jurRl8leeqWRoULOENhSCCWrQiNWKz9ufcTiWGVaeC813OEJ
-         NOt6G5FQGfICqjng2gikO9gAoznx27tGMLRN5kJNnyuHGFRmHb/OmMySoFn6GQeehcAW
-         iFDea5vjH/Ki4Y22HxKjXx9yT1oIvD7C9XL4fbga8ywUCkd322PGv1zp0t2CLgDt4gIi
-         zsCnoMod9mccFzeGokJyUOev9BHh6viPCYHcTGbMrAkBkG4LP/tBj/ljawz89KqlMSIC
-         zFNg==
-X-Gm-Message-State: AOAM533CF99SCef4+Djw/ulau9vAtmWHYLYcMo+e651MmlKWnrlWpA7/
-        cWrNcG8umjrZhNjdDetbrNceFfVW8EvDK2KbxuA=
-X-Google-Smtp-Source: ABdhPJyPGkInEUiQbhKFVgP56C3U2evCJ5iXHm1gk5IO1DAMK7feKgux2WJmFUmWWkHHhrcPNWTBwD/qe9S5rLRCygU=
-X-Received: by 2002:a05:6e02:20e7:: with SMTP id q7mr18729497ilv.254.1635316434886;
- Tue, 26 Oct 2021 23:33:54 -0700 (PDT)
+        bh=u0tjnH7cGTMnJZzZdMCwY+OSK2Wv5tgvwfL8n26UIvo=;
+        b=CxEcidEWvuiaQIZnYJYwMfXk5pAbK5SKI4tDKwYAE3ORNPjY6VD4UPvJaXuqr4rzaY
+         l9tcuIgUDG8Ekz17HQ3X2AqeHZX2QcWswixvgSykFoU33WJsl1ebFLDt8Gr+C5XYiAng
+         W6CfimVWIj/+JamMte73p5IfBgjo144/0kSDI4eaZQ0UL9FOVL+SabTqkTTpU53BYA7w
+         kO400UGa10/uOOoT590d4Xji0njeEawBrGojXae18slHNQ5fVKX2UZx6hwA81JfuvD/4
+         lC4twpwE8cYy5ofnBjRGFM2bif4l2tDUpMglk9h7YBLeHiDnfX96i4o3aUf5NfKi64FT
+         9Dyg==
+X-Gm-Message-State: AOAM531Okl0yFpryWtFWsE7U88wAXZ+tLvfBF3ol+BwB9Xb+9B1UaJwV
+        QBT13cPR0N8eqCW+sswZWATKoOD8vgl0S3EdbiE=
+X-Google-Smtp-Source: ABdhPJyKujfwG5lyx6ez8ZuzrwIya1B8KTWqM2an447uNxze1QzsZtuA4yrpiMDK7tkacAefrUY9SkclGg/fUmgnfec=
+X-Received: by 2002:a5d:8792:: with SMTP id f18mr18314463ion.52.1635317033899;
+ Tue, 26 Oct 2021 23:43:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211026184239.151156-1-krisman@collabora.com> <20211026184239.151156-4-krisman@collabora.com>
-In-Reply-To: <20211026184239.151156-4-krisman@collabora.com>
+References: <20211026184239.151156-1-krisman@collabora.com> <20211026184239.151156-5-krisman@collabora.com>
+In-Reply-To: <20211026184239.151156-5-krisman@collabora.com>
 From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 27 Oct 2021 09:33:44 +0300
-Message-ID: <CAOQ4uxg=H=ytn+-zENmJnEp_7SF2W5WCK6yZJqEB3bsjo1cmBg@mail.gmail.com>
-Subject: Re: [PATCH v2 03/10] syscalls/fanotify20: Introduce helpers for
- FAN_FS_ERROR test
+Date:   Wed, 27 Oct 2021 09:43:43 +0300
+Message-ID: <CAOQ4uxgtkV7kF-YoWH4mau-p2U6bwLb1ajHXmVV1hwoDVpEDTQ@mail.gmail.com>
+Subject: Re: [PATCH v2 04/10] syscalls/fanotify20: Validate the generic error info
 To:     Gabriel Krisman Bertazi <krisman@collabora.com>
 Cc:     LTP List <ltp@lists.linux.it>, Jan Kara <jack@suse.com>,
         Khazhismel Kumykov <khazhy@google.com>, kernel@collabora.com,
@@ -64,172 +63,152 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 On Tue, Oct 26, 2021 at 9:43 PM Gabriel Krisman Bertazi
 <krisman@collabora.com> wrote:
 >
-> fanotify20 is a new test validating the FAN_FS_ERROR file system error
-> event.  This adds some basic structure for the next patches.
->
-> The strategy for error reporting testing in fanotify20 goes like this:
->
->   - Generate a broken filesystem
->   - Start FAN_FS_ERROR monitoring group
->   - Make the file system  notice the error through ordinary operations
->   - Observe the event generated
+> Implement some validation for the generic error info record emitted by
+> the kernel.  The error number is fs-specific but, well, we only support
+> ext4 for now anyway.
 >
 > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 >
+
+After fixing and testing configure.ac you may add:
+
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+
 > ---
 > Changes since v1:
 >   - Move defines to header file.
 > ---
->  testcases/kernel/syscalls/fanotify/.gitignore |   1 +
->  testcases/kernel/syscalls/fanotify/fanotify.h |   3 +
->  .../kernel/syscalls/fanotify/fanotify20.c     | 128 ++++++++++++++++++
->  3 files changed, 132 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/fanotify/fanotify20.c
+>  testcases/kernel/syscalls/fanotify/fanotify.h | 32 +++++++++++++++++
+>  .../kernel/syscalls/fanotify/fanotify20.c     | 35 ++++++++++++++++++-
+>  2 files changed, 66 insertions(+), 1 deletion(-)
 >
-> diff --git a/testcases/kernel/syscalls/fanotify/.gitignore b/testcases/kernel/syscalls/fanotify/.gitignore
-> index 9554b16b196e..c99e6fff76d6 100644
-> --- a/testcases/kernel/syscalls/fanotify/.gitignore
-> +++ b/testcases/kernel/syscalls/fanotify/.gitignore
-> @@ -17,4 +17,5 @@
->  /fanotify17
->  /fanotify18
->  /fanotify19
-> +/fanotify20
->  /fanotify_child
 > diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-> index b2b56466d028..8828b53532a2 100644
+> index 8828b53532a2..58e30aaf00bc 100644
 > --- a/testcases/kernel/syscalls/fanotify/fanotify.h
 > +++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-> @@ -124,6 +124,9 @@ static inline int safe_fanotify_mark(const char *file, const int lineno,
->  #ifndef FAN_OPEN_EXEC_PERM
->  #define FAN_OPEN_EXEC_PERM     0x00040000
+> @@ -167,6 +167,9 @@ typedef struct {
+>  #ifndef FAN_EVENT_INFO_TYPE_DFID
+>  #define FAN_EVENT_INFO_TYPE_DFID       3
 >  #endif
-> +#ifndef FAN_FS_ERROR
-> +#define FAN_FS_ERROR           0x00008000
+> +#ifndef FAN_EVENT_INFO_TYPE_ERROR
+> +#define FAN_EVENT_INFO_TYPE_ERROR      5
 > +#endif
 >
->  /* Flags required for unprivileged user group */
->  #define FANOTIFY_REQUIRED_USER_INIT_FLAGS    (FAN_REPORT_FID)
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify20.c b/testcases/kernel/syscalls/fanotify/fanotify20.c
-> new file mode 100644
-> index 000000000000..7a522aad4386
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify20.c
-> @@ -0,0 +1,128 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2021 Collabora Ltd.
-> + *
-> + * Author: Gabriel Krisman Bertazi <gabriel@krisman.be>
-> + * Based on previous work by Amir Goldstein <amir73il@gmail.com>
-> + */
-> +
-> +/*\
-> + * [Description]
-> + * Check fanotify FAN_ERROR_FS events triggered by intentionally
-> + * corrupted filesystems:
-> + *
-> + * - Generate a broken filesystem
-> + * - Start FAN_FS_ERROR monitoring group
-> + * - Make the file system notice the error through ordinary operations
-> + * - Observe the event generated
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include "config.h"
-> +
-> +#include <stdio.h>
-> +#include <sys/types.h>
-> +#include <errno.h>
-> +#include <string.h>
-> +#include <sys/mount.h>
-> +#include <sys/syscall.h>
-> +#include "tst_test.h"
-> +#include <sys/fanotify.h>
-> +#include <sys/types.h>
-> +#include <fcntl.h>
-> +
-> +#ifdef HAVE_SYS_FANOTIFY_H
-> +#include "fanotify.h"
-> +
-> +#define BUF_SIZE 256
-> +static char event_buf[BUF_SIZE];
-> +int fd_notify;
-> +
-> +#define MOUNT_PATH "test_mnt"
-> +
-> +static struct test_case {
-> +       char *name;
-> +       void (*trigger_error)(void);
-> +} testcases[] = {
+>  #ifndef HAVE_STRUCT_FANOTIFY_EVENT_INFO_HEADER
+>  struct fanotify_event_info_header {
+> @@ -184,6 +187,14 @@ struct fanotify_event_info_fid {
+>  };
+>  #endif /* HAVE_STRUCT_FANOTIFY_EVENT_INFO_FID */
+>
+> +#ifndef HAVE_STRUCT_FANOTIFY_EVENT_INFO_ERROR
+> +struct fanotify_event_info_error {
+> +       struct fanotify_event_info_header hdr;
+> +       __s32 error;
+> +       __u32 error_count;
 > +};
+> +#endif /* HAVE_STRUCT_FANOTIFY_EVENT_INFO_ERROR */
+
+Need to add in configure.ac:
+
+AC_CHECK_TYPES([struct fanotify_event_info_error, struct
+fanotify_event_info_header],,,[#include <sys/fanotify.h>])
+
+(not tested)
+
 > +
-
-
-Does LTP accept .tcnt = 0 gracefully?
-or maybe LTP project does not care much about failing tests during bisection?
-
-> +int check_error_event_metadata(struct fanotify_event_metadata *event)
+>  /* NOTE: only for struct fanotify_event_info_fid */
+>  #ifdef HAVE_STRUCT_FANOTIFY_EVENT_INFO_FID_FSID___VAL
+>  # define FSID_VAL_MEMBER(fsid, i) (fsid.__val[i])
+> @@ -403,4 +414,25 @@ static inline int fanotify_mark_supported_by_kernel(uint64_t flag)
+>                 fanotify_events_supported_by_kernel(mask, init_flags, mark_type)); \
+>  } while (0)
+>
+> +struct fanotify_event_info_header *get_event_info(
+> +                                       struct fanotify_event_metadata *event,
+> +                                       int info_type)
+> +{
+> +       struct fanotify_event_info_header *hdr = NULL;
+> +       char *start = (char *) event;
+> +       int off;
+> +
+> +       for (off = event->metadata_len; (off+sizeof(*hdr)) < event->event_len;
+> +            off += hdr->len) {
+> +               hdr = (struct fanotify_event_info_header *) &(start[off]);
+> +               if (hdr->info_type == info_type)
+> +                       return hdr;
+> +       }
+> +       return NULL;
+> +}
+> +
+> +#define get_event_info_error(event)                                    \
+> +       ((struct fanotify_event_info_error *)                           \
+> +        get_event_info((event), FAN_EVENT_INFO_TYPE_ERROR))
+> +
+>  #endif /* __FANOTIFY_H__ */
+> diff --git a/testcases/kernel/syscalls/fanotify/fanotify20.c b/testcases/kernel/syscalls/fanotify/fanotify20.c
+> index 7a522aad4386..6074d449ae63 100644
+> --- a/testcases/kernel/syscalls/fanotify/fanotify20.c
+> +++ b/testcases/kernel/syscalls/fanotify/fanotify20.c
+> @@ -42,10 +42,32 @@ int fd_notify;
+>
+>  static struct test_case {
+>         char *name;
+> +       int error;
+> +       unsigned int error_count;
+>         void (*trigger_error)(void);
+>  } testcases[] = {
+>  };
+>
+> +int check_error_event_info_error(struct fanotify_event_info_error *info_error,
+> +                                const struct test_case *ex)
 > +{
 > +       int fail = 0;
 > +
-> +       if (event->mask != FAN_FS_ERROR) {
+> +       if (info_error->error_count != ex->error_count) {
+> +               tst_res(TFAIL, "%s: Unexpected error_count (%d!=%d)",
+> +                       ex->name, info_error->error_count, ex->error_count);
 > +               fail++;
-> +               tst_res(TFAIL, "got unexpected event %llx",
-> +                       (unsigned long long)event->mask);
 > +       }
 > +
-> +       if (event->fd != FAN_NOFD) {
+> +       if (info_error->error != ex->error) {
+> +               tst_res(TFAIL, "%s: Unexpected error code value (%d!=%d)",
+> +                       ex->name, info_error->error, ex->error);
 > +               fail++;
-> +               tst_res(TFAIL, "Weird FAN_FD %llx",
-> +                       (unsigned long long)event->mask);
 > +       }
+> +
 > +       return fail;
 > +}
 > +
-> +void check_event(char *buf, size_t len, const struct test_case *ex)
-> +{
-> +       struct fanotify_event_metadata *event =
-> +               (struct fanotify_event_metadata *) buf;
-> +
-> +       if (len < FAN_EVENT_METADATA_LEN) {
-> +               tst_res(TFAIL, "No event metadata found");
-> +               return;
+>  int check_error_event_metadata(struct fanotify_event_metadata *event)
+>  {
+>         int fail = 0;
+> @@ -68,6 +90,8 @@ void check_event(char *buf, size_t len, const struct test_case *ex)
+>  {
+>         struct fanotify_event_metadata *event =
+>                 (struct fanotify_event_metadata *) buf;
+> +       struct fanotify_event_info_error *info_error;
+> +       int fail = 0;
+>
+>         if (len < FAN_EVENT_METADATA_LEN) {
+>                 tst_res(TFAIL, "No event metadata found");
+> @@ -77,7 +101,16 @@ void check_event(char *buf, size_t len, const struct test_case *ex)
+>         if (check_error_event_metadata(event))
+>                 return;
+>
+> -       tst_res(TPASS, "Successfully received: %s", ex->name);
+> +       info_error = get_event_info_error(event);
+> +       if (info_error)
+> +               fail += check_error_event_info_error(info_error, ex);
+> +       else {
+> +               tst_res(TFAIL, "Generic error record not found");
+> +               fail++;
 > +       }
 > +
-> +       if (check_error_event_metadata(event))
-> +               return;
-> +
-> +       tst_res(TPASS, "Successfully received: %s", ex->name);
-> +}
-> +
-> +static void do_test(unsigned int i)
-> +{
-> +       const struct test_case *tcase = &testcases[i];
-> +       size_t read_len;
-> +
-> +       tcase->trigger_error();
-> +
-> +       read_len = SAFE_READ(0, fd_notify, event_buf, BUF_SIZE);
-> +
-> +       check_event(event_buf, read_len, tcase);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +       REQUIRE_FANOTIFY_EVENTS_SUPPORTED_ON_FS(FAN_CLASS_NOTIF|FAN_REPORT_FID,
-> +                                               FAN_MARK_FILESYSTEM,
-> +                                               FAN_FS_ERROR, ".");
-> +
-> +       fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF|FAN_REPORT_FID,
-> +                                      O_RDONLY);
-> +
-> +       SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD|FAN_MARK_FILESYSTEM,
-> +                          FAN_FS_ERROR, AT_FDCWD, MOUNT_PATH);
-
-I think it is better to have the mark add/remove inside do_test
-This way when running fanotify -i 10 (which testers do)
-we also get test coverage for add/remove of mark with FS_ERROR mask.
-
-Thanks,
-Amir.
+> +       if (!fail)
+> +               tst_res(TPASS, "Successfully received: %s", ex->name);
+>  }
+>
+>  static void do_test(unsigned int i)
+> --
+> 2.33.0
+>
