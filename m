@@ -2,127 +2,99 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9C0143C787
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Oct 2021 12:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C74943C87D
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Oct 2021 13:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241388AbhJ0KWO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Oct 2021 06:22:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241374AbhJ0KWM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Oct 2021 06:22:12 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A712DC061767
-        for <linux-ext4@vger.kernel.org>; Wed, 27 Oct 2021 03:19:47 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id h2so2331421ili.11
-        for <linux-ext4@vger.kernel.org>; Wed, 27 Oct 2021 03:19:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZRuknEg+bXzpHdRasbCR+VO8e6gnGIeqPTgWpleV5F4=;
-        b=JH4SaBvKR5O8U4dJwVuauo33s+p6H2UNOBc5R/7r3Rqi+YctqoMD0h0C2J1z+ZAn2y
-         AvHtVwmrA9gqRDe2T3y+dv9jb2ygo4JvU1lHEdvt526VG0dtNyHbG40R4WKWutuYrjEW
-         lCNhOJAbG0dUOO552OQWwmkc16+A3QzNOh1j9m8+3z05k8Hd+bDPJtUkQ//xWV4zaUQe
-         UruwJxdgdGOThMCVR0dc1cLULc9l55A7u1Chl3fJv6Nk03n/4rBidkio1M6njFoaEkIS
-         eS1jbyziN2P4t579mW8Dt0rCz/pRknwEIg7/BiVL6Vz8Qn0O8TSSfcmOj0U2tvVoh8rk
-         4MQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZRuknEg+bXzpHdRasbCR+VO8e6gnGIeqPTgWpleV5F4=;
-        b=yxjaMTDFOIgrpqFWnP0Er8pMq6TIYLV73IhLLyChq0Ks6KLn4By+q6uvlGjWZd5JFD
-         2wfUT9wNQzUOgvfBU6JIZby/lfUB+c6BGHdZ/jTnwUA+zb28qPpuYqpVQW07qyfd+Ief
-         TPzG90yTM2rLQ2PqWyOfFrXS+XUo4XhRiCys1pI7pCbrKwMoObOE/AtTI/2n/lS3v0i8
-         ETwcqsvlzFY/72MfPIYSxIxCJdugwiAs28vvf8obAN0RjTwVXVWaVh2uN86CW2G85wrr
-         Yo7Me/OGwOj+hwbhjD/j60Se0iHxriEuC/ig35UK5i7yXWnINJnSEN0KWhiC/9jpvcUU
-         4HTw==
-X-Gm-Message-State: AOAM533FJOxW5Ji/OL17swX4Ya85juymuddAlnFlPyLKe459iCoV2ISD
-        E41vkPSjKQ5EPdUlXlVedXZ4wQ6UuQHUX5SKU+k=
-X-Google-Smtp-Source: ABdhPJwNSxhip3enHdK5O5ZdpZUhCLr79/Cu4g5rCXygrWtdPDIM7xYpUoVhjO26KTu50j0PPkBhvQ005qNSAiZtGcU=
-X-Received: by 2002:a05:6e02:18cf:: with SMTP id s15mr13759138ilu.198.1635329987184;
- Wed, 27 Oct 2021 03:19:47 -0700 (PDT)
+        id S241639AbhJ0LZM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 Oct 2021 07:25:12 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:42786 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234141AbhJ0LZK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Oct 2021 07:25:10 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id CE3071FD3B;
+        Wed, 27 Oct 2021 11:22:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1635333763; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Xeo4tWojXaRyeV9lNeOTLkKRkzGCZZeeM1nu6FtoDMo=;
+        b=GQH+bPd8mvMYWZUyrwYSJCHciPFVXkGCAGocBuVci9kLQ6yVUawaBnorhWIKXTbrr49QBn
+        xgq+dy8+SSVpp/14yOxXg8ZDU7PsxvKw+e1Ci3nOP16ZGS8OxQycO40Me/EI2UfKfV2bkp
+        BdzhAs7xpVlqH0mdHR7AgnWdTEwyDqc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1635333763;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Xeo4tWojXaRyeV9lNeOTLkKRkzGCZZeeM1nu6FtoDMo=;
+        b=+mPJrTFfhPKbdqDrBGxBaIrno+dpiT8rN3/njrhK85pDR05IwGconbjzv8lVhYuXteIWjd
+        RBcFjYwA3Y1XASAA==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id B63A3A3B83;
+        Wed, 27 Oct 2021 11:22:43 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 917271F2C66; Wed, 27 Oct 2021 13:22:43 +0200 (CEST)
+Date:   Wed, 27 Oct 2021 13:22:43 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Jan Kara <jack@suse.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Tso <tytso@mit.edu>,
+        Dave Chinner <david@fromorbit.com>,
+        David Howells <dhowells@redhat.com>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com
+Subject: Re: [PATCH v9 00/31] file system-wide error monitoring
+Message-ID: <20211027112243.GE28650@quack2.suse.cz>
+References: <20211025192746.66445-1-krisman@collabora.com>
+ <CAOQ4uxhth8NP4hS53rhLppK9_8ET41yrAx5d98s1uhSqrSzVHg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211026184239.151156-1-krisman@collabora.com>
- <20211026184239.151156-5-krisman@collabora.com> <CAOQ4uxgtkV7kF-YoWH4mau-p2U6bwLb1ajHXmVV1hwoDVpEDTQ@mail.gmail.com>
-In-Reply-To: <CAOQ4uxgtkV7kF-YoWH4mau-p2U6bwLb1ajHXmVV1hwoDVpEDTQ@mail.gmail.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 27 Oct 2021 13:19:36 +0300
-Message-ID: <CAOQ4uxia1GQPPbZXTiKnP-CWkfVczDhMmTe6+C5R_Gk1USOd-A@mail.gmail.com>
-Subject: Re: [PATCH v2 04/10] syscalls/fanotify20: Validate the generic error info
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     LTP List <ltp@lists.linux.it>, Jan Kara <jack@suse.com>,
-        Khazhismel Kumykov <khazhy@google.com>, kernel@collabora.com,
-        Ext4 <linux-ext4@vger.kernel.org>,
-        Matthew Bobrowski <repnop@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOQ4uxhth8NP4hS53rhLppK9_8ET41yrAx5d98s1uhSqrSzVHg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 9:43 AM Amir Goldstein <amir73il@gmail.com> wrote:
->
-> On Tue, Oct 26, 2021 at 9:43 PM Gabriel Krisman Bertazi
+On Tue 26-10-21 12:12:38, Amir Goldstein wrote:
+> On Mon, Oct 25, 2021 at 10:27 PM Gabriel Krisman Bertazi
 > <krisman@collabora.com> wrote:
 > >
-> > Implement some validation for the generic error info record emitted by
-> > the kernel.  The error number is fs-specific but, well, we only support
-> > ext4 for now anyway.
+> > Hi,
 > >
-> > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> > This is the 9th version of this patch series.  Thank you, Amir, Jan and
+> > Ted, for the feedback in the previous versions.
 > >
->
-> After fixing and testing configure.ac you may add:
->
-> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
->
-> > ---
-> > Changes since v1:
-> >   - Move defines to header file.
-> > ---
-> >  testcases/kernel/syscalls/fanotify/fanotify.h | 32 +++++++++++++++++
-> >  .../kernel/syscalls/fanotify/fanotify20.c     | 35 ++++++++++++++++++-
-> >  2 files changed, 66 insertions(+), 1 deletion(-)
+> > The main difference in this version is that the pool is no longer
+> > resizeable nor limited in number of marks, even though we only
+> > pre-allocate 32 slots.  In addition, ext4 was modified to always return
+> > non-zero errno, and the documentation was fixed accordingly (No longer
+> > suggests we return EXT4_ERR* values.
 > >
-> > diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-> > index 8828b53532a2..58e30aaf00bc 100644
-> > --- a/testcases/kernel/syscalls/fanotify/fanotify.h
-> > +++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-> > @@ -167,6 +167,9 @@ typedef struct {
-> >  #ifndef FAN_EVENT_INFO_TYPE_DFID
-> >  #define FAN_EVENT_INFO_TYPE_DFID       3
-> >  #endif
-> > +#ifndef FAN_EVENT_INFO_TYPE_ERROR
-> > +#define FAN_EVENT_INFO_TYPE_ERROR      5
-> > +#endif
+> > I also droped the Reviewed-by tags from the ext4 patch, due to the
+> > changes above.
 > >
-> >  #ifndef HAVE_STRUCT_FANOTIFY_EVENT_INFO_HEADER
-> >  struct fanotify_event_info_header {
-> > @@ -184,6 +187,14 @@ struct fanotify_event_info_fid {
-> >  };
-> >  #endif /* HAVE_STRUCT_FANOTIFY_EVENT_INFO_FID */
+> > Please let me know what you think.
 > >
-> > +#ifndef HAVE_STRUCT_FANOTIFY_EVENT_INFO_ERROR
-> > +struct fanotify_event_info_error {
-> > +       struct fanotify_event_info_header hdr;
-> > +       __s32 error;
-> > +       __u32 error_count;
-> > +};
-> > +#endif /* HAVE_STRUCT_FANOTIFY_EVENT_INFO_ERROR */
->
-> Need to add in configure.ac:
->
-> AC_CHECK_TYPES([struct fanotify_event_info_error, struct
-> fanotify_event_info_header],,,[#include <sys/fanotify.h>])
->
-> (not tested)
+> 
+> All good on my end.
+> I've made a couple of minor comments that
+> could be addressed on commit if no other issues are found.
 
-According to Matthew's pidfd patches the syntax should be:
+All good on my end as well. I've applied all the minor updates, tested the
+result and pushed it out to fsnotify branch of my tree. WRT to your new
+FS_ERROR LTP tests, I've noticed that the testcases 1 and 3 from test
+fanotify20 fail for me. After a bit of debugging this seems to be a bug in
+ext4 where it calls ext4_abort() with EXT4_ERR_ESHUTDOWN instead of plain
+ESHUTDOWN. Not sure if you have that fixed or how come the tests passed for
+you. After fixing that ext4 bug everything passes for me.
 
-AC_CHECK_TYPES([struct fanotify_event_info_fid, struct
-fanotify_event_info_header, struct fanotify_event_info_pidfd, struct
-fanotify_event_info_error],,,[#include <sys/fanotify.h>])
-
-Thanks,
-Amir.
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
