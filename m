@@ -2,99 +2,113 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C74943C87D
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Oct 2021 13:22:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA99543C8E4
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Oct 2021 13:53:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241639AbhJ0LZM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Oct 2021 07:25:12 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42786 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234141AbhJ0LZK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Oct 2021 07:25:10 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id CE3071FD3B;
-        Wed, 27 Oct 2021 11:22:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1635333763; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S240073AbhJ0LzZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 Oct 2021 07:55:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46232 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240055AbhJ0LzY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 27 Oct 2021 07:55:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635335578;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Xeo4tWojXaRyeV9lNeOTLkKRkzGCZZeeM1nu6FtoDMo=;
-        b=GQH+bPd8mvMYWZUyrwYSJCHciPFVXkGCAGocBuVci9kLQ6yVUawaBnorhWIKXTbrr49QBn
-        xgq+dy8+SSVpp/14yOxXg8ZDU7PsxvKw+e1Ci3nOP16ZGS8OxQycO40Me/EI2UfKfV2bkp
-        BdzhAs7xpVlqH0mdHR7AgnWdTEwyDqc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1635333763;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xeo4tWojXaRyeV9lNeOTLkKRkzGCZZeeM1nu6FtoDMo=;
-        b=+mPJrTFfhPKbdqDrBGxBaIrno+dpiT8rN3/njrhK85pDR05IwGconbjzv8lVhYuXteIWjd
-        RBcFjYwA3Y1XASAA==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id B63A3A3B83;
-        Wed, 27 Oct 2021 11:22:43 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 917271F2C66; Wed, 27 Oct 2021 13:22:43 +0200 (CEST)
-Date:   Wed, 27 Oct 2021 13:22:43 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Jan Kara <jack@suse.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Tso <tytso@mit.edu>,
-        Dave Chinner <david@fromorbit.com>,
-        David Howells <dhowells@redhat.com>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com
-Subject: Re: [PATCH v9 00/31] file system-wide error monitoring
-Message-ID: <20211027112243.GE28650@quack2.suse.cz>
-References: <20211025192746.66445-1-krisman@collabora.com>
- <CAOQ4uxhth8NP4hS53rhLppK9_8ET41yrAx5d98s1uhSqrSzVHg@mail.gmail.com>
+        bh=7cn8cimWbBWXEPvwtBHTbmJpS9FVs5pGnENY25bd5UU=;
+        b=deGQy21bdBI0+4bkCRSVE/hJIJR3Y688xbUIX010OhIU2sEE1TqsK1418nDA/zC171aSMT
+        FzOXQJ6Y5tNjfVLLWa9WWfTXcGNS2HNPbCIkvMj7OEcax4W7nvS3Rljb4jdFYOHFmJuHXi
+        hqqUxj+Y44u1H58IN86SDP2bgRuP/Qk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-274-QxUfaWElNQ-0d0ON8Tmilg-1; Wed, 27 Oct 2021 07:52:56 -0400
+X-MC-Unique: QxUfaWElNQ-0d0ON8Tmilg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C5C0515875AF;
+        Wed, 27 Oct 2021 11:52:51 +0000 (UTC)
+Received: from work (unknown [10.40.194.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8AAF51ACBB;
+        Wed, 27 Oct 2021 11:52:50 +0000 (UTC)
+Date:   Wed, 27 Oct 2021 13:52:46 +0200
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        linux-fsdevel@vger.kernel.org, cmaiolino@redhat.com
+Subject: Re: [PATCH v3 11/13] ext4: change token2str() to use ext4_param_specs
+Message-ID: <20211027115246.bewgpt35szs7ppda@work>
+References: <20211021114508.21407-1-lczerner@redhat.com>
+ <20211021114508.21407-12-lczerner@redhat.com>
+ <20211026114043.q5kwobv7vlnv2uej@andromeda.lan>
+ <20211026120953.mropvelvr4id7mej@work>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAOQ4uxhth8NP4hS53rhLppK9_8ET41yrAx5d98s1uhSqrSzVHg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211026120953.mropvelvr4id7mej@work>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 26-10-21 12:12:38, Amir Goldstein wrote:
-> On Mon, Oct 25, 2021 at 10:27 PM Gabriel Krisman Bertazi
-> <krisman@collabora.com> wrote:
-> >
-> > Hi,
-> >
-> > This is the 9th version of this patch series.  Thank you, Amir, Jan and
-> > Ted, for the feedback in the previous versions.
-> >
-> > The main difference in this version is that the pool is no longer
-> > resizeable nor limited in number of marks, even though we only
-> > pre-allocate 32 slots.  In addition, ext4 was modified to always return
-> > non-zero errno, and the documentation was fixed accordingly (No longer
-> > suggests we return EXT4_ERR* values.
-> >
-> > I also droped the Reviewed-by tags from the ext4 patch, due to the
-> > changes above.
-> >
-> > Please let me know what you think.
-> >
+On Tue, Oct 26, 2021 at 02:09:53PM +0200, Lukas Czerner wrote:
+> On Tue, Oct 26, 2021 at 01:40:43PM +0200, Carlos Maiolino wrote:
+> > On Thu, Oct 21, 2021 at 01:45:06PM +0200, Lukas Czerner wrote:
+> > > Chage token2str() to use ext4_param_specs instead of tokens so that we
+> > 
+> > ^ Change.
+> > 
+> > > can get rid of tokens entirely.
+> > 
+> > If you're removing tokens entirely, maybe the name token2str() doesn't make
+> > sense anymore?
 > 
-> All good on my end.
-> I've made a couple of minor comments that
-> could be addressed on commit if no other issues are found.
+> True, I guess it's no longer called "token" so maybe option2str() ?
 
-All good on my end as well. I've applied all the minor updates, tested the
-result and pushed it out to fsnotify branch of my tree. WRT to your new
-FS_ERROR LTP tests, I've noticed that the testcases 1 and 3 from test
-fanotify20 fail for me. After a bit of debugging this seems to be a bug in
-ext4 where it calls ext4_abort() with EXT4_ERR_ESHUTDOWN instead of plain
-ESHUTDOWN. Not sure if you have that fixed or how come the tests passed for
-you. After fixing that ext4 bug everything passes for me.
+Actually it's still called token in the struct mount_opts which is what
+we're passing down to the token2str() anyway. Since this really is
+inconsequential stuff I'll leave it as it is.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+-Lukas
+
+> 
+> -Lukas
+> 
+> > 
+> > > 
+> > > Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+> > > ---
+> > >  fs/ext4/super.c | 8 ++++----
+> > >  1 file changed, 4 insertions(+), 4 deletions(-)
+> > > 
+> > > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> > > index bdcaa158eab8..0ccd47f3fa91 100644
+> > > --- a/fs/ext4/super.c
+> > > +++ b/fs/ext4/super.c
+> > > @@ -3037,12 +3037,12 @@ static inline void ext4_show_quota_options(struct seq_file *seq,
+> > >  
+> > >  static const char *token2str(int token)
+> > >  {
+> > > -	const struct match_token *t;
+> > > +	const struct fs_parameter_spec *spec;
+> > >  
+> > > -	for (t = tokens; t->token != Opt_err; t++)
+> > > -		if (t->token == token && !strchr(t->pattern, '='))
+> > > +	for (spec = ext4_param_specs; spec->name != NULL; spec++)
+> > > +		if (spec->opt == token && !spec->type)
+> > >  			break;
+> > > -	return t->pattern;
+> > > +	return spec->name;
+> > >  }
+> > >  
+> > >  /*
+> > > -- 
+> > > 2.31.1
+> > > 
+> > 
+> > -- 
+> > Carlos
+> > 
+> 
+
