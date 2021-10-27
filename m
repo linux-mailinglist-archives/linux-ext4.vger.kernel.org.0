@@ -2,256 +2,133 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E6243CA61
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Oct 2021 15:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5782343CBDA
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Oct 2021 16:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236927AbhJ0NRV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Oct 2021 09:17:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44041 "EHLO
+        id S242471AbhJ0OVs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 Oct 2021 10:21:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48577 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236464AbhJ0NRU (ORCPT
+        by vger.kernel.org with ESMTP id S242486AbhJ0OVk (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 27 Oct 2021 09:17:20 -0400
+        Wed, 27 Oct 2021 10:21:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635340494;
+        s=mimecast20190719; t=1635344354;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6lYaDAFuy3wt+ZO/zKfRWwoq5pybwrOMZoYnxodYxNE=;
-        b=CJftnzEh6371dP1OlTKGR4OWvmTarpw94tokLPcifkvGQs1Ko7tuKKyyGn96Wit7aZ0zEA
-        3gAwqlKbjSrUWd8jeNhc/mULcCh4oq1gQFUJeXxSIvUwd10i6AF2y6xguXKxSGHBJ+xwO0
-        7IsjuBhsohUqxi0FkIYkXLQ0hEKPncI=
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=FBDNXn5opfgZEfd8fE3msBflFHRInWnTIkAZR/iFob4=;
+        b=cnGZdyqCMiiX/CYJUqYh4EVlLb+EHVWr2B1/oIUPbIJMtEH+oFln0RqH5FOWP2uxMPeGly
+        JShFwsGn2TzrMGhzhlvHs4uzM7/josiKNPfgTpLr/GpzRNESx9PzIP/Efw8aU08MPUvT8P
+        bKUBrmONNxrKMrvVQJRx76sHZK5ULco=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-317-Q5cUAYpoMiC8w9SP8OSISw-1; Wed, 27 Oct 2021 09:14:51 -0400
-X-MC-Unique: Q5cUAYpoMiC8w9SP8OSISw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-524-Xop_k_ESMAiz0Ua_eXBSKA-1; Wed, 27 Oct 2021 10:19:13 -0400
+X-MC-Unique: Xop_k_ESMAiz0Ua_eXBSKA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B4E29A0CAB;
-        Wed, 27 Oct 2021 13:14:49 +0000 (UTC)
-Received: from horse.redhat.com (unknown [10.22.34.10])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5B8A21001B3B;
-        Wed, 27 Oct 2021 13:14:49 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id E3E8F2204A5; Wed, 27 Oct 2021 09:14:48 -0400 (EDT)
-Date:   Wed, 27 Oct 2021 09:14:48 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        JeffleXu <jefflexu@linux.alibaba.com>,
-        Theodore Ts'o <tytso@mit.edu>, adilger.kernel@dilger.ca,
-        ira.weiny@intel.com, linux-xfs@vger.kernel.org,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, dan.j.williams@intel.com,
-        Christoph Hellwig <hch@lst.de>,
-        Dave Chinner <dchinner@redhat.com>
-Subject: Re: [Question] ext4/xfs: Default behavior changed after per-file DAX
-Message-ID: <YXlQyMfXDQnO/5E3@redhat.com>
-References: <26ddaf6d-fea7-ed20-cafb-decd63b2652a@linux.alibaba.com>
- <20211026154834.GB24307@magnolia>
- <YXhWP/FCkgHG/+ou@redhat.com>
- <20211026223317.GB5111@dread.disaster.area>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6EC2F101F7A5;
+        Wed, 27 Oct 2021 14:19:12 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.40.194.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 08E6E17DBA;
+        Wed, 27 Oct 2021 14:19:01 +0000 (UTC)
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     linux-ext4@vger.kernel.org, tytso@mit.edu
+Cc:     linux-fsdevel@vger.kernel.org,
+        Carlos Maiolino <cmaiolino@redhat.com>
+Subject: [PATCH v4 00/13] ext4: new mount API conversion
+Date:   Wed, 27 Oct 2021 16:18:44 +0200
+Message-Id: <20211027141857.33657-1-lczerner@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211026223317.GB5111@dread.disaster.area>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 09:33:17AM +1100, Dave Chinner wrote:
-> On Tue, Oct 26, 2021 at 03:25:51PM -0400, Vivek Goyal wrote:
-> > On Tue, Oct 26, 2021 at 08:48:34AM -0700, Darrick J. Wong wrote:
-> > > On Tue, Oct 26, 2021 at 10:12:17PM +0800, JeffleXu wrote:
-> > > > Hi,
-> > > > 
-> > > > Recently I'm working on supporting per-file DAX for virtiofs [1]. Vivek
-> > > > Goyal and I are interested [2] why the default behavior has changed
-> > > > since introduction of per-file DAX on ext4 and xfs [3][4].
-> > > > 
-> > > > That is, before the introduction of per-file DAX, when user doesn't
-> > > > specify '-o dax', DAX is disabled for all files. After supporting
-> > > > per-file DAX, when neither '-o dax' nor '-o dax=always|inode|never' is
-> > > > specified, it actually works in a '-o dax=inode' way if the underlying
-> > > > blkdev is DAX capable, i.e. depending on the persistent inode flag. That
-> > > > is, the default behavior has changed from user's perspective.
-> > > > 
-> > > > We are not sure if this is intentional or not. Appreciate if anyone
-> > > > could offer some hint.
-> > > 
-> > > Yes, that was an intentional change to all three filesystems to make the
-> > > steps we expose to sysadmins/users consistent and documented officially:
-> > > 
-> > > https://lore.kernel.org/linux-fsdevel/20200429043328.411431-1-ira.weiny@intel.com/
-> > 
-> > Ok, so basically new dax options semantics are different from old "-o dax".
-> 
-> Well, yes. "-o dax" is exactly equivalent of "-o dax=always", but it
-> is deprecated and should be ignored for the purposes of a new FSDAX
-> implementation. It will go away eventually.
-> 
-> > - dax=inode is default. This is change of behavior from old "-o dax" where
-> >   default was *no dax* at all.
-> 
-> No, it's not actually a change of behaviour. The default behaviour
-> of a filesystem that supports DAX is identical when you have no
-> mount option specified: if you've taken no action to enable DAX,
-> then DAX will be disabled and not used.
-> 
-> We originally implemented DAX with per-inode flags an no mount
-> option in XFS - the mount option came along with the ext4 DAX
-> implementation for testing because it didn't have on-disk inode
-> flags for DAX.
-> 
-> IOWs, the dax=inode default reflects how we originally intended
-> FSDAX to be managed and how it originally behaved on XFS when no
-> mount option was specified. Then we came across bugs in dynamically
-> changing the per-inode DAX state, we temporarily disabled the
-> on-disk flags on XFS (because EXPERIMENTAL). Then some people
-> started incorrectly associated "no dax option" with "admin wants dax
-> disabled". Then we fixed the bugs with changing on-disk inode flags,
-> ext4 added an on-disk flag and we re-enabled them. The result was a
-> tristate config situation - never, always and per-inode...
-> 
-> > - I tried xfs and mount does not fail even if user mounted with
-> >   "-o dax=inode" and underlying block device does not support dax.
-> >   That's little strange. Some users might expect a failure if certain
-> >   mount option can't be enabled.
-> 
+After some time I am once again resurrecting the patchset to convert the
+ext4 to use the new mount API
+(Documentation/filesystems/mount_api.txt).
 
-Hi Dave,
+The series can be applied on top of the current mainline tree and the work
+is based on the patches from David Howells (thank you David). It was built
+and tested with xfstests and a new ext4 mount options regression test that
+was sent to the fstests list. You can check it out on github as well.
 
-Thanks for all the explanaiton and background. It helps me a lot in
-wrapping my head around the rationale for current design.
+https://github.com/lczerner/xfstests/tree/ext4_mount_test
 
-> It's perfectly reasonable. If the hardware doesn't support DAX, then
-> we just always behave as if dax=never is set.
+Here is a high level description of the patchset
 
-I tried mounting non-DAX block device with dax=always and it failed
-saying DAX can't be used with reflink.
+1. Prepare the ext4 mount parameters required by the new mount API and use
+   it for parsing, while still using the old API to get the options
+   string.
 
-[  100.371978] XFS (vdb): DAX unsupported by block device. Turning off DAX.
-[  100.374185] XFS (vdb): DAX and reflink cannot be used together!
+  fs_parse: allow parameter value to be empty
+  ext4: Add fs parameter specifications for mount options
+  ext4: move option validation to a separate function
+  ext4: Change handle_mount_opt() to use fs_parameter
 
-So looks like first check tried to fallback to dax=never as device does
-not support DAX. But later reflink check thought dax is enabled and
-did not fallback to dax=never.
+2. Remove the use of ext4 super block from all the parsing code, because
+   with the new mount API the parsing is going to be done before we even
+   get the super block.
 
-> IOWs, we simply ignore
-> the inode DAX hint, because we can never enable it. There's just no
-> reason for being obnoxious and rejecting mounts just because the
-> block device doesn't support DAX.
-> 
-> Then we have to consider filesystems with multiple block devices
-> that have different DAX capabilities. dax=inode has to transparently
-> become dax=never for the block devices that don't support DAX, but
-> still operate as dax=inode for the other DAX capable block devices.
-> 
-> We also have to consider that block devices can change configuration
-> dynamically - think about teired storage (e.g a dm-cache device)
-> that has pmem for hot access and SSDs for backing store. That could
-> mean we have DAX capable access for hot data, but not for cold data
-> fetched/stored from SSD. We might manually migrate data between
-> teirs and so the dax capability of the data sets can change
-> dynamically.
-> 
-> The actual presence of DAX should be completely transparent and
-> irrelevant to the application unless the application is specifically
-> dependent on DAX being enabled (i.e. using application level CPU
-> cache flushes for data integrity purposes). If so, it is up to the
-> application to check STATX_ATTR_DAX on it's open files and refuse to
-> operate.
-> 
-> >   So in general, what's the expected behavior with filesystem mount
-> >   options. If user passes a mount option and it can't be enabled,
-> >   should filesystem return error and force user to try again without
-> >   the certain mount option or silently fallback to something else.
-> > 
-> >   I think in the past I have come across overlayfs users which demanded
-> >   that mount fails if certain overlayfs option they have passed in
-> >   can't be honored. They want to know about it so that they can either
-> >   fix the configuration or change mount option.
-> 
-> It's up to the filesystem how it handles mount options. XFS just
-> turns dax=always into dax=never with a warning and continues
-> onwards. There's no point in forcing the user to mount with a
-> different mount option - the end result is going to be exactly the
-> same (i.e. dax=never because hardware doesn't support it).
-> 
-> > - With xfs, I mounted /dev/pmem0 with "-o dax=inode" and checked
-> >   /proc/mounts and I don't see "dax=inode" there. Is that intentional?
-> 
-> Yes, XFS policy is to elide default options from the mount table.
+  ext4: Allow sb to be NULL in ext4_msg()
+  ext4: move quota configuration out of handle_mount_opt()
+  ext4: check ext2/3 compatibility outside handle_mount_opt()
+  ext4: get rid of super block and sbi from handle_mount_ops()
 
-For my education purposes, why do we hide default options. These defaults
-can vary from system to system based on kernel version or based on
-kernel CONFIG options. So if I login into a system and try to figure
-out what defaults xfs (or any other filesystem is working with), I
-probably will have no idea. Looking at /proc/mounts still might help
-me a bit with debugging what filesystem might be doing.
+3. Actually finish the separation of the parsing and super block setup
+   into distinct steps. This is where the new ext4_fill_super() and
+   ext4_remount() functions are created temporarily before the actual
+   transition to the new API.
 
-IOW, I thought that from debugging point of view it can be very helpful
-to even show default options. But there must be reasons to hide defaults
-that I am not aware of.
+  ext4: Completely separate options parsing and sb setup
 
-> 
-> > So following is the side affects of behavior change.
-> > 
-> > A. If somebody wrote scripts and scanned for mount flags to decide whehter
-> >    dax is enabled or not, these will not work anymore.
-> 
-> Correct - this was never supported in the first place and we went
-> through this years ago with intel doing dodgy things like this in their
-> userspace library that we never intended to support.
-> 
-> >    scripts will have
-> >    to be changed to stat() every file in filesystem and look for
-> >    STATX_ATTR_DAX flag to determine dax status.
-> 
-> If you are scanning the filesystem for "DAX capability" then you are
-> doing it wrong. DAX capability is a property of the underlying block
-> device:
-> 
-> $ cat /sys/block/pmem0/queue/dax 
-> 1
-> $
-> 
-> And that tells you if the filesystem is on DAX capable hardware
-> and hence can be used if the admin and/or application turns it on.
-> 
-> > I would have thought to not make dax=inode default and let user opt-in
-> > for that using "dax=inode" mount option. But I guess people liked 
-> > dax=inode default better.
-> > 
-> > Anway, I guess if we want to keep the behavior of virtiofs in-line with
-> > ext4/xfs, we might have to make dax=inode default (atleast in client).
-> 
-> Yes, I've been asking you to make dax=inode the default for some
-> time now.
-> 
-> > Server default might be different because querying the state of
-> > FS_XFLAG_DAX is extra ioctl() call on each LOOKUP and GETATTR call and
-> > those who don't want to use DAX, might not want to pay this cost.
-> 
-> The admin cost of managing per-inode/per-directory DAX capability is
-> negliable. It's a "set-once" operation done at application
-> installation/configuration/data set initialisation time, and never
-> changed again.
+4. Make some last preparations and actually switch the ext4 to use the
+   new mount API.
 
-Agreed.
+  ext4: clean up return values in handle_mount_opt()
+  ext4: change token2str() to use ext4_param_specs
+  ext4: switch to the new mount api
 
-> Performance/overhead arguments for per-inode flag
-> admin hold no water at all.
+5. Cleanup the old unused structures and rearrange the parsing function.
 
-Not sure I understand this. If we make dax=inode default in server, then
-server will always have to call ioctl() to figure out if FS_XFLAG_DAX
-is set or not on LOOKUP and GETATTR calls. So that's one extra system
-call all the time. That's not an admin overhead but runtime overhead
-of virtiofs file server. And if user never intends to use DAX, then
-there is no need to have this overhead (by default).
+  ext4: Remove unused match_table_t tokens
 
-Thanks
-Vivek
+There is still a potential to do some cleanups and perhaps refactoring
+such as using the fsparam_flag_no to remove the separate negative
+options for example. However that can be done later after the conversion
+to the new mount API which is the main purpose of the patchset.
+
+Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+Reviewed-by: Carlos Maiolino <cmaiolino@redhat.com>
+---
+v3 -> v4: Fix some typos, print exact quotafile type in log messages.
+          Remove explicit "Ext4:" from some log messages
+V2 -> V3: Rebase to the newer kernel, including new mount options.
+V1 -> V2: Rebase to the newer kernel
+
+Lukas Czerner (13):
+  fs_parse: allow parameter value to be empty
+  ext4: Add fs parameter specifications for mount options
+  ext4: move option validation to a separate function
+  ext4: Change handle_mount_opt() to use fs_parameter
+  ext4: Allow sb to be NULL in ext4_msg()
+  ext4: move quota configuration out of handle_mount_opt()
+  ext4: check ext2/3 compatibility outside handle_mount_opt()
+  ext4: get rid of super block and sbi from handle_mount_ops()
+  ext4: Completely separate options parsing and sb setup
+  ext4: clean up return values in handle_mount_opt()
+  ext4: change token2str() to use ext4_param_specs
+  ext4: switch to the new mount api
+  ext4: Remove unused match_table_t tokens
+
+ fs/ext4/super.c           | 1848 +++++++++++++++++++++++--------------
+ fs/fs_parser.c            |   31 +-
+ include/linux/fs_parser.h |    2 +-
+ 3 files changed, 1189 insertions(+), 692 deletions(-)
+
+-- 
+2.31.1
 
