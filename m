@@ -2,97 +2,119 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5212F43DAE9
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Oct 2021 07:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E5E543DDFA
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Oct 2021 11:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbhJ1F5k (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 28 Oct 2021 01:57:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhJ1F5j (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 28 Oct 2021 01:57:39 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F7CAC061570;
-        Wed, 27 Oct 2021 22:55:13 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id e144so6645884iof.3;
-        Wed, 27 Oct 2021 22:55:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j1Qv5Ha/AVr8z6tBWvM7R8PNlhV8VsJhutwgW5hkM1A=;
-        b=n1lrrBCc1IRjgSOk59tL/gJd4rZ08V8t5u771YjfQQUwLLprd5tUdUM4RzuScv8TWv
-         xKmIQJPs8mhSM9/7E+0Vo1xxpM2Yrzh9hiaBWDTegfiwKHaYmZDxV/Z+njCKPbb+Od2E
-         ZqodtrNd+xCI0xrJg0uLSkd89abRtmJbeLIoeOjgEYCuip3swTFDlVQlFSTQAHicDO6W
-         ppfQW0EiFU7c0K1EXeSE4S8xsY/SLeNNN9wOUcAGfQf/xfar4OtdllZkmqULaxEgIzYY
-         S25v65TY0x2ycd+Sd7trkQaFC9NM5Q+vilLlAqRCdX4zEu5P/SX2EtiQW3dM7rlxQbPf
-         Vzog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j1Qv5Ha/AVr8z6tBWvM7R8PNlhV8VsJhutwgW5hkM1A=;
-        b=lIIXwQqqEI0elSbyWvcKDpWlXD+TY/f2xv1sHcEsijxLW8FP8ARr9euSd0oHLeIkeT
-         YW8rKVtJoKeAPwColeoIp4JrG3UbAEv26Xcg+BNV9GiuvuUmfekzevb7SKkFVQdjjBgL
-         smyvDb7z0HPwuCYeUWjeRQnZ1JTExWOgsVWR2hqOQSJINZTacIB1kq2jq3FUQXn1Trp4
-         gmq/H2nc691M+xb7o2PZ+awyzrCYhd5vmZ1w/EWtkKRgzC0DyqLnZ3f7uTYjvsDo5y3p
-         1hBzpU5lCzVAn4dJQkA/ONVHfL7bC6C6GdcAqGROrHUodOiGsUF2uHxNSX09z1JLVqCo
-         bgww==
-X-Gm-Message-State: AOAM531OR4jVH/3l0LoyjNvUEElUmpInfNN85/kzylyyOBwR3hwdx/E/
-        q7b6d8g3ApNGm1yBk9RvEvqisE8atJ4K0fSs6W0=
-X-Google-Smtp-Source: ABdhPJyplMOilQsE8HyKh893i0jitWtdeaj+DNxYBV50selVLA8y7/+hpIp4lY8Gw6bdZcwCiaE/XS7REwgegs/djp0=
-X-Received: by 2002:a02:270c:: with SMTP id g12mr1668623jaa.75.1635400512787;
- Wed, 27 Oct 2021 22:55:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211025192746.66445-1-krisman@collabora.com> <CAOQ4uxhth8NP4hS53rhLppK9_8ET41yrAx5d98s1uhSqrSzVHg@mail.gmail.com>
- <20211027112243.GE28650@quack2.suse.cz> <CAOQ4uxgUdvAx6rWTYMROFDX8UOd8eVzKhDcpB0Qne1Uk9oOMAw@mail.gmail.com>
- <87y26ed3hq.fsf@collabora.com>
-In-Reply-To: <87y26ed3hq.fsf@collabora.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Thu, 28 Oct 2021 08:55:02 +0300
-Message-ID: <CAOQ4uxh4ikTUHM6=s09+bq=VAjBsZeU9UXPv8K1XpvxwVU6tMw@mail.gmail.com>
-Subject: Re: [PATCH v9 00/31] file system-wide error monitoring
+        id S230071AbhJ1Jti (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 28 Oct 2021 05:49:38 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:36969 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229626AbhJ1Jth (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 28 Oct 2021 05:49:37 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hg11S2T3qz4xbr;
+        Thu, 28 Oct 2021 20:47:08 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635414429;
+        bh=JAy5EQiMGHwZGBz0rz91x7YvEwCL5YFS18MMfr4ubrM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PHNh108rq8G4lmGpwdjVSZziH+oU62FurnqtS/qwLBowk9hHwnFgFfAJcI6Md7iMF
+         CuePF4pf8ZHRKSoONBBfb/Cfqi5bvx4g18/0TGMiRr3zMUnhW3AnGAiQR59UaqVKHK
+         K3fAXh8YO25yXxMMUo+I+RqS12SXkKptg3yQ4mkjOWGXbEfP5Iurf6qL/f1xOei2bf
+         WBEIQPFy59LQCy6h2PMYV81bajVWVTtZXk0hM1GNYF9n0Jr3PtyLfKcRV/H7sFiv/Q
+         tfEB3VfWHyRLNcw8HBbQcxNDldEJj7usToC495nI+1mQJ5wjksdxIdjG65mzvIQ+3S
+         NWFWhDecOs0Dg==
+Date:   Thu, 28 Oct 2021 20:47:06 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
 To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     Jan Kara <jack@suse.cz>, Jan Kara <jack@suse.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Tso <tytso@mit.edu>,
-        Dave Chinner <david@fromorbit.com>,
-        David Howells <dhowells@redhat.com>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com,
-        Jeff Layton <jlayton@kernel.org>, andres@anarazel.de
-Content-Type: text/plain; charset="UTF-8"
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Shreeya Patel <shreeya.patel@collabora.com>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: Track unicode tree in linux-next (was Re: [PATCH 10/11]
+ unicode: Add utf8-data module)
+Message-ID: <20211028204706.7c3aee30@canb.auug.org.au>
+In-Reply-To: <877ddxdi20.fsf_-_@collabora.com>
+References: <20210915070006.954653-1-hch@lst.de>
+        <20210915070006.954653-11-hch@lst.de>
+        <87wnmipjrw.fsf@collabora.com>
+        <20211012124904.GB9518@lst.de>
+        <87sfx6papz.fsf@collabora.com>
+        <20211026074509.GA594@lst.de>
+        <87mtmvevp7.fsf@collabora.com>
+        <20211027090208.70e88aab@canb.auug.org.au>
+        <877ddxdi20.fsf_-_@collabora.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/VYwQvd5q37uHoWwiQmRtnt2";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-> Also, thank you both for the extensive review and ideas during the
-> development of this series.  It was really appreciated!
->
+--Sig_/VYwQvd5q37uHoWwiQmRtnt2
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thank you for your appreciated effort!
-It was a wild journey through some interesting experiments, but
-you survived it well ;-)
+Hi Gabriel,
 
-Would you be interested in pursuing FAN_WB_ERROR after a due rest
-and after all the dust on FAN_FS_ERROR has settled?
+On Wed, 27 Oct 2021 23:00:55 -0300 Gabriel Krisman Bertazi <krisman@collabo=
+ra.com> wrote:
+>>=20
+> I'd like to ask you to track the branch 'for-next' of the following repos=
+itory:
+>=20
+> git://git.kernel.org/pub/scm/linux/kernel/git/krisman/unicode.git
+>=20
+> This branch is used as a staging area for development of the Unicode
+> subsystem used by native case-insensitive filesystems for file name
+> normalization and casefolding.  It goes to Linus through Ted Ts'o's ext4
+> tree.
 
-FAN_WB_ERROR can use the same info record and same internal
-error event struct as FAN_FS_ERROR.
+Added from today.
 
-A call to fsnotify_wb_error(sb, inode, err) can be placed inside
-mapping_set_error() and maybe for other sporadic callers of errseq_set().
+Thanks for adding your subsystem tree as a participant of linux-next.  As
+you may know, this is not a judgement of your code.  The purpose of
+linux-next is for integration testing and to lower the impact of
+conflicts between subsystems in the next merge window.=20
 
-For wb error, we can consider storing a snapshot of errseq of the sb/inode
-in the sb/inode mark and compute error_count from the errseq diff
-instead of counting it when merging events. This will keep a more accurate
-report even when error reports are dropped due to allocation failure or event
-queue overflow.
+You will need to ensure that the patches/commits in your tree/series have
+been:
+     * submitted under GPL v2 (or later) and include the Contributor's
+        Signed-off-by,
+     * posted to the relevant mailing list,
+     * reviewed by you (or another maintainer of your subsystem tree),
+     * successfully unit tested, and=20
+     * destined for the current or next Linux merge window.
 
-I have a feeling that the Postgres project would find this
-functionality useful (?).
+Basically, this should be just what you would send to Linus (or ask him
+to fetch).  It is allowed to be rebased if you deem it necessary.
 
-Thanks,
-Amir.
+--=20
+Cheers,
+Stephen Rothwell=20
+sfr@canb.auug.org.au
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/VYwQvd5q37uHoWwiQmRtnt2
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF6cZoACgkQAVBC80lX
+0GxCkgf+PRokTvbLrCptDmsPCL72nWIaurHRH1t55hy8HX9+KcrrWeqGFCdw3eoe
+h4hUhjAmAV9zvOJLMf+SCLcsGt4xURHCm3rXZIFfWkxJI7nDRnAnmZtBB6LsUBJV
+Q/bIqQmYLQB2qBjhl4Mlf2EpbpbXFUG5MVIhVjHhTDhBVXRuiNf9mT4ZAHq3DXEo
+RSgxFDlO2lBxTyfmA3JGZ+DgZEc1FZA8OC3BMBEvEtMvmAZpZtPPNdTfEGGxCZPl
+Byh9b9ON4jFYXQRqOQ3oR1OWEpfaKCsWLeIKVtEAY9NOYNMKetctoA8LKzETfN3e
+hHGD4pxSpBBxRTVM9RCfTMENUE/z/g==
+=dAt4
+-----END PGP SIGNATURE-----
+
+--Sig_/VYwQvd5q37uHoWwiQmRtnt2--
