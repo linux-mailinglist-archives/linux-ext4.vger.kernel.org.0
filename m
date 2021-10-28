@@ -2,106 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDFBC43D976
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Oct 2021 04:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A62E243DAE3
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Oct 2021 07:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229624AbhJ1CsV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Oct 2021 22:48:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbhJ1CsU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Oct 2021 22:48:20 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB5BC061570;
-        Wed, 27 Oct 2021 19:45:54 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id y1so3366479plk.10;
-        Wed, 27 Oct 2021 19:45:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=k671jy55aAjTwOUFEu6Ybl7LDuykLg505zNZ5vzETDE=;
-        b=b1gADUShXKoQv+I8r67Qn+dQQsPFZHfWIz+UlquQidqrjT2rCXEF2Xoa5ukWLGG7sJ
-         3VsEuy/ohf3bZlsfo0ZOpghtM/eTH6szVNJyzjz9d5PwtWz/9OsVuU2defylgowsGa3p
-         D/Vt2fmS+9M4K9JNKx8PnDdOFAraOFN2zdMXYJtjE6kd5+SLs9r7qLB8AnMLiQYOo48d
-         4XxFGifPHpwuHupkYpuwaOn30APOqf+6c+VwzBSdvv42tzqU6n2n3VPHpHGLZTi+LhMC
-         +bd1TfZbslhunklSxMBjKYT9lB2NVDPHlZeISIcUg54Dh9oRVxvBK14j6zOyGFyPaYFE
-         GVDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=k671jy55aAjTwOUFEu6Ybl7LDuykLg505zNZ5vzETDE=;
-        b=Va6lHUpX8Zhj4evJCpCJI8D0ioQ9xpdvuZTjlYTjcDEbDSyHcYCVTLeqF3Gb4RD89Y
-         +tsYAo5zErdUQVGpRceak/eYWr0Hj1CbAeRngVenPgYXOklUjlyGH5ORw6SvSUGihXq1
-         eJz+w1N8IR7Mf0z1dGhK8Zm0/2yrbvaLGea672atgMgCGlgC2pJNtjvVt+ZHblWksur+
-         lT3ZPqYeEb8+70vY6aJ3sSMAHFlym9icu7loTC1Gsc8hGwUqYJQjYQSDesK8dpcPlJDQ
-         t3QtxS5YEjLIYekHvReu8eT796paMBbijVDDZbNcHOHCA6jvVGAU/p2B9CgF+wXO5bnr
-         V4Cg==
-X-Gm-Message-State: AOAM530aFskbcbsd6yk1hMxJtv6ibRYJZ4yRglMAr/8nV0/wGSmuUrzO
-        WF/nSAAouQ9MRkpV1tWMJcI=
-X-Google-Smtp-Source: ABdhPJwKdGEockc5VUCpIVYx3Bhlb1VTKggvXNnqyN6pau4ZIITZzXgUrB3IgGw5Qf55d/iWwYXnZw==
-X-Received: by 2002:a17:902:8ec5:b0:13a:2789:cbb0 with SMTP id x5-20020a1709028ec500b0013a2789cbb0mr1274658plo.60.1635389154237;
-        Wed, 27 Oct 2021 19:45:54 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id j8sm1233912pfe.105.2021.10.27.19.45.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 19:45:54 -0700 (PDT)
-From:   luo penghao <cgel.zte@gmail.com>
-X-Google-Original-From: luo penghao <luo.penghao@zte.com.cn>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] ext4: Remove unused assignments
-Date:   Thu, 28 Oct 2021 02:45:45 +0000
-Message-Id: <20211028024545.10540-1-luo.penghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        id S229694AbhJ1Fy6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 28 Oct 2021 01:54:58 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:46433 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229586AbhJ1Fy5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 28 Oct 2021 01:54:57 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R541e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0Utxz1z-_1635400347;
+Received: from admindeMacBook-Pro-2.local(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0Utxz1z-_1635400347)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 28 Oct 2021 13:52:28 +0800
+Subject: Re: [Question] ext4/xfs: Default behavior changed after per-file DAX
+To:     Vivek Goyal <vgoyal@redhat.com>, Ira Weiny <ira.weiny@intel.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>, adilger.kernel@dilger.ca,
+        linux-xfs@vger.kernel.org,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, dan.j.williams@intel.com,
+        Christoph Hellwig <hch@lst.de>,
+        Dave Chinner <dchinner@redhat.com>
+References: <26ddaf6d-fea7-ed20-cafb-decd63b2652a@linux.alibaba.com>
+ <20211026154834.GB24307@magnolia> <YXhWP/FCkgHG/+ou@redhat.com>
+ <20211026205730.GI3465596@iweiny-DESK2.sc.intel.com>
+ <YXlj6GhxkFBQRJYk@redhat.com>
+From:   JeffleXu <jefflexu@linux.alibaba.com>
+Message-ID: <665787d0-f227-a95b-37a3-20f2ea3e09aa@linux.alibaba.com>
+Date:   Thu, 28 Oct 2021 13:52:27 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YXlj6GhxkFBQRJYk@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The eh assignment in these two places is meaningless, because the
-function will goto to merge, which will not use eh.
 
-The clang_analyzer complains as follows:
 
-fs/ext4/extents.c:1988:4 warning:
-fs/ext4/extents.c:2016:4 warning:
+On 10/27/21 10:36 PM, Vivek Goyal wrote:
+> [snip]
+> 
+>>
+>> Is the biggest issue the lack of visibility to see if the device supports DAX?
+> 
+> Not necessarily. I think for me two biggest issues are.
+> 
+> - Should dax be enabled by default in server as well. If we do that,
+>   server will have to make extra ioctl() call on every LOOKUP and GETATTR
+>   fuse request. Local filesystems probably can easily query FS_XFLAGS_DAX
+>   state but doing extra syscall all the time will probably be some cost
+>   (No idea how much).
 
-Value stored to 'eh' is never read
+I tested the time cost from virtiofsd's perspective (time cost of
+passthrough_ll.c:lo_do_lookup()):
+- before per inode DAX feature: 2~4 us
+- after per inode DAX feature: 7~8 us
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
----
- fs/ext4/extents.c | 2 --
- 1 file changed, 2 deletions(-)
+It is within expectation, as the introduction of per inode DAX feature,
+one extra ioctl() system call is introduced.
 
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index b1933e3..9ed8a15 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -1986,7 +1986,6 @@ int ext4_ext_insert_extent(handle_t *handle, struct inode *inode,
- 					+ ext4_ext_get_actual_len(newext));
- 			if (unwritten)
- 				ext4_ext_mark_unwritten(ex);
--			eh = path[depth].p_hdr;
- 			nearex = ex;
- 			goto merge;
- 		}
-@@ -2015,7 +2014,6 @@ int ext4_ext_insert_extent(handle_t *handle, struct inode *inode,
- 					+ ext4_ext_get_actual_len(newext));
- 			if (unwritten)
- 				ext4_ext_mark_unwritten(ex);
--			eh = path[depth].p_hdr;
- 			nearex = ex;
- 			goto merge;
- 		}
+Also the time cost from client's perspective (time cost of
+fs/fuse/dir.c:fuse_lookup_name())
+- before per inode DAX feature: 25~30 us
+- after per inode DAX feature: 30~35 us
+
+That is, ~15%~20% performance loss.
+
+Currently we do ioctl() to query the persitent inode flags every time
+FUSE_LOOKUP request is received, maybe we could cache the result of
+ioctl() on virtiofsd side, but I have no idea how to intercept the
+runtime modification to these persistent indoe flags from other
+processes on host, e.g. sysadmin on host, to maintain the cache consistency.
+
+So if the default behavior of client side is 'dax=inode', and virtiofsd
+disables per inode DAX by default (neither '-o dax=server|attr' is
+specified for virtiofsd) for the sake of performance, then guest won't
+see DAX enabled and thus won't be surprised. This can reduce the
+behavior change to the minimum.
+
+
+> 
+> - So far if virtiofs is mounted without any of the dax options, just
+>   by looking at mount option, I could tell, DAX is not enabled on any
+>   of the files. But that will not be true anymore. Because dax=inode
+>   be default, it is possible that server upgrade enabled dax on some
+>   or all the files.
+> 
+>   I guess I will have to stick to same reason given by ext4/xfs. That is
+>   to determine whether DAX is enabled on a file or not, you need to
+>   query STATX_ATTR_DAX flag. That's the only way to conclude if DAX is
+>   being used on a file or not. Don't look at filesystem mount options
+>   and reach a conclusion (except the case of dax=never).
+
+
 -- 
-2.15.2
-
-
+Thanks,
+Jeffle
