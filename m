@@ -2,96 +2,90 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DEC94404D2
-	for <lists+linux-ext4@lfdr.de>; Fri, 29 Oct 2021 23:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC06444056C
+	for <lists+linux-ext4@lfdr.de>; Sat, 30 Oct 2021 00:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231463AbhJ2VVf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 29 Oct 2021 17:21:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54270 "EHLO
+        id S231394AbhJ2W0m (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 29 Oct 2021 18:26:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231546AbhJ2VVZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 29 Oct 2021 17:21:25 -0400
+        with ESMTP id S229546AbhJ2W0j (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 29 Oct 2021 18:26:39 -0400
 Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49051C061570
-        for <linux-ext4@vger.kernel.org>; Fri, 29 Oct 2021 14:18:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F8AC061570;
+        Fri, 29 Oct 2021 15:24:09 -0700 (PDT)
 Received: from localhost (unknown [IPv6:2804:14c:124:8a08::1002])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
         (Authenticated sender: krisman)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 67D011F45C6F;
-        Fri, 29 Oct 2021 22:18:46 +0100 (BST)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 4CC991F45CD8;
+        Fri, 29 Oct 2021 23:24:04 +0100 (BST)
 From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     jack@suse.com, amir73il@gmail.com, repnop@google.com
-Cc:     ltp@lists.linux.it, khazhy@google.com, kernel@collabora.com,
-        linux-ext4@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>
-Subject: [PATCH v3 9/9] syscalls/fanotify21: Test capture of multiple errors
-Date:   Fri, 29 Oct 2021 18:17:32 -0300
-Message-Id: <20211029211732.386127-10-krisman@collabora.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211029211732.386127-1-krisman@collabora.com>
-References: <20211029211732.386127-1-krisman@collabora.com>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, Jan Kara <jack@suse.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Tso <tytso@mit.edu>,
+        Dave Chinner <david@fromorbit.com>,
+        David Howells <dhowells@redhat.com>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com,
+        Jeff Layton <jlayton@kernel.org>, andres@anarazel.de
+Subject: Re: [PATCH v9 00/31] file system-wide error monitoring
+Organization: Collabora
+References: <20211025192746.66445-1-krisman@collabora.com>
+        <CAOQ4uxhth8NP4hS53rhLppK9_8ET41yrAx5d98s1uhSqrSzVHg@mail.gmail.com>
+        <20211027112243.GE28650@quack2.suse.cz>
+        <CAOQ4uxgUdvAx6rWTYMROFDX8UOd8eVzKhDcpB0Qne1Uk9oOMAw@mail.gmail.com>
+        <87y26ed3hq.fsf@collabora.com>
+        <CAOQ4uxh4ikTUHM6=s09+bq=VAjBsZeU9UXPv8K1XpvxwVU6tMw@mail.gmail.com>
+Date:   Fri, 29 Oct 2021 19:23:55 -0300
+In-Reply-To: <CAOQ4uxh4ikTUHM6=s09+bq=VAjBsZeU9UXPv8K1XpvxwVU6tMw@mail.gmail.com>
+        (Amir Goldstein's message of "Thu, 28 Oct 2021 08:55:02 +0300")
+Message-ID: <8735oja2ro.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-When multiple FS errors occur, only the first is stored.  This testcase
-validates this behavior by issuing two different errors and making sure
-only the first is stored, while the second is simply accumulated in
-error_count.
+Amir Goldstein <amir73il@gmail.com> writes:
 
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
----
- .../kernel/syscalls/fanotify/fanotify21.c     | 26 +++++++++++++++++++
- 1 file changed, 26 insertions(+)
+>> Also, thank you both for the extensive review and ideas during the
+>> development of this series.  It was really appreciated!
+>>
+>
+> Thank you for your appreciated effort!
+> It was a wild journey through some interesting experiments, but
+> you survived it well ;-)
+>
+> Would you be interested in pursuing FAN_WB_ERROR after a due rest
+> and after all the dust on FAN_FS_ERROR has settled?
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify21.c b/testcases/kernel/syscalls/fanotify/fanotify21.c
-index e463365dd69d..7f0154da5eeb 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify21.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify21.c
-@@ -74,6 +74,18 @@ static void tcase2_trigger_lookup(void)
- 			ret, BAD_DIR, errno, EUCLEAN);
- }
- 
-+static void tcase3_trigger(void)
-+{
-+	trigger_fs_abort();
-+	tcase2_trigger_lookup();
-+}
-+
-+static void tcase4_trigger(void)
-+{
-+	tcase2_trigger_lookup();
-+	trigger_fs_abort();
-+}
-+
- static struct test_case {
- 	char *name;
- 	int error;
-@@ -95,6 +107,20 @@ static struct test_case {
- 		.error = EFSCORRUPTED,
- 		.fid = &bad_file_fid,
- 	},
-+	{
-+		.name = "Multiple error submission",
-+		.trigger_error = &tcase3_trigger,
-+		.error_count = 2,
-+		.error = ESHUTDOWN,
-+		.fid = &null_fid,
-+	},
-+	{
-+		.name = "Multiple error submission 2",
-+		.trigger_error = &tcase4_trigger,
-+		.error_count = 2,
-+		.error = EFSCORRUPTED,
-+		.fid = &bad_file_fid,
-+	}
- };
- 
- int check_error_event_info_fid(struct fanotify_event_info_fid *fid,
+I think it would make sense for me to continue working on it, yes.  But,
+before that, I think I still have some support to add to FAN_FS_ERROR,
+like a detailed, fs-specific, info record, and an error location info
+record, which has a use-case in Google Cloud environments.  I have to
+discuss priorities internally, but we (collabora) do have an interest in
+supporting WB_ERROR too.
+
+For the detailed error report, fanotify could have a new info record
+that carries a structure sent out by the file system.  fanotify could
+handle the lifetime of this object, by keeping a larger mempool, or
+delegate its allocation/destruction to the filesystem.
+
+Like I proposed in an earlier version of FAN_FS_ERROR, the format could
+be as simple as:
+
+struct fanotify_error_data_info {
+   struct fanotify_event_info_header hdr;
+   char data[];
+}
+
+I think xfs, at least, would be able to make good use of this record with
+xfs_scrub, as the xfs maintainers mentioned.
+
 -- 
-2.33.0
-
+Gabriel Krisman Bertazi
