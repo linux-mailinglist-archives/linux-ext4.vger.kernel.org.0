@@ -2,113 +2,99 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C28C43FEF4
-	for <lists+linux-ext4@lfdr.de>; Fri, 29 Oct 2021 17:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84CE843FFBF
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 Oct 2021 17:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbhJ2PFt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 29 Oct 2021 11:05:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53388 "EHLO
+        id S229940AbhJ2PpL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 29 Oct 2021 11:45:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbhJ2PFt (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 29 Oct 2021 11:05:49 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B134CC061570
-        for <linux-ext4@vger.kernel.org>; Fri, 29 Oct 2021 08:03:20 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2804:14c:124:8a08::1002])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: krisman)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id C21601F45B3F;
-        Fri, 29 Oct 2021 16:03:17 +0100 (BST)
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     LTP List <ltp@lists.linux.it>, Jan Kara <jack@suse.com>,
-        Khazhismel Kumykov <khazhy@google.com>, kernel@collabora.com,
-        Ext4 <linux-ext4@vger.kernel.org>,
-        Matthew Bobrowski <repnop@google.com>
-Subject: Re: [PATCH v2 10/10] syscalls/fanotify20: Test capture of multiple
- errors
-Organization: Collabora
-References: <20211026184239.151156-1-krisman@collabora.com>
-        <20211026184239.151156-11-krisman@collabora.com>
-        <CAOQ4uxia5Qhieui+keBLumWwGd2+wv88+FykWq-zMrDrHmZUrA@mail.gmail.com>
-Date:   Fri, 29 Oct 2021 12:03:11 -0300
-In-Reply-To: <CAOQ4uxia5Qhieui+keBLumWwGd2+wv88+FykWq-zMrDrHmZUrA@mail.gmail.com>
-        (Amir Goldstein's message of "Wed, 27 Oct 2021 13:00:07 +0300")
-Message-ID: <87bl37an68.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        with ESMTP id S229607AbhJ2PpK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 29 Oct 2021 11:45:10 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62AECC061570
+        for <linux-ext4@vger.kernel.org>; Fri, 29 Oct 2021 08:42:41 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id r28so10335036pga.0
+        for <linux-ext4@vger.kernel.org>; Fri, 29 Oct 2021 08:42:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kkrK8/+uwUhU1+ibCc9sihgvRMe3oeCDEJlEEAsQMNY=;
+        b=6wmVMWLAKN8exE8XR8wv/iFYhudFZm/xaEJpNEZmOxWSzGBAVEn+M6ckTQFipGdRJT
+         yb6PYTTcKIVqTXGsV3bkPy2TCiq4+HLgRy2cRXBAvM33znfROc4XjMNFzIfr4UE69rdj
+         4eISFf7aFEyAHo2Sf/MANtuSqjdRnwdAyb7h0RnbdOmg2MrJVd+mPCxh87qxZR21UV1T
+         Jo7MDmjd0zsp2/1yCw8PZ5/EZTwQNFNoOJVWhez881Nf3OlrTKHfCKrLAxk43DLXDdPH
+         n00SPDakiTsjm+voDnH7pSuvR7gHcdocX6KbBQemE5xaUaALVKmTKfT7gJVRpb96WLOa
+         Bfgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kkrK8/+uwUhU1+ibCc9sihgvRMe3oeCDEJlEEAsQMNY=;
+        b=vUKeAPjNchk9jh+DVjTLEfltfiD7aONI/ViR8xBM9ZaJOVNi/n7fQO9Q0CMQMSL/Yy
+         oTChRZgo2ATHg0LFMXyULgnQjByBdk0nBo+KgLhsb6fBBo63af0KVXLB6nHIV7EsH5xA
+         8qK7nOMD1gLTqOl3mf6cymtsEonvMN+hmjZJRjbMdk7DrXBnmrDeiw4ftmCCMGNdp812
+         g0VfGhpKUqhT1D+HgC26TcEahAUPxpoMIeZvkI1Ih42vnEYCxcnk+JB6asFq79a2lmm7
+         6bbHOZGzOBdf+gkweHyABgZTXZGEzOfZkemcVxv0IUGStjT6ADAMDW3y1bs65awZqvdz
+         CWLw==
+X-Gm-Message-State: AOAM5305wayQmidPchM3t+Sy4rbqR/ZR8Ty4+edyytkEKbWAQOpQRiLr
+        AQSgLirPYt0Up6Dc7LgPREULEwCnxvCp6b5dJ+Z+aQ==
+X-Google-Smtp-Source: ABdhPJwscYMJBcsf4QuT7rFuYsL/BYYBLAhJeu/07ZB2t6F9Qexmb3kIziq0UAiLr3A7UbGhuhxXArjTEfzlR4kAptU=
+X-Received: by 2002:a05:6a00:140e:b0:444:b077:51ef with SMTP id
+ l14-20020a056a00140e00b00444b07751efmr11616698pfu.61.1635522160977; Fri, 29
+ Oct 2021 08:42:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20211018044054.1779424-1-hch@lst.de> <CAPcyv4iEt78-XSsKjTWcpy71zaduXyyigTro6f3fmRqqFOG98Q@mail.gmail.com>
+ <20211029105139.1194bb7f@canb.auug.org.au>
+In-Reply-To: <20211029105139.1194bb7f@canb.auug.org.au>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 29 Oct 2021 08:42:29 -0700
+Message-ID: <CAPcyv4g8iEyN5UN1w1xBqQDYSb3HCh7_smsmjt-PiHORRK+X9Q@mail.gmail.com>
+Subject: Re: futher decouple DAX from block devices
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     Mike Snitzer <snitzer@redhat.com>, Ira Weiny <ira.weiny@intel.com>,
+        device-mapper development <dm-devel@redhat.com>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Linux NVDIMM <nvdimm@lists.linux.dev>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-erofs@lists.ozlabs.org,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Amir Goldstein <amir73il@gmail.com> writes:
-
-> On Tue, Oct 26, 2021 at 9:44 PM Gabriel Krisman Bertazi
->> --- a/testcases/kernel/syscalls/fanotify/fanotify20.c
->> +++ b/testcases/kernel/syscalls/fanotify/fanotify20.c
->> @@ -78,6 +78,18 @@ static void tcase2_trigger_lookup(void)
->>                         ret, BAD_DIR, errno, EUCLEAN);
->>  }
->>
->> +static void tcase3_trigger(void)
->> +{
->> +       trigger_fs_abort();
->> +       tcase2_trigger_lookup();
+On Thu, Oct 28, 2021 at 4:52 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 >
-> So after remount,abort filesystem operations can still be executed?
-> Then I guess my comment from the previous patch about running the test in a loop
-> is not relevant?
+> Hi Dan,
+>
+> On Wed, 27 Oct 2021 13:46:31 -0700 Dan Williams <dan.j.williams@intel.com> wrote:
+> >
+> > My merge resolution is here [1]. Christoph, please have a look. The
+> > rebase and the merge result are both passing my test and I'm now going
+> > to review the individual patches. However, while I do that and collect
+> > acks from DM and EROFS folks, I want to give Stephen a heads up that
+> > this is coming. Primarily I want to see if someone sees a better
+> > strategy to merge this, please let me know, but if not I plan to walk
+> > Stephen and Linus through the resolution.
+>
+> It doesn't look to bad to me (however it is a bit late in the cycle :-(
+> ).  Once you are happy, just put it in your tree (some of the conflicts
+> are against the current -rc3 based version of your tree anyway) and I
+> will cope with it on Monday.
 
-Hi Amir,
+Christoph, Darrick, Shiyang,
 
-As you mentioned here, -i works fine.  Abort will remount with
-MS_RDONLY, and this doesn't affect the existing tests.  Future tests
-that write to the file system inside .trigger_error() would require the
-umount-mount cycle but, since the goal is testing fanotify and not
-specific fs errors, I think we don't need the added complexity of such
-tests.
-
-Output of '-i #' always pass:
-
-  root@test-box:~/ltp/testcases/kernel/syscalls/fanotify# ./fanotify20 -i 5
-  tst_device.c:88: TINFO: Found free device 0 '/dev/loop0'
-  tst_test.c:932: TINFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
-  mke2fs 1.46.4 (18-Aug-2021)
-  tst_test.c:1363: TINFO: Timeout per run is 0h 05m 00s
-  fanotify.h:252: TINFO: fid(test_mnt) = 469af9fc.8ced5767.2.0.0...
-  fanotify.h:252: TINFO: fid(test_mnt/internal_dir/bad_dir) = 469af9fc.8ced5767.8002.acd05469.0...
-  debugfs 1.46.4 (18-Aug-2021)
-  fanotify20.c:234: TPASS: Successfully received: Trigger abort
-  fanotify20.c:234: TPASS: Successfully received: Lookup of inode with invalid mode
-  fanotify20.c:234: TPASS: Successfully received: Multiple error submission
-  fanotify20.c:234: TPASS: Successfully received: Multiple error submission 2
-  fanotify20.c:234: TPASS: Successfully received: Trigger abort
-  fanotify20.c:234: TPASS: Successfully received: Lookup of inode with invalid mode
-  fanotify20.c:234: TPASS: Successfully received: Multiple error submission
-  fanotify20.c:234: TPASS: Successfully received: Multiple error submission 2
-  fanotify20.c:234: TPASS: Successfully received: Trigger abort
-  fanotify20.c:234: TPASS: Successfully received: Lookup of inode with invalid mode
-  fanotify20.c:234: TPASS: Successfully received: Multiple error submission
-  fanotify20.c:234: TPASS: Successfully received: Multiple error submission 2
-  fanotify20.c:234: TPASS: Successfully received: Trigger abort
-  fanotify20.c:234: TPASS: Successfully received: Lookup of inode with invalid mode
-  fanotify20.c:234: TPASS: Successfully received: Multiple error submission
-  fanotify20.c:234: TPASS: Successfully received: Multiple error submission 2
-  fanotify20.c:234: TPASS: Successfully received: Trigger abort
-  fanotify20.c:234: TPASS: Successfully received: Lookup of inode with invalid mode
-  fanotify20.c:234: TPASS: Successfully received: Multiple error submission
-  fanotify20.c:234: TPASS: Successfully received: Multiple error submission 2
-
-  Summary:
-  passed   20
-  failed   0
-  broken   0
-  skipped  0
-  warnings 0
-
-Thanks,
-
--- 
-Gabriel Krisman Bertazi
+I'm losing my nerve to try to jam this into v5.16 this late in the
+cycle. I do want to get dax+reflink squared away as soon as possible,
+but that looks like something that needs to build on top of a
+v5.16-rc1 at this point. If Linus does a -rc8 then maybe it would have
+enough soak time, but otherwise I want to take the time to collect the
+acks and queue up some more follow-on cleanups to prepare for
+block-less-dax.
