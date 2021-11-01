@@ -2,197 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC114416EC
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Nov 2021 10:28:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C0044166A
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Nov 2021 10:22:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232931AbhKAJae (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 1 Nov 2021 05:30:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36871 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233048AbhKAJ2U (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 1 Nov 2021 05:28:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635758745;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=53OXlpDvni31LvIaln3YOdZGCjMTf4uZ9h8tjAcr9uc=;
-        b=KzbXjnhHXelvrPQJLnOs1RcsOAuyNHmHn53AIaLuijNjU6OJ7b9b0aW6KnB46gdlOcCJUI
-        hbkT3TfAfw5Aej99XUDnXeJ0yM5VI48yQUAItL8gIJ97cUGPRaNrWst0tHTOeHRR3lt50j
-        tlVtqytxxMvJcC0MVlX/sPH4U4RbfZ0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-304-oEMrv1l3OUeU-98a7vTv4w-1; Mon, 01 Nov 2021 05:25:40 -0400
-X-MC-Unique: oEMrv1l3OUeU-98a7vTv4w-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2149610A8E00;
-        Mon,  1 Nov 2021 09:25:39 +0000 (UTC)
-Received: from work (unknown [10.40.194.95])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 86EE41007605;
-        Mon,  1 Nov 2021 09:25:29 +0000 (UTC)
-Date:   Mon, 1 Nov 2021 10:25:25 +0100
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        linux-fsdevel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Carlos Maiolino <cmaiolino@redhat.com>
-Subject: Re: [PATCH v4 01/13] fs_parse: allow parameter value to be empty
-Message-ID: <20211101092525.pdwtufampfajze5l@work>
-References: <20211027141857.33657-1-lczerner@redhat.com>
- <20211027141857.33657-2-lczerner@redhat.com>
- <20211029084411.zk32u3hflf2vdzmx@wittgenstein>
+        id S232783AbhKAJY6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 1 Nov 2021 05:24:58 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15327 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232512AbhKAJXl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 1 Nov 2021 05:23:41 -0400
+Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HjSFR0t87z90f4;
+        Mon,  1 Nov 2021 17:20:59 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggeme754-chm.china.huawei.com
+ (10.3.19.100) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Mon, 1
+ Nov 2021 17:21:05 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <jack@suse.comu>, <linux-ext4@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, Ye Bin <yebin10@huawei.com>
+Subject: [PATCH -next RFC] ext2: Add check if block is step over super block
+Date:   Mon, 1 Nov 2021 17:33:51 +0800
+Message-ID: <20211101093351.1164368-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211029084411.zk32u3hflf2vdzmx@wittgenstein>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeme754-chm.china.huawei.com (10.3.19.100)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 10:44:11AM +0200, Christian Brauner wrote:
-> On Wed, Oct 27, 2021 at 04:18:45PM +0200, Lukas Czerner wrote:
-> > Allow parameter value to be empty by specifying fs_param_can_be_empty
-> > flag.
-> 
-> Hey Lukas,
-> 
-> what option is this for? Usually this should be handled by passing
-> FSCONFIG_SET_FLAG. Doesn't seem like a good idea to let the string value
-> be optionally empty. I'd rather have the guarantee that it has to be
-> something instead of having to be extra careful because it could be NULL.
+We got an issue that super block is allocated by file system when run syzkaller
+test. We add debug information find that origin image super block's block bitmap
+is zero. There isn't check whether block is step over super block in ext2_new_blocks.
 
-Hi Christian,
+In order not to make things worse, we'd better to add check if block step over
+super block when new blocks.
 
-this is for ext4 mount options usrjquota and grpjquota that will treat
-empty parameter, that is "grpjquota=" and "usrjquota=", as a means to
-disable those. I agree that it's not ideal, but if I don't want to break
-compatibilily when converting ext4 to this new mount API I have to keep
-that option the way it is.
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ fs/ext2/balloc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-I share your concern, but for the string to be empty, the
-fs_param_can_be_empty flag must be used intentionaly and so the code
-handling this must expect the string to be empty in some cases.
-
-Another option would be to use a flag parameter with the name including
-the egual sign. Not sure if that's currently possible. But that would
-require us to use separtate parameter and it feels even more clunky to
-me especially since we can easly detect empty string instead.
-
-Thanks!
--Lukas
-
-> 
-> > 
-> > Signed-off-by: Lukas Czerner <lczerner@redhat.com>
-> > Cc: Al Viro <viro@zeniv.linux.org.uk>
-> > Reviewed-by: Carlos Maiolino <cmaiolino@redhat.com>
-> > ---
-> >  fs/fs_parser.c            | 31 +++++++++++++++++++++++--------
-> >  include/linux/fs_parser.h |  2 +-
-> >  2 files changed, 24 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/fs/fs_parser.c b/fs/fs_parser.c
-> > index 3df07c0e32b3..ed40ce5742fd 100644
-> > --- a/fs/fs_parser.c
-> > +++ b/fs/fs_parser.c
-> > @@ -199,6 +199,8 @@ int fs_param_is_bool(struct p_log *log, const struct fs_parameter_spec *p,
-> >  	int b;
-> >  	if (param->type != fs_value_is_string)
-> >  		return fs_param_bad_value(log, param);
-> > +	if (!*param->string && (p->flags & fs_param_can_be_empty))
-> > +		return 0;
-> >  	b = lookup_constant(bool_names, param->string, -1);
-> >  	if (b == -1)
-> >  		return fs_param_bad_value(log, param);
-> > @@ -211,8 +213,11 @@ int fs_param_is_u32(struct p_log *log, const struct fs_parameter_spec *p,
-> >  		    struct fs_parameter *param, struct fs_parse_result *result)
-> >  {
-> >  	int base = (unsigned long)p->data;
-> > -	if (param->type != fs_value_is_string ||
-> > -	    kstrtouint(param->string, base, &result->uint_32) < 0)
-> > +	if (param->type != fs_value_is_string)
-> > +		return fs_param_bad_value(log, param);
-> > +	if (!*param->string && (p->flags & fs_param_can_be_empty))
-> > +		return 0;
-> > +	if (kstrtouint(param->string, base, &result->uint_32) < 0)
-> >  		return fs_param_bad_value(log, param);
-> >  	return 0;
-> >  }
-> > @@ -221,8 +226,11 @@ EXPORT_SYMBOL(fs_param_is_u32);
-> >  int fs_param_is_s32(struct p_log *log, const struct fs_parameter_spec *p,
-> >  		    struct fs_parameter *param, struct fs_parse_result *result)
-> >  {
-> > -	if (param->type != fs_value_is_string ||
-> > -	    kstrtoint(param->string, 0, &result->int_32) < 0)
-> > +	if (param->type != fs_value_is_string)
-> > +		return fs_param_bad_value(log, param);
-> > +	if (!*param->string && (p->flags & fs_param_can_be_empty))
-> > +		return 0;
-> > +	if (kstrtoint(param->string, 0, &result->int_32) < 0)
-> >  		return fs_param_bad_value(log, param);
-> >  	return 0;
-> >  }
-> > @@ -231,8 +239,11 @@ EXPORT_SYMBOL(fs_param_is_s32);
-> >  int fs_param_is_u64(struct p_log *log, const struct fs_parameter_spec *p,
-> >  		    struct fs_parameter *param, struct fs_parse_result *result)
-> >  {
-> > -	if (param->type != fs_value_is_string ||
-> > -	    kstrtoull(param->string, 0, &result->uint_64) < 0)
-> > +	if (param->type != fs_value_is_string)
-> > +		return fs_param_bad_value(log, param);
-> > +	if (!*param->string && (p->flags & fs_param_can_be_empty))
-> > +		return 0;
-> > +	if (kstrtoull(param->string, 0, &result->uint_64) < 0)
-> >  		return fs_param_bad_value(log, param);
-> >  	return 0;
-> >  }
-> > @@ -244,6 +255,8 @@ int fs_param_is_enum(struct p_log *log, const struct fs_parameter_spec *p,
-> >  	const struct constant_table *c;
-> >  	if (param->type != fs_value_is_string)
-> >  		return fs_param_bad_value(log, param);
-> > +	if (!*param->string && (p->flags & fs_param_can_be_empty))
-> > +		return 0;
-> >  	c = __lookup_constant(p->data, param->string);
-> >  	if (!c)
-> >  		return fs_param_bad_value(log, param);
-> > @@ -255,7 +268,8 @@ EXPORT_SYMBOL(fs_param_is_enum);
-> >  int fs_param_is_string(struct p_log *log, const struct fs_parameter_spec *p,
-> >  		       struct fs_parameter *param, struct fs_parse_result *result)
-> >  {
-> > -	if (param->type != fs_value_is_string || !*param->string)
-> > +	if (param->type != fs_value_is_string ||
-> > +	    (!*param->string && !(p->flags & fs_param_can_be_empty)))
-> >  		return fs_param_bad_value(log, param);
-> >  	return 0;
-> >  }
-> > @@ -275,7 +289,8 @@ int fs_param_is_fd(struct p_log *log, const struct fs_parameter_spec *p,
-> >  {
-> >  	switch (param->type) {
-> >  	case fs_value_is_string:
-> > -		if (kstrtouint(param->string, 0, &result->uint_32) < 0)
-> > +		if ((!*param->string && !(p->flags & fs_param_can_be_empty)) ||
-> > +		    kstrtouint(param->string, 0, &result->uint_32) < 0)
-> >  			break;
-> >  		if (result->uint_32 <= INT_MAX)
-> >  			return 0;
-> > diff --git a/include/linux/fs_parser.h b/include/linux/fs_parser.h
-> > index aab0ffc6bac6..f103c91139d4 100644
-> > --- a/include/linux/fs_parser.h
-> > +++ b/include/linux/fs_parser.h
-> > @@ -42,7 +42,7 @@ struct fs_parameter_spec {
-> >  	u8			opt;	/* Option number (returned by fs_parse()) */
-> >  	unsigned short		flags;
-> >  #define fs_param_neg_with_no	0x0002	/* "noxxx" is negative param */
-> > -#define fs_param_neg_with_empty	0x0004	/* "xxx=" is negative param */
-> > +#define fs_param_can_be_empty	0x0004	/* "xxx=" is allowed */
-> >  #define fs_param_deprecated	0x0008	/* The param is deprecated */
-> >  	const void		*data;
-> >  };
-> > -- 
-> > 2.31.1
-> > 
-> 
+diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
+index c17ccc19b938..b93d52e6a17a 100644
+--- a/fs/ext2/balloc.c
++++ b/fs/ext2/balloc.c
+@@ -1376,7 +1376,8 @@ ext2_fsblk_t ext2_new_blocks(struct inode *inode, ext2_fsblk_t goal,
+ 	    in_range(ret_block, le32_to_cpu(gdp->bg_inode_table),
+ 		      EXT2_SB(sb)->s_itb_per_group) ||
+ 	    in_range(ret_block + num - 1, le32_to_cpu(gdp->bg_inode_table),
+-		      EXT2_SB(sb)->s_itb_per_group)) {
++		      EXT2_SB(sb)->s_itb_per_group) ||
++	    in_range(EXT2_SB(sb)->s_sb_block, ret_block, num)) {
+ 		ext2_error(sb, "ext2_new_blocks",
+ 			    "Allocating block in system zone - "
+ 			    "blocks from "E2FSBLK", length %lu",
+-- 
+2.31.1
 
