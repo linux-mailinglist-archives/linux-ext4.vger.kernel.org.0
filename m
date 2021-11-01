@@ -2,80 +2,197 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D244414A7
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Nov 2021 09:03:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC114416EC
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Nov 2021 10:28:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231495AbhKAIFn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 1 Nov 2021 04:05:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231402AbhKAIFm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 1 Nov 2021 04:05:42 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A8F5C061764
-        for <linux-ext4@vger.kernel.org>; Mon,  1 Nov 2021 01:03:09 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id j2so34773276lfg.3
-        for <linux-ext4@vger.kernel.org>; Mon, 01 Nov 2021 01:03:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=kTlPYaJ3qmdiuwil3bN4/5BGELxQxYaH2mDV2D/+NOc=;
-        b=noIunhl9PvoPcUkMO1aIA1oVXnNEN4KUMnLzX81u41bUYmm654/d+8Zmtlo6rVUfiP
-         URKnr6K8ehg0Wh7FRqSI9k6fPv2DsXoeQF5RyVvvBWL5iE17ii0Hwy7DEGCxBrabSyNn
-         EOknVx9TADL+GR6CwdZv5iwiQkA+SgU+2TIIuYRY7UtEIvS3tf+3AOfWSGAHDegfCUDW
-         KFTXPeEWCeZvS9OsO77XW5FzLhbHNg24miTgIfpxgxdtWSxpsMgcVp1ovVt1nV8bPABY
-         Nt9t0GENejSl8bnKdYk9qzpsZJoEh4QUKHq3To1LyThtQ/UNoUZiShWGV9dnp4emntud
-         6TAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=kTlPYaJ3qmdiuwil3bN4/5BGELxQxYaH2mDV2D/+NOc=;
-        b=MhW6uFEgaSxTakHeMSzq3DdnCpTq5YdEgGk1BkPLc8BNtwwFA6pEHghRIrPYcyiieC
-         +lO7UHhYo6t/D4LVmbgYJ4hvwta6iMF0nHCB3Iy5hbIUYX6oagfCiwr5lUkgpZLt7312
-         YNVUVHw58rOgtQBpMeel2wltb5U7ZC5mRlaXIUwzzRY60SG6k0YUnSnzSpEN5fqYguNW
-         SJO3HlVOAepEzfqSosJZILViNSo5Lkl/l3URh3V9wwtoQ/ZFlRWvZsQCCV71RM4YDglm
-         HtMEGyoNnxp9NcbPeVvReNFj+HSg4+lc88KvqyYUZLnsSCX5T2+3pfkxJEYXMPTlhCoJ
-         V1CQ==
-X-Gm-Message-State: AOAM533GfiN0TSjHLmUFlcryW9bIiRMHehQEbSGka8wuVXW7n+j7m7Dp
-        wK2Fa9FmajK/7ju8Eo3cIWCkH4U6h04Z4CBh94k=
-X-Google-Smtp-Source: ABdhPJxXtE0G1whIGXe2hxI/YsBwuQCFdtv4O25KgKEw0cNYTytiUo7Vy8b5pLqj8uf6S/Zvq7lb35uF1vpbXYsY0v0=
-X-Received: by 2002:a05:6512:a8e:: with SMTP id m14mr26458494lfu.575.1635753787779;
- Mon, 01 Nov 2021 01:03:07 -0700 (PDT)
+        id S232931AbhKAJae (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 1 Nov 2021 05:30:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36871 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233048AbhKAJ2U (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 1 Nov 2021 05:28:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635758745;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=53OXlpDvni31LvIaln3YOdZGCjMTf4uZ9h8tjAcr9uc=;
+        b=KzbXjnhHXelvrPQJLnOs1RcsOAuyNHmHn53AIaLuijNjU6OJ7b9b0aW6KnB46gdlOcCJUI
+        hbkT3TfAfw5Aej99XUDnXeJ0yM5VI48yQUAItL8gIJ97cUGPRaNrWst0tHTOeHRR3lt50j
+        tlVtqytxxMvJcC0MVlX/sPH4U4RbfZ0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-304-oEMrv1l3OUeU-98a7vTv4w-1; Mon, 01 Nov 2021 05:25:40 -0400
+X-MC-Unique: oEMrv1l3OUeU-98a7vTv4w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2149610A8E00;
+        Mon,  1 Nov 2021 09:25:39 +0000 (UTC)
+Received: from work (unknown [10.40.194.95])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 86EE41007605;
+        Mon,  1 Nov 2021 09:25:29 +0000 (UTC)
+Date:   Mon, 1 Nov 2021 10:25:25 +0100
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        linux-fsdevel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Carlos Maiolino <cmaiolino@redhat.com>
+Subject: Re: [PATCH v4 01/13] fs_parse: allow parameter value to be empty
+Message-ID: <20211101092525.pdwtufampfajze5l@work>
+References: <20211027141857.33657-1-lczerner@redhat.com>
+ <20211027141857.33657-2-lczerner@redhat.com>
+ <20211029084411.zk32u3hflf2vdzmx@wittgenstein>
 MIME-Version: 1.0
-Received: by 2002:a05:6512:304b:0:0:0:0 with HTTP; Mon, 1 Nov 2021 01:03:07
- -0700 (PDT)
-Reply-To: aisha.7d@yahoo.com
-From:   Aisha AG <rbx17058@gmail.com>
-Date:   Mon, 1 Nov 2021 00:03:07 -0800
-Message-ID: <CA+KbyyeEn+hP9T75RRy6+snGWxpAx+xn43MKdB30KYFYZNAV2Q@mail.gmail.com>
-Subject: Hello Dear,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211029084411.zk32u3hflf2vdzmx@wittgenstein>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
--- 
-Hello Dear,
+On Fri, Oct 29, 2021 at 10:44:11AM +0200, Christian Brauner wrote:
+> On Wed, Oct 27, 2021 at 04:18:45PM +0200, Lukas Czerner wrote:
+> > Allow parameter value to be empty by specifying fs_param_can_be_empty
+> > flag.
+> 
+> Hey Lukas,
+> 
+> what option is this for? Usually this should be handled by passing
+> FSCONFIG_SET_FLAG. Doesn't seem like a good idea to let the string value
+> be optionally empty. I'd rather have the guarantee that it has to be
+> something instead of having to be extra careful because it could be NULL.
 
-I came across your e-mail contact prior to a private search while in
-need of your assistance. I am Aisha Al-Qaddafi, the only biological
-Daughter of Former President of Libya Col.Muammar Al-Qaddafi.
-Am a Widow and a single Mother with three Children.
+Hi Christian,
 
-I have investment funds worth Twenty Seven Million Five Hundred
-Thousand United State Dollar $27.500.000.00, and i need a trusted
-investment Manager/Partner because of my current refugee status,
-however, I am interested in you for investment project assistance in
-your country, may be from there, we can build business relationship
-in the nearest future.
+this is for ext4 mount options usrjquota and grpjquota that will treat
+empty parameter, that is "grpjquota=" and "usrjquota=", as a means to
+disable those. I agree that it's not ideal, but if I don't want to break
+compatibilily when converting ext4 to this new mount API I have to keep
+that option the way it is.
 
-I am willing to negotiate an investment/business profit sharing ratio
-with you based on the future investment earning profits.
+I share your concern, but for the string to be empty, the
+fs_param_can_be_empty flag must be used intentionaly and so the code
+handling this must expect the string to be empty in some cases.
 
-If you are willing to handle this project on my behalf kindly reply
-urgently to enable me to provide you more information about the
-investment funds.
-Best Regards
-Mrs Aisha Al-Qaddafi.
+Another option would be to use a flag parameter with the name including
+the egual sign. Not sure if that's currently possible. But that would
+require us to use separtate parameter and it feels even more clunky to
+me especially since we can easly detect empty string instead.
+
+Thanks!
+-Lukas
+
+> 
+> > 
+> > Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+> > Cc: Al Viro <viro@zeniv.linux.org.uk>
+> > Reviewed-by: Carlos Maiolino <cmaiolino@redhat.com>
+> > ---
+> >  fs/fs_parser.c            | 31 +++++++++++++++++++++++--------
+> >  include/linux/fs_parser.h |  2 +-
+> >  2 files changed, 24 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/fs/fs_parser.c b/fs/fs_parser.c
+> > index 3df07c0e32b3..ed40ce5742fd 100644
+> > --- a/fs/fs_parser.c
+> > +++ b/fs/fs_parser.c
+> > @@ -199,6 +199,8 @@ int fs_param_is_bool(struct p_log *log, const struct fs_parameter_spec *p,
+> >  	int b;
+> >  	if (param->type != fs_value_is_string)
+> >  		return fs_param_bad_value(log, param);
+> > +	if (!*param->string && (p->flags & fs_param_can_be_empty))
+> > +		return 0;
+> >  	b = lookup_constant(bool_names, param->string, -1);
+> >  	if (b == -1)
+> >  		return fs_param_bad_value(log, param);
+> > @@ -211,8 +213,11 @@ int fs_param_is_u32(struct p_log *log, const struct fs_parameter_spec *p,
+> >  		    struct fs_parameter *param, struct fs_parse_result *result)
+> >  {
+> >  	int base = (unsigned long)p->data;
+> > -	if (param->type != fs_value_is_string ||
+> > -	    kstrtouint(param->string, base, &result->uint_32) < 0)
+> > +	if (param->type != fs_value_is_string)
+> > +		return fs_param_bad_value(log, param);
+> > +	if (!*param->string && (p->flags & fs_param_can_be_empty))
+> > +		return 0;
+> > +	if (kstrtouint(param->string, base, &result->uint_32) < 0)
+> >  		return fs_param_bad_value(log, param);
+> >  	return 0;
+> >  }
+> > @@ -221,8 +226,11 @@ EXPORT_SYMBOL(fs_param_is_u32);
+> >  int fs_param_is_s32(struct p_log *log, const struct fs_parameter_spec *p,
+> >  		    struct fs_parameter *param, struct fs_parse_result *result)
+> >  {
+> > -	if (param->type != fs_value_is_string ||
+> > -	    kstrtoint(param->string, 0, &result->int_32) < 0)
+> > +	if (param->type != fs_value_is_string)
+> > +		return fs_param_bad_value(log, param);
+> > +	if (!*param->string && (p->flags & fs_param_can_be_empty))
+> > +		return 0;
+> > +	if (kstrtoint(param->string, 0, &result->int_32) < 0)
+> >  		return fs_param_bad_value(log, param);
+> >  	return 0;
+> >  }
+> > @@ -231,8 +239,11 @@ EXPORT_SYMBOL(fs_param_is_s32);
+> >  int fs_param_is_u64(struct p_log *log, const struct fs_parameter_spec *p,
+> >  		    struct fs_parameter *param, struct fs_parse_result *result)
+> >  {
+> > -	if (param->type != fs_value_is_string ||
+> > -	    kstrtoull(param->string, 0, &result->uint_64) < 0)
+> > +	if (param->type != fs_value_is_string)
+> > +		return fs_param_bad_value(log, param);
+> > +	if (!*param->string && (p->flags & fs_param_can_be_empty))
+> > +		return 0;
+> > +	if (kstrtoull(param->string, 0, &result->uint_64) < 0)
+> >  		return fs_param_bad_value(log, param);
+> >  	return 0;
+> >  }
+> > @@ -244,6 +255,8 @@ int fs_param_is_enum(struct p_log *log, const struct fs_parameter_spec *p,
+> >  	const struct constant_table *c;
+> >  	if (param->type != fs_value_is_string)
+> >  		return fs_param_bad_value(log, param);
+> > +	if (!*param->string && (p->flags & fs_param_can_be_empty))
+> > +		return 0;
+> >  	c = __lookup_constant(p->data, param->string);
+> >  	if (!c)
+> >  		return fs_param_bad_value(log, param);
+> > @@ -255,7 +268,8 @@ EXPORT_SYMBOL(fs_param_is_enum);
+> >  int fs_param_is_string(struct p_log *log, const struct fs_parameter_spec *p,
+> >  		       struct fs_parameter *param, struct fs_parse_result *result)
+> >  {
+> > -	if (param->type != fs_value_is_string || !*param->string)
+> > +	if (param->type != fs_value_is_string ||
+> > +	    (!*param->string && !(p->flags & fs_param_can_be_empty)))
+> >  		return fs_param_bad_value(log, param);
+> >  	return 0;
+> >  }
+> > @@ -275,7 +289,8 @@ int fs_param_is_fd(struct p_log *log, const struct fs_parameter_spec *p,
+> >  {
+> >  	switch (param->type) {
+> >  	case fs_value_is_string:
+> > -		if (kstrtouint(param->string, 0, &result->uint_32) < 0)
+> > +		if ((!*param->string && !(p->flags & fs_param_can_be_empty)) ||
+> > +		    kstrtouint(param->string, 0, &result->uint_32) < 0)
+> >  			break;
+> >  		if (result->uint_32 <= INT_MAX)
+> >  			return 0;
+> > diff --git a/include/linux/fs_parser.h b/include/linux/fs_parser.h
+> > index aab0ffc6bac6..f103c91139d4 100644
+> > --- a/include/linux/fs_parser.h
+> > +++ b/include/linux/fs_parser.h
+> > @@ -42,7 +42,7 @@ struct fs_parameter_spec {
+> >  	u8			opt;	/* Option number (returned by fs_parse()) */
+> >  	unsigned short		flags;
+> >  #define fs_param_neg_with_no	0x0002	/* "noxxx" is negative param */
+> > -#define fs_param_neg_with_empty	0x0004	/* "xxx=" is negative param */
+> > +#define fs_param_can_be_empty	0x0004	/* "xxx=" is allowed */
+> >  #define fs_param_deprecated	0x0008	/* The param is deprecated */
+> >  	const void		*data;
+> >  };
+> > -- 
+> > 2.31.1
+> > 
+> 
+
