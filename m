@@ -2,54 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C8F441DC7
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Nov 2021 17:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A9A441DD3
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Nov 2021 17:17:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231919AbhKAQPb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 1 Nov 2021 12:15:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31944 "EHLO
+        id S232416AbhKAQUV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 1 Nov 2021 12:20:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:54923 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232473AbhKAQPa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 1 Nov 2021 12:15:30 -0400
+        by vger.kernel.org with ESMTP id S230517AbhKAQUU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 1 Nov 2021 12:20:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635783176;
+        s=mimecast20190719; t=1635783467;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=+G6SzjVTR+LCyYNlG0zbcp2+gduPxDNU+2Zc+nwBRpo=;
-        b=OSGCzH7a9iwXipiTHXUGo0ViW4DQj+HOpxAD9jdj6SQT3OMsIMINUJqLIoxrv37CEdPivy
-        BBYalGl+Hf/j1rPWI5ToSbwXQmb4zIXtemJC726Rt+HykiFddlTIctqsfIt08KH+Wtk5NW
-        nmF8FM6EQKMZHFJ7vPOmuIz1BuWLhjk=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-328-0GLPwWQTMna7XjhO0hxNlw-1; Mon, 01 Nov 2021 12:12:55 -0400
-X-MC-Unique: 0GLPwWQTMna7XjhO0hxNlw-1
-Received: by mail-qk1-f199.google.com with SMTP id bq14-20020a05620a468e00b0046335b327e9so1089519qkb.23
-        for <linux-ext4@vger.kernel.org>; Mon, 01 Nov 2021 09:12:55 -0700 (PDT)
+        bh=F2vxwqlB6wFzeCRM5lLa77O94J13VaOz9ZvoVd+rZG8=;
+        b=B7k9y58G4JcIJeeiOMtSuF/pN9PKfe884hWhZsMpBKVicHOLGOaAhA3bkvQohmEfRR30U6
+        ZdVJcyY/DGGosjEivx/lAq1oA8SbdNvebn4BSrV8ZNz5rn9Tc0zupJl4VmczztD5x2R0JF
+        Ak+B7EQ3PIAaXpM6rGqwJSPquMZgtiQ=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-65-yrwmbtrENgKba52V0dasxg-1; Mon, 01 Nov 2021 12:17:46 -0400
+X-MC-Unique: yrwmbtrENgKba52V0dasxg-1
+Received: by mail-qt1-f200.google.com with SMTP id 14-20020ac8594e000000b002aa84c324e4so12371383qtz.10
+        for <linux-ext4@vger.kernel.org>; Mon, 01 Nov 2021 09:17:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=+G6SzjVTR+LCyYNlG0zbcp2+gduPxDNU+2Zc+nwBRpo=;
-        b=3WGREOHrxQqfRiUMWa/xGCi0FjoKuJhljotepDBEy0kaFoRlm3hva49kiwEnmRr3Hd
-         iETVyKCOeXhDCdhX7OBAbIXNFuF2q9c08vjIn/O9tBJF3HxahdSj+3pdQH7my0md3IMF
-         PQgA22YXWJZ0NKfNRpjYGnZvOQj5L8fWLV1z/WmjaB1Uct66ZLcE1LImSjM8+CHD1Otf
-         G+Uj0yYm2PYZJA51t75xdi5/rIF2Ov8PomFZdc8irIBPk2avEbGQVmsKZLRGljg/NvSK
-         nNo9UMlToLBAIKvg8KQXs/LXVEAc+LAdYq3CCarq2LKctrKXR56p6jRwMypKntMlE3ow
-         HgCg==
-X-Gm-Message-State: AOAM530BHQ8wh4j65OuvmBhkMOccZEBl7/4HAYP7PXOtte6S3E+yHEsP
-        QqZdRjHf28OOlYxOc1YTITTlnBWPaxjQ4SzYbPMj1OTjjulK60OmpJEuebdRJEO8gGzMe98VBLe
-        RCZ2CE5iQDGjWMCY0QMfS
-X-Received: by 2002:a0c:e708:: with SMTP id d8mr23264790qvn.62.1635783175416;
-        Mon, 01 Nov 2021 09:12:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx/H7B1fdn7PP13//AwKmpta1av9FRTtOajPRoBskVHgoJcCnXd+0D44u/s4udzcALoTqA+Rw==
-X-Received: by 2002:a0c:e708:: with SMTP id d8mr23264758qvn.62.1635783175189;
-        Mon, 01 Nov 2021 09:12:55 -0700 (PDT)
+        bh=F2vxwqlB6wFzeCRM5lLa77O94J13VaOz9ZvoVd+rZG8=;
+        b=jKmXHI2jy5dsnox06GaBgsT6wLQtLnmIGTcE4QLu5pk9Jnlt8LQC6ILvdi24VjmUi9
+         JHu4SFNP92kQuljkfxr4oBY66GHyxcECBxWVijdWmEB9UpT8U/2bL5B4wqDRbk00Jd5Z
+         VHcaRd2MBfSueS9TX40iG2DSnttX3JDwtTGzwIpZP5j7vsJujdvWOvodm9h73yqWnHlS
+         oveq+j7TKCoNXtSOpqvxIn5SsU5We7TRbRT4xeQJYxWetCQpuwYqqDnilTfKDmqQKx29
+         SOcDGyKLtbheZI1czqdomJzHkMzXGNk5+lpTMEShDpRXX1tTjNGlVezFO38E6vsYiHt3
+         qL5g==
+X-Gm-Message-State: AOAM531KY1fjEzu77JiL973rzio+yLZ022Tigmwa65Lbykx/vZVSjR4X
+        pP2+lOFqwVEIveQu+agjOiWRPrKcWKbgEPVoYYv6Aw0gsmycUMi3yCOCLuPiRVSKNBl3EnB27Oe
+        gjS+55KB34IZceaFcPIHL
+X-Received: by 2002:a05:622a:1006:: with SMTP id d6mr31006261qte.259.1635783465646;
+        Mon, 01 Nov 2021 09:17:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwsvnNj6Smb4Ra96XKXfYd15LiYJibYUWXpiZB6UR51qpyc+daCyIZfeeXzYlbHsOmSJkMTRA==
+X-Received: by 2002:a05:622a:1006:: with SMTP id d6mr31006216qte.259.1635783465346;
+        Mon, 01 Nov 2021 09:17:45 -0700 (PDT)
 Received: from localhost (pool-68-160-176-52.bstnma.fios.verizon.net. [68.160.176.52])
-        by smtp.gmail.com with ESMTPSA id v16sm167031qtw.90.2021.11.01.09.12.54
+        by smtp.gmail.com with ESMTPSA id f66sm5772868qkj.76.2021.11.01.09.17.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 09:12:54 -0700 (PDT)
-Date:   Mon, 1 Nov 2021 12:12:53 -0400
+        Mon, 01 Nov 2021 09:17:44 -0700 (PDT)
+Date:   Mon, 1 Nov 2021 12:17:43 -0400
 From:   Mike Snitzer <snitzer@redhat.com>
 To:     Dan Williams <dan.j.williams@intel.com>
 Cc:     Christoph Hellwig <hch@lst.de>, Ira Weiny <ira.weiny@intel.com>,
@@ -61,38 +61,132 @@ Cc:     Christoph Hellwig <hch@lst.de>, Ira Weiny <ira.weiny@intel.com>,
         linux-erofs@lists.ozlabs.org,
         linux-ext4 <linux-ext4@vger.kernel.org>,
         virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 01/11] dm: make the DAX support dependend on CONFIG_FS_DAX
-Message-ID: <YYASBVuorCedsnRL@redhat.com>
+Subject: Re: [PATCH 07/11] dax: remove dax_capable
+Message-ID: <YYATJ+oDT15TD9Np@redhat.com>
 References: <20211018044054.1779424-1-hch@lst.de>
- <20211018044054.1779424-2-hch@lst.de>
- <CAPcyv4hrEPizMOH-XhCqh=23EJDG=W6VwvQ1pVstfe-Jm-AsiQ@mail.gmail.com>
+ <20211018044054.1779424-8-hch@lst.de>
+ <CAPcyv4gE8UXjQAe_6=BKFRCyLWNP_9CNxKFH---RpPnYfmBQLg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPcyv4hrEPizMOH-XhCqh=23EJDG=W6VwvQ1pVstfe-Jm-AsiQ@mail.gmail.com>
+In-Reply-To: <CAPcyv4gE8UXjQAe_6=BKFRCyLWNP_9CNxKFH---RpPnYfmBQLg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Oct 27 2021 at  4:53P -0400,
+On Wed, Oct 27 2021 at  8:16P -0400,
 Dan Williams <dan.j.williams@intel.com> wrote:
 
+> I am going to change the subject of this patch to:
+> 
+> dax: remove ->dax_supported()
+> 
 > On Sun, Oct 17, 2021 at 9:41 PM Christoph Hellwig <hch@lst.de> wrote:
 > >
-> > The device mapper DAX support is all hanging off a block device and thus
-> > can't be used with device dax.  Make it depend on CONFIG_FS_DAX instead
-> > of CONFIG_DAX_DRIVER.  This also means that bdev_dax_pgoff only needs to
-> > be built under CONFIG_FS_DAX now.
 > 
-> Looks good.
+> I'll add a bit more background to help others review this.
 > 
-> Mike, can I get an ack to take this through nvdimm.git? (you'll likely
-> see me repeat this question on subsequent patches in this series).
+> The ->dax_supported() operation arranges for a stack of devices to
+> each answer the question "is dax operational". That request routes to
+> generic_fsdax_supported() at last level device and that attempted an
+> actual dax_direct_access() call and did some sanity checks. However,
+> those sanity checks can be validated in other ways and with those
+> removed the only question to answer is "has each block device driver
+> in the stack performed dax_add_host()". That can be validated without
+> a dax_operation. So, just open code the block size and dax_dev == NULL
+> checks in the callers, and delete ->dax_supported().
+> 
+> Mike, let me know if you have any concerns.
 
-Sorry for late reply, but I see you punted on pushing for 5.16 merge
-anyway (I'm sure my lack of response didn't help, sorry about that).
+Thanks for your additional background, it helped.
 
+
+> 
+> > Just open code the block size and dax_dev == NULL checks in the callers.
+> >
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > ---
+> >  drivers/dax/super.c          | 36 ------------------------------------
+> >  drivers/md/dm-table.c        | 22 +++++++++++-----------
+> >  drivers/md/dm.c              | 21 ---------------------
+> >  drivers/md/dm.h              |  4 ----
+> >  drivers/nvdimm/pmem.c        |  1 -
+> >  drivers/s390/block/dcssblk.c |  1 -
+> >  fs/erofs/super.c             | 11 +++++++----
+> >  fs/ext2/super.c              |  6 ++++--
+> >  fs/ext4/super.c              |  9 ++++++---
+> >  fs/xfs/xfs_super.c           | 21 ++++++++-------------
+> >  include/linux/dax.h          | 14 --------------
+> >  11 files changed, 36 insertions(+), 110 deletions(-)
+> >
+> > diff --git a/drivers/dax/super.c b/drivers/dax/super.c
+> > index 482fe775324a4..803942586d1b6 100644
+> > --- a/drivers/dax/super.c
+> > +++ b/drivers/dax/super.c
+> > @@ -108,42 +108,6 @@ struct dax_device *fs_dax_get_by_bdev(struct block_device *bdev)
+> >         return dax_dev;
+> >  }
+> >  EXPORT_SYMBOL_GPL(fs_dax_get_by_bdev);
+> > -
+> > -bool generic_fsdax_supported(struct dax_device *dax_dev,
+> > -               struct block_device *bdev, int blocksize, sector_t start,
+> > -               sector_t sectors)
+> > -{
+> > -       if (blocksize != PAGE_SIZE) {
+> > -               pr_info("%pg: error: unsupported blocksize for dax\n", bdev);
+> > -               return false;
+> > -       }
+> > -
+> > -       if (!dax_dev) {
+> > -               pr_debug("%pg: error: dax unsupported by block device\n", bdev);
+> > -               return false;
+> > -       }
+> > -
+> > -       return true;
+> > -}
+> > -EXPORT_SYMBOL_GPL(generic_fsdax_supported);
+> > -
+> > -bool dax_supported(struct dax_device *dax_dev, struct block_device *bdev,
+> > -               int blocksize, sector_t start, sector_t len)
+> > -{
+> > -       bool ret = false;
+> > -       int id;
+> > -
+> > -       if (!dax_dev)
+> > -               return false;
+> > -
+> > -       id = dax_read_lock();
+> > -       if (dax_alive(dax_dev) && dax_dev->ops->dax_supported)
+> > -               ret = dax_dev->ops->dax_supported(dax_dev, bdev, blocksize,
+> > -                                                 start, len);
+> > -       dax_read_unlock(id);
+> > -       return ret;
+> > -}
+> > -EXPORT_SYMBOL_GPL(dax_supported);
+> >  #endif /* CONFIG_BLOCK && CONFIG_FS_DAX */
+> >
+> >  enum dax_device_flags {
+> > diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
+> > index 1fa4d5582dca5..4ae671c2168ea 100644
+> > --- a/drivers/md/dm-table.c
+> > +++ b/drivers/md/dm-table.c
+> > @@ -807,12 +807,14 @@ void dm_table_set_type(struct dm_table *t, enum dm_queue_mode type)
+> >  EXPORT_SYMBOL_GPL(dm_table_set_type);
+> >
+> >  /* validate the dax capability of the target device span */
+> > -int device_not_dax_capable(struct dm_target *ti, struct dm_dev *dev,
+> > +static int device_not_dax_capable(struct dm_target *ti, struct dm_dev *dev,
+> >                         sector_t start, sector_t len, void *data)
+> >  {
+> > -       int blocksize = *(int *) data;
+> > +       if (dev->dax_dev)
+> > +               return false;
+> >
+> > -       return !dax_supported(dev->dax_dev, dev->bdev, blocksize, start, len);
+> > +       pr_debug("%pg: error: dax unsupported by block device\n", dev->bdev);
+
+Would prefer the use of DMDEBUG() here (which doesn't need trailing \n)
+
+But otherwise:
 Acked-by: Mike Snitzer <snitzer@redhat.com>
-
-Thanks!
 
