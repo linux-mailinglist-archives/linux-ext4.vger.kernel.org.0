@@ -2,97 +2,125 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E47E0442D9F
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Nov 2021 13:13:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57408442F19
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Nov 2021 14:31:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231247AbhKBMQL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 2 Nov 2021 08:16:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231176AbhKBMQI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Nov 2021 08:16:08 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C28C061714
-        for <linux-ext4@vger.kernel.org>; Tue,  2 Nov 2021 05:13:33 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id h23so8109587ila.4
-        for <linux-ext4@vger.kernel.org>; Tue, 02 Nov 2021 05:13:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mRRv7E+69/vVKkYW5342PCyFEeOfIo3cLN4E2lz8zzw=;
-        b=qLJXf/NpGMRi+g1+Ss1mT3nGqoA4huV4gw3WrmPl4Rwag3nrrx2Gg4TzaIp1s2Pxtg
-         qWNmf2Zm4kISmuE728jdrTly1UECxCq7PvJ1DdR0NCO8Cxcz32CgRUjHgLn1PiFf/Wqs
-         Dx39R1YZAW2CVnCMYw3YR+sIqU9PBwacrCA9kj96L+PlkryTdzcy3Ryxc08syEOledE7
-         +oplfcQTepHRS3eFDpIHzngUSa+7IWtAtESX1YpnOsCigYA8AT7u9k9idM+KCzjrcxh7
-         0jEt/8CtfakiZUwBzyJNTMZ2FlDQ/YKa8G7GfyfIk+aLjvh4x/a+162uZQAc76QzykJf
-         qcMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mRRv7E+69/vVKkYW5342PCyFEeOfIo3cLN4E2lz8zzw=;
-        b=bQ0rJ0OQeCf+Wsk+qDJr5VriAubJY0O2QugW1nN7thyf5uW6qg4t8TwNRyeKHw8B5Y
-         k/xuSgD5tRGxUkhISHqLyL7QSp0IiIYYcWQdtLjhqt7LHYYhN/DIR0MP5mStFQV9PXW0
-         vzq8ESqAX0vuXXRCcdVTdNFn19Xt0qo+nlRr9U/kHrE5M7T54Q2wan/O94kbH7HtHRh1
-         dt1dFA4lY/8zEHvvWQWHzNvWXj7kcJkEKYkVBXtaLCeLd2zeU6cPSLD/m0D26mUydKFD
-         y26ohcGhpqt3mx81iwHS8cXhzrAFl8tDi6OCdguxozq2R9FeghaxxEZErROp3vi+XXH0
-         FqnQ==
-X-Gm-Message-State: AOAM5325DePSiwoLDWGCa4Yf2PeULfncEBNOrpn3Uz7WBTgJSsx7p+1s
-        0lNw3s2Xlah6sYM1WuihHc1BFHeg1V2m7pHHFYU=
-X-Google-Smtp-Source: ABdhPJydtBHU2UTFcy6EgBHaXPFJYQtGjjUl5mjlDqROX1fwXIOEDiWWkoyCRwRDFGFpYx/opWpn14Qm7zWP1E+C+AE=
-X-Received: by 2002:a92:dc0c:: with SMTP id t12mr16924675iln.198.1635855212646;
- Tue, 02 Nov 2021 05:13:32 -0700 (PDT)
+        id S230347AbhKBNeC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 2 Nov 2021 09:34:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26092 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230124AbhKBNeB (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Nov 2021 09:34:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635859886;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=rhcEfJLRdleWa+X/dcg9YrT9vcF5CqG3hiU+x0KnrLI=;
+        b=XpRPw4wxuHvoDeJfx/+Dt1ApOjLoK9NoO2+5GRImwOue4xth1mkVjPvluMXU54gQE/i+Er
+        AuA52idJX2vnIe8C7twhROFWKTD9pXPC+tDCKA7fBGI9s6V8H5xK1RT6/1f9jfNrQxwBHj
+        ggmZQbjMoXK/ZBO2Rs4iSyp+w+7XfVk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-419-_KIH1pGVODGjKPDZtUU2_g-1; Tue, 02 Nov 2021 09:31:23 -0400
+X-MC-Unique: _KIH1pGVODGjKPDZtUU2_g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C0F3A1006AA3;
+        Tue,  2 Nov 2021 13:31:20 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.40.194.30])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 013B45BAE2;
+        Tue,  2 Nov 2021 13:31:18 +0000 (UTC)
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     linux-ext4@vger.kernel.org, tytso@mit.edu
+Cc:     Laurent GUERBY <laurent@guerby.net>
+Subject: [PATCH] ext4: Allow to change s_last_trim_minblks via sysfs
+Date:   Tue,  2 Nov 2021 14:31:15 +0100
+Message-Id: <20211102133115.9600-1-lczerner@redhat.com>
 MIME-Version: 1.0
-References: <20211029211732.386127-1-krisman@collabora.com>
- <20211029211732.386127-2-krisman@collabora.com> <YYEgqgFoo7oJheFr@google.com>
-In-Reply-To: <YYEgqgFoo7oJheFr@google.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Tue, 2 Nov 2021 14:13:21 +0200
-Message-ID: <CAOQ4uxiZetvK=r-tedgqNXR4nT=+kWUG5eVRWu8wVUQY5PN0Ew@mail.gmail.com>
-Subject: Re: [PATCH v3 1/9] syscalls: fanotify: Add macro to require specific
- mark types
-To:     Matthew Bobrowski <repnop@google.com>
-Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Jan Kara <jack@suse.com>, LTP List <ltp@lists.linux.it>,
-        Khazhismel Kumykov <khazhy@google.com>, kernel@collabora.com,
-        Ext4 <linux-ext4@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 1:27 PM Matthew Bobrowski <repnop@google.com> wrote:
->
-> On Fri, Oct 29, 2021 at 06:17:24PM -0300, Gabriel Krisman Bertazi wrote:
-> > Like done for init flags and event types, and a macro to require a
-> > specific mark type.
-> >
-> > Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-> > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-> > ---
-> >  testcases/kernel/syscalls/fanotify/fanotify.h | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
-> > diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-> > index a2be183385e4..c67db3117e29 100644
-> > --- a/testcases/kernel/syscalls/fanotify/fanotify.h
-> > +++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-> > @@ -373,4 +373,9 @@ static inline int fanotify_mark_supported_by_kernel(uint64_t flag)
-> >       return rval;
-> >  }
-> >
-> > +#define REQUIRE_MARK_TYPE_SUPPORTED_ON_KERNEL(mark_type) do { \
-> > +     fanotify_init_flags_err_msg(#mark_type, __FILE__, __LINE__, tst_brk_, \
-> > +                                 fanotify_mark_supported_by_kernel(mark_type)); \
-> > +} while (0)
-> > +
-> >  #endif /* __FANOTIFY_H__ */
->
-> A nit, but I'm of the opinion that s/_ON_/_BY_ within the macro name. Otherwise,
-> this looks OK to me.
+Ext4 has an optimization mechanism for batched disacrd (FITRIM) that
+should help speed up subsequent calls of FITRIM ioctl by skipping the
+groups that were previously trimmed. However because the FITRIM allows
+to set the minimum size of an extent to trim, ext4 stores the last
+minimum extent size and only avoids trimming the group if it was
+previously trimmed with minimum extent size equal to, or smaller than
+the current call.
 
-Agreed. You can change that while cherry-picking to your branch ;-)
+There is currently no way to bypass the optimization without
+umount/mount cycle. This becomes a problem when the file system is
+live migrated to a different storage, because the optimization will
+prevent possibly useful discard calls to the storage.
 
-Thanks,
-Amir.
+Fix it by exporting the s_last_trim_minblks via sysfs interface which
+will allow us to set the minimum size to the number of blocks larger
+than subsequent FITRIM call, effectively bypassing the optimization.
+
+By setting the s_last_trim_minblks to INT_MAX the optimization will be
+effectively cleared regardless of the previous state, or file system
+configuration.
+
+For example:
+echo 2147483647 > /sys/fs/ext4/dm-1/last_trim_minblks
+
+Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+Reported-by: Laurent GUERBY <laurent@guerby.net>
+---
+ fs/ext4/sysfs.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
+index 2314f7446592..72d2a2c61a44 100644
+--- a/fs/ext4/sysfs.c
++++ b/fs/ext4/sysfs.c
+@@ -187,6 +187,9 @@ static struct ext4_attr ext4_attr_##_name = {			\
+ #define EXT4_RO_ATTR_SBI_ATOMIC(_name,_elname)	\
+ 	EXT4_ATTR_OFFSET(_name, 0444, pointer_atomic, ext4_sb_info, _elname)
+ 
++#define EXT4_RW_ATTR_SBI_ATOMIC(_name,_elname)	\
++	EXT4_ATTR_OFFSET(_name, 0644, pointer_atomic, ext4_sb_info, _elname)
++
+ #define EXT4_ATTR_PTR(_name,_mode,_id,_ptr) \
+ static struct ext4_attr ext4_attr_##_name = {			\
+ 	.attr = {.name = __stringify(_name), .mode = _mode },	\
+@@ -245,6 +248,7 @@ EXT4_ATTR(last_error_time, 0444, last_error_time);
+ EXT4_ATTR(journal_task, 0444, journal_task);
+ EXT4_RW_ATTR_SBI_UI(mb_prefetch, s_mb_prefetch);
+ EXT4_RW_ATTR_SBI_UI(mb_prefetch_limit, s_mb_prefetch_limit);
++EXT4_RW_ATTR_SBI_ATOMIC(last_trim_minblks, s_last_trim_minblks);
+ 
+ static unsigned int old_bump_val = 128;
+ EXT4_ATTR_PTR(max_writeback_mb_bump, 0444, pointer_ui, &old_bump_val);
+@@ -295,6 +299,7 @@ static struct attribute *ext4_attrs[] = {
+ #endif
+ 	ATTR_LIST(mb_prefetch),
+ 	ATTR_LIST(mb_prefetch_limit),
++	ATTR_LIST(last_trim_minblks),
+ 	NULL,
+ };
+ ATTRIBUTE_GROUPS(ext4);
+@@ -474,6 +479,15 @@ static ssize_t ext4_attr_store(struct kobject *kobj,
+ 			return ret;
+ 		*((unsigned long *) ptr) = t;
+ 		return len;
++	case attr_pointer_atomic:
++		if (!ptr)
++			return 0;
++		ret = kstrtoint(skip_spaces(buf), 0, (int *)&t);
++		if (ret)
++			return ret;
++		*((unsigned long *) ptr) = t;
++		atomic_set((atomic_t *) ptr, t);
++		return len;
+ 	case attr_inode_readahead:
+ 		return inode_readahead_blks_store(sbi, buf, len);
+ 	case attr_trigger_test_error:
+-- 
+2.31.1
+
