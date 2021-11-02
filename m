@@ -2,63 +2,111 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 360C7442158
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Nov 2021 21:05:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A07F04425BE
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Nov 2021 03:51:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231159AbhKAUHW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 1 Nov 2021 16:07:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50020 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230526AbhKAUHU (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 1 Nov 2021 16:07:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2364660E52;
-        Mon,  1 Nov 2021 20:04:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635797087;
-        bh=DsJjDkX8TRbN+hOtR000e0+OFA+4mRj8nd5JbJ7Ja9s=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=TBfrZXUf8OEFlAQrR19+evjH39yVDJt/f6pVOf0Q6c//5CWp6W8j0/dJw0OJnpQ6u
-         lPc6kzLPoqXCx3fd93HC1pr+7rIJhvbiWmeuzGz3Z8+PGtR+3tMaOvZjKJKA3Ojrij
-         GRgoUAFJhD/de3UKM5Ej0SK74si3GT4n648Akl9EAQ2o7PO/suyHGnAjng3N6d72K6
-         tdLJvTff70l1NHCM0C+i8Xdh8EswObMcDLJhkKdp6Q1tpp0r8TpMYGyv608Ql+W6Bz
-         FYsD/zDY0IcBFb3kQ+qajhIm34AdI6zj1UCEAlIN6Vzx34mZs9Vk6/IfiU/N1kkPJg
-         z4VI58+LfytnQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 126EA609EF;
-        Mon,  1 Nov 2021 20:04:47 +0000 (UTC)
-Subject: Re: [GIT PULL] fscrypt updates for 5.16
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YX8jdp73zUDwlB5E@sol.localdomain>
-References: <YX8jdp73zUDwlB5E@sol.localdomain>
-X-PR-Tracked-List-Id: <linux-ext4.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YX8jdp73zUDwlB5E@sol.localdomain>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
-X-PR-Tracked-Commit-Id: b7e072f9b77f4c516df96e0c22ec09f8b2e76ba1
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: cd3e8ea847eea97095aa01de3d12674d35fd0199
-Message-Id: <163579708701.1875.9945029262289027407.pr-tracker-bot@kernel.org>
-Date:   Mon, 01 Nov 2021 20:04:47 +0000
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
+        id S231186AbhKBCyR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 1 Nov 2021 22:54:17 -0400
+Received: from smtp181.sjtu.edu.cn ([202.120.2.181]:43122 "EHLO
+        smtp181.sjtu.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229526AbhKBCyQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 1 Nov 2021 22:54:16 -0400
+X-Greylist: delayed 505 seconds by postgrey-1.27 at vger.kernel.org; Mon, 01 Nov 2021 22:54:16 EDT
+Received: from proxy02.sjtu.edu.cn (smtp188.sjtu.edu.cn [202.120.2.188])
+        by smtp181.sjtu.edu.cn (Postfix) with ESMTPS id 32FBA1008BE1D;
+        Tue,  2 Nov 2021 10:43:15 +0800 (CST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by proxy02.sjtu.edu.cn (Postfix) with ESMTP id 2213E200BFDAC;
+        Tue,  2 Nov 2021 10:43:15 +0800 (CST)
+X-Virus-Scanned: amavisd-new at 
+Received: from proxy02.sjtu.edu.cn ([127.0.0.1])
+        by localhost (proxy02.sjtu.edu.cn [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id er17avYt62LX; Tue,  2 Nov 2021 10:43:15 +0800 (CST)
+Received: from r742.ipads-lab.se.sjtu.edu.cn (unknown [202.120.40.82])
+        (Authenticated sender: sunrise_l)
+        by proxy02.sjtu.edu.cn (Postfix) with ESMTPSA id A9D3E200BFDA6;
+        Tue,  2 Nov 2021 10:43:00 +0800 (CST)
+From:   Zhongwei Cai <sunrise_l@sjtu.edu.cn>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, mingkaidong@gmail.com,
+        Zhongwei Cai <sunrise_l@sjtu.edu.cn>
+Subject: [PATCH] ext4: remove unnecessary ext4_inode_datasync_dirty in read path
+Date:   Tue,  2 Nov 2021 10:42:58 +0800
+Message-Id: <20211102024258.210439-1-sunrise_l@sjtu.edu.cn>
+X-Mailer: git-send-email 2.26.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The pull request you sent on Sun, 31 Oct 2021 16:15:02 -0700:
+ext4_inode_datasync_dirty will call read_lock(&journal->j_state_lock) in
+journal mode, which is unnecessary in read path (As far as I know, the
+IOMAP_F_DIRTY flag set in the if branch is only used in write path,
+making it unnecessary in read path. Please correct me if I'm wrong).
+and will cause cache contention overhead under high concurrency
+especially in DAX mode. The unnecessary ext4_inode_datasync_dirty can be
+eliminated by passing flags into ext4_set_iomap and checking it.
 
-> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
+Performance tests are shown below. Workloads include simply reading files,
+fileserver in filebench and readrandom/readsequence in RocksDB under
+nosync mode.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/cd3e8ea847eea97095aa01de3d12674d35fd0199
+Sixteen thread performance under ext4-DAX:
+ Throughput (Kop/s) | original |  +patch  | improvement
+ -------------------+----------+----------+--------------
+ Read 4KB block     |   11456  |   27651  |  +141.37%
+ fileserver         |     339  |     343  |  +1.18%
+ readrandom         |    1807  |    1837  |  +1.66%
+ readsequence       |   29724  |   30102  |  +1.27%
 
-Thank you!
+Signed-off-by: Zhongwei Cai <sunrise_l@sjtu.edu.cn>
+---
+ fs/ext4/inode.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 0f06305167d5..72ec2074ef54 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3274,7 +3274,7 @@ static bool ext4_inode_datasync_dirty(struct inode *inode)
+ 
+ static void ext4_set_iomap(struct inode *inode, struct iomap *iomap,
+ 			   struct ext4_map_blocks *map, loff_t offset,
+-			   loff_t length)
++			   loff_t length, int flags)
+ {
+ 	u8 blkbits = inode->i_blkbits;
+ 
+@@ -3284,8 +3284,8 @@ static void ext4_set_iomap(struct inode *inode, struct iomap *iomap,
+ 	 * there is no other metadata changes being made or are pending.
+ 	 */
+ 	iomap->flags = 0;
+-	if (ext4_inode_datasync_dirty(inode) ||
+-	    offset + length > i_size_read(inode))
++	if ((flags & IOMAP_WRITE) && (ext4_inode_datasync_dirty(inode) ||
++	    offset + length > i_size_read(inode)))
+ 		iomap->flags |= IOMAP_F_DIRTY;
+ 
+ 	if (map->m_flags & EXT4_MAP_NEW)
+@@ -3423,7 +3423,7 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+ 	if (ret < 0)
+ 		return ret;
+ out:
+-	ext4_set_iomap(inode, iomap, &map, offset, length);
++	ext4_set_iomap(inode, iomap, &map, offset, length, flags);
+ 
+ 	return 0;
+ }
+@@ -3543,7 +3543,7 @@ static int ext4_iomap_begin_report(struct inode *inode, loff_t offset,
+ 		delalloc = ext4_iomap_is_delalloc(inode, &map);
+ 
+ set_iomap:
+-	ext4_set_iomap(inode, iomap, &map, offset, length);
++	ext4_set_iomap(inode, iomap, &map, offset, length, flags);
+ 	if (delalloc && iomap->type == IOMAP_HOLE)
+ 		iomap->type = IOMAP_DELALLOC;
+ 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.26.0
+
