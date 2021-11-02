@@ -2,45 +2,48 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57408442F19
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Nov 2021 14:31:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6278344302E
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Nov 2021 15:19:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbhKBNeC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 2 Nov 2021 09:34:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26092 "EHLO
+        id S230286AbhKBOVq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 2 Nov 2021 10:21:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53241 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230124AbhKBNeB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Nov 2021 09:34:01 -0400
+        by vger.kernel.org with ESMTP id S229530AbhKBOVq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Nov 2021 10:21:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635859886;
+        s=mimecast20190719; t=1635862751;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=rhcEfJLRdleWa+X/dcg9YrT9vcF5CqG3hiU+x0KnrLI=;
-        b=XpRPw4wxuHvoDeJfx/+Dt1ApOjLoK9NoO2+5GRImwOue4xth1mkVjPvluMXU54gQE/i+Er
-        AuA52idJX2vnIe8C7twhROFWKTD9pXPC+tDCKA7fBGI9s6V8H5xK1RT6/1f9jfNrQxwBHj
-        ggmZQbjMoXK/ZBO2Rs4iSyp+w+7XfVk=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jGbWDq0JeuevevnIwbjTj5Ma5PpZ7MLVoWYZxYZzFb4=;
+        b=Kz1xCp9x3ElisduR42T6VYLGzNZBx2JqR4IQ4H/tb2p+Y8bpoEEBSUIHcX1rD1P6VRJbUA
+        N40QhkN+Vimp1+w51743elZAZNaKquyyrpvg6UrZWVhrPSuFLMPZNmyvQh1U+XbqmbrZiP
+        Tg+EaAsugsUL/V+e20utH78CF2tEzQs=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-419-_KIH1pGVODGjKPDZtUU2_g-1; Tue, 02 Nov 2021 09:31:23 -0400
-X-MC-Unique: _KIH1pGVODGjKPDZtUU2_g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+ us-mta-254-HcXdjykmPduDlpVE6wcQGA-1; Tue, 02 Nov 2021 10:19:07 -0400
+X-MC-Unique: HcXdjykmPduDlpVE6wcQGA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C0F3A1006AA3;
-        Tue,  2 Nov 2021 13:31:20 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A9F51100C609;
+        Tue,  2 Nov 2021 14:19:06 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.40.194.30])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 013B45BAE2;
-        Tue,  2 Nov 2021 13:31:18 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9CD9D67841;
+        Tue,  2 Nov 2021 14:19:05 +0000 (UTC)
 From:   Lukas Czerner <lczerner@redhat.com>
 To:     linux-ext4@vger.kernel.org, tytso@mit.edu
 Cc:     Laurent GUERBY <laurent@guerby.net>
-Subject: [PATCH] ext4: Allow to change s_last_trim_minblks via sysfs
-Date:   Tue,  2 Nov 2021 14:31:15 +0100
-Message-Id: <20211102133115.9600-1-lczerner@redhat.com>
+Subject: [PATCH v2] ext4: Allow to change s_last_trim_minblks via sysfs
+Date:   Tue,  2 Nov 2021 15:19:02 +0100
+Message-Id: <20211102141902.9808-1-lczerner@redhat.com>
+In-Reply-To: <20211102133115.9600-1-lczerner@redhat.com>
+References: <20211102133115.9600-1-lczerner@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -72,11 +75,13 @@ echo 2147483647 > /sys/fs/ext4/dm-1/last_trim_minblks
 Signed-off-by: Lukas Czerner <lczerner@redhat.com>
 Reported-by: Laurent GUERBY <laurent@guerby.net>
 ---
- fs/ext4/sysfs.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+v2: Remove unnecessary assignment
+
+ fs/ext4/sysfs.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
 diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-index 2314f7446592..72d2a2c61a44 100644
+index 2314f7446592..94c86eb8d3cc 100644
 --- a/fs/ext4/sysfs.c
 +++ b/fs/ext4/sysfs.c
 @@ -187,6 +187,9 @@ static struct ext4_attr ext4_attr_##_name = {			\
@@ -105,7 +110,7 @@ index 2314f7446592..72d2a2c61a44 100644
  	NULL,
  };
  ATTRIBUTE_GROUPS(ext4);
-@@ -474,6 +479,15 @@ static ssize_t ext4_attr_store(struct kobject *kobj,
+@@ -474,6 +479,14 @@ static ssize_t ext4_attr_store(struct kobject *kobj,
  			return ret;
  		*((unsigned long *) ptr) = t;
  		return len;
@@ -115,7 +120,6 @@ index 2314f7446592..72d2a2c61a44 100644
 +		ret = kstrtoint(skip_spaces(buf), 0, (int *)&t);
 +		if (ret)
 +			return ret;
-+		*((unsigned long *) ptr) = t;
 +		atomic_set((atomic_t *) ptr, t);
 +		return len;
  	case attr_inode_readahead:
