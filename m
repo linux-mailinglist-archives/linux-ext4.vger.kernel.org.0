@@ -2,102 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4E6444472
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Nov 2021 16:13:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB5544459E
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Nov 2021 17:13:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231571AbhKCPQM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 3 Nov 2021 11:16:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53528 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231175AbhKCPQM (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 3 Nov 2021 11:16:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9DEFC6109F
-        for <linux-ext4@vger.kernel.org>; Wed,  3 Nov 2021 15:13:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635952415;
-        bh=XLoJ2GeDt/RL1WxPRv1Q96xF82QVp6iKfNakXR135D8=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=meYqkSfHZ7HyNd5C8ySECfEHgweyMnd4blquNy969jm8z+CtAt1wonCsxg2bn6CIk
-         RZaaXSUeSL0r3HimUDl+uxV4/ptk76DZrD4WzKWt9aODw1iDa7sMKORnGEEmMOkw06
-         WqaDbbaG3PQFcRw6EKMD5kGettL1Lnp/+YoiyyZ/+IeH+KRw2qSmUR1btUh6OH7eCY
-         7WVWIaFeWkr3uC04vcBu92aQ2s/xI+38o3tMl2M+vvRhYUikpNht+0dURhPJxHin3/
-         Zh9ZagzjppB1ME0game5JAPPepTb5W95RNGhMxDr2iKhHdAQ+aN9DSJzWa1hj7o63N
-         FTwUg7sB8EUAw==
-Received: by pdx-korg-bugzilla-2.web.codeaurora.org (Postfix, from userid 48)
-        id 92D7260F41; Wed,  3 Nov 2021 15:13:35 +0000 (UTC)
-From:   bugzilla-daemon@bugzilla.kernel.org
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 214927] re-mount read-write (mount -oremount,rw) of read-only
- filesystem rejected with EROFS, but block device is not read-only
-Date:   Wed, 03 Nov 2021 15:13:35 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext3@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext3
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: tytso@mit.edu
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext3@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: cc
-Message-ID: <bug-214927-13602-0kDc4tAxpa@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-214927-13602@https.bugzilla.kernel.org/>
-References: <bug-214927-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S232645AbhKCQQU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 3 Nov 2021 12:16:20 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:36120 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231586AbhKCQQU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 3 Nov 2021 12:16:20 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 24470218D9;
+        Wed,  3 Nov 2021 16:13:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1635956023;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3bTowwt5/5FwY7SC7Z7E2G8TBByJ4VGdF4azpNrDENU=;
+        b=T7A2QQNugZkq0mPriLjHnqcNU5MZ9XIBAoAlnlDPGoicll4r8McX8fnQLAS3gArwc6QHy/
+        ybAI0KZkollWMNe2lp8qt4066uya90o/gqi2/8UZB0DcuKpvTdtgWeYIfX2P0REZMcvhXY
+        4nqdeO1HUymOxec3eLx9NPrZq/TMhNw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1635956023;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3bTowwt5/5FwY7SC7Z7E2G8TBByJ4VGdF4azpNrDENU=;
+        b=BIGJPluqIwlb2FEe0penCvEqc/62ILWuThez3GOXABfC79DWq9HQraa+6cu6GvLdK1TZaz
+        GkB5kBg3TyHhpxBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C7F9513C91;
+        Wed,  3 Nov 2021 16:13:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 1NP2Lja1gmHKUAAAMHmgww
+        (envelope-from <pvorel@suse.cz>); Wed, 03 Nov 2021 16:13:42 +0000
+Date:   Wed, 3 Nov 2021 17:13:41 +0100
+From:   Petr Vorel <pvorel@suse.cz>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Matthew Bobrowski <repnop@google.com>, kernel@collabora.com,
+        Khazhismel Kumykov <khazhy@google.com>,
+        Jan Kara <jack@suse.com>, Ext4 <linux-ext4@vger.kernel.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        LTP List <ltp@lists.linux.it>
+Subject: Re: [LTP] [PATCH v3 1/9] syscalls: fanotify: Add macro to require
+ specific mark types
+Message-ID: <YYK1NQ+wPqzOsK9P@pevik>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+References: <20211029211732.386127-1-krisman@collabora.com>
+ <20211029211732.386127-2-krisman@collabora.com>
+ <YYEgqgFoo7oJheFr@google.com>
+ <CAOQ4uxiZetvK=r-tedgqNXR4nT=+kWUG5eVRWu8wVUQY5PN0Ew@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOQ4uxiZetvK=r-tedgqNXR4nT=+kWUG5eVRWu8wVUQY5PN0Ew@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D214927
+Hi all,
 
-Theodore Tso (tytso@mit.edu) changed:
+> On Tue, Nov 2, 2021 at 1:27 PM Matthew Bobrowski <repnop@google.com> wrote:
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-                 CC|                            |tytso@mit.edu
+> > On Fri, Oct 29, 2021 at 06:17:24PM -0300, Gabriel Krisman Bertazi wrote:
+> > > Like done for init flags and event types, and a macro to require a
+> > > specific mark type.
 
---- Comment #3 from Theodore Tso (tytso@mit.edu) ---
-In the case when there is a I/O error while trying to write to the journal,
-there's nothing that can be done safely other than to force the file system=
- to
-be read-only.
+> > > Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+> > > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> > > ---
+> > >  testcases/kernel/syscalls/fanotify/fanotify.h | 5 +++++
+> > >  1 file changed, 5 insertions(+)
 
-When there is a file system which has aborted or otherwise has run into err=
-ors,
-you have to unmount the file system before it is safe to remount it read/wr=
-ite.
- In fact, the ideal procedure is to umount the file system, run fsck, and t=
-hen
-remount the file system.
+> > > diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
+> > > index a2be183385e4..c67db3117e29 100644
+> > > --- a/testcases/kernel/syscalls/fanotify/fanotify.h
+> > > +++ b/testcases/kernel/syscalls/fanotify/fanotify.h
+> > > @@ -373,4 +373,9 @@ static inline int fanotify_mark_supported_by_kernel(uint64_t flag)
+> > >       return rval;
+> > >  }
 
-In the case of the root file system, you can't unmount the file system, so =
-it
-is acceptable to remount it read/only (if that hasn't been done automatical=
-ly),
-run fsck, and then reboot.
+> > > +#define REQUIRE_MARK_TYPE_SUPPORTED_ON_KERNEL(mark_type) do { \
+> > > +     fanotify_init_flags_err_msg(#mark_type, __FILE__, __LINE__, tst_brk_, \
+> > > +                                 fanotify_mark_supported_by_kernel(mark_type)); \
+> > > +} while (0)
+> > > +
+> > >  #endif /* __FANOTIFY_H__ */
 
-The reason for this because while the file system is mounted, there may be =
-file
-system corruption which was fixed by fsck, but for which some corruption (f=
-or
-example, a corrupted refcount) is still present in memory.  So it is not sa=
-fe
-to take a mounted root file system, and modify it using fsck, and then remo=
-unt
-it read/write.   You have to reboot so it can be freshly mounted on the reb=
-oot.
+> > A nit, but I'm of the opinion that s/_ON_/_BY_ within the macro name. Otherwise,
+> > this looks OK to me.
 
---=20
-You may reply to this email to add a comment.
+> Agreed. You can change that while cherry-picking to your branch ;-)
 
-You are receiving this mail because:
-You are watching the assignee of the bug.=
++1. And yes, I'll change it while applying it into LTP (no need to repost).
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+Kind regards,
+Petr
+
+> Thanks,
+> Amir.
