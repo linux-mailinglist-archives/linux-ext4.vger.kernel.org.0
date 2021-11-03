@@ -2,105 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4623F4443E4
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Nov 2021 15:52:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A4E6444472
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Nov 2021 16:13:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230382AbhKCOzI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 3 Nov 2021 10:55:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56589 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230132AbhKCOzI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 3 Nov 2021 10:55:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635951151;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kTzGd0AKmjFHRo7fXFpfjY5blmceuKFi00MsYOAPKc0=;
-        b=GgQtuX520aqol8ve0QVlaQR9WizOO/cUMrkZt9hnFdLcp0P1nknDCCwM/ufKfuE6QNdu1n
-        lIkTU9ZPPEikjdDjmfoS+STObjqXCpuGrxFm90WGrWQzV29T+n0jMWarV/Ik4Fm74RJbeu
-        1cjVz0Gh8tU5UKMSgukc7sF1m7YNaPo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-462-s3WqVMe_Opi-PaffJS9v5Q-1; Wed, 03 Nov 2021 10:52:27 -0400
-X-MC-Unique: s3WqVMe_Opi-PaffJS9v5Q-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75624A40E1;
-        Wed,  3 Nov 2021 14:51:29 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.40.194.74])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2298C19741;
-        Wed,  3 Nov 2021 14:51:27 +0000 (UTC)
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     linux-ext4@vger.kernel.org, tytso@mit.edu
-Cc:     adilger@dilger.ca, Laurent GUERBY <laurent@guerby.net>
-Subject: [PATCH v3 2/2] ext4: Allow to change s_last_trim_minblks via sysfs
-Date:   Wed,  3 Nov 2021 15:51:22 +0100
-Message-Id: <20211103145122.17338-2-lczerner@redhat.com>
-In-Reply-To: <20211103145122.17338-1-lczerner@redhat.com>
-References: <20211103145122.17338-1-lczerner@redhat.com>
+        id S231571AbhKCPQM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 3 Nov 2021 11:16:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53528 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231175AbhKCPQM (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 3 Nov 2021 11:16:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9DEFC6109F
+        for <linux-ext4@vger.kernel.org>; Wed,  3 Nov 2021 15:13:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635952415;
+        bh=XLoJ2GeDt/RL1WxPRv1Q96xF82QVp6iKfNakXR135D8=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=meYqkSfHZ7HyNd5C8ySECfEHgweyMnd4blquNy969jm8z+CtAt1wonCsxg2bn6CIk
+         RZaaXSUeSL0r3HimUDl+uxV4/ptk76DZrD4WzKWt9aODw1iDa7sMKORnGEEmMOkw06
+         WqaDbbaG3PQFcRw6EKMD5kGettL1Lnp/+YoiyyZ/+IeH+KRw2qSmUR1btUh6OH7eCY
+         7WVWIaFeWkr3uC04vcBu92aQ2s/xI+38o3tMl2M+vvRhYUikpNht+0dURhPJxHin3/
+         Zh9ZagzjppB1ME0game5JAPPepTb5W95RNGhMxDr2iKhHdAQ+aN9DSJzWa1hj7o63N
+         FTwUg7sB8EUAw==
+Received: by pdx-korg-bugzilla-2.web.codeaurora.org (Postfix, from userid 48)
+        id 92D7260F41; Wed,  3 Nov 2021 15:13:35 +0000 (UTC)
+From:   bugzilla-daemon@bugzilla.kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 214927] re-mount read-write (mount -oremount,rw) of read-only
+ filesystem rejected with EROFS, but block device is not read-only
+Date:   Wed, 03 Nov 2021 15:13:35 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext3@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext3
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: tytso@mit.edu
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext3@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: cc
+Message-ID: <bug-214927-13602-0kDc4tAxpa@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-214927-13602@https.bugzilla.kernel.org/>
+References: <bug-214927-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Ext4 has an optimization mechanism for batched disacrd (FITRIM) that
-should help speed up subsequent calls of FITRIM ioctl by skipping the
-groups that were previously trimmed. However because the FITRIM allows
-to set the minimum size of an extent to trim, ext4 stores the last
-minimum extent size and only avoids trimming the group if it was
-previously trimmed with minimum extent size equal to, or smaller than
-the current call.
+https://bugzilla.kernel.org/show_bug.cgi?id=3D214927
 
-There is currently no way to bypass the optimization without
-umount/mount cycle. This becomes a problem when the file system is
-live migrated to a different storage, because the optimization will
-prevent possibly useful discard calls to the storage.
+Theodore Tso (tytso@mit.edu) changed:
 
-Fix it by exporting the s_last_trim_minblks via sysfs interface which
-will allow us to set the minimum size to the number of blocks larger
-than subsequent FITRIM call, effectively bypassing the optimization.
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+                 CC|                            |tytso@mit.edu
 
-By setting the s_last_trim_minblks to ULONG_MAX the optimization will be
-effectively cleared regardless of the previous state, or file system
-configuration.
+--- Comment #3 from Theodore Tso (tytso@mit.edu) ---
+In the case when there is a I/O error while trying to write to the journal,
+there's nothing that can be done safely other than to force the file system=
+ to
+be read-only.
 
-For example:
-getconf ULONG_MAX > /sys/fs/ext4/dm-1/last_trim_minblks
+When there is a file system which has aborted or otherwise has run into err=
+ors,
+you have to unmount the file system before it is safe to remount it read/wr=
+ite.
+ In fact, the ideal procedure is to umount the file system, run fsck, and t=
+hen
+remount the file system.
 
-Signed-off-by: Lukas Czerner <lczerner@redhat.com>
-Reported-by: Laurent GUERBY <laurent@guerby.net>
----
-v2: Remove unnecessary assignment
-v3: s_last_trim_minblks is now unsinged long which simplifies this
+In the case of the root file system, you can't unmount the file system, so =
+it
+is acceptable to remount it read/only (if that hasn't been done automatical=
+ly),
+run fsck, and then reboot.
 
- fs/ext4/sysfs.c | 2 ++
- 1 file changed, 2 insertions(+)
+The reason for this because while the file system is mounted, there may be =
+file
+system corruption which was fixed by fsck, but for which some corruption (f=
+or
+example, a corrupted refcount) is still present in memory.  So it is not sa=
+fe
+to take a mounted root file system, and modify it using fsck, and then remo=
+unt
+it read/write.   You have to reboot so it can be freshly mounted on the reb=
+oot.
 
-diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-index 2314f7446592..95d8a996d2d8 100644
---- a/fs/ext4/sysfs.c
-+++ b/fs/ext4/sysfs.c
-@@ -245,6 +245,7 @@ EXT4_ATTR(last_error_time, 0444, last_error_time);
- EXT4_ATTR(journal_task, 0444, journal_task);
- EXT4_RW_ATTR_SBI_UI(mb_prefetch, s_mb_prefetch);
- EXT4_RW_ATTR_SBI_UI(mb_prefetch_limit, s_mb_prefetch_limit);
-+EXT4_RW_ATTR_SBI_UL(last_trim_minblks, s_last_trim_minblks);
- 
- static unsigned int old_bump_val = 128;
- EXT4_ATTR_PTR(max_writeback_mb_bump, 0444, pointer_ui, &old_bump_val);
-@@ -295,6 +296,7 @@ static struct attribute *ext4_attrs[] = {
- #endif
- 	ATTR_LIST(mb_prefetch),
- 	ATTR_LIST(mb_prefetch_limit),
-+	ATTR_LIST(last_trim_minblks),
- 	NULL,
- };
- ATTRIBUTE_GROUPS(ext4);
--- 
-2.31.1
+--=20
+You may reply to this email to add a comment.
 
+You are receiving this mail because:
+You are watching the assignee of the bug.=
