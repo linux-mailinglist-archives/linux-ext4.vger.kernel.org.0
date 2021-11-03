@@ -2,75 +2,96 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D91E5443FD7
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Nov 2021 11:06:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 094484443E3
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Nov 2021 15:52:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231623AbhKCKI4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 3 Nov 2021 06:08:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35528 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231338AbhKCKI4 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 3 Nov 2021 06:08:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D3B6A60F58
-        for <linux-ext4@vger.kernel.org>; Wed,  3 Nov 2021 10:06:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635933979;
-        bh=26Nv9eXstJj5Gl9Fa4iaOSCgPeeuJDnDaW6MJCERKaE=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=MXnNe6E0csn7MXj1nx9fX1vUO1hj3qymigLMEKLn/m9QevOOKs60j/5X0DWbN5R6v
-         UBR4wnt8sr3EHs+/Ii6Z5W+rWY2oMUE5TR6EmT7GA1mkRQehIncbT3bmGCqICFw8lO
-         zxcZPjPkkFTQ/gAUSQCfMX4noUvE//1j2GxCjCSByxGf+wABecH2oNPCY6qChJ0wcT
-         Pz0s3lrOlffadRDQ9KN31WRC0qOciBdibjnM1MBQ1t65oHyUOvdbStwmWfopTLDNxY
-         DuhcX0n6It5tyMR/zWBWoS5eF0DzJdpp6fWRV7FPmoNu2LKyhdLCFiuW2/VoTW7Wyt
-         u/oFGqVbzAo9w==
-Received: by pdx-korg-bugzilla-2.web.codeaurora.org (Postfix, from userid 48)
-        id C8D2F60FF3; Wed,  3 Nov 2021 10:06:19 +0000 (UTC)
-From:   bugzilla-daemon@bugzilla.kernel.org
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 214927] re-mount read-write (mount -oremount,rw) of read-only
- filesystem rejected with EROFS, but block device is not read-only
-Date:   Wed, 03 Nov 2021 10:06:19 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext3@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext3
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: Ulrich.Windl@rz.uni-regensburg.de
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext3@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-214927-13602-jdSDZcum15@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-214927-13602@https.bugzilla.kernel.org/>
-References: <bug-214927-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S230213AbhKCOzH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 3 Nov 2021 10:55:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57316 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230132AbhKCOzG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 3 Nov 2021 10:55:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635951149;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=EwA3ck65BnklSw0Q8bTU6cLSaLcjx0hPlwL4wTRnb4E=;
+        b=TwJqYhCJvu0Wtl67rpr2IM1QZ1cyqv/ArhmTLIqTxZRUKe3fQEej5CTKLAUtJ+U/NyA3dX
+        95pXKY1avBjOQlfOKfkA8qdVbRbxKSrZSm0YoRvnVq1Eev2RjBnc/dpVGjJLdHulUVH1P+
+        GpXPwbWCpooIPY5fwl/zUoUHeBrlnFE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-234-YPONvtusP1ef1j8FB1Smqw-1; Wed, 03 Nov 2021 10:52:26 -0400
+X-MC-Unique: YPONvtusP1ef1j8FB1Smqw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C5643A40D4;
+        Wed,  3 Nov 2021 14:51:27 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.40.194.74])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B38E719741;
+        Wed,  3 Nov 2021 14:51:26 +0000 (UTC)
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     linux-ext4@vger.kernel.org, tytso@mit.edu
+Cc:     adilger@dilger.ca
+Subject: [PATCH 1/2] ext4: Change s_last_trim_minblks type to unsigned long
+Date:   Wed,  3 Nov 2021 15:51:21 +0100
+Message-Id: <20211103145122.17338-1-lczerner@redhat.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D214927
+There is no good reason for the s_last_trim_minblks to be atomic. There is
+no data integrity needed and there is no real danger in setting and
+reading it in a racy manner. Change it to be unsigned long, the same type
+as s_clusters_per_group which is the maximum that's allowed.
 
---- Comment #2 from Ulrich.Windl (Ulrich.Windl@rz.uni-regensburg.de) ---
-Having a second look, it seems the first error was concurrently with fstrim=
-, so
-possibly fstrim can play a role in the scenario:
-kernel: print_req_error: I/O error, dev xvdb, sector 29730024
-fstrim[8864]: fstrim: /var: FITRIM ioctl failed: Input/output error
-fstrim[8864]: fstrim: /tmp: FITRIM ioctl failed: Input/output error
-...
-(the final message was like 13 minutes after those above)
+Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+Suggested-by: Andreas Dilger <adilger@dilger.ca>
+---
+ fs/ext4/ext4.h    | 2 +-
+ fs/ext4/mballoc.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
---=20
-You may reply to this email to add a comment.
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 3825195539d7..92a155401f61 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1660,7 +1660,7 @@ struct ext4_sb_info {
+ 	struct task_struct *s_mmp_tsk;
+ 
+ 	/* record the last minlen when FITRIM is called. */
+-	atomic_t s_last_trim_minblks;
++	unsigned long s_last_trim_minblks;
+ 
+ 	/* Reference to checksum algorithm driver via cryptoapi */
+ 	struct crypto_shash *s_chksum_driver;
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 72bfac2d6dce..eda550ec3956 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -6374,7 +6374,7 @@ ext4_trim_all_free(struct super_block *sb, ext4_group_t group,
+ 	ext4_lock_group(sb, group);
+ 
+ 	if (!EXT4_MB_GRP_WAS_TRIMMED(e4b.bd_info) ||
+-	    minblocks < atomic_read(&EXT4_SB(sb)->s_last_trim_minblks)) {
++	    minblocks < EXT4_SB(sb)->s_last_trim_minblks) {
+ 		ret = ext4_try_to_trim_range(sb, &e4b, start, max, minblocks);
+ 		if (ret >= 0)
+ 			EXT4_MB_GRP_SET_TRIMMED(e4b.bd_info);
+@@ -6475,7 +6475,7 @@ int ext4_trim_fs(struct super_block *sb, struct fstrim_range *range)
+ 	}
+ 
+ 	if (!ret)
+-		atomic_set(&EXT4_SB(sb)->s_last_trim_minblks, minlen);
++		EXT4_SB(sb)->s_last_trim_minblks = minlen;
+ 
+ out:
+ 	range->len = EXT4_C2B(EXT4_SB(sb), trimmed) << sb->s_blocksize_bits;
+-- 
+2.31.1
 
-You are receiving this mail because:
-You are watching the assignee of the bug.=
