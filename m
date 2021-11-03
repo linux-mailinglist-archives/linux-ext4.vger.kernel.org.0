@@ -2,165 +2,117 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68456443F58
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Nov 2021 10:23:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9D6443F99
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Nov 2021 10:49:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231904AbhKCJZp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 3 Nov 2021 05:25:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49297 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231435AbhKCJZo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 3 Nov 2021 05:25:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635931387;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=74CKwY3wWuqHVEQmjsj7AwvJ1uv1PSv77buzTZzjSnE=;
-        b=dLUYYw4iRMDHVnRK+agObLIoIfzZ+eJS0YB8P9Zc01rqYoSx4ZjfK9TEcOtQjA4OWChBiC
-        Z6I2xbwRKVBuxOejge22aDznLWFWMFyyAaTJnfEp6LWKGWhp2m80uIa+qhcs25LbTzCro+
-        g+OcMJjZ1mUZtDglcZl2S4kUfY6zqOk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-473-ewY7WNKCPdGYPVeTy-JQSw-1; Wed, 03 Nov 2021 05:23:04 -0400
-X-MC-Unique: ewY7WNKCPdGYPVeTy-JQSw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BCAF318414A1;
-        Wed,  3 Nov 2021 09:23:02 +0000 (UTC)
-Received: from work (unknown [10.40.194.74])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 68914197FC;
-        Wed,  3 Nov 2021 09:23:01 +0000 (UTC)
-Date:   Wed, 3 Nov 2021 10:22:57 +0100
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        Laurent GUERBY <laurent@guerby.net>
-Subject: Re: [PATCH v2] ext4: Allow to change s_last_trim_minblks via sysfs
-Message-ID: <20211103092257.zmpivrl5yk7kzgx6@work>
-References: <20211102141902.9808-1-lczerner@redhat.com>
- <5E30A795-F9C1-4865-8703-75940F918A88@dilger.ca>
+        id S231435AbhKCJwE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 3 Nov 2021 05:52:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60080 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230097AbhKCJwE (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 3 Nov 2021 05:52:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id DF72F60720
+        for <linux-ext4@vger.kernel.org>; Wed,  3 Nov 2021 09:49:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635932967;
+        bh=z0ssZdseCZyJqZ5f/I2amlhxshgSLI0q+kzqJLSQwVE=;
+        h=From:To:Subject:Date:From;
+        b=mHCKanqKL0hVyPiLQ4hHgVeTWBsrw4petY6oHIJ+d3JiXEIb8iJ5TAxawmHGc7QRp
+         x9/Ry+9hDrj+urONNOEpckzKMDRupOLFj5kaE4nbGAaWPpOIGhV/fR2lxP/6j6dJTy
+         RrZx577a0yIBkTZId6f/Ac00zQ22iLpxUDWLuoGP69Luk29qK9uFDdesIynxch0vyC
+         5tGL5NPL0UtJhsiC4LDq9VC9BI/PeKMaD9I7z1XVGWDMJONAlQBefIJ2sMwCh2wDDX
+         uOwY63bpPZ0raaM/MhW8mTehQUFmYZT7+JZ1Qh5ZqCpn6OVL0RvYNKyyP2Q/fCl9yp
+         mPbyfpN939g6A==
+Received: by pdx-korg-bugzilla-2.web.codeaurora.org (Postfix, from userid 48)
+        id DC25E60FF3; Wed,  3 Nov 2021 09:49:27 +0000 (UTC)
+From:   bugzilla-daemon@bugzilla.kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 214927] New: re-mount read-write (mount -oremount,rw) of
+ read-only filesystem rejected with EROFS, but block device is nor read-only
+Date:   Wed, 03 Nov 2021 09:49:27 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: new
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext3@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext3
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: Ulrich.Windl@rz.uni-regensburg.de
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext3@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_id short_desc product version
+ cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
+ priority component assigned_to reporter cf_regression
+Message-ID: <bug-214927-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5E30A795-F9C1-4865-8703-75940F918A88@dilger.ca>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 04:44:30PM -0800, Andreas Dilger wrote:
-> On Nov 2, 2021, at 06:19, Lukas Czerner <lczerner@redhat.com> wrote:
-> > 
-> > ﻿Ext4 has an optimization mechanism for batched disacrd (FITRIM) that
-> > should help speed up subsequent calls of FITRIM ioctl by skipping the
-> > groups that were previously trimmed. However because the FITRIM allows
-> > to set the minimum size of an extent to trim, ext4 stores the last
-> > minimum extent size and only avoids trimming the group if it was
-> > previously trimmed with minimum extent size equal to, or smaller than
-> > the current call.
-> > 
-> > There is currently no way to bypass the optimization without
-> > umount/mount cycle. This becomes a problem when the file system is
-> > live migrated to a different storage, because the optimization will
-> > prevent possibly useful discard calls to the storage.
-> > 
-> > Fix it by exporting the s_last_trim_minblks via sysfs interface which
-> > will allow us to set the minimum size to the number of blocks larger
-> > than subsequent FITRIM call, effectively bypassing the optimization.
-> > 
-> > By setting the s_last_trim_minblks to INT_MAX the optimization will be
-> > effectively cleared regardless of the previous state, or file system
-> > configuration.
-> > 
-> > For example:
-> > echo 2147483647 > /sys/fs/ext4/dm-1/last_trim_minblks
-> > 
-> > Signed-off-by: Lukas Czerner <lczerner@redhat.com>
-> > Reported-by: Laurent GUERBY <laurent@guerby.net>
-> 
-> The patch itself looks fine, but it isn't really clear why this field is atomic_t?
-> There is no particular data integrity needed for this field between threads
-> and it is not harmful if it is set or read in a racy manner (at most it is set at
-> the end of ext4_trim_fs() once per filesystem trim).
+https://bugzilla.kernel.org/show_bug.cgi?id=3D214927
 
-Indeed I was asking myself the same question, but I didn't have the need
-to change it. There does not seem to be any good reason for it to be
-atomic_t.
+            Bug ID: 214927
+           Summary: re-mount read-write (mount -oremount,rw) of read-only
+                    filesystem rejected with EROFS, but block device is
+                    nor read-only
+           Product: File System
+           Version: 2.5
+    Kernel Version: 4.12.14-122.91-default (SLES12 SP5)
+          Hardware: All
+                OS: Linux
+              Tree: Mainline
+            Status: NEW
+          Severity: normal
+          Priority: P1
+         Component: ext3
+          Assignee: fs_ext3@kernel-bugs.osdl.org
+          Reporter: Ulrich.Windl@rz.uni-regensburg.de
+        Regression: No
 
-> 
-> So it seems like this could be a __u32 (like s_clusters_per_group, which is
-> the largest possible value it can store)
-> and avoid the need to add a new type
-> to the sysfs attribute handling?
+I think there's a kernel or filesystem bug related to ext3:
+We run a SLES12 SP5 Xen PVM that gets its system disk from a sparse file
+located on a SLES15 SP2 Xen host using OCFS2 (the host is a node in a pacem=
+aker
+cluster).
 
-Sure I can change it. Although the s_clusters_per_group in sbi structure
-is unsigned long and that's what we check it against.
+The OCFS2 filesystem became full or almost full, and thus the ext3
+filesystem(s) experienced write errors, remounting to read-only.
+So far, so good, but:
+The errors behavior of ext 3 was set to "continue", so I wonder why it had =
+been
+set to read-only at all.
+Next, after having extended the OCFS2 filesystem size, any remount-attempt
+fails with:
 
-Thanks!
--Lukas
+mount: /: cannot remount /dev/... read-write, is write-protected.
 
+I strace-d the mount command and the mount syscall is returning EROFS
+(Read-only filesystem).
+However in the VM configuration on the host the disk is marked read-write, =
+the
+disk in the VM is flagged read-write, also the VG, LVs, etc. I checked the
+/sys/block/*/ro, too: It's all "0".
 
-> 
-> Cheers, Andreas
-> 
-> 
-> > ---
-> > v2: Remove unnecessary assignment
-> > 
-> > fs/ext4/sysfs.c | 13 +++++++++++++
-> > 1 file changed, 13 insertions(+)
-> > 
-> > diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-> > index 2314f7446592..94c86eb8d3cc 100644
-> > --- a/fs/ext4/sysfs.c
-> > +++ b/fs/ext4/sysfs.c
-> > @@ -187,6 +187,9 @@ static struct ext4_attr ext4_attr_##_name = {            \
-> > #define EXT4_RO_ATTR_SBI_ATOMIC(_name,_elname)    \
-> >    EXT4_ATTR_OFFSET(_name, 0444, pointer_atomic, ext4_sb_info, _elname)
-> > 
-> > +#define EXT4_RW_ATTR_SBI_ATOMIC(_name,_elname)    \
-> > +    EXT4_ATTR_OFFSET(_name, 0644, pointer_atomic, ext4_sb_info, _elname)
-> > +
-> > #define EXT4_ATTR_PTR(_name,_mode,_id,_ptr) \
-> > static struct ext4_attr ext4_attr_##_name = {            \
-> >    .attr = {.name = __stringify(_name), .mode = _mode },    \
-> > @@ -245,6 +248,7 @@ EXT4_ATTR(last_error_time, 0444, last_error_time);
-> > EXT4_ATTR(journal_task, 0444, journal_task);
-> > EXT4_RW_ATTR_SBI_UI(mb_prefetch, s_mb_prefetch);
-> > EXT4_RW_ATTR_SBI_UI(mb_prefetch_limit, s_mb_prefetch_limit);
-> > +EXT4_RW_ATTR_SBI_ATOMIC(last_trim_minblks, s_last_trim_minblks);
-> > 
-> > static unsigned int old_bump_val = 128;
-> > EXT4_ATTR_PTR(max_writeback_mb_bump, 0444, pointer_ui, &old_bump_val);
-> > @@ -295,6 +299,7 @@ static struct attribute *ext4_attrs[] = {
-> > #endif
-> >    ATTR_LIST(mb_prefetch),
-> >    ATTR_LIST(mb_prefetch_limit),
-> > +    ATTR_LIST(last_trim_minblks),
-> >    NULL,
-> > };
-> > ATTRIBUTE_GROUPS(ext4);
-> > @@ -474,6 +479,14 @@ static ssize_t ext4_attr_store(struct kobject *kobj,
-> >            return ret;
-> >        *((unsigned long *) ptr) = t;
-> >        return len;
-> > +    case attr_pointer_atomic:
-> > +        if (!ptr)
-> > +            return 0;
-> > +        ret = kstrtoint(skip_spaces(buf), 0, (int *)&t);
-> > +        if (ret)
-> > +            return ret;
-> > +        atomic_set((atomic_t *) ptr, t);
-> > +        return len;
-> >    case attr_inode_readahead:
-> >        return inode_readahead_blks_store(sbi, buf, len);
-> >    case attr_trigger_test_error:
-> > -- 
-> > 2.31.1
-> > 
-> 
+I also did an fsck (which succeeded), but still after that the error is the
+same.
+Interestingly I noticed that after a *failed* remount attempt, the filesyst=
+em
+(that is mounted read-only) got the error flag being set again.
 
+The only conclusion I have is that there is at least one kernel bug regardi=
+ng
+the read-only status of the block device.
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
