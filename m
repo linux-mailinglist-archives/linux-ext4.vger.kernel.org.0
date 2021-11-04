@@ -2,52 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6371044556A
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Nov 2021 15:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F86544558F
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 Nov 2021 15:44:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbhKDOja (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 4 Nov 2021 10:39:30 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:59725 "EHLO
+        id S229577AbhKDOrB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 4 Nov 2021 10:47:01 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:32919 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229505AbhKDOj3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 4 Nov 2021 10:39:29 -0400
+        with ESMTP id S229505AbhKDOq7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 4 Nov 2021 10:46:59 -0400
 Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1A4EanwW012934
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1A4EiIt4016587
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 4 Nov 2021 10:36:50 -0400
+        Thu, 4 Nov 2021 10:44:19 -0400
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 925B615C00B9; Thu,  4 Nov 2021 10:36:49 -0400 (EDT)
-Date:   Thu, 4 Nov 2021 10:36:49 -0400
+        id 6AB8E15C00B9; Thu,  4 Nov 2021 10:44:18 -0400 (EDT)
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Eric Whitney <enwlinux@gmail.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] Revert "ext4: enforce buffer head state assertion in
- ext4_da_map_blocks"
-Message-ID: <YYPwAZq7UBdiRPdb@mit.edu>
-References: <20211012171901.5352-1-enwlinux@gmail.com>
- <163415796177.214938.9752602885736039327.b4-ty@mit.edu>
- <20211103191457.GA3838@localhost.localdomain>
+To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        linux-ext4@vger.kernel.org
+Cc:     "Theodore Ts'o" <tytso@mit.edu>
+Subject: Re: [PATCH 1/2] ext4: commit inline data during fast commit
+Date:   Thu,  4 Nov 2021 10:44:16 -0400
+Message-Id: <163603704482.2752249.11675165495055132631.b4-ty@mit.edu>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20211015182513.395917-1-harshads@google.com>
+References: <20211015182513.395917-1-harshads@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211103191457.GA3838@localhost.localdomain>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 03:14:57PM -0400, Eric Whitney wrote:
+On Fri, 15 Oct 2021 11:25:12 -0700, Harshad Shirwadkar wrote:
+> From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 > 
-> This reversion isn't visible in the 5.15 kernel.  We'll want to get this in as
-> a bug fix to 5.15.1 if possible.  Please let me know if there's anything I can
-> do to expedite.
+> During the commit phase in fast commits if an inode with inline data
+> is being committed, also commit the inline data along with
+> inode. Since recovery code just blindly copies entire content found in
+> inode TLV, there is no change needed on the recovery path. Thus, this
+> change is backward compatiable.
+> 
+> [...]
 
-Ack, I forgot to send a pull request to Linus before 5.15 went out,
-sorry about that.  I've updated the commit description to include a
-cc:stable and it will be going out with the other ext4 patches for
-this merge window.
+Applied, thanks!
 
-Cheers,
+[1/2] ext4: commit inline data during fast commit
+      commit: 6c31a689b2e9e1dee5cbe16b773648a2d84dfb02
+[2/2] ext4: inline data inode fast commit replay fixes
+      commit: 1ebf21784b19d5bc269f39a5d1eedb7f29a7d152
 
-					- Ted
+Best regards,
+-- 
+Theodore Ts'o <tytso@mit.edu>
