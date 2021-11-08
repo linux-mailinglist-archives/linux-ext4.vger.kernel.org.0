@@ -2,121 +2,199 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1503447869
-	for <lists+linux-ext4@lfdr.de>; Mon,  8 Nov 2021 03:11:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D981E44788A
+	for <lists+linux-ext4@lfdr.de>; Mon,  8 Nov 2021 03:23:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236174AbhKHCNx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 7 Nov 2021 21:13:53 -0500
-Received: from szxga03-in.huawei.com ([45.249.212.189]:27184 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232513AbhKHCNx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 7 Nov 2021 21:13:53 -0500
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HnZLN02B9z8v0p;
-        Mon,  8 Nov 2021 10:09:32 +0800 (CST)
-Received: from [10.174.178.185] (10.174.178.185) by
- dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.15; Mon, 8 Nov 2021 10:11:05 +0800
-Subject: Re: [PATCH -next v5 0/3] Fix some issues about mmp
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>
-References: <20211020031802.2312022-1-yebin10@huawei.com>
-CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>
-From:   yebin <yebin10@huawei.com>
-Message-ID: <61888739.2040801@huawei.com>
-Date:   Mon, 8 Nov 2021 10:11:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
-MIME-Version: 1.0
-In-Reply-To: <20211020031802.2312022-1-yebin10@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.185]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggeme754-chm.china.huawei.com (10.3.19.100)
-X-CFilter-Loop: Reflected
+        id S236586AbhKHC0e (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 7 Nov 2021 21:26:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229757AbhKHC0e (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 7 Nov 2021 21:26:34 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0401C061570;
+        Sun,  7 Nov 2021 18:23:50 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id gn3so7004357pjb.0;
+        Sun, 07 Nov 2021 18:23:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=2MMge1Bbq+tVQ9rbGODc1DW+eqgqDcqIYZ/e7PNWRJ8=;
+        b=c39peYor5ciPZsM0/B5Mx2kQoQOS0dv/7CeE95vCVL1qM5X0ihUT5QbN/kkZoN2wLF
+         tInYysiCbFhBHI9Nxc4XhSNSBeQOlJ05RbE0jzK4y5hxadmFg7wdVVd4pDVsg8ZD5yry
+         amzZni740hJ8VxPxYYW/1tC3RxPOuSqA9teRWFpfyVggDJVo7RBoWZ4hKY97rrcksXJx
+         PTaKvepZkM6OMJm0uBmIK8CeC5Ieip3Lrp0hYcBV3yOjmBYUTvzDRTb14njmQb+hz7jh
+         4lSA5OX0OwgJH+OEUvQ0N9SSa943lsMvkJg2wK+qX1b8FjQ9qFaLYB1e/IbpR/IPfL2I
+         biyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=2MMge1Bbq+tVQ9rbGODc1DW+eqgqDcqIYZ/e7PNWRJ8=;
+        b=8KBXxwxqIH2dKIyX8jqrkGxK7VfBQcQsLYudk+rEgXwJBjpsoBh31xBOSC1cRg7Hu1
+         7yGhM/ggogBuqLk8bQE8KDi9f8PEQMwwgMNuYBtv+p3erpEpknBbqXSqSpjxjwToHmfl
+         8iyExphNK9bDMacweblZE6AHpwXir+WcwJkKgv+OinWMmZ5eV+9gbw7/EkrXw5KPCz7T
+         S8J59DHxsaRiA73uUs9QAX0yD2AtvjDwThHve/Qel1Qzf9aTSsQ1X7yUikRq+EBg6UJg
+         O8iGSjijdZfC4xPxgHac54MLwjeJold/LnUIjk0rCykB3MHvWoewp6easWJQr2sC/ae6
+         dk2A==
+X-Gm-Message-State: AOAM532buBw49q3/XV+/ESxp2nnF7nFdqhMXI2Xrvw5Y5hnjeVW1j5bT
+        2qKXRx5N3ok9kNnY1iRq24Q=
+X-Google-Smtp-Source: ABdhPJyXwMzesaIWrdcXivwK8TIxTEnHaFB1u+cN9QS+og8WLcW/Zbp3icJAD+9PCtiTA6XC9MkKWA==
+X-Received: by 2002:a17:90a:af92:: with SMTP id w18mr48613557pjq.76.1636338230426;
+        Sun, 07 Nov 2021 18:23:50 -0800 (PST)
+Received: from VM-0-3-centos.localdomain ([101.32.213.191])
+        by smtp.gmail.com with ESMTPSA id s10sm11362512pji.55.2021.11.07.18.23.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 07 Nov 2021 18:23:50 -0800 (PST)
+From:   brookxu <brookxu.cn@gmail.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH v2] ext4: fix a possible ABBA deadlock dued to busy PA
+Date:   Mon,  8 Nov 2021 10:23:47 +0800
+Message-Id: <1636338227-26786-1-git-send-email-brookxu.cn@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+From: Chunguang Xu <brookxu@tencent.com>
 
+We found on older kernel (3.10) that in the scenario of insufficient
+disk space, system may trigger an ABBA deadlock problem, it seems that
+this problem still exists in latest kernel, try to fix it here. The
+main process triggered by this problem is that task A occupies the PA
+and waits for the jbd2 transaction finish, the jbd2 transaction waits
+for the completion of task B's IO (plug_list), but task B waits for
+the release of PA by task A to finish discard, which indirectly forms
+an ABBA deadlock. The related calltrace is as follows:
 
-On 2021/10/20 11:17, Ye Bin wrote:
-> I test mmp function as follow steps:
-> 1. Inject delay 5s in ext4_multi_mount_protect function after
-> "skip:" label.
-> 2. Share HostA block device(sda) with HostB(nbd0) by NBD.
-> 3. Enable mmp feature when mkfs.ext4 sda.
-> 4. Mount sda and nbd0 at the same time.
->
-> I found kmmpd never trigger detect multi-mount. Reason is as follow:
-> 1. Kmmpd init seq with 0, if two host have same nodename, will lead to
-> detect confliction very slow, even never detect confliction.
-> 2. When detect confliction in kmmpd, we get 'check_bh' is same with 'bh'.
-> so we compare data with itself.
-> 3. We only trigger detect when ”diff > mmp_check_interval * HZ“,
-> 'mmp_check_interval' is double of 'mmp_update_interval', 'diff' is
-> about 'mmp_update_interval'. So 'diff' is little than 'mmp_check_interval * HZ'
-> normaly. As Jan Kara explain as follows:
-> "I think the check is there only for the case where write_mmp_block() +
-> sleep took longer than mmp_check_interval. I agree that should rarely
-> happen but on a really busy system it is possible and in that case we would
-> miss updating mmp block for too long and so another node could have started
-> using the filesystem. "
->
-> v1->v2:
-> Fix 'last_check_time' not initialized before checking.
->
-> v2->v3:
-> 1. drop commit "ext4: introduce last_check_time record previous check time"
-> As Ted explain as follows:
-> "I'd like Andreas to comment here.  My understanding is that MMP
-> originally intended as a safety mechanism which would be used as part
-> of a primary/backup high availability system, but not as the *primary*
-> system where you might try to have two servers simultaneously try to
-> mount the file system and use MMP as the "election" mechanism to
-> decide which server is going to be the primary system, and which would
-> be the backup system.
->
-> The cost of being able to handle this particular race is it would slow
-> down the mounts of cleanly unmounted systems.
->
-> There *are* better systems to implement leader elections[1] than using
-> MMP.  Most of these more efficient leader elections assume that you
-> have a working IP network, and so if you have a separate storage
-> network (including a shared SCSI bus) from your standard IP network,
-> then MMP is a useful failsafe in the face of a network partition of
-> your IP network.  The question is whether MMP should be useful for
-> more than that.  And if it isn't, then we should probably document
-> what MMP is and isn't good for, and give advice in the form of an
-> application note for how MMP should be used in the context of a larger
-> system."
-> 2. drop commit "ext4: fix possible store wrong check interval value in disk when umount"
-> 3. simplify read_mmp_block fucntion to avoid UAF
->
-> v3->v4:
-> 1. drop commit "ext4: init 'seq' with the value which set in 'ext4_multi_mount_protect'"
-> 2. merge "ext4: get buffer head before read_mmp_block" to
-> "ext4: simplify read_mmp_block fucntion"
-> 3. rename "ext4: avoid to re-read mmp check data get from page cache" to
-> "ext4: remove useless bh_check variable"
-> 4. reorder "ext4: remove useless bh_check variable" and
-> "ext4: simplify read_mmp_block fucntion"
->
-> v4->v5:
-> 1. Fix follow warning:
->>> fs/ext4/mmp.c:124:15: warning: variable 'mmp_block' set but not used [-Wunused-but-set-variable]
->             ext4_fsblk_t mmp_block;
-> 2. Fix incorrect judgement in 'ext4_multi_mount_protect'.
->
-> Ye Bin (3):
->    ext4: compare to local seq and nodename when check conflict
->    ext4: remove useless bh_check variable
->    ext4: simplify read_mmp_block fucntion
->
->   fs/ext4/ext4.h |  5 +++-
->   fs/ext4/mmp.c  | 66 +++++++++++++++++++++-----------------------------
->   2 files changed, 31 insertions(+), 40 deletions(-)
->
-ping...
+    Task A
+    vfs_write
+    ext4_mb_new_blocks()
+    ext4_mb_mark_diskspace_used()       JBD2
+    jbd2_journal_get_write_access()  -> jbd2_journal_commit_transaction()
+  ->schedule()                          filemap_fdatawait()
+ |                                              |
+ | Task B                                       |
+ | do_unlinkat()                                |
+ | ext4_evict_inode()                           |
+ | jbd2_journal_begin_ordered_truncate()        |
+ | filemap_fdatawrite_range()                   |
+ | ext4_mb_new_blocks()                         |
+  -ext4_mb_discard_group_preallocations() <-----
+
+Here, try to cancel ext4_mb_discard_group_preallocations() internal
+retry due to PA busy, and do a limited number of retries inside
+ext4_mb_discard_preallocations(), which can circumvent the above
+problems, but also has some advantages:
+
+1. Since the PA is in a busy state, if other groups have free PAs,
+   keeping the current PA may help to reduce fragmentation.
+2. Continue to traverse forward instead of waiting for the current
+   group PA to be released. In most scenarios, the PA discard time
+   can be reduced.
+
+However, in the case of smaller free space, if only a few groups have
+space, then due to multiple traversals of the group, it may increase
+CPU overhead. But in contrast, I feel that the overall benefit is
+better than the cost.
+
+Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+---
+v2: reset busy to zero before goto repeat.
+
+ fs/ext4/mballoc.c | 35 ++++++++++++++++-------------------
+ 1 file changed, 16 insertions(+), 19 deletions(-)
+
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 72bfac2..72de6c1 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -4814,7 +4814,7 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+  */
+ static noinline_for_stack int
+ ext4_mb_discard_group_preallocations(struct super_block *sb,
+-					ext4_group_t group, int needed)
++				     ext4_group_t group, int needed, int *busy)
+ {
+ 	struct ext4_group_info *grp = ext4_get_group_info(sb, group);
+ 	struct buffer_head *bitmap_bh = NULL;
+@@ -4822,8 +4822,7 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+ 	struct list_head list;
+ 	struct ext4_buddy e4b;
+ 	int err;
+-	int busy = 0;
+-	int free, free_total = 0;
++	int free = 0;
+ 
+ 	mb_debug(sb, "discard preallocation for group %u\n", group);
+ 	if (list_empty(&grp->bb_prealloc_list))
+@@ -4850,15 +4849,13 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+ 		needed = EXT4_CLUSTERS_PER_GROUP(sb) + 1;
+ 
+ 	INIT_LIST_HEAD(&list);
+-repeat:
+-	free = 0;
+ 	ext4_lock_group(sb, group);
+ 	list_for_each_entry_safe(pa, tmp,
+ 				&grp->bb_prealloc_list, pa_group_list) {
+ 		spin_lock(&pa->pa_lock);
+ 		if (atomic_read(&pa->pa_count)) {
+ 			spin_unlock(&pa->pa_lock);
+-			busy = 1;
++			*busy = 1;
+ 			continue;
+ 		}
+ 		if (pa->pa_deleted) {
+@@ -4898,22 +4895,13 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+ 		call_rcu(&(pa)->u.pa_rcu, ext4_mb_pa_callback);
+ 	}
+ 
+-	free_total += free;
+-
+-	/* if we still need more blocks and some PAs were used, try again */
+-	if (free_total < needed && busy) {
+-		ext4_unlock_group(sb, group);
+-		cond_resched();
+-		busy = 0;
+-		goto repeat;
+-	}
+ 	ext4_unlock_group(sb, group);
+ 	ext4_mb_unload_buddy(&e4b);
+ 	put_bh(bitmap_bh);
+ out_dbg:
+ 	mb_debug(sb, "discarded (%d) blocks preallocated for group %u bb_free (%d)\n",
+-		 free_total, group, grp->bb_free);
+-	return free_total;
++		 free, group, grp->bb_free);
++	return free;
+ }
+ 
+ /*
+@@ -5455,13 +5443,22 @@ static int ext4_mb_discard_preallocations(struct super_block *sb, int needed)
+ {
+ 	ext4_group_t i, ngroups = ext4_get_groups_count(sb);
+ 	int ret;
+-	int freed = 0;
++	int freed = 0, busy = 0;
++	int retry = 0;
+ 
+ 	trace_ext4_mb_discard_preallocations(sb, needed);
++ repeat:
++	retry++;
+ 	for (i = 0; i < ngroups && needed > 0; i++) {
+-		ret = ext4_mb_discard_group_preallocations(sb, i, needed);
++		ret = ext4_mb_discard_group_preallocations(sb, i, needed, &busy);
+ 		freed += ret;
+ 		needed -= ret;
++		cond_resched();
++	}
++
++	if (needed > 0 && busy && retry < 3) {
++		busy = 0;
++		goto repeat;
+ 	}
+ 
+ 	return freed;
+-- 
+1.8.3.1
+
