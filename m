@@ -2,85 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BA7C44A53E
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Nov 2021 04:14:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 269C944A5E8
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 Nov 2021 05:50:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236467AbhKIDRZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 8 Nov 2021 22:17:25 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:44610 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231910AbhKIDRY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 8 Nov 2021 22:17:24 -0500
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1A93EX4F009672
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 8 Nov 2021 22:14:34 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 89E9315C00C2; Mon,  8 Nov 2021 22:14:33 -0500 (EST)
-Date:   Mon, 8 Nov 2021 22:14:33 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Samuel Mendoza-Jonas <samjonas@amazon.com>
-Cc:     linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca,
-        benh@amazon.com
-Subject: Re: Debugging ext4 corruption with nojournal & extents
-Message-ID: <YYnnmQjrYii0dOYH@mit.edu>
-References: <20211108173520.xp6xphodfhcen2sy@u87e72aa3c6c25c.ant.amazon.com>
+        id S242859AbhKIEw7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 8 Nov 2021 23:52:59 -0500
+Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:49766 "EHLO
+        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229832AbhKIEw6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 8 Nov 2021 23:52:58 -0500
+Received: from dread.disaster.area (pa49-195-103-97.pa.nsw.optusnet.com.au [49.195.103.97])
+        by mail109.syd.optusnet.com.au (Postfix) with ESMTPS id 9E3CCA0C45;
+        Tue,  9 Nov 2021 15:50:11 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1mkJ5G-006ce5-GH; Tue, 09 Nov 2021 15:50:10 +1100
+Date:   Tue, 9 Nov 2021 15:50:10 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Zhongwei Cai <sunrise_l@sjtu.edu.cn>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, mingkaidong@gmail.com
+Subject: Re: [PATCH] ext4: remove unnecessary ext4_inode_datasync_dirty in
+ read path
+Message-ID: <20211109045010.GG418105@dread.disaster.area>
+References: <20211102024258.210439-1-sunrise_l@sjtu.edu.cn>
+ <20211103002843.GC418105@dread.disaster.area>
+ <ffb199dc-f7ae-ba03-db57-bf7acc3d0636@sjtu.edu.cn>
+ <20211104232226.GD418105@dread.disaster.area>
+ <01e6abf4-3ae5-ecab-3b7f-876c8a3fcbb4@sjtu.edu.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211108173520.xp6xphodfhcen2sy@u87e72aa3c6c25c.ant.amazon.com>
+In-Reply-To: <01e6abf4-3ae5-ecab-3b7f-876c8a3fcbb4@sjtu.edu.cn>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=epq8cqlX c=1 sm=1 tr=0 ts=6189fe04
+        a=fP9RlOTWD4uZJjPSFnn6Ew==:117 a=fP9RlOTWD4uZJjPSFnn6Ew==:17
+        a=kj9zAlcOel0A:10 a=vIxV3rELxO4A:10 a=7-415B0cAAAA:8
+        a=6VncYBqVuDewgahjr6AA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 09:35:20AM -0800, Samuel Mendoza-Jonas wrote:
-> Based on that what I think is happening is
-> - A file with separate (i.e. non-inline) extents is synced / written to disk
->   (in this case, one of the large "compound" files)
-> - ext4_end_io_end() kicks off writeback of extent metadata
->   - AIUI this marks the related buffers dirty but does not wait on them in the
->     no-journal case
-> - The file is deleted, causing the extents to be "removed" and the blocks where
->   they were stored are marked unused
-> - A new file is created (any file, separate extents not required)
-> - The new file is allocated the block that was just freed (the physical block
->   where the old extents were located)
+On Fri, Nov 05, 2021 at 01:28:10PM +0800, Zhongwei Cai wrote:
 > 
-> Some time between this point and when the file is next read, the dirty extent
-> buffer hits the disk instead of the intended data for the new file.
-> A big-hammer hack in __ext4_handle_dirty_metadata() to always sync metadata
-> blocks appears to avoid the issue but isn't ideal - most likely a better
-> solution would be to ensure any dirty metadata buffers are synced before the
-> inode is dropped.
 > 
-> Overall does this summary sound valid, or have I wandered into the
-> weeds somewhere?
+> On 11/5/21 7:22 AM, Dave Chinner wrote:
+> > 
+> > No. Some filesystems don't track inode metadata dirty status using
+> > the VFS inode; instead they track it more efficiently in internal
+> > inode and/or journal based structures. Hence the only way to get
+> > "inode needs journal flush for data stability" information to
+> > generic IO code is to have a specific per-IO mapping flag for it.
+> > 
+> 
+> Could we add IOMAP_REPORT_DIRTY flag in the flags field of
+> struct iomap_iter to indicate whether the IOMAP_F_DIRTY flag
+> needs to be set or not?
 
-Hmm... well, I can tell you what's *supposed* to happen.  When the
-extent block is freed, ext4_free_blocks() gets called with the
-EXT4_FREE_BLOCKS_FORGET flag set.  ext4_free_blocks() calls
-ext4_forget() in two places; one when bh passed to ext4_free_blocks()
-is NULL, and one where it is non-NULL.  And then ext4_free_blocks()
-calls bforget(), which should cause the dirty extent block to get
-thrown away.
+You can try. It might turn out OK, but you're also going to have to
+modify all the iomap code that current needs IOMAP_F_DIRTY to first
+set that flag, then change all the code that currently sets
+IOMAP_F_DIRTY to look at IOMAP_REPORT_DIRTY. i.e you now have to
+change iomap, ext4 and XFS to do this.
 
-This *should* have prevented your failure scenario from taking place,
-since after the call to bforget() the dirty extent buffer *shouldn't*
-have hit the disk.  If your theory is correct, the somehow either (a)
-the bforget() wasn't called, or (b) the bforget() didn't work, and
-then the page writeback for the new page happened first, and then
-buffer cache writeback happened second, overwriting the intended data
-for the new file.
+> Currently the IOMAP_F_DIRTY flag is only checked in
+> iomap_swapfile_activate(), dax_iomap_fault() and iomap_dio_rw()
+> (To be more specific, only the write path in dax_iomap_fault() and
+> iomap_dio_rw()). So it would be unnecessary to set the IOMAP_F_DIRTY
+> flag in dax_iomap_rw() called in the previous tests.
 
-Have you tried enabling the blktrace tracer in combination with some
-of the ext4 tracepoints, to see if you can catch the double write
-happening?  Another thing to try would be enabling some tracepoints,
-such as ext4_forget and ext4_free_blocks.  Unfortunately we don't have
-any tracepoints in fs/ext4/page-io.c to get a tracepoint which
-includes the physical block ranges coming from the writeback path.
-And the tracepoints in fs/fs-writeback.c won't have the physical block
-number (just the inode and logical block numbers).
+I think you're trying to optimise the wrong thing - the API is not
+the problem, the problem is that the journal->j_state_lock is
+contended and the ext4 dirty inode check needs to take it. Fix the
+dirty check not to need the journal state lock and the ext4 problem
+goes away and there is no need to change the iomap infrastructure.
 
-       	     	       	   	   	 - Ted
+> Other file systems that set the IOMAP_F_DIRTY flag efficiently
+> could ignore the IOMAP_REPORT_DIRTY flag.
+
+No, that's just bad API design. If we are adding IOMAP_REPORT_DIRTY
+then the iomap infrastructure should only use that control flag when
+it needs to know if the inode is dirty. At this point, it really
+becomes mandatory for all filesystems using iomap to support it
+because the absence of IOMAP_F_DIRTY because a filesystem doesn't
+support it is not the same as "filesystem didn't set it because the
+inode is clean".
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
