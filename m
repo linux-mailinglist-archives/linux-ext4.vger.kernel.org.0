@@ -2,106 +2,99 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8443A44C259
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Nov 2021 14:46:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B594C44CCF9
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Nov 2021 23:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbhKJNtc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 10 Nov 2021 08:49:32 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:43186 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231526AbhKJNtb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 10 Nov 2021 08:49:31 -0500
-Date:   Wed, 10 Nov 2021 14:46:40 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1636552002;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=mzJai93r+ZR/gProqThGByCGxin7/za36mQAiFwzR5Y=;
-        b=QRitoM4ON9c/eiQciJNr2KdA4q0sGOAjNPCRhQeGjv5iCIrTtKURTDPvsP/8yXR5aSJm+q
-        r6UyDQ0MwoirA3z4I/Lz603hSoeyVOMcHmefIr31LzWNTxpL3WxX/9sc+4hbgiLLW682E5
-        ixbazbDp66FtsuLC1TD9H/3/FCm/qvY5wqMVmQqliPeMw4KNdSG5yJMxvcIeSWWIyXV/cS
-        6FP60Pbk4Nv95nT2PbeoiDdf67fAPrUV0yqi/N5D/lxFv+lT/BomABiBN2YOrtrtqmGaYB
-        7gVS6XI4V8GY6Xm8kLTGr+yjMFZYr7pkmB8RMJJ5/yYaMqc1WsN1O7F41m0Pig==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1636552002;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=mzJai93r+ZR/gProqThGByCGxin7/za36mQAiFwzR5Y=;
-        b=LQf6WXS0PwnYNBxN4fDbF0N3Uz3PnqBNkbWZbFRKlxl2cadzWXTK5KzigKwLb4E/KEfbtV
-        wiVp/7KXHw+5nvBw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     linux-ext4@vger.kernel.org
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH] ext4: Destroy ext4_fc_dentry_cachep kmemcache on module
- removal.
-Message-ID: <20211110134640.lyku5vklvdndw6uk@linutronix.de>
+        id S233781AbhKJWsB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 10 Nov 2021 17:48:01 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:48909 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233725AbhKJWsA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 10 Nov 2021 17:48:00 -0500
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1AAMj8oZ020936
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Nov 2021 17:45:09 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 431B715C00B9; Wed, 10 Nov 2021 17:45:08 -0500 (EST)
+Date:   Wed, 10 Nov 2021 17:45:08 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     torvalds@linux-foundation.org
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] ext4 changes for 5.16-rc1
+Message-ID: <YYxLdGu1Lkcl9HzP@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The kmemcache for ext4_fc_dentry_cachep remains registered after module
-removal.
+The following changes since commit 9e1ff307c779ce1f0f810c7ecce3d95bbae40896:
 
-Destroy ext4_fc_dentry_cachep kmemcache on module removal.
+  Linux 5.15-rc4 (2021-10-03 14:08:47 -0700)
 
-Fixes: aa75f4d3daaeb ("ext4: main fast-commit commit path")
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- fs/ext4/ext4.h        | 1 +
- fs/ext4/fast_commit.c | 5 +++++
- fs/ext4/super.c       | 2 ++
- 3 files changed, 8 insertions(+)
+are available in the Git repository at:
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 3825195539d74..c97860ef322db 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2934,6 +2934,7 @@ bool ext4_fc_replay_check_excluded(struct super_block *sb, ext4_fsblk_t block);
- void ext4_fc_replay_cleanup(struct super_block *sb);
- int ext4_fc_commit(journal_t *journal, tid_t commit_tid);
- int __init ext4_fc_init_dentry_cache(void);
-+void ext4_fc_destroy_dentry_cache(void);
- 
- /* mballoc.c */
- extern const struct seq_operations ext4_mb_seq_groups_ops;
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 8ea5a81e65548..1a43af302ecba 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -2185,3 +2185,8 @@ int __init ext4_fc_init_dentry_cache(void)
- 
- 	return 0;
- }
-+
-+void ext4_fc_destroy_dentry_cache(void)
-+{
-+	kmem_cache_destroy(ext4_fc_dentry_cachep);
-+}
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 88d5d274a8684..eb2dfc2a19d33 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -6641,6 +6641,7 @@ static int __init ext4_init_fs(void)
- out:
- 	unregister_as_ext2();
- 	unregister_as_ext3();
-+	ext4_fc_destroy_dentry_cache();
- out05:
- 	destroy_inodecache();
- out1:
-@@ -6667,6 +6668,7 @@ static void __exit ext4_exit_fs(void)
- 	unregister_as_ext2();
- 	unregister_as_ext3();
- 	unregister_filesystem(&ext4_fs_type);
-+	ext4_fc_destroy_dentry_cache();
- 	destroy_inodecache();
- 	ext4_exit_mballoc();
- 	ext4_exit_sysfs();
--- 
-2.33.1
+  git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
 
+for you to fetch changes up to 124e7c61deb27d758df5ec0521c36cf08d417f7a:
+
+  ext4: fix error code saved on super block during file system abort (2021-11-04 10:47:39 -0400)
+
+----------------------------------------------------------------
+Only bug fixes and cleanups for ext4 this merge window.  Of note are
+fixes for the combination of the inline_data and fast_commit fixes,
+and more accurately calculating when to schedule additional lazy inode
+table init, especially when CONFIG_HZ is 100HZ.
+
+----------------------------------------------------------------
+Austin Kim (1):
+      ext4: remove an unused variable warning with CONFIG_QUOTA=n
+
+Eric Whitney (1):
+      Revert "ext4: enforce buffer head state assertion in ext4_da_map_blocks"
+
+Gabriel Krisman Bertazi (1):
+      ext4: fix error code saved on super block during file system abort
+
+Harshad Shirwadkar (2):
+      ext4: commit inline data during fast commit
+      ext4: inline data inode fast commit replay fixes
+
+Jing Yangyang (1):
+      ext4: fix boolreturn.cocci warnings in fs/ext4/name.c
+
+Lukas Bulwahn (1):
+      ext4: scope ret locally in ext4_try_to_trim_range()
+
+Shaoying Xu (1):
+      ext4: fix lazy initialization next schedule time computation in more granular unit
+
+Xiyu Yang (1):
+      ext4: convert from atomic_t to refcount_t on ext4_io_end->count
+
+Zhang Yi (6):
+      ext4: check for out-of-order index extents in ext4_valid_extent_entries()
+      ext4: check for inconsistent extents between index and leaf block
+      ext4: prevent partial update of the extent blocks
+      ext4: factor out ext4_fill_raw_inode()
+      ext4: move ext4_fill_raw_inode() related functions
+      ext4: prevent getting empty inode buffer
+
+yangerkun (3):
+      ext4: correct the left/middle/right debug message for binsearch
+      ext4: ensure enough credits in ext4_ext_shift_path_extents
+      ext4: refresh the ext4_ext_path struct after dropping i_data_sem.
+
+ fs/ext4/ext4.h        |   3 +-
+ fs/ext4/extents.c     | 175 ++++++++++++++++------------
+ fs/ext4/fast_commit.c |  11 +-
+ fs/ext4/inode.c       | 331 +++++++++++++++++++++++++++--------------------------
+ fs/ext4/mballoc.c     |   5 +-
+ fs/ext4/namei.c       |   2 +-
+ fs/ext4/page-io.c     |   8 +-
+ fs/ext4/super.c       |  15 +--
+ 8 files changed, 300 insertions(+), 250 deletions(-)
