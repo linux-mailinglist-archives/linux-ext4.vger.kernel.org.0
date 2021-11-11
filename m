@@ -2,99 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B594C44CCF9
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Nov 2021 23:45:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87AA744CE9E
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Nov 2021 02:08:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233781AbhKJWsB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 10 Nov 2021 17:48:01 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:48909 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233725AbhKJWsA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 10 Nov 2021 17:48:00 -0500
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1AAMj8oZ020936
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Nov 2021 17:45:09 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 431B715C00B9; Wed, 10 Nov 2021 17:45:08 -0500 (EST)
-Date:   Wed, 10 Nov 2021 17:45:08 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     torvalds@linux-foundation.org
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] ext4 changes for 5.16-rc1
-Message-ID: <YYxLdGu1Lkcl9HzP@mit.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        id S232674AbhKKBKq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 10 Nov 2021 20:10:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44444 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232641AbhKKBKp (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 10 Nov 2021 20:10:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id D70C7613B3;
+        Thu, 11 Nov 2021 01:07:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636592876;
+        bh=u6nZZNxTaFfPuid6+MAjKRrtv3XZhldRV8IVVImOuJw=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=mtF2ixFC9y7SsRndaS4kx+CoaEAj6l5WOF6yZYfpbcFIT8bCj2O+n5jNnJ5IpDY9Q
+         ZWhyH0hhdFzHNEc1MLUj6tU80A7/towD/b5hkdKP89EdL+RlWwGio0hMrYlCUyX2sv
+         h1Liwia39CerFt/mrNYNWVs4a15WY8u5Xy6/TNFLanO94PeDOGbJmmmIB5isLgaPOe
+         4V+JAImMxzbHUEd7V/fZIJ5v38wYzGi/GjGXwswcFNlpYHeMi7wJOWOqx5owwfqJVv
+         jX9XdUmIe8+T0LYqB3t0XcQQbYpshjRqaOmfJ+nTXBtEoP1Lz3hwWdEgBY9H/ONZwD
+         5y+zZhUXBBK2w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D1BA560965;
+        Thu, 11 Nov 2021 01:07:56 +0000 (UTC)
+Subject: Re: [GIT PULL] ext4 changes for 5.16-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YYxLdGu1Lkcl9HzP@mit.edu>
+References: <YYxLdGu1Lkcl9HzP@mit.edu>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YYxLdGu1Lkcl9HzP@mit.edu>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
+X-PR-Tracked-Commit-Id: 124e7c61deb27d758df5ec0521c36cf08d417f7a
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: debe436e77c72fcee804fb867f275e6d31aa999c
+Message-Id: <163659287685.32583.796849278586568089.pr-tracker-bot@kernel.org>
+Date:   Thu, 11 Nov 2021 01:07:56 +0000
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     torvalds@linux-foundation.org, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The following changes since commit 9e1ff307c779ce1f0f810c7ecce3d95bbae40896:
+The pull request you sent on Wed, 10 Nov 2021 17:45:08 -0500:
 
-  Linux 5.15-rc4 (2021-10-03 14:08:47 -0700)
+> git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
 
-are available in the Git repository at:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/debe436e77c72fcee804fb867f275e6d31aa999c
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
+Thank you!
 
-for you to fetch changes up to 124e7c61deb27d758df5ec0521c36cf08d417f7a:
-
-  ext4: fix error code saved on super block during file system abort (2021-11-04 10:47:39 -0400)
-
-----------------------------------------------------------------
-Only bug fixes and cleanups for ext4 this merge window.  Of note are
-fixes for the combination of the inline_data and fast_commit fixes,
-and more accurately calculating when to schedule additional lazy inode
-table init, especially when CONFIG_HZ is 100HZ.
-
-----------------------------------------------------------------
-Austin Kim (1):
-      ext4: remove an unused variable warning with CONFIG_QUOTA=n
-
-Eric Whitney (1):
-      Revert "ext4: enforce buffer head state assertion in ext4_da_map_blocks"
-
-Gabriel Krisman Bertazi (1):
-      ext4: fix error code saved on super block during file system abort
-
-Harshad Shirwadkar (2):
-      ext4: commit inline data during fast commit
-      ext4: inline data inode fast commit replay fixes
-
-Jing Yangyang (1):
-      ext4: fix boolreturn.cocci warnings in fs/ext4/name.c
-
-Lukas Bulwahn (1):
-      ext4: scope ret locally in ext4_try_to_trim_range()
-
-Shaoying Xu (1):
-      ext4: fix lazy initialization next schedule time computation in more granular unit
-
-Xiyu Yang (1):
-      ext4: convert from atomic_t to refcount_t on ext4_io_end->count
-
-Zhang Yi (6):
-      ext4: check for out-of-order index extents in ext4_valid_extent_entries()
-      ext4: check for inconsistent extents between index and leaf block
-      ext4: prevent partial update of the extent blocks
-      ext4: factor out ext4_fill_raw_inode()
-      ext4: move ext4_fill_raw_inode() related functions
-      ext4: prevent getting empty inode buffer
-
-yangerkun (3):
-      ext4: correct the left/middle/right debug message for binsearch
-      ext4: ensure enough credits in ext4_ext_shift_path_extents
-      ext4: refresh the ext4_ext_path struct after dropping i_data_sem.
-
- fs/ext4/ext4.h        |   3 +-
- fs/ext4/extents.c     | 175 ++++++++++++++++------------
- fs/ext4/fast_commit.c |  11 +-
- fs/ext4/inode.c       | 331 +++++++++++++++++++++++++++--------------------------
- fs/ext4/mballoc.c     |   5 +-
- fs/ext4/namei.c       |   2 +-
- fs/ext4/page-io.c     |   8 +-
- fs/ext4/super.c       |  15 +--
- 8 files changed, 300 insertions(+), 250 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
