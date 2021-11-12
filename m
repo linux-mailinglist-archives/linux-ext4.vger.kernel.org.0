@@ -2,126 +2,168 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CD2D44E9FE
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 Nov 2021 16:26:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8F8644EDF3
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Nov 2021 21:37:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbhKLP33 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 12 Nov 2021 10:29:29 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:34700 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbhKLP32 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 12 Nov 2021 10:29:28 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 239651FD3D;
-        Fri, 12 Nov 2021 15:26:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1636730797; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1gNY/niLAf2nm1JKmGISpF3WFcaRy5Ahj8D8HSdUt/E=;
-        b=XriQbg4fPQWU0dIhpRg0/fq4jzN2DZy39z3DsiZWsSfzwlL1jUs/C9j/wfCsxiwdn8sFk2
-        zo/yK9pcOY83z1kd0n1t7CoBVBcg9LXR8Dz4/6SLU4C8T6Loe+t/yfggcO4DQsYXrLJCNd
-        66XUoejBwfnvi8wlkk9msI7gz+ZElLw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1636730797;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1gNY/niLAf2nm1JKmGISpF3WFcaRy5Ahj8D8HSdUt/E=;
-        b=8+IRedjyIHaC3IxaEBbNqN9OXbcP4eyD+YGgIVzuEfyKf2fvqCdIK/jNzl2kSoKhei+8G+
-        aK9QdskinCXSXMBQ==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 13241A3B81;
-        Fri, 12 Nov 2021 15:26:37 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id E10641F2B50; Fri, 12 Nov 2021 16:26:36 +0100 (CET)
-Date:   Fri, 12 Nov 2021 16:26:36 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Lukas Czerner <lczerner@redhat.com>
-Subject: Re: [PATCH] ext4: Avoid trim error on fs with small groups
-Message-ID: <20211112152636.GC25491@quack2.suse.cz>
-References: <20211112152202.26614-1-jack@suse.cz>
+        id S232129AbhKLUj5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 12 Nov 2021 15:39:57 -0500
+Received: from disco.pogo.org.uk ([93.93.128.62]:10436 "EHLO disco.pogo.org.uk"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231968AbhKLUj5 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 12 Nov 2021 15:39:57 -0500
+X-Greylist: delayed 2667 seconds by postgrey-1.27 at vger.kernel.org; Fri, 12 Nov 2021 15:39:56 EST
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=pogo.org.uk
+        ; s=swing; h=Content-Type:MIME-Version:Message-ID:Subject:To:From:Date:Sender
+        :Reply-To:Cc:Content-Transfer-Encoding:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=bYVYJKBHdigEziLfwC7nYV7nf07lzbHLwIfCH2tjsMk=; b=slgku1wsQLGi/4MelDP2Yv7Y1S
+        y/A2zn4vMPTVnivKOHqJ7FPED94lmD50M5x9nKzQKbvRZZqrjfUCxWMaS+/6z2WM9bJUr97y68B98
+        29OnWlcC9ft5rKBNvOpSwknCHIyi41muPnXPenhm9daRQSQAtoScVMHp6/ts7hVcbQY0=;
+Received: from [2001:470:1d21:0:428d:5cff:fe1b:f3e5] (helo=stax)
+        by disco.pogo.org.uk with esmtps  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2 (FreeBSD))
+        (envelope-from <mark@xwax.org>)
+        id 1mlcbG-000K5k-8C
+        for linux-ext4@vger.kernel.org; Fri, 12 Nov 2021 19:52:37 +0000
+Received: from localhost (stax.localdomain [local])
+        by stax.localdomain (OpenSMTPD) with ESMTPA id dd74b131
+        for <linux-ext4@vger.kernel.org>;
+        Fri, 12 Nov 2021 19:52:37 +0000 (UTC)
+Date:   Fri, 12 Nov 2021 19:52:37 +0000 (GMT)
+From:   Mark Hills <mark@xwax.org>
+To:     linux-ext4@vger.kernel.org
+Subject: Maildir quickly hitting max htree
+Message-ID: <2111121900560.16086@stax.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211112152202.26614-1-jack@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 12-11-21 16:22:02, Jan Kara wrote:
-> A user reported FITRIM ioctl failing for him on ext4 on some devices
-> without apparent reason.  After some debugging we've found out that
-> these devices (being LVM volumes) report rather large discard
-> granularity of 42MB and the filesystem had 1k blocksize and thus group
-> size of 8MB. Because ext4 FITRIM implementation puts discard
-> granularity into minlen, ext4_trim_fs() declared the trim request as
-> invalid. However just silently doing nothing seems to be a more
-> appropriate reaction to such combination of parameters since user did
-> not specify anything wrong.
-> 
-> CC: Lukas Czerner <lczerner@redhat.com>
-> Fixes: 5c2ed62fd447 ("ext4: Adjust minlen with discard_granularity in the FITRIM ioctl")
-> Signed-off-by: Jan Kara <jack@suse.cz>
-> ---
->  fs/ext4/ioctl.c   | 2 --
->  fs/ext4/mballoc.c | 8 ++++++++
->  2 files changed, 8 insertions(+), 2 deletions(-)
+Surprised to hit a limit when handling a modest Maildir case; does this 
+reflect a bug?
 
-I wanted to add one more comment: Alternatively we could return EOPNOTSUPP
-in this case to indicate trim is never going to work on this fs. But just
-doing nothing since we cannot submit useful discard request seems
-appropriate to me.
+rsync'ing to a new mail server, after fewer than 100,000 files there are 
+intermittent failures:
 
-								Honza
+  rsync: [receiver] open "/home/mark/Maildir/.robot/cur/1633731549.M990187P7732.yello.[redacted],S=69473,W=70413:2," failed: No space left on device (28)
+  rsync: [receiver] rename "/home/mark/Maildir/.robot/cur/.1624626598.M748388P84607.yello.[redacted],S=17049,W=17352:2,.oBphKA" -> ".robot/cur/1624626598.M748388P84607.yello.[redacted],S=17049,W=17352:2,": No space left on device (28)
 
+The kernel:
 
-> 
-> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-> index 606dee9e08a3..220a4c8178b5 100644
-> --- a/fs/ext4/ioctl.c
-> +++ b/fs/ext4/ioctl.c
-> @@ -1117,8 +1117,6 @@ static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->  		    sizeof(range)))
->  			return -EFAULT;
->  
-> -		range.minlen = max((unsigned int)range.minlen,
-> -				   q->limits.discard_granularity);
->  		ret = ext4_trim_fs(sb, &range);
->  		if (ret < 0)
->  			return ret;
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 72bfac2d6dce..7174add7b153 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -6405,6 +6405,7 @@ ext4_trim_all_free(struct super_block *sb, ext4_group_t group,
->   */
->  int ext4_trim_fs(struct super_block *sb, struct fstrim_range *range)
->  {
-> +	struct request_queue *q = bdev_get_queue(sb->s_bdev);
->  	struct ext4_group_info *grp;
->  	ext4_group_t group, first_group, last_group;
->  	ext4_grpblk_t cnt = 0, first_cluster, last_cluster;
-> @@ -6423,6 +6424,13 @@ int ext4_trim_fs(struct super_block *sb, struct fstrim_range *range)
->  	    start >= max_blks ||
->  	    range->len < sb->s_blocksize)
->  		return -EINVAL;
-> +	/* No point to try to trim less than discard granularity */
-> +	if (range->minlen < q->limits.discard_granularity) {
-> +		minlen = EXT4_NUM_B2C(EXT4_SB(sb),
-> +			q->limits.discard_granularity >> sb->s_blocksize_bits);
-> +		if (minlen > EXT4_CLUSTERS_PER_GROUP(sb))
-> +			goto out;
-> +	}
->  	if (end >= max_blks)
->  		end = max_blks - 1;
->  	if (end <= first_data_blk)
-> -- 
-> 2.26.2
-> 
+  EXT4-fs warning (device dm-4): ext4_dx_add_entry:2351: Directory (ino: 225811) index full, reach max htree level :2
+  EXT4-fs warning (device dm-4): ext4_dx_add_entry:2355: Large directory feature is not enabled on this filesystem
+
+Reaching for 'large_dir' seems premature as this feature is reported as 
+useful for 10M+ files, but this is much lower.
+
+A 'bad' filename will fail consistently. Assuming the 10M+ absolute limit, 
+is the tree grossly imbalanced?
+
+Intuitively, 'htree level :2' does not sound particular deep.
+
+The source folder is 195,000 files -- large, but not crazy. rsync 
+eventually hit a ceiling having written 177,482 of the files. I can still 
+create new ones on the command line with non-Maildir names.
+
+Ruled out quotas, by disabling them with "tune2fs -O ^quota" and 
+remounting.
+
+See below for additional info.
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Mark
+
+
+$ uname -a
+Linux floyd 5.10.78-0-virt #1-Alpine SMP Thu, 11 Nov 2021 14:31:09 +0000 x86_64 GNU/Linux
+
+$ mke2fs -q -t ext4 /dev/vg0/home
+
+$ rsync -va --exclude 'dovecot*' yello:Maildir/. $HOME/Maildir
+
+$ ls | head -15
+1605139205.M487508P91922.yello.[redacted],S=7625,W=7775:2,
+1605139440.M413280P92363.yello.[redacted],S=7632,W=7782:2,
+1605139466.M699663P92402.yello.[redacted],S=7560,W=7710:2,
+1605139479.M651510P92421.yello.[redacted],S=7474,W=7623:2,
+1605139508.M934351P92514.yello.[redacted],S=7626,W=7776:2,
+1605139596.M459228P92713.yello.[redacted],S=7559,W=7709:2,
+1605139645.M57446P92736.yello.[redacted],S=7632,W=7782:2,
+1605139670.M964535P92758.yello.[redacted],S=7628,W=7778:2,
+1605139697.M273694P92807.yello.[redacted],S=7632,W=7782:2,
+1605139748.M607989P92853.yello.[redacted],S=7560,W=7710:2,
+1605139759.M655635P92868.yello.[redacted],S=5912,W=6018:2,
+1605139808.M338286P93071.yello.[redacted],S=7628,W=7778:2,
+1605139961.M915501P93235.yello.[redacted],S=7625,W=7775:2,
+1605140303.M219848P93591.yello.[redacted],S=6898,W=7023:2,
+1605140580.M166212P93921.yello.[redacted],S=6896,W=7021:2,
+
+$ touch abc
+[success]
+
+$ touch 1624626598.M748388P84607.yello.[redacted],S=17049,W=17352:2,
+touch: cannot touch '1624626598.M748388P84607.yello.[redacted],S=17049,W=17352:2,': No space left on device
+
+$ dumpe2fs /dev/vg0/home
+Filesystem volume name:   <none>
+Last mounted on:          /home
+Filesystem UUID:          ad26c968-d057-4d44-bef9-1e2df347580e
+Filesystem magic number:  0xEF53
+Filesystem revision #:    1 (dynamic)
+Filesystem features:      has_journal ext_attr resize_inode dir_index filetype needs_recovery extent 64bit flex_bg sparse_super large_file huge_file dir_nlink extra_isize metadata_csum
+Filesystem flags:         signed_directory_hash
+Default mount options:    user_xattr acl
+Filesystem state:         clean
+Errors behavior:          Continue
+Filesystem OS type:       Linux
+Inode count:              5225472
+Block count:              21229568
+Reserved block count:     851459
+Overhead clusters:        22361
+Free blocks:              8058180
+Free inodes:              4799979
+First block:              1
+Block size:               1024
+Fragment size:            1024
+Group descriptor size:    64
+Reserved GDT blocks:      96
+Blocks per group:         8192
+Fragments per group:      8192
+Inodes per group:         2016
+Inode blocks per group:   504
+Flex block group size:    16
+Filesystem created:       Mon Nov  8 13:14:56 2021
+Last mount time:          Fri Nov 12 18:43:14 2021
+Last write time:          Fri Nov 12 18:43:14 2021
+Mount count:              27
+Maximum mount count:      -1
+Last checked:             Mon Nov  8 13:14:56 2021
+Check interval:           0 (<none>)
+Lifetime writes:          14 GB
+Reserved blocks uid:      0 (user root)
+Reserved blocks gid:      0 (group root)
+First inode:              11
+Inode size:               256
+Required extra isize:     32
+Desired extra isize:      32
+Journal inode:            8
+Default directory hash:   half_md4
+Directory Hash Seed:      839d2871-b97e-456d-9724-096db15931b8
+Journal backup:           inode blocks
+Checksum type:            crc32c
+Checksum:                 0x5974a8b1
+Journal features:         journal_incompat_revoke journal_64bit 
+journal_checksum_v3
+Total journal size:       4096k
+Total journal blocks:     4096
+Max transaction length:   4096
+Fast commit length:       0
+Journal sequence:         0x00000a2a
+Journal start:            702
+Journal checksum type:    crc32c
+Journal checksum:         0x4d693e79
+
+
