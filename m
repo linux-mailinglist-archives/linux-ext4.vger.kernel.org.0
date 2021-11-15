@@ -2,128 +2,180 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 447D04503C2
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Nov 2021 12:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 659FC4515D9
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Nov 2021 21:54:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229613AbhKOLvb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 15 Nov 2021 06:51:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:53874 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229919AbhKOLv3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 15 Nov 2021 06:51:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636976914;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TR0nS+7DbVIcFJQUgEYCbdcxOeGf5QarlNXh2pmRJes=;
-        b=VS5wB3OxD/dOYeObVpvZdNDFr6MICKYWqEYtmc6mks9rz3udVdTPT78vD6Ry8RY+Ydf1X0
-        A/Ja7sXgYgI0TuxMgiY8JHnuIdv06gxxgwf/l+yY0jdx0IDzdg4l1bNx2UvkPMnqFxCkBB
-        HLhytyBjtMxdfZalQLrsajsf4onLd4A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-201-3I9rb_v8O8qC0hFs-E2_ZQ-1; Mon, 15 Nov 2021 06:48:28 -0500
-X-MC-Unique: 3I9rb_v8O8qC0hFs-E2_ZQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 05CA81B2C983;
-        Mon, 15 Nov 2021 11:48:27 +0000 (UTC)
-Received: from work (unknown [10.40.195.33])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0C9F25D9CA;
-        Mon, 15 Nov 2021 11:48:25 +0000 (UTC)
-Date:   Mon, 15 Nov 2021 12:48:21 +0100
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] ext4: Avoid trim error on fs with small groups
-Message-ID: <20211115114821.swt3nqtw2pdgahsq@work>
-References: <20211112152202.26614-1-jack@suse.cz>
+        id S232539AbhKOU4u (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 15 Nov 2021 15:56:50 -0500
+Received: from mail-dm6nam11on2075.outbound.protection.outlook.com ([40.107.223.75]:23392
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1346488AbhKOTeW (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:34:22 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jI4HDbHod6WSGpCJHhUMA2pUQf/ooAMeOPre634urTH0N1+gsVuPRbVV56rBhda2rUXZhhL8gVHOb365LAy0674GUSJWEGm4pfsNJiN3eIIOz+i6QpGPNrGX7SCf5k7Vgm7qpoJM81m195rgrhrrGaC/TDvvXqR9j9aPSVVs/mP2lZfoxYk2w9tMMhHxBWsYIIEGi9Cs+5GLnssNK9F1jie+hkeVxfBUy7kRrRF+5+yQcbE0pvaqfg2xnrdn2mLqfX4ZPC5b4m8mp8L1k3gpUSE5lcTBj5mEceOmrvZl1FrHmuOOKMc5FgRs1UWFtCTjC3rHbtc/noC+FjruUbzVOA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GAF0C1Az5E7eNTp++D6wdqoKFJy/vdeyTKmR/88xqyo=;
+ b=kLLTa+D+K0itJb7FVY4Avtv81isNyE72oAFoy1YLac5+yf7yyvAw/p5DKRy5KJ5g8UsNtylck7YXK/lMpttJnPNFeUEbhGfvIwv/P1vfNPcPaacYUjpMVznLHm+cgMVzT2T32ps2ixna7eZaeLj1lO4kuIhSaI8hW0D456YZxhEQe1S8QyGrjQSPPmbtMnXL5UjKnPFDk95bNbLX/NIPGZJqEfWEYfQ9yiH6DZTrv5CDzDoRvHbrclhvtqiSTRpwGlfn7OZIcuCZZHFiAekgCVyna/CHwRga72qOURmdLVHwVNRrv0vXSgn3fpPHhaJCnkveeOs4p3C/4cpUBlKV0g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=linux-foundation.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GAF0C1Az5E7eNTp++D6wdqoKFJy/vdeyTKmR/88xqyo=;
+ b=FcaxIHciIP6sPV1sfm2plyd5pTqLpO44lvkA3yIIwJaS0M3pfVdmdsBb+dRSdGYQsrLuxVEpVWLxw20VCUTuJAOPaLvj7rPJN6T4EVzM3dv7dRJFIg6Q1tSrdXzpSGeDCgXEfR2j0vqVAO8tmKvDUgHDd1WtCg+rw74Z/QzZDNk=
+Received: from MWHPR04CA0069.namprd04.prod.outlook.com (2603:10b6:300:6c::31)
+ by CH0PR12MB5153.namprd12.prod.outlook.com (2603:10b6:610:b8::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26; Mon, 15 Nov
+ 2021 19:30:49 +0000
+Received: from CO1NAM11FT011.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:6c:cafe::ab) by MWHPR04CA0069.outlook.office365.com
+ (2603:10b6:300:6c::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.25 via Frontend
+ Transport; Mon, 15 Nov 2021 19:30:49 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1NAM11FT011.mail.protection.outlook.com (10.13.175.186) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4690.15 via Frontend Transport; Mon, 15 Nov 2021 19:30:48 +0000
+Received: from alex-MS-7B09.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Mon, 15 Nov
+ 2021 13:30:38 -0600
+From:   Alex Sierra <alex.sierra@amd.com>
+To:     <akpm@linux-foundation.org>, <Felix.Kuehling@amd.com>,
+        <linux-mm@kvack.org>, <rcampbell@nvidia.com>,
+        <linux-ext4@vger.kernel.org>, <linux-xfs@vger.kernel.org>
+CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <hch@lst.de>, <jgg@nvidia.com>, <jglisse@redhat.com>,
+        <apopple@nvidia.com>, <willy@infradead.org>
+Subject: [PATCH v1 3/9] drm/amdkfd: add SPM support for SVM
+Date:   Mon, 15 Nov 2021 13:30:20 -0600
+Message-ID: <20211115193026.27568-4-alex.sierra@amd.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211115193026.27568-1-alex.sierra@amd.com>
+References: <20211115193026.27568-1-alex.sierra@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211112152202.26614-1-jack@suse.cz>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f4175d0a-f378-4685-f5b6-08d9a86e6dca
+X-MS-TrafficTypeDiagnostic: CH0PR12MB5153:
+X-Microsoft-Antispam-PRVS: <CH0PR12MB5153E444956813DC556925BEFD989@CH0PR12MB5153.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: toviR95ND6I78zqfrcWK0rZ+Mp/xEA/wk1q5IL7SKvAyizibENDtKDwW1yo/53MY5mdxxneLX2s/4PxoXG08B5+xvNnKs5tpiqvjpW22yvIfLBzgL8+EsxHHmUtWB9FR6LN+KlT4bjsaBTOWFVePUbf1X/liJOpW1dqB82HruvRWTzIMunvyCmwhPpQid3+9tvP28e5+0v8iVh5NiM9+GHBxB0qVh4pbE/s1OITv2/jaIch45+/SMT928kpHg9RxAh+KvJfSy7Bd4VrnuFYG6TWcl1UvveDicu8JhO0EEFkuTp2w7VSKKYwR74FxNeTArF8TmWZMSb0Kdjdw6B3xlRb0DJyIxTHHrtHwZwn1aA/Wa+GQaGf6uki79aqI5EfubbUFv9S7DXmfPZ3S8NYQWU6Y6D6WDHmsTdeenVCqR2VE8KWihPi2X3pcYxUgV6hKxaoxTY4IsYJ6fHK/VjxPRt0Fy54Acm/WJDJhOXWZu4fkudAdWdj/wd7vPyEmDSL12DToykHbUwd5lHNveLhmoltX9KfmU0/lgEeqVZ57XMvBl/amqNsReuYdlA6zHR2+InsI8U/qzSPRbMMV1QsHdjD9HBYmhM73A7DkwEN/tdVkLSCyzScY0GBXrSgmf8YhfnRdZpMoXxrSZzMTSjhNDYryGj9VJlkpWd+M4WW00MjHwTgm+xeA1gj9TMfyNOtI7y4CIlD0WPP/3IhMT0gUXNrLofJ8GHMF8aqS+dehgTE=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(8676002)(83380400001)(426003)(110136005)(336012)(8936002)(508600001)(5660300002)(26005)(81166007)(6666004)(54906003)(356005)(1076003)(316002)(2616005)(2906002)(7416002)(70206006)(36756003)(86362001)(47076005)(7696005)(70586007)(82310400003)(36860700001)(186003)(16526019)(44832011)(4326008)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2021 19:30:48.9803
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f4175d0a-f378-4685-f5b6-08d9a86e6dca
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT011.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5153
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 04:22:02PM +0100, Jan Kara wrote:
-> A user reported FITRIM ioctl failing for him on ext4 on some devices
-> without apparent reason.  After some debugging we've found out that
-> these devices (being LVM volumes) report rather large discard
-> granularity of 42MB and the filesystem had 1k blocksize and thus group
-> size of 8MB. Because ext4 FITRIM implementation puts discard
-> granularity into minlen, ext4_trim_fs() declared the trim request as
-> invalid. However just silently doing nothing seems to be a more
-> appropriate reaction to such combination of parameters since user did
-> not specify anything wrong.
+When CPU is connected throug XGMI, it has coherent
+access to VRAM resource. In this case that resource
+is taken from a table in the device gmc aperture base.
+This resource is used along with the device type, which could
+be DEVICE_PRIVATE or DEVICE_COHERENT to create the device
+page map region.
 
-Hi Jan,
+Signed-off-by: Alex Sierra <alex.sierra@amd.com>
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+---
+v7:
+Remove lookup_resource call, so export symbol for this function
+is not longer required. Patch dropped "kernel: resource:
+lookup_resource as exported symbol"
+---
+ drivers/gpu/drm/amd/amdkfd/kfd_migrate.c | 29 +++++++++++++++---------
+ 1 file changed, 18 insertions(+), 11 deletions(-)
 
-I agree that it's better to silently do nothing rather than returning
--ENOTSUPP in this case and the patch looks mostly fine.
-
-However currently we return the adjusted minlen back to the user and it
-is also stated in the fstrim man page. I think it's worth keeping that
-behavior.
-
-When I think about it, it would probably be worth updating fstrim to
-notify the user that the minlen changed, I can send a patch for that.
-
-Thanks!
--Lukas
-
-> 
-> CC: Lukas Czerner <lczerner@redhat.com>
-> Fixes: 5c2ed62fd447 ("ext4: Adjust minlen with discard_granularity in the FITRIM ioctl")
-> Signed-off-by: Jan Kara <jack@suse.cz>
-> ---
->  fs/ext4/ioctl.c   | 2 --
->  fs/ext4/mballoc.c | 8 ++++++++
->  2 files changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-> index 606dee9e08a3..220a4c8178b5 100644
-> --- a/fs/ext4/ioctl.c
-> +++ b/fs/ext4/ioctl.c
-> @@ -1117,8 +1117,6 @@ static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->  		    sizeof(range)))
->  			return -EFAULT;
->  
-> -		range.minlen = max((unsigned int)range.minlen,
-> -				   q->limits.discard_granularity);
->  		ret = ext4_trim_fs(sb, &range);
->  		if (ret < 0)
->  			return ret;
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 72bfac2d6dce..7174add7b153 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -6405,6 +6405,7 @@ ext4_trim_all_free(struct super_block *sb, ext4_group_t group,
->   */
->  int ext4_trim_fs(struct super_block *sb, struct fstrim_range *range)
->  {
-> +	struct request_queue *q = bdev_get_queue(sb->s_bdev);
->  	struct ext4_group_info *grp;
->  	ext4_group_t group, first_group, last_group;
->  	ext4_grpblk_t cnt = 0, first_cluster, last_cluster;
-> @@ -6423,6 +6424,13 @@ int ext4_trim_fs(struct super_block *sb, struct fstrim_range *range)
->  	    start >= max_blks ||
->  	    range->len < sb->s_blocksize)
->  		return -EINVAL;
-> +	/* No point to try to trim less than discard granularity */
-> +	if (range->minlen < q->limits.discard_granularity) {
-> +		minlen = EXT4_NUM_B2C(EXT4_SB(sb),
-> +			q->limits.discard_granularity >> sb->s_blocksize_bits);
-> +		if (minlen > EXT4_CLUSTERS_PER_GROUP(sb))
-> +			goto out;
-> +	}
->  	if (end >= max_blks)
->  		end = max_blks - 1;
->  	if (end <= first_data_blk)
-> -- 
-> 2.26.2
-> 
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_migrate.c b/drivers/gpu/drm/amd/amdkfd/kfd_migrate.c
+index aeade32ec298..9e36fe8aea0f 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_migrate.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_migrate.c
+@@ -935,7 +935,7 @@ int svm_migrate_init(struct amdgpu_device *adev)
+ {
+ 	struct kfd_dev *kfddev = adev->kfd.dev;
+ 	struct dev_pagemap *pgmap;
+-	struct resource *res;
++	struct resource *res = NULL;
+ 	unsigned long size;
+ 	void *r;
+ 
+@@ -950,28 +950,34 @@ int svm_migrate_init(struct amdgpu_device *adev)
+ 	 * should remove reserved size
+ 	 */
+ 	size = ALIGN(adev->gmc.real_vram_size, 2ULL << 20);
+-	res = devm_request_free_mem_region(adev->dev, &iomem_resource, size);
+-	if (IS_ERR(res))
+-		return -ENOMEM;
++	if (adev->gmc.xgmi.connected_to_cpu) {
++		pgmap->range.start = adev->gmc.aper_base;
++		pgmap->range.end = adev->gmc.aper_base + adev->gmc.aper_size - 1;
++		pgmap->type = MEMORY_DEVICE_COHERENT;
++	} else {
++		res = devm_request_free_mem_region(adev->dev, &iomem_resource, size);
++		if (IS_ERR(res))
++			return -ENOMEM;
++		pgmap->range.start = res->start;
++		pgmap->range.end = res->end;
++		pgmap->type = MEMORY_DEVICE_PRIVATE;
++	}
+ 
+-	pgmap->type = MEMORY_DEVICE_PRIVATE;
+ 	pgmap->nr_range = 1;
+-	pgmap->range.start = res->start;
+-	pgmap->range.end = res->end;
+ 	pgmap->ops = &svm_migrate_pgmap_ops;
+ 	pgmap->owner = SVM_ADEV_PGMAP_OWNER(adev);
+-	pgmap->flags = MIGRATE_VMA_SELECT_DEVICE_PRIVATE;
+-
++	pgmap->flags = 0;
+ 	/* Device manager releases device-specific resources, memory region and
+ 	 * pgmap when driver disconnects from device.
+ 	 */
+ 	r = devm_memremap_pages(adev->dev, pgmap);
+ 	if (IS_ERR(r)) {
+ 		pr_err("failed to register HMM device memory\n");
+-
+ 		/* Disable SVM support capability */
+ 		pgmap->type = 0;
+-		devm_release_mem_region(adev->dev, res->start, resource_size(res));
++		if (pgmap->type == MEMORY_DEVICE_PRIVATE)
++			devm_release_mem_region(adev->dev, res->start,
++						res->end - res->start + 1);
+ 		return PTR_ERR(r);
+ 	}
+ 
+@@ -984,3 +990,4 @@ int svm_migrate_init(struct amdgpu_device *adev)
+ 
+ 	return 0;
+ }
++
+-- 
+2.32.0
 
