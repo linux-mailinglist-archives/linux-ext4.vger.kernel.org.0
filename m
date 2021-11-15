@@ -2,41 +2,41 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF4A9451D66
+	by mail.lfdr.de (Postfix) with ESMTP id 1700C451D64
 	for <lists+linux-ext4@lfdr.de>; Tue, 16 Nov 2021 01:26:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350433AbhKPA30 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 15 Nov 2021 19:29:26 -0500
-Received: from mail-bn8nam11on2063.outbound.protection.outlook.com ([40.107.236.63]:55840
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        id S1348638AbhKPA3Y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 15 Nov 2021 19:29:24 -0500
+Received: from mail-dm3nam07on2080.outbound.protection.outlook.com ([40.107.95.80]:43346
+        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1346492AbhKOTeW (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        id S1346491AbhKOTeW (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
         Mon, 15 Nov 2021 14:34:22 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iNHXbqxdUf3NocTaNGWQkp+6hXm/caM2wOzmea9YRaslvYghwswzpp+QiZ+9BCLEHqePY3KxWzOHyNjr95Ymb+s9WTJy4ri+sKUovpS8TISJS77PWbyYAwibBy9qU4stERpVX2b1uBtfYa1acyEw7h6hL+DLmWl7/e1cLWJdk84uVAAHezTkCnW4Ho1pwvClvfcTT5Om4fTKV6ADN+ZMaosJ5aNmQcWX6QVDUIb8c5+r95h56/PrDDPGG0pfHYBZPAxGrya1DcksexlgCpY+IGgzmeNdSArDWcJCdzVF9g3R9SmPYuQw+C1cG/cSXcJu+bTw2fkGErHw5j8Ba5kVlw==
+ b=Ts9tB2/w2iiJRrMsFYrrmegmDERdpmnRYdfMv0kFWqGnQC5UJGOszA5iraes6c5eEDUJbi27DAwuc5IKdAU8U/AuHRWpCjf7aLDiIocw27GGRjJ3xkK5fGsOmYb/VJkRuZr/Vy3makwOLF+9dYNe9fTGHwi+eKaTUAVKVqrIjh5BXcFB+6GGdqQxF8TtxQVU+LCrg4MKTrEC/cjdfAA39kR8qd2goV+gCj6/s2nGOnoTvooGCFuHUMabZjuin9sOFz3U0ILsE3PWWBd0Gr4EKF29elOnt966rbXbUElbYsmBthLtUamHFH25f9drb/084Dc6HQ3S/aTrXMux6jrMTw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VqcXW+Nnf1aq7dVzfo+wa58U40/rJKbCb+qwkMh3RW0=;
- b=JlCRnNtIiz8HwbFFaHDSUJ/yNIHhw1BmT8WjM32tQeEBLqn9LhiqBVKQrtXrR6FgCLzyIRtAIiGLohsEIxipabrLSL8ittlOnXn4lBD6DdfSBC4u1S9wC81+XOWH84iDXU3GeBXCEDaudOlAoPlNrMGla9554My6oKI9JakC30LZhAvwQBEoJ/crlfM0DVMpoGXrRLWDcUUCOgrjpU70AuMWV1JfiTeMSuOBThOm80CUi4loLhHQWcHXrQPj7uJRO1zDGlpXdudLfVHCbPiJ0e2iLLlBvsCSa4GfXi++gwetqa95lbXBCF5PGGa05igGHO34BusH7O37UfhKV95dqQ==
+ bh=Kupj+rCul7umAVCSx3q4nxa+D685B44EFa/SS+Wmxz8=;
+ b=njW8onJWScK/9zy2fbLlGfrOvio138sm+YROZnFtVhMHGOgjkpBQdsK8d4jwK3gtAQa88rOTYSq7TfSV6tyhReGaUvX691a4KQ7+SAnpaVUn4H1EMa7OnCOD/x+mLyxSWFnGIs2ebfR0ZyFfntyRTC/fAeXDlvg7lqvYN5pi6iNX0n4vBJwiJzk1NyFhEqwvftXCwE658QtqN7+gGufrWMFJeQiDbhzBqO7QYxUD2aTyQhdyUv4VvUi46FCtFuJO8AL61kcP/voEGFSo4zVqte9lYBFm8wrNKZPLp3iQArAGDlBmgcvzCxal/yrL6pHjFuQK/1X16FSWxvnsnptdIQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=linux-foundation.org smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VqcXW+Nnf1aq7dVzfo+wa58U40/rJKbCb+qwkMh3RW0=;
- b=ML28S5MspI3Fc+XtLZk7s6VxxPS2dKTvnqIJf+uS0QlZN4SsmotaepKYeEEkG8YhXSiiMIUvdQzCp0zjAxwfEtonavVD6+0E+CDWAgW8BRhgK8Qnj1m9HX5pmljuDe64sG5y+Xfs59IzupLRfnz4a6x8fuuS/kwObS+nUDXh96E=
-Received: from CO2PR05CA0099.namprd05.prod.outlook.com (2603:10b6:104:1::25)
- by MN2PR12MB2894.namprd12.prod.outlook.com (2603:10b6:208:10a::27) with
+ bh=Kupj+rCul7umAVCSx3q4nxa+D685B44EFa/SS+Wmxz8=;
+ b=0sk0zX3N6Hr0IakMb/6pMvda9c+0CbTXcAINLPEHC1swtJIi6uwm0jJqly7qlcSbfwlB+iABng1DHBWp9TgZ7XU3uU51vhErlOgUW21BhltZ1yd1BisTLgS3m9/AzA5UDi+b19TTGMGfQYj8gOyVILxlYSQK35wWee7ZdA2f6Ko=
+Received: from MWHPR04CA0050.namprd04.prod.outlook.com (2603:10b6:300:6c::12)
+ by CH2PR12MB4056.namprd12.prod.outlook.com (2603:10b6:610:a5::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.18; Mon, 15 Nov
- 2021 19:30:49 +0000
-Received: from CO1NAM11FT026.eop-nam11.prod.protection.outlook.com
- (2603:10b6:104:1:cafe::d0) by CO2PR05CA0099.outlook.office365.com
- (2603:10b6:104:1::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.15 via Frontend
- Transport; Mon, 15 Nov 2021 19:30:49 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26; Mon, 15 Nov
+ 2021 19:30:50 +0000
+Received: from CO1NAM11FT011.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:6c:cafe::67) by MWHPR04CA0050.outlook.office365.com
+ (2603:10b6:300:6c::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.15 via Frontend
+ Transport; Mon, 15 Nov 2021 19:30:50 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -44,13 +44,13 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1NAM11FT026.mail.protection.outlook.com (10.13.175.67) with Microsoft SMTP
+ CO1NAM11FT011.mail.protection.outlook.com (10.13.175.186) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4690.15 via Frontend Transport; Mon, 15 Nov 2021 19:30:48 +0000
+ 15.20.4690.15 via Frontend Transport; Mon, 15 Nov 2021 19:30:50 +0000
 Received: from alex-MS-7B09.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Mon, 15 Nov
- 2021 13:30:37 -0600
+ 2021 13:30:40 -0600
 From:   Alex Sierra <alex.sierra@amd.com>
 To:     <akpm@linux-foundation.org>, <Felix.Kuehling@amd.com>,
         <linux-mm@kvack.org>, <rcampbell@nvidia.com>,
@@ -58,9 +58,9 @@ To:     <akpm@linux-foundation.org>, <Felix.Kuehling@amd.com>,
 CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
         <hch@lst.de>, <jgg@nvidia.com>, <jglisse@redhat.com>,
         <apopple@nvidia.com>, <willy@infradead.org>
-Subject: [PATCH v1 2/9] mm: add device coherent vma selection for memory migration
-Date:   Mon, 15 Nov 2021 13:30:19 -0600
-Message-ID: <20211115193026.27568-3-alex.sierra@amd.com>
+Subject: [PATCH v1 5/9] lib: test_hmm add ioctl to get zone device type
+Date:   Mon, 15 Nov 2021 13:30:22 -0600
+Message-ID: <20211115193026.27568-6-alex.sierra@amd.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211115193026.27568-1-alex.sierra@amd.com>
 References: <20211115193026.27568-1-alex.sierra@amd.com>
@@ -72,81 +72,115 @@ X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e4487eb2-b616-4e76-e711-08d9a86e6da6
-X-MS-TrafficTypeDiagnostic: MN2PR12MB2894:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB289420708CEC861C00AB0D02FD989@MN2PR12MB2894.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:635;
+X-MS-Office365-Filtering-Correlation-Id: 4c70989d-0885-469b-3dfd-08d9a86e6e74
+X-MS-TrafficTypeDiagnostic: CH2PR12MB4056:
+X-Microsoft-Antispam-PRVS: <CH2PR12MB4056FFA7D4C35E12B55D3956FD989@CH2PR12MB4056.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2399;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: r86A8ayglka0xAizp6J8l1R93yW25fXL1GzwLhTjoz2k2mLwPH9UhkiQ7XoXO75U43HE7kba1aa2qUf06lg6CaTqrK4L2504SDne6n/zKRIO3EsvetW3+LuoTXCCSCb40TsBs6UkxCPMHSZNn9bU0AZUJAQFTCAUeO0n7qDMnl8vXmdTb6lHFM5yFRD1byHm4dRXF24tI7ujMpx3LSRBo5TTGGFhY9lm8fO5c2Mivu9qcQ5rv+gePTeJG+4+wvmqB+X/eaXFE2KgoRwS6fmgu6hanZdPk/ePio2f40l6cmXp1QVbO1RgQ1eXYqYY14B5HeKDrV84hg6Tmy3rtFAjThOhedmfSuPH51b7LgMOa605qO99Edr+oRHK2zCIYmJwPoR43csG/9XyicFE2rYT1OD0Nmlu8EkaBEs1pZuc4l+Ez7X41bKfvGHgga0xG/t8p6wdaMw8haxkdoPTvvsyCqgXTkFZ3Q2+GyxhNG8jYPfRjpoH1zY9up5iC1sxy/ZZ5qG0wW12ydugu/ku3IDvJMxgZCFJiyWJbZeEKFcZdsZClinV/tOB7OGrbY0bAdOVN7mlDTmegSX1TYxk8fq1Ebabv59pWFe+pFDmPD2TdxSSWxw0GJ3l9R+1GR/c+5fLKeB7XhXonTz173FSQtSuxLqfriRsvzmBl/sxuac2Cn7W3ZmyddxHbuIzE/Hot7EimAes4y65+/YWq1zTmys4d9oYdmG+81jFogDYdesb2TA=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(82310400003)(2906002)(110136005)(8676002)(47076005)(4326008)(7416002)(44832011)(316002)(83380400001)(81166007)(508600001)(2616005)(8936002)(426003)(5660300002)(70586007)(336012)(70206006)(36756003)(7696005)(36860700001)(16526019)(26005)(54906003)(86362001)(186003)(6666004)(356005)(1076003)(36900700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: qZaBwR4zEXGSxYs2+pIMB4CJepKRCa2hckxXSUa7jx6sgRRsCWY+3H82/JjznfbOBvxCSx1atC5dlyqw/jBV0CVGIa9zkkiWLYR1rcQugVXCrAE/zxnyzQJTiRwl8Esl2BOEU+hNfDXmXjeOz/4Vr1DxlTquPdIaY6BzOE5qBxtA7mCml/K7T4X6gxMMk85XLLv8KT9NjX9dsIcNQtEaGrR3fTnMunq5fU4vRWz64C7E9i9Ay6s0wtjosRORrV7izjAopfVePJf+kpZYnfS6TnenBs69apJ4/rkVWdKBBw3mxsFJdkfZ6JOfb1xMG9mm1jWY5BX24jQYHU9QMEGcMnybennPitVKG/spMmfL7O0jtfk/JpVoO43/gHbDFuL89XERUuQunOHmhDWuFJejxGo5DEm8nx56dQo1E6lSb+dbg+qRd+ETyxZn53vkoWlkcpBUEcxC3cFeGermOKM+CaQszhyGIS91L32UcQel8VMubM/FSs0ZA/1Z4VMKu74GKq4qQzfHRY1099cZKdVQvAu8ALILrileyPIXCwJ7rH9csoJP4WHnf/XYRvBVhSJ4FLNybj6NUkacf5l2qknWBrjRzg1i+Q6tOaweX9VPD5i4Mpzw/s0T1Ah669vsLc5S09wUY58ZIPfkUAnKgBK/9SM6KZCiqTrIijjouOrnYfF9DhIdAEK8uIMinAgMZvruoKtWg2T08K9Plzx4h+jJluOJuY3tM+9NslikNVKdcOg=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(44832011)(36860700001)(7696005)(36756003)(110136005)(86362001)(336012)(4326008)(2616005)(426003)(8676002)(2906002)(5660300002)(16526019)(82310400003)(26005)(47076005)(6666004)(7416002)(316002)(356005)(1076003)(70206006)(54906003)(70586007)(8936002)(508600001)(83380400001)(81166007)(186003)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2021 19:30:48.7500
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2021 19:30:50.0517
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e4487eb2-b616-4e76-e711-08d9a86e6da6
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4c70989d-0885-469b-3dfd-08d9a86e6e74
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT026.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT011.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB2894
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4056
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This case is used to migrate pages from device memory, back to system
-memory. Device coherent type memory is cache coherent from device and CPU
-point of view.
+new ioctl cmd added to query zone device type. This will be
+used once the test_hmm adds zone device coherent type.
 
 Signed-off-by: Alex Sierra <alex.sierra@amd.com>
 ---
-v2:
-condition added when migrations from device coherent pages.
----
- include/linux/migrate.h | 1 +
- mm/migrate.c            | 9 +++++++--
- 2 files changed, 8 insertions(+), 2 deletions(-)
+ lib/test_hmm.c      | 15 ++++++++++++++-
+ lib/test_hmm_uapi.h |  7 +++++++
+ 2 files changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/migrate.h b/include/linux/migrate.h
-index c8077e936691..e74bb0978f6f 100644
---- a/include/linux/migrate.h
-+++ b/include/linux/migrate.h
-@@ -138,6 +138,7 @@ static inline unsigned long migrate_pfn(unsigned long pfn)
- enum migrate_vma_direction {
- 	MIGRATE_VMA_SELECT_SYSTEM = 1 << 0,
- 	MIGRATE_VMA_SELECT_DEVICE_PRIVATE = 1 << 1,
-+	MIGRATE_VMA_SELECT_DEVICE_COHERENT = 1 << 2,
+diff --git a/lib/test_hmm.c b/lib/test_hmm.c
+index c259842f6d44..2daaa7b3710b 100644
+--- a/lib/test_hmm.c
++++ b/lib/test_hmm.c
+@@ -84,6 +84,7 @@ struct dmirror_chunk {
+ struct dmirror_device {
+ 	struct cdev		cdevice;
+ 	struct hmm_devmem	*devmem;
++	unsigned int            zone_device_type;
+ 
+ 	unsigned int		devmem_capacity;
+ 	unsigned int		devmem_count;
+@@ -470,6 +471,7 @@ static bool dmirror_allocate_chunk(struct dmirror_device *mdevice,
+ 	if (IS_ERR(res))
+ 		goto err_devmem;
+ 
++	mdevice->zone_device_type = HMM_DMIRROR_MEMORY_DEVICE_PRIVATE;
+ 	devmem->pagemap.type = MEMORY_DEVICE_PRIVATE;
+ 	devmem->pagemap.range.start = res->start;
+ 	devmem->pagemap.range.end = res->end;
+@@ -1025,6 +1027,15 @@ static int dmirror_snapshot(struct dmirror *dmirror,
+ 	return ret;
+ }
+ 
++static int dmirror_get_device_type(struct dmirror *dmirror,
++			    struct hmm_dmirror_cmd *cmd)
++{
++	mutex_lock(&dmirror->mutex);
++	cmd->zone_device_type = dmirror->mdevice->zone_device_type;
++	mutex_unlock(&dmirror->mutex);
++
++	return 0;
++}
+ static long dmirror_fops_unlocked_ioctl(struct file *filp,
+ 					unsigned int command,
+ 					unsigned long arg)
+@@ -1074,7 +1085,9 @@ static long dmirror_fops_unlocked_ioctl(struct file *filp,
+ 	case HMM_DMIRROR_SNAPSHOT:
+ 		ret = dmirror_snapshot(dmirror, &cmd);
+ 		break;
+-
++	case HMM_DMIRROR_GET_MEM_DEV_TYPE:
++		ret = dmirror_get_device_type(dmirror, &cmd);
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+diff --git a/lib/test_hmm_uapi.h b/lib/test_hmm_uapi.h
+index f14dea5dcd06..c42e57a6a71e 100644
+--- a/lib/test_hmm_uapi.h
++++ b/lib/test_hmm_uapi.h
+@@ -26,6 +26,7 @@ struct hmm_dmirror_cmd {
+ 	__u64		npages;
+ 	__u64		cpages;
+ 	__u64		faults;
++	__u64		zone_device_type;
  };
  
- struct migrate_vma {
-diff --git a/mm/migrate.c b/mm/migrate.c
-index f74422a42192..166bfec7d85e 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -2340,8 +2340,6 @@ static int migrate_vma_collect_pmd(pmd_t *pmdp,
- 			if (is_writable_device_private_entry(entry))
- 				mpfn |= MIGRATE_PFN_WRITE;
- 		} else {
--			if (!(migrate->flags & MIGRATE_VMA_SELECT_SYSTEM))
--				goto next;
- 			pfn = pte_pfn(pte);
- 			if (is_zero_pfn(pfn)) {
- 				mpfn = MIGRATE_PFN_MIGRATE;
-@@ -2349,6 +2347,13 @@ static int migrate_vma_collect_pmd(pmd_t *pmdp,
- 				goto next;
- 			}
- 			page = vm_normal_page(migrate->vma, addr, pte);
-+			if (!is_zone_device_page(page) &&
-+			    !(migrate->flags & MIGRATE_VMA_SELECT_SYSTEM))
-+				goto next;
-+			if (is_zone_device_page(page) &&
-+			    (!(migrate->flags & MIGRATE_VMA_SELECT_DEVICE_COHERENT) ||
-+			     page->pgmap->owner != migrate->pgmap_owner))
-+				goto next;
- 			mpfn = migrate_pfn(pfn) | MIGRATE_PFN_MIGRATE;
- 			mpfn |= pte_write(pte) ? MIGRATE_PFN_WRITE : 0;
- 		}
+ /* Expose the address space of the calling process through hmm device file */
+@@ -35,6 +36,7 @@ struct hmm_dmirror_cmd {
+ #define HMM_DMIRROR_SNAPSHOT		_IOWR('H', 0x03, struct hmm_dmirror_cmd)
+ #define HMM_DMIRROR_EXCLUSIVE		_IOWR('H', 0x04, struct hmm_dmirror_cmd)
+ #define HMM_DMIRROR_CHECK_EXCLUSIVE	_IOWR('H', 0x05, struct hmm_dmirror_cmd)
++#define HMM_DMIRROR_GET_MEM_DEV_TYPE	_IOWR('H', 0x06, struct hmm_dmirror_cmd)
+ 
+ /*
+  * Values returned in hmm_dmirror_cmd.ptr for HMM_DMIRROR_SNAPSHOT.
+@@ -62,4 +64,9 @@ enum {
+ 	HMM_DMIRROR_PROT_DEV_PRIVATE_REMOTE	= 0x30,
+ };
+ 
++enum {
++	/* 0 is reserved to catch uninitialized type fields */
++	HMM_DMIRROR_MEMORY_DEVICE_PRIVATE = 1,
++};
++
+ #endif /* _LIB_TEST_HMM_UAPI_H */
 -- 
 2.32.0
 
