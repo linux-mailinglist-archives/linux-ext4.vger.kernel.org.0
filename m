@@ -2,113 +2,128 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8F44502E7
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Nov 2021 11:57:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 447D04503C2
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Nov 2021 12:48:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237514AbhKOK7x (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 15 Nov 2021 05:59:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237602AbhKOK7s (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 15 Nov 2021 05:59:48 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31FD2C061766
-        for <linux-ext4@vger.kernel.org>; Mon, 15 Nov 2021 02:56:51 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id r8so29709495wra.7
-        for <linux-ext4@vger.kernel.org>; Mon, 15 Nov 2021 02:56:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PWwCW8mXVC/xZ6jkKVAjmXw3p7extKN8cI5Vy5wzrpg=;
-        b=zTeGU0DGd+6H3acvrUE2XmrPSInU1UfGeLT82n0gAgOzIAUGvcaieXF8GUQEZPxBqK
-         jvrks6SR/2vIKV7VKMe+TOnlfl7fE/HrQlg0Nx25nZp7hWCJen8zCaIO4V2UGmbYgmzl
-         fXvaVjEtHMvAiLo9l0UUtcD8VYyyQaZSTrjpXo1ghMIL37QwgLF1Ml29n5wTR6OpdxZG
-         hzT0HS0Obaphf+efyt4bLI+LncJ2uqyMsMNI5LM4WOHFRPhd+QqFi0zrxh5uNF8LrFQO
-         yuAhU19+ib2k0jKfG6cZfQqc05M2xkl1lpoXdDhvAEqb6qJxry5Whz8oo77ZrM+GFZ7Z
-         bsrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PWwCW8mXVC/xZ6jkKVAjmXw3p7extKN8cI5Vy5wzrpg=;
-        b=vmM4EBiwTxWNif0biEas8JWZOkzB4pS3pXJUoE49xFDl90d8oNGGRPGdpCVln/U8Cp
-         OK3jHLKebTkPS8+tAYe5BmzCH9AR8xTlxvfm+TruDF5zi+5S8ncNw5xDRL49NRhcpwfY
-         lRuCr/3MO+zmvafHRve6u9OIh4Zl+HGBzWJYAWDnYDDkizOMfv5Sp20JsmUXMBGhYqRU
-         rRoDd4+jgAULfQlx9rvb51xrIl3wH99fD419rGEAA1zwUCrNREG8dRyj29HGYIWBNVHt
-         yjrwlnGhTNBCZVdwB8SP3whC8bBkP2OcozJo18zg/SQDdJaphCz9Q/r2WMW/ocbGIOzu
-         A8Bw==
-X-Gm-Message-State: AOAM530I2ZeB2yQey3GwI4LQyL72wXMP1rkheERy21NuO7hFDZpFksSX
-        l6b99jdizCVzsu6sXzy3fI9qQN45Kiy+0hWT4UhWDw==
-X-Google-Smtp-Source: ABdhPJzLGB3NsTcTPq4kevF68H7VhflROSqzR9gvvsFeNbMe67/YJDWT0kS7qDrQbtICAWuFhf+uVoFXjda7cW+Oo68=
-X-Received: by 2002:a5d:6da1:: with SMTP id u1mr46582938wrs.263.1636973809843;
- Mon, 15 Nov 2021 02:56:49 -0800 (PST)
+        id S229613AbhKOLvb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 15 Nov 2021 06:51:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:53874 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229919AbhKOLv3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 15 Nov 2021 06:51:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636976914;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TR0nS+7DbVIcFJQUgEYCbdcxOeGf5QarlNXh2pmRJes=;
+        b=VS5wB3OxD/dOYeObVpvZdNDFr6MICKYWqEYtmc6mks9rz3udVdTPT78vD6Ry8RY+Ydf1X0
+        A/Ja7sXgYgI0TuxMgiY8JHnuIdv06gxxgwf/l+yY0jdx0IDzdg4l1bNx2UvkPMnqFxCkBB
+        HLhytyBjtMxdfZalQLrsajsf4onLd4A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-201-3I9rb_v8O8qC0hFs-E2_ZQ-1; Mon, 15 Nov 2021 06:48:28 -0500
+X-MC-Unique: 3I9rb_v8O8qC0hFs-E2_ZQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 05CA81B2C983;
+        Mon, 15 Nov 2021 11:48:27 +0000 (UTC)
+Received: from work (unknown [10.40.195.33])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0C9F25D9CA;
+        Mon, 15 Nov 2021 11:48:25 +0000 (UTC)
+Date:   Mon, 15 Nov 2021 12:48:21 +0100
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] ext4: Avoid trim error on fs with small groups
+Message-ID: <20211115114821.swt3nqtw2pdgahsq@work>
+References: <20211112152202.26614-1-jack@suse.cz>
 MIME-Version: 1.0
-References: <20201012220620.124408-1-linus.walleij@linaro.org>
- <20201013092240.GI32292@arm.com> <CACRpkdZoMoUQX+CPd31qwjXSKJvaZ6=jcFvUrK_3hkxaUWJNJg@mail.gmail.com>
-In-Reply-To: <CACRpkdZoMoUQX+CPd31qwjXSKJvaZ6=jcFvUrK_3hkxaUWJNJg@mail.gmail.com>
-From:   Peter Maydell <peter.maydell@linaro.org>
-Date:   Mon, 15 Nov 2021 10:56:39 +0000
-Message-ID: <CAFEAcA9R3xc4PFZiojDZviFxeDFE0a9Ka=3okE3mt1c0NGc7MA@mail.gmail.com>
-Subject: Re: [PATCH v3 RESEND] fcntl: Add 32bit filesystem mode
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Dave Martin <Dave.Martin@arm.com>, "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        QEMU Developers <qemu-devel@nongnu.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        Andy Lutomirski <luto@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211112152202.26614-1-jack@suse.cz>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 17 Nov 2020 at 23:38, Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> On Tue, Oct 13, 2020 at 11:22 AM Dave Martin <Dave.Martin@arm.com> wrote:
->
-> > >       case F_SETFD:
-> > >               err = 0;
-> > >               set_close_on_exec(fd, arg & FD_CLOEXEC);
-> > > +             if (arg & FD_32BIT_MODE)
-> > > +                     filp->f_mode |= FMODE_32BITHASH;
-> > > +             else
-> > > +                     filp->f_mode &= ~FMODE_32BITHASH;
-> >
-> > This seems inconsistent?  F_SETFD is for setting flags on a file
-> > descriptor.  Won't setting a flag on filp here instead cause the
-> > behaviour to change for all file descriptors across the system that are
-> > open on this struct file?  Compare set_close_on_exec().
-> >
-> > I don't see any discussion on whether this should be an F_SETFL or an
-> > F_SETFD, though I see F_SETFD was Ted's suggestion originally.
->
-> I cannot honestly say I know the semantic difference.
->
-> I would ask the QEMU people how a user program would expect
-> the flag to behave.
+On Fri, Nov 12, 2021 at 04:22:02PM +0100, Jan Kara wrote:
+> A user reported FITRIM ioctl failing for him on ext4 on some devices
+> without apparent reason.  After some debugging we've found out that
+> these devices (being LVM volumes) report rather large discard
+> granularity of 42MB and the filesystem had 1k blocksize and thus group
+> size of 8MB. Because ext4 FITRIM implementation puts discard
+> granularity into minlen, ext4_trim_fs() declared the trim request as
+> invalid. However just silently doing nothing seems to be a more
+> appropriate reaction to such combination of parameters since user did
+> not specify anything wrong.
 
-Apologies for the very late response -- I hadn't noticed that
-this thread had stalled out waiting for an answer to this,
-and was only reminded of it recently when another QEMU user
-ran into the problem that this kernel patch is trying to resolve.
+Hi Jan,
 
-If I understand the distinction here correctly, I think
-QEMU wouldn't care about it in practice. We want the "32 bit readdir
-offsets" behaviour on all file descriptors that correspond
-to where we're emulating "the guest opened this file descriptor".
-We don't want (but probably won't notice if we get) that behaviour
-on file descriptors that QEMU has opened for its own purposes.
-But we'll never open a file descriptor for the guest and then
-dup it into one for QEMU's purposes. (I guess there might be
-some weird unlikely-to-happen edge cases where an emulated
-guest binary opens an fd for a directory and then passes it
-via exec to a host binary: but even there I expect the host
-binary wouldn't notice it was getting 32-bit hashes.)
+I agree that it's better to silently do nothing rather than returning
+-ENOTSUPP in this case and the patch looks mostly fine.
 
-But overall I think that the more natural behaviour would be that
-it is per-file-descriptor.
+However currently we return the adjusted minlen back to the user and it
+is also stated in the fstrim man page. I think it's worth keeping that
+behavior.
 
--- PMM
+When I think about it, it would probably be worth updating fstrim to
+notify the user that the minlen changed, I can send a patch for that.
+
+Thanks!
+-Lukas
+
+> 
+> CC: Lukas Czerner <lczerner@redhat.com>
+> Fixes: 5c2ed62fd447 ("ext4: Adjust minlen with discard_granularity in the FITRIM ioctl")
+> Signed-off-by: Jan Kara <jack@suse.cz>
+> ---
+>  fs/ext4/ioctl.c   | 2 --
+>  fs/ext4/mballoc.c | 8 ++++++++
+>  2 files changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+> index 606dee9e08a3..220a4c8178b5 100644
+> --- a/fs/ext4/ioctl.c
+> +++ b/fs/ext4/ioctl.c
+> @@ -1117,8 +1117,6 @@ static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+>  		    sizeof(range)))
+>  			return -EFAULT;
+>  
+> -		range.minlen = max((unsigned int)range.minlen,
+> -				   q->limits.discard_granularity);
+>  		ret = ext4_trim_fs(sb, &range);
+>  		if (ret < 0)
+>  			return ret;
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 72bfac2d6dce..7174add7b153 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -6405,6 +6405,7 @@ ext4_trim_all_free(struct super_block *sb, ext4_group_t group,
+>   */
+>  int ext4_trim_fs(struct super_block *sb, struct fstrim_range *range)
+>  {
+> +	struct request_queue *q = bdev_get_queue(sb->s_bdev);
+>  	struct ext4_group_info *grp;
+>  	ext4_group_t group, first_group, last_group;
+>  	ext4_grpblk_t cnt = 0, first_cluster, last_cluster;
+> @@ -6423,6 +6424,13 @@ int ext4_trim_fs(struct super_block *sb, struct fstrim_range *range)
+>  	    start >= max_blks ||
+>  	    range->len < sb->s_blocksize)
+>  		return -EINVAL;
+> +	/* No point to try to trim less than discard granularity */
+> +	if (range->minlen < q->limits.discard_granularity) {
+> +		minlen = EXT4_NUM_B2C(EXT4_SB(sb),
+> +			q->limits.discard_granularity >> sb->s_blocksize_bits);
+> +		if (minlen > EXT4_CLUSTERS_PER_GROUP(sb))
+> +			goto out;
+> +	}
+>  	if (end >= max_blks)
+>  		end = max_blks - 1;
+>  	if (end <= first_data_blk)
+> -- 
+> 2.26.2
+> 
+
