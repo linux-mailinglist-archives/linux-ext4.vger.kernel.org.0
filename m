@@ -2,75 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F174526A6
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Nov 2021 03:07:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD47452D72
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Nov 2021 10:01:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239529AbhKPCJy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 15 Nov 2021 21:09:54 -0500
-Received: from tartarus.angband.pl ([51.83.246.204]:59066 "EHLO
-        tartarus.angband.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239355AbhKOSAq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 15 Nov 2021 13:00:46 -0500
-X-Greylist: delayed 2099 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Nov 2021 13:00:46 EST
-Received: from 89-73-149-240.dynamic.chello.pl ([89.73.149.240] helo=barad-dur.angband.pl)
-        by tartarus.angband.pl with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <kilobyte@angband.pl>)
-        id 1mmfed-00BE1m-Io; Mon, 15 Nov 2021 18:20:29 +0100
-Received: from [2a02:a31c:8245:f980::4] (helo=valinor.angband.pl)
-        by barad-dur.angband.pl with esmtp (Exim 4.94.2)
-        (envelope-from <kilobyte@angband.pl>)
-        id 1mmfec-0002Nz-4V; Mon, 15 Nov 2021 18:20:26 +0100
-Received: from kilobyte by valinor.angband.pl with local (Exim 4.95)
-        (envelope-from <kilobyte@valinor.angband.pl>)
-        id 1mmfeY-000F3O-Qg;
-        Mon, 15 Nov 2021 18:20:22 +0100
-From:   Adam Borowski <kilobyte@angband.pl>
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org
-Cc:     Adam Borowski <kilobyte@angband.pl>
-Date:   Mon, 15 Nov 2021 18:20:20 +0100
-Message-Id: <20211115172020.57853-1-kilobyte@angband.pl>
-X-Mailer: git-send-email 2.33.1
+        id S232719AbhKPJEY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 16 Nov 2021 04:04:24 -0500
+Received: from mail.bizjoindeal.pl ([80.211.97.164]:57710 "EHLO
+        mail.bizjoindeal.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232644AbhKPJEY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 16 Nov 2021 04:04:24 -0500
+X-Greylist: delayed 587 seconds by postgrey-1.27 at vger.kernel.org; Tue, 16 Nov 2021 04:04:23 EST
+Received: by mail.bizjoindeal.pl (Postfix, from userid 1001)
+        id EFE85A2266; Tue, 16 Nov 2021 08:51:27 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=bizjoindeal.pl;
+        s=mail; t=1637052695;
+        bh=JZuQ1fK7zFtz2oeUB7Xfid9vb7kUywdmDd2OluR8ywA=;
+        h=Date:From:To:Subject:From;
+        b=WY0ybjhPexM9mGa3wC5Oe15o4dtAH9hOsgwCO6T9GSPT9PaJsrZvJZMu5BzHgkyOi
+         bt3+q+7r8v7g2Q6JAusZsZdTTwxUYZWSguye6Ghv11yWty4IP94qyndjsOKo+O30E9
+         7M+WvuT7N9WFcpbuppE4UEcCffZrJNzzhTskcbMqxmziIyHl8hoKzvEeC9kjcfVeFJ
+         agid1Hq52Wi/ISZGkbOH5WuXV9aUhjttdfgZ78WpQHLr77vBSugvDEvDSmBCu4/25k
+         Tu9wQLY4/jWqUIVSDrkWvieLq2wmkz/DAW3f2aXT7gdaBMhagOzWazeQeMjxfKWr6l
+         iTEp4o3jz9XjQ==
+Received: by mail.bizjoindeal.pl for <linux-ext4@vger.kernel.org>; Tue, 16 Nov 2021 08:51:12 GMT
+Message-ID: <20211116074500-0.1.60.f0wl.0.nnr0m7utmd@bizjoindeal.pl>
+Date:   Tue, 16 Nov 2021 08:51:12 GMT
+From:   "Dorian Kwiatkowski" <dorian.kwiatkowski@bizjoindeal.pl>
+To:     <linux-ext4@vger.kernel.org>
+Subject: Fotowoltaika dla firm
+X-Mailer: mail.bizjoindeal.pl
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 89.73.149.240
-X-SA-Exim-Mail-From: kilobyte@angband.pl
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on tartarus.angband.pl
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00=-1.9,RDNS_NONE=0.793,
-        SPF_HELO_NONE=0.001,SPF_PASS=-0.001,TVD_RCVD_IP=0.001 autolearn=no
-        autolearn_force=no languages=en
-Subject: [PATCH] ext4: drop an always true check
-X-SA-Exim-Version: 4.2.1 (built Sat, 13 Feb 2021 17:57:42 +0000)
-X-SA-Exim-Scanned: Yes (on tartarus.angband.pl)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-EXT_FIRST_INDEX(ptr) is ptr+12, which can't possibly be null; gcc-12
-warns about this.
+Dzie=C5=84 dobry,
 
-Signed-off-by: Adam Borowski <kilobyte@angband.pl>
----
- fs/ext4/extents.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+kontaktuj=C4=99 si=C4=99 z Pa=C5=84stwem, poniewa=C5=BC dostrzegam mo=C5=BC=
+liwo=C5=9B=C4=87 redukcji op=C5=82at za pr=C4=85d.
 
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 0ecf819bf189..5aa279742da9 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -1496,8 +1496,7 @@ static int ext4_ext_search_left(struct inode *inode,
- 				EXT4_ERROR_INODE(inode,
- 				  "ix (%d) != EXT_FIRST_INDEX (%d) (depth %d)!",
- 				  ix != NULL ? le32_to_cpu(ix->ei_block) : 0,
--				  EXT_FIRST_INDEX(path[depth].p_hdr) != NULL ?
--		le32_to_cpu(EXT_FIRST_INDEX(path[depth].p_hdr)->ei_block) : 0,
-+				  le32_to_cpu(EXT_FIRST_INDEX(path[depth].p_hdr)->ei_block),
- 				  depth);
- 				return -EFSCORRUPTED;
- 			}
--- 
-2.33.1
+Odpowiednio dobrana instalacja fotowoltaiczna to rozwi=C4=85zanie, kt=C3=B3=
+re pozwala wygenerowa=C4=87 spore oszcz=C4=99dno=C5=9Bci w skali roku.
 
+Chcia=C5=82bym porozmawia=C4=87 z Pa=C5=84stwem o tego typu rozwi=C4=85za=
+niu, a tak=C5=BCe przedstawi=C4=87 wst=C4=99pne kalkulacje.
+
+Czy s=C4=85 Pa=C5=84stwo zainteresowani?
+
+Pozdrawiam,
+Dorian Kwiatkowski
