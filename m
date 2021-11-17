@@ -2,97 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 712F845407B
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Nov 2021 06:53:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAEDA454433
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Nov 2021 10:50:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233434AbhKQF4O (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 17 Nov 2021 00:56:14 -0500
-Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:49075 "EHLO
-        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233348AbhKQF4O (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 17 Nov 2021 00:56:14 -0500
-Received: from dread.disaster.area (pa49-195-103-97.pa.nsw.optusnet.com.au [49.195.103.97])
-        by mail109.syd.optusnet.com.au (Postfix) with ESMTPS id EC51AA46A9;
-        Wed, 17 Nov 2021 16:53:13 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1mnDsd-009nSO-AO; Wed, 17 Nov 2021 16:53:11 +1100
-Date:   Wed, 17 Nov 2021 16:53:11 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        linux-ext4@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
-        Chao Yu <chao@kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-        Chuck Lever <chuck.lever@oracle.com>,
-        linux-f2fs-devel@lists.sourceforge.net, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MM: introduce memalloc_retry_wait()
-Message-ID: <20211117055311.GS449541@dread.disaster.area>
-References: <163712329077.13692.12796971766360881401@noble.neil.brown.name>
+        id S235551AbhKQJxn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 17 Nov 2021 04:53:43 -0500
+Received: from verein.lst.de ([213.95.11.211]:49737 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232917AbhKQJxn (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 17 Nov 2021 04:53:43 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 1EABF68AFE; Wed, 17 Nov 2021 10:50:42 +0100 (CET)
+Date:   Wed, 17 Nov 2021 10:50:41 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Alex Sierra <alex.sierra@amd.com>
+Cc:     akpm@linux-foundation.org, Felix.Kuehling@amd.com,
+        linux-mm@kvack.org, rcampbell@nvidia.com,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        hch@lst.de, jgg@nvidia.com, jglisse@redhat.com, apopple@nvidia.com,
+        willy@infradead.org
+Subject: Re: [PATCH v1 1/9] mm: add zone device coherent type memory support
+Message-ID: <20211117095041.GA9730@lst.de>
+References: <20211115193026.27568-1-alex.sierra@amd.com> <20211115193026.27568-2-alex.sierra@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <163712329077.13692.12796971766360881401@noble.neil.brown.name>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.4 cv=e9dl9Yl/ c=1 sm=1 tr=0 ts=619498ca
-        a=fP9RlOTWD4uZJjPSFnn6Ew==:117 a=fP9RlOTWD4uZJjPSFnn6Ew==:17
-        a=kj9zAlcOel0A:10 a=vIxV3rELxO4A:10 a=7-415B0cAAAA:8
-        a=WAyi4Cf-4lf-hVXyuRgA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20211115193026.27568-2-alex.sierra@amd.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 03:28:10PM +1100, NeilBrown wrote:
-> 
-> Various places in the kernel - largely in filesystems - respond to a
-> memory allocation failure by looping around and re-trying.
-.....
-> diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
-> index aca874d33fe6..f2f2a5b28808 100644
-> --- a/include/linux/sched/mm.h
-> +++ b/include/linux/sched/mm.h
-> @@ -214,6 +214,27 @@ static inline void fs_reclaim_acquire(gfp_t gfp_mask) { }
->  static inline void fs_reclaim_release(gfp_t gfp_mask) { }
->  #endif
->  
-> +/* Any memory-allocation retry loop should use
-> + * memalloc_retry_wait(), and pass the flags for the most
-> + * constrained allocation attempt that might have failed.
-> + * This provides useful documentation of where loops are,
-> + * and a central place to fine tune the waiting as the MM
-> + * implementation changes.
-> + */
-> +static inline void memalloc_retry_wait(gfp_t gfp_flags)
-> +{
-> +	gfp_flags = current_gfp_context(gfp_flags);
-> +	if ((gfp_flags & __GFP_DIRECT_RECLAIM) &&
-> +	    !(gfp_flags & __GFP_NORETRY))
-> +		/* Probably waited already, no need for much more */
-> +		schedule_timeout_uninterruptible(1);
-> +	else
-> +		/* Probably didn't wait, and has now released a lock,
-> +		 * so now is a good time to wait
-> +		 */
-> +		schedule_timeout_uninterruptible(HZ/50);
-> +}
+On Mon, Nov 15, 2021 at 01:30:18PM -0600, Alex Sierra wrote:
+> @@ -5695,8 +5695,8 @@ static int mem_cgroup_move_account(struct page *page,
+>   *   2(MC_TARGET_SWAP): if the swap entry corresponding to this pte is a
+>   *     target for charge migration. if @target is not NULL, the entry is stored
+>   *     in target->ent.
+> - *   3(MC_TARGET_DEVICE): like MC_TARGET_PAGE  but page is MEMORY_DEVICE_PRIVATE
+> - *     (so ZONE_DEVICE page and thus not on the lru).
+> + *   3(MC_TARGET_DEVICE): like MC_TARGET_PAGE  but page is MEMORY_DEVICE_COHERENT
+> + *     or MEMORY_DEVICE_PRIVATE (so ZONE_DEVICE page and thus not on the lru).
 
-The existing congestion_wait() calls io_schedule_timeout() under
-TASK_UNINTERRUPTIBLE conditions.
+Please avoid the overly long line.  But I don't think we we need to mention
+the exact enum, but rather do something like:
 
-Does changing all these calls just to a plain
-schedule_timeout_uninterruptible() make any difference to behaviour?
-At least process accounting will appear different (uninterruptible
-sleep instead of IO wait), and I suspect that the block plug
-flushing in io_schedule() might be a good idea to retain for all the
-filesystems that call this function from IO-related routines.
+ *   3(MC_TARGET_DEVICE): like MC_TARGET_PAGE  but page is device memory and
+ *     thus not on the lru.
 
-Cheers,
+> +	switch (pgmap->type) {
+> +	case MEMORY_DEVICE_PRIVATE:
+> +	case MEMORY_DEVICE_COHERENT:
+>  		/*
+>  		 * TODO: Handle HMM pages which may need coordination
+>  		 * with device-side memory.
 
-Dave.
-
--- 
-Dave Chinner
-david@fromorbit.com
+This might be a good opportunity for doing a s/HMM/device/ here.
