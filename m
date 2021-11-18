@@ -2,142 +2,164 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50EDB454E86
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Nov 2021 21:26:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B2644554F2
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Nov 2021 07:55:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232257AbhKQU3R (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 17 Nov 2021 15:29:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232051AbhKQU3R (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 17 Nov 2021 15:29:17 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E12BC061570
-        for <linux-ext4@vger.kernel.org>; Wed, 17 Nov 2021 12:26:18 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id n15-20020a17090a160f00b001a75089daa3so6242104pja.1
-        for <linux-ext4@vger.kernel.org>; Wed, 17 Nov 2021 12:26:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20210112.gappssmtp.com; s=20210112;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=s7G35Fqq4rBCcnJ9EJxEyyo1cjOUNa4BwbpcDJExHfk=;
-        b=673cMad0GPYWw33I+4QPMx4ohGqZtOfUxdMwEIO/u1UKNEvOOEJ9Wl1S6Utnt6RT6g
-         rW9j9gwAfEoAwmqsY+9oGXgg5+RcVTjvZLPcvIi3vFBIqFqdnLGDzuKdKffgHogBQL15
-         RRJa/pN5SJVj3LhxtT2IAbb75tvAXvkDAyY9ZnaRNaQHSTUhT/CFNLk0e6yv+7NpVjBF
-         OX+++KGT2gzehaN/DPdRvRd5RfxAUvUQPkMT7NvoWGwBhG4kD+wGmufEF0yadT4OPZBm
-         vIiYU09+7gNDuRFZXDGgwbc0oxxO8c9RrcpOvsiJUF92v2zB6t2AwTLxhiTTkqZh+JWO
-         dqjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=s7G35Fqq4rBCcnJ9EJxEyyo1cjOUNa4BwbpcDJExHfk=;
-        b=a2tPzci8T4scWKpsJyffXtud7S5wDgVA3Ctvh/Fjj7ktB6RGUFw4Q+7N+Z2VSKdk1C
-         f3WPeij5bEW/B+AdN8zaXtOp9gn24BmtHEscIgm9vEXT92v0BZAB26Q1Fjy2JwzlpNXy
-         NqiI65RtwMEoW4HI072tMCRScuak4WR13MHYBndaAwYy8NoS53PvqYL+r1MOflejPrk4
-         mKlhENHwR3HT/avFpvJRltIUcWwUZTV9AJUbtNEiUHGYszD9r14hYy6FQ1R6WWvZNJ4L
-         sJp8dd/FMjcmvwbkDBNwWAKx+MBI3Xk1rJ0W8MiqYM1AkA0ZUs1T328lTep1E+ijz0wQ
-         6LOQ==
-X-Gm-Message-State: AOAM530pLI2DH6sSmLIS1U/7NW9hbM2tJvG7u4xVeVRID4SEvHbS9T0k
-        ZU597wz+IW2QqOGgQvnHEFicZA==
-X-Google-Smtp-Source: ABdhPJwGHX9zxA7hcNx6nnKshjSLxtHvx84AtqCw2nlWe8YRFrZ9Qk0uIvLzz1MWa3eIUxHQ/Sk2MA==
-X-Received: by 2002:a17:903:1d2:b0:142:24f1:1213 with SMTP id e18-20020a17090301d200b0014224f11213mr59602423plh.81.1637180777449;
-        Wed, 17 Nov 2021 12:26:17 -0800 (PST)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id j7sm6301574pjf.41.2021.11.17.12.26.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 17 Nov 2021 12:26:16 -0800 (PST)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <4423B081-F635-45FB-BFE3-0A75D8F5B0E0@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_0FC7EBE0-F731-4844-8F5D-978C5EF625F7";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH] ext4: drop an always true check
-Date:   Wed, 17 Nov 2021 13:26:13 -0700
-In-Reply-To: <20211115172020.57853-1-kilobyte@angband.pl>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        linux-ext4 <linux-ext4@vger.kernel.org>
-To:     Adam Borowski <kilobyte@angband.pl>
-References: <20211115172020.57853-1-kilobyte@angband.pl>
-X-Mailer: Apple Mail (2.3273)
+        id S243475AbhKRG6H (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 18 Nov 2021 01:58:07 -0500
+Received: from mail-mw2nam10on2085.outbound.protection.outlook.com ([40.107.94.85]:4542
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S242661AbhKRG6F (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 18 Nov 2021 01:58:05 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EwbV+mgCKDsaG1RgTF03Z0Gg44M62z/iGTcXRUi+5BoQsRe56Xij9xqG2V3ff7WdUXvbKJLDfmukdRoa6j7h2CCTxTc5AqqmgWf1kKh6SXFrfDv055iIUmkKMuh4j3AByOxSUrCIWprJqciKyxCl/xObFwwxuha0kZ/k4dt4fwFUVVlhQ9IJPbAjcvO/4uns7fQUJ/j2e1ROZ0ZdARHN9gTAuXwzjxscoXPxlajgZinHGXbL5HGlNN6bTD92iC+xOpqEpdkV1Cl6ncem1Na+4ZPJe/uj+UJt/NfM6Pz5XUzK3B9xCqcecPsKAewyX18md4Mki1tWX1F4iYy18sFPVA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mt4fbdwXZotHnLm51WQhjK3yLRET2vXzMMsX8jcbA3A=;
+ b=dPp4/xMJXTlgfRm/u38S7hyYGGJxMWllVaH0eYufF0hMsXnbVLlPNHqspVfy8ncJIEXDhL80HGb3re3aUkrJuef9AeHpBolSoLxY4MPZqR/YyDxABjs+2oDMppqc7r5wE9nImbEhvOrQLKQ2XBy45maIkq4z5C4PB9OhYkXjnXhGjpbNyAVgIfmw9EAI/irKbE6tSy4kpx+trr4z7zu6VXZeUhlPbxrXORBazL/1c/qnLKWilHKZ6rsPSzMUpRvT1wRULfYVgP0xtHh9hKN9RSAK2oUD6SQGra66vePNP8G9DAAVawAfYD0dEvkJvdkv/a8KHEMuAU6GLIg1B5PwxQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=lists.freedesktop.org
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=quarantine sp=quarantine pct=100)
+ action=none header.from=nvidia.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mt4fbdwXZotHnLm51WQhjK3yLRET2vXzMMsX8jcbA3A=;
+ b=cFH9Km+oaMPfNnOpNmxKxDakgafcWdhUnFkRMd34PAA0AH/roCjq5B0H71XpOjrsm67m/Lry/ZEFMt/4Ql8uBKeuf64n1Xomf+EqSXb5VMOmq4cBMsc2qtZzWTPB1/hSdQXRw9uO5yGhi8RyVzt4MPOmlziYX9wkHA5r+rYShoOABJrSekIZDAlstIIOw2+LnMmZTWoOX1OoDH6seYf28/OYpFqpGZxKhIWqTyv9WPRZncqaTtlyX3cKH7TSWKd/ar9VKTLYxOoZbVh6IEJEdyxnzx4PLVDUFsV4RmiygMhV8+VK51dQAqcnU2vzt2p+d7ms47BcsKBbcfCvsWL8OQ==
+Received: from BN9PR03CA0075.namprd03.prod.outlook.com (2603:10b6:408:fc::20)
+ by MN2PR12MB4486.namprd12.prod.outlook.com (2603:10b6:208:263::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21; Thu, 18 Nov
+ 2021 06:55:03 +0000
+Received: from BN8NAM11FT016.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:fc:cafe::cb) by BN9PR03CA0075.outlook.office365.com
+ (2603:10b6:408:fc::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.27 via Frontend
+ Transport; Thu, 18 Nov 2021 06:55:03 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT016.mail.protection.outlook.com (10.13.176.97) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4713.20 via Frontend Transport; Thu, 18 Nov 2021 06:55:02 +0000
+Received: from nvdebian.localnet (172.20.187.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 18 Nov
+ 2021 06:54:55 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     <akpm@linux-foundation.org>, <Felix.Kuehling@amd.com>,
+        <linux-mm@kvack.org>, <rcampbell@nvidia.com>,
+        <linux-ext4@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
+        Alex Sierra <alex.sierra@amd.com>
+CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <hch@lst.de>, <jgg@nvidia.com>, <jglisse@redhat.com>,
+        <willy@infradead.org>
+Subject: Re: [PATCH v1 2/9] mm: add device coherent vma selection for memory migration
+Date:   Thu, 18 Nov 2021 17:54:08 +1100
+Message-ID: <4255842.lH8mPQHcBG@nvdebian>
+In-Reply-To: <20211115193026.27568-3-alex.sierra@amd.com>
+References: <20211115193026.27568-1-alex.sierra@amd.com> <20211115193026.27568-3-alex.sierra@amd.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4d0a6e52-ba47-4e5b-f26d-08d9aa605860
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4486:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB4486FF829DEE47FC0368D563DF9B9@MN2PR12MB4486.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NC97Vultgt/5SKzBGSpIkT/2gkKIiVgS4spu8DS8NgrfCZ4VHCwKilg3sU0I65lmyOyCIFV23sb67yGpWn1wY6VOQhIjPueNVcrf2ezSVM5WaV2RZZNUlMaul84NqeO49TJBu0CT28+xyHz0wiuPsCBGxnfHVhAjpjwIG1xXTHdyn1dyZCJeHgt1yHW4KkXfhSIqiQLJOg745yQEaH3ulHl6lFd+MGUYG2ZvO9z9nd/VGKM4BLIGlDCNJYDG8DSsKLg1P/Dye8NT0Guun1pco2IyBuyWZL/Ku6t3uaXBp1PSpEW06B/3COue6M3fvAOuynpswm4fPsGSqTZVdJ4DmRWxdi0/C1ni9Fql6strfGiDAvDRz5uy4SwFLtGUEi/EoZ1cfQDFrhYANd3pCRUAdPw4+or4iD8S4AOfNgn6UshYOyAyOduoOIPMPBuqtUzdUKKOgNQHry8sWEDiUr96/ZRTj48FNVuejwPVpBw3f5AmDAt+l7CIlf0/lqigDpxejn07uD/2zLdwKMawL/TE5yIHN9duF7Rf2hcdf53diAwCoM3HN62SaLntE+FZcZQdvjTWGtH4dukNZAcEZ2rjEP45ICb350svgjPg/ccOFAx6Y3oGo4GA2Fod2IluKm2ynjgUfiYxsd6gC5MD1C4eb/kqPuJhJoLqSvHnXPvjU2+23UQMVgrBAQacCqvWLNsmVIzNA2Ggc+MqRLa/4lK9wKUrhX4dO42pSI+5Yf5LYIo=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(83380400001)(356005)(7636003)(5660300002)(6666004)(70586007)(426003)(7416002)(70206006)(9686003)(47076005)(336012)(33716001)(26005)(4326008)(8676002)(9576002)(508600001)(82310400003)(36860700001)(36906005)(2906002)(110136005)(86362001)(316002)(8936002)(186003)(16526019)(54906003)(39026012);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2021 06:55:02.4347
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4d0a6e52-ba47-4e5b-f26d-08d9aa605860
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT016.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4486
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
---Apple-Mail=_0FC7EBE0-F731-4844-8F5D-978C5EF625F7
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=us-ascii
-
-On Nov 15, 2021, at 10:20 AM, Adam Borowski <kilobyte@angband.pl> wrote:
+On Tuesday, 16 November 2021 6:30:19 AM AEDT Alex Sierra wrote:
+> This case is used to migrate pages from device memory, back to system
+> memory. Device coherent type memory is cache coherent from device and CPU
+> point of view.
 > 
-> EXT_FIRST_INDEX(ptr) is ptr+12, which can't possibly be null; gcc-12
-> warns about this.
-> 
-> Signed-off-by: Adam Borowski <kilobyte@angband.pl>
-
-I was wondering if this was intending to check if path[depth].p_hdr was NULL,
-but it is clear from the rest of the code that this could not be true, since
-it is already being accessed earlier in the code, so this looks fine.
-
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-
+> Signed-off-by: Alex Sierra <alex.sierra@amd.com>
 > ---
-> fs/ext4/extents.c | 3 +--
-> 1 file changed, 1 insertion(+), 2 deletions(-)
+> v2:
+> condition added when migrations from device coherent pages.
+> ---
+>  include/linux/migrate.h | 1 +
+>  mm/migrate.c            | 9 +++++++--
+>  2 files changed, 8 insertions(+), 2 deletions(-)
 > 
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index 0ecf819bf189..5aa279742da9 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -1496,8 +1496,7 @@ static int ext4_ext_search_left(struct inode *inode,
-> 				EXT4_ERROR_INODE(inode,
-> 				  "ix (%d) != EXT_FIRST_INDEX (%d) (depth %d)!",
-> 				  ix != NULL ? le32_to_cpu(ix->ei_block) : 0,
-> -				  EXT_FIRST_INDEX(path[depth].p_hdr) != NULL ?
-> -		le32_to_cpu(EXT_FIRST_INDEX(path[depth].p_hdr)->ei_block) : 0,
-> +				  le32_to_cpu(EXT_FIRST_INDEX(path[depth].p_hdr)->ei_block),
-> 				  depth);
-> 				return -EFSCORRUPTED;
-> 			}
-> --
-> 2.33.1
+> diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+> index c8077e936691..e74bb0978f6f 100644
+> --- a/include/linux/migrate.h
+> +++ b/include/linux/migrate.h
+> @@ -138,6 +138,7 @@ static inline unsigned long migrate_pfn(unsigned long pfn)
+>  enum migrate_vma_direction {
+>  	MIGRATE_VMA_SELECT_SYSTEM = 1 << 0,
+>  	MIGRATE_VMA_SELECT_DEVICE_PRIVATE = 1 << 1,
+> +	MIGRATE_VMA_SELECT_DEVICE_COHERENT = 1 << 2,
+>  };
+>  
+>  struct migrate_vma {
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index f74422a42192..166bfec7d85e 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -2340,8 +2340,6 @@ static int migrate_vma_collect_pmd(pmd_t *pmdp,
+>  			if (is_writable_device_private_entry(entry))
+>  				mpfn |= MIGRATE_PFN_WRITE;
+>  		} else {
+> -			if (!(migrate->flags & MIGRATE_VMA_SELECT_SYSTEM))
+> -				goto next;
+>  			pfn = pte_pfn(pte);
+>  			if (is_zero_pfn(pfn)) {
+>  				mpfn = MIGRATE_PFN_MIGRATE;
+> @@ -2349,6 +2347,13 @@ static int migrate_vma_collect_pmd(pmd_t *pmdp,
+>  				goto next;
+>  			}
+>  			page = vm_normal_page(migrate->vma, addr, pte);
+> +			if (!is_zone_device_page(page) &&
+> +			    !(migrate->flags & MIGRATE_VMA_SELECT_SYSTEM))
+> +				goto next;
+> +			if (is_zone_device_page(page) &&
+> +			    (!(migrate->flags & MIGRATE_VMA_SELECT_DEVICE_COHERENT) ||
+> +			     page->pgmap->owner != migrate->pgmap_owner))
+> +				goto next;
+
+Thanks Alex, couple of comments on this:
+
+1. vm_normal_page() can return NULL so you need to add a check for
+   page == NULL otherwise the call to is_zone_device_page(NULL) will crash.
+2. The check for a coherent device page is too indirect. Being explicit and
+   using is_zone_device_coherent_page() instead would make it more direct and
+   obvious, particularly for developers who may not immediately realise that
+   device-private pages should never have pte_present() entries.
+
+>  			mpfn = migrate_pfn(pfn) | MIGRATE_PFN_MIGRATE;
+>  			mpfn |= pte_write(pte) ? MIGRATE_PFN_WRITE : 0;
+>  		}
 > 
 
 
-Cheers, Andreas
 
 
-
-
-
-
---Apple-Mail=_0FC7EBE0-F731-4844-8F5D-978C5EF625F7
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmGVZWUACgkQcqXauRfM
-H+BKbhAAttH4Wyyq5qGSZ/0G1W0NtRt3nFPYWDRn9WT6aONbb6t74CxUQeM+Vdk5
-noLYwUXKTUIkhHI3Ase87ITNSSCjQJ6DkCAOZUkP+kxlDLqK3XQ9lu98Y25qNT2v
-DTNds3YqxtCMLu0uXFJA3+vb5FpreGbU2n+eCKRTe4X16Kl+W5iYQIbXj4uSoV4m
-b0ma5DWxoEGKKx6nXX6M3Jg3PSNVdjFMgMQv6uFqEhNDQjdsHrCxF/siedeNUqlq
-nZPYijh41/Wo9shKovunQpW244SsXga3wbywrAwoLZkFItvcC65fxpyXxS8HziH1
-eh9kVbW3Y+P++zgly4cgxyQ3o9re598dotZICed3AM/OmkchhrYnGxjDSNqph8oU
-pvqL8nYvo519H07+3uDUP1o4GS4w/NLi/L9SVdg7N4Ik7W4x9HE7A/YgWIuGWq5S
-oQ/gurG1dhzYfrMPCRQ0E3qqy5hdg3noE9OXt1ChxHaBa4kedidkB/5wh7mSmfln
-5aL+tnjsfbNSWVcX7Vrsnf3hQ4J1IUsPsWgEXJj+LnmmN3g0XAfUAb3ndzybc4/J
-kE/65XPxyNd1p7yO4ZqEGnZQ3yg+u5BtJq31II9sDONs4+/HJwjURQaWeaH1SJkp
-ah+KWa1p+N/MLzPgsulGpcDLaJj/5nbR5KtHgpPivJDwRCDPfmo=
-=pTax
------END PGP SIGNATURE-----
-
---Apple-Mail=_0FC7EBE0-F731-4844-8F5D-978C5EF625F7--
