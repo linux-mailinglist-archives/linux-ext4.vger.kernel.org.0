@@ -2,218 +2,106 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7F7455572
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Nov 2021 08:19:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60AAF456108
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Nov 2021 17:59:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243788AbhKRHWg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 18 Nov 2021 02:22:36 -0500
-Received: from mail-dm6nam10on2046.outbound.protection.outlook.com ([40.107.93.46]:6529
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S243784AbhKRHW2 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 18 Nov 2021 02:22:28 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IoOsxkbKt898PdWvbMFzvimwxyJUG9CRAesBhO5Am3XUIB+8Uvb3DyVWPB9qA3O5fvr8Y1YVdC4niNMMVYqkbKKpm1SV6X/P0P+NnFwZNFGVCHEHWXDJtXSMFId/q1Jpr+lfjBLejr64qZIwnSC+Neh8Y1TCzqQ0QSFtmiLvzv+Fm9XivH2E4xVITNl1qXuSvvx+ovlqlUVeaaJDgrGRhEqCcVK1h2AMMMf0cLGy96r8aeGcUMVna1Wk5cBWgggn58ZJpcwCCVmt+WXrlXvZjKHbDH3cZiY2y8TM8nvm9B/HpG0OOeeYKywnMnFRv84Y8eVP4B5aWlbS/GClGEA4zw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zVxmmz55dKukc6wHmDEnAyBXiYT9S5ygyCgDGCyPJgQ=;
- b=LJ1MqbZMUHitXwinYLt8SLQerq+ZH5vJWH5AcIxAuvrrZlkii2g2/jEnawbR+o8CpUT0WU7wR1TqwIk1qdPrbx7t+yO3MfWk6ZtiZoh+dnltTOUsVm6RHzqW5HvUnmfCbwKT8iNfqtJ5pg8rB42JGy4tEq7SdUYSJekCwLMBriBgDfcGNWSYKi/2771cO5tLG0cUE+tYsLmGortynfqsOC5kIVPijIqDmFbipEQ7hy8CScqZpynhV2yey/+SWImBAKuMJ1MQ0lr1slIsM6JksDQLPhQFgQPRp8tPXoVoeTq5dbQMn4viUz7lbGESukPBss6DkYeFssOKle3uwTjG9w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=lists.freedesktop.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=quarantine sp=quarantine pct=100)
- action=none header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zVxmmz55dKukc6wHmDEnAyBXiYT9S5ygyCgDGCyPJgQ=;
- b=jDJ6ggmaKWYkTl6L1elJWXmDIxonu8LCiDDBWoCj/qXBXSUbFzdPtuVOCdjZBV3+/suNu/NVuGCM5k79PDmR20hfPFtUzFTJLAh7+/i8uWgRbGCobiqQ0YjZSh1OcFVYVt9apFisP3693Wpx7uPZqTRn+Rd9KF8p9aXtUZG5qNMueVcKMjROs38/ZSpr7Ppiu96dolEyudDTpCGEgO4mloL2pyVum+XehBNsMr651UjkbfHNHoIoZpKhWAJTCfYXLJSYs07AnymhMSujynIAQjMyqe66FLzHBMKQ3rC6DBJh+jRPRkVkI1Tw8XAtSt9Bg6CYzG4tzYk+53MKrXRgxg==
-Received: from MWHPR2201CA0042.namprd22.prod.outlook.com
- (2603:10b6:301:16::16) by DM4PR12MB5039.namprd12.prod.outlook.com
- (2603:10b6:5:38a::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.15; Thu, 18 Nov
- 2021 07:19:26 +0000
-Received: from CO1NAM11FT040.eop-nam11.prod.protection.outlook.com
- (2603:10b6:301:16:cafe::17) by MWHPR2201CA0042.outlook.office365.com
- (2603:10b6:301:16::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19 via Frontend
- Transport; Thu, 18 Nov 2021 07:19:26 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; lists.freedesktop.org; dkim=none (message not
- signed) header.d=none;lists.freedesktop.org; dmarc=pass action=none
- header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT040.mail.protection.outlook.com (10.13.174.140) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4713.20 via Frontend Transport; Thu, 18 Nov 2021 07:19:25 +0000
-Received: from nvdebian.localnet (172.20.187.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 18 Nov
- 2021 07:19:20 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     <akpm@linux-foundation.org>, <Felix.Kuehling@amd.com>,
-        <linux-mm@kvack.org>, <rcampbell@nvidia.com>,
-        <linux-ext4@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        Alex Sierra <alex.sierra@amd.com>
-CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <hch@lst.de>, <jgg@nvidia.com>, <jglisse@redhat.com>,
-        <willy@infradead.org>
-Subject: Re: [PATCH v1 6/9] lib: test_hmm add module param for zone device type
-Date:   Thu, 18 Nov 2021 18:19:16 +1100
-Message-ID: <3407110.cQXnMkeciP@nvdebian>
-In-Reply-To: <20211115193026.27568-7-alex.sierra@amd.com>
-References: <20211115193026.27568-1-alex.sierra@amd.com> <20211115193026.27568-7-alex.sierra@amd.com>
+        id S233811AbhKRRCf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 18 Nov 2021 12:02:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231504AbhKRRCe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 18 Nov 2021 12:02:34 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 833B2C061574
+        for <linux-ext4@vger.kernel.org>; Thu, 18 Nov 2021 08:59:34 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id b11so5746713pld.12
+        for <linux-ext4@vger.kernel.org>; Thu, 18 Nov 2021 08:59:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=LEc7NFqr3FKAIjT7OCYf7cUapdW8bqBPdFrn2WI98Kc=;
+        b=kXj4zLUeLgOQ6T8YUsxCzDVALiScqc/nGaIsO33GPoj4gdXKBmPemvZO736L85Sf3B
+         T6+NVchynMOh7CD+USfO5oLzGvNoJipOvt2ud2wKMQ3bIILu0y/OFCX/KQFKwgty7j0o
+         trN6R5nr3P5htAyJB64pWrF+/MEt9qJzjfYPQo/CfYorzSqLrIj/xynBT1zgG0Xmis4v
+         t3zGI1lD9UlmEDWGDxT3X8LqxkaMkZyVvwN4gd2UC+cFbU6K2fnJffQuctWbkRoT+F7o
+         sKVRzuk+lPb551ZcKXxGANDNpw3+5/FHAK9DWvQNJFtZQ4bkZkzfTgbzvukfhZs28X+d
+         ySbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=LEc7NFqr3FKAIjT7OCYf7cUapdW8bqBPdFrn2WI98Kc=;
+        b=E9yioNB3Z2jr0UqYr5izjeqm98RYWwwaArDD6qv4kAtjENtJi1LG3MYOfSU8GlMEra
+         8dDXEpFLkJhTOnguhH7GAFz+wrggX+L5H1abaVUGGLuUWApDESLzA5ZK9DWn1uZ1io+G
+         tHk7+QsPM/4C6Kf58T5UmHmQ7YQBq4cEUzStsV1tucGKAb7z9nqC2Pa1UcPuCJ4yoqlb
+         a42yyzulkFhpcZUZw5dXgHSwblbfJ9UEuuhgokcsr2Zj5bd7v250NZHoh9qcrhFW16EW
+         hvyK+IG633MXEcONMF59lryyge6da5YULCtcPu5cvflMg09guDKlJXddZ1X+ontT/xwe
+         upsw==
+X-Gm-Message-State: AOAM530a9ARWf+OFSmd7+/sDojj6Y5ojkWj15vG8JyvXn83Pekt5wYDX
+        BfJrCgHDFh/N23CoOCX0ieYybskf/EBKOkaiq8E=
+X-Google-Smtp-Source: ABdhPJwy+KD/ND05drCkWlAwEiT8rhQUI++dRw7/ude9WadAUs+b+hkENpY0TYvp5NdVu176Ryq4vfBMRnO6inMWyNs=
+X-Received: by 2002:a17:90a:e297:: with SMTP id d23mr12178447pjz.131.1637254774036;
+ Thu, 18 Nov 2021 08:59:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0a0e1548-8a66-407c-c6fb-08d9aa63c087
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5039:
-X-Microsoft-Antispam-PRVS: <DM4PR12MB503938DAA438AC3BD401B7E0DF9B9@DM4PR12MB5039.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wuQWs1rOwdgaqWh5d6PKSMdYiSeMMSanyiixjfCl50fMB1VnXkqvQuQJ8RUMTyi/EYK4SwnNEf4DLJtWNO4Y4yiH/nqC/i6FKkAsmbmkX/wrHtUMEPNc9950UbL1UQque5Y5CqUS+P+UW2asqlW/gepQj5UydPwTO5Yuh7qMHadnUeSGncT4gcBvRvSOy1PtWReu8uZobfhFghSLWE2hYBjOlSu6CvH4HSnIZkTYBsDt3hJKsn74/od6ontSPwQ0m/XZw521vB1VZHwfY19jFNJdPcFENGjIcpbLAIcEalOkGjyvpOR6xUXhnCdw6zIDxwJCBS/eQ8EoFBYa0yH03RUECBxy/JcQugsXqMCLy4D2A+xb6oOydT0cGvH0YrQFMODynXs7MTmnqYrN1yKlTdJxH5UR92kp/pSVMAy+O2STaYKpYNAb3hYifc5JowMogUWj8M9eS0dD5G2UJ8SQiVSRxxBHVFrqzA+yyh7+R2hScBRlbghaXMtCd4CuOs43pY3iNT+erVOnM/G6Z0ErJ+b0lvU1UyTj22x41anzV6Vm1X5A8tt94NrgSLOvuiGQFvcutVBGpDckhMfB52KfhE69IUFcx/Z30LPTJojPXeJmaCw2wksggNUgdTAAoeueMDQzGEBLUuqpHQamcRLdALjkkckyvgOjCnQEzG5eLdvUKjsM4kW2rXjnvDdndfzqHxFIxAPq6rON5Knk7xPJ78zYm+qqlH8zVeARDr7Qr28=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(70206006)(26005)(70586007)(86362001)(82310400003)(47076005)(9686003)(426003)(336012)(33716001)(16526019)(186003)(508600001)(36860700001)(8676002)(8936002)(2906002)(7416002)(36906005)(6666004)(316002)(83380400001)(54906003)(7636003)(356005)(5660300002)(110136005)(9576002)(4326008)(334744004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2021 07:19:25.6984
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0a0e1548-8a66-407c-c6fb-08d9aa63c087
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT040.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5039
+Received: by 2002:a05:6a20:3288:b0:5d:5519:fb13 with HTTP; Thu, 18 Nov 2021
+ 08:59:33 -0800 (PST)
+Reply-To: liampayen50@gmail.com
+From:   liam payen <mousandiaye411@gmail.com>
+Date:   Thu, 18 Nov 2021 08:59:33 -0800
+Message-ID: <CAK_EP0R+WBEofxNd1g4hpbCO4Gd3zcQ=0kruULzKsZMkOFUPgQ@mail.gmail.com>
+Subject: =?UTF-8?B?5oiR6ZyA6KaB5L2g55qE5biu5Yqp?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tuesday, 16 November 2021 6:30:23 AM AEDT Alex Sierra wrote:
-> In order to configure device coherent in test_hmm, two module parameters
-> should be passed, which correspond to the SP start address of each
-> device (2) spm_addr_dev0 & spm_addr_dev1. If no parameters are passed,
-> private device type is configured.
-
-Thanks for taking the time to add proper tests for this, as previously
-mentioned I don't like the need for module parameters but understand why these
-are more difficult to avoid.
-
-However as also mentioned previously the restriction of being able to test only
-private *or* coherent device pages is unnecessary and makes testing both types harder, especially if we need to test migration between device private and coherent pages.
-
-<snip>
- 
-> -	res = request_free_mem_region(&iomem_resource, DEVMEM_CHUNK_SIZE,
-> -				      "hmm_dmirror");
-> -	if (IS_ERR(res))
-> -		goto err_devmem;
-> +	if (!spm_addr_dev0 && !spm_addr_dev1) {
-> +		res = request_free_mem_region(&iomem_resource, DEVMEM_CHUNK_SIZE,
-> +					      "hmm_dmirror");
-> +		if (IS_ERR_OR_NULL(res))
-> +			goto err_devmem;
-> +		devmem->pagemap.range.start = res->start;
-> +		devmem->pagemap.range.end = res->end;
-> +		devmem->pagemap.type = MEMORY_DEVICE_PRIVATE;
-> +		mdevice->zone_device_type = HMM_DMIRROR_MEMORY_DEVICE_PRIVATE;
-> +	} else if (spm_addr_dev0 && spm_addr_dev1) {
-> +		devmem->pagemap.range.start = MINOR(mdevice->cdevice.dev) ?
-> +							spm_addr_dev0 :
-> +							spm_addr_dev1;
-
-It seems like it would be fairly straight forward to address this concern by
-adding extra minor character devices for the coherent devices. Would it be
-possible for you to try that?
-
-> +		devmem->pagemap.range.end = devmem->pagemap.range.start +
-> +					    DEVMEM_CHUNK_SIZE - 1;
-> +		devmem->pagemap.type = MEMORY_DEVICE_COHERENT;
-> +		mdevice->zone_device_type = HMM_DMIRROR_MEMORY_DEVICE_COHERENT;
-> +	} else {
-> +		pr_err("Both spm_addr_dev parameters should be set\n");
-> +	}
->  
-> -	mdevice->zone_device_type = HMM_DMIRROR_MEMORY_DEVICE_PRIVATE;
-> -	devmem->pagemap.type = MEMORY_DEVICE_PRIVATE;
-> -	devmem->pagemap.range.start = res->start;
-> -	devmem->pagemap.range.end = res->end;
->  	devmem->pagemap.nr_range = 1;
->  	devmem->pagemap.ops = &dmirror_devmem_ops;
->  	devmem->pagemap.owner = mdevice;
-> @@ -495,10 +517,14 @@ static bool dmirror_allocate_chunk(struct dmirror_device *mdevice,
->  		mdevice->devmem_capacity = new_capacity;
->  		mdevice->devmem_chunks = new_chunks;
->  	}
-> -
->  	ptr = memremap_pages(&devmem->pagemap, numa_node_id());
-> -	if (IS_ERR(ptr))
-> +	if (IS_ERR_OR_NULL(ptr)) {
-> +		if (ptr)
-> +			ret = PTR_ERR(ptr);
-> +		else
-> +			ret = -EFAULT;
->  		goto err_release;
-> +	}
->  
->  	devmem->mdevice = mdevice;
->  	pfn_first = devmem->pagemap.range.start >> PAGE_SHIFT;
-> @@ -531,7 +557,8 @@ static bool dmirror_allocate_chunk(struct dmirror_device *mdevice,
->  
->  err_release:
->  	mutex_unlock(&mdevice->devmem_lock);
-> -	release_mem_region(devmem->pagemap.range.start, range_len(&devmem->pagemap.range));
-> +	if (res)
-> +		release_mem_region(devmem->pagemap.range.start, range_len(&devmem->pagemap.range));
->  err_devmem:
->  	kfree(devmem);
->  
-> @@ -1219,10 +1246,8 @@ static int dmirror_device_init(struct dmirror_device *mdevice, int id)
->  	if (ret)
->  		return ret;
->  
-> -	/* Build a list of free ZONE_DEVICE private struct pages */
-> -	dmirror_allocate_chunk(mdevice, NULL);
-> -
-> -	return 0;
-> +	/* Build a list of free ZONE_DEVICE struct pages */
-> +	return dmirror_allocate_chunk(mdevice, NULL);
->  }
->  
->  static void dmirror_device_remove(struct dmirror_device *mdevice)
-> @@ -1235,8 +1260,9 @@ static void dmirror_device_remove(struct dmirror_device *mdevice)
->  				mdevice->devmem_chunks[i];
->  
->  			memunmap_pages(&devmem->pagemap);
-> -			release_mem_region(devmem->pagemap.range.start,
-> -					   range_len(&devmem->pagemap.range));
-> +			if (devmem->pagemap.type == MEMORY_DEVICE_PRIVATE)
-> +				release_mem_region(devmem->pagemap.range.start,
-> +						   range_len(&devmem->pagemap.range));
->  			kfree(devmem);
->  		}
->  		kfree(mdevice->devmem_chunks);
-> diff --git a/lib/test_hmm_uapi.h b/lib/test_hmm_uapi.h
-> index c42e57a6a71e..77f81e6314eb 100644
-> --- a/lib/test_hmm_uapi.h
-> +++ b/lib/test_hmm_uapi.h
-> @@ -67,6 +67,7 @@ enum {
->  enum {
->  	/* 0 is reserved to catch uninitialized type fields */
->  	HMM_DMIRROR_MEMORY_DEVICE_PRIVATE = 1,
-> +	HMM_DMIRROR_MEMORY_DEVICE_COHERENT,
->  };
->  
->  #endif /* _LIB_TEST_HMM_UAPI_H */
-> 
-
-
-
-
+5oiR5biM5pyb5L2g6IO955CG6Kej6L+Z5p2h5L+h5oGv77yM5Zug5Li65oiR5q2j5Zyo5Yip55So
+57+76K+R57uZ5L2g5YaZ5L+h44CCDQoNCuaIkeaYr+WIqeS6muWnhsK35L2p5oGp5Lit5aOr5aSr
+5Lq644CCDQrlnKjnvo7lm73pmYblhpvnmoTlhpvkuovpg6jpl6jjgILnvo7lm73vvIzkuIDlkI3k
+uK3lo6vvvIwzMiDlsoHvvIzmiJHljZXouqvvvIzmnaXoh6rnvo7lm73nlLDnurPopb/lt57lhYvl
+iKnlpKvlhbDvvIznm67liY3pqbvmiY7lnKjlj5nliKnkuprvvIzkuI7mgZDmgJbkuLvkuYnkvZzm
+iJjjgILmiJHnmoTljZXkvY3mmK/nrKw05oqk55CG6Zif56ysNzgy5peF5L+d6Zqc6JCl44CCDQoN
+CuaIkeaYr+S4gOS4quWFhea7oeeIseW/g+OAgeivmuWunuWSjOa3seaDheeahOS6uu+8jOWFt+ac
+ieiJr+WlveeahOW5vem7mOaEn++8jOaIkeWWnOasoue7k+ivhuaWsOaci+WPi+W5tuS6huino+S7
+luS7rOeahOeUn+a0u+aWueW8j++8jOaIkeWWnOasoueci+WIsOWkp+a1t+eahOazoua1quWSjOWx
+seiEieeahOe+juS4veS7peWPiuWkp+iHqueEtuaJgOaLpeacieeahOS4gOWIh+aPkOS+m+OAguW+
+iOmrmOWFtOiDveabtOWkmuWcsOS6huino+aCqO+8jOaIkeiupOS4uuaIkeS7rOWPr+S7peW7uuer
+i+iJr+WlveeahOWVhuS4muWPi+iwiuOAgg0KDQrmiJHkuIDnm7TlvojkuI3lvIDlv4PvvIzlm6Dk
+uLrov5nkupvlubTmnaXnlJ/mtLvlr7nmiJHkuI3lhazlubPvvJvmiJHlpLHljrvkuobniLbmr43v
+vIzpgqPlubTmiJEgMjENCuWygeOAguaIkeeItuS6suWPq+S5lOWwlMK35L2p5oGp77yM5q+N5Lqy
+5Y+r546b5Li9wrfkvanmganjgILmsqHmnInkurrluK7liqnmiJHvvIzkvYblvojpq5jlhbTmiJHn
+u4jkuo7lnKjnvo7lhpvkuK3mib7liLDkuoboh6rlt7HjgIINCg0K5oiR57uT5ama55Sf5LqG5a2p
+5a2Q77yM5L2G5LuW5q275LqG77yM5LiN5LmF5oiR5LiI5aSr5byA5aeL5qy66aqX5oiR77yM5omA
+5Lul5oiR5LiN5b6X5LiN5pS+5byD5ama5ae744CCDQoNCuaIkeS5n+W+iOW5uOi/kO+8jOWcqOaI
+keeahOWbveWutuOAgee+juWbveWSjOWPmeWIqeS6mui/memHjO+8jOaLpeacieaIkeeUn+a0u+S4
+remcgOimgeeahOS4gOWIh++8jOS9huayoeacieS6uue7meaIkeW7uuiuruOAguaIkemcgOimgeS4
+gOS4quivmuWunueahOS6uuadpeS/oeS7u++8jOS7luS5n+S8muWwseWmguS9leaKlei1hOWQkeaI
+keaPkOS+m+W7uuiuruOAguWboOS4uuaIkeaYr+aIkeeItuavjeWcqOS7luS7rOWOu+S4luWJjeeU
+n+S4i+eahOWUr+S4gOWls+WtqeOAgg0KDQrmiJHkuI3orqTor4bkvaDmnKzkurrvvIzkvYbmiJHo
+rqTkuLrmnInkuIDkuKrlgLzlvpfkv6HotZbnmoTlpb3kurrvvIzku5blj6/ku6Xlu7rnq4vnnJ/m
+raPnmoTkv6Hku7vlkozoia/lpb3nmoTllYbkuJrlj4vosIrvvIzlpoLmnpzkvaDnnJ/nmoTmnInk
+uIDkuKror5rlrp7nmoTlkI3lrZfvvIzmiJHkuZ/mnInkuIDkupvkuJzopb/opoHlkozkvaDliIbk
+uqvnm7jkv6HjgILlnKjkvaDouqvkuIrvvIzlm6DkuLrmiJHpnIDopoHkvaDnmoTluK7liqnjgILm
+iJHmi6XmnInmiJHlnKjlj5nliKnkuprov5nph4zotZrliLDnmoTmgLvpop3vvIg1NTANCuS4h+e+
+juWFg++8ieOAguaIkeS8muWcqOS4i+S4gOWwgeeUteWtkOmCruS7tuS4reWRiuivieS9oOaIkeaY
+r+WmguS9leWBmuWIsOeahO+8jOS4jeimgeaDiuaFjO+8jOS7luS7rOaYr+aXoOmjjumZqeeahO+8
+jOaIkei/mOWcqOS4jiBSZWQNCuacieiBlOezu+eahOS6uumBk+S4u+S5ieWMu+eUn+eahOW4ruWK
+qeS4i+Wwhui/meeslOmSseWtmOWFpeS6humTtuihjOOAguaIkeW4jOacm+aCqOWwhuiHquW3seS9
+nOS4uuaIkeeahOWPl+ebiuS6uuadpeaOpeaUtuWfuumHkeW5tuWcqOaIkeWcqOi/memHjOWujOaI
+kOWQjuehruS/neWug+eahOWuieWFqOW5tuiOt+W+l+aIkeeahOWGm+S6i+mAmuihjOivgeS7peWc
+qOaCqOeahOWbveWutuS4juaCqOS8mumdou+8m+S4jeimgeWus+aAlemTtuihjOS8muWwhui1hOmH
+keWtmOWCqOWcqA0KQVRNIFZJU0Eg5Y2h5Lit77yM6L+Z5a+55oiR5Lus5p2l6K+05piv5a6J5YWo
+5LiU5b+r5o2355qE44CCDQoNCueslOiusDvmiJHkuI3nn6XpgZPmiJHku6zopoHlnKjov5nph4zl
+kYblpJrkuYXvvIzmiJHnmoTlkb3ov5DvvIzlm6DkuLrmiJHlnKjov5nph4zkuKTmrKHngrjlvLno
+oq3lh7vkuK3lubjlrZjkuIvmnaXvvIzov5nlr7zoh7TmiJHlr7vmib7kuIDkuKrlgLzlvpfkv6Ho
+tZbnmoTkurrmnaXluK7liqnmiJHmjqXmlLblkozmipXotYTln7rph5HvvIzlm6DkuLrmiJHlsIbm
+naXliLDkvaDku6znmoTlm73lrrblh7rouqvmipXotYTvvIzlvIDlp4vmlrDnlJ/mtLvvvIzkuI3l
+ho3lvZPlhbXjgIINCg0K5aaC5p6c5oKo5oS/5oSP6LCo5oWO5aSE55CG77yM6K+35Zue5aSN5oiR
+44CC5oiR5Lya5ZGK6K+J5L2g5LiL5LiA5q2l55qE5rWB56iL77yM5bm257uZ5L2g5Y+R6YCB5pu0
+5aSa5YWz5LqO5Z+66YeR5a2Y5YWl6ZO26KGM55qE5L+h5oGv44CC5Lul5Y+K6ZO26KGM5bCG5aaC
+5L2V5biu5Yqp5oiR5Lus6YCa6L+HIEFUTSBWSVNBDQpDQVJEIOWwhui1hOmHkei9rOenu+WIsOaC
+qOeahOWbveWuti/lnLDljLrjgILlpoLmnpzkvaDmnInlhbTotqPvvIzor7fkuI7miJHogZTns7vj
+gIINCg==
