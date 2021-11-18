@@ -2,39 +2,36 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D23674566B5
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Nov 2021 00:58:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 599554566B7
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Nov 2021 00:58:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232967AbhKSABH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 18 Nov 2021 19:01:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233476AbhKSABF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 18 Nov 2021 19:01:05 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 041EAC061574
-        for <linux-ext4@vger.kernel.org>; Thu, 18 Nov 2021 15:58:05 -0800 (PST)
+        id S229554AbhKSABJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 18 Nov 2021 19:01:09 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:39760 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233476AbhKSABJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 18 Nov 2021 19:01:09 -0500
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: krisman)
-        with ESMTPSA id A3ED21F47098
+        with ESMTPSA id 431EE1F47098
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637279883; bh=SEYcYBjqfpHp40Ol4xtoiG1XFKt8lQmtMcz+9DfxYd8=;
+        t=1637279887; bh=AX3c9fTCJEBoDqzWZ2+ck+gWbQoU+iauYve/clPEhL4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jCgtYbK46JaDoTYmzKcfo9wDGrD3+QSBaZNhyTnVNLIz+4SZmjnboRv0P2xX6/1Wz
-         m/vW/G7A2jyqy0JLjEfsFDJgStJN6wSXfNJUtRF3UNUo3N4pHsksEPuKfatbXPOvh+
-         H5/xAzJJwkB7V4FfRGzIcp1KXPiqKyM+S1GatCKXq0SrJVe91KBViYwnmBLtn+oNmz
-         uzdi2pRtPxNNw4R4wv/dhRxD5Oj/XCst3ZbBz6gdzUgV71um2KWUA0uXQagd1DpDT6
-         mO5xbz5jUOOj/rSyo7k/KWWPWZKwAcSQlXEVPVOpH7kgSB12Ekm41FB4q9iZ08KHLa
-         AO4/9Gl+RmX8A==
+        b=m5h96OWWiYow1z8Fvhs2NOGEhNQNzzuzzZ9vUADl7JqPgHADheeSVpaK7eH7rJHga
+         5e3WhTN03xLWuJuedwK+LzdEL+sEf2DXWLr8BQe8YDpAo2MPoCO/bAmfDlDjBMc7bc
+         hYGtw++ONWbCbZOTeujgr79jT3Ini7eYOThsZ+Jq6QKFn4dSt5G7wKKKgXiz18vvGk
+         LmkbxxyLMm/1p+GzCCOJFvImo7lNslS1TC9QizNuxfZwU+gKlbuD08nCU52lVtP518
+         mu/s0gX0V0ZSY0k0tclgA4mvS1DfIo+VgIuyqL6avdN5wB5MdWDTrL0QqNJB1A/oMk
+         Gh8fWO1Pyb5Qw==
 From:   Gabriel Krisman Bertazi <krisman@collabora.com>
 To:     pvorel@suse.cz, jack@suse.com, amir73il@gmail.com,
         repnop@google.com
 Cc:     linux-ext4@vger.kernel.org, kernel@collabora.com,
         khazhy@google.com, ltp@lists.linux.it,
         Gabriel Krisman Bertazi <krisman@collabora.com>
-Subject: [PATCH v4 3/9] syscalls/fanotify22: Introduce FAN_FS_ERROR test
-Date:   Thu, 18 Nov 2021 18:57:38 -0500
-Message-Id: <20211118235744.802584-4-krisman@collabora.com>
+Subject: [PATCH v4 4/9] syscalls/fanotify22: Validate the generic error info
+Date:   Thu, 18 Nov 2021 18:57:39 -0500
+Message-Id: <20211118235744.802584-5-krisman@collabora.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211118235744.802584-1-krisman@collabora.com>
 References: <20211118235744.802584-1-krisman@collabora.com>
@@ -44,207 +41,163 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-fanotify22 is a new test validating the FAN_FS_ERROR file system error
-event.  This adds some basic structure for the next patches and a single
-test of error reporting during filesystem abort
-
-The strategy for error reporting testing in fanotify22 goes like this:
-
-  - Generate a broken filesystem
-  - Start FAN_FS_ERROR monitoring group
-  - Make the file system  notice the error through ordinary operations
-  - Observe the event generated
-
-FAN_FS_ERROR was added in the kernel by Linux commit
-9709bd548f11 ("fanotify: Allow users to request FAN_FS_ERROR events").
+Implement some validation for the generic error info record emitted by
+the kernel.  The error number is fs-specific but, well, we only support
+ext4 for now anyway.
 
 Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 
 ---
-Changes since v3:
-  - fanotify21 -> fanotify22 (Matthew)
+Changes since v2:
+  - check for error record type in autotools (Amir)
 Changes since v1:
   - Move defines to header file.
-  - Move fanotify_mark(2) to do_test (Amir)
-   - Merge abort test here
 ---
- testcases/kernel/syscalls/fanotify/.gitignore |   1 +
- testcases/kernel/syscalls/fanotify/fanotify.h |   3 +
- .../kernel/syscalls/fanotify/fanotify22.c     | 140 ++++++++++++++++++
- 3 files changed, 144 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fanotify/fanotify22.c
+ configure.ac                                  |  3 +-
+ testcases/kernel/syscalls/fanotify/fanotify.h | 32 ++++++++++++++++
+ .../kernel/syscalls/fanotify/fanotify22.c     | 37 ++++++++++++++++++-
+ 3 files changed, 70 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fanotify/.gitignore b/testcases/kernel/syscalls/fanotify/.gitignore
-index 35e73b91e392..6d4ab4ca3c06 100644
---- a/testcases/kernel/syscalls/fanotify/.gitignore
-+++ b/testcases/kernel/syscalls/fanotify/.gitignore
-@@ -19,4 +19,5 @@
- /fanotify19
- /fanotify20
- /fanotify21
-+/fanotify22
- /fanotify_child
+diff --git a/configure.ac b/configure.ac
+index 859aa9857021..a9dc2524966d 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -160,7 +160,8 @@ AC_CHECK_MEMBERS([struct utsname.domainname],,,[
+ AC_CHECK_TYPES([enum kcmp_type],,,[#include <linux/kcmp.h>])
+ AC_CHECK_TYPES([struct acct_v3],,,[#include <sys/acct.h>])
+ AC_CHECK_TYPES([struct af_alg_iv, struct sockaddr_alg],,,[# include <linux/if_alg.h>])
+-AC_CHECK_TYPES([struct fanotify_event_info_fid, struct fanotify_event_info_header],,,[#include <sys/fanotify.h>])
++AC_CHECK_TYPES([struct fanotify_event_info_fid, struct fanotify_event_info_header,
++		struct fanotify_event_info_error],[],[],[#include <sys/fanotify.h>])
+ AC_CHECK_TYPES([struct file_dedupe_range],,,[#include <linux/fs.h>])
+ 
+ AC_CHECK_TYPES([struct file_handle],,,[
 diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-index 242245826004..3a8f950950e0 100644
+index 3a8f950950e0..6b0e68a23a6b 100644
 --- a/testcases/kernel/syscalls/fanotify/fanotify.h
 +++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-@@ -127,6 +127,9 @@ static inline int safe_fanotify_mark(const char *file, const int lineno,
- #ifndef FAN_OPEN_EXEC_PERM
- #define FAN_OPEN_EXEC_PERM	0x00040000
+@@ -181,6 +181,9 @@ typedef struct {
+ #ifndef FAN_EVENT_INFO_TYPE_PIDFD
+ #define FAN_EVENT_INFO_TYPE_PIDFD	4
  #endif
-+#ifndef FAN_FS_ERROR
-+#define FAN_FS_ERROR		0x00008000
++#ifndef FAN_EVENT_INFO_TYPE_ERROR
++#define FAN_EVENT_INFO_TYPE_ERROR	5
 +#endif
  
- /* Additional error status codes that can be returned to userspace */
- #ifndef FAN_NOPIDFD
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify22.c b/testcases/kernel/syscalls/fanotify/fanotify22.c
-new file mode 100644
-index 000000000000..55e695b133d6
---- /dev/null
-+++ b/testcases/kernel/syscalls/fanotify/fanotify22.c
-@@ -0,0 +1,140 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2021 Collabora Ltd.
-+ *
-+ * Author: Gabriel Krisman Bertazi <gabriel@krisman.be>
-+ * Based on previous work by Amir Goldstein <amir73il@gmail.com>
-+ */
+ #ifndef HAVE_STRUCT_FANOTIFY_EVENT_INFO_HEADER
+ struct fanotify_event_info_header {
+@@ -205,6 +208,14 @@ struct fanotify_event_info_pidfd {
+ };
+ #endif /* HAVE_STRUCT_FANOTIFY_EVENT_INFO_PIDFD */
+ 
++#ifndef HAVE_STRUCT_FANOTIFY_EVENT_INFO_ERROR
++struct fanotify_event_info_error {
++	struct fanotify_event_info_header hdr;
++	__s32 error;
++	__u32 error_count;
++};
++#endif /* HAVE_STRUCT_FANOTIFY_EVENT_INFO_ERROR */
 +
-+/*\
-+ * [Description]
-+ * Check fanotify FAN_ERROR_FS events triggered by intentionally
-+ * corrupted filesystems:
-+ *
-+ * - Generate a broken filesystem
-+ * - Start FAN_FS_ERROR monitoring group
-+ * - Make the file system notice the error through ordinary operations
-+ * - Observe the event generated
-+ */
-+
-+#define _GNU_SOURCE
-+#include "config.h"
-+
-+#include <stdio.h>
-+#include <sys/types.h>
-+#include <errno.h>
-+#include <string.h>
-+#include <sys/mount.h>
-+#include <sys/syscall.h>
-+#include "tst_test.h"
-+#include <sys/fanotify.h>
-+#include <sys/types.h>
-+#include <fcntl.h>
-+
-+#ifdef HAVE_SYS_FANOTIFY_H
-+#include "fanotify.h"
-+
-+#define BUF_SIZE 256
-+static char event_buf[BUF_SIZE];
-+int fd_notify;
-+
-+#define MOUNT_PATH "test_mnt"
-+
-+static void trigger_fs_abort(void)
+ /* NOTE: only for struct fanotify_event_info_fid */
+ #ifdef HAVE_STRUCT_FANOTIFY_EVENT_INFO_FID_FSID___VAL
+ # define FSID_VAL_MEMBER(fsid, i) (fsid.__val[i])
+@@ -418,4 +429,25 @@ static inline int fanotify_mark_supported_by_kernel(uint64_t flag)
+ 		fanotify_events_supported_by_kernel(mask, init_flags, mark_type)); \
+ } while (0)
+ 
++struct fanotify_event_info_header *get_event_info(
++					struct fanotify_event_metadata *event,
++					int info_type)
 +{
-+	SAFE_MOUNT(tst_device->dev, MOUNT_PATH, tst_device->fs_type,
-+		   MS_REMOUNT|MS_RDONLY, "abort");
++	struct fanotify_event_info_header *hdr = NULL;
++	char *start = (char *) event;
++	int off;
++
++	for (off = event->metadata_len; (off+sizeof(*hdr)) < event->event_len;
++	     off += hdr->len) {
++		hdr = (struct fanotify_event_info_header *) &(start[off]);
++		if (hdr->info_type == info_type)
++			return hdr;
++	}
++	return NULL;
 +}
 +
-+static struct test_case {
-+	char *name;
-+	void (*trigger_error)(void);
-+} testcases[] = {
-+	{
-+		.name = "Trigger abort",
-+		.trigger_error = &trigger_fs_abort,
-+	},
-+};
++#define get_event_info_error(event)					\
++	((struct fanotify_event_info_error *)				\
++	 get_event_info((event), FAN_EVENT_INFO_TYPE_ERROR))
 +
-+int check_error_event_metadata(struct fanotify_event_metadata *event)
+ #endif /* __FANOTIFY_H__ */
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify22.c b/testcases/kernel/syscalls/fanotify/fanotify22.c
+index 55e695b133d6..d324191c28c8 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify22.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify22.c
+@@ -48,14 +48,38 @@ static void trigger_fs_abort(void)
+ 
+ static struct test_case {
+ 	char *name;
++	int error;
++	unsigned int error_count;
+ 	void (*trigger_error)(void);
+ } testcases[] = {
+ 	{
+ 		.name = "Trigger abort",
+ 		.trigger_error = &trigger_fs_abort,
++		.error_count = 1,
++		.error = ESHUTDOWN,
+ 	},
+ };
+ 
++int check_error_event_info_error(struct fanotify_event_info_error *info_error,
++				 const struct test_case *ex)
 +{
 +	int fail = 0;
 +
-+	if (event->mask != FAN_FS_ERROR) {
++	if (info_error->error_count != ex->error_count) {
++		tst_res(TFAIL, "%s: Unexpected error_count (%d!=%d)",
++			ex->name, info_error->error_count, ex->error_count);
 +		fail++;
-+		tst_res(TFAIL, "got unexpected event %llx",
-+			(unsigned long long)event->mask);
 +	}
 +
-+	if (event->fd != FAN_NOFD) {
++	if (info_error->error != ex->error) {
++		tst_res(TFAIL, "%s: Unexpected error code value (%d!=%d)",
++			ex->name, info_error->error, ex->error);
 +		fail++;
-+		tst_res(TFAIL, "Weird FAN_FD %llx",
-+			(unsigned long long)event->mask);
 +	}
++
 +	return fail;
 +}
 +
-+void check_event(char *buf, size_t len, const struct test_case *ex)
-+{
-+	struct fanotify_event_metadata *event =
-+		(struct fanotify_event_metadata *) buf;
-+
-+	if (len < FAN_EVENT_METADATA_LEN) {
-+		tst_res(TFAIL, "No event metadata found");
-+		return;
+ int check_error_event_metadata(struct fanotify_event_metadata *event)
+ {
+ 	int fail = 0;
+@@ -78,6 +102,8 @@ void check_event(char *buf, size_t len, const struct test_case *ex)
+ {
+ 	struct fanotify_event_metadata *event =
+ 		(struct fanotify_event_metadata *) buf;
++	struct fanotify_event_info_error *info_error;
++	int fail = 0;
+ 
+ 	if (len < FAN_EVENT_METADATA_LEN) {
+ 		tst_res(TFAIL, "No event metadata found");
+@@ -87,7 +113,16 @@ void check_event(char *buf, size_t len, const struct test_case *ex)
+ 	if (check_error_event_metadata(event))
+ 		return;
+ 
+-	tst_res(TPASS, "Successfully received: %s", ex->name);
++	info_error = get_event_info_error(event);
++	if (info_error)
++		fail += check_error_event_info_error(info_error, ex);
++	else {
++		tst_res(TFAIL, "Generic error record not found");
++		fail++;
 +	}
 +
-+	if (check_error_event_metadata(event))
-+		return;
-+
-+	tst_res(TPASS, "Successfully received: %s", ex->name);
-+}
-+
-+static void do_test(unsigned int i)
-+{
-+	const struct test_case *tcase = &testcases[i];
-+	size_t read_len;
-+
-+	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD|FAN_MARK_FILESYSTEM,
-+			   FAN_FS_ERROR, AT_FDCWD, MOUNT_PATH);
-+
-+	tcase->trigger_error();
-+
-+	read_len = SAFE_READ(0, fd_notify, event_buf, BUF_SIZE);
-+
-+	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_REMOVE|FAN_MARK_FILESYSTEM,
-+			   FAN_FS_ERROR, AT_FDCWD, MOUNT_PATH);
-+
-+	check_event(event_buf, read_len, tcase);
-+}
-+
-+static void setup(void)
-+{
-+	REQUIRE_FANOTIFY_EVENTS_SUPPORTED_ON_FS(FAN_CLASS_NOTIF|FAN_REPORT_FID,
-+						FAN_MARK_FILESYSTEM,
-+						FAN_FS_ERROR, ".");
-+
-+	fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF|FAN_REPORT_FID,
-+				       O_RDONLY);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fd_notify > 0)
-+		SAFE_CLOSE(fd_notify);
-+}
-+
-+static struct tst_test test = {
-+	.test = do_test,
-+	.tcnt = ARRAY_SIZE(testcases),
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.mount_device = 1,
-+	.mntpoint = MOUNT_PATH,
-+	.needs_root = 1,
-+	.dev_fs_type = "ext4"
-+};
-+
-+#else
-+	TST_TEST_TCONF("system doesn't have required fanotify support");
-+#endif
++	if (!fail)
++		tst_res(TPASS, "Successfully received: %s", ex->name);
+ }
+ 
+ static void do_test(unsigned int i)
 -- 
 2.33.0
 
