@@ -2,104 +2,109 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A404569C5
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Nov 2021 06:38:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 065EE4569DB
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Nov 2021 06:48:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231895AbhKSFlz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 19 Nov 2021 00:41:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52320 "EHLO
+        id S230428AbhKSFvl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 19 Nov 2021 00:51:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbhKSFly (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 19 Nov 2021 00:41:54 -0500
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1750C061574
-        for <linux-ext4@vger.kernel.org>; Thu, 18 Nov 2021 21:38:53 -0800 (PST)
-Received: by mail-il1-x133.google.com with SMTP id e8so9142432ilu.9
-        for <linux-ext4@vger.kernel.org>; Thu, 18 Nov 2021 21:38:53 -0800 (PST)
+        with ESMTP id S229687AbhKSFvl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 19 Nov 2021 00:51:41 -0500
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD34C061574
+        for <linux-ext4@vger.kernel.org>; Thu, 18 Nov 2021 21:48:40 -0800 (PST)
+Received: by mail-il1-x129.google.com with SMTP id a15so6138525ilj.8
+        for <linux-ext4@vger.kernel.org>; Thu, 18 Nov 2021 21:48:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=f2aHJUlff+sHT0KB89Ar0wCxeN5RNH8wkzpd87A4xsk=;
-        b=oAlT9paDS24Qy4Yiyrpr8LzhBDDyY6nuFPfoE5WZFi0CNco6Z0RyOAi/YjJZH6eLIv
-         3Ztra06Kmrw2Sxn0fXMfJ7gJIFeTN3Ftacz2Uk0/yiQayzlqpvalFSQwDcIgLP5t1kay
-         3syKNEWkQ+dkRBSPNJqHKYProaLHYWN0YbCNld2+Oc3QLDPL9IiB+vZHVt/71sz1Zaup
-         nhJZxWzbLqliECWS8PLsBTIL2hf63nt21oS6vN74Cm2DV8DV6B2jbo1SRgOj5mCwmKl4
-         aQa96+CMiBrp9ev6tWAoxD2XT6oKoegT14sB5S4GQKI9QamhdCPmu9GmeJw7u9pqJofQ
-         6WzQ==
+        bh=h2UaBAPk9+dX1nyaB3MzZPqLop0ttm08MjzVxvsPoZA=;
+        b=UDyTUk11/a32o2RNnkegM+/PGeKx0rK+ZiY4hQ1KmX5J/NBWSK/ixBAe+8Op5lG3/m
+         LWn0GK6/75QAo6QYXIZlF7HNwgE2gbXFwEJFfaL7f1zcntzCn44nYa6f/eKIWEfcmzSI
+         F7XdOSzMZSl+cPTAkfW+38ia8PXRI6j8VoS4l4tLzMLHxWbXtOoytRIkFNyj2qFVMGUX
+         9mg+haQO09LNcvDHvHZaNWYT8cVGJG6w3mfCbepCEPxYzVClHyLUV5Sq1e0+80akYkh5
+         msyRyFk7vJ43a775F+9RCbg0WgrMJoafoBWwYPSl7cS0aYmHbU7eEp+ZEBe1dNH+8ggO
+         xJpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=f2aHJUlff+sHT0KB89Ar0wCxeN5RNH8wkzpd87A4xsk=;
-        b=32tZOIU3lYsuny7ULjFKPDwccMqoBy/hF6RYHFRn8IuNigvxebgBHHoZ6KriypdcJg
-         ElxNnEoEe1wpn/TxKPSkEs5vTkSNTpWVWkKwaZf3eZrXVgHz8FRdqS27G0j1QvgGfiPX
-         uPHruFLO20iQuwbWO/d3a6L/vzLjcIaBu6itv7gIwwa1w8UsKCXvuOLfE27QQrYDPeOn
-         1ljfeFl2vO76zPVOsurP1BxRYCJsHgfvADjc7X0a9r4xjQc/Ogc1HrMj4VTHiuj4IN0m
-         BETQn6oydvmJ+1l7+UotF01PgF1iF4CiRF2TYg4B32DKp2M3XPcPBHqcS5+7G6uhXMsE
-         9KJQ==
-X-Gm-Message-State: AOAM5333TR8ltQRDBmrxYjsLTPN0AGVu65f9HJuDd7gNQWRGMI2EvrDC
-        41weT4o3hoR+hg8SrC6loEcwUtpef0G1nQENgvU=
-X-Google-Smtp-Source: ABdhPJyge6d8ROjZzxsBZyUPkRoblSllQwMAlbWsZDPUJx4cTNGX4/IFYezj1zcs6kCpZ2H+j9hO+ryU6FblamVSbKo=
-X-Received: by 2002:a05:6e02:c87:: with SMTP id b7mr3301518ile.198.1637300333243;
- Thu, 18 Nov 2021 21:38:53 -0800 (PST)
+        bh=h2UaBAPk9+dX1nyaB3MzZPqLop0ttm08MjzVxvsPoZA=;
+        b=emCsrWjvCJck4sP0FGI/8HKd/J/DK/xThhgUKoM3HDVU8HpZRd/SlkoLXKdpJW34hY
+         DDyUElrV4BvQomSKlhyNCJGMnkyKY+eXAyXLHpCkf3R386AvJr6TG5HOTrwlH0GCjpRc
+         R6+knfL8bUwFbehh4208xWpUesD2zl+WpqUSp0GP1TDDbV/xzlI0iO7ttJ79sgJWAHoj
+         YVyOI0nM+cjLXqjTwI3LgsKFQDyM+e18mwjWfuMJOEdxvls1rcHB+EB+6bmmjdmpPsXm
+         1opH60ZtRPM+FUHmlRl2/A6aZPkrIVVxbFvMWs3xhnGsJYy7CtmTg+7lrGqN3g8Bi5O9
+         i9og==
+X-Gm-Message-State: AOAM533QjgZPhqXgB/DaiQFLluzZLdK6RokHZi26bEc0CH80YJJ+Cpqi
+        +1OZ/8oSomLYvlUNSHEHRIwmuC8cwImhWXoDFr8=
+X-Google-Smtp-Source: ABdhPJw5DB8Y5GvFIbCY2VAUIdCUWYCzlqHFJthiqOrHqHNRz3pUwlq8nhvrhLT0/dgiYnXDQrcBtATNXhegN6UflvI=
+X-Received: by 2002:a05:6e02:1ba6:: with SMTP id n6mr3196265ili.254.1637300919715;
+ Thu, 18 Nov 2021 21:48:39 -0800 (PST)
 MIME-Version: 1.0
-References: <20211118235744.802584-1-krisman@collabora.com> <20211118235744.802584-5-krisman@collabora.com>
-In-Reply-To: <20211118235744.802584-5-krisman@collabora.com>
+References: <20211118235744.802584-1-krisman@collabora.com>
+In-Reply-To: <20211118235744.802584-1-krisman@collabora.com>
 From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Fri, 19 Nov 2021 07:38:42 +0200
-Message-ID: <CAOQ4uxjk8J48ASw2yJhd-OR2LVN6kirg7p6xQbX=xEofGYUghw@mail.gmail.com>
-Subject: Re: [PATCH v4 4/9] syscalls/fanotify22: Validate the generic error info
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Petr Vorel <pvorel@suse.cz>,
-        Matthew Bobrowski <repnop@google.com>
-Cc:     Jan Kara <jack@suse.com>, Ext4 <linux-ext4@vger.kernel.org>,
-        kernel@collabora.com, Khazhismel Kumykov <khazhy@google.com>,
+Date:   Fri, 19 Nov 2021 07:48:29 +0200
+Message-ID: <CAOQ4uxhbDgdZZ0qphWg1vnW4ZoAkUxcQp631yZO8W49AE18W9g@mail.gmail.com>
+Subject: Re: [PATCH v4 0/9] Test the new fanotify FAN_FS_ERROR event
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     Petr Vorel <pvorel@suse.cz>, Jan Kara <jack@suse.com>,
+        Matthew Bobrowski <repnop@google.com>,
+        Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com,
+        Khazhismel Kumykov <khazhy@google.com>,
         LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 1:58 AM Gabriel Krisman Bertazi
+On Fri, Nov 19, 2021 at 1:57 AM Gabriel Krisman Bertazi
 <krisman@collabora.com> wrote:
 >
-> Implement some validation for the generic error info record emitted by
-> the kernel.  The error number is fs-specific but, well, we only support
-> ext4 for now anyway.
+> Hi,
 >
-> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> FAN_FS_ERROR was merged into Linus tree, and the PIDFD testcases reached
+> LTP.  Therefore, I'm sending a new version of the FAN_FS_ERROR LTP
+> tests.  This is the v4 of this patchset, and it applies the feedback of
+> the previous version.
+>
+> Thanks,
 >
 > ---
-> Changes since v2:
->   - check for error record type in autotools (Amir)
-> Changes since v1:
->   - Move defines to header file.
-> ---
->  configure.ac                                  |  3 +-
->  testcases/kernel/syscalls/fanotify/fanotify.h | 32 ++++++++++++++++
->  .../kernel/syscalls/fanotify/fanotify22.c     | 37 ++++++++++++++++++-
->  3 files changed, 70 insertions(+), 2 deletions(-)
 >
-> diff --git a/configure.ac b/configure.ac
-> index 859aa9857021..a9dc2524966d 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -160,7 +160,8 @@ AC_CHECK_MEMBERS([struct utsname.domainname],,,[
->  AC_CHECK_TYPES([enum kcmp_type],,,[#include <linux/kcmp.h>])
->  AC_CHECK_TYPES([struct acct_v3],,,[#include <sys/acct.h>])
->  AC_CHECK_TYPES([struct af_alg_iv, struct sockaddr_alg],,,[# include <linux/if_alg.h>])
-> -AC_CHECK_TYPES([struct fanotify_event_info_fid, struct fanotify_event_info_header],,,[#include <sys/fanotify.h>])
-> +AC_CHECK_TYPES([struct fanotify_event_info_fid, struct fanotify_event_info_header,
-> +               struct fanotify_event_info_error],[],[],[#include <sys/fanotify.h>])
+> Original cover letter:
+>
+> FAN_FS_ERROR is a new (still unmerged) fanotify event to monitor
+> fileystem errors.  This patchset introduces a new LTP test for this
+> feature.
+>
+> Testing file system errors is slightly tricky, in particular because
+> they are mostly file system dependent.  Since there are only patches for
+> ext4, I choose to make the test around it, since there wouldn't be much
+> to do with other file systems.  The second challenge is how we cause the
+> file system errors, since there is no error injection for ext4 in Linux.
+> In this series, this is done by corrupting specific data in the
+> test device with the help of debugfs.
+>
+> The FAN_FS_ERROR feature is flying around linux-ext4 and fsdevel, and
+> the latest version is available on the branch below:
+>
+>     https://gitlab.collabora.com/krisman/linux -b fanotify-notifications-v9
+>
+> A proper manpage description is also available on the respective mailing
+> list, or in the branch below:
+>
+>     https://gitlab.collabora.com/krisman/man-pages.git -b fan-fs-error
+>
+> Please, let me know your thoughts.
+>
 
-Doh! it seems like fanotify_event_info_pidfd was dropped between v2 ->
-v3 in Matthew's patches.
+Gabriel,
 
-Petr,
-
-Can you please fix this.
+Can you please push these v4 patches to your gitlab tree?
 
 Thanks,
 Amir.
