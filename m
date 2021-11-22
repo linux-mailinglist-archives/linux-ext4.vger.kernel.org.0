@@ -2,69 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB6364589B1
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 Nov 2021 08:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 158D4458A12
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 Nov 2021 08:47:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230058AbhKVHQg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 22 Nov 2021 02:16:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbhKVHQg (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 Nov 2021 02:16:36 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 474F2C061574
-        for <linux-ext4@vger.kernel.org>; Sun, 21 Nov 2021 23:13:30 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id f9so13703482ybq.10
-        for <linux-ext4@vger.kernel.org>; Sun, 21 Nov 2021 23:13:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=Er04Eew4r9F5GGbSpesF7E+PQbMnKyQXHdATWJtUrfA=;
-        b=iBDr+hwhGaenHUl/8MayEu2KmTESy5bkdjmWtF6sVL51RjPZ90fecdce6R9ijS+Zpp
-         GOi9tbY2hYLAVDnMA1Oav+EtJjYg/HaYHXbwdUJwYnesyJemfrGsUBexnmyJdAMVjAzX
-         YLTHPHGEtAn1CkF3PB6jYeYQ4hDIPhKjRVdDzxoeT9fMN0XoPLYQdrPvQ+jQfavmkOWB
-         gz8CkaLSW5KKyNCXf01r3fX2gn8kx7wHZa6BgjakqrKoz7p3MVEd3Acn6T+q1sCkAfGS
-         R04prmRyQny+ETOPVS/RO+U73WT1ppSb7C3qvSVGQ6nC//MnzQ2IqUANAKtHCogRL7yE
-         tH2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=Er04Eew4r9F5GGbSpesF7E+PQbMnKyQXHdATWJtUrfA=;
-        b=zC6aur0hqbXxLtEFfWyVJe09/W9oAKdP3Ti3m2/f200SwfChEN5atubJUo8x+MAYCj
-         CJG7Jk2zFsKlwfqR8SSegnGMyq5XjMd2B14vdC0nlKHm8Iq9EKIn0S5VwMytmZFzPZaz
-         nl4CTRXbQxkybYZtm9Crqz3PEUDN0+9lzktTI2HTr5YbIBh1AtC40bbE/tU2DC+h1T/J
-         IxZW44R63TdFkX4KyqFHRAwi9iqWJ2RXzgvNasCjORYfkBNCSPvPDEI+nxMWXzQmceyA
-         lFs1Jec4E8e25OCI3N8vLdDIpG/GCj5rJHDOjGFJgsjFtiJi+t3gR424JwuV8pY0Y4WX
-         XM6g==
-X-Gm-Message-State: AOAM5335zGKUACo0+jXMWPAK66O9YakV5EwXwlSUvgBT8LMPaBdpOE3t
-        IoQbLaGwOBFWlKI+WEY+lDBZPir+yaR4m8y8/L0=
-X-Google-Smtp-Source: ABdhPJwkvnwqngUQUR2FUXRL3VBD0wX8v3P4j/dOfdZ1VNBwSQL16lVAGz/oq7Rmi7EkhjF/94vm3HPxlXJwTEu784o=
-X-Received: by 2002:a25:bdce:: with SMTP id g14mr58711622ybk.352.1637565209641;
- Sun, 21 Nov 2021 23:13:29 -0800 (PST)
+        id S232560AbhKVHuz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 22 Nov 2021 02:50:55 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:57164 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233729AbhKVHuu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 Nov 2021 02:50:50 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 928071FD58;
+        Mon, 22 Nov 2021 07:47:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637567263;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3gUeHfZeYpJwk8vTvMN+6s+MYAIG0/bmYj9D7Qf+YZY=;
+        b=hMuNjDdL49MgSGBD0toy/QtjCq22tq122JvrlrS/2rpRcvbM1RBwpjFVf2flPQAMLd4lOX
+        h3o18m8TlOdQLkNjlOzvVn/4GDCbqSYs13XIi6YRpbdT3kGtF65FcaXbSj4axU1aRFBky9
+        ZbVwWVwneOYfCTUZ3hRm3xhQ8BAj7GQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637567263;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3gUeHfZeYpJwk8vTvMN+6s+MYAIG0/bmYj9D7Qf+YZY=;
+        b=OGpan03wXeu5Pkyx97/2Vt4LfDF0iOGcoMFHvTtd+qDr1z2tuRCUD39j2SDLsEAS3XErLn
+        JFTvexderpK+HoBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4801113466;
+        Mon, 22 Nov 2021 07:47:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id QJUJEB9Lm2FCJAAAMHmgww
+        (envelope-from <pvorel@suse.cz>); Mon, 22 Nov 2021 07:47:43 +0000
+Date:   Mon, 22 Nov 2021 08:47:41 +0100
+From:   Petr Vorel <pvorel@suse.cz>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.com>,
+        Matthew Bobrowski <repnop@google.com>,
+        Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com,
+        Khazhismel Kumykov <khazhy@google.com>,
+        LTP List <ltp@lists.linux.it>
+Subject: Re: [PATCH v4 0/9] Test the new fanotify FAN_FS_ERROR event
+Message-ID: <YZtLDXW01Cz0BfPU@pevik>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+References: <20211118235744.802584-1-krisman@collabora.com>
+ <CAOQ4uxhbDgdZZ0qphWg1vnW4ZoAkUxcQp631yZO8W49AE18W9g@mail.gmail.com>
+ <8735nsuepi.fsf@collabora.com>
 MIME-Version: 1.0
-Received: by 2002:a05:7000:25d3:0:0:0:0 with HTTP; Sun, 21 Nov 2021 23:13:29
- -0800 (PST)
-Reply-To: mariaelisabethschaeffler1941@gmail.com
-From:   Maria-Elisabeth Schaeffler <alexbenderloan@gmail.com>
-Date:   Mon, 22 Nov 2021 07:13:29 +0000
-Message-ID: <CA+X3r8Hc2q4ewJDmjT-5+dDk45VH8DBUSb4KkhdDyzs0czwkYA@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8735nsuepi.fsf@collabora.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
---=20
-Hallo,
+Hi all,
 
-Sie haben eine laufende Spende von Frau Maria-Elisabeth Schaeffler,
-Antworten Sie jetzt f=C3=BCr Details und Anforderungen ..
+<snip>
+> Hi Amir,
 
-Herzliche Gr=C3=BC=C3=9Fe
-Gesch=C3=A4ftsf=C3=BChrer schaeffler Gruppen
-Maria-Elisabeth Schaeffler
-mariaelisabethschaeffler1941@gmail.com
+> I have pushed v4 to :
+
+> https://gitlab.collabora.com/krisman/ltp.git -b fan-fs-error_v4
+
+FYI I've rebased it on my fix 3b2ea2e00 ("configure.ac: Add struct
+fanotify_event_info_pidfd check")
+
+https://github.com/linux-test-project/ltp.git -b gertazi/fanotify21.v4.fixes
+
+diff to krisman/fan-fs-error_v4:
+
+diff --git configure.ac configure.ac
+index a9dc25249..d25183368 100644
+--- configure.ac
++++ configure.ac
+@@ -160,8 +160,8 @@ AC_CHECK_MEMBERS([struct utsname.domainname],,,[
+ AC_CHECK_TYPES([enum kcmp_type],,,[#include <linux/kcmp.h>])
+ AC_CHECK_TYPES([struct acct_v3],,,[#include <sys/acct.h>])
+ AC_CHECK_TYPES([struct af_alg_iv, struct sockaddr_alg],,,[# include <linux/if_alg.h>])
+-AC_CHECK_TYPES([struct fanotify_event_info_fid, struct fanotify_event_info_header,
+-		struct fanotify_event_info_error],[],[],[#include <sys/fanotify.h>])
++AC_CHECK_TYPES([struct fanotify_event_info_fid, struct fanotify_event_info_error,
++		struct fanotify_event_info_header, struct fanotify_event_info_pidfd],,,[#include <sys/fanotify.h>])
+ AC_CHECK_TYPES([struct file_dedupe_range],,,[#include <linux/fs.h>])
+ 
+ AC_CHECK_TYPES([struct file_handle],,,[
+
+Kind regards,
+Petr
