@@ -2,215 +2,103 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD3F45943E
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 Nov 2021 18:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D12524594A7
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 Nov 2021 19:22:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233166AbhKVRx1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 22 Nov 2021 12:53:27 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:49406 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233052AbhKVRxZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 Nov 2021 12:53:25 -0500
+        id S238607AbhKVSZL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 22 Nov 2021 13:25:11 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:43014 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236375AbhKVSZL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 Nov 2021 13:25:11 -0500
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id A538C1FD39;
-        Mon, 22 Nov 2021 17:50:17 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id BA1C9218E1;
+        Mon, 22 Nov 2021 18:22:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637603417; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1637605323; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=x33p6NH9ourj6tJW77qYYA8wpbpXO//2S5pXaQ+9glc=;
-        b=vW/NleCIV3ISDcQP4C9VknD4l2CD5Rzjr6i4etioikPxkBuRJX1qrT82pnoLywatwg1qH/
-        7m6vQaVgBw1WSw7AhHv6IXb2SiFgXnJYADf1lO7UQ2xMY34aFz8Fo643a77jIkjKQfQhfO
-        yq1evjwczjhKm7Tw0DUkfBpBbpf8/e8=
+        bh=c98fpZGdGI0+ZOj58/qJeZeQJlRUaVRpLHlnxLE/4jg=;
+        b=n6o+Xij9eQN5/lnRfvOlkAuNc3Ry7zqNfnE+ivf0R6aJ2hgpU7kdDin4yuEhpHcsUv9nVj
+        xj9d3vyvsjI/2rsnCDXUlnOxMCKv6C3nf4fZlUF2axVoHXTPQJ8EHmHr9HCSCIln3ymwlv
+        HVt6I7j6EHzczXMQl/7IuJPmlTLZ67Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637603417;
+        s=susede2_ed25519; t=1637605323;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=x33p6NH9ourj6tJW77qYYA8wpbpXO//2S5pXaQ+9glc=;
-        b=CRWB1hgl256eYz6rMwLRu/+BeY8ouJ6HfiFsG8HNaZ4HQFYXcYWNgc0nwFjTf3Jvfi8Z2V
-        7PvTEVEv1VFPRzAg==
+        bh=c98fpZGdGI0+ZOj58/qJeZeQJlRUaVRpLHlnxLE/4jg=;
+        b=EzDsjigdjabVLoLgMbsPiExi1SZ12ft2deZ0BZQGfgGPC7Ee+CQvx0/hg8LWTvpHzgIrrR
+        9jDDRDv8VoffkNDg==
 Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 97330A3B81;
-        Mon, 22 Nov 2021 17:50:17 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id A0CDBA3B81;
+        Mon, 22 Nov 2021 18:22:03 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 583DC1E3C6D; Mon, 22 Nov 2021 18:50:17 +0100 (CET)
-Date:   Mon, 22 Nov 2021 18:50:17 +0100
+        id 4D9991E3C6D; Mon, 22 Nov 2021 19:22:03 +0100 (CET)
+Date:   Mon, 22 Nov 2021 19:22:03 +0100
 From:   Jan Kara <jack@suse.cz>
-To:     brookxu <brookxu.cn@gmail.com>
+To:     Ye Bin <yebin10@huawei.com>
 Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ritesh Harjani <riteshh@linux.ibm.com>
-Subject: Re: [PATCH v2] ext4: fix a possible ABBA deadlock dued to busy PA
-Message-ID: <20211122175017.GB32119@quack2.suse.cz>
-References: <1632877945-18526-1-git-send-email-brookxu.cn@gmail.com>
+        jack@suse.cz
+Subject: Re: [PATCH -next] jbd2: discard last transaction when commit block
+ checksum broken in v2v3
+Message-ID: <20211122182203.GC32119@quack2.suse.cz>
+References: <20210929035528.1990993-1-yebin10@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1632877945-18526-1-git-send-email-brookxu.cn@gmail.com>
+In-Reply-To: <20210929035528.1990993-1-yebin10@huawei.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Wed 29-09-21 11:55:28, Ye Bin wrote:
+> Now, we meet an issue that commit block has broken checksum when cold reboot
+> device, that lead to mount failed.
+> The reason maybe only some sector store on disk, and then device power off.
+> But we calculate checksum with whole logic block.The data stored on disk can
+> only ensure the atomicity of sector level.
+> Actually, we already replay previous transactions. We can just discard last
+> transaction. As now, descriptor/revocation/commit/superblock has it's own
+> checksum.
+> 
+> Fixes:80b3767fbe15("jbd2: don't wipe the journal on a failed journal checksum")
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
 
-it seems this patch has fallen through the cracks.
+Thanks for the patch. It seems to have fallen through the cracks. Sorry for
+that.
 
-On Wed 29-09-21 09:12:25, brookxu wrote:
-> From: Chunguang Xu <brookxu@tencent.com>
+> ---
+>  fs/jbd2/journal.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> We found on older kernel (3.10) that in the scenario of insufficient
-> disk space, system may trigger an ABBA deadlock problem, it seems that
-> this problem still exists in latest kernel, try to fix it here. The
-> main process triggered by this problem is that task A occupies the PA
-> and waits for the jbd2 transaction finish, the jbd2 transaction waits
-> for the completion of task B's IO (plug_list), but task B waits for
-> the release of PA by task A to finish discard, which indirectly forms
-> an ABBA deadlock. The related calltrace is as follows:
-> 
->     Task A
->     vfs_write
->     ext4_mb_new_blocks()
->     ext4_mb_mark_diskspace_used()       JBD2
->     jbd2_journal_get_write_access()  -> jbd2_journal_commit_transaction()
->   ->schedule()                          filemap_fdatawait()
->  |                                              |
->  | Task B                                       |
->  | do_unlinkat()                                |
->  | ext4_evict_inode()                           |
->  | jbd2_journal_begin_ordered_truncate()        |
->  | filemap_fdatawrite_range()                   |
->  | ext4_mb_new_blocks()                         |
->   -ext4_mb_discard_group_preallocations() <-----
-> 
-> Here, try to cancel ext4_mb_discard_group_preallocations() internal
-> retry due to PA busy, and do a limited number of retries inside
-> ext4_mb_discard_preallocations(), which can circumvent the above
-> problems, but also has some advantages:
-> 
-> 1. Since the PA is in a busy state, if other groups have free PAs,
->    keeping the current PA may help to reduce fragmentation.
-> 2. Continue to traverse forward instead of waiting for the current
->    group PA to be released. In most scenarios, the PA discard time
->    can be reduced.
-> 
-> However, in the case of smaller free space, if only a few groups have
-> space, then due to multiple traversals of the group, it may increase
-> CPU overhead. But in contrast, I feel that the overall benefit is
-> better than the cost.
-> 
-> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> index 35302bc192eb..a3dd7b757b3d 100644
+> --- a/fs/jbd2/journal.c
+> +++ b/fs/jbd2/journal.c
+> @@ -2080,7 +2080,7 @@ int jbd2_journal_load(journal_t *journal)
+>  	if (jbd2_journal_recover(journal))
+>  		goto recovery_error;
+>  
+> -	if (journal->j_failed_commit) {
+> +	if (journal->j_failed_commit && !jbd2_journal_has_csum_v2or3(journal)) {
 
-Thanks for the patch! I guess this is a reasonable middle-ground so feel
-free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-I think Ritesh was last touching this logic so let's check he doesn't see
-anything wrong with this change. Ritesh?
+I guess this decision somewhat questionable. If the failed commit was
+indeed the last one, I guess loosing the last transaction as you suggest is
+a sensible thing to do. However if the checksum failed somewhere in the
+middle of the journal because of a bitflip or something like that, we
+probably don't want to loose that many transactions and rather want to do
+fsck and try to recover as much data as possible... What do others think?
 
 								Honza
 
-
-> ---
-> v2: reset busy to zero before goto repeat.
-> 
->  fs/ext4/mballoc.c | 35 ++++++++++++++++-------------------
->  1 file changed, 16 insertions(+), 19 deletions(-)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 72bfac2..72de6c1 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -4814,7 +4814,7 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
->   */
->  static noinline_for_stack int
->  ext4_mb_discard_group_preallocations(struct super_block *sb,
-> -					ext4_group_t group, int needed)
-> +				     ext4_group_t group, int needed, int *busy)
->  {
->  	struct ext4_group_info *grp = ext4_get_group_info(sb, group);
->  	struct buffer_head *bitmap_bh = NULL;
-> @@ -4822,8 +4822,7 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
->  	struct list_head list;
->  	struct ext4_buddy e4b;
->  	int err;
-> -	int busy = 0;
-> -	int free, free_total = 0;
-> +	int free = 0;
->  
->  	mb_debug(sb, "discard preallocation for group %u\n", group);
->  	if (list_empty(&grp->bb_prealloc_list))
-> @@ -4850,15 +4849,13 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
->  		needed = EXT4_CLUSTERS_PER_GROUP(sb) + 1;
->  
->  	INIT_LIST_HEAD(&list);
-> -repeat:
-> -	free = 0;
->  	ext4_lock_group(sb, group);
->  	list_for_each_entry_safe(pa, tmp,
->  				&grp->bb_prealloc_list, pa_group_list) {
->  		spin_lock(&pa->pa_lock);
->  		if (atomic_read(&pa->pa_count)) {
->  			spin_unlock(&pa->pa_lock);
-> -			busy = 1;
-> +			*busy = 1;
->  			continue;
->  		}
->  		if (pa->pa_deleted) {
-> @@ -4898,22 +4895,13 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
->  		call_rcu(&(pa)->u.pa_rcu, ext4_mb_pa_callback);
->  	}
->  
-> -	free_total += free;
-> -
-> -	/* if we still need more blocks and some PAs were used, try again */
-> -	if (free_total < needed && busy) {
-> -		ext4_unlock_group(sb, group);
-> -		cond_resched();
-> -		busy = 0;
-> -		goto repeat;
-> -	}
->  	ext4_unlock_group(sb, group);
->  	ext4_mb_unload_buddy(&e4b);
->  	put_bh(bitmap_bh);
->  out_dbg:
->  	mb_debug(sb, "discarded (%d) blocks preallocated for group %u bb_free (%d)\n",
-> -		 free_total, group, grp->bb_free);
-> -	return free_total;
-> +		 free, group, grp->bb_free);
-> +	return free;
->  }
->  
->  /*
-> @@ -5455,13 +5443,22 @@ static int ext4_mb_discard_preallocations(struct super_block *sb, int needed)
->  {
->  	ext4_group_t i, ngroups = ext4_get_groups_count(sb);
->  	int ret;
-> -	int freed = 0;
-> +	int freed = 0, busy = 0;
-> +	int retry = 0;
->  
->  	trace_ext4_mb_discard_preallocations(sb, needed);
-> + repeat:
-> +	retry++;
->  	for (i = 0; i < ngroups && needed > 0; i++) {
-> -		ret = ext4_mb_discard_group_preallocations(sb, i, needed);
-> +		ret = ext4_mb_discard_group_preallocations(sb, i, needed, &busy);
->  		freed += ret;
->  		needed -= ret;
-> +		cond_resched();
-> +	}
-> +
-> +	if (needed > 0 && busy && retry < 3) {
-> +		busy = 0;
-> +		goto repeat;
->  	}
->  
->  	return freed;
+>  		printk(KERN_ERR "JBD2: journal transaction %u on %s "
+>  		       "is corrupt.\n", journal->j_failed_commit,
+>  		       journal->j_devname);
 > -- 
-> 1.8.3.1
+> 2.31.1
 > 
 -- 
 Jan Kara <jack@suse.com>
