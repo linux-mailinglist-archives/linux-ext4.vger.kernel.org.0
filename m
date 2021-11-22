@@ -2,503 +2,210 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 389EB4587B6
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 Nov 2021 02:15:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E57C458812
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 Nov 2021 03:40:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232064AbhKVBSe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 21 Nov 2021 20:18:34 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:41220 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229594AbhKVBSe (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 21 Nov 2021 20:18:34 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1DB2D212C9;
-        Mon, 22 Nov 2021 01:15:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1637543727; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GqQ1fa2Qvqu8vDoZglgoNrFiVM2wF7QxgoW52V5xDOc=;
-        b=07hob/idqmMniFvmCthTif3NS1cq/eT+SpBnrhNL4SfJHxAMJIvmim3BL9BOBlaSpR6tkn
-        Q+yUzRd8AhsJzGb7wZlZ21pOjhqj0KviiL8tbLshTjD2pk/JNO5Z8OQ7GD1ExbCWpDdirJ
-        tNuTmi/83iA0YUsy7WiRW4VUnJ1uSEU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1637543727;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GqQ1fa2Qvqu8vDoZglgoNrFiVM2wF7QxgoW52V5xDOc=;
-        b=c26sD4cZX0FIbNmCm9jO2s4pTZV4zMxcX69VcxMIweZQ28Q1R2Ajqdu95gFbcywyO5mfqM
-        9fNTFnLwqvorP+AA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C327C13466;
-        Mon, 22 Nov 2021 01:15:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id bX46HyrvmmEMPgAAMHmgww
-        (envelope-from <neilb@suse.de>); Mon, 22 Nov 2021 01:15:22 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        id S229862AbhKVCnz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 21 Nov 2021 21:43:55 -0500
+Received: from mail-bn8nam11on2067.outbound.protection.outlook.com ([40.107.236.67]:2272
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229686AbhKVCnz (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 21 Nov 2021 21:43:55 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LwNlKaszaTEPoNWBiTySpFuENKK1mtTs150lyrtAxb3GAj0qf5g7s9oDZtwiT8oS5my2Jy8ynn/bnHQMWoYU8gk8GGOcvV3/75li0N2vyciGyDb4m9IRKvbfvnni4IEBzZTgDbOYQk5aztJFWQtOszdHCbJLUHMj2Nmj9VLWoLcvg76FepuwdHqBaJbXYtsLbgQEU2rARSdRBfDsAOpIg2VkSqJXA5RLgJWpcWmmxi0IXJntPwRYPduUjHIAKOrU9vW+IERH1gmu3IIbsJ+yTw3luJmH78qSD8ZcjNyo3Qr3bv5YzOiR3K+eZlrfQa+5ld/hXRxwXZa2V7W736BKyg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gKNa+nF+2JDLJehCd98fAVoaWpAzArM2OAp7ay1k7ec=;
+ b=Ra9s4x3r6Nv8ZQwfGL4jUQJ6vC3TNyavwsJxpvzhCkmwlV+nituNa49O+NuVIhfO4pngWnM2GkyLUmX4INIMqrJvIiMQGr8X29AL2gfTdjJ50ROieeiCPrLLHVx0m7bnXlw8on/i1YdZV4CFzFlwaXX/2fKkwu5rx/TADEMTFXfuZFFE/F7+0W5tH+KHULYkCxbbtWIuI2t4z2V1s2kyV4qN8sMRz9t3mhKC02UGQiro16/kUEJ7wVpgVJK7OxR8jhCPR11PTMtqJZY2XqHwi14tw4HPAFbeCI8bjISb7PX8L7sARA4zaYLd1gcbopcgmptcxdjd7NktlImp4B/MDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=infradead.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gKNa+nF+2JDLJehCd98fAVoaWpAzArM2OAp7ay1k7ec=;
+ b=RjRadBRBirn1k5nLbO0MsslmGChxDD3mkYHwkurbsO5mZB9dvE28mrnI+r28eZXgMgeEB0YFgFiXxiIE/GEmzlR1foV0kxQ5jN3U3j+4AJfOyP6doPhMk1YcpHHLlqxEnJ2tkYyE/HOVguDy5tefJM4RlNudMcShH/a0wkibOBMEcttqoBGQ+ZRR37vxFYHHJe2pwfeTK36mBdtsgJiwuCiB1SeEpynZniPwSVSLawum+Hc+nS+bjpjsd6CktLUmz56GYhw8r6mlnUQpD/fRTGOvxLFboOd3GOTFETJETcxhVmfMFUWGNB4scUeWAlO+jEwAU0La+pDjZxr2YHHPPg==
+Received: from MW4P220CA0019.NAMP220.PROD.OUTLOOK.COM (2603:10b6:303:115::24)
+ by DM6PR12MB4482.namprd12.prod.outlook.com (2603:10b6:5:2a8::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19; Mon, 22 Nov
+ 2021 02:40:47 +0000
+Received: from CO1NAM11FT040.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:115:cafe::66) by MW4P220CA0019.outlook.office365.com
+ (2603:10b6:303:115::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21 via Frontend
+ Transport; Mon, 22 Nov 2021 02:40:47 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT040.mail.protection.outlook.com (10.13.174.140) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4713.20 via Frontend Transport; Mon, 22 Nov 2021 02:40:46 +0000
+Received: from nvdebian.localnet (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 22 Nov
+ 2021 02:40:43 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        <rcampbell@nvidia.com>, <linux-ext4@vger.kernel.org>,
+        <linux-xfs@vger.kernel.org>, Alex Sierra <alex.sierra@amd.com>,
+        Felix Kuehling <felix.kuehling@amd.com>
+CC:     <amd-gfx@lists.freedesktop.org>, <willy@infradead.org>,
+        <jglisse@redhat.com>, <dri-devel@lists.freedesktop.org>,
+        <jgg@nvidia.com>, <hch@lst.de>
+Subject: Re: [PATCH v1 1/9] mm: add zone device coherent type memory support
+Date:   Mon, 22 Nov 2021 13:40:40 +1100
+Message-ID: <4157439.BacSOyMZPU@nvdebian>
+In-Reply-To: <637b19c0-5ec4-b96b-f6f6-c17313f03762@amd.com>
+References: <20211115193026.27568-1-alex.sierra@amd.com> <1997502.P62F5Z1OZk@nvdebian> <637b19c0-5ec4-b96b-f6f6-c17313f03762@amd.com>
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Dave Chinner" <david@fromorbit.com>
-Cc:     "Andrew Morton" <akpm@linux-foundation.org>,
-        "Michal Hocko" <mhocko@suse.com>, "Theodore Ts'o" <tytso@mit.edu>,
-        linux-ext4@vger.kernel.org, "Jaegeuk Kim" <jaegeuk@kernel.org>,
-        "Chao Yu" <chao@kernel.org>, "Darrick J. Wong" <djwong@kernel.org>,
-        linux-xfs@vger.kernel.org, "Chuck Lever" <chuck.lever@oracle.com>,
-        linux-f2fs-devel@lists.sourceforge.net, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] MM: introduce memalloc_retry_wait()
-In-reply-to: <20211117055311.GS449541@dread.disaster.area>
-References: <163712329077.13692.12796971766360881401@noble.neil.brown.name>,
- <20211117055311.GS449541@dread.disaster.area>
-Date:   Mon, 22 Nov 2021 12:15:19 +1100
-Message-id: <163754371968.13692.1277530886009912421@noble.neil.brown.name>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 833acfce-1089-43ca-2fec-08d9ad617ce9
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4482:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB44827AFD68F04F25D442D165DF9F9@DM6PR12MB4482.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GBgblEUomPv5/TGilCRx28tHDLC+CM+KWaQUAjZLQNqEV/Ptwj45AK/FTOXgJL7ezAocCKldeIhD+JT7A2CvyYhzFtf/HC6bvDOqEaYYb00Ksvtge5iXQxpRcQbYew5SacNDIhHts23vXGHHAdguX/vYbkkkVMcGTQVfM78ieRGXMoQr62Ert02LVqTiVK4AdfU1m0UB0Y2/CIVhUyWFUJ7T3xg6G6Ncs1QNxGmJNrYFgo3uGr1Ob4fk8ew/x9AVXvjcoeaeetM9R6VjxAu/nRkqBddmGMG7LbfEjkDAFs7o4eLtmmrxdfh3ijKMQhmSJx6/1i6MOFYiP8m1SSXDzXffiVdUVO0qxpPsTVserGBAkjnjoHwK91f8NtaspCzFFxiRtbtLYvl4yR52evfWPXvI79XwnvbBTkcHUu1Qb5UzvjO0/NTNEX3BFf+USNA6OKAuxmcPn22t9OFeAaTz+NEFYSwhyPls5pKCkALL4sIVjkWH5JyeSyp/NDsZ7edv1/Iie5MvrhIlbVRJfEqXk3NEQR7SiTtLDTMFq8KdGRInF5OZXTyclF5kzXzbIxxBtg/SsJZXcWtsX3rHr/5k6xSEdchOMoyHYdgeUsBoBWBqQ7sT4lGGMuDtF0aT6yJCrWHOiau4i+Xm7mNT/892NwL5p2f4XGtemgynqMUYfDt0M5CmQqgi1VqUkpMkPlNQues1OWh4Ri2n59bO4Qhoaj0nov0S8m6ssZdaPXqhilRJBGEUnRBtF9aCiDNxYBZ4FAdL2JybZ6QhhXENLfD26slMuTTpxUUqOwWCfK1kr5w=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(26005)(2906002)(9686003)(16526019)(83380400001)(8676002)(54906003)(186003)(86362001)(7636003)(82310400003)(8936002)(36860700001)(7416002)(70206006)(110136005)(508600001)(70586007)(4326008)(336012)(36906005)(426003)(33716001)(966005)(47076005)(5660300002)(356005)(9576002)(316002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2021 02:40:46.5987
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 833acfce-1089-43ca-2fec-08d9ad617ce9
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT040.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4482
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+> >> diff --git a/mm/migrate.c b/mm/migrate.c
+> >> index 1852d787e6ab..f74422a42192 100644
+> >> --- a/mm/migrate.c
+> >> +++ b/mm/migrate.c
+> >> @@ -362,7 +362,7 @@ static int expected_page_refs(struct address_space *mapping, struct page *page)
+> >>  	 * Device private pages have an extra refcount as they are
+> >>  	 * ZONE_DEVICE pages.
+> >>  	 */
+> >> -	expected_count += is_device_private_page(page);
+> >> +	expected_count += is_device_page(page);
+> >>  	if (mapping)
+> >>  		expected_count += thp_nr_pages(page) + page_has_private(page);
+> >>  
+> >> @@ -2503,7 +2503,7 @@ static bool migrate_vma_check_page(struct page *page)
+> >>  		 * FIXME proper solution is to rework migration_entry_wait() so
+> >>  		 * it does not need to take a reference on page.
+> >>  		 */
+> > Note that I have posted a patch to fix this - see
+> > https://lore.kernel.org/all/20211118020754.954425-1-apopple@nvidia.com/ This
+> > looks ok for now assuming coherent pages can never be pinned.
+> >
+> > However that raises a question - what happens when something calls
+> > get_user_pages() on a pfn pointing to a coherent device page? I can't see
+> > anything in this series that prevents pinning of coherent device pages, so we
+> > can't just assume they aren't pinned.
+> 
+> I agree. I think we need to depend on your patch to go in first.
+> 
+> I'm also wondering if we need to do something to prevent get_user_pages
+> from pinning device pages. And by "pin", I think migrate_vma_check_page
+> is not talking about FOLL_PIN, but any get_user_pages call. As far as I
+> can tell, there should be nothing fundamentally wrong with pinning
+> device pages for a short time. But I think we'll want to avoid
+> FOLL_LONGTERM because that would affect our memory manager's ability to
+> evict device memory.
 
-Various places in the kernel - largely in filesystems - respond to a
-memory allocation failure by looping around and re-trying.
-Some of these cannot conveniently use __GFP_NOFAIL, for reasons such as:
- - a GFP_ATOMIC allocation, which __GFP_NOFAIL doesn't work on
- - a need to check for the process being signalled between failures
- - the possibility that other recovery actions could be performed
- - the allocation is quite deep in support code, and passing down an
-   extra flag to say if __GFP_NOFAIL is wanted would be clumsy.
+Right, so long as my fix goes in I don't think there is anything wrong with
+pinning device public pages. Agree that we should avoid FOLL_LONGTERM pins for
+device memory though. I think the way to do that is update is_pinnable_page()
+so we treat device pages the same as other unpinnable pages ie. long-term pins
+will migrate the page.
 
-Many of these currently use congestion_wait() which (in almost all
-cases) simply waits the given timeout - congestion isn't tracked for
-most devices.
+> >
+> > In the case of device-private pages this is enforced by the fact they never
+> > have present pte's, so any attempt to GUP them results in a fault. But if I'm
+> > understanding this series correctly that won't be the case for coherent device
+> > pages right?
+> 
+> Right.
+> 
+> Regards,
+>   Felix
+> 
+> 
+> >
+> >> -		return is_device_private_page(page);
+> >> +		return is_device_page(page);
+> >>  	}
+> >>  
+> >>  	/* For file back page */
+> >> @@ -2791,7 +2791,7 @@ EXPORT_SYMBOL(migrate_vma_setup);
+> >>   *     handle_pte_fault()
+> >>   *       do_anonymous_page()
+> >>   * to map in an anonymous zero page but the struct page will be a ZONE_DEVICE
+> >> - * private page.
+> >> + * private or coherent page.
+> >>   */
+> >>  static void migrate_vma_insert_page(struct migrate_vma *migrate,
+> >>  				    unsigned long addr,
+> >> @@ -2867,10 +2867,15 @@ static void migrate_vma_insert_page(struct migrate_vma *migrate,
+> >>  				swp_entry = make_readable_device_private_entry(
+> >>  							page_to_pfn(page));
+> >>  			entry = swp_entry_to_pte(swp_entry);
+> >> +		} else if (is_device_page(page)) {
+> > How about adding an explicit `is_device_coherent_page()` helper? It would make
+> > the test more explicit that this is expected to handle just coherent pages and
+> > I bet there will be future changes that need to differentiate between private
+> > and coherent pages anyway.
+> >
+> >> +			entry = pte_mkold(mk_pte(page,
+> >> +						 READ_ONCE(vma->vm_page_prot)));
+> >> +			if (vma->vm_flags & VM_WRITE)
+> >> +				entry = pte_mkwrite(pte_mkdirty(entry));
+> >>  		} else {
+> >>  			/*
+> >> -			 * For now we only support migrating to un-addressable
+> >> -			 * device memory.
+> >> +			 * We support migrating to private and coherent types
+> >> +			 * for device zone memory.
+> >>  			 */
+> >>  			pr_warn_once("Unsupported ZONE_DEVICE page type.\n");
+> >>  			goto abort;
+> >> @@ -2976,10 +2981,10 @@ void migrate_vma_pages(struct migrate_vma *migrate)
+> >>  		mapping = page_mapping(page);
+> >>  
+> >>  		if (is_zone_device_page(newpage)) {
+> >> -			if (is_device_private_page(newpage)) {
+> >> +			if (is_device_page(newpage)) {
+> >>  				/*
+> >> -				 * For now only support private anonymous when
+> >> -				 * migrating to un-addressable device memory.
+> >> +				 * For now only support private and coherent
+> >> +				 * anonymous when migrating to device memory.
+> >>  				 */
+> >>  				if (mapping) {
+> >>  					migrate->src[i] &= ~MIGRATE_PFN_MIGRATE;
+> >>
+> >
+> >
+> 
 
-It isn't clear what the best delay is for loops, but it is clear that
-the various filesystems shouldn't be responsible for choosing a timeout.
 
-This patch introduces memalloc_retry_wait() with takes on that
-responsibility.  Code that wants to retry a memory allocation can call
-this function passing the GFP flags that were used.  It will wait
-however is appropriate.
 
-For now, it only considers __GFP_NORETRY and whatever
-gfpflags_allow_blocking() tests.  If blocking is allowed without
-__GFP_NORETRY, then alloc_page either made some reclaim progress, or
-waited for a while, before failing.  So there is no need for much
-further waiting.  memalloc_retry_wait() will wait until the current
-jiffie ends.  If this condition is not met, then alloc_page() won't have
-waited much if at all.  In that case memalloc_retry_wait() waits about
-200ms.  This is the delay that most current loops uses.
-
-linux/sched/mm.h needs to be included in some files now,
-but linux/backing-dev.h does not.
-
-Signed-off-by: NeilBrown <neilb@suse.de>
----
-
-Switched to io_schedule_timeout(), and added some missing #includes.
-
- fs/ext4/extents.c        |  8 +++-----
- fs/ext4/inline.c         |  5 ++---
- fs/ext4/page-io.c        |  9 +++++----
- fs/f2fs/data.c           |  4 ++--
- fs/f2fs/gc.c             |  5 ++---
- fs/f2fs/inode.c          |  4 ++--
- fs/f2fs/node.c           |  4 ++--
- fs/f2fs/recovery.c       |  6 +++---
- fs/f2fs/segment.c        |  9 +++------
- fs/f2fs/super.c          |  5 ++---
- fs/xfs/kmem.c            |  3 +--
- fs/xfs/xfs_buf.c         |  2 +-
- include/linux/sched/mm.h | 26 ++++++++++++++++++++++++++
- net/sunrpc/svc_xprt.c    |  3 ++-
- 14 files changed, 56 insertions(+), 37 deletions(-)
-
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 0ecf819bf189..5582fba36b44 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -27,8 +27,8 @@
- #include <linux/slab.h>
- #include <linux/uaccess.h>
- #include <linux/fiemap.h>
--#include <linux/backing-dev.h>
- #include <linux/iomap.h>
-+#include <linux/sched/mm.h>
- #include "ext4_jbd2.h"
- #include "ext4_extents.h"
- #include "xattr.h"
-@@ -4407,8 +4407,7 @@ int ext4_ext_truncate(handle_t *handle, struct inode *i=
-node)
- 	err =3D ext4_es_remove_extent(inode, last_block,
- 				    EXT_MAX_BLOCKS - last_block);
- 	if (err =3D=3D -ENOMEM) {
--		cond_resched();
--		congestion_wait(BLK_RW_ASYNC, HZ/50);
-+		memalloc_retry_wait(GFP_ATOMIC);
- 		goto retry;
- 	}
- 	if (err)
-@@ -4416,8 +4415,7 @@ int ext4_ext_truncate(handle_t *handle, struct inode *i=
-node)
- retry_remove_space:
- 	err =3D ext4_ext_remove_space(inode, last_block, EXT_MAX_BLOCKS - 1);
- 	if (err =3D=3D -ENOMEM) {
--		cond_resched();
--		congestion_wait(BLK_RW_ASYNC, HZ/50);
-+		memalloc_retry_wait(GFP_ATOMIC);
- 		goto retry_remove_space;
- 	}
- 	return err;
-diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index 39a1ab129fdc..635bcf68a67e 100644
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -7,7 +7,7 @@
- #include <linux/iomap.h>
- #include <linux/fiemap.h>
- #include <linux/iversion.h>
--#include <linux/backing-dev.h>
-+#include <linux/sched/mm.h>
-=20
- #include "ext4_jbd2.h"
- #include "ext4.h"
-@@ -1929,8 +1929,7 @@ int ext4_inline_data_truncate(struct inode *inode, int =
-*has_inline)
- retry:
- 			err =3D ext4_es_remove_extent(inode, 0, EXT_MAX_BLOCKS);
- 			if (err =3D=3D -ENOMEM) {
--				cond_resched();
--				congestion_wait(BLK_RW_ASYNC, HZ/50);
-+				memalloc_retry_wait(GFP_ATOMIC);
- 				goto retry;
- 			}
- 			if (err)
-diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
-index 9cb261714991..1d370364230e 100644
---- a/fs/ext4/page-io.c
-+++ b/fs/ext4/page-io.c
-@@ -24,7 +24,7 @@
- #include <linux/kernel.h>
- #include <linux/slab.h>
- #include <linux/mm.h>
--#include <linux/backing-dev.h>
-+#include <linux/sched/mm.h>
-=20
- #include "ext4_jbd2.h"
- #include "xattr.h"
-@@ -523,12 +523,13 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
- 			ret =3D PTR_ERR(bounce_page);
- 			if (ret =3D=3D -ENOMEM &&
- 			    (io->io_bio || wbc->sync_mode =3D=3D WB_SYNC_ALL)) {
--				gfp_flags =3D GFP_NOFS;
-+				gfp_t new_gfp_flags =3D GFP_NOFS;
- 				if (io->io_bio)
- 					ext4_io_submit(io);
- 				else
--					gfp_flags |=3D __GFP_NOFAIL;
--				congestion_wait(BLK_RW_ASYNC, HZ/50);
-+					new_gfp_flags |=3D __GFP_NOFAIL;
-+				memalloc_retry_wait(gfp_flags);
-+				gfp_flags =3D new_gfp_flags;
- 				goto retry_encrypt;
- 			}
-=20
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 9f754aaef558..aacf5e4dcc57 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -8,9 +8,9 @@
- #include <linux/fs.h>
- #include <linux/f2fs_fs.h>
- #include <linux/buffer_head.h>
-+#include <linux/sched/mm.h>
- #include <linux/mpage.h>
- #include <linux/writeback.h>
--#include <linux/backing-dev.h>
- #include <linux/pagevec.h>
- #include <linux/blkdev.h>
- #include <linux/bio.h>
-@@ -2542,7 +2542,7 @@ int f2fs_encrypt_one_page(struct f2fs_io_info *fio)
- 		/* flush pending IOs and wait for a while in the ENOMEM case */
- 		if (PTR_ERR(fio->encrypted_page) =3D=3D -ENOMEM) {
- 			f2fs_flush_merged_writes(fio->sbi);
--			congestion_wait(BLK_RW_ASYNC, DEFAULT_IO_TIMEOUT);
-+			memalloc_retry_wait(GFP_NOFS);
- 			gfp_flags |=3D __GFP_NOFAIL;
- 			goto retry_encrypt;
- 		}
-diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-index a946ce0ead34..374bbb5294d9 100644
---- a/fs/f2fs/gc.c
-+++ b/fs/f2fs/gc.c
-@@ -7,7 +7,6 @@
-  */
- #include <linux/fs.h>
- #include <linux/module.h>
--#include <linux/backing-dev.h>
- #include <linux/init.h>
- #include <linux/f2fs_fs.h>
- #include <linux/kthread.h>
-@@ -15,6 +14,7 @@
- #include <linux/freezer.h>
- #include <linux/sched/signal.h>
- #include <linux/random.h>
-+#include <linux/sched/mm.h>
-=20
- #include "f2fs.h"
- #include "node.h"
-@@ -1375,8 +1375,7 @@ static int move_data_page(struct inode *inode, block_t =
-bidx, int gc_type,
- 		if (err) {
- 			clear_page_private_gcing(page);
- 			if (err =3D=3D -ENOMEM) {
--				congestion_wait(BLK_RW_ASYNC,
--						DEFAULT_IO_TIMEOUT);
-+				memalloc_retry_wait(GFP_NOFS);
- 				goto retry;
- 			}
- 			if (is_dirty)
-diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
-index 0f8b2df3e1e0..4c11254a07d4 100644
---- a/fs/f2fs/inode.c
-+++ b/fs/f2fs/inode.c
-@@ -8,8 +8,8 @@
- #include <linux/fs.h>
- #include <linux/f2fs_fs.h>
- #include <linux/buffer_head.h>
--#include <linux/backing-dev.h>
- #include <linux/writeback.h>
-+#include <linux/sched/mm.h>
-=20
- #include "f2fs.h"
- #include "node.h"
-@@ -562,7 +562,7 @@ struct inode *f2fs_iget_retry(struct super_block *sb, uns=
-igned long ino)
- 	inode =3D f2fs_iget(sb, ino);
- 	if (IS_ERR(inode)) {
- 		if (PTR_ERR(inode) =3D=3D -ENOMEM) {
--			congestion_wait(BLK_RW_ASYNC, DEFAULT_IO_TIMEOUT);
-+			memalloc_retry_wait(GFP_NOFS);
- 			goto retry;
- 		}
- 	}
-diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-index 556fcd8457f3..219506ca9a97 100644
---- a/fs/f2fs/node.c
-+++ b/fs/f2fs/node.c
-@@ -8,7 +8,7 @@
- #include <linux/fs.h>
- #include <linux/f2fs_fs.h>
- #include <linux/mpage.h>
--#include <linux/backing-dev.h>
-+#include <linux/sched/mm.h>
- #include <linux/blkdev.h>
- #include <linux/pagevec.h>
- #include <linux/swap.h>
-@@ -2750,7 +2750,7 @@ int f2fs_recover_inode_page(struct f2fs_sb_info *sbi, s=
-truct page *page)
- retry:
- 	ipage =3D f2fs_grab_cache_page(NODE_MAPPING(sbi), ino, false);
- 	if (!ipage) {
--		congestion_wait(BLK_RW_ASYNC, DEFAULT_IO_TIMEOUT);
-+		memalloc_retry_wait(GFP_NOFS);
- 		goto retry;
- 	}
-=20
-diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
-index 6a1b4668d933..d1664a0567ef 100644
---- a/fs/f2fs/recovery.c
-+++ b/fs/f2fs/recovery.c
-@@ -8,6 +8,7 @@
- #include <asm/unaligned.h>
- #include <linux/fs.h>
- #include <linux/f2fs_fs.h>
-+#include <linux/sched/mm.h>
- #include "f2fs.h"
- #include "node.h"
- #include "segment.h"
-@@ -587,7 +588,7 @@ static int do_recover_data(struct f2fs_sb_info *sbi, stru=
-ct inode *inode,
- 	err =3D f2fs_get_dnode_of_data(&dn, start, ALLOC_NODE);
- 	if (err) {
- 		if (err =3D=3D -ENOMEM) {
--			congestion_wait(BLK_RW_ASYNC, DEFAULT_IO_TIMEOUT);
-+			memalloc_retry_wait(GFP_NOFS);
- 			goto retry_dn;
- 		}
- 		goto out;
-@@ -670,8 +671,7 @@ static int do_recover_data(struct f2fs_sb_info *sbi, stru=
-ct inode *inode,
- 			err =3D check_index_in_prev_nodes(sbi, dest, &dn);
- 			if (err) {
- 				if (err =3D=3D -ENOMEM) {
--					congestion_wait(BLK_RW_ASYNC,
--							DEFAULT_IO_TIMEOUT);
-+					memalloc_retry_wait(GFP_NOFS);
- 					goto retry_prev;
- 				}
- 				goto err;
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index df9ed75f0b7a..40fdb4a8daeb 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -9,6 +9,7 @@
- #include <linux/f2fs_fs.h>
- #include <linux/bio.h>
- #include <linux/blkdev.h>
-+#include <linux/sched/mm.h>
- #include <linux/prefetch.h>
- #include <linux/kthread.h>
- #include <linux/swap.h>
-@@ -245,9 +246,7 @@ static int __revoke_inmem_pages(struct inode *inode,
- 								LOOKUP_NODE);
- 			if (err) {
- 				if (err =3D=3D -ENOMEM) {
--					congestion_wait(BLK_RW_ASYNC,
--							DEFAULT_IO_TIMEOUT);
--					cond_resched();
-+					memalloc_retry_wait(GFP_NOFS);
- 					goto retry;
- 				}
- 				err =3D -EAGAIN;
-@@ -424,9 +423,7 @@ static int __f2fs_commit_inmem_pages(struct inode *inode)
- 			err =3D f2fs_do_write_data_page(&fio);
- 			if (err) {
- 				if (err =3D=3D -ENOMEM) {
--					congestion_wait(BLK_RW_ASYNC,
--							DEFAULT_IO_TIMEOUT);
--					cond_resched();
-+					memalloc_retry_wait(GFP_NOFS);
- 					goto retry;
- 				}
- 				unlock_page(page);
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 040b6d02e1d8..3bace24f8800 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -8,9 +8,9 @@
- #include <linux/module.h>
- #include <linux/init.h>
- #include <linux/fs.h>
-+#include <linux/sched/mm.h>
- #include <linux/statfs.h>
- #include <linux/buffer_head.h>
--#include <linux/backing-dev.h>
- #include <linux/kthread.h>
- #include <linux/parser.h>
- #include <linux/mount.h>
-@@ -2415,8 +2415,7 @@ static ssize_t f2fs_quota_read(struct super_block *sb, =
-int type, char *data,
- 		page =3D read_cache_page_gfp(mapping, blkidx, GFP_NOFS);
- 		if (IS_ERR(page)) {
- 			if (PTR_ERR(page) =3D=3D -ENOMEM) {
--				congestion_wait(BLK_RW_ASYNC,
--						DEFAULT_IO_TIMEOUT);
-+				memalloc_retry_wait(GFP_NOFS);
- 				goto repeat;
- 			}
- 			set_sbi_flag(F2FS_SB(sb), SBI_QUOTA_NEED_REPAIR);
-diff --git a/fs/xfs/kmem.c b/fs/xfs/kmem.c
-index 6f49bf39183c..c557a030acfe 100644
---- a/fs/xfs/kmem.c
-+++ b/fs/xfs/kmem.c
-@@ -4,7 +4,6 @@
-  * All Rights Reserved.
-  */
- #include "xfs.h"
--#include <linux/backing-dev.h>
- #include "xfs_message.h"
- #include "xfs_trace.h"
-=20
-@@ -26,6 +25,6 @@ kmem_alloc(size_t size, xfs_km_flags_t flags)
- 	"%s(%u) possible memory allocation deadlock size %u in %s (mode:0x%x)",
- 				current->comm, current->pid,
- 				(unsigned int)size, __func__, lflags);
--		congestion_wait(BLK_RW_ASYNC, HZ/50);
-+		memalloc_retry_wait(lflags);
- 	} while (1);
- }
-diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
-index 631c5a61d89b..6c45e3fa56f4 100644
---- a/fs/xfs/xfs_buf.c
-+++ b/fs/xfs/xfs_buf.c
-@@ -394,7 +394,7 @@ xfs_buf_alloc_pages(
- 		}
-=20
- 		XFS_STATS_INC(bp->b_mount, xb_page_retries);
--		congestion_wait(BLK_RW_ASYNC, HZ / 50);
-+		memalloc_retry_wait(gfp_mask);
- 	}
- 	return 0;
- }
-diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
-index aca874d33fe6..aa5f09ca5bcf 100644
---- a/include/linux/sched/mm.h
-+++ b/include/linux/sched/mm.h
-@@ -214,6 +214,32 @@ static inline void fs_reclaim_acquire(gfp_t gfp_mask) { }
- static inline void fs_reclaim_release(gfp_t gfp_mask) { }
- #endif
-=20
-+/* Any memory-allocation retry loop should use
-+ * memalloc_retry_wait(), and pass the flags for the most
-+ * constrained allocation attempt that might have failed.
-+ * This provides useful documentation of where loops are,
-+ * and a central place to fine tune the waiting as the MM
-+ * implementation changes.
-+ */
-+static inline void memalloc_retry_wait(gfp_t gfp_flags)
-+{
-+	/* We use io_schedule_timeout because waiting for memory
-+	 * typically included waiting for dirty pages to be
-+	 * written out, which requires IO.
-+	 */
-+	__set_current_state(TASK_UNINTERRUPTIBLE);
-+	gfp_flags =3D current_gfp_context(gfp_flags);
-+	if (gfpflags_allow_blocking(gfp_flags) &&
-+	    !(gfp_flags & __GFP_NORETRY))
-+		/* Probably waited already, no need for much more */
-+		io_schedule_timeout(1);
-+	else
-+		/* Probably didn't wait, and has now released a lock,
-+		 * so now is a good time to wait
-+		 */
-+		io_schedule_timeout(HZ/50);
-+}
-+
- /**
-  * might_alloc - Mark possible allocation sites
-  * @gfp_mask: gfp_t flags that would be used to allocate
-diff --git a/net/sunrpc/svc_xprt.c b/net/sunrpc/svc_xprt.c
-index 1e99ba1b9d72..9cb18b822ab2 100644
---- a/net/sunrpc/svc_xprt.c
-+++ b/net/sunrpc/svc_xprt.c
-@@ -6,6 +6,7 @@
-  */
-=20
- #include <linux/sched.h>
-+#include <linux/sched/mm.h>
- #include <linux/errno.h>
- #include <linux/freezer.h>
- #include <linux/kthread.h>
-@@ -688,7 +689,7 @@ static int svc_alloc_arg(struct svc_rqst *rqstp)
- 			return -EINTR;
- 		}
- 		trace_svc_alloc_arg_err(pages);
--		schedule_timeout(msecs_to_jiffies(500));
-+		memalloc_retry_wait(GFP_KERNEL);
- 	}
- 	rqstp->rq_page_end =3D &rqstp->rq_pages[pages];
- 	rqstp->rq_pages[pages] =3D NULL; /* this might be seen in nfsd_splice_actor=
-() */
---=20
-2.33.1
 
