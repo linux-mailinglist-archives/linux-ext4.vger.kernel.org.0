@@ -2,611 +2,242 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4479F4590E7
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 Nov 2021 16:07:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 886854593D1
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 Nov 2021 18:17:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232963AbhKVPKF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 22 Nov 2021 10:10:05 -0500
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:30660 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229542AbhKVPKF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:10:05 -0500
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AMEEsgw007646;
-        Mon, 22 Nov 2021 15:06:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=LE5T/Zf3aYJhIqYXtCqAfGREqmL57zmQdUIC8CY/jSc=;
- b=iFPu+haWrtZLr3FCWc2Fs3R+H24Dqllt2EXhxI0Oj84TMnNPjRdYuohkb7wKsZrLkdTA
- HbrFELlrq2Wvboi1AxI0r3Bm/d0kZ796/qG+xvcum83eD+FTITB2VSwE+nugVyVXgWZH
- 488/9Np2rOSbVKG8EtWFyugCIsLCurJ4qSMjAdWIfFYbLd3NQ5lj+lGOiuZ5a0AUGUfx
- CrF4aR6jA8kfDwvDzxf/XYpX2JbL3sPeSbZ8MrgS7Y3utFhGXHBL7fChAWKV3sB9zgsv
- DqBrLscSk2ERGpnOESFiJGefV5SLAQGcwd7AmPQn6pMKsEs1vB1EqIybSWvSlJpgxlCG xQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3cg461ak12-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 22 Nov 2021 15:06:40 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AMF6Yco123932;
-        Mon, 22 Nov 2021 15:06:37 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2109.outbound.protection.outlook.com [104.47.58.109])
-        by userp3030.oracle.com with ESMTP id 3cep4wtr2s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 22 Nov 2021 15:06:37 +0000
+        id S230453AbhKVRUH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 22 Nov 2021 12:20:07 -0500
+Received: from mail-mw2nam12on2041.outbound.protection.outlook.com ([40.107.244.41]:58863
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231787AbhKVRUG (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 22 Nov 2021 12:20:06 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Lkbgf3vWrfdnxgb8r82LNHlulPiTZOKhVULbVDx70+Q/grwbpVIw22+F/cuSzZRMuMEjGkhmP5lkDRhcBdpTZpaw2pfks2+635SEo0eBQPozdDfk8srBZK4+ICPFEzy6IWCTQrd/xACL5sHp8E1Bl/hTs4bb/4e+y3xogDQmrEe0f2us/hqm98+s+YpQY0AVrcITjpZyNc2Jmm8d6eZ7XdeEtNrLxHZEytBx/v8ntoYn2rsHpI9sxBW2XuVRHl/2Zr5/LRYNXMLz6nb5IsqMhM6RAOBs/uluyYbosHN5cWfgBuMngHqa4nEhrqCl6QfM6AnfIStocIzVgFYHoworCw==
+ b=KSrJVCx2LWgEAgh/8H4zoC3oON2WR89hzSgj+RxvVwTXZ4vZ/eCvQbT5WWiski7HfnIv5ZsWzkQXJ7EfeTlvl3Oxy+zIX+z7O+W0dWLy34/lBWut1+OLuFD1Oft+AfVp9Qll4CMpQLe1t0p8HAcoamy/MovvpHBqL1waNGVGCeeAezpal+ouytrXC72kChAi5GgAIqsQR2+kZR14KJZ/dNI8IUvJSMWyFEs0Lp9sKYP4hKSgoGgbPIZujq5JAMHe5QahlWpAbwkKRH3s4pWapjNky2ymeTt87bq4oSX1q8cPJWeUEVsKW030+O0rUNUTznStwhBB+gB/0tKeTh7oeg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LE5T/Zf3aYJhIqYXtCqAfGREqmL57zmQdUIC8CY/jSc=;
- b=fshv/+2OJ6tLNusrSb7bAmkThyZU+OMCZUxb8D/gY+d3b2cTboFO06tITjO+1UDtYs0GMcHIXbdmF46p3dmA9GTfzskU4iQUFuANu8aQZXN8eJF0LwC+H7Dz4ArNLsZIIQ5gp6z7qlqQ/bNrXdhahyJP8Qwjru9agU/OWlnAUKCyhFG8j5iw6ngxW3TgX03jU+fX3wtV+0K4Ec9XkLSW3tuCtNsGgLwPv4Thos2yog4pBonAfaaqcUArHxWESm0Mzsq5KrdBVVX7tkTrG+DPtaug7GrHZGU7Po6U6+6SG3CUxZU72b7gs7k2yaR+FX0e3G0T/DE18XIWnDG4HoqAAQ==
+ bh=WRpMjV4deLfHhSglqxxr1VjBEnMn/YOOOP211cMlJ7o=;
+ b=dlVJkgs7CoGzSw357Urj3S9n4CePaAnWUHjHqiXtP7QxKCnR/iyv8/kvXw2lfpPNbET2ah7rpUbfVC1FekAxSul0tTsfvHP6LHRRFNlbKp8M3wIlo+BZtegrc02rsSyX0WfbE30BfxE0ZfPDz9LlrNagSJ5t0I1gpJkgNkZ8swAHgxpb3jRI6kq7fVvcXb4Z548lFLkkr6xhL6gvUwvMDS9z8n/baNg6j0qVhq4Xc2Z8l3fZEEa27YVZp5yarw3S4WwQcdHKPgUG3GwSDkPIeJWDokbc7fH9bVCYzVj5QUsH51WurJXEOSX1D0ve3VU3PF80etsqC3mw1ZGMaWbcgQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LE5T/Zf3aYJhIqYXtCqAfGREqmL57zmQdUIC8CY/jSc=;
- b=fbU0vcwzZ06IVVY0qxFEHgaFa2EfTA1G5zOomsgePFQKYE4AsBXyqXWN8aKYeC91WPOaM5s794F+5iIN7mD02trilppAExFleHpWeVB1JsZDfBw2Gd6UY/UoBcBwEXQhuYCmJ5AyJ4rhNV6Qkq0BNuPL9LredHAcC+Bh3QCVKQI=
-Received: from SJ0PR10MB4688.namprd10.prod.outlook.com (2603:10b6:a03:2db::24)
- by BYAPR10MB3463.namprd10.prod.outlook.com (2603:10b6:a03:118::28) with
+ bh=WRpMjV4deLfHhSglqxxr1VjBEnMn/YOOOP211cMlJ7o=;
+ b=oNDus5sTCC7eMo8e9/wkwgeyL3JDw+WBm3sd6neq4wwELq819avzZHu8Yx5c5AiBYW/53W7DZV+i3ADcXH1QTkukug1wQfJ/MxyLTYp6KgvJiH0CCVog9oKYWd9ZGmmH+bNTClLhYHDhG7Q+7ablNiA3twcHwmbgP6Z+p4DLKOo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN9PR12MB5115.namprd12.prod.outlook.com (2603:10b6:408:118::14)
+ by BN9PR12MB5193.namprd12.prod.outlook.com (2603:10b6:408:11a::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Mon, 22 Nov
- 2021 15:06:33 +0000
-Received: from SJ0PR10MB4688.namprd10.prod.outlook.com
- ([fe80::48f2:bb64:cb4b:372f]) by SJ0PR10MB4688.namprd10.prod.outlook.com
- ([fe80::48f2:bb64:cb4b:372f%7]) with mapi id 15.20.4713.025; Mon, 22 Nov 2021
- 15:06:33 +0000
-From:   Chuck Lever III <chuck.lever@oracle.com>
-To:     Neil Brown <neilb@suse.de>
-CC:     Dave Chinner <david@fromorbit.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] MM: introduce memalloc_retry_wait()
-Thread-Topic: [PATCH v2] MM: introduce memalloc_retry_wait()
-Thread-Index: AQHX3z5z7K9wSNEtN0mv2FiO5P+VlqwPppQA
-Date:   Mon, 22 Nov 2021 15:06:33 +0000
-Message-ID: <286F4A23-74EC-44E7-8734-CD378C2B5298@oracle.com>
-References: <163712329077.13692.12796971766360881401@noble.neil.brown.name>
- <20211117055311.GS449541@dread.disaster.area>
- <163754371968.13692.1277530886009912421@noble.neil.brown.name>
-In-Reply-To: <163754371968.13692.1277530886009912421@noble.neil.brown.name>
-Accept-Language: en-US
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.24; Mon, 22 Nov
+ 2021 17:16:58 +0000
+Received: from BN9PR12MB5115.namprd12.prod.outlook.com
+ ([fe80::9dfe:ccc6:102c:5300]) by BN9PR12MB5115.namprd12.prod.outlook.com
+ ([fe80::9dfe:ccc6:102c:5300%8]) with mapi id 15.20.4713.025; Mon, 22 Nov 2021
+ 17:16:58 +0000
+Subject: Re: [PATCH v1 1/9] mm: add zone device coherent type memory support
+To:     Alistair Popple <apopple@nvidia.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, rcampbell@nvidia.com,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        Alex Sierra <alex.sierra@amd.com>
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        jglisse@redhat.com, willy@infradead.org, jgg@nvidia.com, hch@lst.de
+References: <20211115193026.27568-1-alex.sierra@amd.com>
+ <1997502.P62F5Z1OZk@nvdebian> <637b19c0-5ec4-b96b-f6f6-c17313f03762@amd.com>
+ <4157439.BacSOyMZPU@nvdebian>
+From:   Felix Kuehling <felix.kuehling@amd.com>
+Message-ID: <f45fb007-ccc4-4d09-b609-09faa81d3b81@amd.com>
+Date:   Mon, 22 Nov 2021 12:16:55 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <4157439.BacSOyMZPU@nvdebian>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.120.0.1.13)
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b789f3e5-f150-4b21-603f-08d9adc9abde
-x-ms-traffictypediagnostic: BYAPR10MB3463:
-x-microsoft-antispam-prvs: <BYAPR10MB3463FEFCC0D15E4C98676761939F9@BYAPR10MB3463.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1107;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: oYFTRdl45lqU7ZLBERIeiMgkKu9mOn5O8V6kJpntpFjuIi6G5lvYWt9STjDFWfpFACOvdIbyFlx+QIuBaostJjjOzF38lpjydBnpoBFa3jFF2PHP5nSWfXFKrDjWuqUgM5w9GXGO7vhF2PoltUKClXOQr9je6DABQdekx5I9AqMwr8JhSJ6+I+RwujTqx3jzroqoZw3Nw8DG7rF98CftEU38qc2cXtXO/KFyyPKAJ0fwimGecHK1k73/GN1VnCDaGNFy/oXlqa7c9GLPLuVNe9kvPxGMJl4frkOcvnmasEX1iOlYIUNcapf/MejYl9//M+Pa4gqfHHO48VNtJGc49BB8iKEuMBTMeIN4BQh1pDyue5oNL2e3XwwgzTwYqvSIorvtqYxzsuqr7hWB7e4gyUgVGZqULYyjerYvJdM2AdX2MNvsYFmSPraesq0xvVv/YxxEWPqPDtwz4Pf/I2Uy1QXoONE+sOM6e77x4E1a97LKfckiQ7ABP/eh1o9QJ+Q0p/4Wq4pC+ohckBNaui27Govj23KuKCRuCsOlPQYN5XUWNuODnQ90sYiTPgOtHApUOh/MdrcjcW0OgqvTLu1Kdyr5fS/bNm3FRdKAqTfOGOpxQHV2X5f4YLiemMcwLNqpdXByN6pRqqEAaaWih0BQYvtUyd1nqfiefDowfinQ7OGDltjSkm+VPKZ17J+AdCoW9+4JooTo9qFtM6vF+hVoUeHBZ9730gKIVkB3xTy+lnJTtQrrqcmKarMLyrOErwmF
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4688.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6512007)(7416002)(2906002)(6916009)(6486002)(33656002)(30864003)(64756008)(66446008)(91956017)(36756003)(83380400001)(4326008)(53546011)(6506007)(71200400001)(54906003)(66946007)(186003)(38100700002)(66476007)(66556008)(2616005)(76116006)(38070700005)(316002)(122000001)(508600001)(5660300002)(26005)(8936002)(86362001)(8676002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?sPp2iDm3cEhWgyyeM3Ach8AFy1i/2DDZMzPBbxRW+Cwx9sQjAJElqgE1inzz?=
- =?us-ascii?Q?MTjNk3B+1SIZ70/9ZaIs+hWfd87HQ1z8jkJ7snIvXL1WdDOb53BpW6NtdQsu?=
- =?us-ascii?Q?IMvz8Sq5PfW/Z7+Ska/JnsDJiu/VsjGvTjthQlGSXR22as1GEp13bArEL+eG?=
- =?us-ascii?Q?pmJd+69jPTt7I8GkWsWuAtm91vr/OsogtQMOCamWy3Upv6jPaxk/nHLafI/+?=
- =?us-ascii?Q?RxjrKB7GqH2V/YLX7qh7sv7PNiScvgc5nPkf+zTiQR2jv5fWf+b2/u5dwvaz?=
- =?us-ascii?Q?mO/Gg9ZB6YLP956usLRgtAkNJ9tloX6QUnGR76vbTeHDqlImVrKzf8wwt6BM?=
- =?us-ascii?Q?15Yw4uvk7TNKKNutobOaxyLmurfznFoyrmywJaMF+A4W6bOtQu3ZPi7Hvh84?=
- =?us-ascii?Q?k3G4YNw656x67y0Q87iHJ3yW0v16cw7NQfRjyrMN3REIYct5QLBvmIirHVk6?=
- =?us-ascii?Q?pbntNbAnOhMYGYkKHZcU5wn8VeOXRTcmPgGf/nSmqysgSN/dPiC8NYycTrGv?=
- =?us-ascii?Q?ACo1wKV3mi7Wb2z9WwBE1+/9YWTGj9okb5nUJ44/AOFOwj1drBGp+P7ruOVX?=
- =?us-ascii?Q?P9Nsy/KVPeE7gFpeUUppteBMg5CqjFRbIX/PhS8f9xe0phpOBciJ/OYworaI?=
- =?us-ascii?Q?vztygIuu7FEKkzF0ZwfwjQzvqXYqMe9aY01N+RJ2Pqcp3mSsg3rjwrAUrubG?=
- =?us-ascii?Q?rRTc7E0FheH5ZPyRXZisNDIpvyRUTQiBvc6ENzeCBUrkXyk7mA+F9ocDv0fy?=
- =?us-ascii?Q?GZwmrsNcuU3hIvCzOPQq7UFVVZ45TsD9sB+a5E05KNYg84rRDYb6h5JlaAev?=
- =?us-ascii?Q?qIBtckE1hq5GsBw0RKdCV0JvOhkmzBn9758wkL1L4o8LLwvqcbsSerdzQ+Ly?=
- =?us-ascii?Q?+wclv4ixsSHQklYqOYTKmKjrXKqtXhvbzNFyuR2SJLAwpeU+X+tWzlfxecL6?=
- =?us-ascii?Q?HBEVYPj234RMUcakdaBYwGcS66PfPz6jCUYdK8NFvg7N6jxV63ILJhTmcr8b?=
- =?us-ascii?Q?KbkIQ0zKvEV5QwR3GlUMysBf085kFnTVdxHrG1LzaDCO9Swk/MtzOg0kY3QY?=
- =?us-ascii?Q?Qp3CpsiuMk/rdk1dJXiEbuD9rpoDJQgmrRAIkCjbDq6RSjWU6blndQ82PpYP?=
- =?us-ascii?Q?34ya8papNKx4lHpFiZaT9jtwdjaBgnzZA6cl7L54Yjhb0wNLAl7ZqhC2gNrh?=
- =?us-ascii?Q?oDJVh3zZhsoPc0wXHwmLMPmjEtB6xRZErtlr9y1mXJIONC9RYBlIyprnwU4e?=
- =?us-ascii?Q?DWfzQ/7DUQs05KsO0W/H3CdBCUAbDr+tAw/j9yzrTTmAJRo0sU+2FbHY2YHp?=
- =?us-ascii?Q?VeBID4zMCe+Ymw3zoXGjYi/T9DFEN6NM+X6tuqTPAV9LBjd1z4QfJD2qYLvD?=
- =?us-ascii?Q?Qs267InWZiFkQ8EreDY/vhG5qKBnKI8uHCe9UP3qy4RpCqEqcygiO22XEdXS?=
- =?us-ascii?Q?6NHdI1Pg3Sf8Az5nEvplU/dbEQ8BVV9jtZrYv/Z3eZwwpIon1hu/S7LpHmRL?=
- =?us-ascii?Q?O+MK1YwclkAcBlATJsmAJCDm2hvyr6UFsvXduzzdV/tVNG3G9mgflj0JL+T5?=
- =?us-ascii?Q?Te3IDUE3rQ0DqxW6ApJPUUNHbkW1vv/TmkJjPuxUbjEUurmT7WBcSSYYqGhh?=
- =?us-ascii?Q?nK3vQa1jdDdxLK056TlCFLM=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <01CB2425B80EFE4CA6E6E1315F06A05C@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: YT1PR01CA0098.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2c::7) To BN9PR12MB5115.namprd12.prod.outlook.com
+ (2603:10b6:408:118::14)
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
+Received: from [192.168.2.100] (142.127.191.123) by YT1PR01CA0098.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2c::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21 via Frontend Transport; Mon, 22 Nov 2021 17:16:57 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b255e453-f942-411a-c932-08d9addbe3a3
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5193:
+X-Microsoft-Antispam-PRVS: <BN9PR12MB51939358B80A49B43BEEBA98929F9@BN9PR12MB5193.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ftyjYxevAZNg7PxqiutK0mFQhyxPDmeERrtSfk9hIom6M4jRArhSwsEB0hsF4lqUDu9vhGffHs4+lUNl2eFl7NwVicn9s7FTbE6wZzsDVvjKwpBecmfqC3QjVCxkB4CZskgQn/HzAHNLkQ1S+GDd/iOvGge+Ys6bi9jjiOxTiIfL8JI6WM0P6bCzc2o+1af1lA6k9SEXAjHhwjnoprbg+HZV6cq7plkjSzPyYD+XAB6SrfGP6lKTt1PEOtQFzeGl3C1Nai8WKthHQTsdM9z8eU1SNRDxNB6wpQJGxydPGYN2MxFkJFKOAEP1SN/oHTvmmd0rZMej/3uaKMxI3ot2tPUstvi05BFMR8OujLcLDoXsoLngDK5gD8qH5NcTOJ+JNAG7yYYcUOQsv4GC9KzV/DbDhjbBxnHnGyEvuLOrA6/x1TtdpTRO1wsLbb4hpTSy8gL/+i8IXX5ePKTqVl5FzN3ZOUkmWpUACZvpRROZBTL3GZba1xLSZXuIBrrK2485QA/YF45e6buYyI8NjaVEGycqy/oH3ZlK/8QGLEEkAUAkOwiVA3BdYarpXgBjFVWZbK9WPdCiMjBvDA4n20hCBwOwlZ7dfklxwtgFIBAvgmNXTCeB/gRCE8BpCiBXnQImpl//PlfiLv3KIpiI2HEcRhTtvV5iYf6SStrovzx2iwlv4B0WKvfxBZYJHydo8tnWR5AvWcVyBJNxSeLYMlODFignZbhS9LnXvY+gmdaVDmjC4TfGbzNoa/WmxWI2K5JeUlzMrayOXO9V0g7Ov1lpmb9o41jXAKMQjaw88+W7quNhtef/sj65vS1JfikGQiqB05eOxs2Eh3SOrXYQV6ve0Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5115.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(31696002)(66946007)(186003)(966005)(7416002)(508600001)(16576012)(31686004)(6486002)(66476007)(66556008)(36756003)(316002)(110136005)(8936002)(956004)(86362001)(2616005)(6636002)(2906002)(8676002)(26005)(4001150100001)(38100700002)(44832011)(5660300002)(4326008)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MjBDckxDK01Sd1Y2aXVhRmZuVk1nTDY2ZHdmY1FDUi9ZeFhUK1pkZEJxaDd3?=
+ =?utf-8?B?T1ZjQlNraG5QWEZSR3g0Q2M1SHpJd21jQkVYckw3TTRMTXJWOTlULy9COUMr?=
+ =?utf-8?B?VXk1S0g3Vjg4Z0crSHNCKzRSc1Joa3ZJWisyaXJlM0ZhaDR4NHd1SUcyaUtE?=
+ =?utf-8?B?QmE5aHUra3dYWjJmOWZSNnZMdU9ZZVVDOTM1SUh3TGFWTXVQdXhiUmZxQTVV?=
+ =?utf-8?B?MU5TSUZSRGVwY1JmUTJxUXNHUUJDS2F5NEVOZGpmcDRYV2EycWgxMXNUU2NC?=
+ =?utf-8?B?N1pjUEU0UFVISHdsNDA0c3lCUzAzU1hGdXdTS082clEvd3R3a2JZMmtTY3Zj?=
+ =?utf-8?B?UVRnTDFrUGpray9OZExqeU51Y3hxZkFXa0NFNHJBQ2RmbTJlYzMxOERpY0x3?=
+ =?utf-8?B?UUcyZ2ROeEM3NEFjcCs1aG5uVTM0dmtqb29tZFlNRktJb0lreEJQbUFvdlhN?=
+ =?utf-8?B?cG8yaTFja1BMV29NMGFGNDB1YlBjUDdKT1Mwd21maWRDNmtBZ2VlTXNhTC9X?=
+ =?utf-8?B?Nzk3cFdGV08xZTkrQ2lOZTFHbWFNQXdFSkc4TXZvbzNpOUJTVE9KTXZic2kw?=
+ =?utf-8?B?SjNVSzU1c2c0dEs2dE5pUTg5N1UvZWFsTytoQzRVYlZQQi9BZ2Rqb0JTRmZW?=
+ =?utf-8?B?cDZ5ZENVUHlGcE5vSEQ4MnB4SEFRSDFIVWR1SlMyVTl6eUx3S2hDNTErM1F1?=
+ =?utf-8?B?bEhJaHRlSkFNY3FiM2pVakZHaVR3WTlhN2VpS01GL1M4eDhTMnRRZHVJSWUv?=
+ =?utf-8?B?cktvMnVvTXRIdHA1REZtdlRXSk96ZkpWTFFVSFZZOFhXUlNZdjMwZ0NZUTFP?=
+ =?utf-8?B?YVVyK0lReFhtV1VEdDZkQkdORnJJdjJXeG13Q05ZNVNLTGFVZ0p6ZWdvQ2JQ?=
+ =?utf-8?B?T3d3bzF5dVVQelI2blk5N3RmSFduOGlWUVhpQUdpWWxVZ0xqdytkM0V6MzF6?=
+ =?utf-8?B?RGhzYmpJQVdtSTVMR2FWYTVSOXNZLzh5Z2UzVWVzZWIvNkdwS2VxY0cwVDh6?=
+ =?utf-8?B?V1NQTHZLNTJadG9iU2FqNHhtMEhhYkhSK29ncGx2aXpKaG1mNmdUYVJWczVi?=
+ =?utf-8?B?VmlUcGtVeFdQbmZUanoyZkxSUGNvczhuMU5ibWc3KzNWQ3VTMWg5blNkN0ZJ?=
+ =?utf-8?B?dnZmUitiZjhDSWNTaThMWmU3eEl1Mnp6YWx3R2M2bW5jKzI0ZDhFbUhzayti?=
+ =?utf-8?B?d0dGWnJSUDV1bCtvVk5oZzl5NUlwMyt0SmdzTXhLVDR0OWxpNmR1T2FBWWt1?=
+ =?utf-8?B?TnhzQXN6MXNobURDaWRMNmRzaElTNmJseFRPY0ZMZ0VrNnVzTHhodDM1ZVlt?=
+ =?utf-8?B?VFBGRkU1T1ZSRGJHTWJpdjRUUDdra2NlVzNUQS9jUVdXNFBRSG1oRklUZ2I1?=
+ =?utf-8?B?aHptcVBuK2ZXVUY1ZkY0V3ZwdXgwZ2VybzB1eTRhTlIxM2l5cjljdEQ3MHgr?=
+ =?utf-8?B?UW5DRmRIZkkvSlhIclNWbjNkUUpjVEpDM2REUi9XaS8xUzNZbllVbUQ3RjhH?=
+ =?utf-8?B?VkVFSHYxZ3R3L0dYV3d2Ulg4QjdBSmo0S0xQOWw2cXhOdkJkcTNpR09UaWlk?=
+ =?utf-8?B?Y1RLZTU1aERYeUFBZXBManV6UGU1UVhwZXo5dXQzMmxoQjBrNGhWWC9qN3ph?=
+ =?utf-8?B?b0hyQWNiVFlUeHVBM3Z5cjVWY05Xb1pmeHk3clRvQWNTRkFYNHhNRThXZHow?=
+ =?utf-8?B?MWJYeVlUNXlWdDR2M0lsTm1pQWRrcDVhOG1VNUE3bnZDQ0h2clR6ZVZSczMz?=
+ =?utf-8?B?dlEvek1Qc0ZrQy8yNXVBRGFuMUNCS1ZpNU14WlREN0lVUkpQYUcrbndYMGFF?=
+ =?utf-8?B?TXphL3QzSzgyOGlFa3BlUTV5YlFXQzhFcmZSTVNNdmJtZTEva1k0Lzk0Rk5x?=
+ =?utf-8?B?OGFCQU5NNWY2U0RveGtaU25XUnhOU3ZYWW5tTWRhSko4cW9tbHIxYkI1R1RO?=
+ =?utf-8?B?aXp3RjQ3dEZBTUMvdFF0eFVCWjB2MmZPT3RlSjNrODQwdGdCQjhFcVVjT0J3?=
+ =?utf-8?B?cWR3TDdFZG54d1IweEljN0dQenJpOFU1VW85SjE0T0NMdXJUanZqVHB6c1lr?=
+ =?utf-8?B?ekhTSDBMejU5emo0dnBJditFblAwRUdsME1GVWYzT0xHOWVBTzZNNGhnOURv?=
+ =?utf-8?B?TjlIUkl3R1BBZHhoVDR0ZVNkYzIyVzlsMDVSM3d3eDY4UFM5aXRUeEYvalh2?=
+ =?utf-8?Q?gl2VTYJ9ulhgigXY2zc+d9U=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b255e453-f942-411a-c932-08d9addbe3a3
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5115.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4688.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b789f3e5-f150-4b21-603f-08d9adc9abde
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Nov 2021 15:06:33.1372
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2021 17:16:57.9993
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: LBWJs6U8BiPvBd6gAhyWQWRaBvcgm0qWZvkQejmPm310LZ365Ghcu8NlUlrcDoMmArbwhN/8wsH9cVdGWkzZeA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3463
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10175 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
- mlxlogscore=999 bulkscore=0 mlxscore=0 suspectscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111220080
-X-Proofpoint-GUID: e6w476ha3vDUKwgf8FxQxHoxmv_CGzSw
-X-Proofpoint-ORIG-GUID: e6w476ha3vDUKwgf8FxQxHoxmv_CGzSw
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3/JkKpLvOsR4DqnBusLVIJ5ysRlQEul/dHbVxoYm5160m+jN0mwNeLQ3ye7NI70gDxLij5nKsDJY9poyn1diYw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5193
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Am 2021-11-21 um 9:40 p.m. schrieb Alistair Popple:
+>>>> diff --git a/mm/migrate.c b/mm/migrate.c
+>>>> index 1852d787e6ab..f74422a42192 100644
+>>>> --- a/mm/migrate.c
+>>>> +++ b/mm/migrate.c
+>>>> @@ -362,7 +362,7 @@ static int expected_page_refs(struct address_space *mapping, struct page *page)
+>>>>  	 * Device private pages have an extra refcount as they are
+>>>>  	 * ZONE_DEVICE pages.
+>>>>  	 */
+>>>> -	expected_count += is_device_private_page(page);
+>>>> +	expected_count += is_device_page(page);
+>>>>  	if (mapping)
+>>>>  		expected_count += thp_nr_pages(page) + page_has_private(page);
+>>>>  
+>>>> @@ -2503,7 +2503,7 @@ static bool migrate_vma_check_page(struct page *page)
+>>>>  		 * FIXME proper solution is to rework migration_entry_wait() so
+>>>>  		 * it does not need to take a reference on page.
+>>>>  		 */
+>>> Note that I have posted a patch to fix this - see
+>>> https://lore.kernel.org/all/20211118020754.954425-1-apopple@nvidia.com/ This
+>>> looks ok for now assuming coherent pages can never be pinned.
+>>>
+>>> However that raises a question - what happens when something calls
+>>> get_user_pages() on a pfn pointing to a coherent device page? I can't see
+>>> anything in this series that prevents pinning of coherent device pages, so we
+>>> can't just assume they aren't pinned.
+>> I agree. I think we need to depend on your patch to go in first.
+>>
+>> I'm also wondering if we need to do something to prevent get_user_pages
+>> from pinning device pages. And by "pin", I think migrate_vma_check_page
+>> is not talking about FOLL_PIN, but any get_user_pages call. As far as I
+>> can tell, there should be nothing fundamentally wrong with pinning
+>> device pages for a short time. But I think we'll want to avoid
+>> FOLL_LONGTERM because that would affect our memory manager's ability to
+>> evict device memory.
+> Right, so long as my fix goes in I don't think there is anything wrong with
+> pinning device public pages. Agree that we should avoid FOLL_LONGTERM pins for
+> device memory though. I think the way to do that is update is_pinnable_page()
+> so we treat device pages the same as other unpinnable pages ie. long-term pins
+> will migrate the page.
+
+I'm trying to understand check_and_migrate_movable_pages in gup.c. It
+doesn't look like the right way to migrate device pages. We may have to
+do something different there as well. So instead of changing
+is_pinnable_page, it maybe better to explicitly check for is_device_page
+or is_device_coherent_page in check_and_migrate_movable_pages to migrate
+it correctly, or just fail outright.
+
+Thanks,
+  Felix
 
 
-> On Nov 21, 2021, at 8:15 PM, NeilBrown <neilb@suse.de> wrote:
->=20
->=20
-> Various places in the kernel - largely in filesystems - respond to a
-> memory allocation failure by looping around and re-trying.
-> Some of these cannot conveniently use __GFP_NOFAIL, for reasons such as:
-> - a GFP_ATOMIC allocation, which __GFP_NOFAIL doesn't work on
-> - a need to check for the process being signalled between failures
-> - the possibility that other recovery actions could be performed
-> - the allocation is quite deep in support code, and passing down an
->   extra flag to say if __GFP_NOFAIL is wanted would be clumsy.
->=20
-> Many of these currently use congestion_wait() which (in almost all
-> cases) simply waits the given timeout - congestion isn't tracked for
-> most devices.
->=20
-> It isn't clear what the best delay is for loops, but it is clear that
-> the various filesystems shouldn't be responsible for choosing a timeout.
->=20
-> This patch introduces memalloc_retry_wait() with takes on that
-> responsibility.  Code that wants to retry a memory allocation can call
-> this function passing the GFP flags that were used.  It will wait
-> however is appropriate.
->=20
-> For now, it only considers __GFP_NORETRY and whatever
-> gfpflags_allow_blocking() tests.  If blocking is allowed without
-> __GFP_NORETRY, then alloc_page either made some reclaim progress, or
-> waited for a while, before failing.  So there is no need for much
-> further waiting.  memalloc_retry_wait() will wait until the current
-> jiffie ends.  If this condition is not met, then alloc_page() won't have
-> waited much if at all.  In that case memalloc_retry_wait() waits about
-> 200ms.  This is the delay that most current loops uses.
->=20
-> linux/sched/mm.h needs to be included in some files now,
-> but linux/backing-dev.h does not.
->=20
-> Signed-off-by: NeilBrown <neilb@suse.de>
-> ---
->=20
-> Switched to io_schedule_timeout(), and added some missing #includes.
->=20
-> fs/ext4/extents.c        |  8 +++-----
-> fs/ext4/inline.c         |  5 ++---
-> fs/ext4/page-io.c        |  9 +++++----
-> fs/f2fs/data.c           |  4 ++--
-> fs/f2fs/gc.c             |  5 ++---
-> fs/f2fs/inode.c          |  4 ++--
-> fs/f2fs/node.c           |  4 ++--
-> fs/f2fs/recovery.c       |  6 +++---
-> fs/f2fs/segment.c        |  9 +++------
-> fs/f2fs/super.c          |  5 ++---
-> fs/xfs/kmem.c            |  3 +--
-> fs/xfs/xfs_buf.c         |  2 +-
-> include/linux/sched/mm.h | 26 ++++++++++++++++++++++++++
-> net/sunrpc/svc_xprt.c    |  3 ++-
-> 14 files changed, 56 insertions(+), 37 deletions(-)
->=20
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index 0ecf819bf189..5582fba36b44 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -27,8 +27,8 @@
-> #include <linux/slab.h>
-> #include <linux/uaccess.h>
-> #include <linux/fiemap.h>
-> -#include <linux/backing-dev.h>
-> #include <linux/iomap.h>
-> +#include <linux/sched/mm.h>
-> #include "ext4_jbd2.h"
-> #include "ext4_extents.h"
-> #include "xattr.h"
-> @@ -4407,8 +4407,7 @@ int ext4_ext_truncate(handle_t *handle, struct inod=
-e *inode)
-> 	err =3D ext4_es_remove_extent(inode, last_block,
-> 				    EXT_MAX_BLOCKS - last_block);
-> 	if (err =3D=3D -ENOMEM) {
-> -		cond_resched();
-> -		congestion_wait(BLK_RW_ASYNC, HZ/50);
-> +		memalloc_retry_wait(GFP_ATOMIC);
-> 		goto retry;
-> 	}
-> 	if (err)
-> @@ -4416,8 +4415,7 @@ int ext4_ext_truncate(handle_t *handle, struct inod=
-e *inode)
-> retry_remove_space:
-> 	err =3D ext4_ext_remove_space(inode, last_block, EXT_MAX_BLOCKS - 1);
-> 	if (err =3D=3D -ENOMEM) {
-> -		cond_resched();
-> -		congestion_wait(BLK_RW_ASYNC, HZ/50);
-> +		memalloc_retry_wait(GFP_ATOMIC);
-> 		goto retry_remove_space;
-> 	}
-> 	return err;
-> diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-> index 39a1ab129fdc..635bcf68a67e 100644
-> --- a/fs/ext4/inline.c
-> +++ b/fs/ext4/inline.c
-> @@ -7,7 +7,7 @@
-> #include <linux/iomap.h>
-> #include <linux/fiemap.h>
-> #include <linux/iversion.h>
-> -#include <linux/backing-dev.h>
-> +#include <linux/sched/mm.h>
->=20
-> #include "ext4_jbd2.h"
-> #include "ext4.h"
-> @@ -1929,8 +1929,7 @@ int ext4_inline_data_truncate(struct inode *inode, =
-int *has_inline)
-> retry:
-> 			err =3D ext4_es_remove_extent(inode, 0, EXT_MAX_BLOCKS);
-> 			if (err =3D=3D -ENOMEM) {
-> -				cond_resched();
-> -				congestion_wait(BLK_RW_ASYNC, HZ/50);
-> +				memalloc_retry_wait(GFP_ATOMIC);
-> 				goto retry;
-> 			}
-> 			if (err)
-> diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
-> index 9cb261714991..1d370364230e 100644
-> --- a/fs/ext4/page-io.c
-> +++ b/fs/ext4/page-io.c
-> @@ -24,7 +24,7 @@
-> #include <linux/kernel.h>
-> #include <linux/slab.h>
-> #include <linux/mm.h>
-> -#include <linux/backing-dev.h>
-> +#include <linux/sched/mm.h>
->=20
-> #include "ext4_jbd2.h"
-> #include "xattr.h"
-> @@ -523,12 +523,13 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
-> 			ret =3D PTR_ERR(bounce_page);
-> 			if (ret =3D=3D -ENOMEM &&
-> 			    (io->io_bio || wbc->sync_mode =3D=3D WB_SYNC_ALL)) {
-> -				gfp_flags =3D GFP_NOFS;
-> +				gfp_t new_gfp_flags =3D GFP_NOFS;
-> 				if (io->io_bio)
-> 					ext4_io_submit(io);
-> 				else
-> -					gfp_flags |=3D __GFP_NOFAIL;
-> -				congestion_wait(BLK_RW_ASYNC, HZ/50);
-> +					new_gfp_flags |=3D __GFP_NOFAIL;
-> +				memalloc_retry_wait(gfp_flags);
-> +				gfp_flags =3D new_gfp_flags;
-> 				goto retry_encrypt;
-> 			}
->=20
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index 9f754aaef558..aacf5e4dcc57 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -8,9 +8,9 @@
-> #include <linux/fs.h>
-> #include <linux/f2fs_fs.h>
-> #include <linux/buffer_head.h>
-> +#include <linux/sched/mm.h>
-> #include <linux/mpage.h>
-> #include <linux/writeback.h>
-> -#include <linux/backing-dev.h>
-> #include <linux/pagevec.h>
-> #include <linux/blkdev.h>
-> #include <linux/bio.h>
-> @@ -2542,7 +2542,7 @@ int f2fs_encrypt_one_page(struct f2fs_io_info *fio)
-> 		/* flush pending IOs and wait for a while in the ENOMEM case */
-> 		if (PTR_ERR(fio->encrypted_page) =3D=3D -ENOMEM) {
-> 			f2fs_flush_merged_writes(fio->sbi);
-> -			congestion_wait(BLK_RW_ASYNC, DEFAULT_IO_TIMEOUT);
-> +			memalloc_retry_wait(GFP_NOFS);
-> 			gfp_flags |=3D __GFP_NOFAIL;
-> 			goto retry_encrypt;
-> 		}
-> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-> index a946ce0ead34..374bbb5294d9 100644
-> --- a/fs/f2fs/gc.c
-> +++ b/fs/f2fs/gc.c
-> @@ -7,7 +7,6 @@
->  */
-> #include <linux/fs.h>
-> #include <linux/module.h>
-> -#include <linux/backing-dev.h>
-> #include <linux/init.h>
-> #include <linux/f2fs_fs.h>
-> #include <linux/kthread.h>
-> @@ -15,6 +14,7 @@
-> #include <linux/freezer.h>
-> #include <linux/sched/signal.h>
-> #include <linux/random.h>
-> +#include <linux/sched/mm.h>
->=20
-> #include "f2fs.h"
-> #include "node.h"
-> @@ -1375,8 +1375,7 @@ static int move_data_page(struct inode *inode, bloc=
-k_t bidx, int gc_type,
-> 		if (err) {
-> 			clear_page_private_gcing(page);
-> 			if (err =3D=3D -ENOMEM) {
-> -				congestion_wait(BLK_RW_ASYNC,
-> -						DEFAULT_IO_TIMEOUT);
-> +				memalloc_retry_wait(GFP_NOFS);
-> 				goto retry;
-> 			}
-> 			if (is_dirty)
-> diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
-> index 0f8b2df3e1e0..4c11254a07d4 100644
-> --- a/fs/f2fs/inode.c
-> +++ b/fs/f2fs/inode.c
-> @@ -8,8 +8,8 @@
-> #include <linux/fs.h>
-> #include <linux/f2fs_fs.h>
-> #include <linux/buffer_head.h>
-> -#include <linux/backing-dev.h>
-> #include <linux/writeback.h>
-> +#include <linux/sched/mm.h>
->=20
-> #include "f2fs.h"
-> #include "node.h"
-> @@ -562,7 +562,7 @@ struct inode *f2fs_iget_retry(struct super_block *sb,=
- unsigned long ino)
-> 	inode =3D f2fs_iget(sb, ino);
-> 	if (IS_ERR(inode)) {
-> 		if (PTR_ERR(inode) =3D=3D -ENOMEM) {
-> -			congestion_wait(BLK_RW_ASYNC, DEFAULT_IO_TIMEOUT);
-> +			memalloc_retry_wait(GFP_NOFS);
-> 			goto retry;
-> 		}
-> 	}
-> diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-> index 556fcd8457f3..219506ca9a97 100644
-> --- a/fs/f2fs/node.c
-> +++ b/fs/f2fs/node.c
-> @@ -8,7 +8,7 @@
-> #include <linux/fs.h>
-> #include <linux/f2fs_fs.h>
-> #include <linux/mpage.h>
-> -#include <linux/backing-dev.h>
-> +#include <linux/sched/mm.h>
-> #include <linux/blkdev.h>
-> #include <linux/pagevec.h>
-> #include <linux/swap.h>
-> @@ -2750,7 +2750,7 @@ int f2fs_recover_inode_page(struct f2fs_sb_info *sb=
-i, struct page *page)
-> retry:
-> 	ipage =3D f2fs_grab_cache_page(NODE_MAPPING(sbi), ino, false);
-> 	if (!ipage) {
-> -		congestion_wait(BLK_RW_ASYNC, DEFAULT_IO_TIMEOUT);
-> +		memalloc_retry_wait(GFP_NOFS);
-> 		goto retry;
-> 	}
->=20
-> diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
-> index 6a1b4668d933..d1664a0567ef 100644
-> --- a/fs/f2fs/recovery.c
-> +++ b/fs/f2fs/recovery.c
-> @@ -8,6 +8,7 @@
-> #include <asm/unaligned.h>
-> #include <linux/fs.h>
-> #include <linux/f2fs_fs.h>
-> +#include <linux/sched/mm.h>
-> #include "f2fs.h"
-> #include "node.h"
-> #include "segment.h"
-> @@ -587,7 +588,7 @@ static int do_recover_data(struct f2fs_sb_info *sbi, =
-struct inode *inode,
-> 	err =3D f2fs_get_dnode_of_data(&dn, start, ALLOC_NODE);
-> 	if (err) {
-> 		if (err =3D=3D -ENOMEM) {
-> -			congestion_wait(BLK_RW_ASYNC, DEFAULT_IO_TIMEOUT);
-> +			memalloc_retry_wait(GFP_NOFS);
-> 			goto retry_dn;
-> 		}
-> 		goto out;
-> @@ -670,8 +671,7 @@ static int do_recover_data(struct f2fs_sb_info *sbi, =
-struct inode *inode,
-> 			err =3D check_index_in_prev_nodes(sbi, dest, &dn);
-> 			if (err) {
-> 				if (err =3D=3D -ENOMEM) {
-> -					congestion_wait(BLK_RW_ASYNC,
-> -							DEFAULT_IO_TIMEOUT);
-> +					memalloc_retry_wait(GFP_NOFS);
-> 					goto retry_prev;
-> 				}
-> 				goto err;
-> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> index df9ed75f0b7a..40fdb4a8daeb 100644
-> --- a/fs/f2fs/segment.c
-> +++ b/fs/f2fs/segment.c
-> @@ -9,6 +9,7 @@
-> #include <linux/f2fs_fs.h>
-> #include <linux/bio.h>
-> #include <linux/blkdev.h>
-> +#include <linux/sched/mm.h>
-> #include <linux/prefetch.h>
-> #include <linux/kthread.h>
-> #include <linux/swap.h>
-> @@ -245,9 +246,7 @@ static int __revoke_inmem_pages(struct inode *inode,
-> 								LOOKUP_NODE);
-> 			if (err) {
-> 				if (err =3D=3D -ENOMEM) {
-> -					congestion_wait(BLK_RW_ASYNC,
-> -							DEFAULT_IO_TIMEOUT);
-> -					cond_resched();
-> +					memalloc_retry_wait(GFP_NOFS);
-> 					goto retry;
-> 				}
-> 				err =3D -EAGAIN;
-> @@ -424,9 +423,7 @@ static int __f2fs_commit_inmem_pages(struct inode *in=
-ode)
-> 			err =3D f2fs_do_write_data_page(&fio);
-> 			if (err) {
-> 				if (err =3D=3D -ENOMEM) {
-> -					congestion_wait(BLK_RW_ASYNC,
-> -							DEFAULT_IO_TIMEOUT);
-> -					cond_resched();
-> +					memalloc_retry_wait(GFP_NOFS);
-> 					goto retry;
-> 				}
-> 				unlock_page(page);
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index 040b6d02e1d8..3bace24f8800 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -8,9 +8,9 @@
-> #include <linux/module.h>
-> #include <linux/init.h>
-> #include <linux/fs.h>
-> +#include <linux/sched/mm.h>
-> #include <linux/statfs.h>
-> #include <linux/buffer_head.h>
-> -#include <linux/backing-dev.h>
-> #include <linux/kthread.h>
-> #include <linux/parser.h>
-> #include <linux/mount.h>
-> @@ -2415,8 +2415,7 @@ static ssize_t f2fs_quota_read(struct super_block *=
-sb, int type, char *data,
-> 		page =3D read_cache_page_gfp(mapping, blkidx, GFP_NOFS);
-> 		if (IS_ERR(page)) {
-> 			if (PTR_ERR(page) =3D=3D -ENOMEM) {
-> -				congestion_wait(BLK_RW_ASYNC,
-> -						DEFAULT_IO_TIMEOUT);
-> +				memalloc_retry_wait(GFP_NOFS);
-> 				goto repeat;
-> 			}
-> 			set_sbi_flag(F2FS_SB(sb), SBI_QUOTA_NEED_REPAIR);
-> diff --git a/fs/xfs/kmem.c b/fs/xfs/kmem.c
-> index 6f49bf39183c..c557a030acfe 100644
-> --- a/fs/xfs/kmem.c
-> +++ b/fs/xfs/kmem.c
-> @@ -4,7 +4,6 @@
->  * All Rights Reserved.
->  */
-> #include "xfs.h"
-> -#include <linux/backing-dev.h>
-> #include "xfs_message.h"
-> #include "xfs_trace.h"
->=20
-> @@ -26,6 +25,6 @@ kmem_alloc(size_t size, xfs_km_flags_t flags)
-> 	"%s(%u) possible memory allocation deadlock size %u in %s (mode:0x%x)",
-> 				current->comm, current->pid,
-> 				(unsigned int)size, __func__, lflags);
-> -		congestion_wait(BLK_RW_ASYNC, HZ/50);
-> +		memalloc_retry_wait(lflags);
-> 	} while (1);
-> }
-> diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
-> index 631c5a61d89b..6c45e3fa56f4 100644
-> --- a/fs/xfs/xfs_buf.c
-> +++ b/fs/xfs/xfs_buf.c
-> @@ -394,7 +394,7 @@ xfs_buf_alloc_pages(
-> 		}
->=20
-> 		XFS_STATS_INC(bp->b_mount, xb_page_retries);
-> -		congestion_wait(BLK_RW_ASYNC, HZ / 50);
-> +		memalloc_retry_wait(gfp_mask);
-> 	}
-> 	return 0;
-> }
-> diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
-> index aca874d33fe6..aa5f09ca5bcf 100644
-> --- a/include/linux/sched/mm.h
-> +++ b/include/linux/sched/mm.h
-> @@ -214,6 +214,32 @@ static inline void fs_reclaim_acquire(gfp_t gfp_mask=
-) { }
-> static inline void fs_reclaim_release(gfp_t gfp_mask) { }
-> #endif
->=20
-> +/* Any memory-allocation retry loop should use
-> + * memalloc_retry_wait(), and pass the flags for the most
-> + * constrained allocation attempt that might have failed.
-> + * This provides useful documentation of where loops are,
-
-"useful documentation" is a good thing, but to me that means
-there's some auditing mechanism like a trace point. Getting
-to this function seems like an exceptional event that should
-be noted externally.
-
-If memalloc_retry_wait() had a trace point, I'd be inclined
-to remove trace_svc_alloc_arg_err().
-
-(This comment is not an objection to your patch).
-
-
-> + * and a central place to fine tune the waiting as the MM
-> + * implementation changes.
-> + */
-> +static inline void memalloc_retry_wait(gfp_t gfp_flags)
-> +{
-> +	/* We use io_schedule_timeout because waiting for memory
-> +	 * typically included waiting for dirty pages to be
-> +	 * written out, which requires IO.
-> +	 */
-> +	__set_current_state(TASK_UNINTERRUPTIBLE);
-> +	gfp_flags =3D current_gfp_context(gfp_flags);
-> +	if (gfpflags_allow_blocking(gfp_flags) &&
-> +	    !(gfp_flags & __GFP_NORETRY))
-> +		/* Probably waited already, no need for much more */
-> +		io_schedule_timeout(1);
-> +	else
-> +		/* Probably didn't wait, and has now released a lock,
-> +		 * so now is a good time to wait
-> +		 */
-> +		io_schedule_timeout(HZ/50);
-> +}
-> +
-> /**
->  * might_alloc - Mark possible allocation sites
->  * @gfp_mask: gfp_t flags that would be used to allocate
-> diff --git a/net/sunrpc/svc_xprt.c b/net/sunrpc/svc_xprt.c
-> index 1e99ba1b9d72..9cb18b822ab2 100644
-> --- a/net/sunrpc/svc_xprt.c
-> +++ b/net/sunrpc/svc_xprt.c
-> @@ -6,6 +6,7 @@
->  */
->=20
-> #include <linux/sched.h>
-> +#include <linux/sched/mm.h>
-> #include <linux/errno.h>
-> #include <linux/freezer.h>
-> #include <linux/kthread.h>
-> @@ -688,7 +689,7 @@ static int svc_alloc_arg(struct svc_rqst *rqstp)
-> 			return -EINTR;
-> 		}
-> 		trace_svc_alloc_arg_err(pages);
-> -		schedule_timeout(msecs_to_jiffies(500));
-> +		memalloc_retry_wait(GFP_KERNEL);
-> 	}
-> 	rqstp->rq_page_end =3D &rqstp->rq_pages[pages];
-> 	rqstp->rq_pages[pages] =3D NULL; /* this might be seen in nfsd_splice_ac=
-tor() */
-> --=20
-> 2.33.1
->=20
-
---
-Chuck Lever
-
-
-
+>
+>>> In the case of device-private pages this is enforced by the fact they never
+>>> have present pte's, so any attempt to GUP them results in a fault. But if I'm
+>>> understanding this series correctly that won't be the case for coherent device
+>>> pages right?
+>> Right.
+>>
+>> Regards,
+>>   Felix
+>>
+>>
+>>>> -		return is_device_private_page(page);
+>>>> +		return is_device_page(page);
+>>>>  	}
+>>>>  
+>>>>  	/* For file back page */
+>>>> @@ -2791,7 +2791,7 @@ EXPORT_SYMBOL(migrate_vma_setup);
+>>>>   *     handle_pte_fault()
+>>>>   *       do_anonymous_page()
+>>>>   * to map in an anonymous zero page but the struct page will be a ZONE_DEVICE
+>>>> - * private page.
+>>>> + * private or coherent page.
+>>>>   */
+>>>>  static void migrate_vma_insert_page(struct migrate_vma *migrate,
+>>>>  				    unsigned long addr,
+>>>> @@ -2867,10 +2867,15 @@ static void migrate_vma_insert_page(struct migrate_vma *migrate,
+>>>>  				swp_entry = make_readable_device_private_entry(
+>>>>  							page_to_pfn(page));
+>>>>  			entry = swp_entry_to_pte(swp_entry);
+>>>> +		} else if (is_device_page(page)) {
+>>> How about adding an explicit `is_device_coherent_page()` helper? It would make
+>>> the test more explicit that this is expected to handle just coherent pages and
+>>> I bet there will be future changes that need to differentiate between private
+>>> and coherent pages anyway.
+>>>
+>>>> +			entry = pte_mkold(mk_pte(page,
+>>>> +						 READ_ONCE(vma->vm_page_prot)));
+>>>> +			if (vma->vm_flags & VM_WRITE)
+>>>> +				entry = pte_mkwrite(pte_mkdirty(entry));
+>>>>  		} else {
+>>>>  			/*
+>>>> -			 * For now we only support migrating to un-addressable
+>>>> -			 * device memory.
+>>>> +			 * We support migrating to private and coherent types
+>>>> +			 * for device zone memory.
+>>>>  			 */
+>>>>  			pr_warn_once("Unsupported ZONE_DEVICE page type.\n");
+>>>>  			goto abort;
+>>>> @@ -2976,10 +2981,10 @@ void migrate_vma_pages(struct migrate_vma *migrate)
+>>>>  		mapping = page_mapping(page);
+>>>>  
+>>>>  		if (is_zone_device_page(newpage)) {
+>>>> -			if (is_device_private_page(newpage)) {
+>>>> +			if (is_device_page(newpage)) {
+>>>>  				/*
+>>>> -				 * For now only support private anonymous when
+>>>> -				 * migrating to un-addressable device memory.
+>>>> +				 * For now only support private and coherent
+>>>> +				 * anonymous when migrating to device memory.
+>>>>  				 */
+>>>>  				if (mapping) {
+>>>>  					migrate->src[i] &= ~MIGRATE_PFN_MIGRATE;
+>>>>
+>
+>
