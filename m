@@ -2,54 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF7C459A9F
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Nov 2021 04:41:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 363F2459AC3
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Nov 2021 04:51:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230325AbhKWDoV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 22 Nov 2021 22:44:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56272 "EHLO
+        id S231351AbhKWDyf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 22 Nov 2021 22:54:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231868AbhKWDoU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 Nov 2021 22:44:20 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 485C0C06173E
-        for <linux-ext4@vger.kernel.org>; Mon, 22 Nov 2021 19:41:13 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id gx15-20020a17090b124f00b001a695f3734aso1741493pjb.0
-        for <linux-ext4@vger.kernel.org>; Mon, 22 Nov 2021 19:41:13 -0800 (PST)
+        with ESMTP id S230514AbhKWDyf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 Nov 2021 22:54:35 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF155C061746
+        for <linux-ext4@vger.kernel.org>; Mon, 22 Nov 2021 19:51:27 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id gb13-20020a17090b060d00b001a674e2c4a8so1719527pjb.4
+        for <linux-ext4@vger.kernel.org>; Mon, 22 Nov 2021 19:51:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=intel-com.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=yuisy9zT1caIpoCJEL+LfomruK38WXIi70xmI7lYDdI=;
-        b=Y08/be2uy1a6FHo2yuq5V6dIERIFe+eeTyXLXTKFjFxfAYARUBwDdqRv9XulygxcF5
-         4zZfKtYGqV6eckQSPyIqI+Gn3GMQFWIP9FXR6DHHwN+9GDnZm18bVZGFa88rvhT3Zhp8
-         eBxG8SJu0LWqmuhUvXdN5Q8E0N7Fv2c7+1ZOSnPpTxrI3q5JIXNMGFvAj0k+TWuhQgQG
-         tLoyO8DVm7L0ndxV5dBnp+whJ587dE90ANm0vqzPKJbxSHtsEtd3ERFpgMcAPItk+09G
-         dbm69RRAjzWoV6a6vlvEHV0tkZfEJqiOGj5p0uoKbINk6WBGJnIFfCSAm3gIT8TG78mL
-         kVoQ==
+        bh=set6lIbZWt1UwkjEncJQUmHWp82483Zo0VHgKUnBt0w=;
+        b=jaUppntJAg9/mAuYY2fdr9gBd/oPSVvQjQU9MV63keKS4G12JP+nEpEbf/XFgQhTnX
+         lYhroHBz4A/n/ueNjXRdi4PGz3IaMMWx7LGsyQ+k3PmsLBwgA59MgQmr1YDS9DWkwjiz
+         h84Lz9nQApqhFCv5vhWhKtFCwv3whkuknXHpmp6xY5puSg20rPurJJzE+22u3JyTEE6e
+         V2urCXYlCDQCwVaaqgneBsM+4H995+ijZVTqf+fHfdEatR6QlNecFf1J/UGHfHqEPUgZ
+         uA/eGzna5QhHm2jHR+WAFoVlyr/aaF9uDy12SjgTOzdukRcbvTwMgK4DzpeCeqXvlNDK
+         as+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yuisy9zT1caIpoCJEL+LfomruK38WXIi70xmI7lYDdI=;
-        b=8JRW1RZeHz5PWiO/uTq9o2gYO6U0LIEegECWDdwMxwd6B1iEsOkhFUw2qAY7zAA0Ur
-         SyNC2tarcEzREMeOAyC8IP9gdq3jEQNopESQUyFJeEMjsx1D5lcIKR4yfm6M01kZs3Sq
-         dGQcgyjnoirh/5hbVp5Mxs03RODAERk1e305bKv95rplyRHDJ+NxYYL0CVd/UwxYJQcP
-         soN+R5LWWmxdxq0FTkX6V91yY/2CH+izs9ngoi/ylmPIV+D0KHcj8riPIyRmunRHfdaM
-         ONIMlCthsyCrEhhpYiHljj15bMDbULRKrx7lrJolmFywiCeFhuFoYPOnnNEFsKXomKfW
-         KbeQ==
-X-Gm-Message-State: AOAM533l4Dl9kL1XsKQZqS5Bl7F5AOYMRGHw0JukSMsoIe6035treqe7
-        /tTHxqzxfpunjzJttcVcX466t2Czf4Lo5/dhzRetTw==
-X-Google-Smtp-Source: ABdhPJwgBzEQtBEEt5JgwawqvX/CZbZsaXh/qAQWeeflxeagBI6MsJ+fyqKdfOXHrkiL5G4d5gMRZlq/mNM2Mj9gTds=
-X-Received: by 2002:a17:90b:1e07:: with SMTP id pg7mr2525502pjb.93.1637638872640;
- Mon, 22 Nov 2021 19:41:12 -0800 (PST)
+        bh=set6lIbZWt1UwkjEncJQUmHWp82483Zo0VHgKUnBt0w=;
+        b=eiiga3IJwMuCuBpm6qvVwx14uNUkjRR9k6+myrN+A2AZLueObtsAKRISjQsUVxvjO6
+         N5OW0BV6Z7/ZGQzKBgi0VMSn0kexIRzyMW+myvI3sdYgdQuxARmOyJQ0okwe+911ezZJ
+         SqM0ACI9SW9DWgiVj2b/L9WoGh06kgETVkfcRd7y5ac62gRpHELwV81U3xr/SAZRnpv3
+         8cTWwx9Y4vq4Iu4Ng9JtiPgst6ZnifZS5Sr80tOuKhopL7uvmT7VaGQ4HuMPMep7n7iv
+         UgdtVSEow1t6fpgFNSSmEv9LK1ICKSVzjkODwWk0SlPeaxwEkSNVuGnI9hpGFi9SLtBq
+         V1XQ==
+X-Gm-Message-State: AOAM533eIG1+Vz5dfwDKD70oeaSXAI1fSwhPK/Wt1Tb/3c+eVXda9ACJ
+        khZUHUK9zdL0fqq7O/AIpQ8H7DqR178ayi14ikCrP4uBeTc=
+X-Google-Smtp-Source: ABdhPJwgdeM7vJZ2DKKwalEr7KeonINU2K18nZr67CpB7ixzXQKpSb7Eol7dgHhzUPEgLb+CGDYy92xBtwbeaxDZs1M=
+X-Received: by 2002:a17:902:6acb:b0:142:76c3:d35f with SMTP id
+ i11-20020a1709026acb00b0014276c3d35fmr2967201plt.89.1637639486743; Mon, 22
+ Nov 2021 19:51:26 -0800 (PST)
 MIME-Version: 1.0
-References: <20211109083309.584081-1-hch@lst.de> <20211109083309.584081-7-hch@lst.de>
-In-Reply-To: <20211109083309.584081-7-hch@lst.de>
+References: <20211109083309.584081-1-hch@lst.de> <20211109083309.584081-8-hch@lst.de>
+In-Reply-To: <20211109083309.584081-8-hch@lst.de>
 From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 22 Nov 2021 19:41:01 -0800
-Message-ID: <CAPcyv4imYR=NLizABpZA+gKH+amNQ6jcVNQhtF+1jyevdWzmBw@mail.gmail.com>
-Subject: Re: [PATCH 06/29] dax: move the partition alignment check into fs_dax_get_by_bdev
+Date:   Mon, 22 Nov 2021 19:51:15 -0800
+Message-ID: <CAPcyv4jnLdFaDwLTeRhJcTzyjd-psZRgWqVDqzOAZr3EGLbF2w@mail.gmail.com>
+Subject: Re: [PATCH 07/29] xfs: factor out a xfs_setup_dax_always helper
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Mike Snitzer <snitzer@redhat.com>, Ira Weiny <ira.weiny@intel.com>,
         device-mapper development <dm-devel@redhat.com>,
@@ -67,9 +68,10 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 On Tue, Nov 9, 2021 at 12:33 AM Christoph Hellwig <hch@lst.de> wrote:
 >
-> fs_dax_get_by_bdev is the primary interface to find a dax device for a
-> block device, so move the partition alignment check there instead of
-> wiring it up through ->dax_supported.
+> Factor out another DAX setup helper to simplify future changes.  Also
+> move the experimental warning after the checks to not clutter the log
+> too much if the setup failed.
 >
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
 Reviewed-by: Dan Williams <dan.j.williams@intel.com>
