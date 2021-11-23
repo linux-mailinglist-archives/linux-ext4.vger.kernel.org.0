@@ -2,55 +2,56 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13208459A38
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Nov 2021 03:54:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2BA7459A3F
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Nov 2021 03:54:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232800AbhKWC52 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 22 Nov 2021 21:57:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46018 "EHLO
+        id S232827AbhKWC6B (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 22 Nov 2021 21:58:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231868AbhKWC52 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 Nov 2021 21:57:28 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8232C061746
-        for <linux-ext4@vger.kernel.org>; Mon, 22 Nov 2021 18:54:20 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id o14so15789345plg.5
-        for <linux-ext4@vger.kernel.org>; Mon, 22 Nov 2021 18:54:20 -0800 (PST)
+        with ESMTP id S231868AbhKWC6A (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 Nov 2021 21:58:00 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77359C061574
+        for <linux-ext4@vger.kernel.org>; Mon, 22 Nov 2021 18:54:53 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id y7so15851781plp.0
+        for <linux-ext4@vger.kernel.org>; Mon, 22 Nov 2021 18:54:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=intel-com.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Al5JsM62A3tHtpfVSPPyo8ez+nZ96myx/BqVadpnmZE=;
-        b=xC+R2Ze1hcDaIg+74cuixxadPvoKZHVUfRh3cG7NL6liGTAKRC1u/dtLV2Upl+DjCb
-         lz8tF4p8hd5xqtUPL0FFIN4COIFn8gNO0kZEDg0AZkuF8D8jKwc0aEvQ7rx69yXQ0Onu
-         ygsv6Lso/1XQ2tNifMHR6wKXy6FdeML5mJLZDRvnaAHvQPYqIVreOhkxmGyxQPa6SI/i
-         eitCea7WNPUHw+NWqm+DDMhFpduBZks6zZt+EcfeE8ME4X0s0nFvXWdxr1dRMwydHs/r
-         NeInAl4EFa9zlunOlALEVrXarilVx4ntLaJRr9tg/Qn0MoP7TxRpqBu+w38vRZVF2hEy
-         GCPQ==
+        bh=hzu6WTfZUrCey1J7m6mzu3SyuG3mlb0cV5bc4AfptPs=;
+        b=beaUT1FtsNFsra95ne0owHh0REAyyuUzujf6WfZCqbHVqWDCseUjZNBp1imtZrvl25
+         Tle8IyUp3iiK6T7rSedrQcl9c/h0UQVa4ff4523mpAef4KYGb1TbGvy3lfGAL4G4Ooqr
+         TH0f0Xw5heidYTCEKZrSbgx6eXucck48D1PdG9bQqnHF3xFKgaR12HFK4qLWfYdcBAaW
+         hyr06oXivq4GX87hiZVUip/cxW8DPPmY1DWSzEzAGLteKQgqOmlnE0Fzbh+eO2i8dmuO
+         d0czzqQ7InLmIRWHjnUfTxiVsP9Xg6prNyjUDIVMDnnmk947ZrGB8bNv0YUysQL48hVn
+         bE4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Al5JsM62A3tHtpfVSPPyo8ez+nZ96myx/BqVadpnmZE=;
-        b=DsdnvAocPpUQCq9FBj19CKxsNxuiALOkr9aWdPKFz9nPN/9bk28AoK+xH10L5GvMpY
-         etBspKxwn2M2SMR3l3KigP4s83MoBvfBMj3pdHxK0H1+vlk0Q5ozveQ+NTJ+lQti03yi
-         876cYrbaIIW+3p/wiGERC9O76qfpm0LcMy2dnTxcI7WxguTswzuvC7Rat3hCI18eD22O
-         RHazCwaeKrJJpzYMWH9qSL2hp2b79hCUCETQuoHSDLx+4mlr5DfJgyK6FlQJ++4zw4VH
-         Vuwq9m2dqK7gDcHbvJLun5dO1U0K9fAdHUrufZd5nV0uOr8oSRPHW8P9Z1UYdLENhdzn
-         MWkg==
-X-Gm-Message-State: AOAM531dKj8m5lnE8jksgtHxO9SaSswlbU/CBtkzKeANS/A69T+8nvut
-        u//aDvwQpxItB1cVF4kUCQLUbijg1oFUrGu6G2CINQ==
-X-Google-Smtp-Source: ABdhPJzVmbqwkteuXJ4hKBjAQTD1mqO5WV/z0skpRbQzjFZ3o+tEVCfuAJYtWwfPr8oZjtyH1KqF3yLKCjaZBtlyJ4k=
-X-Received: by 2002:a17:90b:1e07:: with SMTP id pg7mr2220703pjb.93.1637636060294;
- Mon, 22 Nov 2021 18:54:20 -0800 (PST)
+        bh=hzu6WTfZUrCey1J7m6mzu3SyuG3mlb0cV5bc4AfptPs=;
+        b=u+tsnHYj8d6DvTwQ4CUMPV5Fyv9HgzG5EFcXdHD6FXqV1tZN32kxKvFemJgWvjCNUS
+         Yu9EvO9mKHyPxUsgkKxrcrkaNF6j9y5Vsr2Zsn+h4qrjD42n0USbXQUP8NX5almwxTkN
+         nxaPijHIZD18SKa/Q/4IOCNQ66mbc6nhemi1RHn3/2JcfF9skiRM0o9LjRNIcMlcMYdK
+         Rk+i5vTcbTSwN2GN5NYlY8MFBAw2UwHhtf5rWVkFccDkPLFbaAnoCHncKqsWM35R5/EK
+         uDapjHBwWfI3ANBCvlaulTJyX0/T5Od/sX29AZdKAYpkLx4PzAoZJOSPx2JknYsxhfb8
+         BvWg==
+X-Gm-Message-State: AOAM531sSsCXNAaC3T3vqBk2QCd2BFOrMT4srxId68aKJmznCIAltNpO
+        Zz2UAWsJZY6XuyxTfctm7Qnyc3lsk5ePTndyOxv8iA==
+X-Google-Smtp-Source: ABdhPJxeiX5ifpjvIOpWVxQMDUuHcOe3OIdJeR8Imw/gLHmEQwl4x/JiO/uU+o3bH9o5PQYkURGBJLUFMItHEKRZD78=
+X-Received: by 2002:a17:902:a50f:b0:143:7dec:567 with SMTP id
+ s15-20020a170902a50f00b001437dec0567mr2776615plq.18.1637636093077; Mon, 22
+ Nov 2021 18:54:53 -0800 (PST)
 MIME-Version: 1.0
-References: <20211109083309.584081-1-hch@lst.de> <20211109083309.584081-3-hch@lst.de>
- <CAPcyv4iPOcD8OsimpSZMnbTEsGZKj-GqSY=cWC0tPvoVs6DE1Q@mail.gmail.com> <20211119065457.GA15524@lst.de>
-In-Reply-To: <20211119065457.GA15524@lst.de>
+References: <20211109083309.584081-1-hch@lst.de> <20211109083309.584081-4-hch@lst.de>
+ <CAPcyv4hzWBZfex=C2_+nNLFKODw8+E9NSgK50COqE748cfEKTg@mail.gmail.com>
+In-Reply-To: <CAPcyv4hzWBZfex=C2_+nNLFKODw8+E9NSgK50COqE748cfEKTg@mail.gmail.com>
 From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 22 Nov 2021 18:54:09 -0800
-Message-ID: <CAPcyv4iDujo8ZZp=8xNEhB3u6Vyc6nzq_THGiGRON7x3oi9enw@mail.gmail.com>
-Subject: Re: [PATCH 02/29] dm: make the DAX support dependend on CONFIG_FS_DAX
+Date:   Mon, 22 Nov 2021 18:54:42 -0800
+Message-ID: <CAPcyv4g=KgKZR6JF8_=mTs7Ndgq7DSU+5_sTJ7gQuwUgC5dRYg@mail.gmail.com>
+Subject: Re: [PATCH 03/29] dax: remove CONFIG_DAX_DRIVER
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Mike Snitzer <snitzer@redhat.com>, Ira Weiny <ira.weiny@intel.com>,
         device-mapper development <dm-devel@redhat.com>,
@@ -66,19 +67,14 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 10:55 PM Christoph Hellwig <hch@lst.de> wrote:
+On Wed, Nov 17, 2021 at 9:43 AM Dan Williams <dan.j.williams@intel.com> wrote:
 >
-> On Wed, Nov 17, 2021 at 09:23:44AM -0800, Dan Williams wrote:
-> > Applied, fixed the spelling of 'dependent' in the subject and picked
-> > up Mike's Ack from the previous send:
+> On Tue, Nov 9, 2021 at 12:33 AM Christoph Hellwig <hch@lst.de> wrote:
 > >
-> > https://lore.kernel.org/r/YYASBVuorCedsnRL@redhat.com
-> >
-> > Christoph, any particular reason you did not pick up the tags from the
-> > last posting?
+> > CONFIG_DAX_DRIVER only selects CONFIG_DAX now, so remove it.
 >
-> I thought I did, but apparently I've missed some.
+> Applied.
 
-I'll reply with the ones I see missing that need carrying over and add
-my own reviewed-by then you can send me a pull request when ready,
-deal?
+Unapplied,
+
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
