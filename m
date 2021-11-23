@@ -2,205 +2,215 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0723459F2F
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Nov 2021 10:27:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D5F8459F66
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Nov 2021 10:41:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234660AbhKWJau (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 23 Nov 2021 04:30:50 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:53448 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233866AbhKWJau (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 23 Nov 2021 04:30:50 -0500
+        id S231623AbhKWJoI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 23 Nov 2021 04:44:08 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:46470 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231246AbhKWJoH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 23 Nov 2021 04:44:07 -0500
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 1E5C21FD58;
-        Tue, 23 Nov 2021 09:27:42 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 1FF832171F;
+        Tue, 23 Nov 2021 09:40:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637659662; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1637660459; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=U5Msc3mEcH5QpBAfAeDh/f00f43U6Z+29a0j9xlLtqY=;
-        b=Vznk4Ou6ER7k3m46lH6x4xgE9t8MIG8FNoyUOdTJ6X+heqJaU/Mc81x12XjBaccrnLRRpF
-        1OCo9F6f/v3bMql4stKgqk5+ypY6HkSchOuKF4gz4Y2RN1jZfef9jMJ3hAk83JqFm3vABu
-        hf3Ne71OvZhXO08cdNelcxl5/0Bg77M=
+        bh=w7dc313dal0202LofCH+BjxG2ZPhaIaRUROC0jGIafI=;
+        b=GdfsDsZSs46Mll3aknM+YZPRk0XtyEgZ21rnH/QddyQl3AzUEPPoeogS3KcptOME9IDBYJ
+        0kr75gD4yrIf9tGqXMh0nCGAxwxdKn/XaT6t/DhhPUC62SSARkrTYUt2N9JuOoj+VtSw5R
+        f+QoQlCjmnujW7ETGxBfgxezFY4rLU8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637659662;
+        s=susede2_ed25519; t=1637660459;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=U5Msc3mEcH5QpBAfAeDh/f00f43U6Z+29a0j9xlLtqY=;
-        b=RrSdvTsoWO6e3ZOhhm0qqEF4+VnlMy0mU9KOZ4OzLDe2cFjHDDYVpmZe+aS2yHRhUvvhf2
-        uNxqOp2EQfPQIfBw==
+        bh=w7dc313dal0202LofCH+BjxG2ZPhaIaRUROC0jGIafI=;
+        b=olJRCCBe++eBLrag1s9akwC1PFD8DDdqRtpf455tNzBR2GLHQYQBSP4ygJ0xqs/2Qfsh0d
+        YkmBUCwDvdu6KsDg==
 Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 0B789A3B8D;
-        Tue, 23 Nov 2021 09:27:42 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 1160FA3B81;
+        Tue, 23 Nov 2021 09:40:58 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id D30761E0C01; Tue, 23 Nov 2021 10:27:41 +0100 (CET)
-Date:   Tue, 23 Nov 2021 10:27:41 +0100
+        id 543321E0C01; Tue, 23 Nov 2021 10:40:56 +0100 (CET)
+Date:   Tue, 23 Nov 2021 10:40:56 +0100
 From:   Jan Kara <jack@suse.cz>
-To:     yangerkun <yangerkun@huawei.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, yukuai3@huawei.com
-Subject: Re: [PATCH] ext4: if zeroout fails fall back to splitting the extent
- node
-Message-ID: <20211123092741.GA8583@quack2.suse.cz>
-References: <YRaNKc2PvM+Eyzmp@mit.edu>
- <20210813212701.366447-1-tytso@mit.edu>
- <715f636e-ff1b-301f-38a9-602437fdd95a@huawei.com>
+To:     brookxu <brookxu.cn@gmail.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+        riteshh@linux.ibm.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] ext4: fix a possible ABBA deadlock dued to busy PA
+Message-ID: <20211123094056.GB8583@quack2.suse.cz>
+References: <1637630277-23496-1-git-send-email-brookxu.cn@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <715f636e-ff1b-301f-38a9-602437fdd95a@huawei.com>
+In-Reply-To: <1637630277-23496-1-git-send-email-brookxu.cn@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
-
-On Sun 26-09-21 19:35:01, yangerkun wrote:
-> Rethink about this problem. Should we consider other place which call
-> ext4_issue_zeroout? Maybe it can trigger the problem too(in theory, not
-> really happened)...
+On Tue 23-11-21 09:17:57, brookxu wrote:
+> From: Chunguang Xu <brookxu@tencent.com>
 > 
-> How about include follow patch which not only transfer ENOSPC to EIO. But
-> also stop to overwrite the error return by ext4_ext_insert_extent in
-> ext4_split_extent_at.
+> We found on older kernel (3.10) that in the scenario of insufficient
+> disk space, system may trigger an ABBA deadlock problem, it seems that
+> this problem still exists in latest kernel, try to fix it here. The
+> main process triggered by this problem is that task A occupies the PA
+> and waits for the jbd2 transaction finish, the jbd2 transaction waits
+> for the completion of task B's IO (plug_list), but task B waits for
+> the release of PA by task A to finish discard, which indirectly forms
+> an ABBA deadlock. The related calltrace is as follows:
 > 
-> Besides, 308c57ccf431 ("ext4: if zeroout fails fall back to splitting the
-> extent node") can work together with this patch.
+>     Task A
+>     vfs_write
+>     ext4_mb_new_blocks()
+>     ext4_mb_mark_diskspace_used()       JBD2
+>     jbd2_journal_get_write_access()  -> jbd2_journal_commit_transaction()
+>   ->schedule()                          filemap_fdatawait()
+>  |                                              |
+>  | Task B                                       |
+>  | do_unlinkat()                                |
+>  | ext4_evict_inode()                           |
+>  | jbd2_journal_begin_ordered_truncate()        |
+>  | filemap_fdatawrite_range()                   |
+>  | ext4_mb_new_blocks()                         |
+>   -ext4_mb_discard_group_preallocations() <-----
+> 
+> Here, try to cancel ext4_mb_discard_group_preallocations() internal
+> retry due to PA busy, and do a limited number of retries inside
+> ext4_mb_discard_preallocations(), which can circumvent the above
+> problems, but also has some advantages:
+> 
+> 1. Since the PA is in a busy state, if other groups have free PAs,
+>    keeping the current PA may help to reduce fragmentation.
+> 2. Continue to traverse forward instead of waiting for the current
+>    group PA to be released. In most scenarios, the PA discard time
+>    can be reduced.
+> 
+> However, in the case of smaller free space, if only a few groups have
+> space, then due to multiple traversals of the group, it may increase
+> CPU overhead. But in contrast, I feel that the overall benefit is
+> better than the cost.
+> 
+> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> ---
+> v2: reset busy to zero before goto repeat.
+> v3: fix a clang-analyzer warning report by kernel test robot.
 
-I've got back to this. The ext4_ext_zeroout() calls in
-ext4_split_extent_at() seem to be there as fallback when insertion of a new
-extent fails due to ENOSPC / EDQUOT. If even ext4_ext_zeroout(), then I
-think returning an error as the code does now is correct and we don't have
-much other option. Also we are really running out of disk space so I think
-returning ENOSPC is fine. What exact scenario are you afraid of?
+Thanks for the patch. Still looks good to me so feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
 
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index c0de30f25185..66767ede235f 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -3218,16 +3218,18 @@ static int ext4_split_extent_at(handle_t *handle,
->                 goto out;
 > 
->         if (EXT4_EXT_MAY_ZEROOUT & split_flag) {
-> +               int ret = 0;
-> +
->                 if (split_flag &
-> (EXT4_EXT_DATA_VALID1|EXT4_EXT_DATA_VALID2)) {
->                         if (split_flag & EXT4_EXT_DATA_VALID1) {
-> -                               err = ext4_ext_zeroout(inode, ex2);
-> +                               ret = ext4_ext_zeroout(inode, ex2);
->                                 zero_ex.ee_block = ex2->ee_block;
->                                 zero_ex.ee_len = cpu_to_le16(
+>  fs/ext4/mballoc.c | 40 ++++++++++++++++++----------------------
+>  1 file changed, 18 insertions(+), 22 deletions(-)
 > 
-> ext4_ext_get_actual_len(ex2));
->                                 ext4_ext_store_pblock(&zero_ex,
-> 
-> ext4_ext_pblock(ex2));
->                         } else {
-> -                               err = ext4_ext_zeroout(inode, ex);
-> +                               ret = ext4_ext_zeroout(inode, ex);
->                                 zero_ex.ee_block = ex->ee_block;
->                                 zero_ex.ee_len = cpu_to_le16(
-> 
-> ext4_ext_get_actual_len(ex));
-> @@ -3235,7 +3237,7 @@ static int ext4_split_extent_at(handle_t *handle,
->                                                       ext4_ext_pblock(ex));
->                         }
->                 } else {
-> -                       err = ext4_ext_zeroout(inode, &orig_ex);
-> +                       ret = ext4_ext_zeroout(inode, &orig_ex);
->                         zero_ex.ee_block = orig_ex.ee_block;
->                         zero_ex.ee_len = cpu_to_le16(
-> 
-> ext4_ext_get_actual_len(&orig_ex));
-> @@ -3243,7 +3245,7 @@ static int ext4_split_extent_at(handle_t *handle,
->                                               ext4_ext_pblock(&orig_ex));
->                 }
-> 
-> -               if (!err) {
-> +               if (!ret) {
->                         /* update the extent length and mark as initialized
-> */
->                         ex->ee_len = cpu_to_le16(ee_len);
->                         ext4_ext_try_to_merge(handle, inode, path, ex);
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index d18852d6029c..95b970581864 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -427,6 +427,9 @@ int ext4_issue_zeroout(struct inode *inode, ext4_lblk_t
-> lblk, ext4_fsblk_t pblk,
->         if (ret > 0)
->                 ret = 0;
-> 
-> +       if (ret == -ENOSPC)
-> +               ret = -EIO;
-> +
->         return ret;
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 215b706..3dd9b9e 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -4814,7 +4814,7 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+>   */
+>  static noinline_for_stack int
+>  ext4_mb_discard_group_preallocations(struct super_block *sb,
+> -					ext4_group_t group, int needed)
+> +				     ext4_group_t group, int *busy)
+>  {
+>  	struct ext4_group_info *grp = ext4_get_group_info(sb, group);
+>  	struct buffer_head *bitmap_bh = NULL;
+> @@ -4822,8 +4822,7 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+>  	struct list_head list;
+>  	struct ext4_buddy e4b;
+>  	int err;
+> -	int busy = 0;
+> -	int free, free_total = 0;
+> +	int free = 0;
+>  
+>  	mb_debug(sb, "discard preallocation for group %u\n", group);
+>  	if (list_empty(&grp->bb_prealloc_list))
+> @@ -4846,19 +4845,14 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+>  		goto out_dbg;
+>  	}
+>  
+> -	if (needed == 0)
+> -		needed = EXT4_CLUSTERS_PER_GROUP(sb) + 1;
+> -
+>  	INIT_LIST_HEAD(&list);
+> -repeat:
+> -	free = 0;
+>  	ext4_lock_group(sb, group);
+>  	list_for_each_entry_safe(pa, tmp,
+>  				&grp->bb_prealloc_list, pa_group_list) {
+>  		spin_lock(&pa->pa_lock);
+>  		if (atomic_read(&pa->pa_count)) {
+>  			spin_unlock(&pa->pa_lock);
+> -			busy = 1;
+> +			*busy = 1;
+>  			continue;
+>  		}
+>  		if (pa->pa_deleted) {
+> @@ -4898,22 +4892,13 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+>  		call_rcu(&(pa)->u.pa_rcu, ext4_mb_pa_callback);
+>  	}
+>  
+> -	free_total += free;
+> -
+> -	/* if we still need more blocks and some PAs were used, try again */
+> -	if (free_total < needed && busy) {
+> -		ext4_unlock_group(sb, group);
+> -		cond_resched();
+> -		busy = 0;
+> -		goto repeat;
+> -	}
+>  	ext4_unlock_group(sb, group);
+>  	ext4_mb_unload_buddy(&e4b);
+>  	put_bh(bitmap_bh);
+>  out_dbg:
+>  	mb_debug(sb, "discarded (%d) blocks preallocated for group %u bb_free (%d)\n",
+> -		 free_total, group, grp->bb_free);
+> -	return free_total;
+> +		 free, group, grp->bb_free);
+> +	return free;
 >  }
+>  
+>  /*
+> @@ -5455,13 +5440,24 @@ static int ext4_mb_discard_preallocations(struct super_block *sb, int needed)
+>  {
+>  	ext4_group_t i, ngroups = ext4_get_groups_count(sb);
+>  	int ret;
+> -	int freed = 0;
+> +	int freed = 0, busy = 0;
+> +	int retry = 0;
+>  
+>  	trace_ext4_mb_discard_preallocations(sb, needed);
+> +
+> +	if (needed == 0)
+> +		needed = EXT4_CLUSTERS_PER_GROUP(sb) + 1;
+> + repeat:
+>  	for (i = 0; i < ngroups && needed > 0; i++) {
+> -		ret = ext4_mb_discard_group_preallocations(sb, i, needed);
+> +		ret = ext4_mb_discard_group_preallocations(sb, i, &busy);
+>  		freed += ret;
+>  		needed -= ret;
+> +		cond_resched();
+> +	}
+> +
+> +	if (needed > 0 && busy && ++retry < 3) {
+> +		busy = 0;
+> +		goto repeat;
+>  	}
+>  
+>  	return freed;
+> -- 
+> 1.8.3.1
 > 
-> 
-> 
-> 在 2021/8/14 5:27, Theodore Ts'o 写道:
-> > If the underlying storage device is using thin-provisioning, it's
-> > possible for a zeroout operation to return ENOSPC.
-> > 
-> > Commit df22291ff0fd ("ext4: Retry block allocation if we have free blocks
-> > left") added logic to retry block allocation since we might get free block
-> > after we commit a transaction. But the ENOSPC from thin-provisioning
-> > will confuse ext4, and lead to an infinite loop.
-> > 
-> > Since using zeroout instead of splitting the extent node is an
-> > optimization, if it fails, we might as well fall back to splitting the
-> > extent node.
-> > 
-> > Reported-by: yangerkun <yangerkun@huawei.com>
-> > Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-> > ---
-> > 
-> > I've run this through my battery of tests, and it doesn't cause any
-> > regressions.  Yangerkun, can you test this and see if this works for
-> > you?
-> > 
-> >   fs/ext4/extents.c | 5 +++--
-> >   1 file changed, 3 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> > index 92ad64b89d9b..501516cadc1b 100644
-> > --- a/fs/ext4/extents.c
-> > +++ b/fs/ext4/extents.c
-> > @@ -3569,7 +3569,7 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
-> >   				split_map.m_len - ee_block);
-> >   			err = ext4_ext_zeroout(inode, &zero_ex1);
-> >   			if (err)
-> > -				goto out;
-> > +				goto fallback;
-> >   			split_map.m_len = allocated;
-> >   		}
-> >   		if (split_map.m_lblk - ee_block + split_map.m_len <
-> > @@ -3583,7 +3583,7 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
-> >   						      ext4_ext_pblock(ex));
-> >   				err = ext4_ext_zeroout(inode, &zero_ex2);
-> >   				if (err)
-> > -					goto out;
-> > +					goto fallback;
-> >   			}
-> >   			split_map.m_len += split_map.m_lblk - ee_block;
-> > @@ -3592,6 +3592,7 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
-> >   		}
-> >   	}
-> > +fallback:
-> >   	err = ext4_split_extent(handle, inode, ppath, &split_map, split_flag,
-> >   				flags);
-> >   	if (err > 0)
-> > 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
