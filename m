@@ -2,266 +2,177 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5035945C4A2
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Nov 2021 14:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87EC445CABB
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Nov 2021 18:15:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354399AbhKXNuc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 24 Nov 2021 08:50:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31603 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1354196AbhKXNs7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:48:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637761549;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=b7QI1o7Ls2gj25N/ROr0r6RbdOdefxtgwwcPRc5r7HE=;
-        b=EneOxPuEfgXA63E5Qxv+gzii8kmd/vQhf+2ZPmn5IrV8XR/OOGzlPq65vt5/XyQAvbc+Lq
-        eJmCUwC8I2GhhlimgEVxSnxoPp5vRR1nbn3EORrNdVW8Vv9k/61i9OD8BNw0t31DFp56GZ
-        Qul08z5/dBAz1pl63M0WoGV+FOzNR9o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-398-8orvxn5TNUSmFp1B1VRS-Q-1; Wed, 24 Nov 2021 08:45:47 -0500
-X-MC-Unique: 8orvxn5TNUSmFp1B1VRS-Q-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E25E315720;
-        Wed, 24 Nov 2021 13:45:46 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.40.194.241])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 219E11972E;
-        Wed, 24 Nov 2021 13:45:45 +0000 (UTC)
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     linux-ext4@vger.kernel.org, tytso@mit.edu
-Subject: [PATCH] tune2fs: implement support for set/get label iocts
-Date:   Wed, 24 Nov 2021 14:45:42 +0100
-Message-Id: <20211124134542.22270-1-lczerner@redhat.com>
+        id S232031AbhKXRS0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 24 Nov 2021 12:18:26 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:57682 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229509AbhKXRS0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 24 Nov 2021 12:18:26 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id D1A0D21941;
+        Wed, 24 Nov 2021 17:15:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637774115; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BCGtCJK5L+eb9vaFKEIUdp3BquJpa4mvy+SgrA9zVSg=;
+        b=othiAs3Q0nnlWrofkMO6HESzKEwJ/ObCn3/cFPwXrvSY8N0G6Y/dBKN5zsHqLhssiqNRf/
+        zzONo6m2cRwC6exwaWw1VCbxv9EOEjaHxoFAp673tdWWbN/uuDtvnDgGy5XK5G/03r7HEH
+        Tf3NaNH+04SItLFe83W7YGp1InrRRJQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637774115;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BCGtCJK5L+eb9vaFKEIUdp3BquJpa4mvy+SgrA9zVSg=;
+        b=OPZre4kbSNbmXjxz8G6RbYVBoJ7/OzaOwltbyZA7EiKn/184tW0EFzLl9JRXEPAEh7ltUw
+        iDK5WTrJOwBcGADQ==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id 28B90A3B81;
+        Wed, 24 Nov 2021 17:15:15 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id CC6B01E0D1A; Wed, 24 Nov 2021 18:15:10 +0100 (CET)
+Date:   Wed, 24 Nov 2021 18:15:10 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     yangerkun <yangerkun@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        yukuai3@huawei.com
+Subject: Re: [PATCH] ext4: if zeroout fails fall back to splitting the extent
+ node
+Message-ID: <20211124171510.GA11240@quack2.suse.cz>
+References: <YRaNKc2PvM+Eyzmp@mit.edu>
+ <20210813212701.366447-1-tytso@mit.edu>
+ <715f636e-ff1b-301f-38a9-602437fdd95a@huawei.com>
+ <20211123092741.GA8583@quack2.suse.cz>
+ <d5346e36-3331-0d0d-e36d-83f543986ccb@huawei.com>
+ <20211124103737.GI8583@quack2.suse.cz>
+ <9e47b349-0360-3426-dfa3-cc77f444fac3@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9e47b349-0360-3426-dfa3-cc77f444fac3@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Implement support for FS_IOC_SETFSLABEL and FS_IOC_GETFSLABEL ioctls.
-Try to use the ioctls if possible even before we open the file system
-since we don't need it. Only fall back to the old method in the case the
-file system is not mounted, is mounted read only in the set label case,
-or the ioctls are not suppported by the kernel.
+On Wed 24-11-21 20:11:43, yangerkun wrote:
+> 
+> 
+> On 2021/11/24 18:37, Jan Kara wrote:
+> > On Wed 24-11-21 17:01:12, yangerkun wrote:
+> > > On 2021/11/23 17:27, Jan Kara wrote:
+> > > > Hello,
+> > > > 
+> > > > On Sun 26-09-21 19:35:01, yangerkun wrote:
+> > > > > Rethink about this problem. Should we consider other place which call
+> > > > > ext4_issue_zeroout? Maybe it can trigger the problem too(in theory, not
+> > > > > really happened)...
+> > > > > 
+> > > > > How about include follow patch which not only transfer ENOSPC to EIO. But
+> > > > > also stop to overwrite the error return by ext4_ext_insert_extent in
+> > > > > ext4_split_extent_at.
+> > > > > 
+> > > > > Besides, 308c57ccf431 ("ext4: if zeroout fails fall back to splitting the
+> > > > > extent node") can work together with this patch.
+> > > > 
+> > > > I've got back to this. The ext4_ext_zeroout() calls in
+> > > > ext4_split_extent_at() seem to be there as fallback when insertion of a new
+> > > > extent fails due to ENOSPC / EDQUOT. If even ext4_ext_zeroout(), then I
+> > > > think returning an error as the code does now is correct and we don't have
+> > > > much other option. Also we are really running out of disk space so I think
+> > > > returning ENOSPC is fine. What exact scenario are you afraid of?
+> > > 
+> > > I am afraid about the EDQUOT from ext4_ext_insert_extent may be overwrite by
+> > > ext4_ext_zeroout with ENOSPC. And this may lead to dead loop since
+> > > ext4_writepages will retry once get ENOSPC? Maybe I am wrong...
+> > 
+> > OK, so passing back original error instead of the error from
+> > ext4_ext_zeroout() makes sense. But I don't think doing much more is needed
+> > - firstly, ENOSPC or EDQUOT should not happen in ext4_split_extent_at()
+> > called from ext4_writepages() because we should have reserved enough
+> > space for extent splits when writing data. So hitting that is already
+> 
+> ext4_da_write_begin
+>   ext4_da_get_block_prep
+>     ext4_insert_delayed_block
+>       ext4_da_reserve_space
+> 
+> It seems we will only reserve space for data, no for metadata...
+> 
+> 
+> > unexpected. Committing transaction holding blocks that are expected to be
+> > free is the most likely reason for us seeing ENOSPC and returning EIO in
+> > that case would be bug.
+> 
+> Agree. EIO from ext4_ext_zeroout that overwrite the ENOSPC from
+> ext4_ext_insert_extent seems buggy too. Maybe we should ignore the error
+> from ext4_ext_zeroout and return the error from ext4_ext_insert_extent
+> once ext4_ext_zeroout in ext4_split_extent_at got a error. Something
+> like this:
 
-The new ioctls can also be supported by file system drivers other than
-ext4. As a result tune2fs and e2label will work for those file systems
-as well as long as the file system is mounted. Note that we still truncate
-the label exceeds the supported lenghth on extN file system family, while
-we keep the label intact for others.
+Yep, something like that looks good to me.
 
-Update tune2fs and e2label as well.
+								Honza
 
-Signed-off-by: Lukas Czerner <lczerner@redhat.com>
----
- lib/ext2fs/ext2fs.h    |  1 +
- lib/ext2fs/ismounted.c |  5 +++
- misc/e2label.8.in      |  7 ++-
- misc/tune2fs.8.in      |  8 +++-
- misc/tune2fs.c         | 96 ++++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 114 insertions(+), 3 deletions(-)
-
-diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
-index 0ee0e7d0..68f9c1fe 100644
---- a/lib/ext2fs/ext2fs.h
-+++ b/lib/ext2fs/ext2fs.h
-@@ -531,6 +531,7 @@ typedef struct ext2_struct_inode_scan *ext2_inode_scan;
- #define EXT2_MF_READONLY	4
- #define EXT2_MF_SWAP		8
- #define EXT2_MF_BUSY		16
-+#define EXT2_MF_EXTFS		32
- 
- /*
-  * Ext2/linux mode flags.  We define them here so that we don't need
-diff --git a/lib/ext2fs/ismounted.c b/lib/ext2fs/ismounted.c
-index aee7d726..c73273b8 100644
---- a/lib/ext2fs/ismounted.c
-+++ b/lib/ext2fs/ismounted.c
-@@ -207,6 +207,11 @@ is_root:
- 			close(fd);
- 		(void) unlink(TEST_FILE);
- 	}
-+
-+	if (!strcmp(mnt->mnt_type, "ext4") ||
-+	    !strcmp(mnt->mnt_type, "ext3") ||
-+	    !strcmp(mnt->mnt_type, "ext2"))
-+		*mount_flags |= EXT2_MF_EXTFS;
- 	retval = 0;
- errout:
- 	endmntent (f);
-diff --git a/misc/e2label.8.in b/misc/e2label.8.in
-index 1dc96199..fa5294c4 100644
---- a/misc/e2label.8.in
-+++ b/misc/e2label.8.in
-@@ -33,7 +33,12 @@ Ext2 volume labels can be at most 16 characters long; if
- .I volume-label
- is longer than 16 characters,
- .B e2label
--will truncate it and print a warning message.
-+will truncate it and print a warning message.  For other file systems that
-+support online label manipulation and are mounted
-+.B e2label
-+will work as well, but it will not attempt to truncate the
-+.I volume-label
-+at all.
- .PP
- It is also possible to set the volume label using the
- .B \-L
-diff --git a/misc/tune2fs.8.in b/misc/tune2fs.8.in
-index 1e026e5f..628dcdc0 100644
---- a/misc/tune2fs.8.in
-+++ b/misc/tune2fs.8.in
-@@ -457,8 +457,12 @@ Ext2 file system labels can be at most 16 characters long; if
- .I volume-label
- is longer than 16 characters,
- .B tune2fs
--will truncate it and print a warning.  The volume label can be used
--by
-+will truncate it and print a warning.  For other file systems that
-+support online label manipulation and are mounted
-+.B tune2fs
-+will work as well, but it will not attempt to truncate the
-+.I volume-label
-+at all.  The volume label can be used by
- .BR mount (8),
- .BR fsck (8),
- and
-diff --git a/misc/tune2fs.c b/misc/tune2fs.c
-index 71a8e99b..6c162ba5 100644
---- a/misc/tune2fs.c
-+++ b/misc/tune2fs.c
-@@ -52,6 +52,9 @@ extern int optind;
- #include <sys/types.h>
- #include <libgen.h>
- #include <limits.h>
-+#ifdef HAVE_SYS_IOCTL_H
-+#include <sys/ioctl.h>
-+#endif
- 
- #include "ext2fs/ext2_fs.h"
- #include "ext2fs/ext2fs.h"
-@@ -70,6 +73,15 @@ extern int optind;
- #define QOPT_ENABLE	(1)
- #define QOPT_DISABLE	(-1)
- 
-+#ifndef FS_IOC_SETFSLABEL
-+#define FSLABEL_MAX 256
-+#define FS_IOC_SETFSLABEL	_IOW(0x94, 50, char[FSLABEL_MAX])
-+#endif
-+
-+#ifndef FS_IOC_GETFSLABEL
-+#define FS_IOC_GETFSLABEL	_IOR(0x94, 49, char[FSLABEL_MAX])
-+#endif
-+
- extern int ask_yn(const char *string, int def);
- 
- const char *program_name = "tune2fs";
-@@ -2997,6 +3009,75 @@ fs_update_journal_user(struct ext2_super_block *sb, __u8 old_uuid[UUID_SIZE])
- 	return 0;
- }
- 
-+/*
-+ * Use FS_IOC_SETFSLABEL or FS_IOC_GETFSLABEL to set/get file system label
-+ * Return:	0 on success
-+ *		1 on error
-+ *		-1 when the old method should be used
-+ */
-+int handle_fslabel(int setlabel) {
-+	errcode_t ret;
-+	int mnt_flags, fd;
-+	char label[FSLABEL_MAX];
-+	int maxlen = FSLABEL_MAX - 1;
-+	char mntpt[PATH_MAX + 1];
-+
-+	ret = ext2fs_check_mount_point(device_name, &mnt_flags,
-+					  mntpt, sizeof(mntpt));
-+	if (ret) {
-+		com_err(device_name, ret, _("while checking mount status"));
-+		return 1;
-+	}
-+	if (!(mnt_flags & EXT2_MF_MOUNTED) ||
-+	    (setlabel && (mnt_flags & EXT2_MF_READONLY)))
-+		return -1;
-+
-+	if (!mntpt[0]) {
-+		fprintf(stderr,_("Unknown mount point for %s\n"), device_name);
-+		return 1;
-+	}
-+
-+	fd = open(mntpt, O_RDONLY);
-+	if (fd < 0) {
-+		com_err(mntpt, errno, _("while opening mount point"));
-+		return 1;
-+	}
-+
-+	/* Get fs label */
-+	if (!setlabel) {
-+		if (ioctl(fd, FS_IOC_GETFSLABEL, &label)) {
-+			close(fd);
-+			if (errno == ENOTTY)
-+				return -1;
-+			com_err(mntpt, errno, _("while trying to get fs label"));
-+			return 1;
-+		}
-+		close(fd);
-+		printf("%.*s\n", EXT2_LEN_STR(label));
-+		return 0;
-+	}
-+
-+	/* If it's extN file system, truncate the label to appropriate size */
-+	if (mnt_flags & EXT2_MF_EXTFS)
-+		maxlen = EXT2_LABEL_LEN;
-+	if (strlen(new_label) > maxlen) {
-+		fputs(_("Warning: label too long, truncating.\n"),
-+		      stderr);
-+		new_label[maxlen] = '\0';
-+	}
-+
-+	/* Set fs label */
-+	if (ioctl(fd, FS_IOC_SETFSLABEL, new_label)) {
-+		close(fd);
-+		if (errno == ENOTTY)
-+			return -1;
-+		com_err(mntpt, errno, _("while trying to set fs label"));
-+		return 1;
-+	}
-+	close(fd);
-+	return 0;
-+}
-+
- #ifndef BUILD_AS_LIB
- int main(int argc, char **argv)
- #else
-@@ -3038,6 +3119,21 @@ int tune2fs_main(int argc, char **argv)
- #endif
- 		io_ptr = unix_io_manager;
- 
-+	/*
-+	 * Try the get/set fs label using ioctls before we even attempt
-+	 * to open the file system.
-+	 */
-+	if (L_flag || print_label) {
-+		rc = handle_fslabel(L_flag);
-+		if (rc != -1) {
-+#ifndef BUILD_AS_LIB
-+			exit(rc);
-+#endif
-+			return rc;
-+		}
-+		rc = 0;
-+	}
-+
- retry_open:
- 	if ((open_flag & EXT2_FLAG_RW) == 0 || f_flag)
- 		open_flag |= EXT2_FLAG_SKIP_MMP;
+> 
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index 0ecf819bf189..56cc00ee42a1 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -3185,6 +3185,7 @@ static int ext4_split_extent_at(handle_t *handle,
+>         struct ext4_extent *ex2 = NULL;
+>         unsigned int ee_len, depth;
+>         int err = 0;
+> +       int err1;
+> 
+>         BUG_ON((split_flag & (EXT4_EXT_DATA_VALID1 | EXT4_EXT_DATA_VALID2))
+> ==
+>                (EXT4_EXT_DATA_VALID1 | EXT4_EXT_DATA_VALID2));
+> @@ -3255,7 +3256,7 @@ static int ext4_split_extent_at(handle_t *handle,
+>         if (EXT4_EXT_MAY_ZEROOUT & split_flag) {
+>                 if (split_flag &
+> (EXT4_EXT_DATA_VALID1|EXT4_EXT_DATA_VALID2)) {
+>                         if (split_flag & EXT4_EXT_DATA_VALID1) {
+> -                               err = ext4_ext_zeroout(inode, ex2);
+> +                               err1 = ext4_ext_zeroout(inode, ex2);
+>                                 zero_ex.ee_block = ex2->ee_block;
+>                                 zero_ex.ee_len = cpu_to_le16(
+> 
+> ext4_ext_get_actual_len(ex2));
+> @@ -3270,7 +3271,7 @@ static int ext4_split_extent_at(handle_t *handle,
+>                                                       ext4_ext_pblock(ex));
+>                         }
+>                 } else {
+> -                       err = ext4_ext_zeroout(inode, &orig_ex);
+> +                       err1 = ext4_ext_zeroout(inode, &orig_ex);
+>                         zero_ex.ee_block = orig_ex.ee_block;
+>                         zero_ex.ee_len = cpu_to_le16(
+> 
+> ext4_ext_get_actual_len(&orig_ex));
+> @@ -3278,7 +3279,7 @@ static int ext4_split_extent_at(handle_t *handle,
+>                                               ext4_ext_pblock(&orig_ex));
+>                 }
+> 
+> -               if (!err) {
+> +               if (!err1) {
+>                         /* update the extent length and mark as initialized
+> */
+>                         ex->ee_len = cpu_to_le16(ee_len);
+>                         ext4_ext_try_to_merge(handle, inode, path, ex);
+> 
+> 
+> 
+> > Secondly, returning EIO instead of ENOSPC is IMO a
+> > bit confusing for upper layers and makes it harder to analyze where the
+> > real problem is...
+> > 
+> > 								Honza
+> > 
 -- 
-2.31.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
