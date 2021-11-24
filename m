@@ -2,74 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D06745B2E3
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Nov 2021 04:52:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2C945B455
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Nov 2021 07:36:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240607AbhKXDzc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 23 Nov 2021 22:55:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236364AbhKXDzc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 23 Nov 2021 22:55:32 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8375C06173E
-        for <linux-ext4@vger.kernel.org>; Tue, 23 Nov 2021 19:52:22 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id m24so736290pls.10
-        for <linux-ext4@vger.kernel.org>; Tue, 23 Nov 2021 19:52:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6zOlc/LjY/38MNl2fNjkOvdM3xFlyfeXQW77bsVPs7U=;
-        b=lAK1cPsbcZgDOnzv+wRyX5hFeuNtWn74alyzSOfh2WTiCK6b1Gd9bfDzl0+LSFYqBx
-         NFA78tBSHfT8IWLc76OROAypo1vlQiiVSp+deqPBmSErFfOP18cWXFbnZCxI9VIMHHuR
-         rkB6XFn/xh99StS9siD+gMovD+TGGHheUMxQDm6Fs4TRxLl6LVPgdXFahdYzrs2kgHk1
-         2vtAqiLmzKNsso+noEF/MbJXbTSUoUVvNEOcLZD7XraD8UxaJOkOnpqbEwEn6rei4bjJ
-         t5MvTN9s/WuPOzLWfQKYxVJtbNdZgfs/23Dfq3WeRbXM/0WgTMF9HeylQ/9xSVmw3Fc5
-         g5XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6zOlc/LjY/38MNl2fNjkOvdM3xFlyfeXQW77bsVPs7U=;
-        b=egY3y5nT1510KEF+cBMPHfLfOBzsNeNn9OJds6jHLoY8Fo33MoKYUzp5lQAd++n5Bu
-         DaeDQQkFbgh7bVStvirzMRP1OowF9v/1UO8ECuWnz3pn7my2FgP9LVbiKYKMVpqep6G7
-         PbZGd3D68vac3bUQy6A4NWI+qqHuFXra13nv1LFXGNf32nbXpew/W6KhM4UhEF4D+AIh
-         54siVmkYCZYD6OMdZs9x5ynwKQzjB/dtV9CDcGcRAiy0qL/MVJ/+sOQAkqMvMP9cshVJ
-         Ljawde1Fl0cVeWiRGuuPI5ubnCA9YMgM3bVjVLWJ3z6PTjQigR4KBvsVA075BLR7faT4
-         DJwQ==
-X-Gm-Message-State: AOAM532eOgr599nn+p9K223fYwsuTqh6fjJ388zquQ0ALmlPWc76by2W
-        6XWTpyUwD3JuW9SGKhlY6vU3Am3WplNdfVos8iL2Ag==
-X-Google-Smtp-Source: ABdhPJymXNtj/xuoHYk/qKEwmz57TlRY6ykmrutCD2G8CDlG536bSV07F4JpqasRcpvkUcp5iE8OReW1Fq5UwnxXf/0=
-X-Received: by 2002:a17:90a:e7ca:: with SMTP id kb10mr10703847pjb.8.1637725942362;
- Tue, 23 Nov 2021 19:52:22 -0800 (PST)
-MIME-Version: 1.0
-References: <20211109083309.584081-1-hch@lst.de> <20211109083309.584081-30-hch@lst.de>
-In-Reply-To: <20211109083309.584081-30-hch@lst.de>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 23 Nov 2021 19:52:11 -0800
-Message-ID: <CAPcyv4gNH1ex_6+pHmpv_pWGV8H8KomzWFtfMvtntNe++x8OBA@mail.gmail.com>
-Subject: Re: [PATCH 29/29] fsdax: don't require CONFIG_BLOCK
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Mike Snitzer <snitzer@redhat.com>, Ira Weiny <ira.weiny@intel.com>,
-        device-mapper development <dm-devel@redhat.com>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-erofs@lists.ozlabs.org,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
+        id S236077AbhKXGjT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 24 Nov 2021 01:39:19 -0500
+Received: from verein.lst.de ([213.95.11.211]:35804 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229479AbhKXGjS (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 24 Nov 2021 01:39:18 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id C659668AFE; Wed, 24 Nov 2021 07:36:05 +0100 (CET)
+Date:   Wed, 24 Nov 2021 07:36:05 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>, dm-devel@redhat.com,
+        linux-xfs@vger.kernel.org, nvdimm@lists.linux.dev,
+        linux-s390@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
         virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH 06/29] dax: move the partition alignment check into
+ fs_dax_get_by_bdev
+Message-ID: <20211124063605.GA6889@lst.de>
+References: <20211109083309.584081-1-hch@lst.de> <20211109083309.584081-7-hch@lst.de> <20211123222555.GE266024@magnolia>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211123222555.GE266024@magnolia>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 12:34 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> The file system DAX code now does not require the block code.  So allow
-> building a kernel with fuse DAX but not block layer.
+On Tue, Nov 23, 2021 at 02:25:55PM -0800, Darrick J. Wong wrote:
+> > +	if ((get_start_sect(bdev) * SECTOR_SIZE) % PAGE_SIZE ||
+> > +	    (bdev_nr_sectors(bdev) * SECTOR_SIZE) % PAGE_SIZE) {
+> 
+> Do we have to be careful about 64-bit division here, or do we not
+> support DAX on 32-bit?
 
-Looks good to me.
+I can't find anything in the Kconfig limiting DAX to 32-bit.  But
+then again the existing code has divisions like this, so the compiler
+is probably smart enough to turn them into shifts.
 
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> > +		pr_info("%pg: error: unaligned partition for dax\n", bdev);
+> 
+> I also wonder if this should be ratelimited...?
+
+This happens once (or maybe three times for XFS with rt and log devices)
+at mount time, so I see no need for a ratelimit.
