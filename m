@@ -2,51 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02FA46027E
-	for <lists+linux-ext4@lfdr.de>; Sun, 28 Nov 2021 01:13:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA954606F5
+	for <lists+linux-ext4@lfdr.de>; Sun, 28 Nov 2021 15:35:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbhK1AQw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 27 Nov 2021 19:16:52 -0500
-Received: from mailbackend.panix.com ([166.84.1.89]:18586 "EHLO
-        mailbackend.panix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232262AbhK1AOv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 27 Nov 2021 19:14:51 -0500
-Received: from xps-7390.lan (mobile-166-172-187-190.mycingular.net [166.172.187.190])
-        by mailbackend.panix.com (Postfix) with ESMTPSA id 4J1pn21bDvz3rvq;
-        Sat, 27 Nov 2021 19:11:34 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=panix.com; s=panix;
-        t=1638058295; bh=54ypOB+ijgfXMIzAJ3Y0gyBZ73m6bLpMirz7eYhg7Zw=;
-        h=Date:From:Reply-To:To:cc:Subject:In-Reply-To:References;
-        b=RO/d+G0ZjwEhnybrmtseZs4rGg4ih6PNn2ORJl6olZDHHDZeVY4XrkB5PuIQsJRQT
-         /CBkkcqNI9d4KcEgltil+OO6NhblXO1crj4UtUN9pr7u8RH/ESo4dJOwEB8HEbyIqX
-         xKO8ta54U/AsaAF5DSC7rUQ0V4XextNQxIAZxHqc=
-Date:   Sat, 27 Nov 2021 16:11:31 -0800 (PST)
-From:   "Kenneth R. Crudup" <kenny@panix.com>
-Reply-To: "Kenneth R. Crudup" <kenny@panix.com>
-To:     Jens Axboe <axboe@kernel.dk>
-cc:     linux-bcache@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-nvme@lists.infradead.org,
-        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-        "Kenneth R. Crudup" <kenny@panix.com>
-Subject: Re: Write I/O queue hangup at random on recent Linus' kernels
-In-Reply-To: <a4d728c2-703d-66be-bffd-3bfde0fddf41@kernel.dk>
-Message-ID: <b549b4ce-4156-eaab-a146-1fa52f51b642@panix.com>
-References: <b3ba57a7-d363-9c17-c4be-9dbe86875@panix.com> <b9c2681f-e63a-4d3b-913d-d8a75e2c2ea0@kernel.dk> <be6a783-97db-c3bf-b16f-e8c62b14755d@panix.com> <17206ea6-506d-b1de-09e8-c935ff308bd6@kernel.dk> <903be817-4118-f34e-1b35-a0108045590f@kernel.dk>
- <986e942b-d430-783b-5b1c-4525d4a94e48@panix.com> <ddc41b84-c414-006a-0840-250281caf1e5@kernel.dk> <1ff86d55-f39d-f88b-b8d-b6dfbd2f1b19@panix.com> <a4d728c2-703d-66be-bffd-3bfde0fddf41@kernel.dk>
+        id S1357847AbhK1OjA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 28 Nov 2021 09:39:00 -0500
+Received: from out20-99.mail.aliyun.com ([115.124.20.99]:34934 "EHLO
+        out20-99.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353175AbhK1OhA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 28 Nov 2021 09:37:00 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07725649|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0149221-0.00481884-0.980259;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047204;MF=guan@eryu.me;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.M-fxwva_1638110021;
+Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.M-fxwva_1638110021)
+          by smtp.aliyun-inc.com(10.147.41.138);
+          Sun, 28 Nov 2021 22:33:42 +0800
+Date:   Sun, 28 Nov 2021 22:33:41 +0800
+From:   Eryu Guan <guan@eryu.me>
+To:     Lukas Czerner <lczerner@redhat.com>
+Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] common/rc: set maximum label length for ext4
+Message-ID: <YaOTRYYkEwlbnvPb@desktop>
+References: <20211123101119.5112-1-lczerner@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211123101119.5112-1-lczerner@redhat.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Tue, Nov 23, 2021 at 11:11:19AM +0100, Lukas Czerner wrote:
+> Set maximum label length for ext4 in _label_get_max() to be able to test
+> online file system label set/get ioctls.
 
-On Fri, 26 Nov 2021, Jens Axboe wrote:
+Some background info included in commit log would be good, e.g. ext4
+didn't support get/set label ioctl but we're going to add that support
+in both kernel and e2fsprogs.
 
->>> That said, I'm pretty confident in the fix,
+And I noticed the kernel patch is still in review, and has no comments
+so far. So I'd like to wait and make sure the new ioctl will be accepted
+first.
 
-Moot point kinda, as I see the fix in Linus' master, but yeah, it's working here.
+Thanks,
+Eryu
 
-	-Kenny
-
--- 
-Kenneth R. Crudup / Sr. SW Engineer, Scott County Consulting, Orange County CA
+> 
+> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+> ---
+>  common/rc | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/common/rc b/common/rc
+> index 8e351f17..50d6d0bd 100644
+> --- a/common/rc
+> +++ b/common/rc
+> @@ -4545,6 +4545,9 @@ _label_get_max()
+>  	f2fs)
+>  		echo 255
+>  		;;
+> +	ext2|ext3|ext4)
+> +		echo 16
+> +		;;
+>  	*)
+>  		_notrun "$FSTYP does not define maximum label length"
+>  		;;
+> -- 
+> 2.31.1
