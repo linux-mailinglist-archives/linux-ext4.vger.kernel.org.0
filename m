@@ -2,122 +2,190 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0874613DF
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Nov 2021 12:30:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C14FD462290
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Nov 2021 21:52:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234805AbhK2Ldb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 29 Nov 2021 06:33:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:52190 "EHLO
+        id S231757AbhK2Uz0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 29 Nov 2021 15:55:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:26688 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234515AbhK2Lbb (ORCPT
+        by vger.kernel.org with ESMTP id S231759AbhK2Ux0 (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 29 Nov 2021 06:31:31 -0500
+        Mon, 29 Nov 2021 15:53:26 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1638185293;
+        s=mimecast20190719; t=1638219007;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=EB3ov99cOot4oEHHAmAvn4OTPfm97MK2ElTXTKtzC7s=;
-        b=fNaUm3R1kcWILno8M3ZSFblN3MuUQXSh1LxOhPCICdv7amA1G4f04/hC+seT3wl45VnobY
-        QT46XW5NtuDgry+7raU+AwFYjpsdep8jd0VA8HG2jvgm2ztw/f84VCJkyH4Tk5+VJiHFGl
-        YHN/jD3UdMn+JbGXBu2EeOV+7OOE934=
+        bh=fehrAXIWDS+JK6bB9goiBRH/WsWW4Tx2eVhu6pJSueg=;
+        b=ThzlhG6aZFSm+q218oKQcMMHqQngDKFpnSPJYrU3nSZ2kyU8kAE+I4HVgqB3lOGXEe916r
+        Le30J1E2Cb8xJ5pBhi7Yc7AFgvuBplPdqx313Hxxki+nKpFS0WSOqdD6u3zrfrR9ZREmW0
+        vm94WT0hS4egGmrj7VwB5cePPIP2dIc=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-409-hEP5FGMzNa6MydylqlcNXw-1; Mon, 29 Nov 2021 06:28:09 -0500
-X-MC-Unique: hEP5FGMzNa6MydylqlcNXw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+ us-mta-497-2WP1rfzcOu-rvSEKvQoXNg-1; Mon, 29 Nov 2021 15:50:04 -0500
+X-MC-Unique: 2WP1rfzcOu-rvSEKvQoXNg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 430A11023F4E;
-        Mon, 29 Nov 2021 11:28:08 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C088E190A7A0;
+        Mon, 29 Nov 2021 20:50:02 +0000 (UTC)
 Received: from work (unknown [10.40.194.53])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id DDF0C60BF1;
-        Mon, 29 Nov 2021 11:28:06 +0000 (UTC)
-Date:   Mon, 29 Nov 2021 12:28:03 +0100
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B04E619D9F;
+        Mon, 29 Nov 2021 20:50:01 +0000 (UTC)
+Date:   Mon, 29 Nov 2021 21:49:57 +0100
 From:   Lukas Czerner <lczerner@redhat.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] ext4: Destroy ext4_fc_dentry_cachep kmemcache on module
- removal.
-Message-ID: <20211129112803.tdm75zscdadsiul4@work>
-References: <20211110134640.lyku5vklvdndw6uk@linutronix.de>
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu
+Subject: Re: [PATCH v2] ext4: implement support for get/set fs label
+Message-ID: <20211129204957.u43dc5lesun32noq@work>
+References: <20211111215904.21237-1-lczerner@redhat.com>
+ <20211112082019.22078-1-lczerner@redhat.com>
+ <5E8B9CB8-9EEE-4CB2-8DB6-DE995103B513@dilger.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211110134640.lyku5vklvdndw6uk@linutronix.de>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <5E8B9CB8-9EEE-4CB2-8DB6-DE995103B513@dilger.ca>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 02:46:40PM +0100, Sebastian Andrzej Siewior wrote:
-> The kmemcache for ext4_fc_dentry_cachep remains registered after module
-> removal.
+On Mon, Nov 29, 2021 at 01:28:09PM -0700, Andreas Dilger wrote:
+> On Nov 12, 2021, at 1:20 AM, Lukas Czerner <lczerner@redhat.com> wrote:
+> > 
+> > Implement support for FS_IOC_GETFSLABEL and FS_IOC_SETFSLABEL ioctls for
+> > online reading and setting of file system label.
+> > 
+> > ext4_ioctl_getlabel() is simple, just get the label from the primary
+> > superblock bh. This might not be the first sb on the file system if
+> > 'sb=' mount option is used.
+> > 
+> > In ext4_ioctl_setlabel() we update what ext4 currently views as a
+> > primary superblock and then proceed to update backup superblocks. There
+> > are two caveats:
+> > - the primary superblock might not be the first superblock and so it
+> >   might not be the one used by userspace tools if read directly
+> >   off the disk.
+> > - because the primary superblock might not be the first superblock we
+> >   potentialy have to update it as part of backup superblock update.
+> >   However the first sb location is a bit more complicated than the rest
+> >   so we have to account for that.
+> > 
+> > Tested with generic/492 with various configurations. I also checked the
+> > behavior with 'sb=' mount options, including very large file systems
+> > with and without sparse_super/sparse_super2.
+> > 
+> > Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+> > ---
 > 
-> Destroy ext4_fc_dentry_cachep kmemcache on module removal.
+> One minor issue/question inline.
+> 
+> > +static int ext4_ioctl_setlabel(struct file *filp, const char __user *user_label)
+> > +{
+> > +	size_t len;
+> > +	handle_t *handle;
+> > +	ext4_group_t ngroups;
+> > +	ext4_fsblk_t sb_block;
+> > +	struct buffer_head *bh;
+> > +	int ret = 0, ret2, grp;
+> > +	unsigned long offset = 0;
+> > +	char new_label[EXT4_LABEL_MAX + 1];
+> > +	struct super_block *sb = file_inode(filp)->i_sb;
+> > +	struct ext4_sb_info *sbi = EXT4_SB(sb);
+> > +	struct ext4_super_block *es = sbi->s_es;
+> > +
+> > +	/* Sanity check, this should never happen */
+> > +	BUILD_BUG_ON(sizeof(es->s_volume_name) < EXT4_LABEL_MAX);
+> > +
+> > +	if (!capable(CAP_SYS_ADMIN))
+> > +		return -EPERM;
+> > +	/*
+> > +	 * Copy the maximum length allowed for ext4 label with one more to
+> > +	 * find the required terminating null byte in order to test the
+> > +	 * label length. The on disk label doesn't need to be null terminated.
+> > +	 */
+> > +	if (copy_from_user(new_label, user_label, EXT4_LABEL_MAX + 1))
+> > +		return -EFAULT;
+> > +
+> > +	len = strnlen(new_label, EXT4_LABEL_MAX + 1);
+> > +	if (len > EXT4_LABEL_MAX)
+> > +		return -EINVAL;
+> > +
+> > +	ret = mnt_want_write_file(filp);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	handle = ext4_journal_start_sb(sb, EXT4_HT_MISC, EXT4_MAX_TRANS_DATA);
+> > +	if (IS_ERR(handle)) {
+> > +		ret = PTR_ERR(handle);
+> > +		goto err_out;
+> > +	}
+> > +	/* Update the primary superblock first */
+> > +	ret = ext4_journal_get_write_access(handle, sb,
+> > +					    sbi->s_sbh,
+> > +					    EXT4_JTR_NONE);
+> > +	if (ret)
+> > +		goto err_journal;
+> > +
+> > +	lock_buffer(sbi->s_sbh);
+> > +	memset(es->s_volume_name, 0, sizeof(es->s_volume_name));
+> > +	memcpy(es->s_volume_name, new_label, len);
+> 
+> (minor) this introduces a very small window where s_volume_name is unset.
+> Since "new_label" is already a temporary buffer of the correct size, it
+> would be better IMHO to zero it out, copy the new label from userspace
+> into it, and then copy EXT4_LABEL_MAX bytes of new_label to s_volume_name.
+> 
+> It still isn't perfect, but reduces the window significantly.
 
-Thanks! It looks good to me.
+Very good point, I'll fix that in the next version.
 
-Reviewed-by: Lukas Czerner <lczerner@redhat.com>
+Thanks!
+-Lukas
 
 > 
-> Fixes: aa75f4d3daaeb ("ext4: main fast-commit commit path")
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> ---
->  fs/ext4/ext4.h        | 1 +
->  fs/ext4/fast_commit.c | 5 +++++
->  fs/ext4/super.c       | 2 ++
->  3 files changed, 8 insertions(+)
+> > +	/* Update backup superblocks */
+> > +	ngroups = ext4_get_groups_count(sb);
+> > +	for (grp = 0; grp < ngroups; grp++) {
 > 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 3825195539d74..c97860ef322db 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -2934,6 +2934,7 @@ bool ext4_fc_replay_check_excluded(struct super_block *sb, ext4_fsblk_t block);
->  void ext4_fc_replay_cleanup(struct super_block *sb);
->  int ext4_fc_commit(journal_t *journal, tid_t commit_tid);
->  int __init ext4_fc_init_dentry_cache(void);
-> +void ext4_fc_destroy_dentry_cache(void);
->  
->  /* mballoc.c */
->  extern const struct seq_operations ext4_mb_seq_groups_ops;
-> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> index 8ea5a81e65548..1a43af302ecba 100644
-> --- a/fs/ext4/fast_commit.c
-> +++ b/fs/ext4/fast_commit.c
-> @@ -2185,3 +2185,8 @@ int __init ext4_fc_init_dentry_cache(void)
->  
->  	return 0;
->  }
-> +
-> +void ext4_fc_destroy_dentry_cache(void)
-> +{
-> +	kmem_cache_destroy(ext4_fc_dentry_cachep);
-> +}
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 88d5d274a8684..eb2dfc2a19d33 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -6641,6 +6641,7 @@ static int __init ext4_init_fs(void)
->  out:
->  	unregister_as_ext2();
->  	unregister_as_ext3();
-> +	ext4_fc_destroy_dentry_cache();
->  out05:
->  	destroy_inodecache();
->  out1:
-> @@ -6667,6 +6668,7 @@ static void __exit ext4_exit_fs(void)
->  	unregister_as_ext2();
->  	unregister_as_ext3();
->  	unregister_filesystem(&ext4_fs_type);
-> +	ext4_fc_destroy_dentry_cache();
->  	destroy_inodecache();
->  	ext4_exit_mballoc();
->  	ext4_exit_sysfs();
-> -- 
-> 2.33.1
+> 		:
+> 		:
 > 
+> > +		ext4_debug("update backup superblock %llu\n", sb_block);
+> > +		BUFFER_TRACE(bh, "get_write_access");
+> > +		ret = ext4_journal_get_write_access(handle, sb,
+> > +						    bh,
+> > +						    EXT4_JTR_NONE);
+> > +		if (ret) {
+> > +			brelse(bh);
+> > +			break;
+> > +		}
+> > +
+> > +		es = (struct ext4_super_block *) (bh->b_data + offset);
+> > +		lock_buffer(bh);
+> > +		if (ext4_has_metadata_csum(sb) &&
+> > +		    es->s_checksum != ext4_superblock_csum(sb, es)) {
+> > +			ext4_msg(sb, KERN_ERR, "Invalid checksum for backup "
+> > +				 "superblock %llu\n", sb_block);
+> > +			unlock_buffer(bh);
+> > +			brelse(bh);
+> > +			ret = -EFSBADCRC;
+> > +			break;
+> > +		}
+> > +		memset(es->s_volume_name, 0, sizeof(es->s_volume_name));
+> > +		memcpy(es->s_volume_name, new_label, len);
+> 
+> Same here.
+> 
+> The rest looks fine.
+> 
+> Cheers, Andreas
+> 
+> 
+> 
+> 
+> 
+
 
