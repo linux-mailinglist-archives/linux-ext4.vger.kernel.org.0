@@ -2,123 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E70AF462ACB
-	for <lists+linux-ext4@lfdr.de>; Tue, 30 Nov 2021 04:00:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D1E462B6D
+	for <lists+linux-ext4@lfdr.de>; Tue, 30 Nov 2021 05:04:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230185AbhK3DDd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 29 Nov 2021 22:03:33 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:51239 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229996AbhK3DDc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 29 Nov 2021 22:03:32 -0500
-Received: from callcc.thunk.org (c-24-1-67-28.hsd1.il.comcast.net [24.1.67.28])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1AU309sl009458
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Nov 2021 22:00:09 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id B2E4942004A; Mon, 29 Nov 2021 22:00:08 -0500 (EST)
-Date:   Mon, 29 Nov 2021 22:00:08 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Lukas Czerner <lczerner@redhat.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v2] ext4: implement support for get/set fs label
-Message-ID: <YaWTuCoIyaDBsUWF@mit.edu>
-References: <20211111215904.21237-1-lczerner@redhat.com>
- <20211112082019.22078-1-lczerner@redhat.com>
+        id S232542AbhK3EIJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 29 Nov 2021 23:08:09 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:28192 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230427AbhK3EIJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 29 Nov 2021 23:08:09 -0500
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4J37pz6Xryz8vgK;
+        Tue, 30 Nov 2021 12:02:51 +0800 (CST)
+Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Tue, 30 Nov 2021 12:04:49 +0800
+Received: from [10.174.176.102] (10.174.176.102) by
+ dggpeml100016.china.huawei.com (7.185.36.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Tue, 30 Nov 2021 12:04:48 +0800
+Message-ID: <54d44dbc-861d-8c49-9b29-2621c201ca4f@huawei.com>
+Date:   Tue, 30 Nov 2021 12:04:48 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211112082019.22078-1-lczerner@redhat.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+From:   zhanchengbin <zhanchengbin1@huawei.com>
+Subject: [PATCH] resize2fs : resize2fs failed due to the same name of tmpfs
+To:     Theodore Ts'o <tytso@mit.edu>
+CC:     <linux-ext4@vger.kernel.org>, <liuzhiqiang26@huawei.com>,
+        <linfeilong@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.102]
+X-ClientProxiedBy: dggpeml500013.china.huawei.com (7.185.36.41) To
+ dggpeml100016.china.huawei.com (7.185.36.216)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 09:20:19AM +0100, Lukas Czerner wrote:
-> +	/* Update backup superblocks */
-> +	ngroups = ext4_get_groups_count(sb);
-> +	for (grp = 0; grp < ngroups; grp++) {
-> +
-		...
-> +		ret = ext4_journal_ensure_credits_fn(handle, 1,
-> +						     EXT4_MAX_TRANS_DATA,
-> +						     0, 0);
-> +		if (ret < 0)
-> +			break;
+If there is a tmpfs with the same name as the disk, and mount before the 
+disk,example:
+	/dev/sdd /root/tmp tmpfs rw,seclabel,relatime 0 0
+	/dev/sdd /root/mnt ext4 rw,seclabel,relatime 0 0
 
-This doesn't look right.  This will try to make sure there is at least
-one credit left on the handle, and if there isn't it will attempt to
-add EXT4_MAX_TRANS_DATA to the handle --- and if there isn't enough
-room remaining in the journal to add that number of credits, no
-credits will be added, and ext4_journal_ensure_credits_fn() will
-return a positive integer (in our current implementation it will
-always return 1).
+Create a hard link /dev/sdd-ln for the disk and resize2fs it.The items in
+/proc/mounts are traversed, When you get to tmpfs,file!=mnt->mnt_fsname,
+Therefore, the stat(mnt->mnt_fsname, &st_buf) branch is used,However, the
+values of file_rdev and st_buf.st_rdev are the same.As a result, the system
+mistakenly considers that disk is mounted to /root/tmp.As a result,resize2fs
+fails.
 
-So once run out of credits, and there is no more room in the journal,
-we we will proceed, and when we try to modify the backup superblock, a
-WARN_ON will be triggered and ext4_handle_dirty_metadata() will
-trigger an ext4_error(), which would be unfortunate.
+mkdir /root/tmp
+mkdir /root/mnt
+mkfs.ext4 -F -b 1024 -E "resize=10000000" /dev/sdd 32768
+mount -t tmpfs /dev/sdd /root/tmp
+mount /dev/sdd /root/mnt
+ln /dev/sdd /dev/sdd-ln
+resize2fs /dev/sdd-ln 6G
 
-I'd also point out that for very large file systems, I'm not convinced
-that we need to atomically update all of the backup superblocks at the
-same time.  Sure, probably makes sense to update the primary, and
-superblocks for block groups 0 and 1 atomically (or s_backup_bgs[0,1]
-a sparse_super2 file system) using the journal.
+Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+Signed-off-by: guiyao@huawei.com
+---
+  lib/ext2fs/ismounted.c | 9 +++++++--
+  1 file changed, 7 insertions(+), 2 deletions(-)
 
-But after that?  I'd suggest not running the updates for the rest
-through the journal at all, and just write them out directly.  Nothing
-else will try to read or write the backup superblock blocks, so
-there's no reason why we have to be super careful writing out the
-rest.  If we crash after we've only updated the first 20 backup
-superblocks --- that's probably 18 more than a user will actually use
-in the first place.
-
-That allows us to simply reserve 3 credits, and we won't need to try
-to extend the handle, which means we don't have to implement some kind
-of fallback logic in case the handle extension fails.
-
-
-One other comment.  Eventually (and not so in the distant future)
-we're going to want to use the same superblock updating logic to
-handle changing the UUID, and possibly, for other tune2fs operations.
-The reason for this is that there are some people who are trying to
-update the UUID and resize the file system to fit the size of the
-cloud block device (e.g., either an Amazon EBS or GCE's PD) in
-separate systemd unit scripts.  This results in race conditions that
-can cause either the tune2fs or resize2fs to fail --- rarely, but if
-you are starting up thousands and thousands of VM's per day, even the
-rare becomes common place.  This is the reason of e2fsprogs commit
-6338a8467564 ("libext2fs: retry reading superblock on open when
-checksum is bad") but that turns out not to be enough; although it
-does reduce the incidence rate by another order of magnitude or two.
-
-So....  we should probably have a mutex which prevents two ioctls
-which is modifying the superblock from running at the same time.  It's
-*probably* going to be OK for now, since the second ioctl racing to
-update the superblock will update the checksum, and so long as we have
-journalling enabled, we shouldn't have a bad checksum end up on disk.
-But we're going to want to add an ioctl to fetch the superblock, and
-at that point we'll definitely need the mutex to protect the
-superblock getter from getting an inconsistent view of the superblock.
-
-The other thing that might be nice would be if the superblock update
-function was abstracted out, and the FS_IOC_SETLABEL ioctl provided a
-callback function which updates the label.
-
-Neither of these two suggestions are strictly necessary for your patch
-series (although the mutex will prevent problems with racing
-FS_IOC_SETLABEL and FS_IOC_GETLABEL ioctls), so if you don't want to
-make these changes now, I'm not going to insist on them; we can
-always make these improvements when we implement FS_IOC_SETUUID,
-FS_IOC_GETUUID, and EXT4_IOC_GET_SB.  (BTW, I believe Darrick has
-patches to implement FS_IOC_[SG]ETUUID for xfs and possibly some other
-file systems, IIRC, but those have never been landed in Linus's tree.)
-
-And finally, thanks for working on FS_IOC_SETLABEL!  It has been on my
-todo list for a long time, but it's never managed to make the top of
-the priority queue...
-
-Cheers,
-
-     	      	    	      	   	      = Ted
+diff --git a/lib/ext2fs/ismounted.c b/lib/ext2fs/ismounted.c
+index aee7d726..463a82a6 100644
+--- a/lib/ext2fs/ismounted.c
++++ b/lib/ext2fs/ismounted.c
+@@ -98,6 +98,7 @@ static errcode_t check_mntent_file(const char 
+*mtab_file, const char *file,
+  {
+  	struct mntent 	*mnt;
+  	struct stat	st_buf;
++	struct stat	dir_st_buf;
+  	errcode_t	retval = 0;
+  	dev_t		file_dev=0, file_rdev=0;
+  	ino_t		file_ino=0;
+@@ -144,8 +145,12 @@ static errcode_t check_mntent_file(const char 
+*mtab_file, const char *file,
+  		if (stat(mnt->mnt_fsname, &st_buf) == 0) {
+  			if (ext2fsP_is_disk_device(st_buf.st_mode)) {
+  #ifndef __GNU__
+-				if (file_rdev && (file_rdev == st_buf.st_rdev))
+-					break;
++				if (file_rdev && (file_rdev == st_buf.st_rdev)) {
++					if (stat(mnt->mnt_dir, &dir_st_buf) != 0)
++						continue;
++					if (file_rdev == dir_st_buf.st_dev)
++						break;
++				}
+  				if (check_loop_mounted(mnt->mnt_fsname,
+  						st_buf.st_rdev, file_dev,
+  						file_ino) == 1)
+-- 
+2.23.0
