@@ -2,163 +2,490 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92EF3463040
-	for <lists+linux-ext4@lfdr.de>; Tue, 30 Nov 2021 10:50:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20915463CC1
+	for <lists+linux-ext4@lfdr.de>; Tue, 30 Nov 2021 18:27:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240599AbhK3Jxm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 30 Nov 2021 04:53:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:59929 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240643AbhK3JxQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 30 Nov 2021 04:53:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1638265797;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EOasfDOdVDQ8zMIq5l7EtG2AtJ6syjRwqqrBeYbgB9I=;
-        b=TfnzGwj97shGi/o4i5mcJo3GcF0ceqummnhUhdhms3hUqABR+V+AxAixGTycqBXFbwegXW
-        b6ZipPbmRyNdb5x6EHpiWZ6kURVeseumAjs+i9Tq1Xvy61XPEw3fGPX/GfaLUCVlKwgmTU
-        DnuqWxZmFA7XP5NV+EU5rWQ+VNbXw6M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-195-mMUSVXsAOfiIzMxP_eLxXA-1; Tue, 30 Nov 2021 04:49:56 -0500
-X-MC-Unique: mMUSVXsAOfiIzMxP_eLxXA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S230247AbhK3RbA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 30 Nov 2021 12:31:00 -0500
+Received: from sin.source.kernel.org ([145.40.73.55]:52326 "EHLO
+        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244804AbhK3RaA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 30 Nov 2021 12:30:00 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 03C3384B9A9;
-        Tue, 30 Nov 2021 09:49:55 +0000 (UTC)
-Received: from work (unknown [10.40.194.184])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4664460C0F;
-        Tue, 30 Nov 2021 09:49:54 +0000 (UTC)
-Date:   Tue, 30 Nov 2021 10:49:50 +0100
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v2] ext4: implement support for get/set fs label
-Message-ID: <20211130094950.ixqkxrjne6ldryeg@work>
-References: <20211111215904.21237-1-lczerner@redhat.com>
- <20211112082019.22078-1-lczerner@redhat.com>
- <YaWTuCoIyaDBsUWF@mit.edu>
+        by sin.source.kernel.org (Postfix) with ESMTPS id 4DEC6CE1A96;
+        Tue, 30 Nov 2021 17:26:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 698F9C53FC1;
+        Tue, 30 Nov 2021 17:26:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638293197;
+        bh=BMG4z10Kn+4IsBnm0eMRsV0qjHiN0yQ30zDqbBy45SM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sNtLoYDY2zHtXbW7e9UQt9r80pIhCvB+EQzY2o7of+YWnfcOK4MYRcb2KtOQ+hjzc
+         QWqWVxm6s+B1XWsdG1z4li4cve6WfhsS9kQdh0j8NjeMZIJIAJtyMbWFuqyjsfTMwU
+         gEvC/UJ38a2NUjmDdRsprA6KFnpNAeyJzkiwRjrEFGVJbVTgarZrAk1ShyIUfwhV3I
+         Jr2TX4J1lNr8G4q9yrjKraUEMRFgu3+8VrrzWCeJrMkjv2MQ06tfR0EP9WMOWB6izB
+         j7ZObSOK4eSJ5ewSukvjrEuh2qW7bMGBnjpcwDz/Q7OYh+t+ILVcujeRwHG4b6jRxL
+         jKmLZL0ruYLqQ==
+Date:   Tue, 30 Nov 2021 09:26:36 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>, dm-devel@redhat.com,
+        linux-xfs@vger.kernel.org, nvdimm@lists.linux.dev,
+        linux-s390@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH 04/29] dax: simplify the dax_device <-> gendisk
+ association
+Message-ID: <20211130172636.GC8467@magnolia>
+References: <20211129102203.2243509-1-hch@lst.de>
+ <20211129102203.2243509-5-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YaWTuCoIyaDBsUWF@mit.edu>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20211129102203.2243509-5-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Nov 29, 2021 at 10:00:08PM -0500, Theodore Y. Ts'o wrote:
-> On Fri, Nov 12, 2021 at 09:20:19AM +0100, Lukas Czerner wrote:
-> > +	/* Update backup superblocks */
-> > +	ngroups = ext4_get_groups_count(sb);
-> > +	for (grp = 0; grp < ngroups; grp++) {
-> > +
-> 		...
-> > +		ret = ext4_journal_ensure_credits_fn(handle, 1,
-> > +						     EXT4_MAX_TRANS_DATA,
-> > +						     0, 0);
-> > +		if (ret < 0)
-> > +			break;
+On Mon, Nov 29, 2021 at 11:21:38AM +0100, Christoph Hellwig wrote:
+> Replace the dax_host_hash with an xarray indexed by the pointer value
+> of the gendisk, and require explicitly calls from the block drivers that
+> want to associate their gendisk with a dax_device.
 > 
-> This doesn't look right.  This will try to make sure there is at least
-> one credit left on the handle, and if there isn't it will attempt to
-> add EXT4_MAX_TRANS_DATA to the handle --- and if there isn't enough
-> room remaining in the journal to add that number of credits, no
-> credits will be added, and ext4_journal_ensure_credits_fn() will
-> return a positive integer (in our current implementation it will
-> always return 1).
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Acked-by: Mike Snitzer <snitzer@redhat.com>
 
-Oops, I was sure I've seen this somewhere in the code, but I guess I was
-wrong. Should have checked what it actually returns. Thanks for pointing
-this out.
+Nice cleanup from the fs side!
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-> 
-> So once run out of credits, and there is no more room in the journal,
-> we we will proceed, and when we try to modify the backup superblock, a
-> WARN_ON will be triggered and ext4_handle_dirty_metadata() will
-> trigger an ext4_error(), which would be unfortunate.
-> 
-> I'd also point out that for very large file systems, I'm not convinced
-> that we need to atomically update all of the backup superblocks at the
-> same time.  Sure, probably makes sense to update the primary, and
-> superblocks for block groups 0 and 1 atomically (or s_backup_bgs[0,1]
-> a sparse_super2 file system) using the journal.
-> 
-> But after that?  I'd suggest not running the updates for the rest
-> through the journal at all, and just write them out directly.  Nothing
-> else will try to read or write the backup superblock blocks, so
-> there's no reason why we have to be super careful writing out the
-> rest.  If we crash after we've only updated the first 20 backup
-> superblocks --- that's probably 18 more than a user will actually use
-> in the first place.
-> 
-> That allows us to simply reserve 3 credits, and we won't need to try
-> to extend the handle, which means we don't have to implement some kind
-> of fallback logic in case the handle extension fails.
+--D
 
-I think I agree. But in this case should we at least attempt to check
-and update the backup superblocks in fsck? Not sure if we do that
-already.
-
+> ---
+>  drivers/dax/bus.c            |   6 +-
+>  drivers/dax/super.c          | 109 +++++++++--------------------------
+>  drivers/md/dm.c              |   6 +-
+>  drivers/nvdimm/pmem.c        |  10 +++-
+>  drivers/s390/block/dcssblk.c |  11 +++-
+>  fs/fuse/virtio_fs.c          |   2 +-
+>  include/linux/dax.h          |  19 ++++--
+>  7 files changed, 66 insertions(+), 97 deletions(-)
 > 
+> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+> index 6cc4da4c713d9..bd7af2f7c5b0a 100644
+> --- a/drivers/dax/bus.c
+> +++ b/drivers/dax/bus.c
+> @@ -1323,10 +1323,10 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
+>  	}
+>  
+>  	/*
+> -	 * No 'host' or dax_operations since there is no access to this
+> -	 * device outside of mmap of the resulting character device.
+> +	 * No dax_operations since there is no access to this device outside of
+> +	 * mmap of the resulting character device.
+>  	 */
+> -	dax_dev = alloc_dax(dev_dax, NULL, NULL, DAXDEV_F_SYNC);
+> +	dax_dev = alloc_dax(dev_dax, NULL, DAXDEV_F_SYNC);
+>  	if (IS_ERR(dax_dev)) {
+>  		rc = PTR_ERR(dax_dev);
+>  		goto err_alloc_dax;
+> diff --git a/drivers/dax/super.c b/drivers/dax/super.c
+> index e20d0cef10a18..bf77c3da5d56d 100644
+> --- a/drivers/dax/super.c
+> +++ b/drivers/dax/super.c
+> @@ -7,10 +7,8 @@
+>  #include <linux/mount.h>
+>  #include <linux/pseudo_fs.h>
+>  #include <linux/magic.h>
+> -#include <linux/genhd.h>
+>  #include <linux/pfn_t.h>
+>  #include <linux/cdev.h>
+> -#include <linux/hash.h>
+>  #include <linux/slab.h>
+>  #include <linux/uio.h>
+>  #include <linux/dax.h>
+> @@ -21,15 +19,12 @@
+>   * struct dax_device - anchor object for dax services
+>   * @inode: core vfs
+>   * @cdev: optional character interface for "device dax"
+> - * @host: optional name for lookups where the device path is not available
+>   * @private: dax driver private data
+>   * @flags: state and boolean properties
+>   */
+>  struct dax_device {
+> -	struct hlist_node list;
+>  	struct inode inode;
+>  	struct cdev cdev;
+> -	const char *host;
+>  	void *private;
+>  	unsigned long flags;
+>  	const struct dax_operations *ops;
+> @@ -42,10 +37,6 @@ static DEFINE_IDA(dax_minor_ida);
+>  static struct kmem_cache *dax_cache __read_mostly;
+>  static struct super_block *dax_superblock __read_mostly;
+>  
+> -#define DAX_HASH_SIZE (PAGE_SIZE / sizeof(struct hlist_head))
+> -static struct hlist_head dax_host_list[DAX_HASH_SIZE];
+> -static DEFINE_SPINLOCK(dax_host_lock);
+> -
+>  int dax_read_lock(void)
+>  {
+>  	return srcu_read_lock(&dax_srcu);
+> @@ -58,13 +49,22 @@ void dax_read_unlock(int id)
+>  }
+>  EXPORT_SYMBOL_GPL(dax_read_unlock);
+>  
+> -static int dax_host_hash(const char *host)
+> +#if defined(CONFIG_BLOCK) && defined(CONFIG_FS_DAX)
+> +#include <linux/blkdev.h>
+> +
+> +static DEFINE_XARRAY(dax_hosts);
+> +
+> +int dax_add_host(struct dax_device *dax_dev, struct gendisk *disk)
+>  {
+> -	return hashlen_hash(hashlen_string("DAX", host)) % DAX_HASH_SIZE;
+> +	return xa_insert(&dax_hosts, (unsigned long)disk, dax_dev, GFP_KERNEL);
+>  }
+> +EXPORT_SYMBOL_GPL(dax_add_host);
+>  
+> -#if defined(CONFIG_BLOCK) && defined(CONFIG_FS_DAX)
+> -#include <linux/blkdev.h>
+> +void dax_remove_host(struct gendisk *disk)
+> +{
+> +	xa_erase(&dax_hosts, (unsigned long)disk);
+> +}
+> +EXPORT_SYMBOL_GPL(dax_remove_host);
+>  
+>  int bdev_dax_pgoff(struct block_device *bdev, sector_t sector, size_t size,
+>  		pgoff_t *pgoff)
+> @@ -81,41 +81,24 @@ int bdev_dax_pgoff(struct block_device *bdev, sector_t sector, size_t size,
+>  EXPORT_SYMBOL(bdev_dax_pgoff);
+>  
+>  /**
+> - * dax_get_by_host() - temporary lookup mechanism for filesystem-dax
+> - * @host: alternate name for the device registered by a dax driver
+> + * fs_dax_get_by_bdev() - temporary lookup mechanism for filesystem-dax
+> + * @bdev: block device to find a dax_device for
+>   */
+> -static struct dax_device *dax_get_by_host(const char *host)
+> +struct dax_device *fs_dax_get_by_bdev(struct block_device *bdev)
+>  {
+> -	struct dax_device *dax_dev, *found = NULL;
+> -	int hash, id;
+> +	struct dax_device *dax_dev;
+> +	int id;
+>  
+> -	if (!host)
+> +	if (!blk_queue_dax(bdev->bd_disk->queue))
+>  		return NULL;
+>  
+> -	hash = dax_host_hash(host);
+> -
+>  	id = dax_read_lock();
+> -	spin_lock(&dax_host_lock);
+> -	hlist_for_each_entry(dax_dev, &dax_host_list[hash], list) {
+> -		if (!dax_alive(dax_dev)
+> -				|| strcmp(host, dax_dev->host) != 0)
+> -			continue;
+> -
+> -		if (igrab(&dax_dev->inode))
+> -			found = dax_dev;
+> -		break;
+> -	}
+> -	spin_unlock(&dax_host_lock);
+> +	dax_dev = xa_load(&dax_hosts, (unsigned long)bdev->bd_disk);
+> +	if (!dax_dev || !dax_alive(dax_dev) || !igrab(&dax_dev->inode))
+> +		dax_dev = NULL;
+>  	dax_read_unlock(id);
+>  
+> -	return found;
+> -}
+> -
+> -struct dax_device *fs_dax_get_by_bdev(struct block_device *bdev)
+> -{
+> -	if (!blk_queue_dax(bdev->bd_disk->queue))
+> -		return NULL;
+> -	return dax_get_by_host(bdev->bd_disk->disk_name);
+> +	return dax_dev;
+>  }
+>  EXPORT_SYMBOL_GPL(fs_dax_get_by_bdev);
+>  
+> @@ -361,12 +344,7 @@ void kill_dax(struct dax_device *dax_dev)
+>  		return;
+>  
+>  	clear_bit(DAXDEV_ALIVE, &dax_dev->flags);
+> -
+>  	synchronize_srcu(&dax_srcu);
+> -
+> -	spin_lock(&dax_host_lock);
+> -	hlist_del_init(&dax_dev->list);
+> -	spin_unlock(&dax_host_lock);
+>  }
+>  EXPORT_SYMBOL_GPL(kill_dax);
+>  
+> @@ -398,8 +376,6 @@ static struct dax_device *to_dax_dev(struct inode *inode)
+>  static void dax_free_inode(struct inode *inode)
+>  {
+>  	struct dax_device *dax_dev = to_dax_dev(inode);
+> -	kfree(dax_dev->host);
+> -	dax_dev->host = NULL;
+>  	if (inode->i_rdev)
+>  		ida_simple_remove(&dax_minor_ida, iminor(inode));
+>  	kmem_cache_free(dax_cache, dax_dev);
+> @@ -474,54 +450,25 @@ static struct dax_device *dax_dev_get(dev_t devt)
+>  	return dax_dev;
+>  }
+>  
+> -static void dax_add_host(struct dax_device *dax_dev, const char *host)
+> -{
+> -	int hash;
+> -
+> -	/*
+> -	 * Unconditionally init dax_dev since it's coming from a
+> -	 * non-zeroed slab cache
+> -	 */
+> -	INIT_HLIST_NODE(&dax_dev->list);
+> -	dax_dev->host = host;
+> -	if (!host)
+> -		return;
+> -
+> -	hash = dax_host_hash(host);
+> -	spin_lock(&dax_host_lock);
+> -	hlist_add_head(&dax_dev->list, &dax_host_list[hash]);
+> -	spin_unlock(&dax_host_lock);
+> -}
+> -
+> -struct dax_device *alloc_dax(void *private, const char *__host,
+> -		const struct dax_operations *ops, unsigned long flags)
+> +struct dax_device *alloc_dax(void *private, const struct dax_operations *ops,
+> +		unsigned long flags)
+>  {
+>  	struct dax_device *dax_dev;
+> -	const char *host;
+>  	dev_t devt;
+>  	int minor;
+>  
+> -	if (ops && !ops->zero_page_range) {
+> -		pr_debug("%s: error: device does not provide dax"
+> -			 " operation zero_page_range()\n",
+> -			 __host ? __host : "Unknown");
+> +	if (WARN_ON_ONCE(ops && !ops->zero_page_range))
+>  		return ERR_PTR(-EINVAL);
+> -	}
+> -
+> -	host = kstrdup(__host, GFP_KERNEL);
+> -	if (__host && !host)
+> -		return ERR_PTR(-ENOMEM);
+>  
+>  	minor = ida_simple_get(&dax_minor_ida, 0, MINORMASK+1, GFP_KERNEL);
+>  	if (minor < 0)
+> -		goto err_minor;
+> +		return ERR_PTR(-ENOMEM);
+>  
+>  	devt = MKDEV(MAJOR(dax_devt), minor);
+>  	dax_dev = dax_dev_get(devt);
+>  	if (!dax_dev)
+>  		goto err_dev;
+>  
+> -	dax_add_host(dax_dev, host);
+>  	dax_dev->ops = ops;
+>  	dax_dev->private = private;
+>  	if (flags & DAXDEV_F_SYNC)
+> @@ -531,8 +478,6 @@ struct dax_device *alloc_dax(void *private, const char *__host,
+>  
+>   err_dev:
+>  	ida_simple_remove(&dax_minor_ida, minor);
+> - err_minor:
+> -	kfree(host);
+>  	return ERR_PTR(-ENOMEM);
+>  }
+>  EXPORT_SYMBOL_GPL(alloc_dax);
+> diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+> index b93fcc91176e5..a8c650276b321 100644
+> --- a/drivers/md/dm.c
+> +++ b/drivers/md/dm.c
+> @@ -1683,6 +1683,7 @@ static void cleanup_mapped_device(struct mapped_device *md)
+>  	bioset_exit(&md->io_bs);
+>  
+>  	if (md->dax_dev) {
+> +		dax_remove_host(md->disk);
+>  		kill_dax(md->dax_dev);
+>  		put_dax(md->dax_dev);
+>  		md->dax_dev = NULL;
+> @@ -1784,12 +1785,13 @@ static struct mapped_device *alloc_dev(int minor)
+>  	sprintf(md->disk->disk_name, "dm-%d", minor);
+>  
+>  	if (IS_ENABLED(CONFIG_FS_DAX)) {
+> -		md->dax_dev = alloc_dax(md, md->disk->disk_name,
+> -					&dm_dax_ops, 0);
+> +		md->dax_dev = alloc_dax(md, &dm_dax_ops, 0);
+>  		if (IS_ERR(md->dax_dev)) {
+>  			md->dax_dev = NULL;
+>  			goto bad;
+>  		}
+> +		if (dax_add_host(md->dax_dev, md->disk))
+> +			goto bad;
+>  	}
+>  
+>  	format_dev_t(md->name, MKDEV(_major, minor));
+> diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
+> index fe7ece1534e1e..1018f0d44acb8 100644
+> --- a/drivers/nvdimm/pmem.c
+> +++ b/drivers/nvdimm/pmem.c
+> @@ -379,6 +379,7 @@ static void pmem_release_disk(void *__pmem)
+>  {
+>  	struct pmem_device *pmem = __pmem;
+>  
+> +	dax_remove_host(pmem->disk);
+>  	kill_dax(pmem->dax_dev);
+>  	put_dax(pmem->dax_dev);
+>  	del_gendisk(pmem->disk);
+> @@ -497,17 +498,20 @@ static int pmem_attach_disk(struct device *dev,
+>  
+>  	if (is_nvdimm_sync(nd_region))
+>  		flags = DAXDEV_F_SYNC;
+> -	dax_dev = alloc_dax(pmem, disk->disk_name, &pmem_dax_ops, flags);
+> +	dax_dev = alloc_dax(pmem, &pmem_dax_ops, flags);
+>  	if (IS_ERR(dax_dev)) {
+>  		rc = PTR_ERR(dax_dev);
+>  		goto out;
+>  	}
+> +	rc = dax_add_host(dax_dev, disk);
+> +	if (rc)
+> +		goto out_cleanup_dax;
+>  	dax_write_cache(dax_dev, nvdimm_has_cache(nd_region));
+>  	pmem->dax_dev = dax_dev;
+>  
+>  	rc = device_add_disk(dev, disk, pmem_attribute_groups);
+>  	if (rc)
+> -		goto out_cleanup_dax;
+> +		goto out_remove_host;
+>  	if (devm_add_action_or_reset(dev, pmem_release_disk, pmem))
+>  		return -ENOMEM;
+>  
+> @@ -519,6 +523,8 @@ static int pmem_attach_disk(struct device *dev,
+>  		dev_warn(dev, "'badblocks' notification disabled\n");
+>  	return 0;
+>  
+> +out_remove_host:
+> +	dax_remove_host(pmem->disk);
+>  out_cleanup_dax:
+>  	kill_dax(pmem->dax_dev);
+>  	put_dax(pmem->dax_dev);
+> diff --git a/drivers/s390/block/dcssblk.c b/drivers/s390/block/dcssblk.c
+> index 27ab888b44d0a..657e492f2bc26 100644
+> --- a/drivers/s390/block/dcssblk.c
+> +++ b/drivers/s390/block/dcssblk.c
+> @@ -687,18 +687,21 @@ dcssblk_add_store(struct device *dev, struct device_attribute *attr, const char
+>  	if (rc)
+>  		goto put_dev;
+>  
+> -	dev_info->dax_dev = alloc_dax(dev_info, dev_info->gd->disk_name,
+> -			&dcssblk_dax_ops, DAXDEV_F_SYNC);
+> +	dev_info->dax_dev = alloc_dax(dev_info, &dcssblk_dax_ops,
+> +			DAXDEV_F_SYNC);
+>  	if (IS_ERR(dev_info->dax_dev)) {
+>  		rc = PTR_ERR(dev_info->dax_dev);
+>  		dev_info->dax_dev = NULL;
+>  		goto put_dev;
+>  	}
+> +	rc = dax_add_host(dev_info->dax_dev, dev_info->gd);
+> +	if (rc)
+> +		goto out_dax;
+>  
+>  	get_device(&dev_info->dev);
+>  	rc = device_add_disk(&dev_info->dev, dev_info->gd, NULL);
+>  	if (rc)
+> -		goto out_dax;
+> +		goto out_dax_host;
+>  
+>  	switch (dev_info->segment_type) {
+>  		case SEG_TYPE_SR:
+> @@ -714,6 +717,8 @@ dcssblk_add_store(struct device *dev, struct device_attribute *attr, const char
+>  	rc = count;
+>  	goto out;
+>  
+> +out_dax_host:
+> +	dax_remove_host(dev_info->gd);
+>  out_dax:
+>  	put_device(&dev_info->dev);
+>  	kill_dax(dev_info->dax_dev);
+> diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
+> index 4cfa4bc1f5794..242cc1c0d7ed7 100644
+> --- a/fs/fuse/virtio_fs.c
+> +++ b/fs/fuse/virtio_fs.c
+> @@ -850,7 +850,7 @@ static int virtio_fs_setup_dax(struct virtio_device *vdev, struct virtio_fs *fs)
+>  	dev_dbg(&vdev->dev, "%s: window kaddr 0x%px phys_addr 0x%llx len 0x%llx\n",
+>  		__func__, fs->window_kaddr, cache_reg.addr, cache_reg.len);
+>  
+> -	fs->dax_dev = alloc_dax(fs, NULL, &virtio_fs_dax_ops, 0);
+> +	fs->dax_dev = alloc_dax(fs, &virtio_fs_dax_ops, 0);
+>  	if (IS_ERR(fs->dax_dev))
+>  		return PTR_ERR(fs->dax_dev);
+>  
+> diff --git a/include/linux/dax.h b/include/linux/dax.h
+> index 8623caa673889..e2e9a67004cbd 100644
+> --- a/include/linux/dax.h
+> +++ b/include/linux/dax.h
+> @@ -11,9 +11,11 @@
+>  
+>  typedef unsigned long dax_entry_t;
+>  
+> +struct dax_device;
+> +struct gendisk;
+>  struct iomap_ops;
+>  struct iomap;
+> -struct dax_device;
+> +
+>  struct dax_operations {
+>  	/*
+>  	 * direct_access: translate a device-relative
+> @@ -39,8 +41,8 @@ struct dax_operations {
+>  };
+>  
+>  #if IS_ENABLED(CONFIG_DAX)
+> -struct dax_device *alloc_dax(void *private, const char *host,
+> -		const struct dax_operations *ops, unsigned long flags);
+> +struct dax_device *alloc_dax(void *private, const struct dax_operations *ops,
+> +		unsigned long flags);
+>  void put_dax(struct dax_device *dax_dev);
+>  void kill_dax(struct dax_device *dax_dev);
+>  void dax_write_cache(struct dax_device *dax_dev, bool wc);
+> @@ -68,7 +70,7 @@ static inline bool daxdev_mapping_supported(struct vm_area_struct *vma,
+>  	return dax_synchronous(dax_dev);
+>  }
+>  #else
+> -static inline struct dax_device *alloc_dax(void *private, const char *host,
+> +static inline struct dax_device *alloc_dax(void *private,
+>  		const struct dax_operations *ops, unsigned long flags)
+>  {
+>  	/*
+> @@ -107,6 +109,8 @@ static inline bool daxdev_mapping_supported(struct vm_area_struct *vma,
+>  struct writeback_control;
+>  int bdev_dax_pgoff(struct block_device *, sector_t, size_t, pgoff_t *pgoff);
+>  #if IS_ENABLED(CONFIG_FS_DAX)
+> +int dax_add_host(struct dax_device *dax_dev, struct gendisk *disk);
+> +void dax_remove_host(struct gendisk *disk);
+>  bool generic_fsdax_supported(struct dax_device *dax_dev,
+>  		struct block_device *bdev, int blocksize, sector_t start,
+>  		sector_t sectors);
+> @@ -128,6 +132,13 @@ struct page *dax_layout_busy_page_range(struct address_space *mapping, loff_t st
+>  dax_entry_t dax_lock_page(struct page *page);
+>  void dax_unlock_page(struct page *page, dax_entry_t cookie);
+>  #else
+> +static inline int dax_add_host(struct dax_device *dax_dev, struct gendisk *disk)
+> +{
+> +	return 0;
+> +}
+> +static inline void dax_remove_host(struct gendisk *disk)
+> +{
+> +}
+>  #define generic_fsdax_supported		NULL
+>  
+>  static inline bool dax_supported(struct dax_device *dax_dev,
+> -- 
+> 2.30.2
 > 
-> One other comment.  Eventually (and not so in the distant future)
-> we're going to want to use the same superblock updating logic to
-> handle changing the UUID, and possibly, for other tune2fs operations.
-> The reason for this is that there are some people who are trying to
-> update the UUID and resize the file system to fit the size of the
-> cloud block device (e.g., either an Amazon EBS or GCE's PD) in
-> separate systemd unit scripts.  This results in race conditions that
-> can cause either the tune2fs or resize2fs to fail --- rarely, but if
-> you are starting up thousands and thousands of VM's per day, even the
-> rare becomes common place.  This is the reason of e2fsprogs commit
-> 6338a8467564 ("libext2fs: retry reading superblock on open when
-> checksum is bad") but that turns out not to be enough; although it
-> does reduce the incidence rate by another order of magnitude or two.
-> 
-> So....  we should probably have a mutex which prevents two ioctls
-> which is modifying the superblock from running at the same time.  It's
-> *probably* going to be OK for now, since the second ioctl racing to
-> update the superblock will update the checksum, and so long as we have
-> journalling enabled, we shouldn't have a bad checksum end up on disk.
-> But we're going to want to add an ioctl to fetch the superblock, and
-> at that point we'll definitely need the mutex to protect the
-> superblock getter from getting an inconsistent view of the superblock.
-> 
-> The other thing that might be nice would be if the superblock update
-> function was abstracted out, and the FS_IOC_SETLABEL ioctl provided a
-> callback function which updates the label.
-> 
-> Neither of these two suggestions are strictly necessary for your patch
-> series (although the mutex will prevent problems with racing
-> FS_IOC_SETLABEL and FS_IOC_GETLABEL ioctls), so if you don't want to
-> make these changes now, I'm not going to insist on them; we can
-> always make these improvements when we implement FS_IOC_SETUUID,
-> FS_IOC_GETUUID, and EXT4_IOC_GET_SB.  (BTW, I believe Darrick has
-> patches to implement FS_IOC_[SG]ETUUID for xfs and possibly some other
-> file systems, IIRC, but those have never been landed in Linus's tree.)
-
-It's not a critical functionality so it can wait. I'll think about
-implementing the superblock modification system. Thanks for the useful
-pointers.
-
-> 
-> And finally, thanks for working on FS_IOC_SETLABEL!  It has been on my
-> todo list for a long time, but it's never managed to make the top of
-> the priority queue...
-
-No problem, I am happy to help.
-
--Lukas
-
-> 
-> Cheers,
-> 
->      	      	    	      	   	      = Ted
-> 
-
