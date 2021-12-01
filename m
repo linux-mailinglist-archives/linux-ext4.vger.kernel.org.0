@@ -2,123 +2,99 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C76514648F6
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Dec 2021 08:39:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3782A464B09
+	for <lists+linux-ext4@lfdr.de>; Wed,  1 Dec 2021 10:53:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347813AbhLAHnE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 1 Dec 2021 02:43:04 -0500
-Received: from szxga03-in.huawei.com ([45.249.212.189]:28206 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347744AbhLAHnD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Dec 2021 02:43:03 -0500
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4J3rXQ6VYhz8vlL;
-        Wed,  1 Dec 2021 15:37:42 +0800 (CST)
-Received: from [10.174.178.185] (10.174.178.185) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Wed, 1 Dec 2021 15:39:40 +0800
-Subject: Re: [PATCH -next v5 0/3] Fix some issues about mmp
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>
-References: <20211020031802.2312022-1-yebin10@huawei.com>
-CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>
-From:   yebin <yebin10@huawei.com>
-Message-ID: <61A726BC.8090303@huawei.com>
-Date:   Wed, 1 Dec 2021 15:39:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+        id S236815AbhLAJ4d (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 1 Dec 2021 04:56:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235434AbhLAJ4d (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Dec 2021 04:56:33 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17833C061748
+        for <linux-ext4@vger.kernel.org>; Wed,  1 Dec 2021 01:53:13 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id v19so17243418plo.7
+        for <linux-ext4@vger.kernel.org>; Wed, 01 Dec 2021 01:53:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SF1mD5SWLvbt+au3tQQLZWrYTDwiz/pttxfTol9Z/fI=;
+        b=b/Mm9urqTRdhVGB6h0fWJ0QMjbyDSJdXQG26En4LCQRYoJ8jW6tO4ab2oPyeKooSEW
+         88CAdIxf0SHDQ/DKEqFiT4JyWsbptsT0n69sWdmkD6ns/AmdnJfJRjNKBGMH1x/uvd94
+         OrmSBry0lWUlIZa0ALj64izwXInFXOrcrn7Xyp8Acc8vTR/r0pbTn7gNsZc9krupKvyX
+         nTtywYxiJD78N7pddL5zdSitF9r0HgF3yA+eDJeI2gYeq3tsLouIN6lFimllwNbU5dQf
+         5UwtHHnAD7TbqzR02Q6hynRjI4vhPmpWp3C4gcWa6QaVhdBzGg9yWVlfxCVnTRpD5rkx
+         9kHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SF1mD5SWLvbt+au3tQQLZWrYTDwiz/pttxfTol9Z/fI=;
+        b=Y0bltWn/AGpruj0cbL+MUxXma3jLcjfniWWfOuOr+WoNabJs5kdn9S+MnBL8ya43Qu
+         CAu4xIoc6rkhgwxAET4sVkMa50FmFAG/GrTST/AXN7M4mLlZ3NxGMOHYYi0xMip2TEXx
+         ++lDxAXgTTsZ9taZIUV3YUo5huO7WhUyp6V/5eNDcTD7H9Xn5xqOyK9dvAaZyLyD/IH6
+         gG2YKdEyD64ea57PiRkduinrkgctCmcCtlUckZYhyeVVDF9aX7jTlnpAmnx6ljXT4Tnr
+         JqqZyJk4EI+qlvukuFcUfa0RSN8G2vqDL+mvEAyNFWiN8doyBNEOLqSf+DDoXSjX4Itt
+         27bw==
+X-Gm-Message-State: AOAM530/jx4ZJTi+tRzfeNUTpZZT2gZnQFMy8im7DqdHoO56pq5xru1g
+        WBmHkGO/kXQB3UmObktDUXmDnpR3s+qLYQ==
+X-Google-Smtp-Source: ABdhPJxxL9L4neI7W9JiWVsl5rNK0SWUzvcQV2lb8jnIYXrVdufA+dU8AdJUGKlQEPbWLzTCTGzxLA==
+X-Received: by 2002:a17:902:f2c2:b0:141:9ce8:930f with SMTP id h2-20020a170902f2c200b001419ce8930fmr5918250plc.68.1638352392636;
+        Wed, 01 Dec 2021 01:53:12 -0800 (PST)
+Received: from yinxin.bytedance.net ([139.177.225.235])
+        by smtp.gmail.com with ESMTPSA id s2sm28426494pfg.124.2021.12.01.01.53.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Dec 2021 01:53:11 -0800 (PST)
+From:   Xin Yin <yinxin.x@bytedance.com>
+To:     harshadshirwadkar@gmail.com, tytso@mit.edu,
+        adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xin Yin <yinxin.x@bytedance.com>
+Subject: [PATCH] ext4: fix fast commit may miss tracking range for FALLOC_FL_ZERO_RANGE
+Date:   Wed,  1 Dec 2021 17:52:58 +0800
+Message-Id: <20211201095258.1966-1-yinxin.x@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20211020031802.2312022-1-yebin10@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.185]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+when call falloc with FALLOC_FL_ZERO_RANGE, to set an range to unwritten,
+which has been already initialized. If the range is align to blocksize,
+fast commit will not track range for this change.
 
+change to track range during allocating blocks.
 
-On 2021/10/20 11:17, Ye Bin wrote:
-> I test mmp function as follow steps:
-> 1. Inject delay 5s in ext4_multi_mount_protect function after
-> "skip:" label.
-> 2. Share HostA block device(sda) with HostB(nbd0) by NBD.
-> 3. Enable mmp feature when mkfs.ext4 sda.
-> 4. Mount sda and nbd0 at the same time.
->
-> I found kmmpd never trigger detect multi-mount. Reason is as follow:
-> 1. Kmmpd init seq with 0, if two host have same nodename, will lead to
-> detect confliction very slow, even never detect confliction.
-> 2. When detect confliction in kmmpd, we get 'check_bh' is same with 'bh'.
-> so we compare data with itself.
-> 3. We only trigger detect when ”diff > mmp_check_interval * HZ“,
-> 'mmp_check_interval' is double of 'mmp_update_interval', 'diff' is
-> about 'mmp_update_interval'. So 'diff' is little than 'mmp_check_interval * HZ'
-> normaly. As Jan Kara explain as follows:
-> "I think the check is there only for the case where write_mmp_block() +
-> sleep took longer than mmp_check_interval. I agree that should rarely
-> happen but on a really busy system it is possible and in that case we would
-> miss updating mmp block for too long and so another node could have started
-> using the filesystem. "
->
-> v1->v2:
-> Fix 'last_check_time' not initialized before checking.
->
-> v2->v3:
-> 1. drop commit "ext4: introduce last_check_time record previous check time"
-> As Ted explain as follows:
-> "I'd like Andreas to comment here.  My understanding is that MMP
-> originally intended as a safety mechanism which would be used as part
-> of a primary/backup high availability system, but not as the *primary*
-> system where you might try to have two servers simultaneously try to
-> mount the file system and use MMP as the "election" mechanism to
-> decide which server is going to be the primary system, and which would
-> be the backup system.
->
-> The cost of being able to handle this particular race is it would slow
-> down the mounts of cleanly unmounted systems.
->
-> There *are* better systems to implement leader elections[1] than using
-> MMP.  Most of these more efficient leader elections assume that you
-> have a working IP network, and so if you have a separate storage
-> network (including a shared SCSI bus) from your standard IP network,
-> then MMP is a useful failsafe in the face of a network partition of
-> your IP network.  The question is whether MMP should be useful for
-> more than that.  And if it isn't, then we should probably document
-> what MMP is and isn't good for, and give advice in the form of an
-> application note for how MMP should be used in the context of a larger
-> system."
-> 2. drop commit "ext4: fix possible store wrong check interval value in disk when umount"
-> 3. simplify read_mmp_block fucntion to avoid UAF
->
-> v3->v4:
-> 1. drop commit "ext4: init 'seq' with the value which set in 'ext4_multi_mount_protect'"
-> 2. merge "ext4: get buffer head before read_mmp_block" to
-> "ext4: simplify read_mmp_block fucntion"
-> 3. rename "ext4: avoid to re-read mmp check data get from page cache" to
-> "ext4: remove useless bh_check variable"
-> 4. reorder "ext4: remove useless bh_check variable" and
-> "ext4: simplify read_mmp_block fucntion"
->
-> v4->v5:
-> 1. Fix follow warning:
->>> fs/ext4/mmp.c:124:15: warning: variable 'mmp_block' set but not used [-Wunused-but-set-variable]
->             ext4_fsblk_t mmp_block;
-> 2. Fix incorrect judgement in 'ext4_multi_mount_protect'.
->
-> Ye Bin (3):
->    ext4: compare to local seq and nodename when check conflict
->    ext4: remove useless bh_check variable
->    ext4: simplify read_mmp_block fucntion
->
->   fs/ext4/ext4.h |  5 +++-
->   fs/ext4/mmp.c  | 66 +++++++++++++++++++++-----------------------------
->   2 files changed, 31 insertions(+), 40 deletions(-)
-Hi, Ted
-I've tested this patch set. If there are no other questions, can it be 
-merged?
+Signed-off-by: Xin Yin <yinxin.x@bytedance.com>
+---
+ fs/ext4/extents.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 9229ab1f99c5..4108896d471b 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -4433,6 +4433,8 @@ static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
+ 			ret2 = ext4_journal_stop(handle);
+ 			break;
+ 		}
++		ext4_fc_track_range(handle, inode, map.m_lblk,
++					map.m_lblk + map.m_len - 1);
+ 		map.m_lblk += ret;
+ 		map.m_len = len = len - ret;
+ 		epos = (loff_t)map.m_lblk << inode->i_blkbits;
+@@ -4599,8 +4601,6 @@ static long ext4_zero_range(struct file *file, loff_t offset,
+ 	ret = ext4_mark_inode_dirty(handle, inode);
+ 	if (unlikely(ret))
+ 		goto out_handle;
+-	ext4_fc_track_range(handle, inode, offset >> inode->i_sb->s_blocksize_bits,
+-			(offset + len - 1) >> inode->i_sb->s_blocksize_bits);
+ 	/* Zero out partial block at the edges of the range */
+ 	ret = ext4_zero_partial_blocks(handle, inode, offset, len);
+ 	if (ret >= 0)
+-- 
+2.20.1
 
