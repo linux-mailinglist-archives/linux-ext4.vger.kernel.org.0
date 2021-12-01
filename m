@@ -2,77 +2,76 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D8F464CD5
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Dec 2021 12:34:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA319465039
+	for <lists+linux-ext4@lfdr.de>; Wed,  1 Dec 2021 15:42:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349019AbhLALhi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 1 Dec 2021 06:37:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348966AbhLALhf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Dec 2021 06:37:35 -0500
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86013C0613DD
-        for <linux-ext4@vger.kernel.org>; Wed,  1 Dec 2021 03:34:10 -0800 (PST)
-Received: by mail-qv1-xf31.google.com with SMTP id b11so21254990qvm.7
-        for <linux-ext4@vger.kernel.org>; Wed, 01 Dec 2021 03:34:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=l4J9Z+m4hmgZbWtQHlC70w1zjUmiI7wjClCwm6dHAnY=;
-        b=nKE9e+4jEQRb21OhoYPSbxPLfJ2IuSmNXU0U6wmcP4ykCacrWpdbtE0jjuz/hSLLGi
-         3CHjeG+lFmWzoULwCsmlhVFgDEk5dLFaYb51pw7bXGjZ9H8t0j91dP9aL17MRQYkMPZK
-         Snvty/Yp8/ZrWZr2EuFXHqBxUdbU8X39ik45viERJ1Dn7qW8BPCFp2vlafV2okU0kn5j
-         QPTIDY8QJSy8zAVbK10d6+AY0lky+mrQRAAg0uS1DacQStzD/dQtt/uBz/RlGIdZCai/
-         BHep24kmiLdl1nvBvHYMFonu8NoJvJlErv7lbZlg2+2c277BpkzmDA4WwPZoxzlIf0Mh
-         Af5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=l4J9Z+m4hmgZbWtQHlC70w1zjUmiI7wjClCwm6dHAnY=;
-        b=XBpvBPzIK45NkwWNYmL8kzIVQDZ82t78XF+h0Jn+PT2AvEtHJsIm3Sx5C645ppCAoJ
-         UGbxqPk2GMG+kXuOGYjYfic5jhiktV95U7lxaX4TFSfDWWlxdGT6bWhbSE7FMUYTXVdU
-         qiPmhLagT/PbrQRoloRf+/1hpugCcXR0WxY9NGbk2fBysvtA0n43t7P6tb8ELijSvfN8
-         l/jPFvibyGAr0tM09wzVOCcoJeyaryBx4ZTZ1uQZqkIzMJwyww6qyq9YvAfdwaOxj0rN
-         QrqWu9KQCbMZPyPUdx+jnm2pOr041bVU8poNiGlSzn/s9nhM2iCeS5etmeV4ebftNfCG
-         dXsQ==
-X-Gm-Message-State: AOAM532yxkjN+Qterdfi63J/jS9sMjON2ODPEn0BK6rNJgzgaU4t1npo
-        R+WMRm+9RPT/Ojvqlq/gGG/eUYohMA1SYGRcP4+UAOggH0w=
-X-Google-Smtp-Source: ABdhPJwK+H50pzFgfv5CJPfAwBzUdMqIKHh+Ckkuju2lG2knVlJrzqINPiiwPjc/Uz6xuSJez7Fkn5YZPcfa5CPpvro=
-X-Received: by 2002:a67:ef4d:: with SMTP id k13mr6266305vsr.4.1638358439020;
- Wed, 01 Dec 2021 03:33:59 -0800 (PST)
+        id S239882AbhLAOqC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 1 Dec 2021 09:46:02 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:56034 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S239125AbhLAOnO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Dec 2021 09:43:14 -0500
+Received: from callcc.thunk.org (c-24-1-67-28.hsd1.il.comcast.net [24.1.67.28])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1B1EdhZk022409
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 1 Dec 2021 09:39:45 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 6E74842004A; Wed,  1 Dec 2021 09:39:43 -0500 (EST)
+Date:   Wed, 1 Dec 2021 09:39:43 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Lukas Czerner <lczerner@redhat.com>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v2] ext4: implement support for get/set fs label
+Message-ID: <YaeJL8bOsGqBWR7P@mit.edu>
+References: <20211111215904.21237-1-lczerner@redhat.com>
+ <20211112082019.22078-1-lczerner@redhat.com>
+ <YaWTuCoIyaDBsUWF@mit.edu>
+ <20211130094950.ixqkxrjne6ldryeg@work>
 MIME-Version: 1.0
-Sender: unitednationawardwinner@gmail.com
-Received: by 2002:ab0:6c55:0:0:0:0:0 with HTTP; Wed, 1 Dec 2021 03:33:58 -0800 (PST)
-From:   "Mrs. Orgil Baatar" <mrs.orgilbaatar21@gmail.com>
-Date:   Wed, 1 Dec 2021 03:33:58 -0800
-X-Google-Sender-Auth: uTQ_nfkzXaWGWaTWp1BSFqK3Ucs
-Message-ID: <CAJ4dHaSrD-X=xpfKNZV-hXSiMV6mNYrgy5vWCNkKm6iu5RQStg@mail.gmail.com>
-Subject: Your long awaited part payment of $2.5.000.00Usd
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211130094950.ixqkxrjne6ldryeg@work>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Attention: Beneficiary, Your long awaited part payment of
-$2.5.000.00Usd (TWO MILLION FIVE Hundred Thousand United State
-Dollars) is ready for immediate release to you, and it was
-electronically credited into an ATM Visa Card for easy delivery.
+On Tue, Nov 30, 2021 at 10:49:50AM +0100, Lukas Czerner wrote:
+> > But after that?  I'd suggest not running the updates for the rest
+> > through the journal at all, and just write them out directly.  Nothing
+> > else will try to read or write the backup superblock blocks, so
+> > there's no reason why we have to be super careful writing out the
+> > rest.  If we crash after we've only updated the first 20 backup
+> > superblocks --- that's probably 18 more than a user will actually use
+> > in the first place.
+> > 
+> > That allows us to simply reserve 3 credits, and we won't need to try
+> > to extend the handle, which means we don't have to implement some kind
+> > of fallback logic in case the handle extension fails.
+> 
+> I think I agree. But in this case should we at least attempt to check
+> and update the backup superblocks in fsck? Not sure if we do that
+> already.
 
-Your new Payment Reference No.- 6363836,
-Pin Code No: 1787
-Your Certificate of Merit Payment No: 05872,
+Well, after a successful file system check by fsck, we'll update all
+of the backup superblocks.  If we've done a full file system check we
+know that the primary superblock is consistent with the rest of the
+file system, so at that point it's safe to write it to all of the
+backup superblocks in the file system.
 
-Your Names: |
-Address: |
+But if we haven't done the full file system check, we won't know
+whether it is the primary or the backup superblock which is incorrect.
+I guess we could do the basic superblock checks, and if there are at
+least two additional superblocks, we see if we have do a 2 out of 3
+voting check.  Or if there are differences between the primary and the
+backup we could force a full check.
 
-Person to Contact:MR KELLY HALL the Director of the International
-Audit unit ATM Payment Center,
+I think in practice though, so long as the primary and two backup
+superblocks are part of the jbd2 transaction, that should be good
+enough in terms of recovery since usually most users only use the
+first backup superblock to recover if the primary is damaged.  Whether
+we update the rest of the backup superblocks improves things, but it's
+not really going to make a difference 99.99% of the time.
 
-Email: uba-bf@e-ubabf.com
-TELEPHONE: +226 64865611 You can whatsApp the bank
-
-Regards.
-Mrs ORGIL BAATAR
+    	   	    	   	      	     - Ted
