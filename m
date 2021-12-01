@@ -2,76 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA319465039
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Dec 2021 15:42:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EECE4652D6
+	for <lists+linux-ext4@lfdr.de>; Wed,  1 Dec 2021 17:34:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239882AbhLAOqC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 1 Dec 2021 09:46:02 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:56034 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S239125AbhLAOnO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Dec 2021 09:43:14 -0500
-Received: from callcc.thunk.org (c-24-1-67-28.hsd1.il.comcast.net [24.1.67.28])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1B1EdhZk022409
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 1 Dec 2021 09:39:45 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 6E74842004A; Wed,  1 Dec 2021 09:39:43 -0500 (EST)
-Date:   Wed, 1 Dec 2021 09:39:43 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Lukas Czerner <lczerner@redhat.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v2] ext4: implement support for get/set fs label
-Message-ID: <YaeJL8bOsGqBWR7P@mit.edu>
-References: <20211111215904.21237-1-lczerner@redhat.com>
- <20211112082019.22078-1-lczerner@redhat.com>
- <YaWTuCoIyaDBsUWF@mit.edu>
- <20211130094950.ixqkxrjne6ldryeg@work>
+        id S237826AbhLAQiD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 1 Dec 2021 11:38:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351107AbhLAQiA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Dec 2021 11:38:00 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2850C061748
+        for <linux-ext4@vger.kernel.org>; Wed,  1 Dec 2021 08:34:39 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id z6so18132706plk.6
+        for <linux-ext4@vger.kernel.org>; Wed, 01 Dec 2021 08:34:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fBElkur6LZmhvoW3bpkBRdx7KWPV73Vhiu0rYHr4YMM=;
+        b=q0LBMW064LM05W/yKb489eACmvMqpYTbpNwORh7Ki/utFTeYIQIDlBTZCyrkrqfgQo
+         tUTRm5oRjof9WlL1f0jesBQe69bQu2cGooYSEEa3ugZSFgXV1v7mSchxBMnM4YtkNWmR
+         82ZoBXpOi75GJX9DNihIZ9ZK3oU4sLpf8NGFp6kIgt44Zc9kP8CZTYSo25jbZN29wkGM
+         H+8j3KaZCQt36E0HiUtIPyhj+FJHDRQoGHF00IqdpzempmNIpyYNyUTn1nqUIAejUH9u
+         wZZHtioCkZ29raeaopAO75PHyP6hmtRFp6gfjlmHMDnCR2X3Nmm/Yv0jNOf1Ge44HW7W
+         R70Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fBElkur6LZmhvoW3bpkBRdx7KWPV73Vhiu0rYHr4YMM=;
+        b=LqK+31Joqfj3Gw3SMPBroMIH4nkvAssYczA1pku+vBh1vT3bl7Y1ayJakpMjL+znyp
+         nXdjGzvOkKUuGz8T92bipTBeo3KSV7IxxoTEhrElNJupM9UO7Ty/9PZQvJWZXx1WNR4U
+         qKlsXAkjWqX3YLlXi7cy7N0IqnZQh3ESwQ48X80baTVGP2Oe4Cux0VaejBmF9FeLK+Pz
+         dF0x0MptWc8PtdsaQKNSISH6EKcMxGoD8y2oHdlsaWTheyQl+75D+30w0qQs72sYACbB
+         ZPmX0Ym/DbplrsgdeY+gKSUa3vppyrPIcNkyZswNOHW7g+a3Q+XhsPULgtUtK9yiUFp4
+         oh5Q==
+X-Gm-Message-State: AOAM5332joWqBfitPAyTJVtkHOkLd6CiGnexzqeW88a9r02ku3n9ivcA
+        r4zCFi84P47g8mkkY3Atn4hnnPXSyTw=
+X-Google-Smtp-Source: ABdhPJyUu/VSGxC5/rhCARYcznW0EAHO84EUbGEcuDs1Jl0CVRLqJO7xVgp4kBr05k7mWjqyEGzZxw==
+X-Received: by 2002:a17:90b:3a83:: with SMTP id om3mr9106164pjb.0.1638376478651;
+        Wed, 01 Dec 2021 08:34:38 -0800 (PST)
+Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:41a5:fd1:e459:52d9])
+        by smtp.googlemail.com with ESMTPSA id il13sm2126374pjb.52.2021.12.01.08.34.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Dec 2021 08:34:37 -0800 (PST)
+From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+X-Google-Original-From: Harshad Shirwadkar <harshads@google.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] ext4: initialize err_blk before calling __ext4_get_inode_loc
+Date:   Wed,  1 Dec 2021 08:34:21 -0800
+Message-Id: <20211201163421.2631661-1-harshads@google.com>
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211130094950.ixqkxrjne6ldryeg@work>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Nov 30, 2021 at 10:49:50AM +0100, Lukas Czerner wrote:
-> > But after that?  I'd suggest not running the updates for the rest
-> > through the journal at all, and just write them out directly.  Nothing
-> > else will try to read or write the backup superblock blocks, so
-> > there's no reason why we have to be super careful writing out the
-> > rest.  If we crash after we've only updated the first 20 backup
-> > superblocks --- that's probably 18 more than a user will actually use
-> > in the first place.
-> > 
-> > That allows us to simply reserve 3 credits, and we won't need to try
-> > to extend the handle, which means we don't have to implement some kind
-> > of fallback logic in case the handle extension fails.
-> 
-> I think I agree. But in this case should we at least attempt to check
-> and update the backup superblocks in fsck? Not sure if we do that
-> already.
+From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 
-Well, after a successful file system check by fsck, we'll update all
-of the backup superblocks.  If we've done a full file system check we
-know that the primary superblock is consistent with the rest of the
-file system, so at that point it's safe to write it to all of the
-backup superblocks in the file system.
+It is not guaranteed that __ext4_get_inode_loc will definitely set
+err_blk pointer when it returns EIO. To avoid using uninitialized
+variables, let's first set err_blk to 0.
 
-But if we haven't done the full file system check, we won't know
-whether it is the primary or the backup superblock which is incorrect.
-I guess we could do the basic superblock checks, and if there are at
-least two additional superblocks, we see if we have do a 2 out of 3
-voting check.  Or if there are differences between the primary and the
-backup we could force a full check.
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+---
+ fs/ext4/inode.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I think in practice though, so long as the primary and two backup
-superblocks are part of the jbd2 transaction, that should be good
-enough in terms of recovery since usually most users only use the
-first backup superblock to recover if the primary is damaged.  Whether
-we update the rest of the backup superblocks improves things, but it's
-not really going to make a difference 99.99% of the time.
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index bfd3545f1e5d..fbdd2dda57ae 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -4523,7 +4523,7 @@ static int __ext4_get_inode_loc(struct super_block *sb, unsigned long ino,
+ static int __ext4_get_inode_loc_noinmem(struct inode *inode,
+ 					struct ext4_iloc *iloc)
+ {
+-	ext4_fsblk_t err_blk;
++	ext4_fsblk_t err_blk = 0;
+ 	int ret;
+ 
+ 	ret = __ext4_get_inode_loc(inode->i_sb, inode->i_ino, NULL, iloc,
+@@ -4538,7 +4538,7 @@ static int __ext4_get_inode_loc_noinmem(struct inode *inode,
+ 
+ int ext4_get_inode_loc(struct inode *inode, struct ext4_iloc *iloc)
+ {
+-	ext4_fsblk_t err_blk;
++	ext4_fsblk_t err_blk = 0;
+ 	int ret;
+ 
+ 	ret = __ext4_get_inode_loc(inode->i_sb, inode->i_ino, inode, iloc,
+-- 
+2.34.0.rc2.393.gf8c9666880-goog
 
-    	   	    	   	      	     - Ted
