@@ -2,179 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F30AC46599F
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 Dec 2021 00:04:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C302946624B
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 Dec 2021 12:26:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234814AbhLAXHn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 1 Dec 2021 18:07:43 -0500
-Received: from omta002.cacentral1.a.cloudfilter.net ([3.97.99.33]:47650 "EHLO
-        omta002.cacentral1.a.cloudfilter.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234771AbhLAXHk (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Dec 2021 18:07:40 -0500
-X-Greylist: delayed 442 seconds by postgrey-1.27 at vger.kernel.org; Wed, 01 Dec 2021 18:07:40 EST
-Received: from shw-obgw-4002a.ext.cloudfilter.net ([10.228.9.250])
-        by cmsmtp with ESMTP
-        id sPTtmUyNhztEjsYX0mRjwg; Wed, 01 Dec 2021 22:56:54 +0000
-Received: from webber.adilger.int ([70.77.221.9])
-        by cmsmtp with ESMTP
-        id sYWzmzaAT5livsYWzmkHTf; Wed, 01 Dec 2021 22:56:54 +0000
-X-Authority-Analysis: v=2.4 cv=IfaU5Ema c=1 sm=1 tr=0 ts=61a7fdb6
- a=2Y6h5+ypAxmHcsumz2f7Og==:117 a=2Y6h5+ypAxmHcsumz2f7Og==:17 a=RPJ6JBhKAAAA:8
- a=FP58Ms26AAAA:8 a=xDA5UoXM69o270h-HjUA:9 a=fa_un-3J20JGBB2Tu-mn:22
-From:   Andreas Dilger <adilger@dilger.ca>
-To:     tytso@mit.edu
-Cc:     linux-ext4@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>
-Subject: [PATCH] misc: fix chattr usage message for project ID
-Date:   Wed,  1 Dec 2021 15:56:51 -0700
-Message-Id: <20211201225651.58251-1-adilger@dilger.ca>
-X-Mailer: git-send-email 2.25.1
+        id S241462AbhLBL3u (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 2 Dec 2021 06:29:50 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:29081 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1357141AbhLBL3u (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Dec 2021 06:29:50 -0500
+Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4J4YVl6Bysz1DJn6;
+        Thu,  2 Dec 2021 19:23:43 +0800 (CST)
+Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
+ dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Thu, 2 Dec 2021 19:26:26 +0800
+Received: from [10.174.176.102] (10.174.176.102) by
+ dggpeml100016.china.huawei.com (7.185.36.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Thu, 2 Dec 2021 19:26:26 +0800
+Message-ID: <c96e1895-1b89-cdac-0239-a84b8a3ffc3e@huawei.com>
+Date:   Thu, 2 Dec 2021 19:26:25 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfHK7VjJklm0M+vwOz91mbhsGI+y+uZSSPbmiIGkE0zZv4xc6r0dHU3qPKpGECwqzaF0FkDlAEvBma4AeMvUbiNNNwWqU2aRlRBatsTDRaYa01qHXM7N9
- BtJSx/XMZDg8FAnU5fn86WMfy8yID5Krspxv/2gQPTO39XpOHSzqsw4tLbuen6T+bWaGtlEQmW3wLlwNASBvEmHT4IfCodhZUGIuYeMu+54kXHL3xHQT4ZYe
- ETAJsORafldz/+FqSYZB/Q==
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+To:     Theodore Ts'o <tytso@mit.edu>
+CC:     <linux-ext4@vger.kernel.org>, <liuzhiqiang26@huawei.com>,
+        <linfeilong@huawei.com>
+From:   zhanchengbin <zhanchengbin1@huawei.com>
+Subject: [PATCH 0/6] solve memory leak and check whether NULL pointer
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.102]
+X-ClientProxiedBy: dggpeml500005.china.huawei.com (7.185.36.59) To
+ dggpeml100016.china.huawei.com (7.185.36.216)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Fix the "chattr -h" usage message to properly document that the
-"-p" option takes a project argument, like "-v" takes a version.
+Solve the memory leak of the abnormal branch and the new null pointer check
 
-Update the man page formatting to emphasize literal strings.
+zhanchengbin (6):
+   alloc_string : String structure consistency
+   ss_execute_command : Check whether the pointer is not null before it
+     is referenced.
+   quota_set_sb_inum : Check whether the pointer is not null  before it
+     is referenced.
+   badblock_list memory leak
+   ldesc Non-empty judgment
+   io->name memory leak
 
-Signed-off-by: Andreas Dilger <adilger@dilger.ca>
----
- misc/chattr.1.in | 86 +++++++++++++++++++++++++++++++++---------------
- misc/chattr.c    |  2 +-
- 2 files changed, 61 insertions(+), 27 deletions(-)
+  e2fsck/logfile.c      |  2 ++
+  e2fsck/problem.c      |  2 ++
+  lib/ext2fs/test_io.c  |  2 ++
+  lib/ext2fs/undo_io.c  |  2 ++
+  lib/ss/execute_cmd.c  |  2 ++
+  lib/support/mkquota.c |  3 ++-
+  misc/dumpe2fs.c       |  1 +
+  resize/resize2fs.c    | 10 ++++++----
+  8 files changed, 19 insertions(+), 5 deletions(-)
 
-diff --git a/misc/chattr.1.in b/misc/chattr.1.in
-index 922410b6..cd2e0020 100644
---- a/misc/chattr.1.in
-+++ b/misc/chattr.1.in
-@@ -23,44 +23,77 @@ chattr \- change file attributes on a Linux file system
- .B chattr
- changes the file attributes on a Linux file system.
- .PP
--The format of a symbolic mode is +-=[aAcCdDeFijmPsStTux].
-+The format of a symbolic
-+.I mode
-+is
-+.BR +-= [ aAcCdDeFijmPsStTux ].
- .PP
--The operator '+' causes the selected attributes to be added to the
--existing attributes of the files; '-' causes them to be removed; and '='
-+The operator
-+.RB ' + '
-+causes the selected attributes to be added to the
-+existing attributes of the files;
-+.RB ' - '
-+causes them to be removed; and
-+.RB ' = '
- causes them to be the only attributes that the files have.
- .PP
--The letters 'aAcCdDeFijmPsStTux' select the new attributes for the files:
--append only (a),
--no atime updates (A),
--compressed (c),
--no copy on write (C),
--no dump (d),
--synchronous directory updates (D),
--extent format (e),
--case-insensitive directory lookups (F),
--immutable (i),
--data journaling (j),
--don't compress (m),
--project hierarchy (P),
--secure deletion (s),
--synchronous updates (S),
--no tail-merging (t),
--top of directory hierarchy (T),
--undeletable (u),
--and direct access for files (x).
-+The letters
-+.RB ' aAcCdDeFijmPsStTux '
-+select the new attributes for the files:
-+append only
-+.RB ( a ),
-+no atime updates
-+.RB ( A ),
-+compressed
-+.RB ( c ),
-+no copy on write
-+.RB ( C ),
-+no dump
-+.RB ( d ),
-+synchronous directory updates
-+.RB ( D ),
-+extent format
-+.RB ( e ),
-+case-insensitive directory lookups
-+.RB ( F ),
-+immutable
-+.RB ( i ),
-+data journaling
-+.RB ( j ),
-+don't compress
-+.RB ( m ),
-+project hierarchy
-+.RB ( P ),
-+secure deletion
-+.RB ( s ),
-+synchronous updates
-+.RB ( S ),
-+no tail-merging
-+.RB ( t ),
-+top of directory hierarchy
-+.RB ( T ),
-+undeletable
-+.RB ( u ),
-+and direct access for files
-+.RB ( x ).
- .PP
- The following attributes are read-only, and may be listed by
- .BR lsattr (1)
- but not modified by chattr:
--encrypted (E),
--indexed directory (I),
--inline data (N),
--and verity (V).
-+encrypted
-+.RB ( E ),
-+indexed directory
-+.RB ( I ),
-+inline data
-+.RB ( N ),
-+and verity
-+.RB ( V ).
- .PP
- Not all flags are supported or utilized by all file systems; refer to
- file system-specific man pages such as
- .BR btrfs (5),
- .BR ext4 (5),
-+.BR mkfs.f2fs (8),
- and
- .BR xfs (5)
- for more file system-specific details.
-@@ -258,4 +291,5 @@ http://e2fsprogs.sourceforge.net.
- .BR lsattr (1),
- .BR btrfs (5),
- .BR ext4 (5),
-+.BR mkfs.f2fs (8),
- .BR xfs (5).
-diff --git a/misc/chattr.c b/misc/chattr.c
-index 644ef4e9..c7382a37 100644
---- a/misc/chattr.c
-+++ b/misc/chattr.c
-@@ -86,7 +86,7 @@ static unsigned long sf;
- static void usage(void)
- {
- 	fprintf(stderr,
--		_("Usage: %s [-pRVf] [-+=aAcCdDeijPsStTuFx] [-v version] files...\n"),
-+		_("Usage: %s [-RVf] [-+=aAcCdDeijPsStTuFx] [-p project] [-v version] files...\n"),
- 		program_name);
- 	exit(1);
- }
 -- 
-2.25.1
+2.23.0
 
