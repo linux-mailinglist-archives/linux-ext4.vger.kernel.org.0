@@ -2,55 +2,80 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47DA24665E2
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 Dec 2021 15:54:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12A1946663E
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 Dec 2021 16:13:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358823AbhLBO5g (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 2 Dec 2021 09:57:36 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:56075 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1358808AbhLBO5f (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Dec 2021 09:57:35 -0500
-Received: from callcc.thunk.org (c-24-1-67-28.hsd1.il.comcast.net [24.1.67.28])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1B2Erux2021109
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 2 Dec 2021 09:53:57 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 1C122420136; Thu,  2 Dec 2021 09:53:56 -0500 (EST)
-Date:   Thu, 2 Dec 2021 09:53:56 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     zhanchengbin <zhanchengbin1@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, liuzhiqiang26@huawei.com,
-        linfeilong@huawei.com
-Subject: Re: [PATCH 0/6] solve memory leak and check whether NULL pointer
-Message-ID: <YajeBKHX3eZFz63z@mit.edu>
-References: <c96e1895-1b89-cdac-0239-a84b8a3ffc3e@huawei.com>
+        id S1358819AbhLBPQh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 2 Dec 2021 10:16:37 -0500
+Received: from mailbackend.panix.com ([166.84.1.89]:50000 "EHLO
+        mailbackend.panix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236157AbhLBPQh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Dec 2021 10:16:37 -0500
+Received: from xps-7390.lan (50-233-66-25-static.hfc.comcastbusiness.net [50.233.66.25])
+        by mailbackend.panix.com (Postfix) with ESMTPSA id 4J4fbX4wgSzRyK;
+        Thu,  2 Dec 2021 10:13:12 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=panix.com; s=panix;
+        t=1638457993; bh=toNejAxkj+yP8ltzlp9a3STqZnD7jU0oVwaijQEJlZU=;
+        h=Date:From:Reply-To:To:cc:Subject:In-Reply-To:References;
+        b=iQWI9zs4cbEE27OPkZUNGunlqbBji7LPHblAro+/jkZcNX24HasiX5UC30tsS+Ese
+         pPZ502MW72NrVzRpV70RpLot5KWFaFQS5/mSzJ3Rv12dJPF/NtSLrrtAyySPvjJTJU
+         HL0nQA00QggMvQiD4jwuQqwy6YAByTPWSR92+T7c=
+Date:   Thu, 2 Dec 2021 07:13:11 -0800 (PST)
+From:   "Kenneth R. Crudup" <kenny@panix.com>
+Reply-To: "Kenneth R. Crudup" <kenny@panix.com>
+To:     Jens Axboe <axboe@kernel.dk>
+cc:     linux-bcache@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-nvme@lists.infradead.org,
+        "Kenneth R. Crudup" <kenny@panix.com>, shinichiro.kawasaki@wdc.com
+Subject: Re: Write I/O queue hangup at random on recent Linus' kernels
+In-Reply-To: <be6a783-97db-c3bf-b16f-e8c62b14755d@panix.com>
+Message-ID: <4429eed8-b9b9-6943-f76-6ea38d695248@panix.com>
+References: <b3ba57a7-d363-9c17-c4be-9dbe86875@panix.com> <b9c2681f-e63a-4d3b-913d-d8a75e2c2ea0@kernel.dk> <be6a783-97db-c3bf-b16f-e8c62b14755d@panix.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c96e1895-1b89-cdac-0239-a84b8a3ffc3e@huawei.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Dec 02, 2021 at 07:26:25PM +0800, zhanchengbin wrote:
-> Solve the memory leak of the abnormal branch and the new null pointer check
-> 
-> zhanchengbin (6):
->   alloc_string : String structure consistency
->   ss_execute_command : Check whether the pointer is not null before it
->     is referenced.
->   quota_set_sb_inum : Check whether the pointer is not null  before it
->     is referenced.
->   badblock_list memory leak
->   ldesc Non-empty judgment
->   io->name memory leak
 
-The cover letter for the patch series arrived, but none of the patches
-associated with it did.  Could you resend?
+On Thu, 25 Nov 2021, Kenneth R. Crudup wrote:
+
+> > echo 0 > /sys/block/nvme0n1/queue/wbt_lat_usec
+> > and that will disable writeback throttling on that device.
+
+> It's been about 48 hours and haven't seen the issue since doing this.
+
+I'm now back to running Linus' master (which includes your fix for this, and
+I'm not disabling WBT any longer).
+
+We may still have issues, it appears. Everything was going OK until yesterday,
+when I had an SD-Card with an image of an SSD with a dm volume group on it,
+that I'd had mounted as a loopback image and activated (... was that clear)?
+
+While I'm not seeing any kernel messages related to my NVMe (root) device, I'm
+also seeing the same UI issues as before- the KDE toolbar is unresponsive, and
+I don't have full interaction with my desktop UI (i.e., can't click on the
+bottom button bar to switch to the active window). I'm pretty sure this is a
+symptom of another I/O problem, however.
+
+I tried to unfreeze it by:
+
+  $ echo 0 | sudo tee -a /sys/block/mmcblk0/queue/wbt_lat_usec /sys/block/loop?/queue/wbt_lat_usec
+
+... and a couple of seconds after that, it looked as if some queued-up toolbar
+actions spit out (but was then unresponsive), so I'd tried this to see if it
+would tell me if I had any throttled/stalled IOs:
+
+  $ egrep -r . $(sudo find /sys/block/*/ -name inflight )
+
+... but they were all zeros.
+
+Does this make sense? Your patch seemed to be block-device-agnostic, but is there
+a chance there's a similar path in the "dm" that also needs to be fixed?
 
 Thanks,
 
-					- Ted
+	-Kenny
+
+-- 
+Kenneth R. Crudup / Sr. SW Engineer, Scott County Consulting, Orange County CA
