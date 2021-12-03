@@ -2,91 +2,71 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB7704666CD
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 Dec 2021 16:37:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C98466F0E
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 Dec 2021 02:18:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235317AbhLBPkv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 2 Dec 2021 10:40:51 -0500
-Received: from mailbackend.panix.com ([166.84.1.89]:60364 "EHLO
-        mailbackend.panix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233165AbhLBPkv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Dec 2021 10:40:51 -0500
-Received: from xps-7390.lan (50-233-66-25-static.hfc.comcastbusiness.net [50.233.66.25])
-        by mailbackend.panix.com (Postfix) with ESMTPSA id 4J4g7W0QqVz2jCv;
-        Thu,  2 Dec 2021 10:37:26 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=panix.com; s=panix;
-        t=1638459447; bh=dbKm0N0V3+vmx7loDcn20Anbh9JDyOpiRkOKnYCaoPo=;
-        h=Date:From:Reply-To:To:cc:Subject:In-Reply-To:References;
-        b=A7kKY5Je6s5F+dwDSFtlTMCWbUVWbq9JEsNVRFpg6ZFGq6fmQ1UUeLeXnMbRDBhsn
-         BtdVL5OPgxJ0b3FT8zipfDsiS5pO5uhkVwXWUeevTkneiIemJaYBXpyzJ1kqRR0PI7
-         /e7O8ej/mv7oXZUrp+gru9VOcZ3QJYW+ge2XFneY=
-Date:   Thu, 2 Dec 2021 07:37:26 -0800 (PST)
-From:   "Kenneth R. Crudup" <kenny@panix.com>
-Reply-To: "Kenneth R. Crudup" <kenny@panix.com>
-To:     Jens Axboe <axboe@kernel.dk>
-cc:     linux-bcache@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-nvme@lists.infradead.org,
-        shinichiro.kawasaki@wdc.com
-Subject: Re: Write I/O queue hangup at random on recent Linus' kernels
-In-Reply-To: <4429eed8-b9b9-6943-f76-6ea38d695248@panix.com>
-Message-ID: <a2eb227a-a4dc-e4e7-d3ea-567778bfc9c0@panix.com>
-References: <b3ba57a7-d363-9c17-c4be-9dbe86875@panix.com> <b9c2681f-e63a-4d3b-913d-d8a75e2c2ea0@kernel.dk> <be6a783-97db-c3bf-b16f-e8c62b14755d@panix.com> <4429eed8-b9b9-6943-f76-6ea38d695248@panix.com>
+        id S1344768AbhLCBWK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 2 Dec 2021 20:22:10 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:29148 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349900AbhLCBWJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Dec 2021 20:22:09 -0500
+Received: from kwepemi100010.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4J4vzx0hWzzXdTc;
+        Fri,  3 Dec 2021 09:16:45 +0800 (CST)
+Received: from kwepemm600003.china.huawei.com (7.193.23.202) by
+ kwepemi100010.china.huawei.com (7.221.188.54) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 3 Dec 2021 09:18:45 +0800
+Received: from [127.0.0.1] (10.174.177.249) by kwepemm600003.china.huawei.com
+ (7.193.23.202) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Fri, 3 Dec
+ 2021 09:18:44 +0800
+Subject: Re: [PATCH 0/6] solve memory leak and check whether NULL pointer
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        zhanchengbin <zhanchengbin1@huawei.com>
+CC:     <linux-ext4@vger.kernel.org>, <linfeilong@huawei.com>
+References: <c96e1895-1b89-cdac-0239-a84b8a3ffc3e@huawei.com>
+ <YajeBKHX3eZFz63z@mit.edu>
+From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Message-ID: <4b608d9d-074d-9801-53fc-df9d62ab3e6f@huawei.com>
+Date:   Fri, 3 Dec 2021 09:18:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <YajeBKHX3eZFz63z@mit.edu>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.249]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Sorry for that, we will resend the patch series.
 
-On Thu, 2 Dec 2021, Kenneth R. Crudup wrote:
-
->   $ egrep -r . $(sudo find /sys/block/*/ -name inflight )
+On 2021/12/2 22:53, Theodore Y. Ts'o wrote:
+> On Thu, Dec 02, 2021 at 07:26:25PM +0800, zhanchengbin wrote:
+>> Solve the memory leak of the abnormal branch and the new null pointer check
+>>
+>> zhanchengbin (6):
+>>   alloc_string : String structure consistency
+>>   ss_execute_command : Check whether the pointer is not null before it
+>>     is referenced.
+>>   quota_set_sb_inum : Check whether the pointer is not null  before it
+>>     is referenced.
+>>   badblock_list memory leak
+>>   ldesc Non-empty judgment
+>>   io->name memory leak
+> The cover letter for the patch series arrived, but none of the patches
+> associated with it did.  Could you resend?
 >
-> ... but they were all zeros.
+> Thanks,
+>
+> 					- Ted
+>
+> .
 
-... and similarly:
-
-----
-$ sudo egrep -r . $(sudo find /sys/kernel/debug/block/ -name inflight)
-/sys/kernel/debug/block/mmcblk0/rqos/wbt/inflight:0: inflight 0
-/sys/kernel/debug/block/mmcblk0/rqos/wbt/inflight:1: inflight 0
-/sys/kernel/debug/block/mmcblk0/rqos/wbt/inflight:2: inflight 0
-/sys/kernel/debug/block/sda/rqos/wbt/inflight:0: inflight 0
-/sys/kernel/debug/block/sda/rqos/wbt/inflight:1: inflight 0
-/sys/kernel/debug/block/sda/rqos/wbt/inflight:2: inflight 0
-/sys/kernel/debug/block/nvme0n1/rqos/wbt/inflight:0: inflight 0
-/sys/kernel/debug/block/nvme0n1/rqos/wbt/inflight:1: inflight 0
-/sys/kernel/debug/block/nvme0n1/rqos/wbt/inflight:2: inflight 0
-/sys/kernel/debug/block/loop7/rqos/wbt/inflight:0: inflight 0
-/sys/kernel/debug/block/loop7/rqos/wbt/inflight:1: inflight 0
-/sys/kernel/debug/block/loop7/rqos/wbt/inflight:2: inflight 0
-/sys/kernel/debug/block/loop6/rqos/wbt/inflight:0: inflight 0
-/sys/kernel/debug/block/loop6/rqos/wbt/inflight:1: inflight 0
-/sys/kernel/debug/block/loop6/rqos/wbt/inflight:2: inflight 0
-/sys/kernel/debug/block/loop5/rqos/wbt/inflight:0: inflight 0
-/sys/kernel/debug/block/loop5/rqos/wbt/inflight:1: inflight 0
-/sys/kernel/debug/block/loop5/rqos/wbt/inflight:2: inflight 0
-/sys/kernel/debug/block/loop4/rqos/wbt/inflight:0: inflight 0
-/sys/kernel/debug/block/loop4/rqos/wbt/inflight:1: inflight 0
-/sys/kernel/debug/block/loop4/rqos/wbt/inflight:2: inflight 0
-/sys/kernel/debug/block/loop3/rqos/wbt/inflight:0: inflight 0
-/sys/kernel/debug/block/loop3/rqos/wbt/inflight:1: inflight 0
-/sys/kernel/debug/block/loop3/rqos/wbt/inflight:2: inflight 0
-/sys/kernel/debug/block/loop2/rqos/wbt/inflight:0: inflight 0
-/sys/kernel/debug/block/loop2/rqos/wbt/inflight:1: inflight 0
-/sys/kernel/debug/block/loop2/rqos/wbt/inflight:2: inflight 0
-/sys/kernel/debug/block/loop1/rqos/wbt/inflight:0: inflight 0
-/sys/kernel/debug/block/loop1/rqos/wbt/inflight:1: inflight 0
-/sys/kernel/debug/block/loop1/rqos/wbt/inflight:2: inflight 0
-/sys/kernel/debug/block/loop0/rqos/wbt/inflight:0: inflight 0
-/sys/kernel/debug/block/loop0/rqos/wbt/inflight:1: inflight 0
-/sys/kernel/debug/block/loop0/rqos/wbt/inflight:2: inflight 0
-----
-
-(... but just now, I got a delayed popup from my UI, which then went back to
-being unresponsive again)
-
-	-Kenny
-
--- 
-Kenneth R. Crudup / Sr. SW Engineer, Scott County Consulting, Orange County CA
