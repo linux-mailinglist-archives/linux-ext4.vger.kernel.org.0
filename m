@@ -2,68 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE2A469038
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 Dec 2021 06:40:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2EA7469926
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 Dec 2021 15:37:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237294AbhLFFn6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 6 Dec 2021 00:43:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbhLFFn6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Dec 2021 00:43:58 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16943C0613F8
-        for <linux-ext4@vger.kernel.org>; Sun,  5 Dec 2021 21:40:30 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id z18so11569791iof.5
-        for <linux-ext4@vger.kernel.org>; Sun, 05 Dec 2021 21:40:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=Er04Eew4r9F5GGbSpesF7E+PQbMnKyQXHdATWJtUrfA=;
-        b=O5YWfI5B6A4S8ZJtFVey5ARKoRSXvwTCvb+NGDoPTAgiCgbb70IfSZEHN7LFvxgzmV
-         hgB6dBbhKdfLeAuP9bFy3z5RLWEF+HkGktYDY2dnaOcZC1uROHDiPNBZNYgWjRUGFhCE
-         yJNC3Tw8Jp2oJxa75n6XAhEGlKFIws0pUQXSFKAHsy/0O66g3L6UnV613Ty1SGlhRziR
-         7I1bznxMQk3iocACjkagfuo05GbhxbmJ7AeUntHgSXYmr219Ocf+FyYVvmcUJI3Ro1G+
-         8FCxWI7LS+R8w1YAT2NQ2yb5GpvqySqGCPfJE0ObkCkSag+SK2Gq9xD4UQ+tPJKRHWsY
-         mLAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=Er04Eew4r9F5GGbSpesF7E+PQbMnKyQXHdATWJtUrfA=;
-        b=bzJao6VY++vDroW7y6zPrkxoOKOCGSqp5ruIcpsZr+dMqjPE+J71/j2TGEIk8cYlGC
-         Kem39Ed0VoUzob4ViVfg0/tS3EdG3djinmrj8NP1cVjnIJ7R/80P5iVYrclT8OO538hU
-         EkYQUb8Z3y8JF4xPoCphF1ORAfIkqQPHVQNCRjaTTuT4RhmqpZ7vcLCnrWTOivYiY3UA
-         h6ysbciY8aNhfGqQny1ttKHWpUJza+xkmGBYSD4NC1xhoyTlEyI8em692FfOfrIVZ1Qi
-         shXTYUUMnIK5U14ZthfrqqEWfjemyaI/0aV2RmS7YWmzeqbnoKO//dvVg+lU512ihbjn
-         S8Iw==
-X-Gm-Message-State: AOAM530K/tI0iXhtNpO36RUajpeppcVJ/7lxVkQsKXVveKIvoGidysHo
-        eoa5Et5EdI5W0Bt8IIY+lBn4tS1x8S5vD5QYT3g=
-X-Google-Smtp-Source: ABdhPJwOQSxyspXTiD5jIX+o6BcaenSMj5wFf/E6jKohg6a16CdBmS/nTcLp/9H+nQ/qmNM2nH/eg1l9yI/1zPr+Scc=
-X-Received: by 2002:a5e:d502:: with SMTP id e2mr32194304iom.118.1638769229215;
- Sun, 05 Dec 2021 21:40:29 -0800 (PST)
+        id S1344371AbhLFOlH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 6 Dec 2021 09:41:07 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:34800 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244773AbhLFOlF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Dec 2021 09:41:05 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1EB221FD34;
+        Mon,  6 Dec 2021 14:37:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1638801456; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OJOFlQjAKHcH0wqO+IJBUf4iHa9DwBG2cjInTKyoM4E=;
+        b=el5TjAHKLWW2wM3zq3SuwP85wmOjdWL2W7Belcj2QLQt76bBXjq9Q8I/LO6iPlcS3+UMdp
+        tRAAqLZcdokJcAwRpre4MobQQw7oj11U2wLevTVI+Frt3WRZ9dPmVq099M40WG3R/aNIuc
+        c1+NgeK/gj9ANXfEE0aoDaoY5Rx8/5A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1638801456;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OJOFlQjAKHcH0wqO+IJBUf4iHa9DwBG2cjInTKyoM4E=;
+        b=TLkeKaekyqkOO95lQp68lKsorvQ3apRfoG/W1CMBDU18/bUxZihRAjCRtoyLU2SSabEs0G
+        HtRKTpoAoSkX94Cg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A5D4C13BBC;
+        Mon,  6 Dec 2021 14:37:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id kKRAJS8grmH/PwAAMHmgww
+        (envelope-from <lhenriques@suse.de>); Mon, 06 Dec 2021 14:37:35 +0000
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id 4b702813;
+        Mon, 6 Dec 2021 14:37:34 +0000 (UTC)
+From:   =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
+To:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>,
+        Jeroen van Wolffelaar <jeroen@wolffelaar.nl>
+Subject: [PATCH] ext4: set csum seed in tmp inode while migrating to extents
+Date:   Mon,  6 Dec 2021 14:37:33 +0000
+Message-Id: <20211206143733.18918-1-lhenriques@suse.de>
+In-Reply-To: <bug-213357-13602@https.bugzilla.kernel.org>
+References: <bug-213357-13602@https.bugzilla.kernel.org>
 MIME-Version: 1.0
-Received: by 2002:a02:7b07:0:0:0:0:0 with HTTP; Sun, 5 Dec 2021 21:40:28 -0800 (PST)
-Reply-To: mariaelisabethschaeffler1941@gmail.com
-From:   Maria-Elisabeth Schaeffler <celina.usa10006@gmail.com>
-Date:   Mon, 6 Dec 2021 05:40:28 +0000
-Message-ID: <CAD0DzFJn7ELBQN0PX9BDwWWwFjzm3q6yUkzy2NZk+Z2ucEXGaQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
---=20
-Hallo,
+When migrating to extents, the temporary inode will have it's own checksum
+seed.  This means that, when swapping the inodes data, the inode checksums
+will be incorrect.
 
-Sie haben eine laufende Spende von Frau Maria-Elisabeth Schaeffler,
-Antworten Sie jetzt f=C3=BCr Details und Anforderungen ..
+This can be fixed by recalculating the extents checksums again.  Or simply
+by copying the seed into the temporary inode.
 
-Herzliche Gr=C3=BC=C3=9Fe
-Gesch=C3=A4ftsf=C3=BChrer schaeffler Gruppen
-Maria-Elisabeth Schaeffler
-mariaelisabethschaeffler1941@gmail.com
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=213357
+Reported-by: Jeroen van Wolffelaar <jeroen@wolffelaar.nl>
+Signed-off-by: Luís Henriques <lhenriques@suse.de>
+---
+ fs/ext4/migrate.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
+index 7e0b4f81c6c0..dd4ece38fc83 100644
+--- a/fs/ext4/migrate.c
++++ b/fs/ext4/migrate.c
+@@ -413,7 +413,7 @@ int ext4_ext_migrate(struct inode *inode)
+ 	handle_t *handle;
+ 	int retval = 0, i;
+ 	__le32 *i_data;
+-	struct ext4_inode_info *ei;
++	struct ext4_inode_info *ei, *tmp_ei;
+ 	struct inode *tmp_inode = NULL;
+ 	struct migrate_struct lb;
+ 	unsigned long max_entries;
+@@ -503,6 +503,10 @@ int ext4_ext_migrate(struct inode *inode)
+ 	}
+ 
+ 	ei = EXT4_I(inode);
++	tmp_ei = EXT4_I(tmp_inode);
++	/* Use the right seed for checksumming */
++	tmp_ei->i_csum_seed = ei->i_csum_seed;
++
+ 	i_data = ei->i_data;
+ 	memset(&lb, 0, sizeof(lb));
+ 
