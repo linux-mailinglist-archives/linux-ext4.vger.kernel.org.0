@@ -2,109 +2,98 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B009C46CE84
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Dec 2021 08:51:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C45046CE86
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Dec 2021 08:52:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244560AbhLHHy4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Dec 2021 02:54:56 -0500
-Received: from omta001.cacentral1.a.cloudfilter.net ([3.97.99.32]:56508 "EHLO
-        omta001.cacentral1.a.cloudfilter.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231739AbhLHHyz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Dec 2021 02:54:55 -0500
-Received: from shw-obgw-4001a.ext.cloudfilter.net ([10.228.9.142])
-        by cmsmtp with ESMTP
-        id ubGWmS58QlW5qurjYm43H2; Wed, 08 Dec 2021 07:51:24 +0000
-Received: from webber.adilger.int ([70.77.221.9])
-        by cmsmtp with ESMTP
-        id urjWmyM4flt4QurjXmHmJK; Wed, 08 Dec 2021 07:51:24 +0000
-X-Authority-Analysis: v=2.4 cv=F+dEy4tN c=1 sm=1 tr=0 ts=61b063fc
- a=2Y6h5+ypAxmHcsumz2f7Og==:117 a=2Y6h5+ypAxmHcsumz2f7Og==:17 a=RPJ6JBhKAAAA:8
- a=FKBdsoCbyCQ-z-6tLEAA:9 a=fa_un-3J20JGBB2Tu-mn:22
-From:   Andreas Dilger <adilger@dilger.ca>
-To:     tytso@mit.edu
-Cc:     linux-ext4@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>
-Subject: [PATCH] e2fsck: map PROMPT_* values to prompt messages
-Date:   Wed,  8 Dec 2021 00:51:12 -0700
-Message-Id: <20211208075112.85649-1-adilger@dilger.ca>
+        id S240853AbhLHHzd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Dec 2021 02:55:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231739AbhLHHzc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Dec 2021 02:55:32 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFEB5C061574;
+        Tue,  7 Dec 2021 23:52:00 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id p18so985766plf.13;
+        Tue, 07 Dec 2021 23:52:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OugZMT2M5ZDnSu+JcYein3ciyAIl9s8J2Fw+G4vDbaE=;
+        b=WZG72vIse6pieieXJfgtY6m3c4REzAHoko54lnE2THEZl3iNBw4kGeFiRZYCOoDrTA
+         QGLv24VrIsj+yBHpN6gtQx23CMKoVFVVqXZIyo3saHjMdSvlSk1OX7b+bHqMpyhUga8Z
+         IOEe8BEvgMQSipzbSEpxMgOHYLhPM4DBqGNG7YdBkky7MjBZamXDMJ2eLAE1OhIF/8IL
+         KipdDAuLRNvxl1wR0YMl4hHsKSdwkxIldRT/ZBpjPDZVnmqab+u8SHxtqs1UEKmwnsk+
+         lET3UQi4C4cMEEvO6e0fsLtaj7R0AirpEw25OmLgDfBg7ckYq6ujJOxG2S85iQbsrDpv
+         DKUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OugZMT2M5ZDnSu+JcYein3ciyAIl9s8J2Fw+G4vDbaE=;
+        b=M+5BiVTAOXc5JYp/3/4IDwriYyTbcVloOAsiV9bl+o/e/WOJlUs4PXhbNAEktebYHf
+         Amy/Qb4sYdBKZ/GtiuBJicHGxaxYqBWWUr1w+T06cb6V/YOdHWy08orDqI4/9IjI1oYP
+         DYcwYe0KCvLAej+ruqEPXLh2Y7IoIWuHlVB/EdWRkRDbIO8CfWwT1UGGdVccYRjxl1tp
+         ulfQkTShQ21ihKusW0PuGx9w98qavepV0jDGz8mX+oo2m6ndHMB/r3SwnD1pjpLwkgZT
+         WC4Bdv6dpBDgKzMxQQc3mCJDlpmtHdSpJszF5l0iyjWGEikXj7k2TO4GXg8crAuv3Bol
+         B3/A==
+X-Gm-Message-State: AOAM530MbrIUxfGWTdRhNBu1sjHK8YS16k9DzslLb0Uy3o2mRsoS7Qte
+        +UYKNYiuOzrx1w70TbHr0ZM=
+X-Google-Smtp-Source: ABdhPJwqjN0muZvKsgEQ8OaB0heymV0D93JX4akDCaURb1Tm5etVnUPT15Mo3hPhSG1NbqNELWShnw==
+X-Received: by 2002:a17:90b:1b03:: with SMTP id nu3mr5418749pjb.240.1638949920380;
+        Tue, 07 Dec 2021 23:52:00 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id h26sm1634548pgm.68.2021.12.07.23.51.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Dec 2021 23:52:00 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: luo.penghao@zte.com.cn
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luo penghao <luo.penghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] ext4: Remove redundant o_start statements
+Date:   Wed,  8 Dec 2021 07:51:57 +0000
+Message-Id: <20211208075157.404535-1-luo.penghao@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfLyDCPKFf/L13tfpfi9E3K1HzbZ8Rdm78BHr7o8noXHX5VXa3SzZvTdUqUWpNU0WnvGINKDf4KI+668lNUitZ32ftD/i39O/CBVeJju7/KaIPBK8ohHU
- Mf/NJ0Ar8882RLvVxGqSPHeo+Q1zGqLGvy1oR6agEMKmqehaYDf7p/r4dS6MGmHheHpMnpJaUICqesjq4dfcY6B3UMt3MK/igEzWpSE3luq63Rv/N+trl0Fe
- CSuvAi//Mr89FJjVuD76Cw==
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-It isn't totally clear when searching the code for PROMPT_*
-constants from problem codes where these messages come from.
-Similarly, there isn't a direct mapping from the prompt string
-to the constant.
+From: luo penghao <luo.penghao@zte.com.cn>
 
-Add comments that make this mapping more clear.
+The if will goto out of the loop, and until the end of the
+function execution, o_start will not be used again.
 
-Signed-off-by: Andreas Dilger <adilger@dilger.ca>
+The clang_analyzer complains as follows:
+
+fs/ext4/move_extent.c:635:5 warning:
+
+Value stored to 'o_start' is never read
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
 ---
- e2fsck/problem.c | 46 +++++++++++++++++++++++-----------------------
- 1 file changed, 23 insertions(+), 23 deletions(-)
+ fs/ext4/move_extent.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/e2fsck/problem.c b/e2fsck/problem.c
-index 757b5d56..2d02468c 100644
---- a/e2fsck/problem.c
-+++ b/e2fsck/problem.c
-@@ -50,29 +50,29 @@
-  * to fix a problem.
-  */
- static const char *prompt[] = {
--	N_("(no prompt)"),	/* 0 */
--	N_("Fix"),		/* 1 */
--	N_("Clear"),		/* 2 */
--	N_("Relocate"),		/* 3 */
--	N_("Allocate"),		/* 4 */
--	N_("Expand"),		/* 5 */
--	N_("Connect to /lost+found"), /* 6 */
--	N_("Create"),		/* 7 */
--	N_("Salvage"),		/* 8 */
--	N_("Truncate"),		/* 9 */
--	N_("Clear inode"),	/* 10 */
--	N_("Abort"),		/* 11 */
--	N_("Split"),		/* 12 */
--	N_("Continue"),		/* 13 */
--	N_("Clone multiply-claimed blocks"), /* 14 */
--	N_("Delete file"),	/* 15 */
--	N_("Suppress messages"),/* 16 */
--	N_("Unlink"),		/* 17 */
--	N_("Clear HTree index"),/* 18 */
--	N_("Recreate"),		/* 19 */
--	N_("Optimize"),		/* 20 */
--	N_("Clear flag"),	/* 21 */
--	"",			/* 22 */
-+	N_("(no prompt)"),			/* PROMPT_NONE		=  0 */
-+	N_("Fix"),				/* PROMPT_FIX		=  1 */
-+	N_("Clear"),				/* PROMPT_CLEAR		=  2 */
-+	N_("Relocate"),				/* PROMPT_RELOCATE	=  3 */
-+	N_("Allocate"),				/* PROMPT_CREATE	=  4 */
-+	N_("Expand"),				/* PROMPT_EXPAND	=  5 */
-+	N_("Connect to /lost+found"),		/* PROMPT_CONNECT	=  6 */
-+	N_("Create"),				/* PROMPT_CREATE	=  7 */
-+	N_("Salvage"),				/* PROMPT_SALVAGE	=  8 */
-+	N_("Truncate"),				/* PROMPT_TRUNCATE	=  9 */
-+	N_("Clear inode"),			/* PROMPT_CLEAR_INODE	= 10 */
-+	N_("Abort"),				/* PROMPT_ABORT		= 11 */
-+	N_("Split"),				/* PROMPT_SPLIT		= 12 */
-+	N_("Continue"),				/* PROMPT_CONTINUE	= 13 */
-+	N_("Clone multiply-claimed blocks"),	/* PROMPT_CLONE		= 14 */
-+	N_("Delete file"),			/* PROMPT_DELETE	= 15 */
-+	N_("Suppress messages"),		/* PROMPT_SUPPRESS	= 16 */
-+	N_("Unlink"),				/* PROMPT_UNLINK	= 17 */
-+	N_("Clear HTree index"),		/* PROMPT_CLEAR_HTREE	= 18 */
-+	N_("Recreate"),				/* PROMPT_RECREATE	= 19 */
-+	N_("Optimize"),				/* PROMPT_OPTIMIZE	= 20 */
-+	N_("Clear flag"),			/* PROMPT_CLEAR_FLAG	= 21 */
-+	"",					/* PROMPT_NULL		= 22 */
- };
- 
- /*
+diff --git a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
+index 64a5797..95aa212 100644
+--- a/fs/ext4/move_extent.c
++++ b/fs/ext4/move_extent.c
+@@ -632,7 +632,6 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp, __u64 orig_blk,
+ 		/* Check hole before the start pos */
+ 		if (cur_blk + cur_len - 1 < o_start) {
+ 			if (next_blk == EXT_MAX_BLOCKS) {
+-				o_start = o_end;
+ 				ret = -ENODATA;
+ 				goto out;
+ 			}
 -- 
-2.25.1
+2.15.2
+
 
