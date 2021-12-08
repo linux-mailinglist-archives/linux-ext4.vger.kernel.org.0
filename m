@@ -2,197 +2,132 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC9246D5DB
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Dec 2021 15:37:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFB0D46D8BA
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Dec 2021 17:42:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232125AbhLHOkz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Dec 2021 09:40:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43330 "EHLO
+        id S233054AbhLHQqP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Dec 2021 11:46:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233260AbhLHOky (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Dec 2021 09:40:54 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68473C061746;
-        Wed,  8 Dec 2021 06:37:22 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id r11so8946971edd.9;
-        Wed, 08 Dec 2021 06:37:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QvvZ2fkysQ5rF8RYcRn/4oTATeY96pP6kNxCUPgpnUY=;
-        b=it+aj+VQqF5zZSzChLCl8+vf54hQKFdHIMMcA66ftcNDEVDJOfhGY2C3XOWrqVGS3r
-         0XJ2C/vQ3Jd5tQ9dCvuKFiLnZ14z25DGIdI8YEzcjg73+c0xxfNQvkV/URXaOLVus6AI
-         h8i5ou/luPEvtA9xCiKzhd3/eqUqwOO802NRBV3bule+9QIwRizZLkgq0jHTlntzs7r6
-         sHqkuZr5E5NpKmOtcU8uMEiEWWgZq549It6vaRSry39v6baDXylwQG/OPZ/i9YRhBVb2
-         FEGbG1SxTBKDYQofaysUePqqzJUyw7s6L2LEUHBCsbfGfbPJpLpbjcLCqO3omL+MiShq
-         p/qA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QvvZ2fkysQ5rF8RYcRn/4oTATeY96pP6kNxCUPgpnUY=;
-        b=PdTQYkYItncCHyllKp6FoVq9E05MBEU6Kj4P5pZNW7drgoaMAPIXwwMtnq1A86lnc1
-         RqSWwKd0dBCBw7Dz4UG3ZIXDDcy/W1/XOoSoFbL7nkpI9Hoo6dvuV/3wneFTL8jln6eK
-         wmlLVVwV6h4GCeiON4L7+AH7+zMyvlPrf+I53+Swn71cnwxC4vFwOVQsDrdt+WUfJ5qH
-         ACJfbFJg0ObszxqWOWaklrpYJQBurh2PZklY5ujNvD7UecFf3pwyuuY8BQrOE+y/40Wo
-         qv6Q35CbwjK4cUhIMiIQ61UkrBns+bWcugprSPXZlbL7BrynEQ0wWumaLHUCMV6Ol2kY
-         /Knw==
-X-Gm-Message-State: AOAM530qeDPlQTxs/B+ece+eCLxBrzVKQ6mWBQ4Kvvx0AUDs+Y2nGu6G
-        r63t/s54RmdYTDWSGf+G1hhyPYNAFBu6skqb0zlIRCGH2LhcJnAjm70=
-X-Google-Smtp-Source: ABdhPJwPdc8KUsRkGH2HocpMgPNNS/SorjtPfNiFwMWwgaMEH3w+0JQmpxQo+j5VVX2Jih0+ABuw7eSqWOZUW4EeHvc=
-X-Received: by 2002:a17:906:b1c6:: with SMTP id bv6mr7862301ejb.30.1638974239905;
- Wed, 08 Dec 2021 06:37:19 -0800 (PST)
+        with ESMTP id S230420AbhLHQqP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Dec 2021 11:46:15 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A05C061746
+        for <linux-ext4@vger.kernel.org>; Wed,  8 Dec 2021 08:42:43 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 37E50CE2216
+        for <linux-ext4@vger.kernel.org>; Wed,  8 Dec 2021 16:42:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 558E6C00446;
+        Wed,  8 Dec 2021 16:42:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638981759;
+        bh=SF9V7YgUNGEl5fDFTACbT+ALmxHIHHMklkDMtn6Wzts=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qrgnOKPwdPIGIU2tQDxDkE7EPsAO7pNa5gsaAMpWYz+3kaUEo/KPV8W2hqMj+5vSv
+         tSkNOs69PC3ZP2diq/DHI1YpI1Es987mpzZnm1ZVxU7KhcO9R9tmNxbxira61DhlwU
+         ibs4Ct3PNfvJWhDC89GwTcC+9fw5I1yZygUm82DhlXw8dzPQFfmRLRzpWUkCiQtPXn
+         3UIf3Tr8zv9gKxPgdzhp/lLMCeSsckUkQru8eaoLDTlfTJOSHAyaOdyUxtq7ZmB3Do
+         AFKjUfJZ0gGthjPXhes0/sycm5ZaGCZSJaJZg6LBcrsE0rBeuZdLCehhBEMKnQuTtq
+         LMHrFINSqvH7g==
+Date:   Wed, 8 Dec 2021 08:42:38 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     tytso@mit.edu, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] e2fsck: map PROMPT_* values to prompt messages
+Message-ID: <20211208164238.GA69182@magnolia>
+References: <20211208075112.85649-1-adilger@dilger.ca>
 MIME-Version: 1.0
-References: <20211124110308.2053-1-urezki@gmail.com> <20211124110308.2053-3-urezki@gmail.com>
-In-Reply-To: <20211124110308.2053-3-urezki@gmail.com>
-From:   Uladzislau Rezki <urezki@gmail.com>
-Date:   Wed, 8 Dec 2021 15:37:07 +0100
-Message-ID: <CA+KHdyXK7P6WrAEY516CPq6Cx7Qp_udnb7Je2wj_xkX4pud5Bg@mail.gmail.com>
-Subject: Re: [PATCH 2/9] ext4: Replace ext4_kvfree_array_rcu() by kvfree_rcu() API
-To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211208075112.85649-1-adilger@dilger.ca>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-+ linux-ext4@vger.kernel.org
-
-On Wed, Nov 24, 2021 at 12:03 PM Uladzislau Rezki (Sony)
-<urezki@gmail.com> wrote:
->
-> The ext4_kvfree_array_rcu() function was introduced in order to
-> release some memory after a grace period during resizing of a
-> partition. An object that is freed does not contain any rcu_head
-> filed.
->
-> To do so, it requires to allocate some extra memory for a special
-> structure that has an rcu_head filed and pointer one where a freed
-> memory is attached. Finally call_rcu() API is invoked.
->
-> Since we have a single argument of kvfree_rcu() API, we can easily
-> replace all that tricky code by one single call that does the same
-> but in more efficient way.
->
-> CC: "Theodore Ts'o" <tytso@mit.edu>
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+On Wed, Dec 08, 2021 at 12:51:12AM -0700, Andreas Dilger wrote:
+> It isn't totally clear when searching the code for PROMPT_*
+> constants from problem codes where these messages come from.
+> Similarly, there isn't a direct mapping from the prompt string
+> to the constant.
+> 
+> Add comments that make this mapping more clear.
+> 
+> Signed-off-by: Andreas Dilger <adilger@dilger.ca>
 > ---
->  fs/ext4/ext4.h    |  1 -
->  fs/ext4/mballoc.c |  2 +-
->  fs/ext4/resize.c  | 31 ++-----------------------------
->  fs/ext4/super.c   |  2 +-
->  4 files changed, 4 insertions(+), 32 deletions(-)
->
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 404dd50856e5..7e8ff3ac2beb 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -3089,7 +3089,6 @@ extern int ext4_generic_delete_entry(struct inode *dir,
->  extern bool ext4_empty_dir(struct inode *inode);
->
->  /* resize.c */
-> -extern void ext4_kvfree_array_rcu(void *to_free);
->  extern int ext4_group_add(struct super_block *sb,
->                                 struct ext4_new_group_data *input);
->  extern int ext4_group_extend(struct super_block *sb,
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 215b7068f548..b0469f7a5c55 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -3109,7 +3109,7 @@ int ext4_mb_alloc_groupinfo(struct super_block *sb, ext4_group_t ngroups)
->         rcu_assign_pointer(sbi->s_group_info, new_groupinfo);
->         sbi->s_group_info_size = size / sizeof(*sbi->s_group_info);
->         if (old_groupinfo)
-> -               ext4_kvfree_array_rcu(old_groupinfo);
-> +               kvfree_rcu(old_groupinfo);
->         ext4_debug("allocated s_groupinfo array for %d meta_bg's\n",
->                    sbi->s_group_info_size);
->         return 0;
-> diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
-> index b63cb88ccdae..ac6aa037aaab 100644
-> --- a/fs/ext4/resize.c
-> +++ b/fs/ext4/resize.c
-> @@ -17,33 +17,6 @@
->
->  #include "ext4_jbd2.h"
->
-> -struct ext4_rcu_ptr {
-> -       struct rcu_head rcu;
-> -       void *ptr;
-> -};
-> -
-> -static void ext4_rcu_ptr_callback(struct rcu_head *head)
-> -{
-> -       struct ext4_rcu_ptr *ptr;
-> -
-> -       ptr = container_of(head, struct ext4_rcu_ptr, rcu);
-> -       kvfree(ptr->ptr);
-> -       kfree(ptr);
-> -}
-> -
-> -void ext4_kvfree_array_rcu(void *to_free)
-> -{
-> -       struct ext4_rcu_ptr *ptr = kzalloc(sizeof(*ptr), GFP_KERNEL);
-> -
-> -       if (ptr) {
-> -               ptr->ptr = to_free;
-> -               call_rcu(&ptr->rcu, ext4_rcu_ptr_callback);
-> -               return;
-> -       }
-> -       synchronize_rcu();
-> -       kvfree(to_free);
-> -}
-> -
->  int ext4_resize_begin(struct super_block *sb)
->  {
->         struct ext4_sb_info *sbi = EXT4_SB(sb);
-> @@ -906,7 +879,7 @@ static int add_new_gdb(handle_t *handle, struct inode *inode,
->         n_group_desc[gdb_num] = gdb_bh;
->         rcu_assign_pointer(EXT4_SB(sb)->s_group_desc, n_group_desc);
->         EXT4_SB(sb)->s_gdb_count++;
-> -       ext4_kvfree_array_rcu(o_group_desc);
-> +       kvfree_rcu(o_group_desc);
->
->         lock_buffer(EXT4_SB(sb)->s_sbh);
->         le16_add_cpu(&es->s_reserved_gdt_blocks, -1);
-> @@ -969,7 +942,7 @@ static int add_new_gdb_meta_bg(struct super_block *sb,
->
->         rcu_assign_pointer(EXT4_SB(sb)->s_group_desc, n_group_desc);
->         EXT4_SB(sb)->s_gdb_count++;
-> -       ext4_kvfree_array_rcu(o_group_desc);
-> +       kvfree_rcu(o_group_desc);
->         return err;
->  }
->
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 111b0498a232..3942cd271a00 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -2759,7 +2759,7 @@ int ext4_alloc_flex_bg_array(struct super_block *sb, ext4_group_t ngroup)
->         rcu_assign_pointer(sbi->s_flex_groups, new_groups);
->         sbi->s_flex_groups_allocated = size;
->         if (old_groups)
-> -               ext4_kvfree_array_rcu(old_groups);
-> +               kvfree_rcu(old_groups);
->         return 0;
->  }
->
-> --
-> 2.30.2
->
+>  e2fsck/problem.c | 46 +++++++++++++++++++++++-----------------------
+>  1 file changed, 23 insertions(+), 23 deletions(-)
+> 
+> diff --git a/e2fsck/problem.c b/e2fsck/problem.c
+> index 757b5d56..2d02468c 100644
+> --- a/e2fsck/problem.c
+> +++ b/e2fsck/problem.c
+> @@ -50,29 +50,29 @@
+>   * to fix a problem.
+>   */
+>  static const char *prompt[] = {
+> -	N_("(no prompt)"),	/* 0 */
+> -	N_("Fix"),		/* 1 */
+> -	N_("Clear"),		/* 2 */
+> -	N_("Relocate"),		/* 3 */
+> -	N_("Allocate"),		/* 4 */
+> -	N_("Expand"),		/* 5 */
+> -	N_("Connect to /lost+found"), /* 6 */
+> -	N_("Create"),		/* 7 */
+> -	N_("Salvage"),		/* 8 */
+> -	N_("Truncate"),		/* 9 */
+> -	N_("Clear inode"),	/* 10 */
+> -	N_("Abort"),		/* 11 */
+> -	N_("Split"),		/* 12 */
+> -	N_("Continue"),		/* 13 */
+> -	N_("Clone multiply-claimed blocks"), /* 14 */
+> -	N_("Delete file"),	/* 15 */
+> -	N_("Suppress messages"),/* 16 */
+> -	N_("Unlink"),		/* 17 */
+> -	N_("Clear HTree index"),/* 18 */
+> -	N_("Recreate"),		/* 19 */
+> -	N_("Optimize"),		/* 20 */
+> -	N_("Clear flag"),	/* 21 */
+> -	"",			/* 22 */
+> +	N_("(no prompt)"),			/* PROMPT_NONE		=  0 */
 
+Why not make it even clearer and mismerge proof:
 
--- 
-Uladzislau Rezki
+static const char *prompt[] = {
+	[0]		= N_("(no prompt")),	/* null value test */
+	[PROMPT_FIX]	= N_("Fix"),		/* 1 */
+	[PROMPT_CLEAR]	= N_("Clear"),		/* 2 */
+	...
+};
+
+--D
+
+> +	N_("Fix"),				/* PROMPT_FIX		=  1 */
+> +	N_("Clear"),				/* PROMPT_CLEAR		=  2 */
+> +	N_("Relocate"),				/* PROMPT_RELOCATE	=  3 */
+> +	N_("Allocate"),				/* PROMPT_CREATE	=  4 */
+> +	N_("Expand"),				/* PROMPT_EXPAND	=  5 */
+> +	N_("Connect to /lost+found"),		/* PROMPT_CONNECT	=  6 */
+> +	N_("Create"),				/* PROMPT_CREATE	=  7 */
+> +	N_("Salvage"),				/* PROMPT_SALVAGE	=  8 */
+> +	N_("Truncate"),				/* PROMPT_TRUNCATE	=  9 */
+> +	N_("Clear inode"),			/* PROMPT_CLEAR_INODE	= 10 */
+> +	N_("Abort"),				/* PROMPT_ABORT		= 11 */
+> +	N_("Split"),				/* PROMPT_SPLIT		= 12 */
+> +	N_("Continue"),				/* PROMPT_CONTINUE	= 13 */
+> +	N_("Clone multiply-claimed blocks"),	/* PROMPT_CLONE		= 14 */
+> +	N_("Delete file"),			/* PROMPT_DELETE	= 15 */
+> +	N_("Suppress messages"),		/* PROMPT_SUPPRESS	= 16 */
+> +	N_("Unlink"),				/* PROMPT_UNLINK	= 17 */
+> +	N_("Clear HTree index"),		/* PROMPT_CLEAR_HTREE	= 18 */
+> +	N_("Recreate"),				/* PROMPT_RECREATE	= 19 */
+> +	N_("Optimize"),				/* PROMPT_OPTIMIZE	= 20 */
+> +	N_("Clear flag"),			/* PROMPT_CLEAR_FLAG	= 21 */
+> +	"",					/* PROMPT_NULL		= 22 */
+>  };
+>  
+>  /*
+> -- 
+> 2.25.1
+> 
