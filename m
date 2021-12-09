@@ -2,131 +2,179 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74EE646E10B
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 Dec 2021 03:53:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DECC246E71B
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 Dec 2021 11:53:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229680AbhLIC46 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Dec 2021 21:56:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230511AbhLIC45 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Dec 2021 21:56:57 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF415C0617A1
-        for <linux-ext4@vger.kernel.org>; Wed,  8 Dec 2021 18:53:24 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id v22so4116638qtx.8
-        for <linux-ext4@vger.kernel.org>; Wed, 08 Dec 2021 18:53:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9lZzV6uRxUvt0RqeIyM4DCy//4WwHZcCj15yKoRWKv0=;
-        b=MuH7fGvI/9AD+8Jf3135+Y84ksGN91yCSTt0zoUDEqseX7B2K0YN6lCaPdgDeOMRpm
-         GOe7MfuQdBr+Z4wyPuK/X3Oq+E11gqhW44bDipD/o7JNOnqwTqyXLLafarAjz6Qto1ro
-         aG+jBeBbWAiByCuS0S6B9hU+pATvx85RKkpkIAQIfLRbW2qUaPcS9Uu6YIpp8W008vUj
-         AvLKcneW2BuqADAMC9NC6N/Val8HXTIHMS7sQv01juWNQbBHSKaBSpUv61IEYCjx2r7c
-         hWVEXyKPTi4aa/SWCsc4zb+EUhNMyK5Z6Ko/CgGa+RO3zAgIsW2+q5scXiLYdGdjXPHA
-         IZ9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9lZzV6uRxUvt0RqeIyM4DCy//4WwHZcCj15yKoRWKv0=;
-        b=jMiTFvpy4IW83q5IQudN4PvXLmt1bek8yhGLooaRqzbILw9jaV6AzKHnC8LnXspD0O
-         2N/KnBgNFQv0N+VakFcKBPZEMBHsTkuqh9mEZzWCYRHytNvGA4xE46g8WGolcnMi98N7
-         55w9Jbw13XRvRzLdbfYicrCdE3f45UZ0XScqhiPCc2ti9GHVsTgpX4RJkzDmwAhNQZQD
-         7re7kqaUbIqOcHOiaqwvZ/t0clTnT5LjTqOBjAV3RhF++/r6+PWPYs6rE5ppy8xW7vf5
-         MziNfpqcC2u+3yWke09R5oOH98dSgKpkKbYGDfVyLEmfzQ9FPi3bb3fMEefwyWXJkyUE
-         7Vgg==
-X-Gm-Message-State: AOAM532tV2e88B4XkM1sNQZuUQ7IwBsuVQPHMK2OVsgcIhDIGo8tisoR
-        CphZj69CfR5h2A/CjU8GcZ361g==
-X-Google-Smtp-Source: ABdhPJzd7PgIaK+OliA8j4qPmgBHphO7odQ23RlPROnXGhIchmoXCBqWvKGTqHwv0CnaCCZT+fN4FA==
-X-Received: by 2002:a05:622a:8d:: with SMTP id o13mr13208686qtw.574.1639018404025;
-        Wed, 08 Dec 2021 18:53:24 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id m1sm2800768qtk.34.2021.12.08.18.53.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Dec 2021 18:53:23 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mv9Yg-000zXC-FC; Wed, 08 Dec 2021 22:53:22 -0400
-Date:   Wed, 8 Dec 2021 22:53:22 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     akpm@linux-foundation.org, Felix.Kuehling@amd.com,
-        linux-mm@kvack.org, rcampbell@nvidia.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        Alex Sierra <alex.sierra@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        hch@lst.de, jglisse@redhat.com, willy@infradead.org
-Subject: Re: [PATCH v2 03/11] mm/gup: migrate PIN_LONGTERM dev coherent pages
- to system
-Message-ID: <20211209025322.GE6467@ziepe.ca>
-References: <20211206185251.20646-1-alex.sierra@amd.com>
- <2858338.J0npWUQLIM@nvdebian>
- <20211208135345.GC6467@ziepe.ca>
- <117075453.Ddeq1f3ylz@nvdebian>
+        id S231745AbhLIK5A (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 9 Dec 2021 05:57:00 -0500
+Received: from mail-dm3nam07on2067.outbound.protection.outlook.com ([40.107.95.67]:22112
+        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236359AbhLIK44 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 9 Dec 2021 05:56:56 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NJIk6BJ0Pz8UO5lPwvuID/PmNIisSBpR9iLooc4XbLGfPEpC4yz6H9otMi5IH4tQgbbLzGGLzCJQp4kGr00+FvwKIw/6XHfJbpQMPi9MAtpiOprvoCGV3lEpfYVpUe3gQPrWLnqqxAs2gZDxH6Mt5BjdHJddR5NKkWZSKXWPC331QSPrvQYPZD7hkWmi6Xi/cM4ObFDA7WUbKy8dlTMoKGdBxlC8owGKJuXGmQpq1HZAskPvMYn9XyxgcsNaQbkPEKV5Xi4yt7yORNA06tF95rsTGiT1bSOu8koS4Rpfvh7ZOI7rX6Jb7ZycFQOImzPnY8Get0R6M/orz55UpHAF5Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OxkNY6q++y/FT9Sq+BwUn4Q3sk8rLT1vE6MTEsaT3NA=;
+ b=aNfuTtj3FaM/MupmpciL1Sw6P0alRT9SlaQHvWjiLDbnPXmlKL5zcL7mpJ1o0kq/jdxzr3IlHnZBF0w0l2f7dAt63obdpZHdt6QNijKqIvkcPGr+fmPQiv4YAsPGN1VivdEmDonHBQ5tghZWpOm9MjaQ6Vt5sBEYjYvfu+a3h8RnxmpIGIpovcJifuYflW8irSIxzdrcobeDeLtIT7qVlRXQMdhY1U4q5iqJFTnHXyDtCbDWuveNKllO7NJ5sJiuWvtGmKsevEw/zeGwrsdufM1hItTVkbPYRG0OvItTcz92uaI/BHPpo2l3nPfyHkEsUZSXCwOUedi2VT3jhRP/yA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 203.18.50.13) smtp.rcpttodomain=infradead.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OxkNY6q++y/FT9Sq+BwUn4Q3sk8rLT1vE6MTEsaT3NA=;
+ b=G7sZF/AvwcFSyL+5RasI2whs4YB6lpNEGKWH8E5izeda/ydQATe1uzRGyASLtI613ppqPtSNt0TX0RaJoNVjoeu/ZwljtRz3GpVuyhTw7S7oXvw1GBXM8CWzGxpSAXz4rU5KKl4iwNGEtPsP1TzeJTTVEetZKD9I9VNjUi26HzDw8CIt5O2RYJic69F8pUeQcNXkZfHNHdTBcu6npU4B9Gx5jFCoKchUDbSp/SU95xE/Nj1vJGrMe0LTKi+eROhwKMVVdPive5t7og/qfj8xKIvjPDXMbb89pRM0nNzK2W/qrmUw7MFXL7P5RW+fkA16wjJwFHBbM9r2kAWXWg5LIQ==
+Received: from CO2PR06CA0071.namprd06.prod.outlook.com (2603:10b6:104:3::29)
+ by DM5PR12MB1228.namprd12.prod.outlook.com (2603:10b6:3:74::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.16; Thu, 9 Dec
+ 2021 10:53:21 +0000
+Received: from CO1NAM11FT063.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:104:3:cafe::1a) by CO2PR06CA0071.outlook.office365.com
+ (2603:10b6:104:3::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4778.12 via Frontend
+ Transport; Thu, 9 Dec 2021 10:53:21 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 203.18.50.13)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 203.18.50.13 as permitted sender) receiver=protection.outlook.com;
+ client-ip=203.18.50.13; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (203.18.50.13) by
+ CO1NAM11FT063.mail.protection.outlook.com (10.13.175.37) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4755.13 via Frontend Transport; Thu, 9 Dec 2021 10:53:20 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by HKMAIL102.nvidia.com
+ (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 9 Dec
+ 2021 10:53:20 +0000
+Received: from nvdebian.localnet (172.20.187.6) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.9; Thu, 9 Dec 2021
+ 02:53:15 -0800
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Felix Kuehling <felix.kuehling@amd.com>,
+        <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        <rcampbell@nvidia.com>, <linux-ext4@vger.kernel.org>,
+        <linux-xfs@vger.kernel.org>,
+        "Sierra Guiza, Alejandro (Alex)" <alex.sierra@amd.com>
+CC:     <amd-gfx@lists.freedesktop.org>, <willy@infradead.org>,
+        <jglisse@redhat.com>, <dri-devel@lists.freedesktop.org>,
+        <jgg@nvidia.com>, <hch@lst.de>
+Subject: Re: [PATCH v2 03/11] mm/gup: migrate PIN_LONGTERM dev coherent pages to system
+Date:   Thu, 9 Dec 2021 21:53:12 +1100
+Message-ID: <2497746.4npHOaMrmn@nvdebian>
+In-Reply-To: <3f8a48d6-7ee7-fb30-5942-29054c34aac5@amd.com>
+References: <20211206185251.20646-1-alex.sierra@amd.com> <2b996383-ebe6-e9d8-d794-58ecfd4a16e8@amd.com> <3f8a48d6-7ee7-fb30-5942-29054c34aac5@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <117075453.Ddeq1f3ylz@nvdebian>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 67640458-1c38-42ff-80f8-08d9bb021da8
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1228:EE_
+X-Microsoft-Antispam-PRVS: <DM5PR12MB1228B442E6B148341F5CE1C9DF709@DM5PR12MB1228.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CS7Ti9uliB2LOKuv4TVrRzPIi6xamrevZU0k7KufNpKtXED7Ip6cX36RpxqFHAKGxXOEGoS5I5y1FygeY723zg7m4tpNPh6RAFF1LLuKobY35L0U0IjKPrdA3BllcCEJh8w0Me26P4B2D1idPoKbeGnsZutMcWdWSV5ZFZuBGsJU9ntjZkzKDQBMBxtQxfRzapBva7c0izYs8Pdr6nOjVZeRinqlpSd5X1aDkAl2cvz/DPgAgKHPcIWlpFa52VvFVwzDHXsmCrvAG2rjH6aW85AbEamJ25h16fDwQdC3SvYnBmBclzjH11myzwvB6XN48lMtwlenflcIMjXFiOS00pcIL2LMPIDMPqCduJpzLVTHzYuzXTnUhlmSQbmdUQJeZ5UjOaIiMihR9PdfSpMEArTSlEDDCi4B3GLS5BKPRbEJ6rSr3o6bab9cInevibSwgg7BTHW2526D/A8IG1z553hPOQrgS3vdTix/ostlPMwtbR1D4268eiWbkZX5ziBrNs1RCO0Csgipf9awjoC03d0O1MmzxBU4WU66D64S7ERn3WT1dNbibRXtnsoNJEkPmXic06Wi59K9kGayxh60/uj96ZFGBVEjI+y8qTiUXQGgtjYsEV6q2LJao9gCyq+kXZ9WIOCdhjQz00TGfhZOMG/3GoJD4iM/2qK/yqiztMbxu6HZd6+6rEHTxWHbbfbtr1CZxvVx1p/Qs6BEmPpNl1+kyNs0m5Z1H5kaygW33IfKMUvT17bheQcWBxbhi8gi79IcWefDVNC+kp3Fhv+EEUHS3kezMdTxx1qCvclT43S3X18N6iL4XLsOiLJkbp0waNYgtEIxAHOu5LwOKG6sow==
+X-Forefront-Antispam-Report: CIP:203.18.50.13;CTRY:HK;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:hkhybrid02.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(40470700001)(7416002)(356005)(110136005)(54906003)(6666004)(86362001)(47076005)(336012)(5660300002)(7636003)(9576002)(426003)(26005)(8676002)(2906002)(53546011)(33716001)(36860700001)(8936002)(186003)(16526019)(34070700002)(70206006)(508600001)(9686003)(316002)(70586007)(82310400004)(40460700001)(83380400001)(4326008)(39026012);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2021 10:53:20.8109
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 67640458-1c38-42ff-80f8-08d9bb021da8
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[203.18.50.13];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT063.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1228
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Dec 09, 2021 at 12:45:24PM +1100, Alistair Popple wrote:
-> On Thursday, 9 December 2021 12:53:45 AM AEDT Jason Gunthorpe wrote:
-> > > I think a similar problem exists for device private fault handling as well and
-> > > it has been on my list of things to fix for a while. I think the solution is to
-> > > call try_get_page(), except it doesn't work with device pages due to the whole
-> > > refcount thing. That issue is blocking a fair bit of work now so I've started
-> > > looking into it.
-> > 
-> > Where is this?
->  
-> Nothing posted yet. I've been going through the mailing list and the old
-> thread[1] to get an understanding of what is left to do. If you have any
-> suggestions they would be welcome.
+On Thursday, 9 December 2021 5:55:26 AM AEDT Sierra Guiza, Alejandro (Alex) wrote:
+> 
+> On 12/8/2021 11:30 AM, Felix Kuehling wrote:
+> > Am 2021-12-08 um 11:58 a.m. schrieb Felix Kuehling:
+> >> Am 2021-12-08 um 6:31 a.m. schrieb Alistair Popple:
+> >>> On Tuesday, 7 December 2021 5:52:43 AM AEDT Alex Sierra wrote:
+> >>>> Avoid long term pinning for Coherent device type pages. This could
+> >>>> interfere with their own device memory manager.
+> >>>> If caller tries to get user device coherent pages with PIN_LONGTERM flag
+> >>>> set, those pages will be migrated back to system memory.
+> >>>>
+> >>>> Signed-off-by: Alex Sierra <alex.sierra@amd.com>
+> >>>> ---
+> >>>>   mm/gup.c | 32 ++++++++++++++++++++++++++++++--
+> >>>>   1 file changed, 30 insertions(+), 2 deletions(-)
+> >>>>
+> >>>> diff --git a/mm/gup.c b/mm/gup.c
+> >>>> index 886d6148d3d0..1572eacf07f4 100644
+> >>>> --- a/mm/gup.c
+> >>>> +++ b/mm/gup.c
+> >>>> @@ -1689,17 +1689,37 @@ struct page *get_dump_page(unsigned long addr)
+> >>>>   #endif /* CONFIG_ELF_CORE */
+> >>>>   
+> >>>>   #ifdef CONFIG_MIGRATION
+> >>>> +static int migrate_device_page(unsigned long address,
+> >>>> +				struct page *page)
+> >>>> +{
+> >>>> +	struct vm_area_struct *vma = find_vma(current->mm, address);
+> >>>> +	struct vm_fault vmf = {
+> >>>> +		.vma = vma,
+> >>>> +		.address = address & PAGE_MASK,
+> >>>> +		.flags = FAULT_FLAG_USER,
+> >>>> +		.pgoff = linear_page_index(vma, address),
+> >>>> +		.gfp_mask = GFP_KERNEL,
+> >>>> +		.page = page,
+> >>>> +	};
+> >>>> +	if (page->pgmap && page->pgmap->ops->migrate_to_ram)
+> >>>> +		return page->pgmap->ops->migrate_to_ram(&vmf);
+> >>> How does this synchronise against pgmap being released? As I understand things
+> >>> at this point we're not holding a reference on either the page or pgmap, so
+> >>> the page and therefore the pgmap may have been freed.
+> >>>
+> >>> I think a similar problem exists for device private fault handling as well and
+> >>> it has been on my list of things to fix for a while. I think the solution is to
+> >>> call try_get_page(), except it doesn't work with device pages due to the whole
+> >>> refcount thing. That issue is blocking a fair bit of work now so I've started
+> >>> looking into it.
+> >> At least the page should have been pinned by the __get_user_pages_locked
+> >> call in __gup_longterm_locked. That refcount is dropped in
+> >> check_and_migrate_movable_pages when it returns 0 or an error.
+> > Never mind. We unpin the pages first. Alex, would the migration work if
+> > we unpinned them afterwards? Also, the normal CPU page fault code path
+> > seems to make sure the page is locked (check in pfn_swap_entry_to_page)
+> > before calling migrate_to_ram.
 
-Oh, that
+I don't think that's true. The check in pfn_swap_entry_to_page() is only for
+migration entries:
 
-Joao's series here is the first step:
+	BUG_ON(is_migration_entry(entry) && !PageLocked(p));
 
-https://lore.kernel.org/linux-mm/20211202204422.26777-1-joao.m.martins@oracle.com/
+As this is coherent memory though why do we have to call into a device driver
+to do the migration? Couldn't this all be done in the kernel?
 
-I already sent a patch to remove the DRM usage of PUD/PMD -
-0d979509539e ("drm/ttm: remove ttm_bo_vm_insert_huge()")
+> No, you can not unpinned after migration. Due to the expected_count VS 
+> page_count condition at migrate_page_move_mapping, during migrate_page call.
+> 
+> Regards,
+> Alex Sierra
+> 
+> > Regards,
+> >    Felix
+> >
+> >
+> 
 
-Next, someone needs to change FSDAX to have a folio covering the
-ZONE_DEVICE pages before it installs a PUD or PMD. I don't know
-anything about FS's to know how to do this at all.
 
-Thus all PUD/PMD entries will point at a head page or larger of a
-compound. This is important because all the existing machinery for THP
-assumes 1 PUD/PMD means 1 struct page to manipulate.
 
-Then, consolidate all the duplicated code that runs when a page is
-removed from a PTE/PMD/PUD etc into a function. Figure out why the
-duplications are different to make them the same (I have some rough
-patches for this step)
 
-Start with PUD and have zap on PUD call the consolidated function and
-make vmf_insert_pfn_pud_prot() accept a struct page not pfn and incr
-the refcount. PUD is easy because there is no THP
-
-Then do the same to PMD without breaking the THP code
-
-Then make the PTE also incr the refcount on insert and zap
-
-Exterminate vma_is_special_huge() along the way, there is no such
-thing as a special huge VMA without a pud/pmd_special flag so all
-things installed here must be struct page and not special.
-
-Then the patches that are already posted are applicable and we can
-kill the refcount == 1 stuff. No 0 ref count pages installed in page
-tables.
-
-Once all of that is done it is fairly straightforward to remove
-pud/pmd/pte_devmap entirely and the pgmap stuff from gup.c
-
-Jason
