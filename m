@@ -2,124 +2,106 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E713946F8EB
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Dec 2021 03:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A2A46F9A2
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Dec 2021 04:35:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbhLJCHO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 9 Dec 2021 21:07:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235732AbhLJCHO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 9 Dec 2021 21:07:14 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5250FC061746;
-        Thu,  9 Dec 2021 18:03:40 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id k4so5274761plx.8;
-        Thu, 09 Dec 2021 18:03:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=jVLTcGZ/b50WBIIZiq+RM8D9NcbJZ+0giWVxc/gopOQ=;
-        b=FnffvwfX2jEByd6zOARdmwiS3gC2Ik8bp6dxntd66hZaYIRLCSNFkqcJ+aHOh18xii
-         0w9ecwz3xCiFTuPefZv/JQ9KmSOzrojlZq+8u8R3tISFtswtMmz/jA2xmC5vepK1Spo4
-         C7rNPZnX29SnpkXKSXTi6l8XeRBARUoXgpTtiXchkUttxfq/Ovaqtldp6y8Dky7amkJ8
-         dDFB2ZQuiXe+WCrk36KrjjXNUWFbD441Z9C+n8rYCD7xx9jB3Ts3IRgnASjp2qlnw3K6
-         G/Gw/ngSGhDKJD0lygwn1a3jb0D0FPZ9yNo1t+yLbk34baMosA8WiRNI2Od4NmV7bwPZ
-         Fpvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=jVLTcGZ/b50WBIIZiq+RM8D9NcbJZ+0giWVxc/gopOQ=;
-        b=GZJhwoRoplntiMwAHAmpZPqzeZQXRR+wO8E9VFfpAAIQl5eDZqnRAsce24EBCKjdj/
-         tolIPmPw1rpNzycYWm3ZM+w1x53r73TtWCu6jrLr88cQ8+zmP+oD660IyA4worNSJgR0
-         pPgkqvgMGfev1+03ZeilS0dLtOk7yBcrlgqPQ+Hx63bbC/0Qmut31N7zTWO3WaxN4mpB
-         zvZYO5RokJnedsMsk/JWjbOnu68gcuIykpG7LoBRlz6LZU5g/DwVWutubAPfcgqgWmbE
-         fHqDBOYyzX+Atp2gNtS6TiEN/SkwTeLEz7fZwJfVflLT+a+cKr4ahLH85lrBklqxikRx
-         Zi8w==
-X-Gm-Message-State: AOAM532Qxvd18TfKDQSM2jb5ffRldFQbuTB/5p/07mdrhKYSNOFpnz3O
-        ZLkXfIqPrgiH4PROVzkrnTIlIOmcXpE=
-X-Google-Smtp-Source: ABdhPJx7dWC9mSZKMKwQvCVSKOBCbf7sR7YEKYTC/CEb8tLX3PwmrfubOylQvi1n1ehH+B7T8OrAFQ==
-X-Received: by 2002:a17:90a:be0f:: with SMTP id a15mr19980782pjs.243.1639101819775;
-        Thu, 09 Dec 2021 18:03:39 -0800 (PST)
-Received: from [183.173.151.43] ([183.173.151.43])
-        by smtp.gmail.com with ESMTPSA id 16sm759404pgu.93.2021.12.09.18.03.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Dec 2021 18:03:39 -0800 (PST)
-Subject: Re: [BUG] fs: ext4: possible ABBA deadlock in
- ext4_inline_data_truncate() and ext4_punch_hole()
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <03a92134-ce74-f586-59a0-baed436b275a@gmail.com>
- <YbI2IEzCVo+A6GTi@mit.edu>
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-Message-ID: <c9f25d5a-0963-5b2d-b1f0-e7c7454f7153@gmail.com>
-Date:   Fri, 10 Dec 2021 10:03:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S234163AbhLJDiq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 9 Dec 2021 22:38:46 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:29166 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231314AbhLJDip (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 9 Dec 2021 22:38:45 -0500
+Received: from dggpeml500024.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4J9Ggy1D40z8wgK;
+        Fri, 10 Dec 2021 11:33:02 +0800 (CST)
+Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
+ dggpeml500024.china.huawei.com (7.185.36.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 10 Dec 2021 11:35:09 +0800
+Received: from [10.174.176.102] (10.174.176.102) by
+ dggpeml100016.china.huawei.com (7.185.36.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 10 Dec 2021 11:35:09 +0800
+Message-ID: <5dceb32a-2c30-0a99-ef87-6218c9c6a931@huawei.com>
+Date:   Fri, 10 Dec 2021 11:35:08 +0800
 MIME-Version: 1.0
-In-Reply-To: <YbI2IEzCVo+A6GTi@mit.edu>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+From:   zhanchengbin <zhanchengbin1@huawei.com>
+Subject: Re: [PATCH] setup_tdb : fix memory leak
+To:     Theodore Ts'o <tytso@mit.edu>
+CC:     <linux-ext4@vger.kernel.org>, <liuzhiqiang26@huawei.com>,
+        <linfeilong@huawei.com>
+References: <3a0cbb4e-6ea3-356a-433d-3a7a6466b018@huawei.com>
+In-Reply-To: <3a0cbb4e-6ea3-356a-433d-3a7a6466b018@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-Originating-IP: [10.174.176.102]
+X-ClientProxiedBy: dggpeml500005.china.huawei.com (7.185.36.59) To
+ dggpeml100016.china.huawei.com (7.185.36.216)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+ping
 
-
-On 2021/12/10 1:00, Theodore Y. Ts'o wrote:
-> On Thu, Dec 09, 2021 at 07:10:44PM +0800, Jia-Ju Bai wrote:
->> Hello,
->>
->> My static analysis tool reports a possible ABBA deadlock in the ext4 module
->> in Linux 5.10:
->>
->> ext4_inline_data_truncate()
->>    down_write(&EXT4_I(inode)->i_data_sem); --> Line 1895 (Lock A)
->>    ext4_xattr_ibody_get()
->>      ext4_xattr_inode_get()
->>        ext4_xattr_inode_iget()
->>          inode_lock(inode); --> Line 427 (Lock B)
->>
->> ext4_punch_hole()
->>    inode_lock(inode); --> Line 4018 (Lock B)
->>    ext4_update_disksize_before_punch()
->>      ext4_update_i_disksize()
->>        down_write(&EXT4_I(inode)->i_data_sem); --> Line 3248 (Lock A)
->>
->> When ext4_inline_data_truncate() and ext4_punch_hole() are concurrently
->> executed, the deadlock can occur.
->>
->> I am not quite sure whether this possible deadlock is real and how to fix it
->> if it is real.
-> Hi,
->
-> Thanks for the report.  I don't believe this is deadlock is possible,
-> because the first thing ext4_punch_hole() does is to check to see if
-> the inode has inline data --- and if so, it calls
-> ext4_convert_inline_data() to convert it to a normal file.  In
-> ext4_convert_inline_data(), we take the xattr lock, and then do the
-> conversion, and then drop the xattr lock.  So by the time
-> ext4_punch_hole() starts doing its work, the inode is not an inline
-> data file.
->
-> In ext4_inline_data_truncate(), we take the xattr lock, and once we
-> have the xattr lock, we check to see if inode is still an inline data
-> file.  If it has been converted, we then bail out.
->
-> Hence, the ABBA deadlock that your static analysis tool has pointed
-> shouldn't happen in practice.
-
-Hi Ted,
-
-Thank you very much for the detailed explanation!
-I will improve my static analysis tool for this point.
-
-
-Best wishes,
-Jia-Ju Bai
-
+在 2021/11/30 14:40, zhanchengbin 写道:
+> In setup_tdb(), need free tdb_dir before return,
+> otherwise it will cause memory leak.
+> 
+> Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+> Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+> ---
+>   e2fsck/dirinfo.c | 13 +++++++++----
+>   1 file changed, 9 insertions(+), 4 deletions(-)
+> 
+> diff --git a/e2fsck/dirinfo.c b/e2fsck/dirinfo.c
+> index 49d624c5..a2b36d8e 100644
+> --- a/e2fsck/dirinfo.c
+> +++ b/e2fsck/dirinfo.c
+> @@ -49,7 +49,7 @@ static void setup_tdb(e2fsck_t ctx, ext2_ino_t num_dirs)
+>       ext2_ino_t        threshold;
+>       errcode_t        retval;
+>       mode_t            save_umask;
+> -    char            *tdb_dir, uuid[40];
+> +    char            *tdb_dir = NULL, uuid[40];
+>       int            fd, enable;
+> 
+>       profile_get_string(ctx->profile, "scratch_files", "directory", 0, 0,
+> @@ -61,11 +61,11 @@ static void setup_tdb(e2fsck_t ctx, ext2_ino_t 
+> num_dirs)
+> 
+>       if (!enable || !tdb_dir || access(tdb_dir, W_OK) ||
+>           (threshold && num_dirs <= threshold))
+> -        return;
+> +        goto error;
+> 
+>       retval = ext2fs_get_mem(strlen(tdb_dir) + 64, &db->tdb_fn);
+>       if (retval)
+> -        return;
+> +        goto error;
+> 
+>       uuid_unparse(ctx->fs->super->s_uuid, uuid);
+>       sprintf(db->tdb_fn, "%s/%s-dirinfo-XXXXXX", tdb_dir, uuid);
+> @@ -74,7 +74,7 @@ static void setup_tdb(e2fsck_t ctx, ext2_ino_t num_dirs)
+>       umask(save_umask);
+>       if (fd < 0) {
+>           db->tdb = NULL;
+> -        return;
+> +        goto error;
+>       }
+> 
+>       if (num_dirs < 99991)
+> @@ -83,6 +83,11 @@ static void setup_tdb(e2fsck_t ctx, ext2_ino_t num_dirs)
+>       db->tdb = tdb_open(db->tdb_fn, num_dirs, TDB_NOLOCK | TDB_NOSYNC,
+>                  O_RDWR | O_CREAT | O_TRUNC, 0600);
+>       close(fd);
+> +
+> +error:
+> +    if(tdb_dir) {
+> +        free(tdb_dir);
+> +    }
+>   }
+>   #endif
+> 
