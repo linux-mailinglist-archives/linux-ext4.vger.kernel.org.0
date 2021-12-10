@@ -2,581 +2,236 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F804703BF
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Dec 2021 16:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E424705F4
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Dec 2021 17:39:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242790AbhLJP0G (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 10 Dec 2021 10:26:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57972 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242805AbhLJP0F (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 10 Dec 2021 10:26:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1639149750;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tynikxPez6WsuUesDSXCPO1kdPYR1tDs96xqtSJROq0=;
-        b=LFMyCb4BoCLdywKgU4YrbLeJTPXA38KGJFk2J9PZqLFJT9dvAm+hLK+Vi91+gHAFcfNPNq
-        aXk/eeMT7xpMIYplc63OoL8wrLT4wDyW4pJsLFO0Gp0W8ttrJWnTqJLikzGe6PQlwpDghv
-        0Zpgx6tM28NK7UqVJVvrVyB+detIq6w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-8-8tZbGeq1OB6W58e9yrHutw-1; Fri, 10 Dec 2021 10:22:29 -0500
-X-MC-Unique: 8tZbGeq1OB6W58e9yrHutw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 059741023F4D;
-        Fri, 10 Dec 2021 15:22:28 +0000 (UTC)
-Received: from work (unknown [10.40.194.148])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B717322E04;
-        Fri, 10 Dec 2021 15:22:26 +0000 (UTC)
-Date:   Fri, 10 Dec 2021 16:22:20 +0100
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     linux-ext4@vger.kernel.org, tytso@mit.edu
-Subject: Re: [PATCH v3] ext4: implement support for get/set fs label
-Message-ID: <20211210152220.5scsal2r6smfvrey@work>
-References: <20211112082019.22078-1-lczerner@redhat.com>
- <20211210151624.36414-1-lczerner@redhat.com>
+        id S243674AbhLJQnU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 10 Dec 2021 11:43:20 -0500
+Received: from mail-mw2nam12on2054.outbound.protection.outlook.com ([40.107.244.54]:19200
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234718AbhLJQnT (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 10 Dec 2021 11:43:19 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ki9OpU2W/UHje94LexT912XAJLwqiappC2hgTdxtHZAM2WoYWbVW/vgiVEB5zR9FYy6QxMC4X/OwkFjCNFmpRCA27f5yVxXY37dhyXm4CKlawUqm3ALFoK9iqzF4IuGpVzw1JOivhJqnkVmf66WWSUGhQgI9wQBkNfnDnObEU7B9Vk7aPeF7tt24f+sugQQQpzmSA8I8SM9JuePFWX0ifNVEqrLlQV71cSCYzVFwUwDqTamgLcVCevcHCilSLVe2MnEj6pO+cjNBJGn/IFQF3HwmFvpsiOnlqVPEwl3I9HfPJoQ5glsUSdN0Uxi/CNG+JkMjSrQc4F3Fs93KNIxnPQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rh4jmBvwEY2nt94lkeONIwZhxQcBnz9hoAnB1NqqLY0=;
+ b=JhSZGfD2IvehN9QxMv4d02jJk3BcNqJDFKJgrGpc64GXFVaUWdA0XyGQogNPXhfWYx5XlRP5N/PoTKjN6FTz7Us8P38SthSz9xW5dA5D4O3dubyK8LGnSTSKBMc9Qgwatz3I+VOyrHjQLp9zb9uVK61Jg5GhQmFifQgeFog+zy9H23nWtTEVpTffg5xZPR1aXdhd4/N+sgCwk97b3pyakUVPWrKn3YI9NY0SMgGG8cu2fnnjyAKLKp0s5Jb5VF5sfTHPfKpiI1kUPIpfdOy+QNLZHL/snMLm04EgANOoRxDnKqwBa3QbVxgqrIfAaIzt0hJMLqALnHHju16PciiYLA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rh4jmBvwEY2nt94lkeONIwZhxQcBnz9hoAnB1NqqLY0=;
+ b=TVU5ZOz4BJvfUqb43nEqM6ZN4LjTHPI9r43N6bYtQOP4qgf/O5OZmGsMscJVD131ttIEIFzPavNikw3T/OtfkrgB93SfYwWF33RsIGpP/72Af4VtusyqUtG5FqRDh913RteGUGY7GaWXIcF04GRwQw7PXzEGRaSk9mI8C9czMzc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN9PR12MB5115.namprd12.prod.outlook.com (2603:10b6:408:118::14)
+ by BN9PR12MB5196.namprd12.prod.outlook.com (2603:10b6:408:11d::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.25; Fri, 10 Dec
+ 2021 16:39:42 +0000
+Received: from BN9PR12MB5115.namprd12.prod.outlook.com
+ ([fe80::9dfe:ccc6:102c:5300]) by BN9PR12MB5115.namprd12.prod.outlook.com
+ ([fe80::9dfe:ccc6:102c:5300%7]) with mapi id 15.20.4755.022; Fri, 10 Dec 2021
+ 16:39:42 +0000
+Subject: Re: [PATCH v2 03/11] mm/gup: migrate PIN_LONGTERM dev coherent pages
+ to system
+To:     Alistair Popple <apopple@nvidia.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, rcampbell@nvidia.com,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        "Sierra Guiza, Alejandro (Alex)" <alex.sierra@amd.com>
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        jglisse@redhat.com, willy@infradead.org, jgg@nvidia.com, hch@lst.de
+References: <20211206185251.20646-1-alex.sierra@amd.com>
+ <b9163ccc-829e-9939-8177-a66ab41187e7@amd.com>
+ <72fe6b48-4aa5-b766-3f33-8c3445fdcc99@amd.com> <2613033.KcdVtnzQgr@nvdebian>
+From:   Felix Kuehling <felix.kuehling@amd.com>
+Organization: AMD Inc.
+Message-ID: <4ceda6e1-76c4-d92a-e4a3-a78d08620058@amd.com>
+Date:   Fri, 10 Dec 2021 11:39:39 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <2613033.KcdVtnzQgr@nvdebian>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-ClientProxiedBy: CH0PR13CA0002.namprd13.prod.outlook.com
+ (2603:10b6:610:b1::7) To BN9PR12MB5115.namprd12.prod.outlook.com
+ (2603:10b6:408:118::14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211210151624.36414-1-lczerner@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Received: from [172.27.226.80] (165.204.55.251) by CH0PR13CA0002.namprd13.prod.outlook.com (2603:10b6:610:b1::7) with Microsoft SMTP Server (version=TLS1_2, cipher=) via Frontend Transport; Fri, 10 Dec 2021 16:39:41 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9c30a377-793c-4381-65fc-08d9bbfbaa3a
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5196:EE_
+X-Microsoft-Antispam-PRVS: <BN9PR12MB519694EBEF424DB6B845D27F92719@BN9PR12MB5196.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 42eDIuy+RUcZSCoroFkkH+H3BWGwQA5mJ4K1SzpgzHeo/8Tb5gCVjz5y2WdGx3iP+U3rla89AbkXfEY3sdy+fSOPEccoFZXwlxfIoeBrc2bbWxpJuJcp/BntDVj1fcecq9YpaTaumzyk3bhyF5PPD1puDL+MeT8dWqkHLUjCOAl8zgRyMp7rFQQV/Xporo9BXTjtxgopj4SKxx/ciM6Klm5LJ15nWld4ZvJvZj+YaOMWEGyQku99HBmnkYDRw6/B9IplXOOhOL5/jUeLgLGXVlUhyBgIJKaOm0qlQxfrPjU7/laVz0awIDDEDky/yky+S02h24DG95PIYAcLkscMrXM09tl+w0s5yuXOLtNHkV7FNmukVTp/VfsYx6P0XTk3ZM0e/di7QXTYf62bsuNHrsP8HmXwQhNGhz/x75CnLATtb2t/Na1iGVKM1a1aSwLKqyuw5KxbK+PA8OWG2ftywlzmKh6iaPxeupNKRFHmae2LGXqRBuEyOjwKKtmSq+njgmGJpvf+yJF/rU9E2hMJe+ps6SOhVSBJ3eU1rt7Sly9Gr833QnhJ/PaO7fVu4D9KhAs+vbVpo4jFN3s/WJYwTHgMyGesgG7BLdEz4DL55ZWFsA4OpxpxFZE/p4AVUZ56EdwsGn+HnZZXNBZMOlljMNMTqz4JksgftBAyndb+rp2rBJFVSPAdUdZofxx3GelnKIP2LymJMWMGZlqz7qI6Rwn2eflfgxruUMDXh7eQer8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5115.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6636002)(31696002)(38100700002)(16576012)(36756003)(2906002)(8676002)(8936002)(44832011)(36916002)(5660300002)(956004)(26005)(2616005)(83380400001)(186003)(31686004)(66556008)(66476007)(66946007)(86362001)(7416002)(508600001)(6486002)(110136005)(53546011)(316002)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eSt3aWt0MDBIaVo0ZGUrQTVxejNDU3hHS05KRWNKaHJqRkwzYnROYXh4WmJZ?=
+ =?utf-8?B?VWVLVDlWUUhnNFJqNlBKbXdXNjUrdSt1cUpkN2pQNVNxaTJOS3o0eW1FckN1?=
+ =?utf-8?B?cksyNnd4NUxHZnBEQmdrZlFhbHljU0RwYS9Bcjk1VVIzMm5Oc20vUTBGbzMz?=
+ =?utf-8?B?T0tJcWtkQTZJREo3Q0cvMGpROGlNQXNnd1ZuSTdkYkxlZjZqRkhPM0FhaVdV?=
+ =?utf-8?B?TUk3TDhZYk9Ha2dvMDhOcUVwenFvSmpBWGNsUERNRlJ3R2lMOTQ4bi9jZnJU?=
+ =?utf-8?B?WFNaeHVYd0I1ekZSTkpSZmhibktqMXJYakJvL2ZveWRFYkE1WXRSVGlKZmRa?=
+ =?utf-8?B?N3Eyd2RyampCa1hObmp5RW9qeUtsMEZHYXcrVUtHMHE2MXFDZXQwRFdiMVFK?=
+ =?utf-8?B?SnVWais0TnlpV3A2Zi8zRXB6OFMxc1VFZ0xIeGdMeTJuOTMyU1YyYS9GQnFB?=
+ =?utf-8?B?T0dLZWVvSmJMLysrei9jUjFiK3k1NUw2WWJwMjNZdlIrY1pPaytBVkN1a2VS?=
+ =?utf-8?B?QVVTMmxFZ2phQjc4cGNoTjhCSXViSkh0cU5LK0hWMlFyZ2tWMmZEcHpFZnc5?=
+ =?utf-8?B?ais1S3A2bDE5THRLdjhIWVcza1EvMnROYWh4U3BOcTArenNLVVdDelpuNTlF?=
+ =?utf-8?B?MVpDTDBjd2Jjd3hwZDJlbEl2Wjk0b09XR2lNdnpFMm5namovd2ZTNkk1UlJr?=
+ =?utf-8?B?LzNFM1BNTU5hbkJIbjVvcnZHa3ZSSXoxZVRUeFNXSno0OHFHV3JwYnpoV1pZ?=
+ =?utf-8?B?cXZMZnhDM1BudGFFZ2lGTEdZV3U3aUE0SWREZ3VnUERzdWJTTHl2ZzJOUklR?=
+ =?utf-8?B?SVc4dHFiU3BCbGtpVTRjQ0lGd05ROFlFVHR2OUtmRHJYdnFHazFoSFRWMU5z?=
+ =?utf-8?B?TW1aYXZiZWJ4bFJiTC8vZzlLYzhGUmwzeW1aMTdDK2RMWXdsWkpROS9iaGFa?=
+ =?utf-8?B?aHN0NXVSR0pCdnBFcE13UWNyeEFudnNsZlhrZ1dYNE5mRk1pYkh6dnFsZ1BK?=
+ =?utf-8?B?V3B3d0R3UFV6eXB6RG82S0srRDEyUGVCRG5WUXJ6RDFBQWNBT29oV0J4Z1Zw?=
+ =?utf-8?B?N2hnb0NBME9wUU1nZFVRdE40d2NqRExtQ2xaOGw3YUJtTTg2aGdlc0V4WU1R?=
+ =?utf-8?B?YW5VRlJGTXFyWmtHdUtxQnpsbW1VbzdFUEZsWmx4ZHR1QVI4UG5YK1MxNkd4?=
+ =?utf-8?B?OWtjdWthb1BXN3hIdnRTVVN5azl1M0JCTzlQa0xjdWpUMjZqYWhuQ0p0UGVt?=
+ =?utf-8?B?OWhwcW9wQ2F3YUpDNG9UemRsQ0dUTFliT2dkVUZuUTFFajJFNmc4T2Q5SnEy?=
+ =?utf-8?B?S0syRE5QdnpGLzNsK29DQkdOY3kzeE5DZDRXZklneElxb24ydzQ4UXVMU2Mw?=
+ =?utf-8?B?M0hxNEZtZU8wSnJRdWhYaDEvbVlYY1ZuaUx0L1BKWFczNElYU205Mm9qMHAv?=
+ =?utf-8?B?WUVqOVllNkpFbnVRU0dEUGx2Q0RWaHp6Q0o3RU9ERDFmSnFOSlB1cjdJc0Fq?=
+ =?utf-8?B?L3U4eDFzRkQ1b2pzdE94YSt6R0s5NGJmS3MyVHV6bzJONlo5TDZVdlJNN3lB?=
+ =?utf-8?B?cTg0cmFoZUxtdDNCWHpzcFN0RlErZWtEQ0Q2M1lVVDI0VzdCU2RCQXorZkd2?=
+ =?utf-8?B?bWJFNTZ5MC94OUVJY2hnblg5b0J1TFZIK0xraWp1cXdIMTNUUDJYeXFlRzlS?=
+ =?utf-8?B?cG1xcnFxeDRNM3RoYkw5Z1lQcXpkdE5oQ0FkWjdKR3RJVnBINzFOVVRlQVNL?=
+ =?utf-8?B?MVp4MWJ4TUhvUlcvR3Y0YnZ5Zmk1cC81M2xTZVF0M2FwL09FNHl5Z3NrVTg0?=
+ =?utf-8?B?RHgxTFlqdWpBV1FrQ1k3WnJGcU9keG11enJPZ3NsV0hKY2E1bG5YZ0JYaGV6?=
+ =?utf-8?B?aGV6Y3Q5Z1hCcGl0WnI3cEMrMU5GMUw5NXc0V0ZZU29ESG9qOUEyZ0g0dWQ0?=
+ =?utf-8?B?ampOS0VMN2lUU3R2bTBlS0F4c0ZRaDdJcUViZm00Q2NiRElGeEZpRkFaSmsw?=
+ =?utf-8?B?a3Z0bUU5MmdxT0VRdExyOE9JLzlmWGtOMzh4V0Q3RkZsZkV5cERyM1YxY25O?=
+ =?utf-8?B?NXplRlliWW5oU2k4dlpWdE1rcjVTbGJHSUY0WW9VWkpnb2phZzJnSGtxRVBT?=
+ =?utf-8?B?d3cxVnRWQ2hTT2pXMGpUbFFFZVhaQktSMkVsajYrYUdhanV6anN3VXR0K1R6?=
+ =?utf-8?Q?5qul1p++2YUfFvW5TxaIs5g=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9c30a377-793c-4381-65fc-08d9bbfbaa3a
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5115.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Dec 2021 16:39:42.0110
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 110y5jQmWAJ84ApBYP47xMpIyscmjBxdmJNfwubyuXocXRI8xR0iwhAN4TB7NnyoSc1xOECGaBNdcfIsfNntuQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5196
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Ted,
+On 2021-12-09 8:31 p.m., Alistair Popple wrote:
+> On Friday, 10 December 2021 3:54:31 AM AEDT Sierra Guiza, Alejandro (Alex) wrote:
+>> On 12/9/2021 10:29 AM, Felix Kuehling wrote:
+>>> Am 2021-12-09 um 5:53 a.m. schrieb Alistair Popple:
+>>>> On Thursday, 9 December 2021 5:55:26 AM AEDT Sierra Guiza, Alejandro (Alex) wrote:
+>>>>> On 12/8/2021 11:30 AM, Felix Kuehling wrote:
+>>>>>> Am 2021-12-08 um 11:58 a.m. schrieb Felix Kuehling:
+>>>>>>> Am 2021-12-08 um 6:31 a.m. schrieb Alistair Popple:
+>>>>>>>> On Tuesday, 7 December 2021 5:52:43 AM AEDT Alex Sierra wrote:
+>>>>>>>>> Avoid long term pinning for Coherent device type pages. This could
+>>>>>>>>> interfere with their own device memory manager.
+>>>>>>>>> If caller tries to get user device coherent pages with PIN_LONGTERM flag
+>>>>>>>>> set, those pages will be migrated back to system memory.
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Alex Sierra<alex.sierra@amd.com>
+>>>>>>>>> ---
+>>>>>>>>>     mm/gup.c | 32 ++++++++++++++++++++++++++++++--
+>>>>>>>>>     1 file changed, 30 insertions(+), 2 deletions(-)
+>>>>>>>>>
+>>>>>>>>> diff --git a/mm/gup.c b/mm/gup.c
+>>>>>>>>> index 886d6148d3d0..1572eacf07f4 100644
+>>>>>>>>> --- a/mm/gup.c
+>>>>>>>>> +++ b/mm/gup.c
+>>>>>>>>> @@ -1689,17 +1689,37 @@ struct page *get_dump_page(unsigned long addr)
+>>>>>>>>>     #endif /* CONFIG_ELF_CORE */
+>>>>>>>>>     
+>>>>>>>>>     #ifdef CONFIG_MIGRATION
+>>>>>>>>> +static int migrate_device_page(unsigned long address,
+>>>>>>>>> +				struct page *page)
+>>>>>>>>> +{
+>>>>>>>>> +	struct vm_area_struct *vma = find_vma(current->mm, address);
+>>>>>>>>> +	struct vm_fault vmf = {
+>>>>>>>>> +		.vma = vma,
+>>>>>>>>> +		.address = address & PAGE_MASK,
+>>>>>>>>> +		.flags = FAULT_FLAG_USER,
+>>>>>>>>> +		.pgoff = linear_page_index(vma, address),
+>>>>>>>>> +		.gfp_mask = GFP_KERNEL,
+>>>>>>>>> +		.page = page,
+>>>>>>>>> +	};
+>>>>>>>>> +	if (page->pgmap && page->pgmap->ops->migrate_to_ram)
+>>>>>>>>> +		return page->pgmap->ops->migrate_to_ram(&vmf);
+>>>>>>>> How does this synchronise against pgmap being released? As I understand things
+>>>>>>>> at this point we're not holding a reference on either the page or pgmap, so
+>>>>>>>> the page and therefore the pgmap may have been freed.
+>>>>>>>>
+>>>>>>>> I think a similar problem exists for device private fault handling as well and
+>>>>>>>> it has been on my list of things to fix for a while. I think the solution is to
+>>>>>>>> call try_get_page(), except it doesn't work with device pages due to the whole
+>>>>>>>> refcount thing. That issue is blocking a fair bit of work now so I've started
+>>>>>>>> looking into it.
+>>>>>>> At least the page should have been pinned by the __get_user_pages_locked
+>>>>>>> call in __gup_longterm_locked. That refcount is dropped in
+>>>>>>> check_and_migrate_movable_pages when it returns 0 or an error.
+>>>>>> Never mind. We unpin the pages first. Alex, would the migration work if
+>>>>>> we unpinned them afterwards? Also, the normal CPU page fault code path
+>>>>>> seems to make sure the page is locked (check in pfn_swap_entry_to_page)
+>>>>>> before calling migrate_to_ram.
+>>>> I don't think that's true. The check in pfn_swap_entry_to_page() is only for
+>>>> migration entries:
+>>>>
+>>>> 	BUG_ON(is_migration_entry(entry) && !PageLocked(p));
+>>>>
+>>>> As this is coherent memory though why do we have to call into a device driver
+>>>> to do the migration? Couldn't this all be done in the kernel?
+>>> I think you're right. I hadn't thought of that mainly because I'm even
+>>> less familiar with the non-device migration code. Alex, can you give
+>>> that a try? As long as the driver still gets a page-free callback when
+>>> the device page is freed, it should work.
+> Yes, you should still get the page-free callback when the migration code drops
+> the last page reference.
+>
+>> ACK.Will do
+> There is currently not really any support for migrating device pages based on
+> pfn. What I think is needed is something like migrate_pages(), but that API
+> won't work for a couple of reasons - main one being that it relies on pages
+> being LRU pages.
+>
+> I've been working on a series to implement an equivalent of migrate_pages() for
+> device-private (and by extension device-coherent) pages. It might also be useful
+> here so I will try and get it posted as an RFC next week.
+If we want to make progress on this patch series in the shorter term, we 
+could just fail get_user_pages with FOLL_LONGTERM for DEVICE_COHERENT 
+pages. Then add the migration support when your patch series is ready.
 
-in the previous version of the patch you asked that the superblock
-modification is generic enough so that it can be used for future
-features (like changing UUID for example). Does it look more or less
-like what you had in mind ?
-
-You also mentioned the superblock locking so that we can do multiple
-modifications operations safely, including some future GET_SUPER ioctl.
-This is not part of the patch, but I have some ideas about more changes.
-
-There are couple of places in ext4 where we change superblock using
-journal; set features, generate s_encrypt_pw_salt, modify s_last_orphan,
-s_last_mounted and there is also ext4_update_super() in
-flush_stashed_error_work().  Also all the wild things done in resize.c.
-
-I think we should consolidate all or most of those under a single helper
-and I was thiking about how to go about it cleanly. We could play games
-with modifying s_es directly, which just points into s_sbh. And rely on
-the fact that it's read only once so we maybe should be able to modify
-it and then do the journal dance afterwards? I don't know if that's even
-allowed, but it sounds weird to me.
-
-Other option would be to have an exact, but in-memory representation of
-on-disk superblock, make any necessary modifications on that structure,
-have a lock protecting it and then creating a generic commit_superblock
-function (journalled and non-journalled) to translate fields to s_es
-(perhaps reuse ext4_update_super) and commit it to disk.
-
-One disadvantage might be that on-disk modification from userspace on
-mounted file systems will not work anymore, since it will always be
-overwriten by the in-kernel in-memory representation.
-
-What do you think ?
-
-Btw, I'd rather not wait with get/set label until after all of that if
-possible, so that I can get it off my mind for now.
-
-Thanks!
--Lukas
+Regards,
+   Felix
 
 
-On Fri, Dec 10, 2021 at 04:16:24PM +0100, Lukas Czerner wrote:
-> Implement support for FS_IOC_GETFSLABEL and FS_IOC_SETFSLABEL ioctls for
-> online reading and setting of file system label.
-> 
-> ext4_ioctl_getlabel() is simple, just get the label from the primary
-> superblock bh. This might not be the first sb on the file system if
-> 'sb=' mount option is used.
-> 
-> In ext4_ioctl_setlabel() we update what ext4 currently views as a
-> primary superblock and then proceed to update backup superblocks. There
-> are two caveats:
->  - the primary superblock might not be the first superblock and so it
->    might not be the one used by userspace tools if read directly
->    off the disk.
->  - because the primary superblock might not be the first superblock we
->    potentialy have to update it as part of backup superblock update.
->    However the first sb location is a bit more complicated than the rest
->    so we have to account for that.
-> 
-> The superblock modification is created generic enough so the infrastructure
-> can be used for other potential superblock modification operations
-> operations, such as chaning UUID.
-> 
-> Tested with generic/492 with various configurations. I also checked the
-> behavior with 'sb=' mount options, including very large file systems
-> with and without sparse_super/sparse_super2.
-> 
-> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
-> ---
-> V2: Fix typo. Place constant in BUILD_BUG_ON comparison on the right side
-> V3: Setlabel completely reworked
-> 
->  fs/ext4/ext4.h              |   9 +-
->  fs/ext4/ioctl.c             | 292 ++++++++++++++++++++++++++++++++++++
->  fs/ext4/resize.c            |  19 ++-
->  fs/ext4/super.c             |   4 +-
->  include/trace/events/ext4.h |  22 +++
->  5 files changed, 339 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 404dd50856e5..f355deb619a2 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -1298,6 +1298,8 @@ extern void ext4_set_bits(void *bm, int cur, int len);
->  /* Metadata checksum algorithm codes */
->  #define EXT4_CRC32C_CHKSUM		1
->  
-> +#define EXT4_LABEL_MAX			16
-> +
->  /*
->   * Structure of the super block
->   */
-> @@ -1347,7 +1349,7 @@ struct ext4_super_block {
->  /*60*/	__le32	s_feature_incompat;	/* incompatible feature set */
->  	__le32	s_feature_ro_compat;	/* readonly-compatible feature set */
->  /*68*/	__u8	s_uuid[16];		/* 128-bit uuid for volume */
-> -/*78*/	char	s_volume_name[16];	/* volume name */
-> +/*78*/	char	s_volume_name[EXT4_LABEL_MAX];	/* volume name */
->  /*88*/	char	s_last_mounted[64] __nonstring;	/* directory where last mounted */
->  /*C8*/	__le32	s_algorithm_usage_bitmap; /* For compression */
->  	/*
-> @@ -3096,6 +3098,9 @@ extern int ext4_group_extend(struct super_block *sb,
->  				struct ext4_super_block *es,
->  				ext4_fsblk_t n_blocks_count);
->  extern int ext4_resize_fs(struct super_block *sb, ext4_fsblk_t n_blocks_count);
-> +extern unsigned int ext4_list_backups(struct super_block *sb,
-> +				      unsigned int *three, unsigned int *five,
-> +				      unsigned int *seven);
->  
->  /* super.c */
->  extern struct buffer_head *ext4_sb_bread(struct super_block *sb,
-> @@ -3110,6 +3115,8 @@ extern int ext4_read_bh_lock(struct buffer_head *bh, int op_flags, bool wait);
->  extern void ext4_sb_breadahead_unmovable(struct super_block *sb, sector_t block);
->  extern int ext4_seq_options_show(struct seq_file *seq, void *offset);
->  extern int ext4_calculate_overhead(struct super_block *sb);
-> +extern __le32 ext4_superblock_csum(struct super_block *sb,
-> +				   struct ext4_super_block *es);
->  extern void ext4_superblock_csum_set(struct super_block *sb);
->  extern int ext4_alloc_flex_bg_array(struct super_block *sb,
->  				    ext4_group_t ngroup);
-> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-> index 606dee9e08a3..285862288ecb 100644
-> --- a/fs/ext4/ioctl.c
-> +++ b/fs/ext4/ioctl.c
-> @@ -27,6 +27,231 @@
->  #include "fsmap.h"
->  #include <trace/events/ext4.h>
->  
-> +typedef void ext4_modify_sb_callback(struct ext4_super_block *es,
-> +				       const void *arg);
-> +
-> +/*
-> + * Superblock modification callback function for changing file system
-> + * label
-> + */
-> +static void ext4_sb_setlabel(struct ext4_super_block *es, const void *arg)
-> +{
-> +	/* Sanity check, this should never happen */
-> +	BUILD_BUG_ON(sizeof(es->s_volume_name) < EXT4_LABEL_MAX);
-> +
-> +	memcpy(es->s_volume_name, (char *)arg, EXT4_LABEL_MAX);
-> +}
-> +
-> +int ext4_modify_primary_sb(struct super_block *sb, handle_t *handle,
-> +			   ext4_modify_sb_callback func,
-> +			   const void *arg)
-> +{
-> +	int err = 0;
-> +	struct ext4_sb_info *sbi = EXT4_SB(sb);
-> +	struct buffer_head *bh = sbi->s_sbh;
-> +	struct ext4_super_block *es = sbi->s_es;
-> +
-> +	trace_ext4_modify_sb(sb, bh->b_blocknr, 1);
-> +
-> +	BUFFER_TRACE(bh, "get_write_access");
-> +	err = ext4_journal_get_write_access(handle, sb,
-> +					    bh,
-> +					    EXT4_JTR_NONE);
-> +	if (err)
-> +		goto out_err;
-> +
-> +	lock_buffer(bh);
-> +	func(es, arg);
-> +	ext4_superblock_csum_set(sb);
-> +	unlock_buffer(bh);
-> +
-> +	if (buffer_write_io_error(bh) || !buffer_uptodate(bh)) {
-> +		ext4_msg(sbi->s_sb, KERN_ERR, "previous I/O error to "
-> +			 "superblock detected");
-> +		clear_buffer_write_io_error(bh);
-> +		set_buffer_uptodate(bh);
-> +	}
-> +
-> +	err = ext4_handle_dirty_metadata(handle, NULL, bh);
-> +	if (err)
-> +		goto out_err;
-> +	err = sync_dirty_buffer(bh);
-> +out_err:
-> +	ext4_std_error(sb, err);
-> +	return err;
-> +}
-> +
-> +/*
-> + * Update one backup superblcok in the group 'grp' using the primary
-> + * superblock data. If the handle is NULL the modification is not
-> + * journalled.
-> + *
-> + * Returns: 0 when no modification was done (no superblock in the group)
-> + *	    1 when the modification was successful
-> + *	   <0 on error
-> + */
-> +static int ext4_update_backup_sb(struct super_block *sb, handle_t *handle,
-> +				 ext4_group_t grp)
-> +{
-> +	int err = 0;
-> +	ext4_fsblk_t sb_block;
-> +	struct buffer_head *bh;
-> +	unsigned long offset = 0;
-> +
-> +	if (!ext4_bg_has_super(sb, grp))
-> +		return 0;
-> +
-> +	/*
-> +	 * For the group 0 there is always 1k padding, so we have
-> +	 * either adjust offset, or sb_block depending on blocksize
-> +	 */
-> +	if (grp == 0) {
-> +		sb_block = 1 * EXT4_MIN_BLOCK_SIZE;
-> +		offset = do_div(sb_block, sb->s_blocksize);
-> +	} else {
-> +		sb_block = ext4_group_first_block_no(sb, grp);
-> +		offset = 0;
-> +	}
-> +
-> +	trace_ext4_modify_sb(sb, sb_block, handle ? 1 : 0);
-> +
-> +	bh = sb_getblk(sb, sb_block);
-> +	if (IS_ERR(bh))
-> +		return PTR_ERR(bh);
-> +
-> +	if (handle) {
-> +		BUFFER_TRACE(bh, "get_write_access");
-> +		err = ext4_journal_get_write_access(handle, sb,
-> +						    bh,
-> +						    EXT4_JTR_NONE);
-> +		if (err)
-> +			goto out_bh;
-> +	}
-> +
-> +	lock_buffer(bh);
-> +	memcpy(bh->b_data + offset, EXT4_SB(sb)->s_es,
-> +	       sizeof(struct ext4_super_block));
-> +	set_buffer_uptodate(bh);
-> +	unlock_buffer(bh);
-> +
-> +	if (err)
-> +		goto out_bh;
-> +
-> +	if (handle) {
-> +		err = ext4_handle_dirty_metadata(handle, NULL, bh);
-> +		if (err)
-> +			goto out_bh;
-> +	} else {
-> +		BUFFER_TRACE(bh, "marking dirty");
-> +		mark_buffer_dirty(bh);
-> +	}
-> +	err = sync_dirty_buffer(bh);
-> +
-> +out_bh:
-> +	brelse(bh);
-> +	ext4_std_error(sb, err);
-> +	return (err) ? err : 1;
-> +}
-> +
-> +/*
-> + * Modify primary and backup superblocks using the provided function
-> + * func and argument arg.
-> + *
-> + * Only the primary superblock and at most two backup superblock
-> + * modifications are journalled; the rest is modified without journal.
-> + * This is safe because e2fsck will re-write them if there is a problem,
-> + * and we're very unlikely to ever need more than two backups.
-> + */
-> +int ext4_modify_superblocks_fn(struct super_block *sb,
-> +			       ext4_modify_sb_callback func,
-> +			       const void *arg)
-> +{
-> +	handle_t *handle;
-> +	ext4_group_t ngroups;
-> +	unsigned int three = 1;
-> +	unsigned int five = 5;
-> +	unsigned int seven = 7;
-> +	int err = 0, ret, i;
-> +	ext4_group_t grp, primary_grp;
-> +	struct ext4_sb_info *sbi = EXT4_SB(sb);
-> +
-> +	/*
-> +	 * We can't modify superblocks while the online resize is running
-> +	 */
-> +	if (test_and_set_bit_lock(EXT4_FLAGS_RESIZING,
-> +				  &sbi->s_ext4_flags)) {
-> +		ext4_msg(sb, KERN_ERR, "Can't modify superblock while"
-> +			 "performing online resize");
-> +		return -EBUSY;
-> +	}
-> +
-> +	/*
-> +	 * We're only going to modify primary superblock and two
-> +	 * backup superblocks in this transaction.
-> +	 */
-> +	handle = ext4_journal_start_sb(sb, EXT4_HT_MISC, 3);
-> +	if (IS_ERR(handle)) {
-> +		err = PTR_ERR(handle);
-> +		goto out;
-> +	}
-> +
-> +	/* Modify primary superblock */
-> +	err = ext4_modify_primary_sb(sb, handle, func, arg);
-> +	if (err) {
-> +		ext4_msg(sb, KERN_ERR, "Failed to modify primary "
-> +			 "superblock");
-> +		goto out_journal;
-> +	}
-> +
-> +	primary_grp = ext4_get_group_number(sb, sbi->s_sbh->b_blocknr);
-> +	ngroups = ext4_get_groups_count(sb);
-> +
-> +	/*
-> +	 * Update backup superblocks. We have to start from group 0
-> +	 * because it might not be where the primary superblock is
-> +	 * if the fs is mounted with -o sb=<backup_sb_block>
-> +	 */
-> +	i = 0;
-> +	grp = 0;
-> +	while (grp < ngroups) {
-> +		/* Skip primary superblock */
-> +		if (grp == primary_grp)
-> +			goto next_grp;
-> +
-> +		ret = ext4_update_backup_sb(sb, handle, grp);
-> +		if (ret < 0) {
-> +			err = ret;
-> +			goto out_journal;
-> +		}
-> +
-> +		i += ret;
-> +		if (handle && i > 1) {
-> +			/*
-> +			 * We're only journalling primary superblock and
-> +			 * two backup superblocks; the rest is not
-> +			 * journalled.
-> +			 */
-> +			err = ext4_journal_stop(handle);
-> +			if (err)
-> +				goto out;
-> +			handle = NULL;
-> +		}
-> +next_grp:
-> +		grp = ext4_list_backups(sb, &three, &five, &seven);
-> +	}
-> +
-> +out_journal:
-> +	if (handle) {
-> +		ret = ext4_journal_stop(handle);
-> +		if (ret && !err)
-> +			err = ret;
-> +	}
-> +out:
-> +	clear_bit_unlock(EXT4_FLAGS_RESIZING, &sbi->s_ext4_flags);
-> +	smp_mb__after_atomic();
-> +	return err ? err : 0;
-> +}
-> +
->  /**
->   * Swap memory between @a and @b for @len bytes.
->   *
-> @@ -850,6 +1075,64 @@ static int ext4_ioctl_checkpoint(struct file *filp, unsigned long arg)
->  	return err;
->  }
->  
-> +static int ext4_ioctl_setlabel(struct file *filp, const char __user *user_label)
-> +{
-> +	size_t len;
-> +	int ret = 0;
-> +	char new_label[EXT4_LABEL_MAX + 1];
-> +	struct super_block *sb = file_inode(filp)->i_sb;
-> +
-> +	if (!capable(CAP_SYS_ADMIN))
-> +		return -EPERM;
-> +
-> +	/*
-> +	 * Copy the maximum length allowed for ext4 label with one more to
-> +	 * find the required terminating null byte in order to test the
-> +	 * label length. The on disk label doesn't need to be null terminated.
-> +	 */
-> +	if (copy_from_user(new_label, user_label, EXT4_LABEL_MAX + 1))
-> +		return -EFAULT;
-> +
-> +	len = strnlen(new_label, EXT4_LABEL_MAX + 1);
-> +	if (len > EXT4_LABEL_MAX)
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * Clear the buffer after the new label
-> +	 */
-> +	memset(new_label + len, 0, EXT4_LABEL_MAX - len);
-> +
-> +	ret = mnt_want_write_file(filp);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = ext4_modify_superblocks_fn(sb, ext4_sb_setlabel, new_label);
-> +
-> +	mnt_drop_write_file(filp);
-> +	return ret;
-> +}
-> +
-> +static int ext4_ioctl_getlabel(struct ext4_sb_info *sbi, char __user *user_label)
-> +{
-> +	char label[EXT4_LABEL_MAX + 1];
-> +
-> +	/*
-> +	 * EXT4_LABEL_MAX must always be smaller than FSLABEL_MAX because
-> +	 * FSLABEL_MAX must include terminating null byte, while s_volume_name
-> +	 * does not have to.
-> +	 */
-> +	BUILD_BUG_ON(EXT4_LABEL_MAX >= FSLABEL_MAX);
-> +
-> +	memset(label, 0, sizeof(label));
-> +	lock_buffer(sbi->s_sbh);
-> +	strncpy(label, sbi->s_es->s_volume_name, EXT4_LABEL_MAX);
-> +	unlock_buffer(sbi->s_sbh);
-> +
-> +	if (copy_to_user(user_label, label, sizeof(label)))
-> +		return -EFAULT;
-> +	return 0;
-> +}
-> +
->  static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->  {
->  	struct inode *inode = file_inode(filp);
-> @@ -1266,6 +1549,13 @@ static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->  	case EXT4_IOC_CHECKPOINT:
->  		return ext4_ioctl_checkpoint(filp, arg);
->  
-> +	case FS_IOC_GETFSLABEL:
-> +		return ext4_ioctl_getlabel(EXT4_SB(sb), (void __user *)arg);
-> +
-> +	case FS_IOC_SETFSLABEL:
-> +		return ext4_ioctl_setlabel(filp,
-> +					   (const void __user *)arg);
-> +
->  	default:
->  		return -ENOTTY;
->  	}
-> @@ -1347,6 +1637,8 @@ long ext4_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
->  	case EXT4_IOC_GETSTATE:
->  	case EXT4_IOC_GET_ES_CACHE:
->  	case EXT4_IOC_CHECKPOINT:
-> +	case FS_IOC_GETFSLABEL:
-> +	case FS_IOC_SETFSLABEL:
->  		break;
->  	default:
->  		return -ENOIOCTLCMD;
-> diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
-> index b63cb88ccdae..ee8f02f406cb 100644
-> --- a/fs/ext4/resize.c
-> +++ b/fs/ext4/resize.c
-> @@ -717,12 +717,23 @@ static int setup_new_flex_group_blocks(struct super_block *sb,
->   * sequence of powers of 3, 5, and 7: 1, 3, 5, 7, 9, 25, 27, 49, 81, ...
->   * For a non-sparse filesystem it will be every group: 1, 2, 3, 4, ...
->   */
-> -static unsigned ext4_list_backups(struct super_block *sb, unsigned *three,
-> -				  unsigned *five, unsigned *seven)
-> +unsigned int ext4_list_backups(struct super_block *sb, unsigned int *three,
-> +			       unsigned int *five, unsigned int *seven)
->  {
-> -	unsigned *min = three;
-> +	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
-> +	unsigned int *min = three;
->  	int mult = 3;
-> -	unsigned ret;
-> +	unsigned int ret;
-> +
-> +	if (ext4_has_feature_sparse_super2(sb)) {
-> +		do {
-> +			if (*min > 2)
-> +				return UINT_MAX;
-> +			ret = le32_to_cpu(es->s_backup_bgs[*min - 1]);
-> +			*min += 1;
-> +		} while (!ret);
-> +		return ret;
-> +	}
->  
->  	if (!ext4_has_feature_sparse_super(sb)) {
->  		ret = *min;
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 4e33b5eca694..d79182793675 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -260,8 +260,8 @@ static int ext4_verify_csum_type(struct super_block *sb,
->  	return es->s_checksum_type == EXT4_CRC32C_CHKSUM;
->  }
->  
-> -static __le32 ext4_superblock_csum(struct super_block *sb,
-> -				   struct ext4_super_block *es)
-> +__le32 ext4_superblock_csum(struct super_block *sb,
-> +			    struct ext4_super_block *es)
->  {
->  	struct ext4_sb_info *sbi = EXT4_SB(sb);
->  	int offset = offsetof(struct ext4_super_block, s_checksum);
-> diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
-> index 0ea36b2b0662..17d5a8d0fbfd 100644
-> --- a/include/trace/events/ext4.h
-> +++ b/include/trace/events/ext4.h
-> @@ -2837,6 +2837,28 @@ TRACE_EVENT(ext4_fc_track_range,
->  		      __entry->end)
->  	);
->  
-> +TRACE_EVENT(ext4_modify_sb,
-> +	TP_PROTO(struct super_block *sb, ext4_fsblk_t fsblk, unsigned flags),
-> +
-> +	TP_ARGS(sb, fsblk, flags),
-> +
-> +	TP_STRUCT__entry(
-> +		__field(dev_t,		dev)
-> +		__field(ext4_fsblk_t,	fsblk)
-> +		__field(unsigned int,	flags)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__entry->dev	= sb->s_dev;
-> +		__entry->fsblk	= fsblk;
-> +		__entry->flags	= flags;
-> +	),
-> +
-> +	TP_printk("dev %d,%d fsblk %llu flags %u",
-> +		  MAJOR(__entry->dev), MINOR(__entry->dev),
-> +		  __entry->fsblk, __entry->flags)
-> +);
-> +
->  #endif /* _TRACE_EXT4_H */
->  
->  /* This part must be outside protection */
-> -- 
-> 2.31.1
-> 
-
+>
+>   - Alistair
+>
+>> Alex Sierra
+>>
+>>> Regards,
+>>>     Felix
+>>>
+>>>
+>>>>> No, you can not unpinned after migration. Due to the expected_count VS
+>>>>> page_count condition at migrate_page_move_mapping, during migrate_page call.
+>>>>>
+>>>>> Regards,
+>>>>> Alex Sierra
+>>>>>
+>>>>>> Regards,
+>>>>>>      Felix
+>>>>>>
+>>>>>>
+>
+>
