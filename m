@@ -2,129 +2,77 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2934470F9A
-	for <lists+linux-ext4@lfdr.de>; Sat, 11 Dec 2021 01:51:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A82E471043
+	for <lists+linux-ext4@lfdr.de>; Sat, 11 Dec 2021 03:02:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240038AbhLKAyv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 10 Dec 2021 19:54:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60912 "EHLO
+        id S1345663AbhLKCFq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 10 Dec 2021 21:05:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234568AbhLKAyv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 10 Dec 2021 19:54:51 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDC7FC061714
-        for <linux-ext4@vger.kernel.org>; Fri, 10 Dec 2021 16:51:14 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9572FB82A0F
-        for <linux-ext4@vger.kernel.org>; Sat, 11 Dec 2021 00:51:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31135C00446;
-        Sat, 11 Dec 2021 00:51:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639183872;
-        bh=6zx3xYMU93C0BIOTUplB86oBncrQo4o0yQM0aT7gTeY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=asmWqcNzQ+ftAkr26WshU25EiMfWgt+Q9FY6aEOJqu/Ajp17fC2LYWZxGoLE6dTlN
-         BGsdEDG6OpvA7cdUqHNQ2VtdgeyxywchqISTNj9wtfn+zzoPz8LUpmo9hqC/eMv4YG
-         8nQa7bhYJFN3PxgJVtTBDGlz4hQcj17pnV18yntf4QZ1x43vfUgnZKSt9HvratDO9D
-         kUDBDsjG382EiEy/MKi8yGxOhnAYUFFhJMsX1k/PnJ6BwwRzYVlkJfC6k9YIKqRXHn
-         CTbN0ZlfFAZMCMEgCSd2A8d34z48sYiJOiY17+fEWfdW3aO4tkR4gCulbDQj+LSr6+
-         4C2pPUlDrgblw==
-Date:   Fri, 10 Dec 2021 16:51:11 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        linux-ext4 <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH] e2fsck: map PROMPT_* values to prompt messages
-Message-ID: <20211211005111.GC69182@magnolia>
-References: <20211208075112.85649-1-adilger@dilger.ca>
- <20211208164238.GA69182@magnolia>
- <07CD099E-959E-4F85-B7B6-72F025E64545@dilger.ca>
+        with ESMTP id S1345671AbhLKCFm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 10 Dec 2021 21:05:42 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34BDBC0698C6
+        for <linux-ext4@vger.kernel.org>; Fri, 10 Dec 2021 18:02:05 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id 13so16084410ljj.11
+        for <linux-ext4@vger.kernel.org>; Fri, 10 Dec 2021 18:02:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=UB8HPXfiFrSS8lJHVD9imqT8IM8lXgQeVTQMVTTdoew=;
+        b=YLFlW2EU3wC14KpVTk+IM58oSghSYLjMmVu6zQ/IYCwgsR5Sf12xJCL/5+CVpbXsnt
+         22KfNqT06o98mhCtfoOfWNh/4tfFmj2AFDjLdssqJs8+fwuuzWeqstsrP9Eqc87OlMHn
+         TvZYh66KNDgDYMOMzV+7fqlsVNnsPbs5tbKal0uE5CTp2Rk7sipJ65nnPaJWW6urjiYG
+         yjhaQr0+DsLsyIMnaiNd6rjtUc7yQgIo65YEuBLpX5cuMOVjNiZW8dTCMF1ZcQmI8lLg
+         ts2zRNIssQ7WVu8YEQseHp9elEHPuA+qDafMGck3ipNTcw1LcoccQXJFJcltFVTtty4m
+         33gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=UB8HPXfiFrSS8lJHVD9imqT8IM8lXgQeVTQMVTTdoew=;
+        b=iJ/wQ9MfME2D5iwh2IlOPsvVXf0np2R8cgtXZ4HHAhpe/7+atJaF1f7YIsFTSGiF0b
+         W353wPCmOMWnPIUKK6Y5xo+TYl0lW/ifWLGnEVPczHBNZ0mmNRP7gW5lXaOwKj6zU03q
+         QJiYIJIfmNjdZ+kdoYkx9aRasnz/E0mg2ElTZpNAZB57D8eBlXzaq+HvYHrSWGlaf0lC
+         dJwvHZ7dy8Vs5qLX2QC4W6nQNsT0oZC7fwqtKd0Yy4hoek/qyZjf8b7sIcvQzhqheqoI
+         Q8jylAkGK5NRtxZGySDvPmCqxsVmdgRv4A1m7t2+SKz6BznUM4wNIn8XrjP4GZeqbw1l
+         93Mw==
+X-Gm-Message-State: AOAM5314g4OowA2eWz3B/eyVNrvPREhF74rLe2WSVwJ1YUy4rHjJiJpE
+        xFC/tm6KaxNM4OX5B7OsQWwSmw1aSH+F0rrJFCc=
+X-Google-Smtp-Source: ABdhPJxBVYZ26kuukI+qghu2oEbePULLlY8UzOvy8Thh2XI49DVZF++TlN5eyoWkvajWnohXM36KonRfGTJC1IRe82w=
+X-Received: by 2002:a2e:9d8f:: with SMTP id c15mr17452679ljj.477.1639188123220;
+ Fri, 10 Dec 2021 18:02:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <07CD099E-959E-4F85-B7B6-72F025E64545@dilger.ca>
+Received: by 2002:a05:6512:12c7:0:0:0:0 with HTTP; Fri, 10 Dec 2021 18:02:02
+ -0800 (PST)
+Reply-To: internationallmonetary695@gmail.com
+From:   International Monetary fund <abubakarsadiq1297@gmail.com>
+Date:   Fri, 10 Dec 2021 18:02:02 -0800
+Message-ID: <CAHXNoSg3Z7iK4ieUWhau28hUaL637ztb2vgqOT3oZCxEMRC3RQ@mail.gmail.com>
+Subject: Dear Beneficiary,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Dec 09, 2021 at 02:55:26PM -0700, Andreas Dilger wrote:
-> On Dec 8, 2021, at 9:42 AM, Darrick J. Wong <djwong@kernel.org> wrote:
-> > 
-> > On Wed, Dec 08, 2021 at 12:51:12AM -0700, Andreas Dilger wrote:
-> >> It isn't totally clear when searching the code for PROMPT_*
-> >> constants from problem codes where these messages come from.
-> >> Similarly, there isn't a direct mapping from the prompt string
-> >> to the constant.
-> >> 
-> >> Add comments that make this mapping more clear.
-> >> 
-> >> Signed-off-by: Andreas Dilger <adilger@dilger.ca>
-> >> ---
-> >> e2fsck/problem.c | 46 +++++++++++++++++++++++-----------------------
-> >> 1 file changed, 23 insertions(+), 23 deletions(-)
-> >> 
-> >> diff --git a/e2fsck/problem.c b/e2fsck/problem.c
-> >> index 757b5d56..2d02468c 100644
-> >> --- a/e2fsck/problem.c
-> >> +++ b/e2fsck/problem.c
-> >> @@ -50,29 +50,29 @@
-> >>  * to fix a problem.
-> >>  */
-> >> static const char *prompt[] = {
-> >> -	N_("(no prompt)"),	/* 0 */
-> >> -	N_("Fix"),		/* 1 */
-> >> -	N_("Clear"),		/* 2 */
-> >> -	N_("Relocate"),		/* 3 */
-> >> -	N_("Allocate"),		/* 4 */
-> >> -	N_("Expand"),		/* 5 */
-> >> -	N_("Connect to /lost+found"), /* 6 */
-> >> -	N_("Create"),		/* 7 */
-> >> -	N_("Salvage"),		/* 8 */
-> >> -	N_("Truncate"),		/* 9 */
-> >> -	N_("Clear inode"),	/* 10 */
-> >> -	N_("Abort"),		/* 11 */
-> >> -	N_("Split"),		/* 12 */
-> >> -	N_("Continue"),		/* 13 */
-> >> -	N_("Clone multiply-claimed blocks"), /* 14 */
-> >> -	N_("Delete file"),	/* 15 */
-> >> -	N_("Suppress messages"),/* 16 */
-> >> -	N_("Unlink"),		/* 17 */
-> >> -	N_("Clear HTree index"),/* 18 */
-> >> -	N_("Recreate"),		/* 19 */
-> >> -	N_("Optimize"),		/* 20 */
-> >> -	N_("Clear flag"),	/* 21 */
-> >> -	"",			/* 22 */
-> >> +	N_("(no prompt)"),			/* PROMPT_NONE		=  0 */
-> > 
-> > Why not make it even clearer and mismerge proof:
-> > 
-> > static const char *prompt[] = {
-> > 	[0]		= N_("(no prompt")),	/* null value test */
-> > 	[PROMPT_FIX]	= N_("Fix"),		/* 1 */
-> > 	[PROMPT_CLEAR]	= N_("Clear"),		/* 2 */
-> > 	...
-> > };
-> 
-> I thought about that too, but then I thought the "[index] = foo" designated
-> initializer is GNU or at least C99-specific, and I wondered if that was
-> going to cause portability problems for some ancient system that e2fsprogs
-> is building on...  I figured adding comments is relatively safe, and these
-> values change so rarely that more complexity in the patch was not a win.
+-- 
+ I.M.F Head Office
+#1900 Pennsylvania Ave NW,
+Washington, DC 20431
+INTERNATIONAL MONETARY FUND.
+REF:-XVGNN82010
+internationallmonetary695@gmail.com
+Telephone : +12062785473
 
-<shrug> Yeah, I thought it was safe enough to use -std=gnu90 features,
-but I guess it's really up to Ted to decide if he'd prefer a structural
-fix or not.  Evidently this syntax is /still/ being argued in the C++
-committees, which ... yay. :(
+This message is from International Monetary fund (IMF) I am Mr Bo Li
+deputy to  Kristalina Georgieva the current president of International
+  Monetary fund (IMF) We are aware of the stress you have been passing
+through and how you have lost your money trying to claim your fund ,
+you have to worry no more for the international monetary fund is fully
+ in-charge of your fund now, contact  me for more info on how you will
+receive your fund( internationallmonetary695@gmail.com) or call me
+on-Telephone : +12062785473 for more info.
 
---D
-
-> Cheers, Andreas
-> 
-> 
-> 
-> 
-> 
-
-
+Regards,
+Mr Bo Li
