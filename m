@@ -2,119 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 028AD4741F4
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Dec 2021 13:03:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3129F47422B
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Dec 2021 13:15:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233757AbhLNMDT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 14 Dec 2021 07:03:19 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:60560 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231684AbhLNMDS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Dec 2021 07:03:18 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 7606C2113A;
-        Tue, 14 Dec 2021 12:03:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1639483397; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KhNZ4PkSqALinQKCIgirA+fLFqcYFioHowV7Dcqr5SQ=;
-        b=SgYEfw1vZAVshCeFRZaQyui4/FWkqGBKpapCXf4NXTLdOaTdf4Gv2PeAaaoDNZInpGD3kP
-        ceWcYvsM9K/FPZpswZL3TPLyeA9wbYcbJzEf9HKUlelLCe9B1Q6yfH7pDWYle0kx80TamR
-        cLIzcT1HhYmvrcJpSS9cALfQ4KykDj0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1639483397;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KhNZ4PkSqALinQKCIgirA+fLFqcYFioHowV7Dcqr5SQ=;
-        b=mkOlqs2zYVn1/oN/Ib9wSDQ/jMNfT0/qma43fMTtuA0z9tgwNeb4VsxPDuy/eXyCnwLoLg
-        pnMziqlNCM2yEFDQ==
-Received: from quack2.suse.cz (unknown [10.163.28.18])
-        by relay2.suse.de (Postfix) with ESMTP id 60313A3B83;
-        Tue, 14 Dec 2021 12:03:17 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 1B00C1F2C7E; Tue, 14 Dec 2021 13:03:17 +0100 (CET)
-Date:   Tue, 14 Dec 2021 13:03:17 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     =?iso-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
+        id S229593AbhLNMP2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 14 Dec 2021 07:15:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229565AbhLNMP2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Dec 2021 07:15:28 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A2C6C061574
+        for <linux-ext4@vger.kernel.org>; Tue, 14 Dec 2021 04:15:28 -0800 (PST)
+Date:   Tue, 14 Dec 2021 13:15:24 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1639484125;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=VSSGqKWrulK7FvEkBZ985y3w5SZtkSNgNk4wk8Vv85M=;
+        b=uBbwqn82Cbd2asZGDPp03cJ01a8t2z5it4mKAWDUJfLQs7eS2iAC3BWOF77dBAfQwZ5sWW
+        S8HuVu47wcc71ov3RDiobx609ktDSKqvfgn5b6PIxQiWVupiApl/j1cs6F1YJxnKQ44S7N
+        +MH5cYrDvUpRjOlGXmv3BP+AVtCmTSVTnJmFHpmuNYJ832lC7xgBPmusBCM4602jP89lIa
+        roAgjasAefm0XHCn7yjQQlOrKMx+SNuWXj7X8N4o78nBR+Lm9/N64EOFfovIaPOol/fKy5
+        wwg/59zhrhDgIzfsyIkZF+oed/2jXdRIYtMxY92ZpaHFnoVcbImKENMmv/kVew==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1639484125;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=VSSGqKWrulK7FvEkBZ985y3w5SZtkSNgNk4wk8Vv85M=;
+        b=ocRsryxEcRfKwK1M6zovA64duJUqI6sA3gb8NBkU6zH8v7NUgwwu5tsxKMVN5xANPkRlox
+        0IVbBrpNrguLHEDA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Theodore Ts'o <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jeroen van Wolffelaar <jeroen@wolffelaar.nl>
-Subject: Re: [PATCH] ext4: set csum seed in tmp inode while migrating to
- extents
-Message-ID: <20211214120317.GA5503@quack2.suse.cz>
-References: <bug-213357-13602@https.bugzilla.kernel.org>
- <20211206143733.18918-1-lhenriques@suse.de>
+        linux-ext4@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Lukas Czerner <lczerner@redhat.com>
+Subject: [PATCH REPOST] ext4: Destroy ext4_fc_dentry_cachep kmemcache on
+ module removal.
+Message-ID: <YbiK3JetFFl08bd7@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211206143733.18918-1-lhenriques@suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 06-12-21 14:37:33, Luís Henriques wrote:
-> When migrating to extents, the temporary inode will have it's own checksum
-> seed.  This means that, when swapping the inodes data, the inode checksums
-> will be incorrect.
-> 
-> This can be fixed by recalculating the extents checksums again.  Or simply
-> by copying the seed into the temporary inode.
-> 
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=213357
-> Reported-by: Jeroen van Wolffelaar <jeroen@wolffelaar.nl>
-> Signed-off-by: Luís Henriques <lhenriques@suse.de>
+The kmemcache for ext4_fc_dentry_cachep remains registered after module
+removal.
 
-Thanks for debugging this! Two comments below:
+Destroy ext4_fc_dentry_cachep kmemcache on module removal.
 
-> diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
-> index 7e0b4f81c6c0..dd4ece38fc83 100644
-> --- a/fs/ext4/migrate.c
-> +++ b/fs/ext4/migrate.c
-> @@ -413,7 +413,7 @@ int ext4_ext_migrate(struct inode *inode)
->  	handle_t *handle;
->  	int retval = 0, i;
->  	__le32 *i_data;
-> -	struct ext4_inode_info *ei;
-> +	struct ext4_inode_info *ei, *tmp_ei;
+Fixes: aa75f4d3daaeb ("ext4: main fast-commit commit path")
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Reviewed-by: Lukas Czerner <lczerner@redhat.com>
+Link: https://lore.kernel.org/r/20211110134640.lyku5vklvdndw6uk@linutronix.de
+---
+ fs/ext4/ext4.h        | 1 +
+ fs/ext4/fast_commit.c | 5 +++++
+ fs/ext4/super.c       | 2 ++
+ 3 files changed, 8 insertions(+)
 
-Probably no need for the new tmp_ei variable when you use it only once...
-
-> @@ -503,6 +503,10 @@ int ext4_ext_migrate(struct inode *inode)
->  	}
->  
->  	ei = EXT4_I(inode);
-> +	tmp_ei = EXT4_I(tmp_inode);
-> +	/* Use the right seed for checksumming */
-> +	tmp_ei->i_csum_seed = ei->i_csum_seed;
-> +
-
-I think this is subtly broken in another way: If we crash in the middle of
-migration, tmp_inode (and possibly attached extent tree blocks) will have
-wrong checksums (remember that i_csum_seed is computed from inode number)
-and so orphan cleanup will fail. On the other hand in that case the orphan
-cleanup will free blocks we have already managed to attach to the tmp_inode
-although they are still properly attached to the old 'inode'. So the
-recovery from a crash in the middle of the migration seems to be broken
-anyway. So I guess what you do is an improvement. But can you perhaps:
-
-1) Move i_csum_seed initialization to a bit earlier in ext4_ext_migrate()
-just after we have got the tmp_inode from  ext4_new_inode()? That way all
-inode writes will at least happen with the same csum.
-
-2) Add a comment you are updating the csum seed so that metadata blocks get
-proper checksum for 'inode' and that recovery from a crash in the middle of
-migration is currently broken.
-
-Thanks!
-
-								Honza
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 404dd50856e5d..af7088085d4e4 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -2935,6 +2935,7 @@ bool ext4_fc_replay_check_excluded(struct super_block *sb, ext4_fsblk_t block);
+ void ext4_fc_replay_cleanup(struct super_block *sb);
+ int ext4_fc_commit(journal_t *journal, tid_t commit_tid);
+ int __init ext4_fc_init_dentry_cache(void);
++void ext4_fc_destroy_dentry_cache(void);
+ 
+ /* mballoc.c */
+ extern const struct seq_operations ext4_mb_seq_groups_ops;
+diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+index 0f32b445582ab..4665508efd778 100644
+--- a/fs/ext4/fast_commit.c
++++ b/fs/ext4/fast_commit.c
+@@ -2192,3 +2192,8 @@ int __init ext4_fc_init_dentry_cache(void)
+ 
+ 	return 0;
+ }
++
++void ext4_fc_destroy_dentry_cache(void)
++{
++	kmem_cache_destroy(ext4_fc_dentry_cachep);
++}
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 4e33b5eca694d..71185a217d05b 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -6649,6 +6649,7 @@ static int __init ext4_init_fs(void)
+ out:
+ 	unregister_as_ext2();
+ 	unregister_as_ext3();
++	ext4_fc_destroy_dentry_cache();
+ out05:
+ 	destroy_inodecache();
+ out1:
+@@ -6675,6 +6676,7 @@ static void __exit ext4_exit_fs(void)
+ 	unregister_as_ext2();
+ 	unregister_as_ext3();
+ 	unregister_filesystem(&ext4_fs_type);
++	ext4_fc_destroy_dentry_cache();
+ 	destroy_inodecache();
+ 	ext4_exit_mballoc();
+ 	ext4_exit_sysfs();
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.34.1
+
