@@ -2,54 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E9B4761FA
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Dec 2021 20:40:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52BB44761FC
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Dec 2021 20:41:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbhLOTka (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Dec 2021 14:40:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39250 "EHLO
+        id S229657AbhLOTlZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Dec 2021 14:41:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbhLOTka (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Dec 2021 14:40:30 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C10BBC061574;
-        Wed, 15 Dec 2021 11:40:29 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id 13so34818662ljj.11;
-        Wed, 15 Dec 2021 11:40:29 -0800 (PST)
+        with ESMTP id S229492AbhLOTlZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Dec 2021 14:41:25 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F24CC061574;
+        Wed, 15 Dec 2021 11:41:24 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id b40so45141359lfv.10;
+        Wed, 15 Dec 2021 11:41:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:date:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=8HtAgUhr/NsiGqKq9VgMDhC8R9rDE1DfVxbnNun+dH8=;
-        b=S/mLeu1UJTdOu5UTWcv2jQOYG/Z5fRndaHXfBTr2MjSRTsJEYJQzqTCeNyQIDyzMYb
-         3RHvEK2EySGmD0ovvTKAV+004wUR1sWZUW4+GhHpusD8yfgbLQYB9m4rwPdz5/Rvr9mE
-         3XCF7U9UyioGkn4i0fEwZkClnBWwZ8Gf9gMUbLK6+hMC8ySk075wPD+d2VeccDp6a/ke
-         x/EGRVRgwZI/z+FohTFJGdm0C5fQgWa1Bd2wdQWGE1eOyTJvtVTeiVmfZ8hdkTJMaaN/
-         As6vLEkL3J9+x1nzbMY63pLV7JZ9EbsIkhHY30rZiZ4dxiWmoOCUc3XfzUhPILirE5zb
-         BiPA==
+        bh=kC5hssZfuoqKQFOl0IRNjLPgt4ZvJbJLqKLSmIpMcYw=;
+        b=J1dW9Nitupl96gsJeQ1DDiPCWRUqZgUXxF0+A+FUZzfBUcTSEMQjKGSQj5tKAjYUTO
+         N6NjY53M2T2I7vFKpnmoSut7L9mLo0shhC4XzWuhnhu0JaEoSA9EK+r6AZY6pldAeKs0
+         mHEYeNuEmzZu0OZY47x90bL0uRnS8rK2m9sc2FYU+bN47JGvYYNe1LxYiGMW/9gddHc5
+         CjU0XDV13W+jXkHiCKQo0RCAhP0Stw7hLAZT9O9nT0dI5OT5sVQQZ/AQbFuCr0nBb/7K
+         Z2hrv0ViovkYbveWa8VPY+wdk0VCgbqnXOsAg9v18t/Xqe/8FyIkLkYY14bagkuzfxz5
+         PB6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:date:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=8HtAgUhr/NsiGqKq9VgMDhC8R9rDE1DfVxbnNun+dH8=;
-        b=wmHJOeQIqq1U9ixfGXRyjlYTMOOAhExC7olJSKrCw6NMVmRYRwLsVwBm403Di0iIDt
-         JBLQnJcYoRn7PFzyC9CYZTpk08g09OslNPPBt37h2weOcCu/+Pr9Ylrj2p5i8cXtkOti
-         aZcOi4uaI+ustk8TXBGA4qfWGIJN53D7UQDuqS/RYQI2OzWefQfhPWBLAQMZWrOvvzzM
-         i/NAhJKUD3AjdpnhzP5TrWTe5OL0VDIajyKVfIXwjirp8KsDyTzYc1ulHHXHfZtqmdqo
-         vrA9uPvWh3yqsvYgb4tJw+8ukNupQzCkCHUnPyekYOVG4xNkiPxVLxk/CacaCNsfmcxA
-         U0kA==
-X-Gm-Message-State: AOAM530/1UQthqkQ7JlhJEaKvUMRtFp38qYx0TIWC6YtfDYGefo0eyWr
-        dnO2aLNj/P9Cq56fj0sm4Qc=
-X-Google-Smtp-Source: ABdhPJyRHySmqWpVFF6JU+B67GThGTAe/tyYhvgk9PzNlEOLyQHiSplDlcCt3qEGZ7jC0n6elYy7Yg==
-X-Received: by 2002:a2e:a279:: with SMTP id k25mr11876627ljm.37.1639597228072;
-        Wed, 15 Dec 2021 11:40:28 -0800 (PST)
+        bh=kC5hssZfuoqKQFOl0IRNjLPgt4ZvJbJLqKLSmIpMcYw=;
+        b=lgZl8VtQj+1XRYpCh6DeS1L7frLIRMMr8xxhRw6bb2xy0c7j6l3OK+KMbqKrq0l9vO
+         Te2P/0r18BYF3GtFONh9aK2rJ6vJvsjjlxXYLUP41GzlPbqeOSPwP2EtQ/tIlghgC85R
+         D7UKX/ktCPXlH6mmMtIw4Nd4T2W0FfXfrpIfSD7GNsDkEJZ8aWxmD3tz3iP87iMMYcBs
+         2GBibFMHH0MjS1tY6XQKgdp/0ffI2M6lbyy+qJwTJMIerDYMAXmFQDdwjUlHnC1EO1yH
+         iUN4zrwenx9/lcBnV1Ar/qwveHmaDbIvutMabJh5tlUGxuNri4kbzM5xJ40cuK79MEUb
+         x9ZQ==
+X-Gm-Message-State: AOAM530x7sAuAdDcKIXaTqoeN9kBggUxYTckzciu/CAUihySX2UzQX1M
+        HcAVtiHm2SiWzhnQfvLDIsI=
+X-Google-Smtp-Source: ABdhPJz4XmxZm2vwudyDVD7pkEndYczLrZjTupCg8nmjNpQObzp+Ft4IXjgLZ9BlbnY9fTk8yHwVGw==
+X-Received: by 2002:a19:6557:: with SMTP id c23mr11065671lfj.617.1639597282903;
+        Wed, 15 Dec 2021 11:41:22 -0800 (PST)
 Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id v8sm464263lfq.177.2021.12.15.11.40.26
+        by smtp.gmail.com with ESMTPSA id a1sm464681lfc.92.2021.12.15.11.41.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Dec 2021 11:40:27 -0800 (PST)
+        Wed, 15 Dec 2021 11:41:21 -0800 (PST)
 From:   Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Wed, 15 Dec 2021 20:40:25 +0100
+Date:   Wed, 15 Dec 2021 20:41:18 +0100
 To:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org
 Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>,
@@ -63,138 +63,48 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         "Theodore Y . Ts'o" <tytso@mit.edu>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH RESEND] ext4: Replace ext4_kvfree_array_rcu() by
- kvfree_rcu() API
-Message-ID: <YbpEqWAH6r1Dz8HC@pc638.lan>
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Uladzislau Rezki <uladzislau.rezki@sony.com>
+Subject: Re: [PATCH RESEND] ext4: Switch to kvfree_rcu() API
+Message-ID: <YbpE3uOu3ur/X5L4@pc638.lan>
 References: <20211215111845.2514-1-urezki@gmail.com>
- <20211215111845.2514-2-urezki@gmail.com>
+ <20211215111845.2514-3-urezki@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211215111845.2514-2-urezki@gmail.com>
+In-Reply-To: <20211215111845.2514-3-urezki@gmail.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Dec 15, 2021 at 12:18:38PM +0100, Uladzislau Rezki (Sony) wrote:
-> The ext4_kvfree_array_rcu() function was introduced in order to
-> release some memory after a grace period during resizing of a
-> partition. An object that is freed does not contain any rcu_head
-> filed.
+On Wed, Dec 15, 2021 at 12:18:39PM +0100, Uladzislau Rezki (Sony) wrote:
+> From: Uladzislau Rezki <uladzislau.rezki@sony.com>
 > 
-> To do so, it requires to allocate some extra memory for a special
-> structure that has an rcu_head filed and pointer one where a freed
-> memory is attached. Finally call_rcu() API is invoked.
-> 
-> Since we have a single argument of kvfree_rcu() API, we can easily
-> replace all that tricky code by one single call that does the same
-> but in more efficient way.
+> Instead of invoking a synchronize_rcu() to free a pointer
+> after a grace period we can directly make use of new API
+> that does the same but in more efficient way.
 > 
 > TO: "Theodore Ts'o" <tytso@mit.edu>
 > TO: linux-ext4@vger.kernel.org
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> Signed-off-by: Uladzislau Rezki <uladzislau.rezki@sony.com>
 > ---
->  fs/ext4/ext4.h    |  1 -
->  fs/ext4/mballoc.c |  2 +-
->  fs/ext4/resize.c  | 31 ++-----------------------------
->  fs/ext4/super.c   |  2 +-
->  4 files changed, 4 insertions(+), 32 deletions(-)
+>  fs/ext4/super.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 404dd50856e5..7e8ff3ac2beb 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -3089,7 +3089,6 @@ extern int ext4_generic_delete_entry(struct inode *dir,
->  extern bool ext4_empty_dir(struct inode *inode);
->  
->  /* resize.c */
-> -extern void ext4_kvfree_array_rcu(void *to_free);
->  extern int ext4_group_add(struct super_block *sb,
->  				struct ext4_new_group_data *input);
->  extern int ext4_group_extend(struct super_block *sb,
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 215b7068f548..b0469f7a5c55 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -3109,7 +3109,7 @@ int ext4_mb_alloc_groupinfo(struct super_block *sb, ext4_group_t ngroups)
->  	rcu_assign_pointer(sbi->s_group_info, new_groupinfo);
->  	sbi->s_group_info_size = size / sizeof(*sbi->s_group_info);
->  	if (old_groupinfo)
-> -		ext4_kvfree_array_rcu(old_groupinfo);
-> +		kvfree_rcu(old_groupinfo);
->  	ext4_debug("allocated s_groupinfo array for %d meta_bg's\n",
->  		   sbi->s_group_info_size);
->  	return 0;
-> diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
-> index b63cb88ccdae..ac6aa037aaab 100644
-> --- a/fs/ext4/resize.c
-> +++ b/fs/ext4/resize.c
-> @@ -17,33 +17,6 @@
->  
->  #include "ext4_jbd2.h"
->  
-> -struct ext4_rcu_ptr {
-> -	struct rcu_head rcu;
-> -	void *ptr;
-> -};
-> -
-> -static void ext4_rcu_ptr_callback(struct rcu_head *head)
-> -{
-> -	struct ext4_rcu_ptr *ptr;
-> -
-> -	ptr = container_of(head, struct ext4_rcu_ptr, rcu);
-> -	kvfree(ptr->ptr);
-> -	kfree(ptr);
-> -}
-> -
-> -void ext4_kvfree_array_rcu(void *to_free)
-> -{
-> -	struct ext4_rcu_ptr *ptr = kzalloc(sizeof(*ptr), GFP_KERNEL);
-> -
-> -	if (ptr) {
-> -		ptr->ptr = to_free;
-> -		call_rcu(&ptr->rcu, ext4_rcu_ptr_callback);
-> -		return;
-> -	}
-> -	synchronize_rcu();
-> -	kvfree(to_free);
-> -}
-> -
->  int ext4_resize_begin(struct super_block *sb)
->  {
->  	struct ext4_sb_info *sbi = EXT4_SB(sb);
-> @@ -906,7 +879,7 @@ static int add_new_gdb(handle_t *handle, struct inode *inode,
->  	n_group_desc[gdb_num] = gdb_bh;
->  	rcu_assign_pointer(EXT4_SB(sb)->s_group_desc, n_group_desc);
->  	EXT4_SB(sb)->s_gdb_count++;
-> -	ext4_kvfree_array_rcu(o_group_desc);
-> +	kvfree_rcu(o_group_desc);
->  
->  	lock_buffer(EXT4_SB(sb)->s_sbh);
->  	le16_add_cpu(&es->s_reserved_gdt_blocks, -1);
-> @@ -969,7 +942,7 @@ static int add_new_gdb_meta_bg(struct super_block *sb,
->  
->  	rcu_assign_pointer(EXT4_SB(sb)->s_group_desc, n_group_desc);
->  	EXT4_SB(sb)->s_gdb_count++;
-> -	ext4_kvfree_array_rcu(o_group_desc);
-> +	kvfree_rcu(o_group_desc);
->  	return err;
->  }
->  
 > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 111b0498a232..3942cd271a00 100644
+> index 4e33b5eca694..111b0498a232 100644
 > --- a/fs/ext4/super.c
 > +++ b/fs/ext4/super.c
-> @@ -2759,7 +2759,7 @@ int ext4_alloc_flex_bg_array(struct super_block *sb, ext4_group_t ngroup)
->  	rcu_assign_pointer(sbi->s_flex_groups, new_groups);
->  	sbi->s_flex_groups_allocated = size;
->  	if (old_groups)
-> -		ext4_kvfree_array_rcu(old_groups);
-> +		kvfree_rcu(old_groups);
->  	return 0;
+> @@ -1886,8 +1886,7 @@ static int clear_qf_name(struct super_block *sb, int qtype)
+>  		return -1;
+>  	}
+>  	rcu_assign_pointer(sbi->s_qf_names[qtype], NULL);
+> -	synchronize_rcu();
+> -	kfree(old_qname);
+> +	kvfree_rcu(old_qname);
+>  	return 1;
 >  }
->  
+>  #endif
 > -- 
 > 2.30.2
 > 
