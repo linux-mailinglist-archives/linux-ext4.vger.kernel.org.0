@@ -2,100 +2,114 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75CC3474CDB
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Dec 2021 21:56:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE80474F87
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Dec 2021 01:49:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230407AbhLNU41 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 14 Dec 2021 15:56:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38384 "EHLO
+        id S238648AbhLOAtt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 14 Dec 2021 19:49:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230394AbhLNU41 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Dec 2021 15:56:27 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 222C5C061574
-        for <linux-ext4@vger.kernel.org>; Tue, 14 Dec 2021 12:56:27 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id t11so19725262qtw.3
-        for <linux-ext4@vger.kernel.org>; Tue, 14 Dec 2021 12:56:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iBq5h4ljD4EhKsomLG2GAY5w6FFirqkm84KkBsSVkYU=;
-        b=ddLs8POnwbSFYqAglRT/C+UjtU/NsW52fgYiAO2C9uHC4scyWTTgbfS9yTVU3O4dMW
-         k4kyqmBupT0mUw1eRnqTWagH4d9CntOOYeWECGDKAM+k3ftSDBGc/W79hWj4cbcfYmek
-         7if+G5XLefC+pyH6SCZdFPiueehRgjTt7WaAQFd4+pt75hcUkWg6I9qk3W1ZlKIw2G9w
-         Ku4uOsk/xPVjbvXsT+F/XsGZ7/2QgJpRcnlbgNfyrHobI0uqBxrthn2nvIjZ0K0KHOQV
-         XHroqstGC5LY3w0PBNyEP2Oe+JPexFGgvKCEJvt6mESHRdUBiwQLIEVqkxGI8BUofXci
-         Q8Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iBq5h4ljD4EhKsomLG2GAY5w6FFirqkm84KkBsSVkYU=;
-        b=ANtwzw+G+a7FRS1V90S+VaAOjU800YhzUhAwIzXWx/pDEz94j6465h229XwgUQRLuB
-         zQBSNuAIkyob3bBBjoltT/OIt4azmHrWLxs8DAfsWND3U1/VzNvOJ6klpBqG8wqUsIMw
-         0j0kzqz8qMHauSdJ3V0CN9DJMBUiMVESVsE5FaxuKDzcq/lOj5gHKQYpIq5nmbRud4Iv
-         47KOfF8eKK0FgTnik9xTHOB/jGt9GdIGI1pdLQ7frX5LFLERu7e6UjdE3dbnSWN9Swcm
-         Uz9vQTlGo83GRXkm35r8olGJbaKIcpNQYxP8YvZA7YStPgWPS3k6nJf4m2ycrj9vI6yd
-         /vxA==
-X-Gm-Message-State: AOAM531A0RxLKQEqqifLOpddmsqaCfbu9QiRTo/hLdWHXMh7zZoCzlbI
-        9lbPFDcO3oJK8Z33zWFCH9ibc3a2zsc=
-X-Google-Smtp-Source: ABdhPJyMu1MVGsPWZhCsngSrTourGXmhPflqL9zK98SmxcsDX2HKW0NByDrmSbjvzj69kqk73Wb6ig==
-X-Received: by 2002:ac8:5cce:: with SMTP id s14mr8768045qta.349.1639515386158;
-        Tue, 14 Dec 2021 12:56:26 -0800 (PST)
-Received: from localhost.localdomain (c-73-60-226-25.hsd1.nh.comcast.net. [73.60.226.25])
-        by smtp.gmail.com with ESMTPSA id d15sm783913qtd.70.2021.12.14.12.56.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Dec 2021 12:56:25 -0800 (PST)
-From:   Eric Whitney <enwlinux@gmail.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, Eric Whitney <enwlinux@gmail.com>
-Subject: [PATCH] xfstests-bld: add ext4/044 to adv.exclude
-Date:   Tue, 14 Dec 2021 15:56:17 -0500
-Message-Id: <20211214205617.17233-1-enwlinux@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        with ESMTP id S238641AbhLOAtt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Dec 2021 19:49:49 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C56E4C06173E;
+        Tue, 14 Dec 2021 16:49:48 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 95C14B81DFD;
+        Wed, 15 Dec 2021 00:49:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38E64C34601;
+        Wed, 15 Dec 2021 00:49:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1639529386;
+        bh=FZKl3tGfrowl5Ti7tX7JSdDJMVveBK63MZ1TCe4VWaA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Jj3b3SgFhHnCFW1lJXQRXxR67BMC9ieccEdiaFUqH2GO8+TEokXFiBAmqk6+D561L
+         y/pyo4mFtnWvKRkcNH9EVuwyF5oUSLSDJDmfAt+YgFZqWw4GVljKicJlpA6q8x/Nd1
+         qIkSgECnpTv06qHJ+qa2OTyBhjeYYg5FnaiHpWMewF9s/WMaShUkuubZttE6n/Qxpc
+         vgjglmKasHoaAf22Js0hTbb1vI2eKdfR3PeIwjMgOeRv8H2jH8b3NykbJEa5OJk4P1
+         vkdi5xKzYqmb2E/jOtibYoiEOd2S8ZST9EK7kzb2E58yVslGABW+1Xo9/3D4DNqgaY
+         GGtxSjADmAqew==
+Date:   Tue, 14 Dec 2021 16:49:45 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     =?iso-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jeroen van Wolffelaar <jeroen@wolffelaar.nl>
+Subject: Re: [PATCH v2] ext4: set csum seed in tmp inode while migrating to
+ extents
+Message-ID: <20211215004945.GD69182@magnolia>
+References: <20211214175058.19511-1-lhenriques@suse.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211214175058.19511-1-lhenriques@suse.de>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Test ext4/044 fails when run in the adv test case because it explicitly
-attempts to mount a test file system created with the inline_data
-feature as ext3.  The inline_data feature and ext3 are incompatible,
-and the mount attempt fails.
+On Tue, Dec 14, 2021 at 05:50:58PM +0000, Luís Henriques wrote:
+> When migrating to extents, the temporary inode will have it's own checksum
+> seed.  This means that, when swapping the inodes data, the inode checksums
+> will be incorrect.
+> 
+> This can be fixed by recalculating the extents checksums again.  Or simply
+> by copying the seed into the temporary inode.
+> 
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=213357
+> Reported-by: Jeroen van Wolffelaar <jeroen@wolffelaar.nl>
+> Signed-off-by: Luís Henriques <lhenriques@suse.de>
+> ---
+>  fs/ext4/migrate.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+> 
+> changes since v1:
+> 
+> * Dropped tmp_ei variable
+> * ->i_csum_seed is now initialised immediately after tmp_inode is created
+> * New comment about the seed initialization and stating that recovery
+>   needs to be fixed.
+> 
+> Cheers,
+> --
+> Luís
+> 
+> diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
+> index 7e0b4f81c6c0..36dfc88ce05b 100644
+> --- a/fs/ext4/migrate.c
+> +++ b/fs/ext4/migrate.c
+> @@ -459,6 +459,17 @@ int ext4_ext_migrate(struct inode *inode)
+>  		ext4_journal_stop(handle);
+>  		goto out_unlock;
+>  	}
+> +	/*
+> +	 * Use the correct seed for checksum (i.e. the seed from 'inode').  This
+> +	 * is so that the metadata blocks will have the correct checksum after
+> +	 * the migration.
+> +	 *
+> +	 * Note however that, if a crash occurs during the migration process,
+> +	 * the recovery process is broken because the tmp_inode checksums will
+> +	 * be wrong and the orphans cleanup will fail.
 
-This test did not fail in earlier xfstests-bld versions because the
-features included in adv were different.  In particular, the 64bit
-feature was applied, and this had an unfortunate side effect.
-Because the 64bit feature requires extents, and because the test
-attempts to create an ext3 file system, the initial attempt actually
-failed.  This was hidden by behavior in the xfstest function
-_scratch_do_mkfs, which then attempted to create the file system without
-the supplied "extra" mkfs options (those supplied for the adv test case).
-So, the test file system was not created with inline_data, the explicit
-attempt to mount the test file system as ext3 succeeded, and the test
-passed without testing anything particular to the adv test case.
+...and then what does the user do?
 
-Signed-off-by: Eric Whitney <enwlinux@gmail.com>
----
- .../test-appliance/files/root/fs/ext4/cfg/adv.exclude         | 4 ++++
- 1 file changed, 4 insertions(+)
+--D
 
-diff --git a/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/adv.exclude b/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/adv.exclude
-index b6c802d..42d7451 100644
---- a/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/adv.exclude
-+++ b/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/adv.exclude
-@@ -1,5 +1,9 @@
- ext4/004	# dump/restore doesn't handle inline data
- 
-+# ext4/044 tries to mount the file system as ext3 explicitly.  This will
-+# fail because ext3 and the inline_data feature are incompatible.
-+ext4/044
-+
- # This takes a *long* time and doesn't add much value to run on all
- # configurations.  So we're going to be selective where we run it.
- generic/027
--- 
-2.20.1
-
+> +	 */
+> +	ei = EXT4_I(inode);
+> +	EXT4_I(tmp_inode)->i_csum_seed = ei->i_csum_seed;
+>  	i_size_write(tmp_inode, i_size_read(inode));
+>  	/*
+>  	 * Set the i_nlink to zero so it will be deleted later
+> @@ -502,7 +513,6 @@ int ext4_ext_migrate(struct inode *inode)
+>  		goto out_tmp_inode;
+>  	}
+>  
+> -	ei = EXT4_I(inode);
+>  	i_data = ei->i_data;
+>  	memset(&lb, 0, sizeof(lb));
+>  
