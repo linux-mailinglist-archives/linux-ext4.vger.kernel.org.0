@@ -2,108 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E36479021
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Dec 2021 16:42:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE78478F41
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Dec 2021 16:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234653AbhLQPmG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Dec 2021 10:42:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60156 "EHLO
+        id S233216AbhLQPLn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Dec 2021 10:11:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232425AbhLQPmF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Dec 2021 10:42:05 -0500
-X-Greylist: delayed 1928 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 17 Dec 2021 07:42:04 PST
-Received: from top.wolffelaar.nl (top.wolffelaar.nl [IPv6:2a01:7c8:d006:9b:5054:ff:fe71:c4fc])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E03AC061574;
-        Fri, 17 Dec 2021 07:42:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=wolffelaar.nl; s=202103.top; h=Message-ID:References:In-Reply-To:Subject:Cc
-        :To:From:Date:Content-Transfer-Encoding:Content-Type:MIME-Version:Sender:
-        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=3rU2NucpADexhzJ+OcpPb0OQz9bw/D3NfmzXX2qTU6c=; b=OjTz14J6wvR8VBOQRYpN12oRIL
-        o82LxtMJVYbII9+1xLIIAG2+dMin7qY6lv3AqX+QaoSJgLZ46IHWakfjIyyIKgvX3gPkuLyxmZ2uv
-        VhHu510T3Til9b28w463yxJacBpNuJZlRc6ChQmR73e8xW0Y0BvIJbhu/4EjvvBN5cb01G8DvWh1v
-        05Xvkdp0ulVAqHjDHqm9eLI2XkEnkKPRBIOJyT5pdGIo7fnPi+CqtniCL4pl+qkJCbJwVsomf2sMM
-        hvRFb5G7NsTp76UCgpz0L1RwVojDHDwZTlJiTfYuqvKUchccCYOJIuyTHKHPwAQXp/MLH/HqBhzkH
-        aFNp5Eww==;
-Received: from localhost ([::1] helo=webmail.wolffelaar.nl)
-        by top.wolffelaar.nl with esmtpa (Exim 4.92)
-        (envelope-from <jeroen@wolffelaar.nl>)
-        id 1myErm-0001m8-5k; Fri, 17 Dec 2021 16:09:50 +0100
+        with ESMTP id S232151AbhLQPLm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Dec 2021 10:11:42 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D1CC061574;
+        Fri, 17 Dec 2021 07:11:42 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id j18so4702096wrd.2;
+        Fri, 17 Dec 2021 07:11:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:content-language:to:from
+         :subject:content-transfer-encoding;
+        bh=L2fRcZSEDgREADQi8ozNIgt6sXZ7Th/KimLRuTl0m+c=;
+        b=kKWF5M87hgWdpvOyh7Vbm/8DfOREj3F9Iay4G5zvChQ3Lsq4EqvCFrJn1Ru9gcIK5B
+         HsoVUSCCf4Vm3m69qPqGrkvwt+Ml9alEc28UxsglMXj5Mjtl7u7CucFHY3PBKlyqJ7xW
+         7gADoIW5RzOuLWjvGyCQ+NiAGPZyHEQHWEgylKKl/IfmzGF+HoqHDPgpBHmPYlXYBP+x
+         b4mXHhXGBDdrHRx28eUZEPVU3+AXBP7owbHfyxMhgL1v6y/egkEFQzwlhpt156JG18ss
+         ouZu+SN8plP1488Ww6laaiCqYMbFNZL6RhbskmV9R6mVWQSyUUvcDKfme6LQgc4oTJZZ
+         tCzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:from:subject:content-transfer-encoding;
+        bh=L2fRcZSEDgREADQi8ozNIgt6sXZ7Th/KimLRuTl0m+c=;
+        b=7JzqsH3ydjAeIDdAC0FKccA1Y8bVJr8DSnZLCh3rMq8Kgb28DA8HL7K2SjtXugtgq3
+         cfQuxonDzHCnNxYvO8gtjjNDSU/ba2Z0Y4HknpmehxLbaY38mmf4yiaEWxXR1O1bLGmq
+         CTceXvdmLyqYbDYaliMwtILULz9D8Rh/xLMxRQXwcmoe9J/woHxrkSJjQTVHD8IaisvT
+         81UqJKP8VRR8XLAweQxwA0n8Up1YJtnRWJ+g/nrK/7bF1MmOjnabCOA21NnVgZ2+vH1+
+         qTvmiqIXkhzUo8bqqFIowO65jOzzXwwDIw9E9IT7YYI5uLC504znq8M3CRNO3PJaHFzr
+         R6hQ==
+X-Gm-Message-State: AOAM5308E/OWECEcVY2HChmr4s26yl44W33PeN1ZeVVmkhzBwxQ3zGLo
+        vziXKOlpVDh/CN3/UMzo0S3XHYt2ZuY=
+X-Google-Smtp-Source: ABdhPJwhBk604QQbITBC8c0uxtm8Cuh1fBurkO0gwd6TiYi/rZjCwd4fRbDXiHV9QoytyutIZ/5amA==
+X-Received: by 2002:a05:6000:1568:: with SMTP id 8mr2983668wrz.79.1639753900848;
+        Fri, 17 Dec 2021 07:11:40 -0800 (PST)
+Received: from ?IPV6:2003:ea:8f24:fd00:c4df:e014:c9b1:77c6? (p200300ea8f24fd00c4dfe014c9b177c6.dip0.t-ipconnect.de. [2003:ea:8f24:fd00:c4df:e014:c9b1:77c6])
+        by smtp.googlemail.com with ESMTPSA id b197sm7417696wmb.24.2021.12.17.07.11.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Dec 2021 07:11:40 -0800 (PST)
+Message-ID: <b5817114-8122-cf0e-ca8e-b5d1c9f43bc2@gmail.com>
+Date:   Fri, 17 Dec 2021 16:11:32 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Fri, 17 Dec 2021 15:09:50 +0000
-From:   Jeroen van Wolffelaar <jeroen@wolffelaar.nl>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Lukas Czerner <lczerner@redhat.com>, Jan Kara <jack@suse.cz>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        =?UTF-8?Q?Lu=C3=ADs_Henriques?= <lhenriques@suse.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] ext4: set csum seed in tmp inode while migrating to
- extents
-In-Reply-To: <YbuGLsQy6TSM2xOl@mit.edu>
-References: <20211214175058.19511-1-lhenriques@suse.de>
- <20211215004945.GD69182@magnolia> <20211215112852.GM14044@quack2.suse.cz>
- <20211215141237.lrymhbebgjunh4n2@work> <YbuGLsQy6TSM2xOl@mit.edu>
-Message-ID: <f8a4352c32b1c6d4407f6d1b99a2c43c@wolffelaar.nl>
-X-Sender: jeroen@wolffelaar.nl
-User-Agent: Roundcube Webmail/1.3.17
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.0
+Content-Language: en-US
+To:     Lukas Czerner <lczerner@redhat.com>, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Problem with data=ordered ext4 mount option in linux-next
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-First of all, thanks Luís for figuring out the bug and writing a patch.
+On linux-next systemd-remount-fs complains about an invalid mount option
+here, resulting in a r/o root fs. After playing with the mount options
+it turned out that data=ordered causes the problem. linux-next from Dec
+1st was ok, so it seems to be related to the new mount API patches.
 
-On 2021-12-16 18:32, Theodore Ts'o wrote:
-> So the question is, is it worth it to continue supporting the migrate
-> feature, or should we just delete all of the migration code, and risk
-> users complaining that we've broken their use case?  The chances of
-> that happening is admittedly low, and Linus's rule that "it's only
-> breaking userspace if a user complains" means we might very well get
-> away with it.  :-)
+At a first glance I saw no obvious problem, the following looks good.
+Maybe you have an idea where to look ..
 
-As the person who ran into this bug and then filed the issue in
-bugzilla, my two cents:
+static const struct constant_table ext4_param_data[] = {
+	{"journal",	EXT4_MOUNT_JOURNAL_DATA},
+	{"ordered",	EXT4_MOUNT_ORDERED_DATA},
+	{"writeback",	EXT4_MOUNT_WRITEBACK_DATA},
+	{}
+};
 
-I can do without the migration functionality, it is slightly
-inconvenient, but that's it. I do believe having an always-broken
-migration path (HEAD kernel, if csum is on) is much worse than not
-having one. I don't personally care if a crash means I lose one or
-several files, but I feel it's really not okay for chattr to risk losing
-a file in a crash on a journalled filesystem. I would consider that a
-severe data loss bug.
-
-Thus, I support removing this feature. At the same time, I believe the
-original patch is strictly better than the existing situation, so I also
-support adding that to the kernel so that in the happy case, this
-doesn't cause e2fsck failures, pending the (much longer) deprecation
-path.
+	fsparam_enum	("data",		Opt_data, ext4_param_data),
 
 
-In case anyone cares, my usecase, so you can see it's quite esoteric.
-You can also stop reading, I believe that's better :-P.
-
-I have a rotation of harddisks that I use to have offline backups. They
-were ext3 until the day I ran into this bug, I finally got around to
-upgrading the filesystems (I never wanted to upgrade the instant ext4
-became available, but arguably this is somewhat late too).
-
-Because I knew -- out of prior interest -- that ext3 blocklists did not
-have checksums, I wanted to ensure all existing files were csum too, so
-extents. chattr +e promised to do exactly that. Well, it didn't work.
-
-All files are indexed and checksummed, losing any or all, I can recover
-from.  So a working chattr +e, even if it risks losing some or all data,
-would be 'best' for my case. My alternative is just copying all files
-in-disk, which is a few TiB of extra I/O, but whatever.
-
-Recreating the filesystem is annoying, since that brings the number of
-backup copies *intentionally* down by one, temporarily, which I do not
-want to do. I want my buffer for unintentional failures.
-
-Thank you all,
---Jeroen
