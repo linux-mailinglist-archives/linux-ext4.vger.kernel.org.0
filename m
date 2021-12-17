@@ -2,149 +2,467 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29141479411
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Dec 2021 19:26:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53AE947953D
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Dec 2021 21:10:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234227AbhLQS0i (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Dec 2021 13:26:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43486 "EHLO
+        id S230131AbhLQUKZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Dec 2021 15:10:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231609AbhLQS0h (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Dec 2021 13:26:37 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D444DC061574;
-        Fri, 17 Dec 2021 10:26:36 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id bg2-20020a05600c3c8200b0034565c2be15so4689538wmb.0;
-        Fri, 17 Dec 2021 10:26:36 -0800 (PST)
+        with ESMTP id S231490AbhLQUKZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Dec 2021 15:10:25 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B43CAC061574
+        for <linux-ext4@vger.kernel.org>; Fri, 17 Dec 2021 12:10:24 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id z5so12210686edd.3
+        for <linux-ext4@vger.kernel.org>; Fri, 17 Dec 2021 12:10:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language
-         :from:to:cc:references:in-reply-to:content-transfer-encoding;
-        bh=KV+FDN9BPfOKArptCyEPtP+g5PqRElDD4grRoqnSLFw=;
-        b=hjE4c28aDU2h4w5xpxVUvi76InQcTtif6oD1soUp93UbrcvX5EnkJifNFaqqMGtiyK
-         I9sdC4vy5Y7M8FBoZxxoWuMfe12E3uTgJACYutgeGOxyQOjgmXz5nBYXOx9AosQn6Q4Q
-         cDdB6UKn//GjLWy3cpqdL8dxTHt8qJ9Ck4NTJtp2YhE5v76vXLF62A4VFkQy05RtvQ6l
-         WqDWbl9MHulhFs61gOWxZmgYaDoeGZTtE8DcMXTg4g2t9ZAkAYIUQFqvbnhtG3RhkZ1b
-         FMiIpnquILoS5NOyyPDTCFn66eCiO6W5g2sYElEdvS9l32Pr6759ChzBpiByG9ucs0Ob
-         bElQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lxhwYO0Y1wqtLd5p0acIgKSw6cTuZrt0m88csFffJIw=;
+        b=a58sJDMy4fXtfOFHZNkIzO91mSaXUkLk4Ks0QEZJT6tMsErYKUwvkjKvF+/2cClZc8
+         0m7cXuXk+iowZxRKdMkv7u+7lsJMyPl/f1AC0vkzHJovcfg/W8xnVKwoVETvNU3mBw6p
+         qBqPi+XAeGIq8EPsNx48r+wNmLSkFaq/fk3Ta4FWf/usGnR7jH38QpzADdNp3KyN4JgW
+         kc6mb4i4q6u/plK7bmLJqaRXtfxDMX8Ojz4efqqqu68MoLF6v+GoqTsiPZY8n9+6tz1s
+         KSGd1tMinwjRa0M6wE/AfxUuxu5vyxNW5vHYGC/5wRFfUQQDH0fDPjbef4BxWT/HsEoy
+         wi2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:from:to:cc:references:in-reply-to
-         :content-transfer-encoding;
-        bh=KV+FDN9BPfOKArptCyEPtP+g5PqRElDD4grRoqnSLFw=;
-        b=JPC4mk6kVwpnuceSepxGFnLKp2Pr4V+jJE/MCndw5w9gqrW4uqJkPw3AJPqccYiAcm
-         W3brNOkX+pspaSoO4sve28/almiwI3TJKLhaLkv6xQF99k/6vuVxKHIjpnJq0oYI1EDF
-         FcxKLdOCF4kGIL0NIGO5CJccdRTBIDqcqlbRMb4J2/H1Y1T6pdTJFFdi8O3oOvtARnfb
-         jSaMMs2PGqOFGl6/xdZf1OmAhuoSWJDASEGkGNGJFM5rcXXp03Lm170aONrfnD5lAg+b
-         SfEfZLm1ztvV1EfcZiCJJgt1blNs6Po1og7izD3XIqcgVhyzmZLp5raUO5R7cq2DvuSl
-         M+UQ==
-X-Gm-Message-State: AOAM530RnSopaDsHM5CKW04yoapJv4Yl3112/c7SYUV/Ps67L7GaQNHs
-        /+nahUGzrtCqVG+xfX7erutkm4z0eY0=
-X-Google-Smtp-Source: ABdhPJzSVMMqWobq8puIAZRwwMXLnEKwBznx2SdCfHspVYhEMOds13EyTDyCjzTx92ppGQ9j6jsUgw==
-X-Received: by 2002:a1c:ed0a:: with SMTP id l10mr10593108wmh.140.1639765594905;
-        Fri, 17 Dec 2021 10:26:34 -0800 (PST)
-Received: from ?IPV6:2003:ea:8f24:fd00:d0f6:769:a23b:b01? (p200300ea8f24fd00d0f60769a23b0b01.dip0.t-ipconnect.de. [2003:ea:8f24:fd00:d0f6:769:a23b:b01])
-        by smtp.googlemail.com with ESMTPSA id e1sm6023353wrc.74.2021.12.17.10.26.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Dec 2021 10:26:34 -0800 (PST)
-Message-ID: <d05a95a9-0bbd-3495-2b81-18673909edd4@gmail.com>
-Date:   Fri, 17 Dec 2021 19:26:30 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lxhwYO0Y1wqtLd5p0acIgKSw6cTuZrt0m88csFffJIw=;
+        b=KVEHr8RBpEwfAV5lYpi7Jm0uWqD+KVHv+ALVZaZpHvn3v1aW0Q9etTvvauhpdzgaJY
+         NffeZDPPQtz+vGZMXz5SZL7gjmztieYD50Bc+IEyRgDnMk+DDYRXKctOuOvxLBWmHqJM
+         toAvBw3ypxCl516pAGBXzMYbpaw+iYzqXAa/zfbdy7S/JGNHwWNM86xxS8nGXr1y2qvA
+         oxoiFomLcJV8neu7lV4NkYg7RzI9MRHfKXu1yeS1uTzMah8bk1q5tYhLkFSUbbnxY9UI
+         yVYnaLRTnA2m89Msk6epl8tIb+pFitstrswzkss1pa6/JDfDcNeITbTtHowzzbqS+vfl
+         /wkA==
+X-Gm-Message-State: AOAM532L5kEr8M64FOPBLB3SvAlZx4eMTmg235Fp1IWN0tUgqUP1n+bq
+        AJSeC/6BW8+gKX/0wJf6OpWnCvUKdHA+y9ybXrw=
+X-Google-Smtp-Source: ABdhPJzLbQ700YImp9DmLlQza7+ey9FenJFnWLF4FbWeeuuDfuWDXVfLTwPazBOEtYCBC/7M0Wufh4qRsxpXE04UrDw=
+X-Received: by 2002:a17:906:c156:: with SMTP id dp22mr3033812ejc.283.1639771822723;
+ Fri, 17 Dec 2021 12:10:22 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Subject: Re: Problem with data=ordered ext4 mount option in linux-next
-Content-Language: en-US
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-To:     Lukas Czerner <lczerner@redhat.com>
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <b5817114-8122-cf0e-ca8e-b5d1c9f43bc2@gmail.com>
- <20211217152456.l7b2mbefdkk64fkj@work>
- <b1fa8d59-02e8-16b7-7218-a3f6ac66e3fa@gmail.com>
- <df69973d-47c5-fbd6-f83d-4d7d8a261c4c@gmail.com>
-In-Reply-To: <df69973d-47c5-fbd6-f83d-4d7d8a261c4c@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20211215193323.GA24187@localhost.localdomain> <20211216213628.GA18665@localhost.localdomain>
+In-Reply-To: <20211216213628.GA18665@localhost.localdomain>
+From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
+Date:   Fri, 17 Dec 2021 12:10:11 -0800
+Message-ID: <CAD+ocbzp+rOKn6VgCXxjFNGoMF6voJtA+X5dCQXX+W9p37H9PA@mail.gmail.com>
+Subject: Re: generic/083 triggers hang on 5.16-rc5 w/fast_commit
+To:     Eric Whitney <enwlinux@gmail.com>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 17.12.2021 18:02, Heiner Kallweit wrote:
-> On 17.12.2021 16:34, Heiner Kallweit wrote:
->> On 17.12.2021 16:24, Lukas Czerner wrote:
->>> On Fri, Dec 17, 2021 at 04:11:32PM +0100, Heiner Kallweit wrote:
->>>> On linux-next systemd-remount-fs complains about an invalid mount option
->>>> here, resulting in a r/o root fs. After playing with the mount options
->>>> it turned out that data=ordered causes the problem. linux-next from Dec
->>>> 1st was ok, so it seems to be related to the new mount API patches.
->>>>
->>>> At a first glance I saw no obvious problem, the following looks good.
->>>> Maybe you have an idea where to look ..
->>>>
->>>> static const struct constant_table ext4_param_data[] = {
->>>> 	{"journal",	EXT4_MOUNT_JOURNAL_DATA},
->>>> 	{"ordered",	EXT4_MOUNT_ORDERED_DATA},
->>>> 	{"writeback",	EXT4_MOUNT_WRITEBACK_DATA},
->>>> 	{}
->>>> };
->>>>
->>>> 	fsparam_enum	("data",		Opt_data, ext4_param_data),
->>>>
->>>
->>> Thank you for the report!
->>>
->>> The ext4 mount has been reworked to use the new mount api and the work
->>> has been applied to linux-next couple of days ago so I definitelly
->>> assume there is a bug in there that I've missed. I will be looking into
->>> it.
->>>
->>> Can you be a little bit more specific about how to reproduce the problem
->>> as well as the error it generates in the logs ? Any other mount options
->>> used simultaneously, non-default file system features, or mount options
->>> stored within the superblock ?
->>>
->>> Can you reproduce it outside of the systemd unit, say a script ?
->>>
->> Yes:
->>
->> [root@zotac ~]# mount -o remount,data=ordered /
->> mount: /: mount point not mounted or bad option.
->> [root@zotac ~]# mount -o remount,discard /
->> [root@zotac ~]#
->>
->> "systemctl status systemd-remount-fs" shows the same error.
->>
->> Following options I had in my fstab (ext4 fs):
->> rw,relatime,data=ordered,discard
->>
->> No non-default system features.
->>
->>> Thanks!
->>> -Lukas
->>>
->> Heiner
-> 
-> Sorry, should have looked at dmesg earlier. There I see:
-> EXT4-fs: Cannot change data mode on remount
-> Message seems to be triggered from ext4_check_opt_consistency().
-> Not sure why this error doesn't occur with old mount API.
-> And actually I don't change the data mode.
+Thanks Eric for testing with Xin's patch. I also observed that the
+patch didn't fix it.
 
-Based on the old API code: Maybe we need something like this?
-At least it works for me.
+I have found one root cause after which the probability of failure
+reduces drastically (it takes over 200-300 runs to reproduce the
+issue). I'm looking for other places where something might be wrong.
+But one definite issue is that in ext4_buffered_write_iter() we start
+a fast commit transaction and if for some reason the write fails, we
+try to perform a commit (hoping that after the commit write would
+succeed). However, that commit waits for the opened fast commit
+transaction to finish, causing the thread to hang. I should be
+stopping the transaction before starting the commit. I'll send out the
+patch once I find other issues too.
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index b72d989b7..9ec7e526c 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -2821,7 +2821,9 @@ static int ext4_check_opt_consistency(struct fs_context *fc,
-                                 "Remounting file system with no journal "
-                                 "so ignoring journalled data option");
-                        ctx_clear_mount_opt(ctx, EXT4_MOUNT_DATA_FLAGS);
--               } else if (ctx->mask_s_mount_opt & EXT4_MOUNT_DATA_FLAGS) {
-+               } else if (ctx->mask_s_mount_opt & EXT4_MOUNT_DATA_FLAGS &&
-+                          (ctx->vals_s_mount_opt & EXT4_MOUNT_DATA_FLAGS) !=
-+                          (sbi->s_mount_opt & EXT4_MOUNT_DATA_FLAGS)) {
-                        ext4_msg(NULL, KERN_ERR, "Cannot change data mode "
-                                 "on remount");
-                        return -EINVAL;
+Thanks,
+Harshad
+
+On Thu, Dec 16, 2021 at 1:36 PM Eric Whitney <enwlinux@gmail.com> wrote:
+>
+> * Eric Whitney <enwlinux@gmail.com>:
+> > I'm observing kernel hangs when running generic/083 using the latest version
+> > of the xfstests-bld test appliance on 5.16-rc5 with the adv test case.  The
+> > hangs typically occur once in 16 or 17 trials.  This is not a regression in
+> > 5.16, as it's reproducible in 5.15.  Modifying the adv test case to exclude
+> > the inline_data feature and then all features results in 100 passed tests
+> > out of 100 trials in each case.  Modifying adv to include only the fast_commit
+> > feature leads to hangs at the same rate as described above.  Output from a hung
+> > test run follows below.
+> >
+> > Thanks,
+> > Eric
+> >
+> > generic/083 5s ...    [16:09:08][   24.909037] run fstests generic/083 at 2028
+> > [   25.266112] EXT4-fs (vdc): mounted filesystem with ordered data mode. Opts: .
+> > [  245.414394] INFO: task jbd2/vdc-8:4436 blocked for more than 122 seconds.
+> > [  245.418977]       Not tainted 5.16.0-rc5 #1
+> > [  245.421909] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this.
+> > [  245.425207] task:jbd2/vdc-8      state:D stack:    0 pid: 4436 ppid:     2 f0
+> > [  245.426372] Call Trace:
+> > [  245.426777]  <TASK>
+> > [  245.427130]  __schedule+0x309/0xab0
+> > [  245.427722]  ? lock_release+0x132/0x2a0
+> > [  245.428338]  ? wait_woken+0x60/0x60
+> > [  245.428899]  schedule+0x44/0xc0
+> > [  245.429407]  jbd2_journal_commit_transaction+0x174/0x1e40
+> > [  245.430276]  ? find_held_lock+0x2d/0x90
+> > [  245.430920]  ? try_to_del_timer_sync+0x4d/0x80
+> > [  245.431622]  ? wait_woken+0x60/0x60
+> > [  245.432189]  ? _raw_spin_unlock_irqrestore+0x3b/0x50
+> > [  245.432982]  ? try_to_del_timer_sync+0x4d/0x80
+> > [  245.433692]  kjournald2+0xcc/0x2a0
+> > [  245.434263]  ? wait_woken+0x60/0x60
+> > [  245.434820]  ? commit_timeout+0x10/0x10
+> > [  245.435435]  kthread+0x164/0x190
+> > [  245.435957]  ? set_kthread_struct+0x40/0x40
+> > [  245.436630]  ret_from_fork+0x22/0x30
+> > [  245.437218]  </TASK>
+> > [  245.437602] INFO: task fsstress:4440 blocked for more than 122 seconds.
+> > [  245.438643]       Not tainted 5.16.0-rc5 #1
+> > [  245.439306] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this.
+> > [  245.440513] task:fsstress        state:D stack:    0 pid: 4440 ppid:  4439 f0
+> > [  245.441857] Call Trace:
+> > [  245.442240]  <TASK>
+> > [  245.442530]  __schedule+0x309/0xab0
+> > [  245.442903]  schedule+0x44/0xc0
+> > [  245.443237]  jbd2_log_wait_commit+0x119/0x190
+> > [  245.444011]  ? wait_woken+0x60/0x60
+> > [  245.444616]  __jbd2_journal_force_commit+0x5d/0xb0
+> > [  245.445374]  jbd2_journal_force_commit_nested+0xa/0x20
+> > [  245.446181]  ext4_should_retry_alloc+0x5c/0xb0
+> > [  245.446882]  ext4_da_write_begin+0xf2/0x310
+> > [  245.447572]  generic_perform_write+0xf0/0x1d0
+> > [  245.448258]  ? generic_update_time+0xa0/0xc0
+> > [  245.448935]  ? file_update_time+0xd4/0x110
+> > [  245.449582]  ext4_buffered_write_iter+0x88/0x120
+> > [  245.450314]  ext4_file_write_iter+0x5f/0x8a0
+> > [  245.451011]  ? lock_is_held_type+0xd8/0x130
+> > [  245.451662]  ? find_held_lock+0x2d/0x90
+> > [  245.452275]  do_iter_readv_writev+0x169/0x1d0
+> > [  245.452972]  do_iter_write+0x83/0x1c0
+> > [  245.453554]  iter_file_splice_write+0x265/0x390
+> > [  245.454298]  direct_splice_actor+0x31/0x40
+> > [  245.454934]  splice_direct_to_actor+0xfb/0x220
+> > [  245.455640]  ? pipe_to_sendpage+0xa0/0xa0
+> > [  245.456279]  do_splice_direct+0xa0/0xd0
+> > [  245.456895]  vfs_copy_file_range+0x1b6/0x5b0
+> > [  245.457590]  __x64_sys_copy_file_range+0xdd/0x200
+> > [  245.458325]  do_syscall_64+0x3a/0x80
+> > [  245.458891]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > [  245.459682] RIP: 0033:0x7f9419fb5f59
+> > [  245.460247] RSP: 002b:00007ffdf52d2428 EFLAGS: 00000246 ORIG_RAX: 00000000006
+> > [  245.461444] RAX: ffffffffffffffda RBX: 00007ffdf52d2478 RCX: 00007f9419fb5f59
+> > [  245.462537] RDX: 0000000000000004 RSI: 00007ffdf52d2470 RDI: 0000000000000003
+> > [  245.463640] RBP: 0000000000019f46 R08: 0000000000019f46 R09: 0000000000000000
+> > [  245.464770] R10: 00007ffdf52d2478 R11: 0000000000000246 R12: 0000000000000004
+> > [  245.465876] R13: 00007ffdf52d2470 R14: 0000000000000003 R15: 000000000009858f
+> > [  245.466989]  </TASK>
+> > [  245.467343] INFO: task fsstress:4441 blocked for more than 122 seconds.
+> > [  245.468383]       Not tainted 5.16.0-rc5 #1
+> > [  245.469031] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this.
+> > [  245.470238] task:fsstress        state:D stack:    0 pid: 4441 ppid:  4439 f0
+> > [  245.471436] Call Trace:
+> > [  245.471681]  <TASK>
+> > [  245.471924]  __schedule+0x309/0xab0
+> > [  245.472683]  schedule+0x44/0xc0
+> > [  245.473181]  jbd2_log_wait_commit+0x119/0x190
+> > [  245.473869]  ? wait_woken+0x60/0x60
+> > [  245.474448]  __jbd2_journal_force_commit+0x5d/0xb0
+> > [  245.475197]  jbd2_journal_force_commit_nested+0xa/0x20
+> > [  245.476004]  ext4_should_retry_alloc+0x5c/0xb0
+> > [  245.476709]  ext4_write_begin+0x168/0x520
+> > [  245.477352]  __page_symlink+0xbe/0x110
+> > [  245.477977]  ext4_symlink+0x1db/0x3d0
+> > [  245.478561]  vfs_symlink+0x109/0x1b0
+> > [  245.479124]  do_symlinkat+0xde/0xf0
+> > [  245.479685]  __x64_sys_symlink+0x37/0x40
+> > [  245.480306]  do_syscall_64+0x3a/0x80
+> > [  245.480903]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > [  245.481677] RIP: 0033:0x7f9419fadf07
+> > [  245.482266] RSP: 002b:00007ffdf52d2c58 EFLAGS: 00000206 ORIG_RAX: 00000000008
+> > [  245.483436] RAX: ffffffffffffffda RBX: 000000000000023d RCX: 00007f9419fadf07
+> > [  245.484573] RDX: 0000000000000064 RSI: 00005595aed07d60 RDI: 00005595aed0bd00
+> > [  245.485680] RBP: 00005595aed0bd00 R08: 0000000000000004 R09: 00005595aecf3980
+> > [  245.486774] R10: 0000000000000006 R11: 0000000000000206 R12: 00005595aed07d60
+> > [  245.487901] R13: 00007ffdf52d2dc0 R14: 00005595aed0bd00 R15: 00005595ad3dd450
+> > [  245.489012]  </TASK>
+> > [  245.489358] INFO: task fsstress:4442 blocked for more than 122 seconds.
+> > [  245.490390]       Not tainted 5.16.0-rc5 #1
+> > [  245.491059] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this.
+> > [  245.492255] task:fsstress        state:D stack:    0 pid: 4442 ppid:  4439 f0
+> > [  245.493541] Call Trace:
+> > [  245.493933]  <TASK>
+> > [  245.494298]  __schedule+0x309/0xab0
+> > [  245.494851]  schedule+0x44/0xc0
+> > [  245.495355]  jbd2_log_wait_commit+0x119/0x190
+> > [  245.496038]  ? wait_woken+0x60/0x60
+> > [  245.496604]  __jbd2_journal_force_commit+0x5d/0xb0
+> > [  245.497358]  jbd2_journal_force_commit_nested+0xa/0x20
+> > [  245.498175]  ext4_should_retry_alloc+0x5c/0xb0
+> > [  245.498865]  ext4_iomap_begin+0x193/0x2b0
+> > [  245.499499]  iomap_iter+0x184/0x4a0
+> > [  245.500053]  __iomap_dio_rw+0x249/0x7b0
+> > [  245.500686]  iomap_dio_rw+0xa/0x30
+> > [  245.501203]  ext4_file_write_iter+0x421/0x8a0
+> > [  245.501840]  new_sync_write+0x125/0x1c0
+> > [  245.502355]  vfs_write+0x20f/0x370
+> > [  245.502757]  ksys_write+0x5f/0xe0
+> > [  245.503120]  do_syscall_64+0x3a/0x80
+> > [  245.503472]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > [  245.503956] RIP: 0033:0x7f941a094471
+> > [  245.504328] RSP: 002b:00007ffdf52d2908 EFLAGS: 00000246 ORIG_RAX: 00000000001
+> > [  245.505399] RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f941a094471
+> > [  245.506509] RDX: 000000000000c000 RSI: 00005595aed08000 RDI: 0000000000000003
+> > [  245.507663] RBP: 000000000018f000 R08: 0000000000000b4f R09: 00007f941a07e0d0
+> > [  245.508776] R10: 00005595aecf2010 R11: 0000000000000246 R12: 00000000000003c7
+> > [  245.509888] R13: 000000000000c000 R14: 00005595aed08000 R15: 0000000000000000
+> > [  245.511041]  </TASK>
+> > [  245.511398] INFO: task fsstress:4443 blocked for more than 122 seconds.
+> > [  245.512430]       Not tainted 5.16.0-rc5 #1
+> > [  245.513103] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this.
+> > [  245.514354] task:fsstress        state:D stack:    0 pid: 4443 ppid:  4439 f0
+> > [  245.515652] Call Trace:
+> > [  245.516054]  <TASK>
+> > [  245.516408]  __schedule+0x309/0xab0
+> > [  245.516976]  schedule+0x44/0xc0
+> > [  245.517483]  jbd2_log_wait_commit+0x119/0x190
+> > [  245.518199]  ? wait_woken+0x60/0x60
+> > [  245.518758]  __jbd2_journal_force_commit+0x5d/0xb0
+> > [  245.519520]  jbd2_journal_force_commit_nested+0xa/0x20
+> > [  245.520330]  ext4_should_retry_alloc+0x5c/0xb0
+> > [  245.521065]  ext4_da_write_begin+0xf2/0x310
+> > [  245.521736]  generic_perform_write+0xf0/0x1d0
+> > [  245.522425]  ? generic_update_time+0xa0/0xc0
+> > [  245.523102]  ? file_update_time+0xd4/0x110
+> > [  245.523759]  ext4_buffered_write_iter+0x88/0x120
+> > [  245.524521]  ext4_file_write_iter+0x5f/0x8a0
+> > [  245.525197]  ? lock_is_held_type+0xd8/0x130
+> > [  245.525875]  do_iter_readv_writev+0x169/0x1d0
+> > [  245.526568]  do_iter_write+0x83/0x1c0
+> > [  245.527155]  vfs_writev+0x9c/0x280
+> > [  245.527725]  ? lock_is_held_type+0xd8/0x130
+> > [  245.528388]  ? find_held_lock+0x2d/0x90
+> > [  245.528911]  ? do_writev+0x6b/0x110
+> > [  245.529443]  ? syscall_enter_from_user_mode+0x20/0x70
+> > [  245.530182]  do_writev+0x6b/0x110
+> > [  245.530674]  do_syscall_64+0x3a/0x80
+> > [  245.531219]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > [  245.531978] RIP: 0033:0x7f9419fb2504
+> > [  245.532498] RSP: 002b:00007ffdf52d28f8 EFLAGS: 00000246 ORIG_RAX: 00000000004
+> > [  245.533817] RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f9419fb2504
+> > [  245.534870] RDX: 00000000000000d9 RSI: 00005595aed072f0 RDI: 0000000000000003
+> > [  245.535915] RBP: 000000000000040a R08: 00005595aed7cf55 R09: 00007f941a07e3a0
+> > [  245.536957] R10: 00005595aecf2010 R11: 0000000000000246 R12: 00005595aed072f0
+> > [  245.538003] R13: 00005595aed61250 R14: 00000000000000d9 R15: 000000000000020d
+> > [  245.539051]  </TASK>
+> > [  245.539382] INFO: task fsstress:4444 blocked for more than 123 seconds.
+> > [  245.540346]       Not tainted 5.16.0-rc5 #1
+> > [  245.541007] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this.
+> > [  245.542237] task:fsstress        state:D stack:    0 pid: 4444 ppid:  4439 f0
+> > [  245.543252] Call Trace:
+> > [  245.543555]  <TASK>
+> > [  245.543821]  __schedule+0x309/0xab0
+> > [  245.544294]  schedule+0x44/0xc0
+> > [  245.544779]  jbd2_log_wait_commit+0x119/0x190
+> > [  245.545203]  ? wait_woken+0x60/0x60
+> > [  245.545546]  __jbd2_journal_force_commit+0x5d/0xb0
+> > [  245.546009]  jbd2_journal_force_commit_nested+0xa/0x20
+> > [  245.546501]  ext4_should_retry_alloc+0x5c/0xb0
+> > [  245.546929]  ext4_da_write_begin+0xf2/0x310
+> > [  245.547337]  generic_perform_write+0xf0/0x1d0
+> > [  245.547797]  ext4_buffered_write_iter+0x88/0x120
+> > [  245.548398]  ext4_file_write_iter+0x5f/0x8a0
+> > [  245.548998]  new_sync_write+0x125/0x1c0
+> > [  245.549568]  vfs_write+0x20f/0x370
+> > [  245.550070]  ksys_write+0x5f/0xe0
+> > [  245.550560]  do_syscall_64+0x3a/0x80
+> > [  245.551109]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > [  245.551857] RIP: 0033:0x7f941a094471
+> > [  245.552384] RSP: 002b:00007ffdf52d2908 EFLAGS: 00000246 ORIG_RAX: 00000000001
+> > [  245.553480] RAX: ffffffffffffffda RBX: 00000000000184da RCX: 00007f941a094471
+> > [  245.554527] RDX: 00000000000184da RSI: 00005595aedc43c0 RDI: 0000000000000003
+> > [  245.555564] RBP: 0000000000000311 R08: 0000000000000000 R09: 00007f941a07dcd0
+> > [  245.556601] R10: 00005595aecf2010 R11: 0000000000000246 R12: 0000000000000003
+> > [  245.557648] R13: 00000000001d8893 R14: 00005595aedc43c0 R15: 0000000000000000
+> > [  245.558694]  </TASK>
+> > [  245.559021] INFO: task fsstress:4445 blocked for more than 123 seconds.
+> > [  245.559977]       Not tainted 5.16.0-rc5 #1
+> > [  245.560591] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this.
+> > [  245.561733] task:fsstress        state:D stack:    0 pid: 4445 ppid:  4439 f0
+> > [  245.562945] Call Trace:
+> > [  245.563491]  <TASK>
+> > [  245.563887]  __schedule+0x309/0xab0
+> > [  245.564427]  schedule+0x44/0xc0
+> > [  245.564905]  jbd2_log_wait_commit+0x119/0x190
+> > [  245.565542]  ? wait_woken+0x60/0x60
+> > [  245.566056]  __jbd2_journal_force_commit+0x5d/0xb0
+> > [  245.566750]  jbd2_journal_force_commit_nested+0xa/0x20
+> > [  245.567494]  ext4_should_retry_alloc+0x5c/0xb0
+> > [  245.568156]  ext4_da_write_begin+0xf2/0x310
+> > [  245.568788]  generic_perform_write+0xf0/0x1d0
+> > [  245.569429]  ext4_buffered_write_iter+0x88/0x120
+> > [  245.570102]  ext4_file_write_iter+0x5f/0x8a0
+> > [  245.570730]  new_sync_write+0x125/0x1c0
+> > [  245.571313]  vfs_write+0x20f/0x370
+> > [  245.571821]  ksys_write+0x5f/0xe0
+> > [  245.572311]  do_syscall_64+0x3a/0x80
+> > [  245.572842]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > [  245.573573] RIP: 0033:0x7f941a094471
+> > [  245.574097] RSP: 002b:00007ffdf52d2908 EFLAGS: 00000246 ORIG_RAX: 00000000001
+> > [  245.575199] RAX: ffffffffffffffda RBX: 0000000000019da9 RCX: 00007f941a094471
+> > [  245.576239] RDX: 0000000000019da9 RSI: 00005595aedc23f0 RDI: 0000000000000003
+> > [  245.577271] RBP: 0000000000000359 R08: 0000000000000003 R09: 00007f941a07dd60
+> > [  245.578319] R10: 00005595aecf2010 R11: 0000000000000246 R12: 0000000000000003
+> > [  245.579357] R13: 0000000000147e54 R14: 00005595aedc23f0 R15: 0000000000000000
+> > [  245.580395]  </TASK>
+> > [  245.580729] INFO: task fsstress:4446 blocked for more than 123 seconds.
+> > [  245.581693]       Not tainted 5.16.0-rc5 #1
+> > [  245.582344] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this.
+> > [  245.583552] task:fsstress        state:D stack:    0 pid: 4446 ppid:  4439 f0
+> > [  245.584844] Call Trace:
+> > [  245.585145]  <TASK>
+> > [  245.585491]  __schedule+0x309/0xab0
+> > [  245.586040]  ? lock_release+0x132/0x2a0
+> > [  245.586560]  schedule+0x44/0xc0
+> > [  245.586866]  ext4_fc_commit+0x447/0xa90
+> > [  245.587231]  ? jbd2_trans_will_send_data_barrier+0x7f/0xa0
+> > [  245.587765]  ? wait_woken+0x60/0x60
+> > [  245.588103]  ext4_sync_file+0x3fc/0x470
+> > [  245.588466]  do_fsync+0x38/0x70
+> > [  245.588917]  __x64_sys_fdatasync+0x13/0x20
+> > [  245.589517]  do_syscall_64+0x3a/0x80
+> > [  245.590042]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > [  245.590774] RIP: 0033:0x7f9419fb32c4
+> > [  245.591317] RSP: 002b:00007ffdf52d2db8 EFLAGS: 00000246 ORIG_RAX: 0000000000b
+> > [  245.592439] RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f9419fb32c4
+> > [  245.593465] RDX: 00007ffdf52d2d20 RSI: 00007ffdf52d2d20 RDI: 0000000000000003
+> > [  245.594762] RBP: 00000000000003df R08: 00007f941a07dc40 R09: 00007ffdf52d2a06
+> > [  245.595861] R10: 0000000000000000 R11: 0000000000000246 R12: 00000000000002ee
+> > [  245.596968] R13: 0000000051eb851f R14: 00007ffdf52d2e60 R15: 00005595ad3d85f0
+> > [  245.598100]  </TASK>
+> > [  245.598364] INFO: task fsstress:4447 blocked for more than 123 seconds.
+> > [  245.599382]       Not tainted 5.16.0-rc5 #1
+> > [  245.600039] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this.
+> > [  245.601273] task:fsstress        state:D stack:    0 pid: 4447 ppid:  4439 f0
+> > [  245.602406] Call Trace:
+> > [  245.602829]  <TASK>
+> > [  245.603191]  __schedule+0x309/0xab0
+> > [  245.603788]  schedule+0x44/0xc0
+> > [  245.604324]  jbd2_log_wait_commit+0x119/0x190
+> > [  245.604897]  ? wait_woken+0x60/0x60
+> > [  245.605493]  __jbd2_journal_force_commit+0x5d/0xb0
+> > [  245.606290]  jbd2_journal_force_commit_nested+0xa/0x20
+> > [  245.607136]  ext4_should_retry_alloc+0x5c/0xb0
+> > [  245.607885]  ext4_da_write_begin+0xf2/0x310
+> > [  245.608423]  generic_perform_write+0xf0/0x1d0
+> > [  245.609148]  ? generic_update_time+0xa0/0xc0
+> > [  245.609861]  ? file_update_time+0xd4/0x110
+> > [  245.610527]  ext4_buffered_write_iter+0x88/0x120
+> > [  245.611296]  ext4_file_write_iter+0x5f/0x8a0
+> > [  245.611840]  ? lock_is_held_type+0xd8/0x130
+> > [  245.612470]  ? find_held_lock+0x2d/0x90
+> > [  245.613055]  do_iter_readv_writev+0x169/0x1d0
+> > [  245.613709]  do_iter_write+0x83/0x1c0
+> > [  245.614272]  iter_file_splice_write+0x265/0x390
+> > [  245.615015]  direct_splice_actor+0x31/0x40
+> > [  245.615676]  splice_direct_to_actor+0xfb/0x220
+> > [  245.616390]  ? pipe_to_sendpage+0xa0/0xa0
+> > [  245.617038]  do_splice_direct+0xa0/0xd0
+> > [  245.617684]  vfs_copy_file_range+0x1b6/0x5b0
+> > [  245.618338]  __x64_sys_copy_file_range+0xdd/0x200
+> > [  245.619026]  do_syscall_64+0x3a/0x80
+> > [  245.619552]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > [  245.620283] RIP: 0033:0x7f9419fb5f59
+> > [  245.620811] RSP: 002b:00007ffdf52d2428 EFLAGS: 00000246 ORIG_RAX: 00000000006
+> > [  245.621907] RAX: ffffffffffffffda RBX: 00007ffdf52d2478 RCX: 00007f9419fb5f59
+> > [  245.622986] RDX: 0000000000000004 RSI: 00007ffdf52d2470 RDI: 0000000000000003
+> > [  245.623983] RBP: 000000000001ddb5 R08: 000000000001ddb5 R09: 0000000000000000
+> > [  245.625033] R10: 00007ffdf52d2478 R11: 0000000000000246 R12: 0000000000000004
+> > [  245.626162] R13: 00007ffdf52d2470 R14: 0000000000000003 R15: 000000000030e49f
+> > [  245.627282]  </TASK>
+> > [  245.627654] INFO: task fsstress:4448 blocked for more than 123 seconds.
+> > [  245.628601]       Not tainted 5.16.0-rc5 #1
+> > [  245.629266] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this.
+> > [  245.630484] task:fsstress        state:D stack:    0 pid: 4448 ppid:  4439 f0
+> > [  245.631788] Call Trace:
+> > [  245.632162]  <TASK>
+> > [  245.632495]  __schedule+0x309/0xab0
+> > [  245.632991]  schedule+0x44/0xc0
+> > [  245.633395]  jbd2_log_wait_commit+0x119/0x190
+> > [  245.633958]  ? wait_woken+0x60/0x60
+> > [  245.634465]  __jbd2_journal_force_commit+0x5d/0xb0
+> > [  245.635224]  jbd2_journal_force_commit_nested+0xa/0x20
+> > [  245.635889]  ext4_should_retry_alloc+0x5c/0xb0
+> > [  245.636464]  ext4_da_write_begin+0xf2/0x310
+> > [  245.637042]  generic_perform_write+0xf0/0x1d0
+> > [  245.637631]  ext4_buffered_write_iter+0x88/0x120
+> > [  245.638294]  ext4_file_write_iter+0x5f/0x8a0
+> > [  245.638847]  new_sync_write+0x125/0x1c0
+> > [  245.639349]  vfs_write+0x20f/0x370
+> > [  245.639787]  ksys_write+0x5f/0xe0
+> > [  245.640220]  do_syscall_64+0x3a/0x80
+> > [  245.640685]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > [  245.641351] RIP: 0033:0x7f941a094471
+> > [  245.641910] RSP: 002b:00007ffdf52d2908 EFLAGS: 00000246 ORIG_RAX: 00000000001
+> > [  245.642861] RAX: ffffffffffffffda RBX: 00000000000094f2 RCX: 00007f941a094471
+> > [  245.643751] RDX: 00000000000094f2 RSI: 00005595aecf55c0 RDI: 0000000000000003
+> > [  245.644686] RBP: 000000000000040e R08: 00005595aed4d330 R09: 00007f941a07dcc0
+> > [  245.645630] R10: 00005595aecf2010 R11: 0000000000000246 R12: 0000000000000003
+> > [  245.646501] R13: 00000000000dd6d8 R14: 00005595aecf55c0 R15: 0000000000000000
+> > [  245.647380]  </TASK>
+> > [  245.647684]
+> > [  245.647684] Showing all locks held in the system:
+> > [  245.648492] 1 lock held by khungtaskd/25:
+> > [  245.648992]  #0: ffffffff82762e40 (rcu_read_lock){....}-{1:2}, at: debug_shoa
+> > [  245.650094] 2 locks held by fsstress/4440:
+> > [  245.650600]  #0: ffff88800bb09448 (sb_writers#3){.+.+}-{0:0}, at: __x64_sys_0
+> > [  245.651761]  #1: ffff888013cad850 (&sb->s_type->i_mutex_key#9){++++}-{3:3}, 0
+> > [  245.653096] 2 locks held by fsstress/4441:
+> > [  245.653595]  #0: ffff88800bb09448 (sb_writers#3){.+.+}-{0:0}, at: filename_c0
+> > [  245.654650]  #1: ffff88800750f470 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, 0
+> > [  245.656111] 2 locks held by fsstress/4442:
+> > [  245.656655]  #0: ffff88800bb09448 (sb_writers#3){.+.+}-{0:0}, at: ksys_write0
+> > [  245.657707]  #1: ffff8880076f32d0 (&sb->s_type->i_mutex_key#9){++++}-{3:3}, 0
+> > [  245.659084] 2 locks held by fsstress/4443:
+> > [  245.659618]  #0: ffff88800bb09448 (sb_writers#3){.+.+}-{0:0}, at: do_writev+0
+> > [  245.660632]  #1: ffff888007686b10 (&sb->s_type->i_mutex_key#9){++++}-{3:3}, 0
+> > [  245.661960] 2 locks held by fsstress/4444:
+> > [  245.662540]  #0: ffff88800bb09448 (sb_writers#3){.+.+}-{0:0}, at: ksys_write0
+> > [  245.663538]  #1: ffff8880178c96b0 (&sb->s_type->i_mutex_key#9){++++}-{3:3}, 0
+> > [  245.664873] 2 locks held by fsstress/4445:
+> > [  245.665442]  #0: ffff88800bb09448 (sb_writers#3){.+.+}-{0:0}, at: ksys_write0
+> > [  245.666441]  #1: ffff88801a8da970 (&sb->s_type->i_mutex_key#9){++++}-{3:3}, 0
+> > [  245.667806] 2 locks held by fsstress/4447:
+> > [  245.668389]  #0: ffff88800bb09448 (sb_writers#3){.+.+}-{0:0}, at: __x64_sys_0
+> > [  245.669588]  #1: ffff88800777c590 (&sb->s_type->i_mutex_key#9){++++}-{3:3}, 0
+> > [  245.670944] 2 locks held by fsstress/4448:
+> > [  245.671520]  #0: ffff88800bb09448 (sb_writers#3){.+.+}-{0:0}, at: ksys_write0
+> > [  245.672537]  #1: ffff888017ac2010 (&sb->s_type->i_mutex_key#9){++++}-{3:3}, 0
+> > [  245.673888] 2 locks held by fsstress/4449:
+> > [  245.674455]  #0: ffff88800bb09448 (sb_writers#3){.+.+}-{0:0}, at: ksys_fallo0
+> > [  245.675596]  #1: ffff88800747bc30 (&sb->s_type->i_mutex_key#9){++++}-{3:3}, 0
+> > [  245.676839] 2 locks held by fsstress/4450:
+> > [  245.677356]  #0: ffff88800bb09448 (sb_writers#3){.+.+}-{0:0}, at: do_writev+0
+> > [  245.678379]  #1: ffff888013caf470 (&sb->s_type->i_mutex_key#9){++++}-{3:3}, 0
+> > [  245.679794] 2 locks held by fsstress/4451:
+> > [  245.680329]  #0: ffff88800bb09448 (sb_writers#3){.+.+}-{0:0}, at: ksys_write0
+> > [  245.681390]  #1: ffff888007542010 (&sb->s_type->i_mutex_key#9){++++}-{3:3}, 0
+> > [  245.682734] 1 lock held by fsstress/4452:
+> > [  245.683243]  #0: ffff88800bb090e0 (&type->s_umount_key#31){++++}-{3:3}, at: 0
+> > [  245.684412] 1 lock held by fsstress/4453:
+> > [  245.684967]  #0: ffff88800bb090e0 (&type->s_umount_key#31){++++}-{3:3}, at: 0
+> > [  245.686109] 2 locks held by fsstress/4454:
+> > [  245.686674]  #0: ffff88800bb09448 (sb_writers#3){.+.+}-{0:0}, at: do_writev+0
+> > [  245.687718]  #1: ffff8880178461b0 (&sb->s_type->i_mutex_key#9){++++}-{3:3}, 0
+> > [  245.689137]
+> > [  245.689346] =============================================
+> > [  245.689346]
+> >
+>
+>
+> Hi Harshad:
+>
+> FWIW, I've applied Xin Yin's hang fix for fallocate when using fast_commit to a
+> 5.16-rc5 kernel and I'm still seeing generic/083 hang when running the adv
+> test case on the test appliance.  If anything, it actually hangs more quickly
+> and reliably - generally on the first or second trial in a sequence.
+>
+> Eric
+>
