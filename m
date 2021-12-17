@@ -2,175 +2,176 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6C147812B
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Dec 2021 01:17:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9C74782FE
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Dec 2021 03:11:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229525AbhLQARc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Dec 2021 19:17:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbhLQARc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Dec 2021 19:17:32 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE463C061574
-        for <linux-ext4@vger.kernel.org>; Thu, 16 Dec 2021 16:17:31 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id b1-20020a17090a990100b001b14bd47532so490332pjp.0
-        for <linux-ext4@vger.kernel.org>; Thu, 16 Dec 2021 16:17:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20210112.gappssmtp.com; s=20210112;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=Ib4eiWDJ6+c4sjpMK1wlIgOcjZJJ4Mrctb7LGuZassU=;
-        b=CpTP0HxEomTgkgY3FijgdWHPgf2ookNFW/VBH0JPERNdelQfCY8z0Fn0K9Ihxmy4Xk
-         uc+gmZ6CNMSPSMixXNPjHUpccA32jGvrw27fwuSjAXJv3w1vZCYeMqKm1yDBLVLO+/2L
-         56VVdc6Rg7RLyYlWqmJc+CVULq7EDRaiDLdE5arKBR/T6FXva3FbgAROnyZVJoH+y/j8
-         UXzQzkgiUpK0rRG7QDwqigJXHe6w+EzM0DI+suAmeB1Kr0LBQ1C8rr3kCUl8D7BSlZ8g
-         +ld7oCalBupww0pAAQJEbHvItJyGaEkoHJWGiOCX/jKdkJyH6lZW/dwmAIW3cyyN7SX4
-         3fMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=Ib4eiWDJ6+c4sjpMK1wlIgOcjZJJ4Mrctb7LGuZassU=;
-        b=oBaggphk9GTKjkrghLCin+fA1tdtaMaREfXgQTTToyimWu5sbStt5tSFsWcC2Oxjb5
-         19CfsvUC5UdCGiQJbi8TfosQGdnWW1+ksMt57joqkcwGWfVuUMY/hEmrodIVcSIW5GEM
-         CFHMPoF6noRd0fJLc/GJPhsNDGYWxB4DkbwoXOMbfT+KavFww2FYVXpGwoLpJniPaiVG
-         LjnJxl3/N3BB8JVSmIw0m/Xgo0aTdyZ1h1Pn2AMI8f4gosZfGEKzGpDTgk5NDthSa3Pe
-         ICov3cfrMcWOxQZc64lzrNSaA9lycCfMacEjYv29L4lda+ntkxyYJpbHBvGyhEsv9u+h
-         rLWg==
-X-Gm-Message-State: AOAM533P/bBUb633IsDTd+ygO8lS+0cPA5yim2lPzhS3u6oBSR3tc7Iv
-        D21BJKyv2MNeJG9en/6HO8ZnCA==
-X-Google-Smtp-Source: ABdhPJxvJL6mPIYQpA+/Tb41rzxEYHJM9t7GznDaHhRR8NsWrVzx/3wCDu5mfuFg5dd2BngMPfYNLA==
-X-Received: by 2002:a17:902:6b05:b0:142:83f9:6e29 with SMTP id o5-20020a1709026b0500b0014283f96e29mr526749plk.32.1639700251181;
-        Thu, 16 Dec 2021 16:17:31 -0800 (PST)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id j127sm7453600pfg.14.2021.12.16.16.17.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 16 Dec 2021 16:17:30 -0800 (PST)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <A5DD4B7A-A3AE-4A00-943A-A35D98204764@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_373B4ECC-B75A-4064-9573-2ADA909BD5DF";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH] ext4: compare inode's i_projid with EXT4_DEF_PROJID
- rather than check EXT4_INODE_PROJINHERIT flag
-Date:   Thu, 16 Dec 2021 17:17:28 -0700
-In-Reply-To: <20211214050636.GE279368@dread.disaster.area>
-Cc:     Roman Anufriev <dotdot@yandex-team.ru>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        linux-ext4 <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>,
-        wshilong@ddn.com, Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Dave Chinner <david@fromorbit.com>
-References: <1638883122-8953-1-git-send-email-dotdot@yandex-team.ru>
- <alpine.OSX.2.23.453.2112071702150.70498@dotdot-osx>
- <Ya+3L3gBFCeWZki7@mit.edu>
- <alpine.OSX.2.23.453.2112102232440.94559@dotdot-osx>
- <20211214050636.GE279368@dread.disaster.area>
-X-Mailer: Apple Mail (2.3273)
+        id S229565AbhLQCLg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Dec 2021 21:11:36 -0500
+Received: from mga02.intel.com ([134.134.136.20]:16722 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229449AbhLQCLg (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 16 Dec 2021 21:11:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1639707096; x=1671243096;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=yAjiwUaIEdzf9SApDqxL8mfZBxrBi9Lf0q22oUAsn3o=;
+  b=McEoWApoDBlMJKB26LaHLQ05+ttbO4c0pOBd05qas3cYSDTnq6tlI1dm
+   3bG5uyYI0g+nEFl8VsfRlbE/lIKDaFoMXxx3M/2925n3X9tPSXEAeB7pf
+   X60aVsofH9ue9INnkQBhMp/Ui1m8R97/Mko6qG5mvDwPaVzr3rayZQ29C
+   yiohlu9PuBkuzetg/mLT2R5HenB14axa8vWojc1piJ0XeaYvnRhk8Pbwv
+   U20O08KGckHj/Vk0qHLq5WC0IioLWVOgmgJZR1nYpwVlK8OjBF0iSVMkC
+   oOD2dFAszvpR/PPYmg2BvmW0D/p6AwkhVoCtvSCQeeKUEEmxGpIC+tYVg
+   g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10200"; a="226945614"
+X-IronPort-AV: E=Sophos;i="5.88,213,1635231600"; 
+   d="scan'208";a="226945614"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2021 18:11:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,213,1635231600"; 
+   d="scan'208";a="756326021"
+Received: from lkp-server02.sh.intel.com (HELO 9f38c0981d9f) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 16 Dec 2021 18:11:33 -0800
+Received: from kbuild by 9f38c0981d9f with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1my2ib-00045e-4r; Fri, 17 Dec 2021 02:11:33 +0000
+Date:   Fri, 17 Dec 2021 10:11:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     cgel.zte@gmail.com, tytso@mit.edu
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Changcheng Deng <deng.changcheng@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH] ext4: use min() to make code cleaner
+Message-ID: <202112171003.SXtQAHHE-lkp@intel.com>
+References: <20211216091022.449364-1-deng.changcheng@zte.com.cn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211216091022.449364-1-deng.changcheng@zte.com.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Hi,
 
---Apple-Mail=_373B4ECC-B75A-4064-9573-2ADA909BD5DF
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Thank you for the patch! Perhaps something to improve:
 
-On Dec 13, 2021, at 10:06 PM, Dave Chinner <david@fromorbit.com> wrote:
-> On Fri, Dec 10, 2021 at 10:55:10PM +0300, Roman Anufriev wrote:
->>=20
->> On Tue, 7 Dec 2021, Theodore Y. Ts'o wrote:
->>=20
->>> On Tue, Dec 07, 2021 at 05:05:19PM +0300, Roman Anufriev wrote:
->>>>> Commit 7ddf79a10395 ("ext4: only set project inherit bit for =
-directory")
->>>>> removes EXT4_INODE_PROJINHERIT flag from regular files. This makes
->>>>> ext4_statfs() output incorrect (function does not apply quota =
-limits
->>>>> on used/available space, etc) when called on dentry of regular =
-file
->>>>> with project quota enabled.
->>>=20
->>> Under what circumstance is userspace trying to call statfs on a file
->>> descriptor?
->>>=20
->>> Removing the test for EXT4_INODE_PROJINHERIT will cause
->>> incorrect/misleading results being returned in the case where we =
-have
->>> a directory where a directory hierarchy is using project id's, but
->>> which is *not* using PROJINHERIT.
->>=20
->> I'm not sure I quite understood what will be wrong in that case, =
-because
->> as Dave mentioned:
->>=20
->>> PROJINHERIT just indicates the default projid that an inode is
->>> created with; ...
->=20
-> Directory inodes can have a project ID set without PROJINHERIT, it
-> just means they are accounted to that specific project and have no
-> special behaviour w.r.t. newly created children in the directory.
-> i.e. without PROJINHERIT, all children will be created with a
-> proj ID of zero rather than the projid of the parent directory.
->=20
-> i.e. I can do `xfs_io -c "chproj -R 42" /mnt/test` and it will set
-> all filesystem and directories to have a projid =3D 42, but
-> PROJINHERIT is not set on any directory. The tree gets accounted to
-> project 42, but it isn't a directory tree quota - it's just a user
-> controlled aggregation of random files associated with the same
-> project ID.
->=20
-> Hence the statfs behaviour of "report project quota limits for
-> directory tree" should only be triggered if PROJINHERIT is set on
-> the directory, because that's the only viable indicator that
-> directory tree quotas *may* be in use on the filesystem.
+[auto build test WARNING on tytso-ext4/dev]
+[also build test WARNING on v5.16-rc5 next-20211215]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-Sure, I think the question is if statfs() is called on a regular
-file in a parent directory with PROJINHERIT set (which is easily
-checked) should it return the project limits in the same way as
-if statfs() is called on the directory itself?
+url:    https://github.com/0day-ci/linux/commits/cgel-zte-gmail-com/ext4-use-min-to-make-code-cleaner/20211216-171213
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+config: hexagon-randconfig-r026-20211216 (https://download.01.org/0day-ci/archive/20211217/202112171003.SXtQAHHE-lkp@intel.com/config)
+compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project dd245bab9fbb364faa1581e4f92ba3119a872fba)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/ff519f2d7d41c154cb0d31a9aebe16ce1f6af7ed
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review cgel-zte-gmail-com/ext4-use-min-to-make-code-cleaner/20211216-171213
+        git checkout ff519f2d7d41c154cb0d31a9aebe16ce1f6af7ed
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash fs/ext4/
 
-It seems inconsistent for that statfs("/home/adilger/file") returns
-full-filesystem information, but statfs("/home/adilger") and
-statfs("/home/adilger/dir") would return project information, if
-PROJINHERIT are set on "adilger/" and "dir/".  It kind of ruins
-the "tree" aspect, especially for processes that are in a container
-that has limits on the subdirectory it is mounting.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Cheers, Andreas
+All warnings (new ones prefixed by >>):
 
-
-
-
+>> fs/ext4/super.c:6926:12: warning: comparison of distinct pointer types ('typeof (sb->s_blocksize - offset) *' (aka 'unsigned long *') and 'typeof (toread) *' (aka 'unsigned int *')) [-Wcompare-distinct-pointer-types]
+                   tocopy = min(sb->s_blocksize - offset, toread);
+                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/minmax.h:45:19: note: expanded from macro 'min'
+   #define min(x, y)       __careful_cmp(x, y, <)
+                           ^~~~~~~~~~~~~~~~~~~~~~
+   include/linux/minmax.h:36:24: note: expanded from macro '__careful_cmp'
+           __builtin_choose_expr(__safe_cmp(x, y), \
+                                 ^~~~~~~~~~~~~~~~
+   include/linux/minmax.h:26:4: note: expanded from macro '__safe_cmp'
+                   (__typecheck(x, y) && __no_side_effects(x, y))
+                    ^~~~~~~~~~~~~~~~~
+   include/linux/minmax.h:20:28: note: expanded from macro '__typecheck'
+           (!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
+                      ~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~
+   fs/ext4/super.c:2173:1: warning: unused function 'ctx_test_flags' [-Wunused-function]
+   EXT4_SET_CTX(flags);
+   ^
+   fs/ext4/super.c:2168:20: note: expanded from macro 'EXT4_SET_CTX'
+   static inline bool ctx_test_##name(struct ext4_fs_context *ctx, int flag)\
+                      ^
+   <scratch space>:148:1: note: expanded from here
+   ctx_test_flags
+   ^
+   fs/ext4/super.c:2176:1: warning: unused function 'ctx_clear_mount_flags' [-Wunused-function]
+   EXT4_SET_CTX(mount_flags);
+   ^
+   fs/ext4/super.c:2163:20: note: expanded from macro 'EXT4_SET_CTX'
+   static inline void ctx_clear_##name(struct ext4_fs_context *ctx, int flag)\
+                      ^
+   <scratch space>:169:1: note: expanded from here
+   ctx_clear_mount_flags
+   ^
+   fs/ext4/super.c:2176:1: warning: unused function 'ctx_test_mount_flags' [-Wunused-function]
+   fs/ext4/super.c:2168:20: note: expanded from macro 'EXT4_SET_CTX'
+   static inline bool ctx_test_##name(struct ext4_fs_context *ctx, int flag)\
+                      ^
+   <scratch space>:172:1: note: expanded from here
+   ctx_test_mount_flags
+   ^
+   4 warnings generated.
 
 
---Apple-Mail=_373B4ECC-B75A-4064-9573-2ADA909BD5DF
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
+vim +6926 fs/ext4/super.c
 
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
+  6904	
+  6905	/* Read data from quotafile - avoid pagecache and such because we cannot afford
+  6906	 * acquiring the locks... As quota files are never truncated and quota code
+  6907	 * itself serializes the operations (and no one else should touch the files)
+  6908	 * we don't have to be afraid of races */
+  6909	static ssize_t ext4_quota_read(struct super_block *sb, int type, char *data,
+  6910				       size_t len, loff_t off)
+  6911	{
+  6912		struct inode *inode = sb_dqopt(sb)->files[type];
+  6913		ext4_lblk_t blk = off >> EXT4_BLOCK_SIZE_BITS(sb);
+  6914		int offset = off & (sb->s_blocksize - 1);
+  6915		int tocopy;
+  6916		size_t toread;
+  6917		struct buffer_head *bh;
+  6918		loff_t i_size = i_size_read(inode);
+  6919	
+  6920		if (off > i_size)
+  6921			return 0;
+  6922		if (off+len > i_size)
+  6923			len = i_size-off;
+  6924		toread = len;
+  6925		while (toread > 0) {
+> 6926			tocopy = min(sb->s_blocksize - offset, toread);
+  6927			bh = ext4_bread(NULL, inode, blk, 0);
+  6928			if (IS_ERR(bh))
+  6929				return PTR_ERR(bh);
+  6930			if (!bh)	/* A hole? */
+  6931				memset(data, 0, tocopy);
+  6932			else
+  6933				memcpy(data, bh->b_data+offset, tocopy);
+  6934			brelse(bh);
+  6935			offset = 0;
+  6936			toread -= tocopy;
+  6937			data += tocopy;
+  6938			blk++;
+  6939		}
+  6940		return len;
+  6941	}
+  6942	
 
-iQIyBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmG71xgACgkQcqXauRfM
-H+DAwA/4ndb0wtMjoRty4GP3UNmL/IAAmdt5cOpHbbgJ7kbVczo6fZ7T06GProjD
-TGjA40UXjepVEIvEjd8fCPnu4YvWaNWmMbtGHZQBkQrf5aTLb91+Pmv7nQy+CV9l
-gd85rbCrtpXwQkiUgwRiQYzIQA+6Vnc5oKtYIOi3ZdKSi4KreFdmUT1y904XVA8b
-Fr902hWPz89tuODZY+ABRL8jS6ybOpLYbJSxxeaqPeXZBxDje1xXrIzg/5GMpGhE
-8taYmp7RGjx64jbNGIN8XEqTBmWI/GFoMRMGuJkbkEgQdy/PzvLoTSJuZC2FTaoB
-Xlm2mCpQXwfRNoMN/Tr1SftoxLedqh/Ijd51oyizOlZagFbfOD1dtQJbItR9nvTC
-kPdSgdu1oXkvHCA23+vYvBCBVFQYCqg7408TERWkB2jZpp1we9XPcljgUFi1YYlv
-sTpXZUaO1WqSdBEpJk3J1atCDhaxcIpJ3autGegTxM16xP+Ol7X+ZZQfEI4tSfMD
-Vn/e5jWOKH2Enz468+7QEeXDzmtndYwNSQ7tGuLzuHK9rhqb8Sr/by0nGb6yFRcK
-qtTM4xN2LyNZ3n1xlRclBa6gmMAOJh64RUF3UAdvAUF1cIZfokpf7XsgY+nl+PFS
-bfgOOILBUjFNce1Tl/kd90pqjWgzNeBdqpHn9qKu0k3EupWhkg==
-=hBxc
------END PGP SIGNATURE-----
-
---Apple-Mail=_373B4ECC-B75A-4064-9573-2ADA909BD5DF--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
