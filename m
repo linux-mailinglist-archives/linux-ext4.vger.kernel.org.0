@@ -2,158 +2,153 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D430647833D
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Dec 2021 03:39:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD5BF4787D3
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Dec 2021 10:35:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231342AbhLQCjU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Dec 2021 21:39:20 -0500
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:60381 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229471AbhLQCjU (ORCPT
+        id S232303AbhLQJft (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Dec 2021 04:35:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22347 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233088AbhLQJfr (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 16 Dec 2021 21:39:20 -0500
-Received: from dread.disaster.area (pa49-181-243-119.pa.nsw.optusnet.com.au [49.181.243.119])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 9AA4610A49D2;
-        Fri, 17 Dec 2021 13:39:15 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1my39N-003zki-JJ; Fri, 17 Dec 2021 13:39:13 +1100
-Date:   Fri, 17 Dec 2021 13:39:13 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     Roman Anufriev <dotdot@yandex-team.ru>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        linux-ext4 <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>,
-        wshilong@ddn.com, Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>
-Subject: Re: [PATCH] ext4: compare inode's i_projid with EXT4_DEF_PROJID
- rather than check EXT4_INODE_PROJINHERIT flag
-Message-ID: <20211217023913.GA945095@dread.disaster.area>
-References: <1638883122-8953-1-git-send-email-dotdot@yandex-team.ru>
- <alpine.OSX.2.23.453.2112071702150.70498@dotdot-osx>
- <Ya+3L3gBFCeWZki7@mit.edu>
- <alpine.OSX.2.23.453.2112102232440.94559@dotdot-osx>
- <20211214050636.GE279368@dread.disaster.area>
- <A5DD4B7A-A3AE-4A00-943A-A35D98204764@dilger.ca>
+        Fri, 17 Dec 2021 04:35:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1639733746;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bmnpl2iegSuF51b6nPRuLZJPWzdNLSMyzB0gc5C1OOk=;
+        b=hp9f1duiScT7iGNcaAFbn6d1EeQYxJCsSIizp3XLWxD/u820y4zHMmYwV9axkHlz8urMcP
+        sFwPpXPFu7x89nEGXLnEVGQ9GRCZGnTjumJv3jSx3SkXjmPjKG8zEd1lK3cpqbNqWl+2RY
+        5sDoxxmpeOHOyM4ps+n//MDCbX1kan4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-556--E9jagY6Op-HQLeue0Zbzw-1; Fri, 17 Dec 2021 04:35:42 -0500
+X-MC-Unique: -E9jagY6Op-HQLeue0Zbzw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 330D42FD1B;
+        Fri, 17 Dec 2021 09:35:41 +0000 (UTC)
+Received: from work (unknown [10.40.194.105])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E3A2E7A5C2;
+        Fri, 17 Dec 2021 09:35:38 +0000 (UTC)
+Date:   Fri, 17 Dec 2021 10:35:34 +0100
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Jan Kara <jack@suse.cz>, "Darrick J. Wong" <djwong@kernel.org>,
+        =?utf-8?B?THXDrXM=?= Henriques <lhenriques@suse.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jeroen van Wolffelaar <jeroen@wolffelaar.nl>
+Subject: Re: [PATCH v2] ext4: set csum seed in tmp inode while migrating to
+ extents
+Message-ID: <20211217093534.2ug6e5cm37md2c3u@work>
+References: <20211214175058.19511-1-lhenriques@suse.de>
+ <20211215004945.GD69182@magnolia>
+ <20211215112852.GM14044@quack2.suse.cz>
+ <20211215141237.lrymhbebgjunh4n2@work>
+ <YbuGLsQy6TSM2xOl@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <A5DD4B7A-A3AE-4A00-943A-A35D98204764@dilger.ca>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.4 cv=VuxAv86n c=1 sm=1 tr=0 ts=61bbf856
-        a=BEa52nrBdFykVEm6RU8P4g==:117 a=BEa52nrBdFykVEm6RU8P4g==:17
-        a=kj9zAlcOel0A:10 a=IOMw9HtfNCkA:10 a=7-415B0cAAAA:8 a=eJfxgxciAAAA:8
-        a=lob30jc7ayrNxV22hpgA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
-        a=xM9caqqi1sUkTy8OJ5Uh:22
+In-Reply-To: <YbuGLsQy6TSM2xOl@mit.edu>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Dec 16, 2021 at 05:17:28PM -0700, Andreas Dilger wrote:
-> On Dec 13, 2021, at 10:06 PM, Dave Chinner <david@fromorbit.com> wrote:
-> > On Fri, Dec 10, 2021 at 10:55:10PM +0300, Roman Anufriev wrote:
-> >> 
-> >> On Tue, 7 Dec 2021, Theodore Y. Ts'o wrote:
-> >> 
-> >>> On Tue, Dec 07, 2021 at 05:05:19PM +0300, Roman Anufriev wrote:
-> >>>>> Commit 7ddf79a10395 ("ext4: only set project inherit bit for directory")
-> >>>>> removes EXT4_INODE_PROJINHERIT flag from regular files. This makes
-> >>>>> ext4_statfs() output incorrect (function does not apply quota limits
-> >>>>> on used/available space, etc) when called on dentry of regular file
-> >>>>> with project quota enabled.
-> >>> 
-> >>> Under what circumstance is userspace trying to call statfs on a file
-> >>> descriptor?
-> >>> 
-> >>> Removing the test for EXT4_INODE_PROJINHERIT will cause
-> >>> incorrect/misleading results being returned in the case where we have
-> >>> a directory where a directory hierarchy is using project id's, but
-> >>> which is *not* using PROJINHERIT.
-> >> 
-> >> I'm not sure I quite understood what will be wrong in that case, because
-> >> as Dave mentioned:
-> >> 
-> >>> PROJINHERIT just indicates the default projid that an inode is
-> >>> created with; ...
+On Thu, Dec 16, 2021 at 01:32:14PM -0500, Theodore Ts'o wrote:
+> On Wed, Dec 15, 2021 at 03:12:37PM +0100, Lukas Czerner wrote:
+> > > Run fsck of course! And then recover from backups :) I know this is sad but
+> > > the situation is that our migration code just is not crash-safe (if we
+> > > crash we are going to free blocks that are still used by the migrated
+> > > inode) and Luis makes it work in case we do not crash (which should be
+> > > hopefully more common) and documents it does not work in case we crash.
+> > > So overall I'd call it a win.
+> > > 
+> > > But maybe we should just remove this online-migration functionality
+> > > completely from the kernel? That would be also a fine solution for me. I
+> > > was thinking whether we could somehow make the inode migration crash-safe
+> > > but I didn't think of anything which would not require on-disk format
+> > > change...
 > > 
-> > Directory inodes can have a project ID set without PROJINHERIT, it
-> > just means they are accounted to that specific project and have no
-> > special behaviour w.r.t. newly created children in the directory.
-> > i.e. without PROJINHERIT, all children will be created with a
-> > proj ID of zero rather than the projid of the parent directory.
-> > 
-> > i.e. I can do `xfs_io -c "chproj -R 42" /mnt/test` and it will set
-> > all filesystem and directories to have a projid = 42, but
-> > PROJINHERIT is not set on any directory. The tree gets accounted to
-> > project 42, but it isn't a directory tree quota - it's just a user
-> > controlled aggregation of random files associated with the same
-> > project ID.
-> > 
-> > Hence the statfs behaviour of "report project quota limits for
-> > directory tree" should only be triggered if PROJINHERIT is set on
-> > the directory, because that's the only viable indicator that
-> > directory tree quotas *may* be in use on the filesystem.
+> > Since this is not something that anyone can honestly recommend doing
+> > without a prior backup and a word of warning I personaly would be in favor
+> > of removing it.
 > 
-> Sure, I think the question is if statfs() is called on a regular
-> file in a parent directory with PROJINHERIT set (which is easily
-> checked) should it return the project limits in the same way as
-> if statfs() is called on the directory itself?
+> So there are a couple options that we could pursue:
+> 
+> 1) We could change the migrate code to stop putting the orphan inode
+> on the orphan list.  If we do this, an crash in the middle of the
+> migrate will, in the worst case (when the migration isn't completed
+> within a single jbd2 transaction) result in a leaked inode.  That's
+> not ideal, but it won't lead user data loss, and e2fsck will recover
+> the situation by cloning the blocks, and leaving the inode in
+> lost+found.
+> 
+> 2) We could try to ensure migration happens all within a single
+> transaction, if they all fit inside a the inode structure, we allocate
+> a tmp inode for all of the indirect blocks, attach the blocks to the
+> tmp inode, place the tmp inode on the orphan list, and put all of that
+> on a single handle, and then in a second handle, truncate the tmp
+> inode to release the indirect blocks.  If we need to allocate extent
+> tree blocks, then all of that would need to fit in a single
+> transaction, and it's a bit more complicated, but it is doable.
+> 
+> 3) We can simply remove the inode migration feature by removing
+> EXT4_EXTENTS_FL from EXT4_FL_USER_MODIFIABLE, and changing the
+> implementation of the EXT4_IOC_MIGRATE ioctl to return EOPNOTSUPP, and
+> then cleaning up the code paths that are now unreachable.
+> 
+> The migration feature is clearly less compelling than it was ten years
+> ago, when ext4 was first introduced --- and most enterprise distros
+> have never supported the feature even when it has existed.  Also on
+> the plus side, we've never shipped a program to globally migrate a
+> file system by using ioctl interface.
+> 
+> On the other hand, there may have been user shell scripts that have
+> done something like "find /mntpt -type f -print0 | xargs -0 chattr +e {} \;"
+> And so option #3 could be construed as "breaking userspace", especially
+> without a deprecation window.
+> 
+> Furthermore, Option #1 is pretty simple to implement, and chances of a
+> migration getting spread across two jbd2 commits is not actually
+> pretty low.  And if it does happen, there would only be a single inode
+> that would get its blocks cloned and attached to lost+found.
+> 
+> Thats being said, if we *did* option #1, in the long run we'd want to
+> land a complete solution, which would either be something like option
+> #2, or allocating a flag to give a hint to e2fsprogs that if it does
+> find an leaked inode with with the flag set on the on-disk inode, that
+> all it needs to do is to zero out the inode and be done with it.
+> 
+> So the question is, is it worth it to continue supporting the migrate
+> feature, or should we just delete all of the migration code, and risk
+> users complaining that we've broken their use case?  The chances of
+> that happening is admittedly low, and Linus's rule that "it's only
+> breaking userspace if a user complains" means we might very well get
+> away with it.  :-)
 
-It's more complex than that. If the file and parent projid match,
-then maybe it is a directory tree quota, but if they differ then
-what?
+That's a very good summary Ted, thanks.
 
-If the inode has multiple parents (i.e. hard linked) and only some
-of them PROJINHERIT and/or matching projids, then what?
+Our rationale behind not supporting the migration was always the fact
+that we felt that backup was absolutely necessary before operation like
+this. When you already have up-to-date backup available you might as
+well create a fresh ext4 file system with all the advantages it brings
+and recover data from said backup. I think this is still a very
+reasonable approach.
 
-IOWs, we're way off into the heuristics realm of guessing what the
-user has configured project IDs for and what behaviour they might
-want. And given the flexibility of of project quotas, we're going to
-lose that guessing game if we start to play it.
+I have no doubt it was useful featrure in the early days of ext4, but I
+think we're well past that. Any attempt to rework or fix the feature
+assumes it's still useful and has it's users today and into the future.
+I very much doubt that, so let's test it. Let's start a year long
+deprecation window.
 
-However, this guessing game is largely irrelevant because we can't
-change the existing user visible behaviour without risking breakage
-of existing systems.  The user visible behaviour was defined in the
-first commits that introduced directory tree emulation with XFS
-project quotas 15 years ago:
+-Lukas
 
-commit 932f2c323196c214e645d5a572a1d7b562c0f93f
-Author: Nathan Scott <nathans@sgi.com>
-Date:   Fri Jun 9 15:29:58 2006 +1000
+> 
+> 						- Ted
+> 
 
-    [XFS] statvfs component of directory/project quota support, code
-    originally by Glen.
-
-    SGI-PV: 932952
-    SGI-Modid: xfs-linux-melb:xfs-kern:26105a
-
-    Signed-off-by: Nathan Scott <nathans@sgi.com>
-
-and so it's highly likely that in those 15 years someone now relies
-on the behaviour we defined way back then. 
-
-> It seems inconsistent for that statfs("/home/adilger/file") returns
-> full-filesystem information, but statfs("/home/adilger") and
-> statfs("/home/adilger/dir") would return project information, if
-> PROJINHERIT are set on "adilger/" and "dir/".  It kind of ruins
-> the "tree" aspect, especially for processes that are in a container
-> that has limits on the subdirectory it is mounting.
-
-Yup, but as I keep saying, project quotas are *not* directory tree
-quotas. What might "ruin" the tree aspect for you may be the feature
-that "makes" it for someone else....
-
-In reality, we had to walk a fine line between the unrestricted
-freedom project quotas give users with and the bare minimum
-restrictions needed to allow directory tree based propagation and
-reporting of space usage that was required at the time.  So while
-the behaviour might be less than optimal for specific use cases
-we have now, the horse bolted a long, long time ago....
-
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
