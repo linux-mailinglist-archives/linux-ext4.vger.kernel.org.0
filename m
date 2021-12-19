@@ -2,101 +2,92 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DBDB479F2C
-	for <lists+linux-ext4@lfdr.de>; Sun, 19 Dec 2021 05:45:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE14647A08F
+	for <lists+linux-ext4@lfdr.de>; Sun, 19 Dec 2021 14:06:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235169AbhLSEpX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 18 Dec 2021 23:45:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39410 "EHLO
+        id S235685AbhLSNG4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 19 Dec 2021 08:06:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbhLSEpW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 18 Dec 2021 23:45:22 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B43BEC061574
-        for <linux-ext4@vger.kernel.org>; Sat, 18 Dec 2021 20:45:21 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id d10so13776441lfg.6
-        for <linux-ext4@vger.kernel.org>; Sat, 18 Dec 2021 20:45:21 -0800 (PST)
+        with ESMTP id S235672AbhLSNG4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 19 Dec 2021 08:06:56 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4891C061574;
+        Sun, 19 Dec 2021 05:06:55 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id t83so6926879qke.8;
+        Sun, 19 Dec 2021 05:06:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1pPOMMvduWoVZ1x6QZaT1lS85BSiYsSZopsDBMCE+MU=;
-        b=UgVQJPbEoyq0YTpXGuX7+LPKkOMV72Nj0Z9QINOsv3cuc+OL1v5LxYYt/zwy18FaSI
-         v2vo5TnYr5O/TLLBnVkLCux9S/qLikLkdMKMwa0+fDZuEIBid+8pBIhonHzkmnL55O77
-         gChM9C0dvYBHWyZ6ZlUfd6ua97dg0UFH302UXUnpomf1iFY0OTdk0LddW3pckb02Vu56
-         kAc1bliZ73w248ROBA0CfWS2iZUoUEiCJtNq5K/XRWkxJ46Dleq5/EVT3HilGWTpX3fW
-         Oppja7b+LAg7CSE0fik3cLhfI3p9d+CE49uitAX2zScqDXNSp7gjT5qfjFPpsWTMXMe/
-         ra4A==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z9QXmoUKACc7ZSq/o6LT4XnEmMfhBC1mDucmF5H9RcU=;
+        b=aup8adwJS6Fw+ol0oWiW4dUyRghu7xgSPBDmWHn8znWYtqZsOc+bQeqsx2JpVYP8Ev
+         1yev6Kd7qWF/zEbexnXFsmojm50doesYr62lv9gb2s38n9i6g3nGQN5nIgvB8ppNYKMZ
+         /pAp4GUeVpteX865/HXmtzMU98VuvFGqtz0YEaYuwl5LRw7hIVoAPWE7PADLb+uMhPtL
+         F1b2ZUlhfFfqA0SsZAQp6EC0dQWeTCikpvmblNFksKL0qLnrsb+flNQgdx43ERdNTtyG
+         frZ7Wo5edgfKPDNJGx08tqdV46insR0qi2bHnS0BvapVLTFuyaTrXVRgyhgZNhCQfEj4
+         3zvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1pPOMMvduWoVZ1x6QZaT1lS85BSiYsSZopsDBMCE+MU=;
-        b=rsUXCZAoAVH6LuFqTElfLRmfvF+XoXldT/m8uWJebD0bdj2vJOvaui5rMoOyARXYCK
-         UYKtNrzE+049Zuue7hAWoc9F8q2qO3K/X3EgnxHQq0FEiAKCgRNCicL/YCmtaVEKPeNF
-         XLC1En3m+IlQdsVRVOD4fiWtFL95eauxZT7UjI5cywR4pF7O0z630o1xO8N/KYeP2v16
-         AJylFKtgckyON7ZEBq/E425MJT92SFJUc9IGxijYnrwbG9WdO3tU8n/EZY+CUMT7WPP0
-         rq1bTXAfeU6OfgIjsSiqZ0gEx+6OREyhqTbaRrLN8ojTTtErJw7LBWMcOYKtjvKC2U0A
-         1QjA==
-X-Gm-Message-State: AOAM531y6IE7bhS0JHmqIBlVTrC9Q5K07ykkp6uAZs/ClIowS4wdR/IQ
-        OVg07wMHIlwCOemxAalZZzE2Dt9x2jK6qF1O76AXc5rQCp0=
-X-Google-Smtp-Source: ABdhPJz/X0Ow9UwZklUaAvNQYPK/mRj3sS5CSXlWSXKbrPXeahYtYnKguOqnj8eNwISZIv0oL9t6VeCvOIIlT7UfAas=
-X-Received: by 2002:a05:6512:22d0:: with SMTP id g16mr10014855lfu.404.1639889119990;
- Sat, 18 Dec 2021 20:45:19 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z9QXmoUKACc7ZSq/o6LT4XnEmMfhBC1mDucmF5H9RcU=;
+        b=vMZFq3foL8GfiqRYzkMtTg5V2deBlfW+jxAacZEyzn+WOg3OE/k/MLWk2FgKJhQaGF
+         qoUyLepK7Zgg2imlmIwBfZ56S6GuXAJe9EVWxU8/wgkOtZ/44q2VDcF1mAX+bGtBItJM
+         QfB1IcYKihZQLwCuxWjXiSa1iu6pdnzEOYAaKgN+tRcUyJ40mYe14IC65xaa2z3MDScY
+         EzN3KJQG6aR/Tizbx1O2WIdoXxGu5W5zfH2CRXSszQomhhrwH5dKNcchGy+zGm+OTeGb
+         pGeJ2nv7KVhabcATL+MBkZE96D5I7KYvHQxaTUPsE1NS8ksKG99VaPWYH6WyD9G4URVX
+         //8A==
+X-Gm-Message-State: AOAM531T/KIso/YOy2nGAsf1/JhAbJPzJ8ga8u86/MeloE/VMIhib1Uy
+        ILKC8ou1xOjR/rbDSjm6aDg=
+X-Google-Smtp-Source: ABdhPJzTqMGCN7CnRzV52ioKHx4tvy/48O3vQbsg2JZ1LCp1gQ5kLg5zFzeF36jf82naQHxvb7MKiA==
+X-Received: by 2002:a05:620a:306:: with SMTP id s6mr4406808qkm.368.1639919214861;
+        Sun, 19 Dec 2021 05:06:54 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id v1sm12152482qtw.65.2021.12.19.05.06.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Dec 2021 05:06:54 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: xu.xin16@zte.com.cn
+To:     tytso@mit.edu, linux-ext4@vger.kernel.org
+Cc:     adilger.kernel@dilger.ca, linux-kernel@vger.kernel.org,
+        xu xin <xu.xin16@zte.com.cn>, Zeal robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] fs/ext4: use BUG_ON instead of if condition followed by BUG
+Date:   Sun, 19 Dec 2021 13:06:43 +0000
+Message-Id: <20211219130643.462943-1-xu.xin16@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211201095258.1966-1-yinxin.x@bytedance.com> <20211217204322.1000035-1-harshads@google.com>
-In-Reply-To: <20211217204322.1000035-1-harshads@google.com>
-From:   Xin Yin <yinxin.x@bytedance.com>
-Date:   Sun, 19 Dec 2021 12:45:09 +0800
-Message-ID: <CAK896s6_kfs9AoDSq=Wfgb9Rx4zKmvoC-YYBr5gnwBCAejL7xA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] ext4: fix fast commit may miss tracking
- range for FALLOC_FL_ZERO_RANGE
-To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Dec 18, 2021 at 4:43 AM Harshad Shirwadkar
-<harshadshirwadkar@gmail.com> wrote:
->
-> > fs/ext4/extents.c | 4 ++--
-> > 1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> >diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> >index 9229ab1f99c5..4108896d471b 100644
-> >--- a/fs/ext4/extents.c
-> >+++ b/fs/ext4/extents.c
-> >@@ -4433,6 +4433,8 @@ static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
-> >                       ret2 = ext4_journal_stop(handle);
-> >                       break;
-> >               }
-> >+              ext4_fc_track_range(handle, inode, map.m_lblk,
-> >+                                      map.m_lblk + map.m_len - 1);
->
-> ext4_alloc_file_blocks() calls ext4_map_blocks(), inside which we do
-> call ext4_fc_track_range(). However, we are doing that only if
-> map.m_flags & EXT4_MAP_MAPPED is true. So, unwritten flag is set we
-> are not calling track_range there. Perhaps the right fix is to call
-> ext4_fc_track_range() from ext4_map_blocks() if MAPPED or UNWRITTEN
-> flag is set?
+From: xu xin <xu.xin16@zte.com.cn>
 
-Thanks, you are right, this should be better. I will test this way and
-resend a v2 patch for this issue.
+BUG_ON would be better.
 
->
-> >               map.m_lblk += ret;
-> >               map.m_len = len = len - ret;
-> >               epos = (loff_t)map.m_lblk << inode->i_blkbits;
-> >@@ -4599,8 +4601,6 @@ static long ext4_zero_range(struct file *file, loff_t offset,
-> >       ret = ext4_mark_inode_dirty(handle, inode);
-> >       if (unlikely(ret))
-> >               goto out_handle;
-> >-      ext4_fc_track_range(handle, inode, offset >> inode->i_sb->s_blocksize_bits,
-> >-                      (offset + len - 1) >> inode->i_sb->s_blocksize_bits);
-> >       /* Zero out partial block at the edges of the range */
-> >       ret = ext4_zero_partial_blocks(handle, inode, offset, len);
-> >       if (ret >= 0)
-> >--
+This issue was detected with the help of Coccinelle.
+
+Reported-by: Zeal robot <zealci@zte.com.cn>
+Signed-off-by: xu xin <xu.xin16@zte.com.cn>
+---
+ fs/ext4/ext4.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 9cc55bcda6ba..00bc3f67d37f 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -2400,8 +2400,7 @@ ext4_rec_len_from_disk(__le16 dlen, unsigned blocksize)
+ 
+ static inline __le16 ext4_rec_len_to_disk(unsigned len, unsigned blocksize)
+ {
+-	if ((len > blocksize) || (blocksize > (1 << 18)) || (len & 3))
+-		BUG();
++	BUG_ON((len > blocksize) || (blocksize > (1 << 18)) || (len & 3));
+ #if (PAGE_SIZE >= 65536)
+ 	if (len < 65536)
+ 		return cpu_to_le16(len);
+-- 
+2.25.1
+
