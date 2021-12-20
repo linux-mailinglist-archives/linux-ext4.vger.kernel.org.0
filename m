@@ -2,59 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B6147A3D1
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Dec 2021 04:17:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF55047A3D2
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 Dec 2021 04:17:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237329AbhLTDRT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 19 Dec 2021 22:17:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47986 "EHLO
+        id S237332AbhLTDRW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 19 Dec 2021 22:17:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237313AbhLTDRT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 19 Dec 2021 22:17:19 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C44BC061574
-        for <linux-ext4@vger.kernel.org>; Sun, 19 Dec 2021 19:17:19 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id k4so8115314pgb.8
-        for <linux-ext4@vger.kernel.org>; Sun, 19 Dec 2021 19:17:19 -0800 (PST)
+        with ESMTP id S237313AbhLTDRU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 19 Dec 2021 22:17:20 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5702AC061574
+        for <linux-ext4@vger.kernel.org>; Sun, 19 Dec 2021 19:17:20 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id q17so6951959plr.11
+        for <linux-ext4@vger.kernel.org>; Sun, 19 Dec 2021 19:17:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=UW9n2VRj6nMMfvzL+DSyZBAR1HT04cH6q41kOBvMMMQ=;
-        b=lnp+V5ppm+BNm/vXNFxFvkvWV2iNICBXZ6/O8U7fB4RHa5OWgVx7Zj9mp8HPrmfztK
-         MENcHkuTpSkx7KIIwBzhUOjmBWlYCxhcrA/i17tjpQ3NxUS7ouMqxP1VE0csH0XigSBZ
-         8ISRGMK6+hmkIsKq98WJLrd9per+yvNTZwC4g9fkedeUXW686mKZqMKuWCdoZEG65t72
-         4lsnQugPzgUtkrAyvfJWrD3lCEjKv7/Z/MvdTEBt+bJHlsO027z3ijUpNNtoZ35VvLAX
-         23eZNGJj1WRTnNDos5/tfRGUWwBseUuxwRy9SBUPNgApOzv3iYp3TDKgo/2r0lnVVObg
-         3yWA==
+        bh=a35sQHDOY13qtNOT6mgKkiXL/g/x7ybU0ZJu3OLQn5w=;
+        b=SAVnbIhYgOba022Zd1//uvIqwU13yZDaeem2rO8Q4XPIcsXcWzQx3v4P81QTaGz8Ey
+         yg4qy/0PkRLJYj97etin1TdQOjQrjxzvU3+L4S2+t08mthna1WMN+wbazdnDOLYyOtnv
+         L1CFSXg22xqZz9LJSS5+u2VFyn24Z1PcfQqmSLcZVkWmGtYuz6+DLUDPWXUMUwGd/U+H
+         vvqOMrjXiFMUpvKuaPDLRG+hKdclfInSRe7bEGzbOBHEOoKwEBhfnXKd28r7aZUNmOih
+         J7PSWKmKqH53amaWLqTWyTczNNPL2ShSjrogXQid+dnnH2cQvwlPDYXBH2GRlOJIDCHy
+         yIyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=UW9n2VRj6nMMfvzL+DSyZBAR1HT04cH6q41kOBvMMMQ=;
-        b=Vj40Yi2OjG+Rc8dS6wHwdgC+PRkyP8m0bkzLrHwKIiPGAzvYy6jgA6no33YFwbBr6/
-         FcVJ+3o3kUpgTjIptPY0Z5RyuUB86eKciwPuSQp9TRdw4tBvWqcJXiCrbWt213rNW8tC
-         71tL+nquwkvKKwlVFh85T1NFTigGZEsULmDfa5v1tIMNZ/jYhxTJg+D8xvewhIy9nlk3
-         Cytql81wbF/O9SAZFAKNJ3/vzeNo30JRs1HtNFXD7nvoUsZeS26HsRKiS+/WzLQcoSu0
-         xj12+5zxAIGKQLugG6Mx1Hw3FHZISPwyYMkVS1uS//PaZvOYPnm2AwEnjbaDGcWINTR2
-         WWfg==
-X-Gm-Message-State: AOAM533h+tLzjVfVZZvgUFRzciFNCv0V1dvXDnidDv6EKOBfv+jqe+ox
-        0jo5vQBdt08KHNvuNsWE2XqrDDM5dkw=
-X-Google-Smtp-Source: ABdhPJydg8cOrXawTkYn1s/xk0VnWH75mBgbYycpaAYQmoLWRA+41ok6DdMuXFUKUZfJ+u50ApuVFg==
-X-Received: by 2002:a62:830e:0:b0:4b1:78a:d4f with SMTP id h14-20020a62830e000000b004b1078a0d4fmr14390747pfe.52.1639970237956;
-        Sun, 19 Dec 2021 19:17:17 -0800 (PST)
+        bh=a35sQHDOY13qtNOT6mgKkiXL/g/x7ybU0ZJu3OLQn5w=;
+        b=i9GktJHGuVD72W6myfnO2JBIJ1EtNxRx24GURB6OPh+Srvd8j4ii62X+yCyTKGmLYL
+         9BzLuPTb+4IPYopVZoToACYedHyw54B6o8Zv/gvsIRskt9KYmeUF+B56bFCaV6HdvEqt
+         3HK+e5hdPZ+Fd/zcmcgFFmnoC2mH9dz6af7wzFo5eniWFxIOBrZr/VIftBhsNrhlYM0H
+         6uuIask+QfiV7RpNuYqNtcj+p4Q80pjC336fN163r4INpZMHUp7ES4KuE6Dtwtltq+7y
+         Ip9FviAX7T8YsQDSeg3gbB1ZbY1yHNMxop3gBv6nmVKcN7ZQLSoY8sNKxjmr2AhYoGHv
+         iXyw==
+X-Gm-Message-State: AOAM533mmi2YoDowAyosYR/gT3T2CcYa6nDvHOZalO5s2DJK5M/z4btn
+        p33MYN9Egf9JcujcxR+qv4NvnKbsGlY=
+X-Google-Smtp-Source: ABdhPJxwVNI3XYi0OduNShkELtXHFb1eixk8JVM3sSi/vwIH2tLbiBpHJePcwBVvMiV1YQ+TN2qw0g==
+X-Received: by 2002:a17:90b:3b8c:: with SMTP id pc12mr25717992pjb.9.1639970239152;
+        Sun, 19 Dec 2021 19:17:19 -0800 (PST)
 Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:29b6:d340:a7f2:2b64])
-        by smtp.googlemail.com with ESMTPSA id kb1sm9102412pjb.56.2021.12.19.19.17.17
+        by smtp.googlemail.com with ESMTPSA id kb1sm9102412pjb.56.2021.12.19.19.17.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Dec 2021 19:17:17 -0800 (PST)
+        Sun, 19 Dec 2021 19:17:18 -0800 (PST)
 From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 X-Google-Original-From: Harshad Shirwadkar <harshads@google.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     yinxin.x@bytedance.com, enwlinux@gmail.com,
         Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH 1/3] ext4: drop transaction start stop APIs for fast commit
-Date:   Sun, 19 Dec 2021 19:17:02 -0800
-Message-Id: <20211220031704.441727-2-harshads@google.com>
+Subject: [PATCH 2/3] ext4: drop ineligible txn start stop APIs
+Date:   Sun, 19 Dec 2021 19:17:03 -0800
+Message-Id: <20211220031704.441727-3-harshads@google.com>
 X-Mailer: git-send-email 2.34.1.173.g76aa8bc2d0-goog
 In-Reply-To: <20211220031704.441727-1-harshads@google.com>
 References: <20211220031704.441727-1-harshads@google.com>
@@ -66,339 +66,242 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 
-This patch drops ext4_fc_start_update() and ext4_fc_stop_update() APIs
-for fast commits. To ensure that there are no ongoing journal updates
-during fast commit, we also make jbd2_fc_begin_commit() lock journal
-for updates. This way we don't have to maintain two different
-transaction start stop APIs for fast commit and full commit.
+This patch drops ext4_fc_start_ineligible() and
+ext4_fc_stop_ineligible() APIs. Fast commit ineligible transactions
+should simply call ext4_fc_mark_ineligible() after starting the
+trasaction.
 
 Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 ---
- fs/ext4/acl.c         |  2 --
- fs/ext4/ext4.h        |  5 ---
- fs/ext4/extents.c     |  3 --
- fs/ext4/fast_commit.c | 76 ++++---------------------------------------
- fs/ext4/file.c        |  4 ---
- fs/ext4/inode.c       |  7 +---
- fs/ext4/ioctl.c       | 10 +-----
- fs/jbd2/journal.c     |  2 ++
- 8 files changed, 10 insertions(+), 99 deletions(-)
+ fs/ext4/ext4.h        |  6 ++--
+ fs/ext4/extents.c     |  6 ++--
+ fs/ext4/fast_commit.c | 79 ++++++++-----------------------------------
+ fs/ext4/ioctl.c       |  3 +-
+ fs/ext4/super.c       |  1 -
+ 5 files changed, 20 insertions(+), 75 deletions(-)
 
-diff --git a/fs/ext4/acl.c b/fs/ext4/acl.c
-index 0613dfcbfd4a..5a35768d6149 100644
---- a/fs/ext4/acl.c
-+++ b/fs/ext4/acl.c
-@@ -246,7 +246,6 @@ ext4_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
- 	handle = ext4_journal_start(inode, EXT4_HT_XATTR, credits);
- 	if (IS_ERR(handle))
- 		return PTR_ERR(handle);
--	ext4_fc_start_update(inode);
- 
- 	if ((type == ACL_TYPE_ACCESS) && acl) {
- 		error = posix_acl_update_mode(mnt_userns, inode, &mode, &acl);
-@@ -264,7 +263,6 @@ ext4_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
- 	}
- out_stop:
- 	ext4_journal_stop(handle);
--	ext4_fc_stop_update(inode);
- 	if (error == -ENOSPC && ext4_should_retry_alloc(inode->i_sb, &retries))
- 		goto retry;
- 	return error;
 diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 404dd50856e5..89bf10d020c9 100644
+index 89bf10d020c9..a6cb4ca99c41 100644
 --- a/fs/ext4/ext4.h
 +++ b/fs/ext4/ext4.h
-@@ -1057,9 +1057,6 @@ struct ext4_inode_info {
- 	/* End of lblk range that needs to be committed in this fast commit */
- 	ext4_lblk_t i_fc_lblk_len;
+@@ -1722,9 +1722,9 @@ struct ext4_sb_info {
+ 	 */
+ 	struct work_struct s_error_work;
  
--	/* Number of ongoing updates on this inode */
--	atomic_t  i_fc_updates;
--
- 	/* Fast commit wait queue for this inode */
- 	wait_queue_head_t i_fc_wait;
- 
-@@ -2928,8 +2925,6 @@ void ext4_fc_track_inode(handle_t *handle, struct inode *inode);
+-	/* Ext4 fast commit stuff */
++	/* Ext4 fast commit sub transaction ID */
+ 	atomic_t s_fc_subtid;
+-	atomic_t s_fc_ineligible_updates;
++
+ 	/*
+ 	 * After commit starts, the main queue gets locked, and the further
+ 	 * updates get added in the staging queue.
+@@ -2923,8 +2923,6 @@ void __ext4_fc_track_create(handle_t *handle, struct inode *inode,
+ void ext4_fc_track_create(handle_t *handle, struct dentry *dentry);
+ void ext4_fc_track_inode(handle_t *handle, struct inode *inode);
  void ext4_fc_mark_ineligible(struct super_block *sb, int reason);
- void ext4_fc_start_ineligible(struct super_block *sb, int reason);
- void ext4_fc_stop_ineligible(struct super_block *sb);
--void ext4_fc_start_update(struct inode *inode);
--void ext4_fc_stop_update(struct inode *inode);
+-void ext4_fc_start_ineligible(struct super_block *sb, int reason);
+-void ext4_fc_stop_ineligible(struct super_block *sb);
  void ext4_fc_del(struct inode *inode);
  bool ext4_fc_replay_check_excluded(struct super_block *sb, ext4_fsblk_t block);
  void ext4_fc_replay_cleanup(struct super_block *sb);
 diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 0ecf819bf189..703feff8cb8c 100644
+index 703feff8cb8c..38111ea18ae1 100644
 --- a/fs/ext4/extents.c
 +++ b/fs/ext4/extents.c
-@@ -4697,8 +4697,6 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
- 		     FALLOC_FL_INSERT_RANGE))
- 		return -EOPNOTSUPP;
+@@ -5341,7 +5341,7 @@ static int ext4_collapse_range(struct inode *inode, loff_t offset, loff_t len)
+ 		ret = PTR_ERR(handle);
+ 		goto out_mmap;
+ 	}
+-	ext4_fc_start_ineligible(sb, EXT4_FC_REASON_FALLOC_RANGE);
++	ext4_fc_mark_ineligible(sb, EXT4_FC_REASON_FALLOC_RANGE);
  
--	ext4_fc_start_update(inode);
--
- 	if (mode & FALLOC_FL_PUNCH_HOLE) {
- 		ret = ext4_punch_hole(inode, offset, len);
- 		goto exit;
-@@ -4762,7 +4760,6 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
- 	inode_unlock(inode);
- 	trace_ext4_fallocate_exit(inode, offset, max_blocks, ret);
- exit:
--	ext4_fc_stop_update(inode);
- 	return ret;
- }
+ 	down_write(&EXT4_I(inode)->i_data_sem);
+ 	ext4_discard_preallocations(inode, 0);
+@@ -5380,7 +5380,6 @@ static int ext4_collapse_range(struct inode *inode, loff_t offset, loff_t len)
  
+ out_stop:
+ 	ext4_journal_stop(handle);
+-	ext4_fc_stop_ineligible(sb);
+ out_mmap:
+ 	filemap_invalidate_unlock(mapping);
+ out_mutex:
+@@ -5482,7 +5481,7 @@ static int ext4_insert_range(struct inode *inode, loff_t offset, loff_t len)
+ 		ret = PTR_ERR(handle);
+ 		goto out_mmap;
+ 	}
+-	ext4_fc_start_ineligible(sb, EXT4_FC_REASON_FALLOC_RANGE);
++	ext4_fc_mark_ineligible(sb, EXT4_FC_REASON_FALLOC_RANGE);
+ 
+ 	/* Expand file to avoid data loss if there is error while shifting */
+ 	inode->i_size += len;
+@@ -5557,7 +5556,6 @@ static int ext4_insert_range(struct inode *inode, loff_t offset, loff_t len)
+ 
+ out_stop:
+ 	ext4_journal_stop(handle);
+-	ext4_fc_stop_ineligible(sb);
+ out_mmap:
+ 	filemap_invalidate_unlock(mapping);
+ out_mutex:
 diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 0f32b445582a..084ab4d4e2ce 100644
+index 084ab4d4e2ce..609c416841d5 100644
 --- a/fs/ext4/fast_commit.c
 +++ b/fs/ext4/fast_commit.c
-@@ -58,11 +58,6 @@
-  *     section for more details).
-  * [7] Wait for [4], [5] and [6] to complete.
+@@ -60,21 +60,11 @@
   *
-- * All the inode updates must call ext4_fc_start_update() before starting an
-- * update. If such an ongoing update is present, fast commit waits for it to
-- * complete. The completion of such an update is marked by
-- * ext4_fc_stop_update().
-- *
   * Fast Commit Ineligibility
   * -------------------------
-  * Not all operations are supported by fast commits today (e.g extended
-@@ -166,15 +161,13 @@
-  *    fast commit recovery even if that area is invalidated by later full
-  *    commits.
-  *
-- * 1) Make fast commit atomic updates more fine grained. Today, a fast commit
-- *    eligible update must be protected within ext4_fc_start_update() and
-- *    ext4_fc_stop_update(). These routines are called at much higher
-- *    routines. This can be made more fine grained by combining with
-- *    ext4_journal_start().
+- * Not all operations are supported by fast commits today (e.g extended
+- * attributes). Fast commit ineligibility is marked by calling one of the
+- * two following functions:
 - *
-- * 2) Same above for ext4_fc_start_ineligible() and ext4_fc_stop_ineligible()
-+ * 1) Instead of having ext4_fc_start_ineligible() and
-+ *    ext4_fc_stop_ineligible(), add an argument to jbd2__journal_start() and
-+ *    jbd2__journal_stop(), that way fast commit eligibility of an operation is
-+ *    completely maintained with jbd2. If we do that, we would also move
-+ *    EXT4_MF_FC_INELIGIBLE flag to jbd2.
+- * - ext4_fc_mark_ineligible(): This makes next fast commit operation to fall
+- *   back to full commit. This is useful in case of transient errors.
   *
-- * 3) Handle more ineligible cases.
-+ * 2) Handle more ineligible cases.
-  */
- 
- #include <trace/events/ext4.h>
-@@ -212,7 +205,6 @@ void ext4_fc_init_inode(struct inode *inode)
- 	ext4_clear_inode_state(inode, EXT4_STATE_FC_COMMITTING);
- 	INIT_LIST_HEAD(&ei->i_fc_list);
- 	init_waitqueue_head(&ei->i_fc_wait);
--	atomic_set(&ei->i_fc_updates, 0);
- }
- 
- /* This function must be called with sbi->s_fc_lock held. */
-@@ -240,50 +232,6 @@ __releases(&EXT4_SB(inode->i_sb)->s_fc_lock)
- 	finish_wait(wq, &wait.wq_entry);
+- * - ext4_fc_start_ineligible() and ext4_fc_stop_ineligible() - This makes all
+- *   the fast commits happening between ext4_fc_start_ineligible() and
+- *   ext4_fc_stop_ineligible() and one fast commit after the call to
+- *   ext4_fc_stop_ineligible() to fall back to full commits. It is important to
+- *   make one more fast commit to fall back to full commit after stop call so
+- *   that it guaranteed that the fast commit ineligible operation contained
+- *   within ext4_fc_start_ineligible() and ext4_fc_stop_ineligible() is
+- *   followed by at least 1 full commit.
++ * Not all operations are supported by fast commits today (e.g extended
++ * attributes). Fast commit ineligibility is marked by calling
++ * ext4_fc_mark_ineligible(): This makes next fast commit operation to fall back
++ * to full commit.
+  *
+  * Atomicity of commits
+  * --------------------
+@@ -276,44 +266,6 @@ void ext4_fc_mark_ineligible(struct super_block *sb, int reason)
+ 	sbi->s_fc_stats.fc_ineligible_reason_count[reason]++;
  }
  
 -/*
-- * Inform Ext4's fast about start of an inode update
-- *
-- * This function is called by the high level call VFS callbacks before
-- * performing any inode update. This function blocks if there's an ongoing
-- * fast commit on the inode in question.
+- * Start a fast commit ineligible update. Any commits that happen while
+- * such an operation is in progress fall back to full commits.
 - */
--void ext4_fc_start_update(struct inode *inode)
+-void ext4_fc_start_ineligible(struct super_block *sb, int reason)
 -{
--	struct ext4_inode_info *ei = EXT4_I(inode);
+-	struct ext4_sb_info *sbi = EXT4_SB(sb);
 -
--	if (!test_opt2(inode->i_sb, JOURNAL_FAST_COMMIT) ||
--	    (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY))
+-	if (!test_opt2(sb, JOURNAL_FAST_COMMIT) ||
+-	    (EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY))
 -		return;
 -
--restart:
--	spin_lock(&EXT4_SB(inode->i_sb)->s_fc_lock);
--	if (list_empty(&ei->i_fc_list))
--		goto out;
--
--	if (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING)) {
--		ext4_fc_wait_committing_inode(inode);
--		goto restart;
--	}
--out:
--	atomic_inc(&ei->i_fc_updates);
--	spin_unlock(&EXT4_SB(inode->i_sb)->s_fc_lock);
+-	WARN_ON(reason >= EXT4_FC_REASON_MAX);
+-	sbi->s_fc_stats.fc_ineligible_reason_count[reason]++;
+-	atomic_inc(&sbi->s_fc_ineligible_updates);
 -}
 -
 -/*
-- * Stop inode update and wake up waiting fast commits if any.
+- * Stop a fast commit ineligible update. We set EXT4_MF_FC_INELIGIBLE flag here
+- * to ensure that after stopping the ineligible update, at least one full
+- * commit takes place.
 - */
--void ext4_fc_stop_update(struct inode *inode)
+-void ext4_fc_stop_ineligible(struct super_block *sb)
 -{
--	struct ext4_inode_info *ei = EXT4_I(inode);
--
--	if (!test_opt2(inode->i_sb, JOURNAL_FAST_COMMIT) ||
--	    (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY))
+-	if (!test_opt2(sb, JOURNAL_FAST_COMMIT) ||
+-	    (EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY))
 -		return;
 -
--	if (atomic_dec_and_test(&ei->i_fc_updates))
--		wake_up_all(&ei->i_fc_wait);
+-	ext4_set_mount_flag(sb, EXT4_MF_FC_INELIGIBLE);
+-	atomic_dec(&EXT4_SB(sb)->s_fc_ineligible_updates);
+-}
+-
+-static inline int ext4_fc_is_ineligible(struct super_block *sb)
+-{
+-	return (ext4_test_mount_flag(sb, EXT4_MF_FC_INELIGIBLE) ||
+-		atomic_read(&EXT4_SB(sb)->s_fc_ineligible_updates));
 -}
 -
  /*
-  * Remove inode from fast commit list. If the inode is being committed
-  * we wait until inode commit is done.
-@@ -933,18 +881,6 @@ static int ext4_fc_submit_inode_data_all(journal_t *journal)
- 	ext4_set_mount_flag(sb, EXT4_MF_FC_COMMITTING);
- 	list_for_each_entry(ei, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
- 		ext4_set_inode_state(&ei->vfs_inode, EXT4_STATE_FC_COMMITTING);
--		while (atomic_read(&ei->i_fc_updates)) {
--			DEFINE_WAIT(wait);
--
--			prepare_to_wait(&ei->i_fc_wait, &wait,
--						TASK_UNINTERRUPTIBLE);
--			if (atomic_read(&ei->i_fc_updates)) {
--				spin_unlock(&sbi->s_fc_lock);
--				schedule();
--				spin_lock(&sbi->s_fc_lock);
--			}
--			finish_wait(&ei->i_fc_wait, &wait);
--		}
- 		spin_unlock(&sbi->s_fc_lock);
- 		ret = jbd2_submit_inode_data(ei->jinode);
- 		if (ret)
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index 4c5f41052351..8cc11715518a 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -259,7 +259,6 @@ static ssize_t ext4_buffered_write_iter(struct kiocb *iocb,
- 	if (iocb->ki_flags & IOCB_NOWAIT)
+  * Generic fast commit tracking function. If this is the first time this we are
+  * called after a full commit, we initialize fast commit fields and then call
+@@ -339,7 +291,7 @@ static int ext4_fc_track_template(
+ 	    (sbi->s_mount_state & EXT4_FC_REPLAY))
  		return -EOPNOTSUPP;
  
--	ext4_fc_start_update(inode);
- 	inode_lock(inode);
- 	ret = ext4_write_checks(iocb, from);
- 	if (ret <= 0)
-@@ -271,7 +270,6 @@ static ssize_t ext4_buffered_write_iter(struct kiocb *iocb,
+-	if (ext4_fc_is_ineligible(inode->i_sb))
++	if (ext4_test_mount_flag(inode->i_sb, EXT4_MF_FC_INELIGIBLE))
+ 		return -EINVAL;
  
+ 	tid = handle->h_transaction->t_tid;
+@@ -1078,11 +1030,8 @@ int ext4_fc_commit(journal_t *journal, tid_t commit_tid)
+ 
+ 	start_time = ktime_get();
+ 
+-	if (!test_opt2(sb, JOURNAL_FAST_COMMIT) ||
+-		(ext4_fc_is_ineligible(sb))) {
+-		reason = EXT4_FC_REASON_INELIGIBLE;
+-		goto out;
+-	}
++	if (!test_opt2(sb, JOURNAL_FAST_COMMIT))
++		return jbd2_complete_transaction(journal, commit_tid);
+ 
+ restart_fc:
+ 	ret = jbd2_fc_begin_commit(journal, commit_tid);
+@@ -1098,6 +1047,14 @@ int ext4_fc_commit(journal_t *journal, tid_t commit_tid)
+ 		reason = EXT4_FC_REASON_FC_START_FAILED;
+ 		goto out;
+ 	}
++	/*
++	 * After establishing journal barrier via jbd2_fc_begin_commit(), check
++	 * if we are fast commit ineligible.
++	 */
++	if (ext4_test_mount_flag(sb, EXT4_MF_FC_INELIGIBLE)) {
++		reason = EXT4_FC_REASON_INELIGIBLE;
++		goto out;
++	}
+ 
+ 	fc_bufs_before = (sbi->s_fc_bytes + bsize - 1) / bsize;
+ 	ret = ext4_fc_perform_commit(journal);
+@@ -1116,12 +1073,6 @@ int ext4_fc_commit(journal_t *journal, tid_t commit_tid)
+ 	atomic_inc(&sbi->s_fc_subtid);
+ 	jbd2_fc_end_commit(journal);
  out:
- 	inode_unlock(inode);
--	ext4_fc_stop_update(inode);
- 	if (likely(ret > 0)) {
- 		iocb->ki_pos += ret;
- 		ret = generic_write_sync(iocb, ret);
-@@ -552,9 +550,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 			goto out;
- 		}
- 
--		ext4_fc_start_update(inode);
- 		ret = ext4_orphan_add(handle, inode);
--		ext4_fc_stop_update(inode);
- 		if (ret) {
- 			ext4_journal_stop(handle);
- 			goto out;
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index bfd3545f1e5d..82f555d26980 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5320,7 +5320,7 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
- 		if (error)
- 			return error;
- 	}
--	ext4_fc_start_update(inode);
-+
- 	if ((ia_valid & ATTR_UID && !uid_eq(attr->ia_uid, inode->i_uid)) ||
- 	    (ia_valid & ATTR_GID && !gid_eq(attr->ia_gid, inode->i_gid))) {
- 		handle_t *handle;
-@@ -5344,7 +5344,6 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
- 
- 		if (error) {
- 			ext4_journal_stop(handle);
--			ext4_fc_stop_update(inode);
- 			return error;
- 		}
- 		/* Update corresponding info in inode so that everything is in
-@@ -5356,7 +5355,6 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
- 		error = ext4_mark_inode_dirty(handle, inode);
- 		ext4_journal_stop(handle);
- 		if (unlikely(error)) {
--			ext4_fc_stop_update(inode);
- 			return error;
- 		}
- 	}
-@@ -5370,12 +5368,10 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
- 			struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
- 
- 			if (attr->ia_size > sbi->s_bitmap_maxbytes) {
--				ext4_fc_stop_update(inode);
- 				return -EFBIG;
- 			}
- 		}
- 		if (!S_ISREG(inode->i_mode)) {
--			ext4_fc_stop_update(inode);
- 			return -EINVAL;
- 		}
- 
-@@ -5499,7 +5495,6 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
- 		ext4_std_error(inode->i_sb, error);
- 	if (!error)
- 		error = rc;
--	ext4_fc_stop_update(inode);
- 	return error;
- }
- 
+-	/* Has any ineligible update happened since we started? */
+-	if (reason == EXT4_FC_REASON_OK && ext4_fc_is_ineligible(sb)) {
+-		sbi->s_fc_stats.fc_ineligible_reason_count[EXT4_FC_COMMIT_FAILED]++;
+-		reason = EXT4_FC_REASON_INELIGIBLE;
+-	}
+-
+ 	spin_lock(&sbi->s_fc_lock);
+ 	if (reason != EXT4_FC_REASON_OK &&
+ 		reason != EXT4_FC_REASON_ALREADY_COMMITTED) {
 diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-index 606dee9e08a3..e64a12e1218a 100644
+index e64a12e1218a..1366afb59fba 100644
 --- a/fs/ext4/ioctl.c
 +++ b/fs/ext4/ioctl.c
-@@ -743,7 +743,6 @@ int ext4_fileattr_set(struct user_namespace *mnt_userns,
- 	u32 flags = fa->flags;
- 	int err = -EOPNOTSUPP;
- 
--	ext4_fc_start_update(inode);
- 	if (flags & ~EXT4_FL_USER_VISIBLE)
- 		goto out;
- 
-@@ -764,7 +763,6 @@ int ext4_fileattr_set(struct user_namespace *mnt_userns,
- 		goto out;
- 	err = ext4_ioctl_setproject(inode, fa->fsx_projid);
- out:
--	ext4_fc_stop_update(inode);
- 	return err;
- }
- 
-@@ -1273,13 +1271,7 @@ static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 
- long ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- {
--	long ret;
--
--	ext4_fc_start_update(file_inode(filp));
--	ret = __ext4_ioctl(filp, cmd, arg);
--	ext4_fc_stop_update(file_inode(filp));
--
--	return ret;
-+	return __ext4_ioctl(filp, cmd, arg);
- }
- 
- #ifdef CONFIG_COMPAT
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index 35302bc192eb..0b86a4365b66 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -757,6 +757,7 @@ int jbd2_fc_begin_commit(journal_t *journal, tid_t tid)
+@@ -169,7 +169,7 @@ static long swap_inode_boot_loader(struct super_block *sb,
+ 		err = -EINVAL;
+ 		goto err_out;
  	}
- 	journal->j_flags |= JBD2_FAST_COMMIT_ONGOING;
- 	write_unlock(&journal->j_state_lock);
-+	jbd2_journal_lock_updates(journal);
+-	ext4_fc_start_ineligible(sb, EXT4_FC_REASON_SWAP_BOOT);
++	ext4_fc_mark_ineligible(sb, EXT4_FC_REASON_SWAP_BOOT);
  
- 	return 0;
- }
-@@ -768,6 +769,7 @@ EXPORT_SYMBOL(jbd2_fc_begin_commit);
-  */
- static int __jbd2_fc_end_commit(journal_t *journal, tid_t tid, bool fallback)
- {
-+	jbd2_journal_unlock_updates(journal);
- 	if (journal->j_fc_cleanup_callback)
- 		journal->j_fc_cleanup_callback(journal, 0);
- 	write_lock(&journal->j_state_lock);
+ 	/* Protect extent tree against block allocations via delalloc */
+ 	ext4_double_down_write_data_sem(inode, inode_bl);
+@@ -252,7 +252,6 @@ static long swap_inode_boot_loader(struct super_block *sb,
+ 
+ err_out1:
+ 	ext4_journal_stop(handle);
+-	ext4_fc_stop_ineligible(sb);
+ 	ext4_double_up_write_data_sem(inode, inode_bl);
+ 
+ err_out:
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 6998c07c209a..0e547c6ec73f 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5069,7 +5069,6 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb,
+ 
+ 	/* Initialize fast commit stuff */
+ 	atomic_set(&sbi->s_fc_subtid, 0);
+-	atomic_set(&sbi->s_fc_ineligible_updates, 0);
+ 	INIT_LIST_HEAD(&sbi->s_fc_q[FC_Q_MAIN]);
+ 	INIT_LIST_HEAD(&sbi->s_fc_q[FC_Q_STAGING]);
+ 	INIT_LIST_HEAD(&sbi->s_fc_dentry_q[FC_Q_MAIN]);
 -- 
 2.34.1.173.g76aa8bc2d0-goog
 
