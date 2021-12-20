@@ -2,116 +2,198 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A033347B290
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Dec 2021 19:07:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAAA847B478
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 Dec 2021 21:41:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233610AbhLTSHj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 20 Dec 2021 13:07:39 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:52738 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230489AbhLTSHj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Dec 2021 13:07:39 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C5F45218FC;
-        Mon, 20 Dec 2021 18:07:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1640023657;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jTf/rOfLIo/IHEJv+ideVPj0MhsHO3/HazU84UhMJGo=;
-        b=f7s2/f/XtE//e5+p5rqTe+cP4RT8pNVh4oifsm394oTIr7Wzl3ht5ub1dtBmlPEheYm4I+
-        WgLqqNGTm4EHv1ca+filzt9wAO9sgP54jw5ONv4epxRiiKe6Pa22qfBWhGsc8mrQ9QtIUd
-        VeFk/V8WQt55tX6sM78dG12qXuTTBQ0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1640023657;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jTf/rOfLIo/IHEJv+ideVPj0MhsHO3/HazU84UhMJGo=;
-        b=aGlRhTL+kYuxwMfUA/QL8cFY29Xlbwnm3Hl+hN1zuD2P7gInmf1b1/Rw+Uw8GYBVhJ84uf
-        V+UGUihUJ8bl3JCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 520BF13DBD;
-        Mon, 20 Dec 2021 18:07:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id I3sTEWnGwGFJfAAAMHmgww
-        (envelope-from <pvorel@suse.cz>); Mon, 20 Dec 2021 18:07:37 +0000
-Date:   Mon, 20 Dec 2021 19:07:35 +0100
-From:   Petr Vorel <pvorel@suse.cz>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel@collabora.com, Khazhismel Kumykov <khazhy@google.com>,
-        Matthew Bobrowski <repnop@google.com>,
-        Jan Kara <jack@suse.com>, Ext4 <linux-ext4@vger.kernel.org>,
-        LTP List <ltp@lists.linux.it>, Cyril Hrubis <chrubis@suse.cz>,
-        Richard Palethorpe <rpalethorpe@suse.com>
-Subject: Re: [LTP] [PATCH v4 0/9] Test the new fanotify FAN_FS_ERROR event
-Message-ID: <YcDGZ+eNcQ5fPsmN@pevik>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-References: <20211118235744.802584-1-krisman@collabora.com>
- <CAOQ4uxhbDgdZZ0qphWg1vnW4ZoAkUxcQp631yZO8W49AE18W9g@mail.gmail.com>
- <8735nsuepi.fsf@collabora.com>
- <YZtLDXW01Cz0BfPU@pevik>
- <YZ4Wf3d+J36NPMfS@pevik>
- <CAOQ4uxgg6BvUtcaD4stDv7meS0it-0-iDWNiz_-=SRN_tvgzYQ@mail.gmail.com>
+        id S229779AbhLTUlH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 20 Dec 2021 15:41:07 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55501 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229436AbhLTUlH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Dec 2021 15:41:07 -0500
+Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1BKKf1SZ024569
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Dec 2021 15:41:01 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id DB36815C33A4; Mon, 20 Dec 2021 15:41:00 -0500 (EST)
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     guan@eryu.me
+Cc:     fstests@vger.kernel.org,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>, Eric Whitney <enwlinux@gmail.com>
+Subject: [PATCH] ext4/033: test EXT4_IOC_RESIZE_FS by calling the ioctl directly
+Date:   Mon, 20 Dec 2021 15:40:59 -0500
+Message-Id: <20211220204059.2248577-1-tytso@mit.edu>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <Yb9M3aIb9cJGIJaB@desktop>
+References: <Yb9M3aIb9cJGIJaB@desktop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxgg6BvUtcaD4stDv7meS0it-0-iDWNiz_-=SRN_tvgzYQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Amir,
+E2fsprogs commits 4ea80d031c7e ("resize2fs: adjust new size of the
+file system to allow a successful resize") and 50088b1996cc
+("resize2fs: attempt to keep the # of inodes valid by removing the
+last bg") will automatically reduce the requested new size of the file
+system by up to a single block group to avoid overflowing the 32-bit
+inode count.   This interferes with ext4/033's test of kernel commit
+4f2f76f75143 ("ext4: Forbid overflowing inode count when # resizing".)
 
-[ Cc Cyril and Richie ]
+Address this by creating a new test program, ext4_resize which calls
+the EXT4_IOC_RESIZE_FS ioctl directly so we can correctly test the
+kernel's online resize code.
 
-> On Wed, Nov 24, 2021 at 12:40 PM Petr Vorel <pvorel@suse.cz> wrote:
+Reported-by: Eric Whitney <enwlinux@gmail.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ .gitignore        |  1 +
+ src/Makefile      |  2 +-
+ src/ext4_resize.c | 50 +++++++++++++++++++++++++++++++++++++++++++++++
+ tests/ext4/033    | 16 ++++++++++-----
+ 4 files changed, 63 insertions(+), 6 deletions(-)
+ create mode 100644 src/ext4_resize.c
 
-> > Hi all,
+diff --git a/.gitignore b/.gitignore
+index 9e6d2fd5..65b93307 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -77,6 +77,7 @@ tags
+ /src/dirperf
+ /src/dirstress
+ /src/e4compact
++/src/ext4_resize
+ /src/fault
+ /src/feature
+ /src/fiemap-tester
+diff --git a/src/Makefile b/src/Makefile
+index 25ab061d..1737ed0e 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -31,7 +31,7 @@ LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
+ 	dio-invalidate-cache stat_test t_encrypted_d_revalidate \
+ 	attr_replace_test swapon mkswap t_attr_corruption t_open_tmpfiles \
+ 	fscrypt-crypt-util bulkstat_null_ocount splice-test chprojid_fail \
+-	detached_mounts_propagation
++	detached_mounts_propagation ext4_resize
+ 
+ EXTRA_EXECS = dmerror fill2attr fill2fs fill2fs_check scaleread.sh \
+ 	      btrfs_crc32c_forged_name.py
+diff --git a/src/ext4_resize.c b/src/ext4_resize.c
+new file mode 100644
+index 00000000..1ac51e6f
+--- /dev/null
++++ b/src/ext4_resize.c
+@@ -0,0 +1,50 @@
++// SPDX-License-Identifier: GPL-2.0
++
++/*
++ * Test program which uses the raw ext4 resize_fs ioctl directly.
++ */
++
++#include <stdio.h>
++#include <fcntl.h>
++#include <errno.h>
++#include <unistd.h>
++#include <stdint.h>
++#include <stdlib.h>
++#include <sys/ioctl.h>
++#include <sys/mount.h>
++
++typedef unsigned long long __u64;
++
++#ifndef EXT4_IOC_RESIZE_FS
++#define EXT4_IOC_RESIZE_FS		_IOW('f', 16, __u64)
++#endif
++
++int main(int argc, char **argv)
++{
++	__u64	new_size;
++	int	error, fd;
++	char	*tmp = NULL;
++
++	if (argc != 3) {
++		fputs("insufficient arguments\n", stderr);
++		return 1;
++	}
++	fd = open(argv[1], O_RDONLY);
++	if (!fd) {
++		perror(argv[1]);
++		return 1;
++	}
++
++	new_size = strtoull(argv[2], &tmp, 10);
++	if ((errno) || (*tmp != '\0')) {
++		fprintf(stderr, "%s: invalid new size\n", argv[0]);
++		return 1;
++	}
++
++	error = ioctl(fd, EXT4_IOC_RESIZE_FS, &new_size);
++	if (error < 0) {
++		perror("EXT4_IOC_RESIZE_FS");
++		return 1;
++	}
++	return 0;
++}
+diff --git a/tests/ext4/033 b/tests/ext4/033
+index 1bc14c03..22041a17 100755
+--- a/tests/ext4/033
++++ b/tests/ext4/033
+@@ -5,7 +5,8 @@
+ # FS QA Test 033
+ #
+ # Test s_inodes_count overflow for huge filesystems. This bug was fixed
+-# by commit "ext4: Forbid overflowing inode count when resizing".
++# by commit 4f2f76f75143 ("ext4: Forbid overflowing inode count when
++# resizing".)
+ #
+ . ./common/preamble
+ _begin_fstest auto ioctl resize
+@@ -28,7 +29,9 @@ _supported_fs ext4
+ _require_scratch_nocheck
+ _require_dmhugedisk
+ _require_dumpe2fs
+-_require_command "$RESIZE2FS_PROG" resize2fs
++_require_test_program ext4_resize
++
++EXT4_RESIZE=$here/src/ext4_resize
+ 
+ # Figure out whether device is large enough
+ devsize=$(blockdev --getsize64 $SCRATCH_DEV)
+@@ -68,7 +71,8 @@ $DUMPE2FS_PROG -h $DMHUGEDISK_DEV >> $seqres.full 2>&1
+ 
+ # This should fail, s_inodes_count would just overflow!
+ echo "Resizing to inode limit + 1..."
+-$RESIZE2FS_PROG $DMHUGEDISK_DEV $((limit_groups*group_blocks)) >> $seqres.full 2>&1
++echo $EXT4_RESIZE $SCRATCH_MNT $((limit_groups*group_blocks)) >> $seqres.full 2>&1
++$EXT4_RESIZE $SCRATCH_MNT $((limit_groups*group_blocks)) >> $seqres.full 2>&1
+ if [ $? -eq 0 ]; then
+ 	echo "Resizing succeeded but it should fail!"
+ 	exit
+@@ -76,7 +80,8 @@ fi
+ 
+ # This should succeed, we are maxing out inodes
+ echo "Resizing to max group count..."
+-$RESIZE2FS_PROG $DMHUGEDISK_DEV $(((limit_groups-1)*group_blocks)) >> $seqres.full 2>&1
++echo $EXT4_RESIZE $SCRATCH_MNT $(((limit_groups-1)*group_blocks)) >> $seqres.full 2>&1
++$EXT4_RESIZE $SCRATCH_MNT $(((limit_groups-1)*group_blocks)) >> $seqres.full 2>&1
+ if [ $? -ne 0 ]; then
+ 	echo "Resizing failed!"
+ 	exit
+@@ -87,7 +92,8 @@ $DUMPE2FS_PROG -h $DMHUGEDISK_DEV >> $seqres.full 2>&1
+ 
+ # This should fail, s_inodes_count would overflow by quite a bit!
+ echo "Resizing to device size..."
+-$RESIZE2FS_PROG $DMHUGEDISK_DEV >> $seqres.full 2>&1
++echo $EXT4_RESIZE $SCRATCH_MNT $(((limit_groups + 16)*group_blocks)) >> $seqres.full 2>&1
++$EXT4_RESIZE $SCRATCH_MNT $(((limit_groups + 16)*group_blocks)) >> $seqres.full 2>&1
+ if [ $? -eq 0 ]; then
+ 	echo "Resizing succeeded but it should fail!"
+ 	exit
+-- 
+2.31.0
 
-> > <snip>
-> > > > Hi Amir,
-
-> > > > I have pushed v4 to :
-
-> > > > https://gitlab.collabora.com/krisman/ltp.git -b fan-fs-error_v4
-
-> > > FYI I've rebased it on my fix 3b2ea2e00 ("configure.ac: Add struct
-> > > fanotify_event_info_pidfd check")
-
-> > > https://github.com/linux-test-project/ltp.git -b gertazi/fanotify21.v4.fixes
-
-> > FYI I removed branch from official LTP repository and put it to my fork
-> > https://github.com/pevik/ltp.git -b fan-fs-error_v4.fixes
-
-
-> Hi Petr,
-
-> Are you waiting with this merge for after release of v5.16?
-> or is it just waiting behind other work?
-Yes. Thanks for this input, we're just discussing our policy about tests for new
-(kernel) release functionality. First we agreed to wait [1] (due problems
-described in [2]), Richie is suggesting to merge earlier [2], although Cyril
-had doubts it's worth of the work [3].
-
-Kind regards,
-Petr
-
-> Just asking out of curiosity.
-> I've based my tests for fan_rename (queued for v5.17) on top of your branch.
-
-> Thanks,
-> Amir.
-
-[1] https://lore.kernel.org/ltp/20211210134556.26091-1-pvorel@suse.cz/
-[2] https://lore.kernel.org/ltp/87lf0ffw1y.fsf@suse.de/
-[3] https://lore.kernel.org/ltp/Ybc5QJSZM3YIji70@yuki/
