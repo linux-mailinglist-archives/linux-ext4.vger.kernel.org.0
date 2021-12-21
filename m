@@ -2,118 +2,86 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9498947C1BD
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Dec 2021 15:43:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8BAC47C87B
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Dec 2021 21:57:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238573AbhLUOnT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 Dec 2021 09:43:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58592 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235585AbhLUOnR (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 21 Dec 2021 09:43:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1640097797;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=au6VllE/GeLnsIb0itQOsWjmnN2qcl/Ccot7HKnDawM=;
-        b=ZMz8pvTBbb9aXjSWRO1l7XgSOKkfQ2v4Eb3x2YBItD51QHheHsnhpOtkFx5Y0jeO4MrjZD
-        XUXZXYkNop0lI5EDPIcAS+IrMBmU8FmMnMJg5OzgFKSydRJ0r23voyyIL1I21vN/eaW+u8
-        l2nJaZIT/PhPEtsbIh9L1FWHkzwTCIo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-632-jGu1uFrkOtqmCNivb9aHFQ-1; Tue, 21 Dec 2021 09:43:14 -0500
-X-MC-Unique: jGu1uFrkOtqmCNivb9aHFQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 325D464141;
-        Tue, 21 Dec 2021 14:43:12 +0000 (UTC)
-Received: from work (unknown [10.40.194.80])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A60395DF37;
-        Tue, 21 Dec 2021 14:43:10 +0000 (UTC)
-Date:   Tue, 21 Dec 2021 15:43:05 +0100
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     Ye Bin <yebin10@huawei.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jack@suse.cz
-Subject: Re: [PATCH -next] ext4: Fix remount with 'abort' option isn't
- effective
-Message-ID: <20211221144305.nlryh7q2cgdbpmi5@work>
-References: <20211221123214.2410593-1-yebin10@huawei.com>
+        id S235497AbhLUU5z (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 Dec 2021 15:57:55 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:47333 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234101AbhLUU5y (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 Dec 2021 15:57:54 -0500
+Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1BLKvgTT015930
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Dec 2021 15:57:43 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 232C215C33A4; Tue, 21 Dec 2021 15:57:42 -0500 (EST)
+Date:   Tue, 21 Dec 2021 15:57:42 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     zhanchengbin <zhanchengbin1@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, liuzhiqiang26@huawei.com,
+        linfeilong@huawei.com
+Subject: Re: [PATCH] resize2fs : resize2fs failed due to the same name of
+ tmpfs
+Message-ID: <YcI/xt1IiJKLN/Bw@mit.edu>
+References: <54d44dbc-861d-8c49-9b29-2621c201ca4f@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211221123214.2410593-1-yebin10@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <54d44dbc-861d-8c49-9b29-2621c201ca4f@huawei.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
+On Tue, Nov 30, 2021 at 12:04:48PM +0800, zhanchengbin wrote:
+> If there is a tmpfs with the same name as the disk, and mount before the
+> disk,example:
+> 	/dev/sdd /root/tmp tmpfs rw,seclabel,relatime 0 0
+> 	/dev/sdd /root/mnt ext4 rw,seclabel,relatime 0 0
 
-nice catch. This is a bug indeed. However I am currently in a process of
-changing the ctx_set/clear/test_ helpers because currently it generates
-functions that are unused.
+This should already be fixed e2fsprogs 1.45.5+ via this commit:
 
-While I am at it I can just create a custom ctx_set_mount_flags()
-helper that would behave as expected so that we won't have to specify
-"1 < EXT4_MF_FS_ABORTED" which is not really obvious and hence error
-prone.
+commit ea4d53b7b9079fd6e2cc34cf569a993a183bfbd2
+Author: Theodore Ts'o <tytso@mit.edu>
+Date:   Sun Nov 10 12:11:49 2019 -0500
 
-My plan is to send my patch set including this one tomorrow, will that
-be fine with you ?
+    libext2fs/ismounted.c: check device id in advance to skip false device names
+    
+    If there is a trickster which tries to use device names as the mount
+    device for pseudo-file systems, the resulting /proc/mounts can confuse
+    ext2fs_check_mount_point().  (So far as I can tell, there's no good
+    reason to do this, but sysadmins do the darnest things.)
+    
+    An example of this might be the following /proc/mounts excerpt:
+    
+    /dev/sdb /mnt2 tmpfs rw,relatime 0 0
+    /dev/sdb /mnt ext4 rw,relatime 0 0
+    
+    This is created via "mount -t tmpfs /dev/sdb /mnt2" followed via
+    "mount -t ext4 /dev/sdb /mnt".  (Normally, a sane mount of tmpfs would
+    use something like "mount -t tmpfs tmpfs /mnt2".)
+    
+    Fix this by double checking the st_rdev of the claimed mountpoint and
+    match it with the dev_t of the device.  (Note that the GNU HURD
+    doesn't support st_rdev, so we can't solve this problem for the HURD.)
+    
+    Reported-by: GuiYao <guiyao@huawei.com>
+    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 
--Lukas
+I've tested via tst_ismounted and I can't replicate the issue you've described.
 
-On Tue, Dec 21, 2021 at 08:32:14PM +0800, Ye Bin wrote:
-> We test remount with 'abort' option as follows:
-> [root@localhost home]# mount  /dev/sda test
-> [root@localhost home]# mount | grep test
-> /dev/sda on /home/test type ext4 (rw,relatime)
-> [root@localhost home]# mount -o remount,abort test
-> [root@localhost home]# mount | grep test
-> /dev/sda on /home/test type ext4 (rw,relatime)
-> 
-> Obviously, remount 'abort' option isn't effective.
-> After 6e47a3cc68fc commit we process abort option with 'ctx_set_mount_flags':
-> static inline void ctx_set_mount_flags(struct ext4_fs_context *ctx, int flag)
-> {
-> 	ctx->mask_s_mount_flags |= flag;
-> 	ctx->vals_s_mount_flags |= flag;
-> }
-> 
-> But we test 'abort' option with 'ext4_test_mount_flag':
-> static inline int ext4_test_mount_flag(struct super_block *sb, int bit)
-> {
->         return test_bit(bit, &EXT4_SB(sb)->s_mount_flags);
-> }
-> 
-> To solve this issue, pass (1 <<  EXT4_MF_FS_ABORTED) to 'ctx_set_mount_flags'.
-> 
-> Fixes:6e47a3cc68fc("ext4: get rid of super block and sbi from handle_mount_ops()")
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
-> ---
->  fs/ext4/super.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index b72d989b77fb..071b7b3c5678 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -2236,7 +2236,7 @@ static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *param)
->  			 param->key);
->  		return 0;
->  	case Opt_abort:
-> -		ctx_set_mount_flags(ctx, EXT4_MF_FS_ABORTED);
-> +		ctx_set_mount_flags(ctx, 1 << EXT4_MF_FS_ABORTED);
->  		return 0;
->  	case Opt_i_version:
->  		ctx_set_flags(ctx, SB_I_VERSION);
-> -- 
-> 2.31.1
-> 
+% cd /build/e2fsprogs-maint/lib/ext2fs
+% make tst_ismounted
+% sudo ./tst_ismounted /dev/dm-7
+Bogus entry in /proc/mounts!  (/dev/dm-7 is not mounted on /root/tmp)
+Device /dev/dm-7 reports flags 11
+        /dev/dm-7 is apparently in use.
+        /dev/dm-7 is mounted.
+        /dev/dm-7 is mounted on /root/mnt.
 
+Cheers,
+
+							- Ted
