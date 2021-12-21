@@ -2,198 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAAA847B478
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Dec 2021 21:41:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14BA547B85C
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Dec 2021 03:28:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229779AbhLTUlH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 20 Dec 2021 15:41:07 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55501 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229436AbhLTUlH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Dec 2021 15:41:07 -0500
-Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1BKKf1SZ024569
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Dec 2021 15:41:01 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id DB36815C33A4; Mon, 20 Dec 2021 15:41:00 -0500 (EST)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     guan@eryu.me
-Cc:     fstests@vger.kernel.org,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, Eric Whitney <enwlinux@gmail.com>
-Subject: [PATCH] ext4/033: test EXT4_IOC_RESIZE_FS by calling the ioctl directly
-Date:   Mon, 20 Dec 2021 15:40:59 -0500
-Message-Id: <20211220204059.2248577-1-tytso@mit.edu>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <Yb9M3aIb9cJGIJaB@desktop>
-References: <Yb9M3aIb9cJGIJaB@desktop>
+        id S231927AbhLUC2u (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 20 Dec 2021 21:28:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230060AbhLUC2u (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Dec 2021 21:28:50 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34742C061574
+        for <linux-ext4@vger.kernel.org>; Mon, 20 Dec 2021 18:28:50 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id v13so10359112pfi.3
+        for <linux-ext4@vger.kernel.org>; Mon, 20 Dec 2021 18:28:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MH7pYtAT9fzAukQeckl+HCZps771tRVGu5kQlLXlq3k=;
+        b=1+UMVDDAGt5X+2K8SrcmnRBejdnZWeVbq00615mjG735u+o1cBnFsVlq5ocYwKc3su
+         9oH8zKtnKNeidf6m6HDwY+eEDL5YM4gZEEepsO/5krO5va4sbsRjIr1XfGW+xPBh6pdK
+         9XI1WvND/4WtNoHPcNFYsunr8RlFnqHwaILJr3jj8rc9UQuVADVUomlLeB7OxtVrATX2
+         LPL6D2McW4wZLV5KaK/eU5QC+yYSo7Y/NxptV50rJ5mfRFdOVeCDEv4b2VafU4lEnE3h
+         SJqAgp6bmiuXUr96Ovnh2pPwjK5pP22FNZ1+sB4FC30x06tj8CDj7/4k67GP+adP+1L3
+         srfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MH7pYtAT9fzAukQeckl+HCZps771tRVGu5kQlLXlq3k=;
+        b=IwaWESrywAcuBOEdZFP12Ic91j8LVeIiBNgxTN2HC+//jaxIAxVY0ixJRS8XkYyJ/X
+         +dqzLwFcZvFZou8S5gT61PSoy/DxdFZLwaSt+JsJfH7l6faX22CMU6sPx855ORzlwJ9P
+         7mVB+5xGawkbdiFBTqB3hi5NlP1gKa4Ga1dbiY1JyDWrySU6hJK/vbfK3vWTtzgWG34M
+         36w7UfWPrTyJtoX/qLCDZ9ralpBVxoou0PeDoRx9f2DGqVJq2KpCDYWLhzyNL0YgZe7q
+         jvfgJE4ZTaKLFJ0557HRa8hKV4swft62BECFpkSWwf/eM4j2lH8OWaV8Is7E/YMqp8c3
+         FC8Q==
+X-Gm-Message-State: AOAM533soIGU2G8+pBuAJ8wSWcn+188/O/FRWy4OPn1wanvQNtUpzENk
+        RsSfcASXT1+1pLCpChA606dWyeDQ+Pf8YQ==
+X-Google-Smtp-Source: ABdhPJyT3WEou35Q0MyQl4g78Eel5W9j84NcO9UiV3rwEdLLqRU/mr1Bxb7TeEfvLajqbESVPlnP1g==
+X-Received: by 2002:a63:69ca:: with SMTP id e193mr957858pgc.448.1640053729667;
+        Mon, 20 Dec 2021 18:28:49 -0800 (PST)
+Received: from yinxin.bytedance.net ([139.177.225.251])
+        by smtp.gmail.com with ESMTPSA id j20sm1352154pjl.3.2021.12.20.18.28.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Dec 2021 18:28:49 -0800 (PST)
+From:   Xin Yin <yinxin.x@bytedance.com>
+To:     harshadshirwadkar@gmail.com, tytso@mit.edu,
+        adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xin Yin <yinxin.x@bytedance.com>
+Subject: [PATCH v2] ext4: fix fast commit may miss tracking range for FALLOC_FL_ZERO_RANGE
+Date:   Tue, 21 Dec 2021 10:28:39 +0800
+Message-Id: <20211221022839.374606-1-yinxin.x@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-E2fsprogs commits 4ea80d031c7e ("resize2fs: adjust new size of the
-file system to allow a successful resize") and 50088b1996cc
-("resize2fs: attempt to keep the # of inodes valid by removing the
-last bg") will automatically reduce the requested new size of the file
-system by up to a single block group to avoid overflowing the 32-bit
-inode count.   This interferes with ext4/033's test of kernel commit
-4f2f76f75143 ("ext4: Forbid overflowing inode count when # resizing".)
+when call falloc with FALLOC_FL_ZERO_RANGE, to set an range to unwritten,
+which has been already initialized. If the range is align to blocksize,
+fast commit will not track range for this change.
 
-Address this by creating a new test program, ext4_resize which calls
-the EXT4_IOC_RESIZE_FS ioctl directly so we can correctly test the
-kernel's online resize code.
+Also track range for unwritten range in ext4_map_blocks().
 
-Reported-by: Eric Whitney <enwlinux@gmail.com>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Xin Yin <yinxin.x@bytedance.com>
 ---
- .gitignore        |  1 +
- src/Makefile      |  2 +-
- src/ext4_resize.c | 50 +++++++++++++++++++++++++++++++++++++++++++++++
- tests/ext4/033    | 16 ++++++++++-----
- 4 files changed, 63 insertions(+), 6 deletions(-)
- create mode 100644 src/ext4_resize.c
+v2: change to track unwritten range in ext4_map_blocks()
+---
+ fs/ext4/extents.c | 2 --
+ fs/ext4/inode.c   | 7 ++++---
+ 2 files changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/.gitignore b/.gitignore
-index 9e6d2fd5..65b93307 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -77,6 +77,7 @@ tags
- /src/dirperf
- /src/dirstress
- /src/e4compact
-+/src/ext4_resize
- /src/fault
- /src/feature
- /src/fiemap-tester
-diff --git a/src/Makefile b/src/Makefile
-index 25ab061d..1737ed0e 100644
---- a/src/Makefile
-+++ b/src/Makefile
-@@ -31,7 +31,7 @@ LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
- 	dio-invalidate-cache stat_test t_encrypted_d_revalidate \
- 	attr_replace_test swapon mkswap t_attr_corruption t_open_tmpfiles \
- 	fscrypt-crypt-util bulkstat_null_ocount splice-test chprojid_fail \
--	detached_mounts_propagation
-+	detached_mounts_propagation ext4_resize
- 
- EXTRA_EXECS = dmerror fill2attr fill2fs fill2fs_check scaleread.sh \
- 	      btrfs_crc32c_forged_name.py
-diff --git a/src/ext4_resize.c b/src/ext4_resize.c
-new file mode 100644
-index 00000000..1ac51e6f
---- /dev/null
-+++ b/src/ext4_resize.c
-@@ -0,0 +1,50 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Test program which uses the raw ext4 resize_fs ioctl directly.
-+ */
-+
-+#include <stdio.h>
-+#include <fcntl.h>
-+#include <errno.h>
-+#include <unistd.h>
-+#include <stdint.h>
-+#include <stdlib.h>
-+#include <sys/ioctl.h>
-+#include <sys/mount.h>
-+
-+typedef unsigned long long __u64;
-+
-+#ifndef EXT4_IOC_RESIZE_FS
-+#define EXT4_IOC_RESIZE_FS		_IOW('f', 16, __u64)
-+#endif
-+
-+int main(int argc, char **argv)
-+{
-+	__u64	new_size;
-+	int	error, fd;
-+	char	*tmp = NULL;
-+
-+	if (argc != 3) {
-+		fputs("insufficient arguments\n", stderr);
-+		return 1;
-+	}
-+	fd = open(argv[1], O_RDONLY);
-+	if (!fd) {
-+		perror(argv[1]);
-+		return 1;
-+	}
-+
-+	new_size = strtoull(argv[2], &tmp, 10);
-+	if ((errno) || (*tmp != '\0')) {
-+		fprintf(stderr, "%s: invalid new size\n", argv[0]);
-+		return 1;
-+	}
-+
-+	error = ioctl(fd, EXT4_IOC_RESIZE_FS, &new_size);
-+	if (error < 0) {
-+		perror("EXT4_IOC_RESIZE_FS");
-+		return 1;
-+	}
-+	return 0;
-+}
-diff --git a/tests/ext4/033 b/tests/ext4/033
-index 1bc14c03..22041a17 100755
---- a/tests/ext4/033
-+++ b/tests/ext4/033
-@@ -5,7 +5,8 @@
- # FS QA Test 033
- #
- # Test s_inodes_count overflow for huge filesystems. This bug was fixed
--# by commit "ext4: Forbid overflowing inode count when resizing".
-+# by commit 4f2f76f75143 ("ext4: Forbid overflowing inode count when
-+# resizing".)
- #
- . ./common/preamble
- _begin_fstest auto ioctl resize
-@@ -28,7 +29,9 @@ _supported_fs ext4
- _require_scratch_nocheck
- _require_dmhugedisk
- _require_dumpe2fs
--_require_command "$RESIZE2FS_PROG" resize2fs
-+_require_test_program ext4_resize
-+
-+EXT4_RESIZE=$here/src/ext4_resize
- 
- # Figure out whether device is large enough
- devsize=$(blockdev --getsize64 $SCRATCH_DEV)
-@@ -68,7 +71,8 @@ $DUMPE2FS_PROG -h $DMHUGEDISK_DEV >> $seqres.full 2>&1
- 
- # This should fail, s_inodes_count would just overflow!
- echo "Resizing to inode limit + 1..."
--$RESIZE2FS_PROG $DMHUGEDISK_DEV $((limit_groups*group_blocks)) >> $seqres.full 2>&1
-+echo $EXT4_RESIZE $SCRATCH_MNT $((limit_groups*group_blocks)) >> $seqres.full 2>&1
-+$EXT4_RESIZE $SCRATCH_MNT $((limit_groups*group_blocks)) >> $seqres.full 2>&1
- if [ $? -eq 0 ]; then
- 	echo "Resizing succeeded but it should fail!"
- 	exit
-@@ -76,7 +80,8 @@ fi
- 
- # This should succeed, we are maxing out inodes
- echo "Resizing to max group count..."
--$RESIZE2FS_PROG $DMHUGEDISK_DEV $(((limit_groups-1)*group_blocks)) >> $seqres.full 2>&1
-+echo $EXT4_RESIZE $SCRATCH_MNT $(((limit_groups-1)*group_blocks)) >> $seqres.full 2>&1
-+$EXT4_RESIZE $SCRATCH_MNT $(((limit_groups-1)*group_blocks)) >> $seqres.full 2>&1
- if [ $? -ne 0 ]; then
- 	echo "Resizing failed!"
- 	exit
-@@ -87,7 +92,8 @@ $DUMPE2FS_PROG -h $DMHUGEDISK_DEV >> $seqres.full 2>&1
- 
- # This should fail, s_inodes_count would overflow by quite a bit!
- echo "Resizing to device size..."
--$RESIZE2FS_PROG $DMHUGEDISK_DEV >> $seqres.full 2>&1
-+echo $EXT4_RESIZE $SCRATCH_MNT $(((limit_groups + 16)*group_blocks)) >> $seqres.full 2>&1
-+$EXT4_RESIZE $SCRATCH_MNT $(((limit_groups + 16)*group_blocks)) >> $seqres.full 2>&1
- if [ $? -eq 0 ]; then
- 	echo "Resizing succeeded but it should fail!"
- 	exit
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 9229ab1f99c5..6bce319f3bcd 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -4599,8 +4599,6 @@ static long ext4_zero_range(struct file *file, loff_t offset,
+ 	ret = ext4_mark_inode_dirty(handle, inode);
+ 	if (unlikely(ret))
+ 		goto out_handle;
+-	ext4_fc_track_range(handle, inode, offset >> inode->i_sb->s_blocksize_bits,
+-			(offset + len - 1) >> inode->i_sb->s_blocksize_bits);
+ 	/* Zero out partial block at the edges of the range */
+ 	ret = ext4_zero_partial_blocks(handle, inode, offset, len);
+ 	if (ret >= 0)
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 0afab6d5c65b..47ad4b8cb503 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -741,10 +741,11 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
+ 			if (ret)
+ 				return ret;
+ 		}
+-		ext4_fc_track_range(handle, inode, map->m_lblk,
+-			    map->m_lblk + map->m_len - 1);
+ 	}
+-
++	if (retval > 0 && (map->m_flags & EXT4_MAP_UNWRITTEN ||
++				map->m_flags & EXT4_MAP_MAPPED))
++		ext4_fc_track_range(handle, inode, map->m_lblk,
++					map->m_lblk + map->m_len - 1);
+ 	if (retval < 0)
+ 		ext_debug(inode, "failed with err %d\n", retval);
+ 	return retval;
 -- 
-2.31.0
+2.20.1
 
