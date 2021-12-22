@@ -2,137 +2,173 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BF1347CABC
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Dec 2021 02:24:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB9747CF12
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Dec 2021 10:20:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234518AbhLVBYD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 Dec 2021 20:24:03 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:16847 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234213AbhLVBYD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 Dec 2021 20:24:03 -0500
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4JJbDb2Z4yz91rk;
-        Wed, 22 Dec 2021 09:23:11 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Wed, 22 Dec
- 2021 09:24:01 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
-        Ye Bin <yebin10@huawei.com>
-Subject: [PATCH -next] ext4: Fix BUG_ON in ext4_bread when write quota data
-Date:   Wed, 22 Dec 2021 09:35:37 +0800
-Message-ID: <20211222013537.3096310-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        id S243868AbhLVJT7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 Dec 2021 04:19:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30461 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243866AbhLVJT6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 22 Dec 2021 04:19:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1640164798;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HW6P5aqMvgJy6ygBO3Phm4zEMTRrHSBikFoLdf1Jgbg=;
+        b=cMzj7gW1NCDqWmQ+gwn3AuLxIyuQmBtB3KbxCcJDsVwoGnU/zQJqkWHIaidwITw/JhZ5Zu
+        hXpjqykClsEhgsetNeQZYZXmR8SFqvK6R2clTIAS5hVvvHeQFLf8Y7uQgC4XWrfjFwXQvV
+        ycoWffII9F/WKwzXy5hYIBDbiMMInrM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-638-3ZvPHLPpNqSh_bo4KCMVUQ-1; Wed, 22 Dec 2021 04:19:54 -0500
+X-MC-Unique: 3ZvPHLPpNqSh_bo4KCMVUQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 763611800D50;
+        Wed, 22 Dec 2021 09:19:53 +0000 (UTC)
+Received: from work (unknown [10.40.193.216])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id AAC5357BE;
+        Wed, 22 Dec 2021 09:19:51 +0000 (UTC)
+Date:   Wed, 22 Dec 2021 10:19:47 +0100
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     yebin <yebin10@huawei.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jack@suse.cz
+Subject: Re: [PATCH -next] ext4: Fix remount with 'abort' option isn't
+ effective
+Message-ID: <20211222091947.chmg6mcetocrmygd@work>
+References: <20211221123214.2410593-1-yebin10@huawei.com>
+ <20211221144305.nlryh7q2cgdbpmi5@work>
+ <61C27A0E.9050900@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <61C27A0E.9050900@huawei.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-We got issue as follows when run syzkaller:
-[  167.936972] EXT4-fs error (device loop0): __ext4_remount:6314: comm rep: Abort forced by user
-[  167.938306] EXT4-fs (loop0): Remounting filesystem read-only
-[  167.981637] Assertion failure in ext4_getblk() at fs/ext4/inode.c:847: '(EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY) || handle != NULL || create == 0'
-[  167.983601] ------------[ cut here ]------------
-[  167.984245] kernel BUG at fs/ext4/inode.c:847!
-[  167.984882] invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-[  167.985624] CPU: 7 PID: 2290 Comm: rep Tainted: G    B             5.16.0-rc5-next-20211217+ #123
-[  167.986823] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
-[  167.988590] RIP: 0010:ext4_getblk+0x17e/0x504
-[  167.989189] Code: c6 01 74 28 49 c7 c0 a0 a3 5c 9b b9 4f 03 00 00 48 c7 c2 80 9c 5c 9b 48 c7 c6 40 b6 5c 9b 48 c7 c7 20 a4 5c 9b e8 77 e3 fd ff <0f> 0b 8b 04 244
-[  167.991679] RSP: 0018:ffff8881736f7398 EFLAGS: 00010282
-[  167.992385] RAX: 0000000000000094 RBX: 1ffff1102e6dee75 RCX: 0000000000000000
-[  167.993337] RDX: 0000000000000001 RSI: ffffffff9b6e29e0 RDI: ffffed102e6dee66
-[  167.994292] RBP: ffff88816a076210 R08: 0000000000000094 R09: ffffed107363fa09
-[  167.995252] R10: ffff88839b1fd047 R11: ffffed107363fa08 R12: ffff88816a0761e8
-[  167.996205] R13: 0000000000000000 R14: 0000000000000021 R15: 0000000000000001
-[  167.997158] FS:  00007f6a1428c740(0000) GS:ffff88839b000000(0000) knlGS:0000000000000000
-[  167.998238] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  167.999025] CR2: 00007f6a140716c8 CR3: 0000000133216000 CR4: 00000000000006e0
-[  167.999987] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[  168.000944] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[  168.001899] Call Trace:
-[  168.002235]  <TASK>
-[  168.007167]  ext4_bread+0xd/0x53
-[  168.007612]  ext4_quota_write+0x20c/0x5c0
-[  168.010457]  write_blk+0x100/0x220
-[  168.010944]  remove_free_dqentry+0x1c6/0x440
-[  168.011525]  free_dqentry.isra.0+0x565/0x830
-[  168.012133]  remove_tree+0x318/0x6d0
-[  168.014744]  remove_tree+0x1eb/0x6d0
-[  168.017346]  remove_tree+0x1eb/0x6d0
-[  168.019969]  remove_tree+0x1eb/0x6d0
-[  168.022128]  qtree_release_dquot+0x291/0x340
-[  168.023297]  v2_release_dquot+0xce/0x120
-[  168.023847]  dquot_release+0x197/0x3e0
-[  168.024358]  ext4_release_dquot+0x22a/0x2d0
-[  168.024932]  dqput.part.0+0x1c9/0x900
-[  168.025430]  __dquot_drop+0x120/0x190
-[  168.025942]  ext4_clear_inode+0x86/0x220
-[  168.026472]  ext4_evict_inode+0x9e8/0xa22
-[  168.028200]  evict+0x29e/0x4f0
-[  168.028625]  dispose_list+0x102/0x1f0
-[  168.029148]  evict_inodes+0x2c1/0x3e0
-[  168.030188]  generic_shutdown_super+0xa4/0x3b0
-[  168.030817]  kill_block_super+0x95/0xd0
-[  168.031360]  deactivate_locked_super+0x85/0xd0
-[  168.031977]  cleanup_mnt+0x2bc/0x480
-[  168.033062]  task_work_run+0xd1/0x170
-[  168.033565]  do_exit+0xa4f/0x2b50
-[  168.037155]  do_group_exit+0xef/0x2d0
-[  168.037666]  __x64_sys_exit_group+0x3a/0x50
-[  168.038237]  do_syscall_64+0x3b/0x90
-[  168.038751]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+On Wed, Dec 22, 2021 at 09:06:22AM +0800, yebin wrote:
+> 
+> 
+> On 2021/12/21 22:43, Lukas Czerner wrote:
+> > Hi,
+> > 
+> > nice catch. This is a bug indeed. However I am currently in a process of
+> > changing the ctx_set/clear/test_ helpers because currently it generates
+> > functions that are unused.
+> > 
+> > While I am at it I can just create a custom ctx_set_mount_flags()
+> > helper that would behave as expected so that we won't have to specify
+> > "1 < EXT4_MF_FS_ABORTED" which is not really obvious and hence error
+> > prone.
+> Actually, I fixed the first version as follows:
 
-In order to reproduce this problem, the following conditions need to be met:
-1. Ext4 filesystem with no journal;
-2. Filesystem image with incorrect quota data;
-3. Abort filesystem forced by user;
-4. umount filesystem;
+Allright, this looks better.
 
-As in ext4_quota_write:
-...
-         if (EXT4_SB(sb)->s_journal && !handle) {
-                 ext4_msg(sb, KERN_WARNING, "Quota write (off=%llu, len=%llu)"
-                         " cancelled because transaction is not started",
-                         (unsigned long long)off, (unsigned long long)len);
-                 return -EIO;
-         }
-...
-We only check handle if NULL when filesystem has journal. There is need
-check handle if NULL even when filesystem has no journal.
+> 
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index b72d989b77fb..199920ffc7d3 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -2049,8 +2049,8 @@ struct ext4_fs_context {
+>  	unsigned int	mask_s_mount_opt;
+>  	unsigned int	vals_s_mount_opt2;
+>  	unsigned int	mask_s_mount_opt2;
+> -	unsigned int	vals_s_mount_flags;
+> -	unsigned int	mask_s_mount_flags;
+> +	unsigned long	vals_s_mount_flags;
+> +	unsigned long	mask_s_mount_flags;
+>  	unsigned int	opt_flags;	/* MOPT flags */
+>  	unsigned int	spec;
+>  	u32		s_max_batch_time;
+> @@ -2166,7 +2166,12 @@ static inline bool ctx_test_##name(struct ext4_fs_context *ctx, int flag)\
+>  EXT4_SET_CTX(flags);
+>  EXT4_SET_CTX(mount_opt);
+>  EXT4_SET_CTX(mount_opt2);
+> -EXT4_SET_CTX(mount_flags);
+> +
+> +static inline void ctx_set_mount_flags(struct ext4_fs_context *ctx, int bit)
 
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- fs/ext4/super.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Maybe ctx_set_mount_flag since you can't really set more than one this
+way?
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 071b7b3c5678..c8ca5811ea65 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -6955,9 +6955,10 @@ static ssize_t ext4_quota_write(struct super_block *sb, int type,
- 	struct buffer_head *bh;
- 	handle_t *handle = journal_current_handle();
- 
--	if (EXT4_SB(sb)->s_journal && !handle) {
-+	if (!handle) {
- 		ext4_msg(sb, KERN_WARNING, "Quota write (off=%llu, len=%llu)"
--			" cancelled because transaction is not started",
-+			" cancelled because transaction is not started"
-+			" or filesystem is abort forced by user",
- 			(unsigned long long)off, (unsigned long long)len);
- 		return -EIO;
- 	}
--- 
-2.31.1
+> +{
+> +	set_bit(bit, &ctx->mask_s_mount_flags);
+> +	set_bit(bit, &ctx->vals_s_mount_flags);
+> +}
+> 
+> 
+> I think 'mask_s_mount_flags' is useless now.
+
+So how would we know what flags have changed ? Sure, there is currently
+no need to clear the flag but that can come in future and once it does
+we'll only need to create a clear helper, the rest will be ready.
+I'd rather keep it.
+
+-Lukas
+
+> > 
+> > My plan is to send my patch set including this one tomorrow, will that
+> > be fine with you ?
+> > 
+> > -Lukas
+> > 
+> > On Tue, Dec 21, 2021 at 08:32:14PM +0800, Ye Bin wrote:
+> > > We test remount with 'abort' option as follows:
+> > > [root@localhost home]# mount  /dev/sda test
+> > > [root@localhost home]# mount | grep test
+> > > /dev/sda on /home/test type ext4 (rw,relatime)
+> > > [root@localhost home]# mount -o remount,abort test
+> > > [root@localhost home]# mount | grep test
+> > > /dev/sda on /home/test type ext4 (rw,relatime)
+> > > 
+> > > Obviously, remount 'abort' option isn't effective.
+> > > After 6e47a3cc68fc commit we process abort option with 'ctx_set_mount_flags':
+> > > static inline void ctx_set_mount_flags(struct ext4_fs_context *ctx, int flag)
+> > > {
+> > > 	ctx->mask_s_mount_flags |= flag;
+> > > 	ctx->vals_s_mount_flags |= flag;
+> > > }
+> > > 
+> > > But we test 'abort' option with 'ext4_test_mount_flag':
+> > > static inline int ext4_test_mount_flag(struct super_block *sb, int bit)
+> > > {
+> > >          return test_bit(bit, &EXT4_SB(sb)->s_mount_flags);
+> > > }
+> > > 
+> > > To solve this issue, pass (1 <<  EXT4_MF_FS_ABORTED) to 'ctx_set_mount_flags'.
+> > > 
+> > > Fixes:6e47a3cc68fc("ext4: get rid of super block and sbi from handle_mount_ops()")
+> > > Signed-off-by: Ye Bin <yebin10@huawei.com>
+> > > ---
+> > >   fs/ext4/super.c | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> > > index b72d989b77fb..071b7b3c5678 100644
+> > > --- a/fs/ext4/super.c
+> > > +++ b/fs/ext4/super.c
+> > > @@ -2236,7 +2236,7 @@ static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *param)
+> > >   			 param->key);
+> > >   		return 0;
+> > >   	case Opt_abort:
+> > > -		ctx_set_mount_flags(ctx, EXT4_MF_FS_ABORTED);
+> > > +		ctx_set_mount_flags(ctx, 1 << EXT4_MF_FS_ABORTED);
+> > >   		return 0;
+> > >   	case Opt_i_version:
+> > >   		ctx_set_flags(ctx, SB_I_VERSION);
+> > > -- 
+> > > 2.31.1
+> > > 
+> > .
+> > 
+> 
 
