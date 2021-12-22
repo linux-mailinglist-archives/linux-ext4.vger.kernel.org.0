@@ -2,58 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1A447D189
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Dec 2021 13:12:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4769D47D3D0
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Dec 2021 15:38:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234104AbhLVMMW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 Dec 2021 07:12:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:60620 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233737AbhLVMMU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 22 Dec 2021 07:12:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1640175140;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        id S1343496AbhLVOh7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 Dec 2021 09:37:59 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:54228 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238818AbhLVOh6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 Dec 2021 09:37:58 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id C4AD6212B7;
+        Wed, 22 Dec 2021 14:37:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1640183877; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=/NABFwm5FRfNIIRBj7DUsB1+nk+yswNcbmkyB4IFYkU=;
-        b=PaTPw61pdTL8eRPTrf3dAsHQ+Rdtp7KSWMXF4curDBSnngiagbqLsZwH0I7MJV0HvwP3vM
-        IpazUMlwFvqt2VrUZdoW7XsdwD403JYLrclL3j71CO//1jpKp+/9HqdSmpfmMsUEDwEb8v
-        ovtj7M3l+TUU+U78H4P8D0jMAGpg6Bo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-193-dswmGz32NyyoKQq3qzhDyw-1; Wed, 22 Dec 2021 07:12:15 -0500
-X-MC-Unique: dswmGz32NyyoKQq3qzhDyw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C4DD61006AAF;
-        Wed, 22 Dec 2021 12:12:12 +0000 (UTC)
-Received: from work (unknown [10.40.193.216])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E23B15ED4C;
-        Wed, 22 Dec 2021 12:12:10 +0000 (UTC)
-Date:   Wed, 22 Dec 2021 13:12:06 +0100
-From:   Lukas Czerner <lczerner@redhat.com>
+        bh=gc7GULz8GdRORFE4g+VjvQfetQYn3CecFaan/rOImzU=;
+        b=pp2MQa4g4afqeHnnbpstvRRU0/qWMlW3OK2cev8JBu+h0CU2G607lmDtWIKsVNc5MPiGlf
+        UQYbLtLeBmrUAxD4kratrxEyvquGjz1GfnyYp2i/V7jM0BhhPl2n1Km6Hqp2GGdldC0qqR
+        hD2XX1rjZZsYBlFXLZ+Ujjay4STNAgA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1640183877;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gc7GULz8GdRORFE4g+VjvQfetQYn3CecFaan/rOImzU=;
+        b=E33r5WLDqBxz72e8y/vh9Rj8eAHM6hee0L1G3De5TXXGsSaRB+ut2Ly/Amuo1Ed0D7oG7w
+        Kp9twdzYx7wOzdAg==
+Received: from quack2.suse.cz (unknown [10.163.28.18])
+        by relay2.suse.de (Postfix) with ESMTP id B0536A3B81;
+        Wed, 22 Dec 2021 14:37:57 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 832E51F2CEF; Wed, 22 Dec 2021 15:37:57 +0100 (CET)
+Date:   Wed, 22 Dec 2021 15:37:57 +0100
+From:   Jan Kara <jack@suse.cz>
 To:     Ye Bin <yebin10@huawei.com>
 Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
         jack@suse.cz
 Subject: Re: [PATCH -next] ext4: Fix BUG_ON in ext4_bread when write quota
  data
-Message-ID: <20211222121206.g45g7v4y3i35kvnp@work>
+Message-ID: <20211222143757.GD685@quack2.suse.cz>
 References: <20211222013537.3096310-1-yebin10@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20211222013537.3096310-1-yebin10@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Dec 22, 2021 at 09:35:37AM +0800, Ye Bin wrote:
+On Wed 22-12-21 09:35:37, Ye Bin wrote:
 > We got issue as follows when run syzkaller:
 > [  167.936972] EXT4-fs error (device loop0): __ext4_remount:6314: comm rep: Abort forced by user
 > [  167.938306] EXT4-fs (loop0): Remounting filesystem read-only
@@ -126,6 +127,16 @@ On Wed, Dec 22, 2021 at 09:35:37AM +0800, Ye Bin wrote:
 > ...
 > We only check handle if NULL when filesystem has journal. There is need
 > check handle if NULL even when filesystem has no journal.
+
+Hum, so I think we can just drop this whole condition and warning and
+instead add a silent return of -EROFS if the filesystem is readonly. That
+should also fix the bug and also make aborted case less noisy. The message
+from ext4_quota_write() IMO is not very useful and ext4_bread() will
+provide us with a BUG and stacktrace which is better for debugging what
+went wrong anyway.
+
+								Honza
+
 > 
 > Signed-off-by: Ye Bin <yebin10@huawei.com>
 > ---
@@ -146,20 +157,12 @@ On Wed, Dec 22, 2021 at 09:35:37AM +0800, Ye Bin wrote:
 > -			" cancelled because transaction is not started",
 > +			" cancelled because transaction is not started"
 > +			" or filesystem is abort forced by user",
-
-The patch looks good, except this sentence. I don't think it has
-anything to do with the abort forced by the user. Yes, in your
-reproducer you induced the error by aborting the fs, but it can happen
-any time we fail to start a journal transaction. So IMO the message is
-already accurate enough. See ext4_release_dquot().
-
-Thanks!
--Lukas
-
 >  			(unsigned long long)off, (unsigned long long)len);
 >  		return -EIO;
 >  	}
 > -- 
 > 2.31.1
 > 
-
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
