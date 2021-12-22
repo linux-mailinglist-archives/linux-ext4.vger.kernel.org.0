@@ -2,173 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB9747CF12
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Dec 2021 10:20:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A11E47D038
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Dec 2021 11:45:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243868AbhLVJT7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 Dec 2021 04:19:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30461 "EHLO
+        id S240065AbhLVKp2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 Dec 2021 05:45:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47159 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243866AbhLVJT6 (ORCPT
+        by vger.kernel.org with ESMTP id S240018AbhLVKp2 (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 22 Dec 2021 04:19:58 -0500
+        Wed, 22 Dec 2021 05:45:28 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1640164798;
+        s=mimecast20190719; t=1640169927;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HW6P5aqMvgJy6ygBO3Phm4zEMTRrHSBikFoLdf1Jgbg=;
-        b=cMzj7gW1NCDqWmQ+gwn3AuLxIyuQmBtB3KbxCcJDsVwoGnU/zQJqkWHIaidwITw/JhZ5Zu
-        hXpjqykClsEhgsetNeQZYZXmR8SFqvK6R2clTIAS5hVvvHeQFLf8Y7uQgC4XWrfjFwXQvV
-        ycoWffII9F/WKwzXy5hYIBDbiMMInrM=
+         to:to:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=gszH25NrjRBHFOo76ObB6AvioB2IT34MO5pT6R2OYgY=;
+        b=XGsJVk/QG7vGZdyq/iu3Z367hAUqxRNDMM+wpdl5K5tmkraoNgSaFYd11MjliekJeaROz7
+        y5kcX16/BCYPerOuGeGlreTea5Ep2XY58eu/piLbRCB2oQ7548t5mWTbOW9jbcD5WAioOF
+        oYR+uZBjyfJRJ2WE/7EwjDxCGWUi0ms=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-638-3ZvPHLPpNqSh_bo4KCMVUQ-1; Wed, 22 Dec 2021 04:19:54 -0500
-X-MC-Unique: 3ZvPHLPpNqSh_bo4KCMVUQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+ us-mta-612-VTOoIJdoOMWNSJ4ZcIv0NQ-1; Wed, 22 Dec 2021 05:45:26 -0500
+X-MC-Unique: VTOoIJdoOMWNSJ4ZcIv0NQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 763611800D50;
-        Wed, 22 Dec 2021 09:19:53 +0000 (UTC)
-Received: from work (unknown [10.40.193.216])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AAC5357BE;
-        Wed, 22 Dec 2021 09:19:51 +0000 (UTC)
-Date:   Wed, 22 Dec 2021 10:19:47 +0100
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 685021808327;
+        Wed, 22 Dec 2021 10:45:25 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.40.193.216])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9FFB676613;
+        Wed, 22 Dec 2021 10:45:24 +0000 (UTC)
 From:   Lukas Czerner <lczerner@redhat.com>
-To:     yebin <yebin10@huawei.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jack@suse.cz
-Subject: Re: [PATCH -next] ext4: Fix remount with 'abort' option isn't
- effective
-Message-ID: <20211222091947.chmg6mcetocrmygd@work>
-References: <20211221123214.2410593-1-yebin10@huawei.com>
- <20211221144305.nlryh7q2cgdbpmi5@work>
- <61C27A0E.9050900@huawei.com>
+To:     linux-ext4@vger.kernel.org, tytso@mit.edu
+Subject: [PATCH 1/2] ext4: remove lazytime/nolazytime mount options handled by MS_LAZYTIME
+Date:   Wed, 22 Dec 2021 11:45:16 +0100
+Message-Id: <20211222104517.11187-1-lczerner@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <61C27A0E.9050900@huawei.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Dec 22, 2021 at 09:06:22AM +0800, yebin wrote:
-> 
-> 
-> On 2021/12/21 22:43, Lukas Czerner wrote:
-> > Hi,
-> > 
-> > nice catch. This is a bug indeed. However I am currently in a process of
-> > changing the ctx_set/clear/test_ helpers because currently it generates
-> > functions that are unused.
-> > 
-> > While I am at it I can just create a custom ctx_set_mount_flags()
-> > helper that would behave as expected so that we won't have to specify
-> > "1 < EXT4_MF_FS_ABORTED" which is not really obvious and hence error
-> > prone.
-> Actually, I fixed the first version as follows:
+The lazytime and nolazytime mount options were added temporarily back in
+2015 with commit a26f49926da9 ("ext4: add optimization for the lazytime
+mount option"). It think it has been enough time for the util-linux with
+lazytime support to get widely used. Remove the mount options.
 
-Allright, this looks better.
+Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+---
+ fs/ext4/super.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index b72d989b77fb..199920ffc7d3 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -2049,8 +2049,8 @@ struct ext4_fs_context {
->  	unsigned int	mask_s_mount_opt;
->  	unsigned int	vals_s_mount_opt2;
->  	unsigned int	mask_s_mount_opt2;
-> -	unsigned int	vals_s_mount_flags;
-> -	unsigned int	mask_s_mount_flags;
-> +	unsigned long	vals_s_mount_flags;
-> +	unsigned long	mask_s_mount_flags;
->  	unsigned int	opt_flags;	/* MOPT flags */
->  	unsigned int	spec;
->  	u32		s_max_batch_time;
-> @@ -2166,7 +2166,12 @@ static inline bool ctx_test_##name(struct ext4_fs_context *ctx, int flag)\
->  EXT4_SET_CTX(flags);
->  EXT4_SET_CTX(mount_opt);
->  EXT4_SET_CTX(mount_opt2);
-> -EXT4_SET_CTX(mount_flags);
-> +
-> +static inline void ctx_set_mount_flags(struct ext4_fs_context *ctx, int bit)
-
-Maybe ctx_set_mount_flag since you can't really set more than one this
-way?
-
-> +{
-> +	set_bit(bit, &ctx->mask_s_mount_flags);
-> +	set_bit(bit, &ctx->vals_s_mount_flags);
-> +}
-> 
-> 
-> I think 'mask_s_mount_flags' is useless now.
-
-So how would we know what flags have changed ? Sure, there is currently
-no need to clear the flag but that can come in future and once it does
-we'll only need to create a clear helper, the rest will be ready.
-I'd rather keep it.
-
--Lukas
-
-> > 
-> > My plan is to send my patch set including this one tomorrow, will that
-> > be fine with you ?
-> > 
-> > -Lukas
-> > 
-> > On Tue, Dec 21, 2021 at 08:32:14PM +0800, Ye Bin wrote:
-> > > We test remount with 'abort' option as follows:
-> > > [root@localhost home]# mount  /dev/sda test
-> > > [root@localhost home]# mount | grep test
-> > > /dev/sda on /home/test type ext4 (rw,relatime)
-> > > [root@localhost home]# mount -o remount,abort test
-> > > [root@localhost home]# mount | grep test
-> > > /dev/sda on /home/test type ext4 (rw,relatime)
-> > > 
-> > > Obviously, remount 'abort' option isn't effective.
-> > > After 6e47a3cc68fc commit we process abort option with 'ctx_set_mount_flags':
-> > > static inline void ctx_set_mount_flags(struct ext4_fs_context *ctx, int flag)
-> > > {
-> > > 	ctx->mask_s_mount_flags |= flag;
-> > > 	ctx->vals_s_mount_flags |= flag;
-> > > }
-> > > 
-> > > But we test 'abort' option with 'ext4_test_mount_flag':
-> > > static inline int ext4_test_mount_flag(struct super_block *sb, int bit)
-> > > {
-> > >          return test_bit(bit, &EXT4_SB(sb)->s_mount_flags);
-> > > }
-> > > 
-> > > To solve this issue, pass (1 <<  EXT4_MF_FS_ABORTED) to 'ctx_set_mount_flags'.
-> > > 
-> > > Fixes:6e47a3cc68fc("ext4: get rid of super block and sbi from handle_mount_ops()")
-> > > Signed-off-by: Ye Bin <yebin10@huawei.com>
-> > > ---
-> > >   fs/ext4/super.c | 2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> > > index b72d989b77fb..071b7b3c5678 100644
-> > > --- a/fs/ext4/super.c
-> > > +++ b/fs/ext4/super.c
-> > > @@ -2236,7 +2236,7 @@ static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *param)
-> > >   			 param->key);
-> > >   		return 0;
-> > >   	case Opt_abort:
-> > > -		ctx_set_mount_flags(ctx, EXT4_MF_FS_ABORTED);
-> > > +		ctx_set_mount_flags(ctx, 1 << EXT4_MF_FS_ABORTED);
-> > >   		return 0;
-> > >   	case Opt_i_version:
-> > >   		ctx_set_flags(ctx, SB_I_VERSION);
-> > > -- 
-> > > 2.31.1
-> > > 
-> > .
-> > 
-> 
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 71f7f866de58..0fc511d16b6d 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1703,8 +1703,7 @@ enum {
+ 	Opt_usrquota, Opt_grpquota, Opt_prjquota, Opt_i_version,
+ 	Opt_dax, Opt_dax_always, Opt_dax_inode, Opt_dax_never,
+ 	Opt_stripe, Opt_delalloc, Opt_nodelalloc, Opt_warn_on_error,
+-	Opt_nowarn_on_error, Opt_mblk_io_submit,
+-	Opt_lazytime, Opt_nolazytime, Opt_debug_want_extra_isize,
++	Opt_nowarn_on_error, Opt_mblk_io_submit, Opt_debug_want_extra_isize,
+ 	Opt_nomblk_io_submit, Opt_block_validity, Opt_noblock_validity,
+ 	Opt_inode_readahead_blks, Opt_journal_ioprio,
+ 	Opt_dioread_nolock, Opt_dioread_lock,
+@@ -1818,8 +1817,6 @@ static const struct fs_parameter_spec ext4_param_specs[] = {
+ 	fsparam_flag	("nodelalloc",		Opt_nodelalloc),
+ 	fsparam_flag	("warn_on_error",	Opt_warn_on_error),
+ 	fsparam_flag	("nowarn_on_error",	Opt_nowarn_on_error),
+-	fsparam_flag	("lazytime",		Opt_lazytime),
+-	fsparam_flag	("nolazytime",		Opt_nolazytime),
+ 	fsparam_u32	("debug_want_extra_isize",
+ 						Opt_debug_want_extra_isize),
+ 	fsparam_flag	("mblk_io_submit",	Opt_removed),
+@@ -2244,12 +2241,6 @@ static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 	case Opt_i_version:
+ 		ctx_set_flags(ctx, SB_I_VERSION);
+ 		return 0;
+-	case Opt_lazytime:
+-		ctx_set_flags(ctx, SB_LAZYTIME);
+-		return 0;
+-	case Opt_nolazytime:
+-		ctx_clear_flags(ctx, SB_LAZYTIME);
+-		return 0;
+ 	case Opt_inlinecrypt:
+ #ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
+ 		ctx_set_flags(ctx, SB_INLINECRYPT);
+@@ -6261,7 +6252,7 @@ static int __ext4_remount(struct fs_context *fc, struct super_block *sb,
+ 	 * either way we need to make sure it matches in both *flags and
+ 	 * s_flags. Copy those selected flags from *flags to s_flags
+ 	 */
+-	vfs_flags = SB_LAZYTIME | SB_I_VERSION;
++	vfs_flags = SB_I_VERSION;
+ 	sb->s_flags = (sb->s_flags & ~vfs_flags) | (*flags & vfs_flags);
+ 
+ 	ext4_apply_options(fc, sb);
+-- 
+2.31.1
 
