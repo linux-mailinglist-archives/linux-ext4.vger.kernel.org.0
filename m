@@ -2,119 +2,160 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2607647D51B
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Dec 2021 17:28:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8257447DD7E
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Dec 2021 02:41:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241840AbhLVQ2d (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 Dec 2021 11:28:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236333AbhLVQ2d (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 Dec 2021 11:28:33 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E923FC061574
-        for <linux-ext4@vger.kernel.org>; Wed, 22 Dec 2021 08:28:32 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id z9so2386844qtj.9
-        for <linux-ext4@vger.kernel.org>; Wed, 22 Dec 2021 08:28:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dOnFNCm8yH5utW/0+zKDtsHuV2oy5uKeV8mlHRJwuY0=;
-        b=YOBKU8qSqfljzSNAuad0Kg2kz/PviS4mWFRJVoYn7ZBtBZH7DeBHZVT5NXvM+IM4yL
-         GBDSdJHwqo4KBKYO0LaXKsljmN/R2PMq2GcLuxfoTVpBGzHQSvdif+6PwNI7u/sDlrPo
-         VqzLzDr2V7VVJnZJxmU7LWqqUjmFEoj8Jd+lE8xGZ799uYFtaCR4YMF+BpypHGeMv0Wx
-         GsW+A1hZRudH4zZKIYUgLjXBBrDASSjfW2t/lUCIAK9CBMt7J5ZiscYIM16aBgw1LlW3
-         t0KSPnOkJqMvRVmg5uS1pJil1Xb4ct63bX5q0oDrlXDE5sepACtfdacH/ckTHtPhNStW
-         N9Yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dOnFNCm8yH5utW/0+zKDtsHuV2oy5uKeV8mlHRJwuY0=;
-        b=cpSVqsXMzW3yQtvJOOgwJLiE56yN6XJefPa9xR+CbedjSgZ82JOoJIBbtMfcPKduXR
-         HWiAtsBW0CoLSpizuOCGsI2URUn3oVVmFf7pfkwT1fyikg/LKVojZy/IBvhgyO7Ua/PW
-         xkmBBSVVIPnAWLGfOAGdUfTXsTeckZbVIG/8D2EqszSvnA5P83z69ePtoQrQ3Ki29hdh
-         sy1edCBp2mNIoda6KSioP7/8hZ1J1Udu7HGiItFSNHph1auxUKMpL2OAzC+oJj4TyvqQ
-         k4NG3wzQDXptX4gS/fuw0hoS2Ku49sXjDrgPbBiO96mbjk/o3RvoBx4yuSvcJzfF2EPM
-         uOzw==
-X-Gm-Message-State: AOAM533NPsR3A2upcu778rMHrs/Z7YYaTIJvJBkMVa2RWzLaU4W0ePGJ
-        IP3yo2fAIQxZ8H68W5ainSaVTyxh2oE=
-X-Google-Smtp-Source: ABdhPJwKI6qarn9dTWSru59A8CpDtyT/eP50EfI6FRFq7kO+Chgu4PMABJWOIMHk77JHLtGRs0NWQw==
-X-Received: by 2002:a05:622a:612:: with SMTP id z18mr2749208qta.442.1640190512119;
-        Wed, 22 Dec 2021 08:28:32 -0800 (PST)
-Received: from localhost.localdomain (c-73-60-226-25.hsd1.nh.comcast.net. [73.60.226.25])
-        by smtp.gmail.com with ESMTPSA id o20sm2190179qkp.114.2021.12.22.08.28.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Dec 2021 08:28:31 -0800 (PST)
-Date:   Wed, 22 Dec 2021 11:28:29 -0500
-From:   Eric Whitney <enwlinux@gmail.com>
-To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, yinxin.x@bytedance.com,
-        enwlinux@gmail.com, Harshad Shirwadkar <harshads@google.com>
-Subject: Re: [PATCH 0/3] ext4 fast commit API cleanup
-Message-ID: <20211222162829.GA12835@localhost.localdomain>
-References: <20211220031704.441727-1-harshads@google.com>
+        id S239866AbhLWBle (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 Dec 2021 20:41:34 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:33899 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235957AbhLWBld (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 Dec 2021 20:41:33 -0500
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4JKCZr16QZzcc8V;
+        Thu, 23 Dec 2021 09:41:08 +0800 (CST)
+Received: from [10.174.178.185] (10.174.178.185) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Thu, 23 Dec 2021 09:41:31 +0800
+Subject: Re: [PATCH -next] ext4: Fix remount with 'abort' option isn't
+ effective
+To:     Lukas Czerner <lczerner@redhat.com>
+References: <20211221123214.2410593-1-yebin10@huawei.com>
+ <20211221144305.nlryh7q2cgdbpmi5@work> <61C27A0E.9050900@huawei.com>
+ <20211222091947.chmg6mcetocrmygd@work>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <jack@suse.cz>
+From:   yebin <yebin10@huawei.com>
+Message-ID: <61C3D3CB.1010106@huawei.com>
+Date:   Thu, 23 Dec 2021 09:41:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211220031704.441727-1-harshads@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211222091947.chmg6mcetocrmygd@work>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.185]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-* Harshad Shirwadkar <harshadshirwadkar@gmail.com>:
-> ext4: fast commit API cleanup
-> 
-> This patch series fixes up fast commit APIs. There are NO on-disk
-> format changes introduced in this series. The main contribution of the
-> series is that it drops fast commit specific transaction APIs and
-> makes fast commits work with journal transaction APIs of JBD2
-> journalling system. With these changes, a fast commit eligible
-> transaction is simply enclosed in calls to "jbd2_journal_start()" and
-> "jbd2_journal_stop()". If the update that is being performed is fast
-> commit ineligible, one must simply call ext4_fc_mark_ineligible()
-> after starting a transaction using "jbd2_journal_start()". The last
-> patch in the series simplifies fast commit stats recording by moving
-> it to a different function.
-> 
-> I verified that the patch series introduces no regressions in "quick"
-> and "log" groups when "fast_commit" feature is enabled.
-> 
-> Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-> 
-> Harshad Shirwadkar (3):
->   ext4: drop transaction start stop APIs for fast commit
->   ext4: drop ineligible txn start stop APIs
->   ext4: simplify updating of fast commit stats
-> 
->  fs/ext4/acl.c         |   2 -
->  fs/ext4/ext4.h        |  12 +-
->  fs/ext4/extents.c     |   9 +-
->  fs/ext4/fast_commit.c | 250 ++++++++++++------------------------------
->  fs/ext4/fast_commit.h |  27 ++---
->  fs/ext4/file.c        |   4 -
->  fs/ext4/inode.c       |   7 +-
->  fs/ext4/ioctl.c       |  13 +--
->  fs/ext4/super.c       |   1 -
->  fs/jbd2/journal.c     |   2 +
->  10 files changed, 96 insertions(+), 231 deletions(-)
-> 
-> -- 
-> 2.34.1.173.g76aa8bc2d0-goog
+
+
+On 2021/12/22 17:19, Lukas Czerner wrote:
+> On Wed, Dec 22, 2021 at 09:06:22AM +0800, yebin wrote:
+>>
+>> On 2021/12/21 22:43, Lukas Czerner wrote:
+>>> Hi,
+>>>
+>>> nice catch. This is a bug indeed. However I am currently in a process of
+>>> changing the ctx_set/clear/test_ helpers because currently it generates
+>>> functions that are unused.
+>>>
+>>> While I am at it I can just create a custom ctx_set_mount_flags()
+>>> helper that would behave as expected so that we won't have to specify
+>>> "1 < EXT4_MF_FS_ABORTED" which is not really obvious and hence error
+>>> prone.
+>> Actually, I fixed the first version as follows:
+> Allright, this looks better.
 >
-
-Hi Harshad:
-
-I applied this patch series to 5.16-rc6, and then ran 500 trials of generic/083
-using xfstests-bld's adv test case (where I'd consistently encountered kernel
-hangs after 16 or 17 runs) without failures and a full -g auto run over all the
-default test cases without regressions.
-
-Thanks for the patches!
-
-Tested-by: Eric Whitney <enwlinux@gmail.com>
-
-Eric
+>> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+>> index b72d989b77fb..199920ffc7d3 100644
+>> --- a/fs/ext4/super.c
+>> +++ b/fs/ext4/super.c
+>> @@ -2049,8 +2049,8 @@ struct ext4_fs_context {
+>>   	unsigned int	mask_s_mount_opt;
+>>   	unsigned int	vals_s_mount_opt2;
+>>   	unsigned int	mask_s_mount_opt2;
+>> -	unsigned int	vals_s_mount_flags;
+>> -	unsigned int	mask_s_mount_flags;
+>> +	unsigned long	vals_s_mount_flags;
+>> +	unsigned long	mask_s_mount_flags;
+>>   	unsigned int	opt_flags;	/* MOPT flags */
+>>   	unsigned int	spec;
+>>   	u32		s_max_batch_time;
+>> @@ -2166,7 +2166,12 @@ static inline bool ctx_test_##name(struct ext4_fs_context *ctx, int flag)\
+>>   EXT4_SET_CTX(flags);
+>>   EXT4_SET_CTX(mount_opt);
+>>   EXT4_SET_CTX(mount_opt2);
+>> -EXT4_SET_CTX(mount_flags);
+>> +
+>> +static inline void ctx_set_mount_flags(struct ext4_fs_context *ctx, int bit)
+> Maybe ctx_set_mount_flag since you can't really set more than one this
+> way?
+So I think it's a little inappropriate to use the current repair scheme.
+>> +{
+>> +	set_bit(bit, &ctx->mask_s_mount_flags);
+>> +	set_bit(bit, &ctx->vals_s_mount_flags);
+>> +}
+>>
+>>
+>> I think 'mask_s_mount_flags' is useless now.
+> So how would we know what flags have changed ? Sure, there is currently
+> no need to clear the flag but that can come in future and once it does
+> we'll only need to create a clear helper, the rest will be ready.
+> I'd rather keep it.
+>
+> -Lukas
+ From this point of view, I agree with you.
+>>> My plan is to send my patch set including this one tomorrow, will that
+>>> be fine with you ?
+>>>
+>>> -Lukas
+>>>
+>>> On Tue, Dec 21, 2021 at 08:32:14PM +0800, Ye Bin wrote:
+>>>> We test remount with 'abort' option as follows:
+>>>> [root@localhost home]# mount  /dev/sda test
+>>>> [root@localhost home]# mount | grep test
+>>>> /dev/sda on /home/test type ext4 (rw,relatime)
+>>>> [root@localhost home]# mount -o remount,abort test
+>>>> [root@localhost home]# mount | grep test
+>>>> /dev/sda on /home/test type ext4 (rw,relatime)
+>>>>
+>>>> Obviously, remount 'abort' option isn't effective.
+>>>> After 6e47a3cc68fc commit we process abort option with 'ctx_set_mount_flags':
+>>>> static inline void ctx_set_mount_flags(struct ext4_fs_context *ctx, int flag)
+>>>> {
+>>>> 	ctx->mask_s_mount_flags |= flag;
+>>>> 	ctx->vals_s_mount_flags |= flag;
+>>>> }
+>>>>
+>>>> But we test 'abort' option with 'ext4_test_mount_flag':
+>>>> static inline int ext4_test_mount_flag(struct super_block *sb, int bit)
+>>>> {
+>>>>           return test_bit(bit, &EXT4_SB(sb)->s_mount_flags);
+>>>> }
+>>>>
+>>>> To solve this issue, pass (1 <<  EXT4_MF_FS_ABORTED) to 'ctx_set_mount_flags'.
+>>>>
+>>>> Fixes:6e47a3cc68fc("ext4: get rid of super block and sbi from handle_mount_ops()")
+>>>> Signed-off-by: Ye Bin <yebin10@huawei.com>
+>>>> ---
+>>>>    fs/ext4/super.c | 2 +-
+>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+>>>> index b72d989b77fb..071b7b3c5678 100644
+>>>> --- a/fs/ext4/super.c
+>>>> +++ b/fs/ext4/super.c
+>>>> @@ -2236,7 +2236,7 @@ static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *param)
+>>>>    			 param->key);
+>>>>    		return 0;
+>>>>    	case Opt_abort:
+>>>> -		ctx_set_mount_flags(ctx, EXT4_MF_FS_ABORTED);
+>>>> +		ctx_set_mount_flags(ctx, 1 << EXT4_MF_FS_ABORTED);
+>>>>    		return 0;
+>>>>    	case Opt_i_version:
+>>>>    		ctx_set_flags(ctx, SB_I_VERSION);
+>>>> -- 
+>>>> 2.31.1
+>>>>
+>>> .
+>>>
+> .
+>
 
