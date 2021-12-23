@@ -2,55 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C2E47E89E
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Dec 2021 21:11:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F6547E8A2
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Dec 2021 21:12:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240406AbhLWULb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 23 Dec 2021 15:11:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38226 "EHLO
+        id S1350210AbhLWUMM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 Dec 2021 15:12:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233073AbhLWULa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Dec 2021 15:11:30 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37019C061401;
-        Thu, 23 Dec 2021 12:11:30 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id j6so25405070edw.12;
-        Thu, 23 Dec 2021 12:11:30 -0800 (PST)
+        with ESMTP id S233073AbhLWUML (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Dec 2021 15:12:11 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F2BC061401;
+        Thu, 23 Dec 2021 12:12:11 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id y22so25608857edq.2;
+        Thu, 23 Dec 2021 12:12:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+Z0W+uNVLefCvGenGTWY6S3Ph9n5iOBFk9YTlc8vDc8=;
-        b=eMjsHlFQ7izRRsjczN5qKrPvXKW4HRt16BdOixLAkEnLdLnE/debRO8zo4NmTQAefO
-         ued5YzGRMKGD5zL/kTmn+y+24slEG+iNfAkEq5kWhQTLnarzyQJoY9A+DY8AnNw2ZbSo
-         TdVyinRKlG7VpiIozrCBJ/fg4meV1pUnw41KXqgavn3nTupyiUZHVw13lssjahkM3wDk
-         2C5GBVoEvOU+WsXuZrBx/xGEZdM9VsjLuD3iFLsTx4ORDFsDsmadQw01JeYnLA0lSt6H
-         hS0Kt2KEeeloku77jndCY5i45dAyuDxUWPTggs67SMBu0UXHDHVJhp2zp/Lazc3rjETy
-         /xtQ==
+        bh=ql7JHWbpBacxfnANpRJ0y6Ne37lRfrh7MoiffzaYpUA=;
+        b=d1voRlNyVBYT5j0NYkHBmvYcwhZrdNsCwdKM/bXC3xjPAxl53B3ueB1myuSN0iBMSE
+         cuYl4wSCE1BIg5q4RWIXhDFNB7WGE4UHi9HI0C4EqkdGkvaCahBw0hH3o9kcJhS25LDn
+         IULzlCCCPJviJG565aQM9Uih1YO8598acqGf+euwfW5dCfQGIXmIEFsA6CJ9snz96tTU
+         h/Ll/vVvWp8Nl87zFNOtTEBdm2Z5VUoDACC53yolUmfrN/mdoTFywL22cHOCIsUzy/2t
+         beVLz5+/uKvsj0KANs+bxB0vzM4XzpGRkY99k3hPEYYB3VZ42e90oBCeX3Dx5yOcbC6J
+         aEvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+Z0W+uNVLefCvGenGTWY6S3Ph9n5iOBFk9YTlc8vDc8=;
-        b=nNngSZJV9OKAlPrOj1q338nhOrZHVdpR2HZvsffD3M3uJhXGFfDjWhWgFqhdIqpU0a
-         S0m5qdA9danOqKbClzXbCg5mmgomV5k0wy8+yHWWxKbVEEJfVdLsqQdnLAhANFfQXvjY
-         UAYhlhMiolbO3HAqeqGRpwbuPRTN7hLmEO1xC6YTxodn8nMxCJgv1uP+qBqxjciZtb9h
-         +ZcflgZ/001aG/qR+rbtX5ZKngZWkE3nanYJfxkTLQ5M9pCx2YkCvcdAAj7X22VBXRXy
-         pwEHWjPhsGsolohaFBZsR/0umY4iVXAIqOvKVQwq2/Co1uZY1AVr6vpMOPquW6HfPtM1
-         oATw==
-X-Gm-Message-State: AOAM531UkdCKRUY+w2RSlyOwG9T2HdD1qB6Ulr490kQhhWgswWEUrJs9
-        tfDrPRmf+n+BXTE2xsX/bDknMnWNAbnemUkBbx4=
-X-Google-Smtp-Source: ABdhPJwrrW8MmRZCCatjVSXKEr03lsImIO+p9ufdkuSu5Vih456wCAUQfFFq0Kdeb4SrV2hEHjXB/FeGSRC7qOfpvlY=
-X-Received: by 2002:a17:906:f283:: with SMTP id gu3mr3017338ejb.768.1640290288588;
- Thu, 23 Dec 2021 12:11:28 -0800 (PST)
+        bh=ql7JHWbpBacxfnANpRJ0y6Ne37lRfrh7MoiffzaYpUA=;
+        b=h/4P95N5qKXWdgzjh2hVTwJZKt0+BR0Q/+BFPAvaNAMOkqNX1VbelXNoNEj/+jwJ8W
+         owfyGdmCBxqm0XP0rMkytoRCcu2Pr6JBaWd9KvLckM2nZWquJTeQ1vS3cI5haLtYgo6g
+         zSaGBD8j0cbhPwK4FWozzzrh9RYCI/LgPH781J+Igq/Tu8n8i0dckrNPWKimo/m4Af4z
+         5yM1gVWcwNkQ+uCFRwCYHa1KpKD7qtZhhLcPm0ODdiepw5K08iRCq7OgvJrs+fhKHpHT
+         LAYPgavQ9ZcHtDES2haCKmf8iUJj16pLrFUM3j72Ku6uQ8Dff+6zAdxQWutFH4CFFpLH
+         9F4w==
+X-Gm-Message-State: AOAM531B5cUwjO1SU9HY/qS2o1FMYJYIkOE92qs/lprCE9XFHy4XS/MQ
+        o38XAazQUUpay57i+Imh42l20fY39463EOgeYiw=
+X-Google-Smtp-Source: ABdhPJxh9PPia1qcBdbOdFfqHrTh4HiYmGRP06JjpEnXQXNJqhNANBjIeLcGET9B12Sb/uCQ4Ie3LWFgcDIzDRQ4zNE=
+X-Received: by 2002:a17:907:6d03:: with SMTP id sa3mr3077994ejc.156.1640290329688;
+ Thu, 23 Dec 2021 12:12:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20211223032337.5198-1-yinxin.x@bytedance.com> <20211223032337.5198-2-yinxin.x@bytedance.com>
-In-Reply-To: <20211223032337.5198-2-yinxin.x@bytedance.com>
+References: <20211223032337.5198-1-yinxin.x@bytedance.com> <20211223032337.5198-3-yinxin.x@bytedance.com>
+In-Reply-To: <20211223032337.5198-3-yinxin.x@bytedance.com>
 From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Thu, 23 Dec 2021 12:11:17 -0800
-Message-ID: <CAD+ocbxF=GdQdVryoSgbf5uJJk7H0uawLoQTKdDCKfnWgbmuxA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] ext4: use ext4_ext_remove_space() for fast commit
- replay delete range
+Date:   Thu, 23 Dec 2021 12:11:58 -0800
+Message-ID: <CAD+ocbzJ2_uvc5SV1YhnAOXB4t8m0OikLCXhYTBhF-vnH1hAjQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ext4: fast commit may miss tracking unwritten range
+ during ftruncate
 To:     Xin Yin <yinxin.x@bytedance.com>
 Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
@@ -67,54 +67,32 @@ Reviewed-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 
 On Wed, Dec 22, 2021 at 7:24 PM Xin Yin <yinxin.x@bytedance.com> wrote:
 >
-> For now ,we use ext4_punch_hole() during fast commit replay delete range
-> procedure. But it will be affected by inode->i_size, which may not
-> correct during fast commit replay procedure. The following test will
-> failed.
+> If use FALLOC_FL_KEEP_SIZE to alloc unwritten range at bottom, the
+> inode->i_size will not include the unwritten range. When call
+> ftruncate with fast commit enabled, it will miss to track the
+> unwritten range.
 >
-> -create & write foo (len 1000K)
-> -falloc FALLOC_FL_ZERO_RANGE foo (range 400K - 600K)
-> -create & fsync bar
-> -falloc FALLOC_FL_PUNCH_HOLE foo (range 300K-500K)
-> -fsync foo
-> -crash before a full commit
->
-> After the fast_commit reply procedure, the range 400K-500K will not be
-> removed. Because in this case, when calling ext4_punch_hole() the
-> inode->i_size is 0, and it just retruns with doing nothing.
->
-> Change to use ext4_ext_remove_space() instead of ext4_punch_hole()
-> to remove blocks of inode directly.
+> Change to trace the full range during ftruncate.
 >
 > Signed-off-by: Xin Yin <yinxin.x@bytedance.com>
 > ---
->  fs/ext4/fast_commit.c | 13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
+>  fs/ext4/inode.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 >
-> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> index aa05b23f9c14..3deb97b22ca4 100644
-> --- a/fs/ext4/fast_commit.c
-> +++ b/fs/ext4/fast_commit.c
-> @@ -1708,11 +1708,14 @@ ext4_fc_replay_del_range(struct super_block *sb, struct ext4_fc_tl *tl,
->                 }
->         }
->
-> -       ret = ext4_punch_hole(inode,
-> -               le32_to_cpu(lrange.fc_lblk) << sb->s_blocksize_bits,
-> -               le32_to_cpu(lrange.fc_len) <<  sb->s_blocksize_bits);
-> -       if (ret)
-> -               jbd_debug(1, "ext4_punch_hole returned %d", ret);
-> +       down_write(&EXT4_I(inode)->i_data_sem);
-> +       ret = ext4_ext_remove_space(inode, lrange.fc_lblk,
-> +                               lrange.fc_lblk + lrange.fc_len - 1);
-> +       up_write(&EXT4_I(inode)->i_data_sem);
-> +       if (ret) {
-> +               iput(inode);
-> +               return 0;
-> +       }
->         ext4_ext_replay_shrink_inode(inode,
->                 i_size_read(inode) >> sb->s_blocksize_bits);
->         ext4_mark_inode_dirty(NULL, inode);
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 82f555d26980..1d2ba63874ad 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -5423,8 +5423,7 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
+>                                 ext4_fc_track_range(handle, inode,
+>                                         (attr->ia_size > 0 ? attr->ia_size - 1 : 0) >>
+>                                         inode->i_sb->s_blocksize_bits,
+> -                                       (oldsize > 0 ? oldsize - 1 : 0) >>
+> -                                       inode->i_sb->s_blocksize_bits);
+> +                                       EXT_MAX_BLOCKS - 1);
+>                         else
+>                                 ext4_fc_track_range(
+>                                         handle, inode,
 > --
 > 2.20.1
 >
