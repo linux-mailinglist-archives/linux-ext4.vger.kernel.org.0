@@ -2,67 +2,119 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A22CA47E5DA
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Dec 2021 16:43:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9690847E684
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Dec 2021 17:44:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240100AbhLWPnj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 23 Dec 2021 10:43:39 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:34566 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1349410AbhLWPmH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Dec 2021 10:42:07 -0500
-Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1BNFfow6002088
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Dec 2021 10:41:51 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 2039E15C00C8; Thu, 23 Dec 2021 10:41:50 -0500 (EST)
-Date:   Thu, 23 Dec 2021 10:41:50 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     yebin <yebin10@huawei.com>
-Cc:     Lukas Czerner <lczerner@redhat.com>, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jack@suse.cz
-Subject: Re: [PATCH -next] ext4: Fix remount with 'abort' option isn't
- effective
-Message-ID: <YcSYvk5DdGjjB9q/@mit.edu>
-References: <20211221123214.2410593-1-yebin10@huawei.com>
- <20211221144305.nlryh7q2cgdbpmi5@work>
- <61C27A0E.9050900@huawei.com>
- <20211222091947.chmg6mcetocrmygd@work>
- <61C3D3CB.1010106@huawei.com>
+        id S1349240AbhLWQo4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 Dec 2021 11:44:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233591AbhLWQoz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Dec 2021 11:44:55 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41B61C061401
+        for <linux-ext4@vger.kernel.org>; Thu, 23 Dec 2021 08:44:54 -0800 (PST)
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1640277891;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=DqjzpyejmKl3fb8aZGQqkotqBv+cbYCwbKa9BS3bBcE=;
+        b=XM9OgyOlnTsARrpHECG5nN+1B6wAVtiYlz7EnnkBk0O/p1ytVb0svf7SwVa1JVA0pi/KNL
+        CkmdLho0y91/G2hCAbf+zo79HdS7pv7prCHMsDxYKlbMy+K27IV50ytSVJ4t6dWhC2ngQP
+        YWGD/UNbLqqR5KtaGOqx9G4JJ1HUdh4f2OjTqfuza5Uxh3JJRuM/bfGkI3ZHe7Z+Eg77b/
+        89jxpy3dJBvwku5kl3TtME8lJ0OmjsCov69cQRQdtLdyy5LSKwxXOCsopjEJrvRJEHYb9i
+        ecgbTGXGnbffLSStMdFMzLUUdkeFr2vgil+QlL64TVJ9wXddFRqY2cdXMnrBQw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1640277891;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=DqjzpyejmKl3fb8aZGQqkotqBv+cbYCwbKa9BS3bBcE=;
+        b=yh9/7gsnPG4hexn2YPepQuO4FfWlm1Dw5TVdSO9zmlKnJCTmv46PkkmxyoMyQ7wlof4TeT
+        kikV0nx78KqGTlAQ==
+To:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Lukas Czerner <lczerner@redhat.com>,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: [PATCH REPOST REPOST] ext4: Destroy ext4_fc_dentry_cachep kmemcache on module removal.
+Date:   Thu, 23 Dec 2021 17:44:36 +0100
+Message-Id: <20211223164436.2628390-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <61C3D3CB.1010106@huawei.com>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Dec 23, 2021 at 09:41:31AM +0800, yebin wrote:
-> 
-> On 2021/12/22 17:19, Lukas Czerner wrote:
-> > On Wed, Dec 22, 2021 at 09:06:22AM +0800, yebin wrote:
-> > > 
-> > > On 2021/12/21 22:43, Lukas Czerner wrote:
-> > > > Hi,
-> > > > 
-> > > > nice catch. This is a bug indeed. However I am currently in a process of
-> > > > changing the ctx_set/clear/test_ helpers because currently it generates
-> > > > functions that are unused.
-> > > > 
-> > > > While I am at it I can just create a custom ctx_set_mount_flags()
-> > > > helper that would behave as expected so that we won't have to specify
-> > > > "1 < EXT4_MF_FS_ABORTED" which is not really obvious and hence error
-> > > > prone.
-> > > Actually, I fixed the first version as follows:
-> > Allright, this looks better.
+The kmemcache for ext4_fc_dentry_cachep remains registered after module
+removal.
 
-Was there an update to this patch?  I can't seem to find it in my
-inbox or in patchwork....
+Destroy ext4_fc_dentry_cachep kmemcache on module removal.
 
-Thanks,
+Fixes: aa75f4d3daaeb ("ext4: main fast-commit commit path")
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Reviewed-by: Lukas Czerner <lczerner@redhat.com>
+Reviewed-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Link: https://lore.kernel.org/r/20211110134640.lyku5vklvdndw6uk@linutronix.=
+de
+Link: https://lore.kernel.org/r/YbiK3JetFFl08bd7@linutronix.de
+---
+ fs/ext4/ext4.h        | 1 +
+ fs/ext4/fast_commit.c | 5 +++++
+ fs/ext4/super.c       | 2 ++
+ 3 files changed, 8 insertions(+)
 
-					- Ted
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 9cc55bcda6ba4..2d414dfd60cb6 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -2936,6 +2936,7 @@ bool ext4_fc_replay_check_excluded(struct super_block=
+ *sb, ext4_fsblk_t block);
+ void ext4_fc_replay_cleanup(struct super_block *sb);
+ int ext4_fc_commit(journal_t *journal, tid_t commit_tid);
+ int __init ext4_fc_init_dentry_cache(void);
++void ext4_fc_destroy_dentry_cache(void);
+=20
+ /* mballoc.c */
+ extern const struct seq_operations ext4_mb_seq_groups_ops;
+diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+index 0f32b445582ab..4665508efd778 100644
+--- a/fs/ext4/fast_commit.c
++++ b/fs/ext4/fast_commit.c
+@@ -2192,3 +2192,8 @@ int __init ext4_fc_init_dentry_cache(void)
+=20
+ 	return 0;
+ }
++
++void ext4_fc_destroy_dentry_cache(void)
++{
++	kmem_cache_destroy(ext4_fc_dentry_cachep);
++}
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index b72d989b77fb6..55f2fba6a5292 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -7133,6 +7133,7 @@ static int __init ext4_init_fs(void)
+ out:
+ 	unregister_as_ext2();
+ 	unregister_as_ext3();
++	ext4_fc_destroy_dentry_cache();
+ out05:
+ 	destroy_inodecache();
+ out1:
+@@ -7159,6 +7160,7 @@ static void __exit ext4_exit_fs(void)
+ 	unregister_as_ext2();
+ 	unregister_as_ext3();
+ 	unregister_filesystem(&ext4_fs_type);
++	ext4_fc_destroy_dentry_cache();
+ 	destroy_inodecache();
+ 	ext4_exit_mballoc();
+ 	ext4_exit_sysfs();
+--=20
+2.34.1
+
