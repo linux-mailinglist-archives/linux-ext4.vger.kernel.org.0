@@ -2,74 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F225E47E517
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Dec 2021 15:46:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98CC547E580
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Dec 2021 16:36:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232621AbhLWOqJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 23 Dec 2021 09:46:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231679AbhLWOqI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Dec 2021 09:46:08 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CFADC061401
-        for <linux-ext4@vger.kernel.org>; Thu, 23 Dec 2021 06:46:08 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id bp39so4731827qtb.6
-        for <linux-ext4@vger.kernel.org>; Thu, 23 Dec 2021 06:46:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=joyRshBMB0pUZouBTijbaxpx24se8NW3vGdGk6Vw+T8=;
-        b=PsjuIA2V3DwGnUTxeRnpk6QqaOPSAxqErQCISl7+HkTnhcuzFyetIKjYOoN6611MtX
-         fUwIGQsi8BUdbeidyrx1aiQ/luOWPS2wyWmECO/pORSGp/soipXhc0xF1Z04qh4J21jv
-         YvOw4bIBL/w/PxQqfNdcZqUjJYSdXXHle8W02fhcCPXmx1Kwx3UX06HwscJVkymSETML
-         J9FH2XeoIkQF1BSusKFJPwh1Dz2lIIEE84KmhFKkf2uiuioxkIaCxx3Bfhk7mfbkJmtk
-         f2+tJ4PVyZ9U4f+qa9kD1jfV55GnXA+9pBpJvEJ9ui3v/trdCEA0odACFbcJWvRK4am2
-         CJXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=joyRshBMB0pUZouBTijbaxpx24se8NW3vGdGk6Vw+T8=;
-        b=IEO5OMD60sSEeVV6O9tpfyz1G8UK7431ZxJExZAyOTkV7QnWyRmfMfCu6CAMSJSuPC
-         rRPHBoJZSmFhP7fwbPlMyHqm8H7JULAzrYRTeCgsWX3DhjrdrYqWDHAFwH0x2L1vsc0J
-         huBRQKRlKMvLiwGdo4T8msZ1qvAcv4TBrm5n51YObqitRvAxq87JREMa3UXCjd8fGGth
-         4V1JMnq1cFSr5FXymGPkHn6rJvwPkF06o6aNm4uNV1ybaqz+6hOohe2iMHxLnXZXXatS
-         jG1CqTFhRSB6SM+MPiu8lfdFWPdTZB9fTDtoHQJO5FYxlmkRWP3PuhcWbfphFHFdhZEV
-         8XFQ==
-X-Gm-Message-State: AOAM533/Zg8yXBbnmKFtUbksQbwVW4OcqWVeDeGu6zpg2DhGSYN8swrg
-        ce2GZAel75KXab5vpDbwTWMyVJuPE1CTJyoOjB4=
-X-Google-Smtp-Source: ABdhPJxQVrrJi7Gx/gk7TX2wPuGnB9ap0x5NneevNNM1PpfL0ynIsMF3tNNjxlpopNkaxJ58NQRvLpRdtUoxgSvQ3Nk=
-X-Received: by 2002:ac8:5913:: with SMTP id 19mr1867952qty.588.1640270766960;
- Thu, 23 Dec 2021 06:46:06 -0800 (PST)
+        id S235773AbhLWPgr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 Dec 2021 10:36:47 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:33567 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232417AbhLWPgr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Dec 2021 10:36:47 -0500
+Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1BNFahvH032356
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Dec 2021 10:36:44 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 7F36215C00C8; Thu, 23 Dec 2021 10:36:43 -0500 (EST)
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     linux-ext4@vger.kernel.org, Lukas Czerner <lczerner@redhat.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>
+Subject: Re: [PATCH 1/2] ext4: remove lazytime/nolazytime mount options handled by MS_LAZYTIME
+Date:   Thu, 23 Dec 2021 10:36:39 -0500
+Message-Id: <164027376767.2884327.15583563759797199280.b4-ty@mit.edu>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20211222104517.11187-1-lczerner@redhat.com>
+References: <20211222104517.11187-1-lczerner@redhat.com>
 MIME-Version: 1.0
-Sender: danielekeh51@gmail.com
-Received: by 2002:ad4:4c10:0:0:0:0:0 with HTTP; Thu, 23 Dec 2021 06:46:06
- -0800 (PST)
-From:   Sophia Erick Lucas <sdltdkggl3455@gmail.com>
-Date:   Thu, 23 Dec 2021 15:46:06 +0100
-X-Google-Sender-Auth: Zy8cu7UcQmlhdz4faqxNdx8-4Y4
-Message-ID: <CAFF_m1Ra1oCWe182wJzne7ioKrnm=whTd226623zfsJCj_JFfQ@mail.gmail.com>
-Subject: HELLO
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello My Dear,
+On Wed, 22 Dec 2021 11:45:16 +0100, Lukas Czerner wrote:
+> The lazytime and nolazytime mount options were added temporarily back in
+> 2015 with commit a26f49926da9 ("ext4: add optimization for the lazytime
+> mount option"). It think it has been enough time for the util-linux with
+> lazytime support to get widely used. Remove the mount options.
+> 
+> 
 
-It is my pleasure to communicate with you, I know that this message
-will be a surprise to you my name is Mrs. Sophia Erick, I am diagnosed
-with ovarian cancer which my doctor have confirmed that I have only
-some weeks to live so I have decided you handover the sum of($
-11,000,000.00 ) through I decided handover the money in my account to
-you for help of the orphanage homes and the needy once
+Applied, thanks!
 
-Please   kindly reply me here as soon as possible to enable me give
-you more information but before handing over my details to you please
-assure me that you will only take 30%  of the money and share the rest
-to the poor orphanage home and the needy once, thank you am waiting to
-hear from you
+[1/2] ext4: remove lazytime/nolazytime mount options handled by MS_LAZYTIME
+      commit: 4437992be7ca3ac5dd0a62cad10357112d4fb43e
+[2/2] ext4: fix i_version handling on remount
+      commit: 960e0ab63b2e5d8476bc873743f812e9e90cd047
 
-Mrs Sophia Erick.
+Best regards,
+-- 
+Theodore Ts'o <tytso@mit.edu>
