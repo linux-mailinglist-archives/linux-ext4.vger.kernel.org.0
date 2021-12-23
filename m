@@ -2,112 +2,86 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F3747DDD1
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Dec 2021 03:44:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A8247DE0E
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Dec 2021 04:24:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345966AbhLWCor (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 Dec 2021 21:44:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59300 "EHLO
+        id S1346075AbhLWDYM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 Dec 2021 22:24:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345963AbhLWCoq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 Dec 2021 21:44:46 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48050C061401;
-        Wed, 22 Dec 2021 18:44:46 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id b13so15727814edd.8;
-        Wed, 22 Dec 2021 18:44:46 -0800 (PST)
+        with ESMTP id S231389AbhLWDYL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 Dec 2021 22:24:11 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E8DC061401
+        for <linux-ext4@vger.kernel.org>; Wed, 22 Dec 2021 19:24:11 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id rj2-20020a17090b3e8200b001b1944bad25so4361622pjb.5
+        for <linux-ext4@vger.kernel.org>; Wed, 22 Dec 2021 19:24:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p4jPq2pw+PTiHlL/hTZBeJotK5UYVBBCWawKPHqgffE=;
-        b=n5LXwVC03oImLYI1xcsiWVbwWsq3qnn4rQzW55QNyXjs+y6kNg6lcjvH8O7DWIsXVW
-         8rXu6BpNIYakkOiH0viNy6JFpLGI2qwGRm8OTdlvlNZOvhxTSZRHA9JdOnbss/DOoazn
-         7dQbt8dfRRmVX93hjhSBcLCmC0EkVODUxJG1yEp0DXCjB8lf0pWnAVy+BDO20x5PYuMQ
-         BOMj4peQVPKl2uzdepyQoNoZpL2S/Ko+KI/gP02p/Rhf6q65cdfD1eFX7JcxX1jakcaS
-         tKBEUTpR0BqpEyf9clLtXhwUb+qrluzN/iReUoipDh64tkG7mo8Eedrt5rKK7WLRgUVS
-         DMQQ==
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LS8DywJ2uBotDQESRAfls6o357hbpNH3R8BA0Fi916w=;
+        b=lHLwS7wAvLitgo6ES2KRcZ1GVPKcovSQnuFOpENHUp1rAYu/G1c3ZAe/gRjz/6zx1M
+         LxJc2AicRtvTeVtzXWMIbRUYExSNxu3ZIh/fyaZcb/sM6e3rgOei1qiZkwA82DH8CPs6
+         dNPy6K09gknxnf3ku0F/wJLcA3khMFzNAfpiNO4Pn/8ap6axdeBkMnSC+m+sw+3LkMup
+         8w9PXmk64U/FnyTbBJp0QVJcevypHmXwRjKII+Na4ieHaEB0u2ag2ok93Co0NUywL/Xe
+         RHMfKu1DW6ou8RKfE/lDKa4Y04X69SZ6PExHVcC2wYNbQwIrJXs8Zdo3c4ULkna5oumy
+         3H0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p4jPq2pw+PTiHlL/hTZBeJotK5UYVBBCWawKPHqgffE=;
-        b=wYb/vM9fjUlBreIaBGaR5/YWucByB0nI8ScE0PQOb+KAtNp51vmHG4U9H+Mdiz/gRU
-         w5mCNPEcHYxJ+BkEBbaG1ZbfF5oHm2uR/q/OtD86kHIf3BETTQxSF7kWOEL+xa/k7FAq
-         gmfOgLCyroNMvGlGN9+RAGloESbJdByqJIVHH5+ZbnsQYo+GxWfD4M0INgU1DdBCGHLv
-         x+/qnmPa9iARmKuCrMST5XMCVvne5H8p3YTH4PRAmNPdXDsBknXkYySPMn4/X8IyDaJk
-         d7g4p73Q/ABknIFEzjheuzSoCuDhfene9/+E0BEj3lkYOi/J5LROhOwL5aXaOYKIlrW+
-         dzEQ==
-X-Gm-Message-State: AOAM530jEtYaLNhE/O3ujRH12Of/LI5/lxbivi9MG2U7OIHz451LEQ3D
-        90yqalVYEubFJAprz489pFtMrYMw9x0b3iDVBfs=
-X-Google-Smtp-Source: ABdhPJyFTkczcsccFrzxIAQdmRL7cKTyK2B9g272glowgs5lurtIekzTpvLZi5I/QOrnazJzjDoYITI0TP/frw9/0Uc=
-X-Received: by 2002:a17:907:948d:: with SMTP id dm13mr416078ejc.607.1640227484776;
- Wed, 22 Dec 2021 18:44:44 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LS8DywJ2uBotDQESRAfls6o357hbpNH3R8BA0Fi916w=;
+        b=u7o5eJTMwW8ALWnMXC4vmOk9r4exTuj1nk+oJc+mVRNxqSsKtaqJNv6DmdJDMDYwTZ
+         TJNO1c1echhZVezR0TpIyBbnxVjRU7M+u0PUCtcHP41lHsYbJLfH4nGSBem6vHaDjWi6
+         0C9qejkE6kCXMJgJUOpuGrZb+FtzFXxb0h1vhpYDcomjiGkVSd7sHVQiTrfUdTFDtG7E
+         cTeD8iqXIZWCwIlmiF6McHAvDBA+fahI8HrBsvDHfpK79VDezLpSwNDGOUNEH9ZwishS
+         VOCoZoaA8vO2efuDJxe9Sqh6BoELJHlfghtSJcOJaEpzE4QsofK3IVRy7C3/YfZ6ryup
+         7Msg==
+X-Gm-Message-State: AOAM530OhzxQrRcxdXYLbDn/ww/DJK0sa45VULgfmAT0gC38m3LeydBr
+        V0cQ3gUCE1KxDNAqFQ+hR9cE84rdRiwoXA==
+X-Google-Smtp-Source: ABdhPJzzO25WFeEjMVlRpDbyTeU+tl2GTDKhLHGdlfQgu9owR/074xdIe33WKXIUcAmDFIAJyEUGtw==
+X-Received: by 2002:a17:90b:2243:: with SMTP id hk3mr949951pjb.72.1640229851211;
+        Wed, 22 Dec 2021 19:24:11 -0800 (PST)
+Received: from yinxin.bytedance.net ([139.177.225.235])
+        by smtp.gmail.com with ESMTPSA id d3sm4348622pfv.192.2021.12.22.19.24.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Dec 2021 19:24:10 -0800 (PST)
+From:   Xin Yin <yinxin.x@bytedance.com>
+To:     harshadshirwadkar@gmail.com, tytso@mit.edu,
+        adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xin Yin <yinxin.x@bytedance.com>
+Subject: [PATCH 0/2] ext4: fast commit crash consistency issues
+Date:   Thu, 23 Dec 2021 11:23:35 +0800
+Message-Id: <20211223032337.5198-1-yinxin.x@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211216080303.388139-1-yinxin.x@bytedance.com> <CAD+ocbzWryj6FnHR4naiBvNHN4WqyuGo_n-52J_42jpLVLeAew@mail.gmail.com>
-In-Reply-To: <CAD+ocbzWryj6FnHR4naiBvNHN4WqyuGo_n-52J_42jpLVLeAew@mail.gmail.com>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Wed, 22 Dec 2021 18:44:33 -0800
-Message-ID: <CAD+ocbx=e14c1wwv7zpp2N7v=kSHPD=muBC37PcRrdUDqtDKCA@mail.gmail.com>
-Subject: Re: [PATCH] ext4: call fallocate may cause process to hang when using
- fast commit
-To:     Xin Yin <yinxin.x@bytedance.com>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Once the patch series "ext4 fast commit API cleanup" gets merged in
-(https://patchwork.ozlabs.org/project/linux-ext4/list/?series=277672),
-this patch won't be required anymore. So, I'll undo my review in favor
-of merging the API cleanup patch series first.
+This patch sets fix 2 crash-consistency issues of fast commit.
+First patch change to use ext4_ext_remove_space instead of 
+ext4_punch_hole during replay delete range procedure. This 
+avoid replay procedure being affeced by incorrect inode->i_size. 
+Second patch correct the trank range logic for ftruncte.
 
-- Harshad
+After testing this patch sets with xfstests-bld, in the "log" and 
+"quick" group with config "fast_commit" is selected. No regressions
+was found.
 
-On Fri, Dec 17, 2021 at 12:17 PM harshad shirwadkar
-<harshadshirwadkar@gmail.com> wrote:
->
-> Thanks for the patch Xin, it looks good to me. I think there are a few
-> other places where we are not stopping the transaction before calling
-> commit. I'm trying to find them out.
->
-> Reviewed-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
->
-> On Thu, Dec 16, 2021 at 12:04 AM Xin Yin <yinxin.x@bytedance.com> wrote:
-> >
-> > If open a file with O_SYNC, and call fallocate with mode=0.when using
-> > fast commit, will cause the process to hang.
-> >
-> > During the fast_commit procedure, it will wait for inode update done.
-> > call ext4_fc_stop_update() before ext4_fc_commit() to mark inode
-> > complete update.
-> >
-> > Signed-off-by: Xin Yin <yinxin.x@bytedance.com>
-> > ---
-> >  fs/ext4/extents.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >
-> > diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> > index 4108896d471b..92db33887b6c 100644
-> > --- a/fs/ext4/extents.c
-> > +++ b/fs/ext4/extents.c
-> > @@ -4707,8 +4707,12 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
-> >                 goto out;
-> >
-> >         if (file->f_flags & O_SYNC && EXT4_SB(inode->i_sb)->s_journal) {
-> > +               ext4_fc_stop_update(inode);
-> >                 ret = ext4_fc_commit(EXT4_SB(inode->i_sb)->s_journal,
-> >                                         EXT4_I(inode)->i_sync_tid);
-> > +               inode_unlock(inode);
-> > +               trace_ext4_fallocate_exit(inode, offset, max_blocks, ret);
-> > +               return ret;
-> >         }
-> >  out:
-> >         inode_unlock(inode);
-> > --
-> > 2.20.1
-> >
+Signed-off-by: Xin Yin <yinxin.x@bytedance.com>
+
+Xin Yin (2):
+  ext4: use ext4_ext_remove_space() for fast commit replay delete range
+  ext4: fast commit may miss tracking unwritten range during ftruncate
+
+ fs/ext4/fast_commit.c | 13 ++++++++-----
+ fs/ext4/inode.c       |  3 +--
+ 2 files changed, 9 insertions(+), 7 deletions(-)
+
+-- 
+2.20.1
+
