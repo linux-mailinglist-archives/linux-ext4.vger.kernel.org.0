@@ -2,121 +2,98 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98F247EE10
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Dec 2021 10:52:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0608147F13B
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Dec 2021 22:51:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352347AbhLXJwL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 24 Dec 2021 04:52:11 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:30103 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343853AbhLXJwJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Dec 2021 04:52:09 -0500
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4JL2MD0YpBz1DKGZ;
-        Fri, 24 Dec 2021 17:48:56 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Fri, 24 Dec
- 2021 17:52:07 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
-        <lczerner@redhat.com>, Ye Bin <yebin10@huawei.com>
-Subject: [PATCH -next] ext4: Fix null-ptr-deref in '__ext4_journal_ensure_credits'
-Date:   Fri, 24 Dec 2021 18:03:41 +0800
-Message-ID: <20211224100341.3299128-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        id S1353594AbhLXVuK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 24 Dec 2021 16:50:10 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:37210 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353591AbhLXVuJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Dec 2021 16:50:09 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C1426B8234D
+        for <linux-ext4@vger.kernel.org>; Fri, 24 Dec 2021 21:50:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 77030C36AEC
+        for <linux-ext4@vger.kernel.org>; Fri, 24 Dec 2021 21:50:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1640382607;
+        bh=aq/BJOqvrfRf3I7ANEFLY7jDwEns0IyDt0dV33BDIGo=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=RIVqWDbJlCnDsRm00zH4477Dw3J2rsnW3eqm2h9Aqbncgdu7y173zknpuSsQpZjOA
+         1In/yx7UgTvMA/AIBbMB+BxwVzRgiejIHbfOg8oS3xoec4ZnN6mu1DRaeHyZiGpkYZ
+         8vbj0XUDEYbR+z/lpL4djH3qEXJKIPcF5dmv0ku3gm5hjksDsLES2DcQulQ85pApyA
+         MJ11W/llEYaKZVsdOAnIJ1C8HQZhWNVGfTQe/RdWBbhptA8wdLi6zQY2/HLVdp9yHh
+         z7D7keg+Mb017e+bCwPcgi+F5bV7LgQh8tpc+g9tLbf+jeM31F07BmtZwXYO96gddY
+         bg4j9a8RBoO5g==
+Received: by pdx-korg-bugzilla-2.web.codeaurora.org (Postfix, from userid 48)
+        id 30D0360F9E; Fri, 24 Dec 2021 21:50:07 +0000 (UTC)
+From:   bugzilla-daemon@bugzilla.kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 215225] FUZZ: Page fault and infinite loop after mount and
+ operate on crafted image
+Date:   Fri, 24 Dec 2021 21:50:06 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: qhjin_dev@163.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: cc
+Message-ID: <bug-215225-13602-bwS1Tocgi0@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-215225-13602@https.bugzilla.kernel.org/>
+References: <bug-215225-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-We got issue as follows when run syzkaller test:
-[ 1901.130043] EXT4-fs error (device vda): ext4_remount:5624: comm syz-executor.5: Abort forced by user
-[ 1901.130901] Aborting journal on device vda-8.
-[ 1901.131437] EXT4-fs error (device vda): ext4_journal_check_start:61: comm syz-executor.16: Detected aborted journal
-[ 1901.131566] EXT4-fs error (device vda): ext4_journal_check_start:61: comm syz-executor.11: Detected aborted journal
-[ 1901.132586] EXT4-fs error (device vda): ext4_journal_check_start:61: comm syz-executor.18: Detected aborted journal
-[ 1901.132751] EXT4-fs error (device vda): ext4_journal_check_start:61: comm syz-executor.9: Detected aborted journal
-[ 1901.136149] EXT4-fs error (device vda) in ext4_reserve_inode_write:6035: Journal has aborted
-[ 1901.136837] EXT4-fs error (device vda): ext4_journal_check_start:61: comm syz-fuzzer: Detected aborted journal
-[ 1901.136915] ==================================================================
-[ 1901.138175] BUG: KASAN: null-ptr-deref in __ext4_journal_ensure_credits+0x74/0x140 [ext4]
-[ 1901.138343] EXT4-fs error (device vda): ext4_journal_check_start:61: comm syz-executor.13: Detected aborted journal
-[ 1901.138398] EXT4-fs error (device vda): ext4_journal_check_start:61: comm syz-executor.1: Detected aborted journal
-[ 1901.138808] Read of size 8 at addr 0000000000000000 by task syz-executor.17/968
-[ 1901.138817]
-[ 1901.138852] EXT4-fs error (device vda): ext4_journal_check_start:61: comm syz-executor.30: Detected aborted journal
-[ 1901.144779] CPU: 1 PID: 968 Comm: syz-executor.17 Not tainted 4.19.90-vhulk2111.1.0.h893.eulerosv2r10.aarch64+ #1
-[ 1901.146479] Hardware name: linux,dummy-virt (DT)
-[ 1901.147317] Call trace:
-[ 1901.147552]  dump_backtrace+0x0/0x2d8
-[ 1901.147898]  show_stack+0x28/0x38
-[ 1901.148215]  dump_stack+0xec/0x15c
-[ 1901.148746]  kasan_report+0x108/0x338
-[ 1901.149207]  __asan_load8+0x58/0xb0
-[ 1901.149753]  __ext4_journal_ensure_credits+0x74/0x140 [ext4]
-[ 1901.150579]  ext4_xattr_delete_inode+0xe4/0x700 [ext4]
-[ 1901.151316]  ext4_evict_inode+0x524/0xba8 [ext4]
-[ 1901.151985]  evict+0x1a4/0x378
-[ 1901.152353]  iput+0x310/0x428
-[ 1901.152733]  do_unlinkat+0x260/0x428
-[ 1901.153056]  __arm64_sys_unlinkat+0x6c/0xc0
-[ 1901.153455]  el0_svc_common+0xc8/0x320
-[ 1901.153799]  el0_svc_handler+0xf8/0x160
-[ 1901.154265]  el0_svc+0x10/0x218
-[ 1901.154682] ==================================================================
+https://bugzilla.kernel.org/show_bug.cgi?id=3D215225
 
-This issue may happens like this:
-	Process1                               Process2
-ext4_evict_inode
-  ext4_journal_start
-   ext4_truncate
-     ext4_ind_truncate
-       ext4_free_branches
-         ext4_ind_truncate_ensure_credits
-	   ext4_journal_ensure_credits_fn
-	     ext4_journal_restart
-	       handle->h_transaction = NULL;
-                                           mount -o remount,abort  /mnt
-					   -> trigger JBD abort
-               start_this_handle -> will return failed
-  ext4_xattr_delete_inode
-    ext4_journal_ensure_credits
-      ext4_journal_ensure_credits_fn
-        __ext4_journal_ensure_credits
-	  jbd2_handle_buffer_credits
-	    journal = handle->h_transaction->t_journal; ->null-ptr-deref
+Qinghua Jin (qhjin_dev@163.com) changed:
 
-Now, indirect truncate process didn't handle error. To solve this issue
-maybe simply add check handle is abort in '__ext4_journal_ensure_credits'
-is enough, and i also think this is necessary.
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+                 CC|                            |qhjin_dev@163.com
 
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- fs/ext4/ext4_jbd2.c | 2 ++
- 1 file changed, 2 insertions(+)
+--- Comment #1 from Qinghua Jin (qhjin_dev@163.com) ---
+It seems that the tmp38.img is corrupt. Could you please send a correct one?
 
-diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
-index 6def7339056d..3477a16d08ae 100644
---- a/fs/ext4/ext4_jbd2.c
-+++ b/fs/ext4/ext4_jbd2.c
-@@ -162,6 +162,8 @@ int __ext4_journal_ensure_credits(handle_t *handle, int check_cred,
- {
- 	if (!ext4_handle_valid(handle))
- 		return 0;
-+	if (is_handle_aborted(handle))
-+		return -EROFS;
- 	if (jbd2_handle_buffer_credits(handle) >= check_cred &&
- 	    handle->h_revoke_credits >= revoke_cred)
- 		return 0;
--- 
-2.31.1
+$ e2fsck tmp38.img=20
+e2fsck 1.45.7 (28-Jan-2021)
+ext2fs_open2: The ext2 superblock is corrupt
+e2fsck: Superblock invalid, trying backup blocks...
+tmp38.img contains a file system with errors, check forced.
+Resize inode not valid.  Recreate<y>? yes
+Pass 1: Checking inodes, blocks, and sizes
+Root inode has dtime set (probably due to old mke2fs).  Fix<y>? yes
+Inode 13 has an invalid extent
+        (logical block 0, invalid physical block 8332801, len 1)
+Clear<y>? yes
+Inode 13 has an invalid extent
+        (logical block 0, invalid physical block 64344, len 1)
+Clear<y>? yes
 
+
+Thanks,
+Qinghua Jin
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
