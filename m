@@ -2,97 +2,121 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 339BC47EC57
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Dec 2021 07:57:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D98F247EE10
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Dec 2021 10:52:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351657AbhLXG5n (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 24 Dec 2021 01:57:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351653AbhLXG5n (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Dec 2021 01:57:43 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 156C0C061757
-        for <linux-ext4@vger.kernel.org>; Thu, 23 Dec 2021 22:57:43 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id b1-20020a17090a990100b001b14bd47532so7730278pjp.0
-        for <linux-ext4@vger.kernel.org>; Thu, 23 Dec 2021 22:57:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=i+Om8CUBFbbiGYcwD1vEJMNJB8KZwFnP8OoPGSPB78A=;
-        b=AxjTX43BGCBHkubVDj4xJFjp3veZ8CeoSJVzBvVndcchGGSW43PcoSkkDP+0Qn3BVF
-         dtISfUCWP7zPHO8LuraVWIOvMV5YWtjIg6fmpBymkxFpwfWG8CrUrVNa1nf7vVevPwx1
-         85IyFU/kxLEm8XCC97PTG639k2OI9NL5s06tEDzHhKJmEHwmIQN5q25S604r1gzPPqYE
-         jRdvcM7+7yH/ZsJnEgKWWeStJaCbbqCkKCeERpOsgnYfNV5DsuR0g8mulN0LBgYzmZNv
-         ZFaCZOMRuKk0QLyxmKwo0qv/1tjxr/xbMOYu1BbSRLmEASZfgiY5Fy/3EozW2ZG282nL
-         VJuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=i+Om8CUBFbbiGYcwD1vEJMNJB8KZwFnP8OoPGSPB78A=;
-        b=081Fe9PyDt9fl9GCDPR8gX+5EEcDWXk4eeujch8UVGn60oJnThtcNzRMjPcdAxFUFQ
-         LPrNpfwWoTo2XBidrgSfmHyU3nloCAVkutmsO+uQGVghZ9vKuNRUJge7Nax7pQLYu8VE
-         dplYM348coAhCVQVSYY4l/IX1WNPgLjkO9TJ9igkcz7ZER03iiUgBcMQ9OXONqOVrGN+
-         IKuaVQYKOXJ4/Uvj3FkTLFAfCQ4XXdh2ARlOKwOxDsVDhJSkuhrB+BPSfM/jzqYXRVmD
-         hBndDbvcuht9lghynzoIulvgxBeJo3fqmYXgyk//8s1VCqD8rNL6HIMMkKhVpalx0N2S
-         GfiQ==
-X-Gm-Message-State: AOAM532vAwNJ3EauN3K/PmwtMEKdSDvCQtpWV1j+d5hcnDO3S5KnIuXZ
-        gVton1HZc1KC8AOhchq3NP3bvQ==
-X-Google-Smtp-Source: ABdhPJwo1+lGB/2cwbm1vE2CWTqK5ITZii/N97FqtQGMsQtVKTYXDyBjyw24JGib+W8sxRvnJuUCGg==
-X-Received: by 2002:a17:90b:3a8c:: with SMTP id om12mr6709434pjb.232.1640329062678;
-        Thu, 23 Dec 2021 22:57:42 -0800 (PST)
-Received: from yinxin.bytedance.net ([139.177.225.235])
-        by smtp.gmail.com with ESMTPSA id h19sm5154089pfh.112.2021.12.23.22.57.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Dec 2021 22:57:42 -0800 (PST)
-From:   Xin Yin <yinxin.x@bytedance.com>
-To:     harshadshirwadkar@gmail.com, tytso@mit.edu,
-        adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xin Yin <yinxin.x@bytedance.com>
-Subject: [PATCH RESEND] ext4:fix different behavior of fsync when use fast commit
-Date:   Fri, 24 Dec 2021 14:57:28 +0800
-Message-Id: <20211224065728.5820-1-yinxin.x@bytedance.com>
-X-Mailer: git-send-email 2.25.1
+        id S1352347AbhLXJwL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 24 Dec 2021 04:52:11 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:30103 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343853AbhLXJwJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Dec 2021 04:52:09 -0500
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4JL2MD0YpBz1DKGZ;
+        Fri, 24 Dec 2021 17:48:56 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Fri, 24 Dec
+ 2021 17:52:07 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
+        <lczerner@redhat.com>, Ye Bin <yebin10@huawei.com>
+Subject: [PATCH -next] ext4: Fix null-ptr-deref in '__ext4_journal_ensure_credits'
+Date:   Fri, 24 Dec 2021 18:03:41 +0800
+Message-ID: <20211224100341.3299128-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-For the follow test example:
--mkdir test/
--create&write test/a.txt
--fsync test/a.txt
--crash (before a full commit)
+We got issue as follows when run syzkaller test:
+[ 1901.130043] EXT4-fs error (device vda): ext4_remount:5624: comm syz-executor.5: Abort forced by user
+[ 1901.130901] Aborting journal on device vda-8.
+[ 1901.131437] EXT4-fs error (device vda): ext4_journal_check_start:61: comm syz-executor.16: Detected aborted journal
+[ 1901.131566] EXT4-fs error (device vda): ext4_journal_check_start:61: comm syz-executor.11: Detected aborted journal
+[ 1901.132586] EXT4-fs error (device vda): ext4_journal_check_start:61: comm syz-executor.18: Detected aborted journal
+[ 1901.132751] EXT4-fs error (device vda): ext4_journal_check_start:61: comm syz-executor.9: Detected aborted journal
+[ 1901.136149] EXT4-fs error (device vda) in ext4_reserve_inode_write:6035: Journal has aborted
+[ 1901.136837] EXT4-fs error (device vda): ext4_journal_check_start:61: comm syz-fuzzer: Detected aborted journal
+[ 1901.136915] ==================================================================
+[ 1901.138175] BUG: KASAN: null-ptr-deref in __ext4_journal_ensure_credits+0x74/0x140 [ext4]
+[ 1901.138343] EXT4-fs error (device vda): ext4_journal_check_start:61: comm syz-executor.13: Detected aborted journal
+[ 1901.138398] EXT4-fs error (device vda): ext4_journal_check_start:61: comm syz-executor.1: Detected aborted journal
+[ 1901.138808] Read of size 8 at addr 0000000000000000 by task syz-executor.17/968
+[ 1901.138817]
+[ 1901.138852] EXT4-fs error (device vda): ext4_journal_check_start:61: comm syz-executor.30: Detected aborted journal
+[ 1901.144779] CPU: 1 PID: 968 Comm: syz-executor.17 Not tainted 4.19.90-vhulk2111.1.0.h893.eulerosv2r10.aarch64+ #1
+[ 1901.146479] Hardware name: linux,dummy-virt (DT)
+[ 1901.147317] Call trace:
+[ 1901.147552]  dump_backtrace+0x0/0x2d8
+[ 1901.147898]  show_stack+0x28/0x38
+[ 1901.148215]  dump_stack+0xec/0x15c
+[ 1901.148746]  kasan_report+0x108/0x338
+[ 1901.149207]  __asan_load8+0x58/0xb0
+[ 1901.149753]  __ext4_journal_ensure_credits+0x74/0x140 [ext4]
+[ 1901.150579]  ext4_xattr_delete_inode+0xe4/0x700 [ext4]
+[ 1901.151316]  ext4_evict_inode+0x524/0xba8 [ext4]
+[ 1901.151985]  evict+0x1a4/0x378
+[ 1901.152353]  iput+0x310/0x428
+[ 1901.152733]  do_unlinkat+0x260/0x428
+[ 1901.153056]  __arm64_sys_unlinkat+0x6c/0xc0
+[ 1901.153455]  el0_svc_common+0xc8/0x320
+[ 1901.153799]  el0_svc_handler+0xf8/0x160
+[ 1901.154265]  el0_svc+0x10/0x218
+[ 1901.154682] ==================================================================
 
-If fast commit is used then "a.txt" will lost, while the normal
-journaling can recover it.
+This issue may happens like this:
+	Process1                               Process2
+ext4_evict_inode
+  ext4_journal_start
+   ext4_truncate
+     ext4_ind_truncate
+       ext4_free_branches
+         ext4_ind_truncate_ensure_credits
+	   ext4_journal_ensure_credits_fn
+	     ext4_journal_restart
+	       handle->h_transaction = NULL;
+                                           mount -o remount,abort  /mnt
+					   -> trigger JBD abort
+               start_this_handle -> will return failed
+  ext4_xattr_delete_inode
+    ext4_journal_ensure_credits
+      ext4_journal_ensure_credits_fn
+        __ext4_journal_ensure_credits
+	  jbd2_handle_buffer_credits
+	    journal = handle->h_transaction->t_journal; ->null-ptr-deref
 
-We should keep behavior of fsync unchanged when use fast commit.
+Now, indirect truncate process didn't handle error. To solve this issue
+maybe simply add check handle is abort in '__ext4_journal_ensure_credits'
+is enough, and i also think this is necessary.
 
-other report: https://www.spinics.net/lists/linux-ext4/msg80514.html
-
-Signed-off-by: Xin Yin <yinxin.x@bytedance.com>
+Signed-off-by: Ye Bin <yebin10@huawei.com>
 ---
- fs/ext4/fast_commit.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ext4/ext4_jbd2.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 3deb97b22ca4..4b843648ffe5 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -423,7 +423,7 @@ void __ext4_fc_track_create(handle_t *handle, struct inode *inode,
- 	args.op = EXT4_FC_TAG_CREAT;
- 
- 	ret = ext4_fc_track_template(handle, inode, __track_dentry_update,
--					(void *)&args, 0);
-+					(void *)&args, 1);
- 	trace_ext4_fc_track_create(inode, dentry, ret);
- }
- 
+diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
+index 6def7339056d..3477a16d08ae 100644
+--- a/fs/ext4/ext4_jbd2.c
++++ b/fs/ext4/ext4_jbd2.c
+@@ -162,6 +162,8 @@ int __ext4_journal_ensure_credits(handle_t *handle, int check_cred,
+ {
+ 	if (!ext4_handle_valid(handle))
+ 		return 0;
++	if (is_handle_aborted(handle))
++		return -EROFS;
+ 	if (jbd2_handle_buffer_credits(handle) >= check_cred &&
+ 	    handle->h_revoke_credits >= revoke_cred)
+ 		return 0;
 -- 
-2.20.1
+2.31.1
 
