@@ -2,34 +2,34 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B421147E9DC
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Dec 2021 01:28:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB1A847EB6E
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Dec 2021 05:42:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350434AbhLXA2C (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 23 Dec 2021 19:28:02 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41337 "EHLO
+        id S245709AbhLXEmr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 Dec 2021 23:42:47 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:34724 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1350410AbhLXA2B (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Dec 2021 19:28:01 -0500
+        with ESMTP id S240362AbhLXEmq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Dec 2021 23:42:46 -0500
 Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1BO0RqLa003095
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1BO4gUu9029484
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Dec 2021 19:27:53 -0500
+        Thu, 23 Dec 2021 23:42:32 -0500
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 80EE315C339D; Thu, 23 Dec 2021 19:27:52 -0500 (EST)
+        id 257F615C00C8; Thu, 23 Dec 2021 23:42:30 -0500 (EST)
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     harshadshirwadkar@gmail.com, adilger.kernel@dilger.ca,
-        Xin Yin <yinxin.x@bytedance.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v2] ext4: fix fast commit may miss tracking range for FALLOC_FL_ZERO_RANGE
-Date:   Thu, 23 Dec 2021 19:27:51 -0500
-Message-Id: <164030564165.2940033.13491679644853079214.b4-ty@mit.edu>
+To:     linux-ext4@vger.kernel.org, Ye Bin <yebin10@huawei.com>,
+        adilger.kernel@dilger.ca
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, lczerner@redhat.com,
+        linux-kernel@vger.kernel.org, jack@suse.cz
+Subject: Re: [PATCH -next v2] ext4: Fix BUG_ON in ext4_bread when write quota data
+Date:   Thu, 23 Dec 2021 23:42:29 -0500
+Message-Id: <164032093754.3048709.7733859615094609303.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20211221022839.374606-1-yinxin.x@bytedance.com>
-References: <20211221022839.374606-1-yinxin.x@bytedance.com>
+In-Reply-To: <20211223015506.297766-1-yebin10@huawei.com>
+References: <20211223015506.297766-1-yebin10@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -37,20 +37,68 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 21 Dec 2021 10:28:39 +0800, Xin Yin wrote:
-> when call falloc with FALLOC_FL_ZERO_RANGE, to set an range to unwritten,
-> which has been already initialized. If the range is align to blocksize,
-> fast commit will not track range for this change.
-> 
-> Also track range for unwritten range in ext4_map_blocks().
-> 
+On Thu, 23 Dec 2021 09:55:06 +0800, Ye Bin wrote:
+> We got issue as follows when run syzkaller:
+> [  167.936972] EXT4-fs error (device loop0): __ext4_remount:6314: comm rep: Abort forced by user
+> [  167.938306] EXT4-fs (loop0): Remounting filesystem read-only
+> [  167.981637] Assertion failure in ext4_getblk() at fs/ext4/inode.c:847: '(EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY) || handle != NULL || create == 0'
+> [  167.983601] ------------[ cut here ]------------
+> [  167.984245] kernel BUG at fs/ext4/inode.c:847!
+> [  167.984882] invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
+> [  167.985624] CPU: 7 PID: 2290 Comm: rep Tainted: G    B             5.16.0-rc5-next-20211217+ #123
+> [  167.986823] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
+> [  167.988590] RIP: 0010:ext4_getblk+0x17e/0x504
+> [  167.989189] Code: c6 01 74 28 49 c7 c0 a0 a3 5c 9b b9 4f 03 00 00 48 c7 c2 80 9c 5c 9b 48 c7 c6 40 b6 5c 9b 48 c7 c7 20 a4 5c 9b e8 77 e3 fd ff <0f> 0b 8b 04 244
+> [  167.991679] RSP: 0018:ffff8881736f7398 EFLAGS: 00010282
+> [  167.992385] RAX: 0000000000000094 RBX: 1ffff1102e6dee75 RCX: 0000000000000000
+> [  167.993337] RDX: 0000000000000001 RSI: ffffffff9b6e29e0 RDI: ffffed102e6dee66
+> [  167.994292] RBP: ffff88816a076210 R08: 0000000000000094 R09: ffffed107363fa09
+> [  167.995252] R10: ffff88839b1fd047 R11: ffffed107363fa08 R12: ffff88816a0761e8
+> [  167.996205] R13: 0000000000000000 R14: 0000000000000021 R15: 0000000000000001
+> [  167.997158] FS:  00007f6a1428c740(0000) GS:ffff88839b000000(0000) knlGS:0000000000000000
+> [  167.998238] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  167.999025] CR2: 00007f6a140716c8 CR3: 0000000133216000 CR4: 00000000000006e0
+> [  167.999987] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [  168.000944] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [  168.001899] Call Trace:
+> [  168.002235]  <TASK>
+> [  168.007167]  ext4_bread+0xd/0x53
+> [  168.007612]  ext4_quota_write+0x20c/0x5c0
+> [  168.010457]  write_blk+0x100/0x220
+> [  168.010944]  remove_free_dqentry+0x1c6/0x440
+> [  168.011525]  free_dqentry.isra.0+0x565/0x830
+> [  168.012133]  remove_tree+0x318/0x6d0
+> [  168.014744]  remove_tree+0x1eb/0x6d0
+> [  168.017346]  remove_tree+0x1eb/0x6d0
+> [  168.019969]  remove_tree+0x1eb/0x6d0
+> [  168.022128]  qtree_release_dquot+0x291/0x340
+> [  168.023297]  v2_release_dquot+0xce/0x120
+> [  168.023847]  dquot_release+0x197/0x3e0
+> [  168.024358]  ext4_release_dquot+0x22a/0x2d0
+> [  168.024932]  dqput.part.0+0x1c9/0x900
+> [  168.025430]  __dquot_drop+0x120/0x190
+> [  168.025942]  ext4_clear_inode+0x86/0x220
+> [  168.026472]  ext4_evict_inode+0x9e8/0xa22
+> [  168.028200]  evict+0x29e/0x4f0
+> [  168.028625]  dispose_list+0x102/0x1f0
+> [  168.029148]  evict_inodes+0x2c1/0x3e0
+> [  168.030188]  generic_shutdown_super+0xa4/0x3b0
+> [  168.030817]  kill_block_super+0x95/0xd0
+> [  168.031360]  deactivate_locked_super+0x85/0xd0
+> [  168.031977]  cleanup_mnt+0x2bc/0x480
+> [  168.033062]  task_work_run+0xd1/0x170
+> [  168.033565]  do_exit+0xa4f/0x2b50
+> [  168.037155]  do_group_exit+0xef/0x2d0
+> [  168.037666]  __x64_sys_exit_group+0x3a/0x50
+> [  168.038237]  do_syscall_64+0x3b/0x90
+> [  168.038751]  entry_SYSCALL_64_after_hwframe+0x44/0xae
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] ext4: fix fast commit may miss tracking range for FALLOC_FL_ZERO_RANGE
-      commit: f6c90a2bcabcfc56d91aa5091b76ce8082de7d68
+[1/1] ext4: Fix BUG_ON in ext4_bread when write quota data
+      commit: ce85548ab4295234b4f8e63a0eea0c157d2f6b25
 
 Best regards,
 -- 
