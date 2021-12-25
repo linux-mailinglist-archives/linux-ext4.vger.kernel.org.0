@@ -2,160 +2,192 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA7C047F2B5
-	for <lists+linux-ext4@lfdr.de>; Sat, 25 Dec 2021 09:58:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 974C847F3A0
+	for <lists+linux-ext4@lfdr.de>; Sat, 25 Dec 2021 16:33:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231222AbhLYI6O (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 25 Dec 2021 03:58:14 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:15974 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231220AbhLYI6N (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 25 Dec 2021 03:58:13 -0500
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4JLd6V0kNVzVhMD;
-        Sat, 25 Dec 2021 16:54:58 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by canpemm500005.china.huawei.com
- (7.192.104.229) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Sat, 25 Dec
- 2021 16:58:10 +0800
-From:   Zhang Yi <yi.zhang@huawei.com>
-To:     <linux-ext4@vger.kernel.org>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-        <yi.zhang@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH] ext4: fix an use-after-free issue about data=journal writeback mode
-Date:   Sat, 25 Dec 2021 17:09:37 +0800
-Message-ID: <20211225090937.712867-1-yi.zhang@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        id S232048AbhLYP1m (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 25 Dec 2021 10:27:42 -0500
+Received: from mga09.intel.com ([134.134.136.24]:30084 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232046AbhLYP1m (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sat, 25 Dec 2021 10:27:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1640446062; x=1671982062;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=poL0fQf3ZS2pA2j/saSg+hBTAzhKcorALPom1cEDIrQ=;
+  b=fBjVSOeExFZGELS11nSVrN2yCe3gZ/uUERj+/OYX3uDgx7x3E5jqQfAw
+   5eoM7PyYDflTaYs12CJjHtJL7pDC/w0LA/bJVtR8nvbFFv8TAeuIDp8E1
+   mFsMCf0/cG7/j5w+s3q4V5NahFq3e6K2IV/k1UGM5nT7YBF7AefzB/lsc
+   d7pwX4luuERfCzAIvBy+HyxwVOwQ+P6u63QshGrLpxpGa/Tg0qVyyZeEL
+   qb7zZeHBd/xMf12CcGqlqe2NV+1KYHXrP1Qq0Zb1lEZndGY9u8N6PfWAp
+   yq59nY1kx2cBnK7p+ISmyXYxj+EPVgSU6PLjyqWMelmriubu1mYXpsVHF
+   w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10208"; a="240852302"
+X-IronPort-AV: E=Sophos;i="5.88,235,1635231600"; 
+   d="scan'208";a="240852302"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Dec 2021 07:27:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,235,1635231600"; 
+   d="scan'208";a="469307871"
+Received: from lkp-server01.sh.intel.com (HELO e357b3ef1427) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 25 Dec 2021 07:27:40 -0800
+Received: from kbuild by e357b3ef1427 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1n18xQ-0004ON-28; Sat, 25 Dec 2021 15:27:40 +0000
+Date:   Sat, 25 Dec 2021 23:27:04 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:dev] BUILD REGRESSION
+ cc5fef71a1c741473eebb1aa6f7056ceb49bc33d
+Message-ID: <61c73848.ezrkzdC4STslya5j%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- canpemm500005.china.huawei.com (7.192.104.229)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Our syzkaller report an use-after-free issue that accessing the freed
-buffer_head on the writeback page in __ext4_journalled_writepage(). The
-problem is that if there was a truncate racing with the data=journalled
-writeback procedure, the writeback length could become zero and
-bget_one() refuse to get buffer_head's refcount, then the truncate
-procedure release buffer once we drop page lock, finally, the last
-ext4_walk_page_buffers() trigger the use-after-free problem.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: cc5fef71a1c741473eebb1aa6f7056ceb49bc33d  ext4: replace snprintf in show functions with sysfs_emit
 
-sync                               truncate
-ext4_sync_file()
- file_write_and_wait_range()
-                                   ext4_setattr(0)
-                                    inode->i_size = 0
-  ext4_writepage()
-   len = 0
-   __ext4_journalled_writepage()
-    page_bufs = page_buffers(page)
-    ext4_walk_page_buffers(bget_one) <- does not get refcount
-                                    do_invalidatepage()
-                                      free_buffer_head()
-    ext4_walk_page_buffers(page_bufs) <- trigger use-after-free
+Error/Warning reports:
 
-After commit bdf96838aea6 ("ext4: fix race between truncate and
-__ext4_journalled_writepage()"), we have already handled the racing
-case, so the bget_one() and bput_one() are not needed. So this patch
-simply remove these hunk, and recheck the i_size to make it safe.
+https://lore.kernel.org/linux-ext4/202112101722.3Kpomg0h-lkp@intel.com
 
-Fixes: bdf96838aea6 ("ext4: fix race between truncate and __ext4_journalled_writepage()")
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Cc: stable@vger.kernel.org
+possible Error/Warning in current branch (please contact us if interested):
+
+fs/ext4/super.c:2640:22-40: ERROR: reference preceded by free on line 2639
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- i386-randconfig-c021-20211225
+|   `-- fs-ext4-super.c:ERROR:reference-preceded-by-free-on-line
+|-- ia64-randconfig-c004-20211225
+|   `-- fs-ext4-super.c:ERROR:reference-preceded-by-free-on-line
+|-- ia64-randconfig-s032-20211225
+|   |-- fs-ext4-super.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-char-const-got-char-noderef-__rcu
+|   `-- fs-ext4-super.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-const-objp-got-char-noderef-__rcu
+|-- powerpc-randconfig-c023-20211225
+|   `-- fs-ext4-super.c:ERROR:reference-preceded-by-free-on-line
+|-- x86_64-randconfig-c002-20211225
+|   `-- fs-ext4-super.c:ERROR:reference-preceded-by-free-on-line
+`-- x86_64-randconfig-c022-20211225
+    `-- fs-ext4-super.c:ERROR:reference-preceded-by-free-on-line
+
+elapsed time: 722m
+
+configs tested: 99
+configs skipped: 3
+
+gcc tested configs:
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm64                               defconfig
+arm64                            allyesconfig
+i386                 randconfig-c001-20211225
+ia64                            zx1_defconfig
+powerpc                      makalu_defconfig
+sh                  sh7785lcr_32bit_defconfig
+powerpc                     mpc83xx_defconfig
+arm                             pxa_defconfig
+ia64                          tiger_defconfig
+mips                          rm200_defconfig
+arm                       aspeed_g5_defconfig
+i386                                defconfig
+powerpc                      acadia_defconfig
+xtensa                    xip_kc705_defconfig
+powerpc                          allyesconfig
+nios2                               defconfig
+m68k                       m5275evb_defconfig
+arm                        mini2440_defconfig
+sh                           se7721_defconfig
+powerpc                      pmac32_defconfig
+sparc                            allyesconfig
+arm                  randconfig-c002-20211225
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+m68k                                defconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nios2                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+xtensa                           allyesconfig
+parisc                              defconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                             allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+i386                              debian-10.3
+sparc                               defconfig
+i386                   debian-10.3-kselftests
+nds32                             allnoconfig
+arc                              allyesconfig
+mips                             allmodconfig
+mips                             allyesconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+x86_64               randconfig-a013-20211225
+x86_64               randconfig-a014-20211225
+x86_64               randconfig-a015-20211225
+x86_64               randconfig-a011-20211225
+x86_64               randconfig-a012-20211225
+x86_64               randconfig-a016-20211225
+i386                 randconfig-a012-20211225
+i386                 randconfig-a011-20211225
+i386                 randconfig-a013-20211225
+i386                 randconfig-a014-20211225
+i386                 randconfig-a016-20211225
+i386                 randconfig-a015-20211225
+arc                  randconfig-r043-20211225
+riscv                randconfig-r042-20211225
+s390                 randconfig-r044-20211225
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+riscv                    nommu_virt_defconfig
+x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+x86_64                              defconfig
+
+clang tested configs:
+i386                 randconfig-a002-20211225
+i386                 randconfig-a003-20211225
+i386                 randconfig-a005-20211225
+i386                 randconfig-a001-20211225
+i386                 randconfig-a004-20211225
+i386                 randconfig-a006-20211225
+x86_64               randconfig-a003-20211225
+x86_64               randconfig-a001-20211225
+x86_64               randconfig-a005-20211225
+x86_64               randconfig-a006-20211225
+x86_64               randconfig-a004-20211225
+x86_64               randconfig-a002-20211225
+hexagon              randconfig-r041-20211225
+hexagon              randconfig-r045-20211225
+
 ---
- fs/ext4/inode.c | 37 ++++++++++---------------------------
- 1 file changed, 10 insertions(+), 27 deletions(-)
-
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index bfd3545f1e5d..cd94a70dd3d5 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -1844,30 +1844,16 @@ int ext4_da_get_block_prep(struct inode *inode, sector_t iblock,
- 	return 0;
- }
- 
--static int bget_one(handle_t *handle, struct inode *inode,
--		    struct buffer_head *bh)
--{
--	get_bh(bh);
--	return 0;
--}
--
--static int bput_one(handle_t *handle, struct inode *inode,
--		    struct buffer_head *bh)
--{
--	put_bh(bh);
--	return 0;
--}
--
- static int __ext4_journalled_writepage(struct page *page,
- 				       unsigned int len)
- {
- 	struct address_space *mapping = page->mapping;
- 	struct inode *inode = mapping->host;
--	struct buffer_head *page_bufs = NULL;
- 	handle_t *handle = NULL;
- 	int ret = 0, err = 0;
- 	int inline_data = ext4_has_inline_data(inode);
- 	struct buffer_head *inode_bh = NULL;
-+	loff_t size;
- 
- 	ClearPageChecked(page);
- 
-@@ -1877,14 +1863,6 @@ static int __ext4_journalled_writepage(struct page *page,
- 		inode_bh = ext4_journalled_write_inline_data(inode, len, page);
- 		if (inode_bh == NULL)
- 			goto out;
--	} else {
--		page_bufs = page_buffers(page);
--		if (!page_bufs) {
--			BUG();
--			goto out;
--		}
--		ext4_walk_page_buffers(handle, inode, page_bufs, 0, len,
--				       NULL, bget_one);
- 	}
- 	/*
- 	 * We need to release the page lock before we start the
-@@ -1905,7 +1883,8 @@ static int __ext4_journalled_writepage(struct page *page,
- 
- 	lock_page(page);
- 	put_page(page);
--	if (page->mapping != mapping) {
-+	size = i_size_read(inode);
-+	if (page->mapping != mapping || page_offset(page) > size) {
- 		/* The page got truncated from under us */
- 		ext4_journal_stop(handle);
- 		ret = 0;
-@@ -1915,6 +1894,13 @@ static int __ext4_journalled_writepage(struct page *page,
- 	if (inline_data) {
- 		ret = ext4_mark_inode_dirty(handle, inode);
- 	} else {
-+		struct buffer_head *page_bufs = page_buffers(page);
-+
-+		if (page->index == size >> PAGE_SHIFT)
-+			len = size & ~PAGE_MASK;
-+		else
-+			len = PAGE_SIZE;
-+
- 		ret = ext4_walk_page_buffers(handle, inode, page_bufs, 0, len,
- 					     NULL, do_journal_get_write_access);
- 
-@@ -1935,9 +1921,6 @@ static int __ext4_journalled_writepage(struct page *page,
- out:
- 	unlock_page(page);
- out_no_pagelock:
--	if (!inline_data && page_bufs)
--		ext4_walk_page_buffers(NULL, inode, page_bufs, 0, len,
--				       NULL, bput_one);
- 	brelse(inode_bh);
- 	return ret;
- }
--- 
-2.31.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
