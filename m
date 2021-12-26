@@ -2,79 +2,50 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C211D47F4C9
-	for <lists+linux-ext4@lfdr.de>; Sun, 26 Dec 2021 01:03:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9464B47F637
+	for <lists+linux-ext4@lfdr.de>; Sun, 26 Dec 2021 10:42:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233134AbhLZADY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 25 Dec 2021 19:03:24 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:41076 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233057AbhLZADX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 25 Dec 2021 19:03:23 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5A58660DB6
-        for <linux-ext4@vger.kernel.org>; Sun, 26 Dec 2021 00:03:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BCFA6C36AEB
-        for <linux-ext4@vger.kernel.org>; Sun, 26 Dec 2021 00:03:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1640477002;
-        bh=mJBz1ScMCroT8NSYW8m1xTrOKLtANTFoE3Pl5b9U5vo=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=AGpDbBGAY/QMLYWI4wJ0TjKMjQwX1Ky1V/oXFJE1aNVPDVhQA2UjrbIlQWKueXYiB
-         Umrjemaq9iQr1qu50hPdd5BlEcAAor+smw6repx9c8j8c9V53i9kufsGZ/2BtpWfh7
-         zXnAAZ/K03pwnrZ5nLJkrRkHYVw9WpQEJsnU02R4ETRjsM7vLEuJV+Kpl5wzmBZue4
-         PbmydqilL9nH5TOjpeKwdlSnkr13zGGvvkyzy9kxU/s3T/VCJVnUFJ5xiNhp/AxrDH
-         DSKe5GryFpPnPJ9ub3QwOWfSrI2dabZAYbNKuZZz96d7MJRQv3JyqsK23C3Dq7lKKh
-         IRbQjYdrsjUmQ==
-Received: by pdx-korg-bugzilla-2.web.codeaurora.org (Postfix, from userid 48)
-        id 8821B60FC0; Sun, 26 Dec 2021 00:03:22 +0000 (UTC)
-From:   bugzilla-daemon@bugzilla.kernel.org
+        id S233187AbhLZJmU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 26 Dec 2021 04:42:20 -0500
+Received: from slot0.jllresort.com ([62.197.136.5]:48868 "EHLO
+        slot0.jllresort.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233184AbhLZJmU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 26 Dec 2021 04:42:20 -0500
+X-Greylist: delayed 726 seconds by postgrey-1.27 at vger.kernel.org; Sun, 26 Dec 2021 04:42:20 EST
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=dkim; d=jllresort.com;
+ h=Reply-To:From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding; i=ele.mon@jllresort.com;
+ bh=iAIn5n5fFOIM8j1xQ9q3vhsdPQ0=;
+ b=GlwCd5j6qyVFt8UEcMJG2LZpwJ6YqD+14r6vm7qPp79mHvcNASvb2cEpGRMr6h0twyUbyklhUmDz
+   AdA6Y+XiXFBUc+Xh/Vpgi8RzbNjtiPrVqL0IEu8rvnzL8LCpHf+TQRGRFl8ga1XHB5VcR5GcqqwF
+   +krmxJZ2/l/cpqpwSOycsdg7tLVyGQnYCyvBNaW5WgiDt6UQHBj7tGIdZaNNfW3pjurwIYgrMGq3
+   di+cg1QvsxE3Bnb4y9bBJZIbxX99k3bUzO22aJcZa+dPLglogjNbsKq4Mm7O9DoXGP5k5b2r3iJt
+   gcdym/LlxI+RbXTCWjKN8ICjHckOAHuafKpj6g==
+DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns; s=dkim; d=jllresort.com;
+ b=v+17UHiHzolctsWivl/e6y9as2rC6ukokEYZaPo6UuAXrbOk4v34HK1xDuoTwWAazd4k5yHSYTZw
+   GdrtrrY6iwl1wkU7haQ8NHY4LwXpXTihkgzNDchbIxzgQ/ouZbqU+MsHctEDNWN5UDARaS2rfG7G
+   6EeoxbkiHbf6rMD8YEWzejxmJHBAYVAdIWDx0PiJCIiROkuabryHDUTbOR+iDGdeovr2qPO46A9e
+   NO06LAofZTgFMoHK4T4uC2IxBa+qp46Rt2KDPdqcuoRavEddZSOqAiClpz//Fcgoz8yd57SxGntf
+   p2ScYFwaIR654xFTY3l+wVvGco/jweqN03byDQ==;
+Reply-To: mustafa.ayvaz@ayvazburosu.com
+From:   ele.mon@jllresort.com
 To:     linux-ext4@vger.kernel.org
-Subject: [Bug 215225] FUZZ: Page fault and infinite loop after mount and
- operate on crafted image
-Date:   Sun, 26 Dec 2021 00:03:22 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: wenqingliu0120@gmail.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-215225-13602-WJs38kN1oK@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-215225-13602@https.bugzilla.kernel.org/>
-References: <bug-215225-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+Subject: Happy Weekend:
+Date:   26 Dec 2021 10:29:30 +0100
+Message-ID: <20211226102855.DCAC26A1F0E744FF@jllresort.com>
 MIME-Version: 1.0
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D215225
+Greetings to you linux-ext4,
 
---- Comment #3 from Wenqing Liu (wenqingliu0120@gmail.com) ---
-The bug is triggered when mount and operate on the corrupted image. I can s=
-till
-reproduce it on 5.16.0-rc6 when run
+I was wondering if you got my previous email? I have been trying=20
+to reach you by email linux-ext4@vger.kernel.org, kindly get back=20
+to me swiftly, it is very important and urgent.
 
-$unzip tmp38.zip
-$su
-#./single.sh ext4 38
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+Thanks
+Mustafa Ayvaz
+Email: mustafa.ayvaz@ayvazburosu.com
