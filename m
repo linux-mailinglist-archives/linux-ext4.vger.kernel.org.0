@@ -2,91 +2,88 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D7BD480DC4
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Dec 2021 23:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B3A8481827
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Dec 2021 02:37:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbhL1WkT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 28 Dec 2021 17:40:19 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:60126 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230054AbhL1WkT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Dec 2021 17:40:19 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 123C61C0B77; Tue, 28 Dec 2021 23:40:18 +0100 (CET)
-Date:   Tue, 28 Dec 2021 23:40:17 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Lukas Czerner <lczerner@redhat.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        =?iso-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jeroen van Wolffelaar <jeroen@wolffelaar.nl>
-Subject: Re: [PATCH v2] ext4: set csum seed in tmp inode while migrating to
- extents
-Message-ID: <20211228224017.GA2242@duo.ucw.cz>
-References: <20211214175058.19511-1-lhenriques@suse.de>
- <20211215004945.GD69182@magnolia>
- <20211215112852.GM14044@quack2.suse.cz>
- <20211215141237.lrymhbebgjunh4n2@work>
- <YbuGLsQy6TSM2xOl@mit.edu>
- <20211217093534.2ug6e5cm37md2c3u@work>
+        id S232342AbhL3Bh3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 29 Dec 2021 20:37:29 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55429 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232036AbhL3Bh3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 29 Dec 2021 20:37:29 -0500
+Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1BU1bLWG010574
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Dec 2021 20:37:22 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 9153C15C33A3; Wed, 29 Dec 2021 20:37:21 -0500 (EST)
+Date:   Wed, 29 Dec 2021 20:37:21 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Manfred Spraul <manfred@colorfullife.com>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 1vier1@web.de
+Subject: Re: JBD2: journal transaction 6943 on loop0-8 is corrupt.
+Message-ID: <Yc0NUYyRhLdtapq+@mit.edu>
+References: <baa3101d-e2f7-823e-040f-8739ab610419@colorfullife.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="x+6KMIRAuhnl3hBn"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211217093534.2ug6e5cm37md2c3u@work>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <baa3101d-e2f7-823e-040f-8739ab610419@colorfullife.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Tue, Dec 28, 2021 at 09:36:22PM +0100, Manfred Spraul wrote:
+> Hi,
+> 
+> with simulated power failures, I see a corrupted journal
+> 
+> [39056.200845] JBD2: journal transaction 6943 on loop0-8 is corrupt.
+> [39056.200851] EXT4-fs (loop0): error loading journal
 
---x+6KMIRAuhnl3hBn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This means that the journal replay found a commit which was *not* the
+last commit, and which contained a CRC error.  If it's the last commit
+(e.g., there is no valid subsequent commit block), then it's possible
+that the journal commit was never completed before the system crashed
+--- e.g., it was an interrupted commit.
 
-Hi!
+Your test is aborting the commit at various points in the write I/O
+stream, so it should be simulating an interrupted commit (assuming
+that it's not corrupting any I/O.  So the jbd2 layer should have
+understood it was the last commit in the journal, and been OK with the
+checksum failure.
 
-> > So the question is, is it worth it to continue supporting the migrate
-> > feature, or should we just delete all of the migration code, and risk
-> > users complaining that we've broken their use case?  The chances of
-> > that happening is admittedly low, and Linus's rule that "it's only
-> > breaking userspace if a user complains" means we might very well get
-> > away with it.  :-)
->=20
-> That's a very good summary Ted, thanks.
->=20
-> Our rationale behind not supporting the migration was always the fact
-> that we felt that backup was absolutely necessary before operation like
-> this. When you already have up-to-date backup available you might as
-> well create a fresh ext4 file system with all the advantages it brings
-> and recover data from said backup. I think this is still a very
-> reasonable approach.
+But what can happen is that if there is a commit block in the right
+place at the end of the transaction, left over from the previous
+journalling session, this can confuse the jbd2 layer into thinking
+that it is *not* the last transaction, and then it will make the
+"journal transaction is corrupt" report.
 
-Umm. Not really?
+How does the jbd2 layer determine whether there is a valid "subsequent
+commit", well if the subsequent commit block meets the following two
+criteria:
 
-First... full backup/restore will take a _long_ time.
+	* the commit id is the correct, expected one (n+1 the previous
+          commit id).
+	* the commit time (seconds since January 1, 1970) in the
+	  commit block is greater than the comit time in the previous
+	  commit block.
 
-Second... if you do online migration, you have filesystem you are
-quite unlikely to corrupt, and backup you are unlikely to use. If you
-do backup/restore, you have to be _way_ more careful that backup media
-is reliable etc.
+So if your test setup doesn't correctly set the time (say, it always
+leaves the bootup time to January 1, 1970), and the workload is
+extremely regular, it's possible that the replay interrupted a journal
+commit, but there was left-over commit block that *looked* valid, and
+it triggered the failure.
 
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
+If this is what happened, it's not a disaster --- the journal replay
+will have correctly stopped where it should have, but it thought it
+was an exceptional abort, as opposed to a normal journal replay
+commpletion.  So the "file system is corrupted flag" will be set,
+forcing an fsck, but the fsck shouldn't find any problems with the
+file system.
 
---x+6KMIRAuhnl3hBn
-Content-Type: application/pgp-signature; name="signature.asc"
+Does this explanation seem to fit with how your test setup is
+arranged?
 
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYcuSUQAKCRAw5/Bqldv6
-8l2kAKCs+/aLi7Q0m2l8B0Z/lo5ml8h+EwCeMcYdjuzb8vm9b1uutXrUteym7Qs=
-=ndn0
------END PGP SIGNATURE-----
-
---x+6KMIRAuhnl3hBn--
+     	  	      	      	       - Ted
