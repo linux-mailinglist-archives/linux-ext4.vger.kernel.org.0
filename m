@@ -2,33 +2,33 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5435B48229A
+	by mail.lfdr.de (Postfix) with ESMTP id 9CC9B48229B
 	for <lists+linux-ext4@lfdr.de>; Fri, 31 Dec 2021 08:42:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242741AbhLaHmE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 31 Dec 2021 02:42:04 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:34865 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229636AbhLaHmD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 31 Dec 2021 02:42:03 -0500
-Received: from dggpeml500023.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4JQHC02JfZzcc6n;
-        Fri, 31 Dec 2021 15:41:32 +0800 (CST)
+        id S242743AbhLaHmT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 31 Dec 2021 02:42:19 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:17315 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229636AbhLaHmT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 31 Dec 2021 02:42:19 -0500
+Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4JQHBm01gZz9ryP;
+        Fri, 31 Dec 2021 15:41:20 +0800 (CST)
 Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
- dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
+ dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 31 Dec 2021 15:42:02 +0800
+ 15.1.2308.20; Fri, 31 Dec 2021 15:42:17 +0800
 Received: from [10.174.176.102] (10.174.176.102) by
  dggpeml100016.china.huawei.com (7.185.36.216) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 31 Dec 2021 15:42:01 +0800
-Message-ID: <9cb10a07-383c-cc45-d917-7f5a74b31d39@huawei.com>
-Date:   Fri, 31 Dec 2021 15:42:01 +0800
+ 15.1.2308.20; Fri, 31 Dec 2021 15:42:17 +0800
+Message-ID: <ee0b034c-71f3-63b7-a8de-d8e7760b9545@huawei.com>
+Date:   Fri, 31 Dec 2021 15:42:17 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
  Thunderbird/91.3.2
-Subject: [PATCH v2 2/6] lib/ss: check whether argp is null before accessing
- it, in ss_execute_command()
+Subject: [PATCH v2 3/6] lib/support: check whether inump is null before,
+ accessing it in quota_set_sb_inum()
 From:   zhanchengbin <zhanchengbin1@huawei.com>
 To:     Theodore Ts'o <tytso@mit.edu>
 CC:     <linux-ext4@vger.kernel.org>, <liuzhiqiang26@huawei.com>,
@@ -45,28 +45,29 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-In ss_execute_command(), we should check whether argp is null before 
+In quota_set_sb_inum(), we should check whether inump is null before 
 accessing it,
 otherwise the null potinter dereference error may occur.
 
 Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
 ---
-  lib/ss/execute_cmd.c | 2 ++
-  1 file changed, 2 insertions(+)
+  lib/support/mkquota.c | 3 ++-
+  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/lib/ss/execute_cmd.c b/lib/ss/execute_cmd.c
-index d443a468..b6e4a5dc 100644
---- a/lib/ss/execute_cmd.c
-+++ b/lib/ss/execute_cmd.c
-@@ -171,6 +171,8 @@ int ss_execute_command(int sci_idx, register char 
-*argv[])
-  	for (argp = argv; *argp; argp++)
-  		argc++;
-  	argp = (char **)malloc((argc+1)*sizeof(char *));
-+	if (argp == NULL)
-+		return (SS_ET_COMMAND_NOT_FOUND);
-  	for (i = 0; i <= argc; i++)
-  		argp[i] = argv[i];
-  	i = really_execute_command(sci_idx, argc, &argp);
+diff --git a/lib/support/mkquota.c b/lib/support/mkquota.c
+index 6f4a0b90..482e3d91 100644
+--- a/lib/support/mkquota.c
++++ b/lib/support/mkquota.c
+@@ -99,7 +99,8 @@ void quota_set_sb_inum(ext2_filsys fs, ext2_ino_t ino, 
+enum quota_type qtype)
+
+  	log_debug("setting quota ino in superblock: ino=%u, type=%d", ino,
+  		 qtype);
+-	*inump = ino;
++	if (inump != NULL)
++		*inump = ino;
+  	ext2fs_mark_super_dirty(fs);
+  }
+
 -- 
 2.27.0
