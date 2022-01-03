@@ -2,134 +2,146 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7324848651B
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jan 2022 14:20:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 078894866F6
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jan 2022 16:45:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239442AbiAFNT6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 Jan 2022 08:19:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55036 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231453AbiAFNT6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Jan 2022 08:19:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1641475197;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        id S240599AbiAFPps (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Jan 2022 10:45:48 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:50314 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229726AbiAFPpr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Jan 2022 10:45:47 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id C7166212B8;
+        Thu,  6 Jan 2022 15:45:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1641483945; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=1VC3NszYeeyQ6yGxye/bZ9Wi+jchr9+jRHTDBUck7iI=;
-        b=GT9u0SZeh9ys4whWuME4iZ5NR2hgpruZP1iy0LeDAqsD2ut7DsqrNeNGq0M8ZMGGL2aC9B
-        YgUvkDCRjjBT1590hflgd3hhBeGKAYmS48eHF7tWAT7q/Ek7dS4yTyM6YGz40riGCrUQa8
-        iX0mqoCuGPesGp+sxAgBVT3DeAQOxCw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-646-gZnLDsG7MdGgCRIRwIxnYA-1; Thu, 06 Jan 2022 08:19:54 -0500
-X-MC-Unique: gZnLDsG7MdGgCRIRwIxnYA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        bh=hCnxgXNlc+hA/hBIb33Q07o6OGeUNCNtDgyikwrRKkc=;
+        b=JlYBvnUHwwfEm3g4gZsmn8n8+1kZn23vrzlOrTlEbyJUkHIkHdB8nHeX3Bv8no/eC/m6tN
+        yutRKtWwuXhcU0EE+onPLrZwBw6qsIUIaeinpR9DDnMCo3GpKWyf5e5XfZ0MIV1IWLlD+A
+        JpaGEkzIH/jl0tvO8APpIGu/tOhUEK0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1641483945;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hCnxgXNlc+hA/hBIb33Q07o6OGeUNCNtDgyikwrRKkc=;
+        b=l55rYlEQ0gNFUR/I7Feeytd6h5rMUpKGQpfWQcT9tiHqmCEYcPhir7G11OHU9PdLMHIEVh
+        njzFfYNZnmICjnDg==
+Received: from quack3.suse.cz (unknown [10.163.43.118])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 25FB21006AA4;
-        Thu,  6 Jan 2022 13:19:53 +0000 (UTC)
-Received: from work (unknown [10.40.194.183])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AE2BC7E668;
-        Thu,  6 Jan 2022 13:19:51 +0000 (UTC)
-Date:   Thu, 6 Jan 2022 14:19:48 +0100
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>, jack@suse.cz
-Subject: Re: [PATCH] ext4: don't use the orphan list when migrating an inode
-Message-ID: <20220106131948.xlwfs73lfyhe6454@work>
-References: <20220106050505.474719-1-tytso@mit.edu>
+        by relay2.suse.de (Postfix) with ESMTPS id AC694A3B83;
+        Thu,  6 Jan 2022 15:45:45 +0000 (UTC)
+Received: by localhost (Postfix, from userid 1000)
+        id 4ADB8A05AF; Mon,  3 Jan 2022 14:30:56 +0100 (CET)
+Date:   Mon, 3 Jan 2022 14:30:56 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Ye Bin <yebin10@huawei.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jack@suse.cz, lczerner@redhat.com
+Subject: Re: [PATCH -next] ext4: Fix null-ptr-deref in
+ '__ext4_journal_ensure_credits'
+Message-ID: <20220103133056.3gwhjt72lkdio6cy@quack3>
+References: <20211224100341.3299128-1-yebin10@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220106050505.474719-1-tytso@mit.edu>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20211224100341.3299128-1-yebin10@huawei.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jan 06, 2022 at 12:05:05AM -0500, Theodore Ts'o wrote:
-> We probably want to remove the indirect block to extents migration
-> feature after a deprecation window, but until then, let's fix a
-> potential data loss problem caused by the fact that we put the
-> tmp_inode on the orphan list.  In the unlikely case where we crash and
-> do a journal recovery, the data blocks belonging to the inode inode
-> being migrated are also represented in the tmp_inode on the orphan
-> list --- and so its data blocks will get marked unallocated, and
-> available for reuse.
+On Fri 24-12-21 18:03:41, Ye Bin wrote:
+> We got issue as follows when run syzkaller test:
+> [ 1901.130043] EXT4-fs error (device vda): ext4_remount:5624: comm syz-executor.5: Abort forced by user
+> [ 1901.130901] Aborting journal on device vda-8.
+> [ 1901.131437] EXT4-fs error (device vda): ext4_journal_check_start:61: comm syz-executor.16: Detected aborted journal
+> [ 1901.131566] EXT4-fs error (device vda): ext4_journal_check_start:61: comm syz-executor.11: Detected aborted journal
+> [ 1901.132586] EXT4-fs error (device vda): ext4_journal_check_start:61: comm syz-executor.18: Detected aborted journal
+> [ 1901.132751] EXT4-fs error (device vda): ext4_journal_check_start:61: comm syz-executor.9: Detected aborted journal
+> [ 1901.136149] EXT4-fs error (device vda) in ext4_reserve_inode_write:6035: Journal has aborted
+> [ 1901.136837] EXT4-fs error (device vda): ext4_journal_check_start:61: comm syz-fuzzer: Detected aborted journal
+> [ 1901.136915] ==================================================================
+> [ 1901.138175] BUG: KASAN: null-ptr-deref in __ext4_journal_ensure_credits+0x74/0x140 [ext4]
+> [ 1901.138343] EXT4-fs error (device vda): ext4_journal_check_start:61: comm syz-executor.13: Detected aborted journal
+> [ 1901.138398] EXT4-fs error (device vda): ext4_journal_check_start:61: comm syz-executor.1: Detected aborted journal
+> [ 1901.138808] Read of size 8 at addr 0000000000000000 by task syz-executor.17/968
+> [ 1901.138817]
+> [ 1901.138852] EXT4-fs error (device vda): ext4_journal_check_start:61: comm syz-executor.30: Detected aborted journal
+> [ 1901.144779] CPU: 1 PID: 968 Comm: syz-executor.17 Not tainted 4.19.90-vhulk2111.1.0.h893.eulerosv2r10.aarch64+ #1
+> [ 1901.146479] Hardware name: linux,dummy-virt (DT)
+> [ 1901.147317] Call trace:
+> [ 1901.147552]  dump_backtrace+0x0/0x2d8
+> [ 1901.147898]  show_stack+0x28/0x38
+> [ 1901.148215]  dump_stack+0xec/0x15c
+> [ 1901.148746]  kasan_report+0x108/0x338
+> [ 1901.149207]  __asan_load8+0x58/0xb0
+> [ 1901.149753]  __ext4_journal_ensure_credits+0x74/0x140 [ext4]
+> [ 1901.150579]  ext4_xattr_delete_inode+0xe4/0x700 [ext4]
+> [ 1901.151316]  ext4_evict_inode+0x524/0xba8 [ext4]
+> [ 1901.151985]  evict+0x1a4/0x378
+> [ 1901.152353]  iput+0x310/0x428
+> [ 1901.152733]  do_unlinkat+0x260/0x428
+> [ 1901.153056]  __arm64_sys_unlinkat+0x6c/0xc0
+> [ 1901.153455]  el0_svc_common+0xc8/0x320
+> [ 1901.153799]  el0_svc_handler+0xf8/0x160
+> [ 1901.154265]  el0_svc+0x10/0x218
+> [ 1901.154682] ==================================================================
 > 
-> Instead, we stop putting the tmp_inode on the oprhan list.  So in the
-> case where we crash while migrating the inode, we'll leak an inode,
-> which is not a disaster.  It will be easily fixed the next time we run
-> fsck, and it's better than potentially having blocks getting claimed
-> by two different files, and losing data as a result.
-
-Looks good to me. Thanks!
-
-Reviewed-by: Lukas Czerner <lczerner@redhat.com>
-
-
+> This issue may happens like this:
+> 	Process1                               Process2
+> ext4_evict_inode
+>   ext4_journal_start
+>    ext4_truncate
+>      ext4_ind_truncate
+>        ext4_free_branches
+>          ext4_ind_truncate_ensure_credits
+> 	   ext4_journal_ensure_credits_fn
+> 	     ext4_journal_restart
+> 	       handle->h_transaction = NULL;
+>                                            mount -o remount,abort  /mnt
+> 					   -> trigger JBD abort
+>                start_this_handle -> will return failed
+>   ext4_xattr_delete_inode
+>     ext4_journal_ensure_credits
+>       ext4_journal_ensure_credits_fn
+>         __ext4_journal_ensure_credits
+> 	  jbd2_handle_buffer_credits
+> 	    journal = handle->h_transaction->t_journal; ->null-ptr-deref
 > 
-> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-> ---
->  fs/ext4/migrate.c | 19 ++++---------------
->  1 file changed, 4 insertions(+), 15 deletions(-)
+> Now, indirect truncate process didn't handle error. To solve this issue
+> maybe simply add check handle is abort in '__ext4_journal_ensure_credits'
+> is enough, and i also think this is necessary.
 > 
-> diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
-> index 36dfc88ce05b..ff8916e1d38e 100644
-> --- a/fs/ext4/migrate.c
-> +++ b/fs/ext4/migrate.c
-> @@ -437,12 +437,12 @@ int ext4_ext_migrate(struct inode *inode)
->  	percpu_down_write(&sbi->s_writepages_rwsem);
->  
->  	/*
-> -	 * Worst case we can touch the allocation bitmaps, a bgd
-> -	 * block, and a block to link in the orphan list.  We do need
-> -	 * need to worry about credits for modifying the quota inode.
-> +	 * Worst case we can touch the allocation bitmaps and a block
-> +	 * group descriptor block.  We do need need to worry about
-> +	 * credits for modifying the quota inode.
->  	 */
->  	handle = ext4_journal_start(inode, EXT4_HT_MIGRATE,
-> -		4 + EXT4_MAXQUOTAS_TRANS_BLOCKS(inode->i_sb));
-> +		3 + EXT4_MAXQUOTAS_TRANS_BLOCKS(inode->i_sb));
->  
->  	if (IS_ERR(handle)) {
->  		retval = PTR_ERR(handle);
-> @@ -463,10 +463,6 @@ int ext4_ext_migrate(struct inode *inode)
->  	 * Use the correct seed for checksum (i.e. the seed from 'inode').  This
->  	 * is so that the metadata blocks will have the correct checksum after
->  	 * the migration.
-> -	 *
-> -	 * Note however that, if a crash occurs during the migration process,
-> -	 * the recovery process is broken because the tmp_inode checksums will
-> -	 * be wrong and the orphans cleanup will fail.
->  	 */
->  	ei = EXT4_I(inode);
->  	EXT4_I(tmp_inode)->i_csum_seed = ei->i_csum_seed;
-> @@ -478,7 +474,6 @@ int ext4_ext_migrate(struct inode *inode)
->  	clear_nlink(tmp_inode);
->  
->  	ext4_ext_tree_init(handle, tmp_inode);
-> -	ext4_orphan_add(handle, tmp_inode);
->  	ext4_journal_stop(handle);
->  
->  	/*
-> @@ -503,12 +498,6 @@ int ext4_ext_migrate(struct inode *inode)
->  
->  	handle = ext4_journal_start(inode, EXT4_HT_MIGRATE, 1);
->  	if (IS_ERR(handle)) {
-> -		/*
-> -		 * It is impossible to update on-disk structures without
-> -		 * a handle, so just rollback in-core changes and live other
-> -		 * work to orphan_list_cleanup()
-> -		 */
-> -		ext4_orphan_del(NULL, tmp_inode);
->  		retval = PTR_ERR(handle);
->  		goto out_tmp_inode;
->  	}
-> -- 
-> 2.31.0
-> 
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
 
+Thanks for the report and the analysis! The fix looks good. Feel free to
+add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+
+> diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
+> index 6def7339056d..3477a16d08ae 100644
+> --- a/fs/ext4/ext4_jbd2.c
+> +++ b/fs/ext4/ext4_jbd2.c
+> @@ -162,6 +162,8 @@ int __ext4_journal_ensure_credits(handle_t *handle, int check_cred,
+>  {
+>  	if (!ext4_handle_valid(handle))
+>  		return 0;
+> +	if (is_handle_aborted(handle))
+> +		return -EROFS;
+>  	if (jbd2_handle_buffer_credits(handle) >= check_cred &&
+>  	    handle->h_revoke_credits >= revoke_cred)
+>  		return 0;
+
+
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
