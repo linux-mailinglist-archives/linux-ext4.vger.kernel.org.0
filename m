@@ -2,55 +2,117 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68A2C482F41
-	for <lists+linux-ext4@lfdr.de>; Mon,  3 Jan 2022 10:13:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C26C4830BC
+	for <lists+linux-ext4@lfdr.de>; Mon,  3 Jan 2022 12:49:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232313AbiACJNQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 3 Jan 2022 04:13:16 -0500
-Received: from mail.tomediacase.pl ([151.236.18.187]:57262 "EHLO
-        mail.tomediacase.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230525AbiACJNP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 3 Jan 2022 04:13:15 -0500
-X-Greylist: delayed 484 seconds by postgrey-1.27 at vger.kernel.org; Mon, 03 Jan 2022 04:13:15 EST
-Received: by mail.tomediacase.pl (Postfix, from userid 1001)
-        id 37D6640BBD; Mon,  3 Jan 2022 10:05:09 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tomediacase.pl;
-        s=mail; t=1641200710;
-        bh=1KDTsB3nJcWAjbNGIw57IBVNLXBfvIhwZJ5safZoOHQ=;
-        h=Date:From:To:Subject:From;
-        b=UCiMJf4xT1DhJj6SqeMPgiZr79K/s35eanEzuZ9U2xavFNmegrqXcUmc2Ss4Gvcfe
-         wPcTsw3HCwwA04m9AkRZn/27OvDb1EBy3zarpyyio6KRL4El1cPj+OLmu9rm/02eaA
-         9AitRyMno+cpBQyAz4UUXZvqRDE0Rylq4fCniEP9Ze/+hHV0E+Rg+8zHmQ4OhJDLuC
-         WtyNch+c5jtxIOC3fXmEfYiiFhgv6nfYBMATyB99PWOR6g16gd3SjZkHTFy990trbn
-         n0CP2AfYcy8avfcO/1cmj0wALEOyMn1AQnveuDDQTDVb40NGo7RCIMvdnIfVtuGPZ1
-         KGcn5JPXRMTiQ==
-Received: by mail.tomediacase.pl for <linux-ext4@vger.kernel.org>; Mon,  3 Jan 2022 09:05:08 GMT
-Message-ID: <20220103084500-0.1.z.2q4p.0.g48i48elqn@tomediacase.pl>
-Date:   Mon,  3 Jan 2022 09:05:08 GMT
-From:   "Adam Charachuta" <adam.charachuta@tomediacase.pl>
-To:     <linux-ext4@vger.kernel.org>
-Subject: =?UTF-8?Q?S=C5=82owa_kluczowe_do_wypozycjonowania?=
-X-Mailer: mail.tomediacase.pl
+        id S233077AbiACLtl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 3 Jan 2022 06:49:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:23494 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229788AbiACLtk (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 3 Jan 2022 06:49:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1641210580;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=O2W3BHwBpNpujMTuCJvmRQWjBfRoPnEfYjaEvRBQoJ4=;
+        b=FBgY7GtFojovEFJqCOprv4By71+SkjYZpLxYAbCVGoDykACZx4YZcv1Bw/+GUABGsrKIaK
+        TGM8FIv3wce3yUgI5BA862opWlE+jNf9McJtSc8zSgVoh7OIUMLAC0f6M9hS+6hUU9Bm/w
+        nQgRHOImeu+3aM1VfDjtXmIu8BPr2P8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-179-CVNj7gYqNfSj-RVt85_y8w-1; Mon, 03 Jan 2022 06:49:37 -0500
+X-MC-Unique: CVNj7gYqNfSj-RVt85_y8w-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DCCBB100CCC0;
+        Mon,  3 Jan 2022 11:49:35 +0000 (UTC)
+Received: from work (unknown [10.40.194.183])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D2F357E22E;
+        Mon,  3 Jan 2022 11:49:34 +0000 (UTC)
+Date:   Mon, 3 Jan 2022 12:49:31 +0100
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: Re: [tytso-ext4:dev] BUILD REGRESSION
+ cc5fef71a1c741473eebb1aa6f7056ceb49bc33d
+Message-ID: <20220103114931.uup7lw3d4pj7yrrx@work>
+References: <61c73848.ezrkzdC4STslya5j%lkp@intel.com>
+ <YckTD4NcqD8rdZDV@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YckTD4NcqD8rdZDV@mit.edu>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Dzie=C5=84 dobry,
+On Sun, Dec 26, 2021 at 08:12:47PM -0500, Theodore Ts'o wrote:
+> On Sat, Dec 25, 2021 at 11:27:04PM +0800, kernel test robot wrote:
+> > tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+> > branch HEAD: cc5fef71a1c741473eebb1aa6f7056ceb49bc33d  ext4: replace snprintf in show functions with sysfs_emit
+> > 
+> > Error/Warning reports:
+> > 
+> > https://lore.kernel.org/linux-ext4/202112101722.3Kpomg0h-lkp@intel.com
+> > 
+> > possible Error/Warning in current branch (please contact us if interested):
+> > 
+> > fs/ext4/super.c:2640:22-40: ERROR: reference preceded by free on line 2639
+> 
+> The Intel test robot mis-identified the commit which introduced this
+> problem (it looks like the first commit with the problem is commit
+> e6e268cb6822 ("ext4: move quota configuration out of
+> handle_mount_opt()"), but it caused me to take a closer look, and this
+> looks... wrong.
+> 
+> From ext4_apply_quota_options() in fs/extr4/super.c:
+> 
+> 			qname = ctx->s_qf_names[i]; /* May be NULL */
+> 			ctx->s_qf_names[i] = NULL;
+> 			kfree(sbi->s_qf_names[i]);
+> 			rcu_assign_pointer(sbi->s_qf_names[i], qname);
+> 			set_opt(sb, QUOTA);
+> 
+> sbi->s_qf_names[i] is an RCU protected pointer, which is used via
+> rcu_derference().  So how can it be safe to kfree() the pointer;
+> should that be kfree_rcu() at the very least?
+> 
+> Lukas, can you take a look and let me know?   Thanks!
+> 
+>        	       	      	       	      - Ted
 
-zapozna=C5=82em si=C4=99 z Pa=C5=84stwa ofert=C4=85 i z przyjemno=C5=9Bci=
-=C4=85 przyznaj=C4=99, =C5=BCe przyci=C4=85ga uwag=C4=99 i zach=C4=99ca d=
-o dalszych rozm=C3=B3w.=20
+Hi Ted,
 
-Pomy=C5=9Bla=C5=82em, =C5=BCe mo=C5=BCe m=C3=B3g=C5=82bym mie=C4=87 sw=C3=
-=B3j wk=C5=82ad w Pa=C5=84stwa rozw=C3=B3j i pom=C3=B3c dotrze=C4=87 z t=C4=
-=85 ofert=C4=85 do wi=C4=99kszego grona odbiorc=C3=B3w. Pozycjonuj=C4=99 =
-strony www, dzi=C4=99ki czemu generuj=C4=85 =C5=9Bwietny ruch w sieci.
+yes indeed this is a bug. Something like this untested patch should fix
+it I believe.
 
-Mo=C5=BCemy porozmawia=C4=87 w najbli=C5=BCszym czasie?
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index b72d989b77fb..6f52609a334c 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -2633,8 +2633,10 @@ static void ext4_apply_quota_options(struct fs_context *fc,
+
+                        qname = ctx->s_qf_names[i]; /* May be NULL */
+                        ctx->s_qf_names[i] = NULL;
+-                       kfree(sbi->s_qf_names[i]);
+-                       rcu_assign_pointer(sbi->s_qf_names[i], qname);
++                       qname = rcu_replace_pointer(sbi->s_qf_names[i], qname,
++                                               lockdep_is_held(&sb->s_umount));
++                       if (qname)
++                               kfree_rcu(qname);
+                        set_opt(sb, QUOTA);
+                }
+        }
 
 
-Pozdrawiam,
-Adam Charachuta
+There is also a question of the other warning where we pass the pointer
+to strcmp which we should silence as well. I'll send a proper patch.
+
+Thanks!
+-Lukas
+
