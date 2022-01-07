@@ -2,147 +2,116 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 138C4486F51
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Jan 2022 02:00:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56572487442
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Jan 2022 09:49:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344076AbiAGBAB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 Jan 2022 20:00:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60386 "EHLO
+        id S1346186AbiAGItP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 7 Jan 2022 03:49:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236544AbiAGA77 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Jan 2022 19:59:59 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD10C061245;
-        Thu,  6 Jan 2022 16:59:59 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id z9so15937398edm.10;
-        Thu, 06 Jan 2022 16:59:59 -0800 (PST)
+        with ESMTP id S1346176AbiAGItO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 Jan 2022 03:49:14 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0065BC061245
+        for <linux-ext4@vger.kernel.org>; Fri,  7 Jan 2022 00:49:13 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id x6so13116477lfa.5
+        for <linux-ext4@vger.kernel.org>; Fri, 07 Jan 2022 00:49:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=193b4YHjs1buOAzSFIPKTBZORcA2cD4by1MwizuSpRM=;
-        b=kdBniaYQywtcRRDuNzzDVpl7lTixQ9Y1NbYlEmhfMQ2i4+aRsC1vE7CJKKX9g584zh
-         ZeL+Lo6hCKp4kL+AABTpvw0/wgU0PdG/e1Yn9XcaewePQVwXm7858s6paiywqz5HBVtb
-         sfcklQ3rSwXeeCWlt6xlXPXkacmQPqNzWiR27wkjPzqpiVyZNLtqUhbBRI5PMO/v863B
-         fu0pc2kBoDy23xSQQZ4de7w/peDUxNPBdLtM1ciYJ98fA3UzdSMsTrmeSejriUCh/epT
-         etPk4bp0MDizzZS98nVcRM9YoMztLIPOWXrRgahqL9m5pAIpqKZzMpntFvnlrOb+ElbB
-         mL8g==
+        bh=XFIR/uG+ezKrSRft5Fjc/6qgQZpqXtpbYwZlKrolyBI=;
+        b=EPjRpFxeAOL5ruGpOFP9TB1lKbJCbfoKYbxjlUtpeTvc+gd53NIICxNWvl3R1Y9601
+         9bwUwDFv+PCYE1hSyjaATzGGtQ0GebLMpf1FWs3khCbXQ0I7DxRmjW5BLkJMRxtkJMIv
+         Lt0Xzt56zUCwRWeUCy0cLvrkQCVtb7epfWkemPi9spuNw8b9/D9rXZUrUT5cmZASuspk
+         pvgYGvtM/4+ZCzLfaa8ZW+36xDieteTr98WJoJWOE6VcqGDj2L6iAMxs4MzM80UyJ27/
+         M+Qp+7DMRzoG5LmyXx+lUqnWcj+kUQsnjxwI6yb3vaiqHWn96NIgZAZp23k69YUi3I+7
+         7NlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=193b4YHjs1buOAzSFIPKTBZORcA2cD4by1MwizuSpRM=;
-        b=wHav4z5xYXcmbYkU6uN+PE4crKiZG7dZ9mFwzA2xkFCk/BdQBNCk8/Vni4ZGaW/5Yi
-         vB0eA05qBjg3v9R6vsoCYmKSMeprTLxGPfv6OrRl4TC9njIr7M0V/XLPgVEEhbELQrhX
-         EqGTd7Q7P3cZPHW4NXnYbMvJ3WdikeUQIThU0iSma0DXNZyAmojeyVeBalCsW47wFiIk
-         mX3jszRChEn95g05oNQEoUXbnhM6juN4G0zHPPSJlcmYEOjOrYjaFwawy2c0kWWHx7JK
-         L6xtFGrT9igGalhtj3f8MFdFFdO/foGZat4n7uTp5lQ5WoQnQn0Wv53Zghuvj742mdWf
-         1LdQ==
-X-Gm-Message-State: AOAM53373zDa1LzOm+nEBWNXGD53Y0gK6Hl/7WlUUzbv168N5H5wHQqm
-        ecZtPG0OwlhlIxFFN5nZKsnM5cOylu3on/BIWODmmFcafvw=
-X-Google-Smtp-Source: ABdhPJxJBcDiJq48nZOyiyf4PNZ9r4ZiJ6Rd1Q02GkfapSXgfzOPLAW687ZRqwj1yOM2vNvSGQt923kieCZkk7Xqono=
-X-Received: by 2002:a17:906:4793:: with SMTP id cw19mr51347677ejc.15.1641517197290;
- Thu, 06 Jan 2022 16:59:57 -0800 (PST)
+        bh=XFIR/uG+ezKrSRft5Fjc/6qgQZpqXtpbYwZlKrolyBI=;
+        b=cW5AN6GQfyrs4vbhD54ZINz3GwSiiGJYMBEtj485xNXiO44B5/f6g4KzgbNtebY40w
+         M2XYfM1PTtWMJ+FJvfQuHv7Hn7IMY6dElEU2IybZWysXUaYvanpmmjkLukK+XRFlWkKI
+         ThzBfxX46EugXQ0wzO2CRuwOj7/J0qAZnESwfJ6oX+2sJHNXHAv0Ig0/tpMqS6/SCjQ1
+         +qhs849ntjYD505TlOEJ5Aavhc8mdEaeKHtqsRLHsRhfmfiU9H/K77zG2LJMeYGtdVPK
+         AvUha9F4Na2Id74ZX9UlKcmijXcj0augxoQC01Q6v1fpI6HgBdnv0GdTtgwNSMD9jti7
+         4t3A==
+X-Gm-Message-State: AOAM530soC4WH6g3bNQyRrRYbCWpq1kvkxZ7r0zCm2em8xq/MViuylMF
+        u3iwPTE5SFUA8tUgN4Vll5PoAM2OrXB6GwpPFEzRAg==
+X-Google-Smtp-Source: ABdhPJzAv2NLTpJ1v0haPGOEU+pdJb4gIC5IXAchiRWpKGjAMTLWgrBbxhgux6AyqMYBZ5E/WzWCGOor5Zjj7bUhh1w=
+X-Received: by 2002:ac2:4895:: with SMTP id x21mr56297330lfc.336.1641545351905;
+ Fri, 07 Jan 2022 00:49:11 -0800 (PST)
 MIME-Version: 1.0
-References: <20211230062905.586150-1-luo.penghao@zte.com.cn>
- <YdZzt0LF/ajTGNXo@mit.edu> <20220106105843.comh4jk3krxppgbp@work>
-In-Reply-To: <20220106105843.comh4jk3krxppgbp@work>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Thu, 6 Jan 2022 16:59:46 -0800
-Message-ID: <CAD+ocbyF=9pskuSRono-hAg2mEzEmCOD30oFGYW8piQ=BjwhYw@mail.gmail.com>
-Subject: Re: [PATCH linux] ext4: Delete useless ret assignment
-To:     Lukas Czerner <lczerner@redhat.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, cgel.zte@gmail.com,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
+References: <20211224065728.5820-1-yinxin.x@bytedance.com> <YdZgYvC4K87PiMfO@mit.edu>
+In-Reply-To: <YdZgYvC4K87PiMfO@mit.edu>
+From:   Xin Yin <yinxin.x@bytedance.com>
+Date:   Fri, 7 Jan 2022 16:49:01 +0800
+Message-ID: <CAK896s7kJ47Q857u-+vBsera95tSJkxMy2Qhqk-91YjbR3QSdA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH RESEND] ext4:fix different behavior of
+ fsync when use fast commit
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     harshadshirwadkar@gmail.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-First of all thanks for catching this. Yeah, I think the right thing
-to do here is to return the return value up to the caller. Also, I
-agree with Lukas, we should only set fc_modified_inodes_size if the
-allocation succeeds. Luo, would you be okay updating the patch to
-include these changes?
+Thanks for the explanation and direction , I will do another fix for this issue.
 
-Thanks,
-Harshad
 
-On Thu, Jan 6, 2022 at 2:58 AM Lukas Czerner <lczerner@redhat.com> wrote:
+
+Best Regards,
+Xin Yin
+
+
+On Thu, Jan 6, 2022 at 11:22 AM Theodore Ts'o <tytso@mit.edu> wrote:
 >
-> On Wed, Jan 05, 2022 at 11:44:39PM -0500, Theodore Ts'o wrote:
-> > On Thu, Dec 30, 2021 at 06:29:05AM +0000, cgel.zte@gmail.com wrote:
-> > > From: luo penghao <luo.penghao@zte.com.cn>
-> > >
-> > > The assignments in these two places will be overwritten by new
-> > > assignments later, so they should be deleted.
-> > >
-> > > The clang_analyzer complains as follows:
-> > >
-> > > fs/ext4/fast_commit.c
-> > >
-> > > Value stored to 'ret' is never read
+> On Fri, Dec 24, 2021 at 02:57:28PM +0800, Xin Yin wrote:
+> > For the follow test example:
+> > -mkdir test/
+> > -create&write test/a.txt
+> > -fsync test/a.txt
+> > -crash (before a full commit)
 > >
-> > I suspect the right answer here is that we *should* be checking the
-> > return value, and reflecting the error up to caller, if appropriate.
+> > If fast commit is used then "a.txt" will lost, while the normal
+> > journaling can recover it.
+>
+> The problem is that your proposed fix:
+>
+> > diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+> > index 3deb97b22ca4..4b843648ffe5 100644
+> > --- a/fs/ext4/fast_commit.c
+> > +++ b/fs/ext4/fast_commit.c
+> > @@ -423,7 +423,7 @@ void __ext4_fc_track_create(handle_t *handle, struct inode *inode,
+> >       args.op = EXT4_FC_TAG_CREAT;
 > >
-> > Harshad, what do you think?
+> >       ret = ext4_fc_track_template(handle, inode, __track_dentry_update,
+> > -                                     (void *)&args, 0);
+> > +                                     (void *)&args, 1);
+> >       trace_ext4_fc_track_create(inode, dentry, ret);
+> >  }
 >
-> Indeed we absolutely *must* be checking the return value and bail out
-> otherwise we risk overwriting kernel memory among other possible
-> problems.
+> affects both file creations as well as directory creations (mkdir).
+> Putting the inode on the fast commit list is something that is meant
+> for files, and means that on a fast commit we need to force the data
+> blocks out.  So it seems that isn't the right fix for the problem.
 >
-> See ext4_fc_record_modified_inode() where we increment
-> fc_modified_inodes_size before the actual reallocation which in case of
-> allocation failure will leave us with elevated fc_modified_inodes_size
-> and the next call to ext4_fc_record_modified_inode() can modify
-> fc_modified_inodes[] out of bounds.
+> Why do something really simple?  Look at the parent directory's inode,
+> and check its i_sync_tid.  If it's not equal to
+> handle->h_transaction->t_tid, then it's safe to do the fast commit.
+> If it's equal to the current transaction, we can either force a full
+> commit.
 >
-> In addition to checking the return value we should probably also move
-> incrementing the fc_modified_inodes_size until after the successful
-> reallocation in order to avoid such pitfalls.
+> Optionally, in the case where i_sync_tid == current tid, since there's
+> a chance that the parent directory's inode could have been freshly
+> fetched from disk (see __ext4_iget() in fs/ext4/inode.c), we could
+> compare its i_crtime against ktime_get_real_seconds(), and if the
+> inode was created in the last 2*journal->j_commit_interval/HZ seconds,
+> it's safe to do a fast commit; otherwise do a full commit.
 >
-> Thanks!
-> -Lukas
+> Cheers,
 >
-> >
-> >                                       - Ted
-> >
-> > >
-> > > Reported-by: Zeal Robot <zealci@zte.com.cn>
-> > > Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
-> > > ---
-> > >  fs/ext4/fast_commit.c | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> > > index 8ea5a81..8d5d044 100644
-> > > --- a/fs/ext4/fast_commit.c
-> > > +++ b/fs/ext4/fast_commit.c
-> > > @@ -1660,7 +1660,7 @@ static int ext4_fc_replay_add_range(struct super_block *sb,
-> > >             return 0;
-> > >     }
-> > >
-> > > -   ret = ext4_fc_record_modified_inode(sb, inode->i_ino);
-> > > +   ext4_fc_record_modified_inode(sb, inode->i_ino);
-> > >
-> > >     start = le32_to_cpu(ex->ee_block);
-> > >     start_pblk = ext4_ext_pblock(ex);
-> > > @@ -1785,7 +1785,7 @@ ext4_fc_replay_del_range(struct super_block *sb, struct ext4_fc_tl *tl,
-> > >             return 0;
-> > >     }
-> > >
-> > > -   ret = ext4_fc_record_modified_inode(sb, inode->i_ino);
-> > > +   ext4_fc_record_modified_inode(sb, inode->i_ino);
-> > >
-> > >     jbd_debug(1, "DEL_RANGE, inode %ld, lblk %d, len %d\n",
-> > >                     inode->i_ino, le32_to_cpu(lrange.fc_lblk),
-> > > --
-> > > 2.15.2
-> > >
-> > >
-> >
->
+>                                         - Ted
