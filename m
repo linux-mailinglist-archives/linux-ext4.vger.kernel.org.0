@@ -2,125 +2,180 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC6D4879CD
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Jan 2022 16:40:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDFDB487D4D
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Jan 2022 20:49:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348090AbiAGPkX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 7 Jan 2022 10:40:23 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:41610 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239631AbiAGPkX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 Jan 2022 10:40:23 -0500
-Received: by mail-il1-f200.google.com with SMTP id h23-20020a056e021d9700b002b49f2b9bccso3978522ila.8
-        for <linux-ext4@vger.kernel.org>; Fri, 07 Jan 2022 07:40:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=dvC8bxPjiwLGXSkNcF3Q93xX7JWFUNuMn44uek3aYtA=;
-        b=oe4QkMrRIBXdWAEqSN//lG+O4ita5g3ZmJ/VazxwZvWj9p0zZY81/UuWOLL/XwBr5w
-         085LtE4U7BaMr6c9KAwd5LHt2ECXXDAaBmz20v/BM+qtRjDK5Uikq4EEoSWLVghMi508
-         9uKtdGGib4GXkjNqM3AXHdIn7CUqNA/rvmbPmBYCbRgoUTn5teRsW8DspUI1de+pkjhA
-         mfRnkW6wJSMn0YeoWHRMApkhNThwIw7qzkNh6ZCv/XnU5hGmSKArZ4gKVviBwO44qfob
-         oA7zZJGfDNH2Lmirnz2bv6lhpJ1KYl64SLbCw9zpmsSMJWCjvjX04JYp6969spmMTiyZ
-         qcRA==
-X-Gm-Message-State: AOAM530HhY+mPvCv8H7KY+QRn7PchpaetMoVUrRqoqA48LuoS2domx27
-        z9UeiFhTFJVspzVVeyc4ddftUHtJp9TMi7FqZ7Hs3097jFIl
-X-Google-Smtp-Source: ABdhPJyquJ3rLlkIovZ8hSfmH5P1AHmL9UwceMYom0IfHxoqJ35nICd0eUN+EtC2+Xby1IUIr2Aiuq5leXycezl5PZrxMZdnVaQO
+        id S233522AbiAGTtN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 7 Jan 2022 14:49:13 -0500
+Received: from mga01.intel.com ([192.55.52.88]:9573 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233528AbiAGTtM (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 7 Jan 2022 14:49:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1641584952; x=1673120952;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=T4YKDaGwzh7oaLkHquZldPLSiKm9eHt8mUO7fcU8y5M=;
+  b=hTXlCO0a+GPdPxf0rdCMJU7l1dB66c5ZxnlfdBudsfMD2tXqHIYcaSFZ
+   PtcoMsKP4pfQQ66VHYmM7VYofJccOXYDspEs4oQvbgOn6MUYGuJ8Jk6Yg
+   Qpt1QQi8ZXN2dJmCFOAUYzDzAkjBw37xsejMo/hYjh1VbGZkKVXufCZGD
+   GWQRFKK55rmszKiBpDcWoEcXHWbiGxWINngmyvOAoCdPEasKxe4O+764t
+   2obWFRZK1MTlHmdvQQnlCe8H6Drc7jm9fGEsUd1/18GsYI8n1HWAt0cct
+   lgvptuTy3l8Fyazx9/QANOwNgWdE9WdgFV+v08njTuuLQnChmPZuv7NHK
+   g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10220"; a="267233948"
+X-IronPort-AV: E=Sophos;i="5.88,270,1635231600"; 
+   d="scan'208";a="267233948"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2022 11:49:11 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,270,1635231600"; 
+   d="scan'208";a="557363464"
+Received: from lkp-server01.sh.intel.com (HELO e357b3ef1427) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 07 Jan 2022 11:49:10 -0800
+Received: from kbuild by e357b3ef1427 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1n5vEb-000IzF-38; Fri, 07 Jan 2022 19:49:09 +0000
+Date:   Sat, 08 Jan 2022 03:48:16 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:dev] BUILD SUCCESS
+ 412aac1d161a0190996b37826e3a2f6757c39611
+Message-ID: <61d89900.+3AtEs+ykSVdyaHd%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:140e:: with SMTP id k14mr30556024jad.119.1641570022402;
- Fri, 07 Jan 2022 07:40:22 -0800 (PST)
-Date:   Fri, 07 Jan 2022 07:40:22 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000f2f3605d4ffce9e@google.com>
-Subject: [syzbot] KMSAN: uninit-value in ext4_inode_journal_mode (2)
-From:   syzbot <syzbot+11542230634289d7f1f6@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, glider@google.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: 412aac1d161a0190996b37826e3a2f6757c39611  ext4: don't use the orphan list when migrating an inode
 
-syzbot found the following issue on:
+elapsed time: 1562m
 
-HEAD commit:    81c325bbf94e kmsan: hooks: do not check memory in kmsan_in..
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=11473f2db00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2d8b9a11641dc9aa
-dashboard link: https://syzkaller.appspot.com/bug?extid=11542230634289d7f1f6
-compiler:       clang version 14.0.0 (/usr/local/google/src/llvm-git-monorepo 2b554920f11c8b763cd9ed9003f4e19b919b8e1f), GNU ld (GNU Binutils for Debian) 2.35.2
-userspace arch: i386
+configs tested: 107
+configs skipped: 4
 
-Unfortunately, I don't have any reproducer for this issue yet.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+11542230634289d7f1f6@syzkaller.appspotmail.com
+gcc tested configs:
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm64                            allyesconfig
+arm64                               defconfig
+i386                 randconfig-c001-20220107
+um                           x86_64_defconfig
+sh                        sh7785lcr_defconfig
+powerpc                  iss476-smp_defconfig
+mips                  maltasmvp_eva_defconfig
+mips                           jazz_defconfig
+arm                       aspeed_g5_defconfig
+parisc                generic-64bit_defconfig
+powerpc                 mpc837x_mds_defconfig
+sparc64                          alldefconfig
+arm                           h5000_defconfig
+arm                          badge4_defconfig
+sh                        dreamcast_defconfig
+xtensa                    smp_lx200_defconfig
+sh                          polaris_defconfig
+m68k                       m5208evb_defconfig
+m68k                          sun3x_defconfig
+sh                            migor_defconfig
+mips                         cobalt_defconfig
+arm                  randconfig-c002-20220107
+arm                  randconfig-c002-20220106
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a005-20220107
+x86_64               randconfig-a001-20220107
+x86_64               randconfig-a006-20220107
+x86_64               randconfig-a002-20220107
+x86_64               randconfig-a004-20220107
+x86_64               randconfig-a003-20220107
+i386                 randconfig-a005-20220107
+i386                 randconfig-a004-20220107
+i386                 randconfig-a006-20220107
+i386                 randconfig-a002-20220107
+i386                 randconfig-a001-20220107
+i386                 randconfig-a003-20220107
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
 
-syz-executor.0 (pid 3634) is setting deprecated v1 encryption policy; recommend upgrading to v2.
-=====================================================
-BUG: KMSAN: uninit-value in ext4_inode_journal_mode+0x29f/0x510 fs/ext4/ext4_jbd2.c:16
- ext4_inode_journal_mode+0x29f/0x510 fs/ext4/ext4_jbd2.c:16
- ext4_should_journal_data fs/ext4/ext4_jbd2.h:465 [inline]
- ext4_evict_inode+0x1b5/0x2d10 fs/ext4/inode.c:202
- evict+0x4f4/0xdd0 fs/inode.c:590
- iput_final fs/inode.c:1670 [inline]
- iput+0xc53/0x1100 fs/inode.c:1696
- __ext4_new_inode+0xf32/0x8440 fs/ext4/ialloc.c:1362
- ext4_create+0x455/0x940 fs/ext4/namei.c:2746
- lookup_open fs/namei.c:3280 [inline]
- open_last_lookups fs/namei.c:3350 [inline]
- path_openat+0x2e88/0x5ea0 fs/namei.c:3556
- do_filp_open+0x306/0x760 fs/namei.c:3586
- do_sys_openat2+0x263/0x8f0 fs/open.c:1212
- do_sys_open fs/open.c:1228 [inline]
- __do_sys_creat fs/open.c:1304 [inline]
- __se_sys_creat fs/open.c:1298 [inline]
- __ia32_sys_creat+0x122/0x1a0 fs/open.c:1298
- do_syscall_32_irqs_on arch/x86/entry/common.c:114 [inline]
- __do_fast_syscall_32+0x96/0xf0 arch/x86/entry/common.c:180
- do_fast_syscall_32+0x34/0x70 arch/x86/entry/common.c:205
- do_SYSENTER_32+0x1b/0x20 arch/x86/entry/common.c:248
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-
-Uninit was created at:
- __alloc_pages+0xbbf/0x1090 mm/page_alloc.c:5409
- alloc_pages+0x8a5/0xb80
- alloc_slab_page mm/slub.c:1810 [inline]
- allocate_slab+0x287/0x1c10 mm/slub.c:1947
- new_slab mm/slub.c:2010 [inline]
- ___slab_alloc+0xb85/0x1e30 mm/slub.c:3039
- __slab_alloc mm/slub.c:3126 [inline]
- slab_alloc_node mm/slub.c:3217 [inline]
- slab_alloc mm/slub.c:3259 [inline]
- kmem_cache_alloc+0xbb3/0x11c0 mm/slub.c:3264
- ext4_alloc_inode+0x5e/0x870 fs/ext4/super.c:1295
- alloc_inode fs/inode.c:235 [inline]
- new_inode_pseudo+0xa6/0x5a0 fs/inode.c:944
- new_inode+0x5a/0x3c0 fs/inode.c:973
- __ext4_new_inode+0x3cb/0x8440 fs/ext4/ialloc.c:960
- ext4_mkdir+0x623/0x1870 fs/ext4/namei.c:2929
- vfs_mkdir+0x8ca/0xba0 fs/namei.c:3883
- do_mkdirat+0x3f5/0x8e0 fs/namei.c:3909
- __do_sys_mkdirat fs/namei.c:3924 [inline]
- __se_sys_mkdirat fs/namei.c:3922 [inline]
- __x64_sys_mkdirat+0x11a/0x160 fs/namei.c:3922
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x54/0xd0 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-CPU: 0 PID: 3634 Comm: syz-executor.0 Not tainted 5.16.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-=====================================================
-
+clang tested configs:
+mips                 randconfig-c004-20220107
+arm                  randconfig-c002-20220107
+i386                 randconfig-c001-20220107
+riscv                randconfig-c006-20220107
+powerpc              randconfig-c003-20220107
+x86_64               randconfig-c007-20220107
+powerpc                     skiroot_defconfig
+x86_64               randconfig-a012-20220107
+x86_64               randconfig-a015-20220107
+x86_64               randconfig-a014-20220107
+x86_64               randconfig-a013-20220107
+x86_64               randconfig-a011-20220107
+x86_64               randconfig-a016-20220107
+i386                 randconfig-a012-20220107
+i386                 randconfig-a011-20220107
+i386                 randconfig-a013-20220107
+i386                 randconfig-a014-20220107
+i386                 randconfig-a015-20220107
+i386                 randconfig-a016-20220107
+s390                 randconfig-r044-20220107
+hexagon              randconfig-r041-20220107
+hexagon              randconfig-r045-20220107
+riscv                randconfig-r042-20220107
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
