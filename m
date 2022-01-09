@@ -2,57 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 988E3488783
-	for <lists+linux-ext4@lfdr.de>; Sun,  9 Jan 2022 04:01:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7B61488787
+	for <lists+linux-ext4@lfdr.de>; Sun,  9 Jan 2022 04:07:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232399AbiAIDBn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 8 Jan 2022 22:01:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45318 "EHLO
+        id S233484AbiAIDG7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 8 Jan 2022 22:06:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230133AbiAIDBn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 8 Jan 2022 22:01:43 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 255DAC061401
-        for <linux-ext4@vger.kernel.org>; Sat,  8 Jan 2022 19:01:43 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id s30so3411671lfo.7
-        for <linux-ext4@vger.kernel.org>; Sat, 08 Jan 2022 19:01:43 -0800 (PST)
+        with ESMTP id S230425AbiAIDG7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 8 Jan 2022 22:06:59 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF2B2C06173F
+        for <linux-ext4@vger.kernel.org>; Sat,  8 Jan 2022 19:06:58 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id br17so101404lfb.6
+        for <linux-ext4@vger.kernel.org>; Sat, 08 Jan 2022 19:06:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=epw5fsJKvpKo01BuQhMwYrk6Zimo6UwKmX1WcXHr/ZQ=;
-        b=cCrWMfN9F4g5YYsJYQqJxovw3PyIVDSADAnov5xeixEA6wWdM/KV2wpxIbVZX0WvCl
-         QclNhZmexUAKjSTg/+DIakllVGhyvxBD+9eTXZUFKWqP3CprcBxkwIyJVa+dOPWcgCTQ
-         Am25P6LvyCJgCkcvdgSKIFeniI2bYiQelfP6WozTLKTohZ+aHSv6ga3jwg2Trqm5YElZ
-         5uiK0fvq7dFJGlQHWCL4KYg9ZSn1f+rLs52jbIqKMV+MbUJVUBeiOAt99RC1PVAmKquA
-         qRnqBKVj2ykQrBUlECW50qaEHtTfF1SsJjTHYlop9jAnXGx5lwhJCnhla6I/VN3vCo2x
-         l02A==
+        bh=xFCwYYaJtD+h2CoX9K4/NZ5SGhf2H1bVCDfwVf5ZnaA=;
+        b=x+hO075Zb+7GRSUV9aG8zqpNACbm6t+feW3NUoUSwEIbXVBxTRO8yVlccyN4VlSrdE
+         L9FR7IP1T9evnFvXoaGfuENot73h3pmsPMDYFhLkwEhKJnuXO3nM/zMHHWMB9tsW/vra
+         eIOvLPUUkDWLYU39/Do15z0089WpoOlr6y8afMJOVa+Gb2rzvr6hBtmpuN6Xtwt1VQcz
+         3SwuatDMtH1xU6AFiLqSTNgdw7RQ7cV++pe7+EsBNbm1OyQMQylFqgsyjWVhJGx6U7zR
+         AkhgJQ0IS3GRU9KioQKZuIjMLM2N1DauqdB4WNoX5JxISYotrK+Pc7L2g6c8d41tc08a
+         va/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=epw5fsJKvpKo01BuQhMwYrk6Zimo6UwKmX1WcXHr/ZQ=;
-        b=w31NE73qttaWOiuWRX93ut4mkuQj9MTpdVZ1Y5skBi2nnX5kAXhb17uxlzdPIoKnG0
-         r4T3QQg3fE1vMB+UeTWJLjf8+buNvMXCXNtWDjVv8xPxlKhuRTpbOsOcMtPqWaK303mY
-         M0xnB2gQgZ+FNmyu0fOBCZyv3zoFcIX8UCtAqYmDF1byUsUZ2v1yWFsFwhfiT4wMW6jl
-         i1ZEbe8JQHjKb8o/Ro0BqN50FCx87O/3gsEweDoCszUCQ1qtxp/Jc3IBzgEPnLEvmGAu
-         95/xwXusXenTVVojS3qklQG61lLPrU1kfy/VZ5iQPPoqqExMYI/39tC0Pt4lHzYBPxs+
-         Gj7w==
-X-Gm-Message-State: AOAM530QIBhdr3sf6p+Y2vuwDHNLU1XbKRKjuqdasn7Q5Vu2gH3OIfzH
-        zmuOB2BbpzHbRW+lR72yvs5v/ZW32PPK8uE27pdgGw==
-X-Google-Smtp-Source: ABdhPJxzdjlVC+XeXO+ZliebQIkvMOA7YypjyefFfJHHgEU4h95iPyjI9q9FbY8qO7kQz2NR5JhDcI5pq6mX/WjjqEk=
-X-Received: by 2002:a05:6512:224c:: with SMTP id i12mr35392lfu.13.1641697301236;
- Sat, 08 Jan 2022 19:01:41 -0800 (PST)
+        bh=xFCwYYaJtD+h2CoX9K4/NZ5SGhf2H1bVCDfwVf5ZnaA=;
+        b=BMCrCEhDFwecTZNHJx8Jf2s1+Ccc6+2XqikmoNTHZr+fHjb/VwEAZbCdflKNx2dmoU
+         54R/WvudcpyawgHYAj+iIjD3bbU5Fdk79BAqKNAOfnVEoUfEyuADMXgW1xngxNY+azYC
+         Cq4Y22WnhJ7z/AZEJp6v9DI0zz+4qj7mssAwtQ9zZ3EjoI3CsWBDpRHDj9/VHuoZUYSU
+         URHWhknFBmux5X0oSHIxXtfq2SYGJ3w+Ofu7AqVvUa1Svu8ZFh2RtOtn7npjKTHg1/ki
+         yt5Gi+0p6Am4khe6O2Dd+y5LewlO9ZQyYXy+C6cE+z32qMZMYDPi1ylP7q1sATYt4oQH
+         3NxQ==
+X-Gm-Message-State: AOAM5326TdBsdRzNmdXfko/80Z1E+jzSnxoBru6zgCHoblMaeqBOkqz9
+        tzEBA8nqr/U2zoNUG1IZauFqfha6FRrkGAAHxiEIBw==
+X-Google-Smtp-Source: ABdhPJxvausqaOYs2BnXRzqzBzqDLZZUmhpxFhxAuHSvo7IoIago7aHJnckO+yIQhj29ZGiwNI0V0vPF+NciFtsbKIQ=
+X-Received: by 2002:a19:4957:: with SMTP id l23mr762202lfj.298.1641697616943;
+ Sat, 08 Jan 2022 19:06:56 -0800 (PST)
 MIME-Version: 1.0
-References: <20220106024518.8161-1-yinxin.x@bytedance.com> <20220106024518.8161-2-yinxin.x@bytedance.com>
- <CAD+ocbx2e06YoESJM7m5ra-6so0ijWsYyN1L1ZFTXqxedMMoNw@mail.gmail.com>
- <CAK896s4EgEPU4FyyXczW79uFhVDido-Cwc=X-6jJ3kz2LXwBqw@mail.gmail.com> <CAD+ocbzn4gopc_ohSe66WxiZ-yz4e=XKF+_tHTVQ6JWXd_T8kA@mail.gmail.com>
-In-Reply-To: <CAD+ocbzn4gopc_ohSe66WxiZ-yz4e=XKF+_tHTVQ6JWXd_T8kA@mail.gmail.com>
+References: <20220107121215.1912-1-yinxin.x@bytedance.com> <20220107121215.1912-3-yinxin.x@bytedance.com>
+ <CAD+ocbxUaQMjhOof-zphqYs2MvtqtM5dLxmfxmRGrj2sORZ+sQ@mail.gmail.com>
+In-Reply-To: <CAD+ocbxUaQMjhOof-zphqYs2MvtqtM5dLxmfxmRGrj2sORZ+sQ@mail.gmail.com>
 From:   Xin Yin <yinxin.x@bytedance.com>
-Date:   Sun, 9 Jan 2022 11:01:30 +0800
-Message-ID: <CAK896s6i1y5KhesNj5niyc0WdVCYGAJCoPdG-s1au2rF0QXhjg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 1/2] ext4: prevent used blocks from being
- allocated during fast commit replay
+Date:   Sun, 9 Jan 2022 11:06:46 +0800
+Message-ID: <CAK896s5EV9AOenyPrHJFk7=R--RGhH0eWeVU55vnScSJmM6qwA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH 2/2] ext4: fast commit may miss file actions
 To:     harshad shirwadkar <harshadshirwadkar@gmail.com>
 Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
@@ -63,129 +61,77 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Yes , this is a little tricky, I will add some comments for it, and
-send a v2 patches set
+Thanks, you are right , the EXT4_MF_FC_COMMITTING is not needed after
+this change , I will do the cleanup for it , and send a v2 patches
+set.
 
 Thanks,
 Xin Yin
 
-On Sat, Jan 8, 2022 at 2:05 PM harshad shirwadkar
+On Sat, Jan 8, 2022 at 4:14 AM harshad shirwadkar
 <harshadshirwadkar@gmail.com> wrote:
 >
-> Ah, I see okay. Yeah, that makes sense. We do need to update
-> fc_regions_valid for every addition during the replay phase. I think
-> it may be helpful to add some comments describing this behavior in the
-> code. But other than that, I think what you're doing is fine.
+> Makes sense. With this change, we don't really need
+> EXT4_MF_FC_COMMITTING flag anymore. So, we can drop it. But other than
+> that, this patch looks good.
 >
 > Reviewed-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 >
-> On Fri, Jan 7, 2022 at 6:09 PM Xin Yin <yinxin.x@bytedance.com> wrote:
+> On Fri, Jan 7, 2022 at 4:13 AM Xin Yin <yinxin.x@bytedance.com> wrote:
 > >
-> > On Sat, Jan 8, 2022 at 4:26 AM harshad shirwadkar
-> > <harshadshirwadkar@gmail.com> wrote:
-> > >
-> > > On Wed, Jan 5, 2022 at 6:45 PM Xin Yin <yinxin.x@bytedance.com> wrote:
-> > > >
-> > > > during fast commit replay procedure, we clear inode blocks bitmap in
-> > > > ext4_ext_clear_bb(), this may cause ext4_mb_new_blocks_simple() allocate
-> > > > blocks still in use.
-> > > >
-> > > > make ext4_fc_record_regions() also record physical disk regions used by
-> > > > inodes during replay procedure. Then ext4_mb_new_blocks_simple() can
-> > > > excludes these blocks in use.
-> > > >
-> > > > Signed-off-by: Xin Yin <yinxin.x@bytedance.com>
-> > > > ---
-> > > >  fs/ext4/ext4.h        |  2 ++
-> > > >  fs/ext4/extents.c     |  4 ++++
-> > > >  fs/ext4/fast_commit.c | 11 ++++++++---
-> > > >  3 files changed, 14 insertions(+), 3 deletions(-)
-> > > >
-> > > > diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> > > > index 82fa51d6f145..7b0686758691 100644
-> > > > --- a/fs/ext4/ext4.h
-> > > > +++ b/fs/ext4/ext4.h
-> > > > @@ -2932,6 +2932,8 @@ bool ext4_fc_replay_check_excluded(struct super_block *sb, ext4_fsblk_t block);
-> > > >  void ext4_fc_replay_cleanup(struct super_block *sb);
-> > > >  int ext4_fc_commit(journal_t *journal, tid_t commit_tid);
-> > > >  int __init ext4_fc_init_dentry_cache(void);
-> > > > +int ext4_fc_record_regions(struct super_block *sb, int ino,
-> > > > +                    ext4_lblk_t lblk, ext4_fsblk_t pblk, int len, int replay);
-> > > >
-> > > >  /* mballoc.c */
-> > > >  extern const struct seq_operations ext4_mb_seq_groups_ops;
-> > > > diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> > > > index c3e76a5de661..9b6c76629c93 100644
-> > > > --- a/fs/ext4/extents.c
-> > > > +++ b/fs/ext4/extents.c
-> > > > @@ -6096,11 +6096,15 @@ int ext4_ext_clear_bb(struct inode *inode)
-> > > >
-> > > >                                         ext4_mb_mark_bb(inode->i_sb,
-> > > >                                                         path[j].p_block, 1, 0);
-> > > > +                                       ext4_fc_record_regions(inode->i_sb, inode->i_ino,
-> > > > +                                                       0, path[j].p_block, 1, 1);
-> > > >                                 }
-> > > >                                 ext4_ext_drop_refs(path);
-> > > >                                 kfree(path);
-> > > >                         }
-> > > >                         ext4_mb_mark_bb(inode->i_sb, map.m_pblk, map.m_len, 0);
-> > > > +                       ext4_fc_record_regions(inode->i_sb, inode->i_ino,
-> > > > +                                       map.m_lblk, map.m_pblk, map.m_len, 1);
-> > > >                 }
-> > > >                 cur = cur + map.m_len;
-> > > >         }
-> > > > diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> > > > index 23d13983a281..f0cd20f5fe5e 100644
-> > > > --- a/fs/ext4/fast_commit.c
-> > > > +++ b/fs/ext4/fast_commit.c
-> > > > @@ -1567,13 +1567,15 @@ static int ext4_fc_replay_create(struct super_block *sb, struct ext4_fc_tl *tl,
-> > > >   * Record physical disk regions which are in use as per fast commit area. Our
-> > > >   * simple replay phase allocator excludes these regions from allocation.
-> > > >   */
-> > > > -static int ext4_fc_record_regions(struct super_block *sb, int ino,
-> > > > -               ext4_lblk_t lblk, ext4_fsblk_t pblk, int len)
-> > > > +int ext4_fc_record_regions(struct super_block *sb, int ino,
-> > > > +               ext4_lblk_t lblk, ext4_fsblk_t pblk, int len, int replay)
-> > > Can you explain a bit why this replay parameter is needed here? This
-> > > function simply reallocs the regions array if it doesn't have enough
-> > > space. I am not sure why we need to change that behavior.
+> > in the follow scenario:
+> > 1. jbd start transaction n
+> > 2. task A get new handle for transaction n+1
+> > 3. task A do some actions and add inode to FC_Q_MAIN fc_q
+> > 4. jbd complete transaction n and clear FC_Q_MAIN fc_q
+> > 5. task A call fsync
 > >
-> > ext4_fc_record_regions() originally only used during scan phase,  and
-> > set fc_regions_valid = fc_regions_use when getting a TAIL tag. Now we
-> > also use it during the replay phase,   and need to update
-> > fc_regions_valid in this case, because ext4_fc_replay_check_excluded()
-> > uses fc_regions_valid for regions checking.
-> > Please correct me if I'm wrong.
+> > fast commit will lost the file actions during a full commit.
 > >
-> > > >  {
-> > > >         struct ext4_fc_replay_state *state;
-> > > >         struct ext4_fc_alloc_region *region;
-> > > >
-> > > >         state = &EXT4_SB(sb)->s_fc_replay_state;
-> > > > +       if (replay && state->fc_regions_used != state->fc_regions_valid)
-> > > > +               state->fc_regions_used = state->fc_regions_valid;
-> > > >         if (state->fc_regions_used == state->fc_regions_size) {
-> > > >                 state->fc_regions_size +=
-> > > >                         EXT4_FC_REPLAY_REALLOC_INCREMENT;
-> > > > @@ -1591,6 +1593,9 @@ static int ext4_fc_record_regions(struct super_block *sb, int ino,
-> > > >         region->pblk = pblk;
-> > > >         region->len = len;
-> > > >
-> > > > +       if (replay)
-> > > > +               state->fc_regions_valid++;
-> > > > +
-> > > >         return 0;
-> > > >  }
-> > > >
-> > > > @@ -1938,7 +1943,7 @@ static int ext4_fc_replay_scan(journal_t *journal,
-> > > >                         ret = ext4_fc_record_regions(sb,
-> > > >                                 le32_to_cpu(ext.fc_ino),
-> > > >                                 le32_to_cpu(ex->ee_block), ext4_ext_pblock(ex),
-> > > > -                               ext4_ext_get_actual_len(ex));
-> > > > +                               ext4_ext_get_actual_len(ex), 0);
-> > > >                         if (ret < 0)
-> > > >                                 break;
-> > > >                         ret = JBD2_FC_REPLAY_CONTINUE;
-> > > > --
-> > > > 2.20.1
-> > > >
+> > we should also add updates to staging queue during a full commit.
+> > and in ext4_fc_cleanup(), when reset a inode's fc track range, check
+> > it's i_sync_tid, if it bigger than current transaction tid, do not
+> > rest it, or we will lost the track range.
+> >
+> > Signed-off-by: Xin Yin <yinxin.x@bytedance.com>
+> > ---
+> >  fs/ext4/fast_commit.c | 9 ++++++---
+> >  1 file changed, 6 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+> > index 3673d4798af3..4cea92aec7c4 100644
+> > --- a/fs/ext4/fast_commit.c
+> > +++ b/fs/ext4/fast_commit.c
+> > @@ -365,7 +365,8 @@ static int ext4_fc_track_template(
+> >         spin_lock(&sbi->s_fc_lock);
+> >         if (list_empty(&EXT4_I(inode)->i_fc_list))
+> >                 list_add_tail(&EXT4_I(inode)->i_fc_list,
+> > -                               (ext4_test_mount_flag(inode->i_sb, EXT4_MF_FC_COMMITTING)) ?
+> > +                               (sbi->s_journal->j_flags & JBD2_FULL_COMMIT_ONGOING ||
+> > +                                sbi->s_journal->j_flags & JBD2_FAST_COMMIT_ONGOING) ?
+> >                                 &sbi->s_fc_q[FC_Q_STAGING] :
+> >                                 &sbi->s_fc_q[FC_Q_MAIN]);
+> >         spin_unlock(&sbi->s_fc_lock);
+> > @@ -418,7 +419,8 @@ static int __track_dentry_update(struct inode *inode, void *arg, bool update)
+> >         node->fcd_name.len = dentry->d_name.len;
+> >
+> >         spin_lock(&sbi->s_fc_lock);
+> > -       if (ext4_test_mount_flag(inode->i_sb, EXT4_MF_FC_COMMITTING))
+> > +       if (sbi->s_journal->j_flags & JBD2_FULL_COMMIT_ONGOING ||
+> > +               sbi->s_journal->j_flags & JBD2_FAST_COMMIT_ONGOING)
+> >                 list_add_tail(&node->fcd_list,
+> >                                 &sbi->s_fc_dentry_q[FC_Q_STAGING]);
+> >         else
+> > @@ -1202,7 +1204,8 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
+> >                 list_del_init(&iter->i_fc_list);
+> >                 ext4_clear_inode_state(&iter->vfs_inode,
+> >                                        EXT4_STATE_FC_COMMITTING);
+> > -               ext4_fc_reset_inode(&iter->vfs_inode);
+> > +               if (iter->i_sync_tid <= tid)
+> > +                       ext4_fc_reset_inode(&iter->vfs_inode);
+> >                 /* Make sure EXT4_STATE_FC_COMMITTING bit is clear */
+> >                 smp_mb();
+> >  #if (BITS_PER_LONG < 64)
+> > --
+> > 2.20.1
+> >
