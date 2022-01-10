@@ -2,70 +2,74 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9838489BFC
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Jan 2022 16:17:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF69848A103
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Jan 2022 21:40:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236068AbiAJPRA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 10 Jan 2022 10:17:00 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:43830 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236041AbiAJPRA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 10 Jan 2022 10:17:00 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 091961F393;
-        Mon, 10 Jan 2022 15:16:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1641827819;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DGnaiRxaDsHKeCS/hu+whM0M0VdPlN99xIquzzMKJQ4=;
-        b=jDV+Sj5XywVhkfrCXgeVMS0+71JXCQMb04rxRzfoPItzIXQcWAqG6VXSX1OeLij0LpcJLc
-        dvnXWSpFn4N/JbL06CVrz3jU0WBHyOSyVP4l2Pse5NrkfYYeuSdLndLTR+Llo9ObgpONua
-        rD9+SqtacQnQwg3zyC4l7QaxgyvxqH0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1641827819;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DGnaiRxaDsHKeCS/hu+whM0M0VdPlN99xIquzzMKJQ4=;
-        b=rVLEOeUxkyBDA/avbjvakAld4VzK0Pan6cxPW/3A1uvkdU5HKXgJRrVn42YQwz8NHPnaR3
-        2Gn3P26Ga+pAswAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 88D3913D9D;
-        Mon, 10 Jan 2022 15:16:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Sv2wHupN3GE7dwAAMHmgww
-        (envelope-from <pvorel@suse.cz>); Mon, 10 Jan 2022 15:16:58 +0000
-Date:   Mon, 10 Jan 2022 16:16:56 +0100
-From:   Petr Vorel <pvorel@suse.cz>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     jack@suse.com, amir73il@gmail.com, repnop@google.com,
-        linux-ext4@vger.kernel.org, kernel@collabora.com,
-        khazhy@google.com, ltp@lists.linux.it
-Subject: Re: [PATCH v4 0/9] Test the new fanotify FAN_FS_ERROR event
-Message-ID: <YdxN6HBJF+ATgZxP@pevik>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-References: <20211118235744.802584-1-krisman@collabora.com>
+        id S240243AbiAJUkO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 10 Jan 2022 15:40:14 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:58393 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234477AbiAJUkO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 10 Jan 2022 15:40:14 -0500
+Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 20AKeB9L010233
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 10 Jan 2022 15:40:11 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 26C6815C00C8; Mon, 10 Jan 2022 15:40:11 -0500 (EST)
+Date:   Mon, 10 Jan 2022 15:40:11 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     fstests@vger.kernel.org,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Subject: Announcement: new version of the {kvm,gce}-xfstests appliance
+Message-ID: <YdyZqwIPA8KX6bYm@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211118235744.802584-1-krisman@collabora.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi all,
+To celebrate the new year, I've uploaded an updated version of the
+test appliance used by kvm-xfstests and gce-xfstests.  The
+kvm-xfstests root_fs can be found at:
 
-v5.16 released => patchset merged.
-Thanks!
+     https://kernel.org/pub/linux/kernel/people/tytso/kvm-xfstests
 
-Kind regards,
-Petr
+The gce-xfstests image can be found in the xfstests-cloud project in
+Google Compute Engine with the image name xfstests-202201091923.  Most
+people who request their gce-xfstests image from the xfstests-cloud
+project will get the latest version automatically.
+
+The major change in this latest version of the test appliance is that
+it is now based on Debian Bullseye, the latest Debian stable release,
+which was released in August 2021.  For people who have been doing
+their test development using kvm-xfstests or gce-xfstesets, you should
+rerun the setup-buildchroot script, which now defaults to creating a
+build chroot using Debian Bullseye.
+
+The test appliance was based on these components:
+
+blktests	3be7849 (Tue, 19 Oct 2021 12:22:17 -0700)
+e2fsprogs	v1.46.4-27-g6b7a6e4a (Thu, 4 Nov 2021 20:29:19 -0400)
+fio		fio-3.29 (Sat, 18 Dec 2021 07:09:32 -0700)
+fsverity	v1.4-4-gddc6bc9 (Wed, 22 Sep 2021 11:55:11 -0700)
+ima-evm-utils	v1.3.2 (Wed, 28 Oct 2020 13:18:08 -0400)
+nvme-cli	v1.16 (Thu, 11 Nov 2021 13:09:06 -0800)
+quota		v4.05-43-gd2256ac (Fri, 17 Sep 2021 14:04:16 +0200)
+util-linux	v2.37.2 (Mon, 16 Aug 2021 15:23:50 +0200)
+xfsprogs	v5.13.0 (Fri, 20 Aug 2021 12:03:57 -0400)
+xfstests-bld	8b681c94 (Sat, 8 Jan 2022 22:20:42 -0500)
+xfstests	linux-v3.8-3438-gf0a05db9 (Sun, 9 Jan 2022 18:58:11 -0500)
+
+with local changes to xfstests not yet pushed upstream found here:
+
+    https://github.com/tytso/xfstests release-2022-01-09-f0a05db9
+
+The test appliance sources can be found at
+
+     https://github.com/tytso/xfstests-bld
+
+						- Ted
