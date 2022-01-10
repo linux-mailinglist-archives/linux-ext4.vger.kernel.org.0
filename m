@@ -2,130 +2,94 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4FB9488F12
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Jan 2022 04:52:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A192488F5A
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Jan 2022 05:49:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238418AbiAJDwP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 9 Jan 2022 22:52:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57766 "EHLO
+        id S233013AbiAJEtu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 9 Jan 2022 23:49:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238424AbiAJDwM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 9 Jan 2022 22:52:12 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D223C06173F
-        for <linux-ext4@vger.kernel.org>; Sun,  9 Jan 2022 19:52:12 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id w7so10770816plp.13
-        for <linux-ext4@vger.kernel.org>; Sun, 09 Jan 2022 19:52:12 -0800 (PST)
+        with ESMTP id S232966AbiAJEtt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 9 Jan 2022 23:49:49 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7648BC06173F
+        for <linux-ext4@vger.kernel.org>; Sun,  9 Jan 2022 20:49:49 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id n16so10906295plc.2
+        for <linux-ext4@vger.kernel.org>; Sun, 09 Jan 2022 20:49:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=pB9ixd309jdajttTHm9n2WuXxz/2zgca6PMdCtbA1H8=;
-        b=JiSVlDh8pZAweLjogrN0kItEt37c3PSlPokmWmgOa3LUMXXdshgqk0qCC/hNfEmxkl
-         JLGCmQlnoZvE7ID8Ud4iUHoVwGtEqQqNjCl+IzHxZ52ph7lYy4+2CmWEYc1PGy62fgFu
-         HmaZSoyNxBFbCaageCC0uoto2M0BDXf4ZadWJwe3iG9uRxm9V0X2gzASl07sKTLk7rWK
-         1me5a25xnZQKtBwmEBsorWdlp1rHcWjWvTa6jgkLm4VxNFkBjgIMS8dfjaKMgRHn255Y
-         V89ZP4+vE44EQ1AY0dcZNURpc4mrErmw61/Hrc9JtSlayB7I6lNT7eW6D8zLKRTcpNFX
-         tVqQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bD6zeuVgCTlq+zfvzqfbER3EToA3lGW10eCyIwR7cYs=;
+        b=JPgqoymjnTLcVojp7IBqhEkpgLAAh12doBI8Kjrr7fIyM8ed5YNQk5Q6ssDDfBpg7f
+         MUiuesoz3dNkIPSicQzTTqGZL4KUpv2xiDlUYAbgWKj8mIZ0U+FVDmEl2q0IKCCi2gGs
+         2olwFAiCrxmtugIl0H5eBHs+KrJPp0Yo+IgbxL63W/QS4hW6kGJ23+/T4KKjag9ZCq9p
+         Y8NMYyGZ+dG2dIX22ZUxiUC+/XL4CKp+6MElo8iAR7iJo4HC9rcw8p77w6aVa6zeU3+5
+         RGXE0glCkMT17U8sWGRX9bBRCAvAnAJybMgKh47vWZmhjdmcDiOQrv7MthTKanm1sWhy
+         OkBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pB9ixd309jdajttTHm9n2WuXxz/2zgca6PMdCtbA1H8=;
-        b=tzJ3SGAqD5mGn5mwrO7r33NLeDA0LB8sYGtzIC+NSKLc7VQMjT8GnIc0EOCCIWN9Tu
-         f+VMJ6DFVNtjZzHWArZL1GHqWZZY5OivZr+l+5ew3sYiqBSPZ/GokbAjY/p2kGPE7Jik
-         JFdhkVwSoTtL39CJGV0JW74Dz9vtSXwLGDfGEemv/Yt92sUSwl2+PmS46cQwSKu1i8ZB
-         OhBywHOhA7qnBr+mb/EkFAIxqgRh6v/S6fLr91RhGYoR0Og3b45gRtrnS7iI5xE3G/6y
-         prv7BTy7NJ6ytLPkphhoOKFRj/Cw+WIVLPlKBRo5SQ844c78B+slDLDrRckRmmr7vPCx
-         s2+A==
-X-Gm-Message-State: AOAM532ebsygMlX169DU1W3ZY5H3cRgeKbnI+U8pYfcuIwDRTRvkPP27
-        DKez+h/3Fl62waqk/2Pd9YeZKg==
-X-Google-Smtp-Source: ABdhPJyMSTHmHtRjgnnOsrjOHTZlabUIYWfszTl11z8L0Kp1Yi8K9dWOOyzv03+lx04yv/iSFCSe9Q==
-X-Received: by 2002:a17:902:c406:b0:14a:4178:af93 with SMTP id k6-20020a170902c40600b0014a4178af93mr1195818plk.154.1641786731979;
-        Sun, 09 Jan 2022 19:52:11 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bD6zeuVgCTlq+zfvzqfbER3EToA3lGW10eCyIwR7cYs=;
+        b=W+uiOZw/qzPwfiTOkrN5XYvs7Kbc7UTvQXMkkBmQyXvZk/17le5WbeDhuTVJsFScjP
+         uIChgkoVEXK6FTSaTyo7oV6gxTwUaM0wkL/Bwt0hKHv0Kj+TSaY2HxoquJRa348VCFA5
+         vaXaw4YpRa67fFxdxBnmDq0aWSuS+9uUF+USFC3zI/m6ovit6S46mrRy76t6O0QPO27Q
+         I8GCCasQgefh0cPA95Jqjaxe+bJFkK1JF+//nPMYXfKWFQ/llSbO0drLgW5MkJfTu73G
+         TS7VL6tw/YpX8DOLG3J3HFx+Dlzb/WIsx3NqCRZgT7POMz7Ei5NDqZw7XKIJEBIbz1yV
+         yz/A==
+X-Gm-Message-State: AOAM531gguco1IvY48TTt4vpkS8Bfz6QF/7i9mq1EBsICL80gdN3Pm1a
+        Xpl/Kfb7Z6u7fq6GHwOoCAfwMA==
+X-Google-Smtp-Source: ABdhPJyV4hGH1n9h4eT5F4wnM1l0eR0t92pPMOPG8ztoW+eH1xdPBj7qfCW1cv+3dETT5Q89jluqGg==
+X-Received: by 2002:a17:90a:ae17:: with SMTP id t23mr4668243pjq.116.1641790189022;
+        Sun, 09 Jan 2022 20:49:49 -0800 (PST)
 Received: from yinxin.bytedance.net ([139.177.225.251])
-        by smtp.gmail.com with ESMTPSA id h3sm6772748pjk.48.2022.01.09.19.52.09
+        by smtp.gmail.com with ESMTPSA id v8sm5449997pfu.68.2022.01.09.20.49.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 Jan 2022 19:52:11 -0800 (PST)
+        Sun, 09 Jan 2022 20:49:48 -0800 (PST)
 From:   Xin Yin <yinxin.x@bytedance.com>
 To:     harshadshirwadkar@gmail.com, tytso@mit.edu,
         adilger.kernel@dilger.ca
 Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
         Xin Yin <yinxin.x@bytedance.com>
-Subject: [PATCH v2 2/2] ext4: modify the logic of ext4_mb_new_blocks_simple
-Date:   Mon, 10 Jan 2022 11:51:41 +0800
-Message-Id: <20220110035141.1980-3-yinxin.x@bytedance.com>
+Subject: [PATCH v2 0/2] ext4: fix issues when fast commit work with jbd
+Date:   Mon, 10 Jan 2022 12:48:47 +0800
+Message-Id: <20220110044850.2806-1-yinxin.x@bytedance.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220110035141.1980-1-yinxin.x@bytedance.com>
-References: <20220110035141.1980-1-yinxin.x@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-for now in ext4_mb_new_blocks_simple, if we found a block which
-should be excluded then will switch to next group, this may
-probably cause 'group' run out of range.
+When test fast commit with xfstests generic/455, some logic issues were
+found. When a full commit is ongonig, the logic of fast commit tracking seems
+not correct. The first patch fix the ineligible commit case , and the
+second patch fix the common fast commit case.
 
-change to check next block in the same group when get a block should
-be excluded. Also change the searche range to EXT4_CLUSTERS_PER_GROUP
-and add error checking.
+After testing this patch set with xfstests log and quick group, no 
+regressions were found, and the generic/455 can pass now.
 
-Signed-off-by: Xin Yin <yinxin.x@bytedance.com>
 ---
- fs/ext4/mballoc.c | 26 +++++++++++++++++---------
- 1 file changed, 17 insertions(+), 9 deletions(-)
+v2: drop EXT4_MF_FC_COMMITTING
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 215b7068f548..31a00b473f3e 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -5757,7 +5757,8 @@ static ext4_fsblk_t ext4_mb_new_blocks_simple(handle_t *handle,
- 	struct super_block *sb = ar->inode->i_sb;
- 	ext4_group_t group;
- 	ext4_grpblk_t blkoff;
--	int i = sb->s_blocksize;
-+	ext4_grpblk_t max = EXT4_CLUSTERS_PER_GROUP(sb);
-+	ext4_grpblk_t i = 0;
- 	ext4_fsblk_t goal, block;
- 	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
- 
-@@ -5779,19 +5780,26 @@ static ext4_fsblk_t ext4_mb_new_blocks_simple(handle_t *handle,
- 		ext4_get_group_no_and_offset(sb,
- 			max(ext4_group_first_block_no(sb, group), goal),
- 			NULL, &blkoff);
--		i = mb_find_next_zero_bit(bitmap_bh->b_data, sb->s_blocksize,
-+		while (1) {
-+			i = mb_find_next_zero_bit(bitmap_bh->b_data, max,
- 						blkoff);
-+			if (i >= max)
-+				break;
-+			if (ext4_fc_replay_check_excluded(sb,
-+				ext4_group_first_block_no(sb, group) + i)) {
-+				blkoff = i + 1;
-+			} else
-+				break;
-+		}
- 		brelse(bitmap_bh);
--		if (i >= sb->s_blocksize)
--			continue;
--		if (ext4_fc_replay_check_excluded(sb,
--			ext4_group_first_block_no(sb, group) + i))
--			continue;
--		break;
-+		if (i < max)
-+			break;
- 	}
- 
--	if (group >= ext4_get_groups_count(sb) && i >= sb->s_blocksize)
-+	if (group >= ext4_get_groups_count(sb) || i >= max) {
-+		*errp = -ENOSPC;
- 		return 0;
-+	}
- 
- 	block = ext4_group_first_block_no(sb, group) + i;
- 	ext4_mb_mark_bb(sb, block, 1, 1);
+Xin Yin (2):
+  ext4: fast commit may not fallback for ineligible commit
+  ext4: fast commit may miss file actions
+
+ fs/ext4/ext4.h        |  3 ++-
+ fs/ext4/extents.c     |  4 ++--
+ fs/ext4/fast_commit.c | 28 +++++++++++++++++++---------
+ fs/ext4/inode.c       |  4 ++--
+ fs/ext4/ioctl.c       |  4 ++--
+ fs/ext4/namei.c       |  4 ++--
+ fs/ext4/super.c       |  1 +
+ fs/ext4/xattr.c       |  6 +++---
+ fs/jbd2/commit.c      |  2 +-
+ fs/jbd2/journal.c     |  2 +-
+ include/linux/jbd2.h  |  2 +-
+ 11 files changed, 36 insertions(+), 24 deletions(-)
+
 -- 
 2.20.1
 
