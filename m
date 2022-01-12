@@ -2,275 +2,199 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1AA048C4F9
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Jan 2022 14:39:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56C5F48C7DB
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Jan 2022 17:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241145AbiALNjU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 12 Jan 2022 08:39:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241076AbiALNjU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Jan 2022 08:39:20 -0500
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 178B0C06173F
-        for <linux-ext4@vger.kernel.org>; Wed, 12 Jan 2022 05:39:20 -0800 (PST)
-Received: by mail-ot1-x32d.google.com with SMTP id c3-20020a9d6c83000000b00590b9c8819aso2540586otr.6
-        for <linux-ext4@vger.kernel.org>; Wed, 12 Jan 2022 05:39:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:content-transfer-encoding:mime-version:subject:message-id:date
-         :cc:to;
-        bh=EIeVefQWAYzqAFORFpF2h9lqL7biVyHGuywiewH8ie0=;
-        b=KwQSCqf2yRxDx+YeLTPMvtdwDBwdC5kbg8IS3pbTxygJNqXc3CNPnxhIfX05yxxvuA
-         Kk2xUFvbjSrAP6/OjCUy/ujdBWAUHgF1WcRQ5Ue8JJGxb0RyyHn51PTUw59eJ1qhYRQx
-         49vBflGoHarWJPZXI4/jWF3BLWNu1cWanxZ6dW+yGYhfVDyuXs9nfYuDYrAbiNgMLqQk
-         PrYFEKys8v7S8XQusMSq0IZQzZarKRjH/F7I/CrjfXZ6qaE5JwnFlQ/+vLroJZsoLGeZ
-         K4MmmzIa06EFbkXPD42G568mcAJJzdnxa0b5VEDMO+swRxWq1qgHQkURtJGGn5vUVUxT
-         VaRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:content-transfer-encoding:mime-version
-         :subject:message-id:date:cc:to;
-        bh=EIeVefQWAYzqAFORFpF2h9lqL7biVyHGuywiewH8ie0=;
-        b=3oUFH0JY0ghP7/LR34ojMMGSETT0MCFkoj38RNDRoiiH7GNF2v0+MtKdg00SPM4Buf
-         s/b1+5lUDhyXFg580Gg2xld5TrVNY/lqJ7PVRSdix5S+4oXQnFe7128uMggM656bnHKa
-         OtwqkLSgIuY0+RfwD0BgFGgMjgd/dEZwP9vuAaKclOm7GOZY1s3y3yR85X8ICbc/Hn4T
-         KT+NMXWQmrNU0dVTHE2CueAyMICBDgVXU32hLzHebFXakhQj4xaD3fknBLLeU8mofGnH
-         k80FbY2JwcPcTvO7UqW98GW1TyqBeirZU2WxI0li9Z7jjQty3wEKNq5JwREzbrDKz90+
-         JHyg==
-X-Gm-Message-State: AOAM530xJ317nJTHp5gfhZi64pGfdQqWecmsyPVdhTF9wwgfG+AYRbFv
-        Ik8n6u2aj9mW6IJ4PTHVTGdGEiYQV1k=
-X-Google-Smtp-Source: ABdhPJzlLNWlXLVpT+RdMH7JCEfPclGC56lEnIzstK9rvY/fV4do6fb3j4c/W9hJMcFGvVTNtZZ+lA==
-X-Received: by 2002:a05:6830:1649:: with SMTP id h9mr6383411otr.135.1641994759062;
-        Wed, 12 Jan 2022 05:39:19 -0800 (PST)
-Received: from [192.168.2.192] ([83.234.50.195])
-        by smtp.gmail.com with ESMTPSA id d1sm2477209oop.35.2022.01.12.05.39.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 12 Jan 2022 05:39:18 -0800 (PST)
-From:   Artem Blagodarenko <artem.blagodarenko@gmail.com>
-Content-Type: text/plain;
-        charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Kernel panic and filesystem corruption in setxattr due to journal
- transaction restart
-Message-Id: <A671B859-92F6-468E-964D-E6737BE7DE78@gmail.com>
-Date:   Wed, 12 Jan 2022 16:39:14 +0300
-Cc:     andrew.perepechko@hpe.com, Theodore Ts'o <tytso@mit.edu>,
-        adilger.kernel@dilger.ca
-To:     linux-ext4@vger.kernel.org
-X-Mailer: Apple Mail (2.3445.104.21)
+        id S1354935AbiALQJB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 12 Jan 2022 11:09:01 -0500
+Received: from mail-mw2nam12on2062.outbound.protection.outlook.com ([40.107.244.62]:26848
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1343557AbiALQJA (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 12 Jan 2022 11:09:00 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LeFxpFkfwHjS1VmbXkpmtc+739sahv7GPF+QvAlEZmIbZve45/fx708sbLMuYCOK9TG2uvty8LqB1tKpOV9o4JOqTBw2r6+qRp4g9m4rmG+K+L0p6nS7H7dpc62WVSK8Se2m9Uat/VyDZ+nHGIGrsGgrquPHpk11aL62pWW6UmbmXzj+lOuHjkUTkC3lY6E59WkXY/WgYGu98ckIVsrCMmngOMURb3HueQ+zsRRAmRQdHdx1K8PDLKkmFNAmcQ8VrSxcQP8JcPUlACTaf4ecLS1jmjtxagYG966hnq4X3jQm+CWNkGhWxQg0hT8pZbv5SdKi0tXLykYiwhb1OgKm0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/88KJ2mfWXteyAzOz5Q5YSrrX57/rhTxkf+DCQrxq48=;
+ b=Eymgf3KZYXN4rFshAPwNRkhdP2MX2IOmRarC6/KaP+xpAysmpHBQXF0gJ5QlgdB81ZONuHGYvwbA+fxQWgYsTsFORyu6NVRy4Pc3Qd5VK4Lhvh5lDju/MftmqoA6L8K2CacK3WmDwUQDB5xnXgXdb39wtA19PHeJa1VrZ5P4g/gBM6foDRWiUtm0lcOCq8vI6SFl3Q6nIvqbYKXtbB8NuVlZcpn4hKMaJ5dMosAh2lwRh9haGB1Ztpdab4UozNPX5VYmvKBcgZP6OmAkWv/Vo3YbMQHL52k6/wA62FQPYKafERCd+BFy8r40RrtxWQgNQv35+nPzOA7Sx79Whh4ejQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/88KJ2mfWXteyAzOz5Q5YSrrX57/rhTxkf+DCQrxq48=;
+ b=4IRGpx0KlRgxi0CQQhP5sOZ4hBf8i6Jthi64zRoWPwRvY56iHl1TEG1Tfad1R7guE/s2DJpeNtoJTiCBdlwiaaSyuawOQ/bdoSRwab5fWVeMBR6kwpUQmHwkAqtUWEtnZRQzxBjkO/gdkN4SareYLaC2JRW48hatUQdx7+xRlKk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN9PR12MB5115.namprd12.prod.outlook.com (2603:10b6:408:118::14)
+ by MWHPR12MB1358.namprd12.prod.outlook.com (2603:10b6:300:d::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4867.11; Wed, 12 Jan
+ 2022 16:08:56 +0000
+Received: from BN9PR12MB5115.namprd12.prod.outlook.com
+ ([fe80::971:531c:e4f4:8a9a]) by BN9PR12MB5115.namprd12.prod.outlook.com
+ ([fe80::971:531c:e4f4:8a9a%7]) with mapi id 15.20.4888.009; Wed, 12 Jan 2022
+ 16:08:56 +0000
+Subject: Re: [PATCH v3 00/10] Add MEMORY_DEVICE_COHERENT for coherent device
+ memory mapping
+To:     David Hildenbrand <david@redhat.com>,
+        Alex Sierra <alex.sierra@amd.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, rcampbell@nvidia.com,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        hch@lst.de, jgg@nvidia.com, jglisse@redhat.com, apopple@nvidia.com,
+        willy@infradead.org
+References: <20220110223201.31024-1-alex.sierra@amd.com>
+ <8c4df8e4-ef99-c3fd-dcca-759e92739d4c@redhat.com>
+From:   Felix Kuehling <felix.kuehling@amd.com>
+Message-ID: <f0d6b6d6-806e-4c6f-cbb7-677ef32dfcad@amd.com>
+Date:   Wed, 12 Jan 2022 11:08:53 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <8c4df8e4-ef99-c3fd-dcca-759e92739d4c@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-ClientProxiedBy: YTOPR0101CA0068.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00:14::45) To BN9PR12MB5115.namprd12.prod.outlook.com
+ (2603:10b6:408:118::14)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 94d7b8f0-6a33-4c37-1de2-08d9d5e5d59c
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1358:EE_
+X-Microsoft-Antispam-PRVS: <MWHPR12MB1358A174A7ECB5132B247DF992529@MWHPR12MB1358.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hkgxh3MpLxTUyEpjAkrt6Besd1bmzQvP6NRPaWoNcKK8+jGO5xJNRSg5sxgfbmKZ0DD3skMbvsfwTZXsj11eHyN9H9iyvHGxFB60CCx9JDHTsASgS+yRP3j4w+qSqZ9WwOuW3fUrK9akIxba1WQOFDvtUfUu+tdGOapGBrXnea7kquqkQKB1cyNBtetEskHDK1XjD/4lJbnamH7gkjGhI1n2OoeFQiIbOANjMU8aZtgYdf4Y1Xwsgq3RrLMpdDJ71znsrzZ8g3VTD2gUYXk2HNs/WKqcN05ZA+aZFbDZ7BM5iY5qepUY5JtSvS5gHfe5G44hpjK7GsEk5YuM4H8hQ+leRiol9wb1jZK35Xd0D+j4XKMZhxrm1RBZtxAOd3yWgCe7vKrPrPPMZTfzugqjWUovnxr+XmrnFik3Yga/4Pl05CockrhnFwvRPETPWtPO1xq0ot7NVMfOEe8MRPfQuk7eKXxeRy8TxOTkCcqR1XhrnJwzvcdTJYh+WojEUmhs7Iv1iFf9BkL1egNctOg/MKVzUrn59tWHfZzPPCt7Y47VIOslBB0WsRKexbVCv+b1F2Y+RyceMwRlXSrXRO0tF7n9okpLEz4OaR1jkgJ326KoTaHQotf5qdj73YHtGwWHrYTm00REUbD+q7T33RfCLSUtFSI96XvClgyutCYFAns8P1Ic61MnMqpa8G72KJrMC4cB3FwGa/3G0ygJHmFtUGzXJCzhTHsBD+i08W+IX2vZQGJoCFhWXZp1TvWXJdtv
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5115.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(53546011)(6506007)(2616005)(6512007)(36756003)(186003)(316002)(508600001)(2906002)(26005)(110136005)(7416002)(66556008)(66476007)(66946007)(4326008)(8676002)(8936002)(31696002)(6666004)(6486002)(44832011)(38100700002)(83380400001)(86362001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NmtTZjRSQVF2T3lCeEh3UDUrSnZUZEtkV1R0Rk40YlRIRTAzcXMxb080NmV5?=
+ =?utf-8?B?QXhmSndOd3F3eEpybVBCUXBqU250VXNPZ0RHcHNpNDJ5ZENOU1ZpWTEwcGdo?=
+ =?utf-8?B?bWZoKzZOR3ZZOVU0eWdJRE43cEo5YVZWYmduUStKU2VIS250UDRyYWhySnNP?=
+ =?utf-8?B?cm1RQyt4MkJjZkJDeUNnc1FuVHhJR2lvN281WHRwb0ZmT0QrMG5ybjRpL2Zs?=
+ =?utf-8?B?SHZIN1RESllYQUxwRUlQclJGdlJpN0EwNmV2dEV3Q0h4ek1lRVVicG1XWVIv?=
+ =?utf-8?B?MmY4NWJ0SnZPOW9vSVAyNlhsM25PeHRNLy9McXc2M3RDVWdGQVJlb2xrUTM5?=
+ =?utf-8?B?bG9PMVNhZVFhTjRFdmVpVGNOajBBTGRmdFNqa1Q5blV5RGViaHQreUZwUkJN?=
+ =?utf-8?B?d2ZVQ0Jlb1lsWlZYMjZDNytrcndLeEJzaGJQUFFTaTBDL3ZyS3BXZTlkdlRF?=
+ =?utf-8?B?L0swOXpzSE5wbGVQaDFCWURnRGVkRzBVSXBVeDNsV2lCRXdnY2VPSXF3WW5y?=
+ =?utf-8?B?Z3FyMm1hV2d4bnVuak14UHh3cVBnMXZmQjRvc2gxT0VRQmhGSVY1dm9JQTAy?=
+ =?utf-8?B?THdpQmVGWUFDeFJ1aFR2SUwzcldpTElwU25SbytmYkhDcXRwSDBKR2JaRG1W?=
+ =?utf-8?B?bWdlNGlxUENvT0dlZ0M3c1NTVDZVYXMyMy8zT2xBMWlXMTA5MlpkeDdKUHRR?=
+ =?utf-8?B?Z1VNRTk2dEpPRG43TXJWQlUwWTRaUm5Tb0k0Rmg0N2FWTmZHYVFRYUhzRnNj?=
+ =?utf-8?B?K0tjWkdMZ3pTR0RaYy80ck5LQ3NIaDlPUFVESC92RWV0UjEraVp1cGw4Q1p1?=
+ =?utf-8?B?K3F2SE8vZzVobjZ5K2NGMUs3bndDVU55bXc5M252RU92eGR3OHpwOVRsand0?=
+ =?utf-8?B?L1gxY0RBMExaeVpvb203Z1RDa1dDYVdmLzlzMkVJaUwvbjB5cGFWNmVqaDlV?=
+ =?utf-8?B?Uy9CTjA2ZlhCYUZ0YXNzS0t2bXoxM1RpYzlydWF5dXRNc2FvaTRDZWN6dVc3?=
+ =?utf-8?B?dTNodmFuQTFhM3BObFhwTitUbU5xejBCNU5iMG80YlVFYkIxSFRNVjNRUHAz?=
+ =?utf-8?B?TVBGSnJaaW9IdFhteG5Cd3MvQlk3RVJPZTg2MUhtd24wa3RteWZyaTBKVVdv?=
+ =?utf-8?B?RURwTHRVcGFMWkxDUjY3MWN2QjBEY1BJbjRDMnkvaWYxazR5L0JTbFM0U2lE?=
+ =?utf-8?B?eXlESG1ad1dzMkZjV29UdzFrUWJrOXRPNlpndTN3Y3JzS2NzeXJTTWc2cUcx?=
+ =?utf-8?B?bWd5cXJjekJTYUR2U0EzcG0vMXNPK08vUnphM3YwVW5lNGdlcVV6d0JRMEx6?=
+ =?utf-8?B?dWlkZFpscE15cHpHUDl4Rzh3eDIwWk0xeEx6WEJCam1Ld090b2F4THpzeVRX?=
+ =?utf-8?B?OU12VDlHelpnWGFDWGhQanNZVWp6ZEZNeWFkck1BL2t5VFkvbWp4QXlQbTJD?=
+ =?utf-8?B?NTRwTEhUcGxGbjNhUFFGSTFVb0x4aDd1U0RiRkU3cWc4N2JYOUdxVnQxYjE0?=
+ =?utf-8?B?VnpVNVRjREcwSklIM1FMSHRhSC9WN1N2TU9USkJBRWZnMjdJdUZlSEpOQmIv?=
+ =?utf-8?B?R0xrWnJKUnYxL1FkbVUyMTBIeHFrb3NWU0lDTFE4OFYzOUI0c0NJaWU4b1F6?=
+ =?utf-8?B?ZzFjc21vQmNNNmdzR203NGtWUnFTemk5WG1ocFBTVmJucG42TGl0alRVYVRO?=
+ =?utf-8?B?K1ZRTjJ3Q0RIcWVpT21vUmZJeHc5YjQ5Tys5ZTlrR01rRTNLTDVIOVlxTVFm?=
+ =?utf-8?B?Q2hUUlVxQUhCN2R0N2lSNStCem9NVDNBMHlBdUt1ckkzSHF5Mm1nZ1BMUW50?=
+ =?utf-8?B?QmpYS0ZlcFM0cVpJS1MyZUF0VlhGYVNwUk4zd0FZM2FoT1FBdE95Q1kzdnl6?=
+ =?utf-8?B?bnNsc3VpZVQ4VWZ5UVZ5OXcwUDRYb3BkYmgrQVN0ZUxWTXQ0SzdrT0FtazVS?=
+ =?utf-8?B?UmVDaENjR21pMHBwNzk4MXk4N1d6RFA3U2VSMHkwcSt4WVhjcU16eTVlelpY?=
+ =?utf-8?B?Mm1TRjlxajhyS1lYaUNaSHhPSTRIa0NGOG1iT0VUN2VjQzZ3c3VWMmszb05T?=
+ =?utf-8?B?ZStkV1o0dXZJelRHSlRwbHRuTlBlVmNhSVgyMEJsV1BXNG9aQ2l3OEhON0I1?=
+ =?utf-8?B?QXVxQVNPWGhVUmVuc3h2d0tFKzVFSGFvZFBtSThyQXNGQWgxbnBWMUVXZHYy?=
+ =?utf-8?Q?fTjBUavFCJtApZCDmUyJKD8=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 94d7b8f0-6a33-4c37-1de2-08d9d5e5d59c
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5115.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2022 16:08:55.8903
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ea05cqgcNjXQ9Y5v/u+o46a29O+fyz520roJmRUykvKvuwn/LdkI80RfGP3TI7mRakCanqcJeofNPwQk+mpWUw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1358
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+Am 2022-01-12 um 6:16 a.m. schrieb David Hildenbrand:
+> On 10.01.22 23:31, Alex Sierra wrote:
+>> This patch series introduces MEMORY_DEVICE_COHERENT, a type of memory
+>> owned by a device that can be mapped into CPU page tables like
+>> MEMORY_DEVICE_GENERIC and can also be migrated like
+>> MEMORY_DEVICE_PRIVATE.
+>>
+>> Christoph, the suggestion to incorporate Ralph Campbell’s refcount
+>> cleanup patch into our hardware page migration patchset originally came
+>> from you, but it proved impractical to do things in that order because
+>> the refcount cleanup introduced a bug with wide ranging structural
+>> implications. Instead, we amended Ralph’s patch so that it could be
+>> applied after merging the migration work. As we saw from the recent
+>> discussion, merging the refcount work is going to take some time and
+>> cooperation between multiple development groups, while the migration
+>> work is ready now and is needed now. So we propose to merge this
+>> patchset first and continue to work with Ralph and others to merge the
+>> refcount cleanup separately, when it is ready.
+>>
+>> This patch series is mostly self-contained except for a few places where
+>> it needs to update other subsystems to handle the new memory type.
+>> System stability and performance are not affected according to our
+>> ongoing testing, including xfstests.
+>>
+>> How it works: The system BIOS advertises the GPU device memory
+>> (aka VRAM) as SPM (special purpose memory) in the UEFI system address
+>> map.
+>>
+>> The amdgpu driver registers the memory with devmap as
+>> MEMORY_DEVICE_COHERENT using devm_memremap_pages. The initial user for
+>> this hardware page migration capability is the Frontier supercomputer
+>> project. This functionality is not AMD-specific. We expect other GPU
+>> vendors to find this functionality useful, and possibly other hardware
+>> types in the future.
+>>
+>> Our test nodes in the lab are similar to the Frontier configuration,
+>> with .5 TB of system memory plus 256 GB of device memory split across
+>> 4 GPUs, all in a single coherent address space. Page migration is
+>> expected to improve application efficiency significantly. We will
+>> report empirical results as they become available.
+> Hi,
+>
+> might be a dumb question because I'm not too familiar with
+> MEMORY_DEVICE_COHERENT, but who's in charge of migrating *to* that
+> memory? Or how does a process ever get a grab on such pages?
 
-During recent testing, we have found a repeatable kernel panic and ext4 =
-corruption. Andrew Perepechko investigated the root cause and prepared a =
-reproducer that works on the current master HEAD
+Device memory management and migration to device memory work the same as
+MEMORY_DEVICE_PRIVATE. The device driver is in charge of managing the
+memory and migrating data to it in response to application requests
+(e.g. hipMemPrefetchAsync) or device page faults.
 
-[root@CO82 linux]# git rev-parse HEAD
-daadb3bd0e8d3e317e36bc2c1542e86c528665e5
-
-
-Here is the reproducer:
-[root@CO82 ~]# cat setxttr_corrupt.sh=20
-#!/bin/bash
-dd if=3D/dev/zero of=3D/tmp/ldiskfs bs=3D1M count=3D100
-mkfs.ext4 -O ea_inode /tmp/ldiskfs -J size=3D16 -I 512
-
-mkdir -p /tmp/ldiskfs_m
-mount -t ext4 /tmp/ldiskfs /tmp/ldiskfs_m -o loop,commit=3D600,no_mbcache
-touch /tmp/ldiskfs_m/file{1..1024}
-
-V=3D$(for i in `seq 60000`; do echo -n x ; done)
-V1=3D"1$V"
-V2=3D"2$V"
-
-while true; do
-        setfattr -n user.xattr -v $V /tmp/ldiskfs_m/file{1..1024}
-        setfattr -n user.xattr -v $V1 /tmp/ldiskfs_m/file{1..1024} &
-        setfattr -n user.xattr -v $V2 /tmp/ldiskfs_m/file{1024..1} &
-        wait
-done
-
-umount /tmp/ldiskfs_m
-
-
-Here is an outpost of the test session:
-[root@CO82 ~]# sh ./setxttr_corrupt.sh=20
-100+0 records in
-100+0 records out
-104857600 bytes (105 MB, 100 MiB) copied, 0.0674946 s, 1.6 GB/s
-mke2fs 1.46.2.wc3 (18-Jun-2021)
-Discarding device blocks: done                           =20
-Creating filesystem with 102400 1k blocks and 25584 inodes
-Filesystem UUID: c328f332-3f48-49de-b9e0-25ca129fd8da
-Superblock backups stored on blocks:=20
-	8193, 24577, 40961, 57345, 73729
-
-
-Allocating group tables: done                           =20
-Writing inode tables: done                           =20
-Creating journal (16384 blocks): done
-Writing superblocks and filesystem accounting information: done=20
-
-
-Kernel BUG from dmesg:
-[  275.670724] ------------[ cut here ]------------
-[  275.670729] kernel BUG at fs/jbd2/transaction.c:1503!
-[  275.670937] invalid opcode: 0000 [#1] PREEMPT SMP PTI
-[  275.671128] CPU: 4 PID: 920 Comm: setfattr Not tainted 5.16.0rash+ =
-#56
-[  275.671352] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS =
-VirtualBox 12/01/2006
-[  275.671621] RIP: 0010:jbd2_journal_dirty_metadata+0x1e5/0x220
-[  275.671621] Code: 8e 00 4c 89 e7 ba 01 00 00 00 48 89 ee e8 c3 f5 ff =
-ff 48 89 df e8 4b ed 8e 00 e9 54 ff ff ff 49 39 6c 24 30 0f 84 86 fe ff =
-ff <0f> 0b 4d 8b 4a 78 4c 39 cd 0f 84 3a ff ff ff e9 cf 4e 8a 00 0f 0b
-[  275.671621] RSP: 0018:ffffa54e8088fa20 EFLAGS: 00010207
-[  275.671621] RAX: 0000000000000000 RBX: ffff914541e80070 RCX: =
-0000000000000000
-[  275.671621] RDX: 0000000000000001 RSI: ffff9145437a60d0 RDI: =
-0000000000000000
-[  275.671621] RBP: ffff914543662d00 R08: ffff9145437a60d0 R09: =
-ffff9145575103f8
-[  275.671621] R10: ffff9145456b5800 R11: 0000000000000004 R12: =
-ffff9145563ebf00
-[  275.671621] R13: 0000000000000000 R14: ffff9145437a60d0 R15: =
-ffff9145563ebf08
-[  275.671621] FS:  00007f82fd09f740(0000) GS:ffff91455bd00000(0000) =
-knlGS:0000000000000000
-[  275.671621] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  275.671621] CR2: 000055d7358b3f08 CR3: 0000000102220004 CR4: =
-00000000000706e0
-[  275.671621] DR0: 0000000000000000 DR1: 0000000000000000 DR2: =
-0000000000000000
-[  275.671621] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: =
-0000000000000400
-[  275.671621] Call Trace:
-[  275.671621]  <TASK>
-[  275.671621]  __ext4_handle_dirty_metadata+0x55/0x1a0
-[  275.671621]  ext4_mark_iloc_dirty+0x143/0x680
-[  275.671621]  ext4_xattr_set_handle+0x39a/0x680
-[  275.671621]  ext4_xattr_set+0xd1/0x180
-[  275.671621]  __vfs_setxattr+0x65/0x80
-[  275.671621]  __vfs_setxattr_noperm+0x6b/0x200
-[  275.671621]  vfs_setxattr+0x9d/0x180
-[  275.671621]  setxattr+0x11f/0x180
-[  275.671621]  ? kmem_cache_alloc+0x2e/0x1a0
-[  275.671621]  ? getname_flags+0x65/0x1e0
-[  275.671621]  ? preempt_count_add+0x44/0x90
-[  275.671621]  path_setxattr+0xc2/0xe0
-[  275.671621]  __x64_sys_setxattr+0x22/0x30
-[  275.671621]  do_syscall_64+0x3a/0x80
-[  275.671621]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[  275.671621] RIP: 0033:0x7f82fc9b3dae
-[  275.671621] Code: 48 8b 0d dd 20 2c 00 f7 d8 64 89 01 48 83 c8 ff c3 =
-66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 49 89 ca b8 bc 00 00 00 0f =
-05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d aa 20 2c 00 f7 d8 64 89 01 48
-[  275.671621] RSP: 002b:00007fff8edd7388 EFLAGS: 00000246 ORIG_RAX: =
-00000000000000bc
-[  275.671621] RAX: ffffffffffffffda RBX: 00005621ae002300 RCX: =
-00007f82fc9b3dae
-[  275.671621] RDX: 00005621ae002300 RSI: 00007fff8eddae48 RDI: =
-00007fff8ede9cae
-[  275.671621] RBP: 00007fff8ede9cae R08: 0000000000000000 R09: =
-0000000000000003
-[  275.671621] R10: 000000000000ea61 R11: 0000000000000246 R12: =
-00007fff8eddae48
-[  275.671621] R13: 00007fff8edd74b0 R14: 0000000000000000 R15: =
-0000000000000000
-[  275.671621]  </TASK>
-[  275.671621] Modules linked in:
-[  275.683183] ---[ end trace 6c451d27803f53e0 ]=E2=80=94=20
+The nice thing about MEMORY_DEVICE_COHERENT is, that the CPU, or a 3rd
+party device (e.g. a NIC) can access the memory without migrations
+disrupting execution of high performance application code on the GPU.
 
 
-The corresponding line of code would map to:
-                J_ASSERT_JH(jh, jh->b_transaction =3D=3D transaction ||
-                                jh->b_next_transaction =3D=3D =
-transaction);
+>
+> And where does migration come into play? I assume migration is only
+> required to migrate off of that device memory to ordinary system RAM
+> when required because the device memory has to be freed up, correct?
 
-More precisely, jh is associated with an actively committing transaction =
-in its disk writing phase (i.e. t_updates already dropped to zero).
+That's one case. For example memory pressure can force the GPU driver to
+evict some device-coherent memory back to system memory. Also,
+applications can request a migration to system memory explicitly (again
+with something like hipMemPrefetchAsync).
 
-After a bit of tracing, we've found that the transaction is restarting =
-when changing a large EA to another large EA, which causes a new EA =
-inode to be allocated and the old inode to be freed. The truncate part =
-of the old inode release sometimes fails to extend current transaction =
-and has to restart it (this stack from test session on LDISKFS, ldiskfs_ =
-prefix can be changed to the ext4_):
-
-mdt03_024-198115 [012] 45670.650452: kernel_stack:         <stack trace>
-=3D> trace_event_raw_event_jbd2_handle_start_class (ffffffffc0c7e60c)
-=3D> jbd2__journal_restart (ffffffffc0c75b5c)
-=3D> ldiskfs_datasem_ensure_credits (ffffffffc1ac3431)
-=3D> ldiskfs_ext_rm_leaf (ffffffffc1ac44e8)
-=3D> ldiskfs_ext_remove_space (ffffffffc1ac8240)
-=3D> ldiskfs_ext_truncate (ffffffffc1ac953a)
-=3D> ldiskfs_truncate (ffffffffc1adbdcb)
-=3D> ldiskfs_evict_inode (ffffffffc1adcc71)
-=3D> evict (ffffffff84f37202)
-=3D> ldiskfs_xattr_set_entry (ffffffffc1abcf1e)
-=3D> ldiskfs_xattr_ibody_set (ffffffffc1abd5be)
-=3D> ldiskfs_xattr_set_handle (ffffffffc1abf9e4)
-=3D> ldiskfs_xattr_set (ffffffffc1abfd70)
-=3D> __vfs_setxattr (ffffffff84f431b6)
-=3D> osd_xattr_set (ffffffffc1b7891d)
-=3D> lod_sub_xattr_set (ffffffffc17da152)
-=3D> lod_generate_and_set_lovea (ffffffffc17c7d8c)
-=3D> lod_striped_create (ffffffffc17c81d0)
-=3D> lod_layout_change (ffffffffc17c839b)
-=3D> mdd_layout_change (ffffffffc1850f7d)
-=3D> mdt_layout_change (ffffffffc18aeaf1)
-=3D> mdt_intent_layout (ffffffffc18b5e30)
-=3D> mdt_intent_opc (ffffffffc18ac778)
-=3D> mdt_intent_policy (ffffffffc18b3ba6)
-=3D> ldlm_lock_enqueue (ffffffffc138ffff)
-=3D> ldlm_handle_enqueue0 (ffffffffc13b811f)
-=3D> tgt_enqueue (ffffffffc1441b14)
-=3D> tgt_request_handle (ffffffffc14465cd)
-=3D> ptlrpc_server_handle_request (ffffffffc13ecaea)
-=3D> ptlrpc_main (ffffffffc13f132a)
-=3D> kthread (ffffffff84d043a6)
-=3D> ret_from_fork (ffffffff8560023f)
-
-One problematic part here is that transaction restart enforces current =
-transaction commit so the incomplete transaction will likely commit =
-before the kernel panics. It will cause ext4 CORRUPTION after remount. =
-The reason why the kernel panic is that we restart this transaction =
-somewhere in between of ext4_get_write_access() and =
-ext4_mark_dirty_metadata() so the inode bh sticks in the old =
-transaction:
-
-ext4_xattr_set_handle(handle_t *handle, struct inode *inode, int
- name_index,
-                     =20
-const char *name, const
- void *value, size_t value_len,
-                     =20
-int
- flags)
-...
-        error =3D ext4_reserve_inode_write(handle, inode, &is.iloc);
-...
-                error =3D ext4_xattr_ibody_set(handle, inode, &i, &is);
-...
-                error =3D ext4_mark_iloc_dirty(handle, inode, &is.iloc);
-...
-}
-
-We don't have a fix yet and haven't yet decided how to fix this.
-Andreas suggested moving final iput for the old EA inode out of =
-transaction. Despite this can work for EXT4,  may be problematic with =
-LUSTRE/LDISKFS layering.
-
-Any ideas how to fix this are welcome.
-
-Thanks.
-
-Best regards,
-Artem Blagodarenko.
+Regards,
+  Felix
 
 
+>
+> (a high level description on how this is exploited from users space
+> would be great)
+>
