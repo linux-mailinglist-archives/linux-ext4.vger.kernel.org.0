@@ -2,208 +2,523 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B5B48DB68
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jan 2022 17:10:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2A8848DBB9
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jan 2022 17:27:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231712AbiAMQKj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 Jan 2022 11:10:39 -0500
-Received: from mail-mw2nam08on2054.outbound.protection.outlook.com ([40.107.101.54]:46177
-        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229580AbiAMQKj (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 13 Jan 2022 11:10:39 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YxR2nBPtDzmw7B1KOmbf5H4iZRzuIA3SDTkJSbNpLMju9D3k4hOfgnDdSnHeMTryt3+ZrroygLKyCTE1pC5zhJef4812eUzrTEMlfx5HzGdu/H37CZsPV8VIOkydcQfK9nL47zefi/PxA8uzeWgyjJ/h6OwVrBe+Bu2qSnYkd4i4CpJBx6nGoaUpLugZDdKPE2LW9qaE8ASOiD5h5MDeILXFJzYwzARGWkQISwjJ2LbLGeaAczaaSYOUyAMnnBrEKTWJ6syiQzhdYWKfri9qroBhs+trh+0A+mbfR6/X9Sm1t919/GMGVGXpBf2jQ84V9WtwsYCK9jc8ydgchfcAPA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=j/6d49dadxESDjBjlAJvT+Y8+zuqn0Ttz21PvswQ9Es=;
- b=bXYRD2IfdK/1OrGStxYdHtIXPOKDq/BKRBdEl5/IfJKLUhIFUmxHgittB3EWLAQhIdu1nwmNZK6FU1SE1hfpMXjUCurRrewyHCirrN3x8u9El2y8k72xDPMOCAHzVLqVFt0+PKlbNx71p31U6ge3XQMv9ymHHwjKzEcUFAxPwtLY1Ql0KYCUA99htidrRHgqR9Ex764Xb8LOcgd2ITdELKIwPYf644cLipbNIfGDZvqd81DMdarippOkTK1mMgp/0RIKmY4PEcIGUNk3LDA+U59xoBG0XemHJmIm6MK5JHwiAsbaOaR75uMDdfQ7UlDGUEYHgAwdzLUPmtPk7o53Sw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=j/6d49dadxESDjBjlAJvT+Y8+zuqn0Ttz21PvswQ9Es=;
- b=IcOzGQ/r3VvNXWDFKnHqKncEOT9ObVVwUCBXWFTVhfF0Jg6ZNcwbHlExS+IvhZXSLO8aZZ7FQ3JOw1zGDROt99IVFaw0dmhqD3MDD7rdzk2aRgnwsipfPpHd4DkFTY4XBJC+nPzWBkKQj3MH5RGLhJTZeRo4XM2DHXBcpdW2psEQUd7UKkJT/27OzbMcqmOteEDmkYNYkjlJCnY5HjxK3I1zS8PcqFGbsw5WDSgFsOQxSJhn5N0NdzzgEKg/qBNZ42WYjTDeY3eUnwV/xKDMt/2Fzqxq9Q0zetYc2vMaiQ1wmWdpd+na8OStzUD2l/aPNHjrRFk2Y2h4rhk7bxW8QQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CO6PR12MB5444.namprd12.prod.outlook.com (2603:10b6:5:35e::8) by
- CY4PR12MB1253.namprd12.prod.outlook.com (2603:10b6:903:3c::21) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4888.11; Thu, 13 Jan 2022 16:10:37 +0000
-Received: from CO6PR12MB5444.namprd12.prod.outlook.com
- ([fe80::b120:5877:dc4b:1a7e]) by CO6PR12MB5444.namprd12.prod.outlook.com
- ([fe80::b120:5877:dc4b:1a7e%7]) with mapi id 15.20.4888.011; Thu, 13 Jan 2022
- 16:10:37 +0000
-Subject: Re: [PATCH v3 12/13] ext4: switch to the new mount api
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Lukas Czerner <lczerner@redhat.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        linux-fsdevel@vger.kernel.org,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-References: <20211021114508.21407-1-lczerner@redhat.com>
- <20211021114508.21407-13-lczerner@redhat.com>
- <286d36c9-e9ab-b896-e23c-2a95c6385817@nvidia.com>
- <20220113120807.xlyg4wmbbhajuftu@work>
- <0535c04a-db7c-fa10-149e-91110eb18804@nvidia.com>
-Message-ID: <afa501e4-802d-e8a2-4272-4b67572c6d14@nvidia.com>
-Date:   Thu, 13 Jan 2022 16:10:29 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <0535c04a-db7c-fa10-149e-91110eb18804@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AM5PR04CA0022.eurprd04.prod.outlook.com
- (2603:10a6:206:1::35) To CO6PR12MB5444.namprd12.prod.outlook.com
- (2603:10b6:5:35e::8)
+        id S236620AbiAMQ1b (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 Jan 2022 11:27:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236654AbiAMQ1b (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 13 Jan 2022 11:27:31 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82FF8C061574;
+        Thu, 13 Jan 2022 08:27:30 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id c71so25113272edf.6;
+        Thu, 13 Jan 2022 08:27:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/xngRFd1uiDz3qI2HqJ82bEaAYJN/h3C5wDetbenotE=;
+        b=QAh6icBcoESEEbkX7VKBWBCoE0SC7PGOMtJ0yosyVlt41ufBSBd5oP+9oG9R0AXJuR
+         q0MXrB79xL/b7WG40FL39t23D2mpk6uiAZYlboQmO3qRhWywpdnsPGJfWWWPC1gY7lTT
+         MJoLJp/YxzTBf5/NWfzstIzWNdUmqeaHX7G/s2cAsYS4F4AM3QMF9UFyMW8R1JycVbfc
+         gfUshtPwmrs/3MRq1nVoagEIKWHOA0hzr2cBtcueUhVl5IPOpY2PERghfiQ81Kgf23bR
+         M1try+oVBKWsiBOcQGiFvJUvOD+aJAZ//G4MDknhiv28FZzFW1v0d43ArrXZkLVu5f5O
+         j1fQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/xngRFd1uiDz3qI2HqJ82bEaAYJN/h3C5wDetbenotE=;
+        b=frnFk+YKATH5whNnQQSe6vhaxba3pQfK0RkL3eIatkZI+iIDUhXqGqqia1lKvtWned
+         1WDTYbrbFAod+K6IGinmYNXujUWVKaQoBHZlyfcmFbMJY0Rcbae230Akh1Nbx+OwUxqB
+         6WTLD5MwMVyyM8mmcgSr9lWxCVO0EUVw/3xak/zPLQt2HjK6Z3cf0C38p6uig5jQHnRX
+         I8UdOE4VU31iEkkXgVXC+/orNSeanssQ2a+L8BD6FbcyXUWwQphNHIMKXrrhnwEFnAri
+         DJkPqB2u2PAPnq9G10cASQhfWr4eoYosoANJTPlF/NYsVN4YCjDU3GkfRuUP5RfYQOHm
+         8XUA==
+X-Gm-Message-State: AOAM5308blMS+wMdPueFB5r9AHIPnW7cDjuzUpbF6pi5+MHzeZ5nTdw5
+        Pyz5FyP2RZPrHPur6bdmjbdmjHbpAQwRZX/B3Ek=
+X-Google-Smtp-Source: ABdhPJxJQDoPhY4qR3fm8oH+oU/WZ/ZRlqO3OA8rVIsOBQZUUw0K9kQvpv/WkWaVL0MEPgdY1fxpNhgu87Ctpwwcio8=
+X-Received: by 2002:a05:6402:4241:: with SMTP id g1mr4990699edb.11.1642091248584;
+ Thu, 13 Jan 2022 08:27:28 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5a0e9902-395b-4c9e-795c-08d9d6af3c7d
-X-MS-TrafficTypeDiagnostic: CY4PR12MB1253:EE_
-X-Microsoft-Antispam-PRVS: <CY4PR12MB125345CB1B06592DBEECE8F9D9539@CY4PR12MB1253.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Hk0UGQHMZZOfkXt3sZW4Dy+5Nk8L40Htxv0bgfZWbIWMAqb4OgeCK7Bx3rHBJo9k3jlAtw8MPVp3aWlNNHdRNr1vwTGcUK4c4l/Qs6hiHi/UE51HAaTZENYQBjHjB4XeF1R4MZq34PHSOSCqHWRHZQ24QDA47rQET4Yy9xxuu6SKewnJJf2ocuGXxnBqhvkSmvYP2Ng1f5zCbyIn8fJ4vbTIU7WgWyTAdtnzg7lskjEuOHhBgKT2//cewcgcnZcjv1ZncPVXQ0CbeHzSWCDm9GZHCituvb0VkVl6Zv1PDsm5JLfkKVykfpxhFKG+PzGeVxqH6XeaP8wDinCaANOdTgw9RQ27bAvHLOiD2yRhospKAOebVo6cE+JK0Mu3g+A2kd0gBLunSsklIp+1rZRP12O579ttUAMKpk/vPtkM0YbEAjb4I0Ntb1n23ng4GeW9dmzYbhlM5m5D8d2OJec7yOhVl83S42DP4VbPZ2SMX0HGcQpoeDDVQTTar+Thspnriq+VXIJ1aGtaqw5qC4yPI3tnyrdlVVTyxc1morZBVaVFXCRuApTe4ZxwmaaaZRoPAT60xzdvWFHBQexsN9Wfp9rgYPnH7mRJCSZGsBqwoZolaptah7mG17YBO98atR3k1Bxw18pbIT2M1LumdqNcv2x3gBILYnokKas6IgAUdDbaX3RZ8Ba/LwV3MMe0iNvEQm2X+3qGumKV8ha1H3tf2zRIznU5vdOHnaU2DgMRqHEa4svDRPI15kvmOI7nYCDo
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5444.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2906002)(6486002)(38100700002)(4326008)(316002)(83380400001)(31686004)(6506007)(6666004)(508600001)(186003)(6916009)(86362001)(66946007)(66476007)(66556008)(26005)(31696002)(36756003)(2616005)(8676002)(6512007)(53546011)(5660300002)(8936002)(55236004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NGRDTkxPaUMyQ092czUyQ0JSbDFCQ2Y0YTc5TFptVGd2aVYwWHk1ejNIdDhB?=
- =?utf-8?B?WDRpRWx0TEN6VzV0S3FHTURzODZROWpNVWdOLzZrR1RmZnRZRVU3RTBoQk9V?=
- =?utf-8?B?SFFjMHVOb2tZTWNQb3Joa3EwWS9EYUgydlhtSmlvL1pjVGlwWTJwK2Rhb2RL?=
- =?utf-8?B?M05qaE9vNytHOXJXaE1YZHU0Z3dOOXBjUWtISEtsck0yZ2wzSUpxOXFwTW91?=
- =?utf-8?B?OFdFNXM1cmp4ak9vNTFPYzlKbDdrTUtBaXNrSE8yZm5yMU1FVU5CeExIMnFo?=
- =?utf-8?B?QW9TRHllVjFBb01mZlVsODBFck5mUloxRWJGS3FDYktHblhsajFROTNOSWUy?=
- =?utf-8?B?UXBpMmx4S2l0OHd0OGVDNFBHRExxT2d5VXJxQ0Z5RmwxSVIzUGEydXZDU0Nh?=
- =?utf-8?B?VFRmQzhHb1ExTENoYXM0Z0FnUy9SekM5eTNueDFWRWovUmNNRkRFOXkzbXl6?=
- =?utf-8?B?aHNJeTcyUGJ1Qy9JVlZFNmY5QWVPNENqSXN1TSszZm5tUTlPUXVOTDhnZVlG?=
- =?utf-8?B?YkkwZDVkR255ODRaTlByeldQYVU3ZFhFUHdQWkVNNEhrTUlhS1NmeXg5TG1h?=
- =?utf-8?B?WE1aMTBuVjZIWTZGL0NwcW02ZFVGNU9KUFgyYVpsbU1ybEhMZStRMzFQM1hD?=
- =?utf-8?B?M1g3RURUY29vZ1FyUHRhSmVrREp2MTB2aXc2ZkU5NlBtS0VYY1NNTVB3UVdl?=
- =?utf-8?B?V2k0N3g2Mkd1VXJzbjJlblVIdDVBN3Y0UlgyYStidTA3TjNkN3BjQUlHYVBD?=
- =?utf-8?B?eTEvM25iSFBURHQ4L3daUmZsc0ZULzArMDhJS29vV2xUU2R1RHNyY3JVbGVr?=
- =?utf-8?B?Q09IM1FUcjlocnJES2tWeGZVZFgvRk1oc2FsZWpLNGFQeFpCOXVpOEVrOUZO?=
- =?utf-8?B?azJrZFhFY3RtVTdubHloaFRaTS9vRi9WM3h6Rms2YSs2S3FocnFWWFFvck9I?=
- =?utf-8?B?SnVhTk4ramprVEczRDNGTGNGZXdSUUhFMW1pamIzUHJSOHQ5eWxrMVhjd29Q?=
- =?utf-8?B?SHVnOFA2RGVBdnRvSitVOHVGWGx2S2tOZDhXSWF1WVBqTkJtcFduUHBZbzJD?=
- =?utf-8?B?aFo4NlZ5dW5DQ0dMeUh2KzdBNWladHFta0dPcWhYOFlNbGZPeW5SUk5LV25I?=
- =?utf-8?B?Z2lGbUtoL3lZMTdCTm82bVVoSWRsb3Q4a0tXeEd3bHNsZFhBWVM2WFFEZ09t?=
- =?utf-8?B?bDhUeEZ0SitnSEc2eGNQcVNBNjhCWFdtK2Z1WmVSWkJPcjVrT0NTd3RaZ2d1?=
- =?utf-8?B?dVVvNk8vdEVQRGI0cVRzMC9abnhkQWZVcEU3ZHovcFFlN2xPY1U4MU02ckQr?=
- =?utf-8?B?NHFQb2RMQS9kb3hRZldYU1J1ZURmS3ZIRis0LzRqM1NOMXAxZnA0Y1JLQ2NO?=
- =?utf-8?B?amt1RXdoL0RRNkd4NVBkcm10WUtUZFIycUpjOGFBTTMvM0pIOGFsN0grcHhl?=
- =?utf-8?B?cXB5azZTVlYydE1URmlBc0hycmg5TDQzMHArWEpYUW1jTDVjTUJEMEhnLzRv?=
- =?utf-8?B?bklhS0hCQ00yODVxMit1aVRvUWZoNkpHWXV2bGppcFJhN1doS0t1VktlMzFW?=
- =?utf-8?B?R0JnWDhkallvYXVGSFZnL3NjNUlLRTZZSDNqcUJlMUI4TGhHdWFPU0dFVnRq?=
- =?utf-8?B?Yi9NUFBkUTJadjRrN3o4QnQ1bUlrMCswUkNJUk53L3diMzA0UHcxL3QrNHdF?=
- =?utf-8?B?WnIxOHFqVXIvQ1hld3NJV25zNEVTNlJWb2pZQ2lyY2x0UkdBTFdNdkFFT2Nq?=
- =?utf-8?B?aS96ejBTSkIvMEJhcHBWWjZJNHFaaE9uczNzaDB1aUJzTDdCTjBwYkFod3Rr?=
- =?utf-8?B?RTdQWWhwK3p5eFRlT041R1oyUWJEZnU1RllwYzUzeUFQazNnOGJMUTNENkx0?=
- =?utf-8?B?WUhXNlVFZk5nMGdUWUl6SHNxR0hUUitvVkVLYVdJaG5lOEl0clJYUmJWWkZG?=
- =?utf-8?B?RWtnRzFDaFBmZmdTNWErZVo3MUxnS3dQWDhpRERJcm14dWhhSk5udkNpL2Va?=
- =?utf-8?B?VXJJRzBKTFJvZjVLRXB1TGtvYzJEQ0UxcldEbVA2bTAvQnBVUGVsS1YxbGNS?=
- =?utf-8?B?VmZoQ2habjVPQ1N6Z3lUWTd5Q2hZT2dWOE5rUnhyTm41S082bW9BOHMwazFL?=
- =?utf-8?B?ZFliY0g2Z1RpY2pBYmp5RkRBVFV5R3dvdkdXNzFIc01LYk1Ed2NFUHpSeGlZ?=
- =?utf-8?Q?iTKChnF00gdZuhpGSx3I81w=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5a0e9902-395b-4c9e-795c-08d9d6af3c7d
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5444.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2022 16:10:37.3831
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4ZeK8TxNGXXR73SX56mO24OtIe0M6p0A/M4k4N78EBeCl/91bSdOeR/8LThNQSNnaTSqasqz6jbWS0lVlBxiQQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1253
+References: <20220107121215.1912-2-yinxin.x@bytedance.com> <202201091544.W5HHEXAp-lkp@intel.com>
+ <CAK896s74jBKAhruo-v8rJGWDOgTKF6GKNWg5Qj0B+Zb=VAtJdA@mail.gmail.com>
+ <CAD+ocbwyE=h3jFnanQRqkh+AemCv8aP2W9J92C4OoV047TZS7Q@mail.gmail.com>
+ <CAK896s7kbDtieyHregY2U-Y_nZBixmNAa6pAyoenb_fy_sD_3w@mail.gmail.com>
+ <20220113085939.es3eboxmbiocz6kf@riteshh-domain> <CAK896s4joD9+M_8Qb_oaMpVOZFup=g1Re5YL42z+nR-mEh9P4g@mail.gmail.com>
+ <20220113131228.ycyyytp6b6nkbe42@riteshh-domain>
+In-Reply-To: <20220113131228.ycyyytp6b6nkbe42@riteshh-domain>
+From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
+Date:   Thu, 13 Jan 2022 08:27:16 -0800
+Message-ID: <CAD+ocbyYsDaiQ2bxM3k3VqnpjFKm+yXumoa_MB3H5uiBOG9Kbw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH 1/2] ext4: fast commit may not fallback for
+ ineligible commit
+To:     riteshh <riteshh@linux.ibm.com>
+Cc:     Xin Yin <yinxin.x@bytedance.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, kbuild@lists.01.org,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        kbuild test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+> > > > > name that function as something like "ext4_fc_mark_txn_ineligible()".
+> > > > In this case , I think we can just set "hendle" as NULL , then
+> > > > ext4_fc_mark_ineligible() use tid as
+> > > > journal->j_running_transaction->t_tid. And we do not need to add a new
+> > > > API. How about this?
+> > >
+> > > I was about to comment the same that why two different APIs for the same work.
+> > > Above does sounds a better solution to me. But I will let Harshad
+> > > comment on it too.
 
-On 13/01/2022 15:06, Jon Hunter wrote:
-> 
-> On 13/01/2022 12:08, Lukas Czerner wrote:
->> On Thu, Jan 13, 2022 at 11:29:24AM +0000, Jon Hunter wrote:
->>> Hi Lukas,
->>>
->>> On 21/10/2021 12:45, Lukas Czerner wrote:
->>>> Add the necessary functions for the fs_context_operations. Convert and
->>>> rename ext4_remount() and ext4_fill_super() to ext4_get_tree() and
->>>> ext4_reconfigure() respectively and switch the ext4 to use the new api.
->>>>
->>>> One user facing change is the fact that we no longer have access to the
->>>> entire string of mount options provided by mount(2) since the mount api
->>>> does not store it anywhere. As a result we can't print the options to
->>>> the log as we did in the past after the successful mount.
->>>>
->>>> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
->>>
->>>
->>> I have noticed the following error on -next on various ARM64 
->>> platforms that
->>> we have ...
->>>
->>>   ERR KERN /dev/mmcblk1: Can't open blockdev
->>>
->>> I have bisected this, to see where this was introduced and bisect is
->>> pointing to this commit. I have not looked any further so far, but 
->>> wanted to
->>> see if you had any ideas/suggestions?
->>
->> Hi,
->>
->> this error does not come from the ext4, but probably rather from vfs. 
->> More
->> specifically from get_tree_bdev()
->>
->>          bdev = blkdev_get_by_path(fc->source, mode, fc->fs_type);
->>          if (IS_ERR(bdev)) {
->>                  errorf(fc, "%s: Can't open blockdev", fc->source);
->>                  return PTR_ERR(bdev);
->>          }
-> 
-> Yes, obviously this warning has been there for a while but only seen 
-> after this change was made.
-> 
->> I have no idea why this fails in your case. Do you know what kind of
->> error it fails with? Any oher error or warning messages preceding the 
->> one you
->> point out in the logs?
-> 
-> No only this one.
-> 
->> I assume that this happens on mount and the device that you're trying to
->> mount contains ext4 file system? Ext4 is not the only file system
->> utilizing the new mount api, can you try the same with xfs on the device?
-> 
-> This is happening on a board in the test farm and so not easy to 
-> reformat. Looking some more /dev/mmcblk1 is not a valid device, I only 
-> see /dev/mmcblk0 from the bootlogs on this board. Hmmm, OK I will have 
-> to take a closer look to see where this is coming from.
+Yeah that sounds good. I agree that would be better.
 
-
-OK, I see what is happening. It appears that our test harness always 
-tries to mount a device called /dev/mmcblk1. Prior to this change there 
-was not kernel error generated and looking at the logs I would see ...
-
-mount: /mnt: special device /dev/mmcblk1 does not exist.
-
-Following this change, now a kernel warning is generated and I see ...
-
-[  137.078994] /dev/mmcblk1: Can't open blockdev
-mount: /mnt: special device /dev/mmcblk1 does not exist.
-
-So there is a change in behaviour but at the same time the error looks 
-correct. So sorry for the false-positive.
-
-Cheers
-Jon
-
-
-
--- 
-nvpublic
+> > >
+> > > Also please note in function ext4_xattr_set(), with fstests, I could easily
+> > > reproduce a use-after-free issue with your v2 patches too.
+> > Thanks , this is the same reason as the issue reported by Dan , I will
+> > fix this in the next version. could you share the fstests command to
+> > reproduce this issue?
+>
+> Here are the details, hope it helps.
+>
+> This is with your v2 patches applied. I also have KASAN enabled on my setup.
+> This is with fstest generic/388
+>
+> [  585.335989] run fstests generic/388 at 2022-01-13 18:29:23
+> [  588.175384] EXT4-fs (loop2): mounted filesystem with ordered data mode. Quota mode: none.
+> [  590.603966] EXT4-fs (loop3): mounted filesystem with ordered data mode. Quota mode: none.
+> [  590.635835] EXT4-fs (loop3): shut down requested (1)
+> [  590.637402] Aborting journal on device loop3-8.
+> [  592.606238] EXT4-fs (loop3): mounted filesystem with ordered data mode. Quota mode: none.
+> [  592.770245] ==================================================================
+> [  592.772479] BUG: KASAN: use-after-free in ext4_fc_mark_ineligible+0x97/0xf0
+> [  592.774466] Read of size 8 at addr ffff8880734574d0 by task fsstress/20440
+> [  592.776497]
+> [  592.776958] CPU: 23 PID: 20440 Comm: fsstress Not tainted 5.16.0-rc4+ #183
+> [  592.778800] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/01/2014
+> [  592.781369] Call Trace:
+> [  592.782081]  <TASK>
+> [  592.782691]  dump_stack_lvl+0x5b/0x82
+> [  592.783780]  print_address_description.constprop.0+0x48/0x70
+> [  592.785363]  ? ext4_fc_mark_ineligible+0x97/0xf0
+> [  592.786638]  kasan_report.cold+0x82/0xdb
+> [  592.788023]  ? ext4_fc_mark_ineligible+0x97/0xf0
+> [  592.789324]  __asan_load8+0x69/0x90
+> [  592.790296]  ext4_fc_mark_ineligible+0x97/0xf0
+> [  592.791529]  ext4_xattr_set+0x28c/0x2a0
+> [  592.792639]  ? ext4_xattr_set_credits+0x90/0x90
+> [  592.794166]  ? inode_has_perm+0xa6/0xc0
+> [  592.795318]  ext4_xattr_user_set+0x64/0x80
+> [  592.796482]  __vfs_removexattr+0xc2/0x100
+> [  592.797622]  ? __vfs_getxattr+0x100/0x100
+> [  592.798795]  __vfs_removexattr_locked+0x134/0x240
+> [  592.800134]  vfs_removexattr+0xc2/0x1d0
+> [  592.801423]  ? __vfs_removexattr_locked+0x240/0x240
+> [  592.802778]  ? __kasan_check_write+0x14/0x20
+> [  592.803955]  ? strncpy_from_user+0x1c3/0x200
+> [  592.805210]  removexattr+0xaf/0x100
+> [  592.806186]  ? vfs_removexattr+0x1d0/0x1d0
+> [  592.807413]  ? rcu_read_lock_bh_held+0xb0/0xb0
+> [  592.808871]  ? __this_cpu_preempt_check+0x13/0x20
+> [  592.810207]  ? __this_cpu_preempt_check+0x13/0x20
+> [  592.811534]  ? rcu_read_lock_any_held+0xd2/0x100
+> [  592.812816]  ? rcu_read_lock_held+0xb0/0xb0
+> [  592.813967]  ? preempt_count_sub+0x18/0xc0
+> [  592.815293]  ? __mnt_want_write+0xaa/0x100
+> [  592.816473]  ? mnt_want_write+0xc8/0x220
+> [  592.817585]  path_removexattr+0x12c/0x150
+> [  592.818709]  ? removexattr+0x100/0x100
+> [  592.819748]  ? syscall_enter_from_user_mode+0x21/0x60
+> [  592.821142]  ? __this_cpu_preempt_check+0x13/0x20
+> [  592.822432]  ? lockdep_hardirqs_on+0xc4/0x140
+> [  592.823810]  ? syscall_enter_from_user_mode+0x21/0x60
+> [  592.825226]  __x64_sys_removexattr+0x36/0x40
+> [  592.826414]  do_syscall_64+0x3b/0x90
+> [  592.827411]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [  592.828815] RIP: 0033:0x7ffff7eb50db
+> [  592.829817] Code: f0 ff ff 73 01 c3 48 8b 0d b2 ad 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 84 00 00 00 008
+> [  592.834916] RSP: 002b:00007fffffff9aa8 EFLAGS: 00000202 ORIG_RAX: 00000000000000c5
+> [  592.836977] RAX: ffffffffffffffda RBX: 00007fffffff9ad0 RCX: 00007ffff7eb50db
+> [  592.839019] RDX: 0000000000000000 RSI: 00007fffffff9ad0 RDI: 000055555556d440
+> [  592.840935] RBP: 000000000007a120 R08: 0000000000000000 R09: 00007fffffff9940
+> [  592.842832] R10: 00005555555640da R11: 0000000000000202 R12: 0000000000000014
+> [  592.844869] R13: 8f5c28f5c28f5c29 R14: 0000555555559b60 R15: 0000000000000014
+> [  592.846981]  </TASK>
+> [  592.847709]
+> [  592.848162] Allocated by task 20440:
+> [  592.849169]  kasan_save_stack+0x26/0x60
+> [  592.850231]  __kasan_slab_alloc+0x6d/0x90
+> [  592.851538]  kmem_cache_alloc+0x107/0x360
+> [  592.852823]  jbd2__journal_start+0xd3/0x3d0
+> [  592.854044]  __ext4_journal_start_sb+0x207/0x250
+> [  592.855480]  ext4_xattr_set+0x164/0x2a0
+> [  592.856638]  ext4_xattr_user_set+0x64/0x80
+> [  592.857877]  __vfs_removexattr+0xc2/0x100
+> [  592.859043]  __vfs_removexattr_locked+0x134/0x240
+> [  592.860524]  vfs_removexattr+0xc2/0x1d0
+> [  592.861691]  removexattr+0xaf/0x100
+> [  592.862846]  path_removexattr+0x12c/0x150
+> [  592.864022]  __x64_sys_removexattr+0x36/0x40
+> [  592.865251]  do_syscall_64+0x3b/0x90
+> [  592.866408]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [  592.867900]
+> [  592.868357] Freed by task 20440:
+> [  592.869313]  kasan_save_stack+0x26/0x60
+> [  592.870432]  kasan_set_track+0x25/0x30
+> [  592.871533]  kasan_set_free_info+0x24/0x40
+> [  592.872883]  __kasan_slab_free+0xf2/0x130
+> [  592.874047]  kmem_cache_free+0xc3/0x390
+> [  592.875181]  jbd2_journal_stop+0x3a5/0x790
+> [  592.876387]  __ext4_journal_stop+0x6d/0xf0
+> [  592.877707]  ext4_xattr_set+0x1b7/0x2a0
+> [  592.878834]  ext4_xattr_user_set+0x64/0x80
+> [  592.880040]  __vfs_removexattr+0xc2/0x100
+> [  592.881198]  __vfs_removexattr_locked+0x134/0x240
+> [  592.882542]  vfs_removexattr+0xc2/0x1d0
+> [  592.883833]  removexattr+0xaf/0x100
+> [  592.884873]  path_removexattr+0x12c/0x150
+> [  592.886026]  __x64_sys_removexattr+0x36/0x40
+> [  592.887254]  do_syscall_64+0x3b/0x90
+> [  592.888321]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [  592.889965]
+> [  592.890410] The buggy address belongs to the object at ffff8880734574d0
+> [  592.890410]  which belongs to the cache jbd2_journal_handle of size 56
+> [  592.894137] The buggy address is located 0 bytes inside of
+> [  592.894137]  56-byte region [ffff8880734574d0, ffff888073457508)
+> [  592.897465] The buggy address belongs to the page:
+> [  592.898893] page:ffffea0001cd15c0 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff888073457b30 p7
+> [  592.902061] flags: 0x80000000000200(slab|node=0|zone=1)
+> [  592.903566] raw: 0080000000000200 ffffea0001cd1448 ffff8881098f2ad0 ffff8881098f1a40
+> [  592.905851] raw: ffff888073457b30 00000000000a0007 00000001ffffffff 0000000000000000
+> [  592.908165] page dumped because: kasan: bad access detected
+> [  592.909798]
+> [  592.910397] Memory state around the buggy address:
+> [  592.911816]  ffff888073457380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> [  592.913875]  ffff888073457400: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> [  592.916439] >ffff888073457480: fc fc fc fc fc fc fc fc fc fc fa fb fb fb fb fb
+> [  592.918483]                                                  ^
+> [  592.920189]  ffff888073457500: fb fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> [  592.922563]  ffff888073457580: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> [  592.924890] ==================================================================
+> [  592.926953] Disabling lock debugging due to kernel taint
+> [  592.928593] BUG: kernel NULL pointer dereference, address: 0000000000000008
+> [  592.930699] #PF: supervisor read access in kernel mode
+> [  592.932140] #PF: error_code(0x0000) - not-present page
+> [  592.933565] PGD 0 P4D 0
+> [  592.934320] Oops: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC KASAN PTI
+> [  592.936155] CPU: 23 PID: 20440 Comm: fsstress Tainted: G    B             5.16.0-rc4+ #183
+> [  592.938441] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/01/2014
+> [  592.940946] RIP: 0010:ext4_fc_mark_ineligible+0xa4/0xf0
+> [  592.942389] Code: 89 f7 e8 cf 94 7b 01 4d 85 ed 74 35 49 81 fd 00 f0 ff ff 77 2c 4c 89 ef e8 e9 bd dc ff 4d0
+> [  592.947494] RSP: 0018:ffff88803e2b79d0 EFLAGS: 00010286
+> [  592.948904] RAX: 0000000000000000 RBX: ffff88802b385000 RCX: ffffffff816c3394
+> [  592.950793] RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000008
+> [  592.961655] RBP: ffff88803e2b79f0 R08: ffffffff816c3394 R09: 0000000000000000
+> [  592.963559] R10: ffffffff84535983 R11: fffffbfff08a6b30 R12: 0000000000000000
+> [  592.965600] R13: 0000000000000000 R14: ffff88802b385e50 R15: ffff8880734574d0
+> [  592.967505] FS:  00007ffff7d92740(0000) GS:ffff888118600000(0000) knlGS:0000000000000000
+> [  592.969768] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  592.971315] CR2: 0000000000000008 CR3: 000000000ae3c000 CR4: 00000000000006e0
+> [  592.973227] Call Trace:
+> [  592.973899]  <TASK>
+> [  592.974493]  ext4_xattr_set+0x28c/0x2a0
+> [  592.975687]  ? ext4_xattr_set_credits+0x90/0x90
+> [  592.976938]  ? inode_has_perm+0xa6/0xc0
+> [  592.977991]  ext4_xattr_user_set+0x64/0x80
+> [  592.979107]  __vfs_removexattr+0xc2/0x100
+> [  592.980198]  ? __vfs_getxattr+0x100/0x100
+> [  592.981299]  __vfs_removexattr_locked+0x134/0x240
+> [  592.982629]  vfs_removexattr+0xc2/0x1d0
+> [  592.983664]  ? __vfs_removexattr_locked+0x240/0x240
+> [  592.984994]  ? __kasan_check_write+0x14/0x20
+> [  592.986147]  ? strncpy_from_user+0x1c3/0x200
+> [  592.987313]  removexattr+0xaf/0x100
+> [  592.988267]  ? vfs_removexattr+0x1d0/0x1d0
+> [  592.989486]  ? rcu_read_lock_bh_held+0xb0/0xb0
+> [  592.990696]  ? __this_cpu_preempt_check+0x13/0x20
+> [  592.991967]  ? __this_cpu_preempt_check+0x13/0x20
+> [  592.993255]  ? rcu_read_lock_any_held+0xd2/0x100
+> [  592.994500]  ? rcu_read_lock_held+0xb0/0xb0
+> [  592.995635]  ? preempt_count_sub+0x18/0xc0
+> [  592.996876]  ? __mnt_want_write+0xaa/0x100
+> [  592.997985]  ? mnt_want_write+0xc8/0x220
+> [  592.999059]  path_removexattr+0x12c/0x150
+> [  593.000155]  ? removexattr+0x100/0x100
+> [  593.001288]  ? syscall_enter_from_user_mode+0x21/0x60
+> [  593.002659]  ? __this_cpu_preempt_check+0x13/0x20
+> [  593.003922]  ? lockdep_hardirqs_on+0xc4/0x140
+> [  593.005108]  ? syscall_enter_from_user_mode+0x21/0x60
+> [  593.006482]  __x64_sys_removexattr+0x36/0x40
+> [  593.007642]  do_syscall_64+0x3b/0x90
+> [  593.008705]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [  593.010066] RIP: 0033:0x7ffff7eb50db
+> [  593.011046] Code: f0 ff ff 73 01 c3 48 8b 0d b2 ad 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 84 00 00 00 008
+> [  593.016065] RSP: 002b:00007fffffff9aa8 EFLAGS: 00000202 ORIG_RAX: 00000000000000c5
+> [  593.018080] RAX: ffffffffffffffda RBX: 00007fffffff9ad0 RCX: 00007ffff7eb50db
+> [  593.019972] RDX: 0000000000000000 RSI: 00007fffffff9ad0 RDI: 000055555556d440
+> [  593.021962] RBP: 000000000007a120 R08: 0000000000000000 R09: 00007fffffff9940
+> [  593.023857] R10: 00005555555640da R11: 0000000000000202 R12: 0000000000000014
+> [  593.025762] R13: 8f5c28f5c28f5c29 R14: 0000555555559b60 R15: 0000000000000014
+> [  593.027838]  </TASK>
+> [  593.028466] Modules linked in:
+> [  593.029386] CR2: 0000000000000008
+> [  593.030367] ---[ end trace 0ad9df144b556115 ]---
+> [  593.031704] RIP: 0010:ext4_fc_mark_ineligible+0xa4/0xf0
+> [  593.033243] Code: 89 f7 e8 cf 94 7b 01 4d 85 ed 74 35 49 81 fd 00 f0 ff ff 77 2c 4c 89 ef e8 e9 bd dc ff 4d0
+> [  593.038371] RSP: 0018:ffff88803e2b79d0 EFLAGS: 00010286
+> [  593.039860] RAX: 0000000000000000 RBX: ffff88802b385000 RCX: ffffffff816c3394
+> [  593.041857] RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000008
+> [  593.043856] RBP: ffff88803e2b79f0 R08: ffffffff816c3394 R09: 0000000000000000
+> [  593.045929] R10: ffffffff84535983 R11: fffffbfff08a6b30 R12: 0000000000000000
+> [  593.047903] R13: 0000000000000000 R14: ffff88802b385e50 R15: ffff8880734574d0
+> [  593.050009] FS:  00007ffff7d92740(0000) GS:ffff888118600000(0000) knlGS:0000000000000000
+> [  593.052350] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  593.053968] CR2: 0000000000000008 CR3: 000000000ae3c000 CR4: 00000000000006e0
+> [  593.056027] note: fsstress[20440] exited with preempt_count 1
+> [  593.721992] EXT4-fs (loop3): shut down requested (2)
+>
+> SECTION       -- ext4_4k_fc
+> FSTYP         -- ext4
+> PLATFORM      -- Linux/x86_64 qemu 5.16.0-rc4+ #183 SMP PREEMPT Thu Jan 13 18:17:40 IST 2022
+> MKFS_OPTIONS  -- -I 256 -O fast_commit,64bit -F -b 4096 /dev/loop3
+> MOUNT_OPTIONS -- -o data=ordered /dev/loop3 /mnt1/scratch
+>
+>
+> -ritesh
+>
+>
+> >
+> > Thanks,
+> > Xin Yin
+> > >
+> > >
+> > > -ritesh
+> > >
+> > >
+> > >
+> > > >
+> > > > > >
+> > > > > > Hi Harshad, could you give some advice?  it seems you also need to
+> > > > > > change this part in your following patches.
+> > > > > >
+> > > > > > Thanks,
+> > > > > > Xin Yin
+> > > > > >
+> > > > > > On Mon, Jan 10, 2022 at 5:23 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> > > > > > >
+> > > > > > > Hi Xin,
+> > > > > > >
+> > > > > > > url:    https://github.com/0day-ci/linux/commits/Xin-Yin/ext4-fix-issues-when-fast-commit-work-with-jbd/20220107-201314
+> > > > > > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+> > > > > > > config: x86_64-randconfig-m001-20220107 (https://download.01.org/0day-ci/archive/20220109/202201091544.W5HHEXAp-lkp@intel.com/config)
+> > > > > > > compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> > > > > > >
+> > > > > > > If you fix the issue, kindly add following tag as appropriate
+> > > > > > > Reported-by: kernel test robot <lkp@intel.com>
+> > > > > > > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > > > > > >
+> > > > > > > New smatch warnings:
+> > > > > > > fs/ext4/inode.c:340 ext4_evict_inode() error: uninitialized symbol 'handle'.
+> > > > > > >
+> > > > > > > vim +/handle +340 fs/ext4/inode.c
+> > > > > > >
+> > > > > > > 0930fcc1ee2f0a Al Viro            2010-06-07  167  void ext4_evict_inode(struct inode *inode)
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  168  {
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  169       handle_t *handle;
+> > > > > > > bc965ab3f2b4b7 Theodore Ts'o      2008-08-02  170       int err;
+> > > > > > > 65db869c754e7c Jan Kara           2019-11-05  171       /*
+> > > > > > > 65db869c754e7c Jan Kara           2019-11-05  172        * Credits for final inode cleanup and freeing:
+> > > > > > > 65db869c754e7c Jan Kara           2019-11-05  173        * sb + inode (ext4_orphan_del()), block bitmap, group descriptor
+> > > > > > > 65db869c754e7c Jan Kara           2019-11-05  174        * (xattr block freeing), bitmap, group descriptor (inode freeing)
+> > > > > > > 65db869c754e7c Jan Kara           2019-11-05  175        */
+> > > > > > > 65db869c754e7c Jan Kara           2019-11-05  176       int extra_credits = 6;
+> > > > > > > 0421a189bc8cde Tahsin Erdogan     2017-06-22  177       struct ext4_xattr_inode_array *ea_inode_array = NULL;
+> > > > > > > 46e294efc355c4 Jan Kara           2020-11-27  178       bool freeze_protected = false;
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  179
+> > > > > > > 7ff9c073dd4d72 Theodore Ts'o      2010-11-08  180       trace_ext4_evict_inode(inode);
+> > > > > > > 2581fdc810889f Jiaying Zhang      2011-08-13  181
+> > > > > > > 0930fcc1ee2f0a Al Viro            2010-06-07  182       if (inode->i_nlink) {
+> > > > > > > 2d859db3e4a82a Jan Kara           2011-07-26  183               /*
+> > > > > > > 2d859db3e4a82a Jan Kara           2011-07-26  184                * When journalling data dirty buffers are tracked only in the
+> > > > > > > 2d859db3e4a82a Jan Kara           2011-07-26  185                * journal. So although mm thinks everything is clean and
+> > > > > > > 2d859db3e4a82a Jan Kara           2011-07-26  186                * ready for reaping the inode might still have some pages to
+> > > > > > > 2d859db3e4a82a Jan Kara           2011-07-26  187                * write in the running transaction or waiting to be
+> > > > > > > 2d859db3e4a82a Jan Kara           2011-07-26  188                * checkpointed. Thus calling jbd2_journal_invalidatepage()
+> > > > > > > 2d859db3e4a82a Jan Kara           2011-07-26  189                * (via truncate_inode_pages()) to discard these buffers can
+> > > > > > > 2d859db3e4a82a Jan Kara           2011-07-26  190                * cause data loss. Also even if we did not discard these
+> > > > > > > 2d859db3e4a82a Jan Kara           2011-07-26  191                * buffers, we would have no way to find them after the inode
+> > > > > > > 2d859db3e4a82a Jan Kara           2011-07-26  192                * is reaped and thus user could see stale data if he tries to
+> > > > > > > 2d859db3e4a82a Jan Kara           2011-07-26  193                * read them before the transaction is checkpointed. So be
+> > > > > > > 2d859db3e4a82a Jan Kara           2011-07-26  194                * careful and force everything to disk here... We use
+> > > > > > > 2d859db3e4a82a Jan Kara           2011-07-26  195                * ei->i_datasync_tid to store the newest transaction
+> > > > > > > 2d859db3e4a82a Jan Kara           2011-07-26  196                * containing inode's data.
+> > > > > > > 2d859db3e4a82a Jan Kara           2011-07-26  197                *
+> > > > > > > 2d859db3e4a82a Jan Kara           2011-07-26  198                * Note that directories do not have this problem because they
+> > > > > > > 2d859db3e4a82a Jan Kara           2011-07-26  199                * don't use page cache.
+> > > > > > > 2d859db3e4a82a Jan Kara           2011-07-26  200                */
+> > > > > > > 6a7fd522a7c94c Vegard Nossum      2016-07-04  201               if (inode->i_ino != EXT4_JOURNAL_INO &&
+> > > > > > > 6a7fd522a7c94c Vegard Nossum      2016-07-04  202                   ext4_should_journal_data(inode) &&
+> > > > > > > 3abb1a0fc2871f Jan Kara           2017-06-22  203                   (S_ISLNK(inode->i_mode) || S_ISREG(inode->i_mode)) &&
+> > > > > > > 3abb1a0fc2871f Jan Kara           2017-06-22  204                   inode->i_data.nrpages) {
+> > > > > > > 2d859db3e4a82a Jan Kara           2011-07-26  205                       journal_t *journal = EXT4_SB(inode->i_sb)->s_journal;
+> > > > > > > 2d859db3e4a82a Jan Kara           2011-07-26  206                       tid_t commit_tid = EXT4_I(inode)->i_datasync_tid;
+> > > > > > > 2d859db3e4a82a Jan Kara           2011-07-26  207
+> > > > > > > d76a3a77113db0 Theodore Ts'o      2013-04-03  208                       jbd2_complete_transaction(journal, commit_tid);
+> > > > > > > 2d859db3e4a82a Jan Kara           2011-07-26  209                       filemap_write_and_wait(&inode->i_data);
+> > > > > > > 2d859db3e4a82a Jan Kara           2011-07-26  210               }
+> > > > > > > 91b0abe36a7b2b Johannes Weiner    2014-04-03  211               truncate_inode_pages_final(&inode->i_data);
+> > > > > > > 5dc23bdd5f846e Jan Kara           2013-06-04  212
+> > > > > > > 0930fcc1ee2f0a Al Viro            2010-06-07  213               goto no_delete;
+> > > > > > >
+> > > > > > > Assume we hit this goto
+> > > > > > >
+> > > > > > > 0930fcc1ee2f0a Al Viro            2010-06-07  214       }
+> > > > > > > 0930fcc1ee2f0a Al Viro            2010-06-07  215
+> > > > > > > e2bfb088fac03c Theodore Ts'o      2014-10-05  216       if (is_bad_inode(inode))
+> > > > > > > e2bfb088fac03c Theodore Ts'o      2014-10-05  217               goto no_delete;
+> > > > > > > 871a293155a245 Christoph Hellwig  2010-03-03  218       dquot_initialize(inode);
+> > > > > > > 907f4554e2521c Christoph Hellwig  2010-03-03  219
+> > > > > > > 678aaf481496b0 Jan Kara           2008-07-11  220       if (ext4_should_order_data(inode))
+> > > > > > > 678aaf481496b0 Jan Kara           2008-07-11  221               ext4_begin_ordered_truncate(inode, 0);
+> > > > > > > 91b0abe36a7b2b Johannes Weiner    2014-04-03  222       truncate_inode_pages_final(&inode->i_data);
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  223
+> > > > > > > ceff86fddae874 Jan Kara           2020-04-21  224       /*
+> > > > > > > ceff86fddae874 Jan Kara           2020-04-21  225        * For inodes with journalled data, transaction commit could have
+> > > > > > > ceff86fddae874 Jan Kara           2020-04-21  226        * dirtied the inode. Flush worker is ignoring it because of I_FREEING
+> > > > > > > ceff86fddae874 Jan Kara           2020-04-21  227        * flag but we still need to remove the inode from the writeback lists.
+> > > > > > > ceff86fddae874 Jan Kara           2020-04-21  228        */
+> > > > > > > ceff86fddae874 Jan Kara           2020-04-21  229       if (!list_empty_careful(&inode->i_io_list)) {
+> > > > > > > ceff86fddae874 Jan Kara           2020-04-21  230               WARN_ON_ONCE(!ext4_should_journal_data(inode));
+> > > > > > > ceff86fddae874 Jan Kara           2020-04-21  231               inode_io_list_del(inode);
+> > > > > > > ceff86fddae874 Jan Kara           2020-04-21  232       }
+> > > > > > > ceff86fddae874 Jan Kara           2020-04-21  233
+> > > > > > > 8e8ad8a57c75f3 Jan Kara           2012-06-12  234       /*
+> > > > > > > 8e8ad8a57c75f3 Jan Kara           2012-06-12  235        * Protect us against freezing - iput() caller didn't have to have any
+> > > > > > > 46e294efc355c4 Jan Kara           2020-11-27  236        * protection against it. When we are in a running transaction though,
+> > > > > > > 46e294efc355c4 Jan Kara           2020-11-27  237        * we are already protected against freezing and we cannot grab further
+> > > > > > > 46e294efc355c4 Jan Kara           2020-11-27  238        * protection due to lock ordering constraints.
+> > > > > > > 8e8ad8a57c75f3 Jan Kara           2012-06-12  239        */
+> > > > > > > 46e294efc355c4 Jan Kara           2020-11-27  240       if (!ext4_journal_current_handle()) {
+> > > > > > > 8e8ad8a57c75f3 Jan Kara           2012-06-12  241               sb_start_intwrite(inode->i_sb);
+> > > > > > > 46e294efc355c4 Jan Kara           2020-11-27  242               freeze_protected = true;
+> > > > > > > 46e294efc355c4 Jan Kara           2020-11-27  243       }
+> > > > > > > e50e5129f384ae Andreas Dilger     2017-06-21  244
+> > > > > > > 30a7eb970c3aae Tahsin Erdogan     2017-06-22  245       if (!IS_NOQUOTA(inode))
+> > > > > > > 30a7eb970c3aae Tahsin Erdogan     2017-06-22  246               extra_credits += EXT4_MAXQUOTAS_DEL_BLOCKS(inode->i_sb);
+> > > > > > > 30a7eb970c3aae Tahsin Erdogan     2017-06-22  247
+> > > > > > > 65db869c754e7c Jan Kara           2019-11-05  248       /*
+> > > > > > > 65db869c754e7c Jan Kara           2019-11-05  249        * Block bitmap, group descriptor, and inode are accounted in both
+> > > > > > > 65db869c754e7c Jan Kara           2019-11-05  250        * ext4_blocks_for_truncate() and extra_credits. So subtract 3.
+> > > > > > > 65db869c754e7c Jan Kara           2019-11-05  251        */
+> > > > > > > 30a7eb970c3aae Tahsin Erdogan     2017-06-22  252       handle = ext4_journal_start(inode, EXT4_HT_TRUNCATE,
+> > > > > > > 65db869c754e7c Jan Kara           2019-11-05  253                        ext4_blocks_for_truncate(inode) + extra_credits - 3);
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  254       if (IS_ERR(handle)) {
+> > > > > > > bc965ab3f2b4b7 Theodore Ts'o      2008-08-02  255               ext4_std_error(inode->i_sb, PTR_ERR(handle));
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  256               /*
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  257                * If we're going to skip the normal cleanup, we still need to
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  258                * make sure that the in-core orphan linked list is properly
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  259                * cleaned up.
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  260                */
+> > > > > > > 617ba13b31fbf5 Mingming Cao       2006-10-11  261               ext4_orphan_del(NULL, inode);
+> > > > > > > 46e294efc355c4 Jan Kara           2020-11-27  262               if (freeze_protected)
+> > > > > > > 8e8ad8a57c75f3 Jan Kara           2012-06-12  263                       sb_end_intwrite(inode->i_sb);
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  264               goto no_delete;
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  265       }
+> > > > > > > 30a7eb970c3aae Tahsin Erdogan     2017-06-22  266
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  267       if (IS_SYNC(inode))
+> > > > > > > 0390131ba84fd3 Frank Mayhar       2009-01-07  268               ext4_handle_sync(handle);
+> > > > > > > 407cd7fb83c0eb Tahsin Erdogan     2017-07-04  269
+> > > > > > > 407cd7fb83c0eb Tahsin Erdogan     2017-07-04  270       /*
+> > > > > > > 407cd7fb83c0eb Tahsin Erdogan     2017-07-04  271        * Set inode->i_size to 0 before calling ext4_truncate(). We need
+> > > > > > > 407cd7fb83c0eb Tahsin Erdogan     2017-07-04  272        * special handling of symlinks here because i_size is used to
+> > > > > > > 407cd7fb83c0eb Tahsin Erdogan     2017-07-04  273        * determine whether ext4_inode_info->i_data contains symlink data or
+> > > > > > > 407cd7fb83c0eb Tahsin Erdogan     2017-07-04  274        * block mappings. Setting i_size to 0 will remove its fast symlink
+> > > > > > > 407cd7fb83c0eb Tahsin Erdogan     2017-07-04  275        * status. Erase i_data so that it becomes a valid empty block map.
+> > > > > > > 407cd7fb83c0eb Tahsin Erdogan     2017-07-04  276        */
+> > > > > > > 407cd7fb83c0eb Tahsin Erdogan     2017-07-04  277       if (ext4_inode_is_fast_symlink(inode))
+> > > > > > > 407cd7fb83c0eb Tahsin Erdogan     2017-07-04  278               memset(EXT4_I(inode)->i_data, 0, sizeof(EXT4_I(inode)->i_data));
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  279       inode->i_size = 0;
+> > > > > > > bc965ab3f2b4b7 Theodore Ts'o      2008-08-02  280       err = ext4_mark_inode_dirty(handle, inode);
+> > > > > > > bc965ab3f2b4b7 Theodore Ts'o      2008-08-02  281       if (err) {
+> > > > > > > 12062dddda4509 Eric Sandeen       2010-02-15  282               ext4_warning(inode->i_sb,
+> > > > > > > bc965ab3f2b4b7 Theodore Ts'o      2008-08-02  283                            "couldn't mark inode dirty (err %d)", err);
+> > > > > > > bc965ab3f2b4b7 Theodore Ts'o      2008-08-02  284               goto stop_handle;
+> > > > > > > bc965ab3f2b4b7 Theodore Ts'o      2008-08-02  285       }
+> > > > > > > 2c98eb5ea24976 Theodore Ts'o      2016-11-13  286       if (inode->i_blocks) {
+> > > > > > > 2c98eb5ea24976 Theodore Ts'o      2016-11-13  287               err = ext4_truncate(inode);
+> > > > > > > 2c98eb5ea24976 Theodore Ts'o      2016-11-13  288               if (err) {
+> > > > > > > 54d3adbc29f0c7 Theodore Ts'o      2020-03-28  289                       ext4_error_err(inode->i_sb, -err,
+> > > > > > > 2c98eb5ea24976 Theodore Ts'o      2016-11-13  290                                      "couldn't truncate inode %lu (err %d)",
+> > > > > > > 2c98eb5ea24976 Theodore Ts'o      2016-11-13  291                                      inode->i_ino, err);
+> > > > > > > 2c98eb5ea24976 Theodore Ts'o      2016-11-13  292                       goto stop_handle;
+> > > > > > > 2c98eb5ea24976 Theodore Ts'o      2016-11-13  293               }
+> > > > > > > 2c98eb5ea24976 Theodore Ts'o      2016-11-13  294       }
+> > > > > > > bc965ab3f2b4b7 Theodore Ts'o      2008-08-02  295
+> > > > > > > 30a7eb970c3aae Tahsin Erdogan     2017-06-22  296       /* Remove xattr references. */
+> > > > > > > 30a7eb970c3aae Tahsin Erdogan     2017-06-22  297       err = ext4_xattr_delete_inode(handle, inode, &ea_inode_array,
+> > > > > > > 30a7eb970c3aae Tahsin Erdogan     2017-06-22  298                                     extra_credits);
+> > > > > > > 30a7eb970c3aae Tahsin Erdogan     2017-06-22  299       if (err) {
+> > > > > > > 30a7eb970c3aae Tahsin Erdogan     2017-06-22  300               ext4_warning(inode->i_sb, "xattr delete (err %d)", err);
+> > > > > > > bc965ab3f2b4b7 Theodore Ts'o      2008-08-02  301  stop_handle:
+> > > > > > > bc965ab3f2b4b7 Theodore Ts'o      2008-08-02  302               ext4_journal_stop(handle);
+> > > > > > > 4538821993f448 Theodore Ts'o      2010-07-29  303               ext4_orphan_del(NULL, inode);
+> > > > > > > 46e294efc355c4 Jan Kara           2020-11-27  304               if (freeze_protected)
+> > > > > > > 8e8ad8a57c75f3 Jan Kara           2012-06-12  305                       sb_end_intwrite(inode->i_sb);
+> > > > > > > 30a7eb970c3aae Tahsin Erdogan     2017-06-22  306               ext4_xattr_inode_array_free(ea_inode_array);
+> > > > > > > bc965ab3f2b4b7 Theodore Ts'o      2008-08-02  307               goto no_delete;
+> > > > > > > bc965ab3f2b4b7 Theodore Ts'o      2008-08-02  308       }
+> > > > > > > bc965ab3f2b4b7 Theodore Ts'o      2008-08-02  309
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  310       /*
+> > > > > > > 617ba13b31fbf5 Mingming Cao       2006-10-11  311        * Kill off the orphan record which ext4_truncate created.
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  312        * AKPM: I think this can be inside the above `if'.
+> > > > > > > 617ba13b31fbf5 Mingming Cao       2006-10-11  313        * Note that ext4_orphan_del() has to be able to cope with the
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  314        * deletion of a non-existent orphan - this is because we don't
+> > > > > > > 617ba13b31fbf5 Mingming Cao       2006-10-11  315        * know if ext4_truncate() actually created an orphan record.
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  316        * (Well, we could do this if we need to, but heck - it works)
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  317        */
+> > > > > > > 617ba13b31fbf5 Mingming Cao       2006-10-11  318       ext4_orphan_del(handle, inode);
+> > > > > > > 5ffff834322281 Arnd Bergmann      2018-07-29  319       EXT4_I(inode)->i_dtime  = (__u32)ktime_get_real_seconds();
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  320
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  321       /*
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  322        * One subtle ordering requirement: if anything has gone wrong
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  323        * (transaction abort, IO errors, whatever), then we can still
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  324        * do these next steps (the fs will already have been marked as
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  325        * having errors), but we can't free the inode if the mark_dirty
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  326        * fails.
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  327        */
+> > > > > > > 617ba13b31fbf5 Mingming Cao       2006-10-11  328       if (ext4_mark_inode_dirty(handle, inode))
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  329               /* If that failed, just do the required in-core inode clear. */
+> > > > > > > 0930fcc1ee2f0a Al Viro            2010-06-07  330               ext4_clear_inode(inode);
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  331       else
+> > > > > > > 617ba13b31fbf5 Mingming Cao       2006-10-11  332               ext4_free_inode(handle, inode);
+> > > > > > > 617ba13b31fbf5 Mingming Cao       2006-10-11  333       ext4_journal_stop(handle);
+> > > > > > > 46e294efc355c4 Jan Kara           2020-11-27  334       if (freeze_protected)
+> > > > > > > 8e8ad8a57c75f3 Jan Kara           2012-06-12  335               sb_end_intwrite(inode->i_sb);
+> > > > > > > 0421a189bc8cde Tahsin Erdogan     2017-06-22  336       ext4_xattr_inode_array_free(ea_inode_array);
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  337       return;
+> > > > > > > ac27a0ec112a08 Dave Kleikamp      2006-10-11  338  no_delete:
+> > > > > > > b21ebf143af219 Harshad Shirwadkar 2020-11-05  339       if (!list_empty(&EXT4_I(inode)->i_fc_list))
+> > > > > > >
+> > > > > > > It's not clear without more context where this ->i_fc_list list is
+> > > > > > > modified.
+> > > > > > >
+> > > > > > > db40129f85538a Xin Yin            2022-01-07 @340               ext4_fc_mark_ineligible(inode->i_sb, EXT4_FC_REASON_NOMEM, handle);
+> > > > > > >
+> > > > > > > "handle" might be uninitialized?
+> > > > > > >
+> > > > > > > 0930fcc1ee2f0a Al Viro            2010-06-07  341       ext4_clear_inode(inode);        /* We must guarantee clearing of inode... */
+> > > > > > > 9d0be50230b333 Theodore Ts'o      2010-01-01  342  }
+> > > > > > >
+> > > > > > > ---
+> > > > > > > 0-DAY CI Kernel Test Service, Intel Corporation
+> > > > > > > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> > > > > > >
