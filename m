@@ -2,42 +2,43 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A95D248DA72
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jan 2022 16:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0B5B48DB68
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jan 2022 17:10:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233796AbiAMPGw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 Jan 2022 10:06:52 -0500
-Received: from mail-dm6nam08on2043.outbound.protection.outlook.com ([40.107.102.43]:25697
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        id S231712AbiAMQKj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 Jan 2022 11:10:39 -0500
+Received: from mail-mw2nam08on2054.outbound.protection.outlook.com ([40.107.101.54]:46177
+        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230242AbiAMPGw (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 13 Jan 2022 10:06:52 -0500
+        id S229580AbiAMQKj (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 13 Jan 2022 11:10:39 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J3vtrkL/obEzND/O+ocns/0InEPql8ExWESyIZbEyA59eiOvdBVMXNtY0pdbIM9DncRYjWmfrY5Etu4SNWO5mXM93j3fraHpHq9U/w8JfJeYFaHW0P9Sjaw49IdVNsEiFSeWsS0CQojxThBtmeoxplMD88az5j2fGrK4kAxPuojSG6KW1TZ3MYBFkRmmr/CGKWe0CGd5ROuHPM4tbyWy/9CqWOZXCFpBZR7LC5eej4WNxUusP+a1Z4x3gZZAUugATmVCsoAtJ9UCPlk5vlfNmrqaeswODVv4VmLxu+LcIh+B7sDirZfVqsreHPQ2iSTb4IlrfNK+cgiHQr6u7F9I0g==
+ b=YxR2nBPtDzmw7B1KOmbf5H4iZRzuIA3SDTkJSbNpLMju9D3k4hOfgnDdSnHeMTryt3+ZrroygLKyCTE1pC5zhJef4812eUzrTEMlfx5HzGdu/H37CZsPV8VIOkydcQfK9nL47zefi/PxA8uzeWgyjJ/h6OwVrBe+Bu2qSnYkd4i4CpJBx6nGoaUpLugZDdKPE2LW9qaE8ASOiD5h5MDeILXFJzYwzARGWkQISwjJ2LbLGeaAczaaSYOUyAMnnBrEKTWJ6syiQzhdYWKfri9qroBhs+trh+0A+mbfR6/X9Sm1t919/GMGVGXpBf2jQ84V9WtwsYCK9jc8ydgchfcAPA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YRcsbazB7c0cvQcJjuSeQhsNr+lHP6vAYcszEnY7zRY=;
- b=NunLElLeKx7XSoH6LWtRTCpkIFMLIYOFScd6X9Bzaq1Oi2Isv2lAucpwyxp71ywh2xwGX1G5hTxCpbc1QdrxIZ/O6QAscUcsPDrTmmGdVZaTHZp/CK0kyMOfAEOJyCT7N+Jet1A8Cv2AQMSOTQ7nvXlsUZ15owM8tHt05QDpLIoi6ExhdSZt8j+34hSXMEnF6xHznIZ+kbJphKdwtW2rTgvcpqu76NGcAj73IUWjHIOOcusb9KARhDVoz7td/s3POeYa+CG3MiW5srM+9RSc56/5sUnK7XQd69tLweI/X6rljdatQ5aHQd/uJ13N1SvtCaMUfq/+hn+XRJcEbBZuBA==
+ bh=j/6d49dadxESDjBjlAJvT+Y8+zuqn0Ttz21PvswQ9Es=;
+ b=bXYRD2IfdK/1OrGStxYdHtIXPOKDq/BKRBdEl5/IfJKLUhIFUmxHgittB3EWLAQhIdu1nwmNZK6FU1SE1hfpMXjUCurRrewyHCirrN3x8u9El2y8k72xDPMOCAHzVLqVFt0+PKlbNx71p31U6ge3XQMv9ymHHwjKzEcUFAxPwtLY1Ql0KYCUA99htidrRHgqR9Ex764Xb8LOcgd2ITdELKIwPYf644cLipbNIfGDZvqd81DMdarippOkTK1mMgp/0RIKmY4PEcIGUNk3LDA+U59xoBG0XemHJmIm6MK5JHwiAsbaOaR75uMDdfQ7UlDGUEYHgAwdzLUPmtPk7o53Sw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YRcsbazB7c0cvQcJjuSeQhsNr+lHP6vAYcszEnY7zRY=;
- b=EIQBkS8pOc2ElXfEp1W6Jwz/8lrxVA6zetWpp0dM18+l/pfVYwi7ahZ1WQpElWU53weZ+EFyESYXV+V9VaGLKDIFWyhNXxz+06FduS6ZBmoS2BFoBkMq7ZZT2NkORNRnbChG7iVmLkozy7tEAqfkSr7wikLCDd8kknyEj3r3QUkN9V4hSNbUY3K0NTqEW3zR8thodx4G501UxyOBGDX2WCR0ZwiQhNYp5cmths8IBuVuiAyumdRdG+t2dsNWcJ5cfLZG0RPW7zyqdQALI7f85LOrQIzbYYQat3kjy/5INZMFFbCVlVYGC0msHBiFelP+T84WwDZN8twQ9skJihCvdA==
+ bh=j/6d49dadxESDjBjlAJvT+Y8+zuqn0Ttz21PvswQ9Es=;
+ b=IcOzGQ/r3VvNXWDFKnHqKncEOT9ObVVwUCBXWFTVhfF0Jg6ZNcwbHlExS+IvhZXSLO8aZZ7FQ3JOw1zGDROt99IVFaw0dmhqD3MDD7rdzk2aRgnwsipfPpHd4DkFTY4XBJC+nPzWBkKQj3MH5RGLhJTZeRo4XM2DHXBcpdW2psEQUd7UKkJT/27OzbMcqmOteEDmkYNYkjlJCnY5HjxK3I1zS8PcqFGbsw5WDSgFsOQxSJhn5N0NdzzgEKg/qBNZ42WYjTDeY3eUnwV/xKDMt/2Fzqxq9Q0zetYc2vMaiQ1wmWdpd+na8OStzUD2l/aPNHjrRFk2Y2h4rhk7bxW8QQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from CO6PR12MB5444.namprd12.prod.outlook.com (2603:10b6:5:35e::8) by
- DM6PR12MB4878.namprd12.prod.outlook.com (2603:10b6:5:1b8::24) with Microsoft
+ CY4PR12MB1253.namprd12.prod.outlook.com (2603:10b6:903:3c::21) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4888.9; Thu, 13 Jan 2022 15:06:51 +0000
+ 15.20.4888.11; Thu, 13 Jan 2022 16:10:37 +0000
 Received: from CO6PR12MB5444.namprd12.prod.outlook.com
  ([fe80::b120:5877:dc4b:1a7e]) by CO6PR12MB5444.namprd12.prod.outlook.com
  ([fe80::b120:5877:dc4b:1a7e%7]) with mapi id 15.20.4888.011; Thu, 13 Jan 2022
- 15:06:50 +0000
+ 16:10:37 +0000
 Subject: Re: [PATCH v3 12/13] ext4: switch to the new mount api
+From:   Jon Hunter <jonathanh@nvidia.com>
 To:     Lukas Czerner <lczerner@redhat.com>
 Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
         linux-fsdevel@vger.kernel.org,
@@ -46,158 +47,163 @@ References: <20211021114508.21407-1-lczerner@redhat.com>
  <20211021114508.21407-13-lczerner@redhat.com>
  <286d36c9-e9ab-b896-e23c-2a95c6385817@nvidia.com>
  <20220113120807.xlyg4wmbbhajuftu@work>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <0535c04a-db7c-fa10-149e-91110eb18804@nvidia.com>
-Date:   Thu, 13 Jan 2022 15:06:43 +0000
+ <0535c04a-db7c-fa10-149e-91110eb18804@nvidia.com>
+Message-ID: <afa501e4-802d-e8a2-4272-4b67572c6d14@nvidia.com>
+Date:   Thu, 13 Jan 2022 16:10:29 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.14.0
-In-Reply-To: <20220113120807.xlyg4wmbbhajuftu@work>
+In-Reply-To: <0535c04a-db7c-fa10-149e-91110eb18804@nvidia.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AS9PR06CA0040.eurprd06.prod.outlook.com
- (2603:10a6:20b:463::23) To CO6PR12MB5444.namprd12.prod.outlook.com
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: AM5PR04CA0022.eurprd04.prod.outlook.com
+ (2603:10a6:206:1::35) To CO6PR12MB5444.namprd12.prod.outlook.com
  (2603:10b6:5:35e::8)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0258fc99-0ff5-4d87-4027-08d9d6a653b5
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4878:EE_
-X-Microsoft-Antispam-PRVS: <DM6PR12MB487839393BD8562FF80BFB10D9539@DM6PR12MB4878.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Office365-Filtering-Correlation-Id: 5a0e9902-395b-4c9e-795c-08d9d6af3c7d
+X-MS-TrafficTypeDiagnostic: CY4PR12MB1253:EE_
+X-Microsoft-Antispam-PRVS: <CY4PR12MB125345CB1B06592DBEECE8F9D9539@CY4PR12MB1253.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ASJ8bomRuABj0DHkxVu7H9r17WPHCr/kRVzORp4DL2Wh6T62SuPQkTDQhwOnU/82Lr5hSSoBGN1Fg1I0x7cgalLN6WgQ1Jm9B1UlO/vTPzS4vZtDvVXGFN1J3/UQ5Z0KoyET03zrNsRa+EAP70DAtfbD1nfoIfjqDIwkiOv8BgAmzBAoUU6sotoHcebLZb4MtRBkQQFHnobwe8n1ojTPuK4LtuW6gcFoFvZEcR5k53bgo8IDyKXnfhiAC5lL+Lmj/DgiKnOiT/J4kC4cebSO0AihX4O+rjDm1ga6h5JY1zmUHYgztNgjpcRzTtK3AI2M4dycyWxAydC3MLsamwOzfUjwhX+tsc6SO3CdTvsopQURjAQkNCxF0PqcH7oNQqyfTRdVwDPrDX3XwOudQ4E25nmZu/SbR+tKyNeeHjnlsZy5bt7fltvefB6kP/0nuGeGB/h2Z4Uz5zkXX575kmquEnONYFMLE7qjVA8YFxWN3dcKlJg1rWkRtpJ7gJWgu3gMMf8qDCm4pZEao8IRHYSZTaXWyL91R/G0lNkmpc1qkZDWmWIzqjPm7kPAfepHxOe3JtcA3+X/mKoyasaR/O9ZPRRUxApN7zVRVaRj5aht8X/gJOG8a2/hv2YAeT9bfEONA+wYWXa6Q2OQs2qRplZl7Umh44zMe66JI9BlJ5kV5aKsDtvWgpCP43hyTEEGSpgv9NVnIOnT6xQMNYgGbK8jndNv65Fwd9KraqMP82/U6BHW+JgBDNsG+JAXUjAyqjrG
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5444.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(53546011)(31686004)(4326008)(6916009)(186003)(5660300002)(55236004)(8936002)(31696002)(508600001)(83380400001)(6506007)(8676002)(6512007)(6486002)(66556008)(66946007)(38100700002)(2906002)(316002)(2616005)(26005)(86362001)(66476007)(6666004)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: Hk0UGQHMZZOfkXt3sZW4Dy+5Nk8L40Htxv0bgfZWbIWMAqb4OgeCK7Bx3rHBJo9k3jlAtw8MPVp3aWlNNHdRNr1vwTGcUK4c4l/Qs6hiHi/UE51HAaTZENYQBjHjB4XeF1R4MZq34PHSOSCqHWRHZQ24QDA47rQET4Yy9xxuu6SKewnJJf2ocuGXxnBqhvkSmvYP2Ng1f5zCbyIn8fJ4vbTIU7WgWyTAdtnzg7lskjEuOHhBgKT2//cewcgcnZcjv1ZncPVXQ0CbeHzSWCDm9GZHCituvb0VkVl6Zv1PDsm5JLfkKVykfpxhFKG+PzGeVxqH6XeaP8wDinCaANOdTgw9RQ27bAvHLOiD2yRhospKAOebVo6cE+JK0Mu3g+A2kd0gBLunSsklIp+1rZRP12O579ttUAMKpk/vPtkM0YbEAjb4I0Ntb1n23ng4GeW9dmzYbhlM5m5D8d2OJec7yOhVl83S42DP4VbPZ2SMX0HGcQpoeDDVQTTar+Thspnriq+VXIJ1aGtaqw5qC4yPI3tnyrdlVVTyxc1morZBVaVFXCRuApTe4ZxwmaaaZRoPAT60xzdvWFHBQexsN9Wfp9rgYPnH7mRJCSZGsBqwoZolaptah7mG17YBO98atR3k1Bxw18pbIT2M1LumdqNcv2x3gBILYnokKas6IgAUdDbaX3RZ8Ba/LwV3MMe0iNvEQm2X+3qGumKV8ha1H3tf2zRIznU5vdOHnaU2DgMRqHEa4svDRPI15kvmOI7nYCDo
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5444.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2906002)(6486002)(38100700002)(4326008)(316002)(83380400001)(31686004)(6506007)(6666004)(508600001)(186003)(6916009)(86362001)(66946007)(66476007)(66556008)(26005)(31696002)(36756003)(2616005)(8676002)(6512007)(53546011)(5660300002)(8936002)(55236004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TFRFNEJsc1VROCtyaEVyRzVoYklxSTdBUlltTlUwSzZUTjc1NDNCUHVuME1G?=
- =?utf-8?B?aUgxYXRqaEJDYlNQWG9NZFRoZEZYSXNOZ2loVnRXNjdhODBPS0p4ZXVZSXpU?=
- =?utf-8?B?RTMvbTlXQVZiU0ZwUktxYW1yNHgxVHZFL2MzeThGZkJEbUxjSm9vL0xNS0hL?=
- =?utf-8?B?bHBjV1NNeURxWmtpd24vZGFpVmhVWUg0M3hWVWhkOStQeXRmVFU2cWdyNXov?=
- =?utf-8?B?OENETFZ2LzhwZWZGTWExeXFPYTZadURNQ0xFVmtEbWM2clBUYTc4bS9ERXZk?=
- =?utf-8?B?bUFHWVk1NVNodHFwUEZ0R2I1Zkp5K0p3TXQxWmcxT2JGQ0szZDMxaFVYVmw0?=
- =?utf-8?B?S3lHaXIrS3dmb3VIT1pKdUpKZFlRVFhvV2FxRlJzdFl3TUxBZEkvS3NMdE5k?=
- =?utf-8?B?VjJUekFjOEs0a0k0ZmFtWG1wZDN5bnFEWmk3R1c5MW5PREoydm9RcDdYc2hR?=
- =?utf-8?B?aVZPZU5KY0hXMkd0UGZmTWZLakc1VnJiaEdDYmM4MCtGVTVZeUpnY0JNemVk?=
- =?utf-8?B?endOeVJIbk5xeVE2RnZmOUlURHJBQW1yajBISkF3VkF0aWhxWGxYV29sMGhv?=
- =?utf-8?B?ZkI1ZEpkY0o1eGZ6Z3hXemdaTmMxT3lzbUJVZ0p5b1g3cVdZTXhKNEhFTXEr?=
- =?utf-8?B?QmJDSTFySVJQTllDVkwxQi9vb3JFNTByZWIwejVZckZvbXBTR2JGN3JYdWdI?=
- =?utf-8?B?QWdzSXJsM0pua1pkVmkzOVgzdFZEczBuMFBGN1NnMlc2OUFoM2g2Um5uQ3ZQ?=
- =?utf-8?B?aUhzbUYxcG1LbWRvV2E0TDM3eDU1Yy9YRm9kU0hUOXBTOEcrRm82Si9EenNV?=
- =?utf-8?B?Rkd3eTN2M2FaNEZDcXJjUHFZc1pERHBVM0VSY2hTWWIzeWF3OEZpL2gxSTZO?=
- =?utf-8?B?OXNPUVRQNzhUaUZTWGVhZEhCQWRPc0JGUnlSNG9McitNQjdCTERuNEF2QkEr?=
- =?utf-8?B?ZWV2TEVxVDQ2NEFVTHkydUplc0pPaVo0TnRZMXo4ZVd2eFZxZXZWSXRwVUR2?=
- =?utf-8?B?blR2cTgvSk9PajczQ3d6TERJQXNoZnAyd1BtcTRHR1NUWStoSThDM3JFdnRp?=
- =?utf-8?B?VG5qVWkyU2hPNWZVRGdmUGlOb0JET1kxUVhmTytIOGtWajZUU3cxUHlJY3pn?=
- =?utf-8?B?eHpLa20rdFZHbHZMa1dtM0xMTy9PTXIzV1JsTWZkZWtDNEdqWUdDMGRsdlR6?=
- =?utf-8?B?OVcveEtnZHVDc2Ztb1NlUmkxUDczQ3lOeFhITGVvOEFrdUd0ZWNxLy85ajd5?=
- =?utf-8?B?MzROaFNKT2RmZ2hkU2RuZSs2R2R1YXFkbkNKRUhVT2RLLzRlRmJTVWppN2FQ?=
- =?utf-8?B?SHFZSjAyUlZ6V0duVmF4Wi9VZ2FhQ04rNE1QQmxZNmlyN0VLUVJ3QkN2RE9R?=
- =?utf-8?B?WVR2cEZwS01rVTZVQXoxNHY5L2FpSkRnTm5kQ1NzRmIweGpFN2ptaHBSZDBD?=
- =?utf-8?B?NU1wQmppM2t4Znp5ZkRUVWU4bldLY2lPUDE5ejRYNFpUTGZIT0g3dW90NGVI?=
- =?utf-8?B?RzlCY2dZRWJ6Vk53Wlg5SGIvMTBrY2RsOGJJQi9EVXZQbGNIQnlJbFcrRndL?=
- =?utf-8?B?bU5RWHZ5aVNGVENmWUpaeExiOVpUNVF5bTA1UHpjUE8xOXZxRFFkREF1U2Q4?=
- =?utf-8?B?WUJtQTRqU2Z5TkRNa1B1SU02bE1GUExocHdlbFNrNEFaNUNXcXVDbkhUMExS?=
- =?utf-8?B?S2kxOCtrdzZlSmp1OGhORnVkR1hnWmpMQ3dRcGhqTWtNM2taY0pUV0krRVNK?=
- =?utf-8?B?bzBiSk5EY3JGT1NrcWRyTVlXZTNySm8vNmZqWXRMcWp1WCsxN0VkbzdENm9n?=
- =?utf-8?B?ZmJ6Z20rbjdRQ3VNcmFBZlpVRFl3VEg1c3Rzbm9XRk53UVU0VDFoOGljNUVU?=
- =?utf-8?B?WUd4YmpTTmVBTmRXYXRHSlFhNDQ0MUlldFFvSDZZTUZhdXBNOU5hOGpkVkxI?=
- =?utf-8?B?V2Vha3A3MVliZzl0YnZDUUZsYTlWUjYwd3hRZ1NEVVltMTQyWVZaTUJwa1Rh?=
- =?utf-8?B?bGlYQ3UySTlvWURKZkMyWWpodTJ0ZnBQbnE4Uit2VE9ZS2lNYzE5a3YzbGpy?=
- =?utf-8?B?R2hhSjVjMXBZamx3WWJBWUdKN0NCRGdENlcyS0YwdHlkL01abFIrNHMyTDY1?=
- =?utf-8?B?cmpTbHM5TUhQWmNwMXBYWm1BZnc2UG1KaDZNOFVWNjMrR0ZGNThJckJrdXJH?=
- =?utf-8?Q?DN6pRGqejXv2iyu9Xjw2/Mg=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NGRDTkxPaUMyQ092czUyQ0JSbDFCQ2Y0YTc5TFptVGd2aVYwWHk1ejNIdDhB?=
+ =?utf-8?B?WDRpRWx0TEN6VzV0S3FHTURzODZROWpNVWdOLzZrR1RmZnRZRVU3RTBoQk9V?=
+ =?utf-8?B?SFFjMHVOb2tZTWNQb3Joa3EwWS9EYUgydlhtSmlvL1pjVGlwWTJwK2Rhb2RL?=
+ =?utf-8?B?M05qaE9vNytHOXJXaE1YZHU0Z3dOOXBjUWtISEtsck0yZ2wzSUpxOXFwTW91?=
+ =?utf-8?B?OFdFNXM1cmp4ak9vNTFPYzlKbDdrTUtBaXNrSE8yZm5yMU1FVU5CeExIMnFo?=
+ =?utf-8?B?QW9TRHllVjFBb01mZlVsODBFck5mUloxRWJGS3FDYktHblhsajFROTNOSWUy?=
+ =?utf-8?B?UXBpMmx4S2l0OHd0OGVDNFBHRExxT2d5VXJxQ0Z5RmwxSVIzUGEydXZDU0Nh?=
+ =?utf-8?B?VFRmQzhHb1ExTENoYXM0Z0FnUy9SekM5eTNueDFWRWovUmNNRkRFOXkzbXl6?=
+ =?utf-8?B?aHNJeTcyUGJ1Qy9JVlZFNmY5QWVPNENqSXN1TSszZm5tUTlPUXVOTDhnZVlG?=
+ =?utf-8?B?YkkwZDVkR255ODRaTlByeldQYVU3ZFhFUHdQWkVNNEhrTUlhS1NmeXg5TG1h?=
+ =?utf-8?B?WE1aMTBuVjZIWTZGL0NwcW02ZFVGNU9KUFgyYVpsbU1ybEhMZStRMzFQM1hD?=
+ =?utf-8?B?M1g3RURUY29vZ1FyUHRhSmVrREp2MTB2aXc2ZkU5NlBtS0VYY1NNTVB3UVdl?=
+ =?utf-8?B?V2k0N3g2Mkd1VXJzbjJlblVIdDVBN3Y0UlgyYStidTA3TjNkN3BjQUlHYVBD?=
+ =?utf-8?B?eTEvM25iSFBURHQ4L3daUmZsc0ZULzArMDhJS29vV2xUU2R1RHNyY3JVbGVr?=
+ =?utf-8?B?Q09IM1FUcjlocnJES2tWeGZVZFgvRk1oc2FsZWpLNGFQeFpCOXVpOEVrOUZO?=
+ =?utf-8?B?azJrZFhFY3RtVTdubHloaFRaTS9vRi9WM3h6Rms2YSs2S3FocnFWWFFvck9I?=
+ =?utf-8?B?SnVhTk4ramprVEczRDNGTGNGZXdSUUhFMW1pamIzUHJSOHQ5eWxrMVhjd29Q?=
+ =?utf-8?B?SHVnOFA2RGVBdnRvSitVOHVGWGx2S2tOZDhXSWF1WVBqTkJtcFduUHBZbzJD?=
+ =?utf-8?B?aFo4NlZ5dW5DQ0dMeUh2KzdBNWladHFta0dPcWhYOFlNbGZPeW5SUk5LV25I?=
+ =?utf-8?B?Z2lGbUtoL3lZMTdCTm82bVVoSWRsb3Q4a0tXeEd3bHNsZFhBWVM2WFFEZ09t?=
+ =?utf-8?B?bDhUeEZ0SitnSEc2eGNQcVNBNjhCWFdtK2Z1WmVSWkJPcjVrT0NTd3RaZ2d1?=
+ =?utf-8?B?dVVvNk8vdEVQRGI0cVRzMC9abnhkQWZVcEU3ZHovcFFlN2xPY1U4MU02ckQr?=
+ =?utf-8?B?NHFQb2RMQS9kb3hRZldYU1J1ZURmS3ZIRis0LzRqM1NOMXAxZnA0Y1JLQ2NO?=
+ =?utf-8?B?amt1RXdoL0RRNkd4NVBkcm10WUtUZFIycUpjOGFBTTMvM0pIOGFsN0grcHhl?=
+ =?utf-8?B?cXB5azZTVlYydE1URmlBc0hycmg5TDQzMHArWEpYUW1jTDVjTUJEMEhnLzRv?=
+ =?utf-8?B?bklhS0hCQ00yODVxMit1aVRvUWZoNkpHWXV2bGppcFJhN1doS0t1VktlMzFW?=
+ =?utf-8?B?R0JnWDhkallvYXVGSFZnL3NjNUlLRTZZSDNqcUJlMUI4TGhHdWFPU0dFVnRq?=
+ =?utf-8?B?Yi9NUFBkUTJadjRrN3o4QnQ1bUlrMCswUkNJUk53L3diMzA0UHcxL3QrNHdF?=
+ =?utf-8?B?WnIxOHFqVXIvQ1hld3NJV25zNEVTNlJWb2pZQ2lyY2x0UkdBTFdNdkFFT2Nq?=
+ =?utf-8?B?aS96ejBTSkIvMEJhcHBWWjZJNHFaaE9uczNzaDB1aUJzTDdCTjBwYkFod3Rr?=
+ =?utf-8?B?RTdQWWhwK3p5eFRlT041R1oyUWJEZnU1RllwYzUzeUFQazNnOGJMUTNENkx0?=
+ =?utf-8?B?WUhXNlVFZk5nMGdUWUl6SHNxR0hUUitvVkVLYVdJaG5lOEl0clJYUmJWWkZG?=
+ =?utf-8?B?RWtnRzFDaFBmZmdTNWErZVo3MUxnS3dQWDhpRERJcm14dWhhSk5udkNpL2Va?=
+ =?utf-8?B?VXJJRzBKTFJvZjVLRXB1TGtvYzJEQ0UxcldEbVA2bTAvQnBVUGVsS1YxbGNS?=
+ =?utf-8?B?VmZoQ2habjVPQ1N6Z3lUWTd5Q2hZT2dWOE5rUnhyTm41S082bW9BOHMwazFL?=
+ =?utf-8?B?ZFliY0g2Z1RpY2pBYmp5RkRBVFV5R3dvdkdXNzFIc01LYk1Ed2NFUHpSeGlZ?=
+ =?utf-8?Q?iTKChnF00gdZuhpGSx3I81w=3D?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0258fc99-0ff5-4d87-4027-08d9d6a653b5
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a0e9902-395b-4c9e-795c-08d9d6af3c7d
 X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5444.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2022 15:06:50.8656
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2022 16:10:37.3831
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WTniARrpazGpcXPHhOt9fteLhM0wAbsn/ZIU6oVJF4djPqah4/1K8ShP4lpMX5Y/OhF7DF1ePVsxtxtlXcCNoQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4878
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4ZeK8TxNGXXR73SX56mO24OtIe0M6p0A/M4k4N78EBeCl/91bSdOeR/8LThNQSNnaTSqasqz6jbWS0lVlBxiQQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1253
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
-On 13/01/2022 12:08, Lukas Czerner wrote:
-> On Thu, Jan 13, 2022 at 11:29:24AM +0000, Jon Hunter wrote:
->> Hi Lukas,
->>
->> On 21/10/2021 12:45, Lukas Czerner wrote:
->>> Add the necessary functions for the fs_context_operations. Convert and
->>> rename ext4_remount() and ext4_fill_super() to ext4_get_tree() and
->>> ext4_reconfigure() respectively and switch the ext4 to use the new api.
+On 13/01/2022 15:06, Jon Hunter wrote:
+> 
+> On 13/01/2022 12:08, Lukas Czerner wrote:
+>> On Thu, Jan 13, 2022 at 11:29:24AM +0000, Jon Hunter wrote:
+>>> Hi Lukas,
 >>>
->>> One user facing change is the fact that we no longer have access to the
->>> entire string of mount options provided by mount(2) since the mount api
->>> does not store it anywhere. As a result we can't print the options to
->>> the log as we did in the past after the successful mount.
+>>> On 21/10/2021 12:45, Lukas Czerner wrote:
+>>>> Add the necessary functions for the fs_context_operations. Convert and
+>>>> rename ext4_remount() and ext4_fill_super() to ext4_get_tree() and
+>>>> ext4_reconfigure() respectively and switch the ext4 to use the new api.
+>>>>
+>>>> One user facing change is the fact that we no longer have access to the
+>>>> entire string of mount options provided by mount(2) since the mount api
+>>>> does not store it anywhere. As a result we can't print the options to
+>>>> the log as we did in the past after the successful mount.
+>>>>
+>>>> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
 >>>
->>> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+>>>
+>>> I have noticed the following error on -next on various ARM64 
+>>> platforms that
+>>> we have ...
+>>>
+>>>   ERR KERN /dev/mmcblk1: Can't open blockdev
+>>>
+>>> I have bisected this, to see where this was introduced and bisect is
+>>> pointing to this commit. I have not looked any further so far, but 
+>>> wanted to
+>>> see if you had any ideas/suggestions?
 >>
+>> Hi,
 >>
->> I have noticed the following error on -next on various ARM64 platforms that
->> we have ...
+>> this error does not come from the ext4, but probably rather from vfs. 
+>> More
+>> specifically from get_tree_bdev()
 >>
->>   ERR KERN /dev/mmcblk1: Can't open blockdev
->>
->> I have bisected this, to see where this was introduced and bisect is
->> pointing to this commit. I have not looked any further so far, but wanted to
->> see if you had any ideas/suggestions?
+>>          bdev = blkdev_get_by_path(fc->source, mode, fc->fs_type);
+>>          if (IS_ERR(bdev)) {
+>>                  errorf(fc, "%s: Can't open blockdev", fc->source);
+>>                  return PTR_ERR(bdev);
+>>          }
 > 
-> Hi,
+> Yes, obviously this warning has been there for a while but only seen 
+> after this change was made.
 > 
-> this error does not come from the ext4, but probably rather from vfs. More
-> specifically from get_tree_bdev()
+>> I have no idea why this fails in your case. Do you know what kind of
+>> error it fails with? Any oher error or warning messages preceding the 
+>> one you
+>> point out in the logs?
 > 
->          bdev = blkdev_get_by_path(fc->source, mode, fc->fs_type);
->          if (IS_ERR(bdev)) {
->                  errorf(fc, "%s: Can't open blockdev", fc->source);
->                  return PTR_ERR(bdev);
->          }
+> No only this one.
+> 
+>> I assume that this happens on mount and the device that you're trying to
+>> mount contains ext4 file system? Ext4 is not the only file system
+>> utilizing the new mount api, can you try the same with xfs on the device?
+> 
+> This is happening on a board in the test farm and so not easy to 
+> reformat. Looking some more /dev/mmcblk1 is not a valid device, I only 
+> see /dev/mmcblk0 from the bootlogs on this board. Hmmm, OK I will have 
+> to take a closer look to see where this is coming from.
 
-Yes, obviously this warning has been there for a while but only seen 
-after this change was made.
 
-> I have no idea why this fails in your case. Do you know what kind of
-> error it fails with? Any oher error or warning messages preceding the one you
-> point out in the logs?
+OK, I see what is happening. It appears that our test harness always 
+tries to mount a device called /dev/mmcblk1. Prior to this change there 
+was not kernel error generated and looking at the logs I would see ...
 
-No only this one.
+mount: /mnt: special device /dev/mmcblk1 does not exist.
 
-> I assume that this happens on mount and the device that you're trying to
-> mount contains ext4 file system? Ext4 is not the only file system
-> utilizing the new mount api, can you try the same with xfs on the device?
+Following this change, now a kernel warning is generated and I see ...
 
-This is happening on a board in the test farm and so not easy to 
-reformat. Looking some more /dev/mmcblk1 is not a valid device, I only 
-see /dev/mmcblk0 from the bootlogs on this board. Hmmm, OK I will have 
-to take a closer look to see where this is coming from.
+[  137.078994] /dev/mmcblk1: Can't open blockdev
+mount: /mnt: special device /dev/mmcblk1 does not exist.
 
-> Does this happen only on some specific devices? I see that the error
-> is mentioning /dev/mmcblk1. Is it the case that it only affects MMC ?
-> Does this happen when you try to mount a different type of block device
-> with ext4 on it?
-
-So far I have only seen this with the MMC, but I have not tried others.
-> Any specific mount options you're using? Is it rw mount? If so, any
-> chance the device is read only?
-
-Interestingly we are booting with NFS and so not mounting any MMC by 
-default.
-
-> Do you have any way of reliably reproducing this?
-
-I see it on every boot and this is causing a warning test to fail. This 
-is a new failure and I have not seen this before. I don't see it on the 
-mainline with the same hardware, only on -next.
+So there is a change in behaviour but at the same time the error looks 
+correct. So sorry for the false-positive.
 
 Cheers
 Jon
+
+
 
 -- 
 nvpublic
