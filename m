@@ -2,119 +2,148 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B5A748D728
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jan 2022 13:08:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C92B348D754
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jan 2022 13:17:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233781AbiAMMIR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 Jan 2022 07:08:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:33729 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232873AbiAMMIQ (ORCPT
+        id S234426AbiAMMRe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 Jan 2022 07:17:34 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:5920 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232859AbiAMMRd (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 13 Jan 2022 07:08:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1642075695;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TCNkeFEK71+LV6A7k+ZbeQqGlDkwam6mXnXbXpILn2s=;
-        b=L1QUmLBSQA2cCN83VEfi9bkQfCr5ncpBZA3cwlflyrrfRuXnG4Rn+LpzftbwbhhtRd45Yd
-        BBj/2WKh6X8jYadOG1+iHZI9SRxFxVGEJ7C/+5UMiooxOWI3HoiF527hN4FL7MyiXF6jLE
-        ziq0fxBn+TxDEVmzy71VUWOm0qNzlTA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-57-jwoGwns4MtiJQq0oalNNIQ-1; Thu, 13 Jan 2022 07:08:14 -0500
-X-MC-Unique: jwoGwns4MtiJQq0oalNNIQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2564F10247B4;
-        Thu, 13 Jan 2022 12:08:13 +0000 (UTC)
-Received: from work (unknown [10.40.194.158])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D203D7A8C7;
-        Thu, 13 Jan 2022 12:08:11 +0000 (UTC)
-Date:   Thu, 13 Jan 2022 13:08:07 +0100
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        linux-fsdevel@vger.kernel.org,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH v3 12/13] ext4: switch to the new mount api
-Message-ID: <20220113120807.xlyg4wmbbhajuftu@work>
-References: <20211021114508.21407-1-lczerner@redhat.com>
- <20211021114508.21407-13-lczerner@redhat.com>
- <286d36c9-e9ab-b896-e23c-2a95c6385817@nvidia.com>
+        Thu, 13 Jan 2022 07:17:33 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 20DBxS7W016291;
+        Thu, 13 Jan 2022 12:17:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=9aPU+stAVNBLD4l18gFpeDNu8lWn5ruJ8jdovoj7DjY=;
+ b=gpZyAiNxrTgTJRUCXQIxGMnU5l23EMwCLXWGd2hsbf5WYK+SV3dcQ8IR8HpetqzwDlmg
+ 9+fRdmnwdg4lLDvDeZpuOcXsyuCoT69JVVvFt1zE/TAaKbbUZOhMld8Gjj9Y1PdCd2qG
+ xSl6pA0ix1d8vZgMdRWdyUm6CpnbV8Caf0iIsbu5uZw0nzHwmMLSfFth1IH14RyWDpVa
+ r5FlopY3Nw2s/pwchASynoL5KLpaVcNrZ5ddwlI9RWcuR0jiBYD3N2MYgUZzvxNVqnWQ
+ s3ksBKi8ho55QASRBtrzlAIoJG+Qb8UnmSL+AlrL9jsZ9CY6HunKLMuAqt/D9gwo+HSn +g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3djkpdrbr2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 Jan 2022 12:17:27 +0000
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 20DC9kOS027389;
+        Thu, 13 Jan 2022 12:17:27 GMT
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3djkpdrbqh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 Jan 2022 12:17:27 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 20DCCHwn022191;
+        Thu, 13 Jan 2022 12:17:25 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03ams.nl.ibm.com with ESMTP id 3df28a45t9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 Jan 2022 12:17:25 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 20DC8HJb44958108
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 13 Jan 2022 12:08:17 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CE7954C052;
+        Thu, 13 Jan 2022 12:17:22 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 62CE24C046;
+        Thu, 13 Jan 2022 12:17:22 +0000 (GMT)
+Received: from localhost (unknown [9.43.54.234])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 13 Jan 2022 12:17:22 +0000 (GMT)
+Date:   Thu, 13 Jan 2022 17:47:21 +0530
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>, tytso@mit.edu,
+        Eric Whitney <enwlinux@gmail.com>
+Subject: Re: [PATCH 5/6] jbd2: Refactor wait logic for transaction updates
+ into a common function
+Message-ID: <20220113121721.nyn7kdmr6boaazvp@riteshh-domain>
+References: <cover.1642044249.git.riteshh@linux.ibm.com>
+ <95fa94cbeb4bb0275430a6721a588bd738d5a9aa.1642044249.git.riteshh@linux.ibm.com>
+ <20220113113051.5ehxl2ap3v64eyya@quack3.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <286d36c9-e9ab-b896-e23c-2a95c6385817@nvidia.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20220113113051.5ehxl2ap3v64eyya@quack3.lan>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 6uWLuj5I2dF1xXvNSG00zmpRusw9winC
+X-Proofpoint-GUID: oECPVMpELi1QaZM75eOM1n1l1knGAp_B
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-13_04,2022-01-13_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 suspectscore=0 mlxlogscore=724 lowpriorityscore=0
+ clxscore=1015 adultscore=0 mlxscore=0 phishscore=0 spamscore=0
+ malwarescore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2201130073
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jan 13, 2022 at 11:29:24AM +0000, Jon Hunter wrote:
-> Hi Lukas,
-> 
-> On 21/10/2021 12:45, Lukas Czerner wrote:
-> > Add the necessary functions for the fs_context_operations. Convert and
-> > rename ext4_remount() and ext4_fill_super() to ext4_get_tree() and
-> > ext4_reconfigure() respectively and switch the ext4 to use the new api.
-> > 
-> > One user facing change is the fact that we no longer have access to the
-> > entire string of mount options provided by mount(2) since the mount api
-> > does not store it anywhere. As a result we can't print the options to
-> > the log as we did in the past after the successful mount.
-> > 
-> > Signed-off-by: Lukas Czerner <lczerner@redhat.com>
-> 
-> 
-> I have noticed the following error on -next on various ARM64 platforms that
-> we have ...
-> 
->  ERR KERN /dev/mmcblk1: Can't open blockdev
-> 
-> I have bisected this, to see where this was introduced and bisect is
-> pointing to this commit. I have not looked any further so far, but wanted to
-> see if you had any ideas/suggestions?
+On 22/01/13 12:30PM, Jan Kara wrote:
+> On Thu 13-01-22 08:56:28, Ritesh Harjani wrote:
+> > No functionality change as such in this patch. This only refactors the
+> > common piece of code which waits for t_updates to finish into a common
+> > function named as jbd2_journal_wait_updates(journal_t *)
+> >
+> > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+>
+> Just one nit, otherwise. Feel free to add:
+>
+> Reviewed-by: Jan Kara <jack@suse.cz>
+>
+> > @@ -1757,6 +1757,35 @@ static inline unsigned long jbd2_log_space_left(journal_t *journal)
+> >  	return max_t(long, free, 0);
+> >  }
+> >
+> > +/*
+> > + * Waits for any outstanding t_updates to finish.
+> > + * This is called with write j_state_lock held.
+> > + */
+> > +static inline void jbd2_journal_wait_updates(journal_t *journal)
+> > +{
+> > +	transaction_t *commit_transaction = journal->j_running_transaction;
+> > +
+> > +	if (!commit_transaction)
+> > +		return;
+> > +
+> > +	spin_lock(&commit_transaction->t_handle_lock);
+> > +	while (atomic_read(&commit_transaction->t_updates)) {
+> > +		DEFINE_WAIT(wait);
+> > +
+> > +		prepare_to_wait(&journal->j_wait_updates, &wait,
+> > +					TASK_UNINTERRUPTIBLE);
+> > +		if (atomic_read(&commit_transaction->t_updates)) {
+> > +			spin_unlock(&commit_transaction->t_handle_lock);
+> > +			write_unlock(&journal->j_state_lock);
+> > +			schedule();
+> > +			write_lock(&journal->j_state_lock);
+> > +			spin_lock(&commit_transaction->t_handle_lock);
+> > +		}
+> > +		finish_wait(&journal->j_wait_updates, &wait);
+> > +	}
+> > +	spin_unlock(&commit_transaction->t_handle_lock);
+> > +}
+> > +
+>
+> I don't think making this inline makes sence. Neither the commit code nor
+> jbd2_journal_lock_updates() are so hot that it would warrant this large
+> inline function...
 
-Hi,
+Yes, make sense. Thanks for the review.
+Will do the needful in v2.
 
-this error does not come from the ext4, but probably rather from vfs. More
-specifically from get_tree_bdev()
+-ritesh
 
-        bdev = blkdev_get_by_path(fc->source, mode, fc->fs_type);
-        if (IS_ERR(bdev)) {
-                errorf(fc, "%s: Can't open blockdev", fc->source);
-                return PTR_ERR(bdev);
-        }
-
-I have no idea why this fails in your case. Do you know what kind of
-error it fails with? Any oher error or warning messages preceding the one you
-point out in the logs?
-
-I assume that this happens on mount and the device that you're trying to
-mount contains ext4 file system? Ext4 is not the only file system
-utilizing the new mount api, can you try the same with xfs on the device?
-
-Does this happen only on some specific devices? I see that the error
-is mentioning /dev/mmcblk1. Is it the case that it only affects MMC ?
-Does this happen when you try to mount a different type of block device
-with ext4 on it?
-
-Any specific mount options you're using? Is it rw mount? If so, any
-chance the device is read only?
-
-Do you have any way of reliably reproducing this?
-
-Thanks!
--Lukas
-> 
-> Cheers
-> Jon
-> 
-> -- 
-> nvpublic
-> 
-
+>
+> 								Honza
+>
+> --
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
