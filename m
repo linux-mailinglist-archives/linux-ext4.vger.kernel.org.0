@@ -2,47 +2,47 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A8848DBB9
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jan 2022 17:27:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A53748E364
+	for <lists+linux-ext4@lfdr.de>; Fri, 14 Jan 2022 05:45:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236620AbiAMQ1b (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 Jan 2022 11:27:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35014 "EHLO
+        id S231496AbiANEpA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 Jan 2022 23:45:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236654AbiAMQ1b (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 13 Jan 2022 11:27:31 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82FF8C061574;
-        Thu, 13 Jan 2022 08:27:30 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id c71so25113272edf.6;
-        Thu, 13 Jan 2022 08:27:30 -0800 (PST)
+        with ESMTP id S230200AbiANEo7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 13 Jan 2022 23:44:59 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB4BC06161C
+        for <linux-ext4@vger.kernel.org>; Thu, 13 Jan 2022 20:44:59 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id o12so9876613lfu.12
+        for <linux-ext4@vger.kernel.org>; Thu, 13 Jan 2022 20:44:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/xngRFd1uiDz3qI2HqJ82bEaAYJN/h3C5wDetbenotE=;
-        b=QAh6icBcoESEEbkX7VKBWBCoE0SC7PGOMtJ0yosyVlt41ufBSBd5oP+9oG9R0AXJuR
-         q0MXrB79xL/b7WG40FL39t23D2mpk6uiAZYlboQmO3qRhWywpdnsPGJfWWWPC1gY7lTT
-         MJoLJp/YxzTBf5/NWfzstIzWNdUmqeaHX7G/s2cAsYS4F4AM3QMF9UFyMW8R1JycVbfc
-         gfUshtPwmrs/3MRq1nVoagEIKWHOA0hzr2cBtcueUhVl5IPOpY2PERghfiQ81Kgf23bR
-         M1try+oVBKWsiBOcQGiFvJUvOD+aJAZ//G4MDknhiv28FZzFW1v0d43ArrXZkLVu5f5O
-         j1fQ==
+        bh=58SYHhzQIGXzRxdRs6HS+zXg3ldEE2NZRdBxiFrtCow=;
+        b=t7+OfB8kbk+viYoNjC0ZPc7AV3Cf7uDq3hHPPhYx8Bho/NB8TT5JcbUQgkrKgtgDXS
+         1sDueQdJ76HCuj/mafgLEVkE2rs9FCnGDOtx1tWa5JHeSjz3OEyxRTJW8DzzTj2AqfuL
+         8UBXDR+N0rmDekT7tJdDERq0eKOuvAJ93VK0GxVAZC09OGehEKS8fBEHLoPeXnrx92Fm
+         kEtcPZGyDG8UlWG1VdN/z+1p1zH/2UbYbAsFwMksRcTpJLrPmDwaBrHJ61NXdrH0Szx+
+         +sL2jbAoi3XY8GRRvCO4fqjf0XjjQ/U3gg6i0v5IY7slM03voqteBEuuNgAMguYCUKFb
+         rhDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/xngRFd1uiDz3qI2HqJ82bEaAYJN/h3C5wDetbenotE=;
-        b=frnFk+YKATH5whNnQQSe6vhaxba3pQfK0RkL3eIatkZI+iIDUhXqGqqia1lKvtWned
-         1WDTYbrbFAod+K6IGinmYNXujUWVKaQoBHZlyfcmFbMJY0Rcbae230Akh1Nbx+OwUxqB
-         6WTLD5MwMVyyM8mmcgSr9lWxCVO0EUVw/3xak/zPLQt2HjK6Z3cf0C38p6uig5jQHnRX
-         I8UdOE4VU31iEkkXgVXC+/orNSeanssQ2a+L8BD6FbcyXUWwQphNHIMKXrrhnwEFnAri
-         DJkPqB2u2PAPnq9G10cASQhfWr4eoYosoANJTPlF/NYsVN4YCjDU3GkfRuUP5RfYQOHm
-         8XUA==
-X-Gm-Message-State: AOAM5308blMS+wMdPueFB5r9AHIPnW7cDjuzUpbF6pi5+MHzeZ5nTdw5
-        Pyz5FyP2RZPrHPur6bdmjbdmjHbpAQwRZX/B3Ek=
-X-Google-Smtp-Source: ABdhPJxJQDoPhY4qR3fm8oH+oU/WZ/ZRlqO3OA8rVIsOBQZUUw0K9kQvpv/WkWaVL0MEPgdY1fxpNhgu87Ctpwwcio8=
-X-Received: by 2002:a05:6402:4241:: with SMTP id g1mr4990699edb.11.1642091248584;
- Thu, 13 Jan 2022 08:27:28 -0800 (PST)
+        bh=58SYHhzQIGXzRxdRs6HS+zXg3ldEE2NZRdBxiFrtCow=;
+        b=hYixYIMFdBZcaTPxHKQ1NH/oygkiX6XDeOtX10MAKTqoGohINT9M7zBjUyV0VquKx7
+         wRpRbTO6lT/bEWNFSB0UDhqbaPSNoI65QAOB5GPIjrdSLl3GU0/Swv0osY0kraJAc/dB
+         vtW6od4ZMDlfL6SYOrjLKgvGfg97DUcK9zFg6TpbbIeaAFpXL9J9wNL/EQ9fjVUObtoP
+         I+VxhW46ARwv9QhvxZq+xnr9S0HJfop+1oH6Ex6D4Uf6aEig8Yqd9Uk7xTrcW5Il/WtX
+         B9opD/JYPKP9hI9lGM2XblWwvnsNdFWSLgIVTGgxwrrHj0lACtvfxptu8GwM/Zmm48S4
+         VPYg==
+X-Gm-Message-State: AOAM5320Etsm0oWIosUgdDOMbVfqt5VVR9x06XpuO6hCehydC945atJ9
+        AGa4oP85AW6ywVwpOP0JgmdGKyHhBWzDxkh5rxp5ZA==
+X-Google-Smtp-Source: ABdhPJy+3mbSvmZ2mjk4UqWb7ayNVof1KudHkhYG6Bg6ojGp5fB7KuiGT7QOrWDoI1FQps9WJHJCcp1FMWzw4P6ERvA=
+X-Received: by 2002:a05:651c:1a28:: with SMTP id by40mr2881963ljb.191.1642135497194;
+ Thu, 13 Jan 2022 20:44:57 -0800 (PST)
 MIME-Version: 1.0
 References: <20220107121215.1912-2-yinxin.x@bytedance.com> <202201091544.W5HHEXAp-lkp@intel.com>
  <CAK896s74jBKAhruo-v8rJGWDOgTKF6GKNWg5Qj0B+Zb=VAtJdA@mail.gmail.com>
@@ -51,13 +51,13 @@ References: <20220107121215.1912-2-yinxin.x@bytedance.com> <202201091544.W5HHEXA
  <20220113085939.es3eboxmbiocz6kf@riteshh-domain> <CAK896s4joD9+M_8Qb_oaMpVOZFup=g1Re5YL42z+nR-mEh9P4g@mail.gmail.com>
  <20220113131228.ycyyytp6b6nkbe42@riteshh-domain>
 In-Reply-To: <20220113131228.ycyyytp6b6nkbe42@riteshh-domain>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Thu, 13 Jan 2022 08:27:16 -0800
-Message-ID: <CAD+ocbyYsDaiQ2bxM3k3VqnpjFKm+yXumoa_MB3H5uiBOG9Kbw@mail.gmail.com>
+From:   Xin Yin <yinxin.x@bytedance.com>
+Date:   Fri, 14 Jan 2022 12:44:46 +0800
+Message-ID: <CAK896s6d18ESL1yxwoCmwLxEWydD2RucRobe+YDw52CqpcfS3g@mail.gmail.com>
 Subject: Re: [External] Re: [PATCH 1/2] ext4: fast commit may not fallback for
  ineligible commit
 To:     riteshh <riteshh@linux.ibm.com>
-Cc:     Xin Yin <yinxin.x@bytedance.com>,
+Cc:     harshad shirwadkar <harshadshirwadkar@gmail.com>,
         Dan Carpenter <dan.carpenter@oracle.com>, kbuild@lists.01.org,
         "Theodore Y. Ts'o" <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
@@ -69,6 +69,47 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Hi Riteshh
+Thanks , I will fix this and also check other places for this issue.
+
+On Thu, Jan 13, 2022 at 9:12 PM riteshh <riteshh@linux.ibm.com> wrote:
+>
+> On 22/01/13 05:26PM, Xin Yin wrote:
+> > On Thu, Jan 13, 2022 at 4:59 PM riteshh <riteshh@linux.ibm.com> wrote:
+> > >
+> > > On 22/01/13 02:53PM, Xin Yin wrote:
+> > > > On Thu, Jan 13, 2022 at 12:18 PM harshad shirwadkar
+> > > > <harshadshirwadkar@gmail.com> wrote:
+> > > > >
+> > > > > On Mon, Jan 10, 2022 at 7:13 PM Xin Yin <yinxin.x@bytedance.com> wrote:
+> > > > > >
+> > > > > > Hi Dan,
+> > > > > >
+> > > > > > Thanks for spotting this, and I think it is not only an
+> > > > > > 'uninitialized' issue , we can not use 'handle' after
+> > > > > > ext4_journal_stop,  it may cause a use-after-free.
+> > > > > > So maybe we should use 'transaction tid' as input instead of 'handle',
+> > > > > > then it will be like this ext4_fc_mark_ineligible(struct super_block
+> > > > > > *sb, int reason, tid_t tid). or we should move all
+> > > > > > ext4_fc_mark_ineligible() between ext4_journal_start/ext4_journal_stop
+> > > > > > if we need 'handle' param.
+> > > > > This is a case where the inode is still in the fast commit list and we
+> > > > > reached the "no_delete" case in ext4_evict_inode. Note that we reach
+> > > > > here even when we are not able to start the journal handle. So, the
+> > > > > second option that you suggested (to move ext4_fc_mark_ineligible()
+> > > > > between ext4_journal_start() and ext4_journal_stop()) would not work
+> > > > > for the case when we are not able to start the handle at all. Also,
+> > > > > passing handle to ext4_fc_mark_ineligible() is pretty clean so I'd
+> > > > > like to stay with that instead of passing "tid".
+> > > > Understood, thanks for the explanations.
+> > > >
+> > > > >
+> > > > > How about adding a new variant of ext4_fc_mark_ineligible() that
+> > > > > doesn't take handle and only takes sb and reason? In that function we
+> > > > > can mark the currently running transaction as ineligible. So basically
+> > > > > it would derive tid as journal->j_running_transaction->t_tid. We can
+> > > > Yes , this makes sense , thanks.
+> > > >
 > > > > > name that function as something like "ext4_fc_mark_txn_ineligible()".
 > > > > In this case , I think we can just set "hendle" as NULL , then
 > > > > ext4_fc_mark_ineligible() use tid as
@@ -78,9 +119,6 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 > > > I was about to comment the same that why two different APIs for the same work.
 > > > Above does sounds a better solution to me. But I will let Harshad
 > > > comment on it too.
-
-Yeah that sounds good. I agree that would be better.
-
 > > >
 > > > Also please note in function ext4_xattr_set(), with fstests, I could easily
 > > > reproduce a use-after-free issue with your v2 patches too.
