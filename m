@@ -2,24 +2,24 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BADB848FA53
-	for <lists+linux-ext4@lfdr.de>; Sun, 16 Jan 2022 03:09:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 676D448FFE2
+	for <lists+linux-ext4@lfdr.de>; Mon, 17 Jan 2022 02:17:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbiAPCJc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Sat, 15 Jan 2022 21:09:32 -0500
-Received: from ec2-13-115-114-132.ap-northeast-1.compute.amazonaws.com ([13.115.114.132]:58322
+        id S233880AbiAQBRi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Sun, 16 Jan 2022 20:17:38 -0500
+Received: from ec2-13-115-114-132.ap-northeast-1.compute.amazonaws.com ([13.115.114.132]:51156
         "EHLO mail.gunma-suigai-risk.jp" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230176AbiAPCJb (ORCPT
+        by vger.kernel.org with ESMTP id S232702AbiAQBRh (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 15 Jan 2022 21:09:31 -0500
-Received: from Unknown (unknown [200.237.142.238])
-        by mail.gunma-suigai-risk.jp (Postfix) with ESMTPA id B078223EAE25;
-        Sat, 15 Jan 2022 22:17:16 +0000 (UTC)
-Message-ID: <E8ED5B0803D7F93AE6E3AA1612F8CC5C@cktw>
+        Sun, 16 Jan 2022 20:17:37 -0500
+Received: from Unknown (unknown [91.126.138.135])
+        by mail.gunma-suigai-risk.jp (Postfix) with ESMTPA id A127D2951324;
+        Sun, 16 Jan 2022 08:24:34 +0000 (UTC)
+Message-ID: <5B5EE8BBB0644A89555019A5A164EDBA@sxuqkvv>
 Reply-To: "Fredrik Elvebakk" <fcresswell9@gmail.com>
 From:   "Fredrik Elvebakk" <investment@dnb.no>
 Subject: Re:
-Date:   Sat, 15 Jan 2022 14:15:53 -0800
+Date:   Sun, 16 Jan 2022 00:23:54 -0800
 MIME-Version: 1.0
 Content-Type: text/plain;
         format=flowed;
