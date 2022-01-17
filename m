@@ -2,166 +2,90 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5BA8490A9B
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 Jan 2022 15:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B44E491145
+	for <lists+linux-ext4@lfdr.de>; Mon, 17 Jan 2022 22:11:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237159AbiAQOiQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 17 Jan 2022 09:38:16 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:48694 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237148AbiAQOiK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Jan 2022 09:38:10 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 14CE21F385;
-        Mon, 17 Jan 2022 14:38:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1642430289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wvUap+DwKBiunMat6fSEU/DhZVQmc4GhjOocn0eF9F0=;
-        b=zAarisL5NN5+v9qyJxFdGX7etOauLFTpfdV5yQVvoXbBIkxO1W/kTNELbDmujo2xOxdHg4
-        u2w1xT4rMAgmXEkqiKEYVsvCDR4qdEcTYe5Iql4SHKhYHFHGY+sme4T+J1G5q8i8+lALej
-        xNCytpw4HjuY2tKCjIhLkcEtDsI/0lc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1642430289;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wvUap+DwKBiunMat6fSEU/DhZVQmc4GhjOocn0eF9F0=;
-        b=oC1GEgl2WZAvCkL8tz8vZQn/WUd0qxBZeCixIX8Ay9CGDGI+E+0Ge4w9fMnI4O1GMSWgJU
-        aqJbtMr7iy0vW7Bw==
-Received: from quack3.suse.cz (unknown [10.163.28.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id EC5E8A3B88;
-        Mon, 17 Jan 2022 14:38:08 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 8E87DA05E4; Mon, 17 Jan 2022 15:38:07 +0100 (CET)
-Date:   Mon, 17 Jan 2022 15:38:07 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jan Kara <jack@suse.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>, tytso@mit.edu,
-        Eric Whitney <enwlinux@gmail.com>
-Subject: Re: [PATCH 6/6] jbd2: No need to use t_handle_lock in
- jbd2_journal_wait_updates
-Message-ID: <20220117143807.6fil45qvutvswa7z@quack3.lan>
-References: <cover.1642044249.git.riteshh@linux.ibm.com>
- <e7e0f8c54306591a3a9c8fead1e0e54358052ab6.1642044249.git.riteshh@linux.ibm.com>
- <20220113112749.d5tfszcksvxvshnn@quack3.lan>
- <20220113123842.3rpfcyecylt5n3wo@riteshh-domain>
- <20220117125527.ienv3drg5whiryrr@riteshh-domain>
+        id S243256AbiAQVK6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 17 Jan 2022 16:10:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229641AbiAQVK5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Jan 2022 16:10:57 -0500
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD30C06161C
+        for <linux-ext4@vger.kernel.org>; Mon, 17 Jan 2022 13:10:57 -0800 (PST)
+Received: by mail-io1-xd44.google.com with SMTP id z19so17448055ioj.1
+        for <linux-ext4@vger.kernel.org>; Mon, 17 Jan 2022 13:10:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=UAOvT72nEzyjB3EaBfIB4vBLAlWNhJb9FUU2K5PC8fM=;
+        b=jImEIpZ/trnq+PYotNQhSHZG4AbaEKH4MTs0zO31n7AJOIbdb9inci315PXSUJFwB4
+         3sf/7ZHD5tql6LSdViTphcqJ/JWtuCtA/MvbTUb5aUF0Dx6U2npf805kkkk1YWfxs412
+         Ufmm0seEr80NKFAlkAjzyqsFWYVsln7Aev2hoWmew0bZF+tjStS9+SlXcRj7+q5SRHy3
+         1IRYsH7cqUwoXPdy7xJmx53Jz8pl9B3TZMXqGTI221zC/mGOqTdskrRa/RKO1oGOx0+L
+         oU1nyWabGioDUrQHIL8bBMKmLmTww2Qg7W2jkxRKtHfT7CbMXOXmEs8FyGPOaJIRxHpF
+         OYrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=UAOvT72nEzyjB3EaBfIB4vBLAlWNhJb9FUU2K5PC8fM=;
+        b=vuSmM+27507IolEgtXxxzzBorM8A7/un/CLv9EUsXXHZLkxRNll7ukE0/3cXqJqIdB
+         swCTt2LXTLsMjAurX+8oe3XiMpRY2FEHej9b0yAsLaPUh1q6gx+AaLPl4rJ/uAjJqPuK
+         B3GNKg2TBpp75OdCGMz8hKAZ8FWvmRReSvhBJ6kO0GZx1oeP9vYlo3kGGzQHy/v3YRUD
+         +zlwmRgBFPetwMdaOpT8hFbx6vy1PC0iELwH7oPtzWqP3WDny65u22+n6WGHDhi+wV4c
+         6rE537UsZuy0EiQRz5G0O8R7hgNuQo9IB5n+m19spJ4pA8BNhhoV18L/HfqP4c2OCKCU
+         DQpg==
+X-Gm-Message-State: AOAM532voL72vSu8pWmUchgy22XRjmDmj+oSq70/4VGrvtV7yrEdpxRg
+        wDUcStGL11ATn2kYpro1Frxy9n2I/SfVB6+Tv/k=
+X-Google-Smtp-Source: ABdhPJxFs/vFLdEAs0WXjajTE1/yw+OxDc/F2zzjqu30wvYXB1I3x/0pRjyrn4uwa1T068qHCYuONg28GleBaV4JVQw=
+X-Received: by 2002:a02:c982:: with SMTP id b2mr3169918jap.11.1642453856783;
+ Mon, 17 Jan 2022 13:10:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220117125527.ienv3drg5whiryrr@riteshh-domain>
+Reply-To: jennybezoss14@gmail.com
+Sender: nicolemartha246@gmail.com
+Received: by 2002:a5e:8c04:0:0:0:0:0 with HTTP; Mon, 17 Jan 2022 13:10:56
+ -0800 (PST)
+From:   Mrs Jenny Bezos <jennybezos1@gmail.com>
+Date:   Mon, 17 Jan 2022 21:10:56 +0000
+X-Google-Sender-Auth: yqvWCOBkGlKU1OR0w2w74gjHb58
+Message-ID: <CAM6oAZ47TONjbeT0t--LRvmtDjTrqz4NPb-+=rEV0bzejOE14A@mail.gmail.com>
+Subject: Dearest Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 17-01-22 18:25:27, Ritesh Harjani wrote:
-> On 22/01/13 06:08PM, Ritesh Harjani wrote:
-> > On 22/01/13 12:27PM, Jan Kara wrote:
-> > > On Thu 13-01-22 08:56:29, Ritesh Harjani wrote:
-> > > > Since jbd2_journal_wait_updates() uses waitq based on t_updates atomic_t
-> > > > variable. So from code review it looks like we don't need to use
-> > > > t_handle_lock spinlock for checking t_updates value.
-> > > > Hence this patch gets rid of the spinlock protection in
-> > > > jbd2_journal_wait_updates()
-> > > >
-> > > > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> > >
-> > > This patch looks good. Feel free to add:
-> > >
-> > > Reviewed-by: Jan Kara <jack@suse.cz>
-> > >
-> > > Actually looking at it, t_handle_lock seems to be very much unused. I agree
-> 
-> Thanks Jan for your help in this.
-> I have dropped this patch from v2 in order to discuss few more things and I felt
-> killing t_handle_lock completely can be sent in a seperate patch series.
-
-Yes, probably a good choice.
-
-> > I too had this thought in mind. Thanks for taking a deeper look into it :)
-> >
-> > >
-> > > we don't need it when waiting for outstanding handles but the only
-> > > remaining uses are:
-> > >
-> > > 1) jbd2_journal_extend() where it is not needed either - we use
-> > > atomic_add_return() to manipulate t_outstanding_credits and hold
-> > > j_state_lock for reading which provides us enough exclusion.
-> 
-> I looked into jbd2_journal_extend and yes, we don't need t_handle_lock
-> for updating transaction->t_outstanding_credits, since it already happens with
-> atomic API calls.
-> 
-> Now I do see we update handle->h_**_credits in that function.
-> But I think this is per process (based on task_struct, current->journal_info)
-> and doesn't need a lock protection right?
-
-Yes, handle is per process so no lock is needed there.
-
-> > > 2) update_t_max_wait() - this is the only valid use of t_handle_lock but we
-> > > can just switch it to cmpxchg loop with a bit of care. Something like:
-> > >
-> > > 	unsigned long old;
-> > >
-> > > 	ts = jbd2_time_diff(ts, transaction->t_start);
-> > > 	old = transaction->t_max_wait;
-> > > 	while (old < ts)
-> > > 		old = cmpxchg(&transaction->t_max_wait, old, ts);
-> 
-> I think there might be a simpler and more straight forward way for updating
-> t_max_wait.
-> 
-> I did look into the t_max_wait logic and where all we are updating it.
-> 
-> t_max_wait is the max wait time in starting (&attaching) a _new_ running
-> transaction by a handle. Is this understaning correct?
-
-Correct. It is the maximum time we had to wait for a new transaction to be
-created.
-
-> From code I don't see t_max_wait getting updated for the time taken in order
-> to start the handle by a existing running transaction.
-> 
-> Here is how -
-> update_t_max_wait() will only update t_max_wait if the
-> transaction->t_start is after ts
-> (ts is nothing but when start_this_handle() was called).
-> 
-> 1. This means that for transaction->t_start to be greater than ts, it has to be
->    the new transaction that gets started right (in start_this_handle() func)?
->
-> 2. Second place where transaction->t_start is updated is just after the start of
->    commit phase 7. But this only means that this transaction has become the
->    commit transaction. That means someone has to alloc a new running transaction
->    which again is case-1.
-> 
-> Now I think this spinlock was added since multiple processes can start a handle
-> in parallel and attach a running transaction.
-> 
-> Also this was then moved within CONFIG_JBD2_DEBUG since to avoid spinlock
-> contention on a SMP system in starting multiple handles by different processes.
-> 
-> Now looking at all of above, I think we can move update_t_max_wait()
-> inside jbd2_get_transaction() in start_this_handle(). Because that is where
-> a new transaction will be started and transaction->t_start will be greater then
-> ts. This also is protected within j_state_lock write_lock, so we don't need
-> spinlock.
-
-All above is correct upto this point. The catch is there can be (and often
-are) more processes in start_this_handle() waiting in
-wait_transaction_switching() and then racing to create the new transaction.
-The process calling jbd2_get_transaction() is not necessarily the one which
-entered start_this_handle() first and thus t_max_wait would not be really
-the maximum time someone had to wait.
-
-								Honza
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Dearest Friend,
+
+I am Mrs. Jenny Bezos from America  USA, I decided to donate what I
+have to you  for investment towards the good work of charity
+organizations, and also  to help the motherless and the less
+privileged ones and to carry out charitable works in your Country and
+around the World on my Behalf.
+
+I am diagnosing of throat Cancer, hospitalize for good 2 years and
+some months now and quite obvious that I have few days to live, and I
+am a Widow no child; I decided to will/donate the sum of $7.8 million
+to you for the good work of God, and also to help the motherless and
+less privilege and also forth assistance of the widows. At the moment
+I cannot take any telephone calls right now due to the fact that my
+relatives (who have squandered the funds for this purpose before) are
+around me and my health also. I have adjusted my will and my Bank  is
+aware.
+
+ I have willed those properties to you by quoting my Personal File
+Routing and Account Information. And I have also notified the bank
+that I am willing to give that property to you for good, effective and
+prudent work. It is right to say that I have been directed to do this
+by God. I will be going in for a surgery soon and I want to make sure
+that I make this donation before undergoing this surgery.  I will need
+your support to make this dream come through, could you let me know
+your interest to enable me to give you further information. And I
+hereby advise you to contact me by this email address.
+
+Thanks
+Mrs. Jenny Bezos.
