@@ -2,76 +2,127 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E3674921DC
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Jan 2022 10:04:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A72492917
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Jan 2022 16:01:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233433AbiARJD6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Jan 2022 04:03:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240298AbiARJDy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Jan 2022 04:03:54 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC5E3C061746
-        for <linux-ext4@vger.kernel.org>; Tue, 18 Jan 2022 01:03:50 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id v45so3378047ybi.0
-        for <linux-ext4@vger.kernel.org>; Tue, 18 Jan 2022 01:03:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=IAamEH5Xu1dJ3X0trVcFTPIrL7aTtcDGn5mUS4vw1a8=;
-        b=MKVoGuH84JEqwH7FLePXiHWn749zPRU0NdtP8Sm2JMhUl9c1iVyWjbwz6g8cfGp/lf
-         wGwjovvsv0mdzOrkruLS7VCe5a7nqOLOAOguQfLlO7KlNogBFH31ts7TJnJIMROay93O
-         zLFD2FXmAbjh/mANJwaPSceaNEIBY2ial/GMPVceYyFjbk49spZ6usuG0YECL34rgvGB
-         iei5o2VJiTWPHrHs+06yeYgSnvm3Lro4YfCcKClwdqQV0oHYRRf0rSUvau/jSGUGIY/g
-         PIq25ry8zIUYTR1kpaKtOSp5p5QnPiBRoNfQN58gXlJM4igUY1pzRJNojXS4U/9SVgkd
-         1m4A==
+        id S242597AbiARPAf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Jan 2022 10:00:35 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:34800 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234745AbiARPAe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Jan 2022 10:00:34 -0500
+Received: by mail-il1-f198.google.com with SMTP id a18-20020a923312000000b002b384dccc91so13884582ilf.1
+        for <linux-ext4@vger.kernel.org>; Tue, 18 Jan 2022 07:00:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=IAamEH5Xu1dJ3X0trVcFTPIrL7aTtcDGn5mUS4vw1a8=;
-        b=Bm/itTADPjg0weYsZ+1uBaKyWRGN7QOytcojuRfHy1h6L/UBr1H99UWbrHabkudsZP
-         SmFnPGvC5eS2D8tKqFBx5S6PTmlUmUyt0oWPlOjXDSk9hJEKouTO2oo9lgOMc32nFU+r
-         Gq3B1LPuovm8Q2Rje35Z9R25V87/TTJa3z/ao80a/ATUlQudcM29qOWtZc53WrN/9Ceq
-         vbhrOejPC7mXvRxxZvprfic+HPldVZ7SvxMw/QnvAK70iaDvsDSpL2kkO8v23Gu7ZdcL
-         yfTMXpjBfzW0M8GDobrBU3XE3JMTYxuPg5tziOtgFaCBCkmODwObCvcSADOY4Xbc2w3y
-         K7cA==
-X-Gm-Message-State: AOAM530arpHyOgPI42/hDJaENHs0EP4QNnZT9HcxMxVdcbckx+Hx2t5x
-        e7ZzPjP3xdUrZysDa9G4XvOWfRKopIwg3M3Odxk=
-X-Google-Smtp-Source: ABdhPJy6S8YpzyetQz5KgFrhfh63qx4z5C4Z/Y2SVI8oau6/Qt6fRl+454Z9GiaGeU2dYh9fMxr8ktnL9Tw7RDFSq4I=
-X-Received: by 2002:a25:7287:: with SMTP id n129mr30710797ybc.351.1642496630031;
- Tue, 18 Jan 2022 01:03:50 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=j5wUom1MNv/KYtuHOQzJ0aBGj9CsWbo4IzoCjBRZRY4=;
+        b=iFsmbx89Rybfe6iLEM3OLbSEParvdAZVPi7cVtx1VIwzu5jMUXcWtl+vvGQkpw8CRe
+         6/U0394uR6O5rhX1l/BP0++4hQ6z3Mi3NSik+nEVXl1OwWjCYQM1J8bH4quxCdzP3E/v
+         0pMUvTJQTXDw1loSysfmPqssTO0cEnZS/37U6lCVUTgQTKuXtRfNoCYsLO4ba963/cHx
+         WO8T4DRCR2lrHDqcFmAq3D2W6sLvgrWIDqW1UpZzyMpGrlZN9EJv0HMejuJLinStyMVl
+         xlbNtmuoQfgkTaboPyBZoO3AUitDzcSaxxS3HFoOZJrlyWq0a29uz4qSLZ0YnVx7+U2q
+         LLEw==
+X-Gm-Message-State: AOAM530AssGMyCHRbZkQeh7SZJ9GIso+ydp6IMUpzsl7gtV0QtnNLukA
+        QfS87WPxtHGaRbYeM3OjQ0sEdpORZy/i6TS521kPkQxM+mGo
+X-Google-Smtp-Source: ABdhPJzxwGHLnyIMalpvFYJgau08HciU89xtYGfzxsRsnCjWXgOfEw2JLFUdgu8o4E21WDhE7X7P/wOpBTaGZ4LkkaPC+3HPaYfR
 MIME-Version: 1.0
-Received: by 2002:a05:7108:3655:0:0:0:0 with HTTP; Tue, 18 Jan 2022 01:03:49
- -0800 (PST)
-Reply-To: asil.ajwad@gmail.com
-From:   Asil Ajwad <graceyaogokamboule@gmail.com>
-Date:   Mon, 17 Jan 2022 21:03:49 -1200
-Message-ID: <CA+Yy_gAHH8Aue7iwiH_cJ4+g8NkHKK3sLYXeb_HRC+HesC70HA@mail.gmail.com>
-Subject: Greetings,
-To:     undisclosed-recipients:;
+X-Received: by 2002:a02:2207:: with SMTP id o7mr3257680jao.99.1642518034121;
+ Tue, 18 Jan 2022 07:00:34 -0800 (PST)
+Date:   Tue, 18 Jan 2022 07:00:34 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f6092905d5dc875d@google.com>
+Subject: [syzbot] kernel BUG in jbd2_journal_get_create_access
+From:   syzbot <syzbot+f6645952f81bfbe3907f@syzkaller.appspotmail.com>
+To:     jack@suse.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
--- 
-Greetings,
+Hello,
 
-I am Mr.Asil Ajwad, I work with United Bank of Africa, can you use
-an ATM Visa Card to withdraw money at, ATM Cash Machine in your
-country, if yes I want to transfer abounded fund the sum of $10.5million
-US-Dollars, to you from my country, this is part of the money that was
-abounded by our late old client a politician who unfortunately lost
-his life and was forced out of power Du to greedy act, the bank will
+syzbot found the following issue on:
 
-change the account details to your name, and apply for a Visa Card
-with your details, the Visa Card will be send to you, and you can be
-withdrawing money with it always, whatever any amount you withdraw
-daily, you will send 60% to me and you will take 40%, the Visa Card
-and the bank account will be on your name, I will be waiting for your
-response for more details, thanks to you a lot for giving me your time.
+HEAD commit:    fb3b0673b7d5 Merge tag 'mailbox-v5.17' of git://git.linaro..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15c5a3f7b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=10dbcfb2ca32737b
+dashboard link: https://syzkaller.appspot.com/bug?extid=f6645952f81bfbe3907f
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
 
-regards,
-Mr.Asil Ajwad.
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f6645952f81bfbe3907f@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+kernel BUG at fs/jbd2/transaction.c:1284!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 3618 Comm: syz-executor.3 Not tainted 5.16.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:jbd2_journal_get_create_access+0x443/0x450 fs/jbd2/transaction.c:1281
+Code: ff ff ff 48 89 ef e8 6c cc 91 ff e9 24 ff ff ff e8 42 63 46 ff 0f 0b e8 3b 63 46 ff 0f 0b e8 34 63 46 ff 0f 0b e8 2d 63 46 ff <0f> 0b 66 2e 0f 1f 84 00 00 00 00 00 90 55 41 57 41 56 41 55 41 54
+RSP: 0018:ffffc9000288f890 EFLAGS: 00010293
+RAX: ffffffff823e5703 RBX: ffff88805e7d6600 RCX: ffff88807d450000
+RDX: 0000000000000000 RSI: 0000000000000003 RDI: 0000000000000002
+RBP: 0000000000000003 R08: ffffffff823e5454 R09: 0000000000000003
+R10: fffff52000511f01 R11: 0000000000000004 R12: dffffc0000000000
+R13: ffff88805b4e26e0 R14: ffff88805e7d6480 R15: ffff88801d5560f0
+FS:  0000555556d51400(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000200003c0 CR3: 0000000061c29000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __ext4_journal_get_create_access+0xaf/0x550 fs/ext4/ext4_jbd2.c:324
+ ext4_getblk+0x3d6/0x700 fs/ext4/inode.c:873
+ ext4_bread+0x2a/0x170 fs/ext4/inode.c:902
+ ext4_append+0x1a6/0x370 fs/ext4/namei.c:67
+ ext4_init_new_dir+0x337/0xa10 fs/ext4/namei.c:2893
+ ext4_mkdir+0x4b8/0xc00 fs/ext4/namei.c:2939
+ vfs_mkdir+0x2f6/0x4d0 fs/namei.c:3883
+ do_mkdirat+0x277/0x530 fs/namei.c:3909
+ __do_sys_mkdir fs/namei.c:3929 [inline]
+ __se_sys_mkdir fs/namei.c:3927 [inline]
+ __x64_sys_mkdir+0x6a/0x80 fs/namei.c:3927
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f5d854ff0f7
+Code: 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 53 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffca6f9cc88 EFLAGS: 00000206 ORIG_RAX: 0000000000000053
+RAX: ffffffffffffffda RBX: 00007ffca6f9cd10 RCX: 00007f5d854ff0f7
+RDX: 0000000000000000 RSI: 00000000000001ff RDI: 00007ffca6f9cd10
+RBP: 00007ffca6f9ccec R08: 0000000000000000 R09: 0000000000000005
+R10: 00007ffca6f9ca25 R11: 0000000000000206 R12: 0000000000000032
+R13: 000000000005ac17 R14: 0000000000000003 R15: 00007ffca6f9cd50
+ </TASK>
+Modules linked in:
+---[ end trace 24a9214ffe9eda3d ]---
+RIP: 0010:jbd2_journal_get_create_access+0x443/0x450 fs/jbd2/transaction.c:1281
+Code: ff ff ff 48 89 ef e8 6c cc 91 ff e9 24 ff ff ff e8 42 63 46 ff 0f 0b e8 3b 63 46 ff 0f 0b e8 34 63 46 ff 0f 0b e8 2d 63 46 ff <0f> 0b 66 2e 0f 1f 84 00 00 00 00 00 90 55 41 57 41 56 41 55 41 54
+RSP: 0018:ffffc9000288f890 EFLAGS: 00010293
+RAX: ffffffff823e5703 RBX: ffff88805e7d6600 RCX: ffff88807d450000
+RDX: 0000000000000000 RSI: 0000000000000003 RDI: 0000000000000002
+RBP: 0000000000000003 R08: ffffffff823e5454 R09: 0000000000000003
+R10: fffff52000511f01 R11: 0000000000000004 R12: dffffc0000000000
+R13: ffff88805b4e26e0 R14: ffff88805e7d6480 R15: ffff88801d5560f0
+FS:  0000555556d51400(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000200003c0 CR3: 0000000061c29000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
