@@ -2,35 +2,35 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0CAB491B41
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Jan 2022 04:06:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 622A1491D81
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Jan 2022 04:38:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353765AbiARDEf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 17 Jan 2022 22:04:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34800 "EHLO
+        id S1348841AbiARDiE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 17 Jan 2022 22:38:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345672AbiARCs7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Jan 2022 21:48:59 -0500
+        with ESMTP id S1352815AbiARDed (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Jan 2022 22:34:33 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3480C061753;
-        Mon, 17 Jan 2022 18:40:04 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E553BC02B75E;
+        Mon, 17 Jan 2022 18:44:31 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 910C261278;
-        Tue, 18 Jan 2022 02:40:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E693C36AF5;
-        Tue, 18 Jan 2022 02:40:02 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 831A1612CE;
+        Tue, 18 Jan 2022 02:44:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03420C36AEF;
+        Tue, 18 Jan 2022 02:44:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642473604;
-        bh=oI1tILeYJHphG+rnfp4DSdnyYZnshvVn8lVEbfxuC8M=;
+        s=k20201202; t=1642473871;
+        bh=Wse5B2ZVLpuMQSQR80fU4FTD+9DQlvoY7bQqMuUOALU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JszQXjKWNai4s3S1sJMnbDE9HUiU02MbLzJPkbLFOG9/c7+DP5WaPRUW0zKXDPosm
-         jwsPWMhn/ZarqvyUMDcHbCBRLk7N9icNYLeBAWV+sYEEtBs/KiON/p3Lu14YnsCSW2
-         rif1bxDjjTE2ZvaV5tBMoyD591l5lzXabQnkGLJQctvHqFRGMvzb2WjgkCEzYbM3Mr
-         zlqSC/vKBd0xlN3cXKWhgT9L7d6o+9oCb5WjImx6HOBhO6lZZCKLbG6+puwMPd8d88
-         bVvzLLkb80ZMINCaQY+nXWwy6/EiDjS1FcOw3cfEBD7nJabT7S60/YPkQNzOe/RALq
-         kfdowHredVimw==
+        b=HDrnSb1eH3XfQY/30fuSWZ6QxiOVXWZAj9ZKdbGPjIm4NXdD77WCjNTwh4hSNBOMv
+         VmoQGnjxE7E+eDPHn9Wzl0ekkD3M55K61C7QzPWenNNJTrLHMw+pELLKcqoUpjTXsP
+         cXkkb1HUpbfE86qWo9PKJUP+LxLvIvG3ncaN3HvJCm0kcSgJD6/PLhFnJMIxqxzbbD
+         Aa0sN6kYf6yGIABCqSIa2VEvOpaMq6+WjyJL6+LSJuMz1t6Syv4Q/va0HK1AgZIGKP
+         8WUDAIWCRwKa7NuJfhMcLJC18qusoTIqhRQAyeRpjZmIVwR8fRfmfAh1Qa6E4R7QjR
+         F3O0nDx3jYVuw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Lukas Czerner <lczerner@redhat.com>,
@@ -38,12 +38,12 @@ Cc:     Lukas Czerner <lczerner@redhat.com>,
         Andreas Dilger <adilger@dilger.ca>,
         Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
         adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 188/188] ext4: allow to change s_last_trim_minblks via sysfs
-Date:   Mon, 17 Jan 2022 21:31:52 -0500
-Message-Id: <20220118023152.1948105-188-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 116/116] ext4: allow to change s_last_trim_minblks via sysfs
+Date:   Mon, 17 Jan 2022 21:40:07 -0500
+Message-Id: <20220118024007.1950576-116-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220118023152.1948105-1-sashal@kernel.org>
-References: <20220118023152.1948105-1-sashal@kernel.org>
+In-Reply-To: <20220118024007.1950576-1-sashal@kernel.org>
+References: <20220118024007.1950576-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -91,10 +91,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+)
 
 diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-index 2314f74465924..95d8a996d2d89 100644
+index f24bef3be48a3..4192b4af10602 100644
 --- a/fs/ext4/sysfs.c
 +++ b/fs/ext4/sysfs.c
-@@ -245,6 +245,7 @@ EXT4_ATTR(last_error_time, 0444, last_error_time);
+@@ -250,6 +250,7 @@ EXT4_ATTR(last_error_time, 0444, last_error_time);
  EXT4_ATTR(journal_task, 0444, journal_task);
  EXT4_RW_ATTR_SBI_UI(mb_prefetch, s_mb_prefetch);
  EXT4_RW_ATTR_SBI_UI(mb_prefetch_limit, s_mb_prefetch_limit);
@@ -102,7 +102,7 @@ index 2314f74465924..95d8a996d2d89 100644
  
  static unsigned int old_bump_val = 128;
  EXT4_ATTR_PTR(max_writeback_mb_bump, 0444, pointer_ui, &old_bump_val);
-@@ -295,6 +296,7 @@ static struct attribute *ext4_attrs[] = {
+@@ -299,6 +300,7 @@ static struct attribute *ext4_attrs[] = {
  #endif
  	ATTR_LIST(mb_prefetch),
  	ATTR_LIST(mb_prefetch_limit),
