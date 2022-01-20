@@ -2,35 +2,35 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728A64951AD
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jan 2022 16:44:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8C34951E0
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jan 2022 16:58:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376736AbiATPoY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 20 Jan 2022 10:44:24 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:35111 "EHLO
+        id S1376829AbiATP62 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 20 Jan 2022 10:58:28 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37526 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1376782AbiATPoY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Jan 2022 10:44:24 -0500
+        with ESMTP id S243632AbiATP6W (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Jan 2022 10:58:22 -0500
 Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 20KFiCYi027868
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 20KFwDfQ001102
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 Jan 2022 10:44:12 -0500
+        Thu, 20 Jan 2022 10:58:14 -0500
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 2477E15C41B7; Thu, 20 Jan 2022 10:44:12 -0500 (EST)
+        id CF09C15C41B6; Thu, 20 Jan 2022 10:58:13 -0500 (EST)
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     adilger.kernel@dilger.ca, Xin Yin <yinxin.x@bytedance.com>,
-        harshadshirwadkar@gmail.com
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, riteshh@linux.ibm.com,
-        dan.carpenter@oracle.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/2] ext4: fix issues when fast commit work with jbd
-Date:   Thu, 20 Jan 2022 10:44:08 -0500
-Message-Id: <164269344020.116615.10466472564814944952.b4-ty@mit.edu>
+To:     linux-ext4@vger.kernel.org, Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-kernel@vger.kernel.org, Eric Whitney <enwlinux@gmail.com>,
+        Jan Kara <jack@suse.com>, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCHv2 0/5] ext4/jbd2: inline_data fixes and minor cleanups
+Date:   Thu, 20 Jan 2022 10:58:12 -0500
+Message-Id: <164269428249.194735.9368808618979556408.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20220117093655.35160-1-yinxin.x@bytedance.com>
-References: <20220117093655.35160-1-yinxin.x@bytedance.com>
+In-Reply-To: <cover.1642416995.git.riteshh@linux.ibm.com>
+References: <cover.1642416995.git.riteshh@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -38,23 +38,29 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, 17 Jan 2022 17:36:53 +0800, Xin Yin wrote:
-> When test fast commit with xfstests generic/455, some logic issues were
-> found. When a full commit is ongonig, the logic of fast commit tracking seems
-> not correct. The first patch fix the ineligible commit case , and the
-> second patch fix the common fast commit case.
+On Mon, 17 Jan 2022 17:41:46 +0530, Ritesh Harjani wrote:
+> Please find v2 of the inline_data fixes and some minor cleanups found during
+> code review.
 > 
-> After testing this patch set with xfstests log and quick group, no
-> regressions were found, and the generic/455 can pass now.
+> I have dropped patch-6 in v2 which was removing use of t_handle_lock (spinlock)
+> from within jbd2_journal_wait_updates(). Based on Jan comments, I feel we can
+> push that as killing of t_handle_lock into a separate series (which will be on
+> top of this).
 > 
 > [...]
 
 Applied, thanks!
 
-[1/2] ext4: fast commit may not fallback for ineligible commit
-      commit: b4facf2d8a22262f945975d23e29bbfa94ab5d27
-[2/2] ext4: fast commit may miss file actions
-      commit: 4a404adb1978f0a3f2ec9ee6c257bcc5b2452ee3
+[1/5] ext4: Fix error handling in ext4_restore_inline_data()
+      commit: 2fdd85005f708691a64270ecb67d98191d668c4c
+[2/5] ext4: Remove redundant max inline_size check in ext4_da_write_inline_data_begin()
+      commit: c7fc77e512a432bba754f969c4eb72b33cda3431
+[3/5] ext4: Fix error handling in ext4_fc_record_modified_inode()
+      commit: 6dcee78ea266fb736a3357c2e04d81ee7ec7b6e4
+[4/5] jbd2: Cleanup unused functions declarations from jbd2.h
+      commit: 16263b9820b0d40c778c8ee867f853d3fe638f37
+[5/5] jbd2: Refactor wait logic for transaction updates into a common function
+      commit: b0544c1f23ddeabd89480d842867ca1c6894e021
 
 Best regards,
 -- 
