@@ -2,157 +2,136 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6DFB494758
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jan 2022 07:33:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5AE494806
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jan 2022 08:16:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237274AbiATGdi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 20 Jan 2022 01:33:38 -0500
-Received: from mail-bn8nam08on2086.outbound.protection.outlook.com ([40.107.100.86]:7841
-        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237233AbiATGdi (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 20 Jan 2022 01:33:38 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FQFA53/EW11ow6+6Xrlf0lX+H1kLAhummldqFRb4pFSpyuXNhwzxEMSr5z8s66IKBZYB8Xc1SLE7mkRoTAYYf6S+GZ49Z18bPHvmcowczqV0b6LMDa2m5eCxnW16cKt3yfim8uat9N6ZH9vBMf9tkFfItdKOx62wVuX9Q/faPVwcndDGbyxA2QAZd12Rze8aqpupAe2wiPLWFG/pxL5HXayBbcybznkpz+IDRbHZE1fyvOJShLzbVc40eAl2titqvoH6s7ZuGtteDbYmarNmnhRhOr0QnwOi8jbq72kfukb3p1VIfweDyWpayB/egEKb4GaNHeBUoM832fnzTzJR7Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=y3almGbydkQgDFjE+PHW+drZMheuGVfqmCV6AIA190A=;
- b=kJu1z3daIrPh7AEUU5gqIfQ1wHQuVqGCQzP67l88DzNfQ6NKgjbOX4whN/5C72HDDG7DMIY4D5mEJqy4hG+pFiZnIgSh6I6/FzLsEyR54fjgAN95Moq13m2SZYe9Q5SsIvjPEbQbJN6YPqsNcYBsMz8bzQfR8Q4a6eoqJSODK8qIsTGExfbaNp1+wVUbUZeIj7tG7uNDOcSi9mGdGqlecSQIIGmlyHAXMFQKDje/+4NIKG/pTbjUlR0yH+/b4hc30H/GG0zWKokw5kxsHZy/JzgRgCuxl0ityN2wRUYAQFlFB9/DyHECob+aSCMOJq4ESAMh8tItN+PUjqAlXDw6GQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 12.22.5.235) smtp.rcpttodomain=lists.freedesktop.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y3almGbydkQgDFjE+PHW+drZMheuGVfqmCV6AIA190A=;
- b=TfdJh3zYzU4db6neoLuzMtIS7CKn6aX3EwNsGk5GvYmLY9dLW+vfj8kbscgkxrEqxKGkoVFFJlcf+8ju94hA1Qti4NtdpwaIVrCyx4iNaLSobpVtVlYwqEDhC4dDcxtNxmEX3JZNajiAPlpw7i++k4ozV9y3SlyCyBJph5dtIWXhCRpfI7aIno8tz/JQHWc86wAwm7rHVdNxD/Alp/tQXLZJ4L8A2qeYPP2Pg+mGvOw3AcuNYnqMVwx2yuSlvS+Xd9tuQmdyUnEz9PCTbahO9E8UI8jqKQmvNc5CGF5+9oTRDXiE3asrswBW0n2jZV0uzPDoekgx081aoV3/l5ILdg==
-Received: from MW4PR04CA0290.namprd04.prod.outlook.com (2603:10b6:303:89::25)
- by BL0PR12MB4931.namprd12.prod.outlook.com (2603:10b6:208:17e::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4909.7; Thu, 20 Jan
- 2022 06:33:36 +0000
-Received: from CO1NAM11FT018.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:89:cafe::9b) by MW4PR04CA0290.outlook.office365.com
- (2603:10b6:303:89::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4888.11 via Frontend
- Transport; Thu, 20 Jan 2022 06:33:35 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.235)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 12.22.5.235 as permitted sender) receiver=protection.outlook.com;
- client-ip=12.22.5.235; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (12.22.5.235) by
- CO1NAM11FT018.mail.protection.outlook.com (10.13.175.16) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4909.7 via Frontend Transport; Thu, 20 Jan 2022 06:33:35 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 20 Jan
- 2022 06:33:31 +0000
-Received: from nvdebian.localnet (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.9; Wed, 19 Jan 2022
- 22:33:20 -0800
-From:   Alistair Popple <apopple@nvidia.com>
-To:     <akpm@linux-foundation.org>, <Felix.Kuehling@amd.com>,
-        <linux-mm@kvack.org>, <rcampbell@nvidia.com>,
-        <linux-ext4@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        Alex Sierra <alex.sierra@amd.com>
-CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <hch@lst.de>, <jgg@nvidia.com>, <jglisse@redhat.com>,
-        <willy@infradead.org>
-Subject: Re: [PATCH v3 00/10] Add MEMORY_DEVICE_COHERENT for coherent device memory mapping
-Date:   Thu, 20 Jan 2022 17:33:18 +1100
-Message-ID: <3719261.HnWzZch5t3@nvdebian>
-In-Reply-To: <2389959.omVpu533ic@nvdebian>
-References: <20220110223201.31024-1-alex.sierra@amd.com> <2389959.omVpu533ic@nvdebian>
+        id S1358939AbiATHQR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 20 Jan 2022 02:16:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1358745AbiATHQQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Jan 2022 02:16:16 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D513C061574;
+        Wed, 19 Jan 2022 23:16:16 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 46E2AB81CEC;
+        Thu, 20 Jan 2022 07:16:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B753EC340E0;
+        Thu, 20 Jan 2022 07:16:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1642662974;
+        bh=YfVf7rAvgCs/3ET6tKl91x/+y+054s6VdI88iVi2crE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=PAlOlzacCH2/P3OqiqE/xQAyMQxkbvDpWWaF3mSbkECHkWdbNB3Pkfhdi7TgkKZM4
+         BFoV7ewBtSy2vNip6LmTlBCekvL4uPu07h+n/AoifvoAD3TpvOz+VfTz8In8lj7Hyk
+         o1PD5/yFkvRk3bbYrx5PbtceEkvBJiAMrM0pJXgKYT45Hy7A9wCjlsOwtEDL/nM4RQ
+         kmp9owsKM1ed0iN5+iFWARjZCq1fe9exZMZEGFBi2IbYD463R2L8iFu5eqmiSSSEgf
+         pZB3oCs7fKv4fJ6/eABBNsOWdfaE5RZ02o2lZEKPi1GW2xs0kgblUGLGx4JVArZH3x
+         vWGUG/jsWCi+w==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
+Subject: [PATCH v10 0/5] add support for direct I/O with fscrypt using blk-crypto
+Date:   Wed, 19 Jan 2022 23:12:10 -0800
+Message-Id: <20220120071215.123274-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [10.126.231.35]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f3724f01-50ec-47af-c570-08d9dbdec937
-X-MS-TrafficTypeDiagnostic: BL0PR12MB4931:EE_
-X-Microsoft-Antispam-PRVS: <BL0PR12MB49314856B961F9ED46EB4534DF5A9@BL0PR12MB4931.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FoWqP5MoWxhayBBysnblWcZKFquYC/R75dWjD4wOL27f18Zrhhnyk/sD6WoWFDPqPpFKkHTTvFj4VlK1cdLoeAujjsqaA0Ipqbs70dUzkIW8S1Qprvv/ndfEPfJqD/7IetzWB0MViFaoImNGIA1/QWSiuKvCj8anwSAie7ps21FCLH1s376Z+HJpxCMYPQ9HZWF4rGmP7AtmRilxAHKfdmuL8oEYvonE8YqComx9yIsiwYYNrY8yBuKQ6kL24JKjJ+1wB12XiGrjeZDfbDJyEn0hwGI56Pq9f/VYDacC8BnfKqA1NgKEEpJHtAriGxborTmAu4CpfnX+oHPmdYoEC/6MHaNpC/ndtIAnZDL++zfOI3EIUPFjCuR6zZrXU34ooCgBLI3O8vPJERs9TgL3o5JpkbfJHyUVcG4/s3dZSOijmTTUw8X+s5l1YWA3Mks1wInx09aUfZ2YWCQjMpXxXLr93ABgvFq6eTR0JqlksasJjaULEPgfEogyvAAO5qr5ZhIJqGV7UDLuORWPvqe7IBOknEwFfCPJ9/auxQLkqq8DAitPUei908IUHpjQ5LadNiSxEHzac9Z7i9BSS7QVfxR/dCqrSLsLlDDbzNdk5xF6zgckvzYBW3+2u5GzmliJ2DUVlM7P6vOnOyF9m/XTpA0fgsX+tScNDtVMGXnV/qIToYGQdKjaFKTlAQJiQ4lVIQ4lPJ+xkKYoMUywBSDxm80wc9i1OE4H5LFDO/YBnNwnb9fCZ21PqpRyKeTB48QLITdXuMWs+2KP7TgG5GXPv4FnXnoIRKc0uj50VoQY5G/NR9D2cOFiu1CBHHIRlk8kzeN4xldPXHbl3Npjaqmwzg==
-X-Forefront-Antispam-Report: CIP:12.22.5.235;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:mail.nvidia.com;PTR:InfoNoRecords;CAT:NONE;SFS:(4636009)(36840700001)(40470700002)(46966006)(5660300002)(26005)(356005)(8676002)(70206006)(82310400004)(316002)(40460700001)(186003)(16526019)(47076005)(9576002)(83380400001)(33716001)(7416002)(110136005)(70586007)(81166007)(426003)(9686003)(54906003)(336012)(508600001)(2906002)(8936002)(36860700001)(4326008)(86362001)(39026012)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jan 2022 06:33:35.3952
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f3724f01-50ec-47af-c570-08d9dbdec937
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[12.22.5.235];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT018.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4931
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wednesday, 12 January 2022 10:06:03 PM AEDT Alistair Popple wrote:
-> I have been looking at this in relation to the migration code and noticed we
-> have the following in try_to_migrate():
-> 
->         if (is_zone_device_page(page) && !is_device_private_page(page))
->                 return;
-> 
-> Which if I'm understanding correctly means that migration of device coherent
-> pages will always fail. Given that I do wonder how hmm-tests are passing, but
-> I assume you must always be hitting this fast path in
-> migrate_vma_collect_pmd():
-> 
->                 /*
->                  * Optimize for the common case where page is only mapped once
->                  * in one process. If we can lock the page, then we can safely
->                  * set up a special migration page table entry now.
->                  */
-> 
-> Meaning that try_to_migrate() never gets called from migrate_vma_unmap(). So
-> you will also need some changes to try_to_migrate() and possibly
-> try_to_migrate_one() to make this reliable.
+Encrypted files traditionally haven't supported DIO, due to the need to
+encrypt/decrypt the data.  However, when the encryption is implemented
+using inline encryption (blk-crypto) instead of the traditional
+filesystem-layer encryption, it is straightforward to support DIO.
 
-I have been running the hmm tests with the changes below. I'm pretty sure these
-are correct because the only zone device pages try_to_migrate_one() should be
-called on are device coherent/private, and coherent pages can be treated just
-the same as a normal pages for migration. However it would be worth checking I
-haven't missed anything.
+This series adds support for this.  There are multiple use cases for DIO
+on encrypted files, but avoiding double caching on loopback devices
+located in an encrypted directory is the main one currently.
 
- - Alistair
+Previous versions of this series were sent out by Satya Tangirala.
+I've cleaned up a few things since Satya's last version, v9
+(https://lore.kernel.org/all/20210604210908.2105870-1-satyat@google.com/T/#u).
+But more notably, I've made a couple simplifications.
 
----
+First, since f2fs has now been converted to use iomap for DIO, I've
+dropped the patch which added fscrypt support to fs/direct-io.c.
 
-diff --git a/mm/rmap.c b/mm/rmap.c
-index 163ac4e6bcee..15f56c27daab 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1806,7 +1806,7 @@ static bool try_to_migrate_one(struct page *page, struct vm_area_struct *vma,
- 		/* Update high watermark before we lower rss */
- 		update_hiwater_rss(mm);
- 
--		if (is_zone_device_page(page)) {
-+		if (is_device_private_page(page)) {
- 			unsigned long pfn = page_to_pfn(page);
- 			swp_entry_t entry;
- 			pte_t swp_pte;
-@@ -1947,7 +1947,7 @@ void try_to_migrate(struct page *page, enum ttu_flags flags)
- 					TTU_SYNC)))
- 		return;
- 
--	if (is_zone_device_page(page) && !is_device_private_page(page))
-+	if (is_zone_device_page(page) && !is_device_page(page))
- 		return;
- 
- 	/*
+Second, I've returned to the original design where DIO requests must be
+fully aligned to the FS block size in terms of file position, length,
+and memory buffers.  Satya previously was pursuing a slightly different
+design, where the memory buffers (but not the file position and length)
+were allowed to be aligned to just the block device logical block size.
+This was at the request of Dave Chinner on v4 and v6 of the patchset
+(https://lore.kernel.org/linux-fscrypt/20200720233739.824943-1-satyat@google.com/T/#u
+and
+https://lore.kernel.org/linux-fscrypt/20200724184501.1651378-1-satyat@google.com/T/#u).
+
+I believe that approach is a dead end, for two reasons.  First, it
+necessarily causes it to be possible that crypto data units span bvecs.
+Splits cannot occur at such locations; however the block layer currently
+assumes that bios can be split at any bvec boundary.  Changing that is
+quite difficult, as Satya's v9 patchset demonstrated.  This is not an
+issue if we require FS block aligned buffers instead.  Second, it
+doesn't change the fact that FS block alignment is still required for
+the file position and I/O length; this is unavoidable due to the
+granularity of encryption being the FS block size.  So, it seems that
+relaxing the memory buffer alignment requirement wouldn't make things
+meaningfully easier for applications, which raises the question of why
+we would bother with it in the first place.
+
+Christoph Hellwig also said that he much prefers that fscrypt DIO be
+supported without sector-only alignment to start:
+https://lore.kernel.org/r/YPu+88KReGlt94o3@infradead.org
+
+Given the above, as far as I know the only remaining objection to this
+patchset would be that DIO constraints aren't sufficiently discoverable
+by userspace.  Now, to put this in context, this is a longstanding issue
+with all Linux filesystems, except XFS which has XFS_IOC_DIOINFO.  It's
+not specific to this feature, and it doesn't actually seem to be too
+important in practice; many other filesystem features place constraints
+on DIO, and f2fs even *only* allows fully FS block size aligned DIO.
+(And for better or worse, many systems using fscrypt already have
+out-of-tree patches that enable DIO support, and people don't seem to
+have trouble with the FS block size alignment requirement.)
+
+I plan to propose a new generic ioctl to address the issue of DIO
+constraints being insufficiently discoverable.  But until then, I'm
+wondering if people are willing to consider this patchset again, or
+whether it is considered blocked by this issue alone.  (And if this
+patchset is still unacceptable, would it be acceptable with f2fs support
+only, given that f2fs *already* only allows FS block size aligned DIO?)
+
+Eric Biggers (5):
+  fscrypt: add functions for direct I/O support
+  iomap: support direct I/O with fscrypt using blk-crypto
+  ext4: support direct I/O with fscrypt using blk-crypto
+  f2fs: support direct I/O with fscrypt using blk-crypto
+  fscrypt: update documentation for direct I/O support
+
+ Documentation/filesystems/fscrypt.rst | 25 +++++++-
+ fs/crypto/crypto.c                    |  8 +++
+ fs/crypto/inline_crypt.c              | 90 +++++++++++++++++++++++++++
+ fs/ext4/file.c                        | 10 +--
+ fs/ext4/inode.c                       |  7 +++
+ fs/f2fs/data.c                        |  7 +++
+ fs/f2fs/f2fs.h                        |  6 +-
+ fs/iomap/direct-io.c                  |  6 ++
+ include/linux/fscrypt.h               | 18 ++++++
+ 9 files changed, 170 insertions(+), 7 deletions(-)
 
 
+base-commit: 1d1df41c5a33359a00e919d54eaebfb789711fdc
+-- 
+2.34.1
 
