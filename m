@@ -2,218 +2,253 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCBD049585E
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Jan 2022 03:36:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C86495A48
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Jan 2022 08:06:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245026AbiAUCgI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 20 Jan 2022 21:36:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244394AbiAUCgI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Jan 2022 21:36:08 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEEBFC061574;
-        Thu, 20 Jan 2022 18:36:07 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 55A02B81D84;
-        Fri, 21 Jan 2022 02:36:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEF61C340E0;
-        Fri, 21 Jan 2022 02:36:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642732564;
-        bh=7WwbHgXEEmyGk8VsUc9soyxxvD8Rd4CVOIzfWVbGxgg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TJWHvQOYkvpukFEO29VsctzeUshaTt9r4j2tPBeTNRkhlOAXQFmschOiLFwTw6Vgu
-         kC1CNn/nzXp7xSsldL30IPcWqUdgLtC1WKXtNmnG11pqmtpicA1Hs++8V/A012/q7x
-         4mPI8QRzywjj+HqybFxooxhslpzJjRRCyU3i5ec7nJwO/9wPnVvvOmpe9SQDa/dkM7
-         6rE7wpJ6XE3K4YGGCFPBxob2vexcsDcGHAPAAmhcnrY8Q5+rPbXfAIaqLMpL1a3PWT
-         I0CXVQab1nmPAnsYio6Mnl6xT1TdoYFeBAUlqZdOlZCK6LiWewa1WyG/oOjDmSxpES
-         btPl9CCCv+54w==
-Date:   Thu, 20 Jan 2022 18:36:03 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-xfs@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
-Subject: Re: [PATCH v10 0/5] add support for direct I/O with fscrypt using
- blk-crypto
-Message-ID: <20220121023603.GH13563@magnolia>
-References: <20220120071215.123274-1-ebiggers@kernel.org>
- <YekdnxpeunTGfXqX@infradead.org>
- <20220120171027.GL13540@magnolia>
- <YenIcshA706d/ziV@sol.localdomain>
- <20220120210027.GQ13540@magnolia>
- <20220120220414.GH59729@dread.disaster.area>
- <Yenm1Ipx87JAlyXg@sol.localdomain>
- <20220120235755.GI59729@dread.disaster.area>
+        id S1378762AbiAUHGO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Jan 2022 02:06:14 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:46156 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233755AbiAUHGN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 21 Jan 2022 02:06:13 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=hongnan.li@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0V2QTrBf_1642748771;
+Received: from localhost(mailfrom:hongnan.li@linux.alibaba.com fp:SMTPD_---0V2QTrBf_1642748771)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 21 Jan 2022 15:06:11 +0800
+From:   hongnanli <hongnan.li@linux.alibaba.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     adilger.kernel@dilger.ca, tytso@mit.edu
+Subject: [PATCH] fs/ext4: fix comments mentioning i_mutex
+Date:   Fri, 21 Jan 2022 15:06:11 +0800
+Message-Id: <20220121070611.21618-1-hongnan.li@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220120235755.GI59729@dread.disaster.area>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jan 21, 2022 at 10:57:55AM +1100, Dave Chinner wrote:
-> On Thu, Jan 20, 2022 at 02:48:52PM -0800, Eric Biggers wrote:
-> > On Fri, Jan 21, 2022 at 09:04:14AM +1100, Dave Chinner wrote:
-> > > On Thu, Jan 20, 2022 at 01:00:27PM -0800, Darrick J. Wong wrote:
-> > > > On Thu, Jan 20, 2022 at 12:39:14PM -0800, Eric Biggers wrote:
-> > > > > On Thu, Jan 20, 2022 at 09:10:27AM -0800, Darrick J. Wong wrote:
-> > > > > > On Thu, Jan 20, 2022 at 12:30:23AM -0800, Christoph Hellwig wrote:
-> > > > > > > On Wed, Jan 19, 2022 at 11:12:10PM -0800, Eric Biggers wrote:
-> > > > > > > > 
-> > > > > > > > Given the above, as far as I know the only remaining objection to this
-> > > > > > > > patchset would be that DIO constraints aren't sufficiently discoverable
-> > > > > > > > by userspace.  Now, to put this in context, this is a longstanding issue
-> > > > > > > > with all Linux filesystems, except XFS which has XFS_IOC_DIOINFO.  It's
-> > > > > > > > not specific to this feature, and it doesn't actually seem to be too
-> > > > > > > > important in practice; many other filesystem features place constraints
-> > > > > > > > on DIO, and f2fs even *only* allows fully FS block size aligned DIO.
-> > > > > > > > (And for better or worse, many systems using fscrypt already have
-> > > > > > > > out-of-tree patches that enable DIO support, and people don't seem to
-> > > > > > > > have trouble with the FS block size alignment requirement.)
-> > > > > > > 
-> > > > > > > It might make sense to use this as an opportunity to implement
-> > > > > > > XFS_IOC_DIOINFO for ext4 and f2fs.
-> > > > > > 
-> > > > > > Hmm.  A potential problem with DIOINFO is that it doesn't explicitly
-> > > > > > list the /file/ position alignment requirement:
-> > > > > > 
-> > > > > > struct dioattr {
-> > > > > > 	__u32		d_mem;		/* data buffer memory alignment */
-> > > > > > 	__u32		d_miniosz;	/* min xfer size		*/
-> > > > > > 	__u32		d_maxiosz;	/* max xfer size		*/
-> > > > > > };
-> > > > > 
-> > > > > Well, the comment above struct dioattr says:
-> > > > > 
-> > > > > 	/*
-> > > > > 	 * Direct I/O attribute record used with XFS_IOC_DIOINFO
-> > > > > 	 * d_miniosz is the min xfer size, xfer size multiple and file seek offset
-> > > > > 	 * alignment.
-> > > > > 	 */
-> > > > > 
-> > > > > So d_miniosz serves that purpose already.
-> > > > > 
-> > > > > > 
-> > > > > > Since I /think/ fscrypt requires that directio writes be aligned to file
-> > > > > > block size, right?
-> > > > > 
-> > > > > The file position must be a multiple of the filesystem block size, yes.
-> > > > > Likewise for the "minimum xfer size" and "xfer size multiple", and the "data
-> > > > > buffer memory alignment" for that matter.  So I think XFS_IOC_DIOINFO would be
-> > > > > good enough for the fscrypt direct I/O case.
-> > > > 
-> > > > Oh, ok then.  In that case, just hoist XFS_IOC_DIOINFO to the VFS and
-> > > > add a couple of implementations for ext4 and f2fs, and I think that'll
-> > > > be enough to get the fscrypt patchset moving again.
-> > > 
-> > > On the contrary, I'd much prefer to see this information added to
-> > > statx(). The file offset alignment info is a property of the current
-> > > file (e.g. XFS can have different per-file requirements depending on
-> > > whether the file data is hosted on the data or RT device, etc) and
-> > > so it's not a fixed property of the filesystem.
-> > > 
-> > > statx() was designed to be extended with per-file property
-> > > information, and we already have stuff like filesystem block size in
-> > > that syscall. Hence I would much prefer that we extend it with the
-> > > DIO properties we need to support rather than "create" a new VFS
-> > > ioctl to extract this information. We already have statx(), so let's
-> > > use it for what it was intended for.
+inode->i_mutex has been replaced with inode->i_rwsem long ago. Fix
+comments still mentioning i_mutex.
 
-Eh, ok.  Let's do that instead.
+Signed-off-by: hongnanli <hongnan.li@linux.alibaba.com>
+---
+ fs/ext4/acl.c       | 8 ++++----
+ fs/ext4/ext4.h      | 6 +++---
+ fs/ext4/ext4_jbd2.h | 2 +-
+ fs/ext4/extents.c   | 8 ++++----
+ fs/ext4/indirect.c  | 2 +-
+ fs/ext4/inode.c     | 8 ++++----
+ fs/ext4/migrate.c   | 2 +-
+ fs/ext4/orphan.c    | 4 ++--
+ 8 files changed, 20 insertions(+), 20 deletions(-)
 
-> > > 
-> > 
-> > I assumed that XFS_IOC_DIOINFO *was* per-file.  XFS's *implementation* of it
-> > looks at the filesystem only,
-> 
-> You've got that wrong.
-> 
->         case XFS_IOC_DIOINFO: {
-> >>>>>>          struct xfs_buftarg      *target = xfs_inode_buftarg(ip);
->                 struct dioattr          da;
-> 
->                 da.d_mem =  da.d_miniosz = target->bt_logical_sectorsize;
-> 
-> xfs_inode_buftarg() is determining which block device the inode is
-> storing it's data on, so the returned dioattr values can be
-> different for different inodes in the filesystem...
-> 
-> It's always been that way since the early Irix days - XFS RT devices
-> could have very different IO constraints than the data device and
-> DIO had to conform to the hardware limits underlying the filesystem.
-> Hence the dioattr information has -always- been per-inode
-> information.
-> 
-> > (Per-file state is required for encrypted
-> > files.  It's also required for other filesystem features; e.g., files that use
-> > compression or fs-verity don't support direct I/O at all.)
-> 
-> Which is exactly why is should be a property of statx(), rather than
-> try to re-use a ~30 year old filesystem specific API from a
-> different OS that was never intended to indicate things like "DIO
-> not supported on this file at all"....
+diff --git a/fs/ext4/acl.c b/fs/ext4/acl.c
+index 5a35768d6149..57e82e25f8e2 100644
+--- a/fs/ext4/acl.c
++++ b/fs/ext4/acl.c
+@@ -139,7 +139,7 @@ ext4_acl_to_disk(const struct posix_acl *acl, size_t *size)
+ /*
+  * Inode operation get_posix_acl().
+  *
+- * inode->i_mutex: don't care
++ * inode->i_rwsem: don't care
+  */
+ struct posix_acl *
+ ext4_get_acl(struct inode *inode, int type, bool rcu)
+@@ -183,7 +183,7 @@ ext4_get_acl(struct inode *inode, int type, bool rcu)
+ /*
+  * Set the access or default ACL of an inode.
+  *
+- * inode->i_mutex: down unless called from ext4_new_inode
++ * inode->i_rwsem: down unless called from ext4_new_inode
+  */
+ static int
+ __ext4_set_acl(handle_t *handle, struct inode *inode, int type,
+@@ -271,8 +271,8 @@ ext4_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+ /*
+  * Initialize the ACLs of a new inode. Called from ext4_new_inode.
+  *
+- * dir->i_mutex: down
+- * inode->i_mutex: up (access to inode is still exclusive)
++ * dir->i_rwsem: down
++ * inode->i_rwsem: up (access to inode is still exclusive)
+  */
+ int
+ ext4_init_acl(handle_t *handle, struct inode *inode, struct inode *dir)
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 71a3cdceaa03..f3f206b11271 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1028,7 +1028,7 @@ struct ext4_inode_info {
+ 
+ 	/*
+ 	 * Extended attributes can be read independently of the main file
+-	 * data. Taking i_mutex even when reading would cause contention
++	 * data. Taking i_rwsem even when reading would cause contention
+ 	 * between readers of EAs and writers of regular file data, so
+ 	 * instead we synchronize on xattr_sem when reading or changing
+ 	 * EAs.
+@@ -3407,7 +3407,7 @@ do {								\
+ #define EXT4_FREECLUSTERS_WATERMARK 0
+ #endif
+ 
+-/* Update i_disksize. Requires i_mutex to avoid races with truncate */
++/* Update i_disksize. Requires i_rwsem to avoid races with truncate */
+ static inline void ext4_update_i_disksize(struct inode *inode, loff_t newsize)
+ {
+ 	WARN_ON_ONCE(S_ISREG(inode->i_mode) &&
+@@ -3418,7 +3418,7 @@ static inline void ext4_update_i_disksize(struct inode *inode, loff_t newsize)
+ 	up_write(&EXT4_I(inode)->i_data_sem);
+ }
+ 
+-/* Update i_size, i_disksize. Requires i_mutex to avoid races with truncate */
++/* Update i_size, i_disksize. Requires i_rwsem to avoid races with truncate */
+ static inline int ext4_update_inode_size(struct inode *inode, loff_t newsize)
+ {
+ 	int changed = 0;
+diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
+index 0e4fa644df01..db2ae4a2b38d 100644
+--- a/fs/ext4/ext4_jbd2.h
++++ b/fs/ext4/ext4_jbd2.h
+@@ -491,7 +491,7 @@ static inline int ext4_free_data_revoke_credits(struct inode *inode, int blocks)
+ /*
+  * This function controls whether or not we should try to go down the
+  * dioread_nolock code paths, which makes it safe to avoid taking
+- * i_mutex for direct I/O reads.  This only works for extent-based
++ * i_rwsem for direct I/O reads.  This only works for extent-based
+  * files, and it doesn't work if data journaling is enabled, since the
+  * dioread_nolock code uses b_private to pass information back to the
+  * I/O completion handler, and this conflicts with the jbd's use of
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 74c91da585d7..69b4b06738e5 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -97,7 +97,7 @@ static int ext4_ext_trunc_restart_fn(struct inode *inode, int *dropped)
+ 	 * Drop i_data_sem to avoid deadlock with ext4_map_blocks.  At this
+ 	 * moment, get_block can be called only for blocks inside i_size since
+ 	 * page cache has been already dropped and writes are blocked by
+-	 * i_mutex. So we can safely drop the i_data_sem here.
++	 * i_rwsem. So we can safely drop the i_data_sem here.
+ 	 */
+ 	BUG_ON(EXT4_JOURNAL(inode) == NULL);
+ 	ext4_discard_preallocations(inode, 0);
+@@ -4572,7 +4572,7 @@ static long ext4_zero_range(struct file *file, loff_t offset,
+ 
+ 	flags = EXT4_GET_BLOCKS_CREATE_UNWRIT_EXT;
+ 
+-	/* Wait all existing dio workers, newcomers will block on i_mutex */
++	/* Wait all existing dio workers, newcomers will block on i_rwsem */
+ 	inode_dio_wait(inode);
+ 
+ 	/* Preallocate the range including the unaligned edges */
+@@ -4738,7 +4738,7 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
+ 			goto out;
+ 	}
+ 
+-	/* Wait all existing dio workers, newcomers will block on i_mutex */
++	/* Wait all existing dio workers, newcomers will block on i_rwsem */
+ 	inode_dio_wait(inode);
+ 
+ 	ret = ext4_alloc_file_blocks(file, lblk, max_blocks, new_size, flags);
+@@ -5571,7 +5571,7 @@ static int ext4_insert_range(struct inode *inode, loff_t offset, loff_t len)
+  * stuff such as page-cache locking consistency, bh mapping consistency or
+  * extent's data copying must be performed by caller.
+  * Locking:
+- * 		i_mutex is held for both inodes
++ *		i_rwsem is held for both inodes
+  * 		i_data_sem is locked for write for both inodes
+  * Assumptions:
+  *		All pages from requested range are locked for both inodes
+diff --git a/fs/ext4/indirect.c b/fs/ext4/indirect.c
+index 89efa78ed4b2..07a8c75b65ed 100644
+--- a/fs/ext4/indirect.c
++++ b/fs/ext4/indirect.c
+@@ -696,7 +696,7 @@ static int ext4_ind_trunc_restart_fn(handle_t *handle, struct inode *inode,
+ 	 * Drop i_data_sem to avoid deadlock with ext4_map_blocks.  At this
+ 	 * moment, get_block can be called only for blocks inside i_size since
+ 	 * page cache has been already dropped and writes are blocked by
+-	 * i_mutex. So we can safely drop the i_data_sem here.
++	 * i_rwsem. So we can safely drop the i_data_sem here.
+ 	 */
+ 	BUG_ON(EXT4_JOURNAL(inode) == NULL);
+ 	ext4_discard_preallocations(inode, 0);
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 5f79d265d06a..340498dc768b 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -1224,7 +1224,7 @@ static int ext4_write_begin(struct file *file, struct address_space *mapping,
+ 		/*
+ 		 * __block_write_begin may have instantiated a few blocks
+ 		 * outside i_size.  Trim these off again. Don't need
+-		 * i_size_read because we hold i_mutex.
++		 * i_size_read because we hold i_rwsem.
+ 		 *
+ 		 * Add inode to orphan list in case we crash before
+ 		 * truncate finishes
+@@ -3979,7 +3979,7 @@ int ext4_punch_hole(struct inode *inode, loff_t offset, loff_t length)
+ 
+ 	}
+ 
+-	/* Wait all existing dio workers, newcomers will block on i_mutex */
++	/* Wait all existing dio workers, newcomers will block on i_rwsem */
+ 	inode_dio_wait(inode);
+ 
+ 	/*
+@@ -4129,7 +4129,7 @@ int ext4_truncate(struct inode *inode)
+ 	/*
+ 	 * There is a possibility that we're either freeing the inode
+ 	 * or it's a completely new inode. In those cases we might not
+-	 * have i_mutex locked because it's not necessary.
++	 * have i_rwsem locked because it's not necessary.
+ 	 */
+ 	if (!(inode->i_state & (I_NEW|I_FREEING)))
+ 		WARN_ON(!inode_is_locked(inode));
+@@ -5271,7 +5271,7 @@ static void ext4_wait_for_tail_page_commit(struct inode *inode)
+  * transaction are already on disk (truncate waits for pages under
+  * writeback).
+  *
+- * Called with inode->i_mutex down.
++ * Called with inode->i_rwsem down.
+  */
+ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
+ 		 struct iattr *attr)
+diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
+index ff8916e1d38e..7a5353a8cfd7 100644
+--- a/fs/ext4/migrate.c
++++ b/fs/ext4/migrate.c
+@@ -485,7 +485,7 @@ int ext4_ext_migrate(struct inode *inode)
+ 	 * when we add extents we extent the journal
+ 	 */
+ 	/*
+-	 * Even though we take i_mutex we can still cause block
++	 * Even though we take i_rwsem we can still cause block
+ 	 * allocation via mmap write to holes. If we have allocated
+ 	 * new blocks we fail migrate.  New block allocation will
+ 	 * clear EXT4_STATE_EXT_MIGRATE flag.  The flag is updated
+diff --git a/fs/ext4/orphan.c b/fs/ext4/orphan.c
+index 53adc8f570a3..7de0612eb42d 100644
+--- a/fs/ext4/orphan.c
++++ b/fs/ext4/orphan.c
+@@ -93,7 +93,7 @@ static int ext4_orphan_file_add(handle_t *handle, struct inode *inode)
+  * At filesystem recovery time, we walk this list deleting unlinked
+  * inodes and truncating linked inodes in ext4_orphan_cleanup().
+  *
+- * Orphan list manipulation functions must be called under i_mutex unless
++ * Orphan list manipulation functions must be called under i_rwsem unless
+  * we are just creating the inode or deleting it.
+  */
+ int ext4_orphan_add(handle_t *handle, struct inode *inode)
+@@ -119,7 +119,7 @@ int ext4_orphan_add(handle_t *handle, struct inode *inode)
+ 	/*
+ 	 * Orphan handling is only valid for files with data blocks
+ 	 * being truncated, or files being unlinked. Note that we either
+-	 * hold i_mutex, or the inode can not be referenced from outside,
++	 * hold i_rwsem, or the inode can not be referenced from outside,
+ 	 * so i_nlink should not be bumped due to race
+ 	 */
+ 	ASSERT((S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode) ||
+-- 
+2.19.1.6.gb485710b
 
-Heh.  You mean like ALLOCSP?  Ok ok point taken.
-
-> We've been bitten many times by this "lift a rarely used filesystem
-> specific ioctl to the VFS because it exists" method of API
-> promotion. It almost always ends up in us discovering further down
-> the track that there's something wrong with the API, it doesn't
-> quite do what we need, we have to extend it anyway, or it's just
-> plain borken, etc. And then we have to create a new, fit for purpose
-> API anyway, and there's two VFS APIs we have to maintain forever
-> instead of just one...
-> 
-> Can we learn from past mistakes this time instead of repeating them
-> yet again?
-
-Sure.  How's this?  I couldn't think of a real case of directio
-requiring different alignments for pos and bytecount, so the only real
-addition here is the alignment requirements for best performance.
-
-struct statx {
-...
-	/* 0x90 */
-	__u64	stx_mnt_id;
-
-	/* Memory buffer alignment required for directio, in bytes. */
-	__u32	stx_dio_mem_align;
-
-	/* File range alignment required for directio, in bytes. */
-	__u32	stx_dio_fpos_align_min;
-
-	/* 0xa0 */
-
-	/* File range alignment needed for best performance, in bytes. */
-	__u32	stx_dio_fpos_align_opt;
-
-	/* Maximum size of a directio request, in bytes. */
-	__u32	stx_dio_max_iosize;
-
-	__u64	__spare3[11];	/* Spare space for future expansion */
-	/* 0x100 */
-};
-
-Along with:
-
-#define STATX_DIRECTIO	0x00001000U	/* Want/got directio geometry */
-
-How about that?
-
---D
-
-> 
-> Cheers,
-> 
-> Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
