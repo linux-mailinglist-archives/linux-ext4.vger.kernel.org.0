@@ -2,65 +2,47 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 964B6495A58
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Jan 2022 08:10:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76175495A5E
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Jan 2022 08:12:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348947AbiAUHKB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Jan 2022 02:10:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348858AbiAUHKB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Jan 2022 02:10:01 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529BDC061574;
-        Thu, 20 Jan 2022 23:10:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/iWwKF5zBo+/YqnIlxI/fBLzy6wUHNMRmfKOAf2uK/0=; b=euNtdBdzwfCYHwQlnISZwlowHv
-        Ghmi9l9Zl16SCmCwWK7jluHzRlhl52g/7nnfe1ORbcbWz9eDsTLODftQAP0tQHhTQXNKExIDhJWQR
-        4fKqsCljldRSV8PZQHlegwZhFHZ9EtUloBylY5RK3eI/qjkyxiZFaZj6fQ4MiR0+zNZXQsGMAycnU
-        2oWxcxPC/e7RJEfKpGZ3J1zNhH/rSYHEEISC9QO9qMPLt3qitFPkckTdxf3yffrudX0s+EP6cLkkY
-        1UsupL+zm3akz9Ziutyd2iS7/vdibOYkDaUDgTd30H6/mok/dXO+eYc+FQsShPk5ewqwwszZTJ470
-        kA5hUg5w==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nAo3c-00E1cx-0w; Fri, 21 Jan 2022 07:10:00 +0000
-Date:   Thu, 20 Jan 2022 23:10:00 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-xfs@vger.kernel.org, Dave Chinner <david@fromorbit.com>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Satya Tangirala <satyat@google.com>
-Subject: Re: [PATCH v10 1/5] fscrypt: add functions for direct I/O support
-Message-ID: <YepcSJGy2IbBrMZB@infradead.org>
-References: <20220120071215.123274-1-ebiggers@kernel.org>
- <20220120071215.123274-2-ebiggers@kernel.org>
- <YekdAa4fCKw7VY3J@infradead.org>
- <Yeklkcc7NXKYDHUL@sol.localdomain>
+        id S1378849AbiAUHML (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Jan 2022 02:12:11 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:59418 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348854AbiAUHMI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 21 Jan 2022 02:12:08 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0V2PmKif_1642749125;
+Received: from localhost(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0V2PmKif_1642749125)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 21 Jan 2022 15:12:06 +0800
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+To:     akpm@linux-foundation.org, tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     gautham.ananthakrishna@oracle.com, ocfs2-devel@oss.oracle.com,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH 0/2] ocfs2: fix a deadlock case 
+Date:   Fri, 21 Jan 2022 15:12:03 +0800
+Message-Id: <20220121071205.100648-1-joseph.qi@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Yeklkcc7NXKYDHUL@sol.localdomain>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jan 20, 2022 at 01:04:17AM -0800, Eric Biggers wrote:
-> I actually had changed this from v9 because fscrypt_dio_supported() seemed
-> backwards, given that its purpose is to check whether DIO is unsupported, not
-> whether it's supported per se (and the function's comment reflected this).  What
-> ext4 and f2fs do is check a list of reasons why DIO would *not* be supported,
-> and if none apply, then it is supported.  This is just one of those reasons.
-> 
-> This is subjective though, so if people prefer the old way, I'll change it back.
+This is trying to fix a deadlock case in ocfs2.
+We firstly export jbd2 symbols jbd2_journal_[grab|put]_journal_head as
+preparation and later use them in ocfs2 insread of
+jbd_[lock|unlock]_bh_journal_head to fix the deadlock.
 
-I find non-negated API much better and would also help with undinwinding
-the ext4/f2fs mess.  But I'm not going to block the series on such a
-minor detail, of course.
+Joseph Qi (2):
+  jbd2: export jbd2_journal_[grab|put]_journal_head
+  ocfs2: fix a deadlock when commit trans
+
+ fs/jbd2/journal.c   |  2 ++
+ fs/ocfs2/suballoc.c | 25 +++++++++++--------------
+ 2 files changed, 13 insertions(+), 14 deletions(-)
+
+-- 
+2.19.1.6.gb485710b
+
