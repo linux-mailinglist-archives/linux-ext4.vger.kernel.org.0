@@ -2,93 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0723495A64
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Jan 2022 08:13:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0772F496D9E
+	for <lists+linux-ext4@lfdr.de>; Sat, 22 Jan 2022 20:22:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378858AbiAUHM7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Jan 2022 02:12:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245097AbiAUHM6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Jan 2022 02:12:58 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EC15C061574;
-        Thu, 20 Jan 2022 23:12:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3xQuu5tx1EVXpvy8gXk3sJ9oqDEqzzzoX73hPh5DOfA=; b=q8Mnz0Gu2GNpfhG/y3b/jMfQWZ
-        mrffWaQqN4RqOjJuC4ulhiTWsAkL/RACkK6FG43IXgNrMmZ2ObvkbaNdiwzYoorsoRl43aRSgDFDl
-        GjEvNumk7JqTJq9J6ggkGCUYci/n+AXZ5zEGP8/NG6QsGIn+KdsUUitgTHMGzVG7b0cOfSwHdMZvD
-        21D9iTrO/B9kHAYKo2GVNsUx1xxKLpW7+/eUQLNaVaN/yVYE2izpcQ2WOte5HOGUcujc7WjqBwK3V
-        VWrIsvlUxABtXb2ZoKLsrZkhJD+qMBbGE6i2Mi6YVINqkulvo8ShP2gqaF5FOMpt71no8rw0g0Cv2
-        +1gJdHPw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nAo6S-00E1l5-Pa; Fri, 21 Jan 2022 07:12:56 +0000
-Date:   Thu, 20 Jan 2022 23:12:56 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-xfs@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
-Subject: Re: [PATCH v10 0/5] add support for direct I/O with fscrypt using
- blk-crypto
-Message-ID: <Yepc+JcZiICsJfTQ@infradead.org>
-References: <20220120071215.123274-1-ebiggers@kernel.org>
- <YekdnxpeunTGfXqX@infradead.org>
- <20220120171027.GL13540@magnolia>
- <YenIcshA706d/ziV@sol.localdomain>
- <20220120210027.GQ13540@magnolia>
- <20220120220414.GH59729@dread.disaster.area>
- <Yenm1Ipx87JAlyXg@sol.localdomain>
- <20220120235755.GI59729@dread.disaster.area>
- <20220121023603.GH13563@magnolia>
+        id S229682AbiAVTWw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 22 Jan 2022 14:22:52 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:44496 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229582AbiAVTWv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 22 Jan 2022 14:22:51 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6714A60EB8;
+        Sat, 22 Jan 2022 19:22:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E6D1C004E1;
+        Sat, 22 Jan 2022 19:22:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1642879370;
+        bh=ksJzJXNdFRTsXkalxn9MXIV8DbS4/fp38QoHu36pbT4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RjPivVnMNen4DruSHzJ5p1YoY9KfCfs7Vaf8VpY6WTZ1MOuBLAM2y7SytFIz5aZIs
+         uhAPVS3Zla6Apwf+TuLNr8uy/SrlK05eNP1b4/6kziPthl1bnr1I1fvV+pRfYjZzaU
+         XH8jvY3dSjeNPRDptFAHKjVEIbfKJNr7qb5AavUFh/akQHEZwxGl3S8jKBdm1FBuOc
+         iR3Opef3bBSkasG77xNbB5IHVnvVD+W0WTQo+2/Uja3YfSRJOV6UPdIStQzbkm+uA0
+         k0Jhl9sZ33WnQrrkISDmIQbwyP6Jv3e98Xwsaht3VCymfLtrsZwXjcwnTz0O9Ji7aK
+         J3YlMuxu0WEYQ==
+Date:   Sat, 22 Jan 2022 14:22:49 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Lukas Czerner <lczerner@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Laurent GUERBY <laurent@guerby.net>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Theodore Ts'o <tytso@mit.edu>, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.10 116/116] ext4: allow to change
+ s_last_trim_minblks via sysfs
+Message-ID: <YexZiWQiBELTsl81@sashalap>
+References: <20220118024007.1950576-1-sashal@kernel.org>
+ <20220118024007.1950576-116-sashal@kernel.org>
+ <20220118090346.nw4ckd5smuvui2rp@work>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20220121023603.GH13563@magnolia>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20220118090346.nw4ckd5smuvui2rp@work>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jan 20, 2022 at 06:36:03PM -0800, Darrick J. Wong wrote:
-> Sure.  How's this?  I couldn't think of a real case of directio
-> requiring different alignments for pos and bytecount, so the only real
-> addition here is the alignment requirements for best performance.
+On Tue, Jan 18, 2022 at 10:03:46AM +0100, Lukas Czerner wrote:
+>Why was this selected? It is a new feature not a fix, it's not marked
+>for a stable kernel and moreover it's incomplete
+>(2327fb2e23416cfb2795ccca2f77d4d65925be99 is a prerequisite).
+>
+>I have the same question for the patches for 5.15 and 5.16.
+>
+>I think we should either drop it, or at the very least include the above
+>mentioned commit as well.
 
-While I see some benefits of adding the information to a catchall like
-statx we really need to be careful to not bloat the structure like
-crazy.
+I can drop it from everywhere, thanks!
 
-> struct statx {
-> ...
-> 	/* 0x90 */
-> 	__u64	stx_mnt_id;
-> 
-> 	/* Memory buffer alignment required for directio, in bytes. */
-> 	__u32	stx_dio_mem_align;
-> 
-> 	/* File range alignment required for directio, in bytes. */
-> 	__u32	stx_dio_fpos_align_min;
-
-So this really needs a good explanation why we need both iven that we
-had no real use case for this.
-
-> 	/* File range alignment needed for best performance, in bytes. */
-> 	__u32	stx_dio_fpos_align_opt;
-
-And why we really care about this.  I guess you want to allow sector
-size dio in reflink setups, but discourage it.  But is this really as
-important?
-
-> 	/* Maximum size of a directio request, in bytes. */
-> 	__u32	stx_dio_max_iosize;
-
-I know XFS_IOC_DIOINFO had this, but does it really make much sense?
-Why do we need it for direct I/O and not buffered I/O?
+-- 
+Thanks,
+Sasha
