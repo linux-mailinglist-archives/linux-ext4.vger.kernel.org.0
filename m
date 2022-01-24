@@ -2,53 +2,56 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2495549883A
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jan 2022 19:23:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3A0F499002
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jan 2022 20:57:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241782AbiAXSX3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Jan 2022 13:23:29 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:58042 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235901AbiAXSX2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Jan 2022 13:23:28 -0500
-Received: from callcc.thunk.org (guestnat-104-133-8-106.corp.google.com [104.133.8.106] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 20OINM5s029075
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 Jan 2022 13:23:23 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 7201342011A; Mon, 24 Jan 2022 13:23:21 -0500 (EST)
-Date:   Mon, 24 Jan 2022 13:23:21 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Lyu Tao <tao.lyu@epfl.ch>
-Cc:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-Subject: Re: How does EXT4 ensures two processes don't modify and synchronize
- one page at the same time.
-Message-ID: <Ye7umfsRLkxAeUEv@mit.edu>
-References: <6fdeab9535134fc18e86968b10e726c6@epfl.ch>
+        id S1343819AbiAXT5Y convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Mon, 24 Jan 2022 14:57:24 -0500
+Received: from [103.153.79.64] ([103.153.79.64]:62447 "EHLO [103.153.79.64]"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237744AbiAXTsg (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 24 Jan 2022 14:48:36 -0500
+Reply-To: Nasser Rashid <nasserrashid.uae@gmail.com>
+From:   Nasser Rashid <anice.fronteracapitalgroup@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Subject: EXPO 2020 BUSINESS PROPOSAL
+Date:   24 Jan 2022 11:48:38 -0800
+Message-ID: <20220124114838.F085635438627DE7@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6fdeab9535134fc18e86968b10e726c6@epfl.ch>
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jan 24, 2022 at 05:17:34PM +0000, Lyu Tao wrote:
-> 
-> I'm new to file system area and have a naive question about the global sync.
-> 
-> Let's suppose there are two process are writing to the same file. If
-> one process issues a sync() syscall, which mechanism can ensures the
-> two processes don't modify and synchronize one page at the same
-> time.
+Greetings!
 
-That's not what the sync() system call purports to do.  To quote from
-the sync(2) man page:
+I'm Nasser Rashid, a business financial specialist and investment 
+expert. consultant experienced in financial funding services. I 
+have a
 
-       sync() causes all pending modifications to filesystem metadata
-       and cached file data to be written to the underlying
-       filesystems.
+I have a serious business investment opportunity to discuss with 
+you. Century Financial Dubai is the home of discerning investors.
+We
 
-						- Ted
+We offer independent financial advice and assist our clients in 
+making sound investment decisions from a variety of investment 
+options.
+
+Opportunities are available.
+
+Our company is structured to provide personalized services to As 
+a result, capital security and adequate funding are ensured.
+
+returns on investment. Our investors are ready to provide funding 
+for your business expansion, such as debt and equity.
+
+financing. If you require funding, we would be able to partner 
+with you. We look forward to your response.
+
+Thank you and stay safe,
+
+Nasser Rashid, CFA,
+
+Century Financial
