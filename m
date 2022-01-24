@@ -2,69 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75809497D32
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jan 2022 11:30:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 143B7498648
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jan 2022 18:17:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237158AbiAXKas (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Jan 2022 05:30:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37554 "EHLO
+        id S244160AbiAXRRo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Jan 2022 12:17:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237146AbiAXKaq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Jan 2022 05:30:46 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0757AC06173B
-        for <linux-ext4@vger.kernel.org>; Mon, 24 Jan 2022 02:30:46 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id w14so2803738edd.10
-        for <linux-ext4@vger.kernel.org>; Mon, 24 Jan 2022 02:30:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=Er04Eew4r9F5GGbSpesF7E+PQbMnKyQXHdATWJtUrfA=;
-        b=c+UDsTzdhLV5bp/LnjLPNNpbw24WS7P2v93AnHFkalJYgc9h1Y49T2sLgEvocq0OOk
-         rR9zgAAv/Er5SY/PlHdV+xVwsp7mz7clTRN9GhP9DS9fhKOZvDRf4z0pDC2xU3+AI0cL
-         cpF81rgDMLVYi3xIvoZVcy6KwRgqlACX6IPzDyyTNncS/qQH234ydpJFZh+46rRO/W7u
-         kOe9b8YaTfPMSyr81tFIqUfFfgfiaOxxiv6ejyBMFCWxjaEfpvNt29PnSNzlL8UjUSk5
-         Ep8kuGIAIV9Km0E33Rn46OOLDvtqvKEalZg25z72RhDvuznX1+FPN1XV4BFDD1SlKl+A
-         vcXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=Er04Eew4r9F5GGbSpesF7E+PQbMnKyQXHdATWJtUrfA=;
-        b=WbWwaYGIWkgas3IfMdqowU9Yk4CZA4Ib1KOUY08b1fgUI5wFrKflL6AxQr37mFAS8a
-         6J/mtYPQYqi5UfUmE2hwT9x8rlhvO4hSIOKEaxiW9vlq987sxNGxJXbcNQ6nFwIBpwTo
-         /uSqKf+GTOtgnZwvH3ROoNM5MbufhIxaNNhT3711R2gWAI/hahmJPHps8rC7v+MVXyD8
-         YpUULrZPTA/4ehk1trUFuooYSnu7g4MlyiPss7Suxyj3Y141blHfb4LavACe7SmXYRUk
-         UdyfxR7AUTngOPAHDjKZ9Xh+XhUJakiDf6bw3wVd9B/wQiyV7TMC7Hn/Wcv1r/EMDjKo
-         R5xA==
-X-Gm-Message-State: AOAM532wKaGTNvwuCAwB9dkyPflshleD/nw9rOl/XPKPwyLL8pyh+vmG
-        ADtlOfFOWXQ4EMVtWFy7dLy7oeLhswAUYxBVNs0c+xJvBsX7mg==
-X-Google-Smtp-Source: ABdhPJy9fpMltxpbhOqjK0y2+Hl0jTlGIQRIZBvU6PchdsB0Ah6HAsSgFl67qMzoxjOHz2UyS5WM4+kabBChVrtwByE=
-X-Received: by 2002:a05:6402:1d54:: with SMTP id dz20mr15201490edb.395.1643020243957;
- Mon, 24 Jan 2022 02:30:43 -0800 (PST)
-MIME-Version: 1.0
-Received: by 2002:a50:3491:0:0:0:0:0 with HTTP; Mon, 24 Jan 2022 02:30:43
- -0800 (PST)
-Reply-To: mariaelisabethschaeffler1941@gmail.com
-From:   Maria-Elisabeth Schaeffler <rebeccaefe007@gmail.com>
-Date:   Mon, 24 Jan 2022 10:30:43 +0000
-Message-ID: <CANMBYZH2p=C-BN+3Pt39raST38e47FLtGG7Mn1dn8Oua-6yi_w@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        with ESMTP id S244299AbiAXRRh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Jan 2022 12:17:37 -0500
+Received: from smtp5.epfl.ch (smtp5.epfl.ch [IPv6:2001:620:618:1e0:1:80b2:e034:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96F07C061747
+        for <linux-ext4@vger.kernel.org>; Mon, 24 Jan 2022 09:17:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=epfl.ch;
+      s=epfl; t=1643044654;
+      h=From:To:Subject:Date:Message-ID:Content-Type:Content-Transfer-Encoding:MIME-Version;
+      bh=HvykPgdqDq2ZIA0pExkdK6ltBkWsOmXo9FfzmK7jT1c=;
+      b=DnhlMIFo02DUituBbob7keUVDChEeSNMFxq996yVMmWO1t+ejNswiiROJOWU/2SA1
+        2pe5VFiBsLblHjz1Xv24hgiR1qhKvLo0R1W8I+UgaNpoSPR3SDIktBKpa6/OGjaXY
+        PQwWDBKQKF5C10WVYiJMSaInKY/LCBjCyJwUkdEeE=
+Received: (qmail 27410 invoked by uid 107); 24 Jan 2022 17:17:34 -0000
+Received: from ax-snat-224-186.epfl.ch (HELO ewa11.intranet.epfl.ch) (192.168.224.186) (TLS, AES256-GCM-SHA384 cipher)
+  by mail.epfl.ch (AngelmatoPhylax SMTP proxy) with ESMTPS; Mon, 24 Jan 2022 18:17:34 +0100
+X-EPFL-Auth: R/EupxFXVDvbJIb0e0oB43suN5XVnC46QEg2hyH1QdNM5chHmsM=
+Received: from ewa07.intranet.epfl.ch (128.178.224.178) by
+ ewa11.intranet.epfl.ch (128.178.224.186) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 24 Jan 2022 18:17:34 +0100
+Received: from ewa07.intranet.epfl.ch ([fe80::f470:9b62:7382:7f3a]) by
+ ewa07.intranet.epfl.ch ([fe80::f470:9b62:7382:7f3a%4]) with mapi id
+ 15.01.2308.020; Mon, 24 Jan 2022 18:17:34 +0100
+From:   Lyu Tao <tao.lyu@epfl.ch>
+To:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+Subject: How does EXT4 ensures two processes don't modify and synchronize one
+ page at the same time.
+Thread-Topic: How does EXT4 ensures two processes don't modify and synchronize
+ one page at the same time.
+Thread-Index: AQHYEUYlxaL8ODP5KEKQsEOMAP2YQg==
+Date:   Mon, 24 Jan 2022 17:17:34 +0000
+Message-ID: <6fdeab9535134fc18e86968b10e726c6@epfl.ch>
+Accept-Language: en-US, fr-CH
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [178.199.230.7]
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
---=20
-Hallo,
+Hi,
 
-Sie haben eine laufende Spende von Frau Maria-Elisabeth Schaeffler,
-Antworten Sie jetzt f=C3=BCr Details und Anforderungen ..
+I'm new to file system area and have a naive question about the global sync=
+.
 
-Herzliche Gr=C3=BC=C3=9Fe
-Gesch=C3=A4ftsf=C3=BChrer schaeffler Gruppen
-Maria-Elisabeth Schaeffler
-mariaelisabethschaeffler1941@gmail.com
+Let's suppose there are two process are writing to the same file. If one pr=
+ocess issues a sync() syscall, which mechanism can ensures the two processe=
+s don't modify and synchronize one page at the same time.
+
+Best,
+Tao
