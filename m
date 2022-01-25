@@ -2,106 +2,72 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9516749AC2D
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 Jan 2022 07:15:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E430E49AD16
+	for <lists+linux-ext4@lfdr.de>; Tue, 25 Jan 2022 08:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236896AbiAYGM3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 25 Jan 2022 01:12:29 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:40952 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238834AbiAYGCb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 25 Jan 2022 01:02:31 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 20P4lQrm001512;
-        Tue, 25 Jan 2022 06:02:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : content-transfer-encoding
- : mime-version; s=pp1; bh=5p8Wp2r2xAze9kpL5AFF4CamRzAPWdC2kdc2nmOiCnQ=;
- b=HICX7BuJk2omG6xwdVNyX47LLvKITYV4Ma2DkBpT1F0mOayURAjQSz0Uw2uG9t8y8/UA
- Q0LSTi1LV/gfVJLqHYcKYssoFRI9Zuon+vf9neyV+uGkitt2TdTGkrM1iYX3AmAtsF5N
- 1RQta/Zo8CtWOFI2VswQFc7DUp6kIZZecTDg5q05cogAfwE2UTKSzQEUWCDpUeJ1w1Zf
- rdVZv9B9LGnBWvjuzvKRLIx2z6w/9luhcHWpf4V7SPHEacWj78lWhEfcQO7yUgrXZqys
- Ixpg9iQeko4oAD6dEE7pQ3PIVqr2mVWu/x/0+zwHv4Bs6N8DBMAS6cy+aveuKbuWPhCO yw== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3dtag7197c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jan 2022 06:02:14 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 20P5xj5U032149;
-        Tue, 25 Jan 2022 06:02:12 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 3dr9j92h63-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jan 2022 06:02:12 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 20P62ASq43647338
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 Jan 2022 06:02:10 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2B7E6A4055;
-        Tue, 25 Jan 2022 06:02:10 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 97291A4040;
-        Tue, 25 Jan 2022 06:02:09 +0000 (GMT)
-Received: from localhost (unknown [9.43.18.116])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 25 Jan 2022 06:02:09 +0000 (GMT)
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     fstests <fstests@vger.kernel.org>, linux-ext4@vger.kernel.org
-Cc:     Zhang Yi <yi.zhang@huawei.com>, tytso@mit.edu,
-        Jan Kara <jack@suse.cz>, chenlong <chenlongcl.chen@huawei.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>
-Subject: [RFC 1/1] ext4/054: Remove auto and quick group
-Date:   Tue, 25 Jan 2022 11:32:02 +0530
-Message-Id: <1e04c57094d871869997220fc5539dfe2ffa1884.1643089143.git.riteshh@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1643089143.git.riteshh@linux.ibm.com>
-References: <cover.1643089143.git.riteshh@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: TFrCSFaUSRdfl4WrvakNaFc-V0i2ry_P
-X-Proofpoint-GUID: TFrCSFaUSRdfl4WrvakNaFc-V0i2ry_P
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S1377758AbiAYHG4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 25 Jan 2022 02:06:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1391739AbiAYHCc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 Jan 2022 02:02:32 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 644EFC0417F5
+        for <linux-ext4@vger.kernel.org>; Mon, 24 Jan 2022 21:41:42 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id k31so56811889ybj.4
+        for <linux-ext4@vger.kernel.org>; Mon, 24 Jan 2022 21:41:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=KeMi8W+p20zdR41YZoRj2EapY7imNsLYkAgQIQsIzqY=;
+        b=omchJdYJcVvbnbx3iWDsqNfzfvgFxRY5UV8d5JFHFd0Qxp4Fs99oOTWbnsLJvmkGLO
+         KJ9h0aIZipzZCxLYUC1EbKJQXjsTnrYD4skWPu5L6KEa7WwksJ/DgfAKn2I//FvNz16e
+         yvRSMjBJIkfJOiN7QosmIFzfX6t0OymUxXq/kzoldmt5Tk4SMXy3poAlzZfnj4tLqkCO
+         r1uVZjBjIcfKcTHUm4yIRwmNGijXGA0OAhFYRol/6hiAAZJ37V1K6a3bLM+XpGdFXGos
+         hPiIHyT9XSW8aiVFGjIdHRgRcnWLHkX21ZW87GvspRwlXlL9xuI6dXFZXWxBZnRTJWgA
+         Bk5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=KeMi8W+p20zdR41YZoRj2EapY7imNsLYkAgQIQsIzqY=;
+        b=blu0bae4xsPAF4eC2Uz3p4v9bhCtJkzU5N347LyABdo0rJVIQcekkaFzwT7OIDJ+zF
+         7VMrhUTRTiPv1tqLaa/7QgwIc+pre/FJU6D2UREFbzGK5lnRp90FuY1OrS+44pVHXgKS
+         KW2szXWhzA4LgoWSnsk3JjUJeBAVR4ZGYeu9UQagsIiwhgOTNX02S35IGnff5YDpnegH
+         y2DIUNCAk97xIEIrJzt7qHcILIEEdtc+5mjGbrg1b14rzO/wQv5FpcGbs+Fyz7NVfs9j
+         M9dlTztp/pDgK02H8zGcGce7oksZanHqRrODqe8KqlS6hjOnXrN6aGxzco2PsRIe/znU
+         CEbA==
+X-Gm-Message-State: AOAM533vi6m3k3Di0bFJpVLtCppdP+K4dLMNA1OqZJrSmFFecG8assNX
+        1IbpEu9Jcjegl+w8jsgrF23Gqwu/w/xGR/no2l8=
+X-Google-Smtp-Source: ABdhPJwywiwyTtOCXfovmJIEM7Vqt+PFDzMW3tzxRj90P3fJDPhIlV2jOd/vI9WPw47eCab8Z7S4n4qldrLRD5Ly+Sc=
+X-Received: by 2002:a25:d783:: with SMTP id o125mr27594671ybg.710.1643089301256;
+ Mon, 24 Jan 2022 21:41:41 -0800 (PST)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-25_01,2022-01-24_02,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- spamscore=0 impostorscore=0 mlxlogscore=994 bulkscore=0 adultscore=0
- clxscore=1015 phishscore=0 malwarescore=0 suspectscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2201250040
+Received: by 2002:a05:7000:ad9d:0:0:0:0 with HTTP; Mon, 24 Jan 2022 21:41:40
+ -0800 (PST)
+Reply-To: danielseyba@yahoo.com
+From:   Seyba Daniel <mrssuzaramaling19@gmail.com>
+Date:   Tue, 25 Jan 2022 06:41:40 +0100
+Message-ID: <CAKN-9XgQjuMspSnu-F01fv+Bgr6eZEygpsR3pZ-5cF=m78av-Q@mail.gmail.com>
+Subject: Hello,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-It seems this test creates a crafted corrupted image by modifying ext4
-extent block structure of an inode to test some ext4 extent consistency
-fixes done at [1].
-This IMO, should not be in auto and quick group, since it could cause BUG_ON()
-and happens only with some crafted corrupted image (or with fault injection
-testing with errors=continue mount option).
+Hello,
 
-[1]: https://lore.kernel.org/all/20210908120850.4012324-1-yi.zhang@huawei.com/
-Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
----
- tests/ext4/054 | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I am so sorry contacting you in this means especially when we have never
+met before. I urgently seek your service to represent me in investing in
+your region / country and you will be rewarded for your service without
+affecting your present job with very little time invested in it.
 
-diff --git a/tests/ext4/054 b/tests/ext4/054
-index 9a11719f..21fa4e0a 100755
---- a/tests/ext4/054
-+++ b/tests/ext4/054
-@@ -12,7 +12,7 @@
- #    ext4_valid_extent_entries())
+My interest is in buying real estate, private schools or companies with
+potentials for rapid growth in long terms.
 
- . ./common/preamble
--_begin_fstest auto quick dangerous_fuzzers
-+_begin_fstest dangerous_fuzzers
+So please confirm interest by responding back.
 
- # Import common functions
- . ./common/filter
---
-2.31.1
+My dearest regards
 
+Seyba Daniel
