@@ -2,72 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E430E49AD16
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 Jan 2022 08:08:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B191F49ADC0
+	for <lists+linux-ext4@lfdr.de>; Tue, 25 Jan 2022 08:46:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377758AbiAYHG4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 25 Jan 2022 02:06:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1391739AbiAYHCc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 Jan 2022 02:02:32 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 644EFC0417F5
-        for <linux-ext4@vger.kernel.org>; Mon, 24 Jan 2022 21:41:42 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id k31so56811889ybj.4
-        for <linux-ext4@vger.kernel.org>; Mon, 24 Jan 2022 21:41:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=KeMi8W+p20zdR41YZoRj2EapY7imNsLYkAgQIQsIzqY=;
-        b=omchJdYJcVvbnbx3iWDsqNfzfvgFxRY5UV8d5JFHFd0Qxp4Fs99oOTWbnsLJvmkGLO
-         KJ9h0aIZipzZCxLYUC1EbKJQXjsTnrYD4skWPu5L6KEa7WwksJ/DgfAKn2I//FvNz16e
-         yvRSMjBJIkfJOiN7QosmIFzfX6t0OymUxXq/kzoldmt5Tk4SMXy3poAlzZfnj4tLqkCO
-         r1uVZjBjIcfKcTHUm4yIRwmNGijXGA0OAhFYRol/6hiAAZJ37V1K6a3bLM+XpGdFXGos
-         hPiIHyT9XSW8aiVFGjIdHRgRcnWLHkX21ZW87GvspRwlXlL9xuI6dXFZXWxBZnRTJWgA
-         Bk5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=KeMi8W+p20zdR41YZoRj2EapY7imNsLYkAgQIQsIzqY=;
-        b=blu0bae4xsPAF4eC2Uz3p4v9bhCtJkzU5N347LyABdo0rJVIQcekkaFzwT7OIDJ+zF
-         7VMrhUTRTiPv1tqLaa/7QgwIc+pre/FJU6D2UREFbzGK5lnRp90FuY1OrS+44pVHXgKS
-         KW2szXWhzA4LgoWSnsk3JjUJeBAVR4ZGYeu9UQagsIiwhgOTNX02S35IGnff5YDpnegH
-         y2DIUNCAk97xIEIrJzt7qHcILIEEdtc+5mjGbrg1b14rzO/wQv5FpcGbs+Fyz7NVfs9j
-         M9dlTztp/pDgK02H8zGcGce7oksZanHqRrODqe8KqlS6hjOnXrN6aGxzco2PsRIe/znU
-         CEbA==
-X-Gm-Message-State: AOAM533vi6m3k3Di0bFJpVLtCppdP+K4dLMNA1OqZJrSmFFecG8assNX
-        1IbpEu9Jcjegl+w8jsgrF23Gqwu/w/xGR/no2l8=
-X-Google-Smtp-Source: ABdhPJwywiwyTtOCXfovmJIEM7Vqt+PFDzMW3tzxRj90P3fJDPhIlV2jOd/vI9WPw47eCab8Z7S4n4qldrLRD5Ly+Sc=
-X-Received: by 2002:a25:d783:: with SMTP id o125mr27594671ybg.710.1643089301256;
- Mon, 24 Jan 2022 21:41:41 -0800 (PST)
+        id S1447044AbiAYHqO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 25 Jan 2022 02:46:14 -0500
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:58607 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1446753AbiAYHna (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 25 Jan 2022 02:43:30 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=eguan@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0V2pJgaO_1643096605;
+Received: from localhost(mailfrom:eguan@linux.alibaba.com fp:SMTPD_---0V2pJgaO_1643096605)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 25 Jan 2022 15:43:26 +0800
+Date:   Tue, 25 Jan 2022 15:43:25 +0800
+From:   Eryu Guan <eguan@linux.alibaba.com>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     fstests <fstests@vger.kernel.org>, linux-ext4@vger.kernel.org,
+        Zhang Yi <yi.zhang@huawei.com>, tytso@mit.edu,
+        Jan Kara <jack@suse.cz>, chenlong <chenlongcl.chen@huawei.com>
+Subject: Re: [RFC 0/1] ext4/054: Should we remove auto and quick group?
+Message-ID: <20220125074325.GB12255@e18g06458.et15sqa>
+References: <cover.1643089143.git.riteshh@linux.ibm.com>
 MIME-Version: 1.0
-Received: by 2002:a05:7000:ad9d:0:0:0:0 with HTTP; Mon, 24 Jan 2022 21:41:40
- -0800 (PST)
-Reply-To: danielseyba@yahoo.com
-From:   Seyba Daniel <mrssuzaramaling19@gmail.com>
-Date:   Tue, 25 Jan 2022 06:41:40 +0100
-Message-ID: <CAKN-9XgQjuMspSnu-F01fv+Bgr6eZEygpsR3pZ-5cF=m78av-Q@mail.gmail.com>
-Subject: Hello,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1643089143.git.riteshh@linux.ibm.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Tue, Jan 25, 2022 at 11:32:01AM +0530, Ritesh Harjani wrote:
+> Hello Zhang/Ted,
+> 
+> Looks like the issue fixed by patches at [1], were observed with fault injection
+> testing and with errors=continue mount option. But were not cc'd to stable.
+> 
+> Do you think those should be cc'd to stable tree?
+> 
+> Meanwhile, I was thinking we should anyway remove auto and quick group from this
+> test as it could trigger a bug on in older kernel targets. Thoughts?
 
-I am so sorry contacting you in this means especially when we have never
-met before. I urgently seek your service to represent me in investing in
-your region / country and you will be rewarded for your service without
-affecting your present job with very little time invested in it.
+IMO, ext4/054 is a targeted regression test and should be in auto group,
+which ensures the bug doesn't get re-introduced in future.
 
-My interest is in buying real estate, private schools or companies with
-potentials for rapid growth in long terms.
+I think you could just skip this test to fit your kernel version, e.g.
 
-So please confirm interest by responding back.
+echo ext4/054 > ext4.exclude
+./check -X ext4.exclude
 
-My dearest regards
+Thanks,
+Eryu
 
-Seyba Daniel
+> 
+> 
+> [1]: https://lore.kernel.org/all/20210908120850.4012324-1-yi.zhang@huawei.com/
+> 
+> Ritesh Harjani (1):
+>   ext4/054: Remove auto and quick group
+> 
+>  tests/ext4/054 | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> --
+> 2.31.1
