@@ -2,75 +2,92 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7BB49BD6F
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 Jan 2022 21:49:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E9D249C39A
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Jan 2022 07:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232469AbiAYUtb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 25 Jan 2022 15:49:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41108 "EHLO
+        id S235677AbiAZGcL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Jan 2022 01:32:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232563AbiAYUtM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 Jan 2022 15:49:12 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF29C061744
-        for <linux-ext4@vger.kernel.org>; Tue, 25 Jan 2022 12:49:12 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id i1so2823683pla.9
-        for <linux-ext4@vger.kernel.org>; Tue, 25 Jan 2022 12:49:12 -0800 (PST)
+        with ESMTP id S235657AbiAZGcL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Jan 2022 01:32:11 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C0FC061744
+        for <linux-ext4@vger.kernel.org>; Tue, 25 Jan 2022 22:32:11 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id f8so20317072pgf.8
+        for <linux-ext4@vger.kernel.org>; Tue, 25 Jan 2022 22:32:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=5qRcSiWYVZPeLOQtDxt+I8vSASVfNGyZI4wIHLpAlDo=;
-        b=Trvz/Cz2N9lcF0eFlQVpWY21DJ3TOSbHJf4IWmmvu90ccgpijQhtHdKsUP5Y/Cm0sI
-         KhKLj2nvQ2U02V9QTSFXCEWv3UGCrW5yhB8i+0xiGhipZUzkPXvt8DMBhdLWmZRYk6tB
-         0TZTaEPQ+3WKkRgs4z20Eb5mrkTDT/p1vkvb1PfVoFrSKZkiM/dJg+yz1omJvbkKzVVJ
-         4NHm3tqtqlX89980sJWn5Fin8m9fX+Vn7PlXx9Xn/YWGal/ma5LumZyyS5v4Sh0XhiCk
-         5/Bftr3yhEO5smW5ay+QnAKNyQD8kd0073sqzCuDvWdJGi8rpotAWrNEMKH8654LuV5L
-         uvXw==
+        bh=UFV9HljKMoO/Gv/RBQllZfNyG/7KSwU8sqdiwmqzVPg=;
+        b=rHHIfCeFr9lMxN2MhwVdmuYo0GW95Tx9RS6YGi7T29U43aewRhpZKl0dwvZl3g+1Kq
+         MpznLmqvsUUEgwFfhPZ7zVEsRWX4OTdyf6LH8b9L2usPAyWpIkr3Sy/A+5uQnEih3ZRt
+         vyAdWk1Ua+fnKlO9EM3Ez6IGjo/HaJyRoz3lDOa4qDrI9pMjXfD87xDnxn7xKxA06sNa
+         opACS2Ffdr8fJCNQ5Llwq/dg3lc7Mgnd/1Q7kECcpf5D1Xru9KGi9c6s41nRFucyXzTM
+         u1KFrWsI6P/i0pNS4Rjn5eHX8jpXbLELki4LVGuOvMfw8wXoOro1JFU9tlzQOAn8i4LL
+         KqrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=5qRcSiWYVZPeLOQtDxt+I8vSASVfNGyZI4wIHLpAlDo=;
-        b=xEiGi30Lj+xTWFPNGNbbyOgFznXdjvWj5BbLwQZDGxQwNY0qNFXTh1y0gTNy84nmgx
-         sBVbNzmV91ho8J+86Z1UFuZLGiOn/lOK3V3gVlcZON7E1g1mNbOeEjhaKGkNZ1c8H3z/
-         2hc8IUxrpoEMSeHWVoJ/7E8Cwmnn9pkbelQAaPdckV1StSZeFuV2He/3d+32KZ5MoLec
-         CBwCEz35ppvlNNg0sW2MrGb3jjMihIUf/fXv6AXW5nmzgKRj4fRkzg14RqAYcYBPDFjR
-         df0NP8KyEjUv+1UCQYkkE5OxnM+KTKU+q3X/c28gvgpNw2i1TYCFR/G2ZRHgDfiEFcAJ
-         umxQ==
-X-Gm-Message-State: AOAM532hwP9d7bTI7o3ZncaqAuWXzFv2cZSJzR9DvsW21O6uqZ7fGPwn
-        GE7gXF6cCfOp3NlGzKgb7tNJ5uNz0Va5SXOFPqg=
-X-Google-Smtp-Source: ABdhPJxEIUSppniJtcpyjGfTYivvhS/j0jWcQ/kAR9KS68587uozltp9C8Sa2gDXZZhUiff7nocHcA70+mGcmzyxWWo=
-X-Received: by 2002:a17:90b:1806:: with SMTP id lw6mr5331979pjb.82.1643143752414;
- Tue, 25 Jan 2022 12:49:12 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UFV9HljKMoO/Gv/RBQllZfNyG/7KSwU8sqdiwmqzVPg=;
+        b=TiNXK/FcwqnBK3Z7uSBUSmF/MaE+PVLaY6poG91hJ83uf09VXOicv/GK2lOIm+icI7
+         Evel7rIUh1WL7zGLDCjvXB/iknpN0jGGqD8vkIptIz3p380rnbpbeUuz1lUVGlfZdBEp
+         muT0MjWa1ZEqSbsoIQiqIYcp0vWQJZ20iXxU+hbQ3IkKoENXSqJb9kdC1iqdxwqQV8Vr
+         HoACcJYKkpW1aMZ/dhahVxhk2EKJq7YSZtwfJwjzWsTOHO4iItuiublo1EhdRnXQc6Nb
+         hdlAN+dOyMKlr26sluiaTwmRa2y+wT/JWmqrBL72LzUaFIDKBE6kauGzHzRoMzt+cemo
+         RBnw==
+X-Gm-Message-State: AOAM5334EZ36O2EC+wkzFPT5LJ+k5UlnbchacQ3rLTQYCjTZH7h/lFZx
+        1NoX1Fw/XWmUQEYvCzQmY4/LWQ==
+X-Google-Smtp-Source: ABdhPJwMrKHaj3UkQOIGN91HZ1jmNkH4XivVRyJXnwGPTwata5DNZ4rKGUGsq0dUjtpeBYEuPj4Lng==
+X-Received: by 2002:a63:f201:: with SMTP id v1mr9352021pgh.250.1643178730748;
+        Tue, 25 Jan 2022 22:32:10 -0800 (PST)
+Received: from yinxin.bytedance.net ([139.177.225.244])
+        by smtp.gmail.com with ESMTPSA id p20sm16349824pgm.88.2022.01.25.22.32.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jan 2022 22:32:10 -0800 (PST)
+From:   Xin Yin <yinxin.x@bytedance.com>
+To:     harshadshirwadkar@gmail.com, tytso@mit.edu,
+        adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xin Yin <yinxin.x@bytedance.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] ext4: fix incorrect type issue during replay_del_range
+Date:   Wed, 26 Jan 2022 14:31:46 +0800
+Message-Id: <20220126063146.2302-1-yinxin.x@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: by 2002:a05:6a11:5604:0:0:0:0 with HTTP; Tue, 25 Jan 2022 12:49:11
- -0800 (PST)
-Reply-To: jennifermbaya38@gmail.com
-From:   Mrs Jennifer Mbaya <kokossousylvie@gmail.com>
-Date:   Tue, 25 Jan 2022 12:49:11 -0800
-Message-ID: <CAFBEt+m8TLAxpx6oaYC4imYUm+mn67WUT804FCDA2jtf7wx+OQ@mail.gmail.com>
-Subject: =?UTF-8?Q?Kedvezm=C3=A9nyezett?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Az =C3=96n nev=C3=A9ben az Egyes=C3=BClt Nemzetek =C3=A9s az Eg=C3=A9szs=C3=
-=A9g=C3=BCgyi Vil=C3=A1gszervezet a
-nemzetk=C3=B6zi valutaalaphoz kapcsol=C3=B3dva d=C3=ADjat adom=C3=A1nyoz, a=
-melyben az =C3=96n
-e-mail c=C3=ADm=C3=A9t =C3=A9s p=C3=A9nzeszk=C3=B6z=C3=A9t =C3=A1tadtuk nek=
-=C3=BCnk az =C3=96n =C3=A1tutal=C3=A1sa =C3=A9rdek=C3=A9ben,
-k=C3=A9rj=C3=BCk, eros=C3=ADtse meg adatait az =C3=96n =C3=A1tutal=C3=A1sa =
-=C3=A9rdek=C3=A9ben.
-Azt az utas=C3=ADt=C3=A1st kaptuk, hogy minden f=C3=BCggoben l=C3=A9vo tran=
-zakci=C3=B3t vigy=C3=BCnk
-=C3=A1t a k=C3=B6vetkezo k=C3=A9t napon bel=C3=BCl, de ha megkapta az alapj=
-=C3=A1t, akkor
-hagyja figyelmen k=C3=ADv=C3=BCl ezt az =C3=BCzenetet, ha nem azonnal.
-S=C3=BCrgosen v=C3=A1laszolnia kell erre az =C3=BCzenetre, ez nem egy olyan
-internetes csal=C3=B3, ez a vil=C3=A1gj=C3=A1rv=C3=A1ny enyh=C3=ADt=C3=A9se=
-.
+should not use fast commit log data directly, add le32_to_cpu().
+
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 0b5b5a62b945 ("ext4: use ext4_ext_remove_space() for fast commit replay delete range")
+Signed-off-by: Xin Yin <yinxin.x@bytedance.com>
+---
+ fs/ext4/fast_commit.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+index ccd2b216d6ba..488347b4c8b0 100644
+--- a/fs/ext4/fast_commit.c
++++ b/fs/ext4/fast_commit.c
+@@ -1798,8 +1798,9 @@ ext4_fc_replay_del_range(struct super_block *sb, struct ext4_fc_tl *tl,
+ 	}
+ 
+ 	down_write(&EXT4_I(inode)->i_data_sem);
+-	ret = ext4_ext_remove_space(inode, lrange.fc_lblk,
+-				lrange.fc_lblk + lrange.fc_len - 1);
++	ret = ext4_ext_remove_space(inode, le32_to_cpu(lrange.fc_lblk),
++				le32_to_cpu(lrange.fc_lblk) +
++				le32_to_cpu(lrange.fc_len) - 1);
+ 	up_write(&EXT4_I(inode)->i_data_sem);
+ 	if (ret) {
+ 		iput(inode);
+-- 
+2.25.1
+
