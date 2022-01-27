@@ -2,85 +2,98 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 795A749E40A
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Jan 2022 15:01:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 636E549E578
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Jan 2022 16:09:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241922AbiA0OBp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 27 Jan 2022 09:01:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42872 "EHLO
+        id S242809AbiA0PJ0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 27 Jan 2022 10:09:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242040AbiA0OBo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 27 Jan 2022 09:01:44 -0500
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 704CFC061714
-        for <linux-ext4@vger.kernel.org>; Thu, 27 Jan 2022 06:01:44 -0800 (PST)
-Received: by mail-oi1-x22f.google.com with SMTP id e81so6008798oia.6
-        for <linux-ext4@vger.kernel.org>; Thu, 27 Jan 2022 06:01:44 -0800 (PST)
+        with ESMTP id S242797AbiA0PJY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 27 Jan 2022 10:09:24 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5539C061714
+        for <linux-ext4@vger.kernel.org>; Thu, 27 Jan 2022 07:09:23 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id c190-20020a1c9ac7000000b0035081bc722dso2072194wme.5
+        for <linux-ext4@vger.kernel.org>; Thu, 27 Jan 2022 07:09:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=f+I9YSZvkxFmAyHSEwyC88GkSfohUVVnioLisLLEuoQ=;
-        b=VcP3hfOwcMu0gcyPKDauqAGNUh+XUZMVkKTZfl9BLDfQSZRU59darCZM18CBrfiSM9
-         UWQKa1l2ktX3fWNDBQQcLB7EsQ059OxaeC7E7yjK8Q7RRq3gK4A5IgDKbgxjfB67WHPG
-         2WJrY4ToSohKXJ/U6Uv8sHUZnbuScHbh3lBBnCf9+KaCd9hiEoDsMTVboMxrcUd8nf7r
-         vCayRmTm8GXvNAEQGhnaVMLRloKArz8fJX6qJNQO4yqFLnJQ0kE3wIm6APrQziyJ0ivp
-         YNRDVLRWEfRJ8HGltM41XRFY/GTPPp4RD9K5gHI0nP5StQiDCLV+7f4E0NQiL1F/1bPP
-         4epw==
+        d=embecosm.com; s=google;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Q9QBFDAqqouYlyr0jMPHy+6Jy7f8uGNXIPKhu60Tguw=;
+        b=PzZN6clfrSgII+sbcIBG3+l4Gx/dbWaItSboXcwQmQPA+6VuJ1jv/b6e6wAs54Vmn7
+         GFW7kLaakohm0G+nG+0THpC/Qo3m0zcLipVRl+f2eIkQW2W8wh+8DPoevLPuzOcC8WPi
+         wMHeZx56fyoqxYzubkMIO7gl+1SScDV2HZ9m9dCYsm9slgy6Q3mvJ2ZmepqUEzjrmY36
+         1xPrbRpMFbl6SNmJqIDoe0OrGZklgnoSB5SWtNvkc2c0OHk8qvv+Nwt2nfTVLNNE0Y0p
+         crROOnex1OzaLHqzW+cTFqz+2/z9/sXZNNG5qt9pGDyTmM6W81qWjK70jzCwTB+TmeFP
+         Hm5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=f+I9YSZvkxFmAyHSEwyC88GkSfohUVVnioLisLLEuoQ=;
-        b=N5J/JxpsMF4BLhvdM25Hq0ykwNGC72Tk13XHHyGTqJZh7PpFJqG/j4iKzqvsIhaczE
-         nFH9V8TccIDkB6G3vojZT4KggexD1gNe65Omxqvixv1+Dd/I7u5HC/CpWJrYq0CLuMbS
-         /02iJoC+oRbUfim55nS6kQGD78Hny06haZFy3dnAzBBtk1n8ljxzlUKOFtdwet31htiE
-         HkOmMSXnIvK3eEfEjhAKAdLA98GGhgF5nOnPHmqwvfSdgTLgmUmiAfrVK5v74jYum4Z3
-         o6ufIktKyDH99GPA6pt7aMJ6WhxKoMGOKnYRhZnMULzwG0m12Zvq/bDfzzSreyg9wnH1
-         6fdg==
-X-Gm-Message-State: AOAM533HRwEqMAEiehI9+irMQT3mXlQApX3s8w3jx/pjdpjfYzasiKd6
-        +eAk/JIhRwesbaOfDWTMWIRfomEHVlBsCIRPVYg=
-X-Google-Smtp-Source: ABdhPJxk29CAlZNjhE5YopoJ/6s/S+207Rymw21LGzkzBRcHX9NfoRfQlft1sgvDffwWqG2Gy/iTZxd4CcR0Y9mfAvQ=
-X-Received: by 2002:a05:6808:21aa:: with SMTP id be42mr7351708oib.87.1643292103796;
- Thu, 27 Jan 2022 06:01:43 -0800 (PST)
+        bh=Q9QBFDAqqouYlyr0jMPHy+6Jy7f8uGNXIPKhu60Tguw=;
+        b=sb0ePhC/Uio+Yuy/VPSP1okzOwQQ0PEdF2rFsUzacovW/BLN+4qQ6Fou/g35odQVMi
+         4V/QN2tzh6Vs1D/SufbamomIgEf/pIEwdAxSk1GcCyv+2nJU6LagVLxOy/hQcJWXzKE0
+         nqWhX3YEi/vYqAKwzfbUXRBzCTI4983yxIItuQvGQKQRVTi/vXqT67e0aWePaQzC3B9e
+         Y4cOIcAymnT8IUvPDLMj6AJEdUMEmmk6O+VkMZCTt1k+svjpGrf9GRyfyC7mtpPq5GRI
+         EWrjU7mbMrbUWyr/UQJr6TMUsDfjd4yJMehWLxbMtbr4AkX4BY66OAy2l9mH0tcCW+eE
+         Lt2Q==
+X-Gm-Message-State: AOAM532miak7c8XZnSp6imrCeRB40ngbPvapjDsfJnYLfhLjTZs4zYTa
+        T0dxNfpr7iY5GtLvCO2qIVvnsQ==
+X-Google-Smtp-Source: ABdhPJyjzNwl503vJxXMQViNsp3qKDCzFACpd8m6jsk5JVfDyms+t6Lu+s2ksEvtPsddGf0gq06zwQ==
+X-Received: by 2002:a05:600c:264d:: with SMTP id 13mr3594062wmy.85.1643296162557;
+        Thu, 27 Jan 2022 07:09:22 -0800 (PST)
+Received: from [192.168.88.236] (79-69-186-222.dynamic.dsl.as9105.com. [79.69.186.222])
+        by smtp.gmail.com with ESMTPSA id 8sm6577922wmg.0.2022.01.27.07.09.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Jan 2022 07:09:22 -0800 (PST)
+To:     Matthew Wilcox <willy@infradead.org>,
+        Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     linux-ext4@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <d4a67b38-3026-59be-06a8-3a9a5f908eb4@embecosm.com>
+ <20220127122039.45kxmnm3s7kflo6h@riteshh-domain>
+ <YfKg3DQS0h2lPo3z@casper.infradead.org>
+From:   Maxim Blinov <maxim.blinov@embecosm.com>
+Subject: Re: Help! How to delete an 8094-byte PATH?
+Message-ID: <a57e2fde-f430-952d-9878-d7a5307cb2db@embecosm.com>
+Date:   Thu, 27 Jan 2022 15:09:21 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Received: by 2002:a4a:6841:0:0:0:0:0 with HTTP; Thu, 27 Jan 2022 06:01:43
- -0800 (PST)
-From:   COURT JUSTICE <highcourtofjusticetg2@gmail.com>
-Date:   Thu, 27 Jan 2022 14:01:43 +0000
-Message-ID: <CABsv-+hy3fK2u_mJJSDcoH2wp_dGuu0MeTgke2K+9xPWZCs_yQ@mail.gmail.com>
-Subject: Payment notification letter.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YfKg3DQS0h2lPo3z@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Barrister Jeff Scott and Partners
-Republic of Togo West Africa.
-Tel Contact : +228 9033 58 20
-Contact Person: Barrister  Jeff Scott
+Hi Matthew, Ritesh,
 
-Dear Friend,
+On 27/01/2022 13:40, Matthew Wilcox wrote:
+> here's an idea:
+> 
+> while true; do
+> 	mv confdir3/confdir3 tmpd; rmdir confdir3; mv tmpd confdir3;
+> done
+> 
 
-I am Barrister Jeff Scott a personal Lawyer to Late (Mr. J.B) who is a
-Nationality of your country or maybe one of your relative; He died in
-my country due to Pandemic Corona Virus Crisis, I have contacted you
-as the beneficiary to the Late Mr. J.B) because you have the same name
-with him; please let me know if you know this man, he deposited fund
-valued at =E2=82=AC4.5 million Euros in our Bank here before he died.
+Thankyou for all your comments - mv'ing a child directory "up" and
+deleting *that* did the trick!
 
-Your immediate/urgent response is needed now and don=E2=80=99t hesitate to
-call me and also provide to me these below information=E2=80=99s for better
-communication and to enable the holding Bank start payment to you.
+Infact I was complaining about this to some colleagues who kindly
+pointed me to this thread [1] where someone has exactly the same issue.
 
-1. Your full Name
-2. Your Contact Address
-3. Your Occupation
-4. Telephone N=C2=B0
-5. Private Email.
+Searching for `confdir3`, it turns out this issue is more googleable
+than I initially realized - there's quite a few others who have bumped
+into these weird path length limitations, in particular with docker
+(there's another thing I forgot to mention - to be clear, I'm running
+QEMU inside a docker container.)
 
-Get back to me immediately.
-Thanks
-Barrister Jeff Scott.
+Still it seems strange, since the QEMU VM disk image is a static file
+within the docker file system, and there are no bind mounts going on in
+the container.
+
+[1]: https://github.com/moby/moby/issues/13451
