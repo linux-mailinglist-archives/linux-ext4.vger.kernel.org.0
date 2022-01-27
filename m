@@ -2,119 +2,119 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D82549D9E0
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Jan 2022 06:13:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34CC949DB2B
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Jan 2022 08:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236100AbiA0FNv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 27 Jan 2022 00:13:51 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53644 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235130AbiA0FNv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 27 Jan 2022 00:13:51 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 20R59SjM008893;
-        Thu, 27 Jan 2022 05:13:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=1/UxJrJzwCb+PoAiaPW5pQgvBrEH5fygufnzWdbeQww=;
- b=JIykwzVpMGXBOdAe/d8OtgmlXcRpFcmP4JeivKTS7m7vwGPTTdphxPXRGiSFfmk1pJ9V
- FkeVEMTQ6RRXJia1WEeo+CGLbV/KrT6oUFgd0CiIpg/DjbOro+cDpvtSrF1iUSQ/IKBm
- eyE64ExHvaJKuuGJYMMsX9//zNI3GE+0u/9er1n+kVfXOOdXQrff3BDDmd+sR8XhUuep
- OKs8ZKao0O/jZDZE83koU6alDDZZq70knhJr3MU4bVAkGXzMOtAeySZ7qbpuOo8pcd8x
- 4FqN1kO1y438jVxwwekZ1pDu4nyNLpgryCdXoLxgl6kH7VKRS46xC17XswhngoPkokeX jQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3dumkurbsq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jan 2022 05:13:45 +0000
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 20R5DdYn032122;
-        Thu, 27 Jan 2022 05:13:44 GMT
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3dumkurbs6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jan 2022 05:13:44 +0000
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 20R58M4u023005;
-        Thu, 27 Jan 2022 05:13:42 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma01fra.de.ibm.com with ESMTP id 3dr9j9sxwp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jan 2022 05:13:42 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 20R5DdLn28377542
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 Jan 2022 05:13:39 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B1CA111C058;
-        Thu, 27 Jan 2022 05:13:39 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 302E311C064;
-        Thu, 27 Jan 2022 05:13:39 +0000 (GMT)
-Received: from localhost (unknown [9.43.59.174])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 27 Jan 2022 05:13:38 +0000 (GMT)
-Date:   Thu, 27 Jan 2022 10:43:37 +0530
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     Xin Yin <yinxin.x@bytedance.com>
-Cc:     harshadshirwadkar@gmail.com, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] ext4: fix incorrect type issue during replay_del_range
-Message-ID: <20220127051337.oc6ibems7mm6bhxp@riteshh-domain>
-References: <20220126063146.2302-1-yinxin.x@bytedance.com>
+        id S237044AbiA0HGy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 27 Jan 2022 02:06:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229823AbiA0HGy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 27 Jan 2022 02:06:54 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A32C061714
+        for <linux-ext4@vger.kernel.org>; Wed, 26 Jan 2022 23:06:53 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id d138-20020a1c1d90000000b0034e043aaac7so2617793wmd.5
+        for <linux-ext4@vger.kernel.org>; Wed, 26 Jan 2022 23:06:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=embecosm.com; s=google;
+        h=from:to:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=Dw2vsnDPy4bAOFWcdaGeSZdx/xcsSNnShvjql+tRmx8=;
+        b=RCk6D6EeCg/9Qfd0K9c/eC8WIrD8YZng0Jw33h9j2LSIIwmgSSPmTZODxvqQ5yCMwy
+         ZD3GrH2XH0oPlsGdXt+4lTT0vd3Sm7nwfIk4Z0KU0kNkGzli5V5cnP9RyrHB6GiCNaIr
+         8Iy0j5eDD9myWkdaGJL8kHwYGEUtkxvez6MdWY7ftjotmN7fd1g0HevR2EQSeS4dETxx
+         dhwsX6kunXvy2adw4e6j4Be/WX3DoQc9b7RF4GgKqg6YnK+OKSEqQwxpu+ielQuGxaFb
+         SkZ7e73oEOTWNXutb3LtSdgPK96aCGQtSQQGLZoj7PBq4bqSWino+IkgGoMvC4g7O9FR
+         sopg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=Dw2vsnDPy4bAOFWcdaGeSZdx/xcsSNnShvjql+tRmx8=;
+        b=krbM9lWMSlRTB7VMTHmEDPPC081lgLBeVPwdlnxIuZ9asZjKfyir6HndkGWjtwQM59
+         /h0xqb0vPmzBcXhdhzjQGuLGWWBJhzpdyb3Agg8fhjvFGdfmDlZ/bl2NUEb11sqooe/D
+         WCZIDocFTV1u8NUTiXEu8O4lqKPt63L0ZVmARF9uL+TRMdtZfK50z38haFkBgsd910vW
+         Wq2axvPzi54dDOKDs6bB7axOn8takc0XX/8eC4PjnD0yP8Gc5r7pSAjdBjCCT1KeSI0n
+         4wViVBsm6Tw8IhhJzql/YFFBEIAu6fjZikZKCXqukDqyjcZygz4vs4jb6aEZguAT6pR1
+         iQYg==
+X-Gm-Message-State: AOAM530k1xObBU72D43QVFKLg3MOssJqR0fG650kfMVR2Tsr/fs2hvOX
+        S5/Otnl+AX2VFdagD2rkOn9d4A2K1vCjUg==
+X-Google-Smtp-Source: ABdhPJyPmStBo713qw0nBMDmn8ziKBg5Gz20C9MprW7T/XmiaDtm3SK5u/bmD/LayK0Y337F9RasFQ==
+X-Received: by 2002:a1c:1d48:: with SMTP id d69mr10469322wmd.167.1643267212300;
+        Wed, 26 Jan 2022 23:06:52 -0800 (PST)
+Received: from [192.168.88.236] (79-69-186-222.dynamic.dsl.as9105.com. [79.69.186.222])
+        by smtp.gmail.com with ESMTPSA id 1sm1197585wmo.37.2022.01.26.23.06.51
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jan 2022 23:06:52 -0800 (PST)
+From:   Maxim Blinov <maxim.blinov@embecosm.com>
+To:     linux-ext4@vger.kernel.org
+Subject: Help! How to delete an 8094-byte PATH?
+Message-ID: <d4a67b38-3026-59be-06a8-3a9a5f908eb4@embecosm.com>
+Date:   Thu, 27 Jan 2022 07:06:51 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220126063146.2302-1-yinxin.x@bytedance.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: OWD-0bOb0wHVW8u55OX2s7Oev7CXas0Z
-X-Proofpoint-ORIG-GUID: lSHeWMTH4OCw80k0rOnLIdeqL9jeHbY7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-27_01,2022-01-26_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 spamscore=0 impostorscore=0 malwarescore=0 adultscore=0
- lowpriorityscore=0 mlxscore=0 mlxlogscore=818 clxscore=1015 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2201270028
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22/01/26 02:31PM, Xin Yin wrote:
-> should not use fast commit log data directly, add le32_to_cpu().
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Fixes: 0b5b5a62b945 ("ext4: use ext4_ext_remove_space() for fast commit replay delete range")
-> Signed-off-by: Xin Yin <yinxin.x@bytedance.com>
+Hi all,
 
-Yes, a required change indeed.
-Since the patch marked as fixes was cc'd to stable, so this might be requird as
-well.
+I'm not a subscriber to this list (so please put me in the CC), but I've
+hit a really annoying un-googleable issue that I don't know who to ask
+about.
 
-Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+A runaway script has been recursively creating sub-directories under
+sub-directories until it hit the (apparent) OS limit. The path in
+question goes something like this:
 
-> ---
->  fs/ext4/fast_commit.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> index ccd2b216d6ba..488347b4c8b0 100644
-> --- a/fs/ext4/fast_commit.c
-> +++ b/fs/ext4/fast_commit.c
-> @@ -1798,8 +1798,9 @@ ext4_fc_replay_del_range(struct super_block *sb, struct ext4_fc_tl *tl,
->  	}
->
->  	down_write(&EXT4_I(inode)->i_data_sem);
-> -	ret = ext4_ext_remove_space(inode, lrange.fc_lblk,
-> -				lrange.fc_lblk + lrange.fc_len - 1);
-> +	ret = ext4_ext_remove_space(inode, le32_to_cpu(lrange.fc_lblk),
-> +				le32_to_cpu(lrange.fc_lblk) +
-> +				le32_to_cpu(lrange.fc_len) - 1);
->  	up_write(&EXT4_I(inode)->i_data_sem);
->  	if (ret) {
->  		iput(inode);
-> --
-> 2.25.1
->
+/work/build-native/binutils-gdb/gnulib/confdir3/confdir3/confdir3/confdir3/confdir3/........
+(you get the idea)
+
+It was only stopped by the following error:
+mkdir: cannot create directory 'confdir3': File name too long
+
+OK, fine, that was silly but whatever, right? I tried to delete this
+huge directory from the top with
+
+rm -rf confdir3/
+
+but that simply generated the same error as above. So, I figured "Hey,
+I'll just walk all the way to the bottom, and delete the directories
+one-by-one bottom up". Here's the script I ran to get to the bottom:
+
+$ for i in $(seq 999999); do echo "im $i levels deep"; cd confdir3; done;
+
+It then ran for a while, and eventually I got to the bottom:
+
+```
+...
+im 892 levels deep
+im 893 levels deep
+im 894 levels deep
+im 895 levels deep
+im 896 levels deep
+bash: cd: confdir3: File name too long
+$ ls
+<nothing here>
+```
+
+So then, I `cd ../`, and `rmdir confdir3`, but even here, I get
+
+rmdir: failed to remove 'confdir3/': File name too long
+
+I would be very grateful if someone could please help suggest how I
+might get this infernal tower of directories off of my precious ext4
+partition.
+
+I was thinking maybe there's some kind of magic "forget this directory
+inode ever existed" command, but I am out of my depth with filesystems.
+
+Best Regards,
+
+Maxim Blinov
