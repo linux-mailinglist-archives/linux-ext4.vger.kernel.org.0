@@ -2,50 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C2649D853
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Jan 2022 03:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5452249D841
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Jan 2022 03:47:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235352AbiA0Csg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Jan 2022 21:48:36 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:55212 "EHLO
+        id S235285AbiA0Crw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Jan 2022 21:47:52 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:55138 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233023AbiA0Csg (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Jan 2022 21:48:36 -0500
+        with ESMTP id S235311AbiA0Cru (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Jan 2022 21:47:50 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 322962195F;
-        Thu, 27 Jan 2022 02:48:34 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 2D50621901;
+        Thu, 27 Jan 2022 02:47:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1643251714; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1643251668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kbTSzbNt6Miq4dsiW9WaAJY+K5DZmoWBdpUeULoz7Kg=;
-        b=1wZkr12wd9U5Jdb4sa3OvdmE/oHFvtt6GyOZDezQUmTc91EwhN0PFy7hIF6sBNZxzjVzzb
-        vMqWdKvjwO9S/rmD3Q+QZoagD+vL7i8IDpgzYbd8KQvSEtk1UM0sOH+An+7Eds+PCLsx/B
-        ZQqra1C7uC6CD7jdxFODg3j2QAlSC/w=
+        bh=M8NYMcBcZD8GUv0cDvsP1eePtGigG8J8np/yV6nLjQQ=;
+        b=lpTMtDdgzXu6IXlWF2Cla7JZeA4O6IZP0tjrp8fZaU7ivDos+PHoL/XQMfCABF+bEfNOP4
+        asGZxs7WKvGfhEBJWG6JTtSILEhDDfyUZDxdz3isEFlXeNYP4t4z60IMGMWtpxXKM9DXAB
+        qZWJthZJaYv1R8Swu1zG6SDpKtDJcMw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1643251714;
+        s=susede2_ed25519; t=1643251668;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kbTSzbNt6Miq4dsiW9WaAJY+K5DZmoWBdpUeULoz7Kg=;
-        b=zhTB4TCnIeoWy/UkVvOLLhuwos2xDI6EHBpucyiEuGVNGrBFPJZDsIL8p12sbCoqpKSKHB
-        7DNXoDf4s+YuprBQ==
+        bh=M8NYMcBcZD8GUv0cDvsP1eePtGigG8J8np/yV6nLjQQ=;
+        b=GajJ1CW7bGmknt+eypyqRIr6NQ5RkVudFMz7+fbL2W6FyuUKWG82yY6INCh5zJBg+nHfCU
+        1tfjV2LY/eskY2DQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3F8AA13E46;
-        Thu, 27 Jan 2022 02:48:25 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5662613E46;
+        Thu, 27 Jan 2022 02:47:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id LLPBOvkH8mEgLAAAMHmgww
-        (envelope-from <neilb@suse.de>); Thu, 27 Jan 2022 02:48:25 +0000
-Subject: [PATCH 5/9] cephfs: don't set/clear bdi_congestion
+        id 1653BcwH8mHgKwAAMHmgww
+        (envelope-from <neilb@suse.de>); Thu, 27 Jan 2022 02:47:40 +0000
+Subject: [PATCH 3/9] f2fs: change retry waiting for
+ f2fs_write_single_data_page()
 From:   NeilBrown <neilb@suse.de>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
@@ -66,7 +67,7 @@ Cc:     linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
         ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
         linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
 Date:   Thu, 27 Jan 2022 13:46:29 +1100
-Message-ID: <164325158958.29787.8840004338500709466.stgit@noble.brown>
+Message-ID: <164325158956.29787.7016948342209980097.stgit@noble.brown>
 In-Reply-To: <164325106958.29787.4865219843242892726.stgit@noble.brown>
 References: <164325106958.29787.4865219843242892726.stgit@noble.brown>
 User-Agent: StGit/0.23
@@ -77,114 +78,60 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The bdi congestion framework is no-longer used - writeback uses other
-mechanisms to manage throughput.
+f2fs_write_single_data_page() can return -EAGAIN if it cannot get
+the cp_rwsem lock - it holds a page lock and so cannot wait for it.
 
-So remove calls to set_bdi_congested() and clear_bdi_congested(), and
-remove the writeback_count which is used only to guide the setting and
-clearing.
+Some code which calls f2fs_write_single_data_page() use
+congestion_wait() and then tries again.  congestion_wait() doesn't do
+anything useful as congestion is no longer tracked.  So this is just a
+simple sleep.
 
-The congestion_kb mount option is no longer meaningful, but as it is
-visible to user-space, removing it needs more consideration.
+A better approach is it wait until the cp_rwsem lock can be taken - then
+try again.  There is certainly no point trying again *before* the lock
+can be taken.
 
 Signed-off-by: NeilBrown <neilb@suse.de>
 ---
- fs/ceph/addr.c  |   27 ---------------------------
- fs/ceph/super.c |    2 --
- fs/ceph/super.h |    2 --
- 3 files changed, 31 deletions(-)
+ fs/f2fs/compress.c |    6 +++---
+ fs/f2fs/data.c     |    9 ++++++---
+ 2 files changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-index c98e5238a1b6..9147667f8cd5 100644
---- a/fs/ceph/addr.c
-+++ b/fs/ceph/addr.c
-@@ -57,11 +57,6 @@
-  * accounting is preserved.
-  */
- 
--#define CONGESTION_ON_THRESH(congestion_kb) (congestion_kb >> (PAGE_SHIFT-10))
--#define CONGESTION_OFF_THRESH(congestion_kb)				\
--	(CONGESTION_ON_THRESH(congestion_kb) -				\
--	 (CONGESTION_ON_THRESH(congestion_kb) >> 2))
--
- static int ceph_netfs_check_write_begin(struct file *file, loff_t pos, unsigned int len,
- 					struct folio *folio, void **_fsdata);
- 
-@@ -561,10 +556,6 @@ static int writepage_nounlock(struct page *page, struct writeback_control *wbc)
- 	dout("writepage %p page %p index %lu on %llu~%llu snapc %p seq %lld\n",
- 	     inode, page, page->index, page_off, len, snapc, snapc->seq);
- 
--	if (atomic_long_inc_return(&fsc->writeback_count) >
--	    CONGESTION_ON_THRESH(fsc->mount_options->congestion_kb))
--		set_bdi_congested(inode_to_bdi(inode), BLK_RW_ASYNC);
--
- 	req = ceph_osdc_new_request(osdc, &ci->i_layout, ceph_vino(inode), page_off, &len, 0, 1,
- 				    CEPH_OSD_OP_WRITE, CEPH_OSD_FLAG_WRITE, snapc,
- 				    ceph_wbc.truncate_seq, ceph_wbc.truncate_size,
-@@ -621,10 +612,6 @@ static int writepage_nounlock(struct page *page, struct writeback_control *wbc)
- 	ceph_put_wrbuffer_cap_refs(ci, 1, snapc);
- 	ceph_put_snap_context(snapc);  /* page's reference */
- 
--	if (atomic_long_dec_return(&fsc->writeback_count) <
--	    CONGESTION_OFF_THRESH(fsc->mount_options->congestion_kb))
--		clear_bdi_congested(inode_to_bdi(inode), BLK_RW_ASYNC);
--
- 	return err;
- }
- 
-@@ -704,12 +691,6 @@ static void writepages_finish(struct ceph_osd_request *req)
- 			BUG_ON(!page);
- 			WARN_ON(!PageUptodate(page));
- 
--			if (atomic_long_dec_return(&fsc->writeback_count) <
--			     CONGESTION_OFF_THRESH(
--					fsc->mount_options->congestion_kb))
--				clear_bdi_congested(inode_to_bdi(inode),
--						    BLK_RW_ASYNC);
--
- 			ceph_put_snap_context(detach_page_private(page));
- 			end_page_writeback(page);
- 			dout("unlocking %p\n", page);
-@@ -952,14 +933,6 @@ static int ceph_writepages_start(struct address_space *mapping,
- 			dout("%p will write page %p idx %lu\n",
- 			     inode, page, page->index);
- 
--			if (atomic_long_inc_return(&fsc->writeback_count) >
--			    CONGESTION_ON_THRESH(
--				    fsc->mount_options->congestion_kb)) {
--				set_bdi_congested(inode_to_bdi(inode),
--						  BLK_RW_ASYNC);
--			}
--
--
- 			pages[locked_pages++] = page;
- 			pvec.pages[i] = NULL;
- 
-diff --git a/fs/ceph/super.c b/fs/ceph/super.c
-index bf79f369aec6..b2f38af9fca8 100644
---- a/fs/ceph/super.c
-+++ b/fs/ceph/super.c
-@@ -801,8 +801,6 @@ static struct ceph_fs_client *create_fs_client(struct ceph_mount_options *fsopt,
- 	fsc->filp_gen = 1;
- 	fsc->have_copy_from2 = true;
- 
--	atomic_long_set(&fsc->writeback_count, 0);
--
- 	err = -ENOMEM;
- 	/*
- 	 * The number of concurrent works can be high but they don't need
-diff --git a/fs/ceph/super.h b/fs/ceph/super.h
-index 67f145e1ae7a..fc58adf1d36a 100644
---- a/fs/ceph/super.h
-+++ b/fs/ceph/super.h
-@@ -120,8 +120,6 @@ struct ceph_fs_client {
- 
- 	struct ceph_mds_client *mdsc;
- 
--	atomic_long_t writeback_count;
--
- 	struct workqueue_struct *inode_wq;
- 	struct workqueue_struct *cap_wq;
- 
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index d0c3aeba5945..58ff7f4b296c 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -1505,9 +1505,9 @@ static int f2fs_write_raw_pages(struct compress_ctx *cc,
+ 				if (IS_NOQUOTA(cc->inode))
+ 					return 0;
+ 				ret = 0;
+-				cond_resched();
+-				congestion_wait(BLK_RW_ASYNC,
+-						DEFAULT_IO_TIMEOUT);
++				/* Wait until we can get the lock, then try again. */
++				f2fs_lock_op(F2FS_I_SB(cc->inode));
++				f2fs_unlock_op(F2FS_I_SB(cc->inode));
+ 				goto retry_write;
+ 			}
+ 			return ret;
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 8c417864c66a..1d2341163e2c 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -3047,9 +3047,12 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
+ 				} else if (ret == -EAGAIN) {
+ 					ret = 0;
+ 					if (wbc->sync_mode == WB_SYNC_ALL) {
+-						cond_resched();
+-						congestion_wait(BLK_RW_ASYNC,
+-							DEFAULT_IO_TIMEOUT);
++						/* Wait until we can get the
++						 * lock, then try again.
++						 */
++						f2fs_lock_op(F2FS_I_SB(mapping->host));
++						f2fs_unlock_op(F2FS_I_SB(mapping->host));
++
+ 						goto retry_write;
+ 					}
+ 					goto next;
 
 
