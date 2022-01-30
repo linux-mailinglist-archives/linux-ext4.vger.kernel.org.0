@@ -2,51 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 349974A2BAF
-	for <lists+linux-ext4@lfdr.de>; Sat, 29 Jan 2022 05:54:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 738BD4A33BC
+	for <lists+linux-ext4@lfdr.de>; Sun, 30 Jan 2022 05:28:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352408AbiA2Eyd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 28 Jan 2022 23:54:33 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:35907 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1352399AbiA2Eyd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Jan 2022 23:54:33 -0500
-Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 20T4sQgQ003035
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 Jan 2022 23:54:26 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id DB3D715C0040; Fri, 28 Jan 2022 23:54:25 -0500 (EST)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     linux-ext4@vger.kernel.org,
-        hongnanli <hongnan.li@linux.alibaba.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca
-Subject: Re: [PATCH] fs/ext4: fix comments mentioning i_mutex
-Date:   Fri, 28 Jan 2022 23:54:24 -0500
-Message-Id: <164343205445.816880.17095433748908278662.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20220121070611.21618-1-hongnan.li@linux.alibaba.com>
-References: <20220121070611.21618-1-hongnan.li@linux.alibaba.com>
+        id S235599AbiA3E2S (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 29 Jan 2022 23:28:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354164AbiA3E2P (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 29 Jan 2022 23:28:15 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B433C06175A
+        for <linux-ext4@vger.kernel.org>; Sat, 29 Jan 2022 20:28:15 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id g14so30393981ybs.8
+        for <linux-ext4@vger.kernel.org>; Sat, 29 Jan 2022 20:28:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=B5teSI3NqSzeGu7ngV/22RiyR60khzQ8THYZDZ9DX3Q=;
+        b=QI2firgHOSt+2ZiRAEUqBnRqfCndbuygIyUz1kdYlPzS6AXkdk+mfMubksdM+6U8hJ
+         A4UbXdfo0bhasYFmsw5ceBBj4ub2bgaEqkI+Cp5foQd/M11l9HiEax3hX9+hB29fNDF1
+         4XtAbOKK0Jrn48roHo8mUNvKaz7FG0Csy4DWdnw8Q+/oXs7GbWFZBjN+ifwhy6Rfe8k0
+         Pzhs5uXUX+5v6iQyGpPCJWV84GisQUz+5cfOraMc3PalgV6vYI9t2Z4JMkhIMshepKV2
+         BM+Zj3o1QTUTRt1Kxwo+5vz+cvvR7n44irHUjPq0LbDCW52O0lwQK7qPtMHxw7vn0Id9
+         5U2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=B5teSI3NqSzeGu7ngV/22RiyR60khzQ8THYZDZ9DX3Q=;
+        b=TRkvWhtCO7Umodt4eyeM/9lvp+9payuen1yzsrAogSmwe+2r0e3nOqFJ4/3+XTC/0f
+         EzAsg4A6FXWjmOa5Nu0KbzJMI3DM+DaUwFdzf6lQWzWZoyjcovZzkw+kcaTF+wvbAS09
+         kX523Gn6se4QS/JhhvUYNq52wTF8ZKdddcV3/xdmHmU76o9K/VReP0HXzGfz0lKXeTwn
+         2v3thdW4gA5qAGV2KMf2XT1nZnWmXwdbRqY4U5w66HGsHec6dnRGNCj+NlURTRxgnDlF
+         kKJPCVCTA+VK1DZBCHMBePwQj6UahcCrMow2ZQsTYXQ5xUUvGwA5asce2jo4lmJAELwb
+         is1g==
+X-Gm-Message-State: AOAM533DTiwf+j/qh8Sxo3O9W5HZ7oRYRXIqxVK7n8pjw1AMdC+007E6
+        /bgISE0YrwK1nYrs7aGgVa5+QQc1WQX1QFzUFog=
+X-Google-Smtp-Source: ABdhPJz3bgso8viJFkNwiW8XigzdjL6JZBPDE3NfxKOCgEqvWjdU/qagorQKM5joSRLXylFmq9/zlHP85rUYuZ5fTGQ=
+X-Received: by 2002:a25:6d45:: with SMTP id i66mr23246397ybc.352.1643516893721;
+ Sat, 29 Jan 2022 20:28:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:7010:2312:b0:201:cd76:102e with HTTP; Sat, 29 Jan 2022
+ 20:28:13 -0800 (PST)
+Reply-To: mrs.bill.chantalone01@gmail.com
+From:   "Mrs.Bill.Chantal" <grassroot309@gmail.com>
+Date:   Sun, 30 Jan 2022 05:28:13 +0100
+Message-ID: <CAO3iUMDzg_ZovNWXtuQhU6sDXk7LsNwvNc2pOb7zvX7pPCdMAw@mail.gmail.com>
+Subject: Hello....
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, 21 Jan 2022 15:06:11 +0800, hongnanli wrote:
-> inode->i_mutex has been replaced with inode->i_rwsem long ago. Fix
-> comments still mentioning i_mutex.
-> 
-> 
+You have been compensated with the sum of 9.5 million dollars in this
+united nation the payment will be issue into atm visa  card and send
+to you from the santander bank we need your address and your
+Whatsapp number  + 1 6465853907  this my email.ID
+( mrs.bill.chantal.roland@gmail.com )  contact  me
 
-Applied, thanks!
+Thanks my
 
-[1/1] fs/ext4: fix comments mentioning i_mutex
-      commit: b36c9466ce982906a6420e6af0fca73d1c0931b5
-
-Best regards,
--- 
-Theodore Ts'o <tytso@mit.edu>
+mrs bill chantal
