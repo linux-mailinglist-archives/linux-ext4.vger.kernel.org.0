@@ -2,100 +2,90 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95D404A5077
-	for <lists+linux-ext4@lfdr.de>; Mon, 31 Jan 2022 21:47:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A67D84A519C
+	for <lists+linux-ext4@lfdr.de>; Mon, 31 Jan 2022 22:38:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235345AbiAaUrP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 31 Jan 2022 15:47:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48603 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348150AbiAaUqd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 31 Jan 2022 15:46:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1643661992;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nlHslKz1cGxHLBwn88wZKDWe9MiG6x7ySEZHx4PfzqQ=;
-        b=KhIoRo/jtFIzMd9kNZrbhSCmZVxf7WPkJbt/8LfqSQyjRCk0niho8KQkOR1CnqTnqQI1l4
-        JMt4sSSfSEv0xp3XOIB7nSc57wx7dB1oX1qreVXP+t5KOYb8cAQSmdxmgAQZIoJnB2Cz4c
-        B5AoPWzEKJGWEVc0gJlPAhNZwFd5s9Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-208-YnzQenGqORC08BwzFxuxjA-1; Mon, 31 Jan 2022 15:46:31 -0500
-X-MC-Unique: YnzQenGqORC08BwzFxuxjA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 01AED1091DA0;
-        Mon, 31 Jan 2022 20:46:30 +0000 (UTC)
-Received: from work (unknown [10.40.194.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 00FDA46975;
-        Mon, 31 Jan 2022 20:46:28 +0000 (UTC)
-Date:   Mon, 31 Jan 2022 21:46:25 +0100
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] common/rc: set maximum label length for ext4
-Message-ID: <20220131204625.eimkrccyp4lqit57@work>
-References: <20211123101119.5112-1-lczerner@redhat.com>
- <20220131170700.GA8288@magnolia>
+        id S1381238AbiAaViu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 31 Jan 2022 16:38:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1359579AbiAaViS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 31 Jan 2022 16:38:18 -0500
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29A90C061756
+        for <linux-ext4@vger.kernel.org>; Mon, 31 Jan 2022 13:38:10 -0800 (PST)
+Received: by mail-oi1-x243.google.com with SMTP id 4so4946993oil.11
+        for <linux-ext4@vger.kernel.org>; Mon, 31 Jan 2022 13:38:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=RcCyF58LaRxi/j1nHAT0ApLeXmQ9s66f3iMVqhPacvY=;
+        b=dEuqzCa7Zlz6s4mRGbRbRWXXanD59qsT+xmKk7tBbCVL8shmNgt9pnuL3r3GZQALql
+         Y63DqHUGCnZO0yzAtzp7ZNS2CuC8pMKUMaMtNqE3s9gB45FDt9/C7CdeYDqwmv7HZJbj
+         h6fZit5aG7dGp8FvXKTscfcGshyIKAGZl/Y4NFvWe+GDkg5MDDBzPsbgzyvzZ7B1mfX4
+         ltlQ0tRJrdsWlCdvxMPpvS+PhwNDM1Zp7MYHnfnHzWMTP4bbhrhxbQSB0Xw9LPR0gSp/
+         L2Vas/DZH4ZiZyplfhihUfOHaOD2GjtH1tg3ZI6lVgxDcwRnl8d4U3qCI5tj+07J/ZXk
+         SzvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=RcCyF58LaRxi/j1nHAT0ApLeXmQ9s66f3iMVqhPacvY=;
+        b=xOAh3ImKhaxV3XDMmLyf2R1zEgpcVt1mnbmCsuSx20haC3dK1vrgI75vqjLfc0MO3t
+         AAgGNIXi5xLQB3WV+yGR8kSQVixajMfBu0WTzOYHs/kfGWc92kwonV9/tGSUJj/b9SEV
+         0JzX0KsSfqHXuuL/FAecFMq4WO0oxi99MHSHXo8C0/vgNjiz2ZLeXH4KWhf3XN+1Q5I0
+         zkLPAbJOCUZRg7st0aQdC9InGoAdLI+f5HKiNJkIAPTWMNleqeLNweydrCRXvfOgjRxs
+         2KJTCGrmGDSj9RuOEXOkPjbhg0Ehxrg4q0JR20y3+XTKDPrO5qTDpye5zndb8P+iWvcV
+         PiCg==
+X-Gm-Message-State: AOAM532qnaQQMigeNNIPWpRzC1QfYuzWe6iD4VEkPmfzITJg4NPnDfCx
+        t3V7N/wg7zdw8lTA3QS8O+315cv5FsOt9V2J2+k=
+X-Google-Smtp-Source: ABdhPJzjG4nHBnpm1YeRsvfpKVsM6nmNJIeFJaztEJrNHMe+iyJctx1iGavTAT23A2IhS4j6LtYbunRiUquAn1xj08o=
+X-Received: by 2002:a54:4490:: with SMTP id v16mr14818764oiv.157.1643665089421;
+ Mon, 31 Jan 2022 13:38:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220131170700.GA8288@magnolia>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Received: by 2002:a4a:c30d:0:0:0:0:0 with HTTP; Mon, 31 Jan 2022 13:38:09
+ -0800 (PST)
+Reply-To: westerunion909@gmail.com
+From:   "Antonia Lloyd." <anthonylloydatmxxx04@gmail.com>
+Date:   Mon, 31 Jan 2022 13:38:09 -0800
+Message-ID: <CAExPwBBpihjV-rv_-+hYqb1WD3wpSWx81B_Q3ES15U3TXSPsyw@mail.gmail.com>
+Subject: Dear Email ID Owner.(USD$4000 IMF COMPENSATION FUND TO PICK UP TODAY).
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jan 31, 2022 at 09:07:00AM -0800, Darrick J. Wong wrote:
-> On Tue, Nov 23, 2021 at 11:11:19AM +0100, Lukas Czerner wrote:
-> > Set maximum label length for ext4 in _label_get_max() to be able to test
-> > online file system label set/get ioctls.
-> > 
-> > Signed-off-by: Lukas Czerner <lczerner@redhat.com>
-> > ---
-> >  common/rc | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/common/rc b/common/rc
-> > index 8e351f17..50d6d0bd 100644
-> > --- a/common/rc
-> > +++ b/common/rc
-> > @@ -4545,6 +4545,9 @@ _label_get_max()
-> >  	f2fs)
-> >  		echo 255
-> >  		;;
-> > +	ext2|ext3|ext4)
-> > +		echo 16
-> 
-> After reviewing the ext4 ondisk format, 16 is the correct value.
-> 
-> Though I wonder, what actually prevents generic/492 from running on old
-> kernels without GETLABEL support?
+Dear Email ID Owner.
 
-_require_xfs_io_command "label"
+The IMF is compensating all the email address that was funds as one of
+the ward win Victims and your email address and your name is among the
+listed one of approved to pay the sum of $3.6 million U.S Dollars. We
+have concluded to effect your own payment through Western Union Money
+Transfer for easy pick-up of those funds in good condition,$4000 twice
+daily,till the $3.6 million is completely transferred to you.We now
+need your information where we will be sending the funds,such
+as;Receiver name(Your full Name)address and phone number.Contact
+Western Union agent with this Email: ( westerunion995@gmail.com  ) for
+your payment fund.
 
-should take care of that. This is why I though it was no problem to get
-this change in early.
+Ms.Maria Zatto
+E-mail:westerunion995@gmail.com
+Telephone: +229 682 97 169
 
--Lukas
+Contact Ms.Maria,immediately you get this mail through western union
+email address above to enable her speed-up.your payment and release
+the $4000 dollars MTCN today for you to pick up the payment OK.
 
-> 
-> Either way this patch is ok, so...
-> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-> 
-> --D
-> 
-> > +		;;
-> >  	*)
-> >  		_notrun "$FSTYP does not define maximum label length"
-> >  		;;
-> > -- 
-> > 2.31.1
-> > 
-> 
+You are expected to provide us with the details as prescribed below to
+enable safe and easy release of your funds today.
 
+(1)Your Full name:
+(2)Your Phone number:
+(3)Your Country:
+(4)Your Age:
+
+Thank you,
+Dr.Antonia Lloyd.
+Contact Dir.Western Union Money Transfer,
+Cotonou-Benin Republic.
