@@ -2,98 +2,79 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B92E4A3F75
-	for <lists+linux-ext4@lfdr.de>; Mon, 31 Jan 2022 10:43:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58AC44A4121
+	for <lists+linux-ext4@lfdr.de>; Mon, 31 Jan 2022 12:02:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236888AbiAaJnE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 31 Jan 2022 04:43:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:21444 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238819AbiAaJnE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 31 Jan 2022 04:43:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1643622184;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fM0hWX1Hvc4K9LjDrBo1FgLahCr8ka4rEYWLjkOURK0=;
-        b=R/9bLbR4aQdyH7U+ObZW1yQXC+2nL3SaujbgowgDboGRjr/TG6BepFtZtmSI72BJck8SVF
-        tqs3Q4DQS78HsZE18/Oe+Qu0wo4Ck2MQvCtgPkm8hiNRuzq3m8R2y77gIKBX49yNnGI3vX
-        TfWbdNtbGAJdaGzRuTqhflBW3WzxYl0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-251-t6e8Hm-VPp-FTjA7OIFswA-1; Mon, 31 Jan 2022 04:43:00 -0500
-X-MC-Unique: t6e8Hm-VPp-FTjA7OIFswA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D61C346860;
-        Mon, 31 Jan 2022 09:42:58 +0000 (UTC)
-Received: from work (unknown [10.40.194.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id F082E62D75;
-        Mon, 31 Jan 2022 09:42:57 +0000 (UTC)
-Date:   Mon, 31 Jan 2022 10:42:56 +0100
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     Eryu Guan <guan@eryu.me>
-Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] common/rc: set maximum label length for ext4
-Message-ID: <20220131094256.zfdsbzda5abtufvw@work>
-References: <20211123101119.5112-1-lczerner@redhat.com>
- <YaOTRYYkEwlbnvPb@desktop>
+        id S1358466AbiAaLCU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 31 Jan 2022 06:02:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1358435AbiAaLBK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 31 Jan 2022 06:01:10 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAADEC0617BB
+        for <linux-ext4@vger.kernel.org>; Mon, 31 Jan 2022 02:59:57 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id i65so12540851pfc.9
+        for <linux-ext4@vger.kernel.org>; Mon, 31 Jan 2022 02:59:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=FANIUiWvB3mdY3zLX2DODg2pUIL5eGT5wlydl6jYk40=;
+        b=OjUeAkMVzEddLMMo5PnTCjKyhCs1ageGmC5+cFdXpsSEtg6JbUDTvXCRmwfTUCSofJ
+         slj36zZmhn3J4uwPw0DJBjnv3hUS5m+nEauuYDUNcCWjc1f+d0I+yOjKIUc0Pgz+j5Ue
+         rRdRGfWkjcSXGfwT+M+UDneKFOQe0c6aLr+5TauC2FupNgb1qyGc5yiIkJ8k0NAmHZhf
+         anrjd59/OgrastnWs4ZkrvFaIDjw5pd3eh107tNZ/TuMjnW3micCxNZKM2MDkg13GKwm
+         O5Q6tfm8j18o2CLpoCl1kG865M+uxrSOQqgPJI+OJu79ECke4sTf94bEwDsB5fZLVwuG
+         tdrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=FANIUiWvB3mdY3zLX2DODg2pUIL5eGT5wlydl6jYk40=;
+        b=2s6JWXhEi0YAeit4xHNwfYEgUFO0jPgmTbD1b1ODmq0PNqzcAaVUWoiyrmYx7zuW/h
+         FKgNnwyQIHXN5PIDu2nC4+vC3UPneupK4rp/9fpOoRNUwhpNPEsyMxXGFFudgcw2HfF6
+         aw/ke5SkSrG1fXhackBB2O0SVfFsA1vKw5cg2GSO70bmwlBxXBy8mL/wQMMcD+txQeyR
+         m+90FQytvwCTAJFEgkzuXOQItwOLZ9O4aLZ+A/kixqAMr1FCa5GCDVRI0I+VtYheXygz
+         nr+S4WOM32gkNba2sqj/BKmzUfFW9knU1EhJQ+fmmuwCq+GsfBL6r8MAvQqrVVt6e+t8
+         SOWA==
+X-Gm-Message-State: AOAM5313kqYtHjC854px8E2OITF1cjv8ldGz3mjS3ehK4i0gR65QR5N9
+        3Yuhvx6HBix96cwLsN+SiRu6bL2xKnqVnpKU3/YBGGouoCY=
+X-Google-Smtp-Source: ABdhPJx07OLMUPeEc0ImjaiJBKF2Mcc3ZmsWTIoSvX2FNfz03c1HE0RFqesREnjvPqYHKyL/ALkhu5ugV57XI3T5t/k=
+X-Received: by 2002:a6b:441a:: with SMTP id r26mr10856124ioa.211.1643626786286;
+ Mon, 31 Jan 2022 02:59:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YaOTRYYkEwlbnvPb@desktop>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Reply-To: daniellakyle60@gmail.com
+Sender: drdanielmorris11111@gmail.com
+Received: by 2002:a05:6638:1248:0:0:0:0 with HTTP; Mon, 31 Jan 2022 02:59:45
+ -0800 (PST)
+From:   Mrs daniell akyle <daniellakyle60@gmail.com>
+Date:   Mon, 31 Jan 2022 11:59:45 +0100
+X-Google-Sender-Auth: xE_x512-NJSetLeK1z_d90RC9Q0
+Message-ID: <CAKFcj-P8h0HeDMtZZnog7Sh8cFMKV7095BN2fQnUMpCGPgmhFg@mail.gmail.com>
+Subject: Ahoj
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, Nov 28, 2021 at 10:33:41PM +0800, Eryu Guan wrote:
-> On Tue, Nov 23, 2021 at 11:11:19AM +0100, Lukas Czerner wrote:
-> > Set maximum label length for ext4 in _label_get_max() to be able to test
-> > online file system label set/get ioctls.
-> 
-> Some background info included in commit log would be good, e.g. ext4
-> didn't support get/set label ioctl but we're going to add that support
-> in both kernel and e2fsprogs.
-> 
-> And I noticed the kernel patch is still in review, and has no comments
-> so far. So I'd like to wait and make sure the new ioctl will be accepted
-> first.
-> 
-> Thanks,
-> Eryu
-
-It's upstream now, can we have this change in so that it can be tested?
-
-Thanks!
--Lukas
-
-> 
-> > 
-> > Signed-off-by: Lukas Czerner <lczerner@redhat.com>
-> > ---
-> >  common/rc | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/common/rc b/common/rc
-> > index 8e351f17..50d6d0bd 100644
-> > --- a/common/rc
-> > +++ b/common/rc
-> > @@ -4545,6 +4545,9 @@ _label_get_max()
-> >  	f2fs)
-> >  		echo 255
-> >  		;;
-> > +	ext2|ext3|ext4)
-> > +		echo 16
-> > +		;;
-> >  	*)
-> >  		_notrun "$FSTYP does not define maximum label length"
-> >  		;;
-> > -- 
-> > 2.31.1
-> 
-
+Pozdravy
+Jmenuji se pan=C3=AD Daniella Kyleov=C3=A1, je mi 58 let
+Filip=C3=ADny. V sou=C4=8Dasn=C3=A9 dob=C4=9B jsem hospitalizov=C3=A1n na F=
+ilip=C3=ADn=C3=A1ch, kde jsem
+podstupuje l=C3=A9=C4=8Dbu akutn=C3=ADho karcinomu j=C3=ADcnu. jsem um=C3=
+=ADraj=C3=ADc=C3=AD,
+vdova, kter=C3=A1 se rozhodla darovat =C4=8D=C3=A1st sv=C3=A9ho majetku spo=
+lehliv=C3=A9 osob=C4=9B
+kter=C3=A1 tyto pen=C3=ADze pou=C5=BEije na pomoc chud=C3=BDm a m=C3=A9n=C4=
+=9B privilegovan=C3=BDm. Chci
+poskytnout dar ve v=C3=BD=C5=A1i 3 700 000 =C2=A3 na sirotky nebo charitati=
+vn=C3=AD organizace
+ve va=C5=A1=C3=AD oblasti. Zvl=C3=A1dne=C5=A1 to? Pokud jste ochotni tuto n=
+ab=C3=ADdku p=C5=99ijmout
+a ud=C4=9Blejte p=C5=99esn=C4=9B tak, jak v=C3=A1m =C5=99=C3=ADk=C3=A1m, pa=
+k se mi vra=C5=A5te pro dal=C5=A1=C3=AD vysv=C4=9Btlen=C3=AD.
+pozdravy
+Pan=C3=AD Daniella Kyleov=C3=A1
