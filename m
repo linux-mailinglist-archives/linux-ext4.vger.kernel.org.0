@@ -2,52 +2,98 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1DD4A3DD0
-	for <lists+linux-ext4@lfdr.de>; Mon, 31 Jan 2022 07:44:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B92E4A3F75
+	for <lists+linux-ext4@lfdr.de>; Mon, 31 Jan 2022 10:43:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347942AbiAaGos (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 31 Jan 2022 01:44:48 -0500
-Received: from verein.lst.de ([213.95.11.211]:53705 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347924AbiAaGos (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 31 Jan 2022 01:44:48 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 9117A68AFE; Mon, 31 Jan 2022 07:44:44 +0100 (CET)
-Date:   Mon, 31 Jan 2022 07:44:44 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH] unicode: clean up the Kconfig symbol confusion
-Message-ID: <20220131064444.GA4745@lst.de>
-References: <20220118065614.1241470-1-hch@lst.de> <87zgnp51wo.fsf@collabora.com> <20220124090855.GA23041@lst.de>
+        id S236888AbiAaJnE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 31 Jan 2022 04:43:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:21444 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238819AbiAaJnE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 31 Jan 2022 04:43:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1643622184;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fM0hWX1Hvc4K9LjDrBo1FgLahCr8ka4rEYWLjkOURK0=;
+        b=R/9bLbR4aQdyH7U+ObZW1yQXC+2nL3SaujbgowgDboGRjr/TG6BepFtZtmSI72BJck8SVF
+        tqs3Q4DQS78HsZE18/Oe+Qu0wo4Ck2MQvCtgPkm8hiNRuzq3m8R2y77gIKBX49yNnGI3vX
+        TfWbdNtbGAJdaGzRuTqhflBW3WzxYl0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-251-t6e8Hm-VPp-FTjA7OIFswA-1; Mon, 31 Jan 2022 04:43:00 -0500
+X-MC-Unique: t6e8Hm-VPp-FTjA7OIFswA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D61C346860;
+        Mon, 31 Jan 2022 09:42:58 +0000 (UTC)
+Received: from work (unknown [10.40.194.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id F082E62D75;
+        Mon, 31 Jan 2022 09:42:57 +0000 (UTC)
+Date:   Mon, 31 Jan 2022 10:42:56 +0100
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     Eryu Guan <guan@eryu.me>
+Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] common/rc: set maximum label length for ext4
+Message-ID: <20220131094256.zfdsbzda5abtufvw@work>
+References: <20211123101119.5112-1-lczerner@redhat.com>
+ <YaOTRYYkEwlbnvPb@desktop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220124090855.GA23041@lst.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <YaOTRYYkEwlbnvPb@desktop>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jan 24, 2022 at 10:08:55AM +0100, Christoph Hellwig wrote:
-> On Thu, Jan 20, 2022 at 08:10:47PM -0500, Gabriel Krisman Bertazi wrote:
-> > > Fixes: 2b3d04787012 ("unicode: Add utf8-data module")
-> > > Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > 
-> > I fixed the typo and pushed the patch to a linux-next visible branch
-> > 
-> > https://git.kernel.org/pub/scm/linux/kernel/git/krisman/unicode.git/commit/?h=for-next&id=5298d4bfe80f6ae6ae2777bcd1357b0022d98573
-> > 
-> > I'm also sending a patch series shortly turning IS_ENABLED into part of
-> > the code flow where possible.
+On Sun, Nov 28, 2021 at 10:33:41PM +0800, Eryu Guan wrote:
+> On Tue, Nov 23, 2021 at 11:11:19AM +0100, Lukas Czerner wrote:
+> > Set maximum label length for ext4 in _label_get_max() to be able to test
+> > online file system label set/get ioctls.
 > 
-> Thanks.  It might make sense to get the one patch to Linux for 5.17
-> so that we don't have the new Kconfig symbol for just one release.
+> Some background info included in commit log would be good, e.g. ext4
+> didn't support get/set label ioctl but we're going to add that support
+> in both kernel and e2fsprogs.
+> 
+> And I noticed the kernel patch is still in review, and has no comments
+> so far. So I'd like to wait and make sure the new ioctl will be accepted
+> first.
+> 
+> Thanks,
+> Eryu
 
-Can we try to get this into 5.17-rc, please to avoid adding the Kconfig
-symbol Linus complained about in one release just to remove it again
-in the next one?
+It's upstream now, can we have this change in so that it can be tested?
+
+Thanks!
+-Lukas
+
+> 
+> > 
+> > Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+> > ---
+> >  common/rc | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/common/rc b/common/rc
+> > index 8e351f17..50d6d0bd 100644
+> > --- a/common/rc
+> > +++ b/common/rc
+> > @@ -4545,6 +4545,9 @@ _label_get_max()
+> >  	f2fs)
+> >  		echo 255
+> >  		;;
+> > +	ext2|ext3|ext4)
+> > +		echo 16
+> > +		;;
+> >  	*)
+> >  		_notrun "$FSTYP does not define maximum label length"
+> >  		;;
+> > -- 
+> > 2.31.1
+> 
+
