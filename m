@@ -2,98 +2,139 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F9B4A5B6B
-	for <lists+linux-ext4@lfdr.de>; Tue,  1 Feb 2022 12:47:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 361B34A5D52
+	for <lists+linux-ext4@lfdr.de>; Tue,  1 Feb 2022 14:18:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237374AbiBALrV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 1 Feb 2022 06:47:21 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:52084 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237141AbiBALrV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Feb 2022 06:47:21 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id F26081F3AC;
-        Tue,  1 Feb 2022 11:47:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1643716039; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S238267AbiBANSR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 1 Feb 2022 08:18:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42117 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238172AbiBANSQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Feb 2022 08:18:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1643721495;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=n7iNcT51hZ1Z3NxjkQY5xHCeIRSxzR75ruYUzUbMRxg=;
-        b=cpgdqNr9XjsW/lL0T47hms//3hNKTRprkg+XwRD6+ZAVL/l43UvDlIOZt+9LqrmuKoVhna
-        F5q7SdFGq0g2rlLgEpX1tgPGuNeYKtx/sFsQVmhB8zp4Wj9vnHs3U9Hi3qNBYQ9Q4ELFwI
-        By+2veHZ3YLCftTFb2u7zm9VV8Pd/qY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1643716039;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=n7iNcT51hZ1Z3NxjkQY5xHCeIRSxzR75ruYUzUbMRxg=;
-        b=z3yEEocq/H1Ni33Uv4SMliROfzI+346W9JYtl7LOyx23F+vmaRwQGHYV3Fts+zv8etB1IT
-        KiPfff6357jyFYBA==
-Received: from quack3.suse.cz (unknown [10.163.28.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        bh=UXC1yw6E8gzLJGmP7/8HrH4mG4ZVe0X6VUv9Tso2fsg=;
+        b=fTGeNZxKCTWuCVrQ+a8MwFaKY+Cv3rFlR6iAs8QhSRJqD9Skc/Y/9azhJnKCrswDykcsnv
+        Y8HCqcPqRQKKyF9Ab1nH4CHp12MpxlwmY4u7Wf2YUx/bjZW36y7fjdxJIGdl2duaESzOhq
+        XC3UaMei4I1iMErl3I+A0ziVkXzrTgQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-488-UngBEyHgNmW1ThFxSDzeVw-1; Tue, 01 Feb 2022 08:13:54 -0500
+X-MC-Unique: UngBEyHgNmW1ThFxSDzeVw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id E4528A3B81;
-        Tue,  1 Feb 2022 11:47:19 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 9C38DA05B1; Tue,  1 Feb 2022 12:47:19 +0100 (CET)
-Date:   Tue, 1 Feb 2022 12:47:19 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: Re: [RFC 6/6] ext4: Add extra check in ext4_mb_mark_bb() to prevent
- against possible corruption
-Message-ID: <20220201114719.dzyeitz26kpde5zf@quack3.lan>
-References: <cover.1643642105.git.riteshh@linux.ibm.com>
- <fa6d3adad7e1a4691c4c38b6b670d9330757ce82.1643642105.git.riteshh@linux.ibm.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 574591091DA7;
+        Tue,  1 Feb 2022 13:13:53 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.40.195.99])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7196E2634A;
+        Tue,  1 Feb 2022 13:13:52 +0000 (UTC)
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     tytso@mit.edu
+Cc:     linux-ext4@vger.kernel.org, Ye Bin <yebin10@huawei.com>
+Subject: [PATCH] ext4: fix remount with 'abort' option
+Date:   Tue,  1 Feb 2022 14:13:45 +0100
+Message-Id: <20220201131345.77591-1-lczerner@redhat.com>
+In-Reply-To: <YcSYvk5DdGjjB9q/@mit.edu>
+References: <YcSYvk5DdGjjB9q/@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fa6d3adad7e1a4691c4c38b6b670d9330757ce82.1643642105.git.riteshh@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 31-01-22 20:46:55, Ritesh Harjani wrote:
-> This patch adds an extra checks in ext4_mb_mark_bb() function
-> to make sure we mark & report error if we were to mark/clear any
-> of the critical FS metadata specific bitmaps (&bail out) to prevent
-> from any accidental corruption.
-> 
-> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+After commit 6e47a3cc68fc ("ext4: get rid of super block and sbi from
+handle_mount_ops()") the 'abort' options stopped working. This is
+because we're using ctx_set_mount_flags() helper that's expecting an
+argument with the appropriate bit set, but instead got
+EXT4_MF_FS_ABORTED which is a bit position. ext4_set_mount_flag() is
+using set_bit() while ctx_set_mount_flags() was using bitwise OR.
 
-Again please rather use ext4_inode_block_valid() here. All the callers of
-ext4_mb_mark_bb() have the information available.
+Create a separate helper ctx_set_mount_flag() to handle setting the
+mount_flags correctly.
 
-								Honza
+While we're at it clean up the EXT4_SET_CTX macros so that we're only
+creating helpers that we actually use to avoid warnings.
 
-> ---
->  fs/ext4/mballoc.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 5f20e355d08c..c94888534caa 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -3920,6 +3920,13 @@ void ext4_mb_mark_bb(struct super_block *sb, ext4_fsblk_t block,
->  		len -= overflow;
->  	}
->  
-> +	if (!ext4_group_block_valid(sb, group, block, len)) {
-> +		ext4_error(sb, "Marking blocks in system zone - "
-> +			   "Block = %llu, len = %d", block, len);
-> +		bitmap_bh = NULL;
-> +		goto out_err;
-> +	}
-> +
->  	clen = EXT4_NUM_B2C(sbi, len);
->  
->  	bitmap_bh = ext4_read_block_bitmap(sb, group);
-> -- 
-> 2.31.1
-> 
+Fixes: 6e47a3cc68fc ("ext4: get rid of super block and sbi from handle_mount_ops()")
+Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+Cc: Ye Bin <yebin10@huawei.com>
+---
+ fs/ext4/super.c | 29 +++++++++++++++++++++--------
+ 1 file changed, 21 insertions(+), 8 deletions(-)
+
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index eee0d9ebfa6c..6f74cd51df2e 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -2045,8 +2045,8 @@ struct ext4_fs_context {
+ 	unsigned int	mask_s_mount_opt;
+ 	unsigned int	vals_s_mount_opt2;
+ 	unsigned int	mask_s_mount_opt2;
+-	unsigned int	vals_s_mount_flags;
+-	unsigned int	mask_s_mount_flags;
++	unsigned long	vals_s_mount_flags;
++	unsigned long	mask_s_mount_flags;
+ 	unsigned int	opt_flags;	/* MOPT flags */
+ 	unsigned int	spec;
+ 	u32		s_max_batch_time;
+@@ -2149,23 +2149,36 @@ static inline void ctx_set_##name(struct ext4_fs_context *ctx,		\
+ {									\
+ 	ctx->mask_s_##name |= flag;					\
+ 	ctx->vals_s_##name |= flag;					\
+-}									\
++}
++
++#define EXT4_CLEAR_CTX(name)						\
+ static inline void ctx_clear_##name(struct ext4_fs_context *ctx,	\
+ 				    unsigned long flag)			\
+ {									\
+ 	ctx->mask_s_##name |= flag;					\
+ 	ctx->vals_s_##name &= ~flag;					\
+-}									\
++}
++
++#define EXT4_TEST_CTX(name)						\
+ static inline unsigned long						\
+ ctx_test_##name(struct ext4_fs_context *ctx, unsigned long flag)	\
+ {									\
+ 	return (ctx->vals_s_##name & flag);				\
+-}									\
++}
+ 
+-EXT4_SET_CTX(flags);
++EXT4_SET_CTX(flags); /* set only */
+ EXT4_SET_CTX(mount_opt);
++EXT4_CLEAR_CTX(mount_opt);
++EXT4_TEST_CTX(mount_opt);
+ EXT4_SET_CTX(mount_opt2);
+-EXT4_SET_CTX(mount_flags);
++EXT4_CLEAR_CTX(mount_opt2);
++EXT4_TEST_CTX(mount_opt2);
++
++static inline void ctx_set_mount_flag(struct ext4_fs_context *ctx, int bit)
++{
++	set_bit(bit, &ctx->mask_s_mount_flags);
++	set_bit(bit, &ctx->vals_s_mount_flags);
++}
+ 
+ static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ {
+@@ -2235,7 +2248,7 @@ static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 			 param->key);
+ 		return 0;
+ 	case Opt_abort:
+-		ctx_set_mount_flags(ctx, EXT4_MF_FS_ABORTED);
++		ctx_set_mount_flag(ctx, EXT4_MF_FS_ABORTED);
+ 		return 0;
+ 	case Opt_i_version:
+ 		ext4_msg(NULL, KERN_WARNING, deprecated_msg, param->key, "5.20");
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.31.1
+
