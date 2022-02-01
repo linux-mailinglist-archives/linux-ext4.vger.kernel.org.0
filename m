@@ -2,46 +2,46 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCC74A5EE0
-	for <lists+linux-ext4@lfdr.de>; Tue,  1 Feb 2022 16:03:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D224A5F9E
+	for <lists+linux-ext4@lfdr.de>; Tue,  1 Feb 2022 16:09:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239702AbiBAPDH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 1 Feb 2022 10:03:07 -0500
-Received: from mail-bn7nam10on2087.outbound.protection.outlook.com ([40.107.92.87]:29536
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        id S239583AbiBAPJT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 1 Feb 2022 10:09:19 -0500
+Received: from mail-bn1nam07on2084.outbound.protection.outlook.com ([40.107.212.84]:54219
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239636AbiBAPDG (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 1 Feb 2022 10:03:06 -0500
+        id S239507AbiBAPJS (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 1 Feb 2022 10:09:18 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eVrjKebizsEmvAoj4+YnJCs4/4xkASaghv/cIcJwiYsQQ3cmRYlKtZZ/Zu9S/lKPfyl3GP6xNivyHOWWMW4ZoDNzkciPim6sGeMuHYz+xpYHJXPgyvFVpqiUwohfHq+5svolChMin+Wa0Ede7tkR6TpTKqvVTwaKIdxvjn4UQbc8d4qovVIh+d/TA3GgX0ZQXeCgsoHoMtusBEM779FlRljKS0kGtxXLzEmgRfkNs8Vy1Ztb1YZyataeBQPANZbjpiUHf8ORo+Ho6jrTCdqqAPaHm8mhLl/rfx2wJ7CtEt/zA0l3+Jyu5r5NuUpcpRM+nyO6/2NoFCYd6lwNIaPSNQ==
+ b=RBDWeOoD3NrYvoGh7ZCjA1wRMp10a6Cvm/h1CPYxRsigMseJ8ziLizdMFetrI3VtOl8dcG1fs9rFSnvXvN0zwyleMVrlp0trdjB/jBnywgx0zCWzMZbiPSEgxLv5njU+Fw7TRwrDdmxbrg6Q3kPgY3Uhp/G19Mk1E4080zt3IDfHVf/NLED6QtHzev5lYVbgC01DCWr7m5ieFQ7PzmRCDRvfLfv0Tar8Swq9OdlyCSl2b5lx+NGrHoVMiK3gkdcFOEtf1lmlMsMy0zC8P7KNHA9tNNQucPLDQ+quSJ3YVJUIYpK2HA3415fQzGvnvmCkXI7a5K/K8KE34W8IxypW/g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PM+lgti/p0qMlwCpEwjB6EqHZT7FilI4fJggvRMaZmA=;
- b=LSIIFnlxGiwQYRKfztynI6gtVyiAys4AFi1rlS6XuNQ6K5POU1iTTGedW0yRBsXGaYvLHymcA7wlIeigSqId+vyw5fJ6wb+JfBKYtE1w9WfOnWjf8HkXGGRStDGKi2VKIyL+rlNFAil4HHEvXXJe9sUJndPowgn3WYqUUk+3E+oHdKScQTf2WJ61xu2YTtTrV/NA8XPoTbeLaJ3q/FNkkHQY6BP5YqdNPz6HStM5kVV+XqDk/RY4Pca6xA6VeBbJ14Wi/6qHhZj5tv2NZD9hsuIVg7UGx1ET22LvQ35FAP6birmEsrnUhc7n91N4e1pof3jgLd6s7TJoJpq04eo2HA==
+ bh=q88mWt5NJB0r/DdCs6HANSqAFYCGyfTIsAJ5BPANSQ0=;
+ b=JQdYoRY6guaBcXhuJk3e6RcSLg7hPiVHoHN22FKumFgxT0aAiF4fWMJU5Ld83uDFaFWpwRNFEdrd5kmRv8VWkD2+gNKfqaRT7jwL0jfuS/PWoS5XNdX/M/AZri4wtjAuxThqOvUw1TzivDdjDKcMmDhk/uTYucA39YDNqfkZuctP9ANuZ5XG5BSAztvNDHAEOEROhF4itZanFvhse4G1QHI5qNUdFdyIiAL7/KWXeIvtJ/wNnXf6cckmqAJHIRGBUm78yBF7dQkrjfw9bVEoli2m6fKo10vJgFTFvdD/tY9m5eW1ABPK4iLM1a/+wOhvWAYizlRZs4uwqYzPX7bZFQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PM+lgti/p0qMlwCpEwjB6EqHZT7FilI4fJggvRMaZmA=;
- b=KlPDWynYINZdEKvuqlBMYXymRaQyMbAMdzVtcykaft1vjxfMB3K+oZ12hCKSLe/PzexJ4k7x4f0Q3LfMKFXWOkSCIQRgZoj7O/BZZtdiF1athorDAsBJLkjJYlN9VRnE2Vq4Ee5i3rePYek9duQsv79Rwmy4nLlnKhY0rkQIt04=
+ bh=q88mWt5NJB0r/DdCs6HANSqAFYCGyfTIsAJ5BPANSQ0=;
+ b=cJp7Dxiv43sXxZmvjS3DN9++A3I4gi95799VGkdqLF6UiPd/VrY7sIz9uKzEGf/wQyFaPKUsFSG/KXTLG52uSHQ6DwGRzHdy62OlV3diq+zEqOPJdLEKOlRfv1+fjQiMbRNXBZRvXvOSCwBVKjb7Ji5B3SER2G4Nm2MoDZbQhSQ=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=amd.com;
 Received: from BN9PR12MB5115.namprd12.prod.outlook.com (2603:10b6:408:118::14)
- by DM4PR12MB5134.namprd12.prod.outlook.com (2603:10b6:5:391::17) with
+ by DM5PR12MB1930.namprd12.prod.outlook.com (2603:10b6:3:10d::22) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4930.17; Tue, 1 Feb
- 2022 15:03:04 +0000
+ 2022 15:09:16 +0000
 Received: from BN9PR12MB5115.namprd12.prod.outlook.com
  ([fe80::971:531c:e4f4:8a9a]) by BN9PR12MB5115.namprd12.prod.outlook.com
  ([fe80::971:531c:e4f4:8a9a%7]) with mapi id 15.20.4930.022; Tue, 1 Feb 2022
- 15:03:04 +0000
-Message-ID: <49253aca-5c0b-84d4-4b2a-13426b1064ec@amd.com>
-Date:   Tue, 1 Feb 2022 10:03:01 -0500
+ 15:09:16 +0000
+Message-ID: <f3cf5158-c39f-a707-a896-bef39e7ca9c3@amd.com>
+Date:   Tue, 1 Feb 2022 10:09:13 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.5.0
-Subject: Re: [PATCH 2/3] mm/gup.c: Migrate device coherent pages when pinning
- instead of failing
+Subject: Re: [PATCH 3/3] tools: add hmm gup test for long term pinned device
+ pages
 Content-Language: en-US
 To:     Alistair Popple <apopple@nvidia.com>, akpm@linux-foundation.org,
         linux-mm@kvack.org
@@ -51,249 +51,213 @@ Cc:     rcampbell@nvidia.com, linux-ext4@vger.kernel.org,
         jglisse@redhat.com, willy@infradead.org, alex.sierra@amd.com,
         jhubbard@nvidia.com
 References: <cover.516a938ce97eb805791da6e2df508eb0dce413b8.1643698773.git-series.apopple@nvidia.com>
- <d4d399492b2ba09f4c551fa2261fbd22172886d8.1643698773.git-series.apopple@nvidia.com>
+ <d400bc4c874ff211b8520c51930b5ab78711454a.1643698773.git-series.apopple@nvidia.com>
 From:   Felix Kuehling <felix.kuehling@amd.com>
-In-Reply-To: <d4d399492b2ba09f4c551fa2261fbd22172886d8.1643698773.git-series.apopple@nvidia.com>
+In-Reply-To: <d400bc4c874ff211b8520c51930b5ab78711454a.1643698773.git-series.apopple@nvidia.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: YT1PR01CA0138.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2f::17) To BN9PR12MB5115.namprd12.prod.outlook.com
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YT1PR01CA0059.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2e::28) To BN9PR12MB5115.namprd12.prod.outlook.com
  (2603:10b6:408:118::14)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 23284b9f-7bda-4a83-16b7-08d9e593f236
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5134:EE_
-X-Microsoft-Antispam-PRVS: <DM4PR12MB5134630C65F78417658CBDD592269@DM4PR12MB5134.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Office365-Filtering-Correlation-Id: ec1bf838-97d4-4c33-db3c-08d9e594d02d
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1930:EE_
+X-Microsoft-Antispam-PRVS: <DM5PR12MB1930B9B3B8E6097C2BD6413C92269@DM5PR12MB1930.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Dvkc4y57aw1URFwFBsWKNTSH3SuzIjW+Guc4i2HrlYyppoj1k1n5vsyYG3nyp2m5VFNoFp52QA001yiSlD9tDTzrA8BWapxTv5yeGbzDC1/jybU0ZXHs6xYAYiDvr9bAoUjxgXWcLYrF5mM7Op8WBIXKXF98oBFEWNtvySuRNpBByRBRwmokooRUen79ujc/rvFUy88ZQD0WR9iprv0WwVDhiSkr57RAVpaEzLrLaNXEweTZvD6rNGVksMvfEBNoRzgp8cc4Lkp6yIMNKpqYfrOS0X41HfdYevyHTIjdWT1GHJgRGLKh8gCnZtAJH2N+y7TAd/7NvKsodKNCtvhPdERU4mvCUJFwulEQLDyyFe7nS7nibRMVyORYcfl7011/vZ1xB06YkXqNrxaTcF8/DRYDHcrmjlIPF2cDPs/FsIG8epntRkRd/Byv2si+QDT6GJYsLO5VFO8V8I/ndqaOY5UJfZ3de/d1kTnZsfrYSYwrHQ2XiSIkU4dSjVZv2sYsm363sjxXimABYYhXuHGiet+eBCQSJlYLN+4X2zXxKvcSz6ov5sncqqZosXo7Ky/7Aj6PnYnpZmM0hLXanEGNeWgNGemrMKyincS6tHZRb30ui33bVmilEImxkg2WeM70mQZLqvZZZRoSsLtqDUM0Axsh4nhdYTZm0+80Z+Sg7H3CYzOdABf5OPZVMmf6HpU7PWE7Rfs83dvLFiM6SaDm8EjILz1pryOS1KU7TeAftRc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5115.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(66476007)(66556008)(2906002)(66946007)(8936002)(8676002)(4326008)(31686004)(36756003)(7416002)(2616005)(38100700002)(508600001)(26005)(31696002)(186003)(5660300002)(6486002)(316002)(83380400001)(44832011)(86362001)(6506007)(6512007)(6666004)(43740500002)(45980500001)(20210929001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: RHQ1tuBVkWtJqkQlrOBOoURwFAfFul+fSGYjTXc2kqqjzb5p0mhMbJZuHdtshOUuNgeVnqd2OW82PeK2KmDKa/Ij6N++FxZoVIF/cBNVucygj8fuAyygLw7y+mBLoEpme0rU4W0cY70vLePCrcyJj03HgQ6/FWD9gBj+YDSyrUx7ZulRWlX+sXuRau2PifeNFVW0NEA8C6BkKd/72ZqCGM1KFrAjjD9LdNWDoifW+0kTh9HvqnFPEevxXCW9fh3xfDJzqiw/8OtAnQKw3Zn09v/c/9k5FPEtubsz2lQ4HqTb8qF7s5drYrHDM6b4+kACpjW93XfgAMg2MDcNRb9efXD2OCZfbNr9u3a9k6J6VgVynHN0ZfE4zeAA4CDs4yh6z+nmjmI5kVQHPcRAlbVCGjHfC8vctS76EQb2hxR4Cp+VDYDmAD/2lQ5/hslfVUERnwGB24OpNFuDI2/m0KaEzYPvahhVMOlB+tn+8bVK/dMe/U4yVYv4ft3vjnzCNgHmsy0rUIOFJII5rnJjtf3POuJSdTL2EvS8xPZqbVJNCCzrIDPD+BSEnJ1veuyn39w08Om2Xq8po1Zq6cPpeg2dI1a/HwLBdqtt+9wVnA0cTWkCaUc/vDno8y3bqZSpfSthVyULm7IoxBffWxr01E+fI0tZupSjlQIvTyEamWUVfaIExss8sgR35Qw7gsTAsw0zFH/VKxvcsKC8EN4FT0LcVkQJNkLDj6aYVu5Dbxjd0Pk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5115.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(66556008)(66476007)(508600001)(31696002)(86362001)(6486002)(316002)(31686004)(38100700002)(66946007)(4326008)(8936002)(36756003)(8676002)(26005)(2616005)(7416002)(44832011)(2906002)(6506007)(186003)(6666004)(83380400001)(6512007)(5660300002)(43740500002)(45980500001)(20210929001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bWFyYmk0dDkxVUhNbEw0aERFQXVqdWZLZGtEQTNJbEFYNjYyK2JXZnVGS0dK?=
- =?utf-8?B?QkxQVVovNXdWS2dsWkRya3dKdjczQTFKbGpGcTIxSU9kT3NLUFZWajk5MmVq?=
- =?utf-8?B?S1M0THBwSUNna3dxUzJ5L1Z6L2F1STVEMWJ5NnNaeDNIQjNvSUgzWmxEdGhF?=
- =?utf-8?B?aHk2WW5ibVBkMi8wVlhsZm12aEZFSnc1cVloOEFDc01KdnZBSXRsbk13Z1Rj?=
- =?utf-8?B?eEZ3Y3Y4aVVaaEhhYzMvQ28rbVNaNFRXZ05mTzJ2ZEFvenZXTnM5Sndacllq?=
- =?utf-8?B?aFpRQURqSlZIVStsbVhiWU52Yi9DSzdZKzRPYzI1ZHltczAvNGtFb2VGc1dl?=
- =?utf-8?B?aGFRS0dMZDhGVElZamJOTi9xdjhlamQ3TzJSK0lKMXBsTm5UeDlGelB5Z0Fr?=
- =?utf-8?B?ZzlTVzRsblVmMlorRDIyUzZCWjVMeVY3K2ZubjVVNkRtYzk1S0dRZ01pS2M2?=
- =?utf-8?B?NGdTUVlNMXd4bFJsUHJ5VGRRajRlcHRqWEFWTVNqRU1UTHlIb3ZxbCtjM0hZ?=
- =?utf-8?B?VkxSS01jRWZxWmpSOVlQVUZ3Y2VmNHF4Vy8xazRoblZDVzM2cmM2cWVDbXFq?=
- =?utf-8?B?QmZrM05CR09aWWZtTTJZeUhyOWF1bFpyRWYrQXBWMkk5WDQ0dlRERzVNK21U?=
- =?utf-8?B?TEZqZlpxNjZrN01HcEU3bzFxcWg1dGk4c3I3bzE0WXpPWXEvQndJbHBIR2tQ?=
- =?utf-8?B?ZmZzMEdneEs5T2I5TVYzV0RxVmRLRGpyVjBNdldrcG15WWtFNkVnRjVFTW9a?=
- =?utf-8?B?YXUxSmNFSmFnNUdGU29IZUhYVUZPWXBtMDFXY2lYK3JTWlZMQzRsREZ2M1Y4?=
- =?utf-8?B?bFdaMm82NGd3QUFVQ2hVeXIvYVUvWDQ5bTJqbHNCTlVGdUtGSi9seUcxRWlY?=
- =?utf-8?B?SkJsUEk5YXlzSHpIdGV3VkRYbkNRWmFuZjR4dXVFNlBRM2RPcXZaZlNqTGcr?=
- =?utf-8?B?QXhjd0JXT05RN1U1dDFML0FLa09PNmVKUzk5RE5ObFlVQ1JKam5pVEpHZzdm?=
- =?utf-8?B?T1o0ZWdZcTZiWFJmSUJiSURIN3h3RWdIaHFWR2F2YVF5eWUxTVUrdlRGd3hO?=
- =?utf-8?B?RmtrWWJrZnJnUmV5YmVmR09tQlpKSG1rbmF0Uk9OTGdLWlNzdkd1c2RiYVhi?=
- =?utf-8?B?aG9kOGowdGUrTmtFR1hta2QybThoZ2xQRWxWeVBGMmVuNDBibVBOaTlwdHFz?=
- =?utf-8?B?VGJ3aE5vMW1iV0lRR3RZR2JNWWdpUDNTd2ZMUFdDVFRSVWlvUkhCaWk2VXBm?=
- =?utf-8?B?S0FvMTVpWW00WnAwK0JOaUw1c1FQdFZ6VHhCOEpsWmEvRmlBbEtqOVh4L3oy?=
- =?utf-8?B?NXZUekNQYVZWV2d6Y1BLcFJGaDJrVzg1RDFJck5Bd0gwNnZpU0FnTWM3aXZB?=
- =?utf-8?B?eUw4cG1HYTdMNm1UMnlpQ3NWczVFMkxEbUViQnhXbmIvUjlmVkY1d211am1s?=
- =?utf-8?B?YWxFeUh5bEM0YzZEL1ZOVmZxdFJveHduWExJR2dPUDFVcUFGMjFNcHZ0QmYw?=
- =?utf-8?B?WFNZQ3pyS1RSNkN5VkFaKzhNclg3MkdNWDZLSzE5SG5SYlR5SHRRTXRhajhX?=
- =?utf-8?B?TTRKWkdPUU1KWXJsOU52Y2U3WkIxTmdhVXFaWTZIUTBqeWxpOVRncFF0Yi9F?=
- =?utf-8?B?dkw0RVdueENmaVJXcGIrNlhBbmRuVGFvV25KWWJ0RmtLVGRvTVBkNU1QZ2JX?=
- =?utf-8?B?OW5LSjl0NG5ockhyMy9uRThqZmROS0xhODhjd1dSRjVCUlBDMlRXR0dWNjZr?=
- =?utf-8?B?NFFPcDhKZ1lIKzYxSmNta3VTRGd5UXk0WlY0cEc5aUllY3VtMWtXNmdwTURj?=
- =?utf-8?B?RFI1TUdJSzQxenRNaFlKS3d2NUE3cXdjQWwwRHNrZnJqRzl5WVJhdUdhdzg4?=
- =?utf-8?B?TXVMRVM1aW9LU3YzOFJ1RmszZG43bmt4RmdnTmhoQVNVRU5oYlBMdERpNkUx?=
- =?utf-8?B?QldZWWIweDdjZk9CNlhsa2xSWExqWHpDWHFDUDhpUFdaN1lPQ291SDN4MlRq?=
- =?utf-8?B?YWF0aDJicFpVQnVodjVDNFhHT2VBU2haQmg1WTNiU29sblNSM2RNQkI4RGtk?=
- =?utf-8?B?TXBBM2J4SXRjK3VHRmE4QU5QM0QrUDY4Y2tuSHFwNkZabit6VVE3WG5CSEpU?=
- =?utf-8?B?WElvbGRZajFkMTFUQ1hkdloyOWRVTEtETGY5MEFlNmdYeU1tR0ZTbWNrYUww?=
- =?utf-8?Q?/WufXSkKiHJdGeuPAijhoMc=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T3J6U1YxTWhkclZJUUd3bHVRSm51Wkx2WVZ5Uks2ZUVsU2xxaEgyVWUxUFhw?=
+ =?utf-8?B?Nm90Y29WU2czV09iV0d5b216bGpqWjI1SGFaU3hNZG9HS2plc25rV00zaGh1?=
+ =?utf-8?B?bGlIa2g0V0wzdkplQndSSG1oQ3FUSENXd0Q2amlMNko0VThOaWd5c2luNEJP?=
+ =?utf-8?B?U0diSlNzQ0dsSGkyMDRxdWo2VFdsaTA5cnBPV1EydWVOalF0M2VTeUpLNFRn?=
+ =?utf-8?B?NzVIZmowUFFxWUhUSWF2Y1FnMnlIaFE1VGQvVGVMUFlLSS9rYjBhRGVhZzdh?=
+ =?utf-8?B?R1NTZERRMTliMWlBVk8rQ0ttUHE4MjUyRDc3TE9RUUxaTmZXTG93UyttUk16?=
+ =?utf-8?B?SmhUTzRvay8vMkpoME9DN25OVWYvWGRWYnRBV0o0d3Y4eHdKZ291ZXlEUUZu?=
+ =?utf-8?B?YkhrUFZlOE9xSEgzeEtOQlhXK1JHdDZkZkFFaktiOFhNMkNmdEpNdlNwbFc3?=
+ =?utf-8?B?ekI0UEVSUXF3QzZtNUlpcEx2WG5kTGxBb0N6YmcxWVdUemZJRHJpV0c4blN0?=
+ =?utf-8?B?Q3cwNlBpWXBaYW9peFI3WTdmdFo2MzhoeVp4UXZFdjNsMmFxa2hudlJvUFd2?=
+ =?utf-8?B?YnE2bkFxeUN4MUlZbnNhd1MwNlVLa3M4OGR2dElPN1VNOUtyQUxwSmFZbzRD?=
+ =?utf-8?B?Y0RTdlRYNC9jcld6WUxwMXNxTU5sOGNWM1RRNHVZN2FrN3pZYkNaWEJKS2dU?=
+ =?utf-8?B?eitNMDF5bWNZcVRQaTlPWE1ZTU51NERMMUcvL0FzSFNGUFIyYVdWalJtL2lX?=
+ =?utf-8?B?a3hIT3hNdURLdHJJcUdPMDhtMDlXSkJqRnN1QlluSFJZTnd0MVBTSWdTVFVn?=
+ =?utf-8?B?WlRLQ3lsd0pIRDl6TnkwTGY2YzQrZjZGbjgxL2V6WnFzU0FOVHBoMGxVTFpH?=
+ =?utf-8?B?QytXdXZ4VmZSd0hHM3dUU2ZtMW1FR0ZqWU1WcGloNUxTMjNOMk92MjBHNHJu?=
+ =?utf-8?B?VlJBWjFyL0dSRG94Z1ZRNEZTZS9zZUoyOFphb2FqUmJhbC9XQ0pIclJtclNY?=
+ =?utf-8?B?Q1MySlg5SUxMYVg0dXo0ZVdObGhVang3R2VJK1hGdEloQzM3aG9pazBkV203?=
+ =?utf-8?B?UllscGl5bDJ2N0tjVXI2VWxVVUhPVGV3YXZ0bC9wVjBRQmxwU1Eya2V3WkVI?=
+ =?utf-8?B?dW5UdHJTdGY5dlpWN2toaTM2eUplZnJLNWpvMjBtTXVxYjVtTHp0MGY0MXYy?=
+ =?utf-8?B?bnVBV2hoTkhIN2JWK0gvS3c1cnlWY0wwWXAyQ3BTSXNCMWVlNEk2akYxcnRv?=
+ =?utf-8?B?c1VhTDJxcEhLLzZwMks0clNoNXFnWkJoN09JVlNtS0EranR3U3FwbVhQTmhj?=
+ =?utf-8?B?UFZXbEI1UDJGbG9HMk9nRW9wWVc1Mmpwd25rRGxjNDhmSnBxWER4d2syNTBw?=
+ =?utf-8?B?WkpUNzJGZTVKMUwxeG9yeGowVW1vaE1KeTVJdHVKbUtCNTFVaitFVm5GSXZE?=
+ =?utf-8?B?R0R1TzNYRzF6RTlzUHRVOXBwWnc1YTZLZDdmcGpvVENiTnA1L0lLcGR5ajht?=
+ =?utf-8?B?dXdRS2MvRUZlOWxuOXNvUFFnVWd3aWxpVXNHKzhkZ3V4aVo2bkhyZlFMQ25t?=
+ =?utf-8?B?ZkpmSFcvR2dseVQvSkExZm1OUGRMZnd6b0tyZ3JrL0VrUkpYUTlsZ3p6dTFT?=
+ =?utf-8?B?ZG54SWdaZlZWNS8zQ2I0cDh2QUprSHlxQXA2ZmQvazhBQVdYVHh2RDA3Q1FQ?=
+ =?utf-8?B?V0VhUTRWWGJsYWxPWWJHY3EyWVpNbzBSTEZjNU1PU3c3OUgySWltYXFMNTYx?=
+ =?utf-8?B?dDFTY0c2SjYxNGV4T0VDbTNGc1hWQ1ZEV3A4OFBrTU1yQytDSDFOR1pNT1Jv?=
+ =?utf-8?B?eUhQMWNYSWcwdnFuMnBHSXFSaVdvQVR6NmErSG1SYnlmb3loL3BwTWFBWUc5?=
+ =?utf-8?B?d04yeEZzVHFyOXVoZVRuWHZFOHAyMWwvT2tENHljSGtqWml4YU1jZS9hemVv?=
+ =?utf-8?B?aHZPUTZ2eUV0M2F5eDJSQ2xwdisvT3dYRVdrckVmd2t4d3ArR2FNMm9jZkh0?=
+ =?utf-8?B?YlNqb1NleU9tSUMzRDJySXNOeWc3b0VnKzAyOGJCbk1PNFI2MDlkcUdOWHlm?=
+ =?utf-8?B?cFRUK3BCYTUwS2ZNVTdUMVpVMWhQanYrZk8rWkphLzNYNVovTkNyMXA4RDlP?=
+ =?utf-8?B?QTV2bkcwUm12MmdkcVhTT21KM1FoNWEyK1E1SnVYWHZrcytnWlJZaDRETEUx?=
+ =?utf-8?Q?FFIzQWQMOTdrpgj2udRsi0s=3D?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 23284b9f-7bda-4a83-16b7-08d9e593f236
+X-MS-Exchange-CrossTenant-Network-Message-Id: ec1bf838-97d4-4c33-db3c-08d9e594d02d
 X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5115.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2022 15:03:03.8719
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2022 15:09:16.4588
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: h/Udy+zhN0m1xhsUHR1KoqE0a6s7I0EBR7NAlc64Oz+QVwD/3QYoxNktJmJqz2RNuaBTthuNCYqykNMoOe2ZpQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5134
+X-MS-Exchange-CrossTenant-UserPrincipalName: mRe6l3jOUcVEpfQTSWRCAbVnrvgQ5Ej6hDOB4PZ0i6pyUVueZWIGwRE6TUO3wxDLkDvPEHQdoMXhM7Pq4WvWyQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1930
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
 Am 2022-02-01 um 02:05 schrieb Alistair Popple:
-> Currently any attempts to pin a device coherent page will fail. This is
-> because device coherent pages need to be managed by a device driver, and
-> pinning them would prevent a driver from migrating them off the device.
+> From: Alex Sierra <alex.sierra@amd.com>
 >
-> However this is no reason to fail pinning of these pages. These are
-> coherent and accessible from the CPU so can be migrated just like
-> pinning ZONE_MOVABLE pages. So instead of failing all attempts to pin
-> them first try migrating them out of ZONE_DEVICE.
+> The intention is to test device coherent type pages that have been
+> called through get user pages with PIN_LONGTERM flag set. These pages
+> should get migrated back to normal system memory.
 >
+> Signed-off-by: Alex Sierra <alex.sierra@amd.com>
 > Signed-off-by: Alistair Popple <apopple@nvidia.com>
 
-Thank you for working on this. I have two questions inline.
+This patch is
 
-Other than that, patches 1 and 2 are
-
-Acked-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
 
 
 > ---
->   mm/gup.c | 105 ++++++++++++++++++++++++++++++++++++++++++++++++++------
->   1 file changed, 95 insertions(+), 10 deletions(-)
+>   tools/testing/selftests/vm/Makefile    |  2 +-
+>   tools/testing/selftests/vm/hmm-tests.c | 81 +++++++++++++++++++++++++++-
+>   2 files changed, 82 insertions(+), 1 deletion(-)
 >
-> diff --git a/mm/gup.c b/mm/gup.c
-> index f596b93..2cbef54 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -1834,6 +1834,60 @@ struct page *get_dump_page(unsigned long addr)
+> diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/vm/Makefile
+> index 1607322..58c8427 100644
+> --- a/tools/testing/selftests/vm/Makefile
+> +++ b/tools/testing/selftests/vm/Makefile
+> @@ -142,7 +142,7 @@ $(OUTPUT)/mlock-random-test $(OUTPUT)/memfd_secret: LDLIBS += -lcap
 >   
->   #ifdef CONFIG_MIGRATION
->   /*
-> + * Migrates a device coherent page back to normal memory. Caller should have a
-> + * reference on page which will be copied to the new page if migration is
-> + * successful or dropped on failure.
-> + */
-> +static struct page *migrate_device_page(struct page *page,
-> +					unsigned int gup_flags)
-> +{
-> +	struct page *dpage;
-> +	struct migrate_vma args;
-> +	unsigned long src_pfn, dst_pfn = 0;
-> +
-> +	lock_page(page);
-> +	src_pfn = migrate_pfn(page_to_pfn(page)) | MIGRATE_PFN_MIGRATE;
-> +	args.src = &src_pfn;
-> +	args.dst = &dst_pfn;
-> +	args.cpages = 1;
-> +	args.npages = 1;
-> +	args.vma = NULL;
-> +	migrate_vma_setup(&args);
-> +	if (!(src_pfn & MIGRATE_PFN_MIGRATE))
-> +		return NULL;
-> +
-> +	dpage = alloc_pages(GFP_USER | __GFP_NOWARN, 0);
-
-Don't you need to check dpage for NULL before the try_grab_page call below?
-
-
-> +
-> +	/*
-> +	 * get/pin the new page now so we don't have to retry gup after
-> +	 * migrating. We already have a reference so this should never fail.
-> +	 */
-> +	if (WARN_ON_ONCE(!try_grab_page(dpage, gup_flags))) {
-> +		__free_pages(dpage, 0);
-> +		dpage = NULL;
-> +	}
-> +
-> +	if (dpage) {
-> +		lock_page(dpage);
-> +		dst_pfn = migrate_pfn(page_to_pfn(dpage));
-> +	}
-> +
-> +	migrate_vma_pages(&args);
-> +	if (src_pfn & MIGRATE_PFN_MIGRATE)
-> +		copy_highpage(dpage, page);
-
-Can't dpage can be NULL here as well?
-
-Regards,
-   Felix
-
-
-> +	migrate_vma_finalize(&args);
-> +	if (dpage && !(src_pfn & MIGRATE_PFN_MIGRATE)) {
-> +		if (gup_flags & FOLL_PIN)
-> +			unpin_user_page(dpage);
-> +		else
-> +			put_page(dpage);
-> +		dpage = NULL;
-> +	}
-> +
-> +	return dpage;
-> +}
-> +
+>   $(OUTPUT)/gup_test: ../../../../mm/gup_test.h
+>   
+> -$(OUTPUT)/hmm-tests: local_config.h
+> +$(OUTPUT)/hmm-tests: local_config.h ../../../../mm/gup_test.h
+>   
+>   # HMM_EXTRA_LIBS may get set in local_config.mk, or it may be left empty.
+>   $(OUTPUT)/hmm-tests: LDLIBS += $(HMM_EXTRA_LIBS)
+> diff --git a/tools/testing/selftests/vm/hmm-tests.c b/tools/testing/selftests/vm/hmm-tests.c
+> index 84ec8c4..11b83a8 100644
+> --- a/tools/testing/selftests/vm/hmm-tests.c
+> +++ b/tools/testing/selftests/vm/hmm-tests.c
+> @@ -36,6 +36,7 @@
+>    * in the usual include/uapi/... directory.
+>    */
+>   #include "../../../../lib/test_hmm_uapi.h"
+> +#include "../../../../mm/gup_test.h"
+>   
+>   struct hmm_buffer {
+>   	void		*ptr;
+> @@ -60,6 +61,8 @@ enum {
+>   #define NTIMES		10
+>   
+>   #define ALIGN(x, a) (((x) + (a - 1)) & (~((a) - 1)))
+> +/* Just the flags we need, copied from mm.h: */
+> +#define FOLL_WRITE	0x01	/* check pte is writable */
+>   
+>   FIXTURE(hmm)
+>   {
+> @@ -1766,4 +1769,82 @@ TEST_F(hmm, exclusive_cow)
+>   	hmm_buffer_free(buffer);
+>   }
+>   
 > +/*
->    * Check whether all pages are pinnable, if so return number of pages.  If some
->    * pages are not pinnable, migrate them, and unpin all pages. Return zero if
->    * pages were migrated, or if some pages were not successfully isolated.
-> @@ -1861,15 +1915,40 @@ static long check_and_migrate_movable_pages(unsigned long nr_pages,
->   			continue;
->   		prev_head = head;
->   		/*
-> -		 * If we get a movable page, since we are going to be pinning
-> -		 * these entries, try to move them out if possible.
-> +		 * Device coherent pages are managed by a driver and should not
-> +		 * be pinned indefinitely as it prevents the driver moving the
-> +		 * page. So when trying to pin with FOLL_LONGTERM instead try
-> +		 * migrating page out of device memory.
->   		 */
->   		if (is_dev_private_or_coherent_page(head)) {
-> +			/*
-> +			 * device private pages will get faulted in during gup
-> +			 * so it shouldn't be possible to see one here.
-> +			 */
->   			WARN_ON_ONCE(is_device_private_page(head));
-> -			ret = -EFAULT;
-> -			goto unpin_pages;
-> +			WARN_ON_ONCE(PageCompound(head));
+> + * Test get user device pages through gup_test. Setting PIN_LONGTERM flag.
+> + * This should trigger a migration back to system memory for both, private
+> + * and coherent type pages.
+> + * This test makes use of gup_test module. Make sure GUP_TEST_CONFIG is added
+> + * to your configuration before you run it.
+> + */
+> +TEST_F(hmm, hmm_gup_test)
+> +{
+> +	struct hmm_buffer *buffer;
+> +	struct gup_test gup;
+> +	int gup_fd;
+> +	unsigned long npages;
+> +	unsigned long size;
+> +	unsigned long i;
+> +	int *ptr;
+> +	int ret;
+> +	unsigned char *m;
 > +
-> +			/*
-> +			 * migration will fail if the page is pinned, so convert
-> +			 * the pin on the source page to a normal reference.
-> +			 */
-> +			if (gup_flags & FOLL_PIN) {
-> +				get_page(head);
-> +				unpin_user_page(head);
-> +			}
+> +	gup_fd = open("/sys/kernel/debug/gup_test", O_RDWR);
+> +	if (gup_fd == -1)
+> +		SKIP(return, "Skipping test, could not find gup_test driver");
 > +
-> +			pages[i] = migrate_device_page(head, gup_flags);
-> +			if (!pages[i]) {
-> +				ret = -EBUSY;
-> +				break;
-> +			}
-> +			continue;
->   		}
->   
-> +		/*
-> +		 * If we get a movable page, since we are going to be pinning
-> +		 * these entries, try to move them out if possible.
-> +		 */
->   		if (!is_pinnable_page(head)) {
->   			if (PageHuge(head)) {
->   				if (!isolate_huge_page(head, &movable_page_list))
-> @@ -1897,16 +1976,22 @@ static long check_and_migrate_movable_pages(unsigned long nr_pages,
->   	 * If list is empty, and no isolation errors, means that all pages are
->   	 * in the correct zone.
->   	 */
-> -	if (list_empty(&movable_page_list) && !isolation_error_count)
-> +	if (!ret && list_empty(&movable_page_list) && !isolation_error_count)
->   		return nr_pages;
->   
-> -unpin_pages:
-> -	if (gup_flags & FOLL_PIN) {
-> -		unpin_user_pages(pages, nr_pages);
-> -	} else {
-> -		for (i = 0; i < nr_pages; i++)
-> +	for (i = 0; i < nr_pages; i++)
-> +		if (!pages[i])
-> +			continue;
-> +		else if (gup_flags & FOLL_PIN)
-> +			unpin_user_page(pages[i]);
-> +		else
->   			put_page(pages[i]);
+> +	npages = 4;
+> +	ASSERT_NE(npages, 0);
+> +	size = npages << self->page_shift;
 > +
-> +	if (ret && !list_empty(&movable_page_list)) {
-> +		putback_movable_pages(&movable_page_list);
-> +		return ret;
->   	}
+> +	buffer = malloc(sizeof(*buffer));
+> +	ASSERT_NE(buffer, NULL);
 > +
->   	if (!list_empty(&movable_page_list)) {
->   		ret = migrate_pages(&movable_page_list, alloc_migration_target,
->   				    NULL, (unsigned long)&mtc, MIGRATE_SYNC,
+> +	buffer->fd = -1;
+> +	buffer->size = size;
+> +	buffer->mirror = malloc(size);
+> +	ASSERT_NE(buffer->mirror, NULL);
+> +
+> +	buffer->ptr = mmap(NULL, size,
+> +			   PROT_READ | PROT_WRITE,
+> +			   MAP_PRIVATE | MAP_ANONYMOUS,
+> +			   buffer->fd, 0);
+> +	ASSERT_NE(buffer->ptr, MAP_FAILED);
+> +
+> +	/* Initialize buffer in system memory. */
+> +	for (i = 0, ptr = buffer->ptr; i < size / sizeof(*ptr); ++i)
+> +		ptr[i] = i;
+> +
+> +	/* Migrate memory to device. */
+> +	ret = hmm_migrate_sys_to_dev(self->fd, buffer, npages);
+> +	ASSERT_EQ(ret, 0);
+> +	ASSERT_EQ(buffer->cpages, npages);
+> +	/* Check what the device read. */
+> +	for (i = 0, ptr = buffer->mirror; i < size / sizeof(*ptr); ++i)
+> +		ASSERT_EQ(ptr[i], i);
+> +
+> +	gup.nr_pages_per_call = npages;
+> +	gup.addr = (unsigned long)buffer->ptr;
+> +	gup.gup_flags = FOLL_WRITE;
+> +	gup.size = size;
+> +	/*
+> +	 * Calling gup_test ioctl. It will try to PIN_LONGTERM these device pages
+> +	 * causing a migration back to system memory for both, private and coherent
+> +	 * type pages.
+> +	 */
+> +	if (ioctl(gup_fd, PIN_LONGTERM_BENCHMARK, &gup)) {
+> +		perror("ioctl on PIN_LONGTERM_BENCHMARK\n");
+> +		goto out_test;
+> +	}
+> +
+> +	/* Take snapshot to make sure pages have been migrated to sys memory */
+> +	ret = hmm_dmirror_cmd(self->fd, HMM_DMIRROR_SNAPSHOT, buffer, npages);
+> +	ASSERT_EQ(ret, 0);
+> +	ASSERT_EQ(buffer->cpages, npages);
+> +	m = buffer->mirror;
+> +	for (i = 0; i < npages; i++)
+> +		ASSERT_EQ(m[i], HMM_DMIRROR_PROT_WRITE);
+> +out_test:
+> +	close(gup_fd);
+> +	hmm_buffer_free(buffer);
+> +}
+>   TEST_HARNESS_MAIN
