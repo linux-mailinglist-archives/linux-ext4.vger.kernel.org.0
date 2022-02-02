@@ -2,86 +2,175 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E4D4A7648
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Feb 2022 17:57:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D134A786B
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Feb 2022 20:00:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231706AbiBBQ5S (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 2 Feb 2022 11:57:18 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:58988 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346056AbiBBQ5S (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Feb 2022 11:57:18 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        id S1346833AbiBBTAl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 2 Feb 2022 14:00:41 -0500
+Received: from sandeen.net ([63.231.237.45]:35998 "EHLO sandeen.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231486AbiBBTAj (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 2 Feb 2022 14:00:39 -0500
+Received: from [10.0.0.147] (liberator.sandeen.net [10.0.0.147])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 40B3B21110;
-        Wed,  2 Feb 2022 16:57:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1643821037;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9jF8Bs3HTOn12sXQ/zQWRv1Mody7bEDmU4n3TIWFpgg=;
-        b=15vQrP2KvZgO28J6TBmx5D7dCGO4NLdfJfDp4JJRxP+xfdUgIcydE9SaVebPeq0++Jkcfd
-        pyEswqInWtk6KZLwUo3LCFZwdZVh4HOm2nknQ4GjQXIKuvLVnaY+KMRzS+z1Ukh6en3tmG
-        lscUPEmF5mYEmuMZHwKl4zjVBG7acZ4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1643821037;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9jF8Bs3HTOn12sXQ/zQWRv1Mody7bEDmU4n3TIWFpgg=;
-        b=BUpDgri3PyC6tkBmbSfWor5cwePlT0Q0oyR+n04gX8NEwICiWv4nbtKXhxQgpCfAqHybAQ
-        1AMJM6R/TVfN+fCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E02A013E99;
-        Wed,  2 Feb 2022 16:57:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id TN+KNOy3+mG6QQAAMHmgww
-        (envelope-from <pvorel@suse.cz>); Wed, 02 Feb 2022 16:57:16 +0000
-Date:   Wed, 2 Feb 2022 17:57:15 +0100
-From:   Petr Vorel <pvorel@suse.cz>
-To:     Cyril Hrubis <chrubis@suse.cz>
-Cc:     Amir Goldstein <amir73il@gmail.com>, kernel@collabora.com,
-        Khazhismel Kumykov <khazhy@google.com>,
-        Matthew Bobrowski <repnop@google.com>,
-        Jan Kara <jack@suse.com>, Ext4 <linux-ext4@vger.kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        LTP List <ltp@lists.linux.it>
-Subject: Re: [LTP] [PATCH v4 0/9] Test the new fanotify FAN_FS_ERROR event
-Message-ID: <Yfq368ht9bmasV5b@pevik>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-References: <20211118235744.802584-1-krisman@collabora.com>
- <YdxN6HBJF+ATgZxP@pevik>
- <CAOQ4uxia2NNMPUCQzjo6Gsnz8xr_9YKTeTqzOu-hgdsjfHHx0w@mail.gmail.com>
- <YfqTqAjEPalXzOK7@pevik>
- <Yfqtsi5Y0u8Sv2P8@yuki>
+        by sandeen.net (Postfix) with ESMTPSA id 2E04C78D1;
+        Wed,  2 Feb 2022 13:00:18 -0600 (CST)
+Message-ID: <789e83e5-c346-86de-3c62-f4fcf35a2bf0@sandeen.net>
+Date:   Wed, 2 Feb 2022 13:00:38 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Yfqtsi5Y0u8Sv2P8@yuki>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.5.1
+Content-Language: en-US
+To:     Lukas Czerner <lczerner@redhat.com>, tytso@mit.edu
+Cc:     linux-ext4@vger.kernel.org, Ye Bin <yebin10@huawei.com>
+References: <YcSYvk5DdGjjB9q/@mit.edu>
+ <20220201131345.77591-1-lczerner@redhat.com>
+From:   Eric Sandeen <sandeen@sandeen.net>
+Subject: Re: [PATCH] ext4: fix remount with 'abort' option
+In-Reply-To: <20220201131345.77591-1-lczerner@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-> Hi!
-> > > In any case, Petr, I suggest adding a short timeout to the test
-> > > instead of the default 5min.
-> > > Test takes less than 1 second on my VM on v5.16, so...
-> > We usually don't lower the default timeout, but here it's a good idea since here
-> > it blocks. It's similar speed on my machine, but I'd be conservative and put
-> > timeout 10 sec. Sending patch.
+On 2/1/22 7:13 AM, Lukas Czerner wrote:
+> After commit 6e47a3cc68fc ("ext4: get rid of super block and sbi from
+> handle_mount_ops()") the 'abort' options stopped working. This is
+> because we're using ctx_set_mount_flags() helper that's expecting an
+> argument with the appropriate bit set, but instead got
+> EXT4_MF_FS_ABORTED which is a bit position. ext4_set_mount_flag() is
+> using set_bit() while ctx_set_mount_flags() was using bitwise OR.
+> 
+> Create a separate helper ctx_set_mount_flag() to handle setting the
+> mount_flags correctly.
+> 
+> While we're at it clean up the EXT4_SET_CTX macros so that we're only
+> creating helpers that we actually use to avoid warnings.
+> 
+> Fixes: 6e47a3cc68fc ("ext4: get rid of super block and sbi from handle_mount_ops()")
+> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+> Cc: Ye Bin <yebin10@huawei.com>
 
-> Actually I hope to change the default timeout once I finish my runtime
-> patchset to something more reasonable as majority of LTP tests finish
-> under one second.
+ok thinking out loud here - reducing this to the functional change that
+fixes the bug, (apologies for the surely-mangled whitespace, I'm being lazy),
+it looks something like:
 
-+1. We can then revert that temporary fix for fanotify22.
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index eee0d9ebfa6c..a3047b033053 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -2045,8 +2045,8 @@ struct ext4_fs_context {
+        unsigned int    mask_s_mount_opt;
+        unsigned int    vals_s_mount_opt2;
+        unsigned int    mask_s_mount_opt2;
+-       unsigned int    vals_s_mount_flags;
+-       unsigned int    mask_s_mount_flags;
++       unsigned long   vals_s_mount_flags;
++       unsigned long   mask_s_mount_flags;
+        unsigned int    opt_flags;      /* MOPT flags */
+        unsigned int    spec;
+        u32             s_max_batch_time;
+@@ -2165,7 +2165,13 @@ ctx_test_##name(struct ext4_fs_context *ctx, unsigned long flag) \
+ EXT4_SET_CTX(flags);
+ EXT4_SET_CTX(mount_opt);
+ EXT4_SET_CTX(mount_opt2);
+-EXT4_SET_CTX(mount_flags);
++
++/* Setting the mount_flags field is special, it takes a bit number */
++static inline void ctx_set_mount_flag(struct ext4_fs_context *ctx, int bit)
++{
++       set_bit(bit, &ctx->mask_s_mount_flags);
++       set_bit(bit, &ctx->vals_s_mount_flags);
++}
+ 
+ static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ {
+@@ -2235,7 +2241,7 @@ static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *param)
+                         param->key);
+                return 0;
+        case Opt_abort:
+-               ctx_set_mount_flags(ctx, EXT4_MF_FS_ABORTED);
++               ctx_set_mount_flag(ctx, EXT4_MF_FS_ABORTED);
+                return 0;
+        case Opt_i_version:
+                ext4_msg(NULL, KERN_WARNING, deprecated_msg, param->key, "5.20");
 
-Kind regards,
-Petr
+and that makes sense to me. I wonder if there's any further cleanup that could
+make it slightly more clear or foolproof re: which flag matches which ctx_set_*
+generated function, so the wrong thing doesn't get sent to the wrong routine,
+but that's a different issue, so for the patch as you sent it,
+
+Reviewed-by: Eric Sandeen <sandeen@redhat.com>
+
+> ---
+>  fs/ext4/super.c | 29 +++++++++++++++++++++--------
+>  1 file changed, 21 insertions(+), 8 deletions(-)
+> 
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index eee0d9ebfa6c..6f74cd51df2e 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -2045,8 +2045,8 @@ struct ext4_fs_context {
+>  	unsigned int	mask_s_mount_opt;
+>  	unsigned int	vals_s_mount_opt2;
+>  	unsigned int	mask_s_mount_opt2;
+> -	unsigned int	vals_s_mount_flags;
+> -	unsigned int	mask_s_mount_flags;
+> +	unsigned long	vals_s_mount_flags;
+> +	unsigned long	mask_s_mount_flags;
+>  	unsigned int	opt_flags;	/* MOPT flags */
+>  	unsigned int	spec;
+>  	u32		s_max_batch_time;
+> @@ -2149,23 +2149,36 @@ static inline void ctx_set_##name(struct ext4_fs_context *ctx,		\
+>  {									\
+>  	ctx->mask_s_##name |= flag;					\
+>  	ctx->vals_s_##name |= flag;					\
+> -}									\
+> +}
+> +
+> +#define EXT4_CLEAR_CTX(name)						\
+>  static inline void ctx_clear_##name(struct ext4_fs_context *ctx,	\
+>  				    unsigned long flag)			\
+>  {									\
+>  	ctx->mask_s_##name |= flag;					\
+>  	ctx->vals_s_##name &= ~flag;					\
+> -}									\
+> +}
+> +
+> +#define EXT4_TEST_CTX(name)						\
+>  static inline unsigned long						\
+>  ctx_test_##name(struct ext4_fs_context *ctx, unsigned long flag)	\
+>  {									\
+>  	return (ctx->vals_s_##name & flag);				\
+> -}									\
+> +}
+>  
+> -EXT4_SET_CTX(flags);
+> +EXT4_SET_CTX(flags); /* set only */
+>  EXT4_SET_CTX(mount_opt);
+> +EXT4_CLEAR_CTX(mount_opt);
+> +EXT4_TEST_CTX(mount_opt);
+>  EXT4_SET_CTX(mount_opt2);
+> -EXT4_SET_CTX(mount_flags);
+> +EXT4_CLEAR_CTX(mount_opt2);
+> +EXT4_TEST_CTX(mount_opt2);
+> +
+> +static inline void ctx_set_mount_flag(struct ext4_fs_context *ctx, int bit)
+> +{
+> +	set_bit(bit, &ctx->mask_s_mount_flags);
+> +	set_bit(bit, &ctx->vals_s_mount_flags);
+> +}
+>  
+>  static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *param)
+>  {
+> @@ -2235,7 +2248,7 @@ static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *param)
+>  			 param->key);
+>  		return 0;
+>  	case Opt_abort:
+> -		ctx_set_mount_flags(ctx, EXT4_MF_FS_ABORTED);
+> +		ctx_set_mount_flag(ctx, EXT4_MF_FS_ABORTED);
+>  		return 0;
+>  	case Opt_i_version:
+>  		ext4_msg(NULL, KERN_WARNING, deprecated_msg, param->key, "5.20");
