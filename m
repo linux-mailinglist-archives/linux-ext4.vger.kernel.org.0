@@ -2,87 +2,61 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F70B4A786E
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Feb 2022 20:01:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FEE54A7F14
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Feb 2022 06:26:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242882AbiBBTB4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 2 Feb 2022 14:01:56 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:35976 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231486AbiBBTB4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Feb 2022 14:01:56 -0500
-Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 212J1nep027110
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 2 Feb 2022 14:01:50 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 518D315C0040; Wed,  2 Feb 2022 14:01:49 -0500 (EST)
-Date:   Wed, 2 Feb 2022 14:01:49 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Jan Beulich <jbeulich@suse.com>
-Cc:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-Subject: Re: ext4's dependency on crc32c
-Message-ID: <YfrVHVn4P3PT9wwY@mit.edu>
-References: <73fc221b-400b-a749-4bca-e6854d361a9a@suse.com>
- <YflV+qAsrKCj8h1U@mit.edu>
- <d086e0f2-126f-786a-b4af-d606aa0fa8d8@suse.com>
+        id S236330AbiBCF0i (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Feb 2022 00:26:38 -0500
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:33109 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229872AbiBCF0h (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Feb 2022 00:26:37 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0V3UBDaW_1643865995;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0V3UBDaW_1643865995)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 03 Feb 2022 13:26:35 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     jack@suse.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH -next] mm/fs: remove variable bdi set but not used
+Date:   Thu,  3 Feb 2022 13:26:33 +0800
+Message-Id: <20220203052633.54000-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d086e0f2-126f-786a-b4af-d606aa0fa8d8@suse.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Feb 02, 2022 at 09:08:03AM +0100, Jan Beulich wrote:
-> > Sure, there are some subtleties, though.  For example, we would need
-> > to make sure that sbi->s_chksum_driver() is initialized before we
-> > attempt to use it.  That's because an malicious attacker (or syzbot
-> > fuzzer --- is there a difference? :-) could force the file system
-> > feature bits to be set after we decide whether or not to allocate the
-> > crypto handle.  This can happen by having a maliciously corrupted file
-> > system image which sets the file system feature bits as part of the
-> > journal replay, or simply by writing to the superblock after it is
-> > mounted.
-> 
-> Can any of this happen for an ext3 partition (without destroying its
-> ext3 nature)? IOW would it be possible to set sbi->s_chksum_driver
-> depending on just file system type rather than individual features?
+The code that uses the pointer 'bdi' has been removed in commit:
+'37c32ade079f000c8e539730f254b14fae0d3b49' and inode_to_bdi() doesn't
+change 'inode', so the declaration and assignment of 'bdi' can be removed.
 
-The idea of "an ext3 partition" is not well defined, at least in terms
-of the on-disk format.  The ext2/ext3/ext4 superblock has a set of
-feature flags, the compat, r/o, and incompat feature flags.  You can
-take an "ext3" file system, and enable the "extents" feature, and on
-modern kernels (where "mount -t ext3" is handled by the ext4 file
-system), new files which are created will be extent-mapped.
+Eliminate the following clang warning:
+fs/ext2/ialloc.c:173:27: warning: variable 'bdi' set but not used
 
-You can look at what "mke2fs -t ext3" and "mke2fs -t ext4" will do ---
-although that will change over time as you install new versions of
-e2fsprogs, but it can also be modified by editing the /etc/mke2fs.conf
-file, either becaue a distribution wants to be more aggressive about
-enabling a bleeding edge feature (such as fast commits), or because a
-particular system adminsitrator or company wants to explicitly enable
-or disable some features for their workload:
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ fs/ext2/ialloc.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-[defaults]
-	base_features = sparse_super,large_file,filetype,resize_inode,dir_index,ext_attr
-	default_mntopts = acl,user_xattr
-	enable_periodic_fsck = 0
-	blocksize = 4096
-	inode_size = 256
-	...
-	
-[fs_types]
-	ext3 = {
-		features = has_journal
-	}
-	ext4 = {
-		features = has_journal,extent,huge_file,flex_bg,metadata_csum,64bit,dir_nlink,extra_isize
-	}
-	....
+diff --git a/fs/ext2/ialloc.c b/fs/ext2/ialloc.c
+index d632764da240..998dd2ac8008 100644
+--- a/fs/ext2/ialloc.c
++++ b/fs/ext2/ialloc.c
+@@ -170,9 +170,6 @@ static void ext2_preread_inode(struct inode *inode)
+ 	unsigned long offset;
+ 	unsigned long block;
+ 	struct ext2_group_desc * gdp;
+-	struct backing_dev_info *bdi;
+-
+-	bdi = inode_to_bdi(inode);
+ 
+ 	block_group = (inode->i_ino - 1) / EXT2_INODES_PER_GROUP(inode->i_sb);
+ 	gdp = ext2_get_group_desc(inode->i_sb, block_group, NULL);
+-- 
+2.20.1.7.g153144c
 
-Cheers,
-
-					- Ted
