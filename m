@@ -2,276 +2,236 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D314A8A56
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Feb 2022 18:41:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A624A8FA1
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Feb 2022 22:15:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352985AbiBCRle (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Feb 2022 12:41:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352996AbiBCRl1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Feb 2022 12:41:27 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB46C06173D
-        for <linux-ext4@vger.kernel.org>; Thu,  3 Feb 2022 09:41:27 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id ah7so11011647ejc.4
-        for <linux-ext4@vger.kernel.org>; Thu, 03 Feb 2022 09:41:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6oT++hW6C5oK1MiLjZAPXBEmMurv/nr5AWtfuQ46IUI=;
-        b=O2KpXGsDPQ+PTUK/DudcfJwnCK0EceTOw7JLwf/SdVhHamvxesabrnNn6EKmpPYL11
-         2o9P4vvizXVo+WIcQnDIGYMjIZ0vkq7uEHQ7e8G9oiV9MuvKqHdWY0KLVFG7Up/U5qxe
-         XcS18DP+qHfSjdfBxesBz/RD30/1HOKGrHFMr0K55aXa1gWPZdzWi+tfjrThPPmYzXrE
-         zNvqeyYsrD3KNVbNTCiowuaz2TgNHyZIcgniPqMYCcOFKffTBczzGPWaaZtE9XyKsS/J
-         JTGoSzM8EUtEUwUuGfIss7qaglycDw0chjjCEXCQTi0+KgxdBOGluG3lgsLsBTtfgPC0
-         afrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6oT++hW6C5oK1MiLjZAPXBEmMurv/nr5AWtfuQ46IUI=;
-        b=sG5I6syyjFjVcX2PN1dlBg7OjWDHzwfA0EDurdOomTYDcU4hMwgeItPd38aSVMHF54
-         xFwg4NYdjWsFYf9LuTZIEKa/r8Y1zRKX75cjISZUKC1xrW0SPYiG07gkLxj0isfuhTKh
-         BJ62LOgvzMpeNWciQGZ1CCLQtpX2uzP8YP1ZqlSoVBi9Z/oZbVCU2Q30pLoe9wfhazkF
-         p2rB0dFDAVRJFEAO5W2DEFxKNZxmbDT5gJVg/OinxUCOq+aovAT03/H0BJzMs+Hv7buD
-         ZYwuuIfGk5oECrTWpG2kL+Ss4yoX5tix4G3mjXOXUVIRBOmpD7tea6H1xTyDFGVhNhl6
-         /7Cg==
-X-Gm-Message-State: AOAM530wOx2ovK2uVJfK01xZvYwcimOPJki1uOEq6Y/JWjqXlsmRwBi+
-        uTXqn1FiJ+QCqYrWmr8EYjwsSvsk1c/dmTNYnMMSyM2Q7GQ=
-X-Google-Smtp-Source: ABdhPJxukn1ZOUjO5AKWcYZzt9kxQFnnKa5oV88Cq1RfR48nvBN4WNomgvepEvfApZu4ADqJXTc5FgCF0nXpZC29LMo=
-X-Received: by 2002:a17:907:6d99:: with SMTP id sb25mr31454263ejc.15.1643910085894;
- Thu, 03 Feb 2022 09:41:25 -0800 (PST)
+        id S237543AbiBCVOd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Feb 2022 16:14:33 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:45974 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235192AbiBCVOc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Feb 2022 16:14:32 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 213JcIR1009644;
+        Thu, 3 Feb 2022 21:14:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=7z0ZCWtLzZrJPVSBXJGGwlsKXGRo1dpDl+uwF2QB/4Q=;
+ b=K5pkxaXXjEsT/6dIX9T6aWwiCf8dH74Qy5kG9EGljEWXv4kXeLI2ZqlGsxaRI4KDOgvE
+ ovRDV7k4K/pC022jc6HRcLVD+vIn+rn+kDP4mgsIGvV2EGjcA5ZAkF6u8RSUgtHx+F6L
+ e2NBFdgUJqi9YhMILj0r15XNcr9mxBTPrZby8nWraStnCFf+l1Owq9OyV0D8l0udhZAG
+ Cs/iMmG7T53dDJfljl2fcVUV7xYqHy+GMK/KWQAjFk5DNz1tV3IShLCZATpvjUElb+3B
+ iPGB4RJ/ks0g+v89v+SLQDhwZ6msh0TN/cJXmj0oZLThYaSHVAq452huZJfpU0Sfnbt3 OQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3e02k2h1nc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Feb 2022 21:14:24 +0000
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 213LBZSl031230;
+        Thu, 3 Feb 2022 21:14:23 GMT
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3e02k2h1my-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Feb 2022 21:14:23 +0000
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 213L2hmv018892;
+        Thu, 3 Feb 2022 21:14:21 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03fra.de.ibm.com with ESMTP id 3dvw7a83cu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Feb 2022 21:14:21 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 213L4OV140894780
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 3 Feb 2022 21:04:24 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 93C8511C054;
+        Thu,  3 Feb 2022 21:14:18 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 24B6E11C04C;
+        Thu,  3 Feb 2022 21:14:18 +0000 (GMT)
+Received: from localhost (unknown [9.43.61.133])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  3 Feb 2022 21:14:17 +0000 (GMT)
+Date:   Fri, 4 Feb 2022 02:44:16 +0530
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     Xin Yin <yinxin.x@bytedance.com>
+Cc:     harshadshirwadkar@gmail.com, tytso@mit.edu,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>
+Subject: Re: [External] Re: [PATCH 1/2] ext4: use ext4_ext_remove_space() for
+ fast commit replay delete range
+Message-ID: <20220203211416.5jjdkk7pdaahignw@riteshh-domain>
+References: <20211223032337.5198-1-yinxin.x@bytedance.com>
+ <20211223032337.5198-2-yinxin.x@bytedance.com>
+ <20220201203359.owrnrfqydjloy7oq@riteshh-domain>
+ <CAK896s4=o9cFFnh0KzhbXSSjWiDFoTqNx0ATzGNH8rxj19+1aw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20220203064659.1438701-1-harshads@google.com> <20220203121407.q5htlemd6fljaptf@quack3.lan>
-In-Reply-To: <20220203121407.q5htlemd6fljaptf@quack3.lan>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Thu, 3 Feb 2022 09:41:14 -0800
-Message-ID: <CAD+ocbwaEisW7_iN-dtirzPfncG3=BWvrOkmjFNZac599u6odg@mail.gmail.com>
-Subject: Re: [PATCH] ext4: remove journal barrier during fast commit
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK896s4=o9cFFnh0KzhbXSSjWiDFoTqNx0ATzGNH8rxj19+1aw@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: an2wUMPWkhzA-KdfEn14KoNtdGCSkMEE
+X-Proofpoint-ORIG-GUID: MPte-vS5sfRiUTHP3nN9weXGIGpDPAKl
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-03_06,2022-02-03_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
+ adultscore=0 phishscore=0 bulkscore=0 malwarescore=0 clxscore=1015
+ mlxlogscore=999 spamscore=0 lowpriorityscore=0 impostorscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202030126
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks for the detailed review Jan, please see my questions and responses below:
+On 22/02/02 09:40PM, Xin Yin wrote:
+> On Wed, Feb 2, 2022 at 4:34 AM Ritesh Harjani <riteshh@linux.ibm.com> wrote:
+> >
+> > Hello Xin,
+> >
+> > Sorry about revisiting this thread so late :(
+> > Recently when I was working on one of the fast_commit issue, I got interested
+> > in looking into some of those recent fast_commit fixes.
+> >
+> > Hence some of these queries.
+> >
+> > On 21/12/23 11:23AM, Xin Yin wrote:
+> > > For now ,we use ext4_punch_hole() during fast commit replay delete range
+> > > procedure. But it will be affected by inode->i_size, which may not
+> > > correct during fast commit replay procedure. The following test will
+> > > failed.
+> > >
+> > > -create & write foo (len 1000K)
+> > > -falloc FALLOC_FL_ZERO_RANGE foo (range 400K - 600K)
+> > > -create & fsync bar
+> > ^^^^ do you mean "fsync foo" or is this actually a new file create and fsync
+> > bar?
+> bar is a new created file, it is the brother file of foo , it would be
+> like this.
+> ./foo ./bar
+>
+> >
+> >
+> > > -falloc FALLOC_FL_PUNCH_HOLE foo (range 300K-500K)
+> > > -fsync foo
+> > > -crash before a full commit
+> > >
+> > > After the fast_commit reply procedure, the range 400K-500K will not be
+> > > removed. Because in this case, when calling ext4_punch_hole() the
+> > > inode->i_size is 0, and it just retruns with doing nothing.
+> >
+> > I tried looking into this, but I am not able to put my head around that when
+> > will the inode->i_size will be 0?
+> >
+> > So, what I think should happen is when you are doing falocate/fsync foo in your
+> > above list of operations then, anyways the inode i_disksize will be updated
+> > using ext4_mark_inode_dirty() and during replay phase inode->i_size will hold
+> > the right value no?
+> yes, the inode->i_size hold the right value and ext4_fc_replay_inode()
+> will update inode to the final state, but during replay phase
+> ext4_fc_replay_inode() usually is the last step,  so before this the
+> inode->i_size may not correct.
+>
+> >
+> > Could you please help understand when, where and how will inode->i_size will be
+> > 0?
+> I didn't check why inode->i_size is 0, in this case. I just think
 
-On Thu, 3 Feb 2022 at 04:14, Jan Kara <jack@suse.cz> wrote:
->
-> On Wed 02-02-22 22:46:59, Harshad Shirwadkar wrote:
-> > From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-> >
-> > In commit 2729cfdcfa1cc49bef5a90d046fa4a187fdfcc69 ("ext4: use
->
-> Just first 12 digits from the commit sha is enough :)
-Ack!
->
-> > ext4_journal_start/stop for fast commit transactions"), journal
-> > barrier was introduced in fast commit path as an intermediate step for
-> > fast commit API migration. This patch removes the journal barrier to
-> > improve the fast commit performance. Instead of blocking the entire
-> > journal before starting the fast commit, this patch only blocks the
-> > inode that is being committed during a fast commit.
-> >
-> > Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-> ...
-> > diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
-> > index 3477a16d08ae..16321f89934c 100644
-> > --- a/fs/ext4/ext4_jbd2.c
-> > +++ b/fs/ext4/ext4_jbd2.c
-> > @@ -106,6 +106,61 @@ handle_t *__ext4_journal_start_sb(struct super_block *sb, unsigned int line,
-> >                                  GFP_NOFS, type, line);
-> >  }
-> >
-> > +handle_t *__ext4_journal_start(struct inode *inode, unsigned int line,
-> > +                               int type, int blocks, int rsv_blocks,
-> > +                               int revoke_creds)
-> > +{
-> > +     handle_t *handle;
-> > +     journal_t *journal;
-> > +     int err;
-> > +
-> > +     trace_ext4_journal_start(inode->i_sb, blocks, rsv_blocks, revoke_creds,
-> > +                              _RET_IP_);
-> > +     err = ext4_journal_check_start(inode->i_sb);
-> > +     if (err < 0)
-> > +             return ERR_PTR(err);
-> > +
-> > +     journal = EXT4_SB(inode->i_sb)->s_journal;
-> > +     if (!journal || (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY))
-> > +             return ext4_get_nojournal();
-> > +
-> > +     handle = jbd2__journal_start(journal, blocks, rsv_blocks, revoke_creds,
-> > +                                  GFP_NOFS, type, line);
-> > +
->
-> Perhaps you could reuse __ext4_journal_start_sb() in the above?
->
-> > +     if (test_opt2(inode->i_sb, JOURNAL_FAST_COMMIT)
-> > +         && !IS_ERR(handle)
-> > +         && !ext4_test_mount_flag(inode->i_sb, EXT4_MF_FC_INELIGIBLE)) {
-> > +             if (handle->h_ref == 1) {
-> > +                     WARN_ON(handle->h_priv != NULL);
-> > +                     ext4_fc_start_update(handle, inode);
-> > +                     handle->h_priv = inode;
-> > +                     return handle;
-> > +             }
-> > +             /*
-> > +              * Check if this is a nested transaction that modifies multiple
-> > +              * inodes. Such a transaction is fast commit ineligible.
-> > +              */
-> > +             if (handle->h_priv != inode)
-> > +                     ext4_fc_mark_ineligible(inode->i_sb,
-> > +                                             EXT4_FC_REASON_TOO_MANY_INODES,
-> > +                                             handle);
-> > +     }
->
-> Hum, here you seem to assume that if inode will be modified, we will call
-> __ext4_journal_start() with that inode. But that is not true. It is
-> perfectly valid to start a transaction with ext4_journal_start_sb() and
-> then add inodes to it. ext4_journal_start() is just a convenience helper to
-> save some boilerplate code you can but don't have to use when starting a
-> transaction. In particular we can have handles modifying more inodes
-> without calling ext4_journal_start() for all of them. We also have places
-> (most notably inode allocation) that definitely modify inodes but start
-> transaction with ext4_journal_start_sb(). A lot of auditing would be
-> required to make this approach work and even more to make sure it does not
-> break in the future.
-Ack.
->
-> If I'm reading the code right, what you need to achieve is that buffer
-> backing raw inode or inode's logical->physical block mapping is not
-> modified while the fastcommit including that inode is running because it
-> would corrupt the information being committed. So would not it be enough to
-> call ext4_fc_start_update() in ext4_map_blocks() once we know that we need
-> to modify block mapping and similarly in ext4_reserve_inode_write() (which
-> would need a bit of work to get used universally - fs/ext4/inline.c does
-> not seem to use it)? In ext4_journal_stop() we can then call
-> ext4_fc_stop_update() (we could either keep going with the
-> one-inode-per-handle limitation you have or introduce a list of inodes
-> attached to a handle). So essentially attaching inode to fastcommit would
-> rather be similar to jbd2_journal_get_write_access() than a transaction
-> start. I guess in principle that would work we just have to be careful not
-> to introduce deadlocks with running fastcommit (so that fastcommit does not
-> wait for some inode update to finish, owner of the handle with that inode
-> update waits for some lock, and the lock is held by someone waiting for
-> fastcommit to finish). So to do that we would need to block all new handle
-> starts, wait for all inode updates to finish (which essentially means wait
-> for all handles that modify inodes involved in fastcommit), set
-> EXT4_STATE_FC_COMMITTING for all involved inodes, unblock handle starts and
-> then we can go on with the fastcommit and EXT4_STATE_FC_COMMITTING flags
-> will protect us from inode modifications. This is better than
-> journal_lock_updates() we have now but I'm not sure this is the improvement
-> you were looking for ;).
-Ack, that makes sense. I'll update this patch to call
-ext4_fc_start_update() in ext4_reserve_inode_write() and
-ext4_map_blocks() as we discussed.
+Ok, so I now know why the inode->i_size is 0 during replay phase (for file foo).
+This is because inode->i_disksize is not really updated until after the
+ext4_writepages() kicks in, which in this case, won't happen (for file foo)
+when we are doing fsync on file bar. And hence fsync on file bar won't also
+not ensure the delalloc blocks for file foo get's written out.
 
-ext4_fc_start_update() has the logic to wait if the inode is in
-EXT4_STATE_FC_COMMITTING state. In the current version of the code,
-new handle starts are not blocked if they start on an inode that is
-not in the fast commit list. But if the inode is being committed (i.e.
-its state is EXT4_FC_STATE_FC_COMMITTING), ext4_fc_start_update() will
-wait for the commit to finish. With the changes that you mentioned,
-instead of waiting at journal start, now ext4_fc_start_update() will
-wait at ext4_reserve_inode_write(). Is that acceptable? Apart from
-deadlock concerns, are there any other correctness issues with doing
-that?
->
-> > +
-> > +     return handle;
-> > +}
-> > +
-> > +/* Stop fast commit update on the inode in this handle, if any. */
-> > +static void ext4_fc_journal_stop(handle_t *handle)
-> > +{
-> > +     if (!handle->h_priv || handle->h_ref > 1)
-> > +             return;
-> > +     /*
-> > +      * We have an inode and this is the top level __ext4_journal_stop call.
-> > +      */
-> > +     ext4_fc_stop_update(handle);
-> > +     handle->h_priv = NULL;
-> > +}
-> > +
-> >  int __ext4_journal_stop(const char *where, unsigned int line, handle_t *handle)
-> >  {
-> >       struct super_block *sb;
-> > @@ -119,11 +174,13 @@ int __ext4_journal_stop(const char *where, unsigned int line, handle_t *handle)
-> >
-> >       err = handle->h_err;
-> >       if (!handle->h_transaction) {
-> > +             ext4_fc_journal_stop(handle);
-> >               rc = jbd2_journal_stop(handle);
-> >               return err ? err : rc;
-> >       }
-> >
-> >       sb = handle->h_transaction->t_journal->j_private;
-> > +     ext4_fc_journal_stop(handle);
-> >       rc = jbd2_journal_stop(handle);
-> >
-> >       if (!err)
->
-> Why don't you call ext4_fc_journal_stop() a bit earlier and thus avoid the
-> two callsites?
-Ack, will do that in V2.
->
-> > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> > index d2a29fc93742..5edac6f6f7d3 100644
-> > --- a/fs/ext4/inode.c
-> > +++ b/fs/ext4/inode.c
-> > @@ -5658,7 +5658,6 @@ int ext4_mark_iloc_dirty(handle_t *handle,
-> >               put_bh(iloc->bh);
-> >               return -EIO;
-> >       }
-> > -     ext4_fc_track_inode(handle, inode);
->
-> I'm confused why it is safe to remove this. I mean if a transaction is
-> modifying multiple inodes you will not track them in fast commit?
-This is a consequence of my incorrect assumption that the right inode
-is always passed to ext4_journal_start(). What I was assuming was that
-if the right inode is passed to ext4_journal_start(), then
-ext4_journal_start() would ensure that the inode gets tracked. And so
-there's no need to do that here again.
 
-Even with the new proposed changes, the inode will be tracked from
-ext4_reserve_inode_write(), right? So there is no need to do that here
-again?
->
-> >
-> >       if (IS_I_VERSION(inode))
-> >               inode_inc_iversion(inode);
-> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> > index d1c4b04e72ab..7cbe0084bb39 100644
-> > --- a/fs/ext4/super.c
-> > +++ b/fs/ext4/super.c
-> > @@ -1428,7 +1428,6 @@ static void destroy_inodecache(void)
-> >
-> >  void ext4_clear_inode(struct inode *inode)
-> >  {
-> > -     ext4_fc_del(inode);
-> >       invalidate_inode_buffers(inode);
-> >       clear_inode(inode);
-> >       ext4_discard_preallocations(inode, 0);
->
-> Is this really safe? What prevents inode reclaim from reclaiming inode
-> while it is still part of fastcommit?
-I have moved this call from ext4_clear_inode to ext4_free_inode. That
-takes care of preventing inode reclaim if the inode is on the fast
-commit list. If ext4_evict_inode calls ext4_clear_inode directly
-(without ext4_free_inode), then I mark the file system as fast commit
-ineligible (actually I realized that I have missed that case in this
-version, will add that in V2).
+In fact this above information was something that I was assuming it all wrong.
+Earlier I was of the opinion that fast_commit still pushes _all_ the dirty
+pagecache data of other files to disk too (which is incorrect) and the only
+performance gains happens via less writes to disk (since we write less metadata
+on disk).
 
-Thanks,
-Harshad
+But I think what really happens is -
+In case of fast_commit when fsync is called on any file (say bar), apart from that
+file's (bar) dirty data, it only writes the necessary required metadata information
+of the blocks of others files (in this case file foo) which are already allocated.
+(which in this case was due to fzero operation).
+It does not actually allocate the delalloc blocks due to buffered writes of any
+other file (other than for file on which fsync is called).
+
+This happens in
+ext4_fc_perform_commit() -> ext4_fc_submit_inode_data_all() ->
+jbd2_submit_inode_data -> jbd2_journal_submit_inode_data_buffers() ->
+generic_writepages() -> using writepage() which won't do block allocation for
+delalloc blocks.
+
+So that above is what should give the major performance boost with fast_commit
+in case of multiple file writes doing fsync. :)
+
+@Jan/Harshad - could you please confirm if above is correct?
+
+
+> inode->i_size should not affect the behavior of the replay phase.
+> Another case is inode->i_size may not include unwritten blocks , and
+> if a file has unwritten blocks at bottom, we can not use
+> ext4_punch_hole() to remove the unwritten blocks beyond i_size during
+> the replay phase.
+
+Right. So then yes, we should not depend on inode->i_size during replay phase,
+since it might have an entry in fast_commit area which is still only partially
+correct (or in some transient state w.r.t i_disksize).
+
+
 >
->                                                                 Honza
+> >
+> > Also - it would be helpful if you have some easy reproducer of this issue you
+> > mentioned.
+> The attached test code can reproduce this issue, hope it helps.
+
+Thanks, yes it did help.
+
+-ritesh
+
 >
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+>
+> >
+> > -ritesh
+> >
+> > >
+> > > Change to use ext4_ext_remove_space() instead of ext4_punch_hole()
+> > > to remove blocks of inode directly.
+> > >
+> > > Signed-off-by: Xin Yin <yinxin.x@bytedance.com>
+> > > ---
+> > >  fs/ext4/fast_commit.c | 13 ++++++++-----
+> > >  1 file changed, 8 insertions(+), 5 deletions(-)
+> > >
+> > > diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+> > > index aa05b23f9c14..3deb97b22ca4 100644
+> > > --- a/fs/ext4/fast_commit.c
+> > > +++ b/fs/ext4/fast_commit.c
+> > > @@ -1708,11 +1708,14 @@ ext4_fc_replay_del_range(struct super_block *sb, struct ext4_fc_tl *tl,
+> > >               }
+> > >       }
+> > >
+> > > -     ret = ext4_punch_hole(inode,
+> > > -             le32_to_cpu(lrange.fc_lblk) << sb->s_blocksize_bits,
+> > > -             le32_to_cpu(lrange.fc_len) <<  sb->s_blocksize_bits);
+> > > -     if (ret)
+> > > -             jbd_debug(1, "ext4_punch_hole returned %d", ret);
+> > > +     down_write(&EXT4_I(inode)->i_data_sem);
+> > > +     ret = ext4_ext_remove_space(inode, lrange.fc_lblk,
+> > > +                             lrange.fc_lblk + lrange.fc_len - 1);
+> > > +     up_write(&EXT4_I(inode)->i_data_sem);
+> > > +     if (ret) {
+> > > +             iput(inode);
+> > > +             return 0;
+> > > +     }
+> > >       ext4_ext_replay_shrink_inode(inode,
+> > >               i_size_read(inode) >> sb->s_blocksize_bits);
+> > >       ext4_mark_inode_dirty(NULL, inode);
+> > > --
+> > > 2.20.1
+> > >
+
+
