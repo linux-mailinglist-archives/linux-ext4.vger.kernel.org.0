@@ -2,236 +2,223 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A624A8FA1
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Feb 2022 22:15:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E84A54A932E
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Feb 2022 06:00:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237543AbiBCVOd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Feb 2022 16:14:33 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:45974 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235192AbiBCVOc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Feb 2022 16:14:32 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 213JcIR1009644;
-        Thu, 3 Feb 2022 21:14:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=7z0ZCWtLzZrJPVSBXJGGwlsKXGRo1dpDl+uwF2QB/4Q=;
- b=K5pkxaXXjEsT/6dIX9T6aWwiCf8dH74Qy5kG9EGljEWXv4kXeLI2ZqlGsxaRI4KDOgvE
- ovRDV7k4K/pC022jc6HRcLVD+vIn+rn+kDP4mgsIGvV2EGjcA5ZAkF6u8RSUgtHx+F6L
- e2NBFdgUJqi9YhMILj0r15XNcr9mxBTPrZby8nWraStnCFf+l1Owq9OyV0D8l0udhZAG
- Cs/iMmG7T53dDJfljl2fcVUV7xYqHy+GMK/KWQAjFk5DNz1tV3IShLCZATpvjUElb+3B
- iPGB4RJ/ks0g+v89v+SLQDhwZ6msh0TN/cJXmj0oZLThYaSHVAq452huZJfpU0Sfnbt3 OQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3e02k2h1nc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Feb 2022 21:14:24 +0000
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 213LBZSl031230;
-        Thu, 3 Feb 2022 21:14:23 GMT
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3e02k2h1my-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Feb 2022 21:14:23 +0000
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 213L2hmv018892;
-        Thu, 3 Feb 2022 21:14:21 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03fra.de.ibm.com with ESMTP id 3dvw7a83cu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Feb 2022 21:14:21 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 213L4OV140894780
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 3 Feb 2022 21:04:24 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 93C8511C054;
-        Thu,  3 Feb 2022 21:14:18 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 24B6E11C04C;
-        Thu,  3 Feb 2022 21:14:18 +0000 (GMT)
-Received: from localhost (unknown [9.43.61.133])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  3 Feb 2022 21:14:17 +0000 (GMT)
-Date:   Fri, 4 Feb 2022 02:44:16 +0530
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     Xin Yin <yinxin.x@bytedance.com>
-Cc:     harshadshirwadkar@gmail.com, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>
-Subject: Re: [External] Re: [PATCH 1/2] ext4: use ext4_ext_remove_space() for
- fast commit replay delete range
-Message-ID: <20220203211416.5jjdkk7pdaahignw@riteshh-domain>
-References: <20211223032337.5198-1-yinxin.x@bytedance.com>
- <20211223032337.5198-2-yinxin.x@bytedance.com>
- <20220201203359.owrnrfqydjloy7oq@riteshh-domain>
- <CAK896s4=o9cFFnh0KzhbXSSjWiDFoTqNx0ATzGNH8rxj19+1aw@mail.gmail.com>
+        id S1357021AbiBDE76 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Feb 2022 23:59:58 -0500
+Received: from mga09.intel.com ([134.134.136.24]:15306 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1357014AbiBDE76 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 3 Feb 2022 23:59:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1643950798; x=1675486798;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=RBPfSaYTetBaPMLn4VfKh8I3DkscAxskkT0RnRBfGNo=;
+  b=mz1eZ2zb0k4//dELYQ9DtcWfglWkwH8UM7mCNJSvdp8MrR3ePPHfq+za
+   VabzpK+kGOKmOh07R4cI/tavtkIXGQQe2GVwogmSbn9T+B+wTXzaGhPIY
+   9FPxQTwLhq89xOP3Y7NUCXDW942g/s45nu4yfmhBbNXg+9/fz2heBr8f0
+   5nv8oTv8u4NUK9cietRjE24XE/Y843EOjo10WyPJLt2SobcbhsTaKJZUP
+   t5YuA0Eja5jpTIxaNWqejgMI59IN1jndy4munI5M0aP7sKQIUEH/68w8x
+   GkVLPtIXbqPNKZ4EUMfPyGUCvz+N0QX//1mDWDq31ZXJ40J6cEVfFuvmP
+   w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10247"; a="248072806"
+X-IronPort-AV: E=Sophos;i="5.88,341,1635231600"; 
+   d="scan'208";a="248072806"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2022 20:59:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,341,1635231600"; 
+   d="scan'208";a="524195021"
+Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 03 Feb 2022 20:59:56 -0800
+Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1nFqhQ-000X9h-7P; Fri, 04 Feb 2022 04:59:56 +0000
+Date:   Fri, 04 Feb 2022 12:59:29 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:dev] BUILD SUCCESS
+ f340b3d9027485945d59f9c04f1e33070b02cae2
+Message-ID: <61fcb2b1.ZMTonWHxpWscujEb%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK896s4=o9cFFnh0KzhbXSSjWiDFoTqNx0ATzGNH8rxj19+1aw@mail.gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: an2wUMPWkhzA-KdfEn14KoNtdGCSkMEE
-X-Proofpoint-ORIG-GUID: MPte-vS5sfRiUTHP3nN9weXGIGpDPAKl
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-03_06,2022-02-03_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
- adultscore=0 phishscore=0 bulkscore=0 malwarescore=0 clxscore=1015
- mlxlogscore=999 spamscore=0 lowpriorityscore=0 impostorscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202030126
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22/02/02 09:40PM, Xin Yin wrote:
-> On Wed, Feb 2, 2022 at 4:34 AM Ritesh Harjani <riteshh@linux.ibm.com> wrote:
-> >
-> > Hello Xin,
-> >
-> > Sorry about revisiting this thread so late :(
-> > Recently when I was working on one of the fast_commit issue, I got interested
-> > in looking into some of those recent fast_commit fixes.
-> >
-> > Hence some of these queries.
-> >
-> > On 21/12/23 11:23AM, Xin Yin wrote:
-> > > For now ,we use ext4_punch_hole() during fast commit replay delete range
-> > > procedure. But it will be affected by inode->i_size, which may not
-> > > correct during fast commit replay procedure. The following test will
-> > > failed.
-> > >
-> > > -create & write foo (len 1000K)
-> > > -falloc FALLOC_FL_ZERO_RANGE foo (range 400K - 600K)
-> > > -create & fsync bar
-> > ^^^^ do you mean "fsync foo" or is this actually a new file create and fsync
-> > bar?
-> bar is a new created file, it is the brother file of foo , it would be
-> like this.
-> ./foo ./bar
->
-> >
-> >
-> > > -falloc FALLOC_FL_PUNCH_HOLE foo (range 300K-500K)
-> > > -fsync foo
-> > > -crash before a full commit
-> > >
-> > > After the fast_commit reply procedure, the range 400K-500K will not be
-> > > removed. Because in this case, when calling ext4_punch_hole() the
-> > > inode->i_size is 0, and it just retruns with doing nothing.
-> >
-> > I tried looking into this, but I am not able to put my head around that when
-> > will the inode->i_size will be 0?
-> >
-> > So, what I think should happen is when you are doing falocate/fsync foo in your
-> > above list of operations then, anyways the inode i_disksize will be updated
-> > using ext4_mark_inode_dirty() and during replay phase inode->i_size will hold
-> > the right value no?
-> yes, the inode->i_size hold the right value and ext4_fc_replay_inode()
-> will update inode to the final state, but during replay phase
-> ext4_fc_replay_inode() usually is the last step,  so before this the
-> inode->i_size may not correct.
->
-> >
-> > Could you please help understand when, where and how will inode->i_size will be
-> > 0?
-> I didn't check why inode->i_size is 0, in this case. I just think
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: f340b3d9027485945d59f9c04f1e33070b02cae2  fs/ext4: fix comments mentioning i_mutex
 
-Ok, so I now know why the inode->i_size is 0 during replay phase (for file foo).
-This is because inode->i_disksize is not really updated until after the
-ext4_writepages() kicks in, which in this case, won't happen (for file foo)
-when we are doing fsync on file bar. And hence fsync on file bar won't also
-not ensure the delalloc blocks for file foo get's written out.
+elapsed time: 725m
 
+configs tested: 150
+configs skipped: 4
 
-In fact this above information was something that I was assuming it all wrong.
-Earlier I was of the opinion that fast_commit still pushes _all_ the dirty
-pagecache data of other files to disk too (which is incorrect) and the only
-performance gains happens via less writes to disk (since we write less metadata
-on disk).
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-But I think what really happens is -
-In case of fast_commit when fsync is called on any file (say bar), apart from that
-file's (bar) dirty data, it only writes the necessary required metadata information
-of the blocks of others files (in this case file foo) which are already allocated.
-(which in this case was due to fzero operation).
-It does not actually allocate the delalloc blocks due to buffered writes of any
-other file (other than for file on which fsync is called).
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20220131
+i386                          randconfig-c001
+ia64                         bigsur_defconfig
+sh                   secureedge5410_defconfig
+arc                        nsim_700_defconfig
+mips                           ci20_defconfig
+sh                           se7750_defconfig
+sh                         microdev_defconfig
+arc                            hsdk_defconfig
+arm                         vf610m4_defconfig
+parisc                           allyesconfig
+arc                          axs101_defconfig
+arm                            mps2_defconfig
+arm                           sunxi_defconfig
+sparc                            allyesconfig
+powerpc                     mpc83xx_defconfig
+powerpc                     stx_gp3_defconfig
+mips                         bigsur_defconfig
+powerpc                   currituck_defconfig
+powerpc                     tqm8548_defconfig
+powerpc                 canyonlands_defconfig
+powerpc                      ep88xc_defconfig
+arm                         lubbock_defconfig
+mips                          rb532_defconfig
+powerpc                      ppc40x_defconfig
+sh                   rts7751r2dplus_defconfig
+s390                       zfcpdump_defconfig
+sh                          lboxre2_defconfig
+arc                 nsimosci_hs_smp_defconfig
+sh                ecovec24-romimage_defconfig
+m68k                       m5249evb_defconfig
+arm                             rpc_defconfig
+arm                             pxa_defconfig
+sh                             espt_defconfig
+mips                           ip32_defconfig
+microblaze                      mmu_defconfig
+xtensa                           allyesconfig
+powerpc                     pq2fads_defconfig
+powerpc                     rainier_defconfig
+mips                    maltaup_xpa_defconfig
+openrisc                 simple_smp_defconfig
+nios2                         10m50_defconfig
+um                                  defconfig
+arm                         nhk8815_defconfig
+arm                  randconfig-c002-20220130
+arm                  randconfig-c002-20220131
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allmodconfig
+s390                                defconfig
+s390                             allyesconfig
+i386                             allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20220131
+x86_64               randconfig-a003-20220131
+x86_64               randconfig-a001-20220131
+x86_64               randconfig-a006-20220131
+x86_64               randconfig-a005-20220131
+x86_64               randconfig-a002-20220131
+i386                 randconfig-a006-20220131
+i386                 randconfig-a005-20220131
+i386                 randconfig-a003-20220131
+i386                 randconfig-a002-20220131
+i386                 randconfig-a001-20220131
+i386                 randconfig-a004-20220131
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+riscv                randconfig-r042-20220130
+arc                  randconfig-r043-20220130
+arc                  randconfig-r043-20220131
+s390                 randconfig-r044-20220130
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
 
-This happens in
-ext4_fc_perform_commit() -> ext4_fc_submit_inode_data_all() ->
-jbd2_submit_inode_data -> jbd2_journal_submit_inode_data_buffers() ->
-generic_writepages() -> using writepage() which won't do block allocation for
-delalloc blocks.
+clang tested configs:
+powerpc                          allyesconfig
+powerpc               mpc834x_itxgp_defconfig
+arm                  colibri_pxa270_defconfig
+x86_64                           allyesconfig
+mips                          rm200_defconfig
+arm                             mxs_defconfig
+powerpc                   lite5200b_defconfig
+arm                           sama7_defconfig
+mips                          ath79_defconfig
+powerpc                     ppa8548_defconfig
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64               randconfig-a013-20220131
+x86_64               randconfig-a015-20220131
+x86_64               randconfig-a014-20220131
+x86_64               randconfig-a016-20220131
+x86_64               randconfig-a011-20220131
+x86_64               randconfig-a012-20220131
+i386                 randconfig-a011-20220131
+i386                 randconfig-a013-20220131
+i386                 randconfig-a014-20220131
+i386                 randconfig-a012-20220131
+i386                 randconfig-a015-20220131
+i386                 randconfig-a016-20220131
+i386                          randconfig-a011
+i386                          randconfig-a013
+i386                          randconfig-a015
+riscv                randconfig-r042-20220131
+hexagon              randconfig-r045-20220130
+hexagon              randconfig-r045-20220131
+hexagon              randconfig-r041-20220130
+hexagon              randconfig-r041-20220131
+s390                 randconfig-r044-20220131
+hexagon              randconfig-r045-20220203
+hexagon              randconfig-r041-20220203
 
-So that above is what should give the major performance boost with fast_commit
-in case of multiple file writes doing fsync. :)
-
-@Jan/Harshad - could you please confirm if above is correct?
-
-
-> inode->i_size should not affect the behavior of the replay phase.
-> Another case is inode->i_size may not include unwritten blocks , and
-> if a file has unwritten blocks at bottom, we can not use
-> ext4_punch_hole() to remove the unwritten blocks beyond i_size during
-> the replay phase.
-
-Right. So then yes, we should not depend on inode->i_size during replay phase,
-since it might have an entry in fast_commit area which is still only partially
-correct (or in some transient state w.r.t i_disksize).
-
-
->
-> >
-> > Also - it would be helpful if you have some easy reproducer of this issue you
-> > mentioned.
-> The attached test code can reproduce this issue, hope it helps.
-
-Thanks, yes it did help.
-
--ritesh
-
->
->
-> >
-> > -ritesh
-> >
-> > >
-> > > Change to use ext4_ext_remove_space() instead of ext4_punch_hole()
-> > > to remove blocks of inode directly.
-> > >
-> > > Signed-off-by: Xin Yin <yinxin.x@bytedance.com>
-> > > ---
-> > >  fs/ext4/fast_commit.c | 13 ++++++++-----
-> > >  1 file changed, 8 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> > > index aa05b23f9c14..3deb97b22ca4 100644
-> > > --- a/fs/ext4/fast_commit.c
-> > > +++ b/fs/ext4/fast_commit.c
-> > > @@ -1708,11 +1708,14 @@ ext4_fc_replay_del_range(struct super_block *sb, struct ext4_fc_tl *tl,
-> > >               }
-> > >       }
-> > >
-> > > -     ret = ext4_punch_hole(inode,
-> > > -             le32_to_cpu(lrange.fc_lblk) << sb->s_blocksize_bits,
-> > > -             le32_to_cpu(lrange.fc_len) <<  sb->s_blocksize_bits);
-> > > -     if (ret)
-> > > -             jbd_debug(1, "ext4_punch_hole returned %d", ret);
-> > > +     down_write(&EXT4_I(inode)->i_data_sem);
-> > > +     ret = ext4_ext_remove_space(inode, lrange.fc_lblk,
-> > > +                             lrange.fc_lblk + lrange.fc_len - 1);
-> > > +     up_write(&EXT4_I(inode)->i_data_sem);
-> > > +     if (ret) {
-> > > +             iput(inode);
-> > > +             return 0;
-> > > +     }
-> > >       ext4_ext_replay_shrink_inode(inode,
-> > >               i_size_read(inode) >> sb->s_blocksize_bits);
-> > >       ext4_mark_inode_dirty(NULL, inode);
-> > > --
-> > > 2.20.1
-> > >
-
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
