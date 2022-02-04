@@ -2,115 +2,86 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A6D4A99C1
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Feb 2022 14:13:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A436D4A9EC9
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Feb 2022 19:16:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352144AbiBDNNx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 4 Feb 2022 08:13:53 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:48992 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350186AbiBDNNw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 4 Feb 2022 08:13:52 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 090F961BD5
-        for <linux-ext4@vger.kernel.org>; Fri,  4 Feb 2022 13:13:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 63347C340F0
-        for <linux-ext4@vger.kernel.org>; Fri,  4 Feb 2022 13:13:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643980431;
-        bh=KE5ffrADFOY4iWxyE0pZ2Rxya4e+hwxVVFgiXO+eHvo=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=MlVY4jupGMRf2AblyVIKfV6sAhQlVqTqzR8B2xa2gFiutjXgFzn8f9ZpSMLnEjkza
-         zVToDVXxcqebhO6EAjdeYETD5x/yuEeihKT/EriuEibrsIB/c0N+TLYQ5UUFgnegA1
-         EZnCWjxsAjOe4ifpAiyrLQ+XjpdtSIJ+JJYUttVb2lBHWitpC4z3FLwiI6aBkmSX7V
-         WCPyYktdevucC6H1zcC6JRMObvAhTjMBBCEYSVGGwgFfsLevc+n1Fk7my1POTeX+GT
-         676XtOs1k0A80cPfC98gzgA37VC0XZnVB9ydS8aSclIwMLeGVu/U4XIzPEoV2D+Ezw
-         9dH33D/Z+jHWQ==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-        id 4E800C05FD5; Fri,  4 Feb 2022 13:13:51 +0000 (UTC)
-From:   bugzilla-daemon@kernel.org
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 89621] EXT4-fs error (device dm-1):
- ext4_mb_release_inode_pa:3773: group 24089, free 34, pa_free 32
-Date:   Fri, 04 Feb 2022 13:13:50 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: kernel.org-115@groovy-skills.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: cc
-Message-ID: <bug-89621-13602-hp2LAAAyxY@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-89621-13602@https.bugzilla.kernel.org/>
-References: <bug-89621-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S1377455AbiBDSQ2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 4 Feb 2022 13:16:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1377463AbiBDSQ2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 4 Feb 2022 13:16:28 -0500
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6B77C06173D
+        for <linux-ext4@vger.kernel.org>; Fri,  4 Feb 2022 10:16:27 -0800 (PST)
+Received: by mail-vk1-xa44.google.com with SMTP id o11so3306028vkl.11
+        for <linux-ext4@vger.kernel.org>; Fri, 04 Feb 2022 10:16:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=G/uqavId5/VE8yaXfx24O+2DA3mD8bVuOFZIbKE4aKU=;
+        b=j3c1y7UR63rw/jdMnBX3EVCsyEGixGqoAPp7Ybr3ujiJ2FomAXDulowe0reCXWkd+W
+         cIzVsmgS3BrULkH3aZs40RgfzWpEdj0U7DxQo/LTTnQQmuahgLajX12rrR5vkcVtZ7KA
+         zmM/w1+DQuYQbsOUTNVTGFVOoBni2X4bL7Ya+fbzeYtYx+d6ZwhWD015TyGjDwDLgD9W
+         rRdkslgwNJ1x4IYW6YKbQcEiKUYtzN8FgrgaTcjpRMmyckHQbyXFX9y1dR/NcncFdfXb
+         lbxz6zuaoa/AG3WCCz8846mAG/d05JhoBwFuc7Nh7vxoCwWL6h2qulVy1hB5HmwurY4D
+         pl0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=G/uqavId5/VE8yaXfx24O+2DA3mD8bVuOFZIbKE4aKU=;
+        b=H1gKLxDIMVaRajR8qsmyDpi2hvuM/2Bk0GqghV1Vvs4KkgQR3H8QPaGzncQRLa5ii9
+         pMWQS7OP0BKY1jscq4/ebz9t9Y2ZLKsX7X8/1T/E7P6fFo5tplOOpBc+jSC+kMv1w47H
+         SLhvYgiqBvf45S2UDKzeAign9NOe1Xe4UXO93CVV64dyQvvaM8BtmdiBXOeFxuI4wfDh
+         ItryIS1Sv7AGfnuhE/QRakz1v+A3lNRtHLoDHKAqZNb2rfKWWpgnboSjWTJ4+TPwld1x
+         x4LzZvl+d4jqB6DTyYzodQM4KAMUfd78rz1WgYx/tcR14JGy2UcZSMMublG09TKEqZiT
+         p47A==
+X-Gm-Message-State: AOAM5308GGRHv5XfCRTEKHV5fUIBBe75U2NOCB/vn1UJpUgc0/iQSnwm
+        Aw907CZKNNtc/Ud5gx7COlaMTaupCfj8KyLolm4=
+X-Google-Smtp-Source: ABdhPJxwNTshYUqgan2fhgCVgmwIcJYLfCLjU2bwGfiON0sfhcbjlbGlblitl9ofeBDvswrOcY/Z/7e6GWFO99h4IpI=
+X-Received: by 2002:a05:6122:90a:: with SMTP id j10mr1461339vka.5.1643998586676;
+ Fri, 04 Feb 2022 10:16:26 -0800 (PST)
 MIME-Version: 1.0
+Received: by 2002:ab0:1424:0:0:0:0:0 with HTTP; Fri, 4 Feb 2022 10:16:26 -0800 (PST)
+Reply-To: drsobarakie01@gmail.com
+From:   Dr Dubeam Solion Barakie <amrutatandle07@gmail.com>
+Date:   Fri, 4 Feb 2022 18:16:26 +0000
+Message-ID: <CAA1SnY1aUnnQJB7qQD5Tr1+a0zkX6q4Ou=TsrdyWix9Zoirzsw@mail.gmail.com>
+Subject: Reply Urgently For More details
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D89621
+Reply Urgently For More details
 
-GSI (kernel.org-115@groovy-skills.com) changed:
+I am Dr Dubeam Solion Barakie I currently hold the post as the Audit
+Account Manager of our bank in Ouagadougou Branch, Burkina Faso. I was
+elected to the Board of Directors of the Commercial Bank of Burkina
+Faso in 2000, for the first three years term. In August 2004 I was
+elected to serve as the Chairman of the Board and Managing Director of
+the Bank,
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-                 CC|                            |kernel.org-115@groovy-skill
-                   |                            |s.com
+I got your contact from a reliable web directory. After much
+consideration In developed the trust on you after one week of fasting
+and praying.
 
---- Comment #20 from GSI (kernel.org-115@groovy-skills.com) ---
-This is on a HP ProLiant DL380 G7 with HP Smart Array P410 controller with 8
-disks configured as RAID-6.
+Due to the trust, I made up my mind to disclose this confidential
+business to you. We are in position to reclaim and inherit the sum of
+US$15.8 Million Dollars without any trouble or hindrance from a
+dormant account which remains unclaimed since 7 years ago, the owner
+of this account died.
 
-S.M.A.R.T. reports the disks as healthy.
+This is a U.S Dollar's account and the beneficiary died without trace
+of his family or relatives to claim the fund.
 
-The server has been running for roughly ten months before this issue occured
-the 1st of this month.
-fsck did some repairs. Two days later, 3rd, the issue occured again.
+I am looking for a reliable business partner to present for the
+inheritance. This may not be your area of business but it will be
+another income and benefit for both of us; I will give you more
+specific profit details when I receive feedback from you if you are
+interested.
 
-What is the meaning of the suffix -8 as reported by
-https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/tree/fs/jbd2=
-/journal.c#n2422
-for j_devname?
-
-Regardless of actual device, all bug reports appear to have that -8 in comm=
-on.
-Examples:
-
-
-"Aborting journal on device sda3-8."
-https://askubuntu.com/questions/595024/suddenly-read-only-file-system-ext4
-
-"Aborting journal on device dm-2-8."
-https://bugzilla.kernel.org/show_bug.cgi?id=3D102731
-
-"Aborting journal on device sda2:8."
-https://bbs.archlinux.org/viewtopic.php?id=3D70077
-
-"Aborting journal on device vda1-8."
-https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1423672
-
-"Aborting journal on device dm-1-8."
-https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1423672/comments/26
-
-"Aborting journal on device dm-9-8."
-https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1423672/comments/28
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+Warm Regards
+Dr Dubeam Solion Barakie
