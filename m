@@ -2,223 +2,147 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E84A54A932E
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Feb 2022 06:00:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 558E14A9776
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Feb 2022 11:08:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357021AbiBDE76 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Feb 2022 23:59:58 -0500
-Received: from mga09.intel.com ([134.134.136.24]:15306 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1357014AbiBDE76 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 3 Feb 2022 23:59:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1643950798; x=1675486798;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=RBPfSaYTetBaPMLn4VfKh8I3DkscAxskkT0RnRBfGNo=;
-  b=mz1eZ2zb0k4//dELYQ9DtcWfglWkwH8UM7mCNJSvdp8MrR3ePPHfq+za
-   VabzpK+kGOKmOh07R4cI/tavtkIXGQQe2GVwogmSbn9T+B+wTXzaGhPIY
-   9FPxQTwLhq89xOP3Y7NUCXDW942g/s45nu4yfmhBbNXg+9/fz2heBr8f0
-   5nv8oTv8u4NUK9cietRjE24XE/Y843EOjo10WyPJLt2SobcbhsTaKJZUP
-   t5YuA0Eja5jpTIxaNWqejgMI59IN1jndy4munI5M0aP7sKQIUEH/68w8x
-   GkVLPtIXbqPNKZ4EUMfPyGUCvz+N0QX//1mDWDq31ZXJ40J6cEVfFuvmP
-   w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10247"; a="248072806"
-X-IronPort-AV: E=Sophos;i="5.88,341,1635231600"; 
-   d="scan'208";a="248072806"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2022 20:59:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,341,1635231600"; 
-   d="scan'208";a="524195021"
-Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 03 Feb 2022 20:59:56 -0800
-Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1nFqhQ-000X9h-7P; Fri, 04 Feb 2022 04:59:56 +0000
-Date:   Fri, 04 Feb 2022 12:59:29 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: [tytso-ext4:dev] BUILD SUCCESS
- f340b3d9027485945d59f9c04f1e33070b02cae2
-Message-ID: <61fcb2b1.ZMTonWHxpWscujEb%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S237600AbiBDKI4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 4 Feb 2022 05:08:56 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:21712 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234330AbiBDKIz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 4 Feb 2022 05:08:55 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 2147x9hr023912;
+        Fri, 4 Feb 2022 10:08:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=iZDEhy/NiFHNyKm3O94Qbyibs0mtD/OXpCE8gCcS7VA=;
+ b=P3Jmc+AJuB7r0VrkII+5/q1HAg/IKRhCxfsvV8kcIyo1Vd3rJ84mlF8GsRjnW1Jh5mnT
+ 0nIpWn+hMh8NSl3CZw+KPvbSSaQZjswE1hDyL+o7CJeKUZt6r+XvI4sXOU/oD6YziVWs
+ Ki176MQDd+cWOf9YfcYWFCDthTeSVojE9KRAhNDmGs0YhfiM8EkFAQEznZiXXMnlyLha
+ dfuwuMOC22AKeiJ9U6rplA+ghv1Etm/niVp3sZaGVw4xenk1IOF/aMl7TvMPVKO0YaLq
+ yxvk2c5Z7GmXfekCEgJb4GqBVwk5T41oKyLi+gU2RNxwFONDkOAcMmeC8TNVBloEfdC3 Yg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3e0qxft3m0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Feb 2022 10:08:50 +0000
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 2149ixGa012267;
+        Fri, 4 Feb 2022 10:08:50 GMT
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3e0qxft3ke-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Feb 2022 10:08:50 +0000
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 214A7BHh002476;
+        Fri, 4 Feb 2022 10:08:48 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04fra.de.ibm.com with ESMTP id 3e0r0u3avh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Feb 2022 10:08:48 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 214A8j4j40108542
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 4 Feb 2022 10:08:45 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BCBDCA4054;
+        Fri,  4 Feb 2022 10:08:45 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4ACB1A4064;
+        Fri,  4 Feb 2022 10:08:45 +0000 (GMT)
+Received: from localhost (unknown [9.43.61.133])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  4 Feb 2022 10:08:45 +0000 (GMT)
+Date:   Fri, 4 Feb 2022 15:38:44 +0530
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: Re: [RFC 2/6] ext4: Implement ext4_group_block_valid() as common
+ function
+Message-ID: <20220204100844.ty23mdc5mfjbgiwj@riteshh-domain>
+References: <cover.1643642105.git.riteshh@linux.ibm.com>
+ <40c85b86dd324a11c962843d8ef242780a84b25f.1643642105.git.riteshh@linux.ibm.com>
+ <20220201113453.exaikdfsc3vubqel@quack3.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20220201113453.exaikdfsc3vubqel@quack3.lan>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: FUfWL4cNtv3hYdo_7EsBDY84iuqf8TD4
+X-Proofpoint-ORIG-GUID: zMJWEXrYR61wFRp4z7SbRcO6YtSL6OQY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-04_03,2022-02-03_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
+ mlxlogscore=635 clxscore=1015 lowpriorityscore=0 adultscore=0 mlxscore=0
+ spamscore=0 suspectscore=0 priorityscore=1501 malwarescore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202040054
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-branch HEAD: f340b3d9027485945d59f9c04f1e33070b02cae2  fs/ext4: fix comments mentioning i_mutex
+On 22/02/01 12:34PM, Jan Kara wrote:
+> On Mon 31-01-22 20:46:51, Ritesh Harjani wrote:
+> > This patch implements ext4_group_block_valid() check functionality,
+> > and refactors all the callers to use this common function instead.
+> >
+> > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> ...
+>
+> > diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> > index 8d23108cf9d7..60d32d3d8dc4 100644
+> > --- a/fs/ext4/mballoc.c
+> > +++ b/fs/ext4/mballoc.c
+> > @@ -6001,13 +6001,7 @@ void ext4_free_blocks(handle_t *handle, struct inode *inode,
+> >  		goto error_return;
+> >  	}
+> >
+> > -	if (in_range(ext4_block_bitmap(sb, gdp), block, count) ||
+> > -	    in_range(ext4_inode_bitmap(sb, gdp), block, count) ||
+> > -	    in_range(block, ext4_inode_table(sb, gdp),
+> > -		     sbi->s_itb_per_group) ||
+> > -	    in_range(block + count - 1, ext4_inode_table(sb, gdp),
+> > -		     sbi->s_itb_per_group)) {
+> > -
+> > +	if (!ext4_group_block_valid(sb, block_group, block, count)) {
+> >  		ext4_error(sb, "Freeing blocks in system zone - "
+> >  			   "Block = %llu, count = %lu", block, count);
+> >  		/* err = 0. ext4_std_error should be a no op */
+>
+> When doing this, why not rather directly use ext4_inode_block_valid() here?
 
-elapsed time: 725m
+This is because while freeing these blocks we have their's corresponding block
+group too. So there is little point in checking FS Metadata of all block groups
+v/s FS Metadata of just this block group, no?
 
-configs tested: 150
-configs skipped: 4
+Also, I am not sure if we changing this to check against system-zone's blocks
+(which has FS Metadata blocks from all block groups), can add any additional
+penalty?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+-riteshh
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20220131
-i386                          randconfig-c001
-ia64                         bigsur_defconfig
-sh                   secureedge5410_defconfig
-arc                        nsim_700_defconfig
-mips                           ci20_defconfig
-sh                           se7750_defconfig
-sh                         microdev_defconfig
-arc                            hsdk_defconfig
-arm                         vf610m4_defconfig
-parisc                           allyesconfig
-arc                          axs101_defconfig
-arm                            mps2_defconfig
-arm                           sunxi_defconfig
-sparc                            allyesconfig
-powerpc                     mpc83xx_defconfig
-powerpc                     stx_gp3_defconfig
-mips                         bigsur_defconfig
-powerpc                   currituck_defconfig
-powerpc                     tqm8548_defconfig
-powerpc                 canyonlands_defconfig
-powerpc                      ep88xc_defconfig
-arm                         lubbock_defconfig
-mips                          rb532_defconfig
-powerpc                      ppc40x_defconfig
-sh                   rts7751r2dplus_defconfig
-s390                       zfcpdump_defconfig
-sh                          lboxre2_defconfig
-arc                 nsimosci_hs_smp_defconfig
-sh                ecovec24-romimage_defconfig
-m68k                       m5249evb_defconfig
-arm                             rpc_defconfig
-arm                             pxa_defconfig
-sh                             espt_defconfig
-mips                           ip32_defconfig
-microblaze                      mmu_defconfig
-xtensa                           allyesconfig
-powerpc                     pq2fads_defconfig
-powerpc                     rainier_defconfig
-mips                    maltaup_xpa_defconfig
-openrisc                 simple_smp_defconfig
-nios2                         10m50_defconfig
-um                                  defconfig
-arm                         nhk8815_defconfig
-arm                  randconfig-c002-20220130
-arm                  randconfig-c002-20220131
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allmodconfig
-s390                                defconfig
-s390                             allyesconfig
-i386                             allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20220131
-x86_64               randconfig-a003-20220131
-x86_64               randconfig-a001-20220131
-x86_64               randconfig-a006-20220131
-x86_64               randconfig-a005-20220131
-x86_64               randconfig-a002-20220131
-i386                 randconfig-a006-20220131
-i386                 randconfig-a005-20220131
-i386                 randconfig-a003-20220131
-i386                 randconfig-a002-20220131
-i386                 randconfig-a001-20220131
-i386                 randconfig-a004-20220131
-i386                          randconfig-a012
-i386                          randconfig-a014
-i386                          randconfig-a016
-riscv                randconfig-r042-20220130
-arc                  randconfig-r043-20220130
-arc                  randconfig-r043-20220131
-s390                 randconfig-r044-20220130
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-
-clang tested configs:
-powerpc                          allyesconfig
-powerpc               mpc834x_itxgp_defconfig
-arm                  colibri_pxa270_defconfig
-x86_64                           allyesconfig
-mips                          rm200_defconfig
-arm                             mxs_defconfig
-powerpc                   lite5200b_defconfig
-arm                           sama7_defconfig
-mips                          ath79_defconfig
-powerpc                     ppa8548_defconfig
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64               randconfig-a013-20220131
-x86_64               randconfig-a015-20220131
-x86_64               randconfig-a014-20220131
-x86_64               randconfig-a016-20220131
-x86_64               randconfig-a011-20220131
-x86_64               randconfig-a012-20220131
-i386                 randconfig-a011-20220131
-i386                 randconfig-a013-20220131
-i386                 randconfig-a014-20220131
-i386                 randconfig-a012-20220131
-i386                 randconfig-a015-20220131
-i386                 randconfig-a016-20220131
-i386                          randconfig-a011
-i386                          randconfig-a013
-i386                          randconfig-a015
-riscv                randconfig-r042-20220131
-hexagon              randconfig-r045-20220130
-hexagon              randconfig-r045-20220131
-hexagon              randconfig-r041-20220130
-hexagon              randconfig-r041-20220131
-s390                 randconfig-r044-20220131
-hexagon              randconfig-r045-20220203
-hexagon              randconfig-r041-20220203
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+> > @@ -6194,11 +6188,7 @@ int ext4_group_add_blocks(handle_t *handle, struct super_block *sb,
+> >  		goto error_return;
+> >  	}
+> >
+> > -	if (in_range(ext4_block_bitmap(sb, desc), block, count) ||
+> > -	    in_range(ext4_inode_bitmap(sb, desc), block, count) ||
+> > -	    in_range(block, ext4_inode_table(sb, desc), sbi->s_itb_per_group) ||
+> > -	    in_range(block + count - 1, ext4_inode_table(sb, desc),
+> > -		     sbi->s_itb_per_group)) {
+> > +	if (!ext4_group_block_valid(sb, block_group, block, count)) {
+> >  		ext4_error(sb, "Adding blocks in system zones - "
+> >  			   "Block = %llu, count = %lu",
+> >  			   block, count);
+>
+> And here I'd rather refactor ext4_inode_block_valid() a bit to provide a
+> more generic helper not requiring an inode and use it here...
+>
+> 								Honza
+> --
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
