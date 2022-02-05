@@ -2,86 +2,142 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A436D4A9EC9
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Feb 2022 19:16:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13D134AA82E
+	for <lists+linux-ext4@lfdr.de>; Sat,  5 Feb 2022 11:40:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377455AbiBDSQ2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 4 Feb 2022 13:16:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377463AbiBDSQ2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 4 Feb 2022 13:16:28 -0500
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6B77C06173D
-        for <linux-ext4@vger.kernel.org>; Fri,  4 Feb 2022 10:16:27 -0800 (PST)
-Received: by mail-vk1-xa44.google.com with SMTP id o11so3306028vkl.11
-        for <linux-ext4@vger.kernel.org>; Fri, 04 Feb 2022 10:16:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=G/uqavId5/VE8yaXfx24O+2DA3mD8bVuOFZIbKE4aKU=;
-        b=j3c1y7UR63rw/jdMnBX3EVCsyEGixGqoAPp7Ybr3ujiJ2FomAXDulowe0reCXWkd+W
-         cIzVsmgS3BrULkH3aZs40RgfzWpEdj0U7DxQo/LTTnQQmuahgLajX12rrR5vkcVtZ7KA
-         zmM/w1+DQuYQbsOUTNVTGFVOoBni2X4bL7Ya+fbzeYtYx+d6ZwhWD015TyGjDwDLgD9W
-         rRdkslgwNJ1x4IYW6YKbQcEiKUYtzN8FgrgaTcjpRMmyckHQbyXFX9y1dR/NcncFdfXb
-         lbxz6zuaoa/AG3WCCz8846mAG/d05JhoBwFuc7Nh7vxoCwWL6h2qulVy1hB5HmwurY4D
-         pl0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=G/uqavId5/VE8yaXfx24O+2DA3mD8bVuOFZIbKE4aKU=;
-        b=H1gKLxDIMVaRajR8qsmyDpi2hvuM/2Bk0GqghV1Vvs4KkgQR3H8QPaGzncQRLa5ii9
-         pMWQS7OP0BKY1jscq4/ebz9t9Y2ZLKsX7X8/1T/E7P6fFo5tplOOpBc+jSC+kMv1w47H
-         SLhvYgiqBvf45S2UDKzeAign9NOe1Xe4UXO93CVV64dyQvvaM8BtmdiBXOeFxuI4wfDh
-         ItryIS1Sv7AGfnuhE/QRakz1v+A3lNRtHLoDHKAqZNb2rfKWWpgnboSjWTJ4+TPwld1x
-         x4LzZvl+d4jqB6DTyYzodQM4KAMUfd78rz1WgYx/tcR14JGy2UcZSMMublG09TKEqZiT
-         p47A==
-X-Gm-Message-State: AOAM5308GGRHv5XfCRTEKHV5fUIBBe75U2NOCB/vn1UJpUgc0/iQSnwm
-        Aw907CZKNNtc/Ud5gx7COlaMTaupCfj8KyLolm4=
-X-Google-Smtp-Source: ABdhPJxwNTshYUqgan2fhgCVgmwIcJYLfCLjU2bwGfiON0sfhcbjlbGlblitl9ofeBDvswrOcY/Z/7e6GWFO99h4IpI=
-X-Received: by 2002:a05:6122:90a:: with SMTP id j10mr1461339vka.5.1643998586676;
- Fri, 04 Feb 2022 10:16:26 -0800 (PST)
+        id S229735AbiBEKkm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 5 Feb 2022 05:40:42 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:15264 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229662AbiBEKkl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 5 Feb 2022 05:40:41 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 2154xJnT037406;
+        Sat, 5 Feb 2022 10:40:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=f1WYbGVwEqai84r155RmLNhHHOjV6VxFSgKbWU3642A=;
+ b=TLVWoP3RcVAS1UNBRmZXKgAPIuy6sirmOL216faQOZXNnDNX82FRmaxPPyYbmgz4Q+9y
+ RgWbFH9mxhMD8Te48hBeLfypsJ1QSkZJQvun4gswSmpRuaQRQ9+V1PCPqMrQ+CkrZ3Ri
+ ubZflZv6c6YnC4b0DpXrk4lvLp1CAYm3m5iNByEbT95T//74GMnpyjp6dQGsYuG4gGvK
+ QDmaeMi1sdUjFWz/E9JvW9T6pJZNvKc6Rd6kquIrd6QxCbWTGLTaCeiTWBGxun3I9Bwy
+ d/mTtT4PoII7sae6xB600R0JiiB+vzgbY3mnXb5HRsp8vuKO18jut+4VZCBBUED+prBf YA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3e1ghqdfhk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 05 Feb 2022 10:40:37 +0000
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 215AeaZf010517;
+        Sat, 5 Feb 2022 10:40:36 GMT
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3e1ghqdfha-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 05 Feb 2022 10:40:36 +0000
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 215AWr55026466;
+        Sat, 5 Feb 2022 10:40:35 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03fra.de.ibm.com with ESMTP id 3e1gv8sd5p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 05 Feb 2022 10:40:34 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 215AeWnM30802344
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 5 Feb 2022 10:40:32 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 50D0F52054;
+        Sat,  5 Feb 2022 10:40:32 +0000 (GMT)
+Received: from localhost (unknown [9.43.12.205])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id D2DA75204F;
+        Sat,  5 Feb 2022 10:40:30 +0000 (GMT)
+Date:   Sat, 5 Feb 2022 16:10:29 +0530
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Xin Yin <yinxin.x@bytedance.com>, harshadshirwadkar@gmail.com,
+        tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [External] Re: [PATCH 1/2] ext4: use ext4_ext_remove_space() for
+ fast commit replay delete range
+Message-ID: <20220205104029.dytcn4bhx2qyllbi@riteshh-domain>
+References: <20211223032337.5198-1-yinxin.x@bytedance.com>
+ <20211223032337.5198-2-yinxin.x@bytedance.com>
+ <20220201203359.owrnrfqydjloy7oq@riteshh-domain>
+ <CAK896s4=o9cFFnh0KzhbXSSjWiDFoTqNx0ATzGNH8rxj19+1aw@mail.gmail.com>
+ <20220203211416.5jjdkk7pdaahignw@riteshh-domain>
+ <20220204113639.gxz2giovjegnf62g@quack3.lan>
 MIME-Version: 1.0
-Received: by 2002:ab0:1424:0:0:0:0:0 with HTTP; Fri, 4 Feb 2022 10:16:26 -0800 (PST)
-Reply-To: drsobarakie01@gmail.com
-From:   Dr Dubeam Solion Barakie <amrutatandle07@gmail.com>
-Date:   Fri, 4 Feb 2022 18:16:26 +0000
-Message-ID: <CAA1SnY1aUnnQJB7qQD5Tr1+a0zkX6q4Ou=TsrdyWix9Zoirzsw@mail.gmail.com>
-Subject: Reply Urgently For More details
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220204113639.gxz2giovjegnf62g@quack3.lan>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 7ItB-HQTBY_FYxy5EFRWNwUwCBSZwYV3
+X-Proofpoint-ORIG-GUID: BUraN56K7HYrWhUfLRMVwt8xkzKUG_nI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-05_02,2022-02-03_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 mlxlogscore=999
+ clxscore=1015 spamscore=0 impostorscore=0 priorityscore=1501 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2201110000
+ definitions=main-2202050070
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Reply Urgently For More details
+On 22/02/04 12:36PM, Jan Kara wrote:
+> On Fri 04-02-22 02:44:16, Ritesh Harjani wrote:
+> > Ok, so I now know why the inode->i_size is 0 during replay phase (for file foo).
+> > This is because inode->i_disksize is not really updated until after the
+> > ext4_writepages() kicks in, which in this case, won't happen (for file foo)
+> > when we are doing fsync on file bar. And hence fsync on file bar won't also
+> > not ensure the delalloc blocks for file foo get's written out.
+> >
+> > In fact this above information was something that I was assuming it all
+> > wrong.  Earlier I was of the opinion that fast_commit still pushes _all_
+> > the dirty pagecache data of other files to disk too (which is incorrect)
+> > and the only performance gains happens via less writes to disk (since we
+> > write less metadata on disk).
+> >
+> > But I think what really happens is - In case of fast_commit when fsync is
+> > called on any file (say bar), apart from that file's (bar) dirty data, it
+> > only writes the necessary required metadata information of the blocks of
+> > others files (in this case file foo) which are already allocated.  (which
+> > in this case was due to fzero operation).  It does not actually allocate
+> > the delalloc blocks due to buffered writes of any other file (other than
+> > for file on which fsync is called).
+>
+> Yes, but that is exactly what also happens for normal commit. I.e. even
+> without fastcommits, if we fsync(2), we will flush out data for that file
+> but for all the other files, buffered data still stays in delalloc state in
+> the page cache. Following journal commit will thus write all metadata (and
+> wait for data) of the fsynced files but not for any other file that has
+> only delalloc blocks. If writeback of some other file also happened before
+> we commit, then yes, we include all the changes to the commit as well.
+>
+> > This happens in
+> > ext4_fc_perform_commit() -> ext4_fc_submit_inode_data_all() ->
+> > jbd2_submit_inode_data -> jbd2_journal_submit_inode_data_buffers() ->
+> > generic_writepages() -> using writepage() which won't do block allocation for
+> > delalloc blocks.
+> >
+> > So that above is what should give the major performance boost with fast_commit
+> > in case of multiple file writes doing fsync. :)
+> >
+> > @Jan/Harshad - could you please confirm if above is correct?
+>
+> What you describe is correct but not special to fastcommit. As I mentioned
+> on the call yesterday, fastcommit is currently beneficial only because the
+> logical logging it does ends up writing much less blocks to the journal.
+>
 
-I am Dr Dubeam Solion Barakie I currently hold the post as the Audit
-Account Manager of our bank in Ouagadougou Branch, Burkina Faso. I was
-elected to the Board of Directors of the Commercial Bank of Burkina
-Faso in 2000, for the first three years term. In August 2004 I was
-elected to serve as the Chairman of the Board and Managing Director of
-the Bank,
+Yes, thanks for taking time to explain it again.
+I got this now.
 
-I got your contact from a reliable web directory. After much
-consideration In developed the trust on you after one week of fasting
-and praying.
+Thanks!
+-ritesh
 
-Due to the trust, I made up my mind to disclose this confidential
-business to you. We are in position to reclaim and inherit the sum of
-US$15.8 Million Dollars without any trouble or hindrance from a
-dormant account which remains unclaimed since 7 years ago, the owner
-of this account died.
 
-This is a U.S Dollar's account and the beneficiary died without trace
-of his family or relatives to claim the fund.
-
-I am looking for a reliable business partner to present for the
-inheritance. This may not be your area of business but it will be
-another income and benefit for both of us; I will give you more
-specific profit details when I receive feedback from you if you are
-interested.
-
-Warm Regards
-Dr Dubeam Solion Barakie
+> 								Honza
+> --
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
