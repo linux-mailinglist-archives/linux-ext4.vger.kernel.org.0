@@ -2,175 +2,127 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 467B34AA96E
-	for <lists+linux-ext4@lfdr.de>; Sat,  5 Feb 2022 15:29:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 031B74AAC59
+	for <lists+linux-ext4@lfdr.de>; Sat,  5 Feb 2022 20:50:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380139AbiBEO32 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 5 Feb 2022 09:29:28 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:13740 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1380134AbiBEO31 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 5 Feb 2022 09:29:27 -0500
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 215DQNjl021802;
-        Sat, 5 Feb 2022 14:29:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=foYX60cfFPgyXzRx97URzzhS+rlh07CUJw4hGmMnd6A=;
- b=jb3INu2TzCAjMK+zN2htAx75UCsWp02GGogPTb+VC5NtXg6OqVcVFPEux+LT/AadDbA6
- kiZ56UT7H06yJHT0M5lM3akP+0aCj538iPuPlOpv5qRYpR6FM9Mt1eCLDsDhhnzz7p05
- MuyQYPZvbqYOtshLSX50edjA7wb90b1Lt408hKnXCLhg+oD1RGkNHmMAHf7CcSNLxJ+9
- M0aclwGcB+eiM11AK0bbWao09bJ8hvqXmhj2QfRWhDhI2/DAzyRgGACHS7dt2BP1Qz14
- KtLztjY4WzNGrUwiBzTD8sLVmwBJs5ilN2iSlSRvn1lX69q8wMYwEWBYq7nKnhNUuwyl Iw== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3e1en89tec-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 05 Feb 2022 14:29:26 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 215ERalO032508;
-        Sat, 5 Feb 2022 14:29:25 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 3e1gv8j7uf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 05 Feb 2022 14:29:25 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 215ETLUq44892462
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 5 Feb 2022 14:29:21 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D48415204F;
-        Sat,  5 Feb 2022 14:29:21 +0000 (GMT)
-Received: from localhost (unknown [9.43.12.205])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id F251A5204E;
-        Sat,  5 Feb 2022 14:29:20 +0000 (GMT)
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     fstests <fstests@vger.kernel.org>
-Cc:     linux-ext4@vger.kernel.org, Ritesh Harjani <riteshh@linux.ibm.com>
-Subject: [PATCHv1 4/4] ext4/058: Add shutdown recovery test with fast_commit
-Date:   Sat,  5 Feb 2022 19:58:54 +0530
-Message-Id: <6f55546f021fac9b35ae07d4323f4aba00baad95.1644070604.git.riteshh@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1644070604.git.riteshh@linux.ibm.com>
-References: <cover.1644070604.git.riteshh@linux.ibm.com>
+        id S1355151AbiBETua (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 5 Feb 2022 14:50:30 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:55011 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233594AbiBETua (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 5 Feb 2022 14:50:30 -0500
+Received: by mail-io1-f69.google.com with SMTP id k20-20020a5d91d4000000b0061299fad2fdso5983435ior.21
+        for <linux-ext4@vger.kernel.org>; Sat, 05 Feb 2022 11:50:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=Pbli/zQZbI/e8abqX3qPdH10otwvl66OLiSLsnZ1wuk=;
+        b=mW+R2oHzSDm4QOeF6sdIVXXnKA4Qsd0oLonPkuwQuuJJblQOJZtMrduwzZsY33Ph1D
+         52wRXXcQJ10j8aILa4Wi37pnEPIdvua/53j1KvG4yIAAykA4ucpRTOloLXJUpPCwjpa0
+         7nTyTAdSge0cjdPkKAFVTLwSaP+a7BBCmbY8xb0EULBKCT38AwrwrKTtvoM49BBeDJ9L
+         qc5C5zsRRVvAhEKakyMkUr5tuBJoCPvyHSFRBmcNDAoP6vX0m2wVnUjAU64KeYZFo7f3
+         HPP/mxHH9WbyXeVTvHcI20sIYVnuIjno5IVmRLff8+NZw/SwMg6QMBh4ct/ubJUtNdNF
+         Um7Q==
+X-Gm-Message-State: AOAM530EODrNX1Yls5tV96OBCE1Px/strD1tgABy5wE7g2xoa4YQAlqt
+        VB49u/ItROmycmPVOw49tL3yJ6jOCHeD0nDYPDn5q/36egg8
+X-Google-Smtp-Source: ABdhPJxsqU2+4I+Y558rOIAcUGrzYJIhMIp++rKydhM04pu8XCcKESAedR6b/OIizbSLp9k9qOFF52y4GPh01mwe43XxF47o0ZfW
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: iFg6-LsGGO1xqf6iGh6AJ6J9w_1HSL_K
-X-Proofpoint-ORIG-GUID: iFg6-LsGGO1xqf6iGh6AJ6J9w_1HSL_K
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-05_10,2022-02-03_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- malwarescore=0 bulkscore=0 mlxscore=0 adultscore=0 clxscore=1015
- lowpriorityscore=0 suspectscore=0 priorityscore=1501 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202050095
+X-Received: by 2002:a05:6e02:18c6:: with SMTP id s6mr2453788ilu.301.1644090629623;
+ Sat, 05 Feb 2022 11:50:29 -0800 (PST)
+Date:   Sat, 05 Feb 2022 11:50:29 -0800
+In-Reply-To: <0000000000001e0ba105d5c2dede@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f517d505d74aad30@google.com>
+Subject: Re: [syzbot] general protection fault in ext4_fill_super
+From:   syzbot <syzbot+138c9e58e3cb22eae3b4@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        nathan@kernel.org, ndesaulniers@google.com,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-In certain cases fast_commit may not delete the range during replay
-phase (after sudden FS shutdown) due to some operations which depends on
-inode->i_size (which during replay of an inode with fast_commit could be
-0 for sometime). This fstest tests such scenario with fast_commit in
-ext4.
+syzbot has found a reproducer for the following issue on:
 
-This test case is based on the test case shared via Xin Yin.
+HEAD commit:    0457e5153e0e Merge tag 'for-linus' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=146d12b4700000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=cd57c0f940a9a1ec
+dashboard link: https://syzkaller.appspot.com/bug?extid=138c9e58e3cb22eae3b4
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17f7004fb00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=178cf108700000
 
-Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
----
- tests/ext4/058     | 66 ++++++++++++++++++++++++++++++++++++++++++++++
- tests/ext4/058.out |  7 +++++
- 2 files changed, 73 insertions(+)
- create mode 100755 tests/ext4/058
- create mode 100644 tests/ext4/058.out
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+138c9e58e3cb22eae3b4@syzkaller.appspotmail.com
 
-diff --git a/tests/ext4/058 b/tests/ext4/058
-new file mode 100755
-index 00000000..4d70f483
---- /dev/null
-+++ b/tests/ext4/058
-@@ -0,0 +1,66 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2022 IBM.  All Rights Reserved.
-+#
-+# FS QA Test 058
-+#
-+# Tests fast_commit feature of ext4 as fixed in below commit
-+# 0b5b5a62b945a141: ext4: use ext4_ext_remove_space() for fast commit replay delete range
-+# (Based on test case shared by Xin Yin <yinxin.x@bytedance.com>)
-+#
-+. ./common/preamble
-+_begin_fstest auto shutdown quick log recoveryloop
-+
-+# Override the default cleanup function.
-+_cleanup()
-+{
-+	cd /
-+	rm -r -f $tmp.*
-+   _scratch_unmount > /dev/null 2>&1
-+}
-+
-+# Import common functions.
-+. ./common/filter
-+. ./common/punch
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs ext4
-+_require_scratch
-+_require_scratch_ext4_feature "fast_commit"
-+
-+t1=$SCRATCH_MNT/foo
-+t2=$SCRATCH_MNT/bar
-+
-+$MKFS_EXT4_PROG -F -O 64bit,fast_commit $SCRATCH_DEV 512m >> $seqres.full 2>&1
-+_scratch_mount >> $seqres.full 2>&1
-+
-+bs=$(_get_block_size $SCRATCH_MNT)
-+
-+# create and write data to t1
-+$XFS_IO_PROG -f -c "pwrite 0 $((100*$bs))" $t1 | _filter_xfs_io
-+
-+# fzero certain range in between with -k
-+$XFS_IO_PROG -c "fzero -k  $((40*$bs)) $((20*$bs))" $t1 | _filter_xfs_io
-+
-+# create and fsync a new file t2
-+$XFS_IO_PROG -f -c "fsync" $t2
-+
-+# fpunch within the i_size of a file
-+$XFS_IO_PROG -c "fpunch $((30*$bs)) $((20*$bs))" $t1
-+
-+# fsync t1 to trigger fast_commit operation
-+$XFS_IO_PROG -c "fsync" $t1
-+
-+# shutdown FS now for replay of FC to kick in next mount
-+_scratch_shutdown -v >> $seqres.full 2>&1
-+
-+_scratch_cycle_mount
-+
-+# check fiemap reported is valid or not
-+$XFS_IO_PROG -c "fiemap -v" $t1 | _filter_fiemap_flags $bs
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/ext4/058.out b/tests/ext4/058.out
-new file mode 100644
-index 00000000..98359e01
---- /dev/null
-+++ b/tests/ext4/058.out
-@@ -0,0 +1,7 @@
-+QA output created by 058
-+wrote 409600/409600 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+0: [0..29]: none
-+1: [30..49]: hole
-+2: [50..59]: unwritten
-+3: [60..99]: nonelast
--- 
-2.31.1
+general protection fault, probably for non-canonical address 0xdffffc0000000012: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000090-0x0000000000000097]
+CPU: 0 PID: 3603 Comm: syz-executor131 Not tainted 5.17.0-rc2-syzkaller-00316-g0457e5153e0e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:ext4_fill_super+0x247/0x770 fs/ext4/super.c:5550
+Code: 3b 4c 89 6c 24 20 49 8d bd a8 06 00 00 be 2f 00 00 00 ba 21 00 00 00 e8 87 5a d9 01 4d 8d af 90 00 00 00 4d 89 ec 49 c1 ec 03 <41> 80 3c 2c 00 74 08 4c 89 ef e8 ca 7d 96 ff 49 c7 45 00 01 00 00
+RSP: 0018:ffffc9000284fbe8 EFLAGS: 00010206
+RAX: ffff8880217dc6ac RBX: ffff88801c4048f0 RCX: ffff88807d4b9d00
+RDX: 0000000000000000 RSI: 000000000000002f RDI: 0000000000000035
+RBP: dffffc0000000000 R08: ffffffff84142d6e R09: fffffbfff197f79f
+R10: fffffbfff197f79f R11: 0000000000000000 R12: 0000000000000012
+R13: 0000000000000090 R14: ffff888014784f00 R15: 0000000000000000
+FS:  00005555563943c0(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000001c361000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ get_tree_bdev+0x406/0x630 fs/super.c:1292
+ vfs_get_tree+0x86/0x270 fs/super.c:1497
+ do_new_mount fs/namespace.c:2994 [inline]
+ path_mount+0x1986/0x2c30 fs/namespace.c:3324
+ do_mount fs/namespace.c:3337 [inline]
+ __do_sys_mount fs/namespace.c:3545 [inline]
+ __se_sys_mount+0x308/0x3c0 fs/namespace.c:3522
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fb3d4cbca49
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 51 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc0c4f4df8 EFLAGS: 00000246
+ ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007fb3d4cbca49
+RDX: 0000000020000100 RSI: 00000000200000c0 RDI: 0000000020000080
+RBP: 0000000000000002 R08: 0000000000000000 R09: 0000000000003636
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc0c4f4e00
+R13: 00007ffc0c4f4ea0 R14: 00007ffc0c4f4e60 R15: 0000000000000000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:ext4_fill_super+0x247/0x770 fs/ext4/super.c:5550
+Code: 3b 4c 89 6c 24 20 49 8d bd a8 06 00 00 be 2f 00 00 00 ba 21 00 00 00 e8 87 5a d9 01 4d 8d af 90 00 00 00 4d 89 ec 49 c1 ec 03 <41> 80 3c 2c 00 74 08 4c 89 ef e8 ca 7d 96 ff 49 c7 45 00 01 00 00
+RSP: 0018:ffffc9000284fbe8 EFLAGS: 00010206
+
+RAX: ffff8880217dc6ac RBX: ffff88801c4048f0 RCX: ffff88807d4b9d00
+RDX: 0000000000000000 RSI: 000000000000002f RDI: 0000000000000035
+----------------
+Code disassembly (best guess):
+   0:	3b 4c 89 6c          	cmp    0x6c(%rcx,%rcx,4),%ecx
+   4:	24 20                	and    $0x20,%al
+   6:	49 8d bd a8 06 00 00 	lea    0x6a8(%r13),%rdi
+   d:	be 2f 00 00 00       	mov    $0x2f,%esi
+  12:	ba 21 00 00 00       	mov    $0x21,%edx
+  17:	e8 87 5a d9 01       	callq  0x1d95aa3
+  1c:	4d 8d af 90 00 00 00 	lea    0x90(%r15),%r13
+  23:	4d 89 ec             	mov    %r13,%r12
+  26:	49 c1 ec 03          	shr    $0x3,%r12
+* 2a:	41 80 3c 2c 00       	cmpb   $0x0,(%r12,%rbp,1) <-- trapping instruction
+  2f:	74 08                	je     0x39
+  31:	4c 89 ef             	mov    %r13,%rdi
+  34:	e8 ca 7d 96 ff       	callq  0xff967e03
+  39:	49                   	rex.WB
+  3a:	c7                   	.byte 0xc7
+  3b:	45 00 01             	add    %r8b,(%r9)
 
