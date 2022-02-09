@@ -2,196 +2,137 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 328324AF0D7
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Feb 2022 13:08:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88FBE4AF1BC
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Feb 2022 13:34:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230501AbiBIMHX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 9 Feb 2022 07:07:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48292 "EHLO
+        id S233215AbiBIMeH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 9 Feb 2022 07:34:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233392AbiBIMGq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Feb 2022 07:06:46 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C95E016459;
-        Wed,  9 Feb 2022 03:12:24 -0800 (PST)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Jtxy26drJz9sYG;
-        Wed,  9 Feb 2022 19:10:50 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Wed, 9 Feb
- 2022 19:12:22 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
-        <lczerner@redhat.com>, Ye Bin <yebin10@huawei.com>
-Subject: [PATCH -next] ext4:fix file system corrupted when rmdir non empty directory with IO error
-Date:   Wed, 9 Feb 2022 19:28:19 +0800
-Message-ID: <20220209112819.3072220-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S230481AbiBIMeG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Feb 2022 07:34:06 -0500
+X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 09 Feb 2022 04:34:10 PST
+Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1057DC0613CA;
+        Wed,  9 Feb 2022 04:34:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1644410049; x=1675946049;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=48PiMc7tS+uhyadGRCXdVN/7TsrSH6CeIxMbS1nuv/4=;
+  b=YSwLI1SSD+bU9HJCGBB2jtKQ8OtswOLx16DmmuvtVb82khuo7Pkvzpsx
+   VioRL0p9+CIAguKmEXuwu5E4UYTj6ndLYfkssGMQw3K08QLxhpvD29LVK
+   KkRXAfY9BXOQeAtJu4SKV+80EE2ljqg6g7BhedMRUWLmx4pPVZD/FY1Ys
+   oQ7rN305THIRhs2QkpgBjd1g8lKypYijmQHDr3GTo2M1Nv0OxoPMqaV5s
+   ZQMqLiy6UUPtQ962KnzNFE1GSZlCSxoo9Xro2KMLZgITxDDlAam1dTNTW
+   U1Fq9wOATTq8R9LtBzbhR/4zqVFh8zMWoqUCET6eT/93OsFoU5tJUun29
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.88,355,1635177600"; 
+   d="scan'208";a="197322991"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 09 Feb 2022 20:33:05 +0800
+IronPort-SDR: 8b37qy//8WlPxCjG9uNltytZZ+g976mf+fdtkszmA6aNDpvA295Tae9CNS4yMVvPwSR+gMKf/f
+ tkFXZf9qY9kjMRaNXG8oIWsNUMK0u4GlRaEv4LIjoArJHfb0StWbQMDELdKZ0reH4RrYlC7EoP
+ qNgTvqPedpERz806Kjuefdwx85fKfkCVAPEWZLdJhSDGrNouTkuzEMKTOWpgTi+rsFExjAf3Lt
+ /RO1LhaLqrTDFYstioKUbMa/Th4bGLwM+zJDpymN77MA65OZv7tVwylgHXIWDXcg39C/cDqPvs
+ hQl2iQnqdhSGr2XeCBRJY2V5
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2022 04:04:55 -0800
+IronPort-SDR: RtNunWEvnoR1A15hq9F2kEkvXhqDaCXxAmBpgts/HqWXl1b2/KlKWCVWMs7I6B77iM88/p4kBX
+ hHZ1CRJebCHZqShbrC2CRykl74vupc8vPYrFdBUv7ld5PEoF4sjZjN1IZ4O3tRKdbJJUin8kz0
+ gL16MxlF+n0WojcUcZucOiG15Gw7o4qjldQ2S61RAMG8BE29QDqBnX8mO1N3oeZ77xwjseCGJa
+ 9J0vA/YvHYAUmijMHnIa3JzjFACLUH9RqCM1AFza9tHk2MLbESd41SXS+cII1ADcUjWcyendZn
+ MF8=
+WDCIronportException: Internal
+Received: from shindev.dhcp.fujisawa.hgst.com (HELO shindev.fujisawa.hgst.com) ([10.149.52.173])
+  by uls-op-cesaip02.wdc.com with ESMTP; 09 Feb 2022 04:33:06 -0800
+From:   Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Subject: [PATCH v2 0/6] fstests: fix _scratch_mkfs_sized failure handling
+Date:   Wed,  9 Feb 2022 21:32:59 +0900
+Message-Id: <20220209123305.253038-1-shinichiro.kawasaki@wdc.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-We inject IO error when rmdir non empty direcory, then got issue as follows:
-step1: mkfs.ext4 -F /dev/sda
-step2: mount /dev/sda  test
-step3: cd test
-step4: mkdir -p 1/2
-step5: rmdir 1
-	[  110.920551] ext4_empty_dir: inject fault
-	[  110.921926] EXT4-fs warning (device sda): ext4_rmdir:3113: inode #12:
-	comm rmdir: empty directory '1' has too many links (3)
-step6: cd ..
-step7: umount test
-step8: fsck.ext4 -f /dev/sda
-	e2fsck 1.42.9 (28-Dec-2013)
-	Pass 1: Checking inodes, blocks, and sizes
-	Pass 2: Checking directory structure
-	Entry '..' in .../??? (13) has deleted/unused inode 12.  Clear<y>? yes
-	Pass 3: Checking directory connectivity
-	Unconnected directory inode 13 (...)
-	Connect to /lost+found<y>? yes
-	Pass 4: Checking reference counts
-	Inode 13 ref count is 3, should be 2.  Fix<y>? yes
-	Pass 5: Checking group summary information
+When generic/204 is run for btrfs-zoned filesystem on zoned block devices with
+GB size order, it takes very long time to complete. The test case creates 115MiB
+filesystem on the scratch device and fills files in it within decent run time.
+However, with btrfs-zoned condition, the test case creates filesystem as large
+as the device size and it takes very long time to fill it all. Three causes were
+identified for the long run time, and this series addresses them.
 
-	/dev/sda: ***** FILE SYSTEM WAS MODIFIED *****
-	/dev/sda: 12/131072 files (0.0% non-contiguous), 26157/524288 blocks
+The first cause is mixed mode option that _scratch_mkfs_sized helper function
+adds to mkfs.btrfs. This option was added for both regular btrfs and
+zoned-btrfs. However, zoned-btrfs does not support mixed mode. The mkfs with
+mixed mode fails and results in _scratch_mkfs_sized failure. The mixed mode
+shall not be specified for btrfs-zoned filesystem.
 
-ext4_rmdir
-	if (!ext4_empty_dir(inode))
-		goto end_rmdir;
-ext4_empty_dir
-	bh = ext4_read_dirblock(inode, 0, DIRENT_HTREE);
-	if (IS_ERR(bh))
-		return true;
-Now if read directory block failed, 'ext4_empty_dir' will return true, assume
-directory is empty. Obviously, it will lead to above issue.
-To solve this issue, if read directory block failed 'ext4_empty_dir' just
-return false. To avoid making things worse when file system is already
-corrupted, 'ext4_empty_dir' also return false.
+The second cause is unnecessary call of the _scratch_mkfs helper function in the
+test case generic/204. This helper function is called to obtain data block size
+and i-node size. However, these numbers can be obtained from _scratch_mkfs_sized
+call. The _scratch_mkfs function call shall be removed.
 
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- fs/ext4/inline.c |  9 ++++-----
- fs/ext4/namei.c  | 10 +++++-----
- 2 files changed, 9 insertions(+), 10 deletions(-)
+The third cause is no check of return code from _scratch_mkfs_sized. The test
+case generic/204 calls both _scratch_mkfs and _scratch_mkfs_sized, and does not
+check return code from them. If _scratch_mkfs succeeds and _scratch_mkfs_sized
+fails, the scratch device still has valid filesystem created by _scratch_mkfs.
+Following test workload can be executed without failure, but the filesystem
+does not have the size specified for _scratch_mkfs_sized. The return code of
+_scratch_mkfs_sized shall be checked to catch the mkfs failure. This problem
+exists not only in generic/204, but also in other test cases which call both
+_scratch_mkfs and _scratch_mkfs_sized.
 
-diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index e42941803605..9c076262770d 100644
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -1783,19 +1783,20 @@ bool empty_inline_dir(struct inode *dir, int *has_inline_data)
- 	void *inline_pos;
- 	unsigned int offset;
- 	struct ext4_dir_entry_2 *de;
--	bool ret = true;
-+	bool ret = false;
- 
- 	err = ext4_get_inode_loc(dir, &iloc);
- 	if (err) {
- 		EXT4_ERROR_INODE_ERR(dir, -err,
- 				     "error %d getting inode %lu block",
- 				     err, dir->i_ino);
--		return true;
-+		return false;
- 	}
- 
- 	down_read(&EXT4_I(dir)->xattr_sem);
- 	if (!ext4_has_inline_data(dir)) {
- 		*has_inline_data = 0;
-+		ret = true;
- 		goto out;
- 	}
- 
-@@ -1804,7 +1805,6 @@ bool empty_inline_dir(struct inode *dir, int *has_inline_data)
- 		ext4_warning(dir->i_sb,
- 			     "bad inline directory (dir #%lu) - no `..'",
- 			     dir->i_ino);
--		ret = true;
- 		goto out;
- 	}
- 
-@@ -1823,16 +1823,15 @@ bool empty_inline_dir(struct inode *dir, int *has_inline_data)
- 				     dir->i_ino, le32_to_cpu(de->inode),
- 				     le16_to_cpu(de->rec_len), de->name_len,
- 				     inline_size);
--			ret = true;
- 			goto out;
- 		}
- 		if (le32_to_cpu(de->inode)) {
--			ret = false;
- 			goto out;
- 		}
- 		offset += ext4_rec_len_from_disk(de->rec_len, inline_size);
- 	}
- 
-+	ret = true;
- out:
- 	up_read(&EXT4_I(dir)->xattr_sem);
- 	brelse(iloc.bh);
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 8cf0a924a49b..39e223f7bf64 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -2997,14 +2997,14 @@ bool ext4_empty_dir(struct inode *inode)
- 	if (inode->i_size < ext4_dir_rec_len(1, NULL) +
- 					ext4_dir_rec_len(2, NULL)) {
- 		EXT4_ERROR_INODE(inode, "invalid size");
--		return true;
-+		return false;
- 	}
- 	/* The first directory block must not be a hole,
- 	 * so treat it as DIRENT_HTREE
- 	 */
- 	bh = ext4_read_dirblock(inode, 0, DIRENT_HTREE);
- 	if (IS_ERR(bh))
--		return true;
-+		return false;
- 
- 	de = (struct ext4_dir_entry_2 *) bh->b_data;
- 	if (ext4_check_dir_entry(inode, NULL, de, bh, bh->b_data, bh->b_size,
-@@ -3012,7 +3012,7 @@ bool ext4_empty_dir(struct inode *inode)
- 	    le32_to_cpu(de->inode) != inode->i_ino || strcmp(".", de->name)) {
- 		ext4_warning_inode(inode, "directory missing '.'");
- 		brelse(bh);
--		return true;
-+		return false;
- 	}
- 	offset = ext4_rec_len_from_disk(de->rec_len, sb->s_blocksize);
- 	de = ext4_next_entry(de, sb->s_blocksize);
-@@ -3021,7 +3021,7 @@ bool ext4_empty_dir(struct inode *inode)
- 	    le32_to_cpu(de->inode) == 0 || strcmp("..", de->name)) {
- 		ext4_warning_inode(inode, "directory missing '..'");
- 		brelse(bh);
--		return true;
-+		return false;
- 	}
- 	offset += ext4_rec_len_from_disk(de->rec_len, sb->s_blocksize);
- 	while (offset < inode->i_size) {
-@@ -3035,7 +3035,7 @@ bool ext4_empty_dir(struct inode *inode)
- 				continue;
- 			}
- 			if (IS_ERR(bh))
--				return true;
-+				return false;
- 		}
- 		de = (struct ext4_dir_entry_2 *) (bh->b_data +
- 					(offset & (sb->s_blocksize - 1)));
+In this series, the first patch addresses the first cause, and the second patch
+addresses the second cause. These two patches fix the test case generic/204.
+Following three patches address the third cause, and fix other test cases than
+generic/204.
+
+The last patch is an additional clean up of the helper function _filter_mkfs.
+During this fix work, it was misunderstood that this function were xfs unique.
+To clarify it can be extended to other filesystems, factor out xfs unique part.
+
+Changes from v1:
+* Added 2nd patch which removes _scratch_mkfs call from generic/204
+* Added 6th patch which factors out xfs unique part from _filter_mkfs
+* Dropped 3 patches which had renamed _filter_mkfs to _xfs_filter_mkfs
+* Dropped generic/204 hunk from the 3rd patch
+
+Shin'ichiro Kawasaki (6):
+  common/rc: fix btrfs mixed mode usage in _scratch_mkfs_sized
+  generic/204: remove unnecessary _scratch_mkfs call
+  generic/{171,172,173,174}: check _scratch_mkfs_sized return code
+  ext4/021: check _scratch_mkfs_sized return code
+  xfs/015: check _scratch_mkfs_sized return code
+  common: factor out xfs unique part from _filter_mkfs
+
+ common/filter     | 40 +---------------------------------------
+ common/rc         |  8 ++++----
+ common/xfs        | 41 +++++++++++++++++++++++++++++++++++++++++
+ tests/ext4/021    |  2 +-
+ tests/generic/171 |  2 +-
+ tests/generic/172 |  2 +-
+ tests/generic/173 |  2 +-
+ tests/generic/174 |  2 +-
+ tests/generic/204 |  6 +-----
+ tests/xfs/015     |  2 +-
+ 10 files changed, 53 insertions(+), 54 deletions(-)
+
 -- 
-2.31.1
+2.34.1
 
