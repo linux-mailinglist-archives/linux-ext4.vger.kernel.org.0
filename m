@@ -2,84 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 150934AFD42
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Feb 2022 20:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B70FE4AFE0A
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Feb 2022 21:11:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234208AbiBITZW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 9 Feb 2022 14:25:22 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:43896 "EHLO
+        id S230048AbiBIULh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 9 Feb 2022 15:11:37 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:49832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234369AbiBITZU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Feb 2022 14:25:20 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E3F6E00D0F0
-        for <linux-ext4@vger.kernel.org>; Wed,  9 Feb 2022 11:25:12 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id bg21-20020a05600c3c9500b0035283e7a012so2412508wmb.0
-        for <linux-ext4@vger.kernel.org>; Wed, 09 Feb 2022 11:25:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=9X6kiHxpGEazzvkQHp8JnSwgUsJv8D0X/1igB1bJ0oM=;
-        b=F+1sc9LG9Zusg8VEVpmo/a8vGlBpqMWse1p/RFAUMyYeq8iwZj3MRa7hjavr8KL9Wl
-         jEdeEg8CSnXfgTg6u+0HhVo3iieUx/mqE2aRvLDuwyghlMBvJ6dj+riFgrqwt1R3411+
-         LH/975H10YT9+feSLn8PkRoZMV8B0S/ORAWIQrR6t38RKCx/mNROV0o+pk/oLaF+ivxr
-         shuEKu8D27Sd0379yjauUYuSJbvnPQZDc5rpwQapN1ScgY21I+TSz91lMvAXDtJlvOe4
-         rxvKuPYZb4eivldj0ZoVreDkYl6QuJsstf7YlKapOeJ+mhh/P5E/lW1qfNaCgDAlQEBE
-         +ybg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=9X6kiHxpGEazzvkQHp8JnSwgUsJv8D0X/1igB1bJ0oM=;
-        b=MhF8sJ9CdGdygsh1Z13lkeEDXf4iLBlzxpl0SLXuuapqJGUQeKMxkm7vr8On7VZJ+E
-         KdKKRA9ybS4SFyccKUyz2HRCrpIEYTbgEeoj5bMW2eqSL+YVSvpe6599s8W7tadJT0Ke
-         szq0VDxlrBTbqSfYf10vaH4rO0NT+kcmqsy8I1XKf+GsV7FzpCvp933AcOpaw21uMM9+
-         qMEaNztGpjFLfaX9sfY5WhHPkbOwT9UiP7wCpntNx9c4azIaSLLGyPLkEplOglM9FKom
-         n2bvWgtUlb+WO7XM5FpkY/hVOCOc9YgFC+EA89dKPM9jTnUs5nJIP493Bp+c6ROo+Xmu
-         v5tg==
-X-Gm-Message-State: AOAM531uRjPMzqOtcxeTYi+C4SsxyHaE2WvpUztAlcavQbZ5TGl8ZFXy
-        bBtn2VqXd6qbcooPFBGlZH6HlA==
-X-Google-Smtp-Source: ABdhPJxCUh4sor/h3+HFTKlhR6E08fCeHYcKOJMGBMEAnXI+4nuwI1jwNHyvV7w8k63ICgSJT0jJAg==
-X-Received: by 2002:a7b:c38b:: with SMTP id s11mr3995713wmj.8.1644434709820;
-        Wed, 09 Feb 2022 11:25:09 -0800 (PST)
-Received: from google.com (cpc155339-bagu17-2-0-cust87.1-3.cable.virginm.net. [86.27.177.88])
-        by smtp.gmail.com with ESMTPSA id z5sm6993811wmp.10.2022.02.09.11.25.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Feb 2022 11:25:09 -0800 (PST)
-Date:   Wed, 9 Feb 2022 19:25:05 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        Stable <stable@vger.kernel.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Johannes Thumshirn <jth@kernel.org>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        cluster-devel@redhat.com,
-        syzbot+0ed9f769264276638893@syzkaller.appspotmail.com
-Subject: Re: [PATCH 1/1] Revert "iomap: fall back to buffered writes for
- invalidation failures"
-Message-ID: <YgQVEVVOfPH/f2jQ@google.com>
-References: <20220209085243.3136536-1-lee.jones@linaro.org>
- <20220209150904.GA22025@lst.de>
- <YgPk9HhIeFM43b/a@google.com>
- <YgQSCoD5j9KbpHsA@casper.infradead.org>
+        with ESMTP id S229517AbiBIULg (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Feb 2022 15:11:36 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A690E0918DC;
+        Wed,  9 Feb 2022 12:11:38 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 43ECA61AB2;
+        Wed,  9 Feb 2022 20:11:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8E70C340E7;
+        Wed,  9 Feb 2022 20:11:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644437497;
+        bh=zOp2gUWewyoep3PgpK5NGqgBJCUg+nncwwjeYsUzoFU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=sf9wnonBO85hj+/La/zqX9PVOmY1Zdkdw/QxjYzJQupMZr3kiZYcZk5CuD5hnFSjn
+         qdIjN6YGrYHL2Sqsv6Ij7e1e/qBWmDayXc+5m5ovlFEyR7zipSK+YQ3FtjWXWarHzU
+         3WXaYXrdrEE+zGaRxubyFd8pFEvkOJxdqKmSbIYf9bFciLGKnIEejQvSAkZP96Vcyc
+         V/pgLUegGjlMhk3kxBWDmeA4DEk25UV+IRyJlfHTmstDpllLfUQO03JeKrpr9t+LML
+         jt8DygIzA5GSUOedCiZ6bvOIMGyjid6vwCNg6XWIudp60W01nFu9yV/B0RVQqjxWSn
+         0T7x/VN1zFQEw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 5F4DE5C03C6; Wed,  9 Feb 2022 12:11:37 -0800 (PST)
+Date:   Wed, 9 Feb 2022 12:11:37 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Qian Cai <quic_qiancai@quicinc.com>, Theodore Ts'o <tytso@mit.edu>,
+        Jan Kara <jack@suse.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boqun Feng <boqun.feng@gmail.com>, linux-ext4@vger.kernel.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] jbd2: avoid __GFP_ZERO with SLAB_TYPESAFE_BY_RCU
+Message-ID: <20220209201137.GY4285@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220209165742.5659-1-quic_qiancai@quicinc.com>
+ <20220209181010.gfn66rvip56i54df@quack3.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YgQSCoD5j9KbpHsA@casper.infradead.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+In-Reply-To: <20220209181010.gfn66rvip56i54df@quack3.lan>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,40 +61,64 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 09 Feb 2022, Matthew Wilcox wrote:
-
-> On Wed, Feb 09, 2022 at 03:59:48PM +0000, Lee Jones wrote:
-> > On Wed, 09 Feb 2022, Christoph Hellwig wrote:
+On Wed, Feb 09, 2022 at 07:10:10PM +0100, Jan Kara wrote:
+> On Wed 09-02-22 11:57:42, Qian Cai wrote:
+> > Since the linux-next commit 120aa5e57479 (mm: Check for
+> > SLAB_TYPESAFE_BY_RCU and __GFP_ZERO slab allocation), we will get a
+> > boot warning. Avoid it by calling synchronize_rcu() before the zeroing.
 > > 
-> > > On Wed, Feb 09, 2022 at 08:52:43AM +0000, Lee Jones wrote:
-> > > > This reverts commit 60263d5889e6dc5987dc51b801be4955ff2e4aa7.
-> > > > 
-> > > > Reverting since this commit opens a potential avenue for abuse.
-> > > > 
-> > > > The C-reproducer and more information can be found at the link below.
-> > > > 
-> > > > With this patch applied, I can no longer get the repro to trigger.
-> > > 
-> > > Well, maybe you should actually debug and try to understand what is
-> > > going on before blindly reverting random commits.
-> > 
-> > That is not a reasonable suggestion.
-> > 
-> > Requesting that someone becomes an area expert on a huge and complex
-> > subject such as file systems (various) in order to fix your broken
-> > code is not rational.
+> > Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
 > 
-> Sending a patch to revert a change you don't understand is also
-> not rational.  If you've bisected it to a single change -- great!
-> If reverting the patch still fixes the bug -- also great!  But
-> don't send a patch when you clearly don't understand what the
-> patch did.
+> No, the performance impact of this would be just horrible. Can you
+> ellaborate a bit why SLAB_TYPESAFE_BY_RCU + __GFP_ZERO is a problem and why
+> synchronize_rcu() would be needed here before the memset() please? I mean
+> how is zeroing here any different from the memory just being used?
 
-If reverting isn't the correct thing to do here, please consider this
-as a bug report.
+Suppose a reader picks up a pointer to a memory block, then that memory
+is freed.  No problem, given that this is a SLAB_TYPESAFE_BY_RCU slab,
+so the memory won't be freed while the reader is accessing it.  But while
+the reader is in the process of validating the block, it is zeroed.
 
--- 
-Lee Jones [李琼斯]
-Principal Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+How does the validation step handle this in all cases?
+
+If you have a way of handling this, I will of course drop the patch.
+And learn something new, which is always a good thing.  ;-)
+
+							Thanx, Paul
+
+> > ---
+> >  fs/jbd2/journal.c | 9 ++++++---
+> >  1 file changed, 6 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> > index c2cf74b01ddb..323112de5921 100644
+> > --- a/fs/jbd2/journal.c
+> > +++ b/fs/jbd2/journal.c
+> > @@ -2861,15 +2861,18 @@ static struct journal_head *journal_alloc_journal_head(void)
+> >  #ifdef CONFIG_JBD2_DEBUG
+> >  	atomic_inc(&nr_journal_heads);
+> >  #endif
+> > -	ret = kmem_cache_zalloc(jbd2_journal_head_cache, GFP_NOFS);
+> > +	ret = kmem_cache_alloc(jbd2_journal_head_cache, GFP_NOFS);
+> >  	if (!ret) {
+> >  		jbd_debug(1, "out of memory for journal_head\n");
+> >  		pr_notice_ratelimited("ENOMEM in %s, retrying.\n", __func__);
+> > -		ret = kmem_cache_zalloc(jbd2_journal_head_cache,
+> > +		ret = kmem_cache_alloc(jbd2_journal_head_cache,
+> >  				GFP_NOFS | __GFP_NOFAIL);
+> >  	}
+> > -	if (ret)
+> > +	if (ret) {
+> > +		synchronize_rcu();
+> > +		memset(ret, 0, sizeof(*ret));
+> >  		spin_lock_init(&ret->b_state_lock);
+> > +	}
+> >  	return ret;
+> >  }
+> >  
+> > -- 
+> > 2.30.2
+> > 
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
