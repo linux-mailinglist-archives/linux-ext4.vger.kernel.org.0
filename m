@@ -2,237 +2,275 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 754504AEC0D
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Feb 2022 09:20:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E194AED48
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Feb 2022 09:54:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231689AbiBIITy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 9 Feb 2022 03:19:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58812 "EHLO
+        id S235521AbiBIIxq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 9 Feb 2022 03:53:46 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:46624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230352AbiBIITx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Feb 2022 03:19:53 -0500
-X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 09 Feb 2022 00:19:56 PST
-Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 322F8C0613CA;
-        Wed,  9 Feb 2022 00:19:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1644394797; x=1675930797;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=IjZwl3C/jtPiF0fEZLVP6o/fEYzXBj7cfmTzmNv5PiQ=;
-  b=BSJeaNZtcP+Xh7YPHFCP2NFtiUYftHw6Z5lt6RM3HnrqQe5jI76wPYhs
-   LNmfEUFle2DZ6X5Y8R83VFZmcu1OUP1zaQ5ukQkkLh1hdAOjss9vOE+VI
-   kg9IMpu00KKik9FZ156S8YggStPapN5ntW0adau/Aq4vWt03GmVxm46b4
-   S33nM7hGwEQim8FIulpce8VLgs1E8VEN8RnvC/Monp7ipPqP7kHQ/4Rdh
-   IeTW+AIbhqjynzXh4GHOOTByvxAyrANveJfDeEUzfc/fxRPUVkPsG7QJ+
-   d7JOCfR6d+6oNl5A9kYFYKZUd9xoYX26HqYzEDSy2r9FjWdaoATcbJ0hm
-   w==;
-X-IronPort-AV: E=Sophos;i="5.88,355,1635177600"; 
-   d="scan'208";a="193471669"
-Received: from mail-bn8nam12lp2172.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.172])
-  by ob1.hgst.iphmx.com with ESMTP; 09 Feb 2022 16:18:54 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CkdtEJnCM1NYhIPTFtZODvIXnTrO5nyhoV6otMvo49v9OrqVQ0tgWs6DUrlqQmIWlGiRZwpG3mu9lm3P9takrbV5cuYu8cwPJTnS2l5klC2awr1Qd8Fv+LLCqFPP2FcGDndJsUQYMvhgMZLe8ugWHLhoxdnWXDVCEMbrWlAY2MDebwsf4wxKGtpW1O89fcPTrPr50kGLwDJHZjZRgIn/gfrFef5tcOt7QY+3ftKb7gJEY4n41ZKqa/YQ3PIbAj679HNd97mYxp2pdfz2XespJVxafUCKXZPkI/Nqj2x5pujFrN0KB4UIR/4kyZXx4+uwbdkoyo/o/Wvb9NBcY00EGg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WBKmyEu5mg2hA8989cPG9yfPPJxyuobwRByAiUxQCB8=;
- b=i26TaV5xbEh9LcXG4JNy9QqqN2LVJ1WEcrPhZO6VE+oK/6V8i0gQsrOsChn3QuStPQ+ufWubYBs2OWWaDn9yfkregBQmjyIA7DdPZ3EZ4VMLMhfyPocif6pUbzbm0S/YEIF0vK0oU3RuXHc7vl/RsfxnnRjxdrxDxwemHjBXhoUPUc1evp5Bdy4037uKj77uf4O+BElpdoyj7cgH9WuiJDsKjw154A9rdFrNnKfy4fRIJvZI2yFs90bA7PpdMAAd0gQx4TcB6UUj1iZrQn/XpkpymoPbO0J1izwTmdME39JKpKQFzn6Voubimu1mFp1nCtvDv1/jN417B08i7ixpqg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
+        with ESMTP id S237899AbiBIIxn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Feb 2022 03:53:43 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEF30C02B5CD
+        for <linux-ext4@vger.kernel.org>; Wed,  9 Feb 2022 00:53:37 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id m14so2694067wrg.12
+        for <linux-ext4@vger.kernel.org>; Wed, 09 Feb 2022 00:53:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WBKmyEu5mg2hA8989cPG9yfPPJxyuobwRByAiUxQCB8=;
- b=HwZvIC1io/n1lDfdTlDyxyGzE3OtwYu2qJo/+n41TcTwoHqul49hXnro4XEiuVdydfxhXMbEWtlDcul/ZzfamQX9nTA+PXX3FHhbPlhAJ1tlyGnfiSa2vadLX3jRolNwb6bAUemaKjwQ73vnRYox5LAPwgjGAUQp3ZrYzF+BDQo=
-Received: from DM8PR04MB8037.namprd04.prod.outlook.com (2603:10b6:8:f::6) by
- BN8PR04MB6017.namprd04.prod.outlook.com (2603:10b6:408:53::27) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4975.11; Wed, 9 Feb 2022 08:18:50 +0000
-Received: from DM8PR04MB8037.namprd04.prod.outlook.com
- ([fe80::8c78:3992:975a:f89]) by DM8PR04MB8037.namprd04.prod.outlook.com
- ([fe80::8c78:3992:975a:f89%6]) with mapi id 15.20.4951.019; Wed, 9 Feb 2022
- 08:18:50 +0000
-From:   Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-CC:     "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Subject: Re: [PATCH 5/7] common: rename _filter_mkfs to _xfs_filter_mkfs
-Thread-Topic: [PATCH 5/7] common: rename _filter_mkfs to _xfs_filter_mkfs
-Thread-Index: AQHYG+/CBPelkf6NS0GNBGeElFDeDqyKZC0AgAACzICAAHx7gA==
-Date:   Wed, 9 Feb 2022 08:18:50 +0000
-Message-ID: <20220209081849.32avg2g6x6bc7juj@shindev>
-References: <20220207065541.232685-1-shinichiro.kawasaki@wdc.com>
- <20220207065541.232685-6-shinichiro.kawasaki@wdc.com>
- <20220209004316.GE8288@magnolia> <20220209005317.GE8338@magnolia>
-In-Reply-To: <20220209005317.GE8338@magnolia>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 208515c7-7138-47e9-b6a7-08d9eba4cdaf
-x-ms-traffictypediagnostic: BN8PR04MB6017:EE_
-x-microsoft-antispam-prvs: <BN8PR04MB60175D662BDCA7860BAF1E5AED2E9@BN8PR04MB6017.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: HbE16zG6jW0mNKtTLC8KLDIWaMBAh31iwOnzKPkag46cOUyDMy2hI/yqda4pyHTM3t+x5+CfrH/Cd3G75lx6kqRf6gTeNM2h3LIoZ95uTLnJEcq5tyRj/aErAHxSEcri/ZbRrJWDCbpWlSs1md2OW9xnsk0gPqs1Carnx2srE6kCsjRcGi++i3ezE+BXPiT/z+lZxppeLkyixABfHs0J7h+nWtqWiMJtUm6qAI+n24RE6hJbVPbAwNqymmNkQRcMUs+w4u4ox//H7pFvk7N3+vwpVRdAzASa3DWyrdi1nrAxRT5PdEiQ+I8Fyb1R2K3I9x70IoOI25UxXda8qgC0RqFGJUVrg2Vh1f17eXCJTGS8GisDhzIq+Gg/uKfqSsqmqJKdYChK88GnQna+HfL1uqsGmGVP7wwyluXBIYzgc+ESm/YIGyu8ijpBUD2CQwHjczJo1QRjCJmdZb57znp3WOSMSqhTjy9LyxJu7EVNlMaxbwDwnWDqqlaVNuMaMK8mR4dSy/BpsH7XwW8ZfkeBuOTqwJpXXvcNwxbV/QVm7Di6JrqSk0FlTUET1/kpGSjMwyZ1W+RabPBZpoCIPBwVQ1wWqVAWaiAaZa23TroTjpR5jYnBnlNwjeJ5jh+jH+aEZvwKPMmMJ3irofTXRJcpinnEDMwJkaE5u8YH/KyZF+GSe9Uryj2N56QQVOzsVF028r+4pTdMPNRNI62rJpktpg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR04MB8037.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(7916004)(4636009)(366004)(86362001)(38100700002)(38070700005)(122000001)(33716001)(71200400001)(8936002)(44832011)(5660300002)(66946007)(508600001)(6506007)(91956017)(54906003)(316002)(6916009)(64756008)(4326008)(6512007)(66446008)(66476007)(66556008)(8676002)(76116006)(6486002)(82960400001)(1076003)(83380400001)(26005)(186003)(2906002)(9686003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?GxeJO/fcNjlAQCtGvuVKdq8NPpqCyCelBoFjBSvUdqK2iY+p1Gu7mFVAexRv?=
- =?us-ascii?Q?BVBtWlQs/y5yOnAjnwg5FOGY7YYhROpWpNKHP6KQUpHmX1QWok81OMxNXrbR?=
- =?us-ascii?Q?y4+GGvKov0NbqOIdRIbydYQ/aFWuR04ZIbg8cs/DdsVNwYnsbRre7+xNHXKM?=
- =?us-ascii?Q?tjzgZQlOgpZO04E6GZ3bxjtlhbxHcRkwk9iIDlYCKBw6R2LnnPpGqKPVThv+?=
- =?us-ascii?Q?ERuu9ScJkP1M20Pgxs1r8pBL45Av7ppouw6a00VyaxLZmMVbXE90YNnETjf0?=
- =?us-ascii?Q?qHKcGgII2FcyyQcgUL0zn6pylJNMIiY5jboT9wZ4qag2UXm05YbCjOEJX/SH?=
- =?us-ascii?Q?XbCJKrFnwN1t8lmrvOF+XDdCO2VOPZbuHNU3H4fCY7rKo8M87zNFg08t+L7X?=
- =?us-ascii?Q?mh7q54BeZwbjJMe1SELhIt1z7ikTQWH1vKpHHWpgDSD5YaSwhsTRc9FJTddj?=
- =?us-ascii?Q?1Ajt5SUG6JB5ni3xQFpZOasSHnmGjCVp8PnCIdH/VQyBG4tM/RpmkeAbpqmj?=
- =?us-ascii?Q?4iraRzsEbUWp41r1gB+UtFNfu7NVcfREWBuFn169oAjtds4qWEbLAeC/KVqr?=
- =?us-ascii?Q?kJ2gyWczDgy0cFK8w31tr9UhOJmtZ+e6R4xfsS69M1VriFdRekDD1igh4sUm?=
- =?us-ascii?Q?lkXxGxfsUK61HadornLkHX0zilNFcQeTwzguwI3lmGM8AS2IiuiwHHDbEFoe?=
- =?us-ascii?Q?OEnfcz6urHFwa2yFpmSJK1u12SUv/UhTqpwLTEBhUw1goLvtT3TOJZPbVVov?=
- =?us-ascii?Q?qv9jmd9dbAk0t0uoTVKRjStHwOwCycBg7NDlxflmY8QA9tuHqMELAI4B47ei?=
- =?us-ascii?Q?Q7+4rb3M2SXtnoJVyhTMPeNvWxUnLw8wWXCa2B6PGaao0CWCPlfDyLCBhE9b?=
- =?us-ascii?Q?KVQRdVsAKjmYfVVwnd8tLv7wcbMmjPsIfcgkS3rgsr3YJOOl6b1b5mwFvyvo?=
- =?us-ascii?Q?csf66THcITgeukR34CsqkgiunBvtZ9yT5KdhDXQXhd3O9EBirJnYws1CUvM0?=
- =?us-ascii?Q?p48OA5OXiGVO3dmx/icAWZbLEXuc4+ZS3TucEw/3UUi7etsV4wbboZcchD63?=
- =?us-ascii?Q?5CPXRvqw+0dSuXYbteHRlExpb++yUtNY7nB2RH/i78SfnGml516zqmJIrCVy?=
- =?us-ascii?Q?qyakPfr5bpygxQWgO2mrbRuuaeYkoWkgDnUPaBYhrSsm9ABX+DAoRReWsxlj?=
- =?us-ascii?Q?3ybBFH5mFe3HIX8LMPH1rAfJZQ7CxeZcvEkwL1o+Iwbhn8kYe5nSTYdzaQU+?=
- =?us-ascii?Q?ufsq8Fi8gkXYQ7pmEQ6aN/tKreyZoikiTVMMF1WpiaqdjbFZ+uuLzcwcqxRQ?=
- =?us-ascii?Q?VxcFplHTTlqHAYpoCzi30xK12jcsgTk15XBVQvghip2Hv3nxWA7YKGbqycQi?=
- =?us-ascii?Q?DhTnp1rkrCRUFRhPcRH5uZKLivVlARD3R9GmoqRMKwFHQGugR/YSZebwf5wf?=
- =?us-ascii?Q?MhAiVFQmZuvLNNTce1QYCZwdF0lLhBpzUmk4PGYVH9bv1KRn8XKhd5iLvyor?=
- =?us-ascii?Q?zwYsq9zY/+0A8DWd1Vjm8Q2pgeXrd9TqV1DgoJAM2pInwXYpcv9XnzQCRDMq?=
- =?us-ascii?Q?g+P1PRaJemeKp7Fs5+7fHoGavoYQZxwz1XLyHEYh8EpMF6dXdlxKovBVLCfD?=
- =?us-ascii?Q?N/65zjVAib8fsqwAcWCkX7vGkF2UJlzZHTvSq0bJheVTxDVvX3kTwq4yA8C9?=
- =?us-ascii?Q?xesVisM4J+7wlCsgdjDoYx2n+k0=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2472D23298DD754A9C5984E92A7EAF85@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9CFnL3qqWXJ1KIjkWA+dHMJeCeGe72XRflrV9wguz2M=;
+        b=JRulG9jECURsOXXwkSZgDkDeQzFs5+h5DWCk/fYUmBRzTJMhgMUinIx+1EQsR/mx6+
+         C9wBe9whiV2GeWBIYK4xhljDUm5yu9uP+GZ3LLSew7D7c2ihM+RWPaJfMuhNbHTXhBOV
+         eQoOT3bZqobZrPN2A/FXMhqLvoNR1HF9z8z2nlV6bEk3FpmYPi0c1StxOCw8F+0OOQXS
+         K7RRytLP/4yIrcKR6+rklhTDAMrKvbvPQ3Z2c7qOWtxtzz5acMMqFW6YxUkRN7cHqtuj
+         2DTtVagZc0yxQP25VQMjLdQmHLmRBPJvbEdrqplUDDq4l5dcOycIhuaAebVlCZagvkh3
+         p9jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9CFnL3qqWXJ1KIjkWA+dHMJeCeGe72XRflrV9wguz2M=;
+        b=QiUE+igB+74b/tyToYLpTaFYjxGrk2UgU9JUb4tdqrLJ97rf+yGoicUZbjDYdt/qDy
+         LZIua5nGv5iwIViJbujkEB/D32aiZDwkLAonDyMFh1DmsKOoTK+HEUisT/jrPAe7wpz4
+         ctswJgvXGdopcEMOOHDguDiGfxU7GcNg3GkT+hDSyuWUMKOK/29BRhfOXLz3cWZh0A1i
+         lgKfVD7VzJUy856UbtXZc4s1cE6BXakM+ttHU38mIvnPcmiPLJPMq2XLVfNF1YibJA3L
+         6Oa6Rr2GH49HlUhNO370u/ReXJu1ilYgaofYGtsip3z1l9Zvrwsh/9PzbExE+szzEdJZ
+         z5pw==
+X-Gm-Message-State: AOAM530T3wg4JF6G2/4P2JhnbhD1Mov3fnXAlyj7VeYbG1usKvf7pclK
+        z+XFakG/p3gIV4rsOrwlDbbQFg==
+X-Google-Smtp-Source: ABdhPJwXuq9MmDuIMVKZWowVlwiE642Lp/YhwcVfgvw7YAHEe7zzhYAt78+1XmvRvqOgIOwAyTn7zw==
+X-Received: by 2002:a05:6000:2c2:: with SMTP id o2mr1194369wry.30.1644396799839;
+        Wed, 09 Feb 2022 00:53:19 -0800 (PST)
+Received: from joneslee.c.googlers.com.com (205.215.190.35.bc.googleusercontent.com. [35.190.215.205])
+        by smtp.gmail.com with ESMTPSA id i3sm13854286wrq.72.2022.02.09.00.53.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Feb 2022 00:53:19 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org, Stable <stable@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Dave Chinner <dchinner@redhat.com>,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        Johannes Thumshirn <jth@kernel.org>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        cluster-devel@redhat.com,
+        syzbot+0ed9f769264276638893@syzkaller.appspotmail.com
+Subject: [PATCH 1/1] Revert "iomap: fall back to buffered writes for invalidation failures"
+Date:   Wed,  9 Feb 2022 08:52:43 +0000
+Message-Id: <20220209085243.3136536-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.35.0.263.gb82422642f-goog
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR04MB8037.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 208515c7-7138-47e9-b6a7-08d9eba4cdaf
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Feb 2022 08:18:50.6707
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: AV7d3naGLdfW29S66NTYZnR1WktizzxLaJaD0refmR8mSikAxZ8VnmUSNvspF7Hw1AvR8g8DYEKGKk+i6g0fSkemgTlooNK3sFldKI58dso=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR04MB6017
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Feb 08, 2022 / 16:53, Darrick J. Wong wrote:
-> On Tue, Feb 08, 2022 at 04:43:16PM -0800, Darrick J. Wong wrote:
-> > On Mon, Feb 07, 2022 at 03:55:39PM +0900, Shin'ichiro Kawasaki wrote:
-> > > The helper function works only for xfs and used only for xfs except
-> > > generic/204. Rename the function to clearly indicate that the functio=
-n
-> > > is only for xfs.
-> > >=20
-> > > Suggested-by: Naohiro Aota <naohiro.aota@wdc.com>
-> > > Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-> >=20
-> > <snip the diffstat>
-> >=20
-> > > diff --git a/common/attr b/common/attr
-> > > index 35682d7c..964c790a 100644
-> > > --- a/common/attr
-> > > +++ b/common/attr
-> > > @@ -13,7 +13,7 @@ _acl_get_max()
-> > >  		# CRC format filesystems have much larger ACL counts. The actual
-> > >  		# number is into the thousands, but testing that meany takes too
-> > >  		# long, so just test well past the old limit of 25.
-> > > -		$XFS_INFO_PROG $TEST_DIR | _filter_mkfs > /dev/null 2> $tmp.info
-> > > +		$XFS_INFO_PROG $TEST_DIR | _xfs_filter_mkfs > /dev/null 2> $tmp.in=
-fo
-> > >  		. $tmp.info
-> > >  		rm $tmp.info
-> > >  		if [ $_fs_has_crcs -eq 0 ]; then
-> > > diff --git a/common/filter b/common/filter
-> > > index c3db7a56..24fd0650 100644
-> > > --- a/common/filter
-> > > +++ b/common/filter
-> > > @@ -117,7 +117,7 @@ _filter_date()
-> > > =20
-> > >  # prints filtered output on stdout, values (use eval) on stderr
-> > >  # Non XFS filesystems always return a 4k block size and a 256 byte i=
-node.
-> > > -_filter_mkfs()
-> > > +_xfs_filter_mkfs()
-> > >  {
-> > >      case $FSTYP in
-> > >      xfs)
-> > > diff --git a/common/xfs b/common/xfs
-> >=20
-> > This renames the generic function to be "only for xfs" but it leaves th=
-e
-> > non-XFS bits.  Those bits are /really/ problematic (hardcoded
-> > isize=3D256 and dbsize=3D4096?  Seriously??) and themselves were introd=
-uced
-> > in commit a4d5b247 ("xfstests: Make 204 work with different block and
-> > inode sizes.") oh wow.
-> >=20
-> > I'm sorry that someone left this a mess, but let's try to make it easy
-> > to clean up all the other filesystems, please.  Specifically, could you
-> > please:
-> >=20
-> > 1. Hoist the XFS-specific code from _filter_mkfs into a new
-> >    helper _xfs_filter_mkfs() in common/xfs?
->=20
-> UGH.  I pressed <Send>, not <Save>.  Picking up from where I left off:
->=20
-> 2. Make the generic _filter_mkfs function call the XFS-specific one,
-> ala:
->=20
-> _filter_mkfs()
-> {
->     case $FSTYP in
->     xfs)
-> 	_xfs_filter_mkfs "$@"
-> 	;;
->     *)
-> 	cat - >/dev/null
-> 	perl -e 'print STDERR "dbsize=3D4096\nisize=3D256\n"'
-> 	return ;;
->     esac
-> }
->=20
-> This way you don't have to make a gigantic treewide change, and we can
-> start to make this function work properly for filesystems that have the
-> ability to do an offline geometry dump (aka dumpe2fs for ext*).
+This reverts commit 60263d5889e6dc5987dc51b801be4955ff2e4aa7.
 
-Thank you for the comment. My thought was a rather negative one: I assumed =
-that
-_filter_mkfs would not support other filesystems than xfs. I will add a pat=
-ch
-in v2 series based on your suggestion above, expecting that _filter_mkfs wi=
-ll
-support other filesystems in the future.
+Reverting since this commit opens a potential avenue for abuse.
 
---=20
-Best Regards,
-Shin'ichiro Kawasaki=
+The C-reproducer and more information can be found at the link below.
+
+With this patch applied, I can no longer get the repro to trigger.
+
+  kernel BUG at fs/ext4/inode.c:2647!
+  invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+  CPU: 0 PID: 459 Comm: syz-executor359 Tainted: G        W         5.10.93-syzkaller-01028-g0347b1658399 #0
+  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+  RIP: 0010:mpage_prepare_extent_to_map+0xbe9/0xc00 fs/ext4/inode.c:2647
+  Code: e8 fc bd c3 ff e9 80 f6 ff ff 44 89 e9 80 e1 07 38 c1 0f 8c a6 fe ff ff 4c 89 ef e8 e1 bd c3 ff e9 99 fe ff ff e8 87 c9 89 ff <0f> 0b e8 80 c9 89 ff 0f 0b e8 79 1e b8 02 66 0f 1f 84 00 00 00 00
+  RSP: 0018:ffffc90000e2e9c0 EFLAGS: 00010293
+  RAX: ffffffff81e321f9 RBX: 0000000000000000 RCX: ffff88810c12cf00
+  RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+  RBP: ffffc90000e2eb90 R08: ffffffff81e31e71 R09: fffff940008d68b1
+  R10: fffff940008d68b1 R11: 0000000000000000 R12: ffffea00046b4580
+  R13: ffffc90000e2ea80 R14: 000000000000011e R15: dffffc0000000000
+  FS:  00007fcfd0717700(0000) GS:ffff8881f7000000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 00007fcfd07d5520 CR3: 000000010a142000 CR4: 00000000003506b0
+  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+  Call Trace:
+   ext4_writepages+0xcbb/0x3950 fs/ext4/inode.c:2776
+   do_writepages+0x13a/0x280 mm/page-writeback.c:2358
+   __filemap_fdatawrite_range+0x356/0x420 mm/filemap.c:427
+   filemap_write_and_wait_range+0x64/0xe0 mm/filemap.c:660
+   __iomap_dio_rw+0x621/0x10c0 fs/iomap/direct-io.c:495
+   iomap_dio_rw+0x35/0x80 fs/iomap/direct-io.c:611
+   ext4_dio_write_iter fs/ext4/file.c:571 [inline]
+   ext4_file_write_iter+0xfc5/0x1b70 fs/ext4/file.c:681
+   do_iter_readv_writev+0x548/0x740 include/linux/fs.h:1941
+   do_iter_write+0x182/0x660 fs/read_write.c:866
+   vfs_iter_write+0x7c/0xa0 fs/read_write.c:907
+   iter_file_splice_write+0x7fb/0xf70 fs/splice.c:686
+   do_splice_from fs/splice.c:764 [inline]
+   direct_splice_actor+0xfe/0x130 fs/splice.c:933
+   splice_direct_to_actor+0x4f4/0xbc0 fs/splice.c:888
+   do_splice_direct+0x28b/0x3e0 fs/splice.c:976
+   do_sendfile+0x914/0x1390 fs/read_write.c:1257
+
+Link: https://syzkaller.appspot.com/bug?extid=41c966bf0729a530bd8d
+
+From the patch:
+Cc: Stable <stable@vger.kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Dave Chinner <dchinner@redhat.com>
+Cc: Goldwyn Rodrigues <rgoldwyn@suse.com>
+Cc: Darrick J. Wong <darrick.wong@oracle.com>
+Cc: Bob Peterson <rpeterso@redhat.com>
+Cc: Damien Le Moal <damien.lemoal@wdc.com>
+Cc: Theodore Ts'o <tytso@mit.edu> # for ext4
+Cc: Andreas Gruenbacher <agruenba@redhat.com>
+Cc: Ritesh Harjani <riteshh@linux.ibm.com>
+
+Others:
+Cc: Johannes Thumshirn <jth@kernel.org>
+Cc: linux-xfs@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-ext4@vger.kernel.org
+Cc: cluster-devel@redhat.com
+
+Fixes: 60263d5889e6d ("iomap: fall back to buffered writes for invalidation failures")
+Reported-by: syzbot+0ed9f769264276638893@syzkaller.appspotmail.com
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ fs/ext4/file.c       |  2 --
+ fs/gfs2/file.c       |  3 +--
+ fs/iomap/direct-io.c | 16 +++++-----------
+ fs/iomap/trace.h     |  1 -
+ fs/xfs/xfs_file.c    |  4 ++--
+ fs/zonefs/super.c    |  7 ++-----
+ 6 files changed, 10 insertions(+), 23 deletions(-)
+
+diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+index 3ed8c048fb12c..cb347c3b35535 100644
+--- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -551,8 +551,6 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 		iomap_ops = &ext4_iomap_overwrite_ops;
+ 	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
+ 			   is_sync_kiocb(iocb) || unaligned_io || extend);
+-	if (ret == -ENOTBLK)
+-		ret = 0;
+ 
+ 	if (extend)
+ 		ret = ext4_handle_inode_extension(inode, offset, ret, count);
+diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
+index b39b339feddc9..847adb97380d3 100644
+--- a/fs/gfs2/file.c
++++ b/fs/gfs2/file.c
+@@ -835,8 +835,7 @@ static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from,
+ 
+ 	ret = iomap_dio_rw(iocb, from, &gfs2_iomap_ops, NULL,
+ 			   is_sync_kiocb(iocb));
+-	if (ret == -ENOTBLK)
+-		ret = 0;
++
+ out:
+ 	gfs2_glock_dq(gh);
+ out_uninit:
+diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+index 933f234d5becd..ddcd06c0c452d 100644
+--- a/fs/iomap/direct-io.c
++++ b/fs/iomap/direct-io.c
+@@ -10,7 +10,6 @@
+ #include <linux/backing-dev.h>
+ #include <linux/uio.h>
+ #include <linux/task_io_accounting_ops.h>
+-#include "trace.h"
+ 
+ #include "../internal.h"
+ 
+@@ -413,9 +412,6 @@ iomap_dio_actor(struct inode *inode, loff_t pos, loff_t length,
+  * can be mapped into multiple disjoint IOs and only a subset of the IOs issued
+  * may be pure data writes. In that case, we still need to do a full data sync
+  * completion.
+- *
+- * Returns -ENOTBLK In case of a page invalidation invalidation failure for
+- * writes.  The callers needs to fall back to buffered I/O in this case.
+  */
+ struct iomap_dio *
+ __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
+@@ -493,15 +489,13 @@ __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
+ 	if (iov_iter_rw(iter) == WRITE) {
+ 		/*
+ 		 * Try to invalidate cache pages for the range we are writing.
+-		 * If this invalidation fails, let the caller fall back to
+-		 * buffered I/O.
++		 * If this invalidation fails, tough, the write will still work,
++		 * but racing two incompatible write paths is a pretty crazy
++		 * thing to do, so we don't support it 100%.
+ 		 */
+ 		if (invalidate_inode_pages2_range(mapping, pos >> PAGE_SHIFT,
+-				end >> PAGE_SHIFT)) {
+-			trace_iomap_dio_invalidate_fail(inode, pos, count);
+-			ret = -ENOTBLK;
+-			goto out_free_dio;
+-		}
++				end >> PAGE_SHIFT))
++			dio_warn_stale_pagecache(iocb->ki_filp);
+ 
+ 		if (!wait_for_completion && !inode->i_sb->s_dio_done_wq) {
+ 			ret = sb_init_dio_done_wq(inode->i_sb);
+diff --git a/fs/iomap/trace.h b/fs/iomap/trace.h
+index fdc7ae388476f..5693a39d52fb6 100644
+--- a/fs/iomap/trace.h
++++ b/fs/iomap/trace.h
+@@ -74,7 +74,6 @@ DEFINE_EVENT(iomap_range_class, name,	\
+ DEFINE_RANGE_EVENT(iomap_writepage);
+ DEFINE_RANGE_EVENT(iomap_releasepage);
+ DEFINE_RANGE_EVENT(iomap_invalidatepage);
+-DEFINE_RANGE_EVENT(iomap_dio_invalidate_fail);
+ 
+ #define IOMAP_TYPE_STRINGS \
+ 	{ IOMAP_HOLE,		"HOLE" }, \
+diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
+index 5b0f93f738372..43e2c057214d9 100644
+--- a/fs/xfs/xfs_file.c
++++ b/fs/xfs/xfs_file.c
+@@ -589,8 +589,8 @@ xfs_file_dio_aio_write(
+ 	xfs_iunlock(ip, iolock);
+ 
+ 	/*
+-	 * No fallback to buffered IO after short writes for XFS, direct I/O
+-	 * will either complete fully or return an error.
++	 * No fallback to buffered IO on errors for XFS, direct IO will either
++	 * complete fully or fail.
+ 	 */
+ 	ASSERT(ret < 0 || ret == count);
+ 	return ret;
+diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
+index bec47f2d074be..d54fbef3db4df 100644
+--- a/fs/zonefs/super.c
++++ b/fs/zonefs/super.c
+@@ -851,11 +851,8 @@ static ssize_t zonefs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 	if (iocb->ki_pos >= ZONEFS_I(inode)->i_max_size)
+ 		return -EFBIG;
+ 
+-	if (iocb->ki_flags & IOCB_DIRECT) {
+-		ssize_t ret = zonefs_file_dio_write(iocb, from);
+-		if (ret != -ENOTBLK)
+-			return ret;
+-	}
++	if (iocb->ki_flags & IOCB_DIRECT)
++		return zonefs_file_dio_write(iocb, from);
+ 
+ 	return zonefs_file_buffered_write(iocb, from);
+ }
+-- 
+2.35.0.263.gb82422642f-goog
+
