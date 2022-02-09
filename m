@@ -2,76 +2,83 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E194AED48
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Feb 2022 09:54:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5066A4AEF9D
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Feb 2022 12:04:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235521AbiBIIxq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 9 Feb 2022 03:53:46 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:46624 "EHLO
+        id S229488AbiBILD5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 9 Feb 2022 06:03:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237899AbiBIIxn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Feb 2022 03:53:43 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEF30C02B5CD
-        for <linux-ext4@vger.kernel.org>; Wed,  9 Feb 2022 00:53:37 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id m14so2694067wrg.12
-        for <linux-ext4@vger.kernel.org>; Wed, 09 Feb 2022 00:53:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9CFnL3qqWXJ1KIjkWA+dHMJeCeGe72XRflrV9wguz2M=;
-        b=JRulG9jECURsOXXwkSZgDkDeQzFs5+h5DWCk/fYUmBRzTJMhgMUinIx+1EQsR/mx6+
-         C9wBe9whiV2GeWBIYK4xhljDUm5yu9uP+GZ3LLSew7D7c2ihM+RWPaJfMuhNbHTXhBOV
-         eQoOT3bZqobZrPN2A/FXMhqLvoNR1HF9z8z2nlV6bEk3FpmYPi0c1StxOCw8F+0OOQXS
-         K7RRytLP/4yIrcKR6+rklhTDAMrKvbvPQ3Z2c7qOWtxtzz5acMMqFW6YxUkRN7cHqtuj
-         2DTtVagZc0yxQP25VQMjLdQmHLmRBPJvbEdrqplUDDq4l5dcOycIhuaAebVlCZagvkh3
-         p9jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9CFnL3qqWXJ1KIjkWA+dHMJeCeGe72XRflrV9wguz2M=;
-        b=QiUE+igB+74b/tyToYLpTaFYjxGrk2UgU9JUb4tdqrLJ97rf+yGoicUZbjDYdt/qDy
-         LZIua5nGv5iwIViJbujkEB/D32aiZDwkLAonDyMFh1DmsKOoTK+HEUisT/jrPAe7wpz4
-         ctswJgvXGdopcEMOOHDguDiGfxU7GcNg3GkT+hDSyuWUMKOK/29BRhfOXLz3cWZh0A1i
-         lgKfVD7VzJUy856UbtXZc4s1cE6BXakM+ttHU38mIvnPcmiPLJPMq2XLVfNF1YibJA3L
-         6Oa6Rr2GH49HlUhNO370u/ReXJu1ilYgaofYGtsip3z1l9Zvrwsh/9PzbExE+szzEdJZ
-         z5pw==
-X-Gm-Message-State: AOAM530T3wg4JF6G2/4P2JhnbhD1Mov3fnXAlyj7VeYbG1usKvf7pclK
-        z+XFakG/p3gIV4rsOrwlDbbQFg==
-X-Google-Smtp-Source: ABdhPJwXuq9MmDuIMVKZWowVlwiE642Lp/YhwcVfgvw7YAHEe7zzhYAt78+1XmvRvqOgIOwAyTn7zw==
-X-Received: by 2002:a05:6000:2c2:: with SMTP id o2mr1194369wry.30.1644396799839;
-        Wed, 09 Feb 2022 00:53:19 -0800 (PST)
-Received: from joneslee.c.googlers.com.com (205.215.190.35.bc.googleusercontent.com. [35.190.215.205])
-        by smtp.gmail.com with ESMTPSA id i3sm13854286wrq.72.2022.02.09.00.53.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Feb 2022 00:53:19 -0800 (PST)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Stable <stable@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Dave Chinner <dchinner@redhat.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Johannes Thumshirn <jth@kernel.org>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        cluster-devel@redhat.com,
-        syzbot+0ed9f769264276638893@syzkaller.appspotmail.com
-Subject: [PATCH 1/1] Revert "iomap: fall back to buffered writes for invalidation failures"
-Date:   Wed,  9 Feb 2022 08:52:43 +0000
-Message-Id: <20220209085243.3136536-1-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.35.0.263.gb82422642f-goog
+        with ESMTP id S229452AbiBILD4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Feb 2022 06:03:56 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E73ACE182584;
+        Wed,  9 Feb 2022 02:37:53 -0800 (PST)
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 2199pJdR008826;
+        Wed, 9 Feb 2022 09:56:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=J3XPHCZHIqT70q7kPQVDpC2FjY/RM3lWg4kVQNnz0/c=;
+ b=tG2VG8ipUEn2LlmLLnUSQvNlLEPKFJ0y0mTMqLezxAyu7s4mKdw8jlCHmfO4nWhZfWMc
+ SYv5gDZIxj+VLAMGSupziEsDrvtTYiMh5iizRbKNcFBjadFuaz0dlBhGm4ld6yDi6rkS
+ J12MEMnWCKeQolVNdoZPIr/nIe52hUzsbfvKDuyNrCRjN6LgezMKgEYrDPwhZP7RkIRS
+ cQvd1rKTPdGvX1hd2RqZ8Xx3C2TndHz1Ut/deaSsBwqCbctArhDkN/13VqRXmrdrh//S
+ DC/oluoqEcj83qNs9JmwLjWm3epV+o+t7RK/5SIFeR1XUOqOeXZhDdoU/sR0xoKVGYFL sg== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3e48c14c3s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Feb 2022 09:56:54 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2199ojtW015979;
+        Wed, 9 Feb 2022 09:56:52 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 3e1gv9ngxs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Feb 2022 09:56:52 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2199unqQ43057648
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 9 Feb 2022 09:56:49 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 22C7BA406D;
+        Wed,  9 Feb 2022 09:56:49 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AC172A4076;
+        Wed,  9 Feb 2022 09:56:48 +0000 (GMT)
+Received: from localhost (unknown [9.43.74.163])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  9 Feb 2022 09:56:48 +0000 (GMT)
+Date:   Wed, 9 Feb 2022 15:26:47 +0530
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     syzbot <syzbot+afa2ca5171d93e44b348@syzkaller.appspotmail.com>,
+        jack@suse.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Subject: Re: [syzbot] KASAN: use-after-free Read in jbd2_journal_wait_updates
+Message-ID: <20220209095615.rhoizbwcn3kbazzq@riteshh-domain>
+References: <00000000000040c94205d78125af@google.com>
+ <20220208161429.6oviyrpovqpcwpz5@quack3.lan>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220208161429.6oviyrpovqpcwpz5@quack3.lan>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: bwRtskWy5D1CAKgQ7hguNkJLsZKPUnhE
+X-Proofpoint-ORIG-GUID: bwRtskWy5D1CAKgQ7hguNkJLsZKPUnhE
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-09_04,2022-02-09_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=906
+ malwarescore=0 spamscore=0 bulkscore=0 clxscore=1015 adultscore=0
+ phishscore=0 mlxscore=0 suspectscore=0 priorityscore=1501
+ lowpriorityscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2201110000 definitions=main-2202090062
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,198 +86,48 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This reverts commit 60263d5889e6dc5987dc51b801be4955ff2e4aa7.
+On 22/02/08 05:14PM, Jan Kara wrote:
+> On Tue 08-02-22 04:49:19, syzbot wrote:
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    555f3d7be91a Merge tag '5.17-rc3-ksmbd-server-fixes' of gi..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=17e55852700000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=88e0a6a3dbf057cf
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=afa2ca5171d93e44b348
+> > compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13b03872700000
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+afa2ca5171d93e44b348@syzkaller.appspotmail.com
+>
+> So the syzbot reproducer looks bogus to me but the bug is real.
+> jbd2_journal_wait_updates() looks at commit_transaction after dropping
+> j_state_lock and sleeping which is certainly prone to use-after-free
+> issues.
 
-Reverting since this commit opens a potential avenue for abuse.
+Yes, thanks for taking a look at it.
 
-The C-reproducer and more information can be found at the link below.
+>
+> Funnily, Ritesh's removal of t_handle_lock should "fix" the problem by
+> removing this dereference. So Ritesh, please just add some reference to
+> syzbot report and maybe a backport to stable would be warranted.
+>
 
-With this patch applied, I can no longer get the repro to trigger.
+This actually looks like a regression because of commit [1].
+So I am thinking of sending a separate patch [2] as a fix for this (after my
+testing).
 
-  kernel BUG at fs/ext4/inode.c:2647!
-  invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-  CPU: 0 PID: 459 Comm: syz-executor359 Tainted: G        W         5.10.93-syzkaller-01028-g0347b1658399 #0
-  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-  RIP: 0010:mpage_prepare_extent_to_map+0xbe9/0xc00 fs/ext4/inode.c:2647
-  Code: e8 fc bd c3 ff e9 80 f6 ff ff 44 89 e9 80 e1 07 38 c1 0f 8c a6 fe ff ff 4c 89 ef e8 e1 bd c3 ff e9 99 fe ff ff e8 87 c9 89 ff <0f> 0b e8 80 c9 89 ff 0f 0b e8 79 1e b8 02 66 0f 1f 84 00 00 00 00
-  RSP: 0018:ffffc90000e2e9c0 EFLAGS: 00010293
-  RAX: ffffffff81e321f9 RBX: 0000000000000000 RCX: ffff88810c12cf00
-  RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-  RBP: ffffc90000e2eb90 R08: ffffffff81e31e71 R09: fffff940008d68b1
-  R10: fffff940008d68b1 R11: 0000000000000000 R12: ffffea00046b4580
-  R13: ffffc90000e2ea80 R14: 000000000000011e R15: dffffc0000000000
-  FS:  00007fcfd0717700(0000) GS:ffff8881f7000000(0000) knlGS:0000000000000000
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 00007fcfd07d5520 CR3: 000000010a142000 CR4: 00000000003506b0
-  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-  Call Trace:
-   ext4_writepages+0xcbb/0x3950 fs/ext4/inode.c:2776
-   do_writepages+0x13a/0x280 mm/page-writeback.c:2358
-   __filemap_fdatawrite_range+0x356/0x420 mm/filemap.c:427
-   filemap_write_and_wait_range+0x64/0xe0 mm/filemap.c:660
-   __iomap_dio_rw+0x621/0x10c0 fs/iomap/direct-io.c:495
-   iomap_dio_rw+0x35/0x80 fs/iomap/direct-io.c:611
-   ext4_dio_write_iter fs/ext4/file.c:571 [inline]
-   ext4_file_write_iter+0xfc5/0x1b70 fs/ext4/file.c:681
-   do_iter_readv_writev+0x548/0x740 include/linux/fs.h:1941
-   do_iter_write+0x182/0x660 fs/read_write.c:866
-   vfs_iter_write+0x7c/0xa0 fs/read_write.c:907
-   iter_file_splice_write+0x7fb/0xf70 fs/splice.c:686
-   do_splice_from fs/splice.c:764 [inline]
-   direct_splice_actor+0xfe/0x130 fs/splice.c:933
-   splice_direct_to_actor+0x4f4/0xbc0 fs/splice.c:888
-   do_splice_direct+0x28b/0x3e0 fs/splice.c:976
-   do_sendfile+0x914/0x1390 fs/read_write.c:1257
+Not sure why fstests testing didn't pick this up (given it's a common race),
+or is it because of my recent removal of CONFIG_KASAN from my testing :(
 
-Link: https://syzkaller.appspot.com/bug?extid=41c966bf0729a530bd8d
+I will try a full "auto" test with CONFIG_KASAN enabled and see if we could hit
+this in fstests or not. If not then I will work towards adding a targetted test
+to capture such race.
 
-From the patch:
-Cc: Stable <stable@vger.kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Dave Chinner <dchinner@redhat.com>
-Cc: Goldwyn Rodrigues <rgoldwyn@suse.com>
-Cc: Darrick J. Wong <darrick.wong@oracle.com>
-Cc: Bob Peterson <rpeterso@redhat.com>
-Cc: Damien Le Moal <damien.lemoal@wdc.com>
-Cc: Theodore Ts'o <tytso@mit.edu> # for ext4
-Cc: Andreas Gruenbacher <agruenba@redhat.com>
-Cc: Ritesh Harjani <riteshh@linux.ibm.com>
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/commit/?h=origin&id=4f98186848707f530669238d90e0562d92a78aab
+[2]: https://github.com/riteshharjani/linux/commit/628648810011a22dfaba38ead49716720b27a31c
 
-Others:
-Cc: Johannes Thumshirn <jth@kernel.org>
-Cc: linux-xfs@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org
-Cc: linux-ext4@vger.kernel.org
-Cc: cluster-devel@redhat.com
-
-Fixes: 60263d5889e6d ("iomap: fall back to buffered writes for invalidation failures")
-Reported-by: syzbot+0ed9f769264276638893@syzkaller.appspotmail.com
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- fs/ext4/file.c       |  2 --
- fs/gfs2/file.c       |  3 +--
- fs/iomap/direct-io.c | 16 +++++-----------
- fs/iomap/trace.h     |  1 -
- fs/xfs/xfs_file.c    |  4 ++--
- fs/zonefs/super.c    |  7 ++-----
- 6 files changed, 10 insertions(+), 23 deletions(-)
-
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index 3ed8c048fb12c..cb347c3b35535 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -551,8 +551,6 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 		iomap_ops = &ext4_iomap_overwrite_ops;
- 	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
- 			   is_sync_kiocb(iocb) || unaligned_io || extend);
--	if (ret == -ENOTBLK)
--		ret = 0;
- 
- 	if (extend)
- 		ret = ext4_handle_inode_extension(inode, offset, ret, count);
-diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-index b39b339feddc9..847adb97380d3 100644
---- a/fs/gfs2/file.c
-+++ b/fs/gfs2/file.c
-@@ -835,8 +835,7 @@ static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from,
- 
- 	ret = iomap_dio_rw(iocb, from, &gfs2_iomap_ops, NULL,
- 			   is_sync_kiocb(iocb));
--	if (ret == -ENOTBLK)
--		ret = 0;
-+
- out:
- 	gfs2_glock_dq(gh);
- out_uninit:
-diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-index 933f234d5becd..ddcd06c0c452d 100644
---- a/fs/iomap/direct-io.c
-+++ b/fs/iomap/direct-io.c
-@@ -10,7 +10,6 @@
- #include <linux/backing-dev.h>
- #include <linux/uio.h>
- #include <linux/task_io_accounting_ops.h>
--#include "trace.h"
- 
- #include "../internal.h"
- 
-@@ -413,9 +412,6 @@ iomap_dio_actor(struct inode *inode, loff_t pos, loff_t length,
-  * can be mapped into multiple disjoint IOs and only a subset of the IOs issued
-  * may be pure data writes. In that case, we still need to do a full data sync
-  * completion.
-- *
-- * Returns -ENOTBLK In case of a page invalidation invalidation failure for
-- * writes.  The callers needs to fall back to buffered I/O in this case.
-  */
- struct iomap_dio *
- __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-@@ -493,15 +489,13 @@ __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
- 	if (iov_iter_rw(iter) == WRITE) {
- 		/*
- 		 * Try to invalidate cache pages for the range we are writing.
--		 * If this invalidation fails, let the caller fall back to
--		 * buffered I/O.
-+		 * If this invalidation fails, tough, the write will still work,
-+		 * but racing two incompatible write paths is a pretty crazy
-+		 * thing to do, so we don't support it 100%.
- 		 */
- 		if (invalidate_inode_pages2_range(mapping, pos >> PAGE_SHIFT,
--				end >> PAGE_SHIFT)) {
--			trace_iomap_dio_invalidate_fail(inode, pos, count);
--			ret = -ENOTBLK;
--			goto out_free_dio;
--		}
-+				end >> PAGE_SHIFT))
-+			dio_warn_stale_pagecache(iocb->ki_filp);
- 
- 		if (!wait_for_completion && !inode->i_sb->s_dio_done_wq) {
- 			ret = sb_init_dio_done_wq(inode->i_sb);
-diff --git a/fs/iomap/trace.h b/fs/iomap/trace.h
-index fdc7ae388476f..5693a39d52fb6 100644
---- a/fs/iomap/trace.h
-+++ b/fs/iomap/trace.h
-@@ -74,7 +74,6 @@ DEFINE_EVENT(iomap_range_class, name,	\
- DEFINE_RANGE_EVENT(iomap_writepage);
- DEFINE_RANGE_EVENT(iomap_releasepage);
- DEFINE_RANGE_EVENT(iomap_invalidatepage);
--DEFINE_RANGE_EVENT(iomap_dio_invalidate_fail);
- 
- #define IOMAP_TYPE_STRINGS \
- 	{ IOMAP_HOLE,		"HOLE" }, \
-diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-index 5b0f93f738372..43e2c057214d9 100644
---- a/fs/xfs/xfs_file.c
-+++ b/fs/xfs/xfs_file.c
-@@ -589,8 +589,8 @@ xfs_file_dio_aio_write(
- 	xfs_iunlock(ip, iolock);
- 
- 	/*
--	 * No fallback to buffered IO after short writes for XFS, direct I/O
--	 * will either complete fully or return an error.
-+	 * No fallback to buffered IO on errors for XFS, direct IO will either
-+	 * complete fully or fail.
- 	 */
- 	ASSERT(ret < 0 || ret == count);
- 	return ret;
-diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
-index bec47f2d074be..d54fbef3db4df 100644
---- a/fs/zonefs/super.c
-+++ b/fs/zonefs/super.c
-@@ -851,11 +851,8 @@ static ssize_t zonefs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	if (iocb->ki_pos >= ZONEFS_I(inode)->i_max_size)
- 		return -EFBIG;
- 
--	if (iocb->ki_flags & IOCB_DIRECT) {
--		ssize_t ret = zonefs_file_dio_write(iocb, from);
--		if (ret != -ENOTBLK)
--			return ret;
--	}
-+	if (iocb->ki_flags & IOCB_DIRECT)
-+		return zonefs_file_dio_write(iocb, from);
- 
- 	return zonefs_file_buffered_write(iocb, from);
- }
--- 
-2.35.0.263.gb82422642f-goog
-
+-ritesh
