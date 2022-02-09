@@ -2,94 +2,176 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC6C4ADE0E
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Feb 2022 17:14:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4E84AE616
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Feb 2022 01:35:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350782AbiBHQOd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 8 Feb 2022 11:14:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46644 "EHLO
+        id S240272AbiBIAf4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 8 Feb 2022 19:35:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1382802AbiBHQOc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Feb 2022 11:14:32 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 008CBC06157B;
-        Tue,  8 Feb 2022 08:14:31 -0800 (PST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 8FC22210F9;
-        Tue,  8 Feb 2022 16:14:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1644336870; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=98sUaBfT6bTkcZtNC3rY5d1ATCC+qtqJnkBQ8m+kV0c=;
-        b=jBeXXhOSD4HyDxtqXAAkUonps07pSQv7erAb09XVTKnKiIyQ7m1ivJYfYw8zsGPMUV7jZl
-        h/lUjJVeYKt/DunpS4AfM4XExRjNVy2YBHyUclKESGHbCmcUTWa662lemz6ybcmGW6llo6
-        9VMPrcUeKE3bXGIdFze4yeBJj+tFl4U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1644336870;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=98sUaBfT6bTkcZtNC3rY5d1ATCC+qtqJnkBQ8m+kV0c=;
-        b=kSepq6v2kc34EkoUVZrTeY2wmSwGVSXnXZqQoJ0Pun6WNv1q4AmG0QeJjWz4rwkboA2pC9
-        voZDMUn/xR/jU6Bw==
-Received: from quack3.suse.cz (unknown [10.100.224.230])
+        with ESMTP id S240164AbiBIAfw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Feb 2022 19:35:52 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A793DC06157B;
+        Tue,  8 Feb 2022 16:35:51 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 7A0D4A3B87;
-        Tue,  8 Feb 2022 16:14:30 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id DF4E7A05C7; Tue,  8 Feb 2022 17:14:29 +0100 (CET)
-Date:   Tue, 8 Feb 2022 17:14:29 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     syzbot <syzbot+afa2ca5171d93e44b348@syzkaller.appspotmail.com>
-Cc:     jack@suse.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu, Ritesh Harjani <riteshh@linux.ibm.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in jbd2_journal_wait_updates
-Message-ID: <20220208161429.6oviyrpovqpcwpz5@quack3.lan>
-References: <00000000000040c94205d78125af@google.com>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 69C87B8175F;
+        Wed,  9 Feb 2022 00:35:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D701C004E1;
+        Wed,  9 Feb 2022 00:35:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644366949;
+        bh=SINN8rvGIdWaD570mnD1Dd9uhTxoVudJ59to5rkpYww=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m+NMD5X/+nPUTxTAHv/VqupB5mmHiUU2Owh5ztqO8Zr/7WGaEPDwBwfwT36astLLe
+         qEjrMQW6gCtUDwZFNo6nbM4WwstfbZEPHe28xmTFQbQaOcGfDN8v2azP2LZO82wXNf
+         xvGWIxrZ32NNLBvIxV3sL5L+0dY3pdCwpOnZ5ixj4YvBzzxOggb35SgpJ4WZgAuGUU
+         B7YM38guhBeK4DbPgql7Th4Y1GcnQhEr0dPm3+i/JQ1+oLt03aztDf1YWSikw0TMCf
+         MjtASBYZzvxjO+MiYTgqyz55b/o9JMgCu5LcjFSr6TlPJw3PxyP5XxjvJiInW0tP96
+         cyyp6UCGYpEQA==
+Date:   Tue, 8 Feb 2022 16:35:48 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Subject: Re: [PATCH 2/7] generic/{171,172,173,174,204}: check
+ _scratch_mkfs_sized return code
+Message-ID: <20220209003548.GC8288@magnolia>
+References: <20220207065541.232685-1-shinichiro.kawasaki@wdc.com>
+ <20220207065541.232685-3-shinichiro.kawasaki@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <00000000000040c94205d78125af@google.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220207065541.232685-3-shinichiro.kawasaki@wdc.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 08-02-22 04:49:19, syzbot wrote:
-> Hello,
+On Mon, Feb 07, 2022 at 03:55:36PM +0900, Shin'ichiro Kawasaki wrote:
+> The test cases generic/{171,172,173,174,204} call _scratch_mkfs before
+> _scratch_mkfs_sized, and they do not check return code of
+> _scratch_mkfs_sized. Even if _scratch_mkfs_sized failed, _scratch_mount
+> after it cannot detect the sized mkfs failure because _scratch_mkfs
+> already created a file system on the device. This results in unexpected
+> test condition of the test cases.
 > 
-> syzbot found the following issue on:
+> To avoid the unexpected test condition, check return code of
+> _scratch_mkfs_sized in the test cases.
 > 
-> HEAD commit:    555f3d7be91a Merge tag '5.17-rc3-ksmbd-server-fixes' of gi..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=17e55852700000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=88e0a6a3dbf057cf
-> dashboard link: https://syzkaller.appspot.com/bug?extid=afa2ca5171d93e44b348
-> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13b03872700000
+> Suggested-by: Naohiro Aota <naohiro.aota@wdc.com>
+> Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+
+Hm.  I wonder, are there other tests that employ this _scratch_mkfs ->
+scratch_mkfs_sized sequence and need patching?
+
+$ git grep -l _scratch_mkfs_sized | while read f; do grep -q
+'_scratch_mkfs[[:space:]]' $f && echo $f; done
+common/encrypt
+common/rc
+tests/ext4/021
+tests/generic/171
+tests/generic/172
+tests/generic/173
+tests/generic/174
+tests/generic/204
+tests/generic/520
+tests/generic/525
+tests/xfs/015
+
+generic/520 is a false positive, and you patched the rest.  OK, good.
+
+I wonder if the maintainer will ask for the _scratch_mkfs_sized in the
+failure output, but as far as I'm concerned:
+
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+
+--D
+
+> ---
+>  tests/generic/171 | 2 +-
+>  tests/generic/172 | 2 +-
+>  tests/generic/173 | 2 +-
+>  tests/generic/174 | 2 +-
+>  tests/generic/204 | 3 ++-
+>  5 files changed, 6 insertions(+), 5 deletions(-)
 > 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+afa2ca5171d93e44b348@syzkaller.appspotmail.com
-
-So the syzbot reproducer looks bogus to me but the bug is real.
-jbd2_journal_wait_updates() looks at commit_transaction after dropping
-j_state_lock and sleeping which is certainly prone to use-after-free
-issues.
-
-Funnily, Ritesh's removal of t_handle_lock should "fix" the problem by
-removing this dereference. So Ritesh, please just add some reference to
-syzbot report and maybe a backport to stable would be warranted.
-
-								Honza
-
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> diff --git a/tests/generic/171 b/tests/generic/171
+> index fb2a6f14..f823a454 100755
+> --- a/tests/generic/171
+> +++ b/tests/generic/171
+> @@ -42,7 +42,7 @@ sz_bytes=$((nr_blks * 8 * blksz))
+>  if [ $sz_bytes -lt $((32 * 1048576)) ]; then
+>  	sz_bytes=$((32 * 1048576))
+>  fi
+> -_scratch_mkfs_sized $sz_bytes >> $seqres.full 2>&1
+> +_scratch_mkfs_sized $sz_bytes >> $seqres.full 2>&1 || _fail "mkfs failed"
+>  _scratch_mount >> $seqres.full 2>&1
+>  rm -rf $testdir
+>  mkdir $testdir
+> diff --git a/tests/generic/172 b/tests/generic/172
+> index ab5122fa..383824b9 100755
+> --- a/tests/generic/172
+> +++ b/tests/generic/172
+> @@ -40,7 +40,7 @@ umount $SCRATCH_MNT
+>  
+>  file_size=$((768 * 1024 * 1024))
+>  fs_size=$((1024 * 1024 * 1024))
+> -_scratch_mkfs_sized $fs_size >> $seqres.full 2>&1
+> +_scratch_mkfs_sized $fs_size >> $seqres.full 2>&1 || _fail "mkfs failed"
+>  _scratch_mount >> $seqres.full 2>&1
+>  rm -rf $testdir
+>  mkdir $testdir
+> diff --git a/tests/generic/173 b/tests/generic/173
+> index 0eb313e2..e1493278 100755
+> --- a/tests/generic/173
+> +++ b/tests/generic/173
+> @@ -42,7 +42,7 @@ sz_bytes=$((nr_blks * 8 * blksz))
+>  if [ $sz_bytes -lt $((32 * 1048576)) ]; then
+>  	sz_bytes=$((32 * 1048576))
+>  fi
+> -_scratch_mkfs_sized $sz_bytes >> $seqres.full 2>&1
+> +_scratch_mkfs_sized $sz_bytes >> $seqres.full 2>&1 || _fail "mkfs failed"
+>  _scratch_mount >> $seqres.full 2>&1
+>  rm -rf $testdir
+>  mkdir $testdir
+> diff --git a/tests/generic/174 b/tests/generic/174
+> index 1505453e..c7a177b8 100755
+> --- a/tests/generic/174
+> +++ b/tests/generic/174
+> @@ -43,7 +43,7 @@ sz_bytes=$((nr_blks * 8 * blksz))
+>  if [ $sz_bytes -lt $((32 * 1048576)) ]; then
+>  	sz_bytes=$((32 * 1048576))
+>  fi
+> -_scratch_mkfs_sized $sz_bytes >> $seqres.full 2>&1
+> +_scratch_mkfs_sized $sz_bytes >> $seqres.full 2>&1 || _fail "mkfs failed"
+>  _scratch_mount >> $seqres.full 2>&1
+>  rm -rf $testdir
+>  mkdir $testdir
+> diff --git a/tests/generic/204 b/tests/generic/204
+> index a3dabb71..b5deb443 100755
+> --- a/tests/generic/204
+> +++ b/tests/generic/204
+> @@ -35,7 +35,8 @@ _scratch_mkfs 2> /dev/null | _filter_mkfs 2> $tmp.mkfs > /dev/null
+>  [ $FSTYP = "xfs" ] && MKFS_OPTIONS="$MKFS_OPTIONS -l size=16m -i maxpct=50"
+>  
+>  SIZE=`expr 115 \* 1024 \* 1024`
+> -_scratch_mkfs_sized $SIZE $dbsize 2> /dev/null > $tmp.mkfs.raw
+> +_scratch_mkfs_sized $SIZE $dbsize 2> /dev/null > $tmp.mkfs.raw \
+> +	|| _fail "mkfs failed"
+>  cat $tmp.mkfs.raw | _filter_mkfs 2> $tmp.mkfs > /dev/null
+>  _scratch_mount
+>  
+> -- 
+> 2.34.1
+> 
