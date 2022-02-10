@@ -2,243 +2,380 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5742D4B0CB9
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Feb 2022 12:47:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 302E94B0D7E
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Feb 2022 13:24:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235635AbiBJLrk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Feb 2022 06:47:40 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:45784 "EHLO
+        id S234861AbiBJMYr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Feb 2022 07:24:47 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234873AbiBJLrj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Feb 2022 06:47:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C705EC5
-        for <linux-ext4@vger.kernel.org>; Thu, 10 Feb 2022 03:47:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1644493659;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        with ESMTP id S232743AbiBJMYq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Feb 2022 07:24:46 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF830103D;
+        Thu, 10 Feb 2022 04:24:46 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 765BF1F37B;
+        Thu, 10 Feb 2022 12:24:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1644495885; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=voWjPDpl6rgnyPEWRLZY/zlAv4le197CBv6xEpGwtjU=;
-        b=WB96oGjuHGfveKtbdv/IrjyJfi+ap9b7otdpbxCQg93zlRrsrMpoyHHz98cV0xdSLmQcZQ
-        nzyhhgSBeRSezVRGA45xhvXSfzZhlw3y63sLUKGUv2YzkVNSvNFPGDS6Kmdh17hFjfIC6n
-        K9cAtwktTtvyABpk7mt7JOZzGFwwmEA=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-216-jPmxuoxvOp2pvBhtKhZVSw-1; Thu, 10 Feb 2022 06:47:39 -0500
-X-MC-Unique: jPmxuoxvOp2pvBhtKhZVSw-1
-Received: by mail-wm1-f72.google.com with SMTP id bg16-20020a05600c3c9000b0034bea12c043so4204525wmb.7
-        for <linux-ext4@vger.kernel.org>; Thu, 10 Feb 2022 03:47:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=voWjPDpl6rgnyPEWRLZY/zlAv4le197CBv6xEpGwtjU=;
-        b=v85PovikznlniJG4lyoVFe4nuilcfdqPB/vURgXcCCKm0mlZRflJHC0KaYtY4f6oss
-         kKAVzy9+xn8yaHU8W2nxPpSGFecrk7ij4J6ySIcElEQZdDgIGHe+xkoRc9s207hBQIed
-         ph3LGDNK3EHgOk004JjTfji8dB8MTGgM37zvQKoKT0IkcJOtRj+7421OIDJru5KD/tdh
-         LGXbThHeiqMqHMs+gbCzdxIAENuxh/bIRSIxCc9BX2tPkhmodlh8SW+UkZzChoZuh5J0
-         iBSrpGN6MihhiXioM9E5BMIdHra3E5H7Fq6BMHBkSdd5Niv9bMEKanOc8QyTTskX3+yC
-         /e/w==
-X-Gm-Message-State: AOAM533cwmimodLG0onYq/VIyprA33v23KIWsCD4cDyOZsGrAhkcqp53
-        H9TZPNA22lt+6+nGRr6iMku1gntThJz3RGQD7U0LW5Q2bKz4totQmvmH7ZXltxqjMZV/nrm8+0T
-        i8GyIWU8NlgHEV/D1KXW66Q==
-X-Received: by 2002:a7b:c778:: with SMTP id x24mr1808294wmk.181.1644493657672;
-        Thu, 10 Feb 2022 03:47:37 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx6UoEwYIvoo+UYxUGhTbqYutAgt1KtSHP64o6sBNKHzXr+dVyYnHTL0HD0CFRSHfFSJsuJrw==
-X-Received: by 2002:a7b:c778:: with SMTP id x24mr1808265wmk.181.1644493657358;
-        Thu, 10 Feb 2022 03:47:37 -0800 (PST)
-Received: from ?IPV6:2003:cb:c70b:f900:7b04:69ec:2caf:3b42? (p200300cbc70bf9007b0469ec2caf3b42.dip0.t-ipconnect.de. [2003:cb:c70b:f900:7b04:69ec:2caf:3b42])
-        by smtp.gmail.com with ESMTPSA id h6sm1323620wmq.26.2022.02.10.03.47.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Feb 2022 03:47:36 -0800 (PST)
-Message-ID: <fb557284-bcab-6d95-ac60-acd7459e9e80@redhat.com>
-Date:   Thu, 10 Feb 2022 12:47:35 +0100
+        bh=V7vGqL9kDHDopSycq2pciR9nESF0U5A0PGhxYvc30uI=;
+        b=riWwkdZpE7Hmmps9kxaMzQN/KCLCB49Qc/n/NOMLqJnWBdcMv6FzI1Pw4eBpJRax003ieS
+        EzOtopdOy8Sm6iG9R8VptFdJ95bCtrt6PxbDxOzvZo3qCA1viSu8lMJcq9bIvngSiW+/Lw
+        LAjLAhcbJzf07JA6l7fkGT3wC2FdfV0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1644495885;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=V7vGqL9kDHDopSycq2pciR9nESF0U5A0PGhxYvc30uI=;
+        b=9gCKWe6PPoWQjCnWeWNAgisnMWt0P1gwCwfbdnvMUJGPMbNvKMuA7jEhF/euOXsivpRF2m
+        k+If1xEHWBisboCg==
+Received: from quack3.suse.cz (jack.udp.ovpn1.nue.suse.de [10.163.28.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id C92A0A3B85;
+        Thu, 10 Feb 2022 12:24:43 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 3F68AA05BC; Thu, 10 Feb 2022 13:24:40 +0100 (CET)
+Date:   Thu, 10 Feb 2022 13:24:40 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, Jan Kara <jack@suse.cz>,
+        Wu Fengguang <fengguang.wu@intel.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Lars Ellenberg <lars.ellenberg@linbit.com>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [PATCH 02/11] MM: document and polish read-ahead code.
+Message-ID: <20220210122440.vqth5mwsqtv6vjpq@quack3.lan>
+References: <164447124918.23354.17858831070003318849.stgit@noble.brown>
+ <164447147257.23354.2801426518649016278.stgit@noble.brown>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Subject: Re: [PATCH v2 2/3] mm/gup.c: Migrate device coherent pages when
- pinning instead of failing
-Content-Language: en-US
-To:     Alistair Popple <apopple@nvidia.com>, akpm@linux-foundation.org,
-        linux-mm@kvack.org
-Cc:     Felix.Kuehling@amd.com, rcampbell@nvidia.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        hch@lst.de, jgg@nvidia.com, jglisse@redhat.com,
-        willy@infradead.org, alex.sierra@amd.com, jhubbard@nvidia.com
-References: <cover.0d3c846b1c6c294e055ff7ebe221fab9964c1436.1644207242.git-series.apopple@nvidia.com>
- <dd9960b327ca49a9103d9f97868ea7b0b81186c4.1644207242.git-series.apopple@nvidia.com>
- <9117b387-3c73-0236-51d1-9e6baf43b34e@redhat.com>
- <1894939.704c7Wv018@nvdebian>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <1894939.704c7Wv018@nvdebian>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <164447147257.23354.2801426518649016278.stgit@noble.brown>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 10.02.22 12:39, Alistair Popple wrote:
-> On Thursday, 10 February 2022 9:53:38 PM AEDT David Hildenbrand wrote:
->> On 07.02.22 05:26, Alistair Popple wrote:
->>> Currently any attempts to pin a device coherent page will fail. This is
->>> because device coherent pages need to be managed by a device driver, and
->>> pinning them would prevent a driver from migrating them off the device.
->>>
->>> However this is no reason to fail pinning of these pages. These are
->>> coherent and accessible from the CPU so can be migrated just like
->>> pinning ZONE_MOVABLE pages. So instead of failing all attempts to pin
->>> them first try migrating them out of ZONE_DEVICE.
->>>
->>> Signed-off-by: Alistair Popple <apopple@nvidia.com>
->>> Acked-by: Felix Kuehling <Felix.Kuehling@amd.com>
->>> ---
->>>
->>> Changes for v2:
->>>
->>>  - Added Felix's Acked-by
->>>  - Fixed missing check for dpage == NULL
->>>
->>>  mm/gup.c | 105 ++++++++++++++++++++++++++++++++++++++++++++++++++------
->>>  1 file changed, 95 insertions(+), 10 deletions(-)
->>>
->>> diff --git a/mm/gup.c b/mm/gup.c
->>> index 56d9577..5e826db 100644
->>> --- a/mm/gup.c
->>> +++ b/mm/gup.c
->>> @@ -1861,6 +1861,60 @@ struct page *get_dump_page(unsigned long addr)
->>>  
->>>  #ifdef CONFIG_MIGRATION
->>>  /*
->>> + * Migrates a device coherent page back to normal memory. Caller should have a
->>> + * reference on page which will be copied to the new page if migration is
->>> + * successful or dropped on failure.
->>> + */
->>> +static struct page *migrate_device_page(struct page *page,
->>> +					unsigned int gup_flags)
->>> +{
->>> +	struct page *dpage;
->>> +	struct migrate_vma args;
->>> +	unsigned long src_pfn, dst_pfn = 0;
->>> +
->>> +	lock_page(page);
->>> +	src_pfn = migrate_pfn(page_to_pfn(page)) | MIGRATE_PFN_MIGRATE;
->>> +	args.src = &src_pfn;
->>> +	args.dst = &dst_pfn;
->>> +	args.cpages = 1;
->>> +	args.npages = 1;
->>> +	args.vma = NULL;
->>> +	migrate_vma_setup(&args);
->>> +	if (!(src_pfn & MIGRATE_PFN_MIGRATE))
->>> +		return NULL;
->>> +
->>> +	dpage = alloc_pages(GFP_USER | __GFP_NOWARN, 0);
->>> +
->>> +	/*
->>> +	 * get/pin the new page now so we don't have to retry gup after
->>> +	 * migrating. We already have a reference so this should never fail.
->>> +	 */
->>> +	if (dpage && WARN_ON_ONCE(!try_grab_page(dpage, gup_flags))) {
->>> +		__free_pages(dpage, 0);
->>> +		dpage = NULL;
->>> +	}
->>> +
->>> +	if (dpage) {
->>> +		lock_page(dpage);
->>> +		dst_pfn = migrate_pfn(page_to_pfn(dpage));
->>> +	}
->>> +
->>> +	migrate_vma_pages(&args);
->>> +	if (src_pfn & MIGRATE_PFN_MIGRATE)
->>> +		copy_highpage(dpage, page);
->>> +	migrate_vma_finalize(&args);
->>> +	if (dpage && !(src_pfn & MIGRATE_PFN_MIGRATE)) {
->>> +		if (gup_flags & FOLL_PIN)
->>> +			unpin_user_page(dpage);
->>> +		else
->>> +			put_page(dpage);
->>> +		dpage = NULL;
->>> +	}
->>> +
->>> +	return dpage;
->>> +}
->>> +
->>> +/*
->>>   * Check whether all pages are pinnable, if so return number of pages.  If some
->>>   * pages are not pinnable, migrate them, and unpin all pages. Return zero if
->>>   * pages were migrated, or if some pages were not successfully isolated.
->>> @@ -1888,15 +1942,40 @@ static long check_and_migrate_movable_pages(unsigned long nr_pages,
->>>  			continue;
->>>  		prev_head = head;
->>>  		/*
->>> -		 * If we get a movable page, since we are going to be pinning
->>> -		 * these entries, try to move them out if possible.
->>> +		 * Device coherent pages are managed by a driver and should not
->>> +		 * be pinned indefinitely as it prevents the driver moving the
->>> +		 * page. So when trying to pin with FOLL_LONGTERM instead try
->>> +		 * migrating page out of device memory.
->>>  		 */
->>>  		if (is_dev_private_or_coherent_page(head)) {
->>> +			/*
->>> +			 * device private pages will get faulted in during gup
->>> +			 * so it shouldn't be possible to see one here.
->>> +			 */
->>>  			WARN_ON_ONCE(is_device_private_page(head));
->>> -			ret = -EFAULT;
->>> -			goto unpin_pages;
->>> +			WARN_ON_ONCE(PageCompound(head));
->>> +
->>> +			/*
->>> +			 * migration will fail if the page is pinned, so convert
->>> +			 * the pin on the source page to a normal reference.
->>> +			 */
->>> +			if (gup_flags & FOLL_PIN) {
->>> +				get_page(head);
->>> +				unpin_user_page(head);
->>> +			}
->>> +
->>> +			pages[i] = migrate_device_page(head, gup_flags);
->>
->> For ordinary migrate_pages(), we'll unpin all pages and return 0 so the
->> caller will retry pinning by walking the page tables again.
->>
->> Why can't we apply the same mechanism here? This "let's avoid another
->> walk" looks unnecessary complicated to me, but I might be wrong.
+Hi Neil!
+
+On Thu 10-02-22 16:37:52, NeilBrown wrote:
+> Add some "big-picture" documentation for read-ahead and polish the code
+> to make it fit this documentation.
 > 
-> There's no reason we couldn't. I figured we have the page in the right spot
-> anyway so it was easy to do, and looking at this rebased on top of Christoph's
-> ZONE_DEVICE refcount simplification I'm not sure it would be any simpler
-> anyway.
+> The meaning of ->async_size is clarified to match its name.
+> i.e. Any request to ->readahead() has a sync part and an async part.
+> The caller will wait for the sync pages to complete, but will not wait
+> for the async pages.  The first async page is still marked PG_readahead
+
+So I don't think this is how the code was meant. My understanding of
+readahead comes from a comment:
+
+/*
+ * On-demand readahead design.
+ *
+....
+
+in mm/readahead.c. The ra->size is how many pages should be read.
+ra->async_size is the "lookahead size" meaning that we should place a
+marker (PageReadahead) at "ra->size - ra->async_size" to trigger next
+readahead.
+
 > 
-> It would remove the call to try_grab_page(), but we'd still have to return an
-> error on migration failures whilst also ensuring we putback any non-device
-> pages that may have been isolated. I might have overlooked something though,
-> so certainly happy for suggestions.
+> - in try_context_readahead(), the async_sync is set correctly rather
+>   than being set to 1.  Prior to Commit 2cad40180197 ("readahead: make
+>   context readahead more conservative") it was set to ra->size which
+>   is not correct (that implies no sync component).  As this was too
+>   high and caused problems it was reduced to 1, again incorrect but less
+>   problematic.  The setting provided with this patch does not restore
+>   those problems, and is now not arbitrary.
 
-Staring at the code, I was wondering if we could either
+I agree the 1 there looks strange as it effectively discards all the logic
+handling the lookahead size. I agree with the tweak there but I would do
+this behavioral change as a separate commit since it can have performance
+implications.
 
-* build a second list of device coherent pages to migrate and call a
-  migrate_device_pages() bulk function
-* simply use movable_page_list() and teach migrate_pages() how to handle
-  them.
+> - The calculation of ->async_size in the initial_readahead section of
+>   ondemand_readahead() now makes sense - it is zero if the chosen
+>   size does not exceed the requested size.  This means that we will not
+>   set the PG_readahead flag in this case, but as the requested size
+>   has not been satisfied we can expect a subsequent read ahead request
+>   any way.
 
-I'd really appreciate as little special casing as possible for the ever
-growing list of new DEVICE types all over the place. E.g., just staring
-at fork even before the new device coherent made my head spin.
+So I agree that setting of ->async_size to ->size in initial_readahead
+section does not make great sence but if you look a bit below into readit
+section, you will notice the ->async_size is overwritten there to something
+meaninful. So I think the code actually does something sensible, maybe it
+could be written in a more readable way.
+ 
+> Note that the current function names page_cache_sync_ra() and
+> page_cache_async_ra() are misleading.  All ra request are partly sync
+> and partly async, so either part can be empty.
 
+The meaning of these names IMO is:
+page_cache_sync_ra() - tell readahead that we currently need a page
+ractl->_index and would prefer req_count pages fetched ahead.
+
+page_cache_async_ra() - called when we hit the lookahead marker to give
+opportunity to readahead code to prefetch more pages.
+
+> A page_cache_sync_ra() request will usually set ->async_size non-zero,
+> implying it is not all synchronous.
+> When a non-zero req_count is passed to page_cache_async_ra(), the
+> implication is that some prefix of the request is synchronous, though
+> the calculation made there is incorrect - I haven't tried to fix it.
+> 
+> Signed-off-by: NeilBrown <neilb@suse.de>
+
+								Honza
+
+
+> ---
+>  Documentation/core-api/mm-api.rst |   19 ++++++-
+>  Documentation/filesystems/vfs.rst |   16 ++++--
+>  include/linux/fs.h                |    9 +++
+>  mm/readahead.c                    |  103 ++++++++++++++++++++++++++++++++++++-
+>  4 files changed, 135 insertions(+), 12 deletions(-)
+> 
+> diff --git a/Documentation/core-api/mm-api.rst b/Documentation/core-api/mm-api.rst
+> index 395835f9289f..f5b2f92822c8 100644
+> --- a/Documentation/core-api/mm-api.rst
+> +++ b/Documentation/core-api/mm-api.rst
+> @@ -58,15 +58,30 @@ Virtually Contiguous Mappings
+>  File Mapping and Page Cache
+>  ===========================
+>  
+> -.. kernel-doc:: mm/readahead.c
+> -   :export:
+> +Filemap
+> +-------
+>  
+>  .. kernel-doc:: mm/filemap.c
+>     :export:
+>  
+> +Readahead
+> +---------
+> +
+> +.. kernel-doc:: mm/readahead.c
+> +   :doc: Readahead Overview
+> +
+> +.. kernel-doc:: mm/readahead.c
+> +   :export:
+> +
+> +Writeback
+> +---------
+> +
+>  .. kernel-doc:: mm/page-writeback.c
+>     :export:
+>  
+> +Truncate
+> +--------
+> +
+>  .. kernel-doc:: mm/truncate.c
+>     :export:
+>  
+> diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems/vfs.rst
+> index bf5c48066fac..b4a0baa46dcc 100644
+> --- a/Documentation/filesystems/vfs.rst
+> +++ b/Documentation/filesystems/vfs.rst
+> @@ -806,12 +806,16 @@ cache in your filesystem.  The following members are defined:
+>  	object.  The pages are consecutive in the page cache and are
+>  	locked.  The implementation should decrement the page refcount
+>  	after starting I/O on each page.  Usually the page will be
+> -	unlocked by the I/O completion handler.  If the filesystem decides
+> -	to stop attempting I/O before reaching the end of the readahead
+> -	window, it can simply return.  The caller will decrement the page
+> -	refcount and unlock the remaining pages for you.  Set PageUptodate
+> -	if the I/O completes successfully.  Setting PageError on any page
+> -	will be ignored; simply unlock the page if an I/O error occurs.
+> +	unlocked by the I/O completion handler.  The set of pages are
+> +	divided into some sync pages followed by some async pages,
+> +	rac->ra->async_size gives the number of async pages.  The
+> +	filesystem should attempt to read all sync pages but may decide
+> +	to stop once it reaches the async pages.  If it does decide to
+> +	stop attempting I/O, it can simply return.  The caller will
+> +	remove the remaining pages from the address space, unlock them
+> +	and decrement the page refcount.  Set PageUptodate if the I/O
+> +	completes successfully.  Setting PageError on any page will be
+> +	ignored; simply unlock the page if an I/O error occurs.
+>  
+>  ``readpages``
+>  	called by the VM to read pages associated with the address_space
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index e2d892b201b0..8b5c486bd4a2 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -930,10 +930,15 @@ struct fown_struct {
+>   * struct file_ra_state - Track a file's readahead state.
+>   * @start: Where the most recent readahead started.
+>   * @size: Number of pages read in the most recent readahead.
+> - * @async_size: Start next readahead when this many pages are left.
+> - * @ra_pages: Maximum size of a readahead request.
+> + * @async_size: Numer of pages that were/are not needed immediately
+> + *      and so were/are genuinely "ahead".  Start next readahead when
+> + *      the first of these pages is accessed.
+> + * @ra_pages: Maximum size of a readahead request, copied from the bdi.
+>   * @mmap_miss: How many mmap accesses missed in the page cache.
+>   * @prev_pos: The last byte in the most recent read request.
+> + *
+> + * When this structure is passed to ->readahead(), the "most recent"
+> + * readahead means the current readahead.
+>   */
+>  struct file_ra_state {
+>  	pgoff_t start;
+> diff --git a/mm/readahead.c b/mm/readahead.c
+> index cf0dcf89eb69..c44b2957f59f 100644
+> --- a/mm/readahead.c
+> +++ b/mm/readahead.c
+> @@ -8,6 +8,105 @@
+>   *		Initial version.
+>   */
+>  
+> +/**
+> + * DOC: Readahead Overview
+> + *
+> + * Readahead is used to read content into the page cache before it is
+> + * explicitly requested by the application.  Readahead only ever
+> + * attempts to read pages that are not yet in the page cache.  If a
+> + * page is present but not up-to-date, readahead will not try to read
+> + * it. In that case a simple ->readpage() will be requested.
+> + *
+> + * Readahead is triggered when an application read request (whether a
+> + * systemcall or a page fault) finds that the requested page is not in
+> + * the page cache, or that it is in the page cache and has the
+> + * %PG_readahead flag set.  This flag indicates that the page was loaded
+> + * as part of a previous read-ahead request and now that it has been
+> + * accessed, it is time for the next read-ahead.
+> + *
+> + * Each readahead request is partly synchronous read, and partly async
+> + * read-ahead.  This is reflected in the struct file_ra_state which
+> + * contains ->size being to total number of pages, and ->async_size
+> + * which is the number of pages in the async section.  The first page in
+> + * this async section will have %PG_readahead set as a trigger for a
+> + * subsequent read ahead.  Once a series of sequential reads has been
+> + * established, there should be no need for a synchronous component and
+> + * all read ahead request will be fully asynchronous.
+> + *
+> + * When either of the triggers causes a readahead, three numbers need to
+> + * be determined: the start of the region, the size of the region, and
+> + * the size of the async tail.
+> + *
+> + * The start of the region is simply the first page address at or after
+> + * the accessed address, which is not currently populated in the page
+> + * cache.  This is found with a simple search in the page cache.
+> + *
+> + * The size of the async tail is determined by subtracting the size that
+> + * was explicitly requested from the determined request size, unless
+> + * this would be less than zero - then zero is used.  NOTE THIS
+> + * CALCULATION IS WRONG WHEN THE START OF THE REGION IS NOT THE ACCESSED
+> + * PAGE.
+> + *
+> + * The size of the region is normally determined from the size of the
+> + * previous readahead which loaded the preceding pages.  This may be
+> + * discovered from the struct file_ra_state for simple sequential reads,
+> + * or from examining the state of the page cache when multiple
+> + * sequential reads are interleaved.  Specifically: where the readahead
+> + * was triggered by the %PG_readahead flag, the size of the previous
+> + * readahead is assumed to be the number of pages from the triggering
+> + * page to the start of the new readahead.  In these cases, the size of
+> + * the previous readahead is scaled, often doubled, for the new
+> + * readahead, though see get_next_ra_size() for details.
+> + *
+> + * If the size of the previous read cannot be determined, the number of
+> + * preceding pages in the page cache is used to estimate the size of
+> + * a previous read.  This estimate could easily be misled by random
+> + * reads being coincidentally adjacent, so it is ignored unless it is
+> + * larger than the current request, and it is not scaled up, unless it
+> + * is at the start of file.
+> + *
+> + * In general read ahead is accelerated at the start of the file, as
+> + * reads from there are often sequential.  There are other minor
+> + * adjustments to the read ahead size in various special cases and these
+> + * are best discovered by reading the code.
+> + *
+> + * The above calculation determines the readahead, to which any requested
+> + * read size may be added.
+> + *
+> + * Readahead requests are sent to the filesystem using the ->readahead()
+> + * address space operation, for which mpage_readahead() is a canonical
+> + * implementation.  ->readahead() should normally initiate reads on all
+> + * pages, but may fail to read any or all pages without causing an IO
+> + * error.  The page cache reading code will issue a ->readpage() request
+> + * for any page which ->readahead() does not provided, and only an error
+> + * from this will be final.
+> + *
+> + * ->readahead() will generally call readahead_page() repeatedly to get
+> + * each page from those prepared for read ahead.  It may fail to read a
+> + * page by:
+> + *
+> + * * not calling readahead_page() sufficiently many times, effectively
+> + *   ignoring some pages, as might be appropriate if the path to
+> + *   storage is congested.
+> + *
+> + * * failing to actually submit a read request for a given page,
+> + *   possibly due to insufficient resources, or
+> + *
+> + * * getting an error during subsequent processing of a request.
+> + *
+> + * In the last two cases, the page should be unlocked to indicate that
+> + * the read attempt has failed.  In the first case the page will be
+> + * unlocked by the caller.
+> + *
+> + * Those pages not in the final ``async_size`` of the request should be
+> + * considered to be important and ->readahead() should not fail them due
+> + * to congestion or temporary resource unavailability, but should wait
+> + * for necessary resources (e.g.  memory or indexing information) to
+> + * become available.  Pages in the final ``async_size`` may be
+> + * considered less urgent and failure to read them is more acceptable.
+> + * They will eventually be read individually using ->readpage().
+> + */
+> +
+>  #include <linux/kernel.h>
+>  #include <linux/dax.h>
+>  #include <linux/gfp.h>
+> @@ -426,7 +525,7 @@ static int try_context_readahead(struct address_space *mapping,
+>  
+>  	ra->start = index;
+>  	ra->size = min(size + req_size, max);
+> -	ra->async_size = 1;
+> +	ra->async_size = ra->size - req_size;
+>  
+>  	return 1;
+>  }
+> @@ -527,7 +626,7 @@ static void ondemand_readahead(struct readahead_control *ractl,
+>  initial_readahead:
+>  	ra->start = index;
+>  	ra->size = get_init_ra_size(req_size, max_pages);
+> -	ra->async_size = ra->size > req_size ? ra->size - req_size : ra->size;
+> +	ra->async_size = ra->size > req_size ? ra->size - req_size : 0;
+>  
+>  readit:
+>  	/*
+> 
+> 
 -- 
-Thanks,
-
-David / dhildenb
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
