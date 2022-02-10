@@ -2,380 +2,159 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 302E94B0D7E
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Feb 2022 13:24:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BAD74B0E63
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Feb 2022 14:27:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234861AbiBJMYr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Feb 2022 07:24:47 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41668 "EHLO
+        id S242175AbiBJN11 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Feb 2022 08:27:27 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232743AbiBJMYq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Feb 2022 07:24:46 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF830103D;
-        Thu, 10 Feb 2022 04:24:46 -0800 (PST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 765BF1F37B;
-        Thu, 10 Feb 2022 12:24:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1644495885; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=V7vGqL9kDHDopSycq2pciR9nESF0U5A0PGhxYvc30uI=;
-        b=riWwkdZpE7Hmmps9kxaMzQN/KCLCB49Qc/n/NOMLqJnWBdcMv6FzI1Pw4eBpJRax003ieS
-        EzOtopdOy8Sm6iG9R8VptFdJ95bCtrt6PxbDxOzvZo3qCA1viSu8lMJcq9bIvngSiW+/Lw
-        LAjLAhcbJzf07JA6l7fkGT3wC2FdfV0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1644495885;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=V7vGqL9kDHDopSycq2pciR9nESF0U5A0PGhxYvc30uI=;
-        b=9gCKWe6PPoWQjCnWeWNAgisnMWt0P1gwCwfbdnvMUJGPMbNvKMuA7jEhF/euOXsivpRF2m
-        k+If1xEHWBisboCg==
-Received: from quack3.suse.cz (jack.udp.ovpn1.nue.suse.de [10.163.28.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C92A0A3B85;
-        Thu, 10 Feb 2022 12:24:43 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 3F68AA05BC; Thu, 10 Feb 2022 13:24:40 +0100 (CET)
-Date:   Thu, 10 Feb 2022 13:24:40 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, Jan Kara <jack@suse.cz>,
-        Wu Fengguang <fengguang.wu@intel.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Lars Ellenberg <lars.ellenberg@linbit.com>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: [PATCH 02/11] MM: document and polish read-ahead code.
-Message-ID: <20220210122440.vqth5mwsqtv6vjpq@quack3.lan>
-References: <164447124918.23354.17858831070003318849.stgit@noble.brown>
- <164447147257.23354.2801426518649016278.stgit@noble.brown>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <164447147257.23354.2801426518649016278.stgit@noble.brown>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        with ESMTP id S242180AbiBJN10 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Feb 2022 08:27:26 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 504FFB4E
+        for <linux-ext4@vger.kernel.org>; Thu, 10 Feb 2022 05:27:27 -0800 (PST)
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21ABLGUK029442;
+        Thu, 10 Feb 2022 13:27:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : content-type :
+ content-transfer-encoding : mime-version : subject : message-id : date :
+ cc : to; s=pp1; bh=MpquXG01pKd7omTq3qNXoLn6LnLc4RxtWmzRRBWGlPM=;
+ b=qwXj/bx3bPbkN0vFXsaXS4v74FH14fcj62ZM4en++nzkFmDX2m5J8G7Ly8lP/rAGI0h+
+ j1o/ZrSyX1Pa4SeYgMiuKpOAnbZ6j6Wse91UE7X2y5ata/Ue6+eNP/YyoA/GQfJpx0ob
+ k46pKZ1didFFcLKXzvACu4BlykyvgDfsOEdlS5xCTywVJtRcbmOqOtDjBLpPKJe5Ejz8
+ 95Xos44ONHE7/g+8YgiyeCLOGjm1CB9kNGvvfrKy1HHskMvuUk92+4DJt7DLcJxnxYmN
+ dhpM+Zxa3yoVT4cEVpcrivN0OOAUc78u0UZHm0dViE90ISXfGxEpwExrmwQNvbF9+ibB 0A== 
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3e4m98asdd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Feb 2022 13:27:18 +0000
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21ADDPUk003680;
+        Thu, 10 Feb 2022 13:27:16 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma01fra.de.ibm.com with ESMTP id 3e1gv9xc07-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Feb 2022 13:27:16 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21ADREPO47317436
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Feb 2022 13:27:14 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 366FA52054;
+        Thu, 10 Feb 2022 13:27:14 +0000 (GMT)
+Received: from smtpclient.apple (unknown [9.79.191.145])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 3945F52051;
+        Thu, 10 Feb 2022 13:27:13 +0000 (GMT)
+From:   Sachin Sant <sachinp@linux.ibm.com>
+Content-Type: text/plain;
+        charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: [powerpc] Warning mm/slub.c:3246 during boot (next-20220210) w/ext4
+Message-Id: <6CB9EFBC-1FD6-4486-8C64-8C47EE2A71D4@linux.ibm.com>
+Date:   Thu, 10 Feb 2022 18:57:12 +0530
+Cc:     linuxppc-dev@lists.ozlabs.org,
+        "Paul E. McKenney" <paulmck@kernel.org>, riteshh@linux.ibm.com
+To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 1UAzQR4b2Xnabo-OaHMzfblNtWGJcXfz
+X-Proofpoint-GUID: 1UAzQR4b2Xnabo-OaHMzfblNtWGJcXfz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-10_05,2022-02-09_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
+ spamscore=0 suspectscore=0 adultscore=0 clxscore=1011 impostorscore=0
+ priorityscore=1501 bulkscore=0 lowpriorityscore=0 phishscore=0
+ mlxlogscore=950 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202100072
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Neil!
+While booting 5.17.0-rc3-next-20220210 on Power following warning
+is seen:
 
-On Thu 10-02-22 16:37:52, NeilBrown wrote:
-> Add some "big-picture" documentation for read-ahead and polish the code
-> to make it fit this documentation.
-> 
-> The meaning of ->async_size is clarified to match its name.
-> i.e. Any request to ->readahead() has a sync part and an async part.
-> The caller will wait for the sync pages to complete, but will not wait
-> for the async pages.  The first async page is still marked PG_readahead
+[   32.626501] EXT4-fs (sda2): re-mounted. Quota mode: none.
+[   32.627225] ------------[ cut here ]------------
+[   32.627236] WARNING: CPU: 27 PID: 1084 at mm/slub.c:3246 =
+kmem_cache_alloc+0x3b0/0x680
+[   32.627250] Modules linked in: ext4 mbcache jbd2 sd_mod t10_pi sg ipr =
+tg3 libata ptp pps_core fuse
+[   32.627273] CPU: 27 PID: 1084 Comm: kworker/u161:0 Not tainted =
+5.17.0-rc3-next-20220210 #17
+[   32.627283] NIP:  c000000000444df0 LR: c008000007fe6b44 CTR: =
+c000000000444a40
+[   32.627291] REGS: c000000052393480 TRAP: 0700   Not tainted  =
+(5.17.0-rc3-next-20220210)
+[   32.627298] MSR:  9000000000029033 <SF,HV,EE,ME,IR,DR,RI,LE>  CR: =
+44002822  XER: 20000000
+[   32.627316] CFAR: c000000000444a6c IRQMASK: 0
+[   32.627316] GPR00: c008000007fe6b44 c000000052393720 c000000002a06b00 =
+c000000059660200
+[   32.627316] GPR04: 0000000000000d40 0000000000000000 c00000004f735000 =
+c000000050760618
+[   32.627316] GPR08: 0000000000000001 0000000000080000 0000000000000038 =
+c008000007fe7a70
+[   32.627316] GPR12: c000000000444a40 c0000007fffe1a80 c00000000017a6b8 =
+0000000000000000
+[   32.627316] GPR16: 0000000000000000 0000000000000000 0000000000000000 =
+0000000000000000
+[   32.627316] GPR20: 0000000000000041 c000000052393b78 c000000052393a88 =
+0000000000000338
+[   32.627316] GPR24: c0080000089706d8 c0080000089706d8 c00000004f735000 =
+c008000008014a98
+[   32.627316] GPR28: 0000000000008d40 0000000000000000 0000000000400000 =
+0000000000000100
+[   32.627398] NIP [c000000000444df0] kmem_cache_alloc+0x3b0/0x680
+[   32.627406] LR [c008000007fe6b44] =
+jbd2_journal_add_journal_head+0x13c/0x2b8 [jbd2]
+[   32.627430] Call Trace:
+[   32.627433] [c000000052393720] [c008000007fd0e18] =
+start_this_handle+0x530/0x6b0 [jbd2] (unreliable)
+[   32.627454] [c000000052393790] [0000000000000d40] 0xd40
+[   32.627462] [c000000052393820] [c008000007fd36d8] =
+jbd2_journal_get_write_access+0x80/0x110 [jbd2]
+[   32.627482] [c000000052393860] [c0080000088c5640] =
+__ext4_journal_get_write_access+0xb8/0x2d0 [ext4]
+[   32.627528] [c000000052393910] [c0080000088d69b8] =
+ext4_file_open+0x2e0/0x430 [ext4]
+[   32.627571] [c0000000523939e0] [c000000000488cf0] =
+do_dentry_open+0x170/0x4e0
+[   32.627582] [c000000052393a30] [c0000000004aabfc] =
+path_openat+0xedc/0x1560
+[   32.627593] [c000000052393b30] [c0000000004ac634] =
+do_filp_open+0xa4/0x130
+[   32.627602] [c000000052393c70] [c000000000499c8c] =
+do_open_execat+0x9c/0x2f0
+[   32.627611] [c000000052393cc0] [c00000000049ad44] =
+bprm_execve+0x184/0x7f0
+[   32.627620] [c000000052393d80] [c00000000049c6d8] =
+kernel_execve+0x1a8/0x240
+[   32.627630] [c000000052393dd0] [c00000000017a838] =
+call_usermodehelper_exec_async+0x188/0x2c0
+[   32.627642] [c000000052393e10] [c00000000000ce64] =
+ret_from_kernel_thread+0x5c/0x64
+[   32.627652] Instruction dump:
+[   32.627657] e90d0030 7d49402a 394affff 7d49412a 4bbd1f79 60000000 =
+eae10028 eb610048
+[   32.627672] 4bfffd80 60000000 60000000 60000000 <0fe00000> 7c0802a6 =
+f8410018 fae10028
+[   32.627686] ---[ end trace 0000000000000000 ]=E2=80=94
 
-So I don't think this is how the code was meant. My understanding of
-readahead comes from a comment:
+This WARN_ONCE was introduced by following commit:
 
-/*
- * On-demand readahead design.
- *
-....
+commit 120aa5e574796c9a3ef5f22cdb391747da997a26
+    mm: Check for SLAB_TYPESAFE_BY_RCU and __GFP_ZERO slab allocation
 
-in mm/readahead.c. The ra->size is how many pages should be read.
-ra->async_size is the "lookahead size" meaning that we should place a
-marker (PageReadahead) at "ra->size - ra->async_size" to trigger next
-readahead.
+The system has ext4 file system.
 
-> 
-> - in try_context_readahead(), the async_sync is set correctly rather
->   than being set to 1.  Prior to Commit 2cad40180197 ("readahead: make
->   context readahead more conservative") it was set to ra->size which
->   is not correct (that implies no sync component).  As this was too
->   high and caused problems it was reduced to 1, again incorrect but less
->   problematic.  The setting provided with this patch does not restore
->   those problems, and is now not arbitrary.
-
-I agree the 1 there looks strange as it effectively discards all the logic
-handling the lookahead size. I agree with the tweak there but I would do
-this behavioral change as a separate commit since it can have performance
-implications.
-
-> - The calculation of ->async_size in the initial_readahead section of
->   ondemand_readahead() now makes sense - it is zero if the chosen
->   size does not exceed the requested size.  This means that we will not
->   set the PG_readahead flag in this case, but as the requested size
->   has not been satisfied we can expect a subsequent read ahead request
->   any way.
-
-So I agree that setting of ->async_size to ->size in initial_readahead
-section does not make great sence but if you look a bit below into readit
-section, you will notice the ->async_size is overwritten there to something
-meaninful. So I think the code actually does something sensible, maybe it
-could be written in a more readable way.
- 
-> Note that the current function names page_cache_sync_ra() and
-> page_cache_async_ra() are misleading.  All ra request are partly sync
-> and partly async, so either part can be empty.
-
-The meaning of these names IMO is:
-page_cache_sync_ra() - tell readahead that we currently need a page
-ractl->_index and would prefer req_count pages fetched ahead.
-
-page_cache_async_ra() - called when we hit the lookahead marker to give
-opportunity to readahead code to prefetch more pages.
-
-> A page_cache_sync_ra() request will usually set ->async_size non-zero,
-> implying it is not all synchronous.
-> When a non-zero req_count is passed to page_cache_async_ra(), the
-> implication is that some prefix of the request is synchronous, though
-> the calculation made there is incorrect - I haven't tried to fix it.
-> 
-> Signed-off-by: NeilBrown <neilb@suse.de>
-
-								Honza
-
-
-> ---
->  Documentation/core-api/mm-api.rst |   19 ++++++-
->  Documentation/filesystems/vfs.rst |   16 ++++--
->  include/linux/fs.h                |    9 +++
->  mm/readahead.c                    |  103 ++++++++++++++++++++++++++++++++++++-
->  4 files changed, 135 insertions(+), 12 deletions(-)
-> 
-> diff --git a/Documentation/core-api/mm-api.rst b/Documentation/core-api/mm-api.rst
-> index 395835f9289f..f5b2f92822c8 100644
-> --- a/Documentation/core-api/mm-api.rst
-> +++ b/Documentation/core-api/mm-api.rst
-> @@ -58,15 +58,30 @@ Virtually Contiguous Mappings
->  File Mapping and Page Cache
->  ===========================
->  
-> -.. kernel-doc:: mm/readahead.c
-> -   :export:
-> +Filemap
-> +-------
->  
->  .. kernel-doc:: mm/filemap.c
->     :export:
->  
-> +Readahead
-> +---------
-> +
-> +.. kernel-doc:: mm/readahead.c
-> +   :doc: Readahead Overview
-> +
-> +.. kernel-doc:: mm/readahead.c
-> +   :export:
-> +
-> +Writeback
-> +---------
-> +
->  .. kernel-doc:: mm/page-writeback.c
->     :export:
->  
-> +Truncate
-> +--------
-> +
->  .. kernel-doc:: mm/truncate.c
->     :export:
->  
-> diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems/vfs.rst
-> index bf5c48066fac..b4a0baa46dcc 100644
-> --- a/Documentation/filesystems/vfs.rst
-> +++ b/Documentation/filesystems/vfs.rst
-> @@ -806,12 +806,16 @@ cache in your filesystem.  The following members are defined:
->  	object.  The pages are consecutive in the page cache and are
->  	locked.  The implementation should decrement the page refcount
->  	after starting I/O on each page.  Usually the page will be
-> -	unlocked by the I/O completion handler.  If the filesystem decides
-> -	to stop attempting I/O before reaching the end of the readahead
-> -	window, it can simply return.  The caller will decrement the page
-> -	refcount and unlock the remaining pages for you.  Set PageUptodate
-> -	if the I/O completes successfully.  Setting PageError on any page
-> -	will be ignored; simply unlock the page if an I/O error occurs.
-> +	unlocked by the I/O completion handler.  The set of pages are
-> +	divided into some sync pages followed by some async pages,
-> +	rac->ra->async_size gives the number of async pages.  The
-> +	filesystem should attempt to read all sync pages but may decide
-> +	to stop once it reaches the async pages.  If it does decide to
-> +	stop attempting I/O, it can simply return.  The caller will
-> +	remove the remaining pages from the address space, unlock them
-> +	and decrement the page refcount.  Set PageUptodate if the I/O
-> +	completes successfully.  Setting PageError on any page will be
-> +	ignored; simply unlock the page if an I/O error occurs.
->  
->  ``readpages``
->  	called by the VM to read pages associated with the address_space
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index e2d892b201b0..8b5c486bd4a2 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -930,10 +930,15 @@ struct fown_struct {
->   * struct file_ra_state - Track a file's readahead state.
->   * @start: Where the most recent readahead started.
->   * @size: Number of pages read in the most recent readahead.
-> - * @async_size: Start next readahead when this many pages are left.
-> - * @ra_pages: Maximum size of a readahead request.
-> + * @async_size: Numer of pages that were/are not needed immediately
-> + *      and so were/are genuinely "ahead".  Start next readahead when
-> + *      the first of these pages is accessed.
-> + * @ra_pages: Maximum size of a readahead request, copied from the bdi.
->   * @mmap_miss: How many mmap accesses missed in the page cache.
->   * @prev_pos: The last byte in the most recent read request.
-> + *
-> + * When this structure is passed to ->readahead(), the "most recent"
-> + * readahead means the current readahead.
->   */
->  struct file_ra_state {
->  	pgoff_t start;
-> diff --git a/mm/readahead.c b/mm/readahead.c
-> index cf0dcf89eb69..c44b2957f59f 100644
-> --- a/mm/readahead.c
-> +++ b/mm/readahead.c
-> @@ -8,6 +8,105 @@
->   *		Initial version.
->   */
->  
-> +/**
-> + * DOC: Readahead Overview
-> + *
-> + * Readahead is used to read content into the page cache before it is
-> + * explicitly requested by the application.  Readahead only ever
-> + * attempts to read pages that are not yet in the page cache.  If a
-> + * page is present but not up-to-date, readahead will not try to read
-> + * it. In that case a simple ->readpage() will be requested.
-> + *
-> + * Readahead is triggered when an application read request (whether a
-> + * systemcall or a page fault) finds that the requested page is not in
-> + * the page cache, or that it is in the page cache and has the
-> + * %PG_readahead flag set.  This flag indicates that the page was loaded
-> + * as part of a previous read-ahead request and now that it has been
-> + * accessed, it is time for the next read-ahead.
-> + *
-> + * Each readahead request is partly synchronous read, and partly async
-> + * read-ahead.  This is reflected in the struct file_ra_state which
-> + * contains ->size being to total number of pages, and ->async_size
-> + * which is the number of pages in the async section.  The first page in
-> + * this async section will have %PG_readahead set as a trigger for a
-> + * subsequent read ahead.  Once a series of sequential reads has been
-> + * established, there should be no need for a synchronous component and
-> + * all read ahead request will be fully asynchronous.
-> + *
-> + * When either of the triggers causes a readahead, three numbers need to
-> + * be determined: the start of the region, the size of the region, and
-> + * the size of the async tail.
-> + *
-> + * The start of the region is simply the first page address at or after
-> + * the accessed address, which is not currently populated in the page
-> + * cache.  This is found with a simple search in the page cache.
-> + *
-> + * The size of the async tail is determined by subtracting the size that
-> + * was explicitly requested from the determined request size, unless
-> + * this would be less than zero - then zero is used.  NOTE THIS
-> + * CALCULATION IS WRONG WHEN THE START OF THE REGION IS NOT THE ACCESSED
-> + * PAGE.
-> + *
-> + * The size of the region is normally determined from the size of the
-> + * previous readahead which loaded the preceding pages.  This may be
-> + * discovered from the struct file_ra_state for simple sequential reads,
-> + * or from examining the state of the page cache when multiple
-> + * sequential reads are interleaved.  Specifically: where the readahead
-> + * was triggered by the %PG_readahead flag, the size of the previous
-> + * readahead is assumed to be the number of pages from the triggering
-> + * page to the start of the new readahead.  In these cases, the size of
-> + * the previous readahead is scaled, often doubled, for the new
-> + * readahead, though see get_next_ra_size() for details.
-> + *
-> + * If the size of the previous read cannot be determined, the number of
-> + * preceding pages in the page cache is used to estimate the size of
-> + * a previous read.  This estimate could easily be misled by random
-> + * reads being coincidentally adjacent, so it is ignored unless it is
-> + * larger than the current request, and it is not scaled up, unless it
-> + * is at the start of file.
-> + *
-> + * In general read ahead is accelerated at the start of the file, as
-> + * reads from there are often sequential.  There are other minor
-> + * adjustments to the read ahead size in various special cases and these
-> + * are best discovered by reading the code.
-> + *
-> + * The above calculation determines the readahead, to which any requested
-> + * read size may be added.
-> + *
-> + * Readahead requests are sent to the filesystem using the ->readahead()
-> + * address space operation, for which mpage_readahead() is a canonical
-> + * implementation.  ->readahead() should normally initiate reads on all
-> + * pages, but may fail to read any or all pages without causing an IO
-> + * error.  The page cache reading code will issue a ->readpage() request
-> + * for any page which ->readahead() does not provided, and only an error
-> + * from this will be final.
-> + *
-> + * ->readahead() will generally call readahead_page() repeatedly to get
-> + * each page from those prepared for read ahead.  It may fail to read a
-> + * page by:
-> + *
-> + * * not calling readahead_page() sufficiently many times, effectively
-> + *   ignoring some pages, as might be appropriate if the path to
-> + *   storage is congested.
-> + *
-> + * * failing to actually submit a read request for a given page,
-> + *   possibly due to insufficient resources, or
-> + *
-> + * * getting an error during subsequent processing of a request.
-> + *
-> + * In the last two cases, the page should be unlocked to indicate that
-> + * the read attempt has failed.  In the first case the page will be
-> + * unlocked by the caller.
-> + *
-> + * Those pages not in the final ``async_size`` of the request should be
-> + * considered to be important and ->readahead() should not fail them due
-> + * to congestion or temporary resource unavailability, but should wait
-> + * for necessary resources (e.g.  memory or indexing information) to
-> + * become available.  Pages in the final ``async_size`` may be
-> + * considered less urgent and failure to read them is more acceptable.
-> + * They will eventually be read individually using ->readpage().
-> + */
-> +
->  #include <linux/kernel.h>
->  #include <linux/dax.h>
->  #include <linux/gfp.h>
-> @@ -426,7 +525,7 @@ static int try_context_readahead(struct address_space *mapping,
->  
->  	ra->start = index;
->  	ra->size = min(size + req_size, max);
-> -	ra->async_size = 1;
-> +	ra->async_size = ra->size - req_size;
->  
->  	return 1;
->  }
-> @@ -527,7 +626,7 @@ static void ondemand_readahead(struct readahead_control *ractl,
->  initial_readahead:
->  	ra->start = index;
->  	ra->size = get_init_ra_size(req_size, max_pages);
-> -	ra->async_size = ra->size > req_size ? ra->size - req_size : ra->size;
-> +	ra->async_size = ra->size > req_size ? ra->size - req_size : 0;
->  
->  readit:
->  	/*
-> 
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks
+-Sachin=
