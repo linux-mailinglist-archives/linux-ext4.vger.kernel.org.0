@@ -2,54 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04A764B05A4
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Feb 2022 06:44:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E33944B052A
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Feb 2022 06:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234286AbiBJFmr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Feb 2022 00:42:47 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:37282 "EHLO
+        id S233826AbiBJFiS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Feb 2022 00:38:18 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234248AbiBJFmU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Feb 2022 00:42:20 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1798D2605;
-        Wed,  9 Feb 2022 21:41:27 -0800 (PST)
+        with ESMTP id S230464AbiBJFiS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Feb 2022 00:38:18 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1EE110C2;
+        Wed,  9 Feb 2022 21:38:19 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C3A7D1F441;
-        Thu, 10 Feb 2022 05:41:25 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3E727212BD;
+        Thu, 10 Feb 2022 05:38:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1644471685; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1644471498; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QxH/65m79qvzBGSCwVr/N2GJs7ZD/rte4Udz5IqpfIY=;
-        b=YlngNwM4KJ2lCrfzQTHN/A+kGQDElPDMkLDocNPY7oQ5eLtEVmlsbIk/oygnihNW7FrwoJ
-        OmyikymLamTwFDO2ckBNa2bT8juNRxuUtWfpjZIuevpV3ajlt5aWF4ONgPW2kwJOCPqQh4
-        lyIR4s2Uvt8OOUVHuPtfhMrLcUxrb7E=
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ZwfkqBM5Zq2qH7YykYoVqKGxBkb2fAt928sCyLRg1OI=;
+        b=rjyOsSJ0hdWbAYWMkIp/9yjJA7veoI1NwX3+OjWwkCt3XIX0tXAx6O8uG7pUWWi/i2Pksp
+        pcx98ZHuWm0xEfsG7u3jfVJCopb2Q4lSSuHgnoVhYuKmPEIZ9hw5fVkEpOuzkqN2kH4R7C
+        O3zg6cECKNLyidZeSKz29VI1e99Jc+U=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1644471685;
+        s=susede2_ed25519; t=1644471498;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QxH/65m79qvzBGSCwVr/N2GJs7ZD/rte4Udz5IqpfIY=;
-        b=6n0i9ic8w1i2aZJ9N2rX+fVNb4ZqLqNFRFiTjK1N/idKrQahO5XYfaUQ4n8fWkZ2pi7f30
-        fq+mOgq70ftta4BQ==
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ZwfkqBM5Zq2qH7YykYoVqKGxBkb2fAt928sCyLRg1OI=;
+        b=urUyVi5AjGEouNbZtkXB/wg+OqgZsjRXbihtRMQ4VlR86Ouftkxuz5BGH0eklSfSHWgYk+
+        7+l1LNJhi0d6DCBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0457313519;
-        Thu, 10 Feb 2022 05:41:17 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 77B9213519;
+        Thu, 10 Feb 2022 05:38:10 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id z0pPLH2lBGKxOQAAMHmgww
-        (envelope-from <neilb@suse.de>); Thu, 10 Feb 2022 05:41:17 +0000
-Subject: [PATCH 09/11] f2fs: replace congestion_wait() calls with
- io_schedule_timeout()
+        id 1e9RDMKkBGKdOAAAMHmgww
+        (envelope-from <neilb@suse.de>); Thu, 10 Feb 2022 05:38:10 +0000
+Subject: [PATCH 00/11]  Remove remaining parts of congestion tracking code.
 From:   NeilBrown <neilb@suse.de>
 To:     Andrew Morton <akpm@linux-foundation.org>, Jan Kara <jack@suse.cz>,
         Wu Fengguang <fengguang.wu@intel.com>,
@@ -72,9 +69,7 @@ Cc:     linux-doc@vger.kernel.org, linux-mm@kvack.org,
         ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
         linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
 Date:   Thu, 10 Feb 2022 16:37:52 +1100
-Message-ID: <164447147263.23354.4653093481289339536.stgit@noble.brown>
-In-Reply-To: <164447124918.23354.17858831070003318849.stgit@noble.brown>
-References: <164447124918.23354.17858831070003318849.stgit@noble.brown>
+Message-ID: <164447124918.23354.17858831070003318849.stgit@noble.brown>
 User-Agent: StGit/0.23
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -89,122 +84,69 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-As congestion is no longer tracked, congestion_wait() is effectively
-equivalent to io_schedule_timeout().
-So introduce f2fs_io_schedule_timeout() which sets TASK_UNINTERRUPTIBLE
-and call that instead.
+Here is a refresh of my "remove congestion tracking" series.
 
-Signed-off-by: NeilBrown <neilb@suse.de>
+It makes some small changes to readahead so that the effect of the
+inode_read_congested() test in readahead can be duplicated in the
+filesystem.  fuse uses this.
+It add some documentation for readahead, and for that to work, it
+cleans up related doco a bit.
+
+Andrew: please drop the version of this that is currently in your tree
+even if you don't take this.  The changes to fuse/nfs/ceph are not
+appropriate.
+
+Thanks,
+NeilBrown
+
 ---
- fs/f2fs/compress.c |    4 +---
- fs/f2fs/data.c     |    3 +--
- fs/f2fs/f2fs.h     |    6 ++++++
- fs/f2fs/segment.c  |    8 +++-----
- fs/f2fs/super.c    |    6 ++----
- 5 files changed, 13 insertions(+), 14 deletions(-)
 
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index d0c3aeba5945..2f95559025ad 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -1505,9 +1505,7 @@ static int f2fs_write_raw_pages(struct compress_ctx *cc,
- 				if (IS_NOQUOTA(cc->inode))
- 					return 0;
- 				ret = 0;
--				cond_resched();
--				congestion_wait(BLK_RW_ASYNC,
--						DEFAULT_IO_TIMEOUT);
-+				f2fs_io_schedule_timeout(DEFAULT_IO_TIMEOUT);
- 				goto retry_write;
- 			}
- 			return ret;
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 8c417864c66a..d428ddfd42ee 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -3047,8 +3047,7 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
- 				} else if (ret == -EAGAIN) {
- 					ret = 0;
- 					if (wbc->sync_mode == WB_SYNC_ALL) {
--						cond_resched();
--						congestion_wait(BLK_RW_ASYNC,
-+						f2fs_io_schedule_timeout(
- 							DEFAULT_IO_TIMEOUT);
- 						goto retry_write;
- 					}
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 68b44015514f..467f5dbdc7d1 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -4426,6 +4426,12 @@ static inline bool f2fs_block_unit_discard(struct f2fs_sb_info *sbi)
- 	return F2FS_OPTION(sbi).discard_unit == DISCARD_UNIT_BLOCK;
- }
- 
-+static inline void f2fs_io_schedule_timeout(long timeout)
-+{
-+	set_current_state(TASK_UNINTERRUPTIBLE);
-+	io_schedule_timeout(timeout);
-+}
-+
- #define EFSBADCRC	EBADMSG		/* Bad CRC detected */
- #define EFSCORRUPTED	EUCLEAN		/* Filesystem is corrupted */
- 
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 1dabc8244083..6ff20da44ad7 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -313,8 +313,7 @@ void f2fs_drop_inmem_pages_all(struct f2fs_sb_info *sbi, bool gc_failure)
- skip:
- 		iput(inode);
- 	}
--	congestion_wait(BLK_RW_ASYNC, DEFAULT_IO_TIMEOUT);
--	cond_resched();
-+	f2fs_io_schedule_timeout(DEFAULT_IO_TIMEOUT);
- 	if (gc_failure) {
- 		if (++looped >= count)
- 			return;
-@@ -803,8 +802,7 @@ int f2fs_flush_device_cache(struct f2fs_sb_info *sbi)
- 		do {
- 			ret = __submit_flush_wait(sbi, FDEV(i).bdev);
- 			if (ret)
--				congestion_wait(BLK_RW_ASYNC,
--						DEFAULT_IO_TIMEOUT);
-+				f2fs_io_schedule_timeout(DEFAULT_IO_TIMEOUT);
- 		} while (ret && --count);
- 
- 		if (ret) {
-@@ -3133,7 +3131,7 @@ static unsigned int __issue_discard_cmd_range(struct f2fs_sb_info *sbi,
- 			blk_finish_plug(&plug);
- 			mutex_unlock(&dcc->cmd_lock);
- 			trimmed += __wait_all_discard_cmd(sbi, NULL);
--			congestion_wait(BLK_RW_ASYNC, DEFAULT_IO_TIMEOUT);
-+			f2fs_io_schedule_timeout(DEFAULT_IO_TIMEOUT);
- 			goto next;
- 		}
- skip:
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index baefd398ec1a..ebd32daf052c 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -2135,8 +2135,7 @@ static void f2fs_enable_checkpoint(struct f2fs_sb_info *sbi)
- 	/* we should flush all the data to keep data consistency */
- 	do {
- 		sync_inodes_sb(sbi->sb);
--		cond_resched();
--		congestion_wait(BLK_RW_ASYNC, DEFAULT_IO_TIMEOUT);
-+		f2fs_io_schedule_timeout(DEFAULT_IO_TIMEOUT);
- 	} while (get_pages(sbi, F2FS_DIRTY_DATA) && retry--);
- 
- 	if (unlikely(retry < 0))
-@@ -2504,8 +2503,7 @@ static ssize_t f2fs_quota_write(struct super_block *sb, int type,
- 							&page, &fsdata);
- 		if (unlikely(err)) {
- 			if (err == -ENOMEM) {
--				congestion_wait(BLK_RW_ASYNC,
--						DEFAULT_IO_TIMEOUT);
-+				f2fs_io_schedule_timeout(DEFAULT_IO_TIMEOUT);
- 				goto retry;
- 			}
- 			set_sbi_flag(F2FS_SB(sb), SBI_QUOTA_NEED_REPAIR);
+NeilBrown (11):
+      DOC: convert 'subsection' to 'section' in gfp.h
+      MM: document and polish read-ahead code.
+      MM: improve cleanup when ->readpages doesn't process all pages.
+      fuse: remove reliance on bdi congestion
+      nfs: remove reliance on bdi congestion
+      ceph: remove reliance on bdi congestion
+      Remove inode_congested()
+      Remove bdi_congested() and wb_congested() and related functions
+      f2fs: replace congestion_wait() calls with io_schedule_timeout()
+      block/bfq-iosched.c: use "false" rather than "BLK_RW_ASYNC"
+      Remove congestion tracking framework.
 
+
+ Documentation/core-api/mm-api.rst |  19 ++++-
+ Documentation/filesystems/vfs.rst |  16 ++--
+ block/bfq-iosched.c               |   2 +-
+ drivers/block/drbd/drbd_int.h     |   3 -
+ drivers/block/drbd/drbd_req.c     |   3 +-
+ fs/ceph/addr.c                    |  22 +++---
+ fs/ceph/super.c                   |   1 +
+ fs/ceph/super.h                   |   1 +
+ fs/ext2/ialloc.c                  |   5 --
+ fs/f2fs/compress.c                |   4 +-
+ fs/f2fs/data.c                    |   3 +-
+ fs/f2fs/f2fs.h                    |   6 ++
+ fs/f2fs/segment.c                 |   8 +-
+ fs/f2fs/super.c                   |   6 +-
+ fs/fs-writeback.c                 |  37 ---------
+ fs/fuse/control.c                 |  17 ----
+ fs/fuse/dev.c                     |   8 --
+ fs/fuse/file.c                    |  17 ++++
+ fs/nfs/write.c                    |  14 +++-
+ fs/nilfs2/segbuf.c                |  15 ----
+ fs/xfs/xfs_buf.c                  |   3 -
+ include/linux/backing-dev-defs.h  |   8 --
+ include/linux/backing-dev.h       |  50 ------------
+ include/linux/fs.h                |   9 ++-
+ include/linux/nfs_fs_sb.h         |   1 +
+ include/trace/events/writeback.h  |  28 -------
+ mm/backing-dev.c                  |  57 --------------
+ mm/fadvise.c                      |   5 +-
+ mm/readahead.c                    | 126 +++++++++++++++++++++++++++---
+ mm/vmscan.c                       |  21 +----
+ 30 files changed, 214 insertions(+), 301 deletions(-)
+
+--
+Signature
 
