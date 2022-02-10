@@ -2,54 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A59704B0547
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Feb 2022 06:39:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04A764B05A4
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Feb 2022 06:44:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234330AbiBJFjP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Feb 2022 00:39:15 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35508 "EHLO
+        id S234286AbiBJFmr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Feb 2022 00:42:47 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:37282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234243AbiBJFiw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Feb 2022 00:38:52 -0500
+        with ESMTP id S234248AbiBJFmU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Feb 2022 00:42:20 -0500
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5061D10CC;
-        Wed,  9 Feb 2022 21:38:54 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1798D2605;
+        Wed,  9 Feb 2022 21:41:27 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D576F1F43F;
-        Thu, 10 Feb 2022 05:38:52 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C3A7D1F441;
+        Thu, 10 Feb 2022 05:41:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1644471532; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1644471685; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Tft3SoinWu7UxepEf8WEuD+UlaGfn26eHEwniJocVAs=;
-        b=AZtdCcwJujZVCHcdXkKOM6szi0SH98wyFfZVUIfLZbgfuKnWcUV9h+nOyBGfZYHb4fgg9q
-        0bzK8zlrysy2kvIK7aPM5QM5vklJlDnFMRJyEFrhh2ywPGPQAZRjcJ0eaWwg/TWCT1jT1c
-        Y7P/mxpVQ0jyTZnT5empOfYlfVQmIKo=
+        bh=QxH/65m79qvzBGSCwVr/N2GJs7ZD/rte4Udz5IqpfIY=;
+        b=YlngNwM4KJ2lCrfzQTHN/A+kGQDElPDMkLDocNPY7oQ5eLtEVmlsbIk/oygnihNW7FrwoJ
+        OmyikymLamTwFDO2ckBNa2bT8juNRxuUtWfpjZIuevpV3ajlt5aWF4ONgPW2kwJOCPqQh4
+        lyIR4s2Uvt8OOUVHuPtfhMrLcUxrb7E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1644471532;
+        s=susede2_ed25519; t=1644471685;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Tft3SoinWu7UxepEf8WEuD+UlaGfn26eHEwniJocVAs=;
-        b=yNiRicVz0d7OW6BOtosPuVbsxI1wCRGRy4fi5NKnYLY2dFaJO1i8uBQffBceecqdSDIthz
-        JkyQL6tOSv8newBg==
+        bh=QxH/65m79qvzBGSCwVr/N2GJs7ZD/rte4Udz5IqpfIY=;
+        b=6n0i9ic8w1i2aZJ9N2rX+fVNb4ZqLqNFRFiTjK1N/idKrQahO5XYfaUQ4n8fWkZ2pi7f30
+        fq+mOgq70ftta4BQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4058513519;
-        Thu, 10 Feb 2022 05:38:44 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0457313519;
+        Thu, 10 Feb 2022 05:41:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id AC9zO+SkBGLMOAAAMHmgww
-        (envelope-from <neilb@suse.de>); Thu, 10 Feb 2022 05:38:44 +0000
-Subject: [PATCH 03/11] MM: improve cleanup when ->readpages doesn't process
- all pages.
+        id z0pPLH2lBGKxOQAAMHmgww
+        (envelope-from <neilb@suse.de>); Thu, 10 Feb 2022 05:41:17 +0000
+Subject: [PATCH 09/11] f2fs: replace congestion_wait() calls with
+ io_schedule_timeout()
 From:   NeilBrown <neilb@suse.de>
 To:     Andrew Morton <akpm@linux-foundation.org>, Jan Kara <jack@suse.cz>,
         Wu Fengguang <fengguang.wu@intel.com>,
@@ -72,7 +72,7 @@ Cc:     linux-doc@vger.kernel.org, linux-mm@kvack.org,
         ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
         linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
 Date:   Thu, 10 Feb 2022 16:37:52 +1100
-Message-ID: <164447147258.23354.15753542879688740872.stgit@noble.brown>
+Message-ID: <164447147263.23354.4653093481289339536.stgit@noble.brown>
 In-Reply-To: <164447124918.23354.17858831070003318849.stgit@noble.brown>
 References: <164447124918.23354.17858831070003318849.stgit@noble.brown>
 User-Agent: StGit/0.23
@@ -89,61 +89,122 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-If ->readpages doesn't process all the pages, then it is best to act as
-though they weren't requested so that a subsequent readahead can try
-again.
-So:
-  - remove any 'ahead' pages from the page cache so they can be loaded
-    with ->readahead() rather then multiple ->read()s
-  - update the file_ra_state to reflect the reads that were actually
-    submitted.
-
-This allows ->readpages() to abort early due e.g.  to congestion, which
-will then allow us to remove the inode_read_congested() test from
-page_Cache_async_ra().
+As congestion is no longer tracked, congestion_wait() is effectively
+equivalent to io_schedule_timeout().
+So introduce f2fs_io_schedule_timeout() which sets TASK_UNINTERRUPTIBLE
+and call that instead.
 
 Signed-off-by: NeilBrown <neilb@suse.de>
 ---
- mm/readahead.c |   19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+ fs/f2fs/compress.c |    4 +---
+ fs/f2fs/data.c     |    3 +--
+ fs/f2fs/f2fs.h     |    6 ++++++
+ fs/f2fs/segment.c  |    8 +++-----
+ fs/f2fs/super.c    |    6 ++----
+ 5 files changed, 13 insertions(+), 14 deletions(-)
 
-diff --git a/mm/readahead.c b/mm/readahead.c
-index c44b2957f59f..35a7ebfcb504 100644
---- a/mm/readahead.c
-+++ b/mm/readahead.c
-@@ -104,7 +104,13 @@
-  * for necessary resources (e.g.  memory or indexing information) to
-  * become available.  Pages in the final ``async_size`` may be
-  * considered less urgent and failure to read them is more acceptable.
-- * They will eventually be read individually using ->readpage().
-+ * In this case it is best to use delete_from_page_cache() to remove the
-+ * pages from the page cache as is automatically done for pages that
-+ * were not fetched with readahead_page().  This will allow a
-+ * subsequent synchronous read ahead request to try them again.  If they
-+ * are left in the page cache, then they will be read individually using
-+ * ->readpage().
-+ *
-  */
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index d0c3aeba5945..2f95559025ad 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -1505,9 +1505,7 @@ static int f2fs_write_raw_pages(struct compress_ctx *cc,
+ 				if (IS_NOQUOTA(cc->inode))
+ 					return 0;
+ 				ret = 0;
+-				cond_resched();
+-				congestion_wait(BLK_RW_ASYNC,
+-						DEFAULT_IO_TIMEOUT);
++				f2fs_io_schedule_timeout(DEFAULT_IO_TIMEOUT);
+ 				goto retry_write;
+ 			}
+ 			return ret;
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 8c417864c66a..d428ddfd42ee 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -3047,8 +3047,7 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
+ 				} else if (ret == -EAGAIN) {
+ 					ret = 0;
+ 					if (wbc->sync_mode == WB_SYNC_ALL) {
+-						cond_resched();
+-						congestion_wait(BLK_RW_ASYNC,
++						f2fs_io_schedule_timeout(
+ 							DEFAULT_IO_TIMEOUT);
+ 						goto retry_write;
+ 					}
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 68b44015514f..467f5dbdc7d1 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -4426,6 +4426,12 @@ static inline bool f2fs_block_unit_discard(struct f2fs_sb_info *sbi)
+ 	return F2FS_OPTION(sbi).discard_unit == DISCARD_UNIT_BLOCK;
+ }
  
- #include <linux/kernel.h>
-@@ -226,8 +232,17 @@ static void read_pages(struct readahead_control *rac, struct list_head *pages,
++static inline void f2fs_io_schedule_timeout(long timeout)
++{
++	set_current_state(TASK_UNINTERRUPTIBLE);
++	io_schedule_timeout(timeout);
++}
++
+ #define EFSBADCRC	EBADMSG		/* Bad CRC detected */
+ #define EFSCORRUPTED	EUCLEAN		/* Filesystem is corrupted */
  
- 	if (aops->readahead) {
- 		aops->readahead(rac);
--		/* Clean up the remaining pages */
-+		/*
-+		 * Clean up the remaining pages.  The sizes in ->ra
-+		 * maybe be used to size next read-ahead, so make sure
-+		 * they accurately reflect what happened.
-+		 */
- 		while ((page = readahead_page(rac))) {
-+			rac->ra->size -= 1;
-+			if (rac->ra->async_size > 0) {
-+				rac->ra->async_size -= 1;
-+				delete_from_page_cache(page);
-+			}
- 			unlock_page(page);
- 			put_page(page);
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index 1dabc8244083..6ff20da44ad7 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -313,8 +313,7 @@ void f2fs_drop_inmem_pages_all(struct f2fs_sb_info *sbi, bool gc_failure)
+ skip:
+ 		iput(inode);
+ 	}
+-	congestion_wait(BLK_RW_ASYNC, DEFAULT_IO_TIMEOUT);
+-	cond_resched();
++	f2fs_io_schedule_timeout(DEFAULT_IO_TIMEOUT);
+ 	if (gc_failure) {
+ 		if (++looped >= count)
+ 			return;
+@@ -803,8 +802,7 @@ int f2fs_flush_device_cache(struct f2fs_sb_info *sbi)
+ 		do {
+ 			ret = __submit_flush_wait(sbi, FDEV(i).bdev);
+ 			if (ret)
+-				congestion_wait(BLK_RW_ASYNC,
+-						DEFAULT_IO_TIMEOUT);
++				f2fs_io_schedule_timeout(DEFAULT_IO_TIMEOUT);
+ 		} while (ret && --count);
+ 
+ 		if (ret) {
+@@ -3133,7 +3131,7 @@ static unsigned int __issue_discard_cmd_range(struct f2fs_sb_info *sbi,
+ 			blk_finish_plug(&plug);
+ 			mutex_unlock(&dcc->cmd_lock);
+ 			trimmed += __wait_all_discard_cmd(sbi, NULL);
+-			congestion_wait(BLK_RW_ASYNC, DEFAULT_IO_TIMEOUT);
++			f2fs_io_schedule_timeout(DEFAULT_IO_TIMEOUT);
+ 			goto next;
  		}
+ skip:
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index baefd398ec1a..ebd32daf052c 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -2135,8 +2135,7 @@ static void f2fs_enable_checkpoint(struct f2fs_sb_info *sbi)
+ 	/* we should flush all the data to keep data consistency */
+ 	do {
+ 		sync_inodes_sb(sbi->sb);
+-		cond_resched();
+-		congestion_wait(BLK_RW_ASYNC, DEFAULT_IO_TIMEOUT);
++		f2fs_io_schedule_timeout(DEFAULT_IO_TIMEOUT);
+ 	} while (get_pages(sbi, F2FS_DIRTY_DATA) && retry--);
+ 
+ 	if (unlikely(retry < 0))
+@@ -2504,8 +2503,7 @@ static ssize_t f2fs_quota_write(struct super_block *sb, int type,
+ 							&page, &fsdata);
+ 		if (unlikely(err)) {
+ 			if (err == -ENOMEM) {
+-				congestion_wait(BLK_RW_ASYNC,
+-						DEFAULT_IO_TIMEOUT);
++				f2fs_io_schedule_timeout(DEFAULT_IO_TIMEOUT);
+ 				goto retry;
+ 			}
+ 			set_sbi_flag(F2FS_SB(sb), SBI_QUOTA_NEED_REPAIR);
 
 
