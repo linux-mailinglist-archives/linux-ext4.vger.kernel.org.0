@@ -2,59 +2,76 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE904B1113
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Feb 2022 15:58:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 287CB4B11CF
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Feb 2022 16:37:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243279AbiBJO5O (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Feb 2022 09:57:14 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42404 "EHLO
+        id S243688AbiBJPha (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Feb 2022 10:37:30 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240998AbiBJO5O (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Feb 2022 09:57:14 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2714496;
-        Thu, 10 Feb 2022 06:57:15 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B5AAD61AEA;
-        Thu, 10 Feb 2022 14:57:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 288EBC004E1;
-        Thu, 10 Feb 2022 14:57:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644505034;
-        bh=DYAxKhfO1WMabdPDfP4WWBxwZceNtLPv6VgxeeFlY6o=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=I5V19VR2bvps0s4U0VS5tAlDhdst0iJNEVbBrb6HXsxsepFpZe5/lJPxjnVuJGPE5
-         pgAVNc3svWvoZAlxrqNBw3FP9cknIHJ6MNzZTwSAY1gQKYiSFgOmPIwQebifqRcwQ2
-         WOLx5EVl++mKN0dE6+CU79lru3lwD7LFaBlLRe2KYmBdzx0SwF391dMvK/mBhJnvqQ
-         QBgOjYnwSm+a2aUoHRXobMh+P98MkLz0CJEA1BJX7wtHgMdPNesHgQmchMEvYNleIX
-         ZmpdnPZUKmyOWIqcjNybhd46UqYHUp1jiyN9fFKGDF/4NV+ywZAlkcqTMIRy66AhLB
-         RZobNCgKgZbyA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id EF0825C0388; Thu, 10 Feb 2022 06:57:13 -0800 (PST)
-Date:   Thu, 10 Feb 2022 06:57:13 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Qian Cai <quic_qiancai@quicinc.com>, Theodore Ts'o <tytso@mit.edu>,
-        Jan Kara <jack@suse.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boqun Feng <boqun.feng@gmail.com>, linux-ext4@vger.kernel.org,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] jbd2: avoid __GFP_ZERO with SLAB_TYPESAFE_BY_RCU
-Message-ID: <20220210145713.GK4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220209165742.5659-1-quic_qiancai@quicinc.com>
- <20220209181010.gfn66rvip56i54df@quack3.lan>
- <20220209201137.GY4285@paulmck-ThinkPad-P17-Gen-1>
- <20220210091648.w5wie3llqri5kfw3@quack3.lan>
+        with ESMTP id S243682AbiBJPha (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Feb 2022 10:37:30 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36FD11DF
+        for <linux-ext4@vger.kernel.org>; Thu, 10 Feb 2022 07:37:31 -0800 (PST)
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21AEXVaI020239;
+        Thu, 10 Feb 2022 15:37:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=f3B4ZvNaKIwmMO8CazSSskOkrvRDQ4idk6gBrxGOO2o=;
+ b=p5PtizEuI2bKF0i0XPGxHS4Z7TdhBnOuYmGZ5a4IJocJZT+ZjhL3sclC0ka8Lab+01ye
+ 4lcxKINvKjWJE4d1GeIw5cX6+cs+CNCjAzSSdqMnAeLLwOIxTqYWjMebTl4iiUdHNvkk
+ 8O4KQj5BNZBeqYR1TJmdEcr4WAqg0b7KcGZalH4onmDJTT+iejGOO8Hj4aT1pBqqsqog
+ RQrkOFZyGK/TXRp94Ek8oV7EC+NkFTKUOqMoLZDc4ITiHXBy3e3JjP1p/zYaAbebd1fH
+ ffEalixicMoX8cd1aRFlrD/GCJpqOJNwWNW2kNJFzvLJt4yvIp1sQlMHWA4lE1If4/9C Eg== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3e4vmcnmyp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Feb 2022 15:37:27 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21AFI2Pl019658;
+        Thu, 10 Feb 2022 15:37:24 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06ams.nl.ibm.com with ESMTP id 3e1ggkhqw6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Feb 2022 15:37:24 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21AFbMiL44433838
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Feb 2022 15:37:22 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3F5ADAE051;
+        Thu, 10 Feb 2022 15:37:22 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C3C97AE04D;
+        Thu, 10 Feb 2022 15:37:21 +0000 (GMT)
+Received: from localhost (unknown [9.43.74.163])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 10 Feb 2022 15:37:21 +0000 (GMT)
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     Jan Kara <jack@suse.cz>, Ritesh Harjani <riteshh@linux.ibm.com>,
+        syzbot+afa2ca5171d93e44b348@syzkaller.appspotmail.com
+Subject: [PATCH] jbd2: Fix use-after-free of transaction_t race
+Date:   Thu, 10 Feb 2022 21:07:11 +0530
+Message-Id: <948c2fed518ae739db6a8f7f83f1d58b504f87d0.1644497105.git.ritesh.list@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220210091648.w5wie3llqri5kfw3@quack3.lan>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 34Ti7LGdlnW3tgCSLJyigcBhLU08e1C2
+X-Proofpoint-ORIG-GUID: 34Ti7LGdlnW3tgCSLJyigcBhLU08e1C2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-10_07,2022-02-09_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 adultscore=0 phishscore=0 clxscore=1015 spamscore=0
+ mlxlogscore=992 malwarescore=0 lowpriorityscore=0 suspectscore=0
+ impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202100083
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -63,102 +80,86 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Feb 10, 2022 at 10:16:48AM +0100, Jan Kara wrote:
-> On Wed 09-02-22 12:11:37, Paul E. McKenney wrote:
-> > On Wed, Feb 09, 2022 at 07:10:10PM +0100, Jan Kara wrote:
-> > > On Wed 09-02-22 11:57:42, Qian Cai wrote:
-> > > > Since the linux-next commit 120aa5e57479 (mm: Check for
-> > > > SLAB_TYPESAFE_BY_RCU and __GFP_ZERO slab allocation), we will get a
-> > > > boot warning. Avoid it by calling synchronize_rcu() before the zeroing.
-> > > > 
-> > > > Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
-> > > 
-> > > No, the performance impact of this would be just horrible. Can you
-> > > ellaborate a bit why SLAB_TYPESAFE_BY_RCU + __GFP_ZERO is a problem and why
-> > > synchronize_rcu() would be needed here before the memset() please? I mean
-> > > how is zeroing here any different from the memory just being used?
-> > 
-> > Suppose a reader picks up a pointer to a memory block, then that memory
-> > is freed.  No problem, given that this is a SLAB_TYPESAFE_BY_RCU slab,
-> > so the memory won't be freed while the reader is accessing it.  But while
-> > the reader is in the process of validating the block, it is zeroed.
-> > 
-> > How does the validation step handle this in all cases?
-> > 
-> > If you have a way of handling this, I will of course drop the patch.
-> > And learn something new, which is always a good thing.  ;-)
-> 
-> So I maybe missed something when implementing the usage of journal_heads
-> under RCU but let's have a look. An example of RCU user of journal heads
-> is fs/jbd2/transaction.c:jbd2_write_access_granted(). It does:
-> 
->         rcu_read_lock();
-> 
-> 	// This part fetches journal_head from buffer_head - not related to
-> 	// our slab RCU discussion
-> 
->         if (!buffer_jbd(bh))
->                 goto out;
->         /* This should be bh2jh() but that doesn't work with inline functions */
->         jh = READ_ONCE(bh->b_private);
->         if (!jh)
->                 goto out;
-> 
-> 	// The validation comes here
-> 
->         /* For undo access buffer must have data copied */
->         if (undo && !jh->b_committed_data)
->                 goto out;
+jbd2_journal_wait_updates() is called with j_state_lock held. But if
+there is a commit in progress, then this transaction might get committed
+and freed via jbd2_journal_commit_transaction() ->
+jbd2_journal_free_transaction(), when we release j_state_lock.
+So check for journal->j_running_transaction everytime we release and
+acquire j_state_lock to avoid use-after-free issue.
 
-OK, so if *jh was freed and re-zallocated in the meantime, this test
-should fail.  One concern would be if the zeroing was not at least eight
-bytes at a time, maybe due to overly eager use of fancy SIMD hardware.
-Though perhaps you also do something about ->b_committed_data on
-the free path, the commit-done path, or whatever?  (I do see a
-"jh->b_committed_data = NULL" on what might well be the commit-done path.)
+Fixes: 4f98186848707f53 ("jbd2: refactor wait logic for transaction updates into a common function")
+Reported-and-tested-by: syzbot+afa2ca5171d93e44b348@syzkaller.appspotmail.com
+Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+---
+ fs/jbd2/transaction.c | 41 +++++++++++++++++++++++++----------------
+ 1 file changed, 25 insertions(+), 16 deletions(-)
 
->         if (READ_ONCE(jh->b_transaction) != handle->h_transaction &&
->             READ_ONCE(jh->b_next_transaction) != handle->h_transaction)
->                 goto out;
+diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+index 8e2f8275a253..259e00046a8b 100644
+--- a/fs/jbd2/transaction.c
++++ b/fs/jbd2/transaction.c
+@@ -842,27 +842,38 @@ EXPORT_SYMBOL(jbd2_journal_restart);
+  */
+ void jbd2_journal_wait_updates(journal_t *journal)
+ {
+-	transaction_t *commit_transaction = journal->j_running_transaction;
++	DEFINE_WAIT(wait);
 
-And same with these guys.
+-	if (!commit_transaction)
+-		return;
++	while (1) {
++		/*
++		 * Note that the running transaction can get freed under us if
++		 * this transaction is getting committed in
++		 * jbd2_journal_commit_transaction() ->
++		 * jbd2_journal_free_transaction(). This can only happen when we
++		 * release j_state_lock -> schedule() -> acquire j_state_lock.
++		 * Hence we should everytime retrieve new j_running_transaction
++		 * value (after j_state_lock release acquire cycle), else it may
++		 * lead to use-after-free of old freed transaction.
++		 */
++		transaction_t *transaction = journal->j_running_transaction;
 
-> 	// Then some more checks unrelated to the slab itself.
-> 
->         /*
->          * There are two reasons for the barrier here:
->          * 1) Make sure to fetch b_bh after we did previous checks so that we
->          * detect when jh went through free, realloc, attach to transaction
->          * while we were checking. Paired with implicit barrier in that path.
->          * 2) So that access to bh done after jbd2_write_access_granted()
->          * doesn't get reordered and see inconsistent state of concurrent
->          * do_get_write_access().
->          */
->         smp_mb();
->         if (unlikely(jh->b_bh != bh))
->                 goto out;
-> 
-> 	// If all passed
-> 
-> 	rcu_read_unlock();
-> 	return true;
-> 
-> So if we are going to return true from the function, we know that 'jh' was
-> attached to handle->h_transaction at some point. And when 'jh' was attached
-> to handle->h_transaction, the transaction was holding reference to the 'jh'
-> and our 'handle' holds reference to the transaction so 'jh' could not be
-> freed since that moment. I.e., we are sure our reference to the handle keeps
-> 'jh' alive and we can safely use it.
-> 
-> I don't see how any amount of scribbling over 'jh' could break this
-> validation. But maybe it is just a lack of my imagination :).
+-	spin_lock(&commit_transaction->t_handle_lock);
+-	while (atomic_read(&commit_transaction->t_updates)) {
+-		DEFINE_WAIT(wait);
++		if (!transaction)
++			break;
 
-Regardless of whether you are suffering a lack of imagination, you
-have clearly demonstrated that it is possible to correctly use the
-SLAB_TYPESAFE_BY_RCU flag in conjunction with kmem_cache_alloc(), thus
-demonstrating that I was suffering from a lack of imagination.  ;-)
++		spin_lock(&transaction->t_handle_lock);
+ 		prepare_to_wait(&journal->j_wait_updates, &wait,
+-					TASK_UNINTERRUPTIBLE);
+-		if (atomic_read(&commit_transaction->t_updates)) {
+-			spin_unlock(&commit_transaction->t_handle_lock);
+-			write_unlock(&journal->j_state_lock);
+-			schedule();
+-			write_lock(&journal->j_state_lock);
+-			spin_lock(&commit_transaction->t_handle_lock);
++				TASK_UNINTERRUPTIBLE);
++		if (!atomic_read(&transaction->t_updates)) {
++			spin_unlock(&transaction->t_handle_lock);
++			finish_wait(&journal->j_wait_updates, &wait);
++			break;
+ 		}
++		spin_unlock(&transaction->t_handle_lock);
++		write_unlock(&journal->j_state_lock);
++		schedule();
+ 		finish_wait(&journal->j_wait_updates, &wait);
++		write_lock(&journal->j_state_lock);
+ 	}
+-	spin_unlock(&commit_transaction->t_handle_lock);
+ }
 
-I have therefore reverted my commit.  Please accept my apologies for
-the hassle!
+ /**
+@@ -877,8 +888,6 @@ void jbd2_journal_wait_updates(journal_t *journal)
+  */
+ void jbd2_journal_lock_updates(journal_t *journal)
+ {
+-	DEFINE_WAIT(wait);
+-
+ 	jbd2_might_wait_for_commit(journal);
 
-							Thanx, Paul
+ 	write_lock(&journal->j_state_lock);
+--
+2.31.1
+
