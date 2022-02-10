@@ -2,82 +2,49 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE084B0A69
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Feb 2022 11:18:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F24804B0B60
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Feb 2022 11:50:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239522AbiBJKQl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Feb 2022 05:16:41 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36982 "EHLO
+        id S240212AbiBJKuQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Feb 2022 05:50:16 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239510AbiBJKQl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Feb 2022 05:16:41 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17EC9FD9
-        for <linux-ext4@vger.kernel.org>; Thu, 10 Feb 2022 02:16:39 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id y6-20020a7bc186000000b0037bdc5a531eso876832wmi.0
-        for <linux-ext4@vger.kernel.org>; Thu, 10 Feb 2022 02:16:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=p2L2JMGAHF/fA4cXJq0+NeV9Ap/R7fib8dscPh33vcg=;
-        b=F27+3Ao6twgPUQ/BOE7bCH1y1UIIqmAONzGU3oxFPBf0mAFdO1zuL2KUYM1O++g2kx
-         0QthHn6iinSXUj64X8vvdhOqtR+XWYwn5E/Gw+bJlWic6yenGNohxjvoICKo1CA/v5wh
-         dZGA4pMay8u5aQAVuBZJ9srKDSwgWE/ddXN47oMMFEcWNd53Fe5zwF8cdwre7J051wLF
-         ItDcXZiEPwC7ClNhh568QmdIVrjuPnmTtWwlVTn3hykOQGuNeu6OtXK7BEc5b2gRMv6/
-         7r1aC+tQNy80dt1ZZUiEtUXIHLwa4b8xT03cNBWZKJQJ3w+AQX5CpSGRsTrvE9geY6Nj
-         P3iw==
+        with ESMTP id S240181AbiBJKuQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Feb 2022 05:50:16 -0500
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 082D61006
+        for <linux-ext4@vger.kernel.org>; Thu, 10 Feb 2022 02:50:18 -0800 (PST)
+Received: by mail-il1-f198.google.com with SMTP id f9-20020a92cb49000000b002be1f9405a3so3669088ilq.16
+        for <linux-ext4@vger.kernel.org>; Thu, 10 Feb 2022 02:50:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=p2L2JMGAHF/fA4cXJq0+NeV9Ap/R7fib8dscPh33vcg=;
-        b=22ayBDN1bJDn56iK7Nz5Hvp0hHRAAZAjw736oA3/xgelh7O52Buj9tijOj3Jq1phKd
-         Gv2layabtym9Lal1X2kNwQ3WTGTNsJI4foGOK4Q5KtPPF02EN15vk+QH1ijiNsDBH8yf
-         iPEdwgLoVTv+GSBoSpEriY6xUybX49eJ9AcJlex6gBmqMLnrxasRUh4BW+9eVbpw5nbx
-         T9gEOBOGyIgtB44CuQXH3yLlmMAscURrHka0B1wBEyT/lC/o2H0A0Gnx9lLg7znrcGym
-         HlW6EafMHjgXSM24Ms/H6RALZKGu+fOeu35q1soq1H0M9rOfNW5DgLZbuEq/MFedVWq4
-         I6fw==
-X-Gm-Message-State: AOAM532JY0Rtss9D4wDlq2DZ3lsRJ2mUuykvlaKgLSmTti6lYqnZDCA6
-        ov3d468IsrTDHjOznl1mdaGYoA==
-X-Google-Smtp-Source: ABdhPJyqF2XvTy7u6DWP/6ivautdkeYnX0LG3m5hhXZW9KBraONCYgZP5/iwGcxiCbFl24LtFFh+PA==
-X-Received: by 2002:a05:600c:2058:: with SMTP id p24mr1538504wmg.3.1644488197579;
-        Thu, 10 Feb 2022 02:16:37 -0800 (PST)
-Received: from google.com (cpc155339-bagu17-2-0-cust87.1-3.cable.virginm.net. [86.27.177.88])
-        by smtp.gmail.com with ESMTPSA id y1sm1328053wmi.36.2022.02.10.02.15.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Feb 2022 02:15:55 -0800 (PST)
-Date:   Thu, 10 Feb 2022 10:15:52 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Stable <stable@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Dave Chinner <dchinner@redhat.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Johannes Thumshirn <jth@kernel.org>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        cluster-devel@redhat.com,
-        syzbot+0ed9f769264276638893@syzkaller.appspotmail.com
-Subject: Re: [PATCH 1/1] Revert "iomap: fall back to buffered writes for
- invalidation failures"
-Message-ID: <YgTl2Lm9Vk50WNSj@google.com>
-References: <20220209085243.3136536-1-lee.jones@linaro.org>
- <20220210045911.GF8338@magnolia>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=sxYpZJUZ2c9zNF0g11fgItZpAgYz7w3rafFkaJxtZEQ=;
+        b=gA5ZKVDN82ccL0ecVS/nGL2ew1SYy+F8sA2mZ2zqRPiPqfxxwanAj2XbP8jHDcP7dG
+         AQZSui1z5MXfqcDWAYM5RX5ADw0c42bdh4s9SAUjvSj1hRKUafcG4KmMFHuC6zpT3L7U
+         RlJiCt6iKIPpQ5Vu6dMhzUCBdcpMOdOIDER6e302TIiAiEJpNWTDLuSQUp1DVjUP7Er7
+         zX7iI3Fvj0eMP8DQI/VDPOKgg+Jut63qN95xYI3t2NluhrO7vJFh1S7lVmECwt4U2bZF
+         j4XR9ejEbXWs51+8Qm1pR3sQoVK2rFqMDOsyEJ28IFoXMEsbN/8cGVWYMsXbh7jQin5M
+         0/Hw==
+X-Gm-Message-State: AOAM530v5AcY4Jq/1XGMzvjreI40Yuoqk7Avyo0ZCCipZXgCriSOggMp
+        /Lsd7hnM/K5oMjCrqXjNjwFdQTqUHO01Tpeuoz6GspKhgbRB
+X-Google-Smtp-Source: ABdhPJzDPwxNgGEw7MSf2dUinV4AhG1lZH2BM4eClEPzLE93HkKhYeXKN5whaoqHy9jESUgvFBAgh+EYiT8naivCOjHaQBhUIyma
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220210045911.GF8338@magnolia>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-Received: by 2002:a6b:7219:: with SMTP id n25mr3519606ioc.12.1644490217356;
+ Thu, 10 Feb 2022 02:50:17 -0800 (PST)
+Date:   Thu, 10 Feb 2022 02:50:17 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003e009a05d7a7b77f@google.com>
+Subject: [syzbot] KCSAN: data-race in copy_page_to_iter / strncpy (4)
+From:   syzbot <syzbot+88a9b535e28311efdcd4@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,101 +52,74 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 09 Feb 2022, Darrick J. Wong wrote:
+Hello,
 
-> On Wed, Feb 09, 2022 at 08:52:43AM +0000, Lee Jones wrote:
-> > This reverts commit 60263d5889e6dc5987dc51b801be4955ff2e4aa7.
-> > 
-> > Reverting since this commit opens a potential avenue for abuse.
-> 
-> What kind of abuse?  Did you conclude there's an avenue solely because
-> some combination of userspace rigging produced a BUG warning?  Or is
-> this a real problem that someone found?
+syzbot found the following issue on:
 
-Genuine question: Is the ability for userspace to crash the kernel
-not enough to cause concern?  I would have thought that we'd want to
-prevent this.
+HEAD commit:    e6251ab4551f Merge tag 'nfs-for-5.17-2' of git://git.linux..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=109133b4700000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1dcc3374da7c1f7c
+dashboard link: https://syzkaller.appspot.com/bug?extid=88a9b535e28311efdcd4
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
 
-If by 'real problem' you mean; privilege escalation, memory corruption
-or data leakage, then no, I haven't found any evidence of that.
-However, that's not to say these aren't possible as a result of this
-issue, just that I do not have the skills or knowledge to be able to
-turn this into a demonstrable attack vector.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-However, if you say there is no issue, I'm happy to take your word.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+88a9b535e28311efdcd4@syzkaller.appspotmail.com
 
-> > The C-reproducer and more information can be found at the link below.
-> 
-> No.  Post the information and your analysis here.  I'm not going to dig
-> into some Google site to find out what happened, and I'm not going to
-> assume that future developers will be able to access that URL to learn
-> why this patch was created.
+==================================================================
+BUG: KCSAN: data-race in copy_page_to_iter / strncpy
 
-The link provided doesn't contain any further analysis.  Only the
-reproducer and kernel configuration used, which are both too large to
-enter into a Git commit.
+write to 0xffff888108b1b488 of 1 bytes by task 16090 on cpu 1:
+ strncpy+0xcf/0x150 lib/string.c:114
+ ext4_sample_last_mounted fs/ext4/file.c:828 [inline]
+ ext4_file_open+0x3a6/0x4e0 fs/ext4/file.c:847
+ do_dentry_open+0x52c/0x860 fs/open.c:824
+ vfs_open+0x43/0x50 fs/open.c:959
+ do_open fs/namei.c:3476 [inline]
+ path_openat+0x170c/0x1f30 fs/namei.c:3609
+ do_filp_open+0x105/0x220 fs/namei.c:3636
+ do_sys_openat2+0xb5/0x2b0 fs/open.c:1214
+ do_sys_open fs/open.c:1230 [inline]
+ __do_sys_open fs/open.c:1238 [inline]
+ __se_sys_open fs/open.c:1234 [inline]
+ __x64_sys_open+0xe2/0x110 fs/open.c:1234
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-> >   kernel BUG at fs/ext4/inode.c:2647!
-> >   invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-> >   CPU: 0 PID: 459 Comm: syz-executor359 Tainted: G        W         5.10.93-syzkaller-01028-g0347b1658399 #0
-> 
-> What BUG on fs/ext4/inode.c:2647?
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/fs/ext4/inode.c?h=v5.10.93#n2647
-> 
-> All I see is a call to pagevec_release()?  There's a BUG_ON further up
-> if we wait for page writeback but then it still has Writeback set.  But
-> I don't see anything in pagevec_release that would actually result in a
-> BUG warning.
+read to 0xffff888108b1b400 of 1024 bytes by task 10450 on cpu 0:
+ instrument_copy_to_user include/linux/instrumented.h:119 [inline]
+ copyout lib/iov_iter.c:154 [inline]
+ copy_page_to_iter_iovec lib/iov_iter.c:226 [inline]
+ __copy_page_to_iter lib/iov_iter.c:850 [inline]
+ copy_page_to_iter+0x2cb/0x950 lib/iov_iter.c:878
+ copy_folio_to_iter include/linux/uio.h:153 [inline]
+ filemap_read+0x1126/0x1430 mm/filemap.c:2727
+ blkdev_read_iter+0x2cc/0x380 block/fops.c:614
+ call_read_iter include/linux/fs.h:2068 [inline]
+ new_sync_read fs/read_write.c:400 [inline]
+ vfs_read+0x66c/0x750 fs/read_write.c:481
+ ksys_read+0xd9/0x190 fs/read_write.c:619
+ __do_sys_read fs/read_write.c:629 [inline]
+ __se_sys_read fs/read_write.c:627 [inline]
+ __x64_sys_read+0x3e/0x50 fs/read_write.c:627
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Right, this BUG back-trace was taken from the kernel I received the
-bug report for.  I should have used the one I triggered in Mainline,
-apologies for that.
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 0 PID: 10450 Comm: udevd Not tainted 5.17.0-rc3-syzkaller-00029-ge6251ab4551f-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+==================================================================
+I/O error, dev loop2, sector 0 op 0x0:(READ) flags 0x80700 phys_seg 1 prio class 0
 
-The real source of the BUG is in the inlined call to page_buffers().
 
-Here is the link for the latest release kernel:
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/fs/ext4/inode.c?h=v5.16#n2620
-
-#define page_buffers(page)                                      \
-        ({                                                      \
-                BUG_ON(!PagePrivate(page));                     \
-                ((struct buffer_head *)page_private(page));     \
-        })
-
-> Oh, right, this is one of those inscrutable syzkaller things, where a
-> person can spend hours figuring out what the hell it set up.
-
-A link to the config used (again too big to enter into a commit
-message), can be easily sourced from the link provided.
-
-> Yeah...no, you don't get to submit patches to core kernel code, claim
-> it's not your responsibility to know anything about a subsystem that you
-> want to patch, and then expect us to do the work for you.  If you pick
-> up a syzkaller report, you get to figure out what broke, why, and how to
-> fix it in a reasonable manner.
-> 
-> You're a maintainer, would you accept a patch like this?
-
-No.  I would share my knowledge to provide a helpful review and work
-with the contributor to find a solution (if applicable).
-
-> OH WAIT, you're running this on the Android 5.10 kernel, aren't you?
-> The BUG report came from page_buffers failing to find any buffer heads
-> attached to the page.
-> https://android.googlesource.com/kernel/common/+/refs/heads/android12-5.10-2022-02/fs/ext4/inode.c#2647
-
-Yes, the H/W I have to prototype these on is a phone and the report
-that came in was specifically built against the aforementioned
-kernel.
-
-> Yeah, don't care.
-
-"There is nothing to worry about, as it's intended behaviour"?
-
--- 
-Lee Jones [李琼斯]
-Principal Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
