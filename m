@@ -2,215 +2,270 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 355564B198E
-	for <lists+linux-ext4@lfdr.de>; Fri, 11 Feb 2022 00:35:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2BA24B19AD
+	for <lists+linux-ext4@lfdr.de>; Fri, 11 Feb 2022 00:41:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345713AbiBJXfa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Feb 2022 18:35:30 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44696 "EHLO
+        id S1345759AbiBJXlY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Feb 2022 18:41:24 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:48346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231627AbiBJXfa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Feb 2022 18:35:30 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ADAF5F64;
-        Thu, 10 Feb 2022 15:35:30 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id CEFCF21126;
-        Thu, 10 Feb 2022 23:35:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1644536128; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=o2Yicem2YyHeYev4jh35sFR/3S6yxP16YJIZJw/2u2E=;
-        b=IRejTp/lbCDisc33iEc4E7PVz/okwunBODuHyI/b85cHeu50KxfVz4Lm1ulBn16HHIvtlA
-        ybEwfsOogFOgpBDauYwGb+Akw4qrm8puoflgsBEzORq8jfHdN6f4ykyJ3bj8AO7gbIdRoY
-        JxHa2lsbMPUq7RCvp7L2aTnG70bRko0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1644536128;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=o2Yicem2YyHeYev4jh35sFR/3S6yxP16YJIZJw/2u2E=;
-        b=akwWvp114tx/QzY8BBRxePKACalrKHFoVw/bZPcO2rBeEBJtdQRh+pMHD3FVXfuxr+1IuH
-        CB/Fb6z1JJ/iymCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4AE5C13C55;
-        Thu, 10 Feb 2022 23:35:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id eHQaAjihBWKSUAAAMHmgww
-        (envelope-from <neilb@suse.de>); Thu, 10 Feb 2022 23:35:20 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        with ESMTP id S1345795AbiBJXlX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Feb 2022 18:41:23 -0500
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2050.outbound.protection.outlook.com [40.107.243.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E3C5F72;
+        Thu, 10 Feb 2022 15:41:20 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YJV60lBE4e69NXJgK6CVz3vhGbhRhPGG2y4kTEDfo+vR6ZabXJczbLSmBcfowc6fZG2KjbMgso/Gr/PXs8ZU1QmqLRJSKjKxuEEfN7e4+SL5yaQUPahbTnKnMhcPYMBpMJB87Lne0dXy5CA8ovSdPAGKNl69RlAzzFZm+sB0Cmixwf6+lZvlOZaXJTWCXm9+jev7NhCK0MlKqomVkrARsBFJsGpp54jqAAif+kzo0j9Owj1Eaunm9ZtKwzQFWB1xu6HyIWglLD0HV8HJeLs2kLlphLGLsoHBlQhrEYrg7ONbUrj21f176Ee/EETuu48n61VYm0wLC723D4FnW5fLUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2+8KdbZKYBF8Be+CMwXZ0qBJPfP9sEca8pm7JJU7UhA=;
+ b=l+1fSIL9sykquceQQnRPLmGT80XvOLDDO+9G3ek+qOrzH/gp3hVhnmOVEmrC3Et13YM7qd6ZgOSWlFUQcRE5EEgq6o4HPlcncz/tZahg9nmWP0+7vA8FJqu2fd0HDlBahTDvDm9VmeRnXZRjYzYdq1OSnlD4KEWNsSNs4WESWsOmlwd+8j9T0G+6No6uC35EVJLmIhHe987Z+yf+n7L0WE58Lgh5H61NxQ6Z+Xqd0QyEhl6xOD+TglxAoV+m6FrjGLZwdID4w5tENGbGGb7RpKBtGd8xZnYyMgYdwuthJ7jquV+OdlML6AusOZBOn8+obQHz8+r9zNZadsYbk8vEpg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 12.22.5.234) smtp.rcpttodomain=lst.de smtp.mailfrom=nvidia.com; dmarc=pass
+ (p=reject sp=reject pct=100) action=none header.from=nvidia.com; dkim=none
+ (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2+8KdbZKYBF8Be+CMwXZ0qBJPfP9sEca8pm7JJU7UhA=;
+ b=sxQFb1B+yRGfaGgosFf7SQ/UOnAD4A7YCetXcAKJ+t6C90pURTWus6TQpM+2EwpwSee6NSzWZG/jHQ7UtI3Wzv865uwRWGFji3AgnknQr0LVtuOXQK8c+KuZcCOriQG99BCm9cCsbnJo8Xg2XiA5RFcBr/PAPVYRZCVcbiPvYDPgtl1euL03NxKtCjrP1M3li//hUZB0S+MiQaD+kQzw0Z6AbCnY/DWHDhQDW8shr4WYNceZ5dbRSaSzmYL2XAMXbIgEMxUnu9l7+NC3HZIHGAHAn+UjEWoXt/G+OKoSuIhPQxENInNExQ16FnoWbvQQvxzg6TK3IVurlMzcGIIR5Q==
+Received: from BN0PR04CA0076.namprd04.prod.outlook.com (2603:10b6:408:ea::21)
+ by DM6PR12MB2908.namprd12.prod.outlook.com (2603:10b6:5:185::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4951.12; Thu, 10 Feb
+ 2022 23:41:18 +0000
+Received: from BN8NAM11FT066.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:ea:cafe::bd) by BN0PR04CA0076.outlook.office365.com
+ (2603:10b6:408:ea::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.14 via Frontend
+ Transport; Thu, 10 Feb 2022 23:41:18 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.234)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 12.22.5.234 as permitted sender) receiver=protection.outlook.com;
+ client-ip=12.22.5.234; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (12.22.5.234) by
+ BN8NAM11FT066.mail.protection.outlook.com (10.13.177.138) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4975.11 via Frontend Transport; Thu, 10 Feb 2022 23:41:17 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by DRHQMAIL101.nvidia.com
+ (10.27.9.10) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 10 Feb
+ 2022 23:41:11 +0000
+Received: from nvdebian.localnet (10.126.230.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.9; Thu, 10 Feb 2022
+ 15:41:07 -0800
+From:   Alistair Popple <apopple@nvidia.com>
+To:     <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        David Hildenbrand <david@redhat.com>
+CC:     <Felix.Kuehling@amd.com>, <rcampbell@nvidia.com>,
+        <linux-ext4@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
+        <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <hch@lst.de>, <jgg@nvidia.com>, <jglisse@redhat.com>,
+        <willy@infradead.org>, <alex.sierra@amd.com>, <jhubbard@nvidia.com>
+Subject: Re: [PATCH v2 2/3] mm/gup.c: Migrate device coherent pages when pinning instead of failing
+Date:   Fri, 11 Feb 2022 10:41:05 +1100
+Message-ID: <5251686.PpEh1BJ82l@nvdebian>
+In-Reply-To: <fb557284-bcab-6d95-ac60-acd7459e9e80@redhat.com>
+References: <cover.0d3c846b1c6c294e055ff7ebe221fab9964c1436.1644207242.git-series.apopple@nvidia.com> <1894939.704c7Wv018@nvdebian> <fb557284-bcab-6d95-ac60-acd7459e9e80@redhat.com>
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Jan Kara" <jack@suse.cz>
-Cc:     "Andrew Morton" <akpm@linux-foundation.org>,
-        "Jan Kara" <jack@suse.cz>, "Wu Fengguang" <fengguang.wu@intel.com>,
-        "Jaegeuk Kim" <jaegeuk@kernel.org>, "Chao Yu" <chao@kernel.org>,
-        "Jeff Layton" <jlayton@kernel.org>,
-        "Ilya Dryomov" <idryomov@gmail.com>,
-        "Miklos Szeredi" <miklos@szeredi.hu>,
-        "Trond Myklebust" <trond.myklebust@hammerspace.com>,
-        "Anna Schumaker" <anna.schumaker@netapp.com>,
-        "Ryusuke Konishi" <konishi.ryusuke@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "Philipp Reisner" <philipp.reisner@linbit.com>,
-        "Lars Ellenberg" <lars.ellenberg@linbit.com>,
-        "Paolo Valente" <paolo.valente@linaro.org>,
-        "Jens Axboe" <axboe@kernel.dk>, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: [PATCH 02/11] MM: document and polish read-ahead code.
-In-reply-to: <20220210122440.vqth5mwsqtv6vjpq@quack3.lan>
-References: <164447124918.23354.17858831070003318849.stgit@noble.brown>,
- <164447147257.23354.2801426518649016278.stgit@noble.brown>,
- <20220210122440.vqth5mwsqtv6vjpq@quack3.lan>
-Date:   Fri, 11 Feb 2022 10:35:17 +1100
-Message-id: <164453611721.27779.1299851963795418722@noble.neil.brown.name>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [10.126.230.35]
+X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 16a4bd5f-504c-415c-b966-08d9eceed59d
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2908:EE_
+X-Microsoft-Antispam-PRVS: <DM6PR12MB2908AE34AF904ECA76BD5441DF2F9@DM6PR12MB2908.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: f7wouD2riYtPX8E7ommPm+4sskDUXU1K+YsZMo4idADVG/Tj5GhYiliNjcH/xE9Q7W/dJoBWxcQwbaXvBnHalPtrr0lknho1MKDTuqZcbBk19b/hRMDjiPqe+KSDvT+qE+1qll7rYX9vVsS4nPW9YlrZJVh79rUfQnkn/+xRe2xAkTAx9BTxfTbY5QjzzhAK3yu4aDfjyVRUdLfEdCPM9v/HF+VgB5TTB5Mm9aVpe5Kf/zc2MTh1KMv6M/tuLZ0VayoPauZQqv+hgbmD+VZUGXcxuHQpc6Ebm96MFrVYHfNedKcfyxfzhPGiB9vtX0/kTORRKVSuyS1JJdf+ohz8UbZbj4hAFvubkUg0CE9YZ970koOC4I0Cbv/kgEisXEYbr5dMdZNi9awgN+lDQHrj6qXqMCh1pZwKsne/JCy+wuEmNg6ScXA2w4NwGh8OVkQdAIbOiP3wljXBIcn8uaBK/yym8pssOUP3becXsA5aiyXl3oAo248q92sc2Sue9AE5alZDHTEDbdJAdmKW7Wc8WQbSDlt6/e5Sgb3Og7fUBfpP7+T7VCwBjdN6rhSjzXBiJNfqP8c+MtbztOwtoE8J2HV7UBNJiWK/S9sjmAC+i8nBc1D73Hs+KlqH32gr3mXgghRnSlw4bFPOvnsjfzpzGQIphQZiggavup8fAGgwsiDXmxzY7/pxmS6qSiRR5ehJawjN4YbI/zx5L2fJC9IDychkoBr8qCFrFGVqYCmQwK7sxiaiIP0JJuQPbLxE0hDv
+X-Forefront-Antispam-Report: CIP:12.22.5.234;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:mail.nvidia.com;PTR:InfoNoRecords;CAT:NONE;SFS:(13230001)(4636009)(40470700004)(46966006)(36840700001)(26005)(186003)(81166007)(5660300002)(2906002)(336012)(316002)(16526019)(426003)(40460700003)(7416002)(36860700001)(107886003)(54906003)(110136005)(9686003)(70206006)(53546011)(70586007)(47076005)(83380400001)(4326008)(8936002)(8676002)(33716001)(356005)(9576002)(508600001)(82310400004)(86362001)(39026012)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2022 23:41:17.8172
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 16a4bd5f-504c-415c-b966-08d9eceed59d
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[12.22.5.234];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT066.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2908
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 10 Feb 2022, Jan Kara wrote:
-> Hi Neil!
-> 
-> On Thu 10-02-22 16:37:52, NeilBrown wrote:
-> > Add some "big-picture" documentation for read-ahead and polish the code
-> > to make it fit this documentation.
+On Thursday, 10 February 2022 10:47:35 PM AEDT David Hildenbrand wrote:
+> On 10.02.22 12:39, Alistair Popple wrote:
+> > On Thursday, 10 February 2022 9:53:38 PM AEDT David Hildenbrand wrote:
+> >> On 07.02.22 05:26, Alistair Popple wrote:
+> >>> Currently any attempts to pin a device coherent page will fail. This is
+> >>> because device coherent pages need to be managed by a device driver, and
+> >>> pinning them would prevent a driver from migrating them off the device.
+> >>>
+> >>> However this is no reason to fail pinning of these pages. These are
+> >>> coherent and accessible from the CPU so can be migrated just like
+> >>> pinning ZONE_MOVABLE pages. So instead of failing all attempts to pin
+> >>> them first try migrating them out of ZONE_DEVICE.
+> >>>
+> >>> Signed-off-by: Alistair Popple <apopple@nvidia.com>
+> >>> Acked-by: Felix Kuehling <Felix.Kuehling@amd.com>
+> >>> ---
+> >>>
+> >>> Changes for v2:
+> >>>
+> >>>  - Added Felix's Acked-by
+> >>>  - Fixed missing check for dpage == NULL
+> >>>
+> >>>  mm/gup.c | 105 ++++++++++++++++++++++++++++++++++++++++++++++++++------
+> >>>  1 file changed, 95 insertions(+), 10 deletions(-)
+> >>>
+> >>> diff --git a/mm/gup.c b/mm/gup.c
+> >>> index 56d9577..5e826db 100644
+> >>> --- a/mm/gup.c
+> >>> +++ b/mm/gup.c
+> >>> @@ -1861,6 +1861,60 @@ struct page *get_dump_page(unsigned long addr)
+> >>>  
+> >>>  #ifdef CONFIG_MIGRATION
+> >>>  /*
+> >>> + * Migrates a device coherent page back to normal memory. Caller should have a
+> >>> + * reference on page which will be copied to the new page if migration is
+> >>> + * successful or dropped on failure.
+> >>> + */
+> >>> +static struct page *migrate_device_page(struct page *page,
+> >>> +					unsigned int gup_flags)
+> >>> +{
+> >>> +	struct page *dpage;
+> >>> +	struct migrate_vma args;
+> >>> +	unsigned long src_pfn, dst_pfn = 0;
+> >>> +
+> >>> +	lock_page(page);
+> >>> +	src_pfn = migrate_pfn(page_to_pfn(page)) | MIGRATE_PFN_MIGRATE;
+> >>> +	args.src = &src_pfn;
+> >>> +	args.dst = &dst_pfn;
+> >>> +	args.cpages = 1;
+> >>> +	args.npages = 1;
+> >>> +	args.vma = NULL;
+> >>> +	migrate_vma_setup(&args);
+> >>> +	if (!(src_pfn & MIGRATE_PFN_MIGRATE))
+> >>> +		return NULL;
+> >>> +
+> >>> +	dpage = alloc_pages(GFP_USER | __GFP_NOWARN, 0);
+> >>> +
+> >>> +	/*
+> >>> +	 * get/pin the new page now so we don't have to retry gup after
+> >>> +	 * migrating. We already have a reference so this should never fail.
+> >>> +	 */
+> >>> +	if (dpage && WARN_ON_ONCE(!try_grab_page(dpage, gup_flags))) {
+> >>> +		__free_pages(dpage, 0);
+> >>> +		dpage = NULL;
+> >>> +	}
+> >>> +
+> >>> +	if (dpage) {
+> >>> +		lock_page(dpage);
+> >>> +		dst_pfn = migrate_pfn(page_to_pfn(dpage));
+> >>> +	}
+> >>> +
+> >>> +	migrate_vma_pages(&args);
+> >>> +	if (src_pfn & MIGRATE_PFN_MIGRATE)
+> >>> +		copy_highpage(dpage, page);
+> >>> +	migrate_vma_finalize(&args);
+> >>> +	if (dpage && !(src_pfn & MIGRATE_PFN_MIGRATE)) {
+> >>> +		if (gup_flags & FOLL_PIN)
+> >>> +			unpin_user_page(dpage);
+> >>> +		else
+> >>> +			put_page(dpage);
+> >>> +		dpage = NULL;
+> >>> +	}
+> >>> +
+> >>> +	return dpage;
+> >>> +}
+> >>> +
+> >>> +/*
+> >>>   * Check whether all pages are pinnable, if so return number of pages.  If some
+> >>>   * pages are not pinnable, migrate them, and unpin all pages. Return zero if
+> >>>   * pages were migrated, or if some pages were not successfully isolated.
+> >>> @@ -1888,15 +1942,40 @@ static long check_and_migrate_movable_pages(unsigned long nr_pages,
+> >>>  			continue;
+> >>>  		prev_head = head;
+> >>>  		/*
+> >>> -		 * If we get a movable page, since we are going to be pinning
+> >>> -		 * these entries, try to move them out if possible.
+> >>> +		 * Device coherent pages are managed by a driver and should not
+> >>> +		 * be pinned indefinitely as it prevents the driver moving the
+> >>> +		 * page. So when trying to pin with FOLL_LONGTERM instead try
+> >>> +		 * migrating page out of device memory.
+> >>>  		 */
+> >>>  		if (is_dev_private_or_coherent_page(head)) {
+> >>> +			/*
+> >>> +			 * device private pages will get faulted in during gup
+> >>> +			 * so it shouldn't be possible to see one here.
+> >>> +			 */
+> >>>  			WARN_ON_ONCE(is_device_private_page(head));
+> >>> -			ret = -EFAULT;
+> >>> -			goto unpin_pages;
+> >>> +			WARN_ON_ONCE(PageCompound(head));
+> >>> +
+> >>> +			/*
+> >>> +			 * migration will fail if the page is pinned, so convert
+> >>> +			 * the pin on the source page to a normal reference.
+> >>> +			 */
+> >>> +			if (gup_flags & FOLL_PIN) {
+> >>> +				get_page(head);
+> >>> +				unpin_user_page(head);
+> >>> +			}
+> >>> +
+> >>> +			pages[i] = migrate_device_page(head, gup_flags);
+> >>
+> >> For ordinary migrate_pages(), we'll unpin all pages and return 0 so the
+> >> caller will retry pinning by walking the page tables again.
+> >>
+> >> Why can't we apply the same mechanism here? This "let's avoid another
+> >> walk" looks unnecessary complicated to me, but I might be wrong.
 > > 
-> > The meaning of ->async_size is clarified to match its name.
-> > i.e. Any request to ->readahead() has a sync part and an async part.
-> > The caller will wait for the sync pages to complete, but will not wait
-> > for the async pages.  The first async page is still marked PG_readahead
-
-Thanks for the review!
-
-> 
-> So I don't think this is how the code was meant. My understanding of
-> readahead comes from a comment:
-
-I can't be sure what was "meant" but what I described is very close to
-what the code actually does.
-
-> 
-> /*
->  * On-demand readahead design.
->  *
-> ....
-> 
-> in mm/readahead.c. The ra->size is how many pages should be read.
-> ra->async_size is the "lookahead size" meaning that we should place a
-> marker (PageReadahead) at "ra->size - ra->async_size" to trigger next
-> readahead.
-
-This description of PageReadahead and ->async_size focuses on *what*
-happens, not *why*.  Importantly it doesn't help answer the question "What
-should I set ->async_size to?"
-
-The implication in the code is that when we sequentially access a page
-that was read-ahead (read before it was explicitly requested), we trigger
-more read ahead.  So ->async_size should refer to that part of the
-readahead request which was not explicitly requested.  With that
-understanding, it becomes possible to audit all the places that
-->async_size are set and to see if they make sense.
-
-> 
+> > There's no reason we couldn't. I figured we have the page in the right spot
+> > anyway so it was easy to do, and looking at this rebased on top of Christoph's
+> > ZONE_DEVICE refcount simplification I'm not sure it would be any simpler
+> > anyway.
 > > 
-> > - in try_context_readahead(), the async_sync is set correctly rather
-> >   than being set to 1.  Prior to Commit 2cad40180197 ("readahead: make
-> >   context readahead more conservative") it was set to ra->size which
-> >   is not correct (that implies no sync component).  As this was too
-> >   high and caused problems it was reduced to 1, again incorrect but less
-> >   problematic.  The setting provided with this patch does not restore
-> >   those problems, and is now not arbitrary.
+> > It would remove the call to try_grab_page(), but we'd still have to return an
+> > error on migration failures whilst also ensuring we putback any non-device
+> > pages that may have been isolated. I might have overlooked something though,
+> > so certainly happy for suggestions.
 > 
-> I agree the 1 there looks strange as it effectively discards all the logic
-> handling the lookahead size. I agree with the tweak there but I would do
-> this behavioral change as a separate commit since it can have performance
-> implications.
+> Staring at the code, I was wondering if we could either
 > 
-> > - The calculation of ->async_size in the initial_readahead section of
-> >   ondemand_readahead() now makes sense - it is zero if the chosen
-> >   size does not exceed the requested size.  This means that we will not
-> >   set the PG_readahead flag in this case, but as the requested size
-> >   has not been satisfied we can expect a subsequent read ahead request
-> >   any way.
-> 
-> So I agree that setting of ->async_size to ->size in initial_readahead
-> section does not make great sence but if you look a bit below into readit
-> section, you will notice the ->async_size is overwritten there to something
-> meaninful. So I think the code actually does something sensible, maybe it
-> could be written in a more readable way.
+> * build a second list of device coherent pages to migrate and call a
+>   migrate_device_pages() bulk function
+> * simply use movable_page_list() and teach migrate_pages() how to handle
+>   them.
 
-I'm certainly focusing on making the code look sensible and be
-consistent with the documentation, rather than fixing actual faults in
-behaviour.  Code that makes sense is easier to maintain.
+I did consider that approach. The problem is zone device pages are not LRU
+pages. In particular page->lru is not available to add the page to a list, and
+as an external API and internally migrate_pages() relies heavily on moving
+pages between lists.
 
-I came very close to removing that code after readit: but I agree it
-needs a separate patch and needs more thought.  It looks like a bandaid
-that addressed some specific problem which was probably caused by one of
-the size fields being set "wrongly" earlier.
+> I'd really appreciate as little special casing as possible for the ever
+> growing list of new DEVICE types all over the place. E.g., just staring
+> at fork even before the new device coherent made my head spin.
 
->  
-> > Note that the current function names page_cache_sync_ra() and
-> > page_cache_async_ra() are misleading.  All ra request are partly sync
-> > and partly async, so either part can be empty.
-> 
-> The meaning of these names IMO is:
-> page_cache_sync_ra() - tell readahead that we currently need a page
-> ractl->_index and would prefer req_count pages fetched ahead.
-
-I don't think that is what req_count means.  req_count is the number of
-pages that are needed *now* to satisfy the current read request.
-page_cache_sync_ra() has the job of determining how many more pages (if
-any) to read-ahead to satisfy future requests.  Sometimes it reads
-another req_count - sometimes not.
-
-> 
-> page_cache_async_ra() - called when we hit the lookahead marker to give
-> opportunity to readahead code to prefetch more pages.
-
-Yes, but page_cache_async_ra() is given a req_count which, as above, is
-the number of pages needed to satisfy *this* request.  That wouldn't
-make sense if it was a pure future-readahead request.
-
-In practice, the word "sync" is used to mean "page was missing" and
-"async" here means "PG_readahead was found".  But that isn't what those
-words usually mean.
-
-They both call ondemand_readahead() passing False or True respectively
-to hit_readahead_marker - which makes that meaning clear in the code...
-but it still isn't clear in the name.
-
-> 
-> > A page_cache_sync_ra() request will usually set ->async_size non-zero,
-> > implying it is not all synchronous.
-> > When a non-zero req_count is passed to page_cache_async_ra(), the
-> > implication is that some prefix of the request is synchronous, though
-> > the calculation made there is incorrect - I haven't tried to fix it.
-> > 
-> > Signed-off-by: NeilBrown <neilb@suse.de>
-> 
-> 								Honza
+That's fair. We could pull the checks for device pages out into a self
+contained function (eg. check_and_migrate_device_pages()) called before
+check_and_migrate_movable_pages(). The down side of that is we'd always have an
+extra loop over all the pages just to scan for device pages, but perhaps that's
+not a concern?
 
 
-Thanks,
-NeilBrown
+
