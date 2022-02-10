@@ -2,53 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 061184B0537
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Feb 2022 06:38:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8134E4B056B
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Feb 2022 06:41:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234026AbiBJFig (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Feb 2022 00:38:36 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35132 "EHLO
+        id S234528AbiBJFkK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Feb 2022 00:40:10 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233968AbiBJFie (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Feb 2022 00:38:34 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31FA410D6;
-        Wed,  9 Feb 2022 21:38:30 -0800 (PST)
+        with ESMTP id S234431AbiBJFj7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Feb 2022 00:39:59 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B64FA10C5;
+        Wed,  9 Feb 2022 21:40:01 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 807BD212BF;
-        Thu, 10 Feb 2022 05:38:29 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 70DD91F43D;
+        Thu, 10 Feb 2022 05:40:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1644471509; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1644471600; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TNOQTzqXc1dwn0sxVclyo5qS7TsZyCY45jkw8WmjP7o=;
-        b=auHoL5UkDA+g+STXd2fTFeL3cTfMH9KQgn4il9BORLboaA+LBd59sP0b5doGLioeVsK7jS
-        NShc0YB+A9Hl8fbDJUMCdNeyKFFuCjUVWYjrf+jYzzgjFshprl/gW+8UNyMq+HxYzzky2n
-        Df0gmTbPZ1tSdb71oNen1V3bKLmTvAs=
+        bh=eBfA0J1VAN4vDciFet8kyITCSUUXphOKJM0dbNgQDlg=;
+        b=yqtSqHyxwgEcFQ7tdufVmzaUi5fzX/LrzaAkzdhIXE5cnkTbkkI3ey9uCvPzGq0EJK8rda
+        +E9mWICL33Dcuy7EPilwaTHUIuOW26UmS0BKCDRpVFIaT/aGIr40dAeK5kQwab4f7Y/7nd
+        gFlh18fk9z+J+gUjbfTujF0HzFVklpA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1644471509;
+        s=susede2_ed25519; t=1644471600;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TNOQTzqXc1dwn0sxVclyo5qS7TsZyCY45jkw8WmjP7o=;
-        b=Kanl6OTnMHXJGXAfirc08l5F/NB5YY6FVkspt6BY1Mm/9aCVURAybuHge0yPu9tXIJs/5P
-        A9fVQ05kFoLISgCQ==
+        bh=eBfA0J1VAN4vDciFet8kyITCSUUXphOKJM0dbNgQDlg=;
+        b=CLVBNBE0ot5kjIcVDwlr6NGjjMHQwRokAo5rn1m3cMUkvfX1d7EUuwl81RGB0IMKB7NGBI
+        Q3kdl10ckIPVZ6Cg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C124B13519;
-        Thu, 10 Feb 2022 05:38:21 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2284A13519;
+        Thu, 10 Feb 2022 05:39:52 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id i2fSHs2kBGKsOAAAMHmgww
-        (envelope-from <neilb@suse.de>); Thu, 10 Feb 2022 05:38:21 +0000
-Subject: [PATCH 01/11] DOC: convert 'subsection' to 'section' in gfp.h
+        id zTSyNCilBGIvOQAAMHmgww
+        (envelope-from <neilb@suse.de>); Thu, 10 Feb 2022 05:39:52 +0000
+Subject: [PATCH 06/11] ceph: remove reliance on bdi congestion
 From:   NeilBrown <neilb@suse.de>
 To:     Andrew Morton <akpm@linux-foundation.org>, Jan Kara <jack@suse.cz>,
         Wu Fengguang <fengguang.wu@intel.com>,
@@ -71,7 +71,7 @@ Cc:     linux-doc@vger.kernel.org, linux-mm@kvack.org,
         ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
         linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
 Date:   Thu, 10 Feb 2022 16:37:52 +1100
-Message-ID: <164447147255.23354.3738954641174277133.stgit@noble.brown>
+Message-ID: <164447147260.23354.2337728875894445797.stgit@noble.brown>
 In-Reply-To: <164447124918.23354.17858831070003318849.stgit@noble.brown>
 References: <164447124918.23354.17858831070003318849.stgit@noble.brown>
 User-Agent: StGit/0.23
@@ -88,65 +88,123 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Various DOC: sections in gfp.h have subsection headers (~~~) but the
-place where they are included in mm-api.rst does not have section, only
-chapters.
-So convert to section headers (---) to avoid confusion.  Specifically if
-section are added later in mm-api.rst, an error results.
+The bdi congestion tracking in not widely used and will be removed.
+
+CEPHfs is one of a small number of filesystems that uses it, setting
+just the async (write) congestion flags at what it determines are
+appropriate times.
+
+The only remaining effect of the async flag is to cause (some)
+WB_SYNC_NONE writes to be skipped.
+
+So instead of setting the flag, set an internal flag and change:
+ - .writepages to do nothing if WB_SYNC_NONE and the flag is set
+ - .writepage to return AOP_WRITEPAGE_ACTIVATE if WB_SYNC_NONE
+    and the flag is set.
+
+The writepages change causes a behavioural change in that pageout() can
+now return PAGE_ACTIVATE instead of PAGE_KEEP, so SetPageActive() will
+be called on the page which (I think) wil further delay the next attempt
+at writeout.  This might be a good thing.
 
 Signed-off-by: NeilBrown <neilb@suse.de>
 ---
- include/linux/gfp.h |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ fs/ceph/addr.c  |   22 +++++++++++++---------
+ fs/ceph/super.c |    1 +
+ fs/ceph/super.h |    1 +
+ 3 files changed, 15 insertions(+), 9 deletions(-)
 
-diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-index 80f63c862be5..20f6fbe12993 100644
---- a/include/linux/gfp.h
-+++ b/include/linux/gfp.h
-@@ -79,7 +79,7 @@ struct vm_area_struct;
-  * DOC: Page mobility and placement hints
-  *
-  * Page mobility and placement hints
-- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ * ---------------------------------
-  *
-  * These flags provide hints about how mobile the page is. Pages with similar
-  * mobility are placed within the same pageblocks to minimise problems due
-@@ -112,7 +112,7 @@ struct vm_area_struct;
-  * DOC: Watermark modifiers
-  *
-  * Watermark modifiers -- controls access to emergency reserves
-- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ * ------------------------------------------------------------
-  *
-  * %__GFP_HIGH indicates that the caller is high-priority and that granting
-  * the request is necessary before the system can make forward progress.
-@@ -144,7 +144,7 @@ struct vm_area_struct;
-  * DOC: Reclaim modifiers
-  *
-  * Reclaim modifiers
-- * ~~~~~~~~~~~~~~~~~
-+ * -----------------
-  * Please note that all the following flags are only applicable to sleepable
-  * allocations (e.g. %GFP_NOWAIT and %GFP_ATOMIC will ignore them).
-  *
-@@ -224,7 +224,7 @@ struct vm_area_struct;
-  * DOC: Action modifiers
-  *
-  * Action modifiers
-- * ~~~~~~~~~~~~~~~~
-+ * ----------------
-  *
-  * %__GFP_NOWARN suppresses allocation failure reports.
-  *
-@@ -256,7 +256,7 @@ struct vm_area_struct;
-  * DOC: Useful GFP flag combinations
-  *
-  * Useful GFP flag combinations
-- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ * ----------------------------
-  *
-  * Useful GFP flag combinations that are commonly used. It is recommended
-  * that subsystems start with one of these combinations and then set/clear
+diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
+index c98e5238a1b6..dc7af34640dd 100644
+--- a/fs/ceph/addr.c
++++ b/fs/ceph/addr.c
+@@ -563,7 +563,7 @@ static int writepage_nounlock(struct page *page, struct writeback_control *wbc)
+ 
+ 	if (atomic_long_inc_return(&fsc->writeback_count) >
+ 	    CONGESTION_ON_THRESH(fsc->mount_options->congestion_kb))
+-		set_bdi_congested(inode_to_bdi(inode), BLK_RW_ASYNC);
++		fsc->write_congested = true;
+ 
+ 	req = ceph_osdc_new_request(osdc, &ci->i_layout, ceph_vino(inode), page_off, &len, 0, 1,
+ 				    CEPH_OSD_OP_WRITE, CEPH_OSD_FLAG_WRITE, snapc,
+@@ -623,7 +623,7 @@ static int writepage_nounlock(struct page *page, struct writeback_control *wbc)
+ 
+ 	if (atomic_long_dec_return(&fsc->writeback_count) <
+ 	    CONGESTION_OFF_THRESH(fsc->mount_options->congestion_kb))
+-		clear_bdi_congested(inode_to_bdi(inode), BLK_RW_ASYNC);
++		fsc->write_congested = false;
+ 
+ 	return err;
+ }
+@@ -635,6 +635,10 @@ static int ceph_writepage(struct page *page, struct writeback_control *wbc)
+ 	BUG_ON(!inode);
+ 	ihold(inode);
+ 
++	if (wbc->sync_mode == WB_SYNC_NONE &&
++	    ceph_inode_to_client(inode)->write_congested)
++		return AOP_WRITEPAGE_ACTIVATE;
++
+ 	wait_on_page_fscache(page);
+ 
+ 	err = writepage_nounlock(page, wbc);
+@@ -707,8 +711,7 @@ static void writepages_finish(struct ceph_osd_request *req)
+ 			if (atomic_long_dec_return(&fsc->writeback_count) <
+ 			     CONGESTION_OFF_THRESH(
+ 					fsc->mount_options->congestion_kb))
+-				clear_bdi_congested(inode_to_bdi(inode),
+-						    BLK_RW_ASYNC);
++				fsc->write_congested = false;
+ 
+ 			ceph_put_snap_context(detach_page_private(page));
+ 			end_page_writeback(page);
+@@ -760,6 +763,10 @@ static int ceph_writepages_start(struct address_space *mapping,
+ 	bool done = false;
+ 	bool caching = ceph_is_cache_enabled(inode);
+ 
++	if (wbc->sync_mode == WB_SYNC_NONE &&
++	    fsc->write_congested)
++		return 0;
++
+ 	dout("writepages_start %p (mode=%s)\n", inode,
+ 	     wbc->sync_mode == WB_SYNC_NONE ? "NONE" :
+ 	     (wbc->sync_mode == WB_SYNC_ALL ? "ALL" : "HOLD"));
+@@ -954,11 +961,8 @@ static int ceph_writepages_start(struct address_space *mapping,
+ 
+ 			if (atomic_long_inc_return(&fsc->writeback_count) >
+ 			    CONGESTION_ON_THRESH(
+-				    fsc->mount_options->congestion_kb)) {
+-				set_bdi_congested(inode_to_bdi(inode),
+-						  BLK_RW_ASYNC);
+-			}
+-
++				    fsc->mount_options->congestion_kb))
++				fsc->write_congested = true;
+ 
+ 			pages[locked_pages++] = page;
+ 			pvec.pages[i] = NULL;
+diff --git a/fs/ceph/super.c b/fs/ceph/super.c
+index bf79f369aec6..4a3b77d049c7 100644
+--- a/fs/ceph/super.c
++++ b/fs/ceph/super.c
+@@ -802,6 +802,7 @@ static struct ceph_fs_client *create_fs_client(struct ceph_mount_options *fsopt,
+ 	fsc->have_copy_from2 = true;
+ 
+ 	atomic_long_set(&fsc->writeback_count, 0);
++	fsc->write_congested = false;
+ 
+ 	err = -ENOMEM;
+ 	/*
+diff --git a/fs/ceph/super.h b/fs/ceph/super.h
+index 67f145e1ae7a..0bd97aea2319 100644
+--- a/fs/ceph/super.h
++++ b/fs/ceph/super.h
+@@ -121,6 +121,7 @@ struct ceph_fs_client {
+ 	struct ceph_mds_client *mdsc;
+ 
+ 	atomic_long_t writeback_count;
++	bool write_congested;
+ 
+ 	struct workqueue_struct *inode_wq;
+ 	struct workqueue_struct *cap_wq;
 
 
