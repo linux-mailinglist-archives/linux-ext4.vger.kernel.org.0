@@ -2,447 +2,214 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C404B217E
-	for <lists+linux-ext4@lfdr.de>; Fri, 11 Feb 2022 10:19:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B166E4B2494
+	for <lists+linux-ext4@lfdr.de>; Fri, 11 Feb 2022 12:40:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348287AbiBKJTh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 11 Feb 2022 04:19:37 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60230 "EHLO
+        id S1349515AbiBKLk1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 11 Feb 2022 06:40:27 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345116AbiBKJTg (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Feb 2022 04:19:36 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227EF333;
-        Fri, 11 Feb 2022 01:19:35 -0800 (PST)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Jw7Lv6phRz9rwj;
-        Fri, 11 Feb 2022 17:17:59 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Fri, 11 Feb
- 2022 17:19:32 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>
-CC:     <jaegeuk@kernel.org>, <chao@kernel.org>,
+        with ESMTP id S232547AbiBKLk0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Feb 2022 06:40:26 -0500
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2085.outbound.protection.outlook.com [40.107.92.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9179E9B;
+        Fri, 11 Feb 2022 03:40:24 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VUyyDM5z4h7VhXswr4btj6PhG+P5q5Klk973mzRU02h/4Qwbu0zZ5K+Dgz0S/2ZJTxBI+H8n3rzkNpQSAlC/LLTdyMFNny28sTnxdAGDtzLCyGUALCVcYAgeVAIKVrzMjfuooOSpDYtmFf1HX8reRxezwFN2oPYck0iUmU4rFjtndF1q85N4HFqgjX3T+9atz4vZ4vou5hTShrsAUhbqvNkJ3Igz1Rr0kykFexG5FLj4MmhYEt8+D4yIOKoCzkAUdoM9YjAi0XFSMAWcCN+IOadoCXppk7yZ33McWqiTBn+dQ1rrm7HXdslJrX6n1ZwtzlVYtaAZ6hZYfU/iPACwbA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KhT5YiWLnew0VrPJOfN6l+a/a/WSpiyjWcAkGC3UDEs=;
+ b=TJ8yIvJBhuiIFZyeuIQsOB/VTyqraLy2frS8nEkDqdfwGAawqvXGSzTuuRmTAJ3xEHveiL5A6XWc9Ib4AiR9b1a0MKbMLhDVcpiCcj/AJDDodOj0SZMNMG/QhO/PFoExxGlwU968l8z/cwqhMy3Fu42ThBDrUq0eANFK0wNBHVxD61hR1rudK0+lJwo/ncRUHtCqKvrgZwyu1tLTYKLIDjeQpFrK/PWBFkLVO0V67J77No8FyUj86St7o3+HeeIZMBrgLs/RXIEDYMJ6dvYrUCIhZ84FRgU51re9eBm4rlhjw6PumnM2xNa6PXtptrjzAighb7Z+eyvJPXL6TINMJA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KhT5YiWLnew0VrPJOfN6l+a/a/WSpiyjWcAkGC3UDEs=;
+ b=DNriNoyX58xMGp/o7whwoSj7X3mha7MzgOdkwQ1Z74XYuIQJi4gEiuiRn5z+BNYX8iIqdHoSKXugIeS0SPKDnJuETOFLNlqaoNFLnJE+/aZqWkt0eVNQxM3AMmsyqGVkex6ZBsoJ5wA3wbiCiK1gArfKC8oRNyRf7Q2GZrPyjO0Mg7np/sYJA+XPZU47hwTOmCZ93D1dkHnZl0CMQ3AOhteOssfyoNKIWS7bA+XoM++Cv/Q6KWvmb9+SEWyg3XAHP1afhC9vLGgl7w3Raj0DZuEqq1XUeAdYrX4or0yazTBZx9gCbqp8dfYhNXaNL05LtiIeqeJ5+agV5cTcvcxxnw==
+Received: from MW2PR12MB4667.namprd12.prod.outlook.com (2603:10b6:302:12::28)
+ by MN2PR12MB3199.namprd12.prod.outlook.com (2603:10b6:208:ae::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.12; Fri, 11 Feb
+ 2022 11:40:21 +0000
+Received: from MW2PR12MB4667.namprd12.prod.outlook.com
+ ([fe80::846c:d3cd:5a30:c35]) by MW2PR12MB4667.namprd12.prod.outlook.com
+ ([fe80::846c:d3cd:5a30:c35%5]) with mapi id 15.20.4951.019; Fri, 11 Feb 2022
+ 11:40:21 +0000
+From:   Chaitanya Kulkarni <chaitanyak@nvidia.com>
+To:     Eric Biggers <ebiggers@kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+CC:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
         <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
-        <lczerner@redhat.com>, Ye Bin <yebin10@huawei.com>
-Subject: [PATCH -next v2] ext4:fix file system corrupted when rmdir non empty directory with IO error
-Date:   Fri, 11 Feb 2022 17:35:27 +0800
-Message-ID: <20220211093527.3335518-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 1/7] statx: add I/O alignment information
+Thread-Topic: [RFC PATCH 1/7] statx: add I/O alignment information
+Thread-Index: AQHYHw6MhkvU3aWvQUef3qvKk4R/5KyOOi4A
+Date:   Fri, 11 Feb 2022 11:40:21 +0000
+Message-ID: <1762970b-94b6-1cd0-8ae2-41a5d057f72a@nvidia.com>
+References: <20220211061158.227688-1-ebiggers@kernel.org>
+ <20220211061158.227688-2-ebiggers@kernel.org>
+In-Reply-To: <20220211061158.227688-2-ebiggers@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a67e323c-eb06-4344-dc1e-08d9ed5348e9
+x-ms-traffictypediagnostic: MN2PR12MB3199:EE_
+x-microsoft-antispam-prvs: <MN2PR12MB3199759C4DC6E8EB9CF7A168A3309@MN2PR12MB3199.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2331;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vXdHmGwpFnh7FvGwXqqZgLEl/oP7wzqIxVS3Rc29Kvj3Q8iqqbV7dKWC0TuvI+V1yMxJd8q9AdSPQVboG2EoCOfwCU0iqycUAISKnaaOJvS5NylCg4TMNM9Dxg8tXxYvWbsIdHprwPVW7k6X3EmwE3QzGob+dOBuOmU02zEP4rUjgcgxIBEY7OhwdAHiZO26zEub+5ld3IZNLneNeJbZsjH3AxBT5MFdLY4ozTlYjFPDXtdOPYXPySnNeynjlRpoZTZzjVXmHvbF+WbqtlhKX250059/yNxm6LdIjtR09R8CxriZywIZx6tp0KR7Ql2GviuRXjAxOjg8kxtgBB/h0Qqt/QZy0Md0/2paM9KfKMEo8p6kKqbQEmSj053whmOsQQqk53zawWUJ1gx0WZYitY5i7ErKFLy11I8iQZ95lfwCkhwojXMtv6W/uWYEhXLHNfn8AoZgvmiQfSoLsU8uadGn5Rc0tKiDqSvL0CSLOIWwBbtG//yu5uWPk1TtroaGfas4NBXnHpdEXTDNLAxasQqEvtCBxVctcPfCQhCKDq5onn5kbEeo6uIhOyud0XR640P28mt8aaTaLFFIUenDxxnLAu4PQV0mjDzqOIw3MdhXsJ7trU/6f2axwXN0L5ByZrzbkwf5hAONMnN5mu/pEo8uWe4qPs1trO/Vvcc4qoNjNJLXYdGMhT1gWEwYIJ1ve2ch784eXUlzFc1I8zKuPa3lDaitkkmYLBGSqMG0SGq78FxHlXblmjjt+xQ2ci1GoLgxXTUUZqjaobDgxmacrYpY0JPKlkoplFhX2jBC1kX0Xx03/iykCKvqdHvi5HSDbJ0o1nzVSHZgGwjRiw4zGMFJWuKKqd2eUJ4KMtYlAtZ8QqnlC1CQBzYEL9t7IQaANjdfHwT8K2q9gj7euCzISOUb2+EqKNR20FP8BfrfPd8=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR12MB4667.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(83380400001)(966005)(508600001)(71200400001)(6486002)(36756003)(5660300002)(31686004)(2906002)(64756008)(186003)(66476007)(8676002)(66556008)(4326008)(66946007)(91956017)(110136005)(54906003)(8936002)(316002)(6512007)(122000001)(2616005)(66446008)(38070700005)(76116006)(38100700002)(86362001)(31696002)(6506007)(53546011)(21314003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?QkVKUUY0RkZNTTBSa2tHZnJiUnNoczdXTFNGWDJPTUJzbUxEbCtia2NzL2xW?=
+ =?utf-8?B?dzMra1JmbFM4Y1JIWnRoRXRsMEFqY09Rc3JNQ0RqSmczWTNxRTlNblZsQTN0?=
+ =?utf-8?B?WjdzNHVMSVQyVHB1MkFPUUZYL0lwZVRDVVA4NW8yZk1zVzZsNGVvY1Jac0F1?=
+ =?utf-8?B?LzhIZDJwZXRyYzlpa2owVTk4VGl4THArTTNicGVxTWxXVlFISmh3WEFWYjJQ?=
+ =?utf-8?B?MXQ2M3JyTTRGVkFJWlk1REdDUHB1U1BsSW9DdUhwT3g3cUJWbUpRb2ZxN3px?=
+ =?utf-8?B?SlcwL09OZS9ERjZRa0hjS043N3Y2a3MxelpYWHQ0ejhibzlnbDY5dUxDN1Bs?=
+ =?utf-8?B?U1g2ckUxS3VXS1NuVm1EVDBlWGVqWGN5Y002ejhGVzdwS2V0ZU5QN2gvYkNl?=
+ =?utf-8?B?eThGQXA1RUh0cWxaRG9mZnlVaXJDbjBZR0VHblhleTI5blFGWWYwTTVCWDJI?=
+ =?utf-8?B?QTVNU2tKZEpuWmxFZmYwcndyR011d09pc1BBeTZhWnVJQkJJSkFDOGtJUGxn?=
+ =?utf-8?B?dGpNblgvZG13WXRCRzJmNmlEUFBUSWpDaGdHNGFvQys3djJWVnRpQVg5OEFX?=
+ =?utf-8?B?ZWJEZFBQNVlvMnVQSy8zZ2M5UFZaWk0zaDFBWDNRMENoRU5oUHY1c2d4dkVB?=
+ =?utf-8?B?K1VlcjV2QjlWWmVrSWtReWVaYW92b3dIVXY2Rnd6Z3Z4TGxtaTU3NEVUeHN3?=
+ =?utf-8?B?d2p3NWdONisxN1hMUHJ3S1VmODJodTVqWk9zMzRaNGZERlJnRk8vclNEbnpy?=
+ =?utf-8?B?Z1pSbGp5KzJPNWd3ZmRZeVdpNmpsSzdXYlFVNzVLSWdSM2hMYXB4Q2twYUM2?=
+ =?utf-8?B?dzljeUtndFFMVTZCdGp1UU9FYXdpR2o5YWwxekkyT3VsUkkvZW5yanhjS2xw?=
+ =?utf-8?B?b0I5WEs5cmoyd25LdzlPUkZOejhmdHQ1QW8rbkR4a1VOS3dtV2w1T3FUZG94?=
+ =?utf-8?B?V1dPdGVuQnB1aFN4MjF3RHlveTBxQlRmOGpVRkhQRFZUcEV0Y0w4cVBpNElN?=
+ =?utf-8?B?MHg3YnQ3UHAySG1tU0tNdzJUZnlnYUlvVGhwQkEvS1hxckxPb2RnV1pSK3Fl?=
+ =?utf-8?B?alpyZzBvb05CRnllSTJVdzU5T3hQTnNoa01taGVTek9PQkswbERheFZ2dzJm?=
+ =?utf-8?B?dEdPNU83elpObHJWNzM4dTlvcWJCWkNRNVhaRkpPMW8vYk0ycXMxVTlkcDRC?=
+ =?utf-8?B?UUQrRDZ3R3F4R2dFVWRCWnMyU3BYM3F5NkNnc2dCNytZcjU1bUpCOWZ0d2lR?=
+ =?utf-8?B?N2RrT1ppd3loa2w2SnFwZFQ1TlVvZFRwdVFZRU5wR2lwUFllQmFQS0ZUQzNo?=
+ =?utf-8?B?NVdwVkhMZlBpNStzT1U2OUFNK2oxMzhFNDIrRWhwYkQvNzJGQTk1TzRtdklD?=
+ =?utf-8?B?dE9PbE92YXI5N1lyMmZCWVdyTy9HSEQrM3lhbHhNOUpncXErRTVEM090aDJy?=
+ =?utf-8?B?VWJhMU4vc3N2TTcyT1M4c2MxekltUmJnbXpSM1pNWWJKZTNBZUVsVzN5VWd0?=
+ =?utf-8?B?VXBtOUUxSVNEc21yNEh2eUlKYWh5SnllVGdoekJDNVFNdmtsNWJUcHBscm5q?=
+ =?utf-8?B?TkxaOFBpSE1vdjRrL1RyaVJTWTNQeEZFNEpDNVZleUtRc0xvK2wxS09BOTJ3?=
+ =?utf-8?B?L1pCZHZMdkdiR2ZnK1p0dEZhcGRZczdJczB1eDdna3M2d2VFSVlWdERZdnE2?=
+ =?utf-8?B?S0ZHeEs4eVdoTWNSUWVUUFA4YnBsRzN6RmtBWi9QMjVzamJQaUhMWVltY3ZB?=
+ =?utf-8?B?VWdGTXk1UlJQWXpwNnNXdEg1ZFhXTVgrYWphVU43VUFIS1FkTVRYWEtGdjR4?=
+ =?utf-8?B?dXcyTGNoYUZYVFlTS2hHNFJFTlhlclB6TUR1dGM2Y2dsT3dFdDIzY0loNVk5?=
+ =?utf-8?B?Njk2cHhlSzNzRDk1VWwvMDUwN3NrUmQvQ3JjeGNjRjN4amt5RnNhZVJwWEwy?=
+ =?utf-8?B?TVYzTkY1QTdnNEdOYUNmRm1DZ1N5SzBFaTZkTjlZRW96N3dEemc5RzkrMVZS?=
+ =?utf-8?B?bzgvZ0haMGxMc0ttUHp6cVJMUGlFRXB2SjE4R2MwUkkvU2tkTHdqbnRpYlNG?=
+ =?utf-8?B?VFp2WFR5N1N3dTBSaEpyTS80U0F1OFFoNlBaSlhBb0cvVzZzK2hvWnZFbWEz?=
+ =?utf-8?B?eUN4Q25WVFQydXVVSzlmZ3NuL2J4OFp0T25xMVhrQzhrNkJYcmhWbVJqQTFX?=
+ =?utf-8?Q?s/Ydwois7cqDk2qO8H/cR+/H5OLbmn4KAta49am2T2tf?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <5881397ACD1A9442B7B45570DFB29AB6@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR12MB4667.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a67e323c-eb06-4344-dc1e-08d9ed5348e9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Feb 2022 11:40:21.0208
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: c6YMl99caM+32qkVjLy6gIYGRbnP625QIlDREwGHM2c0CALVeu00Xi+4C0fys25km/a/fJcsWqpvqF5Z8iokbQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3199
+X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,SUSPICIOUS_RECIPS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-We inject IO error when rmdir non empty direcory, then got issue as follows:
-step1: mkfs.ext4 -F /dev/sda
-step2: mount /dev/sda  test
-step3: cd test
-step4: mkdir -p 1/2
-step5: rmdir 1
-	[  110.920551] ext4_empty_dir: inject fault
-	[  110.921926] EXT4-fs warning (device sda): ext4_rmdir:3113: inode #12:
-	comm rmdir: empty directory '1' has too many links (3)
-step6: cd ..
-step7: umount test
-step8: fsck.ext4 -f /dev/sda
-	e2fsck 1.42.9 (28-Dec-2013)
-	Pass 1: Checking inodes, blocks, and sizes
-	Pass 2: Checking directory structure
-	Entry '..' in .../??? (13) has deleted/unused inode 12.  Clear<y>? yes
-	Pass 3: Checking directory connectivity
-	Unconnected directory inode 13 (...)
-	Connect to /lost+found<y>? yes
-	Pass 4: Checking reference counts
-	Inode 13 ref count is 3, should be 2.  Fix<y>? yes
-	Pass 5: Checking group summary information
-
-	/dev/sda: ***** FILE SYSTEM WAS MODIFIED *****
-	/dev/sda: 12/131072 files (0.0% non-contiguous), 26157/524288 blocks
-
-ext4_rmdir
-	if (!ext4_empty_dir(inode))
-		goto end_rmdir;
-ext4_empty_dir
-	bh = ext4_read_dirblock(inode, 0, DIRENT_HTREE);
-	if (IS_ERR(bh))
-		return true;
-Now if read directory block failed, 'ext4_empty_dir' will return true, assume
-directory is empty. Obviously, it will lead to above issue.
-To solve this issue, if read directory block failed 'ext4_empty_dir' just assume
-directory isn't empty. To avoid making things worse when file system is already
-corrupted, 'ext4_empty_dir' also assume directory isn't empty.
-To distinguish the error type, return the exact error code to the caller.
-
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- fs/crypto/policy.c      |  4 +---
- fs/ext4/ext4.h          |  4 ++--
- fs/ext4/inline.c        | 23 +++++++++++------------
- fs/ext4/ioctl.c         |  5 ++---
- fs/ext4/namei.c         | 27 +++++++++++++++------------
- fs/f2fs/dir.c           |  8 ++++----
- fs/f2fs/f2fs.h          |  2 +-
- fs/f2fs/file.c          |  7 +++++--
- fs/f2fs/namei.c         | 10 ++++------
- fs/ubifs/crypto.c       |  4 ++--
- include/linux/fscrypt.h |  2 +-
- 11 files changed, 48 insertions(+), 48 deletions(-)
-
-diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
-index ed3d623724cd..373945022bb6 100644
---- a/fs/crypto/policy.c
-+++ b/fs/crypto/policy.c
-@@ -480,9 +480,7 @@ int fscrypt_ioctl_set_policy(struct file *filp, const void __user *arg)
- 			ret = -ENOTDIR;
- 		else if (IS_DEADDIR(inode))
- 			ret = -ENOENT;
--		else if (!inode->i_sb->s_cop->empty_dir(inode))
--			ret = -ENOTEMPTY;
--		else
-+		else if (!(ret = inode->i_sb->s_cop->empty_dir(inode)))
- 			ret = set_encryption_policy(inode, &policy);
- 	} else if (ret == -EINVAL ||
- 		   (ret == 0 && !fscrypt_policies_equal(&policy,
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index bcd3b9bf8069..e799cc269f7f 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -3087,7 +3087,7 @@ extern int ext4_generic_delete_entry(struct inode *dir,
- 				     void *entry_buf,
- 				     int buf_size,
- 				     int csum_size);
--extern bool ext4_empty_dir(struct inode *inode);
-+extern int ext4_empty_dir(struct inode *inode);
- 
- /* resize.c */
- extern void ext4_kvfree_array_rcu(void *to_free);
-@@ -3623,7 +3623,7 @@ extern int ext4_delete_inline_entry(handle_t *handle,
- 				    struct ext4_dir_entry_2 *de_del,
- 				    struct buffer_head *bh,
- 				    int *has_inline_data);
--extern bool empty_inline_dir(struct inode *dir, int *has_inline_data);
-+extern int empty_inline_dir(struct inode *dir, int *has_inline_data);
- extern struct buffer_head *ext4_get_first_inline_block(struct inode *inode,
- 					struct ext4_dir_entry_2 **parent_de,
- 					int *retval);
-diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index e42941803605..c9b02127ff95 100644
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -1775,22 +1775,22 @@ ext4_get_inline_entry(struct inode *inode,
- 	return (struct ext4_dir_entry_2 *)(inline_pos + offset);
- }
- 
--bool empty_inline_dir(struct inode *dir, int *has_inline_data)
-+int empty_inline_dir(struct inode *dir, int *has_inline_data)
- {
--	int err, inline_size;
-+	int inline_size;
- 	struct ext4_iloc iloc;
- 	size_t inline_len;
- 	void *inline_pos;
- 	unsigned int offset;
- 	struct ext4_dir_entry_2 *de;
--	bool ret = true;
-+	int ret = 0;
- 
--	err = ext4_get_inode_loc(dir, &iloc);
--	if (err) {
--		EXT4_ERROR_INODE_ERR(dir, -err,
-+	ret = ext4_get_inode_loc(dir, &iloc);
-+	if (ret) {
-+		EXT4_ERROR_INODE_ERR(dir, -ret,
- 				     "error %d getting inode %lu block",
--				     err, dir->i_ino);
--		return true;
-+				     ret, dir->i_ino);
-+		return ret;
- 	}
- 
- 	down_read(&EXT4_I(dir)->xattr_sem);
-@@ -1804,7 +1804,7 @@ bool empty_inline_dir(struct inode *dir, int *has_inline_data)
- 		ext4_warning(dir->i_sb,
- 			     "bad inline directory (dir #%lu) - no `..'",
- 			     dir->i_ino);
--		ret = true;
-+		ret = -EFSCORRUPTED;
- 		goto out;
- 	}
- 
-@@ -1823,16 +1823,15 @@ bool empty_inline_dir(struct inode *dir, int *has_inline_data)
- 				     dir->i_ino, le32_to_cpu(de->inode),
- 				     le16_to_cpu(de->rec_len), de->name_len,
- 				     inline_size);
--			ret = true;
-+			ret = -EFSCORRUPTED;
- 			goto out;
- 		}
- 		if (le32_to_cpu(de->inode)) {
--			ret = false;
-+			ret = -ENOTEMPTY;
- 			goto out;
- 		}
- 		offset += ext4_rec_len_from_disk(de->rec_len, inline_size);
- 	}
--
- out:
- 	up_read(&EXT4_I(dir)->xattr_sem);
- 	brelse(iloc.bh);
-diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-index a8022c2c6a58..3845fd554249 100644
---- a/fs/ext4/ioctl.c
-+++ b/fs/ext4/ioctl.c
-@@ -620,10 +620,9 @@ static int ext4_ioctl_setflags(struct inode *inode,
- 			goto flags_out;
- 		}
- 
--		if (!ext4_empty_dir(inode)) {
--			err = -ENOTEMPTY;
-+		err = ext4_empty_dir(inode);
-+		if (err)
- 			goto flags_out;
--		}
- 	}
- 
- 	/*
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 8cf0a924a49b..2862deb374f7 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -2976,8 +2976,11 @@ static int ext4_mkdir(struct user_namespace *mnt_userns, struct inode *dir,
- 
- /*
-  * routine to check that the specified directory is empty (for rmdir)
-+ * return value:
-+ * 0: directory is empty
-+ * <0: error code
-  */
--bool ext4_empty_dir(struct inode *inode)
-+int ext4_empty_dir(struct inode *inode)
- {
- 	unsigned int offset;
- 	struct buffer_head *bh;
-@@ -2997,14 +3000,14 @@ bool ext4_empty_dir(struct inode *inode)
- 	if (inode->i_size < ext4_dir_rec_len(1, NULL) +
- 					ext4_dir_rec_len(2, NULL)) {
- 		EXT4_ERROR_INODE(inode, "invalid size");
--		return true;
-+		return -EFSCORRUPTED;
- 	}
- 	/* The first directory block must not be a hole,
- 	 * so treat it as DIRENT_HTREE
- 	 */
- 	bh = ext4_read_dirblock(inode, 0, DIRENT_HTREE);
- 	if (IS_ERR(bh))
--		return true;
-+		return PTR_ERR(bh);
- 
- 	de = (struct ext4_dir_entry_2 *) bh->b_data;
- 	if (ext4_check_dir_entry(inode, NULL, de, bh, bh->b_data, bh->b_size,
-@@ -3012,7 +3015,7 @@ bool ext4_empty_dir(struct inode *inode)
- 	    le32_to_cpu(de->inode) != inode->i_ino || strcmp(".", de->name)) {
- 		ext4_warning_inode(inode, "directory missing '.'");
- 		brelse(bh);
--		return true;
-+		return -EFSCORRUPTED;
- 	}
- 	offset = ext4_rec_len_from_disk(de->rec_len, sb->s_blocksize);
- 	de = ext4_next_entry(de, sb->s_blocksize);
-@@ -3021,7 +3024,7 @@ bool ext4_empty_dir(struct inode *inode)
- 	    le32_to_cpu(de->inode) == 0 || strcmp("..", de->name)) {
- 		ext4_warning_inode(inode, "directory missing '..'");
- 		brelse(bh);
--		return true;
-+		return -EFSCORRUPTED;
- 	}
- 	offset += ext4_rec_len_from_disk(de->rec_len, sb->s_blocksize);
- 	while (offset < inode->i_size) {
-@@ -3035,7 +3038,7 @@ bool ext4_empty_dir(struct inode *inode)
- 				continue;
- 			}
- 			if (IS_ERR(bh))
--				return true;
-+				return PTR_ERR(bh);
- 		}
- 		de = (struct ext4_dir_entry_2 *) (bh->b_data +
- 					(offset & (sb->s_blocksize - 1)));
-@@ -3046,12 +3049,12 @@ bool ext4_empty_dir(struct inode *inode)
- 		}
- 		if (le32_to_cpu(de->inode)) {
- 			brelse(bh);
--			return false;
-+			return -ENOTEMPTY;
- 		}
- 		offset += ext4_rec_len_from_disk(de->rec_len, sb->s_blocksize);
- 	}
- 	brelse(bh);
--	return true;
-+	return 0;
- }
- 
- static int ext4_rmdir(struct inode *dir, struct dentry *dentry)
-@@ -3087,8 +3090,8 @@ static int ext4_rmdir(struct inode *dir, struct dentry *dentry)
- 	if (le32_to_cpu(de->inode) != inode->i_ino)
- 		goto end_rmdir;
- 
--	retval = -ENOTEMPTY;
--	if (!ext4_empty_dir(inode))
-+	retval = ext4_empty_dir(inode);
-+	if (retval)
- 		goto end_rmdir;
- 
- 	handle = ext4_journal_start(dir, EXT4_HT_DIR,
-@@ -3787,8 +3790,8 @@ static int ext4_rename(struct user_namespace *mnt_userns, struct inode *old_dir,
- 
- 	if (S_ISDIR(old.inode->i_mode)) {
- 		if (new.inode) {
--			retval = -ENOTEMPTY;
--			if (!ext4_empty_dir(new.inode))
-+			retval = ext4_empty_dir(new.inode);
-+			if (retval)
- 				goto end_rename;
- 		} else {
- 			retval = -EMLINK;
-diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-index a0e51937d92e..3de5a1343070 100644
---- a/fs/f2fs/dir.c
-+++ b/fs/f2fs/dir.c
-@@ -953,7 +953,7 @@ void f2fs_delete_entry(struct f2fs_dir_entry *dentry, struct page *page,
- 		f2fs_drop_nlink(dir, inode);
- }
- 
--bool f2fs_empty_dir(struct inode *dir)
-+int f2fs_empty_dir(struct inode *dir)
- {
- 	unsigned long bidx;
- 	struct page *dentry_page;
-@@ -970,7 +970,7 @@ bool f2fs_empty_dir(struct inode *dir)
- 			if (PTR_ERR(dentry_page) == -ENOENT)
- 				continue;
- 			else
--				return false;
-+				return PTR_ERR(dentry_page);
- 		}
- 
- 		dentry_blk = page_address(dentry_page);
-@@ -985,9 +985,9 @@ bool f2fs_empty_dir(struct inode *dir)
- 		f2fs_put_page(dentry_page, 1);
- 
- 		if (bit_pos < NR_DENTRY_IN_BLOCK)
--			return false;
-+			return -ENOTEMPTY;
- 	}
--	return true;
-+	return 0;
- }
- 
- int f2fs_fill_dentries(struct dir_context *ctx, struct f2fs_dentry_ptr *d,
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 5c30a65467e2..09617d7b37fd 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -3465,7 +3465,7 @@ int f2fs_do_add_link(struct inode *dir, const struct qstr *name,
- void f2fs_delete_entry(struct f2fs_dir_entry *dentry, struct page *page,
- 			struct inode *dir, struct inode *inode);
- int f2fs_do_tmpfile(struct inode *inode, struct inode *dir);
--bool f2fs_empty_dir(struct inode *dir);
-+int f2fs_empty_dir(struct inode *dir);
- 
- static inline int f2fs_add_link(struct dentry *dentry, struct inode *inode)
- {
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index cfdc41f87f5d..a3b60d6a58f7 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -1846,10 +1846,13 @@ static int f2fs_setflags_common(struct inode *inode, u32 iflags, u32 mask)
- 		return -EPERM;
- 
- 	if ((iflags ^ masked_flags) & F2FS_CASEFOLD_FL) {
-+		int ret;
-+
- 		if (!f2fs_sb_has_casefold(F2FS_I_SB(inode)))
- 			return -EOPNOTSUPP;
--		if (!f2fs_empty_dir(inode))
--			return -ENOTEMPTY;
-+		ret = f2fs_empty_dir(inode);
-+		if (ret)
-+			return ret;
- 	}
- 
- 	if (iflags & (F2FS_COMPR_FL | F2FS_NOCOMP_FL)) {
-diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
-index 13a0ffc39fa4..e4d1821b707b 100644
---- a/fs/f2fs/namei.c
-+++ b/fs/f2fs/namei.c
-@@ -786,10 +786,10 @@ static int f2fs_mkdir(struct user_namespace *mnt_userns, struct inode *dir,
- static int f2fs_rmdir(struct inode *dir, struct dentry *dentry)
- {
- 	struct inode *inode = d_inode(dentry);
-+	int ret;
- 
--	if (f2fs_empty_dir(inode))
--		return f2fs_unlink(dir, dentry);
--	return -ENOTEMPTY;
-+	ret = f2fs_empty_dir(inode);
-+	return ret ? : f2fs_unlink(dir, dentry);
- }
- 
- static int f2fs_mknod(struct user_namespace *mnt_userns, struct inode *dir,
-@@ -1001,9 +1001,7 @@ static int f2fs_rename(struct user_namespace *mnt_userns, struct inode *old_dir,
- 	}
- 
- 	if (new_inode) {
--
--		err = -ENOTEMPTY;
--		if (old_dir_entry && !f2fs_empty_dir(new_inode))
-+		if (old_dir_entry && (err = f2fs_empty_dir(new_inode)))
- 			goto out_dir;
- 
- 		err = -ENOENT;
-diff --git a/fs/ubifs/crypto.c b/fs/ubifs/crypto.c
-index c57b46a352d8..3ef2017c1444 100644
---- a/fs/ubifs/crypto.c
-+++ b/fs/ubifs/crypto.c
-@@ -19,9 +19,9 @@ static int ubifs_crypt_set_context(struct inode *inode, const void *ctx,
- 			       ctx, len, 0, false);
- }
- 
--static bool ubifs_crypt_empty_dir(struct inode *inode)
-+static int ubifs_crypt_empty_dir(struct inode *inode)
- {
--	return ubifs_check_dir_empty(inode) == 0;
-+	return ubifs_check_dir_empty(inode);
- }
- 
- int ubifs_encrypt(const struct inode *inode, struct ubifs_data_node *dn,
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 91ea9477e9bd..9d3b8df3f5ea 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -116,7 +116,7 @@ struct fscrypt_operations {
- 	/*
- 	 * Check whether a directory is empty.  i_rwsem will be held for write.
- 	 */
--	bool (*empty_dir)(struct inode *inode);
-+	int (*empty_dir)(struct inode *inode);
- 
- 	/*
- 	 * Check whether the filesystem's inode numbers and UUID are stable,
--- 
-2.31.1
-
+T24gMi8xMC8yMiAxMDoxMSBQTSwgRXJpYyBCaWdnZXJzIHdyb3RlOg0KPiBGcm9tOiBFcmljIEJp
+Z2dlcnMgPGViaWdnZXJzQGdvb2dsZS5jb20+DQo+IA0KPiBUcmFkaXRpb25hbGx5LCB0aGUgY29u
+ZGl0aW9ucyBmb3Igd2hlbiBESU8gKGRpcmVjdCBJL08pIGlzIHN1cHBvcnRlZA0KPiB3ZXJlIGZh
+aXJseSBzaW1wbGU6IGZpbGVzeXN0ZW1zIGVpdGhlciBzdXBwb3J0ZWQgRElPIGFsaWduZWQgdG8g
+dGhlDQo+IGJsb2NrIGRldmljZSdzIGxvZ2ljYWwgYmxvY2sgc2l6ZSwgb3IgZGlkbid0IHN1cHBv
+cnQgRElPIGF0IGFsbC4NCj4gDQo+IEhvd2V2ZXIsIGR1ZSB0byBmaWxlc3lzdGVtIGZlYXR1cmVz
+IHRoYXQgaGF2ZSBiZWVuIGFkZGVkIG92ZXIgdGltZSAoZS5nLA0KPiBkYXRhIGpvdXJuYWxsaW5n
+LCBpbmxpbmUgZGF0YSwgZW5jcnlwdGlvbiwgdmVyaXR5LCBjb21wcmVzc2lvbiwNCj4gY2hlY2tw
+b2ludCBkaXNhYmxpbmcsIGxvZy1zdHJ1Y3R1cmVkIG1vZGUpLCB0aGUgY29uZGl0aW9ucyBmb3Ig
+d2hlbiBESU8NCj4gaXMgYWxsb3dlZCBvbiBhIGZpbGUgaGF2ZSBnb3R0ZW4gaW5jcmVhc2luZ2x5
+IGNvbXBsZXguICBXaGV0aGVyIGENCj4gcGFydGljdWxhciBmaWxlIHN1cHBvcnRzIERJTywgYW5k
+IHdpdGggd2hhdCBhbGlnbm1lbnQsIGNhbiBkZXBlbmQgb24NCj4gdmFyaW91cyBmaWxlIGF0dHJp
+YnV0ZXMgYW5kIGZpbGVzeXN0ZW0gbW91bnQgb3B0aW9ucywgYXMgd2VsbCBhcyB3aGljaA0KPiBi
+bG9jayBkZXZpY2UocykgdGhlIGZpbGUncyBkYXRhIGlzIGxvY2F0ZWQgb24uDQo+IA0KPiBYRlMg
+aGFzIGFuIGlvY3RsIFhGU19JT0NfRElPSU5GTyB3aGljaCBleHBvc2VzIHRoaXMgaW5mb3JtYXRp
+b24gdG8NCj4gYXBwbGljYXRpb25zLiAgSG93ZXZlciwgYXMgZGlzY3Vzc2VkDQo+IChodHRwczov
+L2xvcmUua2VybmVsLm9yZy9saW51eC1mc2RldmVsLzIwMjIwMTIwMDcxMjE1LjEyMzI3NC0xLWVi
+aWdnZXJzQGtlcm5lbC5vcmcvVC8jdSksDQo+IHRoaXMgaW9jdGwgaXMgcmFyZWx5IHVzZWQgYW5k
+IG5vdCBrbm93biB0byBiZSB1c2VkIG91dHNpZGUgb2YNCj4gWEZTLXNwZWNpZmljIGNvZGUuICBJ
+dCBhbHNvIHdhcyBuZXZlciBpbnRlbmRlZCB0byBpbmRpY2F0ZSB3aGVuIGEgZmlsZQ0KPiBkb2Vz
+bid0IHN1cHBvcnQgRElPIGF0IGFsbCwgYW5kIGl0IG9ubHkgZXhwb3NlcyB0aGUgbWluaW11bSBJ
+L08NCj4gYWxpZ25tZW50LCBub3QgdGhlIG9wdGltYWwgSS9PIGFsaWdubWVudCB3aGljaCBoYXMg
+YmVlbiByZXF1ZXN0ZWQgdG9vLg0KPiANCj4gVGhlcmVmb3JlLCBsZXQncyBleHBvc2UgdGhpcyBp
+bmZvcm1hdGlvbiB2aWEgc3RhdHgoKS4gIEFkZCB0aGUNCj4gU1RBVFhfSU9BTElHTiBmbGFnIGFu
+ZCB0aHJlZSBmaWVsZHMgYXNzb2NpYXRlZCB3aXRoIGl0Og0KPiANCj4gKiBzdHhfbWVtX2FsaWdu
+X2RpbzogdGhlIGFsaWdubWVudCAoaW4gYnl0ZXMpIHJlcXVpcmVkIGZvciB1c2VyIG1lbW9yeQ0K
+PiAgICBidWZmZXJzIGZvciBESU8sIG9yIDAgaWYgRElPIGlzIG5vdCBzdXBwb3J0ZWQgb24gdGhl
+IGZpbGUuDQo+IA0KPiAqIHN0eF9vZmZzZXRfYWxpZ25fZGlvOiB0aGUgYWxpZ25tZW50IChpbiBi
+eXRlcykgcmVxdWlyZWQgZm9yIGZpbGUNCj4gICAgb2Zmc2V0cyBhbmQgSS9PIHNlZ21lbnQgbGVu
+Z3RocyBmb3IgRElPLCBvciAwIGlmIERJTyBpcyBub3Qgc3VwcG9ydGVkDQo+ICAgIG9uIHRoZSBm
+aWxlLiAgVGhpcyB3aWxsIG9ubHkgYmUgbm9uemVybyBpZiBzdHhfbWVtX2FsaWduX2RpbyBpcw0K
+PiAgICBub256ZXJvLCBhbmQgdmljZSB2ZXJzYS4NCj4gDQo+ICogc3R4X29mZnNldF9hbGlnbl9v
+cHRpbWFsOiB0aGUgYWxpZ25tZW50IChpbiBieXRlcykgc3VnZ2VzdGVkIGZvciBmaWxlDQo+ICAg
+IG9mZnNldHMgYW5kIEkvTyBzZWdtZW50IGxlbmd0aHMgdG8gZ2V0IG9wdGltYWwgcGVyZm9ybWFu
+Y2UuICBUaGlzDQo+ICAgIGFwcGxpZXMgdG8gYm90aCBESU8gYW5kIGJ1ZmZlcmVkIEkvTy4gIEl0
+IGRpZmZlcnMgZnJvbSBzdHhfYmxvY2tzaXplDQo+ICAgIGluIHRoYXQgc3R4X29mZnNldF9hbGln
+bl9vcHRpbWFsIHdpbGwgY29udGFpbiB0aGUgcmVhbCBvcHRpbXVtIEkvTw0KPiAgICBzaXplLCB3
+aGljaCBtYXkgYmUgYSBsYXJnZSB2YWx1ZS4gIEluIGNvbnRyYXN0LCBmb3IgY29tcGF0aWJpbGl0
+eQ0KPiAgICByZWFzb25zIHN0eF9ibG9ja3NpemUgaXMgdGhlIG1pbmltdW0gc2l6ZSBuZWVkZWQg
+dG8gYXZvaWQgcGFnZSBjYWNoZQ0KPiAgICByZWFkL3dyaXRlL21vZGlmeSBjeWNsZXMsIHdoaWNo
+IG1heSBiZSBtdWNoIHNtYWxsZXIgdGhhbiB0aGUgb3B0aW11bQ0KPiAgICBJL08gc2l6ZS4gIEZv
+ciBtb3JlIGRldGFpbHMgYWJvdXQgdGhlIG1vdGl2YXRpb24gZm9yIHRoaXMgZmllbGQsIHNlZQ0K
+PiAgICBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjIwMjEwMDQwMzA0LkdNNTk3MjlAZHJl
+YWQuZGlzYXN0ZXIuYXJlYQ0KPiANCj4gTm90ZSB0aGF0IGFzIHdpdGggb3RoZXIgc3RhdHgoKSBl
+eHRlbnNpb25zLCBpZiBTVEFUWF9JT0FMSUdOIGlzbid0IHNldA0KPiBpbiB0aGUgcmV0dXJuZWQg
+c3RhdHggc3RydWN0LCB0aGVuIHRoZXNlIG5ldyBmaWVsZHMgd29uJ3QgYmUgZmlsbGVkIGluLg0K
+PiBUaGlzIHdpbGwgaGFwcGVuIGlmIHRoZSBmaWxlc3lzdGVtIGRvZXNuJ3Qgc3VwcG9ydCBTVEFU
+WF9JT0FMSUdOLCBvciBpZg0KPiB0aGUgZmlsZSBpc24ndCBhIHJlZ3VsYXIgZmlsZS4gIChJdCBt
+aWdodCBiZSBzdXBwb3J0ZWQgb24gYmxvY2sgZGV2aWNlDQo+IGZpbGVzIGluIHRoZSBmdXR1cmUu
+KSAgSXQgbWlnaHQgYWxzbyBoYXBwZW4gaWYgdGhlIGNhbGxlciBkaWRuJ3QgaW5jbHVkZQ0KPiBT
+VEFUWF9JT0FMSUdOIGluIHRoZSByZXF1ZXN0IG1hc2ssIHNpbmNlIHN0YXR4KCkgaXNuJ3QgcmVx
+dWlyZWQgdG8NCj4gcmV0dXJuIGluZm9ybWF0aW9uIHRoYXQgd2Fzbid0IHJlcXVlc3RlZC4NCj4g
+DQo+IFRoaXMgY29tbWl0IGFkZHMgdGhlIFZGUy1sZXZlbCBwbHVtYmluZyBmb3IgU1RBVFhfSU9B
+TElHTi4gIEluZGl2aWR1YWwNCj4gZmlsZXN5c3RlbXMgd2lsbCBzdGlsbCBuZWVkIHRvIGFkZCBj
+b2RlIHRvIHN1cHBvcnQgaXQuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBFcmljIEJpZ2dlcnMgPGVi
+aWdnZXJzQGdvb2dsZS5jb20+DQo+IC0tLQ0KDQoNCkkndmUgYWN0dWFsbHkgd29ya2VkIG9uIHNp
+bWlsYXIgc2VyaWVzIHRvIGV4cG9ydCBhbGlnbm1lbnQgYW5kIA0KZ3JhbnVsYXJpdHkgZm9yIG5v
+bi10cml2aWFsIG9wZXJhdGlvbnMsIHRoaXMgaW1wbGVtZW50YXRpb24NCm9ubHkgZXhwb3J0aW5n
+IEkvTyBhbGlnbm1lbnRzIChtb3N0bHkgUkVRX09QX1dSSVRFL1JFUV9PUF9SRUFEKSB2aWENCnN0
+YXguDQoNClNpbmNlIGl0IGlzIGNvbWluZyBmcm9tIDotDQpiZGV2X2xvZ2ljYWxfYmxvY2tfc2l6
+ZSgpLT5xLT5saW1pdHMubG9naWNhbF9ibG9ja19zaXplIHRoYXQgaXMgc2V0IHdoZW4NCmxvdyBs
+ZXZlbCBkcml2ZXIgbGlrZSBudm1lIGNhbGxzIGJsa19xdWV1ZV9sb2dpY2FsX2Jsb2NrX3NpemUo
+KS4NCg0KIEZyb20gbXkgZXhwZXJpZW5jZSBlc3BlY2lhbGx5IHdpdGggU1NEcywgYXBwbGljYXRp
+b25zIHdhbnQgdG8NCmtub3cgc2ltaWxhciBpbmZvcm1hdGlvbiBhYm91dCBkaWZmZXJlbnQgbm9u
+LXRyaXZpYWwgcmVxdWVzdHMgc3VjaCBhcw0KUkVRX09QX0RJU0NBUkQvUkVRX09QX1dSSVRFX1pF
+Uk9FUy9SRVFfT1BfVkVSSUZZICh3b3JrIGluIHByb2dyZXNzIHNlZQ0KWzFdKSBldGMuDQoNCkl0
+IHdpbGwgYmUgZ3JlYXQgdG8gbWFrZSB0aGlzIGdlbmVyaWMgdXNlcnNwYWNlIGludGVyZmFjZSB3
+aGVyZSB1c2VyIGNhbg0KYXNrIGZvciBzcGVjaWZpYyBSRVFfT1BfWFhYIHN1Y2ggYXMgZ2VuZXJp
+YyBJL08gUkVRX09QX1JFQUQvUkVRX09QX1dSSVRFDQphbmQgbm9uIGdlbmVyaWMgUkVRX09QX1hY
+IHN1Y2ggYXMgUkVRX09QX0RJU0NBUkQvUkVRX09QX1ZFUklGWSBldGMgLi4uLg0KDQpTaW5jZSBJ
+J3ZlIHdvcmtlZCBvbiBpbXBsZW1lbnRpbmcgUkVRX09QX1ZFUklGWSBzdXBwb3J0IEkgZG9uJ3Qg
+d2FudCB0bw0KaW1wbGVtZW50IHNlcGFyYXRlIGludGVyZmFjZSBmb3IgcXVlcnlpbmcgdGhlIFJF
+UV9PUF9WRVJJRlkgb3IgYW55IG90aGVyDQpub24tdHJpdmlhbCBSRVFfT1BfWFhYIGdyYW51bGFy
+aXR5IG9yIGFsaWdubWVudC4NCg0KLWNrDQoNClsxXSBodHRwczovL3d3dy5zcGluaWNzLm5ldC9s
+aXN0cy9saW51eC14ZnMvbXNnNTY4MjYuaHRtbA0KDQo=
