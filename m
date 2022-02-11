@@ -2,55 +2,50 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 493774B1E7F
-	for <lists+linux-ext4@lfdr.de>; Fri, 11 Feb 2022 07:18:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E67B64B20F6
+	for <lists+linux-ext4@lfdr.de>; Fri, 11 Feb 2022 10:06:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235345AbiBKGRq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 11 Feb 2022 01:17:46 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:58264 "EHLO
+        id S1348230AbiBKJGX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 11 Feb 2022 04:06:23 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:50964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230315AbiBKGRp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Feb 2022 01:17:45 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1762B2D0;
-        Thu, 10 Feb 2022 22:17:45 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A67E961ABD;
-        Fri, 11 Feb 2022 06:17:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA3C8C340F1;
-        Fri, 11 Feb 2022 06:17:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644560264;
-        bh=gY+SW8mDXCVLJFUJPNH/tdEUYgt89QeK8AWxE3ZwQBo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p6vbGACw3Ah792ljjZrRk/+olQ9AfeLUPMAl5V588ySx/IVsJQnK07PzkJvcRbFkn
-         KNmefDP2m5WZNSwTJh98wR2mjNlEU9eSBNLor2qB82UY9PIfIwhYm+Tj4FSTdrw6ZJ
-         LTCIGNC2z1iibcS243VKWrb9kmjxa+TDHQM7myQcTmaf6WkFEVKSoPT4I80NRycm8k
-         gEwP6XCAY3/7/cCzQbefOwUVITsq2Bqi1l7DV/AjIWgHqZrwa1VXFDxp5+V4CGtaxy
-         5us5ng6vuaQllDiBtyey+G4tpaPkrOelsr5xv9/B9XT9biWt6iGiax7OEZHgStolCj
-         Rrxf8QPLV7aCA==
-Date:   Thu, 10 Feb 2022 22:17:42 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-ext4@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v11 0/5] add support for direct I/O with fscrypt using
- blk-crypto
-Message-ID: <YgX/hl4GK85M9mGs@sol.localdomain>
-References: <20220128233940.79464-1-ebiggers@kernel.org>
+        with ESMTP id S1348123AbiBKJGW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Feb 2022 04:06:22 -0500
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2D7F57
+        for <linux-ext4@vger.kernel.org>; Fri, 11 Feb 2022 01:06:21 -0800 (PST)
+Received: by mail-io1-f69.google.com with SMTP id x6-20020a056602160600b00637be03f7b8so5863683iow.17
+        for <linux-ext4@vger.kernel.org>; Fri, 11 Feb 2022 01:06:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=AVcGm0EZzrrnlVKUgG8QxskPWiO/poY886sJ5KEoXHY=;
+        b=39M8ZdvIHsINKVclp8zIxSrDn29LgnEqj/9qItkl7IbBu9FwB0JA07UW1FCm9LiqDP
+         J9okiJGG58E+klEj7acNnHXOHaQsUnP6UijLcABaZLcqqT5fbHiIo+Yk7ezG5YcgSwRm
+         XMfLdlNkhlSxb/zFi42nEU07pdyaPPQvYWbbXMkO8WaqORqR6D60prBIiYA7zIP3O1F5
+         6KkbgK5iQ3nAIkcpyTDoMmXSkVUtBu+AlqnN/hXPGJZKTKygr6rB15D9cLBmBCqgp0Pa
+         hEu3Sp1UhjrqajU/vTVMtYgcnlvgZP69j35N/S4ejZOEyt09bnIc335lUe9k+Rs+XdpA
+         XR8w==
+X-Gm-Message-State: AOAM533Wb0T4jdJI8tS/uxs0+7xRXgjSCqVVO3n4qBMT0eCclU/SnaXP
+        O+uKsggsP3F1Gfi65qMqZtJQ/ed7x7ZtTXUoklXeA4AxcnBK
+X-Google-Smtp-Source: ABdhPJxSVkHCKRC0zvZIU3npjSAX+sigocCFZftEFRRmPIaDnOzFO9wIR7XP8U6GKVfRe6J3FqS0HqnBu/Cl1GzS4VbzB4FNSLLi
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220128233940.79464-1-ebiggers@kernel.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Received: by 2002:a02:2422:: with SMTP id f34mr271094jaa.237.1644570380451;
+ Fri, 11 Feb 2022 01:06:20 -0800 (PST)
+Date:   Fri, 11 Feb 2022 01:06:20 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000055c5ca05d7ba61a9@google.com>
+Subject: [syzbot] linux-next boot error: WARNING in jbd2_journal_add_journal_head
+From:   syzbot <syzbot+8b01515f1a28478eb4bd@syzkaller.appspotmail.com>
+To:     jack@suse.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,97 +53,129 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jan 28, 2022 at 03:39:35PM -0800, Eric Biggers wrote:
-> [Note: I'm planning to send a patchset adding STATX_DIRECTIO as was
-> discussed on v10, but that will be a separate patchset.]
-> 
-> Encrypted files traditionally haven't supported DIO, due to the need to
-> encrypt/decrypt the data.  However, when the encryption is implemented
-> using inline encryption (blk-crypto) instead of the traditional
-> filesystem-layer encryption, it is straightforward to support DIO.
-> 
-> This series adds support for this.  There are multiple use cases for DIO
-> on encrypted files, but avoiding double caching on loopback devices
-> located in an encrypted directory is the main one currently.
-> 
-> v1 through v9 of this series were sent out by Satya Tangirala.  I've
-> cleaned up a few things since Satya's last version
-> (https://lore.kernel.org/all/20210604210908.2105870-1-satyat@google.com/T/#u).
-> But more notably, I've made a couple simplifications.
-> 
-> First, since f2fs has now been converted to use iomap for DIO, I've
-> dropped the patch which added fscrypt support to fs/direct-io.c.
-> 
-> Second, I've returned to the original design where DIO requests must be
-> fully aligned to the FS block size in terms of file position, length,
-> and memory buffers.  Satya previously was pursuing a slightly different
-> design, where the memory buffers (but not the file position and length)
-> were allowed to be aligned to just the block device logical block size.
-> This was at the request of Dave Chinner on v4 and v6 of the patchset
-> (https://lore.kernel.org/linux-fscrypt/20200720233739.824943-1-satyat@google.com/T/#u
-> and
-> https://lore.kernel.org/linux-fscrypt/20200724184501.1651378-1-satyat@google.com/T/#u).
-> 
-> I believe that approach is a dead end, for two reasons.  First, it
-> necessarily causes it to be possible that crypto data units span bvecs.
-> Splits cannot occur at such locations; however the block layer currently
-> assumes that bios can be split at any bvec boundary.  Changing that is
-> quite difficult, as Satya's v9 patchset demonstrated.  This is not an
-> issue if we require FS block aligned buffers instead.  Second, it
-> doesn't change the fact that FS block alignment is still required for
-> the file position and I/O length; this is unavoidable due to the
-> granularity of encryption being the FS block size.  So, it seems that
-> relaxing the memory buffer alignment requirement wouldn't make things
-> meaningfully easier for applications, which raises the question of why
-> we would bother with it in the first place.
-> 
-> Christoph Hellwig also said that he much prefers that fscrypt DIO be
-> supported without sector-only alignment to start:
-> https://lore.kernel.org/r/YPu+88KReGlt94o3@infradead.org
-> 
-> Given the above, as far as I know the only remaining objection to this
-> patchset would be that DIO constraints aren't sufficiently discoverable
-> by userspace.  Now, to put this in context, this is a longstanding issue
-> with all Linux filesystems, except XFS which has XFS_IOC_DIOINFO.  It's
-> not specific to this feature, and it doesn't actually seem to be too
-> important in practice; many other filesystem features place constraints
-> on DIO, and f2fs even *only* allows fully FS block size aligned DIO.
-> (And for better or worse, many systems using fscrypt already have
-> out-of-tree patches that enable DIO support, and people don't seem to
-> have trouble with the FS block size alignment requirement.)
-> 
-> To address the issue of DIO constraints being insufficiently
-> discoverable, I plan to make statx() expose this information.
-> 
-> This series applies to v5.17-rc1.
-> 
-> Changed v10 => v11:
->   * Changed fscrypt_dio_unsupported() back to fscrypt_dio_supported().
->   * Removed a mention of f2fs from fscrypt_dio_supported().
->   * Added Reviewed-by and Acked-by tags, including a couple from earlier
->     I had dropped due to the renaming of fscrypt_dio_supported().
->   * In fscrypt_limit_io_blocks(), don't load i_crypt_info until it's
->     known to be valid, to avoid confusion as is done elsewhere.
-> 
-> Eric Biggers (5):
->   fscrypt: add functions for direct I/O support
->   iomap: support direct I/O with fscrypt using blk-crypto
->   ext4: support direct I/O with fscrypt using blk-crypto
->   f2fs: support direct I/O with fscrypt using blk-crypto
->   fscrypt: update documentation for direct I/O support
-> 
->  Documentation/filesystems/fscrypt.rst | 25 ++++++-
->  fs/crypto/crypto.c                    |  8 +++
->  fs/crypto/inline_crypt.c              | 93 +++++++++++++++++++++++++++
->  fs/ext4/file.c                        | 10 +--
->  fs/ext4/inode.c                       |  7 ++
->  fs/f2fs/data.c                        |  7 ++
->  fs/f2fs/f2fs.h                        |  6 +-
->  fs/iomap/direct-io.c                  |  6 ++
->  include/linux/fscrypt.h               | 18 ++++++
->  9 files changed, 173 insertions(+), 7 deletions(-)
+Hello,
 
-I've applied this patchset to fscrypt.git#master for 5.18
-(https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git/log/).
+syzbot found the following issue on:
 
-- Eric
+HEAD commit:    395a61741f7e Add linux-next specific files for 20220210
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=15273c74700000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=addf1551553641e4
+dashboard link: https://syzkaller.appspot.com/bug?extid=8b01515f1a28478eb4bd
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8b01515f1a28478eb4bd@syzkaller.appspotmail.com
+
+debug_vm_pgtable: [debug_vm_pgtable         ]: Validating architecture page table helpers
+Key type ._fscrypt registered
+Key type .fscrypt registered
+Key type fscrypt-provisioning registered
+kAFS: Red Hat AFS client v0.1 registering.
+Btrfs loaded, crc32c=crc32c-intel, assert=on, zoned=yes, fsverity=yes
+Key type big_key registered
+Key type encrypted registered
+AppArmor: AppArmor sha1 policy hashing enabled
+ima: No TPM chip found, activating TPM-bypass!
+Loading compiled-in module X.509 certificates
+Loaded X.509 cert 'Build time autogenerated kernel key: 6faad590106e97e953b70d9fe8fe9023f99ac2db'
+ima: Allocated hash algorithm: sha256
+ima: No architecture policies found
+evm: Initialising EVM extended attributes:
+evm: security.selinux (disabled)
+evm: security.SMACK64 (disabled)
+evm: security.SMACK64EXEC (disabled)
+evm: security.SMACK64TRANSMUTE (disabled)
+evm: security.SMACK64MMAP (disabled)
+evm: security.apparmor
+evm: security.ima
+evm: security.capability
+evm: HMAC attrs: 0x1
+PM:   Magic number: 10:298:72
+usb usb24-port4: hash matches
+printk: console [netcon0] enabled
+netconsole: network logging started
+gtp: GTP module loaded (pdp ctx size 104 bytes)
+rdma_rxe: loaded
+cfg80211: Loading compiled-in X.509 certificates for regulatory database
+cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
+ALSA device list:
+  #0: Dummy 1
+  #1: Loopback 1
+  #2: Virtual MIDI Card 1
+md: Waiting for all devices to be available before autodetect
+md: If you don't use raid, use raid=noautodetect
+md: Autodetecting RAID arrays.
+md: autorun ...
+md: ... autorun DONE.
+EXT4-fs (sda1): mounted filesystem with ordered data mode. Quota mode: none.
+VFS: Mounted root (ext4 filesystem) readonly on device 8:1.
+devtmpfs: mounted
+Freeing unused kernel image (initmem) memory: 2716K
+Write protecting the kernel read-only data: 172032k
+Freeing unused kernel image (text/rodata gap) memory: 2016K
+Freeing unused kernel image (rodata/data gap) memory: 996K
+Run /sbin/init as init process
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 1 at mm/slub.c:3246 kmem_cache_alloc+0x329/0x3d0 mm/slub.c:3251
+Modules linked in:
+CPU: 1 PID: 1 Comm: init Not tainted 5.17.0-rc3-next-20220210-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:kmem_cache_alloc+0x329/0x3d0 mm/slub.c:3246
+Code: 5d 3e 7e 48 8b 05 a7 5b bc 0b e8 b2 35 9f ff 85 c0 74 2d 65 ff 0d b7 5d 3e 7e 0f 85 93 fe ff ff e8 5b 33 3c ff e9 89 fe ff ff <0f> 0b e9 0a fd ff ff b9 01 00 00 00 bb 01 00 00 00 e9 ce fe ff ff
+RSP: 0018:ffffc90000c675c8 EFLAGS: 00010202
+RAX: 0000000000000000 RBX: ffff88801b4740e8 RCX: 0000000000000000
+RDX: ffff888011898000 RSI: 0000000000000d40 RDI: ffff888018aa9c80
+RBP: ffff888018aa9c80 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff823295f6 R11: 0000000000000000 R12: 0000000000000d40
+R13: ffff88801b4740e8 R14: 0000000000000100 R15: ffff88807f34a000
+FS:  00007fab10ea9800(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ff6395be300 CR3: 000000007f201000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ kmem_cache_zalloc include/linux/slab.h:705 [inline]
+ journal_alloc_journal_head fs/jbd2/journal.c:2864 [inline]
+ jbd2_journal_add_journal_head+0x1cb/0x5c0 fs/jbd2/journal.c:2933
+ jbd2_journal_get_write_access+0x112/0x190 fs/jbd2/transaction.c:1240
+ __ext4_journal_get_write_access+0x1ba/0x440 fs/ext4/ext4_jbd2.c:235
+ ext4_reserve_inode_write+0x187/0x270 fs/ext4/inode.c:5699
+ __ext4_mark_inode_dirty+0x17b/0x8d0 fs/ext4/inode.c:5865
+ ext4_dirty_inode+0xd4/0x110 fs/ext4/inode.c:5902
+ __mark_inode_dirty+0x45b/0xfe0 fs/fs-writeback.c:2370
+ generic_update_time fs/inode.c:1856 [inline]
+ inode_update_time fs/inode.c:1869 [inline]
+ touch_atime+0x63d/0x700 fs/inode.c:1941
+ pick_link fs/namei.c:1796 [inline]
+ step_into+0x89e/0x1d80 fs/namei.c:1876
+ walk_component+0x171/0x6a0 fs/namei.c:2026
+ link_path_walk.part.0+0x7ef/0xf70 fs/namei.c:2347
+ link_path_walk fs/namei.c:2271 [inline]
+ path_lookupat+0xc8/0x860 fs/namei.c:2498
+ filename_lookup+0x1c6/0x590 fs/namei.c:2528
+ user_path_at_empty+0x42/0x60 fs/namei.c:2851
+ user_path_at include/linux/namei.h:57 [inline]
+ do_faccessat+0x127/0x850 fs/open.c:424
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fab11035a67
+Code: 77 01 c3 48 8b 15 11 f4 0c 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 15 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 8b 15 e1 f3 0c 00 f7 d8 64 89 02 b8
+RSP: 002b:00007ffd5ca3e9c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000015
+RAX: ffffffffffffffda RBX: 0000000000000b71 RCX: 00007fab11035a67
+RDX: 0000000000000000 RSI: 0000000000000006 RDI: 00007fab111cc285
+RBP: 0000000000000008 R08: 0000000000000000 R09: 00007fab110d3288
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000b71
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
