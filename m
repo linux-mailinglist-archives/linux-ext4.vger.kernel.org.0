@@ -2,109 +2,149 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA584B2AEB
-	for <lists+linux-ext4@lfdr.de>; Fri, 11 Feb 2022 17:50:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D17144B2B11
+	for <lists+linux-ext4@lfdr.de>; Fri, 11 Feb 2022 17:56:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351746AbiBKQtO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 11 Feb 2022 11:49:14 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49100 "EHLO
+        id S238841AbiBKQ43 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 11 Feb 2022 11:56:29 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:54904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351741AbiBKQtO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Feb 2022 11:49:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 79EB3FD
-        for <linux-ext4@vger.kernel.org>; Fri, 11 Feb 2022 08:49:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1644598152;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PP4TELWylzhqvbTRyqntJ6du2uBGE5WicD7gyfPqb1s=;
-        b=L8wv4zWoXhN3DvGFAwArd9nmJRWpbc43cPEXwm/TbPogN7hCEsEltiqRtDhD2OaxX/2PJh
-        DOQMtZnU6pA+Yx7h49VEMVlnuBkgLZSpVGIWMBPBLkrmqEn9IoqLgb/VQq8m9SaE9FAfBv
-        BkAZ5VUoVyjyTM2K7fIuaLdM7km+3tU=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-656-B1PZvrRgMpKLbdGFGd4b7w-1; Fri, 11 Feb 2022 11:49:11 -0500
-X-MC-Unique: B1PZvrRgMpKLbdGFGd4b7w-1
-Received: by mail-wr1-f70.google.com with SMTP id e11-20020adf9bcb000000b001e316b01456so4042095wrc.21
-        for <linux-ext4@vger.kernel.org>; Fri, 11 Feb 2022 08:49:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=PP4TELWylzhqvbTRyqntJ6du2uBGE5WicD7gyfPqb1s=;
-        b=LCXarshAfHfVGDS6ge+USqTqfUFkaHswceB8+8NYwTrdOjDtdVoCpPvowTBqxqjLQQ
-         Aw2AksN0Z2+eG0+qCRNntOT4+Ga9V4r1VW0pm+V8n9LmXDk1bOA0psP1Gb2hi74QgEub
-         ocv5eQGRHgFFNXBIgYwTstySQCzaCVLwZtRIqOiYN6lkljxJYF0cnZzcyIOjzCczV9mc
-         +gcWAAQEO8+5Y8aC3ozbRr2clEhnprwTDfJA718Vrmy/IyQx14FDNE3EjWPOzvMP816P
-         NdegiixKUoIGe768Ex4gok5BADNBS5sw31LzLG81kV43YPPc4ur8NgRFWCWkIWuVAV0L
-         mtPQ==
-X-Gm-Message-State: AOAM531lfCPaM2NfRFGKxvNjQyy7pIP5DWJCswyOybwpSsKHg8fY0+xR
-        RXKdHhbgqll7o3sCYZGajQrdC9AST6ky6ioKMv8RfpB51iAuLuJoeeync01oLWZKRo6rFFoaxdt
-        r55p7q7mmmXXCKVB2qAvqkA==
-X-Received: by 2002:adf:e94c:: with SMTP id m12mr1981423wrn.383.1644598150267;
-        Fri, 11 Feb 2022 08:49:10 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy7WIrAF58deu+37aUiWlRp/W5UJhe80Crx1E3d+PpeeyE61InCn2g0DPuWCXNpzEMPcQYA7w==
-X-Received: by 2002:adf:e94c:: with SMTP id m12mr1981411wrn.383.1644598150072;
-        Fri, 11 Feb 2022 08:49:10 -0800 (PST)
-Received: from ?IPV6:2003:cb:c70c:aa00:4cc6:d24a:90ae:8c1f? (p200300cbc70caa004cc6d24a90ae8c1f.dip0.t-ipconnect.de. [2003:cb:c70c:aa00:4cc6:d24a:90ae:8c1f])
-        by smtp.gmail.com with ESMTPSA id f1sm3214049wmb.20.2022.02.11.08.49.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Feb 2022 08:49:09 -0800 (PST)
-Message-ID: <6a8df47e-96d0-ffaf-247a-acc504e2532b@redhat.com>
-Date:   Fri, 11 Feb 2022 17:49:08 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Subject: Re: [PATCH v6 01/10] mm: add zone device coherent type memory support
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>
+        with ESMTP id S231781AbiBKQ42 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Feb 2022 11:56:28 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2076.outbound.protection.outlook.com [40.107.93.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 937AE13A;
+        Fri, 11 Feb 2022 08:56:27 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ka1DF9T9TDyU7LaaqQFDT4Q8XVAP0dA5RwmRsKYuw9PDVgzrIkEnWHTDFjZTMoWACsmXAzAlHC/GLawIQHuxiCtWgNGUI7gQOZAQeHLoKxbySmHK49wpAQqNRde9GMfYq4slBW8be28kg3MCkfCGh3ENcohnZsdnIMfCtCQJAw6xxGRhQyV/utR+0HzFGYyJgUTiKWkSxDNvb4vhIIh01eip0p/1dlpkNgwhkoh3ebvHkS1OcCa6n7Br5kMtjrZX6VPps7NTe5CO0X/jjPYwIRwLTncunyHoKHSokWQAUAK7kT8THVN55/LuYjdMZ2FtOj3RK8RtFJLfXdwws4aHqg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=By3qg0mkZCNu4Bqd0t6KUka99itlYFG0/PNVtXtaFo0=;
+ b=OYyM6O/xfUryll72ATIbDgv5BW6pZr6IGBjQxG64caNVC5EnwhiR8Osw/HEQq6U7C41KGVxCOdvQreBOx6Ug0ee3h5jT6l+UFlXEplSQoycY+TaDUlr/0xZ40JnXD3Pu2DSCmKcPbfx0i/0wBDA8rCCkRojMB+rDALFaPDVEnSU4964ZpHkbwLNVTkHWyiQI/Y2tIBX+vyysWRAz7M7lMlgrbF673eXArZTWMe87bQ73klJZ+anc4j42xj7141VWt8Y/lmhasJv3K86+45u8NOQ6OcxX0Gn3qOrua9Y0r/twwosSD4f6FDYXPdBmUkvCvSFJVGLUxp0QJkiUorx6rA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=By3qg0mkZCNu4Bqd0t6KUka99itlYFG0/PNVtXtaFo0=;
+ b=e6S800NXVF7V1H+LBukHOL95AkpWCMaGfJqmxNYzr+LaPxLWUt9WwFgMWV9B/qTUWIToO1OXmfPS1V/NOif1LS3EoSwwQZj277trE/8Kf230jOJyGnozly/8EIR/+jkcO3A0b3HZ/vlPIhJ3o1Eby0CCHfYodqf06zV9gvs1wx8KArus3/lT85sP60TrNi+89pLRqyK/T34ra3fc19vM70sKgZ5E3QAitAoDuhxKCEJoMmdtRrMFpjqOjnCyGaa8g2imdD0hQzKn/ZK91rwlgNPNCT7SFD6ysg0ry0hLM8jndctn075UPVX2S+38d1smxkQbU6aaxum1yHfiMMW72w==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
+ by MWHPR1201MB0272.namprd12.prod.outlook.com (2603:10b6:301:52::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.11; Fri, 11 Feb
+ 2022 16:56:25 +0000
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::e8f4:9793:da37:1bd3]) by MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::e8f4:9793:da37:1bd3%4]) with mapi id 15.20.4975.011; Fri, 11 Feb 2022
+ 16:56:25 +0000
+Date:   Fri, 11 Feb 2022 12:56:24 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     David Hildenbrand <david@redhat.com>
 Cc:     Alex Sierra <alex.sierra@amd.com>, akpm@linux-foundation.org,
         Felix.Kuehling@amd.com, linux-mm@kvack.org, rcampbell@nvidia.com,
         linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
         amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         hch@lst.de, jglisse@redhat.com, apopple@nvidia.com,
         willy@infradead.org
+Subject: Re: [PATCH v6 01/10] mm: add zone device coherent type memory support
+Message-ID: <20220211165624.GP4160@nvidia.com>
 References: <20220201154901.7921-1-alex.sierra@amd.com>
  <20220201154901.7921-2-alex.sierra@amd.com>
  <beb38138-2266-1ff8-cc82-8fe914bed862@redhat.com>
  <20220211164537.GO4160@nvidia.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20220211164537.GO4160@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+ <6a8df47e-96d0-ffaf-247a-acc504e2532b@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6a8df47e-96d0-ffaf-247a-acc504e2532b@redhat.com>
+X-ClientProxiedBy: BLAPR03CA0105.namprd03.prod.outlook.com
+ (2603:10b6:208:32a::20) To MN2PR12MB4192.namprd12.prod.outlook.com
+ (2603:10b6:208:1d5::15)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ec207d12-32b8-4992-63be-08d9ed7f70a2
+X-MS-TrafficTypeDiagnostic: MWHPR1201MB0272:EE_
+X-Microsoft-Antispam-PRVS: <MWHPR1201MB0272EEB10BF2B94BBEEECE0DC2309@MWHPR1201MB0272.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: v+l7VY8sWJx3Jw+BnWuwwCjWxUfgjpA5Wwr4jWpudaE+o1UsW31850DwXlNuOWDsr/JVCemKQYzhANnbNQFw+pXyG1mZWAEDa9+UzISrM9HJHnGiubucUELU7yFzM9/7QJWMCxB2mEz5RHVNTiIE3HsuEhjyxF2dAEyJ3wAxMTDocBBUIJxuJvWXc+661KiJ8Ni0rLjgTKxMmzg8L+7yZJ1Fc8ZBR8dx8EI7KSUx2UWWfCCp2F/0ruao8q4c5b/g7LpKkbaeQWhOn65ZUcUgCxhI96jF+8bFZJps/N8ecq/HhKZrK0VtZfe70iICiRHM3YkGpfljm03sofGsC9Hw34P/18vtYGMaJqTqdxijPOw83XVQ9Qw0WO7tgsoT7Tii1Twba7xtT04Q9azObq4vhZ43xE2yTndnTt0PxoMPaQcw+pmdzyXsyho8sjzyKsKrGNe3NQaRUzHGk7spEIIKbMgxlWj4P9LwZ1vWkqrNqsvcEDNWn7SBvK5grNhHfi1B1VF+nYMKRBY5hkho4LeoFw5PDqacOIxS/rwo9epVh198QUNveiTq4KveH2cUed+GMUbYbbJWVwhT6F5kDOxZt9IeMWl90dfI5cMCOE7Hasbw3hfJw7XJZ8I2yJxAX+U9ahDbqfJQp+4FAVNNYjL5UA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(4326008)(2616005)(508600001)(8676002)(66476007)(66946007)(7416002)(6486002)(5660300002)(86362001)(8936002)(316002)(66556008)(6916009)(26005)(186003)(6512007)(38100700002)(53546011)(1076003)(2906002)(6506007)(36756003)(33656002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4jQWN3+Q5BSU6bBLY7MFuwREZY4ESOKs3pG7gGWIBfMqLl4hgieHYS3zenSl?=
+ =?us-ascii?Q?/QCjtbVDeFmFdXQtyYwRvwqsL+coWAkYs8yS0gaiOi7izPm8/mb0UX7ThmGu?=
+ =?us-ascii?Q?AtGi64RDBp9GfYXjcYSWbhraSi54jdG9O2RiRr0KcS5RceyZTwnPmR2L2mPu?=
+ =?us-ascii?Q?kG/qQlHZyV/hOxnn0vvKeITdk/+nvSWcKk211AIWegcB33vQ6lSsB9C3P9Za?=
+ =?us-ascii?Q?3hYr/udVk3FEjKX38ZLSgNZvg8M/R7+zEecRy1fgY7k0SgYD+4pXc+yNmycJ?=
+ =?us-ascii?Q?HhEOc/ryVc65XQrL8+GjyIEytUdJZij00WxMVs+Q+bMGacgQV+socaQynGn/?=
+ =?us-ascii?Q?NoyMwyJ/Wf85Uy7oY3EHyBDC3AqyjcW7KGlVEnRLMzZ0U0A8Y45mf+o0NGFW?=
+ =?us-ascii?Q?hqEZ+/dhjpqlaYBO80L5wvWK70GqjGJcXywdqe2hDhu9EisjAJysxWvNwL7m?=
+ =?us-ascii?Q?Rt46kuJCWvkoGyV1EvR9dcEQ5jy6GkQpyaQZYfBvishfTGPD2qzkDegoHfSm?=
+ =?us-ascii?Q?6D6h/gCFyWn7wuAJkzDukdvG9gFi0kv2Aka3xc7q+0cA2Ozkz1FkLmP8jjR2?=
+ =?us-ascii?Q?HyXlyGCl0SuIrFhpRPkyb9+ApeJHeSQAHGFyZfMNr8Yu6T+UsHJPle0ORmnS?=
+ =?us-ascii?Q?HxOTLKoeqpZfultLjSTMFF8jMypD/FI/2E3kC7pDejnqMbWCtf0nMuMujFdD?=
+ =?us-ascii?Q?yYVivSKXhgWULXmyljZTzMnwaJ8W+gdOUSBl9qfQQcPArRmowYEzDdT39hwO?=
+ =?us-ascii?Q?NIaRVEGaWBTJ7+UntxSNGc//0uWPTfg4q519zjYjFXxvNt658tYVQ9NMkTxx?=
+ =?us-ascii?Q?ZQs1ozBwQgTST8NK+iSrbKTQbsR1c39v08NiMcFFhfVsisUfIkMh0JyJG32t?=
+ =?us-ascii?Q?nqozPrFgVjP9xQKWPi+XX+1oGy1h2ZWA6hHVCikkDf8tPSjqoCXSTGEFBu7d?=
+ =?us-ascii?Q?hy/uaUf+SmFeP4MPp383gGnwgl2d0Loi+3xIc2R68l2iP7+jnbpw+QMqPU/o?=
+ =?us-ascii?Q?Zszp1U8Y7bc2lqPulZiygMSCft0TrMkP6se9p9rvusBhVGd0YVjR6whFkr4G?=
+ =?us-ascii?Q?kxRSS2NbT8gE1ghUDdPUTQRh5c4qd9WBkkvFGoFHm3Bo4FjRRjS8fQ88ZAmL?=
+ =?us-ascii?Q?2MLD+oC80CFvPTxOoPxLFnYGak29cudRkunw5yFVkYkzSAxncC01oN4fpI93?=
+ =?us-ascii?Q?Vjk9gKLDAD4iloDq9FyOezWqD3qkCZ2K5n4HG/ZRJrUPIQHMhvmnF4IYw5cs?=
+ =?us-ascii?Q?UiClddInNWjDDFWr+5UJfmZ5OJqzKN5NHrHb09h7/6Mu8wWULrMu71J7a4x+?=
+ =?us-ascii?Q?m2/cD1AbvBx/ri+p8IFRKCu8Anq+Gr240J6GtZU4Hm1DTWZ1w9blKLLS3maa?=
+ =?us-ascii?Q?eX/XostVmah32dAw1H9Utw0n+5tIZDvAwosxoWGauDxuius9HZQvsH6nIf8o?=
+ =?us-ascii?Q?BTTPTcm69MeisLrM/QmZAK71PcQCkvV2JXSgMRyZgkVnQ370fu4B1mIUuoAC?=
+ =?us-ascii?Q?YO1NyQHpt1DeWGUaxk7iS1zM8BptNiZk4DXZQ5gHdOjfZ0/8m9KvtvwsxrVX?=
+ =?us-ascii?Q?ZgTbozP/pQi0lQwNykM=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ec207d12-32b8-4992-63be-08d9ed7f70a2
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2022 16:56:25.7361
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vhJ2aleoWcKILV1Kyk4ZJfO+yduo2mMiZcVlQBbRCJd3gz2K71CpD3fmhEL1uCRh
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1201MB0272
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 11.02.22 17:45, Jason Gunthorpe wrote:
-> On Fri, Feb 11, 2022 at 05:15:25PM +0100, David Hildenbrand wrote:
+On Fri, Feb 11, 2022 at 05:49:08PM +0100, David Hildenbrand wrote:
+> On 11.02.22 17:45, Jason Gunthorpe wrote:
+> > On Fri, Feb 11, 2022 at 05:15:25PM +0100, David Hildenbrand wrote:
+> > 
+> >> ... I'm pretty sure we cannot FOLL_PIN DEVICE_PRIVATE pages
+> > 
+> > Currently the only way to get a DEVICE_PRIVATE page out of the page
+> > tables is via hmm_range_fault() and that doesn't manipulate any ref
+> > counts.
 > 
->> ... I'm pretty sure we cannot FOLL_PIN DEVICE_PRIVATE pages
-> 
-> Currently the only way to get a DEVICE_PRIVATE page out of the page
-> tables is via hmm_range_fault() and that doesn't manipulate any ref
-> counts.
+> Thanks for clarifying Jason! ... and AFAIU, device exclusive entries are
+> essentially just pointers at ordinary PageAnon() pages. So with DEVICE
+> COHERENT we'll have the first PageAnon() ZONE_DEVICE pages mapped as
+> present in the page tables where GUP could FOLL_PIN them.
 
-Thanks for clarifying Jason! ... and AFAIU, device exclusive entries are
-essentially just pointers at ordinary PageAnon() pages. So with DEVICE
-COHERENT we'll have the first PageAnon() ZONE_DEVICE pages mapped as
-present in the page tables where GUP could FOLL_PIN them.
+This is my understanding
 
+Though you probably understand what PageAnon means alot better than I
+do.. I wonder if it really makes sense to talk about that together
+with ZONE_DEVICE which has alot in common with filesystem originated
+pages too.
 
--- 
-Thanks,
+I'm not sure what AMDs plan is here, is there an expecation that a GPU
+driver will somehow stuff these pages into an existing anonymous
+memory VMA or do they always come from a driver originated VMA?
 
-David / dhildenb
-
+Jason
