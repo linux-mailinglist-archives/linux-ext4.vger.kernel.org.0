@@ -2,270 +2,183 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2BA24B19AD
-	for <lists+linux-ext4@lfdr.de>; Fri, 11 Feb 2022 00:41:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F774B1BEE
+	for <lists+linux-ext4@lfdr.de>; Fri, 11 Feb 2022 03:08:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345759AbiBJXlY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Feb 2022 18:41:24 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:48346 "EHLO
+        id S1347163AbiBKCId (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Feb 2022 21:08:33 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345795AbiBJXlX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Feb 2022 18:41:23 -0500
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2050.outbound.protection.outlook.com [40.107.243.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E3C5F72;
-        Thu, 10 Feb 2022 15:41:20 -0800 (PST)
+        with ESMTP id S1347159AbiBKCIb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Feb 2022 21:08:31 -0500
+Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 109EC5FAE;
+        Thu, 10 Feb 2022 18:08:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1644545309; x=1676081309;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=C3mu6J3djkptvJzVveOhtTc0DuU4l5kV9/5Ov+folzs=;
+  b=diT+bd5aBKneSiWU5yHQOHJskriy63F+QoDCiEnqHVbIcobZL18VSeZz
+   FzpyO8jXXUrp6WM4UYW3GFBSKgz1a2UYfVuo42hmW7092KSdVtGxvyLyn
+   nWmO00DVa5ZxMmGGTtMKx5p5nXftYEyd2tbWkxYWxhqDMFUimSNV914SZ
+   ibQt8JdQOHPrsaiEt9aN/ynHqhgFHzUB8TXZDuB6vkMvxsCH6LyL9a1sA
+   nE5PK8sz95cJa82VWOfcbW8+fg5zp3mP6GxFHUP62QIviQxEvwNGIpa1/
+   psnV78N2da2mwyUW6znDjnAycoobyOPP0GLH2uGb0Vadb+/sU4Icrlr2N
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.88,359,1635177600"; 
+   d="scan'208";a="197479426"
+Received: from mail-sn1anam02lp2042.outbound.protection.outlook.com (HELO NAM02-SN1-obe.outbound.protection.outlook.com) ([104.47.57.42])
+  by ob1.hgst.iphmx.com with ESMTP; 11 Feb 2022 10:08:28 +0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YJV60lBE4e69NXJgK6CVz3vhGbhRhPGG2y4kTEDfo+vR6ZabXJczbLSmBcfowc6fZG2KjbMgso/Gr/PXs8ZU1QmqLRJSKjKxuEEfN7e4+SL5yaQUPahbTnKnMhcPYMBpMJB87Lne0dXy5CA8ovSdPAGKNl69RlAzzFZm+sB0Cmixwf6+lZvlOZaXJTWCXm9+jev7NhCK0MlKqomVkrARsBFJsGpp54jqAAif+kzo0j9Owj1Eaunm9ZtKwzQFWB1xu6HyIWglLD0HV8HJeLs2kLlphLGLsoHBlQhrEYrg7ONbUrj21f176Ee/EETuu48n61VYm0wLC723D4FnW5fLUQ==
+ b=j91ys+F/ZzNsVLWJ+1kGotS5w9+MvS865E8C+VJ4aQJoVWbUNElBy46006uRGRQs4Vu55iSZ/9BlMN2PtudtsUDz0CiS25MzJT2+p3Y1hLSw5eQ1FZgZ4D5M7HYGVll9wC46Lxl7KaoJQyCyioZhDAykQOc5t4kRT9yQmrVp7Tq0nRMWBkE3SnTDV5O56R1EI2Q9d/VChkaLJQgKVFFW61L2ZZjrgmtXvzN5Qforkp5lD1c2qnZZEmSnc8Xut48gLvdhSDTkw92FiM/ZHTl/RlIZzkpZo6U+TJNBCxyluV/Nhrp2XfQU3rT14SvcgQWiQlqjA23Xk45+18ioC6rmTw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2+8KdbZKYBF8Be+CMwXZ0qBJPfP9sEca8pm7JJU7UhA=;
- b=l+1fSIL9sykquceQQnRPLmGT80XvOLDDO+9G3ek+qOrzH/gp3hVhnmOVEmrC3Et13YM7qd6ZgOSWlFUQcRE5EEgq6o4HPlcncz/tZahg9nmWP0+7vA8FJqu2fd0HDlBahTDvDm9VmeRnXZRjYzYdq1OSnlD4KEWNsSNs4WESWsOmlwd+8j9T0G+6No6uC35EVJLmIhHe987Z+yf+n7L0WE58Lgh5H61NxQ6Z+Xqd0QyEhl6xOD+TglxAoV+m6FrjGLZwdID4w5tENGbGGb7RpKBtGd8xZnYyMgYdwuthJ7jquV+OdlML6AusOZBOn8+obQHz8+r9zNZadsYbk8vEpg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 12.22.5.234) smtp.rcpttodomain=lst.de smtp.mailfrom=nvidia.com; dmarc=pass
- (p=reject sp=reject pct=100) action=none header.from=nvidia.com; dkim=none
- (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ bh=C3mu6J3djkptvJzVveOhtTc0DuU4l5kV9/5Ov+folzs=;
+ b=oSvqC6ERra/zvE20lGojOzDMdpPgaK9jcHqMl0OpRC/FxyfrNiBxSpJnYj1vE22r2R+vSFI6sY0lHoFVkZSc1rGkHS24NAg81bv2Wr1XiZA4taETa9Z0HhKrr0HtRkxQ95tJ2gR3MYgN67kK5IXACS/IKw5vnevd6zycOEk2xdNNJqNS5EHWd4XoeZUawkNVT9h/ceAgqTTvMV5g+0FdWFnip+CgyQc+TvkB1+mMrghMzN8iydNP0KmvhEp4Ovowru2SL+bFlnXnGaiNw/YZMaZ7Ob6KNMQECNr/klwAy5C5XwsygmpqQfahL+8vhMogUBQliujldoXgC2B4b1OAeg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2+8KdbZKYBF8Be+CMwXZ0qBJPfP9sEca8pm7JJU7UhA=;
- b=sxQFb1B+yRGfaGgosFf7SQ/UOnAD4A7YCetXcAKJ+t6C90pURTWus6TQpM+2EwpwSee6NSzWZG/jHQ7UtI3Wzv865uwRWGFji3AgnknQr0LVtuOXQK8c+KuZcCOriQG99BCm9cCsbnJo8Xg2XiA5RFcBr/PAPVYRZCVcbiPvYDPgtl1euL03NxKtCjrP1M3li//hUZB0S+MiQaD+kQzw0Z6AbCnY/DWHDhQDW8shr4WYNceZ5dbRSaSzmYL2XAMXbIgEMxUnu9l7+NC3HZIHGAHAn+UjEWoXt/G+OKoSuIhPQxENInNExQ16FnoWbvQQvxzg6TK3IVurlMzcGIIR5Q==
-Received: from BN0PR04CA0076.namprd04.prod.outlook.com (2603:10b6:408:ea::21)
- by DM6PR12MB2908.namprd12.prod.outlook.com (2603:10b6:5:185::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4951.12; Thu, 10 Feb
- 2022 23:41:18 +0000
-Received: from BN8NAM11FT066.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:ea:cafe::bd) by BN0PR04CA0076.outlook.office365.com
- (2603:10b6:408:ea::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.14 via Frontend
- Transport; Thu, 10 Feb 2022 23:41:18 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.234)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 12.22.5.234 as permitted sender) receiver=protection.outlook.com;
- client-ip=12.22.5.234; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (12.22.5.234) by
- BN8NAM11FT066.mail.protection.outlook.com (10.13.177.138) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4975.11 via Frontend Transport; Thu, 10 Feb 2022 23:41:17 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by DRHQMAIL101.nvidia.com
- (10.27.9.10) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 10 Feb
- 2022 23:41:11 +0000
-Received: from nvdebian.localnet (10.126.230.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.9; Thu, 10 Feb 2022
- 15:41:07 -0800
-From:   Alistair Popple <apopple@nvidia.com>
-To:     <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        David Hildenbrand <david@redhat.com>
-CC:     <Felix.Kuehling@amd.com>, <rcampbell@nvidia.com>,
-        <linux-ext4@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <hch@lst.de>, <jgg@nvidia.com>, <jglisse@redhat.com>,
-        <willy@infradead.org>, <alex.sierra@amd.com>, <jhubbard@nvidia.com>
-Subject: Re: [PATCH v2 2/3] mm/gup.c: Migrate device coherent pages when pinning instead of failing
-Date:   Fri, 11 Feb 2022 10:41:05 +1100
-Message-ID: <5251686.PpEh1BJ82l@nvdebian>
-In-Reply-To: <fb557284-bcab-6d95-ac60-acd7459e9e80@redhat.com>
-References: <cover.0d3c846b1c6c294e055ff7ebe221fab9964c1436.1644207242.git-series.apopple@nvidia.com> <1894939.704c7Wv018@nvdebian> <fb557284-bcab-6d95-ac60-acd7459e9e80@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+ bh=C3mu6J3djkptvJzVveOhtTc0DuU4l5kV9/5Ov+folzs=;
+ b=AXZS7rlrprbmfCBUNOlkFohBXubFC5a962W47prAcmMpKm59Q7FUbQqRNJB1SV3+xKZTOLFtM/iHKOWaW1c+yoN8XfuxLPAXorrMRQ2jbZCk36zmxyb/MtFWIO55EGAA9EWbnFA9SdpsR3/jr+Mq2agYEDCHJzgH+uDA05Rf/B0=
+Received: from DM8PR04MB8037.namprd04.prod.outlook.com (2603:10b6:8:f::6) by
+ BN6PR04MB0932.namprd04.prod.outlook.com (2603:10b6:405:43::34) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4951.18; Fri, 11 Feb 2022 02:07:36 +0000
+Received: from DM8PR04MB8037.namprd04.prod.outlook.com
+ ([fe80::8c78:3992:975a:f89]) by DM8PR04MB8037.namprd04.prod.outlook.com
+ ([fe80::8c78:3992:975a:f89%6]) with mapi id 15.20.4951.019; Fri, 11 Feb 2022
+ 02:07:36 +0000
+From:   Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+CC:     "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Subject: Re: [PATCH v2 2/6] generic/204: remove unnecessary _scratch_mkfs call
+Thread-Topic: [PATCH v2 2/6] generic/204: remove unnecessary _scratch_mkfs
+ call
+Thread-Index: AQHYHbE2IBcn5+zDo0iR6hGUaqqMrKyLzicAgAHOugA=
+Date:   Fri, 11 Feb 2022 02:07:35 +0000
+Message-ID: <20220211020734.x7nxgvdl4ltesjb2@shindev>
+References: <20220209123305.253038-1-shinichiro.kawasaki@wdc.com>
+ <20220209123305.253038-3-shinichiro.kawasaki@wdc.com>
+ <20220209223124.GE8313@magnolia>
+In-Reply-To: <20220209223124.GE8313@magnolia>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 09bcc3c5-9540-4640-f436-08d9ed0345c8
+x-ms-traffictypediagnostic: BN6PR04MB0932:EE_
+x-microsoft-antispam-prvs: <BN6PR04MB0932B257CC69B14F4530CB5BED309@BN6PR04MB0932.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: llyJeYmLx4sPKOW4Bt0GjsBCs5MZQZIAQf6qPfLhSMzz8cFdM5rNdp6b3bF9AzNE6AWlC3p5WSax9uI6E0GYBktZjX14wJ7HQNB8u8X7ypSyQWaDr3arPTGfi2eXTf68Fl4IewPRGzTVidnfIoz35cjwRUT2pH1D+SoODH71gYvyrL+m+cHyVc4J4oGgtBWmcNU4PystLoHbzirkjjp7O1xpPCoVKsDKRllCR3u9mGxCBQTyG/+4ZwjVjBRwtt1wGTf3MW1d33Z5bn0wG6YJNxiHYdZXrKN0+o15gLx+Y1+GNmjY6h7u3Tp0xwBzg75gult9zVUd+PIrEdMHCCwp0DwhnkHy4WxXP6kIOKVs3Y4IRYOLyjez8vtabuXpNdPlznJbDZnF3hHRPwMGsux/MgATNz9vgEmLLo6Xk0LNXsi5w7rkQ1gI4rGsE4AfUWQX/xirMfaiDKs84I/qNLt6D8z88L8Hk2CPTSNanLci9K+a8MdahNYTGE3BYCHfnUvPxs3LFyzn8iMWFdojkZQwM+AoJTo0R5B6/awHI+n40SE7ZpoYn7TpprXcbQ/KKkm2vRFuSFyHGdz8jui8UpJcL/MTY63yNsHFoSs8MDP5WlqwyLSsexcJIPGsUrE2Wqs+FLY54Rlfsv0tqllH30RzthGSVB/AhxcTXTFMMem6PpCi98HY91HzFGXxj7yRVJoq5RSyRBcORlGT3VRX1EhKfCHslcsNjCKXFZVHVNo5rnc=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR04MB8037.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(7916004)(366004)(38100700002)(1076003)(6506007)(71200400001)(186003)(508600001)(26005)(5660300002)(44832011)(38070700005)(2906002)(6486002)(82960400001)(9686003)(86362001)(66556008)(8936002)(91956017)(54906003)(66476007)(83380400001)(6916009)(316002)(6512007)(33716001)(8676002)(4326008)(66446008)(76116006)(64756008)(66946007)(122000001)(41533002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?N1bcNoI9vVQCaU57VSZEGEfbOmpzCTUt0Q7tTjFSVM41XtRnBhjWkKYEI+zV?=
+ =?us-ascii?Q?3NatasYPVkV7uGYWHbfnLYXtsZaJG4AYAwHCKXKZ60QG486HtHuT+wd98f6j?=
+ =?us-ascii?Q?j6ItbCh64TQ6JoOKHiM1AJaMBtNPmpin59R30u/pxUC7DpIajOt6gpBava89?=
+ =?us-ascii?Q?2o0zVDBt1LASLwepAq4Xulk/eMR5Hm6ny4KLMSM49/di+Nb8PCNOSeAEhNYi?=
+ =?us-ascii?Q?MMbbs9RNdvrEFlT9fIde/eqGHYkTvWrVEgUE9Zjsj0nYKdQju54cCDGQ+UZs?=
+ =?us-ascii?Q?pnXweap9kGf+S8pnO0FhRvPtQAQ8m0W6jwZkKg3gxnPWH2i+NDVy7Sg8oavZ?=
+ =?us-ascii?Q?Zjx1i36s+0FS6+myjnyg38iqxQRWqWNcxfsr9d+BMO8OYW4+4gkyi/VR86l2?=
+ =?us-ascii?Q?sn7SlUodeMr+2WoM5X5VuUn91nrPE2EtH1jRdX9vJ5iDkqhMlYoeAznJ4Lna?=
+ =?us-ascii?Q?msW/SNM9wUm7ekOllRwKSB3RD7RwRysbTDdZdbgj48Vs2SgOHJXCz70JVq9M?=
+ =?us-ascii?Q?h8ovoXNxSDT1FFkMquHJitN8lpB6i7MSzANxUOnaOpLlbl4Q0u8RQzoLlr70?=
+ =?us-ascii?Q?w8FR4PqdXPMdb2WZLQzE1u62fXLXv7kR52HUYfpYxSlSLS/q7fkz9xi8QSZp?=
+ =?us-ascii?Q?S0lkP2Hz7krqgoPk7hOnKP87HHOOBckgrofL8xP/CwHmKRS9C7BKdUZcRfx+?=
+ =?us-ascii?Q?rukxGLXN4sHQH/e1Dqy++Apk0OydNVnn9Gc7TIy5uUqL6ZSvshr2RMZG775y?=
+ =?us-ascii?Q?Hc9vHCsKT9dYTqNrt9BhRqHjS12aldG/LZcP0WCkwBnKv9b3R/URdGUD0SRS?=
+ =?us-ascii?Q?H+iCSSVnR6IJwPfUIJbk+SbIQ2/c5GG4sy0x13J3m+miyRL0G9x2epRKWNX4?=
+ =?us-ascii?Q?WnZlts0C1S1hXzNYJIYCssJy/cZ4sRBEEedwDgzvfikdwB7LDvLELJC/dTXM?=
+ =?us-ascii?Q?hBgAhqOE9fqs3JK6ZXyVN5HHvfMh9M4+VoOhQlbcO9ZrjJ9kw1rv7H0v3jSc?=
+ =?us-ascii?Q?oA3MZQVAcGQ8NdFLDRAQhDluW/zN6uY/bLmHAmoJ6p2A18ilgFduwA4H+YSW?=
+ =?us-ascii?Q?nRrND8y3l8sIj/odJHButGWxxPEyUyUd8jbTsq5zrPQQvnEJ7qwUUOhc5Oop?=
+ =?us-ascii?Q?MDdbzAWz/4EIbqKvcpPzOOP8ROlnRFMyOZrTjnshEWGVRzthM3HtrTHX3ZPp?=
+ =?us-ascii?Q?ebvKcjbC/AOm37PIdoF0ss/qQsf6Al4aK52uUgkItMlkwjsF3MF+TMREM/mR?=
+ =?us-ascii?Q?tvcSWdRimW10f1Bs97qXLUOyZlyclUkSwaJ+HeNevJ+6/sUIToGqG7re1Ksz?=
+ =?us-ascii?Q?aOYScIwYfsHtMqtRu/uqk4xWzPuksoFsMcla3h1LUjZGtvwn7sBNjCabwpC7?=
+ =?us-ascii?Q?elrqjtUqBx568yGFWD9TrgrQyCmlIth3sncfY9OPI6x9SqFvsru6ZHf/sfEN?=
+ =?us-ascii?Q?a+ymPj0WxU//SOI4F1ynsbaJFaC0tTE3VmuA/lVN9ygLPH4xmqNEDQVwEOHQ?=
+ =?us-ascii?Q?CvJCQmUDqOl7HbhZgjEuUbG2TCcFvvvtIYduXfzOJsTxxsExHW3sdY4wK22j?=
+ =?us-ascii?Q?eCNsTFKWtjysd17x8gYIGaROe1zjUCrmGWKJU8cp+glZt0biBNVw42zbGZMK?=
+ =?us-ascii?Q?hePFXYP+s/qOYLgbZ93BOlBmDF8ilZnN9Uag3PqPM//QE1u2Itbiq142Dp+T?=
+ =?us-ascii?Q?Ph2R/hZkT8WEZpG7K7rR4YcruKc=3D?=
 Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [10.126.230.35]
-X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 16a4bd5f-504c-415c-b966-08d9eceed59d
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2908:EE_
-X-Microsoft-Antispam-PRVS: <DM6PR12MB2908AE34AF904ECA76BD5441DF2F9@DM6PR12MB2908.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: f7wouD2riYtPX8E7ommPm+4sskDUXU1K+YsZMo4idADVG/Tj5GhYiliNjcH/xE9Q7W/dJoBWxcQwbaXvBnHalPtrr0lknho1MKDTuqZcbBk19b/hRMDjiPqe+KSDvT+qE+1qll7rYX9vVsS4nPW9YlrZJVh79rUfQnkn/+xRe2xAkTAx9BTxfTbY5QjzzhAK3yu4aDfjyVRUdLfEdCPM9v/HF+VgB5TTB5Mm9aVpe5Kf/zc2MTh1KMv6M/tuLZ0VayoPauZQqv+hgbmD+VZUGXcxuHQpc6Ebm96MFrVYHfNedKcfyxfzhPGiB9vtX0/kTORRKVSuyS1JJdf+ohz8UbZbj4hAFvubkUg0CE9YZ970koOC4I0Cbv/kgEisXEYbr5dMdZNi9awgN+lDQHrj6qXqMCh1pZwKsne/JCy+wuEmNg6ScXA2w4NwGh8OVkQdAIbOiP3wljXBIcn8uaBK/yym8pssOUP3becXsA5aiyXl3oAo248q92sc2Sue9AE5alZDHTEDbdJAdmKW7Wc8WQbSDlt6/e5Sgb3Og7fUBfpP7+T7VCwBjdN6rhSjzXBiJNfqP8c+MtbztOwtoE8J2HV7UBNJiWK/S9sjmAC+i8nBc1D73Hs+KlqH32gr3mXgghRnSlw4bFPOvnsjfzpzGQIphQZiggavup8fAGgwsiDXmxzY7/pxmS6qSiRR5ehJawjN4YbI/zx5L2fJC9IDychkoBr8qCFrFGVqYCmQwK7sxiaiIP0JJuQPbLxE0hDv
-X-Forefront-Antispam-Report: CIP:12.22.5.234;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:mail.nvidia.com;PTR:InfoNoRecords;CAT:NONE;SFS:(13230001)(4636009)(40470700004)(46966006)(36840700001)(26005)(186003)(81166007)(5660300002)(2906002)(336012)(316002)(16526019)(426003)(40460700003)(7416002)(36860700001)(107886003)(54906003)(110136005)(9686003)(70206006)(53546011)(70586007)(47076005)(83380400001)(4326008)(8936002)(8676002)(33716001)(356005)(9576002)(508600001)(82310400004)(86362001)(39026012)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2022 23:41:17.8172
+Content-ID: <99C1B80739909948936F0C1225B27B08@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM8PR04MB8037.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 09bcc3c5-9540-4640-f436-08d9ed0345c8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Feb 2022 02:07:35.9399
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 16a4bd5f-504c-415c-b966-08d9eceed59d
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[12.22.5.234];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT066.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2908
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: KzuzP6NwMaUszVjwmKtjsqYmmTYlOoUHej5sqs3e9mDVZTEMGnZFJtXkcb0SoA7FL4Z92bu6j9LNXJLIFpyqH4fo+7Q1i+BhqtKksjNJlQY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR04MB0932
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thursday, 10 February 2022 10:47:35 PM AEDT David Hildenbrand wrote:
-> On 10.02.22 12:39, Alistair Popple wrote:
-> > On Thursday, 10 February 2022 9:53:38 PM AEDT David Hildenbrand wrote:
-> >> On 07.02.22 05:26, Alistair Popple wrote:
-> >>> Currently any attempts to pin a device coherent page will fail. This is
-> >>> because device coherent pages need to be managed by a device driver, and
-> >>> pinning them would prevent a driver from migrating them off the device.
-> >>>
-> >>> However this is no reason to fail pinning of these pages. These are
-> >>> coherent and accessible from the CPU so can be migrated just like
-> >>> pinning ZONE_MOVABLE pages. So instead of failing all attempts to pin
-> >>> them first try migrating them out of ZONE_DEVICE.
-> >>>
-> >>> Signed-off-by: Alistair Popple <apopple@nvidia.com>
-> >>> Acked-by: Felix Kuehling <Felix.Kuehling@amd.com>
-> >>> ---
-> >>>
-> >>> Changes for v2:
-> >>>
-> >>>  - Added Felix's Acked-by
-> >>>  - Fixed missing check for dpage == NULL
-> >>>
-> >>>  mm/gup.c | 105 ++++++++++++++++++++++++++++++++++++++++++++++++++------
-> >>>  1 file changed, 95 insertions(+), 10 deletions(-)
-> >>>
-> >>> diff --git a/mm/gup.c b/mm/gup.c
-> >>> index 56d9577..5e826db 100644
-> >>> --- a/mm/gup.c
-> >>> +++ b/mm/gup.c
-> >>> @@ -1861,6 +1861,60 @@ struct page *get_dump_page(unsigned long addr)
-> >>>  
-> >>>  #ifdef CONFIG_MIGRATION
-> >>>  /*
-> >>> + * Migrates a device coherent page back to normal memory. Caller should have a
-> >>> + * reference on page which will be copied to the new page if migration is
-> >>> + * successful or dropped on failure.
-> >>> + */
-> >>> +static struct page *migrate_device_page(struct page *page,
-> >>> +					unsigned int gup_flags)
-> >>> +{
-> >>> +	struct page *dpage;
-> >>> +	struct migrate_vma args;
-> >>> +	unsigned long src_pfn, dst_pfn = 0;
-> >>> +
-> >>> +	lock_page(page);
-> >>> +	src_pfn = migrate_pfn(page_to_pfn(page)) | MIGRATE_PFN_MIGRATE;
-> >>> +	args.src = &src_pfn;
-> >>> +	args.dst = &dst_pfn;
-> >>> +	args.cpages = 1;
-> >>> +	args.npages = 1;
-> >>> +	args.vma = NULL;
-> >>> +	migrate_vma_setup(&args);
-> >>> +	if (!(src_pfn & MIGRATE_PFN_MIGRATE))
-> >>> +		return NULL;
-> >>> +
-> >>> +	dpage = alloc_pages(GFP_USER | __GFP_NOWARN, 0);
-> >>> +
-> >>> +	/*
-> >>> +	 * get/pin the new page now so we don't have to retry gup after
-> >>> +	 * migrating. We already have a reference so this should never fail.
-> >>> +	 */
-> >>> +	if (dpage && WARN_ON_ONCE(!try_grab_page(dpage, gup_flags))) {
-> >>> +		__free_pages(dpage, 0);
-> >>> +		dpage = NULL;
-> >>> +	}
-> >>> +
-> >>> +	if (dpage) {
-> >>> +		lock_page(dpage);
-> >>> +		dst_pfn = migrate_pfn(page_to_pfn(dpage));
-> >>> +	}
-> >>> +
-> >>> +	migrate_vma_pages(&args);
-> >>> +	if (src_pfn & MIGRATE_PFN_MIGRATE)
-> >>> +		copy_highpage(dpage, page);
-> >>> +	migrate_vma_finalize(&args);
-> >>> +	if (dpage && !(src_pfn & MIGRATE_PFN_MIGRATE)) {
-> >>> +		if (gup_flags & FOLL_PIN)
-> >>> +			unpin_user_page(dpage);
-> >>> +		else
-> >>> +			put_page(dpage);
-> >>> +		dpage = NULL;
-> >>> +	}
-> >>> +
-> >>> +	return dpage;
-> >>> +}
-> >>> +
-> >>> +/*
-> >>>   * Check whether all pages are pinnable, if so return number of pages.  If some
-> >>>   * pages are not pinnable, migrate them, and unpin all pages. Return zero if
-> >>>   * pages were migrated, or if some pages were not successfully isolated.
-> >>> @@ -1888,15 +1942,40 @@ static long check_and_migrate_movable_pages(unsigned long nr_pages,
-> >>>  			continue;
-> >>>  		prev_head = head;
-> >>>  		/*
-> >>> -		 * If we get a movable page, since we are going to be pinning
-> >>> -		 * these entries, try to move them out if possible.
-> >>> +		 * Device coherent pages are managed by a driver and should not
-> >>> +		 * be pinned indefinitely as it prevents the driver moving the
-> >>> +		 * page. So when trying to pin with FOLL_LONGTERM instead try
-> >>> +		 * migrating page out of device memory.
-> >>>  		 */
-> >>>  		if (is_dev_private_or_coherent_page(head)) {
-> >>> +			/*
-> >>> +			 * device private pages will get faulted in during gup
-> >>> +			 * so it shouldn't be possible to see one here.
-> >>> +			 */
-> >>>  			WARN_ON_ONCE(is_device_private_page(head));
-> >>> -			ret = -EFAULT;
-> >>> -			goto unpin_pages;
-> >>> +			WARN_ON_ONCE(PageCompound(head));
-> >>> +
-> >>> +			/*
-> >>> +			 * migration will fail if the page is pinned, so convert
-> >>> +			 * the pin on the source page to a normal reference.
-> >>> +			 */
-> >>> +			if (gup_flags & FOLL_PIN) {
-> >>> +				get_page(head);
-> >>> +				unpin_user_page(head);
-> >>> +			}
-> >>> +
-> >>> +			pages[i] = migrate_device_page(head, gup_flags);
-> >>
-> >> For ordinary migrate_pages(), we'll unpin all pages and return 0 so the
-> >> caller will retry pinning by walking the page tables again.
-> >>
-> >> Why can't we apply the same mechanism here? This "let's avoid another
-> >> walk" looks unnecessary complicated to me, but I might be wrong.
-> > 
-> > There's no reason we couldn't. I figured we have the page in the right spot
-> > anyway so it was easy to do, and looking at this rebased on top of Christoph's
-> > ZONE_DEVICE refcount simplification I'm not sure it would be any simpler
-> > anyway.
-> > 
-> > It would remove the call to try_grab_page(), but we'd still have to return an
-> > error on migration failures whilst also ensuring we putback any non-device
-> > pages that may have been isolated. I might have overlooked something though,
-> > so certainly happy for suggestions.
-> 
-> Staring at the code, I was wondering if we could either
-> 
-> * build a second list of device coherent pages to migrate and call a
->   migrate_device_pages() bulk function
-> * simply use movable_page_list() and teach migrate_pages() how to handle
->   them.
+On Feb 09, 2022 / 14:31, Darrick J. Wong wrote:
+> On Wed, Feb 09, 2022 at 09:33:01PM +0900, Shin'ichiro Kawasaki wrote:
+> > The test case generic/204 calls _scratch_mkfs to get data block size an=
+d
+> > i-node size of the filesystem and obtained data block size is passed to
+> > the following _scratch_mfks_sized call as an option. However, the
+> > _scratch_mkfs call is unnecessary since the sizes can be obtained by
+> > _scratch_mkfs_sized call without the data block size option.
+> >=20
+> > Also the _scratch_mkfs call is harmful when the _scratch_mkfs succeeds
+> > and the _scratch_mkfs_sized fails. In this case, the _scratch_mkfs
+> > leaves valid working filesystem on scratch device then following mount
+> > and IO operations can not detect the failure of _scratch_mkfs_sized.
+> > This results in the test case run with unexpected test condition.
+> >=20
+> > Hence, remove the _scratch_mkfs call and the data block size option for
+> > _scratch_mkfs_sized call.
+> >=20
+> > Suggested-by: Darrick J. Wong <djwong@kernel.org>
+> > Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+>=20
+> Looks ok, assuming you've verified that fstests with FSTYP=3Dxfs doesn't
+> regress...
+>=20
+> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-I did consider that approach. The problem is zone device pages are not LRU
-pages. In particular page->lru is not available to add the page to a list, and
-as an external API and internally migrate_pages() relies heavily on moving
-pages between lists.
+Thanks for reviewing. I tested the test case with FSTYP=3Dxfs on a few devi=
+ces and
+3 variety of MKFS_OPTIONS (no option, "-b size=3D1024 -i size=3D512" and
+"-b size=3D4096 -i size=3D2048") and all passed. Also I ran whole fstests w=
+ith
+FSTYP=3Dxfs, and confirmed that this change does not cause additional failu=
+re.
 
-> I'd really appreciate as little special casing as possible for the ever
-> growing list of new DEVICE types all over the place. E.g., just staring
-> at fork even before the new device coherent made my head spin.
-
-That's fair. We could pull the checks for device pages out into a self
-contained function (eg. check_and_migrate_device_pages()) called before
-check_and_migrate_movable_pages(). The down side of that is we'd always have an
-extra loop over all the pages just to scan for device pages, but perhaps that's
-not a concern?
-
-
-
+--=20
+Best Regards,
+Shin'ichiro Kawasaki=
