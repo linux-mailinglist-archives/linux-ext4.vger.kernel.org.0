@@ -2,195 +2,143 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB894B2B4D
-	for <lists+linux-ext4@lfdr.de>; Fri, 11 Feb 2022 18:07:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F173D4B322F
+	for <lists+linux-ext4@lfdr.de>; Sat, 12 Feb 2022 01:47:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351597AbiBKRHR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 11 Feb 2022 12:07:17 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60786 "EHLO
+        id S245110AbiBLAr2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 11 Feb 2022 19:47:28 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349563AbiBKRHQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Feb 2022 12:07:16 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2085.outbound.protection.outlook.com [40.107.93.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A6A32E8;
-        Fri, 11 Feb 2022 09:07:15 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Qce9LY45lLdRVZoG0GgO+NX0CIFRUGdzvmfCEyk0wYbOdYUeufF8QZgb8UYHxIuOpEPGaWblkPff2KB0uBlhNnMytuDBgMt5wkPaEcKYiMoILn2ASXWgTGjCPYqDTiEXF+tJP/yFnT5TFav8gupf7ODCFsG+qzghKS3WPZ2ngrULLx19VQaDXWX+ceAHDGkisucrFlgJCFYIfFGJxjfHeetH3TjIyB1gAg01OsvEAIMz51ahJVxyesmGhGCM0TdH6lJeu8VfqtfEYYOkcdCsuwXR1uaBc251ly3lFhj93LQSyBpVG5ccgjNEzPzvMuO/L5S13tSHe+rV2tETbXB7CA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=49+uABlHoF/XzoYLH/FogMU5ku/SkUq3CWWdN4lxGb4=;
- b=ecH7HNJD3/1pSO03tShMA1I+eqbiVzG7uYe9BNYDPncZomfO2XhysP8ysL351+naLqwUB7XYjCxLsBl48KF0E+zT+OrsPQy2fdShhZLDNirSOP5+DeGR56lJ/3bQ+7GMK4jdAocaPM9lAMNOHpk4XoUNj8ls5u0kLApqgK7ryXmVw5SNwigl0rxIflj5R35cTP4mJVjwjB7JG0GTROYp95gb8QFKBlLmWqx8RQsmcyArTqWlHyyj+ZGbcE7PfQdRol2PPbLdNmLkaTW4OY/4f2IYUxy48bt5Ax6GOgtuHHpdmaO1iTBwdnzBi/OlZplAmofmU0PAKSjkNRzwXsun+w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=49+uABlHoF/XzoYLH/FogMU5ku/SkUq3CWWdN4lxGb4=;
- b=xqhN/kBBxNi/jcTiBdZTM9Df3L5fBL741kiHIbs/uPn4PDnygUTLjq5fl1yFCNC5ObnzMoc2763Sfg5k1Kk1j2ej3HrMd8h86gFx/8lfvNjrz4xiJbzGy2z84JCdEdMFzPyB0HtYDLVsfpz6fL/xedva6MAPAWRxBEfOq3CYUEs=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN9PR12MB5115.namprd12.prod.outlook.com (2603:10b6:408:118::14)
- by CY4PR12MB1925.namprd12.prod.outlook.com (2603:10b6:903:120::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4951.17; Fri, 11 Feb
- 2022 17:07:13 +0000
-Received: from BN9PR12MB5115.namprd12.prod.outlook.com
- ([fe80::38ec:3a46:f85e:6cfa]) by BN9PR12MB5115.namprd12.prod.outlook.com
- ([fe80::38ec:3a46:f85e:6cfa%4]) with mapi id 15.20.4975.014; Fri, 11 Feb 2022
- 17:07:13 +0000
-Message-ID: <a24d82d9-daf9-fa1a-8b9d-5db7fe10655e@amd.com>
-Date:   Fri, 11 Feb 2022 12:07:11 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v6 01/10] mm: add zone device coherent type memory support
-Content-Language: en-US
-To:     David Hildenbrand <david@redhat.com>,
-        Alex Sierra <alex.sierra@amd.com>, akpm@linux-foundation.org,
-        linux-mm@kvack.org, rcampbell@nvidia.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        hch@lst.de, jgg@nvidia.com, jglisse@redhat.com, apopple@nvidia.com,
-        willy@infradead.org
-References: <20220201154901.7921-1-alex.sierra@amd.com>
- <20220201154901.7921-2-alex.sierra@amd.com>
- <beb38138-2266-1ff8-cc82-8fe914bed862@redhat.com>
- <f2af73c1-396b-168f-7f86-eb10b3b68a26@redhat.com>
-From:   Felix Kuehling <felix.kuehling@amd.com>
-In-Reply-To: <f2af73c1-396b-168f-7f86-eb10b3b68a26@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: YT3PR01CA0064.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:84::10) To BN9PR12MB5115.namprd12.prod.outlook.com
- (2603:10b6:408:118::14)
+        with ESMTP id S231577AbiBLAr2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Feb 2022 19:47:28 -0500
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37650D79
+        for <linux-ext4@vger.kernel.org>; Fri, 11 Feb 2022 16:47:26 -0800 (PST)
+Received: by mail-io1-f72.google.com with SMTP id q24-20020a5d8358000000b006133573a011so7439851ior.23
+        for <linux-ext4@vger.kernel.org>; Fri, 11 Feb 2022 16:47:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=jc30QT8f4scBqobRyundyPLPktYc4x+ym4PxvVJOVaQ=;
+        b=GbT0H5UM8Pwi6UNXEZ0BTLYdU0mjRKVK3p4UzQGLWbKtvSyMRvo0DgS202mO78Jjzy
+         Vm24wKkaiIHlasMh2keFZ6xZMWHvSnq2eRF+Gak8EiqREcC1UD60InUvZ82uzuTva6ll
+         I2zKSoKjm7tvLNZmDxqlVrXQ1PArqHiBy1B0stX5Vrmud67UYHxPQ/ULH5Ds77+jQtRO
+         DlN8RiCstQk8zaVJh9h339QvyjABsWHqkEnJ25pGKZmfg6F0pLIueNQwDAQj/meb42K+
+         Dn6RaRd7jgHvAo3szNn0oixdHcJ58kW8ClPai84VR1qjvlq1f+jtsc9b17RWaqKbacgs
+         QU2Q==
+X-Gm-Message-State: AOAM533ifvpd3qlQnTmcTinwrnzlK29Jic63r7pGI0wpCbXWBgJNjX0S
+        o4mUsblU6sK0MG6NZCt8nXvxEoRIDLApiI8px1Hvp7y3MY5a
+X-Google-Smtp-Source: ABdhPJwzmLaA6z4T0Ml6/moeuB4bOqH/jbhfXiUsB/fuH7IvFqBI/RTZntQot8i+hPVsQaUTF/Yit1eeI8JlOf9xYw9HnZZkEGBR
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5b65f081-ee5b-49bf-546e-08d9ed80f2a8
-X-MS-TrafficTypeDiagnostic: CY4PR12MB1925:EE_
-X-Microsoft-Antispam-PRVS: <CY4PR12MB1925241C51B7366D3470B40392309@CY4PR12MB1925.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IHOSERCs1T0TNGvbXZkqFmAw9k3kTcVZ0xA3R6NKOPhhiWUFiv2NLTjk8TQCbOf/4JQ0KbskB2kKorkmbLgAtzHKDetAvKEADfomArP82dz7E0henlwQgkisVktVeTgs0/EQ+VQuLvj4JlRyGkOpTv4bNJbVq4WsWwtNsUoID7FT7G9mL5DIIJralLC9pnz9dsQEc1CL3TmHz+11JR8gVaV9si74E/L5fmqaZS8Nvqpa8uxTBdBrpAh43KkKuzxoiqF8d6IE0xxSZOFiTH4JYFYTIdp0PM9ml4FghiyTkKe8VP9zC6hqX2QwXjaEEJUYQY+Iwhq4rEXAE74s/fYm1YHBpg/14s1pAID3APsytaRZ2SxdtXfW02P4/5Y0xvD0g02e09jrGZh+23limhvjRh8SwDZsD2CYTQp7mK2N8R9owpjEkOmmdeH58J45a8wYiOHJt2MFT5Rn571mKW6ikhTfzVlM+JpNYBumqZlOYziUZ4jLlVju+LjgFQnNLzsq/XlwLs6EE/2baGuv2pHNRqrqaOU/e9ycKvjNqGS8dRum3s62OrOOFIRqihPLC6EWfYjTZA3Fi+uoOur19BPRZK4N6rfaAZmWMFpXzJxH3FBN13mLFcXcKQ8O1wRxIJCxAC/WDLguF5fOaB6jVR9psXEsZRalxZ64YrzTOayc6LP3re8oD586MCGg1/jDS2pBJh5GxUJ9Pdf/eb1z5JhInuIRuBJPJYmSINHOuG4JU0eUdg3DDA3UuA0J3C6tj9TY
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5115.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(66556008)(6486002)(110136005)(53546011)(508600001)(8676002)(6506007)(38100700002)(31686004)(6512007)(66946007)(2906002)(66476007)(83380400001)(26005)(31696002)(36756003)(44832011)(2616005)(5660300002)(8936002)(316002)(7416002)(86362001)(186003)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dHdKdjRFVkYyTnY2R2ZvVWwzMTJiOGZyZlo2RjNWako3VWlpV3VRdWhVK2Zj?=
- =?utf-8?B?WFYwdWNrbDk4U3ArSlAwVWV5QUxoUmhBNFluem9uYXpZS1ZVc0JXQkRLbUdw?=
- =?utf-8?B?YnF6SGlXbVBSMmRUcnFyQ0I1dGRycm5PbGdXRFVGc0FnaUlqOTZlN2NsYXky?=
- =?utf-8?B?TlpVK3djL0R6ME5HYmxYQVlBMC9KeVdFcTAvVmpQQmNBUEZHNE9FNDlmWTlJ?=
- =?utf-8?B?K0E4cWRMczBrSmlrTGFkeXZzY3VibG5MWGZkMmltNkVDWkpZdVFKcEVMUS9G?=
- =?utf-8?B?cjQza2t4SlhweXV1dTh2Zi8rMnU0bVBZM2xRcW5ESUhybGQva1ZrVmF4YzNN?=
- =?utf-8?B?UnFlS3NlSFVldURSamR0a1djME9QdTFhL2UwdVlKMnp5QllZcUo2ZEh1YWNW?=
- =?utf-8?B?RlNyNjRpbkJickJZRmhoTmpEZlJ5SXRxckNkbDU5QWxQRXZabENYVnBFampu?=
- =?utf-8?B?bWRZWnoxdWw5T0ZKZW11ZDkvdEVxYkEyem5sZzgvR1JLaXl6ZTEyMkpFTjZG?=
- =?utf-8?B?Q09sM0NqWHZXY3NRRkJ3RTI3eWJ0MjR2cDZKRFh0eDgxRHRtVmVDNmtKeU1L?=
- =?utf-8?B?REVqRUdUa2xGWDQ5YVpjRnZONGpQaGorb1ExdjlhMlVIWCtaaTF2QXdmNXQr?=
- =?utf-8?B?NEVvR0k1MlVIQStsZCt3cm83alNoWGNaRWdsQUxVdmV6dTdXYXJmTlJTMFY0?=
- =?utf-8?B?MGVtV040bzJ2REJQU0hTdDJWN2pMV3BmbnRxRGdTZWFDd0pWVGkzbWNWWldB?=
- =?utf-8?B?cEQ4a2tXeUFnbS9rOU9yZk1kTHRyRk92K1dnYm9DTUVpNlhDYm9JaEltVGRQ?=
- =?utf-8?B?eHpsM3hGeVdMa0FEWC9wTjRHNWVQVmw3Y21ZVVUwMnRBaUhnb2txelJiNCs0?=
- =?utf-8?B?KzlYYzdXYlFTWnVSamJpSVUvSE40Q2Z6ZnIwRlRLQTdyYzNINEkzZk1ncWlv?=
- =?utf-8?B?UkNUb243VTBWbzA4MUxUR1krTEU0YlZjVmxWelFuOVlNb3cwS0Z6LzBuQVdq?=
- =?utf-8?B?L0dwWGQrVzB5VmFHbDEyUzErVFZ4aU9nVGI0Ylp3OTRSQWh6ZW1yZkJiczAw?=
- =?utf-8?B?a21iQ2pUb085UUVZNlJQQktzOXQ3S0d2NVVINkJNRTJ5OFB4UVJrVnIycDdp?=
- =?utf-8?B?b21sVFZjTDVFRlVTSytQV21RVUpqajNCYlhKWkZnZldJMUxaOTY2YU5kZzMz?=
- =?utf-8?B?cDJkSDAxSWd1dGNObXdlZjVDTXFKbFBtRmtwR1VQeXpyM20wL3RKRHdFck9j?=
- =?utf-8?B?R0c0NGxyNW5GMEdmdlRkaXRuck5tZmF3cldwUXkyYzhnQmZ6NVhhb0ZxSHRM?=
- =?utf-8?B?bkE1SDcrM2s3K1dxUDBYWTF0RWQyTnRnN1hBdElMcHdXUDRDeHpPK1lGTmE1?=
- =?utf-8?B?THlBV2ZlR1oxVkNCbVRtRG1MN3ZWeC9vcHl4SVhZbnVMV3FLTVpwRlFKZ05C?=
- =?utf-8?B?eElpY3R0c2UvNE1aNE1SeWt4THlmVlU1QUMwek11d1lPdkx6NFYrTDZGYy9k?=
- =?utf-8?B?QTJsK1E4UlAyZW5qTUN5bWkxNWpvNzVNd3FmOXkvblo0cGd5M0krNjBUYWlz?=
- =?utf-8?B?UmFWN1dFOFd1V1JVL09zUWN6eWhwSWZpc0grSWNkNGtOVjJnNE9kbnVhMUti?=
- =?utf-8?B?WjI4RnE5RHViMmQ0UGRMSUdKS29yZ200VXh4UlFHUitXMms0bklnRGVJNDJr?=
- =?utf-8?B?MlNtbERLTE1hRWZob0YvbmtwTFBMT3lEYWYybFJDUHl3QXhrSUtwR2RGd004?=
- =?utf-8?B?Vzh1YUdMOGlwNHQ0akVOcUhHNjNET3Uwd2hsOXhoTWtFWFlWSVM1S0c1azdp?=
- =?utf-8?B?R1FEVTRtZWR4RytTVVNRdjZQWlFGRTRmZzV3Z1E3dUtMWFVJZXpVSUlPRUlq?=
- =?utf-8?B?OGpGUzVBR1dvZkU2dGxmQXMvMXFDMVc0ZEVsM1NUd3ppdVRnUkUzRXl0dHpx?=
- =?utf-8?B?aE43SDFaNlZ5ZHdBd0F2WUpuYUsvS3NON2s0WG5pZWM4WmtwQnM3SmY1bk9S?=
- =?utf-8?B?alhhK0xzWHd4MFRFMnY4ejJMVUZ6UDVmQytTOUVMN0pnVy9yN3dKSHpZbEpU?=
- =?utf-8?B?RE55MnpkUkVGNXZkR0pDVmdxRlJzR2xTUU04SkRYRGdKcUJNQUM5TTZQZm5U?=
- =?utf-8?B?empneGxieGQ1Nkh0SC9RUmkzRklCOGpqdXNSTVVjQTd1V0hpSnM4TitqUFgr?=
- =?utf-8?Q?fQEqHi9zliDap43iP9X5btI=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5b65f081-ee5b-49bf-546e-08d9ed80f2a8
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5115.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2022 17:07:13.3444
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uKbA+uuO0Vvo3mqirdvZIipYvNqwJxlwnWZXPzzlghUj1nZWX72Vqk/fQ35SUd7yHstsoudwIQhRK2F/HX4yQg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1925
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6e02:1a0a:: with SMTP id s10mr2159849ild.297.1644626845549;
+ Fri, 11 Feb 2022 16:47:25 -0800 (PST)
+Date:   Fri, 11 Feb 2022 16:47:25 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000eacb0205d7c7865e@google.com>
+Subject: [syzbot] WARNING in ext4_write_inode (2)
+From:   syzbot <syzbot+748cc361874fca7d33cc@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Hello,
 
-Am 2022-02-11 um 11:39 schrieb David Hildenbrand:
-> On 11.02.22 17:15, David Hildenbrand wrote:
->> On 01.02.22 16:48, Alex Sierra wrote:
->>> Device memory that is cache coherent from device and CPU point of view.
->>> This is used on platforms that have an advanced system bus (like CAPI
->>> or CXL). Any page of a process can be migrated to such memory. However,
->>> no one should be allowed to pin such memory so that it can always be
->>> evicted.
->>>
->>> Signed-off-by: Alex Sierra <alex.sierra@amd.com>
->>> Acked-by: Felix Kuehling <Felix.Kuehling@amd.com>
->>> Reviewed-by: Alistair Popple <apopple@nvidia.com>
->> So, I'm currently messing with PageAnon() pages and CoW semantics ...
->> all these PageAnon() ZONE_DEVICE variants don't necessarily make my life
->> easier but I'm not sure yet if they make my life harder. I hope you can
->> help me understand some of that stuff.
->>
->> 1) What are expected CoW semantics for DEVICE_COHERENT?
->>
->> I assume we'll share them just like other PageAnon() pages during fork()
->> readable, and the first sharer writing to them receives an "ordinary"
->> !ZONE_DEVICE copy.
->>
->> So this would be just like DEVICE_EXCLUSIVE CoW handling I assume, just
->> that we don't have to go through the loop of restoring a device
->> exclusive entry?
->>
->> 2) How are these pages freed to clear/invalidate PageAnon() ?
->>
->> I assume for PageAnon() ZONE_DEVICE pages we'll always for via
->> free_devmap_managed_page(), correct?
->>
->>
->> 3) FOLL_PIN
->>
->> While you write "no one should be allowed to pin such memory", patch #2
->> only blocks FOLL_LONGTERM. So I assume we allow ordinary FOLL_PIN and
->> you might want to be a bit more precise?
->>
->>
->> ... I'm pretty sure we cannot FOLL_PIN DEVICE_PRIVATE pages, but can we
->> FILL_PIN DEVICE_EXCLUSIVE pages? I strongly assume so?
->>
->>
->> Thanks for any information.
->>
-> (digging a bit more, I realized that device exclusive pages are not
-> actually/necessarily ZONE_DEVICE pages -- so I assume DEVICE_COHERENT
-> will be the actual first PageAnon() ZONE_DEVICE pages that can be
-> present in a page table.)
+syzbot found the following issue on:
 
-I think DEVICE_GENERIC pages can also be mapped in the page table. In 
-fact, the first version of our patches attempted to add migration 
-support to DEVICE_GENERIC. But we were convinced to create a new 
-ZONE_DEVICE page type for our use case instead.
+HEAD commit:    1d41d2e82623 Merge tag 'riscv-for-linus-5.17-rc4' of git:/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15ca859a700000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=266de9da75c71a45
+dashboard link: https://syzkaller.appspot.com/bug?extid=748cc361874fca7d33cc
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-Regards,
-   Felix
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+748cc361874fca7d33cc@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 3846 at fs/ext4/inode.c:5160 ext4_write_inode+0x333/0x5a0 fs/ext4/inode.c:5160
+Modules linked in:
+CPU: 0 PID: 3846 Comm: syz-executor.1 Not tainted 5.17.0-rc3-syzkaller-00188-g1d41d2e82623 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:ext4_write_inode+0x333/0x5a0 fs/ext4/inode.c:5160
+Code: b6 04 02 84 c0 74 08 3c 03 0f 8e 46 02 00 00 8b b5 b0 06 00 00 4c 89 f7 e8 fa 3a 12 00 41 89 c4 e9 ed fd ff ff e8 dd fa 63 ff <0f> 0b 45 31 e4 e9 de fd ff ff e8 ce fa 63 ff 48 89 ef 48 8d 74 24
+RSP: 0018:ffffc9000283f2d8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff92000507e5b RCX: 0000000000000000
+RDX: ffff888076c10000 RSI: ffffffff82147d63 RDI: 0000000000000003
+RBP: ffff88805722b478 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff82147ae1 R11: 0000000000000000 R12: 0000000000000800
+R13: ffffc9000283f438 R14: dffffc0000000000 R15: ffff88805722b4a0
+FS:  0000555556fd9400(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b33346000 CR3: 000000006020a000 CR4: 0000000000350ee0
+Call Trace:
+ <TASK>
+ write_inode fs/fs-writeback.c:1471 [inline]
+ __writeback_single_inode+0xb70/0x10d0 fs/fs-writeback.c:1683
+ writeback_single_inode+0x2a5/0x460 fs/fs-writeback.c:1739
+ write_inode_now+0x15c/0x1d0 fs/fs-writeback.c:2739
+ iput_final fs/inode.c:1731 [inline]
+ iput.part.0+0x460/0x820 fs/inode.c:1770
+ iput+0x58/0x70 fs/inode.c:1760
+ dentry_unlink_inode+0x2b1/0x460 fs/dcache.c:401
+ __dentry_kill+0x3c0/0x640 fs/dcache.c:607
+ dentry_kill fs/dcache.c:745 [inline]
+ dput+0x64d/0xbd0 fs/dcache.c:913
+ ovl_destroy_inode+0x38/0x110 fs/overlayfs/super.c:207
+ destroy_inode+0xc4/0x1b0 fs/inode.c:310
+ iput_final fs/inode.c:1744 [inline]
+ iput.part.0+0x562/0x820 fs/inode.c:1770
+ iput+0x58/0x70 fs/inode.c:1760
+ dentry_unlink_inode+0x2b1/0x460 fs/dcache.c:401
+ __dentry_kill+0x3c0/0x640 fs/dcache.c:607
+ shrink_dentry_list+0x128/0x490 fs/dcache.c:1201
+ prune_dcache_sb+0xe7/0x140 fs/dcache.c:1282
+ super_cache_scan+0x336/0x590 fs/super.c:104
+ do_shrink_slab+0x42d/0xbd0 mm/vmscan.c:773
+ shrink_slab_memcg mm/vmscan.c:842 [inline]
+ shrink_slab+0x3ee/0x6f0 mm/vmscan.c:921
+ shrink_node_memcgs mm/vmscan.c:3172 [inline]
+ shrink_node+0x8c1/0x1eb0 mm/vmscan.c:3293
+ shrink_zones mm/vmscan.c:3530 [inline]
+ do_try_to_free_pages+0x376/0x1700 mm/vmscan.c:3588
+ try_to_free_mem_cgroup_pages+0x2cd/0x840 mm/vmscan.c:3902
+ reclaim_high.constprop.0+0x190/0x250 mm/memcontrol.c:2300
+ mem_cgroup_handle_over_high+0x18c/0x540 mm/memcontrol.c:2484
+ tracehook_notify_resume include/linux/tracehook.h:197 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+ exit_to_user_mode_prepare+0x1ab/0x290 kernel/entry/common.c:207
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f1bc5ba24c7
+Code: ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd48f9e3c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: ffffffffffffffea RBX: 0000000000000000 RCX: 00007f1bc5ba24c7
+RDX: 00007ffd48f9e49d RSI: 000000000000000a RDI: 00007ffd48f9e490
+RBP: 00007ffd48f9e490 R08: 00000000ffffffff R09: 00007ffd48f9e260
+R10: 0000555556fda893 R11: 0000000000000246 R12: 00007f1bc5bfa1ea
+R13: 00007ffd48f9f550 R14: 0000555556fda810 R15: 00007ffd48f9f590
+ </TASK>
 
 
->
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
