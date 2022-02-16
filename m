@@ -2,146 +2,108 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF6C4B7DBC
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Feb 2022 03:51:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F8D14B7F9B
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Feb 2022 05:43:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343784AbiBPCgz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 15 Feb 2022 21:36:55 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41846 "EHLO
+        id S1344444AbiBPEmR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 15 Feb 2022 23:42:17 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233597AbiBPCgy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Feb 2022 21:36:54 -0500
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam08on2070.outbound.protection.outlook.com [40.107.102.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12724FCA;
-        Tue, 15 Feb 2022 18:36:43 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AOq+DMp+km0e8HC2+YOpSh5Gwp4M8cd1XIaXl0eMzd685Hsf37HUX9Ftcy0eh1dj8vybK/8scw5odBI8P+Vvj18G6FrHCWjBfXCS3Xph9SOq5wdqs/HKcUiOO0X5/xGivCU78J0xJoSwv45K/uoy6iSGUd1XGxEz1U355va7aXkLxmtw59FUQXipkRrBDrtu751ACxKN82eBXH8fM+ApB/4/7y12/0WaPyHh/I4hEu5v9Yt8oYZmejX8+aplxY1ZKlQVjrJX8eoyMdUxgPBOa9TZr2/u05G4QSA3MPdMoD0Vf5Y0MD7LKbPX9+pezHf6H4fOBmIKqZg/6mjecMinJQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=W6u4KSkTaAdZ3Y1/l8px2yzaaALzD3TCdjvTMQCo2v4=;
- b=Du6fNXqD+8bNhVh4c4+cIp+kHee4jgxmCrjhH4gi2YYlzIuDc4FTpf9w9Y4n+7lWfzU/keUjEwEArJ3e4TjKSJlFxlwzn/RjC0m+E4rGxZz/hxzo3xZblPeyXlA0oLU6iJqr3zKgOvAX+SVI+1Gkl5Hr/p3qvw5pvfol2F6o1rQOra+rXcZatJaeMMMzMBu+1rs3j1w/zB2ARfyq+qfjOrQBAgj36TCHv0gVOSNDyX1fuU4o30BomCX3qqpUs3fvmSM6iTFkbBwK4/j0YZ+I0OVhAQ8jPZhRxe/0Tig8ayBwAQrdxc3EC8OHL4N83L3/C+lk9S4QoLHCDXK1DyETFw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 12.22.5.238) smtp.rcpttodomain=lists.freedesktop.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W6u4KSkTaAdZ3Y1/l8px2yzaaALzD3TCdjvTMQCo2v4=;
- b=tgfdDFWWlxNy5M/lNqnnti0A+xqc4dBOgi3czZyG1cSrQPsbrNka3/ktzS6Obtma9gjQzrVWQf/C15gJVzzyd2v8TOVcoo3Hn+voKYABKN/5pPzOz+m7RHaXKJ5BizU4RPoJonmhB8ZQ5VoF5dz0oykJKDJaag4EN2hopO6FqqOM8PLWltWIxa/OMIxMQOOcL/9QziAhfy+rwrfwZwSUmfGDgSDkByMKoGrlHHQrnVIwn7yen0IL7QEdiO3N4Gbvcp9Z2VugXAi/YQWijRpKlKUd+KQWunHs070aZk6WMl6NhGgiLD5qsisRF+o7XkeELqFunl08kt0kl6mEqr0X/Q==
-Received: from BN6PR1201CA0021.namprd12.prod.outlook.com
- (2603:10b6:405:4c::31) by SA0PR12MB4559.namprd12.prod.outlook.com
- (2603:10b6:806:9e::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.17; Wed, 16 Feb
- 2022 02:36:41 +0000
-Received: from BN8NAM11FT036.eop-nam11.prod.protection.outlook.com
- (2603:10b6:405:4c:cafe::d) by BN6PR1201CA0021.outlook.office365.com
- (2603:10b6:405:4c::31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4995.15 via Frontend
- Transport; Wed, 16 Feb 2022 02:36:40 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.238)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 12.22.5.238 as permitted sender) receiver=protection.outlook.com;
- client-ip=12.22.5.238; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (12.22.5.238) by
- BN8NAM11FT036.mail.protection.outlook.com (10.13.177.168) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4975.11 via Frontend Transport; Wed, 16 Feb 2022 02:36:40 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by DRHQMAIL105.nvidia.com
- (10.27.9.14) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 16 Feb
- 2022 02:36:40 +0000
-Received: from nvdebian.localnet (10.126.230.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.9; Tue, 15 Feb 2022
- 18:36:35 -0800
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Felix Kuehling <felix.kuehling@amd.com>,
-        Christoph Hellwig <hch@lst.de>,
-        David Hildenbrand <david@redhat.com>,
-        Alex Sierra <alex.sierra@amd.com>, <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, <rcampbell@nvidia.com>,
-        <linux-ext4@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <jglisse@redhat.com>, <willy@infradead.org>
-Subject: Re: [PATCH v6 01/10] mm: add zone device coherent type memory support
-Date:   Wed, 16 Feb 2022 13:36:30 +1100
-Message-ID: <6156515.kVgMqSaHHm@nvdebian>
-In-Reply-To: <20220216020357.GD4160@nvidia.com>
-References: <beb38138-2266-1ff8-cc82-8fe914bed862@redhat.com> <877d9vd10u.fsf@nvdebian.thelocal> <20220216020357.GD4160@nvidia.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [10.126.230.35]
-X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ba4567b3-3ec2-4bce-f67a-08d9f0f529bb
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4559:EE_
-X-Microsoft-Antispam-PRVS: <SA0PR12MB4559DE6B57412D6F45E1243BDF359@SA0PR12MB4559.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zsrOwL6/Kf3cPfkQvFEIIPX5y/jZRCIMCj36Vr2HhNJpmB0Cezj7+ECiJ5DSu3OQedMMcp787FeP3t23OKux5BTWCtIyuD3Ef28tTVFtJCby+h3qiEhTucR2pMWd8iLBjxfE4wZYTV4coDfZ0iCi11yl3zkdkL1/+qw+OGBYQUiMo7/SHj8JaLBt5EGYXx6E7WjAlK8hvZoHrHog3gYlE1g6+tNSfjq4IXKwNsuGmC7mDncAuM6s5whOhrlEWEJTUq6HrUEyUcj1J5Jra1UPOjzc0rx+A9X7wUydwJa+CoYXYdM13ic/Dmn/zdUWtPfCRnEhrHoIHFWFdWtOQ8cv/RHahJIAHyBALv4wwnGAAZr5abdww51T66Chfif8Voq354Gxm80hiw3mRQhOikEZ2/iNBS6Gt0W0PlA+t1z4INZrk4W2VJxm/dK+MboJeX81ezEFlgmZe4+aSeB5jqoRcZpXjEP13SRNYsBsrqIu1rHNjbcMHuPBOe9cFNRuTgPoyKxwLRs8+Gb21P2TDPGLe0c24DOQQKN9QGdgYwzA+w4j9jQpsqWtFxd5+AiZ3mi2oNvrYrcy6/c8P6FTjUESC7iAhiDRLw2+E7X/GKT89RDt9w5x+Ark1e1zpqOXt+WTmn1Qha6Rru8NJyJ5u2zzObNeyD23RjwvVglbdNoZj2jnqfJLfvh+QBAyoXrNJ198JtS/HYfJ7475xbAfpL/bNg==
-X-Forefront-Antispam-Report: CIP:12.22.5.238;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:mail.nvidia.com;PTR:InfoNoRecords;CAT:NONE;SFS:(13230001)(4636009)(36840700001)(40470700004)(46966006)(356005)(70206006)(54906003)(82310400004)(426003)(6636002)(16526019)(9686003)(26005)(8936002)(316002)(40460700003)(47076005)(336012)(186003)(8676002)(81166007)(70586007)(6862004)(9576002)(83380400001)(86362001)(4326008)(2906002)(5660300002)(33716001)(508600001)(6666004)(36860700001)(7416002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2022 02:36:40.5755
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ba4567b3-3ec2-4bce-f67a-08d9f0f529bb
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[12.22.5.238];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT036.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4559
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        with ESMTP id S242582AbiBPEmQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Feb 2022 23:42:16 -0500
+Received: from lgeamrelo11.lge.com (lgeamrelo11.lge.com [156.147.23.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 33446C42BD
+        for <linux-ext4@vger.kernel.org>; Tue, 15 Feb 2022 20:42:01 -0800 (PST)
+Received: from unknown (HELO lgeamrelo02.lge.com) (156.147.1.126)
+        by 156.147.23.51 with ESMTP; 16 Feb 2022 13:11:56 +0900
+X-Original-SENDERIP: 156.147.1.126
+X-Original-MAILFROM: byungchul.park@lge.com
+Received: from unknown (HELO localhost.localdomain) (10.177.244.38)
+        by 156.147.1.126 with ESMTP; 16 Feb 2022 13:11:56 +0900
+X-Original-SENDERIP: 10.177.244.38
+X-Original-MAILFROM: byungchul.park@lge.com
+From:   Byungchul Park <byungchul.park@lge.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
+        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
+        chris@chris-wilson.co.uk, duyuyang@gmail.com,
+        johannes.berg@intel.com, tj@kernel.org, willy@infradead.org,
+        david@fromorbit.com, amir73il@gmail.com, bfields@fieldses.org,
+        gregkh@linuxfoundation.org, kernel-team@lge.com,
+        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
+        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
+        ngupta@vflare.org, linux-block@vger.kernel.org, axboe@kernel.dk,
+        paolo.valente@linaro.org, josef@toxicpanda.com,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        jack@suse.cz, jlayton@kernel.org, dan.j.williams@intel.com,
+        hch@infradead.org, djwong@kernel.org,
+        dri-devel@lists.freedesktop.org, airlied@linux.ie,
+        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+        hamohammed.sa@gmail.com
+Subject: [REPORT] ext4 deadlock possibilities by DEPT
+Date:   Wed, 16 Feb 2022 13:11:51 +0900
+Message-Id: <1644984711-26423-1-git-send-email-byungchul.park@lge.com>
+X-Mailer: git-send-email 1.9.1
+X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wednesday, 16 February 2022 1:03:57 PM AEDT Jason Gunthorpe wrote:
-> On Wed, Feb 16, 2022 at 12:23:44PM +1100, Alistair Popple wrote:
-> 
-> > Device private and device coherent pages are not marked with pte_devmap and they
-> > are backed by a struct page. The only way of inserting them is via migrate_vma.
-> > The refcount is decremented in zap_pte_range() on munmap() with special handling
-> > for device private pages. Looking at it again though I wonder if there is any
-> > special treatment required in zap_pte_range() for device coherent pages given
-> > they count as present pages.
-> 
-> This is what I guessed, but we shouldn't be able to just drop
-> pte_devmap on these pages without any other work?? Granted it does
-> very little already..
+Hi Theodore, Andreas and ext4 folks,
 
-Yes, I agree we need to check this more closely. For device private pages
-not having pte_devmap is fine, because they are non-present swap entries so
-they always get special handling in the swap entry paths but the same isn't
-true for coherent device pages.
+I've been developing a tool for detecting deadlock possibilities by
+tracking wait/event rather than lock(?) acquisition order to try to
+cover all synchonization machanisms. It's done on v5.17-rc1 tag.
 
-> I thought at least gup_fast needed to be touched or did this get
-> handled by scanning the page list after the fact?
+https://github.com/lgebyungchulpark/linux-dept/commits/dept1.11_on_v5.17-rc1
 
-Right, for gup I think the only special handling required is to prevent
-pinning. I had assumed that check_and_migrate_movable_pages() would still get
-called for gup_fast but unless I've missed something I don't think it does.
-That means gup_fast could still pin movable and coherent pages. Technically
-that is ok for coherent pages, but it's undesirable.
+Benifit:
 
- - Alistair
+	0. Works with all lock primitives.
+	1. Works with wait_for_completion()/complete().
+	2. Works with 'wait' on PG_locked.
+	3. Works with 'wait' on PG_writeback.
+	4. Works with swait/wakeup.
+	5. Works with waitqueue.
+	6. Multiple reports are allowed.
+	7. Deduplication control on multiple reports.
+	8. Withstand false positives thanks to 6.
+	9. Easy to tag any wait/event.
 
-> Jason
-> 
+Future work:
 
+	0. To make it more stable.
+	1. To separates Dept from Lockdep.
+	2. To improves performance in terms of time and space.
+	3. To use Dept as a dependency engine for Lockdep.
+	4. To add any missing tags of wait/event in the kernel.
+	5. To deduplicate stack trace.
 
+I've got several reports from the tool. Some of them look like false
+alarms caused by Lockdep's fake annotations added for better detection.
+However, some others look like real deadlock possibility. Because of my
+unfamiliarity of the domain, it's hard to confirm if it's a real one.
+I'd like to ask for your opinion on it and it'd be appreciated.
 
+How to interpret the report is:
+
+	1. E(event) in each context cannot be triggered because of the
+	   W(wait) that cannot be woken.
+	2. The stack trace helping find the problematic code is located
+	   in each conext's detail.
+
+Let me add the reports on this email thread.
+
+---
+Thanks,
+Byungchul
 
