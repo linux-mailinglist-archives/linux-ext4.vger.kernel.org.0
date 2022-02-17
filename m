@@ -2,291 +2,191 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 925724B9474
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Feb 2022 00:25:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF424B954D
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Feb 2022 02:17:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238288AbiBPXZu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Feb 2022 18:25:50 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:56364 "EHLO
+        id S230046AbiBQBSH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Feb 2022 20:18:07 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235012AbiBPXZu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Feb 2022 18:25:50 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 691742AAB34;
-        Wed, 16 Feb 2022 15:25:36 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id hw13so2725736ejc.9;
-        Wed, 16 Feb 2022 15:25:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b8nMguw8+586rlhrHbAKDxkwrGMZhMjYDkRLZTvLtHs=;
-        b=UXPPrFMr/1EjEJdjiaSXxI6w5/BvO9z3gx4teXuHC5WP42mwX6rlfmt8iWNlqsi1YQ
-         5g8i9ctbSEpe5oH8/jyU7Ijj9Rrm+EKDEUwP486/vwWofrp1PYyMl+0w/9bceUFqcPY3
-         FGYzu5vR6CGHMz87ECioPSYNKIR9+jQGwcfWxk/JKW+5v/0S3an6zS7nrHpm3t8M8V8s
-         iwA3B+0AMngDJcBKVTZWZQ5slWYdQDGpy8+74IJ3t//QdSutKj8DkBf+lAq4PLZfupCv
-         RjP1AMKkVG3SZKtY4lEbjtt0xdg8768N3xz2bNXZyx4g7OHelcacTDTPe6/N97vk0VTL
-         Yh9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b8nMguw8+586rlhrHbAKDxkwrGMZhMjYDkRLZTvLtHs=;
-        b=UYM4GOvF9IufJFBqfHnEEq2pGm9nFD3gTtCE2hT0lW9Tb3PbBbupSqzDl4MThB/sJQ
-         En6TO2VmN/4jSYDZJMh8D1dF0o2uB4AIdYgYB7LMKq38ZMsD/kcjHue13QWk4wtqmNt2
-         7jFodgJiaN4idHhk46ZT2+cEsm+5tfXJ4OqGgJa/Ra9TXTBfgvpG+0gVSy493nk4WLcL
-         LKMSMHuuY4iPUKjrYnfuYUSWid9x8Hh325J5e1qHzJqdUSBKuHluxSvHQSlFcH+fzn6+
-         C43VgwG2bRUDKYTIUVSJGyL2VtgVzBEDg9LIX+fihLM4thsBfYzT6zwKTq+40WePDXb6
-         Nq8w==
-X-Gm-Message-State: AOAM532h5AoXu+qaS2k33mlpp1jTjDvxDfenKO+2Zv4EEF3g4mOxXxkA
-        aqjVLW8J6qVm8B7sMJcZb8djkxLlDxJBYh8TgfXDufVt
-X-Google-Smtp-Source: ABdhPJxtF21ukqHfOZMSIaiWXkL4eQZJOxGYUIka65KoN/mSZ3+eLx1izvX0evkHnlkHhYZmmbHLHFh/uYBmvaKAToE=
-X-Received: by 2002:a17:907:68f:b0:6cd:3843:508 with SMTP id
- wn15-20020a170907068f00b006cd38430508mr286111ejb.156.1645053934650; Wed, 16
- Feb 2022 15:25:34 -0800 (PST)
+        with ESMTP id S229854AbiBQBSH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Feb 2022 20:18:07 -0500
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam08on2076.outbound.protection.outlook.com [40.107.101.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA7229E97E;
+        Wed, 16 Feb 2022 17:17:53 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kH4/Os6y8OYIP9HBpkt2qdDmHqEs6Rr3Uoov0bGxFJ9YU1tRtXUdDmYLUcjYnDEs/WZjEmRhYEzcHaP6WvDA3kbuwMuv8TjVwszMsQjxT2r6pwA2yLa8FI6u/1E7AxMR2NPhMlykkgMnLA35Kjawr7NtR4lB4+YjER/18Uak/TOHgGeieXS622FNoLkKugzLYlOFgprF5e5qmtMFwXk2QuFiPKchgknI1EIO92sjkrkj21rloN8ISLk2kGQAaflmq+PK54Cz+2ewoVb/kNjpQin2ACDkAPsmrOfEeSt6Z813YAQFf86SWDuxbaInBuAQjfzwji3wPHcMpA1guMiD2g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BMEuhpmAXulDBY6QBh0+C/j+aTHwg+xI6f3mciGWO/4=;
+ b=WXk2I5CJBfc8jSbuf/Xjy+4+2G5BYyUdp0rzqTW1jHZoVCctnaO91LJVK9m3RaAkFrzz7DrOlceuoIdS50cCfUhnEWGdiyJFqVI886K2Hlg1VckjUA7Z8hHQxa3N/X079ChIC8z+xnq6z1cMeRSbKrbzyd+AocvmQIzF8BgAYZgh8koTBKuvGSYAl0V7b5LSzVRQkg6vCe3qeDeZ2zSWGSvOeZt1EFGPoqwunofNFkV/8HvERsVRy+zJ7Ogd9dUUe1a1DbIN0ttFwfhK2Tn6+JhzkibvPfp2QYW7LMu0pf1deL9Abgm5Xl/tTsEzG3kxTxmv72D6fkuGw5BgISW/ig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BMEuhpmAXulDBY6QBh0+C/j+aTHwg+xI6f3mciGWO/4=;
+ b=GWKpTPIiXHsGds6/l0PX+kmSxPY5Zznbtqg4MN+Kfg9vVB1xUqTBaTdkNapDkAPLYeHBwAabUs7DUbmBndPZfcmJOqp4Uv0L+pqBqUXKPCtpVbdVs26LscZEfHc6wq6a4Rw/daIMasSp579DbZJBcL6jHEnYZLCBsLit4Ccw6CHgUtYbr3yHgUJrHWMN/izHiBqQkZfMrYRKxRlYgpXVhgzgPwVwBNoMNbqBHC3J5sH+WWRKL8ISm72Ozd85JptE2dGmTyUbJpWqTztCjVCMZhwUnY39YHcd1fLcXzohKhYafYUxeyp/Zg73Efhh6+Yr88O2N1Xi80yguoSGXVNIEA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
+ by BYAPR12MB4776.namprd12.prod.outlook.com (2603:10b6:a03:10d::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4995.16; Thu, 17 Feb
+ 2022 01:17:51 +0000
+Received: from BYAPR12MB3176.namprd12.prod.outlook.com
+ ([fe80::1528:82a2:aa0:7aa6]) by BYAPR12MB3176.namprd12.prod.outlook.com
+ ([fe80::1528:82a2:aa0:7aa6%6]) with mapi id 15.20.4975.019; Thu, 17 Feb 2022
+ 01:17:51 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Felix Kuehling <felix.kuehling@amd.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Alex Sierra <alex.sierra@amd.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, rcampbell@nvidia.com,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        jglisse@redhat.com, willy@infradead.org
+Subject: Re: [PATCH v6 01/10] mm: add zone device coherent type memory support
+Date:   Thu, 17 Feb 2022 12:05:39 +1100
+References: <beb38138-2266-1ff8-cc82-8fe914bed862@redhat.com>
+ <877d9vd10u.fsf@nvdebian.thelocal> <20220216020357.GD4160@nvidia.com>
+ <6156515.kVgMqSaHHm@nvdebian>
+ <98d8bbc5-ffc2-8966-fdc1-a844874e7ae8@redhat.com>
+ <20220216122600.GG4160@nvidia.com>
+User-agent: mu4e 1.6.9; emacs 27.1
+In-reply-to: <20220216122600.GG4160@nvidia.com>
+Message-ID: <874k4ycmva.fsf@nvdebian.thelocal>
+Content-Type: multipart/mixed; boundary="=-=-="
+X-ClientProxiedBy: BY3PR10CA0008.namprd10.prod.outlook.com
+ (2603:10b6:a03:255::13) To BYAPR12MB3176.namprd12.prod.outlook.com
+ (2603:10b6:a03:134::26)
 MIME-Version: 1.0
-References: <cover.1644809996.git.riteshh@linux.ibm.com> <a2dcc8dbedfd221b90ff02cdb0dfb3c6a7ef2ae9.1644809996.git.riteshh@linux.ibm.com>
-In-Reply-To: <a2dcc8dbedfd221b90ff02cdb0dfb3c6a7ef2ae9.1644809996.git.riteshh@linux.ibm.com>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Wed, 16 Feb 2022 15:25:23 -0800
-Message-ID: <CAD+ocbzzUXJ7qk7Yx2NGuXVKOAKv0yyxo+95o5+6krcAsGmOpA@mail.gmail.com>
-Subject: Re: [RFC 1/1] ext4: Improve fast_commit performance and scalability
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1f4a4e9b-8375-416d-c21a-08d9f1b35121
+X-MS-TrafficTypeDiagnostic: BYAPR12MB4776:EE_
+X-Microsoft-Antispam-PRVS: <BYAPR12MB4776C5225D5A4F55C606BC6BDF369@BYAPR12MB4776.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OSYGsru7tCqTqqhGWYEL2WYfCdp9E1GWbdtP1LT8vg88+Nu2kWdRh3SIYwRjXSfHyM30GQaYAVXe0RI+snffgjucqFM8DQZ9OeJU5epubGL6LsVvRM4rAw+a8c1JGcYwIiq9hEi00XDPryGx9yjs3b30y4Po+sFnNlNxREEx8WGvLEe8iWrvp7lmgtJtLHqWexBkWHihop1VG6c7oPVNcEbgxHNQlUuwYXEkfnF1Lq4sktvfDav6DI8y0tNN2fA/5G2dEhirstj2FjKlxdwWUPir2OmsuIaG+4ChfW0iRFvk3lVxOvoKGd1c6uO3zs6LoKY6Ikuls08Jb/7pNPtyUW+lHsn20mXrIk0AILlL/NuoFmz5pmynfIU7SLp+gfTe/lROd80+sVXnR0QRuv4G4wqi6mavHP0/yKLRefXDiejLxiN1TIpu3DLsV7bTnCcehMChlHXuLDFlZupjWhdgd2VuUVV1Mc3Y/z01/pkRxvS97KsJIM8k2eokCjaf0isxcfJjQdKmf2zFRmnXReq4rOz9aetkTRJPly1/0cCkLjxaUBCFg1yQb+B5Y5s154f7TWGR3P9veLGnTqykTPHt8pHS4qzUd6aG+/SlEljFYDVdthDyPzCZ65f/VniFNQMBF8LORdGqijEi0cntA/hTcw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(6506007)(5660300002)(26005)(186003)(316002)(66556008)(66476007)(6486002)(66946007)(4326008)(2906002)(6862004)(8676002)(6512007)(7416002)(9686003)(8936002)(38100700002)(53546011)(44144004)(508600001)(6636002)(54906003)(6666004)(83380400001)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?e6fFZsIH3hnaeSVsjJ+CZm1UwjTvLxTAqRl6hedw5QECLy+g9dPl9CuKedXq?=
+ =?us-ascii?Q?I8dSI8ogxYJ4UedO4P8cPqo+LVhpcSvV8WIN4+mHNKxNGooyuCN/+/Ali5Kd?=
+ =?us-ascii?Q?gFnv0CJ5mQFYBuBzwBE1o53/xIgaLU2w6UzrnF8grpVsr1cRLssJLMRp4C8c?=
+ =?us-ascii?Q?njBosP57mBBBsidtsh2rGHsIpSVxXP9u8+whQwGG4UY6J3Us1dNQGveQLydr?=
+ =?us-ascii?Q?N67yfwU8gt+aa03SiCOTFJT/NmQOWtKiWEbCKCsyN7+iSq09UGxnb59f1Haw?=
+ =?us-ascii?Q?nyOYXuTfuvvCA1SYOoiAvtoaGy3nYlTZCQpqdlRk3hQwcXbYt7Mx+UAM+eba?=
+ =?us-ascii?Q?S3aCmdKjgGwU4eck/MbZ3Z+/gY/f36QfcbHbu8ZSW/nghoS0HV/EmlWlMz/o?=
+ =?us-ascii?Q?sNQ6yLjkmSsDna2WdeRjbC3inzzW+Hul7IVoMDJxQHVJ+62FudwCEevEZmcp?=
+ =?us-ascii?Q?Th2/esSRNSa75Yif4GvUYvDUxoUdzkEGloyI8ezlcQBkfZ45bOzzC6IFSe5K?=
+ =?us-ascii?Q?CnjBnhpOMmPnZmihSsJg3RDuJwbjAgEEQBnSzCCj2gNGvL+ag9jHydG44whX?=
+ =?us-ascii?Q?Nfiud8AeM2/DrhhsYxqzx3HIsAKc7nyj7GkN4Q9lOCt9ZWzewgydOOGkotWP?=
+ =?us-ascii?Q?422wCi5HVZrnaKqqBm3Gx2WlBt2CeUz6zu9hNK0AT0UNy3FfK3ijt4xj2rtj?=
+ =?us-ascii?Q?/Kunda9sXe3ZVrJoRYGQ4qtOnHuDt8PiGuSBzckBD9SW9O5RATztEs/zTzxv?=
+ =?us-ascii?Q?CTWjR/HE+k5t7pLXzGulFofh/hUALREvY92Ver41qOE73Y7D9vcro8igSdE0?=
+ =?us-ascii?Q?/v/ZlUvsZ6ZKy+q7VgD9yk2pbTb05o9WijYVHhJ/S4+x05uCxmwV8UpLKm0V?=
+ =?us-ascii?Q?4+QJAnGx5cTZAGMm6D/iNZDvIa3AMVFdUs6baVIWTC+xdOPeM6H83Rt92rsT?=
+ =?us-ascii?Q?4rRw3Cg9eAhf8ZfeR/WQVwr5JBskrSMKrxakFnmWQ9Psk76cipv1+2vQvJDi?=
+ =?us-ascii?Q?6QU0Kw8l780rnqExUtMC8VyTuI2BxQVYNxI+awheOF2UsGTeds+LmIUgvGKx?=
+ =?us-ascii?Q?OaIwH8yIP8fXbSprf8ZT1WbHkpwkU4asw9Mg+0V4orMUh/L7CTF9tqN+Obme?=
+ =?us-ascii?Q?b5Q4Nzv6UrSaj/pb45VwtkyaY1qAHibTu97tQj9DpiIkw/KdTQUZvig2oOSp?=
+ =?us-ascii?Q?Fn1HwNZnCce0zKeGjgyegpAVZU+qDHIZL32XNPK81+agsBVJFN3Q49Dz9g3c?=
+ =?us-ascii?Q?aXFi06/wXtZCMJRlj1x7D6CuBFUTSv40DZL+AC5oaS1UmmuRgcJGPmVXJ9Km?=
+ =?us-ascii?Q?b75+9laHA0uqEe88oq7T7Xzvy+TxI9i4nUmOkpvWOGDPC/FqCv5ITKSK3Hv5?=
+ =?us-ascii?Q?FCjun0c5ckqPjdCF90pG1/awDawBGiRNIQqdByC6ZloTtIZeVqAYL9rU4eJJ?=
+ =?us-ascii?Q?rYvSKKrZTapZQWx96Jqrd0j3ad72Z6zX3TIIQqMEjkca87ILpQl1XA6e2rl1?=
+ =?us-ascii?Q?qsYiMs0H3VNLoTZAc69qh3RLTiluybr+8uu39NU5d92Xdd07/Hkje1Evnsp3?=
+ =?us-ascii?Q?4ehRM8QOe21Ex/arx2FrxmH2T5Mj0VHlHAhiD0KcoiYY2QDd6aiaB8q8B5iS?=
+ =?us-ascii?Q?jc+Lmslcb7oXsoSNBeCO0XQ=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1f4a4e9b-8375-416d-c21a-08d9f1b35121
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Feb 2022 01:17:51.4742
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bkyKr/hikiEpFlK+d83fDj7F3PHsgAQusAk84J5lu8RPit/so5ruSBKEO54uqcEXmnUdDM3aP7BDFkmGvvGZIA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB4776
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks for the patch Ritesh. Some questions / comments inlined:
+--=-=-=
+Content-Type: text/plain
+Content-Disposition: inline
 
-On Sun, 13 Feb 2022 at 19:57, Ritesh Harjani <riteshh@linux.ibm.com> wrote:
->
-> Currently ext4_fc_commit_dentry_updates() is of quadratic time
-> complexity, which is causing performance bottlenecks with high
-> threads/file/dir count with fs_mark.
->
-> This patch makes commit dentry updates (and hence ext4_fc_commit()) path
-> to linear time complexity. Hence improves the performance of workloads
-> which does fsync on multiple threads/open files one-by-one.
->
-> Absolute numbers in avg file creates per sec (from fs_mark in 1K order)
-> =======================================================================
-> no.     Order   without-patch(K)   with-patch(K)   Diff(%)
-> 1       1        16.90              17.51           +3.60
-> 2       2,2      32.08              31.80           -0.87
-> 3       3,3      53.97              55.01           +1.92
-> 4       4,4      78.94              76.90           -2.58
-> 5       5,5      95.82              95.37           -0.46
-> 6       6,6      87.92              103.38          +17.58
-> 7       6,10      0.73              126.13          +17178.08
-> 8       6,14      2.33              143.19          +6045.49
->
-> workload type
-> ==============
-> For e.g. 7th row order of 6,10 (2^6 == 64 && 2^10 == 1024)
-> echo /run/riteshh/mnt/{1..64} |sed -E 's/[[:space:]]+/ -d /g' \
->   | xargs -I {} bash -c "sudo fs_mark -L 100 -D 1024 -n 1024 -s0 -S5 -d {}"
->
-> Perf profile
-> (w/o patches)
-> =============================
-> 87.15%  [kernel]  [k] ext4_fc_commit           --> Heavy contention/bottleneck
->  1.98%  [kernel]  [k] perf_event_interrupt
->  0.96%  [kernel]  [k] power_pmu_enable
->  0.91%  [kernel]  [k] update_sd_lb_stats.constprop.0
->  0.67%  [kernel]  [k] ktime_get
->
-> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> ---
->  fs/ext4/ext4.h        |  2 ++
->  fs/ext4/fast_commit.c | 64 +++++++++++++++++++++++++++++++------------
->  fs/ext4/fast_commit.h |  1 +
->  3 files changed, 50 insertions(+), 17 deletions(-)
->
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index bcd3b9bf8069..25242648d8c9 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -1046,6 +1046,8 @@ struct ext4_inode_info {
->
->         /* Fast commit related info */
->
-> +       /* For tracking dentry create updates */
-> +       struct list_head i_fc_dilist;
-The only case in which this list will have multiple entries if hard
-links are created on this inode right? I think that's probably a very
-rare scenario and we can just fallback to full commits. That might
-simplify this patch a bit. Basically if you do that then fc_dentry
-would directly store a pointer to the inode and the inode can store a
-pointer to the "CREAT" fc_dentry object. That way we don't have to do
-list traversals in fc_del and fc_commit. But barring a few fixes, what
-you have here is fine too. So I'll leave it up to you to decide what
-you want to do.
->         struct list_head i_fc_list;     /*
->                                          * inodes that need fast commit
->                                          * protected by sbi->s_fc_lock.
-> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> index 7964ee34e322..f2bee4cf5648 100644
-> --- a/fs/ext4/fast_commit.c
-> +++ b/fs/ext4/fast_commit.c
-> @@ -199,6 +199,7 @@ void ext4_fc_init_inode(struct inode *inode)
->         ext4_fc_reset_inode(inode);
->         ext4_clear_inode_state(inode, EXT4_STATE_FC_COMMITTING);
->         INIT_LIST_HEAD(&ei->i_fc_list);
-> +       INIT_LIST_HEAD(&ei->i_fc_dilist);
->         init_waitqueue_head(&ei->i_fc_wait);
->         atomic_set(&ei->i_fc_updates, 0);
->  }
-> @@ -279,6 +280,8 @@ void ext4_fc_stop_update(struct inode *inode)
->  void ext4_fc_del(struct inode *inode)
->  {
->         struct ext4_inode_info *ei = EXT4_I(inode);
-> +       struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
-> +       struct ext4_fc_dentry_update *fc_dentry, *fc_dentry_n;
->
->         if (!test_opt2(inode->i_sb, JOURNAL_FAST_COMMIT) ||
->             (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY))
-> @@ -286,7 +289,7 @@ void ext4_fc_del(struct inode *inode)
->
->  restart:
->         spin_lock(&EXT4_SB(inode->i_sb)->s_fc_lock);
-> -       if (list_empty(&ei->i_fc_list)) {
-> +       if (list_empty(&ei->i_fc_list) && list_empty(&ei->i_fc_dilist)) {
->                 spin_unlock(&EXT4_SB(inode->i_sb)->s_fc_lock);
->                 return;
->         }
-> @@ -295,7 +298,26 @@ void ext4_fc_del(struct inode *inode)
->                 ext4_fc_wait_committing_inode(inode);
->                 goto restart;
->         }
-> -       list_del_init(&ei->i_fc_list);
-> +
-> +       if (!list_empty(&ei->i_fc_list))
-> +               list_del_init(&ei->i_fc_list);
-> +
-> +       /*
-> +        * Since this inode is getting removed, let's also remove all FC
-> +        * dentry create references, since it is not needed to log it anyways.
-> +        */
-> +       list_for_each_entry_safe(fc_dentry, fc_dentry_n, &ei->i_fc_dilist, fcd_dilist) {
-> +               WARN_ON(fc_dentry->fcd_op != EXT4_FC_TAG_CREAT);
-> +               list_del_init(&fc_dentry->fcd_list);
-> +               list_del_init(&fc_dentry->fcd_dilist);
-> +               spin_unlock(&sbi->s_fc_lock);
-> +
-> +               if (fc_dentry->fcd_name.name &&
-> +                       fc_dentry->fcd_name.len > DNAME_INLINE_LEN)
-> +                       kfree(fc_dentry->fcd_name.name);
-> +               kmem_cache_free(ext4_fc_dentry_cachep, fc_dentry);
-> +               return;
-Shouldn't we continue and remove all nodes in ei->i_fc_dilist?
-> +       }
->         spin_unlock(&EXT4_SB(inode->i_sb)->s_fc_lock);
->  }
->
-> @@ -427,7 +449,7 @@ static int __track_dentry_update(struct inode *inode, void *arg, bool update)
->                 node->fcd_name.name = node->fcd_iname;
->         }
->         node->fcd_name.len = dentry->d_name.len;
-> -
-> +       INIT_LIST_HEAD(&node->fcd_dilist);
->         spin_lock(&sbi->s_fc_lock);
->         if (sbi->s_journal->j_flags & JBD2_FULL_COMMIT_ONGOING ||
->                 sbi->s_journal->j_flags & JBD2_FAST_COMMIT_ONGOING)
-> @@ -435,6 +457,18 @@ static int __track_dentry_update(struct inode *inode, void *arg, bool update)
->                                 &sbi->s_fc_dentry_q[FC_Q_STAGING]);
->         else
->                 list_add_tail(&node->fcd_list, &sbi->s_fc_dentry_q[FC_Q_MAIN]);
-> +
-> +       /*
-> +        * This helps us keep a track of all fc_dentry updates which is part of
-> +        * this ext4 inode. So in case the inode is getting unlinked, before
-> +        * even we get a chance to fsync, we could remove all fc_dentry
-> +        * references while evicting the inode in ext4_fc_del().
-> +        * Also with this, we don't need to loop over all the inodes in
-> +        * sbi->s_fc_q to get the corresponding inode in
-> +        * ext4_fc_commit_dentry_updates().
-> +        */
-> +       if (dentry_update->op == EXT4_FC_TAG_CREAT)
-> +               list_add_tail(&node->fcd_dilist, &ei->i_fc_dilist);
->         spin_unlock(&sbi->s_fc_lock);
->         mutex_lock(&ei->i_fc_lock);
->
-> @@ -954,7 +988,7 @@ __releases(&sbi->s_fc_lock)
->         struct ext4_sb_info *sbi = EXT4_SB(sb);
->         struct ext4_fc_dentry_update *fc_dentry, *fc_dentry_n;
->         struct inode *inode;
-> -       struct ext4_inode_info *ei, *ei_n;
-> +       struct ext4_inode_info *ei;
->         int ret;
->
->         if (list_empty(&sbi->s_fc_dentry_q[FC_Q_MAIN]))
-> @@ -970,21 +1004,16 @@ __releases(&sbi->s_fc_lock)
->                         spin_lock(&sbi->s_fc_lock);
->                         continue;
->                 }
-> -
-> -               inode = NULL;
-> -               list_for_each_entry_safe(ei, ei_n, &sbi->s_fc_q[FC_Q_MAIN],
-> -                                        i_fc_list) {
-> -                       if (ei->vfs_inode.i_ino == fc_dentry->fcd_ino) {
-> -                               inode = &ei->vfs_inode;
-> -                               break;
-> -                       }
-> -               }
->                 /*
-> -                * If we don't find inode in our list, then it was deleted,
-> -                * in which case, we don't need to record it's create tag.
-> +                * With fcd_dilist we need not loop in sbi->s_fc_q to get the
-> +                * corresponding inode pointer
->                  */
-> -               if (!inode)
-> -                       continue;
-> +               WARN_ON(list_empty(&fc_dentry->fcd_dilist));
-> +               ei = list_entry(fc_dentry->fcd_dilist.next,
-> +                               struct ext4_inode_info, i_fc_dilist);
-I think we want "fc_dentry->fcd_ilist.prev" here right? We are
-sequentially traversing all the nodes in the list from first to last.
-Given that I think the inode is the prev of any node that you
-encounter in the list.
+Jason Gunthorpe <jgg@nvidia.com> writes:
 
-- Harshad
-> +               inode = &ei->vfs_inode;
-> +               WARN_ON(inode->i_ino != fc_dentry->fcd_ino);
-> +
->                 spin_unlock(&sbi->s_fc_lock);
+> On Wed, Feb 16, 2022 at 09:31:03AM +0100, David Hildenbrand wrote:
+>> On 16.02.22 03:36, Alistair Popple wrote:
+>> > On Wednesday, 16 February 2022 1:03:57 PM AEDT Jason Gunthorpe wrote:
+>> >> On Wed, Feb 16, 2022 at 12:23:44PM +1100, Alistair Popple wrote:
+>> >>
+>> >>> Device private and device coherent pages are not marked with pte_devmap and they
+>> >>> are backed by a struct page. The only way of inserting them is via migrate_vma.
+>> >>> The refcount is decremented in zap_pte_range() on munmap() with special handling
+>> >>> for device private pages. Looking at it again though I wonder if there is any
+>> >>> special treatment required in zap_pte_range() for device coherent pages given
+>> >>> they count as present pages.
+>> >>
+>> >> This is what I guessed, but we shouldn't be able to just drop
+>> >> pte_devmap on these pages without any other work?? Granted it does
+>> >> very little already..
+>> >
+>> > Yes, I agree we need to check this more closely. For device private pages
+>> > not having pte_devmap is fine, because they are non-present swap entries so
+>> > they always get special handling in the swap entry paths but the same isn't
+>> > true for coherent device pages.
+>>
+>> I'm curious, how does the refcount of a PageAnon() DEVICE_COHERENT page
+>> look like when mapped? I'd assume it's also (currently) still offset by
+>> one, meaning, if it's mapped into a single page table it's always at
+>> least 2.
 >
->                 /*
-> @@ -1228,6 +1257,7 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
->                                              struct ext4_fc_dentry_update,
->                                              fcd_list);
->                 list_del_init(&fc_dentry->fcd_list);
-> +               list_del_init(&fc_dentry->fcd_dilist);
->                 spin_unlock(&sbi->s_fc_lock);
+> Christoph fixed this offset by one and updated the DEVICE_COHERENT
+> patchset, I hope we will see that version merged.
 >
->                 if (fc_dentry->fcd_name.name &&
-> diff --git a/fs/ext4/fast_commit.h b/fs/ext4/fast_commit.h
-> index 083ad1cb705a..02afa52e8e41 100644
-> --- a/fs/ext4/fast_commit.h
-> +++ b/fs/ext4/fast_commit.h
-> @@ -109,6 +109,7 @@ struct ext4_fc_dentry_update {
->         struct qstr fcd_name;   /* Dirent name */
->         unsigned char fcd_iname[DNAME_INLINE_LEN];      /* Dirent name string */
->         struct list_head fcd_list;
-> +       struct list_head fcd_dilist;
->  };
+>> >> I thought at least gup_fast needed to be touched or did this get
+>> >> handled by scanning the page list after the fact?
+>> >
+>> > Right, for gup I think the only special handling required is to prevent
+>> > pinning. I had assumed that check_and_migrate_movable_pages() would still get
+>> > called for gup_fast but unless I've missed something I don't think it does.
+>> > That means gup_fast could still pin movable and coherent pages. Technically
+>> > that is ok for coherent pages, but it's undesirable.
+>>
+>> We really should have the same pinning rules for GUP vs. GUP-fast.
+>> is_pinnable_page() should be the right place for such checks (similarly
+>> as indicated in my reply to the migration series).
 >
->  struct ext4_fc_stats {
-> --
-> 2.31.1
+> Yes, I think this is a bug too.
+
+Agreed, I will add a fix for it to my series as I was surprised the rules for
+PUP-fast were different. I can see how this happened though -
+check_and_migrate_cma_pages() (the precursor to
+check_and_migrate_movable_pages()) was added before PUP-fast and FOLL_LONGTERM
+so I guess we just never added this check there.
+
+- Alistair
+
+> The other place that needs careful audit is all the callers using
+> vm_normal_page() - they must all be able to accept a ZONE_DEVICE page
+> if we don't set pte_devmap.
 >
+> Jason
+
+--=-=-=--
