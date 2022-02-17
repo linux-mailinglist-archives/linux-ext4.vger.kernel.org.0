@@ -2,98 +2,121 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB124BA3DB
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Feb 2022 15:59:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A064BA511
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Feb 2022 16:54:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242274AbiBQO7S (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Feb 2022 09:59:18 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49084 "EHLO
+        id S240436AbiBQPvm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Feb 2022 10:51:42 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242301AbiBQO7R (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Feb 2022 09:59:17 -0500
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 287002B2C73
-        for <linux-ext4@vger.kernel.org>; Thu, 17 Feb 2022 06:59:01 -0800 (PST)
-Received: by mail-vs1-xe44.google.com with SMTP id i27so6505910vsr.10
-        for <linux-ext4@vger.kernel.org>; Thu, 17 Feb 2022 06:59:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=60coACW/xthNPc0Pi0knacR+nKyEdufy/XxLxNhYs6M=;
-        b=gmUTNjKRVoKE4JoVdEQ6+r1Sdafe7vfgAbOcYHYgwLOzckVTDsnXbm0peiDvzcWYy/
-         Yu5yJDVX2XnipZXMBnZQU+r43PLWqzm7mk35KYvtlmrtg2GnYl7PXN5Y5+T38egwyNsn
-         Sfche1zTCPd1lbPJSYLRhH7Ge4re2S6uP7TiSsDPBR0MiNBYQAT8SLyeHFpCPv9QzrfL
-         GFMJJFhILxAZztt4SmfIGIlFgyVvxOtpfjYS3jVwtcj1P0kPjFPJbIelBXVotnhVYHqh
-         Zhs3T9GAYQhex22fqyraSF337YW+2OEAlrxgFcqWHAAlfOWW3LddbPXRxajyDoOoh1Pc
-         Lflg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=60coACW/xthNPc0Pi0knacR+nKyEdufy/XxLxNhYs6M=;
-        b=NOP+A6rzs5TTBlIsRHoBSY22eyVKU/3aQ2Su5Nxzq7g5i+sAGolLvtZX+aX4rBoyB+
-         RhF80ayl7L/FHUEIcDHPJDFI2w4dU2FELOu9uBtIStbRceeyCrpDEoAXZbRe/4OGeYFi
-         k+hD8eluL69dFmhHqnU6HlYVHUDk+H2BAsgjgQYSWN4wF5UjfWR8z7NtES/Nk4Oqlcq7
-         COEIgl30Ho6Ic5661tupAK6OPipuSXttgBMq4DH0/lTw5ECX7zzjX5OKKroLTr8uIR1z
-         zTZ0fpTgO4PjAn7oKlFaNC62Ysgu7EgrElMdYYijox3ml1aWCX2dFAaHozkuT8X4m+Si
-         ejLg==
-X-Gm-Message-State: AOAM532vAV+Vtv3UhA+72LA2aqXrHXZptAgjM4d+t1UBYuXjojOTEi/7
-        2nGHESyvYASDnnn16huvPps8fsFRbMtKZlRa7Nc=
-X-Google-Smtp-Source: ABdhPJzYMTJGh8gcfOJPRzUoV+OFiqCXVziD8fnom5gqQGnYakndZ9AC2zFu2369GKElqdsyinTMPyqNwJZJfpJbrD0=
-X-Received: by 2002:a05:6102:3709:b0:302:5541:3109 with SMTP id
- s9-20020a056102370900b0030255413109mr1129252vst.23.1645109939926; Thu, 17 Feb
- 2022 06:58:59 -0800 (PST)
+        with ESMTP id S241539AbiBQPvl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Feb 2022 10:51:41 -0500
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A27F0185542;
+        Thu, 17 Feb 2022 07:51:15 -0800 (PST)
+Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 21HFp9vA004055
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Feb 2022 10:51:10 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 4815815C34C8; Thu, 17 Feb 2022 10:51:09 -0500 (EST)
+Date:   Thu, 17 Feb 2022 10:51:09 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Byungchul Park <byungchul.park@lge.com>
+Cc:     torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
+        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
+        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
+        chris@chris-wilson.co.uk, duyuyang@gmail.com,
+        johannes.berg@intel.com, tj@kernel.org, willy@infradead.org,
+        david@fromorbit.com, amir73il@gmail.com, bfields@fieldses.org,
+        gregkh@linuxfoundation.org, kernel-team@lge.com,
+        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
+        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
+        ngupta@vflare.org, linux-block@vger.kernel.org, axboe@kernel.dk,
+        paolo.valente@linaro.org, josef@toxicpanda.com,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        jack@suse.cz, jack@suse.com, jlayton@kernel.org,
+        dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
+        dri-devel@lists.freedesktop.org, airlied@linux.ie,
+        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+        hamohammed.sa@gmail.com
+Subject: Re: [PATCH 00/16] DEPT(Dependency Tracker)
+Message-ID: <Yg5u7dzUxL3Vkncg@mit.edu>
+References: <1645095472-26530-1-git-send-email-byungchul.park@lge.com>
 MIME-Version: 1.0
-Received: by 2002:a67:c288:0:0:0:0:0 with HTTP; Thu, 17 Feb 2022 06:58:59
- -0800 (PST)
-Reply-To: pomtfoundation@gmail.com
-From:   Peace Of Mind Trust <idialuspelltemple@gmail.com>
-Date:   Thu, 17 Feb 2022 17:58:59 +0300
-Message-ID: <CAHNDKrEVpH2i37kot9EWoRCuH0Z6yAKdXJ8mxotm1rkpm_rDfg@mail.gmail.com>
-Subject: =?UTF-8?Q?Sie_wurden_ausgew=C3=A4hlt=2C_um_eine_Spende_zu_erhalten?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=5.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:e44 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [idialuspelltemple[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  3.5 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1645095472-26530-1-git-send-email-byungchul.park@lge.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
---=20
-Hallo, lieber Beg=C3=BCnstigter
-Sie haben eine Spende von 2.000.000,00 =E2=82=AC aus dem Frieden von Mind
-Trust Foundation (PMT).
-Bitte kontaktieren Sie uns =C3=BCber: pomtfoundation@gmail.com Weitere
-Informationen zum Anhalten dieser Spendenfonds
+On Thu, Feb 17, 2022 at 07:57:36PM +0900, Byungchul Park wrote:
+> 
+> I've got several reports from the tool. Some of them look like false
+> alarms and some others look like real deadlock possibility. Because of
+> my unfamiliarity of the domain, it's hard to confirm if it's a real one.
+> Let me add the reports on this email thread.
 
-mit bestem Gru=C3=9F
-Peace Of Mind Trust (PMT)
+The problem is we have so many potentially invalid, or
+so-rare-as-to-be-not-worth-the-time-to-investigate-in-the-
+grand-scheme-of-all-of-the-fires-burning-on-maintainers laps that it's
+really not reasonable to ask maintainers to determine whether
+something is a false alarm or not.  If I want more of these unreliable
+potential bug reports to investigate, there is a huge backlog in
+Syzkaller.  :-)
+
+Looking at the second ext4 report, it doesn't make any sense.  Context
+A is the kjournald thread.  We don't do a commit until (a) the timeout
+expires, or (b) someone explicitly requests that a commit happen
+waking up j_wait_commit.  I'm guessing that complaint here is that
+DEPT thinks nothing is explicitly requesting a wake up.  But note that
+after 5 seconds (or whatever journal->j_commit_interval) is configured
+to be we *will* always start a commit.  So ergo, there can't be a deadlock.
+
+At a higher level of discussion, it's an unfair tax on maintainer's
+times to ask maintainers to help you debug DEPT for you.  Tools like
+Syzkaller and DEPT are useful insofar as they save us time in making
+our subsystems better.  But until you can prove that it's not going to
+be a massive denial of service attack on maintainer's time, at the
+*very* least keep an RFC on the patch, or add massive warnings that
+more often than not DEPT is going to be sending maintainers on a wild
+goose chase.
+
+If you know there there "appear to be false positives", you need to
+make sure you've tracked them all down before trying to ask that this
+be merged.
+
+You may also want to add some documentation about why we should trust
+this; in particular for wait channels, when a process calls schedule()
+there may be multiple reasons why the thread will wake up --- in the
+worst case, such as in the select(2) or epoll(2) system call, there
+may be literally thousands of reasons (one for every file desriptor
+the select is waiting on) --- why the process will wake up and thus
+resolve the potential "deadlock" that DEPT is worrying about.  How is
+DEPT going to handle those cases?  If the answer is that things need
+to be tagged, then at least disclose potential reasons why DEPT might
+be untrustworthy to save your reviewers time.
+
+I know that you're trying to help us, but this tool needs to be far
+better than Lockdep before we should think about merging it.  Even if
+it finds 5% more potential deadlocks, if it creates 95% more false
+positive reports --- and the ones it finds are crazy things that
+rarely actually happen in practice, are the costs worth the benefits?
+And who is bearing the costs, and who is receiving the benefits?
+
+Regards,
+
+					- Ted
