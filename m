@@ -2,191 +2,125 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D1A34B9BF8
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Feb 2022 10:26:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68FE44B9D41
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Feb 2022 11:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238678AbiBQJZy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Feb 2022 04:25:54 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:45086 "EHLO
+        id S239164AbiBQKfx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Feb 2022 05:35:53 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:43018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238671AbiBQJZy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Feb 2022 04:25:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 193A62819AD
-        for <linux-ext4@vger.kernel.org>; Thu, 17 Feb 2022 01:25:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1645089924;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TwcTCsKwutXoErWuWFZ+IUKzvQZnQs1kq0Rk37/P/Os=;
-        b=cgdOP6vCVAvt+BrT72JYGHvGvmQvKcD0Rjfv/fGJi8dr6gGjPQcexdxEbgn5k8zQDl7DSr
-        P9FA2PvDHCKWzX21lq8lQH2xtigFtXFS4hW6o02ZspmjkoLwrt+lUbLYaJleRPyyhYa8lK
-        J3P1+oBBwcmU6IC0eqWAs3uxTAzhGA8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-67-o_-OHeNeO3C8_WSH4IofyQ-1; Thu, 17 Feb 2022 04:25:20 -0500
-X-MC-Unique: o_-OHeNeO3C8_WSH4IofyQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 88B5118397A7;
-        Thu, 17 Feb 2022 09:25:19 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.40.194.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C7A1D7B6CA;
-        Thu, 17 Feb 2022 09:25:18 +0000 (UTC)
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     tytso@mit.edu
-Cc:     linux-ext4@vger.kernel.org
-Subject: [PATCH 3/3] e2fsprogs: use mallinfo2 instead of mallinfo if available
-Date:   Thu, 17 Feb 2022 10:25:00 +0100
-Message-Id: <20220217092500.40525-3-lczerner@redhat.com>
-In-Reply-To: <20220217092500.40525-1-lczerner@redhat.com>
-References: <20220217092500.40525-1-lczerner@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,LONGWORDS,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        with ESMTP id S229770AbiBQKfw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Feb 2022 05:35:52 -0500
+Received: from lgeamrelo11.lge.com (lgeamrelo13.lge.com [156.147.23.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 29F9B280EDA
+        for <linux-ext4@vger.kernel.org>; Thu, 17 Feb 2022 02:35:36 -0800 (PST)
+Received: from unknown (HELO lgeamrelo01.lge.com) (156.147.1.125)
+        by 156.147.23.53 with ESMTP; 17 Feb 2022 19:35:34 +0900
+X-Original-SENDERIP: 156.147.1.125
+X-Original-MAILFROM: byungchul.park@lge.com
+Received: from unknown (HELO localhost.localdomain) (10.177.244.38)
+        by 156.147.1.125 with ESMTP; 17 Feb 2022 19:35:34 +0900
+X-Original-SENDERIP: 10.177.244.38
+X-Original-MAILFROM: byungchul.park@lge.com
+From:   Byungchul Park <byungchul.park@lge.com>
+To:     torvalds@linux-foundation.org
+Cc:     damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        mingo@redhat.com, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, will@kernel.org, tglx@linutronix.de,
+        rostedt@goodmis.org, joel@joelfernandes.org, sashal@kernel.org,
+        daniel.vetter@ffwll.ch, chris@chris-wilson.co.uk,
+        duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org,
+        tytso@mit.edu, willy@infradead.org, david@fromorbit.com,
+        amir73il@gmail.com, bfields@fieldses.org,
+        gregkh@linuxfoundation.org, kernel-team@lge.com,
+        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
+        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
+        ngupta@vflare.org, linux-block@vger.kernel.org, axboe@kernel.dk,
+        paolo.valente@linaro.org, josef@toxicpanda.com,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        jack@suse.cz, jack@suse.com, jlayton@kernel.org,
+        dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
+        dri-devel@lists.freedesktop.org, airlied@linux.ie,
+        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+        hamohammed.sa@gmail.com
+Subject: Re: Report in ata_scsi_port_error_handler()
+Date:   Thu, 17 Feb 2022 19:35:28 +0900
+Message-Id: <1645094128-17099-1-git-send-email-byungchul.park@lge.com>
+X-Mailer: git-send-email 1.9.1
+In-Reply-To: <CAHk-=wgfpfWuNQi2SjXQL1ir6iKCpUdBruJ+kmOQP1frH7Zdig@mail.gmail.com>
+References: <CAHk-=wgfpfWuNQi2SjXQL1ir6iKCpUdBruJ+kmOQP1frH7Zdig@mail.gmail.com>
+X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-mallinfo has been deprecated with GNU C library version 2.33 in favor of
-mallinfo2 which works exactly the same as mallinfo but with larger field
-widths. Use mallinfo2 if available.
+<torvalds@linux-foundation.org> wrote:
+> On Tue, Feb 15, 2022 at 10:37 PM Damien Le Moal
+> <damien.lemoal@opensource.wdc.com> wrote:
+> >
+> > On 2/16/22 13:16, Byungchul Park wrote:
+> > > [    2.051040 ] ===================================================
+> > > [    2.051406 ] DEPT: Circular dependency has been detected.
+> > > [    2.051730 ] 5.17.0-rc1-00014-gcf3441bb2012 #2 Tainted: G        W
+> > > [    2.051991 ] ---------------------------------------------------
+> > > [    2.051991 ] summary
+> > > [    2.051991 ] ---------------------------------------------------
+> > > [    2.051991 ] *** DEADLOCK ***
+> > > [    2.051991 ]
+> > > [    2.051991 ] context A
+> > > [    2.051991 ]     [S] (unknown)(&(&ap->eh_wait_q)->dmap:0)
+> > > [    2.051991 ]     [W] __raw_spin_lock_irq(&host->lock:0)
+> > > [    2.051991 ]     [E] event(&(&ap->eh_wait_q)->dmap:0)
+> > > [    2.051991 ]
+> > > [    2.051991 ] context B
+> > > [    2.051991 ]     [S] __raw_spin_lock_irqsave(&host->lock:0)
+> > > [    2.051991 ]     [W] wait(&(&ap->eh_wait_q)->dmap:0)
+> > > [    2.051991 ]     [E] spin_unlock(&host->lock:0)
+> >
+> > Sleeping with a spinlock held would be triggering warnings already, so
+> > these reports seem bogus to me.
+> 
+> Yeah, Matthew pointed out the same thing for another use-case, where
+> it looks like DEPT is looking at the state at the wrong point (not at
+> the scheduling point, but at prepare_to_sleep()).
+> 
+> This ata_port_wait() is the exact same pattern, ie we have
+> 
+>	spin_lock_irqsave(ap->lock, flags);
+> 
+>	while (ap->pflags & (ATA_PFLAG_EH_PENDING | ATA_PFLAG_EH_IN_PROGRESS)) {
+>		prepare_to_wait(&ap->eh_wait_q, &wait, TASK_UNINTERRUPTIBLE);
+>		spin_unlock_irqrestore(ap->lock, flags);
+>		schedule();
+> 
+> and DEPT has incorrectly taken it to mean that 'ap->lock' is held
+> during the wait, when it is actually released before actually waiting.
+> 
+> For the spin-locks, this is all very obvious (because they'd have been
+> caught long ago by much simpler debug code), but the same
+> prepare_to_wait -> wait pattern can most definitely happen with
+> sleeping locks too, so they are all slightly suspect.
+> 
+> And yes, the detailed reports are hard to read because the locations
+> are given as "ata_port_wait_eh+0x52/0xc0". Running them through
+> scripts/decode_stacktrace.sh to turn them into filename and line
+> numbers - and also sort out inlining - would help a lot.
+> 
+> Byungchul, could you fix those two issues? Some of your reports may
 
-Signed-off-by: Lukas Czerner <lczerner@redhat.com>
----
- configure               |  2 +-
- configure.ac            |  1 +
- e2fsck/iscan.c          | 11 ++++++++++-
- e2fsck/util.c           | 11 ++++++++++-
- lib/config.h.in         |  3 +++
- resize/resource_track.c | 13 ++++++++++---
- 6 files changed, 35 insertions(+), 6 deletions(-)
+Of couse, that's what I should do. Thanks for your feedback.
 
-diff --git a/configure b/configure
-index effd929d..530bc77c 100755
---- a/configure
-+++ b/configure
-@@ -11254,7 +11254,7 @@ fi
- if test -n "$DLOPEN_LIB" ; then
-    ac_cv_func_dlopen=yes
- fi
--for ac_func in  	__secure_getenv 	add_key 	backtrace 	chflags 	dlopen 	fadvise64 	fallocate 	fallocate64 	fchown 	fcntl 	fdatasync 	fstat64 	fsync 	ftruncate64 	futimes 	getcwd 	getdtablesize 	getentropy 	gethostname 	getmntinfo 	getpwuid_r 	getrandom 	getrlimit 	getrusage 	jrand48 	keyctl 	llistxattr 	llseek 	lseek64 	mallinfo 	mbstowcs 	memalign 	mempcpy 	mmap 	msync 	nanosleep 	open64 	pathconf 	posix_fadvise 	posix_fadvise64 	posix_memalign 	prctl 	pread 	pwrite 	pread64 	pwrite64 	secure_getenv 	setmntent 	setresgid 	setresuid 	snprintf 	srandom 	stpcpy 	strcasecmp 	strdup 	strnlen 	strptime 	strtoull 	sync_file_range 	sysconf 	usleep 	utime 	utimes 	valloc
-+for ac_func in  	__secure_getenv 	add_key 	backtrace 	chflags 	dlopen 	fadvise64 	fallocate 	fallocate64 	fchown 	fcntl 	fdatasync 	fstat64 	fsync 	ftruncate64 	futimes 	getcwd 	getdtablesize 	getentropy 	gethostname 	getmntinfo 	getpwuid_r 	getrandom 	getrlimit 	getrusage 	jrand48 	keyctl 	llistxattr 	llseek 	lseek64 	mallinfo 	mallinfo2 	mbstowcs 	memalign 	mempcpy 	mmap 	msync 	nanosleep 	open64 	pathconf 	posix_fadvise 	posix_fadvise64 	posix_memalign 	prctl 	pread 	pwrite 	pread64 	pwrite64 	secure_getenv 	setmntent 	setresgid 	setresuid 	snprintf 	srandom 	stpcpy 	strcasecmp 	strdup 	strnlen 	strptime 	strtoull 	sync_file_range 	sysconf 	usleep 	utime 	utimes 	valloc
- do :
-   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
- ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
-diff --git a/configure.ac b/configure.ac
-index dff3d1ca..8acc4e1c 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -1214,6 +1214,7 @@ AC_CHECK_FUNCS(m4_flatten([
- 	llseek
- 	lseek64
- 	mallinfo
-+	mallinfo2
- 	mbstowcs
- 	memalign
- 	mempcpy
-diff --git a/e2fsck/iscan.c b/e2fsck/iscan.c
-index 607e4752..33c6a4cd 100644
---- a/e2fsck/iscan.c
-+++ b/e2fsck/iscan.c
-@@ -109,7 +109,16 @@ void print_resource_track(const char *desc,
- 		printf("%s: ", desc);
- 
- #define kbytes(x)	(((unsigned long long)(x) + 1023) / 1024)
--#ifdef HAVE_MALLINFO
-+#ifdef HAVE_MALLINFO2
-+	if (1) {
-+		struct mallinfo2 malloc_info = mallinfo2();
-+
-+		printf("Memory used: %lluk/%lluk (%lluk/%lluk), ",
-+		       kbytes(malloc_info.arena), kbytes(malloc_info.hblkhd),
-+		       kbytes(malloc_info.uordblks),
-+		       kbytes(malloc_info.fordblks));
-+	} else
-+#elif defined HAVE_MALLINFO
- 	/* don't use mallinfo() if over 2GB used, since it returns "int" */
- 	if ((char *)sbrk(0) - (char *)track->brk_start < 2LL << 30) {
- 		struct mallinfo	malloc_info = mallinfo();
-diff --git a/e2fsck/util.c b/e2fsck/util.c
-index 3fe3c988..42740d9e 100644
---- a/e2fsck/util.c
-+++ b/e2fsck/util.c
-@@ -430,7 +430,16 @@ void print_resource_track(e2fsck_t ctx, const char *desc,
- 		log_out(ctx, "%s: ", desc);
- 
- #define kbytes(x)	(((unsigned long long)(x) + 1023) / 1024)
--#ifdef HAVE_MALLINFO
-+#ifdef HAVE_MALLINFO2
-+	if (1) {
-+		struct mallinfo2 malloc_info = mallinfo2();
-+
-+		log_out(ctx, _("Memory used: %lluk/%lluk (%lluk/%lluk), "),
-+			kbytes(malloc_info.arena), kbytes(malloc_info.hblkhd),
-+			kbytes(malloc_info.uordblks),
-+			kbytes(malloc_info.fordblks));
-+	} else
-+#elif defined HAVE_MALLINFO
- 	/* don't use mallinfo() if over 2GB used, since it returns "int" */
- 	if ((char *)sbrk(0) - (char *)track->brk_start < 2LL << 30) {
- 		struct mallinfo	malloc_info = mallinfo();
-diff --git a/lib/config.h.in b/lib/config.h.in
-index 9c9de65d..b5856bb5 100644
---- a/lib/config.h.in
-+++ b/lib/config.h.in
-@@ -208,6 +208,9 @@
- /* Define to 1 if you have the `mallinfo' function. */
- #undef HAVE_MALLINFO
- 
-+/* Define to 1 if you have the `mallinfo2' function. */
-+#undef HAVE_MALLINFO2
-+
- /* Define to 1 if you have the <malloc.h> header file. */
- #undef HAVE_MALLOC_H
- 
-diff --git a/resize/resource_track.c b/resize/resource_track.c
-index f0efe114..f4667060 100644
---- a/resize/resource_track.c
-+++ b/resize/resource_track.c
-@@ -63,8 +63,10 @@ void print_resource_track(ext2_resize_t rfs, struct resource_track *track,
- #ifdef HAVE_GETRUSAGE
- 	struct rusage r;
- #endif
--#ifdef HAVE_MALLINFO
--	struct mallinfo	malloc_info;
-+#ifdef HAVE_MALLINFO2
-+	struct mallinfo2 malloc_info;
-+#elif defined HAVE_MALLINFO
-+	struct mallinfo malloc_info;
- #endif
- 	struct timeval time_end;
- 
-@@ -76,8 +78,13 @@ void print_resource_track(ext2_resize_t rfs, struct resource_track *track,
- 	if (track->desc)
- 		printf("%s: ", track->desc);
- 
--#ifdef HAVE_MALLINFO
- #define kbytes(x)	(((unsigned long)(x) + 1023) / 1024)
-+#ifdef HAVE_MALLINFO2
-+	malloc_info = mallinfo2();
-+	printf("Memory used: %luk/%luk (%luk/%luk), ",
-+		kbytes(malloc_info.arena), kbytes(malloc_info.hblkhd),
-+		kbytes(malloc_info.uordblks), kbytes(malloc_info.fordblks));
-+#elif defined HAVE_MALLINFO
- 
- 	malloc_info = mallinfo();
- 	printf("Memory used: %luk/%luk (%luk/%luk), ",
--- 
-2.34.1
-
+> well be entirely valid, but the hard-to-read hex offsets and the
+> knowledge that at least some of them are confused about how
+> prepare_to_wait -> wait actually works makes the motivation to look at
+> the details much less..
+> 
+> 	Linus
