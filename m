@@ -2,45 +2,45 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F33E94BAA1C
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Feb 2022 20:47:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEE624BAA24
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Feb 2022 20:47:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245417AbiBQTr0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Feb 2022 14:47:26 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:45412 "EHLO
+        id S245424AbiBQTra (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Feb 2022 14:47:30 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:45452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245402AbiBQTrY (ORCPT
+        with ESMTP id S245403AbiBQTrY (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Feb 2022 14:47:24 -0500
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC6C226549;
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4D582654B;
         Thu, 17 Feb 2022 11:47:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1645127229; x=1676663229;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=WYl42eI4HYLz25VSfvzg7qJMtNusab7DF8CglpN8QQE=;
-  b=P14ifbhDmv3+7yV1aYSWImV5iz7xj3A8Ef7qCFnKLDcOdxkhSu1clDVn
-   12Eg2dnBHl7Ql3NFL7PoKZlmZT1Niibn+pj1Ldd7WLLczTA8g6jZR8hAW
-   TfoOj40Bpwebpbpyy9t4huttgDheS6I8m1pw+xzjzo5WZqhLqNY9Q+GxC
-   eDB5/5b0qldLOUxmQntVPpe8jdX+GD2k6A2AQoJlvtdYO5IpzzjnUtyW4
-   whFl3UJkaIEqodOnCOe9seNu/UV6SLQmFTlz0nRcZpl/vLOuAtSSdZlIP
-   XpPgNZsaix5MU9JrGMWXoyxMgAWhiL+bKMNQEjaYt6iAENzGvsFUB1OPF
+  bh=F3ghFFmf9Z70ke5xUFrYTznu4LR/z5ek87I9Llnq9wE=;
+  b=cKpiHU/2nbX+/oJHEq4DF/FW1yTnm5O2Ke8WaBa6WMQklB8rs7SAtFGp
+   gz2aOrIrl9IoVFISmVC0BZjuHJG0qF8izlyzjF/lB2pxXVS/33HyqCavA
+   CGbFO/a/Ho8+quwvZljO25HLOv7qJsOH0xxpmtZOwvcFrjhZD6ioNskjF
+   1s/qXepB6bHL7+pWO5EOM//snM3f9TPIBqujUmc0GvriP+yXCNGssazSw
+   mU5Ycqvf/q2V+4EC+aHdm93pkexy6iPoUNxBXmy3KGoUjbKrsHIttWK7V
+   yBQnpnBSPZIMZZNETjtKBSv6IfJOGLgmdIOM8MlW5DcszMPuCRLzocj/m
    Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10261"; a="231586439"
+X-IronPort-AV: E=McAfee;i="6200,9189,10261"; a="250903382"
 X-IronPort-AV: E=Sophos;i="5.88,376,1635231600"; 
-   d="scan'208";a="231586439"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2022 11:47:09 -0800
+   d="scan'208";a="250903382"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2022 11:47:09 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.88,376,1635231600"; 
-   d="scan'208";a="774876619"
+   d="scan'208";a="637327206"
 Received: from lkp-server01.sh.intel.com (HELO 6f05bf9e3301) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 17 Feb 2022 11:47:02 -0800
+  by orsmga004.jf.intel.com with ESMTP; 17 Feb 2022 11:47:02 -0800
 Received: from kbuild by 6f05bf9e3301 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1nKmk1-0000UD-7a; Thu, 17 Feb 2022 19:47:01 +0000
-Date:   Fri, 18 Feb 2022 03:46:26 +0800
+        id 1nKmk1-0000UI-9C; Thu, 17 Feb 2022 19:47:01 +0000
+Date:   Fri, 18 Feb 2022 03:46:28 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Byungchul Park <byungchul.park@lge.com>,
         torvalds@linux-foundation.org
@@ -56,14 +56,13 @@ Cc:     kbuild-all@lists.01.org, damien.lemoal@opensource.wdc.com,
         bfields@fieldses.org, gregkh@linuxfoundation.org,
         kernel-team@lge.com, linux-mm@kvack.org, akpm@linux-foundation.org,
         mhocko@kernel.org, minchan@kernel.org, hannes@cmpxchg.org
-Subject: Re: [PATCH 07/16] dept: Apply Dept to
- wait_for_completion()/complete()
-Message-ID: <202202180000.zICbPUhq-lkp@intel.com>
-References: <1645095472-26530-8-git-send-email-byungchul.park@lge.com>
+Subject: Re: [PATCH 02/16] dept: Implement Dept(Dependency Tracker)
+Message-ID: <202202180059.SibYSAt1-lkp@intel.com>
+References: <1645095472-26530-3-git-send-email-byungchul.park@lge.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1645095472-26530-8-git-send-email-byungchul.park@lge.com>
+In-Reply-To: <1645095472-26530-3-git-send-email-byungchul.park@lge.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -80,95 +79,72 @@ Hi Byungchul,
 Thank you for the patch! Perhaps something to improve:
 
 [auto build test WARNING on tip/sched/core]
-[also build test WARNING on linux/master linus/master v5.17-rc4]
-[cannot apply to tip/locking/core hnaz-mm/master next-20220217]
+[also build test WARNING on hnaz-mm/master linux/master linus/master v5.17-rc4]
+[cannot apply to tip/locking/core next-20220217]
 [If your patch is applied to the wrong git tree, kindly drop us a note.
 And when submitting patch, we suggest to use '--base' as documented in
 https://git-scm.com/docs/git-format-patch]
 
 url:    https://github.com/0day-ci/linux/commits/Byungchul-Park/DEPT-Dependency-Tracker/20220217-190040
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git 3624ba7b5e2acc02b01301ea5fd3534971eb9896
-config: arc-allyesconfig (https://download.01.org/0day-ci/archive/20220218/202202180000.zICbPUhq-lkp@intel.com/config)
-compiler: arceb-elf-gcc (GCC) 11.2.0
+config: xtensa-allyesconfig (https://download.01.org/0day-ci/archive/20220218/202202180059.SibYSAt1-lkp@intel.com/config)
+compiler: xtensa-linux-gcc (GCC) 11.2.0
 reproduce (this is a W=1 build):
         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/8ef6cb09cb67a0c5cd7ba4f25f4825d0a5b269b0
+        # https://github.com/0day-ci/linux/commit/4d0434b0b917f4374a09f3b75cbcadf148cfa711
         git remote add linux-review https://github.com/0day-ci/linux
         git fetch --no-tags linux-review Byungchul-Park/DEPT-Dependency-Tracker/20220217-190040
-        git checkout 8ef6cb09cb67a0c5cd7ba4f25f4825d0a5b269b0
+        git checkout 4d0434b0b917f4374a09f3b75cbcadf148cfa711
         # save the config file to linux build tree
         mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=arc SHELL=/bin/bash drivers/scsi/qla2xxx/
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=xtensa SHELL=/bin/bash drivers/net/ethernet/sfc/falcon/
 
 If you fix the issue, kindly add following tag as appropriate
 Reported-by: kernel test robot <lkp@intel.com>
 
 All warnings (new ones prefixed by >>):
 
-   drivers/scsi/qla2xxx/qla_dfs.c: In function 'qla2x00_dfs_tgt_port_database_show':
->> drivers/scsi/qla2xxx/qla_dfs.c:227:1: warning: the frame size of 1028 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-     227 | }
-         | ^
+   In file included from include/linux/delay.h:23,
+                    from drivers/net/ethernet/sfc/falcon/falcon.c:9:
+   drivers/net/ethernet/sfc/falcon/falcon.c: In function 'falcon_spi_slow_wait':
+>> drivers/net/ethernet/sfc/falcon/falcon.c:750:58: warning: '?:' using integer constants in boolean context [-Wint-in-bool-context]
+     750 |                                     TASK_UNINTERRUPTIBLE : TASK_INTERRUPTIBLE);
+   include/linux/sched.h:205:21: note: in definition of macro '__set_current_state'
+     205 |                 if (state_value == TASK_RUNNING)                        \
+         |                     ^~~~~~~~~~~
 
 
-vim +227 drivers/scsi/qla2xxx/qla_dfs.c
+vim +750 drivers/net/ethernet/sfc/falcon/falcon.c
 
-36c7845282eef01 Quinn Tran       2016-02-04  174  
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  175  static int
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  176  qla2x00_dfs_tgt_port_database_show(struct seq_file *s, void *unused)
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  177  {
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  178  	scsi_qla_host_t *vha = s->private;
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  179  	struct qla_hw_data *ha = vha->hw;
-4e5a05d1ecd92ce Arun Easi        2020-09-03  180  	struct gid_list_info *gid_list;
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  181  	dma_addr_t gid_list_dma;
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  182  	fc_port_t fc_port;
-4e5a05d1ecd92ce Arun Easi        2020-09-03  183  	char *id_iter;
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  184  	int rc, i;
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  185  	uint16_t entries, loop_id;
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  186  
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  187  	seq_printf(s, "%s\n", vha->host_str);
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  188  	gid_list = dma_alloc_coherent(&ha->pdev->dev,
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  189  				      qla2x00_gid_list_size(ha),
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  190  				      &gid_list_dma, GFP_KERNEL);
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  191  	if (!gid_list) {
-83548fe2fcbb78a Quinn Tran       2017-06-02  192  		ql_dbg(ql_dbg_user, vha, 0x7018,
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  193  		       "DMA allocation failed for %u\n",
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  194  		       qla2x00_gid_list_size(ha));
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  195  		return 0;
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  196  	}
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  197  
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  198  	rc = qla24xx_gidlist_wait(vha, gid_list, gid_list_dma,
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  199  				  &entries);
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  200  	if (rc != QLA_SUCCESS)
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  201  		goto out_free_id_list;
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  202  
-4e5a05d1ecd92ce Arun Easi        2020-09-03  203  	id_iter = (char *)gid_list;
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  204  
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  205  	seq_puts(s, "Port Name	Port ID		Loop ID\n");
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  206  
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  207  	for (i = 0; i < entries; i++) {
-4e5a05d1ecd92ce Arun Easi        2020-09-03  208  		struct gid_list_info *gid =
-4e5a05d1ecd92ce Arun Easi        2020-09-03  209  			(struct gid_list_info *)id_iter;
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  210  		loop_id = le16_to_cpu(gid->loop_id);
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  211  		memset(&fc_port, 0, sizeof(fc_port_t));
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  212  
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  213  		fc_port.loop_id = loop_id;
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  214  
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  215  		rc = qla24xx_gpdb_wait(vha, &fc_port, 0);
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  216  		seq_printf(s, "%8phC  %02x%02x%02x  %d\n",
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  217  			   fc_port.port_name, fc_port.d_id.b.domain,
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  218  			   fc_port.d_id.b.area, fc_port.d_id.b.al_pa,
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  219  			   fc_port.loop_id);
-4e5a05d1ecd92ce Arun Easi        2020-09-03  220  		id_iter += ha->gid_list_info_size;
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  221  	}
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  222  out_free_id_list:
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  223  	dma_free_coherent(&ha->pdev->dev, qla2x00_gid_list_size(ha),
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  224  			  gid_list, gid_list_dma);
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  225  
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  226  	return 0;
-c423437e3ff41b8 Himanshu Madhani 2017-03-15 @227  }
-c423437e3ff41b8 Himanshu Madhani 2017-03-15  228  
+4a5b504d0c582db drivers/net/sfc/falcon.c                 Ben Hutchings 2008-09-01  738  
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  739  static int
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  740  falcon_spi_slow_wait(struct falcon_mtd_partition *part, bool uninterruptible)
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  741  {
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  742  	const struct falcon_spi_device *spi = part->spi;
+5a6681e22c14090 drivers/net/ethernet/sfc/falcon/falcon.c Edward Cree   2016-11-28  743  	struct ef4_nic *efx = part->common.mtd.priv;
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  744  	u8 status;
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  745  	int rc, i;
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  746  
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  747  	/* Wait up to 4s for flash/EEPROM to finish a slow operation. */
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  748  	for (i = 0; i < 40; i++) {
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  749  		__set_current_state(uninterruptible ?
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28 @750  				    TASK_UNINTERRUPTIBLE : TASK_INTERRUPTIBLE);
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  751  		schedule_timeout(HZ / 10);
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  752  		rc = falcon_spi_cmd(efx, spi, SPI_RDSR, -1, NULL,
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  753  				    &status, sizeof(status));
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  754  		if (rc)
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  755  			return rc;
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  756  		if (!(status & SPI_STATUS_NRDY))
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  757  			return 0;
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  758  		if (signal_pending(current))
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  759  			return -EINTR;
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  760  	}
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  761  	pr_err("%s: timed out waiting for %s\n",
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  762  	       part->common.name, part->common.dev_type_name);
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  763  	return -ETIMEDOUT;
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  764  }
+45a3fd55acc8989 drivers/net/ethernet/sfc/falcon.c        Ben Hutchings 2012-11-28  765  
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
