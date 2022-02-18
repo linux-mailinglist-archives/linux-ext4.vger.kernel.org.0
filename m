@@ -2,164 +2,328 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C77D4BAE4B
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Feb 2022 01:19:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71CD34BAEA4
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Feb 2022 01:41:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbiBRATz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Feb 2022 19:19:55 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:57900 "EHLO
+        id S229968AbiBRAly (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Feb 2022 19:41:54 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:54332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230061AbiBRATz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Feb 2022 19:19:55 -0500
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2053.outbound.protection.outlook.com [40.107.223.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A95A626C;
-        Thu, 17 Feb 2022 16:19:39 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Olz2oqoXxzBgX4xHIKCky0UEDgMiaELhlVSbCmrYzK6/dwvBCJWwxauFh2JCQXKwPImm59laHRcQ40z/ztMImdcHshWt7onW5qIAFhtN01C5KdPmK+uEMpYp4JhWvPHbFryoawuwGqIUzGEswP3DDsEblrGALDqkYxZhdhEZsyIqS0jfc0J+rZp8nzf0khFAcJMIkJbl8mu5qf3Vhl1up6i8xLUx833Pg3UTdTmdDDx2p6IbCeKuTsCnlf/JdKdYsmz9zCOWlKiITqk1/6EpLNoy2I938x2ci7wSyuPKwIbVXdQ/aae51pk9hyFXXT4XW0CIRmunNJTnc1NE59xSwA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=X6ldf/yGhzb0XYIgTLIVh2MEdD10JW916kxG9oQil18=;
- b=QwXjXZxeaFfweCjsMhGmZdb5emPgwinnFZCDXF0YIKbdoEB4d3POv4jM2fDPE3YXJcAzt4JE39hvbX1163YOEu246RQL06EYZZoSD866+xwUJAtfQy2+CUWdtiFrk4zoY6KhN3AgioCvgtbluzWZbdSAqaitPka/St1Jil48Yl6BQgGESLvAhHrzKv8tq1mXMxDP3YVmv2y64+tdh7mtwnBbPmmw1tE9CVueFT/FKn0DtoVn5VrHg49wPrwaSv/2j1l/lIq+Y0HDG9mfYX715H2UhWiT/11itdZZRkR7jYZ7PAC2aQoW07PAYGzNMU7WDdc9hp1ndljZ0mVn51nNlQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X6ldf/yGhzb0XYIgTLIVh2MEdD10JW916kxG9oQil18=;
- b=PplYozhVE2MTmFe7uwHtQESAt/wOcFlzH5Vybv9NFM94WxD4t7dJBWIxKrimC1A8j1gCpEMPahLHYTlqYFekQSzbo3e25X0MbhurhWpL4FEM1RrnPLUFrbD/CLo8s1LjsDH2g0JmOxs5ZW0mx4EAzAHImmjh49izrPUY4yEHQIem6pI0L0vYTr5wuwCrrbqp+yR0fHHnb/opZ/gODOZ8S47z+t+ub2qVUKNJ6zAcQXHIWDWXEVTO4/U1oXR919qA7kQN3nXhajXx7aml/af6A1OM2keTHaIkYlPPhvuVtfrUzoXRoIY8jz4lDi5e93yWrltS4UOP64NDwmBpc7lfWQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
- by BY5PR12MB4817.namprd12.prod.outlook.com (2603:10b6:a03:1fe::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4995.16; Fri, 18 Feb
- 2022 00:19:37 +0000
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::e8f4:9793:da37:1bd3]) by MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::e8f4:9793:da37:1bd3%5]) with mapi id 15.20.4995.018; Fri, 18 Feb 2022
- 00:19:37 +0000
-Date:   Thu, 17 Feb 2022 20:19:35 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Felix Kuehling <felix.kuehling@amd.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Alex Sierra <alex.sierra@amd.com>, akpm@linux-foundation.org,
-        linux-mm@kvack.org, rcampbell@nvidia.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        jglisse@redhat.com, willy@infradead.org
-Subject: Re: [PATCH v6 01/10] mm: add zone device coherent type memory support
-Message-ID: <20220218001935.GN4160@nvidia.com>
-References: <beb38138-2266-1ff8-cc82-8fe914bed862@redhat.com>
- <877d9vd10u.fsf@nvdebian.thelocal>
- <20220216020357.GD4160@nvidia.com>
- <6156515.kVgMqSaHHm@nvdebian>
- <98d8bbc5-ffc2-8966-fdc1-a844874e7ae8@redhat.com>
- <20220216122600.GG4160@nvidia.com>
- <bf16195e-2570-3687-2b53-3f597ebfcfec@amd.com>
+        with ESMTP id S229799AbiBRAlx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Feb 2022 19:41:53 -0500
+Received: from lgeamrelo11.lge.com (lgeamrelo11.lge.com [156.147.23.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1F9B9329B0
+        for <linux-ext4@vger.kernel.org>; Thu, 17 Feb 2022 16:41:32 -0800 (PST)
+Received: from unknown (HELO lgemrelse7q.lge.com) (156.147.1.151)
+        by 156.147.23.51 with ESMTP; 18 Feb 2022 09:41:31 +0900
+X-Original-SENDERIP: 156.147.1.151
+X-Original-MAILFROM: byungchul.park@lge.com
+Received: from unknown (HELO X58A-UD3R) (10.177.244.38)
+        by 156.147.1.151 with ESMTP; 18 Feb 2022 09:41:31 +0900
+X-Original-SENDERIP: 10.177.244.38
+X-Original-MAILFROM: byungchul.park@lge.com
+Date:   Fri, 18 Feb 2022 09:41:24 +0900
+From:   Byungchul Park <byungchul.park@lge.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
+        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
+        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
+        chris@chris-wilson.co.uk, duyuyang@gmail.com,
+        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+        david@fromorbit.com, amir73il@gmail.com, bfields@fieldses.org,
+        gregkh@linuxfoundation.org, kernel-team@lge.com,
+        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
+        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
+        ngupta@vflare.org, linux-block@vger.kernel.org, axboe@kernel.dk,
+        paolo.valente@linaro.org, josef@toxicpanda.com,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        jack@suse.cz, jack@suse.com, jlayton@kernel.org,
+        dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
+        dri-devel@lists.freedesktop.org, airlied@linux.ie,
+        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+        hamohammed.sa@gmail.com
+Subject: Re: Report 1 in ext4 and journal based on v5.17-rc1
+Message-ID: <20220218004124.GC20620@X58A-UD3R>
+References: <1645095472-26530-1-git-send-email-byungchul.park@lge.com>
+ <1645096204-31670-1-git-send-email-byungchul.park@lge.com>
+ <Yg5NTs2RlhdTmSQj@casper.infradead.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bf16195e-2570-3687-2b53-3f597ebfcfec@amd.com>
-X-ClientProxiedBy: MN2PR18CA0014.namprd18.prod.outlook.com
- (2603:10b6:208:23c::19) To MN2PR12MB4192.namprd12.prod.outlook.com
- (2603:10b6:208:1d5::15)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 682bd472-d920-4442-5e15-08d9f27458c4
-X-MS-TrafficTypeDiagnostic: BY5PR12MB4817:EE_
-X-Microsoft-Antispam-PRVS: <BY5PR12MB4817D0F1153F8AB8B22014ACC2379@BY5PR12MB4817.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kzG6g63vvtYHiMXiG2/D1NZRyzb/MjNNDrW+O3SSsH5RKjBmdJdbTjJfyLfayiDEf0pE8WTDR0ptEZZb1pFktbAiHMct8ekBJU/TIhG0op4bEJVdXcAAzQznCIKrF5VeAJSaqCY4p45SEpTwltxfGMdjKUfOZ7UMggUD21RRusZcqKeGapc2QXwVN2V7PjfTX9pa7ohOKWUXas7PV3GOhypib1ZOFR2RJcM54Lyrmia/eKkyge7vmth+BKUf1rseLtxrocQdQNrw9wLG4Bu3ODwkeqhduolTZt55/UWNOawzUlCg4KOL/YtWN+oeI/KTsRidFd4iYgHcMtZaA8sH3l/77DpjPxwpNmpEZHFrbrRSllM0Np8BQmAXGnr8pW8xJOe3VCcRx20f+JREfi1/bSFYHio+dxZRjVoInWq7p0NS1i3KADCg1BpI+A2WC8GGNzeRDSihVW0VQBDYcdgCeRPrDf7aQqLQq7EAefVuMpswqLcLrrjO4uh4t+Ak8jb+ToJTrULyPHJdVTab/K0oC3PtBmSS2J91IIpzhqTiYrsmq6MrJmk75assQ6moCtOOTMrjAdpYLtGyKXCsGgJkSZqLoVXqo/rkYtUMFHWxx1Mze1JTAjXjFDf0TRxElaB5mSrFMPdifnUlyb2p7rQtNg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(316002)(7416002)(54906003)(6916009)(5660300002)(6486002)(33656002)(6506007)(6512007)(86362001)(2906002)(508600001)(38100700002)(8936002)(26005)(1076003)(4326008)(2616005)(186003)(36756003)(66946007)(83380400001)(66476007)(8676002)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JfsDVCLqXXf6G/NbQyGXqKUwhuXemavJTXOuAHlCq1Dk0zVr2mF+g623LDsI?=
- =?us-ascii?Q?GCIrCNuvFs3Y8HGaAPhaA8icB/HQm9pyJr23gjga+yk9z4PPLKiJK2fYAoOp?=
- =?us-ascii?Q?GwJ59FThbnNbO9VLfFmE59KKVWjkJlJeqvzEBu2o06VR9kms4WVkgbxuaYpO?=
- =?us-ascii?Q?0NfWnrhtXBbwYHTZyo3F4Dy7IC8fr/wgZ827G688bSNl6bLwiIYHOJ5Apju8?=
- =?us-ascii?Q?murAD/aDk97bYuTIQKKA1A6UXmbjlOdZqVW6jamMjtpQAHqLiJtyeTVqY48p?=
- =?us-ascii?Q?7Un7K1Qmv4rCwSJxZUC5dIat2hk/qypEGAKxnS8C6wUCY1lcSqV5rzdrUSzW?=
- =?us-ascii?Q?+JR6yJCh+QlRiE/eEhkn72ADz11XJ46JGas13nGkPwMxwXLqn4oL5cCQLTIE?=
- =?us-ascii?Q?zXag7haXgHA9gRceRcLcj/h0QGI0bSJlURq2WQLuXkc/ZpRvyYmnBRgrawtk?=
- =?us-ascii?Q?oygWgtB/S3zTIJ79awZ0WyxsIH8VXgICvEJy1A8iFr8rpMS56T8t8XNTaYgV?=
- =?us-ascii?Q?PgmhB4UYVyoXRsnOQKUsBtmpKtWkp8gGEB8SqqYCR/BKhTtmmD32MOuxt3CL?=
- =?us-ascii?Q?KggIDtTaNV5OU3bF/eZRltTwjO+md6oKzpjQ//N41nObv9fnaKJIK74kQPYx?=
- =?us-ascii?Q?PtsyHn8RICsOwUylUR39Iu7elahwyB2gnh/mfEfguMhBCC5U2E6kSTsBF/vX?=
- =?us-ascii?Q?suYnIFprQuLoI6Jg7q8r9lDKmNrHA3YRxMNDjASFahT9u4XATLNHiiQ8/N/I?=
- =?us-ascii?Q?yKX/RYEU8IivQiQhz0/mUpJQY0icvBHzu4UTZH+1JJ9pxr61tfW3rZ9YFWMp?=
- =?us-ascii?Q?303VEP7aRbwityDyLafsCJTFPLg6QrgJRl2sdAR9jvKMmFZNEF8q44O4AGw2?=
- =?us-ascii?Q?HwEC/MReeqKv4ZH4WTASj80mXkic09W27L/eZ96fSOKZCJm8YJzykinTYN3R?=
- =?us-ascii?Q?3yVBVfZZtVyFMPuDFgATxc+X/M40XoUgCTf2tlzq4YQvpeI7WfE5YjlFnsm5?=
- =?us-ascii?Q?1Y1cgFxVvqK9UKNzjqwcMFXJBNTCFwTpzHFo8rUrrM7XKE1Z1d2FIXtPJ4Uv?=
- =?us-ascii?Q?rkEwtgnbpLsz8ULpi5y4QeP+4ZnJtpJ35Ret3EtcrqXvk2SEqRzHrwXS0wOZ?=
- =?us-ascii?Q?V1CBBGimLKA/Y8G9uMLdft/6KniOdpU9jNBVfBY65lAVIpPESG7iqZVPVAXW?=
- =?us-ascii?Q?G11DSvn33sr/JphtiCUSbQlrYLPzoGRC1lyQjM1FdYEaQjz++OHQma9klere?=
- =?us-ascii?Q?Gci3ifUEkhmZxChHfNVW8RYFactJfct/2yXRoOxtX//il3KzLEnwdeVzPH2A?=
- =?us-ascii?Q?O7ftw1ckeV1cY4MuLs+yceB+2FwkrBK88YyGxvhjCb2inSo2+p5XmdielpRz?=
- =?us-ascii?Q?uuGItmKXNBteybJ3M5bHP1K+F5FYfSoUDyd9o5Dns7aUDF0FGtTE8MTSGlq3?=
- =?us-ascii?Q?YA0rlGKmhJI8nxhWrZhiwM7cBgmj8G5BrUnLyTqGlyxTr3VUpB7d8OiZMtxh?=
- =?us-ascii?Q?u9W8TUFpeLPo4jSCEzZxNML+5gmVTdlJ9bL+hjmgniZ78I5t9HIC03UMf2e1?=
- =?us-ascii?Q?kJldyem8MdXwLAnVTb0=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 682bd472-d920-4442-5e15-08d9f27458c4
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Feb 2022 00:19:37.1863
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 15kAOkAMdyf1tOP9+DUAYY0eoMj1Fkp6/kuUcKyzqfaiue52Vvlm9rCMktn4yQJI
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4817
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <Yg5NTs2RlhdTmSQj@casper.infradead.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Feb 17, 2022 at 04:12:20PM -0500, Felix Kuehling wrote:
+On Thu, Feb 17, 2022 at 01:27:42PM +0000, Matthew Wilcox wrote:
+> On Thu, Feb 17, 2022 at 08:10:03PM +0900, Byungchul Park wrote:
+> > [    7.009608] ===================================================
+> > [    7.009613] DEPT: Circular dependency has been detected.
+> > [    7.009614] 5.17.0-rc1-00014-g8a599299c0cb-dirty #30 Tainted: G        W
+> > [    7.009616] ---------------------------------------------------
+> > [    7.009617] summary
+> > [    7.009618] ---------------------------------------------------
+> > [    7.009618] *** DEADLOCK ***
+> > [    7.009618]
+> > [    7.009619] context A
+> > [    7.009619]     [S] (unknown)(&(bit_wait_table + i)->dmap:0)
+> 
+> Why is the context unknown here?  I don't see a way to debug this
+> without knowing where we acquired the bit wait lock.
 
-> I'm thinking of a more theoretical approach: Instead of auditing all users,
-> I'd ask, what are the invariants that a vm_normal_page should have. Then
-> check, whether our DEVICE_COHERENT pages satisfy them. But maybe the concept
-> of a vm_normal_page isn't defined clearly enough for that.
+ideal view
+------------------
 
-I would say the expectation is that only 'page cache and anon' pages
-are returned - ie the first union in struct page
+context X			context A
 
-This is because the first file in your list I looked at:
+request event E to context A	...
+   write REQUESTEVENT		if (can see REQUESTEVENT written)
+...				   notice the request from X [S]
+wait for the event [W]		...
+   write barrier
+   write WAITSTART		
+   actual wait			if (can see REQUESTEVENT written)
+				   consider it's on the way to the event
+...				
+				...
+				finally the event [E]
 
-static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
-				unsigned long addr, unsigned long end,
-				struct mm_walk *walk)
+Dept works with the above view wrt. wait and event. [S] point varies
+depending on ways to make context A notice the request so that the event
+context A can start. Of course, by making more effort on identifying
+each way in the kernel, we can figure out the exact point.
 
-{
-		page = vm_normal_page(vma, addr, ptent);
-[..]
-		if (pageout) {
-			if (!isolate_lru_page(page)) {
+Here, we can also check WAITSTART with a read barrier instead of
+REQUESTEVENT in context A conservatively. That's how Dept works.
 
-Uses the LRU field, so this is incompatible with all the other page
-types.
+Dept's view
+------------------
 
-One mitigation of this might be to formally make vm_normal_page() ==
-'pte to page cache and anon page' and add a new function that is 'pte
-to any struct page'
+context X			context A
 
-Then go through and sort callers as appropriate.
+request event E to context A	...
+   write REQUESTEVENT		if (can see REQUESTEVENT written)
+...				   notice the request from X [S]
+wait for the event [W]		...
+   write barrier
+   write WAITSTART		read barrier
+   actual wait			if (can see WAITSTART written)
+				   consider it's on the way to the event
+...				
+				...
+				finally the event [E]
+				   consider all waits in context A so far
+				   that could see WAITSTART written
 
-The 'pte to page cache and anon page' can detect ZONE_DEVICE by
-calling is_zone_device_page() insted of pte_devmap() and then continue
-to return NULL. This same trick will fix GUP_fast.
+Thanks,
+Byungchul
 
-Jason
-
+> > [    7.009621]     [W] down_write(&ei->i_data_sem:0)
+> > [    7.009623]     [E] event(&(bit_wait_table + i)->dmap:0)
+> > [    7.009624]
+> > [    7.009625] context B
+> > [    7.009625]     [S] down_read(&ei->i_data_sem:0)
+> > [    7.009626]     [W] wait(&(bit_wait_table + i)->dmap:0)
+> > [    7.009627]     [E] up_read(&ei->i_data_sem:0)
+> > [    7.009628]
+> > [    7.009629] [S]: start of the event context
+> > [    7.009629] [W]: the wait blocked
+> > [    7.009630] [E]: the event not reachable
+> > [    7.009631] ---------------------------------------------------
+> > [    7.009631] context A's detail
+> > [    7.009632] ---------------------------------------------------
+> > [    7.009632] context A
+> > [    7.009633]     [S] (unknown)(&(bit_wait_table + i)->dmap:0)
+> > [    7.009634]     [W] down_write(&ei->i_data_sem:0)
+> > [    7.009635]     [E] event(&(bit_wait_table + i)->dmap:0)
+> > [    7.009636]
+> > [    7.009636] [S] (unknown)(&(bit_wait_table + i)->dmap:0):
+> > [    7.009638] (N/A)
+> > [    7.009638]
+> > [    7.009639] [W] down_write(&ei->i_data_sem:0):
+> > [    7.009639] ext4_truncate (fs/ext4/inode.c:4187) 
+> > [    7.009645] stacktrace:
+> > [    7.009646] down_write (kernel/locking/rwsem.c:1514) 
+> > [    7.009648] ext4_truncate (fs/ext4/inode.c:4187) 
+> > [    7.009650] ext4_da_write_begin (./include/linux/fs.h:827 fs/ext4/truncate.h:23 fs/ext4/inode.c:2963) 
+> > [    7.009652] generic_perform_write (mm/filemap.c:3784) 
+> > [    7.009654] ext4_buffered_write_iter (fs/ext4/file.c:269) 
+> > [    7.009657] ext4_file_write_iter (fs/ext4/file.c:677) 
+> > [    7.009659] new_sync_write (fs/read_write.c:504 (discriminator 1)) 
+> > [    7.009662] vfs_write (fs/read_write.c:590) 
+> > [    7.009663] ksys_write (fs/read_write.c:644) 
+> > [    7.009664] do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80) 
+> > [    7.009667] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:113) 
+> > [    7.009669]
+> > [    7.009670] [E] event(&(bit_wait_table + i)->dmap:0):
+> > [    7.009671] __wake_up_common (kernel/sched/wait.c:108) 
+> > [    7.009673] stacktrace:
+> > [    7.009674] dept_event (kernel/dependency/dept.c:2337) 
+> > [    7.009677] __wake_up_common (kernel/sched/wait.c:109) 
+> > [    7.009678] __wake_up_common_lock (./include/linux/spinlock.h:428 (discriminator 1) kernel/sched/wait.c:141 (discriminator 1)) 
+> > [    7.009679] __wake_up_bit (kernel/sched/wait_bit.c:127) 
+> > [    7.009681] ext4_orphan_del (fs/ext4/orphan.c:282) 
+> > [    7.009683] ext4_truncate (fs/ext4/inode.c:4212) 
+> > [    7.009685] ext4_da_write_begin (./include/linux/fs.h:827 fs/ext4/truncate.h:23 fs/ext4/inode.c:2963) 
+> > [    7.009687] generic_perform_write (mm/filemap.c:3784) 
+> > [    7.009688] ext4_buffered_write_iter (fs/ext4/file.c:269) 
+> > [    7.009690] ext4_file_write_iter (fs/ext4/file.c:677) 
+> > [    7.009692] new_sync_write (fs/read_write.c:504 (discriminator 1)) 
+> > [    7.009694] vfs_write (fs/read_write.c:590) 
+> > [    7.009695] ksys_write (fs/read_write.c:644) 
+> > [    7.009696] do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80) 
+> > [    7.009698] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:113) 
+> > [    7.009700] ---------------------------------------------------
+> > [    7.009700] context B's detail
+> > [    7.009701] ---------------------------------------------------
+> > [    7.009702] context B
+> > [    7.009702]     [S] down_read(&ei->i_data_sem:0)
+> > [    7.009703]     [W] wait(&(bit_wait_table + i)->dmap:0)
+> > [    7.009704]     [E] up_read(&ei->i_data_sem:0)
+> > [    7.009705]
+> > [    7.009706] [S] down_read(&ei->i_data_sem:0):
+> > [    7.009707] ext4_map_blocks (./arch/x86/include/asm/bitops.h:207 ./include/asm-generic/bitops/instrumented-non-atomic.h:135 fs/ext4/ext4.h:1918 fs/ext4/inode.c:562) 
+> > [    7.009709] stacktrace:
+> > [    7.009709] down_read (kernel/locking/rwsem.c:1461) 
+> > [    7.009711] ext4_map_blocks (./arch/x86/include/asm/bitops.h:207 ./include/asm-generic/bitops/instrumented-non-atomic.h:135 fs/ext4/ext4.h:1918 fs/ext4/inode.c:562) 
+> > [    7.009712] ext4_getblk (fs/ext4/inode.c:851) 
+> > [    7.009714] ext4_bread (fs/ext4/inode.c:903) 
+> > [    7.009715] __ext4_read_dirblock (fs/ext4/namei.c:117) 
+> > [    7.009718] dx_probe (fs/ext4/namei.c:789) 
+> > [    7.009720] ext4_dx_find_entry (fs/ext4/namei.c:1721) 
+> > [    7.009722] __ext4_find_entry (fs/ext4/namei.c:1571) 
+> > [    7.009723] ext4_lookup (fs/ext4/namei.c:1770) 
+> > [    7.009725] lookup_open (./include/linux/dcache.h:361 fs/namei.c:3310) 
+> > [    7.009727] path_openat (fs/namei.c:3401 fs/namei.c:3605) 
+> > [    7.009729] do_filp_open (fs/namei.c:3637) 
+> > [    7.009731] do_sys_openat2 (fs/open.c:1215) 
+> > [    7.009732] do_sys_open (fs/open.c:1231) 
+> > [    7.009734] do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80) 
+> > [    7.009736] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:113) 
+> > [    7.009738]
+> > [    7.009738] [W] wait(&(bit_wait_table + i)->dmap:0):
+> > [    7.009739] prepare_to_wait (kernel/sched/wait.c:275) 
+> > [    7.009741] stacktrace:
+> > [    7.009741] __schedule (kernel/sched/sched.h:1318 kernel/sched/sched.h:1616 kernel/sched/core.c:6213) 
+> > [    7.009743] schedule (kernel/sched/core.c:6373 (discriminator 1)) 
+> > [    7.009744] io_schedule (./arch/x86/include/asm/current.h:15 kernel/sched/core.c:8392 kernel/sched/core.c:8418) 
+> > [    7.009745] bit_wait_io (./arch/x86/include/asm/current.h:15 kernel/sched/wait_bit.c:210) 
+> > [    7.009746] __wait_on_bit (kernel/sched/wait_bit.c:49) 
+> > [    7.009748] out_of_line_wait_on_bit (kernel/sched/wait_bit.c:65) 
+> > [    7.009749] ext4_read_bh (./arch/x86/include/asm/bitops.h:207 ./include/asm-generic/bitops/instrumented-non-atomic.h:135 ./include/linux/buffer_head.h:120 fs/ext4/super.c:201) 
+> > [    7.009752] __read_extent_tree_block (fs/ext4/extents.c:545) 
+> > [    7.009754] ext4_find_extent (fs/ext4/extents.c:928) 
+> > [    7.009756] ext4_ext_map_blocks (fs/ext4/extents.c:4099) 
+> > [    7.009757] ext4_map_blocks (fs/ext4/inode.c:563) 
+> > [    7.009759] ext4_getblk (fs/ext4/inode.c:851) 
+> > [    7.009760] ext4_bread (fs/ext4/inode.c:903) 
+> > [    7.009762] __ext4_read_dirblock (fs/ext4/namei.c:117) 
+> > [    7.009764] dx_probe (fs/ext4/namei.c:789) 
+> > [    7.009765] ext4_dx_find_entry (fs/ext4/namei.c:1721) 
+> > [    7.009767]
+> > [    7.009768] [E] up_read(&ei->i_data_sem:0):
+> > [    7.009769] ext4_map_blocks (fs/ext4/inode.c:593) 
+> > [    7.009771] stacktrace:
+> > [    7.009771] up_read (kernel/locking/rwsem.c:1556) 
+> > [    7.009774] ext4_map_blocks (fs/ext4/inode.c:593) 
+> > [    7.009775] ext4_getblk (fs/ext4/inode.c:851) 
+> > [    7.009777] ext4_bread (fs/ext4/inode.c:903) 
+> > [    7.009778] __ext4_read_dirblock (fs/ext4/namei.c:117) 
+> > [    7.009780] dx_probe (fs/ext4/namei.c:789) 
+> > [    7.009782] ext4_dx_find_entry (fs/ext4/namei.c:1721) 
+> > [    7.009784] __ext4_find_entry (fs/ext4/namei.c:1571) 
+> > [    7.009786] ext4_lookup (fs/ext4/namei.c:1770) 
+> > [    7.009788] lookup_open (./include/linux/dcache.h:361 fs/namei.c:3310) 
+> > [    7.009789] path_openat (fs/namei.c:3401 fs/namei.c:3605) 
+> > [    7.009791] do_filp_open (fs/namei.c:3637) 
+> > [    7.009792] do_sys_openat2 (fs/open.c:1215) 
+> > [    7.009794] do_sys_open (fs/open.c:1231) 
+> > [    7.009795] do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80) 
+> > [    7.009797] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:113) 
+> > [    7.009799] ---------------------------------------------------
+> > [    7.009800] information that might be helpful
+> > [    7.009800] ---------------------------------------------------
+> > [    7.009801] CPU: 0 PID: 611 Comm: rs:main Q:Reg Tainted: G        W         5.17.0-rc1-00014-g8a599299c0cb-dirty #30
+> > [    7.009804] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+> > [    7.009805] Call Trace:
+> > [    7.009806]  <TASK>
+> > [    7.009807] dump_stack_lvl (lib/dump_stack.c:107) 
+> > [    7.009809] print_circle (./arch/x86/include/asm/atomic.h:108 ./include/linux/atomic/atomic-instrumented.h:258 kernel/dependency/dept.c:157 kernel/dependency/dept.c:762) 
+> > [    7.009812] ? print_circle (kernel/dependency/dept.c:1086) 
+> > [    7.009814] cb_check_dl (kernel/dependency/dept.c:1104) 
+> > [    7.009815] bfs (kernel/dependency/dept.c:860) 
+> > [    7.009818] add_dep (kernel/dependency/dept.c:1423) 
+> > [    7.009820] do_event.isra.25 (kernel/dependency/dept.c:1650) 
+> > [    7.009822] ? __wake_up_common (kernel/sched/wait.c:108) 
+> > [    7.009824] dept_event (kernel/dependency/dept.c:2337) 
+> > [    7.009826] __wake_up_common (kernel/sched/wait.c:109) 
+> > [    7.009828] __wake_up_common_lock (./include/linux/spinlock.h:428 (discriminator 1) kernel/sched/wait.c:141 (discriminator 1)) 
+> > [    7.009830] __wake_up_bit (kernel/sched/wait_bit.c:127) 
+> > [    7.009832] ext4_orphan_del (fs/ext4/orphan.c:282) 
+> > [    7.009835] ? dept_ecxt_exit (./arch/x86/include/asm/current.h:15 kernel/dependency/dept.c:241 kernel/dependency/dept.c:999 kernel/dependency/dept.c:1043 kernel/dependency/dept.c:2478) 
+> > [    7.009837] ext4_truncate (fs/ext4/inode.c:4212) 
+> > [    7.009839] ext4_da_write_begin (./include/linux/fs.h:827 fs/ext4/truncate.h:23 fs/ext4/inode.c:2963) 
+> > [    7.009842] generic_perform_write (mm/filemap.c:3784) 
+> > [    7.009845] ext4_buffered_write_iter (fs/ext4/file.c:269) 
+> > [    7.009848] ext4_file_write_iter (fs/ext4/file.c:677) 
+> > [    7.009851] new_sync_write (fs/read_write.c:504 (discriminator 1)) 
+> > [    7.009854] vfs_write (fs/read_write.c:590) 
+> > [    7.009856] ksys_write (fs/read_write.c:644) 
+> > [    7.009857] ? trace_hardirqs_on (kernel/trace/trace_preemptirq.c:65) 
+> > [    7.009860] do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80) 
+> > [    7.009862] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:113) 
+> > [    7.009865] RIP: 0033:0x7f3b160b335d
+> > [ 7.009867] Code: e1 20 00 00 75 10 b8 01 00 00 00 0f 05 48 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 ce fa ff ff 48 89 04 24 b8 01 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 17 fb ff ff 48 89 d0 48 83 c4 08 48 3d 01
+> > All code
+> > ========
+> >    0:	e1 20                	loope  0x22
+> >    2:	00 00                	add    %al,(%rax)
+> >    4:	75 10                	jne    0x16
+> >    6:	b8 01 00 00 00       	mov    $0x1,%eax
+> >    b:	0f 05                	syscall 
+> >    d:	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax
+> >   13:	73 31                	jae    0x46
+> >   15:	c3                   	retq   
+> >   16:	48 83 ec 08          	sub    $0x8,%rsp
+> >   1a:	e8 ce fa ff ff       	callq  0xfffffffffffffaed
+> >   1f:	48 89 04 24          	mov    %rax,(%rsp)
+> >   23:	b8 01 00 00 00       	mov    $0x1,%eax
+> >   28:	0f 05                	syscall 
+> >   2a:*	48 8b 3c 24          	mov    (%rsp),%rdi		<-- trapping instruction
+> >   2e:	48 89 c2             	mov    %rax,%rdx
+> >   31:	e8 17 fb ff ff       	callq  0xfffffffffffffb4d
+> >   36:	48 89 d0             	mov    %rdx,%rax
+> >   39:	48 83 c4 08          	add    $0x8,%rsp
+> >   3d:	48                   	rex.W
+> >   3e:	3d                   	.byte 0x3d
+> >   3f:	01                   	.byte 0x1
+> > 
+> > Code starting with the faulting instruction
+> > ===========================================
+> >    0:	48 8b 3c 24          	mov    (%rsp),%rdi
+> >    4:	48 89 c2             	mov    %rax,%rdx
+> >    7:	e8 17 fb ff ff       	callq  0xfffffffffffffb23
+> >    c:	48 89 d0             	mov    %rdx,%rax
+> >    f:	48 83 c4 08          	add    $0x8,%rsp
+> >   13:	48                   	rex.W
+> >   14:	3d                   	.byte 0x3d
+> >   15:	01                   	.byte 0x1
+> > [    7.009869] RSP: 002b:00007f3b1340f180 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
+> > [    7.009871] RAX: ffffffffffffffda RBX: 00007f3b040010a0 RCX: 00007f3b160b335d
+> > [    7.009873] RDX: 0000000000000300 RSI: 00007f3b040010a0 RDI: 0000000000000001
+> > [    7.009874] RBP: 0000000000000000 R08: fffffffffffffa15 R09: fffffffffffffa05
+> > [    7.009875] R10: 0000000000000000 R11: 0000000000000293 R12: 00007f3b04000df0
+> > [    7.009876] R13: 00007f3b1340f1a0 R14: 0000000000000220 R15: 0000000000000300
+> > [    7.009879]  </TASK>
