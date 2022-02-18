@@ -2,121 +2,191 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5554BB731
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Feb 2022 11:46:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A094BC034
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Feb 2022 20:20:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234141AbiBRKq4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 18 Feb 2022 05:46:56 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36516 "EHLO
+        id S236703AbiBRTVI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 18 Feb 2022 14:21:08 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:58406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234107AbiBRKqz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Feb 2022 05:46:55 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38A4513F77;
-        Fri, 18 Feb 2022 02:46:39 -0800 (PST)
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21IAH6kA011920;
-        Fri, 18 Feb 2022 10:46:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=3QfnBNbtvsfT/us+WXyaCCapfpJQssFblYdRiMLuHIg=;
- b=ihqVEVsTR9wyULIitza+4g9YyomRkRgxOa7WFHC5ny7sqBwZGxwBXZ0qZFD+Z5Qube4H
- ZHld0NIXZHV7wp9/G3J1BfKplKIxyyIQ8XwigTcL+7aAkP+vY7T+1MsF1R6aaLbIPGHw
- nXz2mN61O25pzNX3wEiJI+uYEebAH1011kWqyCQxSy1ACqeFSJn14RgdsEH++2YZZohY
- ic7SG7/IUzN8LsysRc+O22b4K5Nfo7IPlG7ABTbFBmy0CyqgR29ZdJPiEBVxbI+4Yyz8
- ZUsYF7/0qVUp1nub7+fBrWjuPRhmMwcAH6fSGBzpSgSRhnFOsJSoG28T8NlBvPzTn7gD lg== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3ea9jqgj9p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Feb 2022 10:46:38 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21IAbwvU011111;
-        Fri, 18 Feb 2022 10:46:36 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06ams.nl.ibm.com with ESMTP id 3e645khdt1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Feb 2022 10:46:36 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21IAkXMK43581848
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Feb 2022 10:46:33 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 915C95207A;
-        Fri, 18 Feb 2022 10:46:33 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.119.232])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 4B7D052077;
-        Fri, 18 Feb 2022 10:46:32 +0000 (GMT)
-Date:   Fri, 18 Feb 2022 16:16:22 +0530
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
-Cc:     riteshh@linux.ibm.com
-Subject: Re: [PATCH 0/2] tests/ext4: Ensure resizes with sparse_super2 are
- handled correctly
-Message-ID: <Yg94/kUaJ05/7JwL@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <cover.1644217569.git.ojaswin@linux.ibm.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1644217569.git.ojaswin@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: C80NW8ApAbLBP_VWXSprgYGVvf0YkYvI
-X-Proofpoint-ORIG-GUID: C80NW8ApAbLBP_VWXSprgYGVvf0YkYvI
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S236738AbiBRTVH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Feb 2022 14:21:07 -0500
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2048.outbound.protection.outlook.com [40.107.92.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94CE52838FC;
+        Fri, 18 Feb 2022 11:20:50 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I99Y0oKoC/EEB9kipVlhEvCM9dVK+kH9tL/laeKwV3dFn0hrwfVxdf4gzHOh7Z+gbvcsbLIaSjKw6AhB9mofTvTgW34JxrUFjBD3L5D+kq74CBr4HxnIt/L3qQxqprF3yZWX4YMMYOAvpuaJjIRTZIF5KxhNAuSFRDBh3El0DfT707sgyQ0R0WIz27V+8/vteSuQeDdj0NFBIHIrtnofajbOYgRL79RJDgoNp5lIef9BxhMxEUOm+Lm3qJ37s0yBsNRC6E8XlQQ8FXsSWVMBOMwBUH4LrJhHWU42+3pWNy/sMrEeMv984e31yok+571zYmmBxlF26oQFR15c2bEWEA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xQRRxEl1dIjnmyqc9ybdRKlG0TdGdNm62a2GHGrFcNc=;
+ b=OcJh3rKWvr9YXtM9ju4Vzodrr+RMjzIE79ecx92bhDoqQH+g6inj0TY8RgxAp1ECiyhy2nWTJfsmhO3NHeM/d5SoWX1Jm3dxpntwX5ubcfC381z29vXFIzqs6UE6qKn22gsi9ilfqn/jvVDrycnmT0fHeYJWyrg8a5FE6q/majRFszZaLQfK63b6c+x59Uc6ODya15QhYVvvIxT3AqXK09V70qkO78DL308b1RxdHXmzCz5VI9lTHwuxWwm2VIslwBHPiqZlUNJOSJMYiCvidAyx43XPeQ3gqqkI/RspT25ABPO7+O7GuIjRKXTJyq+1pa02DtduDADa6q27Sdmh/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xQRRxEl1dIjnmyqc9ybdRKlG0TdGdNm62a2GHGrFcNc=;
+ b=pMSs1a3heyZzkzpIvVAEeWIMwqe878gnwLtkA4b+NZtfmhgQhGeuh1/5guqZ3rO5AAhS6O3ruDeQqQTYzMbJDE2Vp8A/ALbnyZ4QPSejEkabImzbABjJCYlnBf7bS2LUQu+7Fha0yVJAZMPlAXoYjliquMQ97ObOp7BH50GUIt4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN9PR12MB5115.namprd12.prod.outlook.com (2603:10b6:408:118::14)
+ by CY4PR12MB1509.namprd12.prod.outlook.com (2603:10b6:910:8::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.19; Fri, 18 Feb
+ 2022 19:20:47 +0000
+Received: from BN9PR12MB5115.namprd12.prod.outlook.com
+ ([fe80::38ec:3a46:f85e:6cfa]) by BN9PR12MB5115.namprd12.prod.outlook.com
+ ([fe80::38ec:3a46:f85e:6cfa%4]) with mapi id 15.20.4995.016; Fri, 18 Feb 2022
+ 19:20:47 +0000
+Message-ID: <2f2569d5-df0d-7975-7f4a-2d85ceaf29ef@amd.com>
+Date:   Fri, 18 Feb 2022 14:20:45 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH v6 01/10] mm: add zone device coherent type memory support
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Alex Sierra <alex.sierra@amd.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, rcampbell@nvidia.com,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        jglisse@redhat.com, willy@infradead.org
+References: <beb38138-2266-1ff8-cc82-8fe914bed862@redhat.com>
+ <877d9vd10u.fsf@nvdebian.thelocal> <20220216020357.GD4160@nvidia.com>
+ <6156515.kVgMqSaHHm@nvdebian>
+ <98d8bbc5-ffc2-8966-fdc1-a844874e7ae8@redhat.com>
+ <20220216122600.GG4160@nvidia.com>
+ <bf16195e-2570-3687-2b53-3f597ebfcfec@amd.com>
+ <20220218001935.GN4160@nvidia.com>
+From:   Felix Kuehling <felix.kuehling@amd.com>
+In-Reply-To: <20220218001935.GN4160@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: YT3PR01CA0139.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:83::31) To BN9PR12MB5115.namprd12.prod.outlook.com
+ (2603:10b6:408:118::14)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-18_04,2022-02-18_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- spamscore=0 phishscore=0 mlxlogscore=727 mlxscore=0 bulkscore=0
- impostorscore=0 priorityscore=1501 adultscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202180067
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 57749aec-f7f3-4ba8-9f80-08d9f313c467
+X-MS-TrafficTypeDiagnostic: CY4PR12MB1509:EE_
+X-Microsoft-Antispam-PRVS: <CY4PR12MB15096CEBF6076A2BB2F1DBE492379@CY4PR12MB1509.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 96A0sLYVG72fTEPxL3DRu0wS5WM2L2IMkvsBw6wtLV41F51oTT7MbaT2v1dZT7LNU7eIHhYGIobNa9eWptZYxyDfy0pOu+AxXOpGBM0E9FZcZqIdVpLEZN7ypB/EFXZJCQfveh4/Gnhog8LFns86UYp+aEilRgztFbcCjbYlacFMLMv9r/dlYywoXPd8TRqNHwnEFlOJlNKmf/2R2/WA89HLKuFrCYA1Ko+Mq1aIFxZOdFitsFnTip9w06JY+NtotpLLOXGCTeW2REm8IPf8IuZ3pN81N5iZ4TIgNivKEhUJ1jWGo1K9seKAzRbTqHRdfAA8A/a/zFExy1Q/MTuLqQxOaSGD6pqsjj4b1++YjCbEtKV2gIPpPDIZ2W0+CgZpsDVVdKQuVKFMapaDudj7sRp9S3lEAIVQcjqREKIVf7DfpeYNhJMGhTFTMsq1gHggA6/F84jj/bsvkM1WkFvi7apmsEd0KqnWjWHhNBFOV7e3HjbHPVV+xf/b5OLXaUgxZnGoKrw1OtazV9Lmtms7NvSQZ1M9bc+81ouGRJBpEHHR5nIEsomNfx/uEAL9PklkBgn58nfz0yhGKKok1EGHG51zpncLaISebZymU+EhkWatasCCb3F04YmXx2CIsLerA8SV4U8hcwOTViSZK3SSgdCPJAUK5otX3fqDurD06NzPbbkUOp2kx8tWJd+YEwU1tBXeNa0YLOEI+Qs3OcoYAp8V4AKDahj6VZvDCsu43Ms=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5115.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(5660300002)(38100700002)(44832011)(2906002)(36756003)(7416002)(31696002)(8936002)(26005)(66946007)(186003)(66556008)(4326008)(8676002)(66476007)(508600001)(54906003)(6916009)(316002)(2616005)(83380400001)(6512007)(86362001)(6486002)(6506007)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aDduaDh5eTQ2Z1FiRDFMb1NoL0M5d0JqNlJvdm43SHFiTDFBMURkMWJyQjJx?=
+ =?utf-8?B?OW81dFE2RHJucHk2UkFTOXFrd3gyU0EwL2kvV1hXRFdpOUlwTjRSU0VDRzQ4?=
+ =?utf-8?B?R3ZDMXJJVFRSNSswNVhJVHhPM084eE1KM3FnL1FRVU5GUkx5YmVWai9uUll3?=
+ =?utf-8?B?bnhRbkU3bER2SytSeFpHOGtrZy9qNGpyWVlTNG5iazZYcjJ3S0lxcDExdm1a?=
+ =?utf-8?B?TjJHR215NGpWd1dtdlZCT1IydmdhS2RYUVZueTJpYzIxUHlDRXpPTHBQUjZY?=
+ =?utf-8?B?UjNTSW5MaGlUKytlNFZ2cjdnREl0bnRlcGZROW4vVVNocGwwOWtnanZHTHVt?=
+ =?utf-8?B?MUFCY0pYM2luWm00NVpBNVZwU3czbVJJOUh3UktIUG9rNGpDL1Z1NmYyTjds?=
+ =?utf-8?B?bnJJKytFeWp1bTNuWm1pSXV6RkcvNXY2YjhocEhJT2NScUhUT0x5dmFsdVo4?=
+ =?utf-8?B?V2FzVHhRS01HYUd3eTUwalRyb3JWNTdKaW9HNDNnSXlqb3prNW9ZQS9nMHUr?=
+ =?utf-8?B?ZllISjRTWHNRTzZ6NkVYTHIrRG9HMUEzc1Brdk5hdEFmN1luM0UrQkhwRGl2?=
+ =?utf-8?B?a08vR0Z2Rk44eEFsT1dHMTNFazd2dGJRaTh4eCtSY25TRmFRSDhRNXdBU3o4?=
+ =?utf-8?B?a3RHYWp5U3ZBL3I3aU05K3dac2JlaUJzdWtqeVlKNjVCSmpjeWxaSFhsRkVD?=
+ =?utf-8?B?aVoyYWtDS2JXUFZRdHc5WC9tdmdTaHN6M3NGZjdSL2lxYW1rbmdRK3JHL2VQ?=
+ =?utf-8?B?b3NsWXhxNGFreVRFVm9FL1kxVDlRR3JnYTNyQ3NabjRFelM0OGxDM3E1UEN2?=
+ =?utf-8?B?MXdpZjAyeGJiZlR1UC9XNEtienRGSXlzeENWa1ZBVGNkTXZuRGhhTkNjZVBm?=
+ =?utf-8?B?YUlWU1pLQVJBaEROa2hhLzdJbWtQT0RrSzNRUFVFbkI3UUxVbjRnakZ1Vzgy?=
+ =?utf-8?B?TTRkNzFvUTJzNStneUdoV1NJR2RUYVJ2K2U4VlY3UXV4bS9RVVFZVCtTampj?=
+ =?utf-8?B?NnozSlBKUFZVcUtyVytMRVlBalBlc3NVeWNqeGlmeWxJQmFCR0xnUGhSR0pM?=
+ =?utf-8?B?ZWVLbUtOSUYyekNmWmJHaWJkTXdyUENsWlBYQjFmWUkrR1hNUDBuUEVVVVMy?=
+ =?utf-8?B?OURRL1BwWUdIVGxxb2ZWN25MQjlJaVo2SDlCZjNxUFVhbXZpUlZ5eHpkRlBn?=
+ =?utf-8?B?QUdaNm5UTGVFaTlsNnc1ZlRhSW0rV0ZwQUxTM011TTErcHZHc2tuWDQ0Wmxv?=
+ =?utf-8?B?Y0Q4bjdNZWx1aDNDUkFTN1ZpeFR3UU81YVliYXM0Q1pYNTFtVEdjZXd6MnIz?=
+ =?utf-8?B?MzVxVGJnbXRLVHk1YzIybUdkbHFOc0RjM3RNazE0TGhBS2pxRTJ0YWU1YTRO?=
+ =?utf-8?B?dGRuM3l6OG9YanhrZXBwR3c5SDBrYWU3MDVWSXRHcXcxdU5tWjl5ODhpVFBz?=
+ =?utf-8?B?TElaSkN4dm45UVZaWHM1bG5sTUJ2U2MwYzlXbndOVGNDb3JZY3NTMVFSMGU4?=
+ =?utf-8?B?ZHpuVkpQb1ZRMU02b0FqZm5Bcnd4c0hMU1pFV2I4TVh4SHUyQ1ZEWkk3VElO?=
+ =?utf-8?B?Z0h5RWVQK1hITHdJR0dQVXJENmRmOGpEUmJBbnhZQnBNeVFOZDUwKzdNWFpB?=
+ =?utf-8?B?YWc4ckNod0p1SzBFSENvZE5ZS25kT2NONGEvSjJOdllEdklqTmV6ZGxzdVB6?=
+ =?utf-8?B?clJLeWorZU1GdXVrV2I0Ly9mNE1iVXJCL09aK095UDQzaUUwSGlOM3FkVUgy?=
+ =?utf-8?B?V3JWZFVPUDk4dUcxRjVnRXphT1Roa0h2SVFiSWxGRnY4UHdhc1orRzFTcnZ0?=
+ =?utf-8?B?UUJJOEQyMFRLWGo3VHgxcEdpcjUrOUFwRmt5TEU5NStoQk5mRktQWWVCcGcw?=
+ =?utf-8?B?eU9EZTNVL2JTVVA5UUJoTUd0dnYrb3VQTEIzV250L1V0bkUzWlNDQVJ4amFz?=
+ =?utf-8?B?cE1WNS8rQ0JFSlNiM2ExQWh1NzdMNkVZQzFJNExmcG9lTzNaWHBBbDFvTjhQ?=
+ =?utf-8?B?NE5ZMjhncDNhS2JndWtHTWZKMUxSYWFVN3FLdisvVGF0WVB0TkFsL2NWdzQz?=
+ =?utf-8?B?YmEwNmtIQytRNWJkZElMd0x3bS8zY2N1QnFYR0xYOTV1YnZ5bUQwMWZFL0RP?=
+ =?utf-8?B?R3A5Mk1zUE4rYjRrK09PNWJtVGl6Z2tzeXlCaEJ1d3ZHOEFUVjVHSzhQLzFG?=
+ =?utf-8?Q?NIBKE89ZG+zswD4ru4IWjrs=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 57749aec-f7f3-4ba8-9f80-08d9f313c467
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5115.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Feb 2022 19:20:47.5626
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dBW2pqF7Z8NqCOwcHgGmy21QWBxDAn+kbWfkeih4UKMBa4tFhIlbG5awVlv0AVKdp9JGn8HbX5jiE8w1uBGyGw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1509
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+Am 2022-02-17 um 19:19 schrieb Jason Gunthorpe:
+> On Thu, Feb 17, 2022 at 04:12:20PM -0500, Felix Kuehling wrote:
+>
+>> I'm thinking of a more theoretical approach: Instead of auditing all users,
+>> I'd ask, what are the invariants that a vm_normal_page should have. Then
+>> check, whether our DEVICE_COHERENT pages satisfy them. But maybe the concept
+>> of a vm_normal_page isn't defined clearly enough for that.
+> I would say the expectation is that only 'page cache and anon' pages
+> are returned - ie the first union in struct page
+>
+> This is because the first file in your list I looked at:
+>
+> static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
+> 				unsigned long addr, unsigned long end,
+> 				struct mm_walk *walk)
+>
+> {
+> 		page = vm_normal_page(vma, addr, ptent);
+> [..]
+> 		if (pageout) {
+> 			if (!isolate_lru_page(page)) {
+>
+> Uses the LRU field, so this is incompatible with all the other page
+> types.
+>
+> One mitigation of this might be to formally make vm_normal_page() ==
+> 'pte to page cache and anon page' and add a new function that is 'pte
+> to any struct page'
+>
+> Then go through and sort callers as appropriate.
+>
+> The 'pte to page cache and anon page' can detect ZONE_DEVICE by
+> calling is_zone_device_page() insted of pte_devmap() and then continue
+> to return NULL. This same trick will fix GUP_fast.
 
-Just wanted to send a gentle reminder to look into this patchset and let
-me know if anyone has any suggestions or review comments. 
+Sounds good to me. What about vm_normal_page_pmd? Should we remove the 
+pmd_devmap check from that function as well. I'm not even sure what a 
+huge zone_device page would look like, but maybe that's a worthwhile 
+future optimization for our driver.
 
-Thank you for your time,
-Ojaswin
+I'd propose the function names vm_normal_page and 
+vm_normal_or_device_page for the two functions you described. The latter 
+would basically be the current vm_normal_page with the pte_devmap check 
+removed. vm_normal_page could be implemented as a wrapper around 
+vm_normal_or_device_page, which just adds the !is_zone_device_page() check.
 
-On Mon, Feb 07, 2022 at 01:55:32PM +0530, Ojaswin Mujoo wrote:
-> As detailed in the patch [1], kernel currently does not support resizes
-> with sparse_super2 enabled.  Before the above patch, if we used the
-> EXT4_IOC_RESIZE_FS ioctl directly, wiht sparse_super2 enabled, the
-> kernel used to still try the resize and ultimatley leave the fs in an
-> inconsistent state. This also led to corruption and kernel BUGs.
-> 
-> This patchset adds a test for ext4 to ensure that the kernel handles
-> resizes with sparse_super2 correctly, and returns -EOPNOTSUPP. 
-> 
-> Summary:
-> 
-> Patch 1: Fix the src/ext4_resize.c script to return accurate error codes.
-> Patch 2: Add the ext4 test for checking resize functionality
-> 
-> [1]
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b1489186cc8391e0c1e342f9fbc3eedf6b944c61
-> 
-> Ojaswin Mujoo (2):
->   src/ext4_resize.c: Refactor code and ensure accurate errno is returned
->   ext4: Test to ensure resize with sparse_super2 is handled correctly
-> 
->  src/ext4_resize.c  |  46 +++++++++++++-------
->  tests/ext4/056     | 102 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/ext4/056.out |   2 +
->  3 files changed, 136 insertions(+), 14 deletions(-)
->  create mode 100755 tests/ext4/056
->  create mode 100644 tests/ext4/056.out
-> 
-> -- 
-> 2.27.0
-> 
+Regards,
+   Felix
+
+
+>
+> Jason
+>
