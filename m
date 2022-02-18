@@ -2,50 +2,50 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5934BB349
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Feb 2022 08:32:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80CA44BB34C
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Feb 2022 08:32:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232033AbiBRHcP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 18 Feb 2022 02:32:15 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36626 "EHLO
+        id S232053AbiBRHcR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 18 Feb 2022 02:32:17 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231221AbiBRHcP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Feb 2022 02:32:15 -0500
+        with ESMTP id S232047AbiBRHcQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Feb 2022 02:32:16 -0500
 Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B4C5286B6C;
-        Thu, 17 Feb 2022 23:31:59 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D3328ADBC;
+        Thu, 17 Feb 2022 23:32:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1645169518; x=1676705518;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=L5qG7WSQJfsABVKF3+2PBPN2helzTLq3M2i7k7vgfWA=;
-  b=rZiAQHUfx2223wz50O96oHt+7qkdQobjD7UmOa7ZWfefLod9MffuoIAX
-   a7w/C6QVgPs1uWlrM1vuMInINgzglpG1Zipp+7/ijwC0ftTYCfBLxnmRB
-   J6rhpBKu/s9j2DYVnqpA7kL2V8hFR4bTe5Nggp7JKFRFrAOxzMfI3YSeZ
-   NT7h0+DegW8n781yAqyrWGoTg3qOKwj23yl8SsQ6eTURIx35/5cFzs1QL
-   havrNReBVb3jsHyZ4HoGgIzX/i/ONnC0Xbp4gZaqB+xDbET9qC2Njq3Dw
-   VpyMIQhzjU8EV0jU9TTds+9FQJrLBl74ABLwum23H/QHO6jUtUtVCjuud
-   Q==;
+  t=1645169520; x=1676705520;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=X0cJo/gEUSWY7GFbHe4x4WW3rcISwkhA4qYARZRTXL0=;
+  b=ZL3dy/r8JGmcFtpayRC0BOzIhR+zfSFFtJB9PoCjkzJz9DfbQS8zNzE0
+   qaq3srsTpqfe8zyzi3+oJpO+lSVfupjQGiortPoTm5JhqKHtjifEOE+eX
+   8PxFNz4RLRB41BbfLGHzz/80LFOQn404mbBoOMIn2wXbd7994hXzFzXNJ
+   99PZhaTs0Yt/Ayt+DWVLabcJBGCUb8QW2JsW3rinaV1Simxdk7GBwl0CR
+   ZCI1FAHxz+Nveorkpwee73oExh4AvZEZTixNAE6UxOIb/gYpam6IajhBZ
+   GiCKz5yr1F3wLzjRVSTPCYWrcVjhmKb7TrhDCkbhcS4QdkxxeggpZGf3K
+   A==;
 X-IronPort-AV: E=Sophos;i="5.88,378,1635177600"; 
-   d="scan'208";a="193264885"
+   d="scan'208";a="193264892"
 Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 18 Feb 2022 15:31:58 +0800
-IronPort-SDR: NGyccFi4NHIARxFYA0FM69RXdBpv8+WoIyeUAgQvmbyG7aaYgQDqpitAuaDFjrQVWvZg4GdnY+
- ybc3SNYrxJqSMnXnF5qOoJDXzGMNd5A91e0UbpoK4RGtBgCKpK+UJgK7OOvqnVILULHOWGnHcd
- 75WTi8IRPXF8rUMNVS+B5jztELA9LwhMeqELcHGY6BARko+yhKqd5vU6mo1uNeYVhAgQmZ7nYD
- YWHwzVzi5rFdbAjMkxTB8Pxs8f1r7yek70xj++MmVJSV2ft0QJsHtMVAoSfE78NWFoy4fGIjj9
- zBJyMAUzT56FbX9RI1kZW1Ty
+  by ob1.hgst.iphmx.com with ESMTP; 18 Feb 2022 15:32:00 +0800
+IronPort-SDR: 7YTibtaoh4ygGH3r9wYDZbSHbSe83m01b9+17knxqQDu2GYTFNxz+5jCLr+y1MNrsrYU1NBojI
+ 0UfTgkT4U15VY6MF0uinHAbCNokwIYqqOU3H8JlA3LTVKNrGNQDdbKT8QYiBZJgHK0wgJiM3UB
+ kb9KipSWi5SwGNKXIrd/u+Sp1gsqyxFAQL3m34ToOgWWm4Vly79X9o7QWtmujVFyx8LYhVOTmM
+ zNFBe1Znz6HPykWTTMaBHYCJtTZAqwmCxmMxrZH0i1I3KaFfZED3XosMP4TXkJPdVEN2QEtPGX
+ hseRUtLEJLCpTWRmG1AwopXc
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2022 23:04:43 -0800
-IronPort-SDR: 8e9tHaoanCXVmLbFSUTIO4CQtR8DYahbvHrJndF2e7wOfGUDV7BP92r8iIJjcGiZI+3nK2BOxH
- /Tkke6Iz6OMQJ+SqvP0uB0krxF0PAJidGmyLPlfb8A3hU0M1Z8e8r1p+39hNMeaMc87+wzp5Kz
- nclqpdW2E4wup7bkVSXHYybuhO4UVq2vfKURraRWPJ9AmLGJoB1yazFwPFl3WHZvphquO4v7l0
- 8No4FwLRgXonRKNTv2IeLAXb6Ap/8hgX+4ZeKpuZzLmxC61z+vkhh0OqKj/C6CUQyAi4fp7PMr
- 4ds=
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2022 23:04:45 -0800
+IronPort-SDR: lKFR5aoeC6jbqVv67g4GuRn7VTZCiHUnuouSVgkA4977nFObGZTRmZ+RF8aHxykDk94eG5kLKL
+ tkR9vL17WCb6LmIE0dAElFOo85IDizqY2u7v4Zz9Md4Vx4tv8Dax7zK8vVo4Rqi3E3XONQHbPM
+ 0s5Vp3rv3FSl9LMzMbmuGUKqtB9CHK1gbWm23OJ+mKFMZb3XTqBJ/4B74vFrH2laDMX6+NzuQX
+ 8edsfz3K+I7qVYaUlE3CnsGOh5zv3ZV9uE3q0xQ8QJ3DTGh96Rf8SOQMjGx1oQ+OETk/RGEXqj
+ gi4=
 WDCIronportException: Internal
 Received: from shindev.dhcp.fujisawa.hgst.com (HELO shindev.fujisawa.hgst.com) ([10.149.52.173])
-  by uls-op-cesaip02.wdc.com with ESMTP; 17 Feb 2022 23:31:58 -0800
+  by uls-op-cesaip02.wdc.com with ESMTP; 17 Feb 2022 23:31:59 -0800
 From:   Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
 To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
 Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
@@ -53,10 +53,12 @@ Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
         Johannes Thumshirn <johannes.thumshirn@wdc.com>,
         Damien Le Moal <damien.lemoal@opensource.wdc.com>,
         Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Subject: [PATCH v3 0/6] fstests: fix _scratch_mkfs_sized failure handling
-Date:   Fri, 18 Feb 2022 16:31:50 +0900
-Message-Id: <20220218073156.2179803-1-shinichiro.kawasaki@wdc.com>
+Subject: [PATCH v3 1/6] common/rc: fix btrfs mixed mode usage in _scratch_mkfs_sized
+Date:   Fri, 18 Feb 2022 16:31:51 +0900
+Message-Id: <20220218073156.2179803-2-shinichiro.kawasaki@wdc.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220218073156.2179803-1-shinichiro.kawasaki@wdc.com>
+References: <20220218073156.2179803-1-shinichiro.kawasaki@wdc.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -69,72 +71,39 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-When generic/204 is run for btrfs-zoned filesystem on zoned block devices with
-GB size order, it takes very long time to complete. The test case creates 115MiB
-filesystem on the scratch device and fills files in it within decent run time.
-However, with btrfs-zoned condition, the test case creates filesystem as large
-as the device size and it takes very long time to fill it all. Three causes were
-identified for the long run time, and this series addresses them.
+The helper function _scratch_mkfs_sized needs a couple of improvements
+for btrfs. At first, the function adds --mixed option to mkfs.btrfs when
+the filesystem size is smaller then 256MiB, but this threshold is no
+longer correct and it should be 109MiB. Secondly, the --mixed option
+shall not be specified to mkfs.btrfs for zoned devices, since zoned
+devices does not allow mixing metadata blocks and data blocks.
 
-The first cause is mixed mode option that _scratch_mkfs_sized helper function
-adds to mkfs.btrfs. This option was added for both regular btrfs and
-zoned-btrfs. However, zoned-btrfs does not support mixed mode. The mkfs with
-mixed mode fails and results in _scratch_mkfs_sized failure. The mixed mode
-shall not be specified for btrfs-zoned filesystem.
+Suggested-by: Naohiro Aota <naohiro.aota@wdc.com>
+Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ common/rc | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-The second cause is unnecessary call of the _scratch_mkfs helper function in the
-test case generic/204. This helper function is called to obtain data block size
-and i-node size. However, these numbers can be obtained from _scratch_mkfs_sized
-call. The _scratch_mkfs function call shall be removed.
-
-The third cause is no check of return code from _scratch_mkfs_sized. The test
-case generic/204 calls both _scratch_mkfs and _scratch_mkfs_sized, and does not
-check return code from them. If _scratch_mkfs succeeds and _scratch_mkfs_sized
-fails, the scratch device still has valid filesystem created by _scratch_mkfs.
-Following test workload can be executed without failure, but the filesystem
-does not have the size specified for _scratch_mkfs_sized. The return code of
-_scratch_mkfs_sized shall be checked to catch the mkfs failure. This problem
-exists not only in generic/204, but also in other test cases which call both
-_scratch_mkfs and _scratch_mkfs_sized.
-
-In this series, the first patch addresses the first cause, and the second patch
-addresses the second cause. These two patches fix the test case generic/204.
-Following three patches address the third cause, and fix other test cases than
-generic/204.
-
-The last patch is an additional clean up of the helper function _filter_mkfs.
-During this fix work, it was misunderstood that this function were xfs unique.
-To clarify it can be extended to other filesystems, factor out xfs unique part.
-
-Changes from v2:
-* Added Reviewed-by tags
-
-Changes from v1:
-* Added 2nd patch which removes _scratch_mkfs call from generic/204
-* Added 6th patch which factors out xfs unique part from _filter_mkfs
-* Dropped 3 patches which had renamed _filter_mkfs to _xfs_filter_mkfs
-* Dropped generic/204 hunk from the 3rd patch
-
-Shin'ichiro Kawasaki (6):
-  common/rc: fix btrfs mixed mode usage in _scratch_mkfs_sized
-  generic/204: remove unnecessary _scratch_mkfs call
-  generic/{171,172,173,174}: check _scratch_mkfs_sized return code
-  ext4/021: check _scratch_mkfs_sized return code
-  xfs/015: check _scratch_mkfs_sized return code
-  common: factor out xfs unique part from _filter_mkfs
-
- common/filter     | 40 +---------------------------------------
- common/rc         |  8 ++++----
- common/xfs        | 41 +++++++++++++++++++++++++++++++++++++++++
- tests/ext4/021    |  2 +-
- tests/generic/171 |  2 +-
- tests/generic/172 |  2 +-
- tests/generic/173 |  2 +-
- tests/generic/174 |  2 +-
- tests/generic/204 |  6 +-----
- tests/xfs/015     |  2 +-
- 10 files changed, 53 insertions(+), 54 deletions(-)
-
+diff --git a/common/rc b/common/rc
+index de60fb7b..74d2d8bd 100644
+--- a/common/rc
++++ b/common/rc
+@@ -1075,10 +1075,10 @@ _scratch_mkfs_sized()
+ 		;;
+ 	btrfs)
+ 		local mixed_opt=
+-		# minimum size that's needed without the mixed option.
+-		# Ref: btrfs-prog: btrfs_min_dev_size()
+-		# Non mixed mode is also the default option.
+-		(( fssize < $((256 * 1024 *1024)) )) && mixed_opt='--mixed'
++		# Mixed option is required when the filesystem size is small and
++		# the device is not zoned. Ref: btrfs-progs: btrfs_min_dev_size()
++		(( fssize < $((109 * 1024 * 1024)) )) &&
++			! _scratch_btrfs_is_zoned && mixed_opt='--mixed'
+ 		$MKFS_BTRFS_PROG $MKFS_OPTIONS $mixed_opt -b $fssize $SCRATCH_DEV
+ 		;;
+ 	jfs)
 -- 
 2.34.1
 
