@@ -2,250 +2,157 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD8F4BC6A6
-	for <lists+linux-ext4@lfdr.de>; Sat, 19 Feb 2022 08:23:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1364BC740
+	for <lists+linux-ext4@lfdr.de>; Sat, 19 Feb 2022 10:56:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241624AbiBSHWp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 19 Feb 2022 02:22:45 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42538 "EHLO
+        id S241772AbiBSJyj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 19 Feb 2022 04:54:39 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:45428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbiBSHWm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 19 Feb 2022 02:22:42 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF09F210;
-        Fri, 18 Feb 2022 23:22:23 -0800 (PST)
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21J6kcNX031374;
-        Sat, 19 Feb 2022 07:22:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=i17v2TBaJyPAijg3EoGR7ou740fw0QYQ0vDWkvLww3s=;
- b=K/9CBarxfl4M9S9uI3BnyxEJqRwGHNW4Lv+uHFsNe41vSRz8UXQ0DFmfDQ84it310JNx
- B3O/i9n3syMIDWMcTv7WGnX05MDp8krzZTCW6SgEjb0yHO8CUK29EORySOSLZkpRnuUt
- GiJrngMe+N16vyFaQKnzUG8G3maUTxnTUBRit/7FykktvhkNRdS3ofNLtj49V3oiMVhn
- fMfVXrRDK6VWFKVpk4HBocCf/DG99OMz9eLtZsifYARwzv9HsnwbVTZ1PVJEf+RRt7sf
- tkZcqg7w+V+Sy48d2ONh56LXMmGxhDd7iq2IGakT26qFpAF6oy9MCmRCR5tis72KAF98 yg== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3eauk00g98-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 19 Feb 2022 07:22:23 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21J7C4KB000920;
-        Sat, 19 Feb 2022 07:22:21 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 3ear68gt0k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 19 Feb 2022 07:22:21 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21J7MHnn33358140
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 19 Feb 2022 07:22:17 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3237FAE045;
-        Sat, 19 Feb 2022 07:22:17 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9DB36AE051;
-        Sat, 19 Feb 2022 07:22:14 +0000 (GMT)
-Received: from localhost (unknown [9.43.86.157])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Sat, 19 Feb 2022 07:22:13 +0000 (GMT)
-Date:   Sat, 19 Feb 2022 12:52:11 +0530
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 2/2] ext4: Test to ensure resize with sparse_super2 is
- handled correctly
-Message-ID: <20220219072211.lmp64ntxmrcz7sua@riteshh-domain>
-References: <cover.1644217569.git.ojaswin@linux.ibm.com>
- <aead63bfa6cca5a8a1c8225075f48a29d06df1ae.1644217569.git.ojaswin@linux.ibm.com>
+        with ESMTP id S239282AbiBSJyh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 19 Feb 2022 04:54:37 -0500
+Received: from lgeamrelo11.lge.com (lgeamrelo12.lge.com [156.147.23.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9E59F6E8D9
+        for <linux-ext4@vger.kernel.org>; Sat, 19 Feb 2022 01:54:17 -0800 (PST)
+Received: from unknown (HELO lgemrelse7q.lge.com) (156.147.1.151)
+        by 156.147.23.52 with ESMTP; 19 Feb 2022 18:54:15 +0900
+X-Original-SENDERIP: 156.147.1.151
+X-Original-MAILFROM: byungchul.park@lge.com
+Received: from unknown (HELO X58A-UD3R) (10.177.244.38)
+        by 156.147.1.151 with ESMTP; 19 Feb 2022 18:54:15 +0900
+X-Original-SENDERIP: 10.177.244.38
+X-Original-MAILFROM: byungchul.park@lge.com
+Date:   Sat, 19 Feb 2022 18:54:07 +0900
+From:   Byungchul Park <byungchul.park@lge.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
+        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
+        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
+        chris@chris-wilson.co.uk, duyuyang@gmail.com,
+        johannes.berg@intel.com, tj@kernel.org, willy@infradead.org,
+        david@fromorbit.com, amir73il@gmail.com, bfields@fieldses.org,
+        gregkh@linuxfoundation.org, kernel-team@lge.com,
+        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
+        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
+        ngupta@vflare.org, linux-block@vger.kernel.org, axboe@kernel.dk,
+        paolo.valente@linaro.org, josef@toxicpanda.com,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        jack@suse.cz, jack@suse.com, jlayton@kernel.org,
+        dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
+        dri-devel@lists.freedesktop.org, airlied@linux.ie,
+        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+        hamohammed.sa@gmail.com
+Subject: Re: [PATCH 00/16] DEPT(Dependency Tracker)
+Message-ID: <20220219095407.GA10342@X58A-UD3R>
+References: <1645095472-26530-1-git-send-email-byungchul.park@lge.com>
+ <Yg5u7dzUxL3Vkncg@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aead63bfa6cca5a8a1c8225075f48a29d06df1ae.1644217569.git.ojaswin@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: NQ4iIT_KtCQwjsvVDMUCB_JIKZ70-eMB
-X-Proofpoint-ORIG-GUID: NQ4iIT_KtCQwjsvVDMUCB_JIKZ70-eMB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-19_02,2022-02-18_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
- malwarescore=0 mlxlogscore=999 clxscore=1015 lowpriorityscore=0
- adultscore=0 impostorscore=0 mlxscore=0 priorityscore=1501 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202190044
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <Yg5u7dzUxL3Vkncg@mit.edu>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22/02/07 01:55PM, Ojaswin Mujoo wrote:
-> Kernel currently doesn't support resize of EXT4 mounted
-> with sparse_super2 option enabled. Earlier, it used to leave the resize
-> incomplete and the fs would be left in an inconsistent state, however commit
-> b1489186cc83[1] fixed this to avoid the fs corruption by clearly returning
-> -ENOTSUPP.
->
-> Test to ensure that kernel handles resizing with sparse_super2 correctly. Run
-> resize for multiple iterations because this leads to kernel crash due to
-> fs corruption, which we want to detect.
->
-> Related commit in mainline:
->
-> [1] commit b1489186cc8391e0c1e342f9fbc3eedf6b944c61
->
-> 	ext4: add check to prevent attempting to resize an fs with sparse_super2
+On Thu, Feb 17, 2022 at 10:51:09AM -0500, Theodore Ts'o wrote:
+> On Thu, Feb 17, 2022 at 07:57:36PM +0900, Byungchul Park wrote:
+> > 
+> > I've got several reports from the tool. Some of them look like false
+> > alarms and some others look like real deadlock possibility. Because of
+> > my unfamiliarity of the domain, it's hard to confirm if it's a real one.
+> > Let me add the reports on this email thread.
+> 
+> The problem is we have so many potentially invalid, or
+> so-rare-as-to-be-not-worth-the-time-to-investigate-in-the-
+> grand-scheme-of-all-of-the-fires-burning-on-maintainers laps that it's
+> really not reasonable to ask maintainers to determine whether
 
-Thanks for the patch. Few nits below.
+Even though I might have been wrong and might be gonna be wrong, you
+look so arrogant. You were hasty to judge and trying to walk over me.
 
->
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> ---
->  tests/ext4/056     | 102 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/ext4/056.out |   2 +
->  2 files changed, 104 insertions(+)
->  create mode 100755 tests/ext4/056
->  create mode 100644 tests/ext4/056.out
->
-> diff --git a/tests/ext4/056 b/tests/ext4/056
-> new file mode 100755
-> index 00000000..9185621d
-> --- /dev/null
-> +++ b/tests/ext4/056
-> @@ -0,0 +1,102 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2022 IBM. All Rights Reserved.
-> +#
-> +# We don't currently support resize of EXT4 filesystems mounted
-> +# with sparse_super2 option enabled. Earlier, kernel used to leave the resize
-> +# incomplete and the fs would be left into an incomplete state, however commit
-> +# b1489186cc83 fixed this to avoid the fs corruption by clearly returning
-> +# -ENOTSUPP.
-> +#
-> +# This test ensures that kernel handles resizing with sparse_super2 correctly
-> +#
-> +# Related commit in mainline:
-> +#
-> +# commit b1489186cc8391e0c1e342f9fbc3eedf6b944c61
-> +# ext4: add check to prevent attempting to resize an fs with sparse_super2
-> +#
-> +
-> +. ./common/preamble
-> +_begin_fstest auto ioctl resize quick
-> +
-> +# real QA test starts here
-> +
-> +INITIAL_FS_SIZE=1G
-> +RESIZED_FS_SIZE=$((2*1024*1024*1024))  # 2G
-> +ONLINE_RESIZE_BLOCK_LIMIT=$((256*1024*1024))
-> +
-> +_supported_fs ext4
-> +_require_scratch_size $(($RESIZED_FS_SIZE/1024))
-> +_require_test_program "ext4_resize"
-> +
-> +_log()
-> +{
-> +	echo "$seq: $*" >> $seqres.full 2>&1
-> +}
-> +
-> +do_resize()
-> +{
-> +
-> +	$MKFS_PROG `_scratch_mkfs_options -t ext4 -E resize=$ONLINE_RESIZE_BLOCK_LIMIT \
-> +		-O sparse_super2` $INITIAL_FS_SIZE >> $seqres.full 2>&1 \
-> +		|| _fail "$MKFS_PROG failed. Exiting"
-> +
-> +	_scratch_mount || _fail "Failed to mount scratch partition. Exiting"
-> +
-> +	BS=$(_get_block_size $SCRATCH_MNT)
-> +	NEW_BLOCKS=$(($RESIZED_FS_SIZE/$BS))
-> +
-> +	local RESIZE_RET
-> +	local EOPNOTSUPP=95
-> +
-> +	$here/src/ext4_resize $SCRATCH_MNT $NEW_BLOCKS >> $seqres.full 2>&1
-> +	RESIZE_RET=$?
-> +
-> +	# Use $RESIZE_RET for logging
-> +	if [ $RESIZE_RET = 0 ]
-> +	then
-> +		_log "Resizing succeeded but FS might still be corrupt."
+I reported it because I thought it was a real problem but couldn't
+confirm it. For the other reports that I thought was not real, I didn't
+even mention it. If you are talking about the previous report, then I
+felt so sorry as I told you. I skimmed through the part of the waits...
 
-IMO, this above logs is not required. Putting iteration count is more than
-enough. You could log more info if the resize fails. But above log is somewhat
-confusing to me.
+Basically, I respect you and appreciate your feedback. Hope you not get
+me wrong.
 
+> Looking at the second ext4 report, it doesn't make any sense.  Context
+> A is the kjournald thread.  We don't do a commit until (a) the timeout
+> expires, or (b) someone explicitly requests that a commit happen
+> waking up j_wait_commit.  I'm guessing that complaint here is that
+> DEPT thinks nothing is explicitly requesting a wake up.  But note that
+> after 5 seconds (or whatever journal->j_commit_interval) is configured
+> to be we *will* always start a commit.  So ergo, there can't be a deadlock.
 
-> +	elif [ $RESIZE_RET = $EOPNOTSUPP ]
-> +	then
-> +		_log "Resize operation not supported with sparse_super2"
-> +		_log "Threw expected error $RESIZE_RET (EOPNOTSUPP)"
+Yeah, it might not be a *deadlock deadlock* because the wait will be
+anyway woken up by one of the wake up points you mentioned. However, the
+dependency looks problematic because the three contexts participating in
+the dependency chain would be stuck for a while until one eventually
+wakes it up. I bet it would not be what you meant.
 
-If it fails with EOPNOTSUPP, do we still need to iterate in do_resize()
-8 times?
+Again. It's not critical but problematic. Or am I missing something?
 
-> +
-> +	else
-> +		_log "Output of resize = $RESIZE_RET. Expected $EOPNOTSUPP (EOPNOTSUPP)"
-> +		_log "You might be missing kernel patch b1489186cc83"
+> At a higher level of discussion, it's an unfair tax on maintainer's
+> times to ask maintainers to help you debug DEPT for you.  Tools like
+> Syzkaller and DEPT are useful insofar as they save us time in making
+> our subsystems better.  But until you can prove that it's not going to
+> be a massive denial of service attack on maintainer's time, at the
 
-Not sure if we should pin point to a particular patch in this case.
-It could be that we add some features later and then some of those doesn't again
-support resize feature where it should return EOPNOTSUPP, but this test could
-capture that. So, I feel above may not be required.
+Partially I agree. I would understand you even if you don't support Dept
+until you think it's valuable enough. However, let me keep asking things
+to fs folks, not you, even though I would cc you on it.
 
-> +	fi
-> +
-> +	# unount after ioctl sometimes fails with "device busy" so add a small delay
-> +	sleep 0.1
+> If you know there there "appear to be false positives", you need to
+> make sure you've tracked them all down before trying to ask that this
+> be merged.
 
-Let's not add this sleep for EOPNOTSUPP case.
+To track them all down, I need to ask LKML because Dept works perfectly
+with my system. I don't want it to be merged with a lot of false
+positive still in there, either.
 
-> +
-> +	_scratch_unmount >> $seqres.full 2>&1 || _fail "$UMOUNT_PROG failed. Exiting"
-> +}
-> +
-> +run_test()
-> +{
-> +	local FSCK_RET
-> +	local ITERS=8
-> +
-> +	for i in $(seq 1 $ITERS)
-> +	do
-> +		_log "----------- Iteration: $i ------------"
-> +		do_resize
-> +	done
-> +
-> +	_log "-------- Iterations Complete ---------"
-> +	_log "Checking if FS is in consistent state"
-> +	_check_scratch_fs
-> +	FSCK_RET=$?
-> +
-> +	return $FSCK_RET
-> +}
-> +
-> +run_test
-> +status=$?
-> +
-> +if [ "$status" -eq "0" ]
-> +then
-> +	echo "Test Succeeded!" | tee -a $seqres.full
-> +fi
-> +
-> +exit
-> diff --git a/tests/ext4/056.out b/tests/ext4/056.out
-> new file mode 100644
-> index 00000000..41706284
-> --- /dev/null
-> +++ b/tests/ext4/056.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 056
-> +Test Succeeded!
-> --
-> 2.27.0
->
+> You may also want to add some documentation about why we should trust
+> this; in particular for wait channels, when a process calls schedule()
+> there may be multiple reasons why the thread will wake up --- in the
+> worst case, such as in the select(2) or epoll(2) system call, there
+> may be literally thousands of reasons (one for every file desriptor
+> the select is waiting on) --- why the process will wake up and thus
+> resolve the potential "deadlock" that DEPT is worrying about.  How is
+> DEPT going to handle those cases?  If the answer is that things need
+
+Thank you for the information but I don't get it which case you are
+concerning. I'd like to ask you a specific senario of that so that we
+can discuss it more - maybe I guess I could answer to it tho, but I
+won't ask you. Just give me an instance only if you think it's worthy.
+
+You look like a guy who unconditionally blames on new things before
+understanding it rather than asking and discussing. Again. I also think
+anyone doesn't have to spend his or her time for what he or she think is
+not worthy enough.
+
+> I know that you're trying to help us, but this tool needs to be far
+> better than Lockdep before we should think about merging it.  Even if
+> it finds 5% more potential deadlocks, if it creates 95% more false
+
+It should not get merged for sure if so, but it sounds too sarcastic.
+Let's see if it creates 95% false positives for real. If it's true and
+I can't control it, I will give up. That's what I should do.
+
+There are a lot of factors to judge how valuable Dept is. Dept would be
+useful especially in the middle of development, rather than in the final
+state in the tree. It'd be appreciated if you think that sides more, too.
+
+Thanks,
+Byungchul
