@@ -2,24 +2,24 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E81604BC7BB
-	for <lists+linux-ext4@lfdr.de>; Sat, 19 Feb 2022 11:58:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E9A4BC7C3
+	for <lists+linux-ext4@lfdr.de>; Sat, 19 Feb 2022 11:58:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241986AbiBSK7E (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 19 Feb 2022 05:59:04 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41390 "EHLO
+        id S242069AbiBSK7H (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 19 Feb 2022 05:59:07 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234151AbiBSK7D (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 19 Feb 2022 05:59:03 -0500
-Received: from lgeamrelo11.lge.com (lgeamrelo13.lge.com [156.147.23.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 66263674E5
-        for <linux-ext4@vger.kernel.org>; Sat, 19 Feb 2022 02:58:41 -0800 (PST)
+        with ESMTP id S242050AbiBSK7E (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 19 Feb 2022 05:59:04 -0500
+Received: from lgeamrelo11.lge.com (lgeamrelo12.lge.com [156.147.23.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 048F7692A9
+        for <linux-ext4@vger.kernel.org>; Sat, 19 Feb 2022 02:58:42 -0800 (PST)
 Received: from unknown (HELO lgemrelse7q.lge.com) (156.147.1.151)
-        by 156.147.23.53 with ESMTP; 19 Feb 2022 19:58:40 +0900
+        by 156.147.23.52 with ESMTP; 19 Feb 2022 19:58:41 +0900
 X-Original-SENDERIP: 156.147.1.151
 X-Original-MAILFROM: byungchul.park@lge.com
 Received: from unknown (HELO localhost.localdomain) (10.177.244.38)
-        by 156.147.1.151 with ESMTP; 19 Feb 2022 19:58:40 +0900
+        by 156.147.1.151 with ESMTP; 19 Feb 2022 19:58:41 +0900
 X-Original-SENDERIP: 10.177.244.38
 X-Original-MAILFROM: byungchul.park@lge.com
 From:   Byungchul Park <byungchul.park@lge.com>
@@ -46,69 +46,138 @@ Cc:     damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
         dri-devel@lists.freedesktop.org, airlied@linux.ie,
         rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
         hamohammed.sa@gmail.com
-Subject: [PATCH v2 01/18] llist: Move llist_{head,node} definition to types.h
-Date:   Sat, 19 Feb 2022 19:58:14 +0900
-Message-Id: <1645268311-24222-2-git-send-email-byungchul.park@lge.com>
+Subject: [PATCH v2 05/18] dept: Apply Dept to spinlock
+Date:   Sat, 19 Feb 2022 19:58:18 +0900
+Message-Id: <1645268311-24222-6-git-send-email-byungchul.park@lge.com>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1645268311-24222-1-git-send-email-byungchul.park@lge.com>
 References: <1645268311-24222-1-git-send-email-byungchul.park@lge.com>
 X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
         RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-llist_head and llist_node can be used by very primitives. For example,
-Dept for tracking dependency uses llist things in its header. To avoid
-header dependency, move those to types.h.
+Makes Dept able to track dependencies by spinlock.
 
 Signed-off-by: Byungchul Park <byungchul.park@lge.com>
 ---
- include/linux/llist.h | 8 --------
- include/linux/types.h | 8 ++++++++
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ include/linux/lockdep.h            | 18 +++++++++++++++---
+ include/linux/spinlock.h           | 26 ++++++++++++++++++++++++++
+ include/linux/spinlock_types_raw.h | 13 +++++++++++++
+ 3 files changed, 54 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/llist.h b/include/linux/llist.h
-index 85bda2d..99cc3c3 100644
---- a/include/linux/llist.h
-+++ b/include/linux/llist.h
-@@ -53,14 +53,6 @@
- #include <linux/stddef.h>
- #include <linux/types.h>
+diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+index c1a56fe..529ea18 100644
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -584,9 +584,21 @@ static inline void print_irqtrace_events(struct task_struct *curr)
+ #define lock_acquire_shared(l, s, t, n, i)		lock_acquire(l, s, t, 1, 1, n, i)
+ #define lock_acquire_shared_recursive(l, s, t, n, i)	lock_acquire(l, s, t, 2, 1, n, i)
  
--struct llist_head {
--	struct llist_node *first;
--};
--
--struct llist_node {
--	struct llist_node *next;
--};
--
- #define LLIST_HEAD_INIT(name)	{ NULL }
- #define LLIST_HEAD(name)	struct llist_head name = LLIST_HEAD_INIT(name)
+-#define spin_acquire(l, s, t, i)		lock_acquire_exclusive(l, s, t, NULL, i)
+-#define spin_acquire_nest(l, s, t, n, i)	lock_acquire_exclusive(l, s, t, n, i)
+-#define spin_release(l, i)			lock_release(l, i)
++#define spin_acquire(l, s, t, i)					\
++do {									\
++	lock_acquire_exclusive(l, s, t, NULL, i);			\
++	dept_spin_lock(&(l)->dmap, s, t, NULL, "spin_unlock", i);	\
++} while (0)
++#define spin_acquire_nest(l, s, t, n, i)				\
++do {									\
++	lock_acquire_exclusive(l, s, t, n, i);				\
++	dept_spin_lock(&(l)->dmap, s, t, (n) ? &(n)->dmap : NULL, "spin_unlock", i); \
++} while (0)
++#define spin_release(l, i)						\
++do {									\
++	lock_release(l, i);						\
++	dept_spin_unlock(&(l)->dmap, i);				\
++} while (0)
  
-diff --git a/include/linux/types.h b/include/linux/types.h
-index ac825ad..4662d6e 100644
---- a/include/linux/types.h
-+++ b/include/linux/types.h
-@@ -187,6 +187,14 @@ struct hlist_node {
- 	struct hlist_node *next, **pprev;
- };
+ #define rwlock_acquire(l, s, t, i)		lock_acquire_exclusive(l, s, t, NULL, i)
+ #define rwlock_acquire_read(l, s, t, i)					\
+diff --git a/include/linux/spinlock.h b/include/linux/spinlock.h
+index 5c0c517..6b5c3f4 100644
+--- a/include/linux/spinlock.h
++++ b/include/linux/spinlock.h
+@@ -95,6 +95,32 @@
+ # include <linux/spinlock_up.h>
+ #endif
  
-+struct llist_head {
-+	struct llist_node *first;
-+};
++#ifdef CONFIG_DEPT
++#define dept_spin_lock(m, ne, t, n, e_fn, ip)				\
++do {									\
++	if (t) {							\
++		dept_ecxt_enter(m, 1UL, ip, __func__, e_fn, ne);	\
++		dept_ask_event(m);					\
++	} else if (n) {							\
++		dept_skip(m);						\
++	} else {							\
++		dept_wait(m, 1UL, ip, __func__, ne);			\
++		dept_ecxt_enter(m, 1UL, ip, __func__, e_fn, ne);	\
++		dept_ask_event(m);					\
++	}								\
++} while (0)
++#define dept_spin_unlock(m, ip)						\
++do {									\
++	if (!dept_unskip_if_skipped(m)) {				\
++		dept_event(m, 1UL, ip, __func__);			\
++		dept_ecxt_exit(m, ip);					\
++	}								\
++} while (0)
++#else
++#define dept_spin_lock(m, ne, t, n, e_fn, ip)	do { } while (0)
++#define dept_spin_unlock(m, ip)			do { } while (0)
++#endif
 +
-+struct llist_node {
-+	struct llist_node *next;
-+};
+ #ifdef CONFIG_DEBUG_SPINLOCK
+   extern void __raw_spin_lock_init(raw_spinlock_t *lock, const char *name,
+ 				   struct lock_class_key *key, short inner);
+diff --git a/include/linux/spinlock_types_raw.h b/include/linux/spinlock_types_raw.h
+index 91cb36b..279e821 100644
+--- a/include/linux/spinlock_types_raw.h
++++ b/include/linux/spinlock_types_raw.h
+@@ -26,16 +26,28 @@
+ 
+ #define SPINLOCK_OWNER_INIT	((void *)-1L)
+ 
++#ifdef CONFIG_DEPT
++# define RAW_SPIN_DMAP_INIT(lockname)	.dmap = { .name = #lockname, .skip_cnt = ATOMIC_INIT(0) },
++# define SPIN_DMAP_INIT(lockname)	.dmap = { .name = #lockname, .skip_cnt = ATOMIC_INIT(0) },
++# define LOCAL_SPIN_DMAP_INIT(lockname)	.dmap = { .name = #lockname, .skip_cnt = ATOMIC_INIT(0) },
++#else
++# define RAW_SPIN_DMAP_INIT(lockname)
++# define SPIN_DMAP_INIT(lockname)
++# define LOCAL_SPIN_DMAP_INIT(lockname)
++#endif
 +
- struct ustat {
- 	__kernel_daddr_t	f_tfree;
- #ifdef CONFIG_ARCH_32BIT_USTAT_F_TINODE
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ # define RAW_SPIN_DEP_MAP_INIT(lockname)		\
+ 	.dep_map = {					\
+ 		.name = #lockname,			\
+ 		.wait_type_inner = LD_WAIT_SPIN,	\
++		RAW_SPIN_DMAP_INIT(lockname)		\
+ 	}
+ # define SPIN_DEP_MAP_INIT(lockname)			\
+ 	.dep_map = {					\
+ 		.name = #lockname,			\
+ 		.wait_type_inner = LD_WAIT_CONFIG,	\
++		SPIN_DMAP_INIT(lockname)		\
+ 	}
+ 
+ # define LOCAL_SPIN_DEP_MAP_INIT(lockname)		\
+@@ -43,6 +55,7 @@
+ 		.name = #lockname,			\
+ 		.wait_type_inner = LD_WAIT_CONFIG,	\
+ 		.lock_type = LD_LOCK_PERCPU,		\
++		LOCAL_SPIN_DMAP_INIT(lockname)		\
+ 	}
+ #else
+ # define RAW_SPIN_DEP_MAP_INIT(lockname)
 -- 
 1.9.1
 
