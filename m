@@ -2,206 +2,139 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1774E4BC052
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Feb 2022 20:38:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B524BC649
+	for <lists+linux-ext4@lfdr.de>; Sat, 19 Feb 2022 08:22:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237385AbiBRTiT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 18 Feb 2022 14:38:19 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:38124 "EHLO
+        id S239646AbiBSHMy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 19 Feb 2022 02:12:54 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:57270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237370AbiBRTiS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Feb 2022 14:38:18 -0500
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2061.outbound.protection.outlook.com [40.107.220.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5D360052;
-        Fri, 18 Feb 2022 11:38:00 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IIRpaLvPmdSTFia4CP6K1KA4nPionoJwuLQMCV8qQPqv42ikZk8YB2FaO3FjaiHBt8+mEfcxABerpKet3bZm8P+bEXxqee1aGbF2tEmlLXZKIfvJbv4y9pAZx+HV5X5DtbkgEQ4nSaI7blfXxJhu3iRbqFlquvg9XbNziFjs1VfHl/LBHdr8URpGRAwTV9ICINs/kbvhjs0eQy1MJHKq2xihByREUC30tD1qpRQ/bGVJJLNCZrbQQEJIusR2R2aSTNZ4ux0ScpHhHOUMoD5tXhqFG3UPDQ45zzq+PyzNpf2EFZylW4N9FrMuNppbcquqcIOeOJj6Ps5r30cRtwD9tg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jX4mMYS7dvbHjrsQloL6rDIudsTKokN/45NYk1VfLBQ=;
- b=WkhCjCWUEwdWdxsVUCTurBxLGBrvxyomfBFQezT2QFazLmYFWwoZEtUtDIpWbTW4NkhqDr6iEYw++pYL9cfAe6Y55zn9hUGezxc5Wyi9Sr2hMFefLnslqbK+APcMgkuWtVP6aVvM4U8CLkbJCFHey8a33Jcdw2xuhEucq3R0xLQVoLqKgrjw5/Y9N5KZXlUzzA3rDdixKJAM0hyzDwfrC2M/t8mQcNp0u2cGavL+pS82pZI8HGOSRp31N9HqBurbBiSGfd5z51fWDVtT3rdd2IC/npkE/UCYjOGC60sMQ438py5utUmIE6tL2UrIUQrYVvCKKW+dxoNHr/gK4r1NJQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jX4mMYS7dvbHjrsQloL6rDIudsTKokN/45NYk1VfLBQ=;
- b=MKP/05o5xfKk2ElzqPaABBnA9gBPPOUqDNoNVuCJ+VJRTpg/MY6ksORHUi649w7vB9ZMe4eZ3aDNZ7Lq4jTO3Ax4TWVEcw5S/xf5kdD9XmoPMhRMADn3aFQkCtOQ42KKbqDuuU0DEaZTqehoif+zs8sHyTsOK1+NoCzSbW/ngns=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN9PR12MB5115.namprd12.prod.outlook.com (2603:10b6:408:118::14)
- by DM5PR12MB1882.namprd12.prod.outlook.com (2603:10b6:3:112::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.18; Fri, 18 Feb
- 2022 19:37:58 +0000
-Received: from BN9PR12MB5115.namprd12.prod.outlook.com
- ([fe80::38ec:3a46:f85e:6cfa]) by BN9PR12MB5115.namprd12.prod.outlook.com
- ([fe80::38ec:3a46:f85e:6cfa%4]) with mapi id 15.20.4995.016; Fri, 18 Feb 2022
- 19:37:58 +0000
-Message-ID: <fa20d3e3-0943-f336-db01-54367f8e2c1e@amd.com>
-Date:   Fri, 18 Feb 2022 14:37:55 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v6 01/10] mm: add zone device coherent type memory support
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Alex Sierra <alex.sierra@amd.com>, akpm@linux-foundation.org,
-        linux-mm@kvack.org, rcampbell@nvidia.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        jglisse@redhat.com, willy@infradead.org
-References: <beb38138-2266-1ff8-cc82-8fe914bed862@redhat.com>
- <877d9vd10u.fsf@nvdebian.thelocal> <20220216020357.GD4160@nvidia.com>
- <6156515.kVgMqSaHHm@nvdebian>
- <98d8bbc5-ffc2-8966-fdc1-a844874e7ae8@redhat.com>
- <20220216122600.GG4160@nvidia.com>
- <bf16195e-2570-3687-2b53-3f597ebfcfec@amd.com>
- <20220218001935.GN4160@nvidia.com>
- <2f2569d5-df0d-7975-7f4a-2d85ceaf29ef@amd.com>
- <20220218192640.GV4160@nvidia.com>
-From:   Felix Kuehling <felix.kuehling@amd.com>
-In-Reply-To: <20220218192640.GV4160@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: YT2PR01CA0023.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:38::28) To BN9PR12MB5115.namprd12.prod.outlook.com
- (2603:10b6:408:118::14)
+        with ESMTP id S236984AbiBSHMx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 19 Feb 2022 02:12:53 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42A66427D6;
+        Fri, 18 Feb 2022 23:12:35 -0800 (PST)
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21J6Aswh022573;
+        Sat, 19 Feb 2022 07:12:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=InDdrb2T70Jylv7UEtN08N+EnU+K0Gftexg0r6m2N/4=;
+ b=srs8WLIlbbzffaWBHGuNJJzNpOF+gqU9mXb4PvuGHqufhZ96LYC8GWVA7PsVl7p/EXjA
+ nb6jDlFSvMEfGnoYVHexmqueXoH1kf5K20LxGsCB/4488JhnF5b3k7XdWHIxwZvodITo
+ qLlx47AQSG4GvkjtIr7Ng9DFcSTcOTuSBXpv/93j3LRbgHfjY8YVLgMyjLQBgr2wfeYJ
+ gsbkJ4rG6vhzN5r4eMnu/9HQUla6DA5H7izgXH4sv4gs/m6bvmG5jyzZ3R0cDIeiYRVg
+ /21GAe8mod4KTzXMqpiEVJcFFl5AapaLDu+erdV+V99cQ96nFoT9Bush4b/ZRfatQmCS NA== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ear4f2vum-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 19 Feb 2022 07:12:34 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21J7COoA004900;
+        Sat, 19 Feb 2022 07:12:32 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 3ear68gq1k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 19 Feb 2022 07:12:32 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21J7CTCD46793024
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 19 Feb 2022 07:12:29 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 28F545204F;
+        Sat, 19 Feb 2022 07:12:29 +0000 (GMT)
+Received: from localhost (unknown [9.43.86.157])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id EA4AF5204E;
+        Sat, 19 Feb 2022 07:12:27 +0000 (GMT)
+Date:   Sat, 19 Feb 2022 12:42:25 +0530
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 1/2] src/ext4_resize.c: Refactor code and ensure accurate
+ errno is returned
+Message-ID: <20220219071225.mi5hutyxds7xn3io@riteshh-domain>
+References: <cover.1644217569.git.ojaswin@linux.ibm.com>
+ <a64b4c4d199b822fe72bf4c3752b61e0dc0f3e19.1644217569.git.ojaswin@linux.ibm.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 01ebe554-015f-4151-a586-08d9f3162ab6
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1882:EE_
-X-Microsoft-Antispam-PRVS: <DM5PR12MB188217BD60095061AA5D0E7692379@DM5PR12MB1882.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3tMXzlQA0uDWarat2N85yLufrMuVzXrisMBR2eoJmX+r2rj12+4NiSxRBZYqOcQKqpd8A1/YDTvAUKH+oXd8G/sBt5jbhPUT9AnyXFwaCoVcBf24+BhrpdCMkvwLnFV4ZX3w1Kv27A8d70mAe22rGezjESOBtHGzxUabcRo0qQPP2P0Do0450womrrI/JRWxgttOQ3qH9g/juTOOcs9bTjS/0Gquc/rr0n/wQnfogDCgnjH7yV/z8kK5Y2eeFD9qk7tlfgMLAzprG6wsoO8Rm0uWs3xuhkhLIhD++b8z9G3ltb0k/Ych+HycA/ecOrvgIvEA/AUPkHqeHqBqYcgwPBQ6yCErKu2O46I54LU62z8fy7WzO3HY+d6brRs8Ne4sVKf6njUQzS8WsJNEmKgIEzEEMppblsYzLH+ScnC1sSnCNKWom6fMr5aSJXS2QQWyjfPMrrqimCUJAX7RW/lpH51cQ9PGMZ/tdhYUDAKfNbDyVtcL1VSG73VfRLrB7+kB9e0i5tWUzXL46Gr2K7IjBFGf7BDcHet1SAEmAoYto4BBf7jv7widLKisoyXMOL6PZvyM3WOR+mOhMzuZP3YueMgzx6iD+e+NWCgk7P8twPDPZRabZjAVCRdcz1a2SnE1I/gJ67wM4TIFRK6t+i7+drVvknYOn/VUam1XgTEHSBZFBbzlKsgfibFuU0cRpoE3mtvtk+6b1orb3jLWBww6OSd2pRymLh5xIU76FpnjPHU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5115.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(8936002)(6666004)(38100700002)(66946007)(508600001)(31686004)(316002)(4326008)(8676002)(6512007)(6506007)(2616005)(86362001)(5660300002)(2906002)(7416002)(36756003)(44832011)(54906003)(31696002)(6916009)(6486002)(186003)(26005)(66476007)(66556008)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZnNNTUlPSXZ5VEdjMnQxYkpiZnhWT1lmZnFCSDl6a2tRc2NtRUxsUTZ5bkxr?=
- =?utf-8?B?cjdVK0lkZ0tqZ0ZURGZXR0ZyVFg4T1BHU09RTVc3Mjg1NG03NUtDRXJxSmRx?=
- =?utf-8?B?RXFYVlUrV3JtRTZnQitHZi9mUFV5RStuMlNyZnUwV3BtbUNlYnM3QU5qaWdF?=
- =?utf-8?B?ZkxWZjBPNW5zM2ZqclFCVFMvN0JJbUFCV2hEWFRFUUc4eFZaM2ZMa3JBcFZX?=
- =?utf-8?B?UURpcGtLNHh5R05IdVFPaThzd1RKN25GUlVUNml5b1ZoWWpoeDNZczMza25H?=
- =?utf-8?B?Q2ZNbzRlckd0K3JET0F5K1dtR0c3T0Q2L2F3bk11K3RiK2tLQVdmZTQrSWVR?=
- =?utf-8?B?aTNtcEgvNWpmbU1HM1NpekFMbU5SRzVBbnFjaDV0WmhIYWY0dkxzVXhybkJX?=
- =?utf-8?B?QklZYmVCMDJ0azQ1c3hqbXRLenJwZklZaUxxME9sME56dkRySUk3UGZYNjZq?=
- =?utf-8?B?WVJMOEY3eTlaUkVkbmFvd1I0VWx2U2pCK2VLTk9ZMk9BY0JSRUlRMWpRVE5l?=
- =?utf-8?B?S0hPRHVva3BiMXVUVkswcTdFWUV3TzloSEpYZ25xdDk5Z1orL251NjZuUCtz?=
- =?utf-8?B?WEFPQ0ZpdkpJMlkzb0cwbFhEckM0U04vV1dZS1M0RzVBWTZORDhDTklZT2RL?=
- =?utf-8?B?bzFzaDlVWEFFc1pkTUZYMnAwMUh2amhXdmQwRmNaTk14TlRKdW45VC9lN2xq?=
- =?utf-8?B?cWw5eEZJcDZQMmdncGRFRFVjMDlpdkVKaGNzL3hOT0FvMTJUVWEydURjWlIx?=
- =?utf-8?B?eXRHek1PSklVb1EwV1FHMXZtdXprY3RXMXlCRmY3cnY5RVVoMkUvbFc3ZDRZ?=
- =?utf-8?B?eHNkcGZxTm5NWkxiZm1GcGlOSzhmcFptT1lsckU3MGpqcGRkWXlqMnFwMkx2?=
- =?utf-8?B?T0pHa3lmZldsa0JFTkEzNFM4VXdEdHRNL0Vid3dRZW1ZeWdTVTU1ckZBN1lG?=
- =?utf-8?B?eHVCRVNqS3laMWJRamNtUHcvQkwyWDlGc0l5OGJObmVLMTEwOEdpZURJdmV4?=
- =?utf-8?B?aDdERU5WTFdacGtETnJJNzRrTWVLeW9pdzI3dTNtQnduOXhEUUlsbkIwaHNp?=
- =?utf-8?B?V1ltai9IdlVXNVZ0TEtWbmlnRHpCalI1VVZ3ZzNGamdsUWpMeG1aR0ZQT0JY?=
- =?utf-8?B?WDBQKzFJcE43TnF3cVFwN0txbDJBcnV4SkQ2UEtxLzNpVlkxaURVRUxFK29Y?=
- =?utf-8?B?VUZZUXFkS1RNR0Fvb0xEdVhybGtpZkhCU0RzQzBhUG5ZMk5lTCtjVWhiY3FR?=
- =?utf-8?B?VzlKKzZHemVZSWNJRmRkWFp6U1dZWnlSYUdvVnplYkZENzNiaWJHZ25LVUlX?=
- =?utf-8?B?b0d1ZlRFcFByNi9BQnFjaW42NWpqWENSYkI1VzNCL3pTODhzOFR4ODFTOUl4?=
- =?utf-8?B?Uk9JVmJqRkVudFFBZHZJMWJBRm9pS1ArcS9wVjRtYmU3d3UzSVNnRjhwTkww?=
- =?utf-8?B?QTZLWis2QUhxTThiV05MU25LN0VYekhScFk1YkJzK0RROXphZVRuU3k5bmc4?=
- =?utf-8?B?OE55dDZYT0duejhmbFpKL1NmWnVwT1FuSXlPM3Vuc0Z5WHlUUExqMGZwd0N6?=
- =?utf-8?B?ME1pSU9nSmRBMXA3NjVVaG43NnllTjlMbVVWbWdWdUdoTnpEVzYyWDU4MzEz?=
- =?utf-8?B?NUg0Ykg0RVlkY05tU2hRYUhaZ0dyY3l1TXBrYi9NdXh0dFhBNkVHeW1MOTgv?=
- =?utf-8?B?S2JPSUUvakFHb1lUdlAvK0xOWWZFeVk2N2Zod0h5bE1UWjhPNjc2bzdnekli?=
- =?utf-8?B?ckZUVTdldnMyNXc0SzhVSHRhZDB5WDZjU1RucDRwRk8wVmcwVzFyZ1ZSTTJG?=
- =?utf-8?B?TU5wdisyT2l4QmFFVC9wdENNWlYrd3Z2UG5EZWFORGdJTitaaWlxU0pjaUtG?=
- =?utf-8?B?S3VDeDN0U2x2ajJvVFdRWStQdjVySFhpaEF4bkl1b3EyazUyZllzcDI2UDFE?=
- =?utf-8?B?NkFLWk85VlVTZ2tDMVkvVXp6eG9wa0t3djgzZklLZkxzV0tHVXRKWER0KzVh?=
- =?utf-8?B?V0NaU3VUNmdYcllMS1Q5aURVa0ZRVHdNNm5RZ3RyL3AvV2ltVndsUysrSGJo?=
- =?utf-8?B?N1oyK01pem5uU1hyT3hEdGxsZnEwMHZpb3BNY0hPU2RzWEY1QXcxT0g4SktB?=
- =?utf-8?B?T3Fpc2pIUzhVOVRFZW1hRnh1RzRsM1JnMFhpbUxjYkNUNEhIek1icldQV29P?=
- =?utf-8?Q?FD2TRP13nAQgpjQuwJ6vIFo=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 01ebe554-015f-4151-a586-08d9f3162ab6
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5115.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Feb 2022 19:37:58.2172
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hmhhXmpNyLAMuC+eKMKRqkT4Bo5rtz44DoVM6QtZReQ9lqcGfhuAseeViKyiltK8rdEiaAW0sfcPk35esxZDDw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1882
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a64b4c4d199b822fe72bf4c3752b61e0dc0f3e19.1644217569.git.ojaswin@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: GuzLcICkbC_aK_Rw1Pon5NAGyc5vqNek
+X-Proofpoint-GUID: GuzLcICkbC_aK_Rw1Pon5NAGyc5vqNek
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-19_02,2022-02-18_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
+ spamscore=0 malwarescore=0 suspectscore=0 bulkscore=0 priorityscore=1501
+ impostorscore=0 clxscore=1015 mlxscore=0 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2201110000
+ definitions=main-2202190044
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Am 2022-02-18 um 14:26 schrieb Jason Gunthorpe:
-> On Fri, Feb 18, 2022 at 02:20:45PM -0500, Felix Kuehling wrote:
->> Am 2022-02-17 um 19:19 schrieb Jason Gunthorpe:
->>> On Thu, Feb 17, 2022 at 04:12:20PM -0500, Felix Kuehling wrote:
->>>
->>>> I'm thinking of a more theoretical approach: Instead of auditing all users,
->>>> I'd ask, what are the invariants that a vm_normal_page should have. Then
->>>> check, whether our DEVICE_COHERENT pages satisfy them. But maybe the concept
->>>> of a vm_normal_page isn't defined clearly enough for that.
->>> I would say the expectation is that only 'page cache and anon' pages
->>> are returned - ie the first union in struct page
->>>
->>> This is because the first file in your list I looked at:
->>>
->>> static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->>> 				unsigned long addr, unsigned long end,
->>> 				struct mm_walk *walk)
->>>
->>> {
->>> 		page = vm_normal_page(vma, addr, ptent);
->>> [..]
->>> 		if (pageout) {
->>> 			if (!isolate_lru_page(page)) {
->>>
->>> Uses the LRU field, so this is incompatible with all the other page
->>> types.
->>>
->>> One mitigation of this might be to formally make vm_normal_page() ==
->>> 'pte to page cache and anon page' and add a new function that is 'pte
->>> to any struct page'
->>>
->>> Then go through and sort callers as appropriate.
->>>
->>> The 'pte to page cache and anon page' can detect ZONE_DEVICE by
->>> calling is_zone_device_page() insted of pte_devmap() and then continue
->>> to return NULL. This same trick will fix GUP_fast.
->> Sounds good to me. What about vm_normal_page_pmd? Should we remove the
->> pmd_devmap check from that function as well. I'm not even sure what a huge
->> zone_device page would look like, but maybe that's a worthwhile future
->> optimization for our driver.
-> IIRC there are other problems here as PMDs are currently wired to THPs
-> and not general at all..
+On 22/02/07 01:55PM, Ojaswin Mujoo wrote:
+> The current implementation of ext4_resize returned 1 whenever
+> there was an error. Modify this to return the correct error code.
+> This is important for tests that rely on correct error reporting, by
+> the kernel, for ext4 resize functionality.
 >
-> We have huge zone_device pages, it is just any compound page of
-> contiguous pfns - you should be aggregating any contiguous string of
-> logical PFNs together into a folio for performance. If the folio is
-> stuffed into a PMD or not is a different question..
->
->> I'd propose the function names vm_normal_page and vm_normal_or_device_page
->> for the two functions you described.
-> I wouldn't say device_page, it should be any type of page - though
-> device_page is the only other option ATM, AFIAK.
+> Additionaly, perform some code cleanup.
 
-Ok, then how about vm_normal_lru_page and vm_normal_any_page?
+Thanks for fixing the error return codes. This looks good to me.
 
-Regards,
-   Felix
+Feel free to add -
+Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
 
+Stats on running this stats on my dev machine
 
->
->> current vm_normal_page with the pte_devmap check removed. vm_normal_page
->> could be implemented as a wrapper around vm_normal_or_device_page, which
->> just adds the !is_zone_device_page() check.
-> Yes
->
-> Jason
+<on old kernels>
+===================
+qemu@qemu:~/src/tools/xfstests-dev$ sudo ./check -s ext4_4k ext4/056
+SECTION       -- ext4_4k
+FSTYP         -- ext4
+PLATFORM      -- Linux/ppc64le qemu 5.4.0-100-generic #113-Ubuntu SMP Thu Feb 3 18:43:11 UTC 2022
+MKFS_OPTIONS  -- -I 256 -O 64bit -F -b 4096 /dev/loop10
+MOUNT_OPTIONS -- -o data=ordered /dev/loop10 /mnt1/scratch
+
+ext4/056        [failed, exit status 1]- output mismatch (see /home/qemu/src/tools/xfstests-dev/results//ext4_4k/ext4/056.out.bad)
+    --- tests/ext4/056.out      2022-02-19 06:55:22.233659113 +0000
+    +++ /home/qemu/src/tools/xfstests-dev/results//ext4_4k/ext4/056.out.bad     2022-02-19 06:57:48.931542566 +0000
+    @@ -1,2 +1,3 @@
+     QA output created by 056
+    -Test Succeeded!
+    +_check_generic_filesystem: filesystem on /dev/loop10 is inconsistent
+    +(see /home/qemu/src/tools/xfstests-dev/results//ext4_4k/ext4/056.full for details)
+    ...
+    (Run 'diff -u /home/qemu/src/tools/xfstests-dev/tests/ext4/056.out /home/qemu/src/tools/xfstests-dev/results//ext4_4k/ext4/056.out.bad'  to see the entire diff)
+Ran: ext4/056
+Failures: ext4/056
+Failed 1 of 1 tests
+
+SECTION       -- ext4_4k
+=========================
+Ran: ext4/056
+Failures: ext4/056
+Failed 1 of 1 tests
+
+<on 5.16.0-rc4>
+===================
+qemu@qemu:~/src/tools/xfstests-dev$ sudo ./check -s ext4_4k -i 10 ext4/056
+SECTION       -- ext4_4k
+FSTYP         -- ext4
+PLATFORM      -- Linux/ppc64le qemu 5.16.0-rc4+ #6 SMP Sat Jan 29 22:07:24 UTC 2022
+MKFS_OPTIONS  -- -I 256 -O 64bit -F -b 4096 /dev/loop10
+MOUNT_OPTIONS -- -o data=ordered /dev/loop10 /mnt1/scratch
+
+ext4/056 9s ...  11s
+Ran: ext4/056
+Passed all 1 tests
+
+-ritesh
