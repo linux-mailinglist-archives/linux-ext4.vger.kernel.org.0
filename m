@@ -2,141 +2,72 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B3F4BC81F
-	for <lists+linux-ext4@lfdr.de>; Sat, 19 Feb 2022 12:21:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0C74BCF80
+	for <lists+linux-ext4@lfdr.de>; Sun, 20 Feb 2022 16:44:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230471AbiBSLAU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 19 Feb 2022 06:00:20 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41840 "EHLO
+        id S244138AbiBTPin (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 20 Feb 2022 10:38:43 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242188AbiBSK7O (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 19 Feb 2022 05:59:14 -0500
-Received: from lgeamrelo11.lge.com (lgeamrelo13.lge.com [156.147.23.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7CBFD6A029
-        for <linux-ext4@vger.kernel.org>; Sat, 19 Feb 2022 02:58:46 -0800 (PST)
-Received: from unknown (HELO lgemrelse7q.lge.com) (156.147.1.151)
-        by 156.147.23.53 with ESMTP; 19 Feb 2022 19:58:45 +0900
-X-Original-SENDERIP: 156.147.1.151
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO localhost.localdomain) (10.177.244.38)
-        by 156.147.1.151 with ESMTP; 19 Feb 2022 19:58:45 +0900
-X-Original-SENDERIP: 10.177.244.38
-X-Original-MAILFROM: byungchul.park@lge.com
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     torvalds@linux-foundation.org
-Cc:     damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        mingo@redhat.com, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, will@kernel.org, tglx@linutronix.de,
-        rostedt@goodmis.org, joel@joelfernandes.org, sashal@kernel.org,
-        daniel.vetter@ffwll.ch, chris@chris-wilson.co.uk,
-        duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org,
-        tytso@mit.edu, willy@infradead.org, david@fromorbit.com,
-        amir73il@gmail.com, bfields@fieldses.org,
-        gregkh@linuxfoundation.org, kernel-team@lge.com,
-        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
-        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
-        ngupta@vflare.org, linux-block@vger.kernel.org, axboe@kernel.dk,
-        paolo.valente@linaro.org, josef@toxicpanda.com,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        jack@suse.cz, jack@suse.com, jlayton@kernel.org,
-        dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
-        dri-devel@lists.freedesktop.org, airlied@linux.ie,
-        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
-        hamohammed.sa@gmail.com
-Subject: [PATCH v2 18/18] dept: Distinguish each work from another
-Date:   Sat, 19 Feb 2022 19:58:31 +0900
-Message-Id: <1645268311-24222-19-git-send-email-byungchul.park@lge.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1645268311-24222-1-git-send-email-byungchul.park@lge.com>
-References: <1645268311-24222-1-git-send-email-byungchul.park@lge.com>
-X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        with ESMTP id S240720AbiBTPil (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 20 Feb 2022 10:38:41 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C3A41311
+        for <linux-ext4@vger.kernel.org>; Sun, 20 Feb 2022 07:38:17 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id q17so24564794edd.4
+        for <linux-ext4@vger.kernel.org>; Sun, 20 Feb 2022 07:38:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=ymEpgIXl54yuSlZg88NLeYK1RJf0YDtYgXWD/9J1GQ0=;
+        b=degv64KeFtdi2zbjsMqCg99XUBwRsWWRsat8pVSE1dsJMyLEQebzW+u8gL6CBfEQQn
+         TR573CG7WA+9vnEdvbzyisLdqVfd2L7tW255YjXAv70Nz6z7oKmPah1XlxlqBd5nDgXH
+         ePUhHpcz6Nz3MIgpiiVSbZwwadbd4mnHSGmsNzIMifS2uWsr5SlJ5m2rsNUPByoI5zhb
+         SR83azGcCTW//SbmgQ0y+vLGSla0uKvjbMIVO2C3U/MToeM9d3wUPHwP8BDBVACmWkyb
+         mbrrj1iz1ehyoQ1IJSYmVaPjfehHwDHBxgq0J/uzM167cyMcPy58BK3LuVjr98uUFJPh
+         U0VQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=ymEpgIXl54yuSlZg88NLeYK1RJf0YDtYgXWD/9J1GQ0=;
+        b=vR/+Hr/pfQDSjj76nA8Y7mzsM/K6ST1Es7r+4malJS297kboCD9ujTYeYV9apiDsHP
+         MAaPD18IevBWkTwUe1c6Rj0hRZIp7dY7hqDXb/FhoZ/ARdMv5Uec6Fd4JOHGnUqkroDs
+         ffOz8ZHusIL/cZ2+XmV6G4sjaNZda7/mC6XbT2+2lCrR3iV6MzAVJVLW2cOGygWsDOdL
+         APHoz1ADBIApLRj0OvlJ9ON+zf3GqETXgejqakvebVESVrmqi+iH2juMzY1SjwHLNKb7
+         5RJwkQcnSqAlhBgRjZBgydOtRPjmnC6f8dcXQ3uZfxZR0+Gwwlbjw0UpYH30f847bi/t
+         5kbw==
+X-Gm-Message-State: AOAM5317DtF0l/KxMA2L4UWSsbmr3EUHqhBr1WsnQ6kSAXXGGMoAX38b
+        HKJ3QpwU0cFtYtN7Lf1u/GnQMJwewnHIu1X1NqM=
+X-Google-Smtp-Source: ABdhPJz0AN7o9No0fhs6xZEm8hzyX6WOZhNi8B3U8PCYdBi3itNU8MBgMEdAbbMqhnsTf7H9NACa5LH5MJlqKIgsin0=
+X-Received: by 2002:aa7:ce92:0:b0:40f:b89c:18fe with SMTP id
+ y18-20020aa7ce92000000b0040fb89c18femr17517323edv.67.1645371495858; Sun, 20
+ Feb 2022 07:38:15 -0800 (PST)
+MIME-Version: 1.0
+Received: by 2002:a54:38c1:0:0:0:0:0 with HTTP; Sun, 20 Feb 2022 07:38:15
+ -0800 (PST)
+Reply-To: fatibaro01@yahoo.com
+From:   Fatimah Baro <imanosose@gmail.com>
+Date:   Sun, 20 Feb 2022 16:38:15 +0100
+Message-ID: <CAFEyOE7M=ZUrSROmPGAE3yrv-g10xHU=UARo1h+trJF7vepfMA@mail.gmail.com>
+Subject: Business invitation
+To:     imanosose <imanosose@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=2.8 required=5.0 tests=ADVANCE_FEE_3_NEW,BAYES_50,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Workqueue already provides concurrency control. By that, any wait in a
-work doesn't prevents events in other works with the control enabled.
-Thus, each work would better be considered a different context.
-
-So let Dept assign a different context id to each work.
-
-Signed-off-by: Byungchul Park <byungchul.park@lge.com>
----
- include/linux/dept.h     |  2 ++
- kernel/dependency/dept.c | 10 ++++++++++
- kernel/workqueue.c       |  3 +++
- 3 files changed, 15 insertions(+)
-
-diff --git a/include/linux/dept.h b/include/linux/dept.h
-index 1a1c307..55c5ed5 100644
---- a/include/linux/dept.h
-+++ b/include/linux/dept.h
-@@ -486,6 +486,7 @@ struct dept_task {
- extern void dept_event_split_map(struct dept_map_each *me, struct dept_map_common *mc, unsigned long ip, const char *e_fn);
- extern void dept_ask_event_split_map(struct dept_map_each *me, struct dept_map_common *mc);
- extern void dept_kernel_enter(void);
-+extern void dept_work_enter(void);
- 
- /*
-  * for users who want to manage external keys
-@@ -527,6 +528,7 @@ struct dept_task {
- #define dept_event_split_map(me, mc, ip, e_fn)		do { } while (0)
- #define dept_ask_event_split_map(me, mc)		do { } while (0)
- #define dept_kernel_enter()				do { } while (0)
-+#define dept_work_enter()				do { } while (0)
- #define dept_key_init(k)				do { (void)(k); } while (0)
- #define dept_key_destroy(k)				do { (void)(k); } while (0)
- #endif
-diff --git a/kernel/dependency/dept.c b/kernel/dependency/dept.c
-index c369a8e..ee3faa2 100644
---- a/kernel/dependency/dept.c
-+++ b/kernel/dependency/dept.c
-@@ -1873,6 +1873,16 @@ void dept_disable_hardirq(unsigned long ip)
- 	dept_exit(flags);
- }
- 
-+/*
-+ * Assign a different context id to each work.
-+ */
-+void dept_work_enter(void)
-+{
-+	struct dept_task *dt = dept_task();
-+
-+	dt->cxt_id[DEPT_CXT_PROCESS] += (1UL << DEPT_CXTS_NR);
-+}
-+
- void dept_kernel_enter(void)
- {
- 	struct dept_task *dt = dept_task();
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 33f1106..f5d762c 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -51,6 +51,7 @@
- #include <linux/sched/isolation.h>
- #include <linux/nmi.h>
- #include <linux/kvm_para.h>
-+#include <linux/dept.h>
- 
- #include "workqueue_internal.h"
- 
-@@ -2217,6 +2218,8 @@ static void process_one_work(struct worker *worker, struct work_struct *work)
- 
- 	lockdep_copy_map(&lockdep_map, &work->lockdep_map);
- #endif
-+	dept_work_enter();
-+
- 	/* ensure we're on the correct CPU */
- 	WARN_ON_ONCE(!(pool->flags & POOL_DISASSOCIATED) &&
- 		     raw_smp_processor_id() != pool->cpu);
--- 
-1.9.1
-
+Greetings from Burkina Faso,
+Please pardon me if my request offend your person; I need you to stand
+as my foreign partner for investment in your country. Please reply
+immediately if you are interested, so that I can give you more
+information.
+Fatimah Baro
