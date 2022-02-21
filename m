@@ -2,376 +2,239 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 295AA4BD6EA
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Feb 2022 08:43:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E9B4BD717
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Feb 2022 08:43:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243699AbiBUHAA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 21 Feb 2022 02:00:00 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:38694 "EHLO
+        id S1343687AbiBUHC5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 21 Feb 2022 02:02:57 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:43578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238938AbiBUG77 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Feb 2022 01:59:59 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7529BBA9;
-        Sun, 20 Feb 2022 22:59:36 -0800 (PST)
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21L4BB4l002788;
-        Mon, 21 Feb 2022 06:59:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=ay2Z2KBRA8mpX5XVJ8Q99l/i+tEFD+FUQgOGgEZjFI0=;
- b=r9pqLqw0JMretylDT4lvIZvkH4JgsPemn9JDhUro1xW9QSHy1Nj/+Up3fJHkcr5WLvAE
- HCRGyepg3ASYhxNMswsKpVuG1Ba43CEDZuoz9rNAtvsIppjYBVPkaicD35vTZ/vFG95v
- G5l0gJjFpWMNtqy8Oi9MlKvZdZdMWCOpFOa1PoC1VrSSi2q6XrdFIlBWuWVwkETAE0Un
- nRpGa+eKYPIV1oQkZQC59/0la6YBMlbJ5AY1aolLNnmt46dloaaZeoarGd3+7cOA2yOO
- /1TuKiqXM1aRIaoRgv0qHSfT340YF++wS+16OXf0I2nKM6gr6E7C1qZObHQdhY9ZxmTf 2A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ebxrhppg4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Feb 2022 06:59:30 +0000
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 21L6uLqx012639;
-        Mon, 21 Feb 2022 06:59:29 GMT
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ebxrhppfg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Feb 2022 06:59:29 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21L6wg0Z009389;
-        Mon, 21 Feb 2022 06:59:27 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04ams.nl.ibm.com with ESMTP id 3ear68r503-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Feb 2022 06:59:26 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21L6xOgr51642628
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 21 Feb 2022 06:59:24 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A76C84C040;
-        Mon, 21 Feb 2022 06:59:24 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3798D4C044;
-        Mon, 21 Feb 2022 06:59:24 +0000 (GMT)
-Received: from localhost (unknown [9.43.127.119])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 21 Feb 2022 06:59:23 +0000 (GMT)
-Date:   Mon, 21 Feb 2022 12:29:22 +0530
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     harshad shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC 1/1] ext4: Improve fast_commit performance and scalability
-Message-ID: <20220221065922.7h62uofay2frugfs@riteshh-domain>
-References: <cover.1644809996.git.riteshh@linux.ibm.com>
- <a2dcc8dbedfd221b90ff02cdb0dfb3c6a7ef2ae9.1644809996.git.riteshh@linux.ibm.com>
- <CAD+ocbzzUXJ7qk7Yx2NGuXVKOAKv0yyxo+95o5+6krcAsGmOpA@mail.gmail.com>
- <20220217155749.fyknvedbhmfqbir2@riteshh-domain>
+        with ESMTP id S1345757AbiBUHC4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Feb 2022 02:02:56 -0500
+Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F1B2180;
+        Sun, 20 Feb 2022 23:02:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1645426953; x=1676962953;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=0Oxcs+yebJGfAse4aP2bc1EmL5gV/Wu/hJ8JO3TZCfQ=;
+  b=FYsIFLiTzn52Lg8Horm9Pc2Dpp6FfCeeEB6T/F+8f1wbp2L4hyR+w/oU
+   6fLfR1splM+3nX5Az6vlbEb/bcgWy3ECiJefHilbZxyOIfAabS48wXvHO
+   e3iDtw1iBjEb6f6u6VGGwI3TbqhJMPefi5UqBiCa5ckyxBge5cgK7W4z9
+   kvoxomFA5jdIcpAMyHQtlOjdXSnxLE5IgiGJzMv8S5+cekKG4iKYN2Y9V
+   J4E34xk9V5I+5b6lnXEdzlPC5QniNejq9kGTiCxk585EA40Mf2WG3tZRn
+   4vbW0bhzjAb/hgxTjmEFE+59ulkOBLIE5iaMWpnQCQ1xdxSKmvT9dtuE1
+   g==;
+X-IronPort-AV: E=Sophos;i="5.88,385,1635177600"; 
+   d="scan'208";a="192426483"
+Received: from mail-bn8nam12lp2169.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.169])
+  by ob1.hgst.iphmx.com with ESMTP; 21 Feb 2022 15:02:32 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gg8HhI11jgdYJaV54PVBBpS3jSH7kDLjeEibcr4nqjMMJDbnEDhS1MAXlzgkN8oPkkS8aUg/jsUkQa4xgCeRk5unKeUIugk85G3l26jxyFG7U9fxTGtPPNxm9jmd0pyhc6MREa+oTGFELVZLeOyjHehSPqdXf56/ZVgxjm/FFl8vA+8/R+DjQaJQTdx+jMfbugEqfrtcBq6i428wH33V9aBtpO3rr2zp9jrfCZlmfN40j7nP4G4sRZWFkwu5drWj6bHb5AFfNdIBDE/RefMPVPT8nHuFGUV0P2+E+/CDSajKA9AuGtu7usvpxy7EkjQkq+fh32wtltgObvM+LVe+7w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=s+8vSv0P2n3eEL20OS1x/ei/4k+Ud6ol2VAXejvjjG0=;
+ b=cIE3hhDElF3kCozp8u6e8SLLHN20KQ6u94C45rSaHPcc1R/3r5Z1T5vCq3VVuBDjqY5ToB3pG+V9kOfwTMVDnmWYfpWamJ8VNSFWIpHYfI/f1acJNre8itl6aBD7CdUtpXDPMMgv++5wh4pWcNWQHqlOarFuYqD/pH7SdwFpZV4thXseLI+A91B78MeouB44UE+AOjDSHwPpbeMt+8r0P3LhOsCqYqfSN0lsoyjrzqOv/M4+c2oYOtCpGjO5z4l4MQ3u1uzqhIZBvSG2vJKSZ6IxeQ8DOlsEZ+5bS1hKOAOV6BcexEi4plHoatpte8IDvC9HLmf62W7klG2AEZx/zA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s+8vSv0P2n3eEL20OS1x/ei/4k+Ud6ol2VAXejvjjG0=;
+ b=SjinosgZcJkJrZ62Qq7AfzhmaWHZ+0z8iHGR57SqPs/34V8RPVYOMOVv7d6G7yMiMvJjupQVk4KT3S3F9cIbAqoZIMy9YqnCbyOKzxEJMx4acUls1mxZqvN+DY0S9dXZgLe6+UR11NZYs/u0g9gkyvpeLQROe9eAiGhJaP63nnc=
+Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
+ by BN7PR04MB4289.namprd04.prod.outlook.com (2603:10b6:406:f2::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4995.16; Mon, 21 Feb
+ 2022 07:02:30 +0000
+Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
+ ([fe80::d179:1a80:af1d:e8ee]) by SJ0PR04MB7776.namprd04.prod.outlook.com
+ ([fe80::d179:1a80:af1d:e8ee%6]) with mapi id 15.20.4995.027; Mon, 21 Feb 2022
+ 07:02:30 +0000
+From:   Naohiro Aota <Naohiro.Aota@wdc.com>
+To:     Eryu Guan <guan@eryu.me>
+CC:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Subject: Re: [PATCH v3 1/6] common/rc: fix btrfs mixed mode usage in
+ _scratch_mkfs_sized
+Thread-Topic: [PATCH v3 1/6] common/rc: fix btrfs mixed mode usage in
+ _scratch_mkfs_sized
+Thread-Index: AQHYJJmjoO7DDZp/HUO2SfmtKtOnLKycrX+AgADrSIA=
+Date:   Mon, 21 Feb 2022 07:02:30 +0000
+Message-ID: <20220221070229.2hs45fqk7fbfbgpk@naota-xeon>
+References: <20220218073156.2179803-1-shinichiro.kawasaki@wdc.com>
+ <20220218073156.2179803-2-shinichiro.kawasaki@wdc.com>
+ <YhJzp/dnfixk/nMn@desktop>
+In-Reply-To: <YhJzp/dnfixk/nMn@desktop>
+Accept-Language: ja-JP, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3816d5c8-4c33-43f5-be1c-08d9f508207e
+x-ms-traffictypediagnostic: BN7PR04MB4289:EE_
+x-microsoft-antispam-prvs: <BN7PR04MB4289019FCB7F8DE8FFE687228C3A9@BN7PR04MB4289.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: HVjqzI/N17/g7qCoPOLb7rgOVA9B683YXN2FRPq0rykubDqYVnCJ+qm/EombXXxfrKcSGiHV9Ff7kaMnAz6NevXhLpsmHHYDFWgFvOBB9+Fmnhh7kr3f6ZBvWelbwXM+tkDNYtI9OOoegTUBhRAldhzfJ4QZTMMEQiEWl7fHkcGSeiT2yCzfR5C8WRBxqXik3cuFcnKhamoQ/L5ObVEbyNjv3i906g1JHxqwY0wtiPZWKqkugjirNjKy+BheN66ntd6ImDpdWUmrAY6A9skLwYqlqaIFYxD8hCu1+9Y68JEVGJ0DXln50Skz/Z7gFdCa+mn4yX5ZcnV1+CE0eOu5odNvq3LWgsuX1zYLh3XZCrjtsKeqNlseEmrZYXfqK0NO+O8nwPuCBSGJJMoB0Pma4YfKEYPSl9zFynh0C/CKwS4enToRaQO1U2JPNTCxxmRaWO8YfhKkAq5MgJjFRC3Hc4HLLp0TfiX9+l8uKZsGxE2TmNKoXH4uiVZIlvKOmfZFyGNX/hVSJ5lwPFKpZBdDx8JZZ7Cn+X6qaBHRjxUJjBZqCVpaoLu6gIAKwYhMK4+ulckmrxeRqFwp746xRumUAYriW1uMlTb9qqB19yLkBs8lyhpXs/YGEb6eoKrZ0XBCitLuo6+FcnPQajcldfYbSqLo/c+0bjDVAfbqLIZdDBquQCiGpPZlfLPBh7z3FtK0yBDlfFxH8dSHc19IUBpnad3eTp4DoQaE/8aP+nJP85ma4zn6CvBBWjtsahMJcFUJfd8CFuCUY4PYANyuH+nltjhlz/M+pwSfUoISEFNMBm0=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(7916004)(366004)(33716001)(316002)(66446008)(66476007)(66556008)(66946007)(966005)(76116006)(64756008)(4326008)(8676002)(91956017)(508600001)(6486002)(5660300002)(6506007)(9686003)(6512007)(2906002)(38070700005)(1076003)(82960400001)(71200400001)(26005)(186003)(38100700002)(86362001)(122000001)(8936002)(54906003)(6916009)(83380400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?aumfUXhjLr8HWRKXdOatpnnFcPkp4CXXy6/24G38+BmjlEY/G9/wLaQfP9lx?=
+ =?us-ascii?Q?oA/sWxWntL3ZyYikq2qwwXsbYB87/3PHA6hAEmAbXpPQiShddwjxyuRo6S9f?=
+ =?us-ascii?Q?CqlN0sGfhTSXiyPm6JGz2cnWG0Y28TpSzYt0N2stsLfa+/eknD2vMQTRcyET?=
+ =?us-ascii?Q?Pjyq4Y4O3CxS0nGv9JNJ8ig+3VAKbmxlj+BUoTfdWKTKuu22QO5wEHRvG9qF?=
+ =?us-ascii?Q?KWR9jOXuSDKMNG8JUZnXRA8dMWY2gmQAwQ+xvjmvrLbVHaUE8KIbZc7vZKlY?=
+ =?us-ascii?Q?hFv4WDHE8ArQRJCjhqqXjRxf1U0/i/PCmK1vyeVcDxl7+Wm92PLBGvJv9QxL?=
+ =?us-ascii?Q?gMBYAeA5/NJ+2pUt+ixQm2Mhx/jEJ8WCRLhl7oeSZLh/h1GgPhVzrMpo836F?=
+ =?us-ascii?Q?lE95aEsU+tkyB4jRcuhgOwGiQxeY7+l3A3m9xBBzfP5lSndk1aere1ztcB81?=
+ =?us-ascii?Q?EI7qqk/MVTM+krO9rTsoKRJa9GMF091AmHxY8q++oa5zqE6Es3AQEgvhGg+/?=
+ =?us-ascii?Q?smMDiEIY2QiZZrhIk2rwXoKdTuWDBEMXguQIDYWuiVYRtg8BtLN5EvwOk7Sd?=
+ =?us-ascii?Q?vRUWEWIwAwjkxw5Z5IyH7BjT2/OC4cFzK+BhO2Uj7pem9PRXSDLwGMSioDvT?=
+ =?us-ascii?Q?yonSuktmzJcwN/z6UMofDV5saWzw6oqFc8cNEJ97pI6SVz81Po3a8LAF0F06?=
+ =?us-ascii?Q?ggunAw6mHs3Xs7zCI5Qp8PDJ7xdbp0ufq4BDaOXvpH79J8f4xGRt6qz1RdEf?=
+ =?us-ascii?Q?6WAifzCkzWiindsuGEmwObS9ZSEXUPCOfbUbOgxkXqdPDMyMGjD3mJ99k3oF?=
+ =?us-ascii?Q?bEFZeeaU6Fa0bSGDqwg7M5eMzSOmmAGP9FiXG2bod1v6Juxw+JDSvmF26n9V?=
+ =?us-ascii?Q?r4vgF6gqHQsR117pkEX5EclEbwHkjdqC30blXdmFs9RljR3YpUaF/zBVE6u+?=
+ =?us-ascii?Q?nZZJpXz0JlRHnJNRLNf134Shm8fSSYwEG87nSwytT+PYyDYuzaZw36OF+ZyJ?=
+ =?us-ascii?Q?H7BSYm+dwzDDT/toPQd+u+LHEbKvJsDzdl2RTsKMST6cQ5gIqBvTO9YwU0Wg?=
+ =?us-ascii?Q?Rv69JuY3k8lUPqXFU/t2mzAxhPrd2JQjf4tx+j/ppOYrUd6nxZdkp2FbV25o?=
+ =?us-ascii?Q?zkEGc8pwiZ3pO/ca1SyWe23t0ZREKWnsaRCcuAUpeIASxNoGtGGr6iZCQj+v?=
+ =?us-ascii?Q?gFesZQ0CgmkBfMATY+VDZJj9l0DiUEj1o1BfMiAq4N7BoloLJfAFYIEamIQk?=
+ =?us-ascii?Q?OdtXplTDq8CtpzTeJ/n9iQemmicztSjZ+r/D+VZofaxbDh5fjsCR+X1LBI+p?=
+ =?us-ascii?Q?+H92pkhJVAFfo2Jvk2dnDJ/2JJem5AH2xr2XP+JjqdR6F3vqoAovGk+O1Y7X?=
+ =?us-ascii?Q?nNZVnAo6rP/WwJj1I7Cz8L8aruDPxC+zlWaEtHM2ORVyTqJvqXRJY1cvEhaM?=
+ =?us-ascii?Q?HPiR9wQ/XSCfHr83VC8xPJsnBh5JehxRHzkYmkvql9ArteBUHhY5yzXhYbbp?=
+ =?us-ascii?Q?nROjaELQubUqRaFNYmpbXVfha5vaLiwO4fhdA6Q+Xd7VgObgcp7vhO4B8JEQ?=
+ =?us-ascii?Q?P4PQNY1LjpRKYLiIuce9WwavkRD+QrdZqlREeeLiK9xOK2kVCGL9X6164zm4?=
+ =?us-ascii?Q?Er+QV/zl7uEyBubHFPtcg7M=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <7656ADB8E9EE0C4D8F675248B50FEA5B@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220217155749.fyknvedbhmfqbir2@riteshh-domain>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: aCHvQeIfcmlNpZM03l9PXf4qHvGqoC5O
-X-Proofpoint-GUID: p-q9LdEgixFvdxY8b2e71Y65xu8aeKoX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-21_02,2022-02-18_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- spamscore=0 impostorscore=0 mlxscore=0 suspectscore=0 priorityscore=1501
- adultscore=0 phishscore=0 clxscore=1015 mlxlogscore=999 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2201110000
- definitions=main-2202210041
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3816d5c8-4c33-43f5-be1c-08d9f508207e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Feb 2022 07:02:30.2262
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: JZY9zD6CHvgtENOuaqyisWGDYoyU5km0kVabQnZYNPjDiw9uguKib9YWGEIn1qCtL8UCTXIlqpHM2iojOFRQVA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR04MB4289
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello Harshad,
+On Mon, Feb 21, 2022 at 01:00:23AM +0800, Eryu Guan wrote:
+> On Fri, Feb 18, 2022 at 04:31:51PM +0900, Shin'ichiro Kawasaki wrote:
+> > The helper function _scratch_mkfs_sized needs a couple of improvements
+> > for btrfs. At first, the function adds --mixed option to mkfs.btrfs whe=
+n
+> > the filesystem size is smaller then 256MiB, but this threshold is no
+> > longer correct and it should be 109MiB. Secondly, the --mixed option
+>=20
+> I'm wondering if this 256M -> 109M change was made just recently or was
+> made on old kernel.
 
-Few points below.
+The check is imposed from the userland tool btrfs-progs. The value is
+calculated from a code in 31d228a2eb98 ("btrfs-progs: mkfs: Enhance
+minimal device size calculation to fix mkfs failure on small file"),
+which is released around v4.14.
 
-On 22/02/17 09:27PM, Ritesh Harjani wrote:
-> On 22/02/16 03:25PM, harshad shirwadkar wrote:
-> > Thanks for the patch Ritesh. Some questions / comments inlined:
->
-> Thanks a lot for reviewing this :)
->
-> >
-> > On Sun, 13 Feb 2022 at 19:57, Ritesh Harjani <riteshh@linux.ibm.com> wrote:
-> > >
-> > > Currently ext4_fc_commit_dentry_updates() is of quadratic time
-> > > complexity, which is causing performance bottlenecks with high
-> > > threads/file/dir count with fs_mark.
-> > >
-> > > This patch makes commit dentry updates (and hence ext4_fc_commit()) path
-> > > to linear time complexity. Hence improves the performance of workloads
-> > > which does fsync on multiple threads/open files one-by-one.
-> > >
-> > > Absolute numbers in avg file creates per sec (from fs_mark in 1K order)
-> > > =======================================================================
-> > > no.     Order   without-patch(K)   with-patch(K)   Diff(%)
-> > > 1       1        16.90              17.51           +3.60
-> > > 2       2,2      32.08              31.80           -0.87
-> > > 3       3,3      53.97              55.01           +1.92
-> > > 4       4,4      78.94              76.90           -2.58
-> > > 5       5,5      95.82              95.37           -0.46
-> > > 6       6,6      87.92              103.38          +17.58
-> > > 7       6,10      0.73              126.13          +17178.08
-> > > 8       6,14      2.33              143.19          +6045.49
-> > >
-> > > workload type
-> > > ==============
-> > > For e.g. 7th row order of 6,10 (2^6 == 64 && 2^10 == 1024)
-> > > echo /run/riteshh/mnt/{1..64} |sed -E 's/[[:space:]]+/ -d /g' \
-> > >   | xargs -I {} bash -c "sudo fs_mark -L 100 -D 1024 -n 1024 -s0 -S5 -d {}"
-> > >
-> > > Perf profile
-> > > (w/o patches)
-> > > =============================
-> > > 87.15%  [kernel]  [k] ext4_fc_commit           --> Heavy contention/bottleneck
-> > >  1.98%  [kernel]  [k] perf_event_interrupt
-> > >  0.96%  [kernel]  [k] power_pmu_enable
-> > >  0.91%  [kernel]  [k] update_sd_lb_stats.constprop.0
-> > >  0.67%  [kernel]  [k] ktime_get
-> > >
-> > > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> > > ---
-> > >  fs/ext4/ext4.h        |  2 ++
-> > >  fs/ext4/fast_commit.c | 64 +++++++++++++++++++++++++++++++------------
-> > >  fs/ext4/fast_commit.h |  1 +
-> > >  3 files changed, 50 insertions(+), 17 deletions(-)
-> > >
-> > > diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> > > index bcd3b9bf8069..25242648d8c9 100644
-> > > --- a/fs/ext4/ext4.h
-> > > +++ b/fs/ext4/ext4.h
-> > > @@ -1046,6 +1046,8 @@ struct ext4_inode_info {
-> > >
-> > >         /* Fast commit related info */
-> > >
-> > > +       /* For tracking dentry create updates */
-> > > +       struct list_head i_fc_dilist;
-> > The only case in which this list will have multiple entries if hard
-> > links are created on this inode right? I think that's probably a very
->
-> So I too had this thought on my mind later. But then I ended up coding the old way
-> only.
->
-> Ok, so it seems it is only when the first time an inode is created we
-> will have a EXT4_FC_TAG_CREAT. When we are creating a hard link that's actually
-> a EXT4_FC_TAG_LINK.
-> So I think there shouldn't be any case where we have more than one fc_dentry for
-> the same inode. Your thoughts?
->
->
-> > rare scenario and we can just fallback to full commits. That might
-> > simplify this patch a bit. Basically if you do that then fc_dentry
-> > would directly store a pointer to the inode and the inode can store a
-> > pointer to the "CREAT" fc_dentry object. That way we don't have to do
-> > list traversals in fc_del and fc_commit. But barring a few fixes, what
-> > you have here is fine too. So I'll leave it up to you to decide what
-> > you want to do.
->
-> Yes, you are right. If there is only a single fc_dentry object for any given
-> inode, then we can store back pointers in each of those to point to their
-> respective inode and fc_dentry objects.
->
-> I will try and change this in next revision then.
+But, after rechecking the code, the size part of the patch looks
+invalid to me. My bad.
 
-I tried this approach. But it soon becomes messy the moment we think of adding
-a inode pointer in fc_dentry object. Once that happens, we also want to
-remove fcd_ino, since we have a inode and then we need to take care of a lot of
-corner cases where inode will be lost since we don't hold any references.
+https://github.com/kdave/btrfs-progs/blob/master/mkfs/common.c#L651
 
-whereas,
+As said in 50c1905c2795 ("btrfs: _scratch_mkfs_sized fix min size
+without mixed option"), we need to consider every possible profile to
+decide the minimal value.
 
-If we still use the struct list_head abstraction then we don't have to add a lot
-of careful if else checking and things are much clear to understand.
+That gives me:
 
-What I would like to do now is send out a v2 addressing your review comments.
-So I am not doing any list traversal now, but just popping the list first entry
-and adding a warn_on if list does not becomes empty.
+- reserved +=3D BTRFS_BLOCK_RESERVED_1M_FOR_SUPER +
+	    BTRFS_MKFS_SYSTEM_GROUP_SIZE + SZ_8M * 2;
+  --> reserved =3D 1M + 4M + 8M * 2 =3D 21M
 
-Could you then please take a look at v2 and suggest if you are fine with the
-patch/design. We can take it from there then.
+- meta_size =3D SZ_8M + SZ_32M;
+- meta_size *=3D 2;
+- reserved +=3D meta_size;
+  --> reserved =3D 21M + (8M + 32M) * 2 =3D 101M
 
--ritesh
+- data_size =3D 64M;
+- data_size *=3D 2;
+- reserved +=3D data_size;
+  --> reserved =3D 101M + 64M * 2 =3D 229M
 
->
-> > >         struct list_head i_fc_list;     /*
-> > >                                          * inodes that need fast commit
-> > >                                          * protected by sbi->s_fc_lock.
-> > > diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> > > index 7964ee34e322..f2bee4cf5648 100644
-> > > --- a/fs/ext4/fast_commit.c
-> > > +++ b/fs/ext4/fast_commit.c
-> > > @@ -199,6 +199,7 @@ void ext4_fc_init_inode(struct inode *inode)
-> > >         ext4_fc_reset_inode(inode);
-> > >         ext4_clear_inode_state(inode, EXT4_STATE_FC_COMMITTING);
-> > >         INIT_LIST_HEAD(&ei->i_fc_list);
-> > > +       INIT_LIST_HEAD(&ei->i_fc_dilist);
-> > >         init_waitqueue_head(&ei->i_fc_wait);
-> > >         atomic_set(&ei->i_fc_updates, 0);
-> > >  }
-> > > @@ -279,6 +280,8 @@ void ext4_fc_stop_update(struct inode *inode)
-> > >  void ext4_fc_del(struct inode *inode)
-> > >  {
-> > >         struct ext4_inode_info *ei = EXT4_I(inode);
-> > > +       struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
-> > > +       struct ext4_fc_dentry_update *fc_dentry, *fc_dentry_n;
-> > >
-> > >         if (!test_opt2(inode->i_sb, JOURNAL_FAST_COMMIT) ||
-> > >             (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY))
-> > > @@ -286,7 +289,7 @@ void ext4_fc_del(struct inode *inode)
-> > >
-> > >  restart:
-> > >         spin_lock(&EXT4_SB(inode->i_sb)->s_fc_lock);
-> > > -       if (list_empty(&ei->i_fc_list)) {
-> > > +       if (list_empty(&ei->i_fc_list) && list_empty(&ei->i_fc_dilist)) {
-> > >                 spin_unlock(&EXT4_SB(inode->i_sb)->s_fc_lock);
-> > >                 return;
-> > >         }
-> > > @@ -295,7 +298,26 @@ void ext4_fc_del(struct inode *inode)
-> > >                 ext4_fc_wait_committing_inode(inode);
-> > >                 goto restart;
-> > >         }
-> > > -       list_del_init(&ei->i_fc_list);
-> > > +
-> > > +       if (!list_empty(&ei->i_fc_list))
-> > > +               list_del_init(&ei->i_fc_list);
-> > > +
-> > > +       /*
-> > > +        * Since this inode is getting removed, let's also remove all FC
-> > > +        * dentry create references, since it is not needed to log it anyways.
-> > > +        */
-> > > +       list_for_each_entry_safe(fc_dentry, fc_dentry_n, &ei->i_fc_dilist, fcd_dilist) {
-> > > +               WARN_ON(fc_dentry->fcd_op != EXT4_FC_TAG_CREAT);
-> > > +               list_del_init(&fc_dentry->fcd_list);
-> > > +               list_del_init(&fc_dentry->fcd_dilist);
-> > > +               spin_unlock(&sbi->s_fc_lock);
-> > > +
-> > > +               if (fc_dentry->fcd_name.name &&
-> > > +                       fc_dentry->fcd_name.len > DNAME_INLINE_LEN)
-> > > +                       kfree(fc_dentry->fcd_name.name);
-> > > +               kmem_cache_free(ext4_fc_dentry_cachep, fc_dentry);
-> > > +               return;
-> > Shouldn't we continue and remove all nodes in ei->i_fc_dilist?
->
-> Yes, I guess this survived, since we anyway have only one entry in the list
-> always. But thanks for catching.
->
-> > > +       }
-> > >         spin_unlock(&EXT4_SB(inode->i_sb)->s_fc_lock);
-> > >  }
-> > >
-> > > @@ -427,7 +449,7 @@ static int __track_dentry_update(struct inode *inode, void *arg, bool update)
-> > >                 node->fcd_name.name = node->fcd_iname;
-> > >         }
-> > >         node->fcd_name.len = dentry->d_name.len;
-> > > -
-> > > +       INIT_LIST_HEAD(&node->fcd_dilist);
-> > >         spin_lock(&sbi->s_fc_lock);
-> > >         if (sbi->s_journal->j_flags & JBD2_FULL_COMMIT_ONGOING ||
-> > >                 sbi->s_journal->j_flags & JBD2_FAST_COMMIT_ONGOING)
-> > > @@ -435,6 +457,18 @@ static int __track_dentry_update(struct inode *inode, void *arg, bool update)
-> > >                                 &sbi->s_fc_dentry_q[FC_Q_STAGING]);
-> > >         else
-> > >                 list_add_tail(&node->fcd_list, &sbi->s_fc_dentry_q[FC_Q_MAIN]);
-> > > +
-> > > +       /*
-> > > +        * This helps us keep a track of all fc_dentry updates which is part of
-> > > +        * this ext4 inode. So in case the inode is getting unlinked, before
-> > > +        * even we get a chance to fsync, we could remove all fc_dentry
-> > > +        * references while evicting the inode in ext4_fc_del().
-> > > +        * Also with this, we don't need to loop over all the inodes in
-> > > +        * sbi->s_fc_q to get the corresponding inode in
-> > > +        * ext4_fc_commit_dentry_updates().
-> > > +        */
-> > > +       if (dentry_update->op == EXT4_FC_TAG_CREAT)
-> > > +               list_add_tail(&node->fcd_dilist, &ei->i_fc_dilist);
-> > >         spin_unlock(&sbi->s_fc_lock);
-> > >         mutex_lock(&ei->i_fc_lock);
-> > >
-> > > @@ -954,7 +988,7 @@ __releases(&sbi->s_fc_lock)
-> > >         struct ext4_sb_info *sbi = EXT4_SB(sb);
-> > >         struct ext4_fc_dentry_update *fc_dentry, *fc_dentry_n;
-> > >         struct inode *inode;
-> > > -       struct ext4_inode_info *ei, *ei_n;
-> > > +       struct ext4_inode_info *ei;
-> > >         int ret;
-> > >
-> > >         if (list_empty(&sbi->s_fc_dentry_q[FC_Q_MAIN]))
-> > > @@ -970,21 +1004,16 @@ __releases(&sbi->s_fc_lock)
-> > >                         spin_lock(&sbi->s_fc_lock);
-> > >                         continue;
-> > >                 }
-> > > -
-> > > -               inode = NULL;
-> > > -               list_for_each_entry_safe(ei, ei_n, &sbi->s_fc_q[FC_Q_MAIN],
-> > > -                                        i_fc_list) {
-> > > -                       if (ei->vfs_inode.i_ino == fc_dentry->fcd_ino) {
-> > > -                               inode = &ei->vfs_inode;
-> > > -                               break;
-> > > -                       }
-> > > -               }
-> > >                 /*
-> > > -                * If we don't find inode in our list, then it was deleted,
-> > > -                * in which case, we don't need to record it's create tag.
-> > > +                * With fcd_dilist we need not loop in sbi->s_fc_q to get the
-> > > +                * corresponding inode pointer
-> > >                  */
-> > > -               if (!inode)
-> > > -                       continue;
-> > > +               WARN_ON(list_empty(&fc_dentry->fcd_dilist));
-> > > +               ei = list_entry(fc_dentry->fcd_dilist.next,
-> > > +                               struct ext4_inode_info, i_fc_dilist);
-> > I think we want "fc_dentry->fcd_ilist.prev" here right? We are
-> > sequentially traversing all the nodes in the list from first to last.
-> > Given that I think the inode is the prev of any node that you
-> > encounter in the list.
->
-> Not that this will be relevant in the next iteration. But doesn't matter right,
-> next and prev both will have pointer to inode (since it is a circular doubly
-> linked list)? And we are talking about fcd_dilist right?
->
-> -ritesh
->
-> >
-> > - Harshad
-> > > +               inode = &ei->vfs_inode;
-> > > +               WARN_ON(inode->i_ino != fc_dentry->fcd_ino);
-> > > +
-> > >                 spin_unlock(&sbi->s_fc_lock);
-> > >
-> > >                 /*
-> > > @@ -1228,6 +1257,7 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
-> > >                                              struct ext4_fc_dentry_update,
-> > >                                              fcd_list);
-> > >                 list_del_init(&fc_dentry->fcd_list);
-> > > +               list_del_init(&fc_dentry->fcd_dilist);
-> > >                 spin_unlock(&sbi->s_fc_lock);
-> > >
-> > >                 if (fc_dentry->fcd_name.name &&
-> > > diff --git a/fs/ext4/fast_commit.h b/fs/ext4/fast_commit.h
-> > > index 083ad1cb705a..02afa52e8e41 100644
-> > > --- a/fs/ext4/fast_commit.h
-> > > +++ b/fs/ext4/fast_commit.h
-> > > @@ -109,6 +109,7 @@ struct ext4_fc_dentry_update {
-> > >         struct qstr fcd_name;   /* Dirent name */
-> > >         unsigned char fcd_iname[DNAME_INLINE_LEN];      /* Dirent name string */
-> > >         struct list_head fcd_list;
-> > > +       struct list_head fcd_dilist;
-> > >  };
-> > >
-> > >  struct ext4_fc_stats {
-> > > --
-> > > 2.31.1
-> > >
+We can also confirm the calculation with a zero size file:
+
+   $ mkfs.btrfs -f -d DUP -m DUP btrfs.img
+   btrfs-progs v5.16=20
+   See http://btrfs.wiki.kernel.org for more information.
+  =20
+   ERROR: 'btrfs.img' is too small to make a usable filesystem
+   ERROR: minimum size for each btrfs device is 240123904
+
+So, the original 256MB is roughly correct.
+
+> If it was changed just recently, say 5.14 kernel, I suspect that tests
+> will fail on kernels prior to that change.
+>=20
+> But if this change was made on some acient kernels, say 4.10, then I
+> think we're fine with this patch.
+>=20
+> Thanks,
+> Eryu
+>=20
+> > shall not be specified to mkfs.btrfs for zoned devices, since zoned
+> > devices does not allow mixing metadata blocks and data blocks.
+> >=20
+> > Suggested-by: Naohiro Aota <naohiro.aota@wdc.com>
+> > Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+> > Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> > ---
+> >  common/rc | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
+> >=20
+> > diff --git a/common/rc b/common/rc
+> > index de60fb7b..74d2d8bd 100644
+> > --- a/common/rc
+> > +++ b/common/rc
+> > @@ -1075,10 +1075,10 @@ _scratch_mkfs_sized()
+> >  		;;
+> >  	btrfs)
+> >  		local mixed_opt=3D
+> > -		# minimum size that's needed without the mixed option.
+> > -		# Ref: btrfs-prog: btrfs_min_dev_size()
+> > -		# Non mixed mode is also the default option.
+> > -		(( fssize < $((256 * 1024 *1024)) )) && mixed_opt=3D'--mixed'
+> > +		# Mixed option is required when the filesystem size is small and
+> > +		# the device is not zoned. Ref: btrfs-progs: btrfs_min_dev_size()
+> > +		(( fssize < $((109 * 1024 * 1024)) )) &&
+> > +			! _scratch_btrfs_is_zoned && mixed_opt=3D'--mixed'
+> >  		$MKFS_BTRFS_PROG $MKFS_OPTIONS $mixed_opt -b $fssize $SCRATCH_DEV
+> >  		;;
+> >  	jfs)
+> > --=20
+> > 2.34.1=
