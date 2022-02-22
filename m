@@ -2,121 +2,143 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 594494C01FF
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Feb 2022 20:26:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E689D4C030A
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Feb 2022 21:34:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235189AbiBVT00 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 22 Feb 2022 14:26:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58158 "EHLO
+        id S235483AbiBVUfE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 22 Feb 2022 15:35:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231186AbiBVT0Z (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Feb 2022 14:26:25 -0500
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9BDB674D0;
-        Tue, 22 Feb 2022 11:25:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1645557959; x=1677093959;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=je6pxxUyucOKnuMDKEdXL57fjZykpHI9O7enNl2qahg=;
-  b=dIcq6AAHzVgb5fElyNsE0G6LIO3Kix6CGVD5xqFLx48XHPLcoOSgFLWF
-   4sXAtaZ7HVoEW5AaH97pS9hS6WK3Oewjgvo3wmFSKTxRp0KbolmnGHJIS
-   dWxi6YeOEZFDEJoLkFHwf/sQ8LrSMDt4yDeiU6VAMYl3b1X7cTAKWejY8
-   rqNs/neohk6LpZeSCXU/8QHLZdGzq5Yl0hzMeL/pCnZYRdC0UPvoTOvRY
-   p2ABUbrJjo0/lgJHFV1oot3YZdeF3msMB12CHazQhUBGK4oOpaPV+/FJW
-   CQGaiD9akg3BcxxwaUv/oM+JtDxoQZ/8NFetHzl55GM82hv8t2gJ6BceK
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10266"; a="276400870"
-X-IronPort-AV: E=Sophos;i="5.88,387,1635231600"; 
-   d="scan'208";a="276400870"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2022 11:25:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,387,1635231600"; 
-   d="scan'208";a="606801391"
-Received: from lkp-server01.sh.intel.com (HELO 788b1cd46f0d) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 22 Feb 2022 11:25:52 -0800
-Received: from kbuild by 788b1cd46f0d with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1nManH-0000XB-LZ; Tue, 22 Feb 2022 19:25:51 +0000
-Date:   Wed, 23 Feb 2022 03:25:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Byungchul Park <byungchul.park@lge.com>,
-        torvalds@linux-foundation.org
-Cc:     kbuild-all@lists.01.org, damien.lemoal@opensource.wdc.com,
-        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
-        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
-        chris@chris-wilson.co.uk, duyuyang@gmail.com,
-        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
-        bfields@fieldses.org, gregkh@linuxfoundation.org,
-        kernel-team@lge.com, linux-mm@kvack.org, akpm@linux-foundation.org,
-        mhocko@kernel.org, minchan@kernel.org, hannes@cmpxchg.org
-Subject: Re: [PATCH v2 08/18] dept: Apply Dept to
- wait_for_completion()/complete()
-Message-ID: <202202230329.dwOppOXY-lkp@intel.com>
-References: <1645268311-24222-9-git-send-email-byungchul.park@lge.com>
+        with ESMTP id S231694AbiBVUfD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Feb 2022 15:35:03 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC40878042;
+        Tue, 22 Feb 2022 12:34:37 -0800 (PST)
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21MItHh0008673;
+        Tue, 22 Feb 2022 20:34:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=hMea9uduwb9bjCvLXXOBoz4/k4QC2MrrWULG7C7iOlI=;
+ b=KrTwCpKuGDuBCvg1X1WlSVSWbmLeeB7pxpcQdiO2UYF3RvoTpXcXLLdpGLEDlzfDliGQ
+ LWPIiXBJawU9EZngtSyBjMTnt7lAkOYta9moHH8oVO/6k3qGJeGYrfyqlDBZgIR9Xu9G
+ jp7tEOU+PAFcM81ndF4rlXzRrf8oULs9p2VmPsdR6KYIv1bqNbi6XI2IugX/lInmqlc7
+ EbakhB7H7wcbm3iKyEZlKlnz2ZDOwOnmHpBAVwXN7CPh8XZpSSZ24PydQLj7OKrpAwgA
+ AhaAxMNOutmlxeF3vGmEa+hCloscL/yMHb3ftLU5Sr61ylksNotiVUnbSOMw0Dx3hvQk jQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ed34ueetv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Feb 2022 20:34:33 +0000
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 21MJFD3h014896;
+        Tue, 22 Feb 2022 20:34:32 GMT
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ed34ueet0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Feb 2022 20:34:32 +0000
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21MKJBnu014899;
+        Tue, 22 Feb 2022 20:34:30 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma01fra.de.ibm.com with ESMTP id 3ear694chk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Feb 2022 20:34:29 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21MKYRn350069924
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Feb 2022 20:34:27 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5898C42041;
+        Tue, 22 Feb 2022 20:34:27 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DFD024203F;
+        Tue, 22 Feb 2022 20:34:24 +0000 (GMT)
+Received: from localhost (unknown [9.43.75.136])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 22 Feb 2022 20:34:24 +0000 (GMT)
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: [RFC 0/9] ext4: Improve FC trace events and discuss one FC failure
+Date:   Wed, 23 Feb 2022 02:04:08 +0530
+Message-Id: <cover.1645558375.git.riteshh@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: GrsoOnylZi7RJx6GrBZcsCmyEdgZZ3Di
+X-Proofpoint-ORIG-GUID: YCuYLMcRtreZgTdQ4L7cqH1iRhui65Oz
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1645268311-24222-9-git-send-email-byungchul.park@lge.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-22_07,2022-02-21_02,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ clxscore=1015 malwarescore=0 suspectscore=0 spamscore=0 priorityscore=1501
+ lowpriorityscore=0 mlxlogscore=727 phishscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2201110000
+ definitions=main-2202220126
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Byungchul,
+Hello,
 
-Thank you for the patch! Perhaps something to improve:
+Sending this RFC out for getting some review comments/suggestions on the
+problem listed in this cover letter. It would be helpful if someone has any
+pointers around these.
 
-[auto build test WARNING on tip/sched/core]
-[also build test WARNING on linux/master linus/master v5.17-rc5]
-[cannot apply to tip/locking/core hnaz-mm/master next-20220217]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+1. Patch-2 fixes the problem reported by Steven about dereferencing pointers from
+   the ring buffer [1].
+	One of the problem in this patch which I might need some help is, how to
+	expose EXT4_FC_REASON_MAX enum for
+	+	__array(unsigned int, fc_ineligible_rc, EXT4_FC_REASON_MAX)
 
-url:    https://github.com/0day-ci/linux/commits/Byungchul-Park/DEPT-Dependency-Tracker/20220220-185528
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git ed3b362d54f0038cafc985248350d301af7af686
-reproduce: make htmldocs
+	My observation is that this trace_event is correctly printing the array
+	values when called from cat /sys/kernel/debug/tracing/trace_pipe.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+	But when I am using perf record -e ext4:ext4_fc_stats to record these trace
+	events, I am seeing the array values to be all 0.
 
-All warnings (new ones prefixed by >>):
+	Do you know what will be the right and easy way to fix above, so that this works
+	properly for perf tools too? And we should be able to backport this too.
 
->> include/linux/completion.h:121: warning: expecting prototype for init_completion(). Prototype was for __init_completion() instead
+2. Patch-9 discusses one of the problem where FC might miss to track/commit
+   inode's update. This also needs some discussion. I have added my observations
+   on the commit log of patch-9 itself.
 
-vim +121 include/linux/completion.h
+3. Remaining are FC trace event improvement patches, which I found useful while
+   debugging some of the recent fast_commit issues.
 
-8b3db9c542e18b7 Ingo Molnar     2006-07-03  110  
-65eb3dc609dec17 Kevin Diggs     2008-08-26  111  /**
-ee2f154a598e96d Randy Dunlap    2010-10-26  112   * init_completion - Initialize a dynamically allocated completion
-c32f74ab2872994 Wolfram Sang    2013-11-14  113   * @x:  pointer to completion structure that is to be initialized
-65eb3dc609dec17 Kevin Diggs     2008-08-26  114   *
-65eb3dc609dec17 Kevin Diggs     2008-08-26  115   * This inline function will initialize a dynamically created completion
-65eb3dc609dec17 Kevin Diggs     2008-08-26  116   * structure.
-65eb3dc609dec17 Kevin Diggs     2008-08-26  117   */
-82b6a46bab5dcb0 Byungchul Park  2022-02-19  118  static inline void __init_completion(struct completion *x,
-82b6a46bab5dcb0 Byungchul Park  2022-02-19  119  				     struct dept_key *dkey,
-82b6a46bab5dcb0 Byungchul Park  2022-02-19  120  				     const char *name)
-^1da177e4c3f415 Linus Torvalds  2005-04-16 @121  {
-^1da177e4c3f415 Linus Torvalds  2005-04-16  122  	x->done = 0;
-82b6a46bab5dcb0 Byungchul Park  2022-02-19  123  	dept_wfc_init(&x->dmap, dkey, 0, name);
-a5c6234e10280b3 Thomas Gleixner 2020-03-21  124  	init_swait_queue_head(&x->wait);
-^1da177e4c3f415 Linus Torvalds  2005-04-16  125  }
-^1da177e4c3f415 Linus Torvalds  2005-04-16  126  
+Also a careful review of patches is always helpful :)
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+[1]: https://lore.kernel.org/linux-ext4/20220221160916.333e6491@rorschach.local.home/T/#u
+
+Ritesh Harjani (9):
+  ext4: Remove unused enum EXT4_FC_COMMIT_FAILED
+  ext4: Fix ext4_fc_stats trace point
+  ext4: Add couple of more fast_commit tracepoints
+  ext4: Do not call FC trace event if FS does not support FC
+  ext4: Add commit_tid info in jbd debug log
+  ext4: Add commit tid info in ext4_fc_commit_start/stop trace events
+  ext4: Fix remaining two trace events to use same printk convention
+  ext4: Convert ext4_fc_track_dentry type events to use event class
+  ext4: fast_commit missing tracking updates to a file
+
+ fs/ext4/fast_commit.c       |  30 +++--
+ fs/ext4/fast_commit.h       |   1 -
+ include/trace/events/ext4.h | 229 +++++++++++++++++++++++++-----------
+ 3 files changed, 182 insertions(+), 78 deletions(-)
+
+--
+2.31.1
+
