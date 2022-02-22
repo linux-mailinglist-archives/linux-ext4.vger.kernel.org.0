@@ -2,88 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 651534BF75B
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Feb 2022 12:40:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 435514BFD54
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Feb 2022 16:46:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231752AbiBVLkv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 22 Feb 2022 06:40:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60606 "EHLO
+        id S233089AbiBVPrJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 22 Feb 2022 10:47:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231747AbiBVLku (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Feb 2022 06:40:50 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54505136EE7;
-        Tue, 22 Feb 2022 03:40:25 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id j17so5923851wrc.0;
-        Tue, 22 Feb 2022 03:40:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:from:mime-version:content-transfer-encoding
-         :content-description:subject:to:date:reply-to;
-        bh=zncUP4k0qWTkrruw/2Qwtl328+sz3ixjRaMsIKFNcuk=;
-        b=XuEBGqk1UWckbKz/Q0ppMwA+n/lm00aE9YMAHsMtfR7s0qipKYab2gYfuvhTKNXdpO
-         kLc+PGiANsE1AsQnGNo+gfxziyYfr+scVn5OwHqARXbOnHLxfRXu3rjaQHRBuvNaaX4J
-         ve02x7eReY4nM/xmPsra7xA6zvTKJaNhj12kZE1mXogJmU2HL4ykbR6nY3g3NmrIzPXA
-         c02H+C/gNdjDnBfTh0F+8VkYqYe0oBTl88h+5oO6eaK0tObgUm+KfsDAriC9LBxb+Xc+
-         9K5gtzWS6vkqSRkCys2FsxLrMAQ9l25sWvmg51i4jACyMdvRUwwaVGBBa2ETwwRWa7i+
-         PgPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:from:mime-version
-         :content-transfer-encoding:content-description:subject:to:date
-         :reply-to;
-        bh=zncUP4k0qWTkrruw/2Qwtl328+sz3ixjRaMsIKFNcuk=;
-        b=S8mGMwyhpPvpERgnvW7uaa9mReLNbD3ojdRMNOU0ST4ALyGqt5scm4NUPwqV8dLo5Q
-         c5hpuVTuUzsJVRyAHsU5OKwGm9xNBmXXksP2ZpZx8rRWkLDBK7R/+m7L9AXCZfRwP3eA
-         I2cxDq/AsyctLNMlSaE72LUTJHtwPqDEjB5UcOFO3HwahJvmgLX+88Yek04yeNFZCeeI
-         Dso2XTqKF1sV7TJD9U5Ll/SfQXVIVkDpPjgP3miGrXPnkuXb7v2Q9fTMbs4Z+B0xK0k0
-         1qFOQ0GEChpLomrfrrWpKgCHNrgZbwNSEAZB4c4CAehi7n5H2PPOSn/16WcHyfUmweGQ
-         rPpQ==
-X-Gm-Message-State: AOAM53360zTL+h9NnvwhXmJ5lOpSLqLr/j1y+tuwPCY6V5lKpQD9Md+H
-        M33fzqxljYB+dCR9oNk9rX0=
-X-Google-Smtp-Source: ABdhPJz1IaIbefl8JOdUJUpr36UXp0n5OEscVfyeW0XlUGPsfMJATfvgRM0LgNi+Y04N5AYQZVvfaA==
-X-Received: by 2002:a05:6000:188b:b0:1e3:1cfa:5851 with SMTP id a11-20020a056000188b00b001e31cfa5851mr20035629wri.510.1645530023937;
-        Tue, 22 Feb 2022 03:40:23 -0800 (PST)
-Received: from MACBOOKPROF612.localdomain ([102.165.192.234])
-        by smtp.gmail.com with ESMTPSA id c17sm2093025wmh.31.2022.02.22.03.40.17
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Tue, 22 Feb 2022 03:40:23 -0800 (PST)
-Message-ID: <6214cba7.1c69fb81.bb0b.71a2@mx.google.com>
-From:   Scott Godfrey <markmillercom322@gmail.com>
-X-Google-Original-From: Scott Godfrey
-Content-Type: text/plain; charset="iso-8859-1"
+        with ESMTP id S231300AbiBVPrH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Feb 2022 10:47:07 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A76E1A804;
+        Tue, 22 Feb 2022 07:46:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=Huls1rFGB2qZ4Fp0OAzd0z5j8dCiIe4CcnDjsirdHE0=; b=NY5NPM4j7DAPbkK2cuMwVlfa9+
+        pLtx2zKV51IUpxN7o0axOaaHbuz+beKtzWxc4XEL07ug7leB4Yspk738ozlaaKjWJovbBXQBqXNyf
+        om34hTqCcGkdiUHf+j/bfamzv5QoP6KfFuYt2iBA9s5Y4ATbsQwK9gN/MJN48svGIBCqS9zotUV+L
+        CTqIQMCatfRCPBM05BCxZnW65Ugl3HjvA8UkzHDlR4rS9aSSxve7S5y2Tl0bO4fthkP8GFtlc0YjN
+        xl33J386SdqkhSC5ccdG2hBr/4vQv6x6zo+nDpY9jP1EcQLa4ccie6/aCoShiKC0TTSycbGcHjdEa
+        XD5+2vxA==;
+Received: from [2001:4bb8:198:f8fc:c22a:ebfc:be8d:63c2] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nMXN6-00ANW4-Kb; Tue, 22 Feb 2022 15:46:37 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>, "Theodore Ts'o" <tytso@mit.edu>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nilfs@vger.kernel.org
+Subject: simple file system cleanups for the new bio_alloc calling conventions
+Date:   Tue, 22 Feb 2022 16:46:31 +0100
+Message-Id: <20220222154634.597067-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: CONGRATULATION!!!!
-To:     Recipients <Scott@vger.kernel.org>
-Date:   Tue, 22 Feb 2022 13:40:14 +0200
-Reply-To: scottgodfrey.net@gmail.com
-X-Antivirus: AVG (VPS 220222-0, 2/22/2022), Outbound message
-X-Antivirus-Status: Clean
-X-Spam-Status: No, score=4.6 required=5.0 tests=ADVANCE_FEE_2_NEW_MONEY,
-        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        LOTS_OF_MONEY,MONEY_FRAUD_3,MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,TO_MALFORMED,T_SCC_BODY_TEXT_LINE,
-        XFER_LOTSA_MONEY autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-My Name is Scott Godfrey. I wish to inform you that The sum of $2,500,000(M=
-illion)has been donated to you.I
-won a fortune of $699.8 Million in the Million Dollars Power-Ball Jackpot L=
-ottery,2021.And I am
-donating part of it to five lucky people and five Charity
-organization. Your email came out victorious. Please contact via email: sco=
-ttgodfrey.net@gmail.com. For more information about your claims. Thanks.
+Hi all,
 
+this fixes up the remaining fairly trivial file system bio alloctions to
+directly pass the bdev to bio_alloc.  f2fs and btrfs will need more work and
+will be handled separately.
 
--- 
-This email has been checked for viruses by AVG.
-https://www.avg.com
+This is against Jens' for-5.18/block branch.  It would probably make sense to
+also merge it through that.
 
+Diffstat:
+ ext4/page-io.c  |    7 +++----
+ mpage.c         |   50 +++++++++++++++++++++-----------------------------
+ nilfs2/segbuf.c |   20 +++++++++-----------
+ 3 files changed, 33 insertions(+), 44 deletions(-)
