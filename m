@@ -2,54 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9419C4BF04B
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Feb 2022 05:10:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DBA14BF099
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Feb 2022 05:10:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241206AbiBVDVA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 21 Feb 2022 22:21:00 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:51012 "EHLO
+        id S237922AbiBVDTB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 21 Feb 2022 22:19:01 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:43042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241157AbiBVDU7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Feb 2022 22:20:59 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4390C192B8;
-        Mon, 21 Feb 2022 19:20:26 -0800 (PST)
+        with ESMTP id S233775AbiBVDTA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Feb 2022 22:19:00 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE17BFFB;
+        Mon, 21 Feb 2022 19:18:34 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id F1CA8210E6;
-        Tue, 22 Feb 2022 03:20:24 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3ABF61F392;
+        Tue, 22 Feb 2022 03:18:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1645500024; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1645499913; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ViDG/yMqWZxCAxTaqQtcLcHL6JhRHELXtVbiJuJsPUo=;
-        b=Tmz1uo8woLZXqpnP6AmoA/NTuRgmjrgW2cLueq9/kp9TCyUa6S7R3LyYWeiTFJaHuy3dUM
-        KZRmOxRvt9ZDQSR+hpxKFewxvdZZ9Urtb6en4poxusvXIBIlgrBpBLKDAdWO2ORb+DR1Mi
-        bSVP8TV+gQpT0TCoBjfqhnJf7D5nXLw=
+        bh=dxMNB30lzl6BwAspjhyrqZOLtIFrR9DXCk9OQJHPtUY=;
+        b=W7ebGdMAlezFqBmfhUhJtFLKOkWJeos9pQHX2grBMDLkQg4vopHgKFVTPQqtciX/3uFXle
+        LS7sGhVKANsry9bX1t+C90K8NvDOgUWBOJdfcsjev7nJWmTO6WYZvG1tAfszx73V8g317v
+        IPQ6JQNv6q0a7ebKuPJwoY3rm6bp6Jg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1645500024;
+        s=susede2_ed25519; t=1645499913;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ViDG/yMqWZxCAxTaqQtcLcHL6JhRHELXtVbiJuJsPUo=;
-        b=BbqDPkZmtQqupAAVe4rSFiNNNRKLh+0XT0FLFde2mCgSKOwY64NUe64xN29OsgNhaJyglf
-        D4tHxubXuewZC/CA==
+        bh=dxMNB30lzl6BwAspjhyrqZOLtIFrR9DXCk9OQJHPtUY=;
+        b=G7n/l/aOQFd/9dtTrzc2aloiCvbC6lUJXd2tD1UOdI3tXRXAymBbJgRLyF1oHS6++KH8Ts
+        e4yVYzL7OFocyEBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8B58613BA7;
-        Tue, 22 Feb 2022 03:20:16 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 92B2413BA7;
+        Tue, 22 Feb 2022 03:18:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id pLKjEXBWFGI0WwAAMHmgww
-        (envelope-from <neilb@suse.de>); Tue, 22 Feb 2022 03:20:16 +0000
-Subject: [PATCH 10/11] block/bfq-iosched.c: use "false" rather than
- "BLK_RW_ASYNC"
+        id 5RPZKv9VFGKFWgAAMHmgww
+        (envelope-from <neilb@suse.de>); Tue, 22 Feb 2022 03:18:23 +0000
+Subject: [PATCH 03/11] MM: improve cleanup when ->readpages doesn't process
+ all pages.
 From:   NeilBrown <neilb@suse.de>
 To:     Andrew Morton <akpm@linux-foundation.org>, Jan Kara <jack@suse.cz>,
         Wu Fengguang <fengguang.wu@intel.com>,
@@ -72,7 +72,7 @@ Cc:     linux-doc@vger.kernel.org, linux-mm@kvack.org,
         ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
         linux-kernel@vger.kernel.org
 Date:   Tue, 22 Feb 2022 14:17:17 +1100
-Message-ID: <164549983746.9187.7949730109246767909.stgit@noble.brown>
+Message-ID: <164549983736.9187.16755913785880819183.stgit@noble.brown>
 In-Reply-To: <164549971112.9187.16871723439770288255.stgit@noble.brown>
 References: <164549971112.9187.16871723439770288255.stgit@noble.brown>
 User-Agent: StGit/0.23
@@ -89,27 +89,61 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-bfq_get_queue() expects a "bool" for the third arg, so pass "false"
-rather than "BLK_RW_ASYNC" which will soon be removed.
+If ->readpages doesn't process all the pages, then it is best to act as
+though they weren't requested so that a subsequent readahead can try
+again.
+So:
+  - remove any 'ahead' pages from the page cache so they can be loaded
+    with ->readahead() rather then multiple ->read()s
+  - update the file_ra_state to reflect the reads that were actually
+    submitted.
 
-Acked-by: Jens Axboe <axboe@kernel.dk>
+This allows ->readpages() to abort early due e.g.  to congestion, which
+will then allow us to remove the inode_read_congested() test from
+page_Cache_async_ra().
+
 Signed-off-by: NeilBrown <neilb@suse.de>
 ---
- block/bfq-iosched.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/readahead.c |   19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index 36a66e97e3c2..ed9bb1054bf2 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -5448,7 +5448,7 @@ static void bfq_check_ioprio_change(struct bfq_io_cq *bic, struct bio *bio)
- 	bfqq = bic_to_bfqq(bic, false);
- 	if (bfqq) {
- 		bfq_release_process_ref(bfqd, bfqq);
--		bfqq = bfq_get_queue(bfqd, bio, BLK_RW_ASYNC, bic, true);
-+		bfqq = bfq_get_queue(bfqd, bio, false, bic, true);
- 		bic_set_bfqq(bic, bfqq, false);
- 	}
+diff --git a/mm/readahead.c b/mm/readahead.c
+index 73b2bc5302e0..8a97bd408cf6 100644
+--- a/mm/readahead.c
++++ b/mm/readahead.c
+@@ -104,7 +104,13 @@
+  * for necessary resources (e.g.  memory or indexing information) to
+  * become available.  Pages in the final ``async_size`` may be
+  * considered less urgent and failure to read them is more acceptable.
+- * They will eventually be read individually using ->readpage().
++ * In this case it is best to use delete_from_page_cache() to remove the
++ * pages from the page cache as is automatically done for pages that
++ * were not fetched with readahead_page().  This will allow a
++ * subsequent synchronous read ahead request to try them again.  If they
++ * are left in the page cache, then they will be read individually using
++ * ->readpage().
++ *
+  */
  
+ #include <linux/kernel.h>
+@@ -226,8 +232,17 @@ static void read_pages(struct readahead_control *rac, struct list_head *pages,
+ 
+ 	if (aops->readahead) {
+ 		aops->readahead(rac);
+-		/* Clean up the remaining pages */
++		/*
++		 * Clean up the remaining pages.  The sizes in ->ra
++		 * maybe be used to size next read-ahead, so make sure
++		 * they accurately reflect what happened.
++		 */
+ 		while ((page = readahead_page(rac))) {
++			rac->ra->size -= 1;
++			if (rac->ra->async_size > 0) {
++				rac->ra->async_size -= 1;
++				delete_from_page_cache(page);
++			}
+ 			unlock_page(page);
+ 			put_page(page);
+ 		}
 
 
