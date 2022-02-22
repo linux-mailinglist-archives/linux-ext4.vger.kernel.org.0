@@ -2,118 +2,88 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 552014BF393
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Feb 2022 09:27:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 651534BF75B
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Feb 2022 12:40:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229739AbiBVI17 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 22 Feb 2022 03:27:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36288 "EHLO
+        id S231752AbiBVLkv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 22 Feb 2022 06:40:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbiBVI1t (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Feb 2022 03:27:49 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 455319BBB3;
-        Tue, 22 Feb 2022 00:27:25 -0800 (PST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id F1AA31F397;
-        Tue, 22 Feb 2022 08:27:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1645518444; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dKa9YzG6WdPDW42WrXRDZOX/ZgG302zZsU6kzGjfuRk=;
-        b=Td2+1nGSGsZ5KMAOXZdDV1sjvAKTWie8Ea7gXdjxrT1MQOLxRE4sf1yFUF0ozBZVaxx57G
-        F2w6B+J4F1f3Eg7LYwOH4bUr084LTNnx3qdml8GVzZw7C34nAkA10vZYP/GcPXeYqmArAE
-        wCViF/uK3oZXRCgtuFDkWlfv6CnR2eU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1645518444;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dKa9YzG6WdPDW42WrXRDZOX/ZgG302zZsU6kzGjfuRk=;
-        b=NGZGyoSgJN2YJMiLD1FSYJmywAnquy44CmumlY0Lj78LVdd0HvqzHfi6xzzURKNLWHg+/L
-        L+QdSHBoxKlpW+CA==
-Received: from quack3.suse.cz (unknown [10.100.200.198])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id DE5A8A3B88;
-        Tue, 22 Feb 2022 08:27:23 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 9F9B5A0606; Tue, 22 Feb 2022 09:27:23 +0100 (CET)
-Date:   Tue, 22 Feb 2022 09:27:23 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Byungchul Park <byungchul.park@lge.com>
-Cc:     torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
-        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
-        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
-        chris@chris-wilson.co.uk, duyuyang@gmail.com,
-        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
-        bfields@fieldses.org, gregkh@linuxfoundation.org,
-        kernel-team@lge.com, linux-mm@kvack.org, akpm@linux-foundation.org,
-        mhocko@kernel.org, minchan@kernel.org, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, sj@kernel.org, jglisse@redhat.com,
-        dennis@kernel.org, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, vbabka@suse.cz, ngupta@vflare.org,
-        linux-block@vger.kernel.org, axboe@kernel.dk,
-        paolo.valente@linaro.org, josef@toxicpanda.com,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        jack@suse.cz, jack@suse.com, jlayton@kernel.org,
-        dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
-        dri-devel@lists.freedesktop.org, airlied@linux.ie,
-        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
-        hamohammed.sa@gmail.com
-Subject: Re: Report 1 in ext4 and journal based on v5.17-rc1
-Message-ID: <20220222082723.rddf4typah3wegrc@quack3.lan>
-References: <1645095472-26530-1-git-send-email-byungchul.park@lge.com>
- <1645096204-31670-1-git-send-email-byungchul.park@lge.com>
+        with ESMTP id S231747AbiBVLku (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Feb 2022 06:40:50 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54505136EE7;
+        Tue, 22 Feb 2022 03:40:25 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id j17so5923851wrc.0;
+        Tue, 22 Feb 2022 03:40:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:from:mime-version:content-transfer-encoding
+         :content-description:subject:to:date:reply-to;
+        bh=zncUP4k0qWTkrruw/2Qwtl328+sz3ixjRaMsIKFNcuk=;
+        b=XuEBGqk1UWckbKz/Q0ppMwA+n/lm00aE9YMAHsMtfR7s0qipKYab2gYfuvhTKNXdpO
+         kLc+PGiANsE1AsQnGNo+gfxziyYfr+scVn5OwHqARXbOnHLxfRXu3rjaQHRBuvNaaX4J
+         ve02x7eReY4nM/xmPsra7xA6zvTKJaNhj12kZE1mXogJmU2HL4ykbR6nY3g3NmrIzPXA
+         c02H+C/gNdjDnBfTh0F+8VkYqYe0oBTl88h+5oO6eaK0tObgUm+KfsDAriC9LBxb+Xc+
+         9K5gtzWS6vkqSRkCys2FsxLrMAQ9l25sWvmg51i4jACyMdvRUwwaVGBBa2ETwwRWa7i+
+         PgPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:from:mime-version
+         :content-transfer-encoding:content-description:subject:to:date
+         :reply-to;
+        bh=zncUP4k0qWTkrruw/2Qwtl328+sz3ixjRaMsIKFNcuk=;
+        b=S8mGMwyhpPvpERgnvW7uaa9mReLNbD3ojdRMNOU0ST4ALyGqt5scm4NUPwqV8dLo5Q
+         c5hpuVTuUzsJVRyAHsU5OKwGm9xNBmXXksP2ZpZx8rRWkLDBK7R/+m7L9AXCZfRwP3eA
+         I2cxDq/AsyctLNMlSaE72LUTJHtwPqDEjB5UcOFO3HwahJvmgLX+88Yek04yeNFZCeeI
+         Dso2XTqKF1sV7TJD9U5Ll/SfQXVIVkDpPjgP3miGrXPnkuXb7v2Q9fTMbs4Z+B0xK0k0
+         1qFOQ0GEChpLomrfrrWpKgCHNrgZbwNSEAZB4c4CAehi7n5H2PPOSn/16WcHyfUmweGQ
+         rPpQ==
+X-Gm-Message-State: AOAM53360zTL+h9NnvwhXmJ5lOpSLqLr/j1y+tuwPCY6V5lKpQD9Md+H
+        M33fzqxljYB+dCR9oNk9rX0=
+X-Google-Smtp-Source: ABdhPJz1IaIbefl8JOdUJUpr36UXp0n5OEscVfyeW0XlUGPsfMJATfvgRM0LgNi+Y04N5AYQZVvfaA==
+X-Received: by 2002:a05:6000:188b:b0:1e3:1cfa:5851 with SMTP id a11-20020a056000188b00b001e31cfa5851mr20035629wri.510.1645530023937;
+        Tue, 22 Feb 2022 03:40:23 -0800 (PST)
+Received: from MACBOOKPROF612.localdomain ([102.165.192.234])
+        by smtp.gmail.com with ESMTPSA id c17sm2093025wmh.31.2022.02.22.03.40.17
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Tue, 22 Feb 2022 03:40:23 -0800 (PST)
+Message-ID: <6214cba7.1c69fb81.bb0b.71a2@mx.google.com>
+From:   Scott Godfrey <markmillercom322@gmail.com>
+X-Google-Original-From: Scott Godfrey
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1645096204-31670-1-git-send-email-byungchul.park@lge.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: CONGRATULATION!!!!
+To:     Recipients <Scott@vger.kernel.org>
+Date:   Tue, 22 Feb 2022 13:40:14 +0200
+Reply-To: scottgodfrey.net@gmail.com
+X-Antivirus: AVG (VPS 220222-0, 2/22/2022), Outbound message
+X-Antivirus-Status: Clean
+X-Spam-Status: No, score=4.6 required=5.0 tests=ADVANCE_FEE_2_NEW_MONEY,
+        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        LOTS_OF_MONEY,MONEY_FRAUD_3,MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,TO_MALFORMED,T_SCC_BODY_TEXT_LINE,
+        XFER_LOTSA_MONEY autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 17-02-22 20:10:03, Byungchul Park wrote:
-> [    7.009608] ===================================================
-> [    7.009613] DEPT: Circular dependency has been detected.
-> [    7.009614] 5.17.0-rc1-00014-g8a599299c0cb-dirty #30 Tainted: G        W
-> [    7.009616] ---------------------------------------------------
-> [    7.009617] summary
-> [    7.009618] ---------------------------------------------------
-> [    7.009618] *** DEADLOCK ***
-> [    7.009618]
-> [    7.009619] context A
-> [    7.009619]     [S] (unknown)(&(bit_wait_table + i)->dmap:0)
-> [    7.009621]     [W] down_write(&ei->i_data_sem:0)
-> [    7.009623]     [E] event(&(bit_wait_table + i)->dmap:0)
-> [    7.009624]
-> [    7.009625] context B
-> [    7.009625]     [S] down_read(&ei->i_data_sem:0)
-> [    7.009626]     [W] wait(&(bit_wait_table + i)->dmap:0)
-> [    7.009627]     [E] up_read(&ei->i_data_sem:0)
-> [    7.009628]
+My Name is Scott Godfrey. I wish to inform you that The sum of $2,500,000(M=
+illion)has been donated to you.I
+won a fortune of $699.8 Million in the Million Dollars Power-Ball Jackpot L=
+ottery,2021.And I am
+donating part of it to five lucky people and five Charity
+organization. Your email came out victorious. Please contact via email: sco=
+ttgodfrey.net@gmail.com. For more information about your claims. Thanks.
 
-Looking into this I have noticed that Dept here tracks bitlocks (buffer
-locks in particular) but it apparently treats locks on all buffers as one
-locking class so it conflates lock on superblock buffer with a lock on
-extent tree block buffer. These are wastly different locks with different
-locking constraints. So to avoid false positives in filesystems we will
-need to add annotations to differentiate locks on different buffers (based
-on what the block is used for). Similarly how we e.g. annotate i_rwsem for
-different inodes.
 
-								Honza
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+This email has been checked for viruses by AVG.
+https://www.avg.com
+
