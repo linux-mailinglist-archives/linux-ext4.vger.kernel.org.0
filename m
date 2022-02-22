@@ -2,82 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE764BF072
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Feb 2022 05:10:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 552014BF393
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Feb 2022 09:27:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241472AbiBVDVW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 21 Feb 2022 22:21:22 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52014 "EHLO
+        id S229739AbiBVI17 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 22 Feb 2022 03:27:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241468AbiBVDVP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Feb 2022 22:21:15 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5541193E3;
-        Mon, 21 Feb 2022 19:20:48 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 756FA210FF;
-        Tue, 22 Feb 2022 03:20:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1645500047; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        with ESMTP id S229810AbiBVI1t (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Feb 2022 03:27:49 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 455319BBB3;
+        Tue, 22 Feb 2022 00:27:25 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id F1AA31F397;
+        Tue, 22 Feb 2022 08:27:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1645518444; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OVO5L5oh76QqfW3n1oDvBos2Yawv0E43OsrqMmz97u8=;
-        b=Cx4lOcCSZ4xZdlO/0dt8OvOiHYMvfFgE8dneyy4gx9SAbx/jm5IA5BhEiUt8c8MGgChw8S
-        lV0AvwUZ9O2angScciMT5S/cugRbdvDnpm+SMpxcXp1h2pdra88SQyfZY9lVnTX5Tr8Dg4
-        oB5Wo4vGigfE2skk7MCoyKNYLxDuocs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1645500047;
+        bh=dKa9YzG6WdPDW42WrXRDZOX/ZgG302zZsU6kzGjfuRk=;
+        b=Td2+1nGSGsZ5KMAOXZdDV1sjvAKTWie8Ea7gXdjxrT1MQOLxRE4sf1yFUF0ozBZVaxx57G
+        F2w6B+J4F1f3Eg7LYwOH4bUr084LTNnx3qdml8GVzZw7C34nAkA10vZYP/GcPXeYqmArAE
+        wCViF/uK3oZXRCgtuFDkWlfv6CnR2eU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1645518444;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OVO5L5oh76QqfW3n1oDvBos2Yawv0E43OsrqMmz97u8=;
-        b=SRC+OazRSNJPy370sTVlIzOM0il7qZEAvTNiLN6R//xLWhOCX5g8q6QwhVzoewi3VDD6wO
-        l60QJmE012FgycCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        bh=dKa9YzG6WdPDW42WrXRDZOX/ZgG302zZsU6kzGjfuRk=;
+        b=NGZGyoSgJN2YJMiLD1FSYJmywAnquy44CmumlY0Lj78LVdd0HvqzHfi6xzzURKNLWHg+/L
+        L+QdSHBoxKlpW+CA==
+Received: from quack3.suse.cz (unknown [10.100.200.198])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0E23613BA7;
-        Tue, 22 Feb 2022 03:20:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id m6yZK4NWFGJLWwAAMHmgww
-        (envelope-from <neilb@suse.de>); Tue, 22 Feb 2022 03:20:35 +0000
-Subject: [PATCH 11/11] Remove congestion tracking framework.
-From:   NeilBrown <neilb@suse.de>
-To:     Andrew Morton <akpm@linux-foundation.org>, Jan Kara <jack@suse.cz>,
-        Wu Fengguang <fengguang.wu@intel.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Lars Ellenberg <lars.ellenberg@linbit.com>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-nilfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 22 Feb 2022 14:17:17 +1100
-Message-ID: <164549983747.9187.6171768583526866601.stgit@noble.brown>
-In-Reply-To: <164549971112.9187.16871723439770288255.stgit@noble.brown>
-References: <164549971112.9187.16871723439770288255.stgit@noble.brown>
-User-Agent: StGit/0.23
+        by relay2.suse.de (Postfix) with ESMTPS id DE5A8A3B88;
+        Tue, 22 Feb 2022 08:27:23 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 9F9B5A0606; Tue, 22 Feb 2022 09:27:23 +0100 (CET)
+Date:   Tue, 22 Feb 2022 09:27:23 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Byungchul Park <byungchul.park@lge.com>
+Cc:     torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
+        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
+        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
+        chris@chris-wilson.co.uk, duyuyang@gmail.com,
+        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
+        bfields@fieldses.org, gregkh@linuxfoundation.org,
+        kernel-team@lge.com, linux-mm@kvack.org, akpm@linux-foundation.org,
+        mhocko@kernel.org, minchan@kernel.org, hannes@cmpxchg.org,
+        vdavydov.dev@gmail.com, sj@kernel.org, jglisse@redhat.com,
+        dennis@kernel.org, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, vbabka@suse.cz, ngupta@vflare.org,
+        linux-block@vger.kernel.org, axboe@kernel.dk,
+        paolo.valente@linaro.org, josef@toxicpanda.com,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        jack@suse.cz, jack@suse.com, jlayton@kernel.org,
+        dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
+        dri-devel@lists.freedesktop.org, airlied@linux.ie,
+        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+        hamohammed.sa@gmail.com
+Subject: Re: Report 1 in ext4 and journal based on v5.17-rc1
+Message-ID: <20220222082723.rddf4typah3wegrc@quack3.lan>
+References: <1645095472-26530-1-git-send-email-byungchul.park@lge.com>
+ <1645096204-31670-1-git-send-email-byungchul.park@lge.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1645096204-31670-1-git-send-email-byungchul.park@lge.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -88,151 +84,36 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This framework is no longer used - so discard it.
+On Thu 17-02-22 20:10:03, Byungchul Park wrote:
+> [    7.009608] ===================================================
+> [    7.009613] DEPT: Circular dependency has been detected.
+> [    7.009614] 5.17.0-rc1-00014-g8a599299c0cb-dirty #30 Tainted: G        W
+> [    7.009616] ---------------------------------------------------
+> [    7.009617] summary
+> [    7.009618] ---------------------------------------------------
+> [    7.009618] *** DEADLOCK ***
+> [    7.009618]
+> [    7.009619] context A
+> [    7.009619]     [S] (unknown)(&(bit_wait_table + i)->dmap:0)
+> [    7.009621]     [W] down_write(&ei->i_data_sem:0)
+> [    7.009623]     [E] event(&(bit_wait_table + i)->dmap:0)
+> [    7.009624]
+> [    7.009625] context B
+> [    7.009625]     [S] down_read(&ei->i_data_sem:0)
+> [    7.009626]     [W] wait(&(bit_wait_table + i)->dmap:0)
+> [    7.009627]     [E] up_read(&ei->i_data_sem:0)
+> [    7.009628]
 
-Signed-off-by: NeilBrown <neilb@suse.de>
----
- include/linux/backing-dev-defs.h |    8 -----
- include/linux/backing-dev.h      |    2 -
- include/trace/events/writeback.h |   28 -------------------
- mm/backing-dev.c                 |   57 --------------------------------------
- 4 files changed, 95 deletions(-)
+Looking into this I have noticed that Dept here tracks bitlocks (buffer
+locks in particular) but it apparently treats locks on all buffers as one
+locking class so it conflates lock on superblock buffer with a lock on
+extent tree block buffer. These are wastly different locks with different
+locking constraints. So to avoid false positives in filesystems we will
+need to add annotations to differentiate locks on different buffers (based
+on what the block is used for). Similarly how we e.g. annotate i_rwsem for
+different inodes.
 
-diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev-defs.h
-index 993c5628a726..e863c88df95f 100644
---- a/include/linux/backing-dev-defs.h
-+++ b/include/linux/backing-dev-defs.h
-@@ -207,14 +207,6 @@ struct backing_dev_info {
- #endif
- };
- 
--enum {
--	BLK_RW_ASYNC	= 0,
--	BLK_RW_SYNC	= 1,
--};
--
--void clear_bdi_congested(struct backing_dev_info *bdi, int sync);
--void set_bdi_congested(struct backing_dev_info *bdi, int sync);
--
- struct wb_lock_cookie {
- 	bool locked;
- 	unsigned long flags;
-diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
-index 2d764566280c..87ce24d238f3 100644
---- a/include/linux/backing-dev.h
-+++ b/include/linux/backing-dev.h
-@@ -135,8 +135,6 @@ static inline bool writeback_in_progress(struct bdi_writeback *wb)
- 
- struct backing_dev_info *inode_to_bdi(struct inode *inode);
- 
--long congestion_wait(int sync, long timeout);
--
- static inline bool mapping_can_writeback(struct address_space *mapping)
- {
- 	return inode_to_bdi(mapping->host)->capabilities & BDI_CAP_WRITEBACK;
-diff --git a/include/trace/events/writeback.h b/include/trace/events/writeback.h
-index a345b1e12daf..86b2a82da546 100644
---- a/include/trace/events/writeback.h
-+++ b/include/trace/events/writeback.h
-@@ -735,34 +735,6 @@ TRACE_EVENT(writeback_sb_inodes_requeue,
- 	)
- );
- 
--DECLARE_EVENT_CLASS(writeback_congest_waited_template,
--
--	TP_PROTO(unsigned int usec_timeout, unsigned int usec_delayed),
--
--	TP_ARGS(usec_timeout, usec_delayed),
--
--	TP_STRUCT__entry(
--		__field(	unsigned int,	usec_timeout	)
--		__field(	unsigned int,	usec_delayed	)
--	),
--
--	TP_fast_assign(
--		__entry->usec_timeout	= usec_timeout;
--		__entry->usec_delayed	= usec_delayed;
--	),
--
--	TP_printk("usec_timeout=%u usec_delayed=%u",
--			__entry->usec_timeout,
--			__entry->usec_delayed)
--);
--
--DEFINE_EVENT(writeback_congest_waited_template, writeback_congestion_wait,
--
--	TP_PROTO(unsigned int usec_timeout, unsigned int usec_delayed),
--
--	TP_ARGS(usec_timeout, usec_delayed)
--);
--
- DECLARE_EVENT_CLASS(writeback_single_inode_template,
- 
- 	TP_PROTO(struct inode *inode,
-diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-index eae96dfe0261..7176af65b103 100644
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -1005,60 +1005,3 @@ const char *bdi_dev_name(struct backing_dev_info *bdi)
- 	return bdi->dev_name;
- }
- EXPORT_SYMBOL_GPL(bdi_dev_name);
--
--static wait_queue_head_t congestion_wqh[2] = {
--		__WAIT_QUEUE_HEAD_INITIALIZER(congestion_wqh[0]),
--		__WAIT_QUEUE_HEAD_INITIALIZER(congestion_wqh[1])
--	};
--static atomic_t nr_wb_congested[2];
--
--void clear_bdi_congested(struct backing_dev_info *bdi, int sync)
--{
--	wait_queue_head_t *wqh = &congestion_wqh[sync];
--	enum wb_congested_state bit;
--
--	bit = sync ? WB_sync_congested : WB_async_congested;
--	if (test_and_clear_bit(bit, &bdi->wb.congested))
--		atomic_dec(&nr_wb_congested[sync]);
--	smp_mb__after_atomic();
--	if (waitqueue_active(wqh))
--		wake_up(wqh);
--}
--EXPORT_SYMBOL(clear_bdi_congested);
--
--void set_bdi_congested(struct backing_dev_info *bdi, int sync)
--{
--	enum wb_congested_state bit;
--
--	bit = sync ? WB_sync_congested : WB_async_congested;
--	if (!test_and_set_bit(bit, &bdi->wb.congested))
--		atomic_inc(&nr_wb_congested[sync]);
--}
--EXPORT_SYMBOL(set_bdi_congested);
--
--/**
-- * congestion_wait - wait for a backing_dev to become uncongested
-- * @sync: SYNC or ASYNC IO
-- * @timeout: timeout in jiffies
-- *
-- * Waits for up to @timeout jiffies for a backing_dev (any backing_dev) to exit
-- * write congestion.  If no backing_devs are congested then just wait for the
-- * next write to be completed.
-- */
--long congestion_wait(int sync, long timeout)
--{
--	long ret;
--	unsigned long start = jiffies;
--	DEFINE_WAIT(wait);
--	wait_queue_head_t *wqh = &congestion_wqh[sync];
--
--	prepare_to_wait(wqh, &wait, TASK_UNINTERRUPTIBLE);
--	ret = io_schedule_timeout(timeout);
--	finish_wait(wqh, &wait);
--
--	trace_writeback_congestion_wait(jiffies_to_usecs(timeout),
--					jiffies_to_usecs(jiffies - start));
--
--	return ret;
--}
--EXPORT_SYMBOL(congestion_wait);
-
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
