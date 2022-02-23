@@ -2,69 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 499A44C175D
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Feb 2022 16:44:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 943024C1FB4
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Feb 2022 00:32:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242262AbiBWPoR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 23 Feb 2022 10:44:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55984 "EHLO
+        id S241337AbiBWXc1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 23 Feb 2022 18:32:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242108AbiBWPoO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Feb 2022 10:44:14 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2F0B1A85;
-        Wed, 23 Feb 2022 07:43:46 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 687B1618B9;
-        Wed, 23 Feb 2022 15:43:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 882EAC340EB;
-        Wed, 23 Feb 2022 15:43:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645631025;
-        bh=GlQlJ7gTsSs+29mQwM51uU8EyiUWcBAHlmovzgZMq5A=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=ZO1F7n8icLu0SS8LTbbOz3ZX6I0UObRkMZp430mjGi8LrVJUfF2OldgHMoIAzghD1
-         At9AE3VGPsI1ocidqHDOgU8k0/e6MLECtGV+lC7G/btQp4HrkDP1F9XVJc9Yse7aUL
-         mf0cqqw5PbI7fNrGwG0UzZkZyYXVB+Ml/GZggGje4XPizTwSQvNDVGk/tnmWbsfw2l
-         lEnLltwKC4sGbZcxl2yUy66AgXuv+/maAOaFl30j3WzRX1NMcz+bNn6oSbA9LnFLzL
-         wFifgLSN3AYjBd/Ue6eziysvQHRY1lFlZ1BnUJkJQNvSyDlpcBXxF1ZkxyYDbu3pSD
-         T2gR1yrBxcBIQ==
-Message-ID: <ccc81eb5c23f933137c5da8d5050540cc54e58f0.camel@kernel.org>
-Subject: Re: [PATCH 06/11] ceph: remove reliance on bdi congestion
-From:   Jeff Layton <jlayton@kernel.org>
-To:     NeilBrown <neilb@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Wu Fengguang <fengguang.wu@intel.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Lars Ellenberg <lars.ellenberg@linbit.com>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-nilfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
+        with ESMTP id S238302AbiBWXc1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Feb 2022 18:32:27 -0500
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF7E3616F;
+        Wed, 23 Feb 2022 15:31:57 -0800 (PST)
+Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 21NNVXAJ022888
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Feb 2022 18:31:34 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 7F40815C0036; Wed, 23 Feb 2022 18:31:33 -0500 (EST)
+Date:   Wed, 23 Feb 2022 18:31:33 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, linux-ext4@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Dave Chinner <dchinner@redhat.com>,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johannes Thumshirn <jth@kernel.org>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cluster-devel@redhat.com,
         linux-kernel@vger.kernel.org
-Date:   Wed, 23 Feb 2022 10:43:42 -0500
-In-Reply-To: <164549983739.9187.14895675781408171186.stgit@noble.brown>
-References: <164549971112.9187.16871723439770288255.stgit@noble.brown>
-         <164549983739.9187.14895675781408171186.stgit@noble.brown>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.42.4 (3.42.4-1.fc35) 
+Subject: Re: [REPORT] kernel BUG at fs/ext4/inode.c:2620 - page_buffers()
+Message-ID: <YhbD1T7qhgnz4myM@mit.edu>
+References: <Yg0m6IjcNmfaSokM@google.com>
+ <82d0f4e4-c911-a245-4701-4712453592d9@nvidia.com>
+ <Yg8bxiz02WBGf6qO@mit.edu>
+ <7bd88058-2a9a-92a6-2280-43c805b516c3@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7bd88058-2a9a-92a6-2280-43c805b516c3@nvidia.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,164 +57,81 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 2022-02-22 at 14:17 +1100, NeilBrown wrote:
-> The bdi congestion tracking in not widely used and will be removed.
+On Thu, Feb 17, 2022 at 10:33:34PM -0800, John Hubbard wrote:
 > 
-> CEPHfs is one of a small number of filesystems that uses it, setting
-> just the async (write) congestion flags at what it determines are
-> appropriate times.
+> Just a small thing I'll say once, to get it out of my system. No action
+> required here, I just want it understood:
 > 
-> The only remaining effect of the async flag is to cause (some)
-> WB_SYNC_NONE writes to be skipped.
+> Before commit 803e4572d7c5 ("mm/process_vm_access: set FOLL_PIN via
+> pin_user_pages_remote()"), you would have written that like this:
 > 
-> So instead of setting the flag, set an internal flag and change:
->  - .writepages to do nothing if WB_SYNC_NONE and the flag is set
->  - .writepage to return AOP_WRITEPAGE_ACTIVATE if WB_SYNC_NONE
->     and the flag is set.
+> "process_vm_writev() is dirtying pages without properly warning the file
+> system in advance..."
 > 
-> The writepages change causes a behavioural change in that pageout() can
-> now return PAGE_ACTIVATE instead of PAGE_KEEP, so SetPageActive() will
-> be called on the page which (I think) wil further delay the next attempt
-> at writeout.  This might be a good thing.
+> Because, there were many callers that were doing this:
 > 
-> Signed-off-by: NeilBrown <neilb@suse.de>
-
-Maybe. I have to wonder whether all of this is really useful.
-
-When things are congested we'll avoid trying to issue new writeback
-requests. Note that we don't prevent new pages from being dirtied here -
-- only their being written back.
-
-This also doesn't do anything in the DIO or sync_write cases, so if we
-lose caps or are doing DIO, we'll just keep churning out "unlimited"
-writes in those cases anyway.
-
-With ceph too, we're not likely to be dealing with a single server as
-well. One OSD could be struggling to keep up but others are OK. Do we
-really want to throttle writeback to the ones that are fine?
-
-FWIW, the original patch that added this stuff was this:
-
-commit 2baba25019ec564cd247af74013873d69a0b8190
-Author: Yehuda Sadeh <yehuda@hq.newdream.net>
-Date:   Fri Dec 18 13:51:57 2009 -0800
-
-    ceph: writeback congestion control
-    
-    Set bdi congestion bit when amount of write data in flight exceeds adjustable
-    threshold.
-    
-    Signed-off-by: Yehuda Sadeh <yehuda@hq.newdream.net>
-    Signed-off-by: Sage Weil <sage@newdream.net>
-
-...but it's pretty scant on details.
-
-The only reason I can see to throttle writeback like this is to prevent
-you from having too much memory tied up in writeback requests, but we
-aren't limiting other requests in the same way.
-
-Maybe we would do better to just rip this stuff out?
-
-> ---
->  fs/ceph/addr.c  |   22 +++++++++++++---------
->  fs/ceph/super.c |    1 +
->  fs/ceph/super.h |    1 +
->  3 files changed, 15 insertions(+), 9 deletions(-)
+>     get_user_pages*()
+>     ...use the pages...
 > 
-> diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-> index c98e5238a1b6..dc7af34640dd 100644
-> --- a/fs/ceph/addr.c
-> +++ b/fs/ceph/addr.c
-> @@ -563,7 +563,7 @@ static int writepage_nounlock(struct page *page, struct writeback_control *wbc)
->  
->  	if (atomic_long_inc_return(&fsc->writeback_count) >
->  	    CONGESTION_ON_THRESH(fsc->mount_options->congestion_kb))
-> -		set_bdi_congested(inode_to_bdi(inode), BLK_RW_ASYNC);
-> +		fsc->write_congested = true;
->  
->  	req = ceph_osdc_new_request(osdc, &ci->i_layout, ceph_vino(inode), page_off, &len, 0, 1,
->  				    CEPH_OSD_OP_WRITE, CEPH_OSD_FLAG_WRITE, snapc,
-> @@ -623,7 +623,7 @@ static int writepage_nounlock(struct page *page, struct writeback_control *wbc)
->  
->  	if (atomic_long_dec_return(&fsc->writeback_count) <
->  	    CONGESTION_OFF_THRESH(fsc->mount_options->congestion_kb))
-> -		clear_bdi_congested(inode_to_bdi(inode), BLK_RW_ASYNC);
-> +		fsc->write_congested = false;
->  
->  	return err;
->  }
-> @@ -635,6 +635,10 @@ static int ceph_writepage(struct page *page, struct writeback_control *wbc)
->  	BUG_ON(!inode);
->  	ihold(inode);
->  
-> +	if (wbc->sync_mode == WB_SYNC_NONE &&
-> +	    ceph_inode_to_client(inode)->write_congested)
-> +		return AOP_WRITEPAGE_ACTIVATE;
-> +
->  	wait_on_page_fscache(page);
->  
->  	err = writepage_nounlock(page, wbc);
-> @@ -707,8 +711,7 @@ static void writepages_finish(struct ceph_osd_request *req)
->  			if (atomic_long_dec_return(&fsc->writeback_count) <
->  			     CONGESTION_OFF_THRESH(
->  					fsc->mount_options->congestion_kb))
-> -				clear_bdi_congested(inode_to_bdi(inode),
-> -						    BLK_RW_ASYNC);
-> +				fsc->write_congested = false;
->  
->  			ceph_put_snap_context(detach_page_private(page));
->  			end_page_writeback(page);
-> @@ -760,6 +763,10 @@ static int ceph_writepages_start(struct address_space *mapping,
->  	bool done = false;
->  	bool caching = ceph_is_cache_enabled(inode);
->  
-> +	if (wbc->sync_mode == WB_SYNC_NONE &&
-> +	    fsc->write_congested)
-> +		return 0;
-> +
->  	dout("writepages_start %p (mode=%s)\n", inode,
->  	     wbc->sync_mode == WB_SYNC_NONE ? "NONE" :
->  	     (wbc->sync_mode == WB_SYNC_ALL ? "ALL" : "HOLD"));
-> @@ -954,11 +961,8 @@ static int ceph_writepages_start(struct address_space *mapping,
->  
->  			if (atomic_long_inc_return(&fsc->writeback_count) >
->  			    CONGESTION_ON_THRESH(
-> -				    fsc->mount_options->congestion_kb)) {
-> -				set_bdi_congested(inode_to_bdi(inode),
-> -						  BLK_RW_ASYNC);
-> -			}
-> -
-> +				    fsc->mount_options->congestion_kb))
-> +				fsc->write_congested = true;
->  
->  			pages[locked_pages++] = page;
->  			pvec.pages[i] = NULL;
-> diff --git a/fs/ceph/super.c b/fs/ceph/super.c
-> index bf79f369aec6..4a3b77d049c7 100644
-> --- a/fs/ceph/super.c
-> +++ b/fs/ceph/super.c
-> @@ -802,6 +802,7 @@ static struct ceph_fs_client *create_fs_client(struct ceph_mount_options *fsopt,
->  	fsc->have_copy_from2 = true;
->  
->  	atomic_long_set(&fsc->writeback_count, 0);
-> +	fsc->write_congested = false;
->  
->  	err = -ENOMEM;
->  	/*
-> diff --git a/fs/ceph/super.h b/fs/ceph/super.h
-> index 67f145e1ae7a..0bd97aea2319 100644
-> --- a/fs/ceph/super.h
-> +++ b/fs/ceph/super.h
-> @@ -121,6 +121,7 @@ struct ceph_fs_client {
->  	struct ceph_mds_client *mdsc;
->  
->  	atomic_long_t writeback_count;
-> +	bool write_congested;
->  
->  	struct workqueue_struct *inode_wq;
->  	struct workqueue_struct *cap_wq;
-> 
-> 
+>     for_each_page() {
+>             set_page_dirty*()
+>             put_page()
+>     }
 
--- 
-Jeff Layton <jlayton@kernel.org>
+Sure, but that's not sufficient when modifying file-backed pages.
+Previously, there was only two ways of modifying file-backed pages in
+the page cache --- either using the write(2) system call, or when a
+mmaped page is modified by the userspace.
+
+In the case of write(2), the file system gets notified before the page
+cache is modified by a call to the address operation's write_begin()
+call, and after the page cache is modified, the address operation's
+write_end() call lets the file system know that the modification is
+done.  After the write is done, the 30 second writeback timer is
+triggered, and in the case of ext4's data=journalling mode, we close
+the ext4 micro-transation (and therefore the time between write_begin
+and write_end calls needs to be minimal); otherwise this can block
+ext4 transactions.
+
+In the case of a user page fault, the address operation's
+page_mkwrite() is called, and at that point we will allocate any
+blocks needed to back memory if necessary (in the case of delayed
+allocation, file system space has to get reserved).  The problem here
+for remote access is that page_mkwrite() can block, and it can
+potentially fail (e.g., with ENOSPC or ENOMEM).  This is also why we
+can't just add the page buffers and do the file system allocation in
+set_page_dirty(), since set_page_dirty() isn't allowed to block.
+
+One approach might be to make all of the pages writeable when
+pin_user_pages_remote() is called.  That that would mean that in the
+case of remote access via process_vm_writev or RDMA, all of the blocks
+will be allocated early.  But that's probably better since at that
+point the userspace code is in a position to receive the error when
+setting up the RDMA memory, and we don't want to be asking the file
+system to do block allocation when incoming data is coming in from
+Infiniband or iWARP.
+
+> I see that ext4_warning_inode() has rate limiting, but it doesn't look
+> like it's really intended for a per-page rate. It looks like it is
+> per-superblock (yes?), so I suspect one instance of this problem, with
+> many pages involved, could hit the limit.
+> 
+> Often, WARN_ON_ONCE() is used with per-page assertions. That's not great
+> either, but it might be better here. OTOH, I have minimal experience
+> with ext4_warning_inode() and maybe it really is just fine with per-page
+> failure rates.
+
+With the syzbot reproducer, we're not actually triggering the rate
+limiter, since the ext4 warning is only getting hit a bit more than
+once every 4 seconds.  And I'm guessing that in the real world, people
+aren't actually trying to do remote direct access to file-backed
+memory, at least not using ext4, since that's an invitation to a
+kernel crash, and we would have gotten user complaints.  If some user
+actually tries to use process_vm_writev for realsies, as opposed to a
+random fuzzer or from a malicious program , we do want to warn them
+about the potential data loss, so I'd prefer to warn once for each
+inode --- but I'm not convinced that it's worth the effort.
+
+Cheers,
+
+						- Ted
