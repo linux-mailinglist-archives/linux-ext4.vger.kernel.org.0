@@ -2,169 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB36B4C0AB8
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Feb 2022 04:51:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D2774C0F4C
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Feb 2022 10:37:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237699AbiBWDvk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 22 Feb 2022 22:51:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50512 "EHLO
+        id S236127AbiBWJho (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 23 Feb 2022 04:37:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233958AbiBWDvk (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Feb 2022 22:51:40 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 893376579E
-        for <linux-ext4@vger.kernel.org>; Tue, 22 Feb 2022 19:51:12 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id p20so14372190ljo.0
-        for <linux-ext4@vger.kernel.org>; Tue, 22 Feb 2022 19:51:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=W9o8E/GqdYtOTLRG+zZAUd0gtjWhs7Bb1g7AEZ+WmaI=;
-        b=aXRcJ4yvHQJyf6hir6XnrojLMAQB6U8jccX70auhmlB1CquPuAxO5Kj/XnwagE3C3m
-         iycKRFhvQvlKaLOC+DbDUMYJV9DQQzNhIA6i4Bl8PeEn0ftd7oiSO2awlUmRldWHLEL3
-         GvyRwpIEdEZgZ80W4Pu4tDwf4TQK7kvkcExxFkAk6JyDD8nDJ/102TCiXPHGTnE3vfyO
-         MLXKstC6hZQtMKEf3G5KhHehXE6zvK0jMK40AncVqK7efTJUCmKafH/MxV4+te+5RNTI
-         wtC/Hq3o+rOBi29XVbrlpDeLzJ7zWY2BM1QLQRGR86C3tTwBA83f0QluJ9IHay2GHCuY
-         2gpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=W9o8E/GqdYtOTLRG+zZAUd0gtjWhs7Bb1g7AEZ+WmaI=;
-        b=sBspcmusBNJa4uhYtOfbpkJNRht7ydNAmtxvFnnWo1xNgN4Uz20xIgLtzLpJuC0wh3
-         zqkB9gY2op6ozOyKbR9bufvqopYusCiuzNyEjG7apQT6r97gw+cZEuvYprbwQdnu5ZtH
-         llIzd3j5cMHBPuPrNfiLPBV7391My7WgKog+on+Y5NdBQ87n8SAo+Ccd24iwSOLlQm1T
-         2l6FvQNlt4bNfJ+k4V9mlm5+gMtRk7eFbEB0/XV6o+OfUrgudCZcLZI54K9anceQVG8Q
-         d8vg4ztJSQTSoiFtABVPd20sj38dXUhwCDAQLoP1Qi93Y/loAY7qE4uwWMv2o5AuU9I+
-         XHug==
-X-Gm-Message-State: AOAM5314Z5n5DBi+AoEuG7+KJO8MwjvW1QVIXnuD1+u3+7Agx8QOPtXR
-        5sMLykMXvRr+pGpquG4NvAv05Ehtu/GqZCqCYW1chDiHoaPELg==
-X-Google-Smtp-Source: ABdhPJzuv0Mz9ZFoYJQKM313P4fWrFMmznEbd/Qc826SeVAFFXm/puIOmIEgAaFTiz4B6KS9LP5DYnS7kpi2DwUdHuY=
-X-Received: by 2002:a2e:3013:0:b0:246:2ca9:365e with SMTP id
- w19-20020a2e3013000000b002462ca9365emr13863094ljw.291.1645588270878; Tue, 22
- Feb 2022 19:51:10 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1645558375.git.riteshh@linux.ibm.com> <e91b6872860df3ec520799a5d0b65e54ccf32407.1645558375.git.riteshh@linux.ibm.com>
-In-Reply-To: <e91b6872860df3ec520799a5d0b65e54ccf32407.1645558375.git.riteshh@linux.ibm.com>
-From:   Xin Yin <yinxin.x@bytedance.com>
-Date:   Wed, 23 Feb 2022 11:50:59 +0800
-Message-ID: <CAK896s7V7wj0Yiu0NQEFvmS9-oivJUosgMYW5UBJ4cX2YCSh6g@mail.gmail.com>
-Subject: Re: [External] [RFC 9/9] ext4: fast_commit missing tracking updates
- to a file
+        with ESMTP id S239318AbiBWJhn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Feb 2022 04:37:43 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F116496AB;
+        Wed, 23 Feb 2022 01:37:15 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 472992114D;
+        Wed, 23 Feb 2022 09:37:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1645609034; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vkNKhnI3Z4RqRaZWsTmnjavlstvLrtTeTG7qCNbsiZc=;
+        b=DZ4x99N+/+0AEa+8XMcKiLhDGfCtlrlBGG6mbmQTWkwkZRtF7wFbn1VmgG6gUO0VSCC/ih
+        JL0LnlYOKsWQSUV7J51D40KNrHwpSMvsH+g7qKdjlD+93lZeEocuUtL8Dr52ByD/lccSMf
+        ksAPETt0tMNm9J80JoeGpl0cSqEzSNs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1645609034;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vkNKhnI3Z4RqRaZWsTmnjavlstvLrtTeTG7qCNbsiZc=;
+        b=qxX4/ycl1lYcZ5yOgm+InbnPdUtq6N86t/rBuaYd6sEIEBm7ZRTPRgke+/4HqsYSCuelPn
+        okR0EOVnNeN+ZIBg==
+Received: from quack3.suse.cz (unknown [10.163.28.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 36E04A3B83;
+        Wed, 23 Feb 2022 09:37:14 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id E0A3DA0605; Wed, 23 Feb 2022 10:37:13 +0100 (CET)
+Date:   Wed, 23 Feb 2022 10:37:13 +0100
+From:   Jan Kara <jack@suse.cz>
 To:     Ritesh Harjani <riteshh@linux.ibm.com>
 Cc:     linux-ext4@vger.kernel.org,
         Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [RFC 1/9] ext4: Remove unused enum EXT4_FC_COMMIT_FAILED
+Message-ID: <20220223093713.fw7c54xmllxrmmld@quack3.lan>
+References: <cover.1645558375.git.riteshh@linux.ibm.com>
+ <a1e9902e84595a2088bcf4882691a8330640246b.1645558375.git.riteshh@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a1e9902e84595a2088bcf4882691a8330640246b.1645558375.git.riteshh@linux.ibm.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Feb 23, 2022 at 4:36 AM Ritesh Harjani <riteshh@linux.ibm.com> wrote:
->
-> <DO NOT MERGE THIS YET>
->
-> Testcase
-> ==========
-> 1. i=0; while [ $i -lt 1000 ]; do xfs_io -f -c "pwrite -S 0xaa -b 32k 0 32k" -c "fsync" /mnt/$i; i=$(($i+1)); done && sudo ./src/godown -v /mnt && sudo umount /mnt && sudo mount /dev/loop2 /mnt'
-> 2. ls -alih /mnt/ -> In this you will observe one such file with 0 bytes (which ideally should not happen)
->
-> ^^^ say if you don't see the issue because your underlying storage
-> device is very fast, then maybe try with commit=1 mount option.
->
-> Analysis
-> ==========
-> It seems a file's updates can be a part of two transaction tid.
-> Below are the sequence of events which could cause this issue.
->
-> jbd2_handle_start -> (t_tid = 38)
-> __ext4_new_inode
-> ext4_fc_track_template -> __track_inode -> (i_sync_tid = 38, t_tid = 38)
-> <track more updates>
-> jbd2_start_commit -> (t_tid = 38)
->
-> jbd2_handle_start (tid = 39)
-> ext4_fc_track_template -> __track_inode -> (i_sync_tid = 38, t_tid 39)
->     -> ext4_fc_reset_inode & ei->i_sync_tid = t_tid
->
-> ext4_fc_commit_start -> (will wait since jbd2 full commit is in progress)
-> jbd2_end_commit (t_tid = 38)
->     -> jbd2_fc_cleanup() -> this will cleanup entries in sbi->s_fc_q[FC_Q_MAIN]
->         -> And the above could result inode size as 0 as  after effect.
-> ext4_fc_commit_stop
->
-> You could find the logs for the above behavior for inode 979 at [1].
->
-> -> So what is happening here is since the ei->i_fc_list is not empty
-> (because it is already part of sb's MAIN queue), we don't add this inode
-> again into neither sb's MAIN or STAGING queue.
-> And after jbd2_fc_cleanup() is called from jbd2 full commit, we
-> just remove this inode from the main queue.
->
-> So as a simple fix, what I did below was to check if it is a jbd2 full commit
-> in ext4_fc_cleanup(), and if the ei->i_sync_tid > tid, that means we
-> need not remove that from MAIN queue. This is since neither jbd2 nor FC
-> has committed updates of those inodes for this new txn tid yet.
->
-> But below are some quick queries on this
-> =========================================
->
-> 1. why do we call ext4_fc_reset_inode() when inode tid and
->    running txn tid does not match?
-This is part of a change in commit:bdc8a53a6f2f,  it fixes the issue
-for fc tracking logic while jbd2 commit is ongoing.
-If the inode tid is bigger than txn tid, that means this inode may be
-in the STAGING queue, if we reset it then it will lose the tack range.
-I think it's a similar issue, the difference is this inode is already
-in the MAIN queue before the jbd2 commit starts.
-And yes , I think in this case we can not remove it from the MAIN
-queue, but still need to clear EXT4_STATE_FC_COMMITTING right? it may
-block some task still waiting for it.
-
-Thanks,
-Xin Yin
->
-> 2. Also is this an expected behavior from the design perspective of
->    fast_commit. i.e.
->    a. the inode can be part of two tids?
->    b. And that while a full commit is in progress, the inode can still
->    receive updates but using a new transaction tid.
->
-> Frankly speaking, since I was also working on other things, so I haven't
-> yet got the chance to completely analyze the situation yet.
-> Once I have those things sorted, I will spend more time on this, to
-> understand it more. Meanwhile if you already have some answers to above
-> queries/observations, please do share those here.
->
-> Links
-> =========
-> [1] https://raw.githubusercontent.com/riteshharjani/LinuxStudy/master/ext4/fast_commit/fc_inode_missing_updates_ino_979.txt
->
+On Wed 23-02-22 02:04:09, Ritesh Harjani wrote:
+> Below commit removed all references of EXT4_FC_COMMIT_FAILED.
+> commit 0915e464cb274 ("ext4: simplify updating of fast commit stats")
+> 
+> Just remove it since it is not used anymore.
+> 
 > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+
+Sure. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+									Honza
+
 > ---
->  fs/ext4/fast_commit.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> index 8803ba087b07..769b584c2552 100644
-> --- a/fs/ext4/fast_commit.c
-> +++ b/fs/ext4/fast_commit.c
-> @@ -1252,6 +1252,8 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
->         spin_lock(&sbi->s_fc_lock);
->         list_for_each_entry_safe(iter, iter_n, &sbi->s_fc_q[FC_Q_MAIN],
->                                  i_fc_list) {
-> +               if (full && iter->i_sync_tid > tid)
-> +                       continue;
->                 list_del_init(&iter->i_fc_list);
->                 ext4_clear_inode_state(&iter->vfs_inode,
->                                        EXT4_STATE_FC_COMMITTING);
-> --
+>  fs/ext4/fast_commit.h | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/fs/ext4/fast_commit.h b/fs/ext4/fast_commit.h
+> index 02afa52e8e41..80414dcba6e1 100644
+> --- a/fs/ext4/fast_commit.h
+> +++ b/fs/ext4/fast_commit.h
+> @@ -93,7 +93,6 @@ enum {
+>  	EXT4_FC_REASON_RENAME_DIR,
+>  	EXT4_FC_REASON_FALLOC_RANGE,
+>  	EXT4_FC_REASON_INODE_JOURNAL_DATA,
+> -	EXT4_FC_COMMIT_FAILED,
+>  	EXT4_FC_REASON_MAX
+>  };
+>  
+> -- 
 > 2.31.1
->
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
