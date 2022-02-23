@@ -2,241 +2,196 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E764C14EA
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Feb 2022 14:59:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EECA94C15C3
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Feb 2022 15:49:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241293AbiBWN7e (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 23 Feb 2022 08:59:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45176 "EHLO
+        id S241777AbiBWOtj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 23 Feb 2022 09:49:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241278AbiBWN7e (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Feb 2022 08:59:34 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3842A99ED9;
-        Wed, 23 Feb 2022 05:59:06 -0800 (PST)
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21NDK5vr018298;
-        Wed, 23 Feb 2022 13:59:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=lvXdCKE8OJefMNbv2v6d9q7AEN2/nPUxBlLZedxcxhE=;
- b=ak532BpWMF8YC0pPlfAOb7vsSdcpGIs3Q28JTJ9iLER1T9cySjoZ+eDkRsnntmIc0AYS
- fRJAFEFdjZfX1w9FqJWiRrteh/fzllITcXZ/mv+rn1OB/+NOXRBRTYb+aMND6eg5d2cM
- jhEBJWpVGjDpA6bDyTY8flrt/cJ3lPzfVLIVv0/ABDsAOs1JgaZ9Lclf2ELQ6vSjNGpg
- 3F1bhi4js2aI0UQm+3Yn3yBKrk2WLHYzDZqQUhgTOiAKZJlSx42+cbgMbUJ0QKuQWpwe
- 9vYZ46gD4Kb/vjYVWLdo56ei+FsFqyPYgpKWSy6G7KkyCRNwtk/WCRGI+H4akS8TfL40 Gg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3edk21ca0x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Feb 2022 13:59:02 +0000
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 21NDkcN1005141;
-        Wed, 23 Feb 2022 13:59:01 GMT
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3edk21ca09-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Feb 2022 13:59:01 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21NDwYX4014003;
-        Wed, 23 Feb 2022 13:59:00 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03ams.nl.ibm.com with ESMTP id 3ear69aewp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Feb 2022 13:58:59 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21NDwvu338535454
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Feb 2022 13:58:57 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7C50552063;
-        Wed, 23 Feb 2022 13:58:57 +0000 (GMT)
-Received: from localhost (unknown [9.43.7.150])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id D20155205F;
-        Wed, 23 Feb 2022 13:58:52 +0000 (GMT)
-Date:   Wed, 23 Feb 2022 19:28:27 +0530
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     Xin Yin <yinxin.x@bytedance.com>
-Cc:     linux-ext4@vger.kernel.org,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [External] [RFC 9/9] ext4: fast_commit missing tracking updates
- to a file
-Message-ID: <20220223135755.plbr2fvt66k3xyn5@riteshh-domain>
-References: <cover.1645558375.git.riteshh@linux.ibm.com>
- <e91b6872860df3ec520799a5d0b65e54ccf32407.1645558375.git.riteshh@linux.ibm.com>
- <CAK896s7V7wj0Yiu0NQEFvmS9-oivJUosgMYW5UBJ4cX2YCSh6g@mail.gmail.com>
+        with ESMTP id S241786AbiBWOth (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Feb 2022 09:49:37 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA2CDB715B;
+        Wed, 23 Feb 2022 06:49:01 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 792EC210FA;
+        Wed, 23 Feb 2022 14:49:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1645627740; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FK9sEqjfjXY5LitlS8xP8QxizShsUv7zVJcMSguuQsI=;
+        b=Tk2CjgZxXq9scsobDc7T0IE8j69fBv5oYo0j3SprpnwipqdH1e05ijG3ppRVnvj9ajcx0m
+        8dVZCeyNUWJwVds4B0pGKj/goPeyZwV0aYGsTK2pehyuDpIhJDE2I7uA0ettmJEHCGNcoZ
+        KJmeZzigTmasqi+IjZeoiOCACKRgeMI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1645627740;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FK9sEqjfjXY5LitlS8xP8QxizShsUv7zVJcMSguuQsI=;
+        b=ea1wLDQMhfNJsERaMMn0yrMF8Gd3nmirnS6yKtTzzWUn9tSe6Ic6pkXSOxazPL99wYG7nU
+        s6X8OdP1Q7JKn5Dg==
+Received: from quack3.suse.cz (unknown [10.163.28.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 57AB1A3B8E;
+        Wed, 23 Feb 2022 14:49:00 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 03F62A0605; Wed, 23 Feb 2022 15:48:59 +0100 (CET)
+Date:   Wed, 23 Feb 2022 15:48:59 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Byungchul Park <byungchul.park@lge.com>
+Cc:     Jan Kara <jack@suse.cz>, torvalds@linux-foundation.org,
+        damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        mingo@redhat.com, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, will@kernel.org, tglx@linutronix.de,
+        rostedt@goodmis.org, joel@joelfernandes.org, sashal@kernel.org,
+        daniel.vetter@ffwll.ch, chris@chris-wilson.co.uk,
+        duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org,
+        tytso@mit.edu, willy@infradead.org, david@fromorbit.com,
+        amir73il@gmail.com, bfields@fieldses.org,
+        gregkh@linuxfoundation.org, kernel-team@lge.com,
+        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
+        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
+        ngupta@vflare.org, linux-block@vger.kernel.org, axboe@kernel.dk,
+        paolo.valente@linaro.org, josef@toxicpanda.com,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        jack@suse.com, jlayton@kernel.org, dan.j.williams@intel.com,
+        hch@infradead.org, djwong@kernel.org,
+        dri-devel@lists.freedesktop.org, airlied@linux.ie,
+        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+        hamohammed.sa@gmail.com
+Subject: Re: Report 2 in ext4 and journal based on v5.17-rc1
+Message-ID: <20220223144859.na2gjgl5efgw5zhn@quack3.lan>
+References: <1645095472-26530-1-git-send-email-byungchul.park@lge.com>
+ <1645096204-31670-1-git-send-email-byungchul.park@lge.com>
+ <1645096204-31670-2-git-send-email-byungchul.park@lge.com>
+ <20220221190204.q675gtsb6qhylywa@quack3.lan>
+ <20220223003534.GA26277@X58A-UD3R>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK896s7V7wj0Yiu0NQEFvmS9-oivJUosgMYW5UBJ4cX2YCSh6g@mail.gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: IaBRPVVALUrrclXBs8jOIGEe8lfLcMEm
-X-Proofpoint-GUID: vzA8xlSg4GA4SH6nfGhyDpu0QGlNdBhY
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-02-23_05,2022-02-23_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 bulkscore=0 mlxlogscore=999 phishscore=0 adultscore=0
- priorityscore=1501 spamscore=0 lowpriorityscore=0 clxscore=1015
- suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202230077
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220223003534.GA26277@X58A-UD3R>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22/02/23 11:50AM, Xin Yin wrote:
-> On Wed, Feb 23, 2022 at 4:36 AM Ritesh Harjani <riteshh@linux.ibm.com> wrote:
-> >
-> > <DO NOT MERGE THIS YET>
-> >
-> > Testcase
-> > ==========
-> > 1. i=0; while [ $i -lt 1000 ]; do xfs_io -f -c "pwrite -S 0xaa -b 32k 0 32k" -c "fsync" /mnt/$i; i=$(($i+1)); done && sudo ./src/godown -v /mnt && sudo umount /mnt && sudo mount /dev/loop2 /mnt'
-> > 2. ls -alih /mnt/ -> In this you will observe one such file with 0 bytes (which ideally should not happen)
-> >
-> > ^^^ say if you don't see the issue because your underlying storage
-> > device is very fast, then maybe try with commit=1 mount option.
-> >
-> > Analysis
-> > ==========
-> > It seems a file's updates can be a part of two transaction tid.
-> > Below are the sequence of events which could cause this issue.
-> >
-> > jbd2_handle_start -> (t_tid = 38)
-> > __ext4_new_inode
-> > ext4_fc_track_template -> __track_inode -> (i_sync_tid = 38, t_tid = 38)
-> > <track more updates>
-> > jbd2_start_commit -> (t_tid = 38)
-> >
-> > jbd2_handle_start (tid = 39)
-> > ext4_fc_track_template -> __track_inode -> (i_sync_tid = 38, t_tid 39)
-> >     -> ext4_fc_reset_inode & ei->i_sync_tid = t_tid
-> >
-> > ext4_fc_commit_start -> (will wait since jbd2 full commit is in progress)
-> > jbd2_end_commit (t_tid = 38)
-> >     -> jbd2_fc_cleanup() -> this will cleanup entries in sbi->s_fc_q[FC_Q_MAIN]
-> >         -> And the above could result inode size as 0 as  after effect.
-> > ext4_fc_commit_stop
-> >
-> > You could find the logs for the above behavior for inode 979 at [1].
-> >
-> > -> So what is happening here is since the ei->i_fc_list is not empty
-> > (because it is already part of sb's MAIN queue), we don't add this inode
-> > again into neither sb's MAIN or STAGING queue.
-> > And after jbd2_fc_cleanup() is called from jbd2 full commit, we
-> > just remove this inode from the main queue.
-> >
-> > So as a simple fix, what I did below was to check if it is a jbd2 full commit
-> > in ext4_fc_cleanup(), and if the ei->i_sync_tid > tid, that means we
-> > need not remove that from MAIN queue. This is since neither jbd2 nor FC
-> > has committed updates of those inodes for this new txn tid yet.
-> >
-> > But below are some quick queries on this
-> > =========================================
-> >
-> > 1. why do we call ext4_fc_reset_inode() when inode tid and
-> >    running txn tid does not match?
-> This is part of a change in commit:bdc8a53a6f2f,  it fixes the issue
-> for fc tracking logic while jbd2 commit is ongoing.
+On Wed 23-02-22 09:35:34, Byungchul Park wrote:
+> On Mon, Feb 21, 2022 at 08:02:04PM +0100, Jan Kara wrote:
+> > On Thu 17-02-22 20:10:04, Byungchul Park wrote:
+> > > [    9.008161] ===================================================
+> > > [    9.008163] DEPT: Circular dependency has been detected.
+> > > [    9.008164] 5.17.0-rc1-00015-gb94f67143867-dirty #2 Tainted: G        W
+> > > [    9.008166] ---------------------------------------------------
+> > > [    9.008167] summary
+> > > [    9.008167] ---------------------------------------------------
+> > > [    9.008168] *** DEADLOCK ***
+> > > [    9.008168]
+> > > [    9.008168] context A
+> > > [    9.008169]     [S] (unknown)(&(&journal->j_wait_transaction_locked)->dmap:0)
+> > > [    9.008171]     [W] wait(&(&journal->j_wait_commit)->dmap:0)
+> > > [    9.008172]     [E] event(&(&journal->j_wait_transaction_locked)->dmap:0)
+> > > [    9.008173]
+> > > [    9.008173] context B
+> > > [    9.008174]     [S] down_write(mapping.invalidate_lock:0)
+> > > [    9.008175]     [W] wait(&(&journal->j_wait_transaction_locked)->dmap:0)
+> > > [    9.008176]     [E] up_write(mapping.invalidate_lock:0)
+> > > [    9.008177]
+> > > [    9.008178] context C
+> > > [    9.008179]     [S] (unknown)(&(&journal->j_wait_commit)->dmap:0)
+> > > [    9.008180]     [W] down_write(mapping.invalidate_lock:0)
+> > > [    9.008181]     [E] event(&(&journal->j_wait_commit)->dmap:0)
+> > > [    9.008181]
+> > > [    9.008182] [S]: start of the event context
+> > > [    9.008183] [W]: the wait blocked
+> > > [    9.008183] [E]: the event not reachable
+> > 
+> > So what situation is your tool complaining about here? Can you perhaps show
+> > it here in more common visualization like:
+> 
+> Sure.
+> 
+> > TASK1				TASK2
+> > 				does foo, grabs Z
+> > does X, grabs lock Y
+> > blocks on Z
+> > 				blocks on Y
+> > 
+> > or something like that? Because I was not able to decipher this from the
+> > report even after trying for some time...
+> 
+> KJOURNALD2(kthread)	TASK1(ksys_write)	TASK2(ksys_write)
+> 
+> wait A
+> --- stuck
+> 			wait B
+> 			--- stuck
+> 						wait C
+> 						--- stuck
+> 
+> wake up B		wake up C		wake up A
+> 
+> where:
+> A is a wait_queue, j_wait_commit
+> B is a wait_queue, j_wait_transaction_locked
+> C is a rwsem, mapping.invalidate_lock
 
-Thanks Xin for pointing the other issue too.
-But I think what I was mostly referring to was - calling ext4_fc_reset_inode()
-in ext4_fc_track_template().
+I see. But a situation like this is not necessarily a guarantee of a
+deadlock, is it? I mean there can be task D that will eventually call say
+'wake up B' and unblock everything and this is how things were designed to
+work? Multiple sources of wakeups are quite common I'd say... What does
+Dept do to prevent false reports in cases like this?
 
-<..>
- 391         tid = handle->h_transaction->t_tid;
- 392         mutex_lock(&ei->i_fc_lock);
- 393         if (tid == ei->i_sync_tid) {
- 394                 update = true;
- 395         } else {
- 396                 ext4_fc_reset_inode(inode);
- 397                 ei->i_sync_tid = tid;
- 398         }
- 399         ret = __fc_track_fn(inode, args, update);
- 400         mutex_unlock(&ei->i_fc_lock);
- <..>
+> The above is the simplest form. And it's worth noting that Dept focuses
+> on wait and event itself rather than grabing and releasing things like
+> lock. The following is the more descriptive form of it.
+> 
+> KJOURNALD2(kthread)	TASK1(ksys_write)	TASK2(ksys_write)
+> 
+> wait @j_wait_commit
+> 			ext4_truncate_failed_write()
+> 			   down_write(mapping.invalidate_lock)
+> 
+> 			   ext4_truncate()
+> 			      ...
+> 			      wait @j_wait_transaction_locked
+> 
+> 						ext_truncate_failed_write()
+> 						   down_write(mapping.invalidate_lock)
+> 
+> 						ext4_should_retry_alloc()
+> 						   ...
+> 						   __jbd2_log_start_commit()
+> 						      wake_up(j_wait_commit)
+> jbd2_journal_commit_transaction()
+>    wake_up(j_wait_transaction_locked)
+> 			   up_write(mapping.invalidate_lock)
+> 
+> I hope this would help you understand the report.
 
-So, yes these are few corner cases which I want to take a deeper look at.
-I vaugely understand that this reset inode is done since we anyway might have
-done the full commit for previous tid, so we can reset the inode track range.
+I see, thanks for explanation! So the above scenario is impossible because
+for anyone to block on @j_wait_transaction_locked the transaction must be
+committing, which is done only by kjournald2 kthread and so that thread
+cannot be waiting at @j_wait_commit. Essentially blocking on
+@j_wait_transaction_locked means @j_wait_commit wakeup was already done.
 
-So, yes, we should carefully review this as well that if jbd2 commit happens for
-an inode which is still part of MAIN_Q, then does it make sense to still
-call ext4_fc_reset_inode() for that inode in ext4_fc_track_template()?
+I guess this shows there can be non-trivial dependencies between wait
+queues which are difficult to track in an automated way and without such
+tracking we are going to see false positives...
 
-> If the inode tid is bigger than txn tid, that means this inode may be
-> in the STAGING queue, if we reset it then it will lose the tack range.
-> I think it's a similar issue, the difference is this inode is already
+								Honza
 
-Do you have a test case which was failing for your issue?
-I would like to test that one too.
-
-
-> in the MAIN queue before the jbd2 commit starts.
-> And yes , I think in this case we can not remove it from the MAIN
-
-Yes. I too have a similar thought. But I still wanted to get few queries sorted
-(like point 1 & 2).
-
-> queue, but still need to clear EXT4_STATE_FC_COMMITTING right? it may
-> block some task still waiting for it.
-
-Sorry I didn't get you here. So I think we will end up in such situation
-(where ext4_fc_cleanup() is getting called for an inode with i_sync_tid > tid)
-only from full commit path right ?
-And that won't set EXT4_FC_COMMITTING for this inode right anyways no?
-
-Do you mean anything else, or am I missing something here?
-
--ritesh
-
-
->
-> Thanks,
-> Xin Yin
-> >
-> > 2. Also is this an expected behavior from the design perspective of
-> >    fast_commit. i.e.
-> >    a. the inode can be part of two tids?
-> >    b. And that while a full commit is in progress, the inode can still
-> >    receive updates but using a new transaction tid.
-> >
-> > Frankly speaking, since I was also working on other things, so I haven't
-> > yet got the chance to completely analyze the situation yet.
-> > Once I have those things sorted, I will spend more time on this, to
-> > understand it more. Meanwhile if you already have some answers to above
-> > queries/observations, please do share those here.
-> >
-> > Links
-> > =========
-> > [1] https://raw.githubusercontent.com/riteshharjani/LinuxStudy/master/ext4/fast_commit/fc_inode_missing_updates_ino_979.txt
-> >
-> > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> > ---
-> >  fs/ext4/fast_commit.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> > index 8803ba087b07..769b584c2552 100644
-> > --- a/fs/ext4/fast_commit.c
-> > +++ b/fs/ext4/fast_commit.c
-> > @@ -1252,6 +1252,8 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
-> >         spin_lock(&sbi->s_fc_lock);
-> >         list_for_each_entry_safe(iter, iter_n, &sbi->s_fc_q[FC_Q_MAIN],
-> >                                  i_fc_list) {
-> > +               if (full && iter->i_sync_tid > tid)
-> > +                       continue;
-> >                 list_del_init(&iter->i_fc_list);
-> >                 ext4_clear_inode_state(&iter->vfs_inode,
-> >                                        EXT4_STATE_FC_COMMITTING);
-> > --
-> > 2.31.1
-> >
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
