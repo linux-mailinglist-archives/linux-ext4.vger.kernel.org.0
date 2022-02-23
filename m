@@ -2,200 +2,326 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 866294C0363
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Feb 2022 21:53:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27FA94C063D
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Feb 2022 01:35:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235527AbiBVUxL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 22 Feb 2022 15:53:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38268 "EHLO
+        id S236403AbiBWAgR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 22 Feb 2022 19:36:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231699AbiBVUxL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Feb 2022 15:53:11 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9115EA2F15;
-        Tue, 22 Feb 2022 12:52:44 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id EF67DCE1894;
-        Tue, 22 Feb 2022 20:52:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72825C340E8;
-        Tue, 22 Feb 2022 20:52:40 +0000 (UTC)
-Date:   Tue, 22 Feb 2022 15:52:38 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     linux-ext4@vger.kernel.org,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC 2/9] ext4: Fix ext4_fc_stats trace point
-Message-ID: <20220222155238.669e598e@gandalf.local.home>
-In-Reply-To: <9a8c359270a6330ed384ea0a75441e367ecde924.1645558375.git.riteshh@linux.ibm.com>
-References: <cover.1645558375.git.riteshh@linux.ibm.com>
-        <9a8c359270a6330ed384ea0a75441e367ecde924.1645558375.git.riteshh@linux.ibm.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        with ESMTP id S236367AbiBWAgR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Feb 2022 19:36:17 -0500
+Received: from lgeamrelo11.lge.com (lgeamrelo13.lge.com [156.147.23.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C70065C663
+        for <linux-ext4@vger.kernel.org>; Tue, 22 Feb 2022 16:35:48 -0800 (PST)
+Received: from unknown (HELO lgeamrelo04.lge.com) (156.147.1.127)
+        by 156.147.23.53 with ESMTP; 23 Feb 2022 09:35:46 +0900
+X-Original-SENDERIP: 156.147.1.127
+X-Original-MAILFROM: byungchul.park@lge.com
+Received: from unknown (HELO X58A-UD3R) (10.177.244.38)
+        by 156.147.1.127 with ESMTP; 23 Feb 2022 09:35:46 +0900
+X-Original-SENDERIP: 10.177.244.38
+X-Original-MAILFROM: byungchul.park@lge.com
+Date:   Wed, 23 Feb 2022 09:35:34 +0900
+From:   Byungchul Park <byungchul.park@lge.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
+        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
+        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
+        chris@chris-wilson.co.uk, duyuyang@gmail.com,
+        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
+        bfields@fieldses.org, gregkh@linuxfoundation.org,
+        kernel-team@lge.com, linux-mm@kvack.org, akpm@linux-foundation.org,
+        mhocko@kernel.org, minchan@kernel.org, hannes@cmpxchg.org,
+        vdavydov.dev@gmail.com, sj@kernel.org, jglisse@redhat.com,
+        dennis@kernel.org, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, vbabka@suse.cz, ngupta@vflare.org,
+        linux-block@vger.kernel.org, axboe@kernel.dk,
+        paolo.valente@linaro.org, josef@toxicpanda.com,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        jack@suse.com, jlayton@kernel.org, dan.j.williams@intel.com,
+        hch@infradead.org, djwong@kernel.org,
+        dri-devel@lists.freedesktop.org, airlied@linux.ie,
+        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+        hamohammed.sa@gmail.com
+Subject: Re: Report 2 in ext4 and journal based on v5.17-rc1
+Message-ID: <20220223003534.GA26277@X58A-UD3R>
+References: <1645095472-26530-1-git-send-email-byungchul.park@lge.com>
+ <1645096204-31670-1-git-send-email-byungchul.park@lge.com>
+ <1645096204-31670-2-git-send-email-byungchul.park@lge.com>
+ <20220221190204.q675gtsb6qhylywa@quack3.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220221190204.q675gtsb6qhylywa@quack3.lan>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 23 Feb 2022 02:04:10 +0530
-Ritesh Harjani <riteshh@linux.ibm.com> wrote:
+On Mon, Feb 21, 2022 at 08:02:04PM +0100, Jan Kara wrote:
+> On Thu 17-02-22 20:10:04, Byungchul Park wrote:
+> > [    9.008161] ===================================================
+> > [    9.008163] DEPT: Circular dependency has been detected.
+> > [    9.008164] 5.17.0-rc1-00015-gb94f67143867-dirty #2 Tainted: G        W
+> > [    9.008166] ---------------------------------------------------
+> > [    9.008167] summary
+> > [    9.008167] ---------------------------------------------------
+> > [    9.008168] *** DEADLOCK ***
+> > [    9.008168]
+> > [    9.008168] context A
+> > [    9.008169]     [S] (unknown)(&(&journal->j_wait_transaction_locked)->dmap:0)
+> > [    9.008171]     [W] wait(&(&journal->j_wait_commit)->dmap:0)
+> > [    9.008172]     [E] event(&(&journal->j_wait_transaction_locked)->dmap:0)
+> > [    9.008173]
+> > [    9.008173] context B
+> > [    9.008174]     [S] down_write(mapping.invalidate_lock:0)
+> > [    9.008175]     [W] wait(&(&journal->j_wait_transaction_locked)->dmap:0)
+> > [    9.008176]     [E] up_write(mapping.invalidate_lock:0)
+> > [    9.008177]
+> > [    9.008178] context C
+> > [    9.008179]     [S] (unknown)(&(&journal->j_wait_commit)->dmap:0)
+> > [    9.008180]     [W] down_write(mapping.invalidate_lock:0)
+> > [    9.008181]     [E] event(&(&journal->j_wait_commit)->dmap:0)
+> > [    9.008181]
+> > [    9.008182] [S]: start of the event context
+> > [    9.008183] [W]: the wait blocked
+> > [    9.008183] [E]: the event not reachable
+> 
+> So what situation is your tool complaining about here? Can you perhaps show
+> it here in more common visualization like:
 
-> ftrace's __print_symbolic() requires that any enum values used in the
-> symbol to string translation table be wrapped in a TRACE_DEFINE_ENUM
-> so that the enum value can be encoded in the ftrace ring buffer.
+Sure.
 
-Actually, you mean "decoded from the ftrace ring buffer by user space
-tooling".
+> TASK1				TASK2
+> 				does foo, grabs Z
+> does X, grabs lock Y
+> blocks on Z
+> 				blocks on Y
+> 
+> or something like that? Because I was not able to decipher this from the
+> report even after trying for some time...
+
+KJOURNALD2(kthread)	TASK1(ksys_write)	TASK2(ksys_write)
+
+wait A
+--- stuck
+			wait B
+			--- stuck
+						wait C
+						--- stuck
+
+wake up B		wake up C		wake up A
+
+where:
+A is a wait_queue, j_wait_commit
+B is a wait_queue, j_wait_transaction_locked
+C is a rwsem, mapping.invalidate_lock
+
+The above is the simplest form. And it's worth noting that Dept focuses
+on wait and event itself rather than grabing and releasing things like
+lock. The following is the more descriptive form of it.
+
+KJOURNALD2(kthread)	TASK1(ksys_write)	TASK2(ksys_write)
+
+wait @j_wait_commit
+			ext4_truncate_failed_write()
+			   down_write(mapping.invalidate_lock)
+
+			   ext4_truncate()
+			      ...
+			      wait @j_wait_transaction_locked
+
+						ext_truncate_failed_write()
+						   down_write(mapping.invalidate_lock)
+
+						ext4_should_retry_alloc()
+						   ...
+						   __jbd2_log_start_commit()
+						      wake_up(j_wait_commit)
+jbd2_journal_commit_transaction()
+   wake_up(j_wait_transaction_locked)
+			   up_write(mapping.invalidate_lock)
+
+I hope this would help you understand the report.
+
+Yeah... This is what Dept complained. And as Ted said, the kthread would
+be woken up by another wakeup. So it's not deadlock deadlock. However,
+these three threads and any other tasks waiting for any of the events A,
+B, C would be struck for a while until the wakeup eventually wakes up
+the kthread, kjournald2.
+
+I guess it's not what ext4 is meant to do. Honestly, ext4 and journal
+system look so complicated that I'm not convinced tho...
+
+Thanks,
+Byungchul
 
 > 
-> This patch also fixes few other problems found in this trace point.
-> e.g. dereferencing structures in TP_printk which should not be done
-> at any cost.
+> 								Honza
 > 
-> Also to avoid checkpatch warnings, this patch removes those
-> whitespaces/tab stops issues.
+> 				
 > 
-> Fixes: commit aa75f4d3daae ("ext4: main fast-commit commit path")
-
-Should add:
-
-Cc: stable@kernel.org
-
-as the commit landed in 5.10.
-
-> Reported-by: Steven Rostedt <rostedt@goodmis.org>
-> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-
-Looks good with one small nit below.
-
-> ---
->  include/trace/events/ext4.h | 76 +++++++++++++++++++++++--------------
->  1 file changed, 47 insertions(+), 29 deletions(-)
-> 
-> diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
-> index 19e957b7f941..17fb9c506e8a 100644
-> --- a/include/trace/events/ext4.h
-> +++ b/include/trace/events/ext4.h
-> @@ -95,6 +95,16 @@ TRACE_DEFINE_ENUM(ES_REFERENCED_B);
->  	{ FALLOC_FL_COLLAPSE_RANGE,	"COLLAPSE_RANGE"},	\
->  	{ FALLOC_FL_ZERO_RANGE,		"ZERO_RANGE"})
->  
-> +TRACE_DEFINE_ENUM(EXT4_FC_REASON_XATTR);
-> +TRACE_DEFINE_ENUM(EXT4_FC_REASON_CROSS_RENAME);
-> +TRACE_DEFINE_ENUM(EXT4_FC_REASON_JOURNAL_FLAG_CHANGE);
-> +TRACE_DEFINE_ENUM(EXT4_FC_REASON_NOMEM);
-> +TRACE_DEFINE_ENUM(EXT4_FC_REASON_SWAP_BOOT);
-> +TRACE_DEFINE_ENUM(EXT4_FC_REASON_RESIZE);
-> +TRACE_DEFINE_ENUM(EXT4_FC_REASON_RENAME_DIR);
-> +TRACE_DEFINE_ENUM(EXT4_FC_REASON_FALLOC_RANGE);
-> +TRACE_DEFINE_ENUM(EXT4_FC_REASON_INODE_JOURNAL_DATA);
-> +
->  #define show_fc_reason(reason)						\
->  	__print_symbolic(reason,					\
->  		{ EXT4_FC_REASON_XATTR,		"XATTR"},		\
-> @@ -2723,41 +2733,49 @@ TRACE_EVENT(ext4_fc_commit_stop,
->  
->  #define FC_REASON_NAME_STAT(reason)					\
->  	show_fc_reason(reason),						\
-> -	__entry->sbi->s_fc_stats.fc_ineligible_reason_count[reason]
-> +	__entry->fc_ineligible_rc[reason]
->  
->  TRACE_EVENT(ext4_fc_stats,
-> -	    TP_PROTO(struct super_block *sb),
-> -
-> -	    TP_ARGS(sb),
-> +	TP_PROTO(struct super_block *sb),
->  
-> -	    TP_STRUCT__entry(
-> -		    __field(dev_t, dev)
-> -		    __field(struct ext4_sb_info *, sbi)
-> -		    __field(int, count)
-> -		    ),
-> +	TP_ARGS(sb),
->  
-> -	    TP_fast_assign(
-> -		    __entry->dev = sb->s_dev;
-> -		    __entry->sbi = EXT4_SB(sb);
-> -		    ),
-> +	TP_STRUCT__entry(
-> +		__field(dev_t, dev)
-> +		__array(unsigned int, fc_ineligible_rc, EXT4_FC_REASON_MAX)
-> +		__field(unsigned long, fc_commits)
-> +		__field(unsigned long, fc_ineligible_commits)
-> +		__field(unsigned long, fc_numblks)
-> +	),
->  
-> -	    TP_printk("dev %d:%d fc ineligible reasons:\n"
-> -		      "%s:%d, %s:%d, %s:%d, %s:%d, %s:%d, %s:%d, %s:%d, %s:%d, %s:%d; "
-> -		      "num_commits:%ld, ineligible: %ld, numblks: %ld",
-> -		      MAJOR(__entry->dev), MINOR(__entry->dev),
-> -		      FC_REASON_NAME_STAT(EXT4_FC_REASON_XATTR),
-> -		      FC_REASON_NAME_STAT(EXT4_FC_REASON_CROSS_RENAME),
-> -		      FC_REASON_NAME_STAT(EXT4_FC_REASON_JOURNAL_FLAG_CHANGE),
-> -		      FC_REASON_NAME_STAT(EXT4_FC_REASON_NOMEM),
-> -		      FC_REASON_NAME_STAT(EXT4_FC_REASON_SWAP_BOOT),
-> -		      FC_REASON_NAME_STAT(EXT4_FC_REASON_RESIZE),
-> -		      FC_REASON_NAME_STAT(EXT4_FC_REASON_RENAME_DIR),
-> -		      FC_REASON_NAME_STAT(EXT4_FC_REASON_FALLOC_RANGE),
-> -		      FC_REASON_NAME_STAT(EXT4_FC_REASON_INODE_JOURNAL_DATA),
-> -		      __entry->sbi->s_fc_stats.fc_num_commits,
-> -		      __entry->sbi->s_fc_stats.fc_ineligible_commits,
-> -		      __entry->sbi->s_fc_stats.fc_numblks)
-> +	TP_fast_assign(
-> +		int i;
->  
-> +		__entry->dev = sb->s_dev;
-> +		for (i = 0; i < EXT4_FC_REASON_MAX; i++)
-> +			__entry->fc_ineligible_rc[i] =
-> +			EXT4_SB(sb)->s_fc_stats.fc_ineligible_reason_count[i];
-
-As the above line is a continuation of the previous line, it should be
-indented as such. And since you added a line break, it is recommend to have
-any blocks use brackets. That is:
-
-		for (i = 0; i < EXT4_FC_REASON_MAX; i++) {
-			__entry->fc_ineligible_rc[i] =
-				EXT4_SB(sb)->s_fc_stats.fc_ineligible_reason_count[i];
-		}
-
-Other than that:
-
-Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-
--- Steve
-
-
-> +		__entry->fc_commits = EXT4_SB(sb)->s_fc_stats.fc_num_commits;
-> +		__entry->fc_ineligible_commits =
-> +			EXT4_SB(sb)->s_fc_stats.fc_ineligible_commits;
-> +		__entry->fc_numblks = EXT4_SB(sb)->s_fc_stats.fc_numblks;
-> +	),
-> +
-> +	TP_printk("dev %d,%d fc ineligible reasons:\n"
-> +		  "%s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u "
-> +		  "num_commits:%lu, ineligible: %lu, numblks: %lu",
-> +		  MAJOR(__entry->dev), MINOR(__entry->dev),
-> +		  FC_REASON_NAME_STAT(EXT4_FC_REASON_XATTR),
-> +		  FC_REASON_NAME_STAT(EXT4_FC_REASON_CROSS_RENAME),
-> +		  FC_REASON_NAME_STAT(EXT4_FC_REASON_JOURNAL_FLAG_CHANGE),
-> +		  FC_REASON_NAME_STAT(EXT4_FC_REASON_NOMEM),
-> +		  FC_REASON_NAME_STAT(EXT4_FC_REASON_SWAP_BOOT),
-> +		  FC_REASON_NAME_STAT(EXT4_FC_REASON_RESIZE),
-> +		  FC_REASON_NAME_STAT(EXT4_FC_REASON_RENAME_DIR),
-> +		  FC_REASON_NAME_STAT(EXT4_FC_REASON_FALLOC_RANGE),
-> +		  FC_REASON_NAME_STAT(EXT4_FC_REASON_INODE_JOURNAL_DATA),
-> +		  __entry->fc_commits, __entry->fc_ineligible_commits,
-> +		  __entry->fc_numblks)
->  );
->  
->  #define DEFINE_TRACE_DENTRY_EVENT(__type)				\
-
+> > [    9.008184] ---------------------------------------------------
+> > [    9.008184] context A's detail
+> > [    9.008185] ---------------------------------------------------
+> > [    9.008186] context A
+> > [    9.008186]     [S] (unknown)(&(&journal->j_wait_transaction_locked)->dmap:0)
+> > [    9.008187]     [W] wait(&(&journal->j_wait_commit)->dmap:0)
+> > [    9.008188]     [E] event(&(&journal->j_wait_transaction_locked)->dmap:0)
+> > [    9.008189]
+> > [    9.008190] [S] (unknown)(&(&journal->j_wait_transaction_locked)->dmap:0):
+> > [    9.008191] (N/A)
+> > [    9.008191]
+> > [    9.008192] [W] wait(&(&journal->j_wait_commit)->dmap:0):
+> > [    9.008193] prepare_to_wait (kernel/sched/wait.c:275) 
+> > [    9.008197] stacktrace:
+> > [    9.008198] __schedule (kernel/sched/sched.h:1318 kernel/sched/sched.h:1616 kernel/sched/core.c:6213) 
+> > [    9.008200] schedule (kernel/sched/core.c:6373 (discriminator 1)) 
+> > [    9.008201] kjournald2 (fs/jbd2/journal.c:250) 
+> > [    9.008203] kthread (kernel/kthread.c:377) 
+> > [    9.008206] ret_from_fork (arch/x86/entry/entry_64.S:301) 
+> > [    9.008209]
+> > [    9.008209] [E] event(&(&journal->j_wait_transaction_locked)->dmap:0):
+> > [    9.008210] __wake_up_common (kernel/sched/wait.c:108) 
+> > [    9.008212] stacktrace:
+> > [    9.008213] dept_event (kernel/dependency/dept.c:2337) 
+> > [    9.008215] __wake_up_common (kernel/sched/wait.c:109) 
+> > [    9.008217] __wake_up_common_lock (./include/linux/spinlock.h:428 (discriminator 1) kernel/sched/wait.c:141 (discriminator 1)) 
+> > [    9.008218] jbd2_journal_commit_transaction (fs/jbd2/commit.c:583) 
+> > [    9.008221] kjournald2 (fs/jbd2/journal.c:214 (discriminator 3)) 
+> > [    9.008223] kthread (kernel/kthread.c:377) 
+> > [    9.008224] ret_from_fork (arch/x86/entry/entry_64.S:301) 
+> > [    9.008226] ---------------------------------------------------
+> > [    9.008226] context B's detail
+> > [    9.008227] ---------------------------------------------------
+> > [    9.008228] context B
+> > [    9.008228]     [S] down_write(mapping.invalidate_lock:0)
+> > [    9.008229]     [W] wait(&(&journal->j_wait_transaction_locked)->dmap:0)
+> > [    9.008230]     [E] up_write(mapping.invalidate_lock:0)
+> > [    9.008231]
+> > [    9.008232] [S] down_write(mapping.invalidate_lock:0):
+> > [    9.008233] ext4_da_write_begin (fs/ext4/truncate.h:21 fs/ext4/inode.c:2963) 
+> > [    9.008237] stacktrace:
+> > [    9.008237] down_write (kernel/locking/rwsem.c:1514) 
+> > [    9.008239] ext4_da_write_begin (fs/ext4/truncate.h:21 fs/ext4/inode.c:2963) 
+> > [    9.008241] generic_perform_write (mm/filemap.c:3784) 
+> > [    9.008243] ext4_buffered_write_iter (fs/ext4/file.c:269) 
+> > [    9.008245] ext4_file_write_iter (fs/ext4/file.c:677) 
+> > [    9.008247] new_sync_write (fs/read_write.c:504 (discriminator 1)) 
+> > [    9.008250] vfs_write (fs/read_write.c:590) 
+> > [    9.008251] ksys_write (fs/read_write.c:644) 
+> > [    9.008253] do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80) 
+> > [    9.008255] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:113) 
+> > [    9.008258]
+> > [    9.008258] [W] wait(&(&journal->j_wait_transaction_locked)->dmap:0):
+> > [    9.008259] prepare_to_wait (kernel/sched/wait.c:275) 
+> > [    9.008261] stacktrace:
+> > [    9.008261] __schedule (kernel/sched/sched.h:1318 kernel/sched/sched.h:1616 kernel/sched/core.c:6213) 
+> > [    9.008263] schedule (kernel/sched/core.c:6373 (discriminator 1)) 
+> > [    9.008264] wait_transaction_locked (fs/jbd2/transaction.c:184) 
+> > [    9.008266] add_transaction_credits (fs/jbd2/transaction.c:248 (discriminator 3)) 
+> > [    9.008267] start_this_handle (fs/jbd2/transaction.c:427) 
+> > [    9.008269] jbd2__journal_start (fs/jbd2/transaction.c:526) 
+> > [    9.008271] __ext4_journal_start_sb (fs/ext4/ext4_jbd2.c:105) 
+> > [    9.008273] ext4_truncate (fs/ext4/inode.c:4164) 
+> > [    9.008274] ext4_da_write_begin (./include/linux/fs.h:827 fs/ext4/truncate.h:23 fs/ext4/inode.c:2963) 
+> > [    9.008276] generic_perform_write (mm/filemap.c:3784) 
+> > [    9.008277] ext4_buffered_write_iter (fs/ext4/file.c:269) 
+> > [    9.008279] ext4_file_write_iter (fs/ext4/file.c:677) 
+> > [    9.008281] new_sync_write (fs/read_write.c:504 (discriminator 1)) 
+> > [    9.008283] vfs_write (fs/read_write.c:590) 
+> > [    9.008284] ksys_write (fs/read_write.c:644) 
+> > [    9.008285] do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80) 
+> > [    9.008287]
+> > [    9.008288] [E] up_write(mapping.invalidate_lock:0):
+> > [    9.008288] ext4_da_get_block_prep (fs/ext4/inode.c:1795 fs/ext4/inode.c:1829) 
+> > [    9.008291] ---------------------------------------------------
+> > [    9.008291] context C's detail
+> > [    9.008292] ---------------------------------------------------
+> > [    9.008292] context C
+> > [    9.008293]     [S] (unknown)(&(&journal->j_wait_commit)->dmap:0)
+> > [    9.008294]     [W] down_write(mapping.invalidate_lock:0)
+> > [    9.008295]     [E] event(&(&journal->j_wait_commit)->dmap:0)
+> > [    9.008296]
+> > [    9.008297] [S] (unknown)(&(&journal->j_wait_commit)->dmap:0):
+> > [    9.008298] (N/A)
+> > [    9.008298]
+> > [    9.008299] [W] down_write(mapping.invalidate_lock:0):
+> > [    9.008299] ext4_da_write_begin (fs/ext4/truncate.h:21 fs/ext4/inode.c:2963) 
+> > [    9.008302] stacktrace:
+> > [    9.008302] down_write (kernel/locking/rwsem.c:1514) 
+> > [    9.008304] ext4_da_write_begin (fs/ext4/truncate.h:21 fs/ext4/inode.c:2963) 
+> > [    9.008305] generic_perform_write (mm/filemap.c:3784) 
+> > [    9.008307] ext4_buffered_write_iter (fs/ext4/file.c:269) 
+> > [    9.008309] ext4_file_write_iter (fs/ext4/file.c:677) 
+> > [    9.008311] new_sync_write (fs/read_write.c:504 (discriminator 1)) 
+> > [    9.008312] vfs_write (fs/read_write.c:590) 
+> > [    9.008314] ksys_write (fs/read_write.c:644) 
+> > [    9.008315] do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80) 
+> > [    9.008316] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:113) 
+> > [    9.008318]
+> > [    9.008319] [E] event(&(&journal->j_wait_commit)->dmap:0):
+> > [    9.008320] __wake_up_common (kernel/sched/wait.c:108) 
+> > [    9.008321] stacktrace:
+> > [    9.008322] __wake_up_common (kernel/sched/wait.c:109) 
+> > [    9.008323] __wake_up_common_lock (./include/linux/spinlock.h:428 (discriminator 1) kernel/sched/wait.c:141 (discriminator 1)) 
+> > [    9.008324] __jbd2_log_start_commit (fs/jbd2/journal.c:508) 
+> > [    9.008326] jbd2_log_start_commit (fs/jbd2/journal.c:527) 
+> > [    9.008327] __jbd2_journal_force_commit (fs/jbd2/journal.c:560) 
+> > [    9.008329] jbd2_journal_force_commit_nested (fs/jbd2/journal.c:583) 
+> > [    9.008331] ext4_should_retry_alloc (fs/ext4/balloc.c:670 (discriminator 3)) 
+> > [    9.008332] ext4_da_write_begin (fs/ext4/inode.c:2965 (discriminator 1)) 
+> > [    9.008334] generic_perform_write (mm/filemap.c:3784) 
+> > [    9.008335] ext4_buffered_write_iter (fs/ext4/file.c:269) 
+> > [    9.008337] ext4_file_write_iter (fs/ext4/file.c:677) 
+> > [    9.008339] new_sync_write (fs/read_write.c:504 (discriminator 1)) 
+> > [    9.008341] vfs_write (fs/read_write.c:590) 
+> > [    9.008342] ksys_write (fs/read_write.c:644) 
+> > [    9.008343] do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80) 
+> > [    9.008345] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:113) 
+> > [    9.008347] ---------------------------------------------------
+> > [    9.008348] information that might be helpful
+> > [    9.008348] ---------------------------------------------------
+> > [    9.008349] CPU: 0 PID: 89 Comm: jbd2/sda1-8 Tainted: G        W         5.17.0-rc1-00015-gb94f67143867-dirty #2
+> > [    9.008352] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+> > [    9.008353] Call Trace:
+> > [    9.008354]  <TASK>
+> > [    9.008355] dump_stack_lvl (lib/dump_stack.c:107) 
+> > [    9.008358] print_circle (./arch/x86/include/asm/atomic.h:108 ./include/linux/atomic/atomic-instrumented.h:258 kernel/dependency/dept.c:157 kernel/dependency/dept.c:762) 
+> > [    9.008360] ? print_circle (kernel/dependency/dept.c:1086) 
+> > [    9.008362] cb_check_dl (kernel/dependency/dept.c:1104) 
+> > [    9.008364] bfs (kernel/dependency/dept.c:860) 
+> > [    9.008366] add_dep (kernel/dependency/dept.c:1423) 
+> > [    9.008368] do_event.isra.25 (kernel/dependency/dept.c:1651) 
+> > [    9.008370] ? __wake_up_common (kernel/sched/wait.c:108) 
+> > [    9.008372] dept_event (kernel/dependency/dept.c:2337) 
+> > [    9.008374] __wake_up_common (kernel/sched/wait.c:109) 
+> > [    9.008376] __wake_up_common_lock (./include/linux/spinlock.h:428 (discriminator 1) kernel/sched/wait.c:141 (discriminator 1)) 
+> > [    9.008379] jbd2_journal_commit_transaction (fs/jbd2/commit.c:583) 
+> > [    9.008381] ? arch_stack_walk (arch/x86/kernel/stacktrace.c:24) 
+> > [    9.008385] ? ret_from_fork (arch/x86/entry/entry_64.S:301) 
+> > [    9.008387] ? dept_enable_hardirq (./arch/x86/include/asm/current.h:15 kernel/dependency/dept.c:241 kernel/dependency/dept.c:999 kernel/dependency/dept.c:1043 kernel/dependency/dept.c:1843) 
+> > [    9.008389] ? _raw_spin_unlock_irqrestore (./arch/x86/include/asm/irqflags.h:45 ./arch/x86/include/asm/irqflags.h:80 ./arch/x86/include/asm/irqflags.h:138 ./include/linux/spinlock_api_smp.h:151 kernel/locking/spinlock.c:194) 
+> > [    9.008392] ? _raw_spin_unlock_irqrestore (./arch/x86/include/asm/preempt.h:103 ./include/linux/spinlock_api_smp.h:152 kernel/locking/spinlock.c:194) 
+> > [    9.008394] ? try_to_del_timer_sync (kernel/time/timer.c:1239) 
+> > [    9.008396] kjournald2 (fs/jbd2/journal.c:214 (discriminator 3)) 
+> > [    9.008398] ? prepare_to_wait_exclusive (kernel/sched/wait.c:431) 
+> > [    9.008400] ? commit_timeout (fs/jbd2/journal.c:173) 
+> > [    9.008402] kthread (kernel/kthread.c:377) 
+> > [    9.008404] ? kthread_complete_and_exit (kernel/kthread.c:332) 
+> > [    9.008407] ret_from_fork (arch/x86/entry/entry_64.S:301) 
+> > [    9.008410]  </TASK>
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
