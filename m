@@ -2,233 +2,267 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A488C4C2B1E
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Feb 2022 12:44:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A4184C3461
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Feb 2022 19:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232942AbiBXLoa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 24 Feb 2022 06:44:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50104 "EHLO
+        id S231524AbiBXSLJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 24 Feb 2022 13:11:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232438AbiBXLo3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Feb 2022 06:44:29 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB8C28DDFA
-        for <linux-ext4@vger.kernel.org>; Thu, 24 Feb 2022 03:43:59 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id e5so3321732lfr.9
-        for <linux-ext4@vger.kernel.org>; Thu, 24 Feb 2022 03:43:58 -0800 (PST)
+        with ESMTP id S229662AbiBXSLI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Feb 2022 13:11:08 -0500
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 047FE1E6952;
+        Thu, 24 Feb 2022 10:10:38 -0800 (PST)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-2d66f95f1d1so7568247b3.0;
+        Thu, 24 Feb 2022 10:10:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0aj1sHJcqKfZb0FtBlcvqwZ+alQwzGOksJeJvrB2n3c=;
-        b=lKuEAZnyhHTHhRa8sI+KaAy+L/24jIHphLByYoXbT7Laiv3Pp2hGZx5OkqoRCCwQiB
-         G5snGJHKil1n7xQZDv4CkZYg5Oexa2ZeRnkMZGZ9K3qBO72NusQBRomYTmqJx26nK2bl
-         k1uSUGzItmiRTTBKKl9kR2We0meBcXcQOJid+4UuFcbyBJ6ZnMFnk+3VVdO40M8QaLXn
-         215J84p6I9iqmAxns1anQP0EGVwzk+gvFKfqAt15OfNbp6i5onWDrRyNazdXg3ct2bC9
-         2GESHzW5dJ+rx0bqHIv4hXUxUzqVnQxr9B59xRg2RVCmLF+JL9/DauUh+hTdUK82Kyfo
-         PgVw==
+        bh=5eZDgcxBiEahgQGqIVo4NOwq5Qo0wc2zSQHHLGRnIQM=;
+        b=hOAnqSTI/Gh9yfCHqk+7dOsYcudQiruj8mpt7dmfjM5mWHLmv0u3d04DW8ALfBIXMG
+         jo1aQNu8b37er4WOYMPhB0UKNBWuYIbVmK1S5rZBnKtE3j6emTQsT3qFtpIheorsTivo
+         5oFwymdPrzK0TL7yVgoFRt/N/qYgq59XcFETBcR/mN/BchTGsA3oSWbl70lTpcsstt5O
+         nRtu1Pud8PUcNNfPv5BadE0iVwqkk4S+ioB/E0TkrKnbVoRVJH4C91+Hcq3PdR/ymM2E
+         gaQI4Q/rQrPyeTqMR7KeZVadtXbPVvCVGUzET6Lt8AJ66Q92342VKnjcz1C6+ONF0BvN
+         RdLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0aj1sHJcqKfZb0FtBlcvqwZ+alQwzGOksJeJvrB2n3c=;
-        b=IRORanJBURpJCdFNHS1nT/YVwwu9hrDxvn6s6sMTu1tTUCCS/NIL0AtE4B8uJKwKWj
-         DrQzk24fPOauyJxRQI6vM+3TmKy5tGbOVHtnjH3F/v2wKp9SLqm1y+y2elWhoB325c0o
-         KBhkaq665tmNJX1fqK/PtRV/NI+gQ5IamInLH4zl97WEhNrKOIOvKqbIElOFyoUm1diC
-         XKAw6WrEU4lZGkd6/Tb8ETHXJ19CdH7+hcDL2fMpA3GB2tBmA+stZfNT/IXE6qBqKFdF
-         /QIvilGysmqpWaz1fluZY5lquSJjUGm/tmncc3nPUnxTrNA7kgv0Q4KLWQHVrYfAjTe/
-         SWvg==
-X-Gm-Message-State: AOAM530/q/uuIL69m5odrxnrKo3XmT6h02+snjKHCnaPw1veGtx2WoeE
-        H1DPveoRcTrcAuo7U+FSii3UJnPAvW1Z82L58/dqpw==
-X-Google-Smtp-Source: ABdhPJz3iN1wfagflfnHgoSqfOU5YkaziRD5rRzHy7J3nc0KrnbGmpLRrTnVqtp7IHNN091wV5xSs6YsGn582ChCuus=
-X-Received: by 2002:a19:e049:0:b0:42f:b0e2:10c4 with SMTP id
- g9-20020a19e049000000b0042fb0e210c4mr1553336lfj.170.1645703037284; Thu, 24
- Feb 2022 03:43:57 -0800 (PST)
+        bh=5eZDgcxBiEahgQGqIVo4NOwq5Qo0wc2zSQHHLGRnIQM=;
+        b=oUQpn0853d650zuVTsrS6za1Mq5zgvbiylpn6o5dgtNxOXlAHg6neHZlmxD6Pjm3RM
+         /9TZY8vCpgDoxltXe0xt0+G431w3lZXhgFDMyLtT3JCVnBgrwXauBEsmMAqT28YDv6Jm
+         cDHCkyEH3Fxpqtzk9Q49aSoC+ryCTcRvnrGjVpgy4QTKGIRHORkfrZBc8TbV0ik9dUrd
+         IpfXjsuCYzXN9ley9gctykOa4ScDoG14kPhBvotXKW0ZtNH/LTbq/RDUjAYapNjhyum8
+         XzmUFh0hzkWNPQ/M8K0rTXvr/9icEntkKuhB8e5oAlImWhMiiiHg1ow8ddyb27BKZ9xv
+         IbGA==
+X-Gm-Message-State: AOAM531A4Em7O3jg+5dv7olR05P+YacrdPzPE7GzwhPt6VQ5NznjSr67
+        fYBO0hiGVVBC478N9gurQzHIICT1JQiiaLTkHwE=
+X-Google-Smtp-Source: ABdhPJzAIqYPKdGLE2EeqFKSCMroLeeiWgQwRfA5B8K+sGjJ+1Pn3nTjD/EQPHmJEn7zy85dqMfSQ0Bfo7hIsT3Znj8=
+X-Received: by 2002:a81:83d7:0:b0:2d6:b550:21b8 with SMTP id
+ t206-20020a8183d7000000b002d6b55021b8mr3756069ywf.188.1645726237054; Thu, 24
+ Feb 2022 10:10:37 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1645558375.git.riteshh@linux.ibm.com> <e91b6872860df3ec520799a5d0b65e54ccf32407.1645558375.git.riteshh@linux.ibm.com>
- <CAK896s7V7wj0Yiu0NQEFvmS9-oivJUosgMYW5UBJ4cX2YCSh6g@mail.gmail.com> <20220223135755.plbr2fvt66k3xyn5@riteshh-domain>
-In-Reply-To: <20220223135755.plbr2fvt66k3xyn5@riteshh-domain>
-From:   Xin Yin <yinxin.x@bytedance.com>
-Date:   Thu, 24 Feb 2022 19:43:46 +0800
-Message-ID: <CAK896s7GsY_qGPZpA0KvmfsA7frkP0=nO8Fg3qd-ObmL-g+8AA@mail.gmail.com>
-Subject: Re: [External] [RFC 9/9] ext4: fast_commit missing tracking updates
- to a file
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     linux-ext4@vger.kernel.org,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <164447124918.23354.17858831070003318849.stgit@noble.brown> <164447147262.23354.13106570458589592051.stgit@noble.brown>
+In-Reply-To: <164447147262.23354.13106570458589592051.stgit@noble.brown>
+From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Date:   Fri, 25 Feb 2022 03:10:24 +0900
+Message-ID: <CAKFNMokgJMxfvdwc4isNj_gQHAecJF2tq3j8HRhhxW_xN5L5_Q@mail.gmail.com>
+Subject: Re: [PATCH 08/11] Remove bdi_congested() and wb_congested() and
+ related functions
+To:     NeilBrown <neilb@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, Jan Kara <jack@suse.cz>,
+        Wu Fengguang <fengguang.wu@intel.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Lars Ellenberg <lars.ellenberg@linbit.com>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-doc@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>,
+        linux-nilfs <linux-nilfs@vger.kernel.org>,
+        linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
+        LKML <linux-kernel@vger.kernel.org>, linux-block@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Feb 23, 2022 at 9:59 PM Ritesh Harjani <riteshh@linux.ibm.com> wrote:
+On Thu, Feb 10, 2022 at 2:41 PM NeilBrown <neilb@suse.de> wrote:
 >
-> On 22/02/23 11:50AM, Xin Yin wrote:
-> > On Wed, Feb 23, 2022 at 4:36 AM Ritesh Harjani <riteshh@linux.ibm.com> wrote:
-> > >
-> > > <DO NOT MERGE THIS YET>
-> > >
-> > > Testcase
-> > > ==========
-> > > 1. i=0; while [ $i -lt 1000 ]; do xfs_io -f -c "pwrite -S 0xaa -b 32k 0 32k" -c "fsync" /mnt/$i; i=$(($i+1)); done && sudo ./src/godown -v /mnt && sudo umount /mnt && sudo mount /dev/loop2 /mnt'
-> > > 2. ls -alih /mnt/ -> In this you will observe one such file with 0 bytes (which ideally should not happen)
-> > >
-> > > ^^^ say if you don't see the issue because your underlying storage
-> > > device is very fast, then maybe try with commit=1 mount option.
-> > >
-> > > Analysis
-> > > ==========
-> > > It seems a file's updates can be a part of two transaction tid.
-> > > Below are the sequence of events which could cause this issue.
-> > >
-> > > jbd2_handle_start -> (t_tid = 38)
-> > > __ext4_new_inode
-> > > ext4_fc_track_template -> __track_inode -> (i_sync_tid = 38, t_tid = 38)
-> > > <track more updates>
-> > > jbd2_start_commit -> (t_tid = 38)
-> > >
-> > > jbd2_handle_start (tid = 39)
-> > > ext4_fc_track_template -> __track_inode -> (i_sync_tid = 38, t_tid 39)
-> > >     -> ext4_fc_reset_inode & ei->i_sync_tid = t_tid
-> > >
-> > > ext4_fc_commit_start -> (will wait since jbd2 full commit is in progress)
-> > > jbd2_end_commit (t_tid = 38)
-> > >     -> jbd2_fc_cleanup() -> this will cleanup entries in sbi->s_fc_q[FC_Q_MAIN]
-> > >         -> And the above could result inode size as 0 as  after effect.
-> > > ext4_fc_commit_stop
-> > >
-> > > You could find the logs for the above behavior for inode 979 at [1].
-> > >
-> > > -> So what is happening here is since the ei->i_fc_list is not empty
-> > > (because it is already part of sb's MAIN queue), we don't add this inode
-> > > again into neither sb's MAIN or STAGING queue.
-> > > And after jbd2_fc_cleanup() is called from jbd2 full commit, we
-> > > just remove this inode from the main queue.
-> > >
-> > > So as a simple fix, what I did below was to check if it is a jbd2 full commit
-> > > in ext4_fc_cleanup(), and if the ei->i_sync_tid > tid, that means we
-> > > need not remove that from MAIN queue. This is since neither jbd2 nor FC
-> > > has committed updates of those inodes for this new txn tid yet.
-> > >
-> > > But below are some quick queries on this
-> > > =========================================
-> > >
-> > > 1. why do we call ext4_fc_reset_inode() when inode tid and
-> > >    running txn tid does not match?
-> > This is part of a change in commit:bdc8a53a6f2f,  it fixes the issue
-> > for fc tracking logic while jbd2 commit is ongoing.
+> These functions are no longer useful as no BDIs report congestions any
+> more.
 >
-> Thanks Xin for pointing the other issue too.
-> But I think what I was mostly referring to was - calling ext4_fc_reset_inode()
-> in ext4_fc_track_template().
+> Removing the test on bdi_write_contested() in current_may_throttle()
+> could cause a small change in behaviour, but only when PF_LOCAL_THROTTLE
+> is set.
 >
-Understood, I missed something here, then maybe Harshad can give some
-directions for this part.
+> So replace the calls by 'false' and simplify the code - and remove the
+> functions.
+>
+> Acked-by: Ryusuke Konishi <konishi.ryusuke@gmail.com> (for nilfs bits)
+> Signed-off-by: NeilBrown <neilb@suse.de>
+> ---
+>  drivers/block/drbd/drbd_int.h |    3 ---
+>  drivers/block/drbd/drbd_req.c |    3 +--
+>  fs/ext2/ialloc.c              |    5 -----
+>  fs/nilfs2/segbuf.c            |   15 ---------------
+>  fs/xfs/xfs_buf.c              |    3 ---
+>  include/linux/backing-dev.h   |   26 --------------------------
+>  mm/vmscan.c                   |    4 +---
+>  7 files changed, 2 insertions(+), 57 deletions(-)
+>
+> diff --git a/drivers/block/drbd/drbd_int.h b/drivers/block/drbd/drbd_int.h
+> index f27d5b0f9a0b..f804b1bfb3e6 100644
+> --- a/drivers/block/drbd/drbd_int.h
+> +++ b/drivers/block/drbd/drbd_int.h
+> @@ -638,9 +638,6 @@ enum {
+>         STATE_SENT,             /* Do not change state/UUIDs while this is set */
+>         CALLBACK_PENDING,       /* Whether we have a call_usermodehelper(, UMH_WAIT_PROC)
+>                                  * pending, from drbd worker context.
+> -                                * If set, bdi_write_congested() returns true,
+> -                                * so shrink_page_list() would not recurse into,
+> -                                * and potentially deadlock on, this drbd worker.
+>                                  */
+>         DISCONNECT_SENT,
+>
+> diff --git a/drivers/block/drbd/drbd_req.c b/drivers/block/drbd/drbd_req.c
+> index 3235532ae077..2e5fb7e442e3 100644
+> --- a/drivers/block/drbd/drbd_req.c
+> +++ b/drivers/block/drbd/drbd_req.c
+> @@ -909,8 +909,7 @@ static bool remote_due_to_read_balancing(struct drbd_device *device, sector_t se
+>
+>         switch (rbm) {
+>         case RB_CONGESTED_REMOTE:
+> -               return bdi_read_congested(
+> -                       device->ldev->backing_bdev->bd_disk->bdi);
+> +               return 0;
+>         case RB_LEAST_PENDING:
+>                 return atomic_read(&device->local_cnt) >
+>                         atomic_read(&device->ap_pending_cnt) + atomic_read(&device->rs_pending_cnt);
+> diff --git a/fs/ext2/ialloc.c b/fs/ext2/ialloc.c
+> index df14e750e9fe..998dd2ac8008 100644
+> --- a/fs/ext2/ialloc.c
+> +++ b/fs/ext2/ialloc.c
+> @@ -170,11 +170,6 @@ static void ext2_preread_inode(struct inode *inode)
+>         unsigned long offset;
+>         unsigned long block;
+>         struct ext2_group_desc * gdp;
+> -       struct backing_dev_info *bdi;
+> -
+> -       bdi = inode_to_bdi(inode);
+> -       if (bdi_rw_congested(bdi))
+> -               return;
+>
+>         block_group = (inode->i_ino - 1) / EXT2_INODES_PER_GROUP(inode->i_sb);
+>         gdp = ext2_get_group_desc(inode->i_sb, block_group, NULL);
+> diff --git a/fs/nilfs2/segbuf.c b/fs/nilfs2/segbuf.c
+> index 43287b0d3e9b..c4510f79037f 100644
+> --- a/fs/nilfs2/segbuf.c
+> +++ b/fs/nilfs2/segbuf.c
+> @@ -343,17 +343,6 @@ static int nilfs_segbuf_submit_bio(struct nilfs_segment_buffer *segbuf,
+>         struct bio *bio = wi->bio;
+>         int err;
+>
+> -       if (segbuf->sb_nbio > 0 &&
+> -           bdi_write_congested(segbuf->sb_super->s_bdi)) {
+> -               wait_for_completion(&segbuf->sb_bio_event);
+> -               segbuf->sb_nbio--;
+> -               if (unlikely(atomic_read(&segbuf->sb_err))) {
+> -                       bio_put(bio);
+> -                       err = -EIO;
+> -                       goto failed;
+> -               }
+> -       }
+> -
+>         bio->bi_end_io = nilfs_end_bio_write;
+>         bio->bi_private = segbuf;
+>         bio_set_op_attrs(bio, mode, mode_flags);
+> @@ -365,10 +354,6 @@ static int nilfs_segbuf_submit_bio(struct nilfs_segment_buffer *segbuf,
+>         wi->nr_vecs = min(wi->max_pages, wi->rest_blocks);
+>         wi->start = wi->end;
+>         return 0;
+> -
+> - failed:
+> -       wi->bio = NULL;
+> -       return err;
+>  }
 
-> <..>
->  391         tid = handle->h_transaction->t_tid;
->  392         mutex_lock(&ei->i_fc_lock);
->  393         if (tid == ei->i_sync_tid) {
->  394                 update = true;
->  395         } else {
->  396                 ext4_fc_reset_inode(inode);
->  397                 ei->i_sync_tid = tid;
->  398         }
->  399         ret = __fc_track_fn(inode, args, update);
->  400         mutex_unlock(&ei->i_fc_lock);
->  <..>
->
-> So, yes these are few corner cases which I want to take a deeper look at.
-> I vaugely understand that this reset inode is done since we anyway might have
-> done the full commit for previous tid, so we can reset the inode track range.
->
-> So, yes, we should carefully review this as well that if jbd2 commit happens for
-> an inode which is still part of MAIN_Q, then does it make sense to still
-> call ext4_fc_reset_inode() for that inode in ext4_fc_track_template()?
->
-> > If the inode tid is bigger than txn tid, that means this inode may be
-> > in the STAGING queue, if we reset it then it will lose the tack range.
-> > I think it's a similar issue, the difference is this inode is already
->
-> Do you have a test case which was failing for your issue?
-> I would like to test that one too.
+In this revised version, "int err" is no longer used, so could you
+delete it as well ?
 
-This issue can be triggered by generic/455 , but this is one failed
-case for it. I also do not have a reproducer for this.
+Regards,
+Ryusuke Konishi
 
 >
+>  /**
+> diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
+> index b45e0d50a405..b7ebcfe6b8d3 100644
+> --- a/fs/xfs/xfs_buf.c
+> +++ b/fs/xfs/xfs_buf.c
+> @@ -843,9 +843,6 @@ xfs_buf_readahead_map(
+>  {
+>         struct xfs_buf          *bp;
 >
-> > in the MAIN queue before the jbd2 commit starts.
-> > And yes , I think in this case we can not remove it from the MAIN
+> -       if (bdi_read_congested(target->bt_bdev->bd_disk->bdi))
+> -               return;
+> -
+>         xfs_buf_read_map(target, map, nmaps,
+>                      XBF_TRYLOCK | XBF_ASYNC | XBF_READ_AHEAD, &bp, ops,
+>                      __this_address);
+> diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
+> index 860b675c2929..2d764566280c 100644
+> --- a/include/linux/backing-dev.h
+> +++ b/include/linux/backing-dev.h
+> @@ -135,11 +135,6 @@ static inline bool writeback_in_progress(struct bdi_writeback *wb)
 >
-> Yes. I too have a similar thought. But I still wanted to get few queries sorted
-> (like point 1 & 2).
+>  struct backing_dev_info *inode_to_bdi(struct inode *inode);
 >
-> > queue, but still need to clear EXT4_STATE_FC_COMMITTING right? it may
-> > block some task still waiting for it.
+> -static inline int wb_congested(struct bdi_writeback *wb, int cong_bits)
+> -{
+> -       return wb->congested & cong_bits;
+> -}
+> -
+>  long congestion_wait(int sync, long timeout);
 >
-> Sorry I didn't get you here. So I think we will end up in such situation
-> (where ext4_fc_cleanup() is getting called for an inode with i_sync_tid > tid)
-> only from full commit path right ?
-> And that won't set EXT4_FC_COMMITTING for this inode right anyways no?
-
- I am not sure if there are any other cases, But for now we also clear
-EXT4_STATE_FC_COMMITTING in the full commit path right? So maybe some
-further tests are needed.
-
-Thanks,
-Xin Yin
+>  static inline bool mapping_can_writeback(struct address_space *mapping)
+> @@ -391,27 +386,6 @@ static inline void wb_blkcg_offline(struct blkcg *blkcg)
 >
-> Do you mean anything else, or am I missing something here?
+>  #endif /* CONFIG_CGROUP_WRITEBACK */
 >
-> -ritesh
+> -static inline int bdi_congested(struct backing_dev_info *bdi, int cong_bits)
+> -{
+> -       return wb_congested(&bdi->wb, cong_bits);
+> -}
+> -
+> -static inline int bdi_read_congested(struct backing_dev_info *bdi)
+> -{
+> -       return bdi_congested(bdi, 1 << WB_sync_congested);
+> -}
+> -
+> -static inline int bdi_write_congested(struct backing_dev_info *bdi)
+> -{
+> -       return bdi_congested(bdi, 1 << WB_async_congested);
+> -}
+> -
+> -static inline int bdi_rw_congested(struct backing_dev_info *bdi)
+> -{
+> -       return bdi_congested(bdi, (1 << WB_sync_congested) |
+> -                                 (1 << WB_async_congested));
+> -}
+> -
+>  const char *bdi_dev_name(struct backing_dev_info *bdi);
+>
+>  #endif /* _LINUX_BACKING_DEV_H */
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index ce8492939bd3..0b930556c4f2 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -2362,9 +2362,7 @@ static unsigned int move_pages_to_lru(struct lruvec *lruvec,
+>   */
+>  static int current_may_throttle(void)
+>  {
+> -       return !(current->flags & PF_LOCAL_THROTTLE) ||
+> -               current->backing_dev_info == NULL ||
+> -               bdi_write_congested(current->backing_dev_info);
+> +       return !(current->flags & PF_LOCAL_THROTTLE);
+>  }
+>
+>  /*
 >
 >
-> >
-> > Thanks,
-> > Xin Yin
-> > >
-> > > 2. Also is this an expected behavior from the design perspective of
-> > >    fast_commit. i.e.
-> > >    a. the inode can be part of two tids?
-> > >    b. And that while a full commit is in progress, the inode can still
-> > >    receive updates but using a new transaction tid.
-> > >
-> > > Frankly speaking, since I was also working on other things, so I haven't
-> > > yet got the chance to completely analyze the situation yet.
-> > > Once I have those things sorted, I will spend more time on this, to
-> > > understand it more. Meanwhile if you already have some answers to above
-> > > queries/observations, please do share those here.
-> > >
-> > > Links
-> > > =========
-> > > [1] https://raw.githubusercontent.com/riteshharjani/LinuxStudy/master/ext4/fast_commit/fc_inode_missing_updates_ino_979.txt
-> > >
-> > > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> > > ---
-> > >  fs/ext4/fast_commit.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> > > index 8803ba087b07..769b584c2552 100644
-> > > --- a/fs/ext4/fast_commit.c
-> > > +++ b/fs/ext4/fast_commit.c
-> > > @@ -1252,6 +1252,8 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
-> > >         spin_lock(&sbi->s_fc_lock);
-> > >         list_for_each_entry_safe(iter, iter_n, &sbi->s_fc_q[FC_Q_MAIN],
-> > >                                  i_fc_list) {
-> > > +               if (full && iter->i_sync_tid > tid)
-> > > +                       continue;
-> > >                 list_del_init(&iter->i_fc_list);
-> > >                 ext4_clear_inode_state(&iter->vfs_inode,
-> > >                                        EXT4_STATE_FC_COMMITTING);
-> > > --
-> > > 2.31.1
-> > >
