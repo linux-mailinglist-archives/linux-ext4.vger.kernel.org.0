@@ -2,61 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B67754C2978
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Feb 2022 11:31:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F334C2AE7
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Feb 2022 12:30:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233418AbiBXK3g (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 24 Feb 2022 05:29:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45964 "EHLO
+        id S230062AbiBXLbI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 24 Feb 2022 06:31:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233314AbiBXK3f (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Feb 2022 05:29:35 -0500
-Received: from mail105.syd.optusnet.com.au (mail105.syd.optusnet.com.au [211.29.132.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4F5D11E1484;
-        Thu, 24 Feb 2022 02:29:05 -0800 (PST)
-Received: from dread.disaster.area (pa49-186-17-0.pa.vic.optusnet.com.au [49.186.17.0])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 377EB10E3F4B;
-        Thu, 24 Feb 2022 21:29:01 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1nNBMr-00FpGo-82; Thu, 24 Feb 2022 21:29:01 +1100
-Date:   Thu, 24 Feb 2022 21:29:01 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-ext4@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Dave Chinner <dchinner@redhat.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Johannes Thumshirn <jth@kernel.org>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cluster-devel@redhat.com,
+        with ESMTP id S229525AbiBXLbH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Feb 2022 06:31:07 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC5928A113;
+        Thu, 24 Feb 2022 03:30:37 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 75964B82575;
+        Thu, 24 Feb 2022 11:30:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE696C340E9;
+        Thu, 24 Feb 2022 11:30:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1645702235;
+        bh=NEiEy8aPQXv4YCvSSvu1CrwZcw8hIl0XdkWsb+8kvdc=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=lzpWsjsxoWJp5qkJ96UqX80NBnU+UC1GaWf56BLmCibrCohLLcjWbwrFK+UFLdIgS
+         M3+IVpmCOF1k1d18hfO0Yq0UaOYTv8twIThmyrZyJtS0BaI+IBuZ8GbGCLoCA4Nfky
+         uw0HWHltyCjHAtOKREnE0y6956nBervDeobT4ihNlqBT6q1gMuJz1O6ENY8jS1nD30
+         C4oS6GqmHNV9tEmM4VTc/rfnlTTnWEqSE78JNNYFLUpVx8tkL5Lpk/To+UfIvaeCaj
+         xXDDgEeajWU/EpVj5VTsQF8+WQbltJex+TSRMA276bz7hfF54LMk8fLTqs2VgkV0uj
+         ELHbDgvjlTNSA==
+Message-ID: <e8ec98a9c4fab9b7aa099001f09ff9b11f0c3f96.camel@kernel.org>
+Subject: Re: [PATCH 06/11] ceph: remove reliance on bdi congestion
+From:   Jeff Layton <jlayton@kernel.org>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, Jan Kara <jack@suse.cz>,
+        Wu Fengguang <fengguang.wu@intel.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Lars Ellenberg <lars.ellenberg@linbit.com>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
         linux-kernel@vger.kernel.org
-Subject: Re: [REPORT] kernel BUG at fs/ext4/inode.c:2620 - page_buffers()
-Message-ID: <20220224102901.GN59715@dread.disaster.area>
-References: <Yg0m6IjcNmfaSokM@google.com>
- <82d0f4e4-c911-a245-4701-4712453592d9@nvidia.com>
- <Yg8bxiz02WBGf6qO@mit.edu>
- <Yg9QGm2Rygrv+lMj@kroah.com>
- <YhbE2nocBMtLc27C@mit.edu>
- <20220224014842.GM59715@dread.disaster.area>
- <YhcAcfY1pZTl3sId@mit.edu>
+Date:   Thu, 24 Feb 2022 06:30:31 -0500
+In-Reply-To: <164568131640.25116.884631856219777713@noble.neil.brown.name>
+References: <164549971112.9187.16871723439770288255.stgit@noble.brown>
+        , <164549983739.9187.14895675781408171186.stgit@noble.brown>
+        , <ccc81eb5c23f933137c5da8d5050540cc54e58f0.camel@kernel.org>
+         <164568131640.25116.884631856219777713@noble.neil.brown.name>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.42.4 (3.42.4-1.fc35) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YhcAcfY1pZTl3sId@mit.edu>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.4 cv=deDjYVbe c=1 sm=1 tr=0 ts=62175def
-        a=+dVDrTVfsjPpH/ci3UuFng==:117 a=+dVDrTVfsjPpH/ci3UuFng==:17
-        a=kj9zAlcOel0A:10 a=oGFeUVbbRNcA:10 a=7-415B0cAAAA:8
-        a=nNeadVlkB5BEUYMxFkMA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,71 +73,80 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Feb 23, 2022 at 10:50:09PM -0500, Theodore Ts'o wrote:
-> On Thu, Feb 24, 2022 at 12:48:42PM +1100, Dave Chinner wrote:
-> > > Fair enough; on the other hand, we could also view this as making ext4
-> > > more robust against buggy code in other subsystems, and while other
-> > > file systems may be losing user data if they are actually trying to do
-> > > remote memory access to file-backed memory, apparently other file
-> > > systems aren't noticing and so they're not crashing.
+On Thu, 2022-02-24 at 16:41 +1100, NeilBrown wrote:
+> On Thu, 24 Feb 2022, Jeff Layton wrote:
+> > On Tue, 2022-02-22 at 14:17 +1100, NeilBrown wrote:
+> > > The bdi congestion tracking in not widely used and will be removed.
+> > > 
+> > > CEPHfs is one of a small number of filesystems that uses it, setting
+> > > just the async (write) congestion flags at what it determines are
+> > > appropriate times.
+> > > 
+> > > The only remaining effect of the async flag is to cause (some)
+> > > WB_SYNC_NONE writes to be skipped.
+> > > 
+> > > So instead of setting the flag, set an internal flag and change:
+> > >  - .writepages to do nothing if WB_SYNC_NONE and the flag is set
+> > >  - .writepage to return AOP_WRITEPAGE_ACTIVATE if WB_SYNC_NONE
+> > >     and the flag is set.
+> > > 
+> > > The writepages change causes a behavioural change in that pageout() can
+> > > now return PAGE_ACTIVATE instead of PAGE_KEEP, so SetPageActive() will
+> > > be called on the page which (I think) wil further delay the next attempt
+> > > at writeout.  This might be a good thing.
+> > > 
+> > > Signed-off-by: NeilBrown <neilb@suse.de>
 > > 
-> > Oh, we've noticed them, no question about that.  We've got bug
-> > reports going back years for systems being crashed, triggering BUGs
-> > and/or corrupting data on both XFS and ext4 filesystems due to users
-> > trying to run RDMA applications with file backed pages.
+> > Maybe. I have to wonder whether all of this is really useful.
+> > 
+> > When things are congested we'll avoid trying to issue new writeback
+> > requests. Note that we don't prevent new pages from being dirtied here -
+> > - only their being written back.
+> > 
+> > This also doesn't do anything in the DIO or sync_write cases, so if we
+> > lose caps or are doing DIO, we'll just keep churning out "unlimited"
+> > writes in those cases anyway.
 > 
-> Is this issue causing XFS to crash?  I didn't know that.
+> I think the point of congestion tracking is to differentiate between
+> sync and async IO.  Or maybe "required" and "optional".
+> Eventually the "optional" IO will become required, but if we can delay
+> it until a time when there is less "required" io, then maybe we can
+> improve perceived latency.
+> 
+> "optional" IO here is write-back and read-ahead.  If the load of
+> "required" IO is bursty, and if we can shuffle that optional stuff into
+> the quiet periods, we might win.
+> 
 
-I have no idea if crashes nowdays -  go back a few years before and
-search for XFS BUGging out in ->invalidate_page (or was it
-->release_page?) because of unexpected dirty pages. I think it could
-also trigger BUGs in writeback when ->writepages tripped over a
-dirty page without a delayed allocation mapping over the hole...
+In that case, maybe we should be counting in-flight reads too and deny
+readahead when the count crosses some threshold? It seems a bit silly to
+only look at writes when it comes to "congestion".
 
-We were pretty aggressive about telling people reporting such issues
-that they get to keep all the borken bits to themselves and to stop
-wasting our time with unsolvable problems caused by their
-broken-by-design RDMA applications. Hence people have largely
-stopped bothering us with random filesystem crashes on systems using
-RDMA on file-backed pages...
+> Whether this is a real need is an important question that I don't have an
+> answer for.  And whether it is better to leave delayed requests in the
+> page cache, or in the low-level queue with sync requests able to
+> over-take them - I don't know.  If you have multiple low-level queue as
+> you say you can with ceph, then lower might be better.
+> 
+> The block layer has REQ_RAHEAD ..  maybe those request get should get a
+> lower priority ... though I don't think they do.
+> NFS has a 3 level priority queue, with write-back going at a lower
+> priority ... I think... for NFSv3 at least.
+> 
+> Sometimes I suspect that as all our transports have become faster, we
+> have been able to ignore the extra latency caused by poor scheduling of
+> optional requests.  But at other times when my recently upgraded desktop
+> is struggling to view a web page while compiling a kernel ...  I wonder
+> if maybe we don't have the balance right any more.
+> 
+> So maybe you are right - maybe we can rip all this stuff out.
+> 
 
-> I tried the Syzbot reproducer with XFS mounted, and it didn't trigger
-> any crashes.  I'm sure data was getting corrupted, but I figured I
-> should bring ext4 to the XFS level of "at least we're not reliably
-> killing the kernel".
+I lean more toward just removing it. The existing implementation seems a
+bit half-baked with the gaps in what's being counted. Granted, the
+default congestion threshold is pretty high with modern memory sizes, so
+it probably doesn't come into play much in practice, but removing it
+would reduce some complexity in the client.
 
-Oh, well, good to know XFS didn't die a horrible death immediately.
-Thanks for checking, Ted.
-
-> On ext4, an unprivileged process can use process_vm_writev(2) to crash
-> the system.  I don't know how quickly we can get a fix into mm/gup.c,
-> but if some other kernel path tries calling set_page_dirty() on a
-> file-backed page without first asking permission from the file system,
-> it seems to be nice if the file system doesn't BUG() --- as near as I
-> can tell, xfs isn't crashing in this case, but ext4 is.
-
-iomap is probably refusing to map holes for writepage - we've
-cleaned up most of the weird edge cases to return errors, so I'm
-guessing iomap is just ignoring such pages these days.
-
-Yeah, see iomap_writepage_map():
-
-                error = wpc->ops->map_blocks(wpc, inode, pos);
-                if (error)
-                        break;
-                if (WARN_ON_ONCE(wpc->iomap.type == IOMAP_INLINE))
-                        continue;
-                if (wpc->iomap.type == IOMAP_HOLE)
-                        continue;
-
-Yeah, so if writeback maps a hole rather than converts a delalloc
-region to IOMAP_MAPPED, it'll just skip over the block/page.  IIRC,
-they essentially become uncleanable pages, and I think eventually
-inode reclaim will just toss them out of memory.
-
-Cheers,
-
-Dave.
 -- 
-Dave Chinner
-david@fromorbit.com
+Jeff Layton <jlayton@kernel.org>
