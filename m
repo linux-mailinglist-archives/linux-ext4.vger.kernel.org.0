@@ -2,193 +2,158 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6ED54C430B
-	for <lists+linux-ext4@lfdr.de>; Fri, 25 Feb 2022 12:04:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 566CB4C44B3
+	for <lists+linux-ext4@lfdr.de>; Fri, 25 Feb 2022 13:39:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239839AbiBYLFG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 25 Feb 2022 06:05:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34192 "EHLO
+        id S230229AbiBYMj2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 25 Feb 2022 07:39:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239795AbiBYLFG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 25 Feb 2022 06:05:06 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71C92235306
-        for <linux-ext4@vger.kernel.org>; Fri, 25 Feb 2022 03:04:32 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id m14so8774130lfu.4
-        for <linux-ext4@vger.kernel.org>; Fri, 25 Feb 2022 03:04:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c5+HyQ/v5cvjsalYVTfJ47Msc3WhNhFEzUhO7UhjsEM=;
-        b=aJVlwTX7PktbX0Hh4XbjdoVvdw99dia05uPv2WYl8EknEnO2WQXfHr26M8nbeZ0aXA
-         7Sb14vbQCtPmNylvQMRPSkDp0IBvl/UcQ6L5hX6qz1gEyRpWlTVU9cwTPtiEQGeGCWUh
-         Rn+7i+aBKuzaR1Me6F9X5OHIICw0w5TMLjyrbg4GiLtekEtEVn/WOH2VwROD6YNWIXY5
-         iuob1VgtCIeM9j7mCPLFqWFOJ+/WLv5aDMazHKfI9UgkyiPYJ2FEXFQEbNhk3eSPx68Y
-         2jWJB3NlhJfEIBSkTRuY2Qz8xLAalYw9zW3IThKuy4vmU2Xf2SfnAKlAAd4i23NL8AnR
-         IqSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c5+HyQ/v5cvjsalYVTfJ47Msc3WhNhFEzUhO7UhjsEM=;
-        b=oUip8iPBQsBWzBl2/RQbwT3pH8iRDU4SSLqAkT8IsRLRDLJGpDomt+i37XH+aOz5gK
-         FFEEyAPigcPcdfAgReWbPzpOnoOPbYFZzZwYedtOmuzJjVxc30qGVgkSDNeDi++cyMJg
-         9/e8Wf1yRYFknd+XF5ck4hJvzyObnFd4/YIRAYW7HCL0V3k3f5pgeLTaYSi3wuSdrhzm
-         u9naIeQyJq3hi81KmIfyFYMZzS4JTi4uQ5ueMIObf3OgGJrVT7evhbSLun0xDlRsd/It
-         Krhf7MXNCAKZlTUxbHWpNzXZmBmteWmpg4jRncTnlNwbZSK2XfvsySdlVjMbpGRM020S
-         3vIg==
-X-Gm-Message-State: AOAM533vEDOCo+zWfmqjMCAhwvezqYwKF3gXmSTn/acDl4+yMYLzsycJ
-        cZEEeGi26+jllXcJ4Wlx6GidS4hmD1+787un
-X-Google-Smtp-Source: ABdhPJyEZwBcXSU8MGCPwKf7waV/5ELpq3Nq2zG/Dh9tJEYObTem1Gu4YbL1mIISs/AhvIF+8VWY7w==
-X-Received: by 2002:a19:ee17:0:b0:443:5f2c:289e with SMTP id g23-20020a19ee17000000b004435f2c289emr4625255lfb.57.1645787070383;
-        Fri, 25 Feb 2022 03:04:30 -0800 (PST)
-Received: from localhost.localdomain ([83.234.50.195])
-        by smtp.gmail.com with ESMTPSA id o3-20020a2ebd83000000b002461808adbdsm223261ljq.106.2022.02.25.03.04.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Feb 2022 03:04:29 -0800 (PST)
-From:   Artem Blagodarenko <artem.blagodarenko@gmail.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     adilger.kernel@dilger.ca,
-        Andrew Perepechko <andrew.perepechko@hpe.com>,
-        Artem Blagodarenko <artem.blagodarenko@gmail.com>
-Subject: [PATCH] ext4: truncate during setxattr leads to kernel panic
-Date:   Fri, 25 Feb 2022 06:04:13 -0500
-Message-Id: <20220225110413.1663-1-artem.blagodarenko@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S232637AbiBYMj1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 25 Feb 2022 07:39:27 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 779271D63A3
+        for <linux-ext4@vger.kernel.org>; Fri, 25 Feb 2022 04:38:54 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 365D121117;
+        Fri, 25 Feb 2022 12:38:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1645792733; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aOfKMwlQBolqMoMnhjOYN4BNOR0i5B3VKfnpWwg+nHY=;
+        b=Q6IGcU13QC8fsV92fnbGLcmezaiff+aR1QaVGVYFzu4sQF0ZSwU+ocI32OEvhdW1QaVdfY
+        Rw46NiNUCUcMCqHJ5BssRz5x/+wOJgRiM/RdfYq1KnksbU1c0T2ylCCfyunlVVLHz+xQgL
+        dHFXoHzpz/4dbwEyb75hiyGgiI4Wc4M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1645792733;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aOfKMwlQBolqMoMnhjOYN4BNOR0i5B3VKfnpWwg+nHY=;
+        b=kmYsNNUuQ4do4lV0GE8Ut+55OM7C7sOznnO0ytqpDgGJaKcbj1s6Gg9nHN/IFfeCp2RXVN
+        gdFg4RFh7patWSDw==
+Received: from quack3.suse.cz (unknown [10.163.28.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 4ED83A3B81;
+        Fri, 25 Feb 2022 12:38:52 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id F2F7EA05D9; Fri, 25 Feb 2022 13:38:51 +0100 (CET)
+Date:   Fri, 25 Feb 2022 13:38:51 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Zhang Yi <yi.zhang@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, yukuai3@huawei.com
+Subject: Re: [PATCH v2] ext4: fix underflow in ext4_max_bitmap_size()
+Message-ID: <20220225123851.flahv2nlvpqq3d33@quack3.lan>
+References: <20220225102837.3048196-1-yi.zhang@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220225102837.3048196-1-yi.zhang@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Andrew Perepechko <andrew.perepechko@hpe.com>
+On Fri 25-02-22 18:28:37, Zhang Yi wrote:
+> The same to commit 1c2d14212b15 ("ext2: Fix underflow in ext2_max_size()")
+> in ext2 filesystem, ext4 driver has the same issue with 64K block size
+> and ^huge_file, fix this issue the same as ext2. This patch also revert
+> commit 75ca6ad408f4 ("ext4: fix loff_t overflow in ext4_max_bitmap_size()")
+> because it's no longer needed.
+> 
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 
-When changing a large xattr value to a different large xattr value,
-the old xattr inode is freed. Truncate during the final iput causes
-current transaction restart. Eventually, parent inode bh is marked
-dirty and kernel panic happens when jbd2 figures out that this bh
-belongs to the committed transaction.
+Thanks for the patch. I would not refer to ext2 patch in the changelog - it
+is better to have it self-contained. AFAIU the problem is that (meta_blocks
+> upper_limit) for 64k blocksize and ^huge_file and so upper_limit would
+underflow during the computations, am I right?
 
-Here is a reproducer
+Also two comments below:
 
-#!/bin/bash
-dd if=/dev/zero of=/tmp/ldiskfs bs=1M count=100
-mkfs.ext4 -O ea_inode /tmp/ldiskfs -J size=16 -I 512
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index c5021ca0a28a..95608c2127e7 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -3468,8 +3468,9 @@ static loff_t ext4_max_size(int blkbits, int has_huge_files)
+>   */
+>  static loff_t ext4_max_bitmap_size(int bits, int has_huge_files)
+>  {
+> -	unsigned long long upper_limit, res = EXT4_NDIR_BLOCKS;
+> +	loff_t upper_limit, res = EXT4_NDIR_BLOCKS;
+>  	int meta_blocks;
+> +	unsigned int ppb = 1 << (bits - 2);
+>  
+>  	/*
+>  	 * This is calculated to be the largest file size for a dense, block
+> @@ -3501,27 +3502,42 @@ static loff_t ext4_max_bitmap_size(int bits, int has_huge_files)
+>  
+>  	}
+>  
+> -	/* indirect blocks */
+> -	meta_blocks = 1;
+> -	/* double indirect blocks */
+> -	meta_blocks += 1 + (1LL << (bits-2));
+> -	/* tripple indirect blocks */
+> -	meta_blocks += 1 + (1LL << (bits-2)) + (1LL << (2*(bits-2)));
+> -
+> -	upper_limit -= meta_blocks;
+> -	upper_limit <<= bits;
+> -
+> +	/* Compute how many blocks we can address by block tree */
+>  	res += 1LL << (bits-2);
+>  	res += 1LL << (2*(bits-2));
+>  	res += 1LL << (3*(bits-2));
 
-mkdir -p /tmp/ldiskfs_m
-mount -t ext4 /tmp/ldiskfs /tmp/ldiskfs_m -o loop,commit=600,no_mbcache
-touch /tmp/ldiskfs_m/file{1..1024}
+When you have the 'ppb' convenience variable, perhaps you can update this
+math to:
 
-V=$(for i in `seq 60000`; do echo -n x ; done)
-V1="1$V"
-V2="2$V"
+	res = EXT4_NDIR_BLOCKS + ppb + ppb*ppb + ((long long)ppb)*ppb*ppb;
 
-while true; do
-       setfattr -n user.xattr -v $V /tmp/ldiskfs_m/file{1..1024}
-       setfattr -n user.xattr -v $V1 /tmp/ldiskfs_m/file{1..1024} &
-       setfattr -n user.xattr -v $V2 /tmp/ldiskfs_m/file{1024..1} &
-       wait
-done
+It is easier to understand and matches how you compute meta_blocks as well.
 
-A possible fix is to call this final iput in a separate thread.
-This way, setxattr transactions will never be split into two.
-Since the setxattr code adds xattr inodes with nlink=0 into the
-orphan list, old xattr inodes will be properly cleaned up in
-any case.
+> +	/* Compute how many metadata blocks are needed */
+> +	meta_blocks = 1;
+> +	meta_blocks += 1 + ppb;
+> +	meta_blocks += 1 + ppb + ppb * ppb;
+> +	/* Does block tree limit file size? */
+> +	if (res + meta_blocks <= upper_limit)
+> +		goto check_lfs;
+> +
+> +	res = upper_limit;
+> +	/* How many metadata blocks are needed for addressing upper_limit? */
+> +	upper_limit -= EXT4_NDIR_BLOCKS;
+> +	/* indirect blocks */
+> +	meta_blocks = 1;
+> +	upper_limit -= ppb;
+> +	/* double indirect blocks */
+> +	if (upper_limit < ppb * ppb) {
+> +		meta_blocks += 1 + DIV_ROUND_UP_ULL(upper_limit, ppb);
+> +		res -= meta_blocks;
+> +		goto check_lfs;
+> +	}
+> +	meta_blocks += 1 + ppb;
+> +	upper_limit -= ppb * ppb;
+> +	/* tripple indirect blocks for the rest */
+> +	meta_blocks += 1 + DIV_ROUND_UP_ULL(upper_limit, ppb) +
+> +		DIV_ROUND_UP_ULL(upper_limit, ppb*ppb);
+> +	res -= meta_blocks;
+> +check_lfs:
+>  	res <<= bits;
 
-Signed-off-by: Andrew Perepechko <andrew.perepechko@hpe.com>
-Signed-off-by: Artem Blagodarenko <artem.blagodarenko@gmail.com>
-HPE-bug-id: LUS-10534
----
- fs/ext4/super.c |  1 +
- fs/ext4/xattr.c | 34 ++++++++++++++++++++++++++++++++--
- 2 files changed, 33 insertions(+), 2 deletions(-)
+Cannot this overflow loff_t again? I mean if upper_limit == (1 << 48) - 1
+and we have 64k blocksize, 'res' will be larger than (1 << 47) and thus 
+res << 16 will be greater than 1 << 63 => negative... Am I missing
+something?
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index c5021ca0a28a..8c04c19fa4b8 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1199,6 +1199,7 @@ static void ext4_put_super(struct super_block *sb)
- 	int aborted = 0;
- 	int i, err;
- 
-+	flush_scheduled_work();
- 	ext4_unregister_li_request(sb);
- 	ext4_quota_off_umount(sb);
- 
-diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index 042325349098..0cadbf4a9f2b 100644
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -1544,6 +1544,31 @@ static int ext4_xattr_inode_lookup_create(handle_t *handle, struct inode *inode,
- 	return 0;
- }
- 
-+struct delayed_iput_work {
-+	struct work_struct work;
-+	struct inode *inode;
-+};
-+
-+static void delayed_iput_fn(struct work_struct *work)
-+{
-+	struct delayed_iput_work *diwork;
-+
-+	diwork = container_of(work, struct delayed_iput_work, work);
-+	iput(diwork->inode);
-+	kfree(diwork);
-+}
-+
-+static void delayed_iput(struct inode *inode, struct delayed_iput_work *work)
-+{
-+	if (!work) {
-+		iput(inode);
-+	} else {
-+		INIT_WORK(&work->work, delayed_iput_fn);
-+		work->inode = inode;
-+		schedule_work(&work->work);
-+	}
-+}
-+
- /*
-  * Reserve min(block_size/8, 1024) bytes for xattr entries/names if ea_inode
-  * feature is enabled.
-@@ -1561,6 +1586,7 @@ static int ext4_xattr_set_entry(struct ext4_xattr_info *i,
- 	int in_inode = i->in_inode;
- 	struct inode *old_ea_inode = NULL;
- 	struct inode *new_ea_inode = NULL;
-+	struct delayed_iput_work *diwork = NULL;
- 	size_t old_size, new_size;
- 	int ret;
- 
-@@ -1637,7 +1663,11 @@ static int ext4_xattr_set_entry(struct ext4_xattr_info *i,
- 	 * Finish that work before doing any modifications to the xattr data.
- 	 */
- 	if (!s->not_found && here->e_value_inum) {
--		ret = ext4_xattr_inode_iget(inode,
-+		diwork = kmalloc(sizeof(*diwork), GFP_NOFS);
-+		if (!diwork)
-+			ret = -ENOMEM;
-+		else
-+			ret = ext4_xattr_inode_iget(inode,
- 					    le32_to_cpu(here->e_value_inum),
- 					    le32_to_cpu(here->e_hash),
- 					    &old_ea_inode);
-@@ -1791,7 +1821,7 @@ static int ext4_xattr_set_entry(struct ext4_xattr_info *i,
- 	ret = 0;
- out:
- 	iput(old_ea_inode);
--	iput(new_ea_inode);
-+	delayed_iput(old_ea_inode, diwork);
- 	return ret;
- }
- 
+								Honza
 -- 
-2.31.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
