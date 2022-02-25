@@ -2,72 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5085A4C4E85
-	for <lists+linux-ext4@lfdr.de>; Fri, 25 Feb 2022 20:19:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DCE94C4EAE
+	for <lists+linux-ext4@lfdr.de>; Fri, 25 Feb 2022 20:25:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233961AbiBYTT6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 25 Feb 2022 14:19:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52170 "EHLO
+        id S234490AbiBYTZf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 25 Feb 2022 14:25:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234579AbiBYTT4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 25 Feb 2022 14:19:56 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1895195336
-        for <linux-ext4@vger.kernel.org>; Fri, 25 Feb 2022 11:19:21 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id x11so5589613pll.10
-        for <linux-ext4@vger.kernel.org>; Fri, 25 Feb 2022 11:19:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=9fbaEoyP6CTzGYQjVSR4Oe1Sa+YnNbvO8HACned25xo=;
-        b=Q1Ic/oefqBXYMB526iJWxDsmybT4YHLeHBZn84OmKOrd1pnhb8fcZIpdsTjQ5V/EUL
-         V5mJK0xGefy0kFZ74S/s3Zf03eZt7z2SLZDYymY7Mfw3bu1vUIawZokexDKolfGAYxTh
-         ECY1QhQ9yNO+pjQBhXeRC+RXAYU5zCQ6h1tiGkdc96pNbvhJaJYtdoP8m6crTVIzfO7n
-         sRI1bahjQuumvszPmgZYW058nhTGZGAlVIGFICGoVlwJzvSl7L+gftBX1wQQVAEOfvf2
-         5H68Iq537pP2tjSY+2l/xbkVOjG49lnK82qRvpFjBs928/uDsckhSalQ2Ei9PqsM+lMc
-         mqBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=9fbaEoyP6CTzGYQjVSR4Oe1Sa+YnNbvO8HACned25xo=;
-        b=i+LCmTMQ48xH9m8DTZ+HUNhCq6JB05cNn8o3QhOwLd8/GYfiU8JRJTrfRtrVoZJ6dV
-         fuis13U0v0xyRKRt7ddyMt22zAsgSXR1DdyU2fTQerSBevLVoljOuAk7xDf0uefNEQ9m
-         WXY2/JgBTXLXEIYwGMja9l6wgbr+5P2enE93atomD5wxN7tfOpAOVFpSn8ezMx69LO8m
-         rxhR5E9+w5yMB11vLAZUJAlVR6vvBt3Af9+OlMigfMuBEkWNCV4IPcgQbmBF4eiPexCx
-         0jtsSaRVHtBEpV5ra/ovRaEf36fE/dGPBjJOYP7h6y7aBwmr758RxToIDEPTZbxYLUZ5
-         hfeQ==
-X-Gm-Message-State: AOAM530Go/d6BOALg5P36fjXcB0spi7uNOxoaAdwc+lej5uGhqaz3t9z
-        beamSwr4b2zvwp3gu6wBDKZ1GU7BTwVyIQ==
-X-Google-Smtp-Source: ABdhPJzE8/uGr1RhfhSg8oFoOW9jehHCQFXz0ws8GUYmdKEv+r7IW0ddAy8jxGuBYgtmgnD40TED3g==
-X-Received: by 2002:a17:902:e945:b0:14e:b8d9:aa07 with SMTP id b5-20020a170902e94500b0014eb8d9aa07mr8740999pll.163.1645816761184;
-        Fri, 25 Feb 2022 11:19:21 -0800 (PST)
-Received: from [192.168.254.17] ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id x42-20020a056a0018aa00b004e1bf2a3376sm4126644pfh.215.2022.02.25.11.19.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Feb 2022 11:19:20 -0800 (PST)
-Message-ID: <25749d7d-7036-0b71-3dd8-7b04dcc430e4@linaro.org>
-Date:   Fri, 25 Feb 2022 11:19:19 -0800
+        with ESMTP id S232268AbiBYTZe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 25 Feb 2022 14:25:34 -0500
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF951EF366;
+        Fri, 25 Feb 2022 11:25:01 -0800 (PST)
+Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 21PJOZlb031119
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Feb 2022 14:24:36 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 5FD3515C0036; Fri, 25 Feb 2022 14:24:35 -0500 (EST)
+Date:   Fri, 25 Feb 2022 14:24:35 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-ext4@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Dave Chinner <dchinner@redhat.com>,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johannes Thumshirn <jth@kernel.org>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cluster-devel@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH -v2] ext4: don't BUG if kernel subsystems dirty pages without
+ asking ext4 first
+Message-ID: <Yhks88tO3Em/G370@mit.edu>
+References: <Yg0m6IjcNmfaSokM@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: BUG in ext4_ind_remove_space
-Content-Language: en-US
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org
-References: <48308b02-149b-1c47-115a-1a268dac6e24@linaro.org>
- <20220225171016.zwhp62b3yzgewk6l@riteshh-domain>
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-In-Reply-To: <20220225171016.zwhp62b3yzgewk6l@riteshh-domain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Yg0m6IjcNmfaSokM@google.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,57 +54,88 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2/25/22 09:10, Ritesh Harjani wrote:
-> On 22/02/24 05:12PM, Tadeusz Struk wrote:
->>
->> Hi,
->> Syzbot found an issue [1] in fallocate() that looks to me like a loss of precision.
->> The C reproducer [2] calls fallocate() and passes the size 0xffeffeff000ul, and
->> offset 0x1000000ul, which is then used to calculate the first_block and
->> stop_block using ext4_lblk_t type (u32). I think this gets the MSB of the size
->> truncated and leads to invalid calculations, and eventually his BUG() in
->> https://elixir.bootlin.com/linux/v5.16.11/source/fs/ext4/indirect.c#L1244
->> The issue can be reproduced on 5.17.0-rc5, but I don't think it's a new
->> regression. I spent some time debugging it, but could spot anything obvious.
->> Can someone have a look please.
-> 
-> I did look into it a little. Below are some of my observations.
-> If nobody gets to it before me, I can spend sometime next week to verify it's
-> correctness.
-> 
-> So I think based on the warning log before kernel BUG_ON() [1], it looks like it
-> has the problem with ext4_block_to_path() calculation with end offset.
-> It seems it is not fitting into triple block ptrs calculation.
-> 
-> <log>
-> ======
-> EXT4-fs warning (device sda1): ext4_block_to_path:107: block 1074791436 > max in inode 1137
-> 
-> But ideally it should fit in (right?) since we do make sure if end >= max_block;
-> then we set it to end = max_block.
-> 
-> Then looking at how we calculate max_block is below
-> 	max_block = (EXT4_SB(inode->i_sb)->s_bitmap_maxbytes + blocksize-1) >> EXT4_BLOCK_SIZE_BITS(inode->i_sb);
-> 
-> So looking closely I think there _could be_ a off by 1 calculation error in
-> above. So I think above calculation is for max_len and not max_end_block.
-> 
-> I think max_block should be max_end_block which should be this -
-> 	max_end_block = ((EXT4_SB(inode->i_sb)->s_bitmap_maxbytes + blocksize-1) >> EXT4_BLOCK_SIZE_BITS(inode->i_sb))-1;
-> 
-> 
-> But I haven't yet verified it completely. This is just my initial thought.
-> Maybe others can confirm too. Or maybe there is more then one problem.
-> But somehow above looks more likely to me.
+[un]pin_user_pages_remote is dirtying pages without properly warning
+the file system in advance (or faulting in the file data if the page
+is not yet in the page cache).  This was noted by Jan Kara in 2018[1]
+and more recently has resulted in bug reports by Syzbot in various
+Android kernels[2].
 
-I tried the above and it does help.
+This is technically a bug in the mm/gup.c codepath, but arguably ext4
+is fragile in that a buggy get_user_pages() implementation causes ext4
+to crash, where as other file systems are not crashing (although in
+some cases the user data will be lost since gup code is not properly
+informing the file system to potentially allocate blocks or reserve
+space when writing into a sparse portion of file).  I suspect in real
+life it is rare that people are using RDMA into file-backed memory,
+which is why no one has complained to ext4 developers except fuzzing
+programs.
 
-> 
-> I can verify this sometime next week when I get back to it.
-> But thanks for reporting the issue :)
+So instead of crashing with a BUG, issue a warning (since there may be
+potential data loss) and just mark the page as clean to avoid
+unprivileged denial of service attacks until the problem can be
+properly fixed.  More discussion and background can be found in the
+thread starting at [2].
 
-Next week is perfectly fine. Thanks for looking into it.
+[1] https://www.spinics.net/lists/linux-mm/msg142700.html
+[2] https://lore.kernel.org/r/Yg0m6IjcNmfaSokM@google.com
 
+Reported-by: syzbot+d59332e2db681cf18f0318a06e994ebbb529a8db@syzkaller.appspotmail.com
+Reported-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ fs/ext4/inode.c | 27 ++++++++++++++++++++++++++-
+ 1 file changed, 26 insertions(+), 1 deletion(-)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 01c9e4f743ba..f8fefbf67306 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -1993,6 +1993,15 @@ static int ext4_writepage(struct page *page,
+ 	else
+ 		len = PAGE_SIZE;
+ 
++	/* Should never happen but for buggy gup code */
++	if (!page_has_buffers(page)) {
++		ext4_warning_inode(inode,
++		   "page %lu does not have buffers attached", page->index);
++		ClearPageDirty(page);
++		unlock_page(page);
++		return 0;
++	}
++
+ 	page_bufs = page_buffers(page);
+ 	/*
+ 	 * We cannot do block allocation or other extent handling in this
+@@ -2588,12 +2597,28 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
+ 			     (mpd->wbc->sync_mode == WB_SYNC_NONE)) ||
+ 			    unlikely(page->mapping != mapping)) {
+ 				unlock_page(page);
+-				continue;
++				goto out;
+ 			}
+ 
+ 			wait_on_page_writeback(page);
+ 			BUG_ON(PageWriteback(page));
+ 
++			/*
++			 * Should never happen but for buggy code in
++			 * other subsystemsa that call
++			 * set_page_dirty() without properly warning
++			 * the file system first.  See [1] for more
++			 * information.
++			 *
++			 * [1] https://www.spinics.net/lists/linux-mm/msg142700.html
++			 */
++			if (!page_has_buffers(page)) {
++				ext4_warning_inode(mpd->inode, "page %lu does not have buffers attached", page->index);
++				ClearPageDirty(page);
++				unlock_page(page);
++				continue;
++			}
++
+ 			if (mpd->map.m_len == 0)
+ 				mpd->first_page = page->index;
+ 			mpd->next_page = page->index + 1;
 -- 
-Thanks,
-Tadeusz
+2.31.0
+
