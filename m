@@ -2,148 +2,196 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD2E4C5ED8
-	for <lists+linux-ext4@lfdr.de>; Sun, 27 Feb 2022 21:52:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC584C611E
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Feb 2022 03:32:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230470AbiB0Uwn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 27 Feb 2022 15:52:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47220 "EHLO
+        id S232173AbiB1Cd1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 27 Feb 2022 21:33:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbiB0Uwm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 27 Feb 2022 15:52:42 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B9BC6CA56;
-        Sun, 27 Feb 2022 12:52:05 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id bq11so14860773edb.2;
-        Sun, 27 Feb 2022 12:52:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z1ZiN7+HYTmPnWKRoprEVX0bDh5aoOqwKR44umyuBnc=;
-        b=Zf8bWunWTeV2YZSJjRrBN09d5dmBapzHaNBQrsPwqGtJWYYzqN43dRmbrmcB6MS/af
-         7qjQMKGpPmTEblVepX+4mJHAmKKWZx+ZVR3A31e3t9eSQ3NviCom+7lLOqIngkinN9dg
-         gM8YblLTaOxqldX04nC1ZewAmIG4S6psZK09xFYkrEHW/F+A+qhow57UVdU77fN23Sa6
-         Ri60eghsYyPDN/RsE5CbRd6QqEyOXS4fhtlorza6cpqc1vLf1LZdiUH4wBFAkKsCdISn
-         pUbzeEY4U46dcP5WuQaJqfkTq2plX11jM4OsyqK7CBRq2RW+P/rlxIQ+R/HtLUTBFAkc
-         6tig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z1ZiN7+HYTmPnWKRoprEVX0bDh5aoOqwKR44umyuBnc=;
-        b=iXZ8rg7AZhAjaLCKcp4z0G2lIInS3bcM6yFpAwwhj01EMUyAJm3He4g0GhDS4zrOuF
-         dEuNdIvDaLbrs3kRjD8gB7nsajtJmUD4fwW64kmrmz7KoSD4tvVNn8Vj1Xzy75a50qEj
-         sgdSAofR8gpzsAipLzDwGkiknuqL+zaPGZG5n5GN0cXgRxLR/3iJQHH4ds5VED0rO5tt
-         sH0AXKC7u2KcwUg/Z+7QX7sNkz7YdEtxqcjVYse5TLwnv7/3dqE4+ro9cB1eJr+TtSla
-         AHOuNGheU3uu3eXM/Wmt1uAY1Pjp7h8GTwF7e/rHk1wedO+218RkUh5QZ6hr8rE/6oAM
-         gO1g==
-X-Gm-Message-State: AOAM53344HOImqZSLJX0uui5IAl9XL/pqAc/0zZMSdChCFEE3rV9nrgZ
-        GEQ9ZJBOqltYkMwZT8PG/y+B6DR1Bzs8mOxVY2w=
-X-Google-Smtp-Source: ABdhPJw9LzCp9nh96a/8BcX1Zoc1Z5NOv4vzNOYAd49IifSS/tujrO1CbuwamzfbKRP5GNeNaQwcYwWM5QwIEMeyYJs=
-X-Received: by 2002:a50:d496:0:b0:413:2cf1:efb6 with SMTP id
- s22-20020a50d496000000b004132cf1efb6mr16536681edi.150.1645995123598; Sun, 27
- Feb 2022 12:52:03 -0800 (PST)
+        with ESMTP id S231653AbiB1Cd0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 27 Feb 2022 21:33:26 -0500
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DCA538DB3;
+        Sun, 27 Feb 2022 18:32:46 -0800 (PST)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4K6PTN3yk6z9sMq;
+        Mon, 28 Feb 2022 10:29:12 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Mon, 28 Feb
+ 2022 10:32:43 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
+        <lczerner@redhat.com>, Ye Bin <yebin10@huawei.com>
+Subject: [PATCH v3] ext4:fix file system corrupted when rmdir non empty directory with IO error
+Date:   Mon, 28 Feb 2022 10:48:15 +0800
+Message-ID: <20220228024815.3952506-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <cover.1645558375.git.riteshh@linux.ibm.com> <e91b6872860df3ec520799a5d0b65e54ccf32407.1645558375.git.riteshh@linux.ibm.com>
- <CAK896s7V7wj0Yiu0NQEFvmS9-oivJUosgMYW5UBJ4cX2YCSh6g@mail.gmail.com>
- <20220223135755.plbr2fvt66k3xyn5@riteshh-domain> <CAK896s7GsY_qGPZpA0KvmfsA7frkP0=nO8Fg3qd-ObmL-g+8AA@mail.gmail.com>
-In-Reply-To: <CAK896s7GsY_qGPZpA0KvmfsA7frkP0=nO8Fg3qd-ObmL-g+8AA@mail.gmail.com>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Sun, 27 Feb 2022 12:51:52 -0800
-Message-ID: <CAD+ocbySFC=fzqotCdg5hsNE8D3H_7eoU2QdHE0jmsa+z_x0qw@mail.gmail.com>
-Subject: Re: [External] [RFC 9/9] ext4: fast_commit missing tracking updates
- to a file
-To:     Xin Yin <yinxin.x@bytedance.com>
-Cc:     Ritesh Harjani <riteshh@linux.ibm.com>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-> > So, yes these are few corner cases which I want to take a deeper look at.
-> > I vaugely understand that this reset inode is done since we anyway might have
-> > done the full commit for previous tid, so we can reset the inode track range.
-> >
-> > So, yes, we should carefully review this as well that if jbd2 commit happens for
-> > an inode which is still part of MAIN_Q, then does it make sense to still
-> > call ext4_fc_reset_inode() for that inode in ext4_fc_track_template()?
-What this code assumes here is that if tid != ei->i_sync_tid, then the
-fast commit information present in the inode cannot be trusted. This
-is useful when the inode is added to the fast commit queue for the
-first ever or first time during the current transaction. Also note the
-"update" parameter, if update is set to false, then the track
-functions know that this is the first time the track function is
-called since the last (fast / full) commit.
+We inject IO error when rmdir non empty direcory, then got issue as follows:
+step1: mkfs.ext4 -F /dev/sda
+step2: mount /dev/sda  test
+step3: cd test
+step4: mkdir -p 1/2
+step5: rmdir 1
+	[  110.920551] ext4_empty_dir: inject fault
+	[  110.921926] EXT4-fs warning (device sda): ext4_rmdir:3113: inode #12:
+	comm rmdir: empty directory '1' has too many links (3)
+step6: cd ..
+step7: umount test
+step8: fsck.ext4 -f /dev/sda
+	e2fsck 1.42.9 (28-Dec-2013)
+	Pass 1: Checking inodes, blocks, and sizes
+	Pass 2: Checking directory structure
+	Entry '..' in .../??? (13) has deleted/unused inode 12.  Clear<y>? yes
+	Pass 3: Checking directory connectivity
+	Unconnected directory inode 13 (...)
+	Connect to /lost+found<y>? yes
+	Pass 4: Checking reference counts
+	Inode 13 ref count is 3, should be 2.  Fix<y>? yes
+	Pass 5: Checking group summary information
 
-I think the simple invariant that we need to follow is that, once an
-inode is committed (either by fast or full commit)
-ext4_fc_reset_inode() should be called exactly once before any track
-functions get called. So, if we can ensure that reset gets called on
-all inodes that were committed by fast commit / full commit exactly
-once before any track functions update the fc info, then we don't
-really need this reset call here.
+	/dev/sda: ***** FILE SYSTEM WAS MODIFIED *****
+	/dev/sda: 12/131072 files (0.0% non-contiguous), 26157/524288 blocks
 
-> > > > 2. Also is this an expected behavior from the design perspective of
-> > > >    fast_commit. i.e.
-> > > >    a. the inode can be part of two tids?
-From a design perspective, in fast commits, inode updates are not
-strictly tied to tids. We reuse i_sync_tid only to detect if the
-updates to an inode are committed or not. But at a high level, inode
-can be in 3 states from fc perspective - (1) inode is not modified
-since last fast commit / full commit (2) inode is modified since last
-fast commit / full commit (3) inode is being committed by fast commit.
-Well, this makes me think that these states can also be represented by
-inode states, and maybe if we do that we can get rid of reliance on
-i_sync_tid altogether? This needs a bit more thought.
-> > > >    b. And that while a full commit is in progress, the inode can still
-> > > >    receive updates but using a new transaction tid.
-Yeah, inode can still receive updates if a full commit is ongoing. If
-a fast commit is ongoing on a particular update, then the inode will
-not receive updates. EXT4_FC_STATE_COMMITTING will protect against it.
-In the new patch that I'm working on (sorry for the delay on that),
-what I'm doing is that handles that modify inode wait if the inode is
-being committed.
+ext4_rmdir
+	if (!ext4_empty_dir(inode))
+		goto end_rmdir;
+ext4_empty_dir
+	bh = ext4_read_dirblock(inode, 0, DIRENT_HTREE);
+	if (IS_ERR(bh))
+		return true;
+Now if read directory block failed, 'ext4_empty_dir' will return true, assume
+directory is empty. Obviously, it will lead to above issue.
+To solve this issue, if read directory block failed 'ext4_empty_dir' just
+return false. To avoid making things worse when file system is already
+corrupted, 'ext4_empty_dir' also return false.
 
-- Harshad
-> > > >
-> > > > Frankly speaking, since I was also working on other things, so I haven't
-> > > > yet got the chance to completely analyze the situation yet.
-> > > > Once I have those things sorted, I will spend more time on this, to
-> > > > understand it more. Meanwhile if you already have some answers to above
-> > > > queries/observations, please do share those here.
-> > > >
-> > > > Links
-> > > > =========
-> > > > [1] https://raw.githubusercontent.com/riteshharjani/LinuxStudy/master/ext4/fast_commit/fc_inode_missing_updates_ino_979.txt
-> > > >
-> > > > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> > > > ---
-> > > >  fs/ext4/fast_commit.c | 2 ++
-> > > >  1 file changed, 2 insertions(+)
-> > > >
-> > > > diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> > > > index 8803ba087b07..769b584c2552 100644
-> > > > --- a/fs/ext4/fast_commit.c
-> > > > +++ b/fs/ext4/fast_commit.c
-> > > > @@ -1252,6 +1252,8 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
-> > > >         spin_lock(&sbi->s_fc_lock);
-> > > >         list_for_each_entry_safe(iter, iter_n, &sbi->s_fc_q[FC_Q_MAIN],
-> > > >                                  i_fc_list) {
-> > > > +               if (full && iter->i_sync_tid > tid)
-> > > > +                       continue;
-> > > >                 list_del_init(&iter->i_fc_list);
-> > > >                 ext4_clear_inode_state(&iter->vfs_inode,
-> > > >                                        EXT4_STATE_FC_COMMITTING);
-> > > > --
-> > > > 2.31.1
-> > > >
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ fs/ext4/inline.c |  9 ++++-----
+ fs/ext4/namei.c  | 10 +++++-----
+ 2 files changed, 9 insertions(+), 10 deletions(-)
+
+diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+index e42941803605..9c076262770d 100644
+--- a/fs/ext4/inline.c
++++ b/fs/ext4/inline.c
+@@ -1783,19 +1783,20 @@ bool empty_inline_dir(struct inode *dir, int *has_inline_data)
+ 	void *inline_pos;
+ 	unsigned int offset;
+ 	struct ext4_dir_entry_2 *de;
+-	bool ret = true;
++	bool ret = false;
+ 
+ 	err = ext4_get_inode_loc(dir, &iloc);
+ 	if (err) {
+ 		EXT4_ERROR_INODE_ERR(dir, -err,
+ 				     "error %d getting inode %lu block",
+ 				     err, dir->i_ino);
+-		return true;
++		return false;
+ 	}
+ 
+ 	down_read(&EXT4_I(dir)->xattr_sem);
+ 	if (!ext4_has_inline_data(dir)) {
+ 		*has_inline_data = 0;
++		ret = true;
+ 		goto out;
+ 	}
+ 
+@@ -1804,7 +1805,6 @@ bool empty_inline_dir(struct inode *dir, int *has_inline_data)
+ 		ext4_warning(dir->i_sb,
+ 			     "bad inline directory (dir #%lu) - no `..'",
+ 			     dir->i_ino);
+-		ret = true;
+ 		goto out;
+ 	}
+ 
+@@ -1823,16 +1823,15 @@ bool empty_inline_dir(struct inode *dir, int *has_inline_data)
+ 				     dir->i_ino, le32_to_cpu(de->inode),
+ 				     le16_to_cpu(de->rec_len), de->name_len,
+ 				     inline_size);
+-			ret = true;
+ 			goto out;
+ 		}
+ 		if (le32_to_cpu(de->inode)) {
+-			ret = false;
+ 			goto out;
+ 		}
+ 		offset += ext4_rec_len_from_disk(de->rec_len, inline_size);
+ 	}
+ 
++	ret = true;
+ out:
+ 	up_read(&EXT4_I(dir)->xattr_sem);
+ 	brelse(iloc.bh);
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index 8cf0a924a49b..39e223f7bf64 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -2997,14 +2997,14 @@ bool ext4_empty_dir(struct inode *inode)
+ 	if (inode->i_size < ext4_dir_rec_len(1, NULL) +
+ 					ext4_dir_rec_len(2, NULL)) {
+ 		EXT4_ERROR_INODE(inode, "invalid size");
+-		return true;
++		return false;
+ 	}
+ 	/* The first directory block must not be a hole,
+ 	 * so treat it as DIRENT_HTREE
+ 	 */
+ 	bh = ext4_read_dirblock(inode, 0, DIRENT_HTREE);
+ 	if (IS_ERR(bh))
+-		return true;
++		return false;
+ 
+ 	de = (struct ext4_dir_entry_2 *) bh->b_data;
+ 	if (ext4_check_dir_entry(inode, NULL, de, bh, bh->b_data, bh->b_size,
+@@ -3012,7 +3012,7 @@ bool ext4_empty_dir(struct inode *inode)
+ 	    le32_to_cpu(de->inode) != inode->i_ino || strcmp(".", de->name)) {
+ 		ext4_warning_inode(inode, "directory missing '.'");
+ 		brelse(bh);
+-		return true;
++		return false;
+ 	}
+ 	offset = ext4_rec_len_from_disk(de->rec_len, sb->s_blocksize);
+ 	de = ext4_next_entry(de, sb->s_blocksize);
+@@ -3021,7 +3021,7 @@ bool ext4_empty_dir(struct inode *inode)
+ 	    le32_to_cpu(de->inode) == 0 || strcmp("..", de->name)) {
+ 		ext4_warning_inode(inode, "directory missing '..'");
+ 		brelse(bh);
+-		return true;
++		return false;
+ 	}
+ 	offset += ext4_rec_len_from_disk(de->rec_len, sb->s_blocksize);
+ 	while (offset < inode->i_size) {
+@@ -3035,7 +3035,7 @@ bool ext4_empty_dir(struct inode *inode)
+ 				continue;
+ 			}
+ 			if (IS_ERR(bh))
+-				return true;
++				return false;
+ 		}
+ 		de = (struct ext4_dir_entry_2 *) (bh->b_data +
+ 					(offset & (sb->s_blocksize - 1)));
+-- 
+2.31.1
+
