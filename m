@@ -2,62 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C9B4C7EBA
-	for <lists+linux-ext4@lfdr.de>; Tue,  1 Mar 2022 00:49:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E30D84C7EBB
+	for <lists+linux-ext4@lfdr.de>; Tue,  1 Mar 2022 00:50:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbiB1Xub (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Feb 2022 18:50:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58652 "EHLO
+        id S230318AbiB1Xut (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 28 Feb 2022 18:50:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbiB1Xub (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Feb 2022 18:50:31 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A42119873
-        for <linux-ext4@vger.kernel.org>; Mon, 28 Feb 2022 15:49:47 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id d17so12578116pfl.0
-        for <linux-ext4@vger.kernel.org>; Mon, 28 Feb 2022 15:49:47 -0800 (PST)
+        with ESMTP id S230102AbiB1Xus (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Feb 2022 18:50:48 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41FEA119873
+        for <linux-ext4@vger.kernel.org>; Mon, 28 Feb 2022 15:50:08 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id ay5so9239766plb.1
+        for <linux-ext4@vger.kernel.org>; Mon, 28 Feb 2022 15:50:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dilger-ca.20210112.gappssmtp.com; s=20210112;
         h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
          :references;
-        bh=5eLPyv9GYaYv8JfqDraQW+/d0kVtcC5QEY7In8MUAgs=;
-        b=MEosQw1ERLlcb+OwQ04jm3E4FYsTEgUYPmiEkF/Rcedg98E134oD0U5KTHbLYGYasJ
-         KK4mD54ZCbySLVP7pc0xpUfkyoIKIJL3DH+Mk/NZ2qRg4Is8TuBEKGhzx3hRbf3jYoVs
-         PneWVvFUUUbCHQpa2dFO5oi097idhhAsJbCFv9a0+bP5QT2dJPelASetzqg5MW0Bidf1
-         LvZTGy0INYfG5xOWlaQtY68FVcuP6tZGhDGshtHdt84TzGUKGikXrn/cdmZC+mxSGzbf
-         sxg0qmDV64+oKiZhEj+XjAI+L8OqjbybQlri5d8FaOWSIjNqSxFMA4pL27MS2wyJUXRc
-         JfXQ==
+        bh=u8Abd/MrDKI+DWZcXVtOCY+RsYPUFer65FcYkMxNbn0=;
+        b=pLTGKY7ajJRo3wYjk/IwD7mJ3+YdL8dQieNpBeL8t9dtuFjMooQ04NZCe7mVBt6X9c
+         GPLVkfSRYQdpVRSOCpUyB5u2TxMvbbp+0LwcINIPfluiCTw5EEVLZzBJ0kbo/0hhdDJZ
+         xXVCTBHQQep6qBunmj/5aWtAgTt/uHFaq110SOmefseGMVU7epSH0wWli7dFSs6ssUjF
+         h6lZsbQooGZsxb5J0SfGa3thS12lMegOq6hhsR26jXb58zcRS6Pinq+LDkFtfi/BfP6x
+         SauW9pgASdHbNDLIKSnR/qjrYPk8XuxlUj+oyOE+BVgLX7UYYA/0fD2MUjKCvn4AV858
+         TTZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:message-id:mime-version:subject:date
          :in-reply-to:cc:to:references;
-        bh=5eLPyv9GYaYv8JfqDraQW+/d0kVtcC5QEY7In8MUAgs=;
-        b=wv2RWPzQBikt7eBEeK93uTtRZHHtbZidIaUJqdgWis/XjAyIoaQZm1CLqdtnueXhfZ
-         UB12/Wr48ezOIt0txi+ROsXHTsYFV6rdQKVgoOHoHw+nzR98IbveHp0mqL2NjUy3qHVj
-         iNormEcpCPQhusBaMqEMUQly0IwRwU1HUFR50ifIPA3lwlVbmUoZpjkFjQfjErrFNVg/
-         NAZLKDgtAlG4htqc5kiP9if6AStGhqrIPZc5gFusVwx1FnkSckwUM2JGkfjdwlIsv0+2
-         m1RIzYAs+gJ6HoGb2XlMpgyaxAfWIHcZ5U3Y+dPAs4fBuh83NUKpC81WWkKTrBPnUa6m
-         e0Fw==
-X-Gm-Message-State: AOAM531M/dAjJVhnZ3Weu5mfSiH2lM+WcPk3+hLZDHZYBcNtqXEsw0If
-        +lwjCg/YNFN8z+jdxvyph57Ef7MpGDifrA==
-X-Google-Smtp-Source: ABdhPJzrvJAp2WL1rrngrMQCsh+FbTlYkA8cYVHkh4x8ewumuRLAl0JMyBBUwyxvv46ODf5AAsy4Pw==
-X-Received: by 2002:a05:6a00:1a07:b0:4f3:eba5:42ae with SMTP id g7-20020a056a001a0700b004f3eba542aemr12971015pfv.53.1646092186814;
-        Mon, 28 Feb 2022 15:49:46 -0800 (PST)
+        bh=u8Abd/MrDKI+DWZcXVtOCY+RsYPUFer65FcYkMxNbn0=;
+        b=fjf6Q2seYUqLVvOmdHMlYJwrU1Zl/R/4y18VZYezej4THBiUaYolH6Azfp2ECdx5hb
+         UO2caoQLokrZ38kxpv/ObHpjVZnsh8e7BGK17efFhSBZmtoHGxl7uGv1tNzPNnnnyy/E
+         1VWUJF4FxPRkNvxhRCBGiLvs4wPUIiPFIPC6MFBVxBFOA2mowdhn6UEwXtjXSr2EpCYb
+         /9Uz4rZ9S1MUTURfnmJWdvMugsQKPUut2P29p8E6rZOda8n7OVTgmD0RM8y2VSfYaDWe
+         UeTxW+flEEKsp1VYKuLFs9WgXXUO84efFC+ctq5EK70r3IlGCb862p/hp9o5lErwHEb+
+         jsoQ==
+X-Gm-Message-State: AOAM532dH1y8lfdiYCQVHh4dBhAxsNy7Gjoe8osFKp81ISMbIKVBfU39
+        KmjqZh/CDe+d+CV8bicDh88BKnRb76cvHQ==
+X-Google-Smtp-Source: ABdhPJxg9UEEF5mhooE2LBblkVRxbAR7gchJy5pFhOIcp9LR+fkFKHf8HHB4jEGOs7TETXeFkzLG9w==
+X-Received: by 2002:a17:902:d0d2:b0:14f:d360:c103 with SMTP id n18-20020a170902d0d200b0014fd360c103mr22495830pln.7.1646092207659;
+        Mon, 28 Feb 2022 15:50:07 -0800 (PST)
 Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id u25-20020a62ed19000000b004f140515d56sm14213333pfh.46.2022.02.28.15.49.45
+        by smtp.gmail.com with ESMTPSA id u25-20020a62ed19000000b004f140515d56sm14213333pfh.46.2022.02.28.15.50.07
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 28 Feb 2022 15:49:46 -0800 (PST)
+        Mon, 28 Feb 2022 15:50:07 -0800 (PST)
 From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <07A89A7C-93D0-4B86-BCE7-BC77F671C67C@dilger.ca>
+Message-Id: <A6BAF3BC-96A6-4EBB-82DB-BBB3AF078BA0@dilger.ca>
 Content-Type: multipart/signed;
- boundary="Apple-Mail=_39F772CF-8919-4126-AAF4-D52C6A0548FC";
+ boundary="Apple-Mail=_2BBCF1DB-5776-4C6B-BD6A-64CD08C7A3BF";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
 Subject: Re: [PATCH 3/3] e2fsprogs: use mallinfo2 instead of mallinfo if
  available
-Date:   Mon, 28 Feb 2022 16:49:43 -0700
+Date:   Mon, 28 Feb 2022 16:50:06 -0700
 In-Reply-To: <20220217092500.40525-3-lczerner@redhat.com>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, linux-ext4@vger.kernel.org
 To:     Lukas Czerner <lczerner@redhat.com>
 References: <20220217092500.40525-1-lczerner@redhat.com>
  <20220217092500.40525-3-lczerner@redhat.com>
@@ -72,7 +72,7 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
---Apple-Mail=_39F772CF-8919-4126-AAF4-D52C6A0548FC
+--Apple-Mail=_2BBCF1DB-5776-4C6B-BD6A-64CD08C7A3BF
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain;
 	charset=us-ascii
@@ -86,8 +86,6 @@ field
 > widths. Use mallinfo2 if available.
 >=20
 > Signed-off-by: Lukas Czerner <lczerner@redhat.com>
-
-Nice that a replacement for mallinfo() API was finally added to glibc.
 
 Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 
@@ -261,7 +259,7 @@ Cheers, Andreas
 
 
 
---Apple-Mail=_39F772CF-8919-4126-AAF4-D52C6A0548FC
+--Apple-Mail=_2BBCF1DB-5776-4C6B-BD6A-64CD08C7A3BF
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
 	filename=signature.asc
@@ -272,19 +270,19 @@ Content-Description: Message signed with OpenPGP
 -----BEGIN PGP SIGNATURE-----
 Comment: GPGTools - http://gpgtools.org
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmIdX5cACgkQcqXauRfM
-H+DPYBAArZNJTkZ64edLbWljPOk6F6ucwFrK40HgBg1ojrFdYFwfIKphumAdmcde
-JcloiEsIC8m3dg5ud0BBJHbHUPoG/UddLTEfh4UoK9AUkmRVwq50TxBPwl4xqmAy
-Lp9YJM4Pvn5+B+wqUQKUA+VKVVU/1vs95rRoegFJL6lmalxouHUXSz7Bel+FNPFE
-+N1HQugDL/1lPbjgNJjc+Bi5CoNwoy0OppNkoCbSAGl2GiJXJFqzq/iyM9nbK08f
-SRnJyaRr3Kf4wGuBerrwDatwjaM0NPBGOQ05srZnHA4X0JyLR1e9WyV9jrzijDNy
-x7acU/QuKQIje51Gd8cDw+6p8Laj7gMAuUp/OiW4YklDAKZMX71zTsYGrslBFQRe
-Ya2QArZPGzObRWLrl0iNHFsIpLa+/Ex9Ue81tdTfpKZdoWwLRHe41vtElG738aNM
-B0vkzLrWrPAJHOkSpGGMKVPxChfWU3n3Js+KVFwIg8s7QM4wpNKP1mBYUgbLi8Kd
-uh7hH1larxP5BOWuw71N4wTW46WfpThCWlvm1Mqx/ZJCAaaWbx+UvREiDDuZrT1u
-EAtVQFEyZm4qj+tksdYVWfXYPbFo+qo4UJ6bot54y8njzm4cnr8hMKvnTkd1cCHi
-RXHC//UdxAHqkgmQ5bCZr3CGpvzKnWX9MHOTt9HzsN44886DjWE=
-=GfMG
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmIdX64ACgkQcqXauRfM
+H+CmWBAAoiNV+ll2z+T6lSoZKMTirPVZQRhuwW34PcdWfgREPB0MiNeX5MYfB4of
+rhmVHk3uW4GPFbBQB9MYwqQNkHqAjqUjAy/Zx37H5eKUt96st34Y9xspiaWUCsnb
+8r1/GJ4h4cNZRFZ2fDuOxJQilkTsnpG/BYMJscaOLc2jWaPcXypa+mQ+I/TaEzyb
+8i7RedqLTuT9mjeCkSMBjio2hWe5joeY0mwPhgqdowB7ffUjb79BuvjUgo31oGep
+EjLVxoXqMbemZOhT72i6q5EDzQdGDLzbhMMymbqHGtcPtLGN64sbsDSDFmlmDocr
+eG7/ix2AZVrF1y9B3m/otf/e9K5sMPEUeukwJRS516PnEnORbKvUecU2+NcKP9mE
+fn1I7AvO1J8m4yg6feCjkSbBVLtX+NLTjJJpIo9y9Zae7m3iGrwjoC8BvwkCZHI3
++QpkcKl593vDH0dkd5oradJoBXgPM1fQbIzEXzz+gRmzlEuXmMzvqcP7m+n61xqN
+5dM+RROzcc7VAYCSQvnHFlP/2+mqORKaTCaUO9JgFadulxAcD+hDB+eLjEa4EK6l
+n8KkP5ysPGaof/jvG+P3xOjoVHcl9JCGw1bzKVCX2we2bncn302EhzqHUtvOYqTH
+3wGf0CjjbBAWciMgBLwN5fTR6Sg19JSJCnDD5udx5jgQhZHoHvI=
+=tDPK
 -----END PGP SIGNATURE-----
 
---Apple-Mail=_39F772CF-8919-4126-AAF4-D52C6A0548FC--
+--Apple-Mail=_2BBCF1DB-5776-4C6B-BD6A-64CD08C7A3BF--
