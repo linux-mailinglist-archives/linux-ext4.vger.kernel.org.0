@@ -2,86 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB024C6269
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Feb 2022 06:19:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9875E4C655F
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Feb 2022 10:05:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233060AbiB1FUQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Feb 2022 00:20:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53130 "EHLO
+        id S234225AbiB1JFa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 28 Feb 2022 04:05:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230123AbiB1FUP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Feb 2022 00:20:15 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8613939154;
-        Sun, 27 Feb 2022 21:19:37 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E6BD921155;
-        Mon, 28 Feb 2022 05:19:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1646025575; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        with ESMTP id S234294AbiB1JFV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Feb 2022 04:05:21 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E9C419AC
+        for <linux-ext4@vger.kernel.org>; Mon, 28 Feb 2022 01:04:04 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 03E591F3A2;
+        Mon, 28 Feb 2022 09:04:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1646039043; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OsOdRKyOPTsqFVySVeje99MCazN8FHXIRZGctTB3Fjc=;
-        b=1aDnYNyCMKoqi7852ELng+RjN9qj4H3oZKIs6lZKTxoiwJvkWraBZGmj+Lgr7uB+1SHFJz
-        Yh2mZu17ZFxMhdj6twoLK7xeDGS6uw7JuUWs/fN+ewmZBdcdER+polBa/xGaRr74gldhFA
-        Ag1t4rw/IZDJ70lWUTD3DCkE1pDKQVg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1646025575;
+        bh=vtRnU0foWoN2rM3Xp2ByyjTu26o9/VRblCeANRjwRPQ=;
+        b=w+LPVvjIMOgEvAok78lIirhEcujZm1UL48u9cxRWg903UONHVBFUiZPUbqhr4Fn+9q+6Hg
+        5PyeR6qJay29/c2YUd6e8rqzd4mNfiCY8CEUcF96B4Pcel9cUgLFEeXEHr2sbL+/3n1jCC
+        deMBVRXji2WcseM4i+MQ1Q9q53Zpf38=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1646039043;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OsOdRKyOPTsqFVySVeje99MCazN8FHXIRZGctTB3Fjc=;
-        b=ETy1bbk4AvRTgoyR516RJsfNTn47d24xVl6EFjxT7PerkTAmm+E/x1KFcnx2xiTY9paC/z
-        4vNKWy2UyfSPGfDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        bh=vtRnU0foWoN2rM3Xp2ByyjTu26o9/VRblCeANRjwRPQ=;
+        b=f3KVzNw2UZs9lzFlEsJGIOP1Ia3lHbOozBzDlW4cDmc9oI5c3xO/MW/uanByDsx5xHT/ck
+        4tFAI5qMwfPS1CBw==
+Received: from quack3.suse.cz (unknown [10.100.224.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6E5C712FC5;
-        Mon, 28 Feb 2022 05:19:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 5BzICmBbHGIXfAAAMHmgww
-        (envelope-from <neilb@suse.de>); Mon, 28 Feb 2022 05:19:28 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        by relay2.suse.de (Postfix) with ESMTPS id E73A2A3B84;
+        Mon, 28 Feb 2022 09:04:02 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 7B93EA060A; Mon, 28 Feb 2022 10:03:59 +0100 (CET)
+Date:   Mon, 28 Feb 2022 10:03:59 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Zhang Yi <yi.zhang@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, yukuai3@huawei.com
+Subject: Re: [PATCH v2] ext4: fix underflow in ext4_max_bitmap_size()
+Message-ID: <20220228090359.dcqajobuol3ripur@quack3.lan>
+References: <20220225102837.3048196-1-yi.zhang@huawei.com>
+ <20220225123851.flahv2nlvpqq3d33@quack3.lan>
+ <3335eb5d-76c0-0b01-3dca-b2e2ccdf91c0@huawei.com>
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Andrew Morton" <akpm@linux-foundation.org>
-Cc:     "Jan Kara" <jack@suse.cz>, "Wu Fengguang" <fengguang.wu@intel.com>,
-        "Jaegeuk Kim" <jaegeuk@kernel.org>, "Chao Yu" <chao@kernel.org>,
-        "Jeff Layton" <jlayton@kernel.org>,
-        "Ilya Dryomov" <idryomov@gmail.com>,
-        "Miklos Szeredi" <miklos@szeredi.hu>,
-        "Trond Myklebust" <trond.myklebust@hammerspace.com>,
-        "Anna Schumaker" <anna.schumaker@netapp.com>,
-        "Ryusuke Konishi" <konishi.ryusuke@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "Philipp Reisner" <philipp.reisner@linbit.com>,
-        "Lars Ellenberg" <lars.ellenberg@linbit.com>,
-        "Paolo Valente" <paolo.valente@linaro.org>,
-        "Jens Axboe" <axboe@kernel.dk>, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: [PATCH 02/11] MM: document and polish read-ahead code.
-In-reply-to: <20220227204728.b2eb5dd94ecc3e86912bacad@linux-foundation.org>
-References: <164447124918.23354.17858831070003318849.stgit@noble.brown>,
- <164447147257.23354.2801426518649016278.stgit@noble.brown>,
- <20220210122440.vqth5mwsqtv6vjpq@quack3.lan>,
- <164453611721.27779.1299851963795418722@noble.neil.brown.name>,
- <20220224182622.n7abfey3asszyq3x@quack3.lan>,
- <164602251992.20161.9146570952337454229@noble.neil.brown.name>,
- <20220227204728.b2eb5dd94ecc3e86912bacad@linux-foundation.org>
-Date:   Mon, 28 Feb 2022 16:19:24 +1100
-Message-id: <164602556430.20161.5451268677064506613@noble.neil.brown.name>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3335eb5d-76c0-0b01-3dca-b2e2ccdf91c0@huawei.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -92,31 +64,53 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, 28 Feb 2022, Andrew Morton wrote:
-> On Mon, 28 Feb 2022 15:28:39 +1100 "NeilBrown" <neilb@suse.de> wrote:
+On Sat 26-02-22 10:30:31, Zhang Yi wrote:
+> On 2022/2/25 20:38, Jan Kara wrote:
+> > On Fri 25-02-22 18:28:37, Zhang Yi wrote:
+> >> +	/* Compute how many metadata blocks are needed */
+> >> +	meta_blocks = 1;
+> >> +	meta_blocks += 1 + ppb;
+> >> +	meta_blocks += 1 + ppb + ppb * ppb;
+> >> +	/* Does block tree limit file size? */
+> >> +	if (res + meta_blocks <= upper_limit)
+> >> +		goto check_lfs;
+> >> +
+> >> +	res = upper_limit;
+> >> +	/* How many metadata blocks are needed for addressing upper_limit? */
+> >> +	upper_limit -= EXT4_NDIR_BLOCKS;
+> >> +	/* indirect blocks */
+> >> +	meta_blocks = 1;
+> >> +	upper_limit -= ppb;
+> >> +	/* double indirect blocks */
+> >> +	if (upper_limit < ppb * ppb) {
+> >> +		meta_blocks += 1 + DIV_ROUND_UP_ULL(upper_limit, ppb);
+> >> +		res -= meta_blocks;
+> >> +		goto check_lfs;
+> >> +	}
+> >> +	meta_blocks += 1 + ppb;
+> >> +	upper_limit -= ppb * ppb;
+> >> +	/* tripple indirect blocks for the rest */
+> >> +	meta_blocks += 1 + DIV_ROUND_UP_ULL(upper_limit, ppb) +
+> >> +		DIV_ROUND_UP_ULL(upper_limit, ppb*ppb);
+> >> +	res -= meta_blocks;
+> >> +check_lfs:
+> >>  	res <<= bits;
+> > 
+> > Cannot this overflow loff_t again? I mean if upper_limit == (1 << 48) - 1
+> > and we have 64k blocksize, 'res' will be larger than (1 << 47) and thus 
+> > res << 16 will be greater than 1 << 63 => negative... Am I missing
+> > something?
+> > 
 > 
-> > When writing documentation the intent of the author is of some interest,
-> > but the behaviour of the code is paramount.
-> 
-> uh, er, ah, no.  The code describes the behaviour of the code.  The
-> comments are there to describe things other than the code's behaviour.
-> Things such as the author's intent.
-> 
-> Any deviation between the author's intent and the code's behaviour is
-> called a "bug", so it's pretty important to understand authorial
-> intent, no?
+> If upper_limit==(1 << 48) - 1, we could address the whole data blocks, the 'res'
+> is equal to EXT4_NDIR_BLOCKS + ppb + ppb*ppb + ((long long)ppb)*ppb*ppb, it's
+> smaller than (1 << 43) - 1, so res << 16 is still smaller 1 << 59, so it cannot
+> overflow loff_t again.
 
-When the author is writing the documentation - then yes - definitely. 
-When the "author" is several different people over a period of years,
-then it is not even certain that there is a single unified "intent".
+Indeed, sorry for confusion. Not sure where I did mistake in my math
+previously.
 
-The author's intent is less interesting not so much because it is less
-relevant, but because it is less available.
-
-So when writing third-party post-hoc documentation, the focus has to be
-on the code, though with reference to the intent to whatever extent it
-is available.  Bugs then show up where the actual behaviour turns out to
-be impossible to document coherently.
-
-Thanks,
-NeilBrown
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
