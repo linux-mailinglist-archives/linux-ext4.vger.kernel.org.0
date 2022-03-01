@@ -2,127 +2,120 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D120A4C9062
-	for <lists+linux-ext4@lfdr.de>; Tue,  1 Mar 2022 17:32:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E686C4C97E9
+	for <lists+linux-ext4@lfdr.de>; Tue,  1 Mar 2022 22:49:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233397AbiCAQdN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 1 Mar 2022 11:33:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40246 "EHLO
+        id S237484AbiCAVuQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 1 Mar 2022 16:50:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235535AbiCAQdL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Mar 2022 11:33:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A2865532E0
-        for <linux-ext4@vger.kernel.org>; Tue,  1 Mar 2022 08:32:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1646152348;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=n44Wo6vgxZpi5bWperlxNMLPYijk8JsTILs9YPWVgno=;
-        b=QOAHEmxYmFE++6qvDpinVAqosd1W69q/0e9tWSLqGUeVtvZQBhJJu8iuwq9mItRdsqMmAA
-        saAEyeelvl03M7DFQ6+ijw9jrFDTrOs21uPcuuZwp+eZzvOlybxv0YlckLxOKt42V2e0a5
-        7N8zlhS67nWJweswTzbZ8Lry/Q9rI2s=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-622-MW3_y2fQM0SwGopqqDPxrA-1; Tue, 01 Mar 2022 11:32:27 -0500
-X-MC-Unique: MW3_y2fQM0SwGopqqDPxrA-1
-Received: by mail-wm1-f70.google.com with SMTP id m21-20020a7bcf35000000b00380e364b5d2so1458632wmg.2
-        for <linux-ext4@vger.kernel.org>; Tue, 01 Mar 2022 08:32:27 -0800 (PST)
+        with ESMTP id S230285AbiCAVuP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Mar 2022 16:50:15 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6751E344E6;
+        Tue,  1 Mar 2022 13:49:33 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id p15so34211940ejc.7;
+        Tue, 01 Mar 2022 13:49:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YdlzCwyPb0LKAsdsGZLfJlZjUMsAn2owiB/9oX5i75A=;
+        b=qEuYBhepionLwIoGiaa9Ulp44ZeIAan84Vhc/O/Y6o6cp8Zgql95Q6rABAoxAdobZj
+         qQeN/ZTM7qbSTofEST/YutPsc9WDpRLj3l84/yd+1p2JbiHxLjBXXniDthmBLrCExdN/
+         hLyJmEdmjaXGscNd1Yun2TtagX/rVn+g/uiAAbrE9f4X/zMR1s+JgnEowiKxNaqVn9PV
+         Pek7b6OU1s1E2VhnRWYlLdkJ+FDcDWuF1T9WzLb3wqrEXeBR1s/7fkwoGz55JVYAAe8g
+         gH+3LOX9BdkqcrCTiHU28TFZjXh6+mdZPvUcCYNG80jvbK1oujAWLrD6mUpvEC1I7DLR
+         2jNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=n44Wo6vgxZpi5bWperlxNMLPYijk8JsTILs9YPWVgno=;
-        b=zk6a+LfFyL963J3y5btJ/Pu0/pKTmjdIkep5HU27gVcadHmd9ejiCtAk73lFHIRyDJ
-         3Wnz4Mf1/zhl0GjuDnprEmkioZSFu1vDShnj+5jtlqK3B7htO0tpw1dixHZiA1TtHiYo
-         baR3mpUmUON4MyToae68zNjbWy2tN4gwKwTnIfnCjlpZyCIAyF6nXCmsYpV5jHGPryq6
-         dP3s1ZyjnREp+lIRmcka1bo35it3t4Flk2ami/qy6QhmdpTVaNvc7/OvphRCux61oNW+
-         sSNKEbNSQVW/G0+sKNTKyjop0mGcllzGKikiKRKYGNMpnyntXroY4si8L7D3rBDyJoIn
-         yciA==
-X-Gm-Message-State: AOAM531OmA1YmsdB533cXz89sqJebL37AzIUjEE+UBQhEhRwzOesjpCk
-        eWysTfbra++AYZ4rS1mo5LTaBC9aPpgtIgx0CxFV7KwYhLGLH84kAOiqQ7sOkd43AzIXdEfPTiC
-        VPUWH7QHcA4JHK+iDYMaAGA==
-X-Received: by 2002:a05:6000:1b0c:b0:1ef:956e:3210 with SMTP id f12-20020a0560001b0c00b001ef956e3210mr10718765wrz.322.1646152346585;
-        Tue, 01 Mar 2022 08:32:26 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy3kzdNGIIvZpX2C9to3Pb3Y486zu3gVqra59S1lC+acXexuk7wv16jDLZDxszLnYK+EvUsSg==
-X-Received: by 2002:a05:6000:1b0c:b0:1ef:956e:3210 with SMTP id f12-20020a0560001b0c00b001ef956e3210mr10718743wrz.322.1646152346319;
-        Tue, 01 Mar 2022 08:32:26 -0800 (PST)
-Received: from ?IPV6:2003:cb:c70e:5e00:88ce:ad41:cb1b:323? (p200300cbc70e5e0088cead41cb1b0323.dip0.t-ipconnect.de. [2003:cb:c70e:5e00:88ce:ad41:cb1b:323])
-        by smtp.gmail.com with ESMTPSA id m34-20020a05600c3b2200b00380e3225af9sm3328629wms.0.2022.03.01.08.32.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Mar 2022 08:32:25 -0800 (PST)
-Message-ID: <85a68c56-7cce-ef98-7aa6-c68eabf3fa0b@redhat.com>
-Date:   Tue, 1 Mar 2022 17:32:24 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YdlzCwyPb0LKAsdsGZLfJlZjUMsAn2owiB/9oX5i75A=;
+        b=EkiQ5w5rz5aoXXKxu5fKXWmt35OL45G2JmV+OU2ZWTd+tIADIa1V2quEP1flkZnx/0
+         Uz690txdLA84VqSmsMP/TJHMhyWJVzO6b2qShVT95ZsgwkqYIMfGDyG8D/0hMWam3fNM
+         HBj1mennTV9xoGZFhLsfN0yORTup4hYKi02ZHbMnGU3HZ13mQs6IFaAeHunp3VytLoyv
+         l8fj/cGuquqhFcdCTz4ERQ9e4zOTQAnQqzgjXTXZD2f5iZQFxr5LpryCUirZC108k0om
+         4dousfUY1xb8kaO6ngvPo95++jCW1MzNw+ORbaOW0NAdswnPpXCsOEKmSyIbx/B2AWqr
+         8xoQ==
+X-Gm-Message-State: AOAM531TB96LNK3dOJkhK2GsN5al45NCWCXvQO0sSgRmqo1c7v80dGh4
+        sVhQV/LoSkNhF9Y60TRVPSZ6wVizVSDrsw51K8c=
+X-Google-Smtp-Source: ABdhPJwGpmDe1OSxAdDHA7AdYxADhyeiRyRx1A6rkz+OGFpxWqmchI7rXwhx1y2oXfad8rFcIase6SAsTWE4z2cHyOs=
+X-Received: by 2002:a17:907:6006:b0:6ce:46f:fe4b with SMTP id
+ fs6-20020a170907600600b006ce046ffe4bmr19818724ejc.7.1646171371927; Tue, 01
+ Mar 2022 13:49:31 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH] mm: split vm_normal_pages for LRU and non-LRU handling
-Content-Language: en-US
-To:     Felix Kuehling <felix.kuehling@amd.com>,
-        Alex Sierra <alex.sierra@amd.com>, jgg@nvidia.com
-Cc:     rcampbell@nvidia.com, willy@infradead.org, apopple@nvidia.com,
-        dri-devel@lists.freedesktop.org, linux-xfs@vger.kernel.org,
-        linux-mm@kvack.org, jglisse@redhat.com,
-        amd-gfx@lists.freedesktop.org, akpm@linux-foundation.org,
-        linux-ext4@vger.kernel.org, hch@lst.de
-References: <20220218192640.GV4160@nvidia.com>
- <20220228203401.7155-1-alex.sierra@amd.com>
- <2a042493-d04d-41b1-ea12-b326d2116861@redhat.com>
- <41469645-55be-1aaa-c1ef-84a123fdb4ea@amd.com>
- <bfae7d17-eb50-55b1-1275-5ba0f86a5273@redhat.com>
- <353c7bbd-b20e-8a7a-029a-cda9b531e5e8@amd.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <353c7bbd-b20e-8a7a-029a-cda9b531e5e8@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220228235741.102941-1-shy828301@gmail.com> <20220228235741.102941-2-shy828301@gmail.com>
+ <cfaefe6f-dd51-1595-a23c-1aa5dc8350ff@huawei.com>
+In-Reply-To: <cfaefe6f-dd51-1595-a23c-1aa5dc8350ff@huawei.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 1 Mar 2022 13:49:19 -0800
+Message-ID: <CAHbLzkqP36q+exOy3wqa84ziRE6E=ThccGH9rpYC6f8H7RXwWw@mail.gmail.com>
+Subject: Re: [PATCH 1/8] sched: coredump.h: clarify the use of MMF_VM_HUGEPAGE
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Song Liu <songliubraving@fb.com>,
+        Rik van Riel <riel@surriel.com>,
+        Matthew Wilcox <willy@infradead.org>, Zi Yan <ziy@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        darrick.wong@oracle.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 01.03.22 17:30, Felix Kuehling wrote:
-> Am 2022-03-01 um 11:22 schrieb David Hildenbrand:
->>>>>    		if (PageReserved(page))
->>>>> diff --git a/mm/migrate.c b/mm/migrate.c
->>>>> index c31d04b46a5e..17d049311b78 100644
->>>>> --- a/mm/migrate.c
->>>>> +++ b/mm/migrate.c
->>>>> @@ -1614,7 +1614,7 @@ static int add_page_for_migration(struct mm_struct *mm, unsigned long addr,
->>>>>    		goto out;
->>>>>    
->>>>>    	/* FOLL_DUMP to ignore special (like zero) pages */
->>>>> -	follflags = FOLL_GET | FOLL_DUMP;
->>>>> +	follflags = FOLL_GET | FOLL_DUMP | FOLL_LRU;
->>>>>    	page = follow_page(vma, addr, follflags);
->>>> Why wouldn't we want to dump DEVICE_COHERENT pages? This looks wrong.
->>> This function later calls isolate_lru_page, which is something you can't
->>> do with a device page.
->>>
->> Then, that code might require care instead. We most certainly don't want
->> to have random memory holes in a dump just because some anonymous memory
->> was migrated to DEVICE_COHERENT.
-> I don't think this code is for core dumps. The call chain I see is
-> 
-> SYSCALL_DEFINE6(move_pages, ...) -> kernel_move_pages -> do_pages_move 
-> -> add_page_for_migration
-> 
+On Tue, Mar 1, 2022 at 12:45 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
+>
+> On 2022/3/1 7:57, Yang Shi wrote:
+> > MMF_VM_HUGEPAGE is set as long as the mm is available for khugepaged by
+> > khugepaged_enter(), not only when VM_HUGEPAGE is set on vma.  Correct
+> > the comment to avoid confusion.
+> >
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > ---
+> >  include/linux/sched/coredump.h | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/include/linux/sched/coredump.h b/include/linux/sched/coredump.h
+> > index 4d9e3a656875..4d0a5be28b70 100644
+> > --- a/include/linux/sched/coredump.h
+> > +++ b/include/linux/sched/coredump.h
+> > @@ -57,7 +57,8 @@ static inline int get_dumpable(struct mm_struct *mm)
+> >  #endif
+> >                                       /* leave room for more dump flags */
+> >  #define MMF_VM_MERGEABLE     16      /* KSM may merge identical pages */
+> > -#define MMF_VM_HUGEPAGE              17      /* set when VM_HUGEPAGE is set on vma */
+> > +#define MMF_VM_HUGEPAGE              17      /* set when mm is available for
+> > +                                        khugepaged */
+>
+> I think this comment could be written in one line. Anyway, this patch looks good to me.
+> Thanks.
 
-Ah, sorry, I got mislead by FOLL_DUMP and thought we'd be in
-get_dump_page() . As you said, nothing to do.
+Yes, as long as we don't care about the 80 characters limit. I know
+the limit was bumped to 100 by checkpatch, but I have seen 80 was
+still preferred by a lot of people.
 
--- 
-Thanks,
+>
+> Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
 
-David / dhildenb
+Thanks.
 
+>
+> >  /*
+> >   * This one-shot flag is dropped due to necessity of changing exe once again
+> >   * on NFS restore
+> >
+>
