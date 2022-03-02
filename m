@@ -2,157 +2,90 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 005004CADC3
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Mar 2022 19:43:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 007FF4CB2D6
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Mar 2022 00:51:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239894AbiCBSo2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 2 Mar 2022 13:44:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51948 "EHLO
+        id S229635AbiCBXsW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 2 Mar 2022 18:48:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233944AbiCBSo2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Mar 2022 13:44:28 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5AFCA0ED;
-        Wed,  2 Mar 2022 10:43:44 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id a23so5656047eju.3;
-        Wed, 02 Mar 2022 10:43:44 -0800 (PST)
+        with ESMTP id S229641AbiCBXsU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Mar 2022 18:48:20 -0500
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D7D12D20A
+        for <linux-ext4@vger.kernel.org>; Wed,  2 Mar 2022 15:47:21 -0800 (PST)
+Received: by mail-vs1-xe2d.google.com with SMTP id w4so3726430vsq.1
+        for <linux-ext4@vger.kernel.org>; Wed, 02 Mar 2022 15:47:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MYacYFBXciHmpzBVvSdoS7PTXsJUtBNkCcTgWfD2hXg=;
-        b=IirjpbFJTyj19jcvRBrG6M2PJAxHcjEHQfbNn3mOZadb1e1ccHA/LRrHk1rksJpt35
-         MMt2dm7wSSrSlQQTxI44MM0nypv3syVFTI5nsJPKjrZqprWNhtUpFBqSmN7jueiuRM9O
-         nM1/br4YMIBeEaR/nknarhnm2LTZnxp8rxb9jOgLVboCFtdMZok9gz9GuCPYUoA0jX+N
-         IcsILGgEFTzGaOtAw+W4jNLvqf2OCbQ2R+153snnJ8Ltdo/8MshR/5j02p+VlkM+E33r
-         J0KpTmjs0vzUF2pWRa2+W654eN+vr/n+pXKZMBNudNlOAfIqSM9ZhZzjnl51p3wTxGZy
-         tlLA==
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language
+         :from:to:cc:references:in-reply-to:content-transfer-encoding;
+        bh=8YT+5Tuu3gutAxola1C4EJ30kzkV+xH/3+gyS4OqC4g=;
+        b=iTOOgdYB6yxg1D0ivofQEXlxyBi4W/UFtUwTl21Y49/Qn3OBZATzTxRH7EuSXEW8w3
+         npQt2t7kUwuYb0stnVDW122/7nLRPri9+VkYEQrPiJ/2jcYhiIKOWbeV+Iiqa6kYcsuM
+         6MfRCyr1uhTNRmwyBWsrIlJe9PPrGQYNf4zrjq0T2URmI6y/jF200ux/Q8RMq10RXI9y
+         MSJrkBba5ti/lB0SsqpqQpDj9+wnng2esGFn24FBwd22UMvHtQNDmuBVi2rs0lgXlEbI
+         V99Aa8Uq+/GnWjcn6DyKv9pUxTU856EfQuPDKfcwkcIcyALLzSUufp4B5/hsmuFhqg/c
+         FZgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MYacYFBXciHmpzBVvSdoS7PTXsJUtBNkCcTgWfD2hXg=;
-        b=TkHI2XU/n8ywJ8R+ZT3MFLG/e4zro/gZaQ5EBVMaYvr8mdDPfUx1iFhlRZqx70+B+D
-         5ZRTLb2vNR9xUeCY4gz8ruxsWDQkANC+Fk9DRS/XSspZU1DUqJbbwrq/Gu4VlA7iuzUd
-         KU5xWEzlNMAmQ5g8NySLtIuWXCoq6abLglAh2Z8h3aM9T/w5x3EuRx4erESza+6IESjF
-         50+uZkGLIIoz8iHKbmMJ+PAOK2bPSfDBX+GUv8wA9IZVEZFQozJCB/MMo8DS8yQHRmh8
-         ZLg/l0kSaLC7CG9cCGLqeCh492UjCKOhuy9Q31vDUp8ohWZujXGa66U7iU4YFgM2VKnO
-         n0ZA==
-X-Gm-Message-State: AOAM532SiP/XTfom5//6ANSxs8C0bl/OgCqo6uVplzYu5GSuwoyj6gNg
-        8hwLFCQCRY/k1YisdJmp4kaVTO2g5f+wHpQb+98=
-X-Google-Smtp-Source: ABdhPJyuYRtx7NDrJEc4gq8pmV8JxkyEHirpVjET0jmaEbM8g2xi3VgPWfm3DCWICSOT7fYRWup0wjnZgNE081ucq84=
-X-Received: by 2002:a17:906:e28a:b0:6d6:e2e9:d39d with SMTP id
- gg10-20020a170906e28a00b006d6e2e9d39dmr8101292ejb.2.1646246622894; Wed, 02
- Mar 2022 10:43:42 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:from:to:cc:references:in-reply-to
+         :content-transfer-encoding;
+        bh=8YT+5Tuu3gutAxola1C4EJ30kzkV+xH/3+gyS4OqC4g=;
+        b=U0/P9oRJX1RzLdLBlUX0GqV3f86LVW03zmYvtzENgYvzgZ7GnIj9EloVmdORVwH5gE
+         9Gi8jGYmJPM3ShoFL8KaQug4XugppFfEJzjh2PcHNN2Amp/5hleRvSc66UngXc1znUnW
+         PG0CDyhQERUVMmstQodcWVsRQyjedCKDUD66yIAY6Cl0DvqKTWDdVr2+SyYhcjj0iDUe
+         xFXyueGO0wTiYI+t3PVR5cPvs9ErQUHwcHFbVyPJe+90PY4pyRWNdB83zo8dJHPGGFFq
+         cvM3aDYISJNajP7th5nZLuWvmuGtAjWAIUr6lZZqdvoqIkSoJ3Cv7Be0vpwRWjx4qXXW
+         dxog==
+X-Gm-Message-State: AOAM531dM0b8LuPbpcQjZzakHvllzijFOlTi8cfZNaYCiOB2BITgA7ad
+        Ihs35LN8N/q/lKQxB7huvgXE3d8V18gU1Q==
+X-Google-Smtp-Source: ABdhPJxVOiRVynKEu7q0zu6Y5MmQT50vzebW/Yvvr/JNqdWV4W4ljgp/Bes5bzBSILzM1xLX3AV8MA==
+X-Received: by 2002:a05:6a00:139e:b0:4f1:37e5:c350 with SMTP id t30-20020a056a00139e00b004f137e5c350mr35598521pfg.27.1646262892979;
+        Wed, 02 Mar 2022 15:14:52 -0800 (PST)
+Received: from [192.168.254.17] ([50.39.160.154])
+        by smtp.gmail.com with ESMTPSA id rm8-20020a17090b3ec800b001bb82a67816sm120433pjb.52.2022.03.02.15.14.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Mar 2022 15:14:52 -0800 (PST)
+Message-ID: <346904fd-112a-8d57-9221-b5c729ea6056@linaro.org>
+Date:   Wed, 2 Mar 2022 15:14:51 -0800
 MIME-Version: 1.0
-References: <20220228235741.102941-1-shy828301@gmail.com> <20220228235741.102941-3-shy828301@gmail.com>
- <968ccc31-a87c-4657-7193-464f6b5b9259@huawei.com>
-In-Reply-To: <968ccc31-a87c-4657-7193-464f6b5b9259@huawei.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Wed, 2 Mar 2022 10:43:31 -0800
-Message-ID: <CAHbLzkqNq_H6Cdwzd-3VazsQbEz=ZUFU60ec+Py8w3nhx7E5pw@mail.gmail.com>
-Subject: Re: [PATCH 2/8] mm: khugepaged: remove redundant check for VM_NO_KHUGEPAGED
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Song Liu <songliubraving@fb.com>,
-        Rik van Riel <riel@surriel.com>,
-        Matthew Wilcox <willy@infradead.org>, Zi Yan <ziy@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: BUG in ext4_ind_remove_space
+Content-Language: en-US
+From:   Tadeusz Struk <tadeusz.struk@linaro.org>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        darrick.wong@oracle.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        linux-ext4@vger.kernel.org
+References: <48308b02-149b-1c47-115a-1a268dac6e24@linaro.org>
+ <20220225171016.zwhp62b3yzgewk6l@riteshh-domain>
+ <25749d7d-7036-0b71-3dd8-7b04dcc430e4@linaro.org>
+In-Reply-To: <25749d7d-7036-0b71-3dd8-7b04dcc430e4@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Mar 1, 2022 at 1:07 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
->
-> On 2022/3/1 7:57, Yang Shi wrote:
-> > The hugepage_vma_check() called by khugepaged_enter_vma_merge() does
-> > check VM_NO_KHUGEPAGED. Remove the check from caller and move the check
-> > in hugepage_vma_check() up.
-> >
-> > More checks may be run for VM_NO_KHUGEPAGED vmas, but MADV_HUGEPAGE is
-> > definitely not a hot path, so cleaner code does outweigh.
-> >
-> > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > ---
-> >  mm/khugepaged.c | 9 ++++++---
-> >  1 file changed, 6 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-> > index 131492fd1148..82c71c6da9ce 100644
-> > --- a/mm/khugepaged.c
-> > +++ b/mm/khugepaged.c
-> > @@ -366,8 +366,7 @@ int hugepage_madvise(struct vm_area_struct *vma,
-> >                * register it here without waiting a page fault that
-> >                * may not happen any time soon.
-> >                */
-> > -             if (!(*vm_flags & VM_NO_KHUGEPAGED) &&
-> > -                             khugepaged_enter_vma_merge(vma, *vm_flags))
-> > +             if (khugepaged_enter_vma_merge(vma, *vm_flags))
-> >                       return -ENOMEM;
-> >               break;
-> >       case MADV_NOHUGEPAGE:
-> > @@ -446,6 +445,9 @@ static bool hugepage_vma_check(struct vm_area_struct *vma,
-> >       if (!transhuge_vma_enabled(vma, vm_flags))
-> >               return false;
-> >
-> > +     if (vm_flags & VM_NO_KHUGEPAGED)
-> > +             return false;
-> > +
->
-> This patch does improve the readability. But I have a question.
-> It seems VM_NO_KHUGEPAGED is not checked in the below if-condition:
->
->         /* Only regular file is valid */
->         if (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS) && vma->vm_file &&
->             (vm_flags & VM_EXEC)) {
->                 struct inode *inode = vma->vm_file->f_inode;
->
->                 return !inode_is_open_for_write(inode) &&
->                         S_ISREG(inode->i_mode);
->         }
->
-> If we return false due to VM_NO_KHUGEPAGED here, it seems it will affect the
-> return value of this CONFIG_READ_ONLY_THP_FOR_FS condition check.
-> Or am I miss something?
+On 2/25/22 11:19, Tadeusz Struk wrote:
+>> I can verify this sometime next week when I get back to it.
+>> But thanks for reporting the issue :)
+> 
+> Next week is perfectly fine. Thanks for looking into it.
 
-Yes, it will return false instead of true if that file THP check is
-true, but wasn't that old behavior actually problematic? Khugepaged
-definitely can't collapse VM_NO_KHUGEPAGED vmas even though it
-satisfies all the readonly file THP checks. With the old behavior
-khugepaged may scan an exec file hugetlb vma IIUC although it will
-fail later due to other page sanity checks, i.e. page compound check.
+Hi Ritesh,
+Did you have chance to look into this?
+If you want I can send a patch that fixes the off by 1 calculation error.
 
->
-> Thanks.
->
-> >       if (vma->vm_file && !IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) -
-> >                               vma->vm_pgoff, HPAGE_PMD_NR))
-> >               return false;
-> > @@ -471,7 +473,8 @@ static bool hugepage_vma_check(struct vm_area_struct *vma,
-> >               return false;
-> >       if (vma_is_temporary_stack(vma))
-> >               return false;
-> > -     return !(vm_flags & VM_NO_KHUGEPAGED);
-> > +
-> > +     return true;
-> >  }
-> >
-> >  int __khugepaged_enter(struct mm_struct *mm)
-> >
->
->
+-- 
+Thanks,
+Tadeusz
