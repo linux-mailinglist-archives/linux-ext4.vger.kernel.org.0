@@ -2,218 +2,130 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 102BF4CC549
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Mar 2022 19:37:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A52BB4CC5CE
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Mar 2022 20:14:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbiCCShy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Mar 2022 13:37:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49930 "EHLO
+        id S231142AbiCCTPH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Mar 2022 14:15:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230080AbiCCShy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Mar 2022 13:37:54 -0500
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D2E8198ED4
-        for <linux-ext4@vger.kernel.org>; Thu,  3 Mar 2022 10:37:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1646332628; x=1677868628;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=6SjDncrqW7qxnTwAoP0Lo9Qkvoh6ajUoL7t+zdiYF2c=;
-  b=NUafI+k5/g+wR4uXfRYIxG+k0nuf2WdXTI97HXZEILGB9i6zk0bwztjF
-   Yr7ueuCvoEafIXD+BXWerFk4AUajldeDNlxBoPclhoea4RLld4oUYvDde
-   kCO4WHLGYoPLsvFBbwqFYPU2ouTBF8kHQIsSsczM5fnmJAs1LoROTf30q
-   QaqYvht9oSVFlp+lun3DCuddX9NjTjN5WhXqA7Nr0RAaPXgGMrF9DDPrN
-   h27u1XCspMBr6pCQFiEtpgY6Am8tAQ2uPwLOYdY/hctRbtLLSW66+iQKH
-   ELpcQNqn/5dEbMYSYZ2ioXOED9dQ/N87dLDOVRwELMnPd2G5DqPQk9NWr
-   w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10275"; a="316996507"
-X-IronPort-AV: E=Sophos;i="5.90,151,1643702400"; 
-   d="scan'208";a="316996507"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2022 10:37:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,151,1643702400"; 
-   d="scan'208";a="642227450"
-Received: from lkp-server01.sh.intel.com (HELO ccb16ba0ecc3) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 03 Mar 2022 10:37:06 -0800
-Received: from kbuild by ccb16ba0ecc3 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1nPqK1-0000qC-QT; Thu, 03 Mar 2022 18:37:05 +0000
-Date:   Fri, 04 Mar 2022 02:36:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: [tytso-ext4:dev] BUILD SUCCESS
- fe0aa5149f30e3803cdd60427cc8074504ebccba
-Message-ID: <62210a9c.7P1CMZIVWuD409YW%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S235859AbiCCTPG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Mar 2022 14:15:06 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D77515B99F;
+        Thu,  3 Mar 2022 11:14:17 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id kt27so12871492ejb.0;
+        Thu, 03 Mar 2022 11:14:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MOPMhEIV3XBqtSikTY4+v1vOWvKvVs3Rd1CFsa26faY=;
+        b=fR/x2GeKfTrG9900nwOrBgV5oSRy4W2QKTw4oL1vHBDVFBa38opaw7zkQ3fLU9TsLn
+         ntWBKdfXvF11tgQtBZbED1QqD8NWDqW/TOsb7DrwQvr7xRz6vtmalgZ/qAUUM3D+CDkS
+         N1fkOb8+Cymr61nGyH5KcFvnbZwcUu3vi3GeSOjkB6mo/uQ7Om7MZl+EReG1/3C5LSkM
+         q3p7IDRiDte3vM4YjYfE8cNWe/XT65G0xlcAhzB4Dhre25tA5tRd0rMngqg+m0a5Vzw2
+         t14HeSI0vcMIi8fZJHEMwEiN8FGnfbB/zqkhELp53IB4njYD2h3vskak5Xu9MvO70XbU
+         cWRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MOPMhEIV3XBqtSikTY4+v1vOWvKvVs3Rd1CFsa26faY=;
+        b=HvJ9PekAhE1fqD7dCbJ0yomfEu15BdLU6uo4wnKMlVeHyVpbf7K9HKgDv6LzDB3FIs
+         x6oG9re648myuSv4nWGKSljwYvzWiiQeA0QiUPi5GVhBRkN0wUGhoSMgxjelpCvXB8X1
+         vfYhmeruHzdG4Uu32sifVUrY9XkcAHSdqf4j3UrIzkmeHR39321FGXwr36ldebBOwYCt
+         SxG7MDyuesw/hnah89o/R5So487zOOpmIlvkhWhfbEthjBO3E/jdEQfvulZfeMAOR4Sc
+         UQ/lKMIHCPpISzM/30bhnyk8P7HcY6aqaKLvyzfNSbAzK3ueJIk8ZHcSpyKxqekTK0Cn
+         rDbQ==
+X-Gm-Message-State: AOAM531wycsq3szgGy8oZ0Xz/MBQrYebDkJFljNybLKCUSDGVoixuzDI
+        Qr6FekGWsoVZkW6gj6jAbqsKSSv02uG7o6XmL0E=
+X-Google-Smtp-Source: ABdhPJyQRfkxu/g6AA1xO+7oThr+yX8gEw6C/+hhhtZO3+lPLKAOC5cvmmD1Mk0guaV/AzzmFu6KIscF0rWwnMGoeGQ=
+X-Received: by 2002:a17:906:e28a:b0:6d6:e2e9:d39d with SMTP id
+ gg10-20020a170906e28a00b006d6e2e9d39dmr12350886ejb.2.1646334855632; Thu, 03
+ Mar 2022 11:14:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <202203020034.2Ii9kTrs-lkp@intel.com> <6c8b9d6b-fc31-11d6-c5d4-c18b3854b4e9@huawei.com>
+In-Reply-To: <6c8b9d6b-fc31-11d6-c5d4-c18b3854b4e9@huawei.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Thu, 3 Mar 2022 11:14:03 -0800
+Message-ID: <CAHbLzkpUZLkgKXreGwNgpH8dwGZWe63KHSfnV-PO4Y8+VqdWyA@mail.gmail.com>
+Subject: Re: [PATCH 4/8] mm: thp: only regular file could be THP eligible
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kbuild@lists.01.org, Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Song Liu <songliubraving@fb.com>,
+        Rik van Riel <riel@surriel.com>,
+        Matthew Wilcox <willy@infradead.org>, Zi Yan <ziy@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        darrick.wong@oracle.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-branch HEAD: fe0aa5149f30e3803cdd60427cc8074504ebccba  ext4: don't BUG if someone dirty pages without asking ext4 first
+On Thu, Mar 3, 2022 at 3:48 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
+>
+> On 2022/3/3 19:43, Dan Carpenter wrote:
+> > Hi Yang,
+> >
+> > url:    https://github.com/0day-ci/linux/commits/Yang-Shi/Make-khugepaged-collapse-readonly-FS-THP-more-consistent/20220301-075903
+> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+> > config: arm64-randconfig-m031-20220227 (https://download.01.org/0day-ci/archive/20220302/202203020034.2Ii9kTrs-lkp@intel.com/config)
+> > compiler: aarch64-linux-gcc (GCC) 11.2.0
+> >
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> >
+> > smatch warnings:
+> > include/linux/huge_mm.h:179 file_thp_enabled() warn: variable dereferenced before check 'vma->vm_file' (see line 177)
+> > mm/khugepaged.c:468 hugepage_vma_check() error: we previously assumed 'vma->vm_file' could be null (see line 455)
+> > include/linux/huge_mm.h:179 file_thp_enabled() warn: variable dereferenced before check 'vma->vm_file' (see line 177)
+> >
+> > vim +179 include/linux/huge_mm.h
+> >
+> > 2224ed1155c07b Yang Shi     2022-02-28  175  static inline bool file_thp_enabled(struct vm_area_struct *vma)
+> > 2224ed1155c07b Yang Shi     2022-02-28  176  {
+> > 2224ed1155c07b Yang Shi     2022-02-28 @177   struct inode *inode = vma->vm_file->f_inode;
+> >                                                                       ^^^^^^^^^^^^^^
+> > Dereference.
+> >
+> > 2224ed1155c07b Yang Shi     2022-02-28  178
+> > 2224ed1155c07b Yang Shi     2022-02-28 @179   return (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS)) && vma->vm_file &&
+> >                                                                                                     ^^^^^^^^^^^^
+> > Checked too late.
+>
+> Yep. We should check vma->vm_file first before we access vma->vm_file->f_inode.
 
-elapsed time: 725m
+Ah, yes, thanks for the report and the suggestion.
 
-configs tested: 133
-configs skipped: 5
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                          randconfig-c001
-mips                 randconfig-c004-20220303
-arm                          iop32x_defconfig
-x86_64                              defconfig
-ia64                         bigsur_defconfig
-h8300                    h8300h-sim_defconfig
-microblaze                          defconfig
-mips                         db1xxx_defconfig
-sh                            shmin_defconfig
-arm                          badge4_defconfig
-m68k                             allyesconfig
-h8300                     edosk2674_defconfig
-powerpc                    amigaone_defconfig
-mips                            ar7_defconfig
-m68k                          sun3x_defconfig
-arm                            mps2_defconfig
-nios2                         10m50_defconfig
-arc                        nsim_700_defconfig
-arm                        cerfcube_defconfig
-arc                            hsdk_defconfig
-arm                         assabet_defconfig
-sh                   sh7724_generic_defconfig
-sparc                            allyesconfig
-powerpc                     taishan_defconfig
-m68k                        stmark2_defconfig
-nios2                               defconfig
-riscv             nommu_k210_sdcard_defconfig
-mips                 decstation_r4k_defconfig
-arm                         axm55xx_defconfig
-xtensa                generic_kc705_defconfig
-sh                          r7780mp_defconfig
-nds32                            alldefconfig
-arm                            qcom_defconfig
-um                             i386_defconfig
-sh                        sh7757lcr_defconfig
-sh                          urquell_defconfig
-arm                            lart_defconfig
-arc                        nsimosci_defconfig
-arm                           h3600_defconfig
-arm                           sama5_defconfig
-sparc                            alldefconfig
-mips                            gpr_defconfig
-powerpc                        warp_defconfig
-m68k                            q40_defconfig
-i386                                defconfig
-h8300                               defconfig
-sh                           se7705_defconfig
-powerpc                       holly_defconfig
-arm                        clps711x_defconfig
-m68k                        m5407c3_defconfig
-sh                           se7712_defconfig
-m68k                          multi_defconfig
-csky                                defconfig
-riscv                               defconfig
-arm                      jornada720_defconfig
-arm                  randconfig-c002-20220302
-arm                  randconfig-c002-20220303
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc64                            defconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                               defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64                        randconfig-a006
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-arc                  randconfig-r043-20220302
-riscv                randconfig-r042-20220302
-s390                 randconfig-r044-20220302
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-x86_64                           allyesconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                         rhel-8.3-kunit
-x86_64                                  kexec
-
-clang tested configs:
-x86_64                        randconfig-c007
-powerpc              randconfig-c003-20220303
-riscv                randconfig-c006-20220303
-i386                          randconfig-c001
-arm                  randconfig-c002-20220303
-mips                 randconfig-c004-20220303
-powerpc              randconfig-c003-20220302
-riscv                randconfig-c006-20220302
-arm                  randconfig-c002-20220302
-mips                 randconfig-c004-20220302
-mips                     loongson2k_defconfig
-powerpc                       ebony_defconfig
-i386                             allyesconfig
-powerpc                      ppc64e_defconfig
-mips                            e55_defconfig
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-i386                          randconfig-a011
-i386                          randconfig-a013
-i386                          randconfig-a015
-hexagon              randconfig-r045-20220303
-riscv                randconfig-r042-20220303
-hexagon              randconfig-r041-20220303
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+> Thanks.
+>
+> >
+> > 2224ed1155c07b Yang Shi     2022-02-28  180          (vma->vm_flags & VM_EXEC) &&
+> > 2224ed1155c07b Yang Shi     2022-02-28  181          !inode_is_open_for_write(inode) && S_ISREG(inode->i_mode);
+> > 2224ed1155c07b Yang Shi     2022-02-28  182  }
+> >
+> > ---
+> > 0-DAY CI Kernel Test Service, Intel Corporation
+> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> >
+> > .
+> >
+>
