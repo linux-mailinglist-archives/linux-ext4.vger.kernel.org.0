@@ -2,57 +2,85 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A5834CC021
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Mar 2022 15:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09FDD4CC070
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Mar 2022 15:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234088AbiCCOj4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Mar 2022 09:39:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48346 "EHLO
+        id S234190AbiCCO5z (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Mar 2022 09:57:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230385AbiCCOjz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Mar 2022 09:39:55 -0500
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A8AA15DDDC;
-        Thu,  3 Mar 2022 06:39:10 -0800 (PST)
-Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 223Ecl7p029131
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 3 Mar 2022 09:38:48 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 6472A15C0038; Thu,  3 Mar 2022 09:38:47 -0500 (EST)
-Date:   Thu, 3 Mar 2022 09:38:47 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>, linux-ext4@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Dave Chinner <dchinner@redhat.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johannes Thumshirn <jth@kernel.org>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cluster-devel@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -v5] ext4: don't BUG if someone dirty pages without
- asking ext4 first
-Message-ID: <YiDS9wVfq4mM2jGK@mit.edu>
-References: <Yg0m6IjcNmfaSokM@google.com>
- <Yhks88tO3Em/G370@mit.edu>
- <YhlBUCi9O30szf6l@sol.localdomain>
- <YhlFRoJ3OdYMIh44@mit.edu>
- <YhlIvw00Y4MkAgxX@mit.edu>
- <YiBDf7XLnTe4Gwis@mit.edu>
+        with ESMTP id S234211AbiCCO5u (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Mar 2022 09:57:50 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D2718FAD1
+        for <linux-ext4@vger.kernel.org>; Thu,  3 Mar 2022 06:57:03 -0800 (PST)
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 223EYTnD025418;
+        Thu, 3 Mar 2022 14:56:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=pp1;
+ bh=YN7DtEPoSLmoBwfIMa0FHhdIHuih+2lkcslH1MRFYnE=;
+ b=sQY3HirvXlRnm+eE1MfFtZNPH6wqsvOUFA2clWjUykWvg+vRzWvlPNH5/RC2PXatVk3V
+ wNhjwfU9ASAHr+8w/MlDex2seZRhzQJtgejhFjYVGRvhVDIbqqHaTL0DKkQGjNpbgb+w
+ pCgeQ02bveKYEsNWEQ+z9zcYEvNkIFnFmCZ13EWo08VF9/wJF0moIkWUoqTrM4yR2kQe
+ ogu87iOUuy28koXZkhVIQjljd8l6G7HmJheeWhQCbBiYwLotQGqSWFlf4qUBMqrPd4Ie
+ E2sT0TPHK5LNvvxrolKLnegzBn/QSffr4A6dln6bM44gAxY1jmwc0A0VXWkoflmsMO+O tA== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3ejnp24uqd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Mar 2022 14:56:57 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 223Emusx025229;
+        Thu, 3 Mar 2022 14:56:55 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 3efbu9jb43-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Mar 2022 14:56:55 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 223Eurk846006546
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 3 Mar 2022 14:56:53 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 83A1E11C054;
+        Thu,  3 Mar 2022 14:56:53 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 14A8011C05B;
+        Thu,  3 Mar 2022 14:56:53 +0000 (GMT)
+Received: from localhost (unknown [9.43.2.236])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  3 Mar 2022 14:56:52 +0000 (GMT)
+Date:   Thu, 3 Mar 2022 20:26:51 +0530
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     Tadeusz Struk <tadeusz.struk@linaro.org>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org
+Subject: Re: BUG in ext4_ind_remove_space
+Message-ID: <20220303145651.ackek7wotphg26gm@riteshh-domain>
+References: <48308b02-149b-1c47-115a-1a268dac6e24@linaro.org>
+ <20220225171016.zwhp62b3yzgewk6l@riteshh-domain>
+ <25749d7d-7036-0b71-3dd8-7b04dcc430e4@linaro.org>
+ <346904fd-112a-8d57-9221-b5c729ea6056@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YiBDf7XLnTe4Gwis@mit.edu>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <346904fd-112a-8d57-9221-b5c729ea6056@linaro.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: EI3aU6HZoiwHTkNldH2ejjhL3qqr5OFu
+X-Proofpoint-GUID: EI3aU6HZoiwHTkNldH2ejjhL3qqr5OFu
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-03-03_07,2022-02-26_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
+ lowpriorityscore=0 spamscore=0 bulkscore=0 mlxlogscore=823
+ priorityscore=1501 impostorscore=0 mlxscore=0 malwarescore=0
+ suspectscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2201110000 definitions=main-2203030069
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,81 +88,34 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-[un]pin_user_pages_remote is dirtying pages without properly warning
-the file system in advance.  A related race was noted by Jan Kara in
-2018[1]; however, more recently instead of it being a very hard-to-hit
-race, it could be reliably triggered by process_vm_writev(2) which was
-discovered by Syzbot[2].
+On 22/03/02 03:14PM, Tadeusz Struk wrote:
+> On 2/25/22 11:19, Tadeusz Struk wrote:
+> > > I can verify this sometime next week when I get back to it.
+> > > But thanks for reporting the issue :)
+> >
+> > Next week is perfectly fine. Thanks for looking into it.
+>
+> Hi Ritesh,
+> Did you have chance to look into this?
+> If you want I can send a patch that fixes the off by 1 calculation error.
 
-This is technically a bug in mm/gup.c, but arguably ext4 is fragile in
-that if some other kernel subsystem dirty pages without properly
-notifying the file system using page_mkwrite(), ext4 will BUG, while
-other file systems will not BUG (although data will still be lost).
+Hi Tadeusz,
 
-So instead of crashing with a BUG, issue a warning (since there may be
-potential data loss) and just mark the page as clean to avoid
-unprivileged denial of service attacks until the problem can be
-properly fixed.  More discussion and background can be found in the
-thread starting at [2].
+I wanted to look at that path a bit more before sending that patch.
+Last analysis by me was more of a cursory look at the kernel dmesg log which you
+had shared.
 
-[1] https://lore.kernel.org/linux-mm/20180103100430.GE4911@quack2.suse.cz
-[2] https://lore.kernel.org/r/Yg0m6IjcNmfaSokM@google.com
+In case if you want to pursue that issue and spend time on it, then feel free to
+do it.
 
-Reported-by: syzbot+d59332e2db681cf18f0318a06e994ebbb529a8db@syzkaller.appspotmail.com
-Reported-by: Lee Jones <lee.jones@linaro.org>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
----
+I got pulled into number of other things last week and this week. So didn't get
+a chance to look into it yet. I hope to look into this soon (if no one else
+picks up :))
 
- -v5 Argh, sent the wrong version of this patch for V4.  (Which, if you tried
-     testing it, would cause generic/013 on ext4/4k to die horribly. :-)  This
-     is the correct final version.....
+-ritesh
 
- fs/ext4/inode.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 01c9e4f743ba..531a94f48637 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -1993,6 +1993,15 @@ static int ext4_writepage(struct page *page,
- 	else
- 		len = PAGE_SIZE;
- 
-+	/* Should never happen but for bugs in other kernel subsystems */
-+	if (!page_has_buffers(page)) {
-+		ext4_warning_inode(inode,
-+		   "page %lu does not have buffers attached", page->index);
-+		ClearPageDirty(page);
-+		unlock_page(page);
-+		return 0;
-+	}
-+
- 	page_bufs = page_buffers(page);
- 	/*
- 	 * We cannot do block allocation or other extent handling in this
-@@ -2594,6 +2603,22 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
- 			wait_on_page_writeback(page);
- 			BUG_ON(PageWriteback(page));
- 
-+			/*
-+			 * Should never happen but for buggy code in
-+			 * other subsystems that call
-+			 * set_page_dirty() without properly warning
-+			 * the file system first.  See [1] for more
-+			 * information.
-+			 *
-+			 * [1] https://lore.kernel.org/linux-mm/20180103100430.GE4911@quack2.suse.cz
-+			 */
-+			if (!page_has_buffers(page)) {
-+				ext4_warning_inode(mpd->inode, "page %lu does not have buffers attached", page->index);
-+				ClearPageDirty(page);
-+				unlock_page(page);
-+				continue;
-+			}
-+
- 			if (mpd->map.m_len == 0)
- 				mpd->first_page = page->index;
- 			mpd->next_page = page->index + 1;
--- 
-2.31.0
-
+>
+> --
+> Thanks,
+> Tadeusz
