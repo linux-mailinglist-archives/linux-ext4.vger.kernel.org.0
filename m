@@ -2,66 +2,89 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 875F04CBAA6
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Mar 2022 10:48:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA5484CBAC9
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Mar 2022 10:55:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232149AbiCCJtg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Mar 2022 04:49:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57494 "EHLO
+        id S231681AbiCCJzo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Mar 2022 04:55:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231984AbiCCJtf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Mar 2022 04:49:35 -0500
-Received: from lgeamrelo11.lge.com (lgeamrelo12.lge.com [156.147.23.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 878121480D1
-        for <linux-ext4@vger.kernel.org>; Thu,  3 Mar 2022 01:48:47 -0800 (PST)
-Received: from unknown (HELO lgemrelse7q.lge.com) (156.147.1.151)
-        by 156.147.23.52 with ESMTP; 3 Mar 2022 18:48:45 +0900
-X-Original-SENDERIP: 156.147.1.151
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO X58A-UD3R) (10.177.244.38)
-        by 156.147.1.151 with ESMTP; 3 Mar 2022 18:48:45 +0900
-X-Original-SENDERIP: 10.177.244.38
-X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Thu, 3 Mar 2022 18:48:24 +0900
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
-        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
-        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
-        chris@chris-wilson.co.uk, duyuyang@gmail.com,
-        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
-        bfields@fieldses.org, gregkh@linuxfoundation.org,
-        kernel-team@lge.com, linux-mm@kvack.org, akpm@linux-foundation.org,
-        mhocko@kernel.org, minchan@kernel.org, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, sj@kernel.org, jglisse@redhat.com,
-        dennis@kernel.org, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, vbabka@suse.cz, ngupta@vflare.org,
-        linux-block@vger.kernel.org, paolo.valente@linaro.org,
-        josef@toxicpanda.com, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, jack@suse.cz, jack@suse.com,
-        jlayton@kernel.org, dan.j.williams@intel.com, hch@infradead.org,
-        djwong@kernel.org, dri-devel@lists.freedesktop.org,
-        airlied@linux.ie, rodrigosiqueiramelo@gmail.com,
-        melissa.srw@gmail.com, hamohammed.sa@gmail.com
-Subject: Re: [PATCH v3 00/21] DEPT(Dependency Tracker)
-Message-ID: <20220303094824.GA24977@X58A-UD3R>
-References: <1646042220-28952-1-git-send-email-byungchul.park@lge.com>
- <Yh70VkRkUfwIjPWv@ip-172-31-19-208.ap-northeast-1.compute.internal>
- <Yh74VbNZZt35wHZD@ip-172-31-19-208.ap-northeast-1.compute.internal>
- <20220303001812.GA20752@X58A-UD3R>
- <YiB2SZFzgBEcywgg@ip-172-31-19-208.ap-northeast-1.compute.internal>
+        with ESMTP id S231693AbiCCJzn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Mar 2022 04:55:43 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 197F015DB21;
+        Thu,  3 Mar 2022 01:54:58 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id C67C71F37E;
+        Thu,  3 Mar 2022 09:54:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1646301296; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KiLPRDgQGgCu2x95n4UY9Dv1EwVeQLnpZJzpbHdZ9dI=;
+        b=1mPxOqNUPjUuRYvM1Jpo88uvj7mHeU0BtX8fI9JJJRyDkVeAKsX335KbaBabw8d3WKe9mU
+        HuHiRKWaMepp0G+heG7qzF8nwvdSA7m1dmz7EoPucjPZWYPll95EJxKZn0hqiwT3u8aCta
+        gH+QFjpVR9+bskkk3c37kR52I+BOsWA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1646301296;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KiLPRDgQGgCu2x95n4UY9Dv1EwVeQLnpZJzpbHdZ9dI=;
+        b=eSm/KdUai1TPHgQyeg2sJYQkesKT0CqEB9zHNh7ZllJwzw7iMPjlHqVf2VPb2/UGEWSCsY
+        8Lo2iLDGhVjto/Bw==
+Received: from quack3.suse.cz (unknown [10.163.28.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 5EF4CA3B81;
+        Thu,  3 Mar 2022 09:54:52 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 5F3F6A0604; Thu,  3 Mar 2022 10:54:56 +0100 (CET)
+Date:   Thu, 3 Mar 2022 10:54:56 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Byungchul Park <byungchul.park@lge.com>
+Cc:     Jan Kara <jack@suse.cz>, torvalds@linux-foundation.org,
+        damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        mingo@redhat.com, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, will@kernel.org, tglx@linutronix.de,
+        rostedt@goodmis.org, joel@joelfernandes.org, sashal@kernel.org,
+        daniel.vetter@ffwll.ch, chris@chris-wilson.co.uk,
+        duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org,
+        tytso@mit.edu, willy@infradead.org, david@fromorbit.com,
+        amir73il@gmail.com, bfields@fieldses.org,
+        gregkh@linuxfoundation.org, kernel-team@lge.com,
+        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
+        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
+        ngupta@vflare.org, linux-block@vger.kernel.org, axboe@kernel.dk,
+        paolo.valente@linaro.org, josef@toxicpanda.com,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        jack@suse.com, jlayton@kernel.org, dan.j.williams@intel.com,
+        hch@infradead.org, djwong@kernel.org,
+        dri-devel@lists.freedesktop.org, airlied@linux.ie,
+        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+        hamohammed.sa@gmail.com
+Subject: Re: Report 2 in ext4 and journal based on v5.17-rc1
+Message-ID: <20220303095456.kym32pxshwryescx@quack3.lan>
+References: <1645096204-31670-1-git-send-email-byungchul.park@lge.com>
+ <1645096204-31670-2-git-send-email-byungchul.park@lge.com>
+ <20220221190204.q675gtsb6qhylywa@quack3.lan>
+ <20220223003534.GA26277@X58A-UD3R>
+ <20220223144859.na2gjgl5efgw5zhn@quack3.lan>
+ <20220224011102.GA29726@X58A-UD3R>
+ <20220224102239.n7nzyyekuacgpnzg@quack3.lan>
+ <20220228092826.GA5201@X58A-UD3R>
+ <20220228101444.6frl63dn5vmgycbp@quack3.lan>
+ <20220303010033.GB20752@X58A-UD3R>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YiB2SZFzgBEcywgg@ip-172-31-19-208.ap-northeast-1.compute.internal>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+In-Reply-To: <20220303010033.GB20752@X58A-UD3R>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,312 +92,201 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Mar 03, 2022 at 08:03:21AM +0000, Hyeonggon Yoo wrote:
-> On Thu, Mar 03, 2022 at 09:18:13AM +0900, Byungchul Park wrote:
-> > Hi Hyeonggon,
+On Thu 03-03-22 10:00:33, Byungchul Park wrote:
+> On Mon, Feb 28, 2022 at 11:14:44AM +0100, Jan Kara wrote:
+> > On Mon 28-02-22 18:28:26, Byungchul Park wrote:
+> > > case 1. Code with an actual circular dependency, but not deadlock.
+> > > 
+> > >    A circular dependency can be broken by a rescue wakeup source e.g.
+> > >    timeout. It's not a deadlock. If it's okay that the contexts
+> > >    participating in the circular dependency and others waiting for the
+> > >    events in the circle are stuck until it gets broken. Otherwise, say,
+> > >    if it's not meant, then it's anyway problematic.
+> > > 
+> > >    1-1. What if we judge this code is problematic?
+> > >    1-2. What if we judge this code is good?
+> > > 
+> > > case 2. Code with an actual circular dependency, and deadlock.
+> > > 
+> > >    There's no other wakeup source than those within the circular
+> > >    dependency. Literally deadlock. It's problematic and critical.
+> > > 
+> > >    2-1. What if we judge this code is problematic?
+> > >    2-2. What if we judge this code is good?
+> > > 
+> > > case 3. Code with no actual circular dependency, and not deadlock.
+> > > 
+> > >    Must be good.
+> > > 
+> > >    3-1. What if we judge this code is problematic?
+> > >    3-2. What if we judge this code is good?
+> > > 
+> > > ---
+> > > 
+> > > I call only 3-1 "false positive" circular dependency. And you call 1-1
+> > > and 3-1 "false positive" deadlock.
+> > > 
+> > > I've been wondering if the kernel guys esp. Linus considers code with
+> > > any circular dependency is problematic or not, even if it won't lead to
+> > > a deadlock, say, case 1. Even though I designed Dept based on what I
+> > > believe is right, of course, I'm willing to change the design according
+> > > to the majority opinion.
+> > > 
+> > > However, I would never allow case 1 if I were the owner of the kernel
+> > > for better stability, even though the code works anyway okay for now.
 > > 
-> > Dept also allows the following scenario when an user guarantees that
-> > each lock instance is different from another at a different depth:
-> >
-> >    lock A0 with depth
-> >    lock A1 with depth + 1
-> >    lock A2 with depth + 2
-> >    lock A3 with depth + 3
-> >    (and so on)
-> >    ..
-> >    unlock A3
-> >    unlock A2
-> >    unlock A1
-> >    unlock A0
-
-Look at this. Dept allows object->lock -> other_object->lock (with a
-different depth using *_lock_nested()) so won't report it.
-
-> > However, Dept does not allow the following scenario where another lock
-> > class cuts in the dependency chain:
+> > So yes, I call a report for the situation "There is circular dependency but
+> > deadlock is not possible." a false positive. And that is because in my
+> > opinion your definition of circular dependency includes schemes that are
+> > useful and used in the kernel.
 > > 
-> >    lock A0 with depth
-> >    lock B
-> >    lock A1 with depth + 1
-> >    lock A2 with depth + 2
-> >    lock A3 with depth + 3
-> >    (and so on)
-> >    ..
-> >    unlock A3
-> >    unlock A2
-> >    unlock A1
-> >    unlock B
-> >    unlock A0
+> > Your example in case 1 is kind of borderline (I personally would consider
+> > that bug as well) but there are other more valid schemes with multiple
+> > wakeup sources like:
 > > 
-> > This scenario is clearly problematic. What do you think is going to
-> > happen with another context running the following?
-> >
-> 
-> First of all, I want to say I'm not expert at locking primitives.
-> I may be wrong.
-
-It's okay. Thanks anyway for your feedback.
-
-> > >   45  *   scan_mutex [-> object->lock] -> kmemleak_lock -> other_object->lock (SINGLE_DEPTH_NESTING)
-> > >   46  *
-> > >   47  * No kmemleak_lock and object->lock nesting is allowed outside scan_mutex
-> > >   48  * regions.
-> 
-> lock order in kmemleak is described above.
-> 
-> and DEPT detects two cases as deadlock:
-> 
-> 1) object->lock -> other_object->lock
-
-It's not a deadlock *IF* two have different depth using *_lock_nested().
-Dept also allows this case. So Dept wouldn't report it.
-
-> 2) object->lock -> kmemleak_lock, kmemleak_lock -> other_object->lock
-
-But this usage is risky. I already explained it in the mail you replied
-to. I copied it. See the below.
-
-context A
-> >    lock A0 with depth
-> >    lock B
-> >    lock A1 with depth + 1
-> >    lock A2 with depth + 2
-> >    lock A3 with depth + 3
-> >    (and so on)
-> >    ..
-> >    unlock A3
-> >    unlock A2
-> >    unlock A1
-> >    unlock B
-> >    unlock A0
-
-...
-
-context B
-> >    lock A1 with depth
-> >    lock B
-> >    lock A2 with depth + 1
-> >    lock A3 with depth + 2
-> >    (and so on)
-> >    ..
-> >    unlock A3
-> >    unlock A2
-> >    unlock B
-> >    unlock A1
-
-where Ax : object->lock, B : kmemleak_lock.
-
-A deadlock might occur if the two contexts run at the same time.
-
-> And in kmemleak case, 1) and 2) is not possible because it must hold
-> scan_mutex first.
-
-This is another issue. Let's focus on whether the order is okay for now.
-
-> I think the author of kmemleak intended lockdep to treat object->lock
-> and other_object->lock as different class, using raw_spin_lock_nested().
-
-Yes. The author meant to assign a different class according to its depth
-using a Lockdep API. Strictly speaking, those are the same class anyway
-but we assign a different class to each depth to avoid Lockdep splats
-*IF* the user guarantees the nesting lock usage is safe, IOW, guarantees
-each lock instance is different at a different depth.
-
-I was fundamentally asking you... so... is the nesting lock usage safe
-for real? I hope you distinguish between the safe case and the risky
-case when *_lock_nested() is involved. Thoughts?
-
-Thanks,
-Byungchul
-
-> Am I missing something?
-> 
-> Thanks.
-> 
-> >    lock A1 with depth
-> >    lock B
-> >    lock A2 with depth + 1
-> >    lock A3 with depth + 2
-> >    (and so on)
-> >    ..
-> >    unlock A3
-> >    unlock A2
-> >    unlock B
-> >    unlock A1
+> > We have a queue of work to do Q protected by lock L. Consumer process has
+> > code like:
 > > 
-> > It's a deadlock. That's why Dept reports this case as a problem. Or am I
-> > missing something?
+> > while (1) {
+> > 	lock L
+> > 	prepare_to_wait(work_queued);
+> > 	if (no work) {
+> > 		unlock L
+> > 		sleep
+> > 	} else {
+> > 		unlock L
+> > 		do work
+> > 		wake_up(work_done)
+> > 	}
+> > }
 > > 
-> > Thanks,
-> > Byungchul
-> > 
-> > > ---------------------------------------------------
-> > > context A's detail
-> > > ---------------------------------------------------
-> > > context A
-> > >     [S] __raw_spin_lock_irqsave(&object->lock:0)
-> > >     [W] __raw_spin_lock_irqsave(kmemleak_lock:0)
-> > >     [E] spin_unlock(&object->lock:0)
-> > > 
-> > > [S] __raw_spin_lock_irqsave(&object->lock:0):
-> > > [<ffffffc00810302c>] scan_gray_list+0x84/0x13c
-> > > stacktrace:
-> > >       dept_ecxt_enter+0x88/0xf4
-> > >       _raw_spin_lock_irqsave+0xf0/0x1c4
-> > >       scan_gray_list+0x84/0x13c
-> > >       kmemleak_scan+0x2d8/0x54c
-> > >       kmemleak_scan_thread+0xac/0xd4
-> > >       kthread+0xd4/0xe4
-> > >       ret_from_fork+0x10/0x20
-> > > 
-> > > [W] __raw_spin_lock_irqsave(kmemleak_lock:0):
-> > > [<ffffffc008102ebc>] scan_block+0x3c/0x128
-> > > stacktrace:
-> > >       __dept_wait+0x8c/0xa4
-> > >       dept_wait+0x6c/0x88
-> > >       _raw_spin_lock_irqsave+0xb8/0x1c4
-> > >       scan_block+0x3c/0x128
-> > >       scan_gray_list+0xc4/0x13c
-> > >       kmemleak_scan+0x2d8/0x54c
-> > >       kmemleak_scan_thread+0xac/0xd4
-> > >       kthread+0xd4/0xe4
-> > >       ret_from_fork+0x10/0x20
-> > > 
-> > > [E] spin_unlock(&object->lock:0):
-> > > [<ffffffc008102ee0>] scan_block+0x60/0x128
-> > > 
-> > > ---------------------------------------------------
-> > > context B's detail
-> > > ---------------------------------------------------
-> > > context B
-> > >     [S] __raw_spin_lock_irqsave(kmemleak_lock:0)
-> > >     [W] _raw_spin_lock_nested(&object->lock:0)
-> > >     [E] spin_unlock(kmemleak_lock:0)
-> > > 
-> > > [S] __raw_spin_lock_irqsave(kmemleak_lock:0):
-> > > [<ffffffc008102ebc>] scan_block+0x3c/0x128
-> > > stacktrace:
-> > >       dept_ecxt_enter+0x88/0xf4
-> > >       _raw_spin_lock_irqsave+0xf0/0x1c4
-> > >       scan_block+0x3c/0x128
-> > >       kmemleak_scan+0x19c/0x54c
-> > >       kmemleak_scan_thread+0xac/0xd4
-> > >       kthread+0xd4/0xe4
-> > >       ret_from_fork+0x10/0x20
-> > > 
-> > > [W] _raw_spin_lock_nested(&object->lock:0):
-> > > [<ffffffc008102f34>] scan_block+0xb4/0x128
-> > > stacktrace:
-> > >       dept_wait+0x74/0x88
-> > >       _raw_spin_lock_nested+0xa8/0x1b0
-> > >       scan_block+0xb4/0x128
-> > >       kmemleak_scan+0x19c/0x54c
-> > >       kmemleak_scan_thread+0xac/0xd4
-> > >       kthread+0xd4/0xe4
-> > >       ret_from_fork+0x10/0x20
-> > > [E] spin_unlock(kmemleak_lock:0):
-> > > [<ffffffc008102ee0>] scan_block+0x60/0x128
-> > > stacktrace:
-> > >       dept_event+0x7c/0xfc
-> > >       _raw_spin_unlock_irqrestore+0x8c/0x120
-> > >       scan_block+0x60/0x128
-> > >       kmemleak_scan+0x19c/0x54c
-> > >       kmemleak_scan_thread+0xac/0xd4
-> > >       kthread+0xd4/0xe4
-> > >       ret_from_fork+0x10/0x20
-> > > ---------------------------------------------------
-> > > information that might be helpful
-> > > ---------------------------------------------------
-> > > CPU: 1 PID: 38 Comm: kmemleak Tainted: G        W         5.17.0-rc1+ #1
-> > > Hardware name: linux,dummy-virt (DT)
-> > > Call trace:
-> > >  dump_backtrace.part.0+0x9c/0xc4
-> > >  show_stack+0x14/0x28
-> > >  dump_stack_lvl+0x9c/0xcc
-> > >  dump_stack+0x14/0x2c
-> > >  print_circle+0x2d4/0x438
-> > >  cb_check_dl+0x6c/0x70
-> > >  bfs+0xc0/0x168
-> > >  add_dep+0x88/0x11c
-> > >  add_wait+0x2d0/0x2dc
-> > >  __dept_wait+0x8c/0xa4
-> > >  dept_wait+0x6c/0x88
-> > >  _raw_spin_lock_irqsave+0xb8/0x1c4
-> > >  scan_block+0x3c/0x128
-> > >  scan_gray_list+0xc4/0x13c
-> > >  kmemleak_scan+0x2d8/0x54c
-> > >  kmemleak_scan_thread+0xac/0xd4
-> > >  kthread+0xd4/0xe4
-> > >  ret_from_fork+0x10/0x20
-> > > 
-> > > > ===================================================
-> > > > DEPT: Circular dependency has been detected.
-> > > > 5.17.0-rc1+ #1 Tainted: G        W
-> > > > ---------------------------------------------------
-> > > > summary
-> > > > ---------------------------------------------------
-> > > > *** AA DEADLOCK ***
-> > > > 
-> > > > context A
-> > > >     [S] __raw_spin_lock_irqsave(&object->lock:0)
-> > > >     [W] _raw_spin_lock_nested(&object->lock:0)
-> > > >     [E] spin_unlock(&object->lock:0)
-> > > > 
-> > > > [S]: start of the event context
-> > > > [W]: the wait blocked
-> > > > [E]: the event not reachable
-> > > > ---------------------------------------------------
-> > > > context A's detail
-> > > > ---------------------------------------------------
-> > > > context A
-> > > >     [S] __raw_spin_lock_irqsave(&object->lock:0)
-> > > >     [W] _raw_spin_lock_nested(&object->lock:0)
-> > > >     [E] spin_unlock(&object->lock:0)
-> > > > 
-> > > > [S] __raw_spin_lock_irqsave(&object->lock:0):
-> > > > [<ffffffc00810302c>] scan_gray_list+0x84/0x13c
-> > > > stacktrace:
-> > > >       dept_ecxt_enter+0x88/0xf4
-> > > >       _raw_spin_lock_irqsave+0xf0/0x1c4
-> > > >       scan_gray_list+0x84/0x13c
-> > > >       kmemleak_scan+0x2d8/0x54c
-> > > >       kmemleak_scan_thread+0xac/0xd4
-> > > >       kthread+0xd4/0xe4
-> > > >       ret_from_fork+0x10/0x20
-> > > > 
-> > > > [E] spin_unlock(&object->lock:0):
-> > > > [<ffffffc008102ee0>] scan_block+0x60/0x128
-> > > > ---------------------------------------------------
-> > > > information that might be helpful
-> > > > ---------------------------------------------------
-> > > > CPU: 1 PID: 38 Comm: kmemleak Tainted: G        W         5.17.0-rc1+ #1
-> > > > Hardware name: linux,dummy-virt (DT)
-> > > > Call trace:
-> > > >  dump_backtrace.part.0+0x9c/0xc4
-> > > >  show_stack+0x14/0x28
-> > > >  dump_stack_lvl+0x9c/0xcc
-> > > >  dump_stack+0x14/0x2c
-> > > >  print_circle+0x2d4/0x438
-> > > >  cb_check_dl+0x44/0x70
-> > > >  bfs+0x60/0x168
-> > > >  add_dep+0x88/0x11c
-> > > >  add_wait+0x2d0/0x2dc
-> > > >  __dept_wait+0x8c/0xa4
-> > > >  dept_wait+0x6c/0x88
-> > > >  _raw_spin_lock_nested+0xa8/0x1b0
-> > > >  scan_block+0xb4/0x128
-> > > >  scan_gray_list+0xc4/0x13c
-> > > >  kmemleak_scan+0x2d8/0x54c
-> > > >  kmemleak_scan_thread+0xac/0xd4
-> > > >  kthread+0xd4/0xe4
-> > > >  ret_from_fork+0x10/0x20
-> > > >
-> > > [...]
-> > > 
-> > > --
-> > > Thank you, You are awesome!
-> > > Hyeonggon :-)
+> > AFAIU Dept will create dependency here that 'wakeup work_done' is after
+> > 'wait for work_queued'. Producer has code like:
 > 
-> -- 
-> Thank you, You are awesome!
-> Hyeonggon :-)
+> First of all, thank you for this good example.
+> 
+> > while (1) {
+> > 	lock L
+> > 	prepare_to_wait(work_done)
+> > 	if (too much work queued) {
+> > 		unlock L
+> > 		sleep
+> > 	} else {
+> > 		queue work
+> > 		unlock L
+> > 		wake_up(work_queued)
+> > 	}
+> > }
+> > 
+> > And Dept will create dependency here that 'wakeup work_queued' is after
+> > 'wait for work_done'. And thus we have a trivial cycle in the dependencies
+> > despite the code being perfectly valid and safe.
+> 
+> Unfortunately, it's neither perfect nor safe without another wakeup
+> source - rescue wakeup source.
+> 
+>    consumer			producer
+> 
+> 				lock L
+> 				(too much work queued == true)
+> 				unlock L
+> 				--- preempted
+>    lock L
+>    unlock L
+>    do work
+>    lock L
+>    unlock L
+>    do work
+>    ...
+>    (no work == true)
+>    sleep
+> 				--- scheduled in
+> 				sleep
+> 
+> This code leads a deadlock without another wakeup source, say, not safe.
+
+So the scenario you describe above is indeed possible. But the trick is
+that the wakeup from 'consumer' as is doing work will remove 'producer'
+from the wait queue and change the 'producer' process state to
+'TASK_RUNNING'. So when 'producer' calls sleep (in fact schedule()), the
+scheduler will just treat this as another preemption point and the
+'producer' will immediately or soon continue to run. So indeed we can think
+of this as "another wakeup source" but the source is in the CPU scheduler
+itself. This is the standard way how waitqueues are used in the kernel...
+
+> Lastly, just for your information, I need to explain how Dept works a
+> little more for you not to misunderstand Dept.
+> 
+> Assuming the consumer and producer guarantee not to lead a deadlock like
+> the following, Dept won't report it a problem:
+> 
+>    consumer			producer
+> 
+> 				sleep
+>    wakeup work_done
+> 				queue work
+>    sleep
+> 				wakeup work_queued
+>    do work
+> 				sleep
+>    wakeup work_done
+> 				queue work
+>    sleep
+> 				wakeup work_queued
+>    do work
+> 				sleep
+>    ...				...
+> 
+> Dept does not consider all waits preceeding an event but only waits that
+> might lead a deadlock. In this case, Dept works with each region
+> independently.
+> 
+>    consumer			producer
+> 
+> 				sleep <- initiates region 1
+>    --- region 1 starts
+>    ...				...
+>    --- region 1 ends
+>    wakeup work_done
+>    ...				...
+> 				queue work
+>    ...				...
+>    sleep <- initiates region 2
+> 				--- region 2 starts
+>    ...				...
+> 				--- region 2 ends
+> 				wakeup work_queued
+>    ...				...
+>    do work
+>    ...				...
+> 				sleep <- initiates region 3
+>    --- region 3 starts
+>    ...				...
+>    --- region 3 ends
+>    wakeup work_done
+>    ...				...
+> 				queue work
+>    ...				...
+>    sleep <- initiates region 4
+> 				--- region 4 starts
+>    ...				...
+> 				--- region 4 ends
+> 				wakeup work_queued
+>    ...				...
+>    do work
+>    ...				...
+> 
+> That is, Dept does not build dependencies across different regions. So
+> you don't have to worry about unreasonable false positives that much.
+> 
+> Thoughts?
+
+Thanks for explanation! And what exactly defines the 'regions'? When some
+process goes to sleep on some waitqueue, this defines a start of a region
+at the place where all the other processes are at that moment and wakeup of
+the waitqueue is an end of the region?
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
