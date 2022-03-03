@@ -2,144 +2,164 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89AA04CB5E1
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Mar 2022 05:27:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EADF54CB62C
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Mar 2022 06:24:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229520AbiCCE1q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 2 Mar 2022 23:27:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47268 "EHLO
+        id S229696AbiCCFYo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Mar 2022 00:24:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbiCCE1q (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Mar 2022 23:27:46 -0500
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F4F61A391;
-        Wed,  2 Mar 2022 20:27:00 -0800 (PST)
-Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2234Qdxv022243
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 2 Mar 2022 23:26:39 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 3139015C0038; Wed,  2 Mar 2022 23:26:39 -0500 (EST)
-Date:   Wed, 2 Mar 2022 23:26:39 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>, linux-ext4@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Dave Chinner <dchinner@redhat.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johannes Thumshirn <jth@kernel.org>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cluster-devel@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -v4] ext4: don't BUG if kernel subsystems dirty pages
- without asking ext4 first
-Message-ID: <YiBDf7XLnTe4Gwis@mit.edu>
-References: <Yg0m6IjcNmfaSokM@google.com>
- <Yhks88tO3Em/G370@mit.edu>
- <YhlBUCi9O30szf6l@sol.localdomain>
- <YhlFRoJ3OdYMIh44@mit.edu>
- <YhlIvw00Y4MkAgxX@mit.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YhlIvw00Y4MkAgxX@mit.edu>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229677AbiCCFYn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Mar 2022 00:24:43 -0500
+Received: from lgeamrelo11.lge.com (lgeamrelo12.lge.com [156.147.23.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A4A6CF4D13
+        for <linux-ext4@vger.kernel.org>; Wed,  2 Mar 2022 21:23:57 -0800 (PST)
+Received: from unknown (HELO lgeamrelo01.lge.com) (156.147.1.125)
+        by 156.147.23.52 with ESMTP; 3 Mar 2022 14:23:55 +0900
+X-Original-SENDERIP: 156.147.1.125
+X-Original-MAILFROM: byungchul.park@lge.com
+Received: from unknown (HELO localhost.localdomain) (10.177.244.38)
+        by 156.147.1.125 with ESMTP; 3 Mar 2022 14:23:55 +0900
+X-Original-SENDERIP: 10.177.244.38
+X-Original-MAILFROM: byungchul.park@lge.com
+From:   Byungchul Park <byungchul.park@lge.com>
+To:     tytso@mit.edu
+Cc:     damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        torvalds@linux-foundation.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
+        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
+        chris@chris-wilson.co.uk, duyuyang@gmail.com,
+        johannes.berg@intel.com, tj@kernel.org, willy@infradead.org,
+        david@fromorbit.com, amir73il@gmail.com, bfields@fieldses.org,
+        gregkh@linuxfoundation.org, kernel-team@lge.com,
+        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
+        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
+        ngupta@vflare.org, linux-block@vger.kernel.org,
+        paolo.valente@linaro.org, josef@toxicpanda.com,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        jack@suse.cz, jack@suse.com, jlayton@kernel.org,
+        dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
+        dri-devel@lists.freedesktop.org, airlied@linux.ie,
+        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+        hamohammed.sa@gmail.com
+Subject: Re: Report 2 in ext4 and journal based on v5.17-rc1
+Date:   Thu,  3 Mar 2022 14:23:33 +0900
+Message-Id: <1646285013-3934-1-git-send-email-byungchul.park@lge.com>
+X-Mailer: git-send-email 1.9.1
+In-Reply-To: <YiAow5gi21zwUT54@mit.edu>
+References: <YiAow5gi21zwUT54@mit.edu>
+X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-[un]pin_user_pages_remote is dirtying pages without properly warning
-the file system in advance.  A related race was noted by Jan Kara in
-2018[1]; however, more recently instead of it being a very hard-to-hit
-race, it could be reliably triggered by process_vm_writev(2) which was
-discovered by Syzbot[2].
+Ted wrote:
+> On Thu, Mar 03, 2022 at 10:00:33AM +0900, Byungchul Park wrote:
+> > 
+> > Unfortunately, it's neither perfect nor safe without another wakeup
+> > source - rescue wakeup source.
+> > 
+> >    consumer			producer
+> > 
+> >				lock L
+> >				(too much work queued == true)
+> >				unlock L
+> >				--- preempted
+> >    lock L
+> >    unlock L
+> >    do work
+> >    lock L
+> >    unlock L
+> >    do work
+> >    ...
+> >    (no work == true)
+> >    sleep
+> >				--- scheduled in
+> >				sleep
+> 
+> That's not how things work in ext4.  It's **way** more complicated
 
-This is technically a bug in mm/gup.c, but arguably ext4 is fragile in
-that if some other kernel subsystem dirty pages without properly
-notifying the file system using page_mkwrite(), ext4 will BUG, while
-other file systems will not BUG (although data will still be lost).
+You seem to get it wrong. This example is what Jan Kara gave me. I just
+tried to explain things based on Jan Kara's example so leaving all
+statements that Jan Kara wrote. Plus the example was so helpful. Thanks,
+Jan Kara.
 
-So instead of crashing with a BUG, issue a warning (since there may be
-potential data loss) and just mark the page as clean to avoid
-unprivileged denial of service attacks until the problem can be
-properly fixed.  More discussion and background can be found in the
-thread starting at [2].
+> than that.  We have multiple wait channels, one wake up the consumer
+> (read: the commit thread), and one which wakes up any processes
+> waiting for commit thread to have made forward progress.  We also have
+> two spin-lock protected sequence number, one which indicates the
+> current commited transaction #, and one indicating the transaction #
+> that needs to be committed.
+> 
+> On the commit thread, it will sleep on j_wait_commit, and when it is
+> woken up, it will check to see if there is work to be done
+> (j_commit_sequence != j_commit_request), and if so, do the work, and
+> then wake up processes waiting on the wait_queue j_wait_done_commit.
+> (Again, all of this uses the pattern, "prepare to wait", then check to
+> see if we should sleep, if we do need to sleep, unlock j_state_lock,
+> then sleep.   So this prevents any races leading to lost wakeups.
+> 
+> On the start_this_handle() thread, if we current transaction is too
+> full, we set j_commit_request to its transaction id to indicate that
+> we want the current transaction to be committed, and then we wake up
+> the j_wait_commit wait queue and then we enter a loop where do a
+> prepare_to_wait in j_wait_done_commit, check to see if
+> j_commit_sequence == the transaction id that we want to be completed,
+> and if it's not done yet, we unlock the j_state_lock spinlock, and go
+> to sleep.  Again, because of the prepare_to_wait, there is no chance
+> of a lost wakeup.
 
-[1] https://lore.kernel.org/linux-mm/20180103100430.GE4911@quack2.suse.cz
-[2] https://lore.kernel.org/r/Yg0m6IjcNmfaSokM@google.com
+The above explantion gives me a clear view about synchronization of
+journal things. I appreciate it.
 
-Reported-by: syzbot+d59332e2db681cf18f0318a06e994ebbb529a8db@syzkaller.appspotmail.com
-Reported-by: Lee Jones <lee.jones@linaro.org>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Cc: stable@kernel.org
----
-v4 - only changes to the commit description to eliminate some inaccuracies
-     and clarify the text.
+> So there really is no "consumer" and "producer" here.  If you really
+> insist on using this model, which really doesn't apply, for one
 
- fs/ext4/inode.c | 27 ++++++++++++++++++++++++++-
- 1 file changed, 26 insertions(+), 1 deletion(-)
+Dept does not assume "consumer" and "producer" model at all, but Dept
+works with general waits and events. *That model is just one of them.*
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 01c9e4f743ba..008fe8750109 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -1993,6 +1993,15 @@ static int ext4_writepage(struct page *page,
- 	else
- 		len = PAGE_SIZE;
- 
-+	/* Should never happen but for bugs in other kernel subsystems */
-+	if (!page_has_buffers(page)) {
-+		ext4_warning_inode(inode,
-+		   "page %lu does not have buffers attached", page->index);
-+		ClearPageDirty(page);
-+		unlock_page(page);
-+		return 0;
-+	}
-+
- 	page_bufs = page_buffers(page);
- 	/*
- 	 * We cannot do block allocation or other extent handling in this
-@@ -2588,12 +2597,28 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
- 			     (mpd->wbc->sync_mode == WB_SYNC_NONE)) ||
- 			    unlikely(page->mapping != mapping)) {
- 				unlock_page(page);
--				continue;
-+				goto out;
- 			}
- 
- 			wait_on_page_writeback(page);
- 			BUG_ON(PageWriteback(page));
- 
-+			/*
-+			 * Should never happen but for buggy code in
-+			 * other subsystems that call
-+			 * set_page_dirty() without properly warning
-+			 * the file system first.  See [1] for more
-+			 * information.
-+			 *
-+			 * [1] https://lore.kernel.org/linux-mm/20180103100430.GE4911@quack2.suse.cz
-+			 */
-+			if (!page_has_buffers(page)) {
-+				ext4_warning_inode(mpd->inode, "page %lu does not have buffers attached", page->index);
-+				ClearPageDirty(page);
-+				unlock_page(page);
-+				continue;
-+			}
-+
- 			if (mpd->map.m_len == 0)
- 				mpd->first_page = page->index;
- 			mpd->next_page = page->index + 1;
--- 
-2.31.0
+> thread, it's the consumer with respect to one wait queue, and the
+> producer with respect to the *other* wait queue.  For the other
+> thread, the consumer and producer roles are reversed.
+> 
+> And of course, this is a highly simplified model, since we also have a
+> wait queue used by the commit thread to wait for the number of active
+> handles on a particular transaction to go to zero, and
+> stop_this_handle() will wake up commit thread via this wait queue when
+> the last active handle on a particular transaction is retired.  (And
+> yes, that parameter is also protected by a different spin lock which
+> is per-transaction).
 
+This one also gives me a clear view. Thanks a lot.
+
+> So it seems to me that a fundamental flaw in DEPT's model is assuming
+> that the only waiting paradigm that can be used is consumer/producer,
+
+No, Dept does not.
+
+> and that's simply not true.  The fact that you use the term "lock" is
+> also going to lead a misleading line of reasoning, because properly
+
+"lock/unlock L" comes from the Jan Kara's example. It has almost nothing
+to do with the explanation. I just left "lock/unlock L" as a statement
+that comes from the Jan Kara's example.
+
+> speaking, they aren't really locks.  We are simply using wait channels
+
+I totally agree with you. *They aren't really locks but it's just waits
+and wakeups.* That's exactly why I decided to develop Dept. Dept is not
+interested in locks unlike Lockdep, but fouces on waits and wakeup
+sources itself. I think you get Dept wrong a lot. Please ask me more if
+you have things you doubt about Dept.
+
+Thanks,
+Byungchul
