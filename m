@@ -2,37 +2,36 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 885EB4CC0F4
+	by mail.lfdr.de (Postfix) with ESMTP id 398144CC0F3
 	for <lists+linux-ext4@lfdr.de>; Thu,  3 Mar 2022 16:15:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234388AbiCCPPj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Mar 2022 10:15:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39876 "EHLO
+        id S232505AbiCCPPw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Mar 2022 10:15:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234358AbiCCPP1 (ORCPT
+        with ESMTP id S234357AbiCCPP1 (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Mar 2022 10:15:27 -0500
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6660748300;
-        Thu,  3 Mar 2022 07:14:33 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8803847045
+        for <linux-ext4@vger.kernel.org>; Thu,  3 Mar 2022 07:14:37 -0800 (PST)
 Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 223FEGgg016302
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 223FEHkY016325
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 3 Mar 2022 10:14:16 -0500
+        Thu, 3 Mar 2022 10:14:17 -0500
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 1136015C374D; Thu,  3 Mar 2022 10:14:16 -0500 (EST)
+        id 13A4415C3786; Thu,  3 Mar 2022 10:14:16 -0500 (EST)
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        Ye Bin <yebin10@huawei.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-kernel@vger.kernel.org,
-        lczerner@redhat.com, jack@suse.cz
-Subject: Re: [PATCH v3] ext4:fix file system corrupted when rmdir non empty directory with IO error
-Date:   Thu,  3 Mar 2022 10:14:13 -0500
-Message-Id: <164632037181.689479.14788491798802895933.b4-ty@mit.edu>
+To:     linux-ext4@vger.kernel.org, Zhang Yi <yi.zhang@huawei.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
+        jack@suse.cz, yukuai3@huawei.com
+Subject: Re: [PATCH v3] ext4: fix underflow in ext4_max_bitmap_size()
+Date:   Thu,  3 Mar 2022 10:14:14 -0500
+Message-Id: <164632037182.689479.17594587165510308394.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20220228024815.3952506-1-yebin10@huawei.com>
-References: <20220228024815.3952506-1-yebin10@huawei.com>
+In-Reply-To: <20220301111704.2153829-1-yi.zhang@huawei.com>
+References: <20220301111704.2153829-1-yi.zhang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -45,36 +44,22 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, 28 Feb 2022 10:48:15 +0800, Ye Bin wrote:
-> We inject IO error when rmdir non empty direcory, then got issue as follows:
-> step1: mkfs.ext4 -F /dev/sda
-> step2: mount /dev/sda  test
-> step3: cd test
-> step4: mkdir -p 1/2
-> step5: rmdir 1
-> 	[  110.920551] ext4_empty_dir: inject fault
-> 	[  110.921926] EXT4-fs warning (device sda): ext4_rmdir:3113: inode #12:
-> 	comm rmdir: empty directory '1' has too many links (3)
-> step6: cd ..
-> step7: umount test
-> step8: fsck.ext4 -f /dev/sda
-> 	e2fsck 1.42.9 (28-Dec-2013)
-> 	Pass 1: Checking inodes, blocks, and sizes
-> 	Pass 2: Checking directory structure
-> 	Entry '..' in .../??? (13) has deleted/unused inode 12.  Clear<y>? yes
-> 	Pass 3: Checking directory connectivity
-> 	Unconnected directory inode 13 (...)
-> 	Connect to /lost+found<y>? yes
-> 	Pass 4: Checking reference counts
-> 	Inode 13 ref count is 3, should be 2.  Fix<y>? yes
-> 	Pass 5: Checking group summary information
+On Tue, 1 Mar 2022 19:17:04 +0800, Zhang Yi wrote:
+> when ext4 filesystem is created with 64k block size, ^extent and
+> ^huge_file features. the upper_limit would underflow during the
+> computations in ext4_max_bitmap_size(). The problem is the size of block
+> index tree for such large block size is more than i_blocks can carry.
+> So fix the computation to count with this possibility. After this fix,
+> the 'res' cannot overflow loff_t on the extreme case of filesystem with
+> huge_files and 64K block size, so this patch also revert commit
+> 75ca6ad408f4 ("ext4: fix loff_t overflow in ext4_max_bitmap_size()").
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] ext4:fix file system corrupted when rmdir non empty directory with IO error
-      commit: 7aab5c84a0f6ec2290e2ba4a6b245178b1bf949a
+[1/1] ext4: fix underflow in ext4_max_bitmap_size()
+      commit: 5c93e8ecd5bd3bfdee013b6da0850357eb6ca4d8
 
 Best regards,
 -- 
