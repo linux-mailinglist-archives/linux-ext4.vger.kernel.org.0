@@ -2,29 +2,29 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9199F4CE103
-	for <lists+linux-ext4@lfdr.de>; Sat,  5 Mar 2022 00:37:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C0A34CE10D
+	for <lists+linux-ext4@lfdr.de>; Sat,  5 Mar 2022 00:38:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbiCDXht (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 4 Mar 2022 18:37:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33268 "EHLO
+        id S229825AbiCDXjl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 4 Mar 2022 18:39:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbiCDXhr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 4 Mar 2022 18:37:47 -0500
-Received: from lgeamrelo11.lge.com (lgeamrelo12.lge.com [156.147.23.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D5FC81C8858
-        for <linux-ext4@vger.kernel.org>; Fri,  4 Mar 2022 15:36:57 -0800 (PST)
-Received: from unknown (HELO lgemrelse6q.lge.com) (156.147.1.121)
-        by 156.147.23.52 with ESMTP; 5 Mar 2022 08:36:56 +0900
-X-Original-SENDERIP: 156.147.1.121
+        with ESMTP id S229495AbiCDXjl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 4 Mar 2022 18:39:41 -0500
+Received: from lgeamrelo11.lge.com (lgeamrelo13.lge.com [156.147.23.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6FCB5654BE
+        for <linux-ext4@vger.kernel.org>; Fri,  4 Mar 2022 15:38:51 -0800 (PST)
+Received: from unknown (HELO lgeamrelo01.lge.com) (156.147.1.125)
+        by 156.147.23.53 with ESMTP; 5 Mar 2022 08:38:50 +0900
+X-Original-SENDERIP: 156.147.1.125
 X-Original-MAILFROM: byungchul.park@lge.com
 Received: from unknown (HELO X58A-UD3R) (10.177.244.38)
-        by 156.147.1.121 with ESMTP; 5 Mar 2022 08:36:56 +0900
+        by 156.147.1.125 with ESMTP; 5 Mar 2022 08:38:50 +0900
 X-Original-SENDERIP: 10.177.244.38
 X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Sat, 5 Mar 2022 08:36:33 +0900
+Date:   Sat, 5 Mar 2022 08:38:27 +0900
 From:   Byungchul Park <byungchul.park@lge.com>
-To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
 Cc:     torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
         linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
         linux-ext4@vger.kernel.org, mingo@redhat.com,
@@ -47,16 +47,16 @@ Cc:     torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
         djwong@kernel.org, dri-devel@lists.freedesktop.org,
         airlied@linux.ie, rodrigosiqueiramelo@gmail.com,
         melissa.srw@gmail.com, hamohammed.sa@gmail.com
-Subject: Re: [PATCH v4 16/24] locking/lockdep, cpu/hotplus: Use a weaker
- annotation in AP thread
-Message-ID: <20220304233633.GA31304@X58A-UD3R>
+Subject: Re: [PATCH v4 22/24] dept: Don't create dependencies between
+ different depths in any case
+Message-ID: <20220304233827.GB31304@X58A-UD3R>
 References: <1646377603-19730-1-git-send-email-byungchul.park@lge.com>
- <1646377603-19730-17-git-send-email-byungchul.park@lge.com>
- <aac81d30-ccc6-b351-729a-7265e8b6ec2c@gmail.com>
+ <1646377603-19730-23-git-send-email-byungchul.park@lge.com>
+ <YiH6cXo1qThA1X6B@ip-172-31-19-208.ap-northeast-1.compute.internal>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aac81d30-ccc6-b351-729a-7265e8b6ec2c@gmail.com>
+In-Reply-To: <YiH6cXo1qThA1X6B@ip-172-31-19-208.ap-northeast-1.compute.internal>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
         RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
@@ -68,24 +68,17 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Mar 04, 2022 at 10:28:57PM +0300, Sergei Shtylyov wrote:
-> On 3/4/22 10:06 AM, Byungchul Park wrote:
-> 
-> > cb92173d1f0 (locking/lockdep, cpu/hotplug: Annotate AP thread) was
-> 
->    You need to enclose the commit summary in (""), not just (). :-)
+On Fri, Mar 04, 2022 at 11:39:29AM +0000, Hyeonggon Yoo wrote:
+> Works as expected, Thanks!
+> I would report if there is anything else interesting.
 
-Thank you! I will!
+Thanks a lot! What you have done is helpful.
 
-> > introduced to make lockdep_assert_cpus_held() work in AP thread.
-> > 
-> > However, the annotation is too strong for that purpose. We don't have to
-> > use more than try lock annotation for that.
-> > 
-> > Furthermore, now that Dept was introduced, false positive alarms was
-> > reported by that. Replaced it with try lock annotation.
-> > 
-> > Signed-off-by: Byungchul Park <byungchul.park@lge.com>
-> [...]
+Thanks,
+Byungchul
+
+> Tested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 > 
-> MBR, Sergey
+> -- 
+> Thank you, You are awesome!
+> Hyeonggon :-)
