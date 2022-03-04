@@ -2,241 +2,157 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54BF64CCB74
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Mar 2022 02:57:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B06D44CCBB2
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Mar 2022 03:23:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236452AbiCDB6E (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Mar 2022 20:58:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56310 "EHLO
+        id S237674AbiCDCYO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Mar 2022 21:24:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229672AbiCDB6D (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Mar 2022 20:58:03 -0500
-Received: from lgeamrelo11.lge.com (lgeamrelo11.lge.com [156.147.23.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 427A213D553
-        for <linux-ext4@vger.kernel.org>; Thu,  3 Mar 2022 17:57:14 -0800 (PST)
-Received: from unknown (HELO lgeamrelo01.lge.com) (156.147.1.125)
-        by 156.147.23.51 with ESMTP; 4 Mar 2022 10:57:13 +0900
-X-Original-SENDERIP: 156.147.1.125
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO X58A-UD3R) (10.177.244.38)
-        by 156.147.1.125 with ESMTP; 4 Mar 2022 10:57:13 +0900
-X-Original-SENDERIP: 10.177.244.38
-X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Fri, 4 Mar 2022 10:56:51 +0900
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
-        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
-        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
-        chris@chris-wilson.co.uk, duyuyang@gmail.com,
-        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
-        bfields@fieldses.org, gregkh@linuxfoundation.org,
-        kernel-team@lge.com, linux-mm@kvack.org, akpm@linux-foundation.org,
-        mhocko@kernel.org, minchan@kernel.org, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, sj@kernel.org, jglisse@redhat.com,
-        dennis@kernel.org, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, vbabka@suse.cz, ngupta@vflare.org,
-        linux-block@vger.kernel.org, axboe@kernel.dk,
-        paolo.valente@linaro.org, josef@toxicpanda.com,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        jack@suse.com, jlayton@kernel.org, dan.j.williams@intel.com,
-        hch@infradead.org, djwong@kernel.org,
-        dri-devel@lists.freedesktop.org, airlied@linux.ie,
-        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
-        hamohammed.sa@gmail.com
-Subject: Re: Report 2 in ext4 and journal based on v5.17-rc1
-Message-ID: <20220304015650.GC6112@X58A-UD3R>
-References: <1645096204-31670-2-git-send-email-byungchul.park@lge.com>
- <20220221190204.q675gtsb6qhylywa@quack3.lan>
- <20220223003534.GA26277@X58A-UD3R>
- <20220223144859.na2gjgl5efgw5zhn@quack3.lan>
- <20220224011102.GA29726@X58A-UD3R>
- <20220224102239.n7nzyyekuacgpnzg@quack3.lan>
- <20220228092826.GA5201@X58A-UD3R>
- <20220228101444.6frl63dn5vmgycbp@quack3.lan>
- <20220303010033.GB20752@X58A-UD3R>
- <20220303095456.kym32pxshwryescx@quack3.lan>
+        with ESMTP id S232705AbiCDCYN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Mar 2022 21:24:13 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3668565820;
+        Thu,  3 Mar 2022 18:23:26 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 977441F382;
+        Fri,  4 Mar 2022 02:23:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1646360604; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E85sAoXCaTA9rJMXOcKl8Th+xCpRXA0b8EAqZxwZ8A0=;
+        b=OHMBIepyGZT5p2vUzh9m6EF2ADllsCUvjfoI6pTTrXo7Yz0B7BDN+ge9IdtF+2ZYydZGCQ
+        8WoB5pAABgNBYEPVBbEaEnFFjU93OJpcylm9mmoQGVwXSBRAGZ9mDxUgC5aU5qlMH9Ckr8
+        8JdQlmMLB5FGrAN6piwNc9Z7wosEfx8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1646360604;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E85sAoXCaTA9rJMXOcKl8Th+xCpRXA0b8EAqZxwZ8A0=;
+        b=gt1xKH0idJAvV5toxul/AJtWemJaGkXOxCg34os0vjwsTU/KiA45a4f222DhjpE4Y5De+j
+        w3347cZDZ/LwPhDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8CAE41340A;
+        Fri,  4 Mar 2022 02:23:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Wj8UEhV4IWIXewAAMHmgww
+        (envelope-from <neilb@suse.de>); Fri, 04 Mar 2022 02:23:17 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220303095456.kym32pxshwryescx@quack3.lan>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Miklos Szeredi" <miklos@szeredi.hu>
+Cc:     "Andrew Morton" <akpm@linux-foundation.org>,
+        "Jan Kara" <jack@suse.cz>, "Wu Fengguang" <fengguang.wu@intel.com>,
+        "Jaegeuk Kim" <jaegeuk@kernel.org>, "Chao Yu" <chao@kernel.org>,
+        "Jeff Layton" <jlayton@kernel.org>,
+        "Ilya Dryomov" <idryomov@gmail.com>,
+        "Trond Myklebust" <trond.myklebust@hammerspace.com>,
+        "Anna Schumaker" <anna.schumaker@netapp.com>,
+        "Ryusuke Konishi" <konishi.ryusuke@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        "Philipp Reisner" <philipp.reisner@linbit.com>,
+        "Lars Ellenberg" <lars.ellenberg@linbit.com>,
+        "Paolo Valente" <paolo.valente@linaro.org>,
+        "Jens Axboe" <axboe@kernel.dk>, linux-doc@vger.kernel.org,
+        "linux-mm" <linux-mm@kvack.org>, linux-nilfs@vger.kernel.org,
+        "Linux NFS list" <linux-nfs@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        "Ext4" <linux-ext4@vger.kernel.org>, ceph-devel@vger.kernel.org,
+        drbd-dev@lists.linbit.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/11] MM: improve cleanup when ->readpages doesn't
+ process all pages.
+In-reply-to: <CAJfpegs=DhCO62EFV0Q_i2fmqJnziJy1t4itP9deS=FuWEA=TQ@mail.gmail.com>
+References: <164549971112.9187.16871723439770288255.stgit@noble.brown>,
+ <164549983736.9187.16755913785880819183.stgit@noble.brown>,
+ <CAJfpegs=DhCO62EFV0Q_i2fmqJnziJy1t4itP9deS=FuWEA=TQ@mail.gmail.com>
+Date:   Fri, 04 Mar 2022 13:23:14 +1100
+Message-id: <164636059432.13165.6442580674358743838@noble.neil.brown.name>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Mar 03, 2022 at 10:54:56AM +0100, Jan Kara wrote:
-> On Thu 03-03-22 10:00:33, Byungchul Park wrote:
-> > Unfortunately, it's neither perfect nor safe without another wakeup
-> > source - rescue wakeup source.
-> > 
-> >    consumer			producer
-> > 
-> > 				lock L
-> > 				(too much work queued == true)
-> > 				unlock L
-> > 				--- preempted
-> >    lock L
-> >    unlock L
-> >    do work
-> >    lock L
-> >    unlock L
-> >    do work
-> >    ...
-> >    (no work == true)
-> >    sleep
-> > 				--- scheduled in
-> > 				sleep
-> > 
-> > This code leads a deadlock without another wakeup source, say, not safe.
-> 
-> So the scenario you describe above is indeed possible. But the trick is
-> that the wakeup from 'consumer' as is doing work will remove 'producer'
-> from the wait queue and change the 'producer' process state to
-> 'TASK_RUNNING'. So when 'producer' calls sleep (in fact schedule()), the
-> scheduler will just treat this as another preemption point and the
-> 'producer' will immediately or soon continue to run. So indeed we can think
-> of this as "another wakeup source" but the source is in the CPU scheduler
-> itself. This is the standard way how waitqueues are used in the kernel...
+On Wed, 02 Mar 2022, Miklos Szeredi wrote:
+> On Tue, 22 Feb 2022 at 04:18, NeilBrown <neilb@suse.de> wrote:
+> >
+> > If ->readpages doesn't process all the pages, then it is best to act as
+> > though they weren't requested so that a subsequent readahead can try
+> > again.
+> > So:
+> >   - remove any 'ahead' pages from the page cache so they can be loaded
+> >     with ->readahead() rather then multiple ->read()s
+> >   - update the file_ra_state to reflect the reads that were actually
+> >     submitted.
+> >
+> > This allows ->readpages() to abort early due e.g.  to congestion, which
+> > will then allow us to remove the inode_read_congested() test from
+> > page_Cache_async_ra().
+> >
+> > Signed-off-by: NeilBrown <neilb@suse.de>
+> > ---
+> >  mm/readahead.c |   19 +++++++++++++++++--
+> >  1 file changed, 17 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/mm/readahead.c b/mm/readahead.c
+> > index 73b2bc5302e0..8a97bd408cf6 100644
+> > --- a/mm/readahead.c
+> > +++ b/mm/readahead.c
+> > @@ -104,7 +104,13 @@
+> >   * for necessary resources (e.g.  memory or indexing information) to
+> >   * become available.  Pages in the final ``async_size`` may be
+> >   * considered less urgent and failure to read them is more acceptable.
+> > - * They will eventually be read individually using ->readpage().
+> > + * In this case it is best to use delete_from_page_cache() to remove the
+> > + * pages from the page cache as is automatically done for pages that
+> > + * were not fetched with readahead_page().  This will allow a
+> > + * subsequent synchronous read ahead request to try them again.  If they
+> > + * are left in the page cache, then they will be read individually using
+> > + * ->readpage().
+> > + *
+> >   */
+> >
+> >  #include <linux/kernel.h>
+> > @@ -226,8 +232,17 @@ static void read_pages(struct readahead_control *rac=
+, struct list_head *pages,
+> >
+> >         if (aops->readahead) {
+> >                 aops->readahead(rac);
+> > -               /* Clean up the remaining pages */
+> > +               /*
+> > +                * Clean up the remaining pages.  The sizes in ->ra
+> > +                * maybe be used to size next read-ahead, so make sure
+> > +                * they accurately reflect what happened.
+> > +                */
+> >                 while ((page =3D readahead_page(rac))) {
+> > +                       rac->ra->size -=3D 1;
+> > +                       if (rac->ra->async_size > 0) {
+> > +                               rac->ra->async_size -=3D 1;
+> > +                               delete_from_page_cache(page);
+> > +                       }
+>=20
+> Does the  above imply that filesystem should submit at least ra->size
+> pages, regardless of congestion?
 
-Nice! Thanks for the explanation. I will take it into account if needed.
+   ra->size - ra_async_size=20
+pages should be submitted reguardless of congestion.
 
-> > Lastly, just for your information, I need to explain how Dept works a
-> > little more for you not to misunderstand Dept.
-> > 
-> > Assuming the consumer and producer guarantee not to lead a deadlock like
-> > the following, Dept won't report it a problem:
-> > 
-> >    consumer			producer
-> > 
-> > 				sleep
-> >    wakeup work_done
-> > 				queue work
-> >    sleep
-> > 				wakeup work_queued
-> >    do work
-> > 				sleep
-> >    wakeup work_done
-> > 				queue work
-> >    sleep
-> > 				wakeup work_queued
-> >    do work
-> > 				sleep
-> >    ...				...
-> > 
-> > Dept does not consider all waits preceeding an event but only waits that
-> > might lead a deadlock. In this case, Dept works with each region
-> > independently.
-> > 
-> >    consumer			producer
-> > 
-> > 				sleep <- initiates region 1
-> >    --- region 1 starts
-> >    ...				...
-> >    --- region 1 ends
-> >    wakeup work_done
-> >    ...				...
-> > 				queue work
-> >    ...				...
-> >    sleep <- initiates region 2
-> > 				--- region 2 starts
-> >    ...				...
-> > 				--- region 2 ends
-> > 				wakeup work_queued
-> >    ...				...
-> >    do work
-> >    ...				...
-> > 				sleep <- initiates region 3
-> >    --- region 3 starts
-> >    ...				...
-> >    --- region 3 ends
-> >    wakeup work_done
-> >    ...				...
-> > 				queue work
-> >    ...				...
-> >    sleep <- initiates region 4
-> > 				--- region 4 starts
-> >    ...				...
-> > 				--- region 4 ends
-> > 				wakeup work_queued
-> >    ...				...
-> >    do work
-> >    ...				...
-> > 
-> > That is, Dept does not build dependencies across different regions. So
-> > you don't have to worry about unreasonable false positives that much.
-> > 
-> > Thoughts?
-> 
-> Thanks for explanation! And what exactly defines the 'regions'? When some
-> process goes to sleep on some waitqueue, this defines a start of a region
-> at the place where all the other processes are at that moment and wakeup of
-> the waitqueue is an end of the region?
+NeilBrown
 
-Yes. Let me explain it more for better understanding.
-(I copied it from the talk I did with Matthew..)
-
-
-   ideal view
-   -----------
-   context X			context Y
-
-   request event E		...
-      write REQUESTEVENT	when (notice REQUESTEVENT written)
-   ...				   notice the request from X [S]
-
-				--- ideally region 1 starts here
-   wait for the event		...
-      sleep			if (can see REQUESTEVENT written)
-   				   it's on the way to the event
-   ...				
-   				...
-				--- ideally region 1 ends here
-
-				finally the event [E]
-
-Dept basically works with the above view with regard to wait and event.
-But it's very hard to identify the ideal [S] point in practice. So Dept
-instead identifies [S] point by checking WAITSTART with memory barriers
-like the following, which would make Dept work conservatively.
-
-
-   Dept's view
-   ------------
-   context X			context Y
-
-   request event E		...
-      write REQUESTEVENT	when (notice REQUESTEVENT written)
-   ...				   notice the request from X
-
-				--- region 2 Dept gives up starts
-   wait for the event		...
-      write barrier
-      write WAITSTART		read barrier
-      sleep			when (notice WAITSTART written)
-				   ensure the request has come [S]
-
-				--- region 2 Dept gives up ends
-				--- region 3 starts here
-				...
-				if (can see WAITSTART written)
-				   it's on the way to the event
-   ...				
-   				...
-				--- region 3 ends here
-
-   				finally the event [E]
-
-In short, Dept works with region 3.
-
-Thanks,
-Byungchul
