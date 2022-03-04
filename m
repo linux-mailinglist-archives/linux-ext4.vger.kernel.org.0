@@ -2,17 +2,17 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D194CCEA9
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Mar 2022 08:08:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A104CCEA3
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Mar 2022 08:08:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238760AbiCDHJO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 4 Mar 2022 02:09:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39250 "EHLO
+        id S238778AbiCDHJK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 4 Mar 2022 02:09:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238759AbiCDHIv (ORCPT
+        with ESMTP id S238769AbiCDHIv (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Fri, 4 Mar 2022 02:08:51 -0500
 Received: from lgeamrelo11.lge.com (lgeamrelo12.lge.com [156.147.23.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7D606191428
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D8DC619143B
         for <linux-ext4@vger.kernel.org>; Thu,  3 Mar 2022 23:07:12 -0800 (PST)
 Received: from unknown (HELO lgemrelse6q.lge.com) (156.147.1.121)
         by 156.147.23.52 with ESMTP; 4 Mar 2022 16:07:09 +0900
@@ -46,81 +46,51 @@ Cc:     damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
         dri-devel@lists.freedesktop.org, airlied@linux.ie,
         rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
         hamohammed.sa@gmail.com
-Subject: [PATCH v4 20/24] dept: Add nocheck version of init_completion()
-Date:   Fri,  4 Mar 2022 16:06:39 +0900
-Message-Id: <1646377603-19730-21-git-send-email-byungchul.park@lge.com>
+Subject: [PATCH v4 21/24] dept: Disable Dept on struct crypto_larval's completion for now
+Date:   Fri,  4 Mar 2022 16:06:40 +0900
+Message-Id: <1646377603-19730-22-git-send-email-byungchul.park@lge.com>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1646377603-19730-1-git-send-email-byungchul.park@lge.com>
 References: <1646377603-19730-1-git-send-email-byungchul.park@lge.com>
 X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
         RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-For completions who don't want to get tracked by Dept, added
-init_completion_nocheck() to disable Dept on it.
+struct crypto_larval's completion is used for multiple purposes e.g.
+waiting for test to complete or waiting for probe to complete.
+
+The completion variable needs to be split according to what it's used
+for. Otherwise, Dept cannot distinguish one from another and doesn't
+work properly. Now that it isn't, disable Dept on it.
 
 Signed-off-by: Byungchul Park <byungchul.park@lge.com>
 ---
- include/linux/completion.h | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ crypto/api.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/completion.h b/include/linux/completion.h
-index a1ad5a8..9bd3bc9 100644
---- a/include/linux/completion.h
-+++ b/include/linux/completion.h
-@@ -30,6 +30,7 @@ struct completion {
- };
+diff --git a/crypto/api.c b/crypto/api.c
+index cf0869d..f501b91 100644
+--- a/crypto/api.c
++++ b/crypto/api.c
+@@ -115,7 +115,12 @@ struct crypto_larval *crypto_larval_alloc(const char *name, u32 type, u32 mask)
+ 	larval->alg.cra_destroy = crypto_larval_destroy;
  
- #ifdef CONFIG_DEPT
-+#define dept_wfc_nocheck(m)			dept_map_nocheck(m)
- #define dept_wfc_init(m, k, s, n)		dept_map_init(m, k, s, n)
- #define dept_wfc_reinit(m)			dept_map_reinit(m)
- #define dept_wfc_wait(m, ip)						\
-@@ -41,6 +42,7 @@ struct completion {
- #define dept_wfc_enter(m, ip)			dept_ecxt_enter(m, 1UL, ip, "completion_context_enter", "complete", 0)
- #define dept_wfc_exit(m, ip)			dept_ecxt_exit(m, ip)
- #else
-+#define dept_wfc_nocheck(m)			do { } while (0)
- #define dept_wfc_init(m, k, s, n)		do { (void)(n); (void)(k); } while (0)
- #define dept_wfc_reinit(m)			do { } while (0)
- #define dept_wfc_wait(m, ip)			do { } while (0)
-@@ -55,10 +57,11 @@ struct completion {
- #define WFC_DEPT_MAP_INIT(work)
- #endif
+ 	strlcpy(larval->alg.cra_name, name, CRYPTO_MAX_ALG_NAME);
+-	init_completion(&larval->completion);
++	/*
++	 * TODO: Split ->completion according to what it's used for e.g.
++	 * ->test_completion, ->probe_completion and the like, so that
++	 *  Dept can track its dependency properly.
++	 */
++	init_completion_nocheck(&larval->completion);
  
-+#define init_completion_nocheck(x) __init_completion(x, NULL, #x, false)
- #define init_completion(x)					\
- 	do {							\
- 		static struct dept_key __dkey;			\
--		__init_completion(x, &__dkey, #x);		\
-+		__init_completion(x, &__dkey, #x, true);	\
- 	} while (0)
- 
- #define init_completion_map(x, m) init_completion(x)
-@@ -117,10 +120,15 @@ static inline void complete_release(struct completion *x) {}
-  */
- static inline void __init_completion(struct completion *x,
- 				     struct dept_key *dkey,
--				     const char *name)
-+				     const char *name, bool check)
- {
- 	x->done = 0;
--	dept_wfc_init(&x->dmap, dkey, 0, name);
-+
-+	if (check)
-+		dept_wfc_init(&x->dmap, dkey, 0, name);
-+	else
-+		dept_wfc_nocheck(&x->dmap);
-+
- 	init_swait_queue_head(&x->wait);
+ 	return larval;
  }
- 
 -- 
 1.9.1
 
