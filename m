@@ -2,107 +2,176 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7D14CCE95
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Mar 2022 08:08:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D68994CD329
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Mar 2022 12:14:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238788AbiCDHJG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 4 Mar 2022 02:09:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39124 "EHLO
+        id S239139AbiCDLO4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 4 Mar 2022 06:14:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238786AbiCDHIw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 4 Mar 2022 02:08:52 -0500
-Received: from lgeamrelo11.lge.com (lgeamrelo11.lge.com [156.147.23.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ECD69192CAF
-        for <linux-ext4@vger.kernel.org>; Thu,  3 Mar 2022 23:07:14 -0800 (PST)
-Received: from unknown (HELO lgemrelse6q.lge.com) (156.147.1.121)
-        by 156.147.23.51 with ESMTP; 4 Mar 2022 16:07:09 +0900
-X-Original-SENDERIP: 156.147.1.121
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO localhost.localdomain) (10.177.244.38)
-        by 156.147.1.121 with ESMTP; 4 Mar 2022 16:07:09 +0900
-X-Original-SENDERIP: 10.177.244.38
-X-Original-MAILFROM: byungchul.park@lge.com
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     torvalds@linux-foundation.org
-Cc:     damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        mingo@redhat.com, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, will@kernel.org, tglx@linutronix.de,
-        rostedt@goodmis.org, joel@joelfernandes.org, sashal@kernel.org,
-        daniel.vetter@ffwll.ch, chris@chris-wilson.co.uk,
-        duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org,
-        tytso@mit.edu, willy@infradead.org, david@fromorbit.com,
-        amir73il@gmail.com, bfields@fieldses.org,
-        gregkh@linuxfoundation.org, kernel-team@lge.com,
-        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
-        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
-        ngupta@vflare.org, linux-block@vger.kernel.org,
-        paolo.valente@linaro.org, josef@toxicpanda.com,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        jack@suse.cz, jack@suse.com, jlayton@kernel.org,
-        dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
-        dri-devel@lists.freedesktop.org, airlied@linux.ie,
-        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
-        hamohammed.sa@gmail.com
-Subject: [PATCH v4 24/24] dept: Disable Dept on that map once it's been handled until next turn
-Date:   Fri,  4 Mar 2022 16:06:43 +0900
-Message-Id: <1646377603-19730-25-git-send-email-byungchul.park@lge.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1646377603-19730-1-git-send-email-byungchul.park@lge.com>
-References: <1646377603-19730-1-git-send-email-byungchul.park@lge.com>
-X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S239127AbiCDLOz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 4 Mar 2022 06:14:55 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D5191B0BD7;
+        Fri,  4 Mar 2022 03:14:07 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7918361D00;
+        Fri,  4 Mar 2022 11:14:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7958DC340E9;
+        Fri,  4 Mar 2022 11:14:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1646392446;
+        bh=oMRkrgkieQqbJLozH2f1WWABMteAvIgUeoZgr4XZLG4=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=ik9/iqlkSYV+ppGVcBuwu2APgDACKwcHntHw+Hu2Xr2jfUIu91CbsiGhv5jpiECni
+         a9ovy2jThDcrU31vb3KB6PNgCDbjxn7wJSUL91b4PsewrN4+rSSjwpeYjmoA689kh4
+         iDM6CtEhfpShSDPSpPc8OIhQniSoJ0vCl0gEMEfWWqbowcPyp/OV9D5KAOaqrN4GF7
+         NkaSTJNMWNW1q7JiBxw6Y8agL6pJATIClarAY+MMxefSgKrrjMeZe0bTtYVrgIPW8i
+         BgnfCclXxDPDHqmIImbnZl+viTCZzSUfh9tCE21gQuO0asP18iC8AbQv7azba/hjRh
+         5NjtEiNztu8Xw==
+Message-ID: <1c5aa5552850dc90bdeb5f8bc0e4f5dd3270a382.camel@kernel.org>
+Subject: Re: [PATCH 06/11] ceph: remove reliance on bdi congestion
+From:   Jeff Layton <jlayton@kernel.org>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, Jan Kara <jack@suse.cz>,
+        Wu Fengguang <fengguang.wu@intel.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Lars Ellenberg <lars.ellenberg@linbit.com>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 04 Mar 2022 06:14:03 -0500
+In-Reply-To: <164636204663.29369.1845040729675190216@noble.neil.brown.name>
+References: <164549971112.9187.16871723439770288255.stgit@noble.brown>
+        , <164549983739.9187.14895675781408171186.stgit@noble.brown>
+        , <ccc81eb5c23f933137c5da8d5050540cc54e58f0.camel@kernel.org>
+        , <164568131640.25116.884631856219777713@noble.neil.brown.name>
+        , <e8ec98a9c4fab9b7aa099001f09ff9b11f0c3f96.camel@kernel.org>
+         <164636204663.29369.1845040729675190216@noble.neil.brown.name>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.42.4 (3.42.4-1.fc35) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Dept works with waits preceeding an event, that might lead a deadlock.
-Once the event has been handled, it's hard to ensure further waits
-actually contibute to deadlock until next turn, which will start when
-a sleep associated with that map happens.
+On Fri, 2022-03-04 at 13:47 +1100, NeilBrown wrote:
+> On Thu, 24 Feb 2022, Jeff Layton wrote:
+> > On Thu, 2022-02-24 at 16:41 +1100, NeilBrown wrote:
+> > > On Thu, 24 Feb 2022, Jeff Layton wrote:
+> > > > On Tue, 2022-02-22 at 14:17 +1100, NeilBrown wrote:
+> > > > > The bdi congestion tracking in not widely used and will be removed.
+> > > > > 
+> > > > > CEPHfs is one of a small number of filesystems that uses it, setting
+> > > > > just the async (write) congestion flags at what it determines are
+> > > > > appropriate times.
+> > > > > 
+> > > > > The only remaining effect of the async flag is to cause (some)
+> > > > > WB_SYNC_NONE writes to be skipped.
+> > > > > 
+> > > > > So instead of setting the flag, set an internal flag and change:
+> > > > >  - .writepages to do nothing if WB_SYNC_NONE and the flag is set
+> > > > >  - .writepage to return AOP_WRITEPAGE_ACTIVATE if WB_SYNC_NONE
+> > > > >     and the flag is set.
+> > > > > 
+> > > > > The writepages change causes a behavioural change in that pageout() can
+> > > > > now return PAGE_ACTIVATE instead of PAGE_KEEP, so SetPageActive() will
+> > > > > be called on the page which (I think) wil further delay the next attempt
+> > > > > at writeout.  This might be a good thing.
+> > > > > 
+> > > > > Signed-off-by: NeilBrown <neilb@suse.de>
+> > > > 
+> > > > Maybe. I have to wonder whether all of this is really useful.
+> > > > 
+> > > > When things are congested we'll avoid trying to issue new writeback
+> > > > requests. Note that we don't prevent new pages from being dirtied here -
+> > > > - only their being written back.
+> > > > 
+> > > > This also doesn't do anything in the DIO or sync_write cases, so if we
+> > > > lose caps or are doing DIO, we'll just keep churning out "unlimited"
+> > > > writes in those cases anyway.
+> > > 
+> > > I think the point of congestion tracking is to differentiate between
+> > > sync and async IO.  Or maybe "required" and "optional".
+> > > Eventually the "optional" IO will become required, but if we can delay
+> > > it until a time when there is less "required" io, then maybe we can
+> > > improve perceived latency.
+> > > 
+> > > "optional" IO here is write-back and read-ahead.  If the load of
+> > > "required" IO is bursty, and if we can shuffle that optional stuff into
+> > > the quiet periods, we might win.
+> > > 
+> > 
+> > In that case, maybe we should be counting in-flight reads too and deny
+> > readahead when the count crosses some threshold? It seems a bit silly to
+> > only look at writes when it comes to "congestion".
+> 
+> I agree that seems a bit silly.
+> 
+> > 
+> > > Whether this is a real need is an important question that I don't have an
+> > > answer for.  And whether it is better to leave delayed requests in the
+> > > page cache, or in the low-level queue with sync requests able to
+> > > over-take them - I don't know.  If you have multiple low-level queue as
+> > > you say you can with ceph, then lower might be better.
+> > > 
+> > > The block layer has REQ_RAHEAD ..  maybe those request get should get a
+> > > lower priority ... though I don't think they do.
+> > > NFS has a 3 level priority queue, with write-back going at a lower
+> > > priority ... I think... for NFSv3 at least.
+> > > 
+> > > Sometimes I suspect that as all our transports have become faster, we
+> > > have been able to ignore the extra latency caused by poor scheduling of
+> > > optional requests.  But at other times when my recently upgraded desktop
+> > > is struggling to view a web page while compiling a kernel ...  I wonder
+> > > if maybe we don't have the balance right any more.
+> > > 
+> > > So maybe you are right - maybe we can rip all this stuff out.
+> > > 
+> > 
+> > I lean more toward just removing it. The existing implementation seems a
+> > bit half-baked with the gaps in what's being counted. Granted, the
+> > default congestion threshold is pretty high with modern memory sizes, so
+> > it probably doesn't come into play much in practice, but removing it
+> > would reduce some complexity in the client.
+> 
+> I'd love to have some test that could reliably generate congestion and
+> measure latencies for other IO.  Without that, it is mostly guess work.
+> So I cannot argue against your proposal, and do agree that removing the
+> code would reduce complexity.  I have no idea what the costs might be -
+> if any.  Hence my focus was on not changing behaviour.
+> 
 
-So let Dept start tracking dependency when a sleep happens and stop
-tracking dependency once the event e.i. wake up, has been handled.
+Fair enough -- caution is warranted.
 
-Signed-off-by: Byungchul Park <byungchul.park@lge.com>
----
- kernel/dependency/dept.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+I think the thing to do here is to take your patch for now, and then we
+can look at just removing all of this stuff at some point in the future.
+That would also give us a fallback that doesn't require the old
+congestion infrastructure if it turns out that it is needed.
 
-diff --git a/kernel/dependency/dept.c b/kernel/dependency/dept.c
-index cc1b3a3..1c91db8 100644
---- a/kernel/dependency/dept.c
-+++ b/kernel/dependency/dept.c
-@@ -2325,6 +2325,12 @@ void dept_event(struct dept_map *m, unsigned long e_f, unsigned long ip,
- 		do_event((void *)m, c, READ_ONCE(m->wgen), ip);
- 		pop_ecxt((void *)m);
- 	}
-+
-+	/*
-+	 * Keep the map diabled until the next sleep.
-+	 */
-+	WRITE_ONCE(m->wgen, 0);
-+
- 	dept_exit(flags);
- }
- EXPORT_SYMBOL_GPL(dept_event);
-@@ -2447,6 +2453,11 @@ void dept_event_split_map(struct dept_map_each *me,
- 		pop_ecxt((void *)me);
- 	}
- 
-+	/*
-+	 * Keep the map diabled until the next sleep.
-+	 */
-+	WRITE_ONCE(me->wgen, 0);
-+
- 	dept_exit(flags);
- }
- EXPORT_SYMBOL_GPL(dept_event_split_map);
+I'm assuming this is going in via Andrew's tree, but let us know if
+you'd like us to take any of these in via the ceph tree.
+
+Thanks,
 -- 
-1.9.1
-
+Jeff Layton <jlayton@kernel.org>
