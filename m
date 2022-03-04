@@ -2,51 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CFF04CDD34
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Mar 2022 20:14:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A30AB4CDD39
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Mar 2022 20:15:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbiCDTPj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 4 Mar 2022 14:15:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53004 "EHLO
+        id S229529AbiCDTPt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 4 Mar 2022 14:15:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbiCDTPi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 4 Mar 2022 14:15:38 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5811F1601;
-        Fri,  4 Mar 2022 11:14:43 -0800 (PST)
+        with ESMTP id S229818AbiCDTPs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 4 Mar 2022 14:15:48 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B09F021F9F2;
+        Fri,  4 Mar 2022 11:14:54 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id CD5ACB82B66;
-        Fri,  4 Mar 2022 19:14:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D197C340EE;
-        Fri,  4 Mar 2022 19:14:40 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2C7EB61987;
+        Fri,  4 Mar 2022 19:14:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87FE4C36AE3;
+        Fri,  4 Mar 2022 19:14:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646421280;
-        bh=z9QOAPrGETQ++HWZY4bwoQ4oWyQg3KZKh7KMFBI9D3k=;
+        s=k20201202; t=1646421293;
+        bh=Cr2zQpALEYc0BloWcMquGCSDsBxEGFfaAzYxN+PfjoE=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WfZBXhh7cjSx2qbz7lyWNwyYegtc9BVoVASPBl+AYWSzGRgv/lZrbKWP96hd5yKsr
-         sywrXu/hIEvE8UpLbSggbSUenfSEL143wXvWyl2AKiKPE5x3PvCVH1llOmPP/UH0F+
-         KvDKVIy2mG+ICjhAVP6GhOXjDlGHUBIKLkxTa+JPGfIgQZJkk5YwjG+GdC8RrHfQ/y
-         pcqcE1vFzhoU5skSDKZ6APVVNM+SeVRterRiquSWy1mP0jlJQhJY2wVwHxMhjgVsyy
-         36EKJ2NOW8UYdHfiHLakr6VypzkBPNalh8bZIqMKevUtnaKAQBaVjXelfkn5GM0ekY
-         zVb1qMo7OXvwA==
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-2dbc48104beso102387777b3.5;
-        Fri, 04 Mar 2022 11:14:40 -0800 (PST)
-X-Gm-Message-State: AOAM532FSOkPnuyEM8uiVMsLj/xL55Jgk2c0T0qLeOILqA8uDKCRcFEB
-        RpsJr3qAcjMAJBMEb15gcnyGXLayslYUAKbnz4E=
-X-Google-Smtp-Source: ABdhPJz1k+z6CdB1ZzQOzZSIjJIBSsGyOVyzuwjsvPhhdopH3DUGx0z8p5JWInYwnZDE3MO0ZqNgFRCZZrFdU5/nPZ4=
-X-Received: by 2002:a81:23ce:0:b0:2dc:b20:cc73 with SMTP id
- j197-20020a8123ce000000b002dc0b20cc73mr51033ywj.130.1646421279615; Fri, 04
- Mar 2022 11:14:39 -0800 (PST)
+        b=X2JOGuU4ffwTvY2rv/SEVDjilGWGO8z/7GSzn1T2vEP33ZQvPsNQGxISxS3LtbHK7
+         O5Dw4bBrJQcDxGCkDlMycSqAeXgpfkkStXPJF+l+m7t2hpRm+5D+Ex1DUeyfww9OZo
+         /ubv6xPejnFtAW07FYdmw2EUI54FVWv23VHAu/5xJs/FVDhwAGpxje4+Wjf2JB60D9
+         3KBQ91vg15BaVGY75a1UuL6HT2kvuaIeCXtvIw6EMS3lQclIeHrnMhLKa+xLHNBsGa
+         TneeE7SsZp43VWTRUtnSR0/kQRvRfLL16aE4/yvqTg8UGvgDnHdugR7Ntj27qGdM3d
+         zyu4EZK8C/C/Q==
+Received: by mail-yb1-f170.google.com with SMTP id g1so18786007ybe.4;
+        Fri, 04 Mar 2022 11:14:53 -0800 (PST)
+X-Gm-Message-State: AOAM533btCK+NUhYRzYk2Ux8usFHMbHYxC14e0hazDrXJU/82yQ3Qm2s
+        jG5g0415ykkxVSC1PtWK+jvqIXF4zrAWnJ/eXsA=
+X-Google-Smtp-Source: ABdhPJyJKciwB+H2qT8XuSdHG5g3cocNLmmYPiUlbuTc45K35RAIqHTj7b5fPglxl5qTTPIUQQAAK5EEC3jrs2oPFHs=
+X-Received: by 2002:a25:c89:0:b0:61d:a1e8:fd14 with SMTP id
+ 131-20020a250c89000000b0061da1e8fd14mr38894980ybm.322.1646421292474; Fri, 04
+ Mar 2022 11:14:52 -0800 (PST)
 MIME-Version: 1.0
-References: <20220304180105.409765-1-hch@lst.de> <20220304180105.409765-7-hch@lst.de>
-In-Reply-To: <20220304180105.409765-7-hch@lst.de>
+References: <20220304180105.409765-1-hch@lst.de> <20220304180105.409765-8-hch@lst.de>
+In-Reply-To: <20220304180105.409765-8-hch@lst.de>
 From:   Song Liu <song@kernel.org>
-Date:   Fri, 4 Mar 2022 11:14:28 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW4br23hby-nmQsx9=wTn3tgV+OCXh0kMBLQR7Nhc6zdzg@mail.gmail.com>
-Message-ID: <CAPhsuW4br23hby-nmQsx9=wTn3tgV+OCXh0kMBLQR7Nhc6zdzg@mail.gmail.com>
-Subject: Re: [PATCH 06/10] md-multipath: stop using bio_devname
+Date:   Fri, 4 Mar 2022 11:14:41 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW6vmKx6tgsnM9gifW2Szi2cQX4kY77_BRfNwfq9RXniuQ@mail.gmail.com>
+Message-ID: <CAPhsuW6vmKx6tgsnM9gifW2Szi2cQX4kY77_BRfNwfq9RXniuQ@mail.gmail.com>
+Subject: Re: [PATCH 07/10] raid1: stop using bio_devname
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Jens Axboe <axboe@kernel.dk>, "Theodore Ts'o" <tytso@mit.edu>,
         linux-block@vger.kernel.org, dm-devel@redhat.com,
@@ -72,39 +72,31 @@ On Fri, Mar 4, 2022 at 10:01 AM Christoph Hellwig <hch@lst.de> wrote:
 Acked-by: Song Liu <song@kernel.org>
 
 > ---
->  drivers/md/md-multipath.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
+>  drivers/md/raid1.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 >
-> diff --git a/drivers/md/md-multipath.c b/drivers/md/md-multipath.c
-> index c056a7d707b09..bc38a6133cda3 100644
-> --- a/drivers/md/md-multipath.c
-> +++ b/drivers/md/md-multipath.c
-> @@ -294,7 +294,6 @@ static void multipathd(struct md_thread *thread)
+> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+> index c180c188da574..97574575ad0b4 100644
+> --- a/drivers/md/raid1.c
+> +++ b/drivers/md/raid1.c
+> @@ -2069,15 +2069,14 @@ static int fix_sync_read_error(struct r1bio *r1_bio)
+>                 } while (!success && d != r1_bio->read_disk);
 >
->         md_check_recovery(mddev);
->         for (;;) {
-> -               char b[BDEVNAME_SIZE];
->                 spin_lock_irqsave(&conf->device_lock, flags);
->                 if (list_empty(head))
->                         break;
-> @@ -306,13 +305,13 @@ static void multipathd(struct md_thread *thread)
->                 bio->bi_iter.bi_sector = mp_bh->master_bio->bi_iter.bi_sector;
->
->                 if ((mp_bh->path = multipath_map (conf))<0) {
-> -                       pr_err("multipath: %s: unrecoverable IO read error for block %llu\n",
-> -                              bio_devname(bio, b),
-> +                       pr_err("multipath: %pg: unrecoverable IO read error for block %llu\n",
-> +                              bio->bi_bdev,
->                                (unsigned long long)bio->bi_iter.bi_sector);
->                         multipath_end_bh_io(mp_bh, BLK_STS_IOERR);
->                 } else {
-> -                       pr_err("multipath: %s: redirecting sector %llu to another IO path\n",
-> -                              bio_devname(bio, b),
-> +                       pr_err("multipath: %pg: redirecting sector %llu to another IO path\n",
-> +                              bio->bi_bdev,
->                                (unsigned long long)bio->bi_iter.bi_sector);
->                         *bio = *(mp_bh->master_bio);
->                         bio->bi_iter.bi_sector +=
+>                 if (!success) {
+> -                       char b[BDEVNAME_SIZE];
+>                         int abort = 0;
+>                         /* Cannot read from anywhere, this block is lost.
+>                          * Record a bad block on each device.  If that doesn't
+>                          * work just disable and interrupt the recovery.
+>                          * Don't fail devices as that won't really help.
+>                          */
+> -                       pr_crit_ratelimited("md/raid1:%s: %s: unrecoverable I/O read error for block %llu\n",
+> -                                           mdname(mddev), bio_devname(bio, b),
+> +                       pr_crit_ratelimited("md/raid1:%s: %pg: unrecoverable I/O read error for block %llu\n",
+> +                                           mdname(mddev), bio->bi_bdev,
+>                                             (unsigned long long)r1_bio->sector);
+>                         for (d = 0; d < conf->raid_disks * 2; d++) {
+>                                 rdev = conf->mirrors[d].rdev;
 > --
 > 2.30.2
 >
