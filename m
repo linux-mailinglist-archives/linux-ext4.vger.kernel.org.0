@@ -2,35 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F004CE562
-	for <lists+linux-ext4@lfdr.de>; Sat,  5 Mar 2022 15:56:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B944CE56C
+	for <lists+linux-ext4@lfdr.de>; Sat,  5 Mar 2022 16:05:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231927AbiCEO4x (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 5 Mar 2022 09:56:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33166 "EHLO
+        id S231511AbiCEPGR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 5 Mar 2022 10:06:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231920AbiCEO4w (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 5 Mar 2022 09:56:52 -0500
-Received: from lgeamrelo11.lge.com (lgeamrelo11.lge.com [156.147.23.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4E90F396A9
-        for <linux-ext4@vger.kernel.org>; Sat,  5 Mar 2022 06:56:00 -0800 (PST)
-Received: from unknown (HELO lgeamrelo01.lge.com) (156.147.1.125)
-        by 156.147.23.51 with ESMTP; 5 Mar 2022 23:55:58 +0900
-X-Original-SENDERIP: 156.147.1.125
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO X58A-UD3R) (10.177.244.38)
-        by 156.147.1.125 with ESMTP; 5 Mar 2022 23:55:58 +0900
-X-Original-SENDERIP: 10.177.244.38
-X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Sat, 5 Mar 2022 23:55:34 +0900
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        torvalds@linux-foundation.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
-        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
+        with ESMTP id S231688AbiCEPGQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 5 Mar 2022 10:06:16 -0500
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CD281C665D
+        for <linux-ext4@vger.kernel.org>; Sat,  5 Mar 2022 07:05:25 -0800 (PST)
+Received: by mail-qt1-x82b.google.com with SMTP id v3so9771544qta.11
+        for <linux-ext4@vger.kernel.org>; Sat, 05 Mar 2022 07:05:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=geC5xDAay5dBwn3cRxysbEgCyiuAzwcwhdO/zo7/1yQ=;
+        b=tixvP1FGnq2wfskq9ETIT5h8JQ7JPBjYQlaZiVU5QEF2ebRlSOd9Hj4GHFYYxuldWh
+         AEzNtAg/yji+2YKFPr0a17Al0EC/FApvTFNyo+sILOPE6zyZMSw0ZdguDzVRFqh+N+G9
+         axgAo/svRSLgSVS0G7iScy/imA1XKMIHb1NgI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=geC5xDAay5dBwn3cRxysbEgCyiuAzwcwhdO/zo7/1yQ=;
+        b=ibQ2+OkOb2tJpzobzVpooJtsHFZV0/bnheE4KaAYxuw5jtbbw30JVbPXywa/EqnkNh
+         PDQ5Pul7KRwzWFmMKTAo7IEVTcqNbqIGAWwg6d9NNHijnGVDb2r6fnsdLSDnlLYpdCrz
+         Pdwnw8y2OxCJSWu56GvqHINacw4Qgtoc4kcNQpF2/4yHKw+3QUxaPUebQrUy+3pmUxCt
+         8q3gyisMxW+HorjAsHJr+3kaYTmcqI9yzb4hKjoMSAsQZ/sItIQtyCIqDN2iiiApYKn3
+         jw2X/PLciHv8PZ6ndBiLk3TWH939HLdTv3PdZk6BfyZFMAvVRsOjhkF0fEiNMS8U8Tll
+         lKnQ==
+X-Gm-Message-State: AOAM530iSIoBZBHauo6l0RamzglBgVXysAtI5at9p1mBbjT7gF7WZfQV
+        oLCqp/13acw47aspA3n2E2dfPA==
+X-Google-Smtp-Source: ABdhPJzC6+sWbvHtOZiDBxeMwB424Rg3yPbjjQ/pVZIkOOUQmsA5JEXntpUeTe+z/0BHUPh5FnkxHA==
+X-Received: by 2002:a05:622a:3ca:b0:2df:1cae:397b with SMTP id k10-20020a05622a03ca00b002df1cae397bmr3200121qtx.556.1646492724622;
+        Sat, 05 Mar 2022 07:05:24 -0800 (PST)
+Received: from localhost (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
+        by smtp.gmail.com with ESMTPSA id t128-20020a37aa86000000b0060ddf2dc3ecsm3859545qke.104.2022.03.05.07.05.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Mar 2022 07:05:24 -0800 (PST)
+Date:   Sat, 5 Mar 2022 15:05:23 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Byungchul Park <byungchul.park@lge.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>, damien.lemoal@opensource.wdc.com,
+        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, torvalds@linux-foundation.org,
+        mingo@redhat.com, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, will@kernel.org, tglx@linutronix.de,
+        rostedt@goodmis.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
         chris@chris-wilson.co.uk, duyuyang@gmail.com,
         johannes.berg@intel.com, tj@kernel.org, willy@infradead.org,
         david@fromorbit.com, amir73il@gmail.com, bfields@fieldses.org,
@@ -46,96 +68,97 @@ Cc:     damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
         dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
         dri-devel@lists.freedesktop.org, airlied@linux.ie,
         rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
-        hamohammed.sa@gmail.com
+        hamohammed.sa@gmail.com, paulmck@kernel.org
 Subject: Re: Report 2 in ext4 and journal based on v5.17-rc1
-Message-ID: <20220305145534.GB31268@X58A-UD3R>
+Message-ID: <YiN8M4FwAeW/UAoN@google.com>
 References: <YiAow5gi21zwUT54@mit.edu>
  <1646285013-3934-1-git-send-email-byungchul.park@lge.com>
  <YiDSabde88HJ/aTt@mit.edu>
- <20220304032002.GD6112@X58A-UD3R>
- <YiLbs9rszWXpHm/P@mit.edu>
+ <20220304004237.GB6112@X58A-UD3R>
+ <YiLYX0sqmtkTEM5U@mit.edu>
+ <20220305141538.GA31268@X58A-UD3R>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YiLbs9rszWXpHm/P@mit.edu>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220305141538.GA31268@X58A-UD3R>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Mar 04, 2022 at 10:40:35PM -0500, Theodore Ts'o wrote:
-> On Fri, Mar 04, 2022 at 12:20:02PM +0900, Byungchul Park wrote:
+On Sat, Mar 05, 2022 at 11:15:38PM +0900, Byungchul Park wrote:
+> On Fri, Mar 04, 2022 at 10:26:23PM -0500, Theodore Ts'o wrote:
+> > On Fri, Mar 04, 2022 at 09:42:37AM +0900, Byungchul Park wrote:
+> > > 
+> > > All contexts waiting for any of the events in the circular dependency
+> > > chain will be definitely stuck if there is a circular dependency as I
+> > > explained. So we need another wakeup source to break the circle. In
+> > > ext4 code, you might have the wakeup source for breaking the circle.
+> > > 
+> > > What I agreed with is:
+> > > 
+> > >    The case that 1) the circular dependency is unevitable 2) there are
+> > >    another wakeup source for breadking the circle and 3) the duration
+> > >    in sleep is short enough, should be acceptable.
+> > > 
+> > > Sounds good?
 > > 
-> > I found a point that the two wait channels don't lead a deadlock in
-> > some cases thanks to Jan Kara. I will fix it so that Dept won't
-> > complain it.
+> > These dependencies are part of every single ext4 metadata update,
+> > and if there were any unnecessary sleeps, this would be a major
+> > performance gap, and this is a very well studied part of ext4.
+> > 
+> > There are some places where we sleep, sure.  In some case
+> > start_this_handle() needs to wait for a commit to complete, and the
+> > commit thread might need to sleep for I/O to complete.  But the moment
+> > the thing that we're waiting for is complete, we wake up all of the
+> > processes on the wait queue.  But in the case where we wait for I/O
+> > complete, that wakeupis coming from the device driver, when it
+> > receives the the I/O completion interrupt from the hard drive.  Is
+> > that considered an "external source"?  Maybe DEPT doesn't recognize
+> > that this is certain to happen just as day follows the night?  (Well,
+> > maybe the I/O completion interrupt might not happen if the disk drive
+> > bursts into flames --- but then, you've got bigger problems. :-)
 > 
-> I sent my last (admittedly cranky) message before you sent this.  I'm
-> glad you finally understood Jan's explanation.  I was trying to tell
-
-Not finally. I've understood him whenever he tried to tell me something.
-
-> you the same thing, but apparently I failed to communicate in a
-
-I don't think so. Your point and Jan's point are different. All he has
-said make sense. But yours does not.
-
-> sufficiently clear manner.  In any case, what Jan described is a
-> fundamental part of how wait queues work, and I'm kind of amazed that
-> you were able to implement DEPT without understanding it.  (But maybe
-
-Of course, it was possible because all that Dept has to know for basic
-work is wait and event. The subtle things like what Jan told me help
-Dept be better.
-
-> that is why some of the DEPT reports were completely incomprehensible
-
-It's because you are blinded to blame at it without understanding how
-Dept works at all. I will fix those that must be fixed. Don't worry.
-
-> to me; I couldn't interpret why in the world DEPT was saying there was
-> a problem.)
-
-I can tell you if you really want to understand why. But I can't if you
-are like this.
-
-> In any case, the thing I would ask is a little humility.  We regularly
-> use lockdep, and we run a huge number of stress tests, throughout each
-> development cycle.
-
-Sure.
-
-> So if DEPT is issuing lots of reports about apparently circular
-> dependencies, please try to be open to the thought that the fault is
-
-No one was convinced that Dept doesn't have a fault. I think your
-worries are too much.
-
-> in DEPT, and don't try to argue with maintainers that their code MUST
-> be buggy --- but since you don't understand our code, and DEPT must be
-
-No one argued that their code must be buggy, either. So I don't think
-you have to worry about what's never happened.
-
-> theoretically perfect, that it is up to the Maintainers to prove to
-> you that their code is correct.
+> Almost all you've been blaming at Dept are totally non-sense. Based on
+> what you're saying, I'm conviced that you don't understand how Dept
+> works even 1%. You don't even try to understand it before blame.
 > 
-> I am going to gently suggest that it is at least as likely, if not
-> more likely, that the failure is in DEPT or your understanding of what
+> You don't have to understand and support it. But I can't response to you
+> if you keep saying silly things that way.
 
-No doubt. I already think so. But it doesn't mean that I have to keep
-quiet without discussing to imporve Dept. I will keep improving Dept in
-a reasonable way.
+Byungchul, other than ext4 have there been any DEPT reports that other
+subsystem maintainers' agree were valid usecases?
 
-> how kernel wait channels and locking works.  After all, why would it
-> be that we haven't found these problems via our other QA practices?
+Regarding false-positives, just to note lockdep is not without its share of
+false-positives. Just that (as you know), the signal-to-noise ratio should be
+high for it to be useful. I've put up with lockdep's false positives just
+because it occasionally saves me from catastrophe.
 
-Let's talk more once you understand how Dept works at least 10%. Or I
-think we cannot talk in a productive way.
+> > In any case, if DEPT is going to report these "circular dependencies
+> > as bugs that MUST be fixed", it's going to be pure noise and I will
+> > ignore all DEPT reports, and will push back on having Lockdep replaced
+> 
+> Dept is going to be improved so that what you are concerning about won't
+> be reported.
+
+Yeah I am looking forward to learning more about it however I was wondering
+about the following: lockdep can already be used for modeling "resource
+acquire/release" and "resource wait" semantics that are unrelated to locks,
+like we do in mm reclaim. I am wondering why we cannot just use those existing
+lockdep mechanisms for the wait/wake usecases (Assuming that we can agree
+that circular dependencies on related to wait/wake is a bad thing. Or perhaps
+there's a reason why Peter Zijlstra did not use lockdep for wait/wake
+dependencies (such as multiple wake sources) considering he wrote a lot of
+that code.
+
+Keep kicking ass brother, you're doing great.
+
+Thanks,
+
+     Joel
 
