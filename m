@@ -2,29 +2,29 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C5DE4CE279
-	for <lists+linux-ext4@lfdr.de>; Sat,  5 Mar 2022 04:40:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D3F4CE531
+	for <lists+linux-ext4@lfdr.de>; Sat,  5 Mar 2022 15:16:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbiCEDl1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 4 Mar 2022 22:41:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49336 "EHLO
+        id S231816AbiCEOQ7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 5 Mar 2022 09:16:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbiCEDl1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 4 Mar 2022 22:41:27 -0500
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A548E2287E2;
-        Fri,  4 Mar 2022 19:40:37 -0800 (PST)
-Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2253eZWb017065
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 4 Mar 2022 22:40:36 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id B8EDD15C0038; Fri,  4 Mar 2022 22:40:35 -0500 (EST)
-Date:   Fri, 4 Mar 2022 22:40:35 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Byungchul Park <byungchul.park@lge.com>
+        with ESMTP id S231810AbiCEOQ6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 5 Mar 2022 09:16:58 -0500
+Received: from lgeamrelo11.lge.com (lgeamrelo12.lge.com [156.147.23.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 261D622F971
+        for <linux-ext4@vger.kernel.org>; Sat,  5 Mar 2022 06:16:03 -0800 (PST)
+Received: from unknown (HELO lgemrelse7q.lge.com) (156.147.1.151)
+        by 156.147.23.52 with ESMTP; 5 Mar 2022 23:16:01 +0900
+X-Original-SENDERIP: 156.147.1.151
+X-Original-MAILFROM: byungchul.park@lge.com
+Received: from unknown (HELO X58A-UD3R) (10.177.244.38)
+        by 156.147.1.151 with ESMTP; 5 Mar 2022 23:16:01 +0900
+X-Original-SENDERIP: 10.177.244.38
+X-Original-MAILFROM: byungchul.park@lge.com
+Date:   Sat, 5 Mar 2022 23:15:38 +0900
+From:   Byungchul Park <byungchul.park@lge.com>
+To:     Theodore Ts'o <tytso@mit.edu>
 Cc:     damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
         adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
         torvalds@linux-foundation.org, mingo@redhat.com,
@@ -48,56 +48,79 @@ Cc:     damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
         rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
         hamohammed.sa@gmail.com
 Subject: Re: Report 2 in ext4 and journal based on v5.17-rc1
-Message-ID: <YiLbs9rszWXpHm/P@mit.edu>
+Message-ID: <20220305141538.GA31268@X58A-UD3R>
 References: <YiAow5gi21zwUT54@mit.edu>
  <1646285013-3934-1-git-send-email-byungchul.park@lge.com>
  <YiDSabde88HJ/aTt@mit.edu>
- <20220304032002.GD6112@X58A-UD3R>
+ <20220304004237.GB6112@X58A-UD3R>
+ <YiLYX0sqmtkTEM5U@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220304032002.GD6112@X58A-UD3R>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <YiLYX0sqmtkTEM5U@mit.edu>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Mar 04, 2022 at 12:20:02PM +0900, Byungchul Park wrote:
+On Fri, Mar 04, 2022 at 10:26:23PM -0500, Theodore Ts'o wrote:
+> On Fri, Mar 04, 2022 at 09:42:37AM +0900, Byungchul Park wrote:
+> > 
+> > All contexts waiting for any of the events in the circular dependency
+> > chain will be definitely stuck if there is a circular dependency as I
+> > explained. So we need another wakeup source to break the circle. In
+> > ext4 code, you might have the wakeup source for breaking the circle.
+> > 
+> > What I agreed with is:
+> > 
+> >    The case that 1) the circular dependency is unevitable 2) there are
+> >    another wakeup source for breadking the circle and 3) the duration
+> >    in sleep is short enough, should be acceptable.
+> > 
+> > Sounds good?
 > 
-> I found a point that the two wait channels don't lead a deadlock in
-> some cases thanks to Jan Kara. I will fix it so that Dept won't
-> complain it.
+> These dependencies are part of every single ext4 metadata update,
+> and if there were any unnecessary sleeps, this would be a major
+> performance gap, and this is a very well studied part of ext4.
+> 
+> There are some places where we sleep, sure.  In some case
+> start_this_handle() needs to wait for a commit to complete, and the
+> commit thread might need to sleep for I/O to complete.  But the moment
+> the thing that we're waiting for is complete, we wake up all of the
+> processes on the wait queue.  But in the case where we wait for I/O
+> complete, that wakeupis coming from the device driver, when it
+> receives the the I/O completion interrupt from the hard drive.  Is
+> that considered an "external source"?  Maybe DEPT doesn't recognize
+> that this is certain to happen just as day follows the night?  (Well,
+> maybe the I/O completion interrupt might not happen if the disk drive
+> bursts into flames --- but then, you've got bigger problems. :-)
 
-I sent my last (admittedly cranky) message before you sent this.  I'm
-glad you finally understood Jan's explanation.  I was trying to tell
-you the same thing, but apparently I failed to communicate in a
-sufficiently clear manner.  In any case, what Jan described is a
-fundamental part of how wait queues work, and I'm kind of amazed that
-you were able to implement DEPT without understanding it.  (But maybe
-that is why some of the DEPT reports were completely incomprehensible
-to me; I couldn't interpret why in the world DEPT was saying there was
-a problem.)
+Almost all you've been blaming at Dept are totally non-sense. Based on
+what you're saying, I'm conviced that you don't understand how Dept
+works even 1%. You don't even try to understand it before blame.
 
-In any case, the thing I would ask is a little humility.  We regularly
-use lockdep, and we run a huge number of stress tests, throughout each
-development cycle.
+You don't have to understand and support it. But I can't response to you
+if you keep saying silly things that way.
 
-So if DEPT is issuing lots of reports about apparently circular
-dependencies, please try to be open to the thought that the fault is
-in DEPT, and don't try to argue with maintainers that their code MUST
-be buggy --- but since you don't understand our code, and DEPT must be
-theoretically perfect, that it is up to the Maintainers to prove to
-you that their code is correct.
+> In any case, if DEPT is going to report these "circular dependencies
+> as bugs that MUST be fixed", it's going to be pure noise and I will
+> ignore all DEPT reports, and will push back on having Lockdep replaced
 
-I am going to gently suggest that it is at least as likely, if not
-more likely, that the failure is in DEPT or your understanding of what
-how kernel wait channels and locking works.  After all, why would it
-be that we haven't found these problems via our other QA practices?
+Dept is going to be improved so that what you are concerning about won't
+be reported.
 
-Cheers,
+> by DEPT --- because Lockdep give us actionable reports, and if DEPT
 
-						- Ted
+Right. Dept should give actionable reports, too.
+
+> can't tell the difference between a valid programming pattern and a
+> bug, then it's worse than useless.
+
+Needless to say.
+
