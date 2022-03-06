@@ -2,28 +2,29 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4294CEA97
-	for <lists+linux-ext4@lfdr.de>; Sun,  6 Mar 2022 11:52:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1532A4CEBDB
+	for <lists+linux-ext4@lfdr.de>; Sun,  6 Mar 2022 15:19:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233252AbiCFKxE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 6 Mar 2022 05:53:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33302 "EHLO
+        id S232115AbiCFOUN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 6 Mar 2022 09:20:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233244AbiCFKxC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 6 Mar 2022 05:53:02 -0500
-Received: from lgeamrelo11.lge.com (lgeamrelo13.lge.com [156.147.23.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6D60242EFF
-        for <linux-ext4@vger.kernel.org>; Sun,  6 Mar 2022 02:52:09 -0800 (PST)
-Received: from unknown (HELO lgeamrelo02.lge.com) (156.147.1.126)
-        by 156.147.23.53 with ESMTP; 6 Mar 2022 19:52:07 +0900
-X-Original-SENDERIP: 156.147.1.126
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO localhost.localdomain) (10.177.244.38)
-        by 156.147.1.126 with ESMTP; 6 Mar 2022 19:52:07 +0900
-X-Original-SENDERIP: 10.177.244.38
-X-Original-MAILFROM: byungchul.park@lge.com
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     tytso@mit.edu
+        with ESMTP id S231936AbiCFOUL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 6 Mar 2022 09:20:11 -0500
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 821D038DAF;
+        Sun,  6 Mar 2022 06:19:12 -0800 (PST)
+Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 226EJA3E008889
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 6 Mar 2022 09:19:10 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 3595415C0038; Sun,  6 Mar 2022 09:19:10 -0500 (EST)
+Date:   Sun, 6 Mar 2022 09:19:10 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Byungchul Park <byungchul.park@lge.com>
 Cc:     damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
         adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
         torvalds@linux-foundation.org, mingo@redhat.com,
@@ -47,169 +48,65 @@ Cc:     damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
         rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
         hamohammed.sa@gmail.com
 Subject: Re: Report 2 in ext4 and journal based on v5.17-rc1
-Date:   Sun,  6 Mar 2022 19:51:42 +0900
-Message-Id: <1646563902-6671-1-git-send-email-byungchul.park@lge.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <YiQq6Ou39uzHC0mu@mit.edu>
+Message-ID: <YiTC3j6Igkw7xvIM@mit.edu>
 References: <YiQq6Ou39uzHC0mu@mit.edu>
-X-Spam-Status: No, score=-7.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+ <1646563902-6671-1-git-send-email-byungchul.park@lge.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1646563902-6671-1-git-send-email-byungchul.park@lge.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Ted wrote:
-> On Sat, Mar 05, 2022 at 11:55:34PM +0900, Byungchul Park wrote:
-> > > that is why some of the DEPT reports were completely incomprehensible
+On Sun, Mar 06, 2022 at 07:51:42PM +0900, Byungchul Park wrote:
 > > 
-> > It's because you are blinded to blame at it without understanding how
-> > Dept works at all. I will fix those that must be fixed. Don't worry.
+> > Users of DEPT must not have to understand how DEPT works in order to
 > 
-> Users of DEPT must not have to understand how DEPT works in order to
+> Users must not have to understand how Dept works for sure, and haters
+> must not blame things based on what they guess wrong.
 
-Users must not have to understand how Dept works for sure, and haters
-must not blame things based on what they guess wrong.
+For the record, I don't hate DEPT.  I *fear* that DEPT will result in
+my getting spammed with a huge number of false posiives once automated
+testing systems like Syzkaller, zero-day test robot, etcs., get a hold
+of it once it gets merged and start generating hundreds of automated
+reports.
 
-> understand and use DEPT reports.  If you think I don't understand how
-> DEPT work, I'm going to gently suggest that this means DEPT reports
-> are clear enough, and/or DEPT documentation needs to be
-> *substantially* improved, or both --- and these needs to happen before
-> DEPT is ready to be merged.
+And when I tried to read the DEPT reports, and the DEPT documentation,
+and I found that its explanation for why ext4 had a circular
+dependency simply did not make sense.  If my struggles to understand
+why DEPT was issuing a false positive is "guessing", then how do we
+have discussions over how to make DEPT better?
 
-Okay.
-
-> > > So if DEPT is issuing lots of reports about apparently circular
-> > > dependencies, please try to be open to the thought that the fault is
-> > 
-> > No one was convinced that Dept doesn't have a fault. I think your
-> > worries are too much.
+> > called prepare-to-wait on more than one wait queue, how is DEPT going
+> > to distinguish between your "morally correct" wkaeup source, and the
+> > "rescue wakeup source"?
 > 
-> In that case, may I ask that you add back a RFC to the subject prefix
-> (e.g., [PATCH RFC -v5]?)  Or maybe even add the subject prefix NOT YET
+> Sure, it should be done manually. I should do it on my own when that
+> kind of issue arises.
 
-I will.
+The question here is how often will it need to be done, and how easy
+will it be to "do it manually"?  Suppose we mark all of the DEPT false
+positives before it gets merged?  How easy will it be able to suppress
+future false positives in the future, as the kernel evolves?
 
-> READY?  I have seen cases when after a patch series get to PATCH -v22,
-> and then people assume that it *must* be ready, as opposed what it
-> really means, which is "the author is just persistently reposting and
-> rebasing the patch series over and over again".  It would be helpful
-> if you directly acknowledge, in each patch submission, that it is not
-> yet ready for prime time.
-> 
-> After all, right now, DEPT has generated two reports in ext4, both of
-> which were false positives, and both of which have required a lot of
-> maintainer times to prove to you that they were in fact false
-> positives.  So are we all agreed that DEPT is not ready for prime
-> time?
+Perhaps one method is to haved a way to take a particular wait queue,
+or call to schedule(), or at the level of an entire kernel source
+file, and opt it out from DEPT analysis?  That way, if DEPT gets
+merged, and a maintainer starts getting spammed by bogus (or
+incomprehensible) reports, there is a simople way they can annotate
+their source code to prevent DEPT from analyzing code that it is
+apparently not able to understand correctly.
 
-Yes.
+That way we don't necessarily need to have a debate over how close to
+zero percent false positives is necessary before DEPT can get merged.
+And we avoid needing to force maintainers to prove that a DEPT report
+is a false positive, which is from my experience hard to do, since
+they get accused of being DEPT haters and not understanding DEPT.
 
-> > No one argued that their code must be buggy, either. So I don't think
-> > you have to worry about what's never happened.
-> 
-> Well, you kept on insisting that ext4 must have a circular dependency,
-> and that depending on a "rescue wakeup" is bad programming practice,
-> but you'll reluctantly agree to make DEPT accept "rescue wakeups" if
-> that is the will of the developers.  My concern here is the
-> fundmaental concept of "rescue wakeups" is wrong; I don't see how you
-> can distinguish between a valid wakeup and one that you and DEPT is
-> going to somehow characterize as dodgy.
-
-Your concern on it makes sense. I need to explain how I think about it
-more, but not now cuz I guess the other folks alrealy got tired enough.
-Let's talk about it later when needed again.
-
-> Consider: a process can first subscribe to multiple wait queues, and
-> arrange to be woken up by a timeout, and then call schedule() to go to
-> sleep.  So it is not waiting on a single wait channel, but potentially
-> *multiple* wakeup sources.  If you are going to prove that kernel is
-> not going to make forward progress, you need to prove that *all* ways
-> that process might not wake up aren't going to happen for some reason.
-> 
-> Just because one wakeup source seems to form a circular dependency
-> proves nothing, since another wakeup source might be the designed and
-> architected way that code makes forward progress.
-
-I also think it's legal if the design is intended. But it's not if not.
-This is what I meant. Again, it's not about ext4.
-
-> You seem to be assuminng that one wakeup source is somehow the
-> "correct" one, and the other ways that process could be woken up is a
-> "rescue wakeup source" and you seem to believe that relying on a
-> "rescue wakeup source" is bad.  But in the case of a process which has
-
-It depends on whether or not it's intended IMHO.
-
-> called prepare-to-wait on more than one wait queue, how is DEPT going
-> to distinguish between your "morally correct" wkaeup source, and the
-> "rescue wakeup source"?
-
-Sure, it should be done manually. I should do it on my own when that
-kind of issue arises. Agian, ext4 is not the case cuz, based on what Jan
-explained, there's no real circular dependency wrt commit wq, done wq
-and so on.
-
-> > No doubt. I already think so. But it doesn't mean that I have to keep
-> > quiet without discussing to imporve Dept. I will keep improving Dept in
-> > a reasonable way.
-> 
-> Well, I don't want to be in a position of having to prove that every
-> single DEPT report in my code that doesn't make sense to me is
-> nonsense, or else DEPT will get merged.
-> 
-> So maybe we need to reverse the burden of proof.
-
-I will keep in mind.
-
-> Instead of just sending a DEPT report, and then asking the maintainers
-> to explain why it is a false positive, how about if *you* use the DEPT
-> report to examinie the subsystem code, and then explain plain English,
-> how you think this could trigger in real life, or cause a performance
-> problem in real life or perhaps provide a script or C reproducer that
-> triggers the supposed deadlock?
-
-Makes sense. Let me try.
-
-> Yes, that means you will need to understand the code in question, but
-> hopefully the DEPT reports should be clear enough that someone who
-> isn't a deep expert in the code should be able to spot the bug.  If
-> not, and if only a few deep experts of code in question will be able
-> to decipher the DEPT report and figure out a fix, that's really not
-> ideal.
-
-Agree. Just FYI, I've never blamed you are not the expert on Dept.
-
-> If DEPT can find a real bug and you can show that Lockdep wouldn't
-> have been able to find it, then that would be proof that it is making
-> a real contribution.  That's would be real benefit.  At the same time,
-> DEPT will hopefully be able to demonstrate a false positive rate which
-> is low enough that the benefits clearly outweight the costs.
-> 
-> At the moment, I believe the scoreboard for DEPT with respect to ext4
-> is zero real bugs found, and two false positives, both of which have
-> required significant rounds of e-mail before the subsystem maintainers
-> were able to prove to you that it was, indeed, DEPT reporting a false
-> positive.
-
-Right. But we've barely talked in a productive way. We've talked about
-other things way more than proving what you're mentioning.
-
-> Do you now understand why I am so concerned that you aren't putting an
-> RFC or NOT YET READY in the subject line?
-
-Yes. I will.
-
-> - Ted
-> 
-> P.S.  If DEPT had a CONFIG_EXPERIMENTAL, with a disclaimer in the
-> KConfig that some of its reports might be false positives, that might
-> be another way of easing my fears that this won't get used by
-> Syzkaller, and to generate a lot of burdensome triage work on the
-> maintainers.
-
-Thank you for straightforward explanation this time,
-Byungchul
+	  	   	      	    	    	     - Ted
