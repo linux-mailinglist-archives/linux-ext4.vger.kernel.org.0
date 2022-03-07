@@ -2,147 +2,161 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 810E04CF157
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Mar 2022 06:46:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0CF64CFD21
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Mar 2022 12:38:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232386AbiCGFrB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 7 Mar 2022 00:47:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55324 "EHLO
+        id S234217AbiCGLj3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 7 Mar 2022 06:39:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230482AbiCGFrA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Mar 2022 00:47:00 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5480357144
-        for <linux-ext4@vger.kernel.org>; Sun,  6 Mar 2022 21:46:07 -0800 (PST)
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 22750BZY004002;
-        Mon, 7 Mar 2022 05:46:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=pp1;
- bh=i1dyMHfU/TEag9hCuT2DkXPd894y8ye+i+H44b9I4os=;
- b=J586Lzq/5Z6y/siN2yFkK4yja/MV7zt91MocFoJeHS4TV01HRa1jmJi/RAdnB3DE1Sx7
- /8B0O2FkPMEG2nVOmwR8Gu4hn+Fq0rpdmQ23oVrQOUak7BC9iAfLsipo2jLVUULAz1ss
- T/cbNCcdGWdmGZ/adElGPj61DQ5268u/NCHRpQLyTg9Wc47Ex3+7b+NOoFaSxDn87HVm
- crEX1q8XUlUh1dmC1sAI+rmG2MzFUGumBnRPhbOIvAGPFA0K9g8ON0qlOs3GQEtbtb5C
- CwsCcIdtQ10Yp//GmTtBob3mbwKMBfNOkOejO4LLLtsvnLjXcCSbboDNq9dkxGHw1Y+0 fQ== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3emt6tmya6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Mar 2022 05:46:03 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2275d28u003287;
-        Mon, 7 Mar 2022 05:46:01 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03ams.nl.ibm.com with ESMTP id 3ekyg8upbg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Mar 2022 05:46:01 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2275jxVG56164756
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 7 Mar 2022 05:45:59 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 65B1C42042;
-        Mon,  7 Mar 2022 05:45:59 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E9C814203F;
-        Mon,  7 Mar 2022 05:45:58 +0000 (GMT)
-Received: from localhost (unknown [9.43.104.130])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  7 Mar 2022 05:45:58 +0000 (GMT)
-Date:   Mon, 7 Mar 2022 11:15:57 +0530
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     Tadeusz Struk <tadeusz.struk@linaro.org>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org
-Subject: Re: BUG in ext4_ind_remove_space
-Message-ID: <20220307054557.v4qqm4ushmm55v4y@riteshh-domain>
-References: <48308b02-149b-1c47-115a-1a268dac6e24@linaro.org>
- <20220225171016.zwhp62b3yzgewk6l@riteshh-domain>
- <25749d7d-7036-0b71-3dd8-7b04dcc430e4@linaro.org>
- <346904fd-112a-8d57-9221-b5c729ea6056@linaro.org>
- <20220303145651.ackek7wotphg26gm@riteshh-domain>
- <995d8b3c-44ee-e190-42ae-75f2562b8d6b@linaro.org>
- <20220303200804.hugwhtqovxiutkfd@riteshh-domain>
+        with ESMTP id S240357AbiCGLj0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Mar 2022 06:39:26 -0500
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A148C329B1;
+        Mon,  7 Mar 2022 03:38:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1646653111; x=1678189111;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=qzMYx7l24Ue264v7dMmIEeNEqMVuLyEYw5sb7myDtVc=;
+  b=hAt7/VULWm1T7BsSXz/V8d3dxPqjSL7o6XC0wb5apmkz+OVosApjnq1d
+   3FLoTxg7cFWn1iGUWFQkRG7fS++dAtJ7Rlb78H224w7suqEK2/mH8riHu
+   wcpR5GjihquxAkoAS1RXkxBOyHLWDU6u98iVMeaIPSWVbVxQmIyKgwIZM
+   pRw5cXN/BZ59HXPS/j9JH5dXAqmZ0/O3aASnXEZcEr6b4MsH0I085SNZk
+   yj63nA+yL+A0vk50MKnpsp+Oy6ly57Xvvuu/je69gTGf8E4wfyRyxEA0/
+   pHOTJAXQInNLrEMRzt0Y/t+OuqhY+5Ax4f3DC/anQ9W/zQh5mZlX9e0Qj
+   w==;
+X-IronPort-AV: E=Sophos;i="5.90,162,1643644800"; 
+   d="scan'208";a="298794695"
+Received: from mail-bn8nam11lp2169.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.169])
+  by ob1.hgst.iphmx.com with ESMTP; 07 Mar 2022 19:38:29 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JO4fmqML0PqQzshsM1h9gz4d3YNfj7NhxA2CW8X1RoMtobgmkoy1BFx6XCCAom/YJxzZXolM+j9KKQ6+EJfuZnlnzK6uE6yngyUT2x8EmP7dKAeGaRTnAFTN5uVjHXzYmRNutv2JbvYFsMYEFdbNlcRPgNve1c3Ju9RFESlb9LvqQRQN3UnxIKV3DAh6aKCogLImC7TzbcyGrcrPrXGpJiFOeDt8H2DbgzWO8IZWl9kdNEm0r5Sle8M8fs37n6OOjRF98RGiGUa5Je6V8O8S8aSCFIBClH7Q3krTn+fGVFE+I2y3UM6AYhYenUVwoeYaiUaIFnSA1EViIXlG63i4lg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=m/psgpexl0H+Tn1TYkW7QCKKOSY881CwqtA6TNpomyA=;
+ b=Bsqcqsr8nFF5bJ8sqNGZrzv6OtfKYG/XfkXsNLICdpP3251atsC3aqo3Xp44FcB+w2tGKr05nQ5JYdrcaRFyZsJXMaiaq5I0wKW77Z2I0K4AQemjQyirzlXccWY2oExV/R5FPqx7DvfZFNWFVkiFOa870WPAj5RtqXBe7Mh/p8Zfr87dVUXqaaVxAvTa8A2poJ+wQbcuOwJRinaVWs8JpbvKCxJOZD5QcDb2qYS7WkLxfcB6FdHi1hoIpQmKoZJJmPp0PQvV1rDAOci+U6EfrPJj8b/RIxhgKEB5muSDk/YsQEL7ca44xhvkPk7nCxiPg/JzVrGt+ARTqCffAWS/tg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=m/psgpexl0H+Tn1TYkW7QCKKOSY881CwqtA6TNpomyA=;
+ b=fCX6UMZhPVQMHDKnVeorkDOqIqXVzqfWPJo1+IMg6d5/W00TDpoJYV+y4ITxiYO2mvmoNhx9iWxUGPfmMvHyTO1Y0LuRwJTno8JmD3ZfyXdqlqmgZu7pD+/jlwTDYTbc5zwi7UeXuUEC7H3tIEhHKx6aci7TD1z5tGXqQnPoLnY=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by MN2PR04MB6704.namprd04.prod.outlook.com (2603:10b6:208:1e0::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5038.14; Mon, 7 Mar
+ 2022 11:38:27 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::e8b1:ea93:ffce:60f6]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::e8b1:ea93:ffce:60f6%4]) with mapi id 15.20.5038.027; Mon, 7 Mar 2022
+ 11:38:27 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+CC:     Song Liu <song@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+Subject: Re: remove bio_devname
+Thread-Topic: remove bio_devname
+Thread-Index: AQHYL/HalM3iIVsQ8E6UDIHJpvJNVw==
+Date:   Mon, 7 Mar 2022 11:38:27 +0000
+Message-ID: <PH0PR04MB7416EF31E50382108FEDE5689B089@PH0PR04MB7416.namprd04.prod.outlook.com>
+References: <20220304180105.409765-1-hch@lst.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8760ae9d-6d76-4b8a-ba18-08da002efef2
+x-ms-traffictypediagnostic: MN2PR04MB6704:EE_
+x-microsoft-antispam-prvs: <MN2PR04MB670421855839CFDCB304AFB89B089@MN2PR04MB6704.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: tZ9451MKGvwAEYMNMy2TaOlFVkODzGnlFk+ACk6F5HfWVFOdC7nmirwIS89ue/50+mnSzDukwB4xHXXsTMLXvXE7uIP39I51SSLZkhEFLQ7lMOlnOhT2Tgq3gGveN+Zpe8yzJjtsv4jQqzersCpifma5nRP8SXEZD3ely69gpjkNnmZy+zMEpycSl7IzxVhqeX+WldMeiE/XoSWwi1irrRuqFD2IwVkxQk1+3bUTruWVr9WWmR5jMYeFOzAekoZflGAkfG5uK+wU8/CKXaLu15tHhk/s8IYQcoA4KnF3SEJ4rWCR1yZA4xsvdrgnRcoAj+uI3eCck2kt50FWof7NU3y4ipd6/0zWU7ZIkQV0tcUf5oWiBWzMKkS8zIUWv3iRpooq9J2rpR5LgvIkMeD93DbRtviMAEVXa3hjP+pw8ykJMukzx3pNGNRp/FDs/1gt60caAwTV8VSaD37GfPvj5GvOBZRTw74SsIaUxHbGNtdEEI2oZAjukgNnJu01Gc37iXEHBkxMWfZfxzDUNatUia5YHzURubQqaUJ8A/MP7k4s5cRS1zU0JCE+2WBxV6uCLk6m/1+rcbfAOkEBjreC6PZ21FODzcQgfhsHS03KnhQ4j0ytYGGFYwdrKFsc1a/BEBdTpJqMVr0J2l48hmUW5JVdByY59TJQfAhQmD7QzoQVSWblJU7OapPvIOLQqOMTx0/c7yVrQyCYMY9ONKbCzg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(54906003)(55016003)(83380400001)(186003)(86362001)(110136005)(33656002)(71200400001)(5660300002)(316002)(4744005)(8936002)(52536014)(91956017)(64756008)(2906002)(8676002)(508600001)(4326008)(122000001)(76116006)(66446008)(66476007)(38070700005)(66946007)(66556008)(38100700002)(9686003)(6506007)(7696005)(53546011)(7116003)(82960400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?+rgAAS0dW1bhRVsud7VuPgFVuAAMTxlHbl8awey/Otxr8Oq3UnTdxORYw1Mv?=
+ =?us-ascii?Q?VyudxyjDpeQCZtP1TOCYsiGhFTrcMoAYyUR4zlbIAiHA076J2lQJvPYDnQA1?=
+ =?us-ascii?Q?J/VixKhBg7YQmHVWiO45b0q4RjT4tnmR8cxhzMhA28umy9d97Re+b1vn3G7p?=
+ =?us-ascii?Q?b1GWC9ftJGfvkoCxFnYv341A0gmcXD3V+1yHASNIr/IyfmKN6W7pZ4KLybM1?=
+ =?us-ascii?Q?JwpXdUqlPhX7iiOiJPCWfFl1IJ3eRIfauoZufwrFXRp9EIejOBLvcHvV7kqT?=
+ =?us-ascii?Q?PaglLPJsHDiv05FGDWXweKLrlf5BtqCM2MRu5Hl/2ml9lpNUV6TXwXsg6SC3?=
+ =?us-ascii?Q?pbQLyvX88rB6NuPbD0J49hpcMs2qvcuSWhM8zuNN5Dc7O60RWWm1v78QsMhA?=
+ =?us-ascii?Q?TreazZLW6l6VbvYrtEsWvQNVu8han5R9qOzYblBNiO6kbq6RyeWCkcDeZYqp?=
+ =?us-ascii?Q?NsPyHiym+BbrWHAr4s7q0WIhXEiYxnOLZdBB20gVVmB16+loIR3vNBxPUy1V?=
+ =?us-ascii?Q?tk40DILzatJyd/6eLpUKBrzTqkZ82qPdNd46km6ny6LOwhqABEK3UE2msvfZ?=
+ =?us-ascii?Q?9vMOsgCvU3/7Vq7i9+5QCHA1cVY7Fga6fJtWeAKTAfirznQWzGl0F06Yd3kn?=
+ =?us-ascii?Q?Pt8hfGZ07BbfZeCZjFiT3T/Ndg2QkeL/a8QTSR1ZPwAleFGtUT3c0SiU0dcX?=
+ =?us-ascii?Q?+5L/swNTcVlszJyIg/GpE1X+G7D5k3dW/ukCpetI958lt5PJ3CKIMspwOGen?=
+ =?us-ascii?Q?1oloTBI5eAMlvwzAf+20AgIDuvwW9E8bic/xRzFDU9zteVaxvVNO6L1KfLTP?=
+ =?us-ascii?Q?c8kuxVP8BZIeWxzkStDwEoHdvwg1p5jb7zQGFGBxTmYa8Xnm7zRY67lvuyNd?=
+ =?us-ascii?Q?VFhPghqd9skJO4w+585QE67CnSBbOvnO5PoTl7RGFl7gilKH7kPspcV8IqHj?=
+ =?us-ascii?Q?75Tw7SQ4B9urkgZlAm9Qmkk5BcX5s/Gw51LVO3SSSBDsgKpxuQkNzROfq2t0?=
+ =?us-ascii?Q?BrROZ2k74ojSUQXVPci/xAMn73DIQ8AnnbyfTwxyhAJIb0cjAqoQC1Pf3gV3?=
+ =?us-ascii?Q?3NB64QmWDJAuR2KJ/SrnsphJN32FQNqlgiMeuKP53HByItPzPY9Mhiag5Lxd?=
+ =?us-ascii?Q?h7acYeVlu8e4uOUqJK7kglO7yn0DYIv0R+hVHfBWdaId00HH0oO/4F3W9XuQ?=
+ =?us-ascii?Q?EHX4v6a8qS4ErASPOfm7bE73DH+maWf6TWiK1oCJYawLMR1JHEi1msluklyD?=
+ =?us-ascii?Q?V7Ya6UlHAF5vQx78lEU1mnjIZCm9MtSCPRAFjIdsn1sTKAbuPNNMMPb2kwzI?=
+ =?us-ascii?Q?qE3T6KkuBfBnaLtHpzk2VeDVSpETxnrZ+l95bo2XQW7m94+cH2gaTZb2viiM?=
+ =?us-ascii?Q?k7PYfvBrwOB4xweKQCFCsnNQGodqjPy/qFcnPEFXVRy3My8PKzIl2FhRX/Y9?=
+ =?us-ascii?Q?4RViFd1PuehvieKhiNGZ3k+eoecBmHE8gWe/cz6+zbKMdyYm3iAPTbjSIALf?=
+ =?us-ascii?Q?LBSryrdSZtGhzXSEAIszaVNQ7mHHD+pwPHSqWfky02cFoIrKmwTlaYOiBq2O?=
+ =?us-ascii?Q?P+iNOqxcaeCwUTNFpxOCk3Q8H0NCuXViM9z5zUn1n/Qkvk1+xxMfcoehzicM?=
+ =?us-ascii?Q?HJzHJZrHTZsQrNf8dASkcC4LCYJif9PxRK/KqhRxNA7HNcgh2bNay21Gp3Y/?=
+ =?us-ascii?Q?qIDO7u1PYItfAr0k4UhArNWnqVilSZRlCejEe3Fzu4AvKG8ymUzUeZ/3o1dj?=
+ =?us-ascii?Q?cg7B89GIIq2s9gdK/yoPInSwD4SVMpY=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220303200804.hugwhtqovxiutkfd@riteshh-domain>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 0vAHiXmwJKUToPfZ7Bl5qP1P7Qxz8C8L
-X-Proofpoint-GUID: 0vAHiXmwJKUToPfZ7Bl5qP1P7Qxz8C8L
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-03-07_01,2022-03-04_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
- impostorscore=0 priorityscore=1501 bulkscore=0 mlxscore=0 phishscore=0
- clxscore=1015 malwarescore=0 lowpriorityscore=0 suspectscore=0
- mlxlogscore=940 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2203070033
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8760ae9d-6d76-4b8a-ba18-08da002efef2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Mar 2022 11:38:27.0600
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vMvFTy65qTq4xL1Tv6aN0V6gjKHLhMMg+CwdyzVQJEB3t5aAFTY9q4EBsWnDvoJu2tRzYsAmvfhGS19CxQba9jsDOW6ngd8CuoDqWJugHtQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR04MB6704
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22/03/04 01:38AM, Ritesh Harjani wrote:
-> On 22/03/03 07:37AM, Tadeusz Struk wrote:
-> > On 3/3/22 06:56, Ritesh Harjani wrote:
-> > > On 22/03/02 03:14PM, Tadeusz Struk wrote:
-> > > > On 2/25/22 11:19, Tadeusz Struk wrote:
-> > > > > > I can verify this sometime next week when I get back to it.
-> > > > > > But thanks for reporting the issue :)
-> > > > >
-> > > > > Next week is perfectly fine. Thanks for looking into it.
-> > > >
-> > > > Hi Ritesh,
-> > > > Did you have chance to look into this?
-> > > > If you want I can send a patch that fixes the off by 1 calculation error.
-> > >
-> > > Hi Tadeusz,
-> > >
-> > > I wanted to look at that path a bit more before sending that patch.
-> > > Last analysis by me was more of a cursory look at the kernel dmesg log which you
-> > > had shared.
-> > >
-> > > In case if you want to pursue that issue and spend time on it, then feel free to
-> > > do it.
-> > >
-> > > I got pulled into number of other things last week and this week. So didn't get
-> > > a chance to look into it yet. I hope to look into this soon (if no one else
-> > > picks up :))
-> >
-> > I'm not familiar with the internals of ext4 implementation so I would rather
-> > have someone who knows it look at it.
->
-> No problem. I am willing to look into this anyways.
-> btw, this issue could be seen easily with below cmd on non-extent ext4 FS.
->
-> sudo xfs_io -f -c "truncate 0x4010040c000" -c "fsync" -c "fpunch 0x1000000 0xffefffff000" testfile
-
-Just FYI - The change which we discussed to fix the max_block to max_end_block, is not correct.
-Since it will still leave 1 block at the end after punch operation, if the file has s_bitmap_maxbytes size.
-This is due to the fact that, "end" is expected to be 1 block after the end of last block.
-
-Will try look into it to see how can we fix this.
-
-1210 /**
-1211  *      ext4_ind_remove_space - remove space from the range
-1212  *      @handle: JBD handle for this transaction
-1213  *      @inode: inode we are dealing with
-1214  *      @start: First block to remove
-1215  *      @end:   One block after the last block to remove (exclusive)
-1216  *
-1217  *      Free the blocks in the defined range (end is exclusive endpoint of
-1218  *      range). This is used by ext4_punch_hole().
-1219  */
-1220 int ext4_ind_remove_space(handle_t *handle, struct inode *inode,
-1221                           ext4_lblk_t start, ext4_lblk_t end)
-
--ritesh
+On 04/03/2022 19:01, Christoph Hellwig wrote:=0A=
+> Hi Jens,=0A=
+> =0A=
+> this series removes the bio_devname helper and just switches all users=0A=
+> to use the %pg format string directly.=0A=
+> =0A=
+> Diffstat=0A=
+>  block/bio.c               |    6 ------=0A=
+>  block/blk-core.c          |   25 +++++++------------------=0A=
+>  drivers/block/pktcdvd.c   |    9 +--------=0A=
+>  drivers/md/dm-crypt.c     |   10 ++++------=0A=
+>  drivers/md/dm-integrity.c |    5 ++---=0A=
+>  drivers/md/md-multipath.c |    9 ++++-----=0A=
+>  drivers/md/raid1.c        |    5 ++---=0A=
+>  drivers/md/raid5-ppl.c    |   13 ++++---------=0A=
+>  fs/ext4/page-io.c         |    5 ++---=0A=
+>  include/linux/bio.h       |    2 --=0A=
+>  10 files changed, 26 insertions(+), 63 deletions(-)=0A=
+> =0A=
+=0A=
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
