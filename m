@@ -2,147 +2,161 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADCC94D1825
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Mar 2022 13:44:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 371044D18B8
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Mar 2022 14:07:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241207AbiCHMpa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 8 Mar 2022 07:45:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49546 "EHLO
+        id S234635AbiCHNIS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 8 Mar 2022 08:08:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235678AbiCHMpa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Mar 2022 07:45:30 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA6D63A5DA
-        for <linux-ext4@vger.kernel.org>; Tue,  8 Mar 2022 04:44:33 -0800 (PST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 937E9210F5;
-        Tue,  8 Mar 2022 12:44:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1646743472; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3rGadNHg40FOC+/lrU4Ufl5oNtF9n1T2zDX+guAbU5M=;
-        b=AMLhhuXtsBMoFqMke3aL6RGNXd/3jIXoY3DEHwS1CUCJ5bOew0KGVh9EE+atdE+P5pb2Aq
-        Ig3IAPFw5WqtqzoYN5ChqAduXRZAo+DbIjUepTTXLyBlAt4NsTZiykLL6r+xn6pTCjbRim
-        HvEB9/BBDrjN6vBVvG8z/idGBicVpt8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1646743472;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3rGadNHg40FOC+/lrU4Ufl5oNtF9n1T2zDX+guAbU5M=;
-        b=lm/Sa5rL3xGu6qMurAfTwtFzAAEXhe5z84u8ooYxy3EzIEMoNROrnc8PtXhniI3R10FgW9
-        s6Ish54M0C6t7wCw==
-Received: from quack3.suse.cz (unknown [10.100.224.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 85FD7A3B8E;
-        Tue,  8 Mar 2022 12:44:32 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 17109A0609; Tue,  8 Mar 2022 13:44:32 +0100 (CET)
-Date:   Tue, 8 Mar 2022 13:44:32 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, riteshh@linux.ibm.com, jack@suse.cz,
-        tytso@mit.edu
-Subject: Re: [PATCH 4/5] ext4: rework fast commit commit path
-Message-ID: <20220308124432.etmyoi3gmepg2buq@quack3.lan>
-References: <20220308105112.404498-1-harshads@google.com>
- <20220308105112.404498-5-harshads@google.com>
+        with ESMTP id S244058AbiCHNH7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Mar 2022 08:07:59 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27FDE48316
+        for <linux-ext4@vger.kernel.org>; Tue,  8 Mar 2022 05:07:03 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id t28so16002521qtc.7
+        for <linux-ext4@vger.kernel.org>; Tue, 08 Mar 2022 05:07:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sa+Tre1JUm35J/+yjjl5UgGs9+Ghlc1MWYjugeEOHFQ=;
+        b=b9Tdo+5Nei6nAP0Y5wxtIWP4o8W2BuvsTeQiWr9z9Noe4HycsNLfHgC+alPALB6vec
+         wbPxLSjGoMEl4nCGx0RsNhl8MCo5aGRyGnfE2li+jtej03cLiVybCt7cZvZpQ+qGni4U
+         3TaXwIzYy5OAYNZ0u//XAfi0UNICR1QtAc2d4Sa1PomRO9/DdmwM0jOmMQEV99G4/ZhC
+         qUdjRSY6uF9Q+pUZYshvD8SwaXp2CLmqrggoeKKgsB1pO5aDqojCnB7qqDlrEYgPUdsi
+         PmoyYlHnaxehpKiaPiDCkIkDe/kSJ1mSHQ5saPoCUSTltdKEIQYUGGYK5YXvGvFC/bGE
+         7SSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sa+Tre1JUm35J/+yjjl5UgGs9+Ghlc1MWYjugeEOHFQ=;
+        b=EQKBDmQIcyjd73WQl+lkebJHCw7J/ZjFZQHJ91YBFTkc1h32JjtZ0F0VjLZHVV7yJ8
+         Vs/gYd7F7h6X5AWltm3G+Fu1jqA+IaGrkefOy6MNt3AQQ/ShdTHBbQhpzw0LShov6i+N
+         0/xCH+m7Go7JDDcMDX/Xhc6U2gI4AEqN54pIaGLzfaCfjLN74Ae4csLGwGBCkIU9rZTC
+         ChNwPg3uTFEEyEHKIm5cUN86J31EuELRPuJRwiJirGHWX8jyLRFhlU418kPzGmH2ICEb
+         RC9Qo1t8nwaO0SAgRd1xWzEsXojXDkcJvQ+1HoU05Qh71nFXb4SXopO35RuWUTmz2Hrq
+         V7Gg==
+X-Gm-Message-State: AOAM531Wvi5nnSIPF2M0KxTheCzTZ9Dupc9YuvtjZs5QKqtKb03aJoED
+        OdbX+RM4FV0de6mTjHB7eeajPqae16ebejQjFpiP3ntfs8TsIw==
+X-Google-Smtp-Source: ABdhPJz4n8Uwy1QLeaBn3cRHs8YVuqzkMlWxH9EvKcA/jmRSPtmBZv30oaiumc/1FWKN5kAVa5UjU1Mwm7RRkSCQpwE=
+X-Received: by 2002:ac8:7d0b:0:b0:2e0:6891:832c with SMTP id
+ g11-20020ac87d0b000000b002e06891832cmr6697530qtb.297.1646744822105; Tue, 08
+ Mar 2022 05:07:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220308105112.404498-5-harshads@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220308105112.404498-1-harshads@google.com> <20220308105112.404498-4-harshads@google.com>
+ <20220308123020.u4357jwbtoqhy5xd@quack3.lan>
+In-Reply-To: <20220308123020.u4357jwbtoqhy5xd@quack3.lan>
+From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
+Date:   Tue, 8 Mar 2022 05:06:51 -0800
+Message-ID: <CAD+ocbzwGW91MdnwBS2hZ_W+kum-cSpUfAWYJ0jU0xjnt3Y_SQ@mail.gmail.com>
+Subject: Re: [PATCH 3/5] ext4: for committing inode, make ext4_fc_track_inode wait
+To:     Jan Kara <jack@suse.cz>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 08-03-22 02:51:11, Harshad Shirwadkar wrote:
-> From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-> 
-> This patch reworks fast commit's commit path to remove locking the
-> journal for the entire duration of a fast commit. Instead, we only lock
-> the journal while marking all the eligible inodes as "committing". This
-> allows handles to make progress in parallel with the fast commit.
-> 
-> Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+On Tue, 8 Mar 2022 at 04:30, Jan Kara <jack@suse.cz> wrote:
+>
+> On Tue 08-03-22 02:51:10, Harshad Shirwadkar wrote:
+> > From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+> >
+> > If the inode that's being requested to track using ext4_fc_track_inode
+> > is being committed, then wait until the inode finishes the commit.
+> >
+> > Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+>
+> Looks mostly good. Just some notes below.
+>
+> > diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
+> > index 3477a16d08ae..7fa301b0a35a 100644
+> > --- a/fs/ext4/ext4_jbd2.c
+> > +++ b/fs/ext4/ext4_jbd2.c
+> > @@ -106,6 +106,18 @@ handle_t *__ext4_journal_start_sb(struct super_block *sb, unsigned int line,
+> >                                  GFP_NOFS, type, line);
+> >  }
+> >
+> > +handle_t *__ext4_journal_start(struct inode *inode, unsigned int line,
+> > +                               int type, int blocks, int rsv_blocks,
+> > +                               int revoke_creds)
+> > +{
+> > +     handle_t *handle = __ext4_journal_start_sb(inode->i_sb, line,
+> > +                                                type, blocks, rsv_blocks,
+> > +                                                revoke_creds);
+> > +     if (ext4_handle_valid(handle) && !IS_ERR(handle))
+> > +             ext4_fc_track_inode(handle, inode);
+>
+> Why do you need to call ext4_fc_track_inode() here? Calls in
+> ext4_map_blocks() and ext4_mark_iloc_dirty() should be enough, shouldn't
+> they?
+This is just a precautionary call. ext4_fc_track_inode is an
+idempotent function, so it doesn't matter if it gets called multiple
+times. This check just covers cases (such as the ones in inline.c)
+where ext4_reserve_inode_write() doesn't get called. I saw a few
+failures in the log group when I remove this call. The right way to
+fix this though is to ensure that ext4_reserve_inode_write() gets
+called before every inode update.
 
-...
+>
+> > +     return handle;
+> > +}
+> > +
+> >  int __ext4_journal_stop(const char *where, unsigned int line, handle_t *handle)
+> >  {
+> >       struct super_block *sb;
+>
+> ...
+>
+> > @@ -519,6 +525,33 @@ void ext4_fc_track_inode(handle_t *handle, struct inode *inode)
+> >               return;
+> >       }
+> >
+> > +     if (!test_opt2(inode->i_sb, JOURNAL_FAST_COMMIT) ||
+> > +         (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY))
+> > +             return;
+> > +
+> > +     spin_lock(&ei->i_fc_lock);
+> > +     while (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING)) {
+> > +#if (BITS_PER_LONG < 64)
+> > +             DEFINE_WAIT_BIT(wait, &ei->i_state_flags,
+> > +                             EXT4_STATE_FC_COMMITTING);
+> > +             wq = bit_waitqueue(&ei->i_state_flags,
+> > +                                EXT4_STATE_FC_COMMITTING);
+> > +#else
+> > +             DEFINE_WAIT_BIT(wait, &ei->i_flags,
+> > +                             EXT4_STATE_FC_COMMITTING);
+> > +             wq = bit_waitqueue(&ei->i_flags,
+> > +                                EXT4_STATE_FC_COMMITTING);
+> > +#endif
+> > +
+> > +             prepare_to_wait(wq, &wait.wq_entry, TASK_UNINTERRUPTIBLE);
+> > +             spin_unlock(&ei->i_fc_lock);
+> > +
+> > +             schedule();
+> > +             finish_wait(wq, &wait.wq_entry);
+> > +             spin_lock(&ei->i_fc_lock);
+> > +     }
+> > +     spin_unlock(&ei->i_fc_lock);
+>
+> Hum, we operate inode state with atomic bitops. So I think there's no real
+> need for ei->i_fc_lock here. You just need to be careful and check inode
+> state again after prepare_to_wait() call.
+Okay that makes sense, I'll do this in V2.
 
-> @@ -1044,6 +1025,18 @@ static int ext4_fc_perform_commit(journal_t *journal)
->  	int ret = 0;
->  	u32 crc = 0;
->  
-> +	/* Lock the journal */
-> +	jbd2_journal_lock_updates(journal);
-> +	spin_lock(&sbi->s_fc_lock);
-> +	list_for_each_entry(iter, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
-> +		spin_lock(&iter->i_fc_lock);
-> +		ext4_set_inode_state(&iter->vfs_inode,
-> +				     EXT4_STATE_FC_COMMITTING);
-> +		spin_unlock(&iter->i_fc_lock);
-> +	}
-> +	spin_unlock(&sbi->s_fc_lock);
-> +	jbd2_journal_unlock_updates(journal);
-> +
-
-Again, i_fc_lock does not seem to be necessary here...
-
-> @@ -1094,6 +1087,14 @@ static int ext4_fc_perform_commit(journal_t *journal)
->  		ret = ext4_fc_write_inode(inode, &crc);
->  		if (ret)
->  			goto out;
-> +		spin_lock(&iter->i_fc_lock);
-> +		ext4_clear_inode_state(inode, EXT4_STATE_FC_COMMITTING);
-> +		spin_unlock(&iter->i_fc_lock);
-> +#if (BITS_PER_LONG < 64)
-> +		wake_up_bit(&iter->i_state_flags, EXT4_STATE_FC_COMMITTING);
-> +#else
-> +		wake_up_bit(&iter->i_flags, EXT4_STATE_FC_COMMITTING);
-> +#endif
->  		spin_lock(&sbi->s_fc_lock);
-
-And here we can do without i_fc_lock as well, we just need smp_mb() between
-ext4_clear_inode_state() and wake_up_bit() to pair with the implicit
-barrier inside prepare_to_wait(). 
-
-> @@ -1227,13 +1228,15 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
->  	spin_lock(&sbi->s_fc_lock);
->  	list_for_each_entry_safe(iter, iter_n, &sbi->s_fc_q[FC_Q_MAIN],
->  				 i_fc_list) {
-> -		list_del_init(&iter->i_fc_list);
-> +		spin_lock(&iter->i_fc_lock);
->  		ext4_clear_inode_state(&iter->vfs_inode,
->  				       EXT4_STATE_FC_COMMITTING);
-> +		spin_unlock(&iter->i_fc_lock);
->  		if (iter->i_sync_tid <= tid)
->  			ext4_fc_reset_inode(&iter->vfs_inode);
->  		/* Make sure EXT4_STATE_FC_COMMITTING bit is clear */
->  		smp_mb();
-> +		list_del_init(&iter->i_fc_list);
->  #if (BITS_PER_LONG < 64)
->  		wake_up_bit(&iter->i_state_flags, EXT4_STATE_FC_COMMITTING);
->  #else
-
-Again, i_fc_lock not needed here. As a note the comment in the above about
-the barrier is a bit incorrect. The barrier does not make sure any store
-happens. It is just an ordering requirement for the CPU. As such barriers
-really only work in pairs because both cooperating tasks need to force
-proper ordering. So we usually document barriers like:
-
-		/*
-		 * Make sure clearing of EXT4_STATE_FC_COMMITTING is
-		 * visible before we send the wakeup. Pairs with implicit
-		 * barrier in prepare_to_wait() in ext4_fc_track_inode().
-		 */
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+- Harshad
+>
+>                                                                 Honza
+> --
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
