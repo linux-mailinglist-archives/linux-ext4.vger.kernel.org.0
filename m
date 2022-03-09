@@ -2,48 +2,71 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B08FE4D20A6
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Mar 2022 19:51:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B764F4D2967
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Mar 2022 08:22:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344899AbiCHSwF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 8 Mar 2022 13:52:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51910 "EHLO
+        id S230303AbiCIHXC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 9 Mar 2022 02:23:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349115AbiCHSvo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Mar 2022 13:51:44 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E08532F0
-        for <linux-ext4@vger.kernel.org>; Tue,  8 Mar 2022 10:50:46 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 831B2B81C77
-        for <linux-ext4@vger.kernel.org>; Tue,  8 Mar 2022 18:50:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48373C340EB;
-        Tue,  8 Mar 2022 18:50:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646765444;
-        bh=U75RiYNjmWJ2ndhIby8P42M610ffChUEuGTir9XmmmY=;
-        h=Date:From:To:Subject:From;
-        b=VstISf5S1gD3mzjNHgcFOFqaP9FVe0CqvOSWPMJpohNPNkXir2s61xl7l2q40VfuF
-         MUahksJjG1kQ31z71K8Wvc+0m+xBACXBAw/Ks3XErRC9MeN7zOhjFUTn4sn9kyKRK0
-         H7R3vqoT1uHCjbKLJNmI7GD98Of4zXMh6SSxAWFhJ9CTHQZcQJSeVq2DVYFs6W5Rlt
-         pNRhHF+gTPcQQAJj6GacYuVO7ji1+VLa5mTkmANiBDoFdeVoIGi2SIN3brb+6iIsKF
-         80GBHclkyBuZCBTP1T1imV/ws+9o2WDJP/9L8iPIRodRs6COTQPEuNDLg4jCK2vlhL
-         n3ngPFR9YhcJA==
-Date:   Tue, 8 Mar 2022 10:50:43 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Theodore Ts'o <tytso@mit.edu>,
-        linux-ext4 <linux-ext4@vger.kernel.org>
-Subject: [PATCH] ext4: fix fallocate to use file_modified to update
- permissions consistently
-Message-ID: <20220308185043.GA117678@magnolia>
+        with ESMTP id S229460AbiCIHXC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Mar 2022 02:23:02 -0500
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B0910A7E5;
+        Tue,  8 Mar 2022 23:22:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1646810524; x=1678346524;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=8P15gyfMQXBcZtwt5sBe3cAJYWyxAa9xsRjkNdIfHfs=;
+  b=c4rfCkKtxWbo2cNwGtazxDrff4PLQO3Bd8dSZnzZ15U0A7hK6JaOdK3T
+   lM/OMA3SewgeGxHgAnLKnvFUWIs8F64MgNzs7OG/4mUx/+cPfibUDYGrz
+   oc4oQuPihxkWXArRQIP710+6KzgFyOjaxYftaLTIXpxH82iiNA9YnWKpm
+   6awFm3cP03W8tsLb6VfxR67yip3BSl0uUXk9CJrGfewQPMqAzOEWQZJYG
+   sjleyWoz9tViXjnwGsUysmYd9xpoiC4dngT2oxOEEnzH4GGxpKfXogBIf
+   AOdNJOuLqcTz4OUPLtj5HxlS7991m738MjwNYN2gXRfv8KY4F60roK1SL
+   A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="234860537"
+X-IronPort-AV: E=Sophos;i="5.90,167,1643702400"; 
+   d="scan'208";a="234860537"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2022 23:22:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,167,1643702400"; 
+   d="scan'208";a="814643883"
+Received: from lkp-server02.sh.intel.com (HELO 89b41b6ae01c) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 08 Mar 2022 23:21:57 -0800
+Received: from kbuild by 89b41b6ae01c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1nRqdw-0002pB-R8; Wed, 09 Mar 2022 07:21:56 +0000
+Date:   Wed, 9 Mar 2022 15:21:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Byungchul Park <byungchul.park@lge.com>,
+        torvalds@linux-foundation.org
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        mingo@redhat.com, linux-kernel@vger.kernel.org, will@kernel.org,
+        tglx@linutronix.de, rostedt@goodmis.org, joel@joelfernandes.org,
+        sashal@kernel.org, daniel.vetter@ffwll.ch,
+        chris@chris-wilson.co.uk, duyuyang@gmail.com,
+        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
+        bfields@fieldses.org, gregkh@linuxfoundation.org,
+        kernel-team@lge.com, linux-mm@kvack.org, akpm@linux-foundation.org,
+        mhocko@kernel.org, minchan@kernel.org, hannes@cmpxchg.org
+Subject: Re: [PATCH v4 02/24] dept: Implement Dept(Dependency Tracker)
+Message-ID: <202203091550.PnufQ7gO-lkp@intel.com>
+References: <1646377603-19730-3-git-send-email-byungchul.park@lge.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <1646377603-19730-3-git-send-email-byungchul.park@lge.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,168 +74,123 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Darrick J. Wong <djwong@kernel.org>
+Hi Byungchul,
 
-Since the initial introduction of (posix) fallocate back at the turn of
-the century, it has been possible to use this syscall to change the
-user-visible contents of files.  This can happen by extending the file
-size during a preallocation, or through any of the newer modes (punch,
-zero, collapse, insert range).  Because the call can be used to change
-file contents, we should treat it like we do any other modification to a
-file -- update the mtime, and drop set[ug]id privileges/capabilities.
+Thank you for the patch! Perhaps something to improve:
 
-The VFS function file_modified() does all this for us if pass it a
-locked inode, so let's make fallocate drop permissions correctly.
+[auto build test WARNING on tip/sched/core]
+[also build test WARNING on linux/master linus/master v5.17-rc7]
+[cannot apply to tip/locking/core hnaz-mm/master next-20220308]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-Signed-off-by: Darrick J. Wong <djwong@kernel.org>
+url:    https://github.com/0day-ci/linux/commits/Byungchul-Park/DEPT-Dependency-Tracker/20220304-150943
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git 25795ef6299f07ce3838f3253a9cb34f64efcfae
+config: hexagon-randconfig-r022-20220307 (https://download.01.org/0day-ci/archive/20220309/202203091550.PnufQ7gO-lkp@intel.com/config)
+compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project d271fc04d5b97b12e6b797c6067d3c96a8d7470e)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/387c58f459c6eb2a17a99b6c42ad57512a917d5d
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Byungchul-Park/DEPT-Dependency-Tracker/20220304-150943
+        git checkout 387c58f459c6eb2a17a99b6c42ad57512a917d5d
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash drivers/target/ kernel/dependency/
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+>> kernel/dependency/dept.c:2093:6: warning: no previous prototype for function '__dept_wait' [-Wmissing-prototypes]
+   void __dept_wait(struct dept_map *m, unsigned long w_f, unsigned long ip,
+        ^
+   kernel/dependency/dept.c:2093:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   void __dept_wait(struct dept_map *m, unsigned long w_f, unsigned long ip,
+   ^
+   static 
+   In file included from kernel/dependency/dept.c:2532:
+>> kernel/dependency/dept_hash.h:9:1: warning: format specifies type 'size_t' (aka 'unsigned int') but the argument has type 'unsigned long' [-Wformat]
+   HASH(dep, 12)
+   ^~~~~~~~~~~~~
+   kernel/dependency/dept.c:2531:14: note: expanded from macro 'HASH'
+                  #id, B2KB(sizeof(struct hlist_head) * (1UL << bits)));
+                  ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/printk.h:519:34: note: expanded from macro 'pr_info'
+           printk(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+   include/linux/printk.h:446:60: note: expanded from macro 'printk'
+   #define printk(fmt, ...) printk_index_wrap(_printk, fmt, ##__VA_ARGS__)
+                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+   include/linux/printk.h:418:19: note: expanded from macro 'printk_index_wrap'
+                   _p_func(_fmt, ##__VA_ARGS__);                           \
+                           ~~~~    ^~~~~~~~~~~
+   kernel/dependency/dept.c:2497:17: note: expanded from macro 'B2KB'
+   #define B2KB(B) ((B) / 1024)
+                   ^~~~~~~~~~~~
+   In file included from kernel/dependency/dept.c:2532:
+   kernel/dependency/dept_hash.h:10:1: warning: format specifies type 'size_t' (aka 'unsigned int') but the argument has type 'unsigned long' [-Wformat]
+   HASH(class, 12)
+   ^~~~~~~~~~~~~~~
+   kernel/dependency/dept.c:2531:14: note: expanded from macro 'HASH'
+                  #id, B2KB(sizeof(struct hlist_head) * (1UL << bits)));
+                  ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/printk.h:519:34: note: expanded from macro 'pr_info'
+           printk(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+   include/linux/printk.h:446:60: note: expanded from macro 'printk'
+   #define printk(fmt, ...) printk_index_wrap(_printk, fmt, ##__VA_ARGS__)
+                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+   include/linux/printk.h:418:19: note: expanded from macro 'printk_index_wrap'
+                   _p_func(_fmt, ##__VA_ARGS__);                           \
+                           ~~~~    ^~~~~~~~~~~
+   kernel/dependency/dept.c:2497:17: note: expanded from macro 'B2KB'
+   #define B2KB(B) ((B) / 1024)
+                   ^~~~~~~~~~~~
+   3 warnings generated.
+
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for FRAME_POINTER
+   Depends on DEBUG_KERNEL && (M68K || UML || SUPERH) || ARCH_WANT_FRAME_POINTERS
+   Selected by
+   - DEPT && DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT && !MIPS && !PPC && !ARM && !S390 && !MICROBLAZE && !ARC && !X86
+
+
+vim +/__dept_wait +2093 kernel/dependency/dept.c
+
+  2092	
+> 2093	void __dept_wait(struct dept_map *m, unsigned long w_f, unsigned long ip,
+  2094			 const char *w_fn, int ne)
+  2095	{
+  2096		int e;
+  2097	
+  2098		/*
+  2099		 * Be as conservative as possible. In case of mulitple waits for
+  2100		 * a single dept_map, we are going to keep only the last wait's
+  2101		 * wgen for simplicity - keeping all wgens seems overengineering.
+  2102		 *
+  2103		 * Of course, it might cause missing some dependencies that
+  2104		 * would rarely, probabily never, happen but it helps avoid
+  2105		 * false positive report.
+  2106		 */
+  2107		for_each_set_bit(e, &w_f, DEPT_MAX_SUBCLASSES_EVT) {
+  2108			struct dept_class *c;
+  2109			struct dept_key *k;
+  2110	
+  2111			k = m->keys ?: &m->keys_local;
+  2112			c = check_new_class(&m->keys_local, k,
+  2113					    map_sub(m, e), m->name);
+  2114			if (!c)
+  2115				continue;
+  2116	
+  2117			add_wait(c, ip, w_fn, ne);
+  2118		}
+  2119	}
+  2120	
+
 ---
- fs/ext4/ext4.h    |    2 +-
- fs/ext4/extents.c |   32 +++++++++++++++++++++++++-------
- fs/ext4/inode.c   |    7 ++++++-
- 3 files changed, 32 insertions(+), 9 deletions(-)
-
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index bcd3b9bf8069..5a78a4c368fd 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -3030,7 +3030,7 @@ extern int ext4_inode_attach_jinode(struct inode *inode);
- extern int ext4_can_truncate(struct inode *inode);
- extern int ext4_truncate(struct inode *);
- extern int ext4_break_layouts(struct inode *);
--extern int ext4_punch_hole(struct inode *inode, loff_t offset, loff_t length);
-+extern int ext4_punch_hole(struct file *file, loff_t offset, loff_t length);
- extern void ext4_set_inode_flags(struct inode *, bool init);
- extern int ext4_alloc_da_blocks(struct inode *inode);
- extern void ext4_set_aops(struct inode *inode);
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index c0f3f83e0c1b..488d7c1de941 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -4501,9 +4501,9 @@ static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
- 	return ret > 0 ? ret2 : ret;
- }
- 
--static int ext4_collapse_range(struct inode *inode, loff_t offset, loff_t len);
-+static int ext4_collapse_range(struct file *file, loff_t offset, loff_t len);
- 
--static int ext4_insert_range(struct inode *inode, loff_t offset, loff_t len);
-+static int ext4_insert_range(struct file *file, loff_t offset, loff_t len);
- 
- static long ext4_zero_range(struct file *file, loff_t offset,
- 			    loff_t len, int mode)
-@@ -4575,6 +4575,10 @@ static long ext4_zero_range(struct file *file, loff_t offset,
- 	/* Wait all existing dio workers, newcomers will block on i_rwsem */
- 	inode_dio_wait(inode);
- 
-+	ret = file_modified(file);
-+	if (ret)
-+		goto out_mutex;
-+
- 	/* Preallocate the range including the unaligned edges */
- 	if (partial_begin || partial_end) {
- 		ret = ext4_alloc_file_blocks(file,
-@@ -4691,7 +4695,7 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
- 		return -EOPNOTSUPP;
- 
- 	if (mode & FALLOC_FL_PUNCH_HOLE) {
--		ret = ext4_punch_hole(inode, offset, len);
-+		ret = ext4_punch_hole(file, offset, len);
- 		goto exit;
- 	}
- 
-@@ -4700,12 +4704,12 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
- 		goto exit;
- 
- 	if (mode & FALLOC_FL_COLLAPSE_RANGE) {
--		ret = ext4_collapse_range(inode, offset, len);
-+		ret = ext4_collapse_range(file, offset, len);
- 		goto exit;
- 	}
- 
- 	if (mode & FALLOC_FL_INSERT_RANGE) {
--		ret = ext4_insert_range(inode, offset, len);
-+		ret = ext4_insert_range(file, offset, len);
- 		goto exit;
- 	}
- 
-@@ -4741,6 +4745,10 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
- 	/* Wait all existing dio workers, newcomers will block on i_rwsem */
- 	inode_dio_wait(inode);
- 
-+	ret = file_modified(file);
-+	if (ret)
-+		goto out;
-+
- 	ret = ext4_alloc_file_blocks(file, lblk, max_blocks, new_size, flags);
- 	if (ret)
- 		goto out;
-@@ -5242,8 +5250,9 @@ ext4_ext_shift_extents(struct inode *inode, handle_t *handle,
-  * This implements the fallocate's collapse range functionality for ext4
-  * Returns: 0 and non-zero on error.
-  */
--static int ext4_collapse_range(struct inode *inode, loff_t offset, loff_t len)
-+static int ext4_collapse_range(struct file *file, loff_t offset, loff_t len)
- {
-+	struct inode *inode = file_inode(file);
- 	struct super_block *sb = inode->i_sb;
- 	struct address_space *mapping = inode->i_mapping;
- 	ext4_lblk_t punch_start, punch_stop;
-@@ -5295,6 +5304,10 @@ static int ext4_collapse_range(struct inode *inode, loff_t offset, loff_t len)
- 	/* Wait for existing dio to complete */
- 	inode_dio_wait(inode);
- 
-+	ret = file_modified(file);
-+	if (ret)
-+		goto out_mutex;
-+
- 	/*
- 	 * Prevent page faults from reinstantiating pages we have released from
- 	 * page cache.
-@@ -5388,8 +5401,9 @@ static int ext4_collapse_range(struct inode *inode, loff_t offset, loff_t len)
-  * by len bytes.
-  * Returns 0 on success, error otherwise.
-  */
--static int ext4_insert_range(struct inode *inode, loff_t offset, loff_t len)
-+static int ext4_insert_range(struct file *file, loff_t offset, loff_t len)
- {
-+	struct inode *inode = file_inode(file);
- 	struct super_block *sb = inode->i_sb;
- 	struct address_space *mapping = inode->i_mapping;
- 	handle_t *handle;
-@@ -5446,6 +5460,10 @@ static int ext4_insert_range(struct inode *inode, loff_t offset, loff_t len)
- 	/* Wait for existing dio to complete */
- 	inode_dio_wait(inode);
- 
-+	ret = file_modified(file);
-+	if (ret)
-+		goto out_mutex;
-+
- 	/*
- 	 * Prevent page faults from reinstantiating pages we have released from
- 	 * page cache.
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 01c9e4f743ba..99979bc26eea 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -3919,8 +3919,9 @@ int ext4_break_layouts(struct inode *inode)
-  * Returns: 0 on success or negative on failure
-  */
- 
--int ext4_punch_hole(struct inode *inode, loff_t offset, loff_t length)
-+int ext4_punch_hole(struct file *file, loff_t offset, loff_t length)
- {
-+	struct inode *inode = file_inode(file);
- 	struct super_block *sb = inode->i_sb;
- 	ext4_lblk_t first_block, stop_block;
- 	struct address_space *mapping = inode->i_mapping;
-@@ -3982,6 +3983,10 @@ int ext4_punch_hole(struct inode *inode, loff_t offset, loff_t length)
- 	/* Wait all existing dio workers, newcomers will block on i_rwsem */
- 	inode_dio_wait(inode);
- 
-+	ret = file_modified(file);
-+	if (ret)
-+		goto out_mutex;
-+
- 	/*
- 	 * Prevent page faults from reinstantiating pages we have released from
- 	 * page cache.
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
