@@ -2,140 +2,143 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 441464D4FEF
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Mar 2022 18:08:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 068B74D507E
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Mar 2022 18:29:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239631AbiCJRJC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Mar 2022 12:09:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33226 "EHLO
+        id S243408AbiCJR2O (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Mar 2022 12:28:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231151AbiCJRJB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Mar 2022 12:09:01 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A1AB4B1E6;
-        Thu, 10 Mar 2022 09:07:59 -0800 (PST)
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 22AFLEvn006049;
-        Thu, 10 Mar 2022 17:07:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=gOJrpYEIjKDoBOYnxpnAd0h4YRDgIwN6e+vyjHYuhW8=;
- b=sv/Qibmg4IYHGZzQQ7ijEwOCqAz0Ki40/ZLiuTpwBCfCJsWJc6+63f74ERfpmxKU0miF
- TCADEeZwSf4/Vi1JYTXBy2Ro75WRtKEdGlwgZJBuLeAJfxid9xSfS6RX3RKytSthTKfk
- pfPjiwh81iqaceEQYEa/KiJhaiLalL1Nag35nM+nEOMnU406aPJYQ03BjH3WIsDv6ewV
- Fh1Ot6BuXdUyiTnYIxTtrTihu2eFA1KMy06+R1XeWyMcXTFGHkTwaGy5cQIvZ5fKp1Zs
- 8RhfKdYbnUb1F5fYZiuC2RKEQpN0EUd78M+Z8HUOAEAhHJ887vqzAhExKpftomx1q7jU BA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3eqfxg08yq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Mar 2022 17:07:38 +0000
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 22AFM8NG017460;
-        Thu, 10 Mar 2022 17:07:37 GMT
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3eqfxg08xq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Mar 2022 17:07:37 +0000
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 22AH2rmV004298;
-        Thu, 10 Mar 2022 17:07:35 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04fra.de.ibm.com with ESMTP id 3ep8c3vt6e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Mar 2022 17:07:35 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 22AH7WJk43516322
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Mar 2022 17:07:32 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D7F4E42041;
-        Thu, 10 Mar 2022 17:07:32 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 56D6F42042;
-        Thu, 10 Mar 2022 17:07:32 +0000 (GMT)
-Received: from localhost (unknown [9.43.36.239])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 10 Mar 2022 17:07:32 +0000 (GMT)
-Date:   Thu, 10 Mar 2022 22:37:31 +0530
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2 00/10] ext4: Improve FC trace events
-Message-ID: <20220310170731.hq6z6flycmgkhnaa@riteshh-domain>
-References: <cover.1646922487.git.riteshh@linux.ibm.com>
- <20220310110553.431cc997@gandalf.local.home>
+        with ESMTP id S244975AbiCJR1t (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Mar 2022 12:27:49 -0500
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2065.outbound.protection.outlook.com [40.107.92.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C436FA2A;
+        Thu, 10 Mar 2022 09:26:47 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=apiZ+4XrAgR3tae4N+PXK2OJFDhbCjUq+DHxAWR87ttgnq9xQgkaF47z8zb5dCSfM/JN6HS2yEjtEEWElx2JZeFgCuwIw6g3/mCAlyoFU07Jntxsz+ncI1YMIdZmvq/kr7gTjIiYTQXIFohkCf3eKBb7pPch1o+noE4f3S1S6kcERMZ4Si9GKqMWVEFSVypgdAq2c0fj4awaan5TVw09NDuAJhZ7zW4SLyaUqxW8G8khz3z+bk1jizbpLJwFmucVBzE2SmtelKduOhEOXXGMOJbppqGXAx2SgRQijHR4pNmcLWi3K9t1tWw+1UVop2Na1LtHZK9SDfQXaI2QUMkVew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SnWFLTo1EmDBEkgRQX+BhCHTg4ADh4HAgu1C/JL/8HM=;
+ b=GPkoBmptL1yJRxkz8oVoKjktf3aYLfXQBdLZGB8Ay7+RBNNoJcsOZFT3MijC8fWuz9WqzwvYd52sWMcUDN9sLuYJQx6d3PfC0fCZH8PzYRFrmCvaXbaXcaxi6cMD9rNSJqzAlZYw80Qb6e24iIHeQlzGyrcyevEcxYDg5w4kLUms8HHYUjJhGf4NMf6v2OuJlnjLC2sjEeazASl510J8DOXStbCfJS4t5SiCnX+g6/ldHHLGDPkfE2Xi/gcolI6imjkCiQg0qwT4ybiwuCYB7021rRXShm5P4tVxNWaoFFGQ/5hzF3byZqS1sYtmTuorZPF6NgTUkW27q2PE6h6ybA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=nvidia.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SnWFLTo1EmDBEkgRQX+BhCHTg4ADh4HAgu1C/JL/8HM=;
+ b=0nBPy5oJimiB8SHrlfnjQDxEGWVieC5xDZYjR7o8dDnhDHRrJ8Zg2BrdfWhNLUFygzkYFZ4PKSBOgSYPBWU4psJ89LyOH/GQyxezHjpEFXUM7DjnwKa2dKTXiKkQ0Ajj61265MamON84OG1JlMWoJ2AHfq/TghxXA3OZiUQS0jg=
+Received: from DM3PR11CA0020.namprd11.prod.outlook.com (2603:10b6:0:54::30) by
+ MN2PR12MB4470.namprd12.prod.outlook.com (2603:10b6:208:260::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5038.14; Thu, 10 Mar
+ 2022 17:26:45 +0000
+Received: from DM6NAM11FT010.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:0:54:cafe::ce) by DM3PR11CA0020.outlook.office365.com
+ (2603:10b6:0:54::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5061.22 via Frontend
+ Transport; Thu, 10 Mar 2022 17:26:45 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DM6NAM11FT010.mail.protection.outlook.com (10.13.172.222) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.5061.22 via Frontend Transport; Thu, 10 Mar 2022 17:26:44 +0000
+Received: from alex-MS-7B09.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 10 Mar
+ 2022 11:26:43 -0600
+From:   Alex Sierra <alex.sierra@amd.com>
+To:     <jgg@nvidia.com>
+CC:     <david@redhat.com>, <Felix.Kuehling@amd.com>, <linux-mm@kvack.org>,
+        <rcampbell@nvidia.com>, <linux-ext4@vger.kernel.org>,
+        <linux-xfs@vger.kernel.org>, <amd-gfx@lists.freedesktop.org>,
+        <dri-devel@lists.freedesktop.org>, <hch@lst.de>,
+        <jglisse@redhat.com>, <apopple@nvidia.com>, <willy@infradead.org>,
+        <akpm@linux-foundation.org>
+Subject: [PATCH v1 0/3] split vm_normal_pages for LRU and non-LRU handling
+Date:   Thu, 10 Mar 2022 11:26:30 -0600
+Message-ID: <20220310172633.9151-1-alex.sierra@amd.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220310110553.431cc997@gandalf.local.home>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Z5AbZFGP0yz7THaVHnqixiAj13oT8Uyn
-X-Proofpoint-ORIG-GUID: CsMETZloyRIK-0N9942uxIZ443HFGMGB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-03-10_07,2022-03-09_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- lowpriorityscore=0 suspectscore=0 bulkscore=0 clxscore=1015 adultscore=0
- mlxscore=0 spamscore=0 mlxlogscore=974 priorityscore=1501 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2202240000
- definitions=main-2203100091
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1f2c192a-dd52-4b53-2f6f-08da02bb264e
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4470:EE_
+X-Microsoft-Antispam-PRVS: <MN2PR12MB447059BC66D0AD054F9A5441FD0B9@MN2PR12MB4470.namprd12.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7MUn04bFNM3i9AG3+jW4a3U4DKxPkIJhgjzj4WVZddbPFXDHIqGTGxPO/zg/tMQP9sntTaH5B1mGZh/P9v4oyOxx1melFf3W+2rkle6f5vL1i8EMkvJCqr5mUTVBss6EA4FMt5mv3PeG1kWsQzxwC6qdAWKK5D3ZQmxj0ooc+yXnIvaqoy8Wax6CxGeHmQbQNXedoM4cWfCXmjo0BwQRmQvpfUVOwIjBNPFnA9RTleb20tR1R9qV88iCDesK1qlnVrXmRbm6bkOT+OgiW49YYiC5ji0/kd2AyCRtynMgy9pl0QgrNbid+YR6bgdsMut+Y6BArLYDahrZ60wEZtuU6APrcaS+4/NX8mQ4Mx8ULUQDQtjOGdzYwzLPB6u/zEDG71zkx7kY7QDcGhCl1sPZNVx3rVx6zA/X54Ce8JjktaMD1r6qZZnScrr7bt61NwVygVG0YRrqiLQNJhJPbxmSxcEStVDf6ILoeHlshEVgQ49pljPDLkr7h/6pObDmX95qTORi5phZt84RdJrh+iqKqjTM6e2rRFvcTKhXUbQgOgWnW0JshroiQMdi3vP+FQw29MKBao6i8UkV74ACsYL2ULOk29/HLFCbGBzWg1lI5HZeOXw76xie86z4XFr9iU9B9Dyb1NR6eWRjLiAPriO8XGP2BHCacZK3TPvRMWC2SIvzzbYgi7DglwzkzNzDpffvCD+nASdQVZDw0GAXEuVS2w==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230001)(4636009)(46966006)(40470700004)(36840700001)(40460700003)(36756003)(5660300002)(7696005)(83380400001)(316002)(86362001)(8936002)(4326008)(336012)(70206006)(426003)(8676002)(54906003)(47076005)(36860700001)(6916009)(70586007)(81166007)(356005)(1076003)(508600001)(16526019)(2906002)(44832011)(26005)(82310400004)(186003)(6666004)(2616005)(7416002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Mar 2022 17:26:44.9269
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1f2c192a-dd52-4b53-2f6f-08da02bb264e
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT010.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4470
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22/03/10 11:05AM, Steven Rostedt wrote:
-> On Thu, 10 Mar 2022 21:28:54 +0530
-> Ritesh Harjani <riteshh@linux.ibm.com> wrote:
->
-> > Note:- I still couldn't figure out how to expose EXT4_FC_REASON_MAX in patch-2
-> > which (I think) might be (only) needed by trace-cmd or perf record for trace_ext4_fc_stats.
-> > But it seems "cat /sys/kernel/debug/tracing/trace_pipe" gives the right output
-> > for ext4_fc_stats trace event (as shown below).
-> >
-> > So with above reasoning, do you think we should take these patches in?
-> > And we can later see how to provide EXT4_FC_REASON_MAX definition available to
-> > libtraceevent?
->
-> I don't see EXT4_FC_REASON_MAX being used in the TP_printk(). If it isn't
-> used there, it doesn't need to be exposed. Or did I miss something?
+DEVICE_COHERENT pages introduce a subtle distinction in the way
+"normal" pages can be used by various callers throughout the kernel.
+They behave like normal pages for purposes of mapping in CPU page
+tables, and for COW. But they do not support LRU lists, NUMA
+migration or THP. Therefore we split vm_normal_page into two
+functions vm_normal_any_page and vm_normal_lru_page. The latter will
+only return pages that can be put on an LRU list and that support
+NUMA migration, KSM and THP.
 
-I was mentioning about EXT4_FC_REASON_MAX used in TP_STRUCT__entry.
-When I hard code EXT4_FC_REASON_MAX to 9 in TP_STRUCT__entry, I could
-see proper values using trace-cmd. Otherwise I see all 0 (when using trace-cmd
-or perf record).
+HMM tests were added to selftest to excercise these changes with
+device coherent pages. New test called hmm_cow_in_device, will test
+pages marked as COW, allocated in device zone. Also, more
+configurations were added into hmm_gup_test to test basic get
+user pages and get user pages fast paths in device zone pages.
 
-+	TP_STRUCT__entry(
-+		__field(dev_t, dev)
-+		__array(unsigned int, fc_ineligible_rc, EXT4_FC_REASON_MAX)
+Alex Sierra (3):
+  mm: split vm_normal_pages for LRU and non-LRU handling
+  tools: add more gup configs to hmm_gup selftests
+  tools: add selftests to hmm for COW in device memory
 
-Should we anyway hard code this to 9. Since we are anyway printing all the
-9 elements of array values individually.
+ fs/proc/task_mmu.c                     |  12 +--
+ include/linux/mm.h                     |  11 +-
+ mm/gup.c                               |  10 +-
+ mm/hmm.c                               |   2 +-
+ mm/huge_memory.c                       |   2 +-
+ mm/khugepaged.c                        |   8 +-
+ mm/ksm.c                               |   4 +-
+ mm/madvise.c                           |   4 +-
+ mm/memcontrol.c                        |   2 +-
+ mm/memory.c                            |  38 ++++---
+ mm/mempolicy.c                         |   4 +-
+ mm/migrate.c                           |   2 +-
+ mm/migrate_device.c                    |   2 +-
+ mm/mlock.c                             |   6 +-
+ mm/mprotect.c                          |   2 +-
+ tools/testing/selftests/vm/hmm-tests.c | 139 +++++++++++++++++++++----
+ 16 files changed, 185 insertions(+), 63 deletions(-)
 
-+	TP_printk("dev %d,%d fc ineligible reasons:\n"
-+		  "%s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u "
-+		  "num_commits:%lu, ineligible: %lu, numblks: %lu",
-+		  MAJOR(__entry->dev), MINOR(__entry->dev),
-+		  FC_REASON_NAME_STAT(EXT4_FC_REASON_XATTR),
-+		  FC_REASON_NAME_STAT(EXT4_FC_REASON_CROSS_RENAME),
-+		  FC_REASON_NAME_STAT(EXT4_FC_REASON_JOURNAL_FLAG_CHANGE),
-+		  FC_REASON_NAME_STAT(EXT4_FC_REASON_NOMEM),
-+		  FC_REASON_NAME_STAT(EXT4_FC_REASON_SWAP_BOOT),
-+		  FC_REASON_NAME_STAT(EXT4_FC_REASON_RESIZE),
-+		  FC_REASON_NAME_STAT(EXT4_FC_REASON_RENAME_DIR),
-+		  FC_REASON_NAME_STAT(EXT4_FC_REASON_FALLOC_RANGE),
-+		  FC_REASON_NAME_STAT(EXT4_FC_REASON_INODE_JOURNAL_DATA),
-+		  __entry->fc_commits, __entry->fc_ineligible_commits,
-+		  __entry->fc_numblks)
+-- 
+2.32.0
 
-
-Thanks
--ritesh
