@@ -2,105 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D4734D41FF
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Mar 2022 08:44:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 368BA4D4461
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Mar 2022 11:18:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234835AbiCJHpr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Mar 2022 02:45:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54500 "EHLO
+        id S233523AbiCJKTv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Mar 2022 05:19:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233468AbiCJHpp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Mar 2022 02:45:45 -0500
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0583312E768;
-        Wed,  9 Mar 2022 23:44:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1646898285; x=1678434285;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3xL76UjnNfk/gbXIveNqyY1Ko5EZonxMtXIoGMndPvQ=;
-  b=m8YhHn5GHnBYe4Ic5O+ac7B9R2oxufMNJ62ghD7SGrbuL+aB6s/WEEY3
-   2ea4k9op/ba60jqRo+s3aAunbibb6k5M5BpTor07h4wWxybP1H1FL2AJb
-   k3HuAhgE7wNqEjyGmaaYHeS7jpwadEJ8tw25eg/00YkGz+5DByzuUj0CU
-   8ix92n2+GgM5kxztc8mQgPc2wjWBpJNQqV0lcP2M76EvFPaLOAhLvcT13
-   9v8+ocGIyW00E1z8a+WMB92NYDSdlV5ajyBcsP4ZbBB0oE2YzFBbP/3HR
-   hvZnPBEUGt4dQowjV9oUsxD5crPFLB3Y8ODfU668AC5ghTrY3b0Ac8NyK
-   w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10281"; a="254015097"
-X-IronPort-AV: E=Sophos;i="5.90,169,1643702400"; 
-   d="scan'208";a="254015097"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2022 23:44:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,169,1643702400"; 
-   d="scan'208";a="642459708"
-Received: from lkp-server02.sh.intel.com (HELO 89b41b6ae01c) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 09 Mar 2022 23:44:38 -0800
-Received: from kbuild by 89b41b6ae01c with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1nSDTR-0004ZZ-AA; Thu, 10 Mar 2022 07:44:37 +0000
-Date:   Thu, 10 Mar 2022 15:43:43 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Byungchul Park <byungchul.park@lge.com>,
-        torvalds@linux-foundation.org
-Cc:     kbuild-all@lists.01.org, damien.lemoal@opensource.wdc.com,
-        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
-        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
-        chris@chris-wilson.co.uk, duyuyang@gmail.com,
-        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
-        bfields@fieldses.org, gregkh@linuxfoundation.org,
-        kernel-team@lge.com, linux-mm@kvack.org, akpm@linux-foundation.org,
-        mhocko@kernel.org, minchan@kernel.org, hannes@cmpxchg.org
-Subject: Re: [PATCH v4 11/24] dept: Add proc knobs to show stats and
- dependency graph
-Message-ID: <202203101515.nznG7vSJ-lkp@intel.com>
-References: <1646377603-19730-12-git-send-email-byungchul.park@lge.com>
+        with ESMTP id S232377AbiCJKTu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Mar 2022 05:19:50 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E47114FD2
+        for <linux-ext4@vger.kernel.org>; Thu, 10 Mar 2022 02:18:37 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id EACB7210ED;
+        Thu, 10 Mar 2022 10:18:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1646907515; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=n4PlAHdokU/XCpIbq0HompyPwgwmsXwntf2B5M21hcs=;
+        b=xWEyiwcQnJ5KIDpp5KmJ0RND3UP9bdE5ur/rXcSN2h0L0iwQNkJsjoTEorGSYlrHpKEp7h
+        WeLMDkkysJArRPQ3K7UmrPfekPlZyw0sIH3FZNn3pwLClpw7M/gq8fl3rkObDtXnpwysNq
+        SGQ93Omu/qsoCY6wm1V3beve+OH1v7U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1646907515;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=n4PlAHdokU/XCpIbq0HompyPwgwmsXwntf2B5M21hcs=;
+        b=hDbCjwGt79NYeuZl+PXXpjgepBz/qTcg10koeQ0YAUelTH+EDoJXQtm5BVtHY2WmeYGZrG
+        NNzX4a88NbWCgnAw==
+Received: from quack3.suse.cz (unknown [10.100.224.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id DEF6CA3B81;
+        Thu, 10 Mar 2022 10:18:35 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 68C27A0610; Thu, 10 Mar 2022 11:18:35 +0100 (CET)
+From:   Jan Kara <jack@suse.cz>
+To:     Ted Tso <tytso@mit.edu>
+Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
+Subject: [PATCH] ext4: Warn when dirtying page without buffers in data=journal mode
+Date:   Thu, 10 Mar 2022 11:18:32 +0100
+Message-Id: <20220310101832.5645-1-jack@suse.cz>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1646377603-19730-12-git-send-email-byungchul.park@lge.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1874; h=from:subject; bh=E5+XbH4zTAxdnimwCkvRkwuJi6x6iZkBdBwH5zF2LbA=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBiKdBxpg4+s7G4WVxB9gdLJclDtY6grSykPmyhwSpn kRV03CWJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCYinQcQAKCRCcnaoHP2RA2YfWB/ 90a3aeC0kfEeOyH42hJ7y1W+wh8W7wa3lLKDvxRvqcPVX1dZueZ6KW5rtdSMk/AJSQ//u2+bZx5iMs aN7Le9jiDlzLcSMETZMGdKFr65PohBvVuzE+OMe2jii3hfc+DWanQE2DKxHGVLKPlowEZ91Bk5Uh6J TADWvfjeZQDKi2O4zReXmryU/x80k0FLTGR8SP0nVmdRJ9ES8cxmgyGnOc5W88eZfEZ1ax97HRXszm ifmCkW9fQklh4o7lqQrGizGVeQbRxFf1IZt4isXt6s0BMDdbv7V+Z5a03+AcgfG7ok/rTazTjjiwtY IU+HOT5csKNw8z/mcSBGKaDgK55uR6
+X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Byungchul,
+Recently I've got a report of BUG_ON trigerring during transaction
+commit in ext4_journalled_writepage_callback() because we've spotted a
+dirty page without buffers. Add WARN_ON_ONCE to
+ext4_journalled_set_page_dirty() to catch the problematic condition
+earlier where we have better chance of understanding which code path is
+creating dirty data without preparing the page properly. Also update the
+comment with current information when we are at it.
 
-Thank you for the patch! Perhaps something to improve:
-
-[auto build test WARNING on tip/sched/core]
-[also build test WARNING on linux/master linus/master v5.17-rc7]
-[cannot apply to tip/locking/core hnaz-mm/master next-20220309]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
-
-url:    https://github.com/0day-ci/linux/commits/Byungchul-Park/DEPT-Dependency-Tracker/20220304-150943
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git 25795ef6299f07ce3838f3253a9cb34f64efcfae
-config: i386-randconfig-m031-20220307 (https://download.01.org/0day-ci/archive/20220310/202203101515.nznG7vSJ-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-smatch warnings:
-kernel/dependency/dept_object.h:9 dept_stats_show() warn: inconsistent indenting
-
-vim +9 kernel/dependency/dept_object.h
-
-387c58f459c6eb Byungchul Park 2022-03-04 @9  OBJECT(dep, 1024 * 8)
-
+Signed-off-by: Jan Kara <jack@suse.cz>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ fs/ext4/inode.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 01c9e4f743ba..f8f15fd25c6f 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3541,10 +3541,11 @@ const struct iomap_ops ext4_iomap_report_ops = {
+ };
+ 
+ /*
+- * Pages can be marked dirty completely asynchronously from ext4's journalling
+- * activity.  By filemap_sync_pte(), try_to_unmap_one(), etc.  We cannot do
+- * much here because ->set_page_dirty is called under VFS locks.  The page is
+- * not necessarily locked.
++ * Whenever the page is being dirtied, corresponding buffers should already be
++ * attached to the transaction (we take care of this in ext4_page_mkwrite() and
++ * ext4_write_begin()). However we cannot move buffers to dirty transaction
++ * lists here because ->set_page_dirty is called under VFS locks and the page
++ * is not necessarily locked.
+  *
+  * We cannot just dirty the page and leave attached buffers clean, because the
+  * buffers' dirty state is "definitive".  We cannot just set the buffers dirty
+@@ -3555,6 +3556,7 @@ const struct iomap_ops ext4_iomap_report_ops = {
+  */
+ static int ext4_journalled_set_page_dirty(struct page *page)
+ {
++	WARN_ON_ONCE(!page_has_buffers(page));
+ 	SetPageChecked(page);
+ 	return __set_page_dirty_nobuffers(page);
+ }
+-- 
+2.34.1
+
