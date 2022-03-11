@@ -2,156 +2,130 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 542864D5D40
-	for <lists+linux-ext4@lfdr.de>; Fri, 11 Mar 2022 09:26:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C634D5E27
+	for <lists+linux-ext4@lfdr.de>; Fri, 11 Mar 2022 10:16:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbiCKI1F (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 11 Mar 2022 03:27:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40612 "EHLO
+        id S1347189AbiCKJRR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 11 Mar 2022 04:17:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbiCKI1E (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Mar 2022 03:27:04 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0271E1B8FE4
-        for <linux-ext4@vger.kernel.org>; Fri, 11 Mar 2022 00:26:02 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id g20so9988228edw.6
-        for <linux-ext4@vger.kernel.org>; Fri, 11 Mar 2022 00:26:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KChDkEJtGWat+fesexxonqPFpsGTqVja3z4bjqLtBBQ=;
-        b=UR62llwd+kEXJjX+oaMx0iRdQprNdH0uhERsfXIRBxjjluhuTWpaZdGTzsLcpO4ATC
-         9VRnAQUkkdpIY8Wu0Mf05DMcUGJxbVHmVAdNVTVl4hHnJBNkP1wd9Ja/QfNrZPlRu1tp
-         m+xD3UIvVELgIetpUb3fdJVzbb91FC35DmV0YxkmeaFfxuuE34pJjhkfJ1QO+MAEVuhp
-         1oUppMIwXh8VTVzKEtPuxmd9v4JAqV3cGUPqg/RT5/iKwylLi9JNl0hnb5q3a1gZ8t7j
-         W8C/zCI1tISGUlHzAuFbdoKIsmwEpVl+3SlbLmFB+k1MYS9DAp5nryfYcILq4HRIKLOJ
-         8KQg==
+        with ESMTP id S231663AbiCKJRR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Mar 2022 04:17:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1E1901BBF57
+        for <linux-ext4@vger.kernel.org>; Fri, 11 Mar 2022 01:16:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1646990174;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EIGdPHjLg1hmetspOZdQaeJznczctW/NKNGy6+DAXDs=;
+        b=aVQ7iMrikJkUXhtU/7W2OWadbjlV8bh1d7HopqBMbWN7/Lp4fFBAcwG/SembDnu2qNbfqn
+        RWyOA9YnuxTMmz4jTEneDfIQORd4CLht3np0n7rVqCjBLaGKKEtLjI8P2RT18Q0yXAK8S6
+        2TltN77WzWL3EYJr+MeWIkA4L8nehsc=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-298-PYxbsCrzMGqQKyABKmOz2Q-1; Fri, 11 Mar 2022 04:16:11 -0500
+X-MC-Unique: PYxbsCrzMGqQKyABKmOz2Q-1
+Received: by mail-wm1-f71.google.com with SMTP id o21-20020a05600c511500b003818c4b98b5so2798296wms.0
+        for <linux-ext4@vger.kernel.org>; Fri, 11 Mar 2022 01:16:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KChDkEJtGWat+fesexxonqPFpsGTqVja3z4bjqLtBBQ=;
-        b=V4ANTolaZp0M7QNwwRB1UB9R+htgwyB3lmZrx6pnYyoUsqNAR3N11y9wbZAhl2zRr8
-         +qUJq8tITn5cFnyWharMMBc+Ur/qZ4Pp3dpNFeZwV+TpvdrDq6JQfkgVD6q9qOMN1eEE
-         /6B2MgvQ9YKxYY3pa7kRwlvYI/LR5hdH2S6BpOrA0TKQWn728gjTsT87kF2q2VhysDY0
-         3HSj4e9OevW3w5jMrdYd7q5I4CSSPM8NSOYkq3hs9YM/cePR/yCcZPdG45YwIl28PyNn
-         TFU1fBGZFcr0Ch4Va3+eQM6G57VtuyydiP3ErPM6LBwXe6R93hNjPWm/iGdXLEKSqERw
-         gFHg==
-X-Gm-Message-State: AOAM532giFwoZ2HkAsQXdiV+ILMjHU2NOXD/2JWU4+hWR/jGRcbaDIDk
-        peWNCUfpd22swWKrNS5A48ophqiQ/a4gr2+sVdXXdQLC71WixA==
-X-Google-Smtp-Source: ABdhPJxjvrHrQOqII1ShBqH/oQ/1WSbTvhmf2w37Uts94LBYvepph+L+EvIatx1Zyl7Buzo/BGXKLJR/bBmaItMBupc=
-X-Received: by 2002:a05:6402:3490:b0:416:8b97:b1f7 with SMTP id
- v16-20020a056402349000b004168b97b1f7mr7665554edc.36.1646987160172; Fri, 11
- Mar 2022 00:26:00 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:organization:subject
+         :in-reply-to:content-transfer-encoding;
+        bh=EIGdPHjLg1hmetspOZdQaeJznczctW/NKNGy6+DAXDs=;
+        b=zYI9z2v4G7LWd/b6UAP3JDmdWeOMZNNGxlwsltBlCtp1JBfRmHUYkW78PpN4VUBDLg
+         8Iuu8OksrnVoWJbgf/C57lMMflESrsBuodIdeRjhbRejgAH8hkqylsrm/J6Zl1DOwDdy
+         /gfIHzq1pm0fYk0gvpvYyOGhXXOTG1tuvCopVEz/Fq5KuijGiRU/o5Gv5i3HZRv61s7Q
+         Fx0EyVw9PNsutkXOqDDmgk1NFVc7BRHVdD+NvEn9r56n2EHrXfcfj0zSwLqqlE9Ci5Hb
+         eysF7oUNtP8H2lu1kbXHUuo8M4nVzy5d663PnVJyn3AMWHsbEQIB1D9vBUnD6joHu8PN
+         Jpog==
+X-Gm-Message-State: AOAM531tNBOe9ZG7Kl7rv24i+Uiejz7qofZYhQnovBXR/XTOwWfVeFRO
+        OMidyTL1ql3L0XS/twqWy5MC4khLAt2C14mX2eQ9XKHGOUF0E12AgFfpsIs7JnBpmilQOFLhqut
+        XrVRS/oRKgBu2ZiV3Vq7Ijg==
+X-Received: by 2002:a05:600c:4f0e:b0:389:eb27:581f with SMTP id l14-20020a05600c4f0e00b00389eb27581fmr2193338wmq.132.1646990169868;
+        Fri, 11 Mar 2022 01:16:09 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz66GE36RKglM3amxTnbF4SO/2NAriOwP++GkZh2LKs8fqberByaO4MYMTDcE67f9+yx5ejJw==
+X-Received: by 2002:a05:600c:4f0e:b0:389:eb27:581f with SMTP id l14-20020a05600c4f0e00b00389eb27581fmr2193321wmq.132.1646990169610;
+        Fri, 11 Mar 2022 01:16:09 -0800 (PST)
+Received: from ?IPV6:2003:cb:c707:8200:163d:7a08:6e61:87a5? (p200300cbc7078200163d7a086e6187a5.dip0.t-ipconnect.de. [2003:cb:c707:8200:163d:7a08:6e61:87a5])
+        by smtp.gmail.com with ESMTPSA id a8-20020a05600c068800b00389bdc8c8c2sm6270654wmn.12.2022.03.11.01.16.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Mar 2022 01:16:09 -0800 (PST)
+Message-ID: <07401a0a-6878-6af2-f663-9f0c3c1d88e5@redhat.com>
+Date:   Fri, 11 Mar 2022 10:16:08 +0100
 MIME-Version: 1.0
-References: <20220308163319.1183625-1-harshads@google.com> <20220308163319.1183625-3-harshads@google.com>
- <20220309101426.qumxztpd4weqzrcs@quack3.lan> <CAD+ocbyM9HdZwpB_NzKAiJTsZ78gZ_4Hsk3c21tL4ZetapqcFg@mail.gmail.com>
-In-Reply-To: <CAD+ocbyM9HdZwpB_NzKAiJTsZ78gZ_4Hsk3c21tL4ZetapqcFg@mail.gmail.com>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Fri, 11 Mar 2022 00:25:48 -0800
-Message-ID: <CAD+ocbzGsf3=2OK5MD_MyF=SyV63q1Z7Vg5VtkaE5FzmZ7_qqw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] ext4: for committing inode, make
- ext4_fc_track_inode wait
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.2
+Content-Language: en-US
+To:     Alex Sierra <alex.sierra@amd.com>, jgg@nvidia.com
+Cc:     Felix.Kuehling@amd.com, linux-mm@kvack.org, rcampbell@nvidia.com,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        hch@lst.de, jglisse@redhat.com, apopple@nvidia.com,
+        willy@infradead.org, akpm@linux-foundation.org
+References: <20220310172633.9151-1-alex.sierra@amd.com>
+ <20220310172633.9151-2-alex.sierra@amd.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v1 1/3] mm: split vm_normal_pages for LRU and non-LRU
+ handling
+In-Reply-To: <20220310172633.9151-2-alex.sierra@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hmm, after removing ext4_fc_track_inode() from ext4_journal_start(), I
-see one deadlock - there are some places in code where
-ext4_mark_inode_dirty gets called while holding i_data_sem. Commit
-path requires i_data_sem to commit inode data (via ext4_map_blocks).
-So, if an inode is being committed, ext4_mark_inode_dirty may start
-waiting for the inode to commit while holding i_data_sem and the
-commit path may wait on i_data_sem. The right way to fix this is to
-call ext4_fc_track_inode in such places before acquiring i_data_sem in
-write mode. But that would mean we sprinkle code with more
-ext4_fc_track_inode() calls which is something that I preferably
-wanted to avoid.
+On 10.03.22 18:26, Alex Sierra wrote:
+> DEVICE_COHERENT pages introduce a subtle distinction in the way
+> "normal" pages can be used by various callers throughout the kernel.
+> They behave like normal pages for purposes of mapping in CPU page
+> tables, and for COW. But they do not support LRU lists, NUMA
+> migration or THP. Therefore we split vm_normal_page into two
+> functions vm_normal_any_page and vm_normal_lru_page. The latter will
+> only return pages that can be put on an LRU list and that support
+> NUMA migration, KSM and THP.
+> 
+> We also introduced a FOLL_LRU flag that adds the same behaviour to
+> follow_page and related APIs, to allow callers to specify that they
+> expect to put pages on an LRU list.
+> 
 
-This makes me wonder though, for fast commits, is it a terrible idea
-to extend the meaning of ext4_journal_start() from "start a new
-handle" to "start a new handle with an intention to modify the passed
-inode"? Most of the handles modify only one inode, and for other
-places where we do modify multiple inodes, ext4_reserve_inode_write()
-would ensure that those inodes are tracked as well. All of the
-existing places where inode gets modified after grabbing i_data_sem,
-i_data_sem is grabbed only after starting the handle. This would take
-care of the deadlock mentioned above and similar deadlocks. Another
-advantage with doing this is that developers wouldn't need to worry
-about adding explicit ext4_fc_track_inode() calls for future changes.
+I still don't see the need for s/vm_normal_page/vm_normal_any_page/. And
+as this patch is dominated by that change, I'd suggest (again) to just
+drop it as I don't see any value of that renaming. No specifier implies any.
 
-If we decide to do this, we would need to do a thorough code review to
-ensure that the above rule is followed everywhere. But note that
-ext4_fc_track_inode() is idempotent, so it doesn't matter if this
-function gets called multiple times in the same handle. So to avoid
-breaking fast commits, we can be super careful and in the first
-version, we can have ext4_fc_track_range() calls in
-ext4_reserve_inode_dirty(), ext4_journal_start(), inline.c and in
-handles where i_data_sem gets acquired in write mode. We can then
-carefully evaluate each code path and remove redundant
-ext4_fc_track_range() calls.
+The general idea of this change LGTM.
 
-What do you think?
 
-- Harshad
+I wonder how this interacts with the actual DEVICE_COHERENT coherent
+series. Is this a preparation? Should it be part of the DEVICE_COHERENT
+series?
 
-On Thu, 10 Mar 2022 at 20:17, harshad shirwadkar
-<harshadshirwadkar@gmail.com> wrote:
->
-> Thanks for the reviews Jan! I'll update inline.c as you mentioned in
-> the next version.
->
-> - Harshad
->
-> On Wed, 9 Mar 2022 at 02:14, Jan Kara <jack@suse.cz> wrote:
-> >
-> > On Tue 08-03-22 08:33:16, Harshad Shirwadkar wrote:
-> > > From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-> > >
-> > > If the inode that's being requested to track using ext4_fc_track_inode
-> > > is being committed, then wait until the inode finishes the commit.
-> > >
-> > > Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-> >
-> > One comment below...
-> >
-> > > --- a/fs/ext4/ext4_jbd2.c
-> > > +++ b/fs/ext4/ext4_jbd2.c
-> > > @@ -106,6 +106,18 @@ handle_t *__ext4_journal_start_sb(struct super_block *sb, unsigned int line,
-> > >                                  GFP_NOFS, type, line);
-> > >  }
-> > >
-> > > +handle_t *__ext4_journal_start(struct inode *inode, unsigned int line,
-> > > +                               int type, int blocks, int rsv_blocks,
-> > > +                               int revoke_creds)
-> > > +{
-> > > +     handle_t *handle = __ext4_journal_start_sb(inode->i_sb, line,
-> > > +                                                type, blocks, rsv_blocks,
-> > > +                                                revoke_creds);
-> > > +     if (ext4_handle_valid(handle) && !IS_ERR(handle))
-> > > +             ext4_fc_track_inode(handle, inode);
-> > > +     return handle;
-> > > +}
-> > > +
-> >
-> > Please fix fs/ext4/inline.c rather than papering over the problem like
-> > this. Because it is just a landmine waiting to explode in some strange
-> > cornercase when someone does not call ext4_journal_start() but other handle
-> > starting function.
-> >
-> >                                                                 Honza
-> > --
-> > Jan Kara <jack@suse.com>
-> > SUSE Labs, CR
+IOW, should this patch start with
+
+"With DEVICE_COHERENT, we'll soon have vm_normal_pages() return
+device-managed anonymous pages that are not LRU pages. Although they
+behave like normal pages for purposes of mapping in CPU page, and for
+COW, they do not support LRU lists, NUMA migration or THP. [...]"
+
+But then, I'm confused by patch 2 and 3, because it feels more like we'd
+already have DEVICE_COHERENT then ("hmm_is_coherent_type").
+
+
+-- 
+Thanks,
+
+David / dhildenb
+
