@@ -2,199 +2,114 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B144D5404
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Mar 2022 22:58:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 580F94D56D6
+	for <lists+linux-ext4@lfdr.de>; Fri, 11 Mar 2022 01:39:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232049AbiCJV7O (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Mar 2022 16:59:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41006 "EHLO
+        id S236698AbiCKAkm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Mar 2022 19:40:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344190AbiCJV7L (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Mar 2022 16:59:11 -0500
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2070.outbound.protection.outlook.com [40.107.243.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F0BE0A3D;
-        Thu, 10 Mar 2022 13:58:09 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BIV7HQefJOhcNsyVfXlI49UYhKwgLc3e3vi4J3wQ4EVqEPOrql0aBf4Y1qoYCp2t6UiIkTnGs9ZdJR3Sr8oj44Nq4UgDi0Q6o3KREvfGjCC3WcT8LJ0T2cmBTt7F88vmpATrJarvSD52p/G7VSwn5uLMX2UiUu8nLZSEjdhh8rOuP2NBQAf7dwySMm63YB6V1EZuDQuNdO/MDQL/09UflUWP1yVggY5eVRIafN4FLc9PA4dvZoraCiUEF6R9aH3htgQdJZ2OI5+QsCm4YnrDz6+JMcLJeWVMOCmoG0QEE4SyV7Ffhlq7XwJE9DM4PGpvSV+3O6EvXTO84nxu0vREhw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hG8C5P3c2VIPpHqHKDI2kwpp7WkhSn7iDcW/5F6Iybs=;
- b=AkW/w6DVx/cUewKC3Uqxme1RNO8U1L8boF9ws9htlk8FkFbI2kCpLn6xEFaFUDhUAYRgVKFWhusPVmzHjn6zjnnpIKgSCmp4y2rjAOUo3N1Xg/xELe6Egh4vVlchC2Nncx/chanJspBgxWJ9r+5nbdFWATWg3pJ3muRx8lql+z3aUqEKkUKBEXXEWApEWONLsaEtJYegb8TU/x/OnbJvXUKkA1pTGwrY9rffTtb+7CkVAfJGKnPY19Hza1bNfjD7cn9CgMDK2O1KOlVDD5NW1FXNAL6nl2r+4rDXFDXqFvjAW+oVYVDrEA69Gr1lnEsJXRuhpgmXSYH3/hUNOmZxzA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hG8C5P3c2VIPpHqHKDI2kwpp7WkhSn7iDcW/5F6Iybs=;
- b=ghCAAcAGlyZzGg1qw3jgSzIj0vldu6eSEzCklB84Y+J3MpC2JChGmS9JQbanLg1NfzwvVCdOc5cWH8L/QFjTnARgwXPYS/rX1I3WPpxXrgbFK0snxuOMTPFnJ4bIQ0svi0BW+tNMWE0OkKpCat0LaZWlxwQ2DjfHHAfmFf8mUYg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN9PR12MB5115.namprd12.prod.outlook.com (2603:10b6:408:118::14)
- by DM4PR12MB5039.namprd12.prod.outlook.com (2603:10b6:5:38a::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5061.22; Thu, 10 Mar
- 2022 21:58:07 +0000
-Received: from BN9PR12MB5115.namprd12.prod.outlook.com
- ([fe80::4839:9431:1040:5cd5]) by BN9PR12MB5115.namprd12.prod.outlook.com
- ([fe80::4839:9431:1040:5cd5%3]) with mapi id 15.20.5061.022; Thu, 10 Mar 2022
- 21:58:07 +0000
-Message-ID: <651099d6-21ae-16a6-e500-a87002468cda@amd.com>
-Date:   Thu, 10 Mar 2022 16:58:05 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v1 1/3] mm: split vm_normal_pages for LRU and non-LRU
- handling
-Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>,
-        Alex Sierra <alex.sierra@amd.com>
-Cc:     jgg@nvidia.com, david@redhat.com, linux-mm@kvack.org,
-        rcampbell@nvidia.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, hch@lst.de, jglisse@redhat.com,
-        apopple@nvidia.com, akpm@linux-foundation.org
-References: <20220310172633.9151-1-alex.sierra@amd.com>
- <20220310172633.9151-2-alex.sierra@amd.com>
- <YipQqqpTz8hZAbLZ@casper.infradead.org>
-From:   Felix Kuehling <felix.kuehling@amd.com>
-In-Reply-To: <YipQqqpTz8hZAbLZ@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: YT1PR01CA0125.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2c::34) To BN9PR12MB5115.namprd12.prod.outlook.com
- (2603:10b6:408:118::14)
+        with ESMTP id S233337AbiCKAkm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Mar 2022 19:40:42 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0639869496;
+        Thu, 10 Mar 2022 16:39:39 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 908AE61DE1;
+        Fri, 11 Mar 2022 00:39:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D990C340E8;
+        Fri, 11 Mar 2022 00:39:38 +0000 (UTC)
+Date:   Thu, 10 Mar 2022 19:39:36 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv2 00/10] ext4: Improve FC trace events
+Message-ID: <20220310193936.38ae7754@gandalf.local.home>
+In-Reply-To: <20220310170731.hq6z6flycmgkhnaa@riteshh-domain>
+References: <cover.1646922487.git.riteshh@linux.ibm.com>
+        <20220310110553.431cc997@gandalf.local.home>
+        <20220310170731.hq6z6flycmgkhnaa@riteshh-domain>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0f5dbb83-4109-42a2-7ccc-08da02e10f2e
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5039:EE_
-X-Microsoft-Antispam-PRVS: <DM4PR12MB50396AA06F3908DD8966CDD9920B9@DM4PR12MB5039.namprd12.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1zS/aaaBjIFIfMAkhBRBPIw+aBv0faoIVk3qDrkgS8WzXqAJ/L1kG9y8VSa4uIKXHRPj3M9H1NNeMF5jP5lwpBgUdKaRPQVbF50bvv8TZarV0fmoEnOkSH6aS3FDLHauyGNZEZT9rdQqnGk83jAeBO/4L/D/03CnTQ2kyN/grBxw8nm3MoKF3BOJdRpNKGJPQARxonWbt/KnolGPH2aYh9aqh43Da5CgWlo67qebVkN1Sj1nomotLl2H1yq4n7cu35y9g2km4MyWi3G8dEQjMksJOHNKKNBIpmFHLA3H+8S7zH+MRs/vohzkXmf71GYz4bnxwiZo7opIuTKLCnXWzJ8U+duR0g2Pv0ZAKhCYXkp2z+kC7ixc3VAJ8P/yS32qCVt0JSO48J442OwpWs+9SGhQWUUZXxtM5U6ky06cZdnP9iM0f3Y9M2JwdnYrNYNQgfYaInmGldd3Ltpt+qZsonMrtupVjcFSzclIus8gnfEyuKJJ5ojbIp6pOveJmkAot/14gyO20NvCo1CxCa2qC/eKDe53S4Oee94L+C8hzbj2ybc+ybaewUnTV7FSFR4nZVKF7bVPIKWW9ysr7/pNux2jMRUwLLRh15Jti+TmeHZeQOjUyiJp/emKSdjuqtaRwfy3ii/aaXlNgsOxxqQcFwCo2YB1klZOOzJyoeQrTiM9OcttiJrxi/Gw9rkRF6Ffkfo85xiFSAG4uqC0fmDOUghoqpsYYg4hDUkcsNcYivE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5115.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(6512007)(8936002)(86362001)(6486002)(6506007)(316002)(2906002)(83380400001)(508600001)(66946007)(66476007)(66556008)(31696002)(4326008)(8676002)(36756003)(7416002)(110136005)(6636002)(44832011)(31686004)(38100700002)(2616005)(5660300002)(186003)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U0pkLzFNd0tIODBuYlVBUE1HTFdkUU8xK2V5RENsb0xFUmcwTi94UEluQTBj?=
- =?utf-8?B?QVRETmxKeDYyQU5sUnBCQXZIQVhna29ESDVOL0xKU21rbFlaWmh6dFVDSjlB?=
- =?utf-8?B?WFpnMHNUMVQ0bVVBMS82RVN6cDdaMjFnSGxtSnlweldFbDFueUQvL2wxb0I1?=
- =?utf-8?B?enRIVk1aRGxUeHlqZHBlVjhITTduT0xVUktnVEtpRERaMnBET01hZGFXQXg1?=
- =?utf-8?B?TTdNSlU5bUw2WDUwamwyZDQrUmwrVTlya0x5QVEzZlUxZktITHZhSy9XTXgy?=
- =?utf-8?B?TFcyVE0yYUxVSHlZdGdjT1o4citxQ3MrUEpoSVBORTVuckRxZ1diVW4zTDd3?=
- =?utf-8?B?eXNSUjFRaVdEODVxYmxHTngwYjZ2b2krT3Y4c0dQOXQyMTZlVnViWVp1THpk?=
- =?utf-8?B?aERjRkswL1dPajZUMGhvSU9KNW5hd2ZsWC80UHVMQld3UjdjZDIzdlE4ME9T?=
- =?utf-8?B?U3dPaFZVV3c3N0hsNVAySUxsOGFZd2lHdDh2dWJkRkpaUGpoZkJqSUZEQXVE?=
- =?utf-8?B?VDRTVm5pdllFL2VFZDFObmpocFh3L2Z4cm5xRkJjZ2ttbVpUM3htMDBRNUkz?=
- =?utf-8?B?SzVQQ1doTnd5MHdOUytuY1BMa3RaR05uZWdKM1VVa25zeFdGc3R1MERtT3p0?=
- =?utf-8?B?eHAreUNhVGE2YXdZVXVGMW5SS3FVSGxZUCtKNkNjMlhsU2I3Mm9SM3dIVkhO?=
- =?utf-8?B?TDZCQjJJMHdETmZCbWdYZWt2elY5bmdkRXhtV0MreVdCbW1pZkJRWDZwd0dj?=
- =?utf-8?B?RjJVMVJVWEJKUHRWLzFJUjNiSmdpeHRvQ2NuVE85VzRCTkk0ZCt1Tmkzb3F3?=
- =?utf-8?B?czhuVTkzR1VYVDZZTWFtL0JZamZSdC9id3ZsL283akFRUkNHc1h3Sm8veU4y?=
- =?utf-8?B?MjlzelFyNy9QcStvV1lmZ0RlaVVHc0c2WXN6eFliUjkrb3VWN1hIRS9wVlF2?=
- =?utf-8?B?YnhqdTRMSkR6bkN6U3ZaWHRlQUkwa0RPRVJOUVlHaE81WmFNOTlJcDU2eXQv?=
- =?utf-8?B?VDJmVnBtekVCMDl3RU16RVl5NDUwUG04K1BYeU9Ud1dZdGRRVE5qVmlFVGpt?=
- =?utf-8?B?MFdjWmlidVNWTWlDZVFjUURVVXJHaVFIYzdXUlRoQXhRdUltRHJXcUt1a1dW?=
- =?utf-8?B?REZoWkRsTmVFbkpST0pxNk01ZEdFM1pBNVpMeUNvcXBncitVMVA4ejNqZ3dE?=
- =?utf-8?B?ejFJbkpaTDcyOTM1b254ZXVrMll4NWVDWi8vZUdPUVRYcGgwdzdHd1lrdnJh?=
- =?utf-8?B?WUl3aHNCVHViZGh4Z2ZpNnd6OFQrMzhULzR4ZmRzSzNpampqUktreEsrWDRi?=
- =?utf-8?B?YkFvMmlMWktBUmEwMCsrSE1MaGhmelMrWG56ZThnRzZtQXQvVDg4RWQwV2Ur?=
- =?utf-8?B?MjNnSWw2R0xHSWE5RUNoTHpmVUdPdVMwZitMREdKVnNQM20yQ2tpY1ZQNWVa?=
- =?utf-8?B?RFJBU2hrUmNRMDZQT21veVNMMmkxUG9YdEdPNUFHM2pJRDZld1A3K3IzaFhj?=
- =?utf-8?B?aWlxbVNWUTNUQk93dUgvWkJ1VXFLaU1zNllMZnpQWi9qcmlOcFJHOXlyYjhu?=
- =?utf-8?B?R29mYjdELzJSYlBXZWxHZzQ2ZDgvY0s3MzQzUzJzUzRHa0l2MmJLVkhYRXF6?=
- =?utf-8?B?bWdlSjRBcGxNLzAvRTlLOFdDdTNkdFMveStwSDdBRjVrRGxJeGp2SVlUMzlw?=
- =?utf-8?B?ajUydy9kd1Mrd0xxYlUvcmRQd0J0MFVCTzhxUHZJK0xrc3JoWWJFVncwcW5k?=
- =?utf-8?B?SUQzaVZHN1cxZExORzlFVmpvQ3g5ZFl2UUpZOFlXb0hKN21ZTlk2ejNMcEUz?=
- =?utf-8?B?SndoY3h4eEdSMlArUnhVYjUwN24zNFBWWXRieStMQUcvR3dPbVhzQm02Y3BW?=
- =?utf-8?B?VHNjVVQ1MjVlYWpWd1FhSEtHTkFldmg3SnFNampTZVhQbWtDMjdHL0dETUtX?=
- =?utf-8?Q?Xzee7lFuVpLePmot8ezAv5pVqIhPGkwM?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0f5dbb83-4109-42a2-7ccc-08da02e10f2e
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5115.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Mar 2022 21:58:07.4291
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +9Z+UMcgb70fml3MUG0P4z06g5ICIqZOVBEIBupFqTniLsVJuHteq6oHhfZ0I5j/fYNESpOkRCrTv7rElqP75g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5039
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Thu, 10 Mar 2022 22:37:31 +0530
+Ritesh Harjani <riteshh@linux.ibm.com> wrote:
 
-Am 2022-03-10 um 14:25 schrieb Matthew Wilcox:
-> On Thu, Mar 10, 2022 at 11:26:31AM -0600, Alex Sierra wrote:
->> @@ -606,7 +606,7 @@ static void print_bad_pte(struct vm_area_struct *vma, unsigned long addr,
->>    * PFNMAP mappings in order to support COWable mappings.
->>    *
->>    */
->> -struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
->> +struct page *vm_normal_any_page(struct vm_area_struct *vma, unsigned long addr,
->>   			    pte_t pte)
->>   {
->>   	unsigned long pfn = pte_pfn(pte);
->> @@ -620,8 +620,6 @@ struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
->>   			return NULL;
->>   		if (is_zero_pfn(pfn))
->>   			return NULL;
->> -		if (pte_devmap(pte))
->> -			return NULL;
->>   
->>   		print_bad_pte(vma, addr, pte, NULL);
->>   		return NULL;
-> ... what?
->
-> Haven't you just made it so that a devmap page always prints a bad PTE
-> message, and then returns NULL anyway?
+> On 22/03/10 11:05AM, Steven Rostedt wrote:
+> > On Thu, 10 Mar 2022 21:28:54 +0530
+> > Ritesh Harjani <riteshh@linux.ibm.com> wrote:
+> >  
+> > > Note:- I still couldn't figure out how to expose EXT4_FC_REASON_MAX in patch-2
+> > > which (I think) might be (only) needed by trace-cmd or perf record for trace_ext4_fc_stats.
+> > > But it seems "cat /sys/kernel/debug/tracing/trace_pipe" gives the right output
+> > > for ext4_fc_stats trace event (as shown below).
+> > >
+> > > So with above reasoning, do you think we should take these patches in?
+> > > And we can later see how to provide EXT4_FC_REASON_MAX definition available to
+> > > libtraceevent?  
+> >
+> > I don't see EXT4_FC_REASON_MAX being used in the TP_printk(). If it isn't
+> > used there, it doesn't need to be exposed. Or did I miss something?  
+> 
+> I was mentioning about EXT4_FC_REASON_MAX used in TP_STRUCT__entry.
+> When I hard code EXT4_FC_REASON_MAX to 9 in TP_STRUCT__entry, I could
+> see proper values using trace-cmd. Otherwise I see all 0 (when using trace-cmd
+> or perf record).
+> 
+> +	TP_STRUCT__entry(
+> +		__field(dev_t, dev)
+> +		__array(unsigned int, fc_ineligible_rc, EXT4_FC_REASON_MAX)
 
-Yeah, that was stupid. :/  I think the long-term goal was to get rid of 
-pte_devmap. But for now, as long as we have pte_special with pte_devmap, 
-we'll need a special case to handle that like a normal page.
+Ah, I bet it's showing up in the format portion and not the print fmt part
+of the format file.
 
-I only see the PFN_DEV|PFN_MAP flags set in a few places: 
-drivers/dax/device.c, drivers/nvdimm/pmem.c, fs/fuse/virtio_fs.c. I 
-guess we need to test at least one of them for this patch series to make 
-sure we're not breaking them.
+Just to confirm, can you do the following:
 
+# cat /sys/kernel/tracing/events/ext4/ext4_fc_commit_stop/format
 
->
-> Surely this should be:
->
-> 		if (pte_devmap(pte))
-> -			return NULL;
-> +			return pfn_to_page(pfn);
->
-> or maybe
->
-> +			goto check_pfn;
->
-> But I don't know about that highest_memmap_pfn check.
+and show me what it outputs.
 
-Looks to me like it should work. highest_memmap_pfn gets updated in 
-memremap_pages -> pagemap_range -> move_pfn_range_to_zone -> 
-memmap_init_range.
+Thanks,
 
-Regards,
-   Felix
+-- Steve
 
 
->
->> @@ -661,6 +659,22 @@ struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
->>   	return pfn_to_page(pfn);
->>   }
->>   
->> +/*
->> + * vm_normal_lru_page -- This function gets the "struct page" associated
->> + * with a pte only for page cache and anon page. These pages are LRU handled.
->> + */
->> +struct page *vm_normal_lru_page(struct vm_area_struct *vma, unsigned long addr,
->> +			    pte_t pte)
-> It seems a shame to add a new function without proper kernel-doc.
->
+> 
+> Should we anyway hard code this to 9. Since we are anyway printing all the
+> 9 elements of array values individually.
+> 
+> +	TP_printk("dev %d,%d fc ineligible reasons:\n"
+> +		  "%s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u "
+> +		  "num_commits:%lu, ineligible: %lu, numblks: %lu",
+> +		  MAJOR(__entry->dev), MINOR(__entry->dev),
+> +		  FC_REASON_NAME_STAT(EXT4_FC_REASON_XATTR),
+> +		  FC_REASON_NAME_STAT(EXT4_FC_REASON_CROSS_RENAME),
+> +		  FC_REASON_NAME_STAT(EXT4_FC_REASON_JOURNAL_FLAG_CHANGE),
+> +		  FC_REASON_NAME_STAT(EXT4_FC_REASON_NOMEM),
+> +		  FC_REASON_NAME_STAT(EXT4_FC_REASON_SWAP_BOOT),
+> +		  FC_REASON_NAME_STAT(EXT4_FC_REASON_RESIZE),
+> +		  FC_REASON_NAME_STAT(EXT4_FC_REASON_RENAME_DIR),
+> +		  FC_REASON_NAME_STAT(EXT4_FC_REASON_FALLOC_RANGE),
+> +		  FC_REASON_NAME_STAT(EXT4_FC_REASON_INODE_JOURNAL_DATA),
+> +		  __entry->fc_commits, __entry->fc_ineligible_commits,
+> +		  __entry->fc_numblks)
+> 
+> 
+> Thanks
+> -ritesh
+
