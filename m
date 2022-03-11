@@ -2,149 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFA84D58BB
-	for <lists+linux-ext4@lfdr.de>; Fri, 11 Mar 2022 04:15:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 907EE4D5961
+	for <lists+linux-ext4@lfdr.de>; Fri, 11 Mar 2022 05:02:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345942AbiCKDQC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Mar 2022 22:16:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39532 "EHLO
+        id S236057AbiCKEDu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Mar 2022 23:03:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345960AbiCKDQC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Mar 2022 22:16:02 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C9BB1A6157;
-        Thu, 10 Mar 2022 19:15:00 -0800 (PST)
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 22B0Ad5p029667;
-        Fri, 11 Mar 2022 03:14:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=jqIC8Bg12ntTvl+0SIbsbDTrpL8KxvLBHT167uzVtcw=;
- b=ljBujJ0qV11WSnGUmiynIGtQJ1GRSpxPDm5ogCkJw21m2+a2BN1coAOcDby4ygm4CQks
- 5Jg/W2nw7+bgT0BBoGEC7WHOTNv2PbVVCaKSSBvGA1k2Fxnw6H5BNOURXegGN6uZ/4lc
- cGiNcqjiBhNFA1yrGAX93uBdp2JG27yK6QwL0Iw6P7RAtePAJMkwifYmR+Vt36K2t1X1
- 4ucBLpfpitNOzOBgxKNF0zzSR2FtCEM3fb9qhQIUzmvL37QoRcmt2+RIb/hgjJRe1F1L
- 5FApaWDyQgOUk0IqNfN5deUWH97tCdzCapORsraV8gBz3wQJRQ6fkvZM9xXPzxQo95gO Lg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3eqnccjeu9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Mar 2022 03:14:38 +0000
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 22B3CI1T022677;
-        Fri, 11 Mar 2022 03:14:38 GMT
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3eqnccjetr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Mar 2022 03:14:37 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 22B37kPv015817;
-        Fri, 11 Mar 2022 03:14:35 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 3enqgnrjhh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Mar 2022 03:14:35 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 22B3EXLx53019128
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Mar 2022 03:14:33 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ED5ED4C044;
-        Fri, 11 Mar 2022 03:14:32 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 808494C040;
-        Fri, 11 Mar 2022 03:14:32 +0000 (GMT)
-Received: from localhost (unknown [9.43.36.239])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 11 Mar 2022 03:14:32 +0000 (GMT)
-Date:   Fri, 11 Mar 2022 08:44:31 +0530
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2 00/10] ext4: Improve FC trace events
-Message-ID: <20220311031431.3sfbibwuthn4xkym@riteshh-domain>
-References: <cover.1646922487.git.riteshh@linux.ibm.com>
- <20220310110553.431cc997@gandalf.local.home>
- <20220310170731.hq6z6flycmgkhnaa@riteshh-domain>
- <20220310193936.38ae7754@gandalf.local.home>
- <20220311021931.d4oozgtefbalrcch@riteshh-domain>
- <20220310213356.3948cfb7@gandalf.local.home>
+        with ESMTP id S242746AbiCKEDt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Mar 2022 23:03:49 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F28BECC8
+        for <linux-ext4@vger.kernel.org>; Thu, 10 Mar 2022 20:02:47 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id a8so16515946ejc.8
+        for <linux-ext4@vger.kernel.org>; Thu, 10 Mar 2022 20:02:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ce5ASUN/YpMffyWs3RqKg3VfO3dF6LZerAfpmFkK37A=;
+        b=Hm6Y4XMc9K20F4QPUdP6PnfK3/ksAeIb07FGor8NdTBa/VPSrmq/ZkJ2MJyLugc0rr
+         RwB6vlk0zRHzYh94DaCbwTqeQrFYa9hI09oLeuQrCb9yaaTOCcSHTsL9H8WhDbgpWCAr
+         66syo3nJTD6uuZUbNlYIlr+7hnxrtwXMCDLyGhNMNvKzPqOSXNeXtlU1w181ovtr8Mv6
+         ZpUR54EwM9xaVXbXuQTxtfc8MvfN4xw600YpnyrjzpCLN8e+dJUE5utgmt9drRzOQPBO
+         lyEWKy7uy9M8ZJei06/N3U/9gHujTLFYw+ut+tWx0pZMsI48FqCN4dOXkGa9+d7hC/aX
+         fxiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ce5ASUN/YpMffyWs3RqKg3VfO3dF6LZerAfpmFkK37A=;
+        b=VWkxFjTwGMRudLG+UzkB3TTLGwRfvtKkmbn7+dVukM1/m/NpVjuuEFJfAwKFfz++Wy
+         iwu+lF6oVxDegYdgLTzkGyUfJXwp+FYb3gFYyN78Ry/Ey+rW1aTrYHLxD3WRUxrg1dkw
+         1XuMsXfCSuq3uLfbNruhVyMC5bTtYtWeQGts09KSMcmiJEiozZa3yc/Oe0NBhQVC92i5
+         +TvC1Nw8EvJvkUKw921bMXJK6E0NW75hvZGwZZGPUg6NkxlVaIaOAVUiYqPWeaPwGGyt
+         Cg9TChzQS7xLUWov1EZq0/TacJwb0fEdiLB0HJylOY4bIAKnERxKhYQvLqsxEf024ec9
+         jwmA==
+X-Gm-Message-State: AOAM531u3FrYuDkKbfTqQBGtAha4wiIRYyJHLU3hODiqICYhvsTsciDB
+        wp2L8sOrGYb5krGWXhzfO8QWVpl93lSq0XGp2dI=
+X-Google-Smtp-Source: ABdhPJzJB/bpV1b2KA4GdkoQHna6vSLYWzw4nXQ4Syg2/77p+vtO1VNyUxB0sMbSigcdflA7HgBLzHNFzhAyHHr1spg=
+X-Received: by 2002:a17:906:1e42:b0:6d6:df12:7f8d with SMTP id
+ i2-20020a1709061e4200b006d6df127f8dmr7126661ejj.15.1646971365185; Thu, 10 Mar
+ 2022 20:02:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220310213356.3948cfb7@gandalf.local.home>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: qUP-iZseQfzoUmnJRu3EkAsFV4tUzxHh
-X-Proofpoint-GUID: MHi4IatWeYIPMQc3Uve-fpvyTGaiBTWZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-03-10_09,2022-03-09_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=712
- lowpriorityscore=0 adultscore=0 clxscore=1015 priorityscore=1501
- impostorscore=0 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2203110013
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220308163319.1183625-1-harshads@google.com> <20220308163319.1183625-2-harshads@google.com>
+ <20220309101057.3uuix2gvjinobt3i@quack3.lan>
+In-Reply-To: <20220309101057.3uuix2gvjinobt3i@quack3.lan>
+From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
+Date:   Thu, 10 Mar 2022 20:02:33 -0800
+Message-ID: <CAD+ocbyCVc9EL-HdrNHgnHqGS1ymhC6U7eQXuQeJW228WvrHyw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/5] ext4: convert i_fc_lock to spinlock
+To:     Jan Kara <jack@suse.cz>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22/03/10 09:33PM, Steven Rostedt wrote:
-> On Fri, 11 Mar 2022 07:49:31 +0530
-> Ritesh Harjani <riteshh@linux.ibm.com> wrote:
+On Wed, 9 Mar 2022 at 02:10, Jan Kara <jack@suse.cz> wrote:
 >
-> > > # cat /sys/kernel/tracing/events/ext4/ext4_fc_commit_stop/format
+> On Tue 08-03-22 08:33:15, Harshad Shirwadkar wrote:
+> > From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 > >
-> > I think you meant ext4_fc_stats.
->
-> Sure.
->
+> > Convert ext4_inode_info->i_fc_lock to spinlock to avoid sleeping
+> > in invalid contexts.
 > >
-> > >
-> > > and show me what it outputs.
+> > Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+>
+> One comment below...
+>
+> > @@ -972,9 +970,13 @@ static int ext4_fc_wait_inode_data_all(journal_t *journal)
 > >
-> > root@qemu:/home/qemu# cat /sys/kernel/tracing/events/ext4/ext4_fc_stats/format
-> > name: ext4_fc_stats
-> > ID: 986
-> > format:
-> >         field:unsigned short common_type;       offset:0;       size:2; signed:0;
-> >         field:unsigned char common_flags;       offset:2;       size:1; signed:0;
-> >         field:unsigned char common_preempt_count;       offset:3;       size:1; signed:0;
-> >         field:int common_pid;   offset:4;       size:4; signed:1;
-> >
-> >         field:dev_t dev;        offset:8;       size:4; signed:0;
-> >         field:unsigned int fc_ineligible_rc[EXT4_FC_REASON_MAX];        offset:12;      size:36;        signed:0;
+> >       spin_lock(&sbi->s_fc_lock);
+> >       list_for_each_entry_safe(pos, n, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
+> > +             spin_lock(&pos->i_fc_lock);
+> >               if (!ext4_test_inode_state(&pos->vfs_inode,
+> > -                                        EXT4_STATE_FC_COMMITTING))
+> > +                                        EXT4_STATE_FC_COMMITTING)) {
+> > +                     spin_unlock(&pos->i_fc_lock);
+> >                       continue;
+> > +             }
+> > +             spin_unlock(&pos->i_fc_lock);
+> >               spin_unlock(&sbi->s_fc_lock);
 >
-> Bah, the above tells us how many items, and the TRACE_DEFINE_ENUM() doesn't
-> modify this part of the file.
+> Why do you add a lock here in a pure lock-conversion patch? Furthermore I
+> don't think the lock is needed...
+Oops sorry, this was an unintentional leftover from the first version,
+I'll remove it in the next one, thanks!
 
-Then shall I just define TRACE_DEFINE_ENUM(EXT4_FC_REASON_MAX) in this patch.
-Would that be the correct approach? Like how we have defined other enums.
-We haven't yet defined EXT4_FC_REASON_MAX in current patch.
-(as I saw it doesn't affect TP_STRUCT__entry())
-
-
+- Harshad
 >
-> I could update it to do so though.
-
-Please let me know if you have any patch for me to try.
-
-Thanks
--ritesh
-
-
->
-> -- Steve
->
->
-> >         field:unsigned long fc_commits; offset:48;      size:8; signed:0;
-> >         field:unsigned long fc_ineligible_commits;      offset:56;      size:8; signed:0;
-> >         field:unsigned long fc_numblks; offset:64;      size:8; signed:0;
->
+>                                                                 Honza
+> --
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
