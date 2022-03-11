@@ -2,130 +2,295 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C634D5E27
-	for <lists+linux-ext4@lfdr.de>; Fri, 11 Mar 2022 10:16:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52AB84D5EC1
+	for <lists+linux-ext4@lfdr.de>; Fri, 11 Mar 2022 10:49:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347189AbiCKJRR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 11 Mar 2022 04:17:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34590 "EHLO
+        id S233067AbiCKJuc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 11 Mar 2022 04:50:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231663AbiCKJRR (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Mar 2022 04:17:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1E1901BBF57
-        for <linux-ext4@vger.kernel.org>; Fri, 11 Mar 2022 01:16:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1646990174;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EIGdPHjLg1hmetspOZdQaeJznczctW/NKNGy6+DAXDs=;
-        b=aVQ7iMrikJkUXhtU/7W2OWadbjlV8bh1d7HopqBMbWN7/Lp4fFBAcwG/SembDnu2qNbfqn
-        RWyOA9YnuxTMmz4jTEneDfIQORd4CLht3np0n7rVqCjBLaGKKEtLjI8P2RT18Q0yXAK8S6
-        2TltN77WzWL3EYJr+MeWIkA4L8nehsc=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-298-PYxbsCrzMGqQKyABKmOz2Q-1; Fri, 11 Mar 2022 04:16:11 -0500
-X-MC-Unique: PYxbsCrzMGqQKyABKmOz2Q-1
-Received: by mail-wm1-f71.google.com with SMTP id o21-20020a05600c511500b003818c4b98b5so2798296wms.0
-        for <linux-ext4@vger.kernel.org>; Fri, 11 Mar 2022 01:16:10 -0800 (PST)
+        with ESMTP id S232555AbiCKJua (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Mar 2022 04:50:30 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57681B9899
+        for <linux-ext4@vger.kernel.org>; Fri, 11 Mar 2022 01:49:26 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id x4so9471307iom.12
+        for <linux-ext4@vger.kernel.org>; Fri, 11 Mar 2022 01:49:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OOeMBrOT8tm6p8WWBXsKzw6sChHxLXnjsSKfeVY6YUs=;
+        b=TeYcGHJMSPRE2oVGNF2EqGS7ZRTFOSf7UMIEbIhWzmjBMr0s7fNB+hKgJF8AJ4Dant
+         uqRMTb+H1LULj6R6p31mlA520ZCdgL9NByr7j0Zeg0Zhbda9EynWLHszUnCr+C14vBAo
+         UH0IZSDRUUiAni0R4ud47Sqlpk627UkEDBzVk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:organization:subject
-         :in-reply-to:content-transfer-encoding;
-        bh=EIGdPHjLg1hmetspOZdQaeJznczctW/NKNGy6+DAXDs=;
-        b=zYI9z2v4G7LWd/b6UAP3JDmdWeOMZNNGxlwsltBlCtp1JBfRmHUYkW78PpN4VUBDLg
-         8Iuu8OksrnVoWJbgf/C57lMMflESrsBuodIdeRjhbRejgAH8hkqylsrm/J6Zl1DOwDdy
-         /gfIHzq1pm0fYk0gvpvYyOGhXXOTG1tuvCopVEz/Fq5KuijGiRU/o5Gv5i3HZRv61s7Q
-         Fx0EyVw9PNsutkXOqDDmgk1NFVc7BRHVdD+NvEn9r56n2EHrXfcfj0zSwLqqlE9Ci5Hb
-         eysF7oUNtP8H2lu1kbXHUuo8M4nVzy5d663PnVJyn3AMWHsbEQIB1D9vBUnD6joHu8PN
-         Jpog==
-X-Gm-Message-State: AOAM531tNBOe9ZG7Kl7rv24i+Uiejz7qofZYhQnovBXR/XTOwWfVeFRO
-        OMidyTL1ql3L0XS/twqWy5MC4khLAt2C14mX2eQ9XKHGOUF0E12AgFfpsIs7JnBpmilQOFLhqut
-        XrVRS/oRKgBu2ZiV3Vq7Ijg==
-X-Received: by 2002:a05:600c:4f0e:b0:389:eb27:581f with SMTP id l14-20020a05600c4f0e00b00389eb27581fmr2193338wmq.132.1646990169868;
-        Fri, 11 Mar 2022 01:16:09 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz66GE36RKglM3amxTnbF4SO/2NAriOwP++GkZh2LKs8fqberByaO4MYMTDcE67f9+yx5ejJw==
-X-Received: by 2002:a05:600c:4f0e:b0:389:eb27:581f with SMTP id l14-20020a05600c4f0e00b00389eb27581fmr2193321wmq.132.1646990169610;
-        Fri, 11 Mar 2022 01:16:09 -0800 (PST)
-Received: from ?IPV6:2003:cb:c707:8200:163d:7a08:6e61:87a5? (p200300cbc7078200163d7a086e6187a5.dip0.t-ipconnect.de. [2003:cb:c707:8200:163d:7a08:6e61:87a5])
-        by smtp.gmail.com with ESMTPSA id a8-20020a05600c068800b00389bdc8c8c2sm6270654wmn.12.2022.03.11.01.16.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Mar 2022 01:16:09 -0800 (PST)
-Message-ID: <07401a0a-6878-6af2-f663-9f0c3c1d88e5@redhat.com>
-Date:   Fri, 11 Mar 2022 10:16:08 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OOeMBrOT8tm6p8WWBXsKzw6sChHxLXnjsSKfeVY6YUs=;
+        b=GkD8qZylwGVuhnHo6hTMMpNQGGvpNVUgixUfMUGBioZKNZ81EIiDJwIyfGakboSMr0
+         BNJTOQo7BdJP6L2End20n+23+cySh78JVjQLw7OfTSitE/47HAbjbsoTtO7KuVPpCYzq
+         8IQI4hi6Vv+gBM05Ik+mT3pW6mx21o4xXEnU0rC/T4+1hOXxDtZn200t64VfOSMbvlLu
+         kncpFaJ1rHpik9PgT+JTZxQ6iscH7Qy6VyNOdV99HE8nlKoCdcxBbA51AomrC7+AdqjQ
+         vvtgS6Vu9FtvmgUBx0ERUn5QUV3w0Z0kk+NF3rF+hknJaVTACxl+fYvQSgt7why0DnQb
+         1FUw==
+X-Gm-Message-State: AOAM5339MBljcT3HCnBCc8KNfKJ+kcvrkPKPKlRtqgRlSZmp2Qzlsmdc
+        b3GjS7gQ5aN9449WKHW5I00JHZMzSEpIWb0Gef/eB40X4NEVLw==
+X-Google-Smtp-Source: ABdhPJyXrdrkAKgjo8fXLWkOavv03hqd7XKbupqc1o2UgR27bkCudZemEtbmHALz0z6b79yFeeVqhV0KZHG9CUJiT/g=
+X-Received: by 2002:a02:a08c:0:b0:314:ede5:1461 with SMTP id
+ g12-20020a02a08c000000b00314ede51461mr7998691jah.103.1646992165993; Fri, 11
+ Mar 2022 01:49:25 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.2
-Content-Language: en-US
-To:     Alex Sierra <alex.sierra@amd.com>, jgg@nvidia.com
-Cc:     Felix.Kuehling@amd.com, linux-mm@kvack.org, rcampbell@nvidia.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        hch@lst.de, jglisse@redhat.com, apopple@nvidia.com,
-        willy@infradead.org, akpm@linux-foundation.org
-References: <20220310172633.9151-1-alex.sierra@amd.com>
- <20220310172633.9151-2-alex.sierra@amd.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v1 1/3] mm: split vm_normal_pages for LRU and non-LRU
- handling
-In-Reply-To: <20220310172633.9151-2-alex.sierra@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <C5A2A75B-F767-40AC-B500-C99D484E9E30@dilger.ca>
+ <20210927103910.341417-1-sarthakkukreti@chromium.org> <YXYx0iL8Pn/tbxBP@mit.edu>
+In-Reply-To: <YXYx0iL8Pn/tbxBP@mit.edu>
+From:   Gwendal Grignou <gwendal@chromium.org>
+Date:   Fri, 11 Mar 2022 01:49:13 -0800
+Message-ID: <CAPUE2uuNy2A_WZt-np57sByDmU4rqYZzcyeRBAz9u1Zqkaxpsg@mail.gmail.com>
+Subject: Re: [PATCH v2] mke2fs: Add extended option for prezeroed storage devices
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Sarthak Kukreti <sarthakkukreti@chromium.org>,
+        linux-ext4@vger.kernel.org, adilger@dilger.ca, okiselev@amazon.com
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 10.03.22 18:26, Alex Sierra wrote:
-> DEVICE_COHERENT pages introduce a subtle distinction in the way
-> "normal" pages can be used by various callers throughout the kernel.
-> They behave like normal pages for purposes of mapping in CPU page
-> tables, and for COW. But they do not support LRU lists, NUMA
-> migration or THP. Therefore we split vm_normal_page into two
-> functions vm_normal_any_page and vm_normal_lru_page. The latter will
-> only return pages that can be put on an LRU list and that support
-> NUMA migration, KSM and THP.
-> 
-> We also introduced a FOLL_LRU flag that adds the same behaviour to
-> follow_page and related APIs, to allow callers to specify that they
-> expect to put pages on an LRU list.
-> 
+Ted,
 
-I still don't see the need for s/vm_normal_page/vm_normal_any_page/. And
-as this patch is dominated by that change, I'd suggest (again) to just
-drop it as I don't see any value of that renaming. No specifier implies any.
+I noticed Sarthak's patch is not in e2fsprogs-1.46.5 December release.
+His patch is in the |master| branch (commit bd2e72c5c552 ("mke2fs: add
+extended option for prezeroed storage devices")) since September, but
+not in the |maint| branch. Other patches were not included as well -
+see below. Is it expected?
 
-The general idea of this change LGTM.
+git log --cherry-mark --oneline --left-right  origin/master...origin/maint
+< 96185e9b (origin/next, origin/master, origin/HEAD) Merge branch
+'maint' into next
+< f85b4526 tune2fs: implement support for set/get label iocts
+< 8adeabee Merge branch 'maint' into next
+< 02827d06 ext2fs: avoid re-reading inode multiple times
+< bd2e72c5 mke2fs: add extended option for prezeroed storage devices
+< a8f52588 dumpe2fs, debugfs, e2image: Add support for orphan file
+< 795101dd tune2fs: Add support for orphan_file feature
+< d0c52ffb e2fsck: Add support for handling orphan file
+< 818da4a9 mke2fs: Add support for orphan_file feature
+< 1d551c68 libext2fs: Support for orphan file feature
 
+Gwendal.
 
-I wonder how this interacts with the actual DEVICE_COHERENT coherent
-series. Is this a preparation? Should it be part of the DEVICE_COHERENT
-series?
-
-IOW, should this patch start with
-
-"With DEVICE_COHERENT, we'll soon have vm_normal_pages() return
-device-managed anonymous pages that are not LRU pages. Although they
-behave like normal pages for purposes of mapping in CPU page, and for
-COW, they do not support LRU lists, NUMA migration or THP. [...]"
-
-But then, I'm confused by patch 2 and 3, because it feels more like we'd
-already have DEVICE_COHERENT then ("hmm_is_coherent_type").
-
-
--- 
-Thanks,
-
-David / dhildenb
-
+On Sun, Oct 24, 2021 at 9:25 PM Theodore Ts'o <tytso@mit.edu> wrote:
+>
+> I tried running the regression test, and it was failing for me; it
+> showed that even with -E assume_stoarge_prezeroed, the size of the
+> $TMPFILE.1 and $TMPFILE.2 was the same.  Looking into this, it was
+> because in lib/ext2fs/unix_io.c, when the file is a plain file
+> io_channel_discard_zeroes_data() returns true, since it assumes that
+> we can use PUNCH_HOLE to implement unix_io_discard(), which is
+> guaranteed to work.
+>
+> So I had to change the regression test to use losetup, which also
+> meant that the test had to run as root....
+>
+> Anyway, this is what I've checked into e2fsprogs.
+>
+>                                   - Ted
+>
+> commit bd2e72c5c5521b561d20a881c843a64a5832721a
+> Author: Sarthak Kukreti <sarthakkukreti@chromium.org>
+> Date:   Mon Sep 27 03:39:10 2021 -0700
+>
+>     mke2fs: add extended option for prezeroed storage devices
+>
+>     This patch adds an extended option "assume_storage_prezeroed" to
+>     mke2fs. When enabled, this option acts as a hint to mke2fs that the
+>     underlying block device was zeroed before mke2fs was called.  This
+>     allows mke2fs to optimize out the zeroing of the inode table and the
+>     journal, which speeds up the filesystem creation time.
+>
+>     Additionally, on thinly provisioned storage devices (like Ceph,
+>     dm-thin, newly created sparse loopback files), reads on unmapped
+>     extents return zero. This property allows mke2fs (with
+>     assume_storage_prezeroed) to avoid pre-allocating metadata space for
+>     inode tables for the entire filesystem and saves space that would
+>     normally be preallocated for zero inode tables.
+>
+>     Tests
+>     -----
+>     1) Running 'mke2fs -t ext4' on 10G sparse files on an ext4
+>     filesystem drops the time taken by mke2fs from 0.09s to 0.04s
+>     and reduces the initial metadata space allocation (stat on
+>     sparse file) from 139736 blocks (545M) to 8672 blocks (34M).
+>
+>     2) On ChromeOS (running linux kernel 4.19) with dm-thin
+>     and 200GB thin logical volumes using 'mke2fs -t ext4 <dev>':
+>
+>     - Time taken by mke2fs drops from 1.07s to 0.08s.
+>     - Avoiding zeroing out the inode table and journal reduces the
+>       initial metadata space allocation from 0.48% to 0.01%.
+>     - Lazy inode table zeroing results in a further 1.45% of logical
+>       volume space getting allocated for inode tables, even if no file
+>       data is added to the filesystem. With assume_storage_prezeroed,
+>       the metadata allocation remains at 0.01%.
+>
+>     [ Fixed regression test to work on newer versions of e2fsprogs -- TYT ]
+>
+>     Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
+>     Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+>
+> diff --git a/misc/mke2fs.8.in b/misc/mke2fs.8.in
+> index b378e4d7..30f97bb5 100644
+> --- a/misc/mke2fs.8.in
+> +++ b/misc/mke2fs.8.in
+> @@ -365,6 +365,13 @@ small risk if the system crashes before the journal has been overwritten
+>  entirely one time.  If the option value is omitted, it defaults to 1 to
+>  enable lazy journal inode zeroing.
+>  .TP
+> +.B assume_storage_prezeroed\fR[\fB= \fI<0 to disable, 1 to enable>\fR]
+> +If enabled,
+> +.BR mke2fs
+> +assumes that the storage device has been prezeroed, skips zeroing the journal
+> +and inode tables, and annotates the block group flags to signal that the inode
+> +table has been zeroed.
+> +.TP
+>  .B no_copy_xattrs
+>  Normally
+>  .B mke2fs
+> diff --git a/misc/mke2fs.c b/misc/mke2fs.c
+> index c955b318..76b8b8c6 100644
+> --- a/misc/mke2fs.c
+> +++ b/misc/mke2fs.c
+> @@ -96,6 +96,7 @@ int   journal_flags;
+>  int    journal_fc_size;
+>  static e2_blkcnt_t     orphan_file_blocks;
+>  static int     lazy_itable_init;
+> +static int     assume_storage_prezeroed;
+>  static int     packed_meta_blocks;
+>  int            no_copy_xattrs;
+>  static char    *bad_blocks_filename = NULL;
+> @@ -1013,6 +1014,11 @@ static void parse_extended_opts(struct ext2_super_block *param,
+>                                 lazy_itable_init = strtoul(arg, &p, 0);
+>                         else
+>                                 lazy_itable_init = 1;
+> +               } else if (!strcmp(token, "assume_storage_prezeroed")) {
+> +                       if (arg)
+> +                               assume_storage_prezeroed = strtoul(arg, &p, 0);
+> +                       else
+> +                               assume_storage_prezeroed = 1;
+>                 } else if (!strcmp(token, "lazy_journal_init")) {
+>                         if (arg)
+>                                 journal_flags |= strtoul(arg, &p, 0) ?
+> @@ -1131,7 +1137,8 @@ static void parse_extended_opts(struct ext2_super_block *param,
+>                         "\tnodiscard\n"
+>                         "\tencoding=<encoding>\n"
+>                         "\tencoding_flags=<flags>\n"
+> -                       "\tquotatype=<quota type(s) to be enabled>\n\n"),
+> +                       "\tquotatype=<quota type(s) to be enabled>\n"
+> +                       "\tassume_storage_prezeroed=<0 to disable, 1 to enable>\n\n"),
+>                         badopt ? badopt : "");
+>                 free(buf);
+>                 exit(1);
+> @@ -3125,6 +3132,18 @@ int main (int argc, char *argv[])
+>                 io_channel_set_options(fs->io, opt_string);
+>         }
+>
+> +       if (assume_storage_prezeroed) {
+> +               if (verbose)
+> +                       printf("%s",
+> +                              _("Assuming the storage device is prezeroed "
+> +                              "- skipping inode table and journal wipe\n"));
+> +
+> +               lazy_itable_init = 1;
+> +               itable_zeroed = 1;
+> +               zero_hugefile = 0;
+> +               journal_flags |= EXT2_MKJOURNAL_LAZYINIT;
+> +       }
+> +
+>         /* Can't undo discard ... */
+>         if (!noaction && discard && dev_size && (io_ptr != undo_io_manager)) {
+>                 retval = mke2fs_discard_device(fs);
+> diff --git a/tests/m_assume_storage_prezeroed/expect b/tests/m_assume_storage_prezeroed/expect
+> new file mode 100644
+> index 00000000..b735e242
+> --- /dev/null
+> +++ b/tests/m_assume_storage_prezeroed/expect
+> @@ -0,0 +1,2 @@
+> +> 10000
+> +224
+> diff --git a/tests/m_assume_storage_prezeroed/script b/tests/m_assume_storage_prezeroed/script
+> new file mode 100644
+> index 00000000..1a8d8463
+> --- /dev/null
+> +++ b/tests/m_assume_storage_prezeroed/script
+> @@ -0,0 +1,63 @@
+> +test_description="test prezeroed storage metadata allocation"
+> +FILE_SIZE=16M
+> +
+> +LOG=$test_name.log
+> +OUT=$test_name.out
+> +EXP=$test_dir/expect
+> +
+> +if test "$(id -u)" -ne 0 ; then
+> +    echo "$test_name: $test_description: skipped (not root)"
+> +elif ! command -v losetup >/dev/null ; then
+> +    echo "$test_name: $test_description: skipped (no losetup)"
+> +else
+> +    dd if=/dev/zero of=$TMPFILE.1 bs=1 count=0 seek=$FILE_SIZE >> $LOG 2>&1
+> +    dd if=/dev/zero of=$TMPFILE.2 bs=1 count=0 seek=$FILE_SIZE >> $LOG 2>&1
+> +
+> +    LOOP1=$(losetup --show --sector-size 4096 -f $TMPFILE.1)
+> +    if [ ! -b "$LOOP1" ]; then
+> +        echo "$test_name: $DESCRIPTION: skipped (no loop devices)"
+> +        rm -f $TMPFILE.1 $TMPFILE.2
+> +        exit 0
+> +    fi
+> +    LOOP2=$(losetup --show --sector-size 4096 -f $TMPFILE.2)
+> +    if [ ! -b "$LOOP2" ]; then
+> +        echo "$test_name: $DESCRIPTION: skipped (no loop devices)"
+> +        rm -f $TMPFILE.1 $TMPFILE.2
+> +       losetup -d $LOOP1
+> +        exit 0
+> +    fi
+> +
+> +    echo $MKE2FS -o Linux -t ext4 $LOOP1 >> $LOG 2>&1
+> +    $MKE2FS -o Linux -t ext4 $LOOP1 >> $LOG 2>&1
+> +    sync
+> +    stat $TMPFILE.1 >> $LOG 2>&1
+> +    SZ=$(stat -c "%b" $TMPFILE.1)
+> +    if test $SZ -gt 10000 ; then
+> +       echo "> 10000" > $OUT
+> +    else
+> +       echo "$SZ" > $OUT
+> +    fi
+> +
+> +    echo $MKE2FS -o Linux -t ext4 -E assume_storage_prezeroed=1 $LOOP2 >> $LOG 2>&1
+> +    $MKE2FS -o Linux -t ext4 -E assume_storage_prezeroed=1 $LOOP2 >> $LOG 2>&1
+> +    sync
+> +    stat $TMPFILE.2 >> $LOG 2>&1
+> +    stat -c "%b" $TMPFILE.2 >> $OUT
+> +
+> +    losetup -d $LOOP1
+> +    losetup -d $LOOP2
+> +    rm -f $TMPFILE.1 $TMPFILE.2
+> +
+> +    cmp -s $OUT $EXP
+> +    status=$?
+> +
+> +    if [ "$status" = 0 ] ; then
+> +       echo "$test_name: $test_description: ok"
+> +       touch $test_name.ok
+> +    else
+> +       echo "$test_name: $test_description: failed"
+> +       cat $LOG > $test_name.failed
+> +       diff $EXP $OUT >> $test_name.failed
+> +    fi
+> +fi
+> +unset LOG OUT EXP FILE_SIZE LOOP1 LOOP2
+>
