@@ -2,35 +2,38 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FD9F4D7278
-	for <lists+linux-ext4@lfdr.de>; Sun, 13 Mar 2022 05:46:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14CD44D727A
+	for <lists+linux-ext4@lfdr.de>; Sun, 13 Mar 2022 05:46:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231672AbiCMEq6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 12 Mar 2022 23:46:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49378 "EHLO
+        id S233573AbiCMErA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 12 Mar 2022 23:47:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbiCMEq5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 12 Mar 2022 23:46:57 -0500
+        with ESMTP id S233553AbiCMEq7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 12 Mar 2022 23:46:59 -0500
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02ED7606F0
-        for <linux-ext4@vger.kernel.org>; Sat, 12 Mar 2022 20:45:50 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1814B60AAA;
+        Sat, 12 Mar 2022 20:45:53 -0800 (PST)
 Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 22D4jkHg009260
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 22D4jkTd009268
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Sat, 12 Mar 2022 23:45:46 -0500
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 044C515C3E99; Sat, 12 Mar 2022 23:45:46 -0500 (EST)
+        id 0658415C3E9A; Sat, 12 Mar 2022 23:45:46 -0500 (EST)
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Jan Kara <jack@suse.cz>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] ext4: Warn when dirtying page without buffers in data=journal mode
-Date:   Sat, 12 Mar 2022 23:45:39 -0500
-Message-Id: <164714672856.1260831.8397472020365050278.b4-ty@mit.edu>
+To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-ext4@vger.kernel.org
+Cc:     "Theodore Ts'o" <tytso@mit.edu>,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: Re: [PATCH 1/2] ext4: Make mb_optimize_scan option work with set/unset mount cmd
+Date:   Sat, 12 Mar 2022 23:45:40 -0500
+Message-Id: <164714672856.1260831.15800873658441936379.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20220310101832.5645-1-jack@suse.cz>
-References: <20220310101832.5645-1-jack@suse.cz>
+In-Reply-To: <c98970fe99f26718586d02e942f293300fb48ef3.1646732698.git.ojaswin@linux.ibm.com>
+References: <c98970fe99f26718586d02e942f293300fb48ef3.1646732698.git.ojaswin@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -43,21 +46,26 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 10 Mar 2022 11:18:32 +0100, Jan Kara wrote:
-> Recently I've got a report of BUG_ON trigerring during transaction
-> commit in ext4_journalled_writepage_callback() because we've spotted a
-> dirty page without buffers. Add WARN_ON_ONCE to
-> ext4_journalled_set_page_dirty() to catch the problematic condition
-> earlier where we have better chance of understanding which code path is
-> creating dirty data without preparing the page properly. Also update the
-> comment with current information when we are at it.
+On Tue, 8 Mar 2022 15:22:00 +0530, Ojaswin Mujoo wrote:
+> After moving to the new mount API, mb_optimize_scan mount option
+> handling was not working as expected due to the parsed value always
+> being overwritten by default. Refactor and fix this to the expected
+> behavior described below:
+> 
+> *  mb_optimize_scan=1 - On
+> *  mb_optimize_scan=0 - Off
+> *  mb_optimize_scan not passed - On if no. of BGs > threshold else off
+> *  Remounts retain previous value unless we explicitly pass the option
+>    with a new value
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] ext4: Warn when dirtying page without buffers in data=journal mode
-      commit: 2bb8dd401a4f96973d6a9de4218d7f01fbd497ee
+[1/2] ext4: Make mb_optimize_scan option work with set/unset mount cmd
+      commit: 27b38686a3bb601db48901dbc4e2fc5d77ffa2c1
+[2/2] ext4: Make mb_optimize_scan performance mount option work with extents
+      commit: 077d0c2c78df6f7260cdd015a991327efa44d8ad
 
 Best regards,
 -- 
