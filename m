@@ -2,125 +2,142 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEDCF4D7E1A
-	for <lists+linux-ext4@lfdr.de>; Mon, 14 Mar 2022 10:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48D1C4D800E
+	for <lists+linux-ext4@lfdr.de>; Mon, 14 Mar 2022 11:41:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233954AbiCNJHB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 14 Mar 2022 05:07:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
+        id S237761AbiCNKm2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 14 Mar 2022 06:42:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236904AbiCNJHA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 14 Mar 2022 05:07:00 -0400
-X-Greylist: delayed 468 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 14 Mar 2022 02:05:51 PDT
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C2B3F333
-        for <linux-ext4@vger.kernel.org>; Mon, 14 Mar 2022 02:05:51 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 910253201DE2;
-        Mon, 14 Mar 2022 04:57:59 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Mon, 14 Mar 2022 04:58:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm3; bh=SkSeyKPTWI05v6N1wjcspJUWw5vwrJoOrI3Bts
-        E89Cw=; b=IJbCJoN7FaftU3vo+8r2vXvDnikuONWU8Xslz0ZtQYtcCg988WimUa
-        aN5tM3CKA+9XqhWIoCs/beIicL3fXavvVnBQvJJUfhLqVXVgwU/U30vPMG5DD8fh
-        eP+gnslgWJFkVWEsaSyreJSy+x1n8KuSBhTuw0LeY/62kwI9s/V37oQr+R6OoE+y
-        oeJCp6VskLXnqIu4/LiJkJuJY9pI9/G5k5k4YrAddlIBRAZfBMONg4mQmasse9bJ
-        RRQsVTuFUFY4NVY7HD25VZISz+FHeqmk7goQz8ui4F9oKBvIeyUpn+9Z8Pesj8V/
-        DejQZzhqH2LsOsVXU31mgjtSg3rEUT4g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=SkSeyKPTWI05v6N1w
-        jcspJUWw5vwrJoOrI3BtsE89Cw=; b=iczvQOFdimZq9ENNrM5W8crkjKOz6AnTr
-        L++0ceEPiKye1UM3xsaduOWksYz+e8L/Zr8P8Z0LXzxkconIlkZjagg+DmDcWjTZ
-        FU9ydgrtxRiInPP2tA7m+PQ2nI+7vCQTZ0bmCjNvt+DEs90chM/Q8cWx0INPbqyU
-        raIWsr8eWG3449pqIQScitt13jVR89at5MwwIOzmWWXsMkYsth7PdeNEcLXMdcNQ
-        rUzg2yAU+14Ss+6MxiFi/rVzC/zJ7mjAMjutKLX/ji4nXaRVTSCur1P07lqRsMcN
-        NFzOK44zbIk16VZC5SBUXC9VnDNeMqJpdI1+FLdgFaiTgXPU10rmA==
-X-ME-Sender: <xms:lgMvYs1LJZoj-Vd55XGG7esLWSje5QdX1pJZmhsgN_jPsYbTXkvaxA>
-    <xme:lgMvYnGQ7RKhsinSu2v_QKy05VdIjcBkfzkQQYd5NO6v6Zdgw17-bDFpvoc4LDQ3v
-    ZynrmyC2g4eJg>
-X-ME-Received: <xmr:lgMvYk5eeJxgtksEIrqzuNSbqJ2FVjy9ip2hGqkHdLaszC_IOYKdXHPFLNK_l0eyzGR_wWdBpjVkYngqrE-onRAMImMQ9S4G>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddruddvjedguddvhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepfeejvd
-    euudejgfdvleelueejgfejgeeiffdufeffvdeufedtjefhtdfghfegkeejnecuffhomhgr
-    ihhnpehoshdrohhpvghnpdhkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:lgMvYl2nxZzkMOvS_VHZqPfQtPdBta2rzUAv4gEqN9W-yXslJ-gDVw>
-    <xmx:lgMvYvGUhYDRsvVFesJtopBwivjZnYBzF5TOhMf6J39FE0rOpd7rQw>
-    <xmx:lgMvYu-Mw4nl4UtmdDwjqVC8e66Hs4wM0px5_4A4LD1ei4uoHBP-ng>
-    <xmx:lwMvYk4-YVJy30W5d5s3Mq2JWYIVlikVeXVJx3v2y_Z5DmedcXP_Dw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 14 Mar 2022 04:57:58 -0400 (EDT)
-Date:   Mon, 14 Mar 2022 09:57:55 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     stable@vger.kernel.org,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>
-Subject: Re: [PATCH STABLE 5.10 5.4 4.19 4.14] ext4: add check to prevent
- attempting to resize an fs with sparse_super2
-Message-ID: <Yi8Dk80To2px9XVy@kroah.com>
-References: <20220313044449.1260655-1-tytso@mit.edu>
+        with ESMTP id S234173AbiCNKm1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 14 Mar 2022 06:42:27 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2C13EA92;
+        Mon, 14 Mar 2022 03:41:17 -0700 (PDT)
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 22E8a3U8011989;
+        Mon, 14 Mar 2022 10:41:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=CWAf8f5TJCbQpdwIz0ofQ9Dva67XSRgREsrrNLuwR9c=;
+ b=klV9G+whGYzATWcvlvJ+tJNC2VIlxd+vsF5+qJdKS96KQrLV+jZTFRX1KRRmLLC3jS0R
+ +36EX2xsnn7jfK64QiwvpAHQeQ/rxfPp4UFw3XfeHppYsSHD6W750YZI2y2rSDN13KPG
+ +NFaToHJSA5EoiT53C+FVZ/0rOQYbC1jYjwIqMUzQJI53xD+Mtp9wBGQ+Iqmah4EyubH
+ rQtRIjGnpqldEMzATxOW5Ic/StmAzn1vbE5+dUUy8Z1f7uAPUDr4V7ad73RT4behrR0y
+ k9y0/Jz89jDUfkTbuTPmMI3iiWdrpgdWE78n3S5Jz5MxixN6aa68RkrTVEqNcwkao1U+ bg== 
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3es5kmqf47-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Mar 2022 10:41:17 +0000
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 22EAbQ2Q027535;
+        Mon, 14 Mar 2022 10:41:14 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04fra.de.ibm.com with ESMTP id 3erk58kc7h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Mar 2022 10:41:14 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 22EAfBI743844076
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Mar 2022 10:41:12 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4B4C311C6E8;
+        Mon, 14 Mar 2022 10:32:12 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D897311C6C7;
+        Mon, 14 Mar 2022 10:32:10 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.29.85])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 14 Mar 2022 10:32:10 +0000 (GMT)
+From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To:     fstests@vger.kernel.org
+Cc:     riteshh@linux.ibm.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ext4/053: Add support for testing mb_optimize_scan
+Date:   Mon, 14 Mar 2022 16:02:07 +0530
+Message-Id: <5b0d252484cbe973c2df0c677cb47b30012b0db1.1647253313.git.ojaswin@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220313044449.1260655-1-tytso@mit.edu>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Jofw897RvP4hcS-2YBWXAd3cvoNMdPUR
+X-Proofpoint-GUID: Jofw897RvP4hcS-2YBWXAd3cvoNMdPUR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-03-14_04,2022-03-14_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 adultscore=0 spamscore=0 phishscore=0 lowpriorityscore=0
+ mlxscore=0 bulkscore=0 malwarescore=0 mlxlogscore=921 impostorscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2202240000 definitions=main-2203140065
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Mar 12, 2022 at 11:44:49PM -0500, Theodore Ts'o wrote:
-> From: Josh Triplett <josh@joshtriplett.org>
-> 
-> commit b1489186cc8391e0c1e342f9fbc3eedf6b944c61 upstream.
-> 
-> The in-kernel ext4 resize code doesn't support filesystem with the
-> sparse_super2 feature. It fails with errors like this and doesn't
-> finish the resize:
-> 
-> EXT4-fs (loop0): resizing filesystem from 16640 to 7864320 blocks
-> EXT4-fs warning (device loop0): verify_reserved_gdb:760: reserved GDT 2 missing grp 1 (32770)
-> EXT4-fs warning (device loop0): ext4_resize_fs:2111: error (-22) occurred during file system resize
-> EXT4-fs (loop0): resized filesystem to 2097152
-> 
-> To reproduce:
-> mkfs.ext4 -b 4096 -I 256 -J size=32 -E resize=$((256*1024*1024)) -O sparse_super2 ext4.img 65M
-> truncate -s 30G ext4.img
-> mount ext4.img /mnt
-> python3 -c 'import fcntl, os, struct ; fd = os.open("/mnt", os.O_RDONLY | os.O_DIRECTORY) ; fcntl.ioctl(fd, 0x40086610, struct.pack("Q", 30 * 1024 * 1024 * 1024 // 4096), False) ; os.close(fd)'
-> dmesg | tail
-> e2fsck ext4.img
-> 
-> The userspace resize2fs tool has a check for this case: it checks if
-> the filesystem has sparse_super2 set and if the kernel provides
-> /sys/fs/ext4/features/sparse_super2. However, the former check
-> requires manually reading and parsing the filesystem superblock.
-> 
-> Detect this case in ext4_resize_begin and error out early with a clear
-> error message.
-> 
-> Signed-off-by: Josh Triplett <josh@joshtriplett.org>
-> Link: https://lore.kernel.org/r/74b8ae78405270211943cd7393e65586c5faeed1.1623093259.git.josh@joshtriplett.org
-> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-> ---
->  fs/ext4/resize.c | 5 +++++
->  1 file changed, 5 insertions(+)
+Add support to test the mb_optimize_scan mount option.
+Since its value is not reflected in the "options" file in proc,
+use "mb_structs_summary" to verify its value.
 
-Now queued up, thanks.
+Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+---
+ tests/ext4/053 | 21 ++++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
 
-greg k-h
+diff --git a/tests/ext4/053 b/tests/ext4/053
+index e1e79592..bd92002f 100755
+--- a/tests/ext4/053
++++ b/tests/ext4/053
+@@ -100,6 +100,7 @@ test_mnt() {
+ 	(
+ 	ret=0
+ 	IFS=','
++	proc_path="/proc/fs/ext4/$(_short_dev $SCRATCH_DEV)"
+ 	for option in $OPTS; do
+ 		if echo $IGNORED | grep -w $option; then
+ 			continue
+@@ -114,11 +115,16 @@ test_mnt() {
+ 		fi
+ 		option=${option#^}
+ 
+-		if echo $CHECK_MINFO | grep -w $option; then
++		if [[ $option =~ ^mb_optimize_scan=.*$ ]]; then
++			# mb_optimize_scan needs special handling
++			expected=${option#*=}
++			ret=$(cat $proc_path/mb_structs_summary | grep "optimize_scan" \
++				| awk '{ print $2 }')
++		elif echo $CHECK_MINFO | grep -w $option; then
+ 			findmnt -n -o OPTIONS $SCRATCH_DEV | grep $option
+ 			ret=$?
+ 		else
+-			grep $option /proc/fs/ext4/$(_short_dev $SCRATCH_DEV)/options
++			grep $option $proc_path/options
+ 			ret=$?
+ 		fi
+ 
+@@ -526,13 +532,10 @@ for fstype in ext2 ext3 ext4; do
+ 
+ 	mnt prefetch_block_bitmaps removed
+ 	mnt no_prefetch_block_bitmaps
+-	# We don't currently have a way to know that the option has been
+-	# applied, so comment it out for now. This should be fixed in the
+-	# future.
+-	#mnt mb_optimize_scan=0
+-	#mnt mb_optimize_scan=1
+-	#not_mnt mb_optimize_scan=9
+-	#not_mnt mb_optimize_scan=
++	mnt mb_optimize_scan=0
++	mnt mb_optimize_scan=1
++	not_mnt mb_optimize_scan=9
++	not_mnt mb_optimize_scan=
+ 	mnt nombcache
+ 	mnt no_mbcache nombcache
+ 	mnt check=none removed
+-- 
+2.27.0
+
