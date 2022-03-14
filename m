@@ -2,62 +2,80 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F724D7B0F
-	for <lists+linux-ext4@lfdr.de>; Mon, 14 Mar 2022 07:59:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEDCF4D7E1A
+	for <lists+linux-ext4@lfdr.de>; Mon, 14 Mar 2022 10:05:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236498AbiCNHAy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 14 Mar 2022 03:00:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43860 "EHLO
+        id S233954AbiCNJHB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 14 Mar 2022 05:07:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236494AbiCNHAx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 14 Mar 2022 03:00:53 -0400
-Received: from lgeamrelo11.lge.com (lgeamrelo13.lge.com [156.147.23.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1C8F840909
-        for <linux-ext4@vger.kernel.org>; Sun, 13 Mar 2022 23:59:42 -0700 (PDT)
-Received: from unknown (HELO lgeamrelo02.lge.com) (156.147.1.126)
-        by 156.147.23.53 with ESMTP; 14 Mar 2022 15:59:40 +0900
-X-Original-SENDERIP: 156.147.1.126
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO X58A-UD3R) (10.177.244.38)
-        by 156.147.1.126 with ESMTP; 14 Mar 2022 15:59:40 +0900
-X-Original-SENDERIP: 10.177.244.38
-X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Mon, 14 Mar 2022 15:59:06 +0900
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
-        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
-        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
-        chris@chris-wilson.co.uk, duyuyang@gmail.com,
-        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
-        bfields@fieldses.org, gregkh@linuxfoundation.org,
-        kernel-team@lge.com, linux-mm@kvack.org, akpm@linux-foundation.org,
-        mhocko@kernel.org, minchan@kernel.org, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, sj@kernel.org, jglisse@redhat.com,
-        dennis@kernel.org, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, vbabka@suse.cz, ngupta@vflare.org,
-        linux-block@vger.kernel.org, paolo.valente@linaro.org,
-        josef@toxicpanda.com, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, jack@suse.cz, jack@suse.com,
-        jlayton@kernel.org, dan.j.williams@intel.com, hch@infradead.org,
-        djwong@kernel.org, dri-devel@lists.freedesktop.org,
-        airlied@linux.ie, rodrigosiqueiramelo@gmail.com,
-        melissa.srw@gmail.com, hamohammed.sa@gmail.com
-Subject: Re: [PATCH v4 00/24] DEPT(Dependency Tracker)
-Message-ID: <20220314065906.GA6255@X58A-UD3R>
-References: <1646377603-19730-1-git-send-email-byungchul.park@lge.com>
- <Yiv9Fn4kcRbXJLmu@ip-172-31-19-208.ap-northeast-1.compute.internal>
+        with ESMTP id S236904AbiCNJHA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 14 Mar 2022 05:07:00 -0400
+X-Greylist: delayed 468 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 14 Mar 2022 02:05:51 PDT
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C2B3F333
+        for <linux-ext4@vger.kernel.org>; Mon, 14 Mar 2022 02:05:51 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 910253201DE2;
+        Mon, 14 Mar 2022 04:57:59 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Mon, 14 Mar 2022 04:58:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm3; bh=SkSeyKPTWI05v6N1wjcspJUWw5vwrJoOrI3Bts
+        E89Cw=; b=IJbCJoN7FaftU3vo+8r2vXvDnikuONWU8Xslz0ZtQYtcCg988WimUa
+        aN5tM3CKA+9XqhWIoCs/beIicL3fXavvVnBQvJJUfhLqVXVgwU/U30vPMG5DD8fh
+        eP+gnslgWJFkVWEsaSyreJSy+x1n8KuSBhTuw0LeY/62kwI9s/V37oQr+R6OoE+y
+        oeJCp6VskLXnqIu4/LiJkJuJY9pI9/G5k5k4YrAddlIBRAZfBMONg4mQmasse9bJ
+        RRQsVTuFUFY4NVY7HD25VZISz+FHeqmk7goQz8ui4F9oKBvIeyUpn+9Z8Pesj8V/
+        DejQZzhqH2LsOsVXU31mgjtSg3rEUT4g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=SkSeyKPTWI05v6N1w
+        jcspJUWw5vwrJoOrI3BtsE89Cw=; b=iczvQOFdimZq9ENNrM5W8crkjKOz6AnTr
+        L++0ceEPiKye1UM3xsaduOWksYz+e8L/Zr8P8Z0LXzxkconIlkZjagg+DmDcWjTZ
+        FU9ydgrtxRiInPP2tA7m+PQ2nI+7vCQTZ0bmCjNvt+DEs90chM/Q8cWx0INPbqyU
+        raIWsr8eWG3449pqIQScitt13jVR89at5MwwIOzmWWXsMkYsth7PdeNEcLXMdcNQ
+        rUzg2yAU+14Ss+6MxiFi/rVzC/zJ7mjAMjutKLX/ji4nXaRVTSCur1P07lqRsMcN
+        NFzOK44zbIk16VZC5SBUXC9VnDNeMqJpdI1+FLdgFaiTgXPU10rmA==
+X-ME-Sender: <xms:lgMvYs1LJZoj-Vd55XGG7esLWSje5QdX1pJZmhsgN_jPsYbTXkvaxA>
+    <xme:lgMvYnGQ7RKhsinSu2v_QKy05VdIjcBkfzkQQYd5NO6v6Zdgw17-bDFpvoc4LDQ3v
+    ZynrmyC2g4eJg>
+X-ME-Received: <xmr:lgMvYk5eeJxgtksEIrqzuNSbqJ2FVjy9ip2hGqkHdLaszC_IOYKdXHPFLNK_l0eyzGR_wWdBpjVkYngqrE-onRAMImMQ9S4G>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddruddvjedguddvhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepfeejvd
+    euudejgfdvleelueejgfejgeeiffdufeffvdeufedtjefhtdfghfegkeejnecuffhomhgr
+    ihhnpehoshdrohhpvghnpdhkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:lgMvYl2nxZzkMOvS_VHZqPfQtPdBta2rzUAv4gEqN9W-yXslJ-gDVw>
+    <xmx:lgMvYvGUhYDRsvVFesJtopBwivjZnYBzF5TOhMf6J39FE0rOpd7rQw>
+    <xmx:lgMvYu-Mw4nl4UtmdDwjqVC8e66Hs4wM0px5_4A4LD1ei4uoHBP-ng>
+    <xmx:lwMvYk4-YVJy30W5d5s3Mq2JWYIVlikVeXVJx3v2y_Z5DmedcXP_Dw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 14 Mar 2022 04:57:58 -0400 (EDT)
+Date:   Mon, 14 Mar 2022 09:57:55 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     stable@vger.kernel.org,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>
+Subject: Re: [PATCH STABLE 5.10 5.4 4.19 4.14] ext4: add check to prevent
+ attempting to resize an fs with sparse_super2
+Message-ID: <Yi8Dk80To2px9XVy@kroah.com>
+References: <20220313044449.1260655-1-tytso@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Yiv9Fn4kcRbXJLmu@ip-172-31-19-208.ap-northeast-1.compute.internal>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-7.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+In-Reply-To: <20220313044449.1260655-1-tytso@mit.edu>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -66,198 +84,43 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Mar 12, 2022 at 01:53:26AM +0000, Hyeonggon Yoo wrote:
-> On Fri, Mar 04, 2022 at 04:06:19PM +0900, Byungchul Park wrote:
-> > Hi Linus and folks,
-> > 
-> > I've been developing a tool for detecting deadlock possibilities by
-> > tracking wait/event rather than lock(?) acquisition order to try to
-> > cover all synchonization machanisms. It's done on v5.17-rc1 tag.
-> > 
-> > https://github.com/lgebyungchulpark/linux-dept/commits/dept1.14_on_v5.17-rc1
-> >
+On Sat, Mar 12, 2022 at 11:44:49PM -0500, Theodore Ts'o wrote:
+> From: Josh Triplett <josh@joshtriplett.org>
 > 
-> Small feedback unrelated to thread:
-> I'm not sure "Need to expand the ring buffer" is something to call
-> WARN(). Is this stack trace useful for something?
+> commit b1489186cc8391e0c1e342f9fbc3eedf6b944c61 upstream.
+> 
+> The in-kernel ext4 resize code doesn't support filesystem with the
+> sparse_super2 feature. It fails with errors like this and doesn't
+> finish the resize:
+> 
+> EXT4-fs (loop0): resizing filesystem from 16640 to 7864320 blocks
+> EXT4-fs warning (device loop0): verify_reserved_gdb:760: reserved GDT 2 missing grp 1 (32770)
+> EXT4-fs warning (device loop0): ext4_resize_fs:2111: error (-22) occurred during file system resize
+> EXT4-fs (loop0): resized filesystem to 2097152
+> 
+> To reproduce:
+> mkfs.ext4 -b 4096 -I 256 -J size=32 -E resize=$((256*1024*1024)) -O sparse_super2 ext4.img 65M
+> truncate -s 30G ext4.img
+> mount ext4.img /mnt
+> python3 -c 'import fcntl, os, struct ; fd = os.open("/mnt", os.O_RDONLY | os.O_DIRECTORY) ; fcntl.ioctl(fd, 0x40086610, struct.pack("Q", 30 * 1024 * 1024 * 1024 // 4096), False) ; os.close(fd)'
+> dmesg | tail
+> e2fsck ext4.img
+> 
+> The userspace resize2fs tool has a check for this case: it checks if
+> the filesystem has sparse_super2 set and if the kernel provides
+> /sys/fs/ext4/features/sparse_super2. However, the former check
+> requires manually reading and parsing the filesystem superblock.
+> 
+> Detect this case in ext4_resize_begin and error out early with a clear
+> error message.
+> 
+> Signed-off-by: Josh Triplett <josh@joshtriplett.org>
+> Link: https://lore.kernel.org/r/74b8ae78405270211943cd7393e65586c5faeed1.1623093259.git.josh@joshtriplett.org
+> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+> ---
+>  fs/ext4/resize.c | 5 +++++
+>  1 file changed, 5 insertions(+)
 
-Yeah. It seems to happen too often. I won't warn it. Thanks.
+Now queued up, thanks.
 
-> ========
-> 
-> Hello Byungchul. These are two warnings of DEPT on system.
-> Both cases look similar.
-> 
-> In what case DEPT says (unknown)?
-> I'm not sure we can properly debug this.
-> 
-> ===================================================
-> DEPT: Circular dependency has been detected.
-> 5.17.0-rc1+ #3 Tainted: G        W        
-> ---------------------------------------------------
-> summary
-> ---------------------------------------------------
-> *** AA DEADLOCK ***
-> 
-> context A
->     [S] (unknown)(&vfork:0)
->     [W] wait_for_completion_killable(&vfork:0)
->     [E] complete(&vfork:0)
-
-All the reports look like having to do with kernel_clone(). I need to
-check it more. Thank you very much.
-
-You are awesome, Hyeonggon.
-
-Thank you,
-Byungchul
-
-> [S]: start of the event context
-> [W]: the wait blocked
-> [E]: the event not reachable
-> ---------------------------------------------------
-> context A's detail
-> ---------------------------------------------------
-> context A
->     [S] (unknown)(&vfork:0)
->     [W] wait_for_completion_killable(&vfork:0)
->     [E] complete(&vfork:0)
-> 
-> [S] (unknown)(&vfork:0):
-> (N/A)
-> 
-> [W] wait_for_completion_killable(&vfork:0):
-> [<ffffffc00802204c>] kernel_clone+0x25c/0x2b8
-> stacktrace:
->       dept_wait+0x74/0x88
->       wait_for_completion_killable+0x60/0xa0
->       kernel_clone+0x25c/0x2b8
->       __do_sys_clone+0x5c/0x74
->       __arm64_sys_clone+0x18/0x20
->       invoke_syscall.constprop.0+0x78/0xc4
->       do_el0_svc+0x98/0xd0
->       el0_svc+0x44/0xe4
->       el0t_64_sync_handler+0xb0/0x12c
->       el0t_64_sync+0x158/0x15c
-> 
-> [E] complete(&vfork:0):
-> [<ffffffc00801f49c>] mm_release+0x7c/0x90
-> stacktrace:
->       dept_event+0xe0/0x100
->       complete+0x48/0x98
->       mm_release+0x7c/0x90
->       exit_mm_release+0xc/0x14
->       do_exit+0x1b4/0x81c
->       do_group_exit+0x30/0x9c
->       __wake_up_parent+0x0/0x24
->       invoke_syscall.constprop.0+0x78/0xc4
->       do_el0_svc+0x98/0xd0
->       el0_svc+0x44/0xe4
->       el0t_64_sync_handler+0xb0/0x12c
->       el0t_64_sync+0x158/0x15c
-> ---------------------------------------------------
-> information that might be helpful
-> ---------------------------------------------------
-> CPU: 6 PID: 229 Comm: start-stop-daem Tainted: G        W         5.17.0-rc1+ #3
-> Hardware name: linux,dummy-virt (DT)
-> Call trace:
->  dump_backtrace.part.0+0x9c/0xc4
->  show_stack+0x14/0x28
->  dump_stack_lvl+0x9c/0xcc
->  dump_stack+0x14/0x2c
->  print_circle+0x2d4/0x438
->  cb_check_dl+0x44/0x70
->  bfs+0x60/0x168
->  add_dep+0x88/0x11c
->  do_event.constprop.0+0x19c/0x2c0
->  dept_event+0xe0/0x100
->  complete+0x48/0x98
->  mm_release+0x7c/0x90
->  exit_mm_release+0xc/0x14
->  do_exit+0x1b4/0x81c
->  do_group_exit+0x30/0x9c
->  __wake_up_parent+0x0/0x24
->  invoke_syscall.constprop.0+0x78/0xc4
->  do_el0_svc+0x98/0xd0
->  el0_svc+0x44/0xe4
->  el0t_64_sync_handler+0xb0/0x12c
->  el0t_64_sync+0x158/0x15c
-> 
-> 
-> 
-> 
-> ===================================================
-> DEPT: Circular dependency has been detected.
-> 5.17.0-rc1+ #3 Tainted: G        W        
-> ---------------------------------------------------
-> summary
-> ---------------------------------------------------
-> *** AA DEADLOCK ***
-> 
-> context A
->     [S] (unknown)(&try_completion:0)
->     [W] wait_for_completion_timeout(&try_completion:0)
->     [E] complete(&try_completion:0)
-> 
-> [S]: start of the event context
-> [W]: the wait blocked
-> [E]: the event not reachable
-> ---------------------------------------------------
-> context A's detail
-> ---------------------------------------------------
-> context A
->     [S] (unknown)(&try_completion:0)
->     [W] wait_for_completion_timeout(&try_completion:0)
->     [E] complete(&try_completion:0)
-> 
-> [S] (unknown)(&try_completion:0):
-> (N/A)
-> 
-> [W] wait_for_completion_timeout(&try_completion:0):
-> [<ffffffc008166bf4>] kunit_try_catch_run+0xb4/0x160
-> stacktrace:
->       dept_wait+0x74/0x88
->       wait_for_completion_timeout+0x64/0xa0
->       kunit_try_catch_run+0xb4/0x160
->       kunit_test_try_catch_successful_try_no_catch+0x3c/0x98
->       kunit_try_run_case+0x9c/0xa0
->       kunit_generic_run_threadfn_adapter+0x1c/0x28
->       kthread+0xd4/0xe4
->       ret_from_fork+0x10/0x20
-> 
-> [E] complete(&try_completion:0):
-> [<ffffffc00803dce4>] kthread_complete_and_exit+0x18/0x20
-> stacktrace:
->       dept_event+0xe0/0x100
->       complete+0x48/0x98
->       kthread_complete_and_exit+0x18/0x20
->       kunit_try_catch_throw+0x0/0x1c
->       kthread+0xd4/0xe4
->       ret_from_fork+0x10/0x20
-> 
-> ---------------------------------------------------
-> information that might be helpful
-> ---------------------------------------------------
-> CPU: 15 PID: 132 Comm: kunit_try_catch Tainted: G        W         5.17.0-rc1+ #3
-> Hardware name: linux,dummy-virt (DT)
-> Call trace:
->  dump_backtrace.part.0+0x9c/0xc4
->  show_stack+0x14/0x28
->  dump_stack_lvl+0x9c/0xcc
->  dump_stack+0x14/0x2c
->  print_circle+0x2d4/0x438
->  cb_check_dl+0x44/0x70
->  bfs+0x60/0x168
->  add_dep+0x88/0x11c
->  do_event.constprop.0+0x19c/0x2c0
->  dept_event+0xe0/0x100
->  complete+0x48/0x98
->  kthread_complete_and_exit+0x18/0x20
->  kunit_try_catch_throw+0x0/0x1c
->  kthread+0xd4/0xe4
->  ret_from_fork+0x10/0x20
-
-
-> -- 
-> Thank you, You are awesome!
-> Hyeonggon :-)
+greg k-h
