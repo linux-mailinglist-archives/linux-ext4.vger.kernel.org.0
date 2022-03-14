@@ -2,124 +2,235 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 961384D86E0
-	for <lists+linux-ext4@lfdr.de>; Mon, 14 Mar 2022 15:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 655DF4D8D86
+	for <lists+linux-ext4@lfdr.de>; Mon, 14 Mar 2022 20:55:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236907AbiCNOWP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 14 Mar 2022 10:22:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34946 "EHLO
+        id S234678AbiCNT4z (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 14 Mar 2022 15:56:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236288AbiCNOWO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 14 Mar 2022 10:22:14 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 635951C136;
-        Mon, 14 Mar 2022 07:21:05 -0700 (PDT)
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 22ED7CTq006007;
-        Mon, 14 Mar 2022 14:21:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=vBin87u2Lp+yi/bIq2Z97IiIZZj6IztrcwtfbmwWMDQ=;
- b=pQeNhBH+A5tbUjhK0zA3hBAvlfKKlLc2S6lRLDtzc6WUjUORnyNxlh7w5Pgr1KMQRwt1
- +l6490fBv6VWM7oH0kurGPCl5HuwRwP/FoNj8dU35uNNeG2+b1whEclJLpg/u4thoosf
- nmxxB2tMvxBrJNkLBE+EtFTvosFoIMBX6pGbWOxPAkDY0+lDF4+1ukX3tm9GADJ5xhKj
- qh4SYF0sL4DDlwbbqvsSgJVwXWaqJXz6zmWV6bsfmcWDLalNaShX4Z1UPEJgylcaNW77
- gpyxlg5wv/Tu1U9A5V0oNACFgfA3bffRFkejefVOA9GhxH7XVQWNpj8AjR4qpqdPbzla +A== 
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3et6a6tfck-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Mar 2022 14:21:04 +0000
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 22EE7Ewc005330;
-        Mon, 14 Mar 2022 14:21:02 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma05fra.de.ibm.com with ESMTP id 3erk58kr36-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Mar 2022 14:21:02 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 22EEKx0L26804566
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Mar 2022 14:20:59 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3380E520C6;
-        Mon, 14 Mar 2022 14:20:59 +0000 (GMT)
-Received: from localhost (unknown [9.43.35.46])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id E867652199;
-        Mon, 14 Mar 2022 14:20:47 +0000 (GMT)
-Date:   Mon, 14 Mar 2022 19:50:46 +0530
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4/053: Add support for testing mb_optimize_scan
-Message-ID: <20220314142030.aigttj2likaqtz2c@riteshh-domain>
-References: <5b0d252484cbe973c2df0c677cb47b30012b0db1.1647253313.git.ojaswin@linux.ibm.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5b0d252484cbe973c2df0c677cb47b30012b0db1.1647253313.git.ojaswin@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: vk8ee9gjL8yshLkJ1Lh5A5pMkGxm1-0p
-X-Proofpoint-ORIG-GUID: vk8ee9gjL8yshLkJ1Lh5A5pMkGxm1-0p
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-03-14_08,2022-03-14_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
- malwarescore=0 phishscore=0 bulkscore=0 mlxscore=0 adultscore=0
- clxscore=1011 suspectscore=0 priorityscore=1501 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2203140089
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S244221AbiCNT4y (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 14 Mar 2022 15:56:54 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FEEB1128
+        for <linux-ext4@vger.kernel.org>; Mon, 14 Mar 2022 12:55:42 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id z3so14451624plg.8
+        for <linux-ext4@vger.kernel.org>; Mon, 14 Mar 2022 12:55:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20210112.gappssmtp.com; s=20210112;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=7bLvp+ukT3iqO06tE/tyfi4fUu3KplT1rVUr7ctp2A4=;
+        b=gpO8xhUatT1AP4VxCiIscTZxr/t+ixsG+vYROifZEzp0yxdPNXTRZt+Q6eMMYf1ypD
+         bzoolDUf8UA7DRu4ibKsFFxgyvtsIIMj39oM9Ph/2u25tFc3HEvvT2y7ZKF1m1O52y9P
+         X7uT/dvDn5dHdgMESATHKJOhHGjGbC9np9NcrVqoMU/O2ibsRtBIeFYmavRizIcUSkiP
+         3Y9hNHb9+GzAnBsR4dIl2u8rv4hkERWhW58dHwl0F6xj7KEQk+uSKTxrVhZhFqgAAwII
+         uczOs2ZybGb5pHWjhyEpM0pTTXXWuRmA1lviU6o8raZWx4Y1ABQybS2QhcA+6c3DhW/7
+         0njA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=7bLvp+ukT3iqO06tE/tyfi4fUu3KplT1rVUr7ctp2A4=;
+        b=sZlfMkSgpZYNXv1yJx63lQ/49V6Ruvl8nuqmWkwzG9rl7SVtiamoDu5MFrXrJfgGqy
+         dsoLl3Q+Tx0NtBSH906tq4wZsliG96FEGUpOo0ntW05OfJnwGUY4Rg/bpizz4NgZQDCW
+         87mzbk9zWv6kg2q1yMn3fAmLGg1ZSVEdIiBQLpPWkWhRmrf/HI2XI9S/pxqJUR4kjhjN
+         JNyj7MzJEQnI0X218heavFQj/QdVnd+I2vK6q/yY0+M1ZPXqHnAYfSqA6RLl4Wd/jEZL
+         RTCO3hKLHb6Vrftw9DX4eFOGVNOFYOahSUeGZOdLoMKSzgQ3WzPmN/dBQHQu10KfFaUB
+         C8AQ==
+X-Gm-Message-State: AOAM530LtQ1NDZiQ4K3QoBT6kkLQHtI98PfcoZNHkzQ+uiqMtk4bTR/n
+        OF5SCq7fZSpAd9PorUEF3yf02zuwWLZ9fg==
+X-Google-Smtp-Source: ABdhPJxi6yYuDXKhW7zFqnuN5OGxPRUzriz7pXgNcZLeYYlgCu8mIOO1xaLUqJqeAw+3S5wPuaAM8A==
+X-Received: by 2002:a17:902:8c81:b0:153:e42:670b with SMTP id t1-20020a1709028c8100b001530e42670bmr24911579plo.148.1647287741853;
+        Mon, 14 Mar 2022 12:55:41 -0700 (PDT)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id j22-20020a17090a7e9600b001bc67215a52sm265485pjl.56.2022.03.14.12.55.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 14 Mar 2022 12:55:41 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <2B76632D-2642-4892-A721-8AC8DF48A8A4@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_DAC9F445-948C-44DD-95A4-6631B74BDC1B";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v2] ext4: truncate during setxattr leads to kernel panic
+Date:   Mon, 14 Mar 2022 13:55:34 -0600
+In-Reply-To: <20220312231830.103920-1-artem.blagodarenko@gmail.com>
+Cc:     linux-ext4 <linux-ext4@vger.kernel.org>,
+        Andrew Perepechko <andrew.perepechko@hpe.com>
+To:     Artem Blagodarenko <artem.blagodarenko@gmail.com>
+References: <20220312231830.103920-1-artem.blagodarenko@gmail.com>
+X-Mailer: Apple Mail (2.3273)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22/03/14 04:02PM, Ojaswin Mujoo wrote:
-> Add support to test the mb_optimize_scan mount option.
-> Since its value is not reflected in the "options" file in proc,
-> use "mb_structs_summary" to verify its value.
 
-Yes, I think we can do this. Thanks for identifying it.
+--Apple-Mail=_DAC9F445-948C-44DD-95A4-6631B74BDC1B
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
->
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+On Mar 12, 2022, at 4:18 PM, Artem Blagodarenko =
+<artem.blagodarenko@gmail.com> wrote:
+>=20
+> From: Andrew Perepechko <andrew.perepechko@hpe.com>
+>=20
+> When changing a large xattr value to a different large xattr value,
+> the old xattr inode is freed. Truncate during the final iput causes
+> current transaction restart. Eventually, parent inode bh is marked
+> dirty and kernel panic happens when jbd2 figures out that this bh
+> belongs to the committed transaction.
+>=20
+> A possible fix is to call this final iput in a separate thread.
+> This way, setxattr transactions will never be split into two.
+> Since the setxattr code adds xattr inodes with nlink=3D0 into the
+> orphan list, old xattr inodes will be properly cleaned up in
+> any case.
+>=20
+> Signed-off-by: Andrew Perepechko <andrew.perepechko@hpe.com>
 
-Overall the patch looks good to me. Feel free to add
-Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
 
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+
+> HPE-bug-id: LUS-10534
+>=20
+> Changes since v1:
+> - fixed bug added during the porting
+>=20
 > ---
->  tests/ext4/053 | 21 ++++++++++++---------
->  1 file changed, 12 insertions(+), 9 deletions(-)
+> fs/ext4/super.c |  1 +
+> fs/ext4/xattr.c | 34 ++++++++++++++++++++++++++++++++--
+> 2 files changed, 33 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index c5021ca0a28a..8c04c19fa4b8 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -1199,6 +1199,7 @@ static void ext4_put_super(struct super_block =
+*sb)
+> 	int aborted =3D 0;
+> 	int i, err;
+>=20
+> +	flush_scheduled_work();
+> 	ext4_unregister_li_request(sb);
+> 	ext4_quota_off_umount(sb);
+>=20
+> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+> index 042325349098..13c396e354c8 100644
+> --- a/fs/ext4/xattr.c
+> +++ b/fs/ext4/xattr.c
+> @@ -1544,6 +1544,31 @@ static int =
+ext4_xattr_inode_lookup_create(handle_t *handle, struct inode *inode,
+> 	return 0;
+> }
+>=20
+> +struct delayed_iput_work {
+> +	struct work_struct work;
+> +	struct inode *inode;
+> +};
+> +
+> +static void delayed_iput_fn(struct work_struct *work)
+> +{
+> +	struct delayed_iput_work *diwork;
+> +
+> +	diwork =3D container_of(work, struct delayed_iput_work, work);
+> +	iput(diwork->inode);
+> +	kfree(diwork);
+> +}
+> +
+> +static void delayed_iput(struct inode *inode, struct =
+delayed_iput_work *work)
+> +{
+> +	if (!work) {
+> +		iput(inode);
+> +	} else {
+> +		INIT_WORK(&work->work, delayed_iput_fn);
+> +		work->inode =3D inode;
+> +		schedule_work(&work->work);
+> +	}
+> +}
+> +
+> /*
+>  * Reserve min(block_size/8, 1024) bytes for xattr entries/names if =
+ea_inode
+>  * feature is enabled.
+> @@ -1561,6 +1586,7 @@ static int ext4_xattr_set_entry(struct =
+ext4_xattr_info *i,
+> 	int in_inode =3D i->in_inode;
+> 	struct inode *old_ea_inode =3D NULL;
+> 	struct inode *new_ea_inode =3D NULL;
+> +	struct delayed_iput_work *diwork =3D NULL;
+> 	size_t old_size, new_size;
+> 	int ret;
+>=20
+> @@ -1637,7 +1663,11 @@ static int ext4_xattr_set_entry(struct =
+ext4_xattr_info *i,
+> 	 * Finish that work before doing any modifications to the xattr =
+data.
+> 	 */
+> 	if (!s->not_found && here->e_value_inum) {
+> -		ret =3D ext4_xattr_inode_iget(inode,
+> +		diwork =3D kmalloc(sizeof(*diwork), GFP_NOFS);
+> +		if (!diwork)
+> +			ret =3D -ENOMEM;
+> +		else
+> +			ret =3D ext4_xattr_inode_iget(inode,
+> 					    =
+le32_to_cpu(here->e_value_inum),
+> 					    le32_to_cpu(here->e_hash),
+> 					    &old_ea_inode);
+> @@ -1790,7 +1820,7 @@ static int ext4_xattr_set_entry(struct =
+ext4_xattr_info *i,
+>=20
+> 	ret =3D 0;
+> out:
+> -	iput(old_ea_inode);
+> +	delayed_iput(old_ea_inode, diwork);
+> 	iput(new_ea_inode);
+> 	return ret;
+> }
+> --
+> 2.31.1
+>=20
 
-<Some stats>
 
-I ran this test of yours with and w/o your kernel fix for this mount option,
-which is now sitting in ext4 dev tree [1].
+Cheers, Andreas
 
-<with kernel fix>
-ext4/053 173s ...  147s
-Ran: ext4/053
-Passed all 1 tests
 
-<w/o kernel fix>
-ext4/053 173s ... [failed, exit status 2]- output mismatch (see /home/qemu/work/tools/xfstests-dev/results//ext4_4k/ext4/053.out.bad)
-    --- tests/ext4/053.out      2022-01-03 11:50:08.671463501 +0530
-    +++ /home/qemu/work/tools/xfstests-dev/results//ext4_4k/ext4/053.out.bad    2022-03-14 18:26:12.290610687 +0530
-    @@ -1,2 +1,4 @@
-     QA output created by 053
-     Silence is golden.
-    +mounting ext3 "mb_optimize_scan=1" checking "mb_optimize_scan=1" (not found) FAILED
-    +mounting ext4 "mb_optimize_scan=1" checking "mb_optimize_scan=1" (not found) FAILED
-    ...
-    (Run 'diff -u /home/qemu/work/tools/xfstests-dev/tests/ext4/053.out /home/qemu/work/tools/xfstests-dev/results//ext4_4k/ext4/053.out.bad'  to see the entire diff)
-Ran: ext4/053
-Failures: ext4/053
-Failed 1 of 1 tests
 
-[1]: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/commit/?h=dev&id=27b38686a3bb601db48901dbc4e2fc5d77ffa2c1
+
+
+
+--Apple-Mail=_DAC9F445-948C-44DD-95A4-6631B74BDC1B
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmIvnbgACgkQcqXauRfM
+H+B4Ag//eYfardhQDTuFewI0G5JTGSkR3aAuR11SO1N87rBHo2d1P7UQXGx8UeTc
+epvStM5ZysGeyWuHsyRcIjhbco/XewcnU+XOvZUWbMaW+jWoogs+fTh1Sf9tyiqr
+dCrdjOqmi3yj/8g5m0biL2MlR8+se+AxUl0Lr9YFTwhmU3dEwpP8Il4WlhbmaXkN
+XSdbduIq4hGdaJ07z6YpfJY7FYPWyweMEC/l6osKZUh+MnYt1WD6+9wqTuEF/ZbL
+i9+UVwu9iE0kgk291/wCRWq5k5UtRpr096mTNvrBmFM54zoD5lwUy601zy2xzdaZ
+gH2b757N43pjswXD2qKV7hvGPPuoomtRWnAUaVyuxeEnc42Uwhg7nVT1JsSW6GhQ
+dm+c2wlivCSNxsITqkdD46R87E8jgS6T/EufTiBE+esoGI9W4yyrbTqDpTL387pA
+I7eTLD8CMkv89A28Nt+ep+hIvhEC0yWz6MQHfAJlR3z7BUtZSnswAAbSEXXXgrho
+Uf/kOkAeNQ17+/dEC+0X87pjcJqAHEAzHnwHgdfND4kiqWbW4uRhqIYb7IRBcXi7
+YThaWZPkb1QU5Tv1uHTyL9Uic3i2wfNy4fOHq3d7tFB1G1KpGf7Oiz4y20eYeukB
+tw39QLAUy+OxX02eLt+/xgMGlmx6UxWP13gUvKavTCj7EkWzXXM=
+=LzfW
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_DAC9F445-948C-44DD-95A4-6631B74BDC1B--
