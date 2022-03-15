@@ -2,91 +2,48 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C457D4D9506
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Mar 2022 08:10:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 926034D95D7
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Mar 2022 09:02:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236696AbiCOHMC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 15 Mar 2022 03:12:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60366 "EHLO
+        id S1345821AbiCOIDO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 15 Mar 2022 04:03:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233703AbiCOHMC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Mar 2022 03:12:02 -0400
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36CBB4707B
-        for <linux-ext4@vger.kernel.org>; Tue, 15 Mar 2022 00:10:45 -0700 (PDT)
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20220315071039epoutp04ea5f29cfac133c2dd45c97d56db15331~cfE452BeZ0802808028epoutp04e
-        for <linux-ext4@vger.kernel.org>; Tue, 15 Mar 2022 07:10:39 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20220315071039epoutp04ea5f29cfac133c2dd45c97d56db15331~cfE452BeZ0802808028epoutp04e
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1647328239;
-        bh=0z3SFI42ZRuAdP8yrBK1mP5vrxqSVmVDz+qhjz8zcME=;
-        h=Subject:Reply-To:From:To:CC:Date:References:From;
-        b=YxrPNBr0IhAXwJOKvcRGzfGzRgQDb7OeL3twQI4dOY9H6Ws1ohpfZ5CZg8wHC2Diu
-         1liW+bciYBKHHHTmVfymoX4a8HEaZGzzy6kXs01JeDuOxwCaFu6NOxiA6EiPhIKw8s
-         al524eHWwGcrgmieQeBueC8ybTNWRNnR44ZaoFSE=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
-        20220315071038epcas2p3c5229ca99c314cf934a168a230d49397~cfE4fwAMs3274232742epcas2p3x;
-        Tue, 15 Mar 2022 07:10:38 +0000 (GMT)
-Received: from epsmges2p2.samsung.com (unknown [182.195.36.91]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4KHl166tM5z4x9QB; Tue, 15 Mar
-        2022 07:10:34 +0000 (GMT)
-X-AuditID: b6c32a46-bffff70000023ea8-ae-62303be51064
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        4E.54.16040.5EB30326; Tue, 15 Mar 2022 16:10:29 +0900 (KST)
-Mime-Version: 1.0
-Subject: Re: [PATCH v2 1/5] ext4: convert i_fc_lock to spinlock
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     "harshadshirwadkar@gmail.com" <harshadshirwadkar@gmail.com>
-CC:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "riteshh@linux.ibm.com" <riteshh@linux.ibm.com>,
-        "jack@suse.cz" <jack@suse.cz>, "tytso@mit.edu" <tytso@mit.edu>,
-        Daejun Park <daejun7.park@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20220315071028epcms2p2c9d25549f30cbccdcc208f311651977b@epcms2p2>
-Date:   Tue, 15 Mar 2022 16:10:28 +0900
-X-CMS-MailID: 20220315071028epcms2p2c9d25549f30cbccdcc208f311651977b
+        with ESMTP id S1345754AbiCOIDA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Mar 2022 04:03:00 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9555B4BBB8
+        for <linux-ext4@vger.kernel.org>; Tue, 15 Mar 2022 01:01:48 -0700 (PDT)
+Received: from dggpeml500022.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4KHm2V0G32z1GCTk;
+        Tue, 15 Mar 2022 15:56:50 +0800 (CST)
+Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Tue, 15 Mar 2022 16:01:46 +0800
+Received: from [10.174.176.102] (10.174.176.102) by
+ dggpeml100016.china.huawei.com (7.185.36.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Tue, 15 Mar 2022 16:01:46 +0800
+Message-ID: <647cc60d-18d4-ab53-6c91-52c1f6d29c3a@huawei.com>
+Date:   Tue, 15 Mar 2022 16:01:45 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+To:     Theodore Ts'o <tytso@mit.edu>
+CC:     <linux-ext4@vger.kernel.org>, linfeilong <linfeilong@huawei.com>,
+        <liuzhiqiang26@huawei.com>
+From:   zhanchengbin <zhanchengbin1@huawei.com>
+Subject: e2fsck: do not skip deeper checkers when s_last_orphan list has
+ truncated inodes
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupgk+LIzCtJLcpLzFFi42LZdljTXPeptUGSwd0pbBYvD2larHoQbrGy
-        sYXJYvb0ZiaLmfPusFm8enyL3aK15ye7A7vHzll32T0mLDrA6NF05iizR9+WVYweZxYcYff4
-        vEkugC0q2yYjNTEltUghNS85PyUzL91WyTs43jne1MzAUNfQ0sJcSSEvMTfVVsnFJ0DXLTMH
-        6BIlhbLEnFKgUEBicbGSvp1NUX5pSapCRn5xia1SakFKToF5gV5xYm5xaV66Xl5qiZWhgYGR
-        KVBhQnbG959bWQoesFR8annA0sD4i7mLkZNDQsBE4tPXnWxdjFwcQgI7GCXe7Oxn6mLk4OAV
-        EJT4u0MYpEZYwF5ixu/HTCC2kICSxPqLs9gh4noStx6uYQSx2QR0JKafuA8WFwGqX3HyLhPI
-        TGaBO4wSL+b8YINYxisxo/0pC4QtLbF9+VZGCFtD4seyXqiDRCVurn7LDmO/PzYfqkZEovXe
-        WagaQYkHP3dDxSUlXr65wQRh50v8v7IcqrdGYtuBeVC2vsS1jo1ge3kFfCV2dT8Fu4dFQFVi
-        csdBqNtcJI4sOw82k1lAXmL72znMoHBgFtCUWL9LH8SUEFCWOHKLBeaTho2/2dHZzAJ8Eh2H
-        /8LFd8x7AnWZmsS6n+uZIMbISNyaxziBUWkWIpxnIVk7C2HtAkbmVYxiqQXFuempxUYFRvCo
-        Tc7P3cQITpJabjsYp7z9oHeIkYmD8RCjBAezkgjvmRf6SUK8KYmVValF+fFFpTmpxYcYTYEe
-        nsgsJZqcD0zTeSXxhiaWBiZmZobmRqYG5krivF4pGxKFBNITS1KzU1MLUotg+pg4OKUamBps
-        r318vHq6w/8O9cDNLY+Xu6+UTzC5orjZPsCiSkjxTN/+msimxvyG+eyfTuonHJvV4zZde3Pl
-        7m6b31WdRa4aP7UXqmXM1ux14BBfNveU+IVL+qKGVlxPDx5OOCXLKnhu9f3+2S2MS76k7U6R
-        6rRL+6co2f75SV1gkqvJdr8Ox5Xtln+P+Tc8P7X24c1Gsd47uVszC7d/2+7zUrazob7q3nLR
-        7avma4o5MyZ9jFNwu65zwNDuQNvcbecENSfMkVwxcWkcW94u5YvvPpVELv3w/OC0s+sqEqbp
-        tMb1TFrSp/uodkfjv3PyRndniwRuvZkdWKOZOK3DZboKq1/K/eDVao57Anc/um+1veasgRJL
-        cUaioRZzUXEiAPbMZ6EbBAAA
-DLP-Filter: Pass
+X-Originating-IP: [10.174.176.102]
+X-ClientProxiedBy: dggpeml100023.china.huawei.com (7.185.36.151) To
+ dggpeml100016.china.huawei.com (7.185.36.216)
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20220315071028epcms2p2c9d25549f30cbccdcc208f311651977b
-References: <CGME20220315071028epcms2p2c9d25549f30cbccdcc208f311651977b@epcms2p2>
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,25 +51,89 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Harshad Shirwadkar,
+If the system crashes when a file is being truncated, we will get a 
+problematic inode,
+and it will be added into fs->super->s_last_orphan.
+When we run `e2fsck -a img`, the s_last_orphan list will be traversed 
+and deleted.
+During this period, orphan inodes in the s_last_orphan list with 
+i_links_count==0 can
+be deleted, and orphan inodes with  i_links_count !=0 (ex. the truncated 
+inode)
+cannot be deleted. However, when there are some orphan inodes with 
+i_links_count !=0,
+the EXT2_VALID_FS is still assigned to fs->super->s_state, the deeper 
+checkers are skipped
+with some inconsistency problems.
+Here, we will clean EXT2_VALID_FS flag when there is orphan inodes with 
+i_links_count !=0
+for deeper checkers.
 
-...
->@@ -427,11 +427,11 @@ static int __track_dentry_update(struct inode *inode, void *arg, bool update)
-> 	struct dentry *dentry = dentry_update->dentry;
-> 	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
-> 
->-	mutex_unlock(&ei->i_fc_lock);
->+	spin_unlock(&ei->i_fc_lock);
-> 	node = kmem_cache_alloc(ext4_fc_dentry_cachep, GFP_NOFS);
-Is it sleep-safe with spinlock?
+Problems with truncated files.
+     [root@localhost ~]# e2fsck -a img
+     img: recovering journal
+     img: Truncating orphaned inode 188 (uid=0, gid=0, mode=0100666, size=0)
+     img: Truncating orphaned inode 174 (uid=0, gid=0, mode=0100666, size=0)
+     img: clean, 484/128016 files, 118274/512000 blocks
+     [root@localhost ~]# e2fsck -fn img
+     e2fsck 1.46.5 (30-Dec-2021)
+     Pass 1: Checking inodes, blocks, and sizes
+     Inode 174, i_blocks is 2, should be 0.  Fix? no
 
-> 	if (!node) {
-> 		ext4_fc_mark_ineligible(inode->i_sb, EXT4_FC_REASON_NOMEM, NULL);
->-		mutex_lock(&ei->i_fc_lock);
->+		spin_lock(&ei->i_fc_lock);
-> 		return -ENOMEM;
-> 	}
-> 
+     Inode 188, i_blocks is 2, should be 0.  Fix? no
 
-Thanks,
-Daejun
+     Pass 2: Checking directory structure
+     Pass 3: Checking directory connectivity
+     Pass 4: Checking reference counts
+     Pass 5: Checking group summary information
+
+     img: ********** WARNING: Filesystem still has errors **********
+
+     img: 484/128016 files (24.6% non-contiguous), 118274/512000 blocks
+     [root@localhost ~]# e2fsck -a img
+     img: clean, 484/128016 files, 118274/512000 blocks
+
+But, if run `e2fsck -f img`, EXT2_VALID_FS flag will be clean, so do 
+`e2fsck -a img` again,
+can fix this problem.
+
+     [root@localhost ~]# e2fsck -f img
+     e2fsck 1.46.5 (30-Dec-2021)
+     Pass 1: Checking inodes, blocks, and sizes
+     Inode 174, i_blocks is 2, should be 0.  Fix<y>? no
+     Inode 188, i_blocks is 2, should be 0.  Fix<y>? no
+     Pass 2: Checking directory structure
+     Pass 3: Checking directory connectivity
+     Pass 4: Checking reference counts
+     Pass 5: Checking group summary information
+
+     img: ********** WARNING: Filesystem still has errors **********
+
+     img: 484/128016 files (24.6% non-contiguous), 118274/512000 blocks
+     [root@localhost ~]# e2fsck -a img
+     img was not cleanly unmounted, check forced.
+     img: Inode 174, i_blocks is 2, should be 0.  FIXED.
+     img: Inode 188, i_blocks is 2, should be 0.  FIXED.
+     img: 484/128016 files (24.6% non-contiguous), 118274/512000 blocks
+
+Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+---
+  e2fsck/super.c | 1 +
+  1 file changed, 1 insertion(+)
+
+diff --git a/e2fsck/super.c b/e2fsck/super.c
+index 9495e029..f4a414b7 100644
+--- a/e2fsck/super.c
++++ b/e2fsck/super.c
+@@ -351,6 +351,7 @@ static int release_orphan_inode(e2fsck_t ctx, 
+ext2_ino_t *ino, char *block_buf)
+          inode.i_dtime = ctx->now;
+      } else {
+          inode.i_dtime = 0;
++        fs->super->s_state &= ~EXT2_VALID_FS;
+      }
+      e2fsck_write_inode_full(ctx, *ino, EXT2_INODE(&inode),
+                  sizeof(inode), "delete_file");
+
+
+
