@@ -2,78 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A9624D9A8E
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Mar 2022 12:45:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43CB34D9ABF
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Mar 2022 12:57:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235263AbiCOLqU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 15 Mar 2022 07:46:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59882 "EHLO
+        id S1348093AbiCOL7F (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 15 Mar 2022 07:59:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241589AbiCOLqT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Mar 2022 07:46:19 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 027B150056;
-        Tue, 15 Mar 2022 04:45:07 -0700 (PDT)
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 22FAKaaC010365;
-        Tue, 15 Mar 2022 11:45:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : content-transfer-encoding : mime-version; s=pp1;
- bh=v3ezUP1MC6dhsuxXAGQ7c2Quz35iCiyGYZNMPQSWZ8g=;
- b=mBez7gqx+IKMuATuYCD1bWlYkHEIHwsgBxiFz6ZoJ7xvxlZDoE4DHigZaF1xc7xoLfY+
- l7najYfVlm7KCFJwPGj33bKdK+lJpaUyBM/e+y5PAb2Nwf7XWeLx8DxBgcYAwpMO7RE2
- o0DYG0ArptPLGCTFEQkCSx0B9TWLBIVR98KjYKNcfqRSIRC96CReCgPeOBUS65ewEx27
- f4bFM0Z/2/nqgAM7LpzPzBQ7w/hdYhYUodqAmpKMm3mZgC0Z3FkutOErBN3FNASVgftu
- 6IsX6fFf8coYsblNeDUZcXioG3zvpo5S/H0oXtNUwmnQOh/K+oiEzHWyjepv25wE3s8K 6A== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3etryc1kg8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Mar 2022 11:45:04 +0000
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 22FBb7uv013182;
-        Tue, 15 Mar 2022 11:45:02 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma01fra.de.ibm.com with ESMTP id 3erk58nhns-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Mar 2022 11:45:02 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 22FBj0bn47907252
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Mar 2022 11:45:00 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3B10711C04A;
-        Tue, 15 Mar 2022 11:45:00 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3B90B11C052;
-        Tue, 15 Mar 2022 11:44:58 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.50.106])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 15 Mar 2022 11:44:57 +0000 (GMT)
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
+        with ESMTP id S1348095AbiCOL7E (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Mar 2022 07:59:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284096350
+        for <linux-ext4@vger.kernel.org>; Tue, 15 Mar 2022 04:57:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C51DF614FC
+        for <linux-ext4@vger.kernel.org>; Tue, 15 Mar 2022 11:57:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2F901C340F7
+        for <linux-ext4@vger.kernel.org>; Tue, 15 Mar 2022 11:57:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647345472;
+        bh=7fjVcIIZJ/644SY5LCSFplSQdncQWkhFBxYX0YwQdUs=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=mEiH7Eq094eWlyF/kAT/Q9QXJSDQSLiK09M7xpdefvbilG6PSr0rcEwlMODt3Jtps
+         gTNGe0UEHb/RHc9Kw1WsKF/7G7zirpwDDWd2mu016/AHDLuGbOxzBdFgFDj4l8NscO
+         FlbMiKOBJvN4BC3Gd5MxFkWEW32DYh9Bj5qzMMcNtShVYnhPmFKHG2eaBP/8WBV6iG
+         SVuacejO2YyCcJa5YLWEWsgcUN30GQovzVE1vfR4t7TNGs5xCDMEzkSIV4JdZ37m1x
+         nzSYwVjrYhAicSkrhDqQoChpYrUq/APsPfvveremfc/CndfJMz+f88TakBc7WFwSn/
+         OPlwEtQPlV0Gg==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+        id 170C1C05FCE; Tue, 15 Mar 2022 11:57:52 +0000 (UTC)
+From:   bugzilla-daemon@kernel.org
 To:     linux-ext4@vger.kernel.org
-Cc:     "Theodore Ts'o" <tytso@mit.edu>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ext4: Get rid of unused DEFAULT_MB_OPTIMIZE_SCAN
-Date:   Tue, 15 Mar 2022 17:14:54 +0530
-Message-Id: <20220315114454.104182-1-ojaswin@linux.ibm.com>
-X-Mailer: git-send-email 2.27.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: WzxipNqd-Ap8UMfSC9JLxN5927h6tC5K
-X-Proofpoint-ORIG-GUID: WzxipNqd-Ap8UMfSC9JLxN5927h6tC5K
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+Subject: [Bug 215676] fanotify Ignoring/Excluding a Directory not working
+ with FAN_MARK_MOUNT
+Date:   Tue, 15 Mar 2022 11:57:51 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: VFS
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: high
+X-Bugzilla-Who: jack@suse.cz
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_vfs@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: cc component assigned_to
+Message-ID: <bug-215676-13602-IGIg66NAIs@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-215676-13602@https.bugzilla.kernel.org/>
+References: <bug-215676-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-03-15_01,2022-03-15_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 malwarescore=0 adultscore=0 mlxlogscore=999
- lowpriorityscore=0 suspectscore=0 mlxscore=0 spamscore=0 bulkscore=0
- clxscore=1015 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2203150075
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -82,31 +71,26 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-After recent changes to the mb_optimize_scan mount option
-the DEFAULT_MB_OPTIMIZE_SCAN is no longer needed so get
-rid of it.
+https://bugzilla.kernel.org/show_bug.cgi?id=3D215676
 
-Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
----
+Jan Kara (jack@suse.cz) changed:
 
-This patch should be applied after the following:
-https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/commit/?h=dev&id=27b38686a3bb601db48901dbc4e2fc5d77ffa2c1
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+                 CC|                            |jack@suse.cz
+          Component|ext4                        |VFS
+           Assignee|fs_ext4@kernel-bugs.osdl.or |fs_vfs@kernel-bugs.osdl.org
+                   |g                           |
 
- fs/ext4/super.c | 1 -
- 1 file changed, 1 deletion(-)
+--- Comment #1 from Jan Kara (jack@suse.cz) ---
+This is the expected behavior, although there are workarounds and possible
+future improvements. More details in the email thread here:
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index cd0547fabd79..550db5226b4f 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1862,7 +1862,6 @@ static const struct fs_parameter_spec ext4_param_specs[] = {
- };
- 
- #define DEFAULT_JOURNAL_IOPRIO (IOPRIO_PRIO_VALUE(IOPRIO_CLASS_BE, 3))
--#define DEFAULT_MB_OPTIMIZE_SCAN	(-1)
- 
- static const char deprecated_msg[] =
- 	"Mount option \"%s\" will be removed by %s\n"
--- 
-2.27.0
+https://lore.kernel.org/all/CAOQ4uxiDubhONM3w502anndtbqy73q_Kt5bOQ07zbATb8n=
+dvVA@mail.gmail.com
 
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
