@@ -2,139 +2,111 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9C1E4D97BD
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Mar 2022 10:35:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9624D9A8E
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Mar 2022 12:45:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346652AbiCOJgf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 15 Mar 2022 05:36:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57218 "EHLO
+        id S235263AbiCOLqU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 15 Mar 2022 07:46:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346654AbiCOJgd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Mar 2022 05:36:33 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B00B74BFF7
-        for <linux-ext4@vger.kernel.org>; Tue, 15 Mar 2022 02:35:21 -0700 (PDT)
-Received: from dggpeml500022.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KHpBS5wtSzfZ2g;
-        Tue, 15 Mar 2022 17:33:52 +0800 (CST)
-Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
- dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Tue, 15 Mar 2022 17:35:19 +0800
-Received: from [10.174.176.102] (10.174.176.102) by
- dggpeml100016.china.huawei.com (7.185.36.216) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Tue, 15 Mar 2022 17:35:19 +0800
-Message-ID: <f714d963-9855-546d-74b8-8c9a883ae65e@huawei.com>
-Date:   Tue, 15 Mar 2022 17:35:19 +0800
+        with ESMTP id S241589AbiCOLqT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Mar 2022 07:46:19 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 027B150056;
+        Tue, 15 Mar 2022 04:45:07 -0700 (PDT)
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 22FAKaaC010365;
+        Tue, 15 Mar 2022 11:45:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=v3ezUP1MC6dhsuxXAGQ7c2Quz35iCiyGYZNMPQSWZ8g=;
+ b=mBez7gqx+IKMuATuYCD1bWlYkHEIHwsgBxiFz6ZoJ7xvxlZDoE4DHigZaF1xc7xoLfY+
+ l7najYfVlm7KCFJwPGj33bKdK+lJpaUyBM/e+y5PAb2Nwf7XWeLx8DxBgcYAwpMO7RE2
+ o0DYG0ArptPLGCTFEQkCSx0B9TWLBIVR98KjYKNcfqRSIRC96CReCgPeOBUS65ewEx27
+ f4bFM0Z/2/nqgAM7LpzPzBQ7w/hdYhYUodqAmpKMm3mZgC0Z3FkutOErBN3FNASVgftu
+ 6IsX6fFf8coYsblNeDUZcXioG3zvpo5S/H0oXtNUwmnQOh/K+oiEzHWyjepv25wE3s8K 6A== 
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3etryc1kg8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Mar 2022 11:45:04 +0000
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 22FBb7uv013182;
+        Tue, 15 Mar 2022 11:45:02 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma01fra.de.ibm.com with ESMTP id 3erk58nhns-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Mar 2022 11:45:02 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 22FBj0bn47907252
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Mar 2022 11:45:00 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3B10711C04A;
+        Tue, 15 Mar 2022 11:45:00 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3B90B11C052;
+        Tue, 15 Mar 2022 11:44:58 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.50.106])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 15 Mar 2022 11:44:57 +0000 (GMT)
+From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     "Theodore Ts'o" <tytso@mit.edu>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ext4: Get rid of unused DEFAULT_MB_OPTIMIZE_SCAN
+Date:   Tue, 15 Mar 2022 17:14:54 +0530
+Message-Id: <20220315114454.104182-1-ojaswin@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: WzxipNqd-Ap8UMfSC9JLxN5927h6tC5K
+X-Proofpoint-ORIG-GUID: WzxipNqd-Ap8UMfSC9JLxN5927h6tC5K
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-To:     Theodore Ts'o <tytso@mit.edu>
-CC:     <linux-ext4@vger.kernel.org>, linfeilong <linfeilong@huawei.com>,
-        <liuzhiqiang26@huawei.com>
-From:   zhanchengbin <zhanchengbin1@huawei.com>
-Subject: [PATCH] e2fsck: do not skip deeper checkers when s_last_orphan list
- has truncated inodes
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.102]
-X-ClientProxiedBy: dggpeml100025.china.huawei.com (7.185.36.37) To
- dggpeml100016.china.huawei.com (7.185.36.216)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-03-15_01,2022-03-15_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 malwarescore=0 adultscore=0 mlxlogscore=999
+ lowpriorityscore=0 suspectscore=0 mlxscore=0 spamscore=0 bulkscore=0
+ clxscore=1015 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2202240000 definitions=main-2203150075
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-If the system crashes when a file is being truncated, we will get a 
-problematic inode,
-and it will be added into fs->super->s_last_orphan.
-When we run `e2fsck -a img`, the s_last_orphan list will be traversed 
-and deleted.
-During this period, orphan inodes in the s_last_orphan list with 
-i_links_count==0 can
-be deleted, and orphan inodes with  i_links_count !=0 (ex. the truncated 
-inode)
-cannot be deleted. However, when there are some orphan inodes with 
-i_links_count !=0,
-the EXT2_VALID_FS is still assigned to fs->super->s_state, the deeper 
-checkers are skipped
-with some inconsistency problems.
-Here, we will clean EXT2_VALID_FS flag when there is orphan inodes with 
-i_links_count !=0
-for deeper checkers.
+After recent changes to the mb_optimize_scan mount option
+the DEFAULT_MB_OPTIMIZE_SCAN is no longer needed so get
+rid of it.
 
-Problems with truncated files.
-     [root@localhost ~]# e2fsck -a img
-     img: recovering journal
-     img: Truncating orphaned inode 188 (uid=0, gid=0, mode=0100666, size=0)
-     img: Truncating orphaned inode 174 (uid=0, gid=0, mode=0100666, size=0)
-     img: clean, 484/128016 files, 118274/512000 blocks
-     [root@localhost ~]# e2fsck -fn img
-     e2fsck 1.46.5 (30-Dec-2021)
-     Pass 1: Checking inodes, blocks, and sizes
-     Inode 174, i_blocks is 2, should be 0.  Fix? no
-
-     Inode 188, i_blocks is 2, should be 0.  Fix? no
-
-     Pass 2: Checking directory structure
-     Pass 3: Checking directory connectivity
-     Pass 4: Checking reference counts
-     Pass 5: Checking group summary information
-
-     img: ********** WARNING: Filesystem still has errors **********
-
-     img: 484/128016 files (24.6% non-contiguous), 118274/512000 blocks
-     [root@localhost ~]# e2fsck -a img
-     img: clean, 484/128016 files, 118274/512000 blocks
-
-But, if run `e2fsck -f img`, EXT2_VALID_FS flag will be clean, so do 
-`e2fsck -a img` again,
-can fix this problem.
-
-     [root@localhost ~]# e2fsck -f img
-     e2fsck 1.46.5 (30-Dec-2021)
-     Pass 1: Checking inodes, blocks, and sizes
-     Inode 174, i_blocks is 2, should be 0.  Fix<y>? no
-     Inode 188, i_blocks is 2, should be 0.  Fix<y>? no
-     Pass 2: Checking directory structure
-     Pass 3: Checking directory connectivity
-     Pass 4: Checking reference counts
-     Pass 5: Checking group summary information
-
-     img: ********** WARNING: Filesystem still has errors **********
-
-     img: 484/128016 files (24.6% non-contiguous), 118274/512000 blocks
-     [root@localhost ~]# e2fsck -a img
-     img was not cleanly unmounted, check forced.
-     img: Inode 174, i_blocks is 2, should be 0.  FIXED.
-     img: Inode 188, i_blocks is 2, should be 0.  FIXED.
-     img: 484/128016 files (24.6% non-contiguous), 118274/512000 blocks
-
-Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 ---
-  e2fsck/super.c | 1 +
-  1 file changed, 1 insertion(+)
 
-diff --git a/e2fsck/super.c b/e2fsck/super.c
-index 9495e029..f4a414b7 100644
---- a/e2fsck/super.c
-+++ b/e2fsck/super.c
-@@ -351,6 +351,7 @@ static int release_orphan_inode(e2fsck_t ctx, 
-ext2_ino_t *ino, char *block_buf)
-          inode.i_dtime = ctx->now;
-      } else {
-          inode.i_dtime = 0;
-+        fs->super->s_state &= ~EXT2_VALID_FS;
-      }
-      e2fsck_write_inode_full(ctx, *ino, EXT2_INODE(&inode),
-                  sizeof(inode), "delete_file");
+This patch should be applied after the following:
+https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/commit/?h=dev&id=27b38686a3bb601db48901dbc4e2fc5d77ffa2c1
 
+ fs/ext4/super.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index cd0547fabd79..550db5226b4f 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1862,7 +1862,6 @@ static const struct fs_parameter_spec ext4_param_specs[] = {
+ };
+ 
+ #define DEFAULT_JOURNAL_IOPRIO (IOPRIO_PRIO_VALUE(IOPRIO_CLASS_BE, 3))
+-#define DEFAULT_MB_OPTIMIZE_SCAN	(-1)
+ 
+ static const char deprecated_msg[] =
+ 	"Mount option \"%s\" will be removed by %s\n"
+-- 
+2.27.0
 
