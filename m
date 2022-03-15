@@ -2,81 +2,52 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B124D9D8D
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Mar 2022 15:29:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF3A84D9E68
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Mar 2022 16:14:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349213AbiCOOad (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 15 Mar 2022 10:30:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36416 "EHLO
+        id S1349313AbiCOPPg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 15 Mar 2022 11:15:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349184AbiCOOaa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Mar 2022 10:30:30 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 241B55520D;
-        Tue, 15 Mar 2022 07:29:18 -0700 (PDT)
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 22FCrZVO008429;
-        Tue, 15 Mar 2022 14:29:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=UEfh8l2z5Ugymmbrmr+ooUwyFTcVal3at3eCjb1Clmo=;
- b=AF3D1dxluVITFuqocbYz7ds7ImarXArh/6sv0Frf7x1iZj1ZS3etK/B2ZRL7ACJUmK4N
- W946azQrzyV7hlO1+m648RL0Cd56ZRcCSByS4zAxCcQVriuSAF8e/hBMyiqyvDlP3obc
- QyHA9GaK5ZL5NzqCDz0p2KbMMBQeq2TSCF/fzVR7+S+ep11gWIXQ3h4vXpE5pZuEMkEi
- K3ZOrhyBG3oNE1k1p/PfyxFISUauHrZnM/mXQUw9HGSE+gTo7KH9j68JuX25zWDpL1Y1
- oznt7kQuVmmsVJ7LJVWcvI6hdRu9lMPIMhy/0Le2JB8FIjxEY3ve5kKxitTav2XM4qQL WA== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3etru2nfj5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Mar 2022 14:29:17 +0000
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 22FETFTY026887;
-        Tue, 15 Mar 2022 14:29:15 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma01fra.de.ibm.com with ESMTP id 3erk58ntnw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Mar 2022 14:29:15 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 22FETDLK54526416
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Mar 2022 14:29:13 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0EE7E4C044;
-        Tue, 15 Mar 2022 14:29:13 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6C49E4C046;
-        Tue, 15 Mar 2022 14:29:12 +0000 (GMT)
-Received: from localhost (unknown [9.43.32.151])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 15 Mar 2022 14:29:12 +0000 (GMT)
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     fstests <fstests@vger.kernel.org>
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ritesh Harjani <riteshh@linux.ibm.com>
-Subject: [PATCHv2 4/4] generic/677: Add a test to check unwritten extents tracking
-Date:   Tue, 15 Mar 2022 19:58:59 +0530
-Message-Id: <37d65f1026f2fc1f2d13ab54980de93f4fa34c46.1647342932.git.riteshh@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1647342932.git.riteshh@linux.ibm.com>
-References: <cover.1647342932.git.riteshh@linux.ibm.com>
+        with ESMTP id S239158AbiCOPPf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Mar 2022 11:15:35 -0400
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79DE227CDF
+        for <linux-ext4@vger.kernel.org>; Tue, 15 Mar 2022 08:14:21 -0700 (PDT)
+Received: by mail-io1-f72.google.com with SMTP id z10-20020a056602080a00b00645b9fdc630so14744308iow.5
+        for <linux-ext4@vger.kernel.org>; Tue, 15 Mar 2022 08:14:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=fzzxtMFFTEHBKO10X/j+nayURnj7o4HNsDU04+QEw4M=;
+        b=70oyVhPKu+tj8jB19kT6Ys9ZNNiBpesOFbfR01JIaVtwN1L6KY5OqfS/owYx+gr59N
+         W6zUC8W1axPkbL3hsaymXrpdqjB7HukKg8K/fqyuDoAvcUMDvYIBCIsS/ysTG6LcVh+1
+         auzvXrI+CtRqf3pOuF9j2cKglmhxKeiMD4xPT0+rK+O+EUFZhSjPGe3gDRJ0JFFzl2Wj
+         BF693VvIsGk2QPiGJ97RsgO3hxVmqlaiQ13lKsttoKUd/dz63kafs+mPZMi/jxh9GVoZ
+         /TBC6VKivxqPauqhFXjIeONuAvtxxY1cUb1YjAIGOXGWQkTzoJ2xZU059H7iUvYg3+fk
+         sUZQ==
+X-Gm-Message-State: AOAM532/dRfw95WfhjReEkjEETTsFE52KZVpREzRck32L87JlkRxVTIC
+        xHZJ4Dnzj0RPNC1BGz4dNpvPM7e/MZ+vLYPGpQN8CQdStkZ4
+X-Google-Smtp-Source: ABdhPJxox0C2PaY29+M9+IrDL4j7x3FcuzHBnxkxYfgMfeGLxSo5WaaBnQnVVwRXAhLxBL3tg34w9fYkcf2NBZxSjfue4Fq28l8s
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 17IHvhtUMgfqKoVY7OCCr5bs2PAwpVDr
-X-Proofpoint-GUID: 17IHvhtUMgfqKoVY7OCCr5bs2PAwpVDr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-03-15_03,2022-03-15_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
- adultscore=0 lowpriorityscore=0 priorityscore=1501 mlxlogscore=999
- malwarescore=0 bulkscore=0 suspectscore=0 phishscore=0 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2203150092
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Received: by 2002:a05:6638:344a:b0:319:fca7:7361 with SMTP id
+ q10-20020a056638344a00b00319fca77361mr9592119jav.225.1647357259337; Tue, 15
+ Mar 2022 08:14:19 -0700 (PDT)
+Date:   Tue, 15 Mar 2022 08:14:19 -0700
+In-Reply-To: <000000000000183d9e05d7f0c0ee@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000042d70e05da43401f@google.com>
+Subject: Re: [syzbot] kernel BUG in ext4_ind_remove_space
+From:   syzbot <syzbot+fcc629d1a1ae8d3fe8a5@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,105 +55,69 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-With these sequence of operation (in certain cases like with ext4 fast_commit)
-could miss to track unwritten extents during replay phase
-(after sudden FS shutdown).
+syzbot has found a reproducer for the following issue on:
 
-This fstest adds a test case to test this.
+HEAD commit:    09688c0166e7 Linux 5.17-rc8
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11a8bd61700000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d35f9bc6884af6c9
+dashboard link: https://syzkaller.appspot.com/bug?extid=fcc629d1a1ae8d3fe8a5
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1205b189700000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15dda4fe700000
 
-5e4d0eba1ccaf19f
-ext4: fix fast commit may miss tracking range for FALLOC_FL_ZERO_RANGE
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+fcc629d1a1ae8d3fe8a5@syzkaller.appspotmail.com
 
-Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
----
- tests/generic/677     | 64 +++++++++++++++++++++++++++++++++++++++++++
- tests/generic/677.out |  6 ++++
- 2 files changed, 70 insertions(+)
- create mode 100755 tests/generic/677
- create mode 100644 tests/generic/677.out
-
-diff --git a/tests/generic/677 b/tests/generic/677
-new file mode 100755
-index 00000000..e316763a
---- /dev/null
-+++ b/tests/generic/677
-@@ -0,0 +1,64 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2022 IBM Corporation.  All Rights Reserved.
-+#
-+# FS QA Test 677
-+#
-+# Test below sequence of operation which (w/o below kernel patch) in case of
-+# ext4 with fast_commit may misss to track unwritten extents.
-+# commit 5e4d0eba1ccaf19f
-+# ext4: fix fast commit may miss tracking range for FALLOC_FL_ZERO_RANGE
-+#
-+. ./common/preamble
-+_begin_fstest auto quick log shutdown recoveryloop
-+
-+# Override the default cleanup function.
-+_cleanup()
-+{
-+	cd /
-+	rm -r -f $tmp.*
-+}
-+
-+# Import common functions.
-+. ./common/filter
-+. ./common/punch
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs generic
-+_require_scratch
-+_require_xfs_io_command "fzero"
-+_require_xfs_io_command "fiemap"
-+
-+t1=$SCRATCH_MNT/t1
-+
-+_scratch_mkfs > $seqres.full 2>&1
-+
-+_scratch_mount >> $seqres.full 2>&1
-+
-+bs=$(_get_block_size $SCRATCH_MNT)
-+
-+# create and write data to t1
-+$XFS_IO_PROG -f -c "pwrite 0 $((100*$bs))" $t1 | _filter_xfs_io_numbers
-+
-+# fsync t1
-+$XFS_IO_PROG -c "fsync" $t1
-+
-+# fzero certain range in between
-+$XFS_IO_PROG -c "fzero -k  $((40*$bs)) $((20*$bs))" $t1
-+
-+# fsync t1
-+$XFS_IO_PROG -c "fsync" $t1
-+
-+# shutdown FS now for replay of journal to kick during next mount
-+_scratch_shutdown -v >> $seqres.full 2>&1
-+
-+_scratch_cycle_mount
-+
-+# check fiemap reported is valid or not
-+$XFS_IO_PROG -c "fiemap -v" $t1 | _filter_fiemap_flags $bs
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/generic/677.out b/tests/generic/677.out
-new file mode 100644
-index 00000000..b91ab77a
---- /dev/null
-+++ b/tests/generic/677.out
-@@ -0,0 +1,6 @@
-+QA output created by 677
-+wrote XXXX/XXXX bytes at offset XXXX
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+0: [0..39]: none
-+1: [40..59]: unwritten
-+2: [60..99]: nonelast
---
-2.31.1
+EXT4-fs warning (device sda1): ext4_block_to_path:105: block 1074791436 > max in inode 1137
+------------[ cut here ]------------
+kernel BUG at fs/ext4/indirect.c:1244!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 3590 Comm: syz-executor391 Not tainted 5.17.0-rc8-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:ext4_ind_remove_space+0xfde/0x1400 fs/ext4/indirect.c:1244
+Code: 00 0f 85 36 03 00 00 48 8b 0b 4c 89 fe 44 8b 4c 24 20 48 8b 7c 24 10 48 83 c1 04 e8 3c bb ff ff e9 02 f6 ff ff e8 c2 26 66 ff <0f> 0b 4c 8b 7c 24 50 e9 8e f9 ff ff e8 b1 26 66 ff 48 8b 7c 24 10
+RSP: 0018:ffffc90001adfab8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff888021523a00 RSI: ffffffff8212996e RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: ffffffff82128bea R11: 0000000000000000 R12: 0000000000001000
+R13: ffffc90001adfb68 R14: ffffc90001adfb88 R15: ffff8880751fa088
+FS:  00007f69922ff700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000080 CR3: 0000000021605000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ ext4_punch_hole+0xfe8/0x11d0 fs/ext4/inode.c:4044
+ ext4_fallocate+0x1194/0x3ed0 fs/ext4/extents.c:4694
+ vfs_fallocate+0x48d/0xe10 fs/open.c:308
+ ksys_fallocate fs/open.c:331 [inline]
+ __do_sys_fallocate fs/open.c:339 [inline]
+ __se_sys_fallocate fs/open.c:337 [inline]
+ __x64_sys_fallocate+0xcf/0x140 fs/open.c:337
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f699234cdf9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 81 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f69922ff308 EFLAGS: 00000246 ORIG_RAX: 000000000000011d
+RAX: ffffffffffffffda RBX: 0000000000000040 RCX: 00007f699234cdf9
+RDX: 0000000000000000 RSI: 0000000000000003 RDI: 0000000000000005
+RBP: 00007f69923d5408 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000ffeffeff000 R11: 0000000000000246 R12: 00000ffeffeff000
+R13: 00007f69923d5400 R14: 00007f69923a3004 R15: 0000000000022000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:ext4_ind_remove_space+0xfde/0x1400 fs/ext4/indirect.c:1244
+Code: 00 0f 85 36 03 00 00 48 8b 0b 4c 89 fe 44 8b 4c 24 20 48 8b 7c 24 10 48 83 c1 04 e8 3c bb ff ff e9 02 f6 ff ff e8 c2 26 66 ff <0f> 0b 4c 8b 7c 24 50 e9 8e f9 ff ff e8 b1 26 66 ff 48 8b 7c 24 10
+RSP: 0018:ffffc90001adfab8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff888021523a00 RSI: ffffffff8212996e RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: ffffffff82128bea R11: 0000000000000000 R12: 0000000000001000
+R13: ffffc90001adfb68 R14: ffffc90001adfb88 R15: ffff8880751fa088
+FS:  00007f69922ff700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000080 CR3: 0000000021605000 CR4: 0000000000350ef0
 
