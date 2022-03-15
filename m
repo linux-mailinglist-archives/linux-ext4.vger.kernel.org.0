@@ -2,31 +2,31 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 926034D95D7
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Mar 2022 09:02:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9C1E4D97BD
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Mar 2022 10:35:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345821AbiCOIDO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 15 Mar 2022 04:03:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50448 "EHLO
+        id S1346652AbiCOJgf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 15 Mar 2022 05:36:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345754AbiCOIDA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Mar 2022 04:03:00 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9555B4BBB8
-        for <linux-ext4@vger.kernel.org>; Tue, 15 Mar 2022 01:01:48 -0700 (PDT)
-Received: from dggpeml500022.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4KHm2V0G32z1GCTk;
-        Tue, 15 Mar 2022 15:56:50 +0800 (CST)
+        with ESMTP id S1346654AbiCOJgd (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Mar 2022 05:36:33 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B00B74BFF7
+        for <linux-ext4@vger.kernel.org>; Tue, 15 Mar 2022 02:35:21 -0700 (PDT)
+Received: from dggpeml500022.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KHpBS5wtSzfZ2g;
+        Tue, 15 Mar 2022 17:33:52 +0800 (CST)
 Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
  dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Tue, 15 Mar 2022 16:01:46 +0800
+ 15.1.2308.21; Tue, 15 Mar 2022 17:35:19 +0800
 Received: from [10.174.176.102] (10.174.176.102) by
  dggpeml100016.china.huawei.com (7.185.36.216) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Tue, 15 Mar 2022 16:01:46 +0800
-Message-ID: <647cc60d-18d4-ab53-6c91-52c1f6d29c3a@huawei.com>
-Date:   Tue, 15 Mar 2022 16:01:45 +0800
+ 15.1.2308.21; Tue, 15 Mar 2022 17:35:19 +0800
+Message-ID: <f714d963-9855-546d-74b8-8c9a883ae65e@huawei.com>
+Date:   Tue, 15 Mar 2022 17:35:19 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
  Thunderbird/91.3.2
@@ -34,12 +34,12 @@ To:     Theodore Ts'o <tytso@mit.edu>
 CC:     <linux-ext4@vger.kernel.org>, linfeilong <linfeilong@huawei.com>,
         <liuzhiqiang26@huawei.com>
 From:   zhanchengbin <zhanchengbin1@huawei.com>
-Subject: e2fsck: do not skip deeper checkers when s_last_orphan list has
- truncated inodes
+Subject: [PATCH] e2fsck: do not skip deeper checkers when s_last_orphan list
+ has truncated inodes
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.174.176.102]
-X-ClientProxiedBy: dggpeml100023.china.huawei.com (7.185.36.151) To
+X-ClientProxiedBy: dggpeml100025.china.huawei.com (7.185.36.37) To
  dggpeml100016.china.huawei.com (7.185.36.216)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
@@ -134,6 +134,7 @@ ext2_ino_t *ino, char *block_buf)
       }
       e2fsck_write_inode_full(ctx, *ino, EXT2_INODE(&inode),
                   sizeof(inode), "delete_file");
+
 
 
 
