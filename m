@@ -2,20 +2,20 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D084DA837
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Mar 2022 03:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6D844DA82F
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Mar 2022 03:29:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353255AbiCPCaI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 15 Mar 2022 22:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55212 "EHLO
+        id S1353305AbiCPCa2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 15 Mar 2022 22:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353254AbiCPC3N (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Mar 2022 22:29:13 -0400
-Received: from lgeamrelo11.lge.com (lgeamrelo11.lge.com [156.147.23.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C1E3E5F255
+        with ESMTP id S1353268AbiCPC3q (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Mar 2022 22:29:46 -0400
+Received: from lgeamrelo11.lge.com (lgeamrelo12.lge.com [156.147.23.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 855235F264
         for <linux-ext4@vger.kernel.org>; Tue, 15 Mar 2022 19:27:13 -0700 (PDT)
 Received: from unknown (HELO lgemrelse7q.lge.com) (156.147.1.151)
-        by 156.147.23.51 with ESMTP; 16 Mar 2022 11:27:11 +0900
+        by 156.147.23.52 with ESMTP; 16 Mar 2022 11:27:11 +0900
 X-Original-SENDERIP: 156.147.1.151
 X-Original-MAILFROM: byungchul.park@lge.com
 Received: from unknown (HELO localhost.localdomain) (10.177.244.38)
@@ -46,9 +46,9 @@ Cc:     damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
         dri-devel@lists.freedesktop.org, airlied@linux.ie,
         rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
         hamohammed.sa@gmail.com
-Subject: [PATCH RFC v5 18/21] dept: Disable Dept within the wait_bit layer by default
-Date:   Wed, 16 Mar 2022 11:26:30 +0900
-Message-Id: <1647397593-16747-19-git-send-email-byungchul.park@lge.com>
+Subject: [PATCH RFC v5 19/21] dept: Add nocheck version of init_completion()
+Date:   Wed, 16 Mar 2022 11:26:31 +0900
+Message-Id: <1647397593-16747-20-git-send-email-byungchul.park@lge.com>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1647397593-16747-1-git-send-email-byungchul.park@lge.com>
 References: <1647397593-16747-1-git-send-email-byungchul.park@lge.com>
@@ -61,43 +61,65 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The struct wait_queue_head array, bit_wait_table[] in sched/wait_bit.c
-are shared by all its users, which unfortunately vary in terms of class.
-So each should've been assigned its own class to avoid false positives.
-
-It'd better let Dept work at a higher layer than wait_bit. So disabled
-Dept within the wait_bit layer by default.
-
-It's worth noting that Dept is still working with the other struct
-wait_queue_head ones that are mostly well-classified.
+For completions who don't want to get tracked by Dept, added
+init_completion_nocheck() to disable Dept on it.
 
 Signed-off-by: Byungchul Park <byungchul.park@lge.com>
 ---
- kernel/sched/wait_bit.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ include/linux/completion.h | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/sched/wait_bit.c b/kernel/sched/wait_bit.c
-index 02ce292..3e5a3eb 100644
---- a/kernel/sched/wait_bit.c
-+++ b/kernel/sched/wait_bit.c
-@@ -3,6 +3,7 @@
-  * The implementation of the wait_bit*() and related waiting APIs:
+diff --git a/include/linux/completion.h b/include/linux/completion.h
+index 76b4a2d..874cd39 100644
+--- a/include/linux/completion.h
++++ b/include/linux/completion.h
+@@ -30,6 +30,7 @@ struct completion {
+ };
+ 
+ #ifdef CONFIG_DEPT
++#define dept_wfc_nocheck(m)			dept_map_nocheck(m)
+ #define dept_wfc_init(m, k, s, n)		dept_map_init(m, k, s, n)
+ #define dept_wfc_reinit(m)			dept_map_reinit(m)
+ #define dept_wfc_wait(m, ip)						\
+@@ -41,6 +42,7 @@ struct completion {
+ #define dept_wfc_enter(m, ip)			dept_ecxt_enter(m, 1UL, ip, "completion_context_enter", "complete", 0)
+ #define dept_wfc_exit(m, ip)			dept_ecxt_exit(m, 1UL, ip)
+ #else
++#define dept_wfc_nocheck(m)			do { } while (0)
+ #define dept_wfc_init(m, k, s, n)		do { (void)(n); (void)(k); } while (0)
+ #define dept_wfc_reinit(m)			do { } while (0)
+ #define dept_wfc_wait(m, ip)			do { } while (0)
+@@ -55,10 +57,11 @@ struct completion {
+ #define WFC_DEPT_MAP_INIT(work)
+ #endif
+ 
++#define init_completion_nocheck(x) __init_completion(x, NULL, #x, false)
+ #define init_completion(x)					\
+ 	do {							\
+ 		static struct dept_key __dkey;			\
+-		__init_completion(x, &__dkey, #x);		\
++		__init_completion(x, &__dkey, #x, true);	\
+ 	} while (0)
+ 
+ #define init_completion_map(x, m) init_completion(x)
+@@ -117,10 +120,15 @@ static inline void complete_release(struct completion *x) {}
   */
- #include "sched.h"
-+#include <linux/dept.h>
- 
- #define WAIT_TABLE_BITS 8
- #define WAIT_TABLE_SIZE (1 << WAIT_TABLE_BITS)
-@@ -246,6 +247,8 @@ void __init wait_bit_init(void)
+ static inline void __init_completion(struct completion *x,
+ 				     struct dept_key *dkey,
+-				     const char *name)
++				     const char *name, bool check)
  {
- 	int i;
- 
--	for (i = 0; i < WAIT_TABLE_SIZE; i++)
-+	for (i = 0; i < WAIT_TABLE_SIZE; i++) {
- 		init_waitqueue_head(bit_wait_table + i);
-+		dept_map_nocheck(&(bit_wait_table + i)->dmap);
-+	}
+ 	x->done = 0;
+-	dept_wfc_init(&x->dmap, dkey, 0, name);
++
++	if (check)
++		dept_wfc_init(&x->dmap, dkey, 0, name);
++	else
++		dept_wfc_nocheck(&x->dmap);
++
+ 	init_swait_queue_head(&x->wait);
  }
+ 
 -- 
 1.9.1
 
