@@ -2,395 +2,210 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 608234DAD87
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Mar 2022 10:30:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A324DAE0C
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Mar 2022 11:06:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354852AbiCPJba (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Mar 2022 05:31:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44396 "EHLO
+        id S1355083AbiCPKHq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Mar 2022 06:07:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346468AbiCPJb3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Mar 2022 05:31:29 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 858BA65420;
-        Wed, 16 Mar 2022 02:30:15 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id fs4-20020a17090af28400b001bf5624c0aaso1894516pjb.0;
-        Wed, 16 Mar 2022 02:30:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7YtA4PKUNK1dlzTx/+dzDDwxLZbii02Hkl6fdvscBxc=;
-        b=KVlegeKfeY8W67qw6DCRgUShajC9v378ZrSbgZ8Y0HtviKaBmr2m5+8eyDmK6v8H7G
-         0k4SKtLdQMzPWKYvWjIUw0JR80sIdV3nL/kZsp/8CMWPi0qzlJYHpdb6mTsxG5IplBDw
-         Thjkg26PVRf89HpwWIaOAsMjwtBy88ghXsm3oCEO44EdAiRuJ+Hy1ivpDe/BbZ7lcgZd
-         dHBTIFzQC/kC/yrS730ReRdUhoP2+Aaw4VueXzMK0UoB7ipdFT9/d6fVdvDr2cfqj6nn
-         WNwm/S0LF7EvMRSd+YYrg4Smn09H44hOEzfTH45IP3+FlPTrlirMRsSVXsDe7ukKTlyO
-         OEOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7YtA4PKUNK1dlzTx/+dzDDwxLZbii02Hkl6fdvscBxc=;
-        b=IIUjxdiIXlpycbb6d6nvkwjEU+Dg+yNKREjdU+PPv0KTBQl202/MGD8pgcMHLQKKuB
-         zLlcnyg+s3mUhyAUfuXVyh9sV+HOFs7JULGKjnEDeBItFxHUuG/3vtNzaZObqgaF5w/5
-         6yavrDpPwfREIUaoVWd0Jt5VszJpi5+pDc+eSAIJRr8zHb/wSFzV3xmmBTNgmdCZDW0l
-         Q1u61mTFGqhwhomBUMD83qVvFK7c7MT1+lNyt6mppmHJrjCUtxW5l21+cqD+i7o7NNgz
-         5TZzmeIP6mZ6h3dwm79cUfiJoGCq/9nDIgKRQfTyKxtJEdcOGkRf0NuwcnayWd6imxMQ
-         jWgQ==
-X-Gm-Message-State: AOAM532YYMhaR588mesahNzCzH3E7TX+tZDQniF/3XBoUN4PUnLp1lQk
-        kElWtoKmw0Mr+VPG4dDMiv0=
-X-Google-Smtp-Source: ABdhPJzonkpDhlI2fR4HgAVkbUVABxaINz60vwbRBqde0ZZEBs11+G4Wm7i86hUtVDnumBtYwvPoTA==
-X-Received: by 2002:a17:902:a502:b0:151:8289:b19 with SMTP id s2-20020a170902a50200b0015182890b19mr32422431plq.149.1647423014943;
-        Wed, 16 Mar 2022 02:30:14 -0700 (PDT)
-Received: from ip-172-31-19-208.ap-northeast-1.compute.internal (ec2-18-181-137-102.ap-northeast-1.compute.amazonaws.com. [18.181.137.102])
-        by smtp.gmail.com with ESMTPSA id x29-20020aa79a5d000000b004f0ef1822d3sm2081888pfj.128.2022.03.16.02.30.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Mar 2022 02:30:14 -0700 (PDT)
-Date:   Wed, 16 Mar 2022 09:30:02 +0000
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Byungchul Park <byungchul.park@lge.com>
-Cc:     torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
-        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
-        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
-        chris@chris-wilson.co.uk, duyuyang@gmail.com,
-        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
-        bfields@fieldses.org, gregkh@linuxfoundation.org,
-        kernel-team@lge.com, linux-mm@kvack.org, akpm@linux-foundation.org,
-        mhocko@kernel.org, minchan@kernel.org, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, sj@kernel.org, jglisse@redhat.com,
-        dennis@kernel.org, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, vbabka@suse.cz, ngupta@vflare.org,
-        linux-block@vger.kernel.org, paolo.valente@linaro.org,
-        josef@toxicpanda.com, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, jack@suse.cz, jack@suse.com,
-        jlayton@kernel.org, dan.j.williams@intel.com, hch@infradead.org,
-        djwong@kernel.org, dri-devel@lists.freedesktop.org,
-        airlied@linux.ie, rodrigosiqueiramelo@gmail.com,
-        melissa.srw@gmail.com, hamohammed.sa@gmail.com
-Subject: Re: [PATCH v4 00/24] DEPT(Dependency Tracker)
-Message-ID: <YjGuGmdiZCpRt98n@ip-172-31-19-208.ap-northeast-1.compute.internal>
-References: <1646377603-19730-1-git-send-email-byungchul.park@lge.com>
- <Yiv9Fn4kcRbXJLmu@ip-172-31-19-208.ap-northeast-1.compute.internal>
- <20220316043212.GA5715@X58A-UD3R>
-MIME-Version: 1.0
+        with ESMTP id S235316AbiCPKHp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Mar 2022 06:07:45 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD985D5F1;
+        Wed, 16 Mar 2022 03:06:31 -0700 (PDT)
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 22G8BiEK025721;
+        Wed, 16 Mar 2022 10:06:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=58tbMcoH+D0zcwRAbodUC7SaBq9l1hc2MZijX71TevI=;
+ b=YuTv+RFvBrUbuHd5TdpYG60SWKrqDJGNIVhK94cM6jkM9C17QtuouzJAMGnrP0G0ITzc
+ woetESAIwLqGA91G/hFYuIDl/ljCsyWs/zE3nLSlREBPpCikpV40LM9Pl57T2Ik/Gir8
+ g2/MQRXYajjAX+gyyf0s5YdcuERNMYRpdu279HJmLW9C3jHTZLO2a7CttVT8FxBilAFh
+ 2n8ow+kQX60qOxvQBvRWxpVcIY+JMrGjveDvq7LP9NACFgNElEBeNgzPD1DY8gah5Xwi
+ 46XXbMlqsbBrr4MERDDoiw7kXQuNj0AisXFwY6MsDaaebVQvHieqnX5JLEbLoPkq3iRq fQ== 
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3euc5u2cvg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Mar 2022 10:06:28 +0000
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 22GA4HYd016251;
+        Wed, 16 Mar 2022 10:06:25 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma02fra.de.ibm.com with ESMTP id 3erk58qdew-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Mar 2022 10:06:25 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 22G9sufo52232528
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Mar 2022 09:54:56 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6223AA4065;
+        Wed, 16 Mar 2022 10:06:23 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D962BA4060;
+        Wed, 16 Mar 2022 10:06:22 +0000 (GMT)
+Received: from localhost (unknown [9.43.36.69])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 16 Mar 2022 10:06:22 +0000 (GMT)
+Date:   Wed, 16 Mar 2022 15:36:21 +0530
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     Sachin Sant <sachinp@linux.ibm.com>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [powerpc]Kernel crash while running LTP (execveat03)
+ [next-20220315]
+Message-ID: <20220316100621.c5vpouz6cvyu6l7h@riteshh-domain>
+References: <19C0AAEE-43C1-4A17-83DC-5EC24BB1E0BE@linux.ibm.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220316043212.GA5715@X58A-UD3R>
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <19C0AAEE-43C1-4A17-83DC-5EC24BB1E0BE@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: diwscpTDLyKHhAq5aAe59N3iSXmADK6Z
+X-Proofpoint-GUID: diwscpTDLyKHhAq5aAe59N3iSXmADK6Z
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-03-16_03,2022-03-15_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ bulkscore=0 impostorscore=0 phishscore=0 priorityscore=1501
+ lowpriorityscore=0 clxscore=1011 adultscore=0 suspectscore=0
+ mlxlogscore=999 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2202240000 definitions=main-2203160062
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Mar 16, 2022 at 01:32:13PM +0900, Byungchul Park wrote:
-> On Sat, Mar 12, 2022 at 01:53:26AM +0000, Hyeonggon Yoo wrote:
-> > On Fri, Mar 04, 2022 at 04:06:19PM +0900, Byungchul Park wrote:
-> > > Hi Linus and folks,
-> > > 
-> > > I've been developing a tool for detecting deadlock possibilities by
-> > > tracking wait/event rather than lock(?) acquisition order to try to
-> > > cover all synchonization machanisms. It's done on v5.17-rc1 tag.
-> > > 
-> > > https://github.com/lgebyungchulpark/linux-dept/commits/dept1.14_on_v5.17-rc1
-> > >
-> > 
-> > Small feedback unrelated to thread:
-> > I'm not sure "Need to expand the ring buffer" is something to call
-> > WARN(). Is this stack trace useful for something?
-> > ========
-> > 
-> > Hello Byungchul. These are two warnings of DEPT on system.
-> 
-> Hi Hyeonggon,
-> 
-> Could you run scripts/decode_stacktrace.sh and share the result instead
-> of the raw format below if the reports still appear with PATCH v5? It'd
-> be appreciated (:
+On 22/03/16 01:47PM, Sachin Sant wrote:
+> While running LTP tests(execveat03) against 5.17.0-rc8-next-20220315
+> On a POWER10 LPAR following crash is seen:
 >
+> [  945.659049] dummy_del_mod: loading out-of-tree module taints kernel.
+> [  945.659951] dummy_del_mod: module verification failed: signature and/or required key missing - tainting kernel
+> [  955.520206] process 'execveat01' launched '/dev/fd/-1' with NULL argv: empty string added
+> [  955.529560] loop0: detected capacity change from 0 to 524288
+> [  955.830492] EXT4-fs (loop0): mounting ext2 file system using the ext4 subsystem
 
-Hi Byungchul.
 
-on dept1.18_on_v5.17-rc7, the kernel_clone() warning has gone.
-There is one warning remaining on my system:
+Ok, so it has mounted ext2 using ext4 subsystem.
+This means there is no journal.
 
-It warns when running kunit-try-catch-test testcase.
+> [  955.831047] EXT4-fs (loop0): mounted filesystem without journal. Quota mode: none.
+> [  955.831056] ext2 filesystem being mounted at /var/tmp/avocado_2hol2hy1/ltp-SHEyyra8b0/3CPNpu/mntpoint supports timestamps until 2038 (0x7fffffff)
+> [  955.907793] Kernel attempted to read user page (1) - exploit attempt? (uid: 0)
+> [  955.907806] BUG: Kernel NULL pointer dereference on read at 0x00000001
+> [  955.907809] Faulting instruction address: 0xc008000000be04ec
+> [  955.907811] Oops: Kernel access of bad area, sig: 11 [#1]
+> [  955.907814] LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=2048 NUMA pSeries
+> [  955.907818] Modules linked in: overlay vfat fat btrfs blake2b_generic xor raid6_pq zstd_compress xfs loop sctp ip6_udp_tunnel udp_tunnel dm_mod nft_ct nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip_set rfkill nf_tables bonding libcrc32c nfnetlink sunrpc pseries_rng xts vmx_crypto sch_fq_codel ext4 mbcache jbd2 sd_mod t10_pi crc64_rocksoft crc64 sg ibmvscsi ibmveth scsi_transport_srp fuse [last unloaded: dummy_del_mod]
+> [  955.907849] CPU: 30 PID: 1947255 Comm: execveat03 Tainted: G           OE     5.17.0-rc8-next-20220315 #1
+> [  955.907853] NIP:  c008000000be04ec LR: c008000000ba4b00 CTR: c0000000004fd040
+> [  955.907856] REGS: c0000002474831a0 TRAP: 0300   Tainted: G           OE      (5.17.0-rc8-next-20220315)
+> [  955.907860] MSR:  800000000280b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 28028282  XER: 20040000
+> [  955.907869] CFAR: c008000000ba4afc DAR: 0000000000000001 DSISR: 40000000 IRQMASK: 0
+> [  955.907869] GPR00: c008000000ba4b00 c000000247483440 c008000000c28000 0000000000000001
+> [  955.907869] GPR04: c000000206668af8 c008000000be0068 0000000000000000 0000000000000000
+> [  955.907869] GPR08: 0000000000000002 0000000000000004 0000000000000000 c008000000be7f68
+> [  955.907869] GPR12: c0000000004fd040 c000000effbe7280 0000000000000000 0000000000000001
+> [  955.907869] GPR16: 0000000000000000 c0000000029b4048 0000000000000000 0000000000000000
+> [  955.907869] GPR20: 0000000000000000 c0000000029b4048 0000000000000004 c000000206668af8
+> [  955.907869] GPR24: c000000247483528 0000000000000001 c008000000c01208 0000000000000000
+> [  955.907869] GPR28: 0000000000000001 c000000206668af8 c0000001f0d92e80 0000000000000001
+> [  955.907904] NIP [c008000000be04ec] __ext4_fc_track_link+0x44/0xf0 [ext4]
+> [  955.907927] LR [c008000000ba4b00] ext4_rename+0x878/0xdc0 [ext4]
+> [  955.907946] Call Trace:
+> [  955.907947] [c000000247483440] [0000000000000004] 0x4 (unreliable)
+> [  955.907950] [c0000002474834a0] [c008000000ba4b00] ext4_rename+0x878/0xdc0 [ext4]
+> [  955.907969] [c000000247483670] [c0000000004a498c] vfs_rename+0x9cc/0xe00
+> [  955.907975] [c000000247483760] [c008000000341820] ovl_do_rename.constprop.28+0x78/0x140 [overlay]
+> [  955.907982] [c000000247483830] [c008000000341b50] ovl_make_workdir+0x268/0x7e0 [overlay]
+> [  955.907988] [c000000247483960] [c008000000343aa8] ovl_fill_super+0x1060/0x2160 [overlay]
+> [  955.907994] [c000000247483ae0] [c000000000492f68] mount_nodev+0x78/0x100
+> [  955.907998] [c000000247483b20] [c008000000340054] ovl_mount+0x2c/0x50 [overlay]
+> [  955.908004] [c000000247483b40] [c0000000004f676c] legacy_get_tree+0x4c/0xb0
+> [  955.908008] [c000000247483b70] [c00000000049063c] vfs_get_tree+0x4c/0x150
+> [  955.908012] [c000000247483bf0] [c0000000004d3768] path_mount+0x8e8/0xd50
+> [  955.908017] [c000000247483cb0] [c0000000004d3c50] do_mount+0x80/0xd0
+> [  955.908021] [c000000247483d10] [c0000000004d3e3c] sys_mount+0x19c/0x370
+> [  955.908025] [c000000247483db0] [c00000000003375c] system_call_exception+0x18c/0x390
+> [  955.908029] [c000000247483e10] [c00000000000c64c] system_call_common+0xec/0x270
+> [  955.908034] --- interrupt: c00 at 0x7fffa9b38dfc
+> [  955.908036] NIP:  00007fffa9b38dfc LR: 000000001001ba78 CTR: 0000000000000000
+> [  955.908039] REGS: c000000247483e80 TRAP: 0c00   Tainted: G           OE      (5.17.0-rc8-next-20220315)
+> [  955.908042] MSR:  800000000280f033 <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 24002202  XER: 00000000
+> [  955.908050] IRQMASK: 0
+> [  955.908050] GPR00: 0000000000000015 00007ffff95c64c0 00007fffa9c07300 0000000010029a08
+> [  955.908050] GPR04: 0000000010027de0 0000000010029a08 0000000000000000 00000000100299c0
+> [  955.908050] GPR08: 0000000000004000 0000000000000000 0000000000000000 0000000000000000
+> [  955.908050] GPR12: 0000000000000000 00007fffa9e1a340 0000000000000000 0000000000000000
+> [  955.908050] GPR16: 0000000000000000 0000000000000000 ffffffffffffffff 0000000010027a38
+> [  955.908050] GPR20: 00000000100284d0 0000000010028238 00000000100280f8 00007ffff95c65b0
+> [  955.908050] GPR24: 0000000000000003 0000000010051098 0000000010050c60 00000000100555c8
+> [  955.908050] GPR28: 000000000000040c 0000000010027b08 0000000000000000 0000000000000001
+> [  955.908083] NIP [00007fffa9b38dfc] 0x7fffa9b38dfc
+> [  955.908086] LR [000000001001ba78] 0x1001ba78
+> [  955.908090] --- interrupt: c00
+> [  955.908092] Instruction dump:
+> [  955.908095] fba1ffe8 fbc1fff0 7cbe2b78 fbe1fff8 3ca20000 e8a5a0c8 7c7f1b78 39200004
+> [  955.908103] 38e00000 7c9d2378 f8010010 f821ffa1 <e8630000> 38c10028 e94d1100 f9410038
+> [  955.908112] ---[ end trace 0000000000000000 ]---
+> [  955.908943]
+> [  956.908946] Kernel panic - not syncing: Fatal exception
+>
+> Bisect points to following commit:
+> commit 9d5623d7ef8765f21f629e4ac636c19ec245e254
+>     ext4: return early for non-eligible fast_commit track events
+>
+> Reverting this commit allows the test to run successfully.
 
-===================================================
-DEPT: Circular dependency has been detected.
-5.17.0-rc7+ #4 Not tainted
----------------------------------------------------
-summary
----------------------------------------------------
-*** AA DEADLOCK ***
+Hi Sachin,
 
-context A
-[S] (unknown)(&try_completion:0)
-[W] wait_for_completion_timeout(&try_completion:0)
-[E] complete(&try_completion:0)
+Thanks so much for the report. Yes, this was discussed today here [1].
+Ted mentioned, he had to add a change to fix this crash.
+Once that is in, this should be fixed.
 
-[S]: start of the event context
-[W]: the wait blocked
-[E]: the event not reachable
----------------------------------------------------
-context A's detail
----------------------------------------------------
-context A
-[S] (unknown)(&try_completion:0)
-[W] wait_for_completion_timeout(&try_completion:0)
-[E] complete(&try_completion:0)
+If you like you can apply below change and continue with your testing.
 
-[S] (unknown)(&try_completion:0):
-(N/A)
+[1]: https://lore.kernel.org/linux-ext4/164714672856.1260831.16671323737369796834.b4-ty@mit.edu/T/#mdeff2bbdf0d107021514a9c44478d642936c4f9c
 
-[W] wait_for_completion_timeout(&try_completion:0):
-kunit_try_catch_run (lib/kunit/try-catch.c:78 (discriminator 1)) 
-stacktrace:
-dept_wait (kernel/dependency/dept.c:2149) 
-wait_for_completion_timeout (kernel/sched/completion.c:119 (discriminator 4) kernel/sched/completion.c:165 (discriminator 4)) 
-kunit_try_catch_run (lib/kunit/try-catch.c:78 (discriminator 1)) 
-kunit_test_try_catch_successful_try_no_catch (lib/kunit/kunit-test.c:43) 
-kunit_try_run_case (lib/kunit/test.c:333 lib/kunit/test.c:374) 
-kunit_generic_run_threadfn_adapter (lib/kunit/try-catch.c:30) 
-kthread (kernel/kthread.c:379) 
-ret_from_fork (arch/arm64/kernel/entry.S:757)
+-ritesh
 
-[E] complete(&try_completion:0):
-kthread_complete_and_exit (kernel/kthread.c:327) 
-stacktrace:
-dept_event (kernel/dependency/dept.c:2376 (discriminator 2)) 
-complete (kernel/sched/completion.c:33 (discriminator 4)) 
-kthread_complete_and_exit (kernel/kthread.c:327) 
-kunit_try_catch_throw (lib/kunit/try-catch.c:18) 
-kthread (kernel/kthread.c:379) 
-ret_from_fork (arch/arm64/kernel/entry.S:757) 
 
----------------------------------------------------
-information that might be helpful
----------------------------------------------------
-Hardware name: linux,dummy-virt (DT)
-Call trace:
-dump_backtrace.part.0 (arch/arm64/kernel/stacktrace.c:186) 
-show_stack (arch/arm64/kernel/stacktrace.c:193) 
-dump_stack_lvl (lib/dump_stack.c:107 (discriminator 4)) 
-dump_stack (lib/dump_stack.c:114) 
-print_circle (./arch/arm64/include/asm/atomic_ll_sc.h:112 ./arch/arm64/include/asm/atomic.h:30 ./include/linux/atomic/atomic-arch-fallback.h:511 ./include/linux/atomic/atomic-instrumented.h:258 kernel/dependency/dept.c:140 kernel/dependency/dept.c:748) 
-cb_check_dl (kernel/dependency/dept.c:1083 kernel/dependency/dept.c:1064) 
-bfs (kernel/dependency/dept.c:833) 
-add_dep (kernel/dependency/dept.c:1409) 
-do_event (kernel/dependency/dept.c:175 kernel/dependency/dept.c:1644) 
-dept_event (kernel/dependency/dept.c:2376 (discriminator 2)) 
-complete (kernel/sched/completion.c:33 (discriminator 4)) 
-kthread_complete_and_exit (kernel/kthread.c:327) 
-kunit_try_catch_throw (lib/kunit/try-catch.c:18) 
-kthread (kernel/kthread.c:379) 
-ret_from_fork (arch/arm64/kernel/entry.S:757)
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index 39e223f7bf64..e37da8d5cd0c 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -3891,12 +3891,19 @@ static int ext4_rename(struct user_namespace *mnt_userns, struct inode *old_dir,
+ 		ext4_fc_mark_ineligible(old.inode->i_sb,
+ 			EXT4_FC_REASON_RENAME_DIR, handle);
+ 	} else {
++		struct super_block *sb = old.inode->i_sb;
++
+ 		if (new.inode)
+ 			ext4_fc_track_unlink(handle, new.dentry);
+-		__ext4_fc_track_link(handle, old.inode, new.dentry);
+-		__ext4_fc_track_unlink(handle, old.inode, old.dentry);
+-		if (whiteout)
+-			__ext4_fc_track_create(handle, whiteout, old.dentry);
++		if (test_opt2(sb, JOURNAL_FAST_COMMIT) &&
++		    !(EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY) &&
++		    !(ext4_test_mount_flag(sb, EXT4_MF_FC_INELIGIBLE))) {
++			__ext4_fc_track_link(handle, old.inode, new.dentry);
++			__ext4_fc_track_unlink(handle, old.inode, old.dentry);
++			if (whiteout)
++				__ext4_fc_track_create(handle, whiteout,
++						       old.dentry);
++		}
+ 	}
 
--- 
-Thank you, You are awesome!
-Hyeonggon :-)
+ 	if (new.inode) {
 
-> https://lkml.org/lkml/2022/3/15/1277
-> (or https://github.com/lgebyungchulpark/linux-dept/commits/dept1.18_on_v5.17-rc7)
-> 
-> Thank you very much!
-> 
-> --
-> Byungchul
-> 
-> > Both cases look similar.
-> > 
-> > In what case DEPT says (unknown)?
-> > I'm not sure we can properly debug this.
-> > 
-> > ===================================================
-> > DEPT: Circular dependency has been detected.
-> > 5.17.0-rc1+ #3 Tainted: G        W        
-> > ---------------------------------------------------
-> > summary
-> > ---------------------------------------------------
-> > *** AA DEADLOCK ***
-> > 
-> > context A
-> >     [S] (unknown)(&vfork:0)
-> >     [W] wait_for_completion_killable(&vfork:0)
-> >     [E] complete(&vfork:0)
-> > 
-> > [S]: start of the event context
-> > [W]: the wait blocked
-> > [E]: the event not reachable
-> > ---------------------------------------------------
-> > context A's detail
-> > ---------------------------------------------------
-> > context A
-> >     [S] (unknown)(&vfork:0)
-> >     [W] wait_for_completion_killable(&vfork:0)
-> >     [E] complete(&vfork:0)
-> > 
-> > [S] (unknown)(&vfork:0):
-> > (N/A)
-> > 
-> > [W] wait_for_completion_killable(&vfork:0):
-> > [<ffffffc00802204c>] kernel_clone+0x25c/0x2b8
-> > stacktrace:
-> >       dept_wait+0x74/0x88
-> >       wait_for_completion_killable+0x60/0xa0
-> >       kernel_clone+0x25c/0x2b8
-> >       __do_sys_clone+0x5c/0x74
-> >       __arm64_sys_clone+0x18/0x20
-> >       invoke_syscall.constprop.0+0x78/0xc4
-> >       do_el0_svc+0x98/0xd0
-> >       el0_svc+0x44/0xe4
-> >       el0t_64_sync_handler+0xb0/0x12c
-> >       el0t_64_sync+0x158/0x15c
-> > 
-> > [E] complete(&vfork:0):
-> > [<ffffffc00801f49c>] mm_release+0x7c/0x90
-> > stacktrace:
-> >       dept_event+0xe0/0x100
-> >       complete+0x48/0x98
-> >       mm_release+0x7c/0x90
-> >       exit_mm_release+0xc/0x14
-> >       do_exit+0x1b4/0x81c
-> >       do_group_exit+0x30/0x9c
-> >       __wake_up_parent+0x0/0x24
-> >       invoke_syscall.constprop.0+0x78/0xc4
-> >       do_el0_svc+0x98/0xd0
-> >       el0_svc+0x44/0xe4
-> >       el0t_64_sync_handler+0xb0/0x12c
-> >       el0t_64_sync+0x158/0x15c
-> > ---------------------------------------------------
-> > information that might be helpful
-> > ---------------------------------------------------
-> > CPU: 6 PID: 229 Comm: start-stop-daem Tainted: G        W         5.17.0-rc1+ #3
-> > Hardware name: linux,dummy-virt (DT)
-> > Call trace:
-> >  dump_backtrace.part.0+0x9c/0xc4
-> >  show_stack+0x14/0x28
-> >  dump_stack_lvl+0x9c/0xcc
-> >  dump_stack+0x14/0x2c
-> >  print_circle+0x2d4/0x438
-> >  cb_check_dl+0x44/0x70
-> >  bfs+0x60/0x168
-> >  add_dep+0x88/0x11c
-> >  do_event.constprop.0+0x19c/0x2c0
-> >  dept_event+0xe0/0x100
-> >  complete+0x48/0x98
-> >  mm_release+0x7c/0x90
-> >  exit_mm_release+0xc/0x14
-> >  do_exit+0x1b4/0x81c
-> >  do_group_exit+0x30/0x9c
-> >  __wake_up_parent+0x0/0x24
-> >  invoke_syscall.constprop.0+0x78/0xc4
-> >  do_el0_svc+0x98/0xd0
-> >  el0_svc+0x44/0xe4
-> >  el0t_64_sync_handler+0xb0/0x12c
-> >  el0t_64_sync+0x158/0x15c
-> > 
-> > 
-> > 
-> > 
-> > ===================================================
-> > DEPT: Circular dependency has been detected.
-> > 5.17.0-rc1+ #3 Tainted: G        W        
-> > ---------------------------------------------------
-> > summary
-> > ---------------------------------------------------
-> > *** AA DEADLOCK ***
-> > 
-> > context A
-> >     [S] (unknown)(&try_completion:0)
-> >     [W] wait_for_completion_timeout(&try_completion:0)
-> >     [E] complete(&try_completion:0)
-> > 
-> > [S]: start of the event context
-> > [W]: the wait blocked
-> > [E]: the event not reachable
-> > ---------------------------------------------------
-> > context A's detail
-> > ---------------------------------------------------
-> > context A
-> >     [S] (unknown)(&try_completion:0)
-> >     [W] wait_for_completion_timeout(&try_completion:0)
-> >     [E] complete(&try_completion:0)
-> > 
-> > [S] (unknown)(&try_completion:0):
-> > (N/A)
-> > 
-> > [W] wait_for_completion_timeout(&try_completion:0):
-> > [<ffffffc008166bf4>] kunit_try_catch_run+0xb4/0x160
-> > stacktrace:
-> >       dept_wait+0x74/0x88
-> >       wait_for_completion_timeout+0x64/0xa0
-> >       kunit_try_catch_run+0xb4/0x160
-> >       kunit_test_try_catch_successful_try_no_catch+0x3c/0x98
-> >       kunit_try_run_case+0x9c/0xa0
-> >       kunit_generic_run_threadfn_adapter+0x1c/0x28
-> >       kthread+0xd4/0xe4
-> >       ret_from_fork+0x10/0x20
-> > 
-> > [E] complete(&try_completion:0):
-> > [<ffffffc00803dce4>] kthread_complete_and_exit+0x18/0x20
-> > stacktrace:
-> >       dept_event+0xe0/0x100
-> >       complete+0x48/0x98
-> >       kthread_complete_and_exit+0x18/0x20
-> >       kunit_try_catch_throw+0x0/0x1c
-> >       kthread+0xd4/0xe4
-> >       ret_from_fork+0x10/0x20
-> > 
-> > ---------------------------------------------------
-> > information that might be helpful
-> > ---------------------------------------------------
-> > CPU: 15 PID: 132 Comm: kunit_try_catch Tainted: G        W         5.17.0-rc1+ #3
-> > Hardware name: linux,dummy-virt (DT)
-> > Call trace:
-> >  dump_backtrace.part.0+0x9c/0xc4
-> >  show_stack+0x14/0x28
-> >  dump_stack_lvl+0x9c/0xcc
-> >  dump_stack+0x14/0x2c
-> >  print_circle+0x2d4/0x438
-> >  cb_check_dl+0x44/0x70
-> >  bfs+0x60/0x168
-> >  add_dep+0x88/0x11c
-> >  do_event.constprop.0+0x19c/0x2c0
-> >  dept_event+0xe0/0x100
-> >  complete+0x48/0x98
-> >  kthread_complete_and_exit+0x18/0x20
-> >  kunit_try_catch_throw+0x0/0x1c
-> >  kthread+0xd4/0xe4
-> >  ret_from_fork+0x10/0x20
-> > 
-> > 
-> > > Benifit:
-> > > 
-> > > 	0. Works with all lock primitives.
-> > > 	1. Works with wait_for_completion()/complete().
-> > > 	2. Works with 'wait' on PG_locked.
-> > > 	3. Works with 'wait' on PG_writeback.
-> > > 	4. Works with swait/wakeup.
-> > > 	5. Works with waitqueue.
-> > > 	6. Multiple reports are allowed.
-> > > 	7. Deduplication control on multiple reports.
-> > > 	8. Withstand false positives thanks to 6.
-> > > 	9. Easy to tag any wait/event.
-> > > 
-> > > Future work:
-> > 
-> > [...]
-> > 
-> > > -- 
-> > > 1.9.1
-> > > 
-> > 
-> > -- 
-> > Thank you, You are awesome!
-> > Hyeonggon :-)
