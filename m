@@ -2,89 +2,61 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54D404DC0C0
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Mar 2022 09:14:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA5AA4DC375
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Mar 2022 11:00:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230504AbiCQIPQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Mar 2022 04:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47018 "EHLO
+        id S232164AbiCQKBe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Mar 2022 06:01:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229631AbiCQIPP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Mar 2022 04:15:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AA128141DBD
-        for <linux-ext4@vger.kernel.org>; Thu, 17 Mar 2022 01:13:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1647504834;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        with ESMTP id S232174AbiCQKBd (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Mar 2022 06:01:33 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7EF2186FA1;
+        Thu, 17 Mar 2022 03:00:14 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 77CB41F390;
+        Thu, 17 Mar 2022 10:00:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1647511213; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=xxA0Pce6UnOZWW6gsq8il76yFsehAiTQ6twP7i/3/GQ=;
-        b=i9ocHWQ4ruFxw25UNHFShxytWepuLkCReLw3lss3KN+Ovdfa+ThGwCIDnbPe+jitf0YTPx
-        WF9pB+KJo/PISDHdtLt+ZatBzQgNYNCrmOreUoawU/NJtuLinQHJBwIi1fZ9OVCMcE+0Jf
-        5bJ3tJrBaRJf/FEfQG8DJeuaU6A6X/Y=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-224-SrmON4lqNbqj9K5IS5nAYQ-1; Thu, 17 Mar 2022 04:13:53 -0400
-X-MC-Unique: SrmON4lqNbqj9K5IS5nAYQ-1
-Received: by mail-wr1-f72.google.com with SMTP id t15-20020a5d534f000000b001f1e5759cebso1299253wrv.7
-        for <linux-ext4@vger.kernel.org>; Thu, 17 Mar 2022 01:13:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=xxA0Pce6UnOZWW6gsq8il76yFsehAiTQ6twP7i/3/GQ=;
-        b=2TbtfITGdif7dMoBA6lEQEXqqU4pCTyaBrWPiwTD4XdspD1O9NzpMFs8Mrk83WTNuH
-         acX8fLZAbJNxR4sRNeFW+Q3bo1VM+SSAxNfDDiRJrr+shGd4ptKQ0X3bZsEjw6btAoxB
-         iYEG16rQoysdBYWTU2WCi1uLMFSf/tngvCtUl3ZE0s3x++eBXWmViCGDWVB84AOxolSX
-         xx5towTgwuzQn8sDsfLJ4wYpLYnu9lgTExwqa0SKhDnctkHWoR11nuD8EVph4WhK3IRf
-         F0fHDO867go24UEe7F2Hmx3FP9oEMMU0wI7CLy4raQ/R+ctLvjPc7o739weBaXg0thbu
-         Lu9Q==
-X-Gm-Message-State: AOAM531AYq3t45kXCQYGHeyBufLTnyuZjyYDRI3wlgebpXHfrHIej/u+
-        J2emG64ApK26s4dc0oSb4XcFN5a/YGRCC8tbCoYhe4W3NVfwW020Le4Xd9JA2oA//Q+2t9dHtns
-        hi+T3qe9qK698RmEXMkRVZw==
-X-Received: by 2002:a05:6000:144a:b0:203:8688:35d with SMTP id v10-20020a056000144a00b002038688035dmr2896887wrx.399.1647504832457;
-        Thu, 17 Mar 2022 01:13:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzkIygRnwahr8xhyLvIiK8lTpLSYuqqmv1avWZ31V4hbmg8hvmgWPIvr5DZvtTFDGtJ3e2QVw==
-X-Received: by 2002:a05:6000:144a:b0:203:8688:35d with SMTP id v10-20020a056000144a00b002038688035dmr2896866wrx.399.1647504832168;
-        Thu, 17 Mar 2022 01:13:52 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c707:d000:22e9:afb1:c890:7468? (p200300cbc707d00022e9afb1c8907468.dip0.t-ipconnect.de. [2003:cb:c707:d000:22e9:afb1:c890:7468])
-        by smtp.gmail.com with ESMTPSA id j7-20020a05600c410700b0038c72ef3f15sm2542317wmi.38.2022.03.17.01.13.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Mar 2022 01:13:51 -0700 (PDT)
-Message-ID: <ab26f7a0-728e-9627-796b-e8e850402aae@redhat.com>
-Date:   Thu, 17 Mar 2022 09:13:50 +0100
+        bh=Abm9aZWjRWB02cH/iiBq5Tgw+x5jzud0k0C7ziDw03s=;
+        b=vlCVYJPBh0M/MyMvfRsEwu+cDkSf5traFO1dx4P8KF/jzfHC257LnEVgCVdUv1B9+ZgxvD
+        npSQxNmlyBk0bVPntWWUbBKaz1MTkraSdf9gn6leS7M/Cs8AOBvj1yqsmSW5RMglEDxtNH
+        rANFb+MUiW1cdgoUlbE3BTTmylLQoJE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1647511213;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Abm9aZWjRWB02cH/iiBq5Tgw+x5jzud0k0C7ziDw03s=;
+        b=fhBXT5ne5WKxIElVBhepugvk3o08MdErSKw1XcU5a/cEY1ha/sMHd3GIsCliNVcOIjjwQH
+        5BHlJKFVAMUDq4Dw==
+Received: from quack3.suse.cz (unknown [10.100.200.198])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 572BAA3B94;
+        Thu, 17 Mar 2022 10:00:13 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id D7602A0615; Thu, 17 Mar 2022 11:00:12 +0100 (CET)
+Date:   Thu, 17 Mar 2022 11:00:12 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Ye Bin <yebin10@huawei.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jack@suse.cz, lczerner@redhat.com
+Subject: Re: [PATCH -next] jbd2: Fix null-ptr-deref when process reserved
+ list in jbd2_journal_commit_transaction
+Message-ID: <20220317100012.mw7iuvrehlaj5jve@quack3.lan>
+References: <20220317012755.2621687-1-yebin10@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.2
-Subject: Re: [PATCH v1 1/3] mm: split vm_normal_pages for LRU and non-LRU
- handling
-Content-Language: en-US
-To:     Alistair Popple <apopple@nvidia.com>,
-        Felix Kuehling <felix.kuehling@amd.com>
-Cc:     Alex Sierra <alex.sierra@amd.com>, jgg@nvidia.com,
-        linux-mm@kvack.org, rcampbell@nvidia.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        hch@lst.de, jglisse@redhat.com, willy@infradead.org,
-        akpm@linux-foundation.org
-References: <20220310172633.9151-1-alex.sierra@amd.com>
- <20220310172633.9151-2-alex.sierra@amd.com>
- <07401a0a-6878-6af2-f663-9f0c3c1d88e5@redhat.com>
- <1747447c-202d-9195-9d44-57f299be48c4@amd.com>
- <87lex98dtg.fsf@nvdebian.thelocal>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <87lex98dtg.fsf@nvdebian.thelocal>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220317012755.2621687-1-yebin10@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,63 +64,109 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 17.03.22 03:54, Alistair Popple wrote:
-> Felix Kuehling <felix.kuehling@amd.com> writes:
+On Thu 17-03-22 09:27:55, Ye Bin wrote:
+> we got issue as follows:
+> [   72.796117] EXT4-fs error (device sda): ext4_journal_check_start:83: comm fallocate: Detected aborted journal
+> [   72.826847] EXT4-fs (sda): Remounting filesystem read-only
+> fallocate: fallocate failed: Read-only file system
+> [   74.791830] jbd2_journal_commit_transaction: jh=0xffff9cfefe725d90 bh=0x0000000000000000 end delay
+> [   74.793597] ------------[ cut here ]------------
+> [   74.794203] kernel BUG at fs/jbd2/transaction.c:2063!
+> [   74.794886] invalid opcode: 0000 [#1] PREEMPT SMP PTI
+> [   74.795533] CPU: 4 PID: 2260 Comm: jbd2/sda-8 Not tainted 5.17.0-rc8-next-20220315-dirty #150
+> [   74.798327] RIP: 0010:__jbd2_journal_unfile_buffer+0x3e/0x60
+> [   74.801971] RSP: 0018:ffffa828c24a3cb8 EFLAGS: 00010202
+> [   74.802694] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> [   74.803601] RDX: 0000000000000001 RSI: ffff9cfefe725d90 RDI: ffff9cfefe725d90
+> [   74.804554] RBP: ffff9cfefe725d90 R08: 0000000000000000 R09: ffffa828c24a3b20
+> [   74.805471] R10: 0000000000000001 R11: 0000000000000001 R12: ffff9cfefe725d90
+> [   74.806385] R13: ffff9cfefe725d98 R14: 0000000000000000 R15: ffff9cfe833a4d00
+> [   74.807301] FS:  0000000000000000(0000) GS:ffff9d01afb00000(0000) knlGS:0000000000000000
+> [   74.808338] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   74.809084] CR2: 00007f2b81bf4000 CR3: 0000000100056000 CR4: 00000000000006e0
+> [   74.810047] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [   74.810981] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [   74.811897] Call Trace:
+> [   74.812241]  <TASK>
+> [   74.812566]  __jbd2_journal_refile_buffer+0x12f/0x180
+> [   74.813246]  jbd2_journal_refile_buffer+0x4c/0xa0
+> [   74.813869]  jbd2_journal_commit_transaction.cold+0xa1/0x148
+> [   74.817550]  kjournald2+0xf8/0x3e0
+> [   74.819056]  kthread+0x153/0x1c0
+> [   74.819963]  ret_from_fork+0x22/0x30
 > 
->> On 2022-03-11 04:16, David Hildenbrand wrote:
->>> On 10.03.22 18:26, Alex Sierra wrote:
->>>> DEVICE_COHERENT pages introduce a subtle distinction in the way
->>>> "normal" pages can be used by various callers throughout the kernel.
->>>> They behave like normal pages for purposes of mapping in CPU page
->>>> tables, and for COW. But they do not support LRU lists, NUMA
->>>> migration or THP. Therefore we split vm_normal_page into two
->>>> functions vm_normal_any_page and vm_normal_lru_page. The latter will
->>>> only return pages that can be put on an LRU list and that support
->>>> NUMA migration, KSM and THP.
->>>>
->>>> We also introduced a FOLL_LRU flag that adds the same behaviour to
->>>> follow_page and related APIs, to allow callers to specify that they
->>>> expect to put pages on an LRU list.
->>>>
->>> I still don't see the need for s/vm_normal_page/vm_normal_any_page/. And
->>> as this patch is dominated by that change, I'd suggest (again) to just
->>> drop it as I don't see any value of that renaming. No specifier implies any.
->>
->> OK. If nobody objects, we can adopts that naming convention.
+> Above issue may happen as follows:
+>         write                   truncate                   kjournald2
+> generic_perform_write
+>  ext4_write_begin
+>   ext4_walk_page_buffers
+>    do_journal_get_write_access ->add BJ_Reserved list
+>  ext4_journalled_write_end
+>   ext4_walk_page_buffers
+>    write_end_fn
+>     ext4_handle_dirty_metadata
+>                 ***************JBD2 ABORT**************
+>      jbd2_journal_dirty_metadata
+>  -> return -EROFS, jh in reserved_list
+>                                                    jbd2_journal_commit_transaction
+>                                                     while (commit_transaction->t_reserved_list)
+>                                                       jh = commit_transaction->t_reserved_list;
+>                         truncate_pagecache_range
+>                          do_invalidatepage
+> 			  ext4_journalled_invalidatepage
+> 			   jbd2_journal_invalidatepage
+> 			    journal_unmap_buffer
+> 			     __dispose_buffer
+> 			      __jbd2_journal_unfile_buffer
+> 			       jbd2_journal_put_journal_head ->put last ref_count
+> 			        __journal_remove_journal_head
+> 				 bh->b_private = NULL;
+> 				 jh->b_bh = NULL;
+> 				                      jbd2_journal_refile_buffer(journal, jh);
+> 							bh = jh2bh(jh);
+> 							->bh is NULL, later will trigger null-ptr-deref
+> 				 journal_free_journal_head(jh);
 > 
-> I'd prefer we avoid the churn too, but I don't think we should make
-> vm_normal_page() the equivalent of vm_normal_any_page(). It would mean
-> vm_normal_page() would return non-LRU device coherent pages, but to me at least
-> device coherent pages seem special and not what I'd expect from a function with
-> "normal" in the name.
+> As after 96f1e0974575 commit, handle reserved list will not hold "journal->j_state_lock"
+> when kjournald2 commit transaction. So journal_unmap_buffer maybe free
+> journal_head when handle reserved list. And lead to null-ptr-deref or some
+> strange errors.
+> As reserved list almost time is empty. Use "journal->j_state_lock" to protect
+> handle reserved list can simply solve above issue.
 > 
-> So I think it would be better to s/vm_normal_lru_page/vm_normal_page/ and keep
-> vm_normal_any_page() (or perhaps call it vm_any_page?). This is basically what
-> the previous incarnation of this feature did:
-> 
-> struct page *_vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
->                             pte_t pte, bool with_public_device);
-> #define vm_normal_page(vma, addr, pte) _vm_normal_page(vma, addr, pte, false)
-> 
-> Except we should add:
-> 
-> #define vm_normal_any_page(vma, addr, pte) _vm_normal_page(vma, addr, pte, true)
-> 
+> Fixes: 96f1e0974575("jbd2: avoid long hold times of j_state_lock while committing a transaction")
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
 
-"normal" simply tells us that this is not a special mapping -- IOW, we
-want the VM to take a look at the memmap and not treat it like a PFN
-map. What we're changing is that we're now also returning non-lru pages.
-Fair enough, that's why we introduce vm_normal_lru_page() as a
-replacement where we really can only deal with lru pages.
+Good spotting! Thanks for the analysis and the patch!
 
-vm_normal_page vs vm_normal_lru_page is good enough. "lru" further
-limits what we get via vm_normal_page, that's even how it's implemented.
+> diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
+> index 5b9408e3b370..2b737b928d26 100644
+> --- a/fs/jbd2/commit.c
+> +++ b/fs/jbd2/commit.c
+> @@ -488,7 +488,6 @@ void jbd2_journal_commit_transaction(journal_t *journal)
+>  	jbd2_journal_wait_updates(journal);
+>  
+>  	commit_transaction->t_state = T_SWITCH;
+> -	write_unlock(&journal->j_state_lock);
+>  
+>  	J_ASSERT (atomic_read(&commit_transaction->t_outstanding_credits) <=
+>  			journal->j_max_transaction_buffers);
+> @@ -527,6 +526,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
+>  		jbd2_journal_refile_buffer(journal, jh);
+>  	}
+>  
+> +	write_unlock(&journal->j_state_lock);
+>  	/*
+>  	 * Now try to drop any written-back buffers from the journal's
+>  	 * checkpoint lists.  We do this *before* commit because it potentially
 
-vm_normal_page vs vm_normal_any_page is confusing IMHO.
+Honestly, using j_state_lock seems like unnecessarily big hammer for this.
+I'd rather use journal->j_list_lock for this which is much more natural for
+list processing. And we grab it anyway from jbd2_journal_refile_buffer() so
+it is not like there will be any additional overhead anyway.
 
+								Honza
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
