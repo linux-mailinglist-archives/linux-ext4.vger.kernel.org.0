@@ -2,179 +2,218 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4CA94DC789
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Mar 2022 14:25:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD534DC797
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Mar 2022 14:30:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234553AbiCQN1J (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Mar 2022 09:27:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55208 "EHLO
+        id S234569AbiCQNcE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Mar 2022 09:32:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234561AbiCQN1I (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Mar 2022 09:27:08 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2042.outbound.protection.outlook.com [40.107.93.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A19918B7AF;
-        Thu, 17 Mar 2022 06:25:48 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W3cofmZ885Q0Y1VfmZtGnNbZU4TTJkFb2A2RKuO8h+1YUqQvq2RDxS5aJEdhDveMxSLjltUmvdntdACWNocK78Nc6X7fb0sHyGOOGoRPttiAsNyhm7rAkqIxTLBFr3foQi5ZVzk0tZvy24BdxE2K0JVhYPv+NNWsmMZ9GRmabSKTJZSpnltzm1CMXoVo+4OGIaknfCiEhO/Qn3O6z6b8hVU/9VnauNQ4SJbk1A/9qRFdRzPjrXWTImPFmlnJB79WLBX9J/20btsgMJhJZBpX+A5daA1NXdxRZRr7GBw4bpW3z/Tg4vCRXsRzb6EBwyghZ+qFzTz8Z4v5KKDJ989UUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5q1hlJk5vkR5cy+4asI2+SK2NR5fwLevVDj792uRsmk=;
- b=Za3Sbp/YAGXdA0dM+wnLwFxmA5A9EXNaSrUmqA8GZwjoxW81jjSSAiZ/VzgXtYbAKpzpAMQxwzSlgdWSkEWa6cOnibLH0ZBPLDJyQkvupMgOI77hYIRs1N+c1JVZ+Ok9O4XMSqAyoUmryheS61xLRpaux1UCcrpNctTbR+QrtySB4wQ35Rh5NcjSzinzyc1EhTKMkOAluYo6v9QyLfcBe8anYfizqhHklNjUdh9iz+OxIVV9EdegEiahv+Hd6Wz5nG+0idxRzxJuIquQZVwWWvaHvCIbIPs/KK6603E4hcghYmSTwDcV4mKzENr219LxRKkc76K4mx72MBLgA8PkIw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5q1hlJk5vkR5cy+4asI2+SK2NR5fwLevVDj792uRsmk=;
- b=THqUeqt06pBkzWp4mv3TXlfD+6Z3F7Zzje8AJQyc2ajEOm78YwBy3C8z7KO2RWV9Gc7DC897YiQOcECMx9eJxwZ0fbJcOeo7gFb0sPlobxBvR+JqdJlJ8dyyL7kXCwMnqetYjHiXBQZKKt/jjfQIvJ8p/09TPgP4DkvoZ8hGGOthP/YW/6/yqZlqI7/AVf5urVQ+pYjo7IMZbx3PsIJ78ok7L9By2p0zd3Y6ojndNJGpUC/gnOTKf4//8jaEtTJfZJIfce3yornEiseBp6AK1cYBOUYHIPaEuilnN1/tsjCZKc0MQCiBFsk1DoBJEmdt3+xN5LBzs8/d7bRLfnHDSQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
- by BL1PR12MB5320.namprd12.prod.outlook.com (2603:10b6:208:314::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5081.14; Thu, 17 Mar
- 2022 13:25:44 +0000
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::11a0:970a:4c24:c70c]) by MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::11a0:970a:4c24:c70c%5]) with mapi id 15.20.5081.017; Thu, 17 Mar 2022
- 13:25:44 +0000
-Date:   Thu, 17 Mar 2022 10:25:43 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Alistair Popple <apopple@nvidia.com>,
-        Felix Kuehling <felix.kuehling@amd.com>,
-        Alex Sierra <alex.sierra@amd.com>, linux-mm@kvack.org,
-        rcampbell@nvidia.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, hch@lst.de, jglisse@redhat.com,
-        willy@infradead.org, akpm@linux-foundation.org
-Subject: Re: [PATCH v1 1/3] mm: split vm_normal_pages for LRU and non-LRU
- handling
-Message-ID: <20220317132543.GW11336@nvidia.com>
-References: <20220310172633.9151-1-alex.sierra@amd.com>
- <20220310172633.9151-2-alex.sierra@amd.com>
- <07401a0a-6878-6af2-f663-9f0c3c1d88e5@redhat.com>
- <1747447c-202d-9195-9d44-57f299be48c4@amd.com>
- <87lex98dtg.fsf@nvdebian.thelocal>
- <ab26f7a0-728e-9627-796b-e8e850402aae@redhat.com>
+        with ESMTP id S234570AbiCQNcE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Mar 2022 09:32:04 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E4081D760F;
+        Thu, 17 Mar 2022 06:30:47 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 1B3F021108;
+        Thu, 17 Mar 2022 13:30:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1647523846; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y3ogMsPlSaEsoClzjz9EcODCM0amrFlbTL76cPWoxW8=;
+        b=pcN5FVkm/AKs2RCVsJd1K1LIyO98Zu1CQZKhqH98cbpzL2YLTnOnD+gH3hVKHaIrz4sw26
+        bWC1YwQxLsd1cZ2xrG1Vz+exYEow2tuOVFtkh1Vaq9nVawfiRxYu2bkomxZJaCBYpn0Yji
+        ef2LZAPq+8wQLcOnivK0cjw91AmAFEY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1647523846;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y3ogMsPlSaEsoClzjz9EcODCM0amrFlbTL76cPWoxW8=;
+        b=R7Yce8VYFFfK3zxHtNRCJ6ZE5j12DJroKiFi1ESH613q6iucIg4vUrVOXZJ0J+X3e59Vm6
+        lUYg/cqS4aO1vjDw==
+Received: from quack3.suse.cz (unknown [10.100.200.198])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id B8636A3B81;
+        Thu, 17 Mar 2022 13:30:45 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 67E37A0615; Thu, 17 Mar 2022 14:30:45 +0100 (CET)
+Date:   Thu, 17 Mar 2022 14:30:45 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     yebin <yebin10@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lczerner@redhat.com
+Subject: Re: [PATCH -next] jbd2: Fix null-ptr-deref when process reserved
+ list in jbd2_journal_commit_transaction
+Message-ID: <20220317133045.hc6vliufp53idb72@quack3.lan>
+References: <20220317012755.2621687-1-yebin10@huawei.com>
+ <20220317100012.mw7iuvrehlaj5jve@quack3.lan>
+ <62331D5C.2010808@huawei.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ab26f7a0-728e-9627-796b-e8e850402aae@redhat.com>
-X-ClientProxiedBy: BL1P223CA0020.NAMP223.PROD.OUTLOOK.COM
- (2603:10b6:208:2c4::25) To MN2PR12MB4192.namprd12.prod.outlook.com
- (2603:10b6:208:1d5::15)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0ab39593-c216-40ba-8e25-08da0819a41c
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5320:EE_
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5320F31E2397F9D87599EBAEC2129@BL1PR12MB5320.namprd12.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wuXxRXQw2uvIO/ueBQo2HOSvO1aNWpDL9X2Mu8qL+ENFj4PxHOdoxSxugTgqaGOrFyOkDduhPx3b7qe7VgxlctEGLqRBXJ1QIhaD0nVSEZ0onEBexb4MWJqnS4FdYBptUSlXmG/cC8aPiNkBEX2A2AOwS419cWaF3UV3I8ivLCvjKvpXIUx2Z3D97CHFvjuO79Vwa+QWc0TQBRoSWDU+ua4Vra/bD7qvNPBVFTne4kyWhtJw7/VvK5GsCutuIvydlmCZ0Km13J9+P5zdnORIp6xD80sXKI6lt5aB2NRtoFbtt/IrAFPkU/d5LR2ZUMNa6p1txwGvCDJOAZhSOtRVFhdl3d3+sacxO+WsfY8tq84P5uyx4K/y3+nNLcKOHUU6m329uxoWjcL4fQxfrztLjUrnfs1ukFUSIoiPeCaLnc1RfOxCdK/loDMv8H3gf4u7tDnI1Y+vRYG0nvCwd6RpxC3ryjfX9KbHUDM8XXWAYY7JwsbZMNcngQ3+S54r22aPFLdKzaRixsv81JEOc9WzxCMaWwD+AHUgM5cWThL71hOzocsBn3+oozcEhO5wluSBA5ENFaz+L68TK25e2OsV1rIs4HUhW/XLvT653EwSUCNoGzM8wWPEHaqmvJrORh4PTr9gvdNyMxrTShHKXvCjag==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(38100700002)(4326008)(5660300002)(6512007)(53546011)(66946007)(36756003)(54906003)(6486002)(66556008)(66476007)(8676002)(316002)(6916009)(8936002)(86362001)(508600001)(33656002)(83380400001)(1076003)(7416002)(6506007)(2906002)(26005)(186003)(2616005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?J6C8pjwvlzu66CRyYH4zIwtwRe/07xVd9RIPYw0+hpOLXlxCNb+dAg+ZZpF1?=
- =?us-ascii?Q?pG8x4uFfUwPdAWiUnlC6Hos08lqW5d62Qv0oT5iEFG5lt+rHLLCpkY7A5hx9?=
- =?us-ascii?Q?WFarAi2/3He4Jg6g2BCixkgMdTVnpfwKSIACkeukOKJGs/ATU/uoevs72LIp?=
- =?us-ascii?Q?2iCZAQtTcSN4QJ0zz9xOWrE2AxZeUFx4yQ/eGHHfae9WnQ99U4PKSodCyPl2?=
- =?us-ascii?Q?YHeGUMlGV5Nvlq5SevX0FpbKiTMoZAFpdGucbs9AtqAf52F1pdYLMDVcC0k/?=
- =?us-ascii?Q?XavpJ7qsIWqrYX9LM3heocf1mg48XyvVWq9bcCeRyTnz+fib9/i7qd+JKc2P?=
- =?us-ascii?Q?gKfztUXfN1tqUryfKKwh7RJ9XlQM1CE9dgGqH/ymHoFUjO880hYbA8tLjYUJ?=
- =?us-ascii?Q?ibAhc2Mgfx/WeKCx2rhLnrV9EEkR2JfrNDvlu5rlldTDmaDOMV9PK2CXYk8M?=
- =?us-ascii?Q?RUS9Me0FzikNKSUfGclpz/4SdzNsuBEH4k/HvEeX2oWqFAdNaU53Yb2Zq1H5?=
- =?us-ascii?Q?f6mebYnN/mT8Rll8QHk9ha0xyrBlp58e4QTDaLi+z30kAlsMwwxlRXM7ym2R?=
- =?us-ascii?Q?GcYAwdBB0YsFf5GV1pvLc8k93zS97ipJlwmq3O2aFyHx5Y42aqaGyJqmGSxH?=
- =?us-ascii?Q?6dht6QXlGJgN68223EIRxBv4xz8F/hNyn/+gD3hHtZDvoCzSyGEYk8RO9yJN?=
- =?us-ascii?Q?UYFle6vPXc8t/UzZtwhoV+pCH42VYHWomaYIW7XOwOBkeVuqMjvNEs+Nxa1i?=
- =?us-ascii?Q?WqI4gXvaTmpHxTkuS19HVjdzWbhCFOyDmdwnPe4BmM/900klhSD1HiW4DLFj?=
- =?us-ascii?Q?olgZPAIXI5giO63oJQRZScnsa+/5oDGXF1wKRmfoju02CGTSqVvT+LlOA1kf?=
- =?us-ascii?Q?+JZ1ZOT7Hhf9bzdyS1oeMq2XiFCfWPyVbtwRAUd/KJg3vlena4s8hmv9X9cC?=
- =?us-ascii?Q?n9SBERaixAxmOiRVJszYFFZvdPF9fhsV7NImpSpdbj5kkM86sVh8Yyt+IJyV?=
- =?us-ascii?Q?Xy8TSImliVSRsVFjYtoAjaH/5F0TlM/oDI51anb7JnqmBYs52Rx1Wd5GSPdR?=
- =?us-ascii?Q?3O7yzbXgtnPkh/KUBnAjjdxrfYxLXwoxcc3XK17TBbiRcQZmGOf/Ii6neLkv?=
- =?us-ascii?Q?95XqpsT+m+RMh7ITGMRsuVqr8udW1mitvzX5AfNhVOWPA/Y3zCJi9IBX5Pg8?=
- =?us-ascii?Q?sjVz7mYdQ8dv8upB93topqyernO/uUEFGb5ky4t++qgEk/YAc2bS80SCdATs?=
- =?us-ascii?Q?5KBkE/MMIDc2J5G8X8VDIm4AfZS8dnEAPOiyAVOUH2+eHZqrTon8IqN/1gdi?=
- =?us-ascii?Q?oAUJU7hb0/UguReKTYxXcC8q6hULsTnsgLDxycF8YSZWvNS24co+7b00qYzM?=
- =?us-ascii?Q?6t2L6KAEe5T4Fe0NW6TyUsKvYYhNADGi4JF9cch5Ev1RMcR4QEqnRVnaVbMR?=
- =?us-ascii?Q?WxmQ+qVDQKJhcckhFtsAmoCxkSWzdgwg?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0ab39593-c216-40ba-8e25-08da0819a41c
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2022 13:25:44.8604
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Hni5aDahCsZ/0yMzVaTKlXbKvgsD3Ei6AZ42yBUoWl8J30aqzjEoaTCafl8vZHMy
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5320
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <62331D5C.2010808@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Mar 17, 2022 at 09:13:50AM +0100, David Hildenbrand wrote:
-> On 17.03.22 03:54, Alistair Popple wrote:
-> > Felix Kuehling <felix.kuehling@amd.com> writes:
-> > 
-> >> On 2022-03-11 04:16, David Hildenbrand wrote:
-> >>> On 10.03.22 18:26, Alex Sierra wrote:
-> >>>> DEVICE_COHERENT pages introduce a subtle distinction in the way
-> >>>> "normal" pages can be used by various callers throughout the kernel.
-> >>>> They behave like normal pages for purposes of mapping in CPU page
-> >>>> tables, and for COW. But they do not support LRU lists, NUMA
-> >>>> migration or THP. Therefore we split vm_normal_page into two
-> >>>> functions vm_normal_any_page and vm_normal_lru_page. The latter will
-> >>>> only return pages that can be put on an LRU list and that support
-> >>>> NUMA migration, KSM and THP.
-> >>>>
-> >>>> We also introduced a FOLL_LRU flag that adds the same behaviour to
-> >>>> follow_page and related APIs, to allow callers to specify that they
-> >>>> expect to put pages on an LRU list.
-> >>>>
-> >>> I still don't see the need for s/vm_normal_page/vm_normal_any_page/. And
-> >>> as this patch is dominated by that change, I'd suggest (again) to just
-> >>> drop it as I don't see any value of that renaming. No specifier implies any.
-> >>
-> >> OK. If nobody objects, we can adopts that naming convention.
-> > 
-> > I'd prefer we avoid the churn too, but I don't think we should make
-> > vm_normal_page() the equivalent of vm_normal_any_page(). It would mean
-> > vm_normal_page() would return non-LRU device coherent pages, but to me at least
-> > device coherent pages seem special and not what I'd expect from a function with
-> > "normal" in the name.
-> > 
-> > So I think it would be better to s/vm_normal_lru_page/vm_normal_page/ and keep
-> > vm_normal_any_page() (or perhaps call it vm_any_page?). This is basically what
-> > the previous incarnation of this feature did:
-> > 
-> > struct page *_vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
-> >                             pte_t pte, bool with_public_device);
-> > #define vm_normal_page(vma, addr, pte) _vm_normal_page(vma, addr, pte, false)
-> > 
-> > Except we should add:
-> > 
-> > #define vm_normal_any_page(vma, addr, pte) _vm_normal_page(vma, addr, pte, true)
-> > 
+On Thu 17-03-22 19:37:00, yebin wrote:
 > 
-> "normal" simply tells us that this is not a special mapping -- IOW, we
-> want the VM to take a look at the memmap and not treat it like a PFN
-> map. What we're changing is that we're now also returning non-lru pages.
-> Fair enough, that's why we introduce vm_normal_lru_page() as a
-> replacement where we really can only deal with lru pages.
 > 
-> vm_normal_page vs vm_normal_lru_page is good enough. "lru" further
-> limits what we get via vm_normal_page, that's even how it's implemented.
+> On 2022/3/17 18:00, Jan Kara wrote:
+> > On Thu 17-03-22 09:27:55, Ye Bin wrote:
+> > > we got issue as follows:
+> > > [   72.796117] EXT4-fs error (device sda): ext4_journal_check_start:83: comm fallocate: Detected aborted journal
+> > > [   72.826847] EXT4-fs (sda): Remounting filesystem read-only
+> > > fallocate: fallocate failed: Read-only file system
+> > > [   74.791830] jbd2_journal_commit_transaction: jh=0xffff9cfefe725d90 bh=0x0000000000000000 end delay
+> > > [   74.793597] ------------[ cut here ]------------
+> > > [   74.794203] kernel BUG at fs/jbd2/transaction.c:2063!
+> > > [   74.794886] invalid opcode: 0000 [#1] PREEMPT SMP PTI
+> > > [   74.795533] CPU: 4 PID: 2260 Comm: jbd2/sda-8 Not tainted 5.17.0-rc8-next-20220315-dirty #150
+> > > [   74.798327] RIP: 0010:__jbd2_journal_unfile_buffer+0x3e/0x60
+> > > [   74.801971] RSP: 0018:ffffa828c24a3cb8 EFLAGS: 00010202
+> > > [   74.802694] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> > > [   74.803601] RDX: 0000000000000001 RSI: ffff9cfefe725d90 RDI: ffff9cfefe725d90
+> > > [   74.804554] RBP: ffff9cfefe725d90 R08: 0000000000000000 R09: ffffa828c24a3b20
+> > > [   74.805471] R10: 0000000000000001 R11: 0000000000000001 R12: ffff9cfefe725d90
+> > > [   74.806385] R13: ffff9cfefe725d98 R14: 0000000000000000 R15: ffff9cfe833a4d00
+> > > [   74.807301] FS:  0000000000000000(0000) GS:ffff9d01afb00000(0000) knlGS:0000000000000000
+> > > [   74.808338] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > [   74.809084] CR2: 00007f2b81bf4000 CR3: 0000000100056000 CR4: 00000000000006e0
+> > > [   74.810047] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > [   74.810981] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > [   74.811897] Call Trace:
+> > > [   74.812241]  <TASK>
+> > > [   74.812566]  __jbd2_journal_refile_buffer+0x12f/0x180
+> > > [   74.813246]  jbd2_journal_refile_buffer+0x4c/0xa0
+> > > [   74.813869]  jbd2_journal_commit_transaction.cold+0xa1/0x148
+> > > [   74.817550]  kjournald2+0xf8/0x3e0
+> > > [   74.819056]  kthread+0x153/0x1c0
+> > > [   74.819963]  ret_from_fork+0x22/0x30
+> > > 
+> > > Above issue may happen as follows:
+> > >          write                   truncate                   kjournald2
+> > > generic_perform_write
+> > >   ext4_write_begin
+> > >    ext4_walk_page_buffers
+> > >     do_journal_get_write_access ->add BJ_Reserved list
+> > >   ext4_journalled_write_end
+> > >    ext4_walk_page_buffers
+> > >     write_end_fn
+> > >      ext4_handle_dirty_metadata
+> > >                  ***************JBD2 ABORT**************
+> > >       jbd2_journal_dirty_metadata
+> > >   -> return -EROFS, jh in reserved_list
+> > >                                                     jbd2_journal_commit_transaction
+> > >                                                      while (commit_transaction->t_reserved_list)
+> > >                                                        jh = commit_transaction->t_reserved_list;
+> > >                          truncate_pagecache_range
+> > >                           do_invalidatepage
+> > > 			  ext4_journalled_invalidatepage
+> > > 			   jbd2_journal_invalidatepage
+> > > 			    journal_unmap_buffer
+> > > 			     __dispose_buffer
+> > > 			      __jbd2_journal_unfile_buffer
+> > > 			       jbd2_journal_put_journal_head ->put last ref_count
+> > > 			        __journal_remove_journal_head
+> > > 				 bh->b_private = NULL;
+> > > 				 jh->b_bh = NULL;
+> > > 				                      jbd2_journal_refile_buffer(journal, jh);
+> > > 							bh = jh2bh(jh);
+> > > 							->bh is NULL, later will trigger null-ptr-deref
+> > > 				 journal_free_journal_head(jh);
+> > > 
+> > > As after 96f1e0974575 commit, handle reserved list will not hold "journal->j_state_lock"
+> > > when kjournald2 commit transaction. So journal_unmap_buffer maybe free
+> > > journal_head when handle reserved list. And lead to null-ptr-deref or some
+> > > strange errors.
+> > > As reserved list almost time is empty. Use "journal->j_state_lock" to protect
+> > > handle reserved list can simply solve above issue.
+> > > 
+> > > Fixes: 96f1e0974575("jbd2: avoid long hold times of j_state_lock while committing a transaction")
+> > > Signed-off-by: Ye Bin <yebin10@huawei.com>
+> > Good spotting! Thanks for the analysis and the patch!
+> > 
+> > > diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
+> > > index 5b9408e3b370..2b737b928d26 100644
+> > > --- a/fs/jbd2/commit.c
+> > > +++ b/fs/jbd2/commit.c
+> > > @@ -488,7 +488,6 @@ void jbd2_journal_commit_transaction(journal_t *journal)
+> > >   	jbd2_journal_wait_updates(journal);
+> > >   	commit_transaction->t_state = T_SWITCH;
+> > > -	write_unlock(&journal->j_state_lock);
+> > >   	J_ASSERT (atomic_read(&commit_transaction->t_outstanding_credits) <=
+> > >   			journal->j_max_transaction_buffers);
+> > > @@ -527,6 +526,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
+> > >   		jbd2_journal_refile_buffer(journal, jh);
+> > >   	}
+> > > +	write_unlock(&journal->j_state_lock);
+> > >   	/*
+> > >   	 * Now try to drop any written-back buffers from the journal's
+> > >   	 * checkpoint lists.  We do this *before* commit because it potentially
+> > Honestly, using j_state_lock seems like unnecessarily big hammer for this.
+> > I'd rather use journal->j_list_lock for this which is much more natural for
+> > list processing. And we grab it anyway from jbd2_journal_refile_buffer() so
+> > it is not like there will be any additional overhead anyway.
+> > 
+> > 								Honza
+> If use journal->j_list_lock for reserved list, we must change order of
+> jh->b_state_lock and
+> journal->j_list_lock.
+> <../cgi-bin/global.cgi?pattern=j_list_lock&type=symbol>
+> I have another idea as follows. Do you think it is feasible?
 
-This naming makes sense to me.
+Oh right, I forgot the lock ordering is not very convenient for these two
+locks. Ok, then I probably prefer your original solution to the one below.
+But please add a comment like:
 
-Jason
+We use journal->j_state_lock here to serialize processing of
+t_reserved_list with eviction of buffers from journal_unmap_buffer().
+
+Thanks!
+
+								Honza
+
+
+> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+> index 73ed02f061e1..00c51a92a5cc 100644
+> --- a/fs/jbd2/transaction.c
+> +++ b/fs/jbd2/transaction.c
+> @@ -2282,6 +2282,7 @@ static int journal_unmap_buffer(journal_t *journal,
+> struct buffer_head *bh,
+>         if (!jh)
+>                 goto zap_buffer_unlocked;
+> 
+> +repeat:
+>         /* OK, we have data buffer in journaled mode */
+>         write_lock(&journal->j_state_lock);
+>         spin_lock(&jh->b_state_lock);
+> @@ -2357,6 +2358,11 @@ static int journal_unmap_buffer(journal_t *journal,
+> struct buffer_head *bh,
+>                                 goto zap_buffer;
+>                         }
+>                 }
+> +       } else if (transaction->t_state == T_SWITCH) {
+> +               spin_unlock(&journal->j_list_lock);
+> +               spin_unlock(&jh->b_state_lock);
+> +               wait_transaction_switching(journal);
+> +               goto repeat;
+>         } else if (transaction == journal->j_committing_transaction) {
+>                 JBUFFER_TRACE(jh, "on committing transaction");
+>                 /*
+> --
+> 
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
