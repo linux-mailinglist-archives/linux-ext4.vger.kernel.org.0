@@ -2,46 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E8B4DDF10
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Mar 2022 17:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC954DDFFC
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Mar 2022 18:32:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235896AbiCRQco (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 18 Mar 2022 12:32:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59960 "EHLO
+        id S234933AbiCRRd0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 18 Mar 2022 13:33:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239196AbiCRQcl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Mar 2022 12:32:41 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 974451AE625;
-        Fri, 18 Mar 2022 09:31:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9FC09B82475;
-        Fri, 18 Mar 2022 16:31:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58498C340EC;
-        Fri, 18 Mar 2022 16:31:00 +0000 (UTC)
-Date:   Fri, 18 Mar 2022 12:30:58 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Sven Schnelle <svens@linux.ibm.com>
-Cc:     Ritesh Harjani <riteshh@linux.ibm.com>, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.cz>, "Theodore Ts'o" <tytso@mit.edu>,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@kernel.org
-Subject: Re: [PATCHv3 02/10] ext4: Fix ext4_fc_stats trace point
-Message-ID: <20220318123058.348938b1@gandalf.local.home>
-In-Reply-To: <20220317143938.745e1420@gandalf.local.home>
-References: <cover.1647057583.git.riteshh@linux.ibm.com>
-        <b4b9691414c35c62e570b723e661c80674169f9a.1647057583.git.riteshh@linux.ibm.com>
-        <yt9dr1706b4i.fsf@linux.ibm.com>
-        <20220317143938.745e1420@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        with ESMTP id S233290AbiCRRd0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Mar 2022 13:33:26 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE27CF488;
+        Fri, 18 Mar 2022 10:32:07 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id l4-20020a17090a49c400b001c6840df4a3so5106776pjm.0;
+        Fri, 18 Mar 2022 10:32:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=v2+7TjxCz/iJePRyFbqQRLmhTrxcszamkFrqGEeq6RE=;
+        b=j6rdW0vl3K3sGSkYu5w7VUoJZJZvYdcycVs5qyXdXGtGv/mX1pV1rkvC+ckVdBL/Ts
+         wvoc0z+Ja9EpA3+aKl1DVOsCRjgJKx36A8CareMJUtbIejvnh7zRR1RHLrb6JRUsAhRx
+         y0XUYRpUFdMt12mg3Z5uz8Lg5USvnTqhJt5vEWr6o+HZ9irOkyy/DovkNM2SbrQ1JX8M
+         Lna+vYwAd0Rq7IOpPk7i0MgBEJKL+nnQ3bg5tkxA+RaNMuaObzgsjcFqQ5RukRiVwvzQ
+         sgIGO2lunB2ZEKsPV6TA44T15jtdf435vfQTo3DmA/yN/XVMy6OnkbkfkFbbTdP8O2J1
+         lxKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v2+7TjxCz/iJePRyFbqQRLmhTrxcszamkFrqGEeq6RE=;
+        b=rAqSx1OpdliI+/3Ggpnvvu+8EBfz/QJles4EcDHQIwfl7xpPsyZkYSXY5B+SHY/6Kx
+         UbVuwFFXqcy2fmuAhUYMwAKGuDeZrvVFE4ZTm3HILzfqmprI4glPh6UItql8DzHU5zFR
+         v1gXmCXGSdChCMhvIHm3s3kqhRrxs8giNwAOptOwbIVmA3u0WfyMhNA20cbWDp8+eGM4
+         pK/jkY/VRHiTqwmf9Wq39vv7fw8ut49GR0ScRdkPTArBLjlRA8WI677irim+7+qX+a5+
+         t9SsC8MEuDVheFSTxLf2tsApBiSJnXFAN2wazMQLqbmhBib+W1q0l8uL0gsyURdQjYqJ
+         MqPQ==
+X-Gm-Message-State: AOAM530RLxARBvL1j5k/uhnP28aM+XhH7tvhDbm1Od0HaKE8I+qTKnMj
+        9jXBv+ulDC47BkF5tVxhyTiGAeY2MsLHc7S10nk=
+X-Google-Smtp-Source: ABdhPJyh5sar5ek5GT9YTEP77ixsCcilYxYkIste3RuLag/BYsrgSRi1slJnriJ+u/pf99Z+trolDxeILv7BgoSjLmA=
+X-Received: by 2002:a17:90a:3906:b0:1bf:a0a6:d208 with SMTP id
+ y6-20020a17090a390600b001bfa0a6d208mr22604556pjb.21.1647624726981; Fri, 18
+ Mar 2022 10:32:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+References: <20220317234827.447799-1-shy828301@gmail.com> <20220318012948.GE1544202@dread.disaster.area>
+In-Reply-To: <20220318012948.GE1544202@dread.disaster.area>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 18 Mar 2022 10:31:55 -0700
+Message-ID: <CAHbLzkpFch0+=XorZXpaqvFb=_OXdn4ZsjOLhWg1EJpMZNaM0A@mail.gmail.com>
+Subject: Re: [v2 PATCH 0/8] Make khugepaged collapse readonly FS THP more consistent
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     vbabka@suse.cz, kirill.shutemov@linux.intel.com,
+        linmiaohe@huawei.com, songliubraving@fb.com, riel@surriel.com,
+        willy@infradead.org, ziy@nvidia.com, akpm@linux-foundation.org,
+        tytso@mit.edu, adilger.kernel@dilger.ca, darrick.wong@oracle.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,124 +70,108 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 17 Mar 2022 14:39:38 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Thu, Mar 17, 2022 at 6:29 PM Dave Chinner <david@fromorbit.com> wrote:
+>
+> On Thu, Mar 17, 2022 at 04:48:19PM -0700, Yang Shi wrote:
+> >
+> > Changelog
+> > v2: * Collected reviewed-by tags from Miaohe Lin.
+> >     * Fixed build error for patch 4/8.
+> >
+> > The readonly FS THP relies on khugepaged to collapse THP for suitable
+> > vmas.  But it is kind of "random luck" for khugepaged to see the
+> > readonly FS vmas (see report: https://lore.kernel.org/linux-mm/00f195d4-d039-3cf2-d3a1-a2c88de397a0@suse.cz/) since currently the vmas are registered to khugepaged when:
+> >   - Anon huge pmd page fault
+> >   - VMA merge
+> >   - MADV_HUGEPAGE
+> >   - Shmem mmap
+> >
+> > If the above conditions are not met, even though khugepaged is enabled
+> > it won't see readonly FS vmas at all.  MADV_HUGEPAGE could be specified
+> > explicitly to tell khugepaged to collapse this area, but when khugepaged
+> > mode is "always" it should scan suitable vmas as long as VM_NOHUGEPAGE
+> > is not set.
+> >
+> > So make sure readonly FS vmas are registered to khugepaged to make the
+> > behavior more consistent.
+> >
+> > Registering the vmas in mmap path seems more preferred from performance
+> > point of view since page fault path is definitely hot path.
+> >
+> >
+> > The patch 1 ~ 7 are minor bug fixes, clean up and preparation patches.
+> > The patch 8 converts ext4 and xfs.  We may need convert more filesystems,
+> > but I'd like to hear some comments before doing that.
+>
+> After reading through the patchset, I have no idea what this is even
+> doing or enabling. I can't comment on the last patch and it's effect
+> on XFS because there's no high level explanation of the
+> functionality or feature to provide me with the context in which I
+> should be reviewing this patchset.
+>
+> I understand this has something to do with hugepages, but there's no
+> explaination of exactly where huge pages are going to be used in the
+> filesystem, what the problems with khugepaged and filesystems are
+> that this apparently solves, what constraints it places on
+> filesystems to enable huge pages to be used, etc.
+>
+> I'm guessing that the result is that we'll suddenly see huge pages
+> in the page cache for some undefined set of files in some undefined
+> set of workloads. But that doesn't help me understand any of the
+> impacts it may have. e.g:
 
-> [ here I wanted to add a patch, but I haven't figured out the best way to
->   fix it yet. ]
+Song introduced READ_ONLY_THP_FOR_FS back in 2019. It collapses huge
+pages for readonly executable file mappings to speed up the programs
+with huge text section. The huge page is allocated/collapsed by
+khugepaged instead of in page fault path.
 
-Care to try this patch?
+Vlastimil reported the huge pages are not collapsed consistently since
+the suitable MMs were not registered by khugepaged consistently as the
+commit log elaborated. So this patchset makes the behavior of
+khugepaged (for collapsing readonly file THP) more consistent.
 
--- Steve
+>
+> - how does this relate to the folio conversion and use of large
+>   pages in the page cache?
+> - why do we want two completely separate large page mechanisms in
+>   the page cache?
 
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index 7b558c72f595..e11e167b7809 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -40,6 +40,14 @@ static LIST_HEAD(ftrace_generic_fields);
- static LIST_HEAD(ftrace_common_fields);
- static bool eventdir_initialized;
- 
-+static LIST_HEAD(module_strings);
-+
-+struct module_string {
-+	struct list_head	next;
-+	struct module		*module;
-+	char			*str;
-+};
-+
- #define GFP_TRACE (GFP_KERNEL | __GFP_ZERO)
- 
- static struct kmem_cache *field_cachep;
-@@ -2643,14 +2651,40 @@ static void update_event_printk(struct trace_event_call *call,
- 	}
- }
- 
-+static void add_str_to_module(struct module *module, char *str)
-+{
-+	struct module_string *modstr;
-+
-+	modstr = kmalloc(sizeof(*modstr), GFP_KERNEL);
-+
-+	/*
-+	 * If we failed to allocate memory here, then we'll just
-+	 * let the str memory leak when the module is removed.
-+	 * If this fails to allocate, there's worse problems than
-+	 * a leaked string on module removal.
-+	 */
-+	if (WARN_ON_ONCE(!modstr))
-+		return;
-+
-+	modstr->module = module;
-+	modstr->str = str;
-+
-+	list_add(&modstr->next, &module_strings);
-+}
-+
- static void update_event_fields(struct trace_event_call *call,
- 				struct trace_eval_map *map)
- {
- 	struct ftrace_event_field *field;
- 	struct list_head *head;
- 	char *ptr;
-+	char *str;
- 	int len = strlen(map->eval_string);
- 
-+	/* Dynamic events should never have field maps */
-+	if (WARN_ON_ONCE(call->flags & TRACE_EVENT_FL_DYNAMIC))
-+		return;
-+
- 	head = trace_get_fields(call);
- 	list_for_each_entry(field, head, link) {
- 		ptr = strchr(field->type, '[');
-@@ -2664,9 +2698,26 @@ static void update_event_fields(struct trace_event_call *call,
- 		if (strncmp(map->eval_string, ptr, len) != 0)
- 			continue;
- 
-+		str = kstrdup(field->type, GFP_KERNEL);
-+		if (WARN_ON_ONCE(!str))
-+			return;
-+		ptr = str + (ptr - field->type);
- 		ptr = eval_replace(ptr, map, len);
- 		/* enum/sizeof string smaller than value */
--		WARN_ON_ONCE(!ptr);
-+		if (WARN_ON_ONCE(!ptr)) {
-+			kfree(str);
-+			continue;
-+		}
-+
-+		/*
-+		 * If the event is part of a module, then we need to free the string
-+		 * when the module is removed. Otherwise, it will stay allocated
-+		 * until a reboot.
-+		 */
-+		if (call->module)
-+			add_str_to_module(call->module, str);
-+
-+		field->type = str;
- 	}
- }
- 
-@@ -2893,6 +2944,7 @@ static void trace_module_add_events(struct module *mod)
- static void trace_module_remove_events(struct module *mod)
- {
- 	struct trace_event_call *call, *p;
-+	struct module_string *modstr, *m;
- 
- 	down_write(&trace_event_sem);
- 	list_for_each_entry_safe(call, p, &ftrace_events, list) {
-@@ -2901,6 +2953,14 @@ static void trace_module_remove_events(struct module *mod)
- 		if (call->module == mod)
- 			__trace_remove_event_call(call);
- 	}
-+	/* Check for any strings allocade for this module */
-+	list_for_each_entry_safe(modstr, m, &module_strings, next) {
-+		if (modstr->module != mod)
-+			continue;
-+		list_del(&modstr->next);
-+		kfree(modstr->str);
-+		kfree(modstr);
-+	}
- 	up_write(&trace_event_sem);
- 
- 	/*
+It has nothing to do with the folio conversion. But once the file
+THP/huge page is fully supported, the READ_ONLY_THP_FOR_FS may be
+deprecated. However, making khugepaged collapse file THP more
+consistently is applicable to full file huge page support as well as
+long as we still use khugepaged to collapse THP.
+
+> - why is this limited to "read only VMAs" and how does the
+>   filesystem actually ensure that the VMAs are read only?
+
+It uses the below check:
+
+(IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS)) &&
+               (vma->vm_flags & VM_EXEC) &&
+               !inode_is_open_for_write(inode) && S_ISREG(inode->i_mode);
+
+This condition was introduced by READ_ONLY_THP_FOR_FS in the first
+place, not this patchset.
+
+> - what happens if we have a file that huge pages mapped into the
+>   page cache via read only VMAs then has write() called on it via a
+>   different file descriptor and so we need to dirty the page cache
+>   that has huge pages in it?
+
+Once someone else opens the fd in write mode, the THP will be
+truncated and khugepaged will backoff IIUC.
+
+>
+> I've got a lot more questions, but to save me having to ask them,
+> how about you explain what this new functionality actually does, why
+> we need to support it, and why it is better than the fully writeable
+> huge page support via folios that we already have in the works...
+>
+> Cheers,
+>
+> Dave.
+>
+> --
+> Dave Chinner
+> david@fromorbit.com
