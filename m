@@ -2,51 +2,71 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 724164DD7CD
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Mar 2022 11:15:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F26F4DDA57
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Mar 2022 14:16:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234925AbiCRKQJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 18 Mar 2022 06:16:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40218 "EHLO
+        id S236592AbiCRNR2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 18 Mar 2022 09:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234929AbiCRKQH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Mar 2022 06:16:07 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F8A114DF1
-        for <linux-ext4@vger.kernel.org>; Fri, 18 Mar 2022 03:14:49 -0700 (PDT)
-Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4KKfyF1kCCz1GCN6;
-        Fri, 18 Mar 2022 18:14:45 +0800 (CST)
-Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Fri, 18 Mar 2022 18:14:47 +0800
-Received: from [10.174.176.102] (10.174.176.102) by
- dggpeml100016.china.huawei.com (7.185.36.216) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Fri, 18 Mar 2022 18:14:46 +0800
-Message-ID: <63bf116a-1e48-dae4-09bf-fc35bcfde0ce@huawei.com>
-Date:   Fri, 18 Mar 2022 18:14:46 +0800
+        with ESMTP id S229896AbiCRNR1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Mar 2022 09:17:27 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89ECF2DD988;
+        Fri, 18 Mar 2022 06:16:08 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 4754F21101;
+        Fri, 18 Mar 2022 13:16:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1647609367; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=f3kv0AiWNbv68LeKn1hsglF0Wmdg9GUXlOxnUzosnJE=;
+        b=RK4Lrt9+CnrVCuQbkXrZvk5QH0vUSOjRUd7C+Ln3z0RmN1oYZuIH4Bu4rjLqpRetncL8OD
+        KG64pV77vbFy92MPEtx4ZyQaB54ufzgzMG7rYRZrCUXkkrVsheQFzZs4zNAHAYRgabSebV
+        /K6+C8WFYtSwLA6AxvWlF7lvcry/RK0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1647609367;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=f3kv0AiWNbv68LeKn1hsglF0Wmdg9GUXlOxnUzosnJE=;
+        b=1Y3jQ8OtUy1BzZ6aMZOd8GtTDjO5qg9IFlggqVA4rKJsXb0vV9+Bbv5EoIr+0SUymPvHwF
+        7X/IPap+IsNs/uCw==
+Received: from quack3.suse.cz (unknown [10.163.28.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id D008EA3B9E;
+        Fri, 18 Mar 2022 13:16:06 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id E0483A0615; Fri, 18 Mar 2022 14:16:00 +0100 (CET)
+Date:   Fri, 18 Mar 2022 14:16:00 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Brian Foster <bfoster@redhat.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        Ashish Sangwan <a.sangwan@samsung.com>,
+        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4@vger.kernel.org
+Subject: Re: writeback completion soft lockup BUG in folio_wake_bit()
+Message-ID: <20220318131600.iv7ct2m4o52plkhl@quack3.lan>
+References: <YjDj3lvlNJK/IPiU@bfoster>
+ <YjJPu/3tYnuKK888@casper.infradead.org>
+ <CAHk-=wgPTWoXCa=JembExs8Y7fw7YUi9XR0zn1xaxWLSXBN_vg@mail.gmail.com>
+ <YjNN5SzHELGig+U4@casper.infradead.org>
+ <CAHk-=wiZvOpaP0DVyqOnspFqpXRaT6q53=gnA2psxnf5dbt7bw@mail.gmail.com>
+ <YjOlJL7xwktKoLFN@casper.infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Subject: Re: e2fsck: do not skip deeper checkers when s_last_orphan list has
- truncated inodes
-To:     Theodore Ts'o <tytso@mit.edu>
-CC:     <linux-ext4@vger.kernel.org>, linfeilong <linfeilong@huawei.com>,
-        <liuzhiqiang26@huawei.com>
-References: <647cc60d-18d4-ab53-6c91-52c1f6d29c3a@huawei.com>
- <YjDS0SLV+jqHfgPm@mit.edu>
-From:   zhanchengbin <zhanchengbin1@huawei.com>
-In-Reply-To: <YjDS0SLV+jqHfgPm@mit.edu>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.102]
-X-ClientProxiedBy: dggpeml100008.china.huawei.com (7.185.36.48) To
- dggpeml100016.china.huawei.com (7.185.36.216)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YjOlJL7xwktKoLFN@casper.infradead.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,153 +75,45 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
-
-在 2022/3/16 1:54, Theodore Ts'o 写道:
-> On Tue, Mar 15, 2022 at 04:01:45PM +0800, zhanchengbin wrote:
->> If the system crashes when a file is being truncated, we will get a
->> problematic inode,
->> and it will be added into fs->super->s_last_orphan.
->> When we run `e2fsck -a img`, the s_last_orphan list will be traversed and
->> deleted.
->> During this period, orphan inodes in the s_last_orphan list with
->> i_links_count==0 can
->> be deleted, and orphan inodes with  i_links_count !=0 (ex. the truncated
->> inode)
->> cannot be deleted. However, when there are some orphan inodes with
->> i_links_count !=0,
->> the EXT2_VALID_FS is still assigned to fs->super->s_state, the deeper
->> checkers are skipped
->> with some inconsistency problems.
+On Thu 17-03-22 21:16:20, Matthew Wilcox wrote:
+> On Thu, Mar 17, 2022 at 12:26:35PM -0700, Linus Torvalds wrote:
+> > That whole "xyz_writeback_keepwrite()" thing seems odd. It's used in
+> > only one place (the folio version isn't used at all):
+> > 
+> >   ext4_writepage():
+> > 
+> >      ext4_walk_page_buffers() fails:
+> >                 redirty_page_for_writepage(wbc, page);
+> >                 keep_towrite = true;
+> >       ext4_bio_write_page().
+> > 
+> > which just looks odd. Why does it even try to continue to do the
+> > writepage when the page buffer thing has failed?
+> > 
+> > In the regular write path (ie ext4_write_begin()), a
+> > ext4_walk_page_buffers() failure is fatal or causes a retry). Why is
+> > ext4_writepage() any different? Particularly since it wants to keep
+> > the page dirty, then trying to do the writeback just seems wrong.
+> > 
+> > So this code is all a bit odd, I suspect there are decades of "people
+> > continued to do what they historically did" changes, and it is all
+> > worrisome.
 > 
-> That's not supposed to happen.  We regularly put inodes on the orphan
-> list when they are being truncated so that if we crash, the truncation
-> operation can be completed as part of the journal recovery and remount
-> operation.  This is true regardles sof whether the recovery is done by
-> e2fsck or by the kernel.
+> I found the commit: 1c8349a17137 ("ext4: fix data integrity sync in
+> ordered mode").  Fortunately, we have a documented test for this,
+> generic/127, so we'll know if we've broken it.
 
-Yes, you are right.
-Truncated has been completed，and file ACL has been set to zero in
-release_inode_blocks(), but the i_blocks was not subtracted acl blocks.
-So i_blocks is inconsistent。
-Li Jinlin sent a patch yesterday to fix it.
+I agree with Dave that 'keep_towrite' thing is kind of self-inflicted
+damage on the ext4 side (we need to write out some blocks underlying the
+page but cannot write all from the transaction commit code, so we need to
+keep xarray tags intact so that data integrity sync cannot miss the page).
+Also it is no longer needed in the current default ext4 setup. But if you
+have blocksize < pagesize and mount the fs with 'dioreadlock,data=ordered'
+mount options, the hack is still needed AFAIK and we don't have a
+reasonable way around it.
 
-> 
-> If a crash during a truncate leads to an inconsistent file system
-> after the file system is mounted, or after e2fsck does the journal
-> replay and orphan inode list processing, that's a kernel bug, and we
-> should fix the bug in the kernel.
-> 
-> Do you have a reliable reproducer for this situation?
+								Honza
 
-I have a reproducer but it is not necessarily:
-#!/bin/bash
-disk_list=$(multipath -ll | grep filedisk | awk '{print $1}')
-
-for disk in ${disk_list}
-do
-     mkfs.ext4 -F /dev/mapper/$disk
-     mkdir ${disk}
-done
-
-function err_inject()
-{
-     iscsiadm -m node -p 127.0.0.1 -u &> /dev/null
-     iscsiadm -m node -p 127.0.0.1 -l &> /dev/null
-     sleep 1
-     iscsiadm -m node -p 9.82.236.206 -u &> /dev/null
-     iscsiadm -m node -p 9.82.236.206 -l &> /dev/null
-     sleep 1
-
-     iscsiadm -m node -p 127.0.0.1 -u &> /dev/null
-     iscsiadm -m node -p 127.0.0.1 -l &> /dev/null
-     iscsiadm -m node -p 9.82.236.206 -u &> /dev/null
-     iscsiadm -m node -p 9.82.236.206 -l &> /dev/null
-     sleep 1
-}
-
-
-
-count=0
-while true
-do
-     ((count=count+1))
-     for disk in ${disk_list}
-     do
-         while true
-         do
-             mount -o data_err=abort,errors=remount-ro /dev/mapper/$disk 
-$disk && break
-             sleep 0.1
-         done
-         nohup fsstress -d $(pwd)/$disk -l 10 -n 1000 -p 10 &>/dev/null &
-     done
-
-     sleep 5
-
-     for disk in ${disk_list}
-     do
-         dm=$(multipath -ll | grep -w $disk | awk '{print $2}')
-         aqu_sz=$(iostat -x 1 -d 2 | grep -w $dm | tail -1 | awk '{print 
-$(NF-1)}')
-         util=$(iostat -x 1 -d 2 | grep -w $dm | tail -1 | awk '{print 
-$NF}')
-         #if [ "${aqu_sz}" == "0.00" -o "$util" == "0.00" ];then
-         #    iostat -x 1 -d 2
-         #    exit 1
-         #fi
-         mount | grep $disk | grep '(ro' && exit 1
-     done
-
-     err_inject
-
-     while [ -n "`pidof fsstress`" ]
-     do
-         sleep 1
-     done
-
-     for disk in ${disk_list}
-     do
-         umount $disk
-         dm=$(multipath -ll | grep -w $disk | awk '{print $2}')
-         aqu_sz=$(iostat -x 1 -d 2 | grep -w $dm | tail -1 | awk '{print 
-$(NF-1)}')
-         util=$(iostat -x 1 -d 2 | grep -w $dm | tail -1 | awk '{print 
-$NF}')
-         if [ "${aqu_sz}" != "0.00" -o "$util" != "0.00" ];then
-             iostat -x 1 -d 2
-             exit 1
-         fi
-
-         dd bs=1M if=/dev/mapper/$disk of=/root/dockerback
-
-         fsck.ext4 -a /dev/mapper/$disk
-             ret=$?
-             if [ $ret -ne 0 -a $ret -ne 1 ]; then
-                 exit 1
-             fi
-
-         fsck.ext4 -fn /dev/mapper/$disk
-             ret=$?
-             if [ $ret -ne 0 ]; then
-                 exit 1
-             fi
-     done
-
-     if [ $count -gt 5 ];then
-         echo 3 > /proc/sys/vm/drop_caches
-         sleep 1
-         cat /proc/meminfo >> mem.txt
-         echo "" >> mem.txt
-         slabtop -o >> slab.txt
-         echo "" >> slab.txt
-         count=0
-     fi
-done
-
-> 
-> Thanks,
-> 
-> 						- Ted
-> .
-> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
