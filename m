@@ -2,94 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97BEC4DE611
-	for <lists+linux-ext4@lfdr.de>; Sat, 19 Mar 2022 06:05:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B91AB4DE94A
+	for <lists+linux-ext4@lfdr.de>; Sat, 19 Mar 2022 17:23:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242150AbiCSFG1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 19 Mar 2022 01:06:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41600 "EHLO
+        id S243629AbiCSQZC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 19 Mar 2022 12:25:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240014AbiCSFGZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 19 Mar 2022 01:06:25 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E972B5ADA;
-        Fri, 18 Mar 2022 22:05:05 -0700 (PDT)
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 22J3qA6M004240;
-        Sat, 19 Mar 2022 05:04:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=KRFaVSWL/9emteJ6cwiuaXKazHFMP9Nbr4bOW8oHCRE=;
- b=WE8CWmAQd73Ir/f3D8VYt9E8kBOaCJ1SyKB6ZMpMxYYUMjPqGlNznsXwfqr6ScxklbiM
- 65E/vzYVBWRhibKDiOMxdgF3n8ULTd6IhvDx6b3GVzvPqhky18nySkOPw0tQB24kzlOl
- VhzpKFBw/arKnzVmKlonHbDQApCEAI1xB3yxaK7YgbMpz3I0oV6QLx/1AspfHY6BrMiL
- waBBQcVcrdp7sZM/PQubvrajmyLP49yyJqatbhAm2uR1PKcZZyREgsOo/PsrQk8KVpOz
- YW9Kue0NUx49VvmTJF9p7be42OijjdhiSKTVmVawRA0ILe90SDDzIJs2udgpGGoG6E1E Ig== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ew7n6rre0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 19 Mar 2022 05:04:42 +0000
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 22J51UVq007941;
-        Sat, 19 Mar 2022 05:04:42 GMT
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ew7n6rrdm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 19 Mar 2022 05:04:42 +0000
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 22J3x1Qm005638;
-        Sat, 19 Mar 2022 05:04:40 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04fra.de.ibm.com with ESMTP id 3ew6t8g4s5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 19 Mar 2022 05:04:40 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 22J54cep30867780
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 19 Mar 2022 05:04:38 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E92DE11C04A;
-        Sat, 19 Mar 2022 05:04:37 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6A2BD11C052;
-        Sat, 19 Mar 2022 05:04:37 +0000 (GMT)
-Received: from localhost (unknown [9.43.118.162])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Sat, 19 Mar 2022 05:04:37 +0000 (GMT)
-Date:   Sat, 19 Mar 2022 10:34:36 +0530
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Sven Schnelle <svens@linux.ibm.com>
-Cc:     linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@kernel.org
-Subject: Re: [PATCHv3 02/10] ext4: Fix ext4_fc_stats trace point
-Message-ID: <20220319050436.y7v3rxkjnbhb33sl@riteshh-domain>
-References: <cover.1647057583.git.riteshh@linux.ibm.com>
- <b4b9691414c35c62e570b723e661c80674169f9a.1647057583.git.riteshh@linux.ibm.com>
- <yt9dr1706b4i.fsf@linux.ibm.com>
- <20220317143938.745e1420@gandalf.local.home>
- <20220318123058.348938b1@gandalf.local.home>
+        with ESMTP id S229707AbiCSQZB (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 19 Mar 2022 12:25:01 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8E7B8BF4D;
+        Sat, 19 Mar 2022 09:23:39 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 22JGN4VN007569
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 19 Mar 2022 12:23:05 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 49E8815C0038; Sat, 19 Mar 2022 12:23:04 -0400 (EDT)
+Date:   Sat, 19 Mar 2022 12:23:04 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
+        Brian Foster <bfoster@redhat.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        Ashish Sangwan <a.sangwan@samsung.com>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Subject: Re: writeback completion soft lockup BUG in folio_wake_bit()
+Message-ID: <YjYDaBnN36zggeGa@mit.edu>
+References: <YjDj3lvlNJK/IPiU@bfoster>
+ <YjJPu/3tYnuKK888@casper.infradead.org>
+ <CAHk-=wgPTWoXCa=JembExs8Y7fw7YUi9XR0zn1xaxWLSXBN_vg@mail.gmail.com>
+ <YjNN5SzHELGig+U4@casper.infradead.org>
+ <CAHk-=wiZvOpaP0DVyqOnspFqpXRaT6q53=gnA2psxnf5dbt7bw@mail.gmail.com>
+ <YjOlJL7xwktKoLFN@casper.infradead.org>
+ <20220318131600.iv7ct2m4o52plkhl@quack3.lan>
+ <CAHk-=wiky+cT7xF_2S94ToEjm=XNX73CsFHaQJH3tzYQ+Vb1mw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220318123058.348938b1@gandalf.local.home>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: -KaAEAYfkUccww1OuOfH0SQY-ZLYVrdM
-X-Proofpoint-GUID: qeamiA8I1JE5uVo8lbe2LrfJdHpNBGYN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-03-19_01,2022-03-15_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=953 clxscore=1015
- malwarescore=0 adultscore=0 bulkscore=0 phishscore=0 priorityscore=1501
- mlxscore=0 suspectscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2202240000
- definitions=main-2203190024
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <CAHk-=wiky+cT7xF_2S94ToEjm=XNX73CsFHaQJH3tzYQ+Vb1mw@mail.gmail.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,21 +57,79 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22/03/18 12:30PM, Steven Rostedt wrote:
-> On Thu, 17 Mar 2022 14:39:38 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> > [ here I wanted to add a patch, but I haven't figured out the best way to
-> >   fix it yet. ]
->
-> Care to try this patch?
->
+On Fri, Mar 18, 2022 at 11:56:04AM -0700, Linus Torvalds wrote:
+> On Fri, Mar 18, 2022 at 6:16 AM Jan Kara <jack@suse.cz> wrote:
+> >
+> > I agree with Dave that 'keep_towrite' thing is kind of self-inflicted
+> > damage on the ext4 side (we need to write out some blocks underlying the
+> > page but cannot write all from the transaction commit code, so we need to
+> > keep xarray tags intact so that data integrity sync cannot miss the page).
+> > Also it is no longer needed in the current default ext4 setup. But if you
+> > have blocksize < pagesize and mount the fs with 'dioreadlock,data=ordered'
+> > mount options, the hack is still needed AFAIK and we don't have a
+> > reasonable way around it.
+> 
+> I assume you meant 'dioread_lock'.
+> 
+> Which seems to be the default (even if 'data=ordered' is not).
 
-fwiw, I gave this patch a try (on x86 and ppc64le guests) and with it
-ext4_fc_stats() trace event is working fine as expected. Although I could
-never reproduced the original issue which Sven reported on his s390x box.
+That's not quite right.  data=ordered is the default, and that has
+been the case since ext3 was introduced.
 
-So will wait till Sven also give this a try.
+"dioread_lock" was the default in the days of ext3; "dioread_nolock"
+was added to allow parallel Direct I/O reads (hence "nolock").  A
+while back, we tried to make dioread_nolock the default since it tends
+improve performance for workloads that have a mix of writes that
+should be affected by fsyncs, and those that shouldn't.
 
-Thanks!!
--ritesh
+Howevver, we had to revert that change when blocksize < pagesize to
+work around a problem found on Power machines where "echo 3 >
+drop_caches" on the host appears to cause file system corruptions on
+the guest.  (Commit 626b035b816b "ext4: don't set dioread_nolock by
+default for blocksize < pagesize").
+
+> IOW, we could simply warn about "data=ordered is no longer supported"
+> and turn it into data=journal.
+> 
+> Obviously *only* do this for the case of "blocksize < PAGE_SIZE".
+
+Actiavelly, we've discussed a number of times doing the reverse ---
+removing data=journal entirely, since it's (a) rarely used, and (b)
+data=journal disables a bunch of optimizations, including
+preallocation, and so its performance is pretty awful for most
+workloads.  The main reason why haven't until now is that we believe
+there is a small number of people who do find data=journal useful for
+their workload, and at least _so_ far it's not been that hard to keep
+it limping along --- although in most cases, data=journal doesn't get
+supported for new features or performance optimizations, and it
+definitely does note get as much testing.
+
+
+So the thing that I've been waiting to do for a while is to replace
+the whole data=ordered vs data=writeback and dioread_nolock and
+dioread_lock is a complete reworking of the ext4 buffered writeback
+path, where we write the data blocks *first*, and only then update the
+ext4 metadata.
+
+Historically, going as far back as ext2, we've always allocated data
+blocks and updatted the metadata blocks, and only then updated the
+buffer or page cache for the data blocks.  All of the complexities
+around data=ordered, data=writeback, dioread_nolock, etc., is because
+we haven't done the fundamental work of reversing the order in which
+we do buffered writeback.   What we *should* be doing is:
+
+*) Determining where the new allocated data blockblocks should be, and
+   preventing those blocks from being used for any other purposes, but
+   *not* updating the file system metadata to reflect that change.
+
+*) Submit the data block write
+
+*) On write completion, update the metadata blocks in a kernel thread.
+
+Over time, we've been finding more and more reasons why I need to do
+this work, so it's something I'm going to have to prioritize in the
+next few months.
+
+Cheerse,
+
+						- Ted
