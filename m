@@ -2,136 +2,199 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E29E64E1BD0
-	for <lists+linux-ext4@lfdr.de>; Sun, 20 Mar 2022 14:15:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC204E1EEC
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Mar 2022 02:59:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245129AbiCTNQp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 20 Mar 2022 09:16:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51738 "EHLO
+        id S1344112AbiCUCAl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 20 Mar 2022 22:00:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236759AbiCTNQp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 20 Mar 2022 09:16:45 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B7B3192F;
-        Sun, 20 Mar 2022 06:15:22 -0700 (PDT)
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 22K8NxdQ029675;
-        Sun, 20 Mar 2022 13:14:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : references : date : in-reply-to : message-id : content-type :
- mime-version; s=pp1; bh=cFVIwF9yYVTiRJkYUmq32sKgvro0yz9kJgAFCojfzyE=;
- b=so/Uaj6ZCzt4OFV6op3z5XC0Aniqmm5+98hrVGILSgLA/UlXYfVnwvyE7BfWfXNYyoan
- MGQlo+y7r46oWYgDGCfswciOe+3oBHIdiWJKrN6IsCwAoa6SwxehqfkffQMRu7EzkmWi
- IWz1YzJ7fys6j1Z1hcgiYJEZyObi4I5yIOwpbFnbxjccrV7kf+FQgLSHlgWtNyYdS5qr
- qYXJTyI2Zy6NUlttro2YbqFKsyQ7aS2glAcYF8U3cRUv1tOI25CQ18oxcGhrerhKe1OI
- BMF39Mkylr3tEaCABUxM4RQ09IZKXESFyk5byGNjG/GJth5WXW60xghTtZvJPtAEveqL Yg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ewrtkqjew-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 20 Mar 2022 13:14:52 +0000
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 22KDEpfq003716;
-        Sun, 20 Mar 2022 13:14:51 GMT
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ewrtkqjem-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 20 Mar 2022 13:14:51 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 22KDACFt007130;
-        Sun, 20 Mar 2022 13:14:49 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 3ew6t8t1hy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 20 Mar 2022 13:14:49 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 22KDElB739715298
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 20 Mar 2022 13:14:47 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 506CE42042;
-        Sun, 20 Mar 2022 13:14:47 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 048414203F;
-        Sun, 20 Mar 2022 13:14:47 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Sun, 20 Mar 2022 13:14:46 +0000 (GMT)
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Jan Kara <jack@suse.cz>, "Theodore Ts'o" <tytso@mit.edu>,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: Re: [PATCH] tracing: Have type enum modifications copy the strings
-References: <20220318153432.3984b871@gandalf.local.home>
-Date:   Sun, 20 Mar 2022 14:14:46 +0100
-In-Reply-To: <20220318153432.3984b871@gandalf.local.home> (Steven Rostedt's
-        message of "Fri, 18 Mar 2022 15:34:32 -0400")
-Message-ID: <yt9d5yo8rcjd.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: uJEVLYBGmTLnaGnqHzkeM2KjkP3M5DtT
-X-Proofpoint-ORIG-GUID: XAsz1rZJpP9cI-IyYaa037Z8NuzOM3RY
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S238328AbiCUCAk (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 20 Mar 2022 22:00:40 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A5512621
+        for <linux-ext4@vger.kernel.org>; Sun, 20 Mar 2022 18:59:15 -0700 (PDT)
+Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4KMHnK3FCWzfZ35;
+        Mon, 21 Mar 2022 09:57:41 +0800 (CST)
+Received: from kwepemm600003.china.huawei.com (7.193.23.202) by
+ kwepemi500012.china.huawei.com (7.221.188.12) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Mon, 21 Mar 2022 09:59:13 +0800
+Received: from [127.0.0.1] (10.174.177.249) by kwepemm600003.china.huawei.com
+ (7.193.23.202) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Mon, 21 Mar
+ 2022 09:59:12 +0800
+Subject: Re: [PATCH] e2fsck: subtract acl blocks when setting i_file_acl to
+ zero
+To:     Li Jinlin <lijinlin3@huawei.com>, <tytso@mit.edu>
+CC:     <linux-ext4@vger.kernel.org>, <linfeilong@huawei.com>
+References: <20220317172943.2426272-1-lijinlin3@huawei.com>
+ <8e8f277d-6222-5f63-0dcb-a17771a0deff@huawei.com>
+From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Message-ID: <ed518b11-3c38-1c1f-a75d-3293c91f17d4@huawei.com>
+Date:   Mon, 21 Mar 2022 09:59:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-03-20_04,2022-03-15_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- impostorscore=0 mlxlogscore=999 malwarescore=0 clxscore=1011 phishscore=0
- spamscore=0 suspectscore=0 priorityscore=1501 lowpriorityscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2203200097
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <8e8f277d-6222-5f63-0dcb-a17771a0deff@huawei.com>
+Content-Type: text/plain; charset="gbk"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.249]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Steve,
+For truncating orphaned inode, we should not remove its ACL in release_inode_blocks(),
+otherwise it may cause safety problems due to loss of acl.
 
-Steven Rostedt <rostedt@goodmis.org> writes:
+diff --git a/e2fsck/super.c b/e2fsck/super.c
+index 31e2ffb..6249e12 100644
+--- a/e2fsck/super.c
++++ b/e2fsck/super.c
+@@ -236,6 +236,10 @@ static int release_inode_blocks(e2fsck_t ctx, ext2_ino_t ino,
+         ext2fs_iblk_sub_blocks(fs, EXT2_INODE(inode),
+                 pb.truncated_blocks);
 
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
->
-> When an enum is used in the visible parts of a trace event that is
-> exported to user space, the user space applications like perf and
-> trace-cmd do not have a way to know what the value of the enum is. To
-> solve this, at boot up (or module load) the printk formats are modified to
-> replace the enum with their numeric value in the string output.
->
-> Array fields of the event are defined by [<nr-elements>] in the type
-> portion of the format file so that the user space parsers can correctly
-> parse the array into the appropriate size chunks. But in some trace
-> events, an enum is used in defining the size of the array, which once
-> again breaks the parsing of user space tooling.
->
-> This was solved the same way as the print formats were, but it modified
-> the type strings of the trace event. This caused crashes in some
-> architectures because, as supposed to the print string, is a const string
-> value. This was not detected on x86, as it appears that const strings are
-> still writable (at least in boot up), but other architectures this is not
-> the case, and writing to a const string will cause a kernel fault.
->
-> To fix this, use kstrdup() to copy the type before modifying it. If the
-> trace event is for the core kernel there's no need to free it because the
-> string will be in use for the life of the machine being on line. For
-> modules, create a link list to store all the strings being allocated for
-> modules and when the module is removed, free them.
->
-> Link: https://lore.kernel.org/all/yt9dr1706b4i.fsf@linux.ibm.com/
->
-> Fixes: b3bc8547d3be ("tracing: Have TRACE_DEFINE_ENUM affect trace event types as well")
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
++    /* do not clean up file acl if the inode is truncating type */
++    if (inode->i_links_count)
++        return 0;
++
+     blk = ext2fs_file_acl_block(fs, EXT2_INODE(inode));
+     if (blk) {
+         retval = ext2fs_adjust_ea_refcount3(fs, blk, block_buf, -1,
+-- 
+2.27.0
 
-This fixes the crash seen on s390. Thanks!
+On 2022/3/18 0:54, Li Jinlin wrote:
+> We got issue as follows:
+>     [root@localhost ~]# e2fsck -a img
+>     img: recovering journal
+>     img: Truncating orphaned inode 188 (uid=0, gid=0, mode=0100666, size=0)
+>     img: Truncating orphaned inode 174 (uid=0, gid=0, mode=0100666, size=0)
+>     img: clean, 484/128016 files, 118274/512000 blocks
+>     [root@localhost ~]# e2fsck -fn img
+>     e2fsck 1.46.5 (30-Dec-2021)
+>     Pass 1: Checking inodes, blocks, and sizes
+>     Inode 174, i_blocks is 2, should be 0.  Fix? no
+>     
+>     Inode 188, i_blocks is 2, should be 0.  Fix? no
+>     
+>     Pass 2: Checking directory structure
+>     Pass 3: Checking directory connectivity
+>     Pass 4: Checking reference counts
+>     Pass 5: Checking group summary information
+>     
+>     img: ********** WARNING: Filesystem still has errors **********
+>     
+>     img: 484/128016 files (24.6% non-contiguous), 118274/512000 blocks
+> 
+> 
+> File ACL would be set to zero in release_inode_blocks(), but the
+> blocks count will not be subtract acl blocks, which causes this issue.
+> 
+> To slove this issue, subtract acl blocks when setting i_file_acl to
+> zero. 
+> 
+> Signed-off-by: LiJinlin <lijinlin3@huawei.com>
+> Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+> ---
+>  e2fsck/super.c        |  7 +++++--
+>  lib/ext2fs/ext2fs.h   |  5 +++++
+>  lib/ext2fs/ext_attr.c | 15 +++++++++++++--
+>  3 files changed, 23 insertions(+), 4 deletions(-)
+> 
+> diff --git a/e2fsck/super.c b/e2fsck/super.c
+> index 9495e029..715a8dc9 100644
+> --- a/e2fsck/super.c
+> +++ b/e2fsck/super.c
+> @@ -194,6 +194,7 @@ static int release_inode_blocks(e2fsck_t ctx, ext2_ino_t ino,
+>  	blk64_t				blk;
+>  	errcode_t			retval;
+>  	__u32				count;
+> +	__u32				blocks;
+>  
+>  	if (!ext2fs_inode_has_valid_blocks2(fs, EXT2_INODE(inode)))
+>  		return 0;
+> @@ -238,8 +239,10 @@ static int release_inode_blocks(e2fsck_t ctx, ext2_ino_t ino,
+>  
+>  	blk = ext2fs_file_acl_block(fs, EXT2_INODE(inode));
+>  	if (blk) {
+> -		retval = ext2fs_adjust_ea_refcount3(fs, blk, block_buf, -1,
+> -				&count, ino);
+> +		retval = ext2fs_adjust_ea_refcount4(fs, blk, block_buf, -1,
+> +				&count, ino, &blocks);
+> +		if (retval == 0)
+> +			ext2fs_iblk_sub_blocks(fs, EXT2_INODE(inode), blocks);
+>  		if (retval == EXT2_ET_BAD_EA_BLOCK_NUM) {
+>  			retval = 0;
+>  			count = 1;
+> diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
+> index 68f9c1fe..8ebebf31 100644
+> --- a/lib/ext2fs/ext2fs.h
+> +++ b/lib/ext2fs/ext2fs.h
+> @@ -1289,6 +1289,11 @@ extern errcode_t ext2fs_adjust_ea_refcount3(ext2_filsys fs, blk64_t blk,
+>  					   char *block_buf,
+>  					   int adjust, __u32 *newcount,
+>  					   ext2_ino_t inum);
+> +extern errcode_t ext2fs_adjust_ea_refcount4(ext2_filsys fs, blk64_t blk,
+> +					   char *block_buf,
+> +					   int adjust, __u32 *newcount,
+> +					   ext2_ino_t inum,
+> +					   __u32 *blocks);
+>  errcode_t ext2fs_xattrs_write(struct ext2_xattr_handle *handle);
+>  errcode_t ext2fs_xattrs_read(struct ext2_xattr_handle *handle);
+>  errcode_t ext2fs_xattrs_read_inode(struct ext2_xattr_handle *handle,
+> diff --git a/lib/ext2fs/ext_attr.c b/lib/ext2fs/ext_attr.c
+> index d36fe68d..1538a53a 100644
+> --- a/lib/ext2fs/ext_attr.c
+> +++ b/lib/ext2fs/ext_attr.c
+> @@ -237,9 +237,10 @@ errcode_t ext2fs_write_ext_attr(ext2_filsys fs, blk_t block, void *inbuf)
+>  /*
+>   * This function adjusts the reference count of the EA block.
+>   */
+> -errcode_t ext2fs_adjust_ea_refcount3(ext2_filsys fs, blk64_t blk,
+> +errcode_t ext2fs_adjust_ea_refcount4(ext2_filsys fs, blk64_t blk,
+>  				    char *block_buf, int adjust,
+> -				    __u32 *newcount, ext2_ino_t inum)
+> +				    __u32 *newcount, ext2_ino_t inum,
+> +				    __u32 *blocks)
+>  {
+>  	errcode_t	retval;
+>  	struct ext2_ext_attr_header *header;
+> @@ -264,6 +265,8 @@ errcode_t ext2fs_adjust_ea_refcount3(ext2_filsys fs, blk64_t blk,
+>  	header->h_refcount += adjust;
+>  	if (newcount)
+>  		*newcount = header->h_refcount;
+> +	if (blocks)
+> +		*blocks = header->h_blocks;
+>  
+>  	retval = ext2fs_write_ext_attr3(fs, blk, block_buf, inum);
+>  	if (retval)
+> @@ -275,6 +278,14 @@ errout:
+>  	return retval;
+>  }
+>  
+> +errcode_t ext2fs_adjust_ea_refcount3(ext2_filsys fs, blk64_t blk,
+> +				    char *block_buf, int adjust,
+> +				    __u32 *newcount, ext2_ino_t inum)
+> +{
+> +	return ext2fs_adjust_ea_refcount4(fs, blk, block_buf, adjust,
+> +					  newcount, 0, NULL);
+> +}
+> +
+>  errcode_t ext2fs_adjust_ea_refcount2(ext2_filsys fs, blk64_t blk,
+>  				    char *block_buf, int adjust,
+>  				    __u32 *newcount)
+> 
 
-Tested-by: Sven Schnelle <svens@linux.ibm.com>
