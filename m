@@ -2,73 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F080A4E4566
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Mar 2022 18:42:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0CD94E4608
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Mar 2022 19:32:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239150AbiCVRn6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 22 Mar 2022 13:43:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58834 "EHLO
+        id S240438AbiCVSdc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 22 Mar 2022 14:33:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232603AbiCVRn5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Mar 2022 13:43:57 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 288568D68E
-        for <linux-ext4@vger.kernel.org>; Tue, 22 Mar 2022 10:42:30 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id mz9-20020a17090b378900b001c657559290so3679913pjb.2
-        for <linux-ext4@vger.kernel.org>; Tue, 22 Mar 2022 10:42:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:content-language:to:cc
-         :references:from:subject:in-reply-to:content-transfer-encoding;
-        bh=8eVxzRvyLtCG7jsxYp2DMv5IzFzQJ8tF2ct1zspcSHM=;
-        b=CFN0faYqJEMiGGiJ3/jcs6SXeF7Ypf47fmbFWVnsXCh1OLgjcru4hRQ6G9Qzb9kc98
-         1fpOP6GO9bDh7FNxEHSNNOLgjaP6FPwosn0mZ7LOA6uVP5W1IAbyUQiq+OX1UnQ3bs+X
-         RP3sMuyDBbemnWWXnk+Xgm3smBTU3nlHc1snpOtNcIosBdNgwzUXx4heTfUYk7t0mYLD
-         UaVO1G81vlzQWa2SAgGLxXQ5rSNR+tgMVCKwSOO1QqkX3jDPIuxlIXZP3m2hSOMFMfdY
-         QUWkGEfT90Z6GO6twtb5sRDDWRRmH3BnfrhBFmHx99nmkiEAwglm1Ktl1c8lwiFvqFDR
-         7MNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:subject:in-reply-to
-         :content-transfer-encoding;
-        bh=8eVxzRvyLtCG7jsxYp2DMv5IzFzQJ8tF2ct1zspcSHM=;
-        b=3KUist9NjwnF/WZFOk0QYFq+L+l/IKdD1v86DXfpe+F7SGYmMQVO+seembRnhHAENQ
-         j50OmmiU0sgRxdHPsLaaA1eNdJhd4e5impZEuDbRP5tpatJqrBNtdJ74XTQXbkKR6oap
-         r1UzjtohrzwXEOZW2YTzhpJC0VjaoEIP9jg+s7xZnla5jhTKE9fqStkrXuKJwdzX+enw
-         uKerV8Kz5aVA9N6ltEkL9QsHE6Tcm2Ror4Y5in5/AyOh1lyc+ex5f8sOohs8FO+pM/cY
-         lZSxZKSPQisEVooCg43Q1BbdPBEJt2+HTQAx81OPFvfw22X8Bg0a5YS6dumZQm68z4vO
-         on4g==
-X-Gm-Message-State: AOAM532alzvKAu2p5Ewc4xIrfyen0tyTLbcffCsbyav2kY8RfwdN4igz
-        EvsymvoFb7dRzDwSZYENpkqPvA==
-X-Google-Smtp-Source: ABdhPJy9vC4WUq3ufn8fXKBmqrQWJW3Ut0rwyp1dty7ZEUF2OrW08MT7FKi9Ac+qsazRDCMbpmaKUA==
-X-Received: by 2002:a17:90b:1643:b0:1c6:e74b:31e1 with SMTP id il3-20020a17090b164300b001c6e74b31e1mr6363736pjb.182.1647970949596;
-        Tue, 22 Mar 2022 10:42:29 -0700 (PDT)
-Received: from [192.168.254.17] ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id oo17-20020a17090b1c9100b001bf0ccc59c2sm3713845pjb.16.2022.03.22.10.42.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Mar 2022 10:42:28 -0700 (PDT)
-Message-ID: <da6deb10-62e9-cbe6-e6f4-15f956e966b1@linaro.org>
-Date:   Tue, 22 Mar 2022 10:42:27 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Content-Language: en-US
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     tytso@mit.edu, Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        linux-ext4@vger.kernel.org, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+7a806094edd5d07ba029@syzkaller.appspotmail.com
-References: <20220315215439.269122-1-tadeusz.struk@linaro.org>
- <Yjn7V3whEZ3UmJlF@iweiny-desk3>
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-Subject: Re: [PATCH v2] ext4: check if offset+length is valid in fallocate
-In-Reply-To: <Yjn7V3whEZ3UmJlF@iweiny-desk3>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        with ESMTP id S240911AbiCVSdZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Mar 2022 14:33:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A7FF8CDBB;
+        Tue, 22 Mar 2022 11:31:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 089A7615EE;
+        Tue, 22 Mar 2022 18:31:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6BF36C340EC;
+        Tue, 22 Mar 2022 18:31:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647973916;
+        bh=QmIvL3x8HBh1HSJ5HGqlajc0d/oc/GSWwN3g8Ue+tgw=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=qpQNaLLWNGdTXJNp1yFVvP8HOkGwx10E4oaW9mgIS5zeqS0KdAK1xdiDYY7YCCVIj
+         RKe62fmkzdU+UFK92nh4q1RqbY+JPhC9U/NnVoPqcE0PpKUOC7jlYC0eAwMVFWpNgC
+         GUVxknfyxKOSbPYaViwtPjtGcPpk0irruF0YRaaxFKthX9LCTbaaiPBObr07CrCtpq
+         /YNnk8Alowa8viXW8Fzq4AiuhYaDg2F2x+PreKOC6lweqOEpNYvvRIuwY1CmxJcFUd
+         eHUmU0BXIdawrYE7l5FoJhLHi1pJ0W//NfCq3yxEnTNunRYvKfVWqqh01jVQpvJLZP
+         DFSdugupI5e9A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 535C8E6D406;
+        Tue, 22 Mar 2022 18:31:56 +0000 (UTC)
+Subject: Re: [GIT PULL] fscrypt updates for 5.18
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YjgEC8Nw9PDmdY0O@sol.localdomain>
+References: <YjgEC8Nw9PDmdY0O@sol.localdomain>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YjgEC8Nw9PDmdY0O@sol.localdomain>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
+X-PR-Tracked-Commit-Id: cdaa1b1941f667814300799ddb74f3079517cd5a
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 881b568756ae55ce7d87b9f001cbbe9d1289893e
+Message-Id: <164797391633.17704.3889508763261319003.pr-tracker-bot@kernel.org>
+Date:   Tue, 22 Mar 2022 18:31:56 +0000
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>
+X-Spam-Status: No, score=-7.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,47 +63,15 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Ira,
-On 3/22/22 09:37, Ira Weiny wrote:
-> On Tue, Mar 15, 2022 at 02:54:39PM -0700, Tadeusz Struk wrote:
->> Syzbot found an issue [1] in ext4_fallocate().
->> The C reproducer [2] calls fallocate(), passing size 0xffeffeff000ul,
->> and offset 0x1000000ul, which, when added together exceed the disk size,
->> and trigger a BUG in ext4_ind_remove_space() [3].
->> According to the comment doc in ext4_ind_remove_space() the 'end' block
->> parameter needs to be one block after the last block to remove.
->> In the case when the BUG is triggered it points to the last block on
->> a 4GB virtual disk image. This is calculated in
->> ext4_ind_remove_space() in [4].
->> This patch adds a check that ensure the length + offest to be
->> within the valid range and returns -ENOSPC error code in case
->> it is invalid.
-> 
-> Why is the check in vfs_fallocate() not working for this?
-> 
-> https://elixir.bootlin.com/linux/v5.17-rc8/source/fs/open.c#L300
+The pull request you sent on Sun, 20 Mar 2022 21:50:19 -0700:
 
-Good question. From reading the comment:
-https://elixir.bootlin.com/linux/v5.17/source/fs/ext4/file.c#L225
+> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
 
-it is possible that, for the bitmap-format, the limit might be smaller
-than the s_maxbytes.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/881b568756ae55ce7d87b9f001cbbe9d1289893e
 
-But even for a extent-mapped file the offest+len needs to be within the
-first to last-1 block range for fallocate(fd, FALLOC_FL_PUNCH_HOLE, ...)
-If it points to the last one then it is invalid, no?
-
-The check you pointed to in vfs code checks if offest+len goes beyond
-maximal file size.
-
-> Also why do other file systems not fail?  Is it because ext4 is special due to
-> the end block needing to be one block after the last.  That seems to imply the
-> last block can't be used or there is some off by one issue somewhere?
-
-According to the comment in
-https://elixir.bootlin.com/linux/v5.17/source/fs/ext4/indirect.c#L1214
-it has to be one block after the last to be removed.
+Thank you!
 
 -- 
-Thanks,
-Tadeusz
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
