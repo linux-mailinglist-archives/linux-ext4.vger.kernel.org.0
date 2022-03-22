@@ -2,180 +2,143 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FCE74E3CF0
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Mar 2022 11:49:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D56484E4454
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Mar 2022 17:38:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232859AbiCVKu3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 22 Mar 2022 06:50:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34136 "EHLO
+        id S238890AbiCVQjn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 22 Mar 2022 12:39:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231843AbiCVKu2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Mar 2022 06:50:28 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A5A7811BA;
-        Tue, 22 Mar 2022 03:49:01 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id AA00C210F1;
-        Tue, 22 Mar 2022 10:48:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1647946138; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0/MS6PTFwvGlMff+fmHo+wapCdTSqM2WuKx4kjihEQ8=;
-        b=ZfLXpa9/tqS97W10ssQ0skDVsBjSAB/1cV3Ek5JsGuhhpq1QQb6Ra47mIr3JqBUvrq0/td
-        Yu7F6S2P7ELd8+00xeqqsGb0S0xW7QxJepCI9d8hnACUGnRmXVX10ejVSWtM+k7RoBgU7m
-        ay+/Gr1afpGP8qICEQz8iCZwNPQtdEY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1647946138;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0/MS6PTFwvGlMff+fmHo+wapCdTSqM2WuKx4kjihEQ8=;
-        b=/A43+c8IpcqTZouKIxX2h47kT1r6+4qpeFL5cxmq842YCs1/2I1TVVNEK3wgIGo2AQ1uxi
-        zBazoeg1K5ylpyCg==
-Received: from quack3.suse.cz (unknown [10.100.224.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 98986A3B88;
-        Tue, 22 Mar 2022 10:48:58 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 4DC3DA0610; Tue, 22 Mar 2022 11:48:57 +0100 (CET)
-Date:   Tue, 22 Mar 2022 11:48:57 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Ye Bin <yebin10@huawei.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jack@suse.cz, lczerner@redhat.com
-Subject: Re: [PATCH -next] ext4: fix bug_on in start_this_handle during
- umount filesystem
-Message-ID: <20220322104857.ehiu3payojri4cmq@quack3.lan>
-References: <20220322012419.725457-1-yebin10@huawei.com>
+        with ESMTP id S238223AbiCVQjm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Mar 2022 12:39:42 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D5242E9;
+        Tue, 22 Mar 2022 09:38:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1647967093; x=1679503093;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=nC2uy4Xiy6nxLZooVE1BSEhtIrAjWOGJKX0aq/EHvdg=;
+  b=Sif4+A+Fj2vWbzGHMQ4u7ON4xy9ZhrU6UMCrBD2oP4iDVadnx6GrLCXJ
+   OKOkRtbqO9ZDWkxsk7FwYRAQQheGnM+9TqTpwHEM+wJ0pccLDyatYsqND
+   y30BaA1a5tQU1p0LCEN4MhNgQ+4FCYQjS0bk5ogH9S8TF2ZpKAqOl2usY
+   c+HHMVqDuyfiv5QFfwVS3FoIIQZGqvNoAG7vT32BmW9aU1fltusXKoxtK
+   7LJgBDnWryFQKN2bksmghIUxsvyw79D1a3KIvVEW9anWy+zCpxhOpy+z3
+   W5OX7Ct0vQ5xz7olOJVlwmnL0dQRV+A54ITJdmSXbJyaGh9ajp+rB+WeZ
+   g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10294"; a="282708280"
+X-IronPort-AV: E=Sophos;i="5.90,202,1643702400"; 
+   d="scan'208";a="282708280"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2022 09:37:44 -0700
+X-IronPort-AV: E=Sophos;i="5.90,202,1643702400"; 
+   d="scan'208";a="600943360"
+Received: from tsscotth-mobl1.amr.corp.intel.com (HELO localhost) ([10.213.167.42])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2022 09:37:44 -0700
+Date:   Tue, 22 Mar 2022 09:37:43 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Tadeusz Struk <tadeusz.struk@linaro.org>
+Cc:     tytso@mit.edu, Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        linux-ext4@vger.kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+7a806094edd5d07ba029@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2] ext4: check if offset+length is valid in fallocate
+Message-ID: <Yjn7V3whEZ3UmJlF@iweiny-desk3>
+References: <20220315215439.269122-1-tadeusz.struk@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220322012419.725457-1-yebin10@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220315215439.269122-1-tadeusz.struk@linaro.org>
+X-Spam-Status: No, score=-7.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 22-03-22 09:24:19, Ye Bin wrote:
-> We got issue as follows:
-> ------------[ cut here ]------------
-> kernel BUG at fs/jbd2/transaction.c:389!
-> invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-> CPU: 9 PID: 131 Comm: kworker/9:1 Not tainted 5.17.0-862.14.0.6.x86_64-00001-g23f87daf7d74-dirty #197
-> Workqueue: events flush_stashed_error_work
-> RIP: 0010:start_this_handle+0x41c/0x1160
-> RSP: 0018:ffff888106b47c20 EFLAGS: 00010202
-> RAX: ffffed10251b8400 RBX: ffff888128dc204c RCX: ffffffffb52972ac
-> RDX: 0000000000000200 RSI: 0000000000000004 RDI: ffff888128dc2050
-> RBP: 0000000000000039 R08: 0000000000000001 R09: ffffed10251b840a
-> R10: ffff888128dc204f R11: ffffed10251b8409 R12: ffff888116d78000
-> R13: 0000000000000000 R14: dffffc0000000000 R15: ffff888128dc2000
-> FS:  0000000000000000(0000) GS:ffff88839d680000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000001620068 CR3: 0000000376c0e000 CR4: 00000000000006e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  jbd2__journal_start+0x38a/0x790
->  jbd2_journal_start+0x19/0x20
->  flush_stashed_error_work+0x110/0x2b3
->  process_one_work+0x688/0x1080
->  worker_thread+0x8b/0xc50
->  kthread+0x26f/0x310
->  ret_from_fork+0x22/0x30
->  </TASK>
-> Modules linked in:
-> ---[ end trace 0000000000000000 ]---
-> 
-> Above issue may happen as follows:
->       umount            read procfs            error_work
-> ext4_put_super
->   flush_work(&sbi->s_error_work);
-> 
->                       ext4_mb_seq_groups_show
-> 	                ext4_mb_load_buddy_gfp
-> 			  ext4_mb_init_group
-> 			    ext4_mb_init_cache
-> 	                      ext4_read_block_bitmap_nowait
-> 			        ext4_validate_block_bitmap
-> 				  ext4_error
-> 			            ext4_handle_error
-> 			              schedule_work(&EXT4_SB(sb)->s_error_work);
-> 
->   ext4_unregister_sysfs(sb);
->   jbd2_journal_destroy(sbi->s_journal);
->     journal_kill_thread
->       journal->j_flags |= JBD2_UNMOUNT;
-> 
->                                           flush_stashed_error_work
-> 				            jbd2_journal_start
-> 					      start_this_handle
-> 					        BUG_ON(journal->j_flags & JBD2_UNMOUNT);
-> 
-> To solve this issue, we call 'ext4_unregister_sysfs' in 'ext4_put_super' firstly
-> like 'ext4_fill_super' error handle.
-> 
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
+On Tue, Mar 15, 2022 at 02:54:39PM -0700, Tadeusz Struk wrote:
+> Syzbot found an issue [1] in ext4_fallocate().
+> The C reproducer [2] calls fallocate(), passing size 0xffeffeff000ul,
+> and offset 0x1000000ul, which, when added together exceed the disk size,
+> and trigger a BUG in ext4_ind_remove_space() [3].
+> According to the comment doc in ext4_ind_remove_space() the 'end' block
+> parameter needs to be one block after the last block to remove.
+> In the case when the BUG is triggered it points to the last block on
+> a 4GB virtual disk image. This is calculated in
+> ext4_ind_remove_space() in [4].
+> This patch adds a check that ensure the length + offest to be
+> within the valid range and returns -ENOSPC error code in case
+> it is invalid.
 
-Looks good. Thanks! Feel free to add:
+Why is the check in vfs_fallocate() not working for this?
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+https://elixir.bootlin.com/linux/v5.17-rc8/source/fs/open.c#L300
 
-								Honza
+Also why do other file systems not fail?  Is it because ext4 is special due to
+the end block needing to be one block after the last.  That seems to imply the
+last block can't be used or there is some off by one issue somewhere?
 
+Ira
+
+> 
+> LINK: [1] https://syzkaller.appspot.com/bug?id=b80bd9cf348aac724a4f4dff251800106d721331
+> LINK: [2] https://syzkaller.appspot.com/text?tag=ReproC&x=14ba0238700000
+> LINK: [3] https://elixir.bootlin.com/linux/v5.17-rc8/source/fs/ext4/indirect.c#L1244
+> LINK: [4] https://elixir.bootlin.com/linux/v5.17-rc8/source/fs/ext4/indirect.c#L1234
+> 
+> Cc: Theodore Ts'o <tytso@mit.edu>
+> Cc: Andreas Dilger <adilger.kernel@dilger.ca>
+> Cc: Ritesh Harjani <riteshh@linux.ibm.com>
+> Cc: <linux-ext4@vger.kernel.org>
+> Cc: <stable@vger.kernel.org>
+> Cc: <linux-kernel@vger.kernel.org>
+> 
+> Fixes: a4bb6b64e39a ("ext4: enable "punch hole" functionality")
+> Reported-by: syzbot+7a806094edd5d07ba029@syzkaller.appspotmail.com
+> Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
+> --
+> v2: Change sbi->s_blocksize to inode->i_sb->s_blocksize in maxlength
+>  computation.
 > ---
->  fs/ext4/super.c | 19 ++++++++++++-------
->  1 file changed, 12 insertions(+), 7 deletions(-)
+>  fs/ext4/inode.c | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
 > 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 81749eaddf4c..a673012e35c8 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -1199,20 +1199,25 @@ static void ext4_put_super(struct super_block *sb)
->  	int aborted = 0;
->  	int i, err;
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 01c9e4f743ba..355384007d11 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -3924,7 +3924,8 @@ int ext4_punch_hole(struct inode *inode, loff_t offset, loff_t length)
+>  	struct super_block *sb = inode->i_sb;
+>  	ext4_lblk_t first_block, stop_block;
+>  	struct address_space *mapping = inode->i_mapping;
+> -	loff_t first_block_offset, last_block_offset;
+> +	loff_t first_block_offset, last_block_offset, max_length;
+> +	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+>  	handle_t *handle;
+>  	unsigned int credits;
+>  	int ret = 0, ret2 = 0;
+> @@ -3967,6 +3968,16 @@ int ext4_punch_hole(struct inode *inode, loff_t offset, loff_t length)
+>  		   offset;
+>  	}
 >  
-> -	ext4_unregister_li_request(sb);
-> -	ext4_quota_off_umount(sb);
-> -
-> -	flush_work(&sbi->s_error_work);
-> -	destroy_workqueue(sbi->rsv_conversion_wq);
-> -	ext4_release_orphan_info(sb);
-> -
->  	/*
->  	 * Unregister sysfs before destroying jbd2 journal.
->  	 * Since we could still access attr_journal_task attribute via sysfs
->  	 * path which could have sbi->s_journal->j_task as NULL
-> +	 * Unregister sysfs before flush sbi->s_error_work.
-> +	 * Since user may read /proc/fs/ext4/xx/mb_groups during umount, If
-> +	 * read metadata verify failed then will queue error work.
-> +	 * flush_stashed_error_work will call start_this_handle may trigger
-> +	 * BUG_ON.
->  	 */
->  	ext4_unregister_sysfs(sb);
->  
-> +	ext4_unregister_li_request(sb);
-> +	ext4_quota_off_umount(sb);
+> +	/*
+> +	 * For punch hole the length + offset needs to be at least within
+> +	 * one block before last
+> +	 */
+> +	max_length = sbi->s_bitmap_maxbytes - inode->i_sb->s_blocksize;
+> +	if (offset + length >= max_length) {
+> +		ret = -ENOSPC;
+> +		goto out_mutex;
+> +	}
 > +
-> +	flush_work(&sbi->s_error_work);
-> +	destroy_workqueue(sbi->rsv_conversion_wq);
-> +	ext4_release_orphan_info(sb);
-> +
->  	if (sbi->s_journal) {
->  		aborted = is_journal_aborted(sbi->s_journal);
->  		err = jbd2_journal_destroy(sbi->s_journal);
+>  	if (offset & (sb->s_blocksize - 1) ||
+>  	    (offset + length) & (sb->s_blocksize - 1)) {
+>  		/*
 > -- 
-> 2.31.1
+> 2.35.1
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
