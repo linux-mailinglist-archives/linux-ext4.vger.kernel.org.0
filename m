@@ -2,54 +2,64 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 527314E5B10
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Mar 2022 23:10:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67F184E5BAC
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Mar 2022 00:06:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345117AbiCWWLl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 23 Mar 2022 18:11:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55168 "EHLO
+        id S1345408AbiCWXIJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 23 Mar 2022 19:08:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239931AbiCWWLk (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Mar 2022 18:11:40 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CFE327FD8;
-        Wed, 23 Mar 2022 15:10:10 -0700 (PDT)
+        with ESMTP id S1345522AbiCWXIH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Mar 2022 19:08:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE4BC9027D
+        for <linux-ext4@vger.kernel.org>; Wed, 23 Mar 2022 16:06:37 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D75CCB81FE8;
-        Wed, 23 Mar 2022 22:10:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A4FC4C340E8;
-        Wed, 23 Mar 2022 22:10:07 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 49274617F0
+        for <linux-ext4@vger.kernel.org>; Wed, 23 Mar 2022 23:06:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B2D2EC340F2
+        for <linux-ext4@vger.kernel.org>; Wed, 23 Mar 2022 23:06:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648073407;
-        bh=qolJ27SnIxSW27HwkjV+UbRWzVMKt118KZi4gH/gKpA=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=S/X59p/y5dUiGolgtUQwu4RvQGSKNR18NhJ4C9zCLPYwF0caWvidV5b1hoV2LUVJp
-         r0C70gg01CCfVDcQyFFfi5545j33REuV+w5/fSaaQdcEQ95zkkvoeTa7MG+Kw2YA59
-         KRlogBLovrdcGGX3gvz33at4Uf3vKAZzShyojj4/NXntw/QXC6ytpyGA83NmnylkVZ
-         wlPGdEYZzL3EHyBSU88Tfrk7N5X6EAr6ZeiKIIwBb2+Ms3WCq0tVOfEMPT8I43Sle6
-         rNDYYIbaFteFN6TD85gXp3sfFN3PLeXbmxQQ9NP9mdRn0T1G95abMlV+ELgdYgaCdW
-         0EEVD4JH3Zihw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 86E48E7BB0B;
-        Wed, 23 Mar 2022 22:10:07 +0000 (UTC)
-Subject: Re: [GIT PULL] ext4 updates for 5.18-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YjuYwa2jhanwyryf@mit.edu>
-References: <YjuYwa2jhanwyryf@mit.edu>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YjuYwa2jhanwyryf@mit.edu>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
-X-PR-Tracked-Commit-Id: 919adbfec29d5b89b3e45620653cbeeb0d42e6fd
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 9b03992f0c88baef524842e411fbdc147780dd5d
-Message-Id: <164807340750.27141.17045124539245947003.pr-tracker-bot@kernel.org>
-Date:   Wed, 23 Mar 2022 22:10:07 +0000
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+        s=k20201202; t=1648076796;
+        bh=fNBu8bVAqCYmw3IC5ZRPSBmhmf2XJfPuDTi8+CQyCmY=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=oapdG1HH0/xVRVHporrAu/7eo8ZQsdfubSc5PyvawvHaQm0q9ctuAWn5wrdPgH+nc
+         OWCI7V7TUx39cBBHztuKb+nEs1yn6bovTr9D26rXmvWGrF2WNVIAZmXz8MfZnEI+SY
+         KcbbAZHIuxBNsI3MTPuTUhrtOjnxMAz3WVcfjT3Htegf0lTilwHacMweDv3T12cIVp
+         +4CHvQXWEjUpBbuIANYSuYA422fqj9Qp0+/+OzNbbgwdtKufXkQEuxLD4Jfn9ucfHa
+         DxsdXARK/fIEnE8ThcyDLGpqtfK6NbN5ttLyrOyRGaTN0OksfoZEfwq6tl9L+feMpo
+         l4/1dbDRsZYBA==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+        id A2281CC13AD; Wed, 23 Mar 2022 23:06:36 +0000 (UTC)
+From:   bugzilla-daemon@kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 215712] kernel deadlocks while mounting the image
+Date:   Wed, 23 Mar 2022 23:06:36 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: lists@nerdbynature.de
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: cc
+Message-ID: <bug-215712-13602-2iktX1lkDv@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-215712-13602@https.bugzilla.kernel.org/>
+References: <bug-215712-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
+MIME-Version: 1.0
 X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -60,15 +70,56 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The pull request you sent on Wed, 23 Mar 2022 18:01:37 -0400:
+https://bugzilla.kernel.org/show_bug.cgi?id=3D215712
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
+Christian Kujau (lists@nerdbynature.de) changed:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/9b03992f0c88baef524842e411fbdc147780dd5d
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+                 CC|                            |lists@nerdbynature.de
 
-Thank you!
+--- Comment #3 from Christian Kujau (lists@nerdbynature.de) ---
+A 5.17 kernel *is* able to mount the image here, but it takes quite some ti=
+me
+to complete:
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+$ time mount -v -t ext4 -o loop,ro,debug tmp.img /mnt/disk/
+mount: /dev/loop0 mounted on /mnt/disk.
+
+real    1m32.694s
+user    0m0.008s
+sys     1m32.665s
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+During that time the CPU is spinning like crazy, but I don't know how to de=
+bug
+this further as to why it's spinning. perf comes to mind, but maybe somethi=
+ng
+more ext4 specific is more useful here. dmesg shows, for this mount operati=
+on:
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+[  188.269405] [EXT4 FS bs=3D1024, gc=3D2, bpg=3D8192, ipg=3D2048, mo=3Da80=
+2c818,
+mo2=3D0002]
+[  280.932637] EXT4-fs (loop0): mounted filesystem with ordered data mode.
+Quota mode: disabled.
+[  595.249319] EXT4-fs (loop0): error count since last fsck: 1
+[  595.250559] EXT4-fs (loop0): initial error at time 1647888893:
+ext4_mb_generate_buddy:756
+[  595.253403] EXT4-fs (loop0): last error at time 1647888893:
+ext4_mb_generate_buddy:756
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+@Ming, can you share details on how the image has been modified?
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
