@@ -2,122 +2,186 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E8BE4E5156
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Mar 2022 12:34:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 930DB4E51C7
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Mar 2022 13:01:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235809AbiCWLfj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 23 Mar 2022 07:35:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37078 "EHLO
+        id S244048AbiCWMCa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 23 Mar 2022 08:02:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235779AbiCWLfe (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Mar 2022 07:35:34 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A28457523A;
-        Wed, 23 Mar 2022 04:34:04 -0700 (PDT)
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 22N9g005008924;
-        Wed, 23 Mar 2022 11:33:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=dTXWgK5sxg+OV8Z4CHkXj0LY3ByBMtrgQTNq8SLCasw=;
- b=SFapMDuZgXt8Vqu1ROJ5T6elAQ27sBj39z3WgK2S79jomr1jdrgCoAhnqLNxGVDMDykX
- mCgs3ORrV1atfa2XwHCrempkhMGEbe+r7hVrd1MvpBCPOal2HMIr8L1YdbfDYHau9are
- +QSM3CHNJoKa8ERffaco3IYSvhNXCxoNYU13zaTzwUf4WtDvxMfS1aG0L0KuRJIcZcx9
- 4zb+LRfM3C4v0eoLE9xg1LJbOfA2mDKrUpQ/q4Jb8itKNFFzO7KVAjuqxuWjwzxteIec
- k1CwWwRLDaZ5P1fSbvpCC+Xr3BhJSiMb07yWSNXJqgapIGGikr5cwVEhRtIdtdZCvCew DA== 
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3f014yj4j5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Mar 2022 11:33:58 +0000
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 22NBH4MM019266;
-        Wed, 23 Mar 2022 11:33:55 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04fra.de.ibm.com with ESMTP id 3ew6t8q822-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Mar 2022 11:33:55 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 22NBXv4n45547856
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Mar 2022 11:33:57 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4E7504C046;
-        Wed, 23 Mar 2022 11:33:53 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C4E7A4C040;
-        Wed, 23 Mar 2022 11:33:52 +0000 (GMT)
-Received: from localhost (unknown [9.43.48.214])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 23 Mar 2022 11:33:52 +0000 (GMT)
-Date:   Wed, 23 Mar 2022 17:03:51 +0530
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     Haowen Bai <baihaowen@meizu.com>
-Cc:     jack@suse.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs: ext2: Fix duplicate included linux/dax.h
-Message-ID: <20220323113351.sibsrr3qbpuegfm4@riteshh-domain>
-References: <1648008123-32485-1-git-send-email-baihaowen@meizu.com>
+        with ESMTP id S244076AbiCWMC3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Mar 2022 08:02:29 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA1A57A9B2;
+        Wed, 23 Mar 2022 05:00:57 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KNn2f5cQyzfYmZ;
+        Wed, 23 Mar 2022 19:59:22 +0800 (CST)
+Received: from [10.174.178.185] (10.174.178.185) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Wed, 23 Mar 2022 20:00:55 +0800
+Subject: Re: [PATCH -next] ext4: fix use-after-free in ext4_search_dir
+To:     Jan Kara <jack@suse.cz>
+References: <20220323034304.3597652-1-yebin10@huawei.com>
+ <20220323104745.76u3uhdn745jaw4j@quack3.lan>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lczerner@redhat.com>
+From:   yebin <yebin10@huawei.com>
+Message-ID: <623B0BF7.3050907@huawei.com>
+Date:   Wed, 23 Mar 2022 20:00:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1648008123-32485-1-git-send-email-baihaowen@meizu.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: FkUFH6qZDgasMF7P6goF9oGYYcDK_hyI
-X-Proofpoint-ORIG-GUID: FkUFH6qZDgasMF7P6goF9oGYYcDK_hyI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-03-23_06,2022-03-22_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1011
- adultscore=0 bulkscore=0 spamscore=0 priorityscore=1501 impostorscore=0
- phishscore=0 lowpriorityscore=0 mlxlogscore=750 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2203230066
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220323104745.76u3uhdn745jaw4j@quack3.lan>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.185]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22/03/23 12:02PM, Haowen Bai wrote:
-> Clean up the following includecheck warning:
+
+
+On 2022/3/23 18:47, Jan Kara wrote:
+> On Wed 23-03-22 11:43:04, Ye Bin wrote:
+>> We got issue as follows:
+>> EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+>> ==================================================================
+>> BUG: KASAN: use-after-free in ext4_search_dir fs/ext4/namei.c:1394 [inline]
+>> BUG: KASAN: use-after-free in search_dirblock fs/ext4/namei.c:1199 [inline]
+>> BUG: KASAN: use-after-free in __ext4_find_entry+0xdca/0x1210 fs/ext4/namei.c:1553
+>> Read of size 1 at addr ffff8881317c3005 by task syz-executor117/2331
+>>
+>> CPU: 1 PID: 2331 Comm: syz-executor117 Not tainted 5.10.0+ #1
+>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+>> Call Trace:
+>>   __dump_stack lib/dump_stack.c:83 [inline]
+>>   dump_stack+0x144/0x187 lib/dump_stack.c:124
+>>   print_address_description+0x7d/0x630 mm/kasan/report.c:387
+>>   __kasan_report+0x132/0x190 mm/kasan/report.c:547
+>>   kasan_report+0x47/0x60 mm/kasan/report.c:564
+>>   ext4_search_dir fs/ext4/namei.c:1394 [inline]
+>>   search_dirblock fs/ext4/namei.c:1199 [inline]
+>>   __ext4_find_entry+0xdca/0x1210 fs/ext4/namei.c:1553
+>>   ext4_lookup_entry fs/ext4/namei.c:1622 [inline]
+>>   ext4_lookup+0xb8/0x3a0 fs/ext4/namei.c:1690
+>>   __lookup_hash+0xc5/0x190 fs/namei.c:1451
+>>   do_rmdir+0x19e/0x310 fs/namei.c:3760
+>>   do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+>>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>> RIP: 0033:0x445e59
+>> Code: 4d c7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 1b c7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+>> RSP: 002b:00007fff2277fac8 EFLAGS: 00000246 ORIG_RAX: 0000000000000054
+>> RAX: ffffffffffffffda RBX: 0000000000400280 RCX: 0000000000445e59
+>> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000200000c0
+>> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000002
+>> R10: 00007fff2277f990 R11: 0000000000000246 R12: 0000000000000000
+>> R13: 431bde82d7b634db R14: 0000000000000000 R15: 0000000000000000
+>>
+>> The buggy address belongs to the page:
+>> page:0000000048cd3304 refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 pfn:0x1317c3
+>> flags: 0x200000000000000()
+>> raw: 0200000000000000 ffffea0004526588 ffffea0004528088 0000000000000000
+>> raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
+>> page dumped because: kasan: bad access detected
+>>
+>> Memory state around the buggy address:
+>>   ffff8881317c2f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>>   ffff8881317c2f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>>> ffff8881317c3000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>>                     ^
+>>   ffff8881317c3080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>>   ffff8881317c3100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>> ==================================================================
+>>
+>> ext4_search_dir:
+>>    ...
+>>    de = (struct ext4_dir_entry_2 *)search_buf;
+>>    dlimit = search_buf + buf_size;
+>>    while ((char *) de < dlimit) {
+>>    ...
+>>      if ((char *) de + de->name_len <= dlimit &&
+>> 	 ext4_match(dir, fname, de)) {
+>> 	    ...
+>>      }
+>>    ...
+>>      de_len = ext4_rec_len_from_disk(de->rec_len, dir->i_sb->s_blocksize);
+>>      if (de_len <= 0)
+>>        return -1;
+>>      offset += de_len;
+>>      de = (struct ext4_dir_entry_2 *) ((char *) de + de_len);
+>>    }
+>>
+>> Assume:
+>> de=0xffff8881317c2fff
+>> dlimit=0x0xffff8881317c3000
+>>
+>> If read 'de->name_len' which address is 0xffff8881317c3005, obviously is
+>> out of range, then will trigger use-after-free.
+>> To solve this issue, 'dlimit' must reserve 8 bytes, as we will read
+>> 'de->name_len' to judge if '(char *) de + de->name_len' out of range.
+>>
+>> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> Oh, good catch.
 >
-> fs/ext2/inode.c: linux/dax.h is included more than once.
+>> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+>> index 3f87cca49f0c..276683f7ab77 100644
+>> --- a/fs/ext4/ext4.h
+>> +++ b/fs/ext4/ext4.h
+>> @@ -2273,6 +2273,10 @@ static inline int ext4_forced_shutdown(struct ext4_sb_info *sbi)
+>>    * Structure of a directory entry
+>>    */
+>>   #define EXT4_NAME_LEN 255
+>> +/*
+>> + * Base length of ext4_dir_entry_2 and ext4_dir_entry exclude name
+>> + */
+>> +#define EXT4_BASE_DIR_LEN 8
+> I'd rather use (sizeof(struct ext4_dir_entry_2) - EXT4_NAME_LEN) here...
 >
-
-
-Checked "make includecheck"
-This is the only warning coming from fs/ext2/
-
-Thanks for the cleanup. Looks good to me.
-Feel free to add -
-
-Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
-
-
-
-> No functional change.
+>>   struct ext4_dir_entry {
+>>   	__le32	inode;			/* Inode number */
+>> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+>> index e37da8d5cd0c..4739a5aa13aa 100644
+>> --- a/fs/ext4/namei.c
+>> +++ b/fs/ext4/namei.c
+>> @@ -1465,7 +1465,7 @@ int ext4_search_dir(struct buffer_head *bh, char *search_buf, int buf_size,
+>>   	int de_len;
+>>   
+>>   	de = (struct ext4_dir_entry_2 *)search_buf;
+>> -	dlimit = search_buf + buf_size;
+>> +	dlimit = search_buf + buf_size - EXT4_BASE_DIR_LEN;
+>>   	while ((char *) de < dlimit) {
+>>   		/* this code is executed quadratically often */
+>>   		/* do minimal checking `by hand' */
+> This looks wrong because a bit later we use dlimit to verify
+> de+de->name_len and that can certainly go upto bufsize. You need to modify
+> only the condition in the while loop like:
 >
-> Signed-off-by: Haowen Bai <baihaowen@meizu.com>
-> ---
->  fs/ext2/inode.c | 1 -
->  1 file changed, 1 deletion(-)
+>    	while ((char *) de < dlimit - EXT4_BASE_DIR_LEN) {
 >
-> diff --git a/fs/ext2/inode.c b/fs/ext2/inode.c
-> index 602578b..da4c301 100644
-> --- a/fs/ext2/inode.c
-> +++ b/fs/ext2/inode.c
-> @@ -36,7 +36,6 @@
->  #include <linux/iomap.h>
->  #include <linux/namei.h>
->  #include <linux/uio.h>
-> -#include <linux/dax.h>
->  #include "ext2.h"
->  #include "acl.h"
->  #include "xattr.h"
-> --
-> 2.7.4
->
+> 									Honza
+I think  'dlimit' also need to minus EXT4_BASE_DIR_LEN when verify 
+'de+de->name_len' .
+Assume:
+de = 0xffff8881317c2ff7
+dlimit = 0x0xffff8881317c3000
+de->name_len = 8
+
+=>
+de + de->name_len = 0xffff8881317c2fff  ( <= dlimit=0x0xffff8881317c3000)
+de->name = 'de' address  + EXT4_BASE_DIR_LEN  = 0xffff8881317c2ff7 + 8 = 
+0xffff8881317c2fff
+If we read 8 bytes form 0xffff8881317c2fff will read out of range.
+
+
