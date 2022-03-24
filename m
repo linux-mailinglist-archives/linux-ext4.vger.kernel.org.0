@@ -2,72 +2,43 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D554F4E5D55
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Mar 2022 03:47:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD7E4E5EB7
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Mar 2022 07:33:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344427AbiCXCso (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 23 Mar 2022 22:48:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45814 "EHLO
+        id S236149AbiCXGey (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 24 Mar 2022 02:34:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242681AbiCXCsm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Mar 2022 22:48:42 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D88939CC;
-        Wed, 23 Mar 2022 19:47:11 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id bx24-20020a17090af49800b001c6872a9e4eso3768781pjb.5;
-        Wed, 23 Mar 2022 19:47:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=90v/5Py9W7EAZEot7188HYCPw8B0VfqItjFqNp0yU8I=;
-        b=dxrv0V3AiE2m0/WOX54xvV5yxB0eJv9FvLmxGfHi84fR/RWgBOp4yXdDNToYvyAawj
-         kFAqEG2QtJP6dJm1A/UKmq+1eB7PdUAV/zCkGhgbi9FbsP45vrQ9Soh8L719JjYtuwIg
-         N8NN/8zPbZSLvzEiIEYCgbzuHQ3nWPE/VgE7HlJAPPawvyRDtRTBtdnSAeEjeXLRRFJY
-         hF4aVeYUjd1A+GEfDEvARaNz62S+hP9Rhjqv1hfCPw9ceQkOiviCfxLNeiibnjpNAGNi
-         /6516352cSybYQDMu2cYXhPHBes/c1Nn7vARgXL0a/M/f8rTpmQpxgaP5aNDcNn0GcUs
-         QfDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=90v/5Py9W7EAZEot7188HYCPw8B0VfqItjFqNp0yU8I=;
-        b=L+Nkts2qPDy28GS2t9yQVU9DCQCizPhOys0HQG12B6SJ1XWGlFlFx8bi41rtihAc7u
-         SxHlRpN3m5QDWwTzWK4IrpjM8/va7gN8nUsnb385S0vHSv+RHL4H7agXmRRxanby//d6
-         /Ke9oBd/6P9gQY25ZNFhi2P6FbBHGTnnlz3STl3DOfbjE3xIsSq2QVdUxyLCoootMnzU
-         Cbf574csqaVdregMOf0+FOlyVv2HiSYbV3eMJLFYXov7eJ1mEedIoNh8ftXxgD6bcTqI
-         2HjMZ9rbT4Agz1a5vaLjd6g4pi8Zgo5PTMCkeWQ4MYJg9uO8Mlimihe5KFi1ZlwEn2k3
-         NBDg==
-X-Gm-Message-State: AOAM531iqzff1cAlAU97hVhfidLAinJRwh1xDXqSq7SIAFL8vnZ2AgHW
-        5/5wIPNPNcLJS25BXLSFTTuZCWQACPBzXEak0Hc=
-X-Google-Smtp-Source: ABdhPJzEvjnYd7B0WIGRcPh8gW/FvpiuSCSRc80jOwhBs6SPVLjct24P89mwBuS0aVh2B9zE/pT9CUr0CDpyaw6jaGg=
-X-Received: by 2002:a17:903:1cd:b0:154:5edf:5704 with SMTP id
- e13-20020a17090301cd00b001545edf5704mr3481459plh.26.1648090031398; Wed, 23
- Mar 2022 19:47:11 -0700 (PDT)
+        with ESMTP id S229528AbiCXGex (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Mar 2022 02:34:53 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA31C27B12;
+        Wed, 23 Mar 2022 23:33:20 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KPFlm1CQKzcbQk;
+        Thu, 24 Mar 2022 14:33:08 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Thu, 24 Mar
+ 2022 14:33:17 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
+        <lczerner@redhat.com>, Ye Bin <yebin10@huawei.com>
+Subject: [PATCH -next v2] ext4: fix use-after-free in ext4_search_dir
+Date:   Thu, 24 Mar 2022 14:48:16 +0800
+Message-ID: <20220324064816.1209985-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20220317234827.447799-1-shy828301@gmail.com> <YjvNzvdcagflTejJ@mit.edu>
-In-Reply-To: <YjvNzvdcagflTejJ@mit.edu>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Wed, 23 Mar 2022 19:46:59 -0700
-Message-ID: <CAHbLzkqTeD_VB0znsBNt8HjjPceqU-uKh6TF3jNVVjZn4dbBLw@mail.gmail.com>
-Subject: Re: [v2 PATCH 0/8] Make khugepaged collapse readonly FS THP more consistent
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Song Liu <songliubraving@fb.com>,
-        Rik van Riel <riel@surriel.com>,
-        Matthew Wilcox <willy@infradead.org>, Zi Yan <ziy@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        darrick.wong@oracle.com, Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,20 +46,121 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Mar 23, 2022 at 6:48 PM Theodore Ts'o <tytso@mit.edu> wrote:
->
-> On Thu, Mar 17, 2022 at 04:48:19PM -0700, Yang Shi wrote:
-> >
-> > The patch 1 ~ 7 are minor bug fixes, clean up and preparation patches.
-> > The patch 8 converts ext4 and xfs.  We may need convert more filesystems,
-> > but I'd like to hear some comments before doing that.
->
-> Adding a hard-coded call to khugepage_enter_file() in ext4 and xfs,
-> and potentially, each file system, seems kludgy as all heck.  Is there
-> any reason not to simply call it in the mm code which calls f_op->mmap()?
+We got issue as follows:
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+==================================================================
+BUG: KASAN: use-after-free in ext4_search_dir fs/ext4/namei.c:1394 [inline]
+BUG: KASAN: use-after-free in search_dirblock fs/ext4/namei.c:1199 [inline]
+BUG: KASAN: use-after-free in __ext4_find_entry+0xdca/0x1210 fs/ext4/namei.c:1553
+Read of size 1 at addr ffff8881317c3005 by task syz-executor117/2331
 
-Thanks, Ted. Very good point. I just didn't think of it. I think it is
-doable. We may be able to clean up the code further.
+CPU: 1 PID: 2331 Comm: syz-executor117 Not tainted 5.10.0+ #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:83 [inline]
+ dump_stack+0x144/0x187 lib/dump_stack.c:124
+ print_address_description+0x7d/0x630 mm/kasan/report.c:387
+ __kasan_report+0x132/0x190 mm/kasan/report.c:547
+ kasan_report+0x47/0x60 mm/kasan/report.c:564
+ ext4_search_dir fs/ext4/namei.c:1394 [inline]
+ search_dirblock fs/ext4/namei.c:1199 [inline]
+ __ext4_find_entry+0xdca/0x1210 fs/ext4/namei.c:1553
+ ext4_lookup_entry fs/ext4/namei.c:1622 [inline]
+ ext4_lookup+0xb8/0x3a0 fs/ext4/namei.c:1690
+ __lookup_hash+0xc5/0x190 fs/namei.c:1451
+ do_rmdir+0x19e/0x310 fs/namei.c:3760
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x445e59
+Code: 4d c7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 1b c7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fff2277fac8 EFLAGS: 00000246 ORIG_RAX: 0000000000000054
+RAX: ffffffffffffffda RBX: 0000000000400280 RCX: 0000000000445e59
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000200000c0
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000002
+R10: 00007fff2277f990 R11: 0000000000000246 R12: 0000000000000000
+R13: 431bde82d7b634db R14: 0000000000000000 R15: 0000000000000000
 
->
->                                  - Ted
+The buggy address belongs to the page:
+page:0000000048cd3304 refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 pfn:0x1317c3
+flags: 0x200000000000000()
+raw: 0200000000000000 ffffea0004526588 ffffea0004528088 0000000000000000
+raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff8881317c2f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff8881317c2f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff8881317c3000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                   ^
+ ffff8881317c3080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff8881317c3100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
+
+ext4_search_dir:
+  ...
+  de = (struct ext4_dir_entry_2 *)search_buf;
+  dlimit = search_buf + buf_size;
+  while ((char *) de < dlimit) {
+  ...
+    if ((char *) de + de->name_len <= dlimit &&
+	 ext4_match(dir, fname, de)) {
+	    ...
+    }
+  ...
+    de_len = ext4_rec_len_from_disk(de->rec_len, dir->i_sb->s_blocksize);
+    if (de_len <= 0)
+      return -1;
+    offset += de_len;
+    de = (struct ext4_dir_entry_2 *) ((char *) de + de_len);
+  }
+
+Assume:
+de=0xffff8881317c2fff
+dlimit=0x0xffff8881317c3000
+
+If read 'de->name_len' which address is 0xffff8881317c3005, obviously is
+out of range, then will trigger use-after-free.
+To solve this issue, 'dlimit' must reserve 8 bytes, as we will read
+'de->name_len' to judge if '(char *) de + de->name_len' out of range.
+
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ fs/ext4/ext4.h  | 4 ++++
+ fs/ext4/namei.c | 4 ++--
+ 2 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 3f87cca49f0c..ea49cf5d70a9 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -2273,6 +2273,10 @@ static inline int ext4_forced_shutdown(struct ext4_sb_info *sbi)
+  * Structure of a directory entry
+  */
+ #define EXT4_NAME_LEN 255
++/*
++ * Base length of ext4_dir_entry_2 and ext4_dir_entry exclude name
++ */
++#define EXT4_BASE_DIR_LEN (sizeof(struct ext4_dir_entry_2) - EXT4_NAME_LEN)
+ 
+ struct ext4_dir_entry {
+ 	__le32	inode;			/* Inode number */
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index e37da8d5cd0c..767b4bfe39c3 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -1466,10 +1466,10 @@ int ext4_search_dir(struct buffer_head *bh, char *search_buf, int buf_size,
+ 
+ 	de = (struct ext4_dir_entry_2 *)search_buf;
+ 	dlimit = search_buf + buf_size;
+-	while ((char *) de < dlimit) {
++	while ((char *) de < dlimit - EXT4_BASE_DIR_LEN) {
+ 		/* this code is executed quadratically often */
+ 		/* do minimal checking `by hand' */
+-		if ((char *) de + de->name_len <= dlimit &&
++		if (de->name + de->name_len <= dlimit &&
+ 		    ext4_match(dir, fname, de)) {
+ 			/* found a match - just to be sure, do
+ 			 * a full check */
+-- 
+2.31.1
+
