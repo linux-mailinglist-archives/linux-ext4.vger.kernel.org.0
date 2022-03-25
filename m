@@ -2,97 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01FA74E6E27
-	for <lists+linux-ext4@lfdr.de>; Fri, 25 Mar 2022 07:19:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 473324E6E51
+	for <lists+linux-ext4@lfdr.de>; Fri, 25 Mar 2022 07:42:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244796AbiCYGUj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 25 Mar 2022 02:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43860 "EHLO
+        id S1358483AbiCYGoO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 25 Mar 2022 02:44:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245719AbiCYGUf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 25 Mar 2022 02:20:35 -0400
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F8153E15
-        for <linux-ext4@vger.kernel.org>; Thu, 24 Mar 2022 23:19:00 -0700 (PDT)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-2e6ceb45174so33102407b3.8
-        for <linux-ext4@vger.kernel.org>; Thu, 24 Mar 2022 23:19:00 -0700 (PDT)
+        with ESMTP id S1347663AbiCYGoO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 25 Mar 2022 02:44:14 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58CB6C6ED0;
+        Thu, 24 Mar 2022 23:42:41 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id c11so5689699pgu.11;
+        Thu, 24 Mar 2022 23:42:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OHcnohF6goVq7JBxRHCvRlkPux4XGzCni0uGSevDn8c=;
-        b=YHAaIesEtaUsqmDpxvbXXRBUIee2FtJzmyPY4rn9EDAOQXNjMsmJ6PxCN+/qNnhbL2
-         cTbHG9CmcM8Cb14+C02T7Btyb9ee+JNRck8cU6Q65IZikCfUvPFNPpEMjmYWicElfxbc
-         DxtFtwLZJJ68JCDrjTTgTdnoPhRHtkdedeZ3VlZJbS0FNehLYoQk0hRMHDvyxWQhiZYn
-         Fs6tgqw6hys0TuVRQ4Q3eorl08MthYi1Of4dLtJBddZELVQXshNeNzAiNYN76dXh8S0C
-         mDpWwBTfoFx29JbWYkR7wx9K1VeS1SZs3phaLl25x+2i3SnHLh38WmorIPrv8dbQa4h1
-         yW9g==
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=c41pCClCkN5PFuk+yVxjeXx2WWOwThCPdPC/YOqI5Oc=;
+        b=FKHElwsSShqv1oat3UyiSLvlerb5qeYV4ERQ2SvkMp/1V3ZR3vKzzZH8C9IPiS0p24
+         4wtOlQPUE/4yepppcqaxxeK8uU0Diwceiw7CyOtFLclTHEj3jU3cD5Nq8Jbi166gMMh8
+         IoJPUpzASBVj6+bNdutkjscnWW6DivrFw4h6xeR6M5Py58sRjlk8ntzrwRQ6/onOHyNS
+         xWuJ07r9TGK1VOydTfcFt7O12lE8OAo7X4zNF65o3R5oMEQp+b88FonNe9Egk3GUm+OP
+         RXA5HEo2jZkSCHkU7wc34JQQN70oNrU5/HoxcCD7q/cj8qqEXlbCJPnOevHf1K4wph0p
+         4/YQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OHcnohF6goVq7JBxRHCvRlkPux4XGzCni0uGSevDn8c=;
-        b=SzDTI+ju1wNM6gnnZ6OLAv//OpYG5cT9wg130MkPf6/RL34EbdORcNyo2wXO4dJh64
-         PSd4LAEd6uF4SWr67EPm7QN4lNZC0vya7tbceQfbvynyD6TcGuR4dvGa6Ja8hwchHifn
-         f9epqyjkORKU/8eGwBOBZTtJGtiZqrWxvrKDN4/ZXjA7My9l0b3TsJwFkm+6gOocP1+K
-         dXGAt1nQH0P3rLlJPdkA9qymn4hwluqMC0uPeMYsqeqY0G8nWZaaFJzTdAiiXONLjznO
-         9T5p7Q4O5rA/U5zXoE4gPJgJyCtUf1ZS28eDLZznmu8WXow4X6iJ5ACwVkVJ78jA3xCX
-         KfFQ==
-X-Gm-Message-State: AOAM532Mw6XZQYanQzXqoLor/FS5gBdW5nuIF7oB65GeHkTiSwEjnqw8
-        PoJzQmdrRGA8eW0oy2IVzvFWPuCEXXCO85NDoyQq1Q==
-X-Google-Smtp-Source: ABdhPJz4fwI6TdbfnTLMNK7QswYiU2nkRDpz3k8FqPiSSRMbDz/RmtbjNZsxFf/zePPXhQHOCM9n7IYp9FPmFhCUOUo=
-X-Received: by 2002:a81:18c3:0:b0:2e5:da72:2383 with SMTP id
- 186-20020a8118c3000000b002e5da722383mr8960656ywy.338.1648189139773; Thu, 24
- Mar 2022 23:18:59 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=c41pCClCkN5PFuk+yVxjeXx2WWOwThCPdPC/YOqI5Oc=;
+        b=SosZx99AHXhUvpppxReeAFtOPxFHPWBgquZfE4URd21HW85UXOyBeSgUoiT3Ygsb4I
+         BZfaXw5bz5jxj9LBYEosZBxg+5vVS4uDtuW3xfnN5rvllJmiYDB7Nr2r9jU+/4EYj5Q4
+         wDD5j1/6WpoIy/sPZ7ry4YXw7s5Eg8e5x7SrT5yacRotsaOzBmwQXhP7flQE5z9Dw7b/
+         KNEsVbr0p2KTBrwnkNJ7DenCyWWmBsMz5WofB7JNDNqXn3KaeSf7AX1/z3dkjkV0hWHW
+         bdbCYJbvLoyEHCiHfkYGXbQJaVbVy3WmN4QcmJGAySKajSTMbk4s9FhSr1o9FOL5yTMf
+         vEMQ==
+X-Gm-Message-State: AOAM532RTO72nA2yo1ICtfAaYyDl8cGOz7RE9lGRRd5ni/KZ0jlppBUI
+        V9l1st7Hf2TZOBdWgmw1dF9qI394pWE1v34HRM/A+J4Lcu9to8S0
+X-Google-Smtp-Source: ABdhPJyIT7qv0mAbLagqCyRC41PfqZxQ6pA+YeAp0PgGt0MQSoJ24RfjHgfRqr5gZRQW/XuBozVtUALpyXPOUsVNc5Y=
+X-Received: by 2002:aa7:86c6:0:b0:4fa:46d:6005 with SMTP id
+ h6-20020aa786c6000000b004fa046d6005mr9010671pfo.86.1648190560379; Thu, 24 Mar
+ 2022 23:42:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <00000000000079c56a05ba1c18c3@google.com> <000000000000b8cdba05dae41558@google.com>
-In-Reply-To: <000000000000b8cdba05dae41558@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 25 Mar 2022 07:18:48 +0100
-Message-ID: <CACT4Y+bWiUfw4YEx7x9rCb80SwbQPfFfSWP6-7cYxOSs5vw39A@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in ext4_xattr_set_entry (4)
-To:     syzbot <syzbot+4cb1e27475bf90a9b926@syzkaller.appspotmail.com>
-Cc:     adilger.kernel@dilger.ca, cmaiolino@redhat.com,
-        lczerner@redhat.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sjc@chobot.com,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu, wanjiabing@vivo.com
+From:   Fariya F <fariya.fatima03@gmail.com>
+Date:   Fri, 25 Mar 2022 12:12:30 +0530
+Message-ID: <CACA3K+i8nZRBxeTfdy7Uq5LHAsbZEHTNati7-RRybsj_4ckUyw@mail.gmail.com>
+Subject: df returns incorrect size of partition due to huge overhead block
+ count in ext4 partition
+To:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 23 Mar 2022 at 16:07, syzbot
-<syzbot+4cb1e27475bf90a9b926@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit 6e47a3cc68fc525428297a00524833361ebbb0e9
-> Author: Lukas Czerner <lczerner@redhat.com>
-> Date:   Wed Oct 27 14:18:52 2021 +0000
->
->     ext4: get rid of super block and sbi from handle_mount_ops()
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=100bc10b700000
-> start commit:   f8ad8187c3b5 fs/pipe: allow sendfile() to pipe again
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=96b123631a6700e9
-> dashboard link: https://syzkaller.appspot.com/bug?extid=4cb1e27475bf90a9b926
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11131f94d00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15c3761b500000
->
-> If the result looks correct, please mark the issue as fixed by replying with:
->
-> #syz fix: ext4: get rid of super block and sbi from handle_mount_ops()
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+My eMMC partition is ext4 formatted and has about 100MB size. df -h
+command lists the size of the partition and the used percentage as
+below.
+    Filesystem           Size  Used Avail Use% Mounted on
 
-Looks reasonable:
+    /dev/mmcblk2p4    16Z   16Z   79M 100% /data
 
-#syz fix: ext4: get rid of super block and sbi from handle_mount_ops()
+For your reference, the returned values for statfs64( ) are
+
+statfs64("/data", 88, {f_type="EXT2_SUPER_MAGIC", f_bsize=1024,
+f_blocks=18446744073659310077, f_bfree=87628, f_bavail=80460,
+f_files=25688, f_ffree=25189, f_fsid={-1446355608, 1063639410},
+f_namelen=255, f_frsize=1024, f_flags=4128}) = 0
+
+The output dumpe2fs returns the following
+
+
+    Block count:              102400
+
+    Reserved block count:     5120
+
+    Overhead blocks:          50343939
+
+As per my kernel (4.9.31) code, the f_blocks is block_count - overhead
+blocks. Considering the subtraction with the above values results in a
+negative value this is interpreted as the huge value of
+18446744073659310077.
+
+I have a script which monitors the used percentage of the partition
+using df -h command and when the used percentage is greater than 70%,
+it deletes files until the used percentage comes down. Considering df
+is reporting all the time 100% usage, all my files get deleted.
+
+My questions are:
+
+a) Where does overhead blocks get set?
+
+b) Why is this value huge for my partition and how to correct it
+considering fsck is also not correcting this
+
+Please note fsck on this partition doesn't report any issues at all.
+
+I am also able to create files in this partition.
