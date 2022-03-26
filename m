@@ -2,329 +2,146 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C14464E7BFD
-	for <lists+linux-ext4@lfdr.de>; Sat, 26 Mar 2022 01:21:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2074E7F99
+	for <lists+linux-ext4@lfdr.de>; Sat, 26 Mar 2022 07:39:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233741AbiCYWhy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 25 Mar 2022 18:37:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59284 "EHLO
+        id S231318AbiCZGkf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 26 Mar 2022 02:40:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233826AbiCYWhx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 25 Mar 2022 18:37:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84FD150E02
-        for <linux-ext4@vger.kernel.org>; Fri, 25 Mar 2022 15:36:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 13B0560ADD
-        for <linux-ext4@vger.kernel.org>; Fri, 25 Mar 2022 22:36:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6DE36C340ED
-        for <linux-ext4@vger.kernel.org>; Fri, 25 Mar 2022 22:36:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648247777;
-        bh=UybdRUeGIHTeFW8NoAOaxlNTJGYTWRZnLiycMrpVESY=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=a9e3kHyyl4Cq9GohjrcjQGT5jC7JcoLchwLgRiz6FfCbBM5Ur52PFHw4AVh2Bsz+5
-         bojreDyq92Gcfl//Q71aoOlLCBqXmb/peRG+tVDDqywb5q4gx6XmQSVEnDIAg7eiOu
-         lPPpJJfz8kf3RIjCW+3afQCEyt4nmyy+skfavy7nuhH+Hei4NiZCgpXxFKVdgb+gwR
-         IYwcbSJkUT+f4JeFyJKKpP3Ad0B1/FLbQvc/45Lac7ywnI4bDnJ/wReQcBo8qqeVWd
-         8Y0hC5Pe6IZ/0SwCILpb6NNp0lZnJz+dDDpd9m8WxhPUhx2lz5Lx6zCbjckGq/MR9N
-         T0vVeqWcsalVw==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-        id 4DEDAC05FD4; Fri, 25 Mar 2022 22:36:17 +0000 (UTC)
-From:   bugzilla-daemon@kernel.org
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 211819] Processes stuck in D-state after accessing
- ext4+fast_commit+fscrypt
-Date:   Fri, 25 Mar 2022 22:36:16 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: kernel@twinhelix.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: cc
-Message-ID: <bug-211819-13602-opkiWIhkdR@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-211819-13602@https.bugzilla.kernel.org/>
-References: <bug-211819-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        with ESMTP id S230143AbiCZGke (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 26 Mar 2022 02:40:34 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B62710FE7;
+        Fri, 25 Mar 2022 23:38:57 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KQTlh0CLlzfZKb;
+        Sat, 26 Mar 2022 14:37:20 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Sat, 26 Mar
+ 2022 14:38:55 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
+        <lczerner@redhat.com>, Ye Bin <yebin10@huawei.com>
+Subject: [PATCH -next] ext4: fix warning in ext4_handle_inode_extension
+Date:   Sat, 26 Mar 2022 14:53:51 +0800
+Message-ID: <20220326065351.761952-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D211819
+We got issue as follows:
+EXT4-fs error (device loop0) in ext4_reserve_inode_write:5741: Out of memory
+EXT4-fs error (device loop0): ext4_setattr:5462: inode #13: comm syz-executor.0: mark_inode_dirty error
+EXT4-fs error (device loop0) in ext4_setattr:5519: Out of memory
+EXT4-fs error (device loop0): ext4_ind_map_blocks:595: inode #13: comm syz-executor.0: Can't allocate blocks for non-extent mapped inodes with bigalloc
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 4361 at fs/ext4/file.c:301 ext4_file_write_iter+0x11c9/0x1220
+Modules linked in:
+CPU: 1 PID: 4361 Comm: syz-executor.0 Not tainted 5.10.0+ #1
+RIP: 0010:ext4_file_write_iter+0x11c9/0x1220
+RSP: 0018:ffff924d80b27c00 EFLAGS: 00010282
+RAX: ffffffff815a3379 RBX: 0000000000000000 RCX: 000000003b000000
+RDX: ffff924d81601000 RSI: 00000000000009cc RDI: 00000000000009cd
+RBP: 000000000000000d R08: ffffffffbc5a2c6b R09: 0000902e0e52a96f
+R10: ffff902e2b7c1b40 R11: ffff902e2b7c1b40 R12: 000000000000000a
+R13: 0000000000000001 R14: ffff902e0e52aa10 R15: ffffffffffffff8b
+FS:  00007f81a7f65700(0000) GS:ffff902e3bc80000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffff600400 CR3: 000000012db88001 CR4: 00000000003706e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ do_iter_readv_writev+0x2e5/0x360
+ do_iter_write+0x112/0x4c0
+ do_pwritev+0x1e5/0x390
+ __x64_sys_pwritev2+0x7e/0xa0
+ do_syscall_64+0x37/0x50
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-AT (kernel@twinhelix.com) changed:
+Above issue may happen as follows:
+Assume
+inode.i_size=4096
+EXT4_I(inode)->i_disksize=4096
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-                 CC|                            |kernel@twinhelix.com
+step 1: set inode->i_isize = 8192
+ext4_setattr
+  if (attr->ia_size != inode->i_size)
+    EXT4_I(inode)->i_disksize = attr->ia_size;
+    rc = ext4_mark_inode_dirty
+       ext4_reserve_inode_write
+          ext4_get_inode_loc
+            __ext4_get_inode_loc
+              sb_getblk --> return -ENOMEM
+   ...
+   if (!error)  ->will not update i_size
+     i_size_write(inode, attr->ia_size);
+Now:
+inode.i_size=4096
+EXT4_I(inode)->i_disksize=8192
 
---- Comment #1 from AT (kernel@twinhelix.com) ---
-This affects kernels 5.16.15-arch1 and 5.16.16-arch1 at least (distro sugge=
-sted
-I add to this report). While running 5.16.16 with my home directory encrypt=
-ed
-with fscrypt (automatically unlocked on login), I enabled EXT4 fast_commit =
-on
-my root drive with:
+step 2: Direct write 4096 bytes
+ext4_file_write_iter
+ ext4_dio_write_iter
+   iomap_dio_rw ->return error
+ if (extend)
+   ext4_handle_inode_extension
+     WARN_ON_ONCE(i_size_read(inode) < EXT4_I(inode)->i_disksize);
+->Then trigger warning.
 
-sudo tune2fs -O fast_commit /dev/nvme0n1p2
+To solve above issue, if mark inode dirty failed in ext4_setattr just
+set 'EXT4_I(inode)->i_disksize' with old value.
 
-( Other filesystem features: has_journal ext_attr resize_inode dir_index
-filetype needs_recovery extent flex_bg encrypt sparse_super large_file
-huge_file dir_nlink extra_isize metadata_csum )
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ fs/ext4/inode.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-The system remained responsive but after that there were repeated episodes =
-like
-this in the log while running Firefox:
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 90fd6f7b6209..8adf1f802f6c 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -5384,6 +5384,7 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
+ 	if (attr->ia_valid & ATTR_SIZE) {
+ 		handle_t *handle;
+ 		loff_t oldsize = inode->i_size;
++		loff_t old_disksize;
+ 		int shrink = (attr->ia_size < inode->i_size);
+ 
+ 		if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))) {
+@@ -5455,6 +5456,7 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
+ 					inode->i_sb->s_blocksize_bits);
+ 
+ 			down_write(&EXT4_I(inode)->i_data_sem);
++			old_disksize = EXT4_I(inode)->i_disksize;
+ 			EXT4_I(inode)->i_disksize = attr->ia_size;
+ 			rc = ext4_mark_inode_dirty(handle, inode);
+ 			if (!error)
+@@ -5466,6 +5468,8 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
+ 			 */
+ 			if (!error)
+ 				i_size_write(inode, attr->ia_size);
++			else
++				EXT4_I(inode)->i_disksize = old_disksize;
+ 			up_write(&EXT4_I(inode)->i_data_sem);
+ 			ext4_journal_stop(handle);
+ 			if (error)
+-- 
+2.31.1
 
-1 Mar 23 22:19:15 hostname kernel: INFO: task IndexedDB #19:3350 blocked for
-more than 122 seconds.
-1 Mar 23 22:19:15 hostname kernel: Not tainted 5.16.16-arch1-1 #1
-2 Mar 23 22:19:15 hostname kernel: "echo 0 >
-/proc/sys/kernel/hung_task_timeout_secs" disables this message.
-3 Mar 23 22:19:15 hostname kernel: task:IndexedDB #19 state:D stack: 0 pid:
-3350 ppid: 1393 flags:0x00000002
-4 Mar 23 22:19:15 hostname kernel: Call Trace:
-5 Mar 23 22:19:15 hostname kernel: <TASK>
-6 Mar 23 22:19:15 hostname kernel: __schedule+0x2f6/0xf80
-7 Mar 23 22:19:15 hostname kernel: ? touch_atime+0x44/0x190
-8 Mar 23 22:19:15 hostname kernel: schedule+0x4b/0xc0
-9 Mar 23 22:19:15 hostname kernel: ext4_fc_wait_committing_inode+0xad/0xe0
-[ext4 ef9ba7b6856d0b378c7bc2df0cae9987df17f5c0]
-10 Mar 23 22:19:15 hostname kernel: ? var_wake_function+0x20/0x20
-11 Mar 23 22:19:15 hostname kernel: ext4_fc_start_update+0x43/0x90 [ext4
-ef9ba7b6856d0b378c7bc2df0cae9987df17f5c0]
-12 Mar 23 22:19:15 hostname kernel: ext4_buffered_write_iter+0x35/0x120 [ex=
-t4
-ef9ba7b6856d0b378c7bc2df0cae9987df17f5c0]
-13 Mar 23 22:19:15 hostname kernel: new_sync_write+0x15c/0x1f0
-14 Mar 23 22:19:15 hostname kernel: vfs_write+0x1eb/0x280
-15 Mar 23 22:19:15 hostname kernel: ksys_write+0x67/0xe0
-16 Mar 23 22:19:15 hostname kernel: do_syscall_64+0x5c/0x80
-17 Mar 23 22:19:15 hostname kernel: ? do_syscall_64+0x69/0x80
-18 Mar 23 22:19:15 hostname kernel: ? syscall_exit_to_user_mode+0x23/0x40
-19 Mar 23 22:19:15 hostname kernel: ? do_syscall_64+0x69/0x80
-20 Mar 23 22:19:15 hostname kernel: entry_SYSCALL_64_after_hwframe+0x44/0xae
-21 Mar 23 22:19:15 hostname kernel: RIP: 0033:0x7f5c0222928f
-22 Mar 23 22:19:15 hostname kernel: RSP: 002b:00007f5becaac970 EFLAGS: 0000=
-0293
-ORIG_RAX: 0000000000000001
-23 Mar 23 22:19:15 hostname kernel: RAX: ffffffffffffffda RBX: 00007f5bbcfc=
-ffa0
-RCX: 00007f5c0222928f
-24 Mar 23 22:19:15 hostname kernel: RDX: 0000000000001000 RSI: 00007f5bb8e8=
-9000
-RDI: 0000000000000038
-25 Mar 23 22:19:15 hostname kernel: RBP: 0000000000000038 R08: 000000000000=
-0000
-R09: 0000000000000001
-26 Mar 23 22:19:15 hostname kernel: R10: 00007ffea35cb080 R11: 000000000000=
-0293
-R12: 00007f5bb8e89000
-27 Mar 23 22:19:15 hostname kernel: R13: 0000000000001000 R14: 00007f5bbcfc=
-ffa0
-R15: 0000000000012000
-28 Mar 23 22:19:15 hostname kernel: </TASK>
-
-Shutdown was held up by Firefox/Thunderbird processes hanging, after an exp=
-ired
-timeout I had to forcefully reboot with Magic SysRq key. At one point the
-system wouldn't boot with disk errors and I had to fsck.ext4 in the initrd,
-luckily managed to get booting again. Log from the latter part of an attemp=
-ted
-suspend:
-
-Mar 24 00:41:16 hostname kernel: PM: suspend entry (s2idle)
-Mar 24 00:41:16 hostname kernel: Filesystems sync: 0.009 seconds
-Mar 24 00:41:36 hostname kernel: Freezing user space processes ...
-Mar 24 00:41:36 hostname kernel: Freezing of tasks failed after 20.009 seco=
-nds
-(3 tasks refusing to freeze, wq_busy=3D0):
-Mar 24 00:41:36 hostname kernel: task:IndexedDB #19 state:D stack: 0 pid: 3=
-350
-ppid: 1393 flags:0x00000006
-Mar 24 00:41:36 hostname kernel: Call Trace:
-Mar 24 00:41:36 hostname kernel: <TASK>
-Mar 24 00:41:36 hostname kernel: __schedule+0x2f6/0xf80
-Mar 24 00:41:36 hostname kernel: ? touch_atime+0x44/0x190
-Mar 24 00:41:36 hostname kernel: schedule+0x4b/0xc0
-Mar 24 00:41:36 hostname kernel: ext4_fc_wait_committing_inode+0xad/0xe0 [e=
-xt4
-ef9ba7b6856d0b378c7bc2df0cae9987df17f5c0]
-Mar 24 00:41:36 hostname kernel: ? var_wake_function+0x20/0x20
-Mar 24 00:41:36 hostname kernel: ext4_fc_start_update+0x43/0x90 [ext4
-ef9ba7b6856d0b378c7bc2df0cae9987df17f5c0]
-Mar 24 00:41:36 hostname kernel: ext4_buffered_write_iter+0x35/0x120 [ext4
-ef9ba7b6856d0b378c7bc2df0cae9987df17f5c0]
-Mar 24 00:41:36 hostname kernel: new_sync_write+0x15c/0x1f0
-Mar 24 00:41:36 hostname kernel: vfs_write+0x1eb/0x280
-Mar 24 00:41:36 hostname kernel: ksys_write+0x67/0xe0
-Mar 24 00:41:36 hostname kernel: do_syscall_64+0x5c/0x80
-Mar 24 00:41:36 hostname kernel: ? do_syscall_64+0x69/0x80
-Mar 24 00:41:36 hostname kernel: ? syscall_exit_to_user_mode+0x23/0x40
-Mar 24 00:41:36 hostname kernel: ? do_syscall_64+0x69/0x80
-Mar 24 00:41:36 hostname kernel: entry_SYSCALL_64_after_hwframe+0x44/0xae
-Mar 24 00:41:36 hostname kernel: RIP: 0033:0x7f5c0222928f
-Mar 24 00:41:36 hostname kernel: RSP: 002b:00007f5becaac970 EFLAGS: 00000293
-ORIG_RAX: 0000000000000001
-Mar 24 00:41:36 hostname kernel: RAX: ffffffffffffffda RBX: 00007f5bbcfcffa0
-RCX: 00007f5c0222928f
-Mar 24 00:41:36 hostname kernel: RDX: 0000000000001000 RSI: 00007f5bb8e89000
-RDI: 0000000000000038
-Mar 24 00:41:36 hostname kernel: RBP: 0000000000000038 R08: 0000000000000000
-R09: 0000000000000001
-Mar 24 00:41:36 hostname kernel: R10: 00007ffea35cb080 R11: 0000000000000293
-R12: 00007f5bb8e89000
-Mar 24 00:41:36 hostname kernel: R13: 0000000000001000 R14: 00007f5bbcfcffa0
-R15: 0000000000012000
-Mar 24 00:41:36 hostname kernel: </TASK>
-Mar 24 00:41:36 hostname kernel: task:Indexed~ Mnt #1 state:D stack: 0
-pid:64999 ppid: 1393 flags:0x00000006
-Mar 24 00:41:36 hostname kernel: Call Trace:
-Mar 24 00:41:36 hostname kernel: <TASK>
-Mar 24 00:41:36 hostname kernel: __schedule+0x2f6/0xf80
-Mar 24 00:41:36 hostname kernel: schedule+0x4b/0xc0
-Mar 24 00:41:36 hostname kernel: ext4_fc_wait_committing_inode+0xad/0xe0 [e=
-xt4
-ef9ba7b6856d0b378c7bc2df0cae9987df17f5c0]
-Mar 24 00:41:36 hostname kernel: ? var_wake_function+0x20/0x20
-Mar 24 00:41:36 hostname kernel: ext4_fc_start_update+0x43/0x90 [ext4
-ef9ba7b6856d0b378c7bc2df0cae9987df17f5c0]
-Mar 24 00:41:36 hostname kernel: ext4_buffered_write_iter+0x35/0x120 [ext4
-ef9ba7b6856d0b378c7bc2df0cae9987df17f5c0]
-Mar 24 00:41:36 hostname kernel: new_sync_write+0x15c/0x1f0
-Mar 24 00:41:36 hostname kernel: vfs_write+0x1eb/0x280
-Mar 24 00:41:36 hostname kernel: ksys_write+0x67/0xe0
-Mar 24 00:41:36 hostname kernel: do_syscall_64+0x5c/0x80
-Mar 24 00:41:36 hostname kernel: ? __fget_light+0x8f/0x110
-Mar 24 00:41:36 hostname kernel: ? syscall_exit_to_user_mode+0x23/0x40
-Mar 24 00:41:36 hostname kernel: ? do_syscall_64+0x69/0x80
-Mar 24 00:41:36 hostname kernel: ? do_syscall_64+0x69/0x80
-Mar 24 00:41:36 hostname kernel: ? syscall_exit_to_user_mode+0x23/0x40
-Mar 24 00:41:36 hostname kernel: ? do_syscall_64+0x69/0x80
-Mar 24 00:41:36 hostname kernel: ? do_syscall_64+0x69/0x80
-Mar 24 00:41:36 hostname kernel: entry_SYSCALL_64_after_hwframe+0x44/0xae
-Mar 24 00:41:36 hostname kernel: RIP: 0033:0x7f5c0222928f
-Mar 24 00:41:36 hostname kernel: RSP: 002b:00007f5bbc0ebcf0 EFLAGS: 00000293
-ORIG_RAX: 0000000000000001
-Mar 24 00:41:36 hostname kernel: RAX: ffffffffffffffda RBX: 00007f5ba7fa5608
-RCX: 00007f5c0222928f
-Mar 24 00:41:36 hostname kernel: RDX: 0000000000000018 RSI: 00007f5bbc0ebeb0
-RDI: 00000000000000ce
-Mar 24 00:41:36 hostname kernel: RBP: 00000000000000ce R08: 0000000000000000
-R09: 0000000000000000
-Mar 24 00:41:36 hostname kernel: R10: 00007ffea35cb080 R11: 0000000000000293
-R12: 00007f5bbc0ebeb0
-Mar 24 00:41:36 hostname kernel: R13: 0000000000000018 R14: 00007f5ba7fa5608
-R15: 0000000000058860
-Mar 24 00:41:36 hostname kernel: </TASK>
-Mar 24 00:41:36 hostname kernel: task:Indexed~ Mnt #2 state:D stack: 0
-pid:65000 ppid: 1393 flags:0x00000006
-Mar 24 00:41:36 hostname kernel: Call Trace:
-Mar 24 00:41:36 hostname kernel: <TASK>
-Mar 24 00:41:36 hostname kernel: __schedule+0x2f6/0xf80
-Mar 24 00:41:36 hostname kernel: ? atime_needs_update+0x82/0x100
-Mar 24 00:41:36 hostname kernel: schedule+0x4b/0xc0
-Mar 24 00:41:36 hostname kernel: ext4_fc_wait_committing_inode+0xad/0xe0 [e=
-xt4
-ef9ba7b6856d0b378c7bc2df0cae9987df17f5c0]
-Mar 24 00:41:36 hostname kernel: ? var_wake_function+0x20/0x20
-Mar 24 00:41:36 hostname kernel: ext4_fc_start_update+0x43/0x90 [ext4
-ef9ba7b6856d0b378c7bc2df0cae9987df17f5c0]
-Mar 24 00:41:36 hostname kernel: ext4_buffered_write_iter+0x35/0x120 [ext4
-ef9ba7b6856d0b378c7bc2df0cae9987df17f5c0]
-Mar 24 00:41:36 hostname kernel: new_sync_write+0x15c/0x1f0
-Mar 24 00:41:36 hostname kernel: vfs_write+0x1eb/0x280
-Mar 24 00:41:36 hostname kernel: ksys_write+0x67/0xe0
-Mar 24 00:41:36 hostname kernel: do_syscall_64+0x5c/0x80
-Mar 24 00:41:36 hostname kernel: ? syscall_exit_to_user_mode+0x23/0x40
-Mar 24 00:41:36 hostname kernel: ? do_syscall_64+0x69/0x80
-Mar 24 00:41:36 hostname kernel: ? syscall_exit_to_user_mode+0x23/0x40
-Mar 24 00:41:36 hostname kernel: ? do_syscall_64+0x69/0x80
-Mar 24 00:41:36 hostname kernel: ? syscall_exit_to_user_mode+0x23/0x40
-Mar 24 00:41:36 hostname kernel: ? do_syscall_64+0x69/0x80
-Mar 24 00:41:36 hostname kernel: ? native_flush_tlb_local+0x31/0x40
-Mar 24 00:41:36 hostname kernel: ? flush_tlb_func+0xc8/0x1d0
-Mar 24 00:41:36 hostname kernel: ? sched_clock_cpu+0x9/0xb0
-Mar 24 00:41:36 hostname kernel: ? irqtime_account_irq+0x38/0xb0
-Mar 24 00:41:36 hostname kernel: entry_SYSCALL_64_after_hwframe+0x44/0xae
-Mar 24 00:41:36 hostname kernel: RIP: 0033:0x7f5c0222928f
-Mar 24 00:41:36 hostname kernel: RSP: 002b:00007f5baf502130 EFLAGS: 00000293
-ORIG_RAX: 0000000000000001
-Mar 24 00:41:36 hostname kernel: RAX: ffffffffffffffda RBX: 00007f5b98511da0
-RCX: 00007f5c0222928f
-Mar 24 00:41:36 hostname kernel: RDX: 0000000000001000 RSI: 00007f5baaf4c000
-RDI: 00000000000000a2
-Mar 24 00:41:36 hostname kernel: RBP: 00000000000000a2 R08: 0000000000000000
-R09: 0000000000000001
-Mar 24 00:41:36 hostname kernel: R10: 00007ffea35cb080 R11: 0000000000000293
-R12: 00007f5baaf4c000
-Mar 24 00:41:36 hostname kernel: R13: 0000000000001000 R14: 00007f5b98511da0
-R15: 0000000000007000
-Mar 24 00:41:36 hostname kernel: </TASK>
-Mar 24 00:41:36 hostname kernel:
-Mar 24 00:41:36 hostname kernel: OOM killer enabled.
-Mar 24 00:41:36 hostname kernel: Restarting tasks ... done.
-Mar 24 00:41:36 hostname kernel: PM: suspend exit
-Mar 24 00:41:36 hostname systemd-sleep[65047]: Failed to put system to slee=
-p.
-System resumed again: Device or resource busy
-Mar 24 00:41:36 hostname systemd[1]: systemd-suspend.service: Main process
-exited, code=3Dexited, status=3D1/FAILURE
-Mar 24 00:41:36 hostname audit[1]: SERVICE_START pid=3D1 uid=3D0 auid=3D429=
-4967295
-ses=3D4294967295 subj=3D=3Dunconfined msg=3D'unit=3Dsystemd-suspend comm=3D=
-"systemd"
-exe=3D"/usr/lib/systemd/systemd" hostname=3D? addr=3D? terminal=3D? res=3Df=
-ailed'
-Mar 24 00:41:36 hostname kernel: audit: type=3D1130 audit(1648035696.209:16=
-6):
-pid=3D1 uid=3D0 auid=3D4294967295 ses=3D4294967295 subj=3D=3Dunconfined
-msg=3D'unit=3Dsystemd-suspend comm=3D"systemd" exe=3D"/usr/lib/systemd/syst=
-emd"
-hostname=3D? addr=3D? terminal=3D? res=3Dfailed'
-Mar 24 00:41:36 hostname systemd[1]: systemd-suspend.service: Failed with
-result 'exit-code'.
-Mar 24 00:41:36 hostname systemd[1]: Failed to start System Suspend.
-Mar 24 00:41:36 hostname systemd[1]: Dependency failed for Suspend.
-Mar 24 00:41:36 hostname systemd[1]: suspend.target: Job suspend.target/sta=
-rt
-failed with result 'dependency'.
-Mar 24 00:41:36 hostname systemd[1]: Stopped target Sleep.
-Mar 24 00:41:36 hostname systemd-logind[595]: Operation 'sleep' finished.
-
-I tried both kernels with the same issue. Then to remove it I ran:
-
-sudo tune2fs -O ^fast_commit /dev/nvme0n1p2
-
-which still resulted in errors until I rebooted and appended "fsck.mode=3Df=
-orce"
-to the Linux boot cmdline; the system now runs OK. Hope this helps debug the
-fscrypt/fast_commit interaction.
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
