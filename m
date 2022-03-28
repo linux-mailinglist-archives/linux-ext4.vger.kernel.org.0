@@ -2,158 +2,141 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1034E9BBC
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Mar 2022 17:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 703824E9BF0
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Mar 2022 18:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239487AbiC1P73 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Mar 2022 11:59:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56492 "EHLO
+        id S241304AbiC1QKO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 28 Mar 2022 12:10:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231363AbiC1P73 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Mar 2022 11:59:29 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52A254D252;
-        Mon, 28 Mar 2022 08:57:48 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 6D6601F439B5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1648483066;
-        bh=0zTlHalK8WQ4nkNCoPhf3HnjHpLJno7/Ik/0DQfe1kc=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=GVVbaLDCRtZ+wwTrVYkEGVcJdhV7w3qg4LrWZqWWEiKoayCu0VptSV5RUm2IKYayZ
-         YW/9wz6eUwkN8sVeRqVZKCv6j0ekqzqDdeLrDNe6AvBRsuZI+uqXliB8q/NBtVVpN6
-         OIulsVX1FkXwCvaEObrN6BtSYASjVYH1959RhTuBFfDp/7hcVTENC4iZHaO9o5bDd0
-         VZVJ5c5PlJeqF6a44u2ohltqb8YECfPEa118q+QgLjanH/QR+FGbTLwEuJMqjanHYg
-         bs8Zy5NmoFP9+ov9lK1DDS3Uvqw9mn9GA39MXmOY2T394XGgRF72TEAaJAUDwkNBfy
-         NhU3mCvaMfsmw==
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Ye Bin <yebin10@huawei.com>
-Cc:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <jack@suse.cz>, <lczerner@redhat.com>
-Subject: Re: [PATCH -next] ext4: fix warning in ext4_handle_inode_extension
-Organization: Collabora
-References: <20220326065351.761952-1-yebin10@huawei.com>
-Date:   Mon, 28 Mar 2022 11:57:43 -0400
-In-Reply-To: <20220326065351.761952-1-yebin10@huawei.com> (Ye Bin's message of
-        "Sat, 26 Mar 2022 14:53:51 +0800")
-Message-ID: <87sfr2qdc8.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        with ESMTP id S241279AbiC1QKM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Mar 2022 12:10:12 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45FE913DD5;
+        Mon, 28 Mar 2022 09:08:30 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id c23so15138387plo.0;
+        Mon, 28 Mar 2022 09:08:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZIjwzEmMu6z/tbad2d7pEHaZUw/qbqWG5HJfzLA3vFQ=;
+        b=EnPhaLmFqUZJUnJj+l54pDDauT2HfeiWzNy8u38CAKVpi5hK93B/EuSzM2sYTATPVz
+         T7uC19L3E+7ZLKn8269yPExjQZ17onwHAQ/21GCeDdew2fVMKHX8jTClJntWmw04Q+lm
+         C3msfxx5Kria8PLsn/ri1IqgXWd+K7UM6MMwQF505N4yvDXjKzfhpFBc1vOrv4+ZvDD1
+         CKEOCXrFeq6q6nfqG97d2kX5hMLrVxemN4lS875nRQ3XomEm/Pi94w+CibIc+bqsuGOF
+         KhHnbWabJpzEN01OYI3yLKdD5ZP/nf5smlVO5x5CB198wuOlkgdrvDfWQW0OLNmHnZlr
+         +9RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZIjwzEmMu6z/tbad2d7pEHaZUw/qbqWG5HJfzLA3vFQ=;
+        b=vbHvg/D9S79ASQNhVGEi5//ZyEGHdgp+4RNpBz+nr2czPsjhBu0tscnSCDzHSnRVfU
+         u0V5rKBy+dqN0m+K4w85uzl+uf2b/Jz4q7IP0rYHnvJVpM4YWHjNAXRYZ6Lh5WqSMxa1
+         EGVpLB0cG/PX2VakeR0b8o5Vj9axULHgoRzsI8K+ybhd3wCh7e7mzCPF6gRjede1H+IQ
+         Y5UY136mVe6vdByYV0YfRIXbyaonoygxGAhZJ6nLIzRbOsRQ5NuzkEdxXoAzO+pOaqmB
+         jReAmIjqyU/GKrNwgco40Y7Chf40TdQqKAbPw3mHWteJ5mOj3QP0WbBJjpqkvcym2vf5
+         UAHA==
+X-Gm-Message-State: AOAM5310Qktp2LoBDquzIft4IBpNgjWWBKMUkB5Q374ZK/TZ5zl7m3Oj
+        XFORaXhQupjqZlKwodOAFY9V/9zzTAn+Fp96A3+ggzR0eUs=
+X-Google-Smtp-Source: ABdhPJwxkRuVnSEUb+UhattrKLXXZqvPQ93gcM3YiRiFd2MospQ8oVcj+eZFSvfRqA7KJaqNxfsG2jo09O+781XL8Oo=
+X-Received: by 2002:a17:90b:1a8a:b0:1c7:c60b:f12 with SMTP id
+ ng10-20020a17090b1a8a00b001c7c60b0f12mr25755588pjb.139.1648483709528; Mon, 28
+ Mar 2022 09:08:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <CACA3K+i8nZRBxeTfdy7Uq5LHAsbZEHTNati7-RRybsj_4ckUyw@mail.gmail.com>
+ <Yj4+IqC6FPzEOhcW@mit.edu>
+In-Reply-To: <Yj4+IqC6FPzEOhcW@mit.edu>
+From:   Fariya F <fariya.fatima03@gmail.com>
+Date:   Mon, 28 Mar 2022 21:38:18 +0530
+Message-ID: <CACA3K+hAnJESkkm9q6wHQLHRkML_8D1pMKquqqW7gfLH_QpXng@mail.gmail.com>
+Subject: Re: df returns incorrect size of partition due to huge overhead block
+ count in ext4 partition
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Ye Bin <yebin10@huawei.com> writes:
+Hi Ted,
 
-> We got issue as follows:
-> EXT4-fs error (device loop0) in ext4_reserve_inode_write:5741: Out of memory
-> EXT4-fs error (device loop0): ext4_setattr:5462: inode #13: comm syz-executor.0: mark_inode_dirty error
-> EXT4-fs error (device loop0) in ext4_setattr:5519: Out of memory
-> EXT4-fs error (device loop0): ext4_ind_map_blocks:595: inode #13: comm syz-executor.0: Can't allocate blocks for non-extent mapped inodes with bigalloc
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 4361 at fs/ext4/file.c:301 ext4_file_write_iter+0x11c9/0x1220
-> Modules linked in:
-> CPU: 1 PID: 4361 Comm: syz-executor.0 Not tainted 5.10.0+ #1
-> RIP: 0010:ext4_file_write_iter+0x11c9/0x1220
-> RSP: 0018:ffff924d80b27c00 EFLAGS: 00010282
-> RAX: ffffffff815a3379 RBX: 0000000000000000 RCX: 000000003b000000
-> RDX: ffff924d81601000 RSI: 00000000000009cc RDI: 00000000000009cd
-> RBP: 000000000000000d R08: ffffffffbc5a2c6b R09: 0000902e0e52a96f
-> R10: ffff902e2b7c1b40 R11: ffff902e2b7c1b40 R12: 000000000000000a
-> R13: 0000000000000001 R14: ffff902e0e52aa10 R15: ffffffffffffff8b
-> FS:  00007f81a7f65700(0000) GS:ffff902e3bc80000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: ffffffffff600400 CR3: 000000012db88001 CR4: 00000000003706e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  do_iter_readv_writev+0x2e5/0x360
->  do_iter_write+0x112/0x4c0
->  do_pwritev+0x1e5/0x390
->  __x64_sys_pwritev2+0x7e/0xa0
->  do_syscall_64+0x37/0x50
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
->
-> Above issue may happen as follows:
-> Assume
-> inode.i_size=4096
-> EXT4_I(inode)->i_disksize=4096
->
-> step 1: set inode->i_isize = 8192
-> ext4_setattr
->   if (attr->ia_size != inode->i_size)
->     EXT4_I(inode)->i_disksize = attr->ia_size;
->     rc = ext4_mark_inode_dirty
->        ext4_reserve_inode_write
->           ext4_get_inode_loc
->             __ext4_get_inode_loc
->               sb_getblk --> return -ENOMEM
->    ...
->    if (!error)  ->will not update i_size
->      i_size_write(inode, attr->ia_size);
-> Now:
-> inode.i_size=4096
-> EXT4_I(inode)->i_disksize=8192
->
-> step 2: Direct write 4096 bytes
-> ext4_file_write_iter
->  ext4_dio_write_iter
->    iomap_dio_rw ->return error
->  if (extend)
->    ext4_handle_inode_extension
->      WARN_ON_ONCE(i_size_read(inode) < EXT4_I(inode)->i_disksize);
-> ->Then trigger warning.
->
-> To solve above issue, if mark inode dirty failed in ext4_setattr just
-> set 'EXT4_I(inode)->i_disksize' with old value.
->
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
-> ---
->  fs/ext4/inode.c | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 90fd6f7b6209..8adf1f802f6c 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -5384,6 +5384,7 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
->  	if (attr->ia_valid & ATTR_SIZE) {
->  		handle_t *handle;
->  		loff_t oldsize = inode->i_size;
-> +		loff_t old_disksize;
->  		int shrink = (attr->ia_size < inode->i_size);
->  
->  		if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))) {
-> @@ -5455,6 +5456,7 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
->  					inode->i_sb->s_blocksize_bits);
->  
->  			down_write(&EXT4_I(inode)->i_data_sem);
-> +			old_disksize = EXT4_I(inode)->i_disksize;
->  			EXT4_I(inode)->i_disksize = attr->ia_size;
->  			rc = ext4_mark_inode_dirty(handle, inode);
->  			if (!error)
-> @@ -5466,6 +5468,8 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
->  			 */
->  			if (!error)
->  				i_size_write(inode, attr->ia_size);
-> +			else
-> +				EXT4_I(inode)->i_disksize = old_disksize;
+Thanks for the response. Really appreciate it. Some questions:
 
-Shouldn't this always be done if ext4_mark_inode_dirty fails?
+a) This issue is observed on one of the customer board and hence a fix
+is a must for us or at least I will need to do a work-around so other
+customer boards do not face this issue. As I mentioned my script
+relies on df -h output of used percentage. In the case of the board
+reporting 16Z of used space and size, the available space is somehow
+reported correctly. Should my script rely on available space and not
+on the used space% output of df. Will that be a reliable work-around?
+Do you see any issue in using the partition from then or some where
+down the line the overhead blocks number would create a problem and my
+partition would end up misbehaving or any sort of data loss could
+occur? Data loss would be a concern for us. Please guide.
 
-if (rc)
-    EXT4_I(inode)->i_disksize = old_disksize;
+//* More info on my script: I have a script which monitors the used
+percentage of the partition using df -h command and when the used
+percentage is greater than 70%, it deletes files until the used
+percentage comes down. Considering df
+is reporting all the time 100% usage, all my files get deleted.*//
 
-Otherwise you hit the same issue if (!error && rc), no?
+b) Any other suggestions of a work-around so even if the overhead
+blocks reports more blocks than actual blocks on the partition, i am
+able to use the partition reliably or do you think it would be a
+better suggestion to wait for the fix in e2fsprogs?
 
--- 
-Gabriel Krisman Bertazi
+I think apart from the fix in e2fsprogs tool, a kernel fix is also
+required, wherein it performs check that the overhead blocks should
+not be greater than the actual blocks on the partition.
+
+Regards
+
+On Sat, Mar 26, 2022 at 3:41 AM Theodore Ts'o <tytso@mit.edu> wrote:
+>
+> On Fri, Mar 25, 2022 at 12:12:30PM +0530, Fariya F wrote:
+> > The output dumpe2fs returns the following
+> >
+> >     Block count:              102400
+> >     Reserved block count:     5120
+> >     Overhead blocks:          50343939
+>
+> Yeah, that value is obviously wrong; I'm not sure how it got
+> corrupted, but that's the cause of the your problem.
+>
+> > a) Where does overhead blocks get set?
+>
+> The kernel can calculate the overhead value, but it can be slow for
+> very large file systems.  For that reason, it is cached in the
+> superblock.  So if the s_overhead_clusters is zero, the kernel will
+> calculate the overhead value, and then update the superblock.
+>
+> In newer versions of e2fsprogs, mkfs.ext4 / mke2fs will write the
+> overhead value into the superblock.
+>
+> > b) Why is this value huge for my partition and how to correct it
+> > considering fsck is also not correcting this
+>
+> The simpleest way is to run the following command with the file system
+> unmounted:
+>
+> debugfs -w -R "set_super_value overhead_clusters 0" /dev/sdXX
+>
+> Then the next time you mount the file system, the correct value should
+> get caluclated and filled in.
+>
+> It's a bug that fsck isn't notcing the problem and correcting it.
+> I'll work on getting that fixed in a future version of e2fsprogs.
+>
+> My apologies for the inconvenience.
+>
+> Cheers,
+>
+>                                         - Ted
