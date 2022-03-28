@@ -2,68 +2,158 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC2184E8F97
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Mar 2022 10:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1034E9BBC
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Mar 2022 17:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234792AbiC1ICA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Mar 2022 04:02:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54052 "EHLO
+        id S239487AbiC1P73 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 28 Mar 2022 11:59:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230222AbiC1IB7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Mar 2022 04:01:59 -0400
-X-Greylist: delayed 516 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 28 Mar 2022 01:00:19 PDT
-Received: from mail.ourpartnership.pl (mail.ourpartnership.pl [80.211.82.238])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 866CE2FFDA
-        for <linux-ext4@vger.kernel.org>; Mon, 28 Mar 2022 01:00:19 -0700 (PDT)
-Received: by mail.ourpartnership.pl (Postfix, from userid 1001)
-        id C7BC163A5F; Mon, 28 Mar 2022 08:46:49 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ourpartnership.pl;
-        s=mail; t=1648453740;
-        bh=M1ZVeu3q6Upppe+FUx/3rgI7MKJXh389NZDbgCK1SX4=;
-        h=Date:From:To:Subject:From;
-        b=gR+3b9c037Ds/RV1I+meNqfOuyQxMRTLL6MG6CINa3Z+zw+ve7ww2IBqtV0TSc9Nn
-         JBKw3C0C4vFY6ETFoxK7/08pPwaZJKJTgWjCv2+WWObv5kUmQ1tWoX+ohESL0mr7bP
-         NxEKcP9qlnax+WI2tChxHgxL+BzAm0p/ngvojJyRkmXDHmCyXWkvaaeHeIZHalwpXo
-         YRJjv865uXTCb/T0SsIJPAs9DmLyBD6oPb+F8GzCi3NSDHoc2qeSDOe0zmO/8LG8n1
-         iDobojhJ7BOIyuF+Ef1S7Ah+ous3pPM85JTS36p1VzwRPqehbgVyvD4Un9DCPczDqe
-         JZzoig3Y7fXEg==
-Received: by mail.ourpartnership.pl for <linux-ext4@vger.kernel.org>; Mon, 28 Mar 2022 07:46:04 GMT
-Message-ID: <20220328074501-0.1.9.2b3e.0.goeni2h4oj@ourpartnership.pl>
-Date:   Mon, 28 Mar 2022 07:46:04 GMT
-From:   =?UTF-8?Q? "Arkadiusz_Soko=C5=82owski" ?= 
-        <arkadiusz.sokolowski@ourpartnership.pl>
-To:     <linux-ext4@vger.kernel.org>
-Subject: Koszty instalacji fotowoltaicznej
-X-Mailer: mail.ourpartnership.pl
+        with ESMTP id S231363AbiC1P73 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Mar 2022 11:59:29 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52A254D252;
+        Mon, 28 Mar 2022 08:57:48 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 6D6601F439B5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1648483066;
+        bh=0zTlHalK8WQ4nkNCoPhf3HnjHpLJno7/Ik/0DQfe1kc=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=GVVbaLDCRtZ+wwTrVYkEGVcJdhV7w3qg4LrWZqWWEiKoayCu0VptSV5RUm2IKYayZ
+         YW/9wz6eUwkN8sVeRqVZKCv6j0ekqzqDdeLrDNe6AvBRsuZI+uqXliB8q/NBtVVpN6
+         OIulsVX1FkXwCvaEObrN6BtSYASjVYH1959RhTuBFfDp/7hcVTENC4iZHaO9o5bDd0
+         VZVJ5c5PlJeqF6a44u2ohltqb8YECfPEa118q+QgLjanH/QR+FGbTLwEuJMqjanHYg
+         bs8Zy5NmoFP9+ov9lK1DDS3Uvqw9mn9GA39MXmOY2T394XGgRF72TEAaJAUDwkNBfy
+         NhU3mCvaMfsmw==
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Ye Bin <yebin10@huawei.com>
+Cc:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <jack@suse.cz>, <lczerner@redhat.com>
+Subject: Re: [PATCH -next] ext4: fix warning in ext4_handle_inode_extension
+Organization: Collabora
+References: <20220326065351.761952-1-yebin10@huawei.com>
+Date:   Mon, 28 Mar 2022 11:57:43 -0400
+In-Reply-To: <20220326065351.761952-1-yebin10@huawei.com> (Ye Bin's message of
+        "Sat, 26 Mar 2022 14:53:51 +0800")
+Message-ID: <87sfr2qdc8.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Dzie=C5=84 dobry,
+Ye Bin <yebin10@huawei.com> writes:
 
-stworzyli=C5=9Bmy specjaln=C4=85 ofert=C4=99 dla firm, na kompleksow=C4=85=
- obs=C5=82ug=C4=99 inwestycji w fotowoltaik=C4=99. =20
+> We got issue as follows:
+> EXT4-fs error (device loop0) in ext4_reserve_inode_write:5741: Out of memory
+> EXT4-fs error (device loop0): ext4_setattr:5462: inode #13: comm syz-executor.0: mark_inode_dirty error
+> EXT4-fs error (device loop0) in ext4_setattr:5519: Out of memory
+> EXT4-fs error (device loop0): ext4_ind_map_blocks:595: inode #13: comm syz-executor.0: Can't allocate blocks for non-extent mapped inodes with bigalloc
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 4361 at fs/ext4/file.c:301 ext4_file_write_iter+0x11c9/0x1220
+> Modules linked in:
+> CPU: 1 PID: 4361 Comm: syz-executor.0 Not tainted 5.10.0+ #1
+> RIP: 0010:ext4_file_write_iter+0x11c9/0x1220
+> RSP: 0018:ffff924d80b27c00 EFLAGS: 00010282
+> RAX: ffffffff815a3379 RBX: 0000000000000000 RCX: 000000003b000000
+> RDX: ffff924d81601000 RSI: 00000000000009cc RDI: 00000000000009cd
+> RBP: 000000000000000d R08: ffffffffbc5a2c6b R09: 0000902e0e52a96f
+> R10: ffff902e2b7c1b40 R11: ffff902e2b7c1b40 R12: 000000000000000a
+> R13: 0000000000000001 R14: ffff902e0e52aa10 R15: ffffffffffffff8b
+> FS:  00007f81a7f65700(0000) GS:ffff902e3bc80000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffffffffff600400 CR3: 000000012db88001 CR4: 00000000003706e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  do_iter_readv_writev+0x2e5/0x360
+>  do_iter_write+0x112/0x4c0
+>  do_pwritev+0x1e5/0x390
+>  __x64_sys_pwritev2+0x7e/0xa0
+>  do_syscall_64+0x37/0x50
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> Above issue may happen as follows:
+> Assume
+> inode.i_size=4096
+> EXT4_I(inode)->i_disksize=4096
+>
+> step 1: set inode->i_isize = 8192
+> ext4_setattr
+>   if (attr->ia_size != inode->i_size)
+>     EXT4_I(inode)->i_disksize = attr->ia_size;
+>     rc = ext4_mark_inode_dirty
+>        ext4_reserve_inode_write
+>           ext4_get_inode_loc
+>             __ext4_get_inode_loc
+>               sb_getblk --> return -ENOMEM
+>    ...
+>    if (!error)  ->will not update i_size
+>      i_size_write(inode, attr->ia_size);
+> Now:
+> inode.i_size=4096
+> EXT4_I(inode)->i_disksize=8192
+>
+> step 2: Direct write 4096 bytes
+> ext4_file_write_iter
+>  ext4_dio_write_iter
+>    iomap_dio_rw ->return error
+>  if (extend)
+>    ext4_handle_inode_extension
+>      WARN_ON_ONCE(i_size_read(inode) < EXT4_I(inode)->i_disksize);
+> ->Then trigger warning.
+>
+> To solve above issue, if mark inode dirty failed in ext4_setattr just
+> set 'EXT4_I(inode)->i_disksize' with old value.
+>
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> ---
+>  fs/ext4/inode.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 90fd6f7b6209..8adf1f802f6c 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -5384,6 +5384,7 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
+>  	if (attr->ia_valid & ATTR_SIZE) {
+>  		handle_t *handle;
+>  		loff_t oldsize = inode->i_size;
+> +		loff_t old_disksize;
+>  		int shrink = (attr->ia_size < inode->i_size);
+>  
+>  		if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))) {
+> @@ -5455,6 +5456,7 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
+>  					inode->i_sb->s_blocksize_bits);
+>  
+>  			down_write(&EXT4_I(inode)->i_data_sem);
+> +			old_disksize = EXT4_I(inode)->i_disksize;
+>  			EXT4_I(inode)->i_disksize = attr->ia_size;
+>  			rc = ext4_mark_inode_dirty(handle, inode);
+>  			if (!error)
+> @@ -5466,6 +5468,8 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
+>  			 */
+>  			if (!error)
+>  				i_size_write(inode, attr->ia_size);
+> +			else
+> +				EXT4_I(inode)->i_disksize = old_disksize;
 
-Specjalizujemy si=C4=99 w zakresie doboru, monta=C5=BCu i serwisie instal=
-acji fotowoltaicznych, dysponujemy najnowocze=C5=9Bniejszymi rozwi=C4=85z=
-ania, kt=C3=B3re zapewni=C4=85 Pa=C5=84stwu oczekiwane rezultaty.
+Shouldn't this always be done if ext4_mark_inode_dirty fails?
 
-Mo=C5=BCemy przygotowa=C4=87 dla Pa=C5=84stwa wst=C4=99pn=C4=85 kalkulacj=
-=C4=99 i przeanalizowa=C4=87 efekty mo=C5=BCliwe do osi=C4=85gni=C4=99cia=
-=2E
+if (rc)
+    EXT4_I(inode)->i_disksize = old_disksize;
 
-Czy s=C4=85 Pa=C5=84stwo otwarci na wst=C4=99pn=C4=85 rozmow=C4=99 w tym =
-temacie?
+Otherwise you hit the same issue if (!error && rc), no?
 
-
-Pozdrawiam
-Arkadiusz Soko=C5=82owski
+-- 
+Gabriel Krisman Bertazi
