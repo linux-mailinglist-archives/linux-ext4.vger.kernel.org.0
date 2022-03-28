@@ -2,35 +2,35 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2B14EA05D
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Mar 2022 21:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A1284EA075
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Mar 2022 21:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343767AbiC1Tuc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Mar 2022 15:50:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50454 "EHLO
+        id S1344017AbiC1Tub (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 28 Mar 2022 15:50:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344048AbiC1TsH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Mar 2022 15:48:07 -0400
+        with ESMTP id S1344144AbiC1TsO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Mar 2022 15:48:14 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F3F569CF6;
-        Mon, 28 Mar 2022 12:43:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC5F86A03C;
+        Mon, 28 Mar 2022 12:44:01 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 29E21B81208;
-        Mon, 28 Mar 2022 19:43:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E05FC340F0;
-        Mon, 28 Mar 2022 19:43:35 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id BE6A4B81203;
+        Mon, 28 Mar 2022 19:43:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A32C0C340F0;
+        Mon, 28 Mar 2022 19:43:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648496616;
-        bh=w51WdM5aHvUcdwBxHUAYODPLjNrTY/mf+S4fCEB517g=;
+        s=k20201202; t=1648496621;
+        bh=X9+QBqSy1pQQYXeuH+D28z07BYNcRuMRUFmFK7j86Wc=;
         h=From:To:Cc:Subject:Date:From;
-        b=ObydgnDh2P9VN1o1oxLU2SJl8Y1YD3RRfaASsbodum/E/Fw4iGsdq28PNTTGM6pIl
-         TjVcivNNDcfBpyl0EO1PBJvpgNaaq/B1CnWQYoR/vMI76Ak7o3WyYZz5Hsfz7D2Cyu
-         pUN4spJK4BEzXoblB6yldsyR01qU7Z6kgzIg8dZ1vMSqCX3PdfJIiy4YgQMnwx7ayQ
-         BvlC66IEFCVFUOi2jizYBGpfgaQizah1SKn+d9ie/QLgbBS7lUbIZxnd2uUbrMNm9/
-         Y3U2qHR8BxafMK+4Uz29Ed9v2i0scwnFzrXTFxF4hRFM3DW4bLMtoiGAH7d7HsjkH1
-         F+Zvsr9YRoDAw==
+        b=ERhL8vmwfl0/3Z4RqvPYGdBnIT85Yh3+UJzs3eacToG1TdG92jHZiKkE6FPPAOH5I
+         qwytEHr2d0gATMcckw3fTjqU3GRtli/Un0TxFZ8ghjCU7NnVWQwcxhit4zZhytGGXr
+         fedX+syt8ApmrU8btyhL8JLAbUGeRdZSR17q0GlCIqH4fDNzZzDtiCtRwjqY551xdq
+         xTTfP83rBHCkHf5bv4A3C20nd5pkkQv2qx6Y83r4i+PjHRBZn9Tdj6sSGvOeX77hDE
+         IgH1ToJJ5r5HG0iSf8MGNrLgjInVgIWe9NPK0JLw0wcJlfgYw6X0KH9nLxLXWdApmE
+         hY3L7YvBTkZ3w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Theodore Ts'o <tytso@mit.edu>,
@@ -38,9 +38,9 @@ Cc:     Theodore Ts'o <tytso@mit.edu>,
         Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>, adilger.kernel@dilger.ca,
         linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 1/2] ext4: don't BUG if someone dirty pages without asking ext4 first
-Date:   Mon, 28 Mar 2022 15:43:32 -0400
-Message-Id: <20220328194334.1586542-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 1/2] ext4: don't BUG if someone dirty pages without asking ext4 first
+Date:   Mon, 28 Mar 2022 15:43:37 -0400
+Message-Id: <20220328194338.1586587-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 X-stable: review
@@ -90,10 +90,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 25 insertions(+)
 
 diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index dcbd8ac8d471..0d62f05f8925 100644
+index 7959aae4857e..96cf0f57ca95 100644
 --- a/fs/ext4/inode.c
 +++ b/fs/ext4/inode.c
-@@ -2161,6 +2161,15 @@ static int ext4_writepage(struct page *page,
+@@ -2148,6 +2148,15 @@ static int ext4_writepage(struct page *page,
  	else
  		len = PAGE_SIZE;
  
@@ -109,7 +109,7 @@ index dcbd8ac8d471..0d62f05f8925 100644
  	page_bufs = page_buffers(page);
  	/*
  	 * We cannot do block allocation or other extent handling in this
-@@ -2710,6 +2719,22 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
+@@ -2697,6 +2706,22 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
  			wait_on_page_writeback(page);
  			BUG_ON(PageWriteback(page));
  
