@@ -2,108 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 028F34E8E45
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Mar 2022 08:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC2184E8F97
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Mar 2022 10:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238517AbiC1GlV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Mar 2022 02:41:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36626 "EHLO
+        id S234792AbiC1ICA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 28 Mar 2022 04:02:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238521AbiC1GlU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Mar 2022 02:41:20 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8BC1137
-        for <linux-ext4@vger.kernel.org>; Sun, 27 Mar 2022 23:39:40 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id pv16so26587026ejb.0
-        for <linux-ext4@vger.kernel.org>; Sun, 27 Mar 2022 23:39:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=vhRjNi0C92HhLekr+PXsG0jM+VxQU0SbIRkpFEeooUI=;
-        b=jg/akFsLf4l4TnPUfiHAsTk7B0h4dygGBJayDXFkwASrxMZJUEea9MeKfqeBnMrYiH
-         VrFZXNx2h0Esx4j4DEDPm41XuiAq6c2svPpmepzodmB0/s1L6Z0H1WjPDpvPWi11YMaD
-         lhHU2n11scb9/JwFUvsog6OZ/tanNS47lQRd/GhRC4743LKx1KOdK/sj2MaBPisGCNuR
-         gkwbMUlg8+S3bw/htucaYMePh+dRLOsjTP4OSISgQmSXgDGZ1F7fne6LmvTfHulQ6VA+
-         CPnEi7NTQNzox+6lP2hPagHlqsOLId9fdqHo82r8eF8AbS3CegFJXRpk5M6Pq0WYKF2o
-         TCgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=vhRjNi0C92HhLekr+PXsG0jM+VxQU0SbIRkpFEeooUI=;
-        b=GKuy2wZ9MbW82g4WZGICEgwXXeg8ESb9UbmC7q3Ju+op1s40DsFc+ffEPtyTymJuev
-         Oi623qAbzElak9vqtDyDn7tx0+mvd17PGUj4h3kCwPHQ1MB5aGR7BO3BEEZV83snvosA
-         6HbHvyny3mQ6hbYCz1z0wxwoRMqE1mBcMM4ujn06oq2GtAi2XvvbHW2sLqBuqApP0gqI
-         eB0mffPu+pyNnv1sHgtseR8zfrnUe2IYgxqgxriO480nQ9EL9mjGruvVvup7C81xTpMI
-         XkYGClhgc7EXPr1h2FQmBQdbLS3Hb61yWOGS2I98wFUfX7CxR4wlbM+UnyugaEZatWh9
-         Yv1Q==
-X-Gm-Message-State: AOAM533gEM6ppIwgz/Ht2sa763C+mvPHOrmc+X1qrRQfBBoDZn+d8QjF
-        68xJr2oeQ0VekXbMfPz/egO6npVI4YVrSto9FGQ=
-X-Google-Smtp-Source: ABdhPJy10YCYZxJh3xVRxmMp49hSQiKUKOdlKFq1RpSJQExzaFUravfPurs4uHrJzoFbBBFsmUSQza2hzoM2b0ZJO2M=
-X-Received: by 2002:a17:907:7ea8:b0:6df:d4a4:8156 with SMTP id
- qb40-20020a1709077ea800b006dfd4a48156mr26169049ejc.226.1648449579461; Sun, 27
- Mar 2022 23:39:39 -0700 (PDT)
+        with ESMTP id S230222AbiC1IB7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Mar 2022 04:01:59 -0400
+X-Greylist: delayed 516 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 28 Mar 2022 01:00:19 PDT
+Received: from mail.ourpartnership.pl (mail.ourpartnership.pl [80.211.82.238])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 866CE2FFDA
+        for <linux-ext4@vger.kernel.org>; Mon, 28 Mar 2022 01:00:19 -0700 (PDT)
+Received: by mail.ourpartnership.pl (Postfix, from userid 1001)
+        id C7BC163A5F; Mon, 28 Mar 2022 08:46:49 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ourpartnership.pl;
+        s=mail; t=1648453740;
+        bh=M1ZVeu3q6Upppe+FUx/3rgI7MKJXh389NZDbgCK1SX4=;
+        h=Date:From:To:Subject:From;
+        b=gR+3b9c037Ds/RV1I+meNqfOuyQxMRTLL6MG6CINa3Z+zw+ve7ww2IBqtV0TSc9Nn
+         JBKw3C0C4vFY6ETFoxK7/08pPwaZJKJTgWjCv2+WWObv5kUmQ1tWoX+ohESL0mr7bP
+         NxEKcP9qlnax+WI2tChxHgxL+BzAm0p/ngvojJyRkmXDHmCyXWkvaaeHeIZHalwpXo
+         YRJjv865uXTCb/T0SsIJPAs9DmLyBD6oPb+F8GzCi3NSDHoc2qeSDOe0zmO/8LG8n1
+         iDobojhJ7BOIyuF+Ef1S7Ah+ous3pPM85JTS36p1VzwRPqehbgVyvD4Un9DCPczDqe
+         JZzoig3Y7fXEg==
+Received: by mail.ourpartnership.pl for <linux-ext4@vger.kernel.org>; Mon, 28 Mar 2022 07:46:04 GMT
+Message-ID: <20220328074501-0.1.9.2b3e.0.goeni2h4oj@ourpartnership.pl>
+Date:   Mon, 28 Mar 2022 07:46:04 GMT
+From:   =?UTF-8?Q? "Arkadiusz_Soko=C5=82owski" ?= 
+        <arkadiusz.sokolowski@ourpartnership.pl>
+To:     <linux-ext4@vger.kernel.org>
+Subject: Koszty instalacji fotowoltaicznej
+X-Mailer: mail.ourpartnership.pl
 MIME-Version: 1.0
-Received: by 2002:a54:3b45:0:0:0:0:0 with HTTP; Sun, 27 Mar 2022 23:39:38
- -0700 (PDT)
-Reply-To: maria.elisabethschaeffler1940@gmail.com
-From:   Maria-Elisabeth Schaeffler <rebeccaefe007@gmail.com>
-Date:   Mon, 28 Mar 2022 07:39:38 +0100
-Message-ID: <CANMBYZE6OYA73QHTNY8pKVB1-40j2DEwt85s6=1rnuGTattWAQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=6.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        FROM_LOCAL_HEX,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:62e listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5060]
-        *  0.0 FROM_LOCAL_HEX From: localpart has long hexadecimal sequence
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [maria.elisabethschaeffler1940[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [rebeccaefe007[at]gmail.com]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [rebeccaefe007[at]gmail.com]
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  3.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
---=20
-Hallo,
+Dzie=C5=84 dobry,
 
-Sie haben eine laufende Spende von Frau Maria-Elisabeth Schaeffler,
-Antworten Sie jetzt f=C3=BCr Details und Anforderungen ..
+stworzyli=C5=9Bmy specjaln=C4=85 ofert=C4=99 dla firm, na kompleksow=C4=85=
+ obs=C5=82ug=C4=99 inwestycji w fotowoltaik=C4=99. =20
 
-Herzliche Gr=C3=BC=C3=9Fe
-Gesch=C3=A4ftsf=C3=BChrer schaeffler Gruppen
-Maria-Elisabeth Schaeffler
-maria.elisabethschaeffler1940@gmail.com
+Specjalizujemy si=C4=99 w zakresie doboru, monta=C5=BCu i serwisie instal=
+acji fotowoltaicznych, dysponujemy najnowocze=C5=9Bniejszymi rozwi=C4=85z=
+ania, kt=C3=B3re zapewni=C4=85 Pa=C5=84stwu oczekiwane rezultaty.
+
+Mo=C5=BCemy przygotowa=C4=87 dla Pa=C5=84stwa wst=C4=99pn=C4=85 kalkulacj=
+=C4=99 i przeanalizowa=C4=87 efekty mo=C5=BCliwe do osi=C4=85gni=C4=99cia=
+=2E
+
+Czy s=C4=85 Pa=C5=84stwo otwarci na wst=C4=99pn=C4=85 rozmow=C4=99 w tym =
+temacie?
+
+
+Pozdrawiam
+Arkadiusz Soko=C5=82owski
