@@ -2,55 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F9B4EA03B
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Mar 2022 21:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39FC44EA04C
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Mar 2022 21:51:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343751AbiC1Tpg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Mar 2022 15:45:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49454 "EHLO
+        id S1343843AbiC1Tq5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 28 Mar 2022 15:46:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343709AbiC1Too (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Mar 2022 15:44:44 -0400
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92BE966CA5
-        for <linux-ext4@vger.kernel.org>; Mon, 28 Mar 2022 12:42:40 -0700 (PDT)
-Received: by mail-il1-f199.google.com with SMTP id z14-20020a92d6ce000000b002c993540ee1so3101462ilp.0
-        for <linux-ext4@vger.kernel.org>; Mon, 28 Mar 2022 12:42:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to:cc;
-        bh=IH/0Be4mYvFxzGsDxJItB2Q/4tGPp/20wo5bgbYbxXU=;
-        b=JwWKuMGaHZOguMyBMW07mMlUAj7BeMVqPpefsxnK66f/QkPJWgMs2RgqTVxClwQi1g
-         0tI+cUoRSZcPow24OABV+920Kwkm0zYcQyfFU9tXKMIN53uKrTn0IdS0ImeZ4F8PnQk2
-         TvZpgTInMEhSs+Srd08ZVYRgJGf6RXpEQYC6SplcPTErGa+C1f89hXuBd2xPIbKO5Ur0
-         NZrX4nLxK78B8ajd8Vqv+OqFwpr3sqmRfk9K3sg05aHnazecDprv1/drX7fAABR5C63s
-         yGB/OovXuZaoM/7JkCilPBbEJ3d7UprNh0Vv9SA02f5umINg8RCqVG/dw0gy27kEtTIu
-         PjlQ==
-X-Gm-Message-State: AOAM530JyHZWEZCvga9+JEpf8oZeTWUbGf/pHXNJK3I1ckZS7ffM9/8H
-        qXmidHEW8jfb8Hy3jrN6COKyL2g/OGhezDeBGCrMz5+Abf80
-X-Google-Smtp-Source: ABdhPJyk+05FvCtiduQ1ZZxIGJZy7XoI5uXzVOMzWtWn4sR4RVl6GeFcoQ7Gh/r9wsiMa0W9Ww3NjnoDROtkEqxLUBkNPjmESpOX
+        with ESMTP id S1343789AbiC1Tqa (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Mar 2022 15:46:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B3E673FD;
+        Mon, 28 Mar 2022 12:43:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 94367612AB;
+        Mon, 28 Mar 2022 19:43:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C5D7C34111;
+        Mon, 28 Mar 2022 19:43:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1648496585;
+        bh=cxIlbeMDmUc/aVrFTc+t0g8Jo+ZFlW+CNDEk4hZ16Io=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=WyB8MuVrMKBP9sXESFupQmRigYjCCtrOFyGJi5Wj215ZCC7X/34b63SQs72flXELL
+         CAWpdju9qliKr7GF5FG58DSgvi4iY/nTTfdEmnpSQu2+WL/LKdaEt6dYATTl08Sexl
+         C9wfxsvpsLn5X8xzUAgITpBa7QQW146LUzw8IGNExeVaFI2g6L9NqahhDTn2IJ9gLw
+         7rcnW0UCtTCiAGKfiGuie0pi9SMLN3VkyROyli9DK+IyEHM8dD9NlAAUu+kV5YgzxD
+         CFo4XiVhUaEv4srYq8nUSmZLvUiD1C7g3+4iZFNpsCM0hnhXX6tdo5XInVM6+1WcbV
+         ZqbjBKibl+imQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Ritesh Harjani <riteshh@linux.ibm.com>, Jan Kara <jack@suse.cz>,
+        Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 03/16] ext4: correct cluster len and clusters changed accounting in ext4_mb_mark_bb
+Date:   Mon, 28 Mar 2022 15:42:46 -0400
+Message-Id: <20220328194300.1586178-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220328194300.1586178-1-sashal@kernel.org>
+References: <20220328194300.1586178-1-sashal@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a02:ceb2:0:b0:314:f9b9:d420 with SMTP id
- z18-20020a02ceb2000000b00314f9b9d420mr13564302jaq.177.1648496559723; Mon, 28
- Mar 2022 12:42:39 -0700 (PDT)
-Date:   Mon, 28 Mar 2022 12:42:39 -0700
-In-Reply-To: <20220328194226.1585920-7-sashal@kernel.org>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000db1a1c05db4c8319@google.com>
-Subject: Re: [PATCH AUTOSEL 5.16 07/20] ext4: don't BUG if someone dirty pages
- without asking ext4 first
-From:   syzbot 
-        <syzbot+d59332e2db681cf18f0318a06e994ebbb529a8db@syzkaller.appspotmail.com>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     adilger.kernel@dilger.ca, lee.jones@linaro.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sashal@kernel.org, stable@vger.kernel.org, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,88 +56,79 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-> From: Theodore Ts'o <tytso@mit.edu>
->
-> [ Upstream commit cc5095747edfb054ca2068d01af20be3fcc3634f ]
->
-> [un]pin_user_pages_remote is dirtying pages without properly warning
-> the file system in advance.  A related race was noted by Jan Kara in
-> 2018[1]; however, more recently instead of it being a very hard-to-hit
-> race, it could be reliably triggered by process_vm_writev(2) which was
-> discovered by Syzbot[2].
->
-> This is technically a bug in mm/gup.c, but arguably ext4 is fragile in
-> that if some other kernel subsystem dirty pages without properly
-> notifying the file system using page_mkwrite(), ext4 will BUG, while
-> other file systems will not BUG (although data will still be lost).
->
-> So instead of crashing with a BUG, issue a warning (since there may be
-> potential data loss) and just mark the page as clean to avoid
-> unprivileged denial of service attacks until the problem can be
-> properly fixed.  More discussion and background can be found in the
-> thread starting at [2].
->
-> [1] https://lore.kernel.org/linux-mm/20180103100430.GE4911@quack2.suse.cz
-> [2] https://lore.kernel.org/r/Yg0m6IjcNmfaSokM@google.com
->
-> Reported-by: syzbot+d59332e2db681cf18f0318a06e994ebbb529a8db@syzkaller.appspotmail.com
-> Reported-by: Lee Jones <lee.jones@linaro.org>
-> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-> Link: https://lore.kernel.org/r/YiDS9wVfq4mM2jGK@mit.edu
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  fs/ext4/inode.c | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
->
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 2f5686dfa30d..a61d1e4e1026 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -1992,6 +1992,15 @@ static int ext4_writepage(struct page *page,
->  	else
->  		len = PAGE_SIZE;
->  
-> +	/* Should never happen but for bugs in other kernel subsystems */
-> +	if (!page_has_buffers(page)) {
-> +		ext4_warning_inode(inode,
-> +		   "page %lu does not have buffers attached", page->index);
-> +		ClearPageDirty(page);
-> +		unlock_page(page);
-> +		return 0;
-> +	}
-> +
->  	page_bufs = page_buffers(page);
->  	/*
->  	 * We cannot do block allocation or other extent handling in this
-> @@ -2595,6 +2604,22 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
->  			wait_on_page_writeback(page);
->  			BUG_ON(PageWriteback(page));
->  
-> +			/*
-> +			 * Should never happen but for buggy code in
-> +			 * other subsystems that call
-> +			 * set_page_dirty() without properly warning
-> +			 * the file system first.  See [1] for more
-> +			 * information.
-> +			 *
-> +			 * [1] https://lore.kernel.org/linux-mm/20180103100430.GE4911@quack2.suse.cz
-> +			 */
-> +			if (!page_has_buffers(page)) {
-> +				ext4_warning_inode(mpd->inode, "page %lu does not have buffers attached", page->index);
-> +				ClearPageDirty(page);
-> +				unlock_page(page);
-> +				continue;
-> +			}
-> +
->  			if (mpd->map.m_len == 0)
->  				mpd->first_page = page->index;
->  			mpd->next_page = page->index + 1;
-> -- 
-> 2.34.1
->
+From: Ritesh Harjani <riteshh@linux.ibm.com>
 
-I see the command but can't find the corresponding bug.
-The email is sent to  syzbot+HASH@syzkaller.appspotmail.com address
-but the HASH does not correspond to any known bug.
-Please double check the address.
+[ Upstream commit a5c0e2fdf7cea535ba03259894dc184e5a4c2800 ]
+
+ext4_mb_mark_bb() currently wrongly calculates cluster len (clen) and
+flex_group->free_clusters. This patch fixes that.
+
+Identified based on code review of ext4_mb_mark_bb() function.
+
+Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/a0b035d536bafa88110b74456853774b64c8ac40.1644992609.git.riteshh@linux.ibm.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/ext4/mballoc.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
+
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 74e3286d0e26..9a749327336f 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -3899,10 +3899,11 @@ void ext4_mb_mark_bb(struct super_block *sb, ext4_fsblk_t block,
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	ext4_group_t group;
+ 	ext4_grpblk_t blkoff;
+-	int i, clen, err;
++	int i, err;
+ 	int already;
++	unsigned int clen, clen_changed;
+ 
+-	clen = EXT4_B2C(sbi, len);
++	clen = EXT4_NUM_B2C(sbi, len);
+ 
+ 	ext4_get_group_no_and_offset(sb, block, &group, &blkoff);
+ 	bitmap_bh = ext4_read_block_bitmap(sb, group);
+@@ -3923,6 +3924,7 @@ void ext4_mb_mark_bb(struct super_block *sb, ext4_fsblk_t block,
+ 		if (!mb_test_bit(blkoff + i, bitmap_bh->b_data) == !state)
+ 			already++;
+ 
++	clen_changed = clen - already;
+ 	if (state)
+ 		ext4_set_bits(bitmap_bh->b_data, blkoff, clen);
+ 	else
+@@ -3935,9 +3937,9 @@ void ext4_mb_mark_bb(struct super_block *sb, ext4_fsblk_t block,
+ 						group, gdp));
+ 	}
+ 	if (state)
+-		clen = ext4_free_group_clusters(sb, gdp) - clen + already;
++		clen = ext4_free_group_clusters(sb, gdp) - clen_changed;
+ 	else
+-		clen = ext4_free_group_clusters(sb, gdp) + clen - already;
++		clen = ext4_free_group_clusters(sb, gdp) + clen_changed;
+ 
+ 	ext4_free_group_clusters_set(sb, gdp, clen);
+ 	ext4_block_bitmap_csum_set(sb, group, gdp, bitmap_bh);
+@@ -3947,10 +3949,13 @@ void ext4_mb_mark_bb(struct super_block *sb, ext4_fsblk_t block,
+ 
+ 	if (sbi->s_log_groups_per_flex) {
+ 		ext4_group_t flex_group = ext4_flex_group(sbi, group);
++		struct flex_groups *fg = sbi_array_rcu_deref(sbi,
++					   s_flex_groups, flex_group);
+ 
+-		atomic64_sub(len,
+-			     &sbi_array_rcu_deref(sbi, s_flex_groups,
+-						  flex_group)->free_clusters);
++		if (state)
++			atomic64_sub(clen_changed, &fg->free_clusters);
++		else
++			atomic64_add(clen_changed, &fg->free_clusters);
+ 	}
+ 
+ 	err = ext4_handle_dirty_metadata(NULL, NULL, bitmap_bh);
+-- 
+2.34.1
 
