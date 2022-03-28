@@ -2,44 +2,44 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5EC4EA0C3
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Mar 2022 21:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A909F4EA043
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Mar 2022 21:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343836AbiC1TuS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Mar 2022 15:50:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49484 "EHLO
+        id S1344046AbiC1Tuh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 28 Mar 2022 15:50:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344197AbiC1TsS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Mar 2022 15:48:18 -0400
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A43167D22
-        for <linux-ext4@vger.kernel.org>; Mon, 28 Mar 2022 12:44:11 -0700 (PDT)
-Received: by mail-il1-f197.google.com with SMTP id 5-20020a92c645000000b002c99d83806dso2842242ill.13
-        for <linux-ext4@vger.kernel.org>; Mon, 28 Mar 2022 12:44:11 -0700 (PDT)
+        with ESMTP id S1344226AbiC1TsY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Mar 2022 15:48:24 -0400
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD1F6A07A
+        for <linux-ext4@vger.kernel.org>; Mon, 28 Mar 2022 12:44:13 -0700 (PDT)
+Received: by mail-io1-f72.google.com with SMTP id g16-20020a05660203d000b005f7b3b0642eso11000435iov.16
+        for <linux-ext4@vger.kernel.org>; Mon, 28 Mar 2022 12:44:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
          :from:to:cc;
-        bh=HNFnyYgATJEiRRHz7pZcGLyOeQuLL7qSe4PflAW2SKw=;
-        b=2IdVzH3uMYsx2zdEabQSr/dyIm5QzAV7z5tCk0boTah02cOc8ddVQmBX0vSJ8du7qm
-         2Q/3iSOWxbn4y9gEr+oTaFtMgzMsy2a2zj9ox+djQ+A00zGgNWHi2SAILbzmsLe6Mc9f
-         h7xNIVH94QzRAm7ko5IwrIRB21lTPJS3I1kKZDTCHG3A5EE7puZaPip2PSDZ1Wht93Os
-         3bYSStdhMjj7BvsaeC4cnoeynvURPnqo7jC3Z2N7MWr4oEagR/H+ljflkT2ut2a708xM
-         L4k3gGKh+x4wWcHTSDNVsX+oI3VyHLb0W3FHteLIVLCwvXSb99AFgitIBeFTm1ZYv3xY
-         ddNw==
-X-Gm-Message-State: AOAM530wr5R2+SqfVINdV+KDqlbt/x9zJXtzTAmrhxoyn+kUSBMS2doB
-        r5OTkp/AzoNY8hDAvIUo3Y1RLhxq7NRFdhB6UKvzICFl+mnj
-X-Google-Smtp-Source: ABdhPJyTTIVYHX8FssxQ+YIkYMpmIDc1cjcs4jQOCuOHMvQdLXOZp0sbYL9rB6vJdic/kTMEXYjU2k+oouihwfeNmptIaETThGTK
+        bh=7zWKMtEbwuwT1uZBUdUYkt9pkOkuqW/DKM2dz5jslsE=;
+        b=cZ3ly1vKOjQ0SvU2jJTNhdsSqE8Kxu1T+GuLfbuTE/x1EJhvJpsi6v+nkXMninyIv0
+         Yo/Vd0tHfL8Krk15+W0Jmy1TOFj4LV+O8aUYlQvu4ef/I/WAZ3nxp1IzifGvWLk0RKdn
+         nRyQyoJ1Men5LXhtO3Ei4zaaFU3WG62tvz4XWZuQcLJ9qJVFyKARvTvgnKtJ5LjYuuQl
+         a4377xHXuzYSMTultbiomqiwcV1joHmO6ZOYkrB9DlXu0i1HE03DhSuTvdxd2JXSWvfD
+         tE23zb9dpgiajgqOl/JC9bRJFzETcwSac3Jt5mlqapDUeQ5JBc7xHJY5x03t2Il6dnLN
+         fbUg==
+X-Gm-Message-State: AOAM5331OpAG+6qqcOrN9fuPdwiq3AXea0s+GcCt+vnyMTN3XRqxyw0k
+        yyZ0lg7Yr6iKwsWSqoQPnblxt95Kp8GOimBHdEczuuY0nxiG
+X-Google-Smtp-Source: ABdhPJwSo6uMATs/DQ2Fc55S2LjOSy42ARyrpKQkFU3C8gQeLy+XP3OtwDMB6jlamFcEK/Qg2DAyBePXjwGnAwFwPb/BJiOWYNxf
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:4102:b0:319:effe:d355 with SMTP id
- ay2-20020a056638410200b00319effed355mr13749616jab.121.1648496628060; Mon, 28
- Mar 2022 12:43:48 -0700 (PDT)
-Date:   Mon, 28 Mar 2022 12:43:48 -0700
-In-Reply-To: <20220328194343.1586624-1-sashal@kernel.org>
+X-Received: by 2002:a5d:9d44:0:b0:645:b6e9:4bbb with SMTP id
+ k4-20020a5d9d44000000b00645b6e94bbbmr7394506iok.77.1648496632312; Mon, 28 Mar
+ 2022 12:43:52 -0700 (PDT)
+Date:   Mon, 28 Mar 2022 12:43:52 -0700
+In-Reply-To: <20220328194347.1586667-1-sashal@kernel.org>
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000edd59205db4c87cd@google.com>
-Subject: Re: [PATCH AUTOSEL 4.14 1/2] ext4: don't BUG if someone dirty pages
+Message-ID: <0000000000002eb7e505db4c88b1@google.com>
+Subject: Re: [PATCH AUTOSEL 4.9 1/2] ext4: don't BUG if someone dirty pages
  without asking ext4 first
 From:   syzbot 
         <syzbot+d59332e2db681cf18f0318a06e994ebbb529a8db@syzkaller.appspotmail.com>
@@ -92,10 +92,10 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 >  1 file changed, 25 insertions(+)
 >
 > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 9c07c8674b21..4d3eefff3c84 100644
+> index 79c067f74253..e66aa8918dee 100644
 > --- a/fs/ext4/inode.c
 > +++ b/fs/ext4/inode.c
-> @@ -2147,6 +2147,15 @@ static int ext4_writepage(struct page *page,
+> @@ -2048,6 +2048,15 @@ static int ext4_writepage(struct page *page,
 >  	else
 >  		len = PAGE_SIZE;
 >  
@@ -111,7 +111,7 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 >  	page_bufs = page_buffers(page);
 >  	/*
 >  	 * We cannot do block allocation or other extent handling in this
-> @@ -2706,6 +2715,22 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
+> @@ -2608,6 +2617,22 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
 >  			wait_on_page_writeback(page);
 >  			BUG_ON(PageWriteback(page));
 >  
