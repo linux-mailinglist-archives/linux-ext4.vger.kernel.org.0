@@ -2,73 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDC7B4E9C04
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Mar 2022 18:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F00C34E9F52
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Mar 2022 20:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240438AbiC1QOL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Mar 2022 12:14:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39152 "EHLO
+        id S245394AbiC1TAs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 28 Mar 2022 15:00:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238518AbiC1QOL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Mar 2022 12:14:11 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D2762123
-        for <linux-ext4@vger.kernel.org>; Mon, 28 Mar 2022 09:12:30 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id s11so13059957pfu.13
-        for <linux-ext4@vger.kernel.org>; Mon, 28 Mar 2022 09:12:30 -0700 (PDT)
+        with ESMTP id S245408AbiC1TAr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Mar 2022 15:00:47 -0400
+Received: from smtp-fw-6001.amazon.com (smtp-fw-6001.amazon.com [52.95.48.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6657C34BA8
+        for <linux-ext4@vger.kernel.org>; Mon, 28 Mar 2022 11:59:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=OYF/jvStaXgJs+lPLO95DLgpFNQWTZE9eUToA1rRs6g=;
-        b=e+BGZaz9UF7wurI72M/5D45ULqW3ey6hXKY/Ts68ZgJK+22nFqMUvhRnEdRnUBpuvl
-         qPQCU0In4ULU6FrtL4iIXhYl3zMBK19R+WUV7DTPh5cvUw6eRFk7AhjuMWBOTqlyWtQC
-         nJKNVvqCmiJ+2LNK54Aq7rTRVFsfPFfRB/v6VG5I9BgHJXzNoHViwd1UmQgMDaSWQXpp
-         2CS5wZFjeU2yLm1azU7lY7IbkgKzdX1RwEucQh4Bj2ntyML4fmuRyUdWr6bNzZXduSsv
-         B679isvImDqKin6vhmJQq3ouLNW2MPfA9u+B75y+vagvE5heMpuBBBY2due9oOaT3xWM
-         w8Ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=OYF/jvStaXgJs+lPLO95DLgpFNQWTZE9eUToA1rRs6g=;
-        b=uU5fJgrwfn/+IS2XLJfIHBYirRRPc+0YQBqIwCibYaA/nHGoavNx3pvuwsbgVQiEGu
-         +tOutwe7ldtVc+3JZovou4YHsx8koDHOia6KTgq09Ps+MNjfMchJLiKJsQLrRz7Mpct3
-         RxPLfRhmnOJZa3spMsjNshCKmTm8CriVWylILQ9bngK7OPzOH5SH810xPg/4of31kDVk
-         ENJmR1hoq+TwM6mNlo8VRkcYjnlOXfSblFo3gwHauiO5KEoLQuAcW/B5PAyQjvXbBORv
-         uipcFgS4nSZ38UY46TIC5g1r93zmYALsS/MZSTSSDpvxppYpcjP0wpVPJ2pllWhxNpka
-         uuxQ==
-X-Gm-Message-State: AOAM532l7INkSaHsLPfN2XdNFcjXF8K48WyfIriGdhkmfosE5iKQBN8o
-        f0/wnDflBDiTHy/djV4Z/q7o6nNmtKnsbaEP
-X-Google-Smtp-Source: ABdhPJwufdTEwBp0S3JduRuquBjA87WlSM0qhzSDEaHQGglV4NKMddG55IsfZm3xx1Hl90qslp+rzw==
-X-Received: by 2002:a63:3fcc:0:b0:398:ae5:6905 with SMTP id m195-20020a633fcc000000b003980ae56905mr10471109pga.463.1648483949404;
-        Mon, 28 Mar 2022 09:12:29 -0700 (PDT)
-Received: from [192.168.254.17] ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id z12-20020aa7888c000000b004f3fc6d95casm16878011pfe.20.2022.03.28.09.12.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Mar 2022 09:12:28 -0700 (PDT)
-Message-ID: <21f3fd84-2de9-646c-4d0c-94007a996c70@linaro.org>
-Date:   Mon, 28 Mar 2022 09:12:27 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH v2] ext4: check if offset+length is valid in fallocate
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1648493946; x=1680029946;
+  h=from:to:subject:date:message-id:content-id:
+   content-transfer-encoding:mime-version;
+  bh=NATTgTxAAwWp1cFrws5ENKhjJwpMMQSI0YCqu2m75qk=;
+  b=A1XEibIoqStt8Z39FOhuor8iUDvLXcNEnroD2BZFOQ4JYZndkmn73uUM
+   PELW2keI24BGi9XsfBayLqnbiweB05BrF3x1Mz7ZGBZsUOonHQXLRLHtC
+   x/mkpr3t86O6FGb0M8IkyYdz8QhgxJlf8vKP52axYUKOElYM+CbY1ZgqH
+   g=;
+X-IronPort-AV: E=Sophos;i="5.90,218,1643673600"; 
+   d="scan'208";a="189754621"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1d-10222bbc.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-6001.iad6.amazon.com with ESMTP; 28 Mar 2022 18:59:05 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-iad-1d-10222bbc.us-east-1.amazon.com (Postfix) with ESMTPS id 357391A007A
+        for <linux-ext4@vger.kernel.org>; Mon, 28 Mar 2022 18:59:04 +0000 (UTC)
+Received: from EX13D23UWA003.ant.amazon.com (10.43.160.194) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.32; Mon, 28 Mar 2022 18:59:04 +0000
+Received: from EX13D23UWA003.ant.amazon.com (10.43.160.194) by
+ EX13D23UWA003.ant.amazon.com (10.43.160.194) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.32; Mon, 28 Mar 2022 18:59:04 +0000
+Received: from EX13D23UWA003.ant.amazon.com ([10.43.160.194]) by
+ EX13D23UWA003.ant.amazon.com ([10.43.160.194]) with mapi id 15.00.1497.033;
+ Mon, 28 Mar 2022 18:59:04 +0000
+From:   "Kiselev, Oleg" <okiselev@amazon.com>
+To:     linux-ext4 <linux-ext4@vger.kernel.org>
+Subject: Issues with resize of `-O bigalloc` filesystem
+Thread-Topic: Issues with resize of `-O bigalloc` filesystem
+Thread-Index: AQHYQtXkNRyKziSEoE+DJHzOpdyBRg==
+Date:   Mon, 28 Mar 2022 18:59:04 +0000
+Message-ID: <9A00B0AB-2A15-4374-95FB-AF72CE65E749@amazon.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     linux-ext4@vger.kernel.org
-Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ritesh Harjani <riteshh@linux.ibm.com>, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+7a806094edd5d07ba029@syzkaller.appspotmail.com,
-        tytso@mit.edu
-References: <20220315215439.269122-1-tadeusz.struk@linaro.org>
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-In-Reply-To: <20220315215439.269122-1-tadeusz.struk@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.43.161.126]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F1E84F02FFCC714BA955C29F5F8AEF36@amazon.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-Spam-Status: No, score=-11.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,23 +69,93 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 3/15/22 14:54, Tadeusz Struk wrote:
-> Syzbot found an issue [1] in ext4_fallocate().
-> The C reproducer [2] calls fallocate(), passing size 0xffeffeff000ul,
-> and offset 0x1000000ul, which, when added together exceed the disk size,
-> and trigger a BUG in ext4_ind_remove_space() [3].
-> According to the comment doc in ext4_ind_remove_space() the 'end' block
-> parameter needs to be one block after the last block to remove.
-> In the case when the BUG is triggered it points to the last block on
-> a 4GB virtual disk image. This is calculated in
-> ext4_ind_remove_space() in [4].
-> This patch adds a check that ensure the length + offest to be
-> within the valid range and returns -ENOSPC error code in case
-> it is invalid.
-
-Hi,
-Any feedback on this?
-
--- 
-Thanks,
-Tadeusz
+V2UgYXJlIHZhbGlkYXRpbmcgdGhlIHVzZSBvZiBgLU8gYmlnYWxsb2NgIGZ1bmN0aW9uYWxpdHkg
+YW5kIGhhdmUgcnVuIGludG8gcHJvYmxlbXMgd2l0aCBpdC4gDQogDQpUaGUgZmlyc3QgaXNzdWUg
+aXMgYW4gZWFzeSB0byByZXBsaWNhdGUgZmFpbHVyZSB3aGVuIHJlc2l6aW5nIHRvIGFuIHVuYWxp
+Z25lZCBzaXplLiANCiANClRoZSByZXBsaWNhdGlvbiBzY2VuYXJpbyBpczoNCj09PT09PT09PT0N
+CiMgdXNlIGEgZGV2aWNlIHRoYXQgaXMgbGFyZ2VyIHRoYW4gdGhlIGZpbGVzeXN0ZW0gd2UgYXJl
+IG1ha2luZw0KREVWPS9kZXYvdmdEYXRhL2x2RGF0YQ0KTU5UPS9yZHNkYXRhIA0Kc3VkbyBta2Rp
+ciAke01OVH0NCnN1ZG8gbWtlMmZzIC10IGV4dDQgLWogLU8gYmlnYWxsb2MgLUMgMTZrIC1MICR7
+TU5UfSAke0RFVn0gMTI4TQ0Kc3VkbyBtb3VudCAke0RFVn0gJHtNTlR9DQpzdWRvIHJlc2l6ZTJm
+cyAke0RFVn0gMTQ4NDg2aw0KPT09PT09PT09PT0gDQpUaGUgdGFyZ2V0IHNpemUgaXMgZGVsaWJl
+cmF0ZWx5IG5vdCBhbGlnbmVkIG9uIGEgMTZLIGJvdW5kYXJ5Lg0KIA0KSGVyZeKAmXMgd2hhdCBk
+bWVzZyBzaG93czoNCltNYXIyNiAwNDo0Nl0gRVhUNC1mcyAoZG0tMSk6IG1vdW50ZWQgZmlsZXN5
+c3RlbSB3aXRoIG9yZGVyZWQgZGF0YSBtb2RlLiBPcHRzOiAobnVsbCkNClsgICswLjAwNjE5Nl0g
+ZXh0NCBmaWxlc3lzdGVtIGJlaW5nIG1vdW50ZWQgYXQgL3Jkc2RhdGEgc3VwcG9ydHMgdGltZXN0
+YW1wcyB1bnRpbCAyMDM4ICgweDdmZmZmZmZmKQ0KWyArMjIuMTczOTEzXSBFWFQ0LWZzIChkbS0x
+KTogcmVzaXppbmcgZmlsZXN5c3RlbSBmcm9tIDEzMTA3MiB0byAxNDg0ODYgYmxvY2tzDQpbICAr
+MC4wMTU0MjJdIC0tLS0tLS0tLS0tLVsgY3V0IGhlcmUgXS0tLS0tLS0tLS0tLQ0KWyAgKzAuMDAz
+NDc2XSBrZXJuZWwgQlVHIGF0IGZzL2V4dDQvcmVzaXplLmM6MTU3NCENClsgICswLjAwMzQ2OV0g
+aW52YWxpZCBvcGNvZGU6IDAwMDAgWyMyXSBTTVAgUFRJDQpbICArMC4wMDM0NzJdIENQVTogMSBQ
+SUQ6IDIzMTgzIENvbW06IHJlc2l6ZTJmcyBUYWludGVkOiBHICAgICAgRCBXICAgICAgICAgNS4x
+MC4xMDItOTkuNDczLmFtem4yLng4Nl82NCAjMQ0KWyAgKzAuMDA2ODI0XSBIYXJkd2FyZSBuYW1l
+OiBBbWF6b24gRUMyIHI1Yi4yeGxhcmdlLywgQklPUyAxLjAgMTAvMTYvMjAxNw0KWyAgKzAuMDA0
+MjE5XSBSSVA6IDAwMTA6ZXh0NF9zZXR1cF9uZXh0X2ZsZXhfZ2QrMHgyNjUvMHgyOTAgW2V4dDRd
+DQpbICArMC4wMDM5ODBdIENvZGU6IDQ4IDhkIDU0IDZkIDAwIDhkIDcwIDAxIDI5IGY4IDQ4IGMx
+IGUyIDA0IDgzIGMwIDAxIDQ4IDhkIDU0IDEzIGQwIDQ4IDhiIDFjIDI0IDhiIDRiIDU0IDAxIDQy
+IDI4IGQzIGU2IDg5IDcyIDIwIGU5IDZkIGZmIGZmIGZmIDwwZj4gMGIgMzEgZWQgZTkgNWUgZmYg
+ZmYgZmYgZjYgYzQgMDQgNzQgYjEgNDggODMgYmEgZTggMDMgMDAgMDAgMDANClsgICswLjAxMTgy
+Nl0gUlNQOiAwMDE4OmZmZmZiOGU3NDAyMTNkMzggRUZMQUdTOiAwMDAxMDIwNg0KWyAgKzAuMDAz
+NjU5XSBSQVg6IDAwMDAwMDAwMDAwMDAwMDEgUkJYOiBmZmZmOWU2ZWYyMmFiODAwIFJDWDogMDAw
+MDAwMDAwMDAwMDAwNA0KWyAgKzAuMDA1ODgzXSBSRFg6IDAwMDAwMDAwMDAwMDQ0MTAgUlNJOiAw
+MDAwMDAwMDAwMDI0NDEwIFJESTogZmZmZmI4ZTc0MDIxM2Q2MA0KWyAgKzAuMDA1ODgwXSBSQlA6
+IDAwMDAwMDAwMDAwMjQ0MDYgUjA4OiAwMDAwMDAwMDAwMDAwNDQxIFIwOTogMDAwMDAwMDAwMDAy
+MDAwMA0KWyAgKzAuMDA1ODM0XSBSMTA6IGZmZmY5ZTc5MjdkZTRmNTAgUjExOiAwMDAwMDAwMDAw
+MDAwMDQyIFIxMjogMDAwMDAwMDAwMDAwMDAxMA0KWyAgKzAuMDA1ODcxXSBSMTM6IDAwMDAwMDAx
+MDI5YjA1YjIgUjE0OiAwMDAwMDAwMDAwMDAwMDEwIFIxNTogZmZmZjllNzBmM2QyOTlhMA0KWyAg
+KzAuMDA1ODU4XSBGUzogIDAwMDA3ZjQ3NzY3Yzk3NDAoMDAwMCkgR1M6ZmZmZjllN2NjZGM0MDAw
+MCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwDQpbICArMC4wMDYyMjBdIENTOiAgMDAxMCBE
+UzogMDAwMCBFUzogMDAwMCBDUjA6IDAwMDAwMDAwODAwNTAwMzMNClsgICswLjAwMzg0MV0gQ1Iy
+OiAwMDAwMDAwMDAxZDE1MGQ4IENSMzogMDAwMDAwMDFjNzNkNjAwMiBDUjQ6IDAwMDAwMDAwMDA3
+NzA2ZTANClsgICswLjAwNTg1OF0gRFIwOiAwMDAwMDAwMDAwMDAwMDAwIERSMTogMDAwMDAwMDAw
+MDAwMDAwMCBEUjI6IDAwMDAwMDAwMDAwMDAwMDANClsgICswLjAwNTg4MV0gRFIzOiAwMDAwMDAw
+MDAwMDAwMDAwIERSNjogMDAwMDAwMDBmZmZlMGZmMCBEUjc6IDAwMDAwMDAwMDAwMDA0MDANClsg
+ICswLjAwNTg4M10gUEtSVTogNTU1NTU1NTQNClsgICswLjAwMjY5M10gQ2FsbCBUcmFjZToNClsg
+ICswLjAwMjYxMV0gID8gZXh0NF9mbGV4X2dyb3VwX2FkZCsweDI5ZS8weDJkMCBbZXh0NF0NClsg
+ICswLjAwMzYyMF0gIGV4dDRfcmVzaXplX2ZzKzB4NDE2LzB4NzcwIFtleHQ0XQ0KWyAgKzAuMDAz
+NDAwXSAgX19leHQ0X2lvY3RsKzB4NjFkLzB4YzgwIFtleHQ0XQ0KWyAgKzAuMDAzMjkzXSAgPyBf
+X2NoZWNrX29iamVjdF9zaXplLnBhcnQuMCsweDExZi8weDE0MA0KWyAgKzAuMDAzNTk5XSAgPyBk
+b19zeXNfb3BlbmF0MisweDgyLzB4MTUwDQpbICArMC4wMDMxOTNdICA/IGttZW1fY2FjaGVfZnJl
+ZSsweGZmLzB4NDEwDQpbICArMC4wMDMyMDFdICBleHQ0X2lvY3RsKzB4MmEvMHg0MCBbZXh0NF0N
+ClsgICswLjAwMzE4NF0gIF9feDY0X3N5c19pb2N0bCsweDgzLzB4YjANClsgICswLjAwMzEzOF0g
+IGRvX3N5c2NhbGxfNjQrMHgzMy8weDQwDQpbICArMC4wMDMwMzVdICBlbnRyeV9TWVNDQUxMXzY0
+X2FmdGVyX2h3ZnJhbWUrMHg0NC8weGE5DQpbICArMC4wMDM1OTBdIFJJUDogMDAzMzoweDdmNDc3
+NjBjZTg4Nw0KWyAgKzAuMDkzOTMyXSBDb2RlOiAwMCAwMCA5MCA0OCA4YiAwNSBmOSAwNSAyYyAw
+MCA2NCBjNyAwMCAyNiAwMCAwMCAwMCA0OCBjNyBjMCBmZiBmZiBmZiBmZiBjMyA2NiAyZSAwZiAx
+ZiA4NCAwMCAwMCAwMCAwMCAwMCBiOCAxMCAwMCAwMCAwMCAwZiAwNSA8NDg+IDNkIDAxIGYwIGZm
+IGZmIDczIDAxIGMzIDQ4IDhiIDBkIGM5IDA1IDJjIDAwIGY3IGQ4IDY0IDg5IDAxIDQ4DQpbICAr
+MC4wMTIwMDBdIFJTUDogMDAyYjowMDAwN2ZmYzhjY2ViYzA4IEVGTEFHUzogMDAwMDAyNDYgT1JJ
+R19SQVg6IDAwMDAwMDAwMDAwMDAwMTANClsgICswLjAwNjA3Nl0gUkFYOiBmZmZmZmZmZmZmZmZm
+ZmRhIFJCWDogMDAwMDAwMDAwMWQwZjk3MCBSQ1g6IDAwMDA3ZjQ3NzYwY2U4ODcNClsgICswLjAw
+NTkyNF0gUkRYOiAwMDAwN2ZmYzhjY2ViZDMwIFJTSTogMDAwMDAwMDA0MDA4NjYxMCBSREk6IDAw
+MDAwMDAwMDAwMDAwMDQNClsgICswLjAwNTk1M10gUkJQOiAwMDAwMDAwMDAwMDAwMDA0IFIwODog
+MDAwMDAwMDAwMDAwMDAwMSBSMDk6IDAwMDAwMDAwMDAwMDAwMDANClsgICswLjAwNTk0NF0gUjEw
+OiAwMDAwMDAwMDAwMDAwMDAwIFIxMTogMDAwMDAwMDAwMDAwMDI0NiBSMTI6IDAwMDAwMDAwMDFk
+MTE5ZjANClsgICswLjAwNTkwOF0gUjEzOiAwMDAwN2ZmYzhjY2ViZDMwIFIxNDogMDAwMDAwMDAw
+MWQwZTJjMCBSMTU6IDAwMDAwMDAwMDAwMDAwMDANClsgICswLjAwNTkzOV0gTW9kdWxlcyBsaW5r
+ZWQgaW46IG5sc191dGY4IGhmc3BsdXMgaGZzIHZmYXQgZmF0IGlzb2ZzIGNkcm9tIGV4dDIgZXh0
+NCBjcmMxNiBtYmNhY2hlIGpiZDIgc3VucnBjIGRtX21pcnJvciBkbV9yZWdpb25faGFzaCBkbV9s
+b2cgZG1fbW9kIGRheCBjcmMzMl9wY2xtdWwgZ2hhc2hfY2xtdWxuaV9pbnRlbCBhZXNuaV9pbnRl
+bCBjcnlwdG9fc2ltZCBjcnlwdGQgbW91c2VkZXYgZ2x1ZV9oZWxwZXIgcHNtb3VzZSBidXR0b24g
+ZW5hIGNyYzMyY19pbnRlbA0KWyAgKzAuMDE1MzU2XSAtLS1bIGVuZCB0cmFjZSBkNWRkNjA4NDQ2
+YjhiOTI3IF0tLS0NClsgICswLjAwMzYxOV0gUklQOiAwMDEwOmV4dDRfc2V0dXBfbmV4dF9mbGV4
+X2dkKzB4MjY1LzB4MjkwIFtleHQ0XQ0KWyAgKzAuMDA0MDQ3XSBDb2RlOiA0OCA4ZCA1NCA2ZCAw
+MCA4ZCA3MCAwMSAyOSBmOCA0OCBjMSBlMiAwNCA4MyBjMCAwMSA0OCA4ZCA1NCAxMyBkMCA0OCA4
+YiAxYyAyNCA4YiA0YiA1NCAwMSA0MiAyOCBkMyBlNiA4OSA3MiAyMCBlOSA2ZCBmZiBmZiBmZiA8
+MGY+IDBiIDMxIGVkIGU5IDVlIGZmIGZmIGZmIGY2IGM0IDA0IDc0IGIxIDQ4IDgzIGJhIGU4IDAz
+IDAwIDAwIDAwDQpbICArMC4wMTE5NDVdIFJTUDogMDAxODpmZmZmYjhlNzQwNTFiZDM4IEVGTEFH
+UzogMDAwMTAyMDYNClsgICswLjAwMzY3MF0gUkFYOiAwMDAwMDAwMDAwMDAwMDAxIFJCWDogZmZm
+ZjllNzZiMmM3NTAwMCBSQ1g6IDAwMDAwMDAwMDAwMDAwMDQNClsgICswLjAwNTk1MV0gUkRYOiAw
+MDAwMDAwMDAwMDA0NDEwIFJTSTogMDAwMDAwMDAwMDAyNDQxMCBSREk6IGZmZmZiOGU3NDA1MWJk
+NjANClsgICswLjAwNTkyNF0gUkJQOiAwMDAwMDAwMDAwMDI0NDA2IFIwODogMDAwMDAwMDAwMDAw
+MDQ0MSBSMDk6IDAwMDAwMDAwMDAwMjAwMDANClsgICswLjAwNTk0Ml0gUjEwOiBmZmZmOWU3OTI3
+ZGU0ZjUwIFIxMTogMDAwMDAwMDAwMDAwMDA0MiBSMTI6IDAwMDAwMDAwMDAwMDAwMTANClsgICsw
+LjAwNTkwOF0gUjEzOiAwMDAwMDAwMTAyODkzZDcxIFIxNDogMDAwMDAwMDAwMDAwMDAxMCBSMTU6
+IGZmZmY5ZTcwZjNkMjkyYzANClsgICswLjAwNTkxNF0gRlM6ICAwMDAwN2Y0Nzc2N2M5NzQwKDAw
+MDApIEdTOmZmZmY5ZTdjY2RjNDAwMDAoMDAwMCkga25sR1M6MDAwMDAwMDAwMDAwMDAwMA0KWyAg
+KzAuMDA2Mjk4XSBDUzogIDAwMTAgRFM6IDAwMDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUw
+MDMzDQpbICArMC4wMDM4ODNdIENSMjogMDAwMDAwMDAwMWQxNTBkOCBDUjM6IDAwMDAwMDAxYzcz
+ZDYwMDIgQ1I0OiAwMDAwMDAwMDAwNzcwNmUwDQpbICArMC4wMDU5MDZdIERSMDogMDAwMDAwMDAw
+MDAwMDAwMCBEUjE6IDAwMDAwMDAwMDAwMDAwMDAgRFIyOiAwMDAwMDAwMDAwMDAwMDAwDQpbICAr
+MC4wMDYwNjhdIERSMzogMDAwMDAwMDAwMDAwMDAwMCBEUjY6IDAwMDAwMDAwZmZmZTBmZjAgRFI3
+OiAwMDAwMDAwMDAwMDAwNDAwDQpbICArMC4wMDU5MTRdIFBLUlU6IDU1NTU1NTU0DQogDQoNCg0K
