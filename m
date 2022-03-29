@@ -2,172 +2,179 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E3124EB189
-	for <lists+linux-ext4@lfdr.de>; Tue, 29 Mar 2022 18:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E809F4EB51E
+	for <lists+linux-ext4@lfdr.de>; Tue, 29 Mar 2022 23:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239375AbiC2QNZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 29 Mar 2022 12:13:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60364 "EHLO
+        id S233360AbiC2VTM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 29 Mar 2022 17:19:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239380AbiC2QNX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 29 Mar 2022 12:13:23 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7BFC17B8AF;
-        Tue, 29 Mar 2022 09:11:39 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id DE1601F441C5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1648570298;
-        bh=2Yb3Ka8BcEOdrGgwzHg98hqEfa2Tzhh5f7Ghg6XGoYw=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=Ce//0ZK8OkkQPZrOu1tnGLymrZ02UytdcZZ2GDChk3b+KiGn0U8hSg39Y2+ZcVer0
-         2roxyhxjTELbluDV3jx9XUbxt2grkmNWrG3khvND8SpttdVasneTYdtU92sAepcaET
-         hiADleAbqtfRXkqOyBUHmSodTxQuWXS9u/wjMxDdoH7RuhtgIsHiejckJbQC9aiM1g
-         0zYknaDWmRO6wb5bB7YUjcnIv/pD4TFo9v0OynWI1UiZb4pRzxBEkiUWAaubfRaAd7
-         b0qcRuPU0/Y1rrDxsoZ8AWhlmJ8Cry4wkOI9a3Im1dr7z9QlUMx6xG7IEl5a7j5qCu
-         /9WCrxImWM/2Q==
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     yebin <yebin10@huawei.com>
-Cc:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <jack@suse.cz>, <lczerner@redhat.com>
-Subject: Re: [PATCH -next] ext4: fix warning in ext4_handle_inode_extension
-Organization: Collabora
-References: <20220326065351.761952-1-yebin10@huawei.com>
-        <87sfr2qdc8.fsf@collabora.com> <62426226.6060903@huawei.com>
-Date:   Tue, 29 Mar 2022 12:11:33 -0400
-In-Reply-To: <62426226.6060903@huawei.com> (yebin's message of "Tue, 29 Mar
-        2022 09:34:30 +0800")
-Message-ID: <87fsn0rb62.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        with ESMTP id S231886AbiC2VTM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 29 Mar 2022 17:19:12 -0400
+Received: from omta001.cacentral1.a.cloudfilter.net (omta001.cacentral1.a.cloudfilter.net [3.97.99.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 278801E377C
+        for <linux-ext4@vger.kernel.org>; Tue, 29 Mar 2022 14:17:27 -0700 (PDT)
+Received: from shw-obgw-4002a.ext.cloudfilter.net ([10.228.9.250])
+        by cmsmtp with ESMTP
+        id ZD2FnWOcR43SgZJDSn5yxy; Tue, 29 Mar 2022 21:17:26 +0000
+Received: from webber.adilger.int ([70.77.221.9])
+        by cmsmtp with ESMTP
+        id ZJDSn3yyqqyysZJDSnsDY5; Tue, 29 Mar 2022 21:17:26 +0000
+X-Authority-Analysis: v=2.4 cv=Y6brDzSN c=1 sm=1 tr=0 ts=62437766
+ a=2Y6h5+ypAxmHcsumz2f7Og==:117 a=2Y6h5+ypAxmHcsumz2f7Og==:17 a=ySfo2T4IAAAA:8
+ a=3KqSEalB3fScOfQquZEA:9 a=ZUkhVnNHqyo2at-WnAgH:22
+From:   Andreas Dilger <adilger@whamcloud.com>
+To:     tytso@mit.edu
+Cc:     linux-ext4@vger.kernel.org, Andreas Dilger <adilger@whamcloud.com>
+Subject: [PATCH] misc: use ext2_ino_t instead of ino_t
+Date:   Tue, 29 Mar 2022 15:17:12 -0600
+Message-Id: <20220329211712.25506-1-adilger@whamcloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfE/Ke/Ch7yUZ+ET8SLw5m/SZWHYLYl4xFPtpPWRp7XkQxLqcuI46i3Yj4tlvqbQ8hsTVH9vZDgU5GXNQ7LSdjMZ+S2S/SAX1ou0rtPmn14t8GEU8ICQs
+ H8pvEYSw90ORGC+VNX8yYCRwe+WSjIDOmDwb0L8qnEYphQvCU2QOVRtfAXDy2J78lF8flzM6JQ7ps0h33eHu3YdiaGKjXWLuRmFAvxEXj6uSD2RJIWCZ7zaF
+ 8UwGvIV7OHyin/n2EWEP5w==
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-yebin <yebin10@huawei.com> writes:
+Some of the new fastcommit and casefold changes used the system
+"ino_t" instead of "ext2_ino_t" for handling filesystem inodes.
+This causes printf warnings if "ino_t" is of a different size.
+Use the library "ext2_ino_t" for consistency.
 
-> On 2022/3/28 23:57, Gabriel Krisman Bertazi wrote:
->> Ye Bin <yebin10@huawei.com> writes:
->>
->>> We got issue as follows:
->>> EXT4-fs error (device loop0) in ext4_reserve_inode_write:5741: Out of memory
->>> EXT4-fs error (device loop0): ext4_setattr:5462: inode #13: comm syz-executor.0: mark_inode_dirty error
->>> EXT4-fs error (device loop0) in ext4_setattr:5519: Out of memory
->>> EXT4-fs error (device loop0): ext4_ind_map_blocks:595: inode #13: comm syz-executor.0: Can't allocate blocks for non-extent mapped inodes with bigalloc
->>> ------------[ cut here ]------------
->>> WARNING: CPU: 1 PID: 4361 at fs/ext4/file.c:301 ext4_file_write_iter+0x11c9/0x1220
->>> Modules linked in:
->>> CPU: 1 PID: 4361 Comm: syz-executor.0 Not tainted 5.10.0+ #1
->>> RIP: 0010:ext4_file_write_iter+0x11c9/0x1220
->>> RSP: 0018:ffff924d80b27c00 EFLAGS: 00010282
->>> RAX: ffffffff815a3379 RBX: 0000000000000000 RCX: 000000003b000000
->>> RDX: ffff924d81601000 RSI: 00000000000009cc RDI: 00000000000009cd
->>> RBP: 000000000000000d R08: ffffffffbc5a2c6b R09: 0000902e0e52a96f
->>> R10: ffff902e2b7c1b40 R11: ffff902e2b7c1b40 R12: 000000000000000a
->>> R13: 0000000000000001 R14: ffff902e0e52aa10 R15: ffffffffffffff8b
->>> FS:  00007f81a7f65700(0000) GS:ffff902e3bc80000(0000) knlGS:0000000000000000
->>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>> CR2: ffffffffff600400 CR3: 000000012db88001 CR4: 00000000003706e0
->>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->>> Call Trace:
->>>   do_iter_readv_writev+0x2e5/0x360
->>>   do_iter_write+0x112/0x4c0
->>>   do_pwritev+0x1e5/0x390
->>>   __x64_sys_pwritev2+0x7e/0xa0
->>>   do_syscall_64+0x37/0x50
->>>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>>
->>> Above issue may happen as follows:
->>> Assume
->>> inode.i_size=4096
->>> EXT4_I(inode)->i_disksize=4096
->>>
->>> step 1: set inode->i_isize = 8192
->>> ext4_setattr
->>>    if (attr->ia_size != inode->i_size)
->>>      EXT4_I(inode)->i_disksize = attr->ia_size;
->>>      rc = ext4_mark_inode_dirty
->>>         ext4_reserve_inode_write
->>>            ext4_get_inode_loc
->>>              __ext4_get_inode_loc
->>>                sb_getblk --> return -ENOMEM
->>>     ...
->>>     if (!error)  ->will not update i_size
->>>       i_size_write(inode, attr->ia_size);
->>> Now:
->>> inode.i_size=4096
->>> EXT4_I(inode)->i_disksize=8192
->>>
->>> step 2: Direct write 4096 bytes
->>> ext4_file_write_iter
->>>   ext4_dio_write_iter
->>>     iomap_dio_rw ->return error
->>>   if (extend)
->>>     ext4_handle_inode_extension
->>>       WARN_ON_ONCE(i_size_read(inode) < EXT4_I(inode)->i_disksize);
->>> ->Then trigger warning.
->>>
->>> To solve above issue, if mark inode dirty failed in ext4_setattr just
->>> set 'EXT4_I(inode)->i_disksize' with old value.
->>>
->>> Signed-off-by: Ye Bin <yebin10@huawei.com>
->>> ---
->>>   fs/ext4/inode.c | 4 ++++
->>>   1 file changed, 4 insertions(+)
->>>
->>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
->>> index 90fd6f7b6209..8adf1f802f6c 100644
->>> --- a/fs/ext4/inode.c
->>> +++ b/fs/ext4/inode.c
->>> @@ -5384,6 +5384,7 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
->>>   	if (attr->ia_valid & ATTR_SIZE) {
->>>   		handle_t *handle;
->>>   		loff_t oldsize = inode->i_size;
->>> +		loff_t old_disksize;
->>>   		int shrink = (attr->ia_size < inode->i_size);
->>>     		if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)))
->>> {
->>> @@ -5455,6 +5456,7 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
->>>   					inode->i_sb->s_blocksize_bits);
->>>     			down_write(&EXT4_I(inode)->i_data_sem);
->>> +			old_disksize = EXT4_I(inode)->i_disksize;
->>>   			EXT4_I(inode)->i_disksize = attr->ia_size;
->>>   			rc = ext4_mark_inode_dirty(handle, inode);
->>>   			if (!error)
->>> @@ -5466,6 +5468,8 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
->>>   			 */
->>>   			if (!error)
->>>   				i_size_write(inode, attr->ia_size);
->>> +			else
->>> +				EXT4_I(inode)->i_disksize = old_disksize;
->> Shouldn't this always be done if ext4_mark_inode_dirty fails?
->>
->> if (rc)
->>      EXT4_I(inode)->i_disksize = old_disksize;
->>
->> Otherwise you hit the same issue if (!error && rc), no?
->
-> In fact, '(!error && rc)' condition is always unsatisfied.
->
-> ext4_setattr
-> ...
-> down_write(&EXT4_I(inode)->i_data_sem);
-> EXT4_I(inode)->i_disksize = attr->ia_size;
-> rc = ext4_mark_inode_dirty(handle, inode);
-> *if (!error) **
-> **        error = rc;*
+Signed-off-by: Andreas Dilger <adilger@whamcloud.com>
+---
+ e2fsck/journal.c       | 16 ++++++++--------
+ e2fsck/pass1.c         |  8 ++++----
+ e2fsck/rehash.c        |  6 +++---
+ lib/ext2fs/badblocks.c |  2 +-
+ 4 files changed, 16 insertions(+), 16 deletions(-)
 
-Oh right. sorry for the noise.
-
+diff --git a/e2fsck/journal.c b/e2fsck/journal.c
+index 2e867234..f77dc1ab 100644
+--- a/e2fsck/journal.c
++++ b/e2fsck/journal.c
+@@ -578,7 +578,7 @@ static int ext4_del_extent_from_list(e2fsck_t ctx, struct extent_list *list,
+ 	return ext4_modify_extent_list(ctx, list, ex, 1 /* delete */);
+ }
+ 
+-static int ext4_fc_read_extents(e2fsck_t ctx, ino_t ino)
++static int ext4_fc_read_extents(e2fsck_t ctx, ext2_ino_t ino)
+ {
+ 	struct extent_list *extent_list = &ctx->fc_replay_state.fc_extent_list;
+ 
+@@ -597,7 +597,7 @@ static int ext4_fc_read_extents(e2fsck_t ctx, ino_t ino)
+  * for the inode so that we can flush all of them at once and it also saves us
+  * from continuously growing and shrinking the extent tree.
+  */
+-static void ext4_fc_flush_extents(e2fsck_t ctx, ino_t ino)
++static void ext4_fc_flush_extents(e2fsck_t ctx, ext2_ino_t ino)
+ {
+ 	struct extent_list *extent_list = &ctx->fc_replay_state.fc_extent_list;
+ 
+@@ -610,10 +610,10 @@ static void ext4_fc_flush_extents(e2fsck_t ctx, ino_t ino)
+ 
+ /* Helper struct for dentry replay routines */
+ struct dentry_info_args {
+-	ino_t parent_ino;
+-	int dname_len;
+-	ino_t ino;
+-	char *dname;
++	ext2_ino_t	parent_ino;
++	ext2_ino_t	ino;
++	int		dname_len;
++	char		*dname;
+ };
+ 
+ static inline int tl_to_darg(struct dentry_info_args *darg,
+@@ -635,7 +635,7 @@ static inline int tl_to_darg(struct dentry_info_args *darg,
+ 	       val + sizeof(struct ext4_fc_dentry_info),
+ 	       darg->dname_len);
+ 	darg->dname[darg->dname_len] = 0;
+-	jbd_debug(1, "%s: %s, ino %lu, parent %lu\n",
++	jbd_debug(1, "%s: %s, ino %u, parent %u\n",
+ 		tag == EXT4_FC_TAG_CREAT ? "create" :
+ 		(tag == EXT4_FC_TAG_LINK ? "link" :
+ 		(tag == EXT4_FC_TAG_UNLINK ? "unlink" : "error")),
+@@ -800,7 +800,7 @@ static int ext4_fc_handle_add_extent(e2fsck_t ctx, __u8 *val)
+ {
+ 	struct ext2fs_extent extent;
+ 	struct ext4_fc_add_range add_range;
+-	ino_t ino;
++	ext2_ino_t ino;
+ 	int ret = 0;
+ 
+ 	memcpy(&add_range, val, sizeof(add_range));
+diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
+index dde862a8..2897b0e7 100644
+--- a/e2fsck/pass1.c
++++ b/e2fsck/pass1.c
+@@ -79,8 +79,8 @@ static void check_blocks(e2fsck_t ctx, struct problem_context *pctx,
+ static void mark_table_blocks(e2fsck_t ctx);
+ static void alloc_bb_map(e2fsck_t ctx);
+ static void alloc_imagic_map(e2fsck_t ctx);
+-static void mark_inode_bad(e2fsck_t ctx, ino_t ino);
+-static void add_casefolded_dir(e2fsck_t ctx, ino_t ino);
++static void mark_inode_bad(e2fsck_t ctx, ext2_ino_t ino);
++static void add_casefolded_dir(e2fsck_t ctx, ext2_ino_t ino);
+ static void handle_fs_bad_blocks(e2fsck_t ctx);
+ static void process_inodes(e2fsck_t ctx, char *block_buf);
+ static EXT2_QSORT_TYPE process_inode_cmp(const void *a, const void *b);
+@@ -2202,7 +2202,7 @@ static EXT2_QSORT_TYPE process_inode_cmp(const void *a, const void *b)
+ /*
+  * Mark an inode as being bad in some what
+  */
+-static void mark_inode_bad(e2fsck_t ctx, ino_t ino)
++static void mark_inode_bad(e2fsck_t ctx, ext2_ino_t ino)
+ {
+ 	struct		problem_context pctx;
+ 
+@@ -2223,7 +2223,7 @@ static void mark_inode_bad(e2fsck_t ctx, ino_t ino)
+ 	ext2fs_mark_inode_bitmap2(ctx->inode_bad_map, ino);
+ }
+ 
+-static void add_casefolded_dir(e2fsck_t ctx, ino_t ino)
++static void add_casefolded_dir(e2fsck_t ctx, ext2_ino_t ino)
+ {
+ 	struct		problem_context pctx;
+ 
+diff --git a/e2fsck/rehash.c b/e2fsck/rehash.c
+index 8cc36f24..f9af0329 100644
+--- a/e2fsck/rehash.c
++++ b/e2fsck/rehash.c
+@@ -89,9 +89,9 @@ struct fill_dir_struct {
+ };
+ 
+ struct hash_entry {
+-	ext2_dirhash_t	hash;
+-	ext2_dirhash_t	minor_hash;
+-	ino_t		ino;
++	ext2_dirhash_t		hash;
++	ext2_dirhash_t		minor_hash;
++	ext2_ino_t		ino;
+ 	struct ext2_dir_entry	*dir;
+ };
+ 
+diff --git a/lib/ext2fs/badblocks.c b/lib/ext2fs/badblocks.c
+index 0f23983b..a306bc06 100644
+--- a/lib/ext2fs/badblocks.c
++++ b/lib/ext2fs/badblocks.c
+@@ -103,7 +103,7 @@ errcode_t ext2fs_badblocks_copy(ext2_badblocks_list src,
+ 
+ 
+ /*
+- * This procedure adds a block to a badblocks list.
++ * This procedure adds an item to a tracking list (e.g. badblocks or casefold).
+  */
+ errcode_t ext2fs_u32_list_add(ext2_u32_list bb, __u32 blk)
+ {
 -- 
-Gabriel Krisman Bertazi
+2.25.1
+
