@@ -2,44 +2,44 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 469024EB182
-	for <lists+linux-ext4@lfdr.de>; Tue, 29 Mar 2022 18:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E3124EB189
+	for <lists+linux-ext4@lfdr.de>; Tue, 29 Mar 2022 18:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239353AbiC2QM6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 29 Mar 2022 12:12:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58436 "EHLO
+        id S239375AbiC2QNZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 29 Mar 2022 12:13:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239424AbiC2QMy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 29 Mar 2022 12:12:54 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68BF6179B2B
-        for <linux-ext4@vger.kernel.org>; Tue, 29 Mar 2022 09:11:10 -0700 (PDT)
+        with ESMTP id S239380AbiC2QNX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 29 Mar 2022 12:13:23 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7BFC17B8AF;
+        Tue, 29 Mar 2022 09:11:39 -0700 (PDT)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: krisman)
-        with ESMTPSA id B20161F43BEF
+        with ESMTPSA id DE1601F441C5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1648570269;
-        bh=+nF0Nh8Kpe7S8dE2sih8gQscORN4DBqfR+PhxmMpRsI=;
+        s=mail; t=1648570298;
+        bh=2Yb3Ka8BcEOdrGgwzHg98hqEfa2Tzhh5f7Ghg6XGoYw=;
         h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=QMToq4AE7tSpPM6UOpE3M0cSCbO4W0lyL1+zo6ew4ktnuF1BIRexOwAq2BTuTG8Ky
-         vckBLZpRtDklEcwydska0Ckw5/zgGGfjR9UhJQxpEoPx12QVVBHj8JeofvCEBQ4a/c
-         LfVF864iwJYKtS1Bd5brJz4ZUqGm41GDZauryrPU2lEs/BRXGK/RPEdqbG4sYAvrJX
-         pjSxnNRA+zQ0pfDYTAMP0jgHstiW/FNBdW15bo2+OjfMCD3186lhZvDxino1yH9bPq
-         /4v0dCp/to48PlxUPHhVbbe6lHio+o4/E7voCsluRGO0doOaeDug8DhYg+Hl5N23ea
-         OV8WOYTshvYVw==
+        b=Ce//0ZK8OkkQPZrOu1tnGLymrZ02UytdcZZ2GDChk3b+KiGn0U8hSg39Y2+ZcVer0
+         2roxyhxjTELbluDV3jx9XUbxt2grkmNWrG3khvND8SpttdVasneTYdtU92sAepcaET
+         hiADleAbqtfRXkqOyBUHmSodTxQuWXS9u/wjMxDdoH7RuhtgIsHiejckJbQC9aiM1g
+         0zYknaDWmRO6wb5bB7YUjcnIv/pD4TFo9v0OynWI1UiZb4pRzxBEkiUWAaubfRaAd7
+         b0qcRuPU0/Y1rrDxsoZ8AWhlmJ8Cry4wkOI9a3Im1dr7z9QlUMx6xG7IEl5a7j5qCu
+         /9WCrxImWM/2Q==
 From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     tytso@mit.edu, jaegeuk@kernel.org, linux-ext4@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCH 3/5] ext4: Implement ci comparison using fscrypt_name
+To:     yebin <yebin10@huawei.com>
+Cc:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <jack@suse.cz>, <lczerner@redhat.com>
+Subject: Re: [PATCH -next] ext4: fix warning in ext4_handle_inode_extension
 Organization: Collabora
-References: <20220322030004.148560-1-krisman@collabora.com>
-        <20220322030004.148560-4-krisman@collabora.com>
-        <YkJ4J0XNSkSSf2Xo@sol.localdomain>
-Date:   Tue, 29 Mar 2022 12:11:04 -0400
-In-Reply-To: <YkJ4J0XNSkSSf2Xo@sol.localdomain> (Eric Biggers's message of
-        "Mon, 28 Mar 2022 20:08:23 -0700")
-Message-ID: <87k0ccrb6v.fsf@collabora.com>
+References: <20220326065351.761952-1-yebin10@huawei.com>
+        <87sfr2qdc8.fsf@collabora.com> <62426226.6060903@huawei.com>
+Date:   Tue, 29 Mar 2022 12:11:33 -0400
+In-Reply-To: <62426226.6060903@huawei.com> (yebin's message of "Tue, 29 Mar
+        2022 09:34:30 +0800")
+Message-ID: <87fsn0rb62.fsf@collabora.com>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -53,130 +53,121 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Eric Biggers <ebiggers@kernel.org> writes:
+yebin <yebin10@huawei.com> writes:
 
-> On Mon, Mar 21, 2022 at 11:00:02PM -0400, Gabriel Krisman Bertazi wrote:
->> By using fscrypt_name here, we can hide most of the caching casefold
->> logic from ext4.  The condition in ext4_match is now quite redundant,
->> but this is addressed in the next patch.
->> 
->> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
->> ---
->>  fs/ext4/namei.c         | 26 ++++++++++++--------------
->>  include/linux/fscrypt.h |  4 ++++
->>  2 files changed, 16 insertions(+), 14 deletions(-)
->> 
->> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
->> index 8976e5a28c73..71b4b05fae89 100644
->> --- a/fs/ext4/namei.c
->> +++ b/fs/ext4/namei.c
->> @@ -1321,10 +1321,9 @@ static void dx_insert_block(struct dx_frame *frame, u32 hash, ext4_lblk_t block)
->>  /**
->>   * ext4_ci_compare() - Match (case-insensitive) a name with a dirent.
->>   * @parent: Inode of the parent of the dentry.
->> - * @name: name under lookup.
->> + * @fname: name under lookup.
->>   * @de_name: Dirent name.
->>   * @de_name_len: dirent name length.
->> - * @quick: whether @name is already casefolded.
->>   *
->>   * Test whether a case-insensitive directory entry matches the filename
->>   * being searched.  If quick is set, the @name being looked up is
->> @@ -1333,8 +1332,9 @@ static void dx_insert_block(struct dx_frame *frame, u32 hash, ext4_lblk_t block)
->>   * Return: > 0 if the directory entry matches, 0 if it doesn't match, or
->>   * < 0 on error.
->>   */
->> -static int ext4_ci_compare(const struct inode *parent, const struct qstr *name,
->> -			   u8 *de_name, size_t de_name_len, bool quick)
->> +static int ext4_ci_compare(const struct inode *parent,
->> +			   const struct fscrypt_name *fname,
->> +			   u8 *de_name, size_t de_name_len)
->>  {
->>  	const struct super_block *sb = parent->i_sb;
->>  	const struct unicode_map *um = sb->s_encoding;
->> @@ -1357,10 +1357,10 @@ static int ext4_ci_compare(const struct inode *parent, const struct qstr *name,
->>  		entry.len = decrypted_name.len;
->>  	}
->>  
->> -	if (quick)
->> -		ret = utf8_strncasecmp_folded(um, name, &entry);
->> +	if (fname->cf_name.name)
->> +		ret = utf8_strncasecmp_folded(um, &fname->cf_name, &entry);
->>  	else
->> -		ret = utf8_strncasecmp(um, name, &entry);
->> +		ret = utf8_strncasecmp(um, fname->usr_fname, &entry);
->>  
->>  	if (!ret)
->>  		match = true;
->> @@ -1370,8 +1370,8 @@ static int ext4_ci_compare(const struct inode *parent, const struct qstr *name,
->>  		 * the names have invalid characters.
->>  		 */
->>  		ret = 0;
->> -		match = ((name->len == entry.len) &&
->> -			 !memcmp(name->name, entry.name, entry.len));
->> +		match = ((fname->usr_fname->len == entry.len) &&
->> +			 !memcmp(fname->usr_fname->name, entry.name, entry.len));
->>  	}
->>  
->>  out:
->> @@ -1440,6 +1440,8 @@ static bool ext4_match(struct inode *parent,
->>  #endif
->>  
->>  #if IS_ENABLED(CONFIG_UNICODE)
->> +	f.cf_name = fname->cf_name;
->> +
->>  	if (parent->i_sb->s_encoding && IS_CASEFOLDED(parent) &&
->>  	    (!IS_ENCRYPTED(parent) || fscrypt_has_encryption_key(parent))) {
->>  		if (fname->cf_name.name) {
->> @@ -1451,13 +1453,9 @@ static bool ext4_match(struct inode *parent,
->>  					return false;
->>  				}
->>  			}
->> -			ret = ext4_ci_compare(parent, &fname->cf_name, de->name,
->> -					      de->name_len, true);
->> -		} else {
->> -			ret = ext4_ci_compare(parent, fname->usr_fname,
->> -					      de->name, de->name_len, false);
->>  		}
->>  
->> +		ret = ext4_ci_compare(parent, &f, de->name, de->name_len);
->>  		if (ret < 0) {
->>  			/*
->>  			 * Treat comparison errors as not a match.  The
->> diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
->> index 91ea9477e9bd..5dc4b3c805e4 100644
->> --- a/include/linux/fscrypt.h
->> +++ b/include/linux/fscrypt.h
->> @@ -36,6 +36,10 @@ struct fscrypt_name {
->>  	u32 minor_hash;
->>  	struct fscrypt_str crypto_buf;
->>  	bool is_nokey_name;
->> +
->> +#ifdef CONFIG_UNICODE
->> +	struct qstr cf_name;
->> +#endif
->>  };
->>  
+> On 2022/3/28 23:57, Gabriel Krisman Bertazi wrote:
+>> Ye Bin <yebin10@huawei.com> writes:
+>>
+>>> We got issue as follows:
+>>> EXT4-fs error (device loop0) in ext4_reserve_inode_write:5741: Out of memory
+>>> EXT4-fs error (device loop0): ext4_setattr:5462: inode #13: comm syz-executor.0: mark_inode_dirty error
+>>> EXT4-fs error (device loop0) in ext4_setattr:5519: Out of memory
+>>> EXT4-fs error (device loop0): ext4_ind_map_blocks:595: inode #13: comm syz-executor.0: Can't allocate blocks for non-extent mapped inodes with bigalloc
+>>> ------------[ cut here ]------------
+>>> WARNING: CPU: 1 PID: 4361 at fs/ext4/file.c:301 ext4_file_write_iter+0x11c9/0x1220
+>>> Modules linked in:
+>>> CPU: 1 PID: 4361 Comm: syz-executor.0 Not tainted 5.10.0+ #1
+>>> RIP: 0010:ext4_file_write_iter+0x11c9/0x1220
+>>> RSP: 0018:ffff924d80b27c00 EFLAGS: 00010282
+>>> RAX: ffffffff815a3379 RBX: 0000000000000000 RCX: 000000003b000000
+>>> RDX: ffff924d81601000 RSI: 00000000000009cc RDI: 00000000000009cd
+>>> RBP: 000000000000000d R08: ffffffffbc5a2c6b R09: 0000902e0e52a96f
+>>> R10: ffff902e2b7c1b40 R11: ffff902e2b7c1b40 R12: 000000000000000a
+>>> R13: 0000000000000001 R14: ffff902e0e52aa10 R15: ffffffffffffff8b
+>>> FS:  00007f81a7f65700(0000) GS:ffff902e3bc80000(0000) knlGS:0000000000000000
+>>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>> CR2: ffffffffff600400 CR3: 000000012db88001 CR4: 00000000003706e0
+>>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>>> Call Trace:
+>>>   do_iter_readv_writev+0x2e5/0x360
+>>>   do_iter_write+0x112/0x4c0
+>>>   do_pwritev+0x1e5/0x390
+>>>   __x64_sys_pwritev2+0x7e/0xa0
+>>>   do_syscall_64+0x37/0x50
+>>>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>>
+>>> Above issue may happen as follows:
+>>> Assume
+>>> inode.i_size=4096
+>>> EXT4_I(inode)->i_disksize=4096
+>>>
+>>> step 1: set inode->i_isize = 8192
+>>> ext4_setattr
+>>>    if (attr->ia_size != inode->i_size)
+>>>      EXT4_I(inode)->i_disksize = attr->ia_size;
+>>>      rc = ext4_mark_inode_dirty
+>>>         ext4_reserve_inode_write
+>>>            ext4_get_inode_loc
+>>>              __ext4_get_inode_loc
+>>>                sb_getblk --> return -ENOMEM
+>>>     ...
+>>>     if (!error)  ->will not update i_size
+>>>       i_size_write(inode, attr->ia_size);
+>>> Now:
+>>> inode.i_size=4096
+>>> EXT4_I(inode)->i_disksize=8192
+>>>
+>>> step 2: Direct write 4096 bytes
+>>> ext4_file_write_iter
+>>>   ext4_dio_write_iter
+>>>     iomap_dio_rw ->return error
+>>>   if (extend)
+>>>     ext4_handle_inode_extension
+>>>       WARN_ON_ONCE(i_size_read(inode) < EXT4_I(inode)->i_disksize);
+>>> ->Then trigger warning.
+>>>
+>>> To solve above issue, if mark inode dirty failed in ext4_setattr just
+>>> set 'EXT4_I(inode)->i_disksize' with old value.
+>>>
+>>> Signed-off-by: Ye Bin <yebin10@huawei.com>
+>>> ---
+>>>   fs/ext4/inode.c | 4 ++++
+>>>   1 file changed, 4 insertions(+)
+>>>
+>>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+>>> index 90fd6f7b6209..8adf1f802f6c 100644
+>>> --- a/fs/ext4/inode.c
+>>> +++ b/fs/ext4/inode.c
+>>> @@ -5384,6 +5384,7 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
+>>>   	if (attr->ia_valid & ATTR_SIZE) {
+>>>   		handle_t *handle;
+>>>   		loff_t oldsize = inode->i_size;
+>>> +		loff_t old_disksize;
+>>>   		int shrink = (attr->ia_size < inode->i_size);
+>>>     		if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)))
+>>> {
+>>> @@ -5455,6 +5456,7 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
+>>>   					inode->i_sb->s_blocksize_bits);
+>>>     			down_write(&EXT4_I(inode)->i_data_sem);
+>>> +			old_disksize = EXT4_I(inode)->i_disksize;
+>>>   			EXT4_I(inode)->i_disksize = attr->ia_size;
+>>>   			rc = ext4_mark_inode_dirty(handle, inode);
+>>>   			if (!error)
+>>> @@ -5466,6 +5468,8 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
+>>>   			 */
+>>>   			if (!error)
+>>>   				i_size_write(inode, attr->ia_size);
+>>> +			else
+>>> +				EXT4_I(inode)->i_disksize = old_disksize;
+>> Shouldn't this always be done if ext4_mark_inode_dirty fails?
+>>
+>> if (rc)
+>>      EXT4_I(inode)->i_disksize = old_disksize;
+>>
+>> Otherwise you hit the same issue if (!error && rc), no?
 >
-> This seems like the wrong approach.  struct fscrypt_name shouldn't have fields
-> that aren't used by the fs/crypto/ layer.
+> In fact, '(!error && rc)' condition is always unsatisfied.
 >
-> Did you check what f2fs does?  It has a struct f2fs_filename to represent
-> everything f2fs needs to know about a filename, and it only uses
-> struct fscrypt_name when communicating with the fs/crypto/ layer.
->
-> struct ext4_filename already exists.  Couldn't you use that here?
+> ext4_setattr
+> ...
+> down_write(&EXT4_I(inode)->i_data_sem);
+> EXT4_I(inode)->i_disksize = attr->ia_size;
+> rc = ext4_mark_inode_dirty(handle, inode);
+> *if (!error) **
+> **        error = rc;*
 
-Hi Eric,
-
-The reason I'm not using struct ext4_filename here is because I'm trying
-to make this generic, so this function can be shared across filesystems
-implementing casefold.  Since the fscrypt_name abstraction is used for
-case-sensitive comparison, I was trying to reuse that type for
-case-insensitive as well.  It seemed unnecessary to define a generic
-casefold_name type just for passing the cf_name and disk_name to this
-function, considering that fscrypt_name is already initialized by
-ext4_match.
+Oh right. sorry for the noise.
 
 -- 
 Gabriel Krisman Bertazi
