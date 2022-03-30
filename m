@@ -2,113 +2,174 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E92BA4ECC06
-	for <lists+linux-ext4@lfdr.de>; Wed, 30 Mar 2022 20:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEBC34ECEAE
+	for <lists+linux-ext4@lfdr.de>; Wed, 30 Mar 2022 23:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350159AbiC3S0k (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 30 Mar 2022 14:26:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37666 "EHLO
+        id S233424AbiC3V0V (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 30 Mar 2022 17:26:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350522AbiC3S0M (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Mar 2022 14:26:12 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F3714838C
-        for <linux-ext4@vger.kernel.org>; Wed, 30 Mar 2022 11:23:39 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id m18so16355171plx.3
-        for <linux-ext4@vger.kernel.org>; Wed, 30 Mar 2022 11:23:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=6PnxJaVdYHTfEoSreao3ANO+XeqxY/p/4dxKSObIH1I=;
-        b=U1oUia1Thamt6Z7oWm6PGNKOk9RXK6Jv76DGrI1cLcYRcY5/d1Tt5qepQRdZm6lsyq
-         RBa/xpJM28ShOu5ibphzafHjPKptRC4OMeOVco0xYKihrCNFhnaGQOBDSvUdgHWgE3gf
-         cWTbx+dPO2nv/wujOZrrbxfJpePUzp7QZ1RCloUPxJhGXTvBKUziPieC1LSkK8oSaB+t
-         E85QJNBGnQK8HE8wei7Zq5jQSpeI5JY8kzofCGcJSUHLIHQXWsBy6ta+brl9WPLZzyWA
-         2jPBZlOFyxLxFI8awBJCcZtcLmSyu35IRMr8cJ72zb2pokIUUqe6EUB9pKUwVKwbq4my
-         ou5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=6PnxJaVdYHTfEoSreao3ANO+XeqxY/p/4dxKSObIH1I=;
-        b=YTQJ0ULCMnAP7b0VlBj9MVlggE+8L/5z3q6aR4xdejSIoqw4oeXTcOG2n4/CGj4PE1
-         5BExvrV2aADeU4cMVXjGH47s6+YyjAP2PWmTSFY3H+ZSx/TrMGuHtrQnkQRRKmokxtUE
-         9JYLegH+EGCMcuYGahDI/fRt2kWmCoFoFi5wyOBT8zKkyG8pNDwDYufHCdIEBPs1Eahi
-         6DZc20+5R9snJf5RY+lowW7zTZEgbexd1g/QQxkgC1ywByCB1qLBje8HiV4rwYOd8mxJ
-         Oq7J1JR6/NSrq/mqBGO2YezUhn8AU95ncKEfM8cXby2zwvdJ+q9NjNGukyfL8YAwhik0
-         OSEw==
-X-Gm-Message-State: AOAM533AqCfE3yBuccritsKD/ZW22KP4OjqqXvKDJ1OFl/GzuLdSSz2Q
-        zLbl9oVKyIMqQ1My3ZpZQubR6ERRhkwHD+N3tw==
-X-Google-Smtp-Source: ABdhPJzkTl+tJbylc9dRvis6ZhULbTl7j4ynIkLgm4b/Lu4YSrf6PCWjehKBvofPJCmWKHUKJGD0xbE01MjL0VC50Jo=
-X-Received: by 2002:a17:90b:3143:b0:1c7:5cee:3948 with SMTP id
- ip3-20020a17090b314300b001c75cee3948mr852445pjb.140.1648664618224; Wed, 30
- Mar 2022 11:23:38 -0700 (PDT)
+        with ESMTP id S232691AbiC3V0U (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Mar 2022 17:26:20 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2047.outbound.protection.outlook.com [40.107.94.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3429339B83;
+        Wed, 30 Mar 2022 14:24:34 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kPIJRmEYR3oEf5QR0Rc15ULPsaFQPVhtoKfyDYT8uI8dWDoTb6E11i0L0WL4BTI273gW6i+toBK+FKLirDWQVprritN2/Z5HHVq/18S6zPbleMZDt1UEL0x9KWliL7Z0GcvajhVNyzrHFbKn5yOkQSsBWeim0ByqP40Ahl5hYo6SFA2LH33OP9fL3b2lxKfZsl6rFzdjLNmLVq8zT2sceyYDiW+jO1pXkMT+5iwMwvhsVmrXcgzm8IdjuHgiM/xzr+p1glNnQ3yYh0RotSwnHeu20te9VipjcZGhHxGKxUUarh/pSrGPM1mhvvnrFjQS7+MPk+l1M/LHAEE01oQsDA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nLIUZyRPEKUSzuG4lWIjaPQdPPxc6MOaIPQjEpwOAVI=;
+ b=AZ8u2p39KOS9q3ASIBirKlXEbERNZXSO6v9AJD1VBSKcInwGT4JNvzb01E9f3qbwm7MRLIFYy53T2bzG/kIMPMjyT7b86gvXEhGYfK+XQ3sKqeY75tFLbrgGZS2TqR7mJ444f4rGRnJNfa6fuDaukgdGLUSZ0/wzt2hqjTtoXJm3BTJltASXkuKHNFBgvNYCxVS9GtUFDzcHIS+ttkypJc59FRrVlahFivTWM9i7XMf2dFI8XqYDlLVyXVt5V2tMlS55/UHYlZALFYgxf0YtZARuz/nVw7+bvpVQqGpzuzM/95skd/tKXutYjDwHD/W3RbIVVzPOsxFLt1VjFjXZyw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=nvidia.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nLIUZyRPEKUSzuG4lWIjaPQdPPxc6MOaIPQjEpwOAVI=;
+ b=uaUsVzNUrP53LAInUxzb/xTDSaOmhaw/Ev5E5OKcL4HlWhTqiJ+HKZmgy/km29YkeDKyH9LODCs8B2ajxFVN49wHdTXSzxRTOwMKLsMmPfWdC5nfIdq4d7CBDVBe0/VQwXv0Z5vCP84TNMQ7OgC1z5Ms016PVJ7uLHYAWaQu6e4=
+Received: from MW4PR03CA0012.namprd03.prod.outlook.com (2603:10b6:303:8f::17)
+ by DM5PR12MB1292.namprd12.prod.outlook.com (2603:10b6:3:73::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5102.19; Wed, 30 Mar 2022 21:24:32 +0000
+Received: from CO1NAM11FT013.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:8f:cafe::c3) by MW4PR03CA0012.outlook.office365.com
+ (2603:10b6:303:8f::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5123.13 via Frontend
+ Transport; Wed, 30 Mar 2022 21:24:32 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1NAM11FT013.mail.protection.outlook.com (10.13.174.227) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.5123.19 via Frontend Transport; Wed, 30 Mar 2022 21:24:31 +0000
+Received: from alex-MS-7B09.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Wed, 30 Mar
+ 2022 16:24:30 -0500
+From:   Alex Sierra <alex.sierra@amd.com>
+To:     <jgg@nvidia.com>
+CC:     <david@redhat.com>, <Felix.Kuehling@amd.com>, <linux-mm@kvack.org>,
+        <rcampbell@nvidia.com>, <linux-ext4@vger.kernel.org>,
+        <linux-xfs@vger.kernel.org>, <amd-gfx@lists.freedesktop.org>,
+        <dri-devel@lists.freedesktop.org>, <hch@lst.de>,
+        <jglisse@redhat.com>, <apopple@nvidia.com>, <willy@infradead.org>,
+        <akpm@linux-foundation.org>
+Subject: [PATCH] drm/amdkfd: Add SVM API support capability bits
+Date:   Wed, 30 Mar 2022 16:24:20 -0500
+Message-ID: <20220330212420.12003-1-alex.sierra@amd.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Reply-To: isabellasayouba0@gmail.com
-Sender: 040stherchurch@gmail.com
-Received: by 2002:a05:6a20:691d:b0:76:6cf5:d552 with HTTP; Wed, 30 Mar 2022
- 11:23:37 -0700 (PDT)
-From:   Mrs Isabella Sayouba <isabellasayouba0@gmail.com>
-Date:   Wed, 30 Mar 2022 18:23:37 +0000
-X-Google-Sender-Auth: _Xe1kByDkvq-Dn04BagO7gok_qM
-Message-ID: <CAAzQq761QVaWKiKernxpKjqNCK+6V9mRKHBnOcqF8rXJO9Y+aA@mail.gmail.com>
-Subject: =?UTF-8?B?44GC44GE44GV44Gk44CC?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=3.8 required=5.0 tests=BAYES_99,BAYES_999,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_HK_NAME_FM_MR_MRS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d8cfbc1c-0d29-4964-fc14-08da1293ae5b
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1292:EE_
+X-Microsoft-Antispam-PRVS: <DM5PR12MB129275290485D25A510CF4F4FD1F9@DM5PR12MB1292.namprd12.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aupQPbJRX2JzI8WvZf0zE+nSjLTyRAlKukftwyodn5s4jQEj71Y9zV+8v3Mx4m5d9f2X+SffVwGNyCb0Vutznub6qgvS4lE4f/f/8TizBGFLFftaL83fZdhXDc3Ux1RjcgOWCyLo7QXCrriZWbcOql3VQTmjQ6dsx6l9vYFNT1ZlbYp04eE+ggw2IEB9LrhqQKI44pXJ0e4xXPoFX9hBFwVJS/GKaXJLTlBNgAK7NXNjzVH31Y8FXtCQJRZrfrwSGMnl0TqvjSm6DKr1++wH9R9tVg82eUtlFH9Bi4RPWZYsjQouEywSp/jmE9paVAZLdqKK4BSsNvammDRLmyNZjYrBBAEiPWFLU/V++V9szMXbTfTGbenN4rBTWtKAwRzyXxhsGBhS8AsyEAoBF0m3tahpvXSPiM6ZMD/VwQnW8Y9ATjYsjTnI3qfJ6DHRWUjGprzWBRKPpz1MSeuusx24HsEWGUQfASRrE+aCNvhrHSBLVrq6b5H1BJ8zjETxXHthc7ysKu7v6jg921SIVnYmmIHuW8SD+ErrAKvSWc5a67RcCYW7/UCsih/jKxKwHkP9KVeBQjNO1ZN+W8zq9GJT5u6U2weVFcb6OvcF4EwqAyD1IyTBwWYkSViUQXyFE8+dv9PW6YCVe5csjps8VDuWH3rzyQVhr/nph2WvElbMMG2/DcK0uHibDxl+mAMRgeuEFpOt27otBNAvstQ9Y8GhXw==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230001)(4636009)(46966006)(36840700001)(40470700004)(4326008)(6666004)(426003)(336012)(70206006)(82310400004)(7416002)(2906002)(7696005)(70586007)(54906003)(86362001)(40460700003)(508600001)(316002)(5660300002)(8676002)(44832011)(8936002)(6916009)(356005)(36756003)(2616005)(83380400001)(36860700001)(26005)(16526019)(1076003)(47076005)(186003)(81166007)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2022 21:24:31.9384
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d8cfbc1c-0d29-4964-fc14-08da1293ae5b
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT013.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1292
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-44GC44GE44GV44Gk44CCDQoNCua2meOCkua1geOBl+OBquOBjOOCieOBk+OBruODoeODvOODq+OC
-kuabuOOBhOOBpuOBhOOBvuOBmeOAguengeOBruebruOBq+OBr+Wkp+OBjeOBquaCsuOBl+OBv+OB
-jOOBguOCiuOBvuOBmeOAguengeOBruWQjeWJjeOBr+OCpOOCtuODmeODqeODu+OCteODqOOCpuOD
-kOOBleOCk+OBp+OBmeOAguODgeODpeODi+OCuOOCouWHuui6q+OBp+OAgeODluODq+OCreODiuOD
-leOCoeOCveOBrueXhemZouOBi+OCiemAo+e1oeOCkuWPluOCiuOBvuOBmeOAguengeOBr+OBguOB
-quOBn+OBq+W/g+OCkumWi+OBhOOBpuaEn+WLleOBl+OBn+OBruOBp+OAgeOBguOBquOBn+OBq+ip
-seOBmeS7peWkluOBq+mBuOaKnuiCouOBr+OBguOCiuOBvuOBm+OCk+OAguengeOBr+OAgTIwMTHl
-ubTjgavkuqHjgY/jgarjgovliY3jgavjg5bjg6vjgq3jg4rjg5XjgqHjgr3jga7jg4Hjg6Xjg4vj
-grjjgqLlpKfkvb/jgag55bm06ZaT5YON44GE44Gm44GE44GfU2F5b3ViYQ0KQnJvd27msI/jgajn
-tZDlqZrjgZfjgb7jgZfjgZ/jgILlrZDkvpvjgarjgZfjgacxMeW5tOmWk+e1kOWpmuOBl+OBn+OA
-gg0KDQrlvbzjga/jgZ/jgaPjgZ815pel6ZaT57aa44GE44Gf55+t44GE55eF5rCX44Gu5b6M44Gn
-5q2744Gr44G+44GX44Gf44CC5b2844Gu5q275b6M44CB56eB44Gv5YaN5ama44GX44Gq44GE44GT
-44Go44Gr5rG644KB44G+44GX44Gf44CC5Lqh44GP44Gq44Gj44Gf5aSr44GM55Sf44GN44Gm44GE
-44Gf44Go44GN44CB5b2844Gv57eP6aGNODUw5LiH44OJ44Or44KS6aCQ44GR44G+44GX44Gf44CC
-DQrvvIg4MDDkuIc1MDAw44OJ44Or77yJ6KW/44Ki44OV44Oq44Kr44Gu44OW44Or44Kt44OK44OV
-44Kh44K944Gu6aaW6YO944Ov44Ks44OJ44Kl44Kw44O844Gu6YqA6KGM44Gn44CC54++5Zyo44CB
-44GT44Gu44GK6YeR44Gv44G+44Gg6YqA6KGM44Gr44GC44KK44G+44GZ44CC5b2844Gv44GT44Gu
-44GK6YeR44KS44OW44Or44Kt44OK44OV44Kh44K944Gu6Ymx5qWt44GL44KJ44Gu6YeR44Gu6Ly4
-5Ye644Gr5Yip55So44Gn44GN44KL44KI44GG44Gr44GX44G+44GX44Gf44CCDQoNCuacgOi/keOA
-geengeOBruWMu+iAheOBr+engeOBjOeZjOOBqOiEs+WNkuS4reOBruWVj+mhjOOBruOBn+OCgeOB
-qzfjg7bmnIjplpPjga/ntprjgYvjgarjgYTjgaDjgo3jgYbjgajnp4HjgavoqIDjgYTjgb7jgZfj
-gZ/jgILnp4HjgpLmnIDjgoLmgqnjgb7jgZvjgabjgYTjgovjga7jga/ohLPljZLkuK3jga7nl4Xm
-sJfjgafjgZnjgILnp4Hjga7nirbmhYvjgpLnn6XjgaPjgZ/jga7jgafjgIHnp4Hjga/jgZPjga7j
-gYrph5HjgpLjgYLjgarjgZ/jgavmuKHjgZfjgabjgIHmgbXjgb7jgozjgarjgYTkurrjgIXjga7k
-uJboqbHjgpLjgZnjgovjgZPjgajjgavjgZfjgb7jgZfjgZ/jgILjgYLjgarjgZ/jga/jgZPjga7j
-gYrph5HjgpLnp4HjgYzjgZPjgZPjgafmjIfnpLrjgZnjgovmlrnms5XjgafliKnnlKjjgZnjgovj
-gafjgZfjgofjgYbjgILnp4Hjga/jgYLjgarjgZ/jgavjgYLjgarjgZ/jga7lgIvkurrnmoTjgark
-vb/nlKjjga7jgZ/jgoHjgavnt4/jgYrph5Hjga4zMOODkeODvOOCu+ODs+ODiOOCkuWPluOBo+OB
-puassuOBl+OBhOOBp+OBmeOAguOBiumHkeOBrjcw77yF44Gv56eB44Gu5ZCN5YmN44Gn5a2k5YWQ
-6Zmi44KS5bu644Gm44CB6YCa44KK44Gu6LKn44GX44GE5Lq644CF44KS5Yqp44GR44KL44Gf44KB
-44Gr5L2/44GG44Gn44GX44KH44GG44CC56eB44Gv5a2k5YWQ44Go44GX44Gm6IKy44Gh44G+44GX
-44Gf44GM44CB56We44Gu5a6244KS57at5oyB44GZ44KL44Gf44KB44Gg44GR44Gr44CB5a625peP
-44Gr44Gv6Kqw44KC44GE44G+44Gb44KT44CC44GT44Gu55eF5rCX44GM56eB44KS44Go44Gm44KC
-6Ium44GX44KB44Gf44Gu44Gn44CB56We44GM56eB44Gu572q44KS6LWm44GX44CB5qW95ZyS44Gn
-56eB44Gu6a2C44KS5Y+X44GR5YWl44KM44KL44KI44GG44Gr44GT44KM44KS44GX44Gm44GE44KL
-44Gu44Gn44GZ44CCDQoNCui/lOS/oeOCkuWPl+OBkeWPluOCiuasoeesrOOAgeODluODq+OCreOD
-iuODleOCoeOCveOBrumKgOihjOOBrumAo+e1oeWFiOOCkuOBiuefpeOCieOBm+OBl+OBvuOBmeOA
-guOBvuOBn+OAgemKgOihjOOBruePvuWcqOOBruWPl+WPluS6uuOBp+OBguOCi+OBk+OBqOOCkuio
-vOaYjuOBmeOCi+aoqemZkOabuOOCkueZuuihjOOBmeOCi+OCiOOBhumKgOihjOmVt+OBq+aMh+ek
-uuOBl+OBvuOBmeOAguengeOBjOOBk+OBk+OBp+i/sOOBueOBn+OCiOOBhuOBq+OBguOBquOBn+OB
-jOOBneOCjOOBq+W/nOOBmOOBpuihjOWLleOBmeOCi+OBk+OBqOOCkuengeOBq+S/neiovOOBl+OB
-puOBj+OBoOOBleOBhOOAgg0KDQrjgqTjgrbjg5njg6njg7vjgrXjg6jjgqbjg5DlpKvkurrjgYvj
-gonjgIINCg==
+From: Philip Yang <Philip.Yang@amd.com>
+
+SVMAPISupported property added to HSA_CAPABILITY, the value match
+HSA_CAPABILITY defined in Thunk spec:
+
+SVMAPISupported: it will not be supported on older kernels that don't
+have HMM or on systems with GFXv8 or older GPUs without support for
+48-bit virtual addresses.
+
+CoherentHostAccess property added to HSA_MEMORYPROPERTY, the value match
+HSA_MEMORYPROPERTY defined in Thunk spec:
+
+CoherentHostAccess: whether or not device memory can be coherently
+accessed by the host CPU.
+
+Signed-off-by: Philip Yang <Philip.Yang@amd.com>
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Signed-off-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+---
+ drivers/gpu/drm/amd/amdkfd/kfd_topology.c |  6 ++++++
+ drivers/gpu/drm/amd/amdkfd/kfd_topology.h | 10 ++++++----
+ 2 files changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_topology.c b/drivers/gpu/drm/amd/amdkfd/kfd_topology.c
+index cdef608db4f4..083ac9babfa8 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_topology.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_topology.c
+@@ -1419,6 +1419,12 @@ int kfd_topology_add_device(struct kfd_dev *gpu)
+ 		dev->node_props.capability |= (adev->ras_features != 0) ?
+ 			HSA_CAP_RASEVENTNOTIFY : 0;
+ 
++	/* SVM API and HMM page migration work together, device memory type
++	 * is initialized to not 0 when page migration register device memory.
++	 */
++	if (adev->kfd.dev->pgmap.type != 0)
++		dev->node_props.capability |= HSA_CAP_SVMAPI_SUPPORTED;
++
+ 	kfd_debug_print_topology();
+ 
+ 	if (!res)
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_topology.h b/drivers/gpu/drm/amd/amdkfd/kfd_topology.h
+index b8b68087bd7a..6bd6380b0ee0 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_topology.h
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_topology.h
+@@ -53,8 +53,9 @@
+ #define HSA_CAP_ASIC_REVISION_MASK		0x03c00000
+ #define HSA_CAP_ASIC_REVISION_SHIFT		22
+ #define HSA_CAP_SRAM_EDCSUPPORTED		0x04000000
++#define HSA_CAP_SVMAPI_SUPPORTED		0x08000000
+ 
+-#define HSA_CAP_RESERVED			0xf80f8000
++#define HSA_CAP_RESERVED			0xf00f8000
+ 
+ struct kfd_node_properties {
+ 	uint64_t hive_id;
+@@ -98,9 +99,10 @@ struct kfd_node_properties {
+ #define HSA_MEM_HEAP_TYPE_GPU_LDS	4
+ #define HSA_MEM_HEAP_TYPE_GPU_SCRATCH	5
+ 
+-#define HSA_MEM_FLAGS_HOT_PLUGGABLE	0x00000001
+-#define HSA_MEM_FLAGS_NON_VOLATILE	0x00000002
+-#define HSA_MEM_FLAGS_RESERVED		0xfffffffc
++#define HSA_MEM_FLAGS_HOT_PLUGGABLE		0x00000001
++#define HSA_MEM_FLAGS_NON_VOLATILE		0x00000002
++#define HSA_MEM_FLAGS_COHERENTHOSTACCESS	0x00000004
++#define HSA_MEM_FLAGS_RESERVED			0xfffffff8
+ 
+ struct kfd_mem_properties {
+ 	struct list_head	list;
+-- 
+2.32.0
+
