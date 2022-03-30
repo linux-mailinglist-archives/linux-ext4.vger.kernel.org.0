@@ -2,224 +2,429 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B314EC5AA
-	for <lists+linux-ext4@lfdr.de>; Wed, 30 Mar 2022 15:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C94D4EC67E
+	for <lists+linux-ext4@lfdr.de>; Wed, 30 Mar 2022 16:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346090AbiC3NcD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 30 Mar 2022 09:32:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41694 "EHLO
+        id S235216AbiC3O1S (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 30 Mar 2022 10:27:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346082AbiC3NcC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Mar 2022 09:32:02 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D391517E9;
-        Wed, 30 Mar 2022 06:30:17 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 286DD21116;
-        Wed, 30 Mar 2022 13:30:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1648647016; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sSaiFh/IADoAovOegWYbx7T/lKLMxBJuJmwbVK1rCps=;
-        b=llSqGEk0nHPvzIgPth2ycz5W2b6boih6ywbxmtx0vFMBt3n8BkFZQDp8ufrS/RFAT90cz2
-        /IdksuEkj03WEH2CuNqhUDX4TfyGOv9w9NVsn7qRrSRP3WNoKPjFcQrmAO/Z7Pkk+Gp0mG
-        uZ7bKv1a9V+gNR2dJKIgiTOr/BeBt1s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1648647016;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sSaiFh/IADoAovOegWYbx7T/lKLMxBJuJmwbVK1rCps=;
-        b=7bMt2CHRYAHPgbnIbv63l3QSlEr3TW1h+V+sfSf2tZ82DffkPlONVM61svu0ze8GHAZrsl
-        fU7F7HkUxjX5faBQ==
-Received: from quack3.suse.cz (unknown [10.163.28.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id CD666A3B82;
-        Wed, 30 Mar 2022 13:30:15 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 62E8AA0610; Wed, 30 Mar 2022 15:30:15 +0200 (CEST)
-Date:   Wed, 30 Mar 2022 15:30:15 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     yebin <yebin10@huawei.com>
-Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lczerner@redhat.com
-Subject: Re: [PATCH -next] ext4: fix warning in ext4_handle_inode_extension
-Message-ID: <20220330133015.yxfnnw564wgehjc3@quack3.lan>
-References: <20220326065351.761952-1-yebin10@huawei.com>
- <20220329092810.j5ngxckygut6mxo2@quack3.lan>
- <6244482D.4090603@huawei.com>
+        with ESMTP id S236048AbiC3O1R (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Mar 2022 10:27:17 -0400
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1220F2F3B8
+        for <linux-ext4@vger.kernel.org>; Wed, 30 Mar 2022 07:25:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1648650331; x=1680186331;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=5yJD7bAIglKwln6c0wu98OEwdvYsguZngxhxwPjEs20=;
+  b=JLRdycTQiTLNg9Fhk3kekYP/kHHAonWyYMtTwf7+yxB7MTB0hY/5YDrf
+   nVuYs1v7bYnJ8dnQPYFwNaK9ptkw7nSG5JwIzRGZr1xt11aQZ8lj47jFi
+   ATpdP+sVpTE4VOu8fjMKOAiLQaCo30gmJZWe49wkfd7zCjO2nd12kVIJq
+   CdQJSFI94DVJWQXiNb8aKTMH+SxyaTrt4K+8YKsMX7XX7aNc83O5jsRc/
+   PW8CYlWkGlZricWxcMfcNsHUS6Cw/ZVpNXIWHT3WDMqHAr4vadN+w2Ulk
+   VHBQx0wNNhM0W0IQTKWNn0VofH5VIV+mgXIcMoE2kJvvvaeltqZkIXINL
+   g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10301"; a="320253719"
+X-IronPort-AV: E=Sophos;i="5.90,222,1643702400"; 
+   d="scan'208";a="320253719"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2022 07:25:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,222,1643702400"; 
+   d="scan'208";a="605452228"
+Received: from lkp-server02.sh.intel.com (HELO 56431612eabd) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 30 Mar 2022 07:25:08 -0700
+Received: from kbuild by 56431612eabd with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nZZFz-00004Y-TG;
+        Wed, 30 Mar 2022 14:25:07 +0000
+Date:   Wed, 30 Mar 2022 22:24:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:dev] BUILD SUCCESS
+ c7cded845fc192cc35a1ca37c0cd957ee35abdf8
+Message-ID: <6244681b.9OsHgcLRZ8/hwNgx%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6244482D.4090603@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 30-03-22 20:08:13, yebin wrote:
-> On 2022/3/29 17:28, Jan Kara wrote:
-> > On Sat 26-03-22 14:53:51, Ye Bin wrote:
-> > > We got issue as follows:
-> > > EXT4-fs error (device loop0) in ext4_reserve_inode_write:5741: Out of memory
-> > > EXT4-fs error (device loop0): ext4_setattr:5462: inode #13: comm syz-executor.0: mark_inode_dirty error
-> > > EXT4-fs error (device loop0) in ext4_setattr:5519: Out of memory
-> > > EXT4-fs error (device loop0): ext4_ind_map_blocks:595: inode #13: comm syz-executor.0: Can't allocate blocks for non-extent mapped inodes with bigalloc
-> > > ------------[ cut here ]------------
-> > > WARNING: CPU: 1 PID: 4361 at fs/ext4/file.c:301 ext4_file_write_iter+0x11c9/0x1220
-> > > Modules linked in:
-> > > CPU: 1 PID: 4361 Comm: syz-executor.0 Not tainted 5.10.0+ #1
-> > > RIP: 0010:ext4_file_write_iter+0x11c9/0x1220
-> > > RSP: 0018:ffff924d80b27c00 EFLAGS: 00010282
-> > > RAX: ffffffff815a3379 RBX: 0000000000000000 RCX: 000000003b000000
-> > > RDX: ffff924d81601000 RSI: 00000000000009cc RDI: 00000000000009cd
-> > > RBP: 000000000000000d R08: ffffffffbc5a2c6b R09: 0000902e0e52a96f
-> > > R10: ffff902e2b7c1b40 R11: ffff902e2b7c1b40 R12: 000000000000000a
-> > > R13: 0000000000000001 R14: ffff902e0e52aa10 R15: ffffffffffffff8b
-> > > FS:  00007f81a7f65700(0000) GS:ffff902e3bc80000(0000) knlGS:0000000000000000
-> > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > CR2: ffffffffff600400 CR3: 000000012db88001 CR4: 00000000003706e0
-> > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > > Call Trace:
-> > >   do_iter_readv_writev+0x2e5/0x360
-> > >   do_iter_write+0x112/0x4c0
-> > >   do_pwritev+0x1e5/0x390
-> > >   __x64_sys_pwritev2+0x7e/0xa0
-> > >   do_syscall_64+0x37/0x50
-> > >   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > > 
-> > > Above issue may happen as follows:
-> > > Assume
-> > > inode.i_size=4096
-> > > EXT4_I(inode)->i_disksize=4096
-> > > 
-> > > step 1: set inode->i_isize = 8192
-> > > ext4_setattr
-> > >    if (attr->ia_size != inode->i_size)
-> > >      EXT4_I(inode)->i_disksize = attr->ia_size;
-> > >      rc = ext4_mark_inode_dirty
-> > >         ext4_reserve_inode_write
-> > >            ext4_get_inode_loc
-> > >              __ext4_get_inode_loc
-> > >                sb_getblk --> return -ENOMEM
-> > >     ...
-> > >     if (!error)  ->will not update i_size
-> > >       i_size_write(inode, attr->ia_size);
-> > > Now:
-> > > inode.i_size=4096
-> > > EXT4_I(inode)->i_disksize=8192
-> > > 
-> > > step 2: Direct write 4096 bytes
-> > > ext4_file_write_iter
-> > >   ext4_dio_write_iter
-> > >     iomap_dio_rw ->return error
-> > >   if (extend)
-> > >     ext4_handle_inode_extension
-> > >       WARN_ON_ONCE(i_size_read(inode) < EXT4_I(inode)->i_disksize);
-> > > ->Then trigger warning.
-> > > 
-> > > To solve above issue, if mark inode dirty failed in ext4_setattr just
-> > > set 'EXT4_I(inode)->i_disksize' with old value.
-> > > 
-> > > Signed-off-by: Ye Bin <yebin10@huawei.com>
-> > Thanks for the fix! So I think this deserves a further debate. I have two
-> > points here:
-> > 
-> > 1) If ext4_mark_inode_dirty() fails (or basically any metadata writeback)
-> > we must abort the journal because metadata is not guaranteed to be
-> > consistent anymore. In this particular callsite of ext4_mark_inode_dirty()
-> > you were able to undo the changes but there are many more where it is not
-> > sanely possible AFAICT. Hence I think that ext4_reserve_inode_write() needs
-> > to call ext4_journal_abort_handle() (as already happens inside
-> > __ext4_journal_get_write_access()) and not just ext4_std_error().
-> > 
-> > 2) The assertion in ext4_handle_inode_extension() should be conditioned on
-> > !is_journal_aborted() to avoid useless warnings for filesystems we know are
-> > inconsistent anyway.
-> > 
-> > Thoughts?
-> > 
-> > 								Honza
-> Do you mean call jbd2_abort in ext4_reserve_inode_write() ?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: c7cded845fc192cc35a1ca37c0cd957ee35abdf8  ext4: truncate during setxattr leads to kernel panic
 
-Yes.
+elapsed time: 6481m
 
-> If we abort journal when metadata is not guaranteed to be consistent. The
-> mode of ‘errors=continue’ is unnecessary.
+configs tested: 342
+configs skipped: 6
 
-Well, firstly, errors=continue was always the best effort. There are no
-guarantees which failures we are able to withstand and which not.
-Generally, I think we try to withstand on-disk filesystem inconsistency but
-not inconsistency coming from programming errors or other external factors
-like out-of-memory conditions. Secondly, we already do abort the journal
-when e.g. jbd2_journal_get_write_access() fails (although that generally
-means some internal inconsistency) or when say revoke handling fails to
-allocate memory for a revoke record. So it won't be a new thing. Thirdly,
-and perhaps most importantly, you have found and fixed just one fairly
-innocent problem happening due to in memory inode state getting
-inconsistent after we fail to record the inode in the journal. There are
-almost 80 callsites of ext4_mark_inode_dirty() and honestly I suspect that
-e.g. inconsistent states resulting from extent tree manipulations being
-aborted in the middle due to ext4_ext_dirty() failing due to ENOMEM will
-also trigger all sorts of "interesting" behavior. So that's why I'd rather
-abort the journal than try to continue when we almost certainly now we
-cannot.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-One other possibility I could see dealing with this class of problems is
-using __GFP_NOFAIL for inode buffer head allocation (through
-sb_getblk_gfp()) in __ext4_get_inode_loc(). BTW, how did you trigger NULL
-sb_getblk() return in the first place? AFAICS grow_buffers() already uses
-__GFP_NOFAIL for all the allocations?
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                          randconfig-c001
+i386                 randconfig-c001-20220328
+m68k                          sun3x_defconfig
+m68k                        mvme147_defconfig
+powerpc                  iss476-smp_defconfig
+powerpc64                           defconfig
+m68k                            mac_defconfig
+h8300                    h8300h-sim_defconfig
+sh                           se7619_defconfig
+sh                          urquell_defconfig
+powerpc                     pq2fads_defconfig
+ia64                          tiger_defconfig
+mips                       capcella_defconfig
+powerpc                       ppc64_defconfig
+m68k                            q40_defconfig
+sh                          r7780mp_defconfig
+arm                           h3600_defconfig
+ia64                            zx1_defconfig
+mips                     decstation_defconfig
+sh                             espt_defconfig
+powerpc                     tqm8548_defconfig
+sh                     magicpanelr2_defconfig
+riscv                            allyesconfig
+ia64                             allmodconfig
+ia64                        generic_defconfig
+mips                      maltasmvp_defconfig
+xtensa                  cadence_csp_defconfig
+sh                           se7705_defconfig
+mips                         mpc30x_defconfig
+sh                                  defconfig
+sh                 kfr2r09-romimage_defconfig
+m68k                       m5275evb_defconfig
+i386                                defconfig
+arm                         assabet_defconfig
+powerpc                      tqm8xx_defconfig
+sh                           se7722_defconfig
+powerpc                     asp8347_defconfig
+sh                             shx3_defconfig
+alpha                            alldefconfig
+powerpc                      bamboo_defconfig
+sh                           sh2007_defconfig
+nios2                         3c120_defconfig
+sh                          rsk7269_defconfig
+arc                        nsim_700_defconfig
+arm                      footbridge_defconfig
+arm                       multi_v4t_defconfig
+arm                            zeus_defconfig
+csky                                defconfig
+arm                           sama5_defconfig
+m68k                       bvme6000_defconfig
+xtensa                              defconfig
+powerpc                    amigaone_defconfig
+arm                            hisi_defconfig
+powerpc                    klondike_defconfig
+m68k                          atari_defconfig
+m68k                                defconfig
+sh                               allmodconfig
+powerpc                       maple_defconfig
+arm                          badge4_defconfig
+ia64                      gensparse_defconfig
+sh                         ap325rxa_defconfig
+arm                           imxrt_defconfig
+powerpc                      ppc6xx_defconfig
+arc                                 defconfig
+powerpc                   motionpro_defconfig
+arc                      axs103_smp_defconfig
+arm                      integrator_defconfig
+s390                          debug_defconfig
+arm                          pxa3xx_defconfig
+powerpc                 mpc8540_ads_defconfig
+sh                            shmin_defconfig
+sh                         apsh4a3a_defconfig
+arm                          exynos_defconfig
+arm                          simpad_defconfig
+parisc                           alldefconfig
+arm                            pleb_defconfig
+sparc                       sparc64_defconfig
+powerpc                     stx_gp3_defconfig
+sh                           se7724_defconfig
+m68k                       m5208evb_defconfig
+powerpc                       holly_defconfig
+arc                         haps_hs_defconfig
+mips                            ar7_defconfig
+mips                           ci20_defconfig
+openrisc                            defconfig
+mips                  decstation_64_defconfig
+s390                       zfcpdump_defconfig
+s390                             allmodconfig
+arm                            mps2_defconfig
+openrisc                    or1ksim_defconfig
+sh                      rts7751r2d1_defconfig
+m68k                         apollo_defconfig
+ia64                                defconfig
+parisc64                            defconfig
+arm                        mvebu_v7_defconfig
+arm                         at91_dt_defconfig
+arm                        mini2440_defconfig
+x86_64                              defconfig
+arc                          axs101_defconfig
+arc                            hsdk_defconfig
+nios2                         10m50_defconfig
+sparc                            alldefconfig
+arm                           sunxi_defconfig
+openrisc                  or1klitex_defconfig
+csky                             alldefconfig
+powerpc                     taishan_defconfig
+nios2                               defconfig
+arm64                            alldefconfig
+powerpc                         wii_defconfig
+mips                           gcw0_defconfig
+nios2                            allyesconfig
+arm                          lpd270_defconfig
+i386                             alldefconfig
+arc                     haps_hs_smp_defconfig
+sparc64                             defconfig
+arm                             pxa_defconfig
+powerpc                     ep8248e_defconfig
+xtensa                       common_defconfig
+m68k                       m5475evb_defconfig
+m68k                       m5249evb_defconfig
+powerpc                      ep88xc_defconfig
+mips                  maltasmvp_eva_defconfig
+arm                           tegra_defconfig
+arm                        multi_v7_defconfig
+sh                          kfr2r09_defconfig
+mips                             allyesconfig
+parisc                generic-64bit_defconfig
+mips                          rb532_defconfig
+sh                         microdev_defconfig
+arm                           u8500_defconfig
+xtensa                           allyesconfig
+arm                     eseries_pxa_defconfig
+m68k                        m5272c3_defconfig
+powerpc                      makalu_defconfig
+arc                        nsimosci_defconfig
+mips                     loongson1b_defconfig
+sh                          r7785rp_defconfig
+sh                          polaris_defconfig
+arc                    vdk_hs38_smp_defconfig
+sh                           se7206_defconfig
+sh                          sdk7780_defconfig
+m68k                         amcore_defconfig
+um                               alldefconfig
+powerpc                      chrp32_defconfig
+m68k                        mvme16x_defconfig
+arm                           h5000_defconfig
+xtensa                  nommu_kc705_defconfig
+powerpc                      pasemi_defconfig
+arm                             rpc_defconfig
+microblaze                      mmu_defconfig
+arm                            qcom_defconfig
+arm                         s3c6400_defconfig
+sh                           se7343_defconfig
+h8300                            alldefconfig
+m68k                             alldefconfig
+sh                               j2_defconfig
+riscv             nommu_k210_sdcard_defconfig
+powerpc64                        alldefconfig
+sh                           se7750_defconfig
+arm                        realview_defconfig
+arm                         lpc18xx_defconfig
+arm                           stm32_defconfig
+um                                  defconfig
+arc                              allyesconfig
+sh                   sh7770_generic_defconfig
+s390                                defconfig
+powerpc                     redwood_defconfig
+sh                            hp6xx_defconfig
+m68k                          multi_defconfig
+xtensa                    xip_kc705_defconfig
+arm                       aspeed_g5_defconfig
+arm                            lart_defconfig
+sh                        apsh4ad0a_defconfig
+h8300                       h8s-sim_defconfig
+mips                        bcm47xx_defconfig
+arm                        trizeps4_defconfig
+powerpc                 mpc837x_rdb_defconfig
+arm                         vf610m4_defconfig
+arc                     nsimosci_hs_defconfig
+mips                       bmips_be_defconfig
+powerpc                      arches_defconfig
+sh                             sh03_defconfig
+parisc64                         alldefconfig
+arm                          pxa910_defconfig
+sh                          landisk_defconfig
+sh                          rsk7264_defconfig
+openrisc                 simple_smp_defconfig
+powerpc                  storcenter_defconfig
+arm                         axm55xx_defconfig
+powerpc                   currituck_defconfig
+parisc                              defconfig
+powerpc                     tqm8541_defconfig
+arm                          gemini_defconfig
+s390                             allyesconfig
+mips                         rt305x_defconfig
+sh                         ecovec24_defconfig
+m68k                             allyesconfig
+xtensa                           alldefconfig
+arm                  randconfig-c002-20220325
+arm                  randconfig-c002-20220324
+arm                  randconfig-c002-20220327
+ia64                             allyesconfig
+m68k                             allmodconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                               defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+sparc                            allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64                        randconfig-a006
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+x86_64               randconfig-a001-20220328
+x86_64               randconfig-a003-20220328
+x86_64               randconfig-a004-20220328
+x86_64               randconfig-a002-20220328
+x86_64               randconfig-a005-20220328
+x86_64               randconfig-a006-20220328
+i386                 randconfig-a001-20220328
+i386                 randconfig-a003-20220328
+i386                 randconfig-a006-20220328
+i386                 randconfig-a005-20220328
+i386                 randconfig-a004-20220328
+i386                 randconfig-a002-20220328
+x86_64                        randconfig-a011
+x86_64                        randconfig-a013
+x86_64                        randconfig-a015
+riscv                randconfig-r042-20220325
+s390                 randconfig-r044-20220325
+arc                  randconfig-r043-20220325
+arc                  randconfig-r043-20220324
+riscv                randconfig-r042-20220327
+s390                 randconfig-r044-20220327
+arc                  randconfig-r043-20220327
+arc                  randconfig-r043-20220328
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                         rhel-8.3-kunit
+x86_64                                  kexec
 
-								Honza
+clang tested configs:
+x86_64                        randconfig-c007
+mips                 randconfig-c004-20220324
+arm                  randconfig-c002-20220324
+riscv                randconfig-c006-20220324
+powerpc              randconfig-c003-20220324
+i386                          randconfig-c001
+mips                 randconfig-c004-20220327
+arm                  randconfig-c002-20220327
+riscv                randconfig-c006-20220327
+powerpc              randconfig-c003-20220327
+s390                 randconfig-c005-20220327
+mips                 randconfig-c004-20220328
+arm                  randconfig-c002-20220328
+x86_64               randconfig-c007-20220328
+powerpc              randconfig-c003-20220328
+riscv                randconfig-c006-20220328
+i386                 randconfig-c001-20220328
+s390                 randconfig-c005-20220328
+powerpc                 mpc832x_rdb_defconfig
+powerpc                       ebony_defconfig
+arm                         s3c2410_defconfig
+arm                  colibri_pxa300_defconfig
+powerpc                      acadia_defconfig
+x86_64                           allyesconfig
+powerpc                     tqm8540_defconfig
+arm                        neponset_defconfig
+mips                           ip22_defconfig
+powerpc                     ppa8548_defconfig
+arm                          imote2_defconfig
+arm                  colibri_pxa270_defconfig
+powerpc                 mpc8315_rdb_defconfig
+mips                  cavium_octeon_defconfig
+arm                         mv78xx0_defconfig
+arm                         s5pv210_defconfig
+mips                           ip27_defconfig
+powerpc                      walnut_defconfig
+powerpc                    ge_imp3a_defconfig
+arm                             mxs_defconfig
+mips                malta_qemu_32r6_defconfig
+arm                        magician_defconfig
+powerpc                   microwatt_defconfig
+arm                          ixp4xx_defconfig
+powerpc                      ppc64e_defconfig
+hexagon                             defconfig
+mips                        bcm63xx_defconfig
+powerpc                 xes_mpc85xx_defconfig
+arm                        multi_v5_defconfig
+powerpc                          allmodconfig
+powerpc                      pmac32_defconfig
+arm                         socfpga_defconfig
+arm                        spear3xx_defconfig
+arm                       imx_v4_v5_defconfig
+arm                           omap1_defconfig
+arm                       spear13xx_defconfig
+mips                       rbtx49xx_defconfig
+powerpc                     ksi8560_defconfig
+powerpc                        icon_defconfig
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+x86_64               randconfig-a016-20220328
+x86_64               randconfig-a012-20220328
+x86_64               randconfig-a011-20220328
+x86_64               randconfig-a014-20220328
+x86_64               randconfig-a013-20220328
+x86_64               randconfig-a015-20220328
+i386                          randconfig-a011
+i386                          randconfig-a013
+i386                          randconfig-a015
+i386                 randconfig-a015-20220328
+i386                 randconfig-a016-20220328
+i386                 randconfig-a011-20220328
+i386                 randconfig-a012-20220328
+i386                 randconfig-a014-20220328
+i386                 randconfig-a013-20220328
+riscv                randconfig-r042-20220328
+hexagon              randconfig-r045-20220328
+hexagon              randconfig-r041-20220328
+riscv                randconfig-r042-20220326
+hexagon              randconfig-r045-20220326
+hexagon              randconfig-r041-20220326
 
-> > > ---
-> > >   fs/ext4/inode.c | 4 ++++
-> > >   1 file changed, 4 insertions(+)
-> > > 
-> > > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> > > index 90fd6f7b6209..8adf1f802f6c 100644
-> > > --- a/fs/ext4/inode.c
-> > > +++ b/fs/ext4/inode.c
-> > > @@ -5384,6 +5384,7 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
-> > >   	if (attr->ia_valid & ATTR_SIZE) {
-> > >   		handle_t *handle;
-> > >   		loff_t oldsize = inode->i_size;
-> > > +		loff_t old_disksize;
-> > >   		int shrink = (attr->ia_size < inode->i_size);
-> > >   		if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))) {
-> > > @@ -5455,6 +5456,7 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
-> > >   					inode->i_sb->s_blocksize_bits);
-> > >   			down_write(&EXT4_I(inode)->i_data_sem);
-> > > +			old_disksize = EXT4_I(inode)->i_disksize;
-> > >   			EXT4_I(inode)->i_disksize = attr->ia_size;
-> > >   			rc = ext4_mark_inode_dirty(handle, inode);
-> > >   			if (!error)
-> > > @@ -5466,6 +5468,8 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
-> > >   			 */
-> > >   			if (!error)
-> > >   				i_size_write(inode, attr->ia_size);
-> > > +			else
-> > > +				EXT4_I(inode)->i_disksize = old_disksize;
-> > >   			up_write(&EXT4_I(inode)->i_data_sem);
-> > >   			ext4_journal_stop(handle);
-> > >   			if (error)
-> > > -- 
-> > > 2.31.1
-> > > 
-> 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+0-DAY CI Kernel Test Service
+https://01.org/lkp
