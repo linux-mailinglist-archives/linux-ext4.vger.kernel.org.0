@@ -2,67 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92EBC4ED745
-	for <lists+linux-ext4@lfdr.de>; Thu, 31 Mar 2022 11:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E43FA4ED9E5
+	for <lists+linux-ext4@lfdr.de>; Thu, 31 Mar 2022 14:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234294AbiCaJva (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 31 Mar 2022 05:51:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45568 "EHLO
+        id S236361AbiCaM4Y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 31 Mar 2022 08:56:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234292AbiCaJv3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 31 Mar 2022 05:51:29 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFB02200370;
-        Thu, 31 Mar 2022 02:49:42 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id cm17so3569378pjb.2;
-        Thu, 31 Mar 2022 02:49:42 -0700 (PDT)
+        with ESMTP id S232332AbiCaM4X (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 31 Mar 2022 08:56:23 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5715516BF95;
+        Thu, 31 Mar 2022 05:54:36 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id f3so20708865pfe.2;
+        Thu, 31 Mar 2022 05:54:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hOW8z8DeUWQcKkytwxGZaY19zSaaGqWYqnEYzq0375k=;
-        b=FiTRgfd09+EKB/9xeLe2RuTU8NrMVLm5dJeDr8BpiqpI8cWTMOJwndq8rDwpt/BiFP
-         1xrX8gCARGKZK1Dd+DXA+qddw0OAqY68xsudL85mrYIz1T0wA3c1l9bONZqpymtgQcXU
-         3lc0/FxzE1Utd1TCSqxx+yYlYNh0ha4P3KJrwKpdWuaEV5TPxtT8dW7A7QLQb5ThuUxz
-         dzvozYUc4ysZtP1TWoWaH0o7V3M/ubf8N8SMPUk3Cfz5Wx+woi9VXvh7oGqwlaskFQG4
-         zOpibnPw9zWH+V5v7j3AciMsYgJ+5Rbp3mHmKd13J5XgYK0YY2y2lRnVX4BMz6wV+ga+
-         Xgbg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aoMV8SVyn+aPeWyMiwW1EjR7hxG7FkQIb96AQXZmcwk=;
+        b=EbdT1yJOJEpA1JUFN3k8oObzwmnqHNgkDj1NDl1aApXJPwbUsWD6CS8E8fR2K/NwwT
+         /x5I/DU3/kF2wxoHxWHbbwsfQlRez7zZ3dtccvYZU8I4yJeDe5GmS4LlWO8WJNnPDHxG
+         keS4Nf6q7G2R5YiFe6fmq2RnTfxDPcCyT92jwd5/1Io5kaBFcvoMOzME2AhV+4Dlb2gb
+         wX5Kv1haKSHSRbdsEojQuIPwwwxFtTk+sKgmoBtxgOiYnfcnOWI87WxfTE3Y5zFtxI5t
+         sZcpmGT/NU1Sio00Jer3JJWA8WLvD5o55/zcq6Uki6+qu3K7UjYJuOvpCVLbxOSzqGlm
+         lLcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hOW8z8DeUWQcKkytwxGZaY19zSaaGqWYqnEYzq0375k=;
-        b=u4et6tg80BwvrdBAiXbBwomZh3TFWoEJIc/700guKQ4T/582YXHYo+OcEDc14d2H8g
-         Tdvsz49+O56UBwTBImy/DRPkP38Bqhh3ULui8LwjvjV+2nqgE2KuM0NpamcktpLBJO+A
-         81wbYmj287Jm28OKVWYOpeDGAtfIJatFvphMCZ89ladjn+nnP7kw+QYOr/RonVUsAgJB
-         R7bU6swn1lkyC1tXZzGUqTFRMCerAsJExGtDL0i4gbcas8dsLlIo3LlyoifrXONHxq3U
-         mdyoIFvx5fPuYs0rxI7/vrJlZxoticK7xY29/Q/oOlH3U97hPoZbY5Gf7uuf/n1Qidct
-         qnwg==
-X-Gm-Message-State: AOAM532YFZfCC3+KL4oPg1fk+Rkq0N7kEVRv2PPV1Ymu3n8/sLsSAyJE
-        0aEE5JGES3Lfr5BM0RA3pHw=
-X-Google-Smtp-Source: ABdhPJy/r0hXSVvcWFxyAwE9S945j4x7CaM2K3Ihok3GWKo2XIlI1/U/7Cu6072LoEKaSSh24sVz0A==
-X-Received: by 2002:a17:903:40c4:b0:154:c9ef:609f with SMTP id t4-20020a17090340c400b00154c9ef609fmr4282063pld.30.1648720182164;
-        Thu, 31 Mar 2022 02:49:42 -0700 (PDT)
-Received: from localhost ([122.179.46.149])
-        by smtp.gmail.com with ESMTPSA id bh3-20020a056a02020300b00378b62df320sm21532510pgb.73.2022.03.31.02.49.40
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aoMV8SVyn+aPeWyMiwW1EjR7hxG7FkQIb96AQXZmcwk=;
+        b=wmMdtDa4UsLHWG+GyAsn3GKBII318k7kvknUrv1TaDrus9njpVLeNYp5/8fbIVuqoM
+         UhSrmIyyIdpiffBFqBXT6lbMZMDbZb9iJSzOFCbjqQw1kXLjgLlEbtzjsE1TbVmNpfZB
+         bQSV2tTGnO40j0gCltyIJOrnO8FWRoZ3jxhDCrIhefmwG3yc7ENrop23ioIHHNpVHdTb
+         rfK7NXLD/vCATOGt4vDfXBfrtgYJGk9G5QcDoORNLXm9c8f+95Y3T79LMmu6Ws4B/6oe
+         dHQCz9u9YKDqOlSGO2yqyqFzM97Uxm1eYzz5GJg9c/zrZhGRI7yXX03lhWbj4vRxrYc/
+         k4Mg==
+X-Gm-Message-State: AOAM532UqWgVI7+etrtPk+/+D7qCF0bDqVk4Z41wPR3Snn5F1CQRjRwo
+        8Gd/5wwfV+ngr5KYqW0FxqwekwN6Okw=
+X-Google-Smtp-Source: ABdhPJwNuA4rsY6Up/Ixoi+nsdK/+7DxTpDFj4WAdBh6rHEIkEdvGfjw/t8KSVg7aoGWMXMLFeUEnw==
+X-Received: by 2002:a63:4d15:0:b0:37f:f622:fe0f with SMTP id a21-20020a634d15000000b0037ff622fe0fmr10624993pgb.68.1648731275708;
+        Thu, 31 Mar 2022 05:54:35 -0700 (PDT)
+Received: from localhost ([2406:7400:63:7e03:b065:1995:217b:6619])
+        by smtp.gmail.com with ESMTPSA id 22-20020a17090a019600b001c6457e1760sm9780194pjc.21.2022.03.31.05.54.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Mar 2022 02:49:41 -0700 (PDT)
-Date:   Thu, 31 Mar 2022 15:19:38 +0530
+        Thu, 31 Mar 2022 05:54:35 -0700 (PDT)
 From:   Ritesh Harjani <ritesh.list@gmail.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Ritesh Harjani <riteshh@linux.ibm.com>,
-        fstests <fstests@vger.kernel.org>, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2 3/4] generic/676: Add a new shutdown recovery test
-Message-ID: <20220331094938.vcvrehdm2azoiy75@riteshh-domain>
-References: <cover.1647342932.git.riteshh@linux.ibm.com>
- <3d8c4f7374e97ccee285474efd04b093afe3ee16.1647342932.git.riteshh@linux.ibm.com>
- <20220315165514.GC8200@magnolia>
- <20220329113227.ig3cmfwzs7y6oywj@riteshh-domain>
+To:     fstests <fstests@vger.kernel.org>
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Ritesh Harjani <ritesh.list@gmail.com>
+Subject: [PATCHv3 0/4] generic: Add some tests around journal replay/recoveryloop
+Date:   Thu, 31 Mar 2022 18:24:19 +0530
+Message-Id: <cover.1648730443.git.ritesh.list@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220329113227.ig3cmfwzs7y6oywj@riteshh-domain>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -73,68 +68,65 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22/03/29 05:02PM, Ritesh Harjani wrote:
-> On 22/03/15 09:55AM, Darrick J. Wong wrote:
-> > On Tue, Mar 15, 2022 at 07:58:58PM +0530, Ritesh Harjani wrote:
-> > > In certain cases (it is noted with ext4 fast_commit feature) that, replay phase
-> > > may not delete the right range of blocks (after sudden FS shutdown)
-> > > due to some operations which depends on inode->i_size (which during replay of
-> > > an inode with fast_commit could be 0 for sometime).
-> > > This fstest is added to test for such scenarios for all generic fs.
-> > >
-> > > This test case is based on the test case shared via Xin Yin.
-> > >
-> > > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> > > ---
-> > >  tests/generic/676     | 72 +++++++++++++++++++++++++++++++++++++++++++
-> > >  tests/generic/676.out |  7 +++++
-> > >  2 files changed, 79 insertions(+)
-> > >  create mode 100755 tests/generic/676
-> > >  create mode 100644 tests/generic/676.out
-> > >
-> > > diff --git a/tests/generic/676 b/tests/generic/676
-> > > new file mode 100755
-> > > index 00000000..315edcdf
-> > > --- /dev/null
-> > > +++ b/tests/generic/676
-> > > @@ -0,0 +1,72 @@
-> > > +#! /bin/bash
-> > > +# SPDX-License-Identifier: GPL-2.0
-> > > +# Copyright (c) 2022 IBM Corporation.  All Rights Reserved.
-> > > +#
-> > > +# FS QA Test 676
-> > > +#
-> > > +# This test with ext4 fast_commit feature w/o below patch missed to delete the right
-> > > +# range during replay phase, since it depends upon inode->i_size (which might not be
-> > > +# stable during replay phase, at least for ext4).
-> > > +# 0b5b5a62b945a141: ext4: use ext4_ext_remove_space() for fast commit replay delete range
-> > > +# (Based on test case shared by Xin Yin <yinxin.x@bytedance.com>)
-> > > +#
-> > > +
-> > > +. ./common/preamble
-> > > +_begin_fstest auto shutdown quick log recoveryloop
-> >
-> > This isn't a looping recovery test.  Maybe we should create a 'recovery'
-> > group for tests that only run once?  I think we already have a few
-> > fstests like that.
->
-> I gave it a thought, but I feel it might be unncessary.
-> From a developer/tester perspective who wanted to test anything related to
-> recovery would then have to use both recovery and recoveryloop.
-> Thoughts?
->
-> >
-> > > +
-> > > +# Override the default cleanup function.
-> > > +_cleanup()
-> > > +{
-> > > +	cd /
-> > > +	rm -r -f $tmp.*
-> > > +   _scratch_unmount > /dev/null 2>&1
-> >
-> > I think the test harness does this for you already, right?
+Hello,
 
-Ok, I agree with this. I will remove _scratch_unmount operation
-from these two new tests in v3.
+The ext4 fast_commit kernel fix has landed into mainline tree [1].
+In this v3, I have addressed review comments from Darrick.
+Does this looks good to be picked up?
+
+I have tested ext4 1k, 4k (w & w/o fast_commit). Also tested other FS with
+default configs (like xfs, btrfs, f2fs). No surprises were seen.
+
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=bfdc502a4a4c058bf4cbb1df0c297761d528f54d
 
 -ritesh
+
+Changelogs:
+===========
+
+v2 => v3
+=========
+1. Addressed review comments from Darrick.
+2. Rebased to latest master.
+
+v1 => v2
+=========
+Sending v2 with tests/ext4/ converted to tests/generic/
+(although I had not received any review comments on v1).
+It seems all of the tests which I had sent in v1 are not ext4 specific anyways.
+So in v2, I have made those into tests/generic/.
+
+Summary
+=========
+These are some of the tests which when tested with ext4 fast_commit feature
+w/o kernel fixes, could cause tests failures and/or KASAN bug (generic/486).
+
+I gave these tests a run with default xfs, btrfs and f2fs configs (along with
+ext4). No surprises observed.
+
+[v2]: https://lore.kernel.org/all/cover.1647342932.git.riteshh@linux.ibm.com/
+[v1]: https://lore.kernel.org/all/cover.1644070604.git.riteshh@linux.ibm.com/
+
+
+Ritesh Harjani (4):
+  generic/468: Add another falloc test entry
+  common/punch: Add block_size argument to _filter_fiemap_**
+  generic/678: Add a new shutdown recovery test
+  generic/679: Add a test to check unwritten extents tracking
+
+ common/punch          |  9 +++---
+ tests/generic/468     |  8 +++++
+ tests/generic/468.out |  2 ++
+ tests/generic/678     | 72 +++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/678.out |  7 +++++
+ tests/generic/679     | 65 ++++++++++++++++++++++++++++++++++++++
+ tests/generic/679.out |  6 ++++
+ 7 files changed, 165 insertions(+), 4 deletions(-)
+ create mode 100755 tests/generic/678
+ create mode 100644 tests/generic/678.out
+ create mode 100755 tests/generic/679
+ create mode 100644 tests/generic/679.out
+
+--
+2.31.1
+
