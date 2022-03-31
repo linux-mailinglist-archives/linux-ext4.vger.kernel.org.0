@@ -2,98 +2,140 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B3A74EDF25
-	for <lists+linux-ext4@lfdr.de>; Thu, 31 Mar 2022 18:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A6434EE016
+	for <lists+linux-ext4@lfdr.de>; Thu, 31 Mar 2022 20:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240276AbiCaQzc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 31 Mar 2022 12:55:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56762 "EHLO
+        id S232021AbiCaSFv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 31 Mar 2022 14:05:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240277AbiCaQz3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 31 Mar 2022 12:55:29 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B75641255B0;
-        Thu, 31 Mar 2022 09:53:41 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id mp11-20020a17090b190b00b001c79aa8fac4so3481111pjb.0;
-        Thu, 31 Mar 2022 09:53:41 -0700 (PDT)
+        with ESMTP id S232596AbiCaSFu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 31 Mar 2022 14:05:50 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C7843391
+        for <linux-ext4@vger.kernel.org>; Thu, 31 Mar 2022 11:04:01 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id b15so314996pfm.5
+        for <linux-ext4@vger.kernel.org>; Thu, 31 Mar 2022 11:04:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BeeYtJ246l+bProXtw2lWm1PZwxv2zffBYuHYauJMQc=;
-        b=jf2RYyS6NTKssnJlBHDO0FSAHT56A8HTbN8DbbiTRRit2/vE31RN6973NUnu3hXanM
-         rASkPkc7h2tnOBB+B8A1Q+ezP6lTL0WpB4o8lYEKGaCRY2eefT/+dnxJBFj74czuk/kc
-         v3d3QPntj2f2fQVyz84kBmLncSZX35HOTDTsMxvT2G3Ey8Gy4CS5JoI4rvKlbcFWqF1P
-         LgQ4aA/8PWRAJXK8s9PbNgXdBZ+Hu02D+eZ/6YgqoYXhEsmh0/+olEfMRmMSxhXA8AxK
-         x/lKOXqa9f4ivIudb3i3VdI5wS0YOnR+JOwwpkvw/gj5//jd7dQNfEVSUXVw3wwwQTF3
-         vLqg==
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:content-language:to:cc
+         :references:from:subject:in-reply-to:content-transfer-encoding;
+        bh=YsjSmrG2rvYs50asz/taC5lCuB0Ss1bBZU3bReqw5is=;
+        b=PouxUIYkBVuDtFYYhzJKLOVGEietOc0cr9qJm2EvDslOhzSw9jON2ICmYF6t9N5/6d
+         UeUa90pA/MozGMKak7kSYV0mXp43DAEGF2q7tXAYxPBwHknQABhfGpVQXvnSm8QSTt/n
+         Eok9vzYTaPRKddP8OxP4oaKDkzdCIH7LL/RmyFAUWgF7jsxDViqNjjb7WbU/DZKVxRtG
+         fN7/0u+gUYr79gPq5Rro0aSzY01+eXTZQ0BBw8iACDlZqN9rtqzBBl4iJe/qiOdvTHpe
+         ywKFz8znw4luKvpXbOv6m6ae8EobDnAtXSAX89rWDWgXE8ZobRk7ujXauAwBCNcXwkU9
+         yg7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BeeYtJ246l+bProXtw2lWm1PZwxv2zffBYuHYauJMQc=;
-        b=kswn3EV98/DxtGrzxnS7nm7Mj77E2tr9+DeCr6SwZCNCdrTXjqqHBp9uTytSdKAzvo
-         hOGue2cJm9ArRLUsX+FMBlih+rWGKYAuoDtYPledu4XTa41oqB5lEfHvz366L/oGQsnO
-         RB9/G5UlvCcBhwaY6JNHlT8+7TpOPkT6bADapVTCPtjF4MmDg3YmGMJ1EHQslRwde1mF
-         jTnPnDnE9pfs7tSOK2pav+TVaUM4TYwmcwwFAsbQqeqPNSr+HsWkei7v5tQKBhsiZvFe
-         kNowXEeNWi/CJduK5SCGuINhO5FglM7QXkGO52sAAFKpNH7znFRdMud+h22vJTPjdKkG
-         qfPA==
-X-Gm-Message-State: AOAM532ZA75t474rjiR5YWTO2K86jbmgzIzrYejO1lsOK3FzqcI05fRE
-        7zDQgX3sFxAfqdi863sZg/SWiJDpmvg=
-X-Google-Smtp-Source: ABdhPJw+gjIAYweZEJzMk+eNXb/tdfecBoIEp3rNe5P7PWQciyyQ1BoSgiRodfLoNhfp3AoEzXBpQw==
-X-Received: by 2002:a17:902:6bc4:b0:154:6b3d:a720 with SMTP id m4-20020a1709026bc400b001546b3da720mr6218875plt.104.1648745620974;
-        Thu, 31 Mar 2022 09:53:40 -0700 (PDT)
-Received: from localhost ([2406:7400:63:7e03:b065:1995:217b:6619])
-        by smtp.gmail.com with ESMTPSA id d5-20020a17090acd0500b001b9c05b075dsm9860162pju.44.2022.03.31.09.53.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Mar 2022 09:53:40 -0700 (PDT)
-Date:   Thu, 31 Mar 2022 22:23:35 +0530
-From:   Ritesh Harjani <ritesh.list@gmail.com>
-To:     fstests <fstests@vger.kernel.org>, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        "Darrick J . Wong" <djwong@kernel.org>
-Subject: Re: [PATCHv3 0/4] generic: Add some tests around journal
- replay/recoveryloop
-Message-ID: <20220331165335.mzx3gfc3uqeeg3sz@riteshh-domain>
-References: <cover.1648730443.git.ritesh.list@gmail.com>
- <20220331145906.2onnohv2bbg3ye6j@zlang-mailbox>
- <20220331161911.7d5dlqfwm2kngnjk@riteshh-domain>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:subject:in-reply-to
+         :content-transfer-encoding;
+        bh=YsjSmrG2rvYs50asz/taC5lCuB0Ss1bBZU3bReqw5is=;
+        b=gwIquj0QP0WLK2Uju5L2Tw6ssrIhcw3pEFC/Emip/c/XVlI20MDkJJWWWReOXN+S2p
+         MAEvDTnpYcp/NcIHWITnH6A6CrEqolVV4llrTIOV7/dlGkeZRj5JuqSDES7kJx9rz9xj
+         juRWMfYmxxhW3FWKV6r01rGF+gE7iPLeJC2f1fryZphUq0FQuLt1Cw7FDAszuWvsjk9F
+         wLDdLzWCo3xB0ZppccYEcTIt8QCf4MWu93vq6/BREqglh3ghcQ31zO/0WrCdKAX+q0xd
+         3PCkfNdFY8zTM8HcO+/RHexVdkSUKmj//vomqa2tOxsbKnTpWLIT981khHoPzUmRttKV
+         hk1A==
+X-Gm-Message-State: AOAM530RPiXNu4W69aobYky7x4ezezpmJa3iM+Cn0HWtxSBPBN7pOj6y
+        b7IgeapmDvX5R64IcpLyDDRM/A==
+X-Google-Smtp-Source: ABdhPJzs/UIaReCHNW6gfF+eZ6FRhildRbC1WSzb8rJwa2DI3Yesk+oxp4qzOcQkzybMD/Ht6oeMLA==
+X-Received: by 2002:a65:6d15:0:b0:382:4e6d:dd0d with SMTP id bf21-20020a656d15000000b003824e6ddd0dmr11580133pgb.333.1648749841056;
+        Thu, 31 Mar 2022 11:04:01 -0700 (PDT)
+Received: from [192.168.254.17] ([50.39.160.154])
+        by smtp.gmail.com with ESMTPSA id oc10-20020a17090b1c0a00b001c7510ed0c8sm11299522pjb.49.2022.03.31.11.03.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 31 Mar 2022 11:04:00 -0700 (PDT)
+Message-ID: <39b76458-17e6-4e04-15d8-1445d2067d0c@linaro.org>
+Date:   Thu, 31 Mar 2022 11:03:59 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220331161911.7d5dlqfwm2kngnjk@riteshh-domain>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Content-Language: en-US
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        linux-ext4@vger.kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+7a806094edd5d07ba029@syzkaller.appspotmail.com
+References: <20220315215439.269122-1-tadeusz.struk@linaro.org>
+ <YkW9+AK2d3i8X9rq@mit.edu>
+From:   Tadeusz Struk <tadeusz.struk@linaro.org>
+Subject: Re: [PATCH v2] ext4: check if offset+length is valid in fallocate
+In-Reply-To: <YkW9+AK2d3i8X9rq@mit.edu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22/03/31 09:49PM, Ritesh Harjani wrote:
-> On 22/03/31 10:59PM, Zorro Lang wrote:
-> > On Thu, Mar 31, 2022 at 06:24:19PM +0530, Ritesh Harjani wrote:
-> > > Hello,
-> >
-> > Hi,
-> >
-> > Your below patches looks like not pure text format, they might contain
-> > binary character or some special characers, looks like the "^M" [1].
+On 3/31/22 07:43, Theodore Ts'o wrote:
+> On Tue, Mar 15, 2022 at 02:54:39PM -0700, Tadeusz Struk wrote:
+>> @@ -3967,6 +3968,16 @@ int ext4_punch_hole(struct inode *inode, loff_t offset, loff_t length)
+>>   		   offset;
+>>   	}
+>>   
+>> +	/*
+>> +	 * For punch hole the length + offset needs to be at least within
+>> +	 * one block before last
+>> +	 */
+>> +	max_length = sbi->s_bitmap_maxbytes - inode->i_sb->s_blocksize;
+>> +	if (offset + length >= max_length) {
+>> +		ret = -ENOSPC;
+>> +		goto out_mutex;
+>> +	}
+> 
+> I wonder if we would be better off just simply capping length to
+> max_length?  If length is set to some large value, such as LONG_MAX,
+> it's pretty clear what the intention should be, which is to simply do
+> the equivalent of truncating the file at offset.  Perhaps we should
+> just do that?
 
-Sorry to bother you. But here is what I tried.
-1. Download the mbx file using b4 am. I didn't see any such character ("^M") in
-   the patches.
-2. Saved the patch using mutt. Again didn't see such character while doing
-	cat -A /patch/to/patch
-3. Downloaded the mail using eml format from webmail. Here I do see this
-   character appended. But that happens not just for my patch, but for all
-   other patches too.
+Don't think that would be the correct behavior. ftrucnate (or truncate)
+modify the file size, but fallocate with FALLOC_FL_PUNCH_HOLE should not.
 
-So could this be related to the way you are downloading these patches.
-Please let me know, if I need to resend these patches again? Because, I don't
-see this behavior at my end. But I would happy to correct it, if that's not the
-case.
+man 2 fallocate says:
+"...
+The FALLOC_FL_PUNCH_HOLE flag must be ORed with FALLOC_FL_KEEP_SIZE in mode;
+in other words, even when punching off the end of the file, the file size
+(as reported by stat(2)) does not change.
+"
+that is enforced by vfs:
+https://elixir.bootlin.com/linux/v5.17.1/source/fs/open.c#L245
 
--ritesh
+> 
+> That being said, we should be consistent with what other file systems
+> do when they are asked to punch a hole starting at offset and
+> extending out to LONG_MAX.
+
+For all the supported file systems, apart from ext4, only btrfs, gfs2, and xfs
+support fallocate and FALLOC_FL_PUNCH_HOLE mode.
+Looking at what they do is they round the length of the space to be freed
+i.e. offset + length to valid value and then perform the operation
+using the valid values.
+
+https://elixir.bootlin.com/linux/v5.17.1/source/fs/gfs2/bmap.c#L2424
+https://elixir.bootlin.com/linux/v5.17.1/source/fs/btrfs/file.c#L2506
+
+For ext4 this would mean that one could only deallocate space up to
+the one before last block. I will change this to do the same in the
+next version if that's ok with you.
+
+> 
+> Also, if we are going to return an error, I don't think ENOSPC is the
+> correct error to be returning.
+
+I took it from man 2 fallocate, my first suspicion was that it crashed
+because the disk on my VM wasn't big enough. It was a bad choice.
+
+-- 
+Thanks,
+Tadeusz
