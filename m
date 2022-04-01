@@ -2,188 +2,128 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98AEC4EE369
-	for <lists+linux-ext4@lfdr.de>; Thu, 31 Mar 2022 23:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 750594EE7C4
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 Apr 2022 07:31:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240666AbiCaVo5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 31 Mar 2022 17:44:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58176 "EHLO
+        id S235029AbiDAFcp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 1 Apr 2022 01:32:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237702AbiCaVo4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 31 Mar 2022 17:44:56 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C85F231AD1
-        for <linux-ext4@vger.kernel.org>; Thu, 31 Mar 2022 14:43:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D806961BA2
-        for <linux-ext4@vger.kernel.org>; Thu, 31 Mar 2022 21:43:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 257E9C340F0;
-        Thu, 31 Mar 2022 21:43:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648762987;
-        bh=QK9/5FCyiNNq2kvVo1FPGGI8vIQLoPXawfLEuI+b/FQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UGSZN1RzOuDjUb+F4m2RervqFLDZ7PDV4KjqADy07zhQLZqTFjNiwNvF930mtmiS1
-         ePyEWlP65eGKGLdA0dJJmeZtYhOXlrJB64lheJkJSm1MCNaqmdPN7BUeovRon63tR4
-         nxKyqj51gmyVUULXg1pnax7wflk/pmmtvRDhWRrBFiR+IXjMboj7TYZ40DdJScDggq
-         vbsZ96zU2I/BizgX372b2IX3HbAn70w4U4AWoKULOOFAWS7QguWZa9cCp8FZiybLPB
-         wTDjnDqS0Rp3ul0ZhYH45ilVVmjk4nXN2y7k/4H8f0qehMwouzbbF7O7IFheQVu9z8
-         8XYZ5OYfrWEbg==
-Date:   Thu, 31 Mar 2022 21:43:05 +0000
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     tytso@mit.edu, jaegeuk@kernel.org, linux-ext4@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCH 3/5] ext4: Implement ci comparison using fscrypt_name
-Message-ID: <YkYgaUsxBy2gcZte@gmail.com>
-References: <20220322030004.148560-1-krisman@collabora.com>
- <20220322030004.148560-4-krisman@collabora.com>
- <YkJ4J0XNSkSSf2Xo@sol.localdomain>
- <87k0ccrb6v.fsf@collabora.com>
+        with ESMTP id S234670AbiDAFco (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 1 Apr 2022 01:32:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 09D6D3A5C5
+        for <linux-ext4@vger.kernel.org>; Thu, 31 Mar 2022 22:30:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1648791055;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7QMXqtrbsC5xFcoJnlfW2A3rDBF4OPWrvizGei7+JWY=;
+        b=PMryfqAM2olVNymcCN2h8Mtm9rJ+/33VFY1ANyOK9gL07qjap+keV93vbNnbPU4EwwqMWI
+        zvxa7JEhRBMS1NSheBxiN7inzgfJ2RlRFHjknnieORZoaN02Hisgzen7tL0cqRO36MVBYh
+        hruXVFS3XyMHHDtqiW80PTv1Q8JnN7M=
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
+ [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-487-HszMFyZlPdiSpSvMIdRLdQ-1; Fri, 01 Apr 2022 01:30:54 -0400
+X-MC-Unique: HszMFyZlPdiSpSvMIdRLdQ-1
+Received: by mail-pf1-f199.google.com with SMTP id k69-20020a628448000000b004fd8affa86aso997226pfd.12
+        for <linux-ext4@vger.kernel.org>; Thu, 31 Mar 2022 22:30:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=7QMXqtrbsC5xFcoJnlfW2A3rDBF4OPWrvizGei7+JWY=;
+        b=qosLvBH6cqFYef8fwuuN1zzaFJkS5aUGDVlC6NtxXs0rXDv8Xlm4rgvRtpqO7wOTuX
+         MX9u91qTxkKs3h0799nQJJlss58hPrH5rKyrJmzBfQVjGVrlODp8IHgfG4PSa23I5WKK
+         PAdKstTrgw+rFIJhxdulJlZu98rX1AC9P5x3k7k4m9DUe8D2Lh7/jgcFlXrd9vBv0Bjh
+         FMY/kSjhCTlS0wkfJwckocNhK3C2k+rwdlt978buvsHNM4rLty/Y9M+uC1Xjf3x5EPig
+         en9w84idpxJTpLQBjW7C10FU8BDwEW8YIE5WsZqnqIrlDPSiNeJB/xcd5M3CycathLB2
+         Gi9Q==
+X-Gm-Message-State: AOAM532wueSgFvTlY4Kz6EpfgzcSWkQyhXGTuffSnsebq68S86cZGggJ
+        AOwDksUQ05dNJ2TnrWFq/nuqL92CV/noCkCoMNI+VRaxFO+biYB005/RiEum1wlFR+QnYoTW2Us
+        GpwsW0+2IvpMg9B+6ib02sw==
+X-Received: by 2002:a17:902:684e:b0:154:3b94:e30c with SMTP id f14-20020a170902684e00b001543b94e30cmr8829436pln.89.1648791052560;
+        Thu, 31 Mar 2022 22:30:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxY7OvK2M1A5AqbXUDoQ2crpDG+2Q85cwgkdCc0FQgN2u2i+IfXl3sL6nrto7SfNk04ngqIng==
+X-Received: by 2002:a17:902:684e:b0:154:3b94:e30c with SMTP id f14-20020a170902684e00b001543b94e30cmr8829414pln.89.1648791052218;
+        Thu, 31 Mar 2022 22:30:52 -0700 (PDT)
+Received: from zlang-mailbox ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id n4-20020a637204000000b00398522203a2sm1056282pgc.80.2022.03.31.22.30.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Mar 2022 22:30:51 -0700 (PDT)
+Date:   Fri, 1 Apr 2022 13:30:47 +0800
+From:   Zorro Lang <zlang@redhat.com>
+To:     Ritesh Harjani <ritesh.list@gmail.com>,
+        "Darrick J . Wong" <djwong@kernel.org>
+Cc:     fstests <fstests@vger.kernel.org>, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCHv3 0/4] generic: Add some tests around journal
+ replay/recoveryloop
+Message-ID: <20220401053047.ic4cbsembj6eoibm@zlang-mailbox>
+Mail-Followup-To: Ritesh Harjani <ritesh.list@gmail.com>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        fstests <fstests@vger.kernel.org>, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <cover.1648730443.git.ritesh.list@gmail.com>
+ <20220331145906.2onnohv2bbg3ye6j@zlang-mailbox>
+ <20220331161911.7d5dlqfwm2kngnjk@riteshh-domain>
+ <20220331165335.mzx3gfc3uqeeg3sz@riteshh-domain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87k0ccrb6v.fsf@collabora.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220331165335.mzx3gfc3uqeeg3sz@riteshh-domain>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Mar 29, 2022 at 12:11:04PM -0400, Gabriel Krisman Bertazi wrote:
-> Eric Biggers <ebiggers@kernel.org> writes:
+On Thu, Mar 31, 2022 at 10:23:35PM +0530, Ritesh Harjani wrote:
+> On 22/03/31 09:49PM, Ritesh Harjani wrote:
+> > On 22/03/31 10:59PM, Zorro Lang wrote:
+> > > On Thu, Mar 31, 2022 at 06:24:19PM +0530, Ritesh Harjani wrote:
+> > > > Hello,
+> > >
+> > > Hi,
+> > >
+> > > Your below patches looks like not pure text format, they might contain
+> > > binary character or some special characers, looks like the "^M" [1].
 > 
-> > On Mon, Mar 21, 2022 at 11:00:02PM -0400, Gabriel Krisman Bertazi wrote:
-> >> By using fscrypt_name here, we can hide most of the caching casefold
-> >> logic from ext4.  The condition in ext4_match is now quite redundant,
-> >> but this is addressed in the next patch.
-> >> 
-> >> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-> >> ---
-> >>  fs/ext4/namei.c         | 26 ++++++++++++--------------
-> >>  include/linux/fscrypt.h |  4 ++++
-> >>  2 files changed, 16 insertions(+), 14 deletions(-)
-> >> 
-> >> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> >> index 8976e5a28c73..71b4b05fae89 100644
-> >> --- a/fs/ext4/namei.c
-> >> +++ b/fs/ext4/namei.c
-> >> @@ -1321,10 +1321,9 @@ static void dx_insert_block(struct dx_frame *frame, u32 hash, ext4_lblk_t block)
-> >>  /**
-> >>   * ext4_ci_compare() - Match (case-insensitive) a name with a dirent.
-> >>   * @parent: Inode of the parent of the dentry.
-> >> - * @name: name under lookup.
-> >> + * @fname: name under lookup.
-> >>   * @de_name: Dirent name.
-> >>   * @de_name_len: dirent name length.
-> >> - * @quick: whether @name is already casefolded.
-> >>   *
-> >>   * Test whether a case-insensitive directory entry matches the filename
-> >>   * being searched.  If quick is set, the @name being looked up is
-> >> @@ -1333,8 +1332,9 @@ static void dx_insert_block(struct dx_frame *frame, u32 hash, ext4_lblk_t block)
-> >>   * Return: > 0 if the directory entry matches, 0 if it doesn't match, or
-> >>   * < 0 on error.
-> >>   */
-> >> -static int ext4_ci_compare(const struct inode *parent, const struct qstr *name,
-> >> -			   u8 *de_name, size_t de_name_len, bool quick)
-> >> +static int ext4_ci_compare(const struct inode *parent,
-> >> +			   const struct fscrypt_name *fname,
-> >> +			   u8 *de_name, size_t de_name_len)
-> >>  {
-> >>  	const struct super_block *sb = parent->i_sb;
-> >>  	const struct unicode_map *um = sb->s_encoding;
-> >> @@ -1357,10 +1357,10 @@ static int ext4_ci_compare(const struct inode *parent, const struct qstr *name,
-> >>  		entry.len = decrypted_name.len;
-> >>  	}
-> >>  
-> >> -	if (quick)
-> >> -		ret = utf8_strncasecmp_folded(um, name, &entry);
-> >> +	if (fname->cf_name.name)
-> >> +		ret = utf8_strncasecmp_folded(um, &fname->cf_name, &entry);
-> >>  	else
-> >> -		ret = utf8_strncasecmp(um, name, &entry);
-> >> +		ret = utf8_strncasecmp(um, fname->usr_fname, &entry);
-> >>  
-> >>  	if (!ret)
-> >>  		match = true;
-> >> @@ -1370,8 +1370,8 @@ static int ext4_ci_compare(const struct inode *parent, const struct qstr *name,
-> >>  		 * the names have invalid characters.
-> >>  		 */
-> >>  		ret = 0;
-> >> -		match = ((name->len == entry.len) &&
-> >> -			 !memcmp(name->name, entry.name, entry.len));
-> >> +		match = ((fname->usr_fname->len == entry.len) &&
-> >> +			 !memcmp(fname->usr_fname->name, entry.name, entry.len));
-> >>  	}
-> >>  
-> >>  out:
-> >> @@ -1440,6 +1440,8 @@ static bool ext4_match(struct inode *parent,
-> >>  #endif
-> >>  
-> >>  #if IS_ENABLED(CONFIG_UNICODE)
-> >> +	f.cf_name = fname->cf_name;
-> >> +
-> >>  	if (parent->i_sb->s_encoding && IS_CASEFOLDED(parent) &&
-> >>  	    (!IS_ENCRYPTED(parent) || fscrypt_has_encryption_key(parent))) {
-> >>  		if (fname->cf_name.name) {
-> >> @@ -1451,13 +1453,9 @@ static bool ext4_match(struct inode *parent,
-> >>  					return false;
-> >>  				}
-> >>  			}
-> >> -			ret = ext4_ci_compare(parent, &fname->cf_name, de->name,
-> >> -					      de->name_len, true);
-> >> -		} else {
-> >> -			ret = ext4_ci_compare(parent, fname->usr_fname,
-> >> -					      de->name, de->name_len, false);
-> >>  		}
-> >>  
-> >> +		ret = ext4_ci_compare(parent, &f, de->name, de->name_len);
-> >>  		if (ret < 0) {
-> >>  			/*
-> >>  			 * Treat comparison errors as not a match.  The
-> >> diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-> >> index 91ea9477e9bd..5dc4b3c805e4 100644
-> >> --- a/include/linux/fscrypt.h
-> >> +++ b/include/linux/fscrypt.h
-> >> @@ -36,6 +36,10 @@ struct fscrypt_name {
-> >>  	u32 minor_hash;
-> >>  	struct fscrypt_str crypto_buf;
-> >>  	bool is_nokey_name;
-> >> +
-> >> +#ifdef CONFIG_UNICODE
-> >> +	struct qstr cf_name;
-> >> +#endif
-> >>  };
-> >>  
-> >
-> > This seems like the wrong approach.  struct fscrypt_name shouldn't have fields
-> > that aren't used by the fs/crypto/ layer.
-> >
-> > Did you check what f2fs does?  It has a struct f2fs_filename to represent
-> > everything f2fs needs to know about a filename, and it only uses
-> > struct fscrypt_name when communicating with the fs/crypto/ layer.
-> >
-> > struct ext4_filename already exists.  Couldn't you use that here?
+> Sorry to bother you. But here is what I tried.
+> 1. Download the mbx file using b4 am. I didn't see any such character ("^M") in
+>    the patches.
+> 2. Saved the patch using mutt. Again didn't see such character while doing
+> 	cat -A /patch/to/patch
+> 3. Downloaded the mail using eml format from webmail. Here I do see this
+>    character appended. But that happens not just for my patch, but for all
+>    other patches too.
 > 
-> Hi Eric,
+> So could this be related to the way you are downloading these patches.
+> Please let me know, if I need to resend these patches again? Because, I don't
+> see this behavior at my end. But I would happy to correct it, if that's not the
+> case.
+
+Hmm... weird, When I tried to open your patch emails, my mutt show me:
+
+  [-- application/octet-stream is unsupported (use 'v' to view this part) --]
+
+Then I have to input 'v' to see the patch content. I'm not sure what's wrong,
+this's the 2nd time I hit this "octet-stream is unsupported" issue yesterday.
+
+Hi Darrick, or any other forks, can you open above 4 patches normally? If that's
+only my personal issue, I'll check my side.
+
+Thanks,
+Zorro
+
 > 
-> The reason I'm not using struct ext4_filename here is because I'm trying
-> to make this generic, so this function can be shared across filesystems
-> implementing casefold.  Since the fscrypt_name abstraction is used for
-> case-sensitive comparison, I was trying to reuse that type for
-> case-insensitive as well.  It seemed unnecessary to define a generic
-> casefold_name type just for passing the cf_name and disk_name to this
-> function, considering that fscrypt_name is already initialized by
-> ext4_match.
+> -ritesh
 > 
 
-Which function, specifically, are you trying to share across filesystems?
-Do you have patches that show what your end goal is?
-
-- Eric
