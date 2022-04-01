@@ -2,122 +2,113 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 485934EEA44
-	for <lists+linux-ext4@lfdr.de>; Fri,  1 Apr 2022 11:20:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D754EEAC8
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 Apr 2022 11:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245738AbiDAJVs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 1 Apr 2022 05:21:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43802 "EHLO
+        id S1344807AbiDAJ4b (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 1 Apr 2022 05:56:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242965AbiDAJVr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 1 Apr 2022 05:21:47 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D30E94D9F2
-        for <linux-ext4@vger.kernel.org>; Fri,  1 Apr 2022 02:19:57 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 756B221110;
-        Fri,  1 Apr 2022 09:19:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1648804796; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MqZS2ffNONM0NxDKplPeZE1PEbHgdc058ywGpxyaEEY=;
-        b=Q/EMS+WxVHLvVTGJXFCex0MnL7nOxPGMsvpYhX9h3c2HJ4M7CkZlSGXKV2F0ObIiDK4nER
-        FhWPLWGZ94MDcXObvg0pz9X2XiiuQ/SLqNgn8sAsE0noN2KFSfpDl28QYhD2bnXyvdibHq
-        G980SBKYyrb6nYA71Spd8x+5Bmf9+lM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1648804796;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MqZS2ffNONM0NxDKplPeZE1PEbHgdc058ywGpxyaEEY=;
-        b=tbY5RAHejLBf62raqbZg8drdshUSQFgA8dTIli2J0SCGfSgo5KdpUJRy2NKc8osfF+r3Vq
-        EiptSrCLlXhPkJDw==
-Received: from quack3.suse.cz (unknown [10.163.28.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 62261A3B82;
-        Fri,  1 Apr 2022 09:19:56 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 4148DA0610; Fri,  1 Apr 2022 11:19:50 +0200 (CEST)
-Date:   Fri, 1 Apr 2022 11:19:50 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     chill <maximkabox13@gmail.com>
-Cc:     jack@suse.com, linux-ext4@vger.kernel.org
-Subject: Re: Use-After-Free Write in jbd2_journal_wait_updates in mainline
- Linux kernel 5.17
-Message-ID: <20220401091950.eszmhrgjhd4j4745@quack3.lan>
-References: <CANpfEhMi-9bFLCof9QODZgc8A31QWst8X5BAiQw4Mp=PhvWF=Q@mail.gmail.com>
+        with ESMTP id S243756AbiDAJ43 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 1 Apr 2022 05:56:29 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5686E147AD9;
+        Fri,  1 Apr 2022 02:54:40 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id y10so2172840pfa.7;
+        Fri, 01 Apr 2022 02:54:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Wz8YVUbIP5nrpoUYrQkW7TtuDiEPJ3Xg42mnIzGwg5I=;
+        b=dFmzRXQV21ibYwzi7Ayh1t6Wolpm2UrezH96+Q749JEdIflJbBh6i5nPWEEcJa9GLI
+         QkVWYXd35aIINLVDoNEJESGco883A+pKdxzBg4M/ezTSoIwNT2X5Jix0s0tIWQWN5GaT
+         2V9U9ClRKNSHNkh3HUpN6Rg98Jdv6U9iTLws/2Lhu7kP8YkTimPzw4JCWFe8JIljvsGZ
+         BdJ2xc6CuSPteOxIGFtmEPVvaT7rjTmBPoaN9zQ6+PkeIlwD49a1ixiljpYGVDzPal/H
+         gQpezLRo9ctRtTgV3PW/e2zL6J2IJahEP3HUXaJPdr55ws+UwQgD3Xf0w1wWWzxqeyFv
+         qFog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Wz8YVUbIP5nrpoUYrQkW7TtuDiEPJ3Xg42mnIzGwg5I=;
+        b=aKIAbi8sUH9jSOZ2aEsy1s8+2J+dE6F8RWESbrIyhd+ZGarl1vzkqyQLGfxNV8ZGKH
+         5EsuV7aH85ydpByTBJdyGwe738a6mS2SlPkEN/8W5V0M8rsBVxYWO7sA5c0+JZZF+7Eq
+         iqXkyX8FoLR4F3557+WrHpzEymmborGQsEDLPIF886Vvq4vEymWzcoGEuQgc+AryFat2
+         q2d7j9oG2D2/OhPsAJCYmqvuT0+Xh7kk/ojENWvRqFYRafkackAgsKvnqPii6kB5qUT/
+         ymzCWiRE66k3qr7Z6i0rSzOKMo399MNDC03EHjGBiBVSxOo+TQK/rlOSmUY8Bg7fxhVl
+         z3mg==
+X-Gm-Message-State: AOAM5320sEKk+MM3H+09IL5P7ffunyJxGx8nDH9UR6xD1tb27nE77Tgp
+        JJT9YZCuZyzz455yxN7NInmnK7Pkaz0=
+X-Google-Smtp-Source: ABdhPJz3yZtbUujbvFgD9334kdr1l4bb6xKKoNxXMzUqACAZooVSdoi5PdJG0uoxS8Xv6Kj06qlIrg==
+X-Received: by 2002:a65:6d87:0:b0:374:2525:dcb0 with SMTP id bc7-20020a656d87000000b003742525dcb0mr14484850pgb.248.1648806879714;
+        Fri, 01 Apr 2022 02:54:39 -0700 (PDT)
+Received: from localhost ([122.179.46.149])
+        by smtp.gmail.com with ESMTPSA id p13-20020a056a000b4d00b004faecee6e89sm2541921pfo.208.2022.04.01.02.54.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Apr 2022 02:54:39 -0700 (PDT)
+Date:   Fri, 1 Apr 2022 15:24:36 +0530
+From:   Ritesh Harjani <ritesh.list@gmail.com>
+To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc:     fstests@vger.kernel.org, riteshh@linux.ibm.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] common/rc: Modify _require_batched_discard to improve
+ test coverage
+Message-ID: <20220401095436.oxdq2duhuudx2c4r@riteshh-domain>
+References: <20220401055713.634842-1-ojaswin@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANpfEhMi-9bFLCof9QODZgc8A31QWst8X5BAiQw4Mp=PhvWF=Q@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220401055713.634842-1-ojaswin@linux.ibm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 31-03-22 16:51:59, chill wrote:
-> Hello, I found a similar vulnerability in the kernel like this:
-> https://groups.google.com/g/syzkaller-bugs/c/AHp-BfwUM50/m/Jas1oKfmAAAJ in
-> the kernel: https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.17.tar.xz
-> REPORT:
-> ==================================================================
-> BUG: KASAN: use-after-free in instrument_atomic_read_write
-> include/linux/instrumented.h:101 [inline]
-> BUG: KASAN: use-after-free in atomic_try_cmpxchg_acquire
-> include/linux/atomic/atomic-instrumented.h:541 [inline]
-> BUG: KASAN: use-after-free in queued_spin_lock
-> include/asm-generic/qspinlock.h:82 [inline]
-> BUG: KASAN: use-after-free in do_raw_spin_lock include/linux/spinlock.h:185
-> [inline]
-> BUG: KASAN: use-after-free in __raw_spin_lock
-> include/linux/spinlock_api_smp.h:134 [inline]
-> BUG: KASAN: use-after-free in _raw_spin_lock+0x73/0xd0
-> kernel/locking/spinlock.c:154
-> Write of size 4 at addr ffff8880236f11a0 by task syz-executor.2/9557
-> 
-> CPU: 0 PID: 9557 Comm: syz-executor.2 Not tainted 5.17.0-rc6 #1
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2
-> 04/01/2014
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0x4d/0x66 lib/dump_stack.c:106
->  print_address_description.constprop.0+0x1f/0x150 mm/kasan/report.c:255
->  __kasan_report mm/kasan/report.c:442 [inline]
->  kasan_report.cold+0x7f/0x11b mm/kasan/report.c:459
->  check_region_inline mm/kasan/generic.c:183 [inline]
->  kasan_check_range+0xf9/0x1e0 mm/kasan/generic.c:189
->  instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
->  atomic_try_cmpxchg_acquire include/linux/atomic/atomic-instrumented.h:541
-> [inline]
->  queued_spin_lock include/asm-generic/qspinlock.h:82 [inline]
->  do_raw_spin_lock include/linux/spinlock.h:185 [inline]
->  __raw_spin_lock include/linux/spinlock_api_smp.h:134 [inline]
->  _raw_spin_lock+0x73/0xd0 kernel/locking/spinlock.c:154
->  spin_lock include/linux/spinlock.h:349 [inline]
->  jbd2_journal_wait_updates+0x1f1/0x280 fs/jbd2/transaction.c:861
->  jbd2_journal_lock_updates+0x13a/0x2e0 fs/jbd2/transaction.c:896
->  ext4_ioctl_checkpoint fs/ext4/ioctl.c:1085 [inline]
->  __ext4_ioctl+0xb5b/0x44f0 fs/ext4/ioctl.c:1562
->  vfs_ioctl fs/ioctl.c:51 [inline]
->  __do_sys_ioctl fs/ioctl.c:874 [inline]
->  __se_sys_ioctl fs/ioctl.c:860 [inline]
->  __x64_sys_ioctl+0x170/0x1d0 fs/ioctl.c:860
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x3b/0x90 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
+On 22/04/01 11:27AM, Ojaswin Mujoo wrote:
+> A recent ext4 patch discussed [1] that some devices (eg LVMs) can
+> have a discard granularity as big as 42MB which makes it larger
+> than the group size of ext4 FS with 1k BS. This causes the FITRIM
+> IOCTL to fail on filesystems like ext4.
+>
+> This case was not correctly handle by "_require_batched_discard" as
+> it incorrectly interpreted the FITRIM failure as fs not supporting
+> the IOCTL. This caused the tests like generic/260 to incorectly
+> report "not run" instead of "failed" in case of large discard
+> granularity.
 
-Thanks for report. This should be fixed by commit f7f497cb702 ("jbd2: kill
-t_handle_lock transaction spinlock") which got just merged into 5.18-rc1.
+Ok, I looked at fstrim code and it does print [1]
+"the discard operation is not supported" in case of rc == 1.
+And if rc != 0 it will always returns EXIT_FAILURE.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+So this patch looks good to me. Feel free to add:
+
+Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+
+
+Although it will be good to check if we can add a generic test case
+using maybe lvm or dm device, where this device could report large
+discard_granularity for actually excercising this code path
+(rather then changing kernel code to test it).
+
+-ritesh
+
+[1]: https://github.com/util-linux/util-linux/blob/master/sys-utils/fstrim.c
+
+>
+> Fix "_require_batched_discard" to use a more accurate method
+> to determine if discard is supported.
+>
+> [1] commit 173b6e383d2
+>     ext4: avoid trim error on fs with small groups
+>
+> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> ---
+>  common/rc | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+>
