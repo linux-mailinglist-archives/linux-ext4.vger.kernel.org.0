@@ -2,42 +2,47 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC574F0A6E
-	for <lists+linux-ext4@lfdr.de>; Sun,  3 Apr 2022 16:54:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AA5F4F0CF1
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Apr 2022 01:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236786AbiDCOzr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 3 Apr 2022 10:55:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33100 "EHLO
+        id S1376660AbiDCXaX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 3 Apr 2022 19:30:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359106AbiDCOze (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 3 Apr 2022 10:55:34 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F77120B7;
-        Sun,  3 Apr 2022 07:53:38 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 233ErMd0020997
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 3 Apr 2022 10:53:22 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 22D9615C3E9E; Sun,  3 Apr 2022 10:53:22 -0400 (EDT)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     adilger.kernel@dilger.ca, Ye Bin <yebin10@huawei.com>,
-        linux-ext4@vger.kernel.org
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, lczerner@redhat.com,
-        linux-kernel@vger.kernel.org, jack@suse.cz
-Subject: Re: [PATCH -next v2] ext4: fix use-after-free in ext4_search_dir
-Date:   Sun,  3 Apr 2022 10:53:19 -0400
-Message-Id: <164899700423.964485.9819897021180386715.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20220324064816.1209985-1-yebin10@huawei.com>
-References: <20220324064816.1209985-1-yebin10@huawei.com>
+        with ESMTP id S1376657AbiDCXaV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 3 Apr 2022 19:30:21 -0400
+Received: from mail105.syd.optusnet.com.au (mail105.syd.optusnet.com.au [211.29.132.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B5C81766A;
+        Sun,  3 Apr 2022 16:28:25 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-43-123.pa.nsw.optusnet.com.au [49.180.43.123])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 7775210E553B;
+        Mon,  4 Apr 2022 09:28:24 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1nb9dv-00DRzz-77; Mon, 04 Apr 2022 09:28:23 +1000
+Date:   Mon, 4 Apr 2022 09:28:23 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Ritesh Harjani <ritesh.list@gmail.com>
+Cc:     fstests <fstests@vger.kernel.org>, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: Re: [PATCHv3 1/4] generic/468: Add another falloc test entry
+Message-ID: <20220403232823.GS1609613@dread.disaster.area>
+References: <cover.1648730443.git.ritesh.list@gmail.com>
+ <75f4c780e8402a8f993cb987e85a31e4895f13de.1648730443.git.ritesh.list@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <75f4c780e8402a8f993cb987e85a31e4895f13de.1648730443.git.ritesh.list@gmail.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=e9dl9Yl/ c=1 sm=1 tr=0 ts=624a2d98
+        a=MV6E7+DvwtTitA3W+3A2Lw==:117 a=MV6E7+DvwtTitA3W+3A2Lw==:17
+        a=kj9zAlcOel0A:10 a=z0gMJWrwH1QA:10 a=VnNF1IyMAAAA:8 a=VwQbUJbxAAAA:8
+        a=7-415B0cAAAA:8 a=pcpTcb-Ldv-4dz7pLwMA:9 a=CjuIK1q_8ugA:10
+        a=AjGcO6oz07-iQ99wixmX:22 a=biEYGPWJfzWAr4FL6Ov7:22
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -45,22 +50,71 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 24 Mar 2022 14:48:16 +0800, Ye Bin wrote:
-> We got issue as follows:
-> EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
-> ==================================================================
-> BUG: KASAN: use-after-free in ext4_search_dir fs/ext4/namei.c:1394 [inline]
-> BUG: KASAN: use-after-free in search_dirblock fs/ext4/namei.c:1199 [inline]
-> BUG: KASAN: use-after-free in __ext4_find_entry+0xdca/0x1210 fs/ext4/namei.c:1553
-> Read of size 1 at addr ffff8881317c3005 by task syz-executor117/2331
+On Thu, Mar 31, 2022 at 06:24:20PM +0530, Ritesh Harjani wrote:
+> From: Ritesh Harjani <riteshh@linux.ibm.com>
 > 
-> [...]
+> Add another falloc test entry which could hit a kernel bug
+> with ext4 fast_commit feature w/o below kernel commit [1].
+> 
+> <log>
+> [  410.888496][ T2743] BUG: KASAN: use-after-free in ext4_mb_mark_bb+0x26a/0x6c0
+> [  410.890432][ T2743] Read of size 8 at addr ffff888171886000 by task mount/2743
+> 
+> This happens when falloc -k size is huge which spans across more than
+> 1 flex block group in ext4. This causes a bug in fast_commit replay
+> code which is fixed by kernel commit at [1].
+> 
+> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/commit/?h=dev&id=bfdc502a4a4c058bf4cbb1df0c297761d528f54d
+> 
+> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> ---
+>  tests/generic/468     | 8 ++++++++
+>  tests/generic/468.out | 2 ++
+>  2 files changed, 10 insertions(+)
+> 
+> diff --git a/tests/generic/468 b/tests/generic/468
+> index 95752d3b..5e73cff9 100755
+> --- a/tests/generic/468
+> +++ b/tests/generic/468
+> @@ -34,6 +34,13 @@ _scratch_mkfs >/dev/null 2>&1
+>  _require_metadata_journaling $SCRATCH_DEV
+>  _scratch_mount
+>  
+> +# blocksize and fact are used in the last case of the fsync/fdatasync test.
+> +# This is mainly trying to test recovery operation in case where the data
+> +# blocks written, exceeds the default flex group size (32768*4096*16) in ext4.
+> +blocks=32768
+> +blocksize=4096
 
-Applied, thanks!
+Block size can change based on mkfs parameters. You should extract
+this dynamically from the filesystem the test is being run on.
 
-[1/1] ext4: fix use-after-free in ext4_search_dir
-      commit: 44c0286d878598b59225b95596e8a19b3516fafc
+> +fact=18
 
-Best regards,
+What is "fact" supposed to mean?
+
+Indeed, wouldn't this simply be better as something like:
+
+larger_than_ext4_fg_size=$((32768 * $blksize * 18))
+
+And then
+
+>  testfile=$SCRATCH_MNT/testfile
+>  
+>  # check inode metadata after shutdown
+> @@ -85,6 +92,7 @@ for i in fsync fdatasync; do
+>  	test_falloc $i "-k " 1024
+>  	test_falloc $i "-k " 4096
+>  	test_falloc $i "-k " 104857600
+> +	test_falloc $i "-k " $(($blocks*$blocksize*$fact))
+
+	test_falloc $i "-k " $larger_than_ext4_fg_size
+
+And just scrub all the sizes from the golden output?
+
+Cheers,
+
+Dave.
 -- 
-Theodore Ts'o <tytso@mit.edu>
+Dave Chinner
+david@fromorbit.com
