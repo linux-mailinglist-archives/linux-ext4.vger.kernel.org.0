@@ -2,101 +2,144 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3EFD4F1836
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Apr 2022 17:23:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8EB14F1D38
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Apr 2022 23:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378248AbiDDPYz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 4 Apr 2022 11:24:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36850 "EHLO
+        id S1380216AbiDDVa3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 4 Apr 2022 17:30:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378524AbiDDPYx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Apr 2022 11:24:53 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC2B3E5DC
-        for <linux-ext4@vger.kernel.org>; Mon,  4 Apr 2022 08:22:53 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id w21so8588650pgm.7
-        for <linux-ext4@vger.kernel.org>; Mon, 04 Apr 2022 08:22:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wyDte6u49XuZOEDhbioS92IXz+R+MU1mBAkIHexEyo8=;
-        b=FI5XYFXXfXWe79T9qLsB6oiy2Bkf+dsXAJ1igK83khhqqLP2t3ELJRa06GFl0sDWKi
-         VfcyzNTleGdnCa+/S2thk88pRmxjYBqC/ERN9xUKYMHzZq6jA+4hGdCEAfS5cC/NZ9pU
-         LfRkGXbMG8YodiJzxbPPPidNkjKCU5j3IldHeadEOboyGo4/mJ1sSQsRsFUAseGOKwpJ
-         cNoAVwtsd1VdYFaKnb7QjGvD7qAOmlFOqk8nwniOrLKqM4HhDIiwCGME/jRLXP4niJFs
-         V4Q4+JFO81ladTPCvBbGPIzI9HYaDhdvi+8f0UbO9+dk8E/rY7SGSlWgHD3txVZATu7B
-         twqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wyDte6u49XuZOEDhbioS92IXz+R+MU1mBAkIHexEyo8=;
-        b=k9lUiksEpCjKaiueY29YTb8qMWlO+IV21j5Wyliz2vaRBYRcm0mqBBn3pI1AjTAIdD
-         mb6IYPpTQV4/RA7QzrAuRZSqexnVxEd/Kxqc0Li1g6Z4SDU5aTwRkSlPkOcmKX8R3BqK
-         RYuVsgUiPmNLqjFHiEj5WguTS/zTGlAnpNFe+fkScIK0+wU6VblOduP+f0/acHIgwDIM
-         6uHZNklM1c/O8FvyWsyS9ndW/dKANinaPI6i2KzdtcpcZ0/LlakGhwvM/ZmC6GXQdtZQ
-         8G53YPk3MnbPcS4DXO0M0OXJj6Xn0hgmRbtvcE2MljRwtlMk9NFxT+EovIzvILSgSWG0
-         6qHA==
-X-Gm-Message-State: AOAM53137IXZB9SJCczgnnmQLn1yD6zpdBfTiLcoA2sbh/hUspROlCi2
-        4FI/bex8FPI3Ryg+fVJkUt0n3g==
-X-Google-Smtp-Source: ABdhPJyuEOrM3uDz7VUMJ+shlo4iDFFBC7PYOBsACm3opqHftv1Rgh5WDiCiU4V6mAm84QapvgrW9g==
-X-Received: by 2002:a05:6a00:1581:b0:4fa:e6d4:c3e6 with SMTP id u1-20020a056a00158100b004fae6d4c3e6mr94158pfk.84.1649085773408;
-        Mon, 04 Apr 2022 08:22:53 -0700 (PDT)
-Received: from C02GD5ZHMD6R.bytedance.net ([139.177.225.245])
-        by smtp.gmail.com with ESMTPSA id n14-20020a17090a394e00b001c670d67b8esm11079971pjf.32.2022.04.04.08.22.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Apr 2022 08:22:53 -0700 (PDT)
-From:   Jinke Han <hanjinke.666@bytedance.com>
-X-Google-Original-From: Jinke Han <hnajinke.666@bytedance>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jinke Han <hanjinke.666@bytedance.com>
-Subject: [PATCH] ext4: remove unnecessary code in __mb_check_buddy
-Date:   Mon,  4 Apr 2022 23:22:43 +0800
-Message-Id: <20220404152243.13556-1-hanjinke.666@bytedance.com>
-X-Mailer: git-send-email 2.32.0 (Apple Git-132)
+        with ESMTP id S1379587AbiDDRlA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Apr 2022 13:41:00 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2043.outbound.protection.outlook.com [40.107.94.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D7C31DE3;
+        Mon,  4 Apr 2022 10:39:02 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=COdoseiOPHuVKirxEue845b5mhPlXT7+39fMIeE9eIXUAvw1x1clHHaW89OO2IWm5Ire/ldURHoQRCp+EZueA53PMkn4UAKhnWE1lwvX+a0jvQ54qqweAfUCwZEppuSM26x+gKPNT8uqLkXqTVnTIORLVNRyZ0w9u7Bcp+KDs6BEI3U83wL74JklxX9v9UFfmK/YC0f5qlfAiTChjLnYOWPVv6gP2+qXJ8aBkriSlLQVxDwS/nsgnIKGECGEEFzf7v4Hmi/zo/fKNaKJHGSrRvWfzm+iCgudyNm5AHiNfiXNwCQcJp8TXYbb8tKtIOMWbONkYg5+KkWK5aTfjCRNTQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wYOAz7xmnugnzgiRIZHEfmhmpWd1Bc0+wkCtsfoWffk=;
+ b=DvM2E4JBNFkfvKvJo9tLQLN5Ha5+fGp4k8/1tjkSvbUBEi50QHKYnP8uXZcS9aNk/YTD4SNSZdKhGwelOUhhIlut/bEdYfdOz6/a0fv5UXRRwplV1oRwzA3snDlqANaWh98zSfd9xfwIVi7p4eRT22G9qwuvIEcDcyHPWPFgTihtIfFZ/N2DzAf5qJZ2Z0gU+mlTJGBmoQggSU6Gg0IJXMpk7ZMsgMND5udPh9uCfsLIfNqIRmLDmETk5d827D6/53GmMmULUOsXZlEYapGulu+dxo05tmCTL/dSGCilCRYsvUcBpRRg3qOhaGzBlbR7xXrO294hkNfUvNEeOpkUiA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wYOAz7xmnugnzgiRIZHEfmhmpWd1Bc0+wkCtsfoWffk=;
+ b=DZ2/QsHq+Ta2enkwAFWqO9aaDTgY3TKpdCeAXZGFEG0FDEFSLzpJtR/qV5NioOuGDTjaFsiigt6hCJKQSp75zIFCRG5WWbqclmYNAGbVGwmZeRqrTNac9RitKByt3jfL0qZCqoROMKxy5pGjWj58ZMOIrpeaFpHoLwxxrI4ztl6bwWl9qumnPUkHV7lYijGCw5O/sNg0Y5WvCFxuQk8u9FGpNSMJn21HDMLqBAH8O4p6pRTPeRRdLJA3XkBKql7XCerRRkERC1RCWmOPEETBHEno2gTqfJSdlTMZr8A4+owggulQ2yRhIkNFbG6YdvDWpMIKiJ+2UcI8ZvBq8fcZeg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
+ by MWHPR12MB1422.namprd12.prod.outlook.com (2603:10b6:300:10::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5123.31; Mon, 4 Apr
+ 2022 17:39:00 +0000
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::cdfb:f88e:410b:9374]) by MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::cdfb:f88e:410b:9374%5]) with mapi id 15.20.5123.031; Mon, 4 Apr 2022
+ 17:39:00 +0000
+Date:   Mon, 4 Apr 2022 14:38:58 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Felix Kuehling <felix.kuehling@amd.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Alex Sierra <alex.sierra@amd.com>,
+        david@redhat.com, linux-mm@kvack.org, rcampbell@nvidia.com,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        jglisse@redhat.com, apopple@nvidia.com, willy@infradead.org,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH v2 1/3] mm: add vm_normal_lru_pages for LRU handled pages
+ only
+Message-ID: <20220404173858.GQ2120790@nvidia.com>
+References: <20220330212537.12186-1-alex.sierra@amd.com>
+ <20220330212537.12186-2-alex.sierra@amd.com>
+ <20220331085341.GA22102@lst.de>
+ <82ed845d-2534-490c-f9b9-a875e0283cc9@amd.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <82ed845d-2534-490c-f9b9-a875e0283cc9@amd.com>
+X-ClientProxiedBy: MN2PR19CA0034.namprd19.prod.outlook.com
+ (2603:10b6:208:178::47) To MN2PR12MB4192.namprd12.prod.outlook.com
+ (2603:10b6:208:1d5::15)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fdd41846-42d3-45ed-2777-08da166200a3
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1422:EE_
+X-Microsoft-Antispam-PRVS: <MWHPR12MB142219285F1A4957E7EA458EC2E59@MWHPR12MB1422.namprd12.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6uJsoSle6nOY97uW25wGlfQ16+wj5DAz2n5Bd60rdgNPeI8L6JSY1ShWnWe6beSvkBBuyYJrBpG0R4PpDeECpzujFKtGCjbiPosnmjeYZLND+NiHfIpQo91vs97JGVOc5rkfL9wN11kfZvu9HCcPNOsI0aeQ4hZD9zOa8YD59AetxekhD/kGD0tliQZRwpnPI58mh8N6dXXqkDTT5LG35mg4JUh4zPnz2fZnrinJvcqrMa+MnrnwUbiKyHPNOD0neMDiwDgQxaHf8OlmuzSRBOaZX6Zo4+uBdmzgCRDSTDbMOoaHK3PJvilVzHLxwVkt+/qul9I1xDKy6EnIoJwMxmCJAnn6PKUiyFPWxXHS0Qt9jeQ0Tmv0f/zGLEnIW6Vnq1845IawYKvDWKAyOh5Csj4h3jL2zeu6VF5n/KNtC397Q4QG7ICJ5cnMUAixO6a+6eI+n6MzpQTi+aySPSq8RSOo04SCGkuqDXkJKsyxExPvtUvfmyCQUUFhqJyWyqkU+0zCglBAyY6spbIq29mu+4j12008pbJWUEkKwivUl0TuQW9gZSDC2HvAvNSnEkffjCvkDmVRQhlGojWeQj32Fdi7oto8xbxBcKdJoKMZRd5Onx1Ic3eh+muOHQ+hlWXmwJxiC1ROWgkTD82cIz8cHA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(7416002)(5660300002)(33656002)(54906003)(2616005)(6486002)(8936002)(86362001)(186003)(508600001)(26005)(4744005)(38100700002)(1076003)(6916009)(2906002)(66476007)(66556008)(66946007)(6506007)(6512007)(36756003)(8676002)(4326008)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hnr1vzfh1ED8SBc/kdvoO4l+IVlu3YpXhBlGAKbUNJS3MR1yV8f6TVFRiELr?=
+ =?us-ascii?Q?mL4z7nrFz8BAkf9utQ+zD/wCX+qxM9HiuFdrmS+3EJZkADG9ulgUwVyu3/f5?=
+ =?us-ascii?Q?A5dBX61LeR2m6Gi4RKMCDc574RShFlhmmotQzkjq8pdpb/OHQtJ2fo51hGC3?=
+ =?us-ascii?Q?a1l8Qi1syZt4Ktd7MgNKJCHe4LVLkUk9OPn+ZcRwHIeNze/8xIVTnewZkD1U?=
+ =?us-ascii?Q?kCyVtJBbJdsxRAe9b4RpBPoqDYNkfj37mpaBhaKbe4MGPQoGJo3GuaDOTFD2?=
+ =?us-ascii?Q?yzfjwRcQ/qQvWIUSqqRzZY/K0CYDAlOSouE/rIL/b+yh3lRCiN0srQ0dVe/Y?=
+ =?us-ascii?Q?qyRjw+owoesBymD92AOlh2P0QopNQPGss9fmGTmOX+B5toy4cZyiW71q5rbX?=
+ =?us-ascii?Q?O5PvZyEXJhjHudaHVZrV55OKaYgVh5pBQTesTeXVUjbyu01Erisg1J60077V?=
+ =?us-ascii?Q?/uKuYl8qF/ntUuSxRnSp1ZH9YhPArGoFwvYk93g7V4TWDl2khk7yf5zemmio?=
+ =?us-ascii?Q?nqcfIyWZolyVDhImvlODBjwcEarkboHdkNPJq+S1JImUXyZBQ9HpZz31pYFv?=
+ =?us-ascii?Q?qvZBZGF+2XIS5BbnClovFifsBxtdZQLa6roiYrUe7VPpnMQ+8T16Xs4YHy8p?=
+ =?us-ascii?Q?lGVkJWB42zUvGXJsgOKA70cjRXTHX4MldfZwOltQOfGWk6Ba9jMd4LXv4D0P?=
+ =?us-ascii?Q?QZdMQsY4/ulmASO6H27/W8R8+3E8G+OjJllYSFc9bJT8fSMqpDqbYz9h10tE?=
+ =?us-ascii?Q?032Xq25Wtz6boIghn6XEyFrkcZlk+7RS3WrEBikIN4qe80H8/b4BKecUI/V7?=
+ =?us-ascii?Q?EKJIE9iGx9LEuPnibl77ZUfl4k0VsjCX6G/IlHSmGxCx6G15Dzk5RXrmBK0V?=
+ =?us-ascii?Q?UeuKs6ZXgINu2OiSB/tSCHcbSUAcW9S2hO1PtSlClcW+rsNpyI7Tdj0nMByB?=
+ =?us-ascii?Q?jOrIJRGX7EaB3Jp/4Rkx7D+/WQDtfUknkIn4y68ZMIM208a4lD+fK2B5RC+5?=
+ =?us-ascii?Q?+ZCSrIHWODxe26p0qP3E/QcDprFbOHMLN+bz62hD8moAI+TtBCZbvAF8dPUl?=
+ =?us-ascii?Q?GYZdpjLDfksstUP3zZN7ajnlsJ8wpxeZ+IT/6oPr782wPoNAxASM5ebcWkDz?=
+ =?us-ascii?Q?nxpfQ2RQAf1huM1PhudVcLT+Mgir+GQdBsLhsoa6PPWroF2mGcWAbXupM1AQ?=
+ =?us-ascii?Q?n8U2MlZxcd7Te7jMVENK5SR2islAmskBcUi8k+1IbPmzGO5CUEMaLxQ1585f?=
+ =?us-ascii?Q?H7mZqduw+9BGMisHuT6/YhMPNgJIjohwp75sEdNZ1y1oFM3mZwdidYPg/LvN?=
+ =?us-ascii?Q?1GkhiS1dM6Us5bnPuedDcfYVsY5r9290SgMiOyZgygZ6trI383lPZj8H60LV?=
+ =?us-ascii?Q?dgcx5+s+D7tpGjAWXGpv7ndt1BzLrZRp+ePm+CpyH7jOds+6uoJLxnzEc2WE?=
+ =?us-ascii?Q?FUSGm496uTr0rmb0k0CiEN97PrWtMlOjl+PWAs72xMmWNrRwcK9MnabRufwJ?=
+ =?us-ascii?Q?UU9+xrgZOkXvpWEHWF1nseteVzDTz37Ok8ebNqkCgCeLf7YUm6VRFnfMFiV3?=
+ =?us-ascii?Q?DFUZcejOFxs6vjAvYK6qAdD2Vbki8f7+pAWhdGwjNcGOWXnSTDHTnjvWERUU?=
+ =?us-ascii?Q?Lsuq+MgZDXNL2RjCpgW4TrPVYfYvb/mBqm4xBBrIOGWdDQ2UyR/O7Od+ZW0V?=
+ =?us-ascii?Q?fTfc9bGtc2CApw9fsUcjWpZXWqnxuEHjXaNUonke8vlk6XzHYUUXyuJ/V7+w?=
+ =?us-ascii?Q?9FIsxWvuLw=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fdd41846-42d3-45ed-2777-08da166200a3
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Apr 2022 17:39:00.2127
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rhMsb9VNMgcgWYIyQHd8XLg3f4+HH0SAuZ8mU+S2FoRm/8jXCakFGLSO1hPnWYdH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1422
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Jinke Han <hanjinke.666@bytedance.com>
+On Fri, Apr 01, 2022 at 04:08:35PM -0400, Felix Kuehling wrote:
 
-When enter elseif branch, the the MB_CHECK_ASSERT will never fail.
-In addtion, the only illegal combination is 0/0, which can be caught
-by the first if branch.
+> > In general I find the vm_normal_lru_page vs vm_normal_page
+> > API highly confusing.  An explicit check for zone device pages
+> > in the dozen or so spots that care has a much better documentation
+> > value, especially if accompanied by comments where it isn't entirely
+> > obvious.
+> 
+> OK. We can do that. It would solve the function naming problem, and we'd
+> have more visibility of device page handling in more places in the kernel,
+> which has educational value.
 
-Signed-off-by: Jinke Han <hanjinke.666@bytedance.com>
----
- fs/ext4/mballoc.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+Personally I find the 'is page XYZ' pretty confusing, like I don't
+know half of what the PageKsm annotations are for..
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index e5d43d2ee474..eba650b31870 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -576,13 +576,10 @@ static int __mb_check_buddy(struct ext4_buddy *e4b, char *file,
- 		for (i = 0; i < max; i++) {
- 
- 			if (mb_test_bit(i, buddy)) {
--				/* only single bit in buddy2 may be 1 */
-+				/* only single bit in buddy2 may be 0 */
- 				if (!mb_test_bit(i << 1, buddy2)) {
- 					MB_CHECK_ASSERT(
- 						mb_test_bit((i<<1)+1, buddy2));
--				} else if (!mb_test_bit((i << 1) + 1, buddy2)) {
--					MB_CHECK_ASSERT(
--						mb_test_bit(i << 1, buddy2));
- 				}
- 				continue;
- 			}
--- 
-2.20.1
+Testing against a specific property the code goes on to use right away
+seems more descriptive to me.
 
+Jason
