@@ -2,133 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 905054F1D42
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Apr 2022 23:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB394F1D4A
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Apr 2022 23:39:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382516AbiDDVae (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 4 Apr 2022 17:30:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59170 "EHLO
+        id S1379582AbiDDVal (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 4 Apr 2022 17:30:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380263AbiDDTYu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Apr 2022 15:24:50 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2040.outbound.protection.outlook.com [40.107.94.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCC33B037;
-        Mon,  4 Apr 2022 12:22:52 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JXAmY/OQ2mF9qgB79rj0w0b0q/exZWqWQ9bTqzcU/6QsJPLjvT0GsLW8N97lbW5KSoKxYyk0fiXcEW+Z4nYbnqkgnrqoByrOrUdeqB+75kMKyhjZJYCfGDVFh9c0DyoijrorF5ZNVuJVTZS5gTuDOHovLdWov/iwngtoF/GPq06fDwE/MY3aLIrd4Doa1JxsVqVHTc2BCELAn+VnzqAu9kM5Rhpqfpcc3wqhO6eX63pBlP1IXcb9RpwDZs725CIzQwf81piWLgPl0yR2PC0SEeeToxLIAyBzJgMSBG7G39i4HJ0ty06YUNoCBGszNMwD1v1S9blde1w38juZqEUctw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gn7VlZrjdkud1pCEohwgWw0QGWBi4FNZ+vh62sWU2uA=;
- b=OPb6DxbK8VNrnaaXSkHMBU1AEd6BdDXY+ccZBByGpbByXUzy+mBjbqpDDWY96brBNzjSBmYSGBWf1DoQaYzbKY1gKWSyVeZaZLMZMRU67ZCuMsX/OCiax4sjU7yFjzCQs4V3+Jwv6gBVfGLXafRCrQfeBTlN2P7NQXOX4jjvvxTgAU3GXjJ5EgyOurNzJH+KKYXifHB+PB9ykodxuJAwwUHO+vDofaNOveww/NyBGSJAP7XlLKp5nwNZfGnI44zuS6Hv8ZfgLo3edPoErOQCRMTcZG4M/teXVzqTEcrt12eIv20ve5/KCs2zJgBFg8GpIgICKwEklglfr0a9NwxaXg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gn7VlZrjdkud1pCEohwgWw0QGWBi4FNZ+vh62sWU2uA=;
- b=wfIDhWZlhQKwRt0B2DlpO4mrKwbQEKkVqPSgCY6ZzNFySpyyFhJSS5X+O5Qpl2EwoSos6d5/uJ0gMWnNl2gyviPlfVlwDOfC3omNam88ViRIQlLlmPfdZoRLgyWipOvl++QNMa2JBZ3X2v0uwax2zihHioB1GSTTOHQCL+QkssU=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2717.namprd12.prod.outlook.com (2603:10b6:805:68::29)
- by BL0PR12MB2419.namprd12.prod.outlook.com (2603:10b6:207:44::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5123.31; Mon, 4 Apr
- 2022 19:22:49 +0000
-Received: from SN6PR12MB2717.namprd12.prod.outlook.com
- ([fe80::8079:93c0:f340:7a1f]) by SN6PR12MB2717.namprd12.prod.outlook.com
- ([fe80::8079:93c0:f340:7a1f%4]) with mapi id 15.20.5123.031; Mon, 4 Apr 2022
- 19:22:49 +0000
-Message-ID: <5030bcfd-3931-d8e8-4eaa-7a3127cbd6ad@amd.com>
-Date:   Mon, 4 Apr 2022 14:22:45 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Subject: Re: [PATCH v2 1/3] mm: add vm_normal_lru_pages for LRU handled pages
- only
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Felix Kuehling <felix.kuehling@amd.com>
-Cc:     Christoph Hellwig <hch@lst.de>, david@redhat.com,
-        linux-mm@kvack.org, rcampbell@nvidia.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        jglisse@redhat.com, apopple@nvidia.com, willy@infradead.org,
-        akpm@linux-foundation.org
-References: <20220330212537.12186-1-alex.sierra@amd.com>
- <20220330212537.12186-2-alex.sierra@amd.com> <20220331085341.GA22102@lst.de>
- <82ed845d-2534-490c-f9b9-a875e0283cc9@amd.com>
- <20220404173858.GQ2120790@nvidia.com>
-From:   "Sierra Guiza, Alejandro (Alex)" <alex.sierra@amd.com>
-In-Reply-To: <20220404173858.GQ2120790@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BLAPR03CA0082.namprd03.prod.outlook.com
- (2603:10b6:208:329::27) To SN6PR12MB2717.namprd12.prod.outlook.com
- (2603:10b6:805:68::29)
+        with ESMTP id S1380398AbiDDUBF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Apr 2022 16:01:05 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B8D30576
+        for <linux-ext4@vger.kernel.org>; Mon,  4 Apr 2022 12:59:08 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 540DB1F43CA1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1649102347;
+        bh=+9Nl6mq8NR2TIC5RdmOzmhb4BvhMIiAfL0MzVEX3DDE=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=odzWz47dS/qoESVPRTVThlupDYtXCcZOvn/dP15X944pRZsC3HUGrjKusQdb5MpoS
+         T4qr9+hmvuojV/mga6UXglWerOXNs9M97ay/uvFWtzWeYh5rYAKU0bgzrJOqsLvg+s
+         nOD0dMh03lxSrwBDtFX32jEulEWVpGQq6NDXD/4mpw5fPerxZOF1XrxTcK+YwQ/VQ7
+         wsZpb4SLX4gQb8AZWZ5KbCjF7SSn/RNoRkB48bk8UIR6IPnyo6WaTVi/E2ZyLutHOQ
+         m5IWPUhWbkCqG7KdRGOl7GP3Kq5ODoKUFBBYAwHwuDKJefW/H7oh7ocfkbDTygU5y6
+         wlQ+IWW5gIi0A==
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     tytso@mit.edu, jaegeuk@kernel.org, linux-ext4@vger.kernel.org,
+        kernel@collabora.com
+Subject: Re: [PATCH 3/5] ext4: Implement ci comparison using fscrypt_name
+Organization: Collabora
+References: <20220322030004.148560-1-krisman@collabora.com>
+        <20220322030004.148560-4-krisman@collabora.com>
+        <YkJ4J0XNSkSSf2Xo@sol.localdomain> <87k0ccrb6v.fsf@collabora.com>
+        <YkYgaUsxBy2gcZte@gmail.com>
+Date:   Mon, 04 Apr 2022 15:59:03 -0400
+In-Reply-To: <YkYgaUsxBy2gcZte@gmail.com> (Eric Biggers's message of "Thu, 31
+        Mar 2022 21:43:05 +0000")
+Message-ID: <87mth0y60o.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2332971d-c0fd-4068-1e1f-08da1670817e
-X-MS-TrafficTypeDiagnostic: BL0PR12MB2419:EE_
-X-Microsoft-Antispam-PRVS: <BL0PR12MB2419772F29B5E0922145FB66FDE59@BL0PR12MB2419.namprd12.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hR88Q/xE8D9V1XrWcJJ26VG6tegdD8+AJXLBkjlzNw2lkMoDifGCY+bJakjKsaN07QCl3f6xIKb7YAa2zMNvYY76aqCFnnxdg5aU9QPwhyyRThIqjXYnWULTkw65HjydptVhHKLquEDTvxYLb6ptDQsaGV1DY4JQqonSVW8OkyrqQ7711A9z6GEmu1Zg4A8J5RgeXGLOpGQQJ0dX24GTtfqr2/OWa8uiQHf2ol7ZwCghKW7ixKBWVV2/8BAsojOORtbHvtYH/fevXydnDjK6KQHCTbBkXeAR/VoMNQWWDE69Eh0pNebhCAc+DaJ/xnQuMqXa1gQbGHtG6WIlt7oiUf4znyf0gzdhHbFsbWjswg71OCK+e2dlTTsJv9tE5lKIE1OYvOV+Waru6VUfu7FEQv0o7rC1TUIEworpr3PbI60OiQcv+pJG0J+kj1FryV0JPZfrzkMWygNcRpGAnvDPf8RMeHCje7Xhd5fBzXZl4BJGFlz1QwjZmdxSbZkWhR7sGy6nOTPUbO5ke7DaSeGBuCV7UBoR0fOHeU+u3Oj6r3Bl7FOcyHyjgpdh90uJyIF4sG3otePLIbH8QSqlDpy9cthLa6w5WOvpYlLeZ/xQxDRNcwLgop4jFz7I9JVBJRObSvywhe7O85Cbo+etsTb61HcQ4RTE348kP1zUAqp9PfE4ymL5h4MXD235Sfg6HYwnA0Ea8bjnrIeqdoytvL9ph71zgievCCFAkjRmHbuRnCU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2717.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(31686004)(38100700002)(7416002)(8936002)(508600001)(4744005)(53546011)(6486002)(6666004)(36756003)(6636002)(6512007)(6506007)(5660300002)(316002)(2906002)(110136005)(66556008)(31696002)(83380400001)(8676002)(86362001)(66476007)(26005)(4326008)(2616005)(66946007)(186003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NnBxOERFVVBnZjcrU0ZBeldBc3Rjb3lHTkEzUkplV2d2QmhGVzEzNm4xZ3F6?=
- =?utf-8?B?WStCc1FueG0reU5Wa1p0akNIUlF1RTJCUFgzNEhjNk1HeEVvcmtncE5TUE9E?=
- =?utf-8?B?QkJQQi85cHMra21adUlpd1U4S2pNemxiM2ZOcVUvVmpSOFFRRFlzcXIrY2I4?=
- =?utf-8?B?RWhZa3FLR1JFM0YwT1ZuREY0aWJHQjYwSWRBTENCeXNBNVU1UmJ5WDlTUnpi?=
- =?utf-8?B?V2ViNzNXc2F4MWM4dWRUN1JyQ1M0bGlOT2tpZlgvakFWdmFUZ1RmNWVOWWxS?=
- =?utf-8?B?bXA2RHBkMWc1T3F1RFF1M08xUk01T1I2MG01NS9RUkVnOC8xWVo3dGhIUSt0?=
- =?utf-8?B?Zm9rNUoyMTIwWHFueXh4REI2aFdhRXdBU0I3NjBwMjFFbW1TQi9EK3JCUVM0?=
- =?utf-8?B?dHEyakJwRDQ3NzVhT1VYWXEwVVV2a0dDV3RHR21IMnNzelI2YzcxNlNFNVBr?=
- =?utf-8?B?Z2g1S0w3OG4yMWtFeEdoSnJKN0h0OWwrbXA5Q2RWRlpSVEpRczNpR1NuL0Uv?=
- =?utf-8?B?aWsyRGIwaGJpVE4xV1c5WDQ4VWtUMHhOenAyeUFjWGRaelRxVFRSZmNIYlBR?=
- =?utf-8?B?QTFDSnozb0dJbWs4ZU5GUE85eU0zNUJsUGVVczVRSDg3UnYwN1V2MENScVEz?=
- =?utf-8?B?L3VXN1dZeFREV0pqNHNkZ3BReWlrZHN2dy9DYzJwckFIb2ZMRGNkM2MzeTBy?=
- =?utf-8?B?cEVlVWJSZmhvbGtEYzBRd3JIdWNLT0xtek5rMlh0WDFOenNmTnJEVytNUWRF?=
- =?utf-8?B?bmFGeGhUMWZzVTJ3bW9KU0RwTGZVRE5acU8zQ29qbWRrOWRRY0RobVlBa3ox?=
- =?utf-8?B?SkN5QXI1aWZaUUpnT2JjLzFNdFdzWk9rc2k3K0hvcmFBVEM5SkhRTXhhcHNI?=
- =?utf-8?B?MVFSaWN3VnV3MTF4aVlZQU8rckdwOU84WWZycmdnZ2lBNGo3ZGtSQVdKcnBC?=
- =?utf-8?B?QnYzQUVUNDQ2bUJFNVVGVzNXSXJld0xVU1VGdHIyY1d5UWIvWDF3QnVPWFlJ?=
- =?utf-8?B?N3p4Zk1LSHZncmtwSjBmWWk2Z0JIV3VSOFFnQm5yQWQ4UUd0SEZPZjE0MjVT?=
- =?utf-8?B?dlFCeU1vMWxxbm1SRC9vWThsQnpOYXJDRWJwT2FYeFpHV1ExUUtrZi9GK0RW?=
- =?utf-8?B?c2FmdHZwRVJnY3JsOVhUZEtNTUgvWTR0dmQ3VkpBQUhkVEp1SnJjNGVXVGpK?=
- =?utf-8?B?dlZ1a0x4cUdmNjJpZ1NHejBwdFI5TFpteFpjckw5UHlEWm44WWF0ZzFkaWF2?=
- =?utf-8?B?TjQ1L3B6cHJNaGgzekJoUjgvaXRmVFJudVZnQWoyMSt3bHMvMU95ZDVJVkFH?=
- =?utf-8?B?OU1aMkJIVHhKcFVGeGI4QmNYNzlxSW96cEJpa3JlbzNpRy9VcEhJQWRkTys0?=
- =?utf-8?B?dDFBOEovRUNUWloxQnkzWHJrVituL0J6Y1pWaytyOFNOVkJyVWhhdkNpZ2w2?=
- =?utf-8?B?cWVqVFo0cStZQXpDVzVHL0duNTdXVGVYVjVyNXNOSXBlbVdkbUdlN2hxTkdP?=
- =?utf-8?B?YjQ3UGU4V2tqeEQrUmE3a08xUzlRNG1QQ0YzUnl2QWJZdDJpeFFUSlUyNmI2?=
- =?utf-8?B?NkQ2OVF3cGtiaGRaMHEvNUd1dXk1czhlQytuSTBKWVQ4RC9EM3oxQWhIc21k?=
- =?utf-8?B?dlRNNm8ycWNHZ2ptM0hCMVJKTk10VzB4QS9pdmVNNTlKZUtVcXZ3MXltaCsy?=
- =?utf-8?B?eS9LcW9FRVFtRGNTUUNONHAxUFpzQWVGa0JFSklYN0tMcU0rbWtYems4a21K?=
- =?utf-8?B?eEY4V3hianF3WkZHMzJDYXNiNzY2M2lhZ1VDcmZiZ29JRFVoYWllRWFxQi84?=
- =?utf-8?B?V2U2UVBBRnk5MTVMaXpGZU5NOE5TRTZwWk15UmNXYmJ4dmgrSWM0L1FrdG4w?=
- =?utf-8?B?NU1LYkQ0UHNHKzQwblFTZHNFMzJNTHpEdXVRdllkaGgzU0ZKYjEwcldpdFpj?=
- =?utf-8?B?d0ZaeExWak9yQ1VMUEM4OGJHbHF1TmRCbm13MGhhMmRES0RLcWJUUTd3aHFj?=
- =?utf-8?B?YU5XaU1EK2dKV2x0cWpZamtlNk85S1ltQ1Q0VHRSUFR4YmJ1cnkvaVV4Wk04?=
- =?utf-8?B?Mk9sSm1KTnJYOVNqQnMySlkzOXhqTlBOYnExbjVmMDZZU0lNc3RSRnZ2VURJ?=
- =?utf-8?B?WStNY2lqSWZ5bVhVRk42UUVEY0NOUUF2amhSRHB1V3pYbFJyUFFVa1JNbzZs?=
- =?utf-8?B?NEpHYzRqNFFvMy8xYk84MTUwUDBVUEphcENFcmkrbVlVd0J5aERnR2tuZ3pt?=
- =?utf-8?B?U1RNNGljVWhWdnBmK3hGMkpNOHZjaWFmU1FxWWd1Tm9sUHJrVVRWY25GdzZz?=
- =?utf-8?B?VmlkSVVJSTVNeFkzOXMxWTU4SUNNL2xGY1NBbUxsZ0hoOW45M0hrQT09?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2332971d-c0fd-4068-1e1f-08da1670817e
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2717.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Apr 2022 19:22:49.3051
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UKOj6L+XfX41j04OzU1tEMZ5guPy2eqa6gWI34D0I4RvQ33d9RqJEWrlyefyHt1CTysziwafahOB3pXGiJmpaQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2419
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -136,32 +54,141 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Eric Biggers <ebiggers@kernel.org> writes:
 
-On 4/4/2022 12:38 PM, Jason Gunthorpe wrote:
-> On Fri, Apr 01, 2022 at 04:08:35PM -0400, Felix Kuehling wrote:
+> On Tue, Mar 29, 2022 at 12:11:04PM -0400, Gabriel Krisman Bertazi wrote:
+>> Eric Biggers <ebiggers@kernel.org> writes:
+>> 
+>> > On Mon, Mar 21, 2022 at 11:00:02PM -0400, Gabriel Krisman Bertazi wrote:
+>> >> By using fscrypt_name here, we can hide most of the caching casefold
+>> >> logic from ext4.  The condition in ext4_match is now quite redundant,
+>> >> but this is addressed in the next patch.
+>> >> 
+>> >> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+>> >> ---
+>> >>  fs/ext4/namei.c         | 26 ++++++++++++--------------
+>> >>  include/linux/fscrypt.h |  4 ++++
+>> >>  2 files changed, 16 insertions(+), 14 deletions(-)
+>> >> 
+>> >> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+>> >> index 8976e5a28c73..71b4b05fae89 100644
+>> >> --- a/fs/ext4/namei.c
+>> >> +++ b/fs/ext4/namei.c
+>> >> @@ -1321,10 +1321,9 @@ static void dx_insert_block(struct dx_frame *frame, u32 hash, ext4_lblk_t block)
+>> >>  /**
+>> >>   * ext4_ci_compare() - Match (case-insensitive) a name with a dirent.
+>> >>   * @parent: Inode of the parent of the dentry.
+>> >> - * @name: name under lookup.
+>> >> + * @fname: name under lookup.
+>> >>   * @de_name: Dirent name.
+>> >>   * @de_name_len: dirent name length.
+>> >> - * @quick: whether @name is already casefolded.
+>> >>   *
+>> >>   * Test whether a case-insensitive directory entry matches the filename
+>> >>   * being searched.  If quick is set, the @name being looked up is
+>> >> @@ -1333,8 +1332,9 @@ static void dx_insert_block(struct dx_frame *frame, u32 hash, ext4_lblk_t block)
+>> >>   * Return: > 0 if the directory entry matches, 0 if it doesn't match, or
+>> >>   * < 0 on error.
+>> >>   */
+>> >> -static int ext4_ci_compare(const struct inode *parent, const struct qstr *name,
+>> >> -			   u8 *de_name, size_t de_name_len, bool quick)
+>> >> +static int ext4_ci_compare(const struct inode *parent,
+>> >> +			   const struct fscrypt_name *fname,
+>> >> +			   u8 *de_name, size_t de_name_len)
+>> >>  {
+>> >>  	const struct super_block *sb = parent->i_sb;
+>> >>  	const struct unicode_map *um = sb->s_encoding;
+>> >> @@ -1357,10 +1357,10 @@ static int ext4_ci_compare(const struct inode *parent, const struct qstr *name,
+>> >>  		entry.len = decrypted_name.len;
+>> >>  	}
+>> >>  
+>> >> -	if (quick)
+>> >> -		ret = utf8_strncasecmp_folded(um, name, &entry);
+>> >> +	if (fname->cf_name.name)
+>> >> +		ret = utf8_strncasecmp_folded(um, &fname->cf_name, &entry);
+>> >>  	else
+>> >> -		ret = utf8_strncasecmp(um, name, &entry);
+>> >> +		ret = utf8_strncasecmp(um, fname->usr_fname, &entry);
+>> >>  
+>> >>  	if (!ret)
+>> >>  		match = true;
+>> >> @@ -1370,8 +1370,8 @@ static int ext4_ci_compare(const struct inode *parent, const struct qstr *name,
+>> >>  		 * the names have invalid characters.
+>> >>  		 */
+>> >>  		ret = 0;
+>> >> -		match = ((name->len == entry.len) &&
+>> >> -			 !memcmp(name->name, entry.name, entry.len));
+>> >> +		match = ((fname->usr_fname->len == entry.len) &&
+>> >> +			 !memcmp(fname->usr_fname->name, entry.name, entry.len));
+>> >>  	}
+>> >>  
+>> >>  out:
+>> >> @@ -1440,6 +1440,8 @@ static bool ext4_match(struct inode *parent,
+>> >>  #endif
+>> >>  
+>> >>  #if IS_ENABLED(CONFIG_UNICODE)
+>> >> +	f.cf_name = fname->cf_name;
+>> >> +
+>> >>  	if (parent->i_sb->s_encoding && IS_CASEFOLDED(parent) &&
+>> >>  	    (!IS_ENCRYPTED(parent) || fscrypt_has_encryption_key(parent))) {
+>> >>  		if (fname->cf_name.name) {
+>> >> @@ -1451,13 +1453,9 @@ static bool ext4_match(struct inode *parent,
+>> >>  					return false;
+>> >>  				}
+>> >>  			}
+>> >> -			ret = ext4_ci_compare(parent, &fname->cf_name, de->name,
+>> >> -					      de->name_len, true);
+>> >> -		} else {
+>> >> -			ret = ext4_ci_compare(parent, fname->usr_fname,
+>> >> -					      de->name, de->name_len, false);
+>> >>  		}
+>> >>  
+>> >> +		ret = ext4_ci_compare(parent, &f, de->name, de->name_len);
+>> >>  		if (ret < 0) {
+>> >>  			/*
+>> >>  			 * Treat comparison errors as not a match.  The
+>> >> diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+>> >> index 91ea9477e9bd..5dc4b3c805e4 100644
+>> >> --- a/include/linux/fscrypt.h
+>> >> +++ b/include/linux/fscrypt.h
+>> >> @@ -36,6 +36,10 @@ struct fscrypt_name {
+>> >>  	u32 minor_hash;
+>> >>  	struct fscrypt_str crypto_buf;
+>> >>  	bool is_nokey_name;
+>> >> +
+>> >> +#ifdef CONFIG_UNICODE
+>> >> +	struct qstr cf_name;
+>> >> +#endif
+>> >>  };
+>> >>  
+>> >
+>> > This seems like the wrong approach.  struct fscrypt_name shouldn't have fields
+>> > that aren't used by the fs/crypto/ layer.
+>> >
+>> > Did you check what f2fs does?  It has a struct f2fs_filename to represent
+>> > everything f2fs needs to know about a filename, and it only uses
+>> > struct fscrypt_name when communicating with the fs/crypto/ layer.
+>> >
+>> > struct ext4_filename already exists.  Couldn't you use that here?
+>> 
+>> Hi Eric,
+>> 
+>> The reason I'm not using struct ext4_filename here is because I'm trying
+>> to make this generic, so this function can be shared across filesystems
+>> implementing casefold.  Since the fscrypt_name abstraction is used for
+>> case-sensitive comparison, I was trying to reuse that type for
+>> case-insensitive as well.  It seemed unnecessary to define a generic
+>> casefold_name type just for passing the cf_name and disk_name to this
+>> function, considering that fscrypt_name is already initialized by
+>> ext4_match.
+>> 
 >
->>> In general I find the vm_normal_lru_page vs vm_normal_page
->>> API highly confusing.  An explicit check for zone device pages
->>> in the dozen or so spots that care has a much better documentation
->>> value, especially if accompanied by comments where it isn't entirely
->>> obvious.
->> OK. We can do that. It would solve the function naming problem, and we'd
->> have more visibility of device page handling in more places in the kernel,
->> which has educational value.
-> Personally I find the 'is page XYZ' pretty confusing, like I don't
-> know half of what the PageKsm annotations are for..
->
-> Testing against a specific property the code goes on to use right away
-> seems more descriptive to me.
+> Which function, specifically, are you trying to share across filesystems?
+> Do you have patches that show what your end goal is?
 
-Hi Jason,
+ext4_ci_compare/f2fs_match_ci_name :)
 
-Are you referring to test for properties such as is_lru_page, 
-is_numa_page, is_lockable_page, etc?
-Otherwise, could you provide an example?
+Let me follow up with a v2 that merges them so it makes more sense.
 
-Regards,
-Alex Sierra
-
->
-> Jason
+-- 
+Gabriel Krisman Bertazi
