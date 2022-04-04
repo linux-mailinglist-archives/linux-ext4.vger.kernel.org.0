@@ -2,170 +2,88 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DFE64F0D07
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Apr 2022 01:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2384F0FDE
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Apr 2022 09:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376702AbiDCXpQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 3 Apr 2022 19:45:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36062 "EHLO
+        id S239545AbiDDHQH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 4 Apr 2022 03:16:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376705AbiDCXpP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 3 Apr 2022 19:45:15 -0400
-Received: from mail104.syd.optusnet.com.au (mail104.syd.optusnet.com.au [211.29.132.246])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 722462E9CC;
-        Sun,  3 Apr 2022 16:43:20 -0700 (PDT)
-Received: from dread.disaster.area (pa49-180-43-123.pa.nsw.optusnet.com.au [49.180.43.123])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id A710653435A;
-        Mon,  4 Apr 2022 09:43:19 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1nb9sM-00DSAi-2u; Mon, 04 Apr 2022 09:43:18 +1000
-Date:   Mon, 4 Apr 2022 09:43:18 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Ritesh Harjani <ritesh.list@gmail.com>
-Cc:     fstests <fstests@vger.kernel.org>, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Ritesh Harjani <riteshh@linux.ibm.com>
-Subject: Re: [PATCHv3 4/4] generic/679: Add a test to check unwritten extents
- tracking
-Message-ID: <20220403234318.GU1609613@dread.disaster.area>
-References: <cover.1648730443.git.ritesh.list@gmail.com>
- <c9a40292799a83e52924b7b748701b3b0aa31c46.1648730443.git.ritesh.list@gmail.com>
+        with ESMTP id S234334AbiDDHQG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Apr 2022 03:16:06 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E2C91E3E2;
+        Mon,  4 Apr 2022 00:14:08 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 07D5C1F37F;
+        Mon,  4 Apr 2022 07:14:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1649056447; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=W4k5k49pn+jL7/s0YiA95ndPbw9oktYc8ZpE4raQd2U=;
+        b=1LMyelwokyDxy5bvNUE/xU1LoGr8+/eGLCsfm031j3/5cp+XcSIcGX34uIkR6ie17yNh+7
+        HVTC90JrMRaf3uaBYKQaKIhm4R+ASEjmJBgc7r/PNRtfbNDA3DrVXX+tqT+1c73ZfxQHp6
+        cn+XFeW2aA23Z4w7I05QA8QZ9vzp1Vo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1649056447;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=W4k5k49pn+jL7/s0YiA95ndPbw9oktYc8ZpE4raQd2U=;
+        b=qCAM3tp3Jt0t7bBgxxC+Ax2I9PCFioLUW6iedsCg6hxfFmlfG93Uya+WvZtKfkdoXFenYx
+        CH5DASZ1NgFkVACg==
+Received: from quack3.suse.cz (unknown [10.100.224.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id CE3B6A3B89;
+        Mon,  4 Apr 2022 07:14:06 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 8F906A06B2; Mon,  4 Apr 2022 09:14:05 +0200 (CEST)
+Date:   Mon, 4 Apr 2022 09:14:05 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     Haowen Bai <baihaowen@meizu.com>, jack@suse.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs: ext2: Fix duplicate included linux/dax.h
+Message-ID: <20220404071405.m5ryafz2ifyg72xs@quack3.lan>
+References: <1648008123-32485-1-git-send-email-baihaowen@meizu.com>
+ <20220323113351.sibsrr3qbpuegfm4@riteshh-domain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c9a40292799a83e52924b7b748701b3b0aa31c46.1648730443.git.ritesh.list@gmail.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.4 cv=deDjYVbe c=1 sm=1 tr=0 ts=624a3117
-        a=MV6E7+DvwtTitA3W+3A2Lw==:117 a=MV6E7+DvwtTitA3W+3A2Lw==:17
-        a=kj9zAlcOel0A:10 a=z0gMJWrwH1QA:10 a=VnNF1IyMAAAA:8 a=7-415B0cAAAA:8
-        a=OHNP50dCb2NrX2JaUOMA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220323113351.sibsrr3qbpuegfm4@riteshh-domain>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Mar 31, 2022 at 06:24:23PM +0530, Ritesh Harjani wrote:
-> From: Ritesh Harjani <riteshh@linux.ibm.com>
+On Wed 23-03-22 17:03:51, Ritesh Harjani wrote:
+> On 22/03/23 12:02PM, Haowen Bai wrote:
+> > Clean up the following includecheck warning:
+> >
+> > fs/ext2/inode.c: linux/dax.h is included more than once.
+> >
 > 
-> With these sequence of operation (in certain cases like with ext4 fast_commit)
-> could miss to track unwritten extents during replay phase
-> (after sudden FS shutdown).
 > 
-> This fstest adds a test case to test this.
+> Checked "make includecheck"
+> This is the only warning coming from fs/ext2/
 > 
-> 5e4d0eba1ccaf19f
-> ext4: fix fast commit may miss tracking range for FALLOC_FL_ZERO_RANGE
+> Thanks for the cleanup. Looks good to me.
+> Feel free to add -
 > 
-> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> ---
->  tests/generic/679     | 65 +++++++++++++++++++++++++++++++++++++++++++
->  tests/generic/679.out |  6 ++++
->  2 files changed, 71 insertions(+)
->  create mode 100755 tests/generic/679
->  create mode 100644 tests/generic/679.out
+> Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
 > 
-> diff --git a/tests/generic/679 b/tests/generic/679
-> new file mode 100755
-> index 00000000..4f35a9cd
-> --- /dev/null
-> +++ b/tests/generic/679
-> @@ -0,0 +1,65 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2022 IBM Corporation.  All Rights Reserved.
-> +#
-> +# FS QA Test 679
-> +#
-> +# Test below sequence of operation which (w/o below kernel patch) in case of
-> +# ext4 with fast_commit may misss to track unwritten extents.
-> +# commit 5e4d0eba1ccaf19f
-> +# ext4: fix fast commit may miss tracking range for FALLOC_FL_ZERO_RANGE
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick log shutdown recoveryloop
-> +
-> +# Override the default cleanup function.
-> +_cleanup()
-> +{
-> +	cd /
-> +	rm -r -f $tmp.*
-> +}
 
-Same as default.
+Thanks. I've added the patch to my tree.
 
-> +
-> +# Import common functions.
-> +. ./common/filter
-> +. ./common/punch
-> +
-> +# real QA test starts here
-> +
-> +# Modify as appropriate.
-> +_supported_fs generic
-> +_require_scratch
-> +_require_xfs_io_command "fzero"
-> +_require_xfs_io_command "fiemap"
-> +_require_scratch_shutdown
-> +
-> +t1=$SCRATCH_MNT/t1
-> +
-> +_scratch_mkfs > $seqres.full 2>&1
-> +
-> +_scratch_mount >> $seqres.full 2>&1
-> +
-> +bs=$(_get_file_block_size $SCRATCH_MNT)
-> +
-> +# create and write data to t1
-> +$XFS_IO_PROG -f -c "pwrite 0 $((100*$bs))" $t1 | _filter_xfs_io_numbers
-> +
-> +# fsync t1
-> +$XFS_IO_PROG -c "fsync" $t1
-> +
-> +# fzero certain range in between
-> +$XFS_IO_PROG -c "fzero -k  $((40*$bs)) $((20*$bs))" $t1
-> +
-> +# fsync t1
-> +$XFS_IO_PROG -c "fsync" $t1
-> +
-> +# shutdown FS now for replay of journal to kick during next mount
-> +_scratch_shutdown -v >> $seqres.full 2>&1
-> +
-> +_scratch_cycle_mount
-> +
-> +# check fiemap reported is valid or not
-> +$XFS_IO_PROG -c "fiemap -v" $t1 | _filter_fiemap_flags $bs
-> +
-> +# success, all done
-> +status=0
-> +exit
-> diff --git a/tests/generic/679.out b/tests/generic/679.out
-> new file mode 100644
-> index 00000000..4d3c3377
-> --- /dev/null
-> +++ b/tests/generic/679.out
-> @@ -0,0 +1,6 @@
-> +QA output created by 679
-> +wrote XXXX/XXXX bytes at offset XXXX
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +0: [0..39]: none
-> +1: [40..59]: unwritten
-> +2: [60..99]: nonelast
+								Honza
 
-This is a subset of the the previous test, and looks like it should
-be tested first before adding the second file and punch operation
-the previous test adds to this write/zero operations. IOWs, they
-look like they could easily be combined into a single test without
-losing anything except having an extra test that has to be run...
-
-Cheers,
-
-Dave.
 -- 
-Dave Chinner
-david@fromorbit.com
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
