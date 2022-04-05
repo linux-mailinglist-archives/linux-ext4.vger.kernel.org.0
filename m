@@ -2,160 +2,279 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B06214F4275
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 Apr 2022 23:44:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97EA44F3FDC
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 Apr 2022 23:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243205AbiDENZo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 5 Apr 2022 09:25:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39214 "EHLO
+        id S235573AbiDEN0B (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 5 Apr 2022 09:26:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380307AbiDELm1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 5 Apr 2022 07:42:27 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 434B010856B;
-        Tue,  5 Apr 2022 04:06:08 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id n6-20020a17090a670600b001caa71a9c4aso2283625pjj.1;
-        Tue, 05 Apr 2022 04:06:08 -0700 (PDT)
+        with ESMTP id S1380520AbiDEMx4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 5 Apr 2022 08:53:56 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2932D3586D
+        for <linux-ext4@vger.kernel.org>; Tue,  5 Apr 2022 04:53:59 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id k21so22804607lfe.4
+        for <linux-ext4@vger.kernel.org>; Tue, 05 Apr 2022 04:53:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=j+wdwc12qZE95ySH1HQbeXjyc++REo1b0Qnn4+adVIU=;
-        b=oyqGsBmX4L/1uWroip4K3nOnUsttJQZgmtBBEVFGABLA0uy540SVJnya8J+/ZQlD9v
-         2psG8zgbaY0B/n6IZ+umEj0I++63NRbRO2W7c5G07Utd+0AeREqW0YoB1CtZRRKtdIwA
-         8+3ZQiwGjXXw0Ox3pPmA89oE6JPeMuMPlMSM3RO68s1+NN761Pb2eISCgM8HFq8pZnoZ
-         JP5/qMDP6eWVJ1d0ZkWjb1wl1j3Ut5RV+KT7BqDk9VTvkyeKIdFjZdlUV1tLZ207P7fe
-         LHLmb6ZfequP++myGlAWLGaY6x0uXWow4ARM9xDCe3FeRwVlMCSLP0Cnt8AVISx5vAgx
-         8CSg==
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=vCX5aiW23yefgecc63cFLFUQq0C7dBZ7yVRDAdJPOpo=;
+        b=GlVI5SDeqj347dB+hNKkcXmI0S4xKM7CTpX3dB6y8IoJmLXiPm81Fw1pmkL+jhfamM
+         tUE4TtVeaEM4tL8FXBwd5j630MeekiBo+8n6FQ6dXwlqRXzsI19jbxARALuwP7r3C95P
+         4yJ45gEWyfZXcKWfAAvs0VeGqSuWIluhZtvtcFLI5FMfPaUsFP9tl9yD/7mU3Q0OYeVQ
+         eIqqVJVG6HINM163/SJNPx0i6DHFl0nKFWyw/gWSBzkZGrr2vxP651rsp6UHs1xNL4wK
+         Od89Bhyowe2YFkWHYzPovopx/CSMOcPgaIXRXA1fJ4uyXAS24CECtycFTpo+rTjpYQ/V
+         b/IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=j+wdwc12qZE95ySH1HQbeXjyc++REo1b0Qnn4+adVIU=;
-        b=XGo8jUjIacCdoH9PW5ZZdRigZE4LHaBvsL/N/iHhRbPjl3wo7zcLSaE5nlL2IxGrJk
-         3vm0IVSuuueQ70jqlwqOi1COpDzwpdu7pyowh/llWa8k6A7Wh44Zj7DRuRmFx572DilT
-         1/piVftky467DPeT/DBbzc9m1SgNumFlbvRa2UZgrv0ySQqxdf2Kur846113vBrIISXZ
-         HrUHVDF4hIGnqgTPqop3hdxa4jn9xVYxKqu6V4IfWVwX22+C/r84IuWoanmcSTOMp717
-         B8Ejm2mLbbgBpBWk7aj8QGpVBCbR90YxtLt34SQ0vybdlSZn1UOE4PMj56L7qWTQnPav
-         MhAw==
-X-Gm-Message-State: AOAM5339/H2qR7gCSGo6gVFIuvyXmTYWleW8pF2ZwUnZK7RxPQ+OXnVj
-        wlHANaKhu508QEkkW+drr+g=
-X-Google-Smtp-Source: ABdhPJwk0WLNGCgMfjAwxXQM/T9tlq11D27bsR0ixlddFb/2PsrH4Bo2ARZ0+4WnC1xPSuP1iE/JnQ==
-X-Received: by 2002:a17:90b:4a88:b0:1c7:9bc:a72e with SMTP id lp8-20020a17090b4a8800b001c709bca72emr3375196pjb.112.1649156767474;
-        Tue, 05 Apr 2022 04:06:07 -0700 (PDT)
-Received: from localhost ([2406:7400:63:792d:bde9:ddd5:53e9:ed83])
-        by smtp.gmail.com with ESMTPSA id bt18-20020a056a00439200b004faad3ae59esm15040322pfb.95.2022.04.05.04.06.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Apr 2022 04:06:07 -0700 (PDT)
-Date:   Tue, 5 Apr 2022 16:36:03 +0530
-From:   Ritesh Harjani <ritesh.list@gmail.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     fstests <fstests@vger.kernel.org>, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Ritesh Harjani <riteshh@linux.ibm.com>
-Subject: Re: [PATCHv3 1/4] generic/468: Add another falloc test entry
-Message-ID: <20220405110603.qqxyivpo4vzj5tlt@riteshh-domain>
-References: <cover.1648730443.git.ritesh.list@gmail.com>
- <75f4c780e8402a8f993cb987e85a31e4895f13de.1648730443.git.ritesh.list@gmail.com>
- <20220403232823.GS1609613@dread.disaster.area>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220403232823.GS1609613@dread.disaster.area>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=vCX5aiW23yefgecc63cFLFUQq0C7dBZ7yVRDAdJPOpo=;
+        b=cXH51owtgYud3dgnxMwaIjW5dFyQpmozB0YSHukXSr+tqEAHcHvxPt/esDP24I71+p
+         M9TENnzYqeLD0gr/9VLSdGq+/LbFH2x01jjsPBW73a8bJON1Oq9bcQYJ3X3bVV4IJnVB
+         e0XFi83TsR0HtYTeJwZm8IjjVCMivzndGGx8fANrSxFY+mmmDTKq1w7915pICVumf+Ot
+         YRKsQXbTo1k/x3pcb4Gcgy2Nz5iBqcdUMcUTuTOu2tERCHgbUxjhHfG/B7Prt1ORwEn1
+         /zd4tqyZYR0fI7bCzTz7+oQYYFwrQ/ToX3PpI9A+l+pV6m5TMNjpiVccbj8MJB8p0XqR
+         nrCQ==
+X-Gm-Message-State: AOAM533s88a9q33m2g6681f6yv6p61BaK391B09PjnI66PyQGHZceBA1
+        jKwwxs5DkRqV3SuUrlUsF5hIubZqPhs=
+X-Google-Smtp-Source: ABdhPJz34eokqppGwRwHXeGNzETl7hSErfEQOQ52VPcX5tNhWZLfm8CtfXCrZnNm1ukHQEPfNaOr/w==
+X-Received: by 2002:a05:6512:2341:b0:448:2465:7cf with SMTP id p1-20020a056512234100b00448246507cfmr2315797lfu.474.1649159637216;
+        Tue, 05 Apr 2022 04:53:57 -0700 (PDT)
+Received: from [192.168.2.15] ([83.234.50.195])
+        by smtp.gmail.com with ESMTPSA id l3-20020a056512332300b0044a34844974sm1481055lfe.12.2022.04.05.04.53.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 05 Apr 2022 04:53:56 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
+Subject: Re: [PATCH v3] ext4: truncate during setxattr leads to kernel panic
+From:   =?utf-8?B?0JHQu9Cw0LPQvtC00LDRgNC10L3QutC+INCQ0YDRgtGR0Lw=?= 
+        <artem.blagodarenko@gmail.com>
+In-Reply-To: <20220402084023.1841375-1-anserper@ya.ru>
+Date:   Tue, 5 Apr 2022 14:53:54 +0300
+Cc:     linux-ext4@vger.kernel.org,
+        Andrew Perepechko <andrew.perepechko@hpe.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <323538E7-7276-4F71-A78D-91E58D27D72E@gmail.com>
+References: <20220402084023.1841375-1-anserper@ya.ru>
+To:     anserper@ya.ru
+X-Mailer: Apple Mail (2.3445.9.7)
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22/04/04 09:28AM, Dave Chinner wrote:
-> On Thu, Mar 31, 2022 at 06:24:20PM +0530, Ritesh Harjani wrote:
-> > From: Ritesh Harjani <riteshh@linux.ibm.com>
-> >
-> > Add another falloc test entry which could hit a kernel bug
-> > with ext4 fast_commit feature w/o below kernel commit [1].
-> >
-> > <log>
-> > [  410.888496][ T2743] BUG: KASAN: use-after-free in ext4_mb_mark_bb+0x26a/0x6c0
-> > [  410.890432][ T2743] Read of size 8 at addr ffff888171886000 by task mount/2743
-> >
-> > This happens when falloc -k size is huge which spans across more than
-> > 1 flex block group in ext4. This causes a bug in fast_commit replay
-> > code which is fixed by kernel commit at [1].
-> >
-> > [1]: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/commit/?h=dev&id=bfdc502a4a4c058bf4cbb1df0c297761d528f54d
-> >
-> > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> > ---
-> >  tests/generic/468     | 8 ++++++++
-> >  tests/generic/468.out | 2 ++
-> >  2 files changed, 10 insertions(+)
-> >
-> > diff --git a/tests/generic/468 b/tests/generic/468
-> > index 95752d3b..5e73cff9 100755
-> > --- a/tests/generic/468
-> > +++ b/tests/generic/468
-> > @@ -34,6 +34,13 @@ _scratch_mkfs >/dev/null 2>&1
-> >  _require_metadata_journaling $SCRATCH_DEV
-> >  _scratch_mount
-> >
-> > +# blocksize and fact are used in the last case of the fsync/fdatasync test.
-> > +# This is mainly trying to test recovery operation in case where the data
-> > +# blocks written, exceeds the default flex group size (32768*4096*16) in ext4.
-> > +blocks=32768
-> > +blocksize=4096
->
-> Block size can change based on mkfs parameters. You should extract
-> this dynamically from the filesystem the test is being run on.
->
+Reviewed-by: Artem Blagodarenko <artem.blagodarenko@gmail.com>
 
-Yes, but we still have kept just 4096 because, anything bigger than that like
-65536 might require a bigger disk size itself to test. The overall size
-requirement of the disk will then become ~36G (32768 * 65536 * 18)
-Hence I went ahead with 4096 which is good enough for testing.
+> 2 =D0=B0=D0=BF=D1=80. 2022 =D0=B3., =D0=B2 11:40, anserper@ya.ru =
+=D0=BD=D0=B0=D0=BF=D0=B8=D1=81=D0=B0=D0=BB(=D0=B0):
+>=20
+> From: Andrew Perepechko <andrew.perepechko@hpe.com>
+>=20
+> When changing a large xattr value to a different large xattr value,
+> the old xattr inode is freed. Truncate during the final iput causes
+> current transaction restart. Eventually, parent inode bh is marked
+> dirty and kernel panic happens when jbd2 figures out that this bh
+> belongs to the committed transaction.
+>=20
+> A possible fix is to call this final iput in a separate thread.
+> This way, setxattr transactions will never be split into two.
+> Since the setxattr code adds xattr inodes with nlink=3D0 into the
+> orphan list, old xattr inodes will be properly cleaned up in
+> any case.
+>=20
+> Signed-off-by: Andrew Perepechko <andrew.perepechko@hpe.com>
+> HPE-bug-id: LUS-10534
+>=20
+> Changes since v1:
+> - fixed a bug added during the porting
+> - fixed a workqueue related deadlock reported by Tetsuo Handa
+> ---
+> fs/ext4/ext4.h    |  7 +++++--
+> fs/ext4/page-io.c |  2 +-
+> fs/ext4/super.c   | 15 ++++++++-------
+> fs/ext4/xattr.c   | 39 +++++++++++++++++++++++++++++++++++++--
+> 4 files changed, 51 insertions(+), 12 deletions(-)
+>=20
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 3f87cca49f0c..52db5d6bae7f 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -1650,8 +1650,11 @@ struct ext4_sb_info {
+> 	struct flex_groups * __rcu *s_flex_groups;
+> 	ext4_group_t s_flex_groups_allocated;
+>=20
+> -	/* workqueue for reserved extent conversions (buffered io) */
+> -	struct workqueue_struct *rsv_conversion_wq;
+> +	/*
+> +	 * workqueue for reserved extent conversions (buffered io)
+> +	 * and large ea inodes reclaim
+> +	 */
+> +	struct workqueue_struct *s_misc_wq;
+>=20
+> 	/* timer for periodic error stats printing */
+> 	struct timer_list s_err_report;
+> diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
+> index 495ce59fb4ad..0142b88471ff 100644
+> --- a/fs/ext4/page-io.c
+> +++ b/fs/ext4/page-io.c
+> @@ -228,7 +228,7 @@ static void ext4_add_complete_io(ext4_io_end_t =
+*io_end)
+> 	WARN_ON(!(io_end->flag & EXT4_IO_END_UNWRITTEN));
+> 	WARN_ON(!io_end->handle && sbi->s_journal);
+> 	spin_lock_irqsave(&ei->i_completed_io_lock, flags);
+> -	wq =3D sbi->rsv_conversion_wq;
+> +	wq =3D sbi->s_misc_wq;
+> 	if (list_empty(&ei->i_rsv_conversion_list))
+> 		queue_work(wq, &ei->i_rsv_conversion_work);
+> 	list_add_tail(&io_end->list, &ei->i_rsv_conversion_list);
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 81749eaddf4c..ee03f593b264 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -1200,10 +1200,11 @@ static void ext4_put_super(struct super_block =
+*sb)
+> 	int i, err;
+>=20
+> 	ext4_unregister_li_request(sb);
+> +	flush_workqueue(sbi->s_misc_wq);
+> 	ext4_quota_off_umount(sb);
+>=20
+> 	flush_work(&sbi->s_error_work);
+> -	destroy_workqueue(sbi->rsv_conversion_wq);
+> +	destroy_workqueue(sbi->s_misc_wq);
+> 	ext4_release_orphan_info(sb);
+>=20
+> 	/*
+> @@ -5294,9 +5295,9 @@ static int __ext4_fill_super(struct fs_context =
+*fc, struct super_block *sb)
+> 	 * The maximum number of concurrent works can be high and
+> 	 * concurrency isn't really necessary.  Limit it to 1.
+> 	 */
+> -	EXT4_SB(sb)->rsv_conversion_wq =3D
+> -		alloc_workqueue("ext4-rsv-conversion", WQ_MEM_RECLAIM | =
+WQ_UNBOUND, 1);
+> -	if (!EXT4_SB(sb)->rsv_conversion_wq) {
+> +	EXT4_SB(sb)->s_misc_wq =3D
+> +		alloc_workqueue("ext4-misc", WQ_MEM_RECLAIM | =
+WQ_UNBOUND, 1);
+> +	if (!EXT4_SB(sb)->s_misc_wq) {
+> 		printk(KERN_ERR "EXT4-fs: failed to create =
+workqueue\n");
+> 		ret =3D -ENOMEM;
+> 		goto failed_mount4;
+> @@ -5514,8 +5515,8 @@ static int __ext4_fill_super(struct fs_context =
+*fc, struct super_block *sb)
+> 	sb->s_root =3D NULL;
+> failed_mount4:
+> 	ext4_msg(sb, KERN_ERR, "mount failed");
+> -	if (EXT4_SB(sb)->rsv_conversion_wq)
+> -		destroy_workqueue(EXT4_SB(sb)->rsv_conversion_wq);
+> +	if (EXT4_SB(sb)->s_misc_wq)
+> +		destroy_workqueue(EXT4_SB(sb)->s_misc_wq);
+> failed_mount_wq:
+> 	ext4_xattr_destroy_cache(sbi->s_ea_inode_cache);
+> 	sbi->s_ea_inode_cache =3D NULL;
+> @@ -6129,7 +6130,7 @@ static int ext4_sync_fs(struct super_block *sb, =
+int wait)
+> 		return 0;
+>=20
+> 	trace_ext4_sync_fs(sb, wait);
+> -	flush_workqueue(sbi->rsv_conversion_wq);
+> +	flush_workqueue(sbi->s_misc_wq);
+> 	/*
+> 	 * Writeback quota in non-journalled quota case - journalled =
+quota has
+> 	 * no dirty dquots
+> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+> index 042325349098..ee13675fbead 100644
+> --- a/fs/ext4/xattr.c
+> +++ b/fs/ext4/xattr.c
+> @@ -1544,6 +1544,36 @@ static int =
+ext4_xattr_inode_lookup_create(handle_t *handle, struct inode *inode,
+> 	return 0;
+> }
+>=20
+> +struct delayed_iput_work {
+> +	struct work_struct work;
+> +	struct inode *inode;
+> +};
+> +
+> +static void delayed_iput_fn(struct work_struct *work)
+> +{
+> +	struct delayed_iput_work *diwork;
+> +
+> +	diwork =3D container_of(work, struct delayed_iput_work, work);
+> +	iput(diwork->inode);
+> +	kfree(diwork);
+> +}
+> +
+> +static void delayed_iput(struct inode *inode, struct =
+delayed_iput_work *work)
+> +{
+> +	if (!inode) {
+> +		kfree(work);
+> +		return;
+> +	}
+> +
+> +	if (!work) {
+> +		iput(inode);
+> +	} else {
+> +		INIT_WORK(&work->work, delayed_iput_fn);
+> +		work->inode =3D inode;
+> +		queue_work(EXT4_SB(inode->i_sb)->s_misc_wq, =
+&work->work);
+> +	}
+> +}
+> +
+> /*
+>  * Reserve min(block_size/8, 1024) bytes for xattr entries/names if =
+ea_inode
+>  * feature is enabled.
+> @@ -1561,6 +1591,7 @@ static int ext4_xattr_set_entry(struct =
+ext4_xattr_info *i,
+> 	int in_inode =3D i->in_inode;
+> 	struct inode *old_ea_inode =3D NULL;
+> 	struct inode *new_ea_inode =3D NULL;
+> +	struct delayed_iput_work *diwork =3D NULL;
+> 	size_t old_size, new_size;
+> 	int ret;
+>=20
+> @@ -1637,7 +1668,11 @@ static int ext4_xattr_set_entry(struct =
+ext4_xattr_info *i,
+> 	 * Finish that work before doing any modifications to the xattr =
+data.
+> 	 */
+> 	if (!s->not_found && here->e_value_inum) {
+> -		ret =3D ext4_xattr_inode_iget(inode,
+> +		diwork =3D kmalloc(sizeof(*diwork), GFP_NOFS);
+> +		if (!diwork)
+> +			ret =3D -ENOMEM;
+> +		else
+> +			ret =3D ext4_xattr_inode_iget(inode,
+> 					    =
+le32_to_cpu(here->e_value_inum),
+> 					    le32_to_cpu(here->e_hash),
+> 					    &old_ea_inode);
+> @@ -1790,7 +1825,7 @@ static int ext4_xattr_set_entry(struct =
+ext4_xattr_info *i,
+>=20
+> 	ret =3D 0;
+> out:
+> -	iput(old_ea_inode);
+> +	delayed_iput(old_ea_inode, diwork);
+> 	iput(new_ea_inode);
+> 	return ret;
+> }
+> --=20
+> 2.25.1
+>=20
 
-But sure, I will add a comment explaining why we have hardcoded it to 4096
-so that others don't get confused. Larger than this size disk anyway doesn't get
-tested much right?
-
-
-> > +fact=18
->
-> What is "fact" supposed to mean?
->
-> Indeed, wouldn't this simply be better as something like:
->
-> larger_than_ext4_fg_size=$((32768 * $blksize * 18))
->
-> And then
->
-> >  testfile=$SCRATCH_MNT/testfile
-> >
-> >  # check inode metadata after shutdown
-> > @@ -85,6 +92,7 @@ for i in fsync fdatasync; do
-> >  	test_falloc $i "-k " 1024
-> >  	test_falloc $i "-k " 4096
-> >  	test_falloc $i "-k " 104857600
-> > +	test_falloc $i "-k " $(($blocks*$blocksize*$fact))
->
-> 	test_falloc $i "-k " $larger_than_ext4_fg_size
->
-
-Yes, looks good to me. Thanks for suggestion.
-
-
-> And just scrub all the sizes from the golden output?
->
-
-This won't be needed since I still would like to go with 4096 blocksize,
-to avoid a large disk size requirement which anyway won't be tested much.
-
-If this sounds good to you, I will fix rest of the changes as discussed in
-the next revision.
-
--ritesh
