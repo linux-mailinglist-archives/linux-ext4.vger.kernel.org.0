@@ -2,184 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8D84F21DE
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 Apr 2022 06:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7854F26A2
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 Apr 2022 10:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229643AbiDECUl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 4 Apr 2022 22:20:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54802 "EHLO
+        id S232833AbiDEIEB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 5 Apr 2022 04:04:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbiDECUl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Apr 2022 22:20:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A904D1AC41F;
-        Mon,  4 Apr 2022 18:15:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7C05D61794;
-        Tue,  5 Apr 2022 01:10:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5985C2BBE4;
-        Tue,  5 Apr 2022 01:10:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649121043;
-        bh=/wQGv+a5YNqAzNePjyG4n29JhJYDL+Zyw5nRut7cPrc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=q8VfEa/oASHdKAkWs2vcgyr8IFyfZpgeO+2YxRec8fu1S5I/16C+2g1X8fOEDJ/dB
-         64eOp+fLrNCiX4pmDDz89Fvaz28wO5peHW1tvH8Q+ANFh8+b3JSAnWgTGSQNUnuMfY
-         GvDS3RbRdDy3f0v35lJ6CsuXQxnlXMq+uHCcECfkLY8apdfr3xbR7Nrm4TC6erTq1u
-         x8aKSIeDPdXmMZqU0KAZEKjtNJN/2enPWNfDMlHiU3yzn+DlIZORiMljEtv48rXNZN
-         +xS+ZQcGnl+E3Z37rSp9+BvQxGB7G7gIziWS54dIpEFGfYRYNpyU3TlXt9kBNrnKtT
-         rjU1AZVFsuHyQ==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, ceph-devel@vger.kernel.org
-Subject: [PATCH] fscrypt: split up FS_CRYPTO_BLOCK_SIZE
-Date:   Mon,  4 Apr 2022 18:09:14 -0700
-Message-Id: <20220405010914.18519-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.35.1
+        with ESMTP id S234270AbiDEH6G (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 5 Apr 2022 03:58:06 -0400
+X-Greylist: delayed 474 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Apr 2022 00:52:11 PDT
+Received: from mail.bizcall.pl (mail.bizcall.pl [192.71.213.112])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD829BAE7
+        for <linux-ext4@vger.kernel.org>; Tue,  5 Apr 2022 00:52:10 -0700 (PDT)
+Received: by mail.bizcall.pl (Postfix, from userid 1001)
+        id 0EE2941628; Tue,  5 Apr 2022 09:44:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=bizcall.pl; s=mail;
+        t=1649144655; bh=L7rZPDqncV/PGNK3vBL4eFyhOA8rMHMu3jCfxnl4mEc=;
+        h=Date:From:To:Subject:From;
+        b=bEbBLGA5ilLkwl52PCOYMsWyFreNpTT59QxvnU+vhAayPOWckadeUoW3pDVYCZtkV
+         0QDSOnM+MfirtGvwksFAB9glssDKZQE97Zm3wjzwsBAlzzESImlxscWezpccIaYu8D
+         Ab3ebEB5uDX7qeLenTgUkXuHx/lztg254KmCwn+7KQCkqBtJGeD8DKTVKd+CQCdvQy
+         pse2Xxlxu+PHozK6M0XcXhfYK9PwGezRYYTAjcbjCQjxgYzTPHzB+GOaZqG5ZV66FB
+         I8fsznAAbRq9qBW32zlqwlWoYqblU0DG3hnUcmhKSyuHhRjzTdnwDe6TZV9BeTFFAc
+         /0NO6GcpdbRFw==
+Received: by mail.bizcall.pl for <linux-ext4@vger.kernel.org>; Tue,  5 Apr 2022 07:43:50 GMT
+Message-ID: <20220405084501-0.1.1v.5hx7.0.c546cydzs8@bizcall.pl>
+Date:   Tue,  5 Apr 2022 07:43:50 GMT
+From:   "Marek Onufrowicz" <marek.onufrowicz@bizcall.pl>
+To:     <linux-ext4@vger.kernel.org>
+Subject: Prezentacja
+X-Mailer: mail.bizcall.pl
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+Dzie=C5=84 dobry!
 
-FS_CRYPTO_BLOCK_SIZE is neither the filesystem block size nor the
-granularity of encryption.  Rather, it defines two logically separate
-constraints that both arise from the block size of the AES cipher:
+Czy m=C3=B3g=C5=82bym przedstawi=C4=87 rozwi=C4=85zanie, kt=C3=B3re umo=C5=
+=BCliwia monitoring ka=C5=BCdego auta w czasie rzeczywistym w tym jego po=
+zycj=C4=99, zu=C5=BCycie paliwa i przebieg?
 
-- The alignment required for the lengths of file contents blocks
-- The minimum input/output length for the filenames encryption modes
+Dodatkowo nasze narz=C4=99dzie minimalizuje koszty utrzymania samochod=C3=
+=B3w, skraca czas przejazd=C3=B3w, a tak=C5=BCe tworzenie planu tras czy =
+dostaw.
 
-Since there are way too many things called the "block size", and the
-connection with the AES block size is not easily understood, split
-FS_CRYPTO_BLOCK_SIZE into two constants FSCRYPT_CONTENTS_ALIGNMENT and
-FSCRYPT_FNAME_MIN_MSG_LEN that more clearly describe what they are.
+Z naszej wiedzy i do=C5=9Bwiadczenia korzysta ju=C5=BC ponad 49 tys. Klie=
+nt=C3=B3w. Monitorujemy 809 000 pojazd=C3=B3w na ca=C5=82ym =C5=9Bwiecie,=
+ co jest nasz=C4=85 najlepsz=C4=85 wizyt=C3=B3wk=C4=85.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/crypto/crypto.c      | 10 +++++-----
- fs/crypto/fname.c       | 11 +++++++++--
- fs/ubifs/ubifs.h        |  2 +-
- include/linux/fscrypt.h | 12 +++++++++++-
- 4 files changed, 26 insertions(+), 9 deletions(-)
+Bardzo prosz=C4=99 o e-maila zwrotnego, je=C5=9Bli mogliby=C5=9Bmy wsp=C3=
+=B3lnie om=C3=B3wi=C4=87 potencja=C5=82 wykorzystania takiego rozwi=C4=85=
+zania w Pa=C5=84stwa firmie.
 
-diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index 526a4c1bed994..e78be66bbf015 100644
---- a/fs/crypto/crypto.c
-+++ b/fs/crypto/crypto.c
-@@ -113,7 +113,7 @@ int fscrypt_crypt_block(const struct inode *inode, fscrypt_direction_t rw,
- 
- 	if (WARN_ON_ONCE(len <= 0))
- 		return -EINVAL;
--	if (WARN_ON_ONCE(len % FS_CRYPTO_BLOCK_SIZE != 0))
-+	if (WARN_ON_ONCE(len % FSCRYPT_CONTENTS_ALIGNMENT != 0))
- 		return -EINVAL;
- 
- 	fscrypt_generate_iv(&iv, lblk_num, ci);
-@@ -213,8 +213,8 @@ EXPORT_SYMBOL(fscrypt_encrypt_pagecache_blocks);
-  * fscrypt_encrypt_block_inplace() - Encrypt a filesystem block in-place
-  * @inode:     The inode to which this block belongs
-  * @page:      The page containing the block to encrypt
-- * @len:       Size of block to encrypt.  Doesn't need to be a multiple of the
-- *		fs block size, but must be a multiple of FS_CRYPTO_BLOCK_SIZE.
-+ * @len:       Size of block to encrypt.  This must be a multiple of
-+ *		FSCRYPT_CONTENTS_ALIGNMENT.
-  * @offs:      Byte offset within @page at which the block to encrypt begins
-  * @lblk_num:  Filesystem logical block number of the block, i.e. the 0-based
-  *		number of the block within the file
-@@ -283,8 +283,8 @@ EXPORT_SYMBOL(fscrypt_decrypt_pagecache_blocks);
-  * fscrypt_decrypt_block_inplace() - Decrypt a filesystem block in-place
-  * @inode:     The inode to which this block belongs
-  * @page:      The page containing the block to decrypt
-- * @len:       Size of block to decrypt.  Doesn't need to be a multiple of the
-- *		fs block size, but must be a multiple of FS_CRYPTO_BLOCK_SIZE.
-+ * @len:       Size of block to decrypt.  This must be a multiple of
-+ *		FSCRYPT_CONTENTS_ALIGNMENT.
-  * @offs:      Byte offset within @page at which the block to decrypt begins
-  * @lblk_num:  Filesystem logical block number of the block, i.e. the 0-based
-  *		number of the block within the file
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index a9be4bc74a94a..14e0ef5e9a20a 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -18,6 +18,13 @@
- #include <crypto/skcipher.h>
- #include "fscrypt_private.h"
- 
-+/*
-+ * The minimum message length (input and output length), in bytes, for all
-+ * filenames encryption modes.  Filenames shorter than this will be zero-padded
-+ * before being encrypted.
-+ */
-+#define FSCRYPT_FNAME_MIN_MSG_LEN 16
-+
- /*
-  * struct fscrypt_nokey_name - identifier for directory entry when key is absent
-  *
-@@ -267,7 +274,7 @@ bool fscrypt_fname_encrypted_size(const union fscrypt_policy *policy,
- 
- 	if (orig_len > max_len)
- 		return false;
--	encrypted_len = max(orig_len, (u32)FS_CRYPTO_BLOCK_SIZE);
-+	encrypted_len = max_t(u32, orig_len, FSCRYPT_FNAME_MIN_MSG_LEN);
- 	encrypted_len = round_up(encrypted_len, padding);
- 	*encrypted_len_ret = min(encrypted_len, max_len);
- 	return true;
-@@ -350,7 +357,7 @@ int fscrypt_fname_disk_to_usr(const struct inode *inode,
- 		return 0;
- 	}
- 
--	if (iname->len < FS_CRYPTO_BLOCK_SIZE)
-+	if (iname->len < FSCRYPT_FNAME_MIN_MSG_LEN)
- 		return -EUCLEAN;
- 
- 	if (fscrypt_has_encryption_key(inode))
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 008fa46ef61e7..7d6d2f152e039 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -132,7 +132,7 @@
- #define WORST_COMPR_FACTOR 2
- 
- #ifdef CONFIG_FS_ENCRYPTION
--#define UBIFS_CIPHER_BLOCK_SIZE FS_CRYPTO_BLOCK_SIZE
-+#define UBIFS_CIPHER_BLOCK_SIZE FSCRYPT_CONTENTS_ALIGNMENT
- #else
- #define UBIFS_CIPHER_BLOCK_SIZE 0
- #endif
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 50d92d805bd8c..efc7f96e5e26b 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -18,7 +18,17 @@
- #include <linux/slab.h>
- #include <uapi/linux/fscrypt.h>
- 
--#define FS_CRYPTO_BLOCK_SIZE		16
-+/*
-+ * The lengths of all file contents blocks must be divisible by this value.
-+ * This is needed to ensure that all contents encryption modes will work, as
-+ * some of the supported modes don't support arbitrarily byte-aligned messages.
-+ *
-+ * Since the needed alignment is 16 bytes, most filesystems will meet this
-+ * requirement naturally, as typical block sizes are powers of 2.  However, if a
-+ * filesystem can generate arbitrarily byte-aligned block lengths (e.g., via
-+ * compression), then it will need to pad to this alignment before encryption.
-+ */
-+#define FSCRYPT_CONTENTS_ALIGNMENT 16
- 
- union fscrypt_policy;
- struct fscrypt_info;
--- 
-2.35.1
 
+Pozdrawiam,
+Marek Onufrowicz
