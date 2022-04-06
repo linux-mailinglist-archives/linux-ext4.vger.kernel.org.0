@@ -2,124 +2,162 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7ED34F57DE
-	for <lists+linux-ext4@lfdr.de>; Wed,  6 Apr 2022 10:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E92354F5840
+	for <lists+linux-ext4@lfdr.de>; Wed,  6 Apr 2022 11:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349904AbiDFIgM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 6 Apr 2022 04:36:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50446 "EHLO
+        id S241319AbiDFJPU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 6 Apr 2022 05:15:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1386180AbiDFIeK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 6 Apr 2022 04:34:10 -0400
-Received: from mail104.syd.optusnet.com.au (mail104.syd.optusnet.com.au [211.29.132.246])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 567853A7ABF;
-        Tue,  5 Apr 2022 21:05:11 -0700 (PDT)
-Received: from dread.disaster.area (pa49-186-233-190.pa.vic.optusnet.com.au [49.186.233.190])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 0ACAE534493;
-        Wed,  6 Apr 2022 14:05:10 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1nbwuq-00EJao-I2; Wed, 06 Apr 2022 14:05:08 +1000
-Date:   Wed, 6 Apr 2022 14:05:08 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Ritesh Harjani <ritesh.list@gmail.com>
-Cc:     fstests <fstests@vger.kernel.org>, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Ritesh Harjani <riteshh@linux.ibm.com>
-Subject: Re: [PATCHv3 1/4] generic/468: Add another falloc test entry
-Message-ID: <20220406040508.GC1609613@dread.disaster.area>
-References: <cover.1648730443.git.ritesh.list@gmail.com>
- <75f4c780e8402a8f993cb987e85a31e4895f13de.1648730443.git.ritesh.list@gmail.com>
- <20220403232823.GS1609613@dread.disaster.area>
- <20220405110603.qqxyivpo4vzj5tlt@riteshh-domain>
+        with ESMTP id S1349283AbiDFJCq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 6 Apr 2022 05:02:46 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E113948EC7A;
+        Tue,  5 Apr 2022 23:05:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=eIMQeXXWWkWx5FDwNbE0TlkL2lmBU9S9LJMrY9Onkc8=; b=VZ+7ypRmFaBJu2hWoqIAVoWmYj
+        4xuOKPhldWs90pyh7ymg8zDgtPiY3fUX65YZt7O8odlZK2biQektgi2RBU0M6b67r5qzYVAWooKMG
+        RUcSTyL9JbVdK+NxQGE8XxOqcy/ecJseZVyWJSGGYU9geNZke8bWZ+0hwzP7GapHHPs8RfgfuSXJe
+        Y6P+Puu3Utc5OgunETt6hMAarqS36XMC4GrXZMgHCqwyaBIKi8AV3Se7oh/6MaZCw/a19Dt2QCcAQ
+        3dQhNCC9soJ3UjvoF59FChYkHOkYI2VJYBUrVQVE7FpoCLMPp5lZq0dB9zF2n/zhNS+Ksy6vRUvVU
+        mD8TTxXw==;
+Received: from 213-225-3-188.nat.highway.a1.net ([213.225.3.188] helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nbynA-003ukl-9g; Wed, 06 Apr 2022 06:05:20 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     dm-devel@redhat.com, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-block@vger.kernel.org, drbd-dev@lists.linbit.com,
+        nbd@other.debian.org, ceph-devel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net,
+        linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@oss.oracle.com, linux-mm@kvack.org
+Subject: use block_device based APIs in block layer consumers
+Date:   Wed,  6 Apr 2022 08:04:49 +0200
+Message-Id: <20220406060516.409838-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220405110603.qqxyivpo4vzj5tlt@riteshh-domain>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.4 cv=VuxAv86n c=1 sm=1 tr=0 ts=624d1176
-        a=bHAvQTfMiaNt/bo4vVGwyA==:117 a=bHAvQTfMiaNt/bo4vVGwyA==:17
-        a=kj9zAlcOel0A:10 a=z0gMJWrwH1QA:10 a=VnNF1IyMAAAA:8 a=VwQbUJbxAAAA:8
-        a=7-415B0cAAAA:8 a=YONGHUKn3BUHUCDE1yQA:9 a=CjuIK1q_8ugA:10
-        a=AjGcO6oz07-iQ99wixmX:22 a=biEYGPWJfzWAr4FL6Ov7:22
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Apr 05, 2022 at 04:36:03PM +0530, Ritesh Harjani wrote:
-> On 22/04/04 09:28AM, Dave Chinner wrote:
-> > On Thu, Mar 31, 2022 at 06:24:20PM +0530, Ritesh Harjani wrote:
-> > > From: Ritesh Harjani <riteshh@linux.ibm.com>
-> > >
-> > > Add another falloc test entry which could hit a kernel bug
-> > > with ext4 fast_commit feature w/o below kernel commit [1].
-> > >
-> > > <log>
-> > > [  410.888496][ T2743] BUG: KASAN: use-after-free in ext4_mb_mark_bb+0x26a/0x6c0
-> > > [  410.890432][ T2743] Read of size 8 at addr ffff888171886000 by task mount/2743
-> > >
-> > > This happens when falloc -k size is huge which spans across more than
-> > > 1 flex block group in ext4. This causes a bug in fast_commit replay
-> > > code which is fixed by kernel commit at [1].
-> > >
-> > > [1]: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/commit/?h=dev&id=bfdc502a4a4c058bf4cbb1df0c297761d528f54d
-> > >
-> > > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> > > ---
-> > >  tests/generic/468     | 8 ++++++++
-> > >  tests/generic/468.out | 2 ++
-> > >  2 files changed, 10 insertions(+)
-> > >
-> > > diff --git a/tests/generic/468 b/tests/generic/468
-> > > index 95752d3b..5e73cff9 100755
-> > > --- a/tests/generic/468
-> > > +++ b/tests/generic/468
-> > > @@ -34,6 +34,13 @@ _scratch_mkfs >/dev/null 2>&1
-> > >  _require_metadata_journaling $SCRATCH_DEV
-> > >  _scratch_mount
-> > >
-> > > +# blocksize and fact are used in the last case of the fsync/fdatasync test.
-> > > +# This is mainly trying to test recovery operation in case where the data
-> > > +# blocks written, exceeds the default flex group size (32768*4096*16) in ext4.
-> > > +blocks=32768
-> > > +blocksize=4096
-> >
-> > Block size can change based on mkfs parameters. You should extract
-> > this dynamically from the filesystem the test is being run on.
-> >
-> 
-> Yes, but we still have kept just 4096 because, anything bigger than that like
-> 65536 might require a bigger disk size itself to test. The overall size
-> requirement of the disk will then become ~36G (32768 * 65536 * 18)
-> Hence I went ahead with 4096 which is good enough for testing.
+Hi Jens,
 
-If the test setup doesn't have a disk large enough, then the test
-should be skipped. That's what '_require_scratch_size' is for.
+this series cleanups up the block layer API so that APIs consumed
+by file systems are (almost) only struct block_devic based, so that
+file systems don't have to poke into block layer internals like the
+request_queue.
 
-i.e. _require_scratch_size $larger_than_ext4_fg_size
+I also found a bunch of existing bugs related to partition offsets
+and discard so these are fixed while going along.
 
-Will do that check once we've calculated the size needed.
-
-> But sure, I will add a comment explaining why we have hardcoded it to 4096
-> so that others don't get confused. Larger than this size disk anyway doesn't get
-> tested much right?
-
-You shouldn't be constricting the test based on assumptions about
-test configurations. If someone decides to test 64k block size, then
-they can size their devices appropriately for the configuration they
-want to test.  If a 64kB block size filesystem can overrun the
-on-disk structure and fail, then the test should exercise that and
-fail appropriately.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Diffstat:
+ arch/um/drivers/ubd_kern.c           |    2 
+ block/blk-core.c                     |    4 -
+ block/blk-lib.c                      |  124 ++++++++++++++++++++---------------
+ block/blk-mq-debugfs.c               |    2 
+ block/blk-settings.c                 |   74 ++++++++++++++++++++
+ block/blk.h                          |   14 ---
+ block/fops.c                         |    2 
+ block/genhd.c                        |    4 -
+ block/ioctl.c                        |   48 ++++++++++---
+ block/partitions/core.c              |   12 ---
+ drivers/block/drbd/drbd_main.c       |   53 +++++++-------
+ drivers/block/drbd/drbd_nl.c         |   94 +++++++++++---------------
+ drivers/block/drbd/drbd_receiver.c   |   13 +--
+ drivers/block/loop.c                 |   15 +---
+ drivers/block/nbd.c                  |    3 
+ drivers/block/null_blk/main.c        |    1 
+ drivers/block/rbd.c                  |    1 
+ drivers/block/rnbd/rnbd-clt.c        |    6 -
+ drivers/block/rnbd/rnbd-srv-dev.h    |    8 --
+ drivers/block/rnbd/rnbd-srv.c        |    5 -
+ drivers/block/virtio_blk.c           |    2 
+ drivers/block/xen-blkback/blkback.c  |   15 ++--
+ drivers/block/xen-blkback/xenbus.c   |    9 --
+ drivers/block/xen-blkfront.c         |    7 -
+ drivers/block/zram/zram_drv.c        |    1 
+ drivers/md/bcache/alloc.c            |    2 
+ drivers/md/bcache/request.c          |    4 -
+ drivers/md/bcache/super.c            |    3 
+ drivers/md/bcache/sysfs.c            |    2 
+ drivers/md/dm-cache-target.c         |    9 --
+ drivers/md/dm-clone-target.c         |    9 --
+ drivers/md/dm-io.c                   |    2 
+ drivers/md/dm-log-writes.c           |    3 
+ drivers/md/dm-raid.c                 |    9 --
+ drivers/md/dm-table.c                |   25 +------
+ drivers/md/dm-thin.c                 |   15 ----
+ drivers/md/dm.c                      |    3 
+ drivers/md/md-linear.c               |   11 ---
+ drivers/md/md.c                      |    5 -
+ drivers/md/raid0.c                   |    7 -
+ drivers/md/raid1.c                   |   18 -----
+ drivers/md/raid10.c                  |   20 -----
+ drivers/md/raid5-cache.c             |    8 +-
+ drivers/md/raid5.c                   |   14 +--
+ drivers/mmc/core/queue.c             |    3 
+ drivers/mtd/mtd_blkdevs.c            |    1 
+ drivers/nvme/host/core.c             |    6 -
+ drivers/nvme/target/io-cmd-bdev.c    |    2 
+ drivers/nvme/target/zns.c            |    3 
+ drivers/s390/block/dasd_fba.c        |    1 
+ drivers/scsi/sd.c                    |    2 
+ drivers/target/target_core_device.c  |   19 ++---
+ drivers/target/target_core_file.c    |   10 +-
+ drivers/target/target_core_iblock.c  |   17 +---
+ fs/btrfs/disk-io.c                   |    3 
+ fs/btrfs/extent-tree.c               |    8 +-
+ fs/btrfs/ioctl.c                     |   12 +--
+ fs/btrfs/volumes.c                   |    4 -
+ fs/btrfs/zoned.c                     |    3 
+ fs/direct-io.c                       |   32 +--------
+ fs/exfat/file.c                      |    5 -
+ fs/exfat/super.c                     |   10 --
+ fs/ext4/ioctl.c                      |   10 --
+ fs/ext4/mballoc.c                    |   10 +-
+ fs/ext4/super.c                      |   10 --
+ fs/f2fs/f2fs.h                       |    3 
+ fs/f2fs/file.c                       |   19 ++---
+ fs/f2fs/segment.c                    |    8 --
+ fs/fat/file.c                        |    5 -
+ fs/fat/inode.c                       |   10 --
+ fs/gfs2/rgrp.c                       |    7 -
+ fs/iomap/direct-io.c                 |    3 
+ fs/jbd2/journal.c                    |    9 --
+ fs/jfs/ioctl.c                       |    5 -
+ fs/jfs/super.c                       |    8 --
+ fs/nilfs2/ioctl.c                    |    6 -
+ fs/nilfs2/sufile.c                   |    4 -
+ fs/nilfs2/the_nilfs.c                |    4 -
+ fs/ntfs3/file.c                      |    6 -
+ fs/ntfs3/super.c                     |   10 +-
+ fs/ocfs2/ioctl.c                     |    5 -
+ fs/super.c                           |    2 
+ fs/xfs/xfs_discard.c                 |    8 +-
+ fs/xfs/xfs_log_cil.c                 |    2 
+ fs/xfs/xfs_super.c                   |   12 +--
+ fs/zonefs/super.c                    |    3 
+ include/linux/blkdev.h               |  112 +++++++++++--------------------
+ include/target/target_core_backend.h |    4 -
+ mm/swapfile.c                        |   31 ++------
+ 89 files changed, 493 insertions(+), 652 deletions(-)
