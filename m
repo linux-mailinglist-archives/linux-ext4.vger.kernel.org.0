@@ -2,219 +2,143 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14F2F4F78E8
-	for <lists+linux-ext4@lfdr.de>; Thu,  7 Apr 2022 10:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A5E4F7934
+	for <lists+linux-ext4@lfdr.de>; Thu,  7 Apr 2022 10:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242819AbiDGIGb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 7 Apr 2022 04:06:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48996 "EHLO
+        id S234599AbiDGIQ2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 7 Apr 2022 04:16:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242826AbiDGIGW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Apr 2022 04:06:22 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54C34160468;
-        Thu,  7 Apr 2022 01:03:18 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id BA7481F859;
-        Thu,  7 Apr 2022 08:03:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1649318596; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7k0z5t+RkWgzil40AtKwhJmpL0iBjAFtHXia6nIwjc8=;
-        b=BFj1weRWNO0gJwf1a0jytpVaNV2SIOQyml/DNHaVaAYv+GWtC9RRp3Nkr1QhUY/V7QdLG9
-        baoJsXmF2FufEolsvsTPwbwZ3Or5/MyPwA8jPnqPoYDtXH5U9TjRT7F8cNWLR3Nqx6fvJv
-        Ws2fOIHqbo98FqfWwnQjig+YJFloGxM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1649318596;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7k0z5t+RkWgzil40AtKwhJmpL0iBjAFtHXia6nIwjc8=;
-        b=DjSOFiN41nmAx2XAVq/tnPaDKbkIhCw6FaIeWu9KyiZMi8ecy7DPyjacZPoBAIl6E7Jspy
-        2pyi9oy0n8T7WCDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4CF8613485;
-        Thu,  7 Apr 2022 08:03:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id F2mtCL+aTmKlAgAAMHmgww
-        (envelope-from <colyli@suse.de>); Thu, 07 Apr 2022 08:03:11 +0000
-Message-ID: <9f91936a-7dd7-2ee6-3293-f199ada85210@suse.de>
-Date:   Thu, 7 Apr 2022 16:03:09 +0800
+        with ESMTP id S235249AbiDGIQ1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Apr 2022 04:16:27 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935281C42DA
+        for <linux-ext4@vger.kernel.org>; Thu,  7 Apr 2022 01:14:26 -0700 (PDT)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KYvJ80rq8zgYH5;
+        Thu,  7 Apr 2022 16:12:40 +0800 (CST)
+Received: from [10.174.178.134] (10.174.178.134) by
+ canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Thu, 7 Apr 2022 16:14:24 +0800
+Subject: Re: [RFC PATCH] ext4: convert symlink external data block mapping to
+ bdev
+To:     Jan Kara <jack@suse.cz>
+CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>, <yukuai3@huawei.com>,
+        <yebin10@huawei.com>
+References: <20220406084503.1961686-1-yi.zhang@huawei.com>
+ <20220406171715.35euuzocoe4ljepe@quack3.lan>
+From:   Zhang Yi <yi.zhang@huawei.com>
+Message-ID: <806b63ff-975d-123d-5925-587aa026ce94@huawei.com>
+Date:   Thu, 7 Apr 2022 16:14:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.7.0
-Subject: Re: [PATCH 22/27] block: refactor discard bio size limiting
+In-Reply-To: <20220406171715.35euuzocoe4ljepe@quack3.lan>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     dm-devel@redhat.com, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-block@vger.kernel.org, drbd-dev@lists.linbit.com,
-        nbd@other.debian.org, ceph-devel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@oss.oracle.com, linux-mm@kvack.org,
-        Jens Axboe <axboe@kernel.dk>
-References: <20220406060516.409838-1-hch@lst.de>
- <20220406060516.409838-23-hch@lst.de>
-From:   Coly Li <colyli@suse.de>
-In-Reply-To: <20220406060516.409838-23-hch@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.174.178.134]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500005.china.huawei.com (7.192.104.229)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 4/6/22 2:05 PM, Christoph Hellwig wrote:
-> Move all the logic to limit the discard bio size into a common helper
-> so that it is better documented.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-
-Acked-by: Coly Li <colyli@suse.de>
 
 
-Thanks for the change.
+On 2022/4/7 1:17, Jan Kara wrote:
+> On Wed 06-04-22 16:45:03, Zhang Yi wrote:
+>> Symlink's external data block is one kind of metadata block, and now
+>> that almost all ext4 metadata block's page cache (e.g. directory blocks,
+>> quota blocks...) belongs to bdev backing inode except the symlink. It
+>> is essentially worked in data=journal mode like other regular file's
+>> data block because probably in order to make it simple for generic VFS
+>> code handling symlinks or some other historical reasons, but the logic
+>> of creating external data block in ext4_symlink() is complicated. and it
+>> also make things confused if user do not want to let the filesystem
+>> worked in data=journal mode. This patch convert the final exceptional
+>> case and make things clean, move the mapping of the symlink's external
+>> data block to bdev like any other metadata block does.
+>>
+>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+>> ---
+>> This RFC patch follow the talking of whether if we could unify the
+>> journal mode of ext4 metadata blocks[1], it stop using the data=journal
+>> mode for the final exception case of symlink's external data block. Any
+>> comments are welcome, thanks.
+>>
+>> [1]. https://lore.kernel.org/linux-ext4/20220321151141.hypnhr6o4vng2sa6@quack3.lan/T/#m84b942a6bb838ba60ae8afd906ebbb987a577488
+>>
+>>  fs/ext4/inode.c   |   9 +---
+>>  fs/ext4/namei.c   | 123 +++++++++++++++++++++-------------------------
+>>  fs/ext4/symlink.c |  44 ++++++++++++++---
+>>  3 files changed, 93 insertions(+), 83 deletions(-)
+> 
+> Hum, we don't save on code but I'd say the result is somewhat more
+> standard. So I guess this makes some sense. Let's see what Ted thinks...
+> 
+> Otherwise I've found just one small bug below.
+> 
+>> @@ -3270,26 +3296,8 @@ static int ext4_symlink(struct user_namespace *mnt_userns, struct inode *dir,
+>>  	if (err)
+>>  		return err;
+>>  
+>> -	if ((disk_link.len > EXT4_N_BLOCKS * 4)) {
+>> -		/*
+>> -		 * For non-fast symlinks, we just allocate inode and put it on
+>> -		 * orphan list in the first transaction => we need bitmap,
+>> -		 * group descriptor, sb, inode block, quota blocks, and
+>> -		 * possibly selinux xattr blocks.
+>> -		 */
+>> -		credits = 4 + EXT4_MAXQUOTAS_INIT_BLOCKS(dir->i_sb) +
+>> -			  EXT4_XATTR_TRANS_BLOCKS;
+>> -	} else {
+>> -		/*
+>> -		 * Fast symlink. We have to add entry to directory
+>> -		 * (EXT4_DATA_TRANS_BLOCKS + EXT4_INDEX_EXTRA_TRANS_BLOCKS),
+>> -		 * allocate new inode (bitmap, group descriptor, inode block,
+>> -		 * quota blocks, sb is already counted in previous macros).
+>> -		 */
+>> -		credits = EXT4_DATA_TRANS_BLOCKS(dir->i_sb) +
+>> -			  EXT4_INDEX_EXTRA_TRANS_BLOCKS + 3;
+>> -	}
+>> -
+>> +	credits = EXT4_DATA_TRANS_BLOCKS(dir->i_sb) +
+>> +		  EXT4_INDEX_EXTRA_TRANS_BLOCKS + 3;
+> 
+> This does not seem like enough credits - we may need to allocate inode, add
+> entry to directory, allocate & initialize symlink block. So I think you
+> need to add 4 for block allocation + init in case of non-fast symlink. And
+> please keep the comment explaining what is actually counted in the number
+> of credits...
+> 
 
-Coly Li
+Thanks for pointing this out, and ext4_mkdir() seems has the same problem too
+because we also need to allocate one more block to store '.' and '..' entries
+for a new created empty directory.
 
+BTW, look the credits calculation in depth, the definition of
+EXT4_DATA_TRANS_BLOCKS is weird, the '-2' subtraction looks wrong.
 
-> ---
->   block/blk-lib.c | 59 ++++++++++++++++++++++++-------------------------
->   block/blk.h     | 14 ------------
->   2 files changed, 29 insertions(+), 44 deletions(-)
->
-> diff --git a/block/blk-lib.c b/block/blk-lib.c
-> index 237d60d8b5857..2ae32a722851c 100644
-> --- a/block/blk-lib.c
-> +++ b/block/blk-lib.c
-> @@ -10,6 +10,32 @@
->   
->   #include "blk.h"
->   
-> +static sector_t bio_discard_limit(struct block_device *bdev, sector_t sector)
-> +{
-> +	unsigned int discard_granularity =
-> +		bdev_get_queue(bdev)->limits.discard_granularity;
-> +	sector_t granularity_aligned_sector;
-> +
-> +	if (bdev_is_partition(bdev))
-> +		sector += bdev->bd_start_sect;
-> +
-> +	granularity_aligned_sector =
-> +		round_up(sector, discard_granularity >> SECTOR_SHIFT);
-> +
-> +	/*
-> +	 * Make sure subsequent bios start aligned to the discard granularity if
-> +	 * it needs to be split.
-> +	 */
-> +	if (granularity_aligned_sector != sector)
-> +		return granularity_aligned_sector - sector;
-> +
-> +	/*
-> +	 * Align the bio size to the discard granularity to make splitting the bio
-> +	 * at discard granularity boundaries easier in the driver if needed.
-> +	 */
-> +	return round_down(UINT_MAX, discard_granularity) >> SECTOR_SHIFT;
-> +}
-> +
->   int __blkdev_issue_discard(struct block_device *bdev, sector_t sector,
->   		sector_t nr_sects, gfp_t gfp_mask, int flags,
->   		struct bio **biop)
-> @@ -17,7 +43,7 @@ int __blkdev_issue_discard(struct block_device *bdev, sector_t sector,
->   	struct request_queue *q = bdev_get_queue(bdev);
->   	struct bio *bio = *biop;
->   	unsigned int op;
-> -	sector_t bs_mask, part_offset = 0;
-> +	sector_t bs_mask;
->   
->   	if (bdev_read_only(bdev))
->   		return -EPERM;
-> @@ -48,36 +74,9 @@ int __blkdev_issue_discard(struct block_device *bdev, sector_t sector,
->   	if (!nr_sects)
->   		return -EINVAL;
->   
-> -	/* In case the discard request is in a partition */
-> -	if (bdev_is_partition(bdev))
-> -		part_offset = bdev->bd_start_sect;
-> -
->   	while (nr_sects) {
-> -		sector_t granularity_aligned_lba, req_sects;
-> -		sector_t sector_mapped = sector + part_offset;
-> -
-> -		granularity_aligned_lba = round_up(sector_mapped,
-> -				q->limits.discard_granularity >> SECTOR_SHIFT);
-> -
-> -		/*
-> -		 * Check whether the discard bio starts at a discard_granularity
-> -		 * aligned LBA,
-> -		 * - If no: set (granularity_aligned_lba - sector_mapped) to
-> -		 *   bi_size of the first split bio, then the second bio will
-> -		 *   start at a discard_granularity aligned LBA on the device.
-> -		 * - If yes: use bio_aligned_discard_max_sectors() as the max
-> -		 *   possible bi_size of the first split bio. Then when this bio
-> -		 *   is split in device drive, the split ones are very probably
-> -		 *   to be aligned to discard_granularity of the device's queue.
-> -		 */
-> -		if (granularity_aligned_lba == sector_mapped)
-> -			req_sects = min_t(sector_t, nr_sects,
-> -					  bio_aligned_discard_max_sectors(q));
-> -		else
-> -			req_sects = min_t(sector_t, nr_sects,
-> -					  granularity_aligned_lba - sector_mapped);
-> -
-> -		WARN_ON_ONCE((req_sects << 9) > UINT_MAX);
-> +		sector_t req_sects =
-> +			min(nr_sects, bio_discard_limit(bdev, sector));
->   
->   		bio = blk_next_bio(bio, bdev, 0, op, gfp_mask);
->   		bio->bi_iter.bi_sector = sector;
-> diff --git a/block/blk.h b/block/blk.h
-> index 8ccbc6e076369..1fdc1d28e6d60 100644
-> --- a/block/blk.h
-> +++ b/block/blk.h
-> @@ -346,20 +346,6 @@ static inline unsigned int bio_allowed_max_sectors(struct request_queue *q)
->   	return round_down(UINT_MAX, queue_logical_block_size(q)) >> 9;
->   }
->   
-> -/*
-> - * The max bio size which is aligned to q->limits.discard_granularity. This
-> - * is a hint to split large discard bio in generic block layer, then if device
-> - * driver needs to split the discard bio into smaller ones, their bi_size can
-> - * be very probably and easily aligned to discard_granularity of the device's
-> - * queue.
-> - */
-> -static inline unsigned int bio_aligned_discard_max_sectors(
-> -					struct request_queue *q)
-> -{
-> -	return round_down(UINT_MAX, q->limits.discard_granularity) >>
-> -			SECTOR_SHIFT;
-> -}
-> -
->   /*
->    * Internal io_context interface
->    */
+> #define EXT4_DATA_TRANS_BLOCKS(sb)	(EXT4_SINGLEDATA_TRANS_BLOCKS(sb) + \
+> 					 EXT4_XATTR_TRANS_BLOCKS - 2 + \
+> 					 EXT4_MAXQUOTAS_TRANS_BLOCKS(sb))
 
+I see the history log, before commit[1], the '-2' subtract the 2 more duplicate
+counted super block in '3 * EXT3_SINGLEDATA_TRANS_BLOCKS', but after this commit,
+it seems buggy because we have only count the super block once. It's a long time
+ago, I'm not sure am I missing something?
 
+[1]. https://git.kernel.org/pub/scm/linux/kernel/git/history/history.git/commit/?id=2df2c24aa6d2cd56777570d96494b921568b4405
+
+Thanks,
+Yi.
