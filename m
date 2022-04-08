@@ -2,55 +2,74 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D10634F9380
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Apr 2022 13:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4794F978C
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Apr 2022 16:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbiDHLLY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 8 Apr 2022 07:11:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57684 "EHLO
+        id S236684AbiDHOEO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 8 Apr 2022 10:04:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbiDHLLW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 8 Apr 2022 07:11:22 -0400
+        with ESMTP id S236424AbiDHOEN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 8 Apr 2022 10:04:13 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2AFE9A995
-        for <linux-ext4@vger.kernel.org>; Fri,  8 Apr 2022 04:09:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95FC334BAE;
+        Fri,  8 Apr 2022 07:02:07 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 8C4EC21600;
-        Fri,  8 Apr 2022 11:09:17 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 33FF9215FD;
+        Fri,  8 Apr 2022 14:02:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1649416157; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        t=1649426526;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Afsu16CaIB10rA1gUIKFPqz6GuP8iPmL3jD1pIAG0W0=;
-        b=zXLCJylJj8AKe+mr272Cb0qTN5fw+xrXWTU6VIPdrr1HkMMupHNJ4yHq8BZlgif764C8Jq
-        cuvf51VxPzBhVMSRdxT8tdXa5Rz6e+1WMr7icYQwaNNjQiJ4CWlm12ahD0YiDA/Jll6wQa
-        WUiIs+ldKPmiVpYKpfAv38ELbvuAi40=
+        bh=NntcuTEBNLs2a5PoQyJ5XTqfafqQKLdTMOol7WzzX0s=;
+        b=IOyS+CY4mKgPgZ8USr3nF2sek6nsoLhx0cr5TMVaaAs4Ag4bKj8Vi2sptagRUXESVfNODS
+        Ln94gENJtPAW0xwa1YTvXkhHuvtN+PZVtUN04bIOD5Gb1FPiPxXvY9276x42sDgCevWU0p
+        F0xk4+Bz9XncCGMfKPV4nKJOLviw8CE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1649416157;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        s=susede2_ed25519; t=1649426526;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Afsu16CaIB10rA1gUIKFPqz6GuP8iPmL3jD1pIAG0W0=;
-        b=r1ARIwjbcu7VfcpG6iIV3iiI6w/UIQoGqS4YFmiv6uzn1Pam1NHM/BsQlhshwIrgMWjZsh
-        /MIzHd/WyhhBSJAQ==
-Received: from quack3.suse.cz (unknown [10.100.224.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 796E7A3B82;
-        Fri,  8 Apr 2022 11:09:17 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 33DE4A061A; Fri,  8 Apr 2022 13:09:14 +0200 (CEST)
-Date:   Fri, 8 Apr 2022 13:09:14 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Eric Whitney <enwlinux@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, jack@suse.cz
-Subject: Re: ext4/052 test failures and possible circular locking
-Message-ID: <20220408110914.qkoya3gq3xyf2s7b@quack3.lan>
-References: <Yk857gXs6sD1tspX@debian-BULLSEYE-live-builder-AMD64>
+        bh=NntcuTEBNLs2a5PoQyJ5XTqfafqQKLdTMOol7WzzX0s=;
+        b=YyECzpdo2dp1JJsJWW+9IUjgVDYVcTRsNKLbGqCSM7UYLC06N2gtmpywFUAHkgPWFPstwI
+        YstMAkxeXK3nzLCA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id C18F6A3B87;
+        Fri,  8 Apr 2022 14:02:05 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 03176DA80E; Fri,  8 Apr 2022 15:58:02 +0200 (CEST)
+Date:   Fri, 8 Apr 2022 15:58:02 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     cgel.zte@gmail.com
+Cc:     dsterba@suse.com, tytso@mit.edu, clm@fb.com, josef@toxicpanda.com,
+        sfrench@samba.org, matthew.garrett@nebula.com, jk@ozlabs.org,
+        ardb@kernel.org, adilger.kernel@dilger.ca, rpeterso@redhat.com,
+        agruenba@redhat.com, viro@zeniv.linux.org.uk,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org,
+        cluster-devel@redhat.com, linux-fsdevel@vger.kernel.org,
+        Lv Ruyi <lv.ruyi@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH v2] fs: remove unnecessary conditional
+Message-ID: <20220408135802.GQ15609@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, cgel.zte@gmail.com, dsterba@suse.com,
+        tytso@mit.edu, clm@fb.com, josef@toxicpanda.com, sfrench@samba.org,
+        matthew.garrett@nebula.com, jk@ozlabs.org, ardb@kernel.org,
+        adilger.kernel@dilger.ca, rpeterso@redhat.com, agruenba@redhat.com,
+        viro@zeniv.linux.org.uk, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-efi@vger.kernel.org,
+        linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
+        linux-fsdevel@vger.kernel.org, Lv Ruyi <lv.ruyi@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+References: <20220408021136.2493147-1-lv.ruyi@zte.com.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Yk857gXs6sD1tspX@debian-BULLSEYE-live-builder-AMD64>
+In-Reply-To: <20220408021136.2493147-1-lv.ruyi@zte.com.cn>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
@@ -61,193 +80,14 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello Eric!
-
-On Thu 07-04-22 15:22:22, Eric Whitney wrote:
-> I've been seeing consistent failures of ext4/052 in the 1k test scenario when
-> running kvm-xfstests with -g auto since 5.17-rc4 in my upstream regression
-> runs.The kernels have lockdep enabled and the test failure is caused by a kernel
-> warning reporting a possible circular locking dependency.  I've included the
-> lockdep splat below.
-
-Thanks for the splat!
-
-> It's difficult to reproduce this failure.  The only way I've been able to do
-> so is to start an entire testing run with "kvm-xfstests -g auto".  This runs
-> all the tests in the auto group in the 4k test scenario, followed by the tests
-> in the auto group in the 1k scenario up to ext4/052, when the failure
-> consistently occurs.  500 runs of ext4/052 on 1k alone fail to reproduce the
-> failure, as do other combination of tests or running the quick group instead
-> of auto.
+On Fri, Apr 08, 2022 at 02:11:36AM +0000, cgel.zte@gmail.com wrote:
+> From: Lv Ruyi <lv.ruyi@zte.com.cn>
 > 
-> Reverting a kernel commit that landed in -rc4 appears to correct this failure:
-> bf23747ee053 ("loop: revert "make autoclear operation asynchronous" ").
-> However, I'm told there were good reasons for that revert, so simply reverting
-> the revert isn't a solution.
+> iput() has already handled null and non-null parameter, so it is no
+> need to use if().
 > 
-> The original patch reverted by this patch landed in 5.17-rc1.  Repeated test
-> runs on 5.16 final and 5.17-rc3 as described above have failed to reproduce
-> the failure.
+> This patch remove all unnecessary conditional in fs subsystem.
+> No functional changes.
 
-This is indeed curious but I think in this case lockdep is just confused by
-treating all superblocks the same (s_umount on all superblocks is from the
-same locking class) where for loop devices it is substantial which
-superblock is on the backing device and which is on the loop device.
-
-If I understand the complaint correctly, it is complaining about a chain
-like:
-
-umount of loopmounted fs		loop worker	freezing process
-  cleanup_mnt()
-    deactivate_super()
-      down_write(sb->s_umount);
-      ...
-      blkdev_put(loopdev)
-        mutex_lock(disk->open_mutex);
-        __loop_clr_fd()
-          wait for all loop IO to finish
-					file_start_write(backing_file)
-					  - blocks on frozen fs
-							freeze_super(backing fs)
-							  ...
-							  sb_wait_write()
-							  down_write(sb->s_umount);
-
-And this is not a deadlock only because backing fs != loopmounted fs but
-lockdep doesn't know...
-
-Anyway Christoph's patches should fix this report because we won't wait for
-IO from __loop_clr_fd() anymore.
-
-								Honza
-
-> ext4/052 16s ... 	[01:27:37][ 3785.331537] run fstests ext4/052 at 2022-04-04 01:27:37
-> [ 3785.584084] EXT4-fs (vdd): mounted filesystem with ordered data mode. Quota mode: none.
-> [ 3785.732395] EXT4-fs (vdc): mounted filesystem with ordered data mode. Quota mode: none.
-> [ 3785.808616] loop0: detected capacity change from 0 to 41943040
-> [ 3785.848334] EXT4-fs (loop0): mounted filesystem without journal. Quota mode: none.
-> [ 3800.334824] 
-> [ 3800.335030] ======================================================
-> [ 3800.335712] WARNING: possible circular locking dependency detected
-> [ 3800.336386] 5.18.0-rc1 #1 Not tainted
-> [ 3800.336789] ------------------------------------------------------
-> [ 3800.337466] umount/900388 is trying to acquire lock:
-> [ 3800.337905] ffff88800ba32d38 ((wq_completion)loop0){+.+.}-{0:0}, at: flush_workqueue+0x7f/0x500
-> [ 3800.338607] 
-> [ 3800.338607] but task is already holding lock:
-> [ 3800.339063] ffff888005d1f118 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_put+0x3a/0x220
-> [ 3800.339686] 
-> [ 3800.339686] which lock already depends on the new lock.
-> [ 3800.339686] 
-> [ 3800.340319] 
-> [ 3800.340319] the existing dependency chain (in reverse order) is:
-> [ 3800.340896] 
-> [ 3800.340896] -> #4 (&disk->open_mutex){+.+.}-{3:3}:
-> [ 3800.341383]        __mutex_lock+0x7c/0x940
-> [ 3800.341704]        blkdev_put+0x3a/0x220
-> [ 3800.342011]        ext4_put_super+0x2fb/0x5b0
-> [ 3800.342352]        generic_shutdown_super+0x71/0x120
-> [ 3800.342742]        kill_block_super+0x21/0x50
-> [ 3800.343082]        deactivate_locked_super+0x2e/0x90
-> [ 3800.343467]        cleanup_mnt+0x131/0x190
-> [ 3800.343788]        task_work_run+0x59/0x90
-> [ 3800.344109]        exit_to_user_mode_prepare+0x19d/0x1a0
-> [ 3800.344523]        syscall_exit_to_user_mode+0x19/0x60
-> [ 3800.344923]        do_syscall_64+0x48/0x90
-> [ 3800.345244]        entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [ 3800.345656] 
-> [ 3800.345656] -> #3 (&type->s_umount_key#32){++++}-{3:3}:
-> [ 3800.346104]        down_write+0x2a/0x60
-> [ 3800.346363]        freeze_super+0x80/0x1b0
-> [ 3800.346615]        __x64_sys_ioctl+0x62/0xb0
-> [ 3800.346882]        do_syscall_64+0x38/0x90
-> [ 3800.347136]        entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [ 3800.347479] 
-> [ 3800.347479] -> #2 (sb_writers#3){++++}-{0:0}:
-> [ 3800.347838]        loop_process_work+0x53b/0x900
-> [ 3800.348124]        process_one_work+0x271/0x590
-> [ 3800.348403]        worker_thread+0x4f/0x3d0
-> [ 3800.348665]        kthread+0xdf/0x110
-> [ 3800.348905]        ret_from_fork+0x1f/0x30
-> [ 3800.349170] 
-> [ 3800.349170] -> #1 ((work_completion)(&lo->rootcg_work)){+.+.}-{0:0}:
-> [ 3800.349652]        process_one_work+0x24b/0x590
-> [ 3800.349932]        worker_thread+0x4f/0x3d0
-> [ 3800.350189]        kthread+0xdf/0x110
-> [ 3800.350448]        ret_from_fork+0x1f/0x30
-> [ 3800.350706] 
-> [ 3800.350706] -> #0 ((wq_completion)loop0){+.+.}-{0:0}:
-> [ 3800.351103]        __lock_acquire+0x1182/0x1ed0
-> [ 3800.351394]        lock_acquire+0xca/0x2f0
-> [ 3800.351645]        flush_workqueue+0xa9/0x500
-> [ 3800.351913]        drain_workqueue+0xa0/0x110
-> [ 3800.352180]        destroy_workqueue+0x36/0x250
-> [ 3800.352456]        __loop_clr_fd+0xad/0x460
-> [ 3800.352713]        blkdev_put+0xc0/0x220
-> [ 3800.352990]        deactivate_locked_super+0x2e/0x90
-> [ 3800.353319]        cleanup_mnt+0x131/0x190
-> [ 3800.353570]        task_work_run+0x59/0x90
-> [ 3800.353824]        exit_to_user_mode_prepare+0x19d/0x1a0
-> [ 3800.354148]        syscall_exit_to_user_mode+0x19/0x60
-> [ 3800.354462]        do_syscall_64+0x48/0x90
-> [ 3800.354713]        entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [ 3800.355056] 
-> [ 3800.355056] other info that might help us debug this:
-> [ 3800.355056] 
-> [ 3800.355542] Chain exists of:
-> [ 3800.355542]   (wq_completion)loop0 --> &type->s_umount_key#32 --> &disk->open_mutex
-> [ 3800.355542] 
-> [ 3800.356269]  Possible unsafe locking scenario:
-> [ 3800.356269] 
-> [ 3800.356631]        CPU0                    CPU1
-> [ 3800.356909]        ----                    ----
-> [ 3800.357187]   lock(&disk->open_mutex);
-> [ 3800.357418]                                lock(&type->s_umount_key#32);
-> [ 3800.357827]                                lock(&disk->open_mutex);
-> [ 3800.358210]   lock((wq_completion)loop0);
-> [ 3800.358458] 
-> [ 3800.358458]  *** DEADLOCK ***
-> [ 3800.358458] 
-> [ 3800.358823] 1 lock held by umount/900388:
-> [ 3800.359069]  #0: ffff888005d1f118 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_put+0x3a/0x220
-> [ 3800.359581] 
-> [ 3800.359581] stack backtrace:
-> [ 3800.359866] CPU: 1 PID: 900388 Comm: umount Not tainted 5.18.0-rc1 #1
-> [ 3800.360259] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
-> [ 3800.360781] Call Trace:
-> [ 3800.360981]  <TASK>
-> [ 3800.361150]  dump_stack_lvl+0x45/0x59
-> [ 3800.361439]  check_noncircular+0xf2/0x110
-> [ 3800.361753]  __lock_acquire+0x1182/0x1ed0
-> [ 3800.362068]  lock_acquire+0xca/0x2f0
-> [ 3800.362349]  ? flush_workqueue+0x7f/0x500
-> [ 3800.362665]  ? lockdep_init_map_type+0x47/0x260
-> [ 3800.363021]  flush_workqueue+0xa9/0x500
-> [ 3800.363323]  ? flush_workqueue+0x7f/0x500
-> [ 3800.363639]  drain_workqueue+0xa0/0x110
-> [ 3800.363941]  destroy_workqueue+0x36/0x250
-> [ 3800.364256]  __loop_clr_fd+0xad/0x460
-> [ 3800.364546]  blkdev_put+0xc0/0x220
-> [ 3800.364814]  deactivate_locked_super+0x2e/0x90
-> [ 3800.365162]  cleanup_mnt+0x131/0x190
-> [ 3800.365443]  task_work_run+0x59/0x90
-> [ 3800.365723]  exit_to_user_mode_prepare+0x19d/0x1a0
-> [ 3800.366100]  syscall_exit_to_user_mode+0x19/0x60
-> [ 3800.366460]  do_syscall_64+0x48/0x90
-> [ 3800.366747]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [ 3800.367143] RIP: 0033:0x7fa7fa263e27
-> [ 3800.367424] Code: 00 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 39 00 0c 00 f7 d8 64 89 01 48
-> [ 3800.368857] RSP: 002b:00007ffd53d1e268 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-> [ 3800.369439] RAX: 0000000000000000 RBX: 00007fa7fa387264 RCX: 00007fa7fa263e27
-> [ 3800.369990] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 000055848a1b6b90
-> [ 3800.370542] RBP: 000055848a1b6960 R08: 0000000000000000 R09: 00007ffd53d1cfe0
-> [ 3800.371095] R10: 000055848a1b6bb0 R11: 0000000000000246 R12: 0000000000000000
-> [ 3800.371645] R13: 000055848a1b6b90 R14: 000055848a1b6a70 R15: 0000000000000000
-> [ 3800.372197]  </TASK>
-> [ 3801.788395] EXT4-fs (vdd): mounted filesystem with ordered data mode. Quota mode: none.
-> _check_dmesg: something found in dmesg (see /results/ext4/results-1k/ext4/052.dmesg)
-> 
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+You'd need to split i by subsystem under fs/, each subdirectory has a
+differnt maintainer. I can take only the btrfs part.
