@@ -2,217 +2,179 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66D824F8C3E
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Apr 2022 05:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4F74F8DC9
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Apr 2022 08:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233656AbiDHCN6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 7 Apr 2022 22:13:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34360 "EHLO
+        id S234938AbiDHFsG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 8 Apr 2022 01:48:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbiDHCN6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Apr 2022 22:13:58 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC9823AFBB;
-        Thu,  7 Apr 2022 19:11:55 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id a38so3770811qkp.5;
-        Thu, 07 Apr 2022 19:11:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dKIfSJ4IWaVGr7yR5YeTRm1BmHoNWFn5MvTethYbLJo=;
-        b=PW2DohTzlmEc+B4EAVzk1YxlUb9ydH12TSb0s/pvgiDv5Wn1QGpIpIOXHc7c/+rBSr
-         YeePfWWdP6CSTGUU3DA76tCvjKgBS7CxxJmsgV9VV0fUXHSdh6B7VzYWFf5zWcMM349g
-         Ro5rKl0Gscl1TsPJNzkYemNRgJp+vjH7Mjs+8M4oFhEqGjQcI5WQGyBlT6esEwGKFrJ5
-         Q4rDh6IAkLTipngg4E1HOF6pZe9X2u5E7r9xWYuQd75PVI+SHt21Z4keV7DpWGwAu8/p
-         k6RD1v3tClaOUxc0fUgGKRls+u/slpQkJEMKmwUwmxuMPnR6XN2qshmZ1PYjrnR8QgDS
-         EMbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dKIfSJ4IWaVGr7yR5YeTRm1BmHoNWFn5MvTethYbLJo=;
-        b=pVnxkhjWk8f/FoYe41blpnT0kuh87H8YtSv0tqS/9ROws95j3LRdYnC+o+3kK7sj0C
-         PM6VFSSJEKoeCO0PKLAg1Y7n9YCrdav5ew+IzVNfNV1pQRU9PnCCDmjZrZcAtEkLIvfY
-         EqsY6UMHgIb0p1yVtFMtbMnWrf3o09qTG/jBKmf1D29z5ftTo6EELuP1K1WKgS2cNVHV
-         35V60eFsZ/jBDMKx9oi10Ee8lfxO0d0B1i4fX0atgiIrQkN6CyOLb3ethx5xg22JuGMR
-         YaLanevIsYR8q/G75kv+VVIzBIE6DbgLtEYE1E3MYuSeIcA820CBPvNi12yekDFZgHV7
-         Juog==
-X-Gm-Message-State: AOAM5305KjEaaoqSy9m1iPh10aCRGxl0aNTM+d9+V15Dvm/Q7QPUzk5Y
-        nOOoEghL6pYxDUC1CsaV9/w=
-X-Google-Smtp-Source: ABdhPJyOwjkr/l7RR4KlPoSKT7cWkib7NEVhOobuqOTGZ4Y3Nn4TovO2hNKoV+uH2XyAZKipJP3Z+w==
-X-Received: by 2002:a37:e307:0:b0:67d:374c:aba1 with SMTP id y7-20020a37e307000000b0067d374caba1mr11179686qki.752.1649383915140;
-        Thu, 07 Apr 2022 19:11:55 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id d2-20020ac85ac2000000b002e1cc2d363asm17551038qtd.24.2022.04.07.19.11.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Apr 2022 19:11:54 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: lv.ruyi@zte.com.cn
-To:     dsterba@suse.com, tytso@mit.edu
-Cc:     clm@fb.com, josef@toxicpanda.com, sfrench@samba.org,
-        matthew.garrett@nebula.com, jk@ozlabs.org, ardb@kernel.org,
-        adilger.kernel@dilger.ca, rpeterso@redhat.com, agruenba@redhat.com,
-        viro@zeniv.linux.org.uk, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-efi@vger.kernel.org,
-        linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
-        linux-fsdevel@vger.kernel.org, Lv Ruyi <lv.ruyi@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH v2] fs: remove unnecessary conditional
-Date:   Fri,  8 Apr 2022 02:11:36 +0000
-Message-Id: <20220408021136.2493147-1-lv.ruyi@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S235005AbiDHFrb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 8 Apr 2022 01:47:31 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C738016F6DF
+        for <linux-ext4@vger.kernel.org>; Thu,  7 Apr 2022 22:45:27 -0700 (PDT)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4KZRzD3pbxz1HBdS;
+        Fri,  8 Apr 2022 13:44:56 +0800 (CST)
+Received: from [10.174.178.134] (10.174.178.134) by
+ canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 8 Apr 2022 13:45:25 +0800
+Subject: Re: [RFC PATCH] ext4: convert symlink external data block mapping to
+ bdev
+To:     Jan Kara <jack@suse.cz>
+CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>, <yukuai3@huawei.com>,
+        <yebin10@huawei.com>
+References: <20220406084503.1961686-1-yi.zhang@huawei.com>
+ <20220406171715.35euuzocoe4ljepe@quack3.lan>
+ <806b63ff-975d-123d-5925-587aa026ce94@huawei.com>
+ <20220407135541.i765244kahb6lgqz@quack3.lan>
+From:   Zhang Yi <yi.zhang@huawei.com>
+Message-ID: <515c6bbe-ae01-0256-1ae2-128dd0620fb3@huawei.com>
+Date:   Fri, 8 Apr 2022 13:45:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <20220407135541.i765244kahb6lgqz@quack3.lan>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.174.178.134]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500005.china.huawei.com (7.192.104.229)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Lv Ruyi <lv.ruyi@zte.com.cn>
+On 2022/4/7 21:55, Jan Kara wrote:
+> On Thu 07-04-22 16:14:24, Zhang Yi wrote:
+>> On 2022/4/7 1:17, Jan Kara wrote:
+>>> On Wed 06-04-22 16:45:03, Zhang Yi wrote:
+>>>> Symlink's external data block is one kind of metadata block, and now
+>>>> that almost all ext4 metadata block's page cache (e.g. directory blocks,
+>>>> quota blocks...) belongs to bdev backing inode except the symlink. It
+>>>> is essentially worked in data=journal mode like other regular file's
+>>>> data block because probably in order to make it simple for generic VFS
+>>>> code handling symlinks or some other historical reasons, but the logic
+>>>> of creating external data block in ext4_symlink() is complicated. and it
+>>>> also make things confused if user do not want to let the filesystem
+>>>> worked in data=journal mode. This patch convert the final exceptional
+>>>> case and make things clean, move the mapping of the symlink's external
+>>>> data block to bdev like any other metadata block does.
+>>>>
+>>>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+>>>> ---
+>>>> This RFC patch follow the talking of whether if we could unify the
+>>>> journal mode of ext4 metadata blocks[1], it stop using the data=journal
+>>>> mode for the final exception case of symlink's external data block. Any
+>>>> comments are welcome, thanks.
+>>>>
+>>>> [1]. https://lore.kernel.org/linux-ext4/20220321151141.hypnhr6o4vng2sa6@quack3.lan/T/#m84b942a6bb838ba60ae8afd906ebbb987a577488
+>>>>
+>>>>  fs/ext4/inode.c   |   9 +---
+>>>>  fs/ext4/namei.c   | 123 +++++++++++++++++++++-------------------------
+>>>>  fs/ext4/symlink.c |  44 ++++++++++++++---
+>>>>  3 files changed, 93 insertions(+), 83 deletions(-)
+>>>
+>>> Hum, we don't save on code but I'd say the result is somewhat more
+>>> standard. So I guess this makes some sense. Let's see what Ted thinks...
+>>>
+>>> Otherwise I've found just one small bug below.
+>>>
+>>>> @@ -3270,26 +3296,8 @@ static int ext4_symlink(struct user_namespace *mnt_userns, struct inode *dir,
+>>>>  	if (err)
+>>>>  		return err;
+>>>>  
+>>>> -	if ((disk_link.len > EXT4_N_BLOCKS * 4)) {
+>>>> -		/*
+>>>> -		 * For non-fast symlinks, we just allocate inode and put it on
+>>>> -		 * orphan list in the first transaction => we need bitmap,
+>>>> -		 * group descriptor, sb, inode block, quota blocks, and
+>>>> -		 * possibly selinux xattr blocks.
+>>>> -		 */
+>>>> -		credits = 4 + EXT4_MAXQUOTAS_INIT_BLOCKS(dir->i_sb) +
+>>>> -			  EXT4_XATTR_TRANS_BLOCKS;
+>>>> -	} else {
+>>>> -		/*
+>>>> -		 * Fast symlink. We have to add entry to directory
+>>>> -		 * (EXT4_DATA_TRANS_BLOCKS + EXT4_INDEX_EXTRA_TRANS_BLOCKS),
+>>>> -		 * allocate new inode (bitmap, group descriptor, inode block,
+>>>> -		 * quota blocks, sb is already counted in previous macros).
+>>>> -		 */
+>>>> -		credits = EXT4_DATA_TRANS_BLOCKS(dir->i_sb) +
+>>>> -			  EXT4_INDEX_EXTRA_TRANS_BLOCKS + 3;
+>>>> -	}
+>>>> -
+>>>> +	credits = EXT4_DATA_TRANS_BLOCKS(dir->i_sb) +
+>>>> +		  EXT4_INDEX_EXTRA_TRANS_BLOCKS + 3;
+>>>
+>>> This does not seem like enough credits - we may need to allocate inode, add
+>>> entry to directory, allocate & initialize symlink block. So I think you
+>>> need to add 4 for block allocation + init in case of non-fast symlink. And
+>>> please keep the comment explaining what is actually counted in the number
+>>> of credits...
+>>>
+>>
+>> Thanks for pointing this out, and ext4_mkdir() seems has the same problem
+>> too because we also need to allocate one more block to store '.' and '..'
+>> entries for a new created empty directory.
+> 
+> OK, I was thinking a bit more about this and the comment was actually a bit
+> misleading AFAICT. So we have:
+> 
+> EXT4_INDEX_EXTRA_TRANS_BLOCKS for addition of entry into the directory.
+> +3 for inode, inode bitmap, group descriptor allocation
+> EXT4_DATA_TRANS_BLOCKS for the data block allocation and modification.
+> 
+> So things actually look OK, just the comment was wrong and in the old code
+> the credits were overestimated (because we've allocated the data block in a
+> separate transaction).
+> 
 
-iput() has already handled null and non-null parameter, so it is no
-need to use if().
+Yes，I will update the comments in my v2 iteration.
 
-This patch remove all unnecessary conditional in fs subsystem.
-No functional changes.
+>> BTW, look the credits calculation in depth, the definition of
+>> EXT4_DATA_TRANS_BLOCKS is weird, the '-2' subtraction looks wrong.
+>>
+>>> #define EXT4_DATA_TRANS_BLOCKS(sb)	(EXT4_SINGLEDATA_TRANS_BLOCKS(sb) + \
+>>> 					 EXT4_XATTR_TRANS_BLOCKS - 2 + \
+>>> 					 EXT4_MAXQUOTAS_TRANS_BLOCKS(sb))
+>>
+>> I see the history log, before commit[1], the '-2' subtract the 2 more duplicate
+>> counted super block in '3 * EXT3_SINGLEDATA_TRANS_BLOCKS', but after this commit,
+>> it seems buggy because we have only count the super block once. It's a long time
+>> ago, I'm not sure am I missing something?
+> 
+> Yes, -2 looks strange but at the same time I fail to see why
+> EXT4_XATTR_TRANS_BLOCKS would need to be accounted for normal data
+> operation and why we're reserving 6 blocks there. I'll raise it on today's
+> ext4 call if someone remembers...
+> 
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
----
-chang log: v1 -> v2
-change subject from "remove redundant judgment" to
-"remove unnecessary conditional", and combine into a patch.
----
- fs/btrfs/relocation.c | 3 +--
- fs/btrfs/tree-log.c   | 3 +--
- fs/cifs/dir.c         | 3 +--
- fs/efivarfs/inode.c   | 3 +--
- fs/ext4/fast_commit.c | 3 +--
- fs/ext4/namei.c       | 3 +--
- fs/gfs2/super.c       | 3 +--
- fs/namei.c            | 3 +--
- 8 files changed, 8 insertions(+), 16 deletions(-)
+I guess the 6 blocks were:
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 50bdd82682fa..edddd93d2118 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -3846,8 +3846,7 @@ struct inode *create_reloc_inode(struct btrfs_fs_info *fs_info,
- 	btrfs_end_transaction(trans);
- 	btrfs_btree_balance_dirty(fs_info);
- 	if (err) {
--		if (inode)
--			iput(inode);
-+		iput(inode);
- 		inode = ERR_PTR(err);
- 	}
- 	return inode;
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 273998153fcc..c46696896f03 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -894,8 +894,7 @@ static noinline int replay_one_extent(struct btrfs_trans_handle *trans,
- 	btrfs_update_inode_bytes(BTRFS_I(inode), nbytes, drop_args.bytes_found);
- 	ret = btrfs_update_inode(trans, root, BTRFS_I(inode));
- out:
--	if (inode)
--		iput(inode);
-+	iput(inode);
- 	return ret;
- }
- 
-diff --git a/fs/cifs/dir.c b/fs/cifs/dir.c
-index ce9b22aecfba..f952b50590e2 100644
---- a/fs/cifs/dir.c
-+++ b/fs/cifs/dir.c
-@@ -401,8 +401,7 @@ cifs_do_create(struct inode *inode, struct dentry *direntry, unsigned int xid,
- out_err:
- 	if (server->ops->close)
- 		server->ops->close(xid, tcon, fid);
--	if (newinode)
--		iput(newinode);
-+	iput(newinode);
- 	goto out;
- }
- 
-diff --git a/fs/efivarfs/inode.c b/fs/efivarfs/inode.c
-index 939e5e242b98..ad2e5c63062a 100644
---- a/fs/efivarfs/inode.c
-+++ b/fs/efivarfs/inode.c
-@@ -119,8 +119,7 @@ static int efivarfs_create(struct user_namespace *mnt_userns, struct inode *dir,
- out:
- 	if (err) {
- 		kfree(var);
--		if (inode)
--			iput(inode);
-+		iput(inode);
- 	}
- 	return err;
- }
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 3d72565ec6e8..e85d351a1a31 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -1659,8 +1659,7 @@ static int ext4_fc_replay_create(struct super_block *sb, struct ext4_fc_tl *tl,
- 	set_nlink(inode, 1);
- 	ext4_mark_inode_dirty(NULL, inode);
- out:
--	if (inode)
--		iput(inode);
-+	iput(inode);
- 	return ret;
- }
- 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index e37da8d5cd0c..2fd3b24a21cd 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -3363,8 +3363,7 @@ static int ext4_symlink(struct user_namespace *mnt_userns, struct inode *dir,
- 	err = ext4_add_nondir(handle, dentry, &inode);
- 	if (handle)
- 		ext4_journal_stop(handle);
--	if (inode)
--		iput(inode);
-+	iput(inode);
- 	goto out_free_encrypted_link;
- 
- err_drop_inode:
-diff --git a/fs/gfs2/super.c b/fs/gfs2/super.c
-index 90db4a289269..a1d94013b96d 100644
---- a/fs/gfs2/super.c
-+++ b/fs/gfs2/super.c
-@@ -1451,8 +1451,7 @@ extern void free_local_statfs_inodes(struct gfs2_sbd *sdp)
- 	list_for_each_entry_safe(lsi, safe, &sdp->sd_sc_inodes_list, si_list) {
- 		if (lsi->si_jid == sdp->sd_jdesc->jd_jid)
- 			sdp->sd_sc_inode = NULL; /* belongs to this node */
--		if (lsi->si_sc_inode)
--			iput(lsi->si_sc_inode);
-+		iput(lsi->si_sc_inode);
- 		list_del(&lsi->si_list);
- 		kfree(lsi);
- 	}
-diff --git a/fs/namei.c b/fs/namei.c
-index 29414d1867fb..b1d93b2fc3b0 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -4214,8 +4214,7 @@ int do_unlinkat(int dfd, struct filename *name)
- 		dput(dentry);
- 	}
- 	inode_unlock(path.dentry->d_inode);
--	if (inode)
--		iput(inode);	/* truncate the inode here */
-+	iput(inode);	/* truncate the inode here */
- 	inode = NULL;
- 	if (delegated_inode) {
- 		error = break_deleg_wait(&delegated_inode);
--- 
-2.25.1
+1. Ref count update on old xattr block
+2. new xattr block
+3. block bitmap update for new xattr block
+4. group descriptor for new xattr block
+5. block bitmap update for old xattr block
+6. group descriptor for old block
 
+The 5 and 6 looks like were overestimated in cases of 1) we just update the
+old ref count to no zero, 2) we free the old xattr block and the credits has
+already counted in the default revoke credits.
+
+Thanks,
+Yi.
+
+>> [1]. https://git.kernel.org/pub/scm/linux/kernel/git/history/history.git/commit/?id=2df2c24aa6d2cd56777570d96494b921568b4405
 
