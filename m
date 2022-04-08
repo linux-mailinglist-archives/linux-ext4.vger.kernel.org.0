@@ -2,179 +2,252 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD4F74F8DC9
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Apr 2022 08:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D10634F9380
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Apr 2022 13:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234938AbiDHFsG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 8 Apr 2022 01:48:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59868 "EHLO
+        id S230038AbiDHLLY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 8 Apr 2022 07:11:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235005AbiDHFrb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 8 Apr 2022 01:47:31 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C738016F6DF
-        for <linux-ext4@vger.kernel.org>; Thu,  7 Apr 2022 22:45:27 -0700 (PDT)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4KZRzD3pbxz1HBdS;
-        Fri,  8 Apr 2022 13:44:56 +0800 (CST)
-Received: from [10.174.178.134] (10.174.178.134) by
- canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 8 Apr 2022 13:45:25 +0800
-Subject: Re: [RFC PATCH] ext4: convert symlink external data block mapping to
- bdev
-To:     Jan Kara <jack@suse.cz>
-CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
-        <adilger.kernel@dilger.ca>, <yukuai3@huawei.com>,
-        <yebin10@huawei.com>
-References: <20220406084503.1961686-1-yi.zhang@huawei.com>
- <20220406171715.35euuzocoe4ljepe@quack3.lan>
- <806b63ff-975d-123d-5925-587aa026ce94@huawei.com>
- <20220407135541.i765244kahb6lgqz@quack3.lan>
-From:   Zhang Yi <yi.zhang@huawei.com>
-Message-ID: <515c6bbe-ae01-0256-1ae2-128dd0620fb3@huawei.com>
-Date:   Fri, 8 Apr 2022 13:45:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        with ESMTP id S229487AbiDHLLW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 8 Apr 2022 07:11:22 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2AFE9A995
+        for <linux-ext4@vger.kernel.org>; Fri,  8 Apr 2022 04:09:18 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 8C4EC21600;
+        Fri,  8 Apr 2022 11:09:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1649416157; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Afsu16CaIB10rA1gUIKFPqz6GuP8iPmL3jD1pIAG0W0=;
+        b=zXLCJylJj8AKe+mr272Cb0qTN5fw+xrXWTU6VIPdrr1HkMMupHNJ4yHq8BZlgif764C8Jq
+        cuvf51VxPzBhVMSRdxT8tdXa5Rz6e+1WMr7icYQwaNNjQiJ4CWlm12ahD0YiDA/Jll6wQa
+        WUiIs+ldKPmiVpYKpfAv38ELbvuAi40=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1649416157;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Afsu16CaIB10rA1gUIKFPqz6GuP8iPmL3jD1pIAG0W0=;
+        b=r1ARIwjbcu7VfcpG6iIV3iiI6w/UIQoGqS4YFmiv6uzn1Pam1NHM/BsQlhshwIrgMWjZsh
+        /MIzHd/WyhhBSJAQ==
+Received: from quack3.suse.cz (unknown [10.100.224.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 796E7A3B82;
+        Fri,  8 Apr 2022 11:09:17 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 33DE4A061A; Fri,  8 Apr 2022 13:09:14 +0200 (CEST)
+Date:   Fri, 8 Apr 2022 13:09:14 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Eric Whitney <enwlinux@gmail.com>
+Cc:     linux-ext4@vger.kernel.org, jack@suse.cz
+Subject: Re: ext4/052 test failures and possible circular locking
+Message-ID: <20220408110914.qkoya3gq3xyf2s7b@quack3.lan>
+References: <Yk857gXs6sD1tspX@debian-BULLSEYE-live-builder-AMD64>
 MIME-Version: 1.0
-In-Reply-To: <20220407135541.i765244kahb6lgqz@quack3.lan>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.134]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- canpemm500005.china.huawei.com (7.192.104.229)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Yk857gXs6sD1tspX@debian-BULLSEYE-live-builder-AMD64>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2022/4/7 21:55, Jan Kara wrote:
-> On Thu 07-04-22 16:14:24, Zhang Yi wrote:
->> On 2022/4/7 1:17, Jan Kara wrote:
->>> On Wed 06-04-22 16:45:03, Zhang Yi wrote:
->>>> Symlink's external data block is one kind of metadata block, and now
->>>> that almost all ext4 metadata block's page cache (e.g. directory blocks,
->>>> quota blocks...) belongs to bdev backing inode except the symlink. It
->>>> is essentially worked in data=journal mode like other regular file's
->>>> data block because probably in order to make it simple for generic VFS
->>>> code handling symlinks or some other historical reasons, but the logic
->>>> of creating external data block in ext4_symlink() is complicated. and it
->>>> also make things confused if user do not want to let the filesystem
->>>> worked in data=journal mode. This patch convert the final exceptional
->>>> case and make things clean, move the mapping of the symlink's external
->>>> data block to bdev like any other metadata block does.
->>>>
->>>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
->>>> ---
->>>> This RFC patch follow the talking of whether if we could unify the
->>>> journal mode of ext4 metadata blocks[1], it stop using the data=journal
->>>> mode for the final exception case of symlink's external data block. Any
->>>> comments are welcome, thanks.
->>>>
->>>> [1]. https://lore.kernel.org/linux-ext4/20220321151141.hypnhr6o4vng2sa6@quack3.lan/T/#m84b942a6bb838ba60ae8afd906ebbb987a577488
->>>>
->>>>  fs/ext4/inode.c   |   9 +---
->>>>  fs/ext4/namei.c   | 123 +++++++++++++++++++++-------------------------
->>>>  fs/ext4/symlink.c |  44 ++++++++++++++---
->>>>  3 files changed, 93 insertions(+), 83 deletions(-)
->>>
->>> Hum, we don't save on code but I'd say the result is somewhat more
->>> standard. So I guess this makes some sense. Let's see what Ted thinks...
->>>
->>> Otherwise I've found just one small bug below.
->>>
->>>> @@ -3270,26 +3296,8 @@ static int ext4_symlink(struct user_namespace *mnt_userns, struct inode *dir,
->>>>  	if (err)
->>>>  		return err;
->>>>  
->>>> -	if ((disk_link.len > EXT4_N_BLOCKS * 4)) {
->>>> -		/*
->>>> -		 * For non-fast symlinks, we just allocate inode and put it on
->>>> -		 * orphan list in the first transaction => we need bitmap,
->>>> -		 * group descriptor, sb, inode block, quota blocks, and
->>>> -		 * possibly selinux xattr blocks.
->>>> -		 */
->>>> -		credits = 4 + EXT4_MAXQUOTAS_INIT_BLOCKS(dir->i_sb) +
->>>> -			  EXT4_XATTR_TRANS_BLOCKS;
->>>> -	} else {
->>>> -		/*
->>>> -		 * Fast symlink. We have to add entry to directory
->>>> -		 * (EXT4_DATA_TRANS_BLOCKS + EXT4_INDEX_EXTRA_TRANS_BLOCKS),
->>>> -		 * allocate new inode (bitmap, group descriptor, inode block,
->>>> -		 * quota blocks, sb is already counted in previous macros).
->>>> -		 */
->>>> -		credits = EXT4_DATA_TRANS_BLOCKS(dir->i_sb) +
->>>> -			  EXT4_INDEX_EXTRA_TRANS_BLOCKS + 3;
->>>> -	}
->>>> -
->>>> +	credits = EXT4_DATA_TRANS_BLOCKS(dir->i_sb) +
->>>> +		  EXT4_INDEX_EXTRA_TRANS_BLOCKS + 3;
->>>
->>> This does not seem like enough credits - we may need to allocate inode, add
->>> entry to directory, allocate & initialize symlink block. So I think you
->>> need to add 4 for block allocation + init in case of non-fast symlink. And
->>> please keep the comment explaining what is actually counted in the number
->>> of credits...
->>>
->>
->> Thanks for pointing this out, and ext4_mkdir() seems has the same problem
->> too because we also need to allocate one more block to store '.' and '..'
->> entries for a new created empty directory.
+Hello Eric!
+
+On Thu 07-04-22 15:22:22, Eric Whitney wrote:
+> I've been seeing consistent failures of ext4/052 in the 1k test scenario when
+> running kvm-xfstests with -g auto since 5.17-rc4 in my upstream regression
+> runs.The kernels have lockdep enabled and the test failure is caused by a kernel
+> warning reporting a possible circular locking dependency.  I've included the
+> lockdep splat below.
+
+Thanks for the splat!
+
+> It's difficult to reproduce this failure.  The only way I've been able to do
+> so is to start an entire testing run with "kvm-xfstests -g auto".  This runs
+> all the tests in the auto group in the 4k test scenario, followed by the tests
+> in the auto group in the 1k scenario up to ext4/052, when the failure
+> consistently occurs.  500 runs of ext4/052 on 1k alone fail to reproduce the
+> failure, as do other combination of tests or running the quick group instead
+> of auto.
 > 
-> OK, I was thinking a bit more about this and the comment was actually a bit
-> misleading AFAICT. So we have:
+> Reverting a kernel commit that landed in -rc4 appears to correct this failure:
+> bf23747ee053 ("loop: revert "make autoclear operation asynchronous" ").
+> However, I'm told there were good reasons for that revert, so simply reverting
+> the revert isn't a solution.
 > 
-> EXT4_INDEX_EXTRA_TRANS_BLOCKS for addition of entry into the directory.
-> +3 for inode, inode bitmap, group descriptor allocation
-> EXT4_DATA_TRANS_BLOCKS for the data block allocation and modification.
+> The original patch reverted by this patch landed in 5.17-rc1.  Repeated test
+> runs on 5.16 final and 5.17-rc3 as described above have failed to reproduce
+> the failure.
+
+This is indeed curious but I think in this case lockdep is just confused by
+treating all superblocks the same (s_umount on all superblocks is from the
+same locking class) where for loop devices it is substantial which
+superblock is on the backing device and which is on the loop device.
+
+If I understand the complaint correctly, it is complaining about a chain
+like:
+
+umount of loopmounted fs		loop worker	freezing process
+  cleanup_mnt()
+    deactivate_super()
+      down_write(sb->s_umount);
+      ...
+      blkdev_put(loopdev)
+        mutex_lock(disk->open_mutex);
+        __loop_clr_fd()
+          wait for all loop IO to finish
+					file_start_write(backing_file)
+					  - blocks on frozen fs
+							freeze_super(backing fs)
+							  ...
+							  sb_wait_write()
+							  down_write(sb->s_umount);
+
+And this is not a deadlock only because backing fs != loopmounted fs but
+lockdep doesn't know...
+
+Anyway Christoph's patches should fix this report because we won't wait for
+IO from __loop_clr_fd() anymore.
+
+								Honza
+
+> ext4/052 16s ... 	[01:27:37][ 3785.331537] run fstests ext4/052 at 2022-04-04 01:27:37
+> [ 3785.584084] EXT4-fs (vdd): mounted filesystem with ordered data mode. Quota mode: none.
+> [ 3785.732395] EXT4-fs (vdc): mounted filesystem with ordered data mode. Quota mode: none.
+> [ 3785.808616] loop0: detected capacity change from 0 to 41943040
+> [ 3785.848334] EXT4-fs (loop0): mounted filesystem without journal. Quota mode: none.
+> [ 3800.334824] 
+> [ 3800.335030] ======================================================
+> [ 3800.335712] WARNING: possible circular locking dependency detected
+> [ 3800.336386] 5.18.0-rc1 #1 Not tainted
+> [ 3800.336789] ------------------------------------------------------
+> [ 3800.337466] umount/900388 is trying to acquire lock:
+> [ 3800.337905] ffff88800ba32d38 ((wq_completion)loop0){+.+.}-{0:0}, at: flush_workqueue+0x7f/0x500
+> [ 3800.338607] 
+> [ 3800.338607] but task is already holding lock:
+> [ 3800.339063] ffff888005d1f118 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_put+0x3a/0x220
+> [ 3800.339686] 
+> [ 3800.339686] which lock already depends on the new lock.
+> [ 3800.339686] 
+> [ 3800.340319] 
+> [ 3800.340319] the existing dependency chain (in reverse order) is:
+> [ 3800.340896] 
+> [ 3800.340896] -> #4 (&disk->open_mutex){+.+.}-{3:3}:
+> [ 3800.341383]        __mutex_lock+0x7c/0x940
+> [ 3800.341704]        blkdev_put+0x3a/0x220
+> [ 3800.342011]        ext4_put_super+0x2fb/0x5b0
+> [ 3800.342352]        generic_shutdown_super+0x71/0x120
+> [ 3800.342742]        kill_block_super+0x21/0x50
+> [ 3800.343082]        deactivate_locked_super+0x2e/0x90
+> [ 3800.343467]        cleanup_mnt+0x131/0x190
+> [ 3800.343788]        task_work_run+0x59/0x90
+> [ 3800.344109]        exit_to_user_mode_prepare+0x19d/0x1a0
+> [ 3800.344523]        syscall_exit_to_user_mode+0x19/0x60
+> [ 3800.344923]        do_syscall_64+0x48/0x90
+> [ 3800.345244]        entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [ 3800.345656] 
+> [ 3800.345656] -> #3 (&type->s_umount_key#32){++++}-{3:3}:
+> [ 3800.346104]        down_write+0x2a/0x60
+> [ 3800.346363]        freeze_super+0x80/0x1b0
+> [ 3800.346615]        __x64_sys_ioctl+0x62/0xb0
+> [ 3800.346882]        do_syscall_64+0x38/0x90
+> [ 3800.347136]        entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [ 3800.347479] 
+> [ 3800.347479] -> #2 (sb_writers#3){++++}-{0:0}:
+> [ 3800.347838]        loop_process_work+0x53b/0x900
+> [ 3800.348124]        process_one_work+0x271/0x590
+> [ 3800.348403]        worker_thread+0x4f/0x3d0
+> [ 3800.348665]        kthread+0xdf/0x110
+> [ 3800.348905]        ret_from_fork+0x1f/0x30
+> [ 3800.349170] 
+> [ 3800.349170] -> #1 ((work_completion)(&lo->rootcg_work)){+.+.}-{0:0}:
+> [ 3800.349652]        process_one_work+0x24b/0x590
+> [ 3800.349932]        worker_thread+0x4f/0x3d0
+> [ 3800.350189]        kthread+0xdf/0x110
+> [ 3800.350448]        ret_from_fork+0x1f/0x30
+> [ 3800.350706] 
+> [ 3800.350706] -> #0 ((wq_completion)loop0){+.+.}-{0:0}:
+> [ 3800.351103]        __lock_acquire+0x1182/0x1ed0
+> [ 3800.351394]        lock_acquire+0xca/0x2f0
+> [ 3800.351645]        flush_workqueue+0xa9/0x500
+> [ 3800.351913]        drain_workqueue+0xa0/0x110
+> [ 3800.352180]        destroy_workqueue+0x36/0x250
+> [ 3800.352456]        __loop_clr_fd+0xad/0x460
+> [ 3800.352713]        blkdev_put+0xc0/0x220
+> [ 3800.352990]        deactivate_locked_super+0x2e/0x90
+> [ 3800.353319]        cleanup_mnt+0x131/0x190
+> [ 3800.353570]        task_work_run+0x59/0x90
+> [ 3800.353824]        exit_to_user_mode_prepare+0x19d/0x1a0
+> [ 3800.354148]        syscall_exit_to_user_mode+0x19/0x60
+> [ 3800.354462]        do_syscall_64+0x48/0x90
+> [ 3800.354713]        entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [ 3800.355056] 
+> [ 3800.355056] other info that might help us debug this:
+> [ 3800.355056] 
+> [ 3800.355542] Chain exists of:
+> [ 3800.355542]   (wq_completion)loop0 --> &type->s_umount_key#32 --> &disk->open_mutex
+> [ 3800.355542] 
+> [ 3800.356269]  Possible unsafe locking scenario:
+> [ 3800.356269] 
+> [ 3800.356631]        CPU0                    CPU1
+> [ 3800.356909]        ----                    ----
+> [ 3800.357187]   lock(&disk->open_mutex);
+> [ 3800.357418]                                lock(&type->s_umount_key#32);
+> [ 3800.357827]                                lock(&disk->open_mutex);
+> [ 3800.358210]   lock((wq_completion)loop0);
+> [ 3800.358458] 
+> [ 3800.358458]  *** DEADLOCK ***
+> [ 3800.358458] 
+> [ 3800.358823] 1 lock held by umount/900388:
+> [ 3800.359069]  #0: ffff888005d1f118 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_put+0x3a/0x220
+> [ 3800.359581] 
+> [ 3800.359581] stack backtrace:
+> [ 3800.359866] CPU: 1 PID: 900388 Comm: umount Not tainted 5.18.0-rc1 #1
+> [ 3800.360259] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+> [ 3800.360781] Call Trace:
+> [ 3800.360981]  <TASK>
+> [ 3800.361150]  dump_stack_lvl+0x45/0x59
+> [ 3800.361439]  check_noncircular+0xf2/0x110
+> [ 3800.361753]  __lock_acquire+0x1182/0x1ed0
+> [ 3800.362068]  lock_acquire+0xca/0x2f0
+> [ 3800.362349]  ? flush_workqueue+0x7f/0x500
+> [ 3800.362665]  ? lockdep_init_map_type+0x47/0x260
+> [ 3800.363021]  flush_workqueue+0xa9/0x500
+> [ 3800.363323]  ? flush_workqueue+0x7f/0x500
+> [ 3800.363639]  drain_workqueue+0xa0/0x110
+> [ 3800.363941]  destroy_workqueue+0x36/0x250
+> [ 3800.364256]  __loop_clr_fd+0xad/0x460
+> [ 3800.364546]  blkdev_put+0xc0/0x220
+> [ 3800.364814]  deactivate_locked_super+0x2e/0x90
+> [ 3800.365162]  cleanup_mnt+0x131/0x190
+> [ 3800.365443]  task_work_run+0x59/0x90
+> [ 3800.365723]  exit_to_user_mode_prepare+0x19d/0x1a0
+> [ 3800.366100]  syscall_exit_to_user_mode+0x19/0x60
+> [ 3800.366460]  do_syscall_64+0x48/0x90
+> [ 3800.366747]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [ 3800.367143] RIP: 0033:0x7fa7fa263e27
+> [ 3800.367424] Code: 00 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 39 00 0c 00 f7 d8 64 89 01 48
+> [ 3800.368857] RSP: 002b:00007ffd53d1e268 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+> [ 3800.369439] RAX: 0000000000000000 RBX: 00007fa7fa387264 RCX: 00007fa7fa263e27
+> [ 3800.369990] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 000055848a1b6b90
+> [ 3800.370542] RBP: 000055848a1b6960 R08: 0000000000000000 R09: 00007ffd53d1cfe0
+> [ 3800.371095] R10: 000055848a1b6bb0 R11: 0000000000000246 R12: 0000000000000000
+> [ 3800.371645] R13: 000055848a1b6b90 R14: 000055848a1b6a70 R15: 0000000000000000
+> [ 3800.372197]  </TASK>
+> [ 3801.788395] EXT4-fs (vdd): mounted filesystem with ordered data mode. Quota mode: none.
+> _check_dmesg: something found in dmesg (see /results/ext4/results-1k/ext4/052.dmesg)
 > 
-> So things actually look OK, just the comment was wrong and in the old code
-> the credits were overestimated (because we've allocated the data block in a
-> separate transaction).
 > 
-
-Yes，I will update the comments in my v2 iteration.
-
->> BTW, look the credits calculation in depth, the definition of
->> EXT4_DATA_TRANS_BLOCKS is weird, the '-2' subtraction looks wrong.
->>
->>> #define EXT4_DATA_TRANS_BLOCKS(sb)	(EXT4_SINGLEDATA_TRANS_BLOCKS(sb) + \
->>> 					 EXT4_XATTR_TRANS_BLOCKS - 2 + \
->>> 					 EXT4_MAXQUOTAS_TRANS_BLOCKS(sb))
->>
->> I see the history log, before commit[1], the '-2' subtract the 2 more duplicate
->> counted super block in '3 * EXT3_SINGLEDATA_TRANS_BLOCKS', but after this commit,
->> it seems buggy because we have only count the super block once. It's a long time
->> ago, I'm not sure am I missing something?
-> 
-> Yes, -2 looks strange but at the same time I fail to see why
-> EXT4_XATTR_TRANS_BLOCKS would need to be accounted for normal data
-> operation and why we're reserving 6 blocks there. I'll raise it on today's
-> ext4 call if someone remembers...
-> 
-
-I guess the 6 blocks were:
-
-1. Ref count update on old xattr block
-2. new xattr block
-3. block bitmap update for new xattr block
-4. group descriptor for new xattr block
-5. block bitmap update for old xattr block
-6. group descriptor for old block
-
-The 5 and 6 looks like were overestimated in cases of 1) we just update the
-old ref count to no zero, 2) we free the old xattr block and the credits has
-already counted in the default revoke credits.
-
-Thanks,
-Yi.
-
->> [1]. https://git.kernel.org/pub/scm/linux/kernel/git/history/history.git/commit/?id=2df2c24aa6d2cd56777570d96494b921568b4405
-
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
