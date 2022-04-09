@@ -2,151 +2,170 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62ED94FA1F2
-	for <lists+linux-ext4@lfdr.de>; Sat,  9 Apr 2022 05:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 174354FA2C8
+	for <lists+linux-ext4@lfdr.de>; Sat,  9 Apr 2022 06:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235743AbiDID0l (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 8 Apr 2022 23:26:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32876 "EHLO
+        id S237062AbiDIExA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 9 Apr 2022 00:53:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231588AbiDID0k (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 8 Apr 2022 23:26:40 -0400
-Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA414146B63
-        for <linux-ext4@vger.kernel.org>; Fri,  8 Apr 2022 20:24:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1649474674; x=1681010674;
-  h=from:to:cc:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version:subject;
-  bh=//FScuMBnecX8RWK2SYHuECoSA+X3A/nGLRgijuLUYU=;
-  b=UXkIiqw0IK20RB6Pkgr1h8tTFlUbLtrBU+9/q8oIezAZ5eNiLoM2iRBN
-   C+FCGtKTuOSk09aGwRWQZ4H/7wAEydkA9hY/FFpDzZUB52uL40Uo2SOJz
-   8uzs8fh+o8lulp+fOBwL+HLTliUUHhLhVBCkeOSMMWc5awIYdyeRQgNvj
-   s=;
-X-IronPort-AV: E=Sophos;i="5.90,246,1643673600"; 
-   d="scan'208";a="188579175"
-Subject: Re: e2fsprogs builds and installs obsolete version of blkid
-Thread-Topic: e2fsprogs builds and installs obsolete version of blkid
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-2a-2dbf0206.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP; 09 Apr 2022 03:24:32 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-pdx-2a-2dbf0206.us-west-2.amazon.com (Postfix) with ESMTPS id DC7FAA2735;
-        Sat,  9 Apr 2022 03:24:31 +0000 (UTC)
-Received: from EX13D23UWA003.ant.amazon.com (10.43.160.194) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.32; Sat, 9 Apr 2022 03:24:31 +0000
-Received: from EX13D23UWA003.ant.amazon.com (10.43.160.194) by
- EX13D23UWA003.ant.amazon.com (10.43.160.194) with Microsoft SMTP Server (TLS)
- id 15.0.1497.32; Sat, 9 Apr 2022 03:24:31 +0000
-Received: from EX13D23UWA003.ant.amazon.com ([10.43.160.194]) by
- EX13D23UWA003.ant.amazon.com ([10.43.160.194]) with mapi id 15.00.1497.033;
- Sat, 9 Apr 2022 03:24:31 +0000
-From:   "Kiselev, Oleg" <okiselev@amazon.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-CC:     linux-ext4 <linux-ext4@vger.kernel.org>
-Thread-Index: AQHYSUMGB1x25g21i0KlSX4qire5eKzi1ruAgAOkCQA=
-Date:   Sat, 9 Apr 2022 03:24:31 +0000
-Message-ID: <4053942A-F51B-4AAA-A44F-3DD5B3E8402A@amazon.com>
-References: <4EF2E5CC-E4E7-4463-893C-274EA9535EC1@amazon.com>
- <Yk2MI/UNYWDNFVx+@mit.edu>
-In-Reply-To: <Yk2MI/UNYWDNFVx+@mit.edu>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.43.160.98]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B019BC507E781B4A9CF8128D495DF7F7@amazon.com>
-Content-Transfer-Encoding: base64
+        with ESMTP id S229604AbiDIEw6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 9 Apr 2022 00:52:58 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A77A3186F5;
+        Fri,  8 Apr 2022 21:50:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=xqCE7mrNhx9Kh54A8pTQxucRKOOrbbHmaHFew3/JwbI=; b=eautlETAmAcOF4Rx+ajcsxqxAt
+        K/gc85CxDlYY+s5RX+TP4qAcopFOJMKyRoUbJGCZqLzThYN44a81gHztvDtTQOXXVmstC/BiZza91
+        +tK8A4YQHg+wud7jKaqcpT5eZw97ewGrhmTU8yf0v/D+yZnMWYW/4nRrMz5fe0RjHIwwo6UCcWnmG
+        q/WhOest1iceY98x52QbO+Ryd19aUS/0aFt0A0VdCFkKu7+7IrcjV/rCpnun6L4B6SbhX7D4hKxqE
+        vkbaC7lWGA+28JjJD9laatsN4l8Gz9BZIOD3BKi8HF53h/Wb9nBnpD0TIdhkMhGAybm9Za6sdmIlK
+        tpLM1eWg==;
+Received: from 213-147-167-116.nat.highway.webapn.at ([213.147.167.116] helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nd33f-0020RM-19; Sat, 09 Apr 2022 04:50:47 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     dm-devel@redhat.com, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-block@vger.kernel.org, drbd-dev@lists.linbit.com,
+        nbd@other.debian.org, ceph-devel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net,
+        linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@oss.oracle.com, linux-mm@kvack.org
+Subject: use block_device based APIs in block layer consumers v2
+Date:   Sat,  9 Apr 2022 06:50:16 +0200
+Message-Id: <20220409045043.23593-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-Spam-Status: No, score=-11.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-R290IGl0LiAgVGhlcmUgd2FzIG5vIG1lbnRpb24gb2YgaW5zdGFsbGluZyBsaWJibGtpZC1kZXZl
-bCBhbmQgbGlidXVpZC1kZXZlbCBpbiB0aGUgSU5TVEFMTCBmaWxlLiAgTm93IHRoYXQgSSBrbm93
-IHdoYXQgdG8gbG9vayBmb3IsIHRoZSAuL2NvbmZpZ3VyZSBhY3Rpb25zIHdpdGggYmxraWQgbWFr
-ZSBzZW5zZS4NCg0K77u/T24gNC82LzIyLCA1OjQ5IEFNLCAiVGhlb2RvcmUgVHMnbyIgPHR5dHNv
-QG1pdC5lZHU+IHdyb3RlOg0KDQogICAgQ0FVVElPTjogVGhpcyBlbWFpbCBvcmlnaW5hdGVkIGZy
-b20gb3V0c2lkZSBvZiB0aGUgb3JnYW5pemF0aW9uLiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3Bl
-biBhdHRhY2htZW50cyB1bmxlc3MgeW91IGNhbiBjb25maXJtIHRoZSBzZW5kZXIgYW5kIGtub3cg
-dGhlIGNvbnRlbnQgaXMgc2FmZS4NCg0KDQoNCiAgICBPbiBUdWUsIEFwciAwNSwgMjAyMiBhdCAx
-MToxNToyMlBNICswMDAwLCBLaXNlbGV2LCBPbGVnIHdyb3RlOg0KICAgID4gVGhlIGUyZnNwcm9n
-cyBjb250YWlucyBhIHZlcnNpb24gMS4wLjAgb2YgYGJsa2lkYC4gIFRoaXMgdmVyc2lvbg0KICAg
-ID4gZG9lcyBub3Qgc3VwcG9ydCBmbGFncyB0aGF0IHRoZSBjdXJyZW50IGtlcm5lbCBpbnN0YWxs
-IHNjcmlwdHMgcGFzcw0KICAgID4gdG8gYGJsa2lkYC4gIEJ5IGJ1aWxkaW5nIGFuZCBpbnN0YWxs
-aW5nIGUyZnNwcm9ncyBJIGVuZGVkIHVwDQogICAgPiByZXBsYWNpbmcgYmxraWQgMi4zMC4yIHdp
-dGggMS4wLjAsIHdoaWNoIGJyb2tlIGtlcm5lbCBwYWNrYWdpbmcuDQogICAgPiBUaGlzIGlzIGVh
-c2lseSBmaXhlZCBieSBkb2luZyBgeXVtIHJlaW5zdGFsbCB1dGlsLWxpbnV4YCwgd2hpY2gNCiAg
-ICA+IHJlaW5zdGFsbHMgdGhlIGNvcnJlY3QgdmVyc2lvbiBibGtpZC4NCiAgICA+DQogICAgPiBU
-aGlzIG1lc3MgY291bGQgYmUgYXZvaWRlZCBpZiBlMmZzcHJvZ3MgZWl0aGVyIGluY2x1ZGVkIGEg
-bW9yZQ0KICAgID4gbW9kZXJuIHZlcnNpb24gb2YgYmxraWQsIG9yIHBlcmhhcHMgZGlkIG5vdCBp
-bmNsdWRlIGJsa2lkIGF0IGFsbCwNCiAgICA+IHNpbmNlIGEgbW9yZSBjdXJyZW50IHZlcnNpb24g
-b2YgdGhpcyB1dGlsaXR5IGlzIG1haW50YWluZWQgYW5kDQogICAgPiBpbnN0YWxsZWQgdGhyb3Vn
-aCBvdGhlciBwYWNrYWdlcy4NCiAgICA+DQogICAgPiAoRmluZGluZyBodHRwczovL2ZvcnVtcy5j
-ZW50b3Mub3JnL3ZpZXd0b3BpYy5waHA/dD02OTY1NSBoZWxwZWQgYSBsb3QgaW4gZmlndXJpbmcg
-b3V0IHdoeSBteSBrZXJuZWwgYnVpbGQgc3RhcnRlZCBmYWlsaW5nIGFsbCBvZiBhIHN1ZGRlbikN
-Cg0KICAgIFRoZSBibGtpZCBhbmQgdXVpZCBsaWJyYXJpZXMgd2VyZSBtb3ZlZCBmcm9tIGUyZnNw
-cm9ncyBmcm9tIHV0aWwtbGludXgNCiAgICBvbiBtb3N0IExpbnV4IGRpc3RyaWJ1dGlvbnMuICBI
-b3dldmVyLCB0aGVzZSBsaWJyYXJpZXMgYXJlIHN0aWxsDQogICAgbmVlZGVkIHRvIGNvbXBpbGUg
-ZTJmc3Byb2dzLCBhbmQgdGhleSBhcmUgbmVlZGVkIGZvciBub24tTGludXgNCiAgICBvcGVyYXRp
-bmcgc3lzdGVtcywgaW5jbHVkaW5nIEZyZWVCU0QsIElsbHVtb3MsIGV0Yy4sIGFuZCBzb21lIExp
-bnV4DQogICAgc3lzdGVtcywgc3VjaCBhcyBBbmRyb2lkLiAgVGhhdCdzIHdoeSB0aGV5IGhhdmVu
-J3QgYmVlbiByZW1vdmVkLg0KDQogICAgSWYgeW91IGluc3RhbGwgdGhlIFJIRUwvRmVkb3JhIHBh
-Y2thZ2VzIGxpYmJsa2lkLWRldmVsIGFuZA0KICAgIGxpYnV1aWQtZGV2ZWwgYmVmb3JlIHlvdSBy
-dW4gcnVuIGUyZnNwcm9ncydzIGNvbmZpZ3VyZSBzY3JpcHQsIHRoZW4gaXQNCiAgICB3aWxsIHVz
-ZSB0aGUgc3lzdGVtIHZlcnNpb25zIG9mIGxpYmJsa2lkIGFuZCBsaWJ1dWlkLCB3aGljaCB3aWxs
-IGRvDQogICAgdGhlIHJpZ2h0IHRoaW5nLg0KDQogICAgKEZvciBEZWJpYW4gLyBVYnVudHUgdGhl
-IHBhY2thZ2VzIG5hbWVzIGFyZSBsaWJibGtpZC1kZXYgYW5kIHV1aWQtZGV2LA0KICAgIGJ1dCBm
-b3IgdGhlc2UgZGlzdHJpYnV0aW9ucyBpdCdzIGJldHRlciB0byBqdXN0IHJ1bg0KICAgICJkcGtn
-LWJ1aWxkcGFja2FnZSIgc2luY2UgdGhhdCB3aWxsIGF1dG9tYXRpY2FsbHkgYnVpbGQgdGhlIERl
-Ymlhbg0KICAgIHBhY2thZ2VzIHdpdGggYWxsIG9mIHRoZSBjb3JyZWN0IGNvbmZpZ3VyZSBvcHRp
-b25zIHZpYSB0aGUNCiAgICBkZWJpYW4vcnVsZXMgZmlsZSwgYW5kIHRoZSBCdWlsZC1EZXBlbmRz
-OiBkZWNsYXJhdGlvbiBpbg0KICAgIGRlYmlhbi9jb250cm9sIHdpbGwgYXV0b21hdGljYWxseSBl
-bmZvcmNlIHRoYXQgeW91IGhhdmUgYWxsIG9mIHRoZQ0KICAgIGNvcnJlY3QgYnVpbGQgcHJlcmVx
-dWl0ZXMgaW5zdGFsbGVkLikNCg0KICAgIElmIHlvdSBoYW5kIGRvbmUgdGhlIHNpbXBsZSB0aGlu
-ZyB0aGF0IG1vc3Qgbm92aWNlIHVzZXJzIGRvLCB3aGljaCBpcw0KICAgIHRvIGp1c3QgcnVuICIu
-L2NvbmZpZ3VyZSA7IG1ha2UiLCB0aGVuIHRoZSBiaW5hcmllcyB3aWxsIHN0YXRpY2FsbHkNCiAg
-ICBsaW5rIHRoZSBvbGQgdmVyc2lvbnMgb2YgYmxraWQgYW5kIHV1aWQgYW5kIHRoYXQgd2lsbCB3
-b3JrIGFzIHdlbGwuDQogICAgWW91IGp1c3QgcmFuIGludG8gdGhlIGNhc2Ugd2hlcmUgKGEpIHlv
-dSBrbmV3IGVub3VnaCB0byBlbmFibGUgRUxGDQogICAgc2hhcmUgbGlicmFyaWVzLCBidXQgKGIp
-IGRpZG4ndCBrbm93IGVub3VnaCB0byBpbnN0YWxsIHRoZSBzeXN0ZW0NCiAgICBsaWJyYXJpZXMg
-aW5zdGVhZCwgYW5kIChjKSB0aGVuIGRpZCBhICJtYWtlIGluc3RhbGwiIGluc3RlYWQgb2YgdXNp
-bmcNCiAgICBhIHBhY2thZ2UgbWFuYWdlciB0byBtZWRpYXRlIGluc3RhbGxhdGlvbiBvZiB0aGUg
-cHJvZ3JhbXMuDQoNCiAgICBJJ20gc29ycnkgdGhhdCBoYXBwZW5lZCB0byB5b3UsIGJ1dCBpdCdz
-IGEgcmVsYXRpdmVseSByYXJlDQogICAgY29tYmluYXRpb24sIGFuZCB0aGUgZmFjdCByZW1haW5z
-IHRoYXQgdGhlcmUgYXJlIG90aGVyIHVzZXJzIG9mDQogICAgZTJmc3Byb2dzIGJlc2lkZXMgTGlu
-dXgsIGFuZCB1bmZvcnR1bmF0ZWx5LCBtYW55IG9wZW4gc291cmNlIHBhY2thZ2VzLA0KICAgIGlu
-Y2x1ZGluZyB1dGlsLWxpbnV4IGFuZCBzeXN0ZW1kLCBzdWZmZXIgZnJvbSB0aGUgIkFsbCBUaGUg
-V29ybGQgUnVucw0KICAgIExpbnV4IiBkaXNlYXNlLCB3aGljaCBzZWVtcyB0byBiZSBhbiB1cGRh
-dGVkIGZvcm0gb2YgdGhlIGRpc2Vhc2UsICJBbGwNCiAgICB0aGUgV29ybGQncyBhIFZheCJbMV0u
-ICAoVGhpcyBpcyBhbHNvIHdoeSBpdCB3b3VsZCB0YWtlIG1vcmUgd29yayB0aGFuDQogICAgaXQn
-cyB3b3J0aCB0byB0cnkgdG8gYmFja3BvcnQgbmV3ZXIgdmVyc2lvbnMgb2YgYmxraWQgaW50byBl
-MmZzcHJvZ3MuKQ0KDQogICAgQ2hlZXJzLA0KDQogICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAtIFRlZA0KDQogICAgWzFdIEZyb206IGh0dHBzOi8vd3d3Lmx5c2F0b3Iu
-bGl1LnNlL2MvdGVuLWNvbW1hbmRtZW50cy5odG1sDQoNCiAgICAgICAgQ29tbWFuZG1lbnQgIzEw
-Og0KICAgICAgICAgICBUaG91IHNoYWx0IGZvcmVzd2VhciwgcmVub3VuY2UsIGFuZCBhYmp1cmUg
-dGhlIHZpbGUgaGVyZXN5IHdoaWNoDQogICAgICAgICAgIGNsYWltZXRoIHRoYXQgYGBBbGwgdGhl
-IHdvcmxkJ3MgYSBWQVgnJywgYW5kIGhhdmUgbm8gY29tbWVyY2Ugd2l0aA0KICAgICAgICAgICB0
-aGUgYmVuaWdodGVkIGhlYXRoZW5zIHdobyBjbGluZyB0byB0aGlzIGJhcmJhcm91cyBiZWxpZWYs
-IHRoYXQNCiAgICAgICAgICAgdGhlIGRheXMgb2YgdGh5IHByb2dyYW0gbWF5IGJlIGxvbmcgZXZl
-biB0aG91Z2ggdGhlIGRheXMgb2YgdGh5DQogICAgICAgICAgIGN1cnJlbnQgbWFjaGluZSBiZSBz
-aG9ydC4NCg0KICAgICAgICBUaGlzIHBhcnRpY3VsYXIgaGVyZXN5IGJpZHMgZmFpciB0byBiZSBy
-ZXBsYWNlZCBieSBgYEFsbCB0aGUNCiAgICAgICAgd29ybGQncyBhIFN1bicnIG9yIGBgQWxsIHRo
-ZSB3b3JsZCdzIGEgMzg2JycgKHRoaXMgbGF0dGVyIGJlaW5nIGENCiAgICAgICAgcGFydGljdWxh
-cmx5IHJldm9sdGluZyBpbnZlbnRpb24gb2YgU2F0YW4pLCBidXQgdGhlIHdvcmRzIGFwcGx5IHRv
-DQogICAgICAgIGFsbCBzdWNoIHdpdGhvdXQgbGltaXRhdGlvbi4gQmV3YXJlLCBpbiBwYXJ0aWN1
-bGFyLCBvZiB0aGUgc3VidGxlDQogICAgICAgIGFuZCB0ZXJyaWJsZSBgYEFsbCB0aGUgd29ybGQn
-cyBhIDMyLWJpdCBtYWNoaW5lJycsIHdoaWNoIGlzIGFsbW9zdA0KICAgICAgICB0cnVlIHRvZGF5
-IGJ1dCBzaGFsbCBjZWFzZSB0byBiZSBzbyBiZWZvcmUgdGh5IHJlc3VtZSBncm93cyB0b28NCiAg
-ICAgICAgbXVjaCBsb25nZXIuDQoNCg0K
+Hi Jens,
+
+this series cleanups up the block layer API so that APIs consumed
+by file systems are (almost) only struct block_devic based, so that
+file systems don't have to poke into block layer internals like the
+request_queue.
+
+I also found a bunch of existing bugs related to partition offsets
+and discard so these are fixed while going along.
+
+
+Changes since v1:
+ - fix a bisection hazard
+ - minor spelling fixes
+ - reorder hunks between two patches to make the changes more obvious
+ - reorder a patch to be earlier in the series to ease backporting
+
+
+Diffstat:
+ arch/um/drivers/ubd_kern.c           |    2 
+ block/blk-core.c                     |    4 -
+ block/blk-lib.c                      |  124 ++++++++++++++++++++---------------
+ block/blk-mq-debugfs.c               |    2 
+ block/blk-settings.c                 |   74 ++++++++++++++++++++
+ block/blk.h                          |   14 ---
+ block/fops.c                         |    2 
+ block/genhd.c                        |    4 -
+ block/ioctl.c                        |   48 ++++++++++---
+ block/partitions/core.c              |   12 ---
+ drivers/block/drbd/drbd_main.c       |   51 ++++++--------
+ drivers/block/drbd/drbd_nl.c         |   94 +++++++++++---------------
+ drivers/block/drbd/drbd_receiver.c   |   13 +--
+ drivers/block/loop.c                 |   15 +---
+ drivers/block/nbd.c                  |    5 -
+ drivers/block/null_blk/main.c        |    1 
+ drivers/block/rbd.c                  |    1 
+ drivers/block/rnbd/rnbd-clt.c        |    6 -
+ drivers/block/rnbd/rnbd-srv-dev.h    |    8 --
+ drivers/block/rnbd/rnbd-srv.c        |    5 -
+ drivers/block/virtio_blk.c           |    2 
+ drivers/block/xen-blkback/blkback.c  |   15 ++--
+ drivers/block/xen-blkback/xenbus.c   |    9 --
+ drivers/block/xen-blkfront.c         |    7 -
+ drivers/block/zram/zram_drv.c        |    1 
+ drivers/md/bcache/alloc.c            |    2 
+ drivers/md/bcache/request.c          |    4 -
+ drivers/md/bcache/super.c            |    3 
+ drivers/md/bcache/sysfs.c            |    2 
+ drivers/md/dm-cache-target.c         |    9 --
+ drivers/md/dm-clone-target.c         |    9 --
+ drivers/md/dm-io.c                   |    2 
+ drivers/md/dm-log-writes.c           |    3 
+ drivers/md/dm-raid.c                 |    9 --
+ drivers/md/dm-table.c                |   25 +------
+ drivers/md/dm-thin.c                 |   15 ----
+ drivers/md/dm.c                      |    3 
+ drivers/md/md-linear.c               |   11 ---
+ drivers/md/md.c                      |    5 -
+ drivers/md/raid0.c                   |    7 -
+ drivers/md/raid1.c                   |   18 -----
+ drivers/md/raid10.c                  |   20 -----
+ drivers/md/raid5-cache.c             |    8 +-
+ drivers/md/raid5.c                   |   14 +--
+ drivers/mmc/core/queue.c             |    3 
+ drivers/mtd/mtd_blkdevs.c            |    1 
+ drivers/nvme/host/core.c             |    6 -
+ drivers/nvme/target/io-cmd-bdev.c    |    2 
+ drivers/nvme/target/zns.c            |    3 
+ drivers/s390/block/dasd_fba.c        |    1 
+ drivers/scsi/sd.c                    |    2 
+ drivers/target/target_core_device.c  |   20 ++---
+ drivers/target/target_core_file.c    |   10 +-
+ drivers/target/target_core_iblock.c  |   17 +---
+ fs/btrfs/disk-io.c                   |    3 
+ fs/btrfs/extent-tree.c               |    8 +-
+ fs/btrfs/ioctl.c                     |   12 +--
+ fs/btrfs/volumes.c                   |    4 -
+ fs/btrfs/zoned.c                     |    3 
+ fs/direct-io.c                       |   32 +--------
+ fs/exfat/file.c                      |    5 -
+ fs/exfat/super.c                     |   10 --
+ fs/ext4/ioctl.c                      |   10 --
+ fs/ext4/mballoc.c                    |   10 +-
+ fs/ext4/super.c                      |   10 --
+ fs/f2fs/f2fs.h                       |    3 
+ fs/f2fs/file.c                       |   19 ++---
+ fs/f2fs/segment.c                    |    8 --
+ fs/fat/file.c                        |    5 -
+ fs/fat/inode.c                       |   10 --
+ fs/gfs2/rgrp.c                       |    7 -
+ fs/iomap/direct-io.c                 |    3 
+ fs/jbd2/journal.c                    |    9 --
+ fs/jfs/ioctl.c                       |    5 -
+ fs/jfs/super.c                       |    8 --
+ fs/nilfs2/ioctl.c                    |    6 -
+ fs/nilfs2/sufile.c                   |    4 -
+ fs/nilfs2/the_nilfs.c                |    4 -
+ fs/ntfs3/file.c                      |    6 -
+ fs/ntfs3/super.c                     |   10 +-
+ fs/ocfs2/ioctl.c                     |    5 -
+ fs/super.c                           |    2 
+ fs/xfs/xfs_discard.c                 |    8 +-
+ fs/xfs/xfs_log_cil.c                 |    2 
+ fs/xfs/xfs_super.c                   |   12 +--
+ fs/zonefs/super.c                    |    3 
+ include/linux/blkdev.h               |  112 +++++++++++--------------------
+ include/target/target_core_backend.h |    4 -
+ mm/swapfile.c                        |   31 ++------
+ 89 files changed, 493 insertions(+), 653 deletions(-)
