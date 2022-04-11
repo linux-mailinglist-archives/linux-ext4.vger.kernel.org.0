@@ -2,36 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B87774FADEF
-	for <lists+linux-ext4@lfdr.de>; Sun, 10 Apr 2022 14:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E08BA4FB24C
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Apr 2022 05:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232318AbiDJMvO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 10 Apr 2022 08:51:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56450 "EHLO
+        id S239450AbiDKDZ4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 10 Apr 2022 23:25:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbiDJMvM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 10 Apr 2022 08:51:12 -0400
-Received: from out20-51.mail.aliyun.com (out20-51.mail.aliyun.com [115.124.20.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F3B4A3E6;
-        Sun, 10 Apr 2022 05:49:00 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07449171|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.183864-0.0663327-0.749803;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047187;MF=guan@eryu.me;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.NNn8Kq0_1649594937;
-Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.NNn8Kq0_1649594937)
-          by smtp.aliyun-inc.com(33.45.46.134);
-          Sun, 10 Apr 2022 20:48:57 +0800
-Date:   Sun, 10 Apr 2022 20:48:57 +0800
-From:   Eryu Guan <guan@eryu.me>
-To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc:     fstests@vger.kernel.org, riteshh@linux.ibm.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4/053: Add support for testing mb_optimize_scan
-Message-ID: <YlLSObvNaXxrrZkw@desktop>
-References: <5b0d252484cbe973c2df0c677cb47b30012b0db1.1647253313.git.ojaswin@linux.ibm.com>
+        with ESMTP id S229625AbiDKDZz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 10 Apr 2022 23:25:55 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F941A3BF;
+        Sun, 10 Apr 2022 20:23:43 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id j21so15467364qta.0;
+        Sun, 10 Apr 2022 20:23:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TxTBF5ylc1PcjiQhqnnTpUZjqhG5JQd7YWZvKQpsVTc=;
+        b=W8YK+cBDYNmAoWo2NM8QKZv6OkeYNZYXkEdNw6qQevduBezaIlBbCaUfD5L8a/nSl8
+         Ibg9fC+zex8eH5uo3MX97BKGSYwzhDXMYAck0HTNAW4Vz3c0UWmbmZ8jY42QeAE9IRqd
+         hxX/NlEs2jPQb8KUP7aHOXP/V2u5vw9F3J5kaHFZak/mKTVU3otUbImHZDiVBlSh5Ex3
+         3wPjrsIbukHDZntFrY2vBU9hNrnLed1RzY5RaM5mL2O9JlBQJV1lUnFWH+UG2z0wsf4A
+         ic4KS3VfFGhJslk2baeMhPXsLdszDOZ2gdVxH6klGJNhVGRqI+xB5V0zkY6x/PePRQVy
+         tyRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TxTBF5ylc1PcjiQhqnnTpUZjqhG5JQd7YWZvKQpsVTc=;
+        b=oF4KgyRotj/9KR/uwSTCligyDszEvEFq6NaK8C3CjsdeZmGvUBDbzp68MAIWUGbLWM
+         FfF1muOt9Wy6aS7pP0PCXAoqRf9gGQ88Zl/jJKE0sHlUeMGNFPyya+BF6sgck0jNP5Wy
+         C2ISRHVxYEUysf+GK4TXIOinMvIO9JdjqObc5Nq1IKTLaEJ7tzh+HMRVoyiIJLMJTm28
+         r+rWlm0K5kI8aKX9j98kLrUYhVHe4Vthb/1vEhM5nuA6pzv0lMTQKOZuAYbWqI/rTjKh
+         AsWZaZPsM8+2vvsW+9ptWA/ElRCIa1qgZ1M5hyrajlu8g37Nc49x3FW1z84Dq2Uh25Uj
+         JSeg==
+X-Gm-Message-State: AOAM530+AMLXMf4mloAe+OJ5m/HwJBmdEYSJl6AC4UFF500Q85ZtREIY
+        iJ2yoGaFDIKRR0kkSvToh1vsqPteDiU=
+X-Google-Smtp-Source: ABdhPJymvXQVk9mB07Cu4bPhBbnhFdk7NqUv7qRAvfROLG+Z4QkQI5eJM8B0I9r1j6etjds6Bvj2mQ==
+X-Received: by 2002:ac8:7616:0:b0:2ed:41c3:d519 with SMTP id t22-20020ac87616000000b002ed41c3d519mr4277873qtq.64.1649647422590;
+        Sun, 10 Apr 2022 20:23:42 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id t10-20020a05620a034a00b0069c06c95bf7sm3050253qkm.14.2022.04.10.20.23.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Apr 2022 20:23:42 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: lv.ruyi@zte.com.cn
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lv Ruyi <lv.ruyi@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH v2] ext4: remove unnecessary conditional
+Date:   Mon, 11 Apr 2022 03:23:37 +0000
+Message-Id: <20220411032337.2517465-1-lv.ruyi@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5b0d252484cbe973c2df0c677cb47b30012b0db1.1647253313.git.ojaswin@linux.ibm.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -39,76 +68,49 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Mar 14, 2022 at 04:02:07PM +0530, Ojaswin Mujoo wrote:
-> Add support to test the mb_optimize_scan mount option.
-> Since its value is not reflected in the "options" file in proc,
-> use "mb_structs_summary" to verify its value.
-> 
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+From: Lv Ruyi <lv.ruyi@zte.com.cn>
 
-mb_optimize_scan option was added in v5.13 by commit 196e402adf2e ("ext4:
-improve cr 0 / cr 1 group scanning"), and ext4/053 will run on v5.12
-kernel (and newer kernels), so test will fail when testing v5.12 kernel.
+iput() has already handled null and non-null parameter, so it is no
+need to use if().
 
-> ---
->  tests/ext4/053 | 21 ++++++++++++---------
->  1 file changed, 12 insertions(+), 9 deletions(-)
-> 
-> diff --git a/tests/ext4/053 b/tests/ext4/053
-> index e1e79592..bd92002f 100755
-> --- a/tests/ext4/053
-> +++ b/tests/ext4/053
-> @@ -100,6 +100,7 @@ test_mnt() {
->  	(
->  	ret=0
->  	IFS=','
-> +	proc_path="/proc/fs/ext4/$(_short_dev $SCRATCH_DEV)"
->  	for option in $OPTS; do
->  		if echo $IGNORED | grep -w $option; then
->  			continue
-> @@ -114,11 +115,16 @@ test_mnt() {
->  		fi
->  		option=${option#^}
->  
-> -		if echo $CHECK_MINFO | grep -w $option; then
-> +		if [[ $option =~ ^mb_optimize_scan=.*$ ]]; then
-> +			# mb_optimize_scan needs special handling
-> +			expected=${option#*=}
-> +			ret=$(cat $proc_path/mb_structs_summary | grep "optimize_scan" \
-> +				| awk '{ print $2 }')
-> +		elif echo $CHECK_MINFO | grep -w $option; then
->  			findmnt -n -o OPTIONS $SCRATCH_DEV | grep $option
->  			ret=$?
->  		else
-> -			grep $option /proc/fs/ext4/$(_short_dev $SCRATCH_DEV)/options
-> +			grep $option $proc_path/options
->  			ret=$?
->  		fi
->  
-> @@ -526,13 +532,10 @@ for fstype in ext2 ext3 ext4; do
->  
->  	mnt prefetch_block_bitmaps removed
->  	mnt no_prefetch_block_bitmaps
-> -	# We don't currently have a way to know that the option has been
-> -	# applied, so comment it out for now. This should be fixed in the
-> -	# future.
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
+---
+v2: change subject from "remove redundant judgment" to
+"remove unnecessary conditional"
+---
+ fs/ext4/fast_commit.c | 3 +--
+ fs/ext4/namei.c       | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-As the comment said, we need a way to know if mb_optimize_scan option is
-supported by current kernel.
+diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+index 3d72565ec6e8..e85d351a1a31 100644
+--- a/fs/ext4/fast_commit.c
++++ b/fs/ext4/fast_commit.c
+@@ -1659,8 +1659,7 @@ static int ext4_fc_replay_create(struct super_block *sb, struct ext4_fc_tl *tl,
+ 	set_nlink(inode, 1);
+ 	ext4_mark_inode_dirty(NULL, inode);
+ out:
+-	if (inode)
+-		iput(inode);
++	iput(inode);
+ 	return ret;
+ }
+ 
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index e37da8d5cd0c..2fd3b24a21cd 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -3363,8 +3363,7 @@ static int ext4_symlink(struct user_namespace *mnt_userns, struct inode *dir,
+ 	err = ext4_add_nondir(handle, dentry, &inode);
+ 	if (handle)
+ 		ext4_journal_stop(handle);
+-	if (inode)
+-		iput(inode);
++	iput(inode);
+ 	goto out_free_encrypted_link;
+ 
+ err_drop_inode:
+-- 
+2.25.1
 
-Thanks,
-Eryu
-
-> -	#mnt mb_optimize_scan=0
-> -	#mnt mb_optimize_scan=1
-> -	#not_mnt mb_optimize_scan=9
-> -	#not_mnt mb_optimize_scan=
-> +	mnt mb_optimize_scan=0
-> +	mnt mb_optimize_scan=1
-> +	not_mnt mb_optimize_scan=9
-> +	not_mnt mb_optimize_scan=
->  	mnt nombcache
->  	mnt no_mbcache nombcache
->  	mnt check=none removed
-> -- 
-> 2.27.0
