@@ -2,40 +2,48 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C0E50185B
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Apr 2022 18:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA0350185A
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Apr 2022 18:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236978AbiDNQK3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 14 Apr 2022 12:10:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53136 "EHLO
+        id S229960AbiDNQK0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 14 Apr 2022 12:10:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349882AbiDNPkT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Apr 2022 11:40:19 -0400
-Received: from mx1.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8F01EAF3;
-        Thu, 14 Apr 2022 08:19:51 -0700 (PDT)
-Received: from [192.168.0.175] (ip5f5aed13.dynamic.kabel-deutschland.de [95.90.237.19])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        with ESMTP id S1359250AbiDNPmv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Apr 2022 11:42:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3170C38DBA;
+        Thu, 14 Apr 2022 08:29:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: buczek)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 36EBE61EA1928;
-        Thu, 14 Apr 2022 17:19:50 +0200 (CEST)
-Message-ID: <4e83fb26-4d4a-d482-640c-8104973b7ebf@molgen.mpg.de>
-Date:   Thu, 14 Apr 2022 17:19:49 +0200
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BE5A561795;
+        Thu, 14 Apr 2022 15:29:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 259D1C385A1;
+        Thu, 14 Apr 2022 15:29:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1649950190;
+        bh=WVPVOL2y6eFxbWQfAEW3ZH2FbE5I3pqQ3L871DtCH+U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lF4jg8if+tUve0km0+OAhXP7snpbuQprjDVc3UvBJ41Uz9x6xz2t1PwJVvAuk+EIY
+         VrNOgnOaK4JmlMPTjrwg6KxHpXfe4LgaNGyJDkNfWlp0hEhhz+yduD3+dQRELxDuCO
+         jmuBHixmDaUo8Mqw+yxzvk5uWzN1Fhjy+YsRRWUIa+YadNNeyx44XKiXt9Co4TIdmd
+         9FzjXO6qJfKHE6Wzy+8/F0XMQBbbp84GUTvur1JN8xs5KAwGbZF1QkWYEgkQUNcaOK
+         Bb6JWe5HsHiGhHxn8UAaX4pDQX9vWeC3D6BszYRPt2JqF2PWbWqitWPul62PG+v1wS
+         Z88+CPAKM1KxA==
+Date:   Thu, 14 Apr 2022 08:29:49 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Eric Whitney <enwlinux@gmail.com>
+Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] common/filter: extend _filter_xfs_io to match -nan
+Message-ID: <20220414152949.GA17014@magnolia>
+References: <20220414142258.761835-1-enwlinux@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Content-Language: en-US
-To:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        dm-devel@redhat.com
-Cc:     it+linux@molgen.mpg.de,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-From:   Donald Buczek <buczek@molgen.mpg.de>
-Subject: ext4_writepages: jbd2_start: 5120 pages, ino 11; err -5
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220414142258.761835-1-enwlinux@gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -44,48 +52,47 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-We have a cluster scheduler which provides each cluster job with a private scratch filesystem (TMPDIR). These are created when a job starts and removed when a job completes. The setup works by fallocate, losetup, mkfs.ext4, mkdir, mount, "losetup -d", rm and the teardown just does a umount and rmdir.
+On Thu, Apr 14, 2022 at 10:22:58AM -0400, Eric Whitney wrote:
+> When run on ext4 with sufficiently fast x86_64 hardware, generic/130
+> sometimes fails because xfs_io can report rate values as -nan:
+> 0.000000 bytes, 0 ops; 0.0000 sec (-nan bytes/sec and -nan ops/sec)
+> 
+> _filter_xfs_io matches the strings 'inf' or 'nan', but not '-nan'.  In
+> that case it fails to convert the actual output to a normalized form
+> matching generic/130's golden output.  Extend the regular expression
+> used to match xfs_io's output to fix this.
+> 
+> Signed-off-by: Eric Whitney <enwlinux@gmail.com>
+> ---
+>  common/filter | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/common/filter b/common/filter
+> index 5fe86756..5b20e848 100644
+> --- a/common/filter
+> +++ b/common/filter
+> @@ -168,9 +168,9 @@ common_line_filter()
+>  
+>  _filter_xfs_io()
+>  {
+> -    # Apart from standard numeric values, we also filter out 'inf' and 'nan'
+> -    # which can result from division in some cases
+> -    sed -e "s/[0-9/.]* [GMKiBbytes]*, [0-9]* ops\; [0-9/:. sec]* ([infa0-9/.]* [EPGMKiBbytes]*\/sec and [infa0-9/.]* ops\/sec)/XXX Bytes, X ops\; XX:XX:XX.X (XXX YYY\/sec and XXX ops\/sec)/"
+> +    # Apart from standard numeric values, we also filter out 'inf', 'nan', and
+> +    # '-nan' which can result from division in some cases
+> +    sed -e "s/[0-9/.]* [GMKiBbytes]*, [0-9]* ops\; [0-9/:. sec]* ([infa0-9/.-]* [EPGMKiBbytes]*\/sec and [infa0-9/.-]* ops\/sec)/XXX Bytes, X ops\; XX:XX:XX.X (XXX YYY\/sec and XXX ops\/sec)/"
 
-This works but there is one nuisance: The systems usually have a lot of memory and some jobs write a lot of data to their scratch filesystems. So when a job finishes, there often is a lot to sync by umount which sometimes takes many minutes and wastes a lot of I/O bandwidth. Additionally, the reserved space can't be returned and reused until the umount is finished and the backing file is deleted.
+/me squints at this regular expression and /thinks/ its ok.
 
-So I was looking for a way to avoid that but didn't find something straightforward. The workaround I've found so far is using a dm-device (linear target) between the filesystem and the loop device and then use this sequence for teardown:
+Took me a while to figure out "infa" tho. :P
 
-- fcntl EXT4_IOC_SHUTDOWN with EXT4_GOING_FLAGS_NOLOGFLUSH
-- dmestup reload $dmname --table "0 $sectors zero"
-- dmsetup resume $dmname --noflush
-- umount $mountpoint
-- dmsetup remove --deferred $dmname
-- rmdir $mountpoint
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-This seems to do what I want. The unnecessary flushing of the temporary data is redirected from the backing file into the zero target and it works really fast. There is one remaining problem though, which might be just a cosmetic one: Although ext4 is shut down to prevent it from writing, I sometimes get the error message from the subject in the logs:
+--D
 
-[2963044.462043] EXT4-fs (dm-1): mounted filesystem without journal. Opts: (null)
-[2963044.686994] EXT4-fs (dm-0): mounted filesystem without journal. Opts: (null)
-[2963044.728391] EXT4-fs (dm-2): mounted filesystem without journal. Opts: (null)
-[2963055.585198] EXT4-fs (dm-2): shut down requested (2)
-[2963064.821246] EXT4-fs (dm-2): mounted filesystem without journal. Opts: (null)
-[2963074.838259] EXT4-fs (dm-2): shut down requested (2)
-[2963095.979089] EXT4-fs (dm-0): shut down requested (2)
-[2963096.066376] EXT4-fs (dm-0): ext4_writepages: jbd2_start: 5120 pages, ino 11; err -5
-[2963108.636648] EXT4-fs (dm-0): mounted filesystem without journal. Opts: (null)
-[2963125.194740] EXT4-fs (dm-0): shut down requested (2)
-[2963166.708088] EXT4-fs (dm-1): shut down requested (2)
-[2963169.334437] EXT4-fs (dm-0): mounted filesystem without journal. Opts: (null)
-[2963227.515974] EXT4-fs (dm-0): shut down requested (2)
-[2966222.515143] EXT4-fs (dm-0): mounted filesystem without journal. Opts: (null)
-[2966222.523390] EXT4-fs (dm-1): mounted filesystem without journal. Opts: (null)
-[2966222.598071] EXT4-fs (dm-2): mounted filesystem without journal. Opts: (null)
-
-So I'd like to ask a few questions:
-
-- Is this error message expected or is it a bug?
-- Can it be ignored or is there a leak or something on that error path.
-- Is there a better way to do what I want? Something I've overlooked?
-- I consider to create a new dm target or add an option to an existing one, because I feel that "zero" underneath a filesystem asks for problems because a filesystem expects to read back the data that it wrote, and the "error" target would trigger lots of errors during the writeback attempts. What I really want is a target which silently discard writes and returns errors on reads. Any opinion about that?
-- But to use devicemapper to eat away the I/O is also just a workaround to the fact that we can't parse some flag to umount to say that we are okay to lose all data and leave the filesystem in a corrupted state if this was the last reference to it. Would this be a useful feature?
-
-Best
-   Donald
--- 
-Donald Buczek
-buczek@molgen.mpg.de
+>  }
+>  
+>  # Also filter out the offset part of xfs_io output
+> -- 
+> 2.30.2
+> 
