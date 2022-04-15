@@ -2,61 +2,49 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7EB502BE5
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Apr 2022 16:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3637502C07
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Apr 2022 16:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354464AbiDOOc0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 15 Apr 2022 10:32:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45534 "EHLO
+        id S1354587AbiDOOkB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 15 Apr 2022 10:40:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354451AbiDOOcZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 15 Apr 2022 10:32:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 67E01A76C7
-        for <linux-ext4@vger.kernel.org>; Fri, 15 Apr 2022 07:29:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1650032995;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iakfPzHPI4Gff47VnXv0STpJeaaR1gdsdPOwiDuiR9U=;
-        b=jVOTswdISzuU/ta84/RbXyf6E8CFHB1A0zVFatOqmOGmkLTAFkgZN9QYgR6OHAX6nGN2fi
-        eHHm7k08ugwY0CiuChsdrEGWQdF9vEWh9RThPEIWYqQwKynDAGcNh0DOMrCq7r2Q7uqZ2B
-        2sslkM1dvx90Y8/QZhsM3NKanQAxWwg=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-388-JF23Ih2COQK_FM_H7mWOOQ-1; Fri, 15 Apr 2022 10:29:52 -0400
-X-MC-Unique: JF23Ih2COQK_FM_H7mWOOQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id ECC90801E95;
-        Fri, 15 Apr 2022 14:29:51 +0000 (UTC)
-Received: from T590 (ovpn-8-16.pek2.redhat.com [10.72.8.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AF0DB9E6C;
-        Fri, 15 Apr 2022 14:29:45 +0000 (UTC)
-Date:   Fri, 15 Apr 2022 22:29:34 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Eric Wheeler <linux-block@lists.ewheeler.net>
-Cc:     linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: loop: it looks like REQ_OP_FLUSH could return before IO
- completion.
-Message-ID: <YlmBTtGdTH2xW1qT@T590>
-References: <af3e552a-6c77-b295-19e1-d7a1e39b31f3@ewheeler.net>
- <YjfFHvTCENCC29WS@T590>
- <c03de7ac-63e9-2680-ca5b-8be62e4e177f@ewheeler.net>
- <bd5f9817-c65e-7915-18b-9c68bb34488e@ewheeler.net>
- <YldqnL79xH5NJGKW@T590>
- <5b3cb173-484e-db3-8224-911a324de7dd@ewheeler.net>
+        with ESMTP id S1349869AbiDOOkA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 15 Apr 2022 10:40:00 -0400
+Received: from mail.urbanec.net (mail.urbanec.net [218.214.117.158])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0770F4667A
+        for <linux-ext4@vger.kernel.org>; Fri, 15 Apr 2022 07:37:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=urbanec.net
+        ; s=dkim_rsa; h=Content-Transfer-Encoding:Content-Type:To:Subject:From:
+        MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=1Z8nICD0zLLM7k2WwmCjJvkTuzPz1n8C4ar7SrDvWv0=; i=@urbanec.net; t=1650033452
+        ; x=1650897452; b=H1GK9wj43R8DiaEZd/639SpVRboM6ogHhQFI3AX0UvFGUR7pkEVv/UARCh7
+        apPgL5edr6bfhjt+p/jBEDPL4m/wdJ5PNYMcUx8mrPThZ3snYZZpP39Ki5A6JXbqk2pbQgph8bx83
+        mVa42fR8yCp+dHNgeSo32pi0ShDagK7BzzWZi8bs8owwgCaWjDVu8F3IuEve0BtOMq/rUDVPgken8
+        I/7rrJ0Camr/GNxlF/MpS5Wn4MMJqBHxFTQJPAwi5DAbAECt4eweZQDD+W7ztWS/gZT9Mj8iWoczr
+        rTLViUT6s0DuBjlrJtlmdmS9w92uqN8hAZz2opAtJcmYlSFulYYw==;
+Received: from ten.urbanec.net ([192.168.42.10])
+        by mail.urbanec.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <linux-ext4.vger.kernel.org@urbanec.net>)
+        id 1nfN4j-0003RH-7t
+        for linux-ext4@vger.kernel.org; Sat, 16 Apr 2022 00:37:29 +1000
+Message-ID: <493bbaea-b0d3-4f8e-20fb-5fb330a128a3@urbanec.net>
+Date:   Sat, 16 Apr 2022 00:37:29 +1000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5b3cb173-484e-db3-8224-911a324de7dd@ewheeler.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.11.54.5
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+From:   Peter Urbanec <linux-ext4.vger.kernel.org@urbanec.net>
+Subject: resize2fs on ext4 leads to corruption
+To:     linux-ext4@vger.kernel.org
+Content-Language: en-AU
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,241 +52,179 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Apr 14, 2022 at 07:10:04PM -0700, Eric Wheeler wrote:
-> On Thu, 14 Apr 2022, Ming Lei wrote:
-> > On Wed, Apr 13, 2022 at 03:49:07PM -0700, Eric Wheeler wrote:
-> > > On Tue, 22 Mar 2022, Eric Wheeler wrote:
-> > > > On Mon, 21 Mar 2022, Ming Lei wrote:
-> > > > > On Sat, Mar 19, 2022 at 10:14:29AM -0700, Eric Wheeler wrote:
-> > > > > > Hello all,
-> > > > > > 
-> > > > > > In loop.c do_req_filebacked() for REQ_OP_FLUSH, lo_req_flush() is called: 
-> > > > > > it does not appear that lo_req_flush() does anything to make sure 
-> > > > > > ki_complete has been called for pending work, it just calls vfs_fsync().
-> > > > > > 
-> > > > > > Is this a consistency problem?
-> > > > > 
-> > > > > No. What FLUSH command provides is just flushing cache in device side to
-> > > > > storage medium, so it is nothing to do with pending request.
-> > > > 
-> > > > If a flush follows a series of writes, would it be best if the flush 
-> > > > happened _after_ those writes complete?  Then then the storage medium will 
-> > > > be sure to flush what was intended to be written.
-> > > > 
-> > > > It seems that this series of events could lead to inconsistent data:
-> > > > 	loop		->	filesystem
-> > > > 	write a
-> > > > 	write b
-> > > > 	flush
-> > > > 				write a
-> > > > 				flush
-> > > > 				write b
-> > > > 				crash, b is lost
-> > > > 
-> > > > If write+flush ordering is _not_ important, then can you help me 
-> > > > understand why?
-> > > > 
-> > > 
-> > > Hi Ming, just checking in: did you see the message above?
-> > > 
-> > > Do you really mean to say that reordering writes around a flush is safe 
-> > > in the presence of a crash?
-> > 
-> > Sorry, replied too quick.
-> 
-> Thats ok, thanks for considering the issue!
->  
-> > BTW, what is the actual crash? Any dmesg log? From the above description, b is
-> > just not flushed to storage when running flush, and sooner or later it will
-> > land, so what is the real issue?
-> 
-> In this case "crash" is actually a filesystem snapshot using most any 
-> snapshot technology such as: dm-thin, btrfs, bcachefs, zfs.  From the 
-> filesystem inside the loop file's point of view, a snapshot is the same as 
-> a hardware crash.
-> 
-> Some background:
-> 
->   We've already seen journal commit re-ordering caused by dm-crypt in 
->   dm-thin snapshots:
-> 	dm-thin -> dm-crypt -> [kvm with a disk using ext4]
-> 
->   This is the original email about dm-crypt ordering:
-> 	https://listman.redhat.com/archives/dm-devel/2016-September/msg00035.html 
-> 
->   We "fixed" the dm-crypt issue by disabling parallel dm-crypt threads 
->   with dm-crypt flags same_cpu_crypt+submit_from_crypt_cpus and haven't 
->   seen the issue since. (Its noticably slower, but I'll take consistency 
->   over performance any day! Not sure if that old dm-crypt ordering has 
->   been fixed.)
-> 
-> So back to considering loop devs:
-> 
-> Having seen the dm-crypt issue I would like to verify that loop isn't 
-> susceptable to the same issue in the presence of lower-level 
-> snapshots---but it looks like it could be since flushes don't enforce 
-> ordering.  Here is why:
-> 
-> In ext4/super.c:ext4_sync_fs(), the ext4 code calls 
-> blkdev_issue_flush(sb->s_bdev) when barriers are enabled (which is 
-> default).  blkdev_issue_flush() sets REQ_PREFLUSH and according to 
-> blk_types.h this is a "request for cache flush"; you could think of 
-> in-flight IO's on the way through loop.ko and into the hypervisor 
-> filesystem where the loop's backing file lives as being in a "cache" of 
-> sorts---especially for non-DIO loopdevs hitting the pagecache.
-> 
-> Thus, ext4 critically expects that all IOs preceding a flush will hit 
-> persistent storage before all future IOs.  Failing that, journal replay 
-> cannot return the filesystem to a consistent state without a `fsck`.  
+I think I may have run into a resize2fs bug that leads to data loss. I 
+see this:
 
-If ext4 expects the following order, it is ext4's responsibility to
-maintain the order, and block layer may re-order all these IOs at will,
-so do not expect IOs are issued to device in submission order
+# mount -t ext4 /dev/md0 /mnt/RED8
+mount: /mnt/RED8: wrong fs type, bad option, bad superblock on /dev/md0, 
+missing codepage or helper program, or other error.
 
-1) IOs preceding flush in 2)
+Besides reporting the issue and gathering as much information as I can 
+to help debug this, I'd also like to ask for some assistance trying to 
+recover
+the data. I'm prepared to put in some effort. I'm on Gentoo and can 
+apply git patches and rebuild the kernel or compile e2fsprogs.
 
-2) flush
+The system is a *32-bit* Gentoo installation built well over a decade 
+ago, but is kept reasonably up to date.
 
-3) IOs after the flush
+# uname -a
+Linux gw 5.16.9-gentoo #2 SMP Sun Feb 13 21:19:40 AEDT 2022 i686 
+Intel(R) Core(TM)2 Duo CPU E8400 @ 3.00GHz GenuineIntel GNU/Linux
 
-Even the device drive may re-order these IOs, such as AHCI/NCQ.
+sys-fs/e2fsprogs
+       Installed versions:  1.46.4(11:13:09 04/01/22)(nls split-usr 
+threads -cron -fuse -lto -static-libs)
 
-> 
-> (Note that ext4 is just an example, really any journaled filesystem is at 
-> risk.)
-> 
-> Lets say a virtual machine uses a loopback file for a disk and the VM 
-> issues the following to delete some file called "/b":
-> 
->   unlink("/b"):
-> 	write: journal commit: unlink /b
-> 	flush: blkdev_issue_flush()
-> 	write: update fs datastructures (remove /b from a dentry)
-> 	<hypervisor snapshot>
-> 
-> If the flush happens out of order then an operation like unlink("/b")  
-> could look like this where the guest VM's filesystem is on the left and 
-> the hypervisor's loop filesystem operations are on the right:
-> 
->   VM ext4 filesystem            |  Hypervisor loop dev ordering
-> --------------------------------+--------------------------------
-> write: journal commit: unlink /b
-> flush: blkdev_issue_flush()
-> write: update fs dentry's
->                                 queued to loop: [journal commit: unlink /b]
->                                 queued to loop: [update fs dentry's]
->                                 flush: vfs_fsync() - out of order
->                                 queued to ext4: [journal commit: unlink /b]
->                                 queued to ext4: [update fs dentry's]
->                                 write lands: [update fs dentry's]
->                                 <snapshot!>
->                                 write lands: [journal commit: unlink /b]
+sys-libs/e2fsprogs-libs
+       Installed versions:  1.46.4-r1(17:26:02 02/01/22)(split-usr 
+-static-libs ABI_MIPS="-n32 -n64 -o32" ABI_S390="-32 -64" ABI_X86="32 
+-64 -x32")
 
-If VM ext4 requires the above order, ext4 FS code has to start flush until
-write(unlink /b) is done or do write(unlink /b) and flush in one single
-command, and start write(update fs dentry's) after the flush is done.
 
-Once ext4 submits IOs in this way, you will see the issue shouldn't be
-related with hypervisor.
+Here is the sequence of steps that lead to data loss:
 
-One issue I saw is in case of snapshot in block layer & loop/buffered
-io. When loop write is done, the data is just in FS page cache, which
-may be invisible to block snapshot(dm-snap), even page writeback may be
-re-order. But if flush is used correctly, this way still works fine.
+Added one 8TB disk to a md raid5 array:
 
-> 				
-> Notice that the last two "write lands" are out of order because the 
-> vfs_fsync() does not separate them as expected by the VM's ext4 
-> implementation.
-> 
-> Presently, loop.c will never re-order actual WRITE's: they will be 
-> submitted to loopdev's `file*` handle in-submit-order because the 
-> workqueue will keep them ordered.  This is good[*].
+# mdadm --add /dev/md0 /dev/sdi1
+# mdadm --grow --raid-devices=4 
+--backup-file=/root/grow_md0_20220410.bak  /dev/md0
 
-Again do not expect block layer to maintain IO order.
+[183222.697484] md: md0: reshape done.
+[183222.866677] md0: detected capacity change from 31255572480 to 
+46883358720
 
-> 
-> But, REQ_FLUSH is not a write:
-> 
-> The vfs_fsync() in lo_req_flush() is _not_ ordered by the writequeue, and 
-> there exists no mechanism in loop.c to enforce completion of IOs submitted 
-> to the loopdev's `file*` handle prior to completing the vfs_fsync(), nor 
-> are subsequent IOs thereby required to complete after the flush.
+md0 : active raid5 sdi1[4] sda1[3] sdh1[1] sdg1[0]
+        23441679360 blocks super 1.2 level 5, 512k chunk, algorithm 2 
+[4/4] [UUUU]
+        bitmap: 0/59 pages [0KB], 65536KB chunk
 
-Yes, but flush is just to flush device cache to medium, and block
-layer doesn't maintain io order, that is responsibility of block layer's
-user(FS) to maintain io order.
+# umount /mnt/RED8
 
-> 
-> Thus, the hypervisor's snapshot-capable filesystem can re-order the last 
-> two writes because the flush happened early.
-> 
-> In the re-ordered case on the hypervisor side:
-> 
->   If a snapshot happens after the dentry removal but _before_ the journal 
->   commit, then a journal replay of the resulting snapshot will be 
->   inconsistent.
-> 
-> Flush re-ordering creates an inconsistency in two possible cases:
-> 
->    a. In the snapshot after dentry removal but before journal commit.
->    b. Crash after dentry removal but before journal comit.
-> 
-> Really a snapshot looks like a crash to the filesystem, so (a) and (b) are 
-> equivalent but (a) is easier to reason about. In either case, mounting the 
-> out-of-order filesystem (snapshot if (a), origin if (b)) will present 
-> kernel errors in the VM when the dentry is read:
-> 
-> 	kernel: EXT4-fs error (device dm-2): ext4_lookup:1441: inode 
-> 	 #1196093: comm rsync: deleted inode referenced: 1188710
-> 	[ https://listman.redhat.com/archives/dm-devel/2016-September/028121.html ]
-> 
-> 
-> Fixing flush ordering provides for two possible improvements:
+# tune2fs -E stride=128,stripe_width=384  /dev/md0
 
-No, what you should fix is to enhance the IO order in FS or journal
-code, instead of block layer.
+# fsck.ext4 -f -v -C 0 -D /dev/md0
 
->   ([*] from above about write ordering)
-> 
-> 1. Consistency, as above.
-> 
-> 2. Performance.  Right now loopdev IOs are serialized by a single write 
->    queue per loopdev.  Parallel work queues could be used to submit IOs in 
->    parallel to the filesystem serving the loopdev's `file*` handle since 
->    VMs may submit IOs from different CPU cores.  Special care would need 
->    to be taken for the following cases:
-> 
->      a. Ordering of dependent IOs (ie, reads or writes of preceding 
->         writes).
->      b. Flushes need to wait for all workqueues to quiesce.
-> 
->    W.r.t choosing the number of WQ's: Certainly not 1:1 CPU to workqueue 
->    mapping because of the old WQ issue running out of pid's with lots of 
->    CPUs, but here are some possibilities:
-> 
->      a. 1:1 per socket
->      b. User configurable as a module parameter
->      c. Dedicated pool of workqueues for all loop devs that dispatch 
->         queued IOs to the correct `file*` handle.  RCU might be useful.
-> 
-> 
-> What next?
-> 
-> Ok, so assuming consistency is an issue, #1 is the priority and #2 is 
-> nice-to-have.  This might be the right time for to consider these since 
-> there is so much discussion about loop.c on the list right now.
-> 
-> According to my understanding of the research above this appears to be an 
-> issue and there are other kernel developers who know this code better than I.  
-> 
-> I want to know if this is correct:
-> 
-> Should others be CC'ed on this topic?  If so, who?
+# mount -t ext4 /dev/md0 /mnt/RED8
 
-ext4 or fsdevel guys.
+At this stage I used the system for about a week without any issues. 
+Then earlier today:
 
+# umount /mnt/RED8
+
+# e2fsck -f /dev/md0
+e2fsck 1.46.4 (18-Aug-2021)
+Pass 1: Checking inodes, blocks, and sizes
+Pass 2: Checking directory structure
+Pass 3: Checking directory connectivity
+Pass 4: Checking reference counts
+Pass 5: Checking group summary information
+RED8: 11665593/488370176 files (0.6% non-contiguous), 
+3434311347/3906946560 blocks
+
+# resize2fs /dev/md0
+resize2fs 1.46.4 (18-Aug-2021)
+Resizing the filesystem on /dev/md0 to 5860419840 (4k) blocks.
+The filesystem on /dev/md0 is now 5860419840 (4k) blocks long.
+
+So far so good. Everything appears to be working just fine until now.
+
+# mount -t ext4 /dev/md0 /mnt/RED8
+mount: /mnt/RED8: wrong fs type, bad option, bad superblock on /dev/md0, 
+missing codepage or helper program, or other error.
+
+# dumpe2fs -h /dev/md0
+dumpe2fs 1.46.4 (18-Aug-2021)
+dumpe2fs: Bad magic number in super-block while trying to open /dev/md0
+Couldn't find valid filesystem superblock.
+
+# dumpe2fs -o superblock=32768  -h /dev/md0
+dumpe2fs 1.46.4 (18-Aug-2021)
+Filesystem volume name:   RED8
+Last mounted on:          /exported/Music
+Filesystem UUID:          1e999cb8-12b2-4ab7-b41b-c77fd267a102
+Filesystem magic number:  0xEF53
+Filesystem revision #:    1 (dynamic)
+Filesystem features:      has_journal ext_attr resize_inode dir_index 
+sparse_super2 filetype extent 64bit flex_bg large_dir inline_data 
+sparse_super large_file huge_file dir_nlink extra_isize metadata_csum
+Filesystem flags:         signed_directory_hash
+Default mount options:    user_xattr acl
+Filesystem state:         not clean
+Errors behavior:          Continue
+Filesystem OS type:       Linux
+Inode count:              732553216
+Block count:              5860419840
+Reserved block count:     0
+Free blocks:              2410725583
+Free inodes:              720887623
+First block:              0
+Block size:               4096
+Fragment size:            4096
+Group descriptor size:    64
+Blocks per group:         32768
+Fragments per group:      32768
+Inodes per group:         4096
+Inode blocks per group:   256
+RAID stride:              128
+RAID stripe width:        384
+Flex block group size:    16
+Filesystem created:       Wed Jan  2 01:42:39 2019
+Last mount time:          Mon Apr 11 00:39:58 2022
+Last write time:          Fri Apr 15 17:53:06 2022
+Mount count:              0
+Maximum mount count:      -1
+Last checked:             Fri Apr 15 17:04:07 2022
+Check interval:           0 (<none>)
+Lifetime writes:          9 TB
+Reserved blocks uid:      0 (user root)
+Reserved blocks gid:      0 (group root)
+First inode:              11
+Inode size:               256
+Required extra isize:     32
+Desired extra isize:      32
+Journal inode:            8
+Default directory hash:   half_md4
+Directory Hash Seed:      7f7889a7-4ff4-4bbb-a7d0-5e9821e7e70b
+Journal backup:           inode blocks
+Backup block groups:      1 178845
+Checksum type:            crc32c
+Checksum:                 0x47b714d9
+Journal features:         journal_incompat_revoke journal_64bit 
+journal_checksum_v3
+Total journal size:       1024M
+Total journal blocks:     262144
+Max transaction length:   262144
+Fast commit length:       0
+Journal sequence:         0x00064746
+Journal start:            0
+Journal checksum type:    crc32c
+Journal checksum:         0x262ca522
+
+# e2fsck -f -C 0 -b 32768 -z /root/20220415_2015_e2fsck-b_32768.e2undo 
+/dev/md0
+e2fsck 1.46.4 (18-Aug-2021)
+Overwriting existing filesystem; this can be undone using the command:
+      e2undo /root/20220415_2015_e2fsck-b_32768.e2undo /dev/md0
+
+e2fsck: Undo file corrupt while trying to open /dev/md0
+
+The superblock could not be read or does not describe a valid ext2/ext3/ext4
+filesystem.  If the device is valid and it really contains an ext2/ext3/ext4
+filesystem (and not swap or ufs or something else), then the superblock
+is corrupt, and you might try running e2fsck with an alternate superblock:
+      e2fsck -b 8193 <device>
+   or
+      e2fsck -b 32768 <device>
+
+In light of recent mailing list traffic, I suspect that the issue may be 
+caused by sparse_super2 .
+
+Any suggestions as to what I could try to recover? Unfortunately, I do 
+not have an undo file for the resize2fs run (which is a bit unusual for 
+me, since I usually tend to take advantage of safety features).
 
 Thanks,
-Ming
+
+      Peter Urbanec
 
