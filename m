@@ -2,97 +2,76 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE9B503304
-	for <lists+linux-ext4@lfdr.de>; Sat, 16 Apr 2022 07:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 698D7503427
+	for <lists+linux-ext4@lfdr.de>; Sat, 16 Apr 2022 07:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbiDPCbd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 15 Apr 2022 22:31:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59454 "EHLO
+        id S229683AbiDPFVL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 16 Apr 2022 01:21:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229876AbiDPCbd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 15 Apr 2022 22:31:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00FA134BB6;
-        Fri, 15 Apr 2022 19:29:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9062F61F03;
-        Sat, 16 Apr 2022 02:29:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49BEAC385A9;
-        Sat, 16 Apr 2022 02:28:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650076142;
-        bh=64fC476XAzTfqTSPn+hnDLb+pMKn+pGg/cu9T2ZYoeo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=YR2swQd5bHjAFWTiUHuzi2CBAoBviVOC618ZH6KrZjKGz54+nb14CQuuZA/rg7rT4
-         HOUGUM1/um4+uLyDQbz+2PZe7eFGngBlsNfmtF55BEnpI8SeGgAW1TB9RPEF0hZ/gu
-         wadS+mRuD6cvw4fVgc6pYN09yVoj6blhm7pLMwx6SJQPqerB95uO3eDsfGVZkI1tAT
-         ypjbfbxn7+bT/FWjnusepnTR0gEoGRsC/NgAvlwAmFKhGsjLJGRbec9W3gsrNwS1xO
-         /N5W0GD6Xr6BMAFslHSxbnYfv+w/HrqJWAmw3dvOKrGV8WDuaNAVrqQjvW1ASku3np
-         CHDdJgFxl65YQ==
-Message-ID: <ffa14a07-b8f9-828e-97bc-cf7a2099bab5@kernel.org>
-Date:   Sat, 16 Apr 2022 10:28:49 +0800
+        with ESMTP id S229548AbiDPFVL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 16 Apr 2022 01:21:11 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26A6EB089;
+        Fri, 15 Apr 2022 22:18:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=g+ujJVVDoFg2B4P01ECtm57Vr62I/0DX7wK8TNkFwYU=; b=EKriTvTdng77iAKQoyYG6B5/VV
+        5OVUPDyFrE6pmPGmccjCI5RnxYElNCQzLnaOMjV1+aazGiETaUlqPpnoE4cupYU/skXt1620cyZxr
+        Q3csBuph9OxtbU1UA4xK0S1pCOd/jE5Sg+f5RR8p9Y6DRiZcXma5uBVVaEz9HrC/Riy4fSh2pzHp4
+        4JrNXR2FCjceXhTJF1oObVnIBVl3OQH9hrO13WcPRT39+BSsBeD881zufHquRmsvHKrHjqG3ZTtT2
+        62qJYsZ2RxvQ6XO4iWJtROJgGsfO4E7TET5bxE2MkxjBxBF1IEAQQrLfmU2S8KXzK7fF0gg2kVxmw
+        z+z7FeMA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nfapQ-00CGcz-82; Sat, 16 Apr 2022 05:18:36 +0000
+Date:   Fri, 15 Apr 2022 22:18:36 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Eric Wheeler <linux-block@lists.ewheeler.net>,
+        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: loop: it looks like REQ_OP_FLUSH could return before IO
+ completion.
+Message-ID: <YlpRrLmwe/TJucjz@infradead.org>
+References: <af3e552a-6c77-b295-19e1-d7a1e39b31f3@ewheeler.net>
+ <YjfFHvTCENCC29WS@T590>
+ <c03de7ac-63e9-2680-ca5b-8be62e4e177f@ewheeler.net>
+ <bd5f9817-c65e-7915-18b-9c68bb34488e@ewheeler.net>
+ <YldqnL79xH5NJGKW@T590>
+ <5b3cb173-484e-db3-8224-911a324de7dd@ewheeler.net>
+ <YlmBTtGdTH2xW1qT@T590>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [f2fs-dev] [PATCH 26/27] block: decouple REQ_OP_SECURE_ERASE from
- REQ_OP_DISCARD
-Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Cc:     jfs-discussion@lists.sourceforge.net,
-        linux-nvme@lists.infradead.org,
-        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        dm-devel@redhat.com, target-devel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, drbd-dev@lists.linbit.com,
-        linux-s390@vger.kernel.org, linux-nilfs@vger.kernel.org,
-        linux-scsi@vger.kernel.org, cluster-devel@redhat.com,
-        xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org,
-        linux-um@lists.infradead.org, nbd@other.debian.org,
-        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
-        David Sterba <dsterba@suse.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, ceph-devel@vger.kernel.org,
-        Coly Li <colyli@suse.de>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        linux-raid@vger.kernel.org,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-mmc@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-xfs@vger.kernel.org,
-        =?UTF-8?Q?Christoph_B=c3=b6hmwalder?= 
-        <christoph.boehmwalder@linbit.com>, ocfs2-devel@oss.oracle.com,
-        linux-fsdevel@vger.kernel.org, ntfs3@lists.linux.dev,
-        linux-btrfs@vger.kernel.org
-References: <20220415045258.199825-1-hch@lst.de>
- <20220415045258.199825-27-hch@lst.de>
-From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <20220415045258.199825-27-hch@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-11.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YlmBTtGdTH2xW1qT@T590>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2022/4/15 12:52, Christoph Hellwig wrote:
-> Secure erase is a very different operation from discard in that it is
-> a data integrity operation vs hint.  Fully split the limits and helper
-> infrastructure to make the separation more clear.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
-> Acked-by: Christoph Böhmwalder <christoph.boehmwalder@linbit.com> [drbd]
-> Acked-by: Ryusuke Konishi <konishi.ryusuke@gmail.com> [nifs2]
-> Acked-by: Jaegeuk Kim <jaegeuk@kernel.org> [f2fs]
-> Acked-by: Coly Li <colyli@suse.de> [bcache]
-> Acked-by: David Sterba <dsterba@suse.com> [btrfs]
+On Fri, Apr 15, 2022 at 10:29:34PM +0800, Ming Lei wrote:
+> If ext4 expects the following order, it is ext4's responsibility to
+> maintain the order, and block layer may re-order all these IOs at will,
+> so do not expect IOs are issued to device in submission order
 
-For f2fs part,
+Yes, and it has been so since REQ_FLUSH (which later became
+REQ_OP_FLUSH) replaced REQ_BARRIER 12 years ago:
 
-Acked-by: Chao Yu <chao@kernel.org>
+commit 28e7d1845216538303bb95d679d8fd4de50e2f1a
+Author: Tejun Heo <tj@kernel.org>
+Date:   Fri Sep 3 11:56:16 2010 +0200
 
-Thanks,
+block: drop barrier ordering by queue draining
+    
+    Filesystems will take all the responsibilities for ordering requests
+    around commit writes and will only indicate how the commit writes
+    themselves should be handled by block layers.  This patch drops
+    barrier ordering by queue draining from block layer.
+
