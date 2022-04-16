@@ -2,48 +2,47 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8566550356B
-	for <lists+linux-ext4@lfdr.de>; Sat, 16 Apr 2022 10:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1025B503826
+	for <lists+linux-ext4@lfdr.de>; Sat, 16 Apr 2022 22:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229436AbiDPJAp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 16 Apr 2022 05:00:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35950 "EHLO
+        id S232439AbiDPUQe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 16 Apr 2022 16:16:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbiDPJAp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 16 Apr 2022 05:00:45 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 626FCFA202
-        for <linux-ext4@vger.kernel.org>; Sat, 16 Apr 2022 01:58:14 -0700 (PDT)
-Received: from localhost (mdns.lwn.net [45.79.72.68])
+        with ESMTP id S232069AbiDPUQe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 16 Apr 2022 16:16:34 -0400
+X-Greylist: delayed 514 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 16 Apr 2022 13:14:01 PDT
+Received: from mx.ewheeler.net (mx.ewheeler.net [173.205.220.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B934136322
+        for <linux-ext4@vger.kernel.org>; Sat, 16 Apr 2022 13:14:01 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mx.ewheeler.net (Postfix) with ESMTP id BF98481;
+        Sat, 16 Apr 2022 13:05:26 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ewheeler.net
+Received: from mx.ewheeler.net ([127.0.0.1])
+        by localhost (mx.ewheeler.net [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id jJdcDIU-romd; Sat, 16 Apr 2022 13:05:26 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 963902CC;
-        Sat, 16 Apr 2022 08:58:11 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 963902CC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1650099492; bh=OhkediGcyvdQTScZxtwjgXYdQ0PSAnpundIuOBxllNg=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=MyipeEeFbwS2Ds2yQBHwTfSagmzpaOURNBjU50SNz4FlPw/vjcAne/KHqUJdFtFhl
-         eohzz7Jjqfh5D7Nx2ZjqpURf2AVxnkrH4KuD/n4gTuPX2rmVzF8C0o+g2XeqRcZ0rA
-         wYDSX6RhhOcLI+pZNcKEWu+FFlOW09/Ph5z3ruQYTA5w0reUbD13mUk20AkAAspwG+
-         CcPu6t+1uqNp8kD5QBWf3I4rez54xy8VKtdE0rpmpsy7GEM8/gA//W3j56NHqXSI+r
-         LXngFgBYVrGbF4kAx453c04sDnFaQPTT3d6VdQVdF4P3lWDLFMnEumw9firF9dTnh+
-         +pxZo7RhCfiyA==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     "wangjianjian (C)" <wangjianjian3@huawei.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH] ext4, doc: Fix incorrect h_reserved size
-In-Reply-To: <34889f32-7dd9-125e-2f7a-734faa395d20@huawei.com>
-References: <34889f32-7dd9-125e-2f7a-734faa395d20@huawei.com>
-Date:   Sat, 16 Apr 2022 02:58:08 -0600
-Message-ID: <87ee1x2yn3.fsf@meer.lwn.net>
+        by mx.ewheeler.net (Postfix) with ESMTPSA id C76C440;
+        Sat, 16 Apr 2022 13:05:25 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx.ewheeler.net C76C440
+Date:   Sat, 16 Apr 2022 13:05:23 -0700 (PDT)
+From:   Eric Wheeler <linux-block@lists.ewheeler.net>
+To:     Christoph Hellwig <hch@infradead.org>
+cc:     Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: loop: it looks like REQ_OP_FLUSH could return before IO
+ completion.
+In-Reply-To: <YlpRrLmwe/TJucjz@infradead.org>
+Message-ID: <2815ce9-85f-7b56-be3f-7835eb9bb2c6@ewheeler.net>
+References: <af3e552a-6c77-b295-19e1-d7a1e39b31f3@ewheeler.net> <YjfFHvTCENCC29WS@T590> <c03de7ac-63e9-2680-ca5b-8be62e4e177f@ewheeler.net> <bd5f9817-c65e-7915-18b-9c68bb34488e@ewheeler.net> <YldqnL79xH5NJGKW@T590> <5b3cb173-484e-db3-8224-911a324de7dd@ewheeler.net>
+ <YlmBTtGdTH2xW1qT@T590> <YlpRrLmwe/TJucjz@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,37 +50,45 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-"wangjianjian (C)" <wangjianjian3@huawei.com> writes:
+On Fri, 15 Apr 2022, Christoph Hellwig wrote:
+> On Fri, Apr 15, 2022 at 10:29:34PM +0800, Ming Lei wrote:
+> > If ext4 expects the following order, it is ext4's responsibility to
+> > maintain the order, and block layer may re-order all these IOs at will,
+> > so do not expect IOs are issued to device in submission order
+> 
+> Yes, and it has been so since REQ_FLUSH (which later became
+> REQ_OP_FLUSH) replaced REQ_BARRIER 12 years ago:
+> 
+> commit 28e7d1845216538303bb95d679d8fd4de50e2f1a
+> Author: Tejun Heo <tj@kernel.org>
+> Date:   Fri Sep 3 11:56:16 2010 +0200
+> 
+> block: drop barrier ordering by queue draining
+>     
+>     Filesystems will take all the responsibilities for ordering requests
+>     around commit writes and will only indicate how the commit writes
+>     themselves should be handled by block layers.  This patch drops
+>     barrier ordering by queue draining from block layer.
 
-> According to document and code, ext4_xattr_header's size is 32 bytes, so
-> h_reserved size should be 3.
->
-> Signed-off-by: Wang Jianjian <wangjianjian3@huawei.com>
-> ---
->  =C2=A0Documentation/filesystems/ext4/attributes.rst | 2 +-
->  =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Documentation/filesystems/ext4/attributes.rst=20
-> b/Documentation/filesystems/ext4/attributes.rst
-> index 54386a010a8d..871d2da7a0a9 100644
-> --- a/Documentation/filesystems/ext4/attributes.rst
-> +++ b/Documentation/filesystems/ext4/attributes.rst
-> @@ -76,7 +76,7 @@ The beginning of an extended attribute block is in
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - Checksum of the extended attribute bloc=
-k.
->  =C2=A0=C2=A0=C2=A0 * - 0x14
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - \_\_u32
-> -=C2=A0=C2=A0=C2=A0=C2=A0 - h\_reserved[2]
-> +=C2=A0=C2=A0=C2=A0=C2=A0 - h\_reserved[3]
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - Zero.
->
+Thanks Christoph. I think this answers my original question, too.
 
-So this patch looks whitespace-damaged, please be sure that you can send
-applyable patches to the list.
+You may have already answered this implicitly above.  If you would be so 
+kind as to confirm my or correct my understanding with a few more 
+questions:
 
-Beyond that, though, while you're in the neighborhood, please fix the
-unnecessary underscore escaping (i.e. s/\_/_/).
+1. Is the only way for a filesystem to know if one IO completed before a 
+   second IO to track the first IO's completion and submit the second IO 
+   when the first IO's completes (eg a journal commit followed by the 
+   subsequent metadata update)?  If not, then what block-layer mechanism 
+   should be used?
 
-Thanks,
+2. Are there any IO ordering flags or mechanisms in the block layer at 
+   this point---or---is it simply that all IOs entering the block layer 
+   can always be re-ordered before reaching the media?
 
-jon
+Thanks!
+
+--
+Eric Wheeler
+
+
