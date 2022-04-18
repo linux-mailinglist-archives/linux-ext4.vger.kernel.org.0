@@ -2,53 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CBCC504E6B
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 Apr 2022 11:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2A35055B7
+	for <lists+linux-ext4@lfdr.de>; Mon, 18 Apr 2022 15:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbiDRJgY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 18 Apr 2022 05:36:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52468 "EHLO
+        id S240309AbiDRNZn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 18 Apr 2022 09:25:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229752AbiDRJgY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Apr 2022 05:36:24 -0400
-Received: from mail.urbanec.net (mail.urbanec.net [218.214.117.158])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488BF1658E
-        for <linux-ext4@vger.kernel.org>; Mon, 18 Apr 2022 02:33:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=urbanec.net
-        ; s=dkim_rsa; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:References
-        :Cc:To:Subject:From:MIME-Version:Date:Message-ID:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=EJd7Kz9TCAFVHQKPMHNYLf3iJTffkjY2OB9PTVMcEP8=; i=@urbanec.net; t=1650274423
-        ; x=1651138423; b=BghvkRvjknIcfL+6nVEZu7270c9aHzf+jR+6TbRsNlowOrGELDE6FVkLxkU
-        812Q+EAYLgRw84ukHzbdTbCqfNNl8FLtaeRg1gDdEatwMMDQBGQytDB0WUUP0j+/ZpTmme+ERjsKx
-        U3H01Rue3SacA2d0fkA4Y/twUawWRQqOfo1CQ4eOuonlAgfeSZezcO/Y48eZDaT8ptxDxvBZodTvE
-        1INJJJJ6w3f3tkZvzAsAQfPyI3q/y4kWIyli++dk59ir/Tk8TO4TleA3A9Uur32KNy4b7gUShfiNr
-        tccalIObJOu0Jw4z0rpNYEla0V1sug8ruEQM3JjqhAH+lYaUofjQ==;
-Received: from ten.urbanec.net ([192.168.42.10])
-        by mail.urbanec.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <linux-ext4.vger.kernel.org@urbanec.net>)
-        id 1ngNlK-0000ND-T8; Mon, 18 Apr 2022 19:33:38 +1000
-Message-ID: <f398b938-c7bb-e1f7-2843-86b0adaff4e4@urbanec.net>
-Date:   Mon, 18 Apr 2022 19:33:38 +1000
+        with ESMTP id S241767AbiDRNZA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Apr 2022 09:25:00 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C113DA64
+        for <linux-ext4@vger.kernel.org>; Mon, 18 Apr 2022 05:52:53 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id q3so12282059plg.3
+        for <linux-ext4@vger.kernel.org>; Mon, 18 Apr 2022 05:52:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:in-reply-to:references:subject:message-id:date
+         :mime-version:content-transfer-encoding;
+        bh=F9FMycteyYrs8wEiBExwTDtAcc/2JBQ5GQqodkswvTM=;
+        b=zqMJx9kEO/syGgh/jfUujcMdgZO1Zk4th79yyPJcsdnvdIDI8Xk864jrHuyarDgv8c
+         gBt2ez+Ym/+EaLgC6MfWMHx5OVcgB54eOfckx7Cmdvf3bmGVDc/T0aLwM9rpN+nKDwcO
+         dWklV+ARMeZbUO1+GrFCqFc/xZjiULaGiN1ll1DVCyoNwgzG1P+0Y9ZhUcwBpI/7WQx/
+         gN/pYZdJuI935bVWCVcjkTqu2k20R+5oG6mGhil2uYi4X3QtR1zxXemtHM8NZ8XUvixz
+         3tQXFtvzqXbRCXIajCtyaq1nqo4kcpEpLyzsTyB3FvSvWQd/rTixV4XGHzsBwq9Bu/vV
+         stDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
+         :message-id:date:mime-version:content-transfer-encoding;
+        bh=F9FMycteyYrs8wEiBExwTDtAcc/2JBQ5GQqodkswvTM=;
+        b=WgdLc1yporA7LHnslsfTaxrMUPm727U1vjyq+oTnXR2hhFueHhFobzL9z/BN6PfDcG
+         h9OihrE3whOffkSdy5fy77U5IqRXtRDF9uEi9zTjrCo3xpS2z2jyOk/PyzB5higQ68Zr
+         KFnXfsMjWO8UFLPaBFgfiMr38Ie07p/e8lC7AZho3y55sRKLXsRjNTM7cAk2PmRqqR3t
+         /Dqb99zrWY3LdspdiFg+msCY9i6AugpGyN2A8TP7UgpZy0/58TMh5jyTdpdVY1y6YsXK
+         y67EYFo1WjLASuf0/KBGtgAaMqySg1e0dsfy5Lpa6FHBn0GUErCoxcw2Ig1p5kYnWP7Q
+         FW0Q==
+X-Gm-Message-State: AOAM533faOrYAJ4bdnJ8HPS15qmCDB2so7ReXNKth1vCBf4UtP3M6o62
+        dv623MiYboEp6LrNv1Dvm2vVSg==
+X-Google-Smtp-Source: ABdhPJyPDIaLEewZhdBb/81ulQRxH4lnSCW72QYENTWzgjKzLqW/EIFRVhnHg8tc4oCKtNOZ6kDuRg==
+X-Received: by 2002:a17:902:6b44:b0:154:4bee:c434 with SMTP id g4-20020a1709026b4400b001544beec434mr10858040plt.43.1650286372060;
+        Mon, 18 Apr 2022 05:52:52 -0700 (PDT)
+Received: from [127.0.1.1] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id s24-20020a17090a441800b001ca9b5724a6sm12663301pjg.36.2022.04.18.05.52.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Apr 2022 05:52:51 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        jfs-discussion@lists.sourceforge.net, linux-raid@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, drbd-dev@lists.linbit.com,
+        xen-devel@lists.xenproject.org, nbd@other.debian.org,
+        linux-nvme@lists.infradead.org, linux-mmc@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-block@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        linux-ext4@vger.kernel.org, dm-devel@redhat.com,
+        linux-nilfs@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        linux-scsi@vger.kernel.org, linux-xfs@vger.kernel.org,
+        cluster-devel@redhat.com, linux-mtd@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, linux-bcache@vger.kernel.org,
+        ceph-devel@vger.kernel.org, ntfs3@lists.linux.dev,
+        linux-um@lists.infradead.org, target-devel@vger.kernel.org
+In-Reply-To: <20220415045258.199825-1-hch@lst.de>
+References: <20220415045258.199825-1-hch@lst.de>
+Subject: Re: use block_device based APIs in block layer consumers v3
+Message-Id: <165028636949.14872.7589996414521818725.b4-ty@kernel.dk>
+Date:   Mon, 18 Apr 2022 06:52:49 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-From:   Peter Urbanec <linux-ext4.vger.kernel.org@urbanec.net>
-Subject: Re: resize2fs on ext4 leads to corruption
-Content-Language: en-AU
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-References: <493bbaea-b0d3-4f8e-20fb-5fb330a128a3@urbanec.net>
- <YlniK5dd1wV2bCXi@mit.edu>
-In-Reply-To: <YlniK5dd1wV2bCXi@mit.edu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,141 +81,76 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-First, thank you for your help with this. I finally managed to get some 
-time today to take another look.
+On Fri, 15 Apr 2022 06:52:31 +0200, Christoph Hellwig wrote:
+> this series cleanups up the block layer API so that APIs consumed
+> by file systems are (almost) only struct block_devic based, so that
+> file systems don't have to poke into block layer internals like the
+> request_queue.
+> 
+> I also found a bunch of existing bugs related to partition offsets
+> and discard so these are fixed while going along.
+> 
+> [...]
 
-On 16/04/2022 07:22, Theodore Ts'o wrote:
-> As a workaround, I would suggest
-> doing is to try running e2fsck with -n, which will open the block
-> device read-only, e.g. "e2fsck -b 32768 -n /dev/mdXX".  If the changes
-> e2fsck look safe, then you can run e2fsck without the -n option.
+Applied, thanks!
 
-First I updated e2fsprogs to 1.46.5 and then tried:
+[01/27] target: remove an incorrect unmap zeroes data deduction
+        commit: 179d8609d8424529e95021df939ed7b0b82b37f1
+[02/27] target: pass a block_device to target_configure_unmap_from_queue
+        commit: 817e8b51eb3d927ce6d56ecf9f48bc3c5b26168b
+[03/27] target: fix discard alignment on partitions
+        commit: 968786b9ef56e75e0109158a4936ffffea962c1e
+[04/27] drbd: remove assign_p_sizes_qlim
+        commit: 40349d0e16cedd0de561f59752c3249780fb749b
+[05/27] drbd: use bdev based limit helpers in drbd_send_sizes
+        commit: 7a38acce229685968b770d1d9e64e01396b93643
+[06/27] drbd: use bdev_alignment_offset instead of queue_alignment_offset
+        commit: c6f23b1a05441a26f765e59dd95e8ba7354f9388
+[07/27] drbd: cleanup decide_on_discard_support
+        commit: 998e9cbcd615e5e6a7baa69e673ee845f812744e
+[08/27] btrfs: use bdev_max_active_zones instead of open coding it
+        commit: c1e7b24416400ef13ff92a1c60c336c9a2834d7b
+[09/27] ntfs3: use bdev_logical_block_size instead of open coding it
+        commit: f09dac9afb8e3ce4b6485dbc091a9b9c742db023
+[10/27] mm: use bdev_is_zoned in claim_swapfile
+        commit: 9964e674559b02619fee2012a56839624143d02e
+[11/27] block: add a bdev_nonrot helper
+        commit: 10f0d2a517796b8f6dc04fb0cc3e49003ae6b0bc
+[12/27] block: add a bdev_write_cache helper
+        commit: 08e688fdb8f7e862092ae64cee20bc8b463d1046
+[13/27] block: add a bdev_fua helper
+        commit: a557e82e5a01826f902bd94fc925c03f253cb712
+[14/27] block: add a bdev_stable_writes helper
+        commit: 36d254893aa6a6e204075c3cce94bb572ac32c04
+[15/27] block: add a bdev_max_zone_append_sectors helper
+        commit: 2aba0d19f4d8c8929b4b3b94a9cfde2aa20e6ee2
+[16/27] block: use bdev_alignment_offset in part_alignment_offset_show
+        commit: 64dcc7c2717395b7c83ffb10f040d3be795d03c1
+[17/27] block: use bdev_alignment_offset in disk_alignment_offset_show
+        commit: 640f2a23911b8388989547f89d055afbb910b88e
+[18/27] block: move bdev_alignment_offset and queue_limit_alignment_offset out of line
+        commit: 89098b075cb74a80083bc4ed6b71d0ee18b6898f
+[19/27] block: remove queue_discard_alignment
+        commit: 4e1462ffe8998749884d61f91be251a7a8719677
+[20/27] block: use bdev_discard_alignment in part_discard_alignment_show
+        commit: f0f975a4dde890bfe25ce17bf07a6495453988a4
+[21/27] block: move {bdev,queue_limit}_discard_alignment out of line
+        commit: 5c4b4a5c6f11c869a57c6bd977143430bc9dc43d
+[22/27] block: refactor discard bio size limiting
+        commit: e3cc28ea28b5f8794db2aed24f8a0282ad2e85a2
+[23/27] block: add a bdev_max_discard_sectors helper
+        commit: cf0fbf894bb543f472f682c486be48298eccf199
+[24/27] block: remove QUEUE_FLAG_DISCARD
+        commit: 70200574cc229f6ba038259e8142af2aa09e6976
+[25/27] block: add a bdev_discard_granularity helper
+        commit: 7b47ef52d0a2025fd1408a8a0990933b8e1e510f
+[26/27] block: decouple REQ_OP_SECURE_ERASE from REQ_OP_DISCARD
+        commit: 44abff2c0b970ae3d310b97617525dc01f248d7c
+[27/27] direct-io: remove random prefetches
+        commit: c22198e78d523c8fa079bbb70b2523bb6aa51849
 
-# e2fsck -f -C 0 -b 32768 -n /dev/md0
-e2fsck 1.46.5 (30-Dec-2021)
-Pass 1: Checking inodes, blocks, and sizes
-Error reading block 32 (Attempt to read block from filesystem resulted 
-in short read).  Ignore error? no
-
-e2fsck: aborted
-
-Initially things looked promising and there were no errors being 
-reported even at 47% of the way through the check. The check terminated 
-at approximately the 50% mark with what appears to be a 32-bit overflow 
-issue.
-
-Looking at the code shows that the `block` member of `struct_io_channel` 
-has a type of `unsigned long`, which is 4 bytes on a 32-bit system. As a 
-result, `e2fsck_handle_(read|write)_error()` can not actually handle 
-blocks past the 32-bit limit. `e2fsck_handle_read_error()` is called via 
-`channel->read_error()` from `raw_read_blk()` in `unix_io.c`. That 
-function uses `unsigned long long` for `block`. I have not looked 
-closely enough to determine whether the 32-bit overflow will only be an 
-issue when the error handler is invoked.
-
-Ideally, the `block` member of `struct_io_channel` would be of type 
-`unsigned long long`, but changing this may introduce binary 
-compatibility issues. As an alternative, it may be prudent to perform an 
-early check for the total number of blocks in a file system and refuse 
-to run e2fsck (and other tools) if that number would cause an overflow.
-
-I have not followed the code any further to see what may have happened 
-during resize2fs.
-
-> As far as what happens, I wasn't able to replicate the problem when
-> resizing an empty file system from 3906946560 to 5860419840 blocks,
-> using a 64-bit binary.  I've stopped testing 32-bit builds quite a
-> while ago
-
-If it is helpful, I can run some ad-hoc tests on the affected 32-bit 
-system, now with e2fsprogs 1.46.5. I've got enough free space to create 
-about ~2TB file for testing purposes. If that is enough for an empty 
-test file system, please let me know the sequence of test commands and 
-I'll provide the results.
-
-> 3906946560 fits in 32-bits, while 5860419840 is larger than 2**32.
-> So it could very much be some kind of a 32-bit block number overflow.
-
-It almost certainly there is at least some aspect that is related to 
-32-bit overflows. For that reason I'm not going to test my luck running 
-anything that would further modify this file system on the 32-bit 
-installation. I'm in the process of building a 64-bit system and will 
-transplant the HDDs to this new machine. The plan is to go with kernel 
-5.17.3 + e2fsprogs 1.46.5 and try the above `e2fsck -n` command to see 
-if I have more luck on a 64-bit host.
-
-
-> While I'm grateful that Gentoo users seem to be super adventurous in
-> terms of turning every single feature they can find, and then send in
-> bug reports so we can improve the case base --- there are reasons why
-> features like sparse_super2 and inline_data are not enabled by
-> default
-
-Indeed, Gentoo tends to attract people who read man pages while tweaking 
-all the options, rather than go with defaults. I can't speak for others, 
-but in my case, when I created the file system, I systematically went 
-though the documented options and turned on anything that looked like it 
-would be applicable to the expected use case for the file system. I 
-tried to stay away from options that were documented as not robust, for 
-example `bigalloc`. I suppose it's a bit like premature optimisation - I 
-should have left most things at default values and only start making 
-changes if/when the need arises.
-
-I should probably rethink my storage strategy. I certainly need to move 
-from 32-bit to 64-bit, the hardware is capable. One big ext4 file system 
-directly on top of md-raid5 has served me well for two decades. Maybe 
-that is no longer a smart option when that one file system has grown to 
-24TB.
-
-> So I don't know if the problemw as due to some kind of bug in
-> resize2fs caused by the use of 64-bit block numbers on a 32-bit
-> binary, or due to the enablement of the sparse_super2 feature.
-
-I used `dd` to made copies of superblocks 1 and 32768. I could not use 
-`dd` to get a copy of superblock 5860392960 - maybe another case of a 
-32-bit limit.
-
-A quick hexdump comparison of superblocks 1 and 32768 shows that 
-superblock 1 has been zeroed out and only a few fields have been 
-repopulated with values that match superblock 32768. It also appears 
-that the checksum has been recomputed using the empty fields as it 
-differs between the two superblocks.
-
-It looks like only the following fields have values set in superblock 1:
-   s_inodes_count         = 00 E0 A9 2B
-   s_blocks_count_lo      = 00 E9 4E 5D
-   s_free_blocks_count_lo = CF C0 B0 8F
-   s_free_inodes_count    = 47 DF F7 2A
-   s_wtime                = 62 24 00 00
-   s_state                = 01 00
-   s_blocks_count_hi      = 01 00 00 00
-   s_kbytes_written       = 20 9E 25 4F 00 00 00 00
-   s_backup_bgs[1]        = 9D BA 02 00
-
-superblock 1 only has a value in s_backup_bgs[1] whereas superblock 
-32768 has both values set:
-   s_backup_bgs[0]        = 01 00 00 00
-   s_backup_bgs[1]        = 9D BA 02 00
-
-A spot check of the `s_blocks_count_(lo|hi)` values indicates the 
-correct size in 64-bit number of 4k blocks.
-
-If it will help, I can supply these two superblocks.
+Best regards,
+-- 
+Jens Axboe
 
 
-> alternatives are (a) do a full
-> block level backup of the file system before running e2fsck --- which
-> I know will be hard since this is a very large file system
-
-I could probably scrounge up enough old HDDs and SATA controllers to 
-concatenate a non-redundant 16TB volume, but I don't have enough gear to 
-stretch it to 24TB.
-
-Once I transplant the drives to a 64-bit machine, is there a way I could 
-use e2image to create a file that I can use to test whether an e2fsck 
-run will work?
-
-Thank you,
-
-	Peter
