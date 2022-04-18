@@ -2,169 +2,125 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBA3C505F1F
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 Apr 2022 23:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21DA2505FB5
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Apr 2022 00:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343592AbiDRVFk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 18 Apr 2022 17:05:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45146 "EHLO
+        id S231585AbiDRWX7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 18 Apr 2022 18:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242971AbiDRVFk (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Apr 2022 17:05:40 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DE62A274
-        for <linux-ext4@vger.kernel.org>; Mon, 18 Apr 2022 14:02:59 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id r13so29054767ejd.5
-        for <linux-ext4@vger.kernel.org>; Mon, 18 Apr 2022 14:02:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p2GdD4HMoXKh89Kz3xaXx6zDuKIbesoEnFLqYzbAHww=;
-        b=Z45O12J3KhSy4H0LXlTNTw2dG1xKsNjcZ9MR5YrLRLia4uAfza0p7zZBglDUSgRXmK
-         RWhkhQLTzcRguFEJzIw0GygALkT+QEzElXbHBUA6ewiaZqzRLBewhg19ULkIOoEY4pgA
-         mQz1XC20ZN9ZM8/7KzsetakZeztighvcy1M+7mBf/RpeJ1SdacKs25p4u57I4pwhPNEt
-         +WlbQQ2hYmDYrcOjs617tqlsa85YF6hd8erI88vokJ9MhAUEXXs4Mf/kwo5Zihm8b+EW
-         qioeC2ihuLBYtClX9lorV0ohf5LsuphWPOAkWwfnfIvAMvJVQivn5C3rlScAsMaTTfjp
-         piuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p2GdD4HMoXKh89Kz3xaXx6zDuKIbesoEnFLqYzbAHww=;
-        b=nuxEcgQ+9OOw2SlNxy262SxyxGrksdTKDl7JVv8nIAE2pwECz2iDj3JLxf55vY0H6q
-         gf0ad5Gbjp9Xz9vdYp/yx4H7mncTNjVl7MV2ZflJrp7zESGcOjMDKuPauN0FE+7d89CD
-         65ya8eN+u4414wW2l6eRImHYKDvv+fP/aMrsS/2TNZvhNKlV1JkkHmWoHuHgrWgqSGUz
-         p7hm2ymNvCKHRsx7DyDQMdsC7btKMEh0+XA33F2yYWANjADd92ud+SYgdZBlWzwFrnXa
-         Z7yKig4Ls85ZVNP3V/UwTw8u8x3UT73CgC7iziKoC4GweoYDYaagvbTPeCuqBKwEGyR1
-         DAcg==
-X-Gm-Message-State: AOAM532tbl8r1KCE86nsiPGP1D/Gzphjx6xbNzWGD5FA/RbwTLu1UJvt
-        47bPlAFrOY4Axurbps27Xs/FtllLgtOooBDf9/4=
-X-Google-Smtp-Source: ABdhPJxjFdMkISAtJQPCGbc/wLYWz3hhVMnRSKbp2yBwOd2jqq8B/3fhrB83AZnyWafYd2J+ASuITNy6ny5xqv9+JBg=
-X-Received: by 2002:a17:907:9484:b0:6e8:9c3e:291c with SMTP id
- dm4-20020a170907948400b006e89c3e291cmr10556956ejc.768.1650315777516; Mon, 18
- Apr 2022 14:02:57 -0700 (PDT)
+        with ESMTP id S231560AbiDRWX7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Apr 2022 18:23:59 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6491A29CB4
+        for <linux-ext4@vger.kernel.org>; Mon, 18 Apr 2022 15:21:18 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 23IMKcZP026011
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Apr 2022 18:20:38 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 02FEF15C3EB8; Mon, 18 Apr 2022 18:20:38 -0400 (EDT)
+Date:   Mon, 18 Apr 2022 18:20:37 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Peter Urbanec <linux-ext4.vger.kernel.org@urbanec.net>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: resize2fs on ext4 leads to corruption
+Message-ID: <Yl3kNRflNwH3n8/3@mit.edu>
+References: <493bbaea-b0d3-4f8e-20fb-5fb330a128a3@urbanec.net>
+ <YlniK5dd1wV2bCXi@mit.edu>
+ <f398b938-c7bb-e1f7-2843-86b0adaff4e4@urbanec.net>
 MIME-Version: 1.0
-References: <20220308163319.1183625-1-harshads@google.com> <20220308163319.1183625-3-harshads@google.com>
- <20220309101426.qumxztpd4weqzrcs@quack3.lan> <CAD+ocbyM9HdZwpB_NzKAiJTsZ78gZ_4Hsk3c21tL4ZetapqcFg@mail.gmail.com>
- <CAD+ocbzGsf3=2OK5MD_MyF=SyV63q1Z7Vg5VtkaE5FzmZ7_qqw@mail.gmail.com> <20220321140617.wc2ohrorqny4leyc@quack3.lan>
-In-Reply-To: <20220321140617.wc2ohrorqny4leyc@quack3.lan>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Mon, 18 Apr 2022 14:02:46 -0700
-Message-ID: <CAD+ocbyBXKa=LvhAwNyxY5b-E1-G01FUhtO+uSwrUn7Z8m+38Q@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] ext4: for committing inode, make
- ext4_fc_track_inode wait
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f398b938-c7bb-e1f7-2843-86b0adaff4e4@urbanec.net>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Sorry for the late reply, I was on vacation and getting to this just now.
+On Mon, Apr 18, 2022 at 07:33:38PM +1000, Peter Urbanec wrote:
+> First I updated e2fsprogs to 1.46.5 and then tried:
+> 
+> # e2fsck -f -C 0 -b 32768 -n /dev/md0
+> e2fsck 1.46.5 (30-Dec-2021)
+> Pass 1: Checking inodes, blocks, and sizes
+> Error reading block 32 (Attempt to read block from filesystem resulted in
+> short read).  Ignore error? no
+> 
+> e2fsck: aborted
+> 
+> Initially things looked promising and there were no errors being reported
+> even at 47% of the way through the check. The check terminated at
+> approximately the 50% mark with what appears to be a 32-bit overflow issue.
 
-On Mon, 21 Mar 2022 at 07:06, Jan Kara <jack@suse.cz> wrote:
->
-> Sorry for delayed reply, I've got dragged into other things and somewhat
-> forgot about this...
->
-> On Fri 11-03-22 00:25:48, harshad shirwadkar wrote:
-> > Hmm, after removing ext4_fc_track_inode() from ext4_journal_start(), I
-> > see one deadlock - there are some places in code where
-> > ext4_mark_inode_dirty gets called while holding i_data_sem. Commit
-> > path requires i_data_sem to commit inode data (via ext4_map_blocks).
-> > So, if an inode is being committed, ext4_mark_inode_dirty may start
-> > waiting for the inode to commit while holding i_data_sem and the
-> > commit path may wait on i_data_sem.
->
-> Indeed, that is a problem.
->
-> > The right way to fix this is to
-> > call ext4_fc_track_inode in such places before acquiring i_data_sem in
-> > write mode. But that would mean we sprinkle code with more
-> > ext4_fc_track_inode() calls which is something that I preferably
-> > wanted to avoid.
->
-> So I agree calling ext4_fc_track_inode() from ext4_reserve_inode_write()
-> isn't going to fly as is. We need to find a better way of doing things.
->
-> > This makes me wonder though, for fast commits, is it a terrible idea
-> > to extend the meaning of ext4_journal_start() from "start a new
-> > handle" to "start a new handle with an intention to modify the passed
-> > inode"? Most of the handles modify only one inode, and for other
-> > places where we do modify multiple inodes, ext4_reserve_inode_write()
-> > would ensure that those inodes are tracked as well.
->
-> Well but to avoid deadlocks like you've described above you would have to
-> start tracking inode with explicit ext4_fc_track_inode() calls before
-> grabbing i_data_sem. ext4_reserve_inode_write() would be only useful for an
-> assertion check that indeed the inode is already tracked.
->
-> > All of the
-> > existing places where inode gets modified after grabbing i_data_sem,
-> > i_data_sem is grabbed only after starting the handle. This would take
-> > care of the deadlock mentioned above and similar deadlocks. Another
-> > advantage with doing this is that developers wouldn't need to worry
-> > about adding explicit ext4_fc_track_inode() calls for future changes.
->
-> Well, at least for the simple case where only one inode is modified. But I
-> agree that's a majority.
->
-> > If we decide to do this, we would need to do a thorough code review to
-> > ensure that the above rule is followed everywhere. But note that
-> > ext4_fc_track_inode() is idempotent, so it doesn't matter if this
-> > function gets called multiple times in the same handle. So to avoid
-> > breaking fast commits, we can be super careful and in the first
-> > version, we can have ext4_fc_track_range() calls in
-> > ext4_reserve_inode_dirty(), ext4_journal_start(), inline.c and in
-> > handles where i_data_sem gets acquired in write mode. We can then
-> > carefully evaluate each code path and remove redundant
-> > ext4_fc_track_range() calls.
->
-> As I wrote above, if we go this path, I'd be for ext4_fc_track_inode()
-> calls in ext4_journal_start() and then adding explicit calls to
-> ext4_fc_track_inode() where additionally needed and have only assertion
-> checks in ext4_reserve_inode_dirty() and other places which modify inode
-> metadata, to catch places which need explicit calls to
-> ext4_fc_track_inode(). That way we won't have any hidden deadlocks in the
-> code waiting to happen.
-Okay sounds good, so based on your response, I'll rework the patch
-series to make following changes:
-1) Add ext4_fc_track_inode() calls in ext4_journal_start()
-2) Add ext4_fc_track_inode calls in places where more than one inode
-are changed in a handle and / or i_data_sem is being acquired.
-3) Add an assertion in ext4_reserve_inode_dirty() to check if the
-inode on which write is being reserved is already being tracked.
+The 32-bit overflow issue is in the reporting of the error.
+struct_io_channel's read_error() callback function, which is set to
+e2fsck_handle_read_error(), is only called when there is an I/O error
+(that's the short read).
 
-Does that sound good?
->
-> I have also another proposal for consideration how we could handle this.
-> Mostly branstorming now: We could also drop the need for fastcommit code to
-> acquire i_data_sem during commit. We could use just information in extent
-> status tree to provide block mapping for the fastcommit code (that does not
-> need i_data_sem). The only thing is we'd need to make sure modified extents
-> from the status tree are not evicted from memory before the appropriate
-> transaction commits so that they are available for appropriate fastcommit -
-> for that we'd probably need to add TID of the transaction that last
-> modified an extent and add check into the shrinker to avoid shrinking
-> uncommitted extents. As a bonus, we could now add to fastcommit only
-> extents with appropriate TID and thus save on extent logging for sparsely
-> modified inode.
-Yeah, I like this idea. I'll add that as a TODO in the code just so
-that we don't lose it.
+So it's not the cause of the failure, but because of that bug, we
+don't know what the block number was where the apparently I/O error
+was found.  Did you check the system logs to see if there was any
+kernel messages that mgiht give us a hint?
 
-Thanks,
-Harshad
->
->                                                                 Honza
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+Since you built e2fsprogs 1.42.6, can you build it making sure that
+debugging symbols are included, and then run the binary out under a
+debugger so when you get the error, you can ^C to escape out to the
+debugger, and then print the stack trace and step up to see where in
+the e2fsck prorgam we were trying to read the block, and what the
+block number should have been.  So something like:
+
+./configure CFLAGS=-g ; make ; gdb e2fsck/e2fsck
+
+> Ideally, the `block` member of `struct_io_channel` would be of type
+> `unsigned long long`, but changing this may introduce binary compatibility
+> issues. As an alternative, it may be prudent to perform an early check for
+> the total number of blocks in a file system and refuse to run e2fsck (and
+> other tools) if that number would cause an overflow.
+
+Well, what we can do is to add new callback functions which are 64-bit
+clean, and new versions of e2fsck can provide both the 32-bit and
+64-bit error functions.
+
+Refusing to run is probably a bit extreme, since this merely is a
+cosmetic issue, and only when there is an I/O error.
+
+Creating 64-bit clean calllback functions io_channel's read_error()
+and write_error() was always part of the plan, and I thought we had
+done it already --- but because it was less critical since RAID arrays
+never fail ("What never?  Well, hardly ever!"[1]) I just never got around
+to it.  :-/
+
+[1] https://gsarchive.net/pinafore/web_opera/pin04.html
+
+> Once I transplant the drives to a 64-bit machine, is there a way I could use
+> e2image to create a file that I can use to test whether an e2fsck run will
+> work?
+
+An alternative which might be easier would be to create a scratch test
+file system, using dm-thin which will allow you to simulate a very
+large file system with thin-provisioning[2].  It will only take
+(roughly) as much space as you write into it.
+
+[2] https://wiki.archlinux.org/title/LVM#Thin_provisioning
+
+Linux will tend to spread the use of its block groups over the LBA
+space, as you start filling it and create a bunch of directories.  So
+if you, say, unpack a Linux kernel and then build it, and then unpack
+a different Linux kernel version tree in to a different directory
+hierarchy and build it, that should be enough to make sure that you
+are using a variety of block groups spaced out through the block
+device.  You could then try running e2fsck on a 32-bit platform, and
+see if you can replicate the problem, and then do an off-line resize,
+etc., without risking your data and without requiring a huge amount of
+space.
+
+Cheers,
+
+						- Ted
