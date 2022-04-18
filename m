@@ -2,279 +2,139 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A43F8504C60
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 Apr 2022 07:45:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F0ED504CBD
+	for <lists+linux-ext4@lfdr.de>; Mon, 18 Apr 2022 08:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232392AbiDRFrw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 18 Apr 2022 01:47:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42948 "EHLO
+        id S236802AbiDRGg1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 18 Apr 2022 02:36:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232257AbiDRFru (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Apr 2022 01:47:50 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26FE2FD34;
-        Sun, 17 Apr 2022 22:45:12 -0700 (PDT)
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 23I4mrQB011852;
-        Mon, 18 Apr 2022 05:45:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=siYszzMsP0pOV5c2PL9cf3FSnweWtrxfQV5lwWoKc7g=;
- b=eJ6Pcr39bhyAlsbaJaGlwNhjKKf7DgGEhbVxmM/jnLMq/5uK9Ear098nT8iHVisR19px
- sTm9B5QliU1V8m1/O2zzx1kYxCctM78o388gPFCMCdX8MKhlKFlkUEKLzl+sK7rzD220
- cBTsuXHkQoTCXSiNvvOC1wiRHkI3g8g1swwxiCSxBk0Y3RTVRu5BBVdNzr23C10QFx4V
- hlVttIN5Q/v6e1dWurcKGwpilGq/5R5ObO8JY/3IP1OdN4h8bX78j1ew85UhSUYsUB0V
- 6S2iXlg3qv4Fu5TwtNu2IMVTm9Du1PPGe9OS7uusUTZzhp5j0Nuzb2RSVwk2/n9fvnTb jg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3fg7d6csnb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Apr 2022 05:45:11 +0000
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 23I5R7sH005843;
-        Mon, 18 Apr 2022 05:45:11 GMT
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3fg7d6csmv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Apr 2022 05:45:11 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 23I5NmsV022724;
-        Mon, 18 Apr 2022 05:45:09 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06ams.nl.ibm.com with ESMTP id 3ffn2hta3t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Apr 2022 05:45:08 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 23I5j6bL29360422
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 18 Apr 2022 05:45:06 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A0FE942047;
-        Mon, 18 Apr 2022 05:45:06 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 12B3242042;
-        Mon, 18 Apr 2022 05:45:05 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.71.87])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Mon, 18 Apr 2022 05:45:04 +0000 (GMT)
-Date:   Mon, 18 Apr 2022 11:15:01 +0530
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     Eryu Guan <guaneryu@gmail.com>
-Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-        riteshh@linux.ibm.com
-Subject: Re: [PATCH v2 2/2] ext4: Test to ensure resize with sparse_super2 is
- handled correctly
-Message-ID: <Ylz63bzfrTwcKKDK@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <cover.1645549521.git.ojaswin@linux.ibm.com>
- <30fa381cac3dcc03b6fae4b9db5bf6c9a01f7bf6.1645549521.git.ojaswin@linux.ibm.com>
- <YlKzHqkZ1GjuIcc9@desktop>
+        with ESMTP id S236810AbiDRGgT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Apr 2022 02:36:19 -0400
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2109.outbound.protection.outlook.com [40.107.215.109])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5865018E3F;
+        Sun, 17 Apr 2022 23:33:38 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AcPfzZbC8JhMvuB7ob9+flrf1S080/02bJ3ZUisd60icEziQyqwxfKNxYkAmZi3WrclWmew/k6UcNRYLCU0o8jouQEp2lJl5QjdC6OjJ4hw+q+ZXI+Qi87vnCgG+G+6wVTG4ohxUZc6Nf16UWio9UMGMf1VocjWutcsxG+a9XN2pfSbS/PxMlSrZl5WToI+HQ7l9fRkKM4jqFtp9yuJPl8E8JO7amhlVi221kS1TyhihB0L7LGOWtceLwDTW8QNkHMD+JqZBLjN6U27mxPNvvD2LOfY4o6Nlmz7EM14xcremC/fALLgnDlQMyxh9KWcPyJ9bHJbQwwafrkGh8fQfiQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=o6hmehXcFAR1LpNSYALI3vQiOl2uusEqiuGD9Jahh80=;
+ b=GRXBjo+uJrJa8q2GJy/dzrGVtZ5nRrWKJ4765xb+VJKIB1nqd7TFDv/jeylOddI28SSAMKG9IPt6S2xaXlmELdcYBXL9BTMCEcsQYoN2MIomc6oyw4tJrDuL0FjhZrDFDepQ7r8Gw0z9VOW301hvXGXd9UPaAIeoL0dWdcJIiLQ+25W8rgSfrPKkgtgZQDdZ2GVfPrK8x1iRC/tPQBeGI0DCHC1c9BbnveXzhojDjOl72xaxXsBIOEwZTywGT9vKdz0ICSbHe9dP1SF/zXMCa/U6l1LAZv1gRx4vd6SVRRWf3VCnHbi4lNnnc24GoBVTFYu8+B6eGAc4QK82vabjvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o6hmehXcFAR1LpNSYALI3vQiOl2uusEqiuGD9Jahh80=;
+ b=Zmm8gMwWBio+KObS2c5tlNVxrD3rAOPmll0XjWLdwEutHxtjfB6TT6HGQzRMzYyidKPVUeT6uHRJck6S0GhH5tXbx1TW9niqymzzfQWOdU3N8C2TGevRVHIIC5+1f85UTEwKxO1Xte4R4yNCh+TbDAg5SKXFdjzKfUUpZko3qmA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from KL1PR0601MB4003.apcprd06.prod.outlook.com (2603:1096:820:26::6)
+ by SG2PR06MB3095.apcprd06.prod.outlook.com (2603:1096:4:75::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5164.20; Mon, 18 Apr
+ 2022 06:33:31 +0000
+Received: from KL1PR0601MB4003.apcprd06.prod.outlook.com
+ ([fe80::f0c7:9081:8b5a:7e7e]) by KL1PR0601MB4003.apcprd06.prod.outlook.com
+ ([fe80::f0c7:9081:8b5a:7e7e%8]) with mapi id 15.20.5164.025; Mon, 18 Apr 2022
+ 06:33:31 +0000
+From:   Fengnan Chang <changfengnan@vivo.com>
+To:     jaegeuk@kernel.org, chao@kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, axboe@kernel.dk
+Cc:     linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        linux-block@vger.kernel.org, Fengnan Chang <changfengnan@vivo.com>
+Subject: [PATCH 1/3] blk-crypto: introduce blk_crypto_supported
+Date:   Mon, 18 Apr 2022 14:33:10 +0800
+Message-Id: <20220418063312.63181-1-changfengnan@vivo.com>
+X-Mailer: git-send-email 2.32.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: TYAPR01CA0068.jpnprd01.prod.outlook.com
+ (2603:1096:404:2b::32) To KL1PR0601MB4003.apcprd06.prod.outlook.com
+ (2603:1096:820:26::6)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YlKzHqkZ1GjuIcc9@desktop>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: taeF1MFrIUX3Wlhva-uYt0baUjNP6lRo
-X-Proofpoint-GUID: fTAwdcVHZIQpfUWCfWwYzycNXj_KVe1v
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-04-18_02,2022-04-15_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 impostorscore=0 mlxlogscore=999 phishscore=0
- clxscore=1015 spamscore=0 malwarescore=0 priorityscore=1501 mlxscore=0
- adultscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2202240000 definitions=main-2204180032
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 275c9f2c-9563-402f-e781-08da21055aff
+X-MS-TrafficTypeDiagnostic: SG2PR06MB3095:EE_
+X-Microsoft-Antispam-PRVS: <SG2PR06MB3095496E51532255E4B98027BBF39@SG2PR06MB3095.apcprd06.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DbhLy57t/AZDdVLR9nfWPspjUnb8vKGQmkj1sD4GmjsuEOz0g9wA7tIgd0ti83EgkGoChr1Eea6ZXjQHh12NdomYEUPxon9zg6J6BaectlgTokHSetTMkPD0Fha4HKcUulViaQKfpMTljFmdr5zxArH+ApWpPbM9Nn5W8asIe/98lX0p48+gJiuhjwTO7UJ4wofvIMWTSVPoGA51lOD/YX9Slruro4ER/kg/kmZMLXYcyjfu1N6yy6hb+BLBEBIjqrliS3EagJZUmeRLsKdf54UZWP58pQgFTXeTXJyiWJiQ/WKY049ShmT0aETTaDyBddr0hWYg4a6xM0OYtJsAYa1VSgu7kE4jm002Xs7O8xBbkIFZSVV8vCY574O5LV47qniLlH5iS2XcR8PtKHQF+YujO4zmgSd6N31Xw5ctnDPx0ZbpM7x0sF7EVJ0TVH8nwIIYDige8kuPop4xKVuMbyu9JKGK+VgNrcBX5W0oWrPS1iWeBGbtK3lEvfXH1QS9NgRHJZQDFhnLg4/h8mWsKLXvPmitS73tkqxhxBGdm//2hifCrvLbB343pb1mZTeAW7NMW1KWd2TdfI5AaTO3j8nv8ZLRHL0MICn44k1C7xhavf2lKcrQTkZj02GXLfAc
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KL1PR0601MB4003.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(8676002)(4326008)(66946007)(2906002)(6506007)(52116002)(66556008)(6666004)(66476007)(2616005)(508600001)(5660300002)(107886003)(86362001)(1076003)(8936002)(6486002)(186003)(6512007)(26005)(36756003)(316002)(83380400001)(38350700002)(38100700002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 8YvNsZ76UAWTwWhwKdqi9HKmYTrVoalNn2b9TVbYtiklqkjMkZbHjpwVki2g3hbg/gEfct2BzX/OtpkEZMu0yrW/h23daZQlIKJH0EWCMGM6kxUn4Nx/h04WBiI0AXZcK5g73/yPTu3Hp+uluDoP3uR9afNmuXTkZL/baIZByRPjiINkQCj5y/0fqkRxXPeNax+QAWiHfIIAYWMZj0d8nx73WVqLvWV5Er7PFvvkLlGeHOvYz7dkpzUPdv74bsHAYduzqvOE7gHYlG+LDde/WxFcG59ywwX+yVu5WCOBFNKMCGULNHvfcmDCdTE4xbUIS42EonaG3/5MNw+JZ8t3mqb7BbwYr3P487naTYmyjzDMcPPu+Q/2GME5l7Wj+cGXOtZiL1rTKiotJJrOsHuOJJXf7Gc1jcpNuCl9gWLHFPw=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 275c9f2c-9563-402f-e781-08da21055aff
+X-MS-Exchange-CrossTenant-AuthSource: KL1PR0601MB4003.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2022 06:33:31.3633
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +pmkrF13/4rvMYPjdeNKgGz20eV9aw0wQ0BeZRtS7o79ynbV2iOgA5G0LfDxfEnPc7dykAMCfki8pok6bYmcyg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR06MB3095
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, Apr 10, 2022 at 06:36:14PM +0800, Eryu Guan wrote:
-> On Tue, Feb 22, 2022 at 11:20:53PM +0530, Ojaswin Mujoo wrote:
-> > Kernel currently doesn't support resize of EXT4 mounted
-> > with sparse_super2 option enabled. Earlier, it used to leave the resize
-> > incomplete and the fs would be left in an inconsistent state, however commit
-> > b1489186cc83[1] fixed this to avoid the fs corruption by clearly returning
-> > -EOPNOTSUPP.
-> > 
-> > Test to ensure that kernel handles resizing with sparse_super2 correctly. Run
-> > resize for multiple iterations because this sometimes leads to kernel crash due
-> > to fs corruption, which we want to detect.
-> > 
-> > Related commit in mainline:
-> > 
-> > [1] commit b1489186cc8391e0c1e342f9fbc3eedf6b944c61
-> > 
-> > 	ext4: add check to prevent attempting to resize an fs with sparse_super2
-> > 
-> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> > ---
-> > 
-> > I would like to add a few comments on the approach followed in this
-> > test:
-> > 
-> > 1. So although we check the return codes of the resize operation for
-> > 	 proper logging, the test is only considered to be passed if fsck
-> > 	 passes after the resize. This is because resizing a patched kernel
-> > 	 always keeps the fs consistent whereas resizing on unpatched kernel
-> > 	 always corrupts the fs. 
-> > 
-> > 2. I've noticed that running mkfs + resize multiple times on unpatched
-> > 	 kernel sometimes results in KASAN reporting use-after-free. Hence, if
-> > 	 we detect the kernel is unpatched (doesn't return EOPNOTSUPP on
-> > 	 resize) we continue iterating to capture this. In this case, we don't
-> > 	 run fsck in each iteration but run it only after all iterations are
-> > 	 complete because _check_scratch_fs exits the test if it fails.
-> > 
-> > 3. In case we detect patched kernel, we stop iterating, and run fsck to
-> > 	 confirm success 
-> > 
-> >  tests/ext4/056     | 108 +++++++++++++++++++++++++++++++++++++++++++++
-> >  tests/ext4/056.out |   2 +
-> >  2 files changed, 110 insertions(+)
-> >  create mode 100755 tests/ext4/056
-> >  create mode 100644 tests/ext4/056.out
-> > 
-> > diff --git a/tests/ext4/056 b/tests/ext4/056
-> > new file mode 100755
-> > index 00000000..0f275dea
-> > --- /dev/null
-> > +++ b/tests/ext4/056
-> > @@ -0,0 +1,108 @@
-> > +#! /bin/bash
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# Copyright (c) 2022 IBM. All Rights Reserved.
-> > +#
-> > +# We don't currently support resize of EXT4 filesystems mounted
-> > +# with sparse_super2 option enabled. Earlier, kernel used to leave the resize
-> > +# incomplete and the fs would be left into an incomplete state, however commit
-> > +# b1489186cc83[1] fixed this to avoid the fs corruption by clearly returning
-> > +# -ENOTSUPP.
-> > +#
-> > +# This test ensures that kernel handles resizing with sparse_super2 correctly
-> > +#
-> > +# Related commit in mainline:
-> > +#
-> > +# [1] commit b1489186cc8391e0c1e342f9fbc3eedf6b944c61
-> > +# 	ext4: add check to prevent attempting to resize an fs with sparse_super2
-> > +#
-> > +
-> > +. ./common/preamble
-> > +_begin_fstest auto ioctl resize quick
-> > +
-> > +# real QA test starts here
-> > +
-> > +INITIAL_FS_SIZE=1G
-> > +RESIZED_FS_SIZE=$((2*1024*1024*1024))  # 2G
-> > +ONLINE_RESIZE_BLOCK_LIMIT=$((256*1024*1024))
-> > +
-> > +STOP_ITER=255   # Arbitrary return code
-> > +
-> > +_supported_fs ext4
-> > +_require_scratch_size $(($RESIZED_FS_SIZE/1024))
-> > +_require_test_program "ext4_resize"
-> > +
-> > +log()
-> > +{
-> > +	echo "$seq: $*" >> $seqres.full 2>&1
-> > +}
-> > +
-> > +do_resize()
-> > +{
-> > +	_mkfs_dev -E resize=$ONLINE_RESIZE_BLOCK_LIMIT -O sparse_super2 \
-> > +		$SCRATCH_DEV $INITIAL_FS_SIZE >> $seqres.full 2>&1 \
-> > +		|| _fail "$MKFS_PROG failed. Exiting"
-> > +
-> > +	_scratch_mount || _fail "Failed to mount scratch partition. Exiting"
-> > +
-> > +	local BS=$(_get_block_size $SCRATCH_MNT)
-> > +	local REQUIRED_BLOCKS=$(($RESIZED_FS_SIZE/$BS))
-> > +
-> > +	local RESIZE_RET
-> > +	local EOPNOTSUPP=95
-> > +
-> > +	log "Resizing FS"
-> > +	$here/src/ext4_resize $SCRATCH_MNT $REQUIRED_BLOCKS >> $seqres.full 2>&1
-> > +	RESIZE_RET=$?
-> > +
-> > +	# Test appears to be successful. Stop iterating and confirm if FS is
-> > +	# consistent.
-> > +	if [ $RESIZE_RET = $EOPNOTSUPP ]
-> > +	then
-> > +		log "Resize operation not supported with sparse_super2"
-> > +		log "Threw expected error $RESIZE_RET (EOPNOTSUPP)"
-> > +		return $STOP_ITER
-> > +	fi
-> > +
-> > +	# Test appears to be unsuccessful. Most probably, the fs is corrupt,
-> > +	# iterate a few more times to further stress test this.
-> > +	log "Something is wrong. Output of resize = $RESIZE_RET. \
-> > +		Expected $EOPNOTSUPP (EOPNOTSUPP)"
-> > +
-> > +	# unmount after ioctl sometimes fails with "device busy" so add a small
-> > +	# delay
-> > +	sleep 0.2
-> > +	_scratch_unmount >> $seqres.full 2>&1 \
-> > +		|| _fail "$UMOUNT_PROG failed. Exiting"
-> > +}
-> > +
-> > +run_test()
-> > +{
-> > +	local FSCK_RET
-> > +	local ITERS=8
-> > +	local RET=0
-> > +
-> > +	for i in $(seq 1 $ITERS)
-> > +	do
-> > +		log "----------- Iteration: $i ------------"
-> > +		do_resize
-> > +		RET=$?
-> > +
-> > +		[ "$RET" = "$STOP_ITER" ] && break
-> > +	done
-> > +
-> > +	log "-------- Iterations Complete ---------"
-> > +	log "Checking if FS is in consistent state"
-> > +	_check_scratch_fs
-> 
-> _check_scratch_fs will exit the test on failure and print error message,
-> which will break the golden image, so there's no need to check fsck ret.
-> 
-> > +	FSCK_RET=$?
-> > +
-> > +	[ "$FSCK_RET" -ne "0" ] && \
-> > +		echo "fs corrupt. Check $seqres.full for more details"
-> > +
-> > +	return $FSCK_RET
-> 
-> So I removed above hunk on commit.
-> 
-> Thanks for the test! And my apology to the HUGE delay on review..
-No worries Eryu, thanks a lot for the review :)
+Introduce blk_crypto_supported, Filesystems may use this to check wheather
+storage device support inline encryption.
 
-Regards,
-Ojaswin
-> 
-> Thanks,
-> Eryu
-> 
-> > +}
-> > +
-> > +echo "Silence is golden"
-> > +run_test
-> > +status=$?
-> > +
-> > +exit
-> > diff --git a/tests/ext4/056.out b/tests/ext4/056.out
-> > new file mode 100644
-> > index 00000000..6142fcd2
-> > --- /dev/null
-> > +++ b/tests/ext4/056.out
-> > @@ -0,0 +1,2 @@
-> > +QA output created by 056
-> > +Silence is golden
-> > -- 
-> > 2.27.0
+Signed-off-by: Fengnan Chang <changfengnan@vivo.com>
+---
+ block/blk-crypto.c         | 6 +++++-
+ include/linux/blk-crypto.h | 5 +++++
+ 2 files changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/block/blk-crypto.c b/block/blk-crypto.c
+index a496aaef85ba..bef0833f9621 100644
+--- a/block/blk-crypto.c
++++ b/block/blk-crypto.c
+@@ -363,7 +363,11 @@ bool blk_crypto_config_supported(struct request_queue *q,
+ 	return IS_ENABLED(CONFIG_BLK_INLINE_ENCRYPTION_FALLBACK) ||
+ 	       __blk_crypto_cfg_supported(q->crypto_profile, cfg);
+ }
+-
++bool blk_crypto_supported(struct request_queue *q)
++{
++	return IS_ENABLED(CONFIG_BLK_INLINE_ENCRYPTION_FALLBACK) ||
++	       q->crypto_profile;
++}
+ /**
+  * blk_crypto_start_using_key() - Start using a blk_crypto_key on a device
+  * @key: A key to use on the device
+diff --git a/include/linux/blk-crypto.h b/include/linux/blk-crypto.h
+index 69b24fe92cbf..6806cef24d0f 100644
+--- a/include/linux/blk-crypto.h
++++ b/include/linux/blk-crypto.h
+@@ -103,6 +103,7 @@ int blk_crypto_evict_key(struct request_queue *q,
+ bool blk_crypto_config_supported(struct request_queue *q,
+ 				 const struct blk_crypto_config *cfg);
+ 
++bool blk_crypto_supported(struct request_queue *q);
+ #else /* CONFIG_BLK_INLINE_ENCRYPTION */
+ 
+ static inline bool bio_has_crypt_ctx(struct bio *bio)
+@@ -110,6 +111,10 @@ static inline bool bio_has_crypt_ctx(struct bio *bio)
+ 	return false;
+ }
+ 
++static inline bool blk_crypto_supported(struct request_queue *q)
++{
++	return false;
++}
+ #endif /* CONFIG_BLK_INLINE_ENCRYPTION */
+ 
+ int __bio_crypt_clone(struct bio *dst, struct bio *src, gfp_t gfp_mask);
+-- 
+2.32.0
+
