@@ -2,85 +2,42 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A8F504CB4
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 Apr 2022 08:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8F38504C97
+	for <lists+linux-ext4@lfdr.de>; Mon, 18 Apr 2022 08:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236809AbiDRGg3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 18 Apr 2022 02:36:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49778 "EHLO
+        id S235672AbiDRGZ4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 18 Apr 2022 02:25:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236813AbiDRGgV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Apr 2022 02:36:21 -0400
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2109.outbound.protection.outlook.com [40.107.215.109])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB28519007;
-        Sun, 17 Apr 2022 23:33:40 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cKO7Ce/RYFyB88bpO0GkMaarYlkRYqPNY1RbhUPADi+z3XNmy6n2EXO1HtyvN8Gx5EldscXLYJsfa69FqjHdU5Wp38Iic0A2S4X+bnNBhPbA0O6ZMdfuCt5OJRspyA0a6PT+e+7GkXB3sHOdYgbrWJj55mbn0ausVmezKm6GznhEoIGqF3HFVURmzAzokMvG+8wa6dsoE5rKPlf2Y4xrvvNCnn4s2FHgdrpwvjg6N0dqqJ8j9TNtZReiEW95I220vjdFO8ZEsCphfuAJqJCD1j5XSLKTkgpH4S7NfuNu+3iGEAF+F4WuJIwQVqc6bclqUeoo/zem+q8s7C0oTgLlLQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lmPWqmtS7iPD3Gnh0idgaebWXHkUMfU5HptJ3FmgFUM=;
- b=V9QaefoHQk2JumAu51SnFIBDoBY1d14+yaKmf+sTTlYDial2zLYLRgQW3d1YiClag7089/5K2PhO8cRH2gED1fJFWXLvYDsQpOEKGsqz3AvJbtmuU93BzEkf0d8MINYwosOU6XarLuM3kxLGxXHg08vPxOup1+Kqh7ShdhCZMU8IUBJT7UkplgnVrxMxMdJZ3qOYhc6k30r6OHRwyc+wXvb0WyGLtlN3xbMmOUILpry9zaELScqyYd+JLNIS+Y4YEB8orEHaeyk6TzLizEbCShmlLh3T3RjrtSK6mCDxwGNgE0P/AmRe08Gqgs8BJGY6qNpwfn/kTuaezPo9cipk2A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lmPWqmtS7iPD3Gnh0idgaebWXHkUMfU5HptJ3FmgFUM=;
- b=C/L3WjGfxZn2hFp5DKUtWSHJnyuciZNTM/Yi6nrZZH8o0qAfDf7TDPoiJJ/kKBy6q7KjH4dWzJ/wNlXcpd6o/lEsYRHziajoPI/ubdBgTk66mUxBkhAEL7UKb/f4l2wHRV/E2ZwRU61kkyQIvbJ6/Zjp0Lq3yJp6v+c3upRflbQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from KL1PR0601MB4003.apcprd06.prod.outlook.com (2603:1096:820:26::6)
- by SG2PR06MB3095.apcprd06.prod.outlook.com (2603:1096:4:75::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5164.20; Mon, 18 Apr
- 2022 06:33:35 +0000
-Received: from KL1PR0601MB4003.apcprd06.prod.outlook.com
- ([fe80::f0c7:9081:8b5a:7e7e]) by KL1PR0601MB4003.apcprd06.prod.outlook.com
- ([fe80::f0c7:9081:8b5a:7e7e%8]) with mapi id 15.20.5164.025; Mon, 18 Apr 2022
- 06:33:35 +0000
-From:   Fengnan Chang <changfengnan@vivo.com>
-To:     jaegeuk@kernel.org, chao@kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, axboe@kernel.dk
-Cc:     linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        linux-block@vger.kernel.org, Fengnan Chang <changfengnan@vivo.com>
-Subject: [PATCH 3/3] ext4: notify when device not supprt inlinecrypt
-Date:   Mon, 18 Apr 2022 14:33:12 +0800
-Message-Id: <20220418063312.63181-3-changfengnan@vivo.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20220418063312.63181-1-changfengnan@vivo.com>
-References: <20220418063312.63181-1-changfengnan@vivo.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: TYAPR01CA0068.jpnprd01.prod.outlook.com
- (2603:1096:404:2b::32) To KL1PR0601MB4003.apcprd06.prod.outlook.com
- (2603:1096:820:26::6)
+        with ESMTP id S230296AbiDRGZz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Apr 2022 02:25:55 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FAAF18B20
+        for <linux-ext4@vger.kernel.org>; Sun, 17 Apr 2022 23:23:16 -0700 (PDT)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4KhcL02fXYz1GCXr;
+        Mon, 18 Apr 2022 14:22:32 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by canpemm500005.china.huawei.com
+ (7.192.104.229) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 18 Apr
+ 2022 14:23:13 +0800
+From:   Zhang Yi <yi.zhang@huawei.com>
+To:     <linux-ext4@vger.kernel.org>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+        <yi.zhang@huawei.com>, <yukuai3@huawei.com>, <yebin10@huawei.com>
+Subject: [RFC PATCH v3] ext4: convert symlink external data block mapping to bdev
+Date:   Mon, 18 Apr 2022 14:37:35 +0800
+Message-ID: <20220418063735.2067766-1-yi.zhang@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a4762591-fc7f-4d43-6dfc-08da21055d66
-X-MS-TrafficTypeDiagnostic: SG2PR06MB3095:EE_
-X-Microsoft-Antispam-PRVS: <SG2PR06MB3095EE50EA3F4D13F789B000BBF39@SG2PR06MB3095.apcprd06.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sseW0M3Kk4hb3ypYTyW6FPA1nW5r4IyDTKKDa/H3YtlwXl+/DgIsJuo93+nBSumPbNip8pb01Ma4XdfoO5FWlYoGDN7tikcpfYJCP9IYfI0EiqxPTBG/opa4VZUHXAZMsXmUYmMUKypit5Wk32nJTm7WJeEisW/CbOz5P8+/Dimnt+2DKBIAntCjtx4f+mcoXVojLuM4iQGilHx76Yp7YLNTJr8o1YPkdeEaE273drt9RDJnQ6VzUBU9Kvqr4WuddSwx2iL8p45TIQMfSKQWshtFB5K5cPuMeWyVpW8hDkCg1rTaEv19klk+raR9lAjvQ03Pm6yLUJcE6Qc1iJ0Wt6bZgAKl3VfwqiEx06uSZkT99CPmGuUnEaznirn2d70PlBK3XYWzeA2KnJmpwRK73Fo86hRgwrVRnbi1VXwfQQK9QvBBkqT8CTCoGz6lz0rZ/BbAzjOFU6+hP3PjFLgc6cuR/3bEITRcsaHxO3bQHX6fraT76417xBySDGGMQR+USskx7Sm+7GzW6qiHamwrv/H6rhReMOT1EVMI1mu78BxPpYh67NjdMFBdfX8ReKwK166XVIIFovfAMGUMndQ0XFkFm8EMp5n3Xy9nB+dM1RYnAd7m2Mc+9/scFCXTmcw3
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KL1PR0601MB4003.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(8676002)(4326008)(66946007)(2906002)(6506007)(52116002)(66556008)(6666004)(66476007)(2616005)(508600001)(5660300002)(107886003)(86362001)(1076003)(8936002)(6486002)(186003)(6512007)(26005)(36756003)(316002)(83380400001)(38350700002)(38100700002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: MXgTOAXw+GKgHjF8rbzXwyBdLuCfQjIdKEpnkbNFzB7BcqpdlZOuAur937EQVZDgCzZHAnYLcDYqR8qk2ZIMcPD5V+WNo7EznpAnBJ+oA0rjatP938pTc6SuArKhF8W4/igT/f/1pB4F/xpe4xikAlKdjMx/sU08XdghnrwnWWdjYpQo51X5IrBhHM4MWuPrfMrxw4FW4s/msHG+4jrxKSbWTp7AHR4VKT0wkSIgaaPiZbStdgin/SEXhCzA5+yX+W6b0GAfiKAP1bmTEvoHMjfLFmXPRvEd4WIVFhXoa1dL5JNVP/00G0T3RWUzxw3HQGIG/OaiVO4dW2I2G/acRoHBYUQId+22Vo2j5fgPsWz6DJZcHyK65an3GOR6JuVd/3lmX2GI5FNcWB9qcXeruSMyFx2ggxcPii0C6WH2asA=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a4762591-fc7f-4d43-6dfc-08da21055d66
-X-MS-Exchange-CrossTenant-AuthSource: KL1PR0601MB4003.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2022 06:33:35.4549
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UIrz7dDR7YMVwf7FqZ7P7Px9QO/ul1bzASoJ2B3EAeftllGgHaNV5//V5pxrwL6MT0lWNgoD/1hf04y70L+Tag==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR06MB3095
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500005.china.huawei.com (7.192.104.229)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,45 +45,352 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Notify when mount filesystem with -o inlinecrypt option, but the device
-not support inlinecrypt.
+Symlink's external data block is one kind of metadata block, and now
+that almost all ext4 metadata block's page cache (e.g. directory blocks,
+quota blocks...) belongs to bdev backing inode except the symlink. It
+is essentially worked in data=journal mode like other regular file's
+data block because probably in order to make it simple for generic VFS
+code handling symlinks or some other historical reasons, but the logic
+of creating external data block in ext4_symlink() is complicated. and it
+also make things confused if user do not want to let the filesystem
+worked in data=journal mode. This patch convert the final exceptional
+case and make things clean, move the mapping of the symlink's external
+data block to bdev like any other metadata block does.
 
-Signed-off-by: Fengnan Chang <changfengnan@vivo.com>
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 ---
- fs/ext4/super.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+v3-v2:
+ - Retry if it fail in close-to-ENOSPC conditions.
+ - Use ext4_add_nondir() to add dir entry for no-fast symlink.
+ - Fix RCU walking for symlinks.
+ - Ensure nul-terminate when in ext4_get_link().
+v2->v1:
+ - Add comment to explain the credits of creating symlink.
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 81749eaddf4c..f91454d3a877 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -48,6 +48,7 @@
- #include <linux/fsnotify.h>
- #include <linux/fs_context.h>
- #include <linux/fs_parser.h>
-+#include <linux/blk-crypto.h>
+[v2]: https://lore.kernel.org/linux-ext4/20220412083941.2242143-1-yi.zhang@huawei.com/
+[v1]: https://lore.kernel.org/linux-ext4/20220406084503.1961686-1-yi.zhang@huawei.com/
+
+ fs/ext4/inode.c   |   9 +---
+ fs/ext4/namei.c   | 123 +++++++++++++++++++++-------------------------
+ fs/ext4/symlink.c |  54 +++++++++++++++++---
+ 3 files changed, 103 insertions(+), 83 deletions(-)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 13740f2d0e61..a6339cefbb1e 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -199,8 +199,7 @@ void ext4_evict_inode(struct inode *inode)
+ 		 */
+ 		if (inode->i_ino != EXT4_JOURNAL_INO &&
+ 		    ext4_should_journal_data(inode) &&
+-		    (S_ISLNK(inode->i_mode) || S_ISREG(inode->i_mode)) &&
+-		    inode->i_data.nrpages) {
++		    S_ISREG(inode->i_mode) && inode->i_data.nrpages) {
+ 			journal_t *journal = EXT4_SB(inode->i_sb)->s_journal;
+ 			tid_t commit_tid = EXT4_I(inode)->i_datasync_tid;
  
- #include "ext4.h"
- #include "ext4_extents.h"	/* Needed for trace points definition */
-@@ -5466,6 +5467,17 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 				 "the device does not support discard");
+@@ -2944,8 +2943,7 @@ static int ext4_da_write_begin(struct file *file, struct address_space *mapping,
+ 
+ 	index = pos >> PAGE_SHIFT;
+ 
+-	if (ext4_nonda_switch(inode->i_sb) || S_ISLNK(inode->i_mode) ||
+-	    ext4_verity_in_progress(inode)) {
++	if (ext4_nonda_switch(inode->i_sb) || ext4_verity_in_progress(inode)) {
+ 		*fsdata = (void *)FALL_BACK_TO_NONDELALLOC;
+ 		return ext4_write_begin(file, mapping, pos,
+ 					len, flags, pagep, fsdata);
+@@ -4977,7 +4975,6 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+ 		}
+ 		if (IS_ENCRYPTED(inode)) {
+ 			inode->i_op = &ext4_encrypted_symlink_inode_operations;
+-			ext4_set_aops(inode);
+ 		} else if (ext4_inode_is_fast_symlink(inode)) {
+ 			inode->i_link = (char *)ei->i_data;
+ 			inode->i_op = &ext4_fast_symlink_inode_operations;
+@@ -4985,9 +4982,7 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+ 				sizeof(ei->i_data) - 1);
+ 		} else {
+ 			inode->i_op = &ext4_symlink_inode_operations;
+-			ext4_set_aops(inode);
+ 		}
+-		inode_nohighmem(inode);
+ 	} else if (S_ISCHR(inode->i_mode) || S_ISBLK(inode->i_mode) ||
+ 	      S_ISFIFO(inode->i_mode) || S_ISSOCK(inode->i_mode)) {
+ 		inode->i_op = &ext4_special_inode_operations;
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index e37da8d5cd0c..dbb6294914bc 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -3249,6 +3249,32 @@ static int ext4_unlink(struct inode *dir, struct dentry *dentry)
+ 	return retval;
+ }
+ 
++static int ext4_init_symlink_block(handle_t *handle, struct inode *inode,
++				   struct fscrypt_str *disk_link)
++{
++	struct buffer_head *bh;
++	char *kaddr;
++	int err = 0;
++
++	bh = ext4_bread(handle, inode, 0, EXT4_GET_BLOCKS_CREATE);
++	if (IS_ERR(bh))
++		return PTR_ERR(bh);
++
++	BUFFER_TRACE(bh, "get_write_access");
++	err = ext4_journal_get_write_access(handle, inode->i_sb, bh, EXT4_JTR_NONE);
++	if (err)
++		goto out;
++
++	kaddr = (char *)bh->b_data;
++	memcpy(kaddr, disk_link->name, disk_link->len);
++	inode->i_size = disk_link->len - 1;
++	EXT4_I(inode)->i_disksize = inode->i_size;
++	err = ext4_handle_dirty_metadata(handle, inode, bh);
++out:
++	brelse(bh);
++	return err;
++}
++
+ static int ext4_symlink(struct user_namespace *mnt_userns, struct inode *dir,
+ 			struct dentry *dentry, const char *symname)
+ {
+@@ -3257,6 +3283,7 @@ static int ext4_symlink(struct user_namespace *mnt_userns, struct inode *dir,
+ 	int err, len = strlen(symname);
+ 	int credits;
+ 	struct fscrypt_str disk_link;
++	int retries = 0;
+ 
+ 	if (unlikely(ext4_forced_shutdown(EXT4_SB(dir->i_sb))))
+ 		return -EIO;
+@@ -3270,26 +3297,15 @@ static int ext4_symlink(struct user_namespace *mnt_userns, struct inode *dir,
+ 	if (err)
+ 		return err;
+ 
+-	if ((disk_link.len > EXT4_N_BLOCKS * 4)) {
+-		/*
+-		 * For non-fast symlinks, we just allocate inode and put it on
+-		 * orphan list in the first transaction => we need bitmap,
+-		 * group descriptor, sb, inode block, quota blocks, and
+-		 * possibly selinux xattr blocks.
+-		 */
+-		credits = 4 + EXT4_MAXQUOTAS_INIT_BLOCKS(dir->i_sb) +
+-			  EXT4_XATTR_TRANS_BLOCKS;
+-	} else {
+-		/*
+-		 * Fast symlink. We have to add entry to directory
+-		 * (EXT4_DATA_TRANS_BLOCKS + EXT4_INDEX_EXTRA_TRANS_BLOCKS),
+-		 * allocate new inode (bitmap, group descriptor, inode block,
+-		 * quota blocks, sb is already counted in previous macros).
+-		 */
+-		credits = EXT4_DATA_TRANS_BLOCKS(dir->i_sb) +
+-			  EXT4_INDEX_EXTRA_TRANS_BLOCKS + 3;
+-	}
+-
++	/*
++	 * EXT4_INDEX_EXTRA_TRANS_BLOCKS for addition of entry into the
++	 * directory. +3 for inode, inode bitmap, group descriptor allocation.
++	 * EXT4_DATA_TRANS_BLOCKS for the data block allocation and
++	 * modification.
++	 */
++	credits = EXT4_DATA_TRANS_BLOCKS(dir->i_sb) +
++		  EXT4_INDEX_EXTRA_TRANS_BLOCKS + 3;
++retry:
+ 	inode = ext4_new_inode_start_handle(mnt_userns, dir, S_IFLNK|S_IRWXUGO,
+ 					    &dentry->d_name, 0, NULL,
+ 					    EXT4_HT_DIR, credits);
+@@ -3297,7 +3313,8 @@ static int ext4_symlink(struct user_namespace *mnt_userns, struct inode *dir,
+ 	if (IS_ERR(inode)) {
+ 		if (handle)
+ 			ext4_journal_stop(handle);
+-		return PTR_ERR(inode);
++		err = PTR_ERR(inode);
++		goto out_retry;
  	}
  
-+#ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
-+	if (sb->s_flags & SB_INLINECRYPT) {
-+		struct request_queue *q = bdev_get_queue(sb->s_bdev);
-+
-+		if (!blk_crypto_supported(q)) {
-+			ext4_msg(sb, KERN_WARNING,
-+			 "mounting with \"inlinecrypt\" option, but the device does not support inlinecrypt");
-+			sb->s_flags &= ~SB_INLINECRYPT;
+ 	if (IS_ENCRYPTED(inode)) {
+@@ -3305,75 +3322,45 @@ static int ext4_symlink(struct user_namespace *mnt_userns, struct inode *dir,
+ 		if (err)
+ 			goto err_drop_inode;
+ 		inode->i_op = &ext4_encrypted_symlink_inode_operations;
++	} else {
++		if ((disk_link.len > EXT4_N_BLOCKS * 4)) {
++			inode->i_op = &ext4_symlink_inode_operations;
++		} else {
++			inode->i_op = &ext4_fast_symlink_inode_operations;
++			inode->i_link = (char *)&EXT4_I(inode)->i_data;
 +		}
-+	}
-+#endif
-+
- 	if (es->s_error_count)
- 		mod_timer(&sbi->s_err_report, jiffies + 300*HZ); /* 5 minutes */
+ 	}
  
+ 	if ((disk_link.len > EXT4_N_BLOCKS * 4)) {
+-		if (!IS_ENCRYPTED(inode))
+-			inode->i_op = &ext4_symlink_inode_operations;
+-		inode_nohighmem(inode);
+-		ext4_set_aops(inode);
+-		/*
+-		 * We cannot call page_symlink() with transaction started
+-		 * because it calls into ext4_write_begin() which can wait
+-		 * for transaction commit if we are running out of space
+-		 * and thus we deadlock. So we have to stop transaction now
+-		 * and restart it when symlink contents is written.
+-		 *
+-		 * To keep fs consistent in case of crash, we have to put inode
+-		 * to orphan list in the mean time.
+-		 */
+-		drop_nlink(inode);
+-		err = ext4_orphan_add(handle, inode);
+-		if (handle)
+-			ext4_journal_stop(handle);
+-		handle = NULL;
+-		if (err)
+-			goto err_drop_inode;
+-		err = __page_symlink(inode, disk_link.name, disk_link.len, 1);
+-		if (err)
+-			goto err_drop_inode;
+-		/*
+-		 * Now inode is being linked into dir (EXT4_DATA_TRANS_BLOCKS
+-		 * + EXT4_INDEX_EXTRA_TRANS_BLOCKS), inode is also modified
+-		 */
+-		handle = ext4_journal_start(dir, EXT4_HT_DIR,
+-				EXT4_DATA_TRANS_BLOCKS(dir->i_sb) +
+-				EXT4_INDEX_EXTRA_TRANS_BLOCKS + 1);
+-		if (IS_ERR(handle)) {
+-			err = PTR_ERR(handle);
+-			handle = NULL;
+-			goto err_drop_inode;
+-		}
+-		set_nlink(inode, 1);
+-		err = ext4_orphan_del(handle, inode);
++		/* alloc symlink block and fill it */
++		err = ext4_init_symlink_block(handle, inode, &disk_link);
+ 		if (err)
+ 			goto err_drop_inode;
+ 	} else {
+ 		/* clear the extent format for fast symlink */
+ 		ext4_clear_inode_flag(inode, EXT4_INODE_EXTENTS);
+-		if (!IS_ENCRYPTED(inode)) {
+-			inode->i_op = &ext4_fast_symlink_inode_operations;
+-			inode->i_link = (char *)&EXT4_I(inode)->i_data;
+-		}
+ 		memcpy((char *)&EXT4_I(inode)->i_data, disk_link.name,
+ 		       disk_link.len);
+ 		inode->i_size = disk_link.len - 1;
++		EXT4_I(inode)->i_disksize = inode->i_size;
+ 	}
+-	EXT4_I(inode)->i_disksize = inode->i_size;
+ 	err = ext4_add_nondir(handle, dentry, &inode);
+ 	if (handle)
+ 		ext4_journal_stop(handle);
+ 	if (inode)
+ 		iput(inode);
+-	goto out_free_encrypted_link;
++	goto out_retry;
+ 
+ err_drop_inode:
+-	if (handle)
+-		ext4_journal_stop(handle);
+ 	clear_nlink(inode);
++	ext4_orphan_add(handle, inode);
+ 	unlock_new_inode(inode);
++	if (handle)
++		ext4_journal_stop(handle);
+ 	iput(inode);
+-out_free_encrypted_link:
++out_retry:
++	if (err == -ENOSPC && ext4_should_retry_alloc(dir->i_sb, &retries))
++		goto retry;
+ 	if (disk_link.name != (unsigned char *)symname)
+ 		kfree(disk_link.name);
+ 	return err;
+diff --git a/fs/ext4/symlink.c b/fs/ext4/symlink.c
+index 69109746e6e2..af9a613ed3b2 100644
+--- a/fs/ext4/symlink.c
++++ b/fs/ext4/symlink.c
+@@ -27,7 +27,7 @@ static const char *ext4_encrypted_get_link(struct dentry *dentry,
+ 					   struct inode *inode,
+ 					   struct delayed_call *done)
+ {
+-	struct page *cpage = NULL;
++	struct buffer_head *bh = NULL;
+ 	const void *caddr;
+ 	unsigned int max_size;
+ 	const char *paddr;
+@@ -39,16 +39,19 @@ static const char *ext4_encrypted_get_link(struct dentry *dentry,
+ 		caddr = EXT4_I(inode)->i_data;
+ 		max_size = sizeof(EXT4_I(inode)->i_data);
+ 	} else {
+-		cpage = read_mapping_page(inode->i_mapping, 0, NULL);
+-		if (IS_ERR(cpage))
+-			return ERR_CAST(cpage);
+-		caddr = page_address(cpage);
++		bh = ext4_bread(NULL, inode, 0, 0);
++		if (IS_ERR(bh))
++			return ERR_CAST(bh);
++		if (!bh) {
++			EXT4_ERROR_INODE(inode, "bad symlink.");
++			return ERR_PTR(-EFSCORRUPTED);
++		}
++		caddr = bh->b_data;
+ 		max_size = inode->i_sb->s_blocksize;
+ 	}
+ 
+ 	paddr = fscrypt_get_symlink(inode, caddr, max_size, done);
+-	if (cpage)
+-		put_page(cpage);
++	brelse(bh);
+ 	return paddr;
+ }
+ 
+@@ -62,6 +65,41 @@ static int ext4_encrypted_symlink_getattr(struct user_namespace *mnt_userns,
+ 	return fscrypt_symlink_getattr(path, stat);
+ }
+ 
++static void ext4_free_link(void *bh)
++{
++	brelse(bh);
++}
++
++static const char *ext4_get_link(struct dentry *dentry, struct inode *inode,
++				 struct delayed_call *callback)
++{
++	struct buffer_head *bh;
++
++	if (!dentry) {
++		bh = ext4_getblk(NULL, inode, 0, 0);
++		if (!bh || IS_ERR(bh))
++			goto error_out;
++		if (!ext4_buffer_uptodate(bh))
++			return ERR_PTR(-ECHILD);
++	} else {
++		bh = ext4_bread(NULL, inode, 0, 0);
++		if (!bh || IS_ERR(bh))
++			goto error_out;
++	}
++
++	set_delayed_call(callback, ext4_free_link, bh);
++	nd_terminate_link(bh->b_data, inode->i_size,
++			  inode->i_sb->s_blocksize - 1);
++	return bh->b_data;
++
++error_out:
++	if (!bh) {
++		EXT4_ERROR_INODE(inode, "bad symlink.");
++		return ERR_PTR(-EFSCORRUPTED);
++	}
++	return ERR_CAST(bh);
++}
++
+ const struct inode_operations ext4_encrypted_symlink_inode_operations = {
+ 	.get_link	= ext4_encrypted_get_link,
+ 	.setattr	= ext4_setattr,
+@@ -70,7 +108,7 @@ const struct inode_operations ext4_encrypted_symlink_inode_operations = {
+ };
+ 
+ const struct inode_operations ext4_symlink_inode_operations = {
+-	.get_link	= page_get_link,
++	.get_link	= ext4_get_link,
+ 	.setattr	= ext4_setattr,
+ 	.getattr	= ext4_getattr,
+ 	.listxattr	= ext4_listxattr,
 -- 
-2.32.0
+2.31.1
 
