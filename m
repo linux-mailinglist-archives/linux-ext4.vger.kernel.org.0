@@ -2,146 +2,120 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A81AB50FF94
-	for <lists+linux-ext4@lfdr.de>; Tue, 26 Apr 2022 15:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 255CB5101C8
+	for <lists+linux-ext4@lfdr.de>; Tue, 26 Apr 2022 17:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348882AbiDZNz5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 26 Apr 2022 09:55:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40708 "EHLO
+        id S1351155AbiDZPZE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 26 Apr 2022 11:25:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345563AbiDZNz4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 26 Apr 2022 09:55:56 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0A4A1353A6;
-        Tue, 26 Apr 2022 06:52:47 -0700 (PDT)
-Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Knjwn153Cz1JBly;
-        Tue, 26 Apr 2022 21:51:53 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
- (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Tue, 26 Apr
- 2022 21:52:45 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <linux-ext4@vger.kernel.org>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-        <yebin10@huawei.com>, <yukuai3@huawei.com>, <libaokun1@huawei.com>,
-        <stable@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH v2] ext4: fix race condition between ext4_write and ext4_convert_inline_data
-Date:   Tue, 26 Apr 2022 22:06:58 +0800
-Message-ID: <20220426140658.1046700-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S1345302AbiDZPZD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 26 Apr 2022 11:25:03 -0400
+Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1693A65D0
+        for <linux-ext4@vger.kernel.org>; Tue, 26 Apr 2022 08:21:56 -0700 (PDT)
+Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-e9027efe6aso12399442fac.10
+        for <linux-ext4@vger.kernel.org>; Tue, 26 Apr 2022 08:21:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NlydFFbtuvEUyExH2Zgk+EX4f4C7HNRLoshbb/lU9+E=;
+        b=Me00n4XTkzexCVNraS2+HsT6sbagBaFALSed/H0VQZwq4DD+AYP/NfAcW+IeEpLqYW
+         V6HscpV/+0sAR57Xr6bNz55SOLP38u8NCTKV8M4BBN5Pi6zGw78NFdw+UgyvqdJ4mcnp
+         EVbM6EOMQgdbfK+qaMnE0myaVBRr/P6PbD2y1ssC8tDI6yMLslNttsUwv3pdoo4ns+G7
+         pZqTlYAQOWvso/B2Gf1+k8SvaWF+mqnO5ChEjYRTG1d5TMGqyksAxlJVdoD6J94+kVr5
+         Fd/ZVSvXv/57bw13hkdnAD2DCx+wrb/p+Xg/F4clyn4+jHdh10CrkBI77Dxe6wc0Tq4I
+         qhBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NlydFFbtuvEUyExH2Zgk+EX4f4C7HNRLoshbb/lU9+E=;
+        b=c88je0HPelWpLjkZzKQ8eR+5nz4xn2ewarB7vlJuSTjEXTlMiFxJq9d9YJ0H260UtA
+         Lq44LgQcmDCMDcFHZKgSgpF4z/OU0BQ8gei+KD4PXY1+6WlPCyd0sXkBNWSpgrnA3khe
+         IYu1fke2kksw1TwGFiDDWNoua3q202EnLjDokrtm2mdk/X3cFfVCwIlPDocF9U1lFPtW
+         rQgA1Ag1EhzeH5k0oxROR6Hd+FSaQWPZIWPMXXKyBoIbbI1BkbG2k8xp0aroKvmwCZ5O
+         CgnZ2pXMK8s3xwN+4THV8WQxzDbPcQzkxwctRbEJ0jn9Dn2rqosqbHQoqZcAOoPuGO68
+         D5qw==
+X-Gm-Message-State: AOAM531b19ay/V9dNOEM1G6m6ukjjzWZ+MiTEKXWm08iMsjugSVb4/lh
+        h0BVy17jfUHUu1wr04rOT0UW4wCEI+wjPZpLu/A=
+X-Google-Smtp-Source: ABdhPJw67xReTAU4AwUuY7HCGguDtve8pCmnmDVW4M5Md6PrglQHeY2lBGqoqk2tr42lGWwb/5VliQ==
+X-Received: by 2002:a05:6870:b427:b0:d3:5044:db1b with SMTP id x39-20020a056870b42700b000d35044db1bmr13130563oap.2.1650986515099;
+        Tue, 26 Apr 2022 08:21:55 -0700 (PDT)
+Received: from daa0ed34aef8.hpecorp.net ([83.234.50.195])
+        by smtp.gmail.com with ESMTPSA id e26-20020a056820061a00b0035e46250f56sm4996872oow.13.2022.04.26.08.21.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Apr 2022 08:21:54 -0700 (PDT)
+From:   Artem Blagodarenko <artem.blagodarenko@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     adilger.kernel@dilger.ca,
+        Artem Blagodarenko <artem.blagodarenko@hpe.com>
+Subject: [RFC] LUS-10810 e2fsck: use bitmaps for in-use block map
+Date:   Sat, 23 Apr 2022 01:42:16 +0000
+Message-Id: <20220423014216.34032-1-artem.blagodarenko@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hulk Robot reported a BUG_ON:
- ==================================================================
- EXT4-fs error (device loop3): ext4_mb_generate_buddy:805: group 0,
- block bitmap and bg descriptor inconsistent: 25 vs 31513 free clusters
- kernel BUG at fs/ext4/ext4_jbd2.c:53!
- invalid opcode: 0000 [#1] SMP KASAN PTI
- CPU: 0 PID: 25371 Comm: syz-executor.3 Not tainted 5.10.0+ #1
- RIP: 0010:ext4_put_nojournal fs/ext4/ext4_jbd2.c:53 [inline]
- RIP: 0010:__ext4_journal_stop+0x10e/0x110 fs/ext4/ext4_jbd2.c:116
- [...]
- Call Trace:
-  ext4_write_inline_data_end+0x59a/0x730 fs/ext4/inline.c:795
-  generic_perform_write+0x279/0x3c0 mm/filemap.c:3344
-  ext4_buffered_write_iter+0x2e3/0x3d0 fs/ext4/file.c:270
-  ext4_file_write_iter+0x30a/0x11c0 fs/ext4/file.c:520
-  do_iter_readv_writev+0x339/0x3c0 fs/read_write.c:732
-  do_iter_write+0x107/0x430 fs/read_write.c:861
-  vfs_writev fs/read_write.c:934 [inline]
-  do_pwritev+0x1e5/0x380 fs/read_write.c:1031
- [...]
- ==================================================================
+From: Artem Blagodarenko <artem.blagodarenko@hpe.com>
 
-Above issue may happen as follows:
-           cpu1                     cpu2
-__________________________|__________________________
-do_pwritev
- vfs_writev
-  do_iter_write
-   ext4_file_write_iter
-    ext4_buffered_write_iter
-     generic_perform_write
-      ext4_da_write_begin
-                           vfs_fallocate
-                            ext4_fallocate
-                             ext4_convert_inline_data
-                              ext4_convert_inline_data_nolock
-                               ext4_destroy_inline_data_nolock
-                                clear EXT4_STATE_MAY_INLINE_DATA
-                               ext4_map_blocks
-                                ext4_ext_map_blocks
-                                 ext4_mb_new_blocks
-                                  ext4_mb_regular_allocator
-                                   ext4_mb_good_group_nolock
-                                    ext4_mb_init_group
-                                     ext4_mb_init_cache
-                                      ext4_mb_generate_buddy  --> error
-       ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA)
-                                ext4_restore_inline_data
-                                 set EXT4_STATE_MAY_INLINE_DATA
-       ext4_block_write_begin
-      ext4_da_write_end
-       ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA)
-       ext4_write_inline_data_end
-        handle=NULL
-        ext4_journal_stop(handle)
-         __ext4_journal_stop
-          ext4_put_nojournal(handle)
-           ref_cnt = (unsigned long)handle
-           BUG_ON(ref_cnt == 0)  ---> BUG_ON
+EXT2FS_BMAP64_RBTREE is too expensive for fragmented prtition,
+that can lead to situation than e2fsck use swapfile.
 
-The lock held by ext4_convert_inline_data is xattr_sem, but the lock
-held by generic_perform_write is i_rwsem. Therefore, the two locks can
-be concurrent. To solve above issue, we just add inode_lock in
-ext4_convert_inline_data.
+This patch change EXT2FS_BMAP64_RBTREE to bimap.
 
-Fixes: 0c8d414f163f ("ext4: let fallocate handle inline data correctly")
-Cc: stable@vger.kernel.org
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Marked as RFC because it must be descussed whether this flags
+should be changed by default or some additional option or
+a heuristic is needed to contol this flags.
+
+signed-off-by: Artem Blagodarenko <artem.blagodarenko@hpe.com>
+
+Change-Id: I6a906b5e54cf40eaba82624d8e4c2b0f90132813
 ---
-V1->V2:
-	Increase the range of the inode_lock.
+ e2fsck/pass1.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
- fs/ext4/inline.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index 9c076262770d..0518edcfc0e1 100644
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -2002,6 +2002,7 @@ int ext4_convert_inline_data(struct inode *inode)
- 	handle_t *handle;
- 	struct ext4_iloc iloc;
- 
-+	inode_lock(inode);
- 	if (!ext4_has_inline_data(inode)) {
- 		ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
- 		return 0;
-@@ -2024,6 +2025,7 @@ int ext4_convert_inline_data(struct inode *inode)
- 	if (ext4_has_inline_data(inode))
- 		error = ext4_convert_inline_data_nolock(handle, inode, &iloc);
- 	ext4_write_unlock_xattr(inode, &no_expand);
-+	inode_unlock(inode);
- 	ext4_journal_stop(handle);
- out_free:
- 	brelse(iloc.bh);
+diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
+index 26b9ab71..563dcdc5 100644
+--- a/e2fsck/pass1.c
++++ b/e2fsck/pass1.c
+@@ -1247,7 +1247,7 @@ void e2fsck_pass1(e2fsck_t ctx)
+ 		return;
+ 	}
+ 	pctx.errcode = e2fsck_allocate_subcluster_bitmap(fs,
+-			_("in-use block map"), EXT2FS_BMAP64_RBTREE,
++			_("in-use block map"), EXT2FS_BMAP64_BITARRAY,
+ 			"block_found_map", &ctx->block_found_map);
+ 	if (pctx.errcode) {
+ 		pctx.num = 1;
+@@ -1256,7 +1256,7 @@ void e2fsck_pass1(e2fsck_t ctx)
+ 		return;
+ 	}
+ 	pctx.errcode = e2fsck_allocate_block_bitmap(fs,
+-			_("metadata block map"), EXT2FS_BMAP64_RBTREE,
++			_("metadata block map"), EXT2FS_BMAP64_BITARRAY,
+ 			"block_metadata_map", &ctx->block_metadata_map);
+ 	if (pctx.errcode) {
+ 		pctx.num = 1;
+@@ -2456,7 +2456,7 @@ static int check_ext_attr(e2fsck_t ctx, struct problem_context *pctx,
+ 	if (!ctx->block_ea_map) {
+ 		pctx->errcode = e2fsck_allocate_block_bitmap(fs,
+ 					_("ext attr block map"),
+-					EXT2FS_BMAP64_RBTREE, "block_ea_map",
++					EXT2FS_BMAP64_BITARRAY, "block_ea_map",
+ 					&ctx->block_ea_map);
+ 		if (pctx->errcode) {
+ 			pctx->num = 2;
 -- 
-2.31.1
+2.27.0
 
