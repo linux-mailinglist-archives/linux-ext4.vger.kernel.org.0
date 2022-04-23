@@ -2,72 +2,201 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC20E50C5FE
-	for <lists+linux-ext4@lfdr.de>; Sat, 23 Apr 2022 03:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5630450CBAC
+	for <lists+linux-ext4@lfdr.de>; Sat, 23 Apr 2022 17:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231371AbiDWBXn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 22 Apr 2022 21:23:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57480 "EHLO
+        id S232088AbiDWP0B (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 23 Apr 2022 11:26:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231574AbiDWBXj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 22 Apr 2022 21:23:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D4F25D18E;
-        Fri, 22 Apr 2022 18:20:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DB9376122F;
-        Sat, 23 Apr 2022 01:20:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4727FC385A4;
-        Sat, 23 Apr 2022 01:20:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650676843;
-        bh=R8xeU+lU3Opd9ECa9+JWLH3W7hAIJsjrO5mbJXYy5vQ=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Th07eE0IUisMd27lYutTyYSyCpXIugzMudf1Oytj8OqLCOO0B4kKJOG2G20OhDlPC
-         7nTag39gLDAJiE3gqvcuG+YBc2FXogP4Ak7rgbO6rpZCVgQdb4sjua+5Wi4Z7Plmrj
-         EmtXmRi5yacyk/Vg70Wdrb3lfzURcvC3wRMnL2aBCbevZFl3LgBzdlOKxP1urwGRgC
-         c9rt1NL5yJp0ZDjxTszvUZjO26i63TZOzPl1MvG9EpBvBpRJgbxlCcUh3tnAGXKsAR
-         KmIqF6k/Gqrrhpru5LporQWCLS+dp3i09sILvR5cXtmFX9I0w+5nblgvqcIYcjZh2i
-         rksUV8Wk58p5Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 349B5E6D402;
-        Sat, 23 Apr 2022 01:20:43 +0000 (UTC)
-Subject: Re: [GIT PULL] ext4 fixes for 5.18-rc4
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YmMsywgKkOpa6dlR@mit.edu>
-References: <YmMsywgKkOpa6dlR@mit.edu>
-X-PR-Tracked-List-Id: <linux-ext4.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YmMsywgKkOpa6dlR@mit.edu>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
-X-PR-Tracked-Commit-Id: 23e3d7f7061f8682c751c46512718f47580ad8f0
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c00c5e1d157bec0ef0b0b59aa5482eb8dc7e8e49
-Message-Id: <165067684321.21969.3748476205738254809.pr-tracker-bot@kernel.org>
-Date:   Sat, 23 Apr 2022 01:20:43 +0000
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229631AbiDWP0B (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 23 Apr 2022 11:26:01 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32C3B326F9
+        for <linux-ext4@vger.kernel.org>; Sat, 23 Apr 2022 08:23:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1650727384; x=1682263384;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=/UasoG34JGQQVCjvsGxktf/bB0tb4jAcv0VgPWUmd+0=;
+  b=BOcIlMZlt7LkW1vX7Tczkmq9Ap32al9zDPeKOCM7ZMtKewnPJd7SvyNj
+   5TGZ2gR/y0zXX/wcEpz8o81oeZ8LI7SY27hNIR1uI8kciK6+4u2k1C5md
+   zLCjhcyI8I/l9MTgtLu6ReUS9/J+sH1f1wZ/NzI1UFw4Lz+SAH6YGYyke
+   Nq+aT0H50iWPKsJgF9irCCfYdMwRj07dzdDWkMK/zwuy7+/2JyCiae0zm
+   flJsNoulFJlIL7/PgyoVzyrl+vMWGxjHX1dsFBMuTDVhJjIMD+pv6xFz2
+   ElzfCWdzBc2n++UNs4P/rXznYe7Xj0+S6G0gBldhzqPoPpANGTcr60FUE
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10326"; a="244832621"
+X-IronPort-AV: E=Sophos;i="5.90,284,1643702400"; 
+   d="scan'208";a="244832621"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2022 08:23:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,284,1643702400"; 
+   d="scan'208";a="728965741"
+Received: from lkp-server01.sh.intel.com (HELO 5056e131ad90) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 23 Apr 2022 08:23:02 -0700
+Received: from kbuild by 5056e131ad90 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1niHbC-00009X-1A;
+        Sat, 23 Apr 2022 15:23:02 +0000
+Date:   Sat, 23 Apr 2022 23:22:57 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:dev] BUILD SUCCESS
+ 23e3d7f7061f8682c751c46512718f47580ad8f0
+Message-ID: <626419d1.hskNe6hcO33l48FI%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The pull request you sent on Fri, 22 Apr 2022 18:31:39 -0400:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: 23e3d7f7061f8682c751c46512718f47580ad8f0  jbd2: fix a potential race while discarding reserved buffers after an abort
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
+elapsed time: 972m
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c00c5e1d157bec0ef0b0b59aa5482eb8dc7e8e49
+configs tested: 118
+configs skipped: 3
 
-Thank you!
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm64                               defconfig
+arm64                            allyesconfig
+arm                              allmodconfig
+arm                                 defconfig
+arm                              allyesconfig
+i386                          randconfig-c001
+sh                ecovec24-romimage_defconfig
+xtensa                    smp_lx200_defconfig
+arm                         lpc18xx_defconfig
+m68k                        m5407c3_defconfig
+m68k                          atari_defconfig
+sh                          rsk7203_defconfig
+ia64                      gensparse_defconfig
+powerpc                      cm5200_defconfig
+h8300                    h8300h-sim_defconfig
+powerpc                      chrp32_defconfig
+sh                        apsh4ad0a_defconfig
+sh                           se7705_defconfig
+sh                           se7722_defconfig
+arm                            xcep_defconfig
+sh                           se7619_defconfig
+m68k                       m5475evb_defconfig
+powerpc                   currituck_defconfig
+powerpc                 canyonlands_defconfig
+powerpc                       holly_defconfig
+x86_64                        randconfig-c001
+arm                  randconfig-c002-20220422
+ia64                             allmodconfig
+ia64                             allyesconfig
+ia64                                defconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+csky                                defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                                defconfig
+s390                             allmodconfig
+parisc                              defconfig
+parisc64                            defconfig
+parisc                           allyesconfig
+s390                             allyesconfig
+sparc                               defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+x86_64                        randconfig-a006
+i386                          randconfig-a001
+i386                          randconfig-a003
+i386                          randconfig-a005
+x86_64                        randconfig-a011
+x86_64                        randconfig-a013
+x86_64                        randconfig-a015
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+riscv                            allmodconfig
+riscv                            allyesconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                         rhel-8.3-kunit
+x86_64                               rhel-8.3
+
+clang tested configs:
+arm                       spear13xx_defconfig
+powerpc                      acadia_defconfig
+mips                           ip27_defconfig
+riscv                            alldefconfig
+arm                    vt8500_v6_v7_defconfig
+powerpc                     ksi8560_defconfig
+powerpc                 mpc836x_mds_defconfig
+mips                malta_qemu_32r6_defconfig
+mips                          ath25_defconfig
+powerpc                     tqm8540_defconfig
+arm                         orion5x_defconfig
+mips                     cu1830-neo_defconfig
+riscv                    nommu_virt_defconfig
+x86_64                           allyesconfig
+powerpc                 mpc832x_rdb_defconfig
+powerpc                      ppc64e_defconfig
+powerpc                  mpc885_ads_defconfig
+arm                         socfpga_defconfig
+arm                             mxs_defconfig
+powerpc                     akebono_defconfig
+x86_64                        randconfig-a005
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+hexagon              randconfig-r041-20220422
+riscv                randconfig-r042-20220422
+hexagon              randconfig-r045-20220422
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+0-DAY CI Kernel Test Service
+https://01.org/lkp
