@@ -2,91 +2,72 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C7B50C3AD
-	for <lists+linux-ext4@lfdr.de>; Sat, 23 Apr 2022 01:11:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC20E50C5FE
+	for <lists+linux-ext4@lfdr.de>; Sat, 23 Apr 2022 03:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233651AbiDVXA2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 22 Apr 2022 19:00:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41056 "EHLO
+        id S231371AbiDWBXn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 22 Apr 2022 21:23:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233992AbiDVXAQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 22 Apr 2022 19:00:16 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD671C6EE8;
-        Fri, 22 Apr 2022 15:31:43 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 23MMVdnm003125
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Apr 2022 18:31:39 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 06F6B15C3EA1; Fri, 22 Apr 2022 18:31:39 -0400 (EDT)
-Date:   Fri, 22 Apr 2022 18:31:39 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: [GIT PULL] ext4 fixes for 5.18-rc4
-Message-ID: <YmMsywgKkOpa6dlR@mit.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S231574AbiDWBXj (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 22 Apr 2022 21:23:39 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D4F25D18E;
+        Fri, 22 Apr 2022 18:20:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DB9376122F;
+        Sat, 23 Apr 2022 01:20:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 4727FC385A4;
+        Sat, 23 Apr 2022 01:20:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1650676843;
+        bh=R8xeU+lU3Opd9ECa9+JWLH3W7hAIJsjrO5mbJXYy5vQ=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Th07eE0IUisMd27lYutTyYSyCpXIugzMudf1Oytj8OqLCOO0B4kKJOG2G20OhDlPC
+         7nTag39gLDAJiE3gqvcuG+YBc2FXogP4Ak7rgbO6rpZCVgQdb4sjua+5Wi4Z7Plmrj
+         EmtXmRi5yacyk/Vg70Wdrb3lfzURcvC3wRMnL2aBCbevZFl3LgBzdlOKxP1urwGRgC
+         c9rt1NL5yJp0ZDjxTszvUZjO26i63TZOzPl1MvG9EpBvBpRJgbxlCcUh3tnAGXKsAR
+         KmIqF6k/Gqrrhpru5LporQWCLS+dp3i09sILvR5cXtmFX9I0w+5nblgvqcIYcjZh2i
+         rksUV8Wk58p5Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 349B5E6D402;
+        Sat, 23 Apr 2022 01:20:43 +0000 (UTC)
+Subject: Re: [GIT PULL] ext4 fixes for 5.18-rc4
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YmMsywgKkOpa6dlR@mit.edu>
+References: <YmMsywgKkOpa6dlR@mit.edu>
+X-PR-Tracked-List-Id: <linux-ext4.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YmMsywgKkOpa6dlR@mit.edu>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
+X-PR-Tracked-Commit-Id: 23e3d7f7061f8682c751c46512718f47580ad8f0
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: c00c5e1d157bec0ef0b0b59aa5482eb8dc7e8e49
+Message-Id: <165067684321.21969.3748476205738254809.pr-tracker-bot@kernel.org>
+Date:   Sat, 23 Apr 2022 01:20:43 +0000
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The following changes since commit 919adbfec29d5b89b3e45620653cbeeb0d42e6fd:
+The pull request you sent on Fri, 22 Apr 2022 18:31:39 -0400:
 
-  ext4: fix kernel doc warnings (2022-03-15 17:45:36 -0400)
+> https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
 
-are available in the Git repository at:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/c00c5e1d157bec0ef0b0b59aa5482eb8dc7e8e49
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
+Thank you!
 
-for you to fetch changes up to 23e3d7f7061f8682c751c46512718f47580ad8f0:
-
-  jbd2: fix a potential race while discarding reserved buffers after an abort (2022-04-21 14:21:30 -0400)
-
-----------------------------------------------------------------
-Fix some syzbot-detected bugs, as well as other bugs found by I/O
-injection testing.  Change ext4's fallocate to update consistently
-drop set[ug]id bits when an fallocate operation might possibly change
-the user-visible contents of a file.  Also, improve handling of
-potentially invalid values in the the s_overhead_cluster superblock
-field to avoid ext4 returning a negative number of free blocks.
-
-----------------------------------------------------------------
-Darrick J. Wong (1):
-      ext4: fix fallocate to use file_modified to update permissions consistently
-
-Tadeusz Struk (1):
-      ext4: limit length to bitmap_maxbytes - blocksize in punch_hole
-
-Theodore Ts'o (3):
-      ext4: fix overhead calculation to account for the reserved gdt blocks
-      ext4: force overhead calculation if the s_overhead_cluster makes no sense
-      ext4: update the cached overhead value in the superblock
-
-Ye Bin (4):
-      ext4: fix symlink file size not match to file content
-      ext4: fix bug_on in start_this_handle during umount filesystem
-      ext4: fix use-after-free in ext4_search_dir
-      jbd2: fix a potential race while discarding reserved buffers after an abort
-
-wangjianjian (C) (1):
-      ext4, doc: fix incorrect h_reserved size
-
- Documentation/filesystems/ext4/attributes.rst |  2 +-
- fs/ext4/ext4.h                                |  7 ++++++-
- fs/ext4/extents.c                             | 32 +++++++++++++++++++++++++-------
- fs/ext4/inode.c                               | 18 ++++++++++++++++--
- fs/ext4/ioctl.c                               | 16 ++++++++++++++++
- fs/ext4/namei.c                               |  4 ++--
- fs/ext4/page-io.c                             |  4 +++-
- fs/ext4/super.c                               | 40 +++++++++++++++++++++++++++++-----------
- fs/jbd2/commit.c                              |  4 +++-
- 9 files changed, 101 insertions(+), 26 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
