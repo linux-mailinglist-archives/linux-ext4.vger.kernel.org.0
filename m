@@ -2,20 +2,20 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0134350D225
-	for <lists+linux-ext4@lfdr.de>; Sun, 24 Apr 2022 15:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE3750D226
+	for <lists+linux-ext4@lfdr.de>; Sun, 24 Apr 2022 15:55:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233282AbiDXN6i (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 24 Apr 2022 09:58:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40634 "EHLO
+        id S232881AbiDXN6j (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 24 Apr 2022 09:58:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232881AbiDXN6i (ORCPT
+        with ESMTP id S237016AbiDXN6i (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Sun, 24 Apr 2022 09:58:38 -0400
 Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50792140CF
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB2415A11
         for <linux-ext4@vger.kernel.org>; Sun, 24 Apr 2022 06:55:37 -0700 (PDT)
 Received: from canpemm500005.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4KmV311lmvzGp4N;
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4KmV3126ffzGp4P;
         Sun, 24 Apr 2022 21:53:01 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by canpemm500005.china.huawei.com
  (7.192.104.229) with Microsoft SMTP Server (version=TLS1_2,
@@ -25,9 +25,9 @@ From:   Zhang Yi <yi.zhang@huawei.com>
 To:     <linux-ext4@vger.kernel.org>
 CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
         <yi.zhang@huawei.com>, <yukuai3@huawei.com>, <yebin10@huawei.com>
-Subject: [RFC PATCH v4 1/2] ext4: add nowait mode for ext4_getblk()
-Date:   Sun, 24 Apr 2022 22:09:35 +0800
-Message-ID: <20220424140936.1898920-2-yi.zhang@huawei.com>
+Subject: [RFC PATCH v4 2/2] ext4: convert symlink external data block mapping to bdev
+Date:   Sun, 24 Apr 2022 22:09:36 +0800
+Message-ID: <20220424140936.1898920-3-yi.zhang@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220424140936.1898920-1-yi.zhang@huawei.com>
 References: <20220424140936.1898920-1-yi.zhang@huawei.com>
@@ -46,81 +46,338 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Current ext4_getblk() might sleep if some resources are not valid or
-could be race with a concurrent extents modifing procedure. So we
-cannot call ext4_getblk() and ext4_map_blocks() to get map blocks in
-the atomic context in some fast path (e.g. the upcoming procedure of
-getting symlink external block in the RCU context), even if the map
-extents have already been check and cached.
+Symlink's external data block is one kind of metadata block, and now
+that almost all ext4 metadata block's page cache (e.g. directory blocks,
+quota blocks...) belongs to bdev backing inode except the symlink. It
+is essentially worked in data=journal mode like other regular file's
+data block because probably in order to make it simple for generic VFS
+code handling symlinks or some other historical reasons, but the logic
+of creating external data block in ext4_symlink() is complicated. and it
+also make things confused if user do not want to let the filesystem
+worked in data=journal mode. This patch convert the final exceptional
+case and make things clean, move the mapping of the symlink's external
+data block to bdev like any other metadata block does.
 
 Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 ---
- fs/ext4/ext4.h  |  2 ++
- fs/ext4/inode.c | 14 ++++++++++++++
- 2 files changed, 16 insertions(+)
+ fs/ext4/inode.c   |   9 +---
+ fs/ext4/namei.c   | 123 +++++++++++++++++++++-------------------------
+ fs/ext4/symlink.c |  51 ++++++++++++++++---
+ 3 files changed, 100 insertions(+), 83 deletions(-)
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index a743b1e3b89e..797bc572d6fb 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -673,6 +673,8 @@ enum {
- 	/* Caller will submit data before dropping transaction handle. This
- 	 * allows jbd2 to avoid submitting data before commit. */
- #define EXT4_GET_BLOCKS_IO_SUBMIT		0x0400
-+	/* Caller is in the atomic contex, find extent if it has been cached */
-+#define EXT4_GET_BLOCKS_CACHED_NOWAIT		0x0800
- 
- /*
-  * The bit position of these flags must not overlap with any of the
 diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 847de9140eee..ea162caace29 100644
+index ea162caace29..5aa243d441a2 100644
 --- a/fs/ext4/inode.c
 +++ b/fs/ext4/inode.c
-@@ -545,12 +545,21 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
- 		} else {
- 			BUG();
+@@ -199,8 +199,7 @@ void ext4_evict_inode(struct inode *inode)
+ 		 */
+ 		if (inode->i_ino != EXT4_JOURNAL_INO &&
+ 		    ext4_should_journal_data(inode) &&
+-		    (S_ISLNK(inode->i_mode) || S_ISREG(inode->i_mode)) &&
+-		    inode->i_data.nrpages) {
++		    S_ISREG(inode->i_mode) && inode->i_data.nrpages) {
+ 			journal_t *journal = EXT4_SB(inode->i_sb)->s_journal;
+ 			tid_t commit_tid = EXT4_I(inode)->i_datasync_tid;
+ 
+@@ -2958,8 +2957,7 @@ static int ext4_da_write_begin(struct file *file, struct address_space *mapping,
+ 
+ 	index = pos >> PAGE_SHIFT;
+ 
+-	if (ext4_nonda_switch(inode->i_sb) || S_ISLNK(inode->i_mode) ||
+-	    ext4_verity_in_progress(inode)) {
++	if (ext4_nonda_switch(inode->i_sb) || ext4_verity_in_progress(inode)) {
+ 		*fsdata = (void *)FALL_BACK_TO_NONDELALLOC;
+ 		return ext4_write_begin(file, mapping, pos,
+ 					len, flags, pagep, fsdata);
+@@ -5005,7 +5003,6 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
  		}
+ 		if (IS_ENCRYPTED(inode)) {
+ 			inode->i_op = &ext4_encrypted_symlink_inode_operations;
+-			ext4_set_aops(inode);
+ 		} else if (ext4_inode_is_fast_symlink(inode)) {
+ 			inode->i_link = (char *)ei->i_data;
+ 			inode->i_op = &ext4_fast_symlink_inode_operations;
+@@ -5013,9 +5010,7 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+ 				sizeof(ei->i_data) - 1);
+ 		} else {
+ 			inode->i_op = &ext4_symlink_inode_operations;
+-			ext4_set_aops(inode);
+ 		}
+-		inode_nohighmem(inode);
+ 	} else if (S_ISCHR(inode->i_mode) || S_ISBLK(inode->i_mode) ||
+ 	      S_ISFIFO(inode->i_mode) || S_ISSOCK(inode->i_mode)) {
+ 		inode->i_op = &ext4_special_inode_operations;
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index 767b4bfe39c3..b5c4d4151494 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -3249,6 +3249,32 @@ static int ext4_unlink(struct inode *dir, struct dentry *dentry)
+ 	return retval;
+ }
+ 
++static int ext4_init_symlink_block(handle_t *handle, struct inode *inode,
++				   struct fscrypt_str *disk_link)
++{
++	struct buffer_head *bh;
++	char *kaddr;
++	int err = 0;
 +
-+		if (flags & EXT4_GET_BLOCKS_CACHED_NOWAIT)
-+			return retval;
- #ifdef ES_AGGRESSIVE_TEST
- 		ext4_map_blocks_es_recheck(handle, inode, map,
- 					   &orig_map, flags);
- #endif
- 		goto found;
- 	}
++	bh = ext4_bread(handle, inode, 0, EXT4_GET_BLOCKS_CREATE);
++	if (IS_ERR(bh))
++		return PTR_ERR(bh);
++
++	BUFFER_TRACE(bh, "get_write_access");
++	err = ext4_journal_get_write_access(handle, inode->i_sb, bh, EXT4_JTR_NONE);
++	if (err)
++		goto out;
++
++	kaddr = (char *)bh->b_data;
++	memcpy(kaddr, disk_link->name, disk_link->len);
++	inode->i_size = disk_link->len - 1;
++	EXT4_I(inode)->i_disksize = inode->i_size;
++	err = ext4_handle_dirty_metadata(handle, inode, bh);
++out:
++	brelse(bh);
++	return err;
++}
++
+ static int ext4_symlink(struct user_namespace *mnt_userns, struct inode *dir,
+ 			struct dentry *dentry, const char *symname)
+ {
+@@ -3257,6 +3283,7 @@ static int ext4_symlink(struct user_namespace *mnt_userns, struct inode *dir,
+ 	int err, len = strlen(symname);
+ 	int credits;
+ 	struct fscrypt_str disk_link;
++	int retries = 0;
+ 
+ 	if (unlikely(ext4_forced_shutdown(EXT4_SB(dir->i_sb))))
+ 		return -EIO;
+@@ -3270,26 +3297,15 @@ static int ext4_symlink(struct user_namespace *mnt_userns, struct inode *dir,
+ 	if (err)
+ 		return err;
+ 
+-	if ((disk_link.len > EXT4_N_BLOCKS * 4)) {
+-		/*
+-		 * For non-fast symlinks, we just allocate inode and put it on
+-		 * orphan list in the first transaction => we need bitmap,
+-		 * group descriptor, sb, inode block, quota blocks, and
+-		 * possibly selinux xattr blocks.
+-		 */
+-		credits = 4 + EXT4_MAXQUOTAS_INIT_BLOCKS(dir->i_sb) +
+-			  EXT4_XATTR_TRANS_BLOCKS;
+-	} else {
+-		/*
+-		 * Fast symlink. We have to add entry to directory
+-		 * (EXT4_DATA_TRANS_BLOCKS + EXT4_INDEX_EXTRA_TRANS_BLOCKS),
+-		 * allocate new inode (bitmap, group descriptor, inode block,
+-		 * quota blocks, sb is already counted in previous macros).
+-		 */
+-		credits = EXT4_DATA_TRANS_BLOCKS(dir->i_sb) +
+-			  EXT4_INDEX_EXTRA_TRANS_BLOCKS + 3;
+-	}
+-
 +	/*
-+	 * In the query cache no-wait mode, nothing we can do more if we
-+	 * cannot find extent in the cache.
++	 * EXT4_INDEX_EXTRA_TRANS_BLOCKS for addition of entry into the
++	 * directory. +3 for inode, inode bitmap, group descriptor allocation.
++	 * EXT4_DATA_TRANS_BLOCKS for the data block allocation and
++	 * modification.
 +	 */
-+	if (flags & EXT4_GET_BLOCKS_CACHED_NOWAIT)
-+		return 0;
++	credits = EXT4_DATA_TRANS_BLOCKS(dir->i_sb) +
++		  EXT4_INDEX_EXTRA_TRANS_BLOCKS + 3;
++retry:
+ 	inode = ext4_new_inode_start_handle(mnt_userns, dir, S_IFLNK|S_IRWXUGO,
+ 					    &dentry->d_name, 0, NULL,
+ 					    EXT4_HT_DIR, credits);
+@@ -3297,7 +3313,8 @@ static int ext4_symlink(struct user_namespace *mnt_userns, struct inode *dir,
+ 	if (IS_ERR(inode)) {
+ 		if (handle)
+ 			ext4_journal_stop(handle);
+-		return PTR_ERR(inode);
++		err = PTR_ERR(inode);
++		goto out_retry;
+ 	}
  
- 	/*
- 	 * Try to see if we can get the block without requesting a new
-@@ -837,10 +846,12 @@ struct buffer_head *ext4_getblk(handle_t *handle, struct inode *inode,
- 	struct ext4_map_blocks map;
- 	struct buffer_head *bh;
- 	int create = map_flags & EXT4_GET_BLOCKS_CREATE;
-+	bool nowait = map_flags & EXT4_GET_BLOCKS_CACHED_NOWAIT;
- 	int err;
+ 	if (IS_ENCRYPTED(inode)) {
+@@ -3305,75 +3322,45 @@ static int ext4_symlink(struct user_namespace *mnt_userns, struct inode *dir,
+ 		if (err)
+ 			goto err_drop_inode;
+ 		inode->i_op = &ext4_encrypted_symlink_inode_operations;
++	} else {
++		if ((disk_link.len > EXT4_N_BLOCKS * 4)) {
++			inode->i_op = &ext4_symlink_inode_operations;
++		} else {
++			inode->i_op = &ext4_fast_symlink_inode_operations;
++			inode->i_link = (char *)&EXT4_I(inode)->i_data;
++		}
+ 	}
  
- 	ASSERT((EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
- 		    || handle != NULL || create == 0);
-+	ASSERT(create == 0 || !nowait);
+ 	if ((disk_link.len > EXT4_N_BLOCKS * 4)) {
+-		if (!IS_ENCRYPTED(inode))
+-			inode->i_op = &ext4_symlink_inode_operations;
+-		inode_nohighmem(inode);
+-		ext4_set_aops(inode);
+-		/*
+-		 * We cannot call page_symlink() with transaction started
+-		 * because it calls into ext4_write_begin() which can wait
+-		 * for transaction commit if we are running out of space
+-		 * and thus we deadlock. So we have to stop transaction now
+-		 * and restart it when symlink contents is written.
+-		 *
+-		 * To keep fs consistent in case of crash, we have to put inode
+-		 * to orphan list in the mean time.
+-		 */
+-		drop_nlink(inode);
+-		err = ext4_orphan_add(handle, inode);
+-		if (handle)
+-			ext4_journal_stop(handle);
+-		handle = NULL;
+-		if (err)
+-			goto err_drop_inode;
+-		err = __page_symlink(inode, disk_link.name, disk_link.len, 1);
+-		if (err)
+-			goto err_drop_inode;
+-		/*
+-		 * Now inode is being linked into dir (EXT4_DATA_TRANS_BLOCKS
+-		 * + EXT4_INDEX_EXTRA_TRANS_BLOCKS), inode is also modified
+-		 */
+-		handle = ext4_journal_start(dir, EXT4_HT_DIR,
+-				EXT4_DATA_TRANS_BLOCKS(dir->i_sb) +
+-				EXT4_INDEX_EXTRA_TRANS_BLOCKS + 1);
+-		if (IS_ERR(handle)) {
+-			err = PTR_ERR(handle);
+-			handle = NULL;
+-			goto err_drop_inode;
+-		}
+-		set_nlink(inode, 1);
+-		err = ext4_orphan_del(handle, inode);
++		/* alloc symlink block and fill it */
++		err = ext4_init_symlink_block(handle, inode, &disk_link);
+ 		if (err)
+ 			goto err_drop_inode;
+ 	} else {
+ 		/* clear the extent format for fast symlink */
+ 		ext4_clear_inode_flag(inode, EXT4_INODE_EXTENTS);
+-		if (!IS_ENCRYPTED(inode)) {
+-			inode->i_op = &ext4_fast_symlink_inode_operations;
+-			inode->i_link = (char *)&EXT4_I(inode)->i_data;
+-		}
+ 		memcpy((char *)&EXT4_I(inode)->i_data, disk_link.name,
+ 		       disk_link.len);
+ 		inode->i_size = disk_link.len - 1;
++		EXT4_I(inode)->i_disksize = inode->i_size;
+ 	}
+-	EXT4_I(inode)->i_disksize = inode->i_size;
+ 	err = ext4_add_nondir(handle, dentry, &inode);
+ 	if (handle)
+ 		ext4_journal_stop(handle);
+ 	if (inode)
+ 		iput(inode);
+-	goto out_free_encrypted_link;
++	goto out_retry;
  
- 	map.m_lblk = block;
- 	map.m_len = 1;
-@@ -851,6 +862,9 @@ struct buffer_head *ext4_getblk(handle_t *handle, struct inode *inode,
- 	if (err < 0)
- 		return ERR_PTR(err);
+ err_drop_inode:
+-	if (handle)
+-		ext4_journal_stop(handle);
+ 	clear_nlink(inode);
++	ext4_orphan_add(handle, inode);
+ 	unlock_new_inode(inode);
++	if (handle)
++		ext4_journal_stop(handle);
+ 	iput(inode);
+-out_free_encrypted_link:
++out_retry:
++	if (err == -ENOSPC && ext4_should_retry_alloc(dir->i_sb, &retries))
++		goto retry;
+ 	if (disk_link.name != (unsigned char *)symname)
+ 		kfree(disk_link.name);
+ 	return err;
+diff --git a/fs/ext4/symlink.c b/fs/ext4/symlink.c
+index 69109746e6e2..d281f5bcc526 100644
+--- a/fs/ext4/symlink.c
++++ b/fs/ext4/symlink.c
+@@ -27,7 +27,7 @@ static const char *ext4_encrypted_get_link(struct dentry *dentry,
+ 					   struct inode *inode,
+ 					   struct delayed_call *done)
+ {
+-	struct page *cpage = NULL;
++	struct buffer_head *bh = NULL;
+ 	const void *caddr;
+ 	unsigned int max_size;
+ 	const char *paddr;
+@@ -39,16 +39,19 @@ static const char *ext4_encrypted_get_link(struct dentry *dentry,
+ 		caddr = EXT4_I(inode)->i_data;
+ 		max_size = sizeof(EXT4_I(inode)->i_data);
+ 	} else {
+-		cpage = read_mapping_page(inode->i_mapping, 0, NULL);
+-		if (IS_ERR(cpage))
+-			return ERR_CAST(cpage);
+-		caddr = page_address(cpage);
++		bh = ext4_bread(NULL, inode, 0, 0);
++		if (IS_ERR(bh))
++			return ERR_CAST(bh);
++		if (!bh) {
++			EXT4_ERROR_INODE(inode, "bad symlink.");
++			return ERR_PTR(-EFSCORRUPTED);
++		}
++		caddr = bh->b_data;
+ 		max_size = inode->i_sb->s_blocksize;
+ 	}
  
-+	if (nowait)
-+		return sb_find_get_block(inode->i_sb, map.m_pblk);
+ 	paddr = fscrypt_get_symlink(inode, caddr, max_size, done);
+-	if (cpage)
+-		put_page(cpage);
++	brelse(bh);
+ 	return paddr;
+ }
+ 
+@@ -62,6 +65,38 @@ static int ext4_encrypted_symlink_getattr(struct user_namespace *mnt_userns,
+ 	return fscrypt_symlink_getattr(path, stat);
+ }
+ 
++static void ext4_free_link(void *bh)
++{
++	brelse(bh);
++}
 +
- 	bh = sb_getblk(inode->i_sb, map.m_pblk);
- 	if (unlikely(!bh))
- 		return ERR_PTR(-ENOMEM);
++static const char *ext4_get_link(struct dentry *dentry, struct inode *inode,
++				 struct delayed_call *callback)
++{
++	struct buffer_head *bh;
++
++	if (!dentry) {
++		bh = ext4_getblk(NULL, inode, 0, EXT4_GET_BLOCKS_CACHED_NOWAIT);
++		if (IS_ERR(bh))
++			return ERR_CAST(bh);
++		if (!bh || !ext4_buffer_uptodate(bh))
++			return ERR_PTR(-ECHILD);
++	} else {
++		bh = ext4_bread(NULL, inode, 0, 0);
++		if (IS_ERR(bh))
++			return ERR_CAST(bh);
++		if (!bh) {
++			EXT4_ERROR_INODE(inode, "bad symlink.");
++			return ERR_PTR(-EFSCORRUPTED);
++		}
++	}
++
++	set_delayed_call(callback, ext4_free_link, bh);
++	nd_terminate_link(bh->b_data, inode->i_size,
++			  inode->i_sb->s_blocksize - 1);
++	return bh->b_data;
++}
++
+ const struct inode_operations ext4_encrypted_symlink_inode_operations = {
+ 	.get_link	= ext4_encrypted_get_link,
+ 	.setattr	= ext4_setattr,
+@@ -70,7 +105,7 @@ const struct inode_operations ext4_encrypted_symlink_inode_operations = {
+ };
+ 
+ const struct inode_operations ext4_symlink_inode_operations = {
+-	.get_link	= page_get_link,
++	.get_link	= ext4_get_link,
+ 	.setattr	= ext4_setattr,
+ 	.getattr	= ext4_getattr,
+ 	.listxattr	= ext4_listxattr,
 -- 
 2.31.1
 
