@@ -2,43 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABE3750D226
-	for <lists+linux-ext4@lfdr.de>; Sun, 24 Apr 2022 15:55:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C234C50D2C4
+	for <lists+linux-ext4@lfdr.de>; Sun, 24 Apr 2022 17:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232881AbiDXN6j (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 24 Apr 2022 09:58:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40708 "EHLO
+        id S231256AbiDXPhz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 24 Apr 2022 11:37:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237016AbiDXN6i (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 24 Apr 2022 09:58:38 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB2415A11
-        for <linux-ext4@vger.kernel.org>; Sun, 24 Apr 2022 06:55:37 -0700 (PDT)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4KmV3126ffzGp4P;
-        Sun, 24 Apr 2022 21:53:01 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by canpemm500005.china.huawei.com
- (7.192.104.229) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Sun, 24 Apr
- 2022 21:55:23 +0800
-From:   Zhang Yi <yi.zhang@huawei.com>
-To:     <linux-ext4@vger.kernel.org>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-        <yi.zhang@huawei.com>, <yukuai3@huawei.com>, <yebin10@huawei.com>
-Subject: [RFC PATCH v4 2/2] ext4: convert symlink external data block mapping to bdev
-Date:   Sun, 24 Apr 2022 22:09:36 +0800
-Message-ID: <20220424140936.1898920-3-yi.zhang@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20220424140936.1898920-1-yi.zhang@huawei.com>
-References: <20220424140936.1898920-1-yi.zhang@huawei.com>
+        with ESMTP id S239946AbiDXPXi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 24 Apr 2022 11:23:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 634E420BFF
+        for <linux-ext4@vger.kernel.org>; Sun, 24 Apr 2022 08:20:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5610660F4E
+        for <linux-ext4@vger.kernel.org>; Sun, 24 Apr 2022 15:20:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A4E3EC385A9
+        for <linux-ext4@vger.kernel.org>; Sun, 24 Apr 2022 15:20:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1650813635;
+        bh=6L/I98L0V4tjth6UkVeuJFRB/4m1IJnZ4O898YAGF4E=;
+        h=From:To:Subject:Date:From;
+        b=hVXxsofnI485wyWUQ65pmN1b1dMvqpjkxfbzPpAdnXjWNqX8XJx1m0xd7a3u/MWgQ
+         4TmM6GDNTrgRGFK88WmjaTFDzME+85IZ1qZAPYuIBy6OGxiTJsoswa3t4KgvuuxGas
+         7XQikQDnZWBKqD4EiB4NEhves7/KdkFLHyvmwv7HDonpdUZMdMjSDWGCJzxtJiNBbK
+         tPVqeww/xwLopgUpPKDOiL5cJR8j18jBY10rxpyRCuYr/3Wh5DeZy04RZyzMjyGOXB
+         Gozi0u+DL0B/BIOc7r8rUyVIKDYsM75JeLF6YV9dKOPVVTeVaUiziB3Z0P/wh7yM3K
+         HHj0F/SJrC2qQ==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+        id 8E495C05FD6; Sun, 24 Apr 2022 15:20:35 +0000 (UTC)
+From:   bugzilla-daemon@kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 215879] New: EXT4-fs error - __ext4_find_entry:1612: inode #2:
+ comm systemd: reading directory lblock 0
+Date:   Sun, 24 Apr 2022 15:20:35 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: new
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: high
+X-Bugzilla-Who: ionut_n2001@yahoo.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_id short_desc product version
+ cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
+ priority component assigned_to reporter cf_regression
+Message-ID: <bug-215879-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500005.china.huawei.com (7.192.104.229)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -46,338 +70,140 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Symlink's external data block is one kind of metadata block, and now
-that almost all ext4 metadata block's page cache (e.g. directory blocks,
-quota blocks...) belongs to bdev backing inode except the symlink. It
-is essentially worked in data=journal mode like other regular file's
-data block because probably in order to make it simple for generic VFS
-code handling symlinks or some other historical reasons, but the logic
-of creating external data block in ext4_symlink() is complicated. and it
-also make things confused if user do not want to let the filesystem
-worked in data=journal mode. This patch convert the final exceptional
-case and make things clean, move the mapping of the symlink's external
-data block to bdev like any other metadata block does.
+https://bugzilla.kernel.org/show_bug.cgi?id=3D215879
 
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
----
- fs/ext4/inode.c   |   9 +---
- fs/ext4/namei.c   | 123 +++++++++++++++++++++-------------------------
- fs/ext4/symlink.c |  51 ++++++++++++++++---
- 3 files changed, 100 insertions(+), 83 deletions(-)
+            Bug ID: 215879
+           Summary: EXT4-fs error - __ext4_find_entry:1612: inode #2: comm
+                    systemd: reading directory lblock 0
+           Product: File System
+           Version: 2.5
+    Kernel Version: 5.18.0-rc3
+          Hardware: x86-64
+                OS: Linux
+              Tree: Mainline
+            Status: NEW
+          Severity: high
+          Priority: P1
+         Component: ext4
+          Assignee: fs_ext4@kernel-bugs.osdl.org
+          Reporter: ionut_n2001@yahoo.com
+        Regression: No
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index ea162caace29..5aa243d441a2 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -199,8 +199,7 @@ void ext4_evict_inode(struct inode *inode)
- 		 */
- 		if (inode->i_ino != EXT4_JOURNAL_INO &&
- 		    ext4_should_journal_data(inode) &&
--		    (S_ISLNK(inode->i_mode) || S_ISREG(inode->i_mode)) &&
--		    inode->i_data.nrpages) {
-+		    S_ISREG(inode->i_mode) && inode->i_data.nrpages) {
- 			journal_t *journal = EXT4_SB(inode->i_sb)->s_journal;
- 			tid_t commit_tid = EXT4_I(inode)->i_datasync_tid;
- 
-@@ -2958,8 +2957,7 @@ static int ext4_da_write_begin(struct file *file, struct address_space *mapping,
- 
- 	index = pos >> PAGE_SHIFT;
- 
--	if (ext4_nonda_switch(inode->i_sb) || S_ISLNK(inode->i_mode) ||
--	    ext4_verity_in_progress(inode)) {
-+	if (ext4_nonda_switch(inode->i_sb) || ext4_verity_in_progress(inode)) {
- 		*fsdata = (void *)FALL_BACK_TO_NONDELALLOC;
- 		return ext4_write_begin(file, mapping, pos,
- 					len, flags, pagep, fsdata);
-@@ -5005,7 +5003,6 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
- 		}
- 		if (IS_ENCRYPTED(inode)) {
- 			inode->i_op = &ext4_encrypted_symlink_inode_operations;
--			ext4_set_aops(inode);
- 		} else if (ext4_inode_is_fast_symlink(inode)) {
- 			inode->i_link = (char *)ei->i_data;
- 			inode->i_op = &ext4_fast_symlink_inode_operations;
-@@ -5013,9 +5010,7 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
- 				sizeof(ei->i_data) - 1);
- 		} else {
- 			inode->i_op = &ext4_symlink_inode_operations;
--			ext4_set_aops(inode);
- 		}
--		inode_nohighmem(inode);
- 	} else if (S_ISCHR(inode->i_mode) || S_ISBLK(inode->i_mode) ||
- 	      S_ISFIFO(inode->i_mode) || S_ISSOCK(inode->i_mode)) {
- 		inode->i_op = &ext4_special_inode_operations;
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 767b4bfe39c3..b5c4d4151494 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -3249,6 +3249,32 @@ static int ext4_unlink(struct inode *dir, struct dentry *dentry)
- 	return retval;
- }
- 
-+static int ext4_init_symlink_block(handle_t *handle, struct inode *inode,
-+				   struct fscrypt_str *disk_link)
-+{
-+	struct buffer_head *bh;
-+	char *kaddr;
-+	int err = 0;
-+
-+	bh = ext4_bread(handle, inode, 0, EXT4_GET_BLOCKS_CREATE);
-+	if (IS_ERR(bh))
-+		return PTR_ERR(bh);
-+
-+	BUFFER_TRACE(bh, "get_write_access");
-+	err = ext4_journal_get_write_access(handle, inode->i_sb, bh, EXT4_JTR_NONE);
-+	if (err)
-+		goto out;
-+
-+	kaddr = (char *)bh->b_data;
-+	memcpy(kaddr, disk_link->name, disk_link->len);
-+	inode->i_size = disk_link->len - 1;
-+	EXT4_I(inode)->i_disksize = inode->i_size;
-+	err = ext4_handle_dirty_metadata(handle, inode, bh);
-+out:
-+	brelse(bh);
-+	return err;
-+}
-+
- static int ext4_symlink(struct user_namespace *mnt_userns, struct inode *dir,
- 			struct dentry *dentry, const char *symname)
- {
-@@ -3257,6 +3283,7 @@ static int ext4_symlink(struct user_namespace *mnt_userns, struct inode *dir,
- 	int err, len = strlen(symname);
- 	int credits;
- 	struct fscrypt_str disk_link;
-+	int retries = 0;
- 
- 	if (unlikely(ext4_forced_shutdown(EXT4_SB(dir->i_sb))))
- 		return -EIO;
-@@ -3270,26 +3297,15 @@ static int ext4_symlink(struct user_namespace *mnt_userns, struct inode *dir,
- 	if (err)
- 		return err;
- 
--	if ((disk_link.len > EXT4_N_BLOCKS * 4)) {
--		/*
--		 * For non-fast symlinks, we just allocate inode and put it on
--		 * orphan list in the first transaction => we need bitmap,
--		 * group descriptor, sb, inode block, quota blocks, and
--		 * possibly selinux xattr blocks.
--		 */
--		credits = 4 + EXT4_MAXQUOTAS_INIT_BLOCKS(dir->i_sb) +
--			  EXT4_XATTR_TRANS_BLOCKS;
--	} else {
--		/*
--		 * Fast symlink. We have to add entry to directory
--		 * (EXT4_DATA_TRANS_BLOCKS + EXT4_INDEX_EXTRA_TRANS_BLOCKS),
--		 * allocate new inode (bitmap, group descriptor, inode block,
--		 * quota blocks, sb is already counted in previous macros).
--		 */
--		credits = EXT4_DATA_TRANS_BLOCKS(dir->i_sb) +
--			  EXT4_INDEX_EXTRA_TRANS_BLOCKS + 3;
--	}
--
-+	/*
-+	 * EXT4_INDEX_EXTRA_TRANS_BLOCKS for addition of entry into the
-+	 * directory. +3 for inode, inode bitmap, group descriptor allocation.
-+	 * EXT4_DATA_TRANS_BLOCKS for the data block allocation and
-+	 * modification.
-+	 */
-+	credits = EXT4_DATA_TRANS_BLOCKS(dir->i_sb) +
-+		  EXT4_INDEX_EXTRA_TRANS_BLOCKS + 3;
-+retry:
- 	inode = ext4_new_inode_start_handle(mnt_userns, dir, S_IFLNK|S_IRWXUGO,
- 					    &dentry->d_name, 0, NULL,
- 					    EXT4_HT_DIR, credits);
-@@ -3297,7 +3313,8 @@ static int ext4_symlink(struct user_namespace *mnt_userns, struct inode *dir,
- 	if (IS_ERR(inode)) {
- 		if (handle)
- 			ext4_journal_stop(handle);
--		return PTR_ERR(inode);
-+		err = PTR_ERR(inode);
-+		goto out_retry;
- 	}
- 
- 	if (IS_ENCRYPTED(inode)) {
-@@ -3305,75 +3322,45 @@ static int ext4_symlink(struct user_namespace *mnt_userns, struct inode *dir,
- 		if (err)
- 			goto err_drop_inode;
- 		inode->i_op = &ext4_encrypted_symlink_inode_operations;
-+	} else {
-+		if ((disk_link.len > EXT4_N_BLOCKS * 4)) {
-+			inode->i_op = &ext4_symlink_inode_operations;
-+		} else {
-+			inode->i_op = &ext4_fast_symlink_inode_operations;
-+			inode->i_link = (char *)&EXT4_I(inode)->i_data;
-+		}
- 	}
- 
- 	if ((disk_link.len > EXT4_N_BLOCKS * 4)) {
--		if (!IS_ENCRYPTED(inode))
--			inode->i_op = &ext4_symlink_inode_operations;
--		inode_nohighmem(inode);
--		ext4_set_aops(inode);
--		/*
--		 * We cannot call page_symlink() with transaction started
--		 * because it calls into ext4_write_begin() which can wait
--		 * for transaction commit if we are running out of space
--		 * and thus we deadlock. So we have to stop transaction now
--		 * and restart it when symlink contents is written.
--		 *
--		 * To keep fs consistent in case of crash, we have to put inode
--		 * to orphan list in the mean time.
--		 */
--		drop_nlink(inode);
--		err = ext4_orphan_add(handle, inode);
--		if (handle)
--			ext4_journal_stop(handle);
--		handle = NULL;
--		if (err)
--			goto err_drop_inode;
--		err = __page_symlink(inode, disk_link.name, disk_link.len, 1);
--		if (err)
--			goto err_drop_inode;
--		/*
--		 * Now inode is being linked into dir (EXT4_DATA_TRANS_BLOCKS
--		 * + EXT4_INDEX_EXTRA_TRANS_BLOCKS), inode is also modified
--		 */
--		handle = ext4_journal_start(dir, EXT4_HT_DIR,
--				EXT4_DATA_TRANS_BLOCKS(dir->i_sb) +
--				EXT4_INDEX_EXTRA_TRANS_BLOCKS + 1);
--		if (IS_ERR(handle)) {
--			err = PTR_ERR(handle);
--			handle = NULL;
--			goto err_drop_inode;
--		}
--		set_nlink(inode, 1);
--		err = ext4_orphan_del(handle, inode);
-+		/* alloc symlink block and fill it */
-+		err = ext4_init_symlink_block(handle, inode, &disk_link);
- 		if (err)
- 			goto err_drop_inode;
- 	} else {
- 		/* clear the extent format for fast symlink */
- 		ext4_clear_inode_flag(inode, EXT4_INODE_EXTENTS);
--		if (!IS_ENCRYPTED(inode)) {
--			inode->i_op = &ext4_fast_symlink_inode_operations;
--			inode->i_link = (char *)&EXT4_I(inode)->i_data;
--		}
- 		memcpy((char *)&EXT4_I(inode)->i_data, disk_link.name,
- 		       disk_link.len);
- 		inode->i_size = disk_link.len - 1;
-+		EXT4_I(inode)->i_disksize = inode->i_size;
- 	}
--	EXT4_I(inode)->i_disksize = inode->i_size;
- 	err = ext4_add_nondir(handle, dentry, &inode);
- 	if (handle)
- 		ext4_journal_stop(handle);
- 	if (inode)
- 		iput(inode);
--	goto out_free_encrypted_link;
-+	goto out_retry;
- 
- err_drop_inode:
--	if (handle)
--		ext4_journal_stop(handle);
- 	clear_nlink(inode);
-+	ext4_orphan_add(handle, inode);
- 	unlock_new_inode(inode);
-+	if (handle)
-+		ext4_journal_stop(handle);
- 	iput(inode);
--out_free_encrypted_link:
-+out_retry:
-+	if (err == -ENOSPC && ext4_should_retry_alloc(dir->i_sb, &retries))
-+		goto retry;
- 	if (disk_link.name != (unsigned char *)symname)
- 		kfree(disk_link.name);
- 	return err;
-diff --git a/fs/ext4/symlink.c b/fs/ext4/symlink.c
-index 69109746e6e2..d281f5bcc526 100644
---- a/fs/ext4/symlink.c
-+++ b/fs/ext4/symlink.c
-@@ -27,7 +27,7 @@ static const char *ext4_encrypted_get_link(struct dentry *dentry,
- 					   struct inode *inode,
- 					   struct delayed_call *done)
- {
--	struct page *cpage = NULL;
-+	struct buffer_head *bh = NULL;
- 	const void *caddr;
- 	unsigned int max_size;
- 	const char *paddr;
-@@ -39,16 +39,19 @@ static const char *ext4_encrypted_get_link(struct dentry *dentry,
- 		caddr = EXT4_I(inode)->i_data;
- 		max_size = sizeof(EXT4_I(inode)->i_data);
- 	} else {
--		cpage = read_mapping_page(inode->i_mapping, 0, NULL);
--		if (IS_ERR(cpage))
--			return ERR_CAST(cpage);
--		caddr = page_address(cpage);
-+		bh = ext4_bread(NULL, inode, 0, 0);
-+		if (IS_ERR(bh))
-+			return ERR_CAST(bh);
-+		if (!bh) {
-+			EXT4_ERROR_INODE(inode, "bad symlink.");
-+			return ERR_PTR(-EFSCORRUPTED);
-+		}
-+		caddr = bh->b_data;
- 		max_size = inode->i_sb->s_blocksize;
- 	}
- 
- 	paddr = fscrypt_get_symlink(inode, caddr, max_size, done);
--	if (cpage)
--		put_page(cpage);
-+	brelse(bh);
- 	return paddr;
- }
- 
-@@ -62,6 +65,38 @@ static int ext4_encrypted_symlink_getattr(struct user_namespace *mnt_userns,
- 	return fscrypt_symlink_getattr(path, stat);
- }
- 
-+static void ext4_free_link(void *bh)
-+{
-+	brelse(bh);
-+}
-+
-+static const char *ext4_get_link(struct dentry *dentry, struct inode *inode,
-+				 struct delayed_call *callback)
-+{
-+	struct buffer_head *bh;
-+
-+	if (!dentry) {
-+		bh = ext4_getblk(NULL, inode, 0, EXT4_GET_BLOCKS_CACHED_NOWAIT);
-+		if (IS_ERR(bh))
-+			return ERR_CAST(bh);
-+		if (!bh || !ext4_buffer_uptodate(bh))
-+			return ERR_PTR(-ECHILD);
-+	} else {
-+		bh = ext4_bread(NULL, inode, 0, 0);
-+		if (IS_ERR(bh))
-+			return ERR_CAST(bh);
-+		if (!bh) {
-+			EXT4_ERROR_INODE(inode, "bad symlink.");
-+			return ERR_PTR(-EFSCORRUPTED);
-+		}
-+	}
-+
-+	set_delayed_call(callback, ext4_free_link, bh);
-+	nd_terminate_link(bh->b_data, inode->i_size,
-+			  inode->i_sb->s_blocksize - 1);
-+	return bh->b_data;
-+}
-+
- const struct inode_operations ext4_encrypted_symlink_inode_operations = {
- 	.get_link	= ext4_encrypted_get_link,
- 	.setattr	= ext4_setattr,
-@@ -70,7 +105,7 @@ const struct inode_operations ext4_encrypted_symlink_inode_operations = {
- };
- 
- const struct inode_operations ext4_symlink_inode_operations = {
--	.get_link	= page_get_link,
-+	.get_link	= ext4_get_link,
- 	.setattr	= ext4_setattr,
- 	.getattr	= ext4_getattr,
- 	.listxattr	= ext4_listxattr,
--- 
-2.31.1
+Hi Kernel Team,
 
+I notice this issue:
+
+EXT4-fs error - __ext4_find_entry:1612: inode #2: comm systemd: reading
+directory lblock 0
+
+
+I think this error is sporadic.
+
+
+Drives:    Local Storage: total: 953.87 GiB used: 45.04 GiB (4.7%)=20
+           ID-1: /dev/nvme0n1 vendor: Intel model: SSDPEKNU010TZ size: 953.=
+87
+GiB temp: 52.9 C=20
+Partition: ID-1: / size: 250.25 GiB used: 40.4 GiB (16.1%) fs: ext4 dev:
+/dev/nvme0n1p2=20
+           ID-2: /boot/efi size: 252 MiB used: 274 KiB (0.1%) fs: vfat dev:
+/dev/nvme0n1p1=20
+           ID-3: /home size: 678.39 GiB used: 4.65 GiB (0.7%) fs: ext4 dev:
+/dev/nvme0n1p4=20
+Swap:      ID-1: swap-1 type: partition size: 8 GiB used: 0 KiB (0.0%) dev:
+/dev/nvme0n1p3=20
+
+OS: Debian 11/MXLinux KDE
+Kernel: 5.18.0-rc3 vanilla
+
+cat /proc/cmdline=20
+BOOT_IMAGE=3D/boot/vmlinuz-5.18.0-1-generic
+root=3DUUID=3D166304ea-bc80-458b-99a1-8a39a4e71a09 ro quiet splash clocksou=
+rce=3Dhpet
+init=3D/lib/systemd/systemd
+
+dpkg -l | grep -E "systemd|preload"
+ii  libpam-systemd:amd64                          1:247.3-6mx21=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20
+         amd64        system and service manager - PAM module
+ii  libsystemd0:amd64                             1:247.3-6mx21=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20
+         amd64        systemd utility library
+ii  preload                                       0.6.4-5+b1=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+         amd64        adaptive readahead daemon
+ii  systemd                                       1:247.3-6mx21=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20
+         amd64        system and service manager
+ii  systemd-shim                                  10-5=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+         amd64        shim for systemd
+
+lspci
+00:00.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Renoir/Cezanne Root
+Complex
+00:00.2 IOMMU: Advanced Micro Devices, Inc. [AMD] Renoir/Cezanne IOMMU
+00:01.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Renoir PCIe Dummy H=
+ost
+Bridge
+00:01.1 PCI bridge: Advanced Micro Devices, Inc. [AMD] Renoir PCIe GPP Brid=
+ge
+00:02.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Renoir PCIe Dummy H=
+ost
+Bridge
+00:02.2 PCI bridge: Advanced Micro Devices, Inc. [AMD] Renoir/Cezanne PCIe =
+GPP
+Bridge
+00:02.4 PCI bridge: Advanced Micro Devices, Inc. [AMD] Renoir/Cezanne PCIe =
+GPP
+Bridge
+00:08.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Renoir PCIe Dummy H=
+ost
+Bridge
+00:08.1 PCI bridge: Advanced Micro Devices, Inc. [AMD] Renoir Internal PCIe=
+ GPP
+Bridge to Bus
+00:14.0 SMBus: Advanced Micro Devices, Inc. [AMD] FCH SMBus Controller (rev=
+ 51)
+00:14.3 ISA bridge: Advanced Micro Devices, Inc. [AMD] FCH LPC Bridge (rev =
+51)
+00:18.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Device 166a
+00:18.1 Host bridge: Advanced Micro Devices, Inc. [AMD] Device 166b
+00:18.2 Host bridge: Advanced Micro Devices, Inc. [AMD] Device 166c
+00:18.3 Host bridge: Advanced Micro Devices, Inc. [AMD] Device 166d
+00:18.4 Host bridge: Advanced Micro Devices, Inc. [AMD] Device 166e
+00:18.5 Host bridge: Advanced Micro Devices, Inc. [AMD] Device 166f
+00:18.6 Host bridge: Advanced Micro Devices, Inc. [AMD] Device 1670
+00:18.7 Host bridge: Advanced Micro Devices, Inc. [AMD] Device 1671
+01:00.0 VGA compatible controller: NVIDIA Corporation GA106M [GeForce RTX 3=
+060
+Mobile / Max-Q] (rev a1)
+01:00.1 Audio device: NVIDIA Corporation Device 228e (rev a1)
+02:00.0 Network controller: MEDIATEK Corp. Device 7961
+03:00.0 Non-Volatile memory controller: Intel Corporation Device f1aa (rev =
+03)
+04:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI]
+Cezanne (rev c4)
+04:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Renoir Radeon =
+High
+Definition Audio Controller
+04:00.2 Encryption controller: Advanced Micro Devices, Inc. [AMD] Family 17h
+(Models 10h-1fh) Platform Security Processor
+04:00.3 USB controller: Advanced Micro Devices, Inc. [AMD] Renoir/Cezanne U=
+SB
+3.1
+04:00.4 USB controller: Advanced Micro Devices, Inc. [AMD] Renoir/Cezanne U=
+SB
+3.1
+04:00.5 Multimedia controller: Advanced Micro Devices, Inc. [AMD]
+Raven/Raven2/FireFlight/Renoir Audio Processor (rev 01)
+04:00.6 Audio device: Advanced Micro Devices, Inc. [AMD] Family 17h (Models
+10h-1fh) HD Audio Controller
+
+CPU Model name:                      AMD Ryzen 9 5900HS with Radeon Graphics
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
