@@ -2,162 +2,170 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18D4B510706
-	for <lists+linux-ext4@lfdr.de>; Tue, 26 Apr 2022 20:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 231685107E3
+	for <lists+linux-ext4@lfdr.de>; Tue, 26 Apr 2022 21:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351465AbiDZSeh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 26 Apr 2022 14:34:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58598 "EHLO
+        id S1351366AbiDZTFK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 26 Apr 2022 15:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351436AbiDZSeg (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 26 Apr 2022 14:34:36 -0400
-Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 317DB26AD9
-        for <linux-ext4@vger.kernel.org>; Tue, 26 Apr 2022 11:31:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1650997888; x=1682533888;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=EPFkrvYzzEnBU5B8E1LfK5E6xn9ZbXldaw8ZFDlxsgk=;
-  b=UIcZIFmuE5XpQrpXFQGJcGjZtOuLwPl14kwR6roiJcUW+aUgzue/9Fnk
-   G/SpsWKv+adwxmuX1tSZSAxEAXtq5ENlDYHW+c6DB3YtN/ODpZIDfou6n
-   Q5ph91NOdxkGIVKycSvWxFX32+gw4ExuomjRfOmc3+dsiNnI7/Dvq58nz
-   k=;
-X-IronPort-AV: E=Sophos;i="5.90,291,1643673600"; 
-   d="scan'208";a="193216123"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-2b-05e8af15.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP; 26 Apr 2022 18:31:26 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-pdx-2b-05e8af15.us-west-2.amazon.com (Postfix) with ESMTPS id BC4B8A285E;
-        Tue, 26 Apr 2022 18:31:25 +0000 (UTC)
-Received: from EX13D01UWA002.ant.amazon.com (10.43.160.74) by
- EX13MTAUWA001.ant.amazon.com (10.43.160.58) with Microsoft SMTP Server (TLS)
- id 15.0.1497.32; Tue, 26 Apr 2022 18:31:25 +0000
-Received: from localhost (10.43.160.52) by EX13d01UWA002.ant.amazon.com
- (10.43.160.74) with Microsoft SMTP Server (TLS) id 15.0.1497.32; Tue, 26 Apr
- 2022 18:31:24 +0000
-Date:   Tue, 26 Apr 2022 11:31:24 -0700
-From:   Samuel Mendoza-Jonas <samjonas@amazon.com>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-CC:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>,
-        <syzbot+afa2ca5171d93e44b348@syzkaller.appspotmail.com>
-Subject: Re: [PATCH] jbd2: Fix use-after-free of transaction_t race
-Message-ID: <20220426183124.phrwsl77bch5uljx@u46989501580c5c.ant.amazon.com>
-References: <948c2fed518ae739db6a8f7f83f1d58b504f87d0.1644497105.git.ritesh.list@gmail.com>
+        with ESMTP id S1351034AbiDZTFK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 26 Apr 2022 15:05:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4833199168;
+        Tue, 26 Apr 2022 12:02:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 76EA7619C8;
+        Tue, 26 Apr 2022 19:02:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7A98C385A4;
+        Tue, 26 Apr 2022 19:02:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1650999720;
+        bh=KjRdUnwoZ+7ZoJC1ywPnZHjuqyL95XZTVpmXHAYdaRw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=PQsbFO5oCQT967Ipf0MCKaM3lN2yZvhXpwBR3YPwVyGZ3Zo3rMPb2BRNtyE0AThav
+         VFIl4+7DOTxZHk+kkHjHznIei9+F1dxWsKmOLycJNLi6F6sXsNSEOytOEyjOdfvy25
+         MxfiUSIbkVdYVEW1jekf7O4vKxU7vWYw6cqfBcOGuHb4ZxT83OqgIA0r3k3BaOUvZd
+         3kXWt+PwXv+xzhFoYUDzyCoNBOuQ+EdeK7CfsPukMKCwAKNbxQQmzaXJnDhjKRm6Nt
+         Z71eVzvB5KfiyGaabemvTSPTRfm+s2Gb8NQKf2NHdp/Tb9iEk5FRk39WI9n62NQqmI
+         pyzEvJUt0QXUw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Ye Bin <yebin10@huawei.com>, Jan Kara <jack@suse.cz>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.17 08/22] ext4: fix bug_on in start_this_handle during umount filesystem
+Date:   Tue, 26 Apr 2022 15:01:31 -0400
+Message-Id: <20220426190145.2351135-8-sashal@kernel.org>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220426190145.2351135-1-sashal@kernel.org>
+References: <20220426190145.2351135-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <948c2fed518ae739db6a8f7f83f1d58b504f87d0.1644497105.git.ritesh.list@gmail.com>
-X-Originating-IP: [10.43.160.52]
-X-ClientProxiedBy: EX13D46UWC004.ant.amazon.com (10.43.162.173) To
- EX13d01UWA002.ant.amazon.com (10.43.160.74)
-X-Spam-Status: No, score=-12.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Feb 10, 2022 at 09:07:11PM +0530, Ritesh Harjani wrote:
-> jbd2_journal_wait_updates() is called with j_state_lock held. But if
-> there is a commit in progress, then this transaction might get committed
-> and freed via jbd2_journal_commit_transaction() ->
-> jbd2_journal_free_transaction(), when we release j_state_lock.
-> So check for journal->j_running_transaction everytime we release and
-> acquire j_state_lock to avoid use-after-free issue.
-> 
-> Fixes: 4f98186848707f53 ("jbd2: refactor wait logic for transaction updates into a common function")
-> Reported-and-tested-by: syzbot+afa2ca5171d93e44b348@syzkaller.appspotmail.com
-> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+From: Ye Bin <yebin10@huawei.com>
 
-Hi Ritesh,
+[ Upstream commit b98535d091795a79336f520b0708457aacf55c67 ]
 
-Looking at the refactor in the commit this fixes, I believe the same
-issue is present prior to the refactor, so this would apply before 5.17
-as well.
-I've posted a backport for 4.9-4.19 and 5.4-5.16 to stable here:
-https://lore.kernel.org/stable/20220426182702.716304-1-samjonas@amazon.com/T/#t
+We got issue as follows:
+------------[ cut here ]------------
+kernel BUG at fs/jbd2/transaction.c:389!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
+CPU: 9 PID: 131 Comm: kworker/9:1 Not tainted 5.17.0-862.14.0.6.x86_64-00001-g23f87daf7d74-dirty #197
+Workqueue: events flush_stashed_error_work
+RIP: 0010:start_this_handle+0x41c/0x1160
+RSP: 0018:ffff888106b47c20 EFLAGS: 00010202
+RAX: ffffed10251b8400 RBX: ffff888128dc204c RCX: ffffffffb52972ac
+RDX: 0000000000000200 RSI: 0000000000000004 RDI: ffff888128dc2050
+RBP: 0000000000000039 R08: 0000000000000001 R09: ffffed10251b840a
+R10: ffff888128dc204f R11: ffffed10251b8409 R12: ffff888116d78000
+R13: 0000000000000000 R14: dffffc0000000000 R15: ffff888128dc2000
+FS:  0000000000000000(0000) GS:ffff88839d680000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000001620068 CR3: 0000000376c0e000 CR4: 00000000000006e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ jbd2__journal_start+0x38a/0x790
+ jbd2_journal_start+0x19/0x20
+ flush_stashed_error_work+0x110/0x2b3
+ process_one_work+0x688/0x1080
+ worker_thread+0x8b/0xc50
+ kthread+0x26f/0x310
+ ret_from_fork+0x22/0x30
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
 
-Please have a look and let me know if you agree.
+Above issue may happen as follows:
+      umount            read procfs            error_work
+ext4_put_super
+  flush_work(&sbi->s_error_work);
 
-Cheers,
-Sam Mendoza-Jonas
+                      ext4_mb_seq_groups_show
+	                ext4_mb_load_buddy_gfp
+			  ext4_mb_init_group
+			    ext4_mb_init_cache
+	                      ext4_read_block_bitmap_nowait
+			        ext4_validate_block_bitmap
+				  ext4_error
+			            ext4_handle_error
+			              schedule_work(&EXT4_SB(sb)->s_error_work);
 
+  ext4_unregister_sysfs(sb);
+  jbd2_journal_destroy(sbi->s_journal);
+    journal_kill_thread
+      journal->j_flags |= JBD2_UNMOUNT;
 
-> ---
->  fs/jbd2/transaction.c | 41 +++++++++++++++++++++++++----------------
->  1 file changed, 25 insertions(+), 16 deletions(-)
-> 
-> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-> index 8e2f8275a253..259e00046a8b 100644
-> --- a/fs/jbd2/transaction.c
-> +++ b/fs/jbd2/transaction.c
-> @@ -842,27 +842,38 @@ EXPORT_SYMBOL(jbd2_journal_restart);
->   */
->  void jbd2_journal_wait_updates(journal_t *journal)
->  {
-> -	transaction_t *commit_transaction = journal->j_running_transaction;
-> +	DEFINE_WAIT(wait);
-> 
-> -	if (!commit_transaction)
-> -		return;
-> +	while (1) {
-> +		/*
-> +		 * Note that the running transaction can get freed under us if
-> +		 * this transaction is getting committed in
-> +		 * jbd2_journal_commit_transaction() ->
-> +		 * jbd2_journal_free_transaction(). This can only happen when we
-> +		 * release j_state_lock -> schedule() -> acquire j_state_lock.
-> +		 * Hence we should everytime retrieve new j_running_transaction
-> +		 * value (after j_state_lock release acquire cycle), else it may
-> +		 * lead to use-after-free of old freed transaction.
-> +		 */
-> +		transaction_t *transaction = journal->j_running_transaction;
-> 
-> -	spin_lock(&commit_transaction->t_handle_lock);
-> -	while (atomic_read(&commit_transaction->t_updates)) {
-> -		DEFINE_WAIT(wait);
-> +		if (!transaction)
-> +			break;
-> 
-> +		spin_lock(&transaction->t_handle_lock);
->  		prepare_to_wait(&journal->j_wait_updates, &wait,
-> -					TASK_UNINTERRUPTIBLE);
-> -		if (atomic_read(&commit_transaction->t_updates)) {
-> -			spin_unlock(&commit_transaction->t_handle_lock);
-> -			write_unlock(&journal->j_state_lock);
-> -			schedule();
-> -			write_lock(&journal->j_state_lock);
-> -			spin_lock(&commit_transaction->t_handle_lock);
-> +				TASK_UNINTERRUPTIBLE);
-> +		if (!atomic_read(&transaction->t_updates)) {
-> +			spin_unlock(&transaction->t_handle_lock);
-> +			finish_wait(&journal->j_wait_updates, &wait);
-> +			break;
->  		}
-> +		spin_unlock(&transaction->t_handle_lock);
-> +		write_unlock(&journal->j_state_lock);
-> +		schedule();
->  		finish_wait(&journal->j_wait_updates, &wait);
-> +		write_lock(&journal->j_state_lock);
->  	}
-> -	spin_unlock(&commit_transaction->t_handle_lock);
->  }
-> 
->  /**
-> @@ -877,8 +888,6 @@ void jbd2_journal_wait_updates(journal_t *journal)
->   */
->  void jbd2_journal_lock_updates(journal_t *journal)
->  {
-> -	DEFINE_WAIT(wait);
-> -
->  	jbd2_might_wait_for_commit(journal);
-> 
->  	write_lock(&journal->j_state_lock);
-> --
-> 2.31.1
-> 
+                                          flush_stashed_error_work
+				            jbd2_journal_start
+					      start_this_handle
+					        BUG_ON(journal->j_flags & JBD2_UNMOUNT);
+
+To solve this issue, we call 'ext4_unregister_sysfs() before flushing
+s_error_work in ext4_put_super().
+
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+Link: https://lore.kernel.org/r/20220322012419.725457-1-yebin10@huawei.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/ext4/super.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
+
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index bed29f96ccc7..67c7c6f1bc8e 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1199,20 +1199,25 @@ static void ext4_put_super(struct super_block *sb)
+ 	int aborted = 0;
+ 	int i, err;
+ 
+-	ext4_unregister_li_request(sb);
+-	ext4_quota_off_umount(sb);
+-
+-	flush_work(&sbi->s_error_work);
+-	destroy_workqueue(sbi->rsv_conversion_wq);
+-	ext4_release_orphan_info(sb);
+-
+ 	/*
+ 	 * Unregister sysfs before destroying jbd2 journal.
+ 	 * Since we could still access attr_journal_task attribute via sysfs
+ 	 * path which could have sbi->s_journal->j_task as NULL
++	 * Unregister sysfs before flush sbi->s_error_work.
++	 * Since user may read /proc/fs/ext4/xx/mb_groups during umount, If
++	 * read metadata verify failed then will queue error work.
++	 * flush_stashed_error_work will call start_this_handle may trigger
++	 * BUG_ON.
+ 	 */
+ 	ext4_unregister_sysfs(sb);
+ 
++	ext4_unregister_li_request(sb);
++	ext4_quota_off_umount(sb);
++
++	flush_work(&sbi->s_error_work);
++	destroy_workqueue(sbi->rsv_conversion_wq);
++	ext4_release_orphan_info(sb);
++
+ 	if (sbi->s_journal) {
+ 		aborted = is_journal_aborted(sbi->s_journal);
+ 		err = jbd2_journal_destroy(sbi->s_journal);
+-- 
+2.35.1
+
