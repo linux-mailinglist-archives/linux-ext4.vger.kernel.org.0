@@ -2,40 +2,40 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00EA650FDCE
-	for <lists+linux-ext4@lfdr.de>; Tue, 26 Apr 2022 14:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A81AB50FF94
+	for <lists+linux-ext4@lfdr.de>; Tue, 26 Apr 2022 15:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350285AbiDZM5p (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 26 Apr 2022 08:57:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60246 "EHLO
+        id S1348882AbiDZNz5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 26 Apr 2022 09:55:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350247AbiDZM5o (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 26 Apr 2022 08:57:44 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B7BF17D4BD;
-        Tue, 26 Apr 2022 05:54:36 -0700 (PDT)
-Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4KnhYQ336PzCsMD;
-        Tue, 26 Apr 2022 20:50:02 +0800 (CST)
+        with ESMTP id S1345563AbiDZNz4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 26 Apr 2022 09:55:56 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0A4A1353A6;
+        Tue, 26 Apr 2022 06:52:47 -0700 (PDT)
+Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Knjwn153Cz1JBly;
+        Tue, 26 Apr 2022 21:51:53 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
  (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Tue, 26 Apr
- 2022 20:54:33 +0800
+ 2022 21:52:45 +0800
 From:   Baokun Li <libaokun1@huawei.com>
 To:     <linux-ext4@vger.kernel.org>
 CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
         <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
         <yebin10@huawei.com>, <yukuai3@huawei.com>, <libaokun1@huawei.com>,
         <stable@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH] ext4: fix race condition between ext4_write and ext4_convert_inline_data
-Date:   Tue, 26 Apr 2022 21:08:47 +0800
-Message-ID: <20220426130847.885833-1-libaokun1@huawei.com>
+Subject: [PATCH v2] ext4: fix race condition between ext4_write and ext4_convert_inline_data
+Date:   Tue, 26 Apr 2022 22:06:58 +0800
+Message-ID: <20220426140658.1046700-1-libaokun1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
 X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  dggpeml500020.china.huawei.com (7.185.36.88)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
@@ -116,19 +116,25 @@ Cc: stable@vger.kernel.org
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
 ---
+V1->V2:
+	Increase the range of the inode_lock.
+
  fs/ext4/inline.c | 2 ++
  1 file changed, 2 insertions(+)
 
 diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index 9c076262770d..3d45ffe8c657 100644
+index 9c076262770d..0518edcfc0e1 100644
 --- a/fs/ext4/inline.c
 +++ b/fs/ext4/inline.c
-@@ -2020,10 +2020,12 @@ int ext4_convert_inline_data(struct inode *inode)
- 		goto out_free;
- 	}
+@@ -2002,6 +2002,7 @@ int ext4_convert_inline_data(struct inode *inode)
+ 	handle_t *handle;
+ 	struct ext4_iloc iloc;
  
 +	inode_lock(inode);
- 	ext4_write_lock_xattr(inode, &no_expand);
+ 	if (!ext4_has_inline_data(inode)) {
+ 		ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
+ 		return 0;
+@@ -2024,6 +2025,7 @@ int ext4_convert_inline_data(struct inode *inode)
  	if (ext4_has_inline_data(inode))
  		error = ext4_convert_inline_data_nolock(handle, inode, &iloc);
  	ext4_write_unlock_xattr(inode, &no_expand);
