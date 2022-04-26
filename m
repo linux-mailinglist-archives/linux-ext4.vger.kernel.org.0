@@ -2,47 +2,47 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83AA351085E
-	for <lists+linux-ext4@lfdr.de>; Tue, 26 Apr 2022 21:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C01D251083C
+	for <lists+linux-ext4@lfdr.de>; Tue, 26 Apr 2022 21:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353783AbiDZTFm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 26 Apr 2022 15:05:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41860 "EHLO
+        id S1353708AbiDZTGN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 26 Apr 2022 15:06:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353753AbiDZTFc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 26 Apr 2022 15:05:32 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF12199817;
-        Tue, 26 Apr 2022 12:02:22 -0700 (PDT)
+        with ESMTP id S1353767AbiDZTFp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 26 Apr 2022 15:05:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9966199825;
+        Tue, 26 Apr 2022 12:02:36 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2A9B7B82249;
-        Tue, 26 Apr 2022 19:02:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5393C385AA;
-        Tue, 26 Apr 2022 19:02:19 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7732F619BA;
+        Tue, 26 Apr 2022 19:02:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0487C385AD;
+        Tue, 26 Apr 2022 19:02:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650999739;
-        bh=iw5SCpFro/JP7l3X7EgKZ6Yqw1DXUGHdxpZWO5Mv9SY=;
+        s=k20201202; t=1650999755;
+        bh=ZrHYo/Z2MZ3OcRsRVGLr7SL2UwYUnoIaQ5hc+QFEvOU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NrWjcW28WjqmZVgK9fEl0G9PdXTMq7DrCqK16tUPNhIvSN6tU1pRS/nzT+8a+aa2h
-         TaJoBMjD8EGh8h/hBHq+9X2p0+IbhSzJyBuUdK0+SdrWJLr15THuPaj9lJlh1a0AkQ
-         QpSXSI4qn93pdkFifGszSJ2J0S6QFNlCAFwttZcGDgd+0fBz2+1Q1chhVXI0ThXkjW
-         OGo3M6djmLvhNvePTKd5r2VI9QcE/h2oHXIEOlfu4tl17ZDTneBuyh1FjsLXau+a4j
-         j9yHC6zmyn01rZXTM3p/gnbK3L2IFDQZUZG0v3sUX7TGhZ+npnYULK5vYBfh+xiCoO
-         SvdFODXTJilZQ==
+        b=UNpA/iaYLXUXBrKFjBcwAIYcRAZo7UjDU/BlOc4IJDiimF32GRsLqpBkuorOS9OU6
+         JkCb5hNYNRX5zlTq5mWPU+XXXhNWcNKg6AtQnOdcaFcAMpsgjjLaQcHWNphKzbwDIC
+         /EB1oCdLKerNZaC5sCfEL22ZN+l9/TngLOF+wP6uDdPMVR9quAO6RD0LgBhZDSN9hr
+         Pr1u540AJAvEnDLGO0KVAVl1QeFlN/LvrQd/dZV5p26nYYGQHR6LMpotUiegQRzLYM
+         BA8YYu0AajHnwf3ukx29KE++XUT25cBeoKr1+CSYr5pYrR+i+3xPpqQeknm34KhHQl
+         /mpjRGB9e2I0A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Ye Bin <yebin10@huawei.com>, Jan Kara <jack@suse.cz>,
         Ritesh Harjani <riteshh@linux.ibm.com>,
         Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
         adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 03/15] ext4: fix bug_on in start_this_handle during umount filesystem
-Date:   Tue, 26 Apr 2022 15:02:02 -0400
-Message-Id: <20220426190216.2351413-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 3/9] ext4: fix bug_on in start_this_handle during umount filesystem
+Date:   Tue, 26 Apr 2022 15:02:24 -0400
+Message-Id: <20220426190232.2351606-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220426190216.2351413-1-sashal@kernel.org>
-References: <20220426190216.2351413-1-sashal@kernel.org>
+In-Reply-To: <20220426190232.2351606-1-sashal@kernel.org>
+References: <20220426190232.2351606-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -126,23 +126,21 @@ Link: https://lore.kernel.org/r/20220322012419.725457-1-yebin10@huawei.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/super.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+ fs/ext4/super.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
 diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index fd4d34deb9fc..d72adbc7e836 100644
+index 9e210bc85c81..8f65513d63d4 100644
 --- a/fs/ext4/super.c
 +++ b/fs/ext4/super.c
-@@ -1167,20 +1167,25 @@ static void ext4_put_super(struct super_block *sb)
+@@ -1176,18 +1176,23 @@ static void ext4_put_super(struct super_block *sb)
  	int aborted = 0;
  	int i, err;
  
 -	ext4_unregister_li_request(sb);
 -	ext4_quota_off_umount(sb);
 -
--	flush_work(&sbi->s_error_work);
 -	destroy_workqueue(sbi->rsv_conversion_wq);
--	ext4_release_orphan_info(sb);
 -
  	/*
  	 * Unregister sysfs before destroying jbd2 journal.
@@ -159,9 +157,7 @@ index fd4d34deb9fc..d72adbc7e836 100644
 +	ext4_unregister_li_request(sb);
 +	ext4_quota_off_umount(sb);
 +
-+	flush_work(&sbi->s_error_work);
 +	destroy_workqueue(sbi->rsv_conversion_wq);
-+	ext4_release_orphan_info(sb);
 +
  	if (sbi->s_journal) {
  		aborted = is_journal_aborted(sbi->s_journal);
