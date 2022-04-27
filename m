@@ -2,158 +2,220 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B733510F84
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Apr 2022 05:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4336D51103C
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Apr 2022 06:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244858AbiD0D0i (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 26 Apr 2022 23:26:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33808 "EHLO
+        id S1357706AbiD0Em5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 Apr 2022 00:42:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350567AbiD0D0h (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 26 Apr 2022 23:26:37 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34BA327B33;
-        Tue, 26 Apr 2022 20:23:25 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Kp3w55Lt8z1JBnc;
-        Wed, 27 Apr 2022 11:22:29 +0800 (CST)
-Received: from [10.174.178.185] (10.174.178.185) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Wed, 27 Apr 2022 11:23:22 +0800
-Subject: Re: [PATCH -next v2] jbd2: Fix null-ptr-deref when process reserved
- list in jbd2_journal_commit_transaction
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>
-References: <20220317142137.1821590-1-yebin10@huawei.com>
-CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>
-From:   yebin <yebin10@huawei.com>
-Message-ID: <6268B72A.6080506@huawei.com>
-Date:   Wed, 27 Apr 2022 11:23:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+        with ESMTP id S237234AbiD0Em4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Apr 2022 00:42:56 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CF2E4237DF
+        for <linux-ext4@vger.kernel.org>; Tue, 26 Apr 2022 21:39:46 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+        id 8301520E97A4; Tue, 26 Apr 2022 21:39:46 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8301520E97A4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1651034386;
+        bh=mvf7xomBYhl7Co74t9faqT3XYzMDcL4V8dPqZ2i23tM=;
+        h=Date:From:To:Subject:From;
+        b=SW7aFM0qK9WbuhQTOpEKE04UvwpEj9G0yk5fiFSXlmg/ZZr7jxyK/AnCfZNvtCEQw
+         k5fR0wN+ZofB3o5GlKhAahq0eS1XKCFT6oAehppn1GmX837eKgNRQbTt9bpsWV4/YV
+         gAbePBl2niMaslHfUjKNPHyaZOoc5V8wE2GhIRbE=
+Date:   Tue, 26 Apr 2022 21:39:46 -0700
+From:   Shradha Gupta <shradhagupta@linux.microsoft.com>
+To:     linux-ext4@vger.kernel.org
+Subject: [BUG]:OS disk corruption EXT4
+Message-ID: <20220427043946.GA21120@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 MIME-Version: 1.0
-In-Reply-To: <20220317142137.1821590-1-yebin10@huawei.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.185]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=unknown-8bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Friendly ping...
+I think I may have run into an issue where my ext4 OS disk shows multiple corruptions and the issue is reproducible after multiple reboots.
 
-On 2022/3/17 22:21, Ye Bin wrote:
-> we got issue as follows:
-> [   72.796117] EXT4-fs error (device sda): ext4_journal_check_start:83: comm fallocate: Detected aborted journal
-> [   72.826847] EXT4-fs (sda): Remounting filesystem read-only
-> fallocate: fallocate failed: Read-only file system
-> [   74.791830] jbd2_journal_commit_transaction: jh=0xffff9cfefe725d90 bh=0x0000000000000000 end delay
-> [   74.793597] ------------[ cut here ]------------
-> [   74.794203] kernel BUG at fs/jbd2/transaction.c:2063!
-> [   74.794886] invalid opcode: 0000 [#1] PREEMPT SMP PTI
-> [   74.795533] CPU: 4 PID: 2260 Comm: jbd2/sda-8 Not tainted 5.17.0-rc8-next-20220315-dirty #150
-> [   74.798327] RIP: 0010:__jbd2_journal_unfile_buffer+0x3e/0x60
-> [   74.801971] RSP: 0018:ffffa828c24a3cb8 EFLAGS: 00010202
-> [   74.802694] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-> [   74.803601] RDX: 0000000000000001 RSI: ffff9cfefe725d90 RDI: ffff9cfefe725d90
-> [   74.804554] RBP: ffff9cfefe725d90 R08: 0000000000000000 R09: ffffa828c24a3b20
-> [   74.805471] R10: 0000000000000001 R11: 0000000000000001 R12: ffff9cfefe725d90
-> [   74.806385] R13: ffff9cfefe725d98 R14: 0000000000000000 R15: ffff9cfe833a4d00
-> [   74.807301] FS:  0000000000000000(0000) GS:ffff9d01afb00000(0000) knlGS:0000000000000000
-> [   74.808338] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   74.809084] CR2: 00007f2b81bf4000 CR3: 0000000100056000 CR4: 00000000000006e0
-> [   74.810047] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [   74.810981] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [   74.811897] Call Trace:
-> [   74.812241]  <TASK>
-> [   74.812566]  __jbd2_journal_refile_buffer+0x12f/0x180
-> [   74.813246]  jbd2_journal_refile_buffer+0x4c/0xa0
-> [   74.813869]  jbd2_journal_commit_transaction.cold+0xa1/0x148
-> [   74.817550]  kjournald2+0xf8/0x3e0
-> [   74.819056]  kthread+0x153/0x1c0
-> [   74.819963]  ret_from_fork+0x22/0x30
->
-> Above issue may happen as follows:
->          write                   truncate                   kjournald2
-> generic_perform_write
->   ext4_write_begin
->    ext4_walk_page_buffers
->     do_journal_get_write_access ->add BJ_Reserved list
->   ext4_journalled_write_end
->    ext4_walk_page_buffers
->     write_end_fn
->      ext4_handle_dirty_metadata
->                  ***************JBD2 ABORT**************
->       jbd2_journal_dirty_metadata
->   -> return -EROFS, jh in reserved_list
->                                                     jbd2_journal_commit_transaction
->                                                      while (commit_transaction->t_reserved_list)
->                                                        jh = commit_transaction->t_reserved_list;
->                          truncate_pagecache_range
->                           do_invalidatepage
-> 			  ext4_journalled_invalidatepage
-> 			   jbd2_journal_invalidatepage
-> 			    journal_unmap_buffer
-> 			     __dispose_buffer
-> 			      __jbd2_journal_unfile_buffer
-> 			       jbd2_journal_put_journal_head ->put last ref_count
-> 			        __journal_remove_journal_head
-> 				 bh->b_private = NULL;
-> 				 jh->b_bh = NULL;
-> 				                      jbd2_journal_refile_buffer(journal, jh);
-> 							bh = jh2bh(jh);
-> 							->bh is NULL, later will trigger null-ptr-deref
-> 				 journal_free_journal_head(jh);
->
-> As after 96f1e0974575 commit, handle reserved list will not hold "journal->j_state_lock"
-> when kjournald2 commit transaction. So journal_unmap_buffer maybe free
-> journal_head when handle reserved list. And lead to null-ptr-deref or some
-> strange errors.
-> As reserved list almost time is empty. Use "journal->j_state_lock" to protect
-> handle reserved list can simply solve above issue.
->
-> Fixes: 96f1e0974575("jbd2: avoid long hold times of j_state_lock while committing a transaction")
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
-> ---
->   fs/jbd2/commit.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
-> index 5b9408e3b370..ac7f067b7bdd 100644
-> --- a/fs/jbd2/commit.c
-> +++ b/fs/jbd2/commit.c
-> @@ -488,7 +488,6 @@ void jbd2_journal_commit_transaction(journal_t *journal)
->   	jbd2_journal_wait_updates(journal);
->   
->   	commit_transaction->t_state = T_SWITCH;
-> -	write_unlock(&journal->j_state_lock);
->   
->   	J_ASSERT (atomic_read(&commit_transaction->t_outstanding_credits) <=
->   			journal->j_max_transaction_buffers);
-> @@ -508,6 +507,8 @@ void jbd2_journal_commit_transaction(journal_t *journal)
->   	 * has reserved.  This is consistent with the existing behaviour
->   	 * that multiple jbd2_journal_get_write_access() calls to the same
->   	 * buffer are perfectly permissible.
-> +	 * We use journal->j_state_lock here to serialize processing of
-> +	 * t_reserved_list with eviction of buffers from journal_unmap_buffer().
->   	 */
->   	while (commit_transaction->t_reserved_list) {
->   		jh = commit_transaction->t_reserved_list;
-> @@ -527,6 +528,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
->   		jbd2_journal_refile_buffer(journal, jh);
->   	}
->   
-> +	write_unlock(&journal->j_state_lock);
->   	/*
->   	 * Now try to drop any written-back buffers from the journal's
->   	 * checkpoint lists.  We do this *before* commit because it potentially
+Please help me understand this corruption better as I am new to ext4 layouts. 
+
+The “fsck -n <device>” command output was as follows:
+
+fsck from util-linux 2.34                                                                                                                                           
+e2fsck 1.45.5 (07-Jan-2020)                                                                                                                                         
+ext2fs_open2: Superblock checksum does not match superblock                                                                                                         
+fsck.ext4: Superblock invalid, trying backup blocks...                                                                                                             
+ Superblock needs_recovery flag is clear, but journal has data.                                                                                                      
+Recovery flag not set in backup superblock, so running journal anyway.                                                                                              
+Clear journal? no                                                                                                                                                                                                                                                                                                                       
+cloudimg-rootfs was not cleanly unmounted, check forced.                                                                                                            
+Pass 1: Checking inodes, blocks, and sizes                                                                                                                          
+Inode 138, end of extent exceeds allowed value                                                                                                                              
+(logical block 14336, physical block 25937920, len 4284)                                                                                                    
+Clear? no                                                                                                                                                                                                                                                                                                                               
+Inode 138, i_blocks is 146744, should be 114696.  Fix? no                                                                                                                                                                                                                                                                               Deleted inode 38837 has zero dtime.  Fix? no                                                                                                                                                                                                                                                                                            Inode 38855, end of extent exceeds allowed value                                                                                                                            
+(logical block 2048, physical block 31733760, len 4)                                                                                                        
+Clear? no                                                                                                                                                                                                                                                                                                                               
+Inode 38855, end of extent exceeds allowed value                                                                                                                            
+(logical block 2054, physical block 31733766, len 51)                                                                                                       
+Clear? no                                                                                                                                                                                                                                                                                                                               
+Inode 38855, end of extent exceeds allowed value                                                                                                                            
+(logical block 2106, physical block 31733818, len 127)                                                                                                     
+Clear? no                                                                                                                                                                                                                                                                                                                               
+Inode 38855, end of extent exceeds allowed value                                                                                                                            
+(logical block 2235, physical block 31733947, len 29)                                                                                                       
+Clear? no                                                                                                                                                                                                                                                                                                                               
+Inode 38855, end of extent exceeds allowed value                                                                                                                            
+(logical block 2267, physical block 31733979, len 93)                                                                                                       
+Clear? no                                                                                                                                                                                                                                                                                                                              
+Inode 38855, end of extent exceeds allowed value                                                                                                                            
+(logical block 2371, physical block 31734083, len 60)                                                                                                       
+Clear? no                                                                                                                                                                                                                                                                                                                              
+ Inode 38855, end of extent exceeds allowed value                                                                                                                            
+(logical block 2442, physical block 31734154, len 16)                                                                                                       
+Clear? no                                                                                                                                                                                                                                                                                                                               
+Inode 38855, end of extent exceeds allowed value                                                                                                                            
+(logical block 2462, physical block 31734174, len 26)                                                                                                       
+Clear? no                                                                                                                                                                                                                                                                                                                               
+Inode 38855, i_blocks is 16392, should be 29528.  Fix? no                                                                                                                                                                                                                                                                               Inodes that were part of a corrupted orphan linked list found.  Fix? no                                                                                                                                                                                                                                                                 Inode 38870 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 38968 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39069 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39081 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39154 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39172 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39271 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39272 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39278 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39342 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39374 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39378 was part of the orphaned inode list.  IGNORED.                                                                                                         
+Inode 39385 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39390 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39396 was part of the orphaned inode list.  IGNORED.                                                                                                         
+Inode 39407 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39408 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39416 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39419 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39420 was part of the orphaned inode list.  IGNORED.                                                                                                         
+ Inode 39425 was part of the orphaned inode list.  IGNORED.                                                                                                         
+ Inode 39426 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39427 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39429 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39430 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39433 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39434 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39435 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39439 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39440 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39442 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39443 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39446 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39448 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39450 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39451 was part of the orphaned inode list.  IGNORED.                                                                                                         
+ Inode 39452 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39453 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39456 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39460 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39464 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39468 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39469 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39471 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39472 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39478 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39479 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39480 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39481 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39483 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39484 was part of the orphaned inode list.  IGNORED.                                                                                                         
+ Inode 39485 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39486 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39487 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39488 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39489 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39490 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39491 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39493 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39494 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39495 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39498 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39499 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39500 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39502 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39503 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39504 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39506 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39507 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39508 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39509 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39510 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39512 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39513 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39514 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39515 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39517 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39518 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39519 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39520 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39521 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39522 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39523 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39524 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39525 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39526 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39527 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39528 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39529 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39530 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39531 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39532 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39533 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39534 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39535 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39536 was part of the orphaned inode list.  IGNORED.                                                                                                         
+ Inode 39537 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39538 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39540 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39541 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39542 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39543 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39544 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39545 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39546 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39547 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39548 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39549 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39552 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39553 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39554 was part of the orphaned inode list.  IGNORED.                                                                                                          
+Inode 39557 was part of the orphaned inode list.  IGNORED.                                                                                                         
+ Inode 258587, end of extent exceeds allowed value                                                                                                                           
+(logical block 512, physical block 25860608, len 28)                                                                                                        
+Clear? no                                                                                                                                                                                                                                                                                                                               
+Inode 258587, i_blocks is 4280, should be 4104.  Fix? no                                                                                                                                                                                                                                                                                Inode 258658, end of extent exceeds allowed value                                                                                                                           
+(logical block 186368, physical block 28665856, len 2116)                                                                                                   
+Clear? no                                                                                                                                                                                                                                                                                                                               
+Inode 258658, i_blocks is 1506648, should be 1490952.  Fix? no                                                                                                                                                                                                                                                                          Inode 261432, end of extent exceeds allowed value                                                                                                                           
+(logical block 1024, physical block 25153536, len 356)                                                                                                      
+Clear? no                                                                                                                                                                                                                                                                                                                               
+Inode 261432, i_blocks is 11024, should be 8200.  Fix? no                                                                                                                                                                                                                                                                               Inode 266714, end of extent exceeds allowed value                                                                                                                           
+(logical block 4096, physical block 28628992, len 2805)                                                                                                     
+Clear? no                                                                                                                                                                                                                                                                                                                              
+ Inode 266714, i_blocks is 55208, should be 32776.  Fix? no                                                                                                                                                                                                                                                                              Inode 269868 was part of the orphaned inode list.  IGNORED.                                                                                                         
+Inode 527158 has an invalid extent node (blk 1100714, lblk 0)                                                                                                       
+Clear? no                                                                                                                                                                                                                                                                                                                               
+Inode 527158 extent tree (at level 1) could be shorter.  Optimize? no                                                                                                                                                                                                                                                                   Inode 527158, i_blocks is 97320, should be 0.  Fix? no       
+.
+.
+.
+Appreciate any help in understanding what might have caused this. 
 
