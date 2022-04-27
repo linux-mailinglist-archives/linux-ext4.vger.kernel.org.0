@@ -2,38 +2,39 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6C0511A96
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Apr 2022 16:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0CD55120C7
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Apr 2022 20:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238191AbiD0Ohq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Apr 2022 10:37:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46234 "EHLO
+        id S239626AbiD0P17 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 Apr 2022 11:27:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238215AbiD0Ohm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Apr 2022 10:37:42 -0400
+        with ESMTP id S239573AbiD0P16 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Apr 2022 11:27:58 -0400
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D44131572D
-        for <linux-ext4@vger.kernel.org>; Wed, 27 Apr 2022 07:34:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A3F330D49D;
+        Wed, 27 Apr 2022 08:24:46 -0700 (PDT)
 Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 23REYQlT020533
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 23RFOXp5006539
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Apr 2022 10:34:26 -0400
+        Wed, 27 Apr 2022 11:24:34 -0400
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id E93E315C3EA1; Wed, 27 Apr 2022 10:34:25 -0400 (EDT)
-Date:   Wed, 27 Apr 2022 10:34:25 -0400
+        id 968B715C3EA1; Wed, 27 Apr 2022 11:24:33 -0400 (EDT)
+Date:   Wed, 27 Apr 2022 11:24:33 -0400
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Shradha Gupta <shradhagupta@linux.microsoft.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [BUG]:OS disk corruption EXT4
-Message-ID: <YmlUcTn4x91HYTVK@mit.edu>
-References: <20220427043946.GA21120@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        fstests@vger.kernel.org
+Subject: Re: [PATCH] ext4: make test_dummy_encryption require the encrypt
+ feature
+Message-ID: <YmlgMQ6e4DCxCSBl@mit.edu>
+References: <20220421184040.173802-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220427043946.GA21120@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+In-Reply-To: <20220421184040.173802-1-ebiggers@kernel.org>
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -42,44 +43,36 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Apr 26, 2022 at 09:39:46PM -0700, Shradha Gupta wrote:
-> I think I may have run into an issue where my ext4 OS disk shows
-> multiple corruptions and the issue is reproducible after multiple
-> reboots.
+On Thu, Apr 21, 2022 at 11:40:40AM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Please help me understand this corruption better as I am new to ext4 layouts. 
+> Make the test_dummy_encryption mount option require that the encrypt
+> feature flag be already enabled on the filesystem, rather than
+> automatically enabling it.  Practically, this means that "-O encrypt"
+> will need to be included in MKFS_OPTIONS when running xfstests with the
+> test_dummy_encryption mount option.
 > 
-> The “fsck -n <device>” command output was as follows:
+> The motivation for this is that:
 > 
-> e2fsck 1.45.5 (07-Jan-2020)
-> ext2fs_open2: Superblock checksum does not match superblock
-> fsck.ext4: Superblock invalid, trying backup blocks...
->  Superblock needs_recovery flag is clear, but journal has data.
-> Recovery flag not set in backup superblock, so running journal anyway.
+> - Having the filesystem auto-enable feature flags is problematic, as it
+>   bypasses the usual sanity checks.  The specific issue which came up
+>   recently is that in kernel versions where ext4 supports casefold but
+>   not encrypt+casefold (v5.1 through v5.10), the kernel will happily add
+>   the encrypt flag to a filesystem that has the casefold flag, making it
+>   unmountable -- but only for subsequent mounts, not the initial one.
+>   This confused the casefold support detection in xfstests, causing
+>   generic/556 to fail rather than be skipped.
+> 
+> - The xfstests-bld test runners (kvm-xfstests et al.) already use the
+>   required mkfs flag, so they will not be affected by this change.  Only
+>   users of test_dummy_encryption alone will be affected.  But, this
+>   option has always been for testing only, so it should be fine to
+>   require that the few users of this option update their test scripts.
 
-You need to give more information; what kernel version are you using?
+One of the test scripts involved is xfstests's ext4/053, as the
+zero-day test rebot has remarked upon.  Eric, could you look into
+submitting a patch to xfstests's ext4/053.
 
-What is the hardware or cloud VM configuration that you are using?
-
-How are you rebooting the machine?  Are you doing a clean shutdown, or
-are you just kicking the plug out of the wall, or killing the VM
-without giving a chance for the system to shut down cleanly?
-
-Ext4 should handle an unclean shutdown cleanly, assuming that the
-hardware (or emulated disk, in the case of a cloud system) properly
-handles CACHE FLUSH requests.
-
-Given the vaguely suggested label on your file system...
-
-> cloudimg-rootfs was not cleanly unmounted, check forced.
-
-Is there anything special going on --- in particular, is this part of
-creating a cloud image?  If so, are you doing anything "interesting",
-such as updating the Label or UUID using tune2fs racing with, say, an
-online resize, or an uncerimonious VM shutdown?
-
-If it is reproducible, can you give us the reproduction recipe?
-
-Thanks,
+Thanks!
 
 					- Ted
