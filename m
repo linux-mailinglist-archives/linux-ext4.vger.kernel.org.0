@@ -2,77 +2,133 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0CD55120C7
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Apr 2022 20:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A66751213E
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Apr 2022 20:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239626AbiD0P17 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Apr 2022 11:27:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59048 "EHLO
+        id S240348AbiD0Pzo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 Apr 2022 11:55:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239573AbiD0P16 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Apr 2022 11:27:58 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A3F330D49D;
-        Wed, 27 Apr 2022 08:24:46 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 23RFOXp5006539
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Apr 2022 11:24:34 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 968B715C3EA1; Wed, 27 Apr 2022 11:24:33 -0400 (EDT)
-Date:   Wed, 27 Apr 2022 11:24:33 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        fstests@vger.kernel.org
-Subject: Re: [PATCH] ext4: make test_dummy_encryption require the encrypt
- feature
-Message-ID: <YmlgMQ6e4DCxCSBl@mit.edu>
-References: <20220421184040.173802-1-ebiggers@kernel.org>
+        with ESMTP id S240503AbiD0Pxw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Apr 2022 11:53:52 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ED6B54F8F
+        for <linux-ext4@vger.kernel.org>; Wed, 27 Apr 2022 08:50:38 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 8B47C210F4;
+        Wed, 27 Apr 2022 15:50:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1651074636; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=heKopi47f9pKe9eE0I4ebeW27yRXRnoWXGqNjuRsuVg=;
+        b=KeViPxciFa7FopQyGzZy5wDIK8fZRfChmG/B/tjqNRwciwdKIZ3ua2uycVTsaOlttsxxR6
+        4RaAr/L+19ietn1V3YEX02vR2McUbBNNkO5LhLtRX+jedYdfkirwzClCX3vcNyw5+fXxOH
+        bO1TZdjfV3UeAfNVe7f2xeJeSNf+his=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1651074636;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=heKopi47f9pKe9eE0I4ebeW27yRXRnoWXGqNjuRsuVg=;
+        b=Tp21fA591TUSpNBh5T13LNIXgI62OBW87zHv8lSNKnz7M1dmfAIs/q8T8sAd6hnkjcGdv5
+        mGinPZoGqnbiSbAA==
+Received: from quack3.suse.cz (unknown [10.100.224.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 73CEE2C143;
+        Wed, 27 Apr 2022 15:50:36 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 86F3FA0639; Wed, 27 Apr 2022 17:50:32 +0200 (CEST)
+Date:   Wed, 27 Apr 2022 17:50:32 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Cc:     linux-ext4@vger.kernel.org, riteshh@linux.ibm.com, jack@suse.cz,
+        tytso@mit.edu
+Subject: Re: [PATCH v3 2/6] ext4: for committing inode, make
+ ext4_fc_track_inode wait
+Message-ID: <20220427155032.pikb3jdb62732xvi@quack3.lan>
+References: <20220419173143.3564144-1-harshads@google.com>
+ <20220419173143.3564144-3-harshads@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220421184040.173802-1-ebiggers@kernel.org>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220419173143.3564144-3-harshads@google.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Apr 21, 2022 at 11:40:40AM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Tue 19-04-22 10:31:39, Harshad Shirwadkar wrote:
+> From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 > 
-> Make the test_dummy_encryption mount option require that the encrypt
-> feature flag be already enabled on the filesystem, rather than
-> automatically enabling it.  Practically, this means that "-O encrypt"
-> will need to be included in MKFS_OPTIONS when running xfstests with the
-> test_dummy_encryption mount option.
+> If the inode that's being requested to track using ext4_fc_track_inode
+> is being committed, then wait until the inode finishes the
+> commit. Also, add calls to ext4_fc_track_inode at the right places.
 > 
-> The motivation for this is that:
+> With this patch, now calling ext4_reserve_inode_write() results in
+> inode being tracked for next fast commit. A subtle lock ordering
+> requirement with i_data_sem (which is documented in the code) requires
+> that ext4_fc_track_inode() be called before grabbing i_data_sem. So,
+> this patch also adds explicit ext4_fc_track_inode() calls in places
+> where i_data_sem grabbed.
 > 
-> - Having the filesystem auto-enable feature flags is problematic, as it
->   bypasses the usual sanity checks.  The specific issue which came up
->   recently is that in kernel versions where ext4 supports casefold but
->   not encrypt+casefold (v5.1 through v5.10), the kernel will happily add
->   the encrypt flag to a filesystem that has the casefold flag, making it
->   unmountable -- but only for subsequent mounts, not the initial one.
->   This confused the casefold support detection in xfstests, causing
->   generic/556 to fail rather than be skipped.
+> Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+> ---
+>  fs/ext4/fast_commit.c | 38 ++++++++++++++++++++++++++++++++++++++
+>  fs/ext4/inline.c      |  3 +++
+>  fs/ext4/inode.c       |  5 ++++-
+>  3 files changed, 45 insertions(+), 1 deletion(-)
 > 
-> - The xfstests-bld test runners (kvm-xfstests et al.) already use the
->   required mkfs flag, so they will not be affected by this change.  Only
->   users of test_dummy_encryption alone will be affected.  But, this
->   option has always been for testing only, so it should be fine to
->   require that the few users of this option update their test scripts.
+> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+> index c278060a15bc..55f4c5ddd8e5 100644
+> --- a/fs/ext4/fast_commit.c
+> +++ b/fs/ext4/fast_commit.c
+> +	/*
+> +	 * If we come here, we may sleep while waiting for the inode to
+> +	 * commit. We shouldn't be holding i_data_sem in write mode when we go
+> +	 * to sleep since the commit path needs to grab the lock while
+> +	 * committing the inode.
+> +	 */
+> +	WARN_ON(lockdep_is_held_type(&ei->i_data_sem, 1));
 
-One of the test scripts involved is xfstests's ext4/053, as the
-zero-day test rebot has remarked upon.  Eric, could you look into
-submitting a patch to xfstests's ext4/053.
+Note that we can deadlock even if we had i_data_sem for reading because
+another reader is not allowed to get the rwsem if there is writer waiting
+for it. So we need to check even that case here.
 
-Thanks!
+> +	while (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING)) {
+> +#if (BITS_PER_LONG < 64)
+> +		DEFINE_WAIT_BIT(wait, &ei->i_state_flags,
+> +				EXT4_STATE_FC_COMMITTING);
+> +		wq = bit_waitqueue(&ei->i_state_flags,
+> +				   EXT4_STATE_FC_COMMITTING);
+> +#else
+> +		DEFINE_WAIT_BIT(wait, &ei->i_flags,
+> +				EXT4_STATE_FC_COMMITTING);
+> +		wq = bit_waitqueue(&ei->i_flags,
+> +				   EXT4_STATE_FC_COMMITTING);
+> +#endif
+> +		prepare_to_wait(wq, &wait.wq_entry, TASK_UNINTERRUPTIBLE);
+> +		if (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING))
+> +			schedule();
+> +		finish_wait(wq, &wait.wq_entry);
+> +	}
+> +
+>  	ret = ext4_fc_track_template(handle, inode, __track_inode, NULL, 1);
+>  	trace_ext4_fc_track_inode(handle, inode, ret);
 
-					- Ted
+As we discussed in the call we should tell lockdep that this is equivalent
+to lock+unlock of let's say fc_committing_lock and the fastcommit code
+setting / clearing EXT4_STATE_FC_COMMITTING is equivalent to lock / unlock
+of fc_committing_lock. That way we get proper lockdep tracking of this
+waiting primitive.
+
+								Honza
+
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
