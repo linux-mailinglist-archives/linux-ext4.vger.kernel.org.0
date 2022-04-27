@@ -2,58 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD4F15115ED
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Apr 2022 13:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ECCB5117F5
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Apr 2022 14:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232273AbiD0LUj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Apr 2022 07:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54746 "EHLO
+        id S234196AbiD0MfG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 Apr 2022 08:35:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232100AbiD0LUi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Apr 2022 07:20:38 -0400
+        with ESMTP id S234278AbiD0MfF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Apr 2022 08:35:05 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E234C2D1C8
-        for <linux-ext4@vger.kernel.org>; Wed, 27 Apr 2022 04:17:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4DE4B1F7;
+        Wed, 27 Apr 2022 05:31:51 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 955FD210EF;
-        Wed, 27 Apr 2022 11:17:26 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 25822210E1;
+        Wed, 27 Apr 2022 12:31:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1651058246; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1651062710; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Xuh17dHNiLL0CJDY0S5w4/S2H5s6yyKw+CHfPIBYCmo=;
-        b=IpzEq5e3ee2wvILTBbTgdKlSRhWfnmuvQ+MiGbmNYgZ7vTWZt4PNI4alyY6Xc/hR/HQgF/
-        hNrLsB6vA1tujP2Hd5HPEIAUyzafPZcfG5UbJG0Idtvmi6yZLbuSQQF3yQEvNIFggd78Q4
-        G5iTcLZ1TGpN0uudQUBDAKQvKegWTfY=
+        bh=C3N+181NGxO23xtLtvgHl8EcRvfl2YIztgq+N5zcc0Q=;
+        b=kWUZDuXbv8n2l/4bg7OILM4Wfr0TQMfM5n6UhSLLBFO7QYMTHTlbH+FN7XNsg/mci/2Rx7
+        I2lkStWKbWmrJEWTtKeJ3rmPz4ywrN5IbbBdWTo7xlqxFERARNsiPV213biZtVVk/prgZw
+        LBdLLHuyIdfvp1EFx7JNWnosE4JstNo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1651058246;
+        s=susede2_ed25519; t=1651062710;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Xuh17dHNiLL0CJDY0S5w4/S2H5s6yyKw+CHfPIBYCmo=;
-        b=o4IyC2KH+CGQNfbwRph7sNnPp3cmVlvfoFra8DdzWHYNipLhx53jHohukLCY0e8/Ag9KQ2
-        CqjZnWimUVlf9GAg==
+        bh=C3N+181NGxO23xtLtvgHl8EcRvfl2YIztgq+N5zcc0Q=;
+        b=YDFmMRH5H6YmEcStLmEwyHz/6yKosU9Gn1KxGeR6GXSKAKCWA/0JT4zdiRl/XcfLXUj4ki
+        wXIOqfgdtdVLYTBQ==
 Received: from quack3.suse.cz (unknown [10.100.224.230])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 816AC2C141;
-        Wed, 27 Apr 2022 11:17:26 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTPS id 0C0EB2C141;
+        Wed, 27 Apr 2022 12:31:49 +0000 (UTC)
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 33558A0620; Wed, 27 Apr 2022 13:17:26 +0200 (CEST)
-Date:   Wed, 27 Apr 2022 13:17:26 +0200
+        id 95379A0620; Wed, 27 Apr 2022 14:31:46 +0200 (CEST)
+Date:   Wed, 27 Apr 2022 14:31:46 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Samuel Mendoza-Jonas <samjonas@amazon.com>
-Cc:     Ritesh Harjani <riteshh@linux.ibm.com>, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.cz>,
-        syzbot+afa2ca5171d93e44b348@syzkaller.appspotmail.com
-Subject: Re: [PATCH] jbd2: Fix use-after-free of transaction_t race
-Message-ID: <20220427111726.3wdyxbqoxs7skdzf@quack3.lan>
-References: <948c2fed518ae739db6a8f7f83f1d58b504f87d0.1644497105.git.ritesh.list@gmail.com>
- <20220426183124.phrwsl77bch5uljx@u46989501580c5c.ant.amazon.com>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yebin10@huawei.com, yukuai3@huawei.com, stable@vger.kernel.org,
+        Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH v2] ext4: fix race condition between ext4_write and
+ ext4_convert_inline_data
+Message-ID: <20220427123146.ymm7lodedvtot2ij@quack3.lan>
+References: <20220426140658.1046700-1-libaokun1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220426183124.phrwsl77bch5uljx@u46989501580c5c.ant.amazon.com>
+In-Reply-To: <20220426140658.1046700-1-libaokun1@huawei.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -63,58 +65,95 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 26-04-22 11:31:24, Samuel Mendoza-Jonas wrote:
-> On Thu, Feb 10, 2022 at 09:07:11PM +0530, Ritesh Harjani wrote:
-> > jbd2_journal_wait_updates() is called with j_state_lock held. But if
-> > there is a commit in progress, then this transaction might get committed
-> > and freed via jbd2_journal_commit_transaction() ->
-> > jbd2_journal_free_transaction(), when we release j_state_lock.
-> > So check for journal->j_running_transaction everytime we release and
-> > acquire j_state_lock to avoid use-after-free issue.
-> > 
-> > Fixes: 4f98186848707f53 ("jbd2: refactor wait logic for transaction updates into a common function")
-> > Reported-and-tested-by: syzbot+afa2ca5171d93e44b348@syzkaller.appspotmail.com
-> > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+On Tue 26-04-22 22:06:58, Baokun Li wrote:
+> Hulk Robot reported a BUG_ON:
+>  ==================================================================
+>  EXT4-fs error (device loop3): ext4_mb_generate_buddy:805: group 0,
+>  block bitmap and bg descriptor inconsistent: 25 vs 31513 free clusters
+>  kernel BUG at fs/ext4/ext4_jbd2.c:53!
+>  invalid opcode: 0000 [#1] SMP KASAN PTI
+>  CPU: 0 PID: 25371 Comm: syz-executor.3 Not tainted 5.10.0+ #1
+>  RIP: 0010:ext4_put_nojournal fs/ext4/ext4_jbd2.c:53 [inline]
+>  RIP: 0010:__ext4_journal_stop+0x10e/0x110 fs/ext4/ext4_jbd2.c:116
+>  [...]
+>  Call Trace:
+>   ext4_write_inline_data_end+0x59a/0x730 fs/ext4/inline.c:795
+>   generic_perform_write+0x279/0x3c0 mm/filemap.c:3344
+>   ext4_buffered_write_iter+0x2e3/0x3d0 fs/ext4/file.c:270
+>   ext4_file_write_iter+0x30a/0x11c0 fs/ext4/file.c:520
+>   do_iter_readv_writev+0x339/0x3c0 fs/read_write.c:732
+>   do_iter_write+0x107/0x430 fs/read_write.c:861
+>   vfs_writev fs/read_write.c:934 [inline]
+>   do_pwritev+0x1e5/0x380 fs/read_write.c:1031
+>  [...]
+>  ==================================================================
 > 
-> Hi Ritesh,
+> Above issue may happen as follows:
+>            cpu1                     cpu2
+> __________________________|__________________________
+> do_pwritev
+>  vfs_writev
+>   do_iter_write
+>    ext4_file_write_iter
+>     ext4_buffered_write_iter
+>      generic_perform_write
+>       ext4_da_write_begin
+>                            vfs_fallocate
+>                             ext4_fallocate
+>                              ext4_convert_inline_data
+>                               ext4_convert_inline_data_nolock
+>                                ext4_destroy_inline_data_nolock
+>                                 clear EXT4_STATE_MAY_INLINE_DATA
+>                                ext4_map_blocks
+>                                 ext4_ext_map_blocks
+>                                  ext4_mb_new_blocks
+>                                   ext4_mb_regular_allocator
+>                                    ext4_mb_good_group_nolock
+>                                     ext4_mb_init_group
+>                                      ext4_mb_init_cache
+>                                       ext4_mb_generate_buddy  --> error
+>        ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA)
+>                                 ext4_restore_inline_data
+>                                  set EXT4_STATE_MAY_INLINE_DATA
+>        ext4_block_write_begin
+>       ext4_da_write_end
+>        ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA)
+>        ext4_write_inline_data_end
+>         handle=NULL
+>         ext4_journal_stop(handle)
+>          __ext4_journal_stop
+>           ext4_put_nojournal(handle)
+>            ref_cnt = (unsigned long)handle
+>            BUG_ON(ref_cnt == 0)  ---> BUG_ON
 > 
-> Looking at the refactor in the commit this fixes, I believe the same
-> issue is present prior to the refactor, so this would apply before 5.17
-> as well.
-> I've posted a backport for 4.9-4.19 and 5.4-5.16 to stable here:
-> https://lore.kernel.org/stable/20220426182702.716304-1-samjonas@amazon.com/T/#t
+> The lock held by ext4_convert_inline_data is xattr_sem, but the lock
+> held by generic_perform_write is i_rwsem. Therefore, the two locks can
+> be concurrent. To solve above issue, we just add inode_lock in
+> ext4_convert_inline_data.
 > 
-> Please have a look and let me know if you agree.
+> Fixes: 0c8d414f163f ("ext4: let fallocate handle inline data correctly")
+> Cc: stable@vger.kernel.org
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-Actually the refactor was indeed the cause for use-after-free. The original
-code in jbd2_journal_lock_updates() was like:
+Thanks for the report and the patch. I agree inode_lock is needed to
+protect the conversion.  However you cannot lock it inside
+ext4_convert_inline_data() because it is often called with inode_lock
+already held (in fact in most of the other cases as far as I have checked).
+So the right fix is to reorganize ext4_fallocate() a bit to do something
+like:
 
-       /* Wait until there are no running updates */
-       while (1) {
-               transaction_t *transaction = journal->j_running_transaction;
+	ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
+	if (ext4_has_inline_data(inode)) {
+		inode_lock(inode);
+		ret = ext4_convert_inline_data(inode);
+		inode_unlock(inode);
+		if (ret)
+			goto exit;
+	}
 
-               if (!transaction)
-                       break;
-               spin_lock(&transaction->t_handle_lock);
-               prepare_to_wait(&journal->j_wait_updates, &wait,
-                               TASK_UNINTERRUPTIBLE);
-               if (!atomic_read(&transaction->t_updates)) {
-                       spin_unlock(&transaction->t_handle_lock);
-                       finish_wait(&journal->j_wait_updates, &wait);
-                       break;
-               }
-               spin_unlock(&transaction->t_handle_lock);
-               write_unlock(&journal->j_state_lock);
-               schedule();
-               finish_wait(&journal->j_wait_updates, &wait);
-               write_lock(&journal->j_state_lock);
-       }
-
-So you can see the code was indeed careful enough to not touch
-t_handle_lock after sleeping. The code in jbd2_journal_commit_transaction()
-did touch t_handle_lock but there it didn't matter because nobody else
-besides the task running jbd2_journal_commit_transaction() can free the
-transaction...
+and remove similar handling from ext4_punch_hole() (and make sure it uses
+the new handling in ext4_fallocate()).
 
 								Honza
 -- 
