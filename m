@@ -2,136 +2,153 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0013A511CEC
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Apr 2022 20:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4362D512ABD
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Apr 2022 06:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242887AbiD0Q1u (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Apr 2022 12:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43144 "EHLO
+        id S232304AbiD1E4e (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 28 Apr 2022 00:56:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242936AbiD0Q1B (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Apr 2022 12:27:01 -0400
-Received: from smtp-fw-6002.amazon.com (smtp-fw-6002.amazon.com [52.95.49.90])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E9D266DB7
-        for <linux-ext4@vger.kernel.org>; Wed, 27 Apr 2022 09:21:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1651076512; x=1682612512;
-  h=date:from:to:cc:message-id:references:mime-version:
-   in-reply-to:subject;
-  bh=Cbg75PUlXZajnRxt3xMCnhVcFuPLrtdlN4tn+AcY6xI=;
-  b=c1HLNC1wvUEKlQgmJVyjh9Miw02XPBzl1FqX8bxGqWbr9Nq6syTmXXlN
-   PCU9qfS4qgTj1PyKRF0jp/Yq2Yu7S3lQd7sB9p/ZGXUAm+jCuJ/0FILzl
-   9V/9PGQxZlPCJqJ+RkffWDcvYblhDIk/Ao4Enm6OJC95Wk2u7fLYsque+
-   Y=;
-X-IronPort-AV: E=Sophos;i="5.90,293,1643673600"; 
-   d="scan'208";a="196791255"
-Subject: Re: [PATCH] jbd2: Fix use-after-free of transaction_t race
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-iad-1a-2d7489a4.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 27 Apr 2022 16:21:48 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-iad-1a-2d7489a4.us-east-1.amazon.com (Postfix) with ESMTPS id 57982951B2;
-        Wed, 27 Apr 2022 16:21:47 +0000 (UTC)
-Received: from EX13D01UWA002.ant.amazon.com (10.43.160.74) by
- EX13MTAUWA001.ant.amazon.com (10.43.160.118) with Microsoft SMTP Server (TLS)
- id 15.0.1497.32; Wed, 27 Apr 2022 16:21:47 +0000
-Received: from localhost (10.43.161.193) by EX13d01UWA002.ant.amazon.com
- (10.43.160.74) with Microsoft SMTP Server (TLS) id 15.0.1497.32; Wed, 27 Apr
- 2022 16:21:46 +0000
-Date:   Wed, 27 Apr 2022 09:21:46 -0700
-From:   Samuel Mendoza-Jonas <samjonas@amazon.com>
-To:     Jan Kara <jack@suse.cz>
-CC:     Ritesh Harjani <riteshh@linux.ibm.com>,
-        <linux-ext4@vger.kernel.org>,
-        <syzbot+afa2ca5171d93e44b348@syzkaller.appspotmail.com>
-Message-ID: <20220427162146.3nj3czri4krdpy3c@u46989501580c5c.ant.amazon.com>
-References: <948c2fed518ae739db6a8f7f83f1d58b504f87d0.1644497105.git.ritesh.list@gmail.com>
- <20220426183124.phrwsl77bch5uljx@u46989501580c5c.ant.amazon.com>
- <20220427111726.3wdyxbqoxs7skdzf@quack3.lan>
+        with ESMTP id S229647AbiD1E4e (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 28 Apr 2022 00:56:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74BCD9728F;
+        Wed, 27 Apr 2022 21:53:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D7EAB61C5B;
+        Thu, 28 Apr 2022 04:53:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 876F6C385A0;
+        Thu, 28 Apr 2022 04:53:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1651121599;
+        bh=9bCPfuK2ZtwsmzVYVCLOfTR7rL5e61TW5lNUriM4gEE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=orxjS9XAaBpxVoFQnE9wsmnTf1WlGnF5YtZ9JN4puN7jXSd+1Hg+eGGLB268CwuoW
+         Ss58+yWw17apNUKDWoB+vBwErUe9k2+U7BWofsnYcgOT7jHQ3WPlJHh1HmOk6jhk9Y
+         QEMAfUbVj4l1dnnDdJqkvhHEWTyQ6W9A6+w6OgNi7rDaH8fa4xKdq1VdnsOQWHJNt2
+         wzJc81oh65S3h/PJLnjudrSwXnS/6RUBSITNKdyL/c+HarzVvHq89ToAgB3+MwshBd
+         PV0ijJhoczo+0QfcUz6bLxNfbNdcYMpqmDuB1D1IidHJKvbRhEyV3DlFDiphHb7bCR
+         Jc+2BXNyVSCEg==
+Date:   Thu, 28 Apr 2022 12:53:13 +0800
+From:   Zorro Lang <zlang@kernel.org>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     fstests@vger.kernel.org, djwong@kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] ext4/054,ext4/055: don't run when using DAX
+Message-ID: <20220428045313.kntbytbqlpgummql@zlang-mailbox>
+Mail-Followup-To: Theodore Ts'o <tytso@mit.edu>, fstests@vger.kernel.org,
+        djwong@kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org
+References: <20220427005209.4188220-1-tytso@mit.edu>
+ <20220427080540.o7tu3nz6g5ch6xpt@zlang-mailbox>
+ <YmlY5NhDodhRRpkU@mit.edu>
+ <20220427171923.ab2duujwkljyatyv@zlang-mailbox>
+ <YmmdOvsw7gJXqu9X@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220427111726.3wdyxbqoxs7skdzf@quack3.lan>
-X-Originating-IP: [10.43.161.193]
-X-ClientProxiedBy: EX13D10UWA003.ant.amazon.com (10.43.160.248) To
- EX13d01UWA002.ant.amazon.com (10.43.160.74)
-X-Spam-Status: No, score=-12.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <YmmdOvsw7gJXqu9X@mit.edu>
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 27, 2022 at 01:17:26PM +0200, Jan Kara wrote:
-> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+On Wed, Apr 27, 2022 at 03:44:58PM -0400, Theodore Ts'o wrote:
+> On Thu, Apr 28, 2022 at 01:19:23AM +0800, Zorro Lang wrote:
+> > I just noticed that _scratch_mkfs_sized() and _scratch_mkfs_blocksized() both use
+> > _scratch_mkfs_xfs for XFS, I'm wondering if ext4 would like to use _scratch_mkfs_ext4()
+> > or even use _scratch_mkfs() directly in these two functions. Then you can do something
+> > likes:
+> >   MKFS_OPTIONS="$MKFS_OPTIONS -F -O quota"
+> >   _scratch_mkfs_blocksized 1024
+> > or:
+> >   MKFS_OPTIONS="$MKFS_OPTIONS -F -O quota" _scratch_mkfs_blocksized 1024
 > 
-> 
-> 
-> On Tue 26-04-22 11:31:24, Samuel Mendoza-Jonas wrote:
-> > On Thu, Feb 10, 2022 at 09:07:11PM +0530, Ritesh Harjani wrote:
-> > > jbd2_journal_wait_updates() is called with j_state_lock held. But if
-> > > there is a commit in progress, then this transaction might get committed
-> > > and freed via jbd2_journal_commit_transaction() ->
-> > > jbd2_journal_free_transaction(), when we release j_state_lock.
-> > > So check for journal->j_running_transaction everytime we release and
-> > > acquire j_state_lock to avoid use-after-free issue.
-> > >
-> > > Fixes: 4f98186848707f53 ("jbd2: refactor wait logic for transaction updates into a common function")
-> > > Reported-and-tested-by: syzbot+afa2ca5171d93e44b348@syzkaller.appspotmail.com
-> > > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> >
-> > Hi Ritesh,
-> >
-> > Looking at the refactor in the commit this fixes, I believe the same
-> > issue is present prior to the refactor, so this would apply before 5.17
-> > as well.
-> > I've posted a backport for 4.9-4.19 and 5.4-5.16 to stable here:
-> > https://lore.kernel.org/stable/20220426182702.716304-1-samjonas@amazon.com/T/#t
-> >
-> > Please have a look and let me know if you agree.
-> 
-> Actually the refactor was indeed the cause for use-after-free. The original
-> code in jbd2_journal_lock_updates() was like:
-> 
->        /* Wait until there are no running updates */
->        while (1) {
->                transaction_t *transaction = journal->j_running_transaction;
-> 
->                if (!transaction)
->                        break;
->                spin_lock(&transaction->t_handle_lock);
->                prepare_to_wait(&journal->j_wait_updates, &wait,
->                                TASK_UNINTERRUPTIBLE);
->                if (!atomic_read(&transaction->t_updates)) {
->                        spin_unlock(&transaction->t_handle_lock);
->                        finish_wait(&journal->j_wait_updates, &wait);
->                        break;
->                }
->                spin_unlock(&transaction->t_handle_lock);
->                write_unlock(&journal->j_state_lock);
->                schedule();
->                finish_wait(&journal->j_wait_updates, &wait);
->                write_lock(&journal->j_state_lock);
->        }
-> 
-> So you can see the code was indeed careful enough to not touch
-> t_handle_lock after sleeping. The code in jbd2_journal_commit_transaction()
-> did touch t_handle_lock but there it didn't matter because nobody else
-> besides the task running jbd2_journal_commit_transaction() can free the
-> transaction...
-> 
+> I'd prefer to keep changing _scratch_mkfs_sized and
+> _scatch_mkfs_blocksized to use _scratch_mfks_ext4 as a separate
+> commit.  It makes sense to do that, but it does mean some behavioral
+> changes; specifically in the external log case,
+> "_scratch_mkfs_blocksized" will now create a file system using an
+> external log.  It's probably a good change, but there is some testing
+> I'd like to do first before makinig that change and I don't have time
+> for it.
 
-Right you are, I misinterpreted the interaction with
-jbd2_journal_commit_transaction(). Thanks for verifying, I'll follow up
-stable to disregard those backports.
+Sure, totally agree :)
 
-Cheers,
-Sam
+> 
+> > We just provide a helper to avoid someone forget 'dax', I don't object someone would
+> > like to "exclude dax" by explicit method :) So if you don't have much time to do this
+> > change, you can just do what you said above, then I'll take another time/chance to
+> > change _scratch_mkfs_* things.
+> 
+> Hmm, one thing which I noticed when searching through things.  xfs/432
+> does this:
+> 
+> _scratch_mkfs -b size=1k -n size=64k > "$seqres.full" 2>&1
+> 
+> So in {gce,kvm}-xfstests we have an exclude file entry in
+> .../fs/xfs/cfg/dax.exclude:
+> 
+> # This test formats a file system with a 1k block size, which is not
+> # compatible with DAX (at least with systems with a 4k page size).
+> xfs/432
+> 
+> ... in order to suppress a test failure.
+> 
+> Arguably we should add an "_exclude_scratch_mount_option dax" to this
+> test, as opposed to having an explicit test exclusion in my test
+> runner.  Or we figure out how to change xfs/432 to use
+> _scratch_mkfs_blocksized.  So there is a lot of cleanup that can be
+> done here, and I suspect we should do this work incrementally.  :-)
 
->                                                                 Honza
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+Thanks for finding that, yes, we can do a cleanup later, if you have
+a failed testing list welcome to provide to be references :)
+
+> 
+> > Maybe we should think about let all _scratch_mkfs_*[1] helpers use _scratch_mkfs
+> > consistently. But that will change and affect too many things. I don't want to break
+> > fundamental code too much, might be better to let each fs help to change and test
+> > that bit by bit, when they need :)
+> 
+> Yep.   :-)
+> 
+> 						- Ted
+> 
+> P.S.  Here's something else that should probably be moved from my test
+> runner into xfstests.  Again from .../xfs/cfg/dax.exclude:
+> 
+> # mkfs.xfs options which now includes reflink, and reflink is not
+> # compatible with DAX
+> xfs/032
+> xfs/205
+> xfs/294
+
+Yes, xfs reflink can't work with DAX now, I don't know if it *will*, maybe
+Darrick knows more details.
+
+> 
+> Maybe _scratch_mkfs_xfs should be parsing the output of mkfs.xfs to
+> see if reflink is enabled, and then automatically asserting an
+> "_exclude_scratch_mount_option dax", perhaps?
+
+Hmm... good point, does it make sense to you, Darrick?
+
+This patch can do what we talked in last patch, and welcome later patches from
+extN forks:) I can help to deal with XFS part later. I don't know if btrfs has
+similar troubles, welcome patches if they need too.
+
+The change on _scratch_mkfs_blocksized will help common part, but can' help all
+situations. Maybe better to let each fs change and test their fundamental helper
+changes separately, to avoid regression :)
+
+Thanks,
+Zorro
+
+> 
