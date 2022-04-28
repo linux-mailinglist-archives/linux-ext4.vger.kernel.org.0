@@ -2,129 +2,179 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C3B513442
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Apr 2022 14:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B3751350E
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Apr 2022 15:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346716AbiD1M6a (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 28 Apr 2022 08:58:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58626 "EHLO
+        id S1347337AbiD1N3p (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 28 Apr 2022 09:29:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346694AbiD1M63 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 28 Apr 2022 08:58:29 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86E2949264;
-        Thu, 28 Apr 2022 05:55:13 -0700 (PDT)
-Received: from zn.tnic (p5de8eeb4.dip0.t-ipconnect.de [93.232.238.180])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 881A91EC04A6;
-        Thu, 28 Apr 2022 14:55:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1651150508;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:references;
-        bh=crCnnWzrAN8x51FVwXTmr/bjEfSC5i6u3ErOccjZXEE=;
-        b=N/QJVCaSj/s2DWZH0C8ol6WCxLpZTPmjSVPQft7LW+e8eHWyIEEkJdtnVRet3959sMLL5a
-        TyRTiSXetS5UKiPD/IYWwoO5dp6AvLzC+rijJCHb8bFtJuLEkGuSnwWqyGLG5qOxjGTR0m
-        F6Mmm02GyvxeTN/GzhxdYAc+JtIZtcA=
-Date:   Thu, 28 Apr 2022 14:55:04 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     linux-ext4@vger.kernel.org
-Cc:     lkml <linux-kernel@vger.kernel.org>
-Subject: EXT4-fs error (device sda5) in ext4_update_backup_sb:165: Filesystem
- failed CRC
-Message-ID: <YmqOqGKajOOx90ZY@zn.tnic>
+        with ESMTP id S229625AbiD1N3o (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 28 Apr 2022 09:29:44 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4506BB0D24;
+        Thu, 28 Apr 2022 06:26:25 -0700 (PDT)
+Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KpxFM45kjzfZkJ;
+        Thu, 28 Apr 2022 21:25:27 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
+ (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 28 Apr
+ 2022 21:26:22 +0800
+From:   Baokun Li <libaokun1@huawei.com>
+To:     <linux-ext4@vger.kernel.org>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
+        <yebin10@huawei.com>, <yukuai3@huawei.com>, <libaokun1@huawei.com>,
+        <stable@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH v3] ext4: fix race condition between ext4_write and ext4_convert_inline_data
+Date:   Thu, 28 Apr 2022 21:40:31 +0800
+Message-ID: <20220428134031.4153381-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
+Hulk Robot reported a BUG_ON:
+ ==================================================================
+ EXT4-fs error (device loop3): ext4_mb_generate_buddy:805: group 0,
+ block bitmap and bg descriptor inconsistent: 25 vs 31513 free clusters
+ kernel BUG at fs/ext4/ext4_jbd2.c:53!
+ invalid opcode: 0000 [#1] SMP KASAN PTI
+ CPU: 0 PID: 25371 Comm: syz-executor.3 Not tainted 5.10.0+ #1
+ RIP: 0010:ext4_put_nojournal fs/ext4/ext4_jbd2.c:53 [inline]
+ RIP: 0010:__ext4_journal_stop+0x10e/0x110 fs/ext4/ext4_jbd2.c:116
+ [...]
+ Call Trace:
+  ext4_write_inline_data_end+0x59a/0x730 fs/ext4/inline.c:795
+  generic_perform_write+0x279/0x3c0 mm/filemap.c:3344
+  ext4_buffered_write_iter+0x2e3/0x3d0 fs/ext4/file.c:270
+  ext4_file_write_iter+0x30a/0x11c0 fs/ext4/file.c:520
+  do_iter_readv_writev+0x339/0x3c0 fs/read_write.c:732
+  do_iter_write+0x107/0x430 fs/read_write.c:861
+  vfs_writev fs/read_write.c:934 [inline]
+  do_pwritev+0x1e5/0x380 fs/read_write.c:1031
+ [...]
+ ==================================================================
 
-the errors at the end of this mail come from one of my test boxes booted
-with latest Linus:
+Above issue may happen as follows:
+           cpu1                     cpu2
+__________________________|__________________________
+do_pwritev
+ vfs_writev
+  do_iter_write
+   ext4_file_write_iter
+    ext4_buffered_write_iter
+     generic_perform_write
+      ext4_da_write_begin
+                           vfs_fallocate
+                            ext4_fallocate
+                             ext4_convert_inline_data
+                              ext4_convert_inline_data_nolock
+                               ext4_destroy_inline_data_nolock
+                                clear EXT4_STATE_MAY_INLINE_DATA
+                               ext4_map_blocks
+                                ext4_ext_map_blocks
+                                 ext4_mb_new_blocks
+                                  ext4_mb_regular_allocator
+                                   ext4_mb_good_group_nolock
+                                    ext4_mb_init_group
+                                     ext4_mb_init_cache
+                                      ext4_mb_generate_buddy  --> error
+       ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA)
+                                ext4_restore_inline_data
+                                 set EXT4_STATE_MAY_INLINE_DATA
+       ext4_block_write_begin
+      ext4_da_write_end
+       ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA)
+       ext4_write_inline_data_end
+        handle=NULL
+        ext4_journal_stop(handle)
+         __ext4_journal_stop
+          ext4_put_nojournal(handle)
+           ref_cnt = (unsigned long)handle
+           BUG_ON(ref_cnt == 0)  ---> BUG_ON
 
-8f4dd16603ce ("Merge branch 'akpm' (patches from Andrew)")
+The lock held by ext4_convert_inline_data is xattr_sem, but the lock
+held by generic_perform_write is i_rwsem. Therefore, the two locks can
+be concurrent.
 
-+ tip/master.
+To solve above issue, we add inode_lock() for ext4_convert_inline_data().
+At the same time, move ext4_convert_inline_data() in front of
+ext4_punch_hole(), remove similar handling from ext4_punch_hole().
 
-A second boot into the same kernel says:
+Fixes: 0c8d414f163f ("ext4: let fallocate handle inline data correctly")
+Cc: stable@vger.kernel.org
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+V1->V2:
+	Increase the range of the inode_lock.
+V2->V3:
+	Move the lock outside the ext4_convert_inline_data().
+	And reorganize ext4_fallocate().
 
-[    5.427329] EXT4-fs (sda5): warning: mounting fs with errors, running e2fsck is recommended
-[    5.435681] EXT4-fs (sda5): mounted filesystem with ordered data mode. Quota mode: disabled.
-...
+ fs/ext4/extents.c | 10 ++++++----
+ fs/ext4/inode.c   |  9 ---------
+ 2 files changed, 6 insertions(+), 13 deletions(-)
 
-[  316.621377] EXT4-fs (sda5): error count since last fsck: 14
-[  316.621645] EXT4-fs (sda5): initial error at time 1651146136: ext4_update_backup_sb:165
-[  316.621948] EXT4-fs (sda5): last error at time 1651146136: ext4_update_backup_sb:165
-
-
-And it used to work fine with rc3:
-
-EXT4-fs (sda5): mounted filesystem with ordered data mode. Quota mode: disabled.
-
-so before I go and fsck the partition, I thought I should report it
-first - maybe something new in ext4 land is not behaving as it should...
-
-And since rc3 I see:
-
-$ git log --oneline v5.18-rc3.. fs/ext4/
-c00c5e1d157b Merge tag 'ext4_for_linus_stable' of git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4
-eb7054212eac ext4: update the cached overhead value in the superblock
-85d825dbf489 ext4: force overhead calculation if the s_overhead_cluster makes no sense
-10b01ee92df5 ext4: fix overhead calculation to account for the reserved gdt blocks
-2da376228a24 ext4: limit length to bitmap_maxbytes - blocksize in punch_hole
-c186f0887fe7 ext4: fix use-after-free in ext4_search_dir
-b98535d09179 ext4: fix bug_on in start_this_handle during umount filesystem
-a2b0b205d125 ext4: fix symlink file size not match to file content
-ad5cd4f4ee4d ext4: fix fallocate to use file_modified to update permissions consistently
-
-so there is something which just got applied...
-
-[    4.742960] device-mapper: ioctl: 4.46.0-ioctl (2022-02-22) initialised: dm-devel@redhat.com
-[    4.766518] loop: module loaded
-[    4.836287] EXT4-fs (sda5): mounted filesystem with ordered data mode. Quota mode: disabled.
-[    4.840733] EXT4-fs (sda5): Invalid checksum for backup superblock 32768
-
-[    4.843142] EXT4-fs error (device sda5) in ext4_update_backup_sb:165: Filesystem failed CRC
-[    4.844802] EXT4-fs (sda5): Invalid checksum for backup superblock 98304
-
-[    4.847239] EXT4-fs error (device sda5) in ext4_update_backup_sb:165: Filesystem failed CRC
-[    4.848942] EXT4-fs (sda5): Invalid checksum for backup superblock 163840
-
-[    4.851344] EXT4-fs error (device sda5) in ext4_update_backup_sb:165: Filesystem failed CRC
-[    4.852919] EXT4-fs (sda5): Invalid checksum for backup superblock 229376
-
-[    4.855270] EXT4-fs error (device sda5) in ext4_update_backup_sb:165: Filesystem failed CRC
-[    4.856910] EXT4-fs (sda5): Invalid checksum for backup superblock 294912
-
-[    4.859279] EXT4-fs error (device sda5) in ext4_update_backup_sb:165: Filesystem failed CRC
-[    4.860946] EXT4-fs (sda5): Invalid checksum for backup superblock 819200
-
-[    4.863429] EXT4-fs error (device sda5) in ext4_update_backup_sb:165: Filesystem failed CRC
-[    4.865182] EXT4-fs (sda5): Invalid checksum for backup superblock 884736
-
-[    4.867793] EXT4-fs error (device sda5) in ext4_update_backup_sb:165: Filesystem failed CRC
-[    4.869583] EXT4-fs (sda5): Invalid checksum for backup superblock 1605632
-
-[    4.872285] EXT4-fs error (device sda5) in ext4_update_backup_sb:165: Filesystem failed CRC
-[    4.874109] EXT4-fs (sda5): Invalid checksum for backup superblock 2654208
-
-[    4.877056] EXT4-fs error (device sda5) in ext4_update_backup_sb:165: Filesystem failed CRC
-[    4.878751] EXT4-fs error (device sda5) in ext4_update_backup_sb:165: Filesystem failed CRC
-
-Thx.
-
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index e473fde6b64b..474479ce76e0 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -4693,15 +4693,17 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
+ 		     FALLOC_FL_INSERT_RANGE))
+ 		return -EOPNOTSUPP;
+ 
++	inode_lock(inode);
++	ret = ext4_convert_inline_data(inode);
++	inode_unlock(inode);
++	if (ret)
++		goto exit;
++
+ 	if (mode & FALLOC_FL_PUNCH_HOLE) {
+ 		ret = ext4_punch_hole(file, offset, len);
+ 		goto exit;
+ 	}
+ 
+-	ret = ext4_convert_inline_data(inode);
+-	if (ret)
+-		goto exit;
+-
+ 	if (mode & FALLOC_FL_COLLAPSE_RANGE) {
+ 		ret = ext4_collapse_range(file, offset, len);
+ 		goto exit;
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 646ece9b3455..4779673d733e 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3967,15 +3967,6 @@ int ext4_punch_hole(struct file *file, loff_t offset, loff_t length)
+ 
+ 	trace_ext4_punch_hole(inode, offset, length, 0);
+ 
+-	ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
+-	if (ext4_has_inline_data(inode)) {
+-		filemap_invalidate_lock(mapping);
+-		ret = ext4_convert_inline_data(inode);
+-		filemap_invalidate_unlock(mapping);
+-		if (ret)
+-			return ret;
+-	}
+-
+ 	/*
+ 	 * Write out all dirty pages to avoid race conditions
+ 	 * Then release them.
 -- 
-Regards/Gruss,
-    Boris.
+2.31.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
