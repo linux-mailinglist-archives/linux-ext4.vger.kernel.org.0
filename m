@@ -2,141 +2,119 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 343F75153A8
-	for <lists+linux-ext4@lfdr.de>; Fri, 29 Apr 2022 20:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A624515FB6
+	for <lists+linux-ext4@lfdr.de>; Sat, 30 Apr 2022 19:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379997AbiD2SbW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 29 Apr 2022 14:31:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60250 "EHLO
+        id S243986AbiD3SBj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 30 Apr 2022 14:01:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380007AbiD2SbT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 29 Apr 2022 14:31:19 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF2E8D0A9A
-        for <linux-ext4@vger.kernel.org>; Fri, 29 Apr 2022 11:28:00 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 698541F46913
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1651256879;
-        bh=e2mIC2NlA+jrtGJdGyDt40xQfgyktaRVyuhlRHDssdg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mhUIS5KolkDEVLKydJJGwtmBAUfMjZYY65SAMwLu6HY0GWa8UA9NyMk5vsKnhBGnz
-         6DaiSFCen8PCqjZq2AAcDKydm37BU3MTUx2JhKJjxwnN5Fm1PPtJBehtmOGlf+ztIz
-         Te9ORRP6J//LieyP1Pg1U6xMFBcwOsKPAtj2ETUeBot/Oef9d6SghZ2ecVHh1FdTjW
-         TbCFGcRx1G3+vrc5pg1BAPcjOGtug7aLvHvHZl8DHGzTwBJsEoehQ8dPEGVROjAq7p
-         4hJ/Jtu7f7chzSdZjk+pOSr2pdIils3iffVpSlw6kgkAEL7OM8TrDEHW1w79s3XPNE
-         xG9FZ3q5ArwXw==
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        ebiggers@kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel@collabora.com
-Subject: [PATCH v3 7/7] f2fs: Reuse generic_ci_match for ci comparisons
-Date:   Fri, 29 Apr 2022 14:27:28 -0400
-Message-Id: <20220429182728.14008-8-krisman@collabora.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220429182728.14008-1-krisman@collabora.com>
-References: <20220429182728.14008-1-krisman@collabora.com>
+        with ESMTP id S243938AbiD3SBi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 30 Apr 2022 14:01:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97AE7939ED;
+        Sat, 30 Apr 2022 10:58:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 33B3461022;
+        Sat, 30 Apr 2022 17:58:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D855C385AA;
+        Sat, 30 Apr 2022 17:58:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1651341494;
+        bh=RuvtmLXYu7k3oxdQeuy8TIHBtPj7lj1z/+j84m4s41I=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jzaK44e/VDrPECBTBVUKIEpLxbI50b4YxKrd9z8/HdBsEAB+sp57ZfrertI7eW3By
+         ISfo3iD/A09JamCO9VMMpD4OIccpvxVxr2iVYWTIlyvDuh+0ShC3b3U1T+uxzonPh2
+         BFJ6XmrEbqzMHlyEZTpip8YwfP2I9yiFxeATEUFj8IM1lWbFJBrGwijXH6ns8TqIC1
+         UEXquTL2YO2QGus2psCl4O4AozPeK2NIUqtIURuNhV5VZPrmUyIkEVCNU/nqU7AUdw
+         DUmNY/0oZhG7Hju7hD0Cy0f3T4P05xxZIS5/yWmc8mBeZBwiWcPKdzg3p13fxsb97H
+         BgkMLMYG1Qpvw==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: [xfstests-bld PATCH] test-appliance: remove convenience fstab entries
+Date:   Sat, 30 Apr 2022 10:57:33 -0700
+Message-Id: <20220430175733.110401-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.36.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        UNPARSEABLE_RELAY,URIBL_BLACK autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Now that ci_match is part of libfs, make f2fs reuse it instead of having
-a different implementation.
+From: Eric Biggers <ebiggers@google.com>
 
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+Fstab entries for the xfstests filesystems interfere with xfstests
+because they change the behavior of 'mount -o remount MOUNTPOINT' to
+remount relative to the mount options from the fstab rather than the
+actual mount options.  For example:
+
+With fstab:
+	$ mount -o lazytime /dev/vdc /vdc
+	$ mount -o remount /vdc
+	$ findmnt /vdc
+	TARGET SOURCE   FSTYPE OPTIONS
+	/vdc   /dev/vdc ext4   rw,relatime
+
+Without fstab:
+	$ rm /etc/fstab
+	$ mount -o lazytime /dev/vdc /vdc
+	$ mount -o remount /vdc
+	$ findmnt /vdc
+	TARGET SOURCE   FSTYPE OPTIONS
+	/vdc   /dev/vdc ext4   rw,relatime,lazytime
+
+So the lazytime option was lost on remount due to the fstab.  This
+happens with other mount options too; lazytime is just an example.
+
+This breaks xfstest ext4/053.
+
+Remove the fstab entries, as they were only needed to make it slightly
+easier to manually mount filesystems in an interactive shell.  So 'mount
+/vdc' will no longer work, but 'mount /dev/vdc /vdc' will still work.
+
+Alternatively we could make xfstests always use
+'mount --options-source=mtab' instead of just 'mount', but xfstests
+calls 'mount' in a bunch of different places.  We could still do it
+anyway, though; let me know if that would be preferred.
+
+Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/f2fs/dir.c | 58 ++++-----------------------------------------------
- 1 file changed, 4 insertions(+), 54 deletions(-)
+ kvm-xfstests/test-appliance/files/etc/fstab | 15 ++-------------
+ 1 file changed, 2 insertions(+), 13 deletions(-)
 
-diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-index 166f08623362..c39b3abbf99e 100644
---- a/fs/f2fs/dir.c
-+++ b/fs/f2fs/dir.c
-@@ -208,69 +208,19 @@ static struct f2fs_dir_entry *find_in_block(struct inode *dir,
- 	return f2fs_find_target_dentry(&d, fname, max_slots);
- }
+diff --git a/kvm-xfstests/test-appliance/files/etc/fstab b/kvm-xfstests/test-appliance/files/etc/fstab
+index fbd0c69..4a6395d 100644
+--- a/kvm-xfstests/test-appliance/files/etc/fstab
++++ b/kvm-xfstests/test-appliance/files/etc/fstab
+@@ -7,18 +7,7 @@ debugfs		/sys/kernel/debug debugfs defaults	0	0
+ v_tmp		/vtmp	9p	trans=virtio,version=9p2000.L,msize=262144,nofail,x-systemd.device-timeout=1	0	0
+ /dev/rootfs	/	ext4    noatime 0 1
  
--#if IS_ENABLED(CONFIG_UNICODE)
--/*
-- * Test whether a case-insensitive directory entry matches the filename
-- * being searched for.
-- *
-- * Returns 1 for a match, 0 for no match, and -errno on an error.
-- */
--static int f2fs_match_ci_name(const struct inode *dir, const struct qstr *name,
--			       const u8 *de_name, u32 de_name_len)
--{
--	const struct super_block *sb = dir->i_sb;
--	const struct unicode_map *um = sb->s_encoding;
--	struct fscrypt_str decrypted_name = FSTR_INIT(NULL, de_name_len);
--	struct qstr entry = QSTR_INIT(de_name, de_name_len);
--	int res;
--
--	if (IS_ENCRYPTED(dir)) {
--		const struct fscrypt_str encrypted_name =
--			FSTR_INIT((u8 *)de_name, de_name_len);
--
--		if (WARN_ON_ONCE(!fscrypt_has_encryption_key(dir)))
--			return -EINVAL;
--
--		decrypted_name.name = kmalloc(de_name_len, GFP_KERNEL);
--		if (!decrypted_name.name)
--			return -ENOMEM;
--		res = fscrypt_fname_disk_to_usr(dir, 0, 0, &encrypted_name,
--						&decrypted_name);
--		if (res < 0)
--			goto out;
--		entry.name = decrypted_name.name;
--		entry.len = decrypted_name.len;
--	}
--
--	res = utf8_strncasecmp_folded(um, name, &entry);
--	/*
--	 * In strict mode, ignore invalid names.  In non-strict mode,
--	 * fall back to treating them as opaque byte sequences.
--	 */
--	if (res < 0 && !sb_has_strict_encoding(sb)) {
--		res = name->len == entry.len &&
--				memcmp(name->name, entry.name, name->len) == 0;
--	} else {
--		/* utf8_strncasecmp_folded returns 0 on match */
--		res = (res == 0);
--	}
--out:
--	kfree(decrypted_name.name);
--	return res;
--}
--#endif /* CONFIG_UNICODE */
--
- static inline int f2fs_match_name(const struct inode *dir,
- 				   const struct f2fs_filename *fname,
- 				   const u8 *de_name, u32 de_name_len)
- {
- 	struct fscrypt_name f;
-+	struct unicode_name u;
+-# Convenience entries for interactive mounting (e.g. 'mount /vdb')
+-/dev/vdb	/vdb	auto	defaults,noauto		0	0
+-/dev/vdc	/vdc	auto	defaults,noauto		0	0
+-/dev/vdd	/vdd	auto	defaults,noauto		0	0
+-/dev/vde	/vde	auto	defaults,noauto		0	0
+-/dev/vdf	/vdf	auto	defaults,noauto		0	0
+ /dev/vdg	/results auto	defaults		0	2
+-/dev/vdi	/vdi	auto	defaults,noauto		0	0
+-/dev/vdj	/vdj	auto	defaults,noauto		0	0
  
- #if IS_ENABLED(CONFIG_UNICODE)
- 	if (fname->cf_name.name) {
- 		struct qstr cf = FSTR_TO_QSTR(&fname->cf_name);
+-localhost:/test	/mnt/test nfs 	defaults,noauto		0	0
+-localhost:/scratch /mnt/scratch nfs defaults,noauto	0	0
 -
--		return f2fs_match_ci_name(dir, &cf, de_name, de_name_len);
-+		u.folded_name = &cf;
-+		u.usr_name = fname->usr_fname;
-+		return generic_ci_match(dir, &u, (u8*) de_name, de_name_len);
- 	}
- #endif
- 	f.usr_fname = fname->usr_fname;
+-/vdc/scratch	/scratch none	defaults,noauto,bind	0	0
+-/vdc/test	/test	 none	defaults,noauto,bind	0	0
++# Don't include entries for the xfstests filesystems (/vdb, /vdc, etc.) here, as
++# they interfere with xfstests by changing the behavior of 'mount -o remount'.
 -- 
-2.35.1
+2.36.0
 
