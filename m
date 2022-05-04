@@ -2,87 +2,137 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9F8751A1D3
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 May 2022 16:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E71CC51ACE2
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 May 2022 20:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351051AbiEDOMU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 4 May 2022 10:12:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57198 "EHLO
+        id S239187AbiEDSfn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 4 May 2022 14:35:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237638AbiEDOMP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 May 2022 10:12:15 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A891419A5
-        for <linux-ext4@vger.kernel.org>; Wed,  4 May 2022 07:08:39 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id iq10so1355348pjb.0
-        for <linux-ext4@vger.kernel.org>; Wed, 04 May 2022 07:08:39 -0700 (PDT)
+        with ESMTP id S1377165AbiEDSff (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 May 2022 14:35:35 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE874A91F
+        for <linux-ext4@vger.kernel.org>; Wed,  4 May 2022 11:17:23 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id q130so2702180ljb.5
+        for <linux-ext4@vger.kernel.org>; Wed, 04 May 2022 11:17:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=KCUaAMRk/weQ5nqNkSROe/7DXdzibTETQDxMQoF1EaE=;
-        b=RFbQxpIuE6C2ezyq6DDlHFOTEWWOCSlzloILsvJYPYmOGxX7gQ9uTEG51n5YjaL6OD
-         V3j00TS7GvuTSh8bEkjygYEWwVSCEORP8z/L6I+P+PcRHBGFru66/FXdJvyXRffMJ6yr
-         dNE3FqU00mvP2Df22Jr+MTMrbKg9vkHExlgW2dp8rdaRvtdK3fSsyk3wSS43qpMsx3f8
-         eCUf4EQF+S6uDKqANPkHZNKBcv+587jufWas9I09vYyBK6vsTMDQoR8kKuTxd2ooOTM1
-         yzhX9yCKwb/LnFU6LP/5tWcn45KDU9EuIamY097VHjBm5+fojU3Y7lS0K8b69x1WVB74
-         OuaQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=azQ8sWCnz/WIz9gx757KP54kS0UJB42kEHdJ90hMQlI=;
+        b=TGN9imabgriFl447VR+LtalCql2Ru1FM30YxNTrRXmNp2/aqSQe997eejilXBWN//u
+         GLL7PEuW6j459zsXmON4fgRMpLVmy4AeFXc6ipyOPPq4NZahAq6TXZNADjmVrlQQdnt5
+         DczkC/efB8FuKeTl9T9HqInWj7/2oPQ1dOleE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=KCUaAMRk/weQ5nqNkSROe/7DXdzibTETQDxMQoF1EaE=;
-        b=E1wuYNdbB48A1i4mTuwxQi0/Xw3PlioS+fKU3rlGt9nDLOtuJVp7F8WiHTRSTcpUs1
-         LrTHl+aNfUbDjV5V1ZIIcbW5UfcnrH3DXnmEIcf9xUOIcJpIPS4/gIEsisl/Zi66UFVN
-         8w0XCUJEJKfkI7LU3E434mQ2Or3bPrMI8WnUg739ioja18BsniEj/BS5CvzptF0uo9sM
-         0jrPkMMYNaBDiYFfDaJY5ivfRgUB0Dpm4ysV/5EhaIYMVnawg4U3wtieeWCG2m7blIvt
-         +43aXw+SaheNVyz0RC0KblbvfHKjpglsmo+d9fo0SFWAGYCxEZ5nUxEf4gCcR36vBgka
-         qasQ==
-X-Gm-Message-State: AOAM5308huPMdNn2ZFAmAdh22ln/SAoZ7umSCbAPEPiVAN7NAw9PCPj+
-        fBohOrl7HRgTHXDq/HozUqc3DQ==
-X-Google-Smtp-Source: ABdhPJylWIf1pK8rvbBUafZUQvlvfAiHqRnOsNMdX1IJgYuXv1cD6M/jCDQK+hl++TSIBX3sjHgizA==
-X-Received: by 2002:a17:902:ef47:b0:156:646b:58e7 with SMTP id e7-20020a170902ef4700b00156646b58e7mr21309272plx.57.1651673318945;
-        Wed, 04 May 2022 07:08:38 -0700 (PDT)
-Received: from [192.168.254.17] ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id s4-20020a62e704000000b0050dc762816csm8258048pfh.70.2022.05.04.07.08.38
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=azQ8sWCnz/WIz9gx757KP54kS0UJB42kEHdJ90hMQlI=;
+        b=MchJY1pYmQRieA1u0xG5Pzcjt3/i7f8U6+Pf6nT7EMtuYnlMRPNHEyKoBUK5sIyfuF
+         7GaNU99bAh5nY2Lz948k3rkTHXmEenjQ4W+no6Plzr7demefhdiQ5DWFGXVpccDTwApZ
+         wYWy5NNrtnDapBc+oXogxqJQJrvOQEGbFl8gTtE36KzAw3wIzYPAdrMR6Y5vK6us1o4T
+         ekO7BH68vyo7tzpIZjx1oPFql0zytyn0FF2QZGVZrP0TJbQEAtDGY+VDDPdScXRxXwGs
+         XVl3RRuFNecVToY6fj7/8kki3tTwEVNEoLN6LcUXPsClEA7muo4xEkOsnZGtSYMTYyzT
+         CCXA==
+X-Gm-Message-State: AOAM530SZX+perbQWufpfm8/aBwoaIYgicRKYE6BjXGaoAyFj8RzpB5W
+        p1wgrDHuwsM4Xkromr6P6zVq2uDnKUeyFpEK
+X-Google-Smtp-Source: ABdhPJxXmHKfm+n8IYYIItgbu0HR4y/A4819fDf0GTFB79iCJWQKB84KPyoIxkDfi61stK36iotktQ==
+X-Received: by 2002:a05:651c:1038:b0:24f:148e:b532 with SMTP id w24-20020a05651c103800b0024f148eb532mr13196218ljm.139.1651688241096;
+        Wed, 04 May 2022 11:17:21 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id m11-20020ac24acb000000b0047255d21130sm1266508lfp.95.2022.05.04.11.17.19
+        for <linux-ext4@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 May 2022 07:08:38 -0700 (PDT)
-Message-ID: <159d94d4-d9ea-7f3b-f86d-be5f981db605@linaro.org>
-Date:   Wed, 4 May 2022 07:08:37 -0700
+        Wed, 04 May 2022 11:17:19 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id x17so3729414lfa.10
+        for <linux-ext4@vger.kernel.org>; Wed, 04 May 2022 11:17:19 -0700 (PDT)
+X-Received: by 2002:a05:6512:b12:b0:44a:ba81:f874 with SMTP id
+ w18-20020a0565120b1200b0044aba81f874mr15410699lfu.449.1651688238925; Wed, 04
+ May 2022 11:17:18 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH v2] ext4: check if offset+length is within valid fallocate
-Content-Language: en-US
-To:     Jan Kara <jack@suse.cz>
-Cc:     syzbot+fcc629d1a1ae8d3fe8a5@syzkaller.appspotmail.com,
-        syzkaller-bugs@googlegroups.com, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, tytso@mit.edu
-References: <00000000000042d70e05da43401f@google.com>
- <20220315213857.268414-1-tadeusz.struk@linaro.org>
- <20220428140209.mewduy4rzr25iepb@quack3.lan>
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-In-Reply-To: <20220428140209.mewduy4rzr25iepb@quack3.lan>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <1651652269-15342-1-git-send-email-byungchul.park@lge.com>
+In-Reply-To: <1651652269-15342-1-git-send-email-byungchul.park@lge.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 4 May 2022 11:17:02 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whnPePcffsNQM+YSHMGttLXvpf8LbBQ8P7HEdqFXaV7Lg@mail.gmail.com>
+Message-ID: <CAHk-=whnPePcffsNQM+YSHMGttLXvpf8LbBQ8P7HEdqFXaV7Lg@mail.gmail.com>
+Subject: Re: [PATCH RFC v6 00/21] DEPT(Dependency Tracker)
+To:     Byungchul Park <byungchul.park@lge.com>
+Cc:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        linux-ide@vger.kernel.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Chris Wilson <chris@chris-wilson.co.uk>, duyuyang@gmail.com,
+        johannes.berg@intel.com, Tejun Heo <tj@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel-team@lge.com, Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>, sj@kernel.org,
+        Jerome Glisse <jglisse@redhat.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, ngupta@vflare.org,
+        linux-block <linux-block@vger.kernel.org>,
+        paolo.valente@linaro.org, Josef Bacik <josef@toxicpanda.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+        jack@suse.com, Jeff Layton <jlayton@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Dave Airlie <airlied@linux.ie>, rodrigosiqueiramelo@gmail.com,
+        melissa.srw@gmail.com, hamohammed.sa@gmail.com, 42.hyeyoo@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 4/28/22 07:02, Jan Kara wrote:
-> On Tue 15-03-22 14:38:57, Tadeusz Struk wrote:
->> #syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> Did this fix fall through the cracks? Tadeusz, can you do a proper patch
-> submission with your Signed-off-by etc.? Thanks!
+On Wed, May 4, 2022 at 1:19 AM Byungchul Park <byungchul.park@lge.com> wrote:
+>
+> Hi Linus and folks,
+>
+> I've been developing a tool for detecting deadlock possibilities by
+> tracking wait/event rather than lock(?) acquisition order to try to
+> cover all synchonization machanisms.
 
-I'm still working on it.
--- 
-Thanks,
-Tadeusz
+So what is the actual status of reports these days?
+
+Last time I looked at some reports, it gave a lot of false positives
+due to mis-understanding prepare_to_sleep().
+
+For this all to make sense, it would need to not have false positives
+(or at least a very small number of them together with a way to sanely
+get rid of them), and also have a track record of finding things that
+lockdep doesn't.
+
+Maybe such reports have been sent out with the current situation, and
+I haven't seen them.
+
+                 Linus
