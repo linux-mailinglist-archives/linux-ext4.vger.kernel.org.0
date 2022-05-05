@@ -2,202 +2,206 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05AD851C432
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 May 2022 17:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD9F51CB0C
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 May 2022 23:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380938AbiEEPu4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 5 May 2022 11:50:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40408 "EHLO
+        id S242440AbiEEVij (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 5 May 2022 17:38:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348488AbiEEPuz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 May 2022 11:50:55 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E19377F5;
-        Thu,  5 May 2022 08:47:15 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 73ECF1F8D3;
-        Thu,  5 May 2022 15:47:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1651765634; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3usa/BDzW7WrqfKTRJ3nV/Kk3MUaQaV93qIHyXp35Eg=;
-        b=uFWAKVFg9D41wufM/KqDn5o59I/849cM0YEy44QfjVzGFE89im5cYXhmfguWPc0Xp0ZixJ
-        nP5rIs5XgaT1n4aqtUeZjjmK1iynF4Z3AN7C6tN2mk6bVNua1wiT9QIvwOmMI7qSrR2bfW
-        hMxBaDd2aV8bdk5GDKGCAlbZUGrFIQw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1651765634;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3usa/BDzW7WrqfKTRJ3nV/Kk3MUaQaV93qIHyXp35Eg=;
-        b=pMjKdhp/bN+0IjyGtt/qVPCcaEiROezTmA+Uyan0JGmnXeaqOBc2BoyyviAHOw3mqAouA8
-        dDIKClmWCpBxA8Cw==
-Received: from quack3.suse.cz (unknown [10.100.224.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 510702C142;
-        Thu,  5 May 2022 15:47:14 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id EE5DBA0627; Thu,  5 May 2022 17:47:13 +0200 (CEST)
-Date:   Thu, 5 May 2022 17:47:13 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ye Bin <yebin10@huawei.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jack@suse.cz, lczerner@redhat.com
-Subject: Re: [PATCH -next] ext4: fix bug_on in ext4_writepages
-Message-ID: <20220505154713.nig6rj76p2gl5mm7@quack3.lan>
-References: <20220505135708.2629657-1-yebin10@huawei.com>
+        with ESMTP id S229572AbiEEVii (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 May 2022 17:38:38 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2047.outbound.protection.outlook.com [40.107.243.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC151582F;
+        Thu,  5 May 2022 14:34:56 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WqKG854F6ghDhB1FY+S4QZ+p9uq6vL74xBZOBrqJ/SKkt5BWYVuDTPVc8M7oo94pVDMncaASIWSeOhtCsLtV49UBDAZTL7plDNqujytqWtnYu19tIrschGn89mri2//laqzKpQ4/6OnaZm8CJmXejJPoKtpoTB3bFAgz3UlIZN+NyBQ2PSrGOyX4QH8FYgzpdABTh0LR3qznbyeBW9DI7IjxxQAsNY89CoazbOycVwLREIPZDN0UTpwqXuEX4vaTybZtjVvVBPJnm6Zh7ErHfZC3hOBid/uGTxSqEDrnK81r/bDucR1gblkkFF9+X366qCPlhiIh3RLQ1eSqfY1hYQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gApRz2oxzbitGCXGYRc+g1FAkZ6BgWFZMTEy2pQdK1M=;
+ b=d9ZaIxpbTIgq/wRQl0F301ZnxaFNJFVjTLJAHDnlmLRb4nNr0yrJax7WnEbKReJW33RwTSTTlbo3aIzQpxaHRFePXyoL5HQbbRcqesSgVVEeNGDxLy4GDaF2qpWuFi+01i5htTHIEg0mAT0zWq1m0eKUwNu7DHXTon2P1dxYPWbFKuCgj0+PmRjP80pYR+7SYGc29nyl/vqSJL8R75KPWxfm8CNe2X38TtXehdGIWsz+NB0Iza1gY5F7R3fNRVeO44wMTjpebRQp7S17thrfIkCPHi2yFewL69Qp9B0yv7OyzDvT0pI+ahh/Eg8+tX44IIIJPHXvrVhyNTpjLOeAlA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=nvidia.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gApRz2oxzbitGCXGYRc+g1FAkZ6BgWFZMTEy2pQdK1M=;
+ b=OKHOr7zjChTeMRwZtTyvgILWy3rWatROR8AQkI2IS8MI8KjuRakrNHSDFS1JtGp5OMv3lofoZmJIKz1leCb29kU3Wsaam9MSKj0BSoH7Z+Vr/lJeLqPgD3jknkMliYbTgEoD3Wmf/Y1AwmtC3+dm/76ADq9+WP2l745kh2Qm4RU=
+Received: from MW4P220CA0020.NAMP220.PROD.OUTLOOK.COM (2603:10b6:303:115::25)
+ by CY5PR12MB6083.namprd12.prod.outlook.com (2603:10b6:930:29::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5206.12; Thu, 5 May
+ 2022 21:34:55 +0000
+Received: from CO1NAM11FT066.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:115:cafe::b9) by MW4P220CA0020.outlook.office365.com
+ (2603:10b6:303:115::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5206.12 via Frontend
+ Transport; Thu, 5 May 2022 21:34:55 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1NAM11FT066.mail.protection.outlook.com (10.13.175.18) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.5227.15 via Frontend Transport; Thu, 5 May 2022 21:34:54 +0000
+Received: from alex-MS-7B09.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 5 May
+ 2022 16:34:53 -0500
+From:   Alex Sierra <alex.sierra@amd.com>
+To:     <jgg@nvidia.com>
+CC:     <david@redhat.com>, <Felix.Kuehling@amd.com>, <linux-mm@kvack.org>,
+        <rcampbell@nvidia.com>, <linux-ext4@vger.kernel.org>,
+        <linux-xfs@vger.kernel.org>, <amd-gfx@lists.freedesktop.org>,
+        <dri-devel@lists.freedesktop.org>, <hch@lst.de>,
+        <jglisse@redhat.com>, <apopple@nvidia.com>, <willy@infradead.org>,
+        <akpm@linux-foundation.org>
+Subject: [PATCH v1 00/15] Add MEMORY_DEVICE_COHERENT for coherent device memory mapping
+Date:   Thu, 5 May 2022 16:34:23 -0500
+Message-ID: <20220505213438.25064-1-alex.sierra@amd.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220505135708.2629657-1-yebin10@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ce3958fc-194c-419b-4e7f-08da2edf187e
+X-MS-TrafficTypeDiagnostic: CY5PR12MB6083:EE_
+X-Microsoft-Antispam-PRVS: <CY5PR12MB6083F2EB90B7A02D75D8E3F8FDC29@CY5PR12MB6083.namprd12.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bfkBQRsHi9o18bzVrDOKxi9/ACxodAaAatyDB+LWc/gMAQXNPJoSLNJyEHGOw8lQIDPfQCG2OtoQxdIQBvXR/yXnLUR5lTyH2M0oPzKiKbf5ThYpn0sFZdb83chZ8mZwERzPMTEP4xagDNhfGoCsZW6Yf+NLyUH0QP1Dw+6hJ0sz+uEElwbifwscGnL0LVEdjBQF7IT351cCrFSdnT07MPGj/xSsQBV7PszYNBc8U6ESzysdxyHdKFdh420xxH3NtvX29LVcZS938zaY3BIgxSJX4IIpxW1/WMUehdalbld3tXB1a4oJScwDFLWmadTtJbUeO76X6uLFVN5HS+oc3x9vQkWyOWHlG+V1VZGlXtEkGQvD9gy9MiT1S0Q2FkoYfczj+Un4wXHC95V93RkDeXnNpdcYD3QJUxtmhUG6h8/kgOuCcqfKybqk8Dp6aCSzBX+ni+q3iJjWmFPbJivON+HiTsv6LpCe+wTy7YhzjyksglUxd1j2AkhufX0VJnM2e05Fx45cy9fQuKwiNJSBmuSFrI4LfU9lnU3CYBsF0Igu341g/qu12cyO+hwVZ3X0ve61dA5OZeJ3kpwEizN21uR7cQ2+F9wxdGtqNYwDZFF2t1bUNNTiaSkntKsmpjPB+s1YPhaj+xikjfVazvep7QLPSVqViUgVBrX88Y0m+fsg91X6oAmZjfI9+FIpdcpxHO4Fg7CqWUzp2lPqAZbNgA==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230001)(4636009)(36840700001)(40470700004)(46966006)(5660300002)(1076003)(40460700003)(26005)(47076005)(7416002)(4326008)(44832011)(83380400001)(6916009)(426003)(316002)(336012)(6666004)(54906003)(36756003)(2906002)(7696005)(86362001)(2616005)(356005)(8936002)(16526019)(186003)(82310400005)(36860700001)(70586007)(70206006)(8676002)(81166007)(508600001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 May 2022 21:34:54.7987
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce3958fc-194c-419b-4e7f-08da2edf187e
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT066.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6083
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 05-05-22 21:57:08, Ye Bin wrote:
-> we got issue as follows:
-> EXT4-fs error (device loop0): ext4_mb_generate_buddy:1141: group 0, block bitmap and bg descriptor inconsistent: 25 vs 31513 free cls
-> ------------[ cut here ]------------
-> kernel BUG at fs/ext4/inode.c:2708!
-> invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-> CPU: 2 PID: 2147 Comm: rep Not tainted 5.18.0-rc2-next-20220413+ #155
-> RIP: 0010:ext4_writepages+0x1977/0x1c10
-> RSP: 0018:ffff88811d3e7880 EFLAGS: 00010246
-> RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffff88811c098000
-> RDX: 0000000000000000 RSI: ffff88811c098000 RDI: 0000000000000002
-> RBP: ffff888128140f50 R08: ffffffffb1ff6387 R09: 0000000000000000
-> R10: 0000000000000007 R11: ffffed10250281ea R12: 0000000000000001
-> R13: 00000000000000a4 R14: ffff88811d3e7bb8 R15: ffff888128141028
-> FS:  00007f443aed9740(0000) GS:ffff8883aef00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000020007200 CR3: 000000011c2a4000 CR4: 00000000000006e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  do_writepages+0x130/0x3a0
->  filemap_fdatawrite_wbc+0x83/0xa0
->  filemap_flush+0xab/0xe0
->  ext4_alloc_da_blocks+0x51/0x120
->  __ext4_ioctl+0x1534/0x3210
->  __x64_sys_ioctl+0x12c/0x170
->  do_syscall_64+0x3b/0x90
-> 
-> It may happen as follows:
-> 1. write inline_data inode
-> vfs_write
->   new_sync_write
->     ext4_file_write_iter
->       ext4_buffered_write_iter
->         generic_perform_write
-> 	  ext4_da_write_begin
-> 	    ext4_da_write_inline_data_begin -> If inline data size too
-> 	    small will allocate block to write, then mapping will has
-> 	    dirty page
-> 	    	ext4_da_convert_inline_data_to_extent ->clear EXT4_STATE_MAY_INLINE_DATA
-> 2. fallocate
-> do_vfs_ioctl
->   ioctl_preallocate
->     vfs_fallocate
->       ext4_fallocate
->         ext4_convert_inline_data
-> 	  ext4_convert_inline_data_nolock
-> 	    ext4_map_blocks -> fail will goto restore data
-> 	    ext4_restore_inline_data
-> 	      ext4_create_inline_data
-> 	      ext4_write_inline_data
-> 	      ext4_set_inode_state -> set inode EXT4_STATE_MAY_INLINE_DATA
-> 3. writepages
-> __ext4_ioctl
->   ext4_alloc_da_blocks
->     filemap_flush
->       filemap_fdatawrite_wbc
->         do_writepages
-> 	  ext4_writepages
-> 	    if (ext4_has_inline_data(inode))
-> 	      BUG_ON(ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA))
-> 
-> To solved this issue, record origin 'EXT4_STATE_MAY_INLINE_DATA' flag, then pass
-> value to 'ext4_restore_inline_data', 'ext4_restore_inline_data' will
-> decide to if recovery 'EXT4_STATE_MAY_INLINE_DATA' flag according to parameter.
-> 
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
+This is our MEMORY_DEVICE_COHERENT patch series rebased and updated
+for current 5.18-rc5.
 
-I think this will get also fixed by a patch from your colleague I've
-reviewed here [1], won't it?
+Changes since the last version:
+- Fixed problems with migration during long-term pinning in
+get_user_pages
+- Open coded vm_normal_lru_pages as suggested in previous code review
+- Update hmm_gup_test with more get_user_pages calls, include
+hmm_cow_in_device in hmm-test.
 
-[1] https://lore.kernel.org/all/20220428165725.mvjh6mx7gr5vekqe@quack3.lan
+This patch series introduces MEMORY_DEVICE_COHERENT, a type of memory
+owned by a device that can be mapped into CPU page tables like
+MEMORY_DEVICE_GENERIC and can also be migrated like
+MEMORY_DEVICE_PRIVATE.
 
-								Honza
+This patch series is mostly self-contained except for a few places where
+it needs to update other subsystems to handle the new memory type.
 
-> ---
->  fs/ext4/inline.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-> index 9c076262770d..407061c79adc 100644
-> --- a/fs/ext4/inline.c
-> +++ b/fs/ext4/inline.c
-> @@ -1125,8 +1125,8 @@ static int ext4_update_inline_dir(handle_t *handle, struct inode *dir,
->  }
->  
->  static void ext4_restore_inline_data(handle_t *handle, struct inode *inode,
-> -				     struct ext4_iloc *iloc,
-> -				     void *buf, int inline_size)
-> +				     struct ext4_iloc *iloc, void *buf,
-> +				     int inline_size, bool has_data)
->  {
->  	int ret;
->  
-> @@ -1138,7 +1138,8 @@ static void ext4_restore_inline_data(handle_t *handle, struct inode *inode,
->  		return;
->  	}
->  	ext4_write_inline_data(inode, iloc, buf, 0, inline_size);
-> -	ext4_set_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
-> +	if (has_data)
-> +		ext4_set_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
->  }
->  
->  static int ext4_finish_convert_inline_dir(handle_t *handle,
-> @@ -1194,6 +1195,7 @@ static int ext4_convert_inline_data_nolock(handle_t *handle,
->  	struct buffer_head *data_bh = NULL;
->  	struct ext4_map_blocks map;
->  	int inline_size;
-> +	bool has_data;
->  
->  	inline_size = ext4_get_inline_size(inode);
->  	buf = kmalloc(inline_size, GFP_NOFS);
-> @@ -1222,6 +1224,8 @@ static int ext4_convert_inline_data_nolock(handle_t *handle,
->  	if (error)
->  		goto out;
->  
-> +	has_data = !!ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
-> +
->  	map.m_lblk = 0;
->  	map.m_len = 1;
->  	map.m_flags = 0;
-> @@ -1262,7 +1266,8 @@ static int ext4_convert_inline_data_nolock(handle_t *handle,
->  	unlock_buffer(data_bh);
->  out_restore:
->  	if (error)
-> -		ext4_restore_inline_data(handle, inode, iloc, buf, inline_size);
-> +		ext4_restore_inline_data(handle, inode, iloc, buf,
-> +					 inline_size, has_data);
->  
->  out:
->  	brelse(data_bh);
-> -- 
-> 2.31.1
-> 
+System stability and performance are not affected according to our
+ongoing testing, including xfstests.
+
+How it works: The system BIOS advertises the GPU device memory
+(aka VRAM) as SPM (special purpose memory) in the UEFI system address
+map.
+
+The amdgpu driver registers the memory with devmap as
+MEMORY_DEVICE_COHERENT using devm_memremap_pages. The initial user for
+this hardware page migration capability is the Frontier supercomputer
+project. This functionality is not AMD-specific. We expect other GPU
+vendors to find this functionality useful, and possibly other hardware
+types in the future.
+
+Our test nodes in the lab are similar to the Frontier configuration,
+with .5 TB of system memory plus 256 GB of device memory split across
+4 GPUs, all in a single coherent address space. Page migration is
+expected to improve application efficiency significantly. We will
+report empirical results as they become available.
+
+Coherent device type pages at gup are now migrated back to system
+memory if they are being pinned long-term (FOLL_LONGTERM). The reason
+is, that long-term pinning would interfere with the device memory
+manager owning the device-coherent pages (e.g. evictions in TTM).
+These series incorporate Alistair Popple patches to do this
+migration from pin_user_pages() calls. hmm_gup_test has been added to
+hmm-test to test different get user pages calls.
+
+This series includes handling of device-managed anonymous pages
+returned by vm_normal_pages. Although they behave like normal pages
+for purposes of mapping in CPU page tables and for COW, they do not
+support LRU lists, NUMA migration or THP.
+
+We also introduced a FOLL_LRU flag that adds the same behaviour to
+follow_page and related APIs, to allow callers to specify that they
+expect to put pages on an LRU list.
+
+Alex Sierra (13):
+  mm: add zone device coherent type memory support
+  mm: add device coherent vma selection for memory migration
+  mm: add device coherent checker to remove migration pte
+  drm/amdkfd: add SPM support for SVM
+  drm/amdkfd: coherent type as sys mem on migration to ram
+  lib: test_hmm add ioctl to get zone device type
+  lib: test_hmm add module param for zone device type
+  lib: add support for device coherent type in test_hmm
+  tools: update hmm-test to support device coherent type
+  tools: update test_hmm script to support SP config
+  mm: handling Non-LRU pages returned by vm_normal_pages
+  tools: add hmm gup tests for device coherent type
+  tools: add selftests to hmm for COW in device memory
+
+Alistair Popple (2):
+  mm: remove the vma check in migrate_vma_setup()
+  mm/gup: migrate device coherent pages when pinning instead of failing
+
+ drivers/gpu/drm/amd/amdkfd/kfd_migrate.c |  33 ++-
+ fs/proc/task_mmu.c                       |   2 +-
+ include/linux/memremap.h                 |  19 ++
+ include/linux/migrate.h                  |   1 +
+ include/linux/mm.h                       |   3 +-
+ lib/test_hmm.c                           | 349 +++++++++++++++++------
+ lib/test_hmm_uapi.h                      |  22 +-
+ mm/gup.c                                 |  49 +++-
+ mm/huge_memory.c                         |   2 +-
+ mm/internal.h                            |   1 +
+ mm/khugepaged.c                          |   9 +-
+ mm/ksm.c                                 |   6 +-
+ mm/madvise.c                             |   4 +-
+ mm/memcontrol.c                          |   7 +-
+ mm/memory-failure.c                      |   8 +-
+ mm/memory.c                              |   9 +-
+ mm/mempolicy.c                           |   2 +-
+ mm/memremap.c                            |  10 +
+ mm/migrate.c                             |   7 +-
+ mm/migrate_device.c                      | 115 ++++++--
+ mm/mlock.c                               |   2 +-
+ mm/mprotect.c                            |   2 +-
+ mm/rmap.c                                |   3 +-
+ tools/testing/selftests/vm/hmm-tests.c   | 307 ++++++++++++++++++--
+ tools/testing/selftests/vm/test_hmm.sh   |  24 +-
+ 25 files changed, 814 insertions(+), 182 deletions(-)
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.32.0
+
