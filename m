@@ -2,189 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5178D51CC58
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 May 2022 00:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02D7A51CDB0
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 May 2022 02:13:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232141AbiEEWyG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 5 May 2022 18:54:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36954 "EHLO
+        id S1387441AbiEFAQ4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 5 May 2022 20:16:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1386512AbiEEWyD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 May 2022 18:54:03 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2082.outbound.protection.outlook.com [40.107.220.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 875821B7A5;
-        Thu,  5 May 2022 15:50:22 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=isLFgay7CkbquwKKmH8xjrnYXQ3MaQXifpD/3zw3xBtAK0kMHjzDKDvMjY00dKS2s4s1wDaSGW9MHkS7yceXD329m8334ktW68HCY5LtqZyg7bP2gXL8J/DKbAVP+wMMOB3egFExPhMwouhlWnWvezSHPiEv9fZIB2SgD/kWEH2qsIqaqh+o0dFmOrfthiFVVZE+42j4nZllRVfE+iculwPCCqpKygXLjHPDkB7RrQDSw5tZ654N1/m8U6Og7/OCsH3D3Clt/WUXceeYQ+JopWmgMCNyRpkIR4Sm8xtZn9RH2fsUJa0XGRz/fzBMURugjGLSTAbQq0aRe0qHscsC+w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=aWHveaucWAMrlWiJbBp4VwJh/N/deTTy/Te2lM5AwGk=;
- b=Vh04sVyHN/dwvit8ZrkqdksDJ8cARIC7e2DgymTO58WzYBAtAnR6vwWpQNyc793a8LX8K6O2PnICCmlQDinPq/xBnbvr9ERnsiBSHJlCdG8h9pyeqBJcrkpPr61wkYhamH5wLHLjA7hrhgA0P8n8a1ipEVyvOLIhTSMFJZuGItZXdyRg7aetKxLCkLmdcfloRDRrkb5bgBlJJzsCyNALqD3SOAJeJzjpt7VMcB5WcPpjT81Lf2GsH8jS/al40rvupLM4GnFsyZYGdmAbjqCCLScVLnB9rSCKz5rDtALjMv7/7jO1snxd2pGVggJqGRyQROA03HftcjaifwEDUaNY4w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aWHveaucWAMrlWiJbBp4VwJh/N/deTTy/Te2lM5AwGk=;
- b=sHsckKYdZM/Qe3CAlFP6fXtSofoPyxIJauLY+LKquUdX/bRGCR14bxypCJjck8S1V46x6p3ZMEXoLJWg8ObUjRN/ttR784tofymNWnfxrtqycp3751WKlplJLq4WfdSz0f4TOdff3WqE2K1+XUsJZblqpsJ1Yy54jbnBzyFaFWSAtrjWHDi+bZLQmKAX/+mvfIh9DWdbfKZ/ZOzizbZlty1hN6R9RJXIIUsVlmnz1NU5DDrAyjFgtlwz12MKtOaFF2GNUPCRMwCf/3txhkv/AiSLMpMr95BePju71yi4dzNr/xgNvP3bDkiUuNGGWdac/FmF/woJLD7jXMqzbxeVig==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
- by MW2PR12MB2459.namprd12.prod.outlook.com (2603:10b6:907:c::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5206.24; Thu, 5 May
- 2022 22:50:19 +0000
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::2d17:b68a:e101:4c18]) by BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::2d17:b68a:e101:4c18%6]) with mapi id 15.20.5206.025; Thu, 5 May 2022
- 22:50:19 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     "Sierra Guiza, Alejandro (Alex)" <Alex.Sierra@amd.com>
-Cc:     "jgg@nvidia.com" <jgg@nvidia.com>,
-        "rcampbell@nvidia.com" <rcampbell@nvidia.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "david@redhat.com" <david@redhat.com>,
-        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "jglisse@redhat.com" <jglisse@redhat.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "hch@lst.de" <hch@lst.de>
-Subject: Re: [PATCH v1 04/15] mm: add device coherent checker to remove
- migration pte
-Date:   Fri, 06 May 2022 08:48:37 +1000
-References: <20220505213438.25064-1-alex.sierra@amd.com>
- <20220505213438.25064-5-alex.sierra@amd.com>
- <SN6PR12MB27173F2F37294D6DDBC3457CFDC29@SN6PR12MB2717.namprd12.prod.outlook.com>
-User-agent: mu4e 1.6.9; emacs 27.1
-In-reply-to: <SN6PR12MB27173F2F37294D6DDBC3457CFDC29@SN6PR12MB2717.namprd12.prod.outlook.com>
-Message-ID: <87zgjvh9w5.fsf@nvdebian.thelocal>
-Content-Type: multipart/mixed; boundary="=-=-="
-X-ClientProxiedBy: BYAPR06CA0028.namprd06.prod.outlook.com
- (2603:10b6:a03:d4::41) To BYAPR12MB3176.namprd12.prod.outlook.com
- (2603:10b6:a03:134::26)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dd80132e-8136-4330-b563-08da2ee9a138
-X-MS-TrafficTypeDiagnostic: MW2PR12MB2459:EE_
-X-Microsoft-Antispam-PRVS: <MW2PR12MB245982CE131E860C7626850FDFC29@MW2PR12MB2459.namprd12.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: irnaT/bclar4rF0r+SspE4Q6qYLH+fYQ3eML4GKQ0brUQ6w5VUeimIiM0XCNmQII9aLW52gz9NU4I+jCALfx+xaH10EhSdOhGbIDSCk87mz+5l2jxtD8aA6r2VqaPR2ZFeGnI7pwnnxVpltRUNQFf0pz3gc5LmOgrvQGdG0PLB6WcpLOrTZ5oQe2FGrjettK2/5ZpcnFB4E/rvUMCqjigmwmFXf1893dAgxqc4o8eOOpjl3+LF/6pxVX9Sj5lqjW7UcJKZtHj/jLIoEPa7Iyp3eqrPSmA1SfKk36lxVrCzHq0RrKnZfs3Wk/7rZ8exurNR/tuc2ytWU1Q0f/MrHZrjKQapuMPKKLrinHd3aaF3SbsMvSuESNYHFDPdaajX17BM7b6VLKOWLQwV3ra5VnSgCbMz2v/e4cy2COXLvQhnj+ehPPj1t8cTnrrsv17lnOI6PowyZXKjyV8FCzESqLYjm3ZSCLE39ZyI7740YPAUC5HZ4ZJ1g10E3+VRZuBsj77aIvnIU62BB5Oh7ZqtZo6YXiUy5vDdb1GW0hXhhf7nObHw529KOc0ZqG2kYt29wArvO3/lNnG7Dek82OgVlL0/Dmcr3W1V0y6mbJvVf2STRsibq26LIr/T/lz5jpx/o7PUazF8LsgVXSn5qQCdMYAA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(86362001)(186003)(38100700002)(83380400001)(54906003)(6512007)(66476007)(8676002)(4326008)(66556008)(6916009)(316002)(6666004)(66946007)(2906002)(7416002)(8936002)(5660300002)(6486002)(9686003)(508600001)(53546011)(26005)(44144004)(6506007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?AsxTcloKkS+2MGtYP3sZ4MkVHXq37p3awq2Os2tj2NFrZcO3BsHQZC81BqY0?=
- =?us-ascii?Q?4J5kJw9fMgWishEYM42tVq50h0/dUrDR+EnzNprQ0g4Kq0h391S8S8gi3rW/?=
- =?us-ascii?Q?p/4aBwQ1QhZfXhon+v6FHenXRQyZjpwnQyf9CLlYeWasKvEsQi820vzugsuZ?=
- =?us-ascii?Q?CeDBwR7HKlpPz3+DyiwtijBR29kPSb9f2Us1Smxf1T/7BmgBVeGv7lJFM2Ou?=
- =?us-ascii?Q?5U8o4M0icMnilia2wR8IY3q+iVrGdEzAIppuR33HMyRESC6I9HfOn9udwYWt?=
- =?us-ascii?Q?6UgHrjT5t8eWTIgtUs7uEiTninPODXxddcJJZNOCO36oRYdWDPSJff8ZSCJE?=
- =?us-ascii?Q?iWCLPfmOJO8ubx2LVbUaOZeJXTFU3Ko11gCkqKKnON9rdf5aiiAb/0OwVLpT?=
- =?us-ascii?Q?S3EXd4449gpDwdJD1QWUDxHYqvLNSPOELHJhK3Dhtp92gjMPxPLSIOHCZRug?=
- =?us-ascii?Q?wR2/XbYyR5pqYPRoeil8QbFwhABKokx86Duaf3Pi1VkOGrh6m6RR6nzberVR?=
- =?us-ascii?Q?LIB7HZgovu2W+JEW9e2hP5tp/ViSNmW2CErf0sG2M/aOgpe9GrV3oTratpoz?=
- =?us-ascii?Q?BzRUzgBRsQH2egzPyfM2VexL4Fxj5owILLiQw1kKmPovDq7PaSRZdYvanmT4?=
- =?us-ascii?Q?UiYnwhWvI6qN/0CcTaA7t16z6IATBZqETgxJKHsKMtAOk1to8ARjWSppjizL?=
- =?us-ascii?Q?xVcs9BhvFpii3nV9OFvdPww6iXU4qqb2tiMT8zEBFs+LZ8HOoLujy6IRHC8H?=
- =?us-ascii?Q?h/QIR6yXwsr65WF1Uu3nQi0RRpNQpdbpczxfbVhooI/McVuIvVtVfOGlBMu5?=
- =?us-ascii?Q?pq+6NvaGV4RBTmpZpId7mWjnex2b29j7ip6Dk0m9cnPhUY5wneNNhA+qQ6Re?=
- =?us-ascii?Q?O6w0dK3rII/O5X98n75NLy7HBK/3GV6xP8uYy/Rrl0ipvDA7nkYs/tBxXcFg?=
- =?us-ascii?Q?1WZfKJJK0aihXPR/rQd2G83RRr/XcpQKECOkqelZqmGc42RV5QVAszVbFRH7?=
- =?us-ascii?Q?VDbxcgWwIceH5sJhRubPnlyOfsaKjJZseZmbTRY1PebGmaNxDTZMIAWF7Fz7?=
- =?us-ascii?Q?YUYBSROHTFrquTDP06HLP/HJ4kw5Who+m61wKsuQTmPPe3CuEa4vLiZ+zYfR?=
- =?us-ascii?Q?WFRjnVBx2pX2b2ePxnbZDkmCrdX6SWxOC8Kay7B9x6pkOg77nnjTu14/o4oA?=
- =?us-ascii?Q?Y7Zg7ChNOJw2GFP/0d6hSfFxDOW6awUAS1rmKDZM7dCYWGMnvpOeC+L/pKDh?=
- =?us-ascii?Q?buy4Xj22t0oOwsqcYyFWaI1CIHp3sj9pQkCi3MloPNT6K018pjbC1FKX1lne?=
- =?us-ascii?Q?10aQcws44UtUaclVIzLPks3XWFAvkftvSJujoM95qCwrRCGm/crjSq6cpflH?=
- =?us-ascii?Q?msk50n5dI9GIOERmHDB8TJqZMdwlwJNswp0b4FDPqmI/GNGPqLkktaYAxKUL?=
- =?us-ascii?Q?RDsvf7ncNP3WqyIOWaGU8JZ1GsMWXD2um+2lF/FKaMphEFsig0JSSpmkx7WZ?=
- =?us-ascii?Q?DVOmNtX0wfgmQ7rgW2qGoTdFSx+dlvMI4GjOg4rMwH3RBykVzgP2ZZmqkyVs?=
- =?us-ascii?Q?G3kbx67KudyL3NLIjtS5xrMVANR/apUJuWbcS7RZX2KEfWPXQrp0PsnR73EC?=
- =?us-ascii?Q?KqhVEWLqKlzdCPWYBN0v3+iW9D7h/VrldCfhfd91aaqC0N2x87Cu5Kt6GJii?=
- =?us-ascii?Q?5cXYmQoNZVW5U0Iifn9OMEZaoERZ5bJyUCC6+4epFW0HbTu0at1f7/FPRdEu?=
- =?us-ascii?Q?QMoaO9jRdA=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dd80132e-8136-4330-b563-08da2ee9a138
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 May 2022 22:50:19.5639
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +mmshOUfxy0qU8KMplvQYEQC19YcgJfMQElm6WKavlrHaGd9kEJjpivLDOsunRCJqUty3oMT+cD5oMRaDVHg1g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR12MB2459
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        with ESMTP id S1351356AbiEFAQw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 May 2022 20:16:52 -0400
+Received: from lgeamrelo11.lge.com (lgeamrelo11.lge.com [156.147.23.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1BB88506E2
+        for <linux-ext4@vger.kernel.org>; Thu,  5 May 2022 17:13:09 -0700 (PDT)
+Received: from unknown (HELO lgeamrelo01.lge.com) (156.147.1.125)
+        by 156.147.23.51 with ESMTP; 6 May 2022 09:13:07 +0900
+X-Original-SENDERIP: 156.147.1.125
+X-Original-MAILFROM: byungchul.park@lge.com
+Received: from unknown (HELO localhost.localdomain) (10.177.244.38)
+        by 156.147.1.125 with ESMTP; 6 May 2022 09:13:07 +0900
+X-Original-SENDERIP: 10.177.244.38
+X-Original-MAILFROM: byungchul.park@lge.com
+From:   Byungchul Park <byungchul.park@lge.com>
+To:     torvalds@linux-foundation.org
+Cc:     damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        mingo@redhat.com, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, will@kernel.org, tglx@linutronix.de,
+        rostedt@goodmis.org, joel@joelfernandes.org, sashal@kernel.org,
+        daniel.vetter@ffwll.ch, chris@chris-wilson.co.uk,
+        duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org,
+        tytso@mit.edu, willy@infradead.org, david@fromorbit.com,
+        amir73il@gmail.com, gregkh@linuxfoundation.org,
+        kernel-team@lge.com, linux-mm@kvack.org, akpm@linux-foundation.org,
+        mhocko@kernel.org, minchan@kernel.org, hannes@cmpxchg.org,
+        vdavydov.dev@gmail.com, sj@kernel.org, jglisse@redhat.com,
+        dennis@kernel.org, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, vbabka@suse.cz, ngupta@vflare.org,
+        linux-block@vger.kernel.org, paolo.valente@linaro.org,
+        josef@toxicpanda.com, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, jack@suse.cz, jack@suse.com,
+        jlayton@kernel.org, dan.j.williams@intel.com, hch@infradead.org,
+        djwong@kernel.org, dri-devel@lists.freedesktop.org,
+        airlied@linux.ie, rodrigosiqueiramelo@gmail.com,
+        melissa.srw@gmail.com, hamohammed.sa@gmail.com, 42.hyeyoo@gmail.com
+Subject: Re: [PATCH RFC v6 00/21] DEPT(Dependency Tracker)
+Date:   Fri,  6 May 2022 09:11:35 +0900
+Message-Id: <1651795895-8641-1-git-send-email-byungchul.park@lge.com>
+X-Mailer: git-send-email 1.9.1
+In-Reply-To: <CAHk-=whnPePcffsNQM+YSHMGttLXvpf8LbBQ8P7HEdqFXaV7Lg@mail.gmail.com>
+References: <CAHk-=whnPePcffsNQM+YSHMGttLXvpf8LbBQ8P7HEdqFXaV7Lg@mail.gmail.com>
+X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Disposition: inline
+Linus wrote:
+>
+> On Wed, May 4, 2022 at 1:19 AM Byungchul Park <byungchul.park@lge.com> wrote:
+> >
+> > Hi Linus and folks,
+> >
+> > I've been developing a tool for detecting deadlock possibilities by
+> > tracking wait/event rather than lock(?) acquisition order to try to
+> > cover all synchonization machanisms.
+> 
+> So what is the actual status of reports these days?
+> 
+> Last time I looked at some reports, it gave a lot of false positives
+> due to mis-understanding prepare_to_sleep().
 
-"Sierra Guiza, Alejandro (Alex)" <Alex.Sierra@amd.com> writes:
+Yes, it was. I handled the case in the following way:
 
-> @apopple@nvidia.com Could you please check this patch? It's somehow related to
-> migrate_device_page() for long term device coherent pages.
+1. Stage the wait at prepare_to_sleep(), which might be used at commit.
+   Which has yet to be an actual wait that Dept considers.
+2. If the condition for sleep is true, the wait will be committed at
+   __schedule(). The wait becomes an actual one that Dept considers.
+3. If the condition is false and the task gets back to TASK_RUNNING,
+   clean(=reset) the staged wait.
 
-Sure thing. This whole series is in my queue of things to review once I make it home from LSF/MM.
+That way, Dept only works with what actually hits to __schedule() for
+the waits through sleep.
 
-- Alistair
+> For this all to make sense, it would need to not have false positives
+> (or at least a very small number of them together with a way to sanely
 
-> Regards,
-> Alex Sierra
->> -----Original Message-----
->> From: amd-gfx <amd-gfx-bounces@lists.freedesktop.org> On Behalf Of Alex
->> Sierra
->> Sent: Thursday, May 5, 2022 4:34 PM
->> To: jgg@nvidia.com
->> Cc: rcampbell@nvidia.com; willy@infradead.org; david@redhat.com;
->> Kuehling, Felix <Felix.Kuehling@amd.com>; apopple@nvidia.com; amd-
->> gfx@lists.freedesktop.org; linux-xfs@vger.kernel.org; linux-mm@kvack.org;
->> jglisse@redhat.com; dri-devel@lists.freedesktop.org; akpm@linux-
->> foundation.org; linux-ext4@vger.kernel.org; hch@lst.de
->> Subject: [PATCH v1 04/15] mm: add device coherent checker to remove
->> migration pte
->>
->> During remove_migration_pte(), entries for device coherent type pages that
->> were not created through special migration ptes, ignore _PAGE_RW flag. This
->> path can be found at migrate_device_page(), where valid vma is not
->> required. In this case, migrate_vma_collect_pmd() is not called and special
->> migration ptes are not set.
->>
->> Signed-off-by: Alex Sierra <alex.sierra@amd.com>
->> ---
->>  mm/migrate.c | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/mm/migrate.c b/mm/migrate.c index
->> 6c31ee1e1c9b..e18ddee56f37 100644
->> --- a/mm/migrate.c
->> +++ b/mm/migrate.c
->> @@ -206,7 +206,8 @@ static bool remove_migration_pte(struct folio *folio,
->>  		 * Recheck VMA as permissions can change since migration
->> started
->>  		 */
->>  		entry = pte_to_swp_entry(*pvmw.pte);
->> -		if (is_writable_migration_entry(entry))
->> +		if (is_writable_migration_entry(entry) ||
->> +		    is_device_coherent_page(pfn_to_page(pvmw.pfn)))
->>  			pte = maybe_mkwrite(pte, vma);
->>  		else if (pte_swp_uffd_wp(*pvmw.pte))
->>  			pte = pte_mkuffd_wp(pte);
->> --
->> 2.32.0
+Yes. I agree with you. I got rid of them that way I described above.
 
---=-=-=--
+> get rid of them), and also have a track record of finding things that
+> lockdep doesn't.
+
+I have some reports that wait_for_completion or waitqueue is involved.
+It's worth noting those are not tracked by Lockdep. I'm checking if
+those are true positive or not. I will share those reports once I get
+more convinced for that.
+
+> Maybe such reports have been sent out with the current situation, and
+> I haven't seen them.
+
+Dept reports usually have been sent to me privately, not in LKML. As I
+told you, I'm planning to share them.
+
+	Byungchul
+
+> 
+>                  Linus
+> 
