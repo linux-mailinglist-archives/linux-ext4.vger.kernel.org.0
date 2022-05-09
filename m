@@ -2,187 +2,135 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2AF051F279
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 May 2022 03:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A53151F482
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 May 2022 08:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232235AbiEIBdr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 8 May 2022 21:33:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41952 "EHLO
+        id S229883AbiEIGbN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 9 May 2022 02:31:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234292AbiEIBbK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 8 May 2022 21:31:10 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1084513F63;
-        Sun,  8 May 2022 18:25:19 -0700 (PDT)
-Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4KxNh16Np0zGpg9;
-        Mon,  9 May 2022 09:22:25 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Mon, 9 May 2022 09:25:12 +0800
-Message-ID: <83ed1d6f-84f9-0e47-ddb1-b8cafc12338a@huawei.com>
-Date:   Mon, 9 May 2022 09:25:11 +0800
+        with ESMTP id S235261AbiEIG16 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 9 May 2022 02:27:58 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F2FC17EC2A;
+        Sun,  8 May 2022 23:24:05 -0700 (PDT)
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24913ULR023542;
+        Mon, 9 May 2022 06:22:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=EUzciikRinO769+UPV9+5CaGF8IJ3vz6NtwLfqJarCs=;
+ b=R0lntO0fsG6s5mi6rKgJO2Hnd9PMz1IPd57GnsFqu1uY8qDN8qHbvVomKp12dttiMA/q
+ +UfgnDND4Xw8REPSsc0jQeBswH5LiIgPZSJ+j6KycC0T5N7tkfQUfImu8vm+9Tf/TTOw
+ 5N4plEZQRM9pdi9tk4wV78kyR7BgYvVPSdeZEHLMKOXExVBSWd8UV7fUSgeelByXHBmc
+ T5Q8LKJcXc7DMmWTW9rFC1ksNECrU8WExj34a1XYmMnKrGDEq7xDqfVhINT9XSSaFvr4
+ NPsWPrLy388G/zYNMYjWd6p8MOqbjbseSDAlcOhsD82QE+JNWwpiImqSijHcDghAARZ2 WA== 
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3fx256b9sq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 09 May 2022 06:22:57 +0000
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2496021N004374;
+        Mon, 9 May 2022 06:22:50 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06fra.de.ibm.com with ESMTP id 3fwg1hsjf2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 09 May 2022 06:22:50 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2496Mm3x52625870
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 9 May 2022 06:22:48 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 14D4C4203F;
+        Mon,  9 May 2022 06:22:48 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1657142041;
+        Mon,  9 May 2022 06:22:46 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.35.189])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon,  9 May 2022 06:22:45 +0000 (GMT)
+Date:   Mon, 9 May 2022 11:52:42 +0530
+From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To:     fstests@vger.kernel.org
+Cc:     riteshh@linux.ibm.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] common/rc: Modify _require_batched_discard to improve
+ test coverage
+Message-ID: <YnizMg+ALwVJYNLS@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <20220401055713.634842-1-ojaswin@linux.ibm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: [PATCH v3] ext4: fix race condition between ext4_write and
- ext4_convert_inline_data
-To:     <linux-ext4@vger.kernel.org>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-        <yebin10@huawei.com>, <yukuai3@huawei.com>,
-        <stable@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>,
-        Baokun Li <libaokun1@huawei.com>
-References: <20220428134031.4153381-1-libaokun1@huawei.com>
-From:   "libaokun (A)" <libaokun1@huawei.com>
-In-Reply-To: <20220428134031.4153381-1-libaokun1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220401055713.634842-1-ojaswin@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: wYsTgguTGl8YPMEWgt8VXt3DtmAafGiO
+X-Proofpoint-ORIG-GUID: wYsTgguTGl8YPMEWgt8VXt3DtmAafGiO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-05-09_01,2022-05-06_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
+ adultscore=0 clxscore=1011 impostorscore=0 bulkscore=0 mlxlogscore=490
+ priorityscore=1501 malwarescore=0 spamscore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2202240000 definitions=main-2205090035
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-A gentle ping.
+Greetings,
 
-在 2022/4/28 21:40, Baokun Li 写道:
-> Hulk Robot reported a BUG_ON:
->   ==================================================================
->   EXT4-fs error (device loop3): ext4_mb_generate_buddy:805: group 0,
->   block bitmap and bg descriptor inconsistent: 25 vs 31513 free clusters
->   kernel BUG at fs/ext4/ext4_jbd2.c:53!
->   invalid opcode: 0000 [#1] SMP KASAN PTI
->   CPU: 0 PID: 25371 Comm: syz-executor.3 Not tainted 5.10.0+ #1
->   RIP: 0010:ext4_put_nojournal fs/ext4/ext4_jbd2.c:53 [inline]
->   RIP: 0010:__ext4_journal_stop+0x10e/0x110 fs/ext4/ext4_jbd2.c:116
->   [...]
->   Call Trace:
->    ext4_write_inline_data_end+0x59a/0x730 fs/ext4/inline.c:795
->    generic_perform_write+0x279/0x3c0 mm/filemap.c:3344
->    ext4_buffered_write_iter+0x2e3/0x3d0 fs/ext4/file.c:270
->    ext4_file_write_iter+0x30a/0x11c0 fs/ext4/file.c:520
->    do_iter_readv_writev+0x339/0x3c0 fs/read_write.c:732
->    do_iter_write+0x107/0x430 fs/read_write.c:861
->    vfs_writev fs/read_write.c:934 [inline]
->    do_pwritev+0x1e5/0x380 fs/read_write.c:1031
->   [...]
->   ==================================================================
->
-> Above issue may happen as follows:
->             cpu1                     cpu2
-> __________________________|__________________________
-> do_pwritev
->   vfs_writev
->    do_iter_write
->     ext4_file_write_iter
->      ext4_buffered_write_iter
->       generic_perform_write
->        ext4_da_write_begin
->                             vfs_fallocate
->                              ext4_fallocate
->                               ext4_convert_inline_data
->                                ext4_convert_inline_data_nolock
->                                 ext4_destroy_inline_data_nolock
->                                  clear EXT4_STATE_MAY_INLINE_DATA
->                                 ext4_map_blocks
->                                  ext4_ext_map_blocks
->                                   ext4_mb_new_blocks
->                                    ext4_mb_regular_allocator
->                                     ext4_mb_good_group_nolock
->                                      ext4_mb_init_group
->                                       ext4_mb_init_cache
->                                        ext4_mb_generate_buddy  --> error
->         ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA)
->                                  ext4_restore_inline_data
->                                   set EXT4_STATE_MAY_INLINE_DATA
->         ext4_block_write_begin
->        ext4_da_write_end
->         ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA)
->         ext4_write_inline_data_end
->          handle=NULL
->          ext4_journal_stop(handle)
->           __ext4_journal_stop
->            ext4_put_nojournal(handle)
->             ref_cnt = (unsigned long)handle
->             BUG_ON(ref_cnt == 0)  ---> BUG_ON
->
-> The lock held by ext4_convert_inline_data is xattr_sem, but the lock
-> held by generic_perform_write is i_rwsem. Therefore, the two locks can
-> be concurrent.
->
-> To solve above issue, we add inode_lock() for ext4_convert_inline_data().
-> At the same time, move ext4_convert_inline_data() in front of
-> ext4_punch_hole(), remove similar handling from ext4_punch_hole().
->
-> Fixes: 0c8d414f163f ("ext4: let fallocate handle inline data correctly")
-> Cc: stable@vger.kernel.org
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Please do let me know if there are any reviews or comments on this patch.
+
+Thank you,
+Ojaswin
+
+On Fri, Apr 01, 2022 at 11:27:13AM +0530, Ojaswin Mujoo wrote:
+> A recent ext4 patch discussed [1] that some devices (eg LVMs) can
+> have a discard granularity as big as 42MB which makes it larger
+> than the group size of ext4 FS with 1k BS. This causes the FITRIM
+> IOCTL to fail on filesystems like ext4.
+> 
+> This case was not correctly handle by "_require_batched_discard" as
+> it incorrectly interpreted the FITRIM failure as fs not supporting
+> the IOCTL. This caused the tests like generic/260 to incorectly
+> report "not run" instead of "failed" in case of large discard
+> granularity.
+> 
+> Fix "_require_batched_discard" to use a more accurate method
+> to determine if discard is supported.
+> 
+> [1] commit 173b6e383d2
+>     ext4: avoid trim error on fs with small groups
+> 
+> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 > ---
-> V1->V2:
-> 	Increase the range of the inode_lock.
-> V2->V3:
-> 	Move the lock outside the ext4_convert_inline_data().
-> 	And reorganize ext4_fallocate().
->
->   fs/ext4/extents.c | 10 ++++++----
->   fs/ext4/inode.c   |  9 ---------
->   2 files changed, 6 insertions(+), 13 deletions(-)
->
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index e473fde6b64b..474479ce76e0 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -4693,15 +4693,17 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
->   		     FALLOC_FL_INSERT_RANGE))
->   		return -EOPNOTSUPP;
->   
-> +	inode_lock(inode);
-> +	ret = ext4_convert_inline_data(inode);
-> +	inode_unlock(inode);
-> +	if (ret)
-> +		goto exit;
+>  common/rc | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/common/rc b/common/rc
+> index e2d3d72a..97386342 100644
+> --- a/common/rc
+> +++ b/common/rc
+> @@ -3858,7 +3858,13 @@ _require_batched_discard()
+>  		exit 1
+>  	fi
+>  	_require_fstrim
+> -	$FSTRIM_PROG $1 > /dev/null 2>&1 || _notrun "FITRIM not supported on $1"
 > +
->   	if (mode & FALLOC_FL_PUNCH_HOLE) {
->   		ret = ext4_punch_hole(file, offset, len);
->   		goto exit;
->   	}
->   
-> -	ret = ext4_convert_inline_data(inode);
-> -	if (ret)
-> -		goto exit;
-> -
->   	if (mode & FALLOC_FL_COLLAPSE_RANGE) {
->   		ret = ext4_collapse_range(file, offset, len);
->   		goto exit;
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 646ece9b3455..4779673d733e 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -3967,15 +3967,6 @@ int ext4_punch_hole(struct file *file, loff_t offset, loff_t length)
->   
->   	trace_ext4_punch_hole(inode, offset, length, 0);
->   
-> -	ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
-> -	if (ext4_has_inline_data(inode)) {
-> -		filemap_invalidate_lock(mapping);
-> -		ret = ext4_convert_inline_data(inode);
-> -		filemap_invalidate_unlock(mapping);
-> -		if (ret)
-> -			return ret;
-> -	}
-> -
->   	/*
->   	 * Write out all dirty pages to avoid race conditions
->   	 * Then release them.
-
-
+> +	$FSTRIM_PROG $1 2>&1 | grep -q "not supported"
+> +	RET=$?
+> +	if [ "$RET" = "0" ]
+> +	then
+> +		_notrun "FITRIM not supported on $1"
+> +	fi
+>  }
+>  
+>  _require_dumpe2fs()
+> -- 
+> 2.27.0
+> 
