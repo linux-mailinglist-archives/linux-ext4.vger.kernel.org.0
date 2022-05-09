@@ -2,204 +2,77 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 134AE51FD7E
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 May 2022 15:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E52565202BC
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 May 2022 18:41:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234960AbiEINFE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 9 May 2022 09:05:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45442 "EHLO
+        id S239216AbiEIQpG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 9 May 2022 12:45:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235016AbiEINFD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 9 May 2022 09:05:03 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 610CA3C718;
-        Mon,  9 May 2022 06:01:09 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 1E48B21A6A;
-        Mon,  9 May 2022 13:01:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1652101268; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y1W1glaT82UhfAqAek9S6C4OBUuGBFNN9mAkUn6Ay0Q=;
-        b=u6+193aG6z+o4BOKRo1ZgKuyTRdUXNFuu4/wDXF5Ne4kE9T64dwUruklmV64im+/3tiX2a
-        +8N/Uv0X80rAL+X1oe0Oi91ea0dJe+zI84RR7/v6ck6wePimqYEPJn40Y8v37Pmh3n1xBW
-        bjUJWAdp9swHZTAgwaqb0CxhCin9GS8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1652101268;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y1W1glaT82UhfAqAek9S6C4OBUuGBFNN9mAkUn6Ay0Q=;
-        b=8OSm/SjDP8xUIHnnaQvqQc6WV5jtXjPTQ/Lhf5EmnK6uSenc4o1/UsWuVcxz7LktxwI0Oz
-        q0kPq0Wkh7auSNAQ==
-Received: from quack3.suse.cz (unknown [10.163.28.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C94612C141;
-        Mon,  9 May 2022 13:01:07 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id D3A41A062A; Mon,  9 May 2022 15:01:01 +0200 (CEST)
-Date:   Mon, 9 May 2022 15:01:01 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ye Bin <yebin10@huawei.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jack@suse.cz, lczerner@redhat.com
-Subject: Re: [PATCH -next] ext4: fix bug_on in ext4_writepages
-Message-ID: <20220509130101.7myd6mhwd54fhvq7@quack3.lan>
-References: <20220505135708.2629657-1-yebin10@huawei.com>
+        with ESMTP id S239209AbiEIQpF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 9 May 2022 12:45:05 -0400
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE634505E
+        for <linux-ext4@vger.kernel.org>; Mon,  9 May 2022 09:41:10 -0700 (PDT)
+Received: by mail-io1-f69.google.com with SMTP id h17-20020a056602155100b0065aa0081429so10280755iow.10
+        for <linux-ext4@vger.kernel.org>; Mon, 09 May 2022 09:41:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=UQHR7i6vxvG7W9b1CjIdDI1PA7CC1Fpf3pZBpknVs7w=;
+        b=fKfWxprwjzr7vwCXr1+WjM4duYK0KpcAiMvuswHMdgp75aekOvt2kAlC+rnkO4ldpL
+         dB87cQXk/jUCZIZEU3cyfezvTOLjCWDL0QBO3z/9+ZLmplshOmSYb9/uwLbxfKbTygCi
+         Dd/Ih7Qay/EiztLGy50TH6UqNo80dokkUr58NbNrL/bmx/pggWkOzQQnJBs2UDSokDs/
+         w94NuujXdV17jwrU2yD4X/BeWvgdA53nBmG7xxRQ1Pi6TNMJLTGhMaAoV1t5pgtq37XP
+         XFKiKHJWAeKBQthEg6uirh5cqqP3NJWQfe8mpR6WJ/Lq22Jv+XEvXZIXM592COsP8a6c
+         zPWQ==
+X-Gm-Message-State: AOAM5328BJE9Tu3N30HPachVwuB553Hho72Z3WmKFK34FwqgqJDxXJMM
+        Pwi81n7Wb3SXSS/8Mvh7l/w/S6gRqBqmkafSGZmExb0IySZP
+X-Google-Smtp-Source: ABdhPJwR1r1shYChS7IbA+UkumG788L8TrCk2UoXDoS4lYNAKkbmJqSpjSmeEcYshtQqDLBeGt0kQ+Ug7FglJSsTUI49/CpRqUor
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220505135708.2629657-1-yebin10@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6602:14c2:b0:657:d130:daa with SMTP id
+ b2-20020a05660214c200b00657d1300daamr6942690iow.83.1652114469771; Mon, 09 May
+ 2022 09:41:09 -0700 (PDT)
+Date:   Mon, 09 May 2022 09:41:09 -0700
+In-Reply-To: <000000000000183d9e05d7f0c0ee@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000195e9205de96e067@google.com>
+Subject: Re: [syzbot] kernel BUG in ext4_ind_remove_space
+From:   syzbot <syzbot+fcc629d1a1ae8d3fe8a5@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, jack@suse.cz, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tadeusz.struk@linaro.org, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 05-05-22 21:57:08, Ye Bin wrote:
-> we got issue as follows:
-> EXT4-fs error (device loop0): ext4_mb_generate_buddy:1141: group 0, block bitmap and bg descriptor inconsistent: 25 vs 31513 free cls
-> ------------[ cut here ]------------
-> kernel BUG at fs/ext4/inode.c:2708!
-> invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-> CPU: 2 PID: 2147 Comm: rep Not tainted 5.18.0-rc2-next-20220413+ #155
-> RIP: 0010:ext4_writepages+0x1977/0x1c10
-> RSP: 0018:ffff88811d3e7880 EFLAGS: 00010246
-> RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffff88811c098000
-> RDX: 0000000000000000 RSI: ffff88811c098000 RDI: 0000000000000002
-> RBP: ffff888128140f50 R08: ffffffffb1ff6387 R09: 0000000000000000
-> R10: 0000000000000007 R11: ffffed10250281ea R12: 0000000000000001
-> R13: 00000000000000a4 R14: ffff88811d3e7bb8 R15: ffff888128141028
-> FS:  00007f443aed9740(0000) GS:ffff8883aef00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000020007200 CR3: 000000011c2a4000 CR4: 00000000000006e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  do_writepages+0x130/0x3a0
->  filemap_fdatawrite_wbc+0x83/0xa0
->  filemap_flush+0xab/0xe0
->  ext4_alloc_da_blocks+0x51/0x120
->  __ext4_ioctl+0x1534/0x3210
->  __x64_sys_ioctl+0x12c/0x170
->  do_syscall_64+0x3b/0x90
-> 
-> It may happen as follows:
-> 1. write inline_data inode
-> vfs_write
->   new_sync_write
->     ext4_file_write_iter
->       ext4_buffered_write_iter
->         generic_perform_write
-> 	  ext4_da_write_begin
-> 	    ext4_da_write_inline_data_begin -> If inline data size too
-> 	    small will allocate block to write, then mapping will has
-> 	    dirty page
-> 	    	ext4_da_convert_inline_data_to_extent ->clear EXT4_STATE_MAY_INLINE_DATA
-> 2. fallocate
-> do_vfs_ioctl
->   ioctl_preallocate
->     vfs_fallocate
->       ext4_fallocate
->         ext4_convert_inline_data
-> 	  ext4_convert_inline_data_nolock
-> 	    ext4_map_blocks -> fail will goto restore data
-> 	    ext4_restore_inline_data
-> 	      ext4_create_inline_data
-> 	      ext4_write_inline_data
-> 	      ext4_set_inode_state -> set inode EXT4_STATE_MAY_INLINE_DATA
-> 3. writepages
-> __ext4_ioctl
->   ext4_alloc_da_blocks
->     filemap_flush
->       filemap_fdatawrite_wbc
->         do_writepages
-> 	  ext4_writepages
-> 	    if (ext4_has_inline_data(inode))
-> 	      BUG_ON(ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA))
-> 
-> To solved this issue, record origin 'EXT4_STATE_MAY_INLINE_DATA' flag, then pass
-> value to 'ext4_restore_inline_data', 'ext4_restore_inline_data' will
-> decide to if recovery 'EXT4_STATE_MAY_INLINE_DATA' flag according to parameter.
-> 
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
+syzbot suspects this issue was fixed by commit:
 
-Thanks for the patch. I agree it will fix the crash you have spotted but
-I'm somewhat wondering whether it would not be simpler to just move the
-call to ext4_destroy_inline_data_nolock() in
-ext4_convert_inline_data_nolock() later, after we have done writing
-data_bh. That way we can completely remove ext4_restore_inline_data() and
-as a consequence avoid problems. What do you think?
+commit 2da376228a2427501feb9d15815a45dbdbdd753e
+Author: Tadeusz Struk <tadeusz.struk@linaro.org>
+Date:   Thu Mar 31 20:05:15 2022 +0000
 
-								Honza
+    ext4: limit length to bitmap_maxbytes - blocksize in punch_hole
 
-> ---
->  fs/ext4/inline.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-> index 9c076262770d..407061c79adc 100644
-> --- a/fs/ext4/inline.c
-> +++ b/fs/ext4/inline.c
-> @@ -1125,8 +1125,8 @@ static int ext4_update_inline_dir(handle_t *handle, struct inode *dir,
->  }
->  
->  static void ext4_restore_inline_data(handle_t *handle, struct inode *inode,
-> -				     struct ext4_iloc *iloc,
-> -				     void *buf, int inline_size)
-> +				     struct ext4_iloc *iloc, void *buf,
-> +				     int inline_size, bool has_data)
->  {
->  	int ret;
->  
-> @@ -1138,7 +1138,8 @@ static void ext4_restore_inline_data(handle_t *handle, struct inode *inode,
->  		return;
->  	}
->  	ext4_write_inline_data(inode, iloc, buf, 0, inline_size);
-> -	ext4_set_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
-> +	if (has_data)
-> +		ext4_set_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
->  }
->  
->  static int ext4_finish_convert_inline_dir(handle_t *handle,
-> @@ -1194,6 +1195,7 @@ static int ext4_convert_inline_data_nolock(handle_t *handle,
->  	struct buffer_head *data_bh = NULL;
->  	struct ext4_map_blocks map;
->  	int inline_size;
-> +	bool has_data;
->  
->  	inline_size = ext4_get_inline_size(inode);
->  	buf = kmalloc(inline_size, GFP_NOFS);
-> @@ -1222,6 +1224,8 @@ static int ext4_convert_inline_data_nolock(handle_t *handle,
->  	if (error)
->  		goto out;
->  
-> +	has_data = !!ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
-> +
->  	map.m_lblk = 0;
->  	map.m_len = 1;
->  	map.m_flags = 0;
-> @@ -1262,7 +1266,8 @@ static int ext4_convert_inline_data_nolock(handle_t *handle,
->  	unlock_buffer(data_bh);
->  out_restore:
->  	if (error)
-> -		ext4_restore_inline_data(handle, inode, iloc, buf, inline_size);
-> +		ext4_restore_inline_data(handle, inode, iloc, buf,
-> +					 inline_size, has_data);
->  
->  out:
->  	brelse(data_bh);
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=100ac712f00000
+start commit:   09688c0166e7 Linux 5.17-rc8
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d35f9bc6884af6c9
+dashboard link: https://syzkaller.appspot.com/bug?extid=fcc629d1a1ae8d3fe8a5
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1205b189700000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15dda4fe700000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: ext4: limit length to bitmap_maxbytes - blocksize in punch_hole
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
