@@ -2,156 +2,205 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8DB251F4A5
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 May 2022 08:57:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C13F51FCEC
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 May 2022 14:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231750AbiEIGik (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 9 May 2022 02:38:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34786 "EHLO
+        id S234489AbiEIMfi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 9 May 2022 08:35:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232804AbiEIGcW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 9 May 2022 02:32:22 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1761718543D;
-        Sun,  8 May 2022 23:28:27 -0700 (PDT)
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2496AdXR024606;
-        Mon, 9 May 2022 06:27:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=Cbo8mWah0q6KvLAW2auEG2VV0Yjo5yAYIm2nuqkZLF8=;
- b=Hs3DDd0uxxpDo9HjWZT3FeENE7b2m8PH0MI7SY7bLjIpEZPnf+f8Qnwn8i3X8X83IMFr
- bZwJ8JntcrRkTuYsTf0r5jEOYsdJWKdSDbPRXvrNYKvx3L1fG0OzYu1KijauyhA9rsV0
- Bp3sifr00CANSiJSBkLA0gFdjPFVQ/gszBRKGbvMo48AbC5N7CoZBbh0BFlMJ45Ewi+U
- iBTY+l/7iyqlDNh7tkCjx2yUPA9UtkSWetsUVPRwwkvuANIGHsDx2DyeiBuB2xhuFuot
- ba/FUPAVF7xxckFXEs/pnAS5XlChliFXy5FcCaUKrBzd/IeQ40sQuxjTYCbjqftYAyNL kg== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3fx22ubk2t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 May 2022 06:27:20 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2496MNI6011694;
-        Mon, 9 May 2022 06:27:18 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 3fwgd8t0h9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 May 2022 06:27:18 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2496RGZC52625884
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 9 May 2022 06:27:16 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 28E62A4051;
-        Mon,  9 May 2022 06:27:16 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 61E3AA4040;
-        Mon,  9 May 2022 06:27:14 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.35.189])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Mon,  9 May 2022 06:27:14 +0000 (GMT)
-Date:   Mon, 9 May 2022 11:57:11 +0530
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     "Theodore Ts'o" <tytso@mit.edu>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: Fix journal_ioprio mount option handling
-Message-ID: <Yni0P6wS3r32XAZN@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <20220418083545.45778-1-ojaswin@linux.ibm.com>
+        with ESMTP id S234486AbiEIMfh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 9 May 2022 08:35:37 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41E5D262653;
+        Mon,  9 May 2022 05:31:43 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id C7AA01F948;
+        Mon,  9 May 2022 12:31:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1652099501; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=D3NP2+AfAwypB8dY0Q7Ug6eLsoFCTz9seHAEXMlM3rE=;
+        b=ytxhXz4/4X/4ZUocjQYzh7Hr0W6tRQwbt9YKELwp2fkTQy/AbU5PuIOisC6RWWGKXGlIoj
+        jP0uhhlOEZkzUXWku7fLVF8BiLEYVIY2ia8rkLziXFx7z1rJU8CWWGlJzjb8GzLsZ9tbn5
+        oTHGnOCv2vK/30agcRle8RU5PymF+sk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1652099501;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=D3NP2+AfAwypB8dY0Q7Ug6eLsoFCTz9seHAEXMlM3rE=;
+        b=xjCMniOCStfULiGuvDqMybVagZXS58I0G6UrDb7F7bEXtB5AoQt/PKxZwcJvlCbP7xybJM
+        JpEPL2tDrpGLqHAA==
+Received: from quack3.suse.cz (unknown [10.163.28.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id A99522C141;
+        Mon,  9 May 2022 12:31:41 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 4BC83A062A; Mon,  9 May 2022 14:31:38 +0200 (CEST)
+Date:   Mon, 9 May 2022 14:31:38 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     yebin <yebin10@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lczerner@redhat.com
+Subject: Re: [PATCH -next] ext4: fix bug_on in ext4_writepages
+Message-ID: <20220509123138.n3tmpybh2jf3x2eg@quack3.lan>
+References: <20220505135708.2629657-1-yebin10@huawei.com>
+ <20220505154713.nig6rj76p2gl5mm7@quack3.lan>
+ <6274797D.6050303@huawei.com>
+ <20220506085034.akzobmffzosg7rem@quack3.lan>
+ <6275192C.5080300@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20220418083545.45778-1-ojaswin@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: dKzuJh_6aO8acZbQ3dODAu1icY_tZxG3
-X-Proofpoint-GUID: dKzuJh_6aO8acZbQ3dODAu1icY_tZxG3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-05-09_01,2022-05-06_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- lowpriorityscore=0 malwarescore=0 adultscore=0 impostorscore=0
- priorityscore=1501 mlxscore=0 bulkscore=0 spamscore=0 mlxlogscore=999
- phishscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2205090035
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6275192C.5080300@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Fri 06-05-22 20:48:44, yebin wrote:
+> On 2022/5/6 16:50, Jan Kara wrote:
+> > On Fri 06-05-22 09:27:25, yebin wrote:
+> > > On 2022/5/5 23:47, Jan Kara wrote:
+> > > > On Thu 05-05-22 21:57:08, Ye Bin wrote:
+> > > > > we got issue as follows:
+> > > > > EXT4-fs error (device loop0): ext4_mb_generate_buddy:1141: group 0, block bitmap and bg descriptor inconsistent: 25 vs 31513 free cls
+> > > > > ------------[ cut here ]------------
+> > > > > kernel BUG at fs/ext4/inode.c:2708!
+> > > > > invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
+> > > > > CPU: 2 PID: 2147 Comm: rep Not tainted 5.18.0-rc2-next-20220413+ #155
+> > > > > RIP: 0010:ext4_writepages+0x1977/0x1c10
+> > > > > RSP: 0018:ffff88811d3e7880 EFLAGS: 00010246
+> > > > > RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffff88811c098000
+> > > > > RDX: 0000000000000000 RSI: ffff88811c098000 RDI: 0000000000000002
+> > > > > RBP: ffff888128140f50 R08: ffffffffb1ff6387 R09: 0000000000000000
+> > > > > R10: 0000000000000007 R11: ffffed10250281ea R12: 0000000000000001
+> > > > > R13: 00000000000000a4 R14: ffff88811d3e7bb8 R15: ffff888128141028
+> > > > > FS:  00007f443aed9740(0000) GS:ffff8883aef00000(0000) knlGS:0000000000000000
+> > > > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > > > CR2: 0000000020007200 CR3: 000000011c2a4000 CR4: 00000000000006e0
+> > > > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > > > Call Trace:
+> > > > >    <TASK>
+> > > > >    do_writepages+0x130/0x3a0
+> > > > >    filemap_fdatawrite_wbc+0x83/0xa0
+> > > > >    filemap_flush+0xab/0xe0
+> > > > >    ext4_alloc_da_blocks+0x51/0x120
+> > > > >    __ext4_ioctl+0x1534/0x3210
+> > > > >    __x64_sys_ioctl+0x12c/0x170
+> > > > >    do_syscall_64+0x3b/0x90
+> > > > > 
+> > > > > It may happen as follows:
+> > > > > 1. write inline_data inode
+> > > > > vfs_write
+> > > > >     new_sync_write
+> > > > >       ext4_file_write_iter
+> > > > >         ext4_buffered_write_iter
+> > > > >           generic_perform_write
+> > > > > 	  ext4_da_write_begin
+> > > > > 	    ext4_da_write_inline_data_begin -> If inline data size too
+> > > > > 	    small will allocate block to write, then mapping will has
+> > > > > 	    dirty page
+> > > > > 	    	ext4_da_convert_inline_data_to_extent ->clear EXT4_STATE_MAY_INLINE_DATA
+> > > > > 2. fallocate
+> > > > > do_vfs_ioctl
+> > > > >     ioctl_preallocate
+> > > > >       vfs_fallocate
+> > > > >         ext4_fallocate
+> > > > >           ext4_convert_inline_data
+> > > > > 	  ext4_convert_inline_data_nolock
+> > > > > 	    ext4_map_blocks -> fail will goto restore data
+> > > > > 	    ext4_restore_inline_data
+> > > > > 	      ext4_create_inline_data
+> > > > > 	      ext4_write_inline_data
+> > > > > 	      ext4_set_inode_state -> set inode EXT4_STATE_MAY_INLINE_DATA
+> > > > > 3. writepages
+> > > > > __ext4_ioctl
+> > > > >     ext4_alloc_da_blocks
+> > > > >       filemap_flush
+> > > > >         filemap_fdatawrite_wbc
+> > > > >           do_writepages
+> > > > > 	  ext4_writepages
+> > > > > 	    if (ext4_has_inline_data(inode))
+> > > > > 	      BUG_ON(ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA))
+> > > > > 
+> > > > > To solved this issue, record origin 'EXT4_STATE_MAY_INLINE_DATA' flag, then pass
+> > > > > value to 'ext4_restore_inline_data', 'ext4_restore_inline_data' will
+> > > > > decide to if recovery 'EXT4_STATE_MAY_INLINE_DATA' flag according to parameter.
+> > > > > 
+> > > > > Signed-off-by: Ye Bin <yebin10@huawei.com>
+> > > > I think this will get also fixed by a patch from your colleague I've
+> > > > reviewed here [1], won't it?
+> > > > 
+> > > > [1] https://lore.kernel.org/all/20220428165725.mvjh6mx7gr5vekqe@quack3.lan
+> > > > 
+> > > The issue I fixed is not the same as the isuue my colleague fixed.
+> > OK, maybe I've jumped to conclusion too early but the fix I've referenced
+> > above will protect ext4_convert_inline_data() in ext4_fallocate() with
+> > inode->i_rwsem so I think the race you describe with ext4_da_write_begin()
+> > cannot happen. The inline conversion path with be entered either from
+> > ext4_da_write_begin() or from ext4_fallocate() but not from both. If I'm
+> > missing something, please explain how you think the problem happens with
+> > the above fix applied... Thanks!
+> > 
+> > 								Honza
+> It's happen as follows:
+> step1:
+> ext4_file_write_iter
+>   ext4_buffered_write_iter
+>     generic_perform_write
+>       ext4_da_write_begin
+>         if (ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA))
+>           ext4_da_write_inline_data_begin
+>             ext4_da_convert_inline_data_to_extent
+>               __block_write_begin
+>               ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
+>             ->clear EXT4_STATE_MAY_INLINE_DATA flag,  If inline data size
+> too
+>         small will allocate block to write, then mapping will has dirty page
+> 
+>       ext4_da_write_end
+>         generic_write_end
+> 
+> step2：
+> vfs_fallocate
+>   ext4_fallocate
+>     ext4_convert_inline_data
+>       if (ext4_has_inline_data(inode))  -> This condition is satisfied
+>         ext4_convert_inline_data_nolock
+>           ext4_map_blocks -> fail will goto restore data
+>           ext4_restore_inline_data
+>            ext4_create_inline_data
+>            ext4_write_inline_data
+>            ext4_set_inode_state -> set inode EXT4_STATE_MAY_INLINE_DATA
+> step3:
+> do_writepages
+>   ext4_writepages
+>     if (ext4_has_inline_data(inode))
+>       BUG_ON(ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA))
+> 
+> As we call "ext4_destroy_inline_data" to destory inline data when delay
+> allocation.  So，if we call fallocate before writepages while
+> ext4_map_blocks return failed, will lead to above issue.  This issue does
+> not require concurrency conditions.
 
-Please let me know if there are any suggestions or reviews on this patch.
+Aha, I see now. Thanks for explanation and sorry for being a bit dense.
+I'll have a look at your original patch.
 
-Thank you in advance,
-Ojaswin
-
-On Mon, Apr 18, 2022 at 02:05:45PM +0530, Ojaswin Mujoo wrote:
-> In __ext4_super() we always overwrote the user specified journal_ioprio
-> value with a default value, expecting  parse_apply_sb_mount_options() to
-> later correctly set ctx->journal_ioprio to the user specified value.
-> However, if parse_apply_sb_mount_options() returned early because of
-> empty sbi->es_s->s_mount_opts, the correct journal_ioprio value was
-> never set.
-> 
-> This patch fixes __ext4_super() to only use the default value if the
-> user has not specified any value for journal_ioprio.
-> 
-> Similarly, the remount behavior was to either use journal_ioprio
-> value specified during initial mount, or use the default value
-> irrespective of the journal_ioprio value specified during remount.
-> This patch modifies this to first check if a new value for ioprio
-> has been passed during remount and apply it. Incase, no new value is
-> passed, use the value specified during initial mount.
-> 
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> ---
->  fs/ext4/super.c | 15 ++++++++++-----
->  1 file changed, 10 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index c5a9ffbf7f4f..bfd767c51203 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -4427,7 +4427,8 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
->  	int silent = fc->sb_flags & SB_SILENT;
->  
->  	/* Set defaults for the variables that will be set during parsing */
-> -	ctx->journal_ioprio = DEFAULT_JOURNAL_IOPRIO;
-> +	if (!(ctx->spec & EXT4_SPEC_JOURNAL_IOPRIO))
-> +		ctx->journal_ioprio = DEFAULT_JOURNAL_IOPRIO;
->  
->  	sbi->s_inode_readahead_blks = EXT4_DEF_INODE_READAHEAD_BLKS;
->  	sbi->s_sectors_written_start =
-> @@ -6289,7 +6290,6 @@ static int __ext4_remount(struct fs_context *fc, struct super_block *sb)
->  	char *to_free[EXT4_MAXQUOTAS];
->  #endif
->  
-> -	ctx->journal_ioprio = DEFAULT_JOURNAL_IOPRIO;
->  
->  	/* Store the original options */
->  	old_sb_flags = sb->s_flags;
-> @@ -6315,9 +6315,14 @@ static int __ext4_remount(struct fs_context *fc, struct super_block *sb)
->  		} else
->  			old_opts.s_qf_names[i] = NULL;
->  #endif
-> -	if (sbi->s_journal && sbi->s_journal->j_task->io_context)
-> -		ctx->journal_ioprio =
-> -			sbi->s_journal->j_task->io_context->ioprio;
-> +	if (!(ctx->spec & EXT4_SPEC_JOURNAL_IOPRIO)) {
-> +		if (sbi->s_journal && sbi->s_journal->j_task->io_context)
-> +			ctx->journal_ioprio =
-> +				sbi->s_journal->j_task->io_context->ioprio;
-> +		else
-> +			ctx->journal_ioprio = DEFAULT_JOURNAL_IOPRIO;
-> +
-> +	}
->  
->  	ext4_apply_options(fc, sb);
->  
-> -- 
-> 2.27.0
-> 
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
