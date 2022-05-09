@@ -2,146 +2,187 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CEDA51F27D
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 May 2022 03:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2AF051F279
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 May 2022 03:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233220AbiEIBds (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 8 May 2022 21:33:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50778 "EHLO
+        id S232235AbiEIBdr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 8 May 2022 21:33:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235106AbiEIBbi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 8 May 2022 21:31:38 -0400
-Received: from lgeamrelo11.lge.com (lgeamrelo12.lge.com [156.147.23.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A8DF913CFC
-        for <linux-ext4@vger.kernel.org>; Sun,  8 May 2022 18:23:38 -0700 (PDT)
-Received: from unknown (HELO lgeamrelo04.lge.com) (156.147.1.127)
-        by 156.147.23.52 with ESMTP; 9 May 2022 10:23:37 +0900
-X-Original-SENDERIP: 156.147.1.127
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO X58A-UD3R) (10.177.244.38)
-        by 156.147.1.127 with ESMTP; 9 May 2022 10:23:37 +0900
-X-Original-SENDERIP: 10.177.244.38
-X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Mon, 9 May 2022 10:22:02 +0900
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        linux-ide@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>, duyuyang@gmail.com,
-        johannes.berg@intel.com, Tejun Heo <tj@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel-team@lge.com, Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>, sj@kernel.org,
-        Jerome Glisse <jglisse@redhat.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, ngupta@vflare.org,
-        linux-block <linux-block@vger.kernel.org>,
-        paolo.valente@linaro.org, Josef Bacik <josef@toxicpanda.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-        jack@suse.com, Jeff Layton <jlayton@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Dave Airlie <airlied@linux.ie>, rodrigosiqueiramelo@gmail.com,
-        melissa.srw@gmail.com, hamohammed.sa@gmail.com, 42.hyeyoo@gmail.com
-Subject: Re: [PATCH RFC v6 00/21] DEPT(Dependency Tracker)
-Message-ID: <20220509012202.GB6047@X58A-UD3R>
-References: <1651652269-15342-1-git-send-email-byungchul.park@lge.com>
- <CAHk-=whnPePcffsNQM+YSHMGttLXvpf8LbBQ8P7HEdqFXaV7Lg@mail.gmail.com>
+        with ESMTP id S234292AbiEIBbK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 8 May 2022 21:31:10 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1084513F63;
+        Sun,  8 May 2022 18:25:19 -0700 (PDT)
+Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4KxNh16Np0zGpg9;
+        Mon,  9 May 2022 09:22:25 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Mon, 9 May 2022 09:25:12 +0800
+Message-ID: <83ed1d6f-84f9-0e47-ddb1-b8cafc12338a@huawei.com>
+Date:   Mon, 9 May 2022 09:25:11 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whnPePcffsNQM+YSHMGttLXvpf8LbBQ8P7HEdqFXaV7Lg@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: Re: [PATCH v3] ext4: fix race condition between ext4_write and
+ ext4_convert_inline_data
+To:     <linux-ext4@vger.kernel.org>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
+        <yebin10@huawei.com>, <yukuai3@huawei.com>,
+        <stable@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>,
+        Baokun Li <libaokun1@huawei.com>
+References: <20220428134031.4153381-1-libaokun1@huawei.com>
+From:   "libaokun (A)" <libaokun1@huawei.com>
+In-Reply-To: <20220428134031.4153381-1-libaokun1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, May 04, 2022 at 11:17:02AM -0700, Linus Torvalds wrote:
-> On Wed, May 4, 2022 at 1:19 AM Byungchul Park <byungchul.park@lge.com> wrote:
-> >
-> > Hi Linus and folks,
-> >
-> > I've been developing a tool for detecting deadlock possibilities by
-> > tracking wait/event rather than lock(?) acquisition order to try to
-> > cover all synchonization machanisms.
-> 
-> So what is the actual status of reports these days?
+A gentle ping.
 
-I'd like to mention one important thing here. Reportability would get
-stronger if the more wait-event pairs get tagged everywhere DEPT can
-work.
+在 2022/4/28 21:40, Baokun Li 写道:
+> Hulk Robot reported a BUG_ON:
+>   ==================================================================
+>   EXT4-fs error (device loop3): ext4_mb_generate_buddy:805: group 0,
+>   block bitmap and bg descriptor inconsistent: 25 vs 31513 free clusters
+>   kernel BUG at fs/ext4/ext4_jbd2.c:53!
+>   invalid opcode: 0000 [#1] SMP KASAN PTI
+>   CPU: 0 PID: 25371 Comm: syz-executor.3 Not tainted 5.10.0+ #1
+>   RIP: 0010:ext4_put_nojournal fs/ext4/ext4_jbd2.c:53 [inline]
+>   RIP: 0010:__ext4_journal_stop+0x10e/0x110 fs/ext4/ext4_jbd2.c:116
+>   [...]
+>   Call Trace:
+>    ext4_write_inline_data_end+0x59a/0x730 fs/ext4/inline.c:795
+>    generic_perform_write+0x279/0x3c0 mm/filemap.c:3344
+>    ext4_buffered_write_iter+0x2e3/0x3d0 fs/ext4/file.c:270
+>    ext4_file_write_iter+0x30a/0x11c0 fs/ext4/file.c:520
+>    do_iter_readv_writev+0x339/0x3c0 fs/read_write.c:732
+>    do_iter_write+0x107/0x430 fs/read_write.c:861
+>    vfs_writev fs/read_write.c:934 [inline]
+>    do_pwritev+0x1e5/0x380 fs/read_write.c:1031
+>   [...]
+>   ==================================================================
+>
+> Above issue may happen as follows:
+>             cpu1                     cpu2
+> __________________________|__________________________
+> do_pwritev
+>   vfs_writev
+>    do_iter_write
+>     ext4_file_write_iter
+>      ext4_buffered_write_iter
+>       generic_perform_write
+>        ext4_da_write_begin
+>                             vfs_fallocate
+>                              ext4_fallocate
+>                               ext4_convert_inline_data
+>                                ext4_convert_inline_data_nolock
+>                                 ext4_destroy_inline_data_nolock
+>                                  clear EXT4_STATE_MAY_INLINE_DATA
+>                                 ext4_map_blocks
+>                                  ext4_ext_map_blocks
+>                                   ext4_mb_new_blocks
+>                                    ext4_mb_regular_allocator
+>                                     ext4_mb_good_group_nolock
+>                                      ext4_mb_init_group
+>                                       ext4_mb_init_cache
+>                                        ext4_mb_generate_buddy  --> error
+>         ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA)
+>                                  ext4_restore_inline_data
+>                                   set EXT4_STATE_MAY_INLINE_DATA
+>         ext4_block_write_begin
+>        ext4_da_write_end
+>         ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA)
+>         ext4_write_inline_data_end
+>          handle=NULL
+>          ext4_journal_stop(handle)
+>           __ext4_journal_stop
+>            ext4_put_nojournal(handle)
+>             ref_cnt = (unsigned long)handle
+>             BUG_ON(ref_cnt == 0)  ---> BUG_ON
+>
+> The lock held by ext4_convert_inline_data is xattr_sem, but the lock
+> held by generic_perform_write is i_rwsem. Therefore, the two locks can
+> be concurrent.
+>
+> To solve above issue, we add inode_lock() for ext4_convert_inline_data().
+> At the same time, move ext4_convert_inline_data() in front of
+> ext4_punch_hole(), remove similar handling from ext4_punch_hole().
+>
+> Fixes: 0c8d414f163f ("ext4: let fallocate handle inline data correctly")
+> Cc: stable@vger.kernel.org
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ---
+> V1->V2:
+> 	Increase the range of the inode_lock.
+> V2->V3:
+> 	Move the lock outside the ext4_convert_inline_data().
+> 	And reorganize ext4_fallocate().
+>
+>   fs/ext4/extents.c | 10 ++++++----
+>   fs/ext4/inode.c   |  9 ---------
+>   2 files changed, 6 insertions(+), 13 deletions(-)
+>
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index e473fde6b64b..474479ce76e0 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -4693,15 +4693,17 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
+>   		     FALLOC_FL_INSERT_RANGE))
+>   		return -EOPNOTSUPP;
+>   
+> +	inode_lock(inode);
+> +	ret = ext4_convert_inline_data(inode);
+> +	inode_unlock(inode);
+> +	if (ret)
+> +		goto exit;
+> +
+>   	if (mode & FALLOC_FL_PUNCH_HOLE) {
+>   		ret = ext4_punch_hole(file, offset, len);
+>   		goto exit;
+>   	}
+>   
+> -	ret = ext4_convert_inline_data(inode);
+> -	if (ret)
+> -		goto exit;
+> -
+>   	if (mode & FALLOC_FL_COLLAPSE_RANGE) {
+>   		ret = ext4_collapse_range(file, offset, len);
+>   		goto exit;
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 646ece9b3455..4779673d733e 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -3967,15 +3967,6 @@ int ext4_punch_hole(struct file *file, loff_t offset, loff_t length)
+>   
+>   	trace_ext4_punch_hole(inode, offset, length, 0);
+>   
+> -	ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
+> -	if (ext4_has_inline_data(inode)) {
+> -		filemap_invalidate_lock(mapping);
+> -		ret = ext4_convert_inline_data(inode);
+> -		filemap_invalidate_unlock(mapping);
+> -		if (ret)
+> -			return ret;
+> -	}
+> -
+>   	/*
+>   	 * Write out all dirty pages to avoid race conditions
+>   	 * Then release them.
 
-Everything e.g. HW-SW interface, any retry logic and so on can be a
-wait-event pair if they work wait or event anyway. For example, polling
-on an IO mapped read register and initiating the HW to go for the event
-also can be a pair. Definitely those make DEPT more useful.
 
----
-
-The way to use the APIs:
-
-1. Define SDT(Simple Dependency Tracker)
-
-   DEFINE_DEPT_SDT(my_hw_event); <- add this
-
-2. Tag on the waits
-
-   sdt_wait(&my_hw_event); <- add this
-   ... retry logic until my hw work done ... <- the original code
-
-3. Tag on the events
-
-   sdt_event(&my_hw_event); <- add this
-   run_my_hw(); <- the original code
-
----
-
-These are all we should do. I believe DEPT would be a very useful tool
-once all wait-event pairs get tagged by the developers in all subsystems
-and device drivers.
-
-	Byungchul
-
-> Last time I looked at some reports, it gave a lot of false positives
-> due to mis-understanding prepare_to_sleep().
-> 
-> For this all to make sense, it would need to not have false positives
-> (or at least a very small number of them together with a way to sanely
-> get rid of them), and also have a track record of finding things that
-> lockdep doesn't.
-> 
-> Maybe such reports have been sent out with the current situation, and
-> I haven't seen them.
-> 
->                  Linus
