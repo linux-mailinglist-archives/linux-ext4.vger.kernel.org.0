@@ -2,163 +2,89 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B805214E8
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 May 2022 14:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D24F8521CE5
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 May 2022 16:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235908AbiEJMP4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 10 May 2022 08:15:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36574 "EHLO
+        id S1344870AbiEJOwS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 10 May 2022 10:52:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241582AbiEJMPy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 May 2022 08:15:54 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D95933A3A;
-        Tue, 10 May 2022 05:11:57 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4KyGzl38wHzGpcX;
-        Tue, 10 May 2022 20:09:07 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Tue, 10 May
- 2022 20:11:54 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
-        Ye Bin <yebin10@huawei.com>
-Subject: [PATCH -next v2] ext4: fix warning in ext4_handle_inode_extension
-Date:   Tue, 10 May 2022 20:25:45 +0800
-Message-ID: <20220510122545.1770410-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S1345658AbiEJOv5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 May 2022 10:51:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AD918F27D;
+        Tue, 10 May 2022 07:13:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1A4CB615DD;
+        Tue, 10 May 2022 14:13:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16E0DC385C6;
+        Tue, 10 May 2022 14:12:55 +0000 (UTC)
+Date:   Tue, 10 May 2022 10:12:54 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Byungchul Park <byungchul.park@lge.com>
+Cc:     Hyeonggon Yoo <42.hyeyoo@gmail.com>, torvalds@linux-foundation.org,
+        damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        mingo@redhat.com, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, will@kernel.org, tglx@linutronix.de,
+        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
+        chris@chris-wilson.co.uk, duyuyang@gmail.com,
+        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
+        gregkh@linuxfoundation.org, kernel-team@lge.com,
+        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
+        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
+        ngupta@vflare.org, linux-block@vger.kernel.org,
+        paolo.valente@linaro.org, josef@toxicpanda.com,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        jack@suse.cz, jack@suse.com, jlayton@kernel.org,
+        dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
+        dri-devel@lists.freedesktop.org, airlied@linux.ie,
+        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+        hamohammed.sa@gmail.com
+Subject: Re: [PATCH RFC v6 00/21] DEPT(Dependency Tracker)
+Message-ID: <20220510101254.33554885@gandalf.local.home>
+In-Reply-To: <20220509233838.GC6047@X58A-UD3R>
+References: <CAHk-=whnPePcffsNQM+YSHMGttLXvpf8LbBQ8P7HEdqFXaV7Lg@mail.gmail.com>
+        <1651795895-8641-1-git-send-email-byungchul.park@lge.com>
+        <YnYd0hd+yTvVQxm5@hyeyoo>
+        <20220509001637.GA6047@X58A-UD3R>
+        <20220509164712.746e236b@gandalf.local.home>
+        <20220509233838.GC6047@X58A-UD3R>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-We got issue as follows:
-EXT4-fs error (device loop0) in ext4_reserve_inode_write:5741: Out of memory
-EXT4-fs error (device loop0): ext4_setattr:5462: inode #13: comm syz-executor.0: mark_inode_dirty error
-EXT4-fs error (device loop0) in ext4_setattr:5519: Out of memory
-EXT4-fs error (device loop0): ext4_ind_map_blocks:595: inode #13: comm syz-executor.0: Can't allocate blocks for non-extent mapped inodes with bigalloc
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 4361 at fs/ext4/file.c:301 ext4_file_write_iter+0x11c9/0x1220
-Modules linked in:
-CPU: 1 PID: 4361 Comm: syz-executor.0 Not tainted 5.10.0+ #1
-RIP: 0010:ext4_file_write_iter+0x11c9/0x1220
-RSP: 0018:ffff924d80b27c00 EFLAGS: 00010282
-RAX: ffffffff815a3379 RBX: 0000000000000000 RCX: 000000003b000000
-RDX: ffff924d81601000 RSI: 00000000000009cc RDI: 00000000000009cd
-RBP: 000000000000000d R08: ffffffffbc5a2c6b R09: 0000902e0e52a96f
-R10: ffff902e2b7c1b40 R11: ffff902e2b7c1b40 R12: 000000000000000a
-R13: 0000000000000001 R14: ffff902e0e52aa10 R15: ffffffffffffff8b
-FS:  00007f81a7f65700(0000) GS:ffff902e3bc80000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffff600400 CR3: 000000012db88001 CR4: 00000000003706e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- do_iter_readv_writev+0x2e5/0x360
- do_iter_write+0x112/0x4c0
- do_pwritev+0x1e5/0x390
- __x64_sys_pwritev2+0x7e/0xa0
- do_syscall_64+0x37/0x50
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+On Tue, 10 May 2022 08:38:38 +0900
+Byungchul Park <byungchul.park@lge.com> wrote:
 
-Above issue may happen as follows:
-Assume
-inode.i_size=4096
-EXT4_I(inode)->i_disksize=4096
+> Yes, I was talking about A and L'.
+> 
+> > detect that regardless of L. A nested lock associates the the nesting with  
+> 
+> When I checked Lockdep code, L' with depth n + 1 and L' with depth n
+> have different classes in Lockdep.
 
-step 1: set inode->i_isize = 8192
-ext4_setattr
-  if (attr->ia_size != inode->i_size)
-    EXT4_I(inode)->i_disksize = attr->ia_size;
-    rc = ext4_mark_inode_dirty
-       ext4_reserve_inode_write
-          ext4_get_inode_loc
-            __ext4_get_inode_loc
-              sb_getblk --> return -ENOMEM
-   ...
-   if (!error)  ->will not update i_size
-     i_size_write(inode, attr->ia_size);
-Now:
-inode.i_size=4096
-EXT4_I(inode)->i_disksize=8192
+If that's the case, then that's a bug in lockdep.
 
-step 2: Direct write 4096 bytes
-ext4_file_write_iter
- ext4_dio_write_iter
-   iomap_dio_rw ->return error
- if (extend)
-   ext4_handle_inode_extension
-     WARN_ON_ONCE(i_size_read(inode) < EXT4_I(inode)->i_disksize);
-->Then trigger warning.
+> 
+> That's why I said Lockdep cannot detect it. By any chance, has it
+> changed so as to consider this case? Or am I missing something?
 
-To solve above issue, when ext4_reserve_inode_write failed we abort jbd2
-instead of only record error information.
-This modification scheme is based on Jan Kara's suggestion:
-"Well, firstly, errors=continue was always the best effort. There are no
-guarantees which failures we are able to withstand and which not.
-Generally, I think we try to withstand on-disk filesystem inconsistency but
-not inconsistency coming from programming errors or other external factors
-like out-of-memory conditions. Secondly, we already do abort the journal
-when e.g. jbd2_journal_get_write_access() fails (although that generally
-means some internal inconsistency) or when say revoke handling fails to
-allocate memory for a revoke record. So it won't be a new thing. Thirdly,
-and perhaps most importantly, you have found and fixed just one fairly
-innocent problem happening due to in memory inode state getting
-inconsistent after we fail to record the inode in the journal. There are
-almost 80 callsites of ext4_mark_inode_dirty() and honestly I suspect that
-e.g. inconsistent states resulting from extent tree manipulations being
-aborted in the middle due to ext4_ext_dirty() failing due to ENOMEM will
-also trigger all sorts of "interesting" behavior. So that's why I'd rather
-abort the journal than try to continue when we almost certainly now we
-cannot."
+No, it's not that lockdep cannot detect it, it should detect it. If it is
+not detecting it, then we need to fix that.
 
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- fs/ext4/inode.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 987ea77e672d..0a30661953ef 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5735,10 +5735,10 @@ int
- ext4_reserve_inode_write(handle_t *handle, struct inode *inode,
- 			 struct ext4_iloc *iloc)
- {
--	int err;
-+	int err = -EIO;;
- 
- 	if (unlikely(ext4_forced_shutdown(EXT4_SB(inode->i_sb))))
--		return -EIO;
-+		goto out;
- 
- 	err = ext4_get_inode_loc(inode, iloc);
- 	if (!err) {
-@@ -5750,7 +5750,9 @@ ext4_reserve_inode_write(handle_t *handle, struct inode *inode,
- 			iloc->bh = NULL;
- 		}
- 	}
--	ext4_std_error(inode->i_sb, err);
-+out:
-+	if (err)
-+		ext4_abort(inode->i_sb, -err, "Detect reserve inode write failed");
- 	return err;
- }
- 
--- 
-2.31.1
-
+-- Steve
