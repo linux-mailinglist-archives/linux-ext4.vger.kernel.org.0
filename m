@@ -2,153 +2,163 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7DEC521431
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 May 2022 13:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30B805214E8
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 May 2022 14:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241236AbiEJLxY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 10 May 2022 07:53:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36288 "EHLO
+        id S235908AbiEJMP4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 10 May 2022 08:15:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233105AbiEJLxX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 May 2022 07:53:23 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3DB825E79C;
-        Tue, 10 May 2022 04:49:26 -0700 (PDT)
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24AAfEGR011022;
-        Tue, 10 May 2022 11:49:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=ARFuf21vSRs3SqQwRlCsfgFUIcJIjrwmZkD6ORueLl8=;
- b=TI8JJuG+TEz4MdFaLVhPHZXlgMR/+YzoOOiPzu6pyVdX+/fP1CO4Zq8phXlwie0VZksN
- x1gWDj93RSQqZiBZWMpFYIiYLnEe4I2baO4HRtkz3Jgd9tnSBmemof0w3Sp/rBq5EpPe
- 12t6SC5FF1+namgvEsfhi7iWnSZNhK2W9/h3DC9gb4gS2ZCDpyrNFVJmuEp54xYTQcB+
- z6pQJvbLH3CHK+L5tWRAiPtK0cmANQn3uFkn6e0r20+t5fBYPjDWwwn7aUcTzHOCIMD5
- DJq0fT9/dhVvs+MmpG2U5xl3KS5u4hy8OW5y4dgmQJbWCsSXZISjhsgrerGHNzoOsb+a Dg== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3fyncetet2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 10 May 2022 11:49:25 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 24ABnJkQ013231;
-        Tue, 10 May 2022 11:49:24 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 3fwgd8v0gn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 10 May 2022 11:49:23 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 24ABnLvG49217806
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 10 May 2022 11:49:21 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9163611C04A;
-        Tue, 10 May 2022 11:49:21 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0362011C04C;
-        Tue, 10 May 2022 11:49:20 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.111.129])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 10 May 2022 11:49:19 +0000 (GMT)
-Date:   Tue, 10 May 2022 17:19:16 +0530
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     fstests@vger.kernel.org, riteshh@linux.ibm.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] common/rc: Modify _require_batched_discard to improve
- test coverage
-Message-ID: <YnpRPGBhFqFyPMUg@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <20220401055713.634842-1-ojaswin@linux.ibm.com>
- <20220510063223.dogoows5t7cxpnul@zlang-mailbox>
+        with ESMTP id S241582AbiEJMPy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 May 2022 08:15:54 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D95933A3A;
+        Tue, 10 May 2022 05:11:57 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4KyGzl38wHzGpcX;
+        Tue, 10 May 2022 20:09:07 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Tue, 10 May
+ 2022 20:11:54 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
+        Ye Bin <yebin10@huawei.com>
+Subject: [PATCH -next v2] ext4: fix warning in ext4_handle_inode_extension
+Date:   Tue, 10 May 2022 20:25:45 +0800
+Message-ID: <20220510122545.1770410-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220510063223.dogoows5t7cxpnul@zlang-mailbox>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: xx6_o-zgZKMJI-XrxxxF8-Z8Yod7k9DZ
-X-Proofpoint-ORIG-GUID: xx6_o-zgZKMJI-XrxxxF8-Z8Yod7k9DZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-05-10_01,2022-05-10_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
- clxscore=1015 impostorscore=0 mlxlogscore=897 malwarescore=0 spamscore=0
- lowpriorityscore=0 bulkscore=0 mlxscore=0 adultscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2202240000
- definitions=main-2205100052
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Zorro,
+We got issue as follows:
+EXT4-fs error (device loop0) in ext4_reserve_inode_write:5741: Out of memory
+EXT4-fs error (device loop0): ext4_setattr:5462: inode #13: comm syz-executor.0: mark_inode_dirty error
+EXT4-fs error (device loop0) in ext4_setattr:5519: Out of memory
+EXT4-fs error (device loop0): ext4_ind_map_blocks:595: inode #13: comm syz-executor.0: Can't allocate blocks for non-extent mapped inodes with bigalloc
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 4361 at fs/ext4/file.c:301 ext4_file_write_iter+0x11c9/0x1220
+Modules linked in:
+CPU: 1 PID: 4361 Comm: syz-executor.0 Not tainted 5.10.0+ #1
+RIP: 0010:ext4_file_write_iter+0x11c9/0x1220
+RSP: 0018:ffff924d80b27c00 EFLAGS: 00010282
+RAX: ffffffff815a3379 RBX: 0000000000000000 RCX: 000000003b000000
+RDX: ffff924d81601000 RSI: 00000000000009cc RDI: 00000000000009cd
+RBP: 000000000000000d R08: ffffffffbc5a2c6b R09: 0000902e0e52a96f
+R10: ffff902e2b7c1b40 R11: ffff902e2b7c1b40 R12: 000000000000000a
+R13: 0000000000000001 R14: ffff902e0e52aa10 R15: ffffffffffffff8b
+FS:  00007f81a7f65700(0000) GS:ffff902e3bc80000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffff600400 CR3: 000000012db88001 CR4: 00000000003706e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ do_iter_readv_writev+0x2e5/0x360
+ do_iter_write+0x112/0x4c0
+ do_pwritev+0x1e5/0x390
+ __x64_sys_pwritev2+0x7e/0xa0
+ do_syscall_64+0x37/0x50
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Thanks for the review.
+Above issue may happen as follows:
+Assume
+inode.i_size=4096
+EXT4_I(inode)->i_disksize=4096
 
-On Tue, May 10, 2022 at 02:32:23PM +0800, Zorro Lang wrote:
-> On Fri, Apr 01, 2022 at 11:27:13AM +0530, Ojaswin Mujoo wrote:
-> > A recent ext4 patch discussed [1] that some devices (eg LVMs) can
-> > have a discard granularity as big as 42MB which makes it larger
-> > than the group size of ext4 FS with 1k BS. This causes the FITRIM
-> > IOCTL to fail on filesystems like ext4.
-> > 
-> > This case was not correctly handle by "_require_batched_discard" as
-> > it incorrectly interpreted the FITRIM failure as fs not supporting
-> > the IOCTL. This caused the tests like generic/260 to incorectly
-> > report "not run" instead of "failed" in case of large discard
-> > granularity.
-> > 
-> > Fix "_require_batched_discard" to use a more accurate method
-> > to determine if discard is supported.
-> > 
-> > [1] commit 173b6e383d2
-> >     ext4: avoid trim error on fs with small groups
-> > 
-> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> > ---
-> >  common/rc | 8 +++++++-
-> >  1 file changed, 7 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/common/rc b/common/rc
-> > index e2d3d72a..97386342 100644
-> > --- a/common/rc
-> > +++ b/common/rc
-> > @@ -3858,7 +3858,13 @@ _require_batched_discard()
-> >  		exit 1
-> >  	fi
-> >  	_require_fstrim
-> > -	$FSTRIM_PROG $1 > /dev/null 2>&1 || _notrun "FITRIM not supported on $1"
-> > +
-> > +	$FSTRIM_PROG $1 2>&1 | grep -q "not supported"
-> > +	RET=$?
-> 
-> Better to use global variable carefully in common functions, if it's not
-> necessary, I'd recommend using "local ret" at here.
-Sure, I'll make the change.
+step 1: set inode->i_isize = 8192
+ext4_setattr
+  if (attr->ia_size != inode->i_size)
+    EXT4_I(inode)->i_disksize = attr->ia_size;
+    rc = ext4_mark_inode_dirty
+       ext4_reserve_inode_write
+          ext4_get_inode_loc
+            __ext4_get_inode_loc
+              sb_getblk --> return -ENOMEM
+   ...
+   if (!error)  ->will not update i_size
+     i_size_write(inode, attr->ia_size);
+Now:
+inode.i_size=4096
+EXT4_I(inode)->i_disksize=8192
 
-> 
-> From my experience, the *quiet (-q)* grep does "exit_on_match" directly,
-> it won't wait the write process, if the write process is still writing but
-> the grep has exited, then it'll cause broken pipe, and the write process
-> exit with failure.
-> 
-> It doesn't always happend, it depends. So I'd like to use "${PIPESTATUS[1]}"
-> or write it as 'grep -q "not supported" <($FSTRIM_PROG $1 2>&1)', to make sure
-> we just care about the "grep" result.
-Ah makes sense, will make this change as well.
+step 2: Direct write 4096 bytes
+ext4_file_write_iter
+ ext4_dio_write_iter
+   iomap_dio_rw ->return error
+ if (extend)
+   ext4_handle_inode_extension
+     WARN_ON_ONCE(i_size_read(inode) < EXT4_I(inode)->i_disksize);
+->Then trigger warning.
 
-Regards,
-Ojaswin
-> 
-> > +	if [ "$RET" = "0" ]
-> > +	then
-> > +		_notrun "FITRIM not supported on $1"
-> > +	fi
-> >  }
-> >  
-> >  _require_dumpe2fs()
-> > -- 
-> > 2.27.0
-> > 
-> 
+To solve above issue, when ext4_reserve_inode_write failed we abort jbd2
+instead of only record error information.
+This modification scheme is based on Jan Kara's suggestion:
+"Well, firstly, errors=continue was always the best effort. There are no
+guarantees which failures we are able to withstand and which not.
+Generally, I think we try to withstand on-disk filesystem inconsistency but
+not inconsistency coming from programming errors or other external factors
+like out-of-memory conditions. Secondly, we already do abort the journal
+when e.g. jbd2_journal_get_write_access() fails (although that generally
+means some internal inconsistency) or when say revoke handling fails to
+allocate memory for a revoke record. So it won't be a new thing. Thirdly,
+and perhaps most importantly, you have found and fixed just one fairly
+innocent problem happening due to in memory inode state getting
+inconsistent after we fail to record the inode in the journal. There are
+almost 80 callsites of ext4_mark_inode_dirty() and honestly I suspect that
+e.g. inconsistent states resulting from extent tree manipulations being
+aborted in the middle due to ext4_ext_dirty() failing due to ENOMEM will
+also trigger all sorts of "interesting" behavior. So that's why I'd rather
+abort the journal than try to continue when we almost certainly now we
+cannot."
+
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ fs/ext4/inode.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 987ea77e672d..0a30661953ef 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -5735,10 +5735,10 @@ int
+ ext4_reserve_inode_write(handle_t *handle, struct inode *inode,
+ 			 struct ext4_iloc *iloc)
+ {
+-	int err;
++	int err = -EIO;;
+ 
+ 	if (unlikely(ext4_forced_shutdown(EXT4_SB(inode->i_sb))))
+-		return -EIO;
++		goto out;
+ 
+ 	err = ext4_get_inode_loc(inode, iloc);
+ 	if (!err) {
+@@ -5750,7 +5750,9 @@ ext4_reserve_inode_write(handle_t *handle, struct inode *inode,
+ 			iloc->bh = NULL;
+ 		}
+ 	}
+-	ext4_std_error(inode->i_sb, err);
++out:
++	if (err)
++		ext4_abort(inode->i_sb, -err, "Detect reserve inode write failed");
+ 	return err;
+ }
+ 
+-- 
+2.31.1
+
