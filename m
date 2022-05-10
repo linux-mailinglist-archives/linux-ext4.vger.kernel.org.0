@@ -2,111 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CDB952242D
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 May 2022 20:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BED15226DB
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 May 2022 00:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343875AbiEJSg3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 10 May 2022 14:36:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49462 "EHLO
+        id S236656AbiEJW2t (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 10 May 2022 18:28:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349106AbiEJSgW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 May 2022 14:36:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22AFB50457;
-        Tue, 10 May 2022 11:36:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B140160DF0;
-        Tue, 10 May 2022 18:36:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED18EC385C2;
-        Tue, 10 May 2022 18:36:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652207780;
-        bh=vRlYcyDSWfWyjRka3YqXUxpx72aKcmWvtuE3ZI2eW6g=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=MON3fzAY2osPB5/7TsU9q2CAFh85n4s47bWXdjZLNFYG1cQipKrQIbIntmMwipCOq
-         /YQ9ZLwTAt/gl8wM7I+3YgAUDaKR/2I9ivA2T52gxKQvZIMUoVtf1cvLEXrREC5mWc
-         TNpvGRatKPEkZjJYU2jW1rcwA4IaPDAn2hvqCUiA2QDYJhXgoTbejhwK9Xb4tnT3AU
-         L/mkCdPoBIoMhubjZf00mklLmheFqAh3mnu7klZReHuhvGg0T7QkzgU2TWEsEKKjJ4
-         91qB7cuOJkOpmXidodXVT0J0gS66E9+Ixzj/fEh1BbdMsvkQoL7r6zCb0WJY35xrZi
-         +LUs/UnH0+TNA==
-Date:   Tue, 10 May 2022 11:36:18 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Lukas Czerner <lczerner@redhat.com>, fstests@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: [xfstests PATCH] ext4/053: fix the rejected mount option testing
-Message-ID: <Ynqwotv9lQvt3TV3@sol.localdomain>
-References: <20220430192130.131842-1-ebiggers@kernel.org>
- <Ynmmy+bWp0Q1/747@sol.localdomain>
- <20220510094308.mhzvcgq5wrat5qao@fedora>
- <20220510154359.xfhmumcmb4o37qdy@zlang-mailbox>
+        with ESMTP id S236440AbiEJW2m (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 May 2022 18:28:42 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42B7852B3B
+        for <linux-ext4@vger.kernel.org>; Tue, 10 May 2022 15:28:40 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id cu23-20020a17090afa9700b001d98d8e53b7so2769277pjb.0
+        for <linux-ext4@vger.kernel.org>; Tue, 10 May 2022 15:28:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:content-language:to:from:cc
+         :subject:content-transfer-encoding;
+        bh=wfPHY8O5lpAXCbOKekK8DfHBJ0WH0D1/nUeEmSt+v20=;
+        b=z5+JwAqr5bItL7ZbzMQ0W/I1TkosIfL+BkwL9FvGWgGcgnRvYA+kho8sI0uuZtmw9h
+         U1Dp4jz+YgVu4PrYB6U/nDairICKgp5B3qMmk4w3AIJYGHOkX5tlgWDKpwGZyxYoKYB0
+         XZXHciGVY9/EeycnNPX2f4n+VkHfUs1chM6hTUDjM3QqUDSrsWrez0WBPQByjRJrNP1b
+         A9E2gxwFAUVTDsGl6T68iL/kwe4ATYBVTcC5s3wdF/bNNmBVS/+md+OJ5frlqd8BEuI5
+         BCffEznNIWLl1pF7aD9F170mFMM4IscmjQ5D2GAw310i2gP8cQIDyWCjVZ+X9hASxRcM
+         V8kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:from:cc:subject:content-transfer-encoding;
+        bh=wfPHY8O5lpAXCbOKekK8DfHBJ0WH0D1/nUeEmSt+v20=;
+        b=rWmg/q4pja3gAodmKvBO+CxG/yeiBZxbRebWDvK8pExE/IvBmJIu53JnwAvh9d/po6
+         cfFxl8fBqk47I4CbibhziIYcp3gyRqklDuUGHuvvTaUdmUr6el5OW2Qg+ahnpAhirHkY
+         K/fnMAeBQ5seNnCYebtOlhN66n0EDkVIvLPBVxJOXzMYwghOJQg/KWaMYkvdmAZs1wq9
+         s8pDAbxZNik0MSs20ZV5PqTUoLIY9464aK3v0DMZR3LEvxRI7o2fwu7DCm4XSIyU6D5C
+         iRHCdM3TCwe+jpWrcsfmdCEpU/h/pUE+gYB5SJQ4yxlCC6XBedd09HMfx9Z+As6Lq/5d
+         zc8A==
+X-Gm-Message-State: AOAM533x93eNpAEYnQOfSKv6rbr2XBy7R9z9bajwLPyeKs+q2pty/HQ2
+        s6eOWNMkAHkCJZ8t4Qm53vksX9IORt2/CQ==
+X-Google-Smtp-Source: ABdhPJxIlNn2Wj+2MuilRsO5BYUSZc7ybzcGHgfGbJI6n2IvJXDB35OlIpH+/GbDFCpAVdmq0z7RPA==
+X-Received: by 2002:a17:90a:8914:b0:1dc:20c0:40f4 with SMTP id u20-20020a17090a891400b001dc20c040f4mr2016927pjn.11.1652221719446;
+        Tue, 10 May 2022 15:28:39 -0700 (PDT)
+Received: from [192.168.254.17] ([50.39.160.154])
+        by smtp.gmail.com with ESMTPSA id mz18-20020a17090b379200b001dcc0cb262asm197584pjb.17.2022.05.10.15.28.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 May 2022 15:28:38 -0700 (PDT)
+Message-ID: <49ac1697-5235-ca2e-2738-f0399c26d718@linaro.org>
+Date:   Tue, 10 May 2022 15:28:38 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220510154359.xfhmumcmb4o37qdy@zlang-mailbox>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Content-Language: en-US
+To:     linux-ext4@vger.kernel.org
+From:   Tadeusz Struk <tadeusz.struk@linaro.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>, linux-fsdevel@vger.kernel.org
+Subject: kernel BUG in ext4_writepages
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, May 10, 2022 at 11:43:59PM +0800, Zorro Lang wrote:
-> On Tue, May 10, 2022 at 11:43:08AM +0200, Lukas Czerner wrote:
-> > On Mon, May 09, 2022 at 04:42:03PM -0700, Eric Biggers wrote:
-> > > On Sat, Apr 30, 2022 at 12:21:30PM -0700, Eric Biggers wrote:
-> > > > From: Eric Biggers <ebiggers@google.com>
-> > > > 
-> > > > 'not_mnt OPTIONS' seems to have been intended to test that the
-> > > > filesystem cannot be mounted at all with the given OPTIONS, meaning that
-> > > > the mount fails as opposed to the options being ignored.  However, this
-> > > > doesn't actually work, as shown by the fact that the test case 'not_mnt
-> > > > test_dummy_encryption=v3' is passing in the !CONFIG_FS_ENCRYPTION case.
-> > > > Actually ext4 ignores this mount option when !CONFIG_FS_ENCRYPTION.
-> > > > (The ext4 behavior might be changed, but that is besides the point.)
-> > > > 
-> > > > The problem is that the do_mnt() helper function is being misused in a
-> > > > context where a mount failure is expected, and it does some additional
-> > > > remount tests that don't make sense in that context.  So if the mount
-> > > > unexpectedly succeeds, then one of these later tests can still "fail",
-> > > > causing the unexpected success to be shadowed by a later failure, which
-> > > > causes the overall test case to pass since it expects a failure.
-> > > > 
-> > > > Fix this by reworking not_mnt() and not_remount_noumount() to use
-> > > > simple_mount() in cases where they are expecting a failure.  Also fix
-> > > > up some of the naming and calling conventions to be less confusing.
-> > > > Finally, make sure to test that remounting fails too, not just mounting.
-> > > > 
-> > > > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> > > > ---
-> > > >  tests/ext4/053 | 148 ++++++++++++++++++++++++++-----------------------
-> > > >  1 file changed, 78 insertions(+), 70 deletions(-)
-> > > 
-> > > Lukas, any thoughts on this patch?  You're the author of this test.
-> > > 
-> > > - Eric
-> > 
-> > Haven't tested it myself but the change looks fine, thanks.
-> 
-> Thanks for you help to review this patch. There's an new failure[1] after we
-> merged this patch:
->   "SHOULD FAIL remounting ext2 "commit=7" (remount unexpectedly succeeded) FAILED"
-> 
-> As this test generally passed, so before I give "Oops" to others, I hope to
-> check with you that if this's an expected failure we need to fix in kernel
-> or in this case itself?
-> 
+Hi,
+Syzbot found another BUG in ext4_writepages [1].
+This time it complains about inode with inline data.
+C reproducer can be found here [2]
+I was able to trigger it on 5.18.0-rc6
 
-This appears to be a kernel bug, so to fix it I've sent the patch
-"ext4: reject the 'commit' option on ext2 filesystems"
-(https://lore.kernel.org/r/20220510183232.172615-1-ebiggers@kernel.org).
+[1] https://syzkaller.appspot.com/bug?id=a1e89d09bbbcbd5c4cb45db230ee28c822953984
+[2] https://syzkaller.appspot.com/text?tag=ReproC&x=129da6caf00000
 
-I didn't notice this earlier because it's not reproducible with
-CONFIG_EXT2_FS=y.  But it is reproducible with CONFIG_EXT2_FS=n and
-CONFIG_EXT4_USE_FOR_EXT2=y.
-
-- Eric
+-- 
+Thanks,
+Tadeusz
