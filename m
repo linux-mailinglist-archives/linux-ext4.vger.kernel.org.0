@@ -2,54 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30830522786
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 May 2022 01:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDFB0522797
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 May 2022 01:28:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236247AbiEJXXc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 10 May 2022 19:23:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44650 "EHLO
+        id S238247AbiEJX2c (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 10 May 2022 19:28:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233372AbiEJXX2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 May 2022 19:23:28 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F42A2802F5;
-        Tue, 10 May 2022 16:23:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E8F27B8201C;
-        Tue, 10 May 2022 23:23:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F481C385CE;
-        Tue, 10 May 2022 23:23:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652225003;
-        bh=e59r18xSxhijBVYd8jpKjsz2cx3igw6HBJgjPaVJtDY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Sv0ubqWbpdeqLbwbUaUTEs6+W/fnUGWHrFuHBYr82WMm9aR4ymhqifd0jvcmpBNb0
-         LoS+NHYvGR2oXcO+EyUYfftGyD4gvMCNThE4IO0UgIEFihoFphP8kpd8IFl1mCdkuV
-         pr9JuYpOJdljpQn0eU+yVswhajqRkAVdHvq+5ZmnW1cBcVNFiq0UH0WPDttPtQtrPH
-         ZPt6sF1xd68swqRfy53yRl2OwrzTzV9o2h20dSy4rScODkm04zjr+Iej3Hh5y8sPPi
-         eZTh8rWM7WxXXEB2wNEZAprzcwVyArX3NRLNSYmFh3tV5BVUA1cxnndvq1Vkn4L+8J
-         U8ep19b3ySU9Q==
-Date:   Tue, 10 May 2022 16:23:21 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Jeff Layton <jlayton@kernel.org>,
-        Lukas Czerner <lczerner@redhat.com>,
-        Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [PATCH v2 0/7] test_dummy_encryption fixes and cleanups
-Message-ID: <Ynrz6foNrUwivT94@google.com>
-References: <20220501050857.538984-1-ebiggers@kernel.org>
- <YnmlZ15YPS1cy4aV@sol.localdomain>
+        with ESMTP id S238047AbiEJX2T (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 May 2022 19:28:19 -0400
+Received: from lgeamrelo11.lge.com (lgeamrelo11.lge.com [156.147.23.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 37F385C345
+        for <linux-ext4@vger.kernel.org>; Tue, 10 May 2022 16:28:13 -0700 (PDT)
+Received: from unknown (HELO lgemrelse7q.lge.com) (156.147.1.151)
+        by 156.147.23.51 with ESMTP; 11 May 2022 08:28:11 +0900
+X-Original-SENDERIP: 156.147.1.151
+X-Original-MAILFROM: byungchul.park@lge.com
+Received: from unknown (HELO X58A-UD3R) (10.177.244.38)
+        by 156.147.1.151 with ESMTP; 11 May 2022 08:28:11 +0900
+X-Original-SENDERIP: 10.177.244.38
+X-Original-MAILFROM: byungchul.park@lge.com
+Date:   Wed, 11 May 2022 08:26:33 +0900
+From:   Byungchul Park <byungchul.park@lge.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Hyeonggon Yoo <42.hyeyoo@gmail.com>, torvalds@linux-foundation.org,
+        damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        mingo@redhat.com, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, will@kernel.org, tglx@linutronix.de,
+        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
+        chris@chris-wilson.co.uk, duyuyang@gmail.com,
+        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
+        gregkh@linuxfoundation.org, kernel-team@lge.com,
+        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
+        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
+        ngupta@vflare.org, linux-block@vger.kernel.org,
+        paolo.valente@linaro.org, josef@toxicpanda.com,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        jack@suse.cz, jack@suse.com, jlayton@kernel.org,
+        dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
+        dri-devel@lists.freedesktop.org, airlied@linux.ie,
+        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+        hamohammed.sa@gmail.com
+Subject: Re: [PATCH RFC v6 00/21] DEPT(Dependency Tracker)
+Message-ID: <20220510232633.GA18445@X58A-UD3R>
+References: <CAHk-=whnPePcffsNQM+YSHMGttLXvpf8LbBQ8P7HEdqFXaV7Lg@mail.gmail.com>
+ <1651795895-8641-1-git-send-email-byungchul.park@lge.com>
+ <YnYd0hd+yTvVQxm5@hyeyoo>
+ <20220509001637.GA6047@X58A-UD3R>
+ <20220509164712.746e236b@gandalf.local.home>
+ <20220509233838.GC6047@X58A-UD3R>
+ <20220510101254.33554885@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YnmlZ15YPS1cy4aV@sol.localdomain>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20220510101254.33554885@gandalf.local.home>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,56 +70,33 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 05/09, Eric Biggers wrote:
-> On Sat, Apr 30, 2022 at 10:08:50PM -0700, Eric Biggers wrote:
-> > This series cleans up and fixes the way that ext4 and f2fs handle the
-> > test_dummy_encryption mount option:
-> > 
-> > - Patches 1-2 make test_dummy_encryption consistently require that the
-> >   'encrypt' feature flag already be enabled and that
-> >   CONFIG_FS_ENCRYPTION be enabled.  Note, this will cause xfstest
-> >   ext4/053 to start failing; my xfstests patch "ext4/053: update the
-> >   test_dummy_encryption tests" will fix that.
-> > 
-> > - Patches 3-7 replace the fscrypt_set_test_dummy_encryption() helper
-> >   function with new functions that work properly with the new mount API,
-> >   by splitting up the parsing, checking, and applying steps.  These fix
-> >   bugs that were introduced when ext4 started using the new mount API.
-> > 
-> > We can either take all these patches through the fscrypt tree, or we can
-> > take them in multiple cycles as follows:
-> > 
-> >     1. patch 1 via ext4, patch 2 via f2fs, patch 3-4 via fscrypt
-> >     2. patch 5 via ext4, patch 6 via f2fs
-> >     3. patch 7 via fscrypt
-> > 
-> > Ted and Jaegeuk, let me know what you prefer.
-> > 
-> > Changed v1 => v2:
-> >     - Added patches 2-7
-> >     - Also reject test_dummy_encryption when !CONFIG_FS_ENCRYPTION
-> > 
-> > Eric Biggers (7):
-> >   ext4: only allow test_dummy_encryption when supported
-> >   f2fs: reject test_dummy_encryption when !CONFIG_FS_ENCRYPTION
-> >   fscrypt: factor out fscrypt_policy_to_key_spec()
-> >   fscrypt: add new helper functions for test_dummy_encryption
-> >   ext4: fix up test_dummy_encryption handling for new mount API
-> >   f2fs: use the updated test_dummy_encryption helper functions
-> >   fscrypt: remove fscrypt_set_test_dummy_encryption()
+On Tue, May 10, 2022 at 10:12:54AM -0400, Steven Rostedt wrote:
+> On Tue, 10 May 2022 08:38:38 +0900
+> Byungchul Park <byungchul.park@lge.com> wrote:
 > 
-> Since I haven't heard from anyone, I've gone ahead and applied patches 3-4 to
-> fscrypt#master for 5.19, so that the filesystem-specific patches can be taken in
-> 5.20.  But patches 1-2 could still be applied now.
-
-Hi Eric,
-
-Let me apply #2 in the f2fs tree first.
-You can put "Acked-by: Jaegeuk Kim <jaegeuk@kernel.org>" in #6.
-
-Thanks,
-
+> > Yes, I was talking about A and L'.
+> > 
+> > > detect that regardless of L. A nested lock associates the the nesting with  
+> > 
+> > When I checked Lockdep code, L' with depth n + 1 and L' with depth n
+> > have different classes in Lockdep.
 > 
-> Any feedback on this series would be greatly appreciated!
+> If that's the case, then that's a bug in lockdep.
+
+Yes, agree. I should've said 'Lockdep doesn't detect it currently.'
+rather than 'Lockdep can't detect it.'.
+
+I also think we make it for this case by fixing the bug in Lockdep.
+
+> > 
+> > That's why I said Lockdep cannot detect it. By any chance, has it
+> > changed so as to consider this case? Or am I missing something?
 > 
-> - Eric
+> No, it's not that lockdep cannot detect it, it should detect it. If it is
+> not detecting it, then we need to fix that.
+
+Yes.
+
+	Byungchul
+> 
+> -- Steve
