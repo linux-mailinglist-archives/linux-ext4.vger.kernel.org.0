@@ -2,74 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5FD520DE5
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 May 2022 08:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5976852113C
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 May 2022 11:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237132AbiEJGgc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 10 May 2022 02:36:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51494 "EHLO
+        id S232557AbiEJJrL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 10 May 2022 05:47:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233625AbiEJGgb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 May 2022 02:36:31 -0400
+        with ESMTP id S232618AbiEJJrK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 May 2022 05:47:10 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 88DCC2265CC
-        for <linux-ext4@vger.kernel.org>; Mon,  9 May 2022 23:32:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DC46E6A42B
+        for <linux-ext4@vger.kernel.org>; Tue, 10 May 2022 02:43:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1652164353;
+        s=mimecast20190719; t=1652175793;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=a3h5h7vFFNlEkouniwaXqhbwXvv2DW4g4x627EWieto=;
-        b=OiUwloX2ZgjGQ72MHKT6JrdAoLZ8Z0c+W/JQTET+mxhDvkr/0/N0Dq1Kuqi1v5L4C3adUP
-        37tVCvwF6zsdrcsw3UjbXWqBYqKwgIw46G02tk8gHJnnVdJ2h+reExa1tsIdwDuu1zni1c
-        H9QsDN/bvu5HFd+Xw47uToQJ7N+HW5E=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=7oZv0qDe8PoR2IcozjQ8ABMi0/YE7k7caegZ0ltZM3c=;
+        b=fqxve5YUuVxOwA/MF3tRMyiK4ijYLcaqHxLljzGPI8CcYHmYpWGWcKwLoQ3+abDzdR7Su9
+        TU051qIgNusf3p+fIdGFi3SJ8SQDCtOm3CxI1jJaydQlK244HMj531rvEEMX8U4HGpB3Pv
+        nuUqWPRUq1wjcThLLlFgIADsmRT2kpE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-265--JEzqxyJO725nAAPzX59qw-1; Tue, 10 May 2022 02:32:32 -0400
-X-MC-Unique: -JEzqxyJO725nAAPzX59qw-1
-Received: by mail-qk1-f197.google.com with SMTP id bk23-20020a05620a1a1700b0067b32f93b90so10112670qkb.16
-        for <linux-ext4@vger.kernel.org>; Mon, 09 May 2022 23:32:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=a3h5h7vFFNlEkouniwaXqhbwXvv2DW4g4x627EWieto=;
-        b=7JhBj31CATC+zciUxuQOgclK9BMKGlOwkFWQRaoUt3JX4LJBrxSXWtueuFRCXVVSiA
-         oVnI4vM1vUEWzjHsDxp4XBm8XUkxcSTHN5NIviOY33KrbGTGe3ZQ32V0YEXY7zYSwmOR
-         bJ0+OZUtpbsWBu9hgeUAMqlpmIwhqt09Kx1A8FNulweHXo6Y9EycMOrVfuY7KcmaCuaD
-         LvgdFs6Gf6CBHu7jF4bSTvd3smCHbq1k9pfp/XyaP8y5RL6HIXkxk4jjE0Vrr0OX6irp
-         dZSUtQ6Cm8yMX1PnsbSNZ7tpGkjeWmiVanxgDD/85O/eLrWgnsLLh8HqdZua3iCG8Bil
-         It2w==
-X-Gm-Message-State: AOAM530qxoCVzkPDQziZeGfAanuU6r6+EBVwI7EGKmjzsJYlpt7dlYz2
-        A1iFCVzDmuh9W6g1hlXP+q4rCNupmDCWh4Cv665FAvuamD9O3T5lbbs71zk4VD28hGfNpuudbLc
-        +tOr/NffSB5tR/XU+0ahXTQ==
-X-Received: by 2002:a05:620a:71a:b0:6a0:15d6:60cc with SMTP id 26-20020a05620a071a00b006a015d660ccmr14022724qkc.413.1652164351027;
-        Mon, 09 May 2022 23:32:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyCznRrStrZANhqjTjRkWY2UTyw291k+9lD6DNcirlWqCKs5lhcy8i5x30DpJuXS3vWIlTlQg==
-X-Received: by 2002:a05:620a:71a:b0:6a0:15d6:60cc with SMTP id 26-20020a05620a071a00b006a015d660ccmr14022721qkc.413.1652164350778;
-        Mon, 09 May 2022 23:32:30 -0700 (PDT)
-Received: from zlang-mailbox ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id c65-20020a379a44000000b0069fc13ce1eesm8315164qke.31.2022.05.09.23.32.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 May 2022 23:32:30 -0700 (PDT)
-Date:   Tue, 10 May 2022 14:32:23 +0800
-From:   Zorro Lang <zlang@redhat.com>
-To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc:     fstests@vger.kernel.org, riteshh@linux.ibm.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] common/rc: Modify _require_batched_discard to improve
- test coverage
-Message-ID: <20220510063223.dogoows5t7cxpnul@zlang-mailbox>
-Mail-Followup-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-        fstests@vger.kernel.org, riteshh@linux.ibm.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20220401055713.634842-1-ojaswin@linux.ibm.com>
+ us-mta-483-Jh8by8wSN_ORnc3JoBFF4w-1; Tue, 10 May 2022 05:43:11 -0400
+X-MC-Unique: Jh8by8wSN_ORnc3JoBFF4w-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6E7AB811E75;
+        Tue, 10 May 2022 09:43:11 +0000 (UTC)
+Received: from fedora (unknown [10.40.193.237])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BE2BB417E3F;
+        Tue, 10 May 2022 09:43:10 +0000 (UTC)
+Date:   Tue, 10 May 2022 11:43:08 +0200
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [xfstests PATCH] ext4/053: fix the rejected mount option testing
+Message-ID: <20220510094308.mhzvcgq5wrat5qao@fedora>
+References: <20220430192130.131842-1-ebiggers@kernel.org>
+ <Ynmmy+bWp0Q1/747@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220401055713.634842-1-ojaswin@linux.ibm.com>
+In-Reply-To: <Ynmmy+bWp0Q1/747@sol.localdomain>
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.9
 X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -80,62 +59,41 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Apr 01, 2022 at 11:27:13AM +0530, Ojaswin Mujoo wrote:
-> A recent ext4 patch discussed [1] that some devices (eg LVMs) can
-> have a discard granularity as big as 42MB which makes it larger
-> than the group size of ext4 FS with 1k BS. This causes the FITRIM
-> IOCTL to fail on filesystems like ext4.
+On Mon, May 09, 2022 at 04:42:03PM -0700, Eric Biggers wrote:
+> On Sat, Apr 30, 2022 at 12:21:30PM -0700, Eric Biggers wrote:
+> > From: Eric Biggers <ebiggers@google.com>
+> > 
+> > 'not_mnt OPTIONS' seems to have been intended to test that the
+> > filesystem cannot be mounted at all with the given OPTIONS, meaning that
+> > the mount fails as opposed to the options being ignored.  However, this
+> > doesn't actually work, as shown by the fact that the test case 'not_mnt
+> > test_dummy_encryption=v3' is passing in the !CONFIG_FS_ENCRYPTION case.
+> > Actually ext4 ignores this mount option when !CONFIG_FS_ENCRYPTION.
+> > (The ext4 behavior might be changed, but that is besides the point.)
+> > 
+> > The problem is that the do_mnt() helper function is being misused in a
+> > context where a mount failure is expected, and it does some additional
+> > remount tests that don't make sense in that context.  So if the mount
+> > unexpectedly succeeds, then one of these later tests can still "fail",
+> > causing the unexpected success to be shadowed by a later failure, which
+> > causes the overall test case to pass since it expects a failure.
+> > 
+> > Fix this by reworking not_mnt() and not_remount_noumount() to use
+> > simple_mount() in cases where they are expecting a failure.  Also fix
+> > up some of the naming and calling conventions to be less confusing.
+> > Finally, make sure to test that remounting fails too, not just mounting.
+> > 
+> > Signed-off-by: Eric Biggers <ebiggers@google.com>
+> > ---
+> >  tests/ext4/053 | 148 ++++++++++++++++++++++++++-----------------------
+> >  1 file changed, 78 insertions(+), 70 deletions(-)
 > 
-> This case was not correctly handle by "_require_batched_discard" as
-> it incorrectly interpreted the FITRIM failure as fs not supporting
-> the IOCTL. This caused the tests like generic/260 to incorectly
-> report "not run" instead of "failed" in case of large discard
-> granularity.
+> Lukas, any thoughts on this patch?  You're the author of this test.
 > 
-> Fix "_require_batched_discard" to use a more accurate method
-> to determine if discard is supported.
-> 
-> [1] commit 173b6e383d2
->     ext4: avoid trim error on fs with small groups
-> 
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> ---
->  common/rc | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/common/rc b/common/rc
-> index e2d3d72a..97386342 100644
-> --- a/common/rc
-> +++ b/common/rc
-> @@ -3858,7 +3858,13 @@ _require_batched_discard()
->  		exit 1
->  	fi
->  	_require_fstrim
-> -	$FSTRIM_PROG $1 > /dev/null 2>&1 || _notrun "FITRIM not supported on $1"
-> +
-> +	$FSTRIM_PROG $1 2>&1 | grep -q "not supported"
-> +	RET=$?
+> - Eric
 
-Better to use global variable carefully in common functions, if it's not
-necessary, I'd recommend using "local ret" at here.
+Haven't tested it myself but the change looks fine, thanks.
 
-From my experience, the *quiet (-q)* grep does "exit_on_match" directly,
-it won't wait the write process, if the write process is still writing but
-the grep has exited, then it'll cause broken pipe, and the write process
-exit with failure.
-
-It doesn't always happend, it depends. So I'd like to use "${PIPESTATUS[1]}"
-or write it as 'grep -q "not supported" <($FSTRIM_PROG $1 2>&1)', to make sure
-we just care about the "grep" result.
-
-> +	if [ "$RET" = "0" ]
-> +	then
-> +		_notrun "FITRIM not supported on $1"
-> +	fi
->  }
->  
->  _require_dumpe2fs()
-> -- 
-> 2.27.0
-> 
+You can add
+Reviewed-by: Lukas Czerner <lczerner@redhat.com>
 
