@@ -2,56 +2,43 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5976852113C
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 May 2022 11:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A302521165
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 May 2022 11:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232557AbiEJJrL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 10 May 2022 05:47:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56670 "EHLO
+        id S233161AbiEJJwd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 10 May 2022 05:52:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232618AbiEJJrK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 May 2022 05:47:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DC46E6A42B
-        for <linux-ext4@vger.kernel.org>; Tue, 10 May 2022 02:43:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1652175793;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7oZv0qDe8PoR2IcozjQ8ABMi0/YE7k7caegZ0ltZM3c=;
-        b=fqxve5YUuVxOwA/MF3tRMyiK4ijYLcaqHxLljzGPI8CcYHmYpWGWcKwLoQ3+abDzdR7Su9
-        TU051qIgNusf3p+fIdGFi3SJ8SQDCtOm3CxI1jJaydQlK244HMj531rvEEMX8U4HGpB3Pv
-        nuUqWPRUq1wjcThLLlFgIADsmRT2kpE=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-483-Jh8by8wSN_ORnc3JoBFF4w-1; Tue, 10 May 2022 05:43:11 -0400
-X-MC-Unique: Jh8by8wSN_ORnc3JoBFF4w-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6E7AB811E75;
-        Tue, 10 May 2022 09:43:11 +0000 (UTC)
-Received: from fedora (unknown [10.40.193.237])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BE2BB417E3F;
-        Tue, 10 May 2022 09:43:10 +0000 (UTC)
-Date:   Tue, 10 May 2022 11:43:08 +0200
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [xfstests PATCH] ext4/053: fix the rejected mount option testing
-Message-ID: <20220510094308.mhzvcgq5wrat5qao@fedora>
-References: <20220430192130.131842-1-ebiggers@kernel.org>
- <Ynmmy+bWp0Q1/747@sol.localdomain>
+        with ESMTP id S239222AbiEJJwd (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 May 2022 05:52:33 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA81238D6E;
+        Tue, 10 May 2022 02:48:36 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KyCs31yzDzhZ2n;
+        Tue, 10 May 2022 17:48:07 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Tue, 10 May
+ 2022 17:48:34 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
+        Ye Bin <yebin10@huawei.com>
+Subject: [PATCH -next v2] ext4: fix bug_on in ext4_writepages
+Date:   Tue, 10 May 2022 18:02:28 +0800
+Message-ID: <20220510100228.1172227-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Ynmmy+bWp0Q1/747@sol.localdomain>
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.9
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,41 +46,96 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, May 09, 2022 at 04:42:03PM -0700, Eric Biggers wrote:
-> On Sat, Apr 30, 2022 at 12:21:30PM -0700, Eric Biggers wrote:
-> > From: Eric Biggers <ebiggers@google.com>
-> > 
-> > 'not_mnt OPTIONS' seems to have been intended to test that the
-> > filesystem cannot be mounted at all with the given OPTIONS, meaning that
-> > the mount fails as opposed to the options being ignored.  However, this
-> > doesn't actually work, as shown by the fact that the test case 'not_mnt
-> > test_dummy_encryption=v3' is passing in the !CONFIG_FS_ENCRYPTION case.
-> > Actually ext4 ignores this mount option when !CONFIG_FS_ENCRYPTION.
-> > (The ext4 behavior might be changed, but that is besides the point.)
-> > 
-> > The problem is that the do_mnt() helper function is being misused in a
-> > context where a mount failure is expected, and it does some additional
-> > remount tests that don't make sense in that context.  So if the mount
-> > unexpectedly succeeds, then one of these later tests can still "fail",
-> > causing the unexpected success to be shadowed by a later failure, which
-> > causes the overall test case to pass since it expects a failure.
-> > 
-> > Fix this by reworking not_mnt() and not_remount_noumount() to use
-> > simple_mount() in cases where they are expecting a failure.  Also fix
-> > up some of the naming and calling conventions to be less confusing.
-> > Finally, make sure to test that remounting fails too, not just mounting.
-> > 
-> > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> > ---
-> >  tests/ext4/053 | 148 ++++++++++++++++++++++++++-----------------------
-> >  1 file changed, 78 insertions(+), 70 deletions(-)
-> 
-> Lukas, any thoughts on this patch?  You're the author of this test.
-> 
-> - Eric
+we got issue as follows:
+EXT4-fs error (device loop0): ext4_mb_generate_buddy:1141: group 0, block bitmap and bg descriptor inconsistent: 25 vs 31513 free cls
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:2708!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
+CPU: 2 PID: 2147 Comm: rep Not tainted 5.18.0-rc2-next-20220413+ #155
+RIP: 0010:ext4_writepages+0x1977/0x1c10
+RSP: 0018:ffff88811d3e7880 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffff88811c098000
+RDX: 0000000000000000 RSI: ffff88811c098000 RDI: 0000000000000002
+RBP: ffff888128140f50 R08: ffffffffb1ff6387 R09: 0000000000000000
+R10: 0000000000000007 R11: ffffed10250281ea R12: 0000000000000001
+R13: 00000000000000a4 R14: ffff88811d3e7bb8 R15: ffff888128141028
+FS:  00007f443aed9740(0000) GS:ffff8883aef00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020007200 CR3: 000000011c2a4000 CR4: 00000000000006e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ do_writepages+0x130/0x3a0
+ filemap_fdatawrite_wbc+0x83/0xa0
+ filemap_flush+0xab/0xe0
+ ext4_alloc_da_blocks+0x51/0x120
+ __ext4_ioctl+0x1534/0x3210
+ __x64_sys_ioctl+0x12c/0x170
+ do_syscall_64+0x3b/0x90
 
-Haven't tested it myself but the change looks fine, thanks.
+It may happen as follows:
+1. write inline_data inode
+vfs_write
+  new_sync_write
+    ext4_file_write_iter
+      ext4_buffered_write_iter
+        generic_perform_write
+          ext4_da_write_begin
+            ext4_da_write_inline_data_begin -> If inline data size too
+            small will allocate block to write, then mapping will has
+            dirty page
+                ext4_da_convert_inline_data_to_extent ->clear EXT4_STATE_MAY_INLINE_DATA
+2. fallocate
+do_vfs_ioctl
+  ioctl_preallocate
+    vfs_fallocate
+      ext4_fallocate
+        ext4_convert_inline_data
+          ext4_convert_inline_data_nolock
+            ext4_map_blocks -> fail will goto restore data
+            ext4_restore_inline_data
+              ext4_create_inline_data
+              ext4_write_inline_data
+              ext4_set_inode_state -> set inode EXT4_STATE_MAY_INLINE_DATA
+3. writepages
+__ext4_ioctl
+  ext4_alloc_da_blocks
+    filemap_flush
+      filemap_fdatawrite_wbc
+        do_writepages
+          ext4_writepages
+            if (ext4_has_inline_data(inode))
+              BUG_ON(ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA))
 
-You can add
-Reviewed-by: Lukas Czerner <lczerner@redhat.com>
+The root cause of this issue is we destory inline data until call ext4_writepages
+under delay allocation mode. But there maybe already covert from inline to extent.
+To solved this issue, we call filemap_flush firstly.
+
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ fs/ext4/inline.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+index 6d253edebf9f..130ed5d83734 100644
+--- a/fs/ext4/inline.c
++++ b/fs/ext4/inline.c
+@@ -2002,6 +2002,14 @@ int ext4_convert_inline_data(struct inode *inode)
+ 	if (!ext4_has_inline_data(inode)) {
+ 		ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
+ 		return 0;
++	} else if (test_opt(inode->i_sb, DELALLOC) && !S_ISDIR(inode->i_mode)) {
++		error = filemap_flush(inode->i_mapping);
++		if (error)
++			return error;
++		if (!ext4_has_inline_data(inode)) {
++			ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
++			return 0;
++		}
+ 	}
+ 
+ 	needed_blocks = ext4_writepage_trans_blocks(inode);
+-- 
+2.31.1
 
