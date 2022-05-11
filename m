@@ -2,46 +2,45 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D5652364B
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 May 2022 16:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E35523665
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 May 2022 16:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245192AbiEKOzA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 11 May 2022 10:55:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54708 "EHLO
+        id S245481AbiEKO6H (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 11 May 2022 10:58:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245166AbiEKOzA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 May 2022 10:55:00 -0400
+        with ESMTP id S245265AbiEKO6C (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 May 2022 10:58:02 -0400
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C6020CDBE;
-        Wed, 11 May 2022 07:54:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 766DA1FD871;
+        Wed, 11 May 2022 07:57:43 -0700 (PDT)
 Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 24BEslok030732
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 24BEvccQ001174
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 May 2022 10:54:48 -0400
+        Wed, 11 May 2022 10:57:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1652280890; bh=taRKOz6EwUQ4xQ+9EE5nIHkaGt56loAP/vKFnY/T/qc=;
+        t=1652281059; bh=p7W8ngs+T1s6AgMafAzc1Nfv8CN1Pg+DEvCQpWtMAE4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=pEQr4Mvcx+rxbMbfiuQRCEquMPWIWaKhilTyX8kwOJWdJNxODiQ9gYOlklfCV+YCJ
-         JuJMlCE/nWhjUU+kauXTyFuQEhFfyDvPOS+0wKZuFm4QtNmy4PwuKo78rMxUIXCkw2
-         1X7tviROMGaod86CPpC3uyMEyCOfqsNuaW39GVSWnKEucDw8j5hLGfqBj79ZhS1KeU
-         3LFr9YcyCScicQQz8ILTrkfuGLg4l82olwgkTMnksMvkgyl7x00da4UDYK6zw8TKKI
-         NYpg36bWez6+G0ClCQTjVmU2kVH6K0MfRVaUUGDe0meAq4CETUO5zzfUhmJzstbhNN
-         PMv9yw1xkO9sA==
+        b=BEAIus/YI2XAGT/DpmlUNxwWxE2HbqQFv1lKWgGVSNsrctM/c6LhU6BHTzJkc+xFt
+         vgKj5tI1X9FbUXPOPbXej9R1vtZDEpP6orX1KO9XoBDxo1vjcdv+CWGGsAhr7iPth/
+         RJ+IN6Ovl1FaA07x4GDNDcWpCttmdPSKLh2Q5Adq7+KPCl9X1ZzkwZpn0JaRPfk7/w
+         BJrKCMQkW6wL8sjeOALT3R/yLX9BwDmVBBl/bXN8Fz0xEyJQpjGApebuS6un5l+7x0
+         Nm+/GYvWSyT+c5j2HAWYrje+fCyN7H0kTnPLvhx5sFQAAUoXTD4oNrjkwX+VxY6o6D
+         8R0EFZTtK8rSA==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 1DEEF15C3F0C; Wed, 11 May 2022 10:54:47 -0400 (EDT)
+        id 0B33315C3F0C; Wed, 11 May 2022 10:57:38 -0400 (EDT)
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Yu Zhe <yuzhe@nfschina.com>, adilger.kernel@dilger.ca
+To:     Chin Yik Ming <yikming2222@gmail.com>, adilger.kernel@dilger.ca
 Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, liqiong@nfschina.com,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] ext4: remove unnecessary type castings
-Date:   Wed, 11 May 2022 10:54:46 -0400
-Message-Id: <165228086549.396391.14523472198531093519.b4-ty@mit.edu>
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: Fix typo
+Date:   Wed, 11 May 2022 10:57:36 -0400
+Message-Id: <165228104687.396881.13153679979038117594.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20220401081321.73735-1-yuzhe@nfschina.com>
-References: <20220401081321.73735-1-yuzhe@nfschina.com>
+In-Reply-To: <20220402090744.8918-1-yikming2222@gmail.com>
+References: <20220402090744.8918-1-yikming2222@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -54,15 +53,15 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, 1 Apr 2022 01:13:21 -0700, Yu Zhe wrote:
-> remove unnecessary void* type castings.
+On Sat, 2 Apr 2022 02:07:44 -0700, Chin Yik Ming wrote:
+> 'functoin' and 'entres' should be 'function' and 'entries' respectively
 > 
 > 
 
 Applied, thanks!
 
-[1/1] ext4: remove unnecessary type castings
-      commit: a10f869aef759f2000d5f953cff5bc87162390c1
+[1/1] ext4: Fix typo
+      commit: 5475b2de3333be6f7a6c04f461c9f64446e5e7cd
 
 Best regards,
 -- 
