@@ -2,29 +2,29 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09FD35227BC
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 May 2022 01:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B99E5228D8
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 May 2022 03:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238413AbiEJXlT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 10 May 2022 19:41:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48684 "EHLO
+        id S240103AbiEKBSU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 10 May 2022 21:18:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238541AbiEJXlM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 May 2022 19:41:12 -0400
+        with ESMTP id S237149AbiEKBSS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 May 2022 21:18:18 -0400
 Received: from lgeamrelo11.lge.com (lgeamrelo12.lge.com [156.147.23.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7174BDEA9
-        for <linux-ext4@vger.kernel.org>; Tue, 10 May 2022 16:41:08 -0700 (PDT)
-Received: from unknown (HELO lgeamrelo04.lge.com) (156.147.1.127)
-        by 156.147.23.52 with ESMTP; 11 May 2022 08:41:07 +0900
-X-Original-SENDERIP: 156.147.1.127
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B43675798C
+        for <linux-ext4@vger.kernel.org>; Tue, 10 May 2022 18:18:16 -0700 (PDT)
+Received: from unknown (HELO lgeamrelo01.lge.com) (156.147.1.125)
+        by 156.147.23.52 with ESMTP; 11 May 2022 10:18:15 +0900
+X-Original-SENDERIP: 156.147.1.125
 X-Original-MAILFROM: byungchul.park@lge.com
 Received: from unknown (HELO X58A-UD3R) (10.177.244.38)
-        by 156.147.1.127 with ESMTP; 11 May 2022 08:41:07 +0900
+        by 156.147.1.125 with ESMTP; 11 May 2022 10:18:14 +0900
 X-Original-SENDERIP: 10.177.244.38
 X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Wed, 11 May 2022 08:39:29 +0900
+Date:   Wed, 11 May 2022 10:16:37 +0900
 From:   Byungchul Park <byungchul.park@lge.com>
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     tytso@mit.edu
 Cc:     torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
         linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
         linux-ext4@vger.kernel.org, mingo@redhat.com,
@@ -32,8 +32,8 @@ Cc:     torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
         will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
         joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
         chris@chris-wilson.co.uk, duyuyang@gmail.com,
-        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
+        johannes.berg@intel.com, tj@kernel.org, willy@infradead.org,
+        david@fromorbit.com, amir73il@gmail.com,
         gregkh@linuxfoundation.org, kernel-team@lge.com,
         linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
         minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
@@ -44,23 +44,19 @@ Cc:     torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
         linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
         jack@suse.cz, jack@suse.com, jlayton@kernel.org,
         dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
-        dri-devel@lists.freedesktop.org, airlied@linux.ie,
-        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
-        hamohammed.sa@gmail.com
+        dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com,
+        melissa.srw@gmail.com, hamohammed.sa@gmail.com, 42.hyeyoo@gmail.com
 Subject: Re: [PATCH RFC v6 00/21] DEPT(Dependency Tracker)
-Message-ID: <20220510233929.GB18445@X58A-UD3R>
-References: <CAHk-=whnPePcffsNQM+YSHMGttLXvpf8LbBQ8P7HEdqFXaV7Lg@mail.gmail.com>
- <1651795895-8641-1-git-send-email-byungchul.park@lge.com>
- <YnYd0hd+yTvVQxm5@hyeyoo>
- <20220509001637.GA6047@X58A-UD3R>
- <YnpJ9Mtf+pjx4JYm@hyeyoo>
+Message-ID: <20220511011637.GC18445@X58A-UD3R>
+References: <YnnAnzPFZZte/UR8@mit.edu>
+ <1652161060-26531-1-git-send-email-byungchul.park@lge.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YnpJ9Mtf+pjx4JYm@hyeyoo>
+In-Reply-To: <1652161060-26531-1-git-send-email-byungchul.park@lge.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,137 +64,54 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, May 10, 2022 at 08:18:12PM +0900, Hyeonggon Yoo wrote:
-> On Mon, May 09, 2022 at 09:16:37AM +0900, Byungchul Park wrote:
-> > On Sat, May 07, 2022 at 04:20:50PM +0900, Hyeonggon Yoo wrote:
-> > > On Fri, May 06, 2022 at 09:11:35AM +0900, Byungchul Park wrote:
-> > > > Linus wrote:
-> > > > >
-> > > > > On Wed, May 4, 2022 at 1:19 AM Byungchul Park <byungchul.park@lge.com> wrote:
-> > > > > >
-> > > > > > Hi Linus and folks,
-> > > > > >
-> > > > > > I've been developing a tool for detecting deadlock possibilities by
-> > > > > > tracking wait/event rather than lock(?) acquisition order to try to
-> > > > > > cover all synchonization machanisms.
-> > > > > 
-> > > > > So what is the actual status of reports these days?
-> > > > > 
-> > > > > Last time I looked at some reports, it gave a lot of false positives
-> > > > > due to mis-understanding prepare_to_sleep().
-> > > > 
-> > > > Yes, it was. I handled the case in the following way:
-> > > > 
-> > > > 1. Stage the wait at prepare_to_sleep(), which might be used at commit.
-> > > >    Which has yet to be an actual wait that Dept considers.
-> > > > 2. If the condition for sleep is true, the wait will be committed at
-> > > >    __schedule(). The wait becomes an actual one that Dept considers.
-> > > > 3. If the condition is false and the task gets back to TASK_RUNNING,
-> > > >    clean(=reset) the staged wait.
-> > > > 
-> > > > That way, Dept only works with what actually hits to __schedule() for
-> > > > the waits through sleep.
-> > > > 
-> > > > > For this all to make sense, it would need to not have false positives
-> > > > > (or at least a very small number of them together with a way to sanely
-> > > > 
-> > > > Yes. I agree with you. I got rid of them that way I described above.
-> > > >
-> > > 
-> > > IMHO DEPT should not report what lockdep allows (Not talking about
+On Tue, May 10, 2022 at 02:37:40PM +0900, Byungchul Park wrote:
+> Ted wrote:
+> > On Tue, May 10, 2022 at 09:32:13AM +0900, Byungchul Park wrote:
+> > > DEPT is tracking way more objects than Lockdep so it's inevitable to be
+> > > slower, but let me try to make it have the similar performance to
+> > > Lockdep.
 > > 
-> > No.
-> > 
-> > > wait events). I mean lockdep allows some kind of nested locks but
-> > > DEPT reports them.
-> > 
-> > You have already asked exactly same question in another thread of
-> > LKML. That time I answered to it but let me explain it again.
-> > 
-> > ---
-> > 
-> > CASE 1.
-> > 
-> >    lock L with depth n
-> >    lock_nested L' with depth n + 1
-> >    ...
-> >    unlock L'
-> >    unlock L
-> > 
-> > This case is allowed by Lockdep.
-> > This case is allowed by DEPT cuz it's not a deadlock.
-> > 
-> > CASE 2.
-> > 
-> >    lock L with depth n
-> >    lock A
-> >    lock_nested L' with depth n + 1
-> >    ...
-> >    unlock L'
-> >    unlock A
-> >    unlock L
-> > 
-> > This case is allowed by Lockdep.
-> > This case is *NOT* allowed by DEPT cuz it's a *DEADLOCK*.
-> >
+> > In order to eliminate some of these false positives, I suspect it's
+> > going to increase the number of object classes that DEPT will need to
+> > track even *more*.  At which point, the cost/benefit of DEPT may get
+> > called into question, especially if all of the false positives can't
+> > be suppressed.
 > 
-> Yeah, in previous threads we discussed this [1]
+> Look. Let's talk in general terms. There's no way to get rid of the
+> false positives all the way. It's a decision issue for *balancing*
+> between considering potential cases and only real ones. Definitely,
+> potential is not real. The more potential things we consider, the higher
+> the chances are, that false positives appear.
 > 
-> And the case was:
-> 	scan_mutex -> object_lock -> kmemleak_lock -> object_lock
-> And dept reported:
-> 	object_lock -> kmemleak_lock, kmemleak_lock -> object_lock as
-> 	deadlock.
+> But yes. The advantage we'd take by detecting potential ones should be
+> higher than the risk of being bothered by false ones. Do you think a
+> tool is useless if it produces a few false positives? Of course, it'd
+> be a problem if it's too many, but otherwise, I think it'd be a great
+> tool if the advantage > the risk.
 > 
-> But IIUC - What DEPT reported happens only under scan_mutex and
-> It is not simple just not to take them because the object can be removed from the
-> list and freed while scanning via kmemleak_free() without kmemleak_lock and object_lock.
+> Don't get me wrong here. It doesn't mean DEPT is perfect for now. The
+> performance should be improved and false alarms that appear should be
+> removed, of course. I'm talking about the direction.
+> 
+> For now, there's no tool to track wait/event itself in Linux kernel -
+> a subset of the functionality exists tho. DEPT is the 1st try for that
+> purpose and can be a useful tool by the right direction.
+> 
+> I know what you are concerning about. I bet it's false positives that
+> are going to bother you once merged. I'll insist that DEPT shouldn't be
+> used as a mandatory testing tool until considered stable enough. But
+> what about ones who would take the advantage use DEPT. Why don't you
+> think of folks who will take the advantage from the hints about
+> dependency of synchronization esp. when their subsystem requires very
+> complicated synchronization? Should a tool be useful only in a final
+> testing stage? What about the usefulness during development stage?
+> 
+> It's worth noting DEPT works with any wait/event so any lockups e.g.
+> even by HW-SW interface, retry logic or the like can be detected by DEPT
+> once all waits and events are tagged properly. I believe the advantage
+> by that is much higher than the bad side facing false alarms. It's just
+> my opinion. I'm goning to respect the majority opinion.
 
-That should be one of the following order:
-
-1. kmemleak_lock -> object_lock -> object_lock(nested)
-2. object_lock -> object_lock(nested) -> kmemleak_lock
-
-> Just I'm still not sure that someone will fix the warning in the future - even if the
-> locking rule is not good - if it will not cause a real deadlock.
-
-There's more important thing than making code just work for now. For
-example, maintainance, communcation via code between current developers
-and potential new commers in the future and so on.
-
-At least, a comment describing why the wrong order in the code is safe
-should be added. I wouldn't allow the current order in the code if I
-were the maintainer.
+s/take advantage/have the benefit/g
 
 	Byungchul
-
-> > ---
-> > 
-> > The following scenario would explain why CASE 2 is problematic.
-> > 
-> >    THREAD X			THREAD Y
-> > 
-> >    lock L with depth n
-> > 				lock L' with depth n
-> >    lock A
-> > 				lock A
-> >    lock_nested L' with depth n + 1
-> > 				lock_nested L'' with depth n + 1
-> >    ...				...
-> >    unlock L'			unlock L''
-> >    unlock A			unlock A
-> >    unlock L			unlock L'
-> > 
-> > Yes. I need to check if the report you shared with me is a true one, but
-> > it's not because DEPT doesn't work with *_nested() APIs.
-> >
-> 
-> Sorry, It was not right just to say DEPT doesn't work with _nested() APIs.
-> 
-> > 	Byungchul
-> 
-> [1] https://lore.kernel.org/lkml/20220304002809.GA6112@X58A-UD3R/
-> 
-> -- 
-> Thanks,
-> Hyeonggon
