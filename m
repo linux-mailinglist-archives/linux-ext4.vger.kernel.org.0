@@ -2,177 +2,248 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61416522F5C
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 May 2022 11:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA24052303C
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 May 2022 12:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234042AbiEKJ1E (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 11 May 2022 05:27:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50322 "EHLO
+        id S229549AbiEKKFP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 11 May 2022 06:05:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238018AbiEKJ1B (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 May 2022 05:27:01 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0126C2D1E3;
-        Wed, 11 May 2022 02:26:58 -0700 (PDT)
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24B8sLRQ011942;
-        Wed, 11 May 2022 09:26:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : content-type :
- content-transfer-encoding : mime-version : subject : message-id : date :
- cc : to; s=pp1; bh=h6D/715FoTuIOtdOWwwB0cshDdJlyZCiWMOsErTmOlM=;
- b=okcwQBeX0tTae/stVpjrbA9M+g8sCXnU4zeOGzKi53ph8XKNsNREvZqXos4Z4LmReium
- oEUg/O8MmdpvoCfHYUmDya4ipPCTxuR7tdZ7SJDxQ2wK0Mbey4LXjEybTxslKXB+I5fm
- 0am24qxfAqxdhPtMiObO+QusqG+Fmm1WjyKWOIrL0XgTFj9tFNAIFOiAJm+77QY9+L3H
- CQstJG0u2/xvGJu6zjc8dHcECUIFH+LQFqg120QQr6HVvGNHRE1aKcKWRtTHwomSCp40
- p44P+QsV/kfSr1K5IxzZ7HNp85Uopx8sXEFpIgV+bdXan7dKp0kBkQuR3G/Q+QuWKOeL fg== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3g03c0y5pp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 May 2022 09:26:55 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 24B9MqpQ017116;
-        Wed, 11 May 2022 09:26:52 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 3fwgd8w7x1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 May 2022 09:26:52 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 24B9QoQY45416732
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 May 2022 09:26:50 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7415EAE04D;
-        Wed, 11 May 2022 09:26:50 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7FB82AE051;
-        Wed, 11 May 2022 09:26:49 +0000 (GMT)
-Received: from smtpclient.apple (unknown [9.199.197.180])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 11 May 2022 09:26:49 +0000 (GMT)
-From:   Sachin Sant <sachinp@linux.ibm.com>
-Content-Type: text/plain;
-        charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.80.82.1.1\))
-Subject: [powerpc] Kernel oops while running xfstests w/ext4
- (5.18-rc6-next-20220510)
-Message-Id: <849697D9-0BF2-435F-B4F0-BC971269A9AA@linux.ibm.com>
-Date:   Wed, 11 May 2022 14:56:47 +0530
-Cc:     linuxppc-dev@lists.ozlabs.org, riteshh@linux.ibm.com
-To:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-next@vger.kernel.org
-X-Mailer: Apple Mail (2.3696.80.82.1.1)
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: wxJg7GrpsJhuRq9rYSv4iomMNym5Kp2a
-X-Proofpoint-ORIG-GUID: wxJg7GrpsJhuRq9rYSv4iomMNym5Kp2a
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-05-11_03,2022-05-10_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- clxscore=1011 mlxlogscore=999 spamscore=0 bulkscore=0 malwarescore=0
- adultscore=0 phishscore=0 lowpriorityscore=0 priorityscore=1501
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2205110040
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229779AbiEKKFN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 May 2022 06:05:13 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EEE05DA0C;
+        Wed, 11 May 2022 03:05:11 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id c11so1375947plg.13;
+        Wed, 11 May 2022 03:05:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dl2s8Tv2/kKkPRE8ZoHeNUZB1flbWNAHTlntidklYaY=;
+        b=KlIsnrMl6LzKnPwuuLyOxZLp19pZPqeI5Z4V8cuAYHI+9RVTGzbduTyCxz28BfMcY5
+         CwyO3hIQASgaBQ4kvhQxLyYSbckbWRlCLb1dD/BMJSrScuRjQHw7frIEqtCsYUwV0aJo
+         alk0g68BL70ZuQYOvBt58YRDPJ1xZn3xnx/SNkP8njfG7szgY0Hu9RRaME/VZH7+xzfW
+         9YmVvFN9yJDIXLpbXehLIFtj0nsBlM+xlrmaYop1xZL6z0w8gbSOGA+RryCui01GAuoH
+         cnWXREB1+3Q/d1q3pf62BP3GXl9AVtphO3G/fEuwafxxWxfxd2TZKvoEk0cxfjqDDCHb
+         RZlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dl2s8Tv2/kKkPRE8ZoHeNUZB1flbWNAHTlntidklYaY=;
+        b=YEZOaKcvCruFRJUUeXH2uTSQvQVmgTEuZb1p4KVD43ClnU8v4+iwSzZwrTVl4UG+k8
+         YXPLwZVFe+YP1TNjusIE0wyBs4R2cidIMfeq6BHD8hT+ei4mvE9WL+BIieI3whnBMD2A
+         ILLJy2xNwA2BEi9OUTpgqTB9Q+sRpzk2OmAQWfKVnB5J7KMsj4CKyq04W7idzrydZcDz
+         xGBPIpr6vCVmWpD95aD0oQLWLla2Lx7TQiCz8NOOqrxOFz/8YNAJAe9zTAMtB8eExzUF
+         ZDf36kgn5ntrN3vDx3zFrGLLA4hLFlSUvT8rLftBRKezjT5nrp1ygo1dJByidVpoTNPZ
+         twBw==
+X-Gm-Message-State: AOAM530tHHIECZjogysmOdLT5/rKQ5SHXLqG02TND05Ndkej7na8Pzj3
+        Xp3wDlQtKsCB5BokFbu9v9aUNMhzSYPyBg==
+X-Google-Smtp-Source: ABdhPJxrR1W/gIbDjmZ7/+hWQ3pnc2AjtEKGxX+igDjmtKyPWlr1/5lfQ6qKTWVrO1rYmy4ogJ7Jlw==
+X-Received: by 2002:a17:90b:d91:b0:1da:35d7:a0c with SMTP id bg17-20020a17090b0d9100b001da35d70a0cmr4565541pjb.92.1652263510558;
+        Wed, 11 May 2022 03:05:10 -0700 (PDT)
+Received: from hyeyoo ([114.29.24.243])
+        by smtp.gmail.com with ESMTPSA id i20-20020a63cd14000000b003c291b46f7esm1330537pgg.18.2022.05.11.03.04.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 May 2022 03:05:09 -0700 (PDT)
+Date:   Wed, 11 May 2022 19:04:51 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Byungchul Park <byungchul.park@lge.com>
+Cc:     torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
+        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
+        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
+        chris@chris-wilson.co.uk, duyuyang@gmail.com,
+        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
+        gregkh@linuxfoundation.org, kernel-team@lge.com,
+        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
+        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
+        ngupta@vflare.org, linux-block@vger.kernel.org,
+        paolo.valente@linaro.org, josef@toxicpanda.com,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        jack@suse.cz, jack@suse.com, jlayton@kernel.org,
+        dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
+        dri-devel@lists.freedesktop.org, airlied@linux.ie,
+        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+        hamohammed.sa@gmail.com, catalin.marinas@arm.com
+Subject: Re: [PATCH RFC v6 00/21] DEPT(Dependency Tracker)
+Message-ID: <YnuKQ9UIhk9WYoz7@hyeyoo>
+References: <CAHk-=whnPePcffsNQM+YSHMGttLXvpf8LbBQ8P7HEdqFXaV7Lg@mail.gmail.com>
+ <1651795895-8641-1-git-send-email-byungchul.park@lge.com>
+ <YnYd0hd+yTvVQxm5@hyeyoo>
+ <20220509001637.GA6047@X58A-UD3R>
+ <YnpJ9Mtf+pjx4JYm@hyeyoo>
+ <20220510233929.GB18445@X58A-UD3R>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220510233929.GB18445@X58A-UD3R>
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-While running xfstests (specifically ext4/032) w/ext4 on a POWER9 LPAR =
-running
-linux-next version 5.18.0-rc6-next-20220510 following crash is seen:
+On Wed, May 11, 2022 at 08:39:29AM +0900, Byungchul Park wrote:
+> On Tue, May 10, 2022 at 08:18:12PM +0900, Hyeonggon Yoo wrote:
+> > On Mon, May 09, 2022 at 09:16:37AM +0900, Byungchul Park wrote:
+> > > On Sat, May 07, 2022 at 04:20:50PM +0900, Hyeonggon Yoo wrote:
+> > > > On Fri, May 06, 2022 at 09:11:35AM +0900, Byungchul Park wrote:
+> > > > > Linus wrote:
+> > > > > >
+> > > > > > On Wed, May 4, 2022 at 1:19 AM Byungchul Park <byungchul.park@lge.com> wrote:
+> > > > > > >
+> > > > > > > Hi Linus and folks,
+> > > > > > >
+> > > > > > > I've been developing a tool for detecting deadlock possibilities by
+> > > > > > > tracking wait/event rather than lock(?) acquisition order to try to
+> > > > > > > cover all synchonization machanisms.
+> > > > > > 
+> > > > > > So what is the actual status of reports these days?
+> > > > > > 
+> > > > > > Last time I looked at some reports, it gave a lot of false positives
+> > > > > > due to mis-understanding prepare_to_sleep().
+> > > > > 
+> > > > > Yes, it was. I handled the case in the following way:
+> > > > > 
+> > > > > 1. Stage the wait at prepare_to_sleep(), which might be used at commit.
+> > > > >    Which has yet to be an actual wait that Dept considers.
+> > > > > 2. If the condition for sleep is true, the wait will be committed at
+> > > > >    __schedule(). The wait becomes an actual one that Dept considers.
+> > > > > 3. If the condition is false and the task gets back to TASK_RUNNING,
+> > > > >    clean(=reset) the staged wait.
+> > > > > 
+> > > > > That way, Dept only works with what actually hits to __schedule() for
+> > > > > the waits through sleep.
+> > > > > 
+> > > > > > For this all to make sense, it would need to not have false positives
+> > > > > > (or at least a very small number of them together with a way to sanely
+> > > > > 
+> > > > > Yes. I agree with you. I got rid of them that way I described above.
+> > > > >
+> > > > 
+> > > > IMHO DEPT should not report what lockdep allows (Not talking about
+> > > 
+> > > No.
+> > > 
+> > > > wait events). I mean lockdep allows some kind of nested locks but
+> > > > DEPT reports them.
+> > > 
+> > > You have already asked exactly same question in another thread of
+> > > LKML. That time I answered to it but let me explain it again.
+> > > 
+> > > ---
+> > > 
+> > > CASE 1.
+> > > 
+> > >    lock L with depth n
+> > >    lock_nested L' with depth n + 1
+> > >    ...
+> > >    unlock L'
+> > >    unlock L
+> > > 
+> > > This case is allowed by Lockdep.
+> > > This case is allowed by DEPT cuz it's not a deadlock.
+> > > 
+> > > CASE 2.
+> > > 
+> > >    lock L with depth n
+> > >    lock A
+> > >    lock_nested L' with depth n + 1
+> > >    ...
+> > >    unlock L'
+> > >    unlock A
+> > >    unlock L
+> > > 
+> > > This case is allowed by Lockdep.
+> > > This case is *NOT* allowed by DEPT cuz it's a *DEADLOCK*.
+> > >
+> > 
+> > Yeah, in previous threads we discussed this [1]
+> > 
+> > And the case was:
+> > 	scan_mutex -> object_lock -> kmemleak_lock -> object_lock
+> > And dept reported:
+> > 	object_lock -> kmemleak_lock, kmemleak_lock -> object_lock as
+> > 	deadlock.
+> > 
+> > But IIUC - What DEPT reported happens only under scan_mutex and
+> > It is not simple just not to take them because the object can be removed from the
+> > list and freed while scanning via kmemleak_free() without kmemleak_lock and object_lock.
+>
+>
+> That should be one of the following order:
+> 
+> 1. kmemleak_lock -> object_lock -> object_lock(nested)
+> 2. object_lock -> object_lock(nested) -> kmemleak_lock
+> 
+> > Just I'm still not sure that someone will fix the warning in the future - even if the
+> > locking rule is not good - if it will not cause a real deadlock.
+> 
+> There's more important thing than making code just work for now. For
+> example, maintainance, communcation via code between current developers
+> and potential new commers in the future and so on.
 
-[  472.486440] EXT4-fs (loop0): resized filesystem to 41943040
-[  472.760888] BUG: Kernel NULL pointer dereference at 0x0000002c
-[  472.760891] Faulting instruction address: 0xc0000000007729f4
-[  472.760894] Oops: Kernel access of bad area, sig: 11 [#1]
-[  472.760913] LE PAGE_SIZE=3D64K MMU=3DHash SMP NR_CPUS=3D2048 NUMA =
-pSeries
-[  472.760921] Modules linked in: loop(E) dm_mod(E) nft_fib_inet(E) =
-nft_fib_ipv4(E) nft_fib_ipv6(E) nft_fib(E) nft_reject_inet(E) =
-nf_reject_ipv4(E) nf_reject_ipv6(E) nft_reject(E) nft_ct(E) =
-nft_chain_nat(E) nf_nat(E) nf_conntrack(E) nf_defrag_ipv6(E) =
-nf_defrag_ipv4(E) ip_set(E) bonding(E) rfkill(E) tls(E) nf_tables(E) =
-libcrc32c(E) nfnetlink(E) sunrpc(E) pseries_rng(E) vmx_crypto(E) ext4(E) =
-mbcache(E) jbd2(E) sr_mod(E) cdrom(E) sd_mod(E) sg(E) lpfc(E) =
-nvmet_fc(E) nvmet(E) ibmvscsi(E) scsi_transport_srp(E) ibmveth(E) =
-nvme_fc(E) nvme(E) nvme_fabrics(E) nvme_core(E) t10_pi(E) =
-scsi_transport_fc(E) crc64_rocksoft(E) crc64(E) tg3(E) ipmi_devintf(E) =
-ipmi_msghandler(E) fuse(E)
-[  472.761006] CPU: 8 PID: 5139 Comm: kworker/u193:0 Tainted: G          =
-  E     5.18.0-rc6-next-20220510 #2
-[  472.761013] Workqueue: loop0 loop_rootcg_workfn [loop]
-[  472.761027] NIP:  c0000000007729f4 LR: c00000000077331c CTR: =
-c0000000009e9ac0
-[  472.761032] REGS: c00000002d95b3a0 TRAP: 0380   Tainted: G            =
-E      (5.18.0-rc6-next-20220510)
-[  472.761038] MSR:  800000000280b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  =
-CR: 24008822  XER: 00000000
-[  472.761057] CFAR: c000000000772b80 IRQMASK: 0=20
-[  472.761057] GPR00: c00000000077331c c00000002d95b640 c000000002a7cf00 =
-c00000002d95b8e0=20
-[  472.761057] GPR04: c00000006fd58200 0000000000000001 0000000000000010 =
-0000000000000040=20
-[  472.761057] GPR08: 0000000000000020 0000000000000000 0000000000010000 =
-c0080000089570f8=20
-[  472.761057] GPR12: 0000000000008000 c00000001ec46300 0000000000000000 =
-c000000054e32200=20
-[  472.761057] GPR16: 5deadbeef0000100 0000000000000000 0000000000000000 =
-0000000000000000=20
-[  472.761057] GPR20: 000000007fffffff c009fffffc817a00 c00000002d95b748 =
-c00000002d95b8e0=20
-[  472.761057] GPR24: 0000000000000001 0000000000000000 c0000000842b1c00 =
-0000000000000000=20
-[  472.761057] GPR28: 0000000000000000 0000000000000000 c00000006fd58200 =
-c00000002d95b8e0=20
-[  472.761126] NIP [c0000000007729f4] blk_add_rq_to_plug+0x74/0x1d0
-[  472.761135] LR [c00000000077331c] =
-blk_mq_try_issue_list_directly+0x18c/0x1d0
-[  472.761141] Call Trace:
-[  472.761144] [c00000002d95b640] [c0000000842b1c00] 0xc0000000842b1c00 =
-(unreliable)
-[  472.761153] [c00000002d95b680] [c000000000773244] =
-blk_mq_try_issue_list_directly+0xb4/0x1d0
-[  472.761160] [c00000002d95b6d0] [c00000000077b38c] =
-blk_mq_sched_insert_requests+0x13c/0x240
-[  472.761168] [c00000002d95b720] [c000000000772658] =
-blk_mq_flush_plug_list+0x118/0x440
-[  472.761175] [c00000002d95b7c0] [c00000000075ecbc] =
-__blk_flush_plug+0x17c/0x200
-[  472.761183] [c00000002d95b840] [c00000000075efe0] =
-blk_finish_plug+0x50/0x70
-[  472.761190] [c00000002d95b870] [c00000000061a2a4] =
-__iomap_dio_rw+0x444/0x960
-[  472.761200] [c00000002d95ba60] [c00000000061a7e0] =
-iomap_dio_rw+0x20/0x90
-[  472.761208] [c00000002d95ba80] [c008000008c56424] =
-ext4_file_read_iter+0x17c/0x2d0 [ext4]
-[  472.761237] [c00000002d95bac0] [c008000009822aa8] =
-lo_rw_aio.isra.36+0x260/0x320 [loop]
-[  472.761245] [c00000002d95bb40] [c008000009824030] =
-loop_process_work+0x448/0xb70 [loop]
-[  472.761253] [c00000002d95bc90] [c000000000183744] =
-process_one_work+0x2b4/0x5b0
-[  472.761262] [c00000002d95bd30] [c000000000183ab8] =
-worker_thread+0x78/0x600
-[  472.761269] [c00000002d95bdc0] [c0000000001901d4] kthread+0x124/0x130
-[  472.761276] [c00000002d95be10] [c00000000000ce04] =
-ret_from_kernel_thread+0x5c/0x64
-[  472.761284] Instruction dump:
-[  472.761288] 893f0014 38e00040 39000020 2fa90000 7d283f9e 7e8a4840 =
-409400b4 e93e0000=20
-[  472.761300] e9290068 71290008 40820024 3d400001 <813d002c> 614affff =
-7e895040 41950090=20
-[  472.761314] ---[ end trace 0000000000000000 ]---
-[  472.769088]=20
-[  473.769091] Kernel panic - not syncing: Fatal exception
+Then we will get same reports from DEPT until already existing bad code (even if it does not
+cause deadlock) is reworked. If you think that is right thing to do, okay.
 
-5.18.0-rc6-next-20220509 build did not exhibit this problem.
-Will try git bisect and report back with results.
+> At least, a comment describing why the wrong order in the code is safe
+> should be added.
 
-- Sachin
+AFAIK The comment is already there in mm/kmemleak.c.
 
+> I wouldn't allow the current order in the code if I
+> were the maintainer.
+
+[+Cc Catalin]
+He may have opinion.
+
+Thanks,
+Hyeonggon
+
+> 	Byungchul
+> 
+> > > ---
+> > > 
+> > > The following scenario would explain why CASE 2 is problematic.
+> > > 
+> > >    THREAD X			THREAD Y
+> > > 
+> > >    lock L with depth n
+> > > 				lock L' with depth n
+> > >    lock A
+> > > 				lock A
+> > >    lock_nested L' with depth n + 1
+> > > 				lock_nested L'' with depth n + 1
+> > >    ...				...
+> > >    unlock L'			unlock L''
+> > >    unlock A			unlock A
+> > >    unlock L			unlock L'
+> > > 
+> > > Yes. I need to check if the report you shared with me is a true one, but
+> > > it's not because DEPT doesn't work with *_nested() APIs.
+> > >
+> > 
+> > Sorry, It was not right just to say DEPT doesn't work with _nested() APIs.
+> > 
+> > > 	Byungchul
+> > 
+> > [1] https://lore.kernel.org/lkml/20220304002809.GA6112@X58A-UD3R/
+> > 
+> > -- 
+> > Thanks,
+> > Hyeonggon
+
+-- 
+Thanks,
+Hyeonggon
