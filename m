@@ -2,152 +2,197 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C56522C41
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 May 2022 08:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1741A522D9E
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 May 2022 09:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240066AbiEKGZS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 11 May 2022 02:25:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57368 "EHLO
+        id S229579AbiEKHtD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 11 May 2022 03:49:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241359AbiEKGZP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 May 2022 02:25:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0953C227808
-        for <linux-ext4@vger.kernel.org>; Tue, 10 May 2022 23:25:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1652250313;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=o3abCV31hEIagI/Cf2hwMAxBja66bv5qyGLhg7RJLWc=;
-        b=eGZx7RL4IH10HlDBPFg5K7FGmA71OdE4jXh3DBaWoNQDN4I/PCaWM1LYbyO09IeGHURHiv
-        0xsPimy9sqIeoncbLjlfqjRA4BRmo0q3p51tUlf4VJBnhAPylqsh5qd3WkCdtCykMMyQf5
-        rOAARruYqpIW6UJZSQIfAf1PDRZRIsM=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-563-nLMKRiw4NUqwYOKrJvGLzw-1; Wed, 11 May 2022 02:25:11 -0400
-X-MC-Unique: nLMKRiw4NUqwYOKrJvGLzw-1
-Received: by mail-qv1-f71.google.com with SMTP id bu6-20020ad455e6000000b004563a74e3f9so1232767qvb.9
-        for <linux-ext4@vger.kernel.org>; Tue, 10 May 2022 23:25:11 -0700 (PDT)
+        with ESMTP id S243120AbiEKHtB (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 May 2022 03:49:01 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F74013B8C2;
+        Wed, 11 May 2022 00:49:00 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id x52so1264162pfu.11;
+        Wed, 11 May 2022 00:49:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gzoa+jq0XpHGYJhcqgikWEC9JzeX9J0ZmovNXZZqPlw=;
+        b=pZSkpwiMq4LnqPxtv7NNZnd0sQ+5K2QkvF7M00OPRdBBKZbN6fzMaV6MJ4pqhUWVw3
+         qeiB5fkuIePt4fE3hDydIodwOhXdxl0yN1yC4BtaIbYFC+ePtdSDHCS+6VNb0eDtqYuk
+         AulJ4HKphYw749hNPshP78whdF192rhBQAtAojzF8WIPZLHLj9KWjxaF+R4EuxjPyf9M
+         RJsDZI6Vkw9VbFtfKnTlgLWfxzmwAMj4OmbM3iNnPFvEVQnCQE5AvAj4ZeRjchRJlPuz
+         i/nCN41u69MS24J1UGFonJ092NoOkpxszFPNAY4W9uZsAuG1xoZ3tF7XAuaQJHbXsegC
+         OVWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=o3abCV31hEIagI/Cf2hwMAxBja66bv5qyGLhg7RJLWc=;
-        b=fZeuwW+S/gVTdhJPZBHQS3lVhzGjqpA4GrJc70WDSS9j34tRS5+7SNiKMuY4boMwJb
-         q+x8bd6IcRDepyvijewrh9ktYSNQNsmbM1H1g6AYUG2pzXWr7QwD7yrMDfwzAxH0Tjcc
-         2henSmzszSZtVDx5u+QJ6405+18tifNGisAYm5T+NFxRsVPgL/LMgPw7iXeVzZ/roVak
-         Y1EWmbJm/mDBVOsyMZFq9CP8yXzBPuINtgPKG+yY8bG54NF+RURR2kzf1G8DQdtZVq8/
-         lzKcGnd70j9m6bNhatf49GBZPqoMCAlP0fTaDE1L4AN81kwpBm4vXOuH0e176uMyk8OI
-         Oj4Q==
-X-Gm-Message-State: AOAM530UdZZlmLSmpbUY0AdXqFQ5AwuwzfRqaZhkjq7k1H5vI9ccXsRY
-        J7KVVN4pAr5pzzjAdbXu5DXm8aW9eox7Bl5Xgy17BneQ8UHadapvOUCnTzwkERWPkP3/3fAvK5C
-        F1YpuhpzmNRwdeqtiSsgtqA==
-X-Received: by 2002:a05:620a:40c8:b0:6a0:922b:2d82 with SMTP id g8-20020a05620a40c800b006a0922b2d82mr9969597qko.252.1652250311106;
-        Tue, 10 May 2022 23:25:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJykqVcKNhhyYS6Y76lvSPlfcHxP/l7/GoT5qBFEzzRZOvzT2VGfolaTnc8xcziW6QWY+55cQA==
-X-Received: by 2002:a05:620a:40c8:b0:6a0:922b:2d82 with SMTP id g8-20020a05620a40c800b006a0922b2d82mr9969586qko.252.1652250310816;
-        Tue, 10 May 2022 23:25:10 -0700 (PDT)
-Received: from zlang-mailbox ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id h8-20020ac85148000000b002f3ef928fbbsm626311qtn.72.2022.05.10.23.25.08
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gzoa+jq0XpHGYJhcqgikWEC9JzeX9J0ZmovNXZZqPlw=;
+        b=r4b24pAci37AEQA3b8U0NwpbeMeb03a1/1RrRcGl4HKOT9P0uvy4VATxsuz7184S89
+         1HuBX0ADYtM5nx3VdWeHQEwv8njW39oNF8XTeXb1FNr8JhWex/O7AlWa2gmsopUoIlSO
+         uLjCLOjWYu+9QpAB5R6+49KRYmP4MLgtDd+vrgYqKofzsVb3/hsfKdbkTyk1xdt2SOrM
+         Yn3JabPQffNSo7O3r8dYGaOQq91uoLu3Rp9e0ii3Msaap4/9LUD2c5AFY3LLqrXdCxZ0
+         F3MlogmGhm3aDqiamzKOnnmU5Hja50oQWqJhni44nrKjAn9/MIac2eLLNPupDt5g6OeV
+         IKGQ==
+X-Gm-Message-State: AOAM531VrNHD9JxPYHw6jd/gJTma0+siEHicYvmini8YsEmNB8EHlIh7
+        XDJma0/nCWj7oBXoR4yIEjU=
+X-Google-Smtp-Source: ABdhPJzVIZV8D4vEEibviwMNgTyoQBp4SRevkz7PIHOExgBxObpfveqLm+o4+WoTueHQ5w3vO3B2KQ==
+X-Received: by 2002:a63:6381:0:b0:3c6:4449:fc60 with SMTP id x123-20020a636381000000b003c64449fc60mr19232124pgb.457.1652255339674;
+        Wed, 11 May 2022 00:48:59 -0700 (PDT)
+Received: from localhost ([2406:7400:63:532d:2759:da01:e9ea:1584])
+        by smtp.gmail.com with ESMTPSA id n19-20020a635913000000b003dafd8f0760sm1036339pgb.28.2022.05.11.00.48.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 May 2022 23:25:10 -0700 (PDT)
-Date:   Wed, 11 May 2022 14:25:04 +0800
-From:   Zorro Lang <zlang@redhat.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Lukas Czerner <lczerner@redhat.com>, fstests@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: [xfstests PATCH] ext4/053: fix the rejected mount option testing
-Message-ID: <20220511062504.c4ed7rhdyqfe54y6@zlang-mailbox>
-Mail-Followup-To: Eric Biggers <ebiggers@kernel.org>,
-        Lukas Czerner <lczerner@redhat.com>, fstests@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-References: <20220430192130.131842-1-ebiggers@kernel.org>
- <Ynmmy+bWp0Q1/747@sol.localdomain>
- <20220510094308.mhzvcgq5wrat5qao@fedora>
- <20220510154359.xfhmumcmb4o37qdy@zlang-mailbox>
- <Ynqwotv9lQvt3TV3@sol.localdomain>
+        Wed, 11 May 2022 00:48:59 -0700 (PDT)
+Date:   Wed, 11 May 2022 13:18:53 +0530
+From:   Ritesh Harjani <ritesh.list@gmail.com>
+To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: Fix journal_ioprio mount option handling
+Message-ID: <20220511074853.4xgdzagwmkp4ejuz@riteshh-domain>
+References: <20220418083545.45778-1-ojaswin@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Ynqwotv9lQvt3TV3@sol.localdomain>
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220418083545.45778-1-ojaswin@linux.ibm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, May 10, 2022 at 11:36:18AM -0700, Eric Biggers wrote:
-> On Tue, May 10, 2022 at 11:43:59PM +0800, Zorro Lang wrote:
-> > On Tue, May 10, 2022 at 11:43:08AM +0200, Lukas Czerner wrote:
-> > > On Mon, May 09, 2022 at 04:42:03PM -0700, Eric Biggers wrote:
-> > > > On Sat, Apr 30, 2022 at 12:21:30PM -0700, Eric Biggers wrote:
-> > > > > From: Eric Biggers <ebiggers@google.com>
-> > > > > 
-> > > > > 'not_mnt OPTIONS' seems to have been intended to test that the
-> > > > > filesystem cannot be mounted at all with the given OPTIONS, meaning that
-> > > > > the mount fails as opposed to the options being ignored.  However, this
-> > > > > doesn't actually work, as shown by the fact that the test case 'not_mnt
-> > > > > test_dummy_encryption=v3' is passing in the !CONFIG_FS_ENCRYPTION case.
-> > > > > Actually ext4 ignores this mount option when !CONFIG_FS_ENCRYPTION.
-> > > > > (The ext4 behavior might be changed, but that is besides the point.)
-> > > > > 
-> > > > > The problem is that the do_mnt() helper function is being misused in a
-> > > > > context where a mount failure is expected, and it does some additional
-> > > > > remount tests that don't make sense in that context.  So if the mount
-> > > > > unexpectedly succeeds, then one of these later tests can still "fail",
-> > > > > causing the unexpected success to be shadowed by a later failure, which
-> > > > > causes the overall test case to pass since it expects a failure.
-> > > > > 
-> > > > > Fix this by reworking not_mnt() and not_remount_noumount() to use
-> > > > > simple_mount() in cases where they are expecting a failure.  Also fix
-> > > > > up some of the naming and calling conventions to be less confusing.
-> > > > > Finally, make sure to test that remounting fails too, not just mounting.
-> > > > > 
-> > > > > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> > > > > ---
-> > > > >  tests/ext4/053 | 148 ++++++++++++++++++++++++++-----------------------
-> > > > >  1 file changed, 78 insertions(+), 70 deletions(-)
-> > > > 
-> > > > Lukas, any thoughts on this patch?  You're the author of this test.
-> > > > 
-> > > > - Eric
-> > > 
-> > > Haven't tested it myself but the change looks fine, thanks.
-> > 
-> > Thanks for you help to review this patch. There's an new failure[1] after we
-> > merged this patch:
-> >   "SHOULD FAIL remounting ext2 "commit=7" (remount unexpectedly succeeded) FAILED"
-> > 
-> > As this test generally passed, so before I give "Oops" to others, I hope to
-> > check with you that if this's an expected failure we need to fix in kernel
-> > or in this case itself?
-> > 
-> 
-> This appears to be a kernel bug, so to fix it I've sent the patch
-> "ext4: reject the 'commit' option on ext2 filesystems"
-> (https://lore.kernel.org/r/20220510183232.172615-1-ebiggers@kernel.org).
+On 22/04/18 02:05PM, Ojaswin Mujoo wrote:
+> In __ext4_super() we always overwrote the user specified journal_ioprio
+> value with a default value, expecting  parse_apply_sb_mount_options() to
+> later correctly set ctx->journal_ioprio to the user specified value.
+> However, if parse_apply_sb_mount_options() returned early because of
+> empty sbi->es_s->s_mount_opts, the correct journal_ioprio value was
+> never set.
 
-Thanks, great to know that.
+>
+> This patch fixes __ext4_super() to only use the default value if the
+					^^^ __ext4_fill_super
+> user has not specified any value for journal_ioprio.
 
-> 
-> I didn't notice this earlier because it's not reproducible with
-> CONFIG_EXT2_FS=y.  But it is reproducible with CONFIG_EXT2_FS=n and
-> CONFIG_EXT4_USE_FOR_EXT2=y.
+Also the problem is that ext4_parse_param() is called before
+__ext4_fill_super(). Hence when we overwrite ctx->journal_ioprio to default
+value in __ext4_fill_super(), that will end up ignoring the user passed
+journal_ioprio value via mount opts (which was passed earlier in
+ext4_parse_param()).
 
-Yes, I tested with this config. I'll remind this failure in next fstests
-announcement, Thanks a lot!
 
-Thanks,
-Zorro
+>
+> Similarly, the remount behavior was to either use journal_ioprio
+> value specified during initial mount, or use the default value
+> irrespective of the journal_ioprio value specified during remount.
+> This patch modifies this to first check if a new value for ioprio
+> has been passed during remount and apply it. Incase, no new value is
+> passed, use the value specified during initial mount.
 
-> 
-> - Eric
-> 
+Yup, here also ext4_parse_param() is called before __ext4_remount().
+Hence we should check if the user has passed it's value in mount opts, if not,
+only then we should use the task original ioprio.
 
+
+I tested this patch and with the patch applied, the task ioprio can be correctly
+set using "journal_ioprio" mount option.
+
+"Mount test"
+=============
+qemu-> sudo perf record -e probe:* -aR mount -o journal_ioprio=1 /dev/loop2 /mnt
+qemu-> ps -eaf |grep -E "jbd2|loop2"
+root        3506       2  0 07:41 ?        00:00:00 [jbd2/loop2-8]
+qemu-> sudo perf script
+           mount  3504 [000]  2503.106871: probe:ext4_parse_param_L222: (ffffffff8147817f) journal_ioprio=16385 spec=32
+           mount  3504 [000]  2503.106908: probe:__ext4_fill_super_L26: (ffffffff8147a650) journal_ioprio=16385 spec=32
+qemu-> ionice -p 3506
+best-effort: prio 1
+
+"remount test"
+=================
+qemu-> sudo perf record -e probe:* -aR mount -o remount,journal_ioprio=0 /dev/loop2 /mnt
+qemu-> sudo perf script
+           mount  3519 [000]  2544.958850: probe:ext4_parse_param_L222: (ffffffff8147817f) journal_ioprio=16384 spec=32
+           mount  3519 [000]  2544.958860:    probe:__ext4_remount_L49: (ffffffff81479da2) journal_ioprio=16384 spec=32
+qemu-> ionice -p 3506
+best-effort: prio 0
+
+"remount with no mount options"
+=================================
+qemu-> sudo perf record -e probe:* -aR mount -o remount /dev/loop2 /mnt
+qemu-> ionice -p 3506
+best-effort: prio 0
+qemu-> sudo perf script
+           mount  3530 [000]  2575.964048:    probe:__ext4_remount_L49: (ffffffff81479da2) journal_ioprio=16384 spec=0
+
+
+>
+> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+
+We should add fixes tag too. Can you please confirm if that would be this patch?
+"ext4: Completely separate options parsing and sb setup".
+
+With that feel free to add below -
+
+Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+Tested-by: Ritesh Harjani <riteshh@linux.ibm.com>
+
+
+-ritesh
+
+> ---
+>  fs/ext4/super.c | 15 ++++++++++-----
+>  1 file changed, 10 insertions(+), 5 deletions(-)
+>
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index c5a9ffbf7f4f..bfd767c51203 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -4427,7 +4427,8 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+>  	int silent = fc->sb_flags & SB_SILENT;
+>
+>  	/* Set defaults for the variables that will be set during parsing */
+> -	ctx->journal_ioprio = DEFAULT_JOURNAL_IOPRIO;
+> +	if (!(ctx->spec & EXT4_SPEC_JOURNAL_IOPRIO))
+> +		ctx->journal_ioprio = DEFAULT_JOURNAL_IOPRIO;
+>
+>  	sbi->s_inode_readahead_blks = EXT4_DEF_INODE_READAHEAD_BLKS;
+>  	sbi->s_sectors_written_start =
+> @@ -6289,7 +6290,6 @@ static int __ext4_remount(struct fs_context *fc, struct super_block *sb)
+>  	char *to_free[EXT4_MAXQUOTAS];
+>  #endif
+>
+> -	ctx->journal_ioprio = DEFAULT_JOURNAL_IOPRIO;
+>
+>  	/* Store the original options */
+>  	old_sb_flags = sb->s_flags;
+> @@ -6315,9 +6315,14 @@ static int __ext4_remount(struct fs_context *fc, struct super_block *sb)
+>  		} else
+>  			old_opts.s_qf_names[i] = NULL;
+>  #endif
+> -	if (sbi->s_journal && sbi->s_journal->j_task->io_context)
+> -		ctx->journal_ioprio =
+> -			sbi->s_journal->j_task->io_context->ioprio;
+> +	if (!(ctx->spec & EXT4_SPEC_JOURNAL_IOPRIO)) {
+> +		if (sbi->s_journal && sbi->s_journal->j_task->io_context)
+> +			ctx->journal_ioprio =
+> +				sbi->s_journal->j_task->io_context->ioprio;
+> +		else
+> +			ctx->journal_ioprio = DEFAULT_JOURNAL_IOPRIO;
+> +
+> +	}
+>
+>  	ext4_apply_options(fc, sb);
+>
+> --
+> 2.27.0
+>
