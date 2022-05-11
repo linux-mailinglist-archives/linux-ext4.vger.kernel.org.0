@@ -2,158 +2,109 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC5C5234E9
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 May 2022 16:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 695A5523510
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 May 2022 16:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234734AbiEKOB7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 11 May 2022 10:01:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57256 "EHLO
+        id S244421AbiEKOJj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 11 May 2022 10:09:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231196AbiEKOB7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 May 2022 10:01:59 -0400
-X-Greylist: delayed 159 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 11 May 2022 07:01:57 PDT
-Received: from joooj.vinc17.net (joooj.vinc17.net [155.133.131.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F41D5F8ED
-        for <linux-ext4@vger.kernel.org>; Wed, 11 May 2022 07:01:57 -0700 (PDT)
-Received: from smtp-zira.vinc17.net (128.119.75.86.rev.sfr.net [86.75.119.128])
-        by joooj.vinc17.net (Postfix) with ESMTPSA id 4757F651;
-        Wed, 11 May 2022 15:59:17 +0200 (CEST)
-Received: by zira.vinc17.org (Postfix, from userid 1000)
-        id 21B642800294; Wed, 11 May 2022 15:59:17 +0200 (CEST)
-Date:   Wed, 11 May 2022 15:59:17 +0200
-From:   Vincent Lefevre <vincent@vinc17.net>
-To:     linux-ext4@vger.kernel.org
-Subject: ext4: unexpected delayed file creation with a 5.17 kernel
-Message-ID: <20220511135917.GA3381602@zira.vinc17.org>
-Mail-Followup-To: Vincent Lefevre <vincent@vinc17.net>,
-        linux-ext4@vger.kernel.org
+        with ESMTP id S244423AbiEKOJh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 May 2022 10:09:37 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4939E69B5F;
+        Wed, 11 May 2022 07:09:36 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 24BE9Gjr002743
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 May 2022 10:09:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1652278159; bh=G8lq57C33xdM0wjJu4yfZma67g+kI57dmaN+DwjnBFc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=VfgBhpdTnTp/WHZyVCzqSg2j1jHJwp4KLsOmzy+xtpRM2YUztUSbc0YRwNW74f6QL
+         eqnpmmjwDJUgN3abtPmKvL7cssA7tI1bHUQS3dFFE+w6cFU6cvnyUC/1ppqd18I0pe
+         NGmjm7Mkwo8GcDSDFZU2wE9dds/EE/z8Ahq1S+9uXiKyX7Nbn6itzG8zyVADzPJ4Y0
+         8z05XLqXtIEHPEQug4yKUaAD2p+4RUxWwemKy+uVciYzeL9z09xviGyISRtDlnfJnV
+         xGOY6+0DUpreDW7+/9oaU/gJv+vXmSkpmpI9jcruw8RBwv+N9fkordUwypKNmsvthh
+         TGnSvrZCxElSg==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 0868615C3F0C; Wed, 11 May 2022 10:09:16 -0400 (EDT)
+Date:   Wed, 11 May 2022 10:09:16 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     yebin <yebin10@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lczerner@redhat.com
+Subject: Re: [PATCH -next] ext4: fix warning in ext4_handle_inode_extension
+Message-ID: <YnvDjHFAeZWEDne1@mit.edu>
+References: <20220326065351.761952-1-yebin10@huawei.com>
+ <20220329092810.j5ngxckygut6mxo2@quack3.lan>
+ <6244482D.4090603@huawei.com>
+ <20220330133015.yxfnnw564wgehjc3@quack3.lan>
+ <62578B0C.9000803@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Mailer-Info: https://www.vinc17.net/mutt/
-User-Agent: Mutt/2.2.4+14 (d448c911) vl-138565 (2022-05-08)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <62578B0C.9000803@huawei.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
+On Thu, Apr 14, 2022 at 10:46:36AM +0800, yebin wrote:
+> To be honest, I don't know syzkaller how to inject the NOMEM
+> fault. If syzkaller rely on the memory fault injection mode provided
+> by the kernel, should report null pointer access. Anyway, If inject
+> a single point of IO fault, we still have to face the same
+> situation.
 
-On a Linux machine (12-core x86_64 Debian/unstable, 5.17 kernel)
-with an ext4 filesystem, I got a file born 30 seconds after its
-actual creation by a script. This is completely unreproducible.
+Was this patch in response to a syzkaller report?  There wasn't a
+Reported-by tag indicating that this came from syzkaller.  If it did,
+and it came from syzkaller run by the syzkaller team (e.g., at
+https://syzkaller.appspot.com/upstream) could you include a reference
+to the syzkaller report?
 
-Here are the details.
+> On 2022/3/30 21:30, Jan Kara wrote:
+> > > Do you mean call jbd2_abort in ext4_reserve_inode_write() ?
+> > Yes.
+> > 
+> > > If we abort journal when metadata is not guaranteed to be consistent. The
+> > > mode of ‘errors=continue’ is unnecessary.
+> > Well, firstly, errors=continue was always the best effort. There are no
+> > guarantees which failures we are able to withstand and which not.
 
-Host/kernel information:
+That's true; however, in general, if we can back out and recover from
+the error, we should, so that errors=continue can work.  If we think
+that continuing will result in far more file system corruption and/or
+the error is from the journalling infrastructure itself, then aborting
+the journal makes sense.
 
-Linux cventin 5.17.0-1-amd64 #1 SMP PREEMPT Debian 5.17.3-1 (2022-04-18) x86_64 GNU/Linux
+> > There are
+> > almost 80 callsites of ext4_mark_inode_dirty() and honestly I suspect that
+> > e.g. inconsistent states resulting from extent tree manipulations being
+> > aborted in the middle due to ext4_ext_dirty() failing due to ENOMEM will
+> > also trigger all sorts of "interesting" behavior. So that's why I'd rather
+> > abort the journal than try to continue when we almost certainly now we
+> > cannot.
 
-I started a shell script (which I wrote and have been using for
-11 years, but with some evolution since then):
+It would not be a bad thing for us to audit all of the callers of
+ext4_mark_inode_dirty() and ext4_reserve_inode_write().  We are
+getting things right in at least some of the callers (for example:
+ext4_mkdir).
 
-cventin:~> ps -p 667828 -o lstart,cmd
-                 STARTED CMD
-Tue Apr 26 14:43:15 2022 /bin/sh /home/vlefevre/wd/mpfr/tests/mpfrtests.sh
+In any case, I'll take this patch, but if this was in response to a
+syzkaller report, please let me know with the syzkaller ID is, so I
+can update the commit before I send a pull request to Linus.
 
-This script creates a file mpfrtests.cventin.lip.ens-lyon.fr.out
-very early. But the first attempts to look at this file failed:
+Thanks!
 
-cventin:~/software/mpfr> tail -n 30 mpfrtests.*.out; ll mpfrtests.*.out
-zsh: no match
-zsh: no match
-cventin:~/software/mpfr[1]> tail -n 30 mpfrtests.*.out; ll mpfrtests.*.out
-zsh: no match
-zsh: no match
-cventin:~/software/mpfr[1]> lt|head                                   <14:43:42
-total 7016
--rw-r--r--  1  188644 2022-04-26 14:43:42 config.log
--rw-r--r--  1    2861 2022-04-26 14:43:42 conftest.c
--rw-r--r--  1       0 2022-04-26 14:43:42 conftest.err
--rw-r--r--  1    1907 2022-04-26 14:43:42 confdefs.h
--rwxr-xr-x  1  632161 2022-04-26 14:43:16 configure.lineno*
-drwxr-xr-x  2    4096 2022-04-26 14:43:11 doc/
-drwxr-xr-x  3    4096 2022-04-26 14:43:11 tune/
--rwxr-xr-x  1   23568 2022-04-26 14:43:11 depcomp*
-drwxr-xr-x  5   36864 2022-04-26 14:43:11 tests/
-cventin:~/software/mpfr> lt|head                                      <14:43:47
-total 6416
--rw-r--r--  1   19436 2022-04-26 14:43:47 config.log
--rw-r--r--  1     561 2022-04-26 14:43:47 conftest.c
--rw-r--r--  1       0 2022-04-26 14:43:47 conftest.err
--rw-r--r--  1    4138 2022-04-26 14:43:47 mpfrtests.cfgout
--rw-r--r--  1     500 2022-04-26 14:43:47 confdefs.h
--rwxr-xr-x  1  632161 2022-04-26 14:43:45 configure.lineno*
--rw-r--r--  1     878 2022-04-26 14:43:45 mpfrtests.cventin.lip.ens-lyon.fr.out
-drwxr-xr-x  3    4096 2022-04-26 14:43:44 tune/
-drwxr-xr-x  4   36864 2022-04-26 14:43:44 tests/
-
-According to /usr/bin/stat, the file birth is
-
- Birth: 2022-04-26 14:43:45.537241731 +0200
-
-thus 30 seconds after the script started!
-
-Note that the configure.lineno file that appears above is created
-*after* mpfrtests.cventin.lip.ens-lyon.fr.out, and one can see
-that at 14:43:16, configure.lineno was already created while
-mpfrtests.cventin.lip.ens-lyon.fr.out did not appear in the
-directory listing.
-
-In the script, the file in question ("$out") is created with
-
-  echo "* $fqdn ($(${1:-.}/config.guess) / ${line#PROC:})" > "$out"
-
-and every other line that writes to the file uses >> "$out"
-in order to append data to the file.
-
-In the strace output of the script (obtained by running the
-script again), I get
-
-  openat(AT_FDCWD, "….out", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
-
-corresponding to the > "$out", then
-
-  openat(AT_FDCWD, "….out", O_WRONLY|O_CREAT|O_APPEND, 0666) = 3
-
-corresponding to the >> "$out", and one with
-
-  openat(AT_FDCWD, "….out", O_WRONLY|O_CREAT|O_APPEND, 0666 <unfinished ...>
-  <... openat resumed>)  = 3
-
-about 30 seconds later.
-
-Note: concerning the clock of the machine, it is handled by systemd,
-and I doubt that there was any "jump"; anyway, even a single jump
-would not explain the issue.
-
-FYI, the script is the following one:
-
-  https://gitlab.inria.fr/mpfr/misc/-/blob/fed7770cf5f712871bd116ef80d93ea5885fc3f7/vl-tests/mpfrtests.sh
-
-and the file in question is what appears as "$out".
-
-What I did was running from a MPFR working tree
-
-  /path/to/mpfrtests.sh < /path/to/mpfrtests.data
-
-where the mpfrtests.data file is the following one:
-
-  https://gitlab.inria.fr/mpfr/misc/-/blob/e0204b3423b9bc25c31548d2acc5b8e19a73f48d/vl-tests/mpfrtests.data
-
-Any idea of what could have happened? Is this a known bug?
-
-The fact that the birth occurred 30 seconds late is surprising,
-but if I understand correctly, the VFS does not seem to have the
-concept of birth time. So perhaps this might explain the behavior,
-e.g. if the VFS inode was copied later than expected.
-
--- 
-Vincent Lefèvre <vincent@vinc17.net> - Web: <https://www.vinc17.net/>
-100% accessible validated (X)HTML - Blog: <https://www.vinc17.net/blog/>
-Work: CR INRIA - computer arithmetic / AriC project (LIP, ENS-Lyon)
+							- Ted
+							
