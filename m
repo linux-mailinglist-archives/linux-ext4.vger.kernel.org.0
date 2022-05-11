@@ -2,70 +2,156 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28CC3523438
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 May 2022 15:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0A2952349C
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 May 2022 15:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244061AbiEKN2A (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 11 May 2022 09:28:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41406 "EHLO
+        id S244079AbiEKNr3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 11 May 2022 09:47:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243678AbiEKN0I (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 May 2022 09:26:08 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D51BE0E;
-        Wed, 11 May 2022 06:26:04 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 24BDPv53007361
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 May 2022 09:25:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1652275559; bh=abbENq8IYOkc31p6pnrCQWyxwIO3BZIyZtmCWB5OPRU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=HeH4aOpTDpaJiWJvLNgGACAFXgFVu5qorYBNh/xr8wtCmvHqVqhBquLL3LlALBk5C
-         er0AFygPA4IIq1YmJiaFdJVwIm9d5Tn9o8cU9NAQaPXheZtPf0Hnqnu0oS4ZmxLzXj
-         u1mVEZdjxQer8QVYo6+IjvnJxIkrqUP6MAW4cCCVLdOI8JPwuVops76ZeSdlo/PKDL
-         x9/vlSOQiA1H8gjIWX9ozXcm8orry08eGpYpOR9O93Kz6KrK8O0ZQwdzZ1NOidFokd
-         SRqUFlb9niC/ii3zzbZ8SZBmV3XooiqXjTMtvut+q9b+m1Ijh1QLJpzj2kaSAf8YSh
-         Hr5oYa0oXvj6Q==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id B043E15C3F0C; Wed, 11 May 2022 09:25:57 -0400 (EDT)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     linux-ext4@vger.kernel.org, Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] ext4: Get rid of unused DEFAULT_MB_OPTIMIZE_SCAN
-Date:   Wed, 11 May 2022 09:25:55 -0400
-Message-Id: <165227553566.382666.7632158616841910185.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20220315114454.104182-1-ojaswin@linux.ibm.com>
-References: <20220315114454.104182-1-ojaswin@linux.ibm.com>
+        with ESMTP id S244156AbiEKNrZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 May 2022 09:47:25 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A682219367;
+        Wed, 11 May 2022 06:47:18 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id D6CEA21A97;
+        Wed, 11 May 2022 13:47:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1652276836; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=itd3Sa1CpZiLCS1ZDb1vqIIXnJVKe6EqK2Q/rkked3Q=;
+        b=pLilFkUDuwCHQ06I9/LEHv6rCi0DznqXDGfK76DXFxgw6UNeOzlzVRC6O22yHkc12xN2gf
+        lFDgWu+g3C/HkW4H97D8nGjRbi55x9srzwFVYGsS4ZmeXdrQtsearXTyM48hXaoOIcM0ef
+        mVDoRMM3N2hj3teqWMdqpHCvBR9k3bg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1652276836;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=itd3Sa1CpZiLCS1ZDb1vqIIXnJVKe6EqK2Q/rkked3Q=;
+        b=oY5XOjAd/sEDKcBkY4b9nI1t+xwGGLaQ0bF5KkiGHjIehtO5DAbknG0TR8VSFuTb6tLsDB
+        JsPyrxGlfq6c8gBg==
+Received: from quack3.suse.cz (unknown [10.163.43.118])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 89D192C141;
+        Wed, 11 May 2022 13:47:16 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id B9939A062A; Wed, 11 May 2022 15:47:10 +0200 (CEST)
+Date:   Wed, 11 May 2022 15:47:10 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ye Bin <yebin10@huawei.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jack@suse.cz
+Subject: Re: [PATCH -next v2] ext4: fix bug_on in ext4_writepages
+Message-ID: <20220511134710.4ggvxuxg7dwf7tkp@quack3.lan>
+References: <20220510100228.1172227-1-yebin10@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220510100228.1172227-1-yebin10@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 15 Mar 2022 17:14:54 +0530, Ojaswin Mujoo wrote:
-> After recent changes to the mb_optimize_scan mount option
-> the DEFAULT_MB_OPTIMIZE_SCAN is no longer needed so get
-> rid of it.
+On Tue 10-05-22 18:02:28, Ye Bin wrote:
+> we got issue as follows:
+> EXT4-fs error (device loop0): ext4_mb_generate_buddy:1141: group 0, block bitmap and bg descriptor inconsistent: 25 vs 31513 free cls
+> ------------[ cut here ]------------
+> kernel BUG at fs/ext4/inode.c:2708!
+> invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
+> CPU: 2 PID: 2147 Comm: rep Not tainted 5.18.0-rc2-next-20220413+ #155
+> RIP: 0010:ext4_writepages+0x1977/0x1c10
+> RSP: 0018:ffff88811d3e7880 EFLAGS: 00010246
+> RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffff88811c098000
+> RDX: 0000000000000000 RSI: ffff88811c098000 RDI: 0000000000000002
+> RBP: ffff888128140f50 R08: ffffffffb1ff6387 R09: 0000000000000000
+> R10: 0000000000000007 R11: ffffed10250281ea R12: 0000000000000001
+> R13: 00000000000000a4 R14: ffff88811d3e7bb8 R15: ffff888128141028
+> FS:  00007f443aed9740(0000) GS:ffff8883aef00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000020007200 CR3: 000000011c2a4000 CR4: 00000000000006e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  do_writepages+0x130/0x3a0
+>  filemap_fdatawrite_wbc+0x83/0xa0
+>  filemap_flush+0xab/0xe0
+>  ext4_alloc_da_blocks+0x51/0x120
+>  __ext4_ioctl+0x1534/0x3210
+>  __x64_sys_ioctl+0x12c/0x170
+>  do_syscall_64+0x3b/0x90
 > 
+> It may happen as follows:
+> 1. write inline_data inode
+> vfs_write
+>   new_sync_write
+>     ext4_file_write_iter
+>       ext4_buffered_write_iter
+>         generic_perform_write
+>           ext4_da_write_begin
+>             ext4_da_write_inline_data_begin -> If inline data size too
+>             small will allocate block to write, then mapping will has
+>             dirty page
+>                 ext4_da_convert_inline_data_to_extent ->clear EXT4_STATE_MAY_INLINE_DATA
+> 2. fallocate
+> do_vfs_ioctl
+>   ioctl_preallocate
+>     vfs_fallocate
+>       ext4_fallocate
+>         ext4_convert_inline_data
+>           ext4_convert_inline_data_nolock
+>             ext4_map_blocks -> fail will goto restore data
+>             ext4_restore_inline_data
+>               ext4_create_inline_data
+>               ext4_write_inline_data
+>               ext4_set_inode_state -> set inode EXT4_STATE_MAY_INLINE_DATA
+> 3. writepages
+> __ext4_ioctl
+>   ext4_alloc_da_blocks
+>     filemap_flush
+>       filemap_fdatawrite_wbc
+>         do_writepages
+>           ext4_writepages
+>             if (ext4_has_inline_data(inode))
+>               BUG_ON(ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA))
 > 
+> The root cause of this issue is we destory inline data until call ext4_writepages
+> under delay allocation mode. But there maybe already covert from inline to extent.
+> To solved this issue, we call filemap_flush firstly.
+> 
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> ---
+>  fs/ext4/inline.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+> index 6d253edebf9f..130ed5d83734 100644
+> --- a/fs/ext4/inline.c
+> +++ b/fs/ext4/inline.c
+> @@ -2002,6 +2002,14 @@ int ext4_convert_inline_data(struct inode *inode)
+>  	if (!ext4_has_inline_data(inode)) {
+>  		ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
+>  		return 0;
+> +	} else if (test_opt(inode->i_sb, DELALLOC) && !S_ISDIR(inode->i_mode)) {
+> +		error = filemap_flush(inode->i_mapping);
 
-Applied, thanks!
+This is actually an interesting option and I kind of like it but shouldn't
+we restrict this to the situation when EXT4_STATE_MAY_INLINE_DATA is clear?
+Otherwise we would be writing out inline data to the inode unnecessarily
+for each ext4_convert_inline_data() call.
 
-[1/1] ext4: Get rid of unused DEFAULT_MB_OPTIMIZE_SCAN
-      commit: 7e0d0d44001506bc42932b5e37baaab84f0397cf
-
-Best regards,
+								Honza
 -- 
-Theodore Ts'o <tytso@mit.edu>
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
