@@ -2,146 +2,91 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0799A523CDE
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 May 2022 20:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42982523D7D
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 May 2022 21:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236568AbiEKSuR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 11 May 2022 14:50:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35206 "EHLO
+        id S1346859AbiEKTcB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 11 May 2022 15:32:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbiEKSuQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 May 2022 14:50:16 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2059.outbound.protection.outlook.com [40.107.93.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 218CA1ACF9A;
-        Wed, 11 May 2022 11:50:15 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A16rpWhIJbaWfx2EPe4EmWFiXlxYiYyD6yuCdYCEztCdAv/a8YClUpKDyvFO9tMeBEgRAIt36OQRl8NTRZ+4bClf/aepr1ZZwS0fgF2h34d0yMI8WkIJcaDJmxtsKHON8LV7yirDbYExcQ8Hj4MsbWH1o4fEYlMInPbAkrLn+onGd4WciHEP3pY8/yF6Q6/iMw5IJbpWoE17Wjwk+3sylpQOU3ALhu6wcVARTjCsGCySXaWDbCFS9n2KeIN8zhf1SOdMrlrzMR0kGHAvWYGDBnvgKWIUtabi42Qz8Czjsk6URE6Q1OV8ITUBPQmwUUZb+NuEwjEp5RWeYKhHERqImw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1g0FPoddCsx+E8iv8Wi5XQ+yXn1cAKoxCA2KD2pkSIQ=;
- b=JPwJybf18e9EbTB0f+OXIvIwj8Ob+H3hGzfO1blKjN69LXt2Yhfvq2U/zYlrTXVSQcL0RCyfQ1Q8VrmU95QFuAeg5SP2eSG4iMd/ZQDOG8XyCt/zybyHeTSqkmgPcegyQ1OxLK7HNLnalDggULdPSZuYizMqXu3KR5fyVhA392wsuqilFDm9oSJ4euwrf6fjxGPFQQFTifRcS9guQm5T/t5sDt5T/3keo6EbhbEwilkNNxKwyi5Z8e/arzVIy69P2XmrY1Ir57pis40Nnv+9VZf5rvn1vUY1mHHsbKL9Qd7Rljv/vSAh69YJFQvza2T18MTrK544e7un1UmHnqXAAw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1g0FPoddCsx+E8iv8Wi5XQ+yXn1cAKoxCA2KD2pkSIQ=;
- b=Xk9jKwnGYLTbEmCCnJHVYxkzzBjB2xQTxn1+KBtUyTh6b0BBxfG2IpWb7t9hiiXT9c08b6PRbeKgaYIyKQSidB4afaz06tYoY+mSBSDOd9oKX7d+gfKfZU2SvgDf25f+ENg9gcSJe7sgLas8IWAWc7kf0RRLJCdZcpweYltGilUbVRm+W0t1dWa30MrQoeBG4mt8NdJJAY2EIBUi9WahwU95jVSqiHnMH85oKmW37Jr+Pcq96sAPjcGcmhk2yNnVzCykVYhVP/04F0zK168lhfWpNfuMRHMpYmCCpeF3xMe7TZgJSQHCSmPWVTa2Wzt2zx5IEL0za2ALiprgIBVgSw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
- by BN8PR12MB3281.namprd12.prod.outlook.com (2603:10b6:408:6e::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5227.21; Wed, 11 May
- 2022 18:50:13 +0000
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::ec2d:9167:1b47:2db2]) by MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::ec2d:9167:1b47:2db2%5]) with mapi id 15.20.5250.013; Wed, 11 May 2022
- 18:50:13 +0000
-Date:   Wed, 11 May 2022 15:50:12 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alex Sierra <alex.sierra@amd.com>
-Cc:     david@redhat.com, Felix.Kuehling@amd.com, linux-mm@kvack.org,
-        rcampbell@nvidia.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, hch@lst.de, jglisse@redhat.com,
-        apopple@nvidia.com, willy@infradead.org, akpm@linux-foundation.org
-Subject: Re: [PATCH v1 13/15] mm: handling Non-LRU pages returned by
- vm_normal_pages
-Message-ID: <20220511185012.GM49344@nvidia.com>
-References: <20220505213438.25064-1-alex.sierra@amd.com>
- <20220505213438.25064-14-alex.sierra@amd.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220505213438.25064-14-alex.sierra@amd.com>
-X-ClientProxiedBy: BL0PR05CA0029.namprd05.prod.outlook.com
- (2603:10b6:208:91::39) To MN2PR12MB4192.namprd12.prod.outlook.com
- (2603:10b6:208:1d5::15)
+        with ESMTP id S245340AbiEKTb7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 May 2022 15:31:59 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8557B69484
+        for <linux-ext4@vger.kernel.org>; Wed, 11 May 2022 12:31:57 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id C53011F42914
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1652297515;
+        bh=YVY7Dsj2P/gpMxAXakIigK52MS4RKuWy4L2G7t4v4ns=;
+        h=From:To:Cc:Subject:Date:From;
+        b=njLxSzNxseww7v2/JuRZpGc16AWA+FBP9wCkyyUOSmMNMH5EAmkvg2pVq1baaz/i4
+         BzZJHSxMys7Yijf6wyRcfrufLRTBySTCtLvkLUEkL3HNPgMajilAFZbXJNtNfdFOc2
+         zeR7IL6TBM/giBK0xABWc6iZYV9xFZJ5PEEs1SvONWnTWRxXE8GQtnlWf8wDpb3baQ
+         LvfjCNYrP6Z1YmVyIKx4U6Swxt7O996r+r4BjLhvob7S3y2wiaMlrfvNpNhLfSLscg
+         oTGZwYyUOhkNtPXxq5F4/eL3BUuGc0WIGQ78zXoP2kBz9U1DRDLFEoYICL+n9oFHuW
+         tzlGv3g9l+B1w==
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        ebiggers@kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel@collabora.com
+Subject: [PATCH v4 00/10] Clean up the case-insensitive lookup path
+Date:   Wed, 11 May 2022 15:31:36 -0400
+Message-Id: <20220511193146.27526-1-krisman@collabora.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 975e0cb6-1cae-42e3-6680-08da337f14f1
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3281:EE_
-X-Microsoft-Antispam-PRVS: <BN8PR12MB328109CAC779F7493772B311C2C89@BN8PR12MB3281.namprd12.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RF1jQ4Bo30T1It63mDp+LGqs5FV+LetTF+lgQSRzmf2ciGGpJvOVfd1dpJNOW41/2CXuh21hnii9FC1r68z+GTUAIwSc34feYKRjbZVQsScC3G4pvSErZLEA23MeC2E7oiQlAXblJwvysdisRr3oUJSO99sqm3cxnp2WFDIVD9AxT6Fm4GqMEwFluKr37eAyD7XjU6nWQRvxuVp9AGhGw85CzGcgkKLyAV4e34zS6y/fH6Tvfbipc3EYbXlz8vGNEy9l6N0lRLwlnWEZtfTzdZx7perRCWOB2p7sY63RyzEshdqzF8+wyfmIHrRFT2jM9yxxqj1XZN/gir+EJdvdtUqXWy31QweiG+tVeFNWQXseN5PWls/5sE++MCHMTRZYsPFOUO95hX8Om0s0bBTuaGn6VvtajBw/IdcaPFWwWEW8JVkOiBsE3w1LuPn7Kcpsyd+qAl4L+bHGXBFhBK7tLUFiKGHg53oguf3CB3+zS3Am9l3hXmqHqsVKKPUQP6NHuy10iA5PJrXqojrM/cvc8A2iAjG9dkWnNKN57Ki6Xvqwphs30i39Hx8uFm/WZXyXvh9MZxYB9/8EZWwuh0P7e2BPDzomKKArqYTlQoeYw1kULeIS+1Oe9OwcUq2HxKA2mXkd0tkQdU5SzjOwpRuUcA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(8676002)(4326008)(6916009)(66476007)(316002)(508600001)(6506007)(38100700002)(66556008)(66946007)(6512007)(26005)(4744005)(36756003)(1076003)(33656002)(2906002)(186003)(5660300002)(6486002)(86362001)(7416002)(8936002)(2616005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?VXeI4TGIR7OlomdUi3o61UcKGiMx/fblucIB5fmF7gqfjdgBmNp78Pa6VjuD?=
- =?us-ascii?Q?iQH9XiEoSKntOl/f5DHCwh/a3z/zH9sTSr2L3LvDDKRoILPHlW94lwBtP2SX?=
- =?us-ascii?Q?N/mzJm/H+bt5okXiynUqz966SZlu/IVy8N13F1LnAuhbzMo5N8oBTPH495+8?=
- =?us-ascii?Q?E6rxeNpW+btooTwRMocWxTgiiuUJlHHaVpt7SOmZw/OXuOWPZM9wJ1SQJlGD?=
- =?us-ascii?Q?yElu6BFv5uGkQIyaxctTQ2cFSVW7cp4/jtaj/Uk6DfzADvlvpOd6A67CSAGE?=
- =?us-ascii?Q?aIQ2r57ltUUHKCt3trm9wOWsHZdYKcSWNvYsWeP4v69c8Jao2wpE/V7wpfdZ?=
- =?us-ascii?Q?l8+6eVLGriK8A0JqDgYCK7FYm/dM1TVE9m8RS/f6LGUUuhvsShcULL9qx4tR?=
- =?us-ascii?Q?BBZ2CzKiGUhPzjtn50dNb/zL9fwJdEgVsQq9m5HmNM+AslCdjTaKS4I5zOWa?=
- =?us-ascii?Q?HuX4UFrTOV27OfIK/0AHLAcyXSFLCbN4vaC9azI9v2oOLIxigoWN0Ffa6LVV?=
- =?us-ascii?Q?8MpTcrGQzkbV6SgHhTnoILqelX+JNbPZnSBui3YfzwvSIerGvPbDAG4z2RU1?=
- =?us-ascii?Q?piLu1+n/MzfY5uqVsY3J1uHdV6Qbz/6spR2+KGXX4hDSVpNS6ftjPujqrXtS?=
- =?us-ascii?Q?v3Ef6pZJIoq0yo17hGyebeOyx673fU1lKC6y9MES/ga3+4xG2NB2wTpWzQSj?=
- =?us-ascii?Q?xtJJdB8q3Mi+g2Rk7MCtTrVK6Sk1CVemO75RDF/jXPoD98DvKiXfA86L3f8v?=
- =?us-ascii?Q?rR/i/mEeeVPl2fGderxTpv4yEiwd34Tm+vgxpXNu2PSHKOSt7KC3mqaKLDmV?=
- =?us-ascii?Q?wyT6xJQ8eyfZj+ly4gilD6lIL2pZDRfkCSiXP4HZ537r6nV66hngFsPgAXEJ?=
- =?us-ascii?Q?iLeDTLAUCHTZQlhOLJ2tvSzZKqiwOxkgZxbS6Fo44JnbBclT/wCHQ7S2zv7C?=
- =?us-ascii?Q?AcO1XUOV9SZRJzbWK2Tv0Zx9JYPjKOl6B25Ufis7n7gK8cXz3KY4DJP4dJaP?=
- =?us-ascii?Q?6C7RPReWiZMkRrk5l1aEPBN92JOWDYfrMNgKRZDsJIV14ZatVrmhvp4l9Yfo?=
- =?us-ascii?Q?2Hawu9uU3RMz1C0P+YHBeykYaUCzFwPM/YLp0plKswhCT/wykiW17qkVOQNu?=
- =?us-ascii?Q?bFLP04TvSmTMoKY5rcJPYLjqZH8Fw23Vds/w1i8MBhrSYLzBv/nOnDQaTzXb?=
- =?us-ascii?Q?XXSZ2jqfOh/bQjswRduA1XUfjPU8Gf2k8uaxBZk58BEb0hCv63yl1Ez7jpjv?=
- =?us-ascii?Q?5bw9PyFdMrUKnWxGn4lsqXKQjKmxmAFmVrZtCsnDxGWn7IstdFBIAgvPDc1k?=
- =?us-ascii?Q?KB20uSG2N9Xr3AOCd6GDYiH6TiefGBrVYs9s+Ep+pINyedUYOY0el3ndtk7e?=
- =?us-ascii?Q?p6fbuPixtsyeT1GYGOIpMyAb/l6M+MVgAaTZHEz9xPou6FQ5N4fisxGpCshM?=
- =?us-ascii?Q?fCqVWmbd6KVJjiccJLGzZeid9TKMZvAbSqhDILMSh3Phk4ZPCtajtd4QgLFt?=
- =?us-ascii?Q?utEL1JqYFSwuwb0HKRo0vJQEhG/zmMbaOY7wQMna2LNNA7+iN38WClr4TTPX?=
- =?us-ascii?Q?A27lsTopsLpVfaVMr2bJLnipGxm6SDAKbCKdgOyf6dccEuc7V/wpAEvXmauj?=
- =?us-ascii?Q?vk2aYk45pXxKkRIiPCmuNIQXCJRbCq4f4XuTCbOA90GFSw5XI5zc5+aG8CZw?=
- =?us-ascii?Q?W5hUAoMXK1XwnBAxFQ0tp3x3SK8W/NkJYktic7Dam46q3rfntgqvATw66hNu?=
- =?us-ascii?Q?IqMxZ8j9zA=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 975e0cb6-1cae-42e3-6680-08da337f14f1
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2022 18:50:13.3136
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iSzZ/Sju3P7QEIdvF9dnGCNImeuiNe/1R7vKVUcPHkRhwZlvo4+fTw4Q1R3SjIBP
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3281
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, May 05, 2022 at 04:34:36PM -0500, Alex Sierra wrote:
+The case-insensitive implementations in f2fs and ext4 have quite a bit
+of duplicated code.  This series simplifies the ext4 version, with the
+goal of extracting ext4_ci_compare into a helper library that can be
+used by both filesystems.  It also reduces the clutter from many
+codeguards for CONFIG_UNICODE; as requested by Linus, they are part of
+the codeflow now.
 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 76e3af9639d9..892c4cc54dc2 100644
-> +++ b/mm/memory.c
-> @@ -621,6 +621,13 @@ struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
->  		if (is_zero_pfn(pfn))
->  			return NULL;
->  		if (pte_devmap(pte))
-> +/*
-> + * NOTE: Technically this should goto check_pfn label. However, page->_mapcount
-> + * is never incremented for device pages that are mmap through DAX mechanism
-> + * using pmem driver mounted into ext4 filesystem. When these pages are unmap,
-> + * zap_pte_range is called and vm_normal_page return a valid page with
-> + * page_mapcount() = 0, before page_remove_rmap is called.
-> + */
->  			return NULL;
+While there, I noticed we can leverage the utf8 functions to detect
+encoded names that are corrupted in the filesystem. Therefore, it also
+adds an ext4 error on that scenario, to mark the filesystem as
+corrupted.
 
-? Where does this series cause device coherent to be returned?
+This series survived passes of xfstests -g quick.
 
-Wasn't the plan to not set pte_devmap() ?
+Gabriel Krisman Bertazi (10):
+  ext4: Match the f2fs ci_compare implementation
+  ext4: Simplify the handling of cached insensitive names
+  f2fs: Simplify the handling of cached insensitive names
+  ext4: Implement ci comparison using unicode_name
+  ext4: Simplify hash check on ext4_match
+  ext4: Log error when lookup of encoded dentry fails
+  ext4: Move ext4_match_ci into libfs
+  f2fs: Reuse generic_ci_match for ci comparisons
+  ext4: Move CONFIG_UNICODE defguards into the code flow
+  f2fs: Move CONFIG_UNICODE defguards into the code flow
 
-Jason
+ fs/ext4/ext4.h     |  41 +++++++--------
+ fs/ext4/namei.c    | 126 ++++++++++++++-------------------------------
+ fs/ext4/super.c    |   4 +-
+ fs/f2fs/dir.c      | 103 ++++++++++++------------------------
+ fs/f2fs/f2fs.h     |   3 +-
+ fs/f2fs/namei.c    |  12 ++---
+ fs/f2fs/recovery.c |   5 +-
+ fs/f2fs/super.c    |  22 ++++----
+ fs/libfs.c         |  61 ++++++++++++++++++++++
+ include/linux/fs.h |   8 +++
+ 10 files changed, 185 insertions(+), 200 deletions(-)
+
+-- 
+2.36.1
+
