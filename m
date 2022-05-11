@@ -2,116 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B99E5228D8
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 May 2022 03:18:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E32D9522B50
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 May 2022 06:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240103AbiEKBSU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 10 May 2022 21:18:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51370 "EHLO
+        id S231657AbiEKEkh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 11 May 2022 00:40:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237149AbiEKBSS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 May 2022 21:18:18 -0400
-Received: from lgeamrelo11.lge.com (lgeamrelo12.lge.com [156.147.23.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B43675798C
-        for <linux-ext4@vger.kernel.org>; Tue, 10 May 2022 18:18:16 -0700 (PDT)
-Received: from unknown (HELO lgeamrelo01.lge.com) (156.147.1.125)
-        by 156.147.23.52 with ESMTP; 11 May 2022 10:18:15 +0900
-X-Original-SENDERIP: 156.147.1.125
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO X58A-UD3R) (10.177.244.38)
-        by 156.147.1.125 with ESMTP; 11 May 2022 10:18:14 +0900
-X-Original-SENDERIP: 10.177.244.38
-X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Wed, 11 May 2022 10:16:37 +0900
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     tytso@mit.edu
-Cc:     torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
-        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
-        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
-        chris@chris-wilson.co.uk, duyuyang@gmail.com,
-        johannes.berg@intel.com, tj@kernel.org, willy@infradead.org,
-        david@fromorbit.com, amir73il@gmail.com,
-        gregkh@linuxfoundation.org, kernel-team@lge.com,
-        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
-        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
-        ngupta@vflare.org, linux-block@vger.kernel.org,
-        paolo.valente@linaro.org, josef@toxicpanda.com,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        jack@suse.cz, jack@suse.com, jlayton@kernel.org,
-        dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
-        dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com,
-        melissa.srw@gmail.com, hamohammed.sa@gmail.com, 42.hyeyoo@gmail.com
-Subject: Re: [PATCH RFC v6 00/21] DEPT(Dependency Tracker)
-Message-ID: <20220511011637.GC18445@X58A-UD3R>
-References: <YnnAnzPFZZte/UR8@mit.edu>
- <1652161060-26531-1-git-send-email-byungchul.park@lge.com>
+        with ESMTP id S240256AbiEKEjs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 May 2022 00:39:48 -0400
+Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4FE153513
+        for <linux-ext4@vger.kernel.org>; Tue, 10 May 2022 21:39:24 -0700 (PDT)
+Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-edf3b6b0f2so1460816fac.9
+        for <linux-ext4@vger.kernel.org>; Tue, 10 May 2022 21:39:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=s3Cdswvtyrq8qHVwuRB9YRoTAIoD9G/2//h6WeFZHzo=;
+        b=nrkBIDyCffFbQz5WNhQU88q5l+bx8m1CoLNL/nRcxBFZRgp3B2RwRJzpJi69hjmFPQ
+         Eotn36CVTQor8sTwq84btYhQQ+OsypTpYdHIfGkC/Ekjg8a9U0HkQq0T/gbcQg5/if4Y
+         i1yzcJYhTRMm8ny1NIiOYUNRazrfloxlCC/1XVxW2+TG0ItQpx2/G3cXjgMuOALgO1Rc
+         auxKHXwS3ghK6vFFIfR8essc70JXfRi2oIpi3YT/VLqISCMTaVWCOI/Xf0rWfpfTmlnw
+         XgqCFC8jOuHD5AjsEtox3h0b9tzcHlVM0fA1RrJyDFubK9aS707t1BYf/K43qSc4slo4
+         wrQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=s3Cdswvtyrq8qHVwuRB9YRoTAIoD9G/2//h6WeFZHzo=;
+        b=V1z6mCbJvM8rH0/bwtfLGbpS61FDRkguYSEuEaaxLejgaH5LKqQBt21CHUXXQjVOoT
+         uUhmYPHU7f6J6Ysxw1J67RrqzLhXSCBmKr6SU6o9pp9pbgFKlXpRT1fYOgFTYBKjrUhk
+         LPrnOto5qfChsIOfDLWW6FIXjavIE3GenyCU406IIk52flYvKb038osUGv4EbcUUkimD
+         6bBygq+fJ71fzE70IEEZER3VgQs1GZXxBzhTGun8d+jvXi9BSDKUDbPskLNa6LxHPMWV
+         ANEu56+hzVSk+91RXoUIYpl6qjA5OwS82CRp1VCQLLat+AX3DoJoreYLnzkxQjO7iIGd
+         7PMA==
+X-Gm-Message-State: AOAM530Elc/BIHGnYl7/APzMlCHHKDxmi3u1EYFYPJTuWfg1Knn/tQDc
+        hHBN2aPGCUKK4aPn0ZpGMGJrU5gCSz+A4/OJ3FWoB6I8QJm/Ig==
+X-Google-Smtp-Source: ABdhPJwbKHmbnZDflMHBZCcp2YbZAAZvFdPcM4owWeuPIkoxodmwIZJ+Xpgi08ylB1RFXLrw63SQRxJzumbwJKMTxhs=
+X-Received: by 2002:a17:90b:1007:b0:1dc:9862:68af with SMTP id
+ gm7-20020a17090b100700b001dc986268afmr3261389pjb.205.1652243951499; Tue, 10
+ May 2022 21:39:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1652161060-26531-1-git-send-email-byungchul.park@lge.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Received: by 2002:a05:6a10:319:0:0:0:0 with HTTP; Tue, 10 May 2022 21:39:10
+ -0700 (PDT)
+From:   Private Mail <privatemail1961@gmail.com>
+Date:   Tue, 10 May 2022 21:39:10 -0700
+Message-ID: <CANjAOAiiVcSrSv31FjThCVmeppS54UVvGVj3SRSvMfxOB+T8DA@mail.gmail.com>
+Subject: Have you had this? It is for your Benefit
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.3 required=5.0 tests=ADVANCE_FEE_4_NEW_MONEY,
+        BAYES_50,DEAR_BENEFICIARY,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,
+        DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FREEMAIL_REPLY,
+        LOTS_OF_MONEY,MONEY_FRAUD_5,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, May 10, 2022 at 02:37:40PM +0900, Byungchul Park wrote:
-> Ted wrote:
-> > On Tue, May 10, 2022 at 09:32:13AM +0900, Byungchul Park wrote:
-> > > DEPT is tracking way more objects than Lockdep so it's inevitable to be
-> > > slower, but let me try to make it have the similar performance to
-> > > Lockdep.
-> > 
-> > In order to eliminate some of these false positives, I suspect it's
-> > going to increase the number of object classes that DEPT will need to
-> > track even *more*.  At which point, the cost/benefit of DEPT may get
-> > called into question, especially if all of the false positives can't
-> > be suppressed.
-> 
-> Look. Let's talk in general terms. There's no way to get rid of the
-> false positives all the way. It's a decision issue for *balancing*
-> between considering potential cases and only real ones. Definitely,
-> potential is not real. The more potential things we consider, the higher
-> the chances are, that false positives appear.
-> 
-> But yes. The advantage we'd take by detecting potential ones should be
-> higher than the risk of being bothered by false ones. Do you think a
-> tool is useless if it produces a few false positives? Of course, it'd
-> be a problem if it's too many, but otherwise, I think it'd be a great
-> tool if the advantage > the risk.
-> 
-> Don't get me wrong here. It doesn't mean DEPT is perfect for now. The
-> performance should be improved and false alarms that appear should be
-> removed, of course. I'm talking about the direction.
-> 
-> For now, there's no tool to track wait/event itself in Linux kernel -
-> a subset of the functionality exists tho. DEPT is the 1st try for that
-> purpose and can be a useful tool by the right direction.
-> 
-> I know what you are concerning about. I bet it's false positives that
-> are going to bother you once merged. I'll insist that DEPT shouldn't be
-> used as a mandatory testing tool until considered stable enough. But
-> what about ones who would take the advantage use DEPT. Why don't you
-> think of folks who will take the advantage from the hints about
-> dependency of synchronization esp. when their subsystem requires very
-> complicated synchronization? Should a tool be useful only in a final
-> testing stage? What about the usefulness during development stage?
-> 
-> It's worth noting DEPT works with any wait/event so any lockups e.g.
-> even by HW-SW interface, retry logic or the like can be detected by DEPT
-> once all waits and events are tagged properly. I believe the advantage
-> by that is much higher than the bad side facing false alarms. It's just
-> my opinion. I'm goning to respect the majority opinion.
+Our Ref: BG/WA0151/2022
 
-s/take advantage/have the benefit/g
+Dear Beneficiary
 
-	Byungchul
+Subject: An Estate of US$15.8 Million
+
+Blount and Griffin Genealogical Investigators specializes in probate
+research to locate missing heirs and beneficiaries to estates in the
+United Kingdom and Europe.
+
+We can also help you find wills, obtain copies of certificates, help
+you to administer an estate, as well as calculating how an estate,
+intestacy or trust should be distributed.
+
+You may be entitled to a large pay out for an inheritance in Europe
+worth US$15.8 million. We have discovered an estate belonging to the
+late Depositor has remained unclaimed since he died in 2011 and we
+have strong reasons to believe you are the closest living relative to
+the deceased we can find.
+
+You may unknowingly be the heir of this person who died without
+leaving a will (intestate). We will conduct a probate research to
+prove your entitlement, and can submit a claim on your behalf all at
+no risk to yourselves.
+
+Our service fee of 10% will be paid to us after you have received the estate.
+
+The estate transfer process should take just a matter of days as we
+have the mechanism and expertise to get this done very quickly. This
+message may come to you as a shock, however we hope to work with you
+to transfer the estate to you as quickly as possible.
+
+Feel free to email our senior case worker Mr. Malcolm Casey on email:
+malcolmcasey68@yahoo.com for further discussions.
+
+With warm regards,
+
+Mr. Blount W. Gort, CEO.
+Blount and Griffin Associates Inc
