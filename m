@@ -2,133 +2,98 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE38C5252D5
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 May 2022 18:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2033A52535B
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 May 2022 19:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356374AbiELQlz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 12 May 2022 12:41:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41684 "EHLO
+        id S1351986AbiELROd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 12 May 2022 13:14:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236495AbiELQly (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 12 May 2022 12:41:54 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249AC5D5F6;
-        Thu, 12 May 2022 09:41:54 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d22so5421030plr.9;
-        Thu, 12 May 2022 09:41:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6TwX+Uem+RX7yFMEQloRfhp790CWUfMnBz6v8ZFXqWw=;
-        b=W0iepvlelCLBuiCrQ0b37NsVuwjZqmnDvDuXQwTxPwqmfcisydLXhlvB+5bIBxb9Mo
-         DDIm9SAd9GCqOj8Y1mqJ3sPE2DDD2VG+CyW+x8zKZGJ1ncvmUcgmSj5NWAatP+ff85TH
-         ZnWqN4wW+Xvd09HvOI7ErGXsWF0qITMEkVBE8CptKkPKH0y41qpN2h8EhYFt/EnyW95X
-         LUnS06SYFHbr1Fd4ZdIEgY2aNXkWlf7fBX3yTTPM4sIzGKDRzP8t5PBqeY5+wGCWKGeI
-         4l9xLi0L1UoF0RefF/g+HEKdfK0lgVXEOyZZ3Lz8Yy/OIJTAikD/cX/wCLx1Gu2ea24/
-         QN8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=6TwX+Uem+RX7yFMEQloRfhp790CWUfMnBz6v8ZFXqWw=;
-        b=4Qx/+dLMe/UYMi/4NF5aXGTzt6txId//pn0zTeIZEmB7igS/a8vc1e7ruASYup9ViL
-         vsmmNel4A2ato1HKfpQ9nHOlL1yjEAfpnOVbWzvvUtB/Xl0WAA6SvbiepWoeWFQSdoQV
-         CX6n0ERvWDrz/IhAHDgbIJlxuWDysXisyjP3ok6RdzMcASdLNz89eix9umQIgeT9iScI
-         yV6hkMzP+qxBErEl8vBV4sE5LdXk1BOYQvtpDR4c/pVLHGJwYdmYjq8Js/6lo6dKkilF
-         jfUp1rnbu/tgBvtuyq36DlZQpZaJbdRA2eqtDTpcIbNpzi2NCzE4+Jk+pDK4Ay7duYRv
-         ResQ==
-X-Gm-Message-State: AOAM530g93I3/N321NxGBxcb0167fLbNgCKlQqX1I3cc/Ly3mZysNPCW
-        5fMuj4oJAlo5bTTqViSMhB8=
-X-Google-Smtp-Source: ABdhPJzsb54QRB11Kg0xwOQPwsZz32Td9eLOjqUbH9eOlCaQUD4CO9IvOZZ+4QXL8vYjVErb6WonGA==
-X-Received: by 2002:a17:902:ab96:b0:159:1ff:4ea0 with SMTP id f22-20020a170902ab9600b0015901ff4ea0mr779294plr.60.1652373713356;
-        Thu, 12 May 2022 09:41:53 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::4:6c64])
-        by smtp.gmail.com with ESMTPSA id x4-20020a62fb04000000b0050dc76281a9sm46574pfm.131.2022.05.12.09.41.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 May 2022 09:41:52 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 12 May 2022 06:41:51 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Byungchul Park <byungchul.park@lge.com>
-Cc:     torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
-        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
-        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
-        chris@chris-wilson.co.uk, duyuyang@gmail.com,
-        johannes.berg@intel.com, tytso@mit.edu, willy@infradead.org,
-        david@fromorbit.com, amir73il@gmail.com,
-        gregkh@linuxfoundation.org, kernel-team@lge.com,
-        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
-        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
-        ngupta@vflare.org, linux-block@vger.kernel.org,
-        paolo.valente@linaro.org, josef@toxicpanda.com,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        jack@suse.cz, jack@suse.com, jlayton@kernel.org,
-        dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
-        dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com,
-        melissa.srw@gmail.com, hamohammed.sa@gmail.com,
-        42.hyeyoo@gmail.com, mcgrof@kernel.org, holt@sgi.com
-Subject: Re: [REPORT] syscall reboot + umh + firmware fallback
-Message-ID: <Yn04z6xzqJQqYNOX@slm.duckdns.org>
-References: <YnzQHWASAxsGL9HW@slm.duckdns.org>
- <1652354304-17492-1-git-send-email-byungchul.park@lge.com>
+        with ESMTP id S1346772AbiELROc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 12 May 2022 13:14:32 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2716726A707
+        for <linux-ext4@vger.kernel.org>; Thu, 12 May 2022 10:14:30 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 24CHE8mL007381
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 May 2022 13:14:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1652375650; bh=67iChVcO9/wm/TRaCuDf/PEeqOS9FwkJk0+0RfT68ws=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=bBvxgc4VLzAiTQYcE1+NaHkltJcE5wW0bdYDeAF1zLgxS8c7tLuG38WF0BlR1/fe4
+         a29DWHkV7Fyjss07bl3y0NSdJGY9fLWjgBJd9N/+Az2pcnPwgoTKwZHpWLmoFSv5i8
+         o/1qX6Dmlkim6ytng5/h57St8+C9SNzjXpgsfCSccZ6r8GOGFngqdrLWHFz8zBeLcm
+         b0uTt4/ZzQ8MWmVw50b5N5ssEOKdsEHNr7EUiMylNx7MbjqzLumXMWysZkHFucIs5v
+         T646x3vCXc8VnVVO1YpYi8yD0ppDBCgM+ErJ9YSM8Cr9ScaWFVBHax96MMgqdlcKaf
+         f42H0a+KnxclQ==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id A14F215C3F2A; Thu, 12 May 2022 13:14:08 -0400 (EDT)
+Date:   Thu, 12 May 2022 13:14:08 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     zhanchengbin <zhanchengbin1@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, liuzhiqiang26@huawei.com,
+        linfeilong@huawei.com, wubo40@huawei.com
+Subject: Re: [PATCH v2 0/6] solve memory leak and check whether NULL pointer
+Message-ID: <Yn1AYM7rLvRHXNgQ@mit.edu>
+References: <52a2a39d-617f-2f27-a8a4-34da6103e44c@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1652354304-17492-1-git-send-email-byungchul.park@lge.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <52a2a39d-617f-2f27-a8a4-34da6103e44c@huawei.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Fri, Dec 31, 2021 at 03:40:41PM +0800, zhanchengbin wrote:
+> Solve the memory leak of the abnormal branch and the new null pointer check
 
-On Thu, May 12, 2022 at 08:18:24PM +0900, Byungchul Park wrote:
-> > 1. wait_for_completion_killable_timeout() doesn't need someone to wake it up
-> >    to make forward progress because it will unstick itself after timeout
-> >    expires.
+Applied, but the patches were all white-space damaged so I had to
+apply them by hand.  I also reworded the commit description to be
+clearer.
+
+The one exception is the patch to lib/ss, which had already been fixed
+commit a282671a0 ("libss: fix possible NULL pointer dereference on
+allocation failure") in my tree.
+
+Cheers,
+
+                                        - Ted
+
+> Changes from V1:
+> ---------------
+> - In the V1 of the patch series, have a bug in patch 1/6, when s->s get
+>   memory successd, s-len is not assigned a value.
 > 
-> I have a question about this one. Yes, it would never been stuck thanks
-> to timeout. However, IIUC, timeouts are not supposed to expire in normal
-> cases. So I thought a timeout expiration means not a normal case so need
-> to inform it in terms of dependency so as to prevent further expiraton.
-> That's why I have been trying to track even timeout'ed APIs.
+> zhanchengbin (6):
+>   e2fsck: set s->len=0 if malloc() fails in alloc_string()
+>   lib/ss: check whether argp is null before accessing it in
+>     ss_execute_command()
+>   lib/support: check whether inump is null before accessing it in
+>     quota_set_sb_inum()
+>   e2fsprogs: call ext2fs_badblocks_list_free() to free list in exception
+>     branch
+>   e2fsck: check whether ldesc is null before accessing it in
+>     end_problem_latch()
+>   lib/ext2fs: call ext2fs_free_mem() to free &io->name in exception
+>     branch
 > 
-> Do you think DEPT shouldn't track timeout APIs? If I was wrong, I
-> shouldn't track the timeout APIs any more.
-
-Without actually surveying the use cases, I can't say for sure but my
-experience has been that we often get pretty creative with timeouts and it's
-something people actively think about and monitor (and it's usually not
-subtle). Given that, I'm skeptical about how much value it'd add for a
-dependency checker to warn about timeouts. It might be net negative than the
-other way around.
-
-> > 2. complete_all() from __fw_load_abort() isn't the only source of wakeup.
-> >    The fw loader can be, and mainly should be, woken up by firmware loading
-> >    actually completing instead of being aborted.
+>  e2fsck/logfile.c      | 2 +-
+>  e2fsck/problem.c      | 2 ++
+>  lib/ext2fs/test_io.c  | 2 ++
+>  lib/ext2fs/undo_io.c  | 2 ++
+>  lib/ss/execute_cmd.c  | 2 ++
+>  lib/support/mkquota.c | 3 ++-
+>  misc/dumpe2fs.c       | 1 +
+>  resize/resize2fs.c    | 4 ++--
+>  8 files changed, 14 insertions(+), 4 deletions(-)
 > 
-> This is the point I'd like to ask. In normal cases, fw_load_done() might
-> happen, of course, if the loading gets completed. However, I was
-> wondering if the kernel ensures either fw_load_done() or fw_load_abort()
-> to be called by *another* context while kernel_halt().
-
-We'll have to walk through the code to tell that. On a cursory look tho, up
-until that point (just before shutting down usermode helper), I don't see
-anything which would actively block firmware loading.
-
-Thanks.
-
--- 
-tejun
+> -- 
+> 2.27.0
