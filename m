@@ -2,47 +2,49 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3406526C24
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 May 2022 23:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBA20526C26
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 May 2022 23:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384420AbiEMVOL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 13 May 2022 17:14:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35466 "EHLO
+        id S1384622AbiEMVP0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 13 May 2022 17:15:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343722AbiEMVOK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 13 May 2022 17:14:10 -0400
+        with ESMTP id S1343722AbiEMVPZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 13 May 2022 17:15:25 -0400
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D2982DAB2;
-        Fri, 13 May 2022 14:14:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBADB5F73;
+        Fri, 13 May 2022 14:15:23 -0700 (PDT)
 Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 24DLDlZ2027436
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 24DLFH7E028110
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 May 2022 17:13:48 -0400
+        Fri, 13 May 2022 17:15:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1652476430; bh=ropMu2WEN5X5W82exC3OHUgNE5nAZ7EaJ+Bk99azWIo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=CgrkpEmqlyKsx5/ONDKMENj/HFmhb71mdUz0+egEViCp4RLRw7f4KPCkwf/EJnZ7f
-         VYebxlGTZrw4tIHpu4n9y/M1JKObWFPvzh8WrcIOPylt4pg1Zge76h6K4ghesEASzO
-         +SKKGmzv5H6MCYW41RW6uQyvwCqjw5vbHV7SDXxv3uxAmO3LtFNgNj094Zm1q3POzF
-         nW2S2ieMJGMfqEt2Yc4pErHSazSFZLLQmpx+mp/+W+iId/PGSyYHAaCx7FfR3aNaiy
-         i9LPAAbqL/ptYNLnKwYlMioI/XCCo4BsL7Y81SlY5jLmIyVHE173NqtH8Kw+GcWokD
-         3x/O8mdV9Ip9A==
+        t=1652476520; bh=/cTWRJMCiKtMCEg/Ssy1mTCj87mtlg66goQED0Wcx2c=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=kciOY6Ci3jCpaPVhTe1nJnZJpj48/mifroAMhhP15OgwqYQKUec7hWY6ZkzK9CkGj
+         eJlu+KiJTRh05eZaASBkqhvcgTueZiDgAyDPCxBLTFyJ9GFUBgSCl97s53Glt/5FEL
+         xJjbxBIJTUyMK5vnuSVg81R6cAuYoyFAc1/qFrT+Vuo3sng6rpoHZX5+G/xDNca+B1
+         f8MfhX60rMAxf2t6x8JZ4MizjOqhQcO5LPAZN7gcPRUgKMcI1tEssLTV4kEmilQ6Dy
+         XHfSw5mvzF27QA4OREKBt+eje6j1ZMNhiKGm9U10nX92hYrisYRtWcIQrsP80zYWF4
+         F4p5dUcIUtAUw==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id A864115C3F2A; Fri, 13 May 2022 17:13:47 -0400 (EDT)
-Date:   Fri, 13 May 2022 17:13:47 -0400
+        id 64B9415C3F2A; Fri, 13 May 2022 17:15:17 -0400 (EDT)
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Ye Bin <yebin10@huawei.com>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jack@suse.cz, lczerner@redhat.com
-Subject: Re: [PATCH -next] ext4: fix use-after-free in ext4_rename_dir_prepare
-Message-ID: <Yn7KC6k/1Ncp6/Tl@mit.edu>
-References: <20220414025223.4113128-1-yebin10@huawei.com>
+To:     cgel.zte@gmail.com, adilger.kernel@dilger.ca
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-kernel@vger.kernel.org,
+        Lv Ruyi <lv.ruyi@zte.com.cn>, linux-ext4@vger.kernel.org,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH v2] ext4: remove unnecessary conditional
+Date:   Fri, 13 May 2022 17:15:15 -0400
+Message-Id: <165247650913.591780.3906460876756807177.b4-ty@mit.edu>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20220411032337.2517465-1-lv.ruyi@zte.com.cn>
+References: <20220411032337.2517465-1-lv.ruyi@zte.com.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220414025223.4113128-1-yebin10@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
         DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
@@ -52,38 +54,19 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Apr 14, 2022 at 10:52:23AM +0800, Ye Bin wrote:
-> We got issue as follows:
-> EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
-> ext4_get_first_dir_block: bh->b_data=0xffff88810bee6000 len=34478
-> ext4_get_first_dir_block: *parent_de=0xffff88810beee6ae bh->b_data=0xffff88810bee6000
-> ext4_rename_dir_prepare: [1] parent_de=0xffff88810beee6ae
-> ==================================================================
-> BUG: KASAN: use-after-free in ext4_rename_dir_prepare+0x152/0x220
-> Read of size 4 at addr ffff88810beee6ae by task rep/1895
+On Mon, 11 Apr 2022 03:23:37 +0000, cgel.zte@gmail.com wrote:
+> From: Lv Ruyi <lv.ruyi@zte.com.cn>
 > 
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index e37da8d5cd0c..2f78544b1d47 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -3463,9 +3466,28 @@ static struct buffer_head *ext4_get_first_dir_block(handle_t *handle,
->  			*retval = PTR_ERR(bh);
->  			return NULL;
->  		}
-> -		*parent_de = ext4_next_entry(
-> -					(struct ext4_dir_entry_2 *)bh->b_data,
-> -					inode->i_sb->s_blocksize);
-> +
-> +		de = (struct ext4_dir_entry_2 *) bh->b_data;
-> +		if (ext4_check_dir_entry(inode, NULL, de, bh, bh->b_data,
-> +					 bh->b_size, 0) ||
-> +		    le32_to_cpu(de->inode) != inode->i_ino ||
-> +		    strcmp(".", de->name)) {
-> +			ext4_warning_inode(inode, "directory missing '.'");
+> iput() has already handled null and non-null parameter, so it is no
+> need to use if().
+> 
+> 
 
-I think we should be calling ext4_error_inode()?  If the directory is
-missing '.' or '..' below, the file system is corrupt, so we probably
-should mark the file system as inconsistent, so that e2fsck can fix
-the file system.
+Applied, thanks!
 
-					- Ted
+[1/1] ext4: remove unnecessary conditional
+      commit: 784a09951c1d8383498c0df091a37db612bebfc7
+
+Best regards,
+-- 
+Theodore Ts'o <tytso@mit.edu>
