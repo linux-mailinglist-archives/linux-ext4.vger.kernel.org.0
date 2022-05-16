@@ -2,138 +2,141 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56FDA527B4C
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 May 2022 03:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E2B527DB3
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 May 2022 08:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236817AbiEPBOL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 15 May 2022 21:14:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60112 "EHLO
+        id S240350AbiEPGkE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 16 May 2022 02:40:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231937AbiEPBOK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 15 May 2022 21:14:10 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05553E0C2;
-        Sun, 15 May 2022 18:14:07 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4L1h8H5sVvzhZ8f;
-        Mon, 16 May 2022 09:13:19 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 16 May
- 2022 09:14:05 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
-        Ye Bin <yebin10@huawei.com>
-Subject: [PATCH -next v3] ext4: fix bug_on in ext4_writepages
-Date:   Mon, 16 May 2022 09:27:52 +0800
-Message-ID: <20220516012752.17241-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S240347AbiEPGkD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 May 2022 02:40:03 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D60B338AD;
+        Sun, 15 May 2022 23:40:01 -0700 (PDT)
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24G5OEn7005015;
+        Mon, 16 May 2022 06:40:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=DcLL7y2N8X7R3Q4gD9zmQ+4CbjMGdyO06C1r8lZBc54=;
+ b=A4OWmrxl4EwYLoZN+DV+NyVIktOcnE3JI7neX2y9nshrEr1JoDFm8/ZtORhLR8C2Ji1c
+ FOGlIY742etEPFbXOS7ymqlZZoKHTPBeG0lYesIeDDo3YJuQgahm5kpvjbTtNMjvXG3Z
+ GjAaaT2MNnMOfGEbsWwX1O2JrURC503Ykrgm0XQzeX1kSqIzuaI76n0aZ1lVJVBH3mTT
+ +M9dWmVniMbm1K1QTbG6ud3GkBjyMmJIcRTXnwFjSmjIpH5JKjPY17zmay2oGS21b6TM
+ yLlHksWhMR2LVe3e1tuAWfm66yUsO/QnacR9mN7vYFoAEM0agQNv/gTBPV2kxOvrOfZb tg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3g3ge8h771-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 May 2022 06:40:01 +0000
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 24G6GnNo008856;
+        Mon, 16 May 2022 06:40:00 GMT
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3g3ge8h76g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 May 2022 06:40:00 +0000
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 24G68SVB016748;
+        Mon, 16 May 2022 06:39:58 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma05fra.de.ibm.com with ESMTP id 3g24291n56-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 May 2022 06:39:58 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 24G6dt2B40174078
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 16 May 2022 06:39:55 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C854E4C044;
+        Mon, 16 May 2022 06:39:55 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CB16C4C046;
+        Mon, 16 May 2022 06:39:53 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.41.34])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 16 May 2022 06:39:53 +0000 (GMT)
+From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To:     fstests@vger.kernel.org
+Cc:     zlang@redhat.com, riteshh@linux.ibm.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] common/rc: Modify _require_batched_discard to improve test coverage
+Date:   Mon, 16 May 2022 12:09:51 +0530
+Message-Id: <20220516063951.87838-1-ojaswin@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Fc-stSPmQNu3HczXZDnJ9etBJx865QbY
+X-Proofpoint-ORIG-GUID: VduchDHmEd_R5WWOixWOtniqCL0VB7JF
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-05-15_11,2022-05-13_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ clxscore=1015 impostorscore=0 bulkscore=0 phishscore=0 mlxlogscore=752
+ adultscore=0 mlxscore=0 malwarescore=0 spamscore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2202240000 definitions=main-2205160036
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-we got issue as follows:
-EXT4-fs error (device loop0): ext4_mb_generate_buddy:1141: group 0, block bitmap and bg descriptor inconsistent: 25 vs 31513 free cls
-------------[ cut here ]------------
-kernel BUG at fs/ext4/inode.c:2708!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-CPU: 2 PID: 2147 Comm: rep Not tainted 5.18.0-rc2-next-20220413+ #155
-RIP: 0010:ext4_writepages+0x1977/0x1c10
-RSP: 0018:ffff88811d3e7880 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffff88811c098000
-RDX: 0000000000000000 RSI: ffff88811c098000 RDI: 0000000000000002
-RBP: ffff888128140f50 R08: ffffffffb1ff6387 R09: 0000000000000000
-R10: 0000000000000007 R11: ffffed10250281ea R12: 0000000000000001
-R13: 00000000000000a4 R14: ffff88811d3e7bb8 R15: ffff888128141028
-FS:  00007f443aed9740(0000) GS:ffff8883aef00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020007200 CR3: 000000011c2a4000 CR4: 00000000000006e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- do_writepages+0x130/0x3a0
- filemap_fdatawrite_wbc+0x83/0xa0
- filemap_flush+0xab/0xe0
- ext4_alloc_da_blocks+0x51/0x120
- __ext4_ioctl+0x1534/0x3210
- __x64_sys_ioctl+0x12c/0x170
- do_syscall_64+0x3b/0x90
+A recent ext4 patch discussed [1] that some devices (eg LVMs) can
+have a discard granularity as big as 42MB which makes it larger
+than the group size of ext4 FS with 1k BS.  This causes the FITRIM
+IOCTL to fail.
 
-It may happen as follows:
-1. write inline_data inode
-vfs_write
-  new_sync_write
-    ext4_file_write_iter
-      ext4_buffered_write_iter
-        generic_perform_write
-          ext4_da_write_begin
-            ext4_da_write_inline_data_begin -> If inline data size too
-            small will allocate block to write, then mapping will has
-            dirty page
-                ext4_da_convert_inline_data_to_extent ->clear EXT4_STATE_MAY_INLINE_DATA
-2. fallocate
-do_vfs_ioctl
-  ioctl_preallocate
-    vfs_fallocate
-      ext4_fallocate
-        ext4_convert_inline_data
-          ext4_convert_inline_data_nolock
-            ext4_map_blocks -> fail will goto restore data
-            ext4_restore_inline_data
-              ext4_create_inline_data
-              ext4_write_inline_data
-              ext4_set_inode_state -> set inode EXT4_STATE_MAY_INLINE_DATA
-3. writepages
-__ext4_ioctl
-  ext4_alloc_da_blocks
-    filemap_flush
-      filemap_fdatawrite_wbc
-        do_writepages
-          ext4_writepages
-            if (ext4_has_inline_data(inode))
-              BUG_ON(ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA))
+This case was not correctly handled by this test since
+"_require_batched_discard" incorrectly interpreted the FITRIM
+failure as SCRATCH_DEV not supporting the IOCTL. This caused the test
+to report "not run" instead of "failed" in case of large discard granularity.
 
-The root cause of this issue is we destory inline data until call ext4_writepages
-under delay allocation mode. But there maybe already covert from inline to extent.
-To solved this issue, we call filemap_flush firstly.
+Fix "_require_batched_discard" to use a more accurate method
+to determine if discard is supported.
 
-Signed-off-by: Ye Bin <yebin10@huawei.com>
+[1] commit 173b6e383d2
+    ext4: avoid trim error on fs with small groups
+
+Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
 ---
- fs/ext4/inline.c | 6 ++++++
- 1 file changed, 6 insertions(+)
 
-diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index 6d253edebf9f..79a7d5d700f7 100644
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -2002,6 +2002,12 @@ int ext4_convert_inline_data(struct inode *inode)
- 	if (!ext4_has_inline_data(inode)) {
- 		ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
- 		return 0;
-+	} else if (!ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA)) {
-+		error = filemap_flush(inode->i_mapping);
-+		if (error)
-+			return error;
-+		if (!ext4_has_inline_data(inode))
-+			return 0;
- 	}
+Changes since v1 [1] 
+
+*  Changed $RET to a local variable
+*  Fixed the grep command 
+
+[1]
+https://lore.kernel.org/all/20220401055713.634842-1-ojaswin@linux.ibm.com/
+
+ common/rc | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/common/rc b/common/rc
+index e2d3d72a..f366e409 100644
+--- a/common/rc
++++ b/common/rc
+@@ -3858,7 +3858,13 @@ _require_batched_discard()
+ 		exit 1
+ 	fi
+ 	_require_fstrim
+-	$FSTRIM_PROG $1 > /dev/null 2>&1 || _notrun "FITRIM not supported on $1"
++
++	grep -q "not supported" <($FSTRIM_PROG $1 2>&1)
++	local ret=$?
++	if [ "$ret" = "0" ]
++	then
++		_notrun "FITRIM not supported on $1"
++	fi
+ }
  
- 	needed_blocks = ext4_writepage_trans_blocks(inode);
+ _require_dumpe2fs()
 -- 
-2.31.1
+2.27.0
 
