@@ -2,145 +2,92 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9975283ED
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 May 2022 14:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3935287B2
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 May 2022 16:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbiEPMMz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 16 May 2022 08:12:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57294 "EHLO
+        id S236818AbiEPO5h (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 16 May 2022 10:57:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236949AbiEPMMy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 May 2022 08:12:54 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED0A275F5;
-        Mon, 16 May 2022 05:12:50 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4L1yjv6cjVzGpsd;
-        Mon, 16 May 2022 20:09:55 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 16 May
- 2022 20:12:48 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
-        Ye Bin <yebin10@huawei.com>
-Subject: [PATCH -next v4] ext4: fix bug_on in ext4_writepages
-Date:   Mon, 16 May 2022 20:26:34 +0800
-Message-ID: <20220516122634.1690462-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S233341AbiEPO5h (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 May 2022 10:57:37 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2123638787
+        for <linux-ext4@vger.kernel.org>; Mon, 16 May 2022 07:57:36 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 24GEvVdf017348
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 May 2022 10:57:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1652713052; bh=RVsjfk/2hlum0vsC/s2w1X8YErKUG5ADjffcOphVXC0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=L1Ul4wQsHnX8NU+ciDRxrXDkKtUHuIHdWn0wnZCo07yZBnaWqAF20HQtydjXhN6Hz
+         J4v93M2b8j2nHTA8g1pQ2FeTd91RuuSL/5BnIZaqt93e1vSEH8kZntTqi/q+U6ZkBU
+         ZlPRhX/PppvGGDg2EwA15k9gsaW850VA1P4slXutRmrltz1vX/UK6cbCVQcThcyxbY
+         agsIarKU4Sj415FN4YrttzkSm/mHnOgKNa4zwG9YUITkBo4shRO3fiiv89qCxd/XEz
+         MjpbIBNJ41QoK3Gm+5d+Lvs8L8McmTlzCC2JErNdzjHWV2XjxX4/dJ/DCkI0Ea7soe
+         aWivKRZXpOPDA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id F0D9F15C3EC0; Mon, 16 May 2022 10:57:30 -0400 (EDT)
+Date:   Mon, 16 May 2022 10:57:30 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     "Lakshmipathi.G" <lakshmipathi.g@gmail.com>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: fast_commit option not recognized/supported by e2fsck?
+Message-ID: <YoJmWmN6UMnzxLpI@mit.edu>
+References: <CAKuJGC-uO-ywctcRH-i0UUfvzX3Yvep0kpSVi+FQXJjWgYMtdA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKuJGC-uO-ywctcRH-i0UUfvzX3Yvep0kpSVi+FQXJjWgYMtdA@mail.gmail.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-we got issue as follows:
-EXT4-fs error (device loop0): ext4_mb_generate_buddy:1141: group 0, block bitmap and bg descriptor inconsistent: 25 vs 31513 free cls
-------------[ cut here ]------------
-kernel BUG at fs/ext4/inode.c:2708!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-CPU: 2 PID: 2147 Comm: rep Not tainted 5.18.0-rc2-next-20220413+ #155
-RIP: 0010:ext4_writepages+0x1977/0x1c10
-RSP: 0018:ffff88811d3e7880 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffff88811c098000
-RDX: 0000000000000000 RSI: ffff88811c098000 RDI: 0000000000000002
-RBP: ffff888128140f50 R08: ffffffffb1ff6387 R09: 0000000000000000
-R10: 0000000000000007 R11: ffffed10250281ea R12: 0000000000000001
-R13: 00000000000000a4 R14: ffff88811d3e7bb8 R15: ffff888128141028
-FS:  00007f443aed9740(0000) GS:ffff8883aef00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020007200 CR3: 000000011c2a4000 CR4: 00000000000006e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- do_writepages+0x130/0x3a0
- filemap_fdatawrite_wbc+0x83/0xa0
- filemap_flush+0xab/0xe0
- ext4_alloc_da_blocks+0x51/0x120
- __ext4_ioctl+0x1534/0x3210
- __x64_sys_ioctl+0x12c/0x170
- do_syscall_64+0x3b/0x90
+On Mon, May 16, 2022 at 03:00:14PM +0530, Lakshmipathi.G wrote:
+> e2fsck 1.46.4 (18-Aug-2021)
+> Using EXT2FS Library version 1.46.4, 18-Aug-2021
+> $ uname -a
+> Linux db 5.13.0-1022-aws #24~20.04.1-Ubuntu SMP Thu Apr 7 22:14:11 UTC
+> 2022 aarch64 aarch64 aarch64 GNU/Linux
+> 
+> Now I did a reboot and the system hangs. It shows the following error
+> message. Any thoughts on what's going wrong here? thanks!
+> 
+> ```
+> Begin: Will now check root file system ... fsck from util-linux 2.34
+> [/usr/sbin/fsck.ext4 (1) -- /dev/nvme0n1p2] fsck.ext4 -a -C0 /dev/nvme0n1p2
+> /dev/nvme0n1p2 has unsupported feature(s): fast_commit
+> e2fsck: Get a newer version of e2fsck!
 
-It may happen as follows:
-1. write inline_data inode
-vfs_write
-  new_sync_write
-    ext4_file_write_iter
-      ext4_buffered_write_iter
-        generic_perform_write
-          ext4_da_write_begin
-            ext4_da_write_inline_data_begin -> If inline data size too
-            small will allocate block to write, then mapping will has
-            dirty page
-                ext4_da_convert_inline_data_to_extent ->clear EXT4_STATE_MAY_INLINE_DATA
-2. fallocate
-do_vfs_ioctl
-  ioctl_preallocate
-    vfs_fallocate
-      ext4_fallocate
-        ext4_convert_inline_data
-          ext4_convert_inline_data_nolock
-            ext4_map_blocks -> fail will goto restore data
-            ext4_restore_inline_data
-              ext4_create_inline_data
-              ext4_write_inline_data
-              ext4_set_inode_state -> set inode EXT4_STATE_MAY_INLINE_DATA
-3. writepages
-__ext4_ioctl
-  ext4_alloc_da_blocks
-    filemap_flush
-      filemap_fdatawrite_wbc
-        do_writepages
-          ext4_writepages
-            if (ext4_has_inline_data(inode))
-              BUG_ON(ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA))
+E2fsck 1.46.4 supports fast commit.  I'm guessing what's going on is
+that the version of e2fsck in the initial ramdisk is pre-1.46 and so
+it didn't support fast commit --- and the root file system is checked
+before it is mounted using scripts and binaries in the initrd.
 
-The root cause of this issue is we destory inline data until call ext4_writepages
-under delay allocation mode. But there maybe already covert from inline to extent.
-To solved this issue, we call filemap_flush firstly.
 
-Signed-off-by: Ye Bin <yebin10@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/inline.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+After installing e2fsprogs, you need to update / recreate the
+initramfs.  How to do this is distro-dependent, but since you are
+using Ubuntu, try this:
 
-diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index 6d253edebf9f..cdaf7978cebb 100644
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -2002,6 +2002,18 @@ int ext4_convert_inline_data(struct inode *inode)
- 	if (!ext4_has_inline_data(inode)) {
- 		ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
- 		return 0;
-+	} else if (!ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA)) {
-+		/*
-+		 * Inode has inline data but EXT4_STATE_MAY_INLINE_DATA is
-+		 * cleared. This means we are in the middle of moving of
-+		 * inline data to delay allocated block. Just force writeout
-+		 * here to finish conversion.
-+		 */
-+		error = filemap_flush(inode->i_mapping);
-+		if (error)
-+			return error;
-+		if (!ext4_has_inline_data(inode))
-+			return 0;
- 	}
- 
- 	needed_blocks = ext4_writepage_trans_blocks(inode);
--- 
-2.31.1
+   sudo update-initramfs -u -k all
 
+See the man page for update-initramfs and mkinitramfs for more
+information.
+
+Cheers,
+
+					- Ted
+
+P.S.  fast commit is a relatively new feature, and we are still fixing
+bugs in fast commit.  So please be careful before using it in a
+production system, especially if it is mission- or life- critical.  If
+you really want to use it, you may want to be using newer kernels than
+5.13.0, such as 5.15 LTS.
