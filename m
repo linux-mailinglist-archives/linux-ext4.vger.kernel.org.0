@@ -2,77 +2,86 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC8B52AC12
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 May 2022 21:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94BF752AC4B
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 May 2022 21:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244137AbiEQTi2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 May 2022 15:38:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57114 "EHLO
+        id S1343653AbiEQT5O (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 May 2022 15:57:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245285AbiEQTiZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 May 2022 15:38:25 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D249D515A8
-        for <linux-ext4@vger.kernel.org>; Tue, 17 May 2022 12:38:20 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 24HJbmKM032272
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 May 2022 15:37:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1652816271; bh=gjF3UmMC4ZyoJnTzFcqn/F3r7v+E//TAc0+qhfAKPdA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=YWZ6i/3IdBGwr4SyraXxcIhbLRAbOxr0dvLm3I5n7e241sNy6Ch6v2KncDvUDSpbR
-         Lmro19q8OiJ7hQ1ll443cFRi1fn/I/p+bBFI890xz/sexmaPab50F9RXxg64+H8J47
-         uS3Zr0VojaZnDQOW8Whwh64YGpaxbrgNZnTzb+qzbu0BQ9DUb03W9832yvasiOZCzD
-         M6fEzqU1r6+viwSH+VTMnMShnFWGl7Ms9Z/CsxocpvZ2L3HWgmRMSzk0MLXa+JoqXf
-         +QiW2Mmw4aa5SomGy3ojp3XS90hFpxQlHepDewrXiflqfjJZB8/hY46Ath5vzgbNTr
-         C07Yz1RX0YpIQ==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 651DE15C3EC0; Tue, 17 May 2022 15:37:48 -0400 (EDT)
-Date:   Tue, 17 May 2022 15:37:48 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+        with ESMTP id S1347718AbiEQT5N (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 May 2022 15:57:13 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C5C522C2
+        for <linux-ext4@vger.kernel.org>; Tue, 17 May 2022 12:57:10 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 594B31F4404A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1652817428;
+        bh=OWXF6pN1PKCgd1hX+us24uD4Px7KYa/a9N/AE+rwvM4=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=MNzP6OhNLXZ5yDXAQu5rueURwO2Uxu1GS86MzOjPufuvaNR9Q7nnkzH0RcByRFwAL
+         XMfTwYuZ7UM3DgKVUwqlWcNvFs/vrPrzssPlBcjIY11866UwSxMHJcETkHJH+cwYcW
+         MNBqilZDb+k5CZqGqVFjGwQRbY7EQ9QOEC0gjUB1t8her9T3p0PusulQScw8ffCHud
+         bmEsilcAsOBVfaMoKtmtZ8Wk1eD7UCX8dKX9s2UNiqAN52rb00tWSPEO4tOkI8r61u
+         qMfna+TLKoTGVPqOJJ/HP/1rP/wdwIrilQhv7AIKTYuOFPgxOnv5HFyy0gza8edrTi
+         q1AadYCLotVbA==
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
 Cc:     adilger.kernel@dilger.ca, jaegeuk@kernel.org,
         linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
         ebiggers@kernel.org, kernel@collabora.com
 Subject: Re: [PATCH v4 00/10] Clean up the case-insensitive lookup path
-Message-ID: <YoP5jH5axe9ltX2Y@mit.edu>
+Organization: Collabora
 References: <20220511193146.27526-1-krisman@collabora.com>
+        <YoP5jH5axe9ltX2Y@mit.edu>
+Date:   Tue, 17 May 2022 15:57:05 -0400
+In-Reply-To: <YoP5jH5axe9ltX2Y@mit.edu> (Theodore Ts'o's message of "Tue, 17
+        May 2022 15:37:48 -0400")
+Message-ID: <87y1z0vsoe.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220511193146.27526-1-krisman@collabora.com>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, May 11, 2022 at 03:31:36PM -0400, Gabriel Krisman Bertazi wrote:
-> The case-insensitive implementations in f2fs and ext4 have quite a bit
-> of duplicated code.  This series simplifies the ext4 version, with the
-> goal of extracting ext4_ci_compare into a helper library that can be
-> used by both filesystems.  It also reduces the clutter from many
-> codeguards for CONFIG_UNICODE; as requested by Linus, they are part of
-> the codeflow now.
-> 
-> While there, I noticed we can leverage the utf8 functions to detect
-> encoded names that are corrupted in the filesystem. Therefore, it also
-> adds an ext4 error on that scenario, to mark the filesystem as
-> corrupted.
+"Theodore Ts'o" <tytso@mit.edu> writes:
 
-Gabriel, are you planning on doing another version of this patch series?
+> On Wed, May 11, 2022 at 03:31:36PM -0400, Gabriel Krisman Bertazi wrote:
+>> The case-insensitive implementations in f2fs and ext4 have quite a bit
+>> of duplicated code.  This series simplifies the ext4 version, with the
+>> goal of extracting ext4_ci_compare into a helper library that can be
+>> used by both filesystems.  It also reduces the clutter from many
+>> codeguards for CONFIG_UNICODE; as requested by Linus, they are part of
+>> the codeflow now.
+>> 
+>> While there, I noticed we can leverage the utf8 functions to detect
+>> encoded names that are corrupted in the filesystem. Therefore, it also
+>> adds an ext4 error on that scenario, to mark the filesystem as
+>> corrupted.
+>
+> Gabriel, are you planning on doing another version of this patch
+> series?
+> It looks like the first two patches for ext4 are not controversial, so
+> I could take those, while some of the other patches have questions
+> which Eric has raised.
 
-It looks like the first two patches for ext4 are not controversial, so
-I could take those, while some of the other patches have questions
-which Eric has raised.
+Hi Ted,
 
-Thanks,
+I'll be reworking the series to apply Eric's comments and I might render
+patch 1 unnecessary.  I'd be happy to send a v5 for the whole thing
+instead of applying the first two now.
 
-						- Ted
+Thanks, 
 
+
+-- 
+Gabriel Krisman Bertazi
