@@ -2,125 +2,107 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E16C52BE93
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 May 2022 17:26:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A9CB52C043
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 May 2022 19:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238531AbiEROTX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 May 2022 10:19:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40044 "EHLO
+        id S240721AbiERRG0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 May 2022 13:06:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238524AbiEROTW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 May 2022 10:19:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0DDD64CD40
-        for <linux-ext4@vger.kernel.org>; Wed, 18 May 2022 07:19:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1652883560;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VfckOg9nc/G1Pfdg8hFEzkjneT+SXrT9/xnBgJMJNjw=;
-        b=BtK6uANpbrKHRfqnQCeAwB4qcpxGo4hFuTl1cepGigKRq59CeLFnbgvF1O74nzEKTP0cJE
-        kEz05Iu01cewQKLbElBBApsP5KrgP6ua6s8T2La9y8HIJwFVqDf8+1XrlfGblb5O1WMqQ0
-        cXlj+Np8DAKdyK/TlSKB9nDIGo7FzNQ=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-594-2PyLEd6TMO6t5F6J9WNOkg-1; Wed, 18 May 2022 10:19:18 -0400
-X-MC-Unique: 2PyLEd6TMO6t5F6J9WNOkg-1
-Received: by mail-qv1-f69.google.com with SMTP id t10-20020a0cd40a000000b00461c0375015so1756442qvh.0
-        for <linux-ext4@vger.kernel.org>; Wed, 18 May 2022 07:19:18 -0700 (PDT)
+        with ESMTP id S240753AbiERRGZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 May 2022 13:06:25 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B86A637A0D
+        for <linux-ext4@vger.kernel.org>; Wed, 18 May 2022 10:06:23 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id c14so2732345pfn.2
+        for <linux-ext4@vger.kernel.org>; Wed, 18 May 2022 10:06:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CjTJ3p6aCRmVinOxweum1QDs81Fl9FfzslrIAeweBkM=;
+        b=d8M7V9cwiXEtE3YHN0uzALLtO4e1UZ0wvHi72ZhwoC0v3xkvp8tUokEpkbQmTJcnue
+         hZgBtuVd25W6kYZOfNseqpSqG7ae6O3eoMiQFqWwQRpWvJ6kHTO5halCTEScQpHEsqtP
+         t/AkHfVVd6M1xaOE2sD8O7wqj5mNmM7Asrrh0ssQD4p43wD49nKXBV48Aa4AkkoQxatA
+         ykGShPYTY83ECMtVMoNNak1EnhaNBUxXZ5u4sOpqpu34+iUdd2ndtRkkdHC3t4Byffjx
+         jWNrq8fOFXSRo/r3J6E0uohgfGHxQnqvrsWOJaeW7XltH6RaXAwFvB9a58y1uCsvQY9x
+         0Bqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=VfckOg9nc/G1Pfdg8hFEzkjneT+SXrT9/xnBgJMJNjw=;
-        b=2FmYEuJEJCfYS6ufLY64wrpjU/yBnhvhUiig3lJyeC5wnPN9usd9jsliIjmesE+58/
-         vhfVyTo2s8cCqFlEWKAZ889J4kMem6RKzrtQ3Z8vVWcainpk6LlE12GNlNKdGGwSTLV0
-         aRW9rJA5qBusavsHqHqm6WW6QDBTnozj1CFiw+IDIJ1HvgjJP7g9276LSm34QZ+yPM5D
-         0CBOyS9urzBFKwGod1wfxXSsG88Uml97CP6FYyc3CSRsJYbzLItG3sntbOTfQGHaPV7/
-         1S8GTPHQVZQg7mqTJG751Oregl0KvN+NUgyDaPiOJfKS9/rWIhj/rgJjvfNmc76XFZLp
-         v/8Q==
-X-Gm-Message-State: AOAM531bglGNp26C1D0j1g1WtkeG+LRyioAd990QPqVxiRA6ddSAAPmX
-        xl9dZdx93qzAQFSrd7Zea08qfHtWKZXiE5cre+cj9WkjT6r4QG8JQeO7bvmnNv10BociwdhScFM
-        1OfNDLMj/vFkyBjUOhdKmHg==
-X-Received: by 2002:a05:620a:400f:b0:6a0:5a16:69f3 with SMTP id h15-20020a05620a400f00b006a05a1669f3mr20337009qko.103.1652883557916;
-        Wed, 18 May 2022 07:19:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJylKGmaR4h+fKRUx8ZDF0bpMUiS7wkjGXnxRlpZU9EGGNOWc9WDXcuIvIad24ACm2E8HEwu0A==
-X-Received: by 2002:a05:620a:400f:b0:6a0:5a16:69f3 with SMTP id h15-20020a05620a400f00b006a05a1669f3mr20336985qko.103.1652883557661;
-        Wed, 18 May 2022 07:19:17 -0700 (PDT)
-Received: from zlang-mailbox ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id s62-20020a372c41000000b0069fc13ce1e9sm1560424qkh.26.2022.05.18.07.19.14
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CjTJ3p6aCRmVinOxweum1QDs81Fl9FfzslrIAeweBkM=;
+        b=YVnwSq4e2Gq+Tqb7MGCPaul4a4ueNWHoMK8PZF+CBvoXESxalQEKeaXLteQ8z8XtPA
+         YND4RbRXCSxtLsN/EmUbQsKNMiJgfGgBjoKL06GzatU65ghhoMVCQxrspxuyvH6s/GDI
+         tozFPI9oqtaFDJImFt9rZz9CpyKrXYjDulGMeIRAMFZBlKTKUBn/l0IdXcVolSci9cXa
+         OYo1AFt25DRcDCnmghd+QoRCy2r01ZsH/lm7FrY5RQAMmfEgeRpo3g2D4F9AJoxy+bi9
+         toM7IpMGq0Ot8372apIvX2XYMTcDl+1NwDi8yQPt8zpigICuohZE2I9G1LAuPEXFcipS
+         rC/w==
+X-Gm-Message-State: AOAM5314eXalQZYpzek0Wa1zA2VAax9GAEpfuU0uB556vEQjK/RZg91f
+        r8dRMTcl0pIKMIrKpkQXq6O2BtzFLxs=
+X-Google-Smtp-Source: ABdhPJyk8Nq9q87Yy7axEC/yi9lHhygcJrjCBM8fJl7yie8/i+8jDTwwetGyvq2EVCZIFaYhgLDEAQ==
+X-Received: by 2002:a63:5a5a:0:b0:3c2:8205:17a6 with SMTP id k26-20020a635a5a000000b003c2820517a6mr321741pgm.609.1652893583273;
+        Wed, 18 May 2022 10:06:23 -0700 (PDT)
+Received: from localhost ([2406:7400:63:532d:aa10:b33a:cf83:4737])
+        by smtp.gmail.com with ESMTPSA id k3-20020a17090ad08300b001d75aabe050sm1817406pju.34.2022.05.18.10.06.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 May 2022 07:19:17 -0700 (PDT)
-Date:   Wed, 18 May 2022 22:19:11 +0800
-From:   Zorro Lang <zlang@redhat.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: [xfstests PATCH 0/2] update test_dummy_encryption testing in
- ext4/053
-Message-ID: <20220518141911.zg73znk2o2krxxwk@zlang-mailbox>
-Mail-Followup-To: Eric Biggers <ebiggers@kernel.org>,
-        fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-References: <20220501051928.540278-1-ebiggers@kernel.org>
+        Wed, 18 May 2022 10:06:22 -0700 (PDT)
+Date:   Wed, 18 May 2022 22:36:17 +0530
+From:   Ritesh Harjani <ritesh.list@gmail.com>
+To:     Zhang Yi <yi.zhang@huawei.com>, Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, yukuai3@huawei.com
+Subject: Re: [PATCH] ext4: fix warning when submitting superblock in
+ ext4_commit_super()
+Message-ID: <20220518170617.vooz4ycfe73xsszx@riteshh-domain>
+References: <20220518141020.2432652-1-yi.zhang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220501051928.540278-1-ebiggers@kernel.org>
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220518141020.2432652-1-yi.zhang@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Apr 30, 2022 at 10:19:26PM -0700, Eric Biggers wrote:
-> This series updates the testing of the test_dummy_encryption mount
-> option in ext4/053.
-> 
-> The first patch will be needed for the test to pass if the kernel patch
-> "ext4: only allow test_dummy_encryption when supported"
-> (https://lore.kernel.org/r/20220501050857.538984-2-ebiggers@kernel.org)
-> is applied.
-> 
-> The second patch starts testing a case that previously wasn't tested.
-> It reproduces a bug that was introduced in the v5.17 kernel and will
-> be fixed by the kernel patch
-> "ext4: fix up test_dummy_encryption handling for new mount API"
-> (https://lore.kernel.org/r/20220501050857.538984-6-ebiggers@kernel.org).
-> 
-> This applies on top of my recent patch
-> "ext4/053: fix the rejected mount option testing"
-> (https://lore.kernel.org/r/20220430192130.131842-1-ebiggers@kernel.org).
+On 22/05/18 10:10PM, Zhang Yi wrote:
+> We have already check the io_error and uptodate flag before submitting
+> the superblock buffer, and re-set the uptodate flag if it has been
+> failed to write out. But it was lockless and could be raced by another
+> ext4_commit_super(), and finally trigger '!uptodate' WARNING when
+> marking buffer dirty. Fix it by submit buffer directly.
 
-Hi Eric,
+I agree that there could be a race with multiple processes trying to call
+ext4_commit_super(). Do you have a easy reproducer for this issue?
 
-Your "ext4/053: fix the rejected mount option testing" has been merged. As the
-two kernel patches haven't been merged by upstream linux, I'd like to merge
-this patchset after the kernel patches be merged. (feel free to ping me, if
-I forget this:)
+Also do you think something like below should fix the problem too?
+So if you lock the buffer from checking until marking the buffer dirty, that
+should avoid the race too that you are reporting.
+Thoughts?
 
-And I saw some discussion under this patchset, and no any RVB, so I'm wondering
-if you are still working/changing on it?
 
-Thanks,
-Zorro
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 6900da973ce2..3447841fe654 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -6007,6 +6007,7 @@ static int ext4_commit_super(struct super_block *sb)
 
-> 
-> Eric Biggers (2):
->   ext4/053: update the test_dummy_encryption tests
->   ext4/053: test changing test_dummy_encryption on remount
-> 
->  tests/ext4/053 | 38 ++++++++++++++++++++++++--------------
->  1 file changed, 24 insertions(+), 14 deletions(-)
-> 
-> -- 
-> 2.36.0
-> 
+        ext4_update_super(sb);
 
++       lock_buffer(sbh);
+        if (buffer_write_io_error(sbh) || !buffer_uptodate(sbh)) {
+                /*
+                 * Oh, dear.  A previous attempt to write the
+@@ -6023,6 +6024,7 @@ static int ext4_commit_super(struct super_block *sb)
+        }
+        BUFFER_TRACE(sbh, "marking dirty");
+        mark_buffer_dirty(sbh);
++       unlock_buffer(sbh);
+        error = __sync_dirty_buffer(sbh,
+                REQ_SYNC | (test_opt(sb, BARRIER) ? REQ_FUA : 0));
+        if (buffer_write_io_error(sbh)) {
