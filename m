@@ -2,67 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5360B52AF13
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 May 2022 02:15:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F07ED52B5F0
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 May 2022 11:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232374AbiERAPz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 May 2022 20:15:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54276 "EHLO
+        id S233846AbiERJKH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 May 2022 05:10:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232447AbiERAPx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 May 2022 20:15:53 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D81A1DA77
-        for <linux-ext4@vger.kernel.org>; Tue, 17 May 2022 17:15:51 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 24I0FXpI008562
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 May 2022 20:15:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1652832935; bh=nLsux+bfQ0hRDpmEXS+VWMhm89TTeh444O+sN/+s48Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=KDgpYTicDX1UqyJA1019FH5KvR050Y4UMYITmPAt7aAmloOpjj1E1FJhMm/FQV0SY
-         ge+GzB4KI1dUSJ2txAHPFrqOY/m+avFf4C1hbUCLxnthdpAdWhkBNJWUiaEAstu+9K
-         vxxB25NifWUElpWe1l92wRrxYqhFAvpjLgBlvhgayP1ZrNS9Nemb+hhYuSGePYq8Uw
-         DAcpQolW+O99Sk4azk8hAEV731c2lQHfLGly2WAL+6D8L3HTC+PkDltJYbUyyStLXa
-         9ouXYUxerIs3eMx5K0bK32hqaacZc6M2HBIIExcdz6W/NhHzmLiFuSxfKFQL9EFGxQ
-         pssISW+/DRbjg==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id F331C15C3EC0; Tue, 17 May 2022 20:15:32 -0400 (EDT)
-Date:   Tue, 17 May 2022 20:15:32 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     adilger.kernel@dilger.ca, jaegeuk@kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        ebiggers@kernel.org, kernel@collabora.com
-Subject: Re: [PATCH v4 00/10] Clean up the case-insensitive lookup path
-Message-ID: <YoQ6pPw/ITJtc310@mit.edu>
-References: <20220511193146.27526-1-krisman@collabora.com>
- <YoP5jH5axe9ltX2Y@mit.edu>
- <87y1z0vsoe.fsf@collabora.com>
+        with ESMTP id S233816AbiERJKG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 May 2022 05:10:06 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773BA13FB1;
+        Wed, 18 May 2022 02:10:04 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 27AA81F9AC;
+        Wed, 18 May 2022 09:10:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1652865003; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=78QKorE5u+svpwXHIAIEDwWldZxmwsbY2t3NfKDaoiY=;
+        b=wXUuu/MQ0BmIvelPVc2w7EXINzFwhYAYChTD2cp1zh+M3hBoEX6BqX24Y3SY/iLWh2fJ7D
+        3jgPgr8vByeX3hwga/zZB4PXc1lFbR0GGVoLHWuIvMP9IigVN3dlAN49FCCSmbMZ+TjdXj
+        sIy5Gc61rpxjMZSuY+PGlQMYrIgRYik=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1652865003;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=78QKorE5u+svpwXHIAIEDwWldZxmwsbY2t3NfKDaoiY=;
+        b=vDA5kQEzRjjZ1GgU65u7mCyyv0ifSeKPsZ0ac7Fm71VrgCT0a1SpSwxiRIMV86HhecpI8l
+        4uTt5Djg1mQ5raAw==
+Received: from quack3.suse.cz (unknown [10.163.43.118])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 19B332C141;
+        Wed, 18 May 2022 09:10:03 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 53132A062F; Wed, 18 May 2022 11:09:56 +0200 (CEST)
+Date:   Wed, 18 May 2022 11:09:56 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] ext4: Verify dir block before splitting it
+Message-ID: <20220518090956.ttowg7yweyqbshmp@quack3.lan>
+References: <20220428180355.15209-1-jack@suse.cz>
+ <20220428183143.5439-1-jack@suse.cz>
+ <YoQyW46RmvG7a1kE@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87y1z0vsoe.fsf@collabora.com>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <YoQyW46RmvG7a1kE@mit.edu>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, May 17, 2022 at 03:57:05PM -0400, Gabriel Krisman Bertazi wrote:
+On Tue 17-05-22 19:40:11, Theodore Ts'o wrote:
+> On Thu, Apr 28, 2022 at 08:31:37PM +0200, Jan Kara wrote:
+> > Before splitting a directory block verify its directory entries are sane
+> > so that the splitting code does not access memory it should not.
 > 
-> I'll be reworking the series to apply Eric's comments and I might render
-> patch 1 unnecessary.  I'd be happy to send a v5 for the whole thing
-> instead of applying the first two now.
+> This commit fails to build due to an undefined variable.  It's fixed
+> with this hunk in the next patch, which needs to be brought back into
+> this commit:
+> 
+> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+> index 5951e9bb348e..7286472e9558 100644
+> --- a/fs/ext4/namei.c
+> +++ b/fs/ext4/namei.c
+> @@ -1278,7 +1278,7 @@ static int dx_make_map(struct inode *dir, struct buffer_head *bh,
+>  			count++;
+>  			cond_resched();
+>  		}
+> -		de = ext4_next_entry(de, blocksize);
+> +		de = ext4_next_entry(de, dir->i_sb->s_blocksize);
+>  	}
+>  	return count;
+>  }
+> 
+> I was thinking about folding in this change and apply the patch with
+> that change --- and I may yet do that --- but it looks like there's a
+> bigger problem with this patch series, which is that it's causing a
+> crash when running ext4/052 due to what appears to be a smashed stack.
+> More about that in the reply to patch 2/2 of this series....
 
-OK, great, I'll wait for the v5 patch series.
+Yup, I'll fix that. Thanks for catching this.
 
-Thanks,
-
-						- Ted
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
