@@ -2,92 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6BCD52C6D2
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 May 2022 00:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96BE952C7F6
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 May 2022 01:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231213AbiERW5M (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 May 2022 18:57:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45046 "EHLO
+        id S231440AbiERXxd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 May 2022 19:53:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231171AbiERW5A (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 May 2022 18:57:00 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E3BC5592
-        for <linux-ext4@vger.kernel.org>; Wed, 18 May 2022 15:56:55 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id f16so6165891ybk.2
-        for <linux-ext4@vger.kernel.org>; Wed, 18 May 2022 15:56:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=mZ3wqB4NmL7z6lpFr/h15h1rYqsZKafJnUpMVahbEPg=;
-        b=ovbcf3BPb/ZrA/FpQ+ZjErGDIEZ9sF3fYOxqsE4Z0xdiTlYY9UY36hS3ty6MLllddq
-         FdZzNc2PcFHW5cwKZ0FlQqx6F8uTY06Ab/cmT+eL89dkm6I4fHT5v6DDGzwY+fqIjM8b
-         RjeYQt93Ckr4p0lPVWY342OwWKznH6xDl4nV36uj7bwrBPcHFh3ePzF5GNEmu/mQBhIV
-         GwWDekgJIDWSV60014hyLdzt2NtjUStY8MI6SiwBWMH8LEBnRGkE0W6Db0zUE9IYWmDQ
-         Ifd6nbhkESdcIbQrjo3sdEfmdPtb1VAIHCw/LAZv1DOtvQwqLYnhML4dVDmuoYeMmVFn
-         q7TQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=mZ3wqB4NmL7z6lpFr/h15h1rYqsZKafJnUpMVahbEPg=;
-        b=bct/Amzl2LzJ9h1nH3JrFnAPaQcUZGsH1Ky49p1LXV6ZAawgiNTgRwVw/vIahqMc6b
-         RmQI0YEW1Fm4SttscIJsWacLoeei0gWzwQstpMto76U6e9Iow80/+JCd1Lp9FuCreQmt
-         5q3BtDbiwnFsYMh4uGTXD4jkt8kgwIqJXF9IvO3X6Mmxvb1C5423WMC7gg5fqnezJ8I4
-         xRgA+wCWB5HnuJOodDTD5EmUBi7KTYcXY7px/8yWkltwdMC94tPrknZQBOVz6RRHmVNH
-         ZcjeZ+H2n3Thhj+fbbwRCa97XJGYK8c3I0k4XKTDS47aehd07ypJmZ+KHasVWyYdEG47
-         lF6Q==
-X-Gm-Message-State: AOAM5311vvQkR02YtRVN3Nms/JQmWf6CzKRu6RXtC7vBDV1F8powXkZo
-        Lif1TRZ7hCLfrfYToXHdqWKdXU0baDEbUZ33kZE=
-X-Google-Smtp-Source: ABdhPJyyLDAg+sVdsLTxwEXiZ5avjedwK/uWMP/Y3UWcChEjwDE+iXuY4kOycHY8vIqM/rcV0hLTcVdg0IN0RAQYgBc=
-X-Received: by 2002:a5b:f87:0:b0:64a:9aa6:e181 with SMTP id
- q7-20020a5b0f87000000b0064a9aa6e181mr1852277ybh.157.1652914614913; Wed, 18
- May 2022 15:56:54 -0700 (PDT)
+        with ESMTP id S229925AbiERXxd (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 May 2022 19:53:33 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B4860A96;
+        Wed, 18 May 2022 16:53:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 26E76B81C03;
+        Wed, 18 May 2022 23:53:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76052C385A9;
+        Wed, 18 May 2022 23:53:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1652918008;
+        bh=urChUY7g9muzenao6Op/35xCF3MRcXpVDil5q1s0Oy4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=OV61lWEayn3LYEHqqYjdbT4rDnSYkojA/uBcYiviKrLQosTqoljlBxdyQuag4D38t
+         QD3252d92imOW+XVDTj0qjrOJ+PoJ1FHyjBnZPYlsp6uvQj29AfMW/W9l/rAHYKyz1
+         EIhGcaMmM0JN4aG/HcXCFiYrX6jbcm36zLqiheYnoEV/n8g93nWWuHGTHlbljGZIyW
+         DwtikEg30uOxeLh6dEvCADQkuEKd5jCOvDNzz3suRYVpoI0hAgf8LBxjbIdG8fLEMv
+         52a1BO/Ce+DjZrrYEzZcYdQZR3Zhx1bno/f/yNbVWXKZAiVyJNYG5rA6eoaqmksXog
+         K4HSm1NvPH8FA==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-xfs@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>
+Subject: [RFC PATCH v2 0/7] make statx() return I/O alignment information
+Date:   Wed, 18 May 2022 16:50:04 -0700
+Message-Id: <20220518235011.153058-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-Received: by 2002:a05:7000:7143:0:0:0:0 with HTTP; Wed, 18 May 2022 15:56:53
- -0700 (PDT)
-Reply-To: tonywenn@asia.com
-From:   Tony Wen <weboutloock4@gmail.com>
-Date:   Thu, 19 May 2022 06:56:53 +0800
-Message-ID: <CAE2_YrD=5bo8j9+ah-xptEBBV-HEC4=Gb0SRHf996phiopc3WQ@mail.gmail.com>
-Subject: engage
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.2 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:b35 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4959]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [weboutloock4[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [weboutloock4[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  3.4 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Can I engage your services?
+This patchset makes the statx() system call return I/O alignment
+information, roughly following the design that was suggested at
+https://lore.kernel.org/linux-fsdevel/20220120071215.123274-1-ebiggers@kernel.org/T/#u
+
+This feature solves two problems: (a) it allows userspace to determine
+when a file supports direct I/O, and with what alignment restrictions;
+and (b) it allows userspace to determine the optimum I/O alignment for a
+file.  For more details, see patch 1.
+
+This is an RFC.  I'd greatly appreciate any feedback on the UAPI, as
+that obviously needs to be gotten right from the beginning.  E.g., does
+the proposed set of fields make sense?  Am I including the right
+information in stx_offset_align_optimal?
+
+Patch 1 adds the VFS support for STATX_IOALIGN.  The remaining patches
+wire it up to ext4 and f2fs.  Support for other filesystems can be added
+later.  We could also support this on block device files; however, since
+block device nodes have different inodes from the block devices
+themselves, it wouldn't apply to statx("/dev/$foo") but rather just to
+'fd = open("/dev/foo"); statx(fd)'.  I'm unsure how useful that would be.
+
+Note, f2fs has one corner case where DIO reads are allowed but not DIO
+writes.  The proposed statx fields can't represent this.  My proposal
+(patch 5) is to just eliminate this case, as it seems much too weird.
+But I'd appreciate any feedback on that part.
+
+This patchset applies to v5.18-rc7.
+
+No changes since v1, which I sent a few months ago; I'm resending this
+because people seem interested in it again
+(https://lore.kernel.org/r/20220518171131.3525293-1-kbusch@fb.com).
+
+Eric Biggers (7):
+  statx: add I/O alignment information
+  fscrypt: change fscrypt_dio_supported() to prepare for STATX_IOALIGN
+  ext4: support STATX_IOALIGN
+  f2fs: move f2fs_force_buffered_io() into file.c
+  f2fs: don't allow DIO reads but not DIO writes
+  f2fs: simplify f2fs_force_buffered_io()
+  f2fs: support STATX_IOALIGN
+
+ fs/crypto/inline_crypt.c  | 48 +++++++++++++++---------------
+ fs/ext4/ext4.h            |  1 +
+ fs/ext4/file.c            | 10 +++----
+ fs/ext4/inode.c           | 31 ++++++++++++++++++++
+ fs/f2fs/f2fs.h            | 45 -----------------------------
+ fs/f2fs/file.c            | 61 ++++++++++++++++++++++++++++++++++++++-
+ fs/stat.c                 |  3 ++
+ include/linux/fscrypt.h   |  7 ++---
+ include/linux/stat.h      |  3 ++
+ include/uapi/linux/stat.h |  9 ++++--
+ 10 files changed, 136 insertions(+), 82 deletions(-)
+
+
+base-commit: 42226c989789d8da4af1de0c31070c96726d990c
+-- 
+2.36.1
+
