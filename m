@@ -2,123 +2,92 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AAB652C67A
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 May 2022 00:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6BCD52C6D2
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 May 2022 00:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbiERWoM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 May 2022 18:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56604 "EHLO
+        id S231213AbiERW5M (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 May 2022 18:57:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbiERWoL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 May 2022 18:44:11 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 004AF17789E
-        for <linux-ext4@vger.kernel.org>; Wed, 18 May 2022 15:44:05 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id B71A21F4146F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1652913844;
-        bh=L6dcGbgKc06/HeCG0OXaln8NHyKNVJM5rCJPx8KRzX8=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=KNT1FFohHdRtRTp+AxVrNQY54YG1ZzolgQE6Cm876E340Uw367n3y1zt/8elfGMba
-         Jbz6glAnCadF6mVtkUTQio5RKipW3OHJxXmDT1VGWoIPaet0Qh9/9LLUFAA+rD8rFF
-         400MFbuFGgfOTJNPMnFT4B+nXKhOI04zgQWSaWrQ0Z4ckbTqCt7zSlcAqASfaPbIdX
-         AfYY/V/mD7I/IIUrn4EnyTtD3GcN9sAEeRs7AP3wtrklA6xP6TKpLs2KmufjALS5jb
-         BLwboAsGAqXY8zfOuRabbAp++/POZo0EcvlHuq5m/9TwMW1ESoaPPuHCbkqyUOCEic
-         FewEtzRBjPJIQ==
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        kernel@collabora.com
-Subject: Re: [PATCH v5 4/8] ext4: Reuse generic_ci_match for ci comparisons
-Organization: Collabora
-References: <20220518172320.333617-1-krisman@collabora.com>
-        <20220518172320.333617-5-krisman@collabora.com>
-        <YoVHDdMYx5Lbn7aP@sol.localdomain>
-Date:   Wed, 18 May 2022 18:44:00 -0400
-In-Reply-To: <YoVHDdMYx5Lbn7aP@sol.localdomain> (Eric Biggers's message of
-        "Wed, 18 May 2022 12:20:45 -0700")
-Message-ID: <87pmkawjf3.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        with ESMTP id S231171AbiERW5A (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 May 2022 18:57:00 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E3BC5592
+        for <linux-ext4@vger.kernel.org>; Wed, 18 May 2022 15:56:55 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id f16so6165891ybk.2
+        for <linux-ext4@vger.kernel.org>; Wed, 18 May 2022 15:56:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=mZ3wqB4NmL7z6lpFr/h15h1rYqsZKafJnUpMVahbEPg=;
+        b=ovbcf3BPb/ZrA/FpQ+ZjErGDIEZ9sF3fYOxqsE4Z0xdiTlYY9UY36hS3ty6MLllddq
+         FdZzNc2PcFHW5cwKZ0FlQqx6F8uTY06Ab/cmT+eL89dkm6I4fHT5v6DDGzwY+fqIjM8b
+         RjeYQt93Ckr4p0lPVWY342OwWKznH6xDl4nV36uj7bwrBPcHFh3ePzF5GNEmu/mQBhIV
+         GwWDekgJIDWSV60014hyLdzt2NtjUStY8MI6SiwBWMH8LEBnRGkE0W6Db0zUE9IYWmDQ
+         Ifd6nbhkESdcIbQrjo3sdEfmdPtb1VAIHCw/LAZv1DOtvQwqLYnhML4dVDmuoYeMmVFn
+         q7TQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=mZ3wqB4NmL7z6lpFr/h15h1rYqsZKafJnUpMVahbEPg=;
+        b=bct/Amzl2LzJ9h1nH3JrFnAPaQcUZGsH1Ky49p1LXV6ZAawgiNTgRwVw/vIahqMc6b
+         RmQI0YEW1Fm4SttscIJsWacLoeei0gWzwQstpMto76U6e9Iow80/+JCd1Lp9FuCreQmt
+         5q3BtDbiwnFsYMh4uGTXD4jkt8kgwIqJXF9IvO3X6Mmxvb1C5423WMC7gg5fqnezJ8I4
+         xRgA+wCWB5HnuJOodDTD5EmUBi7KTYcXY7px/8yWkltwdMC94tPrknZQBOVz6RRHmVNH
+         ZcjeZ+H2n3Thhj+fbbwRCa97XJGYK8c3I0k4XKTDS47aehd07ypJmZ+KHasVWyYdEG47
+         lF6Q==
+X-Gm-Message-State: AOAM5311vvQkR02YtRVN3Nms/JQmWf6CzKRu6RXtC7vBDV1F8powXkZo
+        Lif1TRZ7hCLfrfYToXHdqWKdXU0baDEbUZ33kZE=
+X-Google-Smtp-Source: ABdhPJyyLDAg+sVdsLTxwEXiZ5avjedwK/uWMP/Y3UWcChEjwDE+iXuY4kOycHY8vIqM/rcV0hLTcVdg0IN0RAQYgBc=
+X-Received: by 2002:a5b:f87:0:b0:64a:9aa6:e181 with SMTP id
+ q7-20020a5b0f87000000b0064a9aa6e181mr1852277ybh.157.1652914614913; Wed, 18
+ May 2022 15:56:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+Received: by 2002:a05:7000:7143:0:0:0:0 with HTTP; Wed, 18 May 2022 15:56:53
+ -0700 (PDT)
+Reply-To: tonywenn@asia.com
+From:   Tony Wen <weboutloock4@gmail.com>
+Date:   Thu, 19 May 2022 06:56:53 +0800
+Message-ID: <CAE2_YrD=5bo8j9+ah-xptEBBV-HEC4=Gb0SRHf996phiopc3WQ@mail.gmail.com>
+Subject: engage
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.2 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:b35 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4959]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [weboutloock4[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [weboutloock4[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  3.4 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Eric Biggers <ebiggers@kernel.org> writes:
-
-> On Wed, May 18, 2022 at 01:23:16PM -0400, Gabriel Krisman Bertazi wrote:
->> Instead of reimplementing ext4_match_ci, use the new libfs helper.
->> 
->> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
->> ---
-> [...]
->>  int ext4_fname_setup_ci_filename(struct inode *dir, const struct qstr *iname,
->>  				  struct ext4_filename *name)
->>  {
->> @@ -1432,20 +1380,25 @@ static bool ext4_match(struct inode *parent,
->>  #if IS_ENABLED(CONFIG_UNICODE)
->>  	if (parent->i_sb->s_encoding && IS_CASEFOLDED(parent) &&
->>  	    (!IS_ENCRYPTED(parent) || fscrypt_has_encryption_key(parent))) {
->> -		if (fname->cf_name.name) {
->> -			if (IS_ENCRYPTED(parent)) {
->> -				if (fname->hinfo.hash != EXT4_DIRENT_HASH(de) ||
->> -					fname->hinfo.minor_hash !=
->> -						EXT4_DIRENT_MINOR_HASH(de)) {
->> +		int ret;
->>  
->> -					return false;
->> -				}
->> -			}
->> -			return !ext4_ci_compare(parent, &fname->cf_name,
->> -						de->name, de->name_len, true);
->> +		if (IS_ENCRYPTED(parent) &&
->> +		    (fname->hinfo.hash != EXT4_DIRENT_HASH(de) ||
->> +		     fname->hinfo.minor_hash != EXT4_DIRENT_MINOR_HASH(de)))
->> +			return false;
->> +
->> +		ret = generic_ci_match(parent, fname->usr_fname,
->> +				       &fname->cf_name, de->name,
->> +				       de->name_len);
->> +		if (ret < 0) {
->> +			/*
->> +			 * Treat comparison errors as not a match.  The
->> +			 * only case where it happens is on a disk
->> +			 * corruption or ENOMEM.
->> +			 */
->> +			return false;
->>  		}
->> -		return !ext4_ci_compare(parent, fname->usr_fname, de->name,
->> -						de->name_len, false);
->> +		return ret;
->>  	}
->
-> This needs an explanation for why it's okay to remove
-> 'fname->cf_name.name != NULL' from the condition for doing the hash comparison
-> for an encrypted+casefolded directory entry.
-
-Hi Eric,
-
-The reason is that the only two ways for fname->cf_name to be NULL on a
-case-insensitive lookup is 1) if name under lookup has an invalid
-encoding and the FS is not in strict mode; or 2) if the directory is
-encrypted and we don't have the key.  For case 1, it doesn't
-matter, because the lookup hash will be generated with fname->usr_name,
-the same as the disk (fallback to invalid encoding behavior on !strict
-mode).  Case 2 is caught by the previous check
-(!IS_ENCRYPTED(parent) || fscrypt_has_encryption_key(parent)), so we
-never reach this code.
-
-I'll add the above rationale to the commit message.
-
--- 
-Gabriel Krisman Bertazi
+Can I engage your services?
