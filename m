@@ -2,98 +2,164 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E3752D7FA
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 May 2022 17:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B5FC52D9EA
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 May 2022 18:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241460AbiESPmF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 May 2022 11:42:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43224 "EHLO
+        id S241838AbiESQLu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 May 2022 12:11:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241119AbiESPkx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 May 2022 11:40:53 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5749D2613
-        for <linux-ext4@vger.kernel.org>; Thu, 19 May 2022 08:40:50 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id q76so5397414pgq.10
-        for <linux-ext4@vger.kernel.org>; Thu, 19 May 2022 08:40:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:content-language:to:cc
-         :references:from:subject:in-reply-to:content-transfer-encoding;
-        bh=YC/TQekEQMw0NH762DTjCurcW9GINdVnwHMeh2s+uw4=;
-        b=kuiu9oZhvF54Qzcfg9cySrjvEvn6zYrznGInC2+X0DDWCWSzgy1boVUSxL4zJypQQc
-         Xblzle8ep5i6Y8lk/LWC3AFDdb/axse/zAXNyuHzOTA6RbQ2m0Xe68eX8ngSHG2ZENmI
-         vZVVcGClmI30cAotMo4DKshGm6YVt9TIhB5tLLAUzLnArcKRIn5JgAsL/EW5Qu1SwWPz
-         +lP2y+cZGWngs8vC8S1XaXH87O0nJk0OgCO/FjjO2gqbAIX+YV9R48Xmgl7F35QxpxLB
-         k5uHTP9EDXFJvsWWzEvYYNByZ5eXKtlDY6h/V1lPFu3S6PaOTYmTLuBYbZ0SzBtbYjMJ
-         /N7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:subject:in-reply-to
-         :content-transfer-encoding;
-        bh=YC/TQekEQMw0NH762DTjCurcW9GINdVnwHMeh2s+uw4=;
-        b=iu9C+l68jzHRrU/yaaVmH1IWv9RidBvkykPGJlgzC1pJ+Rl29C+CsDjllRH5x9BleR
-         7tMNbVdwJKMKeVd9Rj7lYq4RWmin4O+w86Ouv2lvQ+U5W6lGkJRy/kTny4Gtid0C27ov
-         7MrKH/yTUioJR6kb2xHLRpPZV0kwW5WG4xJN6ueT4lC8mrTrq6dOfa2AFP3XLf9YZkOf
-         2o/72FfyoM8DrgRV2xFfJnS3TCSGNlpBt7E6tHIGzO2wu5UiigDCPigx1Rl8xz0HLjQr
-         08+r9MijEqvAEb/5oVBnHN1wi/7bOrWBU3Dl34uY2eNmHTPRSZAz2U9ski9V/GKj2EYO
-         /BGw==
-X-Gm-Message-State: AOAM532D68tyBvRxe5n3RR0YyEqpJaoIfDC7j1xZgnw5FV/jSePcxbW2
-        VcKEzTKI4jraeLeuKAw1seAYcg==
-X-Google-Smtp-Source: ABdhPJxwqa2CA1D4Nh6u/HrWw9OSWEpCsDZsU2aDMDHxcRKH/2bYYMwZEs5/QkB8zRpMnH+RprFljQ==
-X-Received: by 2002:a63:343:0:b0:3f6:52e5:edbe with SMTP id 64-20020a630343000000b003f652e5edbemr1682179pgd.272.1652974849844;
-        Thu, 19 May 2022 08:40:49 -0700 (PDT)
-Received: from [192.168.254.17] ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id m11-20020a17090a7f8b00b001cd4989fee6sm5721035pjl.50.2022.05.19.08.40.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 May 2022 08:40:49 -0700 (PDT)
-Message-ID: <bcad7602-890c-d7ce-1b01-2b3ef82674d9@linaro.org>
-Date:   Thu, 19 May 2022 08:40:49 -0700
+        with ESMTP id S232289AbiESQLr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 May 2022 12:11:47 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F003A30A0
+        for <linux-ext4@vger.kernel.org>; Thu, 19 May 2022 09:11:37 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 8909C21B40;
+        Thu, 19 May 2022 16:11:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1652976696; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mgfoE43vpk48Zeloq29kAGoYm5fXlzBqVpsTmJDaFSI=;
+        b=Uz2Wmb1dyKa1WjwXX77TRMtgtJ81aFrUZyB9bRbXs4lZ57DOUsZDgcD19pDk9/0Bg4ADk/
+        lu1DMzsys3C5yD4PnFm/vRVdU7YiP1RYk/1fqT266cgXvwx8RAE0woxoHgHO6hjZnoUW3T
+        eQVfQ9WKP1if64JCRU+CxY0Qb0xKB0E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1652976696;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mgfoE43vpk48Zeloq29kAGoYm5fXlzBqVpsTmJDaFSI=;
+        b=cUzSyRbUrmgq3VXBkfO3cyv/g9Thfv1uNpAzDo7aDeN5yvIEaHxy2KlT5fI/critRK8E8u
+        l6r0NwApUmDIFGCw==
+Received: from quack3.suse.cz (unknown [10.100.224.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 6C55B2C141;
+        Thu, 19 May 2022 16:11:36 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 19AA2A062F; Thu, 19 May 2022 18:11:33 +0200 (CEST)
+Date:   Thu, 19 May 2022 18:11:33 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     harshad shirwadkar <harshadshirwadkar@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>
+Subject: Re: [PATCH v3 2/6] ext4: for committing inode, make
+ ext4_fc_track_inode wait
+Message-ID: <20220519161133.jrsdapiyizzywkeo@quack3.lan>
+References: <20220419173143.3564144-1-harshads@google.com>
+ <20220419173143.3564144-3-harshads@google.com>
+ <20220427155032.pikb3jdb62732xvi@quack3.lan>
+ <CAD+ocbzyHdb+Du+7dDePazue649nr6H=A-pCPo5S1+PSEQMhyQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Content-Language: en-US
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-ext4@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org
-References: <49ac1697-5235-ca2e-2738-f0399c26d718@linaro.org>
- <20220519122353.eqpnxiaybvobfszb@quack3.lan>
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-Subject: Re: kernel BUG in ext4_writepages
-In-Reply-To: <20220519122353.eqpnxiaybvobfszb@quack3.lan>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD+ocbzyHdb+Du+7dDePazue649nr6H=A-pCPo5S1+PSEQMhyQ@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 5/19/22 05:23, Jan Kara wrote:
-> Hi!
-> 
-> On Tue 10-05-22 15:28:38, Tadeusz Struk wrote:
->> Syzbot found another BUG in ext4_writepages [1].
->> This time it complains about inode with inline data.
->> C reproducer can be found here [2]
->> I was able to trigger it on 5.18.0-rc6
->>
->> [1] https://syzkaller.appspot.com/bug?id=a1e89d09bbbcbd5c4cb45db230ee28c822953984
->> [2] https://syzkaller.appspot.com/text?tag=ReproC&x=129da6caf00000
-> 
-> Thanks for report. This should be fixed by:
-> 
-> https://lore.kernel.org/all/20220516012752.17241-1-yebin10@huawei.com/
+On Thu 19-05-22 07:28:11, harshad shirwadkar wrote:
+> On Wed, 27 Apr 2022 at 08:50, Jan Kara <jack@suse.cz> wrote:
+> >
+> > On Tue 19-04-22 10:31:39, Harshad Shirwadkar wrote:
+> > > From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+> > >
+> > > If the inode that's being requested to track using ext4_fc_track_inode
+> > > is being committed, then wait until the inode finishes the
+> > > commit. Also, add calls to ext4_fc_track_inode at the right places.
+> > >
+> > > With this patch, now calling ext4_reserve_inode_write() results in
+> > > inode being tracked for next fast commit. A subtle lock ordering
+> > > requirement with i_data_sem (which is documented in the code) requires
+> > > that ext4_fc_track_inode() be called before grabbing i_data_sem. So,
+> > > this patch also adds explicit ext4_fc_track_inode() calls in places
+> > > where i_data_sem grabbed.
+> > >
+> > > Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+> > > ---
+> > >  fs/ext4/fast_commit.c | 38 ++++++++++++++++++++++++++++++++++++++
+> > >  fs/ext4/inline.c      |  3 +++
+> > >  fs/ext4/inode.c       |  5 ++++-
+> > >  3 files changed, 45 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+> > > index c278060a15bc..55f4c5ddd8e5 100644
+> > > --- a/fs/ext4/fast_commit.c
+> > > +++ b/fs/ext4/fast_commit.c
+> > > +     /*
+> > > +      * If we come here, we may sleep while waiting for the inode to
+> > > +      * commit. We shouldn't be holding i_data_sem in write mode when we go
+> > > +      * to sleep since the commit path needs to grab the lock while
+> > > +      * committing the inode.
+> > > +      */
+> > > +     WARN_ON(lockdep_is_held_type(&ei->i_data_sem, 1));
+> >
+> > Note that we can deadlock even if we had i_data_sem for reading because
+> > another reader is not allowed to get the rwsem if there is writer waiting
+> > for it. So we need to check even that case here.
+> I turned the above WARN_ON to check if data_sem is held in either read
+> or write mode and now I am seeing many other places where data_sem
+> gets grabbed in read mode before calling ext4_fc_track_inode().
 
-Hi,
-Thanks for info. I tested the patch, but it doesn't fix the issue.
-In this case it doesn't even call ext4_convert_inline_data()
+Hum, that's unpleasant. Which places BTW? I'd expect this mostly happens in
+ext4_map_blocks() paths. Anywhere else?
 
+> We either need to call ext4_fc_track_inode() before all
+> ext4_reserve_inode_write() in all those cases, or ensure that places that
+> acquire in data_sem in write mode, wait if there's an ongoing commit and
+> only then lock data_sem.
+
+Neither is particularly appealing I guess. As we discussed on the call,
+probably using extent status tree for the fastcommit code might be a
+cleaner option.
+
+> > > +     while (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING)) {
+> > > +#if (BITS_PER_LONG < 64)
+> > > +             DEFINE_WAIT_BIT(wait, &ei->i_state_flags,
+> > > +                             EXT4_STATE_FC_COMMITTING);
+> > > +             wq = bit_waitqueue(&ei->i_state_flags,
+> > > +                                EXT4_STATE_FC_COMMITTING);
+> > > +#else
+> > > +             DEFINE_WAIT_BIT(wait, &ei->i_flags,
+> > > +                             EXT4_STATE_FC_COMMITTING);
+> > > +             wq = bit_waitqueue(&ei->i_flags,
+> > > +                                EXT4_STATE_FC_COMMITTING);
+> > > +#endif
+> > > +             prepare_to_wait(wq, &wait.wq_entry, TASK_UNINTERRUPTIBLE);
+> > > +             if (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING))
+> > > +                     schedule();
+> > > +             finish_wait(wq, &wait.wq_entry);
+> > > +     }
+> > > +
+> > >       ret = ext4_fc_track_template(handle, inode, __track_inode, NULL, 1);
+> > >       trace_ext4_fc_track_inode(handle, inode, ret);
+> >
+> > As we discussed in the call we should tell lockdep that this is equivalent
+> > to lock+unlock of let's say fc_committing_lock and the fastcommit code
+> > setting / clearing EXT4_STATE_FC_COMMITTING is equivalent to lock / unlock
+> > of fc_committing_lock. That way we get proper lockdep tracking of this
+> > waiting primitive.
+> Sure, so you mean just adding __acquires() / __releases() annotations
+> in these places right?
+
+No. __acquires() and __releases() are sparse annotations. Sparse does also
+some lock checking but it is a static checker and is pretty trivial. Here you
+need to instrument lockdep. We do similar thing in jbd2 to tell lockdep
+that starting a transaction handle effectively behaves as a lock - see the
+rwsem_acquire_read() and rwsem_release() in start_this_handle() and
+stop_this_handle(), respectively.
+
+								Honza
 -- 
-Thanks,
-Tadeusz
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
