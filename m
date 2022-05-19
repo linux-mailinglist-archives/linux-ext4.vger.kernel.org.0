@@ -2,82 +2,122 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE7C52D262
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 May 2022 14:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C14252D288
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 May 2022 14:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237701AbiESMX5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 May 2022 08:23:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34312 "EHLO
+        id S233518AbiESMdY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 May 2022 08:33:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233284AbiESMX4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 May 2022 08:23:56 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBAF2BA55F;
-        Thu, 19 May 2022 05:23:55 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 704251FA1F;
-        Thu, 19 May 2022 12:23:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1652963034; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IPAtCGcgrcB1mkoJ46Ho86Pn7P+4ckrtre+w/sOYjSc=;
-        b=hgFH50h7nXw+YiuyACmlDrXpQVGCVGXDdtf5BbehpyqnxguRuPZZVf6VWvbEnPt2aOt4M/
-        KxDbQjGQ0w5Ys3ukJl7DCbViIIke7vcURjXvCHRTQR/I/N3JBf4XqU8/jOqZC1JXy33C9z
-        HthrvV4ndKAFKOsf3gqJKn6zDa5K/Os=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1652963034;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IPAtCGcgrcB1mkoJ46Ho86Pn7P+4ckrtre+w/sOYjSc=;
-        b=crOO2ys6oPz4nN8wC+P4oB8IynXH2MtFDdUmqE6QNH4HcQFjgU8da1h4eeYo7mvG/uDwSx
-        4cFGlruE/S6nEnDw==
-Received: from quack3.suse.cz (unknown [10.100.224.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 5A4102C141;
-        Thu, 19 May 2022 12:23:54 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id E228BA062F; Thu, 19 May 2022 14:23:53 +0200 (CEST)
-Date:   Thu, 19 May 2022 14:23:53 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Tadeusz Struk <tadeusz.struk@linaro.org>
-Cc:     linux-ext4@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: kernel BUG in ext4_writepages
-Message-ID: <20220519122353.eqpnxiaybvobfszb@quack3.lan>
-References: <49ac1697-5235-ca2e-2738-f0399c26d718@linaro.org>
+        with ESMTP id S232842AbiESMdW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 May 2022 08:33:22 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1833340E5
+        for <linux-ext4@vger.kernel.org>; Thu, 19 May 2022 05:33:20 -0700 (PDT)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4L3q261FjSzQk8g;
+        Thu, 19 May 2022 20:30:22 +0800 (CST)
+Received: from [10.174.178.134] (10.174.178.134) by
+ canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Thu, 19 May 2022 20:33:17 +0800
+Subject: Re: [PATCH] ext4: fix warning when submitting superblock in
+ ext4_commit_super()
+To:     Jan Kara <jack@suse.cz>, Ritesh Harjani <ritesh.list@gmail.com>
+CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>, <yukuai3@huawei.com>
+References: <20220518141020.2432652-1-yi.zhang@huawei.com>
+ <20220518170617.vooz4ycfe73xsszx@riteshh-domain>
+ <94e7b5f7-54c8-d04a-3a3a-31768b630862@huawei.com>
+ <20220519062929.i52y2mwonnrbvr64@riteshh-domain>
+ <20220519093035.2kazqodrv4nqauwf@quack3.lan>
+From:   Zhang Yi <yi.zhang@huawei.com>
+Message-ID: <87282095-5172-eeb0-e78f-367b19e11db4@huawei.com>
+Date:   Thu, 19 May 2022 20:33:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <49ac1697-5235-ca2e-2738-f0399c26d718@linaro.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220519093035.2kazqodrv4nqauwf@quack3.lan>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.134]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500005.china.huawei.com (7.192.104.229)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi!
-
-On Tue 10-05-22 15:28:38, Tadeusz Struk wrote:
-> Syzbot found another BUG in ext4_writepages [1].
-> This time it complains about inode with inline data.
-> C reproducer can be found here [2]
-> I was able to trigger it on 5.18.0-rc6
+On 2022/5/19 17:30, Jan Kara wrote:
+> On Thu 19-05-22 11:59:29, Ritesh Harjani wrote:
+>> On 22/05/19 11:13AM, Zhang Yi wrote:
+>>> On 2022/5/19 1:06, Ritesh Harjani wrote:
+>>>> On 22/05/18 10:10PM, Zhang Yi wrote:
+>>>>> We have already check the io_error and uptodate flag before submitting
+>>>>> the superblock buffer, and re-set the uptodate flag if it has been
+>>>>> failed to write out. But it was lockless and could be raced by another
+>>>>> ext4_commit_super(), and finally trigger '!uptodate' WARNING when
+>>>>> marking buffer dirty. Fix it by submit buffer directly.
+>>>>
+>>>> I agree that there could be a race with multiple processes trying to call
+>>>> ext4_commit_super(). Do you have a easy reproducer for this issue?
+>>>>
+>>>
+>>> Sorry, I don't have a easy reproducer, but we can always reproduce it through
+>>> inject delay and add filters into the ext4_commit_super().
 > 
-> [1] https://syzkaller.appspot.com/bug?id=a1e89d09bbbcbd5c4cb45db230ee28c822953984
-> [2] https://syzkaller.appspot.com/text?tag=ReproC&x=129da6caf00000
+> ...
+>  
+>>>> Also do you think something like below should fix the problem too?
+>>>> So if you lock the buffer from checking until marking the buffer dirty, that
+>>>> should avoid the race too that you are reporting.
+>>>> Thoughts?
+>>>>
+>>>
+>>> Thanks for your suggestion. I've thought about this solution and yes it's simpler
+>>> to fix the race, but I think we lock and unlock the sbh several times just for
+>>> calling standard buffer write helpers is not so good. Opencode the submit
+>>> procedure looks more clear to me.
+>>
+>> I agree your solution was cleaner since it does not has a lot of lock/unlock.
+>> My suggestion came in from looking at the history.
+>> This lock was added here [1] and I think it somehow got removed in this patch[2]
+>>
+>> [1]: https://lore.kernel.org/linux-ext4/1467285150-15977-2-git-send-email-pranjas@gmail.com/
+>> [2]: https://lore.kernel.org/linux-ext4/20201216101844.22917-5-jack@suse.cz/
+> 
+> So the reason why I've move unlock_buffer() into ext4_update_super() was
+> mostly so that the function does not return with buffer lock (which is an
+> odd calling convention) when I was adding another user of it
+> (flush_stashed_error_work()).
+> 
+>> Rather then solutions, I had few queries :)
+>> 1. What are the implications of not using
+>> mark_buffer_dirty()/__sync_dirty_buffer()
+> 
+> Not much. Using submit_bh() directly is fine. Just the duplication of the
+> checks is somewhat unpleasant.
+> 
+>> 2. In your solution one thing which I was not clear of, was whether we
+>> should call clear_buffer_dirty() before calling submit_bh(), in case if
+>> somehow(?) the state of the buffer was already marked dirty? Not sure how
+>> this can happen, but I see the logic in mark_buffer_dirty() which checks,
+>> if the buffer is already marked dirty, it simply returns. Then
+>> __sync_dirty_buffer() clears the buffer dirty state.
+> 
+> It could happen e.g. if there was journalled update of the superblock
+> before. I guess calling clear_buffer_dirty() before submit_bh() does no
+> harm.
+> 
 
-Thanks for report. This should be fixed by:
+Thanks for point out and explain, I missed this case. Call clear_buffer_dirty()
+before submit_bh() can avoid one more redundant submit by writeback process.
 
-https://lore.kernel.org/all/20220516012752.17241-1-yebin10@huawei.com/
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks,
+Yi.
