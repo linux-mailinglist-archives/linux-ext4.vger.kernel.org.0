@@ -2,45 +2,46 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC35252C98F
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 May 2022 04:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF7352C999
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 May 2022 04:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232540AbiESCFa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 May 2022 22:05:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45972 "EHLO
+        id S232688AbiESCJB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 May 2022 22:09:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231614AbiESCFa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 May 2022 22:05:30 -0400
+        with ESMTP id S232713AbiESCI7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 May 2022 22:08:59 -0400
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6CDF51315;
-        Wed, 18 May 2022 19:05:28 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52DB13DA47;
+        Wed, 18 May 2022 19:08:58 -0700 (PDT)
 Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 24J25D0R018585
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 24J28j3s020022
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 May 2022 22:05:14 -0400
+        Wed, 18 May 2022 22:08:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1652925915; bh=pcjxFOhySjekWfGdUnbaIeFGicbs/FvtrliG44D1WJ0=;
+        t=1652926127; bh=Sodfua2E8TPyApI5W9tYm1RDjEIUwIZUK14S5DsMn14=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=Sjpyetr7C/w1KXTsWYgZ+LbKFIHW8eY6kDOulUtIEPGnxDJ4L22/fYNx2aDUCEg2D
-         dtGBxF/CrN2KnW3ZYWueiKIsmaE9dzTnfrHdtDCi+eTV0m/2MM1450LqSQ00AsA3s9
-         tzRZDP6WYb+GlWoSPyli5xbr7OY9MM4dS3ChD9VbLEMZf/Axj7xViJbhIu24CoKl8k
-         pFUxKaAwx5mWOGDfoNun1/Y9zFXao++mBMo3HeIDSYf8slHwJoyVN1eBPbvvDOWXVX
-         0hsxdBEvyOm/4wKqguvyj6eI09Sq8lYnQJnsZSS14Lf1geeilW9gRa0yPrh3oiJSst
-         U5jdk0WDjD1Mw==
+        b=FN2ddy5+IwQv/r0PUkk8qR11tXDhwX6U30RHCXYJ/quVFOM3DfGSdQ1Tjgrcm2unI
+         /aoiGIr7ZkUYQmnQ7w9OuoVel7p59m9NMdb/QFOu59gNTgKyZLi0iGgXUqTPoisHbI
+         PNv2y7UfodpRq5r51Pf2rSQVr66CXbwlLkZVS5pC4PX0P56DLP1XL1QpZaIoqCjjpt
+         QIEjZX/AIkLVYN3LM7PxXB8xJ4Zx2A7rhIMM2Bgv6XgGLRSpS7TkTfQ2F5r5nzLalm
+         2mWqxbdKW4a9lZ1VJNQ6+k6tUFZ5ea8hlk1MhsmXfazzub4ZpbsUbiNtivdxbshfMO
+         G3VTXJRjbZMOA==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 9EC2115C3EC0; Wed, 18 May 2022 22:05:13 -0400 (EDT)
+        id 6D9C515C3EC0; Wed, 18 May 2022 22:08:45 -0400 (EDT)
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     linux-ext4@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, fstests@vger.kernel.org,
-        Lukas Czerner <lczerner@redhat.com>
-Subject: Re: [PATCH] ext4: reject the 'commit' option on ext2 filesystems
-Date:   Wed, 18 May 2022 22:05:13 -0400
-Message-Id: <165292590335.1201976.332165676131707881.b4-ty@mit.edu>
+To:     Ritesh Harjani <ritesh.list@gmail.com>, linux-ext4@vger.kernel.org
+Cc:     "Theodore Ts'o" <tytso@mit.edu>,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-fscrypt@vger.kernel.org, Jan Kara <jack@suse.cz>
+Subject: Re: [PATCHv3 0/3] ext4/crypto: Move out crypto related ops to crypto.c
+Date:   Wed, 18 May 2022 22:08:44 -0400
+Message-Id: <165292603479.1202345.2325254908745666453.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20220510183232.172615-1-ebiggers@kernel.org>
-References: <20220510183232.172615-1-ebiggers@kernel.org>
+In-Reply-To: <cover.1652595565.git.ritesh.list@gmail.com>
+References: <cover.1652595565.git.ritesh.list@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -53,21 +54,26 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 10 May 2022 11:32:32 -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Sun, 15 May 2022 12:07:45 +0530, Ritesh Harjani wrote:
+> Please find the v3 of this cleanup series. Thanks to Eric for his quick
+> review of the patch series.
 > 
-> The 'commit' option is only applicable for ext3 and ext4 filesystems,
-> and has never been accepted by the ext2 filesystem driver, so the ext4
-> driver shouldn't allow it on ext2 filesystems.
-> 
-> This fixes a failure in xfstest ext4/053.
+> Description
+> =============
+> This is 1st in the series to cleanup ext4/super.c, since it has grown quite
+> large. This moves out crypto related ops and few fs encryption related
+> definitions to fs/ext4/crypto.c
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] ext4: reject the 'commit' option on ext2 filesystems
-      commit: cb8435dc8ba33bcafa41cf2aa253794320a3b8df
+[1/3] ext4: Move ext4 crypto code to its own file crypto.c
+      commit: ebe541bdc293d4b2511bc4abb640dcddd454e54c
+[2/3] ext4: Cleanup function defs from ext4.h into crypto.c
+      commit: df56bae5a36f891021ea868657ab85f501d85176
+[3/3] ext4: Refactor and move ext4_ioctl_get_encryption_pwsalt()
+      commit: a137c5b48cb48b6c2885eeeec398433a435cf078
 
 Best regards,
 -- 
