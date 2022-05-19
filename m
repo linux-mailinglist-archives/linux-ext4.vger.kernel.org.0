@@ -2,147 +2,153 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D94952D02A
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 May 2022 12:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5638E52D031
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 May 2022 12:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229531AbiESKI7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 May 2022 06:08:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37496 "EHLO
+        id S236581AbiESKL2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 May 2022 06:11:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbiESKI6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 May 2022 06:08:58 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38498A7747
-        for <linux-ext4@vger.kernel.org>; Thu, 19 May 2022 03:08:57 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id l20-20020a17090a409400b001dd2a9d555bso4840504pjg.0
-        for <linux-ext4@vger.kernel.org>; Thu, 19 May 2022 03:08:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wGaD456U6tiUT4V7cnRxFxSZ3zNxsyIPGj+kxdKx5vI=;
-        b=mPUgpNi8LG09zhUd/5Ku/8tgolONAJ0p1aEEUzauTNWlCIzd8VXtJ9MnwYYIDeRl5X
-         SB4D3QtWCKyC0fb1agFDM7VVcW5fSDfTtyiineMYjGSHroSsk5e47BbHAD8pjH6jFyVa
-         WjpIuSO6UloGgDtXvU2muUBwTw1jWf+7Yqv7X743hMxRL5YhN7FvWEV1yGW3Q+qaJhHH
-         cTbPEhi83vScf2IDhYNu9/QGWsupRU4zNVJQa+I8EgnIfa85Xmvn48auoqXpVqRGdWiy
-         5Eg90jEKPmw9TgfIpexkMrKjionHUPUNfaHfvRWM7URZo0IiCNW0TckbltGdI5GXaDNY
-         0fWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wGaD456U6tiUT4V7cnRxFxSZ3zNxsyIPGj+kxdKx5vI=;
-        b=Cw8IB4MCl1rn2iG10NOMrzf/BZCgdVhr6u9ws+Glbpc//LCohcXa/GpniX7AR6DsZr
-         CT09RaI6hlzv6ZOeCwr53q8Yh1Apm8bzkNl2YeTXhL1f2ypVVKkAZJFYCf/xAQvCCmwr
-         ilaz9yp0cXw6WMRpt+LyLN+lnK9rg8JWsSGsrmjrHOp0IbP6V2dO7As/lZWh8/e4KfCY
-         akgKw53nZgU+XSbVpUR3Yd5kRdH6LkWES5oY35wiKd4+aT/gVwVWDwsWGWyqY6xEH/yH
-         1bNcq14JeNr4q9QJyulZTW5/xrQIAqzbvjCmgbQeTwVamMMzrBqSYd2SaVOLuQyH/EFD
-         76iQ==
-X-Gm-Message-State: AOAM532UIIGduZNMk8ZDrlLiE2n30a5SBSkzuW6Yg7vdDTafq1rVi8ZN
-        dXOOhZWJYkIsIfZBC9Fkp/HX0QdLTSc=
-X-Google-Smtp-Source: ABdhPJwBZh3Y7XmPrJoAzrQ8dG45eRHfKYGnZs1uTQe8qIXiNptSBweoSFGzT6JYIF6MX/D1DDvYbg==
-X-Received: by 2002:a17:90b:3e84:b0:1dc:5942:af0e with SMTP id rj4-20020a17090b3e8400b001dc5942af0emr4369705pjb.61.1652954936658;
-        Thu, 19 May 2022 03:08:56 -0700 (PDT)
-Received: from localhost ([2406:7400:63:532d:c4bb:97f7:b03d:2c53])
-        by smtp.gmail.com with ESMTPSA id u17-20020a170902e21100b001616713999dsm1586111plb.74.2022.05.19.03.08.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 May 2022 03:08:56 -0700 (PDT)
-Date:   Thu, 19 May 2022 15:38:51 +0530
-From:   Ritesh Harjani <ritesh.list@gmail.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Zhang Yi <yi.zhang@huawei.com>, linux-ext4@vger.kernel.org,
-        tytso@mit.edu, adilger.kernel@dilger.ca, yukuai3@huawei.com
-Subject: Re: [PATCH] ext4: fix warning when submitting superblock in
- ext4_commit_super()
-Message-ID: <20220519100851.7mwftkvjfigwo4jj@riteshh-domain>
-References: <20220518141020.2432652-1-yi.zhang@huawei.com>
- <20220518170617.vooz4ycfe73xsszx@riteshh-domain>
- <94e7b5f7-54c8-d04a-3a3a-31768b630862@huawei.com>
- <20220519062929.i52y2mwonnrbvr64@riteshh-domain>
- <20220519093035.2kazqodrv4nqauwf@quack3.lan>
+        with ESMTP id S236578AbiESKL1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 May 2022 06:11:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C05A33A22;
+        Thu, 19 May 2022 03:11:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 72B3D619A6;
+        Thu, 19 May 2022 10:11:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A385C385AA;
+        Thu, 19 May 2022 10:11:14 +0000 (UTC)
+Date:   Thu, 19 May 2022 11:11:10 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc:     Byungchul Park <byungchul.park@lge.com>,
+        torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
+        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
+        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
+        chris@chris-wilson.co.uk, duyuyang@gmail.com,
+        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
+        gregkh@linuxfoundation.org, kernel-team@lge.com,
+        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
+        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
+        ngupta@vflare.org, linux-block@vger.kernel.org,
+        paolo.valente@linaro.org, josef@toxicpanda.com,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        jack@suse.cz, jack@suse.com, jlayton@kernel.org,
+        dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
+        dri-devel@lists.freedesktop.org, airlied@linux.ie,
+        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+        hamohammed.sa@gmail.com
+Subject: Re: [PATCH RFC v6 00/21] DEPT(Dependency Tracker)
+Message-ID: <YoYXvsgVJwwaWrrZ@arm.com>
+References: <CAHk-=whnPePcffsNQM+YSHMGttLXvpf8LbBQ8P7HEdqFXaV7Lg@mail.gmail.com>
+ <1651795895-8641-1-git-send-email-byungchul.park@lge.com>
+ <YnYd0hd+yTvVQxm5@hyeyoo>
+ <20220509001637.GA6047@X58A-UD3R>
+ <YnpJ9Mtf+pjx4JYm@hyeyoo>
+ <20220510233929.GB18445@X58A-UD3R>
+ <YnuKQ9UIhk9WYoz7@hyeyoo>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220519093035.2kazqodrv4nqauwf@quack3.lan>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <YnuKQ9UIhk9WYoz7@hyeyoo>
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22/05/19 11:30AM, Jan Kara wrote:
-> On Thu 19-05-22 11:59:29, Ritesh Harjani wrote:
-> > On 22/05/19 11:13AM, Zhang Yi wrote:
-> > > On 2022/5/19 1:06, Ritesh Harjani wrote:
-> > > > On 22/05/18 10:10PM, Zhang Yi wrote:
-> > > >> We have already check the io_error and uptodate flag before submitting
-> > > >> the superblock buffer, and re-set the uptodate flag if it has been
-> > > >> failed to write out. But it was lockless and could be raced by another
-> > > >> ext4_commit_super(), and finally trigger '!uptodate' WARNING when
-> > > >> marking buffer dirty. Fix it by submit buffer directly.
-> > > >
-> > > > I agree that there could be a race with multiple processes trying to call
-> > > > ext4_commit_super(). Do you have a easy reproducer for this issue?
-> > > >
-> > >
-> > > Sorry, I don't have a easy reproducer, but we can always reproduce it through
-> > > inject delay and add filters into the ext4_commit_super().
->
-> ...
->
-> > > > Also do you think something like below should fix the problem too?
-> > > > So if you lock the buffer from checking until marking the buffer dirty, that
-> > > > should avoid the race too that you are reporting.
-> > > > Thoughts?
-> > > >
-> > >
-> > > Thanks for your suggestion. I've thought about this solution and yes it's simpler
-> > > to fix the race, but I think we lock and unlock the sbh several times just for
-> > > calling standard buffer write helpers is not so good. Opencode the submit
-> > > procedure looks more clear to me.
-> >
-> > I agree your solution was cleaner since it does not has a lot of lock/unlock.
-> > My suggestion came in from looking at the history.
-> > This lock was added here [1] and I think it somehow got removed in this patch[2]
-> >
-> > [1]: https://lore.kernel.org/linux-ext4/1467285150-15977-2-git-send-email-pranjas@gmail.com/
-> > [2]: https://lore.kernel.org/linux-ext4/20201216101844.22917-5-jack@suse.cz/
->
-> So the reason why I've move unlock_buffer() into ext4_update_super() was
-> mostly so that the function does not return with buffer lock (which is an
-> odd calling convention) when I was adding another user of it
-> (flush_stashed_error_work()).
->
-> > Rather then solutions, I had few queries :)
-> > 1. What are the implications of not using
-> > mark_buffer_dirty()/__sync_dirty_buffer()
->
-> Not much. Using submit_bh() directly is fine. Just the duplication of the
-> checks is somewhat unpleasant.
+On Wed, May 11, 2022 at 07:04:51PM +0900, Hyeonggon Yoo wrote:
+> On Wed, May 11, 2022 at 08:39:29AM +0900, Byungchul Park wrote:
+> > On Tue, May 10, 2022 at 08:18:12PM +0900, Hyeonggon Yoo wrote:
+> > > On Mon, May 09, 2022 at 09:16:37AM +0900, Byungchul Park wrote:
+> > > > CASE 1.
+> > > > 
+> > > >    lock L with depth n
+> > > >    lock_nested L' with depth n + 1
+> > > >    ...
+> > > >    unlock L'
+> > > >    unlock L
+> > > > 
+> > > > This case is allowed by Lockdep.
+> > > > This case is allowed by DEPT cuz it's not a deadlock.
+> > > > 
+> > > > CASE 2.
+> > > > 
+> > > >    lock L with depth n
+> > > >    lock A
+> > > >    lock_nested L' with depth n + 1
+> > > >    ...
+> > > >    unlock L'
+> > > >    unlock A
+> > > >    unlock L
+> > > > 
+> > > > This case is allowed by Lockdep.
+> > > > This case is *NOT* allowed by DEPT cuz it's a *DEADLOCK*.
+> > > 
+> > > Yeah, in previous threads we discussed this [1]
+> > > 
+> > > And the case was:
+> > > 	scan_mutex -> object_lock -> kmemleak_lock -> object_lock
+> > > And dept reported:
+> > > 	object_lock -> kmemleak_lock, kmemleak_lock -> object_lock as
+> > > 	deadlock.
+> > > 
+> > > But IIUC - What DEPT reported happens only under scan_mutex and it
+> > > is not simple just not to take them because the object can be
+> > > removed from the list and freed while scanning via kmemleak_free()
+> > > without kmemleak_lock and object_lock.
 
-Ok.
+The above kmemleak sequence shouldn't deadlock since those locks, even
+if taken in a different order, are serialised by scan_mutex. For various
+reasons, trying to reduce the latency, I ended up with some
+fine-grained, per-object locking.
 
->
-> > 2. In your solution one thing which I was not clear of, was whether we
-> > should call clear_buffer_dirty() before calling submit_bh(), in case if
-> > somehow(?) the state of the buffer was already marked dirty? Not sure how
-> > this can happen, but I see the logic in mark_buffer_dirty() which checks,
-> > if the buffer is already marked dirty, it simply returns. Then
-> > __sync_dirty_buffer() clears the buffer dirty state.
->
-> It could happen e.g. if there was journalled update of the superblock
-> before. I guess calling clear_buffer_dirty() before submit_bh() does no
-> harm.
+For object allocation (rbtree modification) and tree search, we use
+kmemleak_lock. During scanning (which can take minutes under
+scan_mutex), we want to prevent (a) long latencies and (b) freeing the
+object being scanned. We release the locks regularly for (a) and hold
+the object->lock for (b).
 
-Makes sense.
+In another thread Byungchul mentioned:
 
->
-> Otherwise I like Yi's solution.
+|    context X			context Y
+| 
+|    lock mutex A		lock mutex A
+|    lock B			lock C
+|    lock C			lock B
+|    unlock C			unlock B
+|    unlock B			unlock C
+|    unlock mutex A		unlock mutex A
+| 
+| In my opinion, lock B and lock C are unnecessary if they are always
+| along with lock mutex A. Or we should keep correct lock order across all
+| the code.
 
-I agree. Thanks for helping with the queries.
+If these are the only two places, yes, locks B and C would be
+unnecessary. But we have those locks acquired (not nested) on the
+allocation path (kmemleak_lock) and freeing path (object->lock). We
+don't want to block those paths while scan_mutex is held.
 
--ritesh
+That said, we may be able to use a single kmemleak_lock for everything.
+The object freeing path may be affected slightly during scanning but the
+code does release it every MAX_SCAN_SIZE bytes. It may even get slightly
+faster as we'd hammer a single lock (I'll do some benchmarks).
+
+But from a correctness perspective, I think the DEPT tool should be
+improved a bit to detect when such out of order locking is serialised by
+an enclosing lock/mutex.
+
+-- 
+Catalin
