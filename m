@@ -2,71 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DCDA52D18F
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 May 2022 13:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE7C52D262
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 May 2022 14:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233687AbiESLfI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 May 2022 07:35:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58440 "EHLO
+        id S237701AbiESMX5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 May 2022 08:23:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231274AbiESLfI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 May 2022 07:35:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF8E2B0A66
-        for <linux-ext4@vger.kernel.org>; Thu, 19 May 2022 04:35:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        with ESMTP id S233284AbiESMX4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 May 2022 08:23:56 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBAF2BA55F;
+        Thu, 19 May 2022 05:23:55 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 704251FA1F;
+        Thu, 19 May 2022 12:23:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1652963034; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IPAtCGcgrcB1mkoJ46Ho86Pn7P+4ckrtre+w/sOYjSc=;
+        b=hgFH50h7nXw+YiuyACmlDrXpQVGCVGXDdtf5BbehpyqnxguRuPZZVf6VWvbEnPt2aOt4M/
+        KxDbQjGQ0w5Ys3ukJl7DCbViIIke7vcURjXvCHRTQR/I/N3JBf4XqU8/jOqZC1JXy33C9z
+        HthrvV4ndKAFKOsf3gqJKn6zDa5K/Os=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1652963034;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IPAtCGcgrcB1mkoJ46Ho86Pn7P+4ckrtre+w/sOYjSc=;
+        b=crOO2ys6oPz4nN8wC+P4oB8IynXH2MtFDdUmqE6QNH4HcQFjgU8da1h4eeYo7mvG/uDwSx
+        4cFGlruE/S6nEnDw==
+Received: from quack3.suse.cz (unknown [10.100.224.230])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5E15261B20
-        for <linux-ext4@vger.kernel.org>; Thu, 19 May 2022 11:35:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18A02C385AA;
-        Thu, 19 May 2022 11:35:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652960105;
-        bh=l+UvfwWDbzIpNOrWxSKX1teRaSjmc4rzDjynn+J1lAA=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=XJRqYvIKuODj6ZGJfUdZPj+xNEUlH9X7Rsdu7MQIxDCHfh3Z02y1Zg0BpdvqZTdmf
-         xs27fBxE6B525tsNCbWFlYqzWUZPiZ+n6kaAKfH4nq9GAFk0RV8i2bP5TtaWjOkFzm
-         9bM5AEKqAkJ63FXMIyIJ+nOuY8APGA3v0nafC0xBoJ67iNbTsyYP/eWpx59r4BGSnW
-         W6XBT02DW7CAXPU6x/xuYQLQgpUUohMr5QqNoBwEKpTznubV1s3l1IDFvrIt1cqwst
-         vKiYeI4UzZo56NC8yVdLyMW4PWdH0i6ELDocLb603EzzTvDlh6H16RT6S9Cp++HLpc
-         F4eXZ7w7YuVGw==
-Message-ID: <893fcc14-6cda-ce2b-222c-2c48bf2275d2@kernel.org>
-Date:   Thu, 19 May 2022 19:35:00 +0800
+        by relay2.suse.de (Postfix) with ESMTPS id 5A4102C141;
+        Thu, 19 May 2022 12:23:54 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id E228BA062F; Thu, 19 May 2022 14:23:53 +0200 (CEST)
+Date:   Thu, 19 May 2022 14:23:53 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Tadeusz Struk <tadeusz.struk@linaro.org>
+Cc:     linux-ext4@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: kernel BUG in ext4_writepages
+Message-ID: <20220519122353.eqpnxiaybvobfszb@quack3.lan>
+References: <49ac1697-5235-ca2e-2738-f0399c26d718@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [f2fs-dev] [PATCH v6 8/8] f2fs: Move CONFIG_UNICODE defguards
- into the code flow
-Content-Language: en-US
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jaegeuk@kernel.org, ebiggers@kernel.org
-Cc:     linux-ext4@vger.kernel.org, kernel@collabora.com,
-        Eric Biggers <ebiggers@google.com>,
-        linux-f2fs-devel@lists.sourceforge.net
-References: <20220519014044.508099-1-krisman@collabora.com>
- <20220519014044.508099-9-krisman@collabora.com>
-From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <20220519014044.508099-9-krisman@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <49ac1697-5235-ca2e-2738-f0399c26d718@linaro.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2022/5/19 9:40, Gabriel Krisman Bertazi wrote:
-> Instead of a bunch of ifdefs, make the unicode built checks part of the
-> code flow where possible, as requested by Torvalds.
+Hi!
+
+On Tue 10-05-22 15:28:38, Tadeusz Struk wrote:
+> Syzbot found another BUG in ext4_writepages [1].
+> This time it complains about inode with inline data.
+> C reproducer can be found here [2]
+> I was able to trigger it on 5.18.0-rc6
 > 
-> Reviewed-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> [1] https://syzkaller.appspot.com/bug?id=a1e89d09bbbcbd5c4cb45db230ee28c822953984
+> [2] https://syzkaller.appspot.com/text?tag=ReproC&x=129da6caf00000
 
-Reviewed-by: Chao Yu <chao@kernel.org>
+Thanks for report. This should be fixed by:
 
-Thanks,
+https://lore.kernel.org/all/20220516012752.17241-1-yebin10@huawei.com/
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
