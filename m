@@ -2,142 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4409B52C95D
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 May 2022 03:42:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06EAA52C963
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 May 2022 03:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232489AbiESBlt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 May 2022 21:41:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46152 "EHLO
+        id S231728AbiESBpS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 May 2022 21:45:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232555AbiESBli (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 May 2022 21:41:38 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E0BC8AE46
-        for <linux-ext4@vger.kernel.org>; Wed, 18 May 2022 18:41:30 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id D733B1F4542F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1652924489;
-        bh=lVxCi2vcBawXM+9LvQgMSIUjo3YYqafepE8JNRdl2/A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AzdlUusccC7kY4mQcr7yY8vgR3r9vYijVlTfpyc7aQReTSLla8k9EJN8mTUkGnpms
-         JoQ+fW7e5kcAxzRl+arsUrFu5LX54rJMoSg96r9MPVjQYTvT1UEcRHO6aPKqnFANv6
-         gzhkqGa4ptCpDJgbpuoAcb9e6wr1tZSAJbFdE6XzXQ6Vud74NiiEp1t7HdrsmvpBZC
-         Rqy6EDezKEaKVEAcYS6ibMZQ2daZ39FCVhb6Idmat2jEtmr46QnbUoFwwuoDXSgcDk
-         L8RTarv8e7jYyp8L6LLM6NGLGNt4I+g2U+V+qyFHv1vQ6IN+kYoFK8VIYUpaaMNh4G
-         TIX4tLmX2Lb/A==
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
-        ebiggers@kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel@collabora.com, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH v6 8/8] f2fs: Move CONFIG_UNICODE defguards into the code flow
-Date:   Wed, 18 May 2022 21:40:44 -0400
-Message-Id: <20220519014044.508099-9-krisman@collabora.com>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220519014044.508099-1-krisman@collabora.com>
-References: <20220519014044.508099-1-krisman@collabora.com>
+        with ESMTP id S229566AbiESBpR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 May 2022 21:45:17 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65DF3A2051;
+        Wed, 18 May 2022 18:45:16 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 24J1j5al009497
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 May 2022 21:45:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1652924707; bh=XZBubmJaF7MirEr/S4g/wn5KyE+MVVbZKpWxmbukzWA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=E4HHzVJGM1DTLR+K9N9hJCqRKGOMjEJaqg3JMe67U9TQV7xgyA/AktYC3UN/NCOi4
+         cj6LfNaMQKBZWI2o/zxe0ZR3pLXoeG/QDgzW4NB4Z7cwUyWsdctvtcZxMGKDmqGbi8
+         YRVpbRtGRDeTLZVpwDYeSHXMkeqM9fWlK5NoWjcSXwVAnmI0cv81CziEkG+jdz1yes
+         3MTtiJor+8iaz1j/VImClyGMmdGCFArgYWVgGQxGxFur0yRgpW+9JGa5135r5wUIte
+         bcDhGovAcGyFLdvjXfUdUvr/I+aTrtfNTjglBU8KYAvWGOG13k1PDLQCbyX4NRzV8O
+         uHnCKIYVSG7Sg==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 7C80815C3EC0; Wed, 18 May 2022 21:45:05 -0400 (EDT)
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] fs: Remove duplicated include in inode.c
+Date:   Wed, 18 May 2022 21:45:04 -0400
+Message-Id: <165292468154.1199114.9470848940112002749.b4-ty@mit.edu>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20220504225025.44753-1-yang.lee@linux.alibaba.com>
+References: <20220504225025.44753-1-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Instead of a bunch of ifdefs, make the unicode built checks part of the
-code flow where possible, as requested by Torvalds.
+On Thu, 5 May 2022 06:50:25 +0800, Yang Li wrote:
+> Fix following includecheck warning:
+> ./fs/ext4/inode.c: linux/dax.h is included more than once.
+> 
+> 
 
-Reviewed-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+Applied, thanks!
 
----
-Changes since v4:
-  - Drop stub removal for !CONFIG_UNICODE case (eric)
----
- fs/f2fs/namei.c | 11 +++++------
- fs/f2fs/super.c |  8 ++++----
- 2 files changed, 9 insertions(+), 10 deletions(-)
+[1/1] fs: Remove duplicated include in inode.c
+      commit: b10b6278ae17366fec058219623c757b3302baae
 
-diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
-index 5f213f05556d..8567a9045df1 100644
---- a/fs/f2fs/namei.c
-+++ b/fs/f2fs/namei.c
-@@ -561,8 +561,7 @@ static struct dentry *f2fs_lookup(struct inode *dir, struct dentry *dentry,
- 		goto out_iput;
- 	}
- out_splice:
--#if IS_ENABLED(CONFIG_UNICODE)
--	if (!inode && IS_CASEFOLDED(dir)) {
-+	if (IS_ENABLED(CONFIG_UNICODE) && !inode && IS_CASEFOLDED(dir)) {
- 		/* Eventually we want to call d_add_ci(dentry, NULL)
- 		 * for negative dentries in the encoding case as
- 		 * well.  For now, prevent the negative dentry
-@@ -571,7 +570,7 @@ static struct dentry *f2fs_lookup(struct inode *dir, struct dentry *dentry,
- 		trace_f2fs_lookup_end(dir, dentry, ino, err);
- 		return NULL;
- 	}
--#endif
-+
- 	new = d_splice_alias(inode, dentry);
- 	err = PTR_ERR_OR_ZERO(new);
- 	trace_f2fs_lookup_end(dir, dentry, ino, !new ? -ENOENT : err);
-@@ -622,16 +621,16 @@ static int f2fs_unlink(struct inode *dir, struct dentry *dentry)
- 		goto fail;
- 	}
- 	f2fs_delete_entry(de, page, dir, inode);
--#if IS_ENABLED(CONFIG_UNICODE)
-+
- 	/* VFS negative dentries are incompatible with Encoding and
- 	 * Case-insensitiveness. Eventually we'll want avoid
- 	 * invalidating the dentries here, alongside with returning the
- 	 * negative dentries at f2fs_lookup(), when it is better
- 	 * supported by the VFS for the CI case.
- 	 */
--	if (IS_CASEFOLDED(dir))
-+	if (IS_ENABLED(CONFIG_UNICODE) && IS_CASEFOLDED(dir))
- 		d_invalidate(dentry);
--#endif
-+
- 	f2fs_unlock_op(sbi);
- 
- 	if (IS_DIRSYNC(dir))
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index baefd398ec1a..b17bd7a70d53 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -283,7 +283,7 @@ struct kmem_cache *f2fs_cf_name_slab;
- static int __init f2fs_create_casefold_cache(void)
- {
- 	f2fs_cf_name_slab = f2fs_kmem_cache_create("f2fs_casefolded_name",
--							F2FS_NAME_LEN);
-+						   F2FS_NAME_LEN);
- 	if (!f2fs_cf_name_slab)
- 		return -ENOMEM;
- 	return 0;
-@@ -1259,13 +1259,13 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
- 		return -EINVAL;
- 	}
- #endif
--#if !IS_ENABLED(CONFIG_UNICODE)
--	if (f2fs_sb_has_casefold(sbi)) {
-+
-+	if (!IS_ENABLED(CONFIG_UNICODE) && f2fs_sb_has_casefold(sbi)) {
- 		f2fs_err(sbi,
- 			"Filesystem with casefold feature cannot be mounted without CONFIG_UNICODE");
- 		return -EINVAL;
- 	}
--#endif
-+
- 	/*
- 	 * The BLKZONED feature indicates that the drive was formatted with
- 	 * zone alignment optimization. This is optional for host-aware
+Best regards,
 -- 
-2.36.1
-
+Theodore Ts'o <tytso@mit.edu>
