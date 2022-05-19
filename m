@@ -2,153 +2,226 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5638E52D031
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 May 2022 12:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F5E52D0B3
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 May 2022 12:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236581AbiESKL2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 May 2022 06:11:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40570 "EHLO
+        id S236877AbiESKkp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 May 2022 06:40:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236578AbiESKL1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 May 2022 06:11:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C05A33A22;
-        Thu, 19 May 2022 03:11:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 72B3D619A6;
-        Thu, 19 May 2022 10:11:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A385C385AA;
-        Thu, 19 May 2022 10:11:14 +0000 (UTC)
-Date:   Thu, 19 May 2022 11:11:10 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     Byungchul Park <byungchul.park@lge.com>,
-        torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
-        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
-        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
-        chris@chris-wilson.co.uk, duyuyang@gmail.com,
-        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
-        gregkh@linuxfoundation.org, kernel-team@lge.com,
-        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
-        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
-        ngupta@vflare.org, linux-block@vger.kernel.org,
-        paolo.valente@linaro.org, josef@toxicpanda.com,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        jack@suse.cz, jack@suse.com, jlayton@kernel.org,
-        dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
-        dri-devel@lists.freedesktop.org, airlied@linux.ie,
-        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
-        hamohammed.sa@gmail.com
-Subject: Re: [PATCH RFC v6 00/21] DEPT(Dependency Tracker)
-Message-ID: <YoYXvsgVJwwaWrrZ@arm.com>
-References: <CAHk-=whnPePcffsNQM+YSHMGttLXvpf8LbBQ8P7HEdqFXaV7Lg@mail.gmail.com>
- <1651795895-8641-1-git-send-email-byungchul.park@lge.com>
- <YnYd0hd+yTvVQxm5@hyeyoo>
- <20220509001637.GA6047@X58A-UD3R>
- <YnpJ9Mtf+pjx4JYm@hyeyoo>
- <20220510233929.GB18445@X58A-UD3R>
- <YnuKQ9UIhk9WYoz7@hyeyoo>
+        with ESMTP id S236841AbiESKko (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 May 2022 06:40:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1B096B12
+        for <linux-ext4@vger.kernel.org>; Thu, 19 May 2022 03:40:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1652956842;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jHXfEQJCdzvn+vH6sbYtYQKkduxNJbglCQPnynYEPR8=;
+        b=WN821P/UrBvp3vIuBGN4YeWKwhom4DXppZNWKSN2pZDnpOHHOL8B69hmXIx4SVuIr4coPW
+        DvjsK+cj9YH+jCp7BDrLvmWIcfg+jJ+o14RlhhRY/tov0CQYwWHjyxdqNezVbyR+82ahuj
+        QwXzee/lmzuRvKgxd0LUkw+wgSHg66U=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-182-31OLkpUJPrqWAhCb3pLTMA-1; Thu, 19 May 2022 06:40:41 -0400
+X-MC-Unique: 31OLkpUJPrqWAhCb3pLTMA-1
+Received: by mail-qt1-f198.google.com with SMTP id g1-20020ac85801000000b002f3b281f745so3884317qtg.22
+        for <linux-ext4@vger.kernel.org>; Thu, 19 May 2022 03:40:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jHXfEQJCdzvn+vH6sbYtYQKkduxNJbglCQPnynYEPR8=;
+        b=rTQmn5cPDZ6wtJZmjzALb1y+4IbKgPvlz80+jLjWZvXO0oaF6u+KsmCeY4WPwHFYYL
+         O2/1dB20mOuTB/GfgFzdvLtZwXsi0/PsdWHvc8zZFKaep7qGVZ5tTS50hJ8++ywzfNlT
+         I5W53BfUYfIsbVFsk3XBipfpwixeoJMroGyM6B1wUK1LRXVXDfftTPp9ODJs9e1wMF2r
+         lsJOnsNfhqnfsSSU+BaZbRIq2Bx4xdCZ/ffAG/lPVrU+5Kvdhk15TNIe2x97aOHzGd8a
+         2U9Wk+Fcvxp75cEuPXO4Mz+Qu9R9HDWqJMW/4j/kO4KJjN0AMLGJKZlNTVHBBXVBBW7q
+         WKOA==
+X-Gm-Message-State: AOAM531DzGZspoaHBCDK8y/ecJmBxzxvPmbwJJKqD99eKLj0xt6OGC8T
+        an/zIBWba7nNqmeBgnebMVNh8Ws8Mk6T1URuzkA2ZND0FKfozyL6xqZ6BTr3Y/e4vRR06jUmf/U
+        1IVWPDZQegL4Qo9P0XDqPGQ==
+X-Received: by 2002:a05:6214:268d:b0:461:f5e4:81f4 with SMTP id gm13-20020a056214268d00b00461f5e481f4mr3048497qvb.33.1652956840424;
+        Thu, 19 May 2022 03:40:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxqus30SrNdDkzSDmH2UCJhElAIvUmrh6N8801+gbXdGw4RXwz/T6k8Gu83pMTtBMKrPZ9+Ng==
+X-Received: by 2002:a05:6214:268d:b0:461:f5e4:81f4 with SMTP id gm13-20020a056214268d00b00461f5e481f4mr3048489qvb.33.1652956840126;
+        Thu, 19 May 2022 03:40:40 -0700 (PDT)
+Received: from zlang-mailbox ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id b188-20020a3767c5000000b0069fc13ce250sm1040034qkc.129.2022.05.19.03.40.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 May 2022 03:40:39 -0700 (PDT)
+Date:   Thu, 19 May 2022 18:40:33 +0800
+From:   Zorro Lang <zlang@redhat.com>
+To:     Lukas Czerner <lczerner@redhat.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>, fstests@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [xfstests PATCH 0/2] update test_dummy_encryption testing in
+ ext4/053
+Message-ID: <20220519104033.u7afgq4btpfdxh27@zlang-mailbox>
+References: <20220501051928.540278-1-ebiggers@kernel.org>
+ <20220518141911.zg73znk2o2krxxwk@zlang-mailbox>
+ <YoUu60S2AjP2fEOk@sol.localdomain>
+ <20220518181607.fpzqmtnaky5jdiuw@zlang-mailbox>
+ <YoVspJ6NUByHPn3r@sol.localdomain>
+ <20220519044701.w7lf5tabdsl3cwra@zlang-mailbox>
+ <20220519083322.6nfcts7wwevv4eca@fedora>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YnuKQ9UIhk9WYoz7@hyeyoo>
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220519083322.6nfcts7wwevv4eca@fedora>
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, May 11, 2022 at 07:04:51PM +0900, Hyeonggon Yoo wrote:
-> On Wed, May 11, 2022 at 08:39:29AM +0900, Byungchul Park wrote:
-> > On Tue, May 10, 2022 at 08:18:12PM +0900, Hyeonggon Yoo wrote:
-> > > On Mon, May 09, 2022 at 09:16:37AM +0900, Byungchul Park wrote:
-> > > > CASE 1.
-> > > > 
-> > > >    lock L with depth n
-> > > >    lock_nested L' with depth n + 1
-> > > >    ...
-> > > >    unlock L'
-> > > >    unlock L
-> > > > 
-> > > > This case is allowed by Lockdep.
-> > > > This case is allowed by DEPT cuz it's not a deadlock.
-> > > > 
-> > > > CASE 2.
-> > > > 
-> > > >    lock L with depth n
-> > > >    lock A
-> > > >    lock_nested L' with depth n + 1
-> > > >    ...
-> > > >    unlock L'
-> > > >    unlock A
-> > > >    unlock L
-> > > > 
-> > > > This case is allowed by Lockdep.
-> > > > This case is *NOT* allowed by DEPT cuz it's a *DEADLOCK*.
+On Thu, May 19, 2022 at 10:33:22AM +0200, Lukas Czerner wrote:
+> On Thu, May 19, 2022 at 12:47:01PM +0800, Zorro Lang wrote:
+> > On Wed, May 18, 2022 at 03:01:08PM -0700, Eric Biggers wrote:
+> > > Zorro, can you fix your email configuration?  Your emails have a
+> > > Mail-Followup-To header that excludes you, so replying doesn't work correctly;
+> > > I had to manually fix the recipients list.  If you're using mutt, you need to
+> > > add 'set followup_to = no' to your muttrc.
+> > 
+> > Oh, I didn't notice that, I use neomutt, it might enable the followup_to by
+> > default. OK, I've set followup_to = no, and restart my neomutt. Hope it helps:)
+> > 
 > > > 
-> > > Yeah, in previous threads we discussed this [1]
+> > > On Thu, May 19, 2022 at 02:16:07AM +0800, Zorro Lang wrote:
+> > > > > > 
+> > > > > > And I saw some discussion under this patchset, and no any RVB, so I'm wondering
+> > > > > > if you are still working/changing on it?
+> > > > > > 
+> > > > > 
+> > > > > I might add a check for kernel version >= 5.19 in patch 1.  Otherwise I'm not
+> > > > > planning any more changes.
+> > > > 
+> > > > Actually I don't think the kernel version check (in fstests) is a good method. Better
+> > > > to check a behavior/feature directly likes those "_require_*" functions.
+> > > > 
+> > > > Why ext4/053 need >=5.12 or even >=5.19, what features restrict that? If some
+> > > > features testing might break the garden image (.out file), we can refer to
+> > > > _link_out_file(). Or even split this case to several small cases, make ext4/053
+> > > > only test old stable behaviors. Then use other cases to test new features,
+> > > > and use _require_$feature_you_test for them (avoid the kernel version
+> > > > restriction).
 > > > 
-> > > And the case was:
-> > > 	scan_mutex -> object_lock -> kmemleak_lock -> object_lock
-> > > And dept reported:
-> > > 	object_lock -> kmemleak_lock, kmemleak_lock -> object_lock as
-> > > 	deadlock.
+> > > This has been discussed earlier in this thread as well as on the patch that
+> > > added ext4/053 originally.  ext4/053 has been gated on version >= 5.12 since the
+> > > beginning.  Kernel version checks are certainly bad in general, but ext4/053 is
+> > > a very nit-picky test intended to detect if anything changed, where a change
+> > > does not necessarily mean a bug.  So maybe the kernel version check makes sense
+> > 
+> > Even on old RHEL-8 system (with a variant of kernel 3.10), the ext4/053 fails
+> > as [1]. Most of mount options test passed, only a few options (inlinecrypt,
+> > test_dummy_encryption, prefetch_block_bitmaps, dioread_lock) might not be
+> > supported.
+> 
+> No it does not. On RHEL-8 system the test will not run because of kernel
+> version test. It will be skipped.
+
+Yes, it will be skipped, I just ran it by removing that "kernel_gte 5.12" line :)
+
+> 
+> > 
+> > I think it's not necessary to mix all old and new ext4 mount options test into
+> > one single test cause. If it's too complicated, we can move some functions into
+> > common/ext4 (or others you like), split ext4/053 to several cases. Let ext4/053
+> > test stable enough mount option (supported from an old enough kernel). Then let
+> > other newer mount options in different single cases.
+> > 
+> > For example, make those CONFIG_FS_ENCRYPTION* tests into a seperated case,
+> > and add something likes require_(fs_encryption?), and src/feature.c can be
+> > used too. Then about dioread_lock and prefetch_block_bitmaps things, we can
+> > deal with them specially, or split them out from ext4/053. I even don't mind
+> > if you test ext2 and ext3/4 in separate case.
+> 
+> Sure, but why to split it? It all should be stable enough, it's user
+> facing interface, that's the whole point of the test. I certainly see
+> the benefit of having the test for all ext4 mount option in one test -
+> it's faster and it's easier to see what's there. I would be agains
+> splitting it.
+
+OK, although you can have a 'group name' to help to run all ext4 mount options
+regression test, but as I said: "as it's an ext4 specific testing, I respect
+the opinion from ext4 list particularly", so I won't touch this case, if you
+against :)
+
+> 
+> As it is now there is only one kernel_gte() check to avoid testing the
+> entire history. With any new mount option as a separate test we would
+> still need kernel_gte test to avoid failing on kernels that don't have
+> the mount option. At least until kernel gains ability to list supported
+> mount options it's the only test we have.
+> 
+> On the other hand I do see some value in making a new test for a new
+> mount option. But I don't have a strong opinion about that.
+> 
+> As for the original topic of the discussion, as I said in previous
+> reply, maybe the right solution here is to treat the change as a bug fix
+> which is arguably is and let it fail on old behavior.
+> 
+> Thanks!
+> -Lukas
+> 
+> > 
+> > That's my personal opinion, I can try to help to do that after merging this
+> > patchset, if ext4 forks agree and would like to give me some supports
+> > (review and Q&A). Anyway, as it's an ext4 specific testing, I respect the
+> > opinion from ext4 list particularly.
+> > 
+> > [1]
+> > +SHOULD FAIL remounting ext2 "commit=7" (remount unexpectedly succeeded) FAILED
+> > +mounting ext2 "test_dummy_encryption=v1" (failed mount) FAILED
+> > +mounting ext2 "test_dummy_encryption=v2" (failed mount) FAILED
+> > +mounting ext2 "test_dummy_encryption=v3" (failed mount) FAILED
+> > +mounting ext2 "inlinecrypt" (failed mount) FAILED
+> > +mounting ext2 "prefetch_block_bitmaps" (failed mount) FAILED
+> > +mounting ext2 "no_prefetch_block_bitmaps" (failed mount) FAILED
+> > +mounting ext3 "test_dummy_encryption=v1" (failed mount) FAILED
+> > +mounting ext3 "test_dummy_encryption=v2" (failed mount) FAILED
+> > +mounting ext3 "test_dummy_encryption=v3" (failed mount) FAILED
+> > +mounting ext3 "inlinecrypt" (failed mount) FAILED
+> > +mounting ext3 "prefetch_block_bitmaps" (failed mount) FAILED
+> > +mounting ext3 "no_prefetch_block_bitmaps" (failed mount) FAILED
+> > +mounting ext4 "nodioread_nolock" (failed mount) FAILED
+> > +mounting ext4 "dioread_lock" checking "nodioread_nolock" (not found) FAILED
+> > +mounting ext4 "test_dummy_encryption=v1" (failed mount) FAILED
+> > +mounting ext4 "test_dummy_encryption=v2" (failed mount) FAILED
+> > +mounting ext4 "test_dummy_encryption=v3" (failed mount) FAILED
+> > +mounting ext4 "inlinecrypt" (failed mount) FAILED
+> > +mounting ext4 "prefetch_block_bitmaps" (failed mount) FAILED
+> > +mounting ext4 "no_prefetch_block_bitmaps" (failed mount) FAILED
+> > 
+> > > there.  Lukas, any thoughts about the issues you encountered when running
+> > > ext4/053 on older kernels?
 > > > 
-> > > But IIUC - What DEPT reported happens only under scan_mutex and it
-> > > is not simple just not to take them because the object can be
-> > > removed from the list and freed while scanning via kmemleak_free()
-> > > without kmemleak_lock and object_lock.
+> > > If you don't want a >= 5.19 version check for the test_dummy_encryption test
+> > > case as well, then I'd rather treat the kernel patch
+> > > "ext4: only allow test_dummy_encryption when supported" as a bug fix and
+> > > backport it to the LTS kernels.  The patch is fixing the mount option to work
+> > > the way it should have worked originally.  Either that or we just remove the
+> > > test_dummy_encryption test case as Ted suggested.
+> > 
+> > Oh, I'd not like to push anyone to do more jobs:) And there're many Linux
+> > distributions with their downstream kernel, not only LTS kernel project.
+> > So I don't mean to make fstests' cases support the oldest existing kernel
+> > version, just hope some common cases try not *only* work for the latest
+> > one, if they have the chance :)
+> > 
+> > Thanks,
+> > Zorro
+> > 
+> > > 
+> > > - Eric
+> > > 
+> > 
+> 
 
-The above kmemleak sequence shouldn't deadlock since those locks, even
-if taken in a different order, are serialised by scan_mutex. For various
-reasons, trying to reduce the latency, I ended up with some
-fine-grained, per-object locking.
-
-For object allocation (rbtree modification) and tree search, we use
-kmemleak_lock. During scanning (which can take minutes under
-scan_mutex), we want to prevent (a) long latencies and (b) freeing the
-object being scanned. We release the locks regularly for (a) and hold
-the object->lock for (b).
-
-In another thread Byungchul mentioned:
-
-|    context X			context Y
-| 
-|    lock mutex A		lock mutex A
-|    lock B			lock C
-|    lock C			lock B
-|    unlock C			unlock B
-|    unlock B			unlock C
-|    unlock mutex A		unlock mutex A
-| 
-| In my opinion, lock B and lock C are unnecessary if they are always
-| along with lock mutex A. Or we should keep correct lock order across all
-| the code.
-
-If these are the only two places, yes, locks B and C would be
-unnecessary. But we have those locks acquired (not nested) on the
-allocation path (kmemleak_lock) and freeing path (object->lock). We
-don't want to block those paths while scan_mutex is held.
-
-That said, we may be able to use a single kmemleak_lock for everything.
-The object freeing path may be affected slightly during scanning but the
-code does release it every MAX_SCAN_SIZE bytes. It may even get slightly
-faster as we'd hammer a single lock (I'll do some benchmarks).
-
-But from a correctness perspective, I think the DEPT tool should be
-improved a bit to detect when such out of order locking is serialised by
-an enclosing lock/mutex.
-
--- 
-Catalin
