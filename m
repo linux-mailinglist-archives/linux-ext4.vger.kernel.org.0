@@ -2,224 +2,153 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBD1152D646
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 May 2022 16:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3DA152D606
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 May 2022 16:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239827AbiESOjj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 May 2022 10:39:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57610 "EHLO
+        id S239722AbiESO23 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 May 2022 10:28:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231478AbiESOjF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 May 2022 10:39:05 -0400
-X-Greylist: delayed 904 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 19 May 2022 07:38:49 PDT
-Received: from sender4-op-o18.zoho.com (sender4-op-o18.zoho.com [136.143.188.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1AEB9968E
-        for <linux-ext4@vger.kernel.org>; Thu, 19 May 2022 07:38:49 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1652970215; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=UUc/a1qTKCDlF2+3QHLcqhwsYBOdFfAQ7x8UUnDAfDnoqcAGOcnYXLkuOyS8wZwBT14i4dxF4lhlH7wXeORxMD8lVwEGIw7cXIdUfVdyIAWjh3uyqubLk6oy9jIhoowkpAAzVsP0RMuwLq/NfCBuYCL3Dq0VVbsBhs24+pEi2tY=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1652970215; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=OU6h4AK10q/BZFnU+VciJzWkp2XjAXU1sgSVxL87nkU=; 
-        b=VEOppScIwmi94N6RIbdn3BjOltknspwh14Xv3+QEjHnJpaZQocYGJ9PWpUBKmd9loJkx+p3jDaNFOA6gFprOGsfBFh0cygwLx4D5lXMSWfeurBcS+uCO2V5obYmlG4DrXi/hC7yeDWUvo/d+5YajrsjsbvSyU6W0lpsl7+om+gc=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=icenowy.me;
-        spf=pass  smtp.mailfrom=uwu@icenowy.me;
-        dmarc=pass header.from=<uwu@icenowy.me>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1652970215;
-        s=zmail; d=icenowy.me; i=uwu@icenowy.me;
-        h=Message-ID:Subject:Subject:From:From:To:To:Cc:Cc:Date:Date:In-Reply-To:References:Content-Type:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
-        bh=OU6h4AK10q/BZFnU+VciJzWkp2XjAXU1sgSVxL87nkU=;
-        b=Wk64YyXTSZf+wXh+uDWh1ZOB9Ji+GiEqGpG2DeqPamXD2JXNweoKZi9aaEX4U9vO
-        P5tjTYcOV3fXR1Ldcj/44RRy/FctA6dCWTCa+noc9+kN2JgdEHyZSVrc7ushuku33YA
-        SXvcPhVMNGAvRbC5OXfQcllBTB98hmRV9tNjl9Pc=
-Received: from edelgard.icenowy.me (59.41.160.82 [59.41.160.82]) by mx.zohomail.com
-        with SMTPS id 165297021293546.341349506360984; Thu, 19 May 2022 07:23:32 -0700 (PDT)
-Message-ID: <b63c04ff68340d367ad4138f3496d217df9b5151.camel@icenowy.me>
-Subject: Re: [PATCH v4] fcntl: Add 32bit filesystem mode
-From:   Icenowy Zheng <uwu@icenowy.me>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org, qemu-devel@nongnu.org,
-        Florian Weimer <fw@deneb.enyo.de>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Eric Blake <eblake@redhat.com>,
-        =?gb2312?Q?=C2=DE=D3=C2=B8=D5?= <luoyonggang@gmail.com>
-Date:   Thu, 19 May 2022 22:23:08 +0800
-In-Reply-To: <20201117233928.255671-1-linus.walleij@linaro.org>
-References: <20201117233928.255671-1-linus.walleij@linaro.org>
-Organization: Anthon Open-Source Community
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 
+        with ESMTP id S239715AbiESO20 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 May 2022 10:28:26 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C4A2CC17C
+        for <linux-ext4@vger.kernel.org>; Thu, 19 May 2022 07:28:24 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id j4so2790608edq.6
+        for <linux-ext4@vger.kernel.org>; Thu, 19 May 2022 07:28:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uEIL6AsSreMI83+kfkA58gTnFlshlzAaH7JxJ4A0+ys=;
+        b=c+fo2wRq0n4LcBXDcISuARTorDzzn6illDjsRXqjcBvvOIUByP8TQzL5MaHyrEjpAO
+         oGJI9xctLJIqDc3NRFncPAMmwo2ID4Cnex1HOCOXnJ0P+Y3RmAA23yRz7KnnMhPXKUX0
+         +5UvNP76VzFvCo87biYoEnla2VoJhXhcn7ySfodwoWoS07zinL+WVsYOqEmQctCIBDc1
+         3MjlWvqkN980LM/I5HYOWxP0zi9BMSUsuTp+lZeVKxszkccNM3MDKEv82lXzERG4ZGL2
+         MaHitl1QaHAWS4AvHJ6tn6kfNqxRJFX/8RHcOl4hAYIOa3EoX2rsdrUUKHiBMaF1FbXX
+         HsvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uEIL6AsSreMI83+kfkA58gTnFlshlzAaH7JxJ4A0+ys=;
+        b=UzkBqqrAgI1bNXC70eR6nx23QHljaIXKzpWnw2PB5Ty4BQ9CwHk0kNh4cd7n1gepzK
+         jZ5TmtftmdLae0Pyl5o8wqpldGtiFcjHhV48SuTaopmKchf9XUc/+WQSAIb5ov38hn2D
+         yYTQrx+wgd466b4eG8569xzcn6yza4P6UzYkI+JMHe0KFllSkMVNpD6bc0g3zTVH2zbO
+         HDGgFa1Q6lbkZ+x0+6XKTFKHTQwMtfMf8gQU8uyDbj6MuDEBevkWXQW30AqiUDDYkAPb
+         ZjelflodgJevwzzd1SHsBAHoKSQ8wjKXPvxjYueK5sRBmVgH2vKSKNf96uGVd3fBYj7G
+         pRyw==
+X-Gm-Message-State: AOAM533BcFZx9sIXV7gPJX2y45+HOt32iHWHyY3h/h9FNTwS5bw3Ng86
+        uqfN1vsSgzHBCF2nw1uW7dG+Hc4OLC+YHit7wez09I0UbzM=
+X-Google-Smtp-Source: ABdhPJxTogRQL40RMOFkBRXeInVMFG2g3aH0dXMfDnZh1VSr8bXfgjc90VxK+RzxNX4Yy8CbrrKJktUeLrBOUh6dpno=
+X-Received: by 2002:a05:6402:1542:b0:42a:ccc0:b1dd with SMTP id
+ p2-20020a056402154200b0042accc0b1ddmr5607372edx.341.1652970502831; Thu, 19
+ May 2022 07:28:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-ZohoMailClient: External
+References: <20220419173143.3564144-1-harshads@google.com> <20220419173143.3564144-3-harshads@google.com>
+ <20220427155032.pikb3jdb62732xvi@quack3.lan>
+In-Reply-To: <20220427155032.pikb3jdb62732xvi@quack3.lan>
+From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
+Date:   Thu, 19 May 2022 07:28:11 -0700
+Message-ID: <CAD+ocbzyHdb+Du+7dDePazue649nr6H=A-pCPo5S1+PSEQMhyQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/6] ext4: for committing inode, make
+ ext4_fc_track_inode wait
+To:     Jan Kara <jack@suse.cz>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-=E5=9C=A8 2020-11-18=E6=98=9F=E6=9C=9F=E4=B8=89=E7=9A=84 00:39 +0100=EF=BC=
-=8CLinus Walleij=E5=86=99=E9=81=93=EF=BC=9A
-> It was brought to my attention that this bug from 2018 was
-> still unresolved: 32 bit emulators like QEMU were given
-> 64 bit hashes when running 32 bit emulation on 64 bit systems.
->=20
+Thanks for the review. Some questions / comments below:
 
-Sorry for replying such an old mail, but I found that using 32-bit file
-syscalls in 32-bit QEMU user on 64-bit hosts are still broken today,
-and google sent me here.
+On Wed, 27 Apr 2022 at 08:50, Jan Kara <jack@suse.cz> wrote:
+>
+> On Tue 19-04-22 10:31:39, Harshad Shirwadkar wrote:
+> > From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+> >
+> > If the inode that's being requested to track using ext4_fc_track_inode
+> > is being committed, then wait until the inode finishes the
+> > commit. Also, add calls to ext4_fc_track_inode at the right places.
+> >
+> > With this patch, now calling ext4_reserve_inode_write() results in
+> > inode being tracked for next fast commit. A subtle lock ordering
+> > requirement with i_data_sem (which is documented in the code) requires
+> > that ext4_fc_track_inode() be called before grabbing i_data_sem. So,
+> > this patch also adds explicit ext4_fc_track_inode() calls in places
+> > where i_data_sem grabbed.
+> >
+> > Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+> > ---
+> >  fs/ext4/fast_commit.c | 38 ++++++++++++++++++++++++++++++++++++++
+> >  fs/ext4/inline.c      |  3 +++
+> >  fs/ext4/inode.c       |  5 ++++-
+> >  3 files changed, 45 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+> > index c278060a15bc..55f4c5ddd8e5 100644
+> > --- a/fs/ext4/fast_commit.c
+> > +++ b/fs/ext4/fast_commit.c
+> > +     /*
+> > +      * If we come here, we may sleep while waiting for the inode to
+> > +      * commit. We shouldn't be holding i_data_sem in write mode when we go
+> > +      * to sleep since the commit path needs to grab the lock while
+> > +      * committing the inode.
+> > +      */
+> > +     WARN_ON(lockdep_is_held_type(&ei->i_data_sem, 1));
+>
+> Note that we can deadlock even if we had i_data_sem for reading because
+> another reader is not allowed to get the rwsem if there is writer waiting
+> for it. So we need to check even that case here.
+I turned the above WARN_ON to check if data_sem is held in either read
+or write mode and now I am seeing many other places where data_sem
+gets grabbed in read mode before calling ext4_fc_track_inode(). We
+either need to call ext4_fc_track_inode() before all
+ext4_reserve_inode_write() in all those cases, or ensure that places
+that acquire in data_sem in write mode, wait if there's an ongoing
+commit and only then lock data_sem.
+>
+> > +     while (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING)) {
+> > +#if (BITS_PER_LONG < 64)
+> > +             DEFINE_WAIT_BIT(wait, &ei->i_state_flags,
+> > +                             EXT4_STATE_FC_COMMITTING);
+> > +             wq = bit_waitqueue(&ei->i_state_flags,
+> > +                                EXT4_STATE_FC_COMMITTING);
+> > +#else
+> > +             DEFINE_WAIT_BIT(wait, &ei->i_flags,
+> > +                             EXT4_STATE_FC_COMMITTING);
+> > +             wq = bit_waitqueue(&ei->i_flags,
+> > +                                EXT4_STATE_FC_COMMITTING);
+> > +#endif
+> > +             prepare_to_wait(wq, &wait.wq_entry, TASK_UNINTERRUPTIBLE);
+> > +             if (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING))
+> > +                     schedule();
+> > +             finish_wait(wq, &wait.wq_entry);
+> > +     }
+> > +
+> >       ret = ext4_fc_track_template(handle, inode, __track_inode, NULL, 1);
+> >       trace_ext4_fc_track_inode(handle, inode, ret);
+>
+> As we discussed in the call we should tell lockdep that this is equivalent
+> to lock+unlock of let's say fc_committing_lock and the fastcommit code
+> setting / clearing EXT4_STATE_FC_COMMITTING is equivalent to lock / unlock
+> of fc_committing_lock. That way we get proper lockdep tracking of this
+> waiting primitive.
+Sure, so you mean just adding __acquires() / __releases() annotations
+in these places right?
 
-This mail does not get any reply according to linux-ext4 patchwork, so
-could I ping it?
-
-Thanks,
-Icenowy Zheng
-
-> This adds a flag to the fcntl() F_GETFD and F_SETFD operations
-> to set the underlying filesystem into 32bit mode even if the
-> file handle was opened using 64bit mode without the compat
-> syscalls.
->=20
-> Programs that need the 32 bit file system behavior need to
-> issue a fcntl() system call such as in this example:
->=20
-> =C2=A0 #define FD_32BIT_MODE 2
->=20
-> =C2=A0 int main(int argc, char** argv) {
-> =C2=A0=C2=A0=C2=A0 DIR* dir;
-> =C2=A0=C2=A0=C2=A0 int err;
-> =C2=A0=C2=A0=C2=A0 int mode;
-> =C2=A0=C2=A0=C2=A0 int fd;
->=20
-> =C2=A0=C2=A0=C2=A0 dir =3D opendir("/boot");
-> =C2=A0=C2=A0=C2=A0 fd =3D dirfd(dir);
-> =C2=A0=C2=A0=C2=A0 mode =3D fcntl(fd, F_GETFD);
-> =C2=A0=C2=A0=C2=A0 mode |=3D FD_32BIT_MODE;
-> =C2=A0=C2=A0=C2=A0 err =3D fcntl(fd, F_SETFD, mode);
-> =C2=A0=C2=A0=C2=A0 if (err) {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 printf("fcntl() failed! err=3D%d\n", err);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 1;
-> =C2=A0=C2=A0=C2=A0 }
-> =C2=A0=C2=A0=C2=A0 printf("dir=3D%p\n", dir);
-> =C2=A0=C2=A0=C2=A0 printf("readdir(dir)=3D%p\n", readdir(dir));
-> =C2=A0=C2=A0=C2=A0 printf("errno=3D%d: %s\n", errno, strerror(errno));
-> =C2=A0=C2=A0=C2=A0 return 0;
-> =C2=A0 }
->=20
-> This can be pretty hard to test since C libraries and linux
-> userspace security extensions aggressively filter the parameters
-> that are passed down and allowed to commit into actual system
-> calls.
->=20
-> Cc: Florian Weimer <fw@deneb.enyo.de>
-> Cc: Peter Maydell <peter.maydell@linaro.org>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Eric Blake <eblake@redhat.com>
-> Reported-by: =E7=BD=97=E5=8B=87=E5=88=9A(Yonggang Luo) <luoyonggang@gmail=
-.com>
-> Suggested-by: Theodore Ts'o <tytso@mit.edu>
-> Link: https://bugs.launchpad.net/qemu/+bug/1805913
-> Link: https://lore.kernel.org/lkml/87bm56vqg4.fsf@mid.deneb.enyo.de/
-> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=3D205957
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
-> ChangeLog v3 RESEND 1-> v4:
-> - Update the example in the commit message to a read/modify/write
-> =C2=A0 version.
-> - Notice that Yonggang Luo sees the sema problem on i386 binaries
-> =C2=A0 as we see on ARM 32bit binaries.
-> ChangeLog v3->v3 RESEND 1:
-> - Resending during the v5.10 merge window to get attention.
-> ChangeLog v2->v3:
-> - Realized that I also have to clear the flag correspondingly
-> =C2=A0 if someone ask for !FD_32BIT_MODE after setting it the
-> =C2=A0 first time.
-> ChangeLog v1->v2:
-> - Use a new flag FD_32BIT_MODE to F_GETFD and F_SETFD
-> =C2=A0 instead of a new fcntl operation, there is already a fcntl
-> =C2=A0 operation to set random flags.
-> - Sorry for taking forever to respin this patch :(
-> ---
-> =C2=A0fs/fcntl.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- | 7 +++++++
-> =C2=A0include/uapi/asm-generic/fcntl.h | 8 ++++++++
-> =C2=A02 files changed, 15 insertions(+)
->=20
-> diff --git a/fs/fcntl.c b/fs/fcntl.c
-> index 19ac5baad50f..6c32edc4099a 100644
-> --- a/fs/fcntl.c
-> +++ b/fs/fcntl.c
-> @@ -335,10 +335,17 @@ static long do_fcntl(int fd, unsigned int cmd,
-> unsigned long arg,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0break;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0case F_GETFD:
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0err =3D get_close_on_exec(fd) ? FD_CLOEXEC : 0;
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0/* Report 32bit file system mode */
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0if (filp->f_mode & FMODE_32BITHASH)
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0err |=3D =
-FD_32BIT_MODE;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0break;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0case F_SETFD:
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0err =3D 0;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0set_close_on_exec(fd, arg & FD_CLOEXEC);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0if (arg & FD_32BIT_MODE)
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0filp->f_m=
-ode |=3D FMODE_32BITHASH;
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0else
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0filp->f_m=
-ode &=3D ~FMODE_32BITHASH;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0break;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0case F_GETFL:
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0err =3D filp->f_flags;
-> diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-
-> generic/fcntl.h
-> index 9dc0bf0c5a6e..edd3573cb7ef 100644
-> --- a/include/uapi/asm-generic/fcntl.h
-> +++ b/include/uapi/asm-generic/fcntl.h
-> @@ -160,6 +160,14 @@ struct f_owner_ex {
-> =C2=A0
-> =C2=A0/* for F_[GET|SET]FL */
-> =C2=A0#define FD_CLOEXEC=C2=A0=C2=A0=C2=A0=C2=A0=C2=A01=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0/* actually anything with low bit set
-> goes */
-> +/*
-> + * This instructs the kernel to provide 32bit semantics (such as
-> hashes) from
-> + * the file system layer, when running a userland that depend on 32bit
-> + * semantics on a kernel that supports 64bit userland, but does not
-> use the
-> + * compat ioctl() for e.g. open(), so that the kernel would otherwise
-> assume
-> + * that the userland process is capable of dealing with 64bit
-> semantics.
-> + */
-> +#define FD_32BIT_MODE=C2=A0=C2=A02
-> =C2=A0
-> =C2=A0/* for posix fcntl() and lockf() */
-> =C2=A0#ifndef F_RDLCK
-
-
+- Harshad
+>
+>                                                                 Honza
+>
+> --
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
