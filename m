@@ -2,53 +2,72 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D0152EB36
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 May 2022 13:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 958E952EE7D
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 May 2022 16:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348766AbiETLwq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 20 May 2022 07:52:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35972 "EHLO
+        id S1349287AbiETOuZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 20 May 2022 10:50:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348762AbiETLwp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 20 May 2022 07:52:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31F615E48E;
-        Fri, 20 May 2022 04:52:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4FFC461DEB;
-        Fri, 20 May 2022 11:52:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BDA2C385A9;
-        Fri, 20 May 2022 11:52:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653047563;
-        bh=KjobZP6O6Jgwt6QhmllP83ZeT6Jg+VwnOafaxcAZ+8c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bptv6Mg3TVFF3Sk1DQV4g4ILT2blHfHJLQtoU4tvyhqF7sBMSi7SFHPt3GYix9zDj
-         fmabFBKLLAt+mzYpio3Dnr/a7b1Bzz/E1lwcSx8VAf8RLyOdKVCKRepQRXrq4mW3NI
-         xqhUOLKtCR6bJJICVsEgK6en7zdhRbI3TuWM4uIQLCEtyDzROd1z4XU0U6Eg3HnHGC
-         6Vu5Fs1CZPey2sZjUfEvTvZXyBNZShJ6tvoIR9/5uN7AJh/Mv7cAPeyxtXUC8GLCOr
-         f3oZpQCpTLgA7aCs25q+jmOHsq0cBJOc1BrqKgBXL2hPTHR0+nkHa+zQP+BSejsGZ5
-         JQb/K98Kky8rA==
-Date:   Fri, 20 May 2022 13:52:37 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Keith Busch <kbusch@kernel.org>
-Subject: Re: [RFC PATCH v2 1/7] statx: add I/O alignment information
-Message-ID: <20220520115237.w2oa5bdzyzhkgwin@wittgenstein>
-References: <20220518235011.153058-1-ebiggers@kernel.org>
- <20220518235011.153058-2-ebiggers@kernel.org>
+        with ESMTP id S1350451AbiETOuX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 20 May 2022 10:50:23 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252121737D4
+        for <linux-ext4@vger.kernel.org>; Fri, 20 May 2022 07:50:22 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id j21so7715215pga.13
+        for <linux-ext4@vger.kernel.org>; Fri, 20 May 2022 07:50:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:content-language:to:cc
+         :references:from:subject:in-reply-to:content-transfer-encoding;
+        bh=YlMUufwr0l9tO9rVDIxOV/soI8WTUMwn/+RPr0+aDoU=;
+        b=cz0wk8lcDszKFG3qX7rWCqzlqco9Sek/q86lTVGXVgDOoWtHf6JHnKv52/V1kI8GsY
+         tNhwHBCWrGXadYVN5kY78XCACyEuD+6h2Hi4/M3ErbKa5FZxFDBExxTLIs+GXtyLB+mE
+         rpPWbcyQ4DRaczSqCmY9GcIY644HfOExpwuZ1zTxkdZlJksBjavAN0Yx1JMdObEEoMfq
+         FwKDI9pJX77DEPyEmJ3qlksOG7v2PfcBVqSE0yDqwcXVEI65BIuXZT+qiJtNDO7ov/g6
+         JnGxVhPaVYO1ZDjM8zlutZROY7BlGoiyfmC57e8wywTsviMatf6ek/1z4itHFNcDOiHn
+         7rzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:subject:in-reply-to
+         :content-transfer-encoding;
+        bh=YlMUufwr0l9tO9rVDIxOV/soI8WTUMwn/+RPr0+aDoU=;
+        b=GfhkYiQBYcWVsYMGOPtP1IeCRF5mTMIdBu78RHKNBsBpJ1sksK6xtGObKKmxqo1aCD
+         uur8svXJ6ludQVd1xr1I91ySt2+nGpSXf7obJjpZb1BTa/uc4OMVbI5GivGAVJqRQYdi
+         0ZtzoxzdTsbsLwJ6gXhzq2iuF6c8zXz1fiMnZ2v317jDeKsJ65UxdqknAq5NoLLk2JKj
+         YnDXWVLr1GhdEbRG4HDCRR+vkXLMHKUuuULVl0CznsUGrNzEFFhetLB8PHbp/VnuhNRo
+         Ja/tjH9HVd9qGuGtFA66PdSYDYqfchniTLgq28i4DLTFoTqOHOFFU51BAejjUU554e7G
+         DD9g==
+X-Gm-Message-State: AOAM532T3n1CHzozJxtqLUEOM6TBA7gc4vfsPAGl98A+aSR+sB/9FAHS
+        fRP9ZNF8WKXFLsLKGWn5zJ4nWQ==
+X-Google-Smtp-Source: ABdhPJy1cIKEs7ndrkw7m80u2H+7m8NPgK6uDNE3lOEbmri0iW/ey3hMLMu3ycAdyZmLlukUP0c5QQ==
+X-Received: by 2002:a63:fc04:0:b0:3f6:4b2b:9d36 with SMTP id j4-20020a63fc04000000b003f64b2b9d36mr6451721pgi.206.1653058221601;
+        Fri, 20 May 2022 07:50:21 -0700 (PDT)
+Received: from [192.168.254.17] ([50.39.160.154])
+        by smtp.gmail.com with ESMTPSA id d10-20020a170902654a00b0015ea9aabd19sm5892769pln.241.2022.05.20.07.50.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 May 2022 07:50:21 -0700 (PDT)
+Message-ID: <983bb802-d883-18d4-7945-dbfa209c1cc8@linaro.org>
+Date:   Fri, 20 May 2022 07:50:20 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20220518235011.153058-2-ebiggers@kernel.org>
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Content-Language: en-US
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org
+References: <49ac1697-5235-ca2e-2738-f0399c26d718@linaro.org>
+ <20220519122353.eqpnxiaybvobfszb@quack3.lan>
+ <e9ccb919-1616-f94f-c465-7024011ad8e5@linaro.org>
+ <20220520095028.rq4ef2o5nwetzog3@quack3>
+From:   Tadeusz Struk <tadeusz.struk@linaro.org>
+Subject: Re: kernel BUG in ext4_writepages
+In-Reply-To: <20220520095028.rq4ef2o5nwetzog3@quack3>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,63 +76,72 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, May 18, 2022 at 04:50:05PM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On 5/20/22 02:50, Jan Kara wrote:
+> On Thu 19-05-22 16:14:17, Tadeusz Struk wrote:
+>> On 5/19/22 05:23, Jan Kara wrote:
+>>> Hi!
+>>>
+>>> On Tue 10-05-22 15:28:38, Tadeusz Struk wrote:
+>>>> Syzbot found another BUG in ext4_writepages [1].
+>>>> This time it complains about inode with inline data.
+>>>> C reproducer can be found here [2]
+>>>> I was able to trigger it on 5.18.0-rc6
+>>>>
+>>>> [1] https://syzkaller.appspot.com/bug?id=a1e89d09bbbcbd5c4cb45db230ee28c822953984
+>>>> [2] https://syzkaller.appspot.com/text?tag=ReproC&x=129da6caf00000
+>>>
+>>> Thanks for report. This should be fixed by:
+>>>
+>>> https://lore.kernel.org/all/20220516012752.17241-1-yebin10@huawei.com/
+>>
+>>
+>> In case of the syzbot bug there is something messed up with PAGE DIRTY flags
+>> and the way syzbot sets up the write. This is what triggers the crash:
 > 
-> Traditionally, the conditions for when DIO (direct I/O) is supported
-> were fairly simple: filesystems either supported DIO aligned to the
-> block device's logical block size, or didn't support DIO at all.
-> 
-> However, due to filesystem features that have been added over time (e.g,
-> data journalling, inline data, encryption, verity, compression,
-> checkpoint disabling, log-structured mode), the conditions for when DIO
-> is allowed on a file have gotten increasingly complex.  Whether a
-> particular file supports DIO, and with what alignment, can depend on
-> various file attributes and filesystem mount options, as well as which
-> block device(s) the file's data is located on.
-> 
-> XFS has an ioctl XFS_IOC_DIOINFO which exposes this information to
-> applications.  However, as discussed
-> (https://lore.kernel.org/linux-fsdevel/20220120071215.123274-1-ebiggers@kernel.org/T/#u),
-> this ioctl is rarely used and not known to be used outside of
-> XFS-specific code.  It also was never intended to indicate when a file
-> doesn't support DIO at all, and it only exposes the minimum I/O
-> alignment, not the optimal I/O alignment which has been requested too.
-> 
-> Therefore, let's expose this information via statx().  Add the
-> STATX_IOALIGN flag and three fields associated with it:
-> 
-> * stx_mem_align_dio: the alignment (in bytes) required for user memory
->   buffers for DIO, or 0 if DIO is not supported on the file.
-> 
-> * stx_offset_align_dio: the alignment (in bytes) required for file
->   offsets and I/O segment lengths for DIO, or 0 if DIO is not supported
->   on the file.  This will only be nonzero if stx_mem_align_dio is
->   nonzero, and vice versa.
-> 
-> * stx_offset_align_optimal: the alignment (in bytes) suggested for file
->   offsets and I/O segment lengths to get optimal performance.  This
->   applies to both DIO and buffered I/O.  It differs from stx_blocksize
->   in that stx_offset_align_optimal will contain the real optimum I/O
->   size, which may be a large value.  In contrast, for compatibility
->   reasons stx_blocksize is the minimum size needed to avoid page cache
->   read/write/modify cycles, which may be much smaller than the optimum
->   I/O size.  For more details about the motivation for this field, see
->   https://lore.kernel.org/r/20220210040304.GM59729@dread.disaster.area
-> 
-> Note that as with other statx() extensions, if STATX_IOALIGN isn't set
-> in the returned statx struct, then these new fields won't be filled in.
-> This will happen if the filesystem doesn't support STATX_IOALIGN, or if
-> the file isn't a regular file.  (It might be supported on block device
-> files in the future.)  It might also happen if the caller didn't include
-> STATX_IOALIGN in the request mask, since statx() isn't required to
-> return information that wasn't requested.
-> 
-> This commit adds the VFS-level plumbing for STATX_IOALIGN.  Individual
-> filesystems will still need to add code to support it.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
+> Can you tell me where exactly we hit the bug? I've now noticed that this is
+> on 5.10 kernel and on vanilla 5.10 there's no BUG_ON on line 2753.
 
-Looks good to me,
-Reviewed-by: Christian Brauner (Microsoft) <brauner@kernel.org>
+We are hiting this bug:
+https://elixir.bootlin.com/linux/latest/source/fs/ext4/inode.c#L2707
+Syzbot found it in v5.10, but I recreated it on 5.18-rc7, that's why
+the line number mismatch. But this is the same bug.
+On 5.10 it's in line 2739:
+https://elixir.bootlin.com/linux/v5.10.117/source/fs/ext4/inode.c#L2739
+
+> 
+>> $ ftrace -f ./repro
+>> ...
+>> [pid  2395] open("./bus", O_RDWR|O_CREAT|O_SYNC|O_NOATIME, 000 <unfinished ...>
+>> [pid  2395] <... open resumed> )        = 6
+>> ...
+>> [pid  2395] write(6, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0", 22 <unfinished ...>
+>> ...
+>> [pid  2395] <... write resumed> )       = 22
+>>
+>> One way I could fix it was to clear the PAGECACHE_TAG_DIRTY on the mapping in
+>> ext4_try_to_write_inline_data() after the page has been updated:
+>>
+>> diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+>> index 9c076262770d..e4bbb53fa26f 100644
+>> --- a/fs/ext4/inline.c
+>> +++ b/fs/ext4/inline.c
+>> @@ -715,6 +715,7 @@ int ext4_try_to_write_inline_data(struct address_space *mapping,
+>>   			put_page(page);
+>>   			goto out_up_read;
+>>   		}
+>> +		__xa_clear_mark(&mapping->i_pages, 0, PAGECACHE_TAG_DIRTY);
+>>   	}
+>>   	ret = 1;
+>>
+>> Please let me know it if makes sense any I will send a proper patch.
+> 
+> No, this looks really wrong... We need to better understand what's going
+> on.
+
+So I was afraid. I'm trying to diverge the ext4_writepages() to go to the
+out_writepages path before we hit this BOG_ON().
+Any hints will be much appreciated.
+
+-- 
+Thanks,
+Tadeusz
