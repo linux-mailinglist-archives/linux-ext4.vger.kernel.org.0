@@ -2,58 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0911D52E8D7
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 May 2022 11:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D0652E984
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 May 2022 11:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347732AbiETJbV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 20 May 2022 05:31:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39816 "EHLO
+        id S236186AbiETJ61 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 20 May 2022 05:58:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237460AbiETJbM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 20 May 2022 05:31:12 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F232B1145A
-        for <linux-ext4@vger.kernel.org>; Fri, 20 May 2022 02:31:08 -0700 (PDT)
+        with ESMTP id S1347728AbiETJ60 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 20 May 2022 05:58:26 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47840EC3FD;
+        Fri, 20 May 2022 02:58:25 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id AECBF21C13;
-        Fri, 20 May 2022 09:31:07 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id F001B1F88B;
+        Fri, 20 May 2022 09:58:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1653039067; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1653040703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=PdFyBA1Zm4T2/g9BpeXMqAcMuawZCO06hiwFM2zcvyM=;
-        b=VjgQvdXLrneqHqhcCXFx++ay1gcNkWzx9N+ZiOyl6x1VN8884MT94KEa7J1AWYpMi+NGjJ
-        fKb3Pm3rYpqvVL2BqCPPPFKTl+dphWg/a5crhz+R2UMR9Cw/yaopF1It2UhY4UaVdlyAAa
-        4eDpimfv55KYux0s66zLCYCusheXBuo=
+        bh=64ihC9Z8An8BVNW7TtS5ZeiD3v6obwU4Wb5TbN/d6lE=;
+        b=rtE5ey666MicJjXHbgWRKj4LKRbVjjbtZKGOlcEy0wYWsmtAxl0gOH3JIchkIUpk5/QrEx
+        S2eehmOuYALLl7ipS8ZcojV8wS61nbxkTA8SHF+8lGFopefr0S+lketbS5TnIW9F35kJeK
+        /jqQZ+v9kFHpDzNfHKmUMEFsPLGculw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1653039067;
+        s=susede2_ed25519; t=1653040703;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=PdFyBA1Zm4T2/g9BpeXMqAcMuawZCO06hiwFM2zcvyM=;
-        b=W8R3IHq0VJvtb5DbL8xLBEYY4yIfUYvcsfs18a+0u0NbdxZU0bEoxDlTW1nTKVWUgS3TrP
-        5HwGLKVfa898EQAA==
+        bh=64ihC9Z8An8BVNW7TtS5ZeiD3v6obwU4Wb5TbN/d6lE=;
+        b=4WIMZ8b0BHB7yygq7FdP0yMfnRLqf4/mr1Eup2XUb9bb3irniVoZkLmTCJWqKJ2Ji9V8sO
+        A4BhfRvi3GHbVMCg==
 Received: from quack3.suse.cz (unknown [10.100.224.230])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 827DB2C141;
-        Fri, 20 May 2022 09:31:07 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTPS id C94CD2C141;
+        Fri, 20 May 2022 09:58:23 +0000 (UTC)
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id D32ADA0634; Fri, 20 May 2022 11:31:05 +0200 (CEST)
-Date:   Fri, 20 May 2022 11:31:05 +0200
+        id 26F32A0634; Fri, 20 May 2022 11:50:28 +0200 (CEST)
+Date:   Fri, 20 May 2022 11:50:28 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Zhang Yi <yi.zhang@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
-        yukuai3@huawei.com
-Subject: Re: [PATCH v2] ext4: fix warning when submitting superblock in
- ext4_commit_super()
-Message-ID: <20220520093105.qlvrp3pyy7egdjce@quack3>
-References: <20220520023216.3065073-1-yi.zhang@huawei.com>
+To:     Tadeusz Struk <tadeusz.struk@linaro.org>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: kernel BUG in ext4_writepages
+Message-ID: <20220520095028.rq4ef2o5nwetzog3@quack3>
+References: <49ac1697-5235-ca2e-2738-f0399c26d718@linaro.org>
+ <20220519122353.eqpnxiaybvobfszb@quack3.lan>
+ <e9ccb919-1616-f94f-c465-7024011ad8e5@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220520023216.3065073-1-yi.zhang@huawei.com>
+In-Reply-To: <e9ccb919-1616-f94f-c465-7024011ad8e5@linaro.org>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -64,85 +65,60 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 20-05-22 10:32:16, Zhang Yi wrote:
-> We have already check the io_error and uptodate flag before submitting
-> the superblock buffer, and re-set the uptodate flag if it has been
-> failed to write out. But it was lockless and could be raced by another
-> ext4_commit_super(), and finally trigger '!uptodate' WARNING when
-> marking buffer dirty. Fix it by submit buffer directly.
+On Thu 19-05-22 16:14:17, Tadeusz Struk wrote:
+> On 5/19/22 05:23, Jan Kara wrote:
+> > Hi!
+> > 
+> > On Tue 10-05-22 15:28:38, Tadeusz Struk wrote:
+> > > Syzbot found another BUG in ext4_writepages [1].
+> > > This time it complains about inode with inline data.
+> > > C reproducer can be found here [2]
+> > > I was able to trigger it on 5.18.0-rc6
+> > > 
+> > > [1] https://syzkaller.appspot.com/bug?id=a1e89d09bbbcbd5c4cb45db230ee28c822953984
+> > > [2] https://syzkaller.appspot.com/text?tag=ReproC&x=129da6caf00000
+> > 
+> > Thanks for report. This should be fixed by:
+> > 
+> > https://lore.kernel.org/all/20220516012752.17241-1-yebin10@huawei.com/
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> 
+> In case of the syzbot bug there is something messed up with PAGE DIRTY flags
+> and the way syzbot sets up the write. This is what triggers the crash:
 
-Looks good. Feel free to add:
+Can you tell me where exactly we hit the bug? I've now noticed that this is
+on 5.10 kernel and on vanilla 5.10 there's no BUG_ON on line 2753.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+> $ ftrace -f ./repro
+> ...
+> [pid  2395] open("./bus", O_RDWR|O_CREAT|O_SYNC|O_NOATIME, 000 <unfinished ...>
+> [pid  2395] <... open resumed> )        = 6
+> ...
+> [pid  2395] write(6, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0", 22 <unfinished ...>
+> ...
+> [pid  2395] <... write resumed> )       = 22
+> 
+> One way I could fix it was to clear the PAGECACHE_TAG_DIRTY on the mapping in
+> ext4_try_to_write_inline_data() after the page has been updated:
+> 
+> diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+> index 9c076262770d..e4bbb53fa26f 100644
+> --- a/fs/ext4/inline.c
+> +++ b/fs/ext4/inline.c
+> @@ -715,6 +715,7 @@ int ext4_try_to_write_inline_data(struct address_space *mapping,
+>  			put_page(page);
+>  			goto out_up_read;
+>  		}
+> +		__xa_clear_mark(&mapping->i_pages, 0, PAGECACHE_TAG_DIRTY);
+>  	}
+>  	ret = 1;
+> 
+> Please let me know it if makes sense any I will send a proper patch.
+
+No, this looks really wrong... We need to better understand what's going
+on.
 
 								Honza
-
-> ---
-> v2->v1:
->  - Add clear_buffer_dirty() before submit_bh().
-> 
->  fs/ext4/super.c | 22 ++++++++++++++++------
->  1 file changed, 16 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 1466fbdbc8e3..9f6892665be4 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -6002,7 +6002,6 @@ static void ext4_update_super(struct super_block *sb)
->  static int ext4_commit_super(struct super_block *sb)
->  {
->  	struct buffer_head *sbh = EXT4_SB(sb)->s_sbh;
-> -	int error = 0;
->  
->  	if (!sbh)
->  		return -EINVAL;
-> @@ -6011,6 +6010,13 @@ static int ext4_commit_super(struct super_block *sb)
->  
->  	ext4_update_super(sb);
->  
-> +	lock_buffer(sbh);
-> +	/* Buffer got discarded which means block device got invalidated */
-> +	if (!buffer_mapped(sbh)) {
-> +		unlock_buffer(sbh);
-> +		return -EIO;
-> +	}
-> +
->  	if (buffer_write_io_error(sbh) || !buffer_uptodate(sbh)) {
->  		/*
->  		 * Oh, dear.  A previous attempt to write the
-> @@ -6025,17 +6031,21 @@ static int ext4_commit_super(struct super_block *sb)
->  		clear_buffer_write_io_error(sbh);
->  		set_buffer_uptodate(sbh);
->  	}
-> -	BUFFER_TRACE(sbh, "marking dirty");
-> -	mark_buffer_dirty(sbh);
-> -	error = __sync_dirty_buffer(sbh,
-> -		REQ_SYNC | (test_opt(sb, BARRIER) ? REQ_FUA : 0));
-> +	get_bh(sbh);
-> +	/* Clear potential dirty bit if it was journalled update */
-> +	clear_buffer_dirty(sbh);
-> +	sbh->b_end_io = end_buffer_write_sync;
-> +	submit_bh(REQ_OP_WRITE,
-> +		  REQ_SYNC | (test_opt(sb, BARRIER) ? REQ_FUA : 0), sbh);
-> +	wait_on_buffer(sbh);
->  	if (buffer_write_io_error(sbh)) {
->  		ext4_msg(sb, KERN_ERR, "I/O error while writing "
->  		       "superblock");
->  		clear_buffer_write_io_error(sbh);
->  		set_buffer_uptodate(sbh);
-> +		return -EIO;
->  	}
-> -	return error;
-> +	return 0;
->  }
->  
->  /*
-> -- 
-> 2.31.1
-> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
