@@ -2,75 +2,147 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 643C352E503
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 May 2022 08:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0911D52E8D7
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 May 2022 11:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345847AbiETGaH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 20 May 2022 02:30:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34726 "EHLO
+        id S1347732AbiETJbV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 20 May 2022 05:31:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345817AbiETGaG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 20 May 2022 02:30:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89EC214AF51;
-        Thu, 19 May 2022 23:30:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        with ESMTP id S237460AbiETJbM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 20 May 2022 05:31:12 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F232B1145A
+        for <linux-ext4@vger.kernel.org>; Fri, 20 May 2022 02:31:08 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id AECBF21C13;
+        Fri, 20 May 2022 09:31:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1653039067; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PdFyBA1Zm4T2/g9BpeXMqAcMuawZCO06hiwFM2zcvyM=;
+        b=VjgQvdXLrneqHqhcCXFx++ay1gcNkWzx9N+ZiOyl6x1VN8884MT94KEa7J1AWYpMi+NGjJ
+        fKb3Pm3rYpqvVL2BqCPPPFKTl+dphWg/a5crhz+R2UMR9Cw/yaopF1It2UhY4UaVdlyAAa
+        4eDpimfv55KYux0s66zLCYCusheXBuo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1653039067;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PdFyBA1Zm4T2/g9BpeXMqAcMuawZCO06hiwFM2zcvyM=;
+        b=W8R3IHq0VJvtb5DbL8xLBEYY4yIfUYvcsfs18a+0u0NbdxZU0bEoxDlTW1nTKVWUgS3TrP
+        5HwGLKVfa898EQAA==
+Received: from quack3.suse.cz (unknown [10.100.224.230])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2517A61D97;
-        Fri, 20 May 2022 06:30:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 342CEC385A9;
-        Fri, 20 May 2022 06:30:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653028204;
-        bh=zLcVAySAGbHavOCyzZ3mHIX/dLccYG2RDrRrXi8XEwY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mIi0kfLHATOya+xGeR0ur/w+CnAM2SQc8hib3dEpvbOubRYGldcau8s/33XCt2s76
-         SThI5nP5Bka/U8+8maJc8ic6ISPZUSR89qgmdoBjvGiqKfq7osmnUSaJHcB6JaG+kf
-         KbTo0iwc3dep7dA/EntYOhibh5zEl3e1WihnZHvrlzXhxsrS7FoVV8b6UdpGBAyRFf
-         Mgjw7EIhBzad06vU33Lx5bn2irSQTKaen9hMmsvds+j654UiaktBoZjKnKcWp+uVfB
-         Vi6Px9ntf2zfzBRwDwtTs3Xltn/kmUYIPpa1ptWnO+w7PtNiWQmW0CZDuhK4HMXxOi
-         7bR3YsuCNmwWQ==
-Date:   Thu, 19 May 2022 23:30:02 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Keith Busch <kbusch@kernel.org>
-Subject: Re: [RFC PATCH v2 1/7] statx: add I/O alignment information
-Message-ID: <Yoc1asB6Ud4Su3gf@sol.localdomain>
-References: <20220518235011.153058-1-ebiggers@kernel.org>
- <20220518235011.153058-2-ebiggers@kernel.org>
- <YobNXbYnhBiqniTH@magnolia>
+        by relay2.suse.de (Postfix) with ESMTPS id 827DB2C141;
+        Fri, 20 May 2022 09:31:07 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id D32ADA0634; Fri, 20 May 2022 11:31:05 +0200 (CEST)
+Date:   Fri, 20 May 2022 11:31:05 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Zhang Yi <yi.zhang@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+        yukuai3@huawei.com
+Subject: Re: [PATCH v2] ext4: fix warning when submitting superblock in
+ ext4_commit_super()
+Message-ID: <20220520093105.qlvrp3pyy7egdjce@quack3>
+References: <20220520023216.3065073-1-yi.zhang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YobNXbYnhBiqniTH@magnolia>
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220520023216.3065073-1-yi.zhang@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, May 19, 2022 at 04:06:05PM -0700, Darrick J. Wong wrote:
-> I guess that means for XFS it's effectively max(pagesize, i_blocksize,
-> bdev io_opt, sb_width, and (pretend XFS can reflink the realtime volume)
-> the rt extent size)?  I didn't see a manpage update for statx(2) but
-> that's mostly what I'm interested in. :)
+On Fri 20-05-22 10:32:16, Zhang Yi wrote:
+> We have already check the io_error and uptodate flag before submitting
+> the superblock buffer, and re-set the uptodate flag if it has been
+> failed to write out. But it was lockless and could be raced by another
+> ext4_commit_super(), and finally trigger '!uptodate' WARNING when
+> marking buffer dirty. Fix it by submit buffer directly.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 
-I'll send out a man page update with the next version.  I don't think there will
-be much new information that isn't already included in this patchset, though.
+Looks good. Feel free to add:
 
-> Looking ahead, it looks like the ext4/f2fs implementations only seem to
-> be returning max(i_blocksize, bdev io_opt)?  But not the pagesize?
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-I think that's just an oversight.  ext4 and f2fs should round the value up to
-PAGE_SIZE.
+								Honza
 
-- Eric
+> ---
+> v2->v1:
+>  - Add clear_buffer_dirty() before submit_bh().
+> 
+>  fs/ext4/super.c | 22 ++++++++++++++++------
+>  1 file changed, 16 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 1466fbdbc8e3..9f6892665be4 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -6002,7 +6002,6 @@ static void ext4_update_super(struct super_block *sb)
+>  static int ext4_commit_super(struct super_block *sb)
+>  {
+>  	struct buffer_head *sbh = EXT4_SB(sb)->s_sbh;
+> -	int error = 0;
+>  
+>  	if (!sbh)
+>  		return -EINVAL;
+> @@ -6011,6 +6010,13 @@ static int ext4_commit_super(struct super_block *sb)
+>  
+>  	ext4_update_super(sb);
+>  
+> +	lock_buffer(sbh);
+> +	/* Buffer got discarded which means block device got invalidated */
+> +	if (!buffer_mapped(sbh)) {
+> +		unlock_buffer(sbh);
+> +		return -EIO;
+> +	}
+> +
+>  	if (buffer_write_io_error(sbh) || !buffer_uptodate(sbh)) {
+>  		/*
+>  		 * Oh, dear.  A previous attempt to write the
+> @@ -6025,17 +6031,21 @@ static int ext4_commit_super(struct super_block *sb)
+>  		clear_buffer_write_io_error(sbh);
+>  		set_buffer_uptodate(sbh);
+>  	}
+> -	BUFFER_TRACE(sbh, "marking dirty");
+> -	mark_buffer_dirty(sbh);
+> -	error = __sync_dirty_buffer(sbh,
+> -		REQ_SYNC | (test_opt(sb, BARRIER) ? REQ_FUA : 0));
+> +	get_bh(sbh);
+> +	/* Clear potential dirty bit if it was journalled update */
+> +	clear_buffer_dirty(sbh);
+> +	sbh->b_end_io = end_buffer_write_sync;
+> +	submit_bh(REQ_OP_WRITE,
+> +		  REQ_SYNC | (test_opt(sb, BARRIER) ? REQ_FUA : 0), sbh);
+> +	wait_on_buffer(sbh);
+>  	if (buffer_write_io_error(sbh)) {
+>  		ext4_msg(sb, KERN_ERR, "I/O error while writing "
+>  		       "superblock");
+>  		clear_buffer_write_io_error(sbh);
+>  		set_buffer_uptodate(sbh);
+> +		return -EIO;
+>  	}
+> -	return error;
+> +	return 0;
+>  }
+>  
+>  /*
+> -- 
+> 2.31.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
