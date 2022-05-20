@@ -2,95 +2,118 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76ED552EA8D
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 May 2022 13:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D0152EB36
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 May 2022 13:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343857AbiETLOO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 20 May 2022 07:14:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48470 "EHLO
+        id S1348766AbiETLwq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 20 May 2022 07:52:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241462AbiETLOK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 20 May 2022 07:14:10 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9719C9E9C7
-        for <linux-ext4@vger.kernel.org>; Fri, 20 May 2022 04:14:09 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 4885221B76;
-        Fri, 20 May 2022 11:14:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1653045248; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=AzcF5C42Pb0QQ6TCm9R9bQt5hJ/uIFIu00sFQbRhOH4=;
-        b=ykD52o9IKUyVzQfEQiBxkqTgvDlIAb9/7qSPSS1dcIVpaRRkTzwfaUZk7qVdqtBnGbe2X5
-        zqnm53RvqSsfHQktxU1o+2cgaejcb3K5sh1cxXtIEILxd7uytJ3DCokgre73tert71hX5N
-        dIArNPuFWDJuu2J8k2o6/YBLCfEqfGo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1653045248;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=AzcF5C42Pb0QQ6TCm9R9bQt5hJ/uIFIu00sFQbRhOH4=;
-        b=uiPCtZ93rlq07jFPpbad2zXQfD/ZPFviT/BxJdMBcCOiAnLaCUgLDvxohyZmWBBtsHYOaG
-        BwVUcR6thliCliAg==
-Received: from quack3.suse.cz (unknown [10.100.224.230])
+        with ESMTP id S1348762AbiETLwp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 20 May 2022 07:52:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31F615E48E;
+        Fri, 20 May 2022 04:52:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 1AB3B2C141;
-        Fri, 20 May 2022 11:14:08 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id F2B79A0634; Fri, 20 May 2022 13:14:05 +0200 (CEST)
-From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
-Subject: [PATCH] ext4: Improve write performance with disabled delalloc
-Date:   Fri, 20 May 2022 13:14:02 +0200
-Message-Id: <20220520111402.4252-1-jack@suse.cz>
-X-Mailer: git-send-email 2.35.3
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4FFC461DEB;
+        Fri, 20 May 2022 11:52:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BDA2C385A9;
+        Fri, 20 May 2022 11:52:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1653047563;
+        bh=KjobZP6O6Jgwt6QhmllP83ZeT6Jg+VwnOafaxcAZ+8c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bptv6Mg3TVFF3Sk1DQV4g4ILT2blHfHJLQtoU4tvyhqF7sBMSi7SFHPt3GYix9zDj
+         fmabFBKLLAt+mzYpio3Dnr/a7b1Bzz/E1lwcSx8VAf8RLyOdKVCKRepQRXrq4mW3NI
+         xqhUOLKtCR6bJJICVsEgK6en7zdhRbI3TuWM4uIQLCEtyDzROd1z4XU0U6Eg3HnHGC
+         6Vu5Fs1CZPey2sZjUfEvTvZXyBNZShJ6tvoIR9/5uN7AJh/Mv7cAPeyxtXUC8GLCOr
+         f3oZpQCpTLgA7aCs25q+jmOHsq0cBJOc1BrqKgBXL2hPTHR0+nkHa+zQP+BSejsGZ5
+         JQb/K98Kky8rA==
+Date:   Fri, 20 May 2022 13:52:37 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Keith Busch <kbusch@kernel.org>
+Subject: Re: [RFC PATCH v2 1/7] statx: add I/O alignment information
+Message-ID: <20220520115237.w2oa5bdzyzhkgwin@wittgenstein>
+References: <20220518235011.153058-1-ebiggers@kernel.org>
+ <20220518235011.153058-2-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20220518235011.153058-2-ebiggers@kernel.org>
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-When delayed allocation is disabled (either through mount option or
-because we are running low on free space), ext4_write_begin() allocates
-blocks with EXT4_GET_BLOCKS_IO_CREATE_EXT flag. With this flag extent
-merging is disabled and since ext4_write_begin() is called for each page
-separately, we end up with a *lot* of 1 block extents in the extent tree
-and following writeback is writing 1 block at a time which results in
-very poor write throughput (4 MB/s instead of 200 MB/s). These days when
-ext4_get_block_unwritten() is used only by ext4_write_begin(),
-ext4_page_mkwrite() and inline data conversion, we can safely allow
-extent merging to happen from these paths since following writeback will
-happen on different boundaries anyway. So use
-EXT4_GET_BLOCKS_CREATE_UNRIT_EXT instead which restores the performance.
+On Wed, May 18, 2022 at 04:50:05PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Traditionally, the conditions for when DIO (direct I/O) is supported
+> were fairly simple: filesystems either supported DIO aligned to the
+> block device's logical block size, or didn't support DIO at all.
+> 
+> However, due to filesystem features that have been added over time (e.g,
+> data journalling, inline data, encryption, verity, compression,
+> checkpoint disabling, log-structured mode), the conditions for when DIO
+> is allowed on a file have gotten increasingly complex.  Whether a
+> particular file supports DIO, and with what alignment, can depend on
+> various file attributes and filesystem mount options, as well as which
+> block device(s) the file's data is located on.
+> 
+> XFS has an ioctl XFS_IOC_DIOINFO which exposes this information to
+> applications.  However, as discussed
+> (https://lore.kernel.org/linux-fsdevel/20220120071215.123274-1-ebiggers@kernel.org/T/#u),
+> this ioctl is rarely used and not known to be used outside of
+> XFS-specific code.  It also was never intended to indicate when a file
+> doesn't support DIO at all, and it only exposes the minimum I/O
+> alignment, not the optimal I/O alignment which has been requested too.
+> 
+> Therefore, let's expose this information via statx().  Add the
+> STATX_IOALIGN flag and three fields associated with it:
+> 
+> * stx_mem_align_dio: the alignment (in bytes) required for user memory
+>   buffers for DIO, or 0 if DIO is not supported on the file.
+> 
+> * stx_offset_align_dio: the alignment (in bytes) required for file
+>   offsets and I/O segment lengths for DIO, or 0 if DIO is not supported
+>   on the file.  This will only be nonzero if stx_mem_align_dio is
+>   nonzero, and vice versa.
+> 
+> * stx_offset_align_optimal: the alignment (in bytes) suggested for file
+>   offsets and I/O segment lengths to get optimal performance.  This
+>   applies to both DIO and buffered I/O.  It differs from stx_blocksize
+>   in that stx_offset_align_optimal will contain the real optimum I/O
+>   size, which may be a large value.  In contrast, for compatibility
+>   reasons stx_blocksize is the minimum size needed to avoid page cache
+>   read/write/modify cycles, which may be much smaller than the optimum
+>   I/O size.  For more details about the motivation for this field, see
+>   https://lore.kernel.org/r/20220210040304.GM59729@dread.disaster.area
+> 
+> Note that as with other statx() extensions, if STATX_IOALIGN isn't set
+> in the returned statx struct, then these new fields won't be filled in.
+> This will happen if the filesystem doesn't support STATX_IOALIGN, or if
+> the file isn't a regular file.  (It might be supported on block device
+> files in the future.)  It might also happen if the caller didn't include
+> STATX_IOALIGN in the request mask, since statx() isn't required to
+> return information that wasn't requested.
+> 
+> This commit adds the VFS-level plumbing for STATX_IOALIGN.  Individual
+> filesystems will still need to add code to support it.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
 
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-So the poor write performance I was speaking about on Thursday was due to
-this...
-
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 646ece9b3455..815da8f6c2e5 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -822,7 +822,7 @@ int ext4_get_block_unwritten(struct inode *inode, sector_t iblock,
- 	ext4_debug("ext4_get_block_unwritten: inode %lu, create flag %d\n",
- 		   inode->i_ino, create);
- 	return _ext4_get_block(inode, iblock, bh_result,
--			       EXT4_GET_BLOCKS_IO_CREATE_EXT);
-+			       EXT4_GET_BLOCKS_CREATE_UNWRIT_EXT);
- }
- 
- /* Maximum number of blocks we map for direct IO at once. */
--- 
-2.35.3
-
+Looks good to me,
+Reviewed-by: Christian Brauner (Microsoft) <brauner@kernel.org>
