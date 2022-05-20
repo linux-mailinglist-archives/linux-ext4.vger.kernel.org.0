@@ -2,43 +2,49 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3DCF52E293
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 May 2022 04:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9148852E321
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 May 2022 05:30:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234237AbiETCmF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 May 2022 22:42:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51016 "EHLO
+        id S234470AbiETD1o (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 May 2022 23:27:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233072AbiETCmE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 May 2022 22:42:04 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4822A985BF;
-        Thu, 19 May 2022 19:42:03 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4L49sP0zvYzQkHZ;
-        Fri, 20 May 2022 10:39:05 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Fri, 20 May
- 2022 10:42:00 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
-        Ye Bin <yebin10@huawei.com>
-Subject: [PATCH -next] ext4: Fix warning in ext4_da_release_space
-Date:   Fri, 20 May 2022 10:55:40 +0800
-Message-ID: <20220520025540.3189247-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S230117AbiETD1o (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 May 2022 23:27:44 -0400
+Received: from mail105.syd.optusnet.com.au (mail105.syd.optusnet.com.au [211.29.132.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 314C78DDF6;
+        Thu, 19 May 2022 20:27:42 -0700 (PDT)
+Received: from dread.disaster.area (pa49-181-2-147.pa.nsw.optusnet.com.au [49.181.2.147])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 4126E10E68AE;
+        Fri, 20 May 2022 13:27:41 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1nrtIh-00E6GN-MT; Fri, 20 May 2022 13:27:39 +1000
+Date:   Fri, 20 May 2022 13:27:39 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Eric Biggers <ebiggers@kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-xfs@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>
+Subject: Re: [RFC PATCH v2 1/7] statx: add I/O alignment information
+Message-ID: <20220520032739.GB1098723@dread.disaster.area>
+References: <20220518235011.153058-1-ebiggers@kernel.org>
+ <20220518235011.153058-2-ebiggers@kernel.org>
+ <YobNXbYnhBiqniTH@magnolia>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YobNXbYnhBiqniTH@magnolia>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=VuxAv86n c=1 sm=1 tr=0 ts=62870aad
+        a=ivVLWpVy4j68lT4lJFbQgw==:117 a=ivVLWpVy4j68lT4lJFbQgw==:17
+        a=kj9zAlcOel0A:10 a=oZkIemNP1mAA:10 a=1XWaLZrsAAAA:8 a=VwQbUJbxAAAA:8
+        a=7-415B0cAAAA:8 a=-h69JAkiF4VdWyV60hkA:9 a=CjuIK1q_8ugA:10
+        a=AjGcO6oz07-iQ99wixmX:22 a=biEYGPWJfzWAr4FL6Ov7:22
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -46,171 +52,71 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-We got issue as follows:
-WARNING: CPU: 2 PID: 1936 at fs/ext4/inode.c:1511 ext4_da_release_space+0x1b9/0x266
-Modules linked in:
-CPU: 2 PID: 1936 Comm: dd Not tainted 5.10.0+ #344
-RIP: 0010:ext4_da_release_space+0x1b9/0x266
-RSP: 0018:ffff888127307848 EFLAGS: 00010292
-RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff843f67cc
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffed1024e60ed9
-RBP: ffff888124dc8140 R08: 0000000000000083 R09: ffffed1075da6d23
-R10: ffff8883aed36917 R11: ffffed1075da6d22 R12: ffff888124dc83f0
-R13: ffff888124dc844c R14: ffff888124dc8168 R15: 000000000000000c
-FS:  00007f6b7247d740(0000) GS:ffff8883aed00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffc1a0b7dd8 CR3: 00000001065ce000 CR4: 00000000000006e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- ext4_es_remove_extent+0x187/0x230
- mpage_release_unused_pages+0x3af/0x470
- ext4_writepages+0xb9b/0x1160
- do_writepages+0xbb/0x1e0
- __filemap_fdatawrite_range+0x1b1/0x1f0
- file_write_and_wait_range+0x80/0xe0
- ext4_sync_file+0x13d/0x800
- vfs_fsync_range+0x75/0x140
- do_fsync+0x4d/0x90
- __x64_sys_fsync+0x1d/0x30
- do_syscall_64+0x33/0x40
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+On Thu, May 19, 2022 at 04:06:05PM -0700, Darrick J. Wong wrote:
+> On Wed, May 18, 2022 at 04:50:05PM -0700, Eric Biggers wrote:
+> > From: Eric Biggers <ebiggers@google.com>
+> > 
+> > Traditionally, the conditions for when DIO (direct I/O) is supported
+> > were fairly simple: filesystems either supported DIO aligned to the
+> > block device's logical block size, or didn't support DIO at all.
+> > 
+> > However, due to filesystem features that have been added over time (e.g,
+> > data journalling, inline data, encryption, verity, compression,
+> > checkpoint disabling, log-structured mode), the conditions for when DIO
+> > is allowed on a file have gotten increasingly complex.  Whether a
+> > particular file supports DIO, and with what alignment, can depend on
+> > various file attributes and filesystem mount options, as well as which
+> > block device(s) the file's data is located on.
+> > 
+> > XFS has an ioctl XFS_IOC_DIOINFO which exposes this information to
+> > applications.  However, as discussed
+> > (https://lore.kernel.org/linux-fsdevel/20220120071215.123274-1-ebiggers@kernel.org/T/#u),
+> > this ioctl is rarely used and not known to be used outside of
+> > XFS-specific code.  It also was never intended to indicate when a file
+> > doesn't support DIO at all, and it only exposes the minimum I/O
+> > alignment, not the optimal I/O alignment which has been requested too.
+> > 
+> > Therefore, let's expose this information via statx().  Add the
+> > STATX_IOALIGN flag and three fields associated with it:
+> > 
+> > * stx_mem_align_dio: the alignment (in bytes) required for user memory
+> >   buffers for DIO, or 0 if DIO is not supported on the file.
+> > 
+> > * stx_offset_align_dio: the alignment (in bytes) required for file
+> >   offsets and I/O segment lengths for DIO, or 0 if DIO is not supported
+> >   on the file.  This will only be nonzero if stx_mem_align_dio is
+> >   nonzero, and vice versa.
+> > 
+> > * stx_offset_align_optimal: the alignment (in bytes) suggested for file
+> >   offsets and I/O segment lengths to get optimal performance.  This
+> >   applies to both DIO and buffered I/O.  It differs from stx_blocksize
+> >   in that stx_offset_align_optimal will contain the real optimum I/O
+> >   size, which may be a large value.  In contrast, for compatibility
+> >   reasons stx_blocksize is the minimum size needed to avoid page cache
+> >   read/write/modify cycles, which may be much smaller than the optimum
+> >   I/O size.  For more details about the motivation for this field, see
+> >   https://lore.kernel.org/r/20220210040304.GM59729@dread.disaster.area
+> 
+> Hmm.  So I guess this is supposed to be the filesystem's best guess at
+> the IO size that will minimize RMW cycles in the entire stack?  i.e. if
+> the user does not want RMW of pagecache pages, of file allocation units
+> (if COW is enabled), of RAID stripes, or in the storage itself, then it
+> should ensure that all IOs are aligned to this value?
+> 
+> I guess that means for XFS it's effectively max(pagesize, i_blocksize,
+> bdev io_opt, sb_width, and (pretend XFS can reflink the realtime volume)
+> the rt extent size)?  I didn't see a manpage update for statx(2) but
+> that's mostly what I'm interested in. :)
 
-Above issue may happens as follows:
-	process1                        process2
-ext4_da_write_begin
-  ext4_da_reserve_space
-    ext4_es_insert_delayed_block[1/1]
-                                    ext4_da_write_begin
-				      ext4_es_insert_delayed_block[0/1]
-ext4_writepages
-  ****Delayed block allocation failed****
-  mpage_release_unused_pages
-    ext4_es_remove_extent[1/1]
-      ext4_da_release_space [reserved 0]
+Yup, xfs_stat_blksize() should give a good idea of what we should
+do. It will end up being pretty much that, except without the need
+to a mount option to turn on the sunit/swidth return, and always
+taking into consideration extent size hints rather than just doing
+that for RT inodes...
 
-ext4_da_write_begin
-  ext4_es_scan_clu(inode, &ext4_es_is_delonly, lblk)
-   ->As there exist [0, 1] extent, so will return true
-                                   ext4_writepages
-				   ****Delayed block allocation failed****
-                                     mpage_release_unused_pages
-				       ext4_es_remove_extent[0/1]
-				         ext4_da_release_space [reserved 1]
-					   ei->i_reserved_data_blocks [1->0]
+Cheers,
 
-  ext4_es_insert_delayed_block[1/1]
-
-ext4_writepages
-  ****Delayed block allocation failed****
-  mpage_release_unused_pages
-  ext4_es_remove_extent[1/1]
-   ext4_da_release_space [reserved 1]
-    ei->i_reserved_data_blocks[0, -1]
-    ->As ei->i_reserved_data_blocks already is zero but to_free is 1,
-    will trigger warning.
-
-To solve above issue, introduce i_clu_lock to protect insert delayed
-block and remove block under cluster delay allocate mode.
-
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- fs/ext4/ext4.h           |  3 +++
- fs/ext4/extents_status.c |  5 +++++
- fs/ext4/inode.c          | 11 +++++++++--
- fs/ext4/super.c          |  1 +
- 4 files changed, 18 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index bcd3b9bf8069..47c88ac4d4a8 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1169,6 +1169,9 @@ struct ext4_inode_info {
- 	__u32 i_csum_seed;
- 
- 	kprojid_t i_projid;
-+
-+	/* Protect concurrent add cluster delayed block and remove block */
-+	struct mutex i_clu_lock;
- };
- 
- /*
-diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
-index 9a3a8996aacf..dd679014db98 100644
---- a/fs/ext4/extents_status.c
-+++ b/fs/ext4/extents_status.c
-@@ -1433,6 +1433,7 @@ static int __es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
- int ext4_es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
- 			  ext4_lblk_t len)
- {
-+	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
- 	ext4_lblk_t end;
- 	int err = 0;
- 	int reserved = 0;
-@@ -1455,9 +1456,13 @@ int ext4_es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
- 	 * so that we are sure __es_shrink() is done with the inode before it
- 	 * is reclaimed.
- 	 */
-+	if (sbi->s_cluster_ratio != 1)
-+		mutex_lock(&EXT4_I(inode)->i_clu_lock);
- 	write_lock(&EXT4_I(inode)->i_es_lock);
- 	err = __es_remove_extent(inode, lblk, end, &reserved);
- 	write_unlock(&EXT4_I(inode)->i_es_lock);
-+	if (sbi->s_cluster_ratio != 1)
-+		mutex_unlock(&EXT4_I(inode)->i_clu_lock);
- 	ext4_es_print_tree(inode);
- 	ext4_da_release_space(inode, reserved);
- 	return err;
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 01c9e4f743ba..1109d77ad60b 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -1649,17 +1649,22 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
- 			goto errout;
- 		reserved = true;
- 	} else {   /* bigalloc */
-+		mutex_lock(&EXT4_I(inode)->i_clu_lock);
- 		if (!ext4_es_scan_clu(inode, &ext4_es_is_delonly, lblk)) {
- 			if (!ext4_es_scan_clu(inode,
- 					      &ext4_es_is_mapped, lblk)) {
- 				ret = ext4_clu_mapped(inode,
- 						      EXT4_B2C(sbi, lblk));
--				if (ret < 0)
-+				if (ret < 0) {
-+					mutex_unlock(&EXT4_I(inode)->i_clu_lock);
- 					goto errout;
-+				}
- 				if (ret == 0) {
- 					ret = ext4_da_reserve_space(inode);
--					if (ret != 0)   /* ENOSPC */
-+					if (ret != 0) {   /* ENOSPC */
-+						mutex_unlock(&EXT4_I(inode)->i_clu_lock);
- 						goto errout;
-+					}
- 					reserved = true;
- 				} else {
- 					allocated = true;
-@@ -1671,6 +1676,8 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
- 	}
- 
- 	ret = ext4_es_insert_delayed_block(inode, lblk, allocated);
-+	if (sbi->s_cluster_ratio != 1)
-+		mutex_unlock(&EXT4_I(inode)->i_clu_lock);
- 	if (ret && reserved)
- 		ext4_da_release_space(inode, 1);
- 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index c5021ca0a28a..aa6f2a68bf41 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1347,6 +1347,7 @@ static struct inode *ext4_alloc_inode(struct super_block *sb)
- 	INIT_WORK(&ei->i_rsv_conversion_work, ext4_end_io_rsv_work);
- 	ext4_fc_init_inode(&ei->vfs_inode);
- 	mutex_init(&ei->i_fc_lock);
-+	mutex_init(&ei->i_clu_lock);
- 	return &ei->vfs_inode;
- }
- 
+Dave.
 -- 
-2.31.1
-
+Dave Chinner
+david@fromorbit.com
