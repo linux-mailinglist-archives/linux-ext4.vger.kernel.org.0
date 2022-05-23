@@ -2,66 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E64465305D0
-	for <lists+linux-ext4@lfdr.de>; Sun, 22 May 2022 22:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E722530702
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 May 2022 03:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233422AbiEVUS7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 22 May 2022 16:18:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49422 "EHLO
+        id S233064AbiEWBMn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 22 May 2022 21:12:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345215AbiEVUS6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 22 May 2022 16:18:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30122369E5
-        for <linux-ext4@vger.kernel.org>; Sun, 22 May 2022 13:18:58 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AE63960E9E
-        for <linux-ext4@vger.kernel.org>; Sun, 22 May 2022 20:18:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 11089C385B8
-        for <linux-ext4@vger.kernel.org>; Sun, 22 May 2022 20:18:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653250737;
-        bh=aIJqfAC3NsJQpxYGDGJsOqVraljRgwqDOgL1ipcrTF8=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=h78uXpXjmpDeNEv4ew23jl2vMZHRpEirm72yA9lvLK20S5yXOTdaiXXy9to+8fkMh
-         zq2UWtQ1N2zlKjJvjuO38GMYdoo7Dc6MpU/8qYm3T6rpGvKPyj+HQDllxb86wyzjjm
-         Eh8SX0g4DTY9adEBA57GkAOwpKybokM3HQhhVcrADHnKN20vTjiQPbNlcBpSlx4Fwp
-         5499QvPxMyXr7wqYmI7aIjGXdd7871C26VGLo4XjMvK2QW0EooCdXjbs14IpV07hFj
-         ivqOigeXHU1LgyIlv68bJ856M3r7/78IgIJfc/4WiGElmWllMy4S7fSIj1J/A2pO4R
-         9RSxrdgjDhZxw==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-        id E68D3C05FD2; Sun, 22 May 2022 20:18:56 +0000 (UTC)
-From:   bugzilla-daemon@kernel.org
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 216012] Data loss on VirtualBox VMs
-Date:   Sun, 22 May 2022 20:18:56 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: high
-X-Bugzilla-Who: aathan_kernel@memeplex.com
-X-Bugzilla-Status: REOPENED
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: bug_status resolution
-Message-ID: <bug-216012-13602-n4vY5CsOj7@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-216012-13602@https.bugzilla.kernel.org/>
-References: <bug-216012-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        with ESMTP id S233023AbiEWBMm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 22 May 2022 21:12:42 -0400
+Received: from lgeamrelo11.lge.com (lgeamrelo12.lge.com [156.147.23.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C0E05377FB
+        for <linux-ext4@vger.kernel.org>; Sun, 22 May 2022 18:12:37 -0700 (PDT)
+Received: from unknown (HELO lgeamrelo01.lge.com) (156.147.1.125)
+        by 156.147.23.52 with ESMTP; 23 May 2022 10:12:36 +0900
+X-Original-SENDERIP: 156.147.1.125
+X-Original-MAILFROM: byungchul.park@lge.com
+Received: from unknown (HELO X58A-UD3R) (10.177.244.38)
+        by 156.147.1.125 with ESMTP; 23 May 2022 10:12:36 +0900
+X-Original-SENDERIP: 10.177.244.38
+X-Original-MAILFROM: byungchul.park@lge.com
+Date:   Mon, 23 May 2022 10:10:45 +0900
+From:   Byungchul Park <byungchul.park@lge.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     tj@kernel.org, torvalds@linux-foundation.org,
+        damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        mingo@redhat.com, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, will@kernel.org, tglx@linutronix.de,
+        rostedt@goodmis.org, joel@joelfernandes.org, sashal@kernel.org,
+        daniel.vetter@ffwll.ch, chris@chris-wilson.co.uk,
+        duyuyang@gmail.com, johannes.berg@intel.com, willy@infradead.org,
+        david@fromorbit.com, amir73il@gmail.com,
+        gregkh@linuxfoundation.org, kernel-team@lge.com,
+        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
+        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
+        ngupta@vflare.org, linux-block@vger.kernel.org,
+        paolo.valente@linaro.org, josef@toxicpanda.com,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        jack@suse.cz, jack@suse.com, jlayton@kernel.org,
+        dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
+        dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com,
+        melissa.srw@gmail.com, hamohammed.sa@gmail.com,
+        42.hyeyoo@gmail.com, mcgrof@kernel.org, holt@sgi.com
+Subject: Re: [REPORT] syscall reboot + umh + firmware fallback
+Message-ID: <20220523011045.GA16721@X58A-UD3R>
+References: <YnzQHWASAxsGL9HW@slm.duckdns.org>
+ <1652354304-17492-1-git-send-email-byungchul.park@lge.com>
+ <Yn0SHhnhB8fyd0jq@mit.edu>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Yn0SHhnhB8fyd0jq@mit.edu>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -70,51 +66,45 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D216012
+On Thu, May 12, 2022 at 09:56:46AM -0400, Theodore Ts'o wrote:
+> On Thu, May 12, 2022 at 08:18:24PM +0900, Byungchul Park wrote:
+> > I have a question about this one. Yes, it would never been stuck thanks
+> > to timeout. However, IIUC, timeouts are not supposed to expire in normal
+> > cases. So I thought a timeout expiration means not a normal case so need
+> > to inform it in terms of dependency so as to prevent further expiraton.
+> > That's why I have been trying to track even timeout'ed APIs.
+> 
+> As I beleive I've already pointed out to you previously in ext4 and
+> ocfs2, the jbd2 timeout every five seconds happens **all** the time
+> while the file system is mounted.  Commits more frequently than five
+> seconds is the exception case, at least for desktops/laptop workloads.
 
-AA (aathan_kernel@memeplex.com) changed:
+Thanks, Ted. It's easy to stop tracking APIs with timeout. I've been
+just afraid that the cases that we want to suppress anyway will be
+skipped.
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-             Status|RESOLVED                    |REOPENED
-         Resolution|ANSWERED                    |---
+However, I should stop it if it produces too many false alarms.
 
---- Comment #2 from AA (aathan_kernel@memeplex.com) ---
+> We *don't* get to the timeout only when a userspace process calls
+> fsync(2), or if the journal was incorrectly sized by the system
+> administrator so that it's too small, and the workload has so many
+> file system mutations that we have to prematurely close the
+> transaction ahead of the 5 second timeout.
 
-I provided the information I had. You're not talking to a complete noob, Ar=
-tem.
-If this issue was deterministically reproducible, you can be assured I'd ha=
-ve
-provided the steps to reproduce it and any additional details.
+Yeah... It's how journaling works. Thanks.
 
-There is some multi-factor problem going on here, and frankly, I don't even
-know where to start in order to determine the cause! This is a linux virtual
-machine hosted by virtualbox on mac os x.
+> > Do you think DEPT shouldn't track timeout APIs? If I was wrong, I
+> > shouldn't track the timeout APIs any more.
+> 
+> DEPT tracking timeouts will cause false positives in at least some
+> cases.  At the very least, there needs to be an easy way to suppress
+> these false positives on a per wait/mutex/spinlock basis.
 
-Since the error is reported by ext4-fs, and I did not immediately find other
-errors reported, I reported the ext4-fs errors to ext4.
+The easy way is to stop tracking those that are along with timeout until
+DEPT starts to consider waits/events by timeout functionality itself.
 
-One possibility is that this occurs when the os x system is under relatively
-high load. Under 5x kernel versions on this VB host I have also seen some
-occasional CPU X stuck for 22s messages. However these messages have not be=
-en
-correlated with the ext4 errors.
+Thanks.
 
-If anyone has knowledge as to the conditions that can cause this ext4 error
-message, I will try to dig deeper next time it happens. The combination of
-factors seems to point to core issues in the VirtualBox drivers and/or
-virtualization interfaces but I'm just not sure. Maybe the virtual block de=
-vice
-driver bubbles up a timeout of some kind as an unrecoverable write to ext4 =
-via
-whatever kernel interface is being used to write fs blocks???
-
-If you still feel ubuntu is the right place to chase down the issue I'll go
-there. I've not gotten any traction from reporting the CPU stuck issue to
-Oracle.
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+	Byungchul
+> 
+>       	       	    	     	      	   	 - Ted
