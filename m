@@ -2,68 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 483375307C7
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 May 2022 04:45:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32CD6530A49
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 May 2022 10:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353078AbiEWCpS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 22 May 2022 22:45:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55182 "EHLO
+        id S229667AbiEWHY1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 23 May 2022 03:24:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240903AbiEWCpR (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 22 May 2022 22:45:17 -0400
-Received: from lgeamrelo11.lge.com (lgeamrelo12.lge.com [156.147.23.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0AE442E0BA
-        for <linux-ext4@vger.kernel.org>; Sun, 22 May 2022 19:45:13 -0700 (PDT)
-Received: from unknown (HELO lgemrelse6q.lge.com) (156.147.1.121)
-        by 156.147.23.52 with ESMTP; 23 May 2022 11:45:12 +0900
-X-Original-SENDERIP: 156.147.1.121
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO X58A-UD3R) (10.177.244.38)
-        by 156.147.1.121 with ESMTP; 23 May 2022 11:45:12 +0900
-X-Original-SENDERIP: 10.177.244.38
-X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Mon, 23 May 2022 11:43:21 +0900
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Hyeonggon Yoo <42.hyeyoo@gmail.com>, torvalds@linux-foundation.org,
-        damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        mingo@redhat.com, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, will@kernel.org, tglx@linutronix.de,
-        rostedt@goodmis.org, joel@joelfernandes.org, sashal@kernel.org,
-        daniel.vetter@ffwll.ch, chris@chris-wilson.co.uk,
-        duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org,
-        tytso@mit.edu, willy@infradead.org, david@fromorbit.com,
-        amir73il@gmail.com, gregkh@linuxfoundation.org,
-        kernel-team@lge.com, linux-mm@kvack.org, akpm@linux-foundation.org,
-        mhocko@kernel.org, minchan@kernel.org, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, sj@kernel.org, jglisse@redhat.com,
-        dennis@kernel.org, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, vbabka@suse.cz, ngupta@vflare.org,
-        linux-block@vger.kernel.org, paolo.valente@linaro.org,
-        josef@toxicpanda.com, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, jack@suse.cz, jack@suse.com,
-        jlayton@kernel.org, dan.j.williams@intel.com, hch@infradead.org,
-        djwong@kernel.org, dri-devel@lists.freedesktop.org,
-        airlied@linux.ie, rodrigosiqueiramelo@gmail.com,
-        melissa.srw@gmail.com, hamohammed.sa@gmail.com
-Subject: Re: [PATCH RFC v6 00/21] DEPT(Dependency Tracker)
-Message-ID: <20220523024321.GB16721@X58A-UD3R>
-References: <CAHk-=whnPePcffsNQM+YSHMGttLXvpf8LbBQ8P7HEdqFXaV7Lg@mail.gmail.com>
- <1651795895-8641-1-git-send-email-byungchul.park@lge.com>
- <YnYd0hd+yTvVQxm5@hyeyoo>
- <20220509001637.GA6047@X58A-UD3R>
- <YnpJ9Mtf+pjx4JYm@hyeyoo>
- <20220510233929.GB18445@X58A-UD3R>
- <YnuKQ9UIhk9WYoz7@hyeyoo>
- <YoYXvsgVJwwaWrrZ@arm.com>
+        with ESMTP id S230201AbiEWHYN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 May 2022 03:24:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D85083B003;
+        Mon, 23 May 2022 00:18:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CE450611BC;
+        Mon, 23 May 2022 07:07:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4775C385A9;
+        Mon, 23 May 2022 07:07:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1653289673;
+        bh=hdwEg4ZhM324vxQXS0bV+GABy7LdsT+hi9juPKa4LYM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Hv1ZewV5rrt82CTBH3ka/CyAsOJFk2s7vSWR+pYA5dTCAr3bgcPvRT+ysVO4Y3wqm
+         sPAznzO3uOWGDrxGeH0y34f2P0RwqZRPfuoriNxhfbmLFAioSzIRBPb9Ug//48eukM
+         YgQvVSqHWznxnJONdWqSGk9Pza3YnxcTxOa5DX3ID5Ke2zHQq9Qha3RiFUCAqGoaI1
+         w78SHOPmTRb2000Gbqj5LaM6h8oAsc5Drdl+k4+PfYj4vrVTMxJMM36NEmVRgEKuFu
+         EpPlgFj+KX+U0lJOBbq/cbS4qPbzfD2PABa1IOY4GZ0Vvxf6k80y7GjEa2YIFj20iw
+         wi6Xf9R1rsyrQ==
+Date:   Mon, 23 May 2022 00:07:51 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [GIT PULL] fscrypt updates for 5.19
+Message-ID: <Yosyx2FYZOIOWs9g@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YoYXvsgVJwwaWrrZ@arm.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,103 +54,43 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, May 19, 2022 at 11:11:10AM +0100, Catalin Marinas wrote:
-> On Wed, May 11, 2022 at 07:04:51PM +0900, Hyeonggon Yoo wrote:
-> > On Wed, May 11, 2022 at 08:39:29AM +0900, Byungchul Park wrote:
-> > > On Tue, May 10, 2022 at 08:18:12PM +0900, Hyeonggon Yoo wrote:
-> > > > On Mon, May 09, 2022 at 09:16:37AM +0900, Byungchul Park wrote:
-> > > > > CASE 1.
-> > > > > 
-> > > > >    lock L with depth n
-> > > > >    lock_nested L' with depth n + 1
-> > > > >    ...
-> > > > >    unlock L'
-> > > > >    unlock L
-> > > > > 
-> > > > > This case is allowed by Lockdep.
-> > > > > This case is allowed by DEPT cuz it's not a deadlock.
-> > > > > 
-> > > > > CASE 2.
-> > > > > 
-> > > > >    lock L with depth n
-> > > > >    lock A
-> > > > >    lock_nested L' with depth n + 1
-> > > > >    ...
-> > > > >    unlock L'
-> > > > >    unlock A
-> > > > >    unlock L
-> > > > > 
-> > > > > This case is allowed by Lockdep.
-> > > > > This case is *NOT* allowed by DEPT cuz it's a *DEADLOCK*.
-> > > > 
-> > > > Yeah, in previous threads we discussed this [1]
-> > > > 
-> > > > And the case was:
-> > > > 	scan_mutex -> object_lock -> kmemleak_lock -> object_lock
-> > > > And dept reported:
-> > > > 	object_lock -> kmemleak_lock, kmemleak_lock -> object_lock as
-> > > > 	deadlock.
-> > > > 
-> > > > But IIUC - What DEPT reported happens only under scan_mutex and it
-> > > > is not simple just not to take them because the object can be
-> > > > removed from the list and freed while scanning via kmemleak_free()
-> > > > without kmemleak_lock and object_lock.
-> 
-> The above kmemleak sequence shouldn't deadlock since those locks, even
-> if taken in a different order, are serialised by scan_mutex. For various
-> reasons, trying to reduce the latency, I ended up with some
-> fine-grained, per-object locking.
+The following changes since commit ce522ba9ef7e2d9fb22a39eb3371c0c64e2a433e:
 
-I understand why you introduced the fine-grained lock. However, the
-different order should be avoided anyway. As Steven said, Lockdep also
-should've detected this case, say, this would have been detected if
-Lockdep worked correctly.
+  Linux 5.18-rc2 (2022-04-10 14:21:36 -1000)
 
-It's not a technical issue to make a tool skip the reversed order when
-it's already protected by another lock. Because each lock has its own
-purpose as you explained, no body knows if the cases might arise that
-use kmemleak_lock and object_lock only w/o holding scan_mutex someday.
+are available in the Git repository at:
 
-I'm wondering how other folks think this case should be handled tho.
+  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
 
-> For object allocation (rbtree modification) and tree search, we use
-> kmemleak_lock. During scanning (which can take minutes under
-> scan_mutex), we want to prevent (a) long latencies and (b) freeing the
-> object being scanned. We release the locks regularly for (a) and hold
-> the object->lock for (b).
-> 
-> In another thread Byungchul mentioned:
-> 
-> |    context X			context Y
-> | 
-> |    lock mutex A		lock mutex A
-> |    lock B			lock C
-> |    lock C			lock B
-> |    unlock C			unlock B
-> |    unlock B			unlock C
-> |    unlock mutex A		unlock mutex A
-> | 
-> | In my opinion, lock B and lock C are unnecessary if they are always
-> | along with lock mutex A. Or we should keep correct lock order across all
-> | the code.
-> 
-> If these are the only two places, yes, locks B and C would be
-> unnecessary. But we have those locks acquired (not nested) on the
-> allocation path (kmemleak_lock) and freeing path (object->lock). We
-> don't want to block those paths while scan_mutex is held.
-> 
-> That said, we may be able to use a single kmemleak_lock for everything.
-> The object freeing path may be affected slightly during scanning but the
-> code does release it every MAX_SCAN_SIZE bytes. It may even get slightly
-> faster as we'd hammer a single lock (I'll do some benchmarks).
-> 
-> But from a correctness perspective, I think the DEPT tool should be
-> improved a bit to detect when such out of order locking is serialised by
-> an enclosing lock/mutex.
+for you to fetch changes up to 218d921b581eadf312c8ef0e09113b111f104eeb:
 
-Again, I don't think this is a technical issue.
+  fscrypt: add new helper functions for test_dummy_encryption (2022-05-09 16:18:54 -0700)
 
-	Byungchul
-> 
-> -- 
-> Catalin
+----------------------------------------------------------------
+
+Some cleanups for fs/crypto/:
+
+- Split up the misleadingly-named FS_CRYPTO_BLOCK_SIZE constant.
+
+- Consistently report the encryption implementation that is being used.
+
+- Add helper functions for the test_dummy_encryption mount option that
+  work properly with the new mount API.  ext4 and f2fs will use these.
+
+----------------------------------------------------------------
+Eric Biggers (4):
+      fscrypt: split up FS_CRYPTO_BLOCK_SIZE
+      fscrypt: log when starting to use inline encryption
+      fscrypt: factor out fscrypt_policy_to_key_spec()
+      fscrypt: add new helper functions for test_dummy_encryption
+
+ fs/crypto/crypto.c          |  10 ++--
+ fs/crypto/fname.c           |  11 +++-
+ fs/crypto/fscrypt_private.h |  10 +++-
+ fs/crypto/inline_crypt.c    |  33 ++++++++++-
+ fs/crypto/keyring.c         |  64 +++++++++++++++++----
+ fs/crypto/keysetup.c        |  22 ++------
+ fs/crypto/policy.c          | 132 ++++++++++++++++++++++++++------------------
+ fs/ubifs/ubifs.h            |   2 +-
+ include/linux/fscrypt.h     |  51 ++++++++++++++++-
+ 9 files changed, 238 insertions(+), 97 deletions(-)
