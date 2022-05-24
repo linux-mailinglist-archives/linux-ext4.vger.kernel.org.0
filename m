@@ -2,53 +2,74 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 337E6532B8A
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 May 2022 15:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 993A3532FA9
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 May 2022 19:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237837AbiEXNoi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 May 2022 09:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60136 "EHLO
+        id S237930AbiEXRbo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 May 2022 13:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237905AbiEXNog (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 May 2022 09:44:36 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3661B9549D;
-        Tue, 24 May 2022 06:44:34 -0700 (PDT)
-Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4L6wQY6gbZzjX2f;
-        Tue, 24 May 2022 21:43:49 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 24 May 2022 21:44:31 +0800
-Message-ID: <26962b95-1129-60c4-dbde-6fea44c514a6@huawei.com>
-Date:   Tue, 24 May 2022 21:44:31 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
+        with ESMTP id S234928AbiEXRbn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 May 2022 13:31:43 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D8751E3D1;
+        Tue, 24 May 2022 10:31:41 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id c14so17055710pfn.2;
+        Tue, 24 May 2022 10:31:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kFuZ9N+bF1LsZStC5mzy+qqX8B+em2hfNM7QZu/oT0s=;
+        b=dtUHGGvLp9UVnVv4i3d3f4usrVReBiYCXLgE9sUasWYw3k5QKmfBQmn4StK3E7Kg7k
+         0kwMiUCxoIMfzLYgC86pdGsjafMtRP/USyqEZTWokOfQhmYFuZjbxKwjMGycm4li/Z6t
+         e0v7G646WsFM/VJ2rTYIdaFlfUK+QYEKezCH4GWVQftBz72jd7EBz8VCyXz2F8Se9JOL
+         c6zGDgj83gkn883ZY1mwXwiWeBn/J9yyoDBeYZYUqoZnloJZU2YhZEbx27H0woLluK/s
+         6sj9Czj5KUT37J6TYJQI7Mt7tDV2U1F0U7jeBrKLl2VhGGn98el6THATSyiFxG8/6qPV
+         qzmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kFuZ9N+bF1LsZStC5mzy+qqX8B+em2hfNM7QZu/oT0s=;
+        b=deiBt6uIYKn2DXSKClslgqzgRjrQzsKmzwwVOCfZ6Gm64r7Yn82U043hkHP5xaBfQv
+         /TjKrOc2MmixlxxOq32oNhuqsDTsxNvA1FJ6s877wlm9eQ77/iTVzLHCv7UK3qUcTZJG
+         LZYUVG0sF8DBQS0xXWo5xYWvPF6myyXuw/nW4ikhyorQXvBjCIiiXPuc72yEfd7/YQB9
+         +oHuLccbLou6lHl1iFnf++ppH3s4Be9aDImLVzVlIwjDQMJ1jM5qsYFQDARP08rlBpwS
+         reOS72kKdJ+UFLdh0UJ9Y3Z73sXoE4Y9DLuiT3r0YbUCE5LU/X1gWo2A+5bIH+dAT2AQ
+         3GvQ==
+X-Gm-Message-State: AOAM531k3kmsN2SKNqAN4xQTD9iRE15+qsVC2K8Evd4vcKnuIXp8bSYH
+        40ayODoEyKDyQam7ZoQhpaU93sPibdA=
+X-Google-Smtp-Source: ABdhPJwlbuze1usQ+UcKp5UqxHpehCJWDI8CCcaM+yLZfmI+iAOLYniF2Z7md6qa11lActiWXjPBsQ==
+X-Received: by 2002:a62:484:0:b0:50d:a020:88e5 with SMTP id 126-20020a620484000000b0050da02088e5mr29204447pfe.51.1653413500999;
+        Tue, 24 May 2022 10:31:40 -0700 (PDT)
+Received: from localhost ([2406:7400:63:4576:a02e:de5c:9e42:9257])
+        by smtp.gmail.com with ESMTPSA id bb5-20020a170902bc8500b0015e8d4eb24dsm721940plb.151.2022.05.24.10.31.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 May 2022 10:31:40 -0700 (PDT)
+Date:   Tue, 24 May 2022 23:01:35 +0530
+From:   Ritesh Harjani <ritesh.list@gmail.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Baokun Li <libaokun1@huawei.com>, linux-ext4@vger.kernel.org,
+        tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yebin10@huawei.com, yukuai3@huawei.com
 Subject: Re: [PATCH 2/2] ext4: correct the judgment of BUG in
  ext4_mb_normalize_request
-To:     Jan Kara <jack@suse.cz>
-CC:     <lczerner@redhat.com>, <linux-ext4@vger.kernel.org>,
-        <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>, <yebin10@huawei.com>, <yukuai3@huawei.com>,
-        Baokun Li <libaokun1@huawei.com>
+Message-ID: <20220524173135.imboagpi3iqav2cg@riteshh-domain>
 References: <20220521134217.312071-1-libaokun1@huawei.com>
  <20220521134217.312071-3-libaokun1@huawei.com>
- <20220523094023.e3rnile4wh7uiich@quack3.lan>
- <3755e40b-f817-83df-b239-b0697976c272@huawei.com>
- <20220524093026.qhwyibhgg6ulsw6r@quack3.lan>
-From:   Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20220524093026.qhwyibhgg6ulsw6r@quack3.lan>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+ <20220523200844.fal3pmp7epid3rvv@riteshh-domain>
+ <20220523210806.yeapg54ctleocwdn@quack3.lan>
+ <20220524062655.ddiltnfxxhlelfgb@riteshh-domain>
+ <20220524093933.bittzsrrpddttnab@quack3.lan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220524093933.bittzsrrpddttnab@quack3.lan>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,133 +77,159 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-在 2022/5/24 17:30, Jan Kara 写道:
-> On Mon 23-05-22 21:04:16, libaokun (A) wrote:
->> 在 2022/5/23 17:40, Jan Kara 写道:
->>> On Sat 21-05-22 21:42:17, Baokun Li wrote:
->>>> When either of the "start + size <= ac->ac_o_ex.fe_logical" or
->>>> "start > ac->ac_o_ex.fe_logical" conditions is met, it indicates
->>>> that the fe_logical is not in the allocated range.
->>>> In this case, it should be bug_ON.
->>>>
->>>> Fixes: dfe076c106f6 ("ext4: get rid of code duplication")
->>>> Signed-off-by: Baokun Li<libaokun1@huawei.com>
->>> I think this is actually wrong. The original condition checks whether
->>> start + size does not overflow the used integer type. Your condition is
->>> much stronger and I don't think it always has to be true. E.g. allocation
->>> goal block (start variable) can be pushed to larger values by existing
->>> preallocation or so.
->>>
->>> 								Honza
->>>
->> I think there are two reasons for this:
->>
->> First of all, the code here is as follows.
->> ```
->>          size = end - start;
->>          [...]
->> if (start + size <= ac->ac_o_ex.fe_logical &&
->>                          start > ac->ac_o_ex.fe_logical) {
->>                  ext4_msg(ac->ac_sb, KERN_ERR,
->>                           "start %lu, size %lu, fe_logical %lu",
->>                           (unsigned long) start, (unsigned long) size,
->>                           (unsigned long) ac->ac_o_ex.fe_logical);
->> BUG();
->> }
->>          BUG_ON(size <= 0 || size > EXT4_BLOCKS_PER_GROUP(ac->ac_sb));
->> ```
->> First of all, there is no need to compare with ac_o_ex.fe_logical if it is
->> to determine whether there is an overflow.
->> Because the previous logic guarantees start < = ac_o_ex.fe_logical, and
-> How does it guarantee that? The logic:
+On 22/05/24 11:39AM, Jan Kara wrote:
+> On Tue 24-05-22 11:56:55, Ritesh Harjani wrote:
+> > On 22/05/23 11:08PM, Jan Kara wrote:
+> > > On Tue 24-05-22 01:38:44, Ritesh Harjani wrote:
+> > > > On 22/05/21 09:42PM, Baokun Li wrote:
+> > > > > When either of the "start + size <= ac->ac_o_ex.fe_logical" or
+> > > > > "start > ac->ac_o_ex.fe_logical" conditions is met, it indicates
+> > > > > that the fe_logical is not in the allocated range.
+> > > >
+> > > > Sounds about right to me based on the logic in ext4_mb_use_inode_pa().
+> > > > We try to allocate/preallocate such that ac->ac_o_ex.fe_logical should fall
+> > > > within the preallocated range. So if our start or start + size doesn't include
+> > > > fe_logical then it is a bug in the ext4_mb_normalize_request() logic.
+> > >
+> > > I agree ac->ac_o_ex.fe_logical is a goal block. But AFAIK it never was a
+> > > hard guarantee that we would allocate extent that includes that block. It
+> >
+> > Agree that the guarantee is not about the extent which finally gets allocated.
+> > It is only within ext4_mb_normalize_request() that the "start" and "size"
+> > variable calculations is done in such a way that the ac->ac_o_ex.fe_logical
+> > block will always fall within the "start" & "end" boundaries after
+> > normalization.
+> >
+> > That is how it also updates the goal block at the end too. ac->ac_g_ex.
+> >
+> > > was always treated as a hint only. In particular if you look at the logic
+> > > in ext4_mb_normalize_request() it does shift the start of the allocation to
+> > > avoid preallocated ranges etc.
+> >
+> > Yes, I checked the logic of ext4_mb_normalize_request() again.
+> > As I see it (I can be wrong, so please correct me), there is always an attempt
+> > to make "start" & "start + size" such that it covers ac->ac_o_ex.fe_logical
+> > except just one change where we are trimming the size of the request to only
+> > EXT4_BLOCKS_PER_GROUP.
+> >
+> > For e.g. when it compares against preallocated ranges. It has a BUG() which
+> > checks if the ac->ac_o_ex.fe_logical already lies in the preallocated range.
+> > Because then we should never have come here to do allocation of a new block.
+> >
+> > 4143                 /* PA must not overlap original request */
+> > 4144                 BUG_ON(!(ac->ac_o_ex.fe_logical >= pa_end ||
+> > 4145                         ac->ac_o_ex.fe_logical < pa->pa_lstart));
+> > <...>
+> > 4152                 BUG_ON(pa->pa_lstart <= start && pa_end >= end);
+> >
+> > Then after skipping the preallocated regions which doesn't fall in between
+> > "start" and "end"...
+> >
+> > 4147                 /* skip PAs this normalized request doesn't overlap with */
+> > 4148                 if (pa->pa_lstart >= end || pa_end <= start) {
+> > 4149                         spin_unlock(&pa->pa_lock);
+> > 4150                         continue;
+> > 4151                 }
+> >
+> > ...it adjusts "start" and "end" boundary according to allocated PAs boundaries
+> > such that fe_logical is always in between "start" and "end".
+> >
+> > 4154                 /* adjust start or end to be adjacent to this pa */
+> > 4155                 if (pa_end <= ac->ac_o_ex.fe_logical) {
+> > 4156                         BUG_ON(pa_end < start);
+> > 4157                         start = pa_end;
+> > 4158                 } else if (pa->pa_lstart > ac->ac_o_ex.fe_logical) {
+> > 4159                         BUG_ON(pa->pa_lstart > end);
+> > 4160                         end = pa->pa_lstart;
+> > 4161                 }
+> >
+> >
+> >
+> > > so I don't see how we are guaranteed that
+> > > ext4_mb_normalize_request() will result in an allocation request that
+> > > includes ac->ac_o_ex.fe_logical.
+> >
+> > It could be I am wrong, but looks like ext4_mb_normalize_request() keeps
+> > ac->ac_o_ex.fe_logical within "start" and "end" of allocation request.
+> > And then updates the goal block.
+> >
+> > 4196         ac->ac_g_ex.fe_logical = start;
+> > 4197         ac->ac_g_ex.fe_len = EXT4_NUM_B2C(sbi, size);
+> >
+> > Thoughts?
 >
->          if (ar->pleft && start <= ar->lleft) {
->                  size -= ar->lleft + 1 - start;
->                  start = ar->lleft + 1;
->          }
+> Right, after some more inspection the only thing I'm concerned about is:
 >
-> can move 'start' to further blocks...
-This is not the case. According to the code of the preceding process,
-ar->pleft and ar->pright are assigned values in ext4_ext_map_blocks.
-ar->pleft is the first allocated block found to the left by map->m_lblk 
-(that is, fe_logical),
-and ar->pright is the first allocated block found to the right.
-ar->lleft and ar->lright are logical block numbers, so there must be 
-"ar->lleft < ac_o_ex.fe_logical < ar->lright".
+>         /* don't cover already allocated blocks in selected range */
+>         if (ar->pleft && start <= ar->lleft) {
+>                 size -= ar->lleft + 1 - start;
+>                 start = ar->lleft + 1;
+>         }
 >
->> limits the scope of size in
->> "BUG_ON (size < = 0 | | size > EXT4_BLOCKS_PER_GROUP (ac- > ac_sb))"
->> immediately following.
-> OK, but what guarantees that ac_o_ex.fe_logical < UINT_MAX - size?
-When ac_o_ex.fe_logical is too large to overflow, predict filesize 
-enters the last branch.
-In this case, start = ac->ac_o_ex.fe_logical and size = ac->ac_o_ex.fe_len.
-However, the overflow is checked in ext4_ext_check_overlap of 
-ext4_ext_map_blocks.
-The code is as follows:
-```
-1898         /* check for wrap through zero on extent logical start block*/
-1899         if (b1 + len1 < b1) {
-1900                 len1 = EXT_MAX_BLOCKS - b1;
-1901                 newext->ee_len = cpu_to_le16(len1);
-1902                 ret = 1;
-1903         }
-```
-Therefore, no overflow occurs.
->
->> Secondly, the following code flow also reflects this logic.
->>
->>             ext4_mb_normalize_request
->>              >>> start + size <= ac->ac_o_ex.fe_logical
->>             ext4_mb_regular_allocator
->>              ext4_mb_simple_scan_group
->>               ext4_mb_use_best_found
->>                ext4_mb_new_preallocation
->>                 ext4_mb_new_inode_pa
->>                  ext4_mb_use_inode_pa
->>                   >>> set ac->ac_b_ex.fe_len <= 0
->>             ext4_mb_mark_diskspace_used
->>              >>> BUG_ON(ac->ac_b_ex.fe_len <= 0);
->>
->> In ext4_mb_use_inode_pa, you have the following code.
->> ```
->> start = pa->pa_pstart + (ac->ac_o_ex.fe_logical - pa->pa_lstart);
->> end = min(pa->pa_pstart + EXT4_C2B(sbi, pa->pa_len), start + EXT4_C2B(sbi,
->> ac->ac_o_ex.fe_len));
->> len = EXT4_NUM_B2C(sbi, end - start);
->> ac->ac_b_ex.fe_len = len;
->> ```
->> The starting position in ext4_mb_mark_diskspace_used will be assert.
->> BUG_ON(ac->ac_b_ex.fe_len <= 0);
->>   
->> When end == start + EXT4_C2B(sbi, ac->ac_o_ex.fe_len) is used, the value of
->> end - start must be greater than 0.
->> However, when end == pa->pa_pstart + EXT4_C2B(sbi, pa->pa_len) occurs, this
->> bug_ON may be triggered.
->> When this bug_ON is triggered, that is,
->>
->> ac->ac_b_ex.fe_len <= 0
->> end - start <= 0
->> end <= start
->> pa->pa_pstart + EXT4_C2B(sbi, pa->pa_len) <= pa->pa_pstart +
->> (ac->ac_o_ex.fe_logical - pa->pa_lstart)
->> pa->pa_len <= ac->ac_o_ex.fe_logical - pa->pa_lstart
->> pa->pa_lstart + pa->pa_len <= ac->ac_o_ex.fe_logical
->> start + size <= ac->ac_o_ex.fe_logical
->>
->> So I think that "&&" here should be changed to "||".
-> Sorry, I still disagree. After some more code reading I agree that
-> ac->ac_o_ex.fe_logical is the logical block where we want allocated blocks
-> to be placed in the inode so logical extent of allocated blocks should include
-> ac->ac_o_ex.fe_logical. But I would be reluctant to make assertion you
-> suggest unless we make sure ac->ac_o_ex.fe_logical in unallocated (in which
-> case we can also remove some other code from ext4_mb_normalize_request()).
->
-> 									Honza
->
-What codes are you referring to that can be deleted?
+> which can shift start beyond ac->ac_o_ex.fe_logical if the block would be
+> already allocated. But I guess in that case we should not be calling
+> ext4_mb_normalize_request()? ... some more code digging .. Yes, that is
+> guaranteed in how lleft is initialized in ext4_ext_map_blocks().
 
--- 
-With Best Regards,
-Baokun Li
+Yes.
+
+> So OK, I withdraw my objection to the stronger check but the changelog really needs
+
+Thanks Jan for confirming it.
+
+
+> to do a better job to explain why the stronger condition should be true.
+
+Agreed.
+
+
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 252c168454c7..9e7c145e9aa2 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -4179,7 +4179,22 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
+        }
+        rcu_read_unlock();
+
+-       if (start + size <= ac->ac_o_ex.fe_logical &&
++       /*
++        * In this function "start" and "size" are normalized for better
++        * alignment and length such that we could preallocate more blocks.
++        * This normalization is done such that original request of
++        * ac->ac_o_ex.fe_logical & fe_len should always lie within "start" and
++        * "size" boundaries.
+
+Does above comment look good to you?
+
+
++        * (Note fe_len can be relaxed since FS block allocation API does not
++        * provide gurantee on number of contiguous blocks allocation since that
++        * depends upon free space left, etc).
++        * In case of inode pa, later we use the allocated blocks
++        * [pa_start + fe_logical - pa_lstart, fe_len/size] from the preallocated
++        * range of goal/best blocks [start, size] to put it at the
++        * ac_o_ex.fe_logical extent of this inode.
++        * (See ext4_mb_use_inode_pa() for more details)
++        */
+
+^^^ We can even put more info if needed (maybe in commit message?)
+
++       if (start + size <= ac->ac_o_ex.fe_logical ||
+                        start > ac->ac_o_ex.fe_logical) {
+                ext4_msg(ac->ac_sb, KERN_ERR,
+                         "start %lu, size %lu, fe_logical %lu",
+
+FYI - I ran the fsstress test (with -g 256) shared by Baokun with only above
+change (&& -> ||) and not the original fix. And I see that we can hit this
+mentioned BUG() now.
+
+<logs>
+========
+[  599.619875] EXT4-fs (loop2): start 692, size 196, fe_logical 982
+	...I think we should also add (orig_size >> bsbits) in above print msg ^^
+
+[  599.621043] ------------[ cut here ]------------
+[  599.625099] kernel BUG at fs/ext4/mballoc.c:4188!
+
+-ritesh
 
