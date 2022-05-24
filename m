@@ -2,169 +2,231 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B86855326AB
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 May 2022 11:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A63532A1E
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 May 2022 14:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231688AbiEXJjl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 May 2022 05:39:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55480 "EHLO
+        id S237196AbiEXMLs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 May 2022 08:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229967AbiEXJjj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 May 2022 05:39:39 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB1764BFB;
-        Tue, 24 May 2022 02:39:38 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id EDD131F8A8;
-        Tue, 24 May 2022 09:39:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1653385176; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        with ESMTP id S233396AbiEXMLs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 May 2022 08:11:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8A1A139805
+        for <linux-ext4@vger.kernel.org>; Tue, 24 May 2022 05:11:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1653394305;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=I1vnc7DGQZOKjaBQO5ZBW5z3EXN52AB+YPt8iluOkyQ=;
-        b=pK1r0ZixEaieqwvUT7+uk46jeL4h3euKR8tB8CbxURPywtsigt14Coq6r97AX0GxbniUmx
-        ehg3scS62klIa+eJkeBZs34YZ7uzMQ2E2KJGUWzZwkcxrmI6hmpUoLJ220yn7IaQq0E5GQ
-        +Gu2WY9gfNP2rhL512f/0YY/gAc30dU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1653385176;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=I1vnc7DGQZOKjaBQO5ZBW5z3EXN52AB+YPt8iluOkyQ=;
-        b=by8U60TOgXgglVlz6aYR/x0u80sJWGn4DMwCKkEtNLb8uqcI0Sp1hg4y45+tvA0YNYOMeP
-        OvMB8oRJnCkq8VCw==
-Received: from quack3.suse.cz (unknown [10.100.224.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        bh=sEI/Dcu3+QzIxfHlZeMPW7wnTyUUPuRL46h4raxehBI=;
+        b=Lur8BeIuI4XLG83JSBiLTSvTrLQEZEiVCCw/+CM/sEolcty7U0+3e8yBs+WkAU37X+27Oe
+        9njnxqWKsSAaNl3z3fQ4spoKvER9+f8HM6VO9Q93+cHgdR95mNIyGIUvmYZcvmPao0mtPD
+        qeG3Wwqq6hPnqrt2r5Sj9r8DG4agMjo=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-646-Zy6FR-paNJqN21ixPH2u8g-1; Tue, 24 May 2022 08:11:44 -0400
+X-MC-Unique: Zy6FR-paNJqN21ixPH2u8g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id CB7272C141;
-        Tue, 24 May 2022 09:39:36 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 811B1A0632; Tue, 24 May 2022 11:39:33 +0200 (CEST)
-Date:   Tue, 24 May 2022 11:39:33 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ritesh Harjani <ritesh.list@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, Baokun Li <libaokun1@huawei.com>,
-        linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, yebin10@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH 2/2] ext4: correct the judgment of BUG in
- ext4_mb_normalize_request
-Message-ID: <20220524093933.bittzsrrpddttnab@quack3.lan>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DB9501C3E985;
+        Tue, 24 May 2022 12:11:43 +0000 (UTC)
+Received: from fedora (unknown [10.40.194.98])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E84401121315;
+        Tue, 24 May 2022 12:11:41 +0000 (UTC)
+Date:   Tue, 24 May 2022 14:11:39 +0200
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     "libaokun (A)" <libaokun1@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yebin10@huawei.com, yukuai3@huawei.com,
+        Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH 1/2] ext4: fix bug_on ext4_mb_use_inode_pa
+Message-ID: <20220524121139.cm6475vnmkupsp5q@fedora>
 References: <20220521134217.312071-1-libaokun1@huawei.com>
- <20220521134217.312071-3-libaokun1@huawei.com>
- <20220523200844.fal3pmp7epid3rvv@riteshh-domain>
- <20220523210806.yeapg54ctleocwdn@quack3.lan>
- <20220524062655.ddiltnfxxhlelfgb@riteshh-domain>
+ <20220521134217.312071-2-libaokun1@huawei.com>
+ <20220523095803.gomx2q62ymocrkrz@fedora>
+ <2525e39a-5be9-bae1-b77d-60f583892868@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20220524062655.ddiltnfxxhlelfgb@riteshh-domain>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2525e39a-5be9-bae1-b77d-60f583892868@huawei.com>
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.3
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 24-05-22 11:56:55, Ritesh Harjani wrote:
-> On 22/05/23 11:08PM, Jan Kara wrote:
-> > On Tue 24-05-22 01:38:44, Ritesh Harjani wrote:
-> > > On 22/05/21 09:42PM, Baokun Li wrote:
-> > > > When either of the "start + size <= ac->ac_o_ex.fe_logical" or
-> > > > "start > ac->ac_o_ex.fe_logical" conditions is met, it indicates
-> > > > that the fe_logical is not in the allocated range.
-> > >
-> > > Sounds about right to me based on the logic in ext4_mb_use_inode_pa().
-> > > We try to allocate/preallocate such that ac->ac_o_ex.fe_logical should fall
-> > > within the preallocated range. So if our start or start + size doesn't include
-> > > fe_logical then it is a bug in the ext4_mb_normalize_request() logic.
-> >
-> > I agree ac->ac_o_ex.fe_logical is a goal block. But AFAIK it never was a
-> > hard guarantee that we would allocate extent that includes that block. It
+On Mon, May 23, 2022 at 08:19:03PM +0800, libaokun (A) wrote:
+> 在 2022/5/23 17:58, Lukas Czerner 写道:
+> > On Sat, May 21, 2022 at 09:42:16PM +0800, Baokun Li wrote:
+> > > Hulk Robot reported a BUG_ON:
+> > > ==================================================================
+> > > kernel BUG at fs/ext4/mballoc.c:3211!
+> > > [...]
+> > > RIP: 0010:ext4_mb_mark_diskspace_used.cold+0x85/0x136f
+> > > [...]
+> > > Call Trace:
+> > >   ext4_mb_new_blocks+0x9df/0x5d30
+> > >   ext4_ext_map_blocks+0x1803/0x4d80
+> > >   ext4_map_blocks+0x3a4/0x1a10
+> > >   ext4_writepages+0x126d/0x2c30
+> > >   do_writepages+0x7f/0x1b0
+> > >   __filemap_fdatawrite_range+0x285/0x3b0
+> > >   file_write_and_wait_range+0xb1/0x140
+> > >   ext4_sync_file+0x1aa/0xca0
+> > >   vfs_fsync_range+0xfb/0x260
+> > >   do_fsync+0x48/0xa0
+> > > [...]
+> > > ==================================================================
+> > > 
+> > > Above issue may happen as follows:
+> > > -------------------------------------
+> > > do_fsync
+> > >   vfs_fsync_range
+> > >    ext4_sync_file
+> > >     file_write_and_wait_range
+> > >      __filemap_fdatawrite_range
+> > >       do_writepages
+> > >        ext4_writepages
+> > >         mpage_map_and_submit_extent
+> > >          mpage_map_one_extent
+> > >           ext4_map_blocks
+> > >            ext4_mb_new_blocks
+> > >             ext4_mb_normalize_request
+> > >              >>> start + size <= ac->ac_o_ex.fe_logical
+> > >             ext4_mb_regular_allocator
+> > >              ext4_mb_simple_scan_group
+> > >               ext4_mb_use_best_found
+> > >                ext4_mb_new_preallocation
+> > >                 ext4_mb_new_inode_pa
+> > >                  ext4_mb_use_inode_pa
+> > >                   >>> set ac->ac_b_ex.fe_len <= 0
+> > >             ext4_mb_mark_diskspace_used
+> > >              >>> BUG_ON(ac->ac_b_ex.fe_len <= 0);
+> > > 
+> > > we can easily reproduce this problem with the following commands:
+> > > 	`fallocate -l100M disk`
+> > > 	`mkfs.ext4 -b 1024 -g 256 disk`
+> > > 	`mount disk /mnt`
+> > > 	`fsstress -d /mnt -l 0 -n 1000 -p 1`
+> > > 
+> > > The size must be smaller than or equal to EXT4_BLOCKS_PER_GROUP.
+> > > Therefore, "start + size <= ac->ac_o_ex.fe_logical" may occur
+> > > when the size is truncated. So start should be the start position of
+> > > the group where ac_o_ex.fe_logical is located after alignment.
+> > > In addition, when the value of fe_logical or EXT4_BLOCKS_PER_GROUP
+> > > is very large, the value calculated by start_off is more accurate.
+> > > 
+> > > Fixes: cd648b8a8fd5 ("ext4: trim allocation requests to group size")
+> > > Reported-by: Hulk Robot<hulkci@huawei.com>
+> > > Signed-off-by: Baokun Li<libaokun1@huawei.com>
+> > > ---
+> > >   fs/ext4/mballoc.c | 11 +++++++++++
+> > >   1 file changed, 11 insertions(+)
+> > > 
+> > > diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> > > index ea653d19f9ec..32410b79b664 100644
+> > > --- a/fs/ext4/mballoc.c
+> > > +++ b/fs/ext4/mballoc.c
+> > > @@ -4107,6 +4107,17 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
+> > >   	size = size >> bsbits;
+> > >   	start = start_off >> bsbits;
+> > > +	/*
+> > > +	 * Because size must be less than or equal to
+> > > +	 * EXT4_BLOCKS_PER_GROUP, start should be the start position of
+> > > +	 * the group where ac_o_ex.fe_logical is located after alignment.
+> > > +	 * In addition, when the value of fe_logical or
+> > > +	 * EXT4_BLOCKS_PER_GROUP is very large, the value calculated
+> > > +	 * by start_off is more accurate.
+> > > +	 */
+> > > +	start = max(start, round_down(ac->ac_o_ex.fe_logical,
+> > > +			EXT4_BLOCKS_PER_GROUP(ac->ac_sb)));
+> > This does not look right. The second argument in round_down() must be a
+> > power of two, but there is no such restriction on blocks per group.
 > 
-> Agree that the guarantee is not about the extent which finally gets allocated.
-> It is only within ext4_mb_normalize_request() that the "start" and "size"
-> variable calculations is done in such a way that the ac->ac_o_ex.fe_logical
-> block will always fall within the "start" & "end" boundaries after
-> normalization.
+> Indeed, block peer group size should be a multiple of 8. I forgot.
 > 
-> That is how it also updates the goal block at the end too. ac->ac_g_ex.
+> Thank you very much for your correction.
 > 
-> > was always treated as a hint only. In particular if you look at the logic
-> > in ext4_mb_normalize_request() it does shift the start of the allocation to
-> > avoid preallocated ranges etc.
+> > Also I am not quite sure why do we adjust the start in this way at all?
+> > If we found what seems to be a preallocated extent which we can use and
+> > we're actually going to use 0 lenght extent it seems like the problem is
+> > somewhere else? Can you desribe the problem a bit more in detail?
+> > 
+> > Maybe I need to look at the ext4_mb_normalize_request() some more.
+> > 
+> > -Lukas
+> The logical block map reached before the problem stack was 1011.
 > 
-> Yes, I checked the logic of ext4_mb_normalize_request() again.
-> As I see it (I can be wrong, so please correct me), there is always an attempt
-> to make "start" & "start + size" such that it covers ac->ac_o_ex.fe_logical
-> except just one change where we are trimming the size of the request to only
-> EXT4_BLOCKS_PER_GROUP.
+> The estimated location of the size logical block of the inde plus the
+> required allocation length 7, the size is 1018.
 > 
-> For e.g. when it compares against preallocated ranges. It has a BUG() which
-> checks if the ac->ac_o_ex.fe_logical already lies in the preallocated range.
-> Because then we should never have come here to do allocation of a new block.
+> But the i_size of inode is 1299, so the size is 1299, the aligned size is
+> 2048, and the end is 2048.
 > 
-> 4143                 /* PA must not overlap original request */
-> 4144                 BUG_ON(!(ac->ac_o_ex.fe_logical >= pa_end ||
-> 4145                         ac->ac_o_ex.fe_logical < pa->pa_lstart));
-> <...>
-> 4152                 BUG_ON(pa->pa_lstart <= start && pa_end >= end);
+> Because of the restriction of ar -> pleft, start==648.
 > 
-> Then after skipping the preallocated regions which doesn't fall in between
-> "start" and "end"...
+> EXT4_BLOCKS_PER_GROUP (ac- > ac_sb) is 256, so the size is 256 and the end
+> is 904.
 > 
-> 4147                 /* skip PAs this normalized request doesn't overlap with */
-> 4148                 if (pa->pa_lstart >= end || pa_end <= start) {
-> 4149                         spin_unlock(&pa->pa_lock);
-> 4150                         continue;
-> 4151                 }
+> It is not normal to truncate here, the end is less than 1299 of the target
+> logical block,
+> that is, the allocated range does not contain the target logical block.
 > 
-> ...it adjusts "start" and "end" boundary according to allocated PAs boundaries
-> such that fe_logical is always in between "start" and "end".
+> Then this new scope conflicts with the previous PA, as follows:
 > 
-> 4154                 /* adjust start or end to be adjacent to this pa */
-> 4155                 if (pa_end <= ac->ac_o_ex.fe_logical) {
-> 4156                         BUG_ON(pa_end < start);
-> 4157                         start = pa_end;
-> 4158                 } else if (pa->pa_lstart > ac->ac_o_ex.fe_logical) {
-> 4159                         BUG_ON(pa->pa_lstart > end);
-> 4160                         end = pa->pa_lstart;
-> 4161                 }
+>           pa_start-506           pa_end-759
+>  |____________P________V_________P__________V_____________l________|
+>  0                       start-648                   end-904 logical-1299 
+> 2048
 > 
+> In this case, start is changed to pa_end, that is, 759.
+> In this case, a bug_ON is reported in ext4_mb_mark_diskspace_used.
 > 
+> The problem is caused by the truncation introduced in the
+> cd648b8a8fd5 ("ext4: trim allocation requests to group size").
+> The size must be smaller than or equal to EXT4_BLOCKS_PER_GROUP.
+> However, the truncation method is incorrect. The group where the logical is
+> located should be used for allocation. If the value of EXT4_BLOCKS_PER_GROUP
+> is 256, size 2048 can be divided into eight groups. If the value of logical
+> is 1299,
+> the value of logical must be in the sixth group, that is,
+> start=1299/256*256=5*256=1280, end=size+1280=1536.
+> Then, the value range can be further narrowed down based on other
+> restrictions.
 > 
-> > so I don't see how we are guaranteed that
-> > ext4_mb_normalize_request() will result in an allocation request that
-> > includes ac->ac_o_ex.fe_logical.
-> 
-> It could be I am wrong, but looks like ext4_mb_normalize_request() keeps
-> ac->ac_o_ex.fe_logical within "start" and "end" of allocation request.
-> And then updates the goal block.
-> 
-> 4196         ac->ac_g_ex.fe_logical = start;
-> 4197         ac->ac_g_ex.fe_len = EXT4_NUM_B2C(sbi, size);
-> 
-> Thoughts?
+>                                    1024     1280     1536
+> |________|________|________|________|________|__l______|________|________|
+> 0 group1 group2 group3 group4 group5 group6 group7 group8 2048
 
-Right, after some more inspection the only thing I'm concerned about is:
+Ok, thanks for the explanation it makes sense now, although should not
+we just adjust the start only when the size is being truncated to the
+EXT4_BLOCKS_PER_GROUP?
 
-        /* don't cover already allocated blocks in selected range */
-        if (ar->pleft && start <= ar->lleft) {
-                size -= ar->lleft + 1 - start;
-                start = ar->lleft + 1;
-        }
+-Lukas
 
-which can shift start beyond ac->ac_o_ex.fe_logical if the block would be
-already allocated. But I guess in that case we should not be calling
-ext4_mb_normalize_request()? ... some more code digging .. Yes, that is
-guaranteed in how lleft is initialized in ext4_ext_map_blocks(). So OK, I
-withdraw my objection to the stronger check but the changelog really needs
-to do a better job to explain why the stronger condition should be true.
+> 
+> > > +
+> > >   	/* don't cover already allocated blocks in selected range */
+> > >   	if (ar->pleft && start <= ar->lleft) {
+> > >   		size -= ar->lleft + 1 - start;
+> > > -- 
+> > > 2.31.1
+> > > 
+> > .
+> 
+> -- 
+> With Best Regards,
+> Baokun Li
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
