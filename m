@@ -2,369 +2,220 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E212533134
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 May 2022 21:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38BDB533154
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 May 2022 21:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231477AbiEXTDZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 May 2022 15:03:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55678 "EHLO
+        id S240909AbiEXTHe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 May 2022 15:07:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240886AbiEXTDK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 May 2022 15:03:10 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on20611.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e88::611])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3345459B9A;
-        Tue, 24 May 2022 12:01:33 -0700 (PDT)
+        with ESMTP id S240917AbiEXTHc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 May 2022 15:07:32 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2079.outbound.protection.outlook.com [40.107.220.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D6F31512;
+        Tue, 24 May 2022 12:07:24 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jSst0GeLOFskrVCpMUfTRZYz7af9xtvyojoYsGEsOH3lHWTRR0kwDb3dtVf1QChZwh7Ga0HTyONGtKioFNRxUtNi8JtboAGzh4InVfz+4Wj7ooPQ7n+q8a9muzpYeU2R1zf67+ac3Q0pAuQfjNYjWDfXYbBZj90yNDC9cYQW+LTDJb6Pc0C+S2b3aR3JcZPEJlnnZqn909SgdNVJ0CdXXfMRa1B7YJbT2Qu6svBkaOZpt+Wo74dyReLxxpOyFCFfOPO0k7dORt7ikp0GdKRSi/7086fkfvQF5HyXcEHDyi/EmH64mhKORiUl6xtIMnc6vfS0lmNWVYvkQQVIHs5KLg==
+ b=iwvunpSdVUYsfdJ9HQmuKkp08neG2XufEUy5qLjugu7g807J0q9qPy4uUHc3CMfX6ADmK0D+BphR5+2ghuO+2BOI7dPcdAe3FuaWZ+rL9/M6p9mRphyP0agczCPiS781X8YZTnh/Pak7M8eMgiKIzoVb/JxuChnOFd4//t0O4M8a95U/5ZFSDE7UfomgXmlJqLczJvmDHw10sMgb7ZU58wmgzTGOssat5NmM4A9AwuBVmM0ebMh8kwAbNN5Dz4nDVhkKL4guJ9wM7+FGV9ilQKOKpwHriaaQ4dcapw0qvtvuxKy75jj2/B089/3Jh0j+yTHOOWAoMILukmbjTpAhpA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uxITL+yeqchm5tgX103KqrEym+cCKMiq2Iza7NC5JvM=;
- b=T2yjDIG5mABfttC0tcwww66Oi87EaidFOPbqm1TdgLEVlP3x7Zb3UVLlRHJ8MShOlb0RzYFZaYeYsvoBIWepZElh1brOzvmQFnYHkXjdUt2zcN4x5E7Jefrkxa+7b4u7IYswj/+B6FppBr0yr3ueGu8G1/gOLZRzqrJk7OPQ6gAgz1e6p+s9PFZPUmzu4aK+w1evvBKXHosHk9pzHnVVCPv4eteu1RbAbERDiaKIMPXtIbIqffbwTTL1So5saVMi8DUTYGv/RUJO+5PoMYMHdmfjq6+0uougURrmPZUwtcPz90FZ/2fc6KsPVBFkzld/auDePec5hTYQLjG0iesdXg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+ bh=Eqx403lcDCZ7rTo+cR2k6lk04wk+W+uduTiqrZ9srsk=;
+ b=eT+qwaFK53elV1sfcXDSLKsVDy/Ncrn0SlbhZ8mtSesAXiWRnDW8iv/dveUxl1eMzqhfSvlAVLR2gtYoivclCzUcJkxk55uOGnTlTAmddopnwImZLy+mI4jyNCrJpv7EADgHiWc7u7J7cBDfDz894aylsnSiDGSL4N18utGbJNwOIGQmyazYZv6xK0JAbp35yVCjzvjqFJ2XD5mOCIC/Il5xEkFEzyB0U9REANJPIol/0O/ccryHczH28k0VbTXNNwCP4V5sI7/EikwqXD5HXLZvZYZLP0XenjN9dNlPIiqWOsDs07nXgNY1PCq8FcuxALoU5sp+o5pmkB4zHsMp8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=nvidia.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uxITL+yeqchm5tgX103KqrEym+cCKMiq2Iza7NC5JvM=;
- b=Zvj7uI+8VOVm8azYqm7kYkRyL6q9lHWEvzmY3XiIj+iZaBlADCmIa0W81AsvzN9n7ERhw8595J45gC/E9HKtahXmEe8Pq7YQHEeVxULsOlzX8UOhyjBzzetAtXB6HIRJxJzbos5NAq6fc8P1NoTeA40JlUcgSZpkMK4tFDYU9SQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2717.namprd12.prod.outlook.com (2603:10b6:805:68::29)
- by BN8PR12MB3347.namprd12.prod.outlook.com (2603:10b6:408:43::32) with
+ bh=Eqx403lcDCZ7rTo+cR2k6lk04wk+W+uduTiqrZ9srsk=;
+ b=4YvjjVXOM53FZPBrY2wZW2t/WO8MuvXh7T/0E3xMlcmHKCwgihV9Tz5iItEdhiWxpf9LWqWsK0OIyQGRlS65R2kFja2OL+aTSzipou2XYzEQY6RJZ9yC+9x0LwfIl14rOukNjW/dftlzvYiesm+fQJUsutHSHkLZkvBs9Fejl9Q=
+Received: from DM5PR17CA0063.namprd17.prod.outlook.com (2603:10b6:3:13f::25)
+ by MW2PR12MB2553.namprd12.prod.outlook.com (2603:10b6:907:9::32) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5293.13; Tue, 24 May
- 2022 19:01:11 +0000
-Received: from SN6PR12MB2717.namprd12.prod.outlook.com
- ([fe80::b9a8:66b3:9ed6:2db]) by SN6PR12MB2717.namprd12.prod.outlook.com
- ([fe80::b9a8:66b3:9ed6:2db%5]) with mapi id 15.20.5273.023; Tue, 24 May 2022
- 19:01:11 +0000
-Message-ID: <b6e1c1dc-0f7a-42af-cbfe-7f7a8068a23a@amd.com>
-Date:   Tue, 24 May 2022 14:01:07 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH v2 11/13] mm: handling Non-LRU pages returned by
- vm_normal_pages
-Content-Language: en-US
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     jgg@nvidia.com, david@redhat.com, Felix.Kuehling@amd.com,
-        linux-mm@kvack.org, rcampbell@nvidia.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        hch@lst.de, jglisse@redhat.com, willy@infradead.org,
-        akpm@linux-foundation.org
-References: <20220516231432.20200-1-alex.sierra@amd.com>
- <20220516231432.20200-12-alex.sierra@amd.com>
- <87wnech1as.fsf@nvdebian.thelocal>
-From:   "Sierra Guiza, Alejandro (Alex)" <alex.sierra@amd.com>
-In-Reply-To: <87wnech1as.fsf@nvdebian.thelocal>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MN2PR17CA0031.namprd17.prod.outlook.com
- (2603:10b6:208:15e::44) To SN6PR12MB2717.namprd12.prod.outlook.com
- (2603:10b6:805:68::29)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5273.17; Tue, 24 May
+ 2022 19:07:21 +0000
+Received: from DM6NAM11FT016.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:13f:cafe::28) by DM5PR17CA0063.outlook.office365.com
+ (2603:10b6:3:13f::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5293.13 via Frontend
+ Transport; Tue, 24 May 2022 19:07:21 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DM6NAM11FT016.mail.protection.outlook.com (10.13.173.139) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.5273.14 via Frontend Transport; Tue, 24 May 2022 19:07:21 +0000
+Received: from alex-MS-7B09.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Tue, 24 May
+ 2022 14:07:16 -0500
+From:   Alex Sierra <alex.sierra@amd.com>
+To:     <jgg@nvidia.com>
+CC:     <david@redhat.com>, <Felix.Kuehling@amd.com>, <linux-mm@kvack.org>,
+        <rcampbell@nvidia.com>, <linux-ext4@vger.kernel.org>,
+        <linux-xfs@vger.kernel.org>, <amd-gfx@lists.freedesktop.org>,
+        <dri-devel@lists.freedesktop.org>, <hch@lst.de>,
+        <jglisse@redhat.com>, <apopple@nvidia.com>, <willy@infradead.org>,
+        <akpm@linux-foundation.org>
+Subject: [PATCH v3 00/13] Add MEMORY_DEVICE_COHERENT for coherent device memory mapping
+Date:   Tue, 24 May 2022 14:06:19 -0500
+Message-ID: <20220524190632.3304-1-alex.sierra@amd.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 21ce60cd-9e6d-4dff-efd8-08da3db7c483
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3347:EE_
-X-Microsoft-Antispam-PRVS: <BN8PR12MB334712FA8D055B8D78F63E61FDD79@BN8PR12MB3347.namprd12.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: f194055f-5dd9-4785-1124-08da3db8a14a
+X-MS-TrafficTypeDiagnostic: MW2PR12MB2553:EE_
+X-Microsoft-Antispam-PRVS: <MW2PR12MB25538D1F2BDE467368A15655FDD79@MW2PR12MB2553.namprd12.prod.outlook.com>
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CDVTCJrzjNjUTS0FmtR7c4EOwAICSVtHs21XAjk9qP9YmWdaq6Wz0yVLitaxgNJDUrQ+JhmHgwHhEkqVQSUoHNHqrGo7YkJh+ENFafiWmwZL1v/K+gV6i1xeN8N1maRTcXr4IUDDUG1rsX8EtrdCxfV4M7/coxL7B5A0dyClb36ZeFJLoCz1KE6wEwcPYdl1jZiDToAyJiJoi9CRtg68rOE7qlfSAoiQ7CfW2V+ctQbL6CT3oNyydNDSD9TzHTstkB/lg9eo3rJ67eBrahwquCegNIlCLsDUcbTd0orcd4OuDzSqWeLPlaoD56BT+a3lvcjken0O0Cj5On07f4uPO+xsJMDb4RfeflXgdzO7c5RvoLTUlfqqDmXprpCAnq8zldfJgI1lwRQlvNY+xKON1qZYChdCq+9IkvKQYaejDGyt/Hh8l0WK0bP6VRlIyoYc6lBdoCQPBXKOt2suWAeVSxQLR7OEhcFAhYnnZ/DewWfX0TWsfbsOzXgRqP6544pxbWeb+57vTkLJYQQ1/qWB/lBkkB+nIZQYPHetxSnJGpYdLTA+Nmq/2ycTuVoe0iHLvFFjnIPUpsjkBTPA2fXSdW1JN7cYGCXotiG9iMUvcGLNU1WTquRTaCoJy91b4pgD7WZ0dx+lUHqoKZFvYLusIFf67RyrOvNrx/yGV6q+nMipYFkMk4EjSJE96F/PKbryTJmvRpWli9dpkK9srB6dj6G+lbUumIBLHI4Ipl8EEGtSAifdJPM50Yaj1GUNENVq
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2717.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(86362001)(186003)(6916009)(36756003)(7416002)(38100700002)(66476007)(66556008)(4326008)(8676002)(31686004)(316002)(66946007)(6666004)(83380400001)(26005)(5660300002)(8936002)(2616005)(31696002)(2906002)(53546011)(6506007)(508600001)(6486002)(6512007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?K0xiY2ZGSlRiK1huUVIxbjA5QWtlSlQzditENmxiaWp5YklOQjIraXpnbWph?=
- =?utf-8?B?U0lSMTg2RnJjQnZSSUFFdzdiRm5IVURyZmVOdEVMY2RPVHp4U1ozajBMb2Vz?=
- =?utf-8?B?TTVBejcrbnFacTVOaGoxRHhaTSsrUTFUYlRwZmpzaVVSMnhxYUNnRmc4aFJ4?=
- =?utf-8?B?ZHlJcGR0ZzBTT2o1dkVVc2JJVksvcUdPNmMrUkR5TkhGWXZSYzdaMDM0UlRx?=
- =?utf-8?B?ZmN6Smp4dEJGY3d4Y3NxSmMwQkFJYVlxZmFubXFjVFB2MFdrWTQ5aWFJbzZr?=
- =?utf-8?B?SGVhU1ByTVpEZVVZa3ZEbmxBQW03ZlpkZXNZM0d0YWZiT051c1RMRk9pc2V2?=
- =?utf-8?B?bnBkUjdZek5iZURxS1gvallxQTJocTZ4YXdNMUJjTjZJdlhUSzJ0TjBETzdH?=
- =?utf-8?B?TFhyM3lucysrc0d2OTFjMUc0VE83cG9peFgxUXBjRXZiWmtHNzRia2NJWDdP?=
- =?utf-8?B?M2IxTUJXdTM4SzlVMlFHS3BEcmhiRWF5czJEL2R2U0VUU2lXZzlmc3ErcWlT?=
- =?utf-8?B?SkZtSGRHaGl2UWRoWm9FczU0MDRkaklEd1hGSmFkYmRRcmxNN1dXOUV5VDEw?=
- =?utf-8?B?SkVIYmxPbm9LdG9mK0xGRHExZ0ZlWXlxU1NZL3pXd0J1MHBIQkRWanZBN2ov?=
- =?utf-8?B?eUlTWS90SnpqemloNE0zc041WUlsakIzM0FJV3Byc1REWDEwRTFQUDI5RWM1?=
- =?utf-8?B?QXNLL0U4WHp3Rnh3MlNIQm0zTjhqQ2V5ckNhWlN2ZVY0QnFyd3JoNGFFMDVJ?=
- =?utf-8?B?VklqVE14Q3RKWXZ0Nk04Ti92aWU4bDFuVEpLNEdoVnBSSndWUGJXYm96TnAw?=
- =?utf-8?B?ZG5xVUZuVU5NNTVEL1g3eEp5SmM2VnFNUzg0Y1l2SUpReGdQQXczNWxQSXlI?=
- =?utf-8?B?S1Fkb010QXdaSWZtWFMzOHk2TWgvRnN1TVY1bVdBOEM4RnI1ckt0TVJLN1pI?=
- =?utf-8?B?eHhrdmdVKzNKS0g2T2NDR2FCSDZWZTRaWG1lam9FZldLRDArQVhYU2NSZVYy?=
- =?utf-8?B?TVUvaXZiaGxGSW8vRmxGUDFYMWQvOFpyd1J3STBad2F3ZnhFM3R0clJncVpa?=
- =?utf-8?B?MEZ0b3hFV1FVTGhEUlFxTEJIY0ZxR2hOWDdEcXVLZzE4OGpud0lpS0JIZjcv?=
- =?utf-8?B?ZXRhaUxVTk9FWEFiRG1aT25Jb1l5ciswTEJFdEZzbWRzd3UzdU9lMW8wZk52?=
- =?utf-8?B?d3hZNzJmemFHTWZJOU5wdDk0L3F5eEp5VUg3di8wSUN6TDZjZWlWTkF6WlBz?=
- =?utf-8?B?V2lvNldSZjJiYmNyRDd0cVVOc2x2a2ZWaFNJNmwvblJRbldDbGUxems3b2xW?=
- =?utf-8?B?ZWdCWGo5RVgreUtBQkJVdlYzT3FqUGwrSlJPekI0SEptc2R5VG16Z0lEY252?=
- =?utf-8?B?TmVyOE84eW83UkY4eXFtMlNua1BnZjBVbkFCS2NLT0x3dFQxRWNldXJ5MlR5?=
- =?utf-8?B?cm5mUHVLTStPRWFub0NUT0cvSWc5VmNpaTZTc1dvbVU4aDhMK3k4M3A0ajdS?=
- =?utf-8?B?WFlIL1lUOHFKdkhuZ2g5TGNMaXdpQ1EzNU9mckpZSVZjQUI4OG9pdHcybUVM?=
- =?utf-8?B?YUN5eGYvaTFVaCswMExUSU9Vd2pGS2o1Y2RSaTNHWVYyZ3liU04xR3hSVXFr?=
- =?utf-8?B?bldVTWJ1Mms3TldpVHdrMWczRldyUUczaDdVV2YxWlFiaUl0SGI4Q3piMEZQ?=
- =?utf-8?B?OUFkZWJpNnQxbjN4c2w4SW9HSXhSSDJDbUdrMnJycXZKZTFEancvMXpHakpt?=
- =?utf-8?B?TFNybzhtRXdQWG0zREFJNUMwUEV6S3MxOEtLRjBXZW5IVUtEeFhQR21CTTRl?=
- =?utf-8?B?TDhvanNvK2t1OFRaQmpPVkljR2lKdlVDWm44elFXbE80eG8wbnUvbDBBMjdH?=
- =?utf-8?B?aVordlNaT05vZjF3YW5KWHBCMEhaQi9LSjNKMEQ5UVovWFFrdkVENEZaTEVE?=
- =?utf-8?B?WS9wL3VwZjhRWitXcFcxN2JYVkR4U3lzVFBjenZVYXNKa2lkb0kzQjg3ZVIx?=
- =?utf-8?B?bmp1ZWkvK1ZDWGZSVURlQkNNOGo5akR3Ujdiamljd2NSMnQ5SG9aVkdFQ1FQ?=
- =?utf-8?B?S1Jsbms3N2RMOWwzSEhLMnVZM3MwSldIVFRSQ040RXFjYmxGcjN5TFNNTS9n?=
- =?utf-8?B?SlZlUG1iazVKa1lsWjBuaDBra2EyYlMvL3UranNpaDZKeTRMSDlQYkMrRU9j?=
- =?utf-8?B?UytnZnF6SjRMOWgvbzd2N3Q1ZzRTVW9nWlVSdnZKeHdWVDd1aVlSOUpHUTd5?=
- =?utf-8?B?NDNWY1ZjZDFsR0Jib2tJTDc1a0lnNWpWYmNwazQ5c3MxQys1R3p2enIxeUVB?=
- =?utf-8?B?S0JDZlNqaXpCNVk1VU01K0RRalhTL1F1QWpScmhmRlJaZ3Nkb3o2QT09?=
+X-Microsoft-Antispam-Message-Info: NwJqwyaGckPH+wPm+If3CI8gSttFEDNctO0b48drX8uSlOfbT5Lk98N7+h2y/0JObcIFDY6oVmOXpnHM0thkt0tLb4oqSIYPxpf0B9oKw+OyzglJaRoq8nNKFzRnP9QXXsEBLbxSESRCORs5FG8nHMoKTsH19xvrVDqhCuDOCr6xDmSgMVFLC92MSfkX2s7Rx/PDQpHkXnbsyNzZjJC4tgFBHPJ4cqCUB/nyRLS28hJqBF26a4ZcUl3naREE62uAVAB/6QntHFLmZI5nV3fItiMq/vJeHaxiNbC4UDCNm5MIUx9jwaHFjff0COei20wd4ccKbJO2uwzsHQoFQuBxTVXu+IY3gSG1NOrU8VA0Ogzrwp9zTpnlxbqopUkxL0SUn6KVX/cikICgsiTVfqyhZq5omw9fiETZq21dgqw+pw5dyOdUzLyqJmesvb3+67bcM3MCw87Mco5qykqqwmw6kvO5tT4l2Mbh8KoLE8D+ELbLDfV7OioZwfURjQtBIU49wApnd0Zeej8ojH52bX+WttneC53sD6P+vBSKIxzWa/KO1GP5KmitmxYhQB1B0o6vuB61N4KNy6JED+tiz8/XvOHgprLhni8c0/vDC3xK0vXHSPDKk1/ggXwRrXbtoNj7pIKJFvFv3/3zACV1YXEFPrgktNdtwQcQdS0oRUVeKN4VNWCloHTpvyAsN0/SOLocDF67WpZLd1Pci6mK+6MHHQ==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230001)(4636009)(46966006)(36840700001)(40470700004)(1076003)(40460700003)(47076005)(426003)(16526019)(336012)(186003)(83380400001)(81166007)(82310400005)(356005)(7696005)(36860700001)(6916009)(508600001)(316002)(70206006)(70586007)(2906002)(54906003)(2616005)(44832011)(8676002)(8936002)(26005)(5660300002)(7416002)(36756003)(86362001)(4326008)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 21ce60cd-9e6d-4dff-efd8-08da3db7c483
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2717.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 May 2022 19:01:11.4136
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 May 2022 19:07:21.4515
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Network-Message-Id: f194055f-5dd9-4785-1124-08da3db8a14a
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WbF2gdqPBQHu69nfkOS6oEO/SEHhTVcrH/wEImAMoedvW2Cz7YXD7EuwXnQiPUH9Ts/MJBSC8Wbe1sz3/CmY5w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3347
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT016.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR12MB2553
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+This is our MEMORY_DEVICE_COHERENT patch series rebased and updated
+for current 5.18.0
 
-On 5/23/2022 7:02 AM, Alistair Popple wrote:
-> Technically I think this patch should be earlier in the series. As I
-> understand it patch 1 allows DEVICE_COHERENT pages to be inserted in the
-> page tables and therefore makes it possible for page table walkers to
-> see non-LRU pages.
+Changes since the last version:
+- Fixed problems with migration during long-term pinning in
+get_user_pages
+- Open coded vm_normal_lru_pages as suggested in previous code review
+- Update hmm_gup_test with more get_user_pages calls, include
+hmm_cow_in_device in hmm-test.
 
-Patch will reordered in V3.
+This patch series introduces MEMORY_DEVICE_COHERENT, a type of memory
+owned by a device that can be mapped into CPU page tables like
+MEMORY_DEVICE_GENERIC and can also be migrated like
+MEMORY_DEVICE_PRIVATE.
 
-Regards,
-Alex Sierra
+This patch series is mostly self-contained except for a few places where
+it needs to update other subsystems to handle the new memory type.
 
->
-> Some more comments below:
->
-> Alex Sierra <alex.sierra@amd.com> writes:
->
->> With DEVICE_COHERENT, we'll soon have vm_normal_pages() return
->> device-managed anonymous pages that are not LRU pages. Although they
->> behave like normal pages for purposes of mapping in CPU page, and for
->> COW. They do not support LRU lists, NUMA migration or THP.
->>
->> We also introduced a FOLL_LRU flag that adds the same behaviour to
->> follow_page and related APIs, to allow callers to specify that they
->> expect to put pages on an LRU list.
-> This means by default GUP can return non-LRU pages. I didn't see
-> anywhere that would be a problem but I didn't check everything. Did you
-> check this or is there some other reason I've missed that makes this not
-> a problem?
+System stability and performance are not affected according to our
+ongoing testing, including xfstests.
 
-I have double checked all gup and pin_user_pages callers and none of 
-them seem to have interaction with LRU APIs.
+How it works: The system BIOS advertises the GPU device memory
+(aka VRAM) as SPM (special purpose memory) in the UEFI system address
+map.
 
-Regards,
-Alex Sierra
+The amdgpu driver registers the memory with devmap as
+MEMORY_DEVICE_COHERENT using devm_memremap_pages. The initial user for
+this hardware page migration capability is the Frontier supercomputer
+project. This functionality is not AMD-specific. We expect other GPU
+vendors to find this functionality useful, and possibly other hardware
+types in the future.
 
->
-> [...]
->
->> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
->> index a4e5eaf3eb01..eb3cfd679800 100644
->> --- a/mm/khugepaged.c
->> +++ b/mm/khugepaged.c
->> @@ -627,7 +627,7 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
->>   			goto out;
->>   		}
->>   		page = vm_normal_page(vma, address, pteval);
->> -		if (unlikely(!page)) {
->> +		if (unlikely(!page) || unlikely(is_zone_device_page(page))) {
->>   			result = SCAN_PAGE_NULL;
->>   			goto out;
->>   		}
->> @@ -1276,7 +1276,7 @@ static int khugepaged_scan_pmd(struct mm_struct *mm,
->>   			writable = true;
->>
->>   		page = vm_normal_page(vma, _address, pteval);
->> -		if (unlikely(!page)) {
->> +		if (unlikely(!page) || unlikely(is_zone_device_page(page))) {
->>   			result = SCAN_PAGE_NULL;
->>   			goto out_unmap;
->>   		}
->> @@ -1484,7 +1484,8 @@ void collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr)
->>   			goto abort;
->>
->>   		page = vm_normal_page(vma, addr, *pte);
->> -
->> +		if (page && is_zone_device_page(page))
->> +			page = NULL;
->>   		/*
->>   		 * Note that uprobe, debugger, or MAP_PRIVATE may change the
->>   		 * page table, but the new page will not be a subpage of hpage.
->> @@ -1502,6 +1503,8 @@ void collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr)
->>   		if (pte_none(*pte))
->>   			continue;
->>   		page = vm_normal_page(vma, addr, *pte);
->> +		if (page && is_zone_device_page(page))
->> +			goto abort;
-> Are either of these two cases actually possible? DEVICE_COHERENT doesn't
-> currently support THP, so if I'm understanding correctly we couldn't
-> have a pte mapped DEVICE_COHERENT THP right? Assuming that's the case I
-> think WARN_ON_ONCE() would be better.
+Our test nodes in the lab are similar to the Frontier configuration,
+with .5 TB of system memory plus 256 GB of device memory split across
+4 GPUs, all in a single coherent address space. Page migration is
+expected to improve application efficiency significantly. We will
+report empirical results as they become available.
 
-Correct, change included in V3 patch series.
+Coherent device type pages at gup are now migrated back to system
+memory if they are being pinned long-term (FOLL_LONGTERM). The reason
+is, that long-term pinning would interfere with the device memory
+manager owning the device-coherent pages (e.g. evictions in TTM).
+These series incorporate Alistair Popple patches to do this
+migration from pin_user_pages() calls. hmm_gup_test has been added to
+hmm-test to test different get user pages calls.
 
-Regards,
-Alex
+This series includes handling of device-managed anonymous pages
+returned by vm_normal_pages. Although they behave like normal pages
+for purposes of mapping in CPU page tables and for COW, they do not
+support LRU lists, NUMA migration or THP.
 
->
-> Otherwise I think everything else looks reasonable.
->
->>   		page_remove_rmap(page, vma, false);
->>   	}
->>
->> diff --git a/mm/ksm.c b/mm/ksm.c
->> index 063a48eeb5ee..f16056efca21 100644
->> --- a/mm/ksm.c
->> +++ b/mm/ksm.c
->> @@ -474,7 +474,7 @@ static int break_ksm(struct vm_area_struct *vma, unsigned long addr)
->>   	do {
->>   		cond_resched();
->>   		page = follow_page(vma, addr,
->> -				FOLL_GET | FOLL_MIGRATION | FOLL_REMOTE);
->> +				FOLL_GET | FOLL_MIGRATION | FOLL_REMOTE | FOLL_LRU);
->>   		if (IS_ERR_OR_NULL(page))
->>   			break;
->>   		if (PageKsm(page))
->> @@ -559,7 +559,7 @@ static struct page *get_mergeable_page(struct rmap_item *rmap_item)
->>   	if (!vma)
->>   		goto out;
->>
->> -	page = follow_page(vma, addr, FOLL_GET);
->> +	page = follow_page(vma, addr, FOLL_GET | FOLL_LRU);
->>   	if (IS_ERR_OR_NULL(page))
->>   		goto out;
->>   	if (PageAnon(page)) {
->> @@ -2288,7 +2288,7 @@ static struct rmap_item *scan_get_next_rmap_item(struct page **page)
->>   		while (ksm_scan.address < vma->vm_end) {
->>   			if (ksm_test_exit(mm))
->>   				break;
->> -			*page = follow_page(vma, ksm_scan.address, FOLL_GET);
->> +			*page = follow_page(vma, ksm_scan.address, FOLL_GET | FOLL_LRU);
->>   			if (IS_ERR_OR_NULL(*page)) {
->>   				ksm_scan.address += PAGE_SIZE;
->>   				cond_resched();
->> diff --git a/mm/madvise.c b/mm/madvise.c
->> index 1873616a37d2..e9c24c834e98 100644
->> --- a/mm/madvise.c
->> +++ b/mm/madvise.c
->> @@ -413,7 +413,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->>   			continue;
->>
->>   		page = vm_normal_page(vma, addr, ptent);
->> -		if (!page)
->> +		if (!page || is_zone_device_page(page))
->>   			continue;
->>
->>   		/*
->> @@ -628,7 +628,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
->>   		}
->>
->>   		page = vm_normal_page(vma, addr, ptent);
->> -		if (!page)
->> +		if (!page || is_zone_device_page(page))
->>   			continue;
->>
->>   		/*
->> diff --git a/mm/memory.c b/mm/memory.c
->> index 76e3af9639d9..571a26805ee1 100644
->> --- a/mm/memory.c
->> +++ b/mm/memory.c
->> @@ -621,6 +621,13 @@ struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
->>   		if (is_zero_pfn(pfn))
->>   			return NULL;
->>   		if (pte_devmap(pte))
->> +/*
->> + * NOTE: New uers of ZONE_DEVICE will not set pte_devmap() and will have
->> + * refcounts incremented on their struct pages when they are inserted into
->> + * PTEs, thus they are safe to return here. Legacy ZONE_DEVICE pages that set
->> + * pte_devmap() do not have refcounts. Example of legacy ZONE_DEVICE is
->> + * MEMORY_DEVICE_FS_DAX type in pmem or virtio_fs drivers.
->> + */
->>   			return NULL;
->>
->>   		print_bad_pte(vma, addr, pte, NULL);
->> @@ -4422,7 +4429,7 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
->>   	pte = pte_modify(old_pte, vma->vm_page_prot);
->>
->>   	page = vm_normal_page(vma, vmf->address, pte);
->> -	if (!page)
->> +	if (!page || is_zone_device_page(page))
->>   		goto out_map;
->>
->>   	/* TODO: handle PTE-mapped THP */
->> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
->> index 8c74107a2b15..e32edbecb0cd 100644
->> --- a/mm/mempolicy.c
->> +++ b/mm/mempolicy.c
->> @@ -528,7 +528,7 @@ static int queue_pages_pte_range(pmd_t *pmd, unsigned long addr,
->>   		if (!pte_present(*pte))
->>   			continue;
->>   		page = vm_normal_page(vma, addr, *pte);
->> -		if (!page)
->> +		if (!page || is_zone_device_page(page))
->>   			continue;
->>   		/*
->>   		 * vm_normal_page() filters out zero pages, but there might
->> diff --git a/mm/migrate.c b/mm/migrate.c
->> index 6c31ee1e1c9b..c5d50e96ecd7 100644
->> --- a/mm/migrate.c
->> +++ b/mm/migrate.c
->> @@ -1611,7 +1611,7 @@ static int add_page_for_migration(struct mm_struct *mm, unsigned long addr,
->>   		goto out;
->>
->>   	/* FOLL_DUMP to ignore special (like zero) pages */
->> -	page = follow_page(vma, addr, FOLL_GET | FOLL_DUMP);
->> +	page = follow_page(vma, addr, FOLL_GET | FOLL_DUMP | FOLL_LRU);
->>
->>   	err = PTR_ERR(page);
->>   	if (IS_ERR(page))
->> @@ -1802,7 +1802,7 @@ static void do_pages_stat_array(struct mm_struct *mm, unsigned long nr_pages,
->>   			goto set_status;
->>
->>   		/* FOLL_DUMP to ignore special (like zero) pages */
->> -		page = follow_page(vma, addr, FOLL_DUMP);
->> +		page = follow_page(vma, addr, FOLL_DUMP | FOLL_LRU);
->>
->>   		err = PTR_ERR(page);
->>   		if (IS_ERR(page))
->> diff --git a/mm/mlock.c b/mm/mlock.c
->> index 716caf851043..b14e929084cc 100644
->> --- a/mm/mlock.c
->> +++ b/mm/mlock.c
->> @@ -333,7 +333,7 @@ static int mlock_pte_range(pmd_t *pmd, unsigned long addr,
->>   		if (!pte_present(*pte))
->>   			continue;
->>   		page = vm_normal_page(vma, addr, *pte);
->> -		if (!page)
->> +		if (!page || is_zone_device_page(page))
->>   			continue;
->>   		if (PageTransCompound(page))
->>   			continue;
->> diff --git a/mm/mprotect.c b/mm/mprotect.c
->> index b69ce7a7b2b7..a6f3587ea29a 100644
->> --- a/mm/mprotect.c
->> +++ b/mm/mprotect.c
->> @@ -91,7 +91,7 @@ static unsigned long change_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
->>   					continue;
->>
->>   				page = vm_normal_page(vma, addr, oldpte);
->> -				if (!page || PageKsm(page))
->> +				if (!page || is_zone_device_page(page) || PageKsm(page))
->>   					continue;
->>
->>   				/* Also skip shared copy-on-write pages */
+We also introduced a FOLL_LRU flag that adds the same behaviour to
+follow_page and related APIs, to allow callers to specify that they
+expect to put pages on an LRU list.
+
+v2:
+- Rebase to latest 5.18-rc7.
+- Drop patch "mm: add device coherent checker to remove migration pte"
+and modify try_to_migrate_one, to let DEVICE_COHERENT pages fall
+through to normal page path. Based on Alistair Popple's comment.
+- Fix comment formatting.
+- Reword comment in vm_normal_page about pte_devmap().
+- Merge "drm/amdkfd: coherent type as sys mem on migration to ram" to
+"drm/amdkfd: add SPM support for SVM".
+
+v3:
+- Rebase to latest 5.18.0.
+- Patch "mm: handling Non-LRU pages returned by vm_normal_pages"
+reordered.
+- Add WARN_ON_ONCE for thp device coherent case.
+
+Alex Sierra (11):
+  mm: add zone device coherent type memory support
+  mm: handling Non-LRU pages returned by vm_normal_pages
+  mm: add device coherent vma selection for memory migration
+  drm/amdkfd: add SPM support for SVM
+  lib: test_hmm add ioctl to get zone device type
+  lib: test_hmm add module param for zone device type
+  lib: add support for device coherent type in test_hmm
+  tools: update hmm-test to support device coherent type
+  tools: update test_hmm script to support SP config
+  tools: add hmm gup tests for device coherent type
+  tools: add selftests to hmm for COW in device memory
+
+Alistair Popple (2):
+  mm: remove the vma check in migrate_vma_setup()
+  mm/gup: migrate device coherent pages when pinning instead of failing
+
+ drivers/gpu/drm/amd/amdkfd/kfd_migrate.c |  33 ++-
+ fs/proc/task_mmu.c                       |   2 +-
+ include/linux/memremap.h                 |  19 ++
+ include/linux/migrate.h                  |   1 +
+ include/linux/mm.h                       |   3 +-
+ lib/test_hmm.c                           | 349 +++++++++++++++++------
+ lib/test_hmm_uapi.h                      |  22 +-
+ mm/gup.c                                 |  49 +++-
+ mm/huge_memory.c                         |   2 +-
+ mm/internal.h                            |   1 +
+ mm/khugepaged.c                          |   9 +-
+ mm/ksm.c                                 |   6 +-
+ mm/madvise.c                             |   4 +-
+ mm/memcontrol.c                          |   7 +-
+ mm/memory-failure.c                      |   8 +-
+ mm/memory.c                              |   9 +-
+ mm/mempolicy.c                           |   2 +-
+ mm/memremap.c                            |  10 +
+ mm/migrate.c                             |   4 +-
+ mm/migrate_device.c                      | 115 ++++++--
+ mm/mlock.c                               |   2 +-
+ mm/mprotect.c                            |   2 +-
+ mm/rmap.c                                |   5 +-
+ tools/testing/selftests/vm/hmm-tests.c   | 308 ++++++++++++++++++--
+ tools/testing/selftests/vm/test_hmm.sh   |  24 +-
+ 25 files changed, 814 insertions(+), 182 deletions(-)
+
+-- 
+2.32.0
+
