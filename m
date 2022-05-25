@@ -2,97 +2,165 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF5D533850
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 May 2022 10:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53AC353398E
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 May 2022 11:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231511AbiEYIWZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 25 May 2022 04:22:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55648 "EHLO
+        id S229782AbiEYJLD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 25 May 2022 05:11:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232661AbiEYIWN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 May 2022 04:22:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A3F110B
-        for <linux-ext4@vger.kernel.org>; Wed, 25 May 2022 01:22:11 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 610B761827
-        for <linux-ext4@vger.kernel.org>; Wed, 25 May 2022 08:22:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C75E5C34118
-        for <linux-ext4@vger.kernel.org>; Wed, 25 May 2022 08:22:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653466930;
-        bh=4v22vIEq/V8XzJsKFBKBWNiEP1EpTvoNCk3rM0wPD9A=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=ZziXvo0IIWYgZ07z8wS5wWEmx5oDGGzXbNTCmiC1chzYpF7/9Ym0eFTYzQf1GkqbF
-         8e+F37h99Bvz1viET+LCLiCPVnojMFncv8IX7mHJOsxZv6WHadHyxegI4v+IkswV2c
-         vJ6nkLUitIKOzgNBywEPtKvxvIx40nC1lTHsa4j545JkBgI2voBEnKlw/kFKjtAto5
-         NuFFY+fSiwfYbl3K7/HyNYcoi0VgJ89HFvRx9Nw7kg9cgVX0PIqsLm64d+mhN8oPSV
-         v6vFZTEY0X8KGZepGhN4S+4bBQYMsX5GSofmEX80FUwzHbIO2TrA7UvEkMmeWvNPqT
-         Czv8wb+kAycrw==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-        id 8AB34C05FD6; Wed, 25 May 2022 08:22:10 +0000 (UTC)
-From:   bugzilla-daemon@kernel.org
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 216012] Data loss on VirtualBox VMs
-Date:   Wed, 25 May 2022 08:22:09 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: high
-X-Bugzilla-Who: aros@gmx.com
-X-Bugzilla-Status: RESOLVED
-X-Bugzilla-Resolution: INSUFFICIENT_DATA
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: cf_kernel_version
-Message-ID: <bug-216012-13602-M8nOzvqw8a@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-216012-13602@https.bugzilla.kernel.org/>
-References: <bug-216012-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        with ESMTP id S242168AbiEYJKL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 May 2022 05:10:11 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD70FA7E2E
+        for <linux-ext4@vger.kernel.org>; Wed, 25 May 2022 02:06:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1653469610; x=1685005610;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Hv8MKvCyHwe8zJqF3tXGjxTfOwXHBNeGwvIAinyY1ko=;
+  b=X8g9jDmESXghU0fgXZrtk2wyoZfspcfmYQGDlJmPphl3UkUIhGkYMpQ1
+   JQUxb96eBUzzPA1KNjh6mWq22ClF60ae6jivO2Cl2IiYtzylo4R3vGAqZ
+   LLZ1CQh4yaYPfZNJX1LO7BOAKoj5HP4F35w6DHYpqC/sLS3PTe8RdcS2b
+   w3Q4lZmOIq2Yzlsz7yd7NkZsJ0mUMJdDy43IFqwifCKCBLszQeiJA4J79
+   wKebhofxax2qeUW6JBLA2bDhL6yosvzClnAJ2viWJlVEU5b2MZAmDI7Kc
+   faFdvZkBTzAQRBwUgz84XdPMFByc7IegkH04dy1UtRqQ5NxT4z6sd9lIw
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10357"; a="261372640"
+X-IronPort-AV: E=Sophos;i="5.91,250,1647327600"; 
+   d="scan'208";a="261372640"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2022 02:06:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,250,1647327600"; 
+   d="scan'208";a="548907397"
+Received: from lkp-server01.sh.intel.com (HELO db63a1be7222) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 25 May 2022 02:06:49 -0700
+Received: from kbuild by db63a1be7222 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1ntmye-0002ta-AR;
+        Wed, 25 May 2022 09:06:48 +0000
+Date:   Wed, 25 May 2022 17:06:06 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:dev] BUILD SUCCESS
+ 5f41fdaea63ddf96d921ab36b2af4a90ccdb5744
+Message-ID: <628df17e.Sjyh+4hp0oImq1vn%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D216012
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: 5f41fdaea63ddf96d921ab36b2af4a90ccdb5744  ext4: only allow test_dummy_encryption when supported
 
-Artem S. Tashkinov (aros@gmx.com) changed:
+elapsed time: 722m
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-     Kernel Version|Linux ubuntu                |Ubuntu 5.13.0-35-generic
-                   |5.13.0-35-generic           |
-                   |#40-Ubuntu SMP Mon Mar 7    |
-                   |08:03:10 UTC 2022 x86_64    |
-                   |x86_64 x86_64 GNU/Linux     |
+configs tested: 84
+configs skipped: 3
 
---- Comment #4 from Artem S. Tashkinov (aros@gmx.com) ---
-The kernel you're using has a solid ext4 filesystem driver as there are no
-similar reports on the net which could mean that you're having issue with
-either MacOS or VirtualBox or both and I'm sorry to break it to you but you=
-'re
-on your own.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-It makes sense to try this VM on another PC or recreate the VM from scratch.
+gcc tested configs:
+arm64                               defconfig
+arm64                            allyesconfig
+arm                              allmodconfig
+arm                                 defconfig
+arm                              allyesconfig
+ia64                                defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+csky                                defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                                defconfig
+s390                             allmodconfig
+parisc                              defconfig
+parisc64                            defconfig
+parisc                           allyesconfig
+s390                             allyesconfig
+sparc                               defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+i386                          randconfig-a001
+i386                          randconfig-a003
+i386                          randconfig-a005
+x86_64                        randconfig-a013
+x86_64                        randconfig-a011
+x86_64                        randconfig-a015
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+x86_64                        randconfig-a006
+arc                  randconfig-r043-20220524
+s390                 randconfig-r044-20220524
+riscv                randconfig-r042-20220524
+riscv                             allnoconfig
+riscv                            allyesconfig
+riscv                            allmodconfig
+riscv                    nommu_k210_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_virt_defconfig
+riscv                               defconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                                  kexec
+x86_64                               rhel-8.3
+x86_64                    rhel-8.3-kselftests
+x86_64                          rhel-8.3-func
+x86_64                         rhel-8.3-kunit
+x86_64                           rhel-8.3-syz
 
---=20
-You may reply to this email to add a comment.
+clang tested configs:
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+i386                          randconfig-a002
+i386                          randconfig-a004
+i386                          randconfig-a006
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+i386                          randconfig-a011
+i386                          randconfig-a013
+i386                          randconfig-a015
+hexagon              randconfig-r045-20220524
+hexagon              randconfig-r041-20220524
 
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
