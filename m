@@ -2,182 +2,324 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6B85347ED
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 May 2022 03:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD8F45349A1
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 May 2022 06:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231438AbiEZBQW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 25 May 2022 21:16:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51678 "EHLO
+        id S1345172AbiEZEFD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 26 May 2022 00:05:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229917AbiEZBQV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 May 2022 21:16:21 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4F5A4EA36;
-        Wed, 25 May 2022 18:16:19 -0700 (PDT)
-Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4L7qgc2f40zQkNm;
-        Thu, 26 May 2022 09:13:16 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 26 May 2022 09:16:16 +0800
-Message-ID: <850b644f-a5b5-48d8-8899-7de7bd944745@huawei.com>
-Date:   Thu, 26 May 2022 09:16:16 +0800
+        with ESMTP id S1344644AbiEZEFB (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 26 May 2022 00:05:01 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0288C0397;
+        Wed, 25 May 2022 21:04:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3C18AB81F3B;
+        Thu, 26 May 2022 04:04:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1937C385B8;
+        Thu, 26 May 2022 04:04:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1653537897;
+        bh=wKDEGt+5Ot1O94WMY1k8OTrln4I2jliCqQ29bqoAWv8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=M1vInzyoEYrQET/xWbLJGjHTIOCPO8XMiSM/8TNOPAuvp9nmxcmY5Yt8gEHMED+r9
+         0jedzeBkUQO7rIo32unMtPjUseqiiPRZkNOHNpsvoF0bCqC2DCmtzF0Uq0jZ+PEq6F
+         PQojtauZ87nkN9U8B1WtnFlVU7bJjM9/8MTZzIvkD8ifJIftCEtwtWSqjbq3IhohVy
+         j+TWhJok8YZo0W5GG/L5sg5QZZyofuXr003DNGzLgJj5nNXyK+vyhnNnKN2Zf0Xdq+
+         /0D5M8nnR5ycDa0aan69cUMr8cVQVFK02cwEA9bTeOp40/QPPyrVr4zuZClIt9NPWo
+         I+4IaWEdrqAQQ==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>
+Cc:     linux-fscrypt@vger.kernel.org, Lukas Czerner <lczerner@redhat.com>,
+        Ritesh Harjani <ritesh.list@gmail.com>
+Subject: [PATCH v4] ext4: fix up test_dummy_encryption handling for new mount API
+Date:   Wed, 25 May 2022 21:04:12 -0700
+Message-Id: <20220526040412.173025-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: [PATCH 2/2] ext4: correct the judgment of BUG in
- ext4_mb_normalize_request
-To:     Jan Kara <jack@suse.cz>
-CC:     <lczerner@redhat.com>, <linux-ext4@vger.kernel.org>,
-        <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>, <yebin10@huawei.com>, <yukuai3@huawei.com>,
-        Baokun Li <libaokun1@huawei.com>
-References: <20220521134217.312071-1-libaokun1@huawei.com>
- <20220521134217.312071-3-libaokun1@huawei.com>
- <20220523094023.e3rnile4wh7uiich@quack3.lan>
- <3755e40b-f817-83df-b239-b0697976c272@huawei.com>
- <20220524093026.qhwyibhgg6ulsw6r@quack3.lan>
- <26962b95-1129-60c4-dbde-6fea44c514a6@huawei.com>
- <20220525112932.d3gi7nynygkirdpi@quack3.lan>
-From:   Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20220525112932.d3gi7nynygkirdpi@quack3.lan>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-在 2022/5/25 19:29, Jan Kara 写道:
-> On Tue 24-05-22 21:44:31, Baokun Li wrote:
->> 在 2022/5/24 17:30, Jan Kara 写道:
->>> On Mon 23-05-22 21:04:16, libaokun (A) wrote:
->>>> 在 2022/5/23 17:40, Jan Kara 写道:
->>>>> On Sat 21-05-22 21:42:17, Baokun Li wrote:
->>>>>> When either of the "start + size <= ac->ac_o_ex.fe_logical" or
->>>>>> "start > ac->ac_o_ex.fe_logical" conditions is met, it indicates
->>>>>> that the fe_logical is not in the allocated range.
->>>>>> In this case, it should be bug_ON.
->>>>>>
->>>>>> Fixes: dfe076c106f6 ("ext4: get rid of code duplication")
->>>>>> Signed-off-by: Baokun Li<libaokun1@huawei.com>
->>>>> I think this is actually wrong. The original condition checks whether
->>>>> start + size does not overflow the used integer type. Your condition is
->>>>> much stronger and I don't think it always has to be true. E.g. allocation
->>>>> goal block (start variable) can be pushed to larger values by existing
->>>>> preallocation or so.
->>>>>
->>>>> 								Honza
->>>>>
->>>> I think there are two reasons for this:
->>>>
->>>> First of all, the code here is as follows.
->>>> ```
->>>>           size = end - start;
->>>>           [...]
->>>> if (start + size <= ac->ac_o_ex.fe_logical &&
->>>>                           start > ac->ac_o_ex.fe_logical) {
->>>>                   ext4_msg(ac->ac_sb, KERN_ERR,
->>>>                            "start %lu, size %lu, fe_logical %lu",
->>>>                            (unsigned long) start, (unsigned long) size,
->>>>                            (unsigned long) ac->ac_o_ex.fe_logical);
->>>> BUG();
->>>> }
->>>>           BUG_ON(size <= 0 || size > EXT4_BLOCKS_PER_GROUP(ac->ac_sb));
->>>> ```
->>>> First of all, there is no need to compare with ac_o_ex.fe_logical if it is
->>>> to determine whether there is an overflow.
->>>> Because the previous logic guarantees start < = ac_o_ex.fe_logical, and
->>> How does it guarantee that? The logic:
->>>
->>>           if (ar->pleft && start <= ar->lleft) {
->>>                   size -= ar->lleft + 1 - start;
->>>                   start = ar->lleft + 1;
->>>           }
->>>
->>> can move 'start' to further blocks...
->> This is not the case. According to the code of the preceding process,
->> ar->pleft and ar->pright are assigned values in ext4_ext_map_blocks.
->> ar->pleft is the first allocated block found to the left by map->m_lblk
->> (that is, fe_logical),
->> and ar->pright is the first allocated block found to the right.
->> ar->lleft and ar->lright are logical block numbers, so there must be
->> "ar->lleft < ac_o_ex.fe_logical < ar->lright".
-> Right, I've found that out after sending my previous email. Sorry for
-> confusion.
-Don't be sorry. Thank you very much for your advice. It has benefited me 
-a lot.
->
->>>> Secondly, the following code flow also reflects this logic.
->>>>
->>>>              ext4_mb_normalize_request
->>>>               >>> start + size <= ac->ac_o_ex.fe_logical
->>>>              ext4_mb_regular_allocator
->>>>               ext4_mb_simple_scan_group
->>>>                ext4_mb_use_best_found
->>>>                 ext4_mb_new_preallocation
->>>>                  ext4_mb_new_inode_pa
->>>>                   ext4_mb_use_inode_pa
->>>>                    >>> set ac->ac_b_ex.fe_len <= 0
->>>>              ext4_mb_mark_diskspace_used
->>>>               >>> BUG_ON(ac->ac_b_ex.fe_len <= 0);
->>>>
->>>> In ext4_mb_use_inode_pa, you have the following code.
->>>> ```
->>>> start = pa->pa_pstart + (ac->ac_o_ex.fe_logical - pa->pa_lstart);
->>>> end = min(pa->pa_pstart + EXT4_C2B(sbi, pa->pa_len), start + EXT4_C2B(sbi,
->>>> ac->ac_o_ex.fe_len));
->>>> len = EXT4_NUM_B2C(sbi, end - start);
->>>> ac->ac_b_ex.fe_len = len;
->>>> ```
->>>> The starting position in ext4_mb_mark_diskspace_used will be assert.
->>>> BUG_ON(ac->ac_b_ex.fe_len <= 0);
->>>> When end == start + EXT4_C2B(sbi, ac->ac_o_ex.fe_len) is used, the value of
->>>> end - start must be greater than 0.
->>>> However, when end == pa->pa_pstart + EXT4_C2B(sbi, pa->pa_len) occurs, this
->>>> bug_ON may be triggered.
->>>> When this bug_ON is triggered, that is,
->>>>
->>>> ac->ac_b_ex.fe_len <= 0
->>>> end - start <= 0
->>>> end <= start
->>>> pa->pa_pstart + EXT4_C2B(sbi, pa->pa_len) <= pa->pa_pstart +
->>>> (ac->ac_o_ex.fe_logical - pa->pa_lstart)
->>>> pa->pa_len <= ac->ac_o_ex.fe_logical - pa->pa_lstart
->>>> pa->pa_lstart + pa->pa_len <= ac->ac_o_ex.fe_logical
->>>> start + size <= ac->ac_o_ex.fe_logical
->>>>
->>>> So I think that "&&" here should be changed to "||".
->>> Sorry, I still disagree. After some more code reading I agree that
->>> ac->ac_o_ex.fe_logical is the logical block where we want allocated blocks
->>> to be placed in the inode so logical extent of allocated blocks should include
->>> ac->ac_o_ex.fe_logical. But I would be reluctant to make assertion you
->>> suggest unless we make sure ac->ac_o_ex.fe_logical in unallocated (in which
->>> case we can also remove some other code from ext4_mb_normalize_request()).
->>>
->>> 									Honza
->>>
->> What codes are you referring to that can be deleted?
-> So I though the shifting of 'start' by lleft cannot happen but then I
-> realized that if 'start' got aligned down, it can now be lower than lleft
-> so the shifting is indeed needed. So all code is needed there.
->
-> 								Honza
+From: Eric Biggers <ebiggers@google.com>
 
-Okay, thanks again!
+Since ext4 was converted to the new mount API, the test_dummy_encryption
+mount option isn't being handled entirely correctly, because the needed
+fscrypt_set_test_dummy_encryption() helper function combines
+parsing/checking/applying into one function.  That doesn't work well
+with the new mount API, which split these into separate steps.
 
+This was sort of okay anyway, due to the parsing logic that was copied
+from fscrypt_set_test_dummy_encryption() into ext4_parse_param(),
+combined with an additional check in ext4_check_test_dummy_encryption().
+However, these overlooked the case of changing the value of
+test_dummy_encryption on remount, which isn't allowed but ext4 wasn't
+detecting until ext4_apply_options() when it's too late to fail.
+Another bug is that if test_dummy_encryption was specified multiple
+times with an argument, memory was leaked.
+
+Fix this up properly by using the new helper functions that allow
+splitting up the parse/check/apply steps for test_dummy_encryption.
+
+Fixes: cebe85d570cf ("ext4: switch to the new mount api")
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+
+v4: rebased onto upstream.
+v3: fixed a couple bugs.
+
+ fs/ext4/super.c | 134 +++++++++++++++++++++++++-----------------------
+ 1 file changed, 71 insertions(+), 63 deletions(-)
+
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 450c918d68fcf..f4ba3eed42a6f 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -87,7 +87,7 @@ static struct inode *ext4_get_journal_inode(struct super_block *sb,
+ static int ext4_validate_options(struct fs_context *fc);
+ static int ext4_check_opt_consistency(struct fs_context *fc,
+ 				      struct super_block *sb);
+-static int ext4_apply_options(struct fs_context *fc, struct super_block *sb);
++static void ext4_apply_options(struct fs_context *fc, struct super_block *sb);
+ static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *param);
+ static int ext4_get_tree(struct fs_context *fc);
+ static int ext4_reconfigure(struct fs_context *fc);
+@@ -1870,31 +1870,12 @@ ext4_sb_read_encoding(const struct ext4_super_block *es)
+ }
+ #endif
+ 
+-static int ext4_set_test_dummy_encryption(struct super_block *sb, char *arg)
+-{
+-#ifdef CONFIG_FS_ENCRYPTION
+-	struct ext4_sb_info *sbi = EXT4_SB(sb);
+-	int err;
+-
+-	err = fscrypt_set_test_dummy_encryption(sb, arg,
+-						&sbi->s_dummy_enc_policy);
+-	if (err) {
+-		ext4_msg(sb, KERN_WARNING,
+-			 "Error while setting test dummy encryption [%d]", err);
+-		return err;
+-	}
+-	ext4_msg(sb, KERN_WARNING, "Test dummy encryption mode enabled");
+-#endif
+-	return 0;
+-}
+-
+ #define EXT4_SPEC_JQUOTA			(1 <<  0)
+ #define EXT4_SPEC_JQFMT				(1 <<  1)
+ #define EXT4_SPEC_DATAJ				(1 <<  2)
+ #define EXT4_SPEC_SB_BLOCK			(1 <<  3)
+ #define EXT4_SPEC_JOURNAL_DEV			(1 <<  4)
+ #define EXT4_SPEC_JOURNAL_IOPRIO		(1 <<  5)
+-#define EXT4_SPEC_DUMMY_ENCRYPTION		(1 <<  6)
+ #define EXT4_SPEC_s_want_extra_isize		(1 <<  7)
+ #define EXT4_SPEC_s_max_batch_time		(1 <<  8)
+ #define EXT4_SPEC_s_min_batch_time		(1 <<  9)
+@@ -1911,7 +1892,7 @@ static int ext4_set_test_dummy_encryption(struct super_block *sb, char *arg)
+ 
+ struct ext4_fs_context {
+ 	char		*s_qf_names[EXT4_MAXQUOTAS];
+-	char		*test_dummy_enc_arg;
++	struct fscrypt_dummy_policy dummy_enc_policy;
+ 	int		s_jquota_fmt;	/* Format of quota to use */
+ #ifdef CONFIG_EXT4_DEBUG
+ 	int s_fc_debug_max_replay;
+@@ -1953,7 +1934,7 @@ static void ext4_fc_free(struct fs_context *fc)
+ 	for (i = 0; i < EXT4_MAXQUOTAS; i++)
+ 		kfree(ctx->s_qf_names[i]);
+ 
+-	kfree(ctx->test_dummy_enc_arg);
++	fscrypt_free_dummy_policy(&ctx->dummy_enc_policy);
+ 	kfree(ctx);
+ }
+ 
+@@ -2029,6 +2010,29 @@ static int unnote_qf_name(struct fs_context *fc, int qtype)
+ }
+ #endif
+ 
++static int ext4_parse_test_dummy_encryption(const struct fs_parameter *param,
++					    struct ext4_fs_context *ctx)
++{
++	int err;
++
++	if (!IS_ENABLED(CONFIG_FS_ENCRYPTION)) {
++		ext4_msg(NULL, KERN_WARNING,
++			 "test_dummy_encryption option not supported");
++		return -EINVAL;
++	}
++	err = fscrypt_parse_test_dummy_encryption(param,
++						  &ctx->dummy_enc_policy);
++	if (err == -EINVAL) {
++		ext4_msg(NULL, KERN_WARNING,
++			 "Value of option \"%s\" is unrecognized", param->key);
++	} else if (err == -EEXIST) {
++		ext4_msg(NULL, KERN_WARNING,
++			 "Conflicting test_dummy_encryption options");
++		return -EINVAL;
++	}
++	return err;
++}
++
+ #define EXT4_SET_CTX(name)						\
+ static inline void ctx_set_##name(struct ext4_fs_context *ctx,		\
+ 				  unsigned long flag)			\
+@@ -2291,29 +2295,7 @@ static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 		ctx->spec |= EXT4_SPEC_JOURNAL_IOPRIO;
+ 		return 0;
+ 	case Opt_test_dummy_encryption:
+-#ifdef CONFIG_FS_ENCRYPTION
+-		if (param->type == fs_value_is_flag) {
+-			ctx->spec |= EXT4_SPEC_DUMMY_ENCRYPTION;
+-			ctx->test_dummy_enc_arg = NULL;
+-			return 0;
+-		}
+-		if (*param->string &&
+-		    !(!strcmp(param->string, "v1") ||
+-		      !strcmp(param->string, "v2"))) {
+-			ext4_msg(NULL, KERN_WARNING,
+-				 "Value of option \"%s\" is unrecognized",
+-				 param->key);
+-			return -EINVAL;
+-		}
+-		ctx->spec |= EXT4_SPEC_DUMMY_ENCRYPTION;
+-		ctx->test_dummy_enc_arg = kmemdup_nul(param->string, param->size,
+-						      GFP_KERNEL);
+-		return 0;
+-#else
+-		ext4_msg(NULL, KERN_WARNING,
+-			 "test_dummy_encryption option not supported");
+-		return -EINVAL;
+-#endif
++		return ext4_parse_test_dummy_encryption(param, ctx);
+ 	case Opt_dax:
+ 	case Opt_dax_type:
+ #ifdef CONFIG_FS_DAX
+@@ -2504,7 +2486,8 @@ static int parse_apply_sb_mount_options(struct super_block *sb,
+ 	if (s_ctx->spec & EXT4_SPEC_JOURNAL_IOPRIO)
+ 		m_ctx->journal_ioprio = s_ctx->journal_ioprio;
+ 
+-	ret = ext4_apply_options(fc, sb);
++	ext4_apply_options(fc, sb);
++	ret = 0;
+ 
+ out_free:
+ 	if (fc) {
+@@ -2673,11 +2656,11 @@ static int ext4_check_quota_consistency(struct fs_context *fc,
+ static int ext4_check_test_dummy_encryption(const struct fs_context *fc,
+ 					    struct super_block *sb)
+ {
+-#ifdef CONFIG_FS_ENCRYPTION
+ 	const struct ext4_fs_context *ctx = fc->fs_private;
+ 	const struct ext4_sb_info *sbi = EXT4_SB(sb);
++	int err;
+ 
+-	if (!(ctx->spec & EXT4_SPEC_DUMMY_ENCRYPTION))
++	if (!fscrypt_is_dummy_policy_set(&ctx->dummy_enc_policy))
+ 		return 0;
+ 
+ 	if (!ext4_has_feature_encrypt(sb)) {
+@@ -2691,14 +2674,46 @@ static int ext4_check_test_dummy_encryption(const struct fs_context *fc,
+ 	 * needed to allow it to be set or changed during remount.  We do allow
+ 	 * it to be specified during remount, but only if there is no change.
+ 	 */
+-	if (fc->purpose == FS_CONTEXT_FOR_RECONFIGURE &&
+-	    !sbi->s_dummy_enc_policy.policy) {
++	if (fc->purpose == FS_CONTEXT_FOR_RECONFIGURE) {
++		if (fscrypt_dummy_policies_equal(&sbi->s_dummy_enc_policy,
++						 &ctx->dummy_enc_policy))
++			return 0;
+ 		ext4_msg(NULL, KERN_WARNING,
+-			 "Can't set test_dummy_encryption on remount");
++			 "Can't set or change test_dummy_encryption on remount");
+ 		return -EINVAL;
+ 	}
+-#endif /* CONFIG_FS_ENCRYPTION */
+-	return 0;
++	/* Also make sure s_mount_opts didn't contain a conflicting value. */
++	if (fscrypt_is_dummy_policy_set(&sbi->s_dummy_enc_policy)) {
++		if (fscrypt_dummy_policies_equal(&sbi->s_dummy_enc_policy,
++						 &ctx->dummy_enc_policy))
++			return 0;
++		ext4_msg(NULL, KERN_WARNING,
++			 "Conflicting test_dummy_encryption options");
++		return -EINVAL;
++	}
++	/*
++	 * fscrypt_add_test_dummy_key() technically changes the super_block, so
++	 * technically it should be delayed until ext4_apply_options() like the
++	 * other changes.  But since we never get here for remounts (see above),
++	 * and this is the last chance to report errors, we do it here.
++	 */
++	err = fscrypt_add_test_dummy_key(sb, &ctx->dummy_enc_policy);
++	if (err)
++		ext4_msg(NULL, KERN_WARNING,
++			 "Error adding test dummy encryption key [%d]", err);
++	return err;
++}
++
++static void ext4_apply_test_dummy_encryption(struct ext4_fs_context *ctx,
++					     struct super_block *sb)
++{
++	if (!fscrypt_is_dummy_policy_set(&ctx->dummy_enc_policy) ||
++	    /* if already set, it was already verified to be the same */
++	    fscrypt_is_dummy_policy_set(&EXT4_SB(sb)->s_dummy_enc_policy))
++		return;
++	EXT4_SB(sb)->s_dummy_enc_policy = ctx->dummy_enc_policy;
++	memset(&ctx->dummy_enc_policy, 0, sizeof(ctx->dummy_enc_policy));
++	ext4_msg(sb, KERN_WARNING, "Test dummy encryption mode enabled");
+ }
+ 
+ static int ext4_check_opt_consistency(struct fs_context *fc,
+@@ -2785,11 +2800,10 @@ static int ext4_check_opt_consistency(struct fs_context *fc,
+ 	return ext4_check_quota_consistency(fc, sb);
+ }
+ 
+-static int ext4_apply_options(struct fs_context *fc, struct super_block *sb)
++static void ext4_apply_options(struct fs_context *fc, struct super_block *sb)
+ {
+ 	struct ext4_fs_context *ctx = fc->fs_private;
+ 	struct ext4_sb_info *sbi = fc->s_fs_info;
+-	int ret = 0;
+ 
+ 	sbi->s_mount_opt &= ~ctx->mask_s_mount_opt;
+ 	sbi->s_mount_opt |= ctx->vals_s_mount_opt;
+@@ -2825,11 +2839,7 @@ static int ext4_apply_options(struct fs_context *fc, struct super_block *sb)
+ #endif
+ 
+ 	ext4_apply_quota_options(fc, sb);
+-
+-	if (ctx->spec & EXT4_SPEC_DUMMY_ENCRYPTION)
+-		ret = ext4_set_test_dummy_encryption(sb, ctx->test_dummy_enc_arg);
+-
+-	return ret;
++	ext4_apply_test_dummy_encryption(ctx, sb);
+ }
+ 
+ 
+@@ -4552,9 +4562,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+ 	if (err < 0)
+ 		goto failed_mount;
+ 
+-	err = ext4_apply_options(fc, sb);
+-	if (err < 0)
+-		goto failed_mount;
++	ext4_apply_options(fc, sb);
+ 
+ #if IS_ENABLED(CONFIG_UNICODE)
+ 	if (ext4_has_feature_casefold(sb) && !sb->s_encoding) {
+
+base-commit: babf0bb978e3c9fce6c4eba6b744c8754fd43d8e
 -- 
-With Best Regards,
-Baokun Li
-.
+2.36.1
 
