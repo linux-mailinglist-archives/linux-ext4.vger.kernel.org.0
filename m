@@ -2,93 +2,143 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7999535D14
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 May 2022 11:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB682535D24
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 May 2022 11:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344763AbiE0JLD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 27 May 2022 05:11:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52294 "EHLO
+        id S233640AbiE0JQr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 27 May 2022 05:16:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351207AbiE0JGA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 27 May 2022 05:06:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1D836111BA6
-        for <linux-ext4@vger.kernel.org>; Fri, 27 May 2022 02:02:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1653642173;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VxSx5WHE/is7ha0Qn9ZHkh6x3/barWbE89a+k35Foho=;
-        b=e4kxOsLL3jDrL7Iv5s9CIj87qlP/NqBLcYgJ/AeiG191IDB6/Dz0qDy/XOC2dnftAPdCJW
-        1ghhuHOWm6XQnBpt0uBF43Ufh6X06wRqXasgMIx8OOPsYx1hvJMecbzHqxZ9sDgvGgTQSu
-        Hgfp0O8VW2SlbNlCm/GheNqd+scG2wM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-391-NTi_t_sZMdal6y7vIU_a0A-1; Fri, 27 May 2022 05:02:51 -0400
-X-MC-Unique: NTi_t_sZMdal6y7vIU_a0A-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BF12E858EEE;
-        Fri, 27 May 2022 09:02:50 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (unknown [10.39.192.71])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 64FE7492C3B;
-        Fri, 27 May 2022 09:02:48 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Keith Busch <kbusch@kernel.org>
-Subject: Re: [RFC PATCH v2 1/7] statx: add I/O alignment information
-References: <20220518235011.153058-1-ebiggers@kernel.org>
-        <20220518235011.153058-2-ebiggers@kernel.org>
-Date:   Fri, 27 May 2022 11:02:46 +0200
-In-Reply-To: <20220518235011.153058-2-ebiggers@kernel.org> (Eric Biggers's
-        message of "Wed, 18 May 2022 16:50:05 -0700")
-Message-ID: <87r14ffivd.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        with ESMTP id S242737AbiE0JQq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 27 May 2022 05:16:46 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BE36AA6B;
+        Fri, 27 May 2022 02:16:44 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4L8fHT1mF3zRhS6;
+        Fri, 27 May 2022 17:13:41 +0800 (CST)
+Received: from [10.174.178.185] (10.174.178.185) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 27 May 2022 17:16:42 +0800
+Subject: Re: [PATCH -next] ext4: fix super block checksum incorrect after
+ mount
+To:     Jan Kara <jack@suse.cz>, Ritesh Harjani <ritesh.list@gmail.com>
+References: <20220525012904.1604737-1-yebin10@huawei.com>
+ <20220525075123.rx5v7fe6ocn354wn@riteshh-domain>
+ <20220525115400.kr3urpp3cf3hybvi@quack3.lan>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From:   yebin <yebin10@huawei.com>
+Message-ID: <629096FA.6030801@huawei.com>
+Date:   Fri, 27 May 2022 17:16:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.9
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220525115400.kr3urpp3cf3hybvi@quack3.lan>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.185]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-* Eric Biggers:
 
-> diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
-> index 1500a0f58041a..f822b23e81091 100644
-> --- a/include/uapi/linux/stat.h
-> +++ b/include/uapi/linux/stat.h
-> @@ -124,9 +124,13 @@ struct statx {
->  	__u32	stx_dev_minor;
->  	/* 0x90 */
->  	__u64	stx_mnt_id;
-> -	__u64	__spare2;
-> +	__u32	stx_mem_align_dio;	/* Memory buffer alignment for direct I/O */
-> +	__u32	stx_offset_align_dio;	/* File offset alignment for direct I/O */
->  	/* 0xa0 */
-> -	__u64	__spare3[12];	/* Spare space for future expansion */
-> +	__u32	stx_offset_align_optimal; /* Optimal file offset alignment for I/O */
-> +	__u32	__spare2;
-> +	/* 0xa8 */
-> +	__u64	__spare3[11];	/* Spare space for future expansion */
->  	/* 0x100 */
->  };
 
-Are 32 bits enough?  Would it make sense to store the base-2 logarithm
-instead?
-
-Thanks,
-Florian
+On 2022/5/25 19:54, Jan Kara wrote:
+> On Wed 25-05-22 13:21:23, Ritesh Harjani wrote:
+>> On 22/05/25 09:29AM, Ye Bin wrote:
+>>> We got issue as follows:
+>>> [home]# mount  /dev/sda  test
+>>> EXT4-fs (sda): warning: mounting fs with errors, running e2fsck is recommended
+>>> [home]# dmesg
+>>> EXT4-fs (sda): warning: mounting fs with errors, running e2fsck is recommended
+>>> EXT4-fs (sda): Errors on filesystem, clearing orphan list.
+>>> EXT4-fs (sda): recovery complete
+>>> EXT4-fs (sda): mounted filesystem with ordered data mode. Quota mode: none.
+>>> [home]# debugfs /dev/sda
+>>> debugfs 1.46.5 (30-Dec-2021)
+>>> Checksum errors in superblock!  Retrying...
+>>>
+>>> Reason is ext4_orphan_cleanup will reset ‘s_last_orphan’ but not update
+>>> super block checksum.
+>>> To solve above issue, defer update super block checksum after ext4_orphan_cleanup.
+>> I agree with the analysis. However after [1], I think all updates to superblock
+>> (including checksum computation) should be done within buffer lock.
+>> (lock_buffer(), unlock_buffer()).
+>>
+>> [1]: https://lore.kernel.org/all/20201216101844.22917-4-jack@suse.cz/
+> So technically you're right that we should hold buffer lock all the time
+> from before we modify superblock buffer until we recompute the checksum (so
+> that we avoid writing superblock with mismatched checksum). To do this we'd
+> have to put checksum recomputations and superblock buffer locking into
+> ext4_orphan_cleanup() around setting of es->s_last_orphan (in three places
+> there AFAICS). A bit tedious but it would actually also fix a (theoretical)
+> race that someone decides to write out superblock after we set
+> s_last_orphan but before we set the checksum.
+>
+> Overall I'm not convinced this is really necessary so I'd be OK even with
+> what Ye suggested. That is IMHO better than mostly pointless locking just
+> around checksum computation because that just makes reader wonder why is it
+> needed...
+>
+> 								Honza
+Thanks for your reply.
+Does my patch need to be adjusted?
+>> With lock changes added, feel free to add -
+>>
+>> Reviewed-by: Ritesh Harjani <ritesh.list@gmail.com>
+>>
+>>
+>>>
+>>> Signed-off-by: Ye Bin <yebin10@huawei.com>
+>>> ---
+>>>   fs/ext4/super.c | 16 ++++++++--------
+>>>   1 file changed, 8 insertions(+), 8 deletions(-)
+>>>
+>>> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+>>> index f9a3ad683b4a..c47204029429 100644
+>>> --- a/fs/ext4/super.c
+>>> +++ b/fs/ext4/super.c
+>>> @@ -5300,14 +5300,6 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+>>>   		err = percpu_counter_init(&sbi->s_freeinodes_counter, freei,
+>>>   					  GFP_KERNEL);
+>>>   	}
+>>> -	/*
+>>> -	 * Update the checksum after updating free space/inode
+>>> -	 * counters.  Otherwise the superblock can have an incorrect
+>>> -	 * checksum in the buffer cache until it is written out and
+>>> -	 * e2fsprogs programs trying to open a file system immediately
+>>> -	 * after it is mounted can fail.
+>>> -	 */
+>>> -	ext4_superblock_csum_set(sb);
+>>>   	if (!err)
+>>>   		err = percpu_counter_init(&sbi->s_dirs_counter,
+>>>   					  ext4_count_dirs(sb), GFP_KERNEL);
+>>> @@ -5365,6 +5357,14 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+>>>   	EXT4_SB(sb)->s_mount_state |= EXT4_ORPHAN_FS;
+>>>   	ext4_orphan_cleanup(sb, es);
+>>>   	EXT4_SB(sb)->s_mount_state &= ~EXT4_ORPHAN_FS;
+>>> +	/*
+>>> +	 * Update the checksum after updating free space/inode counters and
+>>> +	 * ext4_orphan_cleanup. Otherwise the superblock can have an incorrect
+>>> +	 * checksum in the buffer cache until it is written out and
+>>> +	 * e2fsprogs programs trying to open a file system immediately
+>>> +	 * after it is mounted can fail.
+>>> +	 */
+>>> +	ext4_superblock_csum_set(sb);
+>>>   	if (needs_recovery) {
+>>>   		ext4_msg(sb, KERN_INFO, "recovery complete");
+>>>   		err = ext4_mark_recovery_complete(sb, es);
+>>> --
+>>> 2.31.1
+>>>
 
