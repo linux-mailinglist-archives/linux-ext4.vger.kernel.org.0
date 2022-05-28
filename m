@@ -2,67 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F07E536D6D
-	for <lists+linux-ext4@lfdr.de>; Sat, 28 May 2022 17:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A7E536D6F
+	for <lists+linux-ext4@lfdr.de>; Sat, 28 May 2022 17:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237149AbiE1PKv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 28 May 2022 11:10:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56326 "EHLO
+        id S237036AbiE1PM0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 28 May 2022 11:12:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237036AbiE1PKu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 28 May 2022 11:10:50 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA8B13D1A;
-        Sat, 28 May 2022 08:10:49 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id n10so7066987pjh.5;
-        Sat, 28 May 2022 08:10:49 -0700 (PDT)
+        with ESMTP id S237198AbiE1PM0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 28 May 2022 11:12:26 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 167B315A3D;
+        Sat, 28 May 2022 08:12:25 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id q4so6599404plr.11;
+        Sat, 28 May 2022 08:12:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=inDnD0wROpJhPH4vVDWXmOqaC6S+aIzVgfkbHUBSKG8=;
-        b=QKXmnYrqiD3Cxg7dIrI2fr4J4OPY92Gibw1wtBDi/yOOXKpInV3HwaUA3W5Y0Nlp9n
-         f7vEQAFOkklkFopVXCI/LagbDDZoU6XWCtAzQZDsiUW0zKvhaW5y2Cmz2FCKzFLbUfoQ
-         aeP4tO/mPicwZYZtPX5caxaYHXU/ZN+WF4jFPnl+6ZlDUHJiDmn/ThWrKbTF/4MBY4pn
-         TQMj6LRbbcrRBwHbFzvqWdBV4nkEHCs56rYMu8wqhKCe7st6iWXv1gbPGMTJtOcMkN81
-         c3EcofeGkFxULDIF7AdwPiYjRLb0PSkeTFA09oYqG9TPfJSmj4eBY5oFzhXvbFWUYAEu
-         vSTQ==
+        bh=B5mFiaBmbFAgvSLD1k8I0pYH8BNutIgWRHpbfdHvERY=;
+        b=IV9oPszlelkJ4w0dwGDjTehwjb5u5dUCP2DFe/SbM8ztgHrmoPdlfHk/pNTQQG2bu+
+         e+t/am9hrZjirdADtS24BJB1WMToWDvhW4Bjm2sV0OzN1bfBfDXavEe92Pk+UwteWG41
+         Ji+b6hY671PuQQ0sHHCJfYfs6ZlnRlgjcMsSFqjFr89R/tWXosygMWODMnAXcYac1tNv
+         LY0GbZgDXzon0It8W7kx1jGYP51vY6KG9diFYxYhabceXdaeEhaBbft+gMcwX4nauJFR
+         XfzsLJpsrpt/G3Q3ff9VlerGg4eZfw+Jd8ieiqsG7RFBeiauy1DIQYe8Vs1Rqq5gB9X+
+         FXGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=inDnD0wROpJhPH4vVDWXmOqaC6S+aIzVgfkbHUBSKG8=;
-        b=VZtX/3K7M2ZvgFECe8+W6Nw9R+7m2kFoQSbOJmvCvhKOsBo6a3rGJ8REcrtslY9bX2
-         4WiU97zGPoA8CIuWGr+85TmMfYlfIPAd8baZTWdaJk+SdDindZWU2RGIq4Zq/qafHrvq
-         eADWWT2/M/w+AjP3B6PoGPSvByTJnR5SlGv7PjolVDhEi6vCGvZpCSYs8yfllGJHaAVv
-         v5g7lCCXLO8KEk+0wEsrcynj2BgL0y20wyJm7mj2VN9Gk/NihfRrdAYLY1gIHaZuhTwf
-         7ceGI3TuUtP6KWdODCR4GF/pnS/M9gizqPa5pCoyTWqndUbFFnd3Tct6KyLJzyhQCR+9
-         WyZQ==
-X-Gm-Message-State: AOAM531+ik+JcT01lpP4nnP5LdkwVYVbPRUnNPafrcSuFrVRRpLCQhbI
-        37oDMfils9R7ze7L/Wx4FPI=
-X-Google-Smtp-Source: ABdhPJzX3+lTU4TW5kMjJHApRGcMj3jF/RuCM5RRWvIw1UlOrQMBa7IMYfwkeEG4Bmj1HURP2YLrgQ==
-X-Received: by 2002:a17:90b:4f81:b0:1e0:3024:900d with SMTP id qe1-20020a17090b4f8100b001e03024900dmr13910600pjb.229.1653750649381;
-        Sat, 28 May 2022 08:10:49 -0700 (PDT)
+        bh=B5mFiaBmbFAgvSLD1k8I0pYH8BNutIgWRHpbfdHvERY=;
+        b=7/PuFYDDTuOwxyklQE0+4U5N187IXnGLKFWwwWRUESbjYI87HGHlHk3/SCeeHvVtme
+         PgbGtsy4SBcWaOZNPjPQgPpj0PnmoE2rJoHguwkaSrmfbUY3V+mD33MTzMsz79BYWvq8
+         RXkcaIoyeRDBoL7VYHlSrX1vlZWmtUm2526wtaIjcvyNmL0FE/gsxugKzT7chVEI/wMu
+         +gvMbuaj8cNAgBwhNUt+ctBjhCwxqNWwG5GTy9OnhBzZKfm81I532t3pxcUi/KKkZSIw
+         Si48mHiREjQhj4gc/O58S7ddvb4BEkr6p8MWXJbM1isdv4Nrr5JHX6yAzV37uRmLrVcL
+         //pA==
+X-Gm-Message-State: AOAM530Wt+bo+/z0J0J1DnuzW6p3jxeMcl3xOXqF93IzMPwMXNcDG7Gg
+        sm97M0Po6hzRMVmR1S6bA7A=
+X-Google-Smtp-Source: ABdhPJw9/uAnYy1iWqXAPosPe6iGCdsynT6rvhi1zWc9zXKyzDoBP6TxrkXD0CkUqZFTJb/F/k84Dw==
+X-Received: by 2002:a17:902:d716:b0:15f:179c:9817 with SMTP id w22-20020a170902d71600b0015f179c9817mr47444547ply.150.1653750744528;
+        Sat, 28 May 2022 08:12:24 -0700 (PDT)
 Received: from localhost ([2406:7400:63:4576:a782:286b:de51:79ce])
-        by smtp.gmail.com with ESMTPSA id bi7-20020a170902bf0700b0015e8d4eb282sm5707061plb.204.2022.05.28.08.10.48
+        by smtp.gmail.com with ESMTPSA id u18-20020a170902e5d200b00161ef05c480sm5809380plf.6.2022.05.28.08.12.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 May 2022 08:10:49 -0700 (PDT)
-Date:   Sat, 28 May 2022 20:40:44 +0530
+        Sat, 28 May 2022 08:12:24 -0700 (PDT)
+Date:   Sat, 28 May 2022 20:42:19 +0530
 From:   Ritesh Harjani <ritesh.list@gmail.com>
 To:     Baokun Li <libaokun1@huawei.com>
 Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
         adilger.kernel@dilger.ca, jack@suse.cz, lczerner@redhat.com,
         linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yebin10@huawei.com, yukuai3@huawei.com,
-        Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH v3 1/3] ext4: fix bug_on ext4_mb_use_inode_pa
-Message-ID: <20220528151044.u3quqpy4krsfwszq@riteshh-domain>
+        yebin10@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH v3 2/3] ext4: correct the judgment of BUG in
+ ext4_mb_normalize_request
+Message-ID: <20220528151219.ojgwg7pct6ci5zd6@riteshh-domain>
 References: <20220528110017.354175-1-libaokun1@huawei.com>
- <20220528110017.354175-2-libaokun1@huawei.com>
+ <20220528110017.354175-3-libaokun1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220528110017.354175-2-libaokun1@huawei.com>
+In-Reply-To: <20220528110017.354175-3-libaokun1@huawei.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -74,80 +74,56 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 On 22/05/28 07:00PM, Baokun Li wrote:
-> Hulk Robot reported a BUG_ON:
-> ==================================================================
-> kernel BUG at fs/ext4/mballoc.c:3211!
-> [...]
-> RIP: 0010:ext4_mb_mark_diskspace_used.cold+0x85/0x136f
-> [...]
-> Call Trace:
->  ext4_mb_new_blocks+0x9df/0x5d30
->  ext4_ext_map_blocks+0x1803/0x4d80
->  ext4_map_blocks+0x3a4/0x1a10
->  ext4_writepages+0x126d/0x2c30
->  do_writepages+0x7f/0x1b0
->  __filemap_fdatawrite_range+0x285/0x3b0
->  file_write_and_wait_range+0xb1/0x140
->  ext4_sync_file+0x1aa/0xca0
->  vfs_fsync_range+0xfb/0x260
->  do_fsync+0x48/0xa0
-> [...]
-> ==================================================================
+> ext4_mb_normalize_request() can move logical start of allocated blocks
+> to reduce fragmentation and better utilize preallocation. However logical
+> block requested as a start of allocation (ac->ac_o_ex.fe_logical) should
+> always be covered by allocated blocks so we should check that by
+> modifying and to or in the assertion.
 >
-> Above issue may happen as follows:
-> -------------------------------------
-> do_fsync
->  vfs_fsync_range
->   ext4_sync_file
->    file_write_and_wait_range
->     __filemap_fdatawrite_range
->      do_writepages
->       ext4_writepages
->        mpage_map_and_submit_extent
->         mpage_map_one_extent
->          ext4_map_blocks
->           ext4_mb_new_blocks
->            ext4_mb_normalize_request
->             >>> start + size <= ac->ac_o_ex.fe_logical
->            ext4_mb_regular_allocator
->             ext4_mb_simple_scan_group
->              ext4_mb_use_best_found
->               ext4_mb_new_preallocation
->                ext4_mb_new_inode_pa
->                 ext4_mb_use_inode_pa
->                  >>> set ac->ac_b_ex.fe_len <= 0
->            ext4_mb_mark_diskspace_used
->             >>> BUG_ON(ac->ac_b_ex.fe_len <= 0);
->
-> we can easily reproduce this problem with the following commands:
-> 	`fallocate -l100M disk`
-> 	`mkfs.ext4 -b 1024 -g 256 disk`
-> 	`mount disk /mnt`
-> 	`fsstress -d /mnt -l 0 -n 1000 -p 1`
->
-> The size must be smaller than or equal to EXT4_BLOCKS_PER_GROUP.
-> Therefore, "start + size <= ac->ac_o_ex.fe_logical" may occur
-> when the size is truncated. So start should be the start position of
-> the group where ac_o_ex.fe_logical is located after alignment.
-> In addition, when the value of fe_logical or EXT4_BLOCKS_PER_GROUP
-> is very large, the value calculated by start_off is more accurate.
->
-> Fixes: cd648b8a8fd5 ("ext4: trim allocation requests to group size")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
 > Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> ---
-> V1->V2:
-> 	Replace round_down() with rounddown().
-> 	Modified comments.
-> V2->V3:
-> 	Convert EXT4_BLOCKS_PER_GROUP type to ext4_lblk_t
-> 	to avoid compilation warnings.
 
-Looks good to me. Feel free to add -
+Changes looks good to me as we discussed. Feel free to add -
 
 Reviewed-by: Ritesh Harjani <ritesh.list@gmail.com>
 
+> ---
+> V1->V2:
+> 	Change Fixes from dfe076c106f6 to c9de560ded61.
+> V2->V3:
+> 	Delete Fixes tag.
+> 	Add more comments and commit logs to make the code easier to understand.
 >
->  fs/ext4/mballoc.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
+>  fs/ext4/mballoc.c | 17 ++++++++++++++++-
+>  1 file changed, 16 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 4d3740fdff90..9e06334771a3 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -4185,7 +4185,22 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
+>  	}
+>  	rcu_read_unlock();
+>
+> -	if (start + size <= ac->ac_o_ex.fe_logical &&
+> +	/*
+> +	 * In this function "start" and "size" are normalized for better
+> +	 * alignment and length such that we could preallocate more blocks.
+> +	 * This normalization is done such that original request of
+> +	 * ac->ac_o_ex.fe_logical & fe_len should always lie within "start" and
+> +	 * "size" boundaries.
+> +	 * (Note fe_len can be relaxed since FS block allocation API does not
+> +	 * provide gurantee on number of contiguous blocks allocation since that
+> +	 * depends upon free space left, etc).
+> +	 * In case of inode pa, later we use the allocated blocks
+> +	 * [pa_start + fe_logical - pa_lstart, fe_len/size] from the preallocated
+> +	 * range of goal/best blocks [start, size] to put it at the
+> +	 * ac_o_ex.fe_logical extent of this inode.
+> +	 * (See ext4_mb_use_inode_pa() for more details)
+> +	 */
+> +	if (start + size <= ac->ac_o_ex.fe_logical ||
+>  			start > ac->ac_o_ex.fe_logical) {
+>  		ext4_msg(ac->ac_sb, KERN_ERR,
+>  			 "start %lu, size %lu, fe_logical %lu",
+> --
+> 2.31.1
 >
