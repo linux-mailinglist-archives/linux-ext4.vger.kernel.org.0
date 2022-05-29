@@ -2,125 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E260B536EC9
-	for <lists+linux-ext4@lfdr.de>; Sun, 29 May 2022 01:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2278536F04
+	for <lists+linux-ext4@lfdr.de>; Sun, 29 May 2022 03:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230060AbiE1Wz7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 28 May 2022 18:55:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33210 "EHLO
+        id S230200AbiE2BYp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 28 May 2022 21:24:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229887AbiE1Wz6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 28 May 2022 18:55:58 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA6C20BF1
-        for <linux-ext4@vger.kernel.org>; Sat, 28 May 2022 15:55:57 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id c15-20020a9d684f000000b0060b097c71ecso5347465oto.10
-        for <linux-ext4@vger.kernel.org>; Sat, 28 May 2022 15:55:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=lcv+WxJFHV20qbHWSjv7o6OApdQxYB9IE9Ik0cT/3yY=;
-        b=NSveMsBbkN75P7u2nUMdXSs/SNI8qZQ9bgyxTDfNOHIn+NIkyEpged7I/mvaPRPxEo
-         EW/SDDNeRA5Ohpk8fTtr4MF/k1dYcSZqxotGCgwMTW9TOtpqr+q+WEsL/hhwQO43y7xp
-         OvqbjJ1LwGqWOp3xObmmB957zQRYDICFmG/7b131AC4v9BcJwRaA8dk4wjEqRJ0MSFi2
-         JxRZmM4bmXSakXQGdxeqGtNUNM+zr4MoVTD6XZAUlLxS+GscDkOv7jVMJclYjDa3BpI2
-         y8xsjN2Vb2G3MvBt4m3oRh/l/kcL6MFZi3KgZAfTW33t1FG7tMz468VOYtTf5soLc9q2
-         2dng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=lcv+WxJFHV20qbHWSjv7o6OApdQxYB9IE9Ik0cT/3yY=;
-        b=FuRERZ09v6iTycAKYMUVAMQWMKb/vGjdWFgRla2WpE3SpuAAvC7GzvFpks77llLuWA
-         MgCCgi9QS8cXOl+Hyxs0Q8fwwO2W0pH01cza7rRm2Z5+gEC8w6mFUIjfwYH4LvXELSCV
-         FHQRGnXEFdQQVE3HC5vUUQ8ns/nECJB06WaZ3TEkggdm+FsFH/v9+QZSU/CGnuSQjskP
-         2xjGxvXkU77IWZsnQq+Ql8YwJ1vEmZ2CY2Jzwn4aFSUu70k2SzIobZ3nmpMOWBaVRgA6
-         JhpZQip2bVQlohRT9JYlhehUFFZE/wfS+ONKA9SObR2iqScBwd7xNQmxKBRMwMS4bvfx
-         WOPA==
-X-Gm-Message-State: AOAM532ffC6dXUBUKqsh65mws9NgxLYFKT/sTfEeWT0Eac7iU41Z7gSG
-        Ns1xlbzccjXX4aAce9fdgpSmwJWQPk+sTlfkHDlY6rM1KE0=
-X-Google-Smtp-Source: ABdhPJwFl1FkPdb9V8BC+gM9Pdm283VBVmbxLLQxYowjU2IbTdwPLmOOLcob9UPnx6dD/fVcbi4kisRFNpQd9+NYTJk=
-X-Received: by 2002:a9d:19e5:0:b0:606:d75:9239 with SMTP id
- k92-20020a9d19e5000000b006060d759239mr19481568otk.120.1653778556605; Sat, 28
- May 2022 15:55:56 -0700 (PDT)
+        with ESMTP id S229987AbiE2BYo (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 28 May 2022 21:24:44 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6733B5C671
+        for <linux-ext4@vger.kernel.org>; Sat, 28 May 2022 18:24:43 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 24T1OVCo017225
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 28 May 2022 21:24:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1653787474; bh=zjVqq8Cdkij0X1sscXUKa1G/eL68ryEZdeo5hegW7Gk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=TFhXWyEx7XRjyjmJGIvJ3W73bUKn8yVYcfhpicV3sebOx7k3BZJB6mb3dklCV7R4c
+         azqCcS4lKzSrdvbUkxmW++S9hDuph3pxRRSgPC5kta0oetFk0QER8PwbGuQ5mlpjIs
+         HZTqVKj2Enmb/Df097L727Y0lSKZAp9n+YMgQlZzDRx0ycr40/nvlhu5ZSeoXR8Jck
+         R8/w8qWHhSQxJzpLQ2EhXA4hiYU4fsLmbsT8tY32krOtKDz4IcZ64N3BnUMgU2P8Os
+         CXwtae96OWbi9u+A/9fJRDuTJyFXLoBzJKFta7aZabhboDrvC8dIe8gxJ8EUSSftPG
+         ZeXepnjCx9Ciw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 018AD15C009C; Sat, 28 May 2022 21:24:30 -0400 (EDT)
+Date:   Sat, 28 May 2022 21:24:30 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     "Stephen E. Baker" <baker.stephen.e@gmail.com>
+Cc:     adilger.kernel@dilger.ca, hch@lst.de, linux-ext4@vger.kernel.org
+Subject: Re: simplify ext4_sb_read_encoding regression
+Message-ID: <YpLLTkje/QUYPP9z@mit.edu>
+References: <CAFDdnB1Rq3vNe_qt_0u+inzOuL4vrGhgbOoQZKBwfBktni=Npw@mail.gmail.com>
 MIME-Version: 1.0
-From:   "Stephen E. Baker" <baker.stephen.e@gmail.com>
-Date:   Sat, 28 May 2022 18:55:45 -0400
-Message-ID: <CAFDdnB38yRcZ+mQButh9UwGoh928xsZCgmjQ7r3HPEpEwdrZbg@mail.gmail.com>
-Subject: simplify ext4_sb_read_encoding regression
-To:     linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFDdnB1Rq3vNe_qt_0u+inzOuL4vrGhgbOoQZKBwfBktni=Npw@mail.gmail.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Sat, May 28, 2022 at 06:53:59PM -0400, Stephen E. Baker wrote:
+> Hello,
+> 
+> I have a Samsung Chromebook Plus (rk3399-gru-kevin) which boots linux off
+> an external ssd plugged into USB. The root filesystem is ext4 with unicode
+> support, case folding is enabled only on some directories in my home
+> directory.
+> 
+> Since 5.17 the system has been unbootable.
 
-I have a Samsung Chromebook Plus (rk3399-gru-kevin) which boots linux
-off an external ssd plugged into USB. The root filesystem is ext4 with
-unicode support, case folding is enabled only on some directories in
-my home directory.
+Can you boot using an older kernel and send me (a) the output of
+dumpe2fs -h of your root file system, and (b) the output of running
+dmesg immediately after the system is booted?
 
-Since 5.17 the system has been unbootable. I ran a git bisect and it
-pointed to aa8bf298a96acaaaa3af07d09cf7ffeb9798e48a ext4: simplify
-ext4_sb_read_encoding
+If you can capture the console output when trying to boot 5.17, that
+would be helpful.  You may need to disable the graphical boot screen
+depending on what distribution or how the bootloader is configured.
+If you could to take a picture of the screen when it stops/hangs, that
+would be helpful.
 
-Unfortunately reverting that commit alone did not make 5.17 bootable,
-and reverting the whole patch series conflicts with later changes.
+I don't see anything wrong with the commit, and I've tested booting
+the root file system with casefold enabled, and it works just fine.
+What I did was take the root_fs.img from kvm-xfstests[1], and did the
+following:
 
-tune2fs 1.46.5 (30-Dec-2021)
-Filesystem volume name:   <none>
-Last mounted on:          /mnt/chrome
-Filesystem UUID:          8b5e21f1-3d26-4340-8326-d5a3e54f89fc
-Filesystem magic number:  0xEF53
-Filesystem revision #:    1 (dynamic)
-Filesystem features:      has_journal ext_attr resize_inode dir_index
-filetype needs_recovery extent 64bit flex_bg casefold sparse_super
-large_file huge_file dir_nlink extra_isize metadata_csum
-Filesystem flags:         signed_directory_hash
-Default mount options:    user_xattr acl
-Filesystem state:         clean
-Errors behavior:          Continue
-Filesystem OS type:       Linux
-Inode count:              30523392
-Block count:              122087425
-Reserved block count:     6104371
-Overhead clusters:        2196820
-Free blocks:              108560118
-Free inodes:              29690527
-First block:              0
-Block size:               4096
-Fragment size:            4096
-Group descriptor size:    64
-Reserved GDT blocks:      1024
-Blocks per group:         32768
-Fragments per group:      32768
-Inodes per group:         8192
-Inode blocks per group:   512
-Flex block group size:    16
-Filesystem created:       Sun Apr 24 18:30:23 2022
-Last mount time:          Sat May 28 18:45:39 2022
-Last write time:          Sat May 28 18:45:39 2022
-Mount count:              118
-Maximum mount count:      -1
-Last checked:             Sun Apr 24 18:30:23 2022
-Check interval:           0 (<none>)
-Lifetime writes:          96 GB
-Reserved blocks uid:      0 (user root)
-Reserved blocks gid:      0 (group root)
-First inode:              11
-Inode size:               256
-Required extra isize:     32
-Desired extra isize:      32
-Journal inode:            8
-Default directory hash:   half_md4
-Directory Hash Seed:      4973c679-1148-4fa4-b450-2bd335cee42d
-Journal backup:           inode blocks
-Checksum type:            crc32c
-Checksum:                 0x9480930d
+% qemu-img convert -O raw test-appliance/root_fs.img /tmp/root_fs.raw
+% tune2fs -O casefold /tmp/root_fs.raw
+% qemu-img convert -f raw -O qcow2 /tmp/root_fs.raw /tmp/root_fs.img
+% kvm-xfstests -I /tmp/root_fs.img shell
+
+and 5.17 booted without any problems.
+
+[1] https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-quickstart.md
+
+Once in the kvm environment:
+
+root@kvm-xfstests:~# uname -a
+Linux kvm-xfstests 5.17.0-xfstests #644 SMP PREEMPT Sat May 28 21:06:37 EDT 2022 x86_64 GNU/Linux
+
+root@kvm-xfstests:~# dmesg | grep EXT4-fs
+[    0.690089] EXT4-fs (vda): Using encoding defined by superblock: utf8-12.1.0 with flags 0x0
+[    0.690161] EXT4-fs (vda): Using encoding defined by superblock: utf8-12.1.0 with flags 0x0
+[    0.690592] EXT4-fs (vda): mounted filesystem without journal. Quota mode: none.
+[    0.846407] EXT4-fs (vda): re-mounted. Quota mode: none.
+[    1.144539] EXT4-fs (vdg): mounted filesystem with ordered data mode. Quota mode: no
+
+root@kvm-xfstests:~# dumpe2fs -h /dev/vda 2>/dev/null | grep -i features
+Filesystem features:      ext_attr resize_inode dir_index filetype extent 64bit flex_bg casefold sparse_super large_file huge_file dir_nlink extra_isize metadata_csum
+
+root@kvm-xfstests:~# dumpe2fs -h /dev/vda 2>/dev/null | grep -i encoding
 Character encoding:       utf8-12.1
+
+I'm not sure what is going on with your system, but I can't reproduce
+it on my end.
+
+Regards,
+
+						- Ted
