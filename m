@@ -2,60 +2,61 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D63453A0E8
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Jun 2022 11:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3531553AEEB
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 Jun 2022 00:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350914AbiFAJmS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 1 Jun 2022 05:42:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35696 "EHLO
+        id S231402AbiFAVNe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 1 Jun 2022 17:13:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351156AbiFAJlz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Jun 2022 05:41:55 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D82EE5001C
-        for <linux-ext4@vger.kernel.org>; Wed,  1 Jun 2022 02:41:48 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 9734D1F946;
-        Wed,  1 Jun 2022 09:41:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1654076507; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MTT6X8ZokNfCughqToNwYdeIfG+fqAQ2+VL9kR6v78k=;
-        b=BzNtuu2Rejd2LyyDfx/2H0oFEzBBlYmLnpVk9Zv2r6qTzoEa/Wsbp0wpLm8vNTLUU7dvIy
-        jexfLPG3UDeNHpsw9Ki7zUQEUK+JfmmUD0ht4AZocB8WWdbN3aQnIXOtHXIA2VYmWSHZh7
-        aX3eXNnKPLWa8T1LJ8juj0xIZq4zBrQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1654076507;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MTT6X8ZokNfCughqToNwYdeIfG+fqAQ2+VL9kR6v78k=;
-        b=h610cOVZhQV6LaaPsReYZfwh1DSMI+l79B7iImnSHARsUtypNUvQzqWl7MfChUhSSyh2l6
-        uWHm3XCVX46VNODQ==
-Received: from quack3.suse.cz (unknown [10.163.28.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 550132C141;
-        Wed,  1 Jun 2022 09:41:47 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 0A1C4A0633; Wed,  1 Jun 2022 11:41:47 +0200 (CEST)
-Date:   Wed, 1 Jun 2022 11:41:46 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Zhang Yi <yi.zhang@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
-        yukuai3@huawei.com
-Subject: Re: [PATCH v2] ext4: add reserved GDT blocks check
-Message-ID: <20220601094146.tmmw5ks4jganupc7@quack3.lan>
-References: <20220601092717.763694-1-yi.zhang@huawei.com>
+        with ESMTP id S231391AbiFAVNa (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Jun 2022 17:13:30 -0400
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A5C85E754
+        for <linux-ext4@vger.kernel.org>; Wed,  1 Jun 2022 14:13:27 -0700 (PDT)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-f3381207a5so4395768fac.4
+        for <linux-ext4@vger.kernel.org>; Wed, 01 Jun 2022 14:13:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Gk4nfCem3ECRa7Gml0J0mN/3RZoOAdfGaQAqyHPKtiI=;
+        b=HLFKV03IvnCnmYNulbqEkPjTK3riUL87h2wHAPtiQ15M9iY6Q8e992KMQxJwLdk6f+
+         yc6asPWVRklcz8AY8oqwyi19SO9Z3FXfSKl8KIcHwdn2diZ16fcVN3Noj9XYHhxCnXOp
+         L86c6aBumcYcai1ti0jT0anzEO5LqUJSpP7KiFxQXIe3O9qnWY7viJfSABa1ly9ubc5O
+         7xqU4M/fQQEbpLLu8u6cCuAo0xRfp/5LoTJYIMP5ne/O4VXGwgI3hKlV02ue3fdzqvYA
+         6IABKhDngCz8ZKTuipfv5GZ/7HEqJFbM8x/u/85qQFiKTPs+Mb3XRU84XoMrlsTu1Zr+
+         PsMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Gk4nfCem3ECRa7Gml0J0mN/3RZoOAdfGaQAqyHPKtiI=;
+        b=5Nw5oMhCSYVrhokm/zTKjSJcMVxm63AHcuGMOhEgVZvhmQMm2fsUWzD5qgY5gZR6RC
+         yzVk2AZPxtbfXIgfJfHDUEeDQM0imcPru44/x8Geh19x9zenJeRidlsogS3BxTi4WuIA
+         mlwHjxkVkfZXHHKljs0qMe3ogmUKqnAcVOA5y9syM9ANhVy9zzF76UEBjbx8HSkI3QXS
+         xwO0X6pZK/NRnHhtPQijP0SgiQrAeU9Lkq1WMYoUhJeSP077rWdr+jnmOGSvEdivLcdR
+         EghckV1OL/45USBpIVe/WUW5h53Qhpnhj/novHj+TcFlPm/Exaxjp/hdKcQ8vnPK2NFz
+         HRjw==
+X-Gm-Message-State: AOAM533rmG4tY08Eji8Fag63dO+BaAiBwXJrarW9YmciboP9uPLk4kzT
+        rIyvHxxIslN68xDZVJvMN3gjxsu+GmzpNcL6gqyJ/60uKMc=
+X-Google-Smtp-Source: ABdhPJzieEZsH3sz7p7h/CGCrygaKC3twss2VqEDgMRTw52PjXyF0yZxDsfC/Wcw+CTWK4gcBihtpQQBph7O0cnThRw=
+X-Received: by 2002:a05:6870:308:b0:f1:ddfe:8ac5 with SMTP id
+ m8-20020a056870030800b000f1ddfe8ac5mr16670934oaf.237.1654111051378; Wed, 01
+ Jun 2022 12:17:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220601092717.763694-1-yi.zhang@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Received: by 2002:a05:6358:3601:b0:a3:2139:251d with HTTP; Wed, 1 Jun 2022
+ 12:17:30 -0700 (PDT)
+Reply-To: johnwinery@online.ee
+From:   johnwinery <alicejohnson8974@gmail.com>
+Date:   Wed, 1 Jun 2022 12:17:30 -0700
+Message-ID: <CAFqHCSSUC0MpbjYK8d-GCxOG4b6Qbk2uH3+xQDZte6cPBsxLGA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,81 +64,4 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 01-06-22 17:27:17, Zhang Yi wrote:
-> We capture a NULL pointer issue when resizing a corrupt ext4 image which
-> is freshly clear resize_inode feature (not run e2fsck). It could be
-> simply reproduced by following steps. The problem is because of the
-> resize_inode feature was cleared, and it will convert the filesystem to
-> meta_bg mode in ext4_resize_fs(), but the es->s_reserved_gdt_blocks was
-> not reduced to zero, so could we mistakenly call reserve_backup_gdb()
-> and passing an uninitialized resize_inode to it when adding new group
-> descriptors.
-> 
->  mkfs.ext4 /dev/sda 3G
->  tune2fs -O ^resize_inode /dev/sda #forget to run requested e2fsck
->  mount /dev/sda /mnt
->  resize2fs /dev/sda 8G
-> 
->  ========
->  BUG: kernel NULL pointer dereference, address: 0000000000000028
->  CPU: 19 PID: 3243 Comm: resize2fs Not tainted 5.18.0-rc7-00001-gfde086c5ebfd #748
->  ...
->  RIP: 0010:ext4_flex_group_add+0xe08/0x2570
->  ...
->  Call Trace:
->   <TASK>
->   ext4_resize_fs+0xbec/0x1660
->   __ext4_ioctl+0x1749/0x24e0
->   ext4_ioctl+0x12/0x20
->   __x64_sys_ioctl+0xa6/0x110
->   do_syscall_64+0x3b/0x90
->   entry_SYSCALL_64_after_hwframe+0x44/0xae
->  RIP: 0033:0x7f2dd739617b
->  ========
-> 
-> The fix is simple, add a check in ext4_resize_begin() to make sure that
-> the es->s_reserved_gdt_blocks is zero when the resize_inode feature is
-> disabled.
-> 
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-
-Looks good to me. Thanks for the fix. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
-> v2->v1:
->  - move check from ext4_resize_fs() to ext4_resize_begin().
-> 
->  fs/ext4/resize.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
-> index 90a941d20dff..8b70a4701293 100644
-> --- a/fs/ext4/resize.c
-> +++ b/fs/ext4/resize.c
-> @@ -53,6 +53,16 @@ int ext4_resize_begin(struct super_block *sb)
->  	if (!capable(CAP_SYS_RESOURCE))
->  		return -EPERM;
->  
-> +	/*
-> +	 * If the reserved GDT blocks is non-zero, the resize_inode feature
-> +	 * should always be set.
-> +	 */
-> +	if (EXT4_SB(sb)->s_es->s_reserved_gdt_blocks &&
-> +	    !ext4_has_feature_resize_inode(sb)) {
-> +		ext4_error(sb, "resize_inode disabled but reserved GDT blocks non-zero");
-> +		return -EFSCORRUPTED;
-> +	}
-> +
->  	/*
->  	 * If we are not using the primary superblock/GDT copy don't resize,
->           * because the user tools have no way of handling this.  Probably a
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Greeting ,I had written an earlier mail to you but without response
