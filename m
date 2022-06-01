@@ -2,209 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 106535397B2
-	for <lists+linux-ext4@lfdr.de>; Tue, 31 May 2022 22:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46700539EC4
+	for <lists+linux-ext4@lfdr.de>; Wed,  1 Jun 2022 09:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347619AbiEaUBg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 31 May 2022 16:01:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40712 "EHLO
+        id S1347346AbiFAHzq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 1 Jun 2022 03:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347643AbiEaUBT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 31 May 2022 16:01:19 -0400
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam08on2067.outbound.protection.outlook.com [40.107.100.67])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FD0A90CC3;
-        Tue, 31 May 2022 13:01:07 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RKa5ezAysuEbZar9iOYpt4YLcjUcNWpseiLHqdzJgreXe8Hnzn5yD3HgREyXF6rYsv7WJ6is05h/wOaH1EqIjhKFwsYzyajfMYtzwGBYhROQDACLCRWTv/9Lpjyhi+zuilQPdaFFShkW4J09Q0emq4cVz7TM6cVhGNfFLith8770VZ/b3D1cdi0hYb/AULPMfmTNP/L0u7r9vlUVNag6QooGj/QAncWqeXUthznpd4NqNe1rBRk3TEGZ1M+ko9X9ekqWp0xpACNg13hTmnsKeAMDzyHKkCzyPjitf8QU23/rALSxeMWS3SRCaZAG/DkJnvN5ARsQLjcWAxHTMZ1Ayg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RGFoeMuycSLm0T3Ola5avl2Wy7hr3oRWaQlczxEFybc=;
- b=I8KWR9oOMsxXFeY2W2lw1Fx2bl4WJOIfzAa1hIsXw5/twDV5szF1f08sqMs9cAFsAyyJa3DaHXM1xfG1z/3E0kGJi2erFXOvQLVDaRZNLY4lcgNuT9uS+So064R4YmFXA8RVXkuIIyMwOK+BsatNa+eNoxJA1LLMixgXQSmly64PpiL9NRSBHyoNAvSyddD5oDfjJvJqCcmL3VIQpglRsLX6DJx5yNIumlpO045EA6aB4OV7NVo/QcAjnu/5qrpSpSL8wytc744rmHOomoB0R4Z5M5QblOu85aV3zJY2lufBbPf9FdMzHEi5CxJTp2Q61U/9mi1P8lGw4y34EevpxA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=nvidia.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RGFoeMuycSLm0T3Ola5avl2Wy7hr3oRWaQlczxEFybc=;
- b=IZMOOOpxwDYm1Wzbfjbkbe5XtbUUGJ+tdu2AyNDuwbLBwO3F5w+kTBNsbqKqpiekWbJFHO3ePZQv9Q1Xg4k7oM93PiLP6d5AgN0Y1zTaHyzyuv094/0fCnI0X5uW7SPMuWbkZG3QaWb1VSdkOfuh/QapJLywio3oWz51fRqNXZQ=
-Received: from BN9PR03CA0392.namprd03.prod.outlook.com (2603:10b6:408:111::7)
- by CH2PR12MB3654.namprd12.prod.outlook.com (2603:10b6:610:22::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5293.16; Tue, 31 May
- 2022 20:01:05 +0000
-Received: from BN8NAM11FT027.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:111:cafe::bf) by BN9PR03CA0392.outlook.office365.com
- (2603:10b6:408:111::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5293.13 via Frontend
- Transport; Tue, 31 May 2022 20:01:05 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN8NAM11FT027.mail.protection.outlook.com (10.13.177.96) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.5293.13 via Frontend Transport; Tue, 31 May 2022 20:01:05 +0000
-Received: from alex-MS-7B09.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Tue, 31 May
- 2022 15:01:03 -0500
-From:   Alex Sierra <alex.sierra@amd.com>
-To:     <jgg@nvidia.com>
-CC:     <david@redhat.com>, <Felix.Kuehling@amd.com>, <linux-mm@kvack.org>,
-        <rcampbell@nvidia.com>, <linux-ext4@vger.kernel.org>,
-        <linux-xfs@vger.kernel.org>, <amd-gfx@lists.freedesktop.org>,
-        <dri-devel@lists.freedesktop.org>, <hch@lst.de>,
-        <jglisse@redhat.com>, <apopple@nvidia.com>, <willy@infradead.org>,
-        <akpm@linux-foundation.org>
-Subject: [PATCH v5 13/13] tools: add selftests to hmm for COW in device memory
-Date:   Tue, 31 May 2022 15:00:41 -0500
-Message-ID: <20220531200041.24904-14-alex.sierra@amd.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20220531200041.24904-1-alex.sierra@amd.com>
-References: <20220531200041.24904-1-alex.sierra@amd.com>
+        with ESMTP id S1347240AbiFAHzo (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Jun 2022 03:55:44 -0400
+X-Greylist: delayed 487 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 01 Jun 2022 00:55:43 PDT
+Received: from mail.forindustry.pl (mail.forindustry.pl [37.187.225.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D0393451
+        for <linux-ext4@vger.kernel.org>; Wed,  1 Jun 2022 00:55:43 -0700 (PDT)
+Received: by mail.forindustry.pl (Postfix, from userid 1002)
+        id B8EC6A702F; Wed,  1 Jun 2022 07:45:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=forindustry.pl;
+        s=mail; t=1654069564;
+        bh=Vw5jk5D1DE7WK/GNf/MxRQNyAyPYcC0rMJLibxKTj58=;
+        h=Date:From:To:Subject:From;
+        b=aMh5UpyGHsMA7Lcd0oDfroPJrN8f7H0G6eQ9WKBusc7RCweppk3grBJjBJO+AaD8i
+         WK2bwJxqDhma9FKVjcej6K3ew/YBDWTjyeDwSIO+J+1t5dc4aUghxRSNH0TDdFyHlR
+         JwJUyeoN3aVGte05jG3R2L6xnUPfbO+cTNZZP851Udj5wD1COxF0LvKEn2uw99WvQi
+         QqHiIrzlwfmBgE6DO+I2cWiTJuCI+pkJj4ZKPRe7kP2K3RzcRttPid2kMmS/VqyBaj
+         8LlLa320z+/M7Gi/ndukc7FBPdSSArLQ50Uc43/il925Dpi1bIvo5q68nAC8mlb6Rg
+         mh4PEcTPA5pyQ==
+Received: by mail.forindustry.pl for <linux-ext4@vger.kernel.org>; Wed,  1 Jun 2022 07:45:30 GMT
+Message-ID: <20220601064501-0.1.3k.lloj.0.e3aj1jnb5a@forindustry.pl>
+Date:   Wed,  1 Jun 2022 07:45:30 GMT
+From:   =?UTF-8?Q? "Arkadiusz_Soko=C5=82owski" ?= 
+        <arkadiusz.sokolowski@forindustry.pl>
+To:     <linux-ext4@vger.kernel.org>
+Subject: Koszty instalacji fotowoltaicznej
+X-Mailer: mail.forindustry.pl
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c2c9df9a-bc52-4466-e8e1-08da43404b8d
-X-MS-TrafficTypeDiagnostic: CH2PR12MB3654:EE_
-X-Microsoft-Antispam-PRVS: <CH2PR12MB3654A197BD41BC433CF237AFFDDC9@CH2PR12MB3654.namprd12.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EzoQ7MLxyDuO69NzGWKIK8gAuHeSzqrQrO6Wq4xw0Ssw+DbNLSj8IH63ScxQrg59p3yAA3u+lhqgi0Xpu/4RpC7ijNKtSZNaN0VGj37EiHXERm13/oLp1RGbc4VzJnndPSkWdZ3yneJ5eKTMYKYtplS56Kmq69e034xqUmB2OcSNS+Frbrn7nEtFH+AWlOr3Dyiv1zwSPRgAQeAnRWINcSUfwTzWG4QSv5z1iKX6WEvSZTh3p3BFaH1qD3CkxVNgAdtpTzSsHCbh39wF8QWVQT6+sX9Ehs4E6brTGz8A1eLQOFIfOL4vf9t+QwwlB2+Z9R8HAxiRMWvaNyWFsexrhe5ZOW3IckAiKfPenaksxHV+4F5GsugKIWsrDXvyZminGgo8t8cHWPS4P6MzSyfZB+mjKgUIAK5W7aw7pnTa2+NSVMURgVuxFnrR01/kUGfX5fyqptuU7nAiEWyIjD3PpK3utkmzWOjrgdgDWiUPqZ56w/lJ1bxSzomwC6G+n4daX+zabkd78bqJV7EjUJL8xOJcDEMWlpYKy5a/6NVjaToIdm66423FOmU3XYf1iuue4Q95yY2zM+8pVgsCkJyvBhl0/OgTN4zYMqhTCSoqOj6cFnDyo9DVXSpDeuMXTxr7pOsvAEqiJJvtuk30QjBASZyg0QkY40DU8zsElf8nF3yb2EOlOOvCFcHdXSdPk+BFFAST15Ck9VDxB+763fywPw==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230001)(4636009)(36840700001)(46966006)(40470700004)(316002)(86362001)(7416002)(356005)(6916009)(81166007)(54906003)(5660300002)(36860700001)(2906002)(83380400001)(44832011)(47076005)(4326008)(8676002)(82310400005)(2616005)(70586007)(1076003)(70206006)(186003)(426003)(16526019)(336012)(8936002)(6666004)(40460700003)(508600001)(36756003)(7696005)(26005)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 May 2022 20:01:05.0280
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c2c9df9a-bc52-4466-e8e1-08da43404b8d
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT027.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB3654
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The objective is to test device migration mechanism in pages marked
-as COW, for private and coherent device type. In case of writing to
-COW private page(s), a page fault will migrate pages back to system
-memory first. Then, these pages will be duplicated. In case of COW
-device coherent type, pages are duplicated directly from device
-memory.
+Dzie=C5=84 dobry,
 
-Signed-off-by: Alex Sierra <alex.sierra@amd.com>
-Acked-by: Felix Kuehling <Felix.Kuehling@amd.com>
----
- tools/testing/selftests/vm/hmm-tests.c | 80 ++++++++++++++++++++++++++
- 1 file changed, 80 insertions(+)
+stworzyli=C5=9Bmy specjaln=C4=85 ofert=C4=99 dla firm, na kompleksow=C4=85=
+ obs=C5=82ug=C4=99 inwestycji w fotowoltaik=C4=99.
 
-diff --git a/tools/testing/selftests/vm/hmm-tests.c b/tools/testing/selftests/vm/hmm-tests.c
-index 3295c8bf6c63..2da9d5baf339 100644
---- a/tools/testing/selftests/vm/hmm-tests.c
-+++ b/tools/testing/selftests/vm/hmm-tests.c
-@@ -1869,4 +1869,84 @@ TEST_F(hmm, hmm_gup_test)
- 	close(gup_fd);
- 	hmm_buffer_free(buffer);
- }
-+
-+/*
-+ * Test copy-on-write in device pages.
-+ * In case of writing to COW private page(s), a page fault will migrate pages
-+ * back to system memory first. Then, these pages will be duplicated. In case
-+ * of COW device coherent type, pages are duplicated directly from device
-+ * memory.
-+ */
-+TEST_F(hmm, hmm_cow_in_device)
-+{
-+	struct hmm_buffer *buffer;
-+	unsigned long npages;
-+	unsigned long size;
-+	unsigned long i;
-+	int *ptr;
-+	int ret;
-+	unsigned char *m;
-+	pid_t pid;
-+	int status;
-+
-+	npages = 4;
-+	size = npages << self->page_shift;
-+
-+	buffer = malloc(sizeof(*buffer));
-+	ASSERT_NE(buffer, NULL);
-+
-+	buffer->fd = -1;
-+	buffer->size = size;
-+	buffer->mirror = malloc(size);
-+	ASSERT_NE(buffer->mirror, NULL);
-+
-+	buffer->ptr = mmap(NULL, size,
-+			   PROT_READ | PROT_WRITE,
-+			   MAP_PRIVATE | MAP_ANONYMOUS,
-+			   buffer->fd, 0);
-+	ASSERT_NE(buffer->ptr, MAP_FAILED);
-+
-+	/* Initialize buffer in system memory. */
-+	for (i = 0, ptr = buffer->ptr; i < size / sizeof(*ptr); ++i)
-+		ptr[i] = i;
-+
-+	/* Migrate memory to device. */
-+
-+	ret = hmm_migrate_sys_to_dev(self->fd, buffer, npages);
-+	ASSERT_EQ(ret, 0);
-+	ASSERT_EQ(buffer->cpages, npages);
-+
-+	pid = fork();
-+	if (pid == -1)
-+		ASSERT_EQ(pid, 0);
-+	if (!pid) {
-+		/* Child process waitd for SIGTERM from the parent. */
-+		while (1) {
-+		}
-+		perror("Should not reach this\n");
-+		exit(0);
-+	}
-+	/* Parent process writes to COW pages(s) and gets a
-+	 * new copy in system. In case of device private pages,
-+	 * this write causes a migration to system mem first.
-+	 */
-+	for (i = 0, ptr = buffer->ptr; i < size / sizeof(*ptr); ++i)
-+		ptr[i] = i;
-+
-+	/* Terminate child and wait */
-+	EXPECT_EQ(0, kill(pid, SIGTERM));
-+	EXPECT_EQ(pid, waitpid(pid, &status, 0));
-+	EXPECT_NE(0, WIFSIGNALED(status));
-+	EXPECT_EQ(SIGTERM, WTERMSIG(status));
-+
-+	/* Take snapshot to CPU pagetables */
-+	ret = hmm_dmirror_cmd(self->fd, HMM_DMIRROR_SNAPSHOT, buffer, npages);
-+	ASSERT_EQ(ret, 0);
-+	ASSERT_EQ(buffer->cpages, npages);
-+	m = buffer->mirror;
-+	for (i = 0; i < npages; i++)
-+		ASSERT_EQ(HMM_DMIRROR_PROT_WRITE, m[i]);
-+
-+	hmm_buffer_free(buffer);
-+}
- TEST_HARNESS_MAIN
--- 
-2.32.0
+Specjalizujemy si=C4=99 w zakresie doboru, monta=C5=BCu i serwisie instal=
+acji fotowoltaicznych, dysponujemy najnowocze=C5=9Bniejszymi rozwi=C4=85z=
+ania, kt=C3=B3re zapewni=C4=85 Pa=C5=84stwu oczekiwane rezultaty.
 
+Mo=C5=BCemy przygotowa=C4=87 dla Pa=C5=84stwa wst=C4=99pn=C4=85 kalkulacj=
+=C4=99 i przeanalizowa=C4=87 efekty mo=C5=BCliwe do osi=C4=85gni=C4=99cia=
+=2E
+
+Czy s=C4=85 Pa=C5=84stwo otwarci na wst=C4=99pn=C4=85 rozmow=C4=99 w tym =
+temacie?
+
+Pozdrawiam,
+Arkadiusz Soko=C5=82owski
