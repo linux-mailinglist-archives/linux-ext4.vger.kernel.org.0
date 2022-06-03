@@ -2,50 +2,49 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 593B453BD95
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 Jun 2022 19:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58CD053C442
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 Jun 2022 07:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237721AbiFBRwd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 2 Jun 2022 13:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57224 "EHLO
+        id S240572AbiFCFb4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 3 Jun 2022 01:31:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236902AbiFBRwa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Jun 2022 13:52:30 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4272F120B5
-        for <linux-ext4@vger.kernel.org>; Thu,  2 Jun 2022 10:52:29 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id E01411F453CF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1654192348;
-        bh=LBdCDYUVvo34HLgrsp83/hhRD4K+5Vu7cbydBhhrcIA=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=gu/JIY83Rhbg/D4jkfd/J9X5XxkcCI0qdwAmfHQisEQzsFvGy5vzaysEaPhIxfA/N
-         9nV0HoVSopAfz74Wd6OH1yDwb94accHIdSafYbcx4QAJQ6QIWwNByKnWcOLAK3snC2
-         rmKO/0we6THk3BP+PrLayDAisHie530fiFOT5NcPk1ao5QubhV9af9K/XPDuOFtjW8
-         pYF0iP8CGZAfWNU4KUQg8CfVm5FLazR5ryyv9w+mgP7gIO9n+9sK8m2RRE47bml5lc
-         e8HROMA1TWpJKFxOq4WqN1EaH5BfdoENfdQ9WfBo3vbC+8VdGxpQ4C99Vzz31kd2GR
-         Y2ojXSbX2mIXQ==
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Peter Urbanec <linux-ext4.vger.kernel.org@urbanec.net>,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] e2fsck: Always probe filesystem blocksize with simple
- io_manager
-Organization: Collabora
-References: <493bbaea-b0d3-4f8e-20fb-5fb330a128a3@urbanec.net>
-        <YlniK5dd1wV2bCXi@mit.edu> <87pml4lt5v.fsf_-_@collabora.com>
-Date:   Thu, 02 Jun 2022 13:52:24 -0400
-In-Reply-To: <87pml4lt5v.fsf_-_@collabora.com> (Gabriel Krisman Bertazi's
-        message of "Mon, 25 Apr 2022 18:01:00 -0400")
-Message-ID: <87zgivrm07.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        with ESMTP id S237023AbiFCFby (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Jun 2022 01:31:54 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1DC105;
+        Thu,  2 Jun 2022 22:31:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 8B1D5B82153;
+        Fri,  3 Jun 2022 05:31:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 165ACC385A9;
+        Fri,  3 Jun 2022 05:31:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1654234309;
+        bh=8YyKCZHbzxEnqZHzlExnBfqd010jKWg9faUnMg77rp8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q74aZMr2Kej9Yw10UVIC1hk2z5sZbTv5WA2VI2kr+29+CMvJQwyJX2RtZkrjtF22F
+         TtGiD/yLAkZ59IWRKG3o0DbYsW5oyYKQAS5SpnSYl81oZNZ7GFhoYBy+eCPYddKtcu
+         mhPB4u786CP0WQkyBcOeTtIhWj/2icmfUCflA2pqvYhwOGoKLpXeWbYNS/9KxTf2HO
+         aH1GMLlztt6EbS9M+WgeZZ0dyr/IegQZvtFEHml81lqPRhcC1OqrFQpRY1lCzlb23q
+         FtvQuo7/6FmJJIgfPAnULKzZQHHLf70kCkReJDh/l3WmEZuUZBDIlOk9/nmSg8uXT5
+         y5mwXsfSY0E7Q==
+Date:   Fri, 3 Jun 2022 13:31:43 +0800
+From:   Zorro Lang <zlang@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v2] ext4/053: update the test_dummy_encryption tests
+Message-ID: <20220603053143.ud42tcsxrdkr3mj2@zlang-mailbox>
+References: <20220530173044.156375-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220530173044.156375-1-ebiggers@kernel.org>
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,125 +52,90 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Gabriel Krisman Bertazi <krisman@collabora.com> writes:
-
-> "Theodore Ts'o" <tytso@mit.edu> writes:
->
->> So the failure of "e2fsck -f -C 0 -b 32768 -z /root/e2fsck.e2undo
->> /dev/md0" appears to be a bug where e2fsck doesn't work correctly with
->> an undo file when using a backup superblock.  I can replicate this
->> using these commands:
->>
->> 	mke2fs -q -t ext4 /tmp/foo.img 2G
->> 	e2fsck -b 32768 -z /tmp/undo /tmp/foo.img
->>
->> Running e2fsck without the -z option succeeds.  The combination of the
->> -b and -z option seems to be broken.  As a workaround, I would suggest
->> doing is to try running e2fsck with -n, which will open the block
->> device read-only, e.g. "e2fsck -b 32768 -n /dev/mdXX".  If the changes
->> e2fsck look safe, then you can run e2fsck without the -n option.
->
-> Ted,
->
-> I think this is a fix for the combination of -b and -z.
->
-
-Hi Ted, any interest in picking this up?  quite a corner case of
-e2fsprogs, but I think it simplifies that path a bit. :)
-
-> Thanks,
->
->>8
->
-> Combining superblock (-b) with undo file (-z) fails iff the block size
-> is not specified (-B) and is different from the first blocksize probed
-> in try_open_fs (1k).  The reason is as follows:
->
-> try_open_fs will probe different blocksizes if none is provided on the
-> command line. It is done by opening and closing the filesystem until it
-> finds a blocksize that makes sense. This is fine for all io_managers,
-> but undo_io creates the undo file with that blocksize during
-> ext2fs_open.  Once try_open_fs realizes it had the wrong blocksize and
-> retries with a different blocksize, undo_io will read the previously
-> created file and think it's corrupt for this filesystem.
->
-> Ideally, undo_io would know this is a probe and would fix the undo file.
-> It is not simple, though, because it would require undo_io to know the
-> file was just created by the probe code, since an undo file survives
-> through different fsck sessions.  We'd have to pass this information
-> around somehow.  This seems like a complex change to solve a corner
-> case.
->
-> Instead, this patch changes the blocksize probe to always use the
-> unix_io_manager. This way, we safely probe for the blocksize without
-> side effects.  Once the blocksize is known, we can safely reopen the
-> filesystem under the proper io_manager.
->
-> An easily reproducer for this issue (from Ted, adapted by me) is:
->
->  mke2fs -b 4k -q -t ext4 /tmp/foo.img 2G
->  e2fsck -b 32768 -z /tmp/undo /tmp/foo.img
->
-> Reported-by: Peter Urbanec <linux-ext4.vger.kernel.org@urbanec.net>
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+On Mon, May 30, 2022 at 10:30:44AM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Kernel commit 5f41fdaea63d ("ext4: only allow test_dummy_encryption when
+> supported") tightened the requirements on when the test_dummy_encryption
+> mount option is accepted.  Update ext4/053 accordingly.
+> 
+> Move the test cases to later in the file to group them with the other
+> test cases that use do_mkfs to add custom mkfs options instead of using
+> the "default" filesystem that the test creates at the beginning.
+> 
+> Reviewed-by: Lukas Czerner <lczerner@redhat.com>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 > ---
->  e2fsck/unix.c | 41 ++++++++++++++++++++++++-----------------
->  1 file changed, 24 insertions(+), 17 deletions(-)
->
-> diff --git a/e2fsck/unix.c b/e2fsck/unix.c
-> index ae231f93deb7..341b484e6ede 100644
-> --- a/e2fsck/unix.c
-> +++ b/e2fsck/unix.c
-> @@ -1171,25 +1171,32 @@ static errcode_t try_open_fs(e2fsck_t ctx, int flags, io_manager io_ptr,
->  	errcode_t retval;
->  
->  	*ret_fs = NULL;
-> -	if (ctx->superblock && ctx->blocksize) {
-> -		retval = ext2fs_open2(ctx->filesystem_name, ctx->io_options,
-> -				      flags, ctx->superblock, ctx->blocksize,
-> -				      io_ptr, ret_fs);
-> -	} else if (ctx->superblock) {
-> -		int blocksize;
-> -		for (blocksize = EXT2_MIN_BLOCK_SIZE;
-> -		     blocksize <= EXT2_MAX_BLOCK_SIZE; blocksize *= 2) {
-> -			if (*ret_fs) {
-> -				ext2fs_free(*ret_fs);
-> -				*ret_fs = NULL;
-> +
-> +	if (ctx->superblock) {
-> +		unsigned long blocksize = ctx->blocksize;
-> +
-> +		if (!blocksize) {
-> +			for (blocksize = EXT2_MIN_BLOCK_SIZE;
-> +			     blocksize <= EXT2_MAX_BLOCK_SIZE; blocksize *= 2) {
-> +
-> +				retval = ext2fs_open2(ctx->filesystem_name,
-> +						      ctx->io_options, flags,
-> +						      ctx->superblock, blocksize,
-> +						      unix_io_manager, ret_fs);
-> +				if (*ret_fs) {
-> +					ext2fs_free(*ret_fs);
-> +					*ret_fs = NULL;
-> +				}
-> +				if (!retval)
-> +					break;
->  			}
-> -			retval = ext2fs_open2(ctx->filesystem_name,
-> -					      ctx->io_options, flags,
-> -					      ctx->superblock, blocksize,
-> -					      io_ptr, ret_fs);
-> -			if (!retval)
-> -				break;
-> +			if (retval)
-> +				return retval;
->  		}
-> +
-> +		retval = ext2fs_open2(ctx->filesystem_name, ctx->io_options,
-> +				      flags, ctx->superblock, blocksize,
-> +				      io_ptr, ret_fs);
->  	} else
->  		retval = ext2fs_open2(ctx->filesystem_name, ctx->io_options,
->  				      flags, 0, 0, io_ptr, ret_fs);
+> 
+> v2: mention the commit ID now that it is merged, and add a Reviewed-by
 
--- 
-Gabriel Krisman Bertazi
+Hi Eric,
+
+If I don't remember wrong, it was a patchset with 2 patches. Now you only
+send this patch out, do you hope to merge this one only, or merge both?
+
+Thanks,
+Zorro
+
+> 
+>  tests/ext4/053 | 35 +++++++++++++++++++++--------------
+>  1 file changed, 21 insertions(+), 14 deletions(-)
+> 
+> diff --git a/tests/ext4/053 b/tests/ext4/053
+> index 187a2515..23e553c5 100755
+> --- a/tests/ext4/053
+> +++ b/tests/ext4/053
+> @@ -511,20 +511,6 @@ for fstype in ext2 ext3 ext4; do
+>  	mnt noinit_itable
+>  	mnt max_dir_size_kb=4096
+>  
+> -	if _has_kernel_config CONFIG_FS_ENCRYPTION; then
+> -		mnt test_dummy_encryption
+> -		mnt test_dummy_encryption=v1
+> -		mnt test_dummy_encryption=v2
+> -		not_mnt test_dummy_encryption=v3
+> -		not_mnt test_dummy_encryption=
+> -	else
+> -		mnt test_dummy_encryption ^test_dummy_encryption
+> -		mnt test_dummy_encryption=v1 ^test_dummy_encryption=v1
+> -		mnt test_dummy_encryption=v2 ^test_dummy_encryption=v2
+> -		mnt test_dummy_encryption=v3 ^test_dummy_encryption=v3
+> -		not_mnt test_dummy_encryption=
+> -	fi
+> -
+>  	if _has_kernel_config CONFIG_FS_ENCRYPTION_INLINE_CRYPT; then
+>  		mnt inlinecrypt
+>  	else
+> @@ -686,6 +672,27 @@ for fstype in ext2 ext3 ext4; do
+>  	mnt_then_not_remount defaults jqfmt=vfsv1
+>  	remount defaults grpjquota=,usrjquota= ignored
+>  
+> +	echo "== Testing the test_dummy_encryption option" >> $seqres.full
+> +	# Since kernel commit 5f41fdaea63d ("ext4: only allow
+> +	# test_dummy_encryption when supported"), the test_dummy_encryption
+> +	# option is only allowed when the filesystem has the encrypt feature and
+> +	# the kernel has CONFIG_FS_ENCRYPTION.  The encrypt feature requirement
+> +	# implies that this option is never allowed on ext2 or ext3 mounts.
+> +	if [[ $fstype == ext4 ]] && _has_kernel_config CONFIG_FS_ENCRYPTION; then
+> +		do_mkfs -O encrypt $SCRATCH_DEV ${SIZE}k
+> +		mnt test_dummy_encryption
+> +		mnt test_dummy_encryption=v1
+> +		mnt test_dummy_encryption=v2
+> +		not_mnt test_dummy_encryption=bad
+> +		not_mnt test_dummy_encryption=
+> +		do_mkfs -O ^encrypt $SCRATCH_DEV ${SIZE}k
+> +	fi
+> +	not_mnt test_dummy_encryption
+> +	not_mnt test_dummy_encryption=v1
+> +	not_mnt test_dummy_encryption=v2
+> +	not_mnt test_dummy_encryption=bad
+> +	not_mnt test_dummy_encryption=
+> +
+>  done #for fstype in ext2 ext3 ext4; do
+>  
+>  $UMOUNT_PROG $SCRATCH_MNT > /dev/null 2>&1
+> 
+> base-commit: d3cc66012a287b6db81aad408b6970a4a96a67da
+> -- 
+> 2.36.1
+> 
