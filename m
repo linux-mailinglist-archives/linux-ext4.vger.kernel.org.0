@@ -2,85 +2,76 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7BBD53C958
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 Jun 2022 13:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B4553CBA9
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 Jun 2022 16:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243986AbiFCL35 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 3 Jun 2022 07:29:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50074 "EHLO
+        id S241157AbiFCOkT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 3 Jun 2022 10:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241795AbiFCL3z (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Jun 2022 07:29:55 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B37553C701
-        for <linux-ext4@vger.kernel.org>; Fri,  3 Jun 2022 04:29:53 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id r129so3943606wmr.3
-        for <linux-ext4@vger.kernel.org>; Fri, 03 Jun 2022 04:29:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=PaEzrm9U0WjJMxkE+zbw8yGRv0uhjcRl9sFl9vmbKpk=;
-        b=UqOXahmL9BfB383tTJBgHu6G22xRf+OKSRgCFsT4r4tJePNVS75l6QRwzCmA/tV39Z
-         pNNA4/U3XhEQlUBwP9xsXhCTNhde6/mHCpvJYMmHdfBKG0t2xOrFaRTDAjLpmTrbIDmI
-         hZeXiHhTs1+lyNsfzFT+skZmO+T7/KjezF7/vXKef+aTrYx0XLV/bivc/5kQuEAG+1Df
-         m90IEV8xQerchxdq6MhorxMfZeeRwyieC0+DheLrXpixDxR+RT4Ie8Cb8gpWsLIK38fv
-         zneLbaZ1dmMXBVFVE7wMo42ozpaBZHn2Q3ZWBRhU2xc2y4nK5Kq9vbD5T3BzoT+7dZl6
-         43Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=PaEzrm9U0WjJMxkE+zbw8yGRv0uhjcRl9sFl9vmbKpk=;
-        b=vZBue+sjHENhjQa/G5TsaqyeIJhGUZ8ldPxytlp+mlTskWjKHbVVo1K2699DDOB7qB
-         WHW53L3XWwWMNv9cJ3nCYZN2mQsETLU80BoV2fp4MkLspueX1LIgGRSVG5pDIxwPzpHO
-         FxgerSVaneftltl7ur9mt7R5jmGeN4nsA+bKl+cebpAjmEHL8Dl8nTHON0oFYcvz4uSi
-         iWj4bzR4ZIUWFFTmYTr8zfSgkoSaxIc32s/w5S1PzfaJn9L4+NR7OGz7jxYkbt5pkjRr
-         a04Dcq4RMaJUCQKpImaqWpQaSl1BvNCQm/cd0tb0GCXDGETuC6C7k4tsR/zUr2fQcqhi
-         CKCg==
-X-Gm-Message-State: AOAM530WAJOP2STw0CPGRnQRRgclx8MwqZmexr82Ycd+gqgAD9RlRBmq
-        1ckeqCMcJo8G7brZnrW3ygGIybQMmiN4mkt9UHk=
-X-Google-Smtp-Source: ABdhPJw7Ih30gKUIi9ZSLyr7q/1X+eKLEGYrYm9nlCTEiNBMuWMpjKLsSv0M8Mnsi9fm9GXYBpm3HsRWYt6/RJw0ybk=
-X-Received: by 2002:a7b:cc13:0:b0:38e:67e3:db47 with SMTP id
- f19-20020a7bcc13000000b0038e67e3db47mr37823950wmh.133.1654255792234; Fri, 03
- Jun 2022 04:29:52 -0700 (PDT)
+        with ESMTP id S236288AbiFCOkS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Jun 2022 10:40:18 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC4EC48E59;
+        Fri,  3 Jun 2022 07:40:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=aUeh3TS7yGsWjasgaqZC24BFaRSUEZ62WTQKuLG/trQ=; b=Rqpqty5tCsq2jB3TvZzzfKJD4l
+        pb5a7z5ruClsgoUHFfwNxqUKUN7YcBdi3NZa/hveC9iQzmuYkjH0B3pmL8lxBtYU0Q46iJTLOFAl6
+        IKeRglu339/99NOmrlt8avDqhCgseACC1zojteE6QfkjcOU18GFeCnUJV2JPGRHNhlyGcNfs27K79
+        K8dfWfy9vvXs7/clYWfepxLhev3B0XaWxE/DPMY6hIldB38pXsEtbm2AjBdQK1GigomlRu4+ahAQZ
+        SyrgT37FNKsOkuzfHBbjQt8Gl2lPaqd+tJ4eivbFAuFBeSGZVbazqTxsocDxIyjLnxq+6TppM0hZ5
+        Ql0o3aOw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nx8TF-007xAb-Kc; Fri, 03 Jun 2022 14:40:13 +0000
+Date:   Fri, 3 Jun 2022 15:40:13 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     jfs-discussion@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org,
+        "Darrick J . Wong" <djwong@kernel.org>, linux-ext4@vger.kernel.org,
+        Jan Kara <jack@suse.com>
+Subject: generic_quota_read
+Message-ID: <YpodTd+YN/FtiaP3@casper.infradead.org>
+References: <20220526192910.357055-1-willy@infradead.org>
+ <20220526192910.357055-8-willy@infradead.org>
+ <YpBlF2xbfL2yY98n@infradead.org>
 MIME-Version: 1.0
-Received: by 2002:a5d:64ed:0:0:0:0:0 with HTTP; Fri, 3 Jun 2022 04:29:51 -0700 (PDT)
-Reply-To: markwillima00@gmail.com
-From:   Mark <mariamabdul888@gmail.com>
-Date:   Fri, 3 Jun 2022 04:29:51 -0700
-Message-ID: <CAP9xyD2ouspSRZHJQVxeA7d=YeBD9NoSOAN49Kw8RwOVeztQeA@mail.gmail.com>
-Subject: Re: Greetings!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YpBlF2xbfL2yY98n@infradead.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Thu, May 26, 2022 at 10:43:51PM -0700, Christoph Hellwig wrote:
+> >  static ssize_t jfs_quota_read(struct super_block *sb, int type, char *data,
+> > +			      size_t len, loff_t pos)
+>
+> And this whole helper is generic now.  It might be worth to move it
+> into fs/quota/dquot.c as generic_quota_read.
 
-Good day,
+I've been working on that this week.  Unfortunately, you have to convert
+both quota_read and quota_write at the same time, it turns out.  At
+least ext4_quota_write() uses the bdev's inode's page cache to back
+the buffer_heads, so quota_read() and quota_write() are incoherent
+with each other:
 
-The HSBC Bank is a financial institution in United Kingdom. We
-promotes long-term,sustainable and broad-based economic growth in
-developing and emerging countries by providing financial support like
-loans and investment to large, small and
-medium-sized companies (SMEs) as well as fast-growing enterprises
-which in turn helps to create secure and permanent jobs and reduce
-poverty.
+00017 gqr: mapping:00000000ee19acfb index:0x1 pos:0x1470 len:0x30
+00017 4qw: mapping:000000007f9a811e index:0x18405 pos:0x1440 len:0x30
 
-If you need fund to promotes your business, project(Project Funding),
-Loan, planning, budgeting and expansion of your business(s) , do not
-hesitate to indicate your interest as we are here to serve you better
-by granting your request.
+I don't know if there's a way around this.  Can't really use
+read_mapping_folio() on the bdev's inode in generic_quota_read() -- the
+blocks for a given page might be fragmented on disk.  I don't know
+if there's a way to tell ext4_bread() to use the inode's page cache
+instead of the bdev's.  And if we did that, would it even work as
+being part of a transaction?
 
-
-Thank you
-Mr:Mark
