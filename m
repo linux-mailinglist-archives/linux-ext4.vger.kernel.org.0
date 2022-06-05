@@ -2,76 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B4553CBA9
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 Jun 2022 16:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A38C553D8DE
+	for <lists+linux-ext4@lfdr.de>; Sun,  5 Jun 2022 02:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241157AbiFCOkT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 3 Jun 2022 10:40:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37980 "EHLO
+        id S240131AbiFEALy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 4 Jun 2022 20:11:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236288AbiFCOkS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Jun 2022 10:40:18 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC4EC48E59;
-        Fri,  3 Jun 2022 07:40:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=aUeh3TS7yGsWjasgaqZC24BFaRSUEZ62WTQKuLG/trQ=; b=Rqpqty5tCsq2jB3TvZzzfKJD4l
-        pb5a7z5ruClsgoUHFfwNxqUKUN7YcBdi3NZa/hveC9iQzmuYkjH0B3pmL8lxBtYU0Q46iJTLOFAl6
-        IKeRglu339/99NOmrlt8avDqhCgseACC1zojteE6QfkjcOU18GFeCnUJV2JPGRHNhlyGcNfs27K79
-        K8dfWfy9vvXs7/clYWfepxLhev3B0XaWxE/DPMY6hIldB38pXsEtbm2AjBdQK1GigomlRu4+ahAQZ
-        SyrgT37FNKsOkuzfHBbjQt8Gl2lPaqd+tJ4eivbFAuFBeSGZVbazqTxsocDxIyjLnxq+6TppM0hZ5
-        Ql0o3aOw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nx8TF-007xAb-Kc; Fri, 03 Jun 2022 14:40:13 +0000
-Date:   Fri, 3 Jun 2022 15:40:13 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     jfs-discussion@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org,
-        "Darrick J . Wong" <djwong@kernel.org>, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.com>
-Subject: generic_quota_read
-Message-ID: <YpodTd+YN/FtiaP3@casper.infradead.org>
-References: <20220526192910.357055-1-willy@infradead.org>
- <20220526192910.357055-8-willy@infradead.org>
- <YpBlF2xbfL2yY98n@infradead.org>
+        with ESMTP id S233798AbiFEALx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 4 Jun 2022 20:11:53 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E6CA2661
+        for <linux-ext4@vger.kernel.org>; Sat,  4 Jun 2022 17:11:51 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id h188so15160385oia.2
+        for <linux-ext4@vger.kernel.org>; Sat, 04 Jun 2022 17:11:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OmhgEQiwiLj0KRhK2M74z2mxVvIo3YFQOfxUEZbSrig=;
+        b=STmdGgl0FBA7QOfXCQLPzpUk8chnQFsqs4wpZX2NujBAI7NkUEog68unFnBQd9VBS4
+         LDUdrei69s6eirMuTid6i3zWZiwaotgM3FKGVq22DqzB7Y+W/aOWUbme0dYDIXIg5ZoB
+         IOQVATQkphnHSXTE6TiXvaTUzNRDF9WMbPW32gwCkLuRIn4CE0sMiWPaHp1qMBdN/9kk
+         mTQ8han3R6fXbl6EM6vIo7Lx4xPey23b7xCzJ5qmaHp9whtBLLVu2XtKE8RW382pM+cT
+         gWV0nRWkL3qdcjQdUstTZ8PSitIvqbP3w5D5BoQCjfdOLbSs3ETl4xJ9OID4WKEqeEle
+         gt8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OmhgEQiwiLj0KRhK2M74z2mxVvIo3YFQOfxUEZbSrig=;
+        b=d9Rvxz5iCqv+mXc3vW6bp+OcVs/fkreT/LpbDbCk7GrqPV+wPsbdGlwIgnc44/UNSD
+         lAj9xOtIeWhkc7LL4nfq4TDrboMDU489dHoqPFjoR/mu1TbKqH6PXPKptnIOiuCCn6bM
+         FXAqw+ExaW9A1iiGPMtXnItsfitWMQepfSL3He9VaCDd31Cw3rY4u+tISr5iXivctsRI
+         QTVRgKKcOwXs/9Rqe+nflsDhYtPkUa6t1oQC0Ofc9zIqM0XO9pEytBhTXZST+EJR8CVt
+         cixAQ310RzlqsrriocWxpZMZDwa1S2/cYZ4wegIhNgczVwBJnJxZHkW94nUf1E1zSJLH
+         jTJw==
+X-Gm-Message-State: AOAM5316A65rDk/0WxtoMBRA9QWTJO1fQn5RTyaDHIidnvIQ3IXbgMa2
+        w6lDAzbtXqytncQnRszmfkzQR/v0mVxn04aeJSs=
+X-Google-Smtp-Source: ABdhPJzjhmQ8JTOqblz2YCmW14SMsoas2b7nlr++qzy6y+LEP7WzI/s4pTRDDVQbtydeWHY/dmOh2uXZfXxgXwxzu5E=
+X-Received: by 2002:a05:6808:144d:b0:32b:7fbc:9440 with SMTP id
+ x13-20020a056808144d00b0032b7fbc9440mr9745344oiv.226.1654387909966; Sat, 04
+ Jun 2022 17:11:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YpBlF2xbfL2yY98n@infradead.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <CAFDdnB38yRcZ+mQButh9UwGoh928xsZCgmjQ7r3HPEpEwdrZbg@mail.gmail.com>
+ <87sfor85j1.fsf@collabora.com> <CAFDdnB3U67YJ7pivdHQaMB-CkdmvvTbcpxp1FXxBmFyAgJPknw@mail.gmail.com>
+ <874k13t0tk.fsf@collabora.com>
+In-Reply-To: <874k13t0tk.fsf@collabora.com>
+From:   "Stephen E. Baker" <baker.stephen.e@gmail.com>
+Date:   Sat, 4 Jun 2022 20:11:38 -0400
+Message-ID: <CAFDdnB143WXo2sz5trAhh2nH=CJ50U3GgkgDe_YJ394=G6ongg@mail.gmail.com>
+Subject: Re: simplify ext4_sb_read_encoding regression
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>,
+        amstan@chromium.org
+Cc:     linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, May 26, 2022 at 10:43:51PM -0700, Christoph Hellwig wrote:
-> >  static ssize_t jfs_quota_read(struct super_block *sb, int type, char *data,
-> > +			      size_t len, loff_t pos)
+On Thu, Jun 2, 2022 at 1:47 PM Gabriel Krisman Bertazi
+<krisman@collabora.com> wrote:
 >
-> And this whole helper is generic now.  It might be worth to move it
-> into fs/quota/dquot.c as generic_quota_read.
+> Nothing stands out on that commit specifically and I couldn't reproduce
+> it in a vm.  I've reached out to Tomeu to get my hands on that exact
+> chromebook, to try to reproduce it there.  I will report back with my
+> findings.
+>
+I reached out on the archlinuxarm IRC room and amstan offered the use
+of his device.
 
-I've been working on that this week.  Unfortunately, you have to convert
-both quota_read and quota_write at the same time, it turns out.  At
-least ext4_quota_write() uses the bdev's inode's page cache to back
-the buffer_heads, so quota_read() and quota_write() are incoherent
-with each other:
-
-00017 gqr: mapping:00000000ee19acfb index:0x1 pos:0x1470 len:0x30
-00017 4qw: mapping:000000007f9a811e index:0x18405 pos:0x1440 len:0x30
-
-I don't know if there's a way around this.  Can't really use
-read_mapping_folio() on the bdev's inode in generic_quota_read() -- the
-blocks for a given page might be fragmented on disk.  I don't know
-if there's a way to tell ext4_bread() to use the inode's page cache
-instead of the bdev's.  And if we did that, would it even work as
-being part of a transaction?
-
+When he boots my image he sees:
+"EXT4-fs (sda2): can't mount with superblock charset: utf8-12.1.0 not
+supported by the kernel. flags: 0x0."
