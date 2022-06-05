@@ -2,97 +2,129 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F55553D95F
-	for <lists+linux-ext4@lfdr.de>; Sun,  5 Jun 2022 05:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 629F253D99B
+	for <lists+linux-ext4@lfdr.de>; Sun,  5 Jun 2022 06:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235270AbiFEDWD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 4 Jun 2022 23:22:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56774 "EHLO
+        id S243746AbiFEEKN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 5 Jun 2022 00:10:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239358AbiFEDWB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 4 Jun 2022 23:22:01 -0400
-Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0BF31167
-        for <linux-ext4@vger.kernel.org>; Sat,  4 Jun 2022 20:21:58 -0700 (PDT)
-Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-fb1ae0cd9cso4758382fac.13
-        for <linux-ext4@vger.kernel.org>; Sat, 04 Jun 2022 20:21:58 -0700 (PDT)
+        with ESMTP id S243609AbiFEEKL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 5 Jun 2022 00:10:11 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB034DF56
+        for <linux-ext4@vger.kernel.org>; Sat,  4 Jun 2022 21:10:09 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id t31so20316403ybi.2
+        for <linux-ext4@vger.kernel.org>; Sat, 04 Jun 2022 21:10:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1Nu3DzZA3maR5i7R/67aBZU684AfQLdd8fIphTGB4Bk=;
-        b=PZzt5YjeGserRR9qUK+xEyb+vAbmwGtU9L+XBSF03Eou9wxXyiAd5ig2vFyptxb526
-         lH1iCt69ZmDOOoPT/vpI/uJLG0AaA++FPq4LGE4SNg/nos8TmSJhkCHriBoTmIzpTt1G
-         aKkgZihG236CFH3dkF8eEo5J7DVyC73HFBQbceX5EuG+MFYaVMbnkCmRJ4MhVhNdlLBE
-         l5SCmCswcj5kxH9wK1ecAhcJDpP/2PVZ1/24qXeTn0Cugv+EaE8FE5I+Xmm7YP36MBcb
-         D6BuHfxGxiB0pMhCVQmM3aizNJyLQ8KJ8NnmcrfefBADBsBTaiIVg+Q5xmVBAKsPk5Hr
-         kpMA==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=3x72/ah7oVy1n7hZQ2TRq4JYjiu8oyFxE5Jon1kCtcA=;
+        b=m2MotxmnxmWCcLS1bCzOQl4JZVWyZ58OqqFbmIEb2MqVGfuY17hEKe33k+cBV2kTmF
+         hWNAxWuyuCL/R8Q2g06PdqUu26GZg5bpyJDSPirBXRCw8CFoiWk7DRX5TT1VMym/ZFNx
+         TYUwRs/th2AAmguHDsRe2K1x6V/ZMv1N0P0Cm5combCRsCce4mjoMhfeAoFziQnZXDVh
+         A1G9mdxEJmvd92/VghrdUlYslyXwqLycadENIAIdHWQ1lqHXvN7+JKDVbAmL/6RpddI+
+         JWJeIz4Fdrb8yvASx0ms5Rukjru6Ul476f0qP3471VIPva5N/BZglAipifkRI7eaO8wP
+         9vXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1Nu3DzZA3maR5i7R/67aBZU684AfQLdd8fIphTGB4Bk=;
-        b=a9nkAwaF9SLXcbRJwy38GiK0r9cXh4XwB5ju/Jxk5foJr1mbGlfS8IWf5i4l2uIk4Y
-         wgJKjZeTfM6yjV8WmN8TwLq1kSvbhU5lRCsA+ztWCQrnKCxK8mrmW/1n/JDXkKbvJGEX
-         imyc9u9zQmHCkecSHOPont3nKiL1zFtKHcc2mnoLCNx5Qnk5IyD88u7aqxY9w/Y882eO
-         Yag7zSqq+H8KTT8Xeuqoj5ZjW/Lkhc3QykKzq+UY6xhaF8HfVxEefOPvT9j4J5fHGoob
-         isOSWJL7YZZyI5OfEXBTR6poaLpOfglLQG8NozsWIMlCR2TeE38P5fFe+ZYPYO56m8Xj
-         pVog==
-X-Gm-Message-State: AOAM530Wdc4dLqCSQfs4TToqoukz13Du8I/TanMHpj2BbwYzX/gxIcD/
-        378qh38I5xNUkSrseIaZcEdXHkP+gJd54sN2V4c=
-X-Google-Smtp-Source: ABdhPJylkWQlB8HUruacUe++/vx15KdLQKvGwV6Hqscsh4hBNum8Ccaw8YwUtwWaosmupp60Lfq5OeDnaO+vcqCmM2U=
-X-Received: by 2002:a05:6870:d211:b0:f2:91f4:3dfb with SMTP id
- g17-20020a056870d21100b000f291f43dfbmr9863403oac.226.1654399317680; Sat, 04
- Jun 2022 20:21:57 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=3x72/ah7oVy1n7hZQ2TRq4JYjiu8oyFxE5Jon1kCtcA=;
+        b=aQ2JjRTz9bE0bNIB74AaiQO1JWWUMxuxhtxkS1R9Xc6AC+gvLJQF5s0gHdM/iKcXKd
+         W9Maba3sRpUmXCDItCfvP8265vWTRvhY9DINQ3k7uOUllFVT1BoODuR3u1mObk46VDlY
+         Bv3oShzJc/dADOdLoAecPfCu7voQ41LUBk60YCVKnLN3E/fOlizavuJWZn3H/6sON0sy
+         uh+9UXtvf/UPdldWdN1TgrtTr4bbeAZ0GIMD0sZGFMsWejvPmYwGVEPcR6SlNZWGcnJO
+         zr0tpzR0cdYzc0zNPDeNnZHuqF6qlCLd0bIoMh2lZjuTfHUS3dDTnm8Qgn+pA83vNIsT
+         dLjA==
+X-Gm-Message-State: AOAM531V2VLM3xXSgpMmIJ+sWWe7ROOxYo1FVNP3mTcVy05QLoeO1OU6
+        +jp4L/nBff1WBjniQg4nCu0cU+MH85zEzlgTknI=
+X-Google-Smtp-Source: ABdhPJyLuRyUqVo3qdwlHYox5OP+26Yo7OSjr/7agA+lqVWiNNWcxczs5eIyKKGKzkDGwAvnuMLbFFGjNkiLzR3jpRA=
+X-Received: by 2002:a25:d609:0:b0:65c:f2a1:6cf0 with SMTP id
+ n9-20020a25d609000000b0065cf2a16cf0mr19059420ybg.417.1654402208855; Sat, 04
+ Jun 2022 21:10:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAFDdnB38yRcZ+mQButh9UwGoh928xsZCgmjQ7r3HPEpEwdrZbg@mail.gmail.com>
- <87sfor85j1.fsf@collabora.com> <CAFDdnB3U67YJ7pivdHQaMB-CkdmvvTbcpxp1FXxBmFyAgJPknw@mail.gmail.com>
- <874k13t0tk.fsf@collabora.com> <CAFDdnB143WXo2sz5trAhh2nH=CJ50U3GgkgDe_YJ394=G6ongg@mail.gmail.com>
-In-Reply-To: <CAFDdnB143WXo2sz5trAhh2nH=CJ50U3GgkgDe_YJ394=G6ongg@mail.gmail.com>
-From:   "Stephen E. Baker" <baker.stephen.e@gmail.com>
-Date:   Sat, 4 Jun 2022 23:21:46 -0400
-Message-ID: <CAFDdnB0uH_KqpN12pE2pyfb-vh_6Uab8Xdcb=NzQQy8ATEL+gA@mail.gmail.com>
-Subject: Re: simplify ext4_sb_read_encoding regression
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        amstan@chromium.org, "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
+Received: by 2002:a05:6918:7906:b0:bd:b847:5058 with HTTP; Sat, 4 Jun 2022
+ 21:10:08 -0700 (PDT)
+Reply-To: mrstheresaheidi8@gmail.com
+From:   Ms Theresa Heidi <hovossourafiatou@gmail.com>
+Date:   Sat, 4 Jun 2022 21:10:08 -0700
+Message-ID: <CAJK1sRR_+Qs6M9rpHEXnVUeYBSMqjZ541mBfJE-M+cuuLAj3+w@mail.gmail.com>
+Subject: =?UTF-8?B?5oCl5LqL5rGC5Yqp77yB?=
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: base64
+X-Spam-Status: Yes, score=7.6 required=5.0 tests=BAYES_99,BAYES_999,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:b43 listed in]
+        [list.dnswl.org]
+        *  0.2 BAYES_999 BODY: Bayes spam probability is 99.9 to 100%
+        *      [score: 1.0000]
+        *  3.5 BAYES_99 BODY: Bayes spam probability is 99 to 100%
+        *      [score: 1.0000]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [mrstheresaheidi8[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [hovossourafiatou[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Jun 4, 2022 at 8:11 PM Stephen E. Baker
-<baker.stephen.e@gmail.com> wrote:
->
-> I reached out on the archlinuxarm IRC room and amstan offered the use
-> of his device.
->
-> When he boots my image he sees:
-> "EXT4-fs (sda2): can't mount with superblock charset: utf8-12.1.0 not
-> supported by the kernel. flags: 0x0."
-
-At amstan's request I created a new root filesystem without casefold,
-and created a loop device with casefold enabled. I am able to boot
-with that filesystem.
-
-zgrep UNICODE /proc/config
-CONFIG_UNICODE=y
-CONFIG_UNICODE_UTF8_DATA=y
-CONFIG_UNICODE_NORMALIZATION_SELFTEST=m
-
-mount /dev/loop0p1 /mnt
-[ 679.358591] EXT-fs (loop0p1): can't mount with superblock charset:
-utf8-12.1.0 not supported by the kernel. flags: 0x0
-mount: /mnt: wrong fs type, bad option, bad superblock on
-/dev/loop0p1, missing codepage or helper program, or other error.
-
-So it seems I can produce the same error after boot that we saw in
-early boot, which makes debugging much easier.
-
-Given that is there anything I should be trying / looking for?
+5oWI5ZaE5o2Q5qy+77yBDQoNCuivt+S7lOe7humYheivu++8jOaIkeefpemBk+i/meWwgeS/oeeh
+ruWunuWPr+iDveS8mue7meS9oOS4gOS4quaDiuWWnOOAgiDmiJHlnKjpnIDopoHkvaDluK7liqnn
+moTml7blgJnpgJrov4fnp4HkurrmkJzntKLpgYfliLDkuobkvaDnmoTnlLXlrZDpgq7ku7bogZTn
+s7vjgIINCuaIkeaAgOedgOayiemHjeeahOaCsuS8pOWGmei/meWwgemCruS7tue7meS9oO+8jOaI
+kemAieaLqemAmui/h+S6kuiBlOe9keS4juS9oOiBlOezu++8jOWboOS4uuWug+S7jeeEtuaYr+ac
+gOW/q+eahOayn+mAmuWqkuS7i+OAgg0KDQrmiJHmmK82MuWygeeahOeJueiVvuiOjirmtbfokoLl
+pKvkurrvvIznm67liY3lm6DogrrnmYzlnKjku6XoibLliJfnmoTkuIDlrrbnp4Hnq4vljLvpmaLk
+vY/pmaLmsrvnlpfjgIINCjTlubTliY3vvIzmiJHnmoTkuIjlpKvljrvkuJblkI7vvIzmiJHnq4vl
+jbPooqvor4rmlq3lh7rmgqPmnInogrrnmYzvvIzku5bmiorku5bmiYDmnInnmoTkuIDliIfpg73n
+lZnnu5nkuobmiJHjgIIg5oiR5bim552A5oiR55qE56yU6K6w5pys55S16ISR5Zyo5LiA5a625Yy7
+6Zmi6YeM77yM5oiR5LiA55u05Zyo5o6l5Y+X6IK66YOo55mM55eH55qE5rK755aX44CCDQoNCuaI
+keS7juaIkeW3suaVheeahOS4iOWkq+mCo+mHjOe7p+aJv+S6huS4gOeslOi1hOmHke+8jOWPquac
+iTI1MOS4h+e+juWFg++8iDI1MOS4h+e+juWFg++8ieOAgueOsOWcqOW+iOaYjuaYvu+8jOaIkeat
+o+WcqOaOpei/keeUn+WRveeahOacgOWQjuWHoOWkqe+8jOaIkeiupOS4uuaIkeS4jeWGjemcgOim
+gei/meeslOmSseS6huOAgg0K5oiR55qE5Yy755Sf6K6p5oiR5piO55m977yM55Sx5LqO6IK655mM
+55qE6Zeu6aKY77yM5oiR5LiN5Lya5oyB57ut5LiA5bm044CCDQoNCui/meeslOmSsei/mOWcqOWb
+veWklumTtuihjO+8jOeuoeeQhuWxguS7peecn+ato+eahOS4u+S6uueahOi6q+S7veWGmeS/oee7
+meaIke+8jOimgeaxguaIkeWHuumdouaUtumSse+8jOaIluiAheetvuWPkeaOiOadg+S5pu+8jOiu
+qeWIq+S6uuS7o+aIkeaUtumSse+8jOWboOS4uuaIkeeUn+eXheS4jeiDvei/h+adpeOAgg0K5aaC
+5p6c5LiN6YeH5Y+W6KGM5Yqo77yM6ZO26KGM5Y+v6IO95Lya5Zug5Li65L+d5oyB6L+Z5LmI6ZW/
+5pe26Ze06ICM6KKr5rKh5pS26LWE6YeR44CCDQoNCuaIkeWGs+WumuS4juaCqOiBlOezu++8jOWm
+guaenOaCqOaEv+aEj+W5tuacieWFtOi2o+W4ruWKqeaIkeS7juWkluWbvemTtuihjOaPkOWPlui/
+meeslOmSse+8jOeEtuWQjuWwhui1hOmHkeeUqOS6juaFiOWWhOS6i+S4mu+8jOW4ruWKqeW8seWK
+v+e+pOS9k+OAgg0K5oiR6KaB5L2g5Zyo5oiR5Ye65LqL5LmL5YmN55yf6K+a5Zyw5aSE55CG6L+Z
+5Lqb5L+h5omY5Z+66YeR44CCIOi/meS4jeaYr+S4gOeslOiiq+ebl+eahOmSse+8jOS5n+ayoeac
+iea2ieWPiueahOWNsemZqeaYrzEwMCXnmoTpo47pmanlhY3otLnkuI7lhYXliIbnmoTms5Xlvovo
+r4HmmI7jgIINCg0K5oiR6KaB5L2g5ou/NDUl55qE6ZKx57uZ5L2g5Liq5Lq65L2/55So77yM6ICM
+NTUl55qE6ZKx5bCG55So5LqO5oWI5ZaE5bel5L2c44CCDQrmiJHlsIbmhJ/osKLmgqjlnKjov5nk
+u7bkuovkuIrmnIDlpKfnmoTkv6Hku7vlkozkv53lr4bvvIzku6Xlrp7njrDmiJHnmoTlhoXlv4Pm
+hL/mnJvvvIzlm6DkuLrmiJHkuI3mg7PopoHku7vkvZXkvJrljbHlj4rmiJHmnIDlkI7nmoTmhL/m
+nJvnmoTkuJzopb/jgIINCuaIkeW+iOaKseatie+8jOWmguaenOaCqOaUtuWIsOi/meWwgeS/oeWc
+qOaCqOeahOWeg+WcvumCruS7tu+8jOaYr+eUseS6juacgOi/keeahOi/nuaOpemUmeivr+WcqOi/
+memHjOeahOWbveWutuOAgg0KDQrkvaDkurLniLHnmoTlprnlprnjgIINCueJueiVvuiOjirmtbfo
+koLlpKvkuroNCg==
