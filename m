@@ -2,65 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B9453EA39
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 Jun 2022 19:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96B6053E85E
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 Jun 2022 19:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241267AbiFFPvy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 6 Jun 2022 11:51:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34204 "EHLO
+        id S241318AbiFFPxQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 6 Jun 2022 11:53:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241261AbiFFPvx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Jun 2022 11:51:53 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E155221683
-        for <linux-ext4@vger.kernel.org>; Mon,  6 Jun 2022 08:51:52 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id o6-20020a17090a0a0600b001e2c6566046so18237401pjo.0
-        for <linux-ext4@vger.kernel.org>; Mon, 06 Jun 2022 08:51:52 -0700 (PDT)
+        with ESMTP id S241315AbiFFPxQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Jun 2022 11:53:16 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C9FF227352
+        for <linux-ext4@vger.kernel.org>; Mon,  6 Jun 2022 08:53:15 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id e66so13208593pgc.8
+        for <linux-ext4@vger.kernel.org>; Mon, 06 Jun 2022 08:53:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
         bh=Hc9viEeZffCjBHu/ML1+/iUUNsF5FvYmtO3dN3G4Vlw=;
-        b=kbPUnQSF99ZlyPwWnFMWPsmmeT5+u0GJl+ZGFTHeabKhMFFeDRnUeKGX3JhCSS+hY6
-         mMfS+PHJ9L5E095xRkAohdPXVJwDroRWIBlASitwNX9a3jAGrfYMSSDkqKcyUbDVXCul
-         ruha7NS+uXWnUloG+ofrs0oYPnaI0Fp6cI5tGm0Va2Uh4gfskz3KLuwZksl4j4bc1Zai
-         wppoYfumXRwL8ReXNQASidHso1uJrq1qx/g0f8or/mvDaG/HeoWDn4tbBUni0ZINeS3a
-         IuYpHsffUxWApkozUXTvNEmul9Mwkyx//djSdvkunrnGH+v4GAJzi2f2WuINB6WhIKZs
-         NydA==
+        b=ewoiGIcHnngJ8XnuyY2jIwN2ChspJyDD06xIEttXPId2yo5q8lZvjdkMTP+UBe/weY
+         2llWNBnVcx8AlKWfV8HzQcmwXUEEikJ6isuAKerjkF7h7HoyqdjSRO8xEM4H0svFPCf1
+         YYm/fQbB+1omnCmLIouQIUX9Ms1HRCmablN5JxKM2E0SJsjvbAVKaeap3hqgS77EgLyC
+         RbMeDFbVuSMNqfLaNukLhoRg+UMftSUB7u6b7/k+cvy2G1g1/8y1t5FayjUYqgdxe+/1
+         FO2YAHgEgvE9y56lNV9ndYqXYVAT5MDoRJjtwsVEm28OmUKzAGFEjQ56U+S7KyUeuOj5
+         Adlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
         bh=Hc9viEeZffCjBHu/ML1+/iUUNsF5FvYmtO3dN3G4Vlw=;
-        b=aNtUz2jv4Pn6jAb6MhosC+3UDzzr6/CWr9aXnwi9YbTge7InrbQ6vAL0NU7MkKvhcR
-         qCoUUHpFkJLWvEuICpYYy6cPEKHEN4NLyChGH9bv4eMGjAf5cgbN3hlX6/QWKqGXj3XV
-         WS0vCh2M5eyJVXGt+aNbH/Ht0BnaD5wKYwjzkj8suZuzQV14Uz7R9Cy9SPccqw2v4FeD
-         xAmOlAJGu5Ydb1/zFhzoyMLJFkvXMGI31yZSBp4kt1vl6Mq6PO5LHd3RVCZYV1CGmYcs
-         1tNmkXAJ6otmFWwqQYcGjvv1FTc/IVh/o9aXEdfP53eGSp+dJ6t621g2ol+MgbhVCppq
-         0FMg==
-X-Gm-Message-State: AOAM531iquANNIaWLj+kT9bLacDaU2d1HQYIIA1cDnoFedvDY6q6jwJ4
-        5WPbfYAu4teqvn9o/arvryyrNA==
-X-Google-Smtp-Source: ABdhPJz1bjjwn40bEHChJRrt6r9mbuu8qPVpXZuGa83rsIpPLR8CGwZz5sF5cZ4nz3eGwVRCnTDvrA==
-X-Received: by 2002:a17:902:b908:b0:163:e462:704c with SMTP id bf8-20020a170902b90800b00163e462704cmr24524551plb.145.1654530712020;
-        Mon, 06 Jun 2022 08:51:52 -0700 (PDT)
+        b=tLGgSFB85KXRgS3A+PVAu71odv2noFjX3xaeCtNaZdNck+QNtXYIaBeDBER0epXq07
+         m3zb4Tur6LSqb/BMM9oss3skl0qKdYOnQ1K7KNGTpRTqSXjnqhTVf34pTZozR9oNRs2N
+         p/W3BNlqS4nFdk2EjwjBGv6f1TrTWSUs0tYWZjnV8gj0+upinCLOmMT4M6d3Er2+aklV
+         RonxX47LGdHNXyv8XGEmVAd0YzmANpwfb6k0cBYN4K46ZtXTpDfPgg4r+JDFRwQS8baU
+         Gs+kF34RjKlgG1FkdNjDEV1zZl4WUYonb896KujlfH84jYRsTdSvS0EPaSEDiCkYV5Z4
+         TZTg==
+X-Gm-Message-State: AOAM531NJD6SLxUK0B8FkGivmVbgDaIKKI19BwOPU4kpwg3eWTR0AeXe
+        nOYTBVgP9rOXclrEw4Qutq2YDw==
+X-Google-Smtp-Source: ABdhPJx0gfs2uBVwDAH9+sv20TF8wBI/O1vbv568hmncRBiTUr/Kng5zHTKiMHbRtDfNJDlNJgm/yA==
+X-Received: by 2002:a05:6a00:98b:b0:51b:d730:c58 with SMTP id u11-20020a056a00098b00b0051bd7300c58mr21079020pfg.23.1654530794513;
+        Mon, 06 Jun 2022 08:53:14 -0700 (PDT)
 Received: from C02GD5ZHMD6R.bytedance.net ([139.177.225.255])
-        by smtp.gmail.com with ESMTPSA id be3-20020a170902aa0300b001624b1e1a7bsm10941011plb.250.2022.06.06.08.51.49
+        by smtp.gmail.com with ESMTPSA id 65-20020a620444000000b0050dc76281dcsm10962951pfe.182.2022.06.06.08.53.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jun 2022 08:51:51 -0700 (PDT)
+        Mon, 06 Jun 2022 08:53:14 -0700 (PDT)
 From:   Jinke Han <hanjinke.666@bytedance.com>
 X-Google-Original-From: Jinke Han <hnajinke.666@bytedance>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca
 Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
         lei.rao@intel.com, hanjinke <hanjinke.666@bytedance.com>
 Subject: [PATCH] ext4: reuse order and buddy in mb_mark_used when buddy split
-Date:   Mon,  6 Jun 2022 23:51:25 +0800
-Message-Id: <20220606155125.73990-1-hanjinke.666@bytedance.com>
+Date:   Mon,  6 Jun 2022 23:53:05 +0800
+Message-Id: <20220606155305.74146-1-hanjinke.666@bytedance.com>
 X-Mailer: git-send-email 2.32.0 (Apple Git-132)
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
