@@ -2,122 +2,129 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B6053E85E
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 Jun 2022 19:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70AF53F12C
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 Jun 2022 22:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241318AbiFFPxQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 6 Jun 2022 11:53:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40578 "EHLO
+        id S234606AbiFFUvV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 6 Jun 2022 16:51:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241315AbiFFPxQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Jun 2022 11:53:16 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C9FF227352
-        for <linux-ext4@vger.kernel.org>; Mon,  6 Jun 2022 08:53:15 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id e66so13208593pgc.8
-        for <linux-ext4@vger.kernel.org>; Mon, 06 Jun 2022 08:53:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Hc9viEeZffCjBHu/ML1+/iUUNsF5FvYmtO3dN3G4Vlw=;
-        b=ewoiGIcHnngJ8XnuyY2jIwN2ChspJyDD06xIEttXPId2yo5q8lZvjdkMTP+UBe/weY
-         2llWNBnVcx8AlKWfV8HzQcmwXUEEikJ6isuAKerjkF7h7HoyqdjSRO8xEM4H0svFPCf1
-         YYm/fQbB+1omnCmLIouQIUX9Ms1HRCmablN5JxKM2E0SJsjvbAVKaeap3hqgS77EgLyC
-         RbMeDFbVuSMNqfLaNukLhoRg+UMftSUB7u6b7/k+cvy2G1g1/8y1t5FayjUYqgdxe+/1
-         FO2YAHgEgvE9y56lNV9ndYqXYVAT5MDoRJjtwsVEm28OmUKzAGFEjQ56U+S7KyUeuOj5
-         Adlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Hc9viEeZffCjBHu/ML1+/iUUNsF5FvYmtO3dN3G4Vlw=;
-        b=tLGgSFB85KXRgS3A+PVAu71odv2noFjX3xaeCtNaZdNck+QNtXYIaBeDBER0epXq07
-         m3zb4Tur6LSqb/BMM9oss3skl0qKdYOnQ1K7KNGTpRTqSXjnqhTVf34pTZozR9oNRs2N
-         p/W3BNlqS4nFdk2EjwjBGv6f1TrTWSUs0tYWZjnV8gj0+upinCLOmMT4M6d3Er2+aklV
-         RonxX47LGdHNXyv8XGEmVAd0YzmANpwfb6k0cBYN4K46ZtXTpDfPgg4r+JDFRwQS8baU
-         Gs+kF34RjKlgG1FkdNjDEV1zZl4WUYonb896KujlfH84jYRsTdSvS0EPaSEDiCkYV5Z4
-         TZTg==
-X-Gm-Message-State: AOAM531NJD6SLxUK0B8FkGivmVbgDaIKKI19BwOPU4kpwg3eWTR0AeXe
-        nOYTBVgP9rOXclrEw4Qutq2YDw==
-X-Google-Smtp-Source: ABdhPJx0gfs2uBVwDAH9+sv20TF8wBI/O1vbv568hmncRBiTUr/Kng5zHTKiMHbRtDfNJDlNJgm/yA==
-X-Received: by 2002:a05:6a00:98b:b0:51b:d730:c58 with SMTP id u11-20020a056a00098b00b0051bd7300c58mr21079020pfg.23.1654530794513;
-        Mon, 06 Jun 2022 08:53:14 -0700 (PDT)
-Received: from C02GD5ZHMD6R.bytedance.net ([139.177.225.255])
-        by smtp.gmail.com with ESMTPSA id 65-20020a620444000000b0050dc76281dcsm10962951pfe.182.2022.06.06.08.53.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jun 2022 08:53:14 -0700 (PDT)
-From:   Jinke Han <hanjinke.666@bytedance.com>
-X-Google-Original-From: Jinke Han <hnajinke.666@bytedance>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lei.rao@intel.com, hanjinke <hanjinke.666@bytedance.com>
-Subject: [PATCH] ext4: reuse order and buddy in mb_mark_used when buddy split
-Date:   Mon,  6 Jun 2022 23:53:05 +0800
-Message-Id: <20220606155305.74146-1-hanjinke.666@bytedance.com>
-X-Mailer: git-send-email 2.32.0 (Apple Git-132)
+        with ESMTP id S234625AbiFFUtq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Jun 2022 16:49:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA2FEF5B6;
+        Mon,  6 Jun 2022 13:41:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=52TXjMDH2lUY3R09liZNjO+IjMsaCFATm2t/b+KQCF8=; b=SZdEFZWXMJtFPOJuECFsGH4n90
+        q7ier+E1yPXVQU4Nd1lYIGA05aBdagpFc4iTt8PjgeKc8E++hHnQYInhlsw3wbFpf5nxp3H2fcfme
+        0Xx+q8n2owHljzIVuJKc0MDo+cUizE5viLTjZLfP5xwl/nmCSSlMfDWIQiYSrFSnV+41z2epAxAgz
+        c5hI+6eJnPB8FSW9f2DBRPcvqpAvUVkxshVm7oCqFdrliaskJ+h+S7JjdTqvzkHPpD7vXrhjHIlQV
+        QHRESAfyNVHF1VHQMM7Gir9jrNAHNPAhLTN9Pq43f+cwmm1aYDR8JwDm6N7iYlMQcSUd+o2cWsMba
+        zygq/t9A==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nyJWw-00B19H-IZ; Mon, 06 Jun 2022 20:40:54 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, linux-mm@kvack.org,
+        linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, ocfs2-devel@oss.oracle.com,
+        linux-mtd@lists.infradead.org,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH 00/20] Convert aops->migratepage to aops->migrate_folio
+Date:   Mon,  6 Jun 2022 21:40:30 +0100
+Message-Id: <20220606204050.2625949-1-willy@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: hanjinke <hanjinke.666@bytedance.com>
+I plan to submit these patches through my pagecache tree in the upcoming
+merge window.  I'm pretty happy that most filesystems are now using
+common code for ->migrate_folio; it's not something that most filesystem
+people want to care about.  I'm running xfstests using xfs against it now,
+but it's little more than compile tested for other filesystems.
 
-After each buddy split, mb_mark_used will search the proper order
-for the block which may consume some loop in mb_find_order_for_block.
-In fact, we can reuse the oder and buddy generated by the buddy split.
+Matthew Wilcox (Oracle) (20):
+  fs: Add aops->migrate_folio
+  mm/migrate: Convert fallback_migrate_page() to
+    fallback_migrate_folio()
+  mm/migrate: Convert writeout() to take a folio
+  mm/migrate: Convert buffer_migrate_page() to buffer_migrate_folio()
+  mm/migrate: Convert expected_page_refs() to folio_expected_refs()
+  btrfs: Convert btree_migratepage to migrate_folio
+  nfs: Convert to migrate_folio
+  mm/migrate: Convert migrate_page() to migrate_folio()
+  mm/migrate: Add filemap_migrate_folio()
+  btrfs: Convert btrfs_migratepage to migrate_folio
+  ubifs: Convert to filemap_migrate_folio()
+  f2fs: Convert to filemap_migrate_folio()
+  aio: Convert to migrate_folio
+  hugetlb: Convert to migrate_folio
+  balloon: Convert to migrate_folio
+  secretmem: Convert to migrate_folio
+  z3fold: Convert to migrate_folio
+  zsmalloc: Convert to migrate_folio
+  fs: Remove aops->migratepage()
+  mm/folio-compat: Remove migration compatibility functions
 
-Reviewed by: lei.rao@intel.com
-Signed-off-by: hanjinke <hanjinke.666@bytedance.com>
----
- fs/ext4/mballoc.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ Documentation/filesystems/locking.rst       |   5 +-
+ Documentation/filesystems/vfs.rst           |  13 +-
+ Documentation/vm/page_migration.rst         |  33 +--
+ block/fops.c                                |   2 +-
+ drivers/gpu/drm/i915/gem/i915_gem_userptr.c |   4 +-
+ fs/aio.c                                    |  36 ++--
+ fs/btrfs/disk-io.c                          |  22 +-
+ fs/btrfs/inode.c                            |  26 +--
+ fs/ext2/inode.c                             |   4 +-
+ fs/ext4/inode.c                             |   4 +-
+ fs/f2fs/checkpoint.c                        |   4 +-
+ fs/f2fs/data.c                              |  40 +---
+ fs/f2fs/f2fs.h                              |   4 -
+ fs/f2fs/node.c                              |   4 +-
+ fs/gfs2/aops.c                              |   2 +-
+ fs/hugetlbfs/inode.c                        |  19 +-
+ fs/iomap/buffered-io.c                      |  25 ---
+ fs/nfs/file.c                               |   4 +-
+ fs/nfs/internal.h                           |   6 +-
+ fs/nfs/write.c                              |  16 +-
+ fs/ntfs/aops.c                              |   6 +-
+ fs/ocfs2/aops.c                             |   2 +-
+ fs/ubifs/file.c                             |  29 +--
+ fs/xfs/xfs_aops.c                           |   2 +-
+ fs/zonefs/super.c                           |   2 +-
+ include/linux/buffer_head.h                 |  10 +
+ include/linux/fs.h                          |  18 +-
+ include/linux/iomap.h                       |   6 -
+ include/linux/migrate.h                     |  22 +-
+ include/linux/pagemap.h                     |   6 +
+ mm/balloon_compaction.c                     |  15 +-
+ mm/compaction.c                             |   5 +-
+ mm/folio-compat.c                           |  22 --
+ mm/ksm.c                                    |   2 +-
+ mm/migrate.c                                | 217 ++++++++++++--------
+ mm/migrate_device.c                         |   3 +-
+ mm/secretmem.c                              |   6 +-
+ mm/shmem.c                                  |   2 +-
+ mm/swap_state.c                             |   2 +-
+ mm/z3fold.c                                 |   8 +-
+ mm/zsmalloc.c                               |   8 +-
+ 41 files changed, 287 insertions(+), 379 deletions(-)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 9f12f29bc346..c7ac6b269dd8 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -1933,6 +1933,7 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
- 	unsigned ret = 0;
- 	int len0 = len;
- 	void *buddy;
-+	bool split = false;
- 
- 	BUG_ON(start + len > (e4b->bd_sb->s_blocksize << 3));
- 	BUG_ON(e4b->bd_group != ex->fe_group);
-@@ -1957,12 +1958,16 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
- 
- 	/* let's maintain buddy itself */
- 	while (len) {
--		ord = mb_find_order_for_block(e4b, start);
-+		if (!split)
-+			ord = mb_find_order_for_block(e4b, start);
- 
- 		if (((start >> ord) << ord) == start && len >= (1 << ord)) {
- 			/* the whole chunk may be allocated at once! */
- 			mlen = 1 << ord;
--			buddy = mb_find_buddy(e4b, ord, &max);
-+			if (!split)
-+				buddy = mb_find_buddy(e4b, ord, &max);
-+			else
-+				split = false;
- 			BUG_ON((start >> ord) >= max);
- 			mb_set_bit(start >> ord, buddy);
- 			e4b->bd_info->bb_counters[ord]--;
-@@ -1989,6 +1994,7 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
- 		mb_clear_bit(cur + 1, buddy);
- 		e4b->bd_info->bb_counters[ord]++;
- 		e4b->bd_info->bb_counters[ord]++;
-+		split = true;
- 	}
- 	mb_set_largest_free_order(e4b->bd_sb, e4b->bd_info);
- 
 -- 
-2.20.1
+2.35.1
 
