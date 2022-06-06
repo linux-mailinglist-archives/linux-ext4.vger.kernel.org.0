@@ -2,108 +2,122 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ABF253EA5F
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 Jun 2022 19:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B9453EA39
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 Jun 2022 19:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239835AbiFFOky (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 6 Jun 2022 10:40:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33790 "EHLO
+        id S241267AbiFFPvy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 6 Jun 2022 11:51:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239834AbiFFOkx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Jun 2022 10:40:53 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 796B8CA3FD
-        for <linux-ext4@vger.kernel.org>; Mon,  6 Jun 2022 07:40:52 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 341FD1F919;
-        Mon,  6 Jun 2022 14:40:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1654526451; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=Tx1kcbmTDD5GCRgvrHb2o1kOsNktY0BYQ41JVGc/GkE=;
-        b=aCGj9a77+jvoXzz1qFOLd6CL5F7kr37EIsyvRGSxSaEJVvb/OJZxCrr1sVcwlWB9XOWJmu
-        QvqwHqvzzX7UW2EoPw2763LPaI32WfI95kf2Ap4xejRs1bqGEzIB/nnf5C0pUTV2KIdQjk
-        3LhYNJV3loxMQuoRUpq0eKBnwHfq2Qo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1654526451;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=Tx1kcbmTDD5GCRgvrHb2o1kOsNktY0BYQ41JVGc/GkE=;
-        b=59FipQI6wViVQWnSZYOFW9/1O2ekIUl2qFukTr0xObdEWpoLh1bD9Dhh6U7GOHyR5IqDLX
-        6lgi12nFqGAPdEDg==
-Received: from quack3.suse.cz (unknown [10.163.28.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 2A6F42C141;
-        Mon,  6 Jun 2022 14:40:51 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id DAE9BA0633; Mon,  6 Jun 2022 16:40:50 +0200 (CEST)
-From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
-Subject: [PATCH] jbd2: Remove unused exports for jbd2 debugging
-Date:   Mon,  6 Jun 2022 16:40:47 +0200
-Message-Id: <20220606144047.16780-1-jack@suse.cz>
-X-Mailer: git-send-email 2.35.3
+        with ESMTP id S241261AbiFFPvx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Jun 2022 11:51:53 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E155221683
+        for <linux-ext4@vger.kernel.org>; Mon,  6 Jun 2022 08:51:52 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id o6-20020a17090a0a0600b001e2c6566046so18237401pjo.0
+        for <linux-ext4@vger.kernel.org>; Mon, 06 Jun 2022 08:51:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Hc9viEeZffCjBHu/ML1+/iUUNsF5FvYmtO3dN3G4Vlw=;
+        b=kbPUnQSF99ZlyPwWnFMWPsmmeT5+u0GJl+ZGFTHeabKhMFFeDRnUeKGX3JhCSS+hY6
+         mMfS+PHJ9L5E095xRkAohdPXVJwDroRWIBlASitwNX9a3jAGrfYMSSDkqKcyUbDVXCul
+         ruha7NS+uXWnUloG+ofrs0oYPnaI0Fp6cI5tGm0Va2Uh4gfskz3KLuwZksl4j4bc1Zai
+         wppoYfumXRwL8ReXNQASidHso1uJrq1qx/g0f8or/mvDaG/HeoWDn4tbBUni0ZINeS3a
+         IuYpHsffUxWApkozUXTvNEmul9Mwkyx//djSdvkunrnGH+v4GAJzi2f2WuINB6WhIKZs
+         NydA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Hc9viEeZffCjBHu/ML1+/iUUNsF5FvYmtO3dN3G4Vlw=;
+        b=aNtUz2jv4Pn6jAb6MhosC+3UDzzr6/CWr9aXnwi9YbTge7InrbQ6vAL0NU7MkKvhcR
+         qCoUUHpFkJLWvEuICpYYy6cPEKHEN4NLyChGH9bv4eMGjAf5cgbN3hlX6/QWKqGXj3XV
+         WS0vCh2M5eyJVXGt+aNbH/Ht0BnaD5wKYwjzkj8suZuzQV14Uz7R9Cy9SPccqw2v4FeD
+         xAmOlAJGu5Ydb1/zFhzoyMLJFkvXMGI31yZSBp4kt1vl6Mq6PO5LHd3RVCZYV1CGmYcs
+         1tNmkXAJ6otmFWwqQYcGjvv1FTc/IVh/o9aXEdfP53eGSp+dJ6t621g2ol+MgbhVCppq
+         0FMg==
+X-Gm-Message-State: AOAM531iquANNIaWLj+kT9bLacDaU2d1HQYIIA1cDnoFedvDY6q6jwJ4
+        5WPbfYAu4teqvn9o/arvryyrNA==
+X-Google-Smtp-Source: ABdhPJz1bjjwn40bEHChJRrt6r9mbuu8qPVpXZuGa83rsIpPLR8CGwZz5sF5cZ4nz3eGwVRCnTDvrA==
+X-Received: by 2002:a17:902:b908:b0:163:e462:704c with SMTP id bf8-20020a170902b90800b00163e462704cmr24524551plb.145.1654530712020;
+        Mon, 06 Jun 2022 08:51:52 -0700 (PDT)
+Received: from C02GD5ZHMD6R.bytedance.net ([139.177.225.255])
+        by smtp.gmail.com with ESMTPSA id be3-20020a170902aa0300b001624b1e1a7bsm10941011plb.250.2022.06.06.08.51.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Jun 2022 08:51:51 -0700 (PDT)
+From:   Jinke Han <hanjinke.666@bytedance.com>
+X-Google-Original-From: Jinke Han <hnajinke.666@bytedance>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lei.rao@intel.com, hanjinke <hanjinke.666@bytedance.com>
+Subject: [PATCH] ext4: reuse order and buddy in mb_mark_used when buddy split
+Date:   Mon,  6 Jun 2022 23:51:25 +0800
+Message-Id: <20220606155125.73990-1-hanjinke.666@bytedance.com>
+X-Mailer: git-send-email 2.32.0 (Apple Git-132)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1550; h=from:subject; bh=SP4aXUs1HV33DUjFab1bBWr0guyqh1jwWz6lTN5iBEE=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBinhHpiB13qNTcUHd5tIJcQHtwyqFPt1zlwhR6MjuK fs2KrAGJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCYp4R6QAKCRCcnaoHP2RA2QAvCA DYA7r2H+ACpFca55hjF3pI3A5hUd0v4eO8c0Js2NH59IoRG704JLpjCRUAvghiphdCV18Uhg1gkJbd /JFtrS/lwqjxyBKb4WfXLjim8IkGcooRWc1g+LRxJXtuSfEBj9ptNk6+cuv6bC9VTzM9oIba9GT6qo JSCvHW05RnYcAJLFfjFrQSqxNhOpc2rvHmzWe0s/MVHDEmjHITeVGJTTxYpCVoRKtRJuvB/gPbNMoA GJXl4cX+uZmuBl/KBeXJ8rH+1WztIw2gZfX7p+jUS4kBJAtxvaRgBMvEvkGwaSuek4puDb7vOKBeZS YDeye9F80qGsqoaK1KMcSTYE2HTULg
-X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Jbd2 exports jbd2_journal_enable_debug and __jbd2_debug() depite the
-first is used only in fs/jbd2/journal.c and the second only within jbd2
-code. Remove the pointless exports make jbd2_journal_enable_debug
-static.
+From: hanjinke <hanjinke.666@bytedance.com>
 
-Signed-off-by: Jan Kara <jack@suse.cz>
+After each buddy split, mb_mark_used will search the proper order
+for the block which may consume some loop in mb_find_order_for_block.
+In fact, we can reuse the oder and buddy generated by the buddy split.
+
+Reviewed by: lei.rao@intel.com
+Signed-off-by: hanjinke <hanjinke.666@bytedance.com>
 ---
- fs/jbd2/journal.c    | 4 +---
- include/linux/jbd2.h | 1 -
- 2 files changed, 1 insertion(+), 4 deletions(-)
+ fs/ext4/mballoc.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index c0cbeeaec2d1..164bd0eff3cf 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -49,8 +49,7 @@
- #include <asm/page.h>
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 9f12f29bc346..c7ac6b269dd8 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -1933,6 +1933,7 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
+ 	unsigned ret = 0;
+ 	int len0 = len;
+ 	void *buddy;
++	bool split = false;
  
- #ifdef CONFIG_JBD2_DEBUG
--ushort jbd2_journal_enable_debug __read_mostly;
--EXPORT_SYMBOL(jbd2_journal_enable_debug);
-+static ushort jbd2_journal_enable_debug __read_mostly;
+ 	BUG_ON(start + len > (e4b->bd_sb->s_blocksize << 3));
+ 	BUG_ON(e4b->bd_group != ex->fe_group);
+@@ -1957,12 +1958,16 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
  
- module_param_named(jbd2_debug, jbd2_journal_enable_debug, ushort, 0644);
- MODULE_PARM_DESC(jbd2_debug, "Debugging level for jbd2");
-@@ -115,7 +114,6 @@ void __jbd2_debug(int level, const char *file, const char *func,
- 	printk(KERN_DEBUG "%s: (%s, %u): %pV", file, func, line, &vaf);
- 	va_end(args);
- }
--EXPORT_SYMBOL(__jbd2_debug);
- #endif
+ 	/* let's maintain buddy itself */
+ 	while (len) {
+-		ord = mb_find_order_for_block(e4b, start);
++		if (!split)
++			ord = mb_find_order_for_block(e4b, start);
  
- /* Checksumming functions */
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index e79d6e0b14e8..6d3c23fecbc2 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -54,7 +54,6 @@
-  * CONFIG_JBD2_DEBUG is on.
-  */
- #define JBD2_EXPENSIVE_CHECKING
--extern ushort jbd2_journal_enable_debug;
- void __jbd2_debug(int level, const char *file, const char *func,
- 		  unsigned int line, const char *fmt, ...);
+ 		if (((start >> ord) << ord) == start && len >= (1 << ord)) {
+ 			/* the whole chunk may be allocated at once! */
+ 			mlen = 1 << ord;
+-			buddy = mb_find_buddy(e4b, ord, &max);
++			if (!split)
++				buddy = mb_find_buddy(e4b, ord, &max);
++			else
++				split = false;
+ 			BUG_ON((start >> ord) >= max);
+ 			mb_set_bit(start >> ord, buddy);
+ 			e4b->bd_info->bb_counters[ord]--;
+@@ -1989,6 +1994,7 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
+ 		mb_clear_bit(cur + 1, buddy);
+ 		e4b->bd_info->bb_counters[ord]++;
+ 		e4b->bd_info->bb_counters[ord]++;
++		split = true;
+ 	}
+ 	mb_set_largest_free_order(e4b->bd_sb, e4b->bd_info);
  
 -- 
-2.35.3
+2.20.1
 
