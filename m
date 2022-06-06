@@ -2,47 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 235CC53DE01
-	for <lists+linux-ext4@lfdr.de>; Sun,  5 Jun 2022 21:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0E553DFDA
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 Jun 2022 04:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347234AbiFETjK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 5 Jun 2022 15:39:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42516 "EHLO
+        id S1348488AbiFFCyJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 5 Jun 2022 22:54:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347104AbiFETjF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 5 Jun 2022 15:39:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E2A65F8;
-        Sun,  5 Jun 2022 12:39:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=kW7acvpugaZzYgKpNVxP3YXlqqo8ej9HniApAt9C7Wk=; b=GayB5dkNyETT1aj143hZpJ9xJr
-        2W3PmmqCmdsuLmQY9SEJ2F5XCz/p7+bPpCYBl4Z5FqoKlX63+mesk72QIxc8GbTFN6Vj7N693OPSz
-        EAzmfYVOvCExzpQVT6Eo/3ppcpw0dDWOCBIJT0J9+VT3SAskMmWebD7iZwtwga09wxGXdZq+DsWH5
-        zr7rRtR8Ot38QThbkmEFP5sH8mKV2McSI3M5hohoBkIJ5y1yhfwz8O//gZN4YDvKQv5lqJ1I98SFm
-        mt+aJZdCZBveBW7dWweDqSqXxJAfQ3m2/dVOOj384TYkN3SRcXmxaAndo0qADxxP6/AoDc9ozluPC
-        6SRvx5Ow==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nxw5R-009wsh-Ac; Sun, 05 Jun 2022 19:38:57 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
-        linux-nilfs@vger.kernel.org
-Subject: [PATCH 10/10] filemap: Remove find_get_pages_range() and associated functions
-Date:   Sun,  5 Jun 2022 20:38:54 +0100
-Message-Id: <20220605193854.2371230-11-willy@infradead.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20220605193854.2371230-1-willy@infradead.org>
-References: <20220605193854.2371230-1-willy@infradead.org>
+        with ESMTP id S232695AbiFFCyI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 5 Jun 2022 22:54:08 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D25CB4F9EF;
+        Sun,  5 Jun 2022 19:54:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1654484046; x=1686020046;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=hjupLVOyQG8baAFVIDDU9bAnidN+I4RIIVzPaLcbi2I=;
+  b=EWmbDAVQ0rXL6o9frrPb7E+6Jk4Fj9OuZDsT8JUvaHBB1pXOeYXy+hPQ
+   ItNFgMKnhe8NgYJhX0bMMZor3PYPWLdilkD5qUyoqtbiZ+V25ywDMSIni
+   6qcydUPV1jy0msZ5MKKrSHmc3irGkj1uihpfIpbd67be4r18kRzL08RqF
+   XC4fhte+sneEgBm3kzPXgA3PYLAhHBrEOjThabFQPEZtU0KnYAoWVBkEb
+   mrDLFl+KI7LLa/vQ37xqEIcVL9LoFy4vfvpM5h+4JbL62WT0BA8AKbLX+
+   Lj7tQ7ob+whUOi1q9P2DIHvBgdAQuHHGdhj2F0Oe0YiWc8xYr15m/KQ/x
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10369"; a="362959233"
+X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; 
+   d="scan'208";a="362959233"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2022 19:54:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; 
+   d="scan'208";a="708898745"
+Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 05 Jun 2022 19:54:04 -0700
+Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1ny2sV-000CQz-TL;
+        Mon, 06 Jun 2022 02:54:03 +0000
+Date:   Mon, 6 Jun 2022 10:53:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Jan Kara <jack@suse.com>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>, tytso@mit.edu,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 2/3] quota: Support using the page cache for quota files
+Message-ID: <202206061045.oKwjpuXb-lkp@intel.com>
+References: <20220605143815.2330891-3-willy@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,SUSPICIOUS_RECIPS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220605143815.2330891-3-willy@infradead.org>
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,170 +66,101 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-All callers of find_get_pages_range(), pagevec_lookup_range() and
-pagevec_lookup() have now been removed.
+Hi "Matthew,
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- include/linux/pagemap.h |  3 --
- include/linux/pagevec.h | 10 ------
- mm/filemap.c            | 67 -----------------------------------------
- mm/swap.c               | 29 ------------------
- 4 files changed, 109 deletions(-)
+Thank you for the patch! Perhaps something to improve:
 
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index 50e57b2d845f..1caccb9f99aa 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -720,9 +720,6 @@ static inline struct page *find_subpage(struct page *head, pgoff_t index)
- 
- unsigned filemap_get_folios(struct address_space *mapping, pgoff_t *start,
- 		pgoff_t end, struct folio_batch *fbatch);
--unsigned find_get_pages_range(struct address_space *mapping, pgoff_t *start,
--			pgoff_t end, unsigned int nr_pages,
--			struct page **pages);
- unsigned find_get_pages_contig(struct address_space *mapping, pgoff_t start,
- 			       unsigned int nr_pages, struct page **pages);
- unsigned find_get_pages_range_tag(struct address_space *mapping, pgoff_t *index,
-diff --git a/include/linux/pagevec.h b/include/linux/pagevec.h
-index 67b1246f136b..6649154a2115 100644
---- a/include/linux/pagevec.h
-+++ b/include/linux/pagevec.h
-@@ -27,16 +27,6 @@ struct pagevec {
- 
- void __pagevec_release(struct pagevec *pvec);
- void __pagevec_lru_add(struct pagevec *pvec);
--unsigned pagevec_lookup_range(struct pagevec *pvec,
--			      struct address_space *mapping,
--			      pgoff_t *start, pgoff_t end);
--static inline unsigned pagevec_lookup(struct pagevec *pvec,
--				      struct address_space *mapping,
--				      pgoff_t *start)
--{
--	return pagevec_lookup_range(pvec, mapping, start, (pgoff_t)-1);
--}
--
- unsigned pagevec_lookup_range_tag(struct pagevec *pvec,
- 		struct address_space *mapping, pgoff_t *index, pgoff_t end,
- 		xa_mark_t tag);
-diff --git a/mm/filemap.c b/mm/filemap.c
-index ea4145b7a84c..340ccb37f6b6 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2192,73 +2192,6 @@ bool folio_more_pages(struct folio *folio, pgoff_t index, pgoff_t max)
- 	return index < folio->index + folio_nr_pages(folio) - 1;
- }
- 
--/**
-- * find_get_pages_range - gang pagecache lookup
-- * @mapping:	The address_space to search
-- * @start:	The starting page index
-- * @end:	The final page index (inclusive)
-- * @nr_pages:	The maximum number of pages
-- * @pages:	Where the resulting pages are placed
-- *
-- * find_get_pages_range() will search for and return a group of up to @nr_pages
-- * pages in the mapping starting at index @start and up to index @end
-- * (inclusive).  The pages are placed at @pages.  find_get_pages_range() takes
-- * a reference against the returned pages.
-- *
-- * The search returns a group of mapping-contiguous pages with ascending
-- * indexes.  There may be holes in the indices due to not-present pages.
-- * We also update @start to index the next page for the traversal.
-- *
-- * Return: the number of pages which were found. If this number is
-- * smaller than @nr_pages, the end of specified range has been
-- * reached.
-- */
--unsigned find_get_pages_range(struct address_space *mapping, pgoff_t *start,
--			      pgoff_t end, unsigned int nr_pages,
--			      struct page **pages)
--{
--	XA_STATE(xas, &mapping->i_pages, *start);
--	struct folio *folio;
--	unsigned ret = 0;
--
--	if (unlikely(!nr_pages))
--		return 0;
--
--	rcu_read_lock();
--	while ((folio = find_get_entry(&xas, end, XA_PRESENT))) {
--		/* Skip over shadow, swap and DAX entries */
--		if (xa_is_value(folio))
--			continue;
--
--again:
--		pages[ret] = folio_file_page(folio, xas.xa_index);
--		if (++ret == nr_pages) {
--			*start = xas.xa_index + 1;
--			goto out;
--		}
--		if (folio_more_pages(folio, xas.xa_index, end)) {
--			xas.xa_index++;
--			folio_ref_inc(folio);
--			goto again;
--		}
--	}
--
--	/*
--	 * We come here when there is no page beyond @end. We take care to not
--	 * overflow the index @start as it confuses some of the callers. This
--	 * breaks the iteration when there is a page at index -1 but that is
--	 * already broken anyway.
--	 */
--	if (end == (pgoff_t)-1)
--		*start = (pgoff_t)-1;
--	else
--		*start = end + 1;
--out:
--	rcu_read_unlock();
--
--	return ret;
--}
--
- /**
-  * find_get_pages_contig - gang contiguous pagecache lookup
-  * @mapping:	The address_space to search
-diff --git a/mm/swap.c b/mm/swap.c
-index f3922a96b2e9..f65e284247b2 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -1086,35 +1086,6 @@ void folio_batch_remove_exceptionals(struct folio_batch *fbatch)
- 	fbatch->nr = j;
- }
- 
--/**
-- * pagevec_lookup_range - gang pagecache lookup
-- * @pvec:	Where the resulting pages are placed
-- * @mapping:	The address_space to search
-- * @start:	The starting page index
-- * @end:	The final page index
-- *
-- * pagevec_lookup_range() will search for & return a group of up to PAGEVEC_SIZE
-- * pages in the mapping starting from index @start and upto index @end
-- * (inclusive).  The pages are placed in @pvec.  pagevec_lookup() takes a
-- * reference against the pages in @pvec.
-- *
-- * The search returns a group of mapping-contiguous pages with ascending
-- * indexes.  There may be holes in the indices due to not-present pages. We
-- * also update @start to index the next page for the traversal.
-- *
-- * pagevec_lookup_range() returns the number of pages which were found. If this
-- * number is smaller than PAGEVEC_SIZE, the end of specified range has been
-- * reached.
-- */
--unsigned pagevec_lookup_range(struct pagevec *pvec,
--		struct address_space *mapping, pgoff_t *start, pgoff_t end)
--{
--	pvec->nr = find_get_pages_range(mapping, start, end, PAGEVEC_SIZE,
--					pvec->pages);
--	return pagevec_count(pvec);
--}
--EXPORT_SYMBOL(pagevec_lookup_range);
--
- unsigned pagevec_lookup_range_tag(struct pagevec *pvec,
- 		struct address_space *mapping, pgoff_t *index, pgoff_t end,
- 		xa_mark_t tag)
+[auto build test WARNING on tytso-ext4/dev]
+[also build test WARNING on jack-fs/for_next linus/master v5.19-rc1 next-20220603]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Matthew-Wilcox-Oracle/Cache-quota-files-in-the-page-cache/20220606-021629
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+config: mips-mtx1_defconfig (https://download.01.org/0day-ci/archive/20220606/202206061045.oKwjpuXb-lkp@intel.com/config)
+compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project b92436efcb7813fc481b30f2593a4907568d917a)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # install mips cross compiling tool for clang build
+        # apt-get install binutils-mipsel-linux-gnu
+        # https://github.com/intel-lab-lkp/linux/commit/a7ff347e002ef476c8c116f30858f83529638a9b
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Matthew-Wilcox-Oracle/Cache-quota-files-in-the-page-cache/20220606-021629
+        git checkout a7ff347e002ef476c8c116f30858f83529638a9b
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=mips SHELL=/bin/bash fs/quota/
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+>> fs/quota/dquot.c:2184:19: warning: comparison of distinct pointer types ('typeof (toread) *' (aka 'unsigned int *') and 'typeof (((1UL) << 12) - ((unsigned long)(pos) & ~(~((1 << 12) - 1)))) *' (aka 'unsigned long *')) [-Wcompare-distinct-pointer-types]
+                   size_t tocopy = min(toread, PAGE_SIZE - offset_in_page(pos));
+                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/minmax.h:45:19: note: expanded from macro 'min'
+   #define min(x, y)       __careful_cmp(x, y, <)
+                           ^~~~~~~~~~~~~~~~~~~~~~
+   include/linux/minmax.h:36:24: note: expanded from macro '__careful_cmp'
+           __builtin_choose_expr(__safe_cmp(x, y), \
+                                 ^~~~~~~~~~~~~~~~
+   include/linux/minmax.h:26:4: note: expanded from macro '__safe_cmp'
+                   (__typecheck(x, y) && __no_side_effects(x, y))
+                    ^~~~~~~~~~~~~~~~~
+   include/linux/minmax.h:20:28: note: expanded from macro '__typecheck'
+           (!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
+                      ~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~
+   1 warning generated.
+
+
+vim +2184 fs/quota/dquot.c
+
+  2165	
+  2166	ssize_t generic_quota_read(struct super_block *sb, int type, char *data,
+  2167				      size_t len, loff_t pos)
+  2168	{
+  2169		struct inode *inode = sb_dqopt(sb)->files[type];
+  2170		struct address_space *mapping = inode->i_mapping;
+  2171		size_t toread;
+  2172		pgoff_t index;
+  2173		loff_t i_size = i_size_read(inode);
+  2174	
+  2175		if (pos > i_size)
+  2176			return 0;
+  2177		if (pos + len > i_size)
+  2178			len = i_size - pos;
+  2179		toread = len;
+  2180		index = pos / PAGE_SIZE;
+  2181	
+  2182		while (toread > 0) {
+  2183			struct folio *folio = read_mapping_folio(mapping, index, NULL);
+> 2184			size_t tocopy = min(toread, PAGE_SIZE - offset_in_page(pos));
+  2185			void *src;
+  2186	
+  2187			if (folio == ERR_PTR(-ENOMEM)) {
+  2188				memalloc_retry_wait(GFP_NOFS);
+  2189				continue;
+  2190			} else if (IS_ERR(folio))
+  2191				return PTR_ERR(folio);
+  2192	
+  2193			src = kmap_local_folio(folio, offset_in_folio(folio, pos));
+  2194			memcpy(data, src, tocopy);
+  2195			kunmap_local(src);
+  2196			folio_put(folio);
+  2197	
+  2198			toread -= tocopy;
+  2199			data += tocopy;
+  2200			pos += tocopy;
+  2201			index++;
+  2202		}
+  2203		return len;
+  2204	}
+  2205	EXPORT_SYMBOL(generic_quota_read);
+  2206	
+
 -- 
-2.35.1
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
