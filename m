@@ -2,131 +2,128 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDCAC53F9A5
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jun 2022 11:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE31C53FA71
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jun 2022 11:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239500AbiFGJ2M (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 7 Jun 2022 05:28:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41090 "EHLO
+        id S237145AbiFGJz1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 7 Jun 2022 05:55:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239468AbiFGJ2H (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Jun 2022 05:28:07 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D0B39BA9
-        for <linux-ext4@vger.kernel.org>; Tue,  7 Jun 2022 02:28:01 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id g13-20020a9d6b0d000000b0060b13026e0dso12528648otp.8
-        for <linux-ext4@vger.kernel.org>; Tue, 07 Jun 2022 02:28:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=ohM259uqobJqtM7gttWurWj7P+4iDfPJquHax95olDY=;
-        b=gujHBVxqWIlmngbJHwwatlrY6K2BhXGLJOXKENebOL4hOCXVjvoa+7rQ+wCwOuo7nz
-         8e28HbaszMFtjrNu2xJwHUtJo1p0vWs5cPK29M2FpYQX1yrDGputAW1tF1NfmP59wawm
-         4ciGU9SnxDgRMb84mTOs96+/9zN97uENfqj9/+eZfuG77h5pSaMszmbmnWOwi9m+gNzd
-         5NtwsZACk2ULSP0cRt0MdNUxBuwzIbCfzmloCBb/Ue1QhCyZ8f6GEgrTXVIY7durHnKk
-         UWQF6j7yHnTlxlvI9xCgSzii4NusQH9ADfpyzQwiF9b+OrCBSH3adFs9TwqclNBk9aQF
-         O14A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=ohM259uqobJqtM7gttWurWj7P+4iDfPJquHax95olDY=;
-        b=j3rLNPegVKSg+1N5zpWnYLsCqTyocSS6mTYOPATXikLbY+or9xg+bIOvNAwDPOROuD
-         Js/MNx874JFUQTtSjNm1+nkSD+/u02UgAliXL+u+Msva1DB1X1vyC2uYxTyZ0vZYV+FW
-         BGn2S7JW8ofRPONDQsnBARY9LoTkTGPCgNWzAW7RgEOiVxTcWw8m5it6lb4QN9VnNTuN
-         kMuZ8G7ZYrAFE11AroT0OlwLaeeh15VETBchk5J9OdHzkLFpu1cduMRk+oJGlR17vWcB
-         iyN5vAA2Eo88QF/mpd98R/iZE7kY5ne92OaGfIxB4FE3mLCqYFaXZ0HQEEuTDzwrU4lj
-         DzDw==
-X-Gm-Message-State: AOAM5311VSKdkOXen88h/IoxRXlfpNOmS4vhAweEHV5XmoevYdU2Sg+2
-        L5BcFWp40WpQIeamoo1Kq3z8EhQyBNGIB9nrIJg=
-X-Google-Smtp-Source: ABdhPJxTYNOyqQTj+pRtv7B26L++zgaw4oyR9fAzq9Xjy/qi86fDOL5mMOdKcDA6Petw4QZgBH7CHdeaexgYk1On3ls=
-X-Received: by 2002:a05:6830:919:b0:60a:fe63:e321 with SMTP id
- v25-20020a056830091900b0060afe63e321mr11494607ott.227.1654594080399; Tue, 07
- Jun 2022 02:28:00 -0700 (PDT)
+        with ESMTP id S240371AbiFGJy4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Jun 2022 05:54:56 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915F9D2444;
+        Tue,  7 Jun 2022 02:54:53 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 29B4632009B2;
+        Tue,  7 Jun 2022 05:54:50 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 07 Jun 2022 05:54:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1654595689; x=1654682089; bh=Hpeb2D3TKQ
+        4H2hp9llZjHy9pjNtHqPGHYAg6yQDNXIM=; b=QgVq+0Cts//N9rzEk3Gar9CVtB
+        Yu4kH/02B1QZNThE6M/E6U/ZI+kearWw63G8XfbiZwn2LxOiCmEJkh4FYZrOm0gN
+        mcl4qAAm3c4ceVrN4Mqs97tbpyo2I2toh15olHfdZWcHsdB+DpnQIGqvftnaxHCg
+        qrmBzHJ6jPHRcZ6nmz1oC72Tx1Zlcc2LqsHUUjwpiDR3h3EewyNC5R6G63OTfFTS
+        iJUc7ERBZDf2JNcXtCfdCH1pwAKRLC2eTXHiol3Crcag4d8GMn4VqJM6ajkMshUR
+        HcaEz1IVsWjyqmjMp/t6kEY3CLzZiX14MV9fubWvGPZHorwzvOPHj3CmqvoA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm2; t=1654595689; x=1654682089; bh=Hpeb2D3TKQ4H2hp9llZjHy9pjNtH
+        qPGHYAg6yQDNXIM=; b=brhkbWnJQ3j0sGy328RgcklyTrNtBW22+700mu6rspgF
+        bBnLCgicsvVC51aOPX95zUsGsSAFUuROE5dfk4Tt3Pu99UVVV7WsD3XZcPhuMxGs
+        ntXVzpNafOtHHd1TmI3/qa9pEJdocCj87HDu6FSOnX1H4cdqTSGXU+Tdfd159+iG
+        DI0rDe2qYyQWP4sIG4D7OZukGRI1juzngL7lU3tAeWEPpIrosDB2KzfsfBl+zYZ1
+        G4MDuQWFfh+5+2hfS2vsn07NA8jJLtkmESf9PtlCfHMR4vgTU5BvXuJ2eLZsBTLe
+        tXrcD/5qxZfEU5bmMY9fTpD6Zos/M6qNKN5Yut8NYA==
+X-ME-Sender: <xms:aSCfYmQ1Tojaru80ntpwzXkeQBsruepS8u9pmiajNcNUSMbnn4cnEA>
+    <xme:aSCfYryvaoX8vAPJ7M-de9VUxFouc7FDClEtgC4AhGY0KOGHH0I05DAN3E7xuxtW0
+    JBhmL8SxpHjlQ>
+X-ME-Received: <xmr:aSCfYj0TAKmHtru_apxnwAzf7LXeFQPtZrreQ1_6gwO5UeMBgTA-fyilOinK>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedruddthedgvdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepgeehue
+    ehgfdtledutdelkeefgeejteegieekheefudeiffdvudeffeelvedttddvnecuffhomhgr
+    ihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:aSCfYiBrcO2sav_m2mSMHK2uhspP32DxZLWInanrhrO8Lk9hJCkC7w>
+    <xmx:aSCfYvgg4NYfmkSSlxfQcUswwpYPjhLjnFr24I3uF3UNuxKwx7LpTw>
+    <xmx:aSCfYup1k9DfVw5V84bV_EMIXGkh_rt9PPgwqPeztZD7YeHBuAkXwA>
+    <xmx:aSCfYkbh8M9J5ZZtiAJK1_q8OMu5q-FvTahOn_5KI8IPRhLPYA3kXg>
+Feedback-ID: i787e41f1:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 7 Jun 2022 05:54:48 -0400 (EDT)
+Date:   Tue, 7 Jun 2022 11:54:46 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     stable@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Theodore Ts'o <tytso@mit.edu>
+Subject: Re: [PATCH 5.10] ext4: only allow test_dummy_encryption when
+ supported
+Message-ID: <Yp8gZlE6oEhXIRzD@kroah.com>
+References: <20220606231233.165860-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Received: by 2002:a05:6358:99a5:b0:a2:a1fa:9308 with HTTP; Tue, 7 Jun 2022
- 02:28:00 -0700 (PDT)
-Reply-To: robertbaileys_spende@aol.com
-From:   Robert Baileys <mercymiji.j@gmail.com>
-Date:   Tue, 7 Jun 2022 11:28:00 +0200
-Message-ID: <CAAD1zOZ9bCDqBnjmbC3dQfgC=P2zTqAS=TP3q5qK5TFB5=Q9dQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=6.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM,UNDISC_MONEY autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:32b listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [mercymiji.j[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  2.3 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  2.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-        *  0.6 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: ******
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220606231233.165860-1-ebiggers@kernel.org>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
---=20
-Hallo, lieber Beg=C3=BCnstigter,
+On Mon, Jun 06, 2022 at 04:12:33PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> commit 5f41fdaea63ddf96d921ab36b2af4a90ccdb5744 upstream.
+> 
+> Make the test_dummy_encryption mount option require that the encrypt
+> feature flag be already enabled on the filesystem, rather than
+> automatically enabling it.  Practically, this means that "-O encrypt"
+> will need to be included in MKFS_OPTIONS when running xfstests with the
+> test_dummy_encryption mount option.  (ext4/053 also needs an update.)
+> 
+> Moreover, as long as the preconditions for test_dummy_encryption are
+> being tightened anyway, take the opportunity to start rejecting it when
+> !CONFIG_FS_ENCRYPTION rather than ignoring it.
+> 
+> The motivation for requiring the encrypt feature flag is that:
+> 
+> - Having the filesystem auto-enable feature flags is problematic, as it
+>   bypasses the usual sanity checks.  The specific issue which came up
+>   recently is that in kernel versions where ext4 supports casefold but
+>   not encrypt+casefold (v5.1 through v5.10), the kernel will happily add
+>   the encrypt flag to a filesystem that has the casefold flag, making it
+>   unmountable -- but only for subsequent mounts, not the initial one.
+>   This confused the casefold support detection in xfstests, causing
+>   generic/556 to fail rather than be skipped.
+> 
+> - The xfstests-bld test runners (kvm-xfstests et al.) already use the
+>   required mkfs flag, so they will not be affected by this change.  Only
+>   users of test_dummy_encryption alone will be affected.  But, this
+>   option has always been for testing only, so it should be fine to
+>   require that the few users of this option update their test scripts.
+> 
+> - f2fs already requires it (for its equivalent feature flag).
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> Link: https://lore.kernel.org/r/20220519204437.61645-1-ebiggers@kernel.org
+> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 
-Sie haben diese E-Mail von der Robert Bailey Foundation erhalten. Ich
-bin ein pensionierter Regierungsangestellter aus Harlem und ein
-Powerball-Lotterie-Jackpot-Gewinner von 343,8 Millionen Dollar. Ich
-bin der gr=C3=B6=C3=9Fte Jackpot-Gewinner in der Geschichte der New York Lo=
-ttery
-in Amerika. Ich habe diesen Wettbewerb am 27. Oktober 2018 gewonnen
-und m=C3=B6chte Ihnen mitteilen, dass Google in Kooperation mit Microsoft
-Ihre "E-Mail-Adresse" f=C3=BCr meine Anfrage hat und diese 3.000.000,00
-Millionen Euro kosten wird. Ich spende diese 3 Millionen Euro an Sie,
-um auch Wohlt=C3=A4tigkeitsorganisationen und armen Menschen in Ihrer
-Gemeinde zu helfen, damit wir die Welt zu einem besseren Ort f=C3=BCr alle
-machen k=C3=B6nnen. Bitte besuchen Sie die folgende Website f=C3=BCr weiter=
-e
-Informationen, damit Sie diesen 3 Mio. EUR Ausgaben nicht skeptisch
-gegen=C3=BCberstehen.
-https://nypost.com/2018/11/14/meet-the-winner-of-the-biggest-lottery-jackpo=
-t-in-new-york-history/Sie
-Weitere Best=C3=A4tigungen kann ich auch auf meinem Youtube suchen:
-https://www.youtube.com/watch?v=3DH5vT18Ysavc
-Bitte antworten Sie mir per E-Mail (robertbaileys_spende@aol.com).
-Sie m=C3=BCssen diese E-Mail sofort beantworten, damit die =C3=BCberweisend=
-e
-Bank mit dem Erhalt dieser Spende in H=C3=B6he von 3.000.000,00 Millionen
-Euro beginnen kann.
-Bitte kontaktieren Sie die untenstehende E-Mail-Adresse f=C3=BCr weitere
-Informationen, damit Sie diese Spende von der =C3=BCberweisenden Bank
-erhalten k=C3=B6nnen. E-Mail: robertbaileys_spende@aol.com
+Both now queued up, thanks.
 
-Gr=C3=BC=C3=9Fe,
-Robert Bailey
-* * * * * * * * * * * * * * * *
-
-Powerball-Jackpot-Gewinner
-E-Mail: robertbaileys_spende@aol.com
+greg k-h
