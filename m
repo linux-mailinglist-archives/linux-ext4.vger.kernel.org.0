@@ -2,44 +2,44 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8355753F51F
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jun 2022 06:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9246E53F51D
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jun 2022 06:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236550AbiFGEZu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 7 Jun 2022 00:25:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54198 "EHLO
+        id S236549AbiFGEZr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 7 Jun 2022 00:25:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236553AbiFGEZo (ORCPT
+        with ESMTP id S236548AbiFGEZo (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Jun 2022 00:25:44 -0400
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CAC6B82C6
-        for <linux-ext4@vger.kernel.org>; Mon,  6 Jun 2022 21:25:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9169CB82C9
+        for <linux-ext4@vger.kernel.org>; Mon,  6 Jun 2022 21:25:42 -0700 (PDT)
 Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2574PRnn005549
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2574PTaj005600
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 7 Jun 2022 00:25:28 -0400
+        Tue, 7 Jun 2022 00:25:30 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1654575929; bh=7r+itS1oy7jZETpFcWRiPlJxL7altPm35gza+YB/8Jc=;
+        t=1654575931; bh=Z7uA8uljUpAaa3vPWD6QYj1ZJ0uxM8jJ9A1iG1DO0ys=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=fg6ExvNiuOdCxtyduj2G/Dy4GRYEgqIFEEYq4PyiffscVwPfe0bOpMST0tOcizGTB
-         1hi8U+c2nwMi8SxfZKy9oOWkVFuUVf8ieSiZg2LssJ7RNa0ylRXaNdea+1J8zQsH9s
-         917GoAi69fi/F7vz5B8lqzj+HhF48p7d/Ku+ia1U12WokH5s9P7aunrccvvpsQOIVW
-         pL5kEF5lYLjFX0KC5BBbpCKRdOwW8NyJwhHx2Gxguex8OdGL7qWtdFYOrM3466C+at
-         IHz9AmGwOBSV9JGpx7zTnKoTEYvquYkvUZTohB9Px2KcKOtFrkkqXpr/drZlQ13P8O
-         lzqjBiRcec0Cw==
+        b=BkMknYXR9LXeHTxLG/CWRrBDvRe31mhwLuMMQ1sF8Wg0XTfjf8FE8CAw13N2FXKUe
+         /j/17u9xAQBt740tCItb2BldulHHol55hj3U8on4ug1AnMe59NeR6brUykYmPHeXzb
+         rYw7HA2V1II25Q1/9p80Qx3NE7mMPssnE4VkDcChcjH+Qs483WHc7uMpuXkjOlNIOh
+         czd/xUbA1efzmwT4pu+Cfiswvx1OOR+fFjxAWgkztfFUFWdVOl1y/tWL0FyXENR8rx
+         lX9CIMUrWNnnyEMDJsdb2zHvbZds/8GYD+gu02GcT8tW3+YWvAhsVHi2QHW1XQXVIg
+         Bz11Z5AXP6i0w==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id C498815C3E2A; Tue,  7 Jun 2022 00:25:27 -0400 (EDT)
+        id C6B3A15C3E2B; Tue,  7 Jun 2022 00:25:27 -0400 (EDT)
 From:   "Theodore Ts'o" <tytso@mit.edu>
 To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
 Cc:     Nils Bars <nils.bars@rub.de>,
         =?UTF-8?q?Moritz=20Schl=C3=B6gel?= <moritz.schloegel@rub.de>,
         Nico Schiller <nico.schiller@rub.de>,
         "Theodore Ts'o" <tytso@mit.edu>
-Subject: [PATCH 4/7] e2fsck: check for xattr value size integer wraparound
-Date:   Tue,  7 Jun 2022 00:24:41 -0400
-Message-Id: <20220607042444.1798015-5-tytso@mit.edu>
+Subject: [PATCH 5/7] e2fsck: avoid out-of-bounds write for very deep extent trees
+Date:   Tue,  7 Jun 2022 00:24:42 -0400
+Message-Id: <20220607042444.1798015-6-tytso@mit.edu>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20220607042444.1798015-1-tytso@mit.edu>
 References: <20220607042444.1798015-1-tytso@mit.edu>
@@ -55,59 +55,66 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-When checking an extended attrbiute block for correctness, we check if
-the starting offset plus the value size exceeds the end of the block.
-However, we weren't checking if the size was too large, and if it is
-so large that it triggers a wraparound when we added the starting
-offset, we won't notice the problem.  Add the missing check.
+The kernel doesn't support extent trees deeper than 5
+(EXT4_MAX_EXTENT_DEPTH).  For this reason we only maintain the extent
+tree statistics for 5 levels.  Avoid out-of-bounds writes and reads if
+the extent tree is deeper than this.
+
+We keep these statistics to determine whether we should rebuild the
+extent tree.  If the extent tree is too deep, we don't need the
+statistics because we should always rebuild the it.
 
 Reported-by: Nils Bars <nils.bars@rub.de>
 Reported-by: Moritz Schlögel <moritz.schloegel@rub.de>
 Reported-by: Nico Schiller <nico.schiller@rub.de>
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 ---
- e2fsck/pass1.c             |  5 +++--
- lib/ext2fs/ext2_ext_attr.h | 11 +++++++++++
- 2 files changed, 14 insertions(+), 2 deletions(-)
+ e2fsck/extents.c | 10 +++++++++-
+ e2fsck/pass1.c   |  3 ++-
+ 2 files changed, 11 insertions(+), 2 deletions(-)
 
+diff --git a/e2fsck/extents.c b/e2fsck/extents.c
+index 01879f56..86fe00e7 100644
+--- a/e2fsck/extents.c
++++ b/e2fsck/extents.c
+@@ -526,7 +526,8 @@ errcode_t e2fsck_check_rebuild_extents(e2fsck_t ctx, ext2_ino_t ino,
+ 		 */
+ 		if (info.curr_entry == 1 &&
+ 		    !(extent.e_flags & EXT2_EXTENT_FLAGS_SECOND_VISIT) &&
+-		    !eti.force_rebuild) {
++		    !eti.force_rebuild &&
++		    info.curr_level < MAX_EXTENT_DEPTH_COUNT) {
+ 			struct extent_tree_level *etl;
+ 
+ 			etl = eti.ext_info + info.curr_level;
+@@ -580,6 +581,13 @@ errcode_t e2fsck_should_rebuild_extents(e2fsck_t ctx,
+ 	extents_per_block = (ctx->fs->blocksize -
+ 			     sizeof(struct ext3_extent_header)) /
+ 			    sizeof(struct ext3_extent);
++
++	/* If the extent tree is too deep, then rebuild it. */
++	if (info->max_depth > MAX_EXTENT_DEPTH_COUNT) {
++		pctx->blk = info->max_depth;
++		op = PR_1E_CAN_COLLAPSE_EXTENT_TREE;
++		goto rebuild;
++	}
+ 	/*
+ 	 * If we can consolidate a level or shorten the tree, schedule the
+ 	 * extent tree to be rebuilt.
 diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
-index 2a17bb8a..11d7ce93 100644
+index 11d7ce93..43972e7c 100644
 --- a/e2fsck/pass1.c
 +++ b/e2fsck/pass1.c
-@@ -2556,8 +2556,9 @@ static int check_ext_attr(e2fsck_t ctx, struct problem_context *pctx,
- 			break;
- 		}
- 		if (entry->e_value_inum == 0) {
--			if (entry->e_value_offs + entry->e_value_size >
--			    fs->blocksize) {
-+			if (entry->e_value_size > EXT2_XATTR_SIZE_MAX ||
-+			    (entry->e_value_offs + entry->e_value_size >
-+			     fs->blocksize)) {
- 				if (fix_problem(ctx, PR_1_EA_BAD_VALUE, pctx))
- 					goto clear_extattr;
- 				break;
-diff --git a/lib/ext2fs/ext2_ext_attr.h b/lib/ext2fs/ext2_ext_attr.h
-index f2042ed5..c6068c48 100644
---- a/lib/ext2fs/ext2_ext_attr.h
-+++ b/lib/ext2fs/ext2_ext_attr.h
-@@ -57,6 +57,17 @@ struct ext2_ext_attr_entry {
- #define EXT2_XATTR_SIZE(size) \
- 	(((size) + EXT2_EXT_ATTR_ROUND) & ~EXT2_EXT_ATTR_ROUND)
+@@ -2842,7 +2842,8 @@ static void scan_extent_node(e2fsck_t ctx, struct problem_context *pctx,
+ 	if (pctx->errcode)
+ 		return;
+ 	if (!(ctx->options & E2F_OPT_FIXES_ONLY) &&
+-	    !pb->eti.force_rebuild) {
++	    !pb->eti.force_rebuild &&
++	    info.curr_level < MAX_EXTENT_DEPTH_COUNT) {
+ 		struct extent_tree_level *etl;
  
-+/*
-+ * XATTR_SIZE_MAX is currently 64k, but for the purposes of checking
-+ * for file system consistency errors, we use a somewhat bigger value.
-+ * This allows XATTR_SIZE_MAX to grow in the future, but by using this
-+ * instead of INT_MAX for certain consistency checks, we don't need to
-+ * worry about arithmetic overflows.  (Actually XATTR_SIZE_MAX is
-+ * defined in include/uapi/linux/limits.h, so changing it is going
-+ * not going to be trivial....)
-+ */
-+#define EXT2_XATTR_SIZE_MAX (1 << 24)
-+
- #ifdef __KERNEL__
- # ifdef CONFIG_EXT2_FS_EXT_ATTR
- extern int ext2_get_ext_attr(struct inode *, const char *, char *, size_t, int);
+ 		etl = pb->eti.ext_info + info.curr_level;
 -- 
 2.31.0
 
