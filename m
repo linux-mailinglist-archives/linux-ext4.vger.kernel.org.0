@@ -2,92 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3932D53FD9E
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jun 2022 13:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E09FB53FEAB
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jun 2022 14:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231905AbiFGLh3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 7 Jun 2022 07:37:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33212 "EHLO
+        id S243660AbiFGMXQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 7 Jun 2022 08:23:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243011AbiFGLh2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Jun 2022 07:37:28 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B85DFD3;
-        Tue,  7 Jun 2022 04:37:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S243766AbiFGMW5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Jun 2022 08:22:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A11EAC4E97
+        for <linux-ext4@vger.kernel.org>; Tue,  7 Jun 2022 05:22:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1654604564;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UVS52nKzigr/OEhjU9EY/q7WFBWsydiOGBSgOUamNK4=;
+        b=Q+KTRlR+b5Ug+Ne7AbCuX6phCaTYPMEgngBxGw4JH8SrjnTfI0CBKh7YynMbQBC9kRqJH6
+        8BwS/1bjkV3FBJZZgO+xZIai8Q6b0TKetDwSKbNK4XqoB3Udo2efzQ4xPDo58FedJ6LPBr
+        IKURSJLBLeUsqGbMzsoisRoribygF6Q=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-636-oGXqgM0mONazNLlzRsbjNw-1; Tue, 07 Jun 2022 08:22:39 -0400
+X-MC-Unique: oGXqgM0mONazNLlzRsbjNw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 63FF8B81F6A;
-        Tue,  7 Jun 2022 11:37:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B4A4C385A5;
-        Tue,  7 Jun 2022 11:37:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654601841;
-        bh=8ssLmPCQc0kBEOnMpM83QxMMmjw3G4wZmE/Q52LHRZ0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ulrnZ3VWWAYqxXyKMLlRANtahVN2YqNjS+95EKiyA31F59Kxv56ZxZvJeFNL2v8u2
-         HARW/OKmP9vrlxSdZNnaH3ij+7H8UlnfzOCQ1oxjz9vjsiisWeP8YGHgOUWaKE3RXJ
-         0Qgq8LuNiEDX/vIkZ2FV2oYFDoYmwavNlOFsB8uPO+joCcntqxsuAWdrO2LcLkXq03
-         5jcBhpDEojRYyn7qDO7vem729Q325Cpl+yLlRoju9/CWrk0f33UnA9Hak8u2vJNDYY
-         93upScTvvcZE6v6bgLLYedRNMRE70uLsyv1JUV94v403BBEPVF5OmKnH6DlbYWYvUg
-         /f4lOE8iShQ3Q==
-Date:   Tue, 7 Jun 2022 13:37:16 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org
-Subject: Re: [PATCH 00/10] Convert to filemap_get_folios()
-Message-ID: <20220607113716.aec2o7onzu3re2o4@wittgenstein>
-References: <20220605193854.2371230-1-willy@infradead.org>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 42E093831C4D;
+        Tue,  7 Jun 2022 12:22:39 +0000 (UTC)
+Received: from fedora (unknown [10.40.193.176])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6EB7DC27EA2;
+        Tue,  7 Jun 2022 12:22:38 +0000 (UTC)
+Date:   Tue, 7 Jun 2022 14:22:36 +0200
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Ritesh Harjani <ritesh.list@gmail.com>
+Subject: Re: [PATCH 0/2] ext4: Fix possible fs corruption due to xattr races
+Message-ID: <20220607122236.3anpsbtsw3vjyuy5@fedora>
+References: <20220606142215.17962-1-jack@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220605193854.2371230-1-willy@infradead.org>
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220606142215.17962-1-jack@suse.cz>
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.8
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, Jun 05, 2022 at 08:38:44PM +0100, Matthew Wilcox wrote:
-> This patch series removes find_get_pages_range(), pagevec_lookup()
-> and pagevec_lookup_range(), converting all callers to use the new
-> filemap_get_folios().  I've only run xfstests over ext4 ... some other
-> testing might be appropriate.
+On Mon, Jun 06, 2022 at 04:28:45PM +0200, Jan Kara wrote:
+> Hello,
 > 
-> Matthew Wilcox (Oracle) (10):
->   filemap: Add filemap_get_folios()
->   buffer: Convert clean_bdev_aliases() to use filemap_get_folios()
->   ext4: Convert mpage_release_unused_pages() to use filemap_get_folios()
->   ext4: Convert mpage_map_and_submit_buffers() to use
->     filemap_get_folios()
->   f2fs: Convert f2fs_invalidate_compress_pages() to use
->     filemap_get_folios()
->   hugetlbfs: Convert remove_inode_hugepages() to use
->     filemap_get_folios()
->   nilfs2: Convert nilfs_copy_back_pages() to use filemap_get_folios()
->   vmscan: Add check_move_unevictable_folios()
->   shmem: Convert shmem_unlock_mapping() to use filemap_get_folios()
->   filemap: Remove find_get_pages_range() and associated functions
+> I've tracked down the culprit of the jbd2 assertion Ritesh reported to me. In
+> the end it does not have much to do with jbd2 but rather points to a subtle
+> race in xattr code between xattr block reuse and xattr block freeing that can
+> result in fs corruption during journal replay. See patch 2/2 for more details.
+> These patches fix the problem. I have to say I'm not too happy with the special
+> mbcache interface I had to add because it just requires too deep knowledge of
+> how things work internally to get things right. If you get it wrong, you'll
+> have subtle races like above. But I didn't find a more transparent way to
+> fix this race. If someone has ideas, suggestions are welcome!
 > 
->  fs/buffer.c             | 26 +++++++--------
->  fs/ext4/inode.c         | 40 ++++++++++++-----------
->  fs/f2fs/compress.c      | 35 +++++++++-----------
->  fs/hugetlbfs/inode.c    | 44 ++++++++-----------------
->  fs/nilfs2/page.c        | 60 +++++++++++++++++-----------------
->  include/linux/pagemap.h |  5 ++-
->  include/linux/pagevec.h | 10 ------
->  include/linux/swap.h    |  3 +-
->  mm/filemap.c            | 72 +++++++++++++++++------------------------
->  mm/shmem.c              | 13 ++++----
->  mm/swap.c               | 29 -----------------
->  mm/vmscan.c             | 55 ++++++++++++++++++-------------
->  12 files changed, 166 insertions(+), 226 deletions(-)
+> 								Honza
 
-The conversion seems fairly straightforward, so looks good to me.
-Acked-by: Christian Brauner (Microsoft) <brauner@kernel.org>
+I haven't give too much thought towards finding a better way to fix the
+race, but this seems like ok solution to me.
+
+You can add to the series
+
+Reviewed-by: Lukas Czerner <lczerner@redhat.com>
+
