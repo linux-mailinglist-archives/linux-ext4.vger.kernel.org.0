@@ -2,128 +2,92 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE31C53FA71
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jun 2022 11:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3932D53FD9E
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jun 2022 13:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237145AbiFGJz1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 7 Jun 2022 05:55:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36246 "EHLO
+        id S231905AbiFGLh3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 7 Jun 2022 07:37:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240371AbiFGJy4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Jun 2022 05:54:56 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915F9D2444;
-        Tue,  7 Jun 2022 02:54:53 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 29B4632009B2;
-        Tue,  7 Jun 2022 05:54:50 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Tue, 07 Jun 2022 05:54:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm2; t=1654595689; x=1654682089; bh=Hpeb2D3TKQ
-        4H2hp9llZjHy9pjNtHqPGHYAg6yQDNXIM=; b=QgVq+0Cts//N9rzEk3Gar9CVtB
-        Yu4kH/02B1QZNThE6M/E6U/ZI+kearWw63G8XfbiZwn2LxOiCmEJkh4FYZrOm0gN
-        mcl4qAAm3c4ceVrN4Mqs97tbpyo2I2toh15olHfdZWcHsdB+DpnQIGqvftnaxHCg
-        qrmBzHJ6jPHRcZ6nmz1oC72Tx1Zlcc2LqsHUUjwpiDR3h3EewyNC5R6G63OTfFTS
-        iJUc7ERBZDf2JNcXtCfdCH1pwAKRLC2eTXHiol3Crcag4d8GMn4VqJM6ajkMshUR
-        HcaEz1IVsWjyqmjMp/t6kEY3CLzZiX14MV9fubWvGPZHorwzvOPHj3CmqvoA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; t=1654595689; x=1654682089; bh=Hpeb2D3TKQ4H2hp9llZjHy9pjNtH
-        qPGHYAg6yQDNXIM=; b=brhkbWnJQ3j0sGy328RgcklyTrNtBW22+700mu6rspgF
-        bBnLCgicsvVC51aOPX95zUsGsSAFUuROE5dfk4Tt3Pu99UVVV7WsD3XZcPhuMxGs
-        ntXVzpNafOtHHd1TmI3/qa9pEJdocCj87HDu6FSOnX1H4cdqTSGXU+Tdfd159+iG
-        DI0rDe2qYyQWP4sIG4D7OZukGRI1juzngL7lU3tAeWEPpIrosDB2KzfsfBl+zYZ1
-        G4MDuQWFfh+5+2hfS2vsn07NA8jJLtkmESf9PtlCfHMR4vgTU5BvXuJ2eLZsBTLe
-        tXrcD/5qxZfEU5bmMY9fTpD6Zos/M6qNKN5Yut8NYA==
-X-ME-Sender: <xms:aSCfYmQ1Tojaru80ntpwzXkeQBsruepS8u9pmiajNcNUSMbnn4cnEA>
-    <xme:aSCfYryvaoX8vAPJ7M-de9VUxFouc7FDClEtgC4AhGY0KOGHH0I05DAN3E7xuxtW0
-    JBhmL8SxpHjlQ>
-X-ME-Received: <xmr:aSCfYj0TAKmHtru_apxnwAzf7LXeFQPtZrreQ1_6gwO5UeMBgTA-fyilOinK>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedruddthedgvdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepgeehue
-    ehgfdtledutdelkeefgeejteegieekheefudeiffdvudeffeelvedttddvnecuffhomhgr
-    ihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:aSCfYiBrcO2sav_m2mSMHK2uhspP32DxZLWInanrhrO8Lk9hJCkC7w>
-    <xmx:aSCfYvgg4NYfmkSSlxfQcUswwpYPjhLjnFr24I3uF3UNuxKwx7LpTw>
-    <xmx:aSCfYup1k9DfVw5V84bV_EMIXGkh_rt9PPgwqPeztZD7YeHBuAkXwA>
-    <xmx:aSCfYkbh8M9J5ZZtiAJK1_q8OMu5q-FvTahOn_5KI8IPRhLPYA3kXg>
-Feedback-ID: i787e41f1:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 7 Jun 2022 05:54:48 -0400 (EDT)
-Date:   Tue, 7 Jun 2022 11:54:46 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     stable@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [PATCH 5.10] ext4: only allow test_dummy_encryption when
- supported
-Message-ID: <Yp8gZlE6oEhXIRzD@kroah.com>
-References: <20220606231233.165860-1-ebiggers@kernel.org>
+        with ESMTP id S243011AbiFGLh2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Jun 2022 07:37:28 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B85DFD3;
+        Tue,  7 Jun 2022 04:37:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 63FF8B81F6A;
+        Tue,  7 Jun 2022 11:37:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B4A4C385A5;
+        Tue,  7 Jun 2022 11:37:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1654601841;
+        bh=8ssLmPCQc0kBEOnMpM83QxMMmjw3G4wZmE/Q52LHRZ0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ulrnZ3VWWAYqxXyKMLlRANtahVN2YqNjS+95EKiyA31F59Kxv56ZxZvJeFNL2v8u2
+         HARW/OKmP9vrlxSdZNnaH3ij+7H8UlnfzOCQ1oxjz9vjsiisWeP8YGHgOUWaKE3RXJ
+         0Qgq8LuNiEDX/vIkZ2FV2oYFDoYmwavNlOFsB8uPO+joCcntqxsuAWdrO2LcLkXq03
+         5jcBhpDEojRYyn7qDO7vem729Q325Cpl+yLlRoju9/CWrk0f33UnA9Hak8u2vJNDYY
+         93upScTvvcZE6v6bgLLYedRNMRE70uLsyv1JUV94v403BBEPVF5OmKnH6DlbYWYvUg
+         /f4lOE8iShQ3Q==
+Date:   Tue, 7 Jun 2022 13:37:16 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-mm@kvack.org, linux-nilfs@vger.kernel.org
+Subject: Re: [PATCH 00/10] Convert to filemap_get_folios()
+Message-ID: <20220607113716.aec2o7onzu3re2o4@wittgenstein>
+References: <20220605193854.2371230-1-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20220606231233.165860-1-ebiggers@kernel.org>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220605193854.2371230-1-willy@infradead.org>
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jun 06, 2022 at 04:12:33PM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Sun, Jun 05, 2022 at 08:38:44PM +0100, Matthew Wilcox wrote:
+> This patch series removes find_get_pages_range(), pagevec_lookup()
+> and pagevec_lookup_range(), converting all callers to use the new
+> filemap_get_folios().  I've only run xfstests over ext4 ... some other
+> testing might be appropriate.
 > 
-> commit 5f41fdaea63ddf96d921ab36b2af4a90ccdb5744 upstream.
+> Matthew Wilcox (Oracle) (10):
+>   filemap: Add filemap_get_folios()
+>   buffer: Convert clean_bdev_aliases() to use filemap_get_folios()
+>   ext4: Convert mpage_release_unused_pages() to use filemap_get_folios()
+>   ext4: Convert mpage_map_and_submit_buffers() to use
+>     filemap_get_folios()
+>   f2fs: Convert f2fs_invalidate_compress_pages() to use
+>     filemap_get_folios()
+>   hugetlbfs: Convert remove_inode_hugepages() to use
+>     filemap_get_folios()
+>   nilfs2: Convert nilfs_copy_back_pages() to use filemap_get_folios()
+>   vmscan: Add check_move_unevictable_folios()
+>   shmem: Convert shmem_unlock_mapping() to use filemap_get_folios()
+>   filemap: Remove find_get_pages_range() and associated functions
 > 
-> Make the test_dummy_encryption mount option require that the encrypt
-> feature flag be already enabled on the filesystem, rather than
-> automatically enabling it.  Practically, this means that "-O encrypt"
-> will need to be included in MKFS_OPTIONS when running xfstests with the
-> test_dummy_encryption mount option.  (ext4/053 also needs an update.)
-> 
-> Moreover, as long as the preconditions for test_dummy_encryption are
-> being tightened anyway, take the opportunity to start rejecting it when
-> !CONFIG_FS_ENCRYPTION rather than ignoring it.
-> 
-> The motivation for requiring the encrypt feature flag is that:
-> 
-> - Having the filesystem auto-enable feature flags is problematic, as it
->   bypasses the usual sanity checks.  The specific issue which came up
->   recently is that in kernel versions where ext4 supports casefold but
->   not encrypt+casefold (v5.1 through v5.10), the kernel will happily add
->   the encrypt flag to a filesystem that has the casefold flag, making it
->   unmountable -- but only for subsequent mounts, not the initial one.
->   This confused the casefold support detection in xfstests, causing
->   generic/556 to fail rather than be skipped.
-> 
-> - The xfstests-bld test runners (kvm-xfstests et al.) already use the
->   required mkfs flag, so they will not be affected by this change.  Only
->   users of test_dummy_encryption alone will be affected.  But, this
->   option has always been for testing only, so it should be fine to
->   require that the few users of this option update their test scripts.
-> 
-> - f2fs already requires it (for its equivalent feature flag).
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-> Link: https://lore.kernel.org/r/20220519204437.61645-1-ebiggers@kernel.org
-> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+>  fs/buffer.c             | 26 +++++++--------
+>  fs/ext4/inode.c         | 40 ++++++++++++-----------
+>  fs/f2fs/compress.c      | 35 +++++++++-----------
+>  fs/hugetlbfs/inode.c    | 44 ++++++++-----------------
+>  fs/nilfs2/page.c        | 60 +++++++++++++++++-----------------
+>  include/linux/pagemap.h |  5 ++-
+>  include/linux/pagevec.h | 10 ------
+>  include/linux/swap.h    |  3 +-
+>  mm/filemap.c            | 72 +++++++++++++++++------------------------
+>  mm/shmem.c              | 13 ++++----
+>  mm/swap.c               | 29 -----------------
+>  mm/vmscan.c             | 55 ++++++++++++++++++-------------
+>  12 files changed, 166 insertions(+), 226 deletions(-)
 
-Both now queued up, thanks.
-
-greg k-h
+The conversion seems fairly straightforward, so looks good to me.
+Acked-by: Christian Brauner (Microsoft) <brauner@kernel.org>
