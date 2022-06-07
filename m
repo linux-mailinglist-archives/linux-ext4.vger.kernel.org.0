@@ -2,53 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E09FB53FEAB
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jun 2022 14:23:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85F9A53FFC2
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jun 2022 15:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243660AbiFGMXQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 7 Jun 2022 08:23:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39682 "EHLO
+        id S244437AbiFGNMp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 7 Jun 2022 09:12:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243766AbiFGMW5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Jun 2022 08:22:57 -0400
+        with ESMTP id S244523AbiFGNMm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Jun 2022 09:12:42 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A11EAC4E97
-        for <linux-ext4@vger.kernel.org>; Tue,  7 Jun 2022 05:22:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B561711830
+        for <linux-ext4@vger.kernel.org>; Tue,  7 Jun 2022 06:12:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1654604564;
+        s=mimecast20190719; t=1654607557;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UVS52nKzigr/OEhjU9EY/q7WFBWsydiOGBSgOUamNK4=;
-        b=Q+KTRlR+b5Ug+Ne7AbCuX6phCaTYPMEgngBxGw4JH8SrjnTfI0CBKh7YynMbQBC9kRqJH6
-        8BwS/1bjkV3FBJZZgO+xZIai8Q6b0TKetDwSKbNK4XqoB3Udo2efzQ4xPDo58FedJ6LPBr
-        IKURSJLBLeUsqGbMzsoisRoribygF6Q=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=x88zFmIa0xQRcWNFtK8nPZB7r2+a6k7O1vQyJb2OTg8=;
+        b=Fer249CrcrIeFznduJ9acojr9sBkyqz/oh4gR0UNH7cozqmwDHp3EZPTJnkTKT8iw2M4Ak
+        LsRV6DjlgQjco4PP06aKaO16hpMhYf0TtoU3sfTG5xjZ62FhP8kNNd+FKpw5DWOJWdO5rq
+        /boF6wsFTzjCDCup9NuInszBDHBx1NI=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-636-oGXqgM0mONazNLlzRsbjNw-1; Tue, 07 Jun 2022 08:22:39 -0400
-X-MC-Unique: oGXqgM0mONazNLlzRsbjNw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+ us-mta-440-HcR4Jug8ML-d27rW5pm-ug-1; Tue, 07 Jun 2022 09:12:34 -0400
+X-MC-Unique: HcR4Jug8ML-d27rW5pm-ug-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 42E093831C4D;
-        Tue,  7 Jun 2022 12:22:39 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 08F07185A7B2;
+        Tue,  7 Jun 2022 13:12:34 +0000 (UTC)
 Received: from fedora (unknown [10.40.193.176])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6EB7DC27EA2;
-        Tue,  7 Jun 2022 12:22:38 +0000 (UTC)
-Date:   Tue, 7 Jun 2022 14:22:36 +0200
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DB8192026D64;
+        Tue,  7 Jun 2022 13:12:32 +0000 (UTC)
+Date:   Tue, 7 Jun 2022 15:12:30 +0200
 From:   Lukas Czerner <lczerner@redhat.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Ritesh Harjani <ritesh.list@gmail.com>
-Subject: Re: [PATCH 0/2] ext4: Fix possible fs corruption due to xattr races
-Message-ID: <20220607122236.3anpsbtsw3vjyuy5@fedora>
-References: <20220606142215.17962-1-jack@suse.cz>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Nils Bars <nils.bars@rub.de>,
+        Moritz =?utf-8?B?U2NobMO2Z2Vs?= <moritz.schloegel@rub.de>,
+        Nico Schiller <nico.schiller@rub.de>
+Subject: Re: [PATCH 1/7] e2fsck: sanity check the journal inode number
+Message-ID: <20220607131230.vwlqysdihghwwpyx@fedora>
+References: <20220607042444.1798015-1-tytso@mit.edu>
+ <20220607042444.1798015-2-tytso@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20220606142215.17962-1-jack@suse.cz>
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.8
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220607042444.1798015-2-tytso@mit.edu>
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.4
 X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -59,25 +64,47 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jun 06, 2022 at 04:28:45PM +0200, Jan Kara wrote:
-> Hello,
-> 
-> I've tracked down the culprit of the jbd2 assertion Ritesh reported to me. In
-> the end it does not have much to do with jbd2 but rather points to a subtle
-> race in xattr code between xattr block reuse and xattr block freeing that can
-> result in fs corruption during journal replay. See patch 2/2 for more details.
-> These patches fix the problem. I have to say I'm not too happy with the special
-> mbcache interface I had to add because it just requires too deep knowledge of
-> how things work internally to get things right. If you get it wrong, you'll
-> have subtle races like above. But I didn't find a more transparent way to
-> fix this race. If someone has ideas, suggestions are welcome!
-> 
-> 								Honza
+On Tue, Jun 07, 2022 at 12:24:38AM -0400, Theodore Ts'o wrote:
+> E2fsck replays the journal before sanity checking the full superblock.
+> So it's possible that the journal inode number is not valid relative
+> to the number of block groups.  So to avoid potentially an array
+> bounds overrun, sanity check this before trying to find the journal
+> inode.
 
-I haven't give too much thought towards finding a better way to fix the
-race, but this seems like ok solution to me.
-
-You can add to the series
+Looks good.
 
 Reviewed-by: Lukas Czerner <lczerner@redhat.com>
+
+> 
+> Reported-by: Nils Bars <nils.bars@rub.de>
+> Reported-by: Moritz Schlögel <moritz.schloegel@rub.de>
+> Reported-by: Nico Schiller <nico.schiller@rub.de>
+> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+> ---
+>  e2fsck/journal.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/e2fsck/journal.c b/e2fsck/journal.c
+> index 2e867234..12487e3d 100644
+> --- a/e2fsck/journal.c
+> +++ b/e2fsck/journal.c
+> @@ -989,7 +989,14 @@ static errcode_t e2fsck_get_journal(e2fsck_t ctx, journal_t **ret_journal)
+>  	journal->j_blocksize = ctx->fs->blocksize;
+>  
+>  	if (uuid_is_null(sb->s_journal_uuid)) {
+> -		if (!sb->s_journal_inum) {
+> +		/*
+> +		 * The full set of superblock sanity checks haven't
+> +		 * been performed yet, so we need to do some basic
+> +		 * checks here to avoid potential array overruns.
+> +		 */
+> +		if (!sb->s_journal_inum ||
+> +		    (sb->s_journal_inum >
+> +		     (ctx->fs->group_desc_count * sb->s_inodes_per_group))) {
+>  			retval = EXT2_ET_BAD_INODE_NUM;
+>  			goto errout;
+>  		}
+> -- 
+> 2.31.0
+> 
 
