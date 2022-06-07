@@ -2,148 +2,111 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D3165400D9
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jun 2022 16:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B36B75400EC
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jun 2022 16:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245178AbiFGOLk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 7 Jun 2022 10:11:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59110 "EHLO
+        id S245213AbiFGOL6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 7 Jun 2022 10:11:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245156AbiFGOLf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Jun 2022 10:11:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AF869A5029
-        for <linux-ext4@vger.kernel.org>; Tue,  7 Jun 2022 07:11:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1654611092;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SoSZK5Fdg2O/rluBKwwyKA4eybAvHOSFBw/HkVVeuhM=;
-        b=E9fC0hBUCBCt1yZLrY1ZPNnTMxUr+F4N3zmE6QLPbpa+60qfjezZxlYD6LRE8GFtGIrvTJ
-        fZ4dBcfK758eaUjDPJv6q+62PZ0JirwQ00Co+HqxszSphXjZa1XEX+KYWuPGQ1Eg5nUv9N
-        YinyO+3Z6a0qalvre+6KF+TJGC0GhAg=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-484-e0npgYDeOriiVThidcw_lQ-1; Tue, 07 Jun 2022 10:11:29 -0400
-X-MC-Unique: e0npgYDeOriiVThidcw_lQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4F30F811E75;
-        Tue,  7 Jun 2022 14:11:29 +0000 (UTC)
-Received: from fedora (unknown [10.40.193.176])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5B38F404754D;
-        Tue,  7 Jun 2022 14:11:28 +0000 (UTC)
-Date:   Tue, 7 Jun 2022 16:11:26 +0200
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Nils Bars <nils.bars@rub.de>,
-        Moritz =?utf-8?B?U2NobMO2Z2Vs?= <moritz.schloegel@rub.de>,
-        Nico Schiller <nico.schiller@rub.de>
-Subject: Re: [PATCH 6/7] libext2fs: check for cyclic loops in the extent tree
-Message-ID: <20220607141126.qnn6o3zkqydxyfpj@fedora>
-References: <20220607042444.1798015-1-tytso@mit.edu>
- <20220607042444.1798015-7-tytso@mit.edu>
+        with ESMTP id S245218AbiFGOLs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Jun 2022 10:11:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02159AE241;
+        Tue,  7 Jun 2022 07:11:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4nUpYTI4YzQUWe3MX/DeuqIdjPgTHj7mksBWnabO8pk=; b=IoritkaL90aqbR+RUHZKoSo8fb
+        np1ux4ttns5tYj2sJk/FAj12Ak/CQ/wW4eIuwXN5ulK6rhUSeL7wfME8a6K9gYUgIYgqg08BNe9+I
+        tus3kQ04SmPJZl9V4GH+E2xTibe280AETqIE3sbtSug/TUXDR0128c42jRa/+qeI8q7uri0dQOk1f
+        wWHM11+pgzBreVL8bkL3da/JDGIf99g2HUm8tnTrzT4cPM9I17c3dxlon1CkQMKJOgWEf9FbWmKJ9
+        h7TOtnv+jsL8ABFyKBR86bb03b2ZVDj0NIek4XcowncLGE0YjVino+xsZhqucJvOU+7lO9abDpL7s
+        BM8iPWpg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nyZvo-00BhC6-Sq; Tue, 07 Jun 2022 14:11:40 +0000
+Date:   Tue, 7 Jun 2022 15:11:40 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Brian Foster <bfoster@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-aio@kvack.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        ocfs2-devel@oss.oracle.com, linux-mtd@lists.infradead.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH 05/20] mm/migrate: Convert expected_page_refs() to
+ folio_expected_refs()
+Message-ID: <Yp9cnCaZ1O4qHFEp@casper.infradead.org>
+References: <20220606204050.2625949-1-willy@infradead.org>
+ <20220606204050.2625949-6-willy@infradead.org>
+ <Yp9VpZDsUEAZHEuy@bfoster>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220607042444.1798015-7-tytso@mit.edu>
-X-Scanned-By: MIMEDefang 2.84 on 10.11.54.1
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <Yp9VpZDsUEAZHEuy@bfoster>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jun 07, 2022 at 12:24:43AM -0400, Theodore Ts'o wrote:
-> In the extent tree handling code in libext2fs, when we go move down
-> the extent tree, if a cyclic loop is detected, return an error.
-
-Looks good.
-
-Reviewed-by: Lukas Czerner <lczerner@redhat.com>
-
+On Tue, Jun 07, 2022 at 09:41:57AM -0400, Brian Foster wrote:
+> On Mon, Jun 06, 2022 at 09:40:35PM +0100, Matthew Wilcox (Oracle) wrote:
+> > -static int expected_page_refs(struct address_space *mapping, struct page *page)
+> > +static int folio_expected_refs(struct address_space *mapping,
+> > +		struct folio *folio)
+> >  {
+> > -	int expected_count = 1;
+> > +	int refs = 1;
+> > +	if (!mapping)
+> > +		return refs;
+> >  
+> > -	if (mapping)
+> > -		expected_count += compound_nr(page) + page_has_private(page);
+> > -	return expected_count;
+> > +	refs += folio_nr_pages(folio);
+> > +	if (folio_get_private(folio))
+> > +		refs++;
 > 
-> Reported-by: Nils Bars <nils.bars@rub.de>
-> Reported-by: Moritz Schlögel <moritz.schloegel@rub.de>
-> Reported-by: Nico Schiller <nico.schiller@rub.de>
-> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-> ---
->  lib/ext2fs/ext2_err.et.in |  3 +++
->  lib/ext2fs/extent.c       | 11 +++++++++--
->  2 files changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/lib/ext2fs/ext2_err.et.in b/lib/ext2fs/ext2_err.et.in
-> index cf0e00ea..bb1dcf14 100644
-> --- a/lib/ext2fs/ext2_err.et.in
-> +++ b/lib/ext2fs/ext2_err.et.in
-> @@ -551,4 +551,7 @@ ec	EXT2_ET_NO_GDESC,
->  ec	EXT2_FILSYS_CORRUPTED,
->  	"The internal ext2_filsys data structure appears to be corrupted"
->  
-> +ec	EXT2_ET_EXTENT_CYCLE,
-> +	"Found cyclic loop in extent tree"
-> +
->  	end
-> diff --git a/lib/ext2fs/extent.c b/lib/ext2fs/extent.c
-> index 1a206a16..82e75ccd 100644
-> --- a/lib/ext2fs/extent.c
-> +++ b/lib/ext2fs/extent.c
-> @@ -47,6 +47,7 @@ struct extent_path {
->  	int		visit_num;
->  	int		flags;
->  	blk64_t		end_blk;
-> +	blk64_t		blk;
->  	void		*curr;
->  };
->  
-> @@ -286,6 +287,7 @@ errcode_t ext2fs_extent_open2(ext2_filsys fs, ext2_ino_t ino,
->  	handle->path[0].end_blk =
->  		(EXT2_I_SIZE(handle->inode) + fs->blocksize - 1) >>
->  		 EXT2_BLOCK_SIZE_BITS(fs->super);
-> +	handle->path[0].blk = 0;
->  	handle->path[0].visit_num = 1;
->  	handle->level = 0;
->  	handle->magic = EXT2_ET_MAGIC_EXTENT_HANDLE;
-> @@ -305,14 +307,14 @@ errout:
->  errcode_t ext2fs_extent_get(ext2_extent_handle_t handle,
->  			    int flags, struct ext2fs_extent *extent)
->  {
-> -	struct extent_path	*path, *newpath;
-> +	struct extent_path	*path, *newpath, *tp;
->  	struct ext3_extent_header	*eh;
->  	struct ext3_extent_idx		*ix = 0;
->  	struct ext3_extent		*ex;
->  	errcode_t			retval;
->  	blk64_t				blk;
->  	blk64_t				end_blk;
-> -	int				orig_op, op;
-> +	int				orig_op, op, l;
->  	int				failed_csum = 0;
->  
->  	EXT2_CHECK_MAGIC(handle, EXT2_ET_MAGIC_EXTENT_HANDLE);
-> @@ -467,6 +469,11 @@ retry:
->  		}
->  		blk = ext2fs_le32_to_cpu(ix->ei_leaf) +
->  			((__u64) ext2fs_le16_to_cpu(ix->ei_leaf_hi) << 32);
-> +		for (l = handle->level, tp = path; l > 0; l--, tp--) {
-> +			if (blk == tp->blk)
-> +				return EXT2_ET_EXTENT_CYCLE;
-> +		}
-> +		newpath->blk = blk;
->  		if ((handle->fs->flags & EXT2_FLAG_IMAGE_FILE) &&
->  		    (handle->fs->io != handle->fs->image_io))
->  			memset(newpath->buf, 0, handle->fs->blocksize);
-> -- 
-> 2.31.0
-> 
+> Why not folio_has_private() (as seems to be used for later
+> page_has_private() conversions) here?
 
+We have a horrid confusion that I'm trying to clean up stealthily
+without anyone noticing.  I would have gotten away with it too if it
+weren't for you pesky kids.
+
+#define PAGE_FLAGS_PRIVATE                              \
+        (1UL << PG_private | 1UL << PG_private_2)
+
+static inline int page_has_private(struct page *page)
+{
+        return !!(page->flags & PAGE_FLAGS_PRIVATE);
+}
+
+So what this function is saying is that there is one extra refcount
+expected on the struct page if PG_private _or_ PG_private_2 is set.
+
+How are filesystems expected to manage their page's refcount with this
+rule?  Increment the refcount when setting PG_private unless
+PG_private_2 is already set?  Decrement the refcount when clearing
+PG_private_2 unless PG_private is set?
+
+This is garbage.  IMO, PG_private_2 should have no bearing on the page's
+refcount.  Only btrfs and the netfs's use private_2 and neither of them
+do anything to the refcount when setting/clearing it.  So that's what
+I'm implementing here.
+
+> > +
+> > +	return refs;;
+> 
+> Nit: extra ;
+
+Oh, that's where it went ;-)  I had a compile error due to a missing
+semicolon at some point, and thought it was just a typo ...
