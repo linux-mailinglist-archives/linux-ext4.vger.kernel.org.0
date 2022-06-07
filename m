@@ -2,69 +2,52 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC03A53F755
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jun 2022 09:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C28B953F7C3
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jun 2022 10:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236710AbiFGHg3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 7 Jun 2022 03:36:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46788 "EHLO
+        id S231506AbiFGIBy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 7 Jun 2022 04:01:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231790AbiFGHg2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Jun 2022 03:36:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 38CDB69CF5
-        for <linux-ext4@vger.kernel.org>; Tue,  7 Jun 2022 00:36:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1654587386;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=poSLf3SQpSQVqGAvfY9ZUAc4mDsdNw09sPQoA12+Xn0=;
-        b=hfSm24hAkAxOtxAdK5RtalOFpv2znDhW0w8uprj18UcuDvaE1104doT8gg0EGQRE7IVVae
-        Iv9ibPBqibKHQJSPOIOBqaEpuEYNNXoxMCplEm6QKG0vQjt/Q4MwCr3NAXeroafSH4Hism
-        Hc6SSzDGX6eaNpnk8i7CZOns7zf1qCw=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-612-2ahEMljFOY-Irj5WiVftLw-1; Tue, 07 Jun 2022 03:36:25 -0400
-X-MC-Unique: 2ahEMljFOY-Irj5WiVftLw-1
-Received: by mail-wr1-f72.google.com with SMTP id h14-20020adfa4ce000000b00218518b622eso270625wrb.4
-        for <linux-ext4@vger.kernel.org>; Tue, 07 Jun 2022 00:36:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=poSLf3SQpSQVqGAvfY9ZUAc4mDsdNw09sPQoA12+Xn0=;
-        b=dYZwEC17k4FhIApGFLQSKaambAloi05hoL71/Px+T0U+7dc4+pp24a2GmKnyGKYGSq
-         ZmrDst4YM0AfiCrHqNR4DXuoAYuXwxNEDjw81YMAXPqyMgpRmU4Yvoi1ShyajyRHUzWj
-         BTzUl83M6hDn0kNiM4SoOsn+RZ78HqC8GuvPmvxyfcJtyni0A+GH/e0XpOeyPYNBeeg4
-         +lt0vd9jPQlu0cvtoqjgHQ1P86ia41Y05S0ZGnw/MC3kmWPBcoLUaYi1Ztm78eXAdTnt
-         VCc+MNkg+Qsz829/G4MDqQzqrUaEzmrcrrKe4juSB/cnPmFQ87zrT6H4TY0d/KCnsTa6
-         IT8Q==
-X-Gm-Message-State: AOAM533SUC40jPYJQIPUbLfhX0/qqlFxPt86onLeclAUVzuT4dFd/k+N
-        iJa6y2e3v/TSBSJ1sS8xUFWeTq7OssvGcCipaHZC71iTyBIk+BGkgxJH9X6XWI/uUf9mD3bmXUO
-        Lqnj824Av7/kMaGTkXd9W7g==
-X-Received: by 2002:a05:600c:4ec9:b0:397:750a:798a with SMTP id g9-20020a05600c4ec900b00397750a798amr56010316wmq.169.1654587384021;
-        Tue, 07 Jun 2022 00:36:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz/TT1zDaD6ih4ST/0Z6l6/VJexv/LUjWrit9gRiSM2S633qB8aLjqIdjv8Hs+falCUt0H+YA==
-X-Received: by 2002:a05:600c:4ec9:b0:397:750a:798a with SMTP id g9-20020a05600c4ec900b00397750a798amr56010293wmq.169.1654587383789;
-        Tue, 07 Jun 2022 00:36:23 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c709:500:4c8d:4886:f874:7b6f? (p200300cbc70905004c8d4886f8747b6f.dip0.t-ipconnect.de. [2003:cb:c709:500:4c8d:4886:f874:7b6f])
-        by smtp.gmail.com with ESMTPSA id j37-20020a05600c1c2500b0039c235fb6a5sm19943141wms.8.2022.06.07.00.36.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Jun 2022 00:36:22 -0700 (PDT)
-Message-ID: <e4d017a4-556d-bb5f-9830-a8843591bc8d@redhat.com>
-Date:   Tue, 7 Jun 2022 09:36:21 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH 15/20] balloon: Convert to migrate_folio
-Content-Language: en-US
+        with ESMTP id S231132AbiFGIBx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Jun 2022 04:01:53 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EFA7CC162;
+        Tue,  7 Jun 2022 01:01:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1654588912; x=1686124912;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=mQzWEDPxMO7UmRFxluiJ1Ca9g136QsEllPnrNDFo86E=;
+  b=LYdWTevVknceaxiHI5ZDb/kI7p95Z6aLACFHfjht6bFO/e1Fv3uLKpyh
+   IyNoGXGjrm37ZETgDB6N8giq+NDy+DeLckytqVwU43agmCIfCWz0Cansc
+   kAGfJYfAPMNnrF2Q3dnEZnpddYOrNWLWfE1Mjm0H7bjOoxQlljfV/6oJm
+   gkJ2ANcVbNT0/4ef9eABJk17qVtyiaIsJy8KzcRvcJWjv6BGWsRbI44Dl
+   fQ5QpqRp31rAZM/wBWIFIQUef1hyrKVlrrUyczfKy0WZALp13iCcGpsGl
+   CBKunH91Zx/Rt+1+6NUiGvpWqZQGcbH6hk9zyI1055+TM59Yl8uK7Fc5/
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10370"; a="302073764"
+X-IronPort-AV: E=Sophos;i="5.91,283,1647327600"; 
+   d="scan'208";a="302073764"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2022 01:01:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,283,1647327600"; 
+   d="scan'208";a="709385390"
+Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 07 Jun 2022 01:01:47 -0700
+Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nyU9q-000DUT-Qe;
+        Tue, 07 Jun 2022 08:01:46 +0000
+Date:   Tue, 7 Jun 2022 16:01:02 +0800
+From:   kernel test robot <lkp@intel.com>
 To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
         linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
         cluster-devel@redhat.com, linux-mm@kvack.org,
@@ -72,78 +55,85 @@ Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
         linux-ntfs-dev@lists.sourceforge.net, ocfs2-devel@oss.oracle.com,
         linux-mtd@lists.infradead.org,
         virtualization@lists.linux-foundation.org
-References: <20220606204050.2625949-1-willy@infradead.org>
- <20220606204050.2625949-16-willy@infradead.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20220606204050.2625949-16-willy@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 04/20] mm/migrate: Convert buffer_migrate_page() to
+ buffer_migrate_folio()
+Message-ID: <202206071552.6lOdScLW-lkp@intel.com>
+References: <20220606204050.2625949-5-willy@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220606204050.2625949-5-willy@infradead.org>
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 06.06.22 22:40, Matthew Wilcox (Oracle) wrote:
-> This is little more than changing the types over; there's no real work
-> being done in this function.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  mm/balloon_compaction.c | 15 +++++++--------
->  1 file changed, 7 insertions(+), 8 deletions(-)
-> 
-> diff --git a/mm/balloon_compaction.c b/mm/balloon_compaction.c
-> index 4b8eab4b3f45..3f75b876ad76 100644
-> --- a/mm/balloon_compaction.c
-> +++ b/mm/balloon_compaction.c
-> @@ -230,11 +230,10 @@ static void balloon_page_putback(struct page *page)
->  
->  
->  /* move_to_new_page() counterpart for a ballooned page */
-> -static int balloon_page_migrate(struct address_space *mapping,
-> -		struct page *newpage, struct page *page,
-> -		enum migrate_mode mode)
-> +static int balloon_migrate_folio(struct address_space *mapping,
-> +		struct folio *dst, struct folio *src, enum migrate_mode mode)
->  {
-> -	struct balloon_dev_info *balloon = balloon_page_device(page);
-> +	struct balloon_dev_info *balloon = balloon_page_device(&src->page);
->  
->  	/*
->  	 * We can not easily support the no copy case here so ignore it as it
-> @@ -244,14 +243,14 @@ static int balloon_page_migrate(struct address_space *mapping,
->  	if (mode == MIGRATE_SYNC_NO_COPY)
->  		return -EINVAL;
->  
-> -	VM_BUG_ON_PAGE(!PageLocked(page), page);
-> -	VM_BUG_ON_PAGE(!PageLocked(newpage), newpage);
-> +	VM_BUG_ON_FOLIO(!folio_test_locked(src), src);
-> +	VM_BUG_ON_FOLIO(!folio_test_locked(dst), dst);
->  
-> -	return balloon->migratepage(balloon, newpage, page, mode);
-> +	return balloon->migratepage(balloon, &dst->page, &src->page, mode);
->  }
->  
->  const struct address_space_operations balloon_aops = {
-> -	.migratepage = balloon_page_migrate,
-> +	.migrate_folio = balloon_migrate_folio,
->  	.isolate_page = balloon_page_isolate,
->  	.putback_page = balloon_page_putback,
->  };
+Hi "Matthew,
 
-I assume you're working on conversion of the other callbacks as well,
-because otherwise, this ends up looking a bit inconsistent and confusing :)
+I love your patch! Perhaps something to improve:
 
-Change LGTM.
+[auto build test WARNING on linus/master]
+[also build test WARNING on v5.19-rc1 next-20220607]
+[cannot apply to jaegeuk-f2fs/dev-test trondmy-nfs/linux-next kdave/for-next xfs-linux/for-next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Matthew-Wilcox-Oracle/Convert-aops-migratepage-to-aops-migrate_folio/20220607-044509
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git f2906aa863381afb0015a9eb7fefad885d4e5a56
+config: s390-randconfig-c005-20220606 (https://download.01.org/0day-ci/archive/20220607/202206071552.6lOdScLW-lkp@intel.com/config)
+compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project b92436efcb7813fc481b30f2593a4907568d917a)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # install s390 cross compiling tool for clang build
+        # apt-get install binutils-s390x-linux-gnu
+        # https://github.com/intel-lab-lkp/linux/commit/96e64ba8b1be545885d89f44b1d8b968b22bdb4d
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Matthew-Wilcox-Oracle/Convert-aops-migratepage-to-aops-migrate_folio/20220607-044509
+        git checkout 96e64ba8b1be545885d89f44b1d8b968b22bdb4d
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=s390 SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+>> mm/migrate.c:775: warning: expecting prototype for buffer_migrate_folio_noref(). Prototype was for buffer_migrate_folio_norefs() instead
+
+
+vim +775 mm/migrate.c
+
+89cb0888ca1483 Jan Kara                2018-12-28  758  
+96e64ba8b1be54 Matthew Wilcox (Oracle  2022-06-06  759) /**
+96e64ba8b1be54 Matthew Wilcox (Oracle  2022-06-06  760)  * buffer_migrate_folio_noref() - Migration function for folios with buffers.
+96e64ba8b1be54 Matthew Wilcox (Oracle  2022-06-06  761)  * @mapping: The address space containing @src.
+96e64ba8b1be54 Matthew Wilcox (Oracle  2022-06-06  762)  * @dst: The folio to migrate to.
+96e64ba8b1be54 Matthew Wilcox (Oracle  2022-06-06  763)  * @src: The folio to migrate from.
+96e64ba8b1be54 Matthew Wilcox (Oracle  2022-06-06  764)  * @mode: How to migrate the folio.
+96e64ba8b1be54 Matthew Wilcox (Oracle  2022-06-06  765)  *
+96e64ba8b1be54 Matthew Wilcox (Oracle  2022-06-06  766)  * Like buffer_migrate_folio() except that this variant is more careful
+96e64ba8b1be54 Matthew Wilcox (Oracle  2022-06-06  767)  * and checks that there are also no buffer head references. This function
+96e64ba8b1be54 Matthew Wilcox (Oracle  2022-06-06  768)  * is the right one for mappings where buffer heads are directly looked
+96e64ba8b1be54 Matthew Wilcox (Oracle  2022-06-06  769)  * up and referenced (such as block device mappings).
+96e64ba8b1be54 Matthew Wilcox (Oracle  2022-06-06  770)  *
+96e64ba8b1be54 Matthew Wilcox (Oracle  2022-06-06  771)  * Return: 0 on success or a negative errno on failure.
+89cb0888ca1483 Jan Kara                2018-12-28  772   */
+96e64ba8b1be54 Matthew Wilcox (Oracle  2022-06-06  773) int buffer_migrate_folio_norefs(struct address_space *mapping,
+96e64ba8b1be54 Matthew Wilcox (Oracle  2022-06-06  774) 		struct folio *dst, struct folio *src, enum migrate_mode mode)
+89cb0888ca1483 Jan Kara                2018-12-28 @775  {
+96e64ba8b1be54 Matthew Wilcox (Oracle  2022-06-06  776) 	return __buffer_migrate_folio(mapping, dst, src, mode, true);
+89cb0888ca1483 Jan Kara                2018-12-28  777  }
+9361401eb7619c David Howells           2006-09-30  778  #endif
+1d8b85ccf1ed53 Christoph Lameter       2006-06-23  779  
 
 -- 
-Thanks,
-
-David / dhildenb
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
