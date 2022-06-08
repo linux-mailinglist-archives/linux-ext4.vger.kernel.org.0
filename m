@@ -2,217 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC46542CD5
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jun 2022 12:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E314542CE4
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jun 2022 12:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236464AbiFHKOz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Jun 2022 06:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42008 "EHLO
+        id S236499AbiFHKPO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Jun 2022 06:15:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236421AbiFHKNM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Jun 2022 06:13:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A0AFE101E7
-        for <linux-ext4@vger.kernel.org>; Wed,  8 Jun 2022 02:59:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1654682376;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        with ESMTP id S237391AbiFHKOn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Jun 2022 06:14:43 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75ED9F827D
+        for <linux-ext4@vger.kernel.org>; Wed,  8 Jun 2022 03:02:31 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 0A7B621A20;
+        Wed,  8 Jun 2022 10:02:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1654682550; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=X7ko0a61KQIEYlZE2OolrSj5KPboqylHtHlNY2Rk0xk=;
-        b=HTgr1iTc2yNBJ1TMG1abAXJSSpfxGYB6q8DDg6rnb5L77rqSUjLmyMcw5MKS9W8Bqf+0lQ
-        ibC36RSLfFLbCsI4FDLUl0aYLyQa6T26wEi9aO21DVIT3Gz7UrtMwowP+cKEuztqrX1UQe
-        1eaWq5xsDk+ZtqJ0xrl8XsuNvnaiHOY=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-193-3bQHCBeyMlObZkJe4tOvjg-1; Wed, 08 Jun 2022 05:59:35 -0400
-X-MC-Unique: 3bQHCBeyMlObZkJe4tOvjg-1
-Received: by mail-wm1-f70.google.com with SMTP id bg40-20020a05600c3ca800b00394779649b1so14175496wmb.3
-        for <linux-ext4@vger.kernel.org>; Wed, 08 Jun 2022 02:59:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:organization:subject
-         :in-reply-to:content-transfer-encoding;
-        bh=X7ko0a61KQIEYlZE2OolrSj5KPboqylHtHlNY2Rk0xk=;
-        b=WczGM5hfO8cf4yjq54J7CJ2l8896xyxrkEBuEbh1SNthoYY6OAPR/BlUyKFVcU2IsQ
-         gNKFHoSUvE6H6HNw9/T+sc4g2CCtE6KtBThSAd+1a+Q0DGY6KU1sqkuH2U6DWtx+VkwF
-         O7sPfjHpr3abhgG74xrwuvBBJy1Y6Sdxbhy744X19EibbLoIIQ7Jp9XWr9CvM85cbULW
-         qWhKt1RTte2WYlKi3LGIumSxRN3W1knN9oyf24a9zAoCBEIvAr9XlGwf46PFAx8enXpr
-         vRMkcmBKg2AdMIxKWHOXHgz95i11LGR9u+xeaULDgMFyV2BSYYCBRg3NXuldqWhQSXYk
-         eFSA==
-X-Gm-Message-State: AOAM530k5DORu3ZHCANnTXjvpBDFyKfxUlYVDJxXqPCWCddsj4Cqn4LI
-        vd0YjRHOAvmqfeky2BY0edFRItU/mVaCMD2Ja4U+YXPij+1dlZCacDhpfxsIYEQw5FPCu7QtvPg
-        ppB0A6Rfr1yz++hU1RjGEHg==
-X-Received: by 2002:a05:600c:154d:b0:394:8d64:9166 with SMTP id f13-20020a05600c154d00b003948d649166mr33665186wmg.102.1654682374065;
-        Wed, 08 Jun 2022 02:59:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw4BCTXIM51kCwL6Z6H/hpvqsMvzu1fv9X/GhiUOzp5r00CIAo0BKvmPAyhZ/PubqP5kGP1SQ==
-X-Received: by 2002:a05:600c:154d:b0:394:8d64:9166 with SMTP id f13-20020a05600c154d00b003948d649166mr33665171wmg.102.1654682373804;
-        Wed, 08 Jun 2022 02:59:33 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c705:ad00:db2:4c6:8f3a:2ec4? (p200300cbc705ad000db204c68f3a2ec4.dip0.t-ipconnect.de. [2003:cb:c705:ad00:db2:4c6:8f3a:2ec4])
-        by smtp.gmail.com with ESMTPSA id p19-20020a05600c1d9300b003942a244f39sm2898272wms.18.2022.06.08.02.59.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Jun 2022 02:59:33 -0700 (PDT)
-Message-ID: <36cc5e2b-b768-ce1c-fa30-72a932587289@redhat.com>
-Date:   Wed, 8 Jun 2022 11:59:31 +0200
+        bh=JINZ9VlD9DtZibC+30KtzLfT1TvMRt/NBb1lWIO6Li8=;
+        b=1D08+MVHEh0PeVqO4zBX7/Aa2XTAm98JODUPTAxeld9qjs6FlVApbJqoMvEXoY62igbch3
+        jiDjYl12CXyYJEaKhLG7tbactXbx4MrHV612spA5Ixsj6WcInmAsIUW5SO0HXOAfTQqgf6
+        pm/sPw6MJc52I08kVZ1xKi3xTCJ1eSg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1654682550;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JINZ9VlD9DtZibC+30KtzLfT1TvMRt/NBb1lWIO6Li8=;
+        b=80ILTGSjx0q2vBsCpGSin/SFU3DHHbMF+QFAHCIhlkHBdKQ0QROY/cYUv9FjhBnF7/ADMd
+        zbfJXXfDxoZT2zAA==
+Received: from quack3.suse.cz (unknown [10.163.28.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id F02EB2C142;
+        Wed,  8 Jun 2022 10:02:29 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id A8BD6A06E2; Wed,  8 Jun 2022 12:02:29 +0200 (CEST)
+Date:   Wed, 8 Jun 2022 12:02:29 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     linux-ext4@vger.kernel.org
+Cc:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>
+Subject: Re: [PATCH] jbd2: Remove unused exports for jbd2 debugging
+Message-ID: <20220608100229.qry77pkurz5mbu62@quack3.lan>
+References: <20220606144047.16780-1-jack@suse.cz>
+ <202206081021.Y85M7FUG-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-aio@kvack.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
-        ocfs2-devel@oss.oracle.com, linux-mtd@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        Minchan Kim <minchan@kernel.org>,
-        Rafael Aquini <aquini@redhat.com>
-References: <20220606204050.2625949-1-willy@infradead.org>
- <20220606204050.2625949-16-willy@infradead.org>
- <e4d017a4-556d-bb5f-9830-a8843591bc8d@redhat.com>
- <Yp9fj/Si2qyb61Y3@casper.infradead.org>
- <Yp+lU55H4igaV3pB@casper.infradead.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH 15/20] balloon: Convert to migrate_folio
-In-Reply-To: <Yp+lU55H4igaV3pB@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202206081021.Y85M7FUG-lkp@intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 07.06.22 21:21, Matthew Wilcox wrote:
-> On Tue, Jun 07, 2022 at 03:24:15PM +0100, Matthew Wilcox wrote:
->> On Tue, Jun 07, 2022 at 09:36:21AM +0200, David Hildenbrand wrote:
->>> On 06.06.22 22:40, Matthew Wilcox (Oracle) wrote:
->>>>  const struct address_space_operations balloon_aops = {
->>>> -	.migratepage = balloon_page_migrate,
->>>> +	.migrate_folio = balloon_migrate_folio,
->>>>  	.isolate_page = balloon_page_isolate,
->>>>  	.putback_page = balloon_page_putback,
->>>>  };
->>>
->>> I assume you're working on conversion of the other callbacks as well,
->>> because otherwise, this ends up looking a bit inconsistent and confusing :)
->>
->> My intention was to finish converting aops for the next merge window.
->>
->> However, it seems to me that we goofed back in 2016 by merging
->> commit bda807d44454.  isolate_page() and putback_page() should
->> never have been part of address_space_operations.
->>
->> I'm about to embark on creating a new migrate_operations struct
->> for drivers to use that contains only isolate/putback/migrate.
->> No filesystem uses isolate/putback, so those can just be deleted.
->> Both migrate_operations & address_space_operations will contain a
->> migrate callback.
+Hello,
 
-That makes sense to me. I wonder if there was a design
-decision/discussion behind that. CCing Rafael.
+yeah, I was grepping the sources whether I can see an external use of
+jbd2_debug() and didn't notice the macro in include/linux/jbd2.h that is
+calling __jbd2_debug() is actually called jbd_debug(). I actually think we
+should use ext4_debug() instead of jbd_debug() in ext4 code but anyway,
+my patches need tweaking...
 
-@Rafael, full mail at
+								Honza
 
-https://lkml.kernel.org/r/Yp+lU55H4igaV3pB@casper.infradead.org
-
+On Wed 08-06-22 10:29:23, kernel test robot wrote:
+> Hi Jan,
 > 
-> Well, that went more smoothly than I thought it would.
+> I love your patch! Yet something to improve:
 > 
-> I can't see a nice way to split this patch up (other than making secretmem
-> its own patch).  We just don't have enough bits in struct page to support
-> both ways of handling PageMovable at the same time, so we can't convert
-> one driver at a time.  The diffstat is pretty compelling.
-
-Yes, splitting rather overcomplicates stuff.
-
+> [auto build test ERROR on tytso-ext4/dev]
+> [also build test ERROR on linus/master v5.19-rc1 next-20220607]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
 > 
-> The patch is on top of this patch series; I think it probably makes
-> sense to shuffle it to be first, to avoid changing these drivers to
-> folios, then changing them back.
-
-Absolutely.
-
+> url:    https://github.com/intel-lab-lkp/linux/commits/Jan-Kara/jbd2-Remove-unused-exports-for-jbd2-debugging/20220606-224629
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+> config: microblaze-buildonly-randconfig-r012-20220605 (https://download.01.org/0day-ci/archive/20220608/202206081021.Y85M7FUG-lkp@intel.com/config)
+> compiler: microblaze-linux-gcc (GCC) 11.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/intel-lab-lkp/linux/commit/9aaaac58ce0525ce441ad75b45bf3e5f3911a82b
+>         git remote add linux-review https://github.com/intel-lab-lkp/linux
+>         git fetch --no-tags linux-review Jan-Kara/jbd2-Remove-unused-exports-for-jbd2-debugging/20220606-224629
+>         git checkout 9aaaac58ce0525ce441ad75b45bf3e5f3911a82b
+>         # save the config file
+>         mkdir build_dir && cp config build_dir/.config
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.3.0 make.cross W=1 O=build_dir ARCH=microblaze SHELL=/bin/bash
 > 
-> Questions:
+> If you fix the issue, kindly add following tag where applicable
+> Reported-by: kernel test robot <lkp@intel.com>
 > 
-> Is what I've done with zsmalloc acceptable?  The locking in that
-> file is rather complex.
+> All errors (new ones prefixed by >>, old ones prefixed by <<):
 > 
-> Can we now eliminate balloon_mnt / balloon_fs from cmm.c?  I haven't even
-> compiled thatfile , but it seems like the filesystem serves no use now.
+> >> ERROR: modpost: "__jbd2_debug" [fs/ext4/ext4.ko] undefined!
 > 
-> Similar question for vmw_balloon.c, although I have compiled that.
-
-IIRC, virtio-balloon, cmm and vmw_balloon all have the mnt/fs just for
-page migration purposes. So if one can get rid of them, all should be
-able to get rid of them. Essentially everything that uses the balloon
-compaction framework.
-
-That should go into separate patches then.
-
-> 
-> ---
-> 
-> I just spotted a bug with zs_unregister_migration(); it won't compile
-> without CONFIG_MIGRATION.  I'll fix that up if the general approach is
-> acceptable.
-> 
->  arch/powerpc/platforms/pseries/cmm.c |   13 --------
->  drivers/misc/vmw_balloon.c           |   10 ------
->  include/linux/balloon_compaction.h   |    6 +---
->  include/linux/fs.h                   |    2 -
->  include/linux/migrate.h              |   27 ++++++++++++++----
->  include/linux/page-flags.h           |    2 -
->  mm/balloon_compaction.c              |   18 ++++++------
->  mm/compaction.c                      |   29 ++++++++-----------
->  mm/migrate.c                         |   23 ++++++++-------
->  mm/secretmem.c                       |    6 ----
->  mm/util.c                            |    4 +-
->  mm/z3fold.c                          |   45 ++++++------------------------
->  mm/zsmalloc.c                        |   52 +++++++++--------------------------
->  13 files changed, 83 insertions(+), 154 deletions(-)
-> 
-> diff --git a/arch/powerpc/platforms/pseries/cmm.c b/arch/powerpc/platforms/pseries/cmm.c
-> index 15ed8206c463..2ecbab3db723 100644
-> --- a/arch/powerpc/platforms/pseries/cmm.c
-> +++ b/arch/powerpc/platforms/pseries/cmm.c
-> @@ -578,23 +578,10 @@ static int cmm_balloon_compaction_init(void)
->  		return rc;
->  	}
->  
-> -	b_dev_info.inode = alloc_anon_inode(balloon_mnt->mnt_sb);
-> -	if (IS_ERR(b_dev_info.inode)) {
-> -		rc = PTR_ERR(b_dev_info.inode);
-> -		b_dev_info.inode = NULL;
-> -		kern_unmount(balloon_mnt);
-> -		balloon_mnt = NULL;
-> -		return rc;
-> -	}
-> -
-> -	b_dev_info.inode->i_mapping->a_ops = &balloon_aops;
-
-
-Are you missing similar updates to drivers/virtio/virtio_balloon.c ?
-
-At least, there we're also using balloon_aops, so this patch shouldn't
-compile.
-
-
-Skimming over it, nothing else jumped at me.
-
+> -- 
+> 0-DAY CI Kernel Test Service
+> https://01.org/lkp
 -- 
-Thanks,
-
-David / dhildenb
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
