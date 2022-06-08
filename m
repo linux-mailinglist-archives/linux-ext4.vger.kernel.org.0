@@ -2,163 +2,99 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC4A542294
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jun 2022 08:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E415421BE
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jun 2022 08:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbiFHEUc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Jun 2022 00:20:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43140 "EHLO
+        id S232266AbiFHEmO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Jun 2022 00:42:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232734AbiFHEUA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Jun 2022 00:20:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A1D430A465;
-        Tue,  7 Jun 2022 18:43:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=oj6iBHbhY6wXvQP55JwyIS4V24gHjxSYo9c883R7TUw=; b=UfcjCcAZzQcl+QqNdFDayL0DrM
-        rVsFMvfFUXJ+7oDg0pQnlpqu8q9pinredTIeMnZWJx7xr81EuHQZejrMDcKM5oM6LxeQPUOp4s5iX
-        ZSlisTnw/St+HpFk9wwmSqM+LHciBRgwgWakpdRGd3adD7O0iYUtaFaX5R63bQzoG7LRFpPJ4R+6o
-        QTbenogFjZKniIch80zZmMTGAqhansPk4Fgz2CPBlusie4PkzHtBvzj0pHemLIlcBqz4I7YWekTUf
-        ODqwv9lHI37DiFMD5p4KndP3XL35ySlCLg7fIX147nJVyBtb79ZnjXvTWY+K0vIvQUROpSy8Axhht
-        24wQ41bw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nykiD-00CCvI-Vy; Wed, 08 Jun 2022 01:42:22 +0000
-Date:   Wed, 8 Jun 2022 02:42:21 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Jan Kara <jack@suse.com>, tytso@mit.edu,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 3/3] ext4: Use generic_quota_read()
-Message-ID: <Yp/+fSoHgPIhiHQR@casper.infradead.org>
-References: <20220605143815.2330891-1-willy@infradead.org>
- <20220605143815.2330891-4-willy@infradead.org>
- <20220606083814.skjv34b2tjn7l7pi@quack3.lan>
+        with ESMTP id S233829AbiFHEjO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Jun 2022 00:39:14 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A8E27D0F3
+        for <linux-ext4@vger.kernel.org>; Tue,  7 Jun 2022 19:30:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1654655440; x=1686191440;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=H9Gegw95EeArwv/+dQCHsQrzK/8pfT26OnbRuAX1c3w=;
+  b=fX5ASiKzOmuLT9AxDL/XmWri+wZqZkgb2/kSKZfuYKe9Nzynyrf4M8sQ
+   nYCb9LkKvAvclAfOyrGJmJdfpeQUJgK+IXrOCbisLW2ssBJIXh6ZxcmNs
+   wuJY+RCTkW8zKycRRjca2Ii1nfSjmg4OFKi0IXA7xyDDALsBF6ZYlV8sV
+   +9NoKsSLYsV+HMCHhdIvzio0dMhJVf9FgImqPFu0l4iABsg+CCQgKOnAi
+   SOCuWZHVL2nJ8dfZLOM4RsevVZePcYIs/H9XtiAaQ/xvbGg1ctQzoxMAK
+   SA8kbcG83BC17xd3MSSCUCx4Xny5aRjIMmvO8sGK1E3Ni0Ig/h6YSkCrD
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10371"; a="340812521"
+X-IronPort-AV: E=Sophos;i="5.91,284,1647327600"; 
+   d="scan'208";a="340812521"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2022 19:30:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,284,1647327600"; 
+   d="scan'208";a="709748422"
+Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 07 Jun 2022 19:30:14 -0700
+Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nylSY-000EAz-0H;
+        Wed, 08 Jun 2022 02:30:14 +0000
+Date:   Wed, 8 Jun 2022 10:29:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>
+Cc:     kbuild-all@lists.01.org, linux-ext4@vger.kernel.org,
+        Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH] jbd2: Remove unused exports for jbd2 debugging
+Message-ID: <202206081021.Y85M7FUG-lkp@intel.com>
+References: <20220606144047.16780-1-jack@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220606083814.skjv34b2tjn7l7pi@quack3.lan>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220606144047.16780-1-jack@suse.cz>
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jun 06, 2022 at 10:38:14AM +0200, Jan Kara wrote:
-> On Sun 05-06-22 15:38:15, Matthew Wilcox (Oracle) wrote:
-> > The comment about the page cache is rather stale; the buffer cache will
-> > read into the page cache if the buffer isn't present, and the page cache
-> > will not take any locks if the page is present.
-> > 
-> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> 
-> This will not work for couple of reasons, see below. BTW, I don't think the
-> comment about page cache was stale (but lacking details I admit ;). As far
-> as I remember (and it was really many years ago - definitely pre-git era)
-> the problem was (mainly on the write side) that before current state of the
-> code we were using calls like vfs_read() / vfs_write() to get quota
-> information and that was indeed prone to deadlocks.
+Hi Jan,
 
-Ah yes, vfs_write() might indeed be prone to deadlocks.  Particularly
-if we're doing it under the dq_mutex and any memory allocation might
-have recursed into reclaim ;-)
+I love your patch! Yet something to improve:
 
-I actually found the commit in linux-fullhistory.  Changelog for
-context:
+[auto build test ERROR on tytso-ext4/dev]
+[also build test ERROR on linus/master v5.19-rc1 next-20220607]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-commit b72debd66a6ed
-Author: Jan Kara <jack@suse.cz>
-Date:   Mon Jan 3 04:12:24 2005 -0800
+url:    https://github.com/intel-lab-lkp/linux/commits/Jan-Kara/jbd2-Remove-unused-exports-for-jbd2-debugging/20220606-224629
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+config: microblaze-buildonly-randconfig-r012-20220605 (https://download.01.org/0day-ci/archive/20220608/202206081021.Y85M7FUG-lkp@intel.com/config)
+compiler: microblaze-linux-gcc (GCC) 11.3.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/9aaaac58ce0525ce441ad75b45bf3e5f3911a82b
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Jan-Kara/jbd2-Remove-unused-exports-for-jbd2-debugging/20220606-224629
+        git checkout 9aaaac58ce0525ce441ad75b45bf3e5f3911a82b
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.3.0 make.cross W=1 O=build_dir ARCH=microblaze SHELL=/bin/bash
 
-    [PATCH] Fix of quota deadlock on pagelock: quota core
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
 
-    The four patches in this series fix deadlocks with quotas of pagelock (the
-    problem was lock inversion on PageLock and transaction start - quota code
-    needed to first start a transaction and then write the data which subsequent
-ly
-    needed acquisition of PageLock while the standard ordering - PageLock first
-    and transaction start later - was used e.g.  by pdflush).  They implement a
-    new way of quota access to disk: Every filesystem that would like to impleme
-nt
-    quotas now has to provide quota_read() and quota_write() functions.  These
-    functions must obey quota lock ordering (in particular they should not take
-    PageLock inside a transaction).
+All errors (new ones prefixed by >>, old ones prefixed by <<):
 
-    The first patch implements the changes in the quota core, the other three
-    patches implement needed functions in ext2, ext3 and reiserfs.  The patch for
-    reiserfs also fixes several other lock inversion problems (similar as ext3
-    had) and implements the journaled quota functionality (which comes almost for
-    free after the locking fixes...).
-    
-    The quota core patch makes quota support in other filesystems (except XFS
-    which implements everything on its own ;)) unfunctional (quotaon() will refuse
-    to turn on quotas on them).  When the patches get reasonable wide testing and
-    it will seem that no major changes will be needed I can make fixes also for
-    the other filesystems (JFS, UDF, UFS).
-    
-    This patch:
-    
-    The patch implements the new way of quota io in the quota core.  Every
-    filesystem wanting to support quotas has to provide functions quota_read()
-    and quota_write() obeying quota locking rules.  As the writes and reads
-    bypass the pagecache there is some ugly stuff ensuring that userspace can
-    see all the data after quotaoff() (or Q_SYNC quotactl).  In future I plan
-    to make quota files inaccessible from userspace (with the exception of
-    quotacheck(8) which will take care about the cache flushing and such stuff
-    itself) so that this synchronization stuff can be removed...
-    
-    The rewrite of the quota core. Quota uses the filesystem read() and write()
-    functions no more to avoid possible deadlocks on PageLock. From now on every
-    filesystem supporting quotas must provide functions quota_read() and
-    quota_write() which obey the quota locking rules (e.g. they cannot acquire the
-    PageLock).
-    
-    Signed-off-by: Jan Kara <jack@suse.cz>
-    Signed-off-by: Andrew Morton <akpm@osdl.org>
-    Signed-off-by: Linus Torvalds <torvalds@osdl.org>
+>> ERROR: modpost: "__jbd2_debug" [fs/ext4/ext4.ko] undefined!
 
-> > @@ -6924,20 +6882,21 @@ static ssize_t ext4_quota_write(struct super_block *sb, int type,
-> >  		return -EIO;
-> >  	}
-> >  
-> > -	do {
-> > -		bh = ext4_bread(handle, inode, blk,
-> > -				EXT4_GET_BLOCKS_CREATE |
-> > -				EXT4_GET_BLOCKS_METADATA_NOFAIL);
-> > -	} while (PTR_ERR(bh) == -ENOSPC &&
-> > -		 ext4_should_retry_alloc(inode->i_sb, &retries));
-> > -	if (IS_ERR(bh))
-> > -		return PTR_ERR(bh);
-> > -	if (!bh)
-> > +	folio = read_mapping_folio(inode->i_mapping, off / PAGE_SIZE, NULL);
-> > +	if (IS_ERR(folio))
-> > +		return PTR_ERR(folio);
-> > +	head = folio_buffers(folio);
-> > +	if (!head)
-> > +		head = alloc_page_buffers(&folio->page, sb->s_blocksize, false);
-> > +	if (!head)
-> >  		goto out;
-> > +	bh = head;
-> > +	while ((bh_offset(bh) + sb->s_blocksize) <= (off % PAGE_SIZE))
-> > +		bh = bh->b_this_page;
-> 
-> We miss proper handling of blocks that are currently beyond i_size
-> (we are extending the quota file), plus we also miss any mapping of buffers
-> to appropriate disk blocks here...
-> 
-> It could be all fixed by replicating what we do in ext4_write_begin() but
-> I'm not quite convinced using inode's page cache is really worth it...
-
-Ah, yes, write_begin.  Of course that's what I should have used.
-
-I'm looking at this from the point of view of removing buffer_heads
-where possible.  Of course, it's not possible for ext4 while the journal
-relies on buffer_heads, but if we can steer filesystems away from using
-sb_bread() (or equivalents), I think that's a good thing.
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
