@@ -2,52 +2,85 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE1E542F4B
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jun 2022 13:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E2B543103
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jun 2022 15:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232344AbiFHLgW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Jun 2022 07:36:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55038 "EHLO
+        id S239958AbiFHNG2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Jun 2022 09:06:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234287AbiFHLgW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Jun 2022 07:36:22 -0400
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE0515A400
-        for <linux-ext4@vger.kernel.org>; Wed,  8 Jun 2022 04:36:20 -0700 (PDT)
-Received: by mail-il1-f200.google.com with SMTP id i16-20020a056e021d1000b002d3bbe39232so15549374ila.20
-        for <linux-ext4@vger.kernel.org>; Wed, 08 Jun 2022 04:36:20 -0700 (PDT)
+        with ESMTP id S239928AbiFHNG1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Jun 2022 09:06:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0B40BABF73
+        for <linux-ext4@vger.kernel.org>; Wed,  8 Jun 2022 06:06:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1654693585;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=USUlEZ1UMdOAkVgNJKy6bNhyk03F1F+22jSwcfgVGi0=;
+        b=VUPeoJG+GQmJxOx7cSuIFWp/RqxmRoOCc9DJH06KQCMw4bpD/yvdnLgu9SQH8jgGAG+1+6
+        /AeHeP5vfJJeDjgsYfgH030FNDAo1XutHQRoAT+VBvZJAvHcPgf7RKbcnKO/VopexrT5kK
+        wsv3db7rQv3JGyDdPpCsFVEFe4pQnO4=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-42-7hdtTBc-Oc2rXOFtUEozfQ-1; Wed, 08 Jun 2022 09:06:21 -0400
+X-MC-Unique: 7hdtTBc-Oc2rXOFtUEozfQ-1
+Received: by mail-qt1-f200.google.com with SMTP id c16-20020a05622a059000b002f93304d0d8so16323095qtb.14
+        for <linux-ext4@vger.kernel.org>; Wed, 08 Jun 2022 06:06:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=3oh0j0r/IvU5Q15Oq1z/arbGf3o7scCG5pylpXc2HMs=;
-        b=MqeBo77z32huEe+XJ2Q4iUQV8JkQ/uMZm4zNqpNg3iRIrpYMPfx2J4CIZj25kGpjsA
-         BZj6CO7TM6qXO6GDSO62r9QIeNUSTk8Cv+3z9ZAQp9LYkRagiSF5Ke8siiUlxw33JScz
-         yVCwFYlIw2FTWHOJzfMoKZd5bxm8w/uVrASQD8DI8YDvB8rtwmByH/ihrPFimBIxpTuC
-         TD/93Qpx4s6O4tNZr1OhcaYnXKdD2MJyo6tDPk1KM/jnrfjcbSf7Rw5NgMj/4wUZYISq
-         WyBInAeCcOj6kNePWEPJ4u9gkN7mt1R8vslzuB9uK/vdPzrxkb/XsgMWtqk/R9M+5Dp3
-         x6Mw==
-X-Gm-Message-State: AOAM531Sa57aYXgAa51Y0eyIPigNAHCV/HITJU30ChLfiPWXtliFaAYz
-        vXgBWLEvt0+la9fEcvSTo0FXE8pnkkNJLG/yPHakjx/IbPea
-X-Google-Smtp-Source: ABdhPJzySLdxT3hV87AdUk+8VZW4dLmut3dsz1tAJysyLzzaE7t8ot8FY+D6yRCCtxLaMwIXbJ8LKk1ZllCkLoG6hgiHTzozmh0g
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=USUlEZ1UMdOAkVgNJKy6bNhyk03F1F+22jSwcfgVGi0=;
+        b=nQ4/zXoU72vItSo4MjhIP1SejvcIgaH3WxyoBC4k9S7+U6Z1phYj5/r6EYW5w3ANT7
+         oMgrFmuo9l593l4XHtsy0cOq7UXFM9r3/qz0gPU7nGIfqNwXvGmevLtKURnMzAUBT8zu
+         pKRz682ObpX5PfSI4Otg3NEeh/A4MuMAPask2+gfaOHVZPrgtVVFSmYYen4TpmxdwkXe
+         5y+zlw0UIoPExQvmI0KVtmzh4EK1yAPOMzg6o5j7ue2+0v6fZ2B/yzfljl9nDWZ2Nl+n
+         OgLe8j8WqLkndUVj5nN3wbNAyjg1LBQ6MiuxWSjNjlShwv2Zwb09dJh+rQsHbw62iPgg
+         yfVg==
+X-Gm-Message-State: AOAM530uasfcksXYvHyD1Xdatwp7YzuSOyp4i0QXkamjAY2FJLAE0i6u
+        Bpi7Ht7ESgGAmljljZDs4pA3gDR+sw3UP0hBU+t7gKJMoZ884N7kUNPaKrsu015cyoX/1uCISla
+        grbjLqko81yFGM6k+ALxUiQ==
+X-Received: by 2002:a05:622a:1013:b0:305:3c:232e with SMTP id d19-20020a05622a101300b00305003c232emr2957081qte.180.1654693580918;
+        Wed, 08 Jun 2022 06:06:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzmMXLqnBI6Og+4P0GHsdMp3mdyP17UTS82rMH1Kp6fTALPnxZvoiZs7I0UncTVXHO0B2TwhQ==
+X-Received: by 2002:a05:622a:1013:b0:305:3c:232e with SMTP id d19-20020a05622a101300b00305003c232emr2957043qte.180.1654693580507;
+        Wed, 08 Jun 2022 06:06:20 -0700 (PDT)
+Received: from optiplex-fbsd (c-73-182-255-193.hsd1.nh.comcast.net. [73.182.255.193])
+        by smtp.gmail.com with ESMTPSA id v10-20020a05620a440a00b0069fc13ce217sm4216712qkp.72.2022.06.08.06.06.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Jun 2022 06:06:20 -0700 (PDT)
+Date:   Wed, 8 Jun 2022 09:06:17 -0400
+From:   Rafael Aquini <aquini@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-aio@kvack.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        ocfs2-devel@oss.oracle.com, linux-mtd@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        Minchan Kim <minchan@kernel.org>
+Subject: Re: [PATCH 15/20] balloon: Convert to migrate_folio
+Message-ID: <YqCeyZO77Oi1wvxt@optiplex-fbsd>
+References: <20220606204050.2625949-1-willy@infradead.org>
+ <20220606204050.2625949-16-willy@infradead.org>
+ <e4d017a4-556d-bb5f-9830-a8843591bc8d@redhat.com>
+ <Yp9fj/Si2qyb61Y3@casper.infradead.org>
+ <Yp+lU55H4igaV3pB@casper.infradead.org>
+ <36cc5e2b-b768-ce1c-fa30-72a932587289@redhat.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:cd36:0:b0:331:56a4:7a32 with SMTP id
- h22-20020a02cd36000000b0033156a47a32mr17967171jaq.209.1654688180167; Wed, 08
- Jun 2022 04:36:20 -0700 (PDT)
-Date:   Wed, 08 Jun 2022 04:36:20 -0700
-In-Reply-To: <0000000000003fb2e905db20ac96@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000031695705e0ee1d58@google.com>
-Subject: Re: [syzbot] WARNING in ext4_dirty_folio
-From:   syzbot <syzbot+ecab51a4a5b9f26eeaa1@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <36cc5e2b-b768-ce1c-fa30-72a932587289@redhat.com>
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,62 +88,43 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Wed, Jun 08, 2022 at 11:59:31AM +0200, David Hildenbrand wrote:
+> On 07.06.22 21:21, Matthew Wilcox wrote:
+> > On Tue, Jun 07, 2022 at 03:24:15PM +0100, Matthew Wilcox wrote:
+> >> On Tue, Jun 07, 2022 at 09:36:21AM +0200, David Hildenbrand wrote:
+> >>> On 06.06.22 22:40, Matthew Wilcox (Oracle) wrote:
+> >>>>  const struct address_space_operations balloon_aops = {
+> >>>> -	.migratepage = balloon_page_migrate,
+> >>>> +	.migrate_folio = balloon_migrate_folio,
+> >>>>  	.isolate_page = balloon_page_isolate,
+> >>>>  	.putback_page = balloon_page_putback,
+> >>>>  };
+> >>>
+> >>> I assume you're working on conversion of the other callbacks as well,
+> >>> because otherwise, this ends up looking a bit inconsistent and confusing :)
+> >>
+> >> My intention was to finish converting aops for the next merge window.
+> >>
+> >> However, it seems to me that we goofed back in 2016 by merging
+> >> commit bda807d44454.  isolate_page() and putback_page() should
+> >> never have been part of address_space_operations.
+> >>
+> >> I'm about to embark on creating a new migrate_operations struct
+> >> for drivers to use that contains only isolate/putback/migrate.
+> >> No filesystem uses isolate/putback, so those can just be deleted.
+> >> Both migrate_operations & address_space_operations will contain a
+> >> migrate callback.
+> 
+> That makes sense to me. I wonder if there was a design
+> decision/discussion behind that. CCing Rafael.
+>
 
-HEAD commit:    cf67838c4422 selftests net: fix bpf build error
-git tree:       net
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=123c2173f00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fc5a30a131480a80
-dashboard link: https://syzkaller.appspot.com/bug?extid=ecab51a4a5b9f26eeaa1
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1342d5abf00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11ecafebf00000
+None that I recollect. If memory still serves me, I think the idea behind
+bda807d44454 and friends was to provide a generic way to allow page
+mobility for drivers without adding complexity to the page isolation / putback
+paths, and since the migration callback was already part of the aops struct
+those new callbacks just followed suit.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ecab51a4a5b9f26eeaa1@syzkaller.appspotmail.com
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 4160 at fs/ext4/inode.c:3611 ext4_dirty_folio+0xf4/0x120 fs/ext4/inode.c:3611
-Modules linked in:
-CPU: 1 PID: 4160 Comm: syz-executor368 Not tainted 5.18.0-syzkaller-12117-gcf67838c4422 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:ext4_dirty_folio+0xf4/0x120 fs/ext4/inode.c:3611
-Code: 1b 31 ff 48 c1 eb 03 83 e3 01 89 de e8 55 bf 5b ff 84 db 0f 85 72 ff ff ff e8 48 c3 5b ff 0f 0b e9 66 ff ff ff e8 3c c3 5b ff <0f> 0b eb 88 48 89 df e8 60 83 a8 ff e9 3d ff ff ff e8 56 83 a8 ff
-RSP: 0018:ffffc90003dc7bd0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
-RDX: ffff88801e3d3b00 RSI: ffffffff821ec114 RDI: ffffea0001c4f3a8
-RBP: ffffea0001c4f380 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000001 R12: ffff88806f147330
-R13: dffffc0000000000 R14: ffffea0001c4f300 R15: ffffea0001c4f380
-FS:  00007f6e25759700(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000002000008c CR3: 0000000026be0000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- folio_mark_dirty+0xc1/0x140 mm/page-writeback.c:2723
- unpin_user_pages_dirty_lock mm/gup.c:334 [inline]
- unpin_user_pages_dirty_lock+0x411/0x4c0 mm/gup.c:297
- xdp_umem_unpin_pages net/xdp/xdp_umem.c:28 [inline]
- xdp_umem_pin_pages net/xdp/xdp_umem.c:123 [inline]
- xdp_umem_reg net/xdp/xdp_umem.c:219 [inline]
- xdp_umem_create+0xced/0x1180 net/xdp/xdp_umem.c:252
- xsk_setsockopt+0x73e/0x9e0 net/xdp/xsk.c:1094
- __sys_setsockopt+0x2db/0x6a0 net/socket.c:2259
- __do_sys_setsockopt net/socket.c:2270 [inline]
- __se_sys_setsockopt net/socket.c:2267 [inline]
- __x64_sys_setsockopt+0xba/0x150 net/socket.c:2267
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x46/0xb0
-RIP: 0033:0x7f6e257c9a79
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f6e25759308 EFLAGS: 00000246 ORIG_RAX: 0000000000000036
-RAX: ffffffffffffffda RBX: 00007f6e258534f8 RCX: 00007f6e257c9a79
-RDX: 0000000000000004 RSI: 000000000000011b RDI: 0000000000000006
-RBP: 00007f6e258534f0 R08: 0000000000200d6f R09: 0000000000000000
-R10: 0000000020000040 R11: 0000000000000246 R12: 00007f6e258534fc
-R13: 00007f6e2582029c R14: 652e79726f6d656d R15: 0000000000022000
- </TASK>
+-- Rafael
 
