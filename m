@@ -2,150 +2,402 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 523EB5426E4
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jun 2022 08:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD58542850
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jun 2022 09:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232975AbiFHGym (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Jun 2022 02:54:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
+        id S232814AbiFHHrC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Jun 2022 03:47:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234934AbiFHGBt (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Jun 2022 02:01:49 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ADC0470C61
-        for <linux-ext4@vger.kernel.org>; Tue,  7 Jun 2022 21:51:07 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id 187so17335052pfu.9
-        for <linux-ext4@vger.kernel.org>; Tue, 07 Jun 2022 21:51:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Mn7FH6K9HrGUbbXPWwfL9hBH4Ypu/m7csbz88Q2qXOw=;
-        b=iR3A6lW8aIu+Rah6jFcQqDdTsRZvZAeoXZQnZLH6J4ePrFUfASJIkfill5LC4OnitF
-         JtaUcotqSxg1Wj/VAsqLKaPosN9GMikbdQoEAS7LRQ+a08BvC8V/78+bhfoSi4/qHI/4
-         aQMp6aclP557spQuxp3NY8sCWPD9K8fU8HEO+jDDziycHJGk2c+1Pb9m9pjSr6qz67Nx
-         /mVNizfy2tAywzdPo5Ici4AXjCbO4njZWAoQQNT+W/82uYXVFAzX2jtWUP6r0ipSpey4
-         EZocHgSTelLerm4tY3KROQ+01nm07nrcQZ0PicgAFwkqXwgRbcX5rh4ThBSOmcIaLZcf
-         /AAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Mn7FH6K9HrGUbbXPWwfL9hBH4Ypu/m7csbz88Q2qXOw=;
-        b=1nmMhfAYsPu1bh1byITx0cP+6h2ihJucGUf7SVQ/PUAh8rk9swJYMp1pqFwUl6nL1J
-         vRdAewAPS54UfTOwtw+AK1S36eSqlY3jcFiCBq5VZdj0Kx0aHNoArU4wb/h9j99kyrHt
-         VqdMZ8QYxfHB/HbHwLl4C15clviWMDOJqR8PNeUVwPUKyahdgJ0rf7gaphkQ/syoryng
-         rrLFiG05ON8Ni3bJPl1OfI37wSEiPDqbJXdS8T8iDPca2hGwgUM4SqITSf8BdzZbG6SI
-         XY2Onl3dEBNzvrcPchfZBM0ERbNIsR3boLFXubEt5CUmG93hvC55W46ao99wOX1ej7SD
-         0VaA==
-X-Gm-Message-State: AOAM533peHdw3kW0eX7YafKK9N0DncnPHXor7OXgsTM/AechEA97J+rF
-        jJer5OXQgKcGXjmYOqxRj6w=
-X-Google-Smtp-Source: ABdhPJzWpIUgB/Qlyck/UxkcL8Rtv/zQh7uIwF4DgWT+3B2AoYZeUoLVVAwqlzAmxwX+wpEmESm5gw==
-X-Received: by 2002:a65:668b:0:b0:3f6:4026:97cd with SMTP id b11-20020a65668b000000b003f6402697cdmr28317740pgw.420.1654663866152;
-        Tue, 07 Jun 2022 21:51:06 -0700 (PDT)
-Received: from localhost ([2406:7400:63:5d34:e6c2:4c64:12ae:aa11])
-        by smtp.gmail.com with ESMTPSA id pg11-20020a17090b1e0b00b001e88f2f3a31sm4333723pjb.57.2022.06.07.21.51.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jun 2022 21:51:05 -0700 (PDT)
-Date:   Wed, 8 Jun 2022 10:21:00 +0530
-From:   Ritesh Harjani <ritesh.list@gmail.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 0/2] ext4: Fix possible fs corruption due to xattr races
-Message-ID: <20220608045100.uacl5c6usi7kl7gw@riteshh-domain>
-References: <20220606142215.17962-1-jack@suse.cz>
+        with ESMTP id S233450AbiFHHpJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Jun 2022 03:45:09 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2061e.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eae::61e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BABE7276210;
+        Wed,  8 Jun 2022 00:09:30 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WGR2MGWu/Vb0gmzSpORw7gDyIW0qRSuom2W3xBYMV+9AaStL+VQIFQtHujGhWG9QGOOC3m+tCzpfHkigjLKm0RaVovDTpDhM0Y9PxZe+OEtDaMFtnAweu9tCNzRkRIy+JmPMA0POslUobOJMCe4eJUUsYpRm5PULkNY4JtRal+Iuxp08lrePgB57zmqIOEj1Zx+2EWRK7svvVWnFbMXmXgLtGSOnZjon4/N4qJlkOr7Gmuxfuy/CBvvnKdip4FmMVVp7iCp+bOWqaFskrPo3rxqQ2BvxI0Qtu9lirJJzaG3I/8UbXy33DytvoEWXQDOpME7zCI8pZWwHcpCzSlTakA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3JdNyq0j3Ok4dukbsNPsQWxOAkF3FVDRg7jq1vws/Is=;
+ b=guu8zsjbEZw4gOI6Qxcxx0OxJfBjzzAeeZr3eYBz9yHnSpC1ijELa4KhNsZLW8Zh9h+IVcgcocXbVskzoKBf/L2usp/SQg7UqEQNhmLLB36zgFWXd19PbwdoLEiu9e3mTI1tLs3xN3bagpyiGZdw+G46eXOcFXXrWm9orDHvAqXRBhT4Fb6Kl/+ir/JFN/hnzfhK1EPaL/LbDyiZ2Q4Zh3wz3S/NRN3YOMPEMXHwQrfeEqWPhynWasPJE0cdAEDLoSZi1E1jxDL0v4JsnxyQ3ugMHuHfKQqduHCDYTaF7fuENTJ3AcI3zE9Vk3W5dTxmNsSP2HdN1w2tCE4+V38BRg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3JdNyq0j3Ok4dukbsNPsQWxOAkF3FVDRg7jq1vws/Is=;
+ b=jWwIOSuPRALiUPIOPCwJKfkz/2o3gVCCE7CxS6pYPRLgwAqrQcMpD/WfMoh6P3b7Y6PRy4aFDYf/9wEaqeIp5wkSJLMcbYV+VfkwSsbPG5neosY8XJixaUgarRKXz2auvcDuMiBPj/ldn1hgtAmGEh4Mxjw/ZOgCPHsq5IabynpoAtK9Jnf6YiVSKuR5R8fmb1xdohYlChs79NmKwy60Sl7Gyf/xyBZ9TAU0R0IPND6MxclSpUzH5gnsW5op+aUB5QtcVUghkb4Zb0o3LxpFEksHcHlsOi+sanDMr3qnh9UxwjShjxh+9tojeUVEL6/ofMqjNmJf+GmH0kGAKbYsOA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3179.namprd12.prod.outlook.com (2603:10b6:5:183::18)
+ by MN0PR12MB5787.namprd12.prod.outlook.com (2603:10b6:208:376::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5314.18; Wed, 8 Jun
+ 2022 07:07:20 +0000
+Received: from DM6PR12MB3179.namprd12.prod.outlook.com
+ ([fe80::f2:c8b8:5343:91a3]) by DM6PR12MB3179.namprd12.prod.outlook.com
+ ([fe80::f2:c8b8:5343:91a3%7]) with mapi id 15.20.5314.019; Wed, 8 Jun 2022
+ 07:07:20 +0000
+References: <20220531200041.24904-1-alex.sierra@amd.com>
+ <20220531200041.24904-3-alex.sierra@amd.com>
+User-agent: mu4e 1.6.9; emacs 27.1
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Alex Sierra <alex.sierra@amd.com>
+Cc:     jgg@nvidia.com, david@redhat.com, Felix.Kuehling@amd.com,
+        linux-mm@kvack.org, rcampbell@nvidia.com,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        hch@lst.de, jglisse@redhat.com, willy@infradead.org,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH v5 02/13] mm: handling Non-LRU pages returned by
+ vm_normal_pages
+Date:   Wed, 08 Jun 2022 17:06:28 +1000
+In-reply-to: <20220531200041.24904-3-alex.sierra@amd.com>
+Message-ID: <87o7z38wgr.fsf@nvdebian.thelocal>
+Content-Type: text/plain
+X-ClientProxiedBy: SJ0PR13CA0077.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c4::22) To DM6PR12MB3179.namprd12.prod.outlook.com
+ (2603:10b6:5:183::18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220606142215.17962-1-jack@suse.cz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7f256f99-9d9e-4b04-3171-08da491d8743
+X-MS-TrafficTypeDiagnostic: MN0PR12MB5787:EE_
+X-Microsoft-Antispam-PRVS: <MN0PR12MB57877FDB90BC6E0FBDEFC25DDFA49@MN0PR12MB5787.namprd12.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4FvMU9vmeLAwB6WNe4rPn8/Fn0mhoszRX4370Yt1RU9tnHWsL+Sywo/KNA5M+tyXJtTCQoWmvoJKVVq1TOof5R0F5AqXEhuM7s2kIi04ziQ3tFFkGdKEfwdbMQJ99ocVNWL1gF3aLLxZhDWQSSl/QOO7HPSy/YVMFJBRVtNt+GIklY3BwVBENjPSKRB/1CtdWF2n+v1YMV8joFBOOPUKCCkrIfNol3USoqJywN7bRjviu3epr/hnJRFoZmgn6ZynPtxSY47+iuL9gXPB0tuiN/CV64es+fdLjqLGVX+vaMPDQZ4qAodLhMwrJFHU3JjSO1U5Dx0xzUa0MdK9etK2Ego9YglIrlAXoC+Oo2368cD07SwlyS9wd2cPJFzPHrOpU5MsW6ORNfwc/vTp+Swq79dmmpBQ8oX/3j1/X/vylZo1H1qqfHWJCeBYaL15jAH9xVB75xU7hvuZ+bdwD0q6yOjH17B/EPMeEgP+L2zyW56Qz1Ud9eo/0NB0BJWGi17ZZNOvCEH+6JeqMFIBNjs9+ydvJLnyNCwOPaRnvbgI2myZej3vM0AAu0xaXsiGmpRBMsT04SAaO9uJSYM2AM18v98xIWd6t6tv1EzsENww/H9Xk8JbEdrJMdELBmzRu626w2ArZppKagJ5xnyXc4BxOQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3179.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(316002)(6506007)(2906002)(508600001)(5660300002)(186003)(7416002)(6486002)(8676002)(38100700002)(26005)(9686003)(6512007)(66946007)(66556008)(66476007)(4326008)(83380400001)(6916009)(8936002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/kNtRtHb7O6KxGa7qsw4VNRSuO102p72rNTCu3yfBTcw9+h9DcfweKZDzQL3?=
+ =?us-ascii?Q?ceTILqzqjKbgBaZypB9CK4LVzM7EcxNqEDhC4pxlWRGNrDKS8M0rMlf12zv7?=
+ =?us-ascii?Q?D/In3ihFiqDApcSULp1A0LwiNDyxWbo+jL4JXRMKHJ8F1bsC572yV4/HZIdH?=
+ =?us-ascii?Q?FDmxIeywddqIWSiOEqJu/ozotjzhS6FZrEhUs3Cg1s2L+dsZirnXNh296wLv?=
+ =?us-ascii?Q?ujlVStLS1keyeKdFRSv2z7OblXLsUt+VE+3pSbGkLzbEg+hmPqh3tQSw1HIQ?=
+ =?us-ascii?Q?/uGRl+hrwcDmWTH/muRfZtMqAFHIk0dZwfsWW1Qtb+NvOnfWpCD7PqHhyFFB?=
+ =?us-ascii?Q?c1dMPcGw7BH/YdWBADOV9mYoc2ILuh2j+bK8fnHQXMH4UsKq2QfAD7YtaZ4q?=
+ =?us-ascii?Q?wl1aDsK+t00tFv726XHFt3IYHl5i5stGzjwrWs44dPGetLAfqCASHwc1G47m?=
+ =?us-ascii?Q?FY+oPUi/H7IObhnQfUL8xTIk8s2imiUsfUB0jByTuV6x7lUzlZ8If+Ip4ePn?=
+ =?us-ascii?Q?QkL/mtYtlzAIBVjEk0MaOt40kfadUZklTZ+HL1dTAZsvXOSiwolXsOypPCIj?=
+ =?us-ascii?Q?0Hi+J64wLjxHNauIcdZ8xNTji12tPNrdVknB20Jj8nhQxYlkmptiKZ52UCik?=
+ =?us-ascii?Q?O+yS/Wx3Wmk8HdGCQHEhUtcepLF0Q7nq6/1U/xF2Kayg3cvtAiOi6oRg3U/y?=
+ =?us-ascii?Q?PxiWvc0FvP7GIbHKODiuLBDx5vVsjpJW42rz188gjL7aTqoFaO9OdDslOaaM?=
+ =?us-ascii?Q?PKNejuVpXQGSB7cx+P8gz43ojU29Xt/qPzLmLVLk7pSkIKvuxpVKQ3bYaGFX?=
+ =?us-ascii?Q?19N/UFZp55QkUXeVZn3opWcDyoxFn8C93tyWTZOifZ3X/RYkPUfacba7Gtz/?=
+ =?us-ascii?Q?fTR8MqCrnR817OPyeRBvLQsOcm49vClwn3RQd7u/MTRsJyhRzghNGgVE0tmq?=
+ =?us-ascii?Q?hF0nWjlfG89nA2EnkdIb0G2JXcwWZR7e6OBa+4ps/hyFWmth3xG5qTFj+y+H?=
+ =?us-ascii?Q?Jq2IC/efETQPkFJq+g9lKWgWzj/PWzTg2nXo/izH41dZgzo+83USjflEQE0t?=
+ =?us-ascii?Q?Ud8/N/ViZF8tWmBCM3bdmQLHeyIV2cEJBjBaPHx/FAuD788Eaj+lK0LGtn2e?=
+ =?us-ascii?Q?hLG2NjC/iqz4NMXByXh5ewOECWdr0hJAaMY6mH381GJiEgEHgV5/slXkxtSW?=
+ =?us-ascii?Q?LY8V1uGR1w3cGjfJkn9hR5EiqVySOxg/DjsWZzY9QeTFdP7/rzgdbWHlSX6y?=
+ =?us-ascii?Q?1T9jhK1M173uAgqSvIrghWVznb3OWP4S1BR0ZquROz7qsHF2lmYq1EBFFhIx?=
+ =?us-ascii?Q?1DTQSHRNmjNimbjIhoJHCsVHhgeqjZsTKV9YJbSQal/ZRkbfcZ7yDxhrdXHW?=
+ =?us-ascii?Q?uN8Ywpx6l1ptPb52d8LYrwVtqMj5hEOF4+VKqJBvrGJDs473XYDOmUd+KyMh?=
+ =?us-ascii?Q?Brsdv84o+FtkhmFw0i3lPVZyH3ywKr14CA8YP9VJVsSVT2QHbhKVVXjuQUOX?=
+ =?us-ascii?Q?+Ev08fsJiOaMffYutNih7rBl4jwRcmOfQIRq2UkJC++H04wAjRewnaNvsP9Q?=
+ =?us-ascii?Q?bvMU/kk8jCZa6WtVDZBb0PJ/96q5g27g+T/UAvFAOJsYtTX/mqpnRHVwyrNT?=
+ =?us-ascii?Q?EJrkln85HsSRecfx54fmZptFlOPHAGosq5o158ypcwqug+LsD4ez0tfKJtOL?=
+ =?us-ascii?Q?UCFvuEezKXHRZL7wedaScyZow0EYmqg1KcMkCLb8BCpitDqL+257qH56CIUG?=
+ =?us-ascii?Q?5iBLRnKHgg=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7f256f99-9d9e-4b04-3171-08da491d8743
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3179.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2022 07:07:20.1834
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HRTJVSGX3lLy6nTLXJoSgxFPAADDnljciJXyF8GdGdHfevZwITTDoFfhd5iSzs/450okQPgbnRWR6mY7rP/nRw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5787
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22/06/06 04:28PM, Jan Kara wrote:
-> Hello,
+
+I can't see any issues with this now so:
+
+Reviewed-by: Alistair Popple <apopple@nvidia.com>
+
+Alex Sierra <alex.sierra@amd.com> writes:
+
+> With DEVICE_COHERENT, we'll soon have vm_normal_pages() return
+> device-managed anonymous pages that are not LRU pages. Although they
+> behave like normal pages for purposes of mapping in CPU page, and for
+> COW. They do not support LRU lists, NUMA migration or THP.
 >
-> I've tracked down the culprit of the jbd2 assertion Ritesh reported to me. In
-
-Hello Jan,
-
-Thanks for working on the problem and identifying the race.
-
-> the end it does not have much to do with jbd2 but rather points to a subtle
-> race in xattr code between xattr block reuse and xattr block freeing that can
-> result in fs corruption during journal replay. See patch 2/2 for more details.
-> These patches fix the problem. I have to say I'm not too happy with the special
-
-So while I was still reviewing this patch-set, I thought of giving a try with some
-stress test for xattrs (given that this is some sort of race which is not always
-easy to track down).
-
-So it seems it is easy to recreate the crash with stress-ng xattr test (even
-with your patches included).
-	stress-ng --xattr 16 --timeout=10000s
-
-Hope this might help further narrow down the problem.
-
-root@qemu:/home/qemu# [  257.862064] ------------[ cut here ]------------
-[  257.862834] kernel BUG at fs/jbd2/revoke.c:460!
-[  257.863461] invalid opcode: 0000 [#1] PREEMPT SMP PTI
-[  257.864084] CPU: 0 PID: 1499 Comm: stress-ng-xattr Not tainted 5.18.0-rc5+
-#102
-[  257.864973] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-1.13.0-1ubuntu1.1 04/01/2014
-[  257.865972] RIP: 0010:jbd2_journal_cancel_revoke+0x12c/0x170
-[  257.866606] Code: 49 89 44 24 08 e8 b4 bf d8 00 48 8b 3d 2d f9 29 02 4c 89 e6
-e8 c5 81 ea ff 48 8b 73 18 4c 89 ef e8 39 f8
-[  257.868547] RSP: 0018:ffffc9000170b9c0 EFLAGS: 00010286
-[  257.869106] RAX: ffff888101cadb00 RBX: ffff888121cb9f08 RCX: 0000000000000000
-[  257.869837] RDX: 0000000000000001 RSI: 000000000000242d RDI: 00000000ffffffff
-[  257.870552] RBP: ffffc9000170b9e0 R08: ffffffff82cf2f20 R09: ffff888108831e10
-[  257.871264] R10: 00000000000000bb R11: 000000000105d68a R12: ffff888108831e10
-[  257.871977] R13: ffff888120937000 R14: ffff888108928500 R15: ffff888108831e18
-[  257.872689] FS:  00007ffff6b4dc00(0000) GS:ffff88842fc00000(0000)
-knlGS:0000000000000000
-[  257.873528] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  257.874101] CR2: 0000555556361220 CR3: 00000001201dc000 CR4: 00000000000006f0
-[  257.874813] Call Trace:
-[  257.875077]  <TASK>
-[  257.875313]  do_get_write_access+0x3d9/0x460
-[  257.875753]  jbd2_journal_get_write_access+0x54/0x80
-[  257.876260]  __ext4_journal_get_write_access+0x8b/0x1b0
-[  257.876805]  ? ext4_dirty_inode+0x70/0x80
-[  257.877255]  ext4_xattr_block_set+0x935/0xfb0
-[  257.877709]  ext4_xattr_set_handle+0x5c8/0x680
-[  257.878159]  ext4_xattr_set+0xd5/0x180
-[  257.878540]  ext4_xattr_user_set+0x35/0x40
-[  257.878957]  __vfs_removexattr+0x5a/0x70
-[  257.879373]  __vfs_removexattr_locked+0xc5/0x160
-[  257.879846]  vfs_removexattr+0x5b/0x100
-[  257.880235]  removexattr+0x61/0x90
-[  257.880611]  ? kvm_clock_read+0x18/0x30
-[  257.881023]  ? kvm_clock_get_cycles+0x9/0x10
-[  257.881492]  ? ktime_get+0x3e/0xa0
-[  257.881856]  ? native_apic_msr_read+0x40/0x40
-[  257.882302]  ? lapic_next_event+0x21/0x30
-[  257.882716]  ? clockevents_program_event+0x8f/0xe0
-[  257.883206]  ? hrtimer_update_next_event+0x4b/0x70
-[  257.883698]  ? debug_smp_processor_id+0x17/0x20
-[  257.884181]  ? preempt_count_add+0x4d/0xc0
-[  257.884605]  __x64_sys_fremovexattr+0x82/0xb0
-[  257.885063]  do_syscall_64+0x3b/0x90
-[  257.885495]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-<...>
-[  257.892816]  </TASK>
-
--ritesh
-
-> mbcache interface I had to add because it just requires too deep knowledge of
-> how things work internally to get things right. If you get it wrong, you'll
-> have subtle races like above. But I didn't find a more transparent way to
-> fix this race. If someone has ideas, suggestions are welcome!
+> We also introduced a FOLL_LRU flag that adds the same behaviour to
+> follow_page and related APIs, to allow callers to specify that they
+> expect to put pages on an LRU list.
 >
-> 								Honza
+> Signed-off-by: Alex Sierra <alex.sierra@amd.com>
+> Acked-by: Felix Kuehling <Felix.Kuehling@amd.com>
+> ---
+>  fs/proc/task_mmu.c | 2 +-
+>  include/linux/mm.h | 3 ++-
+>  mm/gup.c           | 6 +++++-
+>  mm/huge_memory.c   | 2 +-
+>  mm/khugepaged.c    | 9 ++++++---
+>  mm/ksm.c           | 6 +++---
+>  mm/madvise.c       | 4 ++--
+>  mm/memory.c        | 9 ++++++++-
+>  mm/mempolicy.c     | 2 +-
+>  mm/migrate.c       | 4 ++--
+>  mm/mlock.c         | 2 +-
+>  mm/mprotect.c      | 2 +-
+>  12 files changed, 33 insertions(+), 18 deletions(-)
+>
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index 2d04e3470d4c..2dd8c8a66924 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -1792,7 +1792,7 @@ static struct page *can_gather_numa_stats(pte_t pte, struct vm_area_struct *vma,
+>  		return NULL;
+>
+>  	page = vm_normal_page(vma, addr, pte);
+> -	if (!page)
+> +	if (!page || is_zone_device_page(page))
+>  		return NULL;
+>
+>  	if (PageReserved(page))
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index bc8f326be0ce..d3f43908ff8d 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -601,7 +601,7 @@ struct vm_operations_struct {
+>  #endif
+>  	/*
+>  	 * Called by vm_normal_page() for special PTEs to find the
+> -	 * page for @addr.  This is useful if the default behavior
+> +	 * page for @addr. This is useful if the default behavior
+>  	 * (using pte_page()) would not find the correct page.
+>  	 */
+>  	struct page *(*find_special_page)(struct vm_area_struct *vma,
+> @@ -2934,6 +2934,7 @@ struct page *follow_page(struct vm_area_struct *vma, unsigned long address,
+>  #define FOLL_NUMA	0x200	/* force NUMA hinting page fault */
+>  #define FOLL_MIGRATION	0x400	/* wait for page to replace migration entry */
+>  #define FOLL_TRIED	0x800	/* a retry, previous pass started an IO */
+> +#define FOLL_LRU        0x1000  /* return only LRU (anon or page cache) */
+>  #define FOLL_REMOTE	0x2000	/* we are working on non-current tsk/mm */
+>  #define FOLL_COW	0x4000	/* internal GUP flag */
+>  #define FOLL_ANON	0x8000	/* don't do file mappings */
+> diff --git a/mm/gup.c b/mm/gup.c
+> index 551264407624..48b45bcc8501 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -532,7 +532,11 @@ static struct page *follow_page_pte(struct vm_area_struct *vma,
+>  	}
+>
+>  	page = vm_normal_page(vma, address, pte);
+> -	if (!page && pte_devmap(pte) && (flags & (FOLL_GET | FOLL_PIN))) {
+> +	if ((flags & FOLL_LRU) && ((page && is_zone_device_page(page)) ||
+> +	    (!page && pte_devmap(pte)))) {
+> +		page = ERR_PTR(-EEXIST);
+> +		goto out;
+> +	} else if (!page && pte_devmap(pte) && (flags & (FOLL_GET | FOLL_PIN))) {
+>  		/*
+>  		 * Only return device mapping pages in the FOLL_GET or FOLL_PIN
+>  		 * case since they are only valid while holding the pgmap
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index a77c78a2b6b5..48182c8fe151 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2906,7 +2906,7 @@ static int split_huge_pages_pid(int pid, unsigned long vaddr_start,
+>  		}
+>
+>  		/* FOLL_DUMP to ignore special (like zero) pages */
+> -		page = follow_page(vma, addr, FOLL_GET | FOLL_DUMP);
+> +		page = follow_page(vma, addr, FOLL_GET | FOLL_DUMP | FOLL_LRU);
+>
+>  		if (IS_ERR(page))
+>  			continue;
+> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> index 16be62d493cd..671ac7800e53 100644
+> --- a/mm/khugepaged.c
+> +++ b/mm/khugepaged.c
+> @@ -618,7 +618,7 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
+>  			goto out;
+>  		}
+>  		page = vm_normal_page(vma, address, pteval);
+> -		if (unlikely(!page)) {
+> +		if (unlikely(!page) || unlikely(is_zone_device_page(page))) {
+>  			result = SCAN_PAGE_NULL;
+>  			goto out;
+>  		}
+> @@ -1267,7 +1267,7 @@ static int khugepaged_scan_pmd(struct mm_struct *mm,
+>  			writable = true;
+>
+>  		page = vm_normal_page(vma, _address, pteval);
+> -		if (unlikely(!page)) {
+> +		if (unlikely(!page) || unlikely(is_zone_device_page(page))) {
+>  			result = SCAN_PAGE_NULL;
+>  			goto out_unmap;
+>  		}
+> @@ -1479,7 +1479,8 @@ void collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr)
+>  			goto abort;
+>
+>  		page = vm_normal_page(vma, addr, *pte);
+> -
+> +		if (WARN_ON_ONCE(page && is_zone_device_page(page)))
+> +			page = NULL;
+>  		/*
+>  		 * Note that uprobe, debugger, or MAP_PRIVATE may change the
+>  		 * page table, but the new page will not be a subpage of hpage.
+> @@ -1497,6 +1498,8 @@ void collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr)
+>  		if (pte_none(*pte))
+>  			continue;
+>  		page = vm_normal_page(vma, addr, *pte);
+> +		if (WARN_ON_ONCE(page && is_zone_device_page(page)))
+> +			goto abort;
+>  		page_remove_rmap(page, vma, false);
+>  	}
+>
+> diff --git a/mm/ksm.c b/mm/ksm.c
+> index 54f78c9eecae..400790128102 100644
+> --- a/mm/ksm.c
+> +++ b/mm/ksm.c
+> @@ -474,7 +474,7 @@ static int break_ksm(struct vm_area_struct *vma, unsigned long addr)
+>  	do {
+>  		cond_resched();
+>  		page = follow_page(vma, addr,
+> -				FOLL_GET | FOLL_MIGRATION | FOLL_REMOTE);
+> +				FOLL_GET | FOLL_MIGRATION | FOLL_REMOTE | FOLL_LRU);
+>  		if (IS_ERR_OR_NULL(page))
+>  			break;
+>  		if (PageKsm(page))
+> @@ -559,7 +559,7 @@ static struct page *get_mergeable_page(struct rmap_item *rmap_item)
+>  	if (!vma)
+>  		goto out;
+>
+> -	page = follow_page(vma, addr, FOLL_GET);
+> +	page = follow_page(vma, addr, FOLL_GET | FOLL_LRU);
+>  	if (IS_ERR_OR_NULL(page))
+>  		goto out;
+>  	if (PageAnon(page)) {
+> @@ -2307,7 +2307,7 @@ static struct rmap_item *scan_get_next_rmap_item(struct page **page)
+>  		while (ksm_scan.address < vma->vm_end) {
+>  			if (ksm_test_exit(mm))
+>  				break;
+> -			*page = follow_page(vma, ksm_scan.address, FOLL_GET);
+> +			*page = follow_page(vma, ksm_scan.address, FOLL_GET | FOLL_LRU);
+>  			if (IS_ERR_OR_NULL(*page)) {
+>  				ksm_scan.address += PAGE_SIZE;
+>  				cond_resched();
+> diff --git a/mm/madvise.c b/mm/madvise.c
+> index d7b4f2602949..e5637181de1b 100644
+> --- a/mm/madvise.c
+> +++ b/mm/madvise.c
+> @@ -421,7 +421,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
+>  			continue;
+>
+>  		page = vm_normal_page(vma, addr, ptent);
+> -		if (!page)
+> +		if (!page || is_zone_device_page(page))
+>  			continue;
+>
+>  		/*
+> @@ -639,7 +639,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
+>  		}
+>
+>  		page = vm_normal_page(vma, addr, ptent);
+> -		if (!page)
+> +		if (!page || is_zone_device_page(page))
+>  			continue;
+>
+>  		/*
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 21dadf03f089..30ecbc715e60 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -624,6 +624,13 @@ struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
+>  		if (is_zero_pfn(pfn))
+>  			return NULL;
+>  		if (pte_devmap(pte))
+> +/*
+> + * NOTE: New uers of ZONE_DEVICE will not set pte_devmap() and will have
+> + * refcounts incremented on their struct pages when they are inserted into
+> + * PTEs, thus they are safe to return here. Legacy ZONE_DEVICE pages that set
+> + * pte_devmap() do not have refcounts. Example of legacy ZONE_DEVICE is
+> + * MEMORY_DEVICE_FS_DAX type in pmem or virtio_fs drivers.
+> + */
+>  			return NULL;
+>
+>  		print_bad_pte(vma, addr, pte, NULL);
+> @@ -4685,7 +4692,7 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
+>  	pte = pte_modify(old_pte, vma->vm_page_prot);
+>
+>  	page = vm_normal_page(vma, vmf->address, pte);
+> -	if (!page)
+> +	if (!page || is_zone_device_page(page))
+>  		goto out_map;
+>
+>  	/* TODO: handle PTE-mapped THP */
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index d39b01fd52fe..abc26890fc95 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -523,7 +523,7 @@ static int queue_pages_pte_range(pmd_t *pmd, unsigned long addr,
+>  		if (!pte_present(*pte))
+>  			continue;
+>  		page = vm_normal_page(vma, addr, *pte);
+> -		if (!page)
+> +		if (!page || is_zone_device_page(page))
+>  			continue;
+>  		/*
+>  		 * vm_normal_page() filters out zero pages, but there might
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index e51588e95f57..f7d1b8312631 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -1612,7 +1612,7 @@ static int add_page_for_migration(struct mm_struct *mm, unsigned long addr,
+>  		goto out;
+>
+>  	/* FOLL_DUMP to ignore special (like zero) pages */
+> -	page = follow_page(vma, addr, FOLL_GET | FOLL_DUMP);
+> +	page = follow_page(vma, addr, FOLL_GET | FOLL_DUMP | FOLL_LRU);
+>
+>  	err = PTR_ERR(page);
+>  	if (IS_ERR(page))
+> @@ -1803,7 +1803,7 @@ static void do_pages_stat_array(struct mm_struct *mm, unsigned long nr_pages,
+>  			goto set_status;
+>
+>  		/* FOLL_DUMP to ignore special (like zero) pages */
+> -		page = follow_page(vma, addr, FOLL_GET | FOLL_DUMP);
+> +		page = follow_page(vma, addr, FOLL_GET | FOLL_DUMP | FOLL_LRU);
+>
+>  		err = PTR_ERR(page);
+>  		if (IS_ERR(page))
+> diff --git a/mm/mlock.c b/mm/mlock.c
+> index 716caf851043..b14e929084cc 100644
+> --- a/mm/mlock.c
+> +++ b/mm/mlock.c
+> @@ -333,7 +333,7 @@ static int mlock_pte_range(pmd_t *pmd, unsigned long addr,
+>  		if (!pte_present(*pte))
+>  			continue;
+>  		page = vm_normal_page(vma, addr, *pte);
+> -		if (!page)
+> +		if (!page || is_zone_device_page(page))
+>  			continue;
+>  		if (PageTransCompound(page))
+>  			continue;
+> diff --git a/mm/mprotect.c b/mm/mprotect.c
+> index ba5592655ee3..e034aae2a98b 100644
+> --- a/mm/mprotect.c
+> +++ b/mm/mprotect.c
+> @@ -95,7 +95,7 @@ static unsigned long change_pte_range(struct mmu_gather *tlb,
+>  					continue;
+>
+>  				page = vm_normal_page(vma, addr, oldpte);
+> -				if (!page || PageKsm(page))
+> +				if (!page || is_zone_device_page(page) || PageKsm(page))
+>  					continue;
+>
+>  				/* Also skip shared copy-on-write pages */
