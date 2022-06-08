@@ -2,107 +2,99 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B928D5436DF
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jun 2022 17:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3484654374D
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jun 2022 17:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243716AbiFHPOF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Jun 2022 11:14:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55870 "EHLO
+        id S244320AbiFHPY6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Jun 2022 11:24:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243736AbiFHPMW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Jun 2022 11:12:22 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35EA153C6D;
-        Wed,  8 Jun 2022 08:05:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:To:From:Sender:
-        Reply-To:Cc:Content-Type:Content-ID:Content-Description;
-        bh=Zp2A2WsdHhKodTSMNz93mFV0bupP5ggkN3XKeFjb+k0=; b=M3VEhBOzxJlUiCP//pboxh+Xrb
-        txStpypjpT6314mFPtaihGuyqKQOMKJ1V0ZzdQuEScNXtXZJDvYfa5u8Jdih0CWPuVaKRPqcqBtBd
-        Yy6DIPGnttIBEYTUxelFkme+8q2P9aARzov2wtGuqohwb8+jmGEkpXos4IqKexzl1KdHp6omxtV+Z
-        kJGMCGGwF8+IwSfNUAWMPgQXRO7U57IuE5ZxRzTaRywm+33PuknwtQjXr48/06zj8i1RtOWSKPESF
-        7a3Rp5uR+3cndEP685MoUKLv2oXet+Bj9cpNWM3IDarrjGUqT+b6Al+nMxGn4u3bC3BvCfonmb/nr
-        cBIIDgHQ==;
-Received: from [2001:4bb8:190:726c:66c4:f635:4b37:bdda] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nyxF8-00DtMl-0X; Wed, 08 Jun 2022 15:05:10 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.com>,
-        Dave Kleikamp <shaggy@kernel.org>, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jfs-discussion@lists.sourceforge.net
-Subject: [PATCH 5/5] fs: remove the NULL get_block case in mpage_writepages
-Date:   Wed,  8 Jun 2022 17:04:51 +0200
-Message-Id: <20220608150451.1432388-6-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220608150451.1432388-1-hch@lst.de>
-References: <20220608150451.1432388-1-hch@lst.de>
+        with ESMTP id S244352AbiFHPYV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Jun 2022 11:24:21 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E773C6
+        for <linux-ext4@vger.kernel.org>; Wed,  8 Jun 2022 08:19:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1654701598; x=1686237598;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=C/vRiU53efJcn6fLogwCXc6HwBl6rv6d1wnE187attg=;
+  b=cj+B7BUKkOReHJDTLuzWGq8/z+LdAG12XFZ1uqhUSYlYazZYaVxohovE
+   HpLNXto5UiuEEcv6v99dQolJAAm9raisv2yghKUpnN94OXhcgjaUxwxfV
+   ok+EB5txg9wccs4g9ELdxhxKGY8wMyUZkS0q6e5++f5QPhT6fD3VhwBny
+   tL2/WmeYn/VpvdajLqxC7CTgxA8AwaHDNxWYYCj0ypm3OpESdWPWx3Q3Y
+   N+O+Xy3iZfHd3ObOLL3Hpw4OrXbErIBCsKLO8QQRJrDvq8W4kETcT20tU
+   lRGXaC1ER0wo5DIGLsKTZSlqa04wZBQoKLHp5UuKl1K2RVK5qa8Me3qc9
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10372"; a="363261963"
+X-IronPort-AV: E=Sophos;i="5.91,286,1647327600"; 
+   d="scan'208";a="363261963"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2022 08:19:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,286,1647327600"; 
+   d="scan'208";a="533136744"
+Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 08 Jun 2022 08:19:37 -0700
+Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nyxT6-000Ejc-GS;
+        Wed, 08 Jun 2022 15:19:36 +0000
+Date:   Wed, 8 Jun 2022 23:19:26 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH] jbd2: Remove unused exports for jbd2 debugging
+Message-ID: <202206082321.RIUKdEnL-lkp@intel.com>
+References: <20220606144047.16780-1-jack@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220606144047.16780-1-jack@suse.cz>
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-No one calls mpage_writepages with a NULL get_block paramter, so remove
-support for that case.
+Hi Jan,
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/mpage.c | 22 ++++++----------------
- 1 file changed, 6 insertions(+), 16 deletions(-)
+I love your patch! Yet something to improve:
 
-diff --git a/fs/mpage.c b/fs/mpage.c
-index a354ef2b4b4eb..e4cf881634a6a 100644
---- a/fs/mpage.c
-+++ b/fs/mpage.c
-@@ -636,8 +636,6 @@ static int __mpage_writepage(struct page *page, struct writeback_control *wbc,
-  * @mapping: address space structure to write
-  * @wbc: subtract the number of written pages from *@wbc->nr_to_write
-  * @get_block: the filesystem's block mapper function.
-- *             If this is NULL then use a_ops->writepage.  Otherwise, go
-- *             direct-to-BIO.
-  *
-  * This is a library function, which implements the writepages()
-  * address_space_operation.
-@@ -654,24 +652,16 @@ int
- mpage_writepages(struct address_space *mapping,
- 		struct writeback_control *wbc, get_block_t get_block)
- {
-+	struct mpage_data mpd = {
-+		.get_block	= get_block,
-+	};
- 	struct blk_plug plug;
- 	int ret;
- 
- 	blk_start_plug(&plug);
--
--	if (!get_block)
--		ret = generic_writepages(mapping, wbc);
--	else {
--		struct mpage_data mpd = {
--			.bio = NULL,
--			.last_block_in_bio = 0,
--			.get_block = get_block,
--		};
--
--		ret = write_cache_pages(mapping, wbc, __mpage_writepage, &mpd);
--		if (mpd.bio)
--			mpage_bio_submit(mpd.bio);
--	}
-+	ret = write_cache_pages(mapping, wbc, __mpage_writepage, &mpd);
-+	if (mpd.bio)
-+		mpage_bio_submit(mpd.bio);
- 	blk_finish_plug(&plug);
- 	return ret;
- }
+[auto build test ERROR on tytso-ext4/dev]
+[also build test ERROR on linus/master v5.19-rc1 next-20220608]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Jan-Kara/jbd2-Remove-unused-exports-for-jbd2-debugging/20220606-224629
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+config: hexagon-randconfig-r023-20220607 (https://download.01.org/0day-ci/archive/20220608/202206082321.RIUKdEnL-lkp@intel.com/config)
+compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project b92436efcb7813fc481b30f2593a4907568d917a)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/9aaaac58ce0525ce441ad75b45bf3e5f3911a82b
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Jan-Kara/jbd2-Remove-unused-exports-for-jbd2-debugging/20220606-224629
+        git checkout 9aaaac58ce0525ce441ad75b45bf3e5f3911a82b
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>, old ones prefixed by <<):
+
+>> ERROR: modpost: "__jbd2_debug" [fs/ext4/ext4.ko] undefined!
+
 -- 
-2.30.2
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
