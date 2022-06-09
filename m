@@ -2,85 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9571B545214
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 Jun 2022 18:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3040F5452E3
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 Jun 2022 19:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244536AbiFIQh6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 9 Jun 2022 12:37:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45028 "EHLO
+        id S245457AbiFIRZj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 9 Jun 2022 13:25:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244063AbiFIQh5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 9 Jun 2022 12:37:57 -0400
+        with ESMTP id S244617AbiFIRZi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 9 Jun 2022 13:25:38 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE136994E6;
-        Thu,  9 Jun 2022 09:37:55 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 65EBB1FECD;
-        Thu,  9 Jun 2022 16:37:54 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9494C27B25;
+        Thu,  9 Jun 2022 10:25:37 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 20B841FEC7;
+        Thu,  9 Jun 2022 17:25:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1654792674;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        t=1654795536; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=zfYT+PR9lXha9hYJlMd2oONaI1SUc3WGC1Bck/G8ec0=;
-        b=b2KEX6ZCINZeKoHTynlrz3FMDUbnVbIkotULQQM8wta+qakmo0wc5ILD3yfYynBGt8D1yz
-        HYV/+JhfacH7KcZ34tTxnGAMq0+073DU9INO4NM3aBmmmH1cmHo9hWrrTnPyGWxZmapSer
-        hIaGVqCWyAZ99ysi+fFP8RhgxxrPFtk=
+        bh=Qqv5M93wpHo23KHWJ4hOb2+wV7cmIhR4afJUVlNrr4U=;
+        b=ITmVuKoPV03RoO2+mK8TXq0amJTLvwnDZe0aqwtVO9PtH4SY/Lfk/gofY95bT3aRhlJVRW
+        Zw+T2xfLTKDGPtSNDQuVzZPJxzxo7oLfY5FvR0OU2qNRR6OQzJYetKsWGgdwZZILRxilfL
+        v5V5fs6JqR8RpiWudRI7T0Sbx2Fnfik=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1654792674;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        s=susede2_ed25519; t=1654795536;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=zfYT+PR9lXha9hYJlMd2oONaI1SUc3WGC1Bck/G8ec0=;
-        b=Irv56z+I7t/5vmpdqARm0xsfrzoUND1o/lJUqjcW0uNId73f8zXP/st70yGmLiPVj3W5Qe
-        j8Fgd9g+H7+p0iCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        bh=Qqv5M93wpHo23KHWJ4hOb2+wV7cmIhR4afJUVlNrr4U=;
+        b=fiqhUZwHZDSMOLZttYnvjndI1d6PgUdKXGp5dyuFMCkdkjm6L/Y//rikXFpu1lK8Cv7vAk
+        PW+5IM1fhIeSGbBg==
+Received: from quack3.suse.cz (unknown [10.163.28.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E9F2713A8C;
-        Thu,  9 Jun 2022 16:37:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id sFfPN+EhomK4KAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 09 Jun 2022 16:37:53 +0000
-Date:   Thu, 9 Jun 2022 18:33:23 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-aio@kvack.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
-        ocfs2-devel@oss.oracle.com, linux-mtd@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v2 12/19] btrfs: Convert btrfs_migratepage to
- migrate_folio
-Message-ID: <20220609163323.GV20633@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        by relay2.suse.de (Postfix) with ESMTPS id 083E62C141;
+        Thu,  9 Jun 2022 17:25:36 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 4C8D8A0633; Thu,  9 Jun 2022 19:25:30 +0200 (CEST)
+Date:   Thu, 9 Jun 2022 19:25:30 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.com>,
+        Dave Kleikamp <shaggy@kernel.org>, linux-ext4@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-aio@kvack.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
-        ocfs2-devel@oss.oracle.com, linux-mtd@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        Christoph Hellwig <hch@lst.de>
-References: <20220608150249.3033815-1-willy@infradead.org>
- <20220608150249.3033815-13-willy@infradead.org>
+        jfs-discussion@lists.sourceforge.net
+Subject: Re: [PATCH 5/5] fs: remove the NULL get_block case in
+ mpage_writepages
+Message-ID: <20220609172530.q7bzttn5v2orirre@quack3.lan>
+References: <20220608150451.1432388-1-hch@lst.de>
+ <20220608150451.1432388-6-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220608150249.3033815-13-willy@infradead.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20220608150451.1432388-6-hch@lst.de>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
@@ -91,38 +66,68 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 08, 2022 at 04:02:42PM +0100, Matthew Wilcox (Oracle) wrote:
-> Use filemap_migrate_folio() to do the bulk of the work, and then copy
-> the ordered flag across if needed.
+On Wed 08-06-22 17:04:51, Christoph Hellwig wrote:
+> No one calls mpage_writepages with a NULL get_block paramter, so remove
+> support for that case.
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Acked-by: David Sterba <dsterba@suse.com>
+What about ntfs_writepages()? That seems to call mpage_writepages() with
+NULL get_block() in one case...
 
-> +static int btrfs_migrate_folio(struct address_space *mapping,
-> +			     struct folio *dst, struct folio *src,
->  			     enum migrate_mode mode)
+								Honza
+
+> ---
+>  fs/mpage.c | 22 ++++++----------------
+>  1 file changed, 6 insertions(+), 16 deletions(-)
+> 
+> diff --git a/fs/mpage.c b/fs/mpage.c
+> index a354ef2b4b4eb..e4cf881634a6a 100644
+> --- a/fs/mpage.c
+> +++ b/fs/mpage.c
+> @@ -636,8 +636,6 @@ static int __mpage_writepage(struct page *page, struct writeback_control *wbc,
+>   * @mapping: address space structure to write
+>   * @wbc: subtract the number of written pages from *@wbc->nr_to_write
+>   * @get_block: the filesystem's block mapper function.
+> - *             If this is NULL then use a_ops->writepage.  Otherwise, go
+> - *             direct-to-BIO.
+>   *
+>   * This is a library function, which implements the writepages()
+>   * address_space_operation.
+> @@ -654,24 +652,16 @@ int
+>  mpage_writepages(struct address_space *mapping,
+>  		struct writeback_control *wbc, get_block_t get_block)
 >  {
-> -	int ret;
-> +	int ret = filemap_migrate_folio(mapping, dst, src, mode);
+> +	struct mpage_data mpd = {
+> +		.get_block	= get_block,
+> +	};
+>  	struct blk_plug plug;
+>  	int ret;
 >  
-> -	ret = migrate_page_move_mapping(mapping, newpage, page, 0);
->  	if (ret != MIGRATEPAGE_SUCCESS)
->  		return ret;
->  
-> -	if (page_has_private(page))
-> -		attach_page_private(newpage, detach_page_private(page));
-
-If I'm reading it correctly, the private pointer does not need to be set
-like that anymore because it's done somewhere during the
-filemap_migrate_folio() call.
-
+>  	blk_start_plug(&plug);
 > -
-> -	if (PageOrdered(page)) {
-> -		ClearPageOrdered(page);
-> -		SetPageOrdered(newpage);
-> +	if (folio_test_ordered(src)) {
-> +		folio_clear_ordered(src);
-> +		folio_set_ordered(dst);
->  	}
+> -	if (!get_block)
+> -		ret = generic_writepages(mapping, wbc);
+> -	else {
+> -		struct mpage_data mpd = {
+> -			.bio = NULL,
+> -			.last_block_in_bio = 0,
+> -			.get_block = get_block,
+> -		};
+> -
+> -		ret = write_cache_pages(mapping, wbc, __mpage_writepage, &mpd);
+> -		if (mpd.bio)
+> -			mpage_bio_submit(mpd.bio);
+> -	}
+> +	ret = write_cache_pages(mapping, wbc, __mpage_writepage, &mpd);
+> +	if (mpd.bio)
+> +		mpage_bio_submit(mpd.bio);
+>  	blk_finish_plug(&plug);
+>  	return ret;
+>  }
+> -- 
+> 2.30.2
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
