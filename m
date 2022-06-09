@@ -2,51 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD85A54423C
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 Jun 2022 05:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A765448AC
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 Jun 2022 12:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbiFID4T (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Jun 2022 23:56:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55540 "EHLO
+        id S232467AbiFIKWs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 9 Jun 2022 06:22:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236716AbiFID4R (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Jun 2022 23:56:17 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F7B286C9;
-        Wed,  8 Jun 2022 20:56:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=k5NOE2/mOchRWcRvMdsOMX23IRbR4XjJRm5kjerQYfs=; b=UMDExU/q7tF8/mqWoSgLYxhOpC
-        FkB/nDKRBlAlwMswJxYlpwOD+T9b3fHuzs5Xk9HKsw1RzKM18Nvzmz2zvtMnyPCsG0qy2kU/WHu9X
-        mVccNPi9V87DFgmPksbjSq32mvZYh7FU9kikejkUfrcbqMujPYOK4OsnGEYmxwRBuH+8cz929MoC+
-        J1L5P254VCbTHcr/3B4+pgfRdz1mWvdV10u33rtAMJjWsHP0HN5sU7QukTrtM4bSJeT0tiNaLZ0sf
-        okORJ39zhtNOHmkrX4y3W5zWBlbmRyPPS8qKqjL4e2oY+q3FEDzI+tyRYIGUkaqgz1VdTJg+hKLV8
-        s6Jccx+g==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nz9HM-00G0pb-DO; Thu, 09 Jun 2022 03:56:16 +0000
-Date:   Wed, 8 Jun 2022 20:56:16 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org
-Subject: Re: [PATCH 08/10] vmscan: Add check_move_unevictable_folios()
-Message-ID: <YqFvYAlGGWW7ohTZ@infradead.org>
-References: <20220605193854.2371230-1-willy@infradead.org>
- <20220605193854.2371230-9-willy@infradead.org>
- <YqBYxNPu3tLiN5kI@infradead.org>
- <YqDPIv5IgNHK/pJT@casper.infradead.org>
+        with ESMTP id S229933AbiFIKWr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 9 Jun 2022 06:22:47 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 347DB1FCC5
+        for <linux-ext4@vger.kernel.org>; Thu,  9 Jun 2022 03:22:46 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id a10so20970366pju.3
+        for <linux-ext4@vger.kernel.org>; Thu, 09 Jun 2022 03:22:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yajfj+kLqUG0WqKZHElcKbwvSUfBoW24MZxnWR7qgpA=;
+        b=fHfFAQQZYweNlMrBzSL6ji2t9FvKDz7o3IyVGQRW0klR6lfkZAx2Rqtyybc4FJwZMy
+         T0XkHyUfPDXuzEdQNl50dVnLQsyNKTLYoBHiZFlantJTlSjSXHrJzUrIYNnKv+1rEJiz
+         W2D6H6IK+Gv6fsaq8jIm+4qZ7qjKyt2cOPDyuGOAYnxPhbBtI81IA+AtOiwpF4yTVnBM
+         9iBsJSCI5V1ifVVgrHxR76oMWR82gFo+sWgNAea5pA/RWTLfewrj/9Nfxj2PSgdpYBZN
+         kjz8JS05t8rjbniKjBzNFpVYcPP11W1wX6igrFjjFYa65kuc+0VO+VQam3cC/2r9Pimn
+         VcuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yajfj+kLqUG0WqKZHElcKbwvSUfBoW24MZxnWR7qgpA=;
+        b=Hg5s+4HCYmW4etlQhRspZiexUxT4ktvAs7Er5RgniIcWjEX8qAhE7mWsv8fwYPpvpB
+         hmVrp36CXc/0aLMTveYAiRWOwccaHzYMpMNySTflxwSubL/oE4BRgjNjfW0YVxpw0Qal
+         2DDmZwM1aUmqJeR0fj53E2d0u8f43YzXmWJPIv09HdS1uuybu9he3z4FdYWVIFy47ROY
+         f68Qg3UpopMolPHy5CTD65+m0X1SRj9FUYDBP5cfjNyX9QgiTjfPE73ad3k1Q+c7i2fH
+         FDCAa8yOD5uLkyZrnv5x51DYpoeru4isXqqW8ZfLSTo+QBIAkIge4gr95li5mgLAOf3E
+         aEWA==
+X-Gm-Message-State: AOAM531KRcbXKp3k+EnWv9203S8Qhf9zHGjXyORjC21ScQPM51lY1jVh
+        oj98e/yYqwUMZsD3Ca5j2JQ=
+X-Google-Smtp-Source: ABdhPJxQJ0OreNzNe066eSqu1qkT5rc7AXyIQDBreszzNrcp2iZbPd7oV5TwemvblM9HaDE851NpjA==
+X-Received: by 2002:a17:902:c946:b0:163:ed13:7ab1 with SMTP id i6-20020a170902c94600b00163ed137ab1mr37923869pla.36.1654770165690;
+        Thu, 09 Jun 2022 03:22:45 -0700 (PDT)
+Received: from localhost ([129.41.58.23])
+        by smtp.gmail.com with ESMTPSA id u1-20020a056a00098100b0051bc4ed56bcsm9196041pfg.204.2022.06.09.03.22.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jun 2022 03:22:45 -0700 (PDT)
+Date:   Thu, 9 Jun 2022 15:52:42 +0530
+From:   Ritesh Harjani <ritesh.list@gmail.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 0/4] ext4: Debug message and export cleanups
+Message-ID: <20220609102242.bacrxpbzmr6qazsq@riteshh-domain>
+References: <20220608112041.29097-1-jack@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YqDPIv5IgNHK/pJT@casper.infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20220608112041.29097-1-jack@suse.cz>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,21 +68,18 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 08, 2022 at 05:32:34PM +0100, Matthew Wilcox wrote:
-> On Wed, Jun 08, 2022 at 01:07:32AM -0700, Christoph Hellwig wrote:
-> > On Sun, Jun 05, 2022 at 08:38:52PM +0100, Matthew Wilcox (Oracle) wrote:
-> > > Change the guts of check_move_unevictable_pages() over to use folios
-> > > and add check_move_unevictable_pages() as a wrapper.
-> > 
-> > The changes here look fine, but please also add patches for converting
-> > the two callers (which looks mostly trivial to me).
-> 
-> I do want to get rid of pagevecs entirely, but that conversion isn't
-> going to happen in time for the next merge window.  for_each_sgt_page()
-> is a little intimidating.
+On 22/06/08 01:23PM, Jan Kara wrote:
+> Hello,
+>
+> this series cleans up couple of things around debug messages in ext4/jbd2
+> and removes some unnecessary exports.
+>
 
-for_each_sgt_page, just like other creative scatterlist abuse in the gpu
-code is a beast.  But, instead of doing a for_each_sgt_page to add
-pages to the pagevec and then do a loop over the pagevec to add to
-the folio batch it should be pretty trivial to just cut out the
-middle man.
+I had noticed these jbd_debug() calls too in ext4 code and wanted to clean it
+up. But you have cleaned up few extra things too :)
+
+I have looked at the patches and it looks good to me.
+
+Thanks
+-ritesh
+
