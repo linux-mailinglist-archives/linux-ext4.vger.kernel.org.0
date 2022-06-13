@@ -2,123 +2,218 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41EDF547FFC
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jun 2022 08:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5BFE54807D
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jun 2022 09:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233424AbiFMG5A (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 13 Jun 2022 02:57:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42538 "EHLO
+        id S239053AbiFMHQ6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 13 Jun 2022 03:16:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233263AbiFMG47 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Jun 2022 02:56:59 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D122140F8;
-        Sun, 12 Jun 2022 23:56:52 -0700 (PDT)
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25D5DFNr037410;
-        Mon, 13 Jun 2022 06:56:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=sg4r/3HlNtUZCzfEQKxVVhzIMzc01uTkxBUOjFJpuKA=;
- b=NTLr3Rw9NouBrw7ClKulUEjebkO6A5itEqempmqPPPMIe5WxzTU1RSeuSNqgfcQn+Qel
- mpyWvvRoLkX7BBylqpkYunkyAsl/lIGSSHiWYnubBtx0gSiorItaeUnSnErhVKh1TYVb
- G6DM9VtcvymwPUdxADeoOwB370fMvCzk3ag/yA/bfNUIAGHLBm5gy/BIuEuLSd+rfBFo
- ScYM+CzYJZsSDOfTyT1jJMuHuhBoFfgAdXkwemiKCqxo5iqi4dpnLscBe+et+zL7PfDK
- I9Adon6TD+u/6m2HYQfxfvzeSbDXAYku8Dd0+d8W7hGVcYHuGVi7UIhMuQ6Gzx7IjLiC uQ== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3gn53qhkpg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Jun 2022 06:56:29 +0000
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 25D6oulj030905;
-        Mon, 13 Jun 2022 06:56:28 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma01fra.de.ibm.com with ESMTP id 3gmjp8srqq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Jun 2022 06:56:28 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 25D6uOd822544728
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 13 Jun 2022 06:56:24 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DB10811C052;
-        Mon, 13 Jun 2022 06:56:24 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5FC3B11C050;
-        Mon, 13 Jun 2022 06:56:24 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.171.48.106])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Mon, 13 Jun 2022 06:56:24 +0000 (GMT)
-Date:   Mon, 13 Jun 2022 08:56:22 +0200
-From:   Sumanth Korikkar <sumanthk@linux.ibm.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-ext4@vger.kernel.org, gerald.schaefer@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org
-Subject: Re: [PATCH 06/10] hugetlbfs: Convert remove_inode_hugepages() to use
- filemap_get_folios()
-Message-ID: <YqbflvrB9oEZ1whX@localhost.localdomain>
-References: <20220605193854.2371230-7-willy@infradead.org>
- <20220610155205.3111213-1-sumanthk@linux.ibm.com>
- <YqO08Dsq8ZcAcWDQ@casper.infradead.org>
+        with ESMTP id S239129AbiFMHQ5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Jun 2022 03:16:57 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A3D81ADAB;
+        Mon, 13 Jun 2022 00:16:52 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LM2rZ4tCvzgYpR;
+        Mon, 13 Jun 2022 15:14:54 +0800 (CST)
+Received: from [10.174.178.185] (10.174.178.185) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Mon, 13 Jun 2022 15:16:49 +0800
+Subject: Re: [PATCH -next] ext4: Fix warning in ext4_da_release_space
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>
+References: <20220520025540.3189247-1-yebin10@huawei.com>
+CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>
+From:   yebin <yebin10@huawei.com>
+Message-ID: <62A6E461.9060209@huawei.com>
+Date:   Mon, 13 Jun 2022 15:16:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YqO08Dsq8ZcAcWDQ@casper.infradead.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: avIoxhTFiSlJjY2R9CmSKMJMnKj8Jgxi
-X-Proofpoint-ORIG-GUID: avIoxhTFiSlJjY2R9CmSKMJMnKj8Jgxi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
- definitions=2022-06-13_02,2022-06-09_02,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- priorityscore=1501 phishscore=0 mlxscore=0 adultscore=0 mlxlogscore=774
- lowpriorityscore=0 suspectscore=0 malwarescore=0 bulkscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2204290000
- definitions=main-2206130029
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220520025540.3189247-1-yebin10@huawei.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.185]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jun 10, 2022 at 10:17:36PM +0100, Matthew Wilcox wrote:
-> On Fri, Jun 10, 2022 at 05:52:05PM +0200, Sumanth Korikkar wrote:
-> > To reproduce:
-> > * clone libhugetlbfs:
-> > * Execute, PATH=$PATH:"obj64/" LD_LIBRARY_PATH=../obj64/ alloc-instantiate-race shared
-> 
-> ... it's a lot harder to set up hugetlb than that ...
-> 
-> anyway, i figured it out without being able to run the reproducer.
-> 
-> Can you try this?
-> 
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index a30587f2e598..8ef861297ffb 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -2160,7 +2160,11 @@ unsigned filemap_get_folios(struct address_space *mapping, pgoff_t *start,
->  		if (xa_is_value(folio))
->  			continue;
->  		if (!folio_batch_add(fbatch, folio)) {
-> -			*start = folio->index + folio_nr_pages(folio);
-> +			unsigned long nr = folio_nr_pages(folio);
+ping...
+
+On 2022/5/20 10:55, Ye Bin wrote:
+> We got issue as follows:
+> WARNING: CPU: 2 PID: 1936 at fs/ext4/inode.c:1511 ext4_da_release_space+0x1b9/0x266
+> Modules linked in:
+> CPU: 2 PID: 1936 Comm: dd Not tainted 5.10.0+ #344
+> RIP: 0010:ext4_da_release_space+0x1b9/0x266
+> RSP: 0018:ffff888127307848 EFLAGS: 00010292
+> RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff843f67cc
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffed1024e60ed9
+> RBP: ffff888124dc8140 R08: 0000000000000083 R09: ffffed1075da6d23
+> R10: ffff8883aed36917 R11: ffffed1075da6d22 R12: ffff888124dc83f0
+> R13: ffff888124dc844c R14: ffff888124dc8168 R15: 000000000000000c
+> FS:  00007f6b7247d740(0000) GS:ffff8883aed00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007ffc1a0b7dd8 CR3: 00000001065ce000 CR4: 00000000000006e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>   ext4_es_remove_extent+0x187/0x230
+>   mpage_release_unused_pages+0x3af/0x470
+>   ext4_writepages+0xb9b/0x1160
+>   do_writepages+0xbb/0x1e0
+>   __filemap_fdatawrite_range+0x1b1/0x1f0
+>   file_write_and_wait_range+0x80/0xe0
+>   ext4_sync_file+0x13d/0x800
+>   vfs_fsync_range+0x75/0x140
+>   do_fsync+0x4d/0x90
+>   __x64_sys_fsync+0x1d/0x30
+>   do_syscall_64+0x33/0x40
+>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> Above issue may happens as follows:
+> 	process1                        process2
+> ext4_da_write_begin
+>    ext4_da_reserve_space
+>      ext4_es_insert_delayed_block[1/1]
+>                                      ext4_da_write_begin
+> 				      ext4_es_insert_delayed_block[0/1]
+> ext4_writepages
+>    ****Delayed block allocation failed****
+>    mpage_release_unused_pages
+>      ext4_es_remove_extent[1/1]
+>        ext4_da_release_space [reserved 0]
+>
+> ext4_da_write_begin
+>    ext4_es_scan_clu(inode, &ext4_es_is_delonly, lblk)
+>     ->As there exist [0, 1] extent, so will return true
+>                                     ext4_writepages
+> 				   ****Delayed block allocation failed****
+>                                       mpage_release_unused_pages
+> 				       ext4_es_remove_extent[0/1]
+> 				         ext4_da_release_space [reserved 1]
+> 					   ei->i_reserved_data_blocks [1->0]
+>
+>    ext4_es_insert_delayed_block[1/1]
+>
+> ext4_writepages
+>    ****Delayed block allocation failed****
+>    mpage_release_unused_pages
+>    ext4_es_remove_extent[1/1]
+>     ext4_da_release_space [reserved 1]
+>      ei->i_reserved_data_blocks[0, -1]
+>      ->As ei->i_reserved_data_blocks already is zero but to_free is 1,
+>      will trigger warning.
+>
+> To solve above issue, introduce i_clu_lock to protect insert delayed
+> block and remove block under cluster delay allocate mode.
+>
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> ---
+>   fs/ext4/ext4.h           |  3 +++
+>   fs/ext4/extents_status.c |  5 +++++
+>   fs/ext4/inode.c          | 11 +++++++++--
+>   fs/ext4/super.c          |  1 +
+>   4 files changed, 18 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index bcd3b9bf8069..47c88ac4d4a8 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -1169,6 +1169,9 @@ struct ext4_inode_info {
+>   	__u32 i_csum_seed;
+>   
+>   	kprojid_t i_projid;
 > +
-> +			if (folio_test_hugetlb(folio))
-> +				nr = 1;
-> +			*start = folio->index + nr;
->  			goto out;
->  		}
->  	}
+> +	/* Protect concurrent add cluster delayed block and remove block */
+> +	struct mutex i_clu_lock;
+>   };
+>   
+>   /*
+> diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
+> index 9a3a8996aacf..dd679014db98 100644
+> --- a/fs/ext4/extents_status.c
+> +++ b/fs/ext4/extents_status.c
+> @@ -1433,6 +1433,7 @@ static int __es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
+>   int ext4_es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
+>   			  ext4_lblk_t len)
+>   {
+> +	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+>   	ext4_lblk_t end;
+>   	int err = 0;
+>   	int reserved = 0;
+> @@ -1455,9 +1456,13 @@ int ext4_es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
+>   	 * so that we are sure __es_shrink() is done with the inode before it
+>   	 * is reclaimed.
+>   	 */
+> +	if (sbi->s_cluster_ratio != 1)
+> +		mutex_lock(&EXT4_I(inode)->i_clu_lock);
+>   	write_lock(&EXT4_I(inode)->i_es_lock);
+>   	err = __es_remove_extent(inode, lblk, end, &reserved);
+>   	write_unlock(&EXT4_I(inode)->i_es_lock);
+> +	if (sbi->s_cluster_ratio != 1)
+> +		mutex_unlock(&EXT4_I(inode)->i_clu_lock);
+>   	ext4_es_print_tree(inode);
+>   	ext4_da_release_space(inode, reserved);
+>   	return err;
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 01c9e4f743ba..1109d77ad60b 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -1649,17 +1649,22 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
+>   			goto errout;
+>   		reserved = true;
+>   	} else {   /* bigalloc */
+> +		mutex_lock(&EXT4_I(inode)->i_clu_lock);
+>   		if (!ext4_es_scan_clu(inode, &ext4_es_is_delonly, lblk)) {
+>   			if (!ext4_es_scan_clu(inode,
+>   					      &ext4_es_is_mapped, lblk)) {
+>   				ret = ext4_clu_mapped(inode,
+>   						      EXT4_B2C(sbi, lblk));
+> -				if (ret < 0)
+> +				if (ret < 0) {
+> +					mutex_unlock(&EXT4_I(inode)->i_clu_lock);
+>   					goto errout;
+> +				}
+>   				if (ret == 0) {
+>   					ret = ext4_da_reserve_space(inode);
+> -					if (ret != 0)   /* ENOSPC */
+> +					if (ret != 0) {   /* ENOSPC */
+> +						mutex_unlock(&EXT4_I(inode)->i_clu_lock);
+>   						goto errout;
+> +					}
+>   					reserved = true;
+>   				} else {
+>   					allocated = true;
+> @@ -1671,6 +1676,8 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
+>   	}
+>   
+>   	ret = ext4_es_insert_delayed_block(inode, lblk, allocated);
+> +	if (sbi->s_cluster_ratio != 1)
+> +		mutex_unlock(&EXT4_I(inode)->i_clu_lock);
+>   	if (ret && reserved)
+>   		ext4_da_release_space(inode, 1);
+>   
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index c5021ca0a28a..aa6f2a68bf41 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -1347,6 +1347,7 @@ static struct inode *ext4_alloc_inode(struct super_block *sb)
+>   	INIT_WORK(&ei->i_rsv_conversion_work, ext4_end_io_rsv_work);
+>   	ext4_fc_init_inode(&ei->vfs_inode);
+>   	mutex_init(&ei->i_fc_lock);
+> +	mutex_init(&ei->i_clu_lock);
+>   	return &ei->vfs_inode;
+>   }
+>   
 
-Yes, With the patch, The above tests works fine. 
-
---
-Thanks,
-Sumanth
