@@ -2,109 +2,123 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD855547F33
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jun 2022 07:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41EDF547FFC
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jun 2022 08:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235118AbiFMFix (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 13 Jun 2022 01:38:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46758 "EHLO
+        id S233424AbiFMG5A (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 13 Jun 2022 02:57:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236746AbiFMFih (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Jun 2022 01:38:37 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5065C1263C;
-        Sun, 12 Jun 2022 22:37:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=Zp2A2WsdHhKodTSMNz93mFV0bupP5ggkN3XKeFjb+k0=; b=TkFyl6H75fM8c9tKEtfeL1KjsG
-        CaJ7Oa0Qby+KbEh93MbSGeNt6+Hb0Lsv4whlxvXNFQru8rZdWgVQPCWbmlNxFDK/doxGYWpgCjkIL
-        FLoWBjKj8yg5+LWJwsn1xbEpvaKsIcE/n//P51Nh0sVCcD74niLAOC9BL7tfa+CpEE4KGhniOxYlu
-        korHNvCyxqqp1We7PbToGW9NGxeC6/ymAX43zRsxTYdeEX4ESxpkpstlYzG5NSojl0Ndkcmjojn6h
-        1yVZl0stpkYwXy3332y+rRPyZmpO8UQu0QDJCe7Ldx6GgbaIjPwdXs3UPLTipev2ydkLedaXeggZl
-        ss3HGNUA==;
-Received: from [2001:4bb8:180:36f6:f125:c38b:d3d6:ae6c] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1o0cla-001V6O-Kt; Mon, 13 Jun 2022 05:37:35 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.com>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
-        ntfs3@lists.linux.dev
-Subject: [PATCH 6/6] fs: remove the NULL get_block case in mpage_writepages
-Date:   Mon, 13 Jun 2022 07:37:15 +0200
-Message-Id: <20220613053715.2394147-7-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220613053715.2394147-1-hch@lst.de>
-References: <20220613053715.2394147-1-hch@lst.de>
+        with ESMTP id S233263AbiFMG47 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Jun 2022 02:56:59 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D122140F8;
+        Sun, 12 Jun 2022 23:56:52 -0700 (PDT)
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25D5DFNr037410;
+        Mon, 13 Jun 2022 06:56:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=sg4r/3HlNtUZCzfEQKxVVhzIMzc01uTkxBUOjFJpuKA=;
+ b=NTLr3Rw9NouBrw7ClKulUEjebkO6A5itEqempmqPPPMIe5WxzTU1RSeuSNqgfcQn+Qel
+ mpyWvvRoLkX7BBylqpkYunkyAsl/lIGSSHiWYnubBtx0gSiorItaeUnSnErhVKh1TYVb
+ G6DM9VtcvymwPUdxADeoOwB370fMvCzk3ag/yA/bfNUIAGHLBm5gy/BIuEuLSd+rfBFo
+ ScYM+CzYJZsSDOfTyT1jJMuHuhBoFfgAdXkwemiKCqxo5iqi4dpnLscBe+et+zL7PfDK
+ I9Adon6TD+u/6m2HYQfxfvzeSbDXAYku8Dd0+d8W7hGVcYHuGVi7UIhMuQ6Gzx7IjLiC uQ== 
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3gn53qhkpg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 13 Jun 2022 06:56:29 +0000
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 25D6oulj030905;
+        Mon, 13 Jun 2022 06:56:28 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma01fra.de.ibm.com with ESMTP id 3gmjp8srqq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 13 Jun 2022 06:56:28 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 25D6uOd822544728
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Jun 2022 06:56:24 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DB10811C052;
+        Mon, 13 Jun 2022 06:56:24 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5FC3B11C050;
+        Mon, 13 Jun 2022 06:56:24 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.171.48.106])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon, 13 Jun 2022 06:56:24 +0000 (GMT)
+Date:   Mon, 13 Jun 2022 08:56:22 +0200
+From:   Sumanth Korikkar <sumanthk@linux.ibm.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-ext4@vger.kernel.org, gerald.schaefer@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-nilfs@vger.kernel.org
+Subject: Re: [PATCH 06/10] hugetlbfs: Convert remove_inode_hugepages() to use
+ filemap_get_folios()
+Message-ID: <YqbflvrB9oEZ1whX@localhost.localdomain>
+References: <20220605193854.2371230-7-willy@infradead.org>
+ <20220610155205.3111213-1-sumanthk@linux.ibm.com>
+ <YqO08Dsq8ZcAcWDQ@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YqO08Dsq8ZcAcWDQ@casper.infradead.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: avIoxhTFiSlJjY2R9CmSKMJMnKj8Jgxi
+X-Proofpoint-ORIG-GUID: avIoxhTFiSlJjY2R9CmSKMJMnKj8Jgxi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
+ definitions=2022-06-13_02,2022-06-09_02,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ priorityscore=1501 phishscore=0 mlxscore=0 adultscore=0 mlxlogscore=774
+ lowpriorityscore=0 suspectscore=0 malwarescore=0 bulkscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2204290000
+ definitions=main-2206130029
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-No one calls mpage_writepages with a NULL get_block paramter, so remove
-support for that case.
+On Fri, Jun 10, 2022 at 10:17:36PM +0100, Matthew Wilcox wrote:
+> On Fri, Jun 10, 2022 at 05:52:05PM +0200, Sumanth Korikkar wrote:
+> > To reproduce:
+> > * clone libhugetlbfs:
+> > * Execute, PATH=$PATH:"obj64/" LD_LIBRARY_PATH=../obj64/ alloc-instantiate-race shared
+> 
+> ... it's a lot harder to set up hugetlb than that ...
+> 
+> anyway, i figured it out without being able to run the reproducer.
+> 
+> Can you try this?
+> 
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index a30587f2e598..8ef861297ffb 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -2160,7 +2160,11 @@ unsigned filemap_get_folios(struct address_space *mapping, pgoff_t *start,
+>  		if (xa_is_value(folio))
+>  			continue;
+>  		if (!folio_batch_add(fbatch, folio)) {
+> -			*start = folio->index + folio_nr_pages(folio);
+> +			unsigned long nr = folio_nr_pages(folio);
+> +
+> +			if (folio_test_hugetlb(folio))
+> +				nr = 1;
+> +			*start = folio->index + nr;
+>  			goto out;
+>  		}
+>  	}
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/mpage.c | 22 ++++++----------------
- 1 file changed, 6 insertions(+), 16 deletions(-)
+Yes, With the patch, The above tests works fine. 
 
-diff --git a/fs/mpage.c b/fs/mpage.c
-index a354ef2b4b4eb..e4cf881634a6a 100644
---- a/fs/mpage.c
-+++ b/fs/mpage.c
-@@ -636,8 +636,6 @@ static int __mpage_writepage(struct page *page, struct writeback_control *wbc,
-  * @mapping: address space structure to write
-  * @wbc: subtract the number of written pages from *@wbc->nr_to_write
-  * @get_block: the filesystem's block mapper function.
-- *             If this is NULL then use a_ops->writepage.  Otherwise, go
-- *             direct-to-BIO.
-  *
-  * This is a library function, which implements the writepages()
-  * address_space_operation.
-@@ -654,24 +652,16 @@ int
- mpage_writepages(struct address_space *mapping,
- 		struct writeback_control *wbc, get_block_t get_block)
- {
-+	struct mpage_data mpd = {
-+		.get_block	= get_block,
-+	};
- 	struct blk_plug plug;
- 	int ret;
- 
- 	blk_start_plug(&plug);
--
--	if (!get_block)
--		ret = generic_writepages(mapping, wbc);
--	else {
--		struct mpage_data mpd = {
--			.bio = NULL,
--			.last_block_in_bio = 0,
--			.get_block = get_block,
--		};
--
--		ret = write_cache_pages(mapping, wbc, __mpage_writepage, &mpd);
--		if (mpd.bio)
--			mpage_bio_submit(mpd.bio);
--	}
-+	ret = write_cache_pages(mapping, wbc, __mpage_writepage, &mpd);
-+	if (mpd.bio)
-+		mpage_bio_submit(mpd.bio);
- 	blk_finish_plug(&plug);
- 	return ret;
- }
--- 
-2.30.2
-
+--
+Thanks,
+Sumanth
