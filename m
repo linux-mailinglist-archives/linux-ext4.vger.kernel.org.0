@@ -2,62 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B07315491EB
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jun 2022 18:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BB8D548DBC
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jun 2022 18:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356689AbiFMLuy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 13 Jun 2022 07:50:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55950 "EHLO
+        id S1357886AbiFMNLb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 13 Jun 2022 09:11:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238070AbiFMLtm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Jun 2022 07:49:42 -0400
+        with ESMTP id S1359243AbiFMNJn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Jun 2022 09:09:43 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F3F4D6B9;
-        Mon, 13 Jun 2022 03:53:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FBB0289BB
+        for <linux-ext4@vger.kernel.org>; Mon, 13 Jun 2022 04:19:37 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 9359221CB6;
-        Mon, 13 Jun 2022 10:53:36 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 341B821D38;
+        Mon, 13 Jun 2022 11:19:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1655117616; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1655119176; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=SFH6QqZIOI9s+Mj8/zkFHLSyGhk8xsqPs0kVQb84l4k=;
-        b=fFHe5pXKIIyFXvVsWeA/5WwBk+JfSkvwsgCSRADe8dDe5Ku4q3TD/oasfVz4ymT/ybJgCj
-        h5xIHw1yUvIV1YfrXPfQRKgs3q+0jQkQGo87/mz4Dewh2tv2Is0uDhmp1+lH3DHk+mGcIQ
-        eHELgFs8EmLVc80PVcIRxowjqs7Wv+U=
+        bh=RR3+DQXxZAzr5Tv6WqaMfyGsj9xrGZ5VFzKQwU9pEEg=;
+        b=zT5wRMYaybh9MaMku6gcwO58QZ7P8tRc/33kQDN6Q7MPtMbyzJkAUwCOXQPr59rtz34GvE
+        M9J741x5Ez2c3KJTSNukCav7riqp4kE2gn+HQxasxA7011lLIEDMvOpRNgUAAF5cAQC9Hk
+        ZP9ZGKXgoezyCLPgOVgnsNxadIS7Qis=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1655117616;
+        s=susede2_ed25519; t=1655119176;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=SFH6QqZIOI9s+Mj8/zkFHLSyGhk8xsqPs0kVQb84l4k=;
-        b=zFN63R7DlhvmT+8mWOPnSKzEGh9Hlk6jWAyjUdLUjI2EU9tTrCyM6k2lnTj14xtxLpBF2c
-        0skkcWCRQPx1+TDQ==
+        bh=RR3+DQXxZAzr5Tv6WqaMfyGsj9xrGZ5VFzKQwU9pEEg=;
+        b=mA5hS6dqJzHy0tI247vrnznGQ99ZkY8yS/mciOjuE4k7I/gBm3RwgAjJdbEFUN3eu2kgMM
+        evRf2XfAoypolOCQ==
 Received: from quack3.suse.cz (unknown [10.163.28.18])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 819EE2C141;
-        Mon, 13 Jun 2022 10:53:36 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTPS id C45872C141;
+        Mon, 13 Jun 2022 11:19:35 +0000 (UTC)
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 4431BA0634; Mon, 13 Jun 2022 12:53:36 +0200 (CEST)
-Date:   Mon, 13 Jun 2022 12:53:36 +0200
+        id 736D9A0634; Mon, 13 Jun 2022 13:19:35 +0200 (CEST)
+Date:   Mon, 13 Jun 2022 13:19:35 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.com>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
-        ntfs3@lists.linux.dev
-Subject: Re: [PATCH 6/6] fs: remove the NULL get_block case in
- mpage_writepages
-Message-ID: <20220613105336.dnqraf7tmxhdphyf@quack3.lan>
-References: <20220613053715.2394147-1-hch@lst.de>
- <20220613053715.2394147-7-hch@lst.de>
+To:     Zhang Yi <yi.zhang@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, yukuai3@huawei.com
+Subject: Re: [PATCH] jbd2: fix outstanding credits assert in
+ jbd2_journal_commit_transaction()
+Message-ID: <20220613111935.swheyx3p7psvshxn@quack3.lan>
+References: <20220611130426.2013258-1-yi.zhang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220613053715.2394147-7-hch@lst.de>
+In-Reply-To: <20220611130426.2013258-1-yi.zhang@huawei.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -68,68 +63,75 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 13-06-22 07:37:15, Christoph Hellwig wrote:
-> No one calls mpage_writepages with a NULL get_block paramter, so remove
-> support for that case.
+On Sat 11-06-22 21:04:26, Zhang Yi wrote:
+> We catch an assert problem in jbd2_journal_commit_transaction() when
+> doing fsstress and request falut injection tests. The problem is
+> happened in a race condition between jbd2_journal_commit_transaction()
+> and ext4_end_io_end(). Firstly, ext4_writepages() writeback dirty pages
+> and start reserved handle, and then the journal was aborted due to some
+> previous metadata IO error, jbd2_journal_abort() start to commit current
+> running transaction, the committing procedure could be raced by
+> ext4_end_io_end() and lead to subtract j_reserved_credits twice from
+> commit_transaction->t_outstanding_credits, finally the
+> t_outstanding_credits is mistakenly smaller than t_nr_buffers and
+> trigger assert.
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> kjournald2           kworker
+> 
+> jbd2_journal_commit_transaction()
+>  write_unlock(&journal->j_state_lock);
+>  atomic_sub(j_reserved_credits, t_outstanding_credits); //sub once
+> 
+>      	             jbd2_journal_start_reserved()
+>      	              start_this_handle()  //detect aborted journal
+>      	              jbd2_journal_free_reserved()  //get running transaction
+>                        read_lock(&journal->j_state_lock)
+>      	                __jbd2_journal_unreserve_handle()
+>      	               atomic_sub(j_reserved_credits, t_outstanding_credits);
+>                        //sub again
+>                        read_unlock(&journal->j_state_lock);
+> 
+>  journal->j_running_transaction = NULL;
+>  J_ASSERT(t_nr_buffers <= t_outstanding_credits) //bomb!!!
+> 
+> Fix this issue by using journal->j_state_lock to protect the subtraction
+> in jbd2_journal_commit_transaction().
+> 
+> Fixes: 96f1e0974575 ("jbd2: avoid long hold times of j_state_lock while committing a transaction")
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 
-Looks good. Feel free to add:
+Thanks for the analysis and the fix! This is indeed subtle. This fix looks
+good to me. Feel free to add:
 
 Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
 
 > ---
->  fs/mpage.c | 22 ++++++----------------
->  1 file changed, 6 insertions(+), 16 deletions(-)
+>  fs/jbd2/commit.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/fs/mpage.c b/fs/mpage.c
-> index a354ef2b4b4eb..e4cf881634a6a 100644
-> --- a/fs/mpage.c
-> +++ b/fs/mpage.c
-> @@ -636,8 +636,6 @@ static int __mpage_writepage(struct page *page, struct writeback_control *wbc,
->   * @mapping: address space structure to write
->   * @wbc: subtract the number of written pages from *@wbc->nr_to_write
->   * @get_block: the filesystem's block mapper function.
-> - *             If this is NULL then use a_ops->writepage.  Otherwise, go
-> - *             direct-to-BIO.
->   *
->   * This is a library function, which implements the writepages()
->   * address_space_operation.
-> @@ -654,24 +652,16 @@ int
->  mpage_writepages(struct address_space *mapping,
->  		struct writeback_control *wbc, get_block_t get_block)
->  {
-> +	struct mpage_data mpd = {
-> +		.get_block	= get_block,
-> +	};
->  	struct blk_plug plug;
->  	int ret;
+> diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
+> index eb315e81f1a6..af1a9191368c 100644
+> --- a/fs/jbd2/commit.c
+> +++ b/fs/jbd2/commit.c
+> @@ -553,13 +553,13 @@ void jbd2_journal_commit_transaction(journal_t *journal)
+>  	 */
+>  	jbd2_journal_switch_revoke_table(journal);
 >  
->  	blk_start_plug(&plug);
-> -
-> -	if (!get_block)
-> -		ret = generic_writepages(mapping, wbc);
-> -	else {
-> -		struct mpage_data mpd = {
-> -			.bio = NULL,
-> -			.last_block_in_bio = 0,
-> -			.get_block = get_block,
-> -		};
-> -
-> -		ret = write_cache_pages(mapping, wbc, __mpage_writepage, &mpd);
-> -		if (mpd.bio)
-> -			mpage_bio_submit(mpd.bio);
-> -	}
-> +	ret = write_cache_pages(mapping, wbc, __mpage_writepage, &mpd);
-> +	if (mpd.bio)
-> +		mpage_bio_submit(mpd.bio);
->  	blk_finish_plug(&plug);
->  	return ret;
->  }
+> +	write_lock(&journal->j_state_lock);
+>  	/*
+>  	 * Reserved credits cannot be claimed anymore, free them
+>  	 */
+>  	atomic_sub(atomic_read(&journal->j_reserved_credits),
+>  		   &commit_transaction->t_outstanding_credits);
+>  
+> -	write_lock(&journal->j_state_lock);
+>  	trace_jbd2_commit_flushing(journal, commit_transaction);
+>  	stats.run.rs_flushing = jiffies;
+>  	stats.run.rs_locked = jbd2_time_diff(stats.run.rs_locked,
 > -- 
-> 2.30.2
+> 2.31.1
 > 
 -- 
 Jan Kara <jack@suse.com>
