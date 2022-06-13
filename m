@@ -2,137 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB8D548DBC
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jun 2022 18:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8481E549C1C
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jun 2022 20:49:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357886AbiFMNLb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 13 Jun 2022 09:11:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42624 "EHLO
+        id S1344214AbiFMSsX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 13 Jun 2022 14:48:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359243AbiFMNJn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Jun 2022 09:09:43 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FBB0289BB
-        for <linux-ext4@vger.kernel.org>; Mon, 13 Jun 2022 04:19:37 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 341B821D38;
-        Mon, 13 Jun 2022 11:19:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1655119176; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RR3+DQXxZAzr5Tv6WqaMfyGsj9xrGZ5VFzKQwU9pEEg=;
-        b=zT5wRMYaybh9MaMku6gcwO58QZ7P8tRc/33kQDN6Q7MPtMbyzJkAUwCOXQPr59rtz34GvE
-        M9J741x5Ez2c3KJTSNukCav7riqp4kE2gn+HQxasxA7011lLIEDMvOpRNgUAAF5cAQC9Hk
-        ZP9ZGKXgoezyCLPgOVgnsNxadIS7Qis=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1655119176;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RR3+DQXxZAzr5Tv6WqaMfyGsj9xrGZ5VFzKQwU9pEEg=;
-        b=mA5hS6dqJzHy0tI247vrnznGQ99ZkY8yS/mciOjuE4k7I/gBm3RwgAjJdbEFUN3eu2kgMM
-        evRf2XfAoypolOCQ==
-Received: from quack3.suse.cz (unknown [10.163.28.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C45872C141;
-        Mon, 13 Jun 2022 11:19:35 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 736D9A0634; Mon, 13 Jun 2022 13:19:35 +0200 (CEST)
-Date:   Mon, 13 Jun 2022 13:19:35 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Zhang Yi <yi.zhang@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, yukuai3@huawei.com
-Subject: Re: [PATCH] jbd2: fix outstanding credits assert in
- jbd2_journal_commit_transaction()
-Message-ID: <20220613111935.swheyx3p7psvshxn@quack3.lan>
-References: <20220611130426.2013258-1-yi.zhang@huawei.com>
+        with ESMTP id S1345035AbiFMSsE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Jun 2022 14:48:04 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9946B2252E
+        for <linux-ext4@vger.kernel.org>; Mon, 13 Jun 2022 08:08:05 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id s6so9294920lfo.13
+        for <linux-ext4@vger.kernel.org>; Mon, 13 Jun 2022 08:08:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=nQfnDsNAwBhiTzvcCVWAW+CtmC1+ndx2xo4KA92H/eA=;
+        b=MlwlmNmKHNzD13seN94UW+/7T0WzBdL96B/0FqnrA1P7ZQ+9qIKaDsODi9Voc9VQCE
+         GlMZ9tb9S7LlvCdOx1ct7lzBW+6oGv14ca06gD2IEkCQY4/Iu0PNZRCyZumF1efhvjy0
+         gJg2ai+A1zf2NkflqptwDYNJxgv9/ZOzR8mOmNdSMB8xyvRRYR2ClLSnGNG1eP9XZcqc
+         G71CZR0oTM2eZjbsNpjMNHyqsTm58N6VQ/AW6IWkpxchvGT6T+skkuTZ6KTnRojIdr18
+         2uv9qrdKBW+IcdPGzpH6qcyzaht11Ud0BKnJa17ToTQ+JsqPNwUujFREAH/YmKa+lA+m
+         nlig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=nQfnDsNAwBhiTzvcCVWAW+CtmC1+ndx2xo4KA92H/eA=;
+        b=wYpVpZGCaVQEAbYSD0nwO5vGJuD+EoWzCn0yfLNWiSWHwKFyDtCPvz9C3CDKX4lyhC
+         EeHG/dN9h8VqoK6DOnFUwuZ8qrXTNeh+dhr7Bl/WV5xH/CHu+kngBGd1PNlQmjDoG+dz
+         R3EeBlMfxCzsKLEhioJ3S9dPC4vN+C4CGyjg7unUUeqFriD9f0OvQYwWUKjvYIR/L2BW
+         +mUPfDZAkQROwEx5vClShFC09v8FVnYvfoQUhESA7s0aA6TzwjZCSXYvUwYbXAbic4pj
+         QnJ1e1nJoVDht5DnAH+yx9BRa+k7JnFs9mDEvLTJ1dKnWTHO7UWUDcexfe7XqysAZp1E
+         hdnw==
+X-Gm-Message-State: AJIora9iNr1AbTf9RZF9rQe2oY5E8bot/2yTktSu1//iLPZwr+6hveLt
+        QdIJzfh9QydG1t0HuZGQFvFHI0sms3B83GimTew=
+X-Google-Smtp-Source: AGRyM1v9bRISRBXfbvA8nAIABy5S9g6DWP0Z25yym1LZQlsQYv26JGJi8hVNBR/xgkH1K+/WaAAQoJU629IzhPAr5zo=
+X-Received: by 2002:a05:6512:3c82:b0:479:4df2:c58 with SMTP id
+ h2-20020a0565123c8200b004794df20c58mr199905lfv.276.1655132883574; Mon, 13 Jun
+ 2022 08:08:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220611130426.2013258-1-yi.zhang@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Received: by 2002:aa6:c043:0:b0:1f2:9bf5:c464 with HTTP; Mon, 13 Jun 2022
+ 08:08:02 -0700 (PDT)
+Reply-To: nelsonbile450@gmail.com
+From:   Nelson Bile <chibitovictor@gmail.com>
+Date:   Mon, 13 Jun 2022 17:08:02 +0200
+Message-ID: <CABi+MwmDw_PrnBKoNCDtvfe76Ex_whfJacr2iKvfehjLnmBxgA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM,UNDISC_MONEY,URG_BIZ autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:12c listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5018]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [chibitovictor[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [nelsonbile450[at]gmail.com]
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  0.6 URG_BIZ Contains urgent matter
+        *  2.3 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  0.6 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat 11-06-22 21:04:26, Zhang Yi wrote:
-> We catch an assert problem in jbd2_journal_commit_transaction() when
-> doing fsstress and request falut injection tests. The problem is
-> happened in a race condition between jbd2_journal_commit_transaction()
-> and ext4_end_io_end(). Firstly, ext4_writepages() writeback dirty pages
-> and start reserved handle, and then the journal was aborted due to some
-> previous metadata IO error, jbd2_journal_abort() start to commit current
-> running transaction, the committing procedure could be raced by
-> ext4_end_io_end() and lead to subtract j_reserved_credits twice from
-> commit_transaction->t_outstanding_credits, finally the
-> t_outstanding_credits is mistakenly smaller than t_nr_buffers and
-> trigger assert.
-> 
-> kjournald2           kworker
-> 
-> jbd2_journal_commit_transaction()
->  write_unlock(&journal->j_state_lock);
->  atomic_sub(j_reserved_credits, t_outstanding_credits); //sub once
-> 
->      	             jbd2_journal_start_reserved()
->      	              start_this_handle()  //detect aborted journal
->      	              jbd2_journal_free_reserved()  //get running transaction
->                        read_lock(&journal->j_state_lock)
->      	                __jbd2_journal_unreserve_handle()
->      	               atomic_sub(j_reserved_credits, t_outstanding_credits);
->                        //sub again
->                        read_unlock(&journal->j_state_lock);
-> 
->  journal->j_running_transaction = NULL;
->  J_ASSERT(t_nr_buffers <= t_outstanding_credits) //bomb!!!
-> 
-> Fix this issue by using journal->j_state_lock to protect the subtraction
-> in jbd2_journal_commit_transaction().
-> 
-> Fixes: 96f1e0974575 ("jbd2: avoid long hold times of j_state_lock while committing a transaction")
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-
-Thanks for the analysis and the fix! This is indeed subtle. This fix looks
-good to me. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/jbd2/commit.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
-> index eb315e81f1a6..af1a9191368c 100644
-> --- a/fs/jbd2/commit.c
-> +++ b/fs/jbd2/commit.c
-> @@ -553,13 +553,13 @@ void jbd2_journal_commit_transaction(journal_t *journal)
->  	 */
->  	jbd2_journal_switch_revoke_table(journal);
->  
-> +	write_lock(&journal->j_state_lock);
->  	/*
->  	 * Reserved credits cannot be claimed anymore, free them
->  	 */
->  	atomic_sub(atomic_read(&journal->j_reserved_credits),
->  		   &commit_transaction->t_outstanding_credits);
->  
-> -	write_lock(&journal->j_state_lock);
->  	trace_jbd2_commit_flushing(journal, commit_transaction);
->  	stats.run.rs_flushing = jiffies;
->  	stats.run.rs_locked = jbd2_time_diff(stats.run.rs_locked,
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Greetings I sent you an email a few days ago. Did you receive my
+message? urgent response please
