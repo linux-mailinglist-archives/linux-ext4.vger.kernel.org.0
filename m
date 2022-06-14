@@ -2,73 +2,119 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC88549E23
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jun 2022 21:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 847C354A84D
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Jun 2022 06:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244959AbiFMTyB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 13 Jun 2022 15:54:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60742 "EHLO
+        id S234653AbiFNErZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 14 Jun 2022 00:47:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343658AbiFMTxx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Jun 2022 15:53:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0D43E9A9B6
-        for <linux-ext4@vger.kernel.org>; Mon, 13 Jun 2022 11:24:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1655144683;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yY0MNFDhB0MuSHpTInllqJNSaIJfsG15wflCu/cwAgA=;
-        b=RFpZCKEeNBMIBAlMiVycXYzLLeVelvCC/0ZYTiwi7dn1YBUN0he/Hc89JkLAf0r68wbCOl
-        n/5WvhWu9WQ+kqCLafGKHJCS4uAj1puCIHpg/bfXYvOHRCNJXUL7DKVY4bCcgfopx+rV7p
-        7/mJB2wz/t5RDbXVladhCAwkLQ4uGWg=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-3-fVoiLmMGMOuP8s9UZNBDIA-1; Mon, 13 Jun 2022 14:24:39 -0400
-X-MC-Unique: fVoiLmMGMOuP8s9UZNBDIA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 40B5C3801144;
-        Mon, 13 Jun 2022 18:24:39 +0000 (UTC)
-Received: from fedora (unknown [10.40.193.122])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9182E1415103;
-        Mon, 13 Jun 2022 18:24:38 +0000 (UTC)
-Date:   Mon, 13 Jun 2022 20:24:36 +0200
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 0/4] ext4: Debug message and export cleanups
-Message-ID: <20220613182436.4cnyobjwkprhcxh2@fedora>
-References: <20220608112041.29097-1-jack@suse.cz>
+        with ESMTP id S231327AbiFNErY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Jun 2022 00:47:24 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488B91144
+        for <linux-ext4@vger.kernel.org>; Mon, 13 Jun 2022 21:47:23 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id h1so6787264plf.11
+        for <linux-ext4@vger.kernel.org>; Mon, 13 Jun 2022 21:47:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5x24wcoZLy60C4V6qqBlV8yjrlN4lvCBwUUm7SMMskg=;
+        b=S+kBJOM5he9vqHt4nGu5s3ieVT63/VfE3eDWB+riit4ao7KJ8K5/8h/MVmbsTlqUj/
+         WAi2EathAkRGzkUjYjUYTEm8s0nZD7B9pQGk6uirSUoyalVq2+Ig8Y8IE6Q8/+3bpmTm
+         mBnEYC37/PPXGwRVKNFlSHeJVEX95yQk8VVV0LQ7wolTW62LSKYuAnoniKXQ7VeS2TkL
+         Py2Z8rBGttnxvesyGysFJHSIQ6AcPCUHBmftBxyQRtC4tgAg4OOYfq8vl43zxIQk8gVK
+         Xt83xGGdkSKPmdz3zoKqUahAO+HZNqAsPk0SWWrIlsrTvwe7NmJ9SQAvPaeI4fNT5tPt
+         SUQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5x24wcoZLy60C4V6qqBlV8yjrlN4lvCBwUUm7SMMskg=;
+        b=XpCbNSzjZh/xQA6K4f9cv/uKKyp3lW7f7NFeIK/JJcg5zuHfMzvvn3plk8vMNbe2/f
+         h4ofNxgzf3qFwbFlCW4ZU1wrzjOrxVV5gENxrCYqypPfRzhnE/TzNs73GUlQQwQc2VmA
+         /hZFWeIwCnpmAjZz7OQbesNqRhj3IWOMmutjB5SRj/djG9c5FOaj9YNapazCa3BYOQTR
+         OHxMeDRluT7ok0i8mgnBH2WbBWyUKARwGKNu4ZWl0MpTHz6LXIVCGsamgMFzOXxFOh1J
+         SqPTrjIsbA8aMh0LYRjOldFftEZK1NwSv+PZ+DNRi14NfNo8e5mn/AGZt8Pw1nVqsxse
+         ByGQ==
+X-Gm-Message-State: AOAM530/Fu7hII1gTqW4ZyuJ8BfEJak/ivnLjHZq6cpkuUuqLxwCeTdS
+        fPGLRyOjvPGMyoYgHl0jhN98RqS+G10YjA==
+X-Google-Smtp-Source: ABdhPJzmOo7I9AwFFk5wSFL3fr25zTCJ91yKbcbcQxih7dUz8lgAf6OyEUoocpDXLgGzZyN9t4U4Ag==
+X-Received: by 2002:a17:902:ec83:b0:168:e5ad:8071 with SMTP id x3-20020a170902ec8300b00168e5ad8071mr2587430plg.102.1655182042780;
+        Mon, 13 Jun 2022 21:47:22 -0700 (PDT)
+Received: from localhost.localdomain ([139.177.225.228])
+        by smtp.gmail.com with ESMTPSA id u20-20020a62d454000000b00518285976cdsm6312948pfl.9.2022.06.13.21.47.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jun 2022 21:47:22 -0700 (PDT)
+From:   Jinke Han <hanjinke.666@bytedance.com>
+X-Google-Original-From: Jinke Han <hnajinke.666@bytedance>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hanjinke.666@bytedance.com
+Subject: [PATCH] ext4: fix trim range leak
+Date:   Tue, 14 Jun 2022 12:46:47 +0800
+Message-Id: <20220614044647.21846-1-hanjinke.666@bytedance.com>
+X-Mailer: git-send-email 2.32.0 (Apple Git-132)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220608112041.29097-1-jack@suse.cz>
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.7
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 08, 2022 at 01:23:46PM +0200, Jan Kara wrote:
-> Hello,
-> 
-> this series cleans up couple of things around debug messages in ext4/jbd2
-> and removes some unnecessary exports.
-> 
-> 								Honza
+From: hanjinke <hanjinke.666@bytedance.com>
 
-The series looks good to me.
+When release group lock, a large number of blocks may be alloc from
+the group(e.g. not from the rest of target trim range). This may
+lead end of the loop and leave the rest of trim range unprocessed.
 
-Reviewed-by: Lukas Czerner <lczerner@redhat.com>
+Signed-off-by: hanjinke <hanjinke.666@bytedance.com>
+---
+ fs/ext4/mballoc.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
--Lukas
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 9f12f29bc346..45eb9ee20947 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -6345,14 +6345,13 @@ static int ext4_try_to_trim_range(struct super_block *sb,
+ __acquires(ext4_group_lock_ptr(sb, e4b->bd_group))
+ __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
+ {
+-	ext4_grpblk_t next, count, free_count;
++	ext4_grpblk_t next, count;
+ 	void *bitmap;
+ 
+ 	bitmap = e4b->bd_bitmap;
+ 	start = (e4b->bd_info->bb_first_free > start) ?
+ 		e4b->bd_info->bb_first_free : start;
+ 	count = 0;
+-	free_count = 0;
+ 
+ 	while (start <= max) {
+ 		start = mb_find_next_zero_bit(bitmap, max + 1, start);
+@@ -6367,7 +6366,6 @@ __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
+ 				break;
+ 			count += next - start;
+ 		}
+-		free_count += next - start;
+ 		start = next + 1;
+ 
+ 		if (fatal_signal_pending(current)) {
+@@ -6381,8 +6379,6 @@ __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
+ 			ext4_lock_group(sb, e4b->bd_group);
+ 		}
+ 
+-		if ((e4b->bd_info->bb_free - free_count) < minblocks)
+-			break;
+ 	}
+ 
+ 	return count;
+-- 
+2.20.1
 
