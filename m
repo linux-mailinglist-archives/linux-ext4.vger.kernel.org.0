@@ -2,119 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 847C354A84D
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Jun 2022 06:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7CC654A8AF
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Jun 2022 07:25:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234653AbiFNErZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 14 Jun 2022 00:47:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58504 "EHLO
+        id S237697AbiFNFZW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 14 Jun 2022 01:25:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbiFNErY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Jun 2022 00:47:24 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488B91144
-        for <linux-ext4@vger.kernel.org>; Mon, 13 Jun 2022 21:47:23 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id h1so6787264plf.11
-        for <linux-ext4@vger.kernel.org>; Mon, 13 Jun 2022 21:47:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5x24wcoZLy60C4V6qqBlV8yjrlN4lvCBwUUm7SMMskg=;
-        b=S+kBJOM5he9vqHt4nGu5s3ieVT63/VfE3eDWB+riit4ao7KJ8K5/8h/MVmbsTlqUj/
-         WAi2EathAkRGzkUjYjUYTEm8s0nZD7B9pQGk6uirSUoyalVq2+Ig8Y8IE6Q8/+3bpmTm
-         mBnEYC37/PPXGwRVKNFlSHeJVEX95yQk8VVV0LQ7wolTW62LSKYuAnoniKXQ7VeS2TkL
-         Py2Z8rBGttnxvesyGysFJHSIQ6AcPCUHBmftBxyQRtC4tgAg4OOYfq8vl43zxIQk8gVK
-         Xt83xGGdkSKPmdz3zoKqUahAO+HZNqAsPk0SWWrIlsrTvwe7NmJ9SQAvPaeI4fNT5tPt
-         SUQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5x24wcoZLy60C4V6qqBlV8yjrlN4lvCBwUUm7SMMskg=;
-        b=XpCbNSzjZh/xQA6K4f9cv/uKKyp3lW7f7NFeIK/JJcg5zuHfMzvvn3plk8vMNbe2/f
-         h4ofNxgzf3qFwbFlCW4ZU1wrzjOrxVV5gENxrCYqypPfRzhnE/TzNs73GUlQQwQc2VmA
-         /hZFWeIwCnpmAjZz7OQbesNqRhj3IWOMmutjB5SRj/djG9c5FOaj9YNapazCa3BYOQTR
-         OHxMeDRluT7ok0i8mgnBH2WbBWyUKARwGKNu4ZWl0MpTHz6LXIVCGsamgMFzOXxFOh1J
-         SqPTrjIsbA8aMh0LYRjOldFftEZK1NwSv+PZ+DNRi14NfNo8e5mn/AGZt8Pw1nVqsxse
-         ByGQ==
-X-Gm-Message-State: AOAM530/Fu7hII1gTqW4ZyuJ8BfEJak/ivnLjHZq6cpkuUuqLxwCeTdS
-        fPGLRyOjvPGMyoYgHl0jhN98RqS+G10YjA==
-X-Google-Smtp-Source: ABdhPJzmOo7I9AwFFk5wSFL3fr25zTCJ91yKbcbcQxih7dUz8lgAf6OyEUoocpDXLgGzZyN9t4U4Ag==
-X-Received: by 2002:a17:902:ec83:b0:168:e5ad:8071 with SMTP id x3-20020a170902ec8300b00168e5ad8071mr2587430plg.102.1655182042780;
-        Mon, 13 Jun 2022 21:47:22 -0700 (PDT)
-Received: from localhost.localdomain ([139.177.225.228])
-        by smtp.gmail.com with ESMTPSA id u20-20020a62d454000000b00518285976cdsm6312948pfl.9.2022.06.13.21.47.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jun 2022 21:47:22 -0700 (PDT)
-From:   Jinke Han <hanjinke.666@bytedance.com>
-X-Google-Original-From: Jinke Han <hnajinke.666@bytedance>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hanjinke.666@bytedance.com
-Subject: [PATCH] ext4: fix trim range leak
-Date:   Tue, 14 Jun 2022 12:46:47 +0800
-Message-Id: <20220614044647.21846-1-hanjinke.666@bytedance.com>
-X-Mailer: git-send-email 2.32.0 (Apple Git-132)
+        with ESMTP id S232427AbiFNFZW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Jun 2022 01:25:22 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFDDB26AC4;
+        Mon, 13 Jun 2022 22:25:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 15EF6CE181B;
+        Tue, 14 Jun 2022 05:25:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9603C3411B;
+        Tue, 14 Jun 2022 05:25:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1655184315;
+        bh=yVv5NBSoS8jRKy5ozRnvXgCu1M0fCe/nJRys6szNJx8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V3vMc4a/nCEXDbFNP/4wKJ/IRtOdNoppRm3KT6glab4LkOZA75EmhzGbtaA1xJ+t3
+         zvkLdo81p05dnXKT+qKQuo6DrZwA4lYN2s4XqyUV53L250GdKda6QGguEubwN+2Tiu
+         d4A9dR7WcBIqi94WqvepH+Mo3dRm4pzTy62UhK2d0tWAEz0EaNQA/qG3VSjqGh/ZGP
+         BfUQkMRf8IKtoMh07F+Bm4ksrN2SWxyqmzziAxnkoynG7uOflh+qdDkUkyMvYFq2EJ
+         VUGOVK9SwNY9c0UT3JGvInxETeshxNeq+5qJGUa9Q4x+rKmPDCLKDNxg8c1GJk61r1
+         KqP5kl72VRMGw==
+Date:   Mon, 13 Jun 2022 22:25:12 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Keith Busch <kbusch@kernel.org>
+Subject: Re: [RFC PATCH v2 1/7] statx: add I/O alignment information
+Message-ID: <YqgbuDbdH2OLcbC7@sol.localdomain>
+References: <20220518235011.153058-1-ebiggers@kernel.org>
+ <20220518235011.153058-2-ebiggers@kernel.org>
+ <YobNXbYnhBiqniTH@magnolia>
+ <20220520032739.GB1098723@dread.disaster.area>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220520032739.GB1098723@dread.disaster.area>
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: hanjinke <hanjinke.666@bytedance.com>
+On Fri, May 20, 2022 at 01:27:39PM +1000, Dave Chinner wrote:
+> > > * stx_offset_align_optimal: the alignment (in bytes) suggested for file
+> > >   offsets and I/O segment lengths to get optimal performance.  This
+> > >   applies to both DIO and buffered I/O.  It differs from stx_blocksize
+> > >   in that stx_offset_align_optimal will contain the real optimum I/O
+> > >   size, which may be a large value.  In contrast, for compatibility
+> > >   reasons stx_blocksize is the minimum size needed to avoid page cache
+> > >   read/write/modify cycles, which may be much smaller than the optimum
+> > >   I/O size.  For more details about the motivation for this field, see
+> > >   https://lore.kernel.org/r/20220210040304.GM59729@dread.disaster.area
+> > 
+> > Hmm.  So I guess this is supposed to be the filesystem's best guess at
+> > the IO size that will minimize RMW cycles in the entire stack?  i.e. if
+> > the user does not want RMW of pagecache pages, of file allocation units
+> > (if COW is enabled), of RAID stripes, or in the storage itself, then it
+> > should ensure that all IOs are aligned to this value?
+> > 
+> > I guess that means for XFS it's effectively max(pagesize, i_blocksize,
+> > bdev io_opt, sb_width, and (pretend XFS can reflink the realtime volume)
+> > the rt extent size)?  I didn't see a manpage update for statx(2) but
+> > that's mostly what I'm interested in. :)
+> 
+> Yup, xfs_stat_blksize() should give a good idea of what we should
+> do. It will end up being pretty much that, except without the need
+> to a mount option to turn on the sunit/swidth return, and always
+> taking into consideration extent size hints rather than just doing
+> that for RT inodes...
 
-When release group lock, a large number of blocks may be alloc from
-the group(e.g. not from the rest of target trim range). This may
-lead end of the loop and leave the rest of trim range unprocessed.
+While working on the man-pages update, I'm having second thoughts about the
+stx_offset_align_optimal field.  Does any filesystem other than XFS actually
+want stx_offset_align_optimal, when st[x]_blksize already exists?  Many network
+filesystems, as well as tmpfs when hugepages are enabled, already report large
+(megabytes) sizes in st[x]_blksize.  And all documentation I looked at (man
+pages for Linux, POSIX, FreeBSD, NetBSD, macOS) documents st_blksize as
+something like "the preferred blocksize for efficient I/O".  It's never
+documented as being limited to PAGE_SIZE, which makes sense because it's not.
 
-Signed-off-by: hanjinke <hanjinke.666@bytedance.com>
----
- fs/ext4/mballoc.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+So stx_offset_align_optimal seems redundant, and it is going to confuse
+application developers who will have to decide when to use st[x]_blksize and
+when to use stx_offset_align_optimal.
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 9f12f29bc346..45eb9ee20947 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -6345,14 +6345,13 @@ static int ext4_try_to_trim_range(struct super_block *sb,
- __acquires(ext4_group_lock_ptr(sb, e4b->bd_group))
- __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
- {
--	ext4_grpblk_t next, count, free_count;
-+	ext4_grpblk_t next, count;
- 	void *bitmap;
- 
- 	bitmap = e4b->bd_bitmap;
- 	start = (e4b->bd_info->bb_first_free > start) ?
- 		e4b->bd_info->bb_first_free : start;
- 	count = 0;
--	free_count = 0;
- 
- 	while (start <= max) {
- 		start = mb_find_next_zero_bit(bitmap, max + 1, start);
-@@ -6367,7 +6366,6 @@ __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
- 				break;
- 			count += next - start;
- 		}
--		free_count += next - start;
- 		start = next + 1;
- 
- 		if (fatal_signal_pending(current)) {
-@@ -6381,8 +6379,6 @@ __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
- 			ext4_lock_group(sb, e4b->bd_group);
- 		}
- 
--		if ((e4b->bd_info->bb_free - free_count) < minblocks)
--			break;
- 	}
- 
- 	return count;
--- 
-2.20.1
+Also, applications that don't work well with huge reported optimal I/O sizes
+would still continue to exist, as it will remain possible for applications to
+only be tested on filesystems that report a small optimal I/O size.
 
+Perhaps for now we should just add STATX_DIOALIGN instead of STATX_IOALIGN,
+leaving out the stx_offset_align_optimal field?  What do people think?
+
+- Eric
