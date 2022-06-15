@@ -2,40 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7392954C3E7
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jun 2022 10:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1D8654C533
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jun 2022 11:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240829AbiFOIrL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Jun 2022 04:47:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50884 "EHLO
+        id S243327AbiFOJ4R (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Jun 2022 05:56:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238908AbiFOIrK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Jun 2022 04:47:10 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D06704B1FE;
-        Wed, 15 Jun 2022 01:47:08 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LNJmn4xlvzjY6F;
-        Wed, 15 Jun 2022 16:46:01 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Wed, 15 Jun
- 2022 16:47:06 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <jack@suse.cz>, <linux-ext4@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, Ye Bin <yebin10@huawei.com>
-Subject: [PATCH -next] ext2: fix fs corruption when trying to remove a non-empty directory with IO error
-Date:   Wed, 15 Jun 2022 17:00:10 +0800
-Message-ID: <20220615090010.1544152-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S237420AbiFOJ4Q (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Jun 2022 05:56:16 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FEBF49B59;
+        Wed, 15 Jun 2022 02:56:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id CE8D6B81C62;
+        Wed, 15 Jun 2022 09:56:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DB5FC34115;
+        Wed, 15 Jun 2022 09:56:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1655286973;
+        bh=ZhDBRgQU7ZcI9kZgJu86+5uy/cAyHPmmrrm4MdoMzic=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UZ18s2nlPinYpFsreuxH/N3n6o1GGraB0CtE35X727U/GrkcexK1hPokbY41+Eudm
+         6EGsZKNg2YawcQPZMa6AclhI1nTS4+X2MsBG4XLI1yW2KqU9kReFbYu6ZX07MuFymB
+         GwTIP1vawNFSEb+H4t4lHhNh+LsEmBmdecOGnieT5gZUnDX1p+xc89bapP2/w6ECKb
+         9p5L28unvjqlcQ5TXO0ATnPLJFqdWA06mHUbzqGbdWXVXfcZFN8EDwcq2oM3UvlQYc
+         211BuFbgvLu22KO9zNuYjMN1oah0N0epuNjAzOzdI20QnKhGTJ/2LfC8GjqyaoFPnp
+         iUWiyf3nhc57Q==
+Date:   Wed, 15 Jun 2022 17:56:07 +0800
+From:   Zorro Lang <zlang@kernel.org>
+To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc:     fstests@vger.kernel.org, zlang@redhat.com, riteshh@linux.ibm.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] common/rc: Modify _require_batched_discard to improve
+ test coverage
+Message-ID: <20220615095607.zkvq2vnh4ebue3qi@zlang-mailbox>
+References: <20220516084505.97655-1-ojaswin@linux.ibm.com>
+ <Yqb21hTVUvob/sgc@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Yqb21hTVUvob/sgc@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -44,74 +55,49 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-We got issue as follows:
-[home]# mount  /dev/sdd  test
-[home]# cd test
-[test]# ls
-dir1  lost+found
-[test]# rmdir  dir1
-ext2_empty_dir: inject fault
-[test]# ls
-lost+found
-[test]# cd ..
-[home]# umount test
-[home]# fsck.ext2 -fn  /dev/sdd
-e2fsck 1.42.9 (28-Dec-2013)
-Pass 1: Checking inodes, blocks, and sizes
-Inode 4065, i_size is 0, should be 1024.  Fix? no
+On Mon, Jun 13, 2022 at 02:05:34PM +0530, Ojaswin Mujoo wrote:
+> Greetings,
+> 
+> Please let me know if there are any reviews/suggestions on this
+> patch.
 
-Pass 2: Checking directory structure
-Pass 3: Checking directory connectivity
-Unconnected directory inode 4065 (/???)
-Connect to /lost+found? no
+This patch has been merged in fstests v2022.05.22, as below
 
-'..' in ... (4065) is / (2), should be <The NULL inode> (0).
-Fix? no
+  ee264b3f common/rc: Modify _require_batched_discard to improve test coverage
 
-Pass 4: Checking reference counts
-Inode 2 ref count is 3, should be 4.  Fix? no
+Is there anything wrong with that?
 
-Inode 4065 ref count is 2, should be 3.  Fix? no
+Thanks,
+Zorro
 
-Pass 5: Checking group summary information
-
-/dev/sdd: ********** WARNING: Filesystem still has errors **********
-
-/dev/sdd: 14/128016 files (0.0% non-contiguous), 18477/512000 blocks
-
-Reason is same with commit 7aab5c84a0f6. We can't assume directory
-is empty when read directory entry failed.
-
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- fs/ext2/dir.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
-
-diff --git a/fs/ext2/dir.c b/fs/ext2/dir.c
-index 3bd5772b401b..8f597753ac12 100644
---- a/fs/ext2/dir.c
-+++ b/fs/ext2/dir.c
-@@ -672,17 +672,14 @@ int ext2_empty_dir (struct inode * inode)
- 	void *page_addr = NULL;
- 	struct page *page = NULL;
- 	unsigned long i, npages = dir_pages(inode);
--	int dir_has_error = 0;
- 
- 	for (i = 0; i < npages; i++) {
- 		char *kaddr;
- 		ext2_dirent * de;
--		page = ext2_get_page(inode, i, dir_has_error, &page_addr);
-+		page = ext2_get_page(inode, i, 0, &page_addr);
- 
--		if (IS_ERR(page)) {
--			dir_has_error = 1;
--			continue;
--		}
-+		if (IS_ERR(page))
-+			goto not_empty;
- 
- 		kaddr = page_addr;
- 		de = (ext2_dirent *)kaddr;
--- 
-2.31.1
-
+> 
+> Thank you!
+> 
+> On Mon, May 16, 2022 at 02:15:05PM +0530, Ojaswin Mujoo wrote:
+> > A recent ext4 patch discussed [1] that some devices (eg LVMs) can
+> > have a discard granularity as big as 42MB which makes it larger
+> > than the group size of ext4 FS with 1k BS.  This causes the FITRIM
+> > IOCTL to fail.
+> > 
+> > This case was not correctly handled by this test since
+> > "_require_batched_discard" incorrectly interpreted the FITRIM
+> > failure as SCRATCH_DEV not supporting the IOCTL. This caused the test
+> > to report "not run" instead of "failed" in case of large discard granularity.
+> > 
+> > Fix "_require_batched_discard" to use a more accurate method
+> > to determine if discard is supported.
+> > 
+> > [1] commit 173b6e383d2
+> >     ext4: avoid trim error on fs with small groups
+> > 
+> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> > Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> > ---
+> > 
+> > Changes since v2 [1] 
+> > 
+> > *  Eliminated redundant $ret variable
+> > 
+> > [1]
+> > https://lore.kernel.org/all/20220516063951.87838-1-ojaswin@linux.ibm.com/
+> 
