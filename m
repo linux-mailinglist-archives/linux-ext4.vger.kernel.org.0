@@ -2,95 +2,76 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC31454C8D9
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jun 2022 14:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7644054C977
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jun 2022 15:12:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240208AbiFOMrC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Jun 2022 08:47:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51542 "EHLO
+        id S237546AbiFONMJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Jun 2022 09:12:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234307AbiFOMq7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Jun 2022 08:46:59 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488B146C8C;
-        Wed, 15 Jun 2022 05:46:57 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 0603D1F913;
-        Wed, 15 Jun 2022 12:46:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1655297216; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kCc+fqfVJ1178TStTubhr5OsC5cJgYZfRKAp/t26xnE=;
-        b=tf+peZdELak5lxAWLvBE/N4XgbTrf1OHqfbVynRzidCnDm7YCzgsOqy5R1hqqLi6MgEzW+
-        m9aCUtSljjZszAUcNZTX5wDMOYljQlNoklg3LI2MYLhmpMtCZ1BSCPEt0iBCoacCy+6C7B
-        qMkgp2w0HVuDxJnSAcIiQSyGXQWKcrM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1655297216;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kCc+fqfVJ1178TStTubhr5OsC5cJgYZfRKAp/t26xnE=;
-        b=0Y23oh85gCCILdW5DFoJ2AyTjGokSxU3hCB5zxczcBZvu/YA5YXYysripfCi1hQjrKBW5V
-        7E8IQ/eIJnstoGAw==
-Received: from quack3.suse.cz (unknown [10.163.28.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id DA5932C141;
-        Wed, 15 Jun 2022 12:46:45 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id AC595A062E; Wed, 15 Jun 2022 14:46:33 +0200 (CEST)
-Date:   Wed, 15 Jun 2022 14:46:33 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
-        lczerner@redhat.com, enwlinux@gmail.com,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yebin10@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH v2 1/4] ext4: add EXT4_INODE_HAVE_XATTR_SPACE macro in
- xattr.h
-Message-ID: <20220615124633.6uddzv5msnmwi7c4@quack3.lan>
-References: <20220615040630.808783-1-libaokun1@huawei.com>
- <20220615040630.808783-2-libaokun1@huawei.com>
+        with ESMTP id S233309AbiFONMI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Jun 2022 09:12:08 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B528A24581;
+        Wed, 15 Jun 2022 06:12:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FHOVdTg6NKnoEjJkArBOs1GnjsYN72M8SV5hUzpqtrM=; b=2XD3XMBMNnkMfNTbWofuI16L1y
+        ibePJHi5dvh74MnJpzG/u7S4aY3orURjcbZttxdDGEus2CPnup5s5KOGh1tezdDut2pv1x+NGhPuQ
+        X+3q7hkUy7zDSvVK2F4TppQrdIPlffoCN0T5tf11PK7u3/D8dclNIN8z91X7ihwHu8RuY3cc7wDnT
+        d43ZIT49HPtGxdcjxsIboQvMIdqXM3LrRBtzzeyXMjMyX991d/c4srAjBj5WAi/1DhB92Ucde0Xdx
+        naUR1vNfJj/V/p7q3PNpvUcCQ6o6WE2NrGm2l1MnAHXJhZcTWN19ICW2w0WfNwRcn01j35hhvNYIv
+        H6BuzbSQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1o1SoW-00EdqR-Tk; Wed, 15 Jun 2022 13:12:04 +0000
+Date:   Wed, 15 Jun 2022 06:12:04 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Keith Busch <kbusch@kernel.org>
+Subject: Re: [RFC PATCH v2 1/7] statx: add I/O alignment information
+Message-ID: <YqnapOLvHDmX/3py@infradead.org>
+References: <20220518235011.153058-1-ebiggers@kernel.org>
+ <20220518235011.153058-2-ebiggers@kernel.org>
+ <YobNXbYnhBiqniTH@magnolia>
+ <20220520032739.GB1098723@dread.disaster.area>
+ <YqgbuDbdH2OLcbC7@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220615040630.808783-2-libaokun1@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <YqgbuDbdH2OLcbC7@sol.localdomain>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 15-06-22 12:06:27, Baokun Li wrote:
-> When adding an xattr to an inode, we must ensure that the inode_size is
-> not less than EXT4_GOOD_OLD_INODE_SIZE + extra_isize + pad. Otherwise,
-> the end position may be greater than the start position, resulting in UAF.
-> 
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+On Mon, Jun 13, 2022 at 10:25:12PM -0700, Eric Biggers wrote:
+> While working on the man-pages update, I'm having second thoughts about the
+> stx_offset_align_optimal field.  Does any filesystem other than XFS actually
+> want stx_offset_align_optimal, when st[x]_blksize already exists?  Many network
+> filesystems, as well as tmpfs when hugepages are enabled, already report large
+> (megabytes) sizes in st[x]_blksize.  And all documentation I looked at (man
+> pages for Linux, POSIX, FreeBSD, NetBSD, macOS) documents st_blksize as
+> something like "the preferred blocksize for efficient I/O".  It's never
+> documented as being limited to PAGE_SIZE, which makes sense because it's not.
 
-...
+Yes.  While st_blksize is utterly misnamed, it has always aways been
+the optimal I/O size.
 
-> +/*
-> + * If we want to add an xattr to the inode, we should make sure that
-> + * i_extra_isize is not 0 and that the inode size is not less than
-> + * EXT4_GOOD_OLD_INODE_SIZE + extra_isize + pad.
-> + *   EXT4_GOOD_OLD_INODE_SIZE   extra_isize header   entry   pad  data
-> + * |--------------------------|------------|------|---------|---|-------|
-> + */
-> +#define EXT4_INODE_HAVE_XATTR_SPACE(inode)				\
+> Perhaps for now we should just add STATX_DIOALIGN instead of STATX_IOALIGN,
+> leaving out the stx_offset_align_optimal field?  What do people think?
 
-Gramatically correct would be EXT4_INODE_**HAS**_XATTR_SPACE and I'd be for
-using that. Otherwise the whole series looks good so feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Yes, this sounds like a good plan.
