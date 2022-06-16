@@ -2,67 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D6054D915
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jun 2022 06:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7960D54D91A
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jun 2022 06:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349658AbiFPEEU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Jun 2022 00:04:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49704 "EHLO
+        id S1344862AbiFPEIw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Jun 2022 00:08:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbiFPEER (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Jun 2022 00:04:17 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A958C403DC;
-        Wed, 15 Jun 2022 21:04:16 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id e11so405159pfj.5;
-        Wed, 15 Jun 2022 21:04:16 -0700 (PDT)
+        with ESMTP id S1358588AbiFPEIf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Jun 2022 00:08:35 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9470456F86;
+        Wed, 15 Jun 2022 21:08:34 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id y13-20020a17090a154d00b001eaaa3b9b8dso402931pja.2;
+        Wed, 15 Jun 2022 21:08:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=EBsCfC8tb7+VRmR4uxZN/fE3y4thkUkKWOj8JXNyy+g=;
-        b=WYfGsOEBWAiYj75J6GKjXBriS615QdJQM56UXhmjNBj4dVQWPdbTAdvXoJgl12L5CP
-         HA8tDeGwkXMovPCxUc51p8i4MsqlS+MBZf011uJipIn/wmXlazQa5wutuj/7+djtSDx9
-         xFxPie59kZDH/MndCtZDCcTufPhnvo15fHA0LyTltop1U/qELKOgSalYVSZftdv1+Gmm
-         +OAYjaeZw5zBSnxOMyvI+GEd2fVQisNZ0muCkz3BZsJP1kKKZyPlzs+CpSmKA5BqmEno
-         XZhaTXmbyMr3HrJNxmibvlowNEGyMASbaXC11gpiT6QQ/Q7GbyOSolDwGrA6VWDT7dlR
-         YYuA==
+        bh=vd0bN/XPx9OiHy3gzLV4Y4YAjktoSbcYs2uZYZ3e/rE=;
+        b=ibewHG8NBpBVeqDL2HqfKHkpvwh+DszHHVNyZXtLa3L1tM0mm0Gio1zpSmomvTLjb8
+         7Msk/fcArYrHM20BU112m31sFDNSJypd6MrOo2vPSPdy3csxD0vuUk9xgrZ/zkRtiOpB
+         EVjaiMpDJKUEbqV+uIzQld389AHFq8TEZ1CtmzfBOswLF6PMcgpH7uhN894Yve78gPS8
+         xggBKy+PDeUdYXseShdI9t1TxCAXgq4gv52eO2aui2wXZADd19PCnxcWaoAzO9yO30r8
+         OSCvfeEh8PgzkRFB1xmL1PARFsqLH6eA/JRskTTr1CrJr0EuBPAk+orAF+d38eA3cFB1
+         +jUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=EBsCfC8tb7+VRmR4uxZN/fE3y4thkUkKWOj8JXNyy+g=;
-        b=Q1+uO0cdp5TrMkEUVnMPxstefrX/rVP73N8Y+yvAqfmDGEl7iDhNCGQDpk2u9UmRfc
-         rZvdiMW34TcLWa32X6eiFF2tebO3yiiZxXyqWG/v/ly/XuomwpdTB8GcKJLvw5D2jUva
-         yw4ZhmnKW1RjwF9+UzFTYCtyZ34kMzWauRD1H65ul1A6n2oyoRIWmIC6ikzaax2yVAx0
-         jtqUHH+c2U9E/sqUjKNsBHFqwhGjZaijj5DiBs2ZS5AFP5BQKmCA1o35QSPGcJ+vpZXU
-         di0bJe2XAw1IJF/YCQzZCLepQa2dMM5ORfZRMPmlJk0i8GDQTvBSAvvvpMM9YNgLftfE
-         /PAg==
-X-Gm-Message-State: AJIora+VZ/V83QjWaLOc+FB4LL8JDmOuZOASzxJTfOMt7tQAW70n6Z0Z
-        sG+AWgk28F6SYHF49lBJuKg=
-X-Google-Smtp-Source: AGRyM1sPDZL+FbDkRT64NbubG8JmSPcOdo+aN/qnrQCfjkiWzgw4rxYdSoCA4vmzhG+JDygnWJg8XA==
-X-Received: by 2002:a05:6a00:23c6:b0:51b:f8e3:2e5c with SMTP id g6-20020a056a0023c600b0051bf8e32e5cmr2897544pfc.43.1655352256180;
-        Wed, 15 Jun 2022 21:04:16 -0700 (PDT)
+        bh=vd0bN/XPx9OiHy3gzLV4Y4YAjktoSbcYs2uZYZ3e/rE=;
+        b=n2//GmKd+J5brIs9fLaiecffMW2ytoUZ5UlfDNNA5OUU9UqDGKXlfd8jXPTMqqKWyn
+         1pdSexw8KAKWb5hRjdztDSFELZWTQ+0C81+tgRy1qmmdf1OrnVcRLh0Lha5/0wcosUrk
+         Vem5VGHnf0KqihOy6SrgKlfllWNkdKcrUtm1HNHjhjtmIve9BiU5OvqALhFy9RDfvwoj
+         fk33j/emaV/4oyAN90D4qhnohScbvnp8lRAiEl9Pe7XPhT5FB95V68sNvyhJyQ00W4iV
+         R1Vl3DcmzUwJ3BJfFQTjRwLzV1MIMVIjITgsFTz/SHRwwilTo9BX2CJ1ojdBIwx8RqbK
+         jb4w==
+X-Gm-Message-State: AJIora8qqqmrymnHO1cyRkRKofaoGpGzshevfUR0a+cj3GFXTJSJC8Wr
+        iKu/PhmhTMtPjvHhADJF1jw=
+X-Google-Smtp-Source: AGRyM1vpVH9mYKbCmmwnS4lz+GWa53yJrZpou5g2IhEW3/j+pwcP71PaEzDsfNyilqvzTau4LnYyhw==
+X-Received: by 2002:a17:902:8a91:b0:167:621f:9749 with SMTP id p17-20020a1709028a9100b00167621f9749mr2871786plo.9.1655352513997;
+        Wed, 15 Jun 2022 21:08:33 -0700 (PDT)
 Received: from localhost ([2406:7400:63:5d34:e6c2:4c64:12ae:aa11])
-        by smtp.gmail.com with ESMTPSA id 72-20020a17090a0fce00b001e310303275sm384123pjz.54.2022.06.15.21.04.15
+        by smtp.gmail.com with ESMTPSA id e8-20020a170902784800b00163d76696e1sm456561pln.102.2022.06.15.21.08.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jun 2022 21:04:15 -0700 (PDT)
-Date:   Thu, 16 Jun 2022 09:34:11 +0530
+        Wed, 15 Jun 2022 21:08:33 -0700 (PDT)
+Date:   Thu, 16 Jun 2022 09:38:29 +0530
 From:   Ritesh Harjani <ritesh.list@gmail.com>
 To:     Baokun Li <libaokun1@huawei.com>
 Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
         adilger.kernel@dilger.ca, jack@suse.cz, lczerner@redhat.com,
         enwlinux@gmail.com, linux-kernel@vger.kernel.org,
         yi.zhang@huawei.com, yebin10@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH v3 3/4] ext4: correct max_inline_xattr_value_size
- computing
-Message-ID: <20220616040411.5vsnxz5fc4yq4zri@riteshh-domain>
+Subject: Re: [PATCH v3 4/4] ext4: correct the misjudgment in
+ ext4_iget_extra_inode
+Message-ID: <20220616040829.kb66mg2dnitnlkau@riteshh-domain>
 References: <20220616021358.2504451-1-libaokun1@huawei.com>
- <20220616021358.2504451-4-libaokun1@huawei.com>
+ <20220616021358.2504451-5-libaokun1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220616021358.2504451-4-libaokun1@huawei.com>
+In-Reply-To: <20220616021358.2504451-5-libaokun1@huawei.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -74,35 +74,36 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 On 22/06/16 10:13AM, Baokun Li wrote:
-> If the ext4 inode does not have xattr space, 0 is returned in the
-> get_max_inline_xattr_value_size function. Otherwise, the function returns
-> a negative value when the inode does not contain EXT4_STATE_XATTR.
+> Use the EXT4_INODE_HAS_XATTR_SPACE macro to more accurately
+> determine whether the inode have xattr space.
 
-Yes, this looks good to me.
+Right. I also noticed there are few places in fs/ext4/xattr.c
+and in fs/ext4/inline.c where sizeof(__u32) is being used which (I think)
+should be EXT4_XATTR_PAD. But that need not be part of this patch series.
 
-Feel free to add -
+Looks good to me. Feel free to add -
 Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
 >
 > Signed-off-by: Baokun Li <libaokun1@huawei.com>
 > ---
->  fs/ext4/inline.c | 3 +++
->  1 file changed, 3 insertions(+)
+>  fs/ext4/inode.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 >
-> diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-> index cff52ff6549d..da5de43623dd 100644
-> --- a/fs/ext4/inline.c
-> +++ b/fs/ext4/inline.c
-> @@ -35,6 +35,9 @@ static int get_max_inline_xattr_value_size(struct inode *inode,
->  	struct ext4_inode *raw_inode;
->  	int free, min_offs;
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 53877ffe3c41..ae463cd9b405 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -4687,8 +4687,7 @@ static inline int ext4_iget_extra_inode(struct inode *inode,
+>  	__le32 *magic = (void *)raw_inode +
+>  			EXT4_GOOD_OLD_INODE_SIZE + ei->i_extra_isize;
 >
-> +	if (!EXT4_INODE_HAS_XATTR_SPACE(inode))
-> +		return 0;
-> +
->  	min_offs = EXT4_SB(inode->i_sb)->s_inode_size -
->  			EXT4_GOOD_OLD_INODE_SIZE -
->  			EXT4_I(inode)->i_extra_isize -
+> -	if (EXT4_GOOD_OLD_INODE_SIZE + ei->i_extra_isize + sizeof(__le32) <=
+> -	    EXT4_INODE_SIZE(inode->i_sb) &&
+> +	if (EXT4_INODE_HAS_XATTR_SPACE(inode)  &&
+>  	    *magic == cpu_to_le32(EXT4_XATTR_MAGIC)) {
+>  		ext4_set_inode_state(inode, EXT4_STATE_XATTR);
+>  		return ext4_find_inline_data_nolock(inode);
 > --
 > 2.31.1
 >
