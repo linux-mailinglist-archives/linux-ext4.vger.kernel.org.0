@@ -2,120 +2,96 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 377C954DF8E
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jun 2022 12:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E1454E058
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jun 2022 13:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359357AbiFPKyr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Jun 2022 06:54:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42080 "EHLO
+        id S1377041AbiFPLzR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Jun 2022 07:55:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbiFPKyq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Jun 2022 06:54:46 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 208905DE56;
-        Thu, 16 Jun 2022 03:54:45 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id C3B1B21DA2;
-        Thu, 16 Jun 2022 10:54:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1655376883; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bUUIZPIJgqXxIabRsFLC/hMdM3P1EPHF6IMeeNQPJ3k=;
-        b=oYMOSU/tHdBy+oZDN2Iq4v7D5Z4kSLCJDihrAK7vNLdY/lA0qXDSnivpwLt5scVQ9MQJoH
-        aOYj3Uyss26kiP75Llxq934OHm50ytCLnc34defPJ0jpK850LJVlY4PLcCioZbgPsZ0Kb/
-        1S0mEEZ32Rr5xuVEd2uG/oDx0KIs3RQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1655376883;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bUUIZPIJgqXxIabRsFLC/hMdM3P1EPHF6IMeeNQPJ3k=;
-        b=E5uc+W6+fJwJ5d/lHgcS/lfAqmkxxjfYyXaxLUQF5fs1EyV4lxUuoS0Kpo7bFWgWmUuDPC
-        Q/Y7jK95MI/eywCA==
-Received: from quack3.suse.cz (unknown [10.163.28.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 82FA22C141;
-        Thu, 16 Jun 2022 10:54:43 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 360CFA062E; Thu, 16 Jun 2022 12:54:42 +0200 (CEST)
-Date:   Thu, 16 Jun 2022 12:54:42 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ritesh Harjani <ritesh.list@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, Ye Bin <yebin10@huawei.com>,
-        tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] ext4: fix bug_on in ext4_iomap_begin as race
- between bmap and write
-Message-ID: <20220616105442.cki523p7rdft7svg@quack3.lan>
-References: <20220615135850.1961759-1-yebin10@huawei.com>
- <20220615152139.vp64tnv46enwnfcs@riteshh-domain>
- <20220615153123.ab32zt75q7yn7jc5@riteshh-domain>
- <20220615172609.oydxhjw7exas23hd@quack3.lan>
- <20220616063100.mkuqs6cxcqf6u234@riteshh-domain>
+        with ESMTP id S1377051AbiFPLzH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Jun 2022 07:55:07 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F355F26A
+        for <linux-ext4@vger.kernel.org>; Thu, 16 Jun 2022 04:54:50 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id x4so1296999pfj.10
+        for <linux-ext4@vger.kernel.org>; Thu, 16 Jun 2022 04:54:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JORvJ76YZUnXA8yViAI8KZykUORbRnZMMpR1ykLsjiU=;
+        b=aGLfBwgWivL31vY1/JScz2DMlDQMlIJ+SJK9m7Qtmo3Lw2PVwdStdQZ2UHC/XSwGYs
+         YCgPTDh9HJMA93VleIWo73KdapZFBVcNBfTuCerqeExg000Q7iYlW+hUNhA+mA04mfBo
+         lPV204NUKwd7s8ORyDftIeNh1kzL3cRxOAisc5r5mrgnyHd8IdrEvwzjC3Xv/mEObe/u
+         xVRDmziPwK6IbjAZH4eBVJr5nezxO8wcqRp5Jrmgog4jllKfbzU8phYxmu2epQxPtZwx
+         r7XQV1GXyj8FS4uTcj4XXIsaXTTVrx9uU5kxBPnb++OOHO6ADeaN5+9VNvrW+TWolPHr
+         caGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JORvJ76YZUnXA8yViAI8KZykUORbRnZMMpR1ykLsjiU=;
+        b=UHb4mvwopNwPMBnfDcVcSDIetDMF0J38ZfQBw4fs4Ue+/eR+053gPO9Y7AbVApl5TT
+         BKBHteyQP7UzbawloFr6wTcF/s3z/1Y5IeLqJtazB2ZMF2VMw2EkAEt7dOueu9PGOYV6
+         LXuqnCBuamOBOr2WV/S/cVh4TuduruUrPRPrK7XAVXtJ4XurjcAOfhSzqR5PI2QMLXQN
+         8Bpdo39Mqq1s1sux6xW4Q3eRS8aXzpkKy15CPpTcbNAcUnxDd1YKGicft3bXBYcgBqZW
+         /UMrw2tI1wLrXpj51S5ahqxJhYlvPgvFjvZbz5dBQ1BUoTQCcBDX6VEB4urA0KlljWwF
+         NKQw==
+X-Gm-Message-State: AJIora8S9zR8rzA2B/siEra7+xVopG4eQ/6Z9ijSht/DmyhC2PJ5VfYk
+        lvf18Gp8Y5QVfkLwRRH9vvw=
+X-Google-Smtp-Source: AGRyM1t+E1j98jp+gYksBATG1mEPa3+p2smfZaAi8rT6teDRZkdMfbSaBLFMGPxbvSDU+k2+PwNPcw==
+X-Received: by 2002:a05:6a00:1705:b0:51c:26ae:569c with SMTP id h5-20020a056a00170500b0051c26ae569cmr4428558pfc.28.1655380486175;
+        Thu, 16 Jun 2022 04:54:46 -0700 (PDT)
+Received: from localhost ([2406:7400:63:5d34:e6c2:4c64:12ae:aa11])
+        by smtp.gmail.com with ESMTPSA id c11-20020a621c0b000000b0051ba303f1c0sm1576895pfc.127.2022.06.16.04.54.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jun 2022 04:54:45 -0700 (PDT)
+Date:   Thu, 16 Jun 2022 17:24:40 +0530
+From:   Ritesh Harjani <ritesh.list@gmail.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 0/10 v2] ext4: Fix possible fs corruption due to xattr
+ races
+Message-ID: <20220616115440.ryjyecrwprgfoxp2@riteshh-domain>
+References: <20220614124146.21594-1-jack@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220616063100.mkuqs6cxcqf6u234@riteshh-domain>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220614124146.21594-1-jack@suse.cz>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 16-06-22 12:01:00, Ritesh Harjani wrote:
-> On 22/06/15 07:26PM, Jan Kara wrote:
-> > On Wed 15-06-22 21:01:23, Ritesh Harjani wrote:
-> > > > >
-> > > > > To solved above issue hold inode lock in ext4_bamp.
-> > > > 											^^^ ext4_bmap()
-> > > >
-> > > > I checked the paths where bmap() kernel api can be called i.e. from jbd2/fc and
-> > > > generic_swapfile_activate() (apart from ioctl())
-> > > > For jbd2, it will be called with j_inode within bmap(), hence taking a inode lock
-> > > > of the inode passed within ext4_bmap() (j_inode in this case) should be safe here.
-> > > > Same goes with swapfile path as well.
-> > > >
-> > > > However I feel maybe we should hold inode_lock_shared() since there is no
-> > > > block/extent map layout changes that can happen via ext4_bmap().
-> > > > Hence read lock is what IMO should be used here.
-> > >
-> > > On second thoughts, shoudn't we use ext4_iomap_report_ops here?  Can't
-> > > recollect why we didn't use ext4_iomap_report_ops for iomap_bmap() in the
-> > > first place. Should be good to verify it once.
-> >
-> > Hum, but I guess there's a deeper problem than ext4_bmap(). Generally we
-> > have places doing block mapping (such as ext4_writepages(), readahead, or
-> > page fault) where we don't hold i_rwsem and racing
-> > ext4_create_inline_data() could confuse them? I guess we need to come up
-> 
-> You are right, i_rwsem won't be able to protect against such races which you
-> described. So, we actually use EXT4_I(inode)->xattr_sem for inline data
-> serialization.
+On 22/06/14 06:05PM, Jan Kara wrote:
+> Hello,
+>
+> this is the second version of my patches to fix the race in ext4 xattr handling
+> that led to assertion failure in jbd2 Ritesh has reported. The series is
+> completely reworked. This time it passes beating with "stress-ng --xattr 16".
+> Also I'm somewhat happier about the current solution because, although it is
+> still not trivial to use mbcache correctly, it is at least harder to use it
+> in a racy way :). Please let me know what you think about this series.
 
-Yes, and that is a problem. Because all the places checking for
-ext4_has_inline_data() would have to be protected by xattr_sem (unless they
-are already protected by i_rwsem) to make sure we cannot race with inline
-data creation which is just unworkable both for performance and I suspect
-also lock ordering reasons.
+I have tested this on my setup where I was able to reproduce the problem with
+stress-ng. It ran for several hours and also passed fstests (quick).
 
-> So for this issue, I think if we should move from ext4_iomap_ops to
-> ext4_iomap_report_ops. ext4_iomap_begin_report does takes care of read locking
-> xattr_sem to properly report if it's a inline_data and similarly iomap_bmap
-> reports 0 (which it should) in case of iomap->type != IOMAP_MAPPED
-> (since in this case ext4_iomap_begin_report() will give IOMAP_INLINE)
+So feel free to -
+Tested-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
-I don't think the switch to ext4_iomap_report_ops is really correct. We
-use ext4_iomap_ops mostly for direct IO and if inline data gets there,
-there's indeed a deeper problem. Specifically for ext4_bmap() using i_rwsem
-may be acceptable solution but I'm generally against sprinkling locks here
-and there without good general locking design how exactly are inline data
-operations intended to be synchronized with stuff as writeback, readahead
-etc. Because as I wrote above xattr_sem is not really a working answer...
+-ritesh
 
-								Honza
+>
+> Changes since v1:
+> * Reworked the series to fix all corner cases and make API less errorprone.
+>
+> 								Honza
+>
+> Previous versions:
+> Link: http://lore.kernel.org/r/20220606142215.17962-1-jack@suse.cz # v1
