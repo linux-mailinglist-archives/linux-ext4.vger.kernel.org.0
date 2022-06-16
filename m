@@ -2,88 +2,135 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B1A54E113
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jun 2022 14:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF3454E347
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jun 2022 16:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231578AbiFPMtu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Jun 2022 08:49:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56452 "EHLO
+        id S232827AbiFPOWU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Jun 2022 10:22:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbiFPMtu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Jun 2022 08:49:50 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A521AD96
-        for <linux-ext4@vger.kernel.org>; Thu, 16 Jun 2022 05:49:49 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id B0B9E1F8C1;
-        Thu, 16 Jun 2022 12:49:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1655383787; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EyduPko3ZtALa4oOrrk1ZaEmySl+TBijpQJfEjnfkdA=;
-        b=0fESLNHoG50xvsYY5inQK0WAf4j55uU432NB/q2WAetioYQ9vvbHXwuJSWRRWHR7yx/8W4
-        oMgkN/DoZeb7NxaNPNRWtCW2dRlUJmPsAYJDlM7od7NKjORuo+GHIX3GekvtcQaD4S8q+4
-        v3S1Mi5vQyy/xOwRT91acvoPKigsaFA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1655383787;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EyduPko3ZtALa4oOrrk1ZaEmySl+TBijpQJfEjnfkdA=;
-        b=BNTHxPIMheIf4WC7cPeVkn+OnzxDm/63q7yqHtArck42LF6WfcpWi5c3fgqyIT8bYOU85b
-        9/RYDOZX5Jh/KXBw==
-Received: from quack3.suse.cz (unknown [10.163.28.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 8C3572C141;
-        Thu, 16 Jun 2022 12:49:47 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id F23D0A062E; Thu, 16 Jun 2022 14:49:46 +0200 (CEST)
-Date:   Thu, 16 Jun 2022 14:49:46 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ritesh Harjani <ritesh.list@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 0/10 v2] ext4: Fix possible fs corruption due to xattr
- races
-Message-ID: <20220616124946.pzkhx6q6nzrvuhxy@quack3.lan>
+        with ESMTP id S232449AbiFPOWT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Jun 2022 10:22:19 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB793B3EF;
+        Thu, 16 Jun 2022 07:22:18 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id s37so1632173pfg.11;
+        Thu, 16 Jun 2022 07:22:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=J62eWHBm1JNFoiDxH6Ar0/JBxBaKgKeGtVLTQNkH49I=;
+        b=NLfnQFzKtXZv8Xorzfs04lnAbj9Va00oDN4lA0sXxpAr4eDOsOV9DkyjjI6LXPDOtY
+         XKn2wZo6Hc++qO8K/hHcQnepVHHNUmYVHMNevAlnSY0gwYHNrIx0O4hgZEt9ptlwULTg
+         tuT5MQRW8uPE/Z21D4uTRowc+lqd3VZmnM23CRUhANvGK3AuxX7IMd1MIU6c3Q6bMZmj
+         qGh6Km0oL1uhvWtxByAMmi0AaXfNJkoC2tUlQBE6Tdb+bMGdclAdEldiHSDgK6MCK8yp
+         uXYhEBMKykHZ1QOCx5nX82smkQsaIpLp2QEbKwcW2tm3DEmKYXDMyl+2f+oMDfV39GiG
+         b8bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=J62eWHBm1JNFoiDxH6Ar0/JBxBaKgKeGtVLTQNkH49I=;
+        b=grJ4izg4vM1W6DPbjOIHGeA76BoKUbHEQtAl8PCqc1qKW9Pp3IhF4ukeA+JdrmBgH3
+         s5ei81QgezzkaSjNRNgbJkEYkOZwxRZgvs0aY5PeE0KssNy+rAtBv217sBDxSW/WBZQi
+         MQ8ja7V+aOZcltMsm/5AK+us2HZXbEvMfnL9UTkOPwMdXPcXTB4Onw90XIagSrxkpWEG
+         dsXWBfHCAtC4nFkQbakR7UpY8Vl8I73sELGL0nUhYsWB0EbJLRdFTlynjW5I6Cv/ZJ1b
+         WoiCufMy6QsQfwxP8bvNCw7yVTK2cYSmArmai0LrwgXOImhlHlTh+ofYejaIfdGeeGsq
+         EGLQ==
+X-Gm-Message-State: AJIora+Ovx4Fv5pckN2O3FgH+nmMElc+HPY/AyZ/kEc1F+QpH6UlhRNK
+        hP8NCCVOkMUcPD+qjPXazXGe3v2aI7M=
+X-Google-Smtp-Source: AGRyM1s9zZfQUdfw5VRC9sAQTNZA4tuEgEerSEtCm9JMusC2xcNxA6lKka5z7ocCldwkdLYos0lMvg==
+X-Received: by 2002:aa7:8e0b:0:b0:50d:6d7f:54d with SMTP id c11-20020aa78e0b000000b0050d6d7f054dmr5159906pfr.29.1655389337977;
+        Thu, 16 Jun 2022 07:22:17 -0700 (PDT)
+Received: from localhost ([2406:7400:63:5d34:e6c2:4c64:12ae:aa11])
+        by smtp.gmail.com with ESMTPSA id jd12-20020a170903260c00b001640ab19773sm1728312plb.58.2022.06.16.07.22.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jun 2022 07:22:17 -0700 (PDT)
+Date:   Thu, 16 Jun 2022 19:52:12 +0530
+From:   Ritesh Harjani <ritesh.list@gmail.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 01/10] mbcache: Don't reclaim used entries
+Message-ID: <20220616142212.do5hdazjkuq5ayar@riteshh-domain>
 References: <20220614124146.21594-1-jack@suse.cz>
- <20220616115440.ryjyecrwprgfoxp2@riteshh-domain>
+ <20220614160603.20566-1-jack@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220616115440.ryjyecrwprgfoxp2@riteshh-domain>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220614160603.20566-1-jack@suse.cz>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 16-06-22 17:24:40, Ritesh Harjani wrote:
-> On 22/06/14 06:05PM, Jan Kara wrote:
-> > Hello,
-> >
-> > this is the second version of my patches to fix the race in ext4 xattr handling
-> > that led to assertion failure in jbd2 Ritesh has reported. The series is
-> > completely reworked. This time it passes beating with "stress-ng --xattr 16".
-> > Also I'm somewhat happier about the current solution because, although it is
-> > still not trivial to use mbcache correctly, it is at least harder to use it
-> > in a racy way :). Please let me know what you think about this series.
-> 
-> I have tested this on my setup where I was able to reproduce the problem with
-> stress-ng. It ran for several hours and also passed fstests (quick).
-> 
-> So feel free to -
-> Tested-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+On 22/06/14 06:05PM, Jan Kara wrote:
+> Do not reclaim entries that are currently used by somebody from a
+> shrinker. Firstly, these entries are likely useful. Secondly, we will
+> need to keep such entries to protect pending increment of xattr block
+> refcount.
 
-Thanks for testing!
+Trying to review the patch series to best of my knowledge, so kindly excuse my
+silly queries along the way.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>
+> CC: stable@vger.kernel.org
+> Fixes: 82939d7999df ("ext4: convert to mbcache2")
+> Signed-off-by: Jan Kara <jack@suse.cz>
+> ---
+>  fs/mbcache.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/mbcache.c b/fs/mbcache.c
+> index 97c54d3a2227..cfc28129fb6f 100644
+> --- a/fs/mbcache.c
+> +++ b/fs/mbcache.c
+> @@ -288,7 +288,7 @@ static unsigned long mb_cache_shrink(struct mb_cache *cache,
+>  	while (nr_to_scan-- && !list_empty(&cache->c_list)) {
+>  		entry = list_first_entry(&cache->c_list,
+>  					 struct mb_cache_entry, e_list);
+> -		if (entry->e_referenced) {
+> +		if (entry->e_referenced || atomic_read(&entry->e_refcnt) > 2) {
+
+Sure, yes, the above "||" conditions looks good.
+i.e. if the refcnt is above 2, then we should move the entry to the tail of LRU.
+Because that means that there is another user of this entry which might have
+incremented the refcnt.
+
+>  			entry->e_referenced = 0;
+>  			list_move_tail(&entry->e_list, &cache->c_list);
+>  			continue;
+> @@ -302,6 +302,14 @@ static unsigned long mb_cache_shrink(struct mb_cache *cache,
+>  		spin_unlock(&cache->c_list_lock);
+>  		head = mb_cache_entry_head(cache, entry->e_key);
+>  		hlist_bl_lock(head);
+> +		/* Now a reliable check if the entry didn't get used... */
+
+But not sure why this is more reliable? Anytime we add or remove the entry,
+we first always do the list operation and then increment or decrement the
+refcnt "atomically".
+
+So could you please help in understanding why will this be more reliable?
+
+-ritesh
+
+
+> +		if (atomic_read(&entry->e_refcnt) > 2) {
+> +			hlist_bl_unlock(head);
+> +			spin_lock(&cache->c_list_lock);
+> +			list_add_tail(&entry->e_list, &cache->c_list);
+> +			cache->c_entry_count++;
+> +			continue;
+> +		}
+>  		if (!hlist_bl_unhashed(&entry->e_hash_list)) {
+>  			hlist_bl_del_init(&entry->e_hash_list);
+>  			atomic_dec(&entry->e_refcnt);
+> --
+> 2.35.3
+>
