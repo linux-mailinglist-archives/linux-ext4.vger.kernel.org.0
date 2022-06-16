@@ -2,104 +2,79 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B0654DEAF
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jun 2022 12:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 726D554DEE6
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jun 2022 12:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358706AbiFPKJa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Jun 2022 06:09:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57718 "EHLO
+        id S1376492AbiFPKZZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Jun 2022 06:25:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359535AbiFPKJ3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Jun 2022 06:09:29 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 483AC5D19C;
-        Thu, 16 Jun 2022 03:09:29 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 087161FB38;
-        Thu, 16 Jun 2022 10:09:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1655374168; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+caT8QlPQ9S6xpSAdMZVNNe1g04sv7ZRroACjeKdDOc=;
-        b=F5/ElkrDLgplFsNtvY5krxF2Pr+QiJEjksGjzpJSByplbixwgkKuQUNl4hD57jKWWVz0ZJ
-        u0wt+Cnb/CJJ+4flwIg5G3Zh/ydb5tOuCVXenhygoK1HoE/jzKGf8ftNwh5wnDmQkU6Qa5
-        LlMQWppo4lDieCqikbGbt5pRloLzG5k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1655374168;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+caT8QlPQ9S6xpSAdMZVNNe1g04sv7ZRroACjeKdDOc=;
-        b=1f+oYYcu5fNWng70dqZBzNGG3UuDmKoM7EyAOkT3avxPVQgAtqI3zeP/0Kl2WUZHzmdp6a
-        p1fHIVG81fHaeyDg==
-Received: from quack3.suse.cz (unknown [10.163.28.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id DB58F2C141;
-        Thu, 16 Jun 2022 10:09:27 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 49C60A062E; Thu, 16 Jun 2022 12:09:26 +0200 (CEST)
-Date:   Thu, 16 Jun 2022 12:09:26 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
-        lczerner@redhat.com, enwlinux@gmail.com,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yebin10@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH v3 4/4] ext4: correct the misjudgment in
- ext4_iget_extra_inode
-Message-ID: <20220616100926.g5rqt4ls4qlsl7s7@quack3.lan>
-References: <20220616021358.2504451-1-libaokun1@huawei.com>
- <20220616021358.2504451-5-libaokun1@huawei.com>
+        with ESMTP id S1376452AbiFPKZV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Jun 2022 06:25:21 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D635DA02
+        for <linux-ext4@vger.kernel.org>; Thu, 16 Jun 2022 03:25:19 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id a2so1523718lfg.5
+        for <linux-ext4@vger.kernel.org>; Thu, 16 Jun 2022 03:25:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=lLG88JCPgF7Yhflf4FNi4GQedsSNMbwmPtgneUr9Mu0=;
+        b=W910NhxhsjMJh8xmTqiBb+n/d8vNhkQvEK3uQsx019H/NVF/HsRkR91Mwgf5NoOA2o
+         +G9NG8HKS3dufLn4HoWATUwViMwR/sm7gdhYVGjSBp65IoH9/VzeePSRwsxtnWyD2IYd
+         /P+anhEIznyuyfYSv0fd8QvDY0LuzCx2TbyvmZF5dM2Nj4uA7+9FyoHxvD1xuHmQyiMU
+         TCzjnL3q1oIV583xyWy0s+D4KRyb2LgtwArAnNeV+m1AO8ORaxA26nm4VB9kA/9NXW1T
+         yHcu0NzK0YGRQb2+53awbQan+6daAbhIX2qCkYqY9Qavm2WmKJIEIH3npl/ZhVNAwvQV
+         qPgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=lLG88JCPgF7Yhflf4FNi4GQedsSNMbwmPtgneUr9Mu0=;
+        b=Clw4FknRIC/OpI/8uvzNdfYOVy/KKoG5OlBjiRKvSVsy7DHaFYcmnkvNZ1rHEjNy9C
+         vBQ0ZZx7oJirkcAGJ6ufwnQ7OUJHE2V6FZ1S1DWeulfixIyZr2AuF16VBYjYh3ZEmXve
+         mAc1rfYoCxw/Tr1JEt9TarMBKID93ZOLjvE1Xk1HIL/U0sZnRDz829vLLNjuyX6Beh23
+         Dd6sj3YZErOicXPy8NMgaMn217e2yBnXiFAh9j1QXGJ72lHoGhp55zYIFO7tBA6k3pAO
+         QW15imMwg0m1JNof7LR4ZRzqmOFtRmmMx6euaGc0jhiEiHYnMvmKM6dXb51dSSKzqA0B
+         xcCw==
+X-Gm-Message-State: AJIora930LtG+c6PPpljsZ/o3VQ9tLYyELgdKO4/pVmnTZ/gKwy9/zQH
+        Ui+BMFqZ/UVTK1mFHPRxF2OD0fE/OgHJJHdG0uEVhjr2XmAiW1WuU+k=
+X-Google-Smtp-Source: AGRyM1v2MTXGyROmKEYPPr3IJqOTubJyWU9u6UFQYhvDngD40bhPycsNsVME02FGDV5945mXaS61m+8B4cqbLiC7v1U=
+X-Received: by 2002:a05:6512:3448:b0:479:10f0:11c7 with SMTP id
+ j8-20020a056512344800b0047910f011c7mr2248569lfr.521.1655375117521; Thu, 16
+ Jun 2022 03:25:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220616021358.2504451-5-libaokun1@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Received: by 2002:a05:6520:28c2:b0:1f3:cf5:e20d with HTTP; Thu, 16 Jun 2022
+ 03:25:16 -0700 (PDT)
+Reply-To: clmloans9@gmail.com
+From:   MR ANTHONY EDWARD <bashirusman02021@gmail.com>
+Date:   Thu, 16 Jun 2022 11:25:16 +0100
+Message-ID: <CAGOBX5aJ01nW_foH2aLY6UF6s28QePJ4_J3aCt=hjQSuJNsdog@mail.gmail.com>
+Subject: DARLEHENSANGEBOT
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=4.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
+        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
         version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 16-06-22 10:13:58, Baokun Li wrote:
-> Use the EXT4_INODE_HAS_XATTR_SPACE macro to more accurately
-> determine whether the inode have xattr space.
-> 
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+--=20
+Ben=C3=B6tigen Sie ein Gesch=C3=A4ftsdarlehen oder ein Darlehen jeglicher A=
+rt?
+Wenn ja, kontaktieren Sie uns
 
-Looks good! Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/ext4/inode.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 53877ffe3c41..ae463cd9b405 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -4687,8 +4687,7 @@ static inline int ext4_iget_extra_inode(struct inode *inode,
->  	__le32 *magic = (void *)raw_inode +
->  			EXT4_GOOD_OLD_INODE_SIZE + ei->i_extra_isize;
->  
-> -	if (EXT4_GOOD_OLD_INODE_SIZE + ei->i_extra_isize + sizeof(__le32) <=
-> -	    EXT4_INODE_SIZE(inode->i_sb) &&
-> +	if (EXT4_INODE_HAS_XATTR_SPACE(inode)  &&
->  	    *magic == cpu_to_le32(EXT4_XATTR_MAGIC)) {
->  		ext4_set_inode_state(inode, EXT4_STATE_XATTR);
->  		return ext4_find_inline_data_nolock(inode);
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+*Vollst=C3=A4ndiger Name:
+* Ben=C3=B6tigte Menge:
+*Leihdauer:
+*Mobiltelefon:
+*Land:
