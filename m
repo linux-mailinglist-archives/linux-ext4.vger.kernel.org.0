@@ -2,166 +2,142 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FEB654F49E
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jun 2022 11:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE4154F5C7
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jun 2022 12:46:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235905AbiFQJvk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Jun 2022 05:51:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38430 "EHLO
+        id S1381993AbiFQKoz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Jun 2022 06:44:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380989AbiFQJvj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Jun 2022 05:51:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 24BF969292
-        for <linux-ext4@vger.kernel.org>; Fri, 17 Jun 2022 02:51:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1655459498;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        with ESMTP id S236113AbiFQKoy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Jun 2022 06:44:54 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD2936B649;
+        Fri, 17 Jun 2022 03:44:53 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 7CA631F86B;
+        Fri, 17 Jun 2022 10:44:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1655462692; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=W2XL8pkjreEj3h2zo18bB3t5OqDKTr/JgGg6/1/Ir4Q=;
-        b=NRVq/kabZ2ufeDdk+qoqt4OUnx8BsBjVDpXb7M0cTyD4jjp3+aZLD3wqTekpuigHR6Drtp
-        DxBDtdPcv9QWYcZrSfSiC2wZuflCUZTDetUxEsAe/g6lfBWOCzhXeRfgNTHFqRkVsKmgXS
-        Au3wkieXa+838s5F3XR3DrlB9oTgjus=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-628-D84GadYpOf-rfXcLW-rmLA-1; Fri, 17 Jun 2022 05:51:37 -0400
-X-MC-Unique: D84GadYpOf-rfXcLW-rmLA-1
-Received: by mail-wr1-f72.google.com with SMTP id w8-20020adfde88000000b00213b7fa3a37so834966wrl.2
-        for <linux-ext4@vger.kernel.org>; Fri, 17 Jun 2022 02:51:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:organization:subject
-         :in-reply-to:content-transfer-encoding;
-        bh=W2XL8pkjreEj3h2zo18bB3t5OqDKTr/JgGg6/1/Ir4Q=;
-        b=S/mmqXfgQWXGs92QzACmXgrw/tmOyUPCCQkTBKecuYgSlAeSO1IDE/RckYZ4MfZIb/
-         4kSZLstKBOKN4czWQTWHxIcrMPUIWoSRvqTXwISgoFr7jyTr4qWFtgBljOGP8TCvKtCe
-         NpggfMZ+vgIysf0K7RHRUFK2/SYY/t+cP3VKahXWHFl32BQ7rTuDbLX3O83/CqJy1gRe
-         57yTOCDOsYNrqAZDDjXDTG8F7ck70XPp8TfWRhd1Tnmc6GmancIcppss/KholgOnxKQB
-         tfOhE6MUYCxlZwz9HZXqlpXD3jcTzHy83xyLUF6hntsgMgjV50Gc9fZMd/wev44v+smA
-         OvAA==
-X-Gm-Message-State: AJIora9yD+IICeo5sWbKkTCO024s3cocNd74UYnhwhjuebskpHJFvImL
-        wybmGaSTsAFLZ8oTOlX2Pjr853Nz0WpcUMpAfLbHir7weSHs6GcFXmoMMWwhHIHd1SPbFvPSTvK
-        Rbs7BLeQuMFjARjz95gm6bw==
-X-Received: by 2002:a5d:4108:0:b0:213:b585:66c7 with SMTP id l8-20020a5d4108000000b00213b58566c7mr8407249wrp.335.1655459495983;
-        Fri, 17 Jun 2022 02:51:35 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1vPq26W2EV6yn5ge0JaefggrEXKWcvxXJQoWeAk7go6hHo/0LCo2WNzDgeOAFhBKPGgtatufQ==
-X-Received: by 2002:a5d:4108:0:b0:213:b585:66c7 with SMTP id l8-20020a5d4108000000b00213b58566c7mr8407226wrp.335.1655459495720;
-        Fri, 17 Jun 2022 02:51:35 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c70a:7e00:bb5b:b526:5b76:5824? (p200300cbc70a7e00bb5bb5265b765824.dip0.t-ipconnect.de. [2003:cb:c70a:7e00:bb5b:b526:5b76:5824])
-        by smtp.gmail.com with ESMTPSA id i188-20020a1c3bc5000000b0039ee52c1345sm2080057wma.4.2022.06.17.02.51.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Jun 2022 02:51:35 -0700 (PDT)
-Message-ID: <ae6c6566-4c9b-0547-c2e4-3df7cb2bed33@redhat.com>
-Date:   Fri, 17 Jun 2022 11:51:34 +0200
+        bh=61q2Dy+gZjuH4Bh0Xd2gu4uqaiCBzwX90MvJbzqaUOU=;
+        b=KfxmhOgSgc2oQDKIMz6oIIAqpRyswGOkAWCzNgyVp9AbeV+0WT+7vija1JwYUmp9BCosX6
+        hFI4tjQDgfKw8IdPpl2EErSllzYgxmWGzbyyVftU2CDjarm9cfgpMR81WSWKkR+l0+KHc4
+        aq3TyyfWG7aUuU770QuMT6nLrwR7yWI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1655462692;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=61q2Dy+gZjuH4Bh0Xd2gu4uqaiCBzwX90MvJbzqaUOU=;
+        b=UgbpnSTK0x8HK0BqJjnkWsv7lPyzpJHbc61J4zgxH2LmyaP4Br4Y9O8uK09VdOGKEQvwvU
+        D38QdmekCR4nX9CA==
+Received: from quack3.suse.cz (unknown [10.100.224.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id C9D372C142;
+        Fri, 17 Jun 2022 10:44:50 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id E035AA0632; Fri, 17 Jun 2022 12:44:41 +0200 (CEST)
+Date:   Fri, 17 Jun 2022 12:44:41 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Li Lingfeng <lilingfeng3@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, linux-kernel@vger.kernel.org,
+        jack@suse.cz, yi.zhang@huawei.com, yukuai3@huawei.com,
+        libaokun2@huawei.com
+Subject: Re: [PATCH -next] ext4: recover csum seed of tmp_inode after
+ migrating to extents
+Message-ID: <20220617104441.lfhuca6tflg2oxah@quack3.lan>
+References: <20220617062515.2113438-1-lilingfeng3@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Content-Language: en-US
-To:     Alex Sierra <alex.sierra@amd.com>, jgg@nvidia.com
-Cc:     Felix.Kuehling@amd.com, linux-mm@kvack.org, rcampbell@nvidia.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        hch@lst.de, jglisse@redhat.com, apopple@nvidia.com,
-        willy@infradead.org, akpm@linux-foundation.org
-References: <20220531200041.24904-1-alex.sierra@amd.com>
- <20220531200041.24904-3-alex.sierra@amd.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v5 02/13] mm: handling Non-LRU pages returned by
- vm_normal_pages
-In-Reply-To: <20220531200041.24904-3-alex.sierra@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220617062515.2113438-1-lilingfeng3@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 31.05.22 22:00, Alex Sierra wrote:
-> With DEVICE_COHERENT, we'll soon have vm_normal_pages() return
-> device-managed anonymous pages that are not LRU pages. Although they
-> behave like normal pages for purposes of mapping in CPU page, and for
-> COW. They do not support LRU lists, NUMA migration or THP.
+On Fri 17-06-22 14:25:15, Li Lingfeng wrote:
+> When migrating to extents, the checksum seed of temporary inode
+> need to be replaced by inode's, otherwise the inode checksums
+> will be incorrect when swapping the inodes data.
 > 
-> We also introduced a FOLL_LRU flag that adds the same behaviour to
-> follow_page and related APIs, to allow callers to specify that they
-> expect to put pages on an LRU list.
+> However, the temporary inode can not match it's checksum to
+> itself since it has lost it's own checksum seed.
 > 
-> Signed-off-by: Alex Sierra <alex.sierra@amd.com>
-> Acked-by: Felix Kuehling <Felix.Kuehling@amd.com>
+> mkfs.ext4 -F /dev/sdc
+> mount /dev/sdc /mnt/sdc
+> xfs_io -fc "pwrite 4k 4k" -c "fsync" /mnt/sdc/testfile
+> chattr -e /mnt/sdc/testfile
+> chattr +e /mnt/sdc/testfile
+> umount /dev/sdc
+> fsck -fn /dev/sdc
+> 
+> ========
+> ...
+> Pass 1: Checking inodes, blocks, and sizes
+> Inode 13 passes checks, but checksum does not match inode.  Fix? no
+> ...
+> ========
+> 
+> The fix is simple, save the checksum seed of temporary inode, and
+> recover it after migrating to extents.
+> 
+> Fixes: e81c9302a6c3 ("ext4: set csum seed in tmp inode while migrating to extents")
+> Signed-off-by: Li Lingfeng <lilingfeng3@huawei.com>
+
+Yeah, the migration code and checksums never quite worked together. That's
+the reason why we'd decided to deprecate this code. But I guess this fix is
+simple enough and improves things so feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
 > ---
->  fs/proc/task_mmu.c | 2 +-
->  include/linux/mm.h | 3 ++-
->  mm/gup.c           | 6 +++++-
->  mm/huge_memory.c   | 2 +-
->  mm/khugepaged.c    | 9 ++++++---
->  mm/ksm.c           | 6 +++---
->  mm/madvise.c       | 4 ++--
->  mm/memory.c        | 9 ++++++++-
->  mm/mempolicy.c     | 2 +-
->  mm/migrate.c       | 4 ++--
->  mm/mlock.c         | 2 +-
->  mm/mprotect.c      | 2 +-
->  12 files changed, 33 insertions(+), 18 deletions(-)
+>  fs/ext4/migrate.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> index 2d04e3470d4c..2dd8c8a66924 100644
-> --- a/fs/proc/task_mmu.c
-> +++ b/fs/proc/task_mmu.c
-> @@ -1792,7 +1792,7 @@ static struct page *can_gather_numa_stats(pte_t pte, struct vm_area_struct *vma,
->  		return NULL;
+> diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
+> index 49912814f3d8..04320715d61f 100644
+> --- a/fs/ext4/migrate.c
+> +++ b/fs/ext4/migrate.c
+> @@ -417,7 +417,7 @@ int ext4_ext_migrate(struct inode *inode)
+>  	struct inode *tmp_inode = NULL;
+>  	struct migrate_struct lb;
+>  	unsigned long max_entries;
+> -	__u32 goal;
+> +	__u32 goal, tmp_csum_seed;
+>  	uid_t owner[2];
 >  
->  	page = vm_normal_page(vma, addr, pte);
-> -	if (!page)
-> +	if (!page || is_zone_device_page(page))
->  		return NULL;
->  
->  	if (PageReserved(page))
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index bc8f326be0ce..d3f43908ff8d 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -601,7 +601,7 @@ struct vm_operations_struct {
->  #endif
 >  	/*
->  	 * Called by vm_normal_page() for special PTEs to find the
-> -	 * page for @addr.  This is useful if the default behavior
-> +	 * page for @addr. This is useful if the default behavior
->  	 * (using pte_page()) would not find the correct page.
+> @@ -465,6 +465,7 @@ int ext4_ext_migrate(struct inode *inode)
+>  	 * the migration.
 >  	 */
->  	struct page *(*find_special_page)(struct vm_area_struct *vma,
-> @@ -2934,6 +2934,7 @@ struct page *follow_page(struct vm_area_struct *vma, unsigned long address,
->  #define FOLL_NUMA	0x200	/* force NUMA hinting page fault */
->  #define FOLL_MIGRATION	0x400	/* wait for page to replace migration entry */
->  #define FOLL_TRIED	0x800	/* a retry, previous pass started an IO */
-> +#define FOLL_LRU        0x1000  /* return only LRU (anon or page cache) */
-
-Does that statement hold for special pages like the shared zeropage?
-
-Also, this flag is only valid for in-kernel follow_page() but not for
-the ordinary GUP interfaces. What are the semantics there? Is it fenced?
-
-
-I really wonder if you should simply similarly teach the handful of
-users of follow_page() to just special case these pages ... sounds
-cleaner to me then adding flags with unclear semantics. Alternatively,
-properly document what that flag is actually doing and where it applies.
-
-
-I know, there was discussion on ... sorry for jumping in now, but this
-doesn't look clean to me yet.
-
+>  	ei = EXT4_I(inode);
+> +	tmp_csum_seed = EXT4_I(tmp_inode)->i_csum_seed;
+>  	EXT4_I(tmp_inode)->i_csum_seed = ei->i_csum_seed;
+>  	i_size_write(tmp_inode, i_size_read(inode));
+>  	/*
+> @@ -575,6 +576,7 @@ int ext4_ext_migrate(struct inode *inode)
+>  	 * the inode is not visible to user space.
+>  	 */
+>  	tmp_inode->i_blocks = 0;
+> +	EXT4_I(tmp_inode)->i_csum_seed = tmp_csum_seed;
+>  
+>  	/* Reset the extent details */
+>  	ext4_ext_tree_init(handle, tmp_inode);
+> -- 
+> 2.31.1
+> 
 -- 
-Thanks,
-
-David / dhildenb
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
