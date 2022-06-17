@@ -2,51 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CBE354FB2D
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jun 2022 18:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B38754FB3A
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jun 2022 18:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383346AbiFQQdc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Jun 2022 12:33:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45536 "EHLO
+        id S1383343AbiFQQii (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Jun 2022 12:38:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383358AbiFQQda (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Jun 2022 12:33:30 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4525447AFE
-        for <linux-ext4@vger.kernel.org>; Fri, 17 Jun 2022 09:33:28 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id l18so5267037lje.13
-        for <linux-ext4@vger.kernel.org>; Fri, 17 Jun 2022 09:33:28 -0700 (PDT)
+        with ESMTP id S1383351AbiFQQie (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Jun 2022 12:38:34 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6683338BC1
+        for <linux-ext4@vger.kernel.org>; Fri, 17 Jun 2022 09:38:33 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id s6so7712998lfo.13
+        for <linux-ext4@vger.kernel.org>; Fri, 17 Jun 2022 09:38:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:from:date:message-id:subject:to;
         bh=4ovR8XEIiThxafmbfH2hWCxDryiss6gUb37WNfn5iMk=;
-        b=IdLBhIMFwPrPNyC39302QDb+j6uj4tv5MsJwL3qEccuNNHDa19VAcNv/VfyIm8pZwC
-         iqVYfJReYyD0ucIbq7cMU/9VZZ5Z9rxVvGtHrRnm1nd8Ugo8URr/csb/rY6eVAApBVpl
-         AZ6n0AXg+qIJQyobxeICo/0+ZuPSYnNKtBmvr9L2M0w21SKFZ+ah3b1NsiP1caFVPRz2
-         tCBKBNZHUezinaoAvEAj+eY9LQfP9s/zlpbETGGLoOZV0eeDs42saSnfgm4g6e+idhRW
-         Io9y+/nD+VItDGvBWkElT62mCq8PRlVXn5GNwcqk5c4QaHE4gMWOdUr4AdluvtxiZ+nB
-         LQew==
+        b=gYU6RrB32s5kXlmT0sUS2HQxRdRvqh0q2c4cEvRfiMhDv4WPp4zQcgB/yZYxSnIsuQ
+         5+BU+w4Q/qBqRtc1IXhJaOcpdTWB7ioPoc1Gs0hwCCm7p1d5ewDvS5/iFo/d/IWoPEhP
+         kIaBgHlYgblxaKezH3Imu7wrMdCWvUD1E177cojN+UrxRkPFX1XaCBGaP7qmjFkGW8Rp
+         gH1A6BtLjL5DWzSDq7BWjUoDnM3QvFSPheVYoVMIo7D31dnsWHkPrMHSWvoKfKmpuVH1
+         kC/ymjGD+DYl3PJuBRFCNNGoLCeJ4eBY7aoemNDNqkwbC7IOaP/gd7Cs1o8SH3yAway5
+         cdFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
         bh=4ovR8XEIiThxafmbfH2hWCxDryiss6gUb37WNfn5iMk=;
-        b=GbOiaU/8UDexPZfNDo+Q/84OFoDNsbj7LL6ajTE2Vkhpi6l9CVOBrjMRXyeZyC1AR7
-         rJj6ZswWiiJJRogvS0OIISfF+6DQqsddErLcPu59Nncpfw1s2KgOGWGJ3T1RAlcVE2ch
-         3KWPuxA/ECvOR/9UzDrIvDca8j8Ua+QVp9LInbcQ+mRiB+rUgbblr8Hv5f3We+niMRC2
-         ZBbnWV+P6xtXtRXlRl2h9dbDUxg9MW7U7Cog0lB81JClSYo+r5RVu4duUmPHES48Rv3U
-         xERlArFJZO0xA4OuqutDzZof/vSQKYdD/YCzVqitt+aq363NWiowHzzZ5PTZ419Jh0an
-         j4yw==
-X-Gm-Message-State: AJIora/46slOMEm17/mh8cnCHXmYHvCC7G2WZwgsGtW5Qdpiz4sDsQh0
-        oz9n5KZ+FSNpKdwBHEuXGCHLsDC5PTMalNlm0UYorKL67Auusg==
-X-Google-Smtp-Source: AGRyM1sYavaP36kbfhhvZzmFTX54+WdtKo/jEsD3jhlowfsX3hkVqm85Z0suxNkTnEXPfXCeNzsc93ZwY/5GMYScy00=
-X-Received: by 2002:a2e:b893:0:b0:255:c257:5de with SMTP id
- r19-20020a2eb893000000b00255c25705demr5617180ljp.53.1655483606349; Fri, 17
- Jun 2022 09:33:26 -0700 (PDT)
+        b=6nKQhQ2zR3oLDZsfMO8cYP6TelZrbTeQ6/ZClawR71HdIf1VAgEVTgZJW6IGDtOnWA
+         lENDjL2EdeImh2VniobUK71IdMQQOr6JszP3F3M7sp4GU8Ckx6o9sfgSJrPnUmFHJTPH
+         NeV9vUp0gb4t4syDhpn5t3FEWsO0qfTwyPGVWWXDHXEHle9zICi2HMLjfttG2Xj5SgII
+         OMettIuP3fbrHgVTCPRbWHAUBhhRR+O6PtF5XVmW74leib4zSqBYuYOTCEzz+j76Z3NK
+         P2IyiKGudR44adc4BywIyvdHjPdjvusIQfJzwYW8DxVxFLn+UQn4SU4c6fB3+c42yeCU
+         SCmA==
+X-Gm-Message-State: AJIora+HmEV3SnHYsnixH7TuG/LyWlVv274Z5qhbZav3wUt6DlxsIBPb
+        iVwriaacrj6rGXrySml4OEvNlB/CtL+PSBxiztuMrjYNXTcG/ndD
+X-Google-Smtp-Source: AGRyM1uosIvbc1rjcjhfQvRSKQWI8rG+SQIDdFRfLfVMyRcMCx7wgdVirPoHWSKvJ1BzOBQyd6oJiwfjTOKLCMEEd5Y=
+X-Received: by 2002:a05:6512:2346:b0:479:43b1:8fcf with SMTP id
+ p6-20020a056512234600b0047943b18fcfmr5959490lfu.441.1655483911493; Fri, 17
+ Jun 2022 09:38:31 -0700 (PDT)
 MIME-Version: 1.0
 From:   Santosh S <santosh.letterz@gmail.com>
-Date:   Fri, 17 Jun 2022 12:33:15 -0400
-Message-ID: <CAGQ4T_L9B7RMUc=aE_x4zFXVdg1OOWsiz_5+NfvNFD5jXxJQfA@mail.gmail.com>
-Subject: santosh.letterz@gmail.com
+Date:   Fri, 17 Jun 2022 12:38:20 -0400
+Message-ID: <CAGQ4T_Jne-bxdP9rMNBzqXw16a4kD4FM=F5VuGgUbczj5WgCLA@mail.gmail.com>
+Subject: Overwrite faster than fallocate
 To:     linux-ext4@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
