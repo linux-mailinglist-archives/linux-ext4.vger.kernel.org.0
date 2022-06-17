@@ -2,186 +2,137 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6923F54EAF7
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jun 2022 22:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6FE54EEC7
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jun 2022 03:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378441AbiFPUWf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Jun 2022 16:22:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36848 "EHLO
+        id S1379483AbiFQB0i (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Jun 2022 21:26:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378460AbiFPUWd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Jun 2022 16:22:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93D7BC51;
-        Thu, 16 Jun 2022 13:22:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7C48361D28;
-        Thu, 16 Jun 2022 20:22:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A0B0C3411B;
-        Thu, 16 Jun 2022 20:22:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655410949;
-        bh=M3h58AGOHHTXWiuwNhC9HEL2EAhvwozEXVfdsCNjbvM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=MjJzjusn6ewv72iXR7k0V9x/KXqlia2Fj9JbaIi0pnWWHSBCRL/nBqC84wAMXdJCF
-         uUWcNCHMHFrddP4MYyXNp+Oy0fybAkSIH95xeQ6Fk9zuPmQC3WPQjcduLzixxM7o8G
-         38TPZXSveYCnsy3jrG82hgamJWRowDxP5Jnu4mwmXh5fHMijOx1AFSFhvqbdv/EdVG
-         TaI45Xjwf/GQa0Js+dwSyIt3oQHXLHaIK3t4Ci6uJA/1OMEXWvqW6rq9nnmGc9+5jr
-         JTCmydNG7ltO+qEaQ/uPUkbQlP0pBkiGsWa4Up7jj7oH5TIV2ObhSOLE3aFhumB652
-         gWnXZB3m31aSw==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-man@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Keith Busch <kbusch@kernel.org>
-Subject: [man-pages RFC PATCH] statx.2, open.2: document STATX_DIOALIGN
-Date:   Thu, 16 Jun 2022 13:21:41 -0700
-Message-Id: <20220616202141.125079-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.36.1
+        with ESMTP id S232424AbiFQB0h (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Jun 2022 21:26:37 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B6E8633BE;
+        Thu, 16 Jun 2022 18:26:36 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LPLvW22g4zjXY8;
+        Fri, 17 Jun 2022 09:25:27 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Fri, 17 Jun
+ 2022 09:26:33 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
+        Ye Bin <yebin10@huawei.com>
+Subject: [PATCH -next v2] ext4: fix warning in ext4_iomap_begin as race between bmap and write
+Date:   Fri, 17 Jun 2022 09:39:35 +0800
+Message-ID: <20220617013935.397596-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+We got issue as follows:
+------------[ cut here ]------------
+WARNING: CPU: 3 PID: 9310 at fs/ext4/inode.c:3441 ext4_iomap_begin+0x182/0x5d0
+RIP: 0010:ext4_iomap_begin+0x182/0x5d0
+RSP: 0018:ffff88812460fa08 EFLAGS: 00010293
+RAX: ffff88811f168000 RBX: 0000000000000000 RCX: ffffffff97793c12
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: ffff88812c669160 R08: ffff88811f168000 R09: ffffed10258cd20f
+R10: ffff88812c669077 R11: ffffed10258cd20e R12: 0000000000000001
+R13: 00000000000000a4 R14: 000000000000000c R15: ffff88812c6691ee
+FS:  00007fd0d6ff3740(0000) GS:ffff8883af180000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fd0d6dda290 CR3: 0000000104a62000 CR4: 00000000000006e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ iomap_apply+0x119/0x570
+ iomap_bmap+0x124/0x150
+ ext4_bmap+0x14f/0x250
+ bmap+0x55/0x80
+ do_vfs_ioctl+0x952/0xbd0
+ __x64_sys_ioctl+0xc6/0x170
+ do_syscall_64+0x33/0x40
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Document the proposed STATX_DIOALIGN support for statx()
-(https://lore.kernel.org/linux-fsdevel/20220616201506.124209-1-ebiggers@kernel.org).
+Above issue may happen as follows:
+          bmap                    write
+bmap
+  ext4_bmap
+    iomap_bmap
+      ext4_iomap_begin
+                            ext4_file_write_iter
+			      ext4_buffered_write_iter
+			        generic_perform_write
+				  ext4_da_write_begin
+				    ext4_da_write_inline_data_begin
+				      ext4_prepare_inline_data
+				        ext4_create_inline_data
+					  ext4_set_inode_flag(inode,
+						EXT4_INODE_INLINE_DATA);
+      if (WARN_ON_ONCE(ext4_has_inline_data(inode))) ->trigger bug_on
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
+To solved above issue hold inode lock in ext4_bamp.
+
+Signed-off-by: Ye Bin <yebin10@huawei.com>
 ---
- man2/open.2  | 43 ++++++++++++++++++++++++++++++++-----------
- man2/statx.2 | 32 +++++++++++++++++++++++++++++++-
- 2 files changed, 63 insertions(+), 12 deletions(-)
+ fs/ext4/inode.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/man2/open.2 b/man2/open.2
-index d1485999f..ef29847c3 100644
---- a/man2/open.2
-+++ b/man2/open.2
-@@ -1732,21 +1732,42 @@ of user-space buffers and the file offset of I/Os.
- In Linux alignment
- restrictions vary by filesystem and kernel version and might be
- absent entirely.
--However there is currently no filesystem\-independent
--interface for an application to discover these restrictions for a given
--file or filesystem.
--Some filesystems provide their own interfaces
--for doing so, for example the
-+The handling of misaligned
-+.B O_DIRECT
-+I/Os also varies; they can either fail with
-+.B EINVAL
-+or fall back to buffered I/O.
-+.PP
-+Since Linux 5.20,
-+.B O_DIRECT
-+support and alignment restrictions for a file can be queried using
-+.BR statx (2),
-+using the
-+.B STATX_DIOALIGN
-+flag.
-+Support for
-+.B STATX_DIOALIGN
-+varies by filesystem; see
-+.BR statx (2).
-+.PP
-+Some filesystems provide their own interfaces for querying
-+.B O_DIRECT
-+alignment restrictions, for example the
- .B XFS_IOC_DIOINFO
- operation in
- .BR xfsctl (3).
-+.B STATX_DIOALIGN
-+should be used instead when it is available.
- .PP
--Under Linux 2.4, transfer sizes, the alignment of the user buffer,
--and the file offset must all be multiples of the logical block size
--of the filesystem.
--Since Linux 2.6.0, alignment to the logical block size of the
--underlying storage (typically 512 bytes) suffices.
--The logical block size can be determined using the
-+If none of the above is available, then direct I/O support and alignment
-+restrictions can only be assumed from known characteristics of the filesystem,
-+the individual file, the underlying storage device(s), and the kernel version.
-+In Linux 2.4, most block device based filesystems require that the file offset
-+and the length and memory address of all I/O segments be multiples of the
-+filesystem block size (typically 4096 bytes).
-+In Linux 2.6.0, this was relaxed to the logical block size of the block device
-+(typically 512 bytes).
-+A block device's logical block size can be determined using the
- .BR ioctl (2)
- .B BLKSSZGET
- operation or from the shell using the command:
-diff --git a/man2/statx.2 b/man2/statx.2
-index a8620be6f..fff0a63ec 100644
---- a/man2/statx.2
-+++ b/man2/statx.2
-@@ -61,7 +61,12 @@ struct statx {
-        containing the filesystem where the file resides */
-     __u32 stx_dev_major;   /* Major ID */
-     __u32 stx_dev_minor;   /* Minor ID */
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 53877ffe3c41..9e520a324e37 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3142,13 +3142,15 @@ static sector_t ext4_bmap(struct address_space *mapping, sector_t block)
+ {
+ 	struct inode *inode = mapping->host;
+ 	journal_t *journal;
++	sector_t ret = 0;
+ 	int err;
+ 
++	inode_lock_shared(inode);
+ 	/*
+ 	 * We can get here for an inline file via the FIBMAP ioctl
+ 	 */
+ 	if (ext4_has_inline_data(inode))
+-		return 0;
++		goto out;
+ 
+ 	if (mapping_tagged(mapping, PAGECACHE_TAG_DIRTY) &&
+ 			test_opt(inode->i_sb, DELALLOC)) {
+@@ -3187,10 +3189,14 @@ static sector_t ext4_bmap(struct address_space *mapping, sector_t block)
+ 		jbd2_journal_unlock_updates(journal);
+ 
+ 		if (err)
+-			return 0;
++			goto out;
+ 	}
+ 
+-	return iomap_bmap(mapping, block, &ext4_iomap_ops);
++	ret = iomap_bmap(mapping, block, &ext4_iomap_ops);
 +
-     __u64 stx_mnt_id;      /* Mount ID */
-+
-+    /* Direct I/O alignment restrictions */
-+    __u32 stx_dio_mem_align;
-+    __u32 stx_dio_offset_align;
- };
- .EE
- .in
-@@ -244,8 +249,11 @@ STATX_SIZE	Want stx_size
- STATX_BLOCKS	Want stx_blocks
- STATX_BASIC_STATS	[All of the above]
- STATX_BTIME	Want stx_btime
-+STATX_ALL	The same as STATX_BASIC_STATS | STATX_BTIME.
-+         	This is deprecated and should not be used.
- STATX_MNT_ID	Want stx_mnt_id (since Linux 5.8)
--STATX_ALL	[All currently available fields]
-+STATX_DIOALIGN	Want stx_dio_mem_align and stx_dio_offset_align
-+              	(since Linux 5.20; support varies by filesystem)
- .TE
- .in
- .PP
-@@ -406,6 +414,28 @@ This is the same number reported by
- .BR name_to_handle_at (2)
- and corresponds to the number in the first field in one of the records in
- .IR /proc/self/mountinfo .
-+.TP
-+.I stx_dio_mem_align
-+The alignment (in bytes) required for user memory buffers for direct I/O
-+.BR "" ( O_DIRECT )
-+on this file. or 0 if direct I/O is not supported on this file.
-+.IP
-+.B STATX_DIOALIGN
-+.IR "" ( stx_dio_mem_align
-+and
-+.IR stx_dio_offset_align )
-+is supported on block devices since Linux 5.20.
-+The support on regular files varies by filesystem; it is supported by ext4 and
-+f2fs since Linux 5.20.
-+.TP
-+.I stx_dio_offset_align
-+The alignment (in bytes) required for file offsets and I/O segment lengths for
-+direct I/O
-+.BR "" ( O_DIRECT )
-+on this file, or 0 if direct I/O is not supported on this file.
-+This will only be nonzero if
-+.I stx_dio_mem_align
-+is nonzero, and vice versa.
- .PP
- For further information on the above fields, see
- .BR inode (7).
++out:
++	inode_unlock_shared(inode);
++	return ret;
+ }
+ 
+ static int ext4_read_folio(struct file *file, struct folio *folio)
 -- 
-2.36.1
+2.31.1
 
