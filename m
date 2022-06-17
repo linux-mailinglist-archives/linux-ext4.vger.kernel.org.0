@@ -2,115 +2,106 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3406254F0F9
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jun 2022 08:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F9854F224
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jun 2022 09:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380275AbiFQGMQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Jun 2022 02:12:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60608 "EHLO
+        id S230307AbiFQHoy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Jun 2022 03:44:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380276AbiFQGMP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Jun 2022 02:12:15 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB055393E8;
-        Thu, 16 Jun 2022 23:12:14 -0700 (PDT)
-Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4LPTFr51rxzDrFc;
-        Fri, 17 Jun 2022 14:11:44 +0800 (CST)
-Received: from dggpemm500011.china.huawei.com (7.185.36.110) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 17 Jun 2022 14:12:12 +0800
-Received: from huawei.com (10.175.127.227) by dggpemm500011.china.huawei.com
- (7.185.36.110) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Fri, 17 Jun
- 2022 14:12:11 +0800
-From:   Li Lingfeng <lilingfeng3@huawei.com>
-To:     <linux-ext4@vger.kernel.org>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
-        <yi.zhang@huawei.com>, <yukuai3@huawei.com>,
-        <libaokun2@huawei.com>, <lilingfeng3@huawei.com>
-Subject: [PATCH -next] ext4: recover csum seed of tmp_inode after migrating to extents
-Date:   Fri, 17 Jun 2022 14:25:15 +0800
-Message-ID: <20220617062515.2113438-1-lilingfeng3@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S1380340AbiFQHoy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Jun 2022 03:44:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 313B6674EF
+        for <linux-ext4@vger.kernel.org>; Fri, 17 Jun 2022 00:44:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1655451892;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=coda/CWfS7jjnpuHvtDQX0ASaEE3SWk0zKx/CPt1NF8=;
+        b=cLouWCvzKAqdezRXggX+P8aCyG64WvmL864GD5PUV/OBrJIqcat5FMsabqQK2RBJ50tLbR
+        lmTVnsM+wQ2Q/T9/M77hXFXHablJQNhUPz9nAwiZgg3NxQ2lR68uvJN9uX9mVbhGdvf0nm
+        mPWFrz5r22JCMUwdQwB6nHHY3Op36Xg=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-632-kvu57e4-MTO0919zeuYk9g-1; Fri, 17 Jun 2022 03:44:50 -0400
+X-MC-Unique: kvu57e4-MTO0919zeuYk9g-1
+Received: by mail-wr1-f70.google.com with SMTP id b10-20020adf9b0a000000b0021a0c74738aso748366wrc.7
+        for <linux-ext4@vger.kernel.org>; Fri, 17 Jun 2022 00:44:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=coda/CWfS7jjnpuHvtDQX0ASaEE3SWk0zKx/CPt1NF8=;
+        b=L3zeikXflCG3ADbUqjuzOVzFklMGyKEPBq81gXWYkIqpTcIxpoqMJ09KLfLUmclwiu
+         g5xC/GBO0CcbKtyxGGU0MbbMb6chTuLqaaRFBitNIUaAIE6ZBJVrqyz5DSxhhH5DhNPY
+         FLM3sxD8yWWiCdcSIiYH4RjaXGeoCbxAbQcisjp0/tmKXzT/djij4I8eR8tp5OtmcWrY
+         HJLfVIzvzN8k0GQ2WX9aKe+AjigMow3okEoRmu7fKk/qvVUdhM2fQRcwL1FKF7mxFuKY
+         CkQdd0IKwxu4I0evYO4H9jT2PvnBR7BWfEgWezr6gD5dnlDKm0TPqBBxJ8MEvnJNXjGc
+         qDzg==
+X-Gm-Message-State: AJIora8RJ9DVmc3HUv0q9CSgwrzAjdMJAZ4y9IGNNfTUID7OM3/Sdlz2
+        aLENxc/eaxhfuJpnwQsoWnHLAET3GUjbdcUM+LSRQtYg5tA/2x4550YO9cpHMTqtZ3T/bBNeQmr
+        BLue1YIIw4eWXMtzT4O0ITw==
+X-Received: by 2002:a5d:5272:0:b0:210:33b8:ac4a with SMTP id l18-20020a5d5272000000b0021033b8ac4amr7953169wrc.483.1655451889277;
+        Fri, 17 Jun 2022 00:44:49 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1sotrEWyKnX0mzmXO2tbcDqW4so5zlYrKlmkTzzX5Yo7fZTIXTe3SZOKyKoq4h2kvU8N2TdcQ==
+X-Received: by 2002:a5d:5272:0:b0:210:33b8:ac4a with SMTP id l18-20020a5d5272000000b0021033b8ac4amr7953151wrc.483.1655451889025;
+        Fri, 17 Jun 2022 00:44:49 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c70a:7e00:bb5b:b526:5b76:5824? (p200300cbc70a7e00bb5bb5265b765824.dip0.t-ipconnect.de. [2003:cb:c70a:7e00:bb5b:b526:5b76:5824])
+        by smtp.gmail.com with ESMTPSA id o11-20020a5d474b000000b002185631adf0sm3851245wrs.23.2022.06.17.00.44.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Jun 2022 00:44:48 -0700 (PDT)
+Message-ID: <bd8b3eeb-4951-e3e9-8ee5-94f573ec815f@redhat.com>
+Date:   Fri, 17 Jun 2022 09:44:47 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500011.china.huawei.com (7.185.36.110)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH v5 00/13] Add MEMORY_DEVICE_COHERENT for coherent device
+ memory mapping
+Content-Language: en-US
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Alex Sierra <alex.sierra@amd.com>
+Cc:     jgg@nvidia.com, Felix.Kuehling@amd.com, linux-mm@kvack.org,
+        rcampbell@nvidia.com, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, hch@lst.de, jglisse@redhat.com,
+        apopple@nvidia.com, willy@infradead.org
+References: <20220531200041.24904-1-alex.sierra@amd.com>
+ <20220616191927.b4500e2f73500b9241009788@linux-foundation.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20220616191927.b4500e2f73500b9241009788@linux-foundation.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-When migrating to extents, the checksum seed of temporary inode
-need to be replaced by inode's, otherwise the inode checksums
-will be incorrect when swapping the inodes data.
+On 17.06.22 04:19, Andrew Morton wrote:
+> On Tue, 31 May 2022 15:00:28 -0500 Alex Sierra <alex.sierra@amd.com> wrote:
+> 
+>> This is our MEMORY_DEVICE_COHERENT patch series rebased and updated
+>> for current 5.18.0
+> 
+> I plan to move this series into the non-rebasing mm-stable branch in a
+> few days.  Unless sternly told not to do so!
+> 
 
-However, the temporary inode can not match it's checksum to
-itself since it has lost it's own checksum seed.
+I want to double-check some things regarding PageAnonExclusive
+interaction. I'm busy, but I'll try prioritizing it.
 
-mkfs.ext4 -F /dev/sdc
-mount /dev/sdc /mnt/sdc
-xfs_io -fc "pwrite 4k 4k" -c "fsync" /mnt/sdc/testfile
-chattr -e /mnt/sdc/testfile
-chattr +e /mnt/sdc/testfile
-umount /dev/sdc
-fsck -fn /dev/sdc
-
-========
-...
-Pass 1: Checking inodes, blocks, and sizes
-Inode 13 passes checks, but checksum does not match inode.  Fix? no
-...
-========
-
-The fix is simple, save the checksum seed of temporary inode, and
-recover it after migrating to extents.
-
-Fixes: e81c9302a6c3 ("ext4: set csum seed in tmp inode while migrating to extents")
-Signed-off-by: Li Lingfeng <lilingfeng3@huawei.com>
----
- fs/ext4/migrate.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
-index 49912814f3d8..04320715d61f 100644
---- a/fs/ext4/migrate.c
-+++ b/fs/ext4/migrate.c
-@@ -417,7 +417,7 @@ int ext4_ext_migrate(struct inode *inode)
- 	struct inode *tmp_inode = NULL;
- 	struct migrate_struct lb;
- 	unsigned long max_entries;
--	__u32 goal;
-+	__u32 goal, tmp_csum_seed;
- 	uid_t owner[2];
- 
- 	/*
-@@ -465,6 +465,7 @@ int ext4_ext_migrate(struct inode *inode)
- 	 * the migration.
- 	 */
- 	ei = EXT4_I(inode);
-+	tmp_csum_seed = EXT4_I(tmp_inode)->i_csum_seed;
- 	EXT4_I(tmp_inode)->i_csum_seed = ei->i_csum_seed;
- 	i_size_write(tmp_inode, i_size_read(inode));
- 	/*
-@@ -575,6 +576,7 @@ int ext4_ext_migrate(struct inode *inode)
- 	 * the inode is not visible to user space.
- 	 */
- 	tmp_inode->i_blocks = 0;
-+	EXT4_I(tmp_inode)->i_csum_seed = tmp_csum_seed;
- 
- 	/* Reset the extent details */
- 	ext4_ext_tree_init(handle, tmp_inode);
 -- 
-2.31.1
+Thanks,
+
+David / dhildenb
 
