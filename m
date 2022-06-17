@@ -2,142 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE4154F5C7
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jun 2022 12:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0AB854F64B
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jun 2022 13:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381993AbiFQKoz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Jun 2022 06:44:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38716 "EHLO
+        id S1380989AbiFQLHS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Jun 2022 07:07:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236113AbiFQKoy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Jun 2022 06:44:54 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD2936B649;
-        Fri, 17 Jun 2022 03:44:53 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 7CA631F86B;
-        Fri, 17 Jun 2022 10:44:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1655462692; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=61q2Dy+gZjuH4Bh0Xd2gu4uqaiCBzwX90MvJbzqaUOU=;
-        b=KfxmhOgSgc2oQDKIMz6oIIAqpRyswGOkAWCzNgyVp9AbeV+0WT+7vija1JwYUmp9BCosX6
-        hFI4tjQDgfKw8IdPpl2EErSllzYgxmWGzbyyVftU2CDjarm9cfgpMR81WSWKkR+l0+KHc4
-        aq3TyyfWG7aUuU770QuMT6nLrwR7yWI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1655462692;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=61q2Dy+gZjuH4Bh0Xd2gu4uqaiCBzwX90MvJbzqaUOU=;
-        b=UgbpnSTK0x8HK0BqJjnkWsv7lPyzpJHbc61J4zgxH2LmyaP4Br4Y9O8uK09VdOGKEQvwvU
-        D38QdmekCR4nX9CA==
-Received: from quack3.suse.cz (unknown [10.100.224.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C9D372C142;
-        Fri, 17 Jun 2022 10:44:50 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id E035AA0632; Fri, 17 Jun 2022 12:44:41 +0200 (CEST)
-Date:   Fri, 17 Jun 2022 12:44:41 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Li Lingfeng <lilingfeng3@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-kernel@vger.kernel.org,
-        jack@suse.cz, yi.zhang@huawei.com, yukuai3@huawei.com,
-        libaokun2@huawei.com
-Subject: Re: [PATCH -next] ext4: recover csum seed of tmp_inode after
- migrating to extents
-Message-ID: <20220617104441.lfhuca6tflg2oxah@quack3.lan>
-References: <20220617062515.2113438-1-lilingfeng3@huawei.com>
+        with ESMTP id S1381038AbiFQLHP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Jun 2022 07:07:15 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 428806C56A
+        for <linux-ext4@vger.kernel.org>; Fri, 17 Jun 2022 04:07:14 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id d19so4345082lji.10
+        for <linux-ext4@vger.kernel.org>; Fri, 17 Jun 2022 04:07:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Jh3M8LDovYWs/mBJiVJoI/DS8xun0EDDqspVSX/swmY=;
+        b=pFedS01kBZoPf8w5+XJZcYZ94+8/5BPGUMxxnwwcOpVYITA5QWxlJn7CMxhAI+ggn0
+         /n/28MyUQZTSa/tie3dRsmPvE6NX0vXVKx9GcLBynkwRm7La1SLF/jZ5GK37A9iYVslj
+         cxRwouHTo6i4mfGOTyJ4x2iJ0wTWYK30mjugdDqjpN9rYfygPrW9NZ0NWOyToP1CWp46
+         jNS7rLQYL887bhFBWjWHc5O4KaUdYzHyX312OjiTsq7uRVOIf6TRRgIWJ/y7caMT0Xuq
+         B8ExJre+ZX9oLKGDOuZypV3MojECtLAOVpHDZkChLfLTJ8bAgTQGLFSFyIawJRZds+UR
+         mrog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Jh3M8LDovYWs/mBJiVJoI/DS8xun0EDDqspVSX/swmY=;
+        b=KxmCxNJUEN8z/JYVoa/2YXkhdTc4LaC9ziNRp6wT+6EsWJxwTl4dGq3/cVTYRs8Qbr
+         onb4XVNW72yQunEQbtpdPIlIpF47c/jZNcKE4+MVrb5ImHO7eDzUR8TBg6El9QGvXaeX
+         uC3SX1tamQDxZMBtqv4HyfNFU0uhifZyw62UDfY1+SpdMRYNsGFgcVL2xnxOIDalxrGu
+         wXTmlVHltXFiylAkky/lPcF5IrO1oCewB8rJYWMfY1KkDhlCCTWH3TpBNSR3lRIV0wnb
+         j4IRod1zmpcV+uWXNbYHMDs3rjszOw+HEmdOffJaXjGmheR7H56spFPU2xlQxX35HQq5
+         VdIg==
+X-Gm-Message-State: AJIora8veZsSlu8WfWiVND8foKjt49pyIu+vPzNocy44IKWCeGFLFO9a
+        03+/xfWOlGssmryvcPiATe6dvVVm5Y5m7ls+yA8=
+X-Google-Smtp-Source: AGRyM1urbzChfLmiDMc9bFbg6bdjvB/HYUWIimmBCgu3hpulMNQeMq2SygPR7Z1ddcVc/lcKEnhtY/mkjjoZrMogRKA=
+X-Received: by 2002:a2e:3a18:0:b0:255:c053:1726 with SMTP id
+ h24-20020a2e3a18000000b00255c0531726mr4746217lja.316.1655464032670; Fri, 17
+ Jun 2022 04:07:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220617062515.2113438-1-lilingfeng3@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Received: by 2002:ab3:680f:0:0:0:0:0 with HTTP; Fri, 17 Jun 2022 04:07:12
+ -0700 (PDT)
+Reply-To: sj7209917@gmail.com
+From:   Joseph smith <maelyskpeta@gmail.com>
+Date:   Fri, 17 Jun 2022 04:07:12 -0700
+Message-ID: <CACKGxpxo3tFpcQ2Ff60d2jb9EYqr8nW2BCHOZnDrUcXOM1k82A@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
         version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 17-06-22 14:25:15, Li Lingfeng wrote:
-> When migrating to extents, the checksum seed of temporary inode
-> need to be replaced by inode's, otherwise the inode checksums
-> will be incorrect when swapping the inodes data.
-> 
-> However, the temporary inode can not match it's checksum to
-> itself since it has lost it's own checksum seed.
-> 
-> mkfs.ext4 -F /dev/sdc
-> mount /dev/sdc /mnt/sdc
-> xfs_io -fc "pwrite 4k 4k" -c "fsync" /mnt/sdc/testfile
-> chattr -e /mnt/sdc/testfile
-> chattr +e /mnt/sdc/testfile
-> umount /dev/sdc
-> fsck -fn /dev/sdc
-> 
-> ========
-> ...
-> Pass 1: Checking inodes, blocks, and sizes
-> Inode 13 passes checks, but checksum does not match inode.  Fix? no
-> ...
-> ========
-> 
-> The fix is simple, save the checksum seed of temporary inode, and
-> recover it after migrating to extents.
-> 
-> Fixes: e81c9302a6c3 ("ext4: set csum seed in tmp inode while migrating to extents")
-> Signed-off-by: Li Lingfeng <lilingfeng3@huawei.com>
-
-Yeah, the migration code and checksums never quite worked together. That's
-the reason why we'd decided to deprecate this code. But I guess this fix is
-simple enough and improves things so feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/ext4/migrate.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
-> index 49912814f3d8..04320715d61f 100644
-> --- a/fs/ext4/migrate.c
-> +++ b/fs/ext4/migrate.c
-> @@ -417,7 +417,7 @@ int ext4_ext_migrate(struct inode *inode)
->  	struct inode *tmp_inode = NULL;
->  	struct migrate_struct lb;
->  	unsigned long max_entries;
-> -	__u32 goal;
-> +	__u32 goal, tmp_csum_seed;
->  	uid_t owner[2];
->  
->  	/*
-> @@ -465,6 +465,7 @@ int ext4_ext_migrate(struct inode *inode)
->  	 * the migration.
->  	 */
->  	ei = EXT4_I(inode);
-> +	tmp_csum_seed = EXT4_I(tmp_inode)->i_csum_seed;
->  	EXT4_I(tmp_inode)->i_csum_seed = ei->i_csum_seed;
->  	i_size_write(tmp_inode, i_size_read(inode));
->  	/*
-> @@ -575,6 +576,7 @@ int ext4_ext_migrate(struct inode *inode)
->  	 * the inode is not visible to user space.
->  	 */
->  	tmp_inode->i_blocks = 0;
-> +	EXT4_I(tmp_inode)->i_csum_seed = tmp_csum_seed;
->  
->  	/* Reset the extent details */
->  	ext4_ext_tree_init(handle, tmp_inode);
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Hi   are you available to  speak now
+Thanks
