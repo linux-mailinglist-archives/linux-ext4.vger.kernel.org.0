@@ -2,52 +2,47 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5323C54EF2E
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jun 2022 04:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3406254F0F9
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jun 2022 08:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233339AbiFQCTb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Jun 2022 22:19:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36932 "EHLO
+        id S1380275AbiFQGMQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Jun 2022 02:12:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232651AbiFQCTa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Jun 2022 22:19:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE88F606E1;
-        Thu, 16 Jun 2022 19:19:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7A09261C50;
-        Fri, 17 Jun 2022 02:19:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55B77C3411A;
-        Fri, 17 Jun 2022 02:19:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1655432368;
-        bh=Yki0vBzHWKtp6dJbGwH7gUmRk173I5HAJLFYlBbmLtI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=U9nPBXKmGgZZ77OA8gwHRrq5HaWuWMnXvA4xx6OL7Qe5Q6WWAkLhRNj5c2JUuTOqP
-         fC5Sfz1KP6igFDmHzTkyDdxVCfXz+BEUxESyFl0RvL9jo3cHVy1jIy83e+BVWZ/Bg5
-         Ri0ktWlcrRmiQmPMePGTfamFHNmIEHqZQXsclOsA=
-Date:   Thu, 16 Jun 2022 19:19:27 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Alex Sierra <alex.sierra@amd.com>
-Cc:     <jgg@nvidia.com>, <david@redhat.com>, <Felix.Kuehling@amd.com>,
-        <linux-mm@kvack.org>, <rcampbell@nvidia.com>,
-        <linux-ext4@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <hch@lst.de>, <jglisse@redhat.com>, <apopple@nvidia.com>,
-        <willy@infradead.org>
-Subject: Re: [PATCH v5 00/13] Add MEMORY_DEVICE_COHERENT for coherent device
- memory mapping
-Message-Id: <20220616191927.b4500e2f73500b9241009788@linux-foundation.org>
-In-Reply-To: <20220531200041.24904-1-alex.sierra@amd.com>
-References: <20220531200041.24904-1-alex.sierra@amd.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
+        with ESMTP id S1380276AbiFQGMP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Jun 2022 02:12:15 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB055393E8;
+        Thu, 16 Jun 2022 23:12:14 -0700 (PDT)
+Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4LPTFr51rxzDrFc;
+        Fri, 17 Jun 2022 14:11:44 +0800 (CST)
+Received: from dggpemm500011.china.huawei.com (7.185.36.110) by
+ dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 17 Jun 2022 14:12:12 +0800
+Received: from huawei.com (10.175.127.227) by dggpemm500011.china.huawei.com
+ (7.185.36.110) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Fri, 17 Jun
+ 2022 14:12:11 +0800
+From:   Li Lingfeng <lilingfeng3@huawei.com>
+To:     <linux-ext4@vger.kernel.org>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
+        <yi.zhang@huawei.com>, <yukuai3@huawei.com>,
+        <libaokun2@huawei.com>, <lilingfeng3@huawei.com>
+Subject: [PATCH -next] ext4: recover csum seed of tmp_inode after migrating to extents
+Date:   Fri, 17 Jun 2022 14:25:15 +0800
+Message-ID: <20220617062515.2113438-1-lilingfeng3@huawei.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500011.china.huawei.com (7.185.36.110)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -56,10 +51,66 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 31 May 2022 15:00:28 -0500 Alex Sierra <alex.sierra@amd.com> wrote:
+When migrating to extents, the checksum seed of temporary inode
+need to be replaced by inode's, otherwise the inode checksums
+will be incorrect when swapping the inodes data.
 
-> This is our MEMORY_DEVICE_COHERENT patch series rebased and updated
-> for current 5.18.0
+However, the temporary inode can not match it's checksum to
+itself since it has lost it's own checksum seed.
 
-I plan to move this series into the non-rebasing mm-stable branch in a
-few days.  Unless sternly told not to do so!
+mkfs.ext4 -F /dev/sdc
+mount /dev/sdc /mnt/sdc
+xfs_io -fc "pwrite 4k 4k" -c "fsync" /mnt/sdc/testfile
+chattr -e /mnt/sdc/testfile
+chattr +e /mnt/sdc/testfile
+umount /dev/sdc
+fsck -fn /dev/sdc
+
+========
+...
+Pass 1: Checking inodes, blocks, and sizes
+Inode 13 passes checks, but checksum does not match inode.  Fix? no
+...
+========
+
+The fix is simple, save the checksum seed of temporary inode, and
+recover it after migrating to extents.
+
+Fixes: e81c9302a6c3 ("ext4: set csum seed in tmp inode while migrating to extents")
+Signed-off-by: Li Lingfeng <lilingfeng3@huawei.com>
+---
+ fs/ext4/migrate.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
+index 49912814f3d8..04320715d61f 100644
+--- a/fs/ext4/migrate.c
++++ b/fs/ext4/migrate.c
+@@ -417,7 +417,7 @@ int ext4_ext_migrate(struct inode *inode)
+ 	struct inode *tmp_inode = NULL;
+ 	struct migrate_struct lb;
+ 	unsigned long max_entries;
+-	__u32 goal;
++	__u32 goal, tmp_csum_seed;
+ 	uid_t owner[2];
+ 
+ 	/*
+@@ -465,6 +465,7 @@ int ext4_ext_migrate(struct inode *inode)
+ 	 * the migration.
+ 	 */
+ 	ei = EXT4_I(inode);
++	tmp_csum_seed = EXT4_I(tmp_inode)->i_csum_seed;
+ 	EXT4_I(tmp_inode)->i_csum_seed = ei->i_csum_seed;
+ 	i_size_write(tmp_inode, i_size_read(inode));
+ 	/*
+@@ -575,6 +576,7 @@ int ext4_ext_migrate(struct inode *inode)
+ 	 * the inode is not visible to user space.
+ 	 */
+ 	tmp_inode->i_blocks = 0;
++	EXT4_I(tmp_inode)->i_csum_seed = tmp_csum_seed;
+ 
+ 	/* Reset the extent details */
+ 	ext4_ext_tree_init(handle, tmp_inode);
+-- 
+2.31.1
+
