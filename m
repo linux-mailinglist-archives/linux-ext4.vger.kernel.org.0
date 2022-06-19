@@ -2,118 +2,211 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81447550921
-	for <lists+linux-ext4@lfdr.de>; Sun, 19 Jun 2022 09:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B0FE550A3E
+	for <lists+linux-ext4@lfdr.de>; Sun, 19 Jun 2022 13:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232335AbiFSHaE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 19 Jun 2022 03:30:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50332 "EHLO
+        id S236569AbiFSLaz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 19 Jun 2022 07:30:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230124AbiFSHaD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 19 Jun 2022 03:30:03 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B429865C8;
-        Sun, 19 Jun 2022 00:30:02 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id l4so7572137pgh.13;
-        Sun, 19 Jun 2022 00:30:02 -0700 (PDT)
+        with ESMTP id S236499AbiFSLaz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 19 Jun 2022 07:30:55 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC91CA19E
+        for <linux-ext4@vger.kernel.org>; Sun, 19 Jun 2022 04:30:52 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id i17-20020a7bc951000000b0039c4760ec3fso5718961wml.0
+        for <linux-ext4@vger.kernel.org>; Sun, 19 Jun 2022 04:30:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
+        d=scylladb.com; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:organization:in-reply-to
          :content-transfer-encoding;
-        bh=T0Zq2sYSbf3nMISBHuZKmX2FWCO+JFM7UHxrKNRM8l4=;
-        b=dxxKD1IIOw/UKep65Yl2KZVU8SjzPt9hxjuqZgqBYI45aLQUYyqZQ448QkezxmCvbC
-         egrUNykFdjpdxPMfABGIEGvjVD1JU1kkWMg/xcGAjyMUvpvwr+NjGawplPiR9ud3Kuc+
-         XPO0Rxqa0B9QRwNRu3Zduu3tg6jPaHttKvg5539KS/Om3ml+hlOOWjtRIUcIomNTxkRc
-         HW8CeNwyIghLYAVT6Oe0vePiqQJtlDAEsZjYdr09XXwEQ472QG1S+iuQa/wB8FDhe25J
-         HI6f7dGSLgIeaBGqW9ffGNIX8V6sQSyY8g9aijW9E8wb7ptphNe7hWnL6zVNoRrCYMop
-         654w==
+        bh=O2I45PoOglfUqWYYLgh36wUEI38mqN5c3WyJELiYVrQ=;
+        b=CMDX7ziQVP/ELJCQ2uYixvE/VDY4gI0qJRyGZ6YhB69FGdgWsPUtuQ4ujKYUJOLfr3
+         JecC5hxwQzEatbQfmcHzd4sjCyNFkj1eXcQa2IbP+NPsmH3iuu5a83ukp1hWLtrn+SDp
+         8gvphAot6Kf3zSzGxxzeUfJ6pluXb1axlJWDmuKfXjXHgxmIa3Ne9GsgU811Ua2tYlrE
+         OA1WN8N/jwauET/7+Xk91P+RwrybwSq+T3UMITLjpWa85tfQOfL/LK5uULCiFGPNytHq
+         /qfUyy4cM4U38c3lRisTyxMFzdqTuYbve/Ij7FcakHP7u3lqBMOhVDG5RpW9uGnPMM9A
+         3j5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
          :content-transfer-encoding;
-        bh=T0Zq2sYSbf3nMISBHuZKmX2FWCO+JFM7UHxrKNRM8l4=;
-        b=zw2CSeH6mbRPQUzccWwXElX/SsnK/20W3Wm6lu6MPSEi9BFvU8lWJNKFvTQfE6+GBy
-         +bc8aai1nsMwNN4zTSaG32X03YFS/hLSCeCJMkE0zdQvl/iUqO/G7PneYg3yLNi6v7KZ
-         2+XgGXfn5U7N4jInVX+JjVy9GynrrjNSmMiEBAF85RUtNQJsdKvol8v8QfOB89I5N6/d
-         L/BMj2EaHy6Plw3F+iy5RsNqGNz2zIaD6uTKDV9YlhAWMu0BB3SiQq6W2sXcwTHke2mh
-         pLzz3KS8C9E+ydR4/X2Y9m2ozqsgDyoiPi0/6GNJQ7gHgHCj7oDX3u8L+xbgzgvv59Qq
-         ezwA==
-X-Gm-Message-State: AJIora8ehmTNiXmueLBq97cAPFKTqyKWgueSWI4Ex3i0JUiFDYZeJdV5
-        VCeAow/aM/fL24ei7G2BrPnPYxqYipg=
-X-Google-Smtp-Source: AGRyM1vO/efRhjdO+72XdR9PXMipaaDp8WzocoemKoakQ1UjHnv6cZ3qoJH5VU0st1L98/7W44jE7A==
-X-Received: by 2002:a63:ae4a:0:b0:40c:2d48:5fda with SMTP id e10-20020a63ae4a000000b0040c2d485fdamr14003202pgp.434.1655623801856;
-        Sun, 19 Jun 2022 00:30:01 -0700 (PDT)
-Received: from debian.me (subs03-180-214-233-74.three.co.id. [180.214.233.74])
-        by smtp.gmail.com with ESMTPSA id l2-20020a17090af8c200b001e02073474csm8166168pjd.36.2022.06.19.00.29.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Jun 2022 00:30:01 -0700 (PDT)
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     linux-doc@vger.kernel.org
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Wang Jianjian <wangjianjian3@huawei.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Documentation: ext4: fix cell spacing of table heading on blockmap table
-Date:   Sun, 19 Jun 2022 14:29:39 +0700
-Message-Id: <20220619072938.7334-1-bagasdotme@gmail.com>
-X-Mailer: git-send-email 2.36.0
+        bh=O2I45PoOglfUqWYYLgh36wUEI38mqN5c3WyJELiYVrQ=;
+        b=3zJTW9W519kZ8g0wDl1qt8NMtrX3WEdL3vsnl5CvgLWWr6UXe4f7XcpTa+ztHbeF++
+         GOcRZMi66DeH6K098n/Nv2QPYgOK+zXeEfvKG0IubEySP3C7kbAXK0uLV1chD6pIbG7V
+         zcO65znaAiV5vdDKhnNhN1f+Yzpr2o0v6saZMcIZz4/lR+UDKTCBrxK9VQ0YYjHwFfu3
+         SSdbL0VvZSIBwt+rq8GIfXz6bN+mUQieor5Q+pyh+KPfU9RFU6ZmQ1SFSjOAOAz2B6Js
+         SDISSWQNX089nuhipVYUWxwUYdHaEedaUDJ1OjFPsufJOsBAy9iHcunShk6QSkFV5U1x
+         xDaA==
+X-Gm-Message-State: AJIora+8Rml7q+Zz/f5xusA5oWsljdweULsQlg4q687fKR8eQ3Umw7ro
+        +azPAJgzhfe2SyClHEuRnvpVDw==
+X-Google-Smtp-Source: AGRyM1sQr/+BlLCjFYp7YIL2rW66A6O7S/z7a9tjlAuS/44BkYWT2Uw8taLHxSnMG2oypjiTMj2wcg==
+X-Received: by 2002:a05:600c:17cf:b0:39c:4b79:78c9 with SMTP id y15-20020a05600c17cf00b0039c4b7978c9mr19415525wmo.96.1655638251293;
+        Sun, 19 Jun 2022 04:30:51 -0700 (PDT)
+Received: from [10.0.0.1] (system.cloudius-systems.com. [199.203.229.89])
+        by smtp.gmail.com with ESMTPSA id x1-20020adff0c1000000b002103cfd2fbasm10156755wro.65.2022.06.19.04.30.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 19 Jun 2022 04:30:50 -0700 (PDT)
+Message-ID: <6c06b2d4-2d96-c4a6-7aca-5147a91e7cf2@scylladb.com>
+Date:   Sun, 19 Jun 2022 14:30:47 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH v3 1/8] statx: add direct I/O alignment information
+Content-Language: en-US
+To:     Eric Biggers <ebiggers@kernel.org>, linux-fsdevel@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-xfs@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>
+References: <20220616201506.124209-1-ebiggers@kernel.org>
+ <20220616201506.124209-2-ebiggers@kernel.org>
+From:   Avi Kivity <avi@scylladb.com>
+Organization: ScyllaDB
+In-Reply-To: <20220616201506.124209-2-ebiggers@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Commit 3103084afcf234 ("ext4, doc: remove unnecessary escaping") removes
-redundant underscore escaping, however the cell spacing in heading row of
-blockmap table became not aligned anymore, hence triggers malformed table
-warning:
 
-Documentation/filesystems/ext4/blockmap.rst:3: WARNING: Malformed table.
+On 16/06/2022 23.14, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+>
+> Traditionally, the conditions for when DIO (direct I/O) is supported
+> were fairly simple.  For both block devices and regular files, DIO had
+> to be aligned to the logical block size of the block device.
+>
+> However, due to filesystem features that have been added over time (e.g.
+> multi-device support, data journalling, inline data, encryption, verity,
+> compression, checkpoint disabling, log-structured mode), the conditions
+> for when DIO is allowed on a regular file have gotten increasingly
+> complex.  Whether a particular regular file supports DIO, and with what
+> alignment, can depend on various file attributes and filesystem mount
+> options, as well as which block device(s) the file's data is located on.
+>
+> Moreover, the general rule of DIO needing to be aligned to the block
+> device's logical block size is being relaxed to allow user buffers (but
+> not file offsets) aligned to the DMA alignment instead
+> (https://lore.kernel.org/linux-block/20220610195830.3574005-1-kbusch@fb.com/T/#u).
+>
+> XFS has an ioctl XFS_IOC_DIOINFO that exposes DIO alignment information.
+> Uplifting this to the VFS is one possibility.  However, as discussed
+> (https://lore.kernel.org/linux-fsdevel/20220120071215.123274-1-ebiggers@kernel.org/T/#u),
+> this ioctl is rarely used and not known to be used outside of
+> XFS-specific code.  It was also never intended to indicate when a file
+> doesn't support DIO at all, nor was it intended for block devices.
+>
+> Therefore, let's expose this information via statx().  Add the
+> STATX_DIOALIGN flag and two new statx fields associated with it:
+>
+> * stx_dio_mem_align: the alignment (in bytes) required for user memory
+>    buffers for DIO, or 0 if DIO is not supported on the file.
+>
+> * stx_dio_offset_align: the alignment (in bytes) required for file
+>    offsets and I/O segment lengths for DIO, or 0 if DIO is not supported
+>    on the file.  This will only be nonzero if stx_dio_mem_align is
+>    nonzero, and vice versa.
 
-+---------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| i.i_block Offset   | Where It Points                                                                                                                                                                                                              |
-<snipped>...
 
-The warning caused the table not being loaded.
+If you consider AIO, this is actually three alignments:
 
-Realign the heading row cell by adding missing space at the first cell
-to fix the warning.
+1. offset alignment for reads (sector size in XFS)
 
-Fixes: 3103084afcf234 ("ext4, doc: remove unnecessary escaping")
-Cc: "Theodore Ts'o" <tytso@mit.edu>
-Cc: Andreas Dilger <adilger.kernel@dilger.ca>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Wang Jianjian <wangjianjian3@huawei.com>
-Cc: linux-ext4@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
----
- Documentation/filesystems/ext4/blockmap.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+2. offset alignment for overwrites (sector size in XFS since 
+ed1128c2d0c87e, block size earlier)
 
-diff --git a/Documentation/filesystems/ext4/blockmap.rst b/Documentation/filesystems/ext4/blockmap.rst
-index 2bd990402a5c49..cc596541ce7921 100644
---- a/Documentation/filesystems/ext4/blockmap.rst
-+++ b/Documentation/filesystems/ext4/blockmap.rst
-@@ -1,7 +1,7 @@
- .. SPDX-License-Identifier: GPL-2.0
- 
- +---------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
--| i.i_block Offset   | Where It Points                                                                                                                                                                                                              |
-+| i.i_block Offset    | Where It Points                                                                                                                                                                                                              |
- +=====================+==============================================================================================================================================================================================================================+
- | 0 to 11             | Direct map to file blocks 0 to 11.                                                                                                                                                                                           |
- +---------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+3. offset alignment for appending writes (block size)
 
-base-commit: 354c6e071be986a44b956f7b57f1884244431048
--- 
-An old man doll... just what I always wanted! - Clara
 
+This is critical for linux-aio since violation of these alignments will 
+stall the io_submit system call. Perhaps io_uring handles it better by 
+bouncing to a workqueue, but there is a significant performance and 
+latency penalty for that.
+
+
+Small appending writes are important for database commit logs (and so 
+it's better to overwrite a pre-formatted file to avoid aligning to block 
+size).
+
+
+It would be good to expose these differences.
+
+
+>
+> Note that as with other statx() extensions, if STATX_DIOALIGN isn't set
+> in the returned statx struct, then these new fields won't be filled in.
+> This will happen if the file is neither a regular file nor a block
+> device, or if the file is a regular file and the filesystem doesn't
+> support STATX_DIOALIGN.  It might also happen if the caller didn't
+> include STATX_DIOALIGN in the request mask, since statx() isn't required
+> to return unrequested information.
+>
+> This commit only adds the VFS-level plumbing for STATX_DIOALIGN.  For
+> regular files, individual filesystems will still need to add code to
+> support it.  For block devices, a separate commit will wire it up too.
+>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>   fs/stat.c                 | 2 ++
+>   include/linux/stat.h      | 2 ++
+>   include/uapi/linux/stat.h | 4 +++-
+>   3 files changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/stat.c b/fs/stat.c
+> index 9ced8860e0f35..a7930d7444830 100644
+> --- a/fs/stat.c
+> +++ b/fs/stat.c
+> @@ -611,6 +611,8 @@ cp_statx(const struct kstat *stat, struct statx __user *buffer)
+>   	tmp.stx_dev_major = MAJOR(stat->dev);
+>   	tmp.stx_dev_minor = MINOR(stat->dev);
+>   	tmp.stx_mnt_id = stat->mnt_id;
+> +	tmp.stx_dio_mem_align = stat->dio_mem_align;
+> +	tmp.stx_dio_offset_align = stat->dio_offset_align;
+>   
+>   	return copy_to_user(buffer, &tmp, sizeof(tmp)) ? -EFAULT : 0;
+>   }
+> diff --git a/include/linux/stat.h b/include/linux/stat.h
+> index 7df06931f25d8..ff277ced50e9f 100644
+> --- a/include/linux/stat.h
+> +++ b/include/linux/stat.h
+> @@ -50,6 +50,8 @@ struct kstat {
+>   	struct timespec64 btime;			/* File creation time */
+>   	u64		blocks;
+>   	u64		mnt_id;
+> +	u32		dio_mem_align;
+> +	u32		dio_offset_align;
+>   };
+>   
+>   #endif
+> diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+> index 1500a0f58041a..7cab2c65d3d7f 100644
+> --- a/include/uapi/linux/stat.h
+> +++ b/include/uapi/linux/stat.h
+> @@ -124,7 +124,8 @@ struct statx {
+>   	__u32	stx_dev_minor;
+>   	/* 0x90 */
+>   	__u64	stx_mnt_id;
+> -	__u64	__spare2;
+> +	__u32	stx_dio_mem_align;	/* Memory buffer alignment for direct I/O */
+> +	__u32	stx_dio_offset_align;	/* File offset alignment for direct I/O */
+>   	/* 0xa0 */
+>   	__u64	__spare3[12];	/* Spare space for future expansion */
+>   	/* 0x100 */
+> @@ -152,6 +153,7 @@ struct statx {
+>   #define STATX_BASIC_STATS	0x000007ffU	/* The stuff in the normal stat struct */
+>   #define STATX_BTIME		0x00000800U	/* Want/got stx_btime */
+>   #define STATX_MNT_ID		0x00001000U	/* Got stx_mnt_id */
+> +#define STATX_DIOALIGN		0x00002000U	/* Want/got direct I/O alignment info */
+>   
+>   #define STATX__RESERVED		0x80000000U	/* Reserved for future struct statx expansion */
+>   
