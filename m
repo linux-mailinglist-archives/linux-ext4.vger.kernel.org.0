@@ -2,211 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0FE550A3E
-	for <lists+linux-ext4@lfdr.de>; Sun, 19 Jun 2022 13:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AAFD550BE6
+	for <lists+linux-ext4@lfdr.de>; Sun, 19 Jun 2022 17:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236569AbiFSLaz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 19 Jun 2022 07:30:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55174 "EHLO
+        id S230057AbiFSPqV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 19 Jun 2022 11:46:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236499AbiFSLaz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 19 Jun 2022 07:30:55 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC91CA19E
-        for <linux-ext4@vger.kernel.org>; Sun, 19 Jun 2022 04:30:52 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id i17-20020a7bc951000000b0039c4760ec3fso5718961wml.0
-        for <linux-ext4@vger.kernel.org>; Sun, 19 Jun 2022 04:30:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=scylladb.com; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=O2I45PoOglfUqWYYLgh36wUEI38mqN5c3WyJELiYVrQ=;
-        b=CMDX7ziQVP/ELJCQ2uYixvE/VDY4gI0qJRyGZ6YhB69FGdgWsPUtuQ4ujKYUJOLfr3
-         JecC5hxwQzEatbQfmcHzd4sjCyNFkj1eXcQa2IbP+NPsmH3iuu5a83ukp1hWLtrn+SDp
-         8gvphAot6Kf3zSzGxxzeUfJ6pluXb1axlJWDmuKfXjXHgxmIa3Ne9GsgU811Ua2tYlrE
-         OA1WN8N/jwauET/7+Xk91P+RwrybwSq+T3UMITLjpWa85tfQOfL/LK5uULCiFGPNytHq
-         /qfUyy4cM4U38c3lRisTyxMFzdqTuYbve/Ij7FcakHP7u3lqBMOhVDG5RpW9uGnPMM9A
-         3j5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=O2I45PoOglfUqWYYLgh36wUEI38mqN5c3WyJELiYVrQ=;
-        b=3zJTW9W519kZ8g0wDl1qt8NMtrX3WEdL3vsnl5CvgLWWr6UXe4f7XcpTa+ztHbeF++
-         GOcRZMi66DeH6K098n/Nv2QPYgOK+zXeEfvKG0IubEySP3C7kbAXK0uLV1chD6pIbG7V
-         zcO65znaAiV5vdDKhnNhN1f+Yzpr2o0v6saZMcIZz4/lR+UDKTCBrxK9VQ0YYjHwFfu3
-         SSdbL0VvZSIBwt+rq8GIfXz6bN+mUQieor5Q+pyh+KPfU9RFU6ZmQ1SFSjOAOAz2B6Js
-         SDISSWQNX089nuhipVYUWxwUYdHaEedaUDJ1OjFPsufJOsBAy9iHcunShk6QSkFV5U1x
-         xDaA==
-X-Gm-Message-State: AJIora+8Rml7q+Zz/f5xusA5oWsljdweULsQlg4q687fKR8eQ3Umw7ro
-        +azPAJgzhfe2SyClHEuRnvpVDw==
-X-Google-Smtp-Source: AGRyM1sQr/+BlLCjFYp7YIL2rW66A6O7S/z7a9tjlAuS/44BkYWT2Uw8taLHxSnMG2oypjiTMj2wcg==
-X-Received: by 2002:a05:600c:17cf:b0:39c:4b79:78c9 with SMTP id y15-20020a05600c17cf00b0039c4b7978c9mr19415525wmo.96.1655638251293;
-        Sun, 19 Jun 2022 04:30:51 -0700 (PDT)
-Received: from [10.0.0.1] (system.cloudius-systems.com. [199.203.229.89])
-        by smtp.gmail.com with ESMTPSA id x1-20020adff0c1000000b002103cfd2fbasm10156755wro.65.2022.06.19.04.30.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 19 Jun 2022 04:30:50 -0700 (PDT)
-Message-ID: <6c06b2d4-2d96-c4a6-7aca-5147a91e7cf2@scylladb.com>
-Date:   Sun, 19 Jun 2022 14:30:47 +0300
+        with ESMTP id S229757AbiFSPqU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 19 Jun 2022 11:46:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E540C65AB;
+        Sun, 19 Jun 2022 08:46:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MxPhQC0Fi/1DMOZlvyotEXGMygrfYcYmw9BH/R1+BPA=; b=QxUVrca29bq4c4uLb+7FFVLG2P
+        Wmb/5slT/qsVwGVkMPjkMDNMBEuUHLJWSjs5RmO+hqGaA7EIBqCDB6SEuHb2JEExze92T9tDpajFP
+        N5NTd9C0ZN3PMXSUtOC4c6RnqZ2538DT+n+Q3egZDdZEJqQmQpaAyDjnqpZKVZy71Gy87pc3x3Ksi
+        LsXw1WvDfjTKhr9e9mILVsy2C6LT7Wg54NqRURIhsU4nz9G4gWG2Iv8AcVocwPPabuxciOTaWSYEa
+        coHrqTqoEeEJ6/yOAiayxV8QFPzMaMe5G8TyuCfLO9Xsn+MirVbHJfuUBARLa+C+HMSszkQd13xDS
+        1XKZW8sw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1o2x7u-004S1a-9R; Sun, 19 Jun 2022 15:46:14 +0000
+Date:   Sun, 19 Jun 2022 16:46:14 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jan Kara <jack@suse.com>, Dave Kleikamp <shaggy@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
+        ntfs3@lists.linux.dev
+Subject: Re: remove the nobh helpers v2
+Message-ID: <Yq9ExtTRAx1fqORt@casper.infradead.org>
+References: <20220613053715.2394147-1-hch@lst.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH v3 1/8] statx: add direct I/O alignment information
-Content-Language: en-US
-To:     Eric Biggers <ebiggers@kernel.org>, linux-fsdevel@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-xfs@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>
-References: <20220616201506.124209-1-ebiggers@kernel.org>
- <20220616201506.124209-2-ebiggers@kernel.org>
-From:   Avi Kivity <avi@scylladb.com>
-Organization: ScyllaDB
-In-Reply-To: <20220616201506.124209-2-ebiggers@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220613053715.2394147-1-hch@lst.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Mon, Jun 13, 2022 at 07:37:09AM +0200, Christoph Hellwig wrote:
+> this series (against the pagecache for-next branch) removes the nobh
+> helpers which are a variant of the "normal" buffer head helpers with
+> special tradeoffs for machines with a lot of highmem, and thus rather
+> obsolete.  They pass xfstests, or in case of jfs at least get as far
+> as the baseline.
 
-On 16/06/2022 23.14, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
->
-> Traditionally, the conditions for when DIO (direct I/O) is supported
-> were fairly simple.  For both block devices and regular files, DIO had
-> to be aligned to the logical block size of the block device.
->
-> However, due to filesystem features that have been added over time (e.g.
-> multi-device support, data journalling, inline data, encryption, verity,
-> compression, checkpoint disabling, log-structured mode), the conditions
-> for when DIO is allowed on a regular file have gotten increasingly
-> complex.  Whether a particular regular file supports DIO, and with what
-> alignment, can depend on various file attributes and filesystem mount
-> options, as well as which block device(s) the file's data is located on.
->
-> Moreover, the general rule of DIO needing to be aligned to the block
-> device's logical block size is being relaxed to allow user buffers (but
-> not file offsets) aligned to the DMA alignment instead
-> (https://lore.kernel.org/linux-block/20220610195830.3574005-1-kbusch@fb.com/T/#u).
->
-> XFS has an ioctl XFS_IOC_DIOINFO that exposes DIO alignment information.
-> Uplifting this to the VFS is one possibility.  However, as discussed
-> (https://lore.kernel.org/linux-fsdevel/20220120071215.123274-1-ebiggers@kernel.org/T/#u),
-> this ioctl is rarely used and not known to be used outside of
-> XFS-specific code.  It was also never intended to indicate when a file
-> doesn't support DIO at all, nor was it intended for block devices.
->
-> Therefore, let's expose this information via statx().  Add the
-> STATX_DIOALIGN flag and two new statx fields associated with it:
->
-> * stx_dio_mem_align: the alignment (in bytes) required for user memory
->    buffers for DIO, or 0 if DIO is not supported on the file.
->
-> * stx_dio_offset_align: the alignment (in bytes) required for file
->    offsets and I/O segment lengths for DIO, or 0 if DIO is not supported
->    on the file.  This will only be nonzero if stx_dio_mem_align is
->    nonzero, and vice versa.
-
-
-If you consider AIO, this is actually three alignments:
-
-1. offset alignment for reads (sector size in XFS)
-
-2. offset alignment for overwrites (sector size in XFS since 
-ed1128c2d0c87e, block size earlier)
-
-3. offset alignment for appending writes (block size)
-
-
-This is critical for linux-aio since violation of these alignments will 
-stall the io_submit system call. Perhaps io_uring handles it better by 
-bouncing to a workqueue, but there is a significant performance and 
-latency penalty for that.
-
-
-Small appending writes are important for database commit logs (and so 
-it's better to overwrite a pre-formatted file to avoid aligning to block 
-size).
-
-
-It would be good to expose these differences.
-
-
->
-> Note that as with other statx() extensions, if STATX_DIOALIGN isn't set
-> in the returned statx struct, then these new fields won't be filled in.
-> This will happen if the file is neither a regular file nor a block
-> device, or if the file is a regular file and the filesystem doesn't
-> support STATX_DIOALIGN.  It might also happen if the caller didn't
-> include STATX_DIOALIGN in the request mask, since statx() isn't required
-> to return unrequested information.
->
-> This commit only adds the VFS-level plumbing for STATX_DIOALIGN.  For
-> regular files, individual filesystems will still need to add code to
-> support it.  For block devices, a separate commit will wire it up too.
->
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->   fs/stat.c                 | 2 ++
->   include/linux/stat.h      | 2 ++
->   include/uapi/linux/stat.h | 4 +++-
->   3 files changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/stat.c b/fs/stat.c
-> index 9ced8860e0f35..a7930d7444830 100644
-> --- a/fs/stat.c
-> +++ b/fs/stat.c
-> @@ -611,6 +611,8 @@ cp_statx(const struct kstat *stat, struct statx __user *buffer)
->   	tmp.stx_dev_major = MAJOR(stat->dev);
->   	tmp.stx_dev_minor = MINOR(stat->dev);
->   	tmp.stx_mnt_id = stat->mnt_id;
-> +	tmp.stx_dio_mem_align = stat->dio_mem_align;
-> +	tmp.stx_dio_offset_align = stat->dio_offset_align;
->   
->   	return copy_to_user(buffer, &tmp, sizeof(tmp)) ? -EFAULT : 0;
->   }
-> diff --git a/include/linux/stat.h b/include/linux/stat.h
-> index 7df06931f25d8..ff277ced50e9f 100644
-> --- a/include/linux/stat.h
-> +++ b/include/linux/stat.h
-> @@ -50,6 +50,8 @@ struct kstat {
->   	struct timespec64 btime;			/* File creation time */
->   	u64		blocks;
->   	u64		mnt_id;
-> +	u32		dio_mem_align;
-> +	u32		dio_offset_align;
->   };
->   
->   #endif
-> diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
-> index 1500a0f58041a..7cab2c65d3d7f 100644
-> --- a/include/uapi/linux/stat.h
-> +++ b/include/uapi/linux/stat.h
-> @@ -124,7 +124,8 @@ struct statx {
->   	__u32	stx_dev_minor;
->   	/* 0x90 */
->   	__u64	stx_mnt_id;
-> -	__u64	__spare2;
-> +	__u32	stx_dio_mem_align;	/* Memory buffer alignment for direct I/O */
-> +	__u32	stx_dio_offset_align;	/* File offset alignment for direct I/O */
->   	/* 0xa0 */
->   	__u64	__spare3[12];	/* Spare space for future expansion */
->   	/* 0x100 */
-> @@ -152,6 +153,7 @@ struct statx {
->   #define STATX_BASIC_STATS	0x000007ffU	/* The stuff in the normal stat struct */
->   #define STATX_BTIME		0x00000800U	/* Want/got stx_btime */
->   #define STATX_MNT_ID		0x00001000U	/* Got stx_mnt_id */
-> +#define STATX_DIOALIGN		0x00002000U	/* Want/got direct I/O alignment info */
->   
->   #define STATX__RESERVED		0x80000000U	/* Reserved for future struct statx expansion */
->   
+Thanks, applied & pushed out to the for-next branch.
