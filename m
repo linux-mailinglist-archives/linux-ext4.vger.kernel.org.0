@@ -2,247 +2,238 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 222F95518C8
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Jun 2022 14:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07441552437
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 Jun 2022 20:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241607AbiFTMY2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 20 Jun 2022 08:24:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41394 "EHLO
+        id S1343557AbiFTSug (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 20 Jun 2022 14:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237517AbiFTMY2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Jun 2022 08:24:28 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C6217A83;
-        Mon, 20 Jun 2022 05:24:26 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id t1so18660230ybd.2;
-        Mon, 20 Jun 2022 05:24:26 -0700 (PDT)
+        with ESMTP id S237201AbiFTSuf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Jun 2022 14:50:35 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A24086559
+        for <linux-ext4@vger.kernel.org>; Mon, 20 Jun 2022 11:50:33 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id p3-20020a17090a428300b001ec865eb4a2so6437812pjg.3
+        for <linux-ext4@vger.kernel.org>; Mon, 20 Jun 2022 11:50:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/5JxyhKk/uMc2fQhNdOt2zyaowNO+vOl5nRe37m7DAA=;
-        b=PE6NpoyZLTwUcLsqzDbtJnrnxAIyaVdtaXAicCknBnBwh8ZdqPc+LdCbBV9G0aYWTp
-         OH08dpop/cUwHHDAwRoOZn8NuJbm7em0mCvXsUn5KrkE2uLBzx4qEpmZlCmJ1JT+Dfo2
-         L2g+1N68ykc71e7QB9eNTR6L/SfFYKD49pmyUm+IL+kgwtlzsAFOFxYmtVjO901MBCa0
-         FXrtKRIwLIRyoFGhr+u6OUEnyG6aXt9C5BbkXb3gIq/00R90GPJyncy94IdAi1QYzzKR
-         vgiDWLdFFfvrAAZFOdl0BFPX5q6CTFy21BUmyoGXj99JPg6vLckZ2H/SPEJs5BrMF/te
-         qm2w==
+        d=dilger-ca.20210112.gappssmtp.com; s=20210112;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=N7DPFV5t7axTYYuOVVs8C+HbHaM0eXTf3d4X3HWnGPU=;
+        b=TaIaUUFjgqMng3VhTy7i5yBNW6BkhaQqfR7QYCDqWNfJCQTWHwSN47d4xYw13BhDFC
+         KnZL3xObhoWvzLqdn5XyCU7QEo1A1JeYcYTdqHP9NSTGO2TmsMGlccjUdruy4KByMFlW
+         l2xrts/nRE6EFtY/gKe6vHF0r6tq/XHdjcUWaBZ6+ShVYLgCtSRutuBYJJmxHxDBT6K3
+         4OP3xtL4Lv6f9W9c47qM9LttiHFnnz5paTtChYHWI4OxSQ+L0iE6XtUzdZgnW8fwgqN4
+         Ja91ZRsEkFNczoIZVzzqs1iPQOQIc0eUPq95li+KnnoL2BWMls+9NBW4qS5CGFSctr2c
+         h8Nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/5JxyhKk/uMc2fQhNdOt2zyaowNO+vOl5nRe37m7DAA=;
-        b=ulzaQyXilwMJyLSdhMr6e4xUI1Vr+aw6nnUIb/XhMNhwgK/0XpAFOgQJTDgSnyt2vn
-         f7QZcYD5JTTvMojt1fTO7Tu1T4Inh4NWHO2pzfjpu2aTjzDN1D+/GbdMxa/fYIPitHl0
-         vUbAmktK0YtedM3Z242nsDsqxNBIoiEohcthW26QAMyaie9mk3cmAmDTpfY+Al5hMm8U
-         ewZFsW8D6BRu0mbpn6B+yClICdpXgQXAl3UayDe5SjP/5vdBKuvLjLaY+cMeoOF8kusz
-         VRUcfaflLBb8ylgK7v5SLDDvUOiKn3lxiCKerQ7Xv4EsQrfSXj4dibiHqar3L2IbziD/
-         AGaw==
-X-Gm-Message-State: AJIora+uELfFxKY17BIj0KIqHh7XGgPBuWKgikp2xWMJpeMyypRIw5Hv
-        FhUlHVs8BXpOMCa4NueLe/MFlJDNoPWzblN4KYrCqJXhcJk1IAZW
-X-Google-Smtp-Source: AGRyM1vMxS63SWLYtulgVh/kvFZnhALPPWNXYa9hXtgHK5dVSCko6xQfAiztdTyivXeoAx7i5Qb7kZtG3NdmkeicRKE=
-X-Received: by 2002:a25:c08f:0:b0:668:fcfc:1b2a with SMTP id
- c137-20020a25c08f000000b00668fcfc1b2amr6724569ybf.242.1655727866015; Mon, 20
- Jun 2022 05:24:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220531200041.24904-1-alex.sierra@amd.com> <20220531200041.24904-2-alex.sierra@amd.com>
- <3ac89358-2ce0-7d0d-8b9c-8b0e5cc48945@redhat.com> <02ed2cb7-3ad3-8ffc-6032-04ae1853e234@amd.com>
- <CAFCwf11z5Q+2FPS1yPi6EwQuRqoJg_dLB-rYgtVwP-zQEdqjQQ@mail.gmail.com>
- <87bkuo898d.fsf@nvdebian.thelocal> <CAFCwf11Lru4rHJ93gkCTMqfsWZ8Hcug4z=_t7B=G07bo7zsaFw@mail.gmail.com>
- <877d5b90sp.fsf@nvdebian.thelocal>
-In-Reply-To: <877d5b90sp.fsf@nvdebian.thelocal>
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-Date:   Mon, 20 Jun 2022 15:23:59 +0300
-Message-ID: <CAFCwf11CCmx9xtNqGeALqmVn-1_eBOiqAXDSWczieNdL1QdazA@mail.gmail.com>
-Subject: Re: [PATCH v5 01/13] mm: add zone device coherent type memory support
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     "Sierra Guiza, Alejandro (Alex)" <alex.sierra@amd.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, rcampbell@nvidia.com,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        linux-xfs@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-ext4@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=N7DPFV5t7axTYYuOVVs8C+HbHaM0eXTf3d4X3HWnGPU=;
+        b=P0x4rgGUtGe65hbbFzkVQsJcbpvAJX1Ge1FfyjQjAbAILuumTWkZlD9HbeZyKJp7Eh
+         RW5MmGrGPLnuHBXMzrhCoKWUDo2B+6gWFvKNLCkHumMFcik/MOko6hbLTM0YhoPhpEKX
+         mNkwt1p03CTb4nIlzs27YFvyVFWlPF7fA/kYubGu6paCjQy7xA196hFyKpqH7RFp61LG
+         kOZIVZD4Dv/n1a9dA5Bg6IcJCTkTaXWZZstTGI7oDrbMGLSw89D++fLI5XtSdBe/ckEh
+         Htl9napvzJjl3XXdFd1KQWjeRIZo4E+N4dQKFxsryjLbLaM8tpJuwPFnaLe6nrA8lQ3p
+         DH3A==
+X-Gm-Message-State: AJIora+/gecbvDsV1GkkfPpudjA4UqvMNw4qDgGW50uDyTRwzuoLUS++
+        fDb/DrM4UTf8aVEiaRLyztJipKt9HQGT0vyGrRE=
+X-Google-Smtp-Source: AGRyM1ugP3yIAQ+K2J2wm7xh9ScceNHn9mGQPRD/p8Ak8ZIwaPriUVSz93hpy/jNmRVpnNiluvEO+Q==
+X-Received: by 2002:a17:902:9887:b0:151:6e1c:7082 with SMTP id s7-20020a170902988700b001516e1c7082mr24023291plp.162.1655751033033;
+        Mon, 20 Jun 2022 11:50:33 -0700 (PDT)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id m7-20020aa79007000000b0051bdb735647sm9444459pfo.159.2022.06.20.11.50.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 20 Jun 2022 11:50:32 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <117682F9-5CEF-44F2-935E-E048C8A9D75D@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_5E6B2CB8-94ED-489A-AD93-C072147FD469";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: Overwrite faster than fallocate
+Date:   Mon, 20 Jun 2022 12:52:29 -0600
+In-Reply-To: <CAGQ4T_J-43q5xszJK8yDTUt14NGjjQACK4Z1RST-ZQkju3xSzQ@mail.gmail.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org
+To:     Santosh S <santosh.letterz@gmail.com>
+References: <CAGQ4T_Jne-bxdP9rMNBzqXw16a4kD4FM=F5VuGgUbczj5WgCLA@mail.gmail.com>
+ <Yqz8a0ggTjIU3h7T@mit.edu>
+ <CAGQ4T_J-43q5xszJK8yDTUt14NGjjQACK4Z1RST-ZQkju3xSzQ@mail.gmail.com>
+X-Mailer: Apple Mail (2.3273)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jun 20, 2022 at 11:50 AM Alistair Popple <apopple@nvidia.com> wrote:
->
->
-> Oded Gabbay <oded.gabbay@gmail.com> writes:
->
-> > On Mon, Jun 20, 2022 at 3:33 AM Alistair Popple <apopple@nvidia.com> wrote:
-> >>
-> >>
-> >> Oded Gabbay <oded.gabbay@gmail.com> writes:
-> >>
-> >> > On Fri, Jun 17, 2022 at 8:20 PM Sierra Guiza, Alejandro (Alex)
-> >> > <alex.sierra@amd.com> wrote:
-> >> >>
-> >> >>
-> >> >> On 6/17/2022 4:40 AM, David Hildenbrand wrote:
-> >> >> > On 31.05.22 22:00, Alex Sierra wrote:
-> >> >> >> Device memory that is cache coherent from device and CPU point of view.
-> >> >> >> This is used on platforms that have an advanced system bus (like CAPI
-> >> >> >> or CXL). Any page of a process can be migrated to such memory. However,
-> >> >> >> no one should be allowed to pin such memory so that it can always be
-> >> >> >> evicted.
-> >> >> >>
-> >> >> >> Signed-off-by: Alex Sierra <alex.sierra@amd.com>
-> >> >> >> Acked-by: Felix Kuehling <Felix.Kuehling@amd.com>
-> >> >> >> Reviewed-by: Alistair Popple <apopple@nvidia.com>
-> >> >> >> [hch: rebased ontop of the refcount changes,
-> >> >> >>        removed is_dev_private_or_coherent_page]
-> >> >> >> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> >> >> >> ---
-> >> >> >>   include/linux/memremap.h | 19 +++++++++++++++++++
-> >> >> >>   mm/memcontrol.c          |  7 ++++---
-> >> >> >>   mm/memory-failure.c      |  8 ++++++--
-> >> >> >>   mm/memremap.c            | 10 ++++++++++
-> >> >> >>   mm/migrate_device.c      | 16 +++++++---------
-> >> >> >>   mm/rmap.c                |  5 +++--
-> >> >> >>   6 files changed, 49 insertions(+), 16 deletions(-)
-> >> >> >>
-> >> >> >> diff --git a/include/linux/memremap.h b/include/linux/memremap.h
-> >> >> >> index 8af304f6b504..9f752ebed613 100644
-> >> >> >> --- a/include/linux/memremap.h
-> >> >> >> +++ b/include/linux/memremap.h
-> >> >> >> @@ -41,6 +41,13 @@ struct vmem_altmap {
-> >> >> >>    * A more complete discussion of unaddressable memory may be found in
-> >> >> >>    * include/linux/hmm.h and Documentation/vm/hmm.rst.
-> >> >> >>    *
-> >> >> >> + * MEMORY_DEVICE_COHERENT:
-> >> >> >> + * Device memory that is cache coherent from device and CPU point of view. This
-> >> >> >> + * is used on platforms that have an advanced system bus (like CAPI or CXL). A
-> >> >> >> + * driver can hotplug the device memory using ZONE_DEVICE and with that memory
-> >> >> >> + * type. Any page of a process can be migrated to such memory. However no one
-> >> >> > Any page might not be right, I'm pretty sure. ... just thinking about special pages
-> >> >> > like vdso, shared zeropage, ... pinned pages ...
-> >> >>
-> >> >> Hi David,
-> >> >>
-> >> >> Yes, I think you're right. This type does not cover all special pages.
-> >> >> I need to correct that on the cover letter.
-> >> >> Pinned pages are allowed as long as they're not long term pinned.
-> >> >>
-> >> >> Regards,
-> >> >> Alex Sierra
-> >> >
-> >> > What if I want to hotplug this device's coherent memory, but I do
-> >> > *not* want the OS
-> >> > to migrate any page to it ?
-> >> > I want to fully-control what resides on this memory, as I can consider
-> >> > this memory
-> >> > "expensive". i.e. I don't have a lot of it, I want to use it for
-> >> > specific purposes and
-> >> > I don't want the OS to start using it when there is some memory pressure in
-> >> > the system.
-> >>
-> >> This is exactly what MEMORY_DEVICE_COHERENT is for. Device coherent
-> >> pages are only allocated by a device driver and exposed to user-space by
-> >> a driver migrating pages to them with migrate_vma. The OS can't just
-> >> start using them due to memory pressure for example.
-> >>
-> >>  - Alistair
-> > Thanks for the explanation.
-> >
-> > I guess the commit message confused me a bit, especially these two sentences:
-> >
-> > "Any page of a process can be migrated to such memory. However no one should be
-> > allowed to pin such memory so that it can always be evicted."
-> >
-> > I read them as if the OS is free to choose which pages are migrated to
-> > this memory,
-> > and anything is eligible for migration to that memory (and that's why
-> > we also don't
-> > allow it to pin memory there).
-> >
-> > If we are not allowed to pin anything there, can the device driver
-> > decide to disable
-> > any option for oversubscription of this memory area ?
->
-> I'm not sure I follow your thinking on how oversubscription would work
-> here, however all allocations are controlled by the driver. So if a
-> device's coherent memory is full a driver would be unable to migrate
-> pages to that device until pages are freed by the OS due to being
-> unmapped or the driver evicts pages by migrating them back to normal CPU
-> memory.
->
-> Pinning of pages is allowed, and could prevent such migrations. However
-> this patch series prevents device coherent pages from being pinned
-> longterm (ie. with FOLL_LONGTERM), so it should always be able to evict
-> pages eventually.
->
-> > Let's assume the user uses this memory area for doing p2p with other
-> > CXL devices.
-> > In that case, I wouldn't want the driver/OS to migrate pages in and
-> > out of that memory...
->
-> The OS will not migrate pages in or out (although it may free them if no
-> longer required), but a driver might choose to. So at the moment it's
-> really up to the driver to implement what you want in this regards.
 
-I see.
-In other words, we don't want to allow long-term pinning but
-the driver can decide it doesn't want to evict pages out
-of that memory, until they are freed.
+--Apple-Mail=_5E6B2CB8-94ED-489A-AD93-C072147FD469
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
 
-Thanks,
-Oded
->
-> > So either I should let the user pin those pages, or prevent him from
-> > doing (accidently or not)
-> > oversubscription in this memory area.
->
-> As noted above pages can be pinned, but not long-term.
->
->  - Alistair
->
-> > wdyt ?
-> >
-> >>
-> >> > Oded
-> >> >
-> >> >>
-> >> >> >
-> >> >> >> + * should be allowed to pin such memory so that it can always be evicted.
-> >> >> >> + *
-> >> >> >>    * MEMORY_DEVICE_FS_DAX:
-> >> >> >>    * Host memory that has similar access semantics as System RAM i.e. DMA
-> >> >> >>    * coherent and supports page pinning. In support of coordinating page
-> >> >> >> @@ -61,6 +68,7 @@ struct vmem_altmap {
-> >> >> >>   enum memory_type {
-> >> >> >>      /* 0 is reserved to catch uninitialized type fields */
-> >> >> >>      MEMORY_DEVICE_PRIVATE = 1,
-> >> >> >> +    MEMORY_DEVICE_COHERENT,
-> >> >> >>      MEMORY_DEVICE_FS_DAX,
-> >> >> >>      MEMORY_DEVICE_GENERIC,
-> >> >> >>      MEMORY_DEVICE_PCI_P2PDMA,
-> >> >> >> @@ -143,6 +151,17 @@ static inline bool folio_is_device_private(const struct folio *folio)
-> >> >> > In general, this LGTM, and it should be correct with PageAnonExclusive I think.
-> >> >> >
-> >> >> >
-> >> >> > However, where exactly is pinning forbidden?
-> >> >>
-> >> >> Long-term pinning is forbidden since it would interfere with the device
-> >> >> memory manager owning the
-> >> >> device-coherent pages (e.g. evictions in TTM). However, normal pinning
-> >> >> is allowed on this device type.
-> >> >>
-> >> >> Regards,
-> >> >> Alex Sierra
-> >> >>
-> >> >> >
+On Jun 17, 2022, at 5:56 PM, Santosh S <santosh.letterz@gmail.com> wrote:
+> 
+> On Fri, Jun 17, 2022 at 6:13 PM Theodore Ts'o <tytso@mit.edu> wrote:
+>> 
+>> On Fri, Jun 17, 2022 at 12:38:20PM -0400, Santosh S wrote:
+>>> Dear ext4 developers,
+>>> 
+>>> This is my test - preallocate a large file (2G) and then do sequential
+>>> 4K direct-io writes to that file, with fdatasync after every write.
+>>> I am preallocating using fallocate mode 0. I noticed that if the 2G
+>>> file is pre-written rather than fallocate'd I get more than twice the
+>>> throughput. I could reproduce this with fio. The storage is nvme.
+>>> Kernel version is 5.3.18 on Suse.
+>>> 
+>>> Am I doing something wrong or is this difference expected? Any
+>>> suggestion to get a better throughput without actually pre-writing the
+>>> file.
+>> 
+>> This is, alas, expected.  The reason for this is because when you use
+>> fallocate, the extent is marked as uninitialized, so that when you
+>> read from the those newly allocated blocks, you don't see previously
+>> written data belonging to deleted files.  These files could contain
+>> someone else's e-mail, or medical information, etc.  So if we didn't
+>> do this, it would be a walking, talking HIPPA or PCI violation.
+>> 
+>> So when you write to an fallocated region, and then call fdatasync(2),
+>> we need to update the metadata blocks to clear the uninitialized bit
+>> so that when you read from the file after a crash, you actually get
+>> the data that was written.  So the fdatasync(2) operation is quite the
+>> heavyweight operation, since it requries journal commit because of the
+>> required metadata update.  When you do an overwrite, there is no need
+>> to force a metadata update and journal update, which is why write(2)
+>> plus fdatasync(2) is much lighter weight when you do an overwrite.
+>> 
+>> What enterprise databases (e.g., Oracle Enterprise Database and IBM's
+>> Informix DB) tend to do is to use fallocate a chunk of space (say,
+>> 16MB or 32MB), because for Legacy Unix OS's, this tends enable some
+>> file system's block allocators to be more likely to allocate a
+>> contiguous block range, and then immediate write zero's on that 16 or
+>> 32MB, plus a fdatasync(2).  This fdatasync(2) would update the extent
+>> tree once to make that 16MB or 32MB to be marked initialized to the
+>> database's tablespace file, so you only pay the metadata update once,
+>> instead of every few dozen kilobytes as you write each database commit
+>> into the tablespace file.
+>> 
+>> There is also an old, out of tree patch which enables an fallocate
+>> mode called "no hide stale", which marks the extent tree blcoks which
+>> are allocated using fallocate(2) as initialized.  This substantially
+>> speeds things up, but it is potentially a walking, talking, HIPPA or
+>> PCI violation in that revealing previously written data is considered
+>> a horrible security violation by most file system developers.
+>> 
+>> If you know, say, that a cluster file system is the only user of the
+>> file system, and all data is written encrypted at rest using a
+>> per-user key, such that exposing stale data is not a security
+>> disaster, the "no hide stale" flag could be "safe" in that highly
+>> specialized user case.
+>> 
+>> But that assumes that file system authors can trust application
+>> writers not to do something stupid and insecure, and historically,
+>> file system authors (possibly with good reason, given bitter past
+>> experience) don't trust application writesr to do something which is
+>> very easy, and gooses performance, even if it has terrible side
+>> effects on either data robustness or data security.
+>> 
+>> Effectively, the no hide stale flag could be considered an "Attractive
+>> Nuisance"[1] and so support for this feature has never been accepted
+>> into the mainline kernel, and never to any distro kernels, since the
+>> distribution companies don't want to be held liable for making an
+>> "acctive nuisance" that might enable application authors from shooting
+>> themselves in the foot.
+>> 
+>> [1] https://en.wikipedia.org/wiki/Attractive_nuisance_doctrine
+>> 
+>> In any case, the technique of fallocatE(2) plus zero-fill-write plus
+>> fdatasync(2) isn't *that* slow, and is only needed when you are first
+>> extending the tablespace file.  In the steady state, most database
+>> applications tend to be overwriting space, so this isn't an issue.
+>> 
+>> In any case, if you need to get that last 5% or so of performance ---
+>> say, if you are are an enterprise database company interested in
+>> taking a full page advertisement on the back cover of Business Week
+>> Magazine touting how your enterprise database benchmarks are better
+>> than the competition --- the simple solution is to use a raw block
+>> device.  Of course, most end users want the convenience of the file
+>> system, but that's not the point if you are engaging in
+>> benchmarketing.   :-)
+>> 
+>> Cheers,
+>> 
+>>                                                - Ted
+> 
+> Thank you for a comprehensive answer :-)
+> 
+> I have one more question - when I gradually increase the i/o transfer
+> size the performance degradation begins to lessen and at 32K it is
+> similar to the "overwriting the file" case. I assume this is because
+> the metadata update is now spread over 32K of data rather than 4K.
+
+When splitting unwritten extents, the ext4 code will write out zero
+blocks up to 32KB by default (/sys/fs/ext4/*/extent_max_zeroout_kb)
+to avoid having millions of very small extents in a file (e.g. in
+case of a pathological alternating 4KB write pattern).  If your test
+is writing >= 32KB blocks then this no longer needs to be done.  If
+writing smaller blocks then it makes sense that the speed is 1/2 the
+raw speed because the file blocks are all being written twice (first
+with zeroes, then with actual data on a later write).
+
+32KB (or 64KB) is a reasonable minimum size because any disk write
+will take the same time to write a single block or a whole sector,
+so doing writes in smaller units is not very efficient.  Depending
+on the underlying storage (e.g. RAID-6) it might be more efficient
+to set extent_max_zeroout_kb=1024 or similar.
+
+> However, my understanding is that, in my case, an extent should
+> represent the max 128MiB of data and so the clearing of the
+> uninitialized bit for an extent should happen once every 128MiB, so
+> then why is a higher transfer size making a difference?
+
+You are misunderstanding how uninitialized extents are cleared.  The
+uninitialized extent is split into two/three parts, where only the
+extent that has data written to it (min 32KB) is set to "initialized"
+and the remaining one/two extents are left uninitialized.  Otherwise,
+each write to an uninitialized extent would need up to 128MB of zeroes
+written to disk each time, which would be slow/high latency.
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_5E6B2CB8-94ED-489A-AD93-C072147FD469
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmKwwe4ACgkQcqXauRfM
+H+C7ew/+OZWg3D2aDd+7Ar7bmEl1+flbCDOJQ0ogkMw7pm1SeVikFLRhkRzbJ+wb
+QVE5zeHMfixrCm8X+b+0dt6D8sE4v2Hj0D3VukcGWHM2dbhFwjw2l+bYVE4kZ7fw
+tvkSH/vsKC/9KCCk83EkRFAheQJI+0k4AStjUDqiLDmgBHVGqnS+BzEumvO7SxPc
+0svHW2vzC9Xt1tTXLW1tWuVWQv0vk+5F5G71Ks2E33juRQo5rZWAOcciT5hfr+wa
+QMTsGJp358vBte3XPD2P9rLtCUuex8pelFsoT2tpcMw+Zmj3U4iTZKaue0RBnnBy
+ksAxwOIQ2Qp253x+sD0WS/Hj2FV46DY4DN48CXK5xYxDnhGEmQr9FxVrHouC/JfB
+orZbOO93a0EAvTbBcJ3tsIAQtAZpTkVu7GQ9nz0EGvgcX0RyMjWLdMWTTYXwG+zo
+eo7xSJYqu3x2Zngme/ACj4nGsUJfoN5zRQivzIarmwtN8o/Ee8U1+7xKkZMzwwRC
+QXf2Iw4LAFLSRvgrqZgCOMxDxaQiH59xn1Pza0vVlbEMK20H3GO4/o3OAX/cVnmm
+L2w0LCN1Q1SgyAKUzAUHVxdZGP8O8Sv9mxIZnhLPRr8PfVQAPJKagclJ5rXD+oyS
+ZFpa/AIwU7m4QN/FkUlj0JRuW7UeMIds5PA9KBJyS+OeyWdDOd4=
+=tQuU
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_5E6B2CB8-94ED-489A-AD93-C072147FD469--
