@@ -2,63 +2,71 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3D6550FEC
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Jun 2022 08:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 207FA551006
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 Jun 2022 08:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231392AbiFTGAD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 20 Jun 2022 02:00:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36690 "EHLO
+        id S238471AbiFTGCM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 20 Jun 2022 02:02:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238421AbiFTF7s (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Jun 2022 01:59:48 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F00DF8B;
-        Sun, 19 Jun 2022 22:59:42 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id w24so933907pjg.5;
-        Sun, 19 Jun 2022 22:59:42 -0700 (PDT)
+        with ESMTP id S238431AbiFTGCL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Jun 2022 02:02:11 -0400
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B0BDFC2;
+        Sun, 19 Jun 2022 23:02:10 -0700 (PDT)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-3178acf2a92so55598557b3.6;
+        Sun, 19 Jun 2022 23:02:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=NYiD9eM+KGyPorgMmWX5XLuH3KZcPdxGd9EsYZHUhiY=;
-        b=TrRaOOhpUEndVxuD7aVjtYiXelfTK4XWG/0UTWd1A0E2ycgpEs7qlg9TaEx77TCFEc
-         baphQ6gYwfuGcaFW1uv9HkJ3ia7bMpYFJUC+EFXB+YEZjg4jK5eu/mqtXfkMMfEox3ME
-         XmNUeGHBcjv5CfQt2sNEkfHVoK0+fj13XjXK9XyJQSvigZ1jwDbVlU0JljdqS1D0ongQ
-         JjgdX228kh67cwnRpKKbSz+aeF4sCxi2TFcIuD2+NpvBJUIKLXJGWcWclIfDuM5oqhYu
-         SCkVKT2LxHhTiOFTW5s6/wQCEEJFJ/corEIWHYHez0WfNSNPSObJv+rV8g4EHBUweozF
-         e4HA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Xe3VeJwBL8Ebq+C8acPsdxpGtpDiQ/HFobU5cBrv3WU=;
+        b=JGXEQN+I0XIHQ+X5Mcx0dO6wWlI7vTAu58RHk2tfY9oeE1RryAubJGzZLv3yuLijUw
+         gydtnS0hDUSBpq9r3SsmFRmxKwivL+qEqqG4AeasEJPgKwGUW5ncwS8hDuaBe1by6iLC
+         4shKZoFhI0TDayMYjRURjmXduC89qZioy71wZUHaVlgavAIG9rFEBATExIyE2a7s/Lc/
+         gNmY5EcMGCyLhl0+wKhutdbW2QJ5Poc9OGfm3v+PoOows2woHUi1qoC2FO9C8S35db6d
+         p9G1eS85wqQTc2cRC0ho7twEyZvjDUtmTk7i+PE8vZwGGFv/J/4SsrlLus365LDRYX6v
+         rN2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NYiD9eM+KGyPorgMmWX5XLuH3KZcPdxGd9EsYZHUhiY=;
-        b=gi/0K0ZJDtRlBdMaHZAwsEIoeJQFZMkG/bOWBjLp5StBmqgrn4xz1avGWqDBQNoPD1
-         MGBa8qGF2E0o5b6BQUdYZJCtLh48OfrobFVlKoJYBjmzfiRQDVd0BRqLteNRjY+AM0w2
-         dZmk/wGWfPYUrUYVeKf7s8TeGFcMlc51whjqDmJS4xkbIbTwfMInbpj8fGA6NxoDZ8Ys
-         tM8NZBysBJE9Gk7toDkuXZf2O2wm5F1Cjcl/jF3yG2ZKUrEpOcVn4oLD0XZboaP2pEzl
-         f/is2I2GDJUnkXMvWH5u2qf47M1MiMOEXNG6ki5ulmQNf/TC3WBYn4VBNQZ3tDQ2ZMSY
-         R8Uw==
-X-Gm-Message-State: AJIora9ZhmrbDq0O0O9qcPyyeegTgLi3MAVZ1d8QhBdx6fw8iwj4H/oA
-        dk2bcDxqkvQmPR9KdPcn75w3xtoxKzU=
-X-Google-Smtp-Source: AGRyM1sMmNvyA6tVU+E7iDcAxZ4dzRCPjegQKTiw11JwZQR8nnlK1p8eEhw5j2RBrj1oZi7BWhU3VQ==
-X-Received: by 2002:a17:90b:1c10:b0:1e8:90bd:d912 with SMTP id oc16-20020a17090b1c1000b001e890bdd912mr24897843pjb.233.1655704781351;
-        Sun, 19 Jun 2022 22:59:41 -0700 (PDT)
-Received: from localhost ([2406:7400:63:5d34:e6c2:4c64:12ae:aa11])
-        by smtp.gmail.com with ESMTPSA id 144-20020a621796000000b0051b693baadcsm7934601pfx.205.2022.06.19.22.59.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Jun 2022 22:59:41 -0700 (PDT)
-From:   Ritesh Harjani <ritesh.list@gmail.com>
-To:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Cc:     Jan Kara <jack@suse.com>, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Ritesh Harjani <ritesh.list@gmail.com>
-Subject: [RFC 3/3] fs/buffer: Make submit_bh & submit_bh_wbc return type as void
-Date:   Mon, 20 Jun 2022 11:28:42 +0530
-Message-Id: <ba89f469a59cfaca49478ee391e6bc9dde456e19.1655703467.git.ritesh.list@gmail.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <cover.1655703466.git.ritesh.list@gmail.com>
-References: <cover.1655703466.git.ritesh.list@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Xe3VeJwBL8Ebq+C8acPsdxpGtpDiQ/HFobU5cBrv3WU=;
+        b=IzoV2is+oeE3j+Xh0UWEXTaGsWqRRnJbdQdivUa2V5ESkfaz2ytyOkh1zch3NcEW+g
+         WkL5upZHZKJocwauN6d9g9vJbx706B/2ZSuazVJA1UiW2f8bKcZruqy/844/f8UI5iBq
+         WI+adIAxHSvEFgWI7CPP8Htd8NZZxhV4ya91qSkPJr+bq86qfoEpUnbH9hmzRNZD7bnX
+         Rn6Wk1H73Ic2kRGvY7KzObadwp5lfvXb3z1Y21/RqHGZMZkeay72HEbH370FrRtY7n5I
+         OCBlljL/Y1FxgMeASylSsTnX0fXW8wZ5x8rvbHjpDGVMxdqhCc+2yFygZq3T5hQ7P1rs
+         otAA==
+X-Gm-Message-State: AJIora9N05rSVgrJ4/S6kJDaMNnc7lAXadWkmCpKi7DsV+Ym6ryi5qpa
+        qwTqG1QDKgh993HTqMyjHJQrYR/JIvd60Pqchnk=
+X-Google-Smtp-Source: AGRyM1tzeukUE0eoUNLmKpkTD0UfGuNi9OAgJD/BPDmnsr6lE4pkLipEhHJgaDKCB2nZwNfM9ZoCJ1FPCdi+Kl69/hM=
+X-Received: by 2002:a0d:f8c6:0:b0:2fe:ca9c:f937 with SMTP id
+ i189-20020a0df8c6000000b002feca9cf937mr25655114ywf.62.1655704929245; Sun, 19
+ Jun 2022 23:02:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20220531200041.24904-1-alex.sierra@amd.com> <20220531200041.24904-2-alex.sierra@amd.com>
+ <3ac89358-2ce0-7d0d-8b9c-8b0e5cc48945@redhat.com> <02ed2cb7-3ad3-8ffc-6032-04ae1853e234@amd.com>
+ <CAFCwf11z5Q+2FPS1yPi6EwQuRqoJg_dLB-rYgtVwP-zQEdqjQQ@mail.gmail.com> <87bkuo898d.fsf@nvdebian.thelocal>
+In-Reply-To: <87bkuo898d.fsf@nvdebian.thelocal>
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+Date:   Mon, 20 Jun 2022 09:01:42 +0300
+Message-ID: <CAFCwf11Lru4rHJ93gkCTMqfsWZ8Hcug4z=_t7B=G07bo7zsaFw@mail.gmail.com>
+Subject: Re: [PATCH v5 01/13] mm: add zone device coherent type memory support
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     "Sierra Guiza, Alejandro (Alex)" <alex.sierra@amd.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, rcampbell@nvidia.com,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        linux-xfs@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-ext4@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -69,71 +77,137 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-submit_bh/submit_bh_wbc are non-blocking functions which just submits
-the bio and returns. The caller of submit_bh/submit_bh_wbc needs to wait
-on buffer till I/O completion and then check buffer head's b_state field
-to know if there was any I/O error.
+On Mon, Jun 20, 2022 at 3:33 AM Alistair Popple <apopple@nvidia.com> wrote:
+>
+>
+> Oded Gabbay <oded.gabbay@gmail.com> writes:
+>
+> > On Fri, Jun 17, 2022 at 8:20 PM Sierra Guiza, Alejandro (Alex)
+> > <alex.sierra@amd.com> wrote:
+> >>
+> >>
+> >> On 6/17/2022 4:40 AM, David Hildenbrand wrote:
+> >> > On 31.05.22 22:00, Alex Sierra wrote:
+> >> >> Device memory that is cache coherent from device and CPU point of view.
+> >> >> This is used on platforms that have an advanced system bus (like CAPI
+> >> >> or CXL). Any page of a process can be migrated to such memory. However,
+> >> >> no one should be allowed to pin such memory so that it can always be
+> >> >> evicted.
+> >> >>
+> >> >> Signed-off-by: Alex Sierra <alex.sierra@amd.com>
+> >> >> Acked-by: Felix Kuehling <Felix.Kuehling@amd.com>
+> >> >> Reviewed-by: Alistair Popple <apopple@nvidia.com>
+> >> >> [hch: rebased ontop of the refcount changes,
+> >> >>        removed is_dev_private_or_coherent_page]
+> >> >> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> >> >> ---
+> >> >>   include/linux/memremap.h | 19 +++++++++++++++++++
+> >> >>   mm/memcontrol.c          |  7 ++++---
+> >> >>   mm/memory-failure.c      |  8 ++++++--
+> >> >>   mm/memremap.c            | 10 ++++++++++
+> >> >>   mm/migrate_device.c      | 16 +++++++---------
+> >> >>   mm/rmap.c                |  5 +++--
+> >> >>   6 files changed, 49 insertions(+), 16 deletions(-)
+> >> >>
+> >> >> diff --git a/include/linux/memremap.h b/include/linux/memremap.h
+> >> >> index 8af304f6b504..9f752ebed613 100644
+> >> >> --- a/include/linux/memremap.h
+> >> >> +++ b/include/linux/memremap.h
+> >> >> @@ -41,6 +41,13 @@ struct vmem_altmap {
+> >> >>    * A more complete discussion of unaddressable memory may be found in
+> >> >>    * include/linux/hmm.h and Documentation/vm/hmm.rst.
+> >> >>    *
+> >> >> + * MEMORY_DEVICE_COHERENT:
+> >> >> + * Device memory that is cache coherent from device and CPU point of view. This
+> >> >> + * is used on platforms that have an advanced system bus (like CAPI or CXL). A
+> >> >> + * driver can hotplug the device memory using ZONE_DEVICE and with that memory
+> >> >> + * type. Any page of a process can be migrated to such memory. However no one
+> >> > Any page might not be right, I'm pretty sure. ... just thinking about special pages
+> >> > like vdso, shared zeropage, ... pinned pages ...
+> >>
+> >> Hi David,
+> >>
+> >> Yes, I think you're right. This type does not cover all special pages.
+> >> I need to correct that on the cover letter.
+> >> Pinned pages are allowed as long as they're not long term pinned.
+> >>
+> >> Regards,
+> >> Alex Sierra
+> >
+> > What if I want to hotplug this device's coherent memory, but I do
+> > *not* want the OS
+> > to migrate any page to it ?
+> > I want to fully-control what resides on this memory, as I can consider
+> > this memory
+> > "expensive". i.e. I don't have a lot of it, I want to use it for
+> > specific purposes and
+> > I don't want the OS to start using it when there is some memory pressure in
+> > the system.
+>
+> This is exactly what MEMORY_DEVICE_COHERENT is for. Device coherent
+> pages are only allocated by a device driver and exposed to user-space by
+> a driver migrating pages to them with migrate_vma. The OS can't just
+> start using them due to memory pressure for example.
+>
+>  - Alistair
+Thanks for the explanation.
 
-Hence there is no need for these functions to have any return type.
-Even now they always returns 0. Hence drop the return value and make
-their return type as void to avoid any confusion.
+I guess the commit message confused me a bit, especially these two sentences:
 
-Signed-off-by: Ritesh Harjani <ritesh.list@gmail.com>
----
- fs/buffer.c                 | 9 ++++-----
- include/linux/buffer_head.h | 2 +-
- 2 files changed, 5 insertions(+), 6 deletions(-)
+"Any page of a process can be migrated to such memory. However no one should be
+allowed to pin such memory so that it can always be evicted."
 
-diff --git a/fs/buffer.c b/fs/buffer.c
-index 313283af15b6..6671abc98e21 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -52,7 +52,7 @@
- #include "internal.h"
- 
- static int fsync_buffers_list(spinlock_t *lock, struct list_head *list);
--static int submit_bh_wbc(int op, int op_flags, struct buffer_head *bh,
-+static void submit_bh_wbc(int op, int op_flags, struct buffer_head *bh,
- 			 struct writeback_control *wbc);
- 
- #define BH_ENTRY(list) list_entry((list), struct buffer_head, b_assoc_buffers)
-@@ -2994,7 +2994,7 @@ static void end_bio_bh_io_sync(struct bio *bio)
- 	bio_put(bio);
- }
- 
--static int submit_bh_wbc(int op, int op_flags, struct buffer_head *bh,
-+static void submit_bh_wbc(int op, int op_flags, struct buffer_head *bh,
- 			 struct writeback_control *wbc)
- {
- 	struct bio *bio;
-@@ -3037,12 +3037,11 @@ static int submit_bh_wbc(int op, int op_flags, struct buffer_head *bh,
- 	}
- 
- 	submit_bio(bio);
--	return 0;
- }
- 
--int submit_bh(int op, int op_flags, struct buffer_head *bh)
-+void submit_bh(int op, int op_flags, struct buffer_head *bh)
- {
--	return submit_bh_wbc(op, op_flags, bh, NULL);
-+	submit_bh_wbc(op, op_flags, bh, NULL);
- }
- EXPORT_SYMBOL(submit_bh);
- 
-diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
-index c9d1463bb20f..392d7d5aec05 100644
---- a/include/linux/buffer_head.h
-+++ b/include/linux/buffer_head.h
-@@ -205,7 +205,7 @@ void ll_rw_block(int, int, int, struct buffer_head * bh[]);
- int sync_dirty_buffer(struct buffer_head *bh);
- int __sync_dirty_buffer(struct buffer_head *bh, int op_flags);
- void write_dirty_buffer(struct buffer_head *bh, int op_flags);
--int submit_bh(int, int, struct buffer_head *);
-+void submit_bh(int op, int op_flags, struct buffer_head *bh);
- void write_boundary_block(struct block_device *bdev,
- 			sector_t bblock, unsigned blocksize);
- int bh_uptodate_or_lock(struct buffer_head *bh);
--- 
-2.35.3
+I read them as if the OS is free to choose which pages are migrated to
+this memory,
+and anything is eligible for migration to that memory (and that's why
+we also don't
+allow it to pin memory there).
 
+If we are not allowed to pin anything there, can the device driver
+decide to disable
+any option for oversubscription of this memory area ?
+
+Let's assume the user uses this memory area for doing p2p with other
+CXL devices.
+In that case, I wouldn't want the driver/OS to migrate pages in and
+out of that memory...
+
+So either I should let the user pin those pages, or prevent him from
+doing (accidently or not)
+oversubscription in this memory area.
+
+wdyt ?
+
+>
+> > Oded
+> >
+> >>
+> >> >
+> >> >> + * should be allowed to pin such memory so that it can always be evicted.
+> >> >> + *
+> >> >>    * MEMORY_DEVICE_FS_DAX:
+> >> >>    * Host memory that has similar access semantics as System RAM i.e. DMA
+> >> >>    * coherent and supports page pinning. In support of coordinating page
+> >> >> @@ -61,6 +68,7 @@ struct vmem_altmap {
+> >> >>   enum memory_type {
+> >> >>      /* 0 is reserved to catch uninitialized type fields */
+> >> >>      MEMORY_DEVICE_PRIVATE = 1,
+> >> >> +    MEMORY_DEVICE_COHERENT,
+> >> >>      MEMORY_DEVICE_FS_DAX,
+> >> >>      MEMORY_DEVICE_GENERIC,
+> >> >>      MEMORY_DEVICE_PCI_P2PDMA,
+> >> >> @@ -143,6 +151,17 @@ static inline bool folio_is_device_private(const struct folio *folio)
+> >> > In general, this LGTM, and it should be correct with PageAnonExclusive I think.
+> >> >
+> >> >
+> >> > However, where exactly is pinning forbidden?
+> >>
+> >> Long-term pinning is forbidden since it would interfere with the device
+> >> memory manager owning the
+> >> device-coherent pages (e.g. evictions in TTM). However, normal pinning
+> >> is allowed on this device type.
+> >>
+> >> Regards,
+> >> Alex Sierra
+> >>
+> >> >
