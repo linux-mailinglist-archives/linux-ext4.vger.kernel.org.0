@@ -2,74 +2,126 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC13E552910
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jun 2022 03:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF90552978
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jun 2022 04:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238549AbiFUBjt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 20 Jun 2022 21:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52516 "EHLO
+        id S1344536AbiFUCkh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 20 Jun 2022 22:40:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231894AbiFUBjs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Jun 2022 21:39:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D0B1EAE1;
-        Mon, 20 Jun 2022 18:39:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=VgDEwV/6vW56MaSqzt3dabSrMNxD2Tms7iNkvTe/k0w=; b=kknt8010MtZAiXmjBdKnm4XC5s
-        2sg6OEblMwSwuSUL5PZHhp8+Gjssglo7tw/EpHILRTBXLnn4+3gzt48NYDFF2NccQdA5PedTeS+Vw
-        C34Dcr8/3/Eh5elUEh4EhUyiU302b63jzBeQkNthIkzoZh55GDPS+VZcESNhd4Bb5GD+2jrCffrz6
-        oHt9gRJ3T4jF4uQLzvk16mSVt4Jt5z1HZmoMC63371qupKw2Hr4eV57xJc77sN18A21maCgt40smI
-        8DRD7AhFyRsLs9HXRri0yj6zZzyt3pVt1gEDtDTE0pQmbx6ntB/m9C7EyufsmlRvZZA9w/8LPXliS
-        nNj8NQLQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1o3Srl-005i6P-Fg; Tue, 21 Jun 2022 01:39:41 +0000
-Date:   Tue, 21 Jun 2022 02:39:41 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Ritesh Harjani <ritesh.list@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Jan Kara <jack@suse.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [RFC 1/3] jbd2: Drop useless return value of submit_bh
-Message-ID: <YrEhXYBeQz8kNuGo@casper.infradead.org>
-References: <cover.1655703466.git.ritesh.list@gmail.com>
- <57b9cb59e50dfdf68eef82ef38944fbceba4e585.1655703467.git.ritesh.list@gmail.com>
+        with ESMTP id S242106AbiFUCkh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Jun 2022 22:40:37 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3E21F633
+        for <linux-ext4@vger.kernel.org>; Mon, 20 Jun 2022 19:40:36 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id n12so4874868pfq.0
+        for <linux-ext4@vger.kernel.org>; Mon, 20 Jun 2022 19:40:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:to:cc:references
+         :from:in-reply-to:content-transfer-encoding;
+        bh=MAxGrYPRrn3PDrCT6+3wEqy3eFiNsK2NRcJPeVZeG8Y=;
+        b=VW7TBZ7AhbUaLY1bMT0AIMf1zF4z/GCdtWfYA5qth8EnqLEmZCPvDNjAFBrikMfKNO
+         6BLseU+zvq4Gtk0mx4TfSV3FgigKHWuAI9dUL7uVcA7IPGtI2rJKqSlGoky6xQliKmj+
+         LDpZSNzZFCvOMHa0Zi77QcpVCuBa47cONxkzCyu+fSFuid2Uloj9uD1XKZP4s+n43DdQ
+         Pj6ZRsWHTd2tFmTTltXpp3BkuIaY+J2AsMVxUHjRNkTcf8aWi7AfrglV3LqIM6PdTshA
+         u9MEj1l3jpRgMhxIEGnAoHigsclOwZEv+PsEQE5pEP4TbNvIz/nUrMm4HQM1w/bHXQeC
+         0EnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :to:cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=MAxGrYPRrn3PDrCT6+3wEqy3eFiNsK2NRcJPeVZeG8Y=;
+        b=3p83InnHbIC/Br/0NNBHWLl0V2Vsi4UooRVC4D0qwhswphHdQI/2Zdr+1G76DTn+AO
+         H3O14EbPQF3Pc21Idj6Wq+wn5aN74udKw0FK3XDpe3ArYA/QetN96UsMukcGKDlayUw2
+         rxWl4bx/DJI8ccKMPI4cG7KFSeRfyk4zJBV/jcPYP2KTGNzfCtXRc4Y/RMu8U1r+YRN+
+         6p+KsEzBsSK7daV5+gPDQJF+yykET4xUx+2AKXYxBkZdOikj8V0HHpWyWgY9IJAMAfC9
+         KDgBwFw4mlbQi2Gt2dL28IIsK8epZDoZfoMvnGSLtCC6EmdhxdjddRLiYRZrjndfOxEI
+         x6pQ==
+X-Gm-Message-State: AJIora8G8j/suy+osgjjSnCZMmECeMIRJJ062qYiWx8Y4TP8VZ39UZWv
+        lJAvaEoxIPbW6wJ5s4YjqPUR4w==
+X-Google-Smtp-Source: AGRyM1sRVqR4TPQ7hzPO5xLtJI0dp5o82s+eN+/tAD+iVCtZICpWioOkfJVo3hOKTVfpBf5zMVnxRw==
+X-Received: by 2002:a62:6411:0:b0:50a:81df:bfa6 with SMTP id y17-20020a626411000000b0050a81dfbfa6mr28143915pfb.26.1655779235852;
+        Mon, 20 Jun 2022 19:40:35 -0700 (PDT)
+Received: from [10.76.33.147] ([61.120.150.69])
+        by smtp.gmail.com with ESMTPSA id j11-20020aa7928b000000b005251ce498cfsm3787737pfa.191.2022.06.20.19.40.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Jun 2022 19:40:35 -0700 (PDT)
+Message-ID: <2a95ca55-4088-583b-9a28-cf9f4c0f32fc@bytedance.com>
+Date:   Tue, 21 Jun 2022 10:40:30 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <57b9cb59e50dfdf68eef82ef38944fbceba4e585.1655703467.git.ritesh.list@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.7.0
+Subject: Re: [PATCH] ext4: reuse order and buddy in mb_mark_used when buddy
+ split
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lei.rao@intel.com
+References: <20220606155305.74146-1-hanjinke.666@bytedance.com>
+From:   hanjinke <hanjinke.666@bytedance.com>
+In-Reply-To: <20220606155305.74146-1-hanjinke.666@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jun 20, 2022 at 11:28:40AM +0530, Ritesh Harjani wrote:
-> @@ -1636,14 +1636,12 @@ static int jbd2_write_superblock(journal_t *journal, int write_flags)
->  		sb->s_checksum = jbd2_superblock_csum(journal, sb);
->  	get_bh(bh);
->  	bh->b_end_io = end_buffer_write_sync;
-> -	ret = submit_bh(REQ_OP_WRITE, write_flags, bh);
-> +	submit_bh(REQ_OP_WRITE, write_flags, bh);
->  	wait_on_buffer(bh);
->  	if (buffer_write_io_error(bh)) {
->  		clear_buffer_write_io_error(bh);
->  		set_buffer_uptodate(bh);
->  		ret = -EIO;
-> -	}
-> -	if (ret) {
->  		printk(KERN_ERR "JBD2: Error %d detected when updating "
->  		       "journal superblock for %s.\n", ret,
->  		       journal->j_devname);
+hi, friendly pinging...
 
-Maybe rephrase the error message?  And join it together to match the
-current preferred style.
-
-		printk(KERN_ERR "JBD2: I/O error when updating journal superblock for %s.\n",
-				journal->j_devname);
+在 2022/6/6 下午11:53, Jinke Han 写道:
+> From: hanjinke <hanjinke.666@bytedance.com>
+> 
+> After each buddy split, mb_mark_used will search the proper order
+> for the block which may consume some loop in mb_find_order_for_block.
+> In fact, we can reuse the oder and buddy generated by the buddy split.
+> 
+> Reviewed by: lei.rao@intel.com
+> Signed-off-by: hanjinke <hanjinke.666@bytedance.com>
+> ---
+>   fs/ext4/mballoc.c | 10 ++++++++--
+>   1 file changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 9f12f29bc346..c7ac6b269dd8 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -1933,6 +1933,7 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
+>   	unsigned ret = 0;
+>   	int len0 = len;
+>   	void *buddy;
+> +	bool split = false;
+>   
+>   	BUG_ON(start + len > (e4b->bd_sb->s_blocksize << 3));
+>   	BUG_ON(e4b->bd_group != ex->fe_group);
+> @@ -1957,12 +1958,16 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
+>   
+>   	/* let's maintain buddy itself */
+>   	while (len) {
+> -		ord = mb_find_order_for_block(e4b, start);
+> +		if (!split)
+> +			ord = mb_find_order_for_block(e4b, start);
+>   
+>   		if (((start >> ord) << ord) == start && len >= (1 << ord)) {
+>   			/* the whole chunk may be allocated at once! */
+>   			mlen = 1 << ord;
+> -			buddy = mb_find_buddy(e4b, ord, &max);
+> +			if (!split)
+> +				buddy = mb_find_buddy(e4b, ord, &max);
+> +			else
+> +				split = false;
+>   			BUG_ON((start >> ord) >= max);
+>   			mb_set_bit(start >> ord, buddy);
+>   			e4b->bd_info->bb_counters[ord]--;
+> @@ -1989,6 +1994,7 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
+>   		mb_clear_bit(cur + 1, buddy);
+>   		e4b->bd_info->bb_counters[ord]++;
+>   		e4b->bd_info->bb_counters[ord]++;
+> +		split = true;
+>   	}
+>   	mb_set_largest_free_order(e4b->bd_sb, e4b->bd_info);
+>   
