@@ -2,253 +2,103 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C23425531F6
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jun 2022 14:25:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28AC4553479
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jun 2022 16:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350001AbiFUMZe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 Jun 2022 08:25:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58212 "EHLO
+        id S233396AbiFUO3J (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 Jun 2022 10:29:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350008AbiFUMZc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 Jun 2022 08:25:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 97D94255B0
-        for <linux-ext4@vger.kernel.org>; Tue, 21 Jun 2022 05:25:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1655814329;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=65Njp+ThqlVdqFDxuhaHtcra47G9ZdLFWICrTgPdMDI=;
-        b=LrlmT0ZB9R28yuefufvjJ83xcGvWhVaWZF+KEyvGroKVkLAQPSo3tGSEFkFVK5VDWwUE9Q
-        XZeAE89iPcVHiiJK6oiMzDa2ScVqrwfiDsKicZWicshfaapk4+gbazbM+FwJUnCAj9rAs6
-        XhljaHzZK1HA5VKKu47UbyukLLle+PE=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-315-eXPC7fnUM9SX1r5gg7dwpQ-1; Tue, 21 Jun 2022 08:25:28 -0400
-X-MC-Unique: eXPC7fnUM9SX1r5gg7dwpQ-1
-Received: by mail-wr1-f70.google.com with SMTP id w8-20020adfde88000000b00213b7fa3a37so3181306wrl.2
-        for <linux-ext4@vger.kernel.org>; Tue, 21 Jun 2022 05:25:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=65Njp+ThqlVdqFDxuhaHtcra47G9ZdLFWICrTgPdMDI=;
-        b=78Rd6T+z0EDe8mBipXZXhp69x3snDlY7uqw/DeuGCYawaztm2T8eK/3TAvhEaArB9O
-         eoRY22vBM5/Sj4WRPUd3en8KNRDNg+/cirNYWJQ7GsPjEisk65hlaZTb+wRG+ugtzmK4
-         uKvBnxBKI2PFdjyFXRfC066Pv1ljYRj3DcXTzL31iSoxttOpFXCwogJbpRq4/y97PecM
-         onfbZnJKJ9s00jLrb8FxEWKMb73wVlEIKorFhZWlWvYk2Ajx2z48KjxWHtZuA4KkipXj
-         li7hONMzVTY4YS/eTvQbaDlRSBLWzTljfNm2ekfKoqqocXwt8v3849Qt6iCeE79ynkr3
-         27EQ==
-X-Gm-Message-State: AJIora8JvcCDSOnwcNWn+D0PV1rdnt39l0rDGG4NPSB/9VZtPVEKYJWr
-        ozjsH7d/emP50KxijQVaO8IGRNIj4kosHLqz5aG2XuFiE57dXyuEbUu+wI0wssHVTsKSY8AqzNu
-        XGjtwBythQQyK3WL4MBIpCg==
-X-Received: by 2002:adf:ffcf:0:b0:21a:3cc0:d624 with SMTP id x15-20020adfffcf000000b0021a3cc0d624mr23496568wrs.164.1655814327319;
-        Tue, 21 Jun 2022 05:25:27 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1vHTlAgCbYSPwKOnD4wThbGsJJ+9XZS//2sA4ocZl1PpUmbJFPrznizqZ5xjm3YK7dzwI4CFQ==
-X-Received: by 2002:adf:ffcf:0:b0:21a:3cc0:d624 with SMTP id x15-20020adfffcf000000b0021a3cc0d624mr23496546wrs.164.1655814327013;
-        Tue, 21 Jun 2022 05:25:27 -0700 (PDT)
-Received: from ?IPV6:2003:d8:2f04:2500:cdb0:9b78:d423:43f? (p200300d82f042500cdb09b78d423043f.dip0.t-ipconnect.de. [2003:d8:2f04:2500:cdb0:9b78:d423:43f])
-        by smtp.gmail.com with ESMTPSA id b5-20020a05600c4e0500b0039aef592ca0sm18064551wmq.35.2022.06.21.05.25.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Jun 2022 05:25:26 -0700 (PDT)
-Message-ID: <643c44e7-48be-375b-c7ab-6a30b5ee2937@redhat.com>
-Date:   Tue, 21 Jun 2022 14:25:25 +0200
+        with ESMTP id S230038AbiFUO3J (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 Jun 2022 10:29:09 -0400
+Received: from mail-m971.mail.163.com (mail-m971.mail.163.com [123.126.97.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A8AA262D9;
+        Tue, 21 Jun 2022 07:29:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=dD98V
+        ez2aD21iNFpk0tg6AZ8kngi+2AB0UFxeAgDYzA=; b=EPnbdMYvAKUIAIkqAogV7
+        koFPnM4fK9Ghtb9Wd2rUtZ9UIZDyKCaq3M1bnyZbqe0hyTyXeKEbkXIsLzgxWGNe
+        M8eHqj7vpnwmlZdFWA6MqqS/DFWMNhQtPmEEBtMsYgj0zFB27Kx/rHOCwiGDoAaM
+        yqa5QJ+1wK6WAYqCx9fJR0=
+Received: from [10.20.42.77] (unknown [114.242.206.180])
+        by smtp1 (Coremail) with SMTP id GdxpCgCHjcWo1bFiVHd1KQ--.4781S2;
+        Tue, 21 Jun 2022 22:28:57 +0800 (CST)
+Subject: Re: [PATCH 1/2] ext4: page-io: use 'unsigned int' to bare use of
+ 'unsigned'
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20220518120137.2544-1-liupeibao@163.com>
+ <YqtDEfJd5uUxucaS@mit.edu> <c19b8c8f-7c0f-33e6-3f2c-3425dee7fa8d@163.com>
+ <Yq9obvFIv8LjAAvg@mit.edu>
+From:   Liu Peibao <liupeibao@163.com>
+Message-ID: <902000f3-7d9b-3115-0864-3ffa0f87d4d4@163.com>
+Date:   Tue, 21 Jun 2022 22:28:56 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH v5 01/13] mm: add zone device coherent type memory support
+In-Reply-To: <Yq9obvFIv8LjAAvg@mit.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     Felix Kuehling <felix.kuehling@amd.com>,
-        "Sierra Guiza, Alejandro (Alex)" <alex.sierra@amd.com>,
-        jgg@nvidia.com, linux-mm@kvack.org, rcampbell@nvidia.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        hch@lst.de, jglisse@redhat.com, willy@infradead.org,
-        akpm@linux-foundation.org
-References: <20220531200041.24904-1-alex.sierra@amd.com>
- <20220531200041.24904-2-alex.sierra@amd.com>
- <3ac89358-2ce0-7d0d-8b9c-8b0e5cc48945@redhat.com>
- <02ed2cb7-3ad3-8ffc-6032-04ae1853e234@amd.com>
- <7605beee-0a76-4ee9-e950-17419630f2cf@redhat.com>
- <ddcebcc1-fb0a-e565-f14d-77c9d48f2928@amd.com>
- <6aef4b7f-0ced-08cd-1f0c-50c22996aa41@redhat.com>
- <65987ab8-426d-e533-0295-069312b4f751@amd.com>
- <34e94bdb-675a-5d5c-6137-8aa1ee658d49@redhat.com>
- <87letq6wb5.fsf@nvdebian.thelocal>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <87letq6wb5.fsf@nvdebian.thelocal>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-CM-TRANSID: GdxpCgCHjcWo1bFiVHd1KQ--.4781S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Aw4Utw4fZF18ZFWxAw18Zrb_yoW8Cr1xpr
+        WfZws8KFs8G3yxAr97XwsxJFWrAw4Fkas8JF18JFy5AF1DXF12grZYkF45uryUCrsIg3Wa
+        ga98Z39a9F1qvFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UCzuZUUUUU=
+X-Originating-IP: [114.242.206.180]
+X-CM-SenderInfo: xolx1vpled0qqrwthudrp/1tbiEwknbGE15DBCuAAAsr
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 21.06.22 13:55, Alistair Popple wrote:
-> 
-> David Hildenbrand <david@redhat.com> writes:
-> 
->> On 21.06.22 13:25, Felix Kuehling wrote:
->>>
->>> Am 6/17/22 um 23:19 schrieb David Hildenbrand:
->>>> On 17.06.22 21:27, Sierra Guiza, Alejandro (Alex) wrote:
->>>>> On 6/17/2022 12:33 PM, David Hildenbrand wrote:
->>>>>> On 17.06.22 19:20, Sierra Guiza, Alejandro (Alex) wrote:
->>>>>>> On 6/17/2022 4:40 AM, David Hildenbrand wrote:
->>>>>>>> On 31.05.22 22:00, Alex Sierra wrote:
->>>>>>>>> Device memory that is cache coherent from device and CPU point of view.
->>>>>>>>> This is used on platforms that have an advanced system bus (like CAPI
->>>>>>>>> or CXL). Any page of a process can be migrated to such memory. However,
->>>>>>>>> no one should be allowed to pin such memory so that it can always be
->>>>>>>>> evicted.
->>>>>>>>>
->>>>>>>>> Signed-off-by: Alex Sierra <alex.sierra@amd.com>
->>>>>>>>> Acked-by: Felix Kuehling <Felix.Kuehling@amd.com>
->>>>>>>>> Reviewed-by: Alistair Popple <apopple@nvidia.com>
->>>>>>>>> [hch: rebased ontop of the refcount changes,
->>>>>>>>>          removed is_dev_private_or_coherent_page]
->>>>>>>>> Signed-off-by: Christoph Hellwig <hch@lst.de>
->>>>>>>>> ---
->>>>>>>>>     include/linux/memremap.h | 19 +++++++++++++++++++
->>>>>>>>>     mm/memcontrol.c          |  7 ++++---
->>>>>>>>>     mm/memory-failure.c      |  8 ++++++--
->>>>>>>>>     mm/memremap.c            | 10 ++++++++++
->>>>>>>>>     mm/migrate_device.c      | 16 +++++++---------
->>>>>>>>>     mm/rmap.c                |  5 +++--
->>>>>>>>>     6 files changed, 49 insertions(+), 16 deletions(-)
->>>>>>>>>
->>>>>>>>> diff --git a/include/linux/memremap.h b/include/linux/memremap.h
->>>>>>>>> index 8af304f6b504..9f752ebed613 100644
->>>>>>>>> --- a/include/linux/memremap.h
->>>>>>>>> +++ b/include/linux/memremap.h
->>>>>>>>> @@ -41,6 +41,13 @@ struct vmem_altmap {
->>>>>>>>>      * A more complete discussion of unaddressable memory may be found in
->>>>>>>>>      * include/linux/hmm.h and Documentation/vm/hmm.rst.
->>>>>>>>>      *
->>>>>>>>> + * MEMORY_DEVICE_COHERENT:
->>>>>>>>> + * Device memory that is cache coherent from device and CPU point of view. This
->>>>>>>>> + * is used on platforms that have an advanced system bus (like CAPI or CXL). A
->>>>>>>>> + * driver can hotplug the device memory using ZONE_DEVICE and with that memory
->>>>>>>>> + * type. Any page of a process can be migrated to such memory. However no one
->>>>>>>> Any page might not be right, I'm pretty sure. ... just thinking about special pages
->>>>>>>> like vdso, shared zeropage, ... pinned pages ...
->>>>>> Well, you cannot migrate long term pages, that's what I meant :)
->>>>>>
->>>>>>>>> + * should be allowed to pin such memory so that it can always be evicted.
->>>>>>>>> + *
->>>>>>>>>      * MEMORY_DEVICE_FS_DAX:
->>>>>>>>>      * Host memory that has similar access semantics as System RAM i.e. DMA
->>>>>>>>>      * coherent and supports page pinning. In support of coordinating page
->>>>>>>>> @@ -61,6 +68,7 @@ struct vmem_altmap {
->>>>>>>>>     enum memory_type {
->>>>>>>>>     	/* 0 is reserved to catch uninitialized type fields */
->>>>>>>>>     	MEMORY_DEVICE_PRIVATE = 1,
->>>>>>>>> +	MEMORY_DEVICE_COHERENT,
->>>>>>>>>     	MEMORY_DEVICE_FS_DAX,
->>>>>>>>>     	MEMORY_DEVICE_GENERIC,
->>>>>>>>>     	MEMORY_DEVICE_PCI_P2PDMA,
->>>>>>>>> @@ -143,6 +151,17 @@ static inline bool folio_is_device_private(const struct folio *folio)
->>>>>>>> In general, this LGTM, and it should be correct with PageAnonExclusive I think.
->>>>>>>>
->>>>>>>>
->>>>>>>> However, where exactly is pinning forbidden?
->>>>>>> Long-term pinning is forbidden since it would interfere with the device
->>>>>>> memory manager owning the
->>>>>>> device-coherent pages (e.g. evictions in TTM). However, normal pinning
->>>>>>> is allowed on this device type.
->>>>>> I don't see updates to folio_is_pinnable() in this patch.
->>>>> Device coherent type pages should return true here, as they are pinnable
->>>>> pages.
->>>> That function is only called for long-term pinnings in try_grab_folio().
->>>>
->>>>>> So wouldn't try_grab_folio() simply pin these pages? What am I missing?
->>>>> As far as I understand this return NULL for long term pin pages.
->>>>> Otherwise they get refcount incremented.
->>>> I don't follow.
->>>>
->>>> You're saying
->>>>
->>>> a) folio_is_pinnable() returns true for device coherent pages
->>>>
->>>> and that
->>>>
->>>> b) device coherent pages don't get long-term pinned
->>>>
->>>>
->>>> Yet, the code says
->>>>
->>>> struct folio *try_grab_folio(struct page *page, int refs, unsigned int flags)
->>>> {
->>>> 	if (flags & FOLL_GET)
->>>> 		return try_get_folio(page, refs);
->>>> 	else if (flags & FOLL_PIN) {
->>>> 		struct folio *folio;
->>>>
->>>> 		/*
->>>> 		 * Can't do FOLL_LONGTERM + FOLL_PIN gup fast path if not in a
->>>> 		 * right zone, so fail and let the caller fall back to the slow
->>>> 		 * path.
->>>> 		 */
->>>> 		if (unlikely((flags & FOLL_LONGTERM) &&
->>>> 			     !is_pinnable_page(page)))
->>>> 			return NULL;
->>>> 		...
->>>> 		return folio;
->>>> 	}
->>>> }
->>>>
->>>>
->>>> What prevents these pages from getting long-term pinned as stated in this patch?
->>>
->>> Long-term pinning is handled by __gup_longterm_locked, which migrates
->>> pages returned by __get_user_pages_locked that cannot be long-term
->>> pinned. try_grab_folio is OK to grab the pages. Anything that can't be
->>> long-term pinned will be migrated afterwards, and
->>> __get_user_pages_locked will be retried. The migration of
->>> DEVICE_COHERENT pages was implemented by Alistair in patch 5/13
->>> ("mm/gup: migrate device coherent pages when pinning instead of failing").
+On 6/20/22 2:18 AM, Theodore Ts'o wrote:
+> On Sun, Jun 19, 2022 at 11:21:27AM +0800, Liu Peibao wrote:
 >>
->> Thanks.
->>
->> __gup_longterm_locked()->check_and_migrate_movable_pages()
->>
->> Which checks folio_is_pinnable() and doesn't do anything if set.
->>
->> Sorry to be dense here, but I don't see how what's stated in this patch
->> works without adjusting folio_is_pinnable().
+>> Thanks for your reply. What I want do to is rename some temporary variables
+>> in the patch2 and when I make the patch, there are the checkpatch warnings.
+>>  From the point of view "one patch do one thing", I split the modification
+>> into two patches. Thanks!
 > 
-> Ugh, I think you might be right about try_grab_folio().
+> I didn't really see the poiont of renaming the temporary variables,
+> either.
 > 
-> We didn't update folio_is_pinnable() to include device coherent pages
-> because device coherent pages are pinnable. It is really just
-> FOLL_LONGTERM that we want to prevent here.
+> In this particular case basically only used to avoid line lengths from
+> exceeding ~72 characters, and requiring a line wrap, and bio_start and
+> bio_end is used only in one place in the code block below.
 > 
-> For normal PUP that is done by my change in
-> check_and_migrate_movable_pages() which migrates pages being pinned with
-> FOLL_LONGTERM. But I think I incorrectly assumed we would take the
-> pte_devmap() path in gup_pte_range(), which we don't for coherent pages.
-> So I think the check in try_grab_folio() needs to be:
+> Is it _really_ all that confusing whether they are named
+> bio_{start,end} instead of bvec_{start,end}?
+> 
+> If I was writing that code from scratch, I might have just used start
+> and end without any prefixes.  And as far as "only have a patch do one
+> thing at a time", this doesn't apply to checkpatch fixes.
+> 
+> The basic motivation behind "no checkpatch-only fixes" is that it
+> tends to introduce code churn which makes interpreting information
+> from "git blame" more difficult; and so therefore the costs exceed the
+> extremely marginal benefits of fixing most checkpatch complaints.  So
+> making a _patch_ be checkpatch clean, whether it's modifying existing
+> code or writing new code, is fine, since you're making a subtantive
+> change to the code, so this is as good a time as any to fix up tiny
+> nits such as checkpatch complaints.
+> 
+> But the idea behind "no unnecessary code churn since it ruins git
+> blame and could potentially induce future patch conflicts" also
+> applies to renaming variables.  The benefits are very minor, and they
+> don't outweigh the costs.
+> 
+> 						- Ted
+> 
 
-I think I said it already (and I might be wrong without reading the
-code), but folio_is_pinnable() is *only* called for long-term pinnings.
+Got it! Thanks for your detailed and comprehensive explanation!
 
-It should actually be called folio_is_longterm_pinnable().
-
-That's where that check should go, no?
-
--- 
-Thanks,
-
-David / dhildenb
+Best Regards,
+Peibao
 
