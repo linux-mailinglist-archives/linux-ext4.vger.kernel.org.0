@@ -2,54 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28AC4553479
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jun 2022 16:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BCBA553495
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jun 2022 16:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233396AbiFUO3J (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 Jun 2022 10:29:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40132 "EHLO
+        id S1351781AbiFUOdx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 Jun 2022 10:33:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230038AbiFUO3J (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 Jun 2022 10:29:09 -0400
-Received: from mail-m971.mail.163.com (mail-m971.mail.163.com [123.126.97.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A8AA262D9;
-        Tue, 21 Jun 2022 07:29:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=dD98V
-        ez2aD21iNFpk0tg6AZ8kngi+2AB0UFxeAgDYzA=; b=EPnbdMYvAKUIAIkqAogV7
-        koFPnM4fK9Ghtb9Wd2rUtZ9UIZDyKCaq3M1bnyZbqe0hyTyXeKEbkXIsLzgxWGNe
-        M8eHqj7vpnwmlZdFWA6MqqS/DFWMNhQtPmEEBtMsYgj0zFB27Kx/rHOCwiGDoAaM
-        yqa5QJ+1wK6WAYqCx9fJR0=
-Received: from [10.20.42.77] (unknown [114.242.206.180])
-        by smtp1 (Coremail) with SMTP id GdxpCgCHjcWo1bFiVHd1KQ--.4781S2;
-        Tue, 21 Jun 2022 22:28:57 +0800 (CST)
-Subject: Re: [PATCH 1/2] ext4: page-io: use 'unsigned int' to bare use of
- 'unsigned'
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20220518120137.2544-1-liupeibao@163.com>
- <YqtDEfJd5uUxucaS@mit.edu> <c19b8c8f-7c0f-33e6-3f2c-3425dee7fa8d@163.com>
- <Yq9obvFIv8LjAAvg@mit.edu>
-From:   Liu Peibao <liupeibao@163.com>
-Message-ID: <902000f3-7d9b-3115-0864-3ffa0f87d4d4@163.com>
-Date:   Tue, 21 Jun 2022 22:28:56 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        with ESMTP id S237343AbiFUOdw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 Jun 2022 10:33:52 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89F662ACE
+        for <linux-ext4@vger.kernel.org>; Tue, 21 Jun 2022 07:33:51 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id g18so13098472qvn.2
+        for <linux-ext4@vger.kernel.org>; Tue, 21 Jun 2022 07:33:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jmnYNLE6NFFYvrJvzomWniS3XYbuasULLaAypVkik50=;
+        b=q4fMGrFq/NzkI/mrbiloOuUKYpkyxbztgYGu/RGhJTRsG/WoXoovnyD1vlbS9v+37L
+         cahCU4NuxhUbWcDfQ6y3EMEUBfuX9uHbC/KQb/4IfKXldBCcFLSElfsjfJID7cDV3AHq
+         pp+TSUm6WLJh66BYPsmKVqXEymvhKH5/qRyK8dLHd1a4dK1QtObqFH8mFCLXSm9aGLeZ
+         JDB3WbJp0G/V/DCLArmj6XjI6dyRzNJTo1ySFoptZ1jTWi2ijspsorg9PuOQz/8VqzUi
+         dVlpNAXdcW9Q9cizJQpI40mdvKP7+TrzDVPMbhZFDJU1zt6q8U7RbQxqwq3ttw5GhWPG
+         cm8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jmnYNLE6NFFYvrJvzomWniS3XYbuasULLaAypVkik50=;
+        b=J2MMYL13VHj8gp9DG+APr3TVaatfwsfFVDb4HiGDmZ34Um6lWCGqUZ3E9CZ/dKL3sZ
+         kErwLU+TnoxgBqP202Sah2O6pFfTjs4TPBLdBtVnDMT8D0Y2gh12pxCNR1tNNBuhOoL/
+         ZTx4VkJnm6d8HcC3wjDW7/EYk5usPtkl22RqvlXahUAt01u468VRFhbuOgUJFpvYbXrP
+         9siP6d0lbUv+9L+k0RzyXSKE/bsjMLCUV5YZrL5eKba7yqnq7CObgXmdmYCdMFw0Wnv3
+         cL0+7hWT4YVQNRXUZLJ8oJ0LlJOa9iPdMHKH4Qdsc7llFbuhzsOSA9z2t99PqycSkzz7
+         ltxA==
+X-Gm-Message-State: AJIora9TLYs02OInU46AQ8YmzueXjs5n/D5kSJ3xegNfGN/sMMf/roPR
+        kllfLsGsaDzvMVlxfZNcz9yGLc92lJfyjw==
+X-Google-Smtp-Source: AGRyM1ubQbfd5EjnN1DI1ILYaWM1BtfgWJ9XtjoCkTWPWxwA037l+lpnmYgwDJWVDLJRm8M/7nzL0A==
+X-Received: by 2002:ac8:570d:0:b0:305:2546:a668 with SMTP id 13-20020ac8570d000000b003052546a668mr24708556qtw.204.1655822030383;
+        Tue, 21 Jun 2022 07:33:50 -0700 (PDT)
+Received: from localhost.localdomain (c-73-60-226-25.hsd1.nh.comcast.net. [73.60.226.25])
+        by smtp.gmail.com with ESMTPSA id y9-20020a05620a25c900b006ab93e0e053sm10738797qko.30.2022.06.21.07.33.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jun 2022 07:33:49 -0700 (PDT)
+From:   Eric Whitney <enwlinux@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, Eric Whitney <enwlinux@gmail.com>
+Subject: [PATCH] ext4: minor defrag code improvements
+Date:   Tue, 21 Jun 2022 10:33:40 -0400
+Message-Id: <20220621143340.2268087-1-enwlinux@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <Yq9obvFIv8LjAAvg@mit.edu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: GdxpCgCHjcWo1bFiVHd1KQ--.4781S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Aw4Utw4fZF18ZFWxAw18Zrb_yoW8Cr1xpr
-        WfZws8KFs8G3yxAr97XwsxJFWrAw4Fkas8JF18JFy5AF1DXF12grZYkF45uryUCrsIg3Wa
-        ga98Z39a9F1qvFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UCzuZUUUUU=
-X-Originating-IP: [114.242.206.180]
-X-CM-SenderInfo: xolx1vpled0qqrwthudrp/1tbiEwknbGE15DBCuAAAsr
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,47 +66,67 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 6/20/22 2:18 AM, Theodore Ts'o wrote:
-> On Sun, Jun 19, 2022 at 11:21:27AM +0800, Liu Peibao wrote:
->>
->> Thanks for your reply. What I want do to is rename some temporary variables
->> in the patch2 and when I make the patch, there are the checkpatch warnings.
->>  From the point of view "one patch do one thing", I split the modification
->> into two patches. Thanks!
-> 
-> I didn't really see the poiont of renaming the temporary variables,
-> either.
-> 
-> In this particular case basically only used to avoid line lengths from
-> exceeding ~72 characters, and requiring a line wrap, and bio_start and
-> bio_end is used only in one place in the code block below.
-> 
-> Is it _really_ all that confusing whether they are named
-> bio_{start,end} instead of bvec_{start,end}?
-> 
-> If I was writing that code from scratch, I might have just used start
-> and end without any prefixes.  And as far as "only have a patch do one
-> thing at a time", this doesn't apply to checkpatch fixes.
-> 
-> The basic motivation behind "no checkpatch-only fixes" is that it
-> tends to introduce code churn which makes interpreting information
-> from "git blame" more difficult; and so therefore the costs exceed the
-> extremely marginal benefits of fixing most checkpatch complaints.  So
-> making a _patch_ be checkpatch clean, whether it's modifying existing
-> code or writing new code, is fine, since you're making a subtantive
-> change to the code, so this is as good a time as any to fix up tiny
-> nits such as checkpatch complaints.
-> 
-> But the idea behind "no unnecessary code churn since it ruins git
-> blame and could potentially induce future patch conflicts" also
-> applies to renaming variables.  The benefits are very minor, and they
-> don't outweigh the costs.
-> 
-> 						- Ted
-> 
+Modify two error paths returning EBUSY for bad argument file types to
+return EOPNOTSUPP instead.  Move an extent tree search whose results are
+only occasionally required to the site always requiring them for
+improved efficiency.  Address a few typos.
 
-Got it! Thanks for your detailed and comprehensive explanation!
+Signed-off-by: Eric Whitney <enwlinux@gmail.com>
+---
+ fs/ext4/move_extent.c | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
-Best Regards,
-Peibao
+diff --git a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
+index 701f1d6a217f..4e4b0452106e 100644
+--- a/fs/ext4/move_extent.c
++++ b/fs/ext4/move_extent.c
+@@ -472,19 +472,17 @@ mext_check_arguments(struct inode *orig_inode,
+ 	if (IS_IMMUTABLE(donor_inode) || IS_APPEND(donor_inode))
+ 		return -EPERM;
+ 
+-	/* Ext4 move extent does not support swapfile */
++	/* Ext4 move extent does not support swap files */
+ 	if (IS_SWAPFILE(orig_inode) || IS_SWAPFILE(donor_inode)) {
+-		ext4_debug("ext4 move extent: The argument files should "
+-			"not be swapfile [ino:orig %lu, donor %lu]\n",
++		ext4_debug("ext4 move extent: The argument files should not be swap files [ino:orig %lu, donor %lu]\n",
+ 			orig_inode->i_ino, donor_inode->i_ino);
+-		return -EBUSY;
++		return -EOPNOTSUPP;
+ 	}
+ 
+ 	if (ext4_is_quota_file(orig_inode) && ext4_is_quota_file(donor_inode)) {
+-		ext4_debug("ext4 move extent: The argument files should "
+-			"not be quota files [ino:orig %lu, donor %lu]\n",
++		ext4_debug("ext4 move extent: The argument files should not be quota files [ino:orig %lu, donor %lu]\n",
+ 			orig_inode->i_ino, donor_inode->i_ino);
+-		return -EBUSY;
++		return -EOPNOTSUPP;
+ 	}
+ 
+ 	/* Ext4 move extent supports only extent based file */
+@@ -631,11 +629,11 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp, __u64 orig_blk,
+ 		if (ret)
+ 			goto out;
+ 		ex = path[path->p_depth].p_ext;
+-		next_blk = ext4_ext_next_allocated_block(path);
+ 		cur_blk = le32_to_cpu(ex->ee_block);
+ 		cur_len = ext4_ext_get_actual_len(ex);
+ 		/* Check hole before the start pos */
+ 		if (cur_blk + cur_len - 1 < o_start) {
++			next_blk = ext4_ext_next_allocated_block(path);
+ 			if (next_blk == EXT_MAX_BLOCKS) {
+ 				ret = -ENODATA;
+ 				goto out;
+@@ -663,7 +661,7 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp, __u64 orig_blk,
+ 		donor_page_index = d_start >> (PAGE_SHIFT -
+ 					       donor_inode->i_blkbits);
+ 		offset_in_page = o_start % blocks_per_page;
+-		if (cur_len > blocks_per_page- offset_in_page)
++		if (cur_len > blocks_per_page - offset_in_page)
+ 			cur_len = blocks_per_page - offset_in_page;
+ 		/*
+ 		 * Up semaphore to avoid following problems:
+-- 
+2.30.2
 
