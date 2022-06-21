@@ -2,43 +2,44 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A85C4553D02
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jun 2022 23:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65348553CE7
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jun 2022 23:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356352AbiFUU76 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 Jun 2022 16:59:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55256 "EHLO
+        id S1356386AbiFUVAA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 Jun 2022 17:00:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355245AbiFUU6N (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 Jun 2022 16:58:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E04D732074;
-        Tue, 21 Jun 2022 13:51:06 -0700 (PDT)
+        with ESMTP id S1355634AbiFUU6s (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 Jun 2022 16:58:48 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D862F3A3;
+        Tue, 21 Jun 2022 13:51:33 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1008961888;
-        Tue, 21 Jun 2022 20:50:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E82B1C341C6;
-        Tue, 21 Jun 2022 20:50:33 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DBC4D61874;
+        Tue, 21 Jun 2022 20:50:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE5A0C341C5;
+        Tue, 21 Jun 2022 20:50:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655844634;
-        bh=VoRNCj8yJXl3Edw7BHqzZY4v+pmBxp3Z1rfqaxKuHpE=;
+        s=k20201202; t=1655844640;
+        bh=n2+txuHaV0luaEh0g/RCXVIJELBEjdQC7YwHKghk+XA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MOmi4f3/Zgio6HQVYN0X+yGmazNlhOhLJu2oicblkuCbZKWYsjWTFYTCXTE3S7fmX
-         2zzdikwFby+qmnNPPbUMJLWgI8Ifhlcuy9yaSO7qdY1V5rE6GfmEbiXvT1ecgxIgIK
-         DaWvvqwmK05+kJmb/o8tucYEMJLG5WpFEbWDBlK08gL5JuWnTFbDUNCPHiKUgVvQL9
-         RMIF6zUIlYNugpwODZmP2wYzSm18vSgZeNKYhDS0wNZ1yIk9Z/82d3m/LQoFYVxmHC
-         uYZPoeq0KOjkhXd+tPFfSVsU/ri9BjgIA189TQOsEBMCRK1HqH9Aju42l0io+nyfeo
-         zk7aGbIAdh27Q==
+        b=Y0z9IYEUhml9fk+rIzLaED4+Wvelq92+1VLC2ji+RtMnzVROk5+l7QV01vlrU6JWt
+         6vYTL09uJXFTg6tHKBy22pcUJ08M+Mz1D9g/Xvsj9AtcX2rBRVcO2QcLIsuUx1Sf4u
+         U/oe6ljZU/V62Cn9/7q70SJYTUBSDNVImehPGZ/0Kks3+mpMU+nyekPKjIza6kmPM9
+         yZJAslYzDbTzYQEtSxP8Doj39E0zzdG93He0E4nEMYbo+0hQZwnqwvCKFTnsTMHPEM
+         wS0PH/2MrzUv9SduSg9Yb7E/xYZl+YnwRDmyylE/IcLU4fPFf6Hu1NvuBzaoPPxalq
+         e5KYlL5rOxMSw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
-        Sasha Levin <sashal@kernel.org>, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.17 15/20] ext4: improve write performance with disabled delalloc
-Date:   Tue, 21 Jun 2022 16:50:05 -0400
-Message-Id: <20220621205010.250185-15-sashal@kernel.org>
+Cc:     Baokun Li <libaokun1@huawei.com>,
+        Ritesh Harjani <ritesh.list@gmail.com>,
+        Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.17 20/20] ext4: correct the judgment of BUG in ext4_mb_normalize_request
+Date:   Tue, 21 Jun 2022 16:50:10 -0400
+Message-Id: <20220621205010.250185-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220621205010.250185-1-sashal@kernel.org>
 References: <20220621205010.250185-1-sashal@kernel.org>
@@ -56,44 +57,53 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Baokun Li <libaokun1@huawei.com>
 
-[ Upstream commit 8d5459c11f548131ce48b2fbf45cccc5c382558f ]
+[ Upstream commit cf4ff938b47fc5c00b0ccce53a3b50eca9b32281 ]
 
-When delayed allocation is disabled (either through mount option or
-because we are running low on free space), ext4_write_begin() allocates
-blocks with EXT4_GET_BLOCKS_IO_CREATE_EXT flag. With this flag extent
-merging is disabled and since ext4_write_begin() is called for each page
-separately, we end up with a *lot* of 1 block extents in the extent tree
-and following writeback is writing 1 block at a time which results in
-very poor write throughput (4 MB/s instead of 200 MB/s). These days when
-ext4_get_block_unwritten() is used only by ext4_write_begin(),
-ext4_page_mkwrite() and inline data conversion, we can safely allow
-extent merging to happen from these paths since following writeback will
-happen on different boundaries anyway. So use
-EXT4_GET_BLOCKS_CREATE_UNRIT_EXT instead which restores the performance.
+ext4_mb_normalize_request() can move logical start of allocated blocks
+to reduce fragmentation and better utilize preallocation. However logical
+block requested as a start of allocation (ac->ac_o_ex.fe_logical) should
+always be covered by allocated blocks so we should check that by
+modifying and to or in the assertion.
 
-Signed-off-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20220520111402.4252-1-jack@suse.cz
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Reviewed-by: Ritesh Harjani <ritesh.list@gmail.com>
+Link: https://lore.kernel.org/r/20220528110017.354175-3-libaokun1@huawei.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ext4/mballoc.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 0b85fca32ca9..263e1b1611f7 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -824,7 +824,7 @@ int ext4_get_block_unwritten(struct inode *inode, sector_t iblock,
- 	ext4_debug("ext4_get_block_unwritten: inode %lu, create flag %d\n",
- 		   inode->i_ino, create);
- 	return _ext4_get_block(inode, iblock, bh_result,
--			       EXT4_GET_BLOCKS_IO_CREATE_EXT);
-+			       EXT4_GET_BLOCKS_CREATE_UNWRIT_EXT);
- }
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 47a560d60d3e..1f328a5e2e3d 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -4171,7 +4171,22 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
+ 	}
+ 	rcu_read_unlock();
  
- /* Maximum number of blocks we map for direct IO at once. */
+-	if (start + size <= ac->ac_o_ex.fe_logical &&
++	/*
++	 * In this function "start" and "size" are normalized for better
++	 * alignment and length such that we could preallocate more blocks.
++	 * This normalization is done such that original request of
++	 * ac->ac_o_ex.fe_logical & fe_len should always lie within "start" and
++	 * "size" boundaries.
++	 * (Note fe_len can be relaxed since FS block allocation API does not
++	 * provide gurantee on number of contiguous blocks allocation since that
++	 * depends upon free space left, etc).
++	 * In case of inode pa, later we use the allocated blocks
++	 * [pa_start + fe_logical - pa_lstart, fe_len/size] from the preallocated
++	 * range of goal/best blocks [start, size] to put it at the
++	 * ac_o_ex.fe_logical extent of this inode.
++	 * (See ext4_mb_use_inode_pa() for more details)
++	 */
++	if (start + size <= ac->ac_o_ex.fe_logical ||
+ 			start > ac->ac_o_ex.fe_logical) {
+ 		ext4_msg(ac->ac_sb, KERN_ERR,
+ 			 "start %lu, size %lu, fe_logical %lu",
 -- 
 2.35.1
 
