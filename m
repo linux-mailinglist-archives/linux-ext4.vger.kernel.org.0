@@ -2,126 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF90552978
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jun 2022 04:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33656552AE5
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jun 2022 08:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344536AbiFUCkh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 20 Jun 2022 22:40:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54966 "EHLO
+        id S1345837AbiFUGQC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 Jun 2022 02:16:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242106AbiFUCkh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Jun 2022 22:40:37 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3E21F633
-        for <linux-ext4@vger.kernel.org>; Mon, 20 Jun 2022 19:40:36 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id n12so4874868pfq.0
-        for <linux-ext4@vger.kernel.org>; Mon, 20 Jun 2022 19:40:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:to:cc:references
-         :from:in-reply-to:content-transfer-encoding;
-        bh=MAxGrYPRrn3PDrCT6+3wEqy3eFiNsK2NRcJPeVZeG8Y=;
-        b=VW7TBZ7AhbUaLY1bMT0AIMf1zF4z/GCdtWfYA5qth8EnqLEmZCPvDNjAFBrikMfKNO
-         6BLseU+zvq4Gtk0mx4TfSV3FgigKHWuAI9dUL7uVcA7IPGtI2rJKqSlGoky6xQliKmj+
-         LDpZSNzZFCvOMHa0Zi77QcpVCuBa47cONxkzCyu+fSFuid2Uloj9uD1XKZP4s+n43DdQ
-         Pj6ZRsWHTd2tFmTTltXpp3BkuIaY+J2AsMVxUHjRNkTcf8aWi7AfrglV3LqIM6PdTshA
-         u9MEj1l3jpRgMhxIEGnAoHigsclOwZEv+PsEQE5pEP4TbNvIz/nUrMm4HQM1w/bHXQeC
-         0EnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :to:cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=MAxGrYPRrn3PDrCT6+3wEqy3eFiNsK2NRcJPeVZeG8Y=;
-        b=3p83InnHbIC/Br/0NNBHWLl0V2Vsi4UooRVC4D0qwhswphHdQI/2Zdr+1G76DTn+AO
-         H3O14EbPQF3Pc21Idj6Wq+wn5aN74udKw0FK3XDpe3ArYA/QetN96UsMukcGKDlayUw2
-         rxWl4bx/DJI8ccKMPI4cG7KFSeRfyk4zJBV/jcPYP2KTGNzfCtXRc4Y/RMu8U1r+YRN+
-         6p+KsEzBsSK7daV5+gPDQJF+yykET4xUx+2AKXYxBkZdOikj8V0HHpWyWgY9IJAMAfC9
-         KDgBwFw4mlbQi2Gt2dL28IIsK8epZDoZfoMvnGSLtCC6EmdhxdjddRLiYRZrjndfOxEI
-         x6pQ==
-X-Gm-Message-State: AJIora8G8j/suy+osgjjSnCZMmECeMIRJJ062qYiWx8Y4TP8VZ39UZWv
-        lJAvaEoxIPbW6wJ5s4YjqPUR4w==
-X-Google-Smtp-Source: AGRyM1sRVqR4TPQ7hzPO5xLtJI0dp5o82s+eN+/tAD+iVCtZICpWioOkfJVo3hOKTVfpBf5zMVnxRw==
-X-Received: by 2002:a62:6411:0:b0:50a:81df:bfa6 with SMTP id y17-20020a626411000000b0050a81dfbfa6mr28143915pfb.26.1655779235852;
-        Mon, 20 Jun 2022 19:40:35 -0700 (PDT)
-Received: from [10.76.33.147] ([61.120.150.69])
-        by smtp.gmail.com with ESMTPSA id j11-20020aa7928b000000b005251ce498cfsm3787737pfa.191.2022.06.20.19.40.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Jun 2022 19:40:35 -0700 (PDT)
-Message-ID: <2a95ca55-4088-583b-9a28-cf9f4c0f32fc@bytedance.com>
-Date:   Tue, 21 Jun 2022 10:40:30 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.7.0
-Subject: Re: [PATCH] ext4: reuse order and buddy in mb_mark_used when buddy
- split
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lei.rao@intel.com
-References: <20220606155305.74146-1-hanjinke.666@bytedance.com>
-From:   hanjinke <hanjinke.666@bytedance.com>
-In-Reply-To: <20220606155305.74146-1-hanjinke.666@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S1345836AbiFUGQA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 Jun 2022 02:16:00 -0400
+Received: from smtpbg.qq.com (smtpbg123.qq.com [175.27.65.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF581BE97;
+        Mon, 20 Jun 2022 23:15:54 -0700 (PDT)
+X-QQ-mid: bizesmtp78t1655792144tyyn46h7
+Received: from ubuntu.localdomain ( [106.117.99.68])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Tue, 21 Jun 2022 14:15:34 +0800 (CST)
+X-QQ-SSF: 01000000007000109000000A0000000
+X-QQ-FEAT: HDjpALELSmFgfGq9nHorWpfBP8NQbowQ/hSGqJYLCImI++jRbEtpupGxSmLSQ
+        HbCKGZYq7yE63+bmLNVbe7yzWIv7tubvIsn9ThRaEiW65dpfmRO3YebYV++QvvXNzcFH8dR
+        CXcoLxBY3Jxqn4qOtK3a1DONvAnujQIPrac4Aqiun3vY/5zyd1g9BPVbl0q0IFrqN/sabLn
+        IRONJsYWTGF1VZwfEPTOb9wrV89nWH+ytfVXzQT3k6p1PsgYbJjkqMTsqdAV7wOGI2V2uoz
+        KysJ6pP0ogkUOxgxqeaF++llbtnBBMPLSxZ26jwUQSXUyfRFph3q8CRfM=
+X-QQ-GoodBg: 0
+From:   Jiang Jian <jiangjian@cdjrlc.com>
+To:     tytso@mit.edu
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jiangjian@cdjrlc.com
+Subject: [PATCH] ext4: aligned '*' in comments
+Date:   Tue, 21 Jun 2022 14:15:31 +0800
+Message-Id: <20220621061531.19669-1-jiangjian@cdjrlc.com>
+X-Mailer: git-send-email 2.17.1
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam8
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-hi, friendly pinging...
+The '*' in the comment is not aligned.
 
-在 2022/6/6 下午11:53, Jinke Han 写道:
-> From: hanjinke <hanjinke.666@bytedance.com>
-> 
-> After each buddy split, mb_mark_used will search the proper order
-> for the block which may consume some loop in mb_find_order_for_block.
-> In fact, we can reuse the oder and buddy generated by the buddy split.
-> 
-> Reviewed by: lei.rao@intel.com
-> Signed-off-by: hanjinke <hanjinke.666@bytedance.com>
-> ---
->   fs/ext4/mballoc.c | 10 ++++++++--
->   1 file changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 9f12f29bc346..c7ac6b269dd8 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -1933,6 +1933,7 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
->   	unsigned ret = 0;
->   	int len0 = len;
->   	void *buddy;
-> +	bool split = false;
->   
->   	BUG_ON(start + len > (e4b->bd_sb->s_blocksize << 3));
->   	BUG_ON(e4b->bd_group != ex->fe_group);
-> @@ -1957,12 +1958,16 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
->   
->   	/* let's maintain buddy itself */
->   	while (len) {
-> -		ord = mb_find_order_for_block(e4b, start);
-> +		if (!split)
-> +			ord = mb_find_order_for_block(e4b, start);
->   
->   		if (((start >> ord) << ord) == start && len >= (1 << ord)) {
->   			/* the whole chunk may be allocated at once! */
->   			mlen = 1 << ord;
-> -			buddy = mb_find_buddy(e4b, ord, &max);
-> +			if (!split)
-> +				buddy = mb_find_buddy(e4b, ord, &max);
-> +			else
-> +				split = false;
->   			BUG_ON((start >> ord) >= max);
->   			mb_set_bit(start >> ord, buddy);
->   			e4b->bd_info->bb_counters[ord]--;
-> @@ -1989,6 +1994,7 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
->   		mb_clear_bit(cur + 1, buddy);
->   		e4b->bd_info->bb_counters[ord]++;
->   		e4b->bd_info->bb_counters[ord]++;
-> +		split = true;
->   	}
->   	mb_set_largest_free_order(e4b->bd_sb, e4b->bd_info);
->   
+Signed-off-by: Jiang Jian <jiangjian@cdjrlc.com>
+---
+ fs/ext4/xattr.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/ext4/xattr.h b/fs/ext4/xattr.h
+index 77efb9a627ad..c1edfbc13efb 100644
+--- a/fs/ext4/xattr.h
++++ b/fs/ext4/xattr.h
+@@ -84,7 +84,7 @@ struct ext4_xattr_entry {
+ /*
+  * The minimum size of EA value when you start storing it in an external inode
+  * size of block - size of header - size of 1 entry - 4 null bytes
+-*/
++ */
+ #define EXT4_XATTR_MIN_LARGE_EA_SIZE(b)					\
+ 	((b) - EXT4_XATTR_LEN(3) - sizeof(struct ext4_xattr_header) - 4)
+ 
+-- 
+2.17.1
+
