@@ -2,113 +2,103 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5475579AF
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Jun 2022 14:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18518557A91
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Jun 2022 14:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231807AbiFWMCA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 23 Jun 2022 08:02:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43206 "EHLO
+        id S229992AbiFWMon (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 Jun 2022 08:44:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230257AbiFWMBh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Jun 2022 08:01:37 -0400
-Received: from mail-oa1-x43.google.com (mail-oa1-x43.google.com [IPv6:2001:4860:4864:20::43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 278D24E3BF
-        for <linux-ext4@vger.kernel.org>; Thu, 23 Jun 2022 05:00:22 -0700 (PDT)
-Received: by mail-oa1-x43.google.com with SMTP id 586e51a60fabf-101ec2d6087so15869033fac.3
-        for <linux-ext4@vger.kernel.org>; Thu, 23 Jun 2022 05:00:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=SH1826VGivRTcWTFt6CirTUpizldtIW6lapFTxm7Gbo=;
-        b=dL4ZdfjGobK7bZ5zNav1+xGQiGde1Zc7ClvHsT7kk6LqobgfylVSX6CBG5RjcoVDTa
-         P464n62qmhgQVmko817GDYihyl7pvjfwkgES8JkCRGmr9xxgu3PjHmBrdfIKpKF+gxtz
-         ck0sfdPmzNP6PJDK99aoAJqvIJ6MSx5TfjB1KlqaDZn92DOWiz08x3njQYk7p7AUH10T
-         y+GlFokIsHaKh5IwUNZgaGJCE9OJ9vSfBgmQkTnZzySftM6HqqxRqpOIYwT/wd75+23E
-         P9+fpjMOoHjPoNoGgly+tjBN6a3v4kxdZSCYsYXbKgVUjjGIp5B1Lh0sXido0MvDOb61
-         P1yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=SH1826VGivRTcWTFt6CirTUpizldtIW6lapFTxm7Gbo=;
-        b=W2nsEHZBiXDu4W6p/8PEGGZCOBUesXbwIOcpqqOufUXT5bCrAaUayba3A/hS9kgZ1l
-         gf05c/WJEj+vXL7YpQUg5dHNgRxnqEGFwzy0TFVo6y4v5KjC95d00Cluw4L9uiPQbcC5
-         69Km0eCLqdLvggEhRvbnUCQ2vdYgIf5/Z1c0UvisPNIajiEHX4au/ybpIMODBSMjF20a
-         SE6TwEM5vqdBWL9qaH8xtJA9lqkN2BAHJou3sAJTmrXc9JYibpWMh21ysZ76+14MwnXS
-         nHXssLTvZ9MXLCjpxIxDyRNRKNZ/sSjO+cAsrOSylzNMGOnzzzRBL/VmUIouhBkPEXSP
-         K1kw==
-X-Gm-Message-State: AJIora8wkieB7s79y9+bJOxSJMVhfuJnQIgleSmsDhSokPuSrJEeg5CA
-        zcx4NFoB9Hx8DD715mFpIYgcbM5kGUktnwzpGf0=
-X-Google-Smtp-Source: AGRyM1u9XqAMSItZNhegX/ZymFvhNBQP3xenHiWf00X4SNsH0rLed72zRQSP+YVxHt9F6Yhn4fsa6RzBdFD/GHKyBzE=
-X-Received: by 2002:a05:6870:311:b0:f2:d46a:b370 with SMTP id
- m17-20020a056870031100b000f2d46ab370mr2282258oaf.169.1655985618110; Thu, 23
- Jun 2022 05:00:18 -0700 (PDT)
+        with ESMTP id S231598AbiFWMom (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Jun 2022 08:44:42 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7DE03F8BA;
+        Thu, 23 Jun 2022 05:44:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1655988281; x=1687524281;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=h3Ef2jQOmoumcBkWtU8Mn8h6evOutjsIpL0wWbQpFd0=;
+  b=TH4+6LaFUkoKBP5tlmYKMjyzClceWJietKz8YgljYudkQj4s14vhHLSk
+   cBFfaV+XH0HBa+w30D8J9neoBiYKLyBgVOi70UavQKDW3EtaORdaS2aL1
+   GeqKiexMmnDVvD+DsX+BOnA0koSD0GyNictd5hqy7cyJk8KNtBzGGsHBU
+   svzvULXR2FuKlqhUnb/dbQ1stjdoyKSyyWEAcFIYVLSQg5JmmPBP4IoLv
+   VcBt9tFRmLFfcG7qb/7LHOQRByBIVWXRowbz3BOonTUQcxc/G7GrFd/C8
+   m9QdWob7yIQbb7sxyBRDBVpZEZ+M2nMvX4vQfKdxAFKOoDqYz2SUdE9I4
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10386"; a="367025957"
+X-IronPort-AV: E=Sophos;i="5.92,216,1650956400"; 
+   d="scan'208";a="367025957"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2022 05:44:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,216,1650956400"; 
+   d="scan'208";a="621303381"
+Received: from lkp-server01.sh.intel.com (HELO 68b931ab7ac1) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 23 Jun 2022 05:44:38 -0700
+Received: from kbuild by 68b931ab7ac1 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1o4MCM-0001Gd-Ab;
+        Thu, 23 Jun 2022 12:44:38 +0000
+Date:   Thu, 23 Jun 2022 20:44:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>,
+        viro@zeniv.linux.org.uk, tytso@mit.edu, jaegeuk@kernel.org
+Cc:     kbuild-all@lists.01.org, ebiggers@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel@collabora.com
+Subject: Re: [PATCH 7/7] f2fs: Enable negative dentries on case-insensitive
+ lookup
+Message-ID: <202206231838.E75vWtY3-lkp@intel.com>
+References: <20220622194603.102655-8-krisman@collabora.com>
 MIME-Version: 1.0
-Received: by 2002:a4a:e60e:0:0:0:0:0 with HTTP; Thu, 23 Jun 2022 05:00:17
- -0700 (PDT)
-Reply-To: ibnahmadmustafa.aseelfinance@gmail.com
-From:   "Ibn Ahmad Mustafa(ASEEL Islamic Finance)" <alexaziz900@gmail.com>
-Date:   Thu, 23 Jun 2022 13:00:17 +0100
-Message-ID: <CA+ZonYFVf4r4TP5OjTABRM+sUUb77Yi8rA2ZjaW7-M57GTtrGA@mail.gmail.com>
-Subject: LOAN AND INVESTMENT-ASEEL ISLAMIC FINANCE
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=7.7 required=5.0 tests=BAYES_80,DEAR_SOMETHING,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,
-        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2001:4860:4864:20:0:0:0:43 listed in]
-        [list.dnswl.org]
-        *  2.0 BAYES_80 BODY: Bayes spam probability is 80 to 95%
-        *      [score: 0.8478]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [alexaziz900[at]gmail.com]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [alexaziz900[at]gmail.com]
-        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  2.0 DEAR_SOMETHING BODY: Contains 'Dear (something)'
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  2.2 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *******
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220622194603.102655-8-krisman@collabora.com>
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Dear Sir/Madam
+Hi Gabriel,
 
-I would like to introduce you to Aseel Islamic finance PJSC which is a
-private joint stock company that was
-established in 2006 and has built a leading market position for itself
-in the UAE's Islamic finance market which specializes in loan finance
-and investment activities in real estate, hospitality, industrial &
-sustainable technologies, strategic financial investments, specialized
-education, healthcare services, agriculture, manufacturing,
-mining,energy and additional environmentally sustainable projects.
+I love your patch! Yet something to improve:
 
-I would love to send you further details with your consent.
+[auto build test ERROR on tytso-ext4/dev]
+[also build test ERROR on jaegeuk-f2fs/dev-test linus/master v5.19-rc3 next-20220623]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-Regards.
+url:    https://github.com/intel-lab-lkp/linux/commits/Gabriel-Krisman-Bertazi/Support-negative-dentries-on-case-insensitive-directories/20220623-034942
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+config: x86_64-randconfig-a006 (https://download.01.org/0day-ci/archive/20220623/202206231838.E75vWtY3-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-3) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/ab740b793e65b54ce8f48c693b86761f5bcaa911
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Gabriel-Krisman-Bertazi/Support-negative-dentries-on-case-insensitive-directories/20220623-034942
+        git checkout ab740b793e65b54ce8f48c693b86761f5bcaa911
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
 
-Mr.Ahmad Ibn Mustafa
-International Business Coordinator
-Aseel Islamic Finance PJSC
-Telephone: 800-ASEEL(27335)
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>, old ones prefixed by <<):
+
+ERROR: modpost: "d_set_casefold_lookup" [fs/ext4/ext4.ko] undefined!
+>> ERROR: modpost: "d_set_casefold_lookup" [fs/f2fs/f2fs.ko] undefined!
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
