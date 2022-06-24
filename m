@@ -2,73 +2,42 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3BC155933B
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Jun 2022 08:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E43F5593C1
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Jun 2022 08:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229605AbiFXGRK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 24 Jun 2022 02:17:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59094 "EHLO
+        id S229464AbiFXGvY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 24 Jun 2022 02:51:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230355AbiFXGRI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Jun 2022 02:17:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2C0614EA04
-        for <linux-ext4@vger.kernel.org>; Thu, 23 Jun 2022 23:17:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1656051426;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8zS3IsB2SxaWn7FKVotEVa/GMXmNG8HC49Y5sW0xw7I=;
-        b=C08ejQauOKKxRxkdYLXwiDTj36hanX9b7PhX3MWjRA+9uhZr8oplFtXRji/i/7+uOtC8it
-        GL1TTHYhLiGgEmMI+p48eWhzHk+hir2WQqazHmW+0oyr3OTcR2RGEPNpGIRyuu1v9MgLC6
-        qCepvOsULh6dYh7MElOcHi4YrvBV1QI=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-361-8oo67iV-O_yUXLNNFuEBHQ-1; Fri, 24 Jun 2022 02:17:04 -0400
-X-MC-Unique: 8oo67iV-O_yUXLNNFuEBHQ-1
-Received: by mail-qv1-f71.google.com with SMTP id ls8-20020a0562145f8800b0047078180732so1725066qvb.2
-        for <linux-ext4@vger.kernel.org>; Thu, 23 Jun 2022 23:17:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8zS3IsB2SxaWn7FKVotEVa/GMXmNG8HC49Y5sW0xw7I=;
-        b=Y45o7aN+SwRMVB/au7DPmTJ00ZS2gEwsWOHquTQ2QUFTMZD9Lbg/eRWFjMCuC0F0i+
-         P/KDxMJr/mmUTr7fgAzx1M/e6y4IPu74UdROTDCEtqBgzsZjaSz34BcDUsh0aryttaa2
-         jS+mpZXasPntxddC42hczJj539zLBHznpbwaF28Pm9Hke7ijnMT5LGSvMKb8eOr2TwzP
-         cbXcuc0kDlEs7tgjvH6A3WkECd2aPChGo9MMXdSn1dMw34HvhRJi7UMvsZJwg0tc1f7k
-         RGbakwKAzskZ/cHFSBY0r5tmluB2k43mqgtCcZXSKwFwPetKIaPURR+N+PA41tGM9jmT
-         eFBA==
-X-Gm-Message-State: AJIora+H/quUJu2uw/DK2jJtiM9O5U2ZtSyufR4nEXF93PIJ/mM89nsY
-        CXy+NKOqV4jLaK1IjwGvM2ip7M0oASfdFW94dQpRqYHl0GoVXa0PpERhNpd7qPY6AwLPHk5hKwm
-        xCrlAnUqUjcnXn54bJ8CJ+w==
-X-Received: by 2002:ac8:5b50:0:b0:305:3275:b9bf with SMTP id n16-20020ac85b50000000b003053275b9bfmr11444075qtw.498.1656051423560;
-        Thu, 23 Jun 2022 23:17:03 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1vefrm2rq70JDwELgpQV2bt8QlwdFwZFZWBDiPit9fA/NxGoF8Ny8SVccrw7v0NjT1quM+67A==
-X-Received: by 2002:ac8:5b50:0:b0:305:3275:b9bf with SMTP id n16-20020ac85b50000000b003053275b9bfmr11444063qtw.498.1656051423326;
-        Thu, 23 Jun 2022 23:17:03 -0700 (PDT)
-Received: from zlang-mailbox ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id f10-20020a05620a280a00b006a69d7f390csm1232878qkp.103.2022.06.23.23.17.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jun 2022 23:17:02 -0700 (PDT)
-Date:   Fri, 24 Jun 2022 14:16:57 +0800
-From:   Zorro Lang <zlang@redhat.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, Lukas Czerner <lczerner@redhat.com>
-Subject: Re: [xfstests PATCH v2] ext4/053: test changing
- test_dummy_encryption on remount
-Message-ID: <20220624061657.snbyeebcpepwv5em@zlang-mailbox>
-References: <20220623184113.330183-1-ebiggers@kernel.org>
+        with ESMTP id S230330AbiFXGvX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Jun 2022 02:51:23 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A56367E4E
+        for <linux-ext4@vger.kernel.org>; Thu, 23 Jun 2022 23:51:20 -0700 (PDT)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LTnlm0kttzhYdD;
+        Fri, 24 Jun 2022 14:49:08 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by canpemm500005.china.huawei.com
+ (7.192.104.229) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Fri, 24 Jun
+ 2022 14:51:17 +0800
+From:   Zhang Yi <yi.zhang@huawei.com>
+To:     <linux-ext4@vger.kernel.org>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+        <yi.zhang@huawei.com>, <yukuai3@huawei.com>
+Subject: [PATCH] ext4: silence the warning when evicting inode with dioread_nolock
+Date:   Fri, 24 Jun 2022 15:04:04 +0800
+Message-ID: <20220624070404.763603-1-yi.zhang@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220623184113.330183-1-ebiggers@kernel.org>
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500005.china.huawei.com (7.192.104.229)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,44 +45,84 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jun 23, 2022 at 11:41:13AM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> The test_dummy_encryption mount option isn't supposed to be settable or
-> changeable via a remount, so add test cases for this.  This is a
-> regression test for a bug that was introduced in Linux v5.17 and fixed
-> in v5.19-rc3 by commit 85456054e10b ("ext4: fix up test_dummy_encryption
-> handling for new mount API").
-> 
-> Reviewed-by: Lukas Czerner <lczerner@redhat.com>
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
+When evicting an inode with default dioread_nolock, it could be raced by
+the unwritten extents converting kworker after writeback some new
+allocated dirty blocks. It convert unwritten extents to written, the
+extents could be merged to upper level and free extent blocks, so it
+could mark the inode dirty again even this inode has been marked
+I_FREEING. But the inode->i_io_list check and warning in
+ext4_evict_inode() missing this corner case. Fortunately,
+ext4_evict_inode() will wait all extents converting finished before this
+check, so it will not lead to inode use-after-free problem, so every
+thing is OK besides this warning, let the WARN_ON_ONCE know the
+dioread_nolock case to silence this warning is fine.
 
-Thanks for reminding that, I'll merge this patch this week.
+ ======
+ WARNING: CPU: 7 PID: 1092 at fs/ext4/inode.c:227
+ ext4_evict_inode+0x875/0xc60
+ ...
+ RIP: 0010:ext4_evict_inode+0x875/0xc60
+ ...
+ Call Trace:
+  <TASK>
+  evict+0x11c/0x2b0
+  iput+0x236/0x3a0
+  do_unlinkat+0x1b4/0x490
+  __x64_sys_unlinkat+0x4c/0xb0
+  do_syscall_64+0x3b/0x90
+  entry_SYSCALL_64_after_hwframe+0x46/0xb0
+ RIP: 0033:0x7fa933c1115b
+ ======
 
-> 
-> v2: added info about fixing commit, and added a Reviewed-by tag
-> 
->  tests/ext4/053 | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/tests/ext4/053 b/tests/ext4/053
-> index 23e553c5..555e474e 100755
-> --- a/tests/ext4/053
-> +++ b/tests/ext4/053
-> @@ -685,6 +685,9 @@ for fstype in ext2 ext3 ext4; do
->  		mnt test_dummy_encryption=v2
->  		not_mnt test_dummy_encryption=bad
->  		not_mnt test_dummy_encryption=
-> +		# Can't be set or changed on remount.
-> +		mnt_then_not_remount defaults test_dummy_encryption
-> +		mnt_then_not_remount test_dummy_encryption=v1 test_dummy_encryption=v2
->  		do_mkfs -O ^encrypt $SCRATCH_DEV ${SIZE}k
->  	fi
->  	not_mnt test_dummy_encryption
-> 
-> base-commit: 0882b0913eae6fd6d2010323da1dde0ff96bf7d4
-> -- 
-> 2.36.1
-> 
+rm                          kworker
+                            ext4_end_io_end()
+vfs_unlink()
+ ext4_unlink()
+                             ext4_convert_unwritten_io_end_vec()
+                              ext4_convert_unwritten_extents()
+                               ext4_map_blocks()
+                                ext4_ext_map_blocks()
+                                 ext4_ext_try_to_merge_up()
+                                  __mark_inode_dirty()
+                                   check !I_FREEING
+                                   locked_inode_to_wb_and_lock_list()
+ iput()
+  iput_final()
+   evict()
+    ext4_evict_inode()
+     truncate_inode_pages_final() //wait release io_end
+                                    inode_io_list_move_locked()
+                             ext4_release_io_end()
+     trigger WARN_ON_ONCE()
+
+Fixes: ceff86fddae8 ("ext4: Avoid freeing inodes on dirty list")
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+---
+ fs/ext4/inode.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 3dce7d058985..3b64d72416b7 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -220,11 +220,14 @@ void ext4_evict_inode(struct inode *inode)
+ 
+ 	/*
+ 	 * For inodes with journalled data, transaction commit could have
+-	 * dirtied the inode. Flush worker is ignoring it because of I_FREEING
+-	 * flag but we still need to remove the inode from the writeback lists.
++	 * dirtied the inode. And for inodes with dioread_nolock, unwritten
++	 * extents converting worker could merged extents and also have dirtied
++	 * the inode. Flush worker is ignoring it because of I_FREEING flag but
++	 * we still need to remove the inode from the writeback lists.
+ 	 */
+ 	if (!list_empty_careful(&inode->i_io_list)) {
+-		WARN_ON_ONCE(!ext4_should_journal_data(inode));
++		WARN_ON_ONCE(!ext4_should_journal_data(inode) &&
++			     !ext4_should_dioread_nolock(inode));
+ 		inode_io_list_del(inode);
+ 	}
+ 
+-- 
+2.31.1
 
