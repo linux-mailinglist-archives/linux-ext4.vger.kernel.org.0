@@ -2,110 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4341D55DE6E
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Jun 2022 15:29:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC27355E9EA
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Jun 2022 18:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344991AbiF1Km4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 28 Jun 2022 06:42:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43554 "EHLO
+        id S238395AbiF1Qfa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 28 Jun 2022 12:35:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343854AbiF1Kmw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Jun 2022 06:42:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A925C2E9E2
-        for <linux-ext4@vger.kernel.org>; Tue, 28 Jun 2022 03:42:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1656412970;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ONUUHv3MjjvFIJKVWzF/NPSOZ8SZcSjCl83bnjLd8nk=;
-        b=Hck/UEpIyYkrOih5cuyld8kC7OwJDMnkfmO96xxNJYnec48cAmDl/jyXZnO0P574KwWGaj
-        FfJcQe/qr3aYnHCo2I0t+D6utjyizF/y+yj9Wd6w+N2Ris24KuVeDMQyfqELSI3qDUGuzI
-        a/pEk21MwKmw8KTMB6iWxsaIcyETxbI=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-173-PkcmYVpsPXmtBGQ0NcM9Ng-1; Tue, 28 Jun 2022 06:42:49 -0400
-X-MC-Unique: PkcmYVpsPXmtBGQ0NcM9Ng-1
-Received: by mail-wm1-f69.google.com with SMTP id e24-20020a05600c219800b003a0471b1904so3730325wme.1
-        for <linux-ext4@vger.kernel.org>; Tue, 28 Jun 2022 03:42:49 -0700 (PDT)
+        with ESMTP id S233238AbiF1Qem (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Jun 2022 12:34:42 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F0430F61
+        for <linux-ext4@vger.kernel.org>; Tue, 28 Jun 2022 09:31:40 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id x3so23295961lfd.2
+        for <linux-ext4@vger.kernel.org>; Tue, 28 Jun 2022 09:31:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=plu-edu.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=7yiGZ94Gh4vRl9mZUVCwfYEf1dp4ree/KLDLMgwW5e8=;
+        b=MUZ0GBpkxp77AfAFWH7bm1QaMhyK2iGxLJa56o53qx9iulhA/45B7KbcfqafXC6Btf
+         KJGWtUBjqfRNFDwIKuq+gia90d9kJ0Q/qOtp0U//8Kdy9fQJIWPtG3rVHhKZA7Wnc5LU
+         bOTxKBrLX6ey6ZNTkOuGlyKECjQVnZLLjyuvaQ8BfX7+8r32uAsJPgHI8E7D5oDkeJlQ
+         vNvr2lz/2Kryfe5bkiGPM9slK9A9RvADM7SFPiDJNjzsnKbFeEJGbkZx8BK/acg+dH6D
+         jXRWm2xnsAcC+iWfgKYGRdQIAKPIsLspmeZRRAMs4HBJcNQ685oBqo1sA8iKXwD0I4ZW
+         LwrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=ONUUHv3MjjvFIJKVWzF/NPSOZ8SZcSjCl83bnjLd8nk=;
-        b=Q5vT0ueA3OnlM8pdX9fww5Ia939rkVy1z5ww9AMRT8vncTf5p4PEsXf2xn2+ieHN9v
-         uytzsreidVmzw+htkZauG32SAE4dJko3hyJKSKaj+Oz83iTSixp5GjboF5QqqYeW3Tg+
-         zAx8KwkKm8QwZ4ROcy17vAOCZeyNDiFU0v2OGmF3BPsxUjH+1bHD9v4nbUAFnL1z0UDx
-         ixRtEw0Rj/vnGnuwr4Xcqkf2iUQLbaY3ZxDiD/wUTOTl2w4Yw1BWAOTdyR4F2uvoXM9u
-         EwI6nZWLB4bxtJWmXNp3hmM2wvyTn3RQrkNzv/HfM77HcU4yQEGNIpDHaVCkr8pLessv
-         piwQ==
-X-Gm-Message-State: AJIora9/iPdhKB2yv3KF5+b+NGrU/UnwojVQ7A9kjsZwXRzQKaIbQ01Y
-        abLXjegMy2d02aXWzb5s9TAG8Sq3bSbdX1I/MvbnAFWofF6HNRbOCexI2uPohgcnWPguzzoL6Ua
-        9x4P3EDjGrU7ub8ZHhQn+OA==
-X-Received: by 2002:a05:600c:1991:b0:39c:88ba:2869 with SMTP id t17-20020a05600c199100b0039c88ba2869mr19766105wmq.14.1656412968362;
-        Tue, 28 Jun 2022 03:42:48 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1t89v3kQLLnvmZ+A4VBSjVx4SCynlA5GjVj55ld5GAWdEkQJAn2Ag3b6wuqeEuz7QSmx4Iu0w==
-X-Received: by 2002:a05:600c:1991:b0:39c:88ba:2869 with SMTP id t17-20020a05600c199100b0039c88ba2869mr19766075wmq.14.1656412968043;
-        Tue, 28 Jun 2022 03:42:48 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c709:a00:46df:e778:456a:8d6b? (p200300cbc7090a0046dfe778456a8d6b.dip0.t-ipconnect.de. [2003:cb:c709:a00:46df:e778:456a:8d6b])
-        by smtp.gmail.com with ESMTPSA id p2-20020a056000018200b002103cfd2fbasm13329363wrx.65.2022.06.28.03.42.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Jun 2022 03:42:47 -0700 (PDT)
-Message-ID: <79a7969c-311f-d36b-4d44-dfe2f02c9b99@redhat.com>
-Date:   Tue, 28 Jun 2022 12:42:44 +0200
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=7yiGZ94Gh4vRl9mZUVCwfYEf1dp4ree/KLDLMgwW5e8=;
+        b=vVddnz+ecD9rLFDb70/F0tzddl5DUCCabwDzvLJqyPHeNV1xxag9i2QWxo4WBqFYLz
+         Ms8adz0GR0FMJvbzJJVuslrXU+xuDnR0Pcu7DpQcQe0erkY3EoJgXy8a6r3IXPYjtVLJ
+         bD3MHdBRc+f2hV+BHh1G5ecFVi6QwVYp2MMOTHfESzYl6MJdz3BDfnK3Ypsvq/JNZFn3
+         bu4taSaZE9Ew2vtXSYZYBIkL90v6iV0MRltp6lnDv0Wx6pUJ+r61NusOu86Q5CNnBOLB
+         Yu1nXCJaNy3oj9+SYcYxHO++wi2YCsIuQq+otSpkkRe9FrqNmSmd2MQKpRW65qtWu9dF
+         IiWg==
+X-Gm-Message-State: AJIora/iaeAjrLZpKtecmJZzjPOHE+snX3PHdTjG9jymfEvZ832AwkbS
+        Qa1uAAEPK0j4H+pnURvoE3SW08oOKZ/xIqHtqNUh1Q==
+X-Google-Smtp-Source: AGRyM1uqI0ksrbq2MGC5gZHbgpMsZ5sCP+fLEe13fKjfORGch2KGCDLfwvpWSK1NnrGjf0vpfh6kBSVJlnI/fvC7gdk=
+X-Received: by 2002:a05:6512:1089:b0:47f:6373:6241 with SMTP id
+ j9-20020a056512108900b0047f63736241mr12545519lfg.164.1656433898846; Tue, 28
+ Jun 2022 09:31:38 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH v6 02/14] mm: handling Non-LRU pages returned by
- vm_normal_pages
-Content-Language: en-US
-To:     Alex Sierra <alex.sierra@amd.com>, jgg@nvidia.com
-Cc:     Felix.Kuehling@amd.com, linux-mm@kvack.org, rcampbell@nvidia.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        hch@lst.de, jglisse@redhat.com, apopple@nvidia.com,
-        willy@infradead.org, akpm@linux-foundation.org
-References: <20220628001454.3503-1-alex.sierra@amd.com>
- <20220628001454.3503-3-alex.sierra@amd.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20220628001454.3503-3-alex.sierra@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:aa6:da8c:0:b0:1f5:486:75c3 with HTTP; Tue, 28 Jun 2022
+ 09:31:37 -0700 (PDT)
+Reply-To: crypto.investorstrading@gmail.com
+From:   SIEGL RONNY <lindnelg@plu.edu>
+Date:   Tue, 28 Jun 2022 17:31:37 +0100
+Message-ID: <CAJeMfn+_CYuNk3AY2-TTbzG=OMt+i5Ck+3-GuqB6oy3dB56ppQ@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=7.4 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FORGED_REPLYTO,LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNDISC_MONEY autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:131 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5001]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  2.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+        *  2.5 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 28.06.22 02:14, Alex Sierra wrote:
-> With DEVICE_COHERENT, we'll soon have vm_normal_pages() return
-> device-managed anonymous pages that are not LRU pages. Although they
-> behave like normal pages for purposes of mapping in CPU page, and for
-> COW. They do not support LRU lists, NUMA migration or THP.
-> 
-> We also introduced a FOLL_LRU flag that adds the same behaviour to
-> follow_page and related APIs, to allow callers to specify that they
-> expect to put pages on an LRU list.
-> 
-> Signed-off-by: Alex Sierra <alex.sierra@amd.com>
-> Acked-by: Felix Kuehling <Felix.Kuehling@amd.com>
-> Reviewed-by: Alistair Popple <apopple@nvidia.com>
-> ---
+--=20
+Hallo,
 
-I think my review feedback regarding FOLL_LRU has been ignored.
-
-
--- 
-Thanks,
-
-David / dhildenb
-
+Verdienen Sie w=C3=B6chentlich 65.000 bis 130.000 US-Dollar im
+Bitcoin-Investitionshandel. Es ist sehr lukrativ, dass Sie
+m=C3=B6glicherweise keine Arbeit verrichten m=C3=BCssen, nur falls Sie eine=
+n
+9-5-Job haben, wird dies Ihre Arbeit nicht beeintr=C3=A4chtigen. FRAG MICH
+WIE? Kontaktieren Sie uns f=C3=BCr ein direktes Gespr=C3=A4ch =C3=BCber Wha=
+tsApp: +1
+(201) 590=E2=80=914385
