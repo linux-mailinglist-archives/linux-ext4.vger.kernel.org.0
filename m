@@ -2,223 +2,109 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CDF75606DB
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Jun 2022 19:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B5C75609B7
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Jun 2022 20:49:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229556AbiF2RBj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 29 Jun 2022 13:01:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46302 "EHLO
+        id S231788AbiF2Ssi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 29 Jun 2022 14:48:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230448AbiF2RBd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 29 Jun 2022 13:01:33 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35DA1393FF
-        for <linux-ext4@vger.kernel.org>; Wed, 29 Jun 2022 10:01:31 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id be10so22461664oib.7
-        for <linux-ext4@vger.kernel.org>; Wed, 29 Jun 2022 10:01:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=NpwH8g/eys1RC2/tQqkArhPANM+7/QcgnaLosW/vXNA=;
-        b=fQMMuji/o4HHDAXvrviMvQchc0SYRVdZ6twFGrQNMZ9QvCH1Rz8xgfs55Sh7KuefB/
-         D2leZxpeVUwm3joKVQiQsuOIPopcP7hVDp47VmoPHadvST9K7ZSW2s3MIpZc8zIOHUuw
-         e13KmZEZtwBvH96jLKZv3V1ui+zlzG77ZP1SiCSjIsYP6CuJoVsqy1wo/WKNwqbM3puE
-         7M5L0l3edCf9k+ynGArfdKd86enzuJUyZ9UdwHZF04hEMEG+3esMPwOxq0U1qrsh9Gry
-         LQ9G7cWafqJfuCGbNFO1eoFtyojdelx0YyyC+e2xT3ucH6cRFvQcLN5LcS9Xi8FIT3Y1
-         +9+Q==
+        with ESMTP id S229948AbiF2Ssh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 29 Jun 2022 14:48:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E366E275
+        for <linux-ext4@vger.kernel.org>; Wed, 29 Jun 2022 11:48:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1656528515;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4ZM4Ql5QJUmiVq6/iTZYAWyD16J7WFBV3CLn4iAwAjY=;
+        b=C32cZ5sH31WQ/Ym1uHaWC/SjQbfB5Bktea0JtWZEQhGlQBFKoWMWgVbRFTsnyzqj8wYrO2
+        ED98TBMvs9D/Cetq4eThPWBnAs71O70v1KtEdG+O5ZW00Hk7Ar0wi3sHM+2/W5rtEydg0j
+        avUHXKXtBZcu+emR5wvqFnN6BZoIqcM=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-245-aba8xGh4Ov2fQKkiBkZAhA-1; Wed, 29 Jun 2022 14:48:33 -0400
+X-MC-Unique: aba8xGh4Ov2fQKkiBkZAhA-1
+Received: by mail-wm1-f70.google.com with SMTP id c185-20020a1c35c2000000b0039db3e56c39so123244wma.5
+        for <linux-ext4@vger.kernel.org>; Wed, 29 Jun 2022 11:48:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=NpwH8g/eys1RC2/tQqkArhPANM+7/QcgnaLosW/vXNA=;
-        b=vkopFoma64WPD68557K591/3FEaoWxV8njgdZPl3xh3kU4xb2n8Lw+O/YT9w4/YyEg
-         eM9kCmV7WyJ4HRzY/zIsKC7BR7OBr4u441DS9iXwbvWwujinQgg42jZZDgFAZfTBBb74
-         gfYPvOrcp4kgSe8UKmu1F1rBDFb9NoaH7q43i+eL7WSYfXpO5nymW2HcZ858zFJhgGLO
-         xB7kOtZxtskI2tJ+I+FAWUST6waWFJl61aRDoj7aasbrQ2YvF21M1O0dOL3ZCLPuwIBa
-         RaTvisM6bsCESU2EGUFSz40fvI4A1vgmhcG3AqDOm57ywhbPcX785nyrlSdXBH8BbUns
-         POdQ==
-X-Gm-Message-State: AJIora9OR5qAip3TXtjV2M2f/f12d/QfqMy1v9j4VqhdqXnLlrVpyV1R
-        bJxsVNett7V0GcbA0Iux1yOUaxu/T7GPV+xoEBo2D9II
-X-Google-Smtp-Source: AGRyM1tbJLOFiSiU5dOdW+dYWIUwpCQRAXPUbhdnmRt7BMnVkCsIkYEI8KAy1ws2AhOCjrvLHs88Fu4+FWFrJ8YsU2s=
-X-Received: by 2002:a05:6808:1490:b0:335:22b6:7a6f with SMTP id
- e16-20020a056808149000b0033522b67a6fmr3633663oiw.143.1656522090474; Wed, 29
- Jun 2022 10:01:30 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=4ZM4Ql5QJUmiVq6/iTZYAWyD16J7WFBV3CLn4iAwAjY=;
+        b=JVIuYGA94oZ009NSc/J8ikONShCp911/VWa/z+n+tqzq6d8vhf8Xtgd0Cy7fL4xLaY
+         haCampnTx6Y8CQ6b+hXwKp33YBL7icBMon0st0boxUJ3KxImcu4IYOiCY/cwIHxyegHO
+         HrdNEnsaMHYJf+vAgNK8sbPmc62feR9cLdnOswawTCMDMeNcN1o7NW1ix8OfuU1C/w/I
+         ShEIZGcyZxv6fljSRwU7pq6ainr7FY6KuJ3JhI4XkbVGrp/1sqXfNbOYaehdymL7dmq6
+         NPnODzs6FB70MhU1XR0XMaHQP6x3G6gLJjEJouidD0I+QWu8UQJneKoutzEJ9H3hbiWt
+         nGVg==
+X-Gm-Message-State: AJIora99lTbS5bQc6MWsnm9JwWMJMSCwXPf40U02M8Bfyf0dYZNNWMI/
+        7iZ8w6KBMO6JAUGgOXjsnT1DDWjIk0boGvhdRtN/+uSWnf5ty10WxOtpSVcubUirJ081rIRu8AA
+        5hTu2izYlNW/1bCDT5PK5ug==
+X-Received: by 2002:a5d:688e:0:b0:21b:9d51:25d2 with SMTP id h14-20020a5d688e000000b0021b9d5125d2mr4756604wru.286.1656528511922;
+        Wed, 29 Jun 2022 11:48:31 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1tvKQZkINfbcfHGdv/ByN4E2v7ddXq6JGPQGqaW4FGF/wVw1dJjo/vdI/EF/pOq03d27lnmag==
+X-Received: by 2002:a5d:688e:0:b0:21b:9d51:25d2 with SMTP id h14-20020a5d688e000000b0021b9d5125d2mr4756580wru.286.1656528511695;
+        Wed, 29 Jun 2022 11:48:31 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c708:e600:d4fa:af4b:d7b6:20df? (p200300cbc708e600d4faaf4bd7b620df.dip0.t-ipconnect.de. [2003:cb:c708:e600:d4fa:af4b:d7b6:20df])
+        by smtp.gmail.com with ESMTPSA id n35-20020a05600c3ba300b003a039054567sm3206358wms.18.2022.06.29.11.48.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Jun 2022 11:48:31 -0700 (PDT)
+Message-ID: <2e3e1050-7fa4-106b-9c80-6321afc5ac42@redhat.com>
+Date:   Wed, 29 Jun 2022 20:48:30 +0200
 MIME-Version: 1.0
-References: <CAJJufw5AguY=T0KZ=W3OZCxKJj0VRueoLqRjWw99qPFeJE6UrA@mail.gmail.com>
-In-Reply-To: <CAJJufw5AguY=T0KZ=W3OZCxKJj0VRueoLqRjWw99qPFeJE6UrA@mail.gmail.com>
-From:   Dmitry <ilyevsky@gmail.com>
-Date:   Wed, 29 Jun 2022 10:01:19 -0700
-Message-ID: <CAGOdRhMOrqfqN+Yz2mWWRfQinBif7uW3AxOC5ipVkgnTcRoeiQ@mail.gmail.com>
-Subject: Fwd: ext: hang in jbd2_journal_commit_transaction/wait_transaction_locked
-To:     linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH v7 02/14] mm: add zone device coherent type memory support
+Content-Language: en-US
+To:     Alex Sierra <alex.sierra@amd.com>, jgg@nvidia.com
+Cc:     Felix.Kuehling@amd.com, linux-mm@kvack.org, rcampbell@nvidia.com,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        hch@lst.de, jglisse@redhat.com, apopple@nvidia.com,
+        willy@infradead.org, akpm@linux-foundation.org
+References: <20220629035426.20013-1-alex.sierra@amd.com>
+ <20220629035426.20013-3-alex.sierra@amd.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20220629035426.20013-3-alex.sierra@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi All,
+On 29.06.22 05:54, Alex Sierra wrote:
+> Device memory that is cache coherent from device and CPU point of view.
+> This is used on platforms that have an advanced system bus (like CAPI
+> or CXL). Any page of a process can be migrated to such memory. However,
+> no one should be allowed to pin such memory so that it can always be
+> evicted.
+> 
+> Signed-off-by: Alex Sierra <alex.sierra@amd.com>
+> Acked-by: Felix Kuehling <Felix.Kuehling@amd.com>
+> Reviewed-by: Alistair Popple <apopple@nvidia.com>
+> [hch: rebased ontop of the refcount changes,
+>       removed is_dev_private_or_coherent_page]
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-I'm having deadlock issues with ext4 after upgrading 5.14.14 ->
-5.16.13. Here's the excerpt of blocked threads dump (the are roughly
-200 D threads with a Z parent + jbd2 D thread):
+From what I can tell, this looks good to me
 
-Jun 28 17:43:32 ip-10-66-2-23 kernel: sysrq: Show Blocked State
-Jun 28 17:43:32 ip-10-66-2-23 kernel: task:jbd2/nvme3n1-8  state:D
-stack:    0 pid:11163 ppid:     2 flags:0x00004000
-Jun 28 17:43:32 ip-10-66-2-23 kernel: Call Trace:
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  <TASK>
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  __schedule+0x2d7/0xfa0
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  ? _raw_spin_unlock_irqrestore+0x25/0x40
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  ? _raw_spin_lock_irqsave+0x26/0x50
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  schedule+0x4e/0xc0
-Jun 28 17:43:32 ip-10-66-2-23 kernel:
-jbd2_journal_commit_transaction+0x314/0x1bd0
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  ? cpuacct_charge+0x2e/0x50
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  ? _raw_spin_unlock+0x16/0x30
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  ? do_wait_intr_irq+0xa0/0xa0
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  ? preempt_count_add+0x68/0xa0
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  kjournald2+0x9f/0x260
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  ? do_wait_intr_irq+0xa0/0xa0
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  ?
-jbd2_journal_release_jbd_inode+0x110/0x110
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  kthread+0x16b/0x190
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  ? set_kthread_struct+0x40/0x40
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  ret_from_fork+0x22/0x30
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  </TASK>
-Jun 28 17:43:32 ip-10-66-2-23 kernel: task:BackgrProcPool  state:D
-stack:    0 pid:11757 ppid: 11488 flags:0x00000004
-Jun 28 17:43:32 ip-10-66-2-23 kernel: Call Trace:
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  <TASK>
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  __schedule+0x2d7/0xfa0
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  ? ext4_match.part.0+0xbf/0x100
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  ? _raw_spin_lock_irqsave+0x26/0x50
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  schedule+0x4e/0xc0
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  wait_transaction_locked+0x7a/0xa0
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  ? do_wait_intr_irq+0xa0/0xa0
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  add_transaction_credits+0x10e/0x2a0
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  start_this_handle+0xf1/0x4f0
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  ? kmem_cache_alloc+0x16c/0x2d0
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  jbd2__journal_start+0xf7/0x1f0
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  __ext4_journal_start_sb+0xfe/0x110
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  ext4_rename+0x617/0xb20
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  ? security_inode_permission+0x30/0x50
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  ? avc_has_perm_noaudit+0x7f/0xe0
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  vfs_rename+0x9ca/0xd20
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  ? do_renameat2+0x4be/0x4f0
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  do_renameat2+0x4be/0x4f0
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  __x64_sys_rename+0x40/0x50
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  do_syscall_64+0x3b/0x90
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xae
-Jun 28 17:43:32 ip-10-66-2-23 kernel: RIP: 0033:0x7f6507ffb00b
-Jun 28 17:43:32 ip-10-66-2-23 kernel: RSP: 002b:00007f64ec9f9968
-EFLAGS: 00000202 ORIG_RAX: 0000000000000052
-Jun 28 17:43:32 ip-10-66-2-23 kernel: RAX: ffffffffffffffda RBX:
-00007f64ec9f99a0 RCX: 00007f6507ffb00b
-Jun 28 17:43:32 ip-10-66-2-23 kernel: RDX: 0000000000000031 RSI:
-00007f64d98698b0 RDI: 00007f64edc154a0
-Jun 28 17:43:32 ip-10-66-2-23 kernel: RBP: 00007f64eca28080 R08:
-00007f64ec9ff700 R09: 0000000000000070
-Jun 28 17:43:32 ip-10-66-2-23 kernel: R10: 00007f64edcfb190 R11:
-0000000000000202 R12: 00007f64ec9f99a1
-Jun 28 17:43:32 ip-10-66-2-23 kernel: R13: 0000000000000000 R14:
-00007f64ec9f99b8 R15: 00007f64ec9f99c0
-Jun 28 17:43:32 ip-10-66-2-23 kernel:  </TASK>
+Acked-by: David Hildenbrand <david@redhat.com>
 
-...
-
-Jun 28 17:43:34 ip-10-66-2-23 kernel: task:SystemLogFlush  state:D
-stack:    0 pid:11775 ppid: 11488 flags:0x00000004
-Jun 28 17:43:34 ip-10-66-2-23 kernel: Call Trace:
-Jun 28 17:43:34 ip-10-66-2-23 kernel:  <TASK>
-Jun 28 17:43:34 ip-10-66-2-23 kernel:  __schedule+0x2d7/0xfa0
-Jun 28 17:43:35 ip-10-66-2-23 kernel:  ? avc_has_perm_noaudit+0x7f/0xe0
-Jun 28 17:43:35 ip-10-66-2-23 kernel:  ? avc_has_perm_noaudit+0x7f/0xe0
-Jun 28 17:43:35 ip-10-66-2-23 kernel:  schedule+0x4e/0xc0
-Jun 28 17:43:35 ip-10-66-2-23 kernel:  rwsem_down_read_slowpath+0x310/0x350
-Jun 28 17:43:35 ip-10-66-2-23 kernel:  ? lookup_fast+0xce/0x130
-Jun 28 17:43:35 ip-10-66-2-23 kernel:  walk_component+0x10c/0x190
-Jun 28 17:43:35 ip-10-66-2-23 kernel:  ? path_init+0x2c1/0x3f0
-Jun 28 17:43:35 ip-10-66-2-23 kernel:  path_lookupat+0x6e/0x1b0
-Jun 28 17:43:35 ip-10-66-2-23 kernel:  filename_lookup+0xbc/0x1a0
-Jun 28 17:43:35 ip-10-66-2-23 kernel:  ? __check_object_size+0x136/0x150
-Jun 28 17:43:35 ip-10-66-2-23 kernel:  ? strncpy_from_user+0x3f/0x130
-Jun 28 17:43:35 ip-10-66-2-23 kernel:  ? _raw_spin_unlock_irqrestore+0x25/0x40
-Jun 28 17:43:35 ip-10-66-2-23 kernel:  user_path_at_empty+0x3a/0x50
-Jun 28 17:43:35 ip-10-66-2-23 kernel:  vfs_statx+0x64/0x100
-Jun 28 17:43:35 ip-10-66-2-23 kernel:  __do_sys_newstat+0x26/0x40
-Jun 28 17:43:35 ip-10-66-2-23 kernel:  ? __do_sys_statfs+0x27/0x30
-Jun 28 17:43:35 ip-10-66-2-23 kernel:  ?
-syscall_trace_enter.constprop.0+0x13d/0x1d0
-Jun 28 17:43:35 ip-10-66-2-23 kernel:  do_syscall_64+0x3b/0x90
-Jun 28 17:43:35 ip-10-66-2-23 kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xae
-Jun 28 17:43:35 ip-10-66-2-23 kernel: RIP: 0033:0x7f65080a562a
-Jun 28 17:43:35 ip-10-66-2-23 kernel: RSP: 002b:00007f64e29f5e48
-EFLAGS: 00000246 ORIG_RAX: 0000000000000004
-Jun 28 17:43:35 ip-10-66-2-23 kernel: RAX: ffffffffffffffda RBX:
-00007f64e29f5e78 RCX: 00007f65080a562a
-Jun 28 17:43:35 ip-10-66-2-23 kernel: RDX: 00007f64e29f5e90 RSI:
-00007f64e29f5e90 RDI: 00007f64edcabb50
-Jun 28 17:43:35 ip-10-66-2-23 kernel: RBP: 0000000000000000 R08:
-0000000000000001 R09: 0000000000000070
-Jun 28 17:43:35 ip-10-66-2-23 kernel: R10: 00007f64ede45d00 R11:
-0000000000000246 R12: 00007f64e29f6300
-Jun 28 17:43:35 ip-10-66-2-23 kernel: R13: 00007f6507a34700 R14:
-00007f6507a34bc8 R15: 00007f64ec11ea18
-Jun 28 17:43:35 ip-10-66-2-23 kernel:  </TASK>
-
-...
-
-Jun 28 17:43:36 ip-10-66-2-23 kernel: task:HTTPHandler     state:D
-stack:    0 pid:11809 ppid: 11488 flags:0x00000004
-Jun 28 17:43:36 ip-10-66-2-23 kernel: Call Trace:
-Jun 28 17:43:36 ip-10-66-2-23 kernel:  <TASK>
-Jun 28 17:43:36 ip-10-66-2-23 kernel:  __schedule+0x2d7/0xfa0
-Jun 28 17:43:36 ip-10-66-2-23 kernel:  ? avc_has_perm_noaudit+0x7f/0xe0
-Jun 28 17:43:36 ip-10-66-2-23 kernel:  ? avc_has_perm_noaudit+0x7f/0xe0
-Jun 28 17:43:36 ip-10-66-2-23 kernel:  schedule+0x4e/0xc0
-Jun 28 17:43:36 ip-10-66-2-23 kernel:  rwsem_down_read_slowpath+0x310/0x350
-Jun 28 17:43:36 ip-10-66-2-23 kernel:  ? lookup_fast+0xce/0x130
-Jun 28 17:43:36 ip-10-66-2-23 kernel:  walk_component+0x10c/0x190
-Jun 28 17:43:36 ip-10-66-2-23 kernel:  ? path_init+0x2c1/0x3f0
-Jun 28 17:43:36 ip-10-66-2-23 kernel:  path_lookupat+0x6e/0x1b0
-Jun 28 17:43:36 ip-10-66-2-23 kernel:  filename_lookup+0xbc/0x1a0
-Jun 28 17:43:36 ip-10-66-2-23 kernel:  ? __check_object_size+0x136/0x150
-Jun 28 17:43:36 ip-10-66-2-23 kernel:  ? strncpy_from_user+0x3f/0x130
-Jun 28 17:43:36 ip-10-66-2-23 kernel:  ? _raw_spin_unlock_irqrestore+0x25/0x40
-Jun 28 17:43:36 ip-10-66-2-23 kernel:  user_path_at_empty+0x3a/0x50
-Jun 28 17:43:36 ip-10-66-2-23 kernel:  vfs_statx+0x64/0x100
-Jun 28 17:43:36 ip-10-66-2-23 kernel:  __do_sys_newstat+0x26/0x40
-Jun 28 17:43:36 ip-10-66-2-23 kernel:  ? __do_sys_statfs+0x27/0x30
-Jun 28 17:43:36 ip-10-66-2-23 kernel:  ?
-syscall_trace_enter.constprop.0+0x13d/0x1d0
-Jun 28 17:43:36 ip-10-66-2-23 kernel:  do_syscall_64+0x3b/0x90
-Jun 28 17:43:36 ip-10-66-2-23 kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xae
-Jun 28 17:43:36 ip-10-66-2-23 kernel: RIP: 0033:0x7f65080a562a
-Jun 28 17:43:36 ip-10-66-2-23 kernel: RSP: 002b:00007f64cf7d2f78
-EFLAGS: 00000246 ORIG_RAX: 0000000000000004
-Jun 28 17:43:36 ip-10-66-2-23 kernel: RAX: ffffffffffffffda RBX:
-00007f64cf7d2fa8 RCX: 00007f65080a562a
-Jun 28 17:43:36 ip-10-66-2-23 kernel: RDX: 00007f64cf7d2fc0 RSI:
-00007f64cf7d2fc0 RDI: 00007f64e909b5b0
-Jun 28 17:43:36 ip-10-66-2-23 kernel: RBP: 0000000000000000 R08:
-0000000000000001 R09: 0000000000000070
-Jun 28 17:43:36 ip-10-66-2-23 kernel: R10: 000000000000002b R11:
-0000000000000246 R12: 00007f64cf7d34f0
-Jun 28 17:43:36 ip-10-66-2-23 kernel: R13: 00007f65072ffc00 R14:
-00007f6507300130 R15: 00007f64cb671218
-Jun 28 17:43:36 ip-10-66-2-23 kernel:  </TASK>
-
-The issue seems to pop up after a few hours consistently and after
-downgrade back to 5.14 it is gone. I've looked through 'ext:' commits
-for v5.14..v5.16 but don't see a smoking gun (not an expert though).
-Any suggestions to debug this further (perhaps an issue in nvme/block
-subsystems) or any other pointers would be much appreciated!
-
+-- 
 Thanks,
--Dmitry
+
+David / dhildenb
+
