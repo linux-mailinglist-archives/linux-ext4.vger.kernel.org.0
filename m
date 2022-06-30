@@ -2,159 +2,138 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 901EB561569
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Jun 2022 10:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B24561732
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Jun 2022 12:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232516AbiF3IsX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 30 Jun 2022 04:48:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49240 "EHLO
+        id S234737AbiF3KEY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 30 Jun 2022 06:04:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229964AbiF3IsX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 30 Jun 2022 04:48:23 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8B7186CA
-        for <linux-ext4@vger.kernel.org>; Thu, 30 Jun 2022 01:48:21 -0700 (PDT)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LYX4L4gFGzkWdZ;
-        Thu, 30 Jun 2022 16:46:26 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by canpemm500005.china.huawei.com
- (7.192.104.229) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 30 Jun
- 2022 16:48:19 +0800
-From:   Zhang Yi <yi.zhang@huawei.com>
-To:     <linux-ext4@vger.kernel.org>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-        <openglfreak@googlemail.com>, <yi.zhang@huawei.com>,
-        <yukuai3@huawei.com>
-Subject: [PATCH] ext4: fix reading leftover inlined symlinks
-Date:   Thu, 30 Jun 2022 17:01:00 +0800
-Message-ID: <20220630090100.2769490-1-yi.zhang@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S234754AbiF3KEW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 30 Jun 2022 06:04:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ED0C8443F6
+        for <linux-ext4@vger.kernel.org>; Thu, 30 Jun 2022 03:04:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1656583452;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DmU0ygkfQICKkJrotNjuaw4hfz5r1ur5tb6+FXoicmQ=;
+        b=G1AVLzD1DiKVZJQyxTjqAJSb2eMIubO1H92b43P1C/faa3FRxM8cebCnihl+ABy3+7sbhB
+        hGSh+oHGlz72RgiqyJglfbPwmj75EmpCTcsi0ZcJmPQKpdDdeAQYA+5FTvwGfq7u1Nbb1F
+        mOsZtKYd7AuHrSy1jnAesoUXieM5Sl0=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-475-59xaOh01Mx656ylIj9njuw-1; Thu, 30 Jun 2022 06:04:11 -0400
+X-MC-Unique: 59xaOh01Mx656ylIj9njuw-1
+Received: by mail-wr1-f70.google.com with SMTP id q6-20020adfea06000000b0021bad47edaeso3008797wrm.20
+        for <linux-ext4@vger.kernel.org>; Thu, 30 Jun 2022 03:04:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:organization:subject
+         :in-reply-to:content-transfer-encoding;
+        bh=DmU0ygkfQICKkJrotNjuaw4hfz5r1ur5tb6+FXoicmQ=;
+        b=nVAb7T4CwOAQ7f6ihOBbFCZITtbPGuzej9QZb5ItoPZBUfbICLPiexjyLn77ZXOLhX
+         tnjsoTNKbyfplvNBtivk0wW6wkhe5Q/fodaJgCjQ4NWubYoo3fDCGBSnrLnYI8W0rLPl
+         xiipaeGtJf6DIf4Bm33DjBxo3hwKsN5zPUqAba1ZhByHU80GMC6vWKuOw35lgKHybTVt
+         QjVT2hN45zRSCyx8ft/7Y4PXHN2dsmur2a4TVMFh0M29irky3wLqma1pvjlMyQVrRQaJ
+         71BbUIe7aqPZl3HQaEmc34UEqMFXEmTh029FymotYOesopL2mTng9wFYFAey9kvYJ2AT
+         PbRQ==
+X-Gm-Message-State: AJIora9f2fCmkG4MHEkRBbBiAV8OuP93vbLi6DBLLIt1BfeAej8SJGra
+        wwm+Kjl59PNz+wrawZ6aVf4w79XzgMk0gksiGMOtMy6jfldDObrw/FI8QKcUnDAz1bh3/5lQCRX
+        S24g5mjdCRsw8iIIMHTu+QQ==
+X-Received: by 2002:a7b:c152:0:b0:3a0:3e53:aa17 with SMTP id z18-20020a7bc152000000b003a03e53aa17mr11394757wmi.78.1656583450235;
+        Thu, 30 Jun 2022 03:04:10 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1vuI1sm5VybPo4wkaCR+sryKNwQzXdsHV339ZfkUZFjdgFAR5z/wUEvUcNLFrEOEmcW1irqSA==
+X-Received: by 2002:a7b:c152:0:b0:3a0:3e53:aa17 with SMTP id z18-20020a7bc152000000b003a03e53aa17mr11394724wmi.78.1656583449915;
+        Thu, 30 Jun 2022 03:04:09 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c708:7f00:214b:cffb:c693:2b71? (p200300cbc7087f00214bcffbc6932b71.dip0.t-ipconnect.de. [2003:cb:c708:7f00:214b:cffb:c693:2b71])
+        by smtp.gmail.com with ESMTPSA id j22-20020a05600c1c1600b003a046549a85sm2150594wms.37.2022.06.30.03.04.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Jun 2022 03:04:09 -0700 (PDT)
+Message-ID: <956b1c51-b8f1-0480-81ca-5d03b45110f7@redhat.com>
+Date:   Thu, 30 Jun 2022 12:04:03 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500005.china.huawei.com (7.192.104.229)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Content-Language: en-US
+To:     Alex Sierra <alex.sierra@amd.com>, jgg@nvidia.com
+Cc:     Felix.Kuehling@amd.com, linux-mm@kvack.org, rcampbell@nvidia.com,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        hch@lst.de, jglisse@redhat.com, apopple@nvidia.com,
+        willy@infradead.org, akpm@linux-foundation.org
+References: <20220629035426.20013-1-alex.sierra@amd.com>
+ <20220629035426.20013-5-alex.sierra@amd.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v7 04/14] mm: add device coherent vma selection for memory
+ migration
+In-Reply-To: <20220629035426.20013-5-alex.sierra@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Since commit 6493792d3299 ("ext4: convert symlink external data block
-mapping to bdev"), create new symlink with inline_data is not supported,
-but it missing to handle the leftover inlined symlinks, which could
-cause below error message and fail to read symlink.
+On 29.06.22 05:54, Alex Sierra wrote:
+> This case is used to migrate pages from device memory, back to system
+> memory. Device coherent type memory is cache coherent from device and CPU
+> point of view.
+> 
+> Signed-off-by: Alex Sierra <alex.sierra@amd.com>
+> Acked-by: Felix Kuehling <Felix.Kuehling@amd.com>
+> Reviewed-by: Alistair Poppple <apopple@nvidia.com>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
- ls: cannot read symbolic link 'foo': Structure needs cleaning
 
- EXT4-fs error (device sda): ext4_map_blocks:605: inode #12: block
- 2021161080: comm ls: lblock 0 mapped to illegal pblock 2021161080
- (length 1)
+I'm not too familiar with this code, please excuse my naive questions:
 
-Fix this regression by adding ext4_read_inline_link(), which read the
-inline data directly and convert it through a kmalloced buffer.
+> @@ -148,15 +148,21 @@ static int migrate_vma_collect_pmd(pmd_t *pmdp,
+>  			if (is_writable_device_private_entry(entry))
+>  				mpfn |= MIGRATE_PFN_WRITE;
+>  		} else {
+> -			if (!(migrate->flags & MIGRATE_VMA_SELECT_SYSTEM))
+> -				goto next;
 
-Fixes: 6493792d3299 ("ext4: convert symlink external data block mapping to bdev")
-Reported-by: Torge Matthies <openglfreak@googlemail.com>
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
----
- fs/ext4/ext4.h    |  1 +
- fs/ext4/inline.c  | 30 ++++++++++++++++++++++++++++++
- fs/ext4/symlink.c | 15 +++++++++++++++
- 3 files changed, 46 insertions(+)
+Why not exclude MIGRATE_VMA_SELECT_DEVICE_PRIVATE here? IIRC that would
+have happened before this change.
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 75b8d81b2469..adfc30ee4b7b 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -3583,6 +3583,7 @@ extern struct buffer_head *ext4_get_first_inline_block(struct inode *inode,
- extern int ext4_inline_data_fiemap(struct inode *inode,
- 				   struct fiemap_extent_info *fieinfo,
- 				   int *has_inline, __u64 start, __u64 len);
-+extern void *ext4_read_inline_link(struct inode *inode);
- 
- struct iomap;
- extern int ext4_inline_data_iomap(struct inode *inode, struct iomap *iomap);
-diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index cff52ff6549d..1fa36cbe09ec 100644
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -6,6 +6,7 @@
- 
- #include <linux/iomap.h>
- #include <linux/fiemap.h>
-+#include <linux/namei.h>
- #include <linux/iversion.h>
- #include <linux/sched/mm.h>
- 
-@@ -1588,6 +1589,35 @@ int ext4_read_inline_dir(struct file *file,
- 	return ret;
- }
- 
-+void *ext4_read_inline_link(struct inode *inode)
-+{
-+	struct ext4_iloc iloc;
-+	int ret, inline_size;
-+	void *link;
-+
-+	ret = ext4_get_inode_loc(inode, &iloc);
-+	if (ret)
-+		return ERR_PTR(ret);
-+
-+	ret = -ENOMEM;
-+	inline_size = ext4_get_inline_size(inode);
-+	link = kmalloc(inline_size + 1, GFP_NOFS);
-+	if (!link)
-+		goto out;
-+
-+	ret = ext4_read_inline_data(inode, link, inline_size, &iloc);
-+	if (ret < 0) {
-+		kfree(link);
-+		goto out;
-+	}
-+	nd_terminate_link(link, inode->i_size, ret);
-+out:
-+	if (ret < 0)
-+		link = ERR_PTR(ret);
-+	brelse(iloc.bh);
-+	return link;
-+}
-+
- struct buffer_head *ext4_get_first_inline_block(struct inode *inode,
- 					struct ext4_dir_entry_2 **parent_de,
- 					int *retval)
-diff --git a/fs/ext4/symlink.c b/fs/ext4/symlink.c
-index d281f5bcc526..3d3ed3c38f56 100644
---- a/fs/ext4/symlink.c
-+++ b/fs/ext4/symlink.c
-@@ -74,6 +74,21 @@ static const char *ext4_get_link(struct dentry *dentry, struct inode *inode,
- 				 struct delayed_call *callback)
- {
- 	struct buffer_head *bh;
-+	char *inline_link;
-+
-+	/*
-+	 * Create a new inlined symlink is not supported, just provide a
-+	 * method to read the leftovers.
-+	 */
-+	if (ext4_has_inline_data(inode)) {
-+		if (!dentry)
-+			return ERR_PTR(-ECHILD);
-+
-+		inline_link = ext4_read_inline_link(inode);
-+		if (!IS_ERR(inline_link))
-+			set_delayed_call(callback, kfree_link, inline_link);
-+		return inline_link;
-+	}
- 
- 	if (!dentry) {
- 		bh = ext4_getblk(NULL, inode, 0, EXT4_GET_BLOCKS_CACHED_NOWAIT);
+
+>  			pfn = pte_pfn(pte);
+> -			if (is_zero_pfn(pfn)) {
+> +			if (is_zero_pfn(pfn) &&
+> +			    (migrate->flags & MIGRATE_VMA_SELECT_SYSTEM)) {
+>  				mpfn = MIGRATE_PFN_MIGRATE;
+>  				migrate->cpages++;
+>  				goto next;
+>  			}
+>  			page = vm_normal_page(migrate->vma, addr, pte);
+> +			if (page && !is_zone_device_page(page) &&
+
+I'm wondering if that check logically belongs into patch #2.
+
+> +			    !(migrate->flags & MIGRATE_VMA_SELECT_SYSTEM))
+> +				goto next;
+> +			else if (page && is_device_coherent_page(page) &&
+> +			    (!(migrate->flags & MIGRATE_VMA_SELECT_DEVICE_COHERENT) ||
+> +			     page->pgmap->owner != migrate->pgmap_owner))
+
+
+In general LGTM
+
 -- 
-2.31.1
+Thanks,
+
+David / dhildenb
 
