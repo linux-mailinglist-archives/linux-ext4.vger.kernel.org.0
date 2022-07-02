@@ -2,57 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49BE4563E69
-	for <lists+linux-ext4@lfdr.de>; Sat,  2 Jul 2022 06:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58D95563FA2
+	for <lists+linux-ext4@lfdr.de>; Sat,  2 Jul 2022 13:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231557AbiGBEZy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 2 Jul 2022 00:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58604 "EHLO
+        id S232306AbiGBLH4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 2 Jul 2022 07:07:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231243AbiGBEZy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 2 Jul 2022 00:25:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 382AB35DE0;
-        Fri,  1 Jul 2022 21:25:53 -0700 (PDT)
+        with ESMTP id S232083AbiGBLHw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 2 Jul 2022 07:07:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9029615A39;
+        Sat,  2 Jul 2022 04:07:50 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C6DC260A1B;
-        Sat,  2 Jul 2022 04:25:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2C8EC34114;
-        Sat,  2 Jul 2022 04:25:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1656735952;
-        bh=CnLxEWfEVwpNoTxWsiwQ1LQuKst+72BKDbjbXAesDa4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LQCMYCHDQR6Snh03VJXykPrYGM58AdpZzxwBcPzIoKS+eBA9CKb8Ndukm4D2HfPUa
-         i4yAErDdhscv7vlgetKrJZ7oiJZp8dU98i+LE/12HMErHBMVVau0tOR8gyM7ntkFIH
-         yJLFkEd0F9svS2uuJzXBntMgT6QOg+GCbOO/3Vn8=
-Date:   Fri, 1 Jul 2022 21:25:51 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Felix Kuehling <felix.kuehling@amd.com>,
-        Alex Sierra <alex.sierra@amd.com>, jgg@nvidia.com,
-        linux-mm@kvack.org, rcampbell@nvidia.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        hch@lst.de, jglisse@redhat.com, apopple@nvidia.com,
-        willy@infradead.org
-Subject: Re: [PATCH v7 01/14] mm: rename is_pinnable_pages to
- is_pinnable_longterm_pages
-Message-Id: <20220701212551.7198162dbd65746a69bc41b4@linux-foundation.org>
-In-Reply-To: <49315889-96de-8e41-f8ee-dd5b33c5e1db@redhat.com>
-References: <20220629035426.20013-1-alex.sierra@amd.com>
-        <20220629035426.20013-2-alex.sierra@amd.com>
-        <f00f9c93-c115-d222-dc8c-11493ccd2567@redhat.com>
-        <575b48a6-e372-acda-9a7c-449f307a588c@amd.com>
-        <49315889-96de-8e41-f8ee-dd5b33c5e1db@redhat.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 23BA760DF2;
+        Sat,  2 Jul 2022 11:07:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E09AC341D9;
+        Sat,  2 Jul 2022 11:07:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1656760068;
+        bh=GXTCFNGJ/qi6q84KgPXHTPGckjOATtaMykjkvdiZ8ns=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DrrTnbY+g/95s2OoeUYPgsUS7r9KhEaNN9bCC94hZDu/RhdENgPzZoSE1bFGIeu8f
+         A7Y7GS2fdeuCvgSTgrN/C3Xk/UA4AOOR8PKrhHb1bqaCJDPjmbmDyW0ool3TYK7/Hd
+         CxINUJxSqKohLK3IuucJQULpCltifiDOZOyZyfbIOGyhrjN6eL4nHdwjPVWdsBmNQr
+         m10KGXrSflXIA+909EoSQweUfDbpYP0KDii/iawMcZOW08nSgdAA6iekKm5+xmvGOt
+         qZOWRpYYA6Df/o1E/Rs8oS6M9Sd+dj4RU3q++vdjNLnLFq1bzTTJ2BD2bq9KC1xlYu
+         xlTWaJKAO8emw==
+Received: from mchehab by mail.kernel.org with local (Exim 4.95)
+        (envelope-from <mchehab@kernel.org>)
+        id 1o7ayX-007gro-J8;
+        Sat, 02 Jul 2022 12:07:45 +0100
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, Alasdair Kergon <agk@redhat.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Dipen Patel <dipenp@nvidia.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, dm-devel@redhat.com,
+        kunit-dev@googlegroups.com, kvm@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH 00/12] Fix several documentation build warnings with Sphinx 2.4.4
+Date:   Sat,  2 Jul 2022 12:07:32 +0100
+Message-Id: <cover.1656759988.git.mchehab@kernel.org>
+X-Mailer: git-send-email 2.36.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,31 +73,41 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 30 Jun 2022 00:15:06 +0200 David Hildenbrand <david@redhat.com> wrote:
+This series is against next-20220701. It fixes several warnings
+that are currently produced while building html docs.
 
-> On 30.06.22 00:08, Felix Kuehling wrote:
-> > On 2022-06-29 03:33, David Hildenbrand wrote:
-> >> On 29.06.22 05:54, Alex Sierra wrote:
-> >>> is_pinnable_page() and folio_is_pinnable() were renamed to
-> >>> is_longterm_pinnable_page() and folio_is_longterm_pinnable()
-> >>> respectively. These functions are used in the FOLL_LONGTERM flag
-> >>> context.
-> >> Subject talks about "*_pages"
-> >>
-> >>
-> >> Can you elaborate why the move from mm.h to memremap.h is justified?
-> > 
-> > Patch 2 adds is_device_coherent_page in memremap.h and updates 
-> > is_longterm_pinnable_page to call is_device_coherent_page. memremap.h 
-> > cannot include mm.h because it is itself included by mm.h. So the choice 
-> > was to move is_longterm_pinnable_page to memremap.h, or move 
-> > is_device_coherent_page and all its dependencies to mm.h. The latter 
-> > would have been a bigger change.
-> 
-> I really don't think something mm generic that compiles without
-> ZONE_DEVICE belongs into memremap.h. Please find a cleaner way to get
-> this done.
+Each patch in this series is independent from the others, as
+each one touches a different file.
 
-(without having bothered to look at the code...)
+Mauro Carvalho Chehab (12):
+  docs: ext4: blockmap.rst: fix a broken table
+  docs: tegra194-hte.rst: don't include gpiolib.c twice
+  docs: device-mapper: add a blank line at writecache.rst
+  docs: PCI: pci-vntb-function.rst: Properly include ascii artwork
+  docs: PCI: pci-vntb-howto.rst: fix a title markup
+  docs: virt: kvm: fix a title markup at api.rst
+  docs: ABI: sysfs-bus-nvdimm
+  kunit: test.h: fix a kernel-doc markup
+  net: mac80211: fix a kernel-doc markup
+  docs: alsa: alsa-driver-api.rst: remove a kernel-doc file
+  docs: arm: index.rst: add google/chromebook-boot-flow
+  docs: leds: index.rst: add leds-qcom-lpg to it
 
-The solution is always to create a new purpose-specific header file.
+ Documentation/ABI/testing/sysfs-bus-nvdimm             | 2 ++
+ Documentation/PCI/endpoint/pci-vntb-function.rst       | 2 +-
+ Documentation/PCI/endpoint/pci-vntb-howto.rst          | 2 +-
+ Documentation/admin-guide/device-mapper/writecache.rst | 1 +
+ Documentation/arm/index.rst                            | 2 ++
+ Documentation/driver-api/hte/tegra194-hte.rst          | 3 +--
+ Documentation/filesystems/ext4/blockmap.rst            | 2 +-
+ Documentation/leds/index.rst                           | 1 +
+ Documentation/sound/kernel-api/alsa-driver-api.rst     | 1 -
+ Documentation/virt/kvm/api.rst                         | 6 +++---
+ include/kunit/test.h                                   | 2 +-
+ include/net/mac80211.h                                 | 2 +-
+ 12 files changed, 15 insertions(+), 11 deletions(-)
+
+-- 
+2.36.1
+
+
