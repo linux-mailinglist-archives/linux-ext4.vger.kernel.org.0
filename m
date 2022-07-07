@@ -2,208 +2,153 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1955456AB76
-	for <lists+linux-ext4@lfdr.de>; Thu,  7 Jul 2022 21:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D2156AB7E
+	for <lists+linux-ext4@lfdr.de>; Thu,  7 Jul 2022 21:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236645AbiGGTEq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 7 Jul 2022 15:04:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56778 "EHLO
+        id S235643AbiGGTFc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 7 Jul 2022 15:05:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236672AbiGGTEc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Jul 2022 15:04:32 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2073.outbound.protection.outlook.com [40.107.244.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91EC81F2E8;
-        Thu,  7 Jul 2022 12:04:26 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ilv2JHrp5i2Nt+j5eoc97nQfb6H3kjY6IVu4TJ6QI61e2AOfj4ngdykLySzDRUQBKZYh3ghrgTiPY6yCRLW029x5u6a+LVVLXw0rg6uIuX7sRcCSFtxSISmjjEocQ00nv0LQDUy6zn+pOkfkn05p5DEHmMV0tRVLrL2DhdrzAEgic8VKwvPOKFVdnn4LyoeoCPe8NobFQ5PtZs/FuBqLPgfXeF/hsYEtQQIoaSRzHgOxJosXoFKaJlgsRVzC1qqvB3vXAOW7GGt2/0mvjpflQmqD2HMQnsdrybsdtg7aFI4bBPhr8nzTUYxD/hboMih7u+LHk48nCZxhEO9nZP2DzQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ghINYxYAaP35msqhqy+uXLJjlA8u9eNbkgf4YFEOveA=;
- b=oSsTapTutKx+ODYOZhK7endBHIi5r/qhW9IJ0p7U6fRMu7PVlouMky8ZdqNoe1OMRmJTLoleVaImw61ipmJE3+vPPbxPns5pgs0Wt4cKTtfHz1QVyt6cFeTMZ22fU4/t1bSLhABUs26jD7J1pPKJSrBvwVtnUIX4UiWgIfwCmHlGrLt7pn0vD2DbX2Y13xVZNUFfx96g/DJ4P6Y3qLYmF7qYOnraUjT2bBCSav5N1ZsCYJWbS7UT/gaAgfjiEFITcEynPr7Ps/QI+GCCbJFlBB1eNkxBzaufeEPCKW0Iu9gG2+3211qXKqN0YYTgTQ7vcPnh5nBmJmwCVlooUXx1EQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=nvidia.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ghINYxYAaP35msqhqy+uXLJjlA8u9eNbkgf4YFEOveA=;
- b=EH8OeYdzBLBORq76eKvyZgmcvsiLIkF9nn6985yrYCmWG2wO8FVIXRzZMy8ujRJre2x9AwwUC7HFrMvdKhQplshiN28nU0lQZ9Wrd4JbvDE4VdVER2xBzfVgFJGNgDktGpjrw7ub/vMTGi+1TtjIx92efGlOn9K1Kf1J3YD5A4Y=
-Received: from BN0PR04CA0099.namprd04.prod.outlook.com (2603:10b6:408:ec::14)
- by DS7PR12MB6263.namprd12.prod.outlook.com (2603:10b6:8:95::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.21; Thu, 7 Jul
- 2022 19:04:25 +0000
-Received: from BN8NAM11FT053.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:ec:cafe::29) by BN0PR04CA0099.outlook.office365.com
- (2603:10b6:408:ec::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.15 via Frontend
- Transport; Thu, 7 Jul 2022 19:04:24 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN8NAM11FT053.mail.protection.outlook.com (10.13.177.209) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.5417.15 via Frontend Transport; Thu, 7 Jul 2022 19:04:24 +0000
-Received: from alex-MS-7B09.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Thu, 7 Jul
- 2022 14:04:23 -0500
-From:   Alex Sierra <alex.sierra@amd.com>
-To:     <jgg@nvidia.com>
-CC:     <david@redhat.com>, <Felix.Kuehling@amd.com>, <linux-mm@kvack.org>,
-        <rcampbell@nvidia.com>, <linux-ext4@vger.kernel.org>,
-        <linux-xfs@vger.kernel.org>, <amd-gfx@lists.freedesktop.org>,
-        <dri-devel@lists.freedesktop.org>, <hch@lst.de>,
-        <jglisse@redhat.com>, <apopple@nvidia.com>, <willy@infradead.org>,
-        <akpm@linux-foundation.org>
-Subject: [PATCH v8 15/15] tools: add selftests to hmm for COW in device memory
-Date:   Thu, 7 Jul 2022 14:03:49 -0500
-Message-ID: <20220707190349.9778-16-alex.sierra@amd.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20220707190349.9778-1-alex.sierra@amd.com>
-References: <20220707190349.9778-1-alex.sierra@amd.com>
+        with ESMTP id S236194AbiGGTFb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Jul 2022 15:05:31 -0400
+Received: from root.slava.cc (root.slava.cc [168.119.137.110])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B2C5A449
+        for <linux-ext4@vger.kernel.org>; Thu,  7 Jul 2022 12:05:30 -0700 (PDT)
+From:   Slava Bacherikov <slava@bacher09.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bacher09.org;
+        s=reg; t=1657220725;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4oDb/f9kiDHOWZAUUqDH+OroJpdda9mXSiwM19LCwuY=;
+        b=m69s2iRgypxrJU9C3IJJEa8JSNJqDnIZ8Tf6e+pC4bBbDtaIDyhFlUbv1qSlbc8iiZk2/V
+        hzkwcqjaBHUySrcUiYnH3142G7N2YkpxR9XbdXs6B8gvW9vdmBaZYMjFtY+nb58gt3PDJ1
+        stvSYkoD815GZG0AT6sRB5AJ5Nja+68=
+To:     ebiggers@kernel.org
+Cc:     tytso@mit.edu, linux-ext4@vger.kernel.org, krisman@collabora.com,
+        Slava Bacherikov <slava@bacher09.org>
+Subject: [PATCH v2] tune2fs: allow disabling casefold feature
+Date:   Thu,  7 Jul 2022 22:04:56 +0300
+Message-Id: <20220707190456.64972-1-slava@bacher09.org>
+In-Reply-To: <YscmTC3Mk9OXqOgL@gmail.com>
+References: <YscmTC3Mk9OXqOgL@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2c21ccae-76b9-40f2-b892-08da604b8216
-X-MS-TrafficTypeDiagnostic: DS7PR12MB6263:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lQPaEf7T6+HjGUNaQiYpaMmyW+BvNUZaLDQbqw7bM+uQQcMm/ttqHa6hCJaMaY3krwYP6hAwwoBQOskArPF/XriSWgQWEO7o1rRd7TwZrzG+5dlNQRb3bnv6CX8KeuL4mLS3vUVdzQ+b4mhZy7VHVFJ8TbYF/DnoPOWRaW42uWSO5jV1ZLAm+qIizZPzBD6BY7GbI+BZyMoaATVMdMc8iNXYsnTMTOJUOm1gLHEtdM84VucoX54oDwiulH8AnFreHPZjcZK6cnynR77gN/rotOdeVbJ2FbtQ8XyWrlo/aNM8b6VMCsMRrVaA0wOyfXae5aBnEkgXVrrQ7d9jDt2nw8/AdgRHM1uXlh0kgpYtg8HYZdiVWxTrJnTKveeFLE3gCUEf6xNXGJ2thATrPXMGaE6bRA7kX1ajzLa0aK4dq+vLeCK6zqTTLJv1xKc2PIpEgMLo+woHT6WtrmExQcbxcB0FC6fdvijc1XMT/Hw3GfJXcrz0+lE+gOgSYgzh1SAKoGiTVr1r3qjlt0P/8qJIH6vVAOGQZ74Xz0o/7r0qD+e2/LlLWzD8TtKADrTxF0a3D/00BQNF+RahEGLaJH+jgwG2yc243hBvSRHvjxLAyPNu8vWtu+2eNMifp5Ey5r9PaypXLCVXkWEHxG/8qgLEbts5+v1tRU7q7m4pUkCdv5/Lc1s+vC5PtC1uDC8DcU9a/YV3zygHtCvZhgh35obHMbiJYZ/MljNxKvgj0F2smY3mmacAt+j2fi3zkC4nGLiURbUEqcwkfgGvhu9ztjBpLYDtOIH/jkMzAIYPvbhLinnr6R4zggt5bsc8PA7YnmLdvMV57fhTRW8vOL6JdJyms521M4HWm/489gavaAfDm8kuRtIOT1ZoePmU+biSKQl6
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230016)(4636009)(136003)(39860400002)(346002)(396003)(376002)(40470700004)(36840700001)(46966006)(82740400003)(47076005)(356005)(26005)(7696005)(82310400005)(8676002)(36860700001)(41300700001)(6666004)(81166007)(70586007)(70206006)(2906002)(4326008)(426003)(40460700003)(34020700004)(44832011)(336012)(8936002)(83380400001)(1076003)(54906003)(2616005)(316002)(40480700001)(6916009)(16526019)(86362001)(478600001)(5660300002)(7416002)(36756003)(186003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2022 19:04:24.7062
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2c21ccae-76b9-40f2-b892-08da604b8216
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT053.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6263
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The objective is to test device migration mechanism in pages marked
-as COW, for private and coherent device type. In case of writing to
-COW private page(s), a page fault will migrate pages back to system
-memory first. Then, these pages will be duplicated. In case of COW
-device coherent type, pages are duplicated directly from device
-memory.
+Casefold can be safely disabled if there are no directories with +F
+attribute ( EXT4_CASEFOLD_FL ). This checks all inodes for that flag and in
+case there isn't any, it disables casefold FS feature. When FS has
+directories with +F attributes, user could convert these directories,
+probably by mounting FS and executing some script or by doing it
+manually. Afterwards, it would be possible to disable casefold FS flag
+via tune2fs.
 
-Signed-off-by: Alex Sierra <alex.sierra@amd.com>
-Acked-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Signed-off-by: Slava Bacherikov <slava@bacher09.org>
 ---
- tools/testing/selftests/vm/hmm-tests.c | 80 ++++++++++++++++++++++++++
- 1 file changed, 80 insertions(+)
+ misc/tune2fs.8.in |  6 ++++--
+ misc/tune2fs.c    | 52 ++++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 55 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/vm/hmm-tests.c b/tools/testing/selftests/vm/hmm-tests.c
-index bb38b9777610..716b62c05e3d 100644
---- a/tools/testing/selftests/vm/hmm-tests.c
-+++ b/tools/testing/selftests/vm/hmm-tests.c
-@@ -1874,4 +1874,84 @@ TEST_F(hmm, hmm_gup_test)
- 	close(gup_fd);
- 	hmm_buffer_free(buffer);
+diff --git a/misc/tune2fs.8.in b/misc/tune2fs.8.in
+index 628dcdc0..8ef28860 100644
+--- a/misc/tune2fs.8.in
++++ b/misc/tune2fs.8.in
+@@ -593,8 +593,10 @@ Enable the file system to be larger than 2^32 blocks.
+ .TP
+ .B casefold
+ Enable support for file system level casefolding.
+-.B Tune2fs
+-currently only supports setting this file system feature.
++The option could be disabled only if filesystem has no
++directories with
++.B F
++attribute.
+ .TP
+ .B dir_index
+ Use hashed b-trees to speed up lookups for large directories.
+diff --git a/misc/tune2fs.c b/misc/tune2fs.c
+index 6c162ba5..1c5c2969 100644
+--- a/misc/tune2fs.c
++++ b/misc/tune2fs.c
+@@ -204,7 +204,8 @@ static __u32 clear_ok_features[3] = {
+ 		EXT4_FEATURE_INCOMPAT_FLEX_BG |
+ 		EXT4_FEATURE_INCOMPAT_MMP |
+ 		EXT4_FEATURE_INCOMPAT_64BIT |
+-		EXT4_FEATURE_INCOMPAT_CSUM_SEED,
++		EXT4_FEATURE_INCOMPAT_CSUM_SEED |
++		EXT4_FEATURE_INCOMPAT_CASEFOLD,
+ 	/* R/O compat */
+ 	EXT2_FEATURE_RO_COMPAT_LARGE_FILE |
+ 		EXT4_FEATURE_RO_COMPAT_HUGE_FILE|
+@@ -1020,6 +1021,41 @@ out:
+ 	return retval;
  }
-+
-+/*
-+ * Test copy-on-write in device pages.
-+ * In case of writing to COW private page(s), a page fault will migrate pages
-+ * back to system memory first. Then, these pages will be duplicated. In case
-+ * of COW device coherent type, pages are duplicated directly from device
-+ * memory.
-+ */
-+TEST_F(hmm, hmm_cow_in_device)
+ 
++static int has_casefold_inode(ext2_filsys fs)
 +{
-+	struct hmm_buffer *buffer;
-+	unsigned long npages;
-+	unsigned long size;
-+	unsigned long i;
-+	int *ptr;
-+	int ret;
-+	unsigned char *m;
-+	pid_t pid;
-+	int status;
++	int length = EXT2_INODE_SIZE(fs->super);
++	struct ext2_inode *inode = NULL;
++	ext2_inode_scan	scan;
++	errcode_t	retval;
++	ext2_ino_t	ino;
++	int found_casefold = 0;
 +
-+	npages = 4;
-+	size = npages << self->page_shift;
++	retval = ext2fs_get_mem(length, &inode);
++	if (retval)
++		fatal_err(retval, "while allocating memory");
 +
-+	buffer = malloc(sizeof(*buffer));
-+	ASSERT_NE(buffer, NULL);
++	retval = ext2fs_open_inode_scan(fs, 0, &scan);
++	if (retval)
++		fatal_err(retval, "while opening inode scan");
 +
-+	buffer->fd = -1;
-+	buffer->size = size;
-+	buffer->mirror = malloc(size);
-+	ASSERT_NE(buffer->mirror, NULL);
++	do {
++		retval = ext2fs_get_next_inode_full(scan, &ino, inode, length);
++		if (retval)
++			fatal_err(retval, "while getting next inode");
++		if (!ino)
++			break;
 +
-+	buffer->ptr = mmap(NULL, size,
-+			   PROT_READ | PROT_WRITE,
-+			   MAP_PRIVATE | MAP_ANONYMOUS,
-+			   buffer->fd, 0);
-+	ASSERT_NE(buffer->ptr, MAP_FAILED);
-+
-+	/* Initialize buffer in system memory. */
-+	for (i = 0, ptr = buffer->ptr; i < size / sizeof(*ptr); ++i)
-+		ptr[i] = i;
-+
-+	/* Migrate memory to device. */
-+
-+	ret = hmm_migrate_sys_to_dev(self->fd, buffer, npages);
-+	ASSERT_EQ(ret, 0);
-+	ASSERT_EQ(buffer->cpages, npages);
-+
-+	pid = fork();
-+	if (pid == -1)
-+		ASSERT_EQ(pid, 0);
-+	if (!pid) {
-+		/* Child process waitd for SIGTERM from the parent. */
-+		while (1) {
++		if(inode->i_flags & EXT4_CASEFOLD_FL) {
++			found_casefold = 1;
++			break;
 +		}
-+		perror("Should not reach this\n");
-+		exit(0);
-+	}
-+	/* Parent process writes to COW pages(s) and gets a
-+	 * new copy in system. In case of device private pages,
-+	 * this write causes a migration to system mem first.
-+	 */
-+	for (i = 0, ptr = buffer->ptr; i < size / sizeof(*ptr); ++i)
-+		ptr[i] = i;
++	} while(1);
 +
-+	/* Terminate child and wait */
-+	EXPECT_EQ(0, kill(pid, SIGTERM));
-+	EXPECT_EQ(pid, waitpid(pid, &status, 0));
-+	EXPECT_NE(0, WIFSIGNALED(status));
-+	EXPECT_EQ(SIGTERM, WTERMSIG(status));
-+
-+	/* Take snapshot to CPU pagetables */
-+	ret = hmm_dmirror_cmd(self->fd, HMM_DMIRROR_SNAPSHOT, buffer, npages);
-+	ASSERT_EQ(ret, 0);
-+	ASSERT_EQ(buffer->cpages, npages);
-+	m = buffer->mirror;
-+	for (i = 0; i < npages; i++)
-+		ASSERT_EQ(HMM_DMIRROR_PROT_WRITE, m[i]);
-+
-+	hmm_buffer_free(buffer);
++	ext2fs_free_mem(&inode);
++	ext2fs_close_inode_scan(scan);
++	return found_casefold;
 +}
- TEST_HARNESS_MAIN
--- 
-2.32.0
-
++
+ static errcode_t disable_uninit_bg(ext2_filsys fs, __u32 csum_feature_flag)
+ {
+ 	struct ext2_group_desc *gd;
+@@ -1554,6 +1590,20 @@ mmp_error:
+ 		enabling_casefold = 1;
+ 	}
+ 
++	if (FEATURE_OFF(E2P_FEATURE_INCOMPAT, EXT4_FEATURE_INCOMPAT_CASEFOLD)) {
++		if (mount_flags & EXT2_MF_MOUNTED) {
++			fputs(_("The casefold feature may only be disabled when "
++				"the filesystem is unmounted.\n"), stderr);
++			return 1;
++		}
++		if (has_casefold_inode(fs)) {
++			fputs(_("The casefold feature couldn't be disabled when "
++					"there are inodes with +F flag.\n"), stderr);
++			return 1;
++		}
++		enabling_casefold = 0;
++	}
++
+ 	if (FEATURE_ON(E2P_FEATURE_INCOMPAT,
+ 		EXT4_FEATURE_INCOMPAT_CSUM_SEED)) {
+ 		if (!ext2fs_has_feature_metadata_csum(sb)) {
