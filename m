@@ -2,186 +2,133 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDBE056A6C7
-	for <lists+linux-ext4@lfdr.de>; Thu,  7 Jul 2022 17:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8266556A90C
+	for <lists+linux-ext4@lfdr.de>; Thu,  7 Jul 2022 19:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbiGGPSr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 7 Jul 2022 11:18:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44954 "EHLO
+        id S236531AbiGGRES (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 7 Jul 2022 13:04:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234399AbiGGPSq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Jul 2022 11:18:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8EABA27179
-        for <linux-ext4@vger.kernel.org>; Thu,  7 Jul 2022 08:18:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1657207122;
+        with ESMTP id S236532AbiGGREH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Jul 2022 13:04:07 -0400
+X-Greylist: delayed 585 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 07 Jul 2022 10:04:03 PDT
+Received: from root.slava.cc (root.slava.cc [168.119.137.110])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5D15C965
+        for <linux-ext4@vger.kernel.org>; Thu,  7 Jul 2022 10:04:03 -0700 (PDT)
+From:   Slava Bacherikov <slava@bacher09.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bacher09.org;
+        s=reg; t=1657212855;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=azRhSeFKQirbnO8LbM232D+yP5m2H5ec79dl4Py0T+A=;
-        b=ZF+f0zdQGAmw9r1SZPu0/WI2R/801IxlU1vlJN3O0SMKhg1oganVKlvCmxneaoP++QI0Dh
-        XIMkX9Fy+JQur7tZvU9KnZlFSUrhB+NiQjkT/61JwMRUKthM7oYLL8oXwTADdEEIbG7BOl
-        8QTLYyVH4QPz+owiyJQFoo6sbMLLhII=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-322-lwdWzZJhOQ6qZkzTGFW-9A-1; Thu, 07 Jul 2022 11:18:40 -0400
-X-MC-Unique: lwdWzZJhOQ6qZkzTGFW-9A-1
-Received: by mail-qk1-f200.google.com with SMTP id bs42-20020a05620a472a00b006b550b57229so2086800qkb.15
-        for <linux-ext4@vger.kernel.org>; Thu, 07 Jul 2022 08:18:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=azRhSeFKQirbnO8LbM232D+yP5m2H5ec79dl4Py0T+A=;
-        b=F931hs6B0+l4CGkHAUApcWtDP8TAuzsYN7EDVaO7CMveUJIxEumMrAPLMxIpJkjygi
-         JN0kmoeIXIvHigvwjRUoQJXC5YkeOOTcYI7KDCAka8pgerH8GMUH4umzMe2waKoJvOhG
-         CzKvnLVVviBoaNoeLIeKJ5G89n5cbFcuVdfSul0BEN8IjpnJci5wsB31XkaeDai+rZXV
-         Mb3mobY0IGlnHG4fI1yjhQVEWR7gjQtWsfwn5a+qIpM8bVlikqwtZlVWekSEzkWk16vw
-         EbLa+ddCQh7nhv9rbcmcSheJP4Vgd3EPfBFclOK170EzQXyCiGa/VqMh3o/Fgstdx06z
-         rncw==
-X-Gm-Message-State: AJIora9xIT8bld3AsxOLb0Q4i0pk1x2S2LLGPSP6UkRfRLN3DTCpV+04
-        eJ2CZ5lbShwvtWPW2wSn7a9IZnlemYk1c3x5MeoYk51UMCaAQsgt8MFOsGSt0ZX7Ok2mmAXtgos
-        qfls3PnB0VNKeKzm2U69g1Q==
-X-Received: by 2002:ac8:7e8e:0:b0:31d:3d75:b623 with SMTP id w14-20020ac87e8e000000b0031d3d75b623mr23771358qtj.204.1657207120033;
-        Thu, 07 Jul 2022 08:18:40 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1t4sJ1Raa/1fKRKVduoz+hEKSEi9UR9gvkFS2khR7f/kzvAhotBnNWmzMv2BOMQCEY0UTamZA==
-X-Received: by 2002:ac8:7e8e:0:b0:31d:3d75:b623 with SMTP id w14-20020ac87e8e000000b0031d3d75b623mr23771313qtj.204.1657207119510;
-        Thu, 07 Jul 2022 08:18:39 -0700 (PDT)
-Received: from zlang-mailbox ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id t6-20020a37ea06000000b006b53fe19c41sm3375443qkj.14.2022.07.07.08.18.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jul 2022 08:18:39 -0700 (PDT)
-Date:   Thu, 7 Jul 2022 23:18:33 +0800
-From:   Zorro Lang <zlang@redhat.com>
-To:     Sun Ke <sunke32@huawei.com>
-Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 2/2] ext4/058: set 256 blocks in a block group Set 256
- blocks in a block group
-Message-ID: <20220707151833.72ggvyxjzz2e42kh@zlang-mailbox>
-References: <20220707135917.373342-1-sunke32@huawei.com>
- <20220707135917.373342-3-sunke32@huawei.com>
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=s6QfGxIhanK/aSuHFBmFYHnUNZjoa7GG0K+0iDzUl44=;
+        b=V0Gayry+Qet9uZ1Q6PoRpPKLcECRKXn3AvKrKg2DwQAYQN8DpiejjV1O7WsU3FKoo/xE6r
+        Ko0VUEgN3ohLBAcpXsjM8ZRw9HGeh4gE3EJ41Wn2ICA9ZNJXyTLhMAW1nTKU9NjqSKx9JR
+        UkVtRbOuwblQJTjCChB6enjn0xmhf6Y=
+To:     tytso@mit.edu
+Cc:     linux-ext4@vger.kernel.org, krisman@collabora.com,
+        Slava Bacherikov <slava@bacher09.org>
+Subject: [PATCH] tune2fs: allow disabling casefold feature
+Date:   Thu,  7 Jul 2022 19:54:00 +0300
+Message-Id: <20220707165400.52951-1-slava@bacher09.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220707135917.373342-3-sunke32@huawei.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jul 07, 2022 at 09:59:17PM +0800, Sun Ke wrote:
-> Set 256 blocks in a block group, then inject I/O pressure, it will
-> trigger off kernel BUG in ext4_mb_mark_diskspace_used.
-> 
-> Regression test for commit a08f789d2ab5 ext4: fix bug_on
-> ext4_mb_use_inode_pa.
-> 
-> Signed-off-by: Sun Ke <sunke32@huawei.com>
-> ---
+Casefold can be safely disabled if there are no directories with +F
+attribute ( EXT4_CASEFOLD_FL ). This checks all inodes for that flag and in
+case there isn't any, it disables casefold FS feature. When FS has
+directories with +F attributes, user could convert these directories,
+probably by mounting FS and executing some script or by doing it
+manually. Afterwards, it would be possible to disable casefold FS flag
+via tune2fs.
 
-About the subject:
-"ext4/058: set 256 blocks in a block group Set 256 blocks in a block group"
+Signed-off-by: Slava Bacherikov <slava@bacher09.org>
+---
+ misc/tune2fs.c | 52 +++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 51 insertions(+), 1 deletion(-)
 
-Don't use a fixed number for new case, you can use "ext4: ...". And I can't
-understand the meaning of this subject, except you say it's a duplicate :)
-
-
->  tests/ext4/058     | 37 +++++++++++++++++++++++++++++++++++++
->  tests/ext4/058.out |  2 ++
->  2 files changed, 39 insertions(+)
->  create mode 100755 tests/ext4/058
->  create mode 100644 tests/ext4/058.out
-> 
-> diff --git a/tests/ext4/058 b/tests/ext4/058
-> new file mode 100755
-> index 00000000..dc7903b7
-> --- /dev/null
-> +++ b/tests/ext4/058
-> @@ -0,0 +1,37 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2022 HUAWEI.  All Rights Reserved.
-> +#
-> +# FS QA Test 058
-> +#
-> +# Set 256 blocks in a block group, then inject I/O pressure,
-> +# it will trigger off kernel BUG in ext4_mb_mark_diskspace_used
-> +#
-> +# Regression test for commit
-> +# a08f789d2ab5 ext4: fix bug_on ext4_mb_use_inode_pa 
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto
-> +
-> +# real QA test starts here
-> +
-> +# Modify as appropriate.
-     ^^^
-
-This's comment can be removed.
-
-> +_supported_fs generic
-
-If it's a ext4 specific test case, don't use "generic" at here.
-
-And _fixed_by_kernel_commit() is recommend.
-
-> +_require_scratch
-> +_require_command "$KILLALL_PROG" killall
-> +
-> +# set 256 blocks in a block group
-> +MKFS_OPTIONS="-g 256"
-> +_scratch_mkfs >>$seqres.full 2>&1
-
-I think
-  _scratch_mkfs_ext4 -g 256 >>$seqres.full 2>&1
-is enough. Does other mkfs options will affect this testing?
-
-Or make sure mkfs passed:
-_scratch_mkfs -g 256 >>$seqres.full 2>&1 || _fail "mkfs failed"
-
-> +_scratch_mount
-> +
-> +$FSSTRESS_PROG -d $SCRATCH_MNT -n 1000 -p 1 >> $seqres.full 2>&1 &
-
-Is "-p 1" necessary?
-
-> +sleep 3
-> +$KILLALL_PROG -q $FSSTRESS_PROG
-> +wait
-
-Hmm.... one more background fsstress test case again ... if so, you need to make
-sure the fsstress processes be killed in _cleanup(). Please refer to other cases.
-
-Besides that, I'm wondering if you really need to run fsstress in background?
-Due to from the code logic, you run and kill it directly, then do nothing.
-What special reason cause you have to run fsstress as that?
-
-Thanks,
-Zorro
-
-> +
-> +echo "Silence is golden"
-> +
-> +# success, all done
-> +status=0
-> +exit
-> diff --git a/tests/ext4/058.out b/tests/ext4/058.out
-> new file mode 100644
-> index 00000000..fb5ca60b
-> --- /dev/null
-> +++ b/tests/ext4/058.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 058
-> +Silence is golden
-> -- 
-> 2.13.6
-> 
-
+diff --git a/misc/tune2fs.c b/misc/tune2fs.c
+index 6c162ba5..1c5c2969 100644
+--- a/misc/tune2fs.c
++++ b/misc/tune2fs.c
+@@ -204,7 +204,8 @@ static __u32 clear_ok_features[3] = {
+ 		EXT4_FEATURE_INCOMPAT_FLEX_BG |
+ 		EXT4_FEATURE_INCOMPAT_MMP |
+ 		EXT4_FEATURE_INCOMPAT_64BIT |
+-		EXT4_FEATURE_INCOMPAT_CSUM_SEED,
++		EXT4_FEATURE_INCOMPAT_CSUM_SEED |
++		EXT4_FEATURE_INCOMPAT_CASEFOLD,
+ 	/* R/O compat */
+ 	EXT2_FEATURE_RO_COMPAT_LARGE_FILE |
+ 		EXT4_FEATURE_RO_COMPAT_HUGE_FILE|
+@@ -1020,6 +1021,41 @@ out:
+ 	return retval;
+ }
+ 
++static int has_casefold_inode(ext2_filsys fs)
++{
++	int length = EXT2_INODE_SIZE(fs->super);
++	struct ext2_inode *inode = NULL;
++	ext2_inode_scan	scan;
++	errcode_t	retval;
++	ext2_ino_t	ino;
++	int found_casefold = 0;
++
++	retval = ext2fs_get_mem(length, &inode);
++	if (retval)
++		fatal_err(retval, "while allocating memory");
++
++	retval = ext2fs_open_inode_scan(fs, 0, &scan);
++	if (retval)
++		fatal_err(retval, "while opening inode scan");
++
++	do {
++		retval = ext2fs_get_next_inode_full(scan, &ino, inode, length);
++		if (retval)
++			fatal_err(retval, "while getting next inode");
++		if (!ino)
++			break;
++
++		if(inode->i_flags & EXT4_CASEFOLD_FL) {
++			found_casefold = 1;
++			break;
++		}
++	} while(1);
++
++	ext2fs_free_mem(&inode);
++	ext2fs_close_inode_scan(scan);
++	return found_casefold;
++}
++
+ static errcode_t disable_uninit_bg(ext2_filsys fs, __u32 csum_feature_flag)
+ {
+ 	struct ext2_group_desc *gd;
+@@ -1554,6 +1590,20 @@ mmp_error:
+ 		enabling_casefold = 1;
+ 	}
+ 
++	if (FEATURE_OFF(E2P_FEATURE_INCOMPAT, EXT4_FEATURE_INCOMPAT_CASEFOLD)) {
++		if (mount_flags & EXT2_MF_MOUNTED) {
++			fputs(_("The casefold feature may only be disabled when "
++				"the filesystem is unmounted.\n"), stderr);
++			return 1;
++		}
++		if (has_casefold_inode(fs)) {
++			fputs(_("The casefold feature couldn't be disabled when "
++					"there are inodes with +F flag.\n"), stderr);
++			return 1;
++		}
++		enabling_casefold = 0;
++	}
++
+ 	if (FEATURE_ON(E2P_FEATURE_INCOMPAT,
+ 		EXT4_FEATURE_INCOMPAT_CSUM_SEED)) {
+ 		if (!ext2fs_has_feature_metadata_csum(sb)) {
