@@ -2,178 +2,222 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8546156AD3F
-	for <lists+linux-ext4@lfdr.de>; Thu,  7 Jul 2022 23:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9024256B0BC
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Jul 2022 04:51:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236731AbiGGVK7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 7 Jul 2022 17:10:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58342 "EHLO
+        id S236742AbiGHCuh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 7 Jul 2022 22:50:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236446AbiGGVK5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Jul 2022 17:10:57 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1D920180
-        for <linux-ext4@vger.kernel.org>; Thu,  7 Jul 2022 14:10:56 -0700 (PDT)
-Received: from localhost (mtl.collabora.ca [66.171.169.34])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: krisman)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0738E66019C6;
-        Thu,  7 Jul 2022 22:10:54 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1657228255;
-        bh=8YCeUUClNHt2ybDl51VAv8APrEKapl/a/BtfRgqk/sw=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=YbHxZx1aLeXusfczG382ruqS1p9lR4oojepkVJMrd6H8Rt7nFqVVkTx24A2Nn6dIv
-         5yYHNTe+/P/KlvI9rvhnSIH3Bd3zIPaA1DCk4qMdZ/ZhlBTXdEB9Czsw0kmBgHLJxc
-         qKNNmDCbCF+3Dp/N8XNqDD4RFujlsZHLSOppSbidDeUF8iZFvdhy+U2TzLC1aL5MUd
-         a1zAqpcTyuSpM1U/cTWpNK2QbPKYwBw4a3rXli/uKumn6wPIXoqmds2kvS80UAt77o
-         q4Vs+bunSzVTEmlaL06vn5BBmJjDAB1PmmichjSEvj2ixQGDkSxTeME5VHkLd75aKa
-         4ZyfivO1+e8Pw==
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Slava Bacherikov <slava@bacher09.org>
-Cc:     ebiggers@kernel.org, tytso@mit.edu, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] tune2fs: allow disabling casefold feature
-Organization: Collabora
-References: <Ysc5HYPXUs6rW02S@gmail.com>
-        <20220707204137.71311-1-slava@bacher09.org>
-Date:   Thu, 07 Jul 2022 17:10:52 -0400
-In-Reply-To: <20220707204137.71311-1-slava@bacher09.org> (Slava Bacherikov's
-        message of "Thu, 7 Jul 2022 23:41:37 +0300")
-Message-ID: <87pmig39yb.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        with ESMTP id S236895AbiGHCug (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Jul 2022 22:50:36 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CCED7478D
+        for <linux-ext4@vger.kernel.org>; Thu,  7 Jul 2022 19:50:33 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id c13so25553779qtq.10
+        for <linux-ext4@vger.kernel.org>; Thu, 07 Jul 2022 19:50:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=Ad97sT16le5gjY7PgDU6gmeetvBzm9wlE8bQkILVjNc=;
+        b=tCcxRqjITVsiKb1O2qN38oOtehuQYEQmQlnA5EmpLLTcqVHGWkBNn5r6VjhB95uftz
+         oBhwab0Wa2p2hfzUf6HitqoN4V8My4lx3Sr3LHdaGn7TrTI27nd6mE0wsQOIBv87ES7u
+         uwlTgHRa2iafBHAxVTfOiHdPWVETU8CJjwRGskRUwQecY/1YbABG8fpWqJ0i5forgO17
+         n0R7m15mcAmskoYtfNfHUvAotB5BgPlp6Llxsn+Fa0qYPR44yx2cfMCeEIswKRQZAgPI
+         NLOhCVeNcKdBjtuIw/nnF9iOSfGliNNxy/YqmZphg0HMl4dZzroFochhJCRrtxDrneBV
+         hZ4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=Ad97sT16le5gjY7PgDU6gmeetvBzm9wlE8bQkILVjNc=;
+        b=nN9tgiJjL8YvSei9nuwocKyWd6h96XUg9d0I9O/V+DM+O1kx/U4ZABlqHfgYdzwXic
+         JOyysoYIjR+dWblX5uDqKjpm2DQ3/trtm98aC3DcZrBqnGDMF5QYKKbJi+ZBbZvxKobs
+         Kt9K/bMw0NXuFh+bEcs3S+ViZ5k9pygsABd4kkHtrxnSMjppTrkzevAkycFD6wy/dX9A
+         YuMAb7fP/vQbx2wmI23UT+VSuX/uZOIxXX2t4QDEeqyRzvyRiGetEOtp4U0GlvmLWU0g
+         9P9XDFVcQPuYCpoj8TsFtXq01Qsqp7MJVmu7FQLB0o8N72g4/RmDYnQiZW+Fw0ylD14d
+         T7nQ==
+X-Gm-Message-State: AJIora9FHmswdVmTI2bLur9AtyI7v+UDA+GIFxcKXSviPKKEnRsZ2kb/
+        inzZGKPTxy4UhNOUrTxmkGQPaA==
+X-Google-Smtp-Source: AGRyM1tJqq+vsbrqVwAmw8UZQYXdEmN7Cq4ADeDpayYOUxqHMEno4PbopiKhNsYF91bJVygTm51HMQ==
+X-Received: by 2002:ac8:7d52:0:b0:319:51f0:e418 with SMTP id h18-20020ac87d52000000b0031951f0e418mr1088284qtb.481.1657248632632;
+        Thu, 07 Jul 2022 19:50:32 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id s7-20020a05620a254700b006a65c58db99sm35676841qko.64.2022.07.07.19.50.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jul 2022 19:50:32 -0700 (PDT)
+Date:   Thu, 7 Jul 2022 19:50:17 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-aio@kvack.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        ocfs2-devel@oss.oracle.com, linux-mtd@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2 07/19] mm/migrate: Convert expected_page_refs() to
+ folio_expected_refs()
+In-Reply-To: <20220608150249.3033815-8-willy@infradead.org>
+Message-ID: <6e7599d1-8a5f-bf16-383c-febd753bd051@google.com>
+References: <20220608150249.3033815-1-willy@infradead.org> <20220608150249.3033815-8-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Slava Bacherikov <slava@bacher09.org> writes:
+On Wed, 8 Jun 2022, Matthew Wilcox (Oracle) wrote:
 
-> Casefold can be safely disabled if there are no directories with +F
-> attribute ( EXT4_CASEFOLD_FL ). This checks all inodes for that flag and in
-> case there isn't any, it disables casefold FS feature. When FS has
-> directories with +F attributes, user could convert these directories,
-> probably by mounting FS and executing some script or by doing it
-> manually. Afterwards, it would be possible to disable casefold FS flag
-> via tune2fs.
->
-> Signed-off-by: Slava Bacherikov <slava@bacher09.org>
-
-I think this is a safe thing to do, gave it a quick spin and the patch
-now looks good to me.
-
-Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-
-Thank you,
-
+> Now that both callers have a folio, convert this function to
+> take a folio & rename it.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 > ---
->  misc/tune2fs.8.in |  6 ++++--
->  misc/tune2fs.c    | 54 ++++++++++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 57 insertions(+), 3 deletions(-)
->
-> diff --git a/misc/tune2fs.8.in b/misc/tune2fs.8.in
-> index 628dcdc0..dcf108c1 100644
-> --- a/misc/tune2fs.8.in
-> +++ b/misc/tune2fs.8.in
-> @@ -593,8 +593,10 @@ Enable the file system to be larger than 2^32 blocks.
->  .TP
->  .B casefold
->  Enable support for file system level casefolding.
-> -.B Tune2fs
-> -currently only supports setting this file system feature.
-> +The option can be cleared only if filesystem has no
-> +directories with
-> +.B F
-> +attribute.
->  .TP
->  .B dir_index
->  Use hashed b-trees to speed up lookups for large directories.
-> diff --git a/misc/tune2fs.c b/misc/tune2fs.c
-> index 6c162ba5..a8355619 100644
-> --- a/misc/tune2fs.c
-> +++ b/misc/tune2fs.c
-> @@ -204,7 +204,8 @@ static __u32 clear_ok_features[3] = {
->  		EXT4_FEATURE_INCOMPAT_FLEX_BG |
->  		EXT4_FEATURE_INCOMPAT_MMP |
->  		EXT4_FEATURE_INCOMPAT_64BIT |
-> -		EXT4_FEATURE_INCOMPAT_CSUM_SEED,
-> +		EXT4_FEATURE_INCOMPAT_CSUM_SEED |
-> +		EXT4_FEATURE_INCOMPAT_CASEFOLD,
->  	/* R/O compat */
->  	EXT2_FEATURE_RO_COMPAT_LARGE_FILE |
->  		EXT4_FEATURE_RO_COMPAT_HUGE_FILE|
-> @@ -1020,6 +1021,41 @@ out:
->  	return retval;
+>  mm/migrate.c | 19 ++++++++++++-------
+>  1 file changed, 12 insertions(+), 7 deletions(-)
+> 
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index 2975f0c4d7cf..2e2f41572066 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -336,13 +336,18 @@ void pmd_migration_entry_wait(struct mm_struct *mm, pmd_t *pmd)
+>  }
+>  #endif
+>  
+> -static int expected_page_refs(struct address_space *mapping, struct page *page)
+> +static int folio_expected_refs(struct address_space *mapping,
+> +		struct folio *folio)
+>  {
+> -	int expected_count = 1;
+> +	int refs = 1;
+> +	if (!mapping)
+> +		return refs;
+>  
+> -	if (mapping)
+> -		expected_count += compound_nr(page) + page_has_private(page);
+> -	return expected_count;
+> +	refs += folio_nr_pages(folio);
+> +	if (folio_get_private(folio))
+> +		refs++;
+> +
+> +	return refs;
 >  }
 >  
-> +static int has_casefold_inode(ext2_filsys fs)
-> +{
-> +	int length = EXT2_INODE_SIZE(fs->super);
-> +	struct ext2_inode *inode = NULL;
-> +	ext2_inode_scan	scan;
-> +	errcode_t	retval;
-> +	ext2_ino_t	ino;
-> +	int found_casefold = 0;
-> +
-> +	retval = ext2fs_get_mem(length, &inode);
-> +	if (retval)
-> +		fatal_err(retval, "while allocating memory");
-> +
-> +	retval = ext2fs_open_inode_scan(fs, 0, &scan);
-> +	if (retval)
-> +		fatal_err(retval, "while opening inode scan");
-> +
-> +	do {
-> +		retval = ext2fs_get_next_inode_full(scan, &ino, inode, length);
-> +		if (retval)
-> +			fatal_err(retval, "while getting next inode");
-> +		if (!ino)
-> +			break;
-> +
-> +		if(inode->i_flags & EXT4_CASEFOLD_FL) {
-> +			found_casefold = 1;
-> +			break;
-> +		}
-> +	} while(1);
-> +
-> +	ext2fs_free_mem(&inode);
-> +	ext2fs_close_inode_scan(scan);
-> +	return found_casefold;
-> +}
-> +
->  static errcode_t disable_uninit_bg(ext2_filsys fs, __u32 csum_feature_flag)
->  {
->  	struct ext2_group_desc *gd;
-> @@ -1554,6 +1590,22 @@ mmp_error:
->  		enabling_casefold = 1;
->  	}
+>  /*
+> @@ -359,7 +364,7 @@ int folio_migrate_mapping(struct address_space *mapping,
+>  	XA_STATE(xas, &mapping->i_pages, folio_index(folio));
+>  	struct zone *oldzone, *newzone;
+>  	int dirty;
+> -	int expected_count = expected_page_refs(mapping, &folio->page) + extra_count;
+> +	int expected_count = folio_expected_refs(mapping, folio) + extra_count;
+>  	long nr = folio_nr_pages(folio);
 >  
-> +	if (FEATURE_OFF(E2P_FEATURE_INCOMPAT, EXT4_FEATURE_INCOMPAT_CASEFOLD)) {
-> +		if (mount_flags & EXT2_MF_MOUNTED) {
-> +			fputs(_("The casefold feature may only be disabled when "
-> +				"the filesystem is unmounted.\n"), stderr);
-> +			return 1;
-> +		}
-> +		if (has_casefold_inode(fs)) {
-> +			fputs(_("The casefold feature can't be cleared when "
-> +					"there are inodes with +F flag.\n"), stderr);
-> +			return 1;
-> +		}
-> +		fs->super->s_encoding = 0;
-> +		fs->super->s_encoding_flags = 0;
-> +		enabling_casefold = 0;
-> +	}
-> +
->  	if (FEATURE_ON(E2P_FEATURE_INCOMPAT,
->  		EXT4_FEATURE_INCOMPAT_CSUM_SEED)) {
->  		if (!ext2fs_has_feature_metadata_csum(sb)) {
+>  	if (!mapping) {
+> @@ -669,7 +674,7 @@ static int __buffer_migrate_folio(struct address_space *mapping,
+>  		return migrate_page(mapping, &dst->page, &src->page, mode);
+>  
+>  	/* Check whether page does not have extra refs before we do more work */
+> -	expected_count = expected_page_refs(mapping, &src->page);
+> +	expected_count = folio_expected_refs(mapping, src);
+>  	if (folio_ref_count(src) != expected_count)
+>  		return -EAGAIN;
+>  
+> -- 
+> 2.35.1
 
--- 
-Gabriel Krisman Bertazi
+This commit (742e89c9e352d38df1a5825fe40c4de73a5d5f7a in pagecache.git
+folio/for-next and recent linux-next) is dangerously wrong, at least
+for swapcache, and probably for some others.
+
+I say "dangerously" because it tells page migration a swapcache page
+is safe for migration when it certainly is not.
+
+The fun that typically ensues is kernel BUG at include/linux/mm.h:750!
+put_page_testzero() VM_BUG_ON_PAGE(page_ref_count(page) == 0, page),
+if CONFIG_DEBUG_VM=y (bisecting for that is what brought me to this).
+But I guess you might get silent data corruption too.
+
+I assumed at first that you'd changed the rules, and were now expecting
+any subsystem that puts a non-zero value into folio->private to raise
+its refcount - whereas the old convention (originating with buffer heads)
+is that setting PG_private says an extra refcount has been taken, please
+call try_to_release_page() to lower it, and maybe that will use data in
+page->private to do so; but page->private free for the subsystem owning
+the page to use as it wishes, no refcount implication.  But that you
+had missed updating swapcache.
+
+So I got working okay with the patch below; but before turning it into
+a proper patch, noticed that there were still plenty of other places
+applying the test for PG_private: so now think that maybe you set out
+with intention as above, realized it wouldn't work, but got distracted
+before cleaning up some places you'd already changed.  And patch below
+now goes in the wrong direction.
+
+Or maybe you didn't intend any change, but the PG_private test just got
+missed in a few places.  I don't know, hope you remember, but current
+linux-next badly inconsistent.
+Over to you, thanks,
+
+Hugh
+
+--- a/mm/migrate.c	2022-07-06 14:24:44.499941975 -0700
++++ b/mm/migrate.c	2022-07-06 15:49:25.000000000 -0700
+@@ -351,6 +351,10 @@ unlock:
+ }
+ #endif
+ 
++static inline bool folio_counted_private(struct folio *folio)
++{
++	return !folio_test_swapcache(folio) && folio_get_private(folio);
++}
+ static int folio_expected_refs(struct address_space *mapping,
+ 		struct folio *folio)
+ {
+@@ -359,7 +363,7 @@ static int folio_expected_refs(struct ad
+ 		return refs;
+ 
+ 	refs += folio_nr_pages(folio);
+-	if (folio_get_private(folio))
++	if (folio_counted_private(folio))
+ 		refs++;
+ 
+ 	return refs;
+--- a/mm/vmscan.c	2022-07-06 14:24:44.531942217 -0700
++++ b/mm/vmscan.c	2022-07-06 15:49:37.000000000 -0700
+@@ -2494,6 +2494,10 @@ shrink_inactive_list(unsigned long nr_to
+  * The downside is that we have to touch folio->_refcount against each folio.
+  * But we had to alter folio->flags anyway.
+  */
++static inline bool folio_counted_private(struct folio *folio)
++{
++	return !folio_test_swapcache(folio) && folio_get_private(folio);
++}
+ static void shrink_active_list(unsigned long nr_to_scan,
+ 			       struct lruvec *lruvec,
+ 			       struct scan_control *sc,
+@@ -2538,8 +2542,9 @@ static void shrink_active_list(unsigned
+ 		}
+ 
+ 		if (unlikely(buffer_heads_over_limit)) {
+-			if (folio_get_private(folio) && folio_trylock(folio)) {
+-				if (folio_get_private(folio))
++			if (folio_counted_private(folio) &&
++			    folio_trylock(folio)) {
++				if (folio_counted_private(folio))
+ 					filemap_release_folio(folio, 0);
+ 				folio_unlock(folio);
+ 			}
