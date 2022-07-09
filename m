@@ -2,146 +2,172 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4C0256C33B
-	for <lists+linux-ext4@lfdr.de>; Sat,  9 Jul 2022 01:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3135156C618
+	for <lists+linux-ext4@lfdr.de>; Sat,  9 Jul 2022 04:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238447AbiGHVZR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 8 Jul 2022 17:25:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42594 "EHLO
+        id S229455AbiGICyW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 8 Jul 2022 22:54:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238368AbiGHVZQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 8 Jul 2022 17:25:16 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2043.outbound.protection.outlook.com [40.107.93.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A3A23BF9;
-        Fri,  8 Jul 2022 14:25:15 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FhpsLRDbQPWXyP+H0kch0DGJtfehxLcXo9ibwei+8FV5jHN8BG8ojJjH5TeF14mqaAojrMJZ4jWRe8RV/73XVUksSLfz6Iek7E/YTlTCgsP0x+35T8vkVppGhF2Q4SjgKB10VSrz+MPv3QouXCcOJV7hRGk1AZukE4iqvSorT4Frlh6Exr+NWUZ6z42UC8sXBATJU8+ILx22xsiikB+zaPrdrogQDYBdWvtr3j24jOYPNE7Y6lIm5BWeGSkLOphogAnN//IbwgkatQVQbp63waQzq4t3SzOyluKJmphduANq7aH3LmSHjmXhKDlp7Qu4mAJse7/XQ57R2P/Hvp/M1w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=emaEfPZWEmiqAoUqnwHX3Stg0y213FrxPHVhw/7QHDE=;
- b=akeegfF+zwkpUoqXZ1yt5NIKNtRSb/YLogphmnWBjk1HR1mpZXZk9/uVX6u9gjXbkVNc1/RzhDWSWzGtk/FQSZ6vIJYZzbdv8Fk/ta9sZaWLLktnFXIR6/FOQOEG7UcTvYzuATNBUD3gCJHqtEoW64c7kE+B1ac4OdaxRdlUTT8EkUZq+jPp3WsYXNtCnuSwaRg3eddvahSDXGNBMuzlllu4173tu5Maq4OY7NNbeIELAsMGb/CbLg0ntdkgdYqv/adF7sN58ck8cejyQ+uY8x6rSNtNKg3LSLu1HyyEuv5oQ6Fkm/Tee7SUquFVp9GUw2Qsp+t26p/jarJEOdvGQQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=emaEfPZWEmiqAoUqnwHX3Stg0y213FrxPHVhw/7QHDE=;
- b=e2sdSFiTuNA2WRshK/LWvdegjRnr/fXhzVo7ONusZV7dtqXpsSK/eOtOZk9xcz6xPcdd/+U/sMKkVRAP/trAbyIPqvUyIsrcx1Rt/hoPdYBNlVtBqfXbAcV803Ga2eYF0/NrW5b5OtBMeguLwzU0PZ+uesFgJwqRR94MNs9/SSs=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN9PR12MB5115.namprd12.prod.outlook.com (2603:10b6:408:118::14)
- by DS7PR12MB6118.namprd12.prod.outlook.com (2603:10b6:8:9a::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5395.20; Fri, 8 Jul 2022 21:25:13 +0000
-Received: from BN9PR12MB5115.namprd12.prod.outlook.com
- ([fe80::b096:31c:bfb7:fa0a]) by BN9PR12MB5115.namprd12.prod.outlook.com
- ([fe80::b096:31c:bfb7:fa0a%3]) with mapi id 15.20.5417.020; Fri, 8 Jul 2022
- 21:25:13 +0000
-Message-ID: <715fc1ae-7bd3-5b96-175c-e1cc74920739@amd.com>
-Date:   Fri, 8 Jul 2022 17:25:12 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v8 02/15] mm: move page zone helpers into new
- header-specific file
-Content-Language: en-US
-To:     David Hildenbrand <david@redhat.com>,
-        Alex Sierra <alex.sierra@amd.com>, jgg@nvidia.com
-Cc:     linux-mm@kvack.org, rcampbell@nvidia.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        hch@lst.de, jglisse@redhat.com, apopple@nvidia.com,
-        willy@infradead.org, akpm@linux-foundation.org
-References: <20220707190349.9778-1-alex.sierra@amd.com>
- <20220707190349.9778-3-alex.sierra@amd.com>
- <97816c26-d2dd-1102-4a13-fafb0b1a4bc3@redhat.com>
-From:   Felix Kuehling <felix.kuehling@amd.com>
-Organization: AMD Inc.
-In-Reply-To: <97816c26-d2dd-1102-4a13-fafb0b1a4bc3@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BL1PR13CA0167.namprd13.prod.outlook.com
- (2603:10b6:208:2bd::22) To BN9PR12MB5115.namprd12.prod.outlook.com
- (2603:10b6:408:118::14)
+        with ESMTP id S229436AbiGICyV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 8 Jul 2022 22:54:21 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1782E32ED4
+        for <linux-ext4@vger.kernel.org>; Fri,  8 Jul 2022 19:54:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1657335261; x=1688871261;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=h34036lVbe6h7cZ1wbon7FssiYNw5QFE4EYX4RsU59c=;
+  b=DPIXweciVs/IeK7My6aDDX+QLGfIY8GpVeB+xIsoNLunp0gP8P+P4IvW
+   TAP4YnOzEh3WNqqGPubACi8js77ISGXbaw/NSvCIE0zw4KoSH3cSnAJcd
+   Qa+rC8kJApodlYPFGk1SXgfVPi030u3yaep/EeIc9cnE0vGuKMpaSSVnu
+   5nNVFscguTw0GZ2FlgaZrJ3csXBACknFiFm6GFV4PJZBkIH9UkxtFVgSp
+   Bkc+jw4SwvuiDCF+nty3H7sqWukExIJhJ3cC1c0+p/ql8NDDr+qRxS1nq
+   phAb1jq6ONgiBVHj5+JiKL1GGiNRQbojCS0cKLQ3eHNeWTrsGz+tGJmDA
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10402"; a="264180637"
+X-IronPort-AV: E=Sophos;i="5.92,256,1650956400"; 
+   d="scan'208";a="264180637"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2022 19:54:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,256,1650956400"; 
+   d="scan'208";a="736533455"
+Received: from lkp-server01.sh.intel.com (HELO 68b931ab7ac1) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 08 Jul 2022 19:54:19 -0700
+Received: from kbuild by 68b931ab7ac1 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1oA0br-000OEA-0K;
+        Sat, 09 Jul 2022 02:54:19 +0000
+Date:   Sat, 09 Jul 2022 10:53:35 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:dev] BUILD SUCCESS
+ f8dc286e4d942dab79d1814e0708ac91052a34fa
+Message-ID: <62c8edaf.Hxl+dQGJdxL7Lbi1%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dc5d75ea-947c-4fc0-454f-08da61285857
-X-MS-TrafficTypeDiagnostic: DS7PR12MB6118:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xZP3SWWNFjivGXf09UPv3DY32x7u31JQFhfVPJLlyoG6amCUSzPQ8SZ42/3+MVwacoTeYk+7fhs+Jd3KuuVFD2SV3y0xWn01d4d8o6iAYwL+tBUnm2vtje7kY4sbaCBQSCcHvwL9yeiouhc8SJEGSZ51cRD9E5ECMTi8PY8dQq856TAIi9rP3ZrGCe8tJMhieRCI3R1TcYYGSW7DCj5iNiDR++Q8FXyakLesSD228VPB1fDyYU4iGDgSEZChrp/x+TWYPbM2sjY05QpzzZawEe56NkF4HOnwIRFV1gcRzMMBluMfB4DkjTDGglIeKluC2gVdLI1rPoq1TzeA/i8H9YQn9JGxbpfRxvp/q5bx2KNasq14IJawxLNkZjjU8NfCzNS1ScUpAAXZA7qK0Tz5u9ZSJKcdaBRqCQnX85WyIDPvLFIhEoSrvSfovUp2mDS6dyO58wOvB7piJXG6mfJElYU75rjScVRYOc039D4+C8V/embQ72s+YJXhxYjlvrO0VVblmMkc/iiD+ZP8hKkHx33Nb0bjWaSO5FfITV6kHbkCU3JbyD5OL7q8P918bXmULciDyP+KpV1rUoaNWvdWCMpLkTun8Fbv0TECdOrwjfzvuc89aP9QDvcPJPNKkEMiYial3yaPGJ4RclI/9ArK3QC8U1mSLqFvwu9xFVp7N84C0LtKSZ7ltt/uVDEJEAj2szRHJ28+K7GmKm95T8CxN8Fcn87X4AHeNDz/tfNg7WQdNYkAAIL/n0k5CCzZcnnAI2DrhS+Z1WxjZIw619ivXyBI3Mhs1vBMQK4gl6OQmZnoWw//300XeVAVVAIP7JjX1Dy4cAxUErnONu7oYSGyT3dkJa/Q5QCg2TOPA5Uc4Ro=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5115.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(366004)(39860400002)(136003)(346002)(376002)(396003)(36916002)(8936002)(4326008)(2906002)(44832011)(316002)(110136005)(6506007)(4744005)(478600001)(66946007)(2616005)(66476007)(6486002)(26005)(5660300002)(86362001)(31696002)(7416002)(8676002)(53546011)(36756003)(6512007)(66556008)(38100700002)(41300700001)(31686004)(186003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?c0VVeHZBRzRjTFh1TGxGZ0pENkl5WWp2ZSsvVndEd3VRbTRnNVRqNVZDenkv?=
- =?utf-8?B?dTM5WVJCM3VUYWlxVy83aU9UWW5sZGpBaE9qZGRnTVc3Q1pyWk5Fc2wydlRV?=
- =?utf-8?B?ZGoralZ3bmt4Znk3bjZIRk9BUmtRRHQvSWdDZ0s1Z3cvOGhOWlBmTU1JeG9G?=
- =?utf-8?B?Tm9ocmFGcVN1MXBqbHVyMlBLMTVBVlduQ3l1N2hUazBJWXhTVjFrWEpTejJV?=
- =?utf-8?B?V0xtWHlRTVlCMldFRWtEUDJEcm9zRXVBSDVrTlpsTTQrSUxMM0UxckZKZHhr?=
- =?utf-8?B?dTRBL2pjRkF2MStKNDBkODJsWUdjQ0tMVU9jem55NVZDbGk0NHBUL1hob243?=
- =?utf-8?B?T0QxenNQcWlnMXhoL1B4YkdYTmhOaU1wOXlWZjMvajdTdXh1Y05OOHFaSU5q?=
- =?utf-8?B?MWRKWnNlK3RBdXFpcWI2UU5PRmVZZ2pIdkduditSMW5CaWlhUkhoSkMwNEVK?=
- =?utf-8?B?SDhlRWhlSmRDbEoxQ2xxN0lvY3FtekdMN1ByWjdLUEJZQ25TRENZRm14dDNI?=
- =?utf-8?B?SllGSmZKWUlCWWZYYUpxTG5neEE2ajEwaUFTdmpyb3Bpc3pXR1U0WWIvVmVx?=
- =?utf-8?B?MmVkWlNvSVVHYk81by9FTDJOc0lMWnFlUjByTWZTc0hKSzRpM1U1ejJFTHNv?=
- =?utf-8?B?VzB0OHQ4Z0UreWN6NXdwNnpyaFlZTzRqT1B2OXFnQnUvNHBNVzBBT0llWkNJ?=
- =?utf-8?B?cHZITDJqenJCVldhOWE1aXh1bmtGa053UEpBVHhBNTVaMDR0T2ZtcUdJYnJY?=
- =?utf-8?B?Tm0zcmZTS1JGY3lCdDUxTzRiYTFyS0YxUEZESndra0NuS0M2bnRab3ZzdDVM?=
- =?utf-8?B?WTNmS2U0a0hpc04wdytRbzFBc3JTbGpyS2d3aUpTa3lSd0paMDVERFJtZFJn?=
- =?utf-8?B?dFdmNm52WDRyT3dVcGhoQUs1MG9HaGdZZXdkN2tvWi9iaktBSndOTHM0VjNX?=
- =?utf-8?B?ejJSekVQL0kxRitHdEROVWRjckJPOTdwd2pyZ3lNRlc5anV1eEJRMllVS2Jn?=
- =?utf-8?B?NlluRTQzdC9Pd1hzWFJaSGZZM3Ewai9SRm1CU3prSE0rU3A0aVI5NW8rcmxP?=
- =?utf-8?B?MkFRSXozdzFVd2p6dWVOWnkyQnNiQkROWktSWXFDOTU3eGdNMXlzZTd5VUZM?=
- =?utf-8?B?U01OTStVYW9SREJrUlI1N2VVZEV4aS9zSHhBSytOZXExWHVLZEU4VDc5NnBR?=
- =?utf-8?B?MUlMLzEybjJoNFN5bUVOdXpUblFaalVESHRsZGxtRzdpZkxhMUttaXFBbzN4?=
- =?utf-8?B?VEhqcjBhNHRTNHRLRGYweUx6QUR4aWlxT2c3aEdRZUlaRDN5RTR0R3dQQUpo?=
- =?utf-8?B?cm93a21tTktiRlBjemFpTWd1Qk9nZnNWQ3JTOENBeUoycWFjQjJWS3ZJK3VP?=
- =?utf-8?B?ajV0a3AxbXdqVnlWLzErR1orUW1UZkd2aFpUQzVQMWgxSk5Jc1lTTjFqUDRX?=
- =?utf-8?B?M2VWcC9kSFZSazZMdGM2ZWJnT3BUOXd4MFJONU5kU3huWTVoOUZXYzZwSHdZ?=
- =?utf-8?B?Y1dvNVJhQW9UTWFjWVNUejNQbVRwRnZKN09sRmkzTXBsb2l6MEtNc1NHdWFF?=
- =?utf-8?B?TFV2UDdja0tuZS9xcm5ldTlya2x2MVFzbDZCMVExRjlDMWlXTHBpTHltTHdX?=
- =?utf-8?B?eDJWd0IxSmsxS1duM2Y3TFJsZkc3eFRQWVRWL0FIclNXSEhsREsvaFp4eGhU?=
- =?utf-8?B?QVpOeFdqY2xBd2dFb21uWTNHY0JLdHRXNDdlL3o4RUdCdlFOZHhycDFWZk4x?=
- =?utf-8?B?TjNKUkd6N09KM1ZzaEJDOVpYaHpuUFVtZzVwUjZzYTd1WDVEcDZqQmNnNHQ1?=
- =?utf-8?B?eXpUQmRkOGZKeWVOUW54WFV1TkQzR0IyYXBVR3poSDR6SlNhdks1Q2ExNjlD?=
- =?utf-8?B?VXhGVm13SFZEL2sreEFGcWZ0a21NRDRBWDAzSEZkL0wvRFMzaHkzcStIdGVK?=
- =?utf-8?B?TCtadzcwa1JveldWQUxjVXloM21oZzBYalJ1WHpBZDNXMmgxZ3pjc2lHZDRC?=
- =?utf-8?B?RzBqTHp0c2llUXBrUkQzbEFNbTduL3JhNFNDYmxHeEdLSWNxSzVCR2pWTnZo?=
- =?utf-8?B?b3dzQzVLOXVScExOcldhb3FDYzBGSEFCNWpyMGJ3NkZLR2Y1bWswNURJd1A5?=
- =?utf-8?Q?yOsusd6KOY8rQm5HmrgAZTsay?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dc5d75ea-947c-4fc0-454f-08da61285857
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5115.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jul 2022 21:25:13.6296
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kDKeUmnOdAj8+dQNYFsjmiarX0dVNBS3gHRe4eD1ReGjibc5l8A9Ea4YroggawfOxqjl5z7P9MAAWdJd0Gi//w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6118
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2022-07-08 07:28, David Hildenbrand wrote:
-> On 07.07.22 21:03, Alex Sierra wrote:
->> [WHY]
->> Have a cleaner way to expose all page zone helpers in one header
-> What exactly is a "page zone"? Do you mean a buddy zone as in
-> include/linux/mmzone.h ?
->
-Zone as in ZONE_DEVICE. Maybe we could extend mmzone.h instead of 
-creating page_zone.h? That should work as long as it's OK to include 
-mmzone.h in memremap.h.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: f8dc286e4d942dab79d1814e0708ac91052a34fa  jbd2: fix outstanding credits assert in jbd2_journal_commit_transaction()
 
-Regards,
-   Felix
+elapsed time: 728m
 
+configs tested: 91
+configs skipped: 2
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm64                            allyesconfig
+arm                                 defconfig
+arm                              allyesconfig
+i386                          randconfig-c001
+sh                               j2_defconfig
+powerpc                     sequoia_defconfig
+arm                           h3600_defconfig
+mips                         rt305x_defconfig
+ia64                          tiger_defconfig
+sh                          rsk7264_defconfig
+sh                        edosk7705_defconfig
+arm                           corgi_defconfig
+powerpc                     ep8248e_defconfig
+powerpc                 linkstation_defconfig
+arm                         vf610m4_defconfig
+sh                           se7619_defconfig
+sh                           se7712_defconfig
+sh                           se7721_defconfig
+sh                           se7750_defconfig
+alpha                            alldefconfig
+arm                        clps711x_defconfig
+arm                        oxnas_v6_defconfig
+powerpc                        warp_defconfig
+arm                            hisi_defconfig
+powerpc                     taishan_defconfig
+parisc64                            defconfig
+nios2                            alldefconfig
+mips                      maltasmvp_defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+m68k                             allyesconfig
+m68k                             allmodconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+powerpc                           allnoconfig
+mips                             allyesconfig
+powerpc                          allmodconfig
+sh                               allmodconfig
+i386                             allyesconfig
+i386                                defconfig
+x86_64                        randconfig-a006
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+x86_64                        randconfig-a011
+x86_64                        randconfig-a013
+x86_64                        randconfig-a015
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+riscv                randconfig-r042-20220707
+arc                  randconfig-r043-20220707
+s390                 randconfig-r044-20220707
+x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                           rhel-8.3-syz
+x86_64                         rhel-8.3-kunit
+
+clang tested configs:
+mips                   sb1250_swarm_defconfig
+arm                        mvebu_v5_defconfig
+powerpc                      ppc64e_defconfig
+hexagon                          alldefconfig
+arm                   milbeaut_m10v_defconfig
+powerpc                    gamecube_defconfig
+arm                            dove_defconfig
+powerpc                      walnut_defconfig
+powerpc                          g5_defconfig
+mips                       rbtx49xx_defconfig
+arm                         palmz72_defconfig
+x86_64                        randconfig-k001
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+i386                          randconfig-a013
+i386                          randconfig-a011
+i386                          randconfig-a015
+hexagon              randconfig-r045-20220707
+hexagon              randconfig-r041-20220707
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
