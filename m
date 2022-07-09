@@ -2,47 +2,47 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0F956CB0E
-	for <lists+linux-ext4@lfdr.de>; Sat,  9 Jul 2022 20:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B963B56CB11
+	for <lists+linux-ext4@lfdr.de>; Sat,  9 Jul 2022 20:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229513AbiGISW4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 9 Jul 2022 14:22:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48350 "EHLO
+        id S229525AbiGIS1V (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 9 Jul 2022 14:27:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbiGISW4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 9 Jul 2022 14:22:56 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A7DE1403F
-        for <linux-ext4@vger.kernel.org>; Sat,  9 Jul 2022 11:22:55 -0700 (PDT)
+        with ESMTP id S229450AbiGIS1V (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 9 Jul 2022 14:27:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D61911183F
+        for <linux-ext4@vger.kernel.org>; Sat,  9 Jul 2022 11:27:20 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 095CFB802C8
-        for <linux-ext4@vger.kernel.org>; Sat,  9 Jul 2022 18:22:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 962DFC341CB
-        for <linux-ext4@vger.kernel.org>; Sat,  9 Jul 2022 18:22:52 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7D97C60F28
+        for <linux-ext4@vger.kernel.org>; Sat,  9 Jul 2022 18:27:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D96D9C341CB
+        for <linux-ext4@vger.kernel.org>; Sat,  9 Jul 2022 18:27:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657390972;
-        bh=B+LWzUarvz3PaexKyAi01TyD32wqS8zLOvInndhxb64=;
+        s=k20201202; t=1657391239;
+        bh=cJvOWjqlmtBMg/4/Xgv8xMHLiu9nEYQ3FxUNwYg/tqY=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=GOpSyx9Dw2zPDGRDewltFJXW08JL4aN2AUKVFAqLI5T9SIEgrAsXXpWNNtPXTmsr0
-         OcforShtuR8JVVu90xyfiKLYp9yre/+Gl6OIQjLjni75xGXT/MNZaQKqCDZJNpEATM
-         /drXwZhA9Tqt2EiREceNw8ZvEvpySTiUrZZUcxSns7oMH8iTb7bbYq6zie3soB92mh
-         V/cDbnfrQbhqM9HdUR5FMdQjiViTDjPhwy7QEXIvT+s56sc7Lt5BUSgDUpV9wdMSDR
-         PoTF+GMDbqpva4b6WudJZsWBBG687fO8wSQuMXxkHOFi8Hvz0epDjcbBI2K3Rnp1DW
-         fuK8aQ8fBRfnQ==
+        b=LOoaYs2WJoHWdGcKZA7J9jJqTE5P0MCaQGLUv98Eth04rhggPdLc/d62RZE1SPh8P
+         AHOTbAUjymK1WV/w7Wvb8V54XTrHuxhu5mId0p6tr16SQVvskcDuxbL/o+YZ8XZ149
+         vNyHsWqk7hZefqqPmZPxm9ixJwFwq+vEjgEiC/qLGR+YLT/FskaRuE2A3/4hm+SZc/
+         6nWCId88JhQDSlkhqISbgmhscs+uHu+gk6XnhGF7D3SIsi9jhipzl82OPH+Gi/+xso
+         OSBf5iYPbweQg6kwUtSHCLvFcEs3wVsbeYHc1MBjKS2KnCNN981AXPd08JxI/iG+LW
+         9hMwRqtqsAa/A==
 Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-        id 87644CC13B8; Sat,  9 Jul 2022 18:22:52 +0000 (UTC)
+        id C7348CC13B8; Sat,  9 Jul 2022 18:27:19 +0000 (UTC)
 From:   bugzilla-daemon@kernel.org
 To:     linux-ext4@vger.kernel.org
 Subject: [Bug 216229] Same content in two different files - strange problem,
  unsure if caused by kernel housekeeping
-Date:   Sat, 09 Jul 2022 18:22:52 +0000
+Date:   Sat, 09 Jul 2022 18:27:19 +0000
 X-Bugzilla-Reason: None
 X-Bugzilla-Type: changed
 X-Bugzilla-Watch-Reason: AssignedTo fs_ext2@kernel-bugs.osdl.org
 X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext2
+X-Bugzilla-Component: ext4
 X-Bugzilla-Version: 2.5
 X-Bugzilla-Keywords: 
 X-Bugzilla-Severity: high
@@ -52,8 +52,8 @@ X-Bugzilla-Resolution:
 X-Bugzilla-Priority: P1
 X-Bugzilla-Assigned-To: fs_ext2@kernel-bugs.osdl.org
 X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: rep_platform
-Message-ID: <bug-216229-13602-4kCnQWCh7Y@https.bugzilla.kernel.org/>
+X-Bugzilla-Changed-Fields: component
+Message-ID: <bug-216229-13602-dECWiOYffx@https.bugzilla.kernel.org/>
 In-Reply-To: <bug-216229-13602@https.bugzilla.kernel.org/>
 References: <bug-216229-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
@@ -77,7 +77,7 @@ Joerg M. Sigle (joerg.sigle@jsigle.com) changed:
 
            What    |Removed                     |Added
 ----------------------------------------------------------------------------
-           Hardware|IA-64                       |AMD
+          Component|ext2                        |ext4
 
 --=20
 You may reply to this email to add a comment.
