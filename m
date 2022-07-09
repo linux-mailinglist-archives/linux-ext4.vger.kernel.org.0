@@ -2,44 +2,44 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76A5756CB0D
-	for <lists+linux-ext4@lfdr.de>; Sat,  9 Jul 2022 20:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0F956CB0E
+	for <lists+linux-ext4@lfdr.de>; Sat,  9 Jul 2022 20:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229517AbiGISW2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 9 Jul 2022 14:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48218 "EHLO
+        id S229513AbiGISW4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 9 Jul 2022 14:22:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbiGISW1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 9 Jul 2022 14:22:27 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA4081403F
-        for <linux-ext4@vger.kernel.org>; Sat,  9 Jul 2022 11:22:26 -0700 (PDT)
+        with ESMTP id S229450AbiGISW4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 9 Jul 2022 14:22:56 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A7DE1403F
+        for <linux-ext4@vger.kernel.org>; Sat,  9 Jul 2022 11:22:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 2EBD5CE0A21
-        for <linux-ext4@vger.kernel.org>; Sat,  9 Jul 2022 18:22:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6413FC341CB
-        for <linux-ext4@vger.kernel.org>; Sat,  9 Jul 2022 18:22:23 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 095CFB802C8
+        for <linux-ext4@vger.kernel.org>; Sat,  9 Jul 2022 18:22:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 962DFC341CB
+        for <linux-ext4@vger.kernel.org>; Sat,  9 Jul 2022 18:22:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657390943;
-        bh=IaeBcvBoPXvHTknMApNZzQMJPkT+redmupk5Rhq47mA=;
-        h=From:To:Subject:Date:From;
-        b=G7WK6tPkDDm+EkTgcffH6agkBcKsHyi0iFpKH0MKFI46RAc5Ex97jm/aIawh0KSsj
-         JClS+QlFWRbH8QiL241nUC80ltca28FsiSk8kCMIWI0qS4u9ALNZuZF2lXVHnb0AxQ
-         xIyWsQmThOwO65+YmlS61oxHGESgyzuqE0YPWv5B26dmHeV67CJhSBhgF3/hTyLsMC
-         bp2ktpUdLSg2LYKL4gTVM7EV2jBG2HW2GLfRoaBB1vb8vecrKEK0MAzsC50MDslu41
-         BwFD2bADLq8fPQ4P71FgPiNnaMkUqJ2ikjrPevo3kBdFtUMZucGSn+x4Gi5hNlZOSZ
-         wD44UWyupfH7w==
+        s=k20201202; t=1657390972;
+        bh=B+LWzUarvz3PaexKyAi01TyD32wqS8zLOvInndhxb64=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=GOpSyx9Dw2zPDGRDewltFJXW08JL4aN2AUKVFAqLI5T9SIEgrAsXXpWNNtPXTmsr0
+         OcforShtuR8JVVu90xyfiKLYp9yre/+Gl6OIQjLjni75xGXT/MNZaQKqCDZJNpEATM
+         /drXwZhA9Tqt2EiREceNw8ZvEvpySTiUrZZUcxSns7oMH8iTb7bbYq6zie3soB92mh
+         V/cDbnfrQbhqM9HdUR5FMdQjiViTDjPhwy7QEXIvT+s56sc7Lt5BUSgDUpV9wdMSDR
+         PoTF+GMDbqpva4b6WudJZsWBBG687fO8wSQuMXxkHOFi8Hvz0epDjcbBI2K3Rnp1DW
+         fuK8aQ8fBRfnQ==
 Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-        id 4E6CCCC13B8; Sat,  9 Jul 2022 18:22:23 +0000 (UTC)
+        id 87644CC13B8; Sat,  9 Jul 2022 18:22:52 +0000 (UTC)
 From:   bugzilla-daemon@kernel.org
 To:     linux-ext4@vger.kernel.org
-Subject: [Bug 216229] New: Same content in two different files - strange
- problem, unsure if caused by kernel housekeeping
-Date:   Sat, 09 Jul 2022 18:22:23 +0000
+Subject: [Bug 216229] Same content in two different files - strange problem,
+ unsure if caused by kernel housekeeping
+Date:   Sat, 09 Jul 2022 18:22:52 +0000
 X-Bugzilla-Reason: None
-X-Bugzilla-Type: new
+X-Bugzilla-Type: changed
 X-Bugzilla-Watch-Reason: AssignedTo fs_ext2@kernel-bugs.osdl.org
 X-Bugzilla-Product: File System
 X-Bugzilla-Component: ext2
@@ -52,10 +52,10 @@ X-Bugzilla-Resolution:
 X-Bugzilla-Priority: P1
 X-Bugzilla-Assigned-To: fs_ext2@kernel-bugs.osdl.org
 X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: bug_id short_desc product version
- cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
- priority component assigned_to reporter cf_regression attachments.created
-Message-ID: <bug-216229-13602@https.bugzilla.kernel.org/>
+X-Bugzilla-Changed-Fields: rep_platform
+Message-ID: <bug-216229-13602-4kCnQWCh7Y@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-216229-13602@https.bugzilla.kernel.org/>
+References: <bug-216229-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Bugzilla-URL: https://bugzilla.kernel.org/
@@ -73,43 +73,11 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 https://bugzilla.kernel.org/show_bug.cgi?id=3D216229
 
-            Bug ID: 216229
-           Summary: Same content in two different files - strange problem,
-                    unsure if caused by kernel housekeeping
-           Product: File System
-           Version: 2.5
-    Kernel Version: Linux version 5.15.51-i7 (root@think3) (gcc (Debian
-                    8.3.0-6) 8.3.0, GNU ld (GNU Binutils for Debian)
-                    2.31.1) #1 SMP PREEMPT Thu Jun 30 09:55:14 CEST 2022
-          Hardware: IA-64
-                OS: Linux
-              Tree: Mainline
-            Status: NEW
-          Severity: high
-          Priority: P1
-         Component: ext2
-          Assignee: fs_ext2@kernel-bugs.osdl.org
-          Reporter: joerg.sigle@jsigle.com
-        Regression: No
+Joerg M. Sigle (joerg.sigle@jsigle.com) changed:
 
-Created attachment 301382
-  --> https://bugzilla.kernel.org/attachment.cgi?id=3D301382&action=3Dedit
-two consecutively written files on ext2 (by ext4) end up with the same cont=
-ent
-when written from the same bash script and ls is not called afterwards from
-therein, too
-
-I might have found a problem where two consecutively written files on ext2 =
-(by
-ext4) end up with the same content when written from the same bash script -=
- but
-NOT if ls is called right thereafter before that same script ends. --- Soun=
-ds
-strange and possibly scary to me. Might still be a problem of my own, but I
-observed it on ext2, and not on ntfs-3g in the same system, and never in ma=
-ny
-years before. --- Please see the attached plain text (but better formatted)
-description for further information. Thank you.
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+           Hardware|IA-64                       |AMD
 
 --=20
 You may reply to this email to add a comment.
