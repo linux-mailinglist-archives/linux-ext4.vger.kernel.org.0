@@ -2,50 +2,83 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5206156D6DC
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Jul 2022 09:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 789EF570465
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Jul 2022 15:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229888AbiGKHcT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 11 Jul 2022 03:32:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52286 "EHLO
+        id S229832AbiGKNft (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 11 Jul 2022 09:35:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbiGKHcT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 11 Jul 2022 03:32:19 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1FF9165B6;
-        Mon, 11 Jul 2022 00:32:17 -0700 (PDT)
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LhFrl0V5KzhYr0;
-        Mon, 11 Jul 2022 15:29:43 +0800 (CST)
-Received: from kwepemm600010.china.huawei.com (7.193.23.86) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Mon, 11 Jul 2022 15:32:15 +0800
-Received: from [10.174.178.31] (10.174.178.31) by
- kwepemm600010.china.huawei.com (7.193.23.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Mon, 11 Jul 2022 15:32:14 +0800
-Subject: Re: [PATCH v2 1/2] ext4: resize fs after resize_inode without e2fsck
-To:     Zorro Lang <zlang@kernel.org>
-CC:     <fstests@vger.kernel.org>, <linux-ext4@vger.kernel.org>
-References: <20220708112155.2639551-1-sunke32@huawei.com>
- <20220708112155.2639551-2-sunke32@huawei.com>
- <20220708161624.etkxdewnje4nhmhl@zlang-mailbox>
-From:   Sun Ke <sunke32@huawei.com>
-Message-ID: <4f01bc54-9ed0-49d7-f616-7a031009f6be@huawei.com>
-Date:   Mon, 11 Jul 2022 15:32:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        with ESMTP id S229561AbiGKNfs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 11 Jul 2022 09:35:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6D93732D96
+        for <linux-ext4@vger.kernel.org>; Mon, 11 Jul 2022 06:35:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1657546546;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/a5xYvzFvSo0mMGHcGn3XDGCspkQtQvU8SRGH+lIT7E=;
+        b=OKpYQnea2xO/5Segrtf985PDxlRlMQ6+OgaKQBbLFWuzvAWH8b2PpGIni0SxtQaqOuKnOY
+        IUljfPcYgRA8/NTKcBresyVaZn5yjjxEqL6Ef5dcEKAziUYIZrgfzq0WW1vrXA5EDwxYkn
+        ZLoCWpqIbKEHN7G194F0MeTeYuej/UE=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-632-cIQtto7XPcOkB5RgnDO4Bg-1; Mon, 11 Jul 2022 09:35:45 -0400
+X-MC-Unique: cIQtto7XPcOkB5RgnDO4Bg-1
+Received: by mail-wr1-f70.google.com with SMTP id m7-20020adfa3c7000000b0021d7ae39d1dso651362wrb.12
+        for <linux-ext4@vger.kernel.org>; Mon, 11 Jul 2022 06:35:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:organization:subject
+         :in-reply-to:content-transfer-encoding;
+        bh=/a5xYvzFvSo0mMGHcGn3XDGCspkQtQvU8SRGH+lIT7E=;
+        b=yQFkGPgHi5rleC0UdFIcev2YxYP8LnLlkAguQe8/gx2PizpQk4QzYIK4EvrEWj66c9
+         emIxZj9rEWSl8sLpRns1510cQwOjjC80rqtfyxYwfD4riscF3Nqx0h7L8OK2ZHWuI2eL
+         BUs6n2lJvFFWbiYxYcDjJnY2o7QRd1ogn6hJd1BQlXCvUjSlV8gqSf3U0fKlnTP1Y6be
+         Yg97Ii1GreynPSaFd7QZQ5atPLSLfIcxaHzVh8v/yo9Ad0wcbzK8bhXs3kc6uXNjPseH
+         eVmG36T3fWBm3nSDgjTbzADgpQgXJa5L/hSCZLNWaW84tZs29ALSWBrBfFOxdLaLg2Nf
+         lfRQ==
+X-Gm-Message-State: AJIora8G9GyEypJTVh7V/aOqghwNSHqjmbA0t3kg95Yx4pucXIW6XAMV
+        8e0qGxXCq+xgMmEGfGnliPos52SL7FU3aUpbE8UyscU+LDVmOYtqhtQ07dqn5qHvrpw9UAecDHa
+        blGuiri+tBkXIRDBoulKyQw==
+X-Received: by 2002:a5d:64e8:0:b0:21d:2fc9:20dd with SMTP id g8-20020a5d64e8000000b0021d2fc920ddmr16233257wri.101.1657546543641;
+        Mon, 11 Jul 2022 06:35:43 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1swwNqqy08ywAh4vjGNUUySj6rzTVDwFqgW9rlmCmMyqw6xznPhl3IGIvkFU36hZ2LDn+8inw==
+X-Received: by 2002:a5d:64e8:0:b0:21d:2fc9:20dd with SMTP id g8-20020a5d64e8000000b0021d2fc920ddmr16233220wri.101.1657546543286;
+        Mon, 11 Jul 2022 06:35:43 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c702:1400:c3:4ae0:6d5c:1ab2? (p200300cbc702140000c34ae06d5c1ab2.dip0.t-ipconnect.de. [2003:cb:c702:1400:c3:4ae0:6d5c:1ab2])
+        by smtp.gmail.com with ESMTPSA id o8-20020a05600c510800b003a2e2e965absm5753132wms.20.2022.07.11.06.35.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Jul 2022 06:35:42 -0700 (PDT)
+Message-ID: <2c4dd559-4fa9-f874-934f-d6b674543d0f@redhat.com>
+Date:   Mon, 11 Jul 2022 15:35:42 +0200
 MIME-Version: 1.0
-In-Reply-To: <20220708161624.etkxdewnje4nhmhl@zlang-mailbox>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.31]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600010.china.huawei.com (7.193.23.86)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Content-Language: en-US
+To:     Alex Sierra <alex.sierra@amd.com>, jgg@nvidia.com
+Cc:     Felix.Kuehling@amd.com, linux-mm@kvack.org, rcampbell@nvidia.com,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        hch@lst.de, jglisse@redhat.com, apopple@nvidia.com,
+        willy@infradead.org, akpm@linux-foundation.org
+References: <20220707190349.9778-1-alex.sierra@amd.com>
+ <20220707190349.9778-8-alex.sierra@amd.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v8 07/15] mm/gup: migrate device coherent pages when
+ pinning instead of failing
+In-Reply-To: <20220707190349.9778-8-alex.sierra@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,175 +86,356 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On 07.07.22 21:03, Alex Sierra wrote:
+> From: Alistair Popple <apopple@nvidia.com>
+> 
+> Currently any attempts to pin a device coherent page will fail. This is
+> because device coherent pages need to be managed by a device driver, and
+> pinning them would prevent a driver from migrating them off the device.
+> 
+> However this is no reason to fail pinning of these pages. These are
+> coherent and accessible from the CPU so can be migrated just like
+> pinning ZONE_MOVABLE pages. So instead of failing all attempts to pin
+> them first try migrating them out of ZONE_DEVICE.
+> 
+> Signed-off-by: Alistair Popple <apopple@nvidia.com>
+> Acked-by: Felix Kuehling <Felix.Kuehling@amd.com>
+> [hch: rebased to the split device memory checks,
+>       moved migrate_device_page to migrate_device.c]
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  mm/gup.c            | 47 +++++++++++++++++++++++++++++++++++-----
+>  mm/internal.h       |  1 +
+>  mm/migrate_device.c | 53 +++++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 96 insertions(+), 5 deletions(-)
+> 
+> diff --git a/mm/gup.c b/mm/gup.c
+> index b65fe8bf5af4..9b6b9923d22d 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -1891,9 +1891,43 @@ static long check_and_migrate_movable_pages(unsigned long nr_pages,
+>  			continue;
+>  		prev_folio = folio;
+>  
+> -		if (folio_is_longterm_pinnable(folio))
+> +		/*
+> +		 * Device private pages will get faulted in during gup so it
+> +		 * shouldn't be possible to see one here.
+> +		 */
+> +		if (WARN_ON_ONCE(folio_is_device_private(folio))) {
+> +			ret = -EFAULT;
+> +			goto unpin_pages;
+> +		}
+
+I'd just drop that. Device private pages are never part of a present PTE. So if we
+could actually get a grab of one via GUP we would be in bigger trouble ... 
+already before this patch.
+
+> +
+> +		/*
+> +		 * Device coherent pages are managed by a driver and should not
+> +		 * be pinned indefinitely as it prevents the driver moving the
+> +		 * page. So when trying to pin with FOLL_LONGTERM instead try
+> +		 * to migrate the page out of device memory.
+> +		 */
+> +		if (folio_is_device_coherent(folio)) {
+> +			WARN_ON_ONCE(PageCompound(&folio->page));
+
+Maybe that belongs into migrate_device_page()?
+
+> +
+> +			/*
+> +			 * Migration will fail if the page is pinned, so convert
+
+[...]
+
+>  /*
+>   * mm/gup.c
+> diff --git a/mm/migrate_device.c b/mm/migrate_device.c
+> index cf9668376c5a..5decd26dd551 100644
+> --- a/mm/migrate_device.c
+> +++ b/mm/migrate_device.c
+> @@ -794,3 +794,56 @@ void migrate_vma_finalize(struct migrate_vma *migrate)
+>  	}
+>  }
+>  EXPORT_SYMBOL(migrate_vma_finalize);
+> +
+> +/*
+> + * Migrate a device coherent page back to normal memory.  The caller should have
+> + * a reference on page which will be copied to the new page if migration is
+> + * successful or dropped on failure.
+> + */
+> +struct page *migrate_device_page(struct page *page, unsigned int gup_flags)
+
+Function name should most probably indicate that we're dealing with coherent pages here?
+
+> +{
+> +	unsigned long src_pfn, dst_pfn = 0;
+> +	struct migrate_vma args;
+> +	struct page *dpage;
+> +
+> +	lock_page(page);
+> +	src_pfn = migrate_pfn(page_to_pfn(page)) | MIGRATE_PFN_MIGRATE;
+> +	args.src = &src_pfn;
+> +	args.dst = &dst_pfn;
+> +	args.cpages = 1;
+> +	args.npages = 1;
+> +	args.vma = NULL;
+> +	migrate_vma_setup(&args);
+> +	if (!(src_pfn & MIGRATE_PFN_MIGRATE))
+> +		return NULL;
+
+Wow, these refcount and page locking/unlocking rules with this migrate_* api are
+confusing now. And the usage here of sometimes returning and sometimes falling
+trough don't make it particularly easier to understand here.
+
+I'm not 100% happy about reusing migrate_vma_setup() usage if there *is no VMA*.
+That's just absolutely confusing, because usually migrate_vma_setup() itself 
+would do the collection step and ref+lock pages. :/
+
+In general, I can see why/how we're reusing the migrate_vma_* API here, but there 
+is absolutely no VMA ... not sure what to improve besides providing a second API
+that does a simple single-page migration. But that can be changed later ...
 
 
-ÔÚ 2022/7/9 0:16, Zorro Lang Ð´µÀ:
-> On Fri, Jul 08, 2022 at 07:21:54PM +0800, Sun Ke wrote:
->> Forget to run requested e2fsck after resize_inode, then resize fs, it
->> will trigger off null pointer.
->>
->> Regression test for commit b55c3cd102a6 ext4: add reserved GDT blocks
->> check.
->>
->> Signed-off-by: Sun Ke <sunke32@huawei.com>
->> ---
->>   tests/ext4/057     | 44 ++++++++++++++++++++++++++++++++++++++++++++
->>   tests/ext4/057.out |  2 ++
->>   2 files changed, 46 insertions(+)
->>   create mode 100755 tests/ext4/057
->>   create mode 100644 tests/ext4/057.out
->>
->> diff --git a/tests/ext4/057 b/tests/ext4/057
->> new file mode 100755
->> index 00000000..125f841a
->> --- /dev/null
->> +++ b/tests/ext4/057
->> @@ -0,0 +1,44 @@
->> +#! /bin/bash
->> +# SPDX-License-Identifier: GPL-2.0
->> +# Copyright (c) 2022 HUAWEI.  All Rights Reserved.
->> +#
->> +# FS QA Test 057
->> +#
->> +# Forget to run requested e2fsck after resize_inode, then resize fs,
->> +# it will trigger off null pointer.
->> +#
->> +# Regression test for commit
->> +# b55c3cd102a6 ext4: add reserved GDT blocks check
->> +#
->> +. ./common/preamble
->> +_begin_fstest auto resize quick
->> +
->> +# real QA test starts here
->> +
->> +# Modify as appropriate.
->> +_supported_fs ext4
->> +_fixed_by_kernel_commit b55c3cd102a6 \
->> +	"ext4: add reserved GDT blocks check"
->> +
->> +_require_scratch
->> +_require_command "$TUNE2FS_PROG" tune2fs
->> +_require_command "$RESIZE2FS_PROG" resize2fs
->> +_require_scratch_size $((1024 * 1024)) #kB
->> +
->> +# set fs size 512M
->> +dev_size=$((512 * 1024 * 1024))
->> +_scratch_mkfs_sized $dev_size >$seqres.full 2>&1
->> +
->> +# forget to run requested e2fsck after resize_inode
->> +$TUNE2FS_PROG -O ^resize_inode $SCRATCH_DEV >$seqres.full 2>&1
-> 
-> Please use appending write ">>$seqres.full", to avoid seqres.full be
-> overwritten.
-> 
-> I think we don't need to filter out the error output, we don't expect
-> there's an error, so if it fails, how about output errors to break
-> golden image (remind the testers).
-> 
->> +
->> +_scratch_mount
->> +
->> +# resize fs will trigger NULL pointer in ext4_flex_group_add
->> +$RESIZE2FS_PROG $SCRATCH_DEV 1G >$seqres.full 2>&1
-> 
-> Appending write too...
-> 
-> I'm not sure what's the necessary condition to reproduce the bug. Do you
-> need to resize fs will trigger the bug, but after:
-> 
->    # tune2fs -O ^resize_inode /dev/sda3
-> 
-> Then resize2fs always get:
-> 
->    # resize2fs /dev/sda3 3g
->    resize2fs 1.45.6 (20-Mar-2020)
->    Please run 'e2fsck -f /dev/sda3' first.
-> 
-> Looks like the resizing isn't run actually, is it what you really want?
-> I've tried to review this patch from fstests side, better to get some
-> review points from ext4 devel, to help to make sure that.
-> 
-> Thanks,
-> Zorro
-If comment out the resizefs line, the test will pass.
-But if not, it will panic, also takes about 1 second.
-So I think resizefs is necessary.
+> +
+> +	dpage = alloc_pages(GFP_USER | __GFP_NOWARN, 0);
+> +
 
-[  113.378201] run fstests ext4/057 at 2022-07-11 11:39:19
-[^[[0;32m  OK  ^[[0m] Started /usr/bin/bash -c test -w /p¡­_score_adj; 
-exec ./tests/ext4/057.^M
-[  113.747013] EXT4-fs (sdb): warning: mounting unchecked fs, running 
-e2fsck is recommended
-[  113.779534] BUG: kernel NULL pointer dereference, address: 
-0000000000000028
-[  113.781657] #PF: supervisor read access in kernel mode
-[  113.783250] #PF: error_code(0x0000) - not-present page
-[  113.784747] PGD 10d22b067 P4D 10d22b067 PUD 10c2e8067 PMD 0
-[  113.786360] Oops: 0000 [#1] PREEMPT SMP
-[  113.787514] CPU: 2 PID: 3359 Comm: resize2fs Not tainted 
-5.18.0-rc3-00087-g98d40e76652e #3
-[  113.789980] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), 
-BIOS 1.10.2-1ubuntu1 04/01/2014
-[  113.792566] RIP: 0010:ext4_flex_group_add+0xe06/0x2530
-[  113.794106] Code: 83 05 e5 2d 25 0c 01 48 85 c0 0f 84 16 fd ff ff 48 
-8b 44 24 28 be 40 0c 00 00 48 83 05 d2 2d 25 0c 01 48 83 05 6a 2b 25 0c 
-01 <48> 8b 68 28 48 83 05 0e 20 25 0c 01 48 8b 95 78 03 00 00 48 8b 42
-[  113.799408] RSP: 0018:ffffc900047a7c48 EFLAGS: 00010202
-[  113.800857] RAX: 0000000000000000 RBX: ffff88810633e3a8 RCX: 
-0000000055555557
-[  113.802753] RDX: ffff88810b144400 RSI: 0000000000000c40 RDI: 
-00000000aaaaaaab
-[  113.804627] RBP: 000000000000003f R08: 0000000000000001 R09: 
-0000000000000001
-[  113.806518] R10: 0000000000000000 R11: 00000000fffd2755 R12: 
-0000000000000005
-[  113.808071] R13: ffff88810d279800 R14: 0000000000000000 R15: 
-0000000000000005
-[  113.809540] FS:  00007f6aca9d2bc0(0000) GS:ffff88813bd00000(0000) 
-knlGS:0000000000000000
-[  113.811216] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  113.812404] CR2: 0000000000000028 CR3: 0000000106afc000 CR4: 
-00000000000006e0
-[  113.814078] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 
-0000000000000000
-[  113.815707] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 
-0000000000000400
-[  113.817212] Call Trace:
-[  113.817744]  <TASK>
-[  113.818221]  ? __kmalloc+0x21e/0x5c0[  113.818955] 
-ext4_resize_fs+0xbe4/0x1640
-[  113.819778]  __ext4_ioctl+0x1e75/0x26a0
-[  113.820597]  ? putname+0x75/0xa0
-[  113.821284]  ? kmem_cache_free+0x1a7/0x690
-[  113.822139]  ? putname+0x75/0xa0
-[  113.822801]  ? do_sys_openat2+0x2a8/0x4f0
-[  113.823644]  ext4_ioctl+0x12/0x20
-[  113.824352]  __x64_sys_ioctl+0xa3/0x110
-[  113.825171]  do_syscall_64+0x35/0x80
-[  113.825919]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[  113.826969] RIP: 0033:0x7f6ac9b06577
+alloc_page()
 
-I will continue to improve based on your suggestions on v3.
+> +	/*
+> +	 * get/pin the new page now so we don't have to retry gup after
+> +	 * migrating. We already have a reference so this should never fail.
+> +	 */
+> +	if (dpage && WARN_ON_ONCE(!try_grab_page(dpage, gup_flags))) {
+> +		__free_pages(dpage, 0);
 
+__free_page()
+
+> +		dpage = NULL;
+> +	}
+
+Hm, this means that we are not pinning via the PTE at hand, but via something
+we expect migration to put into the PTE. I'm not really happy about this.
+
+Ideally, we'd make the pinning decision only on the actual GUP path, not in here.
+Just like in the migrate_pages() case, where we end up dropping all refs/pins
+and looking up again via GUP from the PTE.
+
+For example, I wonder if something nasty could happen if the PTE got mapped
+R/O in the meantime and you're pinning R/W here ... 
+
+TBH, all this special casing on gup_flags here is nasty. Please, let's just do
+it like migrate_pages() and do another GUP walk. Absolutely no need to optimize.
+
+[...]
+
+
+
+I'd go with something like the following on top (which does not touch on the
+general semantic issue with migrate_vma_* ). Note that I most probably messed
+up some refcount/lock handling and that it's broken.
+Just to give you an idea what I think could be cleaner.
+
+
+
+diff --git a/mm/gup.c b/mm/gup.c
+index 9b6b9923d22d..17041b3e605e 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -1881,7 +1881,7 @@ static long check_and_migrate_movable_pages(unsigned long nr_pages,
+ 	unsigned long isolation_error_count = 0, i;
+ 	struct folio *prev_folio = NULL;
+ 	LIST_HEAD(movable_page_list);
+-	bool drain_allow = true;
++	bool drain_allow = true, any_device_coherent = false;
+ 	int ret = 0;
+ 
+ 	for (i = 0; i < nr_pages; i++) {
+@@ -1891,15 +1891,6 @@ static long check_and_migrate_movable_pages(unsigned long nr_pages,
+ 			continue;
+ 		prev_folio = folio;
+ 
+-		/*
+-		 * Device private pages will get faulted in during gup so it
+-		 * shouldn't be possible to see one here.
+-		 */
+-		if (WARN_ON_ONCE(folio_is_device_private(folio))) {
+-			ret = -EFAULT;
+-			goto unpin_pages;
+-		}
+-
+ 		/*
+ 		 * Device coherent pages are managed by a driver and should not
+ 		 * be pinned indefinitely as it prevents the driver moving the
+@@ -1907,7 +1898,12 @@ static long check_and_migrate_movable_pages(unsigned long nr_pages,
+ 		 * to migrate the page out of device memory.
+ 		 */
+ 		if (folio_is_device_coherent(folio)) {
+-			WARN_ON_ONCE(PageCompound(&folio->page));
++			/*
++			 * We always want a new GUP lookup with device coherent
++			 * pages.
++			 */
++			any_device_coherent = true;
++			pages[i] = 0;
+ 
+ 			/*
+ 			 * Migration will fail if the page is pinned, so convert
+@@ -1918,11 +1914,12 @@ static long check_and_migrate_movable_pages(unsigned long nr_pages,
+ 				unpin_user_page(&folio->page);
+ 			}
+ 
+-			pages[i] = migrate_device_page(&folio->page, gup_flags);
+-			if (!pages[i]) {
+-				ret = -EBUSY;
++			ret = migrate_device_coherent_page(&folio->page);
++			if (ret)
+ 				goto unpin_pages;
+-			}
++			/* The reference to our folio is stale now. */
++			prev_folio = NULL;
++			folio = NULL;
+ 			continue;
+ 		}
+ 
+@@ -1953,7 +1950,8 @@ static long check_and_migrate_movable_pages(unsigned long nr_pages,
+ 				    folio_nr_pages(folio));
+ 	}
+ 
+-	if (!list_empty(&movable_page_list) || isolation_error_count)
++	if (!list_empty(&movable_page_list) || isolation_error_count ||
++	    any_device_coherent)
+ 		goto unpin_pages;
+ 
+ 	/*
+@@ -1963,14 +1961,19 @@ static long check_and_migrate_movable_pages(unsigned long nr_pages,
+ 	return nr_pages;
+ 
+ unpin_pages:
+-	for (i = 0; i < nr_pages; i++) {
+-		if (!pages[i])
+-			continue;
++	/* We have to be careful if we stumbled over device coherent pages. */
++	if (unlikely(any_device_coherent || !(gup_flags & FOLL_PIN))) {
++		for (i = 0; i < nr_pages; i++) {
++			if (!pages[i])
++				continue;
+ 
+-		if (gup_flags & FOLL_PIN)
+-			unpin_user_page(pages[i]);
+-		else
+-			put_page(pages[i]);
++			if (gup_flags & FOLL_PIN)
++				unpin_user_page(pages[i]);
++			else
++				put_page(pages[i]);
++		}
++	} else {
++		unpin_user_pages(pages, nr_pages);
+ 	}
+ 
+ 	if (!list_empty(&movable_page_list)) {
+diff --git a/mm/internal.h b/mm/internal.h
+index eeab4ee7a4a3..899dab512c5a 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -853,7 +853,7 @@ int numa_migrate_prep(struct page *page, struct vm_area_struct *vma,
+ 		      unsigned long addr, int page_nid, int *flags);
+ 
+ void free_zone_device_page(struct page *page);
+-struct page *migrate_device_page(struct page *page, unsigned int gup_flags);
++int migrate_device_coherent_page(struct page *page);
+ 
+ /*
+  * mm/gup.c
+diff --git a/mm/migrate_device.c b/mm/migrate_device.c
+index 5decd26dd551..dfb78ea3d326 100644
+--- a/mm/migrate_device.c
++++ b/mm/migrate_device.c
+@@ -797,53 +797,40 @@ EXPORT_SYMBOL(migrate_vma_finalize);
+ 
+ /*
+  * Migrate a device coherent page back to normal memory.  The caller should have
+- * a reference on page which will be copied to the new page if migration is
+- * successful or dropped on failure.
++ * a reference on page, which will be dropped on return.
+  */
+-struct page *migrate_device_page(struct page *page, unsigned int gup_flags)
++int migrate_device_coherent_page(struct page *page)
+ {
+ 	unsigned long src_pfn, dst_pfn = 0;
+-	struct migrate_vma args;
++	struct migrate_vma args = {
++		.src = &src_pfn,
++		.dst = &dst_pfn,
++		.cpages = 1,
++		.npages = 1,
++		.vma = NULL,
++	};
+ 	struct page *dpage;
+ 
++	VM_WARN_ON_ONCE(PageCompound(page));
++
+ 	lock_page(page);
+ 	src_pfn = migrate_pfn(page_to_pfn(page)) | MIGRATE_PFN_MIGRATE;
+-	args.src = &src_pfn;
+-	args.dst = &dst_pfn;
+-	args.cpages = 1;
+-	args.npages = 1;
+-	args.vma = NULL;
+-	migrate_vma_setup(&args);
+-	if (!(src_pfn & MIGRATE_PFN_MIGRATE))
+-		return NULL;
+-
+-	dpage = alloc_pages(GFP_USER | __GFP_NOWARN, 0);
+-
+-	/*
+-	 * get/pin the new page now so we don't have to retry gup after
+-	 * migrating. We already have a reference so this should never fail.
+-	 */
+-	if (dpage && WARN_ON_ONCE(!try_grab_page(dpage, gup_flags))) {
+-		__free_pages(dpage, 0);
+-		dpage = NULL;
+-	}
+ 
+-	if (dpage) {
+-		lock_page(dpage);
+-		dst_pfn = migrate_pfn(page_to_pfn(dpage));
++	migrate_vma_setup(&args);
++	if (src_pfn & MIGRATE_PFN_MIGRATE) {
++		dpage = alloc_page(GFP_USER | __GFP_NOWARN);
++		if (dpage) {
++			dst_pfn = migrate_pfn(page_to_pfn(dpage));
++			lock_page(dpage);
++		}
+ 	}
+ 
+ 	migrate_vma_pages(&args);
+ 	if (src_pfn & MIGRATE_PFN_MIGRATE)
+ 		copy_highpage(dpage, page);
+ 	migrate_vma_finalize(&args);
+-	if (dpage && !(src_pfn & MIGRATE_PFN_MIGRATE)) {
+-		if (gup_flags & FOLL_PIN)
+-			unpin_user_page(dpage);
+-		else
+-			put_page(dpage);
+-		dpage = NULL;
+-	}
+ 
+-	return dpage;
++	if (src_pfn & MIGRATE_PFN_MIGRATE)
++		return 0;
++	return -EBUSY;
+ }
+-- 
+2.35.3
+
+
+
+-- 
 Thanks,
-Sun Ke
-> 
->> +
->> +echo "Silence is golden"
->> +
->> +# success, all done
->> +status=0
->> +exit
->> diff --git a/tests/ext4/057.out b/tests/ext4/057.out
->> new file mode 100644
->> index 00000000..185023c7
->> --- /dev/null
->> +++ b/tests/ext4/057.out
->> @@ -0,0 +1,2 @@
->> +QA output created by 057
->> +Silence is golden
->> -- 
->> 2.13.6
->>
-> .
-> 
+
+David / dhildenb
+
