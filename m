@@ -2,38 +2,61 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8519572DBC
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Jul 2022 07:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C99572EAD
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Jul 2022 09:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231465AbiGMFym (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 13 Jul 2022 01:54:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35610 "EHLO
+        id S234499AbiGMHDq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 13 Jul 2022 03:03:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231732AbiGMFyS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 13 Jul 2022 01:54:18 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB7C4D162;
-        Tue, 12 Jul 2022 22:53:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=04OkBbamDrYTTKSS3YvQGrQrd9Zn8zSMi2cQbePeE78=; b=IKl2GBa6GmQU7Q8pCgx4evZsys
-        XSSvfsUBgaR2xSxOWBuY3wcJz+rPlbSzJ9QCkaBCps6ODZhlyrTAMIUNeRWcdxU8vwBV9KObbZ8Ns
-        ACkEcw9DYS+bwqO6sOzCwIdt/xNI/J3Z4tVORq8yj9g9pVjBqhzJ2DKG+bL2Rh+RZZte43a5VWU3B
-        u7q6/6mRSWvuQS9yhM+a2gnFG5T5blBQmFw0k4FN/jUfupfGKErTeaVsRlHCCJfiNrx5thnGfUccQ
-        ucYia00dIFA95i+3kkmFx52pFi+93U0Ttvn5Kn0dJr70WALhbXa9hbbgGPzmR8ksH0cWzuoUvkcJI
-        Cu2j7aVA==;
-Received: from ip4d15c27d.dynamic.kabel-deutschland.de ([77.21.194.125] helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oBVJi-000NZl-7h; Wed, 13 Jul 2022 05:53:46 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     =?UTF-8?q?Christoph=20B=C3=B6hmwalder?= 
+        with ESMTP id S234478AbiGMHDo (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 13 Jul 2022 03:03:44 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB93222B5
+        for <linux-ext4@vger.kernel.org>; Wed, 13 Jul 2022 00:03:42 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id bp15so7955594ejb.6
+        for <linux-ext4@vger.kernel.org>; Wed, 13 Jul 2022 00:03:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0gYYvt1vWIXI8HNMSYfXYBDt+l8mgcRYRjUuxGt2NPY=;
+        b=eUO8a1qjrBJuiWZEU95ms0v4NGhQo/R6mzhJN0jU2rcmOAvZOCm6tQTO5Q4hKqZnUL
+         geUOthwICiNUBd836aa64R1Yi3PO4S+3JrnUsG7/lBN6blQCZkQdvRz8SYJG77Idkh5Q
+         G+vTK9EBX1JQgTUXhm0jqY1sRsWQltfpPJ/Nkuo1Hptetw5RCCA2hU4cePeny5j8nPfc
+         MgkOCQ5cPt79WIbZwWEyGciWFbIcp6Nr78DXPhcUDPFodFxN1dE+/5KvRi256xDOJJKZ
+         IGoCRENig3iGtwks7i7MDn/ifVeo0LQXlfZLxqj0pHadHjoBYFoZFIrpbYQOwkibk7H5
+         rp6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0gYYvt1vWIXI8HNMSYfXYBDt+l8mgcRYRjUuxGt2NPY=;
+        b=cydCcP1nd3LkAUgYQvbAkBdiVOqI5T1L7IxA3uxlakAcVQxbUyNre1FgoOWNs4lFlR
+         NkiS+upHo0O0IjxulooE8dhO0JNu4Ow/TOxxIkc0jjzWsOLQjRS8MEAn6gIp63nxqrMw
+         bqnkb/DP985KEG3Tq4u+VpZv26P3KpswqqPmIW4a2u9rd3TReNAg/QTt3fHBrKg5GnEv
+         /8Nfvo7cLVfU9AYzA7WNrA4iPPlMh/JC8M1TBjrx2CqrIudSKiHVTl/EGNNHpiTGseK4
+         F7gFSGcKndmQRuT9wiMMC3UzAQ11GpYIWuvHM2NuvIBMLqwzqI6TCn4wbrLIgSA1Y6i7
+         9AvA==
+X-Gm-Message-State: AJIora9cL6YedG7t6ixpPAlUpDNstn0BepX9tVDuMuGtl7k9N0wHvHYd
+        Cdxms5/g/QZU9tMd4u3LrfXPhrkEvJ+QcAq3eWOnKg==
+X-Google-Smtp-Source: AGRyM1v6tCbmP3It1PfK7ATbjED1frOwrB/fUUoQmetZ+KCzzdeBWp+khkKlwSMizYudxhMnhwJ7AyxgtQitWHTVyzw=
+X-Received: by 2002:a17:906:d54f:b0:726:2c7c:c0f9 with SMTP id
+ cr15-20020a170906d54f00b007262c7cc0f9mr1952611ejc.441.1657695821259; Wed, 13
+ Jul 2022 00:03:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220713055317.1888500-1-hch@lst.de> <20220713055317.1888500-7-hch@lst.de>
+In-Reply-To: <20220713055317.1888500-7-hch@lst.de>
+From:   Jinpu Wang <jinpu.wang@ionos.com>
+Date:   Wed, 13 Jul 2022 09:03:30 +0200
+Message-ID: <CAMGffEkbzTKkYY2yt-G8t1nO+y3+2+97=-ZgeUdF+ZE3iZvjng@mail.gmail.com>
+Subject: Re: [PATCH 6/9] rnbd-srv: remove the name field from struct rnbd_dev
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        =?UTF-8?Q?Christoph_B=C3=B6hmwalder?= 
         <christoph.boehmwalder@linbit.com>,
         "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Jack Wang <jinpu.wang@ionos.com>, Song Liu <song@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
+        Song Liu <song@kernel.org>, "Theodore Ts'o" <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Jan Kara <jack@suse.com>, Mark Fasheh <mark@fasheh.com>,
         Joel Becker <jlbec@evilplan.org>,
@@ -41,182 +64,132 @@ Cc:     =?UTF-8?q?Christoph=20B=C3=B6hmwalder?=
         linux-block@vger.kernel.org, drbd-dev@lists.linbit.com,
         linux-raid@vger.kernel.org, linux-ext4@vger.kernel.org,
         ocfs2-devel@oss.oracle.com
-Subject: [PATCH 9/9] block: remove bdevname
-Date:   Wed, 13 Jul 2022 07:53:17 +0200
-Message-Id: <20220713055317.1888500-10-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220713055317.1888500-1-hch@lst.de>
-References: <20220713055317.1888500-1-hch@lst.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Replace the remaining calls of bdevname with snprintf using the %pg
-format specifier.
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- block/genhd.c           | 23 -----------------------
- drivers/md/md.c         |  2 +-
- drivers/md/raid1.c      |  2 +-
- drivers/md/raid10.c     |  2 +-
- fs/ext4/mmp.c           |  3 ++-
- fs/jbd2/journal.c       |  6 ++++--
- include/linux/blkdev.h  |  1 -
- kernel/trace/blktrace.c |  4 ++--
- 8 files changed, 11 insertions(+), 32 deletions(-)
-
-diff --git a/block/genhd.c b/block/genhd.c
-index 9d30f159c59ac..44dfcf67ed96a 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -101,29 +101,6 @@ bool set_capacity_and_notify(struct gendisk *disk, sector_t size)
- }
- EXPORT_SYMBOL_GPL(set_capacity_and_notify);
- 
--/*
-- * Format the device name of the indicated block device into the supplied buffer
-- * and return a pointer to that same buffer for convenience.
-- *
-- * Note: do not use this in new code, use the %pg specifier to sprintf and
-- * printk insted.
-- */
--const char *bdevname(struct block_device *bdev, char *buf)
--{
--	struct gendisk *hd = bdev->bd_disk;
--	int partno = bdev->bd_partno;
--
--	if (!partno)
--		snprintf(buf, BDEVNAME_SIZE, "%s", hd->disk_name);
--	else if (isdigit(hd->disk_name[strlen(hd->disk_name)-1]))
--		snprintf(buf, BDEVNAME_SIZE, "%sp%d", hd->disk_name, partno);
--	else
--		snprintf(buf, BDEVNAME_SIZE, "%s%d", hd->disk_name, partno);
--
--	return buf;
--}
--EXPORT_SYMBOL(bdevname);
--
- static void part_stat_read_all(struct block_device *part,
- 		struct disk_stats *stat)
- {
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 076255ec9ba18..4be9d81730712 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -2438,7 +2438,7 @@ static int bind_rdev_to_array(struct md_rdev *rdev, struct mddev *mddev)
- 			mdname(mddev), mddev->max_disks);
- 		return -EBUSY;
- 	}
--	bdevname(rdev->bdev,b);
-+	snprintf(b, sizeof(b), "%pg", rdev->bdev);
- 	strreplace(b, '/', '!');
- 
- 	rdev->mddev = mddev;
-diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
-index 258d4eb2d63c3..65cd90f0b2a8b 100644
---- a/drivers/md/raid1.c
-+++ b/drivers/md/raid1.c
-@@ -1240,7 +1240,7 @@ static void raid1_read_request(struct mddev *mddev, struct bio *bio,
- 		rcu_read_lock();
- 		rdev = rcu_dereference(conf->mirrors[r1_bio->read_disk].rdev);
- 		if (rdev)
--			bdevname(rdev->bdev, b);
-+			snprintf(b, sizeof(b), "%pg", rdev->bdev);
- 		else
- 			strcpy(b, "???");
- 		rcu_read_unlock();
-diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
-index d589f823feb11..a7dcb1bf6b0a9 100644
---- a/drivers/md/raid10.c
-+++ b/drivers/md/raid10.c
-@@ -1164,7 +1164,7 @@ static void raid10_read_request(struct mddev *mddev, struct bio *bio,
- 		disk = r10_bio->devs[slot].devnum;
- 		err_rdev = rcu_dereference(conf->mirrors[disk].rdev);
- 		if (err_rdev)
--			bdevname(err_rdev->bdev, b);
-+			snprintf(b, sizeof(b), "%pg", err_rdev->bdev);
- 		else {
- 			strcpy(b, "???");
- 			/* This never gets dereferenced */
-diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-index b7a850b0070b8..b221f313ded6c 100644
---- a/fs/ext4/mmp.c
-+++ b/fs/ext4/mmp.c
-@@ -371,7 +371,8 @@ int ext4_multi_mount_protect(struct super_block *sb,
- 	EXT4_SB(sb)->s_mmp_bh = bh;
- 
- 	BUILD_BUG_ON(sizeof(mmp->mmp_bdevname) < BDEVNAME_SIZE);
--	bdevname(bh->b_bdev, mmp->mmp_bdevname);
-+	snprintf(mmp->mmp_bdevname, sizeof(mmp->mmp_bdevname),
-+		 "%pg", bh->b_bdev);
- 
- 	/*
- 	 * Start a kernel thread to update the MMP block periodically.
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index c0cbeeaec2d1a..9015f5fa28620 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -1465,7 +1465,8 @@ journal_t *jbd2_journal_init_dev(struct block_device *bdev,
- 	if (!journal)
- 		return NULL;
- 
--	bdevname(journal->j_dev, journal->j_devname);
-+	snprintf(journal->j_devname, sizeof(journal->j_devname),
-+		 "%pg", journal->j_dev);
- 	strreplace(journal->j_devname, '/', '!');
- 	jbd2_stats_proc_init(journal);
- 
-@@ -1507,7 +1508,8 @@ journal_t *jbd2_journal_init_inode(struct inode *inode)
- 		return NULL;
- 
- 	journal->j_inode = inode;
--	bdevname(journal->j_dev, journal->j_devname);
-+	snprintf(journal->j_devname, sizeof(journal->j_devname),
-+		 "%pg", journal->j_dev);
- 	p = strreplace(journal->j_devname, '/', '!');
- 	sprintf(p, "-%lu", journal->j_inode->i_ino);
- 	jbd2_stats_proc_init(journal);
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 22c477fadc0f3..2775763c51b99 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -1457,7 +1457,6 @@ static inline void bio_end_io_acct(struct bio *bio, unsigned long start_time)
- int bdev_read_only(struct block_device *bdev);
- int set_blocksize(struct block_device *bdev, int size);
- 
--const char *bdevname(struct block_device *bdev, char *buffer);
- int lookup_bdev(const char *pathname, dev_t *dev);
- 
- void blkdev_show(struct seq_file *seqf, off_t offset);
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index c584effe5fe99..4752bda1b1a0c 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -736,12 +736,12 @@ int blk_trace_ioctl(struct block_device *bdev, unsigned cmd, char __user *arg)
- 
- 	switch (cmd) {
- 	case BLKTRACESETUP:
--		bdevname(bdev, b);
-+		snprintf(b, sizeof(b), "%pg", bdev);
- 		ret = __blk_trace_setup(q, b, bdev->bd_dev, bdev, arg);
- 		break;
- #if defined(CONFIG_COMPAT) && defined(CONFIG_X86_64)
- 	case BLKTRACESETUP32:
--		bdevname(bdev, b);
-+		snprintf(b, sizeof(b), "%pg", bdev);
- 		ret = compat_blk_trace_setup(q, b, bdev->bd_dev, bdev, arg);
- 		break;
- #endif
--- 
-2.30.2
-
+On Wed, Jul 13, 2022 at 7:53 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> Just print the block device name directly using the %pg format specifier.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Jack Wang <jinpu.wang@ionos.com>
+Thx!
+> ---
+>  drivers/block/rnbd/rnbd-srv-dev.c   | 1 -
+>  drivers/block/rnbd/rnbd-srv-dev.h   | 1 -
+>  drivers/block/rnbd/rnbd-srv-sysfs.c | 5 ++---
+>  drivers/block/rnbd/rnbd-srv.c       | 9 ++++-----
+>  drivers/block/rnbd/rnbd-srv.h       | 3 +--
+>  5 files changed, 7 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/block/rnbd/rnbd-srv-dev.c b/drivers/block/rnbd/rnbd-srv-dev.c
+> index c5d0a03911659..c63017f6e4214 100644
+> --- a/drivers/block/rnbd/rnbd-srv-dev.c
+> +++ b/drivers/block/rnbd/rnbd-srv-dev.c
+> @@ -28,7 +28,6 @@ struct rnbd_dev *rnbd_dev_open(const char *path, fmode_t flags)
+>                 goto err;
+>
+>         dev->blk_open_flags = flags;
+> -       bdevname(dev->bdev, dev->name);
+>
+>         return dev;
+>
+> diff --git a/drivers/block/rnbd/rnbd-srv-dev.h b/drivers/block/rnbd/rnbd-srv-dev.h
+> index 4309e52524691..8407d12f70afe 100644
+> --- a/drivers/block/rnbd/rnbd-srv-dev.h
+> +++ b/drivers/block/rnbd/rnbd-srv-dev.h
+> @@ -15,7 +15,6 @@
+>  struct rnbd_dev {
+>         struct block_device     *bdev;
+>         fmode_t                 blk_open_flags;
+> -       char                    name[BDEVNAME_SIZE];
+>  };
+>
+>  /**
+> diff --git a/drivers/block/rnbd/rnbd-srv-sysfs.c b/drivers/block/rnbd/rnbd-srv-sysfs.c
+> index feaa76c5a3423..297a6924ff4e2 100644
+> --- a/drivers/block/rnbd/rnbd-srv-sysfs.c
+> +++ b/drivers/block/rnbd/rnbd-srv-sysfs.c
+> @@ -38,14 +38,13 @@ static struct kobj_type dev_ktype = {
+>  };
+>
+>  int rnbd_srv_create_dev_sysfs(struct rnbd_srv_dev *dev,
+> -                              struct block_device *bdev,
+> -                              const char *dev_name)
+> +                              struct block_device *bdev)
+>  {
+>         struct kobject *bdev_kobj;
+>         int ret;
+>
+>         ret = kobject_init_and_add(&dev->dev_kobj, &dev_ktype,
+> -                                  rnbd_devs_kobj, dev_name);
+> +                                  rnbd_devs_kobj, "%pg", bdev);
+>         if (ret) {
+>                 kobject_put(&dev->dev_kobj);
+>                 return ret;
+> diff --git a/drivers/block/rnbd/rnbd-srv.c b/drivers/block/rnbd/rnbd-srv.c
+> index beaef43a67b9d..0713014bf423f 100644
+> --- a/drivers/block/rnbd/rnbd-srv.c
+> +++ b/drivers/block/rnbd/rnbd-srv.c
+> @@ -419,7 +419,7 @@ static struct rnbd_srv_sess_dev
+>         return sess_dev;
+>  }
+>
+> -static struct rnbd_srv_dev *rnbd_srv_init_srv_dev(const char *id)
+> +static struct rnbd_srv_dev *rnbd_srv_init_srv_dev(struct block_device *bdev)
+>  {
+>         struct rnbd_srv_dev *dev;
+>
+> @@ -427,7 +427,7 @@ static struct rnbd_srv_dev *rnbd_srv_init_srv_dev(const char *id)
+>         if (!dev)
+>                 return ERR_PTR(-ENOMEM);
+>
+> -       strscpy(dev->id, id, sizeof(dev->id));
+> +       snprintf(dev->id, sizeof(dev->id), "%pg", bdev);
+>         kref_init(&dev->kref);
+>         INIT_LIST_HEAD(&dev->sess_dev_list);
+>         mutex_init(&dev->lock);
+> @@ -512,7 +512,7 @@ rnbd_srv_get_or_create_srv_dev(struct rnbd_dev *rnbd_dev,
+>         int ret;
+>         struct rnbd_srv_dev *new_dev, *dev;
+>
+> -       new_dev = rnbd_srv_init_srv_dev(rnbd_dev->name);
+> +       new_dev = rnbd_srv_init_srv_dev(rnbd_dev->bdev);
+>         if (IS_ERR(new_dev))
+>                 return new_dev;
+>
+> @@ -758,8 +758,7 @@ static int process_msg_open(struct rnbd_srv_session *srv_sess,
+>          */
+>         mutex_lock(&srv_dev->lock);
+>         if (!srv_dev->dev_kobj.state_in_sysfs) {
+> -               ret = rnbd_srv_create_dev_sysfs(srv_dev, rnbd_dev->bdev,
+> -                                                rnbd_dev->name);
+> +               ret = rnbd_srv_create_dev_sysfs(srv_dev, rnbd_dev->bdev);
+>                 if (ret) {
+>                         mutex_unlock(&srv_dev->lock);
+>                         rnbd_srv_err(srv_sess_dev,
+> diff --git a/drivers/block/rnbd/rnbd-srv.h b/drivers/block/rnbd/rnbd-srv.h
+> index be2ae486d407e..6926f9069dc4b 100644
+> --- a/drivers/block/rnbd/rnbd-srv.h
+> +++ b/drivers/block/rnbd/rnbd-srv.h
+> @@ -68,8 +68,7 @@ void rnbd_srv_sess_dev_force_close(struct rnbd_srv_sess_dev *sess_dev,
+>  /* rnbd-srv-sysfs.c */
+>
+>  int rnbd_srv_create_dev_sysfs(struct rnbd_srv_dev *dev,
+> -                             struct block_device *bdev,
+> -                             const char *dir_name);
+> +                             struct block_device *bdev);
+>  void rnbd_srv_destroy_dev_sysfs(struct rnbd_srv_dev *dev);
+>  int rnbd_srv_create_dev_session_sysfs(struct rnbd_srv_sess_dev *sess_dev);
+>  void rnbd_srv_destroy_dev_session_sysfs(struct rnbd_srv_sess_dev *sess_dev);
+> --
+> 2.30.2
+>
