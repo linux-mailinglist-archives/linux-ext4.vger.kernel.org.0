@@ -2,211 +2,84 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04AF5572AD5
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Jul 2022 03:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1FD572DA2
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Jul 2022 07:53:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232716AbiGMBaV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 12 Jul 2022 21:30:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37092 "EHLO
+        id S233545AbiGMFxj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 13 Jul 2022 01:53:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbiGMBaU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 12 Jul 2022 21:30:20 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74165C48DF
-        for <linux-ext4@vger.kernel.org>; Tue, 12 Jul 2022 18:30:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2BE20B81C94
-        for <linux-ext4@vger.kernel.org>; Wed, 13 Jul 2022 01:30:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFC4AC3411C;
-        Wed, 13 Jul 2022 01:30:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657675816;
-        bh=idXIfB4AZj4nTcBIkZUwPDS4pQByMRfyU8iVPc8jYDk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VfB2pIXx7Zm2Zsdfv52Eop8fBajNTSMffhViF/NLVn9LqA4eLa/uqt1A3Yq3RxW9f
-         tD4RgBIiueovIctNgD4ty1dAZkx4nWjnjtD3vqIVKlKHHrKZc/jQXHtHqJtiU8ORDy
-         iChd2W2pgpv9ulQflh8eMcVl4HrEGrqRc+ebPuqDMiHVsWZljGUf9xxhwzKaqyWCnq
-         mGHgYKZ7U5QAGknTsSUbLSElBmZ3xKq85Bp50avdoFu58mMPek/EHYw/+T+RaXQ2gn
-         J+7y6XRMZ03a2i1OwL7bkB3ARUfU1eXZN+vI4rHp9pfuGQJwLa5CD/ek89ssmT6qEs
-         hmvxFJ1I2tlDg==
-Date:   Tue, 12 Jul 2022 18:30:16 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Jeremy Bongio <bongiojp@gmail.com>
-Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] Add manpage for get/set fsuuid ioctl.
-Message-ID: <Ys4gKDDlPtOYvev0@magnolia>
-References: <20220712225653.536984-1-bongiojp@gmail.com>
+        with ESMTP id S229599AbiGMFxi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 13 Jul 2022 01:53:38 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E597135;
+        Tue, 12 Jul 2022 22:53:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=KrpjvwUcHbQf2YuRp2OWaODTDZci6DgQG3eP4OSBmUI=; b=YRBK/+Qzhe+1221YOQ4iqzLn/5
+        4Vwf1PyNclwthcoNXZ8KOoB+GAm/JBggQtmauR03xvzEJ6HJrky94ioJYu/id13gc3E8Vp3eEjaPZ
+        4/U7tIzjiBG7yOAf5AudMpRTfWM/glZnmH0Q5KsdHn9yGpUBaGPrRgAqZ84jMYIXbbDNEzhIhaeXE
+        HPqbGv7ZwbHz+9nAFWGg1NsiY6L75v7smtXveUpmZ+cLceuQWo6JUhgy4Vj3ymFqb/j70IVLdScfi
+        nMcJLQNaBI3D7FKAwYGd4Ir2YoBbRsfjJA6+RJnMFwO2T37jlyn5qeZ+yBeFjFD20xwQM/46VSp4+
+        +bC9PZdw==;
+Received: from ip4d15c27d.dynamic.kabel-deutschland.de ([77.21.194.125] helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1oBVJH-000NMY-Jw; Wed, 13 Jul 2022 05:53:20 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     =?UTF-8?q?Christoph=20B=C3=B6hmwalder?= 
+        <christoph.boehmwalder@linbit.com>,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Jack Wang <jinpu.wang@ionos.com>, Song Liu <song@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.com>, Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        linux-block@vger.kernel.org, drbd-dev@lists.linbit.com,
+        linux-raid@vger.kernel.org, linux-ext4@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com
+Subject: remove bdevname
+Date:   Wed, 13 Jul 2022 07:53:08 +0200
+Message-Id: <20220713055317.1888500-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220712225653.536984-1-bongiojp@gmail.com>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jul 12, 2022 at 03:56:53PM -0700, Jeremy Bongio wrote:
-> This manpage written for the case where xfs or other filesystems will
-> implement the same ioctl.
+Hi Jens,
 
-You might want to cc the manpages project (linux-man@vger.kernel.org),
-since this is likely to end up in there some day.
+this series removes the final uses and the implementation of the bdevname()
+function.
 
-> Signed-off-by: Jeremy Bongio <bongiojp@gmail.com>
-> ---
->  man2/ioctl_fsuuid.2 | 110 ++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 110 insertions(+)
->  create mode 100644 man2/ioctl_fsuuid.2
-> 
-> diff --git a/man2/ioctl_fsuuid.2 b/man2/ioctl_fsuuid.2
-> new file mode 100644
-> index 000000000..db414bf59
-> --- /dev/null
-> +++ b/man2/ioctl_fsuuid.2
-> @@ -0,0 +1,110 @@
-> +.\" Copyright (c) 2022 Google, Inc., written by Jeremy Bongio <bongiojp@gmail.com>
-> +.\"
-> +.\" SPDX-License-Identifier: GPL-2.0-or-later
-> +.TH IOCTL_FSUUID 2 2022-07-08 "Linux" "Linux Programmer's Manual"
-> +.SH NAME
-> +ioctl_fsuuid \- get or set a filesystem label
-> +.SH LIBRARY
-> +Standard C library
-> +.RI ( libc ", " \-lc )
-> +.SH SYNOPSIS
-> +.nf
-> +.BR "#include <linux/fs.h>" "      /* Definition of " *FSLABEL* " constants */"
-> +.BR "#include <uuid/uuid.h>" "     /* Definition of " *UUID_MAX* " constants */"
-
-Hmm... that's in libuuid, and not everyone's going to want to link with
-that.  You might consider defining EXT4_UUID_SIZE in the same place as
-the ioctl definitions, or putting it in libext2fs somewhere.
-
-> +.B #include <sys/ioctl.h>
-> +.PP
-> +.BI "int ioctl(int " fd ", FS_IOC_GETFSUUID, struct " fsuuid ");"
-> +.BI "int ioctl(int " fd ", FS_IOC_SETFSUUID, struct " fsuuid ");"
-> +.fi
-> +.SH DESCRIPTION
-> +If a filesystem supports online uuid manipulation, these
-
-No need to say 'online', ioctls don't work on unmounted filesystems.
-
-> +.BR ioctl (2)
-> +operations can be used to get or set the uuid for the filesystem
-> +on which
-> +.I fd
-> +resides.
-> +.PP
-> +The
-> +.B FS_IOC_GETFSUUID
-> +operation will read the filesystem uuid into
-> +.I fu_uuid.
-> +.I fu_len
-> +must be set to the number of bytes allocated for the uuid.
-> +.I fu_uuid
-> +must be initialized to the size of the filesystem uuid.
-
-Huh?
-
-> +The maximmum number of bytes for a uuid is
-> +.BR UUID_MAX.
-
-"The number of bytes to allocate for the UUID is filesystem-dependent."?
-
-> +.I fu_flags
-> +must be set to 0.
-> +.PP
-> +The
-> +.B FS_IOC_SETFSUUID
-> +operation will set the filesystem uuid according to
-> +.I fu_uuid.
-> +.I fu_len
-> +must be set to the number of bytes in the uuid.
-> +.I fu_flags
-> +must be set to 0. The
-> +.B FS_IOC_SETFSUUID
-> +operation requires privilege
-> +.RB ( CAP_SYS_ADMIN ).
-> +.PP
-> +This information is conveyed in a structure of
-> +the following form:
-> +.PP
-> +.in +4n
-> +.EX
-> +struct fsuuid {
-> +       __u32       fu_len;
-> +       __u32       fu_flags;
-> +       __u8        fu_uuid[];
-> +};
-
-Question: Would it perhaps make more sense to describe the struct and
-what goes in fu_len/fu_uuid first, and then describe what get and set
-do?
-
-> +.EE
-> +.in
-> +.PP
-> +.SH RETURN VALUE
-> +On success zero is returned.
-> +On error, \-1 is returned, and
-> +.I errno
-> +is set to indicate the error.
-> +.SH ERRORS
-> +Possible errors include (but are not limited to) the following:
-> +.TP
-> +.B EFAULT
-> +Either the pointer to the
-> +.I fsuuid
-> +structure is invalid or
-> +.I fu_uuid
-> +has not been initialized properly.
-> +.TP
-> +.B EINVAL
-> +The specified arguments are invalid.
-> +.I fu_len
-> +does not match the filesystem uuid length or
-> +.I fu_flags
-> +has bits set that are not implemented.
-> +.TP
-> +.B ENOTTY
-> +The filesystem does not support the ioctl.
-> +.TP
-> +.B EOPNOTSUPP
-> +The filesystem does not currently support changing the uuid through this
-> +ioctl. This may be due to incompatible feature flags.
-> +.TP
-> +.B EPERM
-> +The calling process does not have sufficient permissions to set the uuid.
-> +.SH VERSIONS
-> +These
-> +.BR ioctl (2)
-> +operations first appeared in Linux 5.19.
-
-5.20 at this point...
-
-> +They were previously known as
-> +.B EXT4_IOC_GETFSUUID
-> +and
-> +.B EXT4_IOC_SETFSUUID
-
-Oh!  I had assumed you'd just leave these as "ext4" ioctls for now and
-let whoever does the next filesystem port add these bits.
-
-> +and were private to ext4.
-> +.SH CONFORMING TO
-> +This API is Linux-specific.
-> +.BR UUID_MAX.
-> +.SH SEE ALSO
-> +.BR ioctl (2)
-> +
-> -- 
-> 2.37.0.144.g8ac04bfd2-goog
-> 
+Diffstat:
+ block/bdev.c                        |   10 ++---
+ block/blk-lib.c                     |    6 +--
+ block/genhd.c                       |   23 ------------
+ drivers/block/drbd/drbd_req.c       |    6 +--
+ drivers/block/pktcdvd.c             |   10 +----
+ drivers/block/rnbd/rnbd-srv-dev.c   |    1 
+ drivers/block/rnbd/rnbd-srv-dev.h   |    1 
+ drivers/block/rnbd/rnbd-srv-sysfs.c |    5 +-
+ drivers/block/rnbd/rnbd-srv.c       |    9 ++---
+ drivers/block/rnbd/rnbd-srv.h       |    3 -
+ drivers/md/md.c                     |    2 -
+ drivers/md/raid1.c                  |    2 -
+ drivers/md/raid10.c                 |    2 -
+ fs/ext4/mmp.c                       |    9 ++---
+ fs/jbd2/journal.c                   |    6 ++-
+ fs/ocfs2/cluster/heartbeat.c        |   64 ++++++++++++++++--------------------
+ include/linux/blkdev.h              |    1 
+ kernel/trace/blktrace.c             |    4 +-
+ 18 files changed, 62 insertions(+), 102 deletions(-)
