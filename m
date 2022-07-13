@@ -2,194 +2,149 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C99572EAD
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Jul 2022 09:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29E7572F32
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Jul 2022 09:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234499AbiGMHDq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 13 Jul 2022 03:03:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58410 "EHLO
+        id S234372AbiGMH1y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 13 Jul 2022 03:27:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234478AbiGMHDo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 13 Jul 2022 03:03:44 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB93222B5
-        for <linux-ext4@vger.kernel.org>; Wed, 13 Jul 2022 00:03:42 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id bp15so7955594ejb.6
-        for <linux-ext4@vger.kernel.org>; Wed, 13 Jul 2022 00:03:42 -0700 (PDT)
+        with ESMTP id S229968AbiGMH1w (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 13 Jul 2022 03:27:52 -0400
+Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4481E3071;
+        Wed, 13 Jul 2022 00:27:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1657697271; x=1689233271;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=/kMW6ONtDBqoSd7W/iLPpOsHAIliObM5Zf0xwkGrEac=;
+  b=UFYXdxUOj8SP2Afe/cOQss1SOHX3aR84E6TRLRzu2KRhecGOVPVDSazm
+   osjQvyyDWCwvPN5jzB01v5vv+F/2JXoneS9/pHI0Rkf0XoL/Z7RRh4CQb
+   sSGYUcsAXZxSKgf1tM3Jjy/vl1wgve+c/B8F3TiTj+lAaQmOl/Cm0M9mL
+   TZD0bqIJuQdGd1U/D3gjhZO9lGGSEmyAAlEKC4gOPiAiNegi7JjMHjyLb
+   bDreVtSnzJqJtn6FTQqMiaqMxxOVPZFbO0XDAa01pWK76KwZJ+gG0c0tk
+   kCDbhbVWsNzi/XPdEsiEPR4FyXX4M/jgcud2TcIrnGSoQAD/lOVd81H/i
+   w==;
+X-IronPort-AV: E=Sophos;i="5.92,267,1650902400"; 
+   d="scan'208";a="204216986"
+Received: from mail-dm6nam12lp2173.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.173])
+  by ob1.hgst.iphmx.com with ESMTP; 13 Jul 2022 15:27:49 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EJ2cWGb1PMHfIkefC8PlapLmobkb5ZQqID98TDq2Rx4O4kEukKu92QIyHLZiuAFH/u+PH/ft6wgRRfRJP7oxxCd1SmcTx2EhI2ToCCraK98QWtDemdPNRGGgJfZcYNAC89VnX0QD9WqAZNFy4KZnqTMoELct8VlBWfsZJ1Zu+aHD5R5YXZnoHATS5kQdcy25zMgWqxHpOplHsi8lTIp4whfX9YRiKGxcSTEvly709A+th3SHtlh6tOBGBYcmHXzL+FWuJJdPmqItD3hbs0ChjdCB7kGuijsJWDgnV2eGeYM6QpVCayAiDBsxnWp9hG0uDhuxe9f/tm9Cud8A2dsdmw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/kMW6ONtDBqoSd7W/iLPpOsHAIliObM5Zf0xwkGrEac=;
+ b=MDQvzwnJ5XvoeEOP/fFuI1zGKn4l8V9BbbjpuOco6W2RLqPz+dc9x/wf5xaED0nKg+fEA+aN1sYJvo8/dLgtP82/EXZG0aGm90lMqQhe7WqyiTnFsS4o7GSq2PZfUn43hucUuQjUw1WGJ6x8CskRxIn62TaRxldKM2BCIJajNI+aYsuM6A59a3aBLayzB+En+XugisPwvxtbAK9nhn9a3uXRhTgZLb+oLd4pBxjFxPpvQqjApDbouEuVXNgffMp2iQlodFCnicvLz/6X9/E1ya8tZ1zskBULj1YzzyynfqHKvMlFIEzyb0b8e3RS1b7adcXnpSSijb424ga0Df/RbQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0gYYvt1vWIXI8HNMSYfXYBDt+l8mgcRYRjUuxGt2NPY=;
-        b=eUO8a1qjrBJuiWZEU95ms0v4NGhQo/R6mzhJN0jU2rcmOAvZOCm6tQTO5Q4hKqZnUL
-         geUOthwICiNUBd836aa64R1Yi3PO4S+3JrnUsG7/lBN6blQCZkQdvRz8SYJG77Idkh5Q
-         G+vTK9EBX1JQgTUXhm0jqY1sRsWQltfpPJ/Nkuo1Hptetw5RCCA2hU4cePeny5j8nPfc
-         MgkOCQ5cPt79WIbZwWEyGciWFbIcp6Nr78DXPhcUDPFodFxN1dE+/5KvRi256xDOJJKZ
-         IGoCRENig3iGtwks7i7MDn/ifVeo0LQXlfZLxqj0pHadHjoBYFoZFIrpbYQOwkibk7H5
-         rp6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0gYYvt1vWIXI8HNMSYfXYBDt+l8mgcRYRjUuxGt2NPY=;
-        b=cydCcP1nd3LkAUgYQvbAkBdiVOqI5T1L7IxA3uxlakAcVQxbUyNre1FgoOWNs4lFlR
-         NkiS+upHo0O0IjxulooE8dhO0JNu4Ow/TOxxIkc0jjzWsOLQjRS8MEAn6gIp63nxqrMw
-         bqnkb/DP985KEG3Tq4u+VpZv26P3KpswqqPmIW4a2u9rd3TReNAg/QTt3fHBrKg5GnEv
-         /8Nfvo7cLVfU9AYzA7WNrA4iPPlMh/JC8M1TBjrx2CqrIudSKiHVTl/EGNNHpiTGseK4
-         F7gFSGcKndmQRuT9wiMMC3UzAQ11GpYIWuvHM2NuvIBMLqwzqI6TCn4wbrLIgSA1Y6i7
-         9AvA==
-X-Gm-Message-State: AJIora9cL6YedG7t6ixpPAlUpDNstn0BepX9tVDuMuGtl7k9N0wHvHYd
-        Cdxms5/g/QZU9tMd4u3LrfXPhrkEvJ+QcAq3eWOnKg==
-X-Google-Smtp-Source: AGRyM1v6tCbmP3It1PfK7ATbjED1frOwrB/fUUoQmetZ+KCzzdeBWp+khkKlwSMizYudxhMnhwJ7AyxgtQitWHTVyzw=
-X-Received: by 2002:a17:906:d54f:b0:726:2c7c:c0f9 with SMTP id
- cr15-20020a170906d54f00b007262c7cc0f9mr1952611ejc.441.1657695821259; Wed, 13
- Jul 2022 00:03:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220713055317.1888500-1-hch@lst.de> <20220713055317.1888500-7-hch@lst.de>
-In-Reply-To: <20220713055317.1888500-7-hch@lst.de>
-From:   Jinpu Wang <jinpu.wang@ionos.com>
-Date:   Wed, 13 Jul 2022 09:03:30 +0200
-Message-ID: <CAMGffEkbzTKkYY2yt-G8t1nO+y3+2+97=-ZgeUdF+ZE3iZvjng@mail.gmail.com>
-Subject: Re: [PATCH 6/9] rnbd-srv: remove the name field from struct rnbd_dev
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        =?UTF-8?Q?Christoph_B=C3=B6hmwalder?= 
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/kMW6ONtDBqoSd7W/iLPpOsHAIliObM5Zf0xwkGrEac=;
+ b=Tm/Bub9PDzQA9j2DbaH6JTqbFjqUvYJoYsarq14QWgUoPlFTLkJRG0RS9ZkgIoQnGGJYVBBG/08iilhJzWmbHXijsA45Zr6Z9+cvidmKzBuwI430E2NjCV1gpUPfSBaQasgtdcShDv+aGvqcktr8p+3KJsuxRA1HxOZd5xQ/G2Q=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by CY4PR0401MB3588.namprd04.prod.outlook.com (2603:10b6:910:90::35) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.25; Wed, 13 Jul
+ 2022 07:27:48 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::d54b:24e1:a45b:ab91]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::d54b:24e1:a45b:ab91%9]) with mapi id 15.20.5417.026; Wed, 13 Jul 2022
+ 07:27:48 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+CC:     =?iso-8859-1?Q?Christoph_B=F6hmwalder?= 
         <christoph.boehmwalder@linbit.com>,
         "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Song Liu <song@kernel.org>, "Theodore Ts'o" <tytso@mit.edu>,
+        Jack Wang <jinpu.wang@ionos.com>, Song Liu <song@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Jan Kara <jack@suse.com>, Mark Fasheh <mark@fasheh.com>,
         Joel Becker <jlbec@evilplan.org>,
         Joseph Qi <joseph.qi@linux.alibaba.com>,
-        linux-block@vger.kernel.org, drbd-dev@lists.linbit.com,
-        linux-raid@vger.kernel.org, linux-ext4@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
+        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>
+Subject: Re: remove bdevname
+Thread-Topic: remove bdevname
+Thread-Index: AQHYlnzqMl5ChJweqEC+p/d22IGEHQ==
+Date:   Wed, 13 Jul 2022 07:27:47 +0000
+Message-ID: <PH0PR04MB74168A262A3A77D111C21B5D9B899@PH0PR04MB7416.namprd04.prod.outlook.com>
+References: <20220713055317.1888500-1-hch@lst.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 83e20a89-8b28-44f8-85e5-08da64a12fc0
+x-ms-traffictypediagnostic: CY4PR0401MB3588:EE_
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 74QtiK2VztPyb+2yguS0HZ6jxKV62fTo3E7PygBFrfxeyY4F8W7CKaTcqTVS4HcO0+RVSjWbSEWQtx6+Eeh4isAtG/TjmCbsCF6TWKlrJhOl4qkx77K4h9ILqEgJdQAhPVydWuJx1ZsXsVZlpQ6Lz+kNzWkwIhcqKijWiWzX/NQzY7QWrA752ZJyVim98tDhD7neU/5fNPOF+YeTZhTxTOGF5LMtHijk6BeliBmx38Yk+xP7OwaliACCnXnstrxsJFoBG+eCzEQH6s7yQoGszRof6Eki7pE80fR8gqJ8eh3RCx0ExRI46tkHw5P3Y9e3rlESDDCo/HsJZJ2nYQlEnhLYoHvs168sr+P3Uri1TJVF1nzxjlLcglwf57PJv4f5tIIGALJxyNsiaRnxWr6FmV0wb9umlUKFuFW2UuFTpt7JQqteWBy5UhGVJqk888yR+PoJzshkc35eDtL5e7PkVOrRd8Pn77T5MgjMZD/A0ADImi3ml2QR/ih5swe+8QWX1gmuQkPBU8WGVMYD7qvtaZhDJcv/b2tjGPs3SUp0nZx9De1bARprZHoNP6Mew9OA6gGX5GSyawSOWY71aNyUMv/lX8Y0SWfdFEk9gGO4i+4rC2IhmjbXegR1oakfWdN7EmznZGHCrJja/QN4MnM5u7hiNAsJQ23qy6Y+FFM+TJXJ+gCQZqznAbPPsOkUAqfk6eYLf6QX3GROzhMnv718AU3nvZRCo4cJeI5nJ8SAhYaYwPw7GFn/GFgwTaZLrKOykkOsoL8sgBSOPGJ3xcMYxmhmcni3ysuJEf0aQfhZehGyUcr9fCT72GQCPluJsatT
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(346002)(136003)(39860400002)(366004)(396003)(376002)(52536014)(4270600006)(33656002)(8936002)(19618925003)(558084003)(2906002)(64756008)(8676002)(55016003)(5660300002)(86362001)(110136005)(66556008)(91956017)(7416002)(66476007)(316002)(54906003)(4326008)(186003)(26005)(66946007)(122000001)(7116003)(76116006)(478600001)(41300700001)(82960400001)(3480700007)(71200400001)(38100700002)(6506007)(66446008)(38070700005)(7696005)(9686003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?3NdEf3BkWP4mPQ2KR0lCV9HNC8EhII1+/cneh4Y7+O9d14AG13/dLZpoq7?=
+ =?iso-8859-1?Q?EBBJMXi9NXp/SkoUK9xpAp92jHZtRoxQs842PMjt8svbdzxpzi76RClRUH?=
+ =?iso-8859-1?Q?Ofq14zTqNQ3GZW89G/Vqxcpe5Qz0pH6zUQUHyEdk+1giqEJB1ZdmSWmWPu?=
+ =?iso-8859-1?Q?wek51Bd89QGBPHc9TuGqT7IBC6qauBn6XlD4sv3jREDL2Za7umQSXR4l9X?=
+ =?iso-8859-1?Q?3PKbrumA7NtI7TPM/51j51ZG007gp38erZ702cyjvJTO0V3PUp4rPRbk3Y?=
+ =?iso-8859-1?Q?qORajEkPZurJyKISPwij4zGpOpjLYgpppwxmh3E40lZGN9MkAEoSTd5SZc?=
+ =?iso-8859-1?Q?G6nOZCIDyQWMJWRiVBEnNJoRyRwIxPOfP+F6Nf/cLgMoRP64HHumjuokKM?=
+ =?iso-8859-1?Q?Dwy2Gyt0qbifvuDPyAcg36eIu251hfDpB7hugi03NkbhGOL3NLKcYJSn49?=
+ =?iso-8859-1?Q?z4byfM05bnuAOS+d6jy5FBtTdm+G9VzZYIUhWkp89EsZaZbyc4o6hp3gOD?=
+ =?iso-8859-1?Q?jeQzJA0pG7oqDudky7Q5j/kDYl3TzptvBT+vHG/2qQBVdmNtDC2q04Pnqg?=
+ =?iso-8859-1?Q?pdkme60H4CWVnj0j75nqeIN+Lb097DlU7FQ56Mov7ezL+MIRyFswtgBTr6?=
+ =?iso-8859-1?Q?4ZJtJO0p2WZwPoqiBbibmYJ4L3aBZvENATXS/+5cifDNacub0dp+t6yCsT?=
+ =?iso-8859-1?Q?sMmVQKdW9PuNjQJ67fE78Tk5PalLxnqhepPIj2sKonhMYYlTwsAQ0BGYjZ?=
+ =?iso-8859-1?Q?pvSABGtoySsgAL0JGL9gKpsn89azjvU8ClQN/lVJr0kcXTbwxWHzUU5l6Y?=
+ =?iso-8859-1?Q?yHfvBNfRbQ7OioPSuV/dPgwfdVQdknkot363s/+bF8G9SGgJ1C3p2OzsIf?=
+ =?iso-8859-1?Q?q4vi4oGGnDnATr5XZitBPNY2C9TqlFJrNMiQgheBFDVDV/PQY0goeJIsQJ?=
+ =?iso-8859-1?Q?0esTcqwkPb+aPywmZyAtJCXLWCjm73YlOHQsLUwoQeNPgL5eHLriIBFfIb?=
+ =?iso-8859-1?Q?SDoY2sY/8MfAp4dCym5GA9WmRdsjU0poFnAiChJITpPjP+hvDYFnxxKN2x?=
+ =?iso-8859-1?Q?6R4rwCdpmRsGCpeHUcvmwxsPGbcapQb0Co6VMSDpnJFvKdp3Hy6SKu9Np6?=
+ =?iso-8859-1?Q?oYFd4XjfP9+yBXXBjl89w2wk3rV3JG3KaNFX6LqpCJ6kaFvMjplcPZSTmo?=
+ =?iso-8859-1?Q?XrB5q5A702IfCEdS2ZS3AbNNf+KUtxELrl9QU8AnJeKgStbSWfnOXTB2E4?=
+ =?iso-8859-1?Q?SiUadUTF/Lz2F8bd/+7mbvF3lniyHY3PIN2qk261nV0PFvY3lxOVOTI4ug?=
+ =?iso-8859-1?Q?vS2v2V36y0MYJfmwQXolSdTiixmqcTej7AIMd4im6SenyFMbV2cOrr5FBy?=
+ =?iso-8859-1?Q?Ox1Zz1KaOxV96d0kLEpwyYrSRwY8WmBduwgj/w+tXUo54/6tTdg09NE6Iv?=
+ =?iso-8859-1?Q?ydoWzKihZX50z+2X+pxLZY/j7aVehDq+6KKfZZIHa4eeEQ2jz8zPuwyIPX?=
+ =?iso-8859-1?Q?A57H6rJYw3THMQ1xpCs1zhMhMmuzgMcKgVPgRjVs2IphrxP0M0iEODoOAO?=
+ =?iso-8859-1?Q?S8/WVLB810IfVbFKc3qSciQbjo/IXF/orhmDCjz4GtjJCPilP9HTndu/hU?=
+ =?iso-8859-1?Q?y21l3Wp5dTnjo4GaysDiXxvsu4psqIIg7I61LW/JxP57ixI8dSe9JvtruL?=
+ =?iso-8859-1?Q?IOlfNPY+yjDADGcNV1c=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 83e20a89-8b28-44f8-85e5-08da64a12fc0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jul 2022 07:27:47.9693
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: W1USNg0u3m1sc/+bXfjQI5YyC5Lj2XibBhghmEgwW7vFv8K1dG6Z2h2ZIiUMNYMbT4NqHwtZrjkhnbGNcT0tI6ppFcg04XxTMXtFOZjpjDk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR0401MB3588
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jul 13, 2022 at 7:53 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> Just print the block device name directly using the %pg format specifier.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-Acked-by: Jack Wang <jinpu.wang@ionos.com>
-Thx!
-> ---
->  drivers/block/rnbd/rnbd-srv-dev.c   | 1 -
->  drivers/block/rnbd/rnbd-srv-dev.h   | 1 -
->  drivers/block/rnbd/rnbd-srv-sysfs.c | 5 ++---
->  drivers/block/rnbd/rnbd-srv.c       | 9 ++++-----
->  drivers/block/rnbd/rnbd-srv.h       | 3 +--
->  5 files changed, 7 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/block/rnbd/rnbd-srv-dev.c b/drivers/block/rnbd/rnbd-srv-dev.c
-> index c5d0a03911659..c63017f6e4214 100644
-> --- a/drivers/block/rnbd/rnbd-srv-dev.c
-> +++ b/drivers/block/rnbd/rnbd-srv-dev.c
-> @@ -28,7 +28,6 @@ struct rnbd_dev *rnbd_dev_open(const char *path, fmode_t flags)
->                 goto err;
->
->         dev->blk_open_flags = flags;
-> -       bdevname(dev->bdev, dev->name);
->
->         return dev;
->
-> diff --git a/drivers/block/rnbd/rnbd-srv-dev.h b/drivers/block/rnbd/rnbd-srv-dev.h
-> index 4309e52524691..8407d12f70afe 100644
-> --- a/drivers/block/rnbd/rnbd-srv-dev.h
-> +++ b/drivers/block/rnbd/rnbd-srv-dev.h
-> @@ -15,7 +15,6 @@
->  struct rnbd_dev {
->         struct block_device     *bdev;
->         fmode_t                 blk_open_flags;
-> -       char                    name[BDEVNAME_SIZE];
->  };
->
->  /**
-> diff --git a/drivers/block/rnbd/rnbd-srv-sysfs.c b/drivers/block/rnbd/rnbd-srv-sysfs.c
-> index feaa76c5a3423..297a6924ff4e2 100644
-> --- a/drivers/block/rnbd/rnbd-srv-sysfs.c
-> +++ b/drivers/block/rnbd/rnbd-srv-sysfs.c
-> @@ -38,14 +38,13 @@ static struct kobj_type dev_ktype = {
->  };
->
->  int rnbd_srv_create_dev_sysfs(struct rnbd_srv_dev *dev,
-> -                              struct block_device *bdev,
-> -                              const char *dev_name)
-> +                              struct block_device *bdev)
->  {
->         struct kobject *bdev_kobj;
->         int ret;
->
->         ret = kobject_init_and_add(&dev->dev_kobj, &dev_ktype,
-> -                                  rnbd_devs_kobj, dev_name);
-> +                                  rnbd_devs_kobj, "%pg", bdev);
->         if (ret) {
->                 kobject_put(&dev->dev_kobj);
->                 return ret;
-> diff --git a/drivers/block/rnbd/rnbd-srv.c b/drivers/block/rnbd/rnbd-srv.c
-> index beaef43a67b9d..0713014bf423f 100644
-> --- a/drivers/block/rnbd/rnbd-srv.c
-> +++ b/drivers/block/rnbd/rnbd-srv.c
-> @@ -419,7 +419,7 @@ static struct rnbd_srv_sess_dev
->         return sess_dev;
->  }
->
-> -static struct rnbd_srv_dev *rnbd_srv_init_srv_dev(const char *id)
-> +static struct rnbd_srv_dev *rnbd_srv_init_srv_dev(struct block_device *bdev)
->  {
->         struct rnbd_srv_dev *dev;
->
-> @@ -427,7 +427,7 @@ static struct rnbd_srv_dev *rnbd_srv_init_srv_dev(const char *id)
->         if (!dev)
->                 return ERR_PTR(-ENOMEM);
->
-> -       strscpy(dev->id, id, sizeof(dev->id));
-> +       snprintf(dev->id, sizeof(dev->id), "%pg", bdev);
->         kref_init(&dev->kref);
->         INIT_LIST_HEAD(&dev->sess_dev_list);
->         mutex_init(&dev->lock);
-> @@ -512,7 +512,7 @@ rnbd_srv_get_or_create_srv_dev(struct rnbd_dev *rnbd_dev,
->         int ret;
->         struct rnbd_srv_dev *new_dev, *dev;
->
-> -       new_dev = rnbd_srv_init_srv_dev(rnbd_dev->name);
-> +       new_dev = rnbd_srv_init_srv_dev(rnbd_dev->bdev);
->         if (IS_ERR(new_dev))
->                 return new_dev;
->
-> @@ -758,8 +758,7 @@ static int process_msg_open(struct rnbd_srv_session *srv_sess,
->          */
->         mutex_lock(&srv_dev->lock);
->         if (!srv_dev->dev_kobj.state_in_sysfs) {
-> -               ret = rnbd_srv_create_dev_sysfs(srv_dev, rnbd_dev->bdev,
-> -                                                rnbd_dev->name);
-> +               ret = rnbd_srv_create_dev_sysfs(srv_dev, rnbd_dev->bdev);
->                 if (ret) {
->                         mutex_unlock(&srv_dev->lock);
->                         rnbd_srv_err(srv_sess_dev,
-> diff --git a/drivers/block/rnbd/rnbd-srv.h b/drivers/block/rnbd/rnbd-srv.h
-> index be2ae486d407e..6926f9069dc4b 100644
-> --- a/drivers/block/rnbd/rnbd-srv.h
-> +++ b/drivers/block/rnbd/rnbd-srv.h
-> @@ -68,8 +68,7 @@ void rnbd_srv_sess_dev_force_close(struct rnbd_srv_sess_dev *sess_dev,
->  /* rnbd-srv-sysfs.c */
->
->  int rnbd_srv_create_dev_sysfs(struct rnbd_srv_dev *dev,
-> -                             struct block_device *bdev,
-> -                             const char *dir_name);
-> +                             struct block_device *bdev);
->  void rnbd_srv_destroy_dev_sysfs(struct rnbd_srv_dev *dev);
->  int rnbd_srv_create_dev_session_sysfs(struct rnbd_srv_sess_dev *sess_dev);
->  void rnbd_srv_destroy_dev_session_sysfs(struct rnbd_srv_sess_dev *sess_dev);
-> --
-> 2.30.2
->
+For the series:=0A=
+=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
