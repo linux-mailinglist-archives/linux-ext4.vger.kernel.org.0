@@ -2,94 +2,97 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B3E757451C
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Jul 2022 08:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18993574720
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Jul 2022 10:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbiGNGdm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 14 Jul 2022 02:33:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51574 "EHLO
+        id S237474AbiGNIhh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 14 Jul 2022 04:37:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbiGNGdm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Jul 2022 02:33:42 -0400
-Received: from m12-18.163.com (m12-18.163.com [220.181.12.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 714E42ADF;
-        Wed, 13 Jul 2022 23:33:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=y2Bvn
-        iMhbl5jK8THTHxbQtXvRNWzTIer28MZL2NagjI=; b=MFjxR9LAZtTatjvAg+SSn
-        3wsJMnONJHk7V30YTydtZZTcDNUenpZ4+UEE3q+vpSF6c90QyFvluQDhnoGaR07P
-        rd7vEnz5rN9iPrLrKhotoHTAJlprSg37YERsQahCN0VH2Jd9M0mYc5EimS+0D8cF
-        0zyXrlE0SONYleVCM4YawY=
-Received: from localhost.localdomain (unknown [111.48.58.12])
-        by smtp14 (Coremail) with SMTP id EsCowAAnT_K2uM9i5aWBMw--.1991S2;
-        Thu, 14 Jul 2022 14:33:29 +0800 (CST)
-From:   Jiangshan Yi <13667453960@163.com>
-To:     jack@suse.com
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiangshan Yi <yijiangshan@kylinos.cn>
-Subject: [PATCH] fs/ext2: replace ternary operator with min_t()
-Date:   Thu, 14 Jul 2022 14:33:18 +0800
-Message-Id: <20220714063318.1777139-1-13667453960@163.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S237163AbiGNIhF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Jul 2022 04:37:05 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB40D3ED78
+        for <linux-ext4@vger.kernel.org>; Thu, 14 Jul 2022 01:37:02 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id r9so1620027lfp.10
+        for <linux-ext4@vger.kernel.org>; Thu, 14 Jul 2022 01:37:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=H3bGT1ZyGPu3PRQJlJHyQI9TvTjBPuNSyHjFOzNfiP0=;
+        b=gaDZ6UkvWmoGLPkb5BiwWKXrxZqJRKNx4T2fn6EvGAM0nTMCvTzxyP4EuJ913j6Iv+
+         SvMX4/pvx4tmhR/0cDdL9pbkcCOAwg/dZQZJjKvYYHG5zoS6pTup2xrhZON7aPFodE61
+         jbdbe7f5x1iqsxnbqtRGk5VVyYe+GfguXyW53v/Jtk7m9BRLrugVau1mwPBhoM15I1rO
+         FgfB/JoMGOti2QefdfOSOcdpcygQeBiN0idXo3yCL6hW5Cz+uWpratECqWcSagxAB5xP
+         zT+sUZ3pJE3RjDVpLi/6z/hZ8yL43zLlaxwdm4ILJ3e9Bke6wVp5k2l7GAKtdogOGzmZ
+         5LQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=H3bGT1ZyGPu3PRQJlJHyQI9TvTjBPuNSyHjFOzNfiP0=;
+        b=CWVcbCAE5rbQJnKkqE0/6aVrbmv2LrygzLLxv5PRIbm+XIeS4cEr+1VpRigMDgqwbI
+         et0yZwa1bsuRlLBAEKsGFkTmXbrWJkdcrAXelmBuDlnMKiQtGSgxKK7vJSrjFVsODMm5
+         Dm/N2BqW1F+AChMK2++mlRAr1iq8KzLEBKPnFVXDGV7/4lram1D8t3cVssTUOrY5yC5v
+         imonI7XhOFWd2ZkoscTS4ze05C2JtHLzswvdQCXXRrVky2kYSA+IZtNPCjfxAKc/Ysl2
+         4QcTZzPqgVAHDDfwSv5eytaz0I9RfFzyxn2xfe8sG/sWsGx1JIi4aZFl56cgy+U6ajaa
+         I57g==
+X-Gm-Message-State: AJIora+OP+9tnaSVHIDwClrHNdcy7TrP+VBsdkcX0vd6+NafRz3PJ/gf
+        kcIlkoos9gA/dGNN8n5ebChnfO4mNSjTTIqJhAM=
+X-Google-Smtp-Source: AGRyM1vX4Zd9WIWDxqKGtP81mt11peMiDiT310/qUqT5enM4eeA2HoIqQaHp0s5sIeDBZVZu8TIFwya2pg7lDHDFDeo=
+X-Received: by 2002:a05:6512:4004:b0:48a:12dc:7f63 with SMTP id
+ br4-20020a056512400400b0048a12dc7f63mr2033540lfb.131.1657787820892; Thu, 14
+ Jul 2022 01:37:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EsCowAAnT_K2uM9i5aWBMw--.1991S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7uFWfCr15KF1UtF1ktF4Utwb_yoW8GrykpF
-        ykAr4xGFyrur1UX3ZrWw4DX3WxWayDKF40qrWj9r1UZr9xtw1fKFn8tFy5WF409r4xZ34v
-        qFs09ryxJw1xWw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jxF4iUUUUU=
-X-Originating-IP: [111.48.58.12]
-X-CM-SenderInfo: bprtllyxuvjmiwq6il2tof0z/xtbBthU++11uPnbZhAAAsA
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Received: by 2002:a2e:9041:0:0:0:0:0 with HTTP; Thu, 14 Jul 2022 01:37:00
+ -0700 (PDT)
+Reply-To: abdwabbomaddahm@gmail.com
+From:   Abdwabbo Maddah <abdwabbomaddah746@gmail.com>
+Date:   Thu, 14 Jul 2022 09:37:00 +0100
+Message-ID: <CAFC-3ieta-vbGq7=-xp9Wgp2Sr8SYhFWTPWR2J6JsyQ_pZJxLQ@mail.gmail.com>
+Subject: Get back to me... URGENT
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FROM_LOCAL_DIGITS,FROM_LOCAL_HEX,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:12b listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4974]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [abdwabbomaddah746[at]gmail.com]
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [abdwabbomaddah746[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  3.2 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Jiangshan Yi <yijiangshan@kylinos.cn>
-
-Fix the following coccicheck warning:
-
-fs/ext2/super.c:1494: WARNING opportunity for min().
-fs/ext2/super.c:1533: WARNING opportunity for min().
-
-min_t() macro is defined in include/linux/minmax.h. It avoids
-multiple evaluations of the arguments when non-constant and performs
-strict type-checking.
-
-Signed-off-by: Jiangshan Yi <yijiangshan@kylinos.cn>
----
- fs/ext2/super.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/fs/ext2/super.c b/fs/ext2/super.c
-index f6a19f6d9f6d..300f2f0cf566 100644
---- a/fs/ext2/super.c
-+++ b/fs/ext2/super.c
-@@ -1490,8 +1490,7 @@ static ssize_t ext2_quota_read(struct super_block *sb, int type, char *data,
- 		len = i_size-off;
- 	toread = len;
- 	while (toread > 0) {
--		tocopy = sb->s_blocksize - offset < toread ?
--				sb->s_blocksize - offset : toread;
-+		tocopy = min_t(size_t, sb->s_blocksize - offset, toread);
- 
- 		tmp_bh.b_state = 0;
- 		tmp_bh.b_size = sb->s_blocksize;
-@@ -1529,8 +1528,7 @@ static ssize_t ext2_quota_write(struct super_block *sb, int type,
- 	struct buffer_head *bh;
- 
- 	while (towrite > 0) {
--		tocopy = sb->s_blocksize - offset < towrite ?
--				sb->s_blocksize - offset : towrite;
-+		tocopy = min_t(size_t, sb->s_blocksize - offset, towrite);
- 
- 		tmp_bh.b_state = 0;
- 		tmp_bh.b_size = sb->s_blocksize;
 -- 
-2.25.1
-
+Dear,
+I had sent you a mail but i don't think you received it that's why am
+writing you again.It is important you get back to me as soon as you
+can.
+Abd-Wabbo Maddah
