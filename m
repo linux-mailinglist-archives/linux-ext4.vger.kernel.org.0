@@ -2,263 +2,165 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98146575162
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Jul 2022 17:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 689B8575229
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Jul 2022 17:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229498AbiGNPFi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 14 Jul 2022 11:05:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43480 "EHLO
+        id S239364AbiGNPqS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 14 Jul 2022 11:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbiGNPFh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Jul 2022 11:05:37 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BE012080
-        for <linux-ext4@vger.kernel.org>; Thu, 14 Jul 2022 08:05:35 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 1B57934B34;
-        Thu, 14 Jul 2022 15:05:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1657811133; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        with ESMTP id S229498AbiGNPqS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Jul 2022 11:46:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0B8EF1EEE9
+        for <linux-ext4@vger.kernel.org>; Thu, 14 Jul 2022 08:46:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1657813576;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=gDTC7I/7lJw5/GQMMLEFnt6FrqgELm4iKTIAotRQ9D0=;
-        b=B2jDc+kjCMOyPTl12lLlj/t7bLU/RPXG4i8fbJu4TMoPbQ0Fgh0GwYA7Lvt/hDMVIK3u1S
-        Pv21NN6Vufxrag4nhZGaS8gmZ+7xM7WyvI4Ap+DTCEkSoMzSbOb5+jLJj7LvejH/qj5irm
-        MLk2zT77cMlxwgpM0N3+ytOjpMqFMvQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1657811133;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gDTC7I/7lJw5/GQMMLEFnt6FrqgELm4iKTIAotRQ9D0=;
-        b=QKK7ux263qwDj8elscyF5yHtzJStR09yNbrIRTtFytOaNANbH7LYvIkKcng3XCFzXVliIR
-        sPFUd0grTaHxBUAA==
-Received: from quack3.suse.cz (unknown [10.100.224.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 049E82C141;
-        Thu, 14 Jul 2022 15:05:33 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id AC1E4A0659; Thu, 14 Jul 2022 17:05:32 +0200 (CEST)
-Date:   Thu, 14 Jul 2022 17:05:32 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ritesh Harjani <ritesh.list@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 10/10] mbcache: Automatically delete entries from cache
- on freeing
-Message-ID: <20220714150532.wndjlbozlnhniofo@quack3>
-References: <20220712104519.29887-1-jack@suse.cz>
- <20220712105436.32204-10-jack@suse.cz>
- <20220714130951.2fc4tjrc53b6vzla@riteshh-domain>
+        bh=nU7zfWEWXnIHysvTFuctDerofUMRFZ0vV8sV3Sp5wAQ=;
+        b=PpHtaFAuRBvXfRVMn1br55f3EPjAL+GYIsuUl61EdDlICDlLTfywKK/J0CRpw1/8FHjgoH
+        7+5m6/82BH1OjQRNqvAGpTH83lD6mF3W5aZnNL+MmZbve2JSxlZ/9vmZrx27/IaJIbFv8t
+        zRbsF504hHndiWDA1UU5HGyGDH7kHTc=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-335-7A23qViLOpyDFsmgqut1hg-1; Thu, 14 Jul 2022 11:46:14 -0400
+X-MC-Unique: 7A23qViLOpyDFsmgqut1hg-1
+Received: by mail-qk1-f197.google.com with SMTP id e128-20020a376986000000b006af6adf035cso1394297qkc.8
+        for <linux-ext4@vger.kernel.org>; Thu, 14 Jul 2022 08:46:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nU7zfWEWXnIHysvTFuctDerofUMRFZ0vV8sV3Sp5wAQ=;
+        b=D48x73Gd2QLeCfn+WXbadyOZO3fsh63UldLMoICxiBqrJLJ4n7M01clUY6BfKvy6Zi
+         IE0kNrPTCf+FWscrZr8/YzBY8UDCs9qT1bOWIKRRJ/WNmWcOH+RXclTdIWZ8R7niBnt6
+         vinT2U0rc71BkKzMRt3iJU6he93A4vsGU1GlutYL3iBbB3pd7mBV3BPE2hMXCeb19DzF
+         65U8VUz8ok/fq8/B7it9nzEu0bji3xhnJOtWyISkSKsscgSjZbTEHBR846UWG0ksqu5p
+         ywwriq2+2wn0sUWX6XqoTvQBifSG6YL4F7I41gZnqwjKiz764I27XeBPYow/R0bE0FSG
+         twgA==
+X-Gm-Message-State: AJIora8Vx3wc2e68Zu+nQiHbJ+xH0+cd4gl428hH2gstsCkKXTVHS15W
+        ILc5xkGjZPX4qTfStw3HzYvuEqWMV6AH50L7avfftK1oqnGj2Oltge9CLW1pwdP8HVO6cb491a4
+        LoejG0/BVsgoWS/tfaxBdlw==
+X-Received: by 2002:ac8:584e:0:b0:31d:29c8:4296 with SMTP id h14-20020ac8584e000000b0031d29c84296mr8337311qth.51.1657813574382;
+        Thu, 14 Jul 2022 08:46:14 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1uwdXBkUkMY2RlfELdM+3QtIGx7EPxIboN1AE3hxKYkkFtqb35zpDrCzhyEexm2i0md/HHGbg==
+X-Received: by 2002:ac8:584e:0:b0:31d:29c8:4296 with SMTP id h14-20020ac8584e000000b0031d29c84296mr8337277qth.51.1657813574012;
+        Thu, 14 Jul 2022 08:46:14 -0700 (PDT)
+Received: from zlang-mailbox ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id f7-20020ac87f07000000b0031e9ab4e4cesm1762470qtk.26.2022.07.14.08.46.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jul 2022 08:46:13 -0700 (PDT)
+Date:   Thu, 14 Jul 2022 23:46:07 +0800
+From:   Zorro Lang <zlang@redhat.com>
+To:     Sun Ke <sunke32@huawei.com>
+Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] ext4: resize fs after resize_inode without e2fsck
+Message-ID: <20220714154607.qq6cqgvncxhsn66w@zlang-mailbox>
+References: <20220713092859.3881376-1-sunke32@huawei.com>
+ <20220713092859.3881376-2-sunke32@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220714130951.2fc4tjrc53b6vzla@riteshh-domain>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220713092859.3881376-2-sunke32@huawei.com>
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 14-07-22 18:39:51, Ritesh Harjani wrote:
-> On 22/07/12 12:54PM, Jan Kara wrote:
-> > Use the fact that entries with elevated refcount are not removed from
+On Wed, Jul 13, 2022 at 05:28:58PM +0800, Sun Ke wrote:
+> Forget to run requested e2fsck after resize_inode, then resize fs, it
+> will trigger off null pointer.
 > 
-> The elevated refcnt means >= 2?
-
-Well, it means when there is real user of the mbcache entry. So 3 before
-this patch, 2 after this patch...
-
-> > the hash and just move removal of the entry from the hash to the entry
-> > freeing time. When doing this we also change the generic code to hold
-> > one reference to the cache entry, not two of them, which makes code
-> > somewhat more obvious.
-> >
-> > Signed-off-by: Jan Kara <jack@suse.cz>
-> > ---
-> >  fs/mbcache.c            | 108 +++++++++++++++-------------------------
-> >  include/linux/mbcache.h |  24 ++++++---
-> >  2 files changed, 55 insertions(+), 77 deletions(-)
-> >
-> > diff --git a/fs/mbcache.c b/fs/mbcache.c
-> > index d1ebb5df2856..96f1d49d30a5 100644
-> > --- a/fs/mbcache.c
-> > +++ b/fs/mbcache.c
-> > @@ -90,7 +90,7 @@ int mb_cache_entry_create(struct mb_cache *cache, gfp_t mask, u32 key,
-> >  		return -ENOMEM;
-> >
-> >  	INIT_LIST_HEAD(&entry->e_list);
-> > -	/* One ref for hash, one ref returned */
-> > +	/* Initial hash reference */
-> >  	atomic_set(&entry->e_refcnt, 1);
-> >  	entry->e_key = key;
-> >  	entry->e_value = value;
-> > @@ -106,21 +106,28 @@ int mb_cache_entry_create(struct mb_cache *cache, gfp_t mask, u32 key,
-> >  		}
-> >  	}
-> >  	hlist_bl_add_head(&entry->e_hash_list, head);
-> > -	hlist_bl_unlock(head);
-> > -
-> > +	/*
-> > +	 * Add entry to LRU list before it can be found by
-> > +	 * mb_cache_entry_delete() to avoid races
-> > +	 */
+> Regression test for commit b55c3cd102a6 ext4: add reserved GDT blocks
+> check.
 > 
-> No reference to mb_cache_entry_delete() now. It is
-> mb_cache_entry_delete_or_get()
-
-Thanks, will fix.
-
-> >  	spin_lock(&cache->c_list_lock);
-> >  	list_add_tail(&entry->e_list, &cache->c_list);
-> > -	/* Grab ref for LRU list */
-> > -	atomic_inc(&entry->e_refcnt);
-> >  	cache->c_entry_count++;
-> >  	spin_unlock(&cache->c_list_lock);
-> > +	hlist_bl_unlock(head);
-> >
-> >  	return 0;
-> >  }
-> >  EXPORT_SYMBOL(mb_cache_entry_create);
-> >
-> > -void __mb_cache_entry_free(struct mb_cache_entry *entry)
-> > +void __mb_cache_entry_free(struct mb_cache *cache, struct mb_cache_entry *entry)
-> >  {
-> > +	struct hlist_bl_head *head;
-> > +
-> > +	head = mb_cache_entry_head(cache, entry->e_key);
-> > +	hlist_bl_lock(head);
-> > +	hlist_bl_del(&entry->e_hash_list);
-> > +	hlist_bl_unlock(head);
-> >  	kmem_cache_free(mb_entry_cache, entry);
-> >  }
-> >  EXPORT_SYMBOL(__mb_cache_entry_free);
-> > @@ -134,7 +141,7 @@ EXPORT_SYMBOL(__mb_cache_entry_free);
-> >   */
-> >  void mb_cache_entry_wait_unused(struct mb_cache_entry *entry)
-> >  {
-> > -	wait_var_event(&entry->e_refcnt, atomic_read(&entry->e_refcnt) <= 3);
-> > +	wait_var_event(&entry->e_refcnt, atomic_read(&entry->e_refcnt) <= 2);
-> >  }
-> >  EXPORT_SYMBOL(mb_cache_entry_wait_unused);
-> >
-> > @@ -155,10 +162,9 @@ static struct mb_cache_entry *__entry_find(struct mb_cache *cache,
-> >  	while (node) {
-> >  		entry = hlist_bl_entry(node, struct mb_cache_entry,
-> >  				       e_hash_list);
-> > -		if (entry->e_key == key && entry->e_reusable) {
-> > -			atomic_inc(&entry->e_refcnt);
-> > +		if (entry->e_key == key && entry->e_reusable &&
-> > +		    atomic_inc_not_zero(&entry->e_refcnt))
-> >  			goto out;
-> > -		}
-> >  		node = node->next;
-> >  	}
-> >  	entry = NULL;
-> > @@ -218,10 +224,9 @@ struct mb_cache_entry *mb_cache_entry_get(struct mb_cache *cache, u32 key,
-> >  	head = mb_cache_entry_head(cache, key);
-> >  	hlist_bl_lock(head);
-> >  	hlist_bl_for_each_entry(entry, node, head, e_hash_list) {
-> > -		if (entry->e_key == key && entry->e_value == value) {
-> > -			atomic_inc(&entry->e_refcnt);
-> > +		if (entry->e_key == key && entry->e_value == value &&
-> > +		    atomic_inc_not_zero(&entry->e_refcnt))
-> >  			goto out;
-> > -		}
-> >  	}
-> >  	entry = NULL;
-> >  out:
-> > @@ -244,37 +249,25 @@ EXPORT_SYMBOL(mb_cache_entry_get);
-> >  struct mb_cache_entry *mb_cache_entry_delete_or_get(struct mb_cache *cache,
-> >  						    u32 key, u64 value)
-> >  {
-> > -	struct hlist_bl_node *node;
-> > -	struct hlist_bl_head *head;
-> >  	struct mb_cache_entry *entry;
-> >
-> > -	head = mb_cache_entry_head(cache, key);
-> > -	hlist_bl_lock(head);
-> > -	hlist_bl_for_each_entry(entry, node, head, e_hash_list) {
-> > -		if (entry->e_key == key && entry->e_value == value) {
-> > -			if (atomic_read(&entry->e_refcnt) > 2) {
-> > -				atomic_inc(&entry->e_refcnt);
-> > -				hlist_bl_unlock(head);
-> > -				return entry;
-> > -			}
-> > -			/* We keep hash list reference to keep entry alive */
-> > -			hlist_bl_del_init(&entry->e_hash_list);
-> > -			hlist_bl_unlock(head);
-> > -			spin_lock(&cache->c_list_lock);
-> > -			if (!list_empty(&entry->e_list)) {
-> > -				list_del_init(&entry->e_list);
-> > -				if (!WARN_ONCE(cache->c_entry_count == 0,
-> > -		"mbcache: attempt to decrement c_entry_count past zero"))
-> > -					cache->c_entry_count--;
-> > -				atomic_dec(&entry->e_refcnt);
-> > -			}
-> > -			spin_unlock(&cache->c_list_lock);
-> > -			mb_cache_entry_put(cache, entry);
-> > -			return NULL;
-> > -		}
-> > -	}
-> > -	hlist_bl_unlock(head);
-> > +	entry = mb_cache_entry_get(cache, key, value);
-> > +	if (!entry)
-> > +		return NULL;
-> > +
-> > +	/*
-> > +	 * Drop the ref we got from mb_cache_entry_get() and the initial hash
-> > +	 * ref if we are the last user
-> > +	 */
-> > +	if (atomic_cmpxchg(&entry->e_refcnt, 2, 0) != 2)
-> > +		return entry;
-> >
-> > +	spin_lock(&cache->c_list_lock);
-> > +	if (!list_empty(&entry->e_list))
-> > +		list_del_init(&entry->e_list);
-> > +	cache->c_entry_count--;
-> > +	spin_unlock(&cache->c_list_lock);
-> > +	__mb_cache_entry_free(cache, entry);
-> >  	return NULL;
-> >  }
-> >  EXPORT_SYMBOL(mb_cache_entry_delete_or_get);
-> > @@ -306,42 +299,24 @@ static unsigned long mb_cache_shrink(struct mb_cache *cache,
-> >  				     unsigned long nr_to_scan)
-> >  {
-> >  	struct mb_cache_entry *entry;
-> > -	struct hlist_bl_head *head;
-> >  	unsigned long shrunk = 0;
-> >
-> >  	spin_lock(&cache->c_list_lock);
-> >  	while (nr_to_scan-- && !list_empty(&cache->c_list)) {
-> >  		entry = list_first_entry(&cache->c_list,
-> >  					 struct mb_cache_entry, e_list);
-> > -		if (entry->e_referenced || atomic_read(&entry->e_refcnt) > 2) {
-> > +		/* Drop initial hash reference if there is no user */
-> > +		if (entry->e_referenced ||
-> > +		    atomic_cmpxchg(&entry->e_refcnt, 1, 0) != 1) {
+> Signed-off-by: Sun Ke <sunke32@huawei.com>
+> ---
+>  tests/ext4/057     | 44 ++++++++++++++++++++++++++++++++++++++++++++
+>  tests/ext4/057.out |  3 +++
+>  2 files changed, 47 insertions(+)
+>  create mode 100755 tests/ext4/057
+>  create mode 100644 tests/ext4/057.out
 > 
-> So here if the refcnt of an entry is 1. That means it is still in use right.
+> diff --git a/tests/ext4/057 b/tests/ext4/057
+> new file mode 100755
+> index 00000000..44dae76c
+> --- /dev/null
+> +++ b/tests/ext4/057
+> @@ -0,0 +1,44 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2022 HUAWEI.  All Rights Reserved.
+> +#
+> +# FS QA Test 057
+> +#
+> +# Forget to run requested e2fsck after resize_inode, then resize fs,
+> +# it will trigger off null pointer.
+> +#
+> +# Regression test for commit
+> +# b55c3cd102a6 ext4: add reserved GDT blocks check
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto resize quick
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs ext4
+> +_fixed_by_kernel_commit b55c3cd102a6 \
+> +	"ext4: add reserved GDT blocks check"
+> +
+> +_require_scratch
+> +_require_command "$TUNE2FS_PROG" tune2fs
+> +_require_command "$RESIZE2FS_PROG" resize2fs
+> +_require_scratch_size $((1024 * 1024)) #kB
+> +
+> +# set fs size 512M
+> +dev_size=$((512 * 1024 * 1024))
+> +_scratch_mkfs_sized $dev_size >> $seqres.full 2>&1
+> +
+> +# forget to run requested e2fsck after resize_inode
+> +$TUNE2FS_PROG -O ^resize_inode $SCRATCH_DEV | grep -w "e2fsck"
+> +
+> +_scratch_mount
+> +
+> +# resize fs will trigger NULL pointer in ext4_flex_group_add
+> +$RESIZE2FS_PROG $SCRATCH_DEV 1G >> $seqres.full 2>&1
+> +
+> +echo "Silence is golden"
+> +
+> +# success, all done
+> +status=0
+> +exit
+> diff --git a/tests/ext4/057.out b/tests/ext4/057.out
+> new file mode 100644
+> index 00000000..4784ad7e
+> --- /dev/null
+> +++ b/tests/ext4/057.out
+> @@ -0,0 +1,3 @@
+> +QA output created by 057
+> +Please run e2fsck -f on the filesystem.
 
-No. One reference is held by the hashtable/LRU itself. So 1 means entry is
-free.
+If you hope to match this line, means this case isn't "Silence is golden".
 
-> So the shrinker will do the atomic_cmpxchg and make it to 0. And then
-> delete the entry from the cache?
-> This will only happen for entry with just 1 reference count.
+I don't know why you'd to have this line, it looks not suit to be golden
+image. If you'd like to make sure current ext4 supports "resize_inode"
+feature, you can use:
+  _require_scratch_ext4_feature resize_inode
+
+Thanks,
+Zorro
+
+> +Silence is golden
+> -- 
+> 2.13.6
 > 
-> Is that correct understanding?
 
-Correct. Basically the atomic 1 -> 0 transition makes sure we are not
-racing with anybody else doing the 1 -> 2 transition. And once reference
-gets to 0, we make sure no new references can be created.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
