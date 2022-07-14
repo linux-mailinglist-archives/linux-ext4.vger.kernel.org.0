@@ -2,44 +2,44 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49CCF574D23
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Jul 2022 14:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB0F4574D1C
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Jul 2022 14:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239147AbiGNMKN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 14 Jul 2022 08:10:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48886 "EHLO
+        id S239015AbiGNMKG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 14 Jul 2022 08:10:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238572AbiGNMJy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Jul 2022 08:09:54 -0400
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF7A43FA08
-        for <linux-ext4@vger.kernel.org>; Thu, 14 Jul 2022 05:08:49 -0700 (PDT)
-Received: by mail-io1-f71.google.com with SMTP id f18-20020a5d8592000000b0067289239d1dso632614ioj.22
-        for <linux-ext4@vger.kernel.org>; Thu, 14 Jul 2022 05:08:49 -0700 (PDT)
+        with ESMTP id S239055AbiGNMJv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Jul 2022 08:09:51 -0400
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A6D4B0E4
+        for <linux-ext4@vger.kernel.org>; Thu, 14 Jul 2022 05:08:52 -0700 (PDT)
+Received: by mail-io1-f69.google.com with SMTP id h7-20020a05660224c700b0067898a33ceaso626588ioe.13
+        for <linux-ext4@vger.kernel.org>; Thu, 14 Jul 2022 05:08:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=WugDegGD5tYpRsXUE6iQPO7lN4FJAzAu9piPnbZrWMo=;
-        b=ak5SCLLev1quv6XQTfAQNe9D/15pxolXKHqRGxcs/jt8HBtIUNurUq9A2ABJySFOOu
-         pcC6ROAbI18zchpGtz8pG1U9aEYvWPgfwuAFnmJDln678966IY6/g6pdA6JdxKoeO6lp
-         JhVBAq70y0g4OBeZnDH7mAilvIYn8tr0zVa4DRMFyoqK8ojOJqxoPYREYElQ3QxHNWS4
-         XBgU0mvim2facwGzav6B0rc1Lvjq7mfiVmKPZiOXwckcHvQq4gyp6WTG/jmLj/3dn+0S
-         Mm9dlLDTTrTyIEaYHgN0hACqCI/ubKarv94DJZMfVx/c6WEoJbpr/IYjocY++yLNKSqs
-         Ioow==
-X-Gm-Message-State: AJIora+3hPwDZCF2+Xlsh8GUzT8PA4NNmrAtKV2dYWQBkO9EzESGW3O5
-        FX6+lcUiyCJ1dkVRMbrXx6dHJY0t9kD8VI3a7xu63SewDnD1
-X-Google-Smtp-Source: AGRyM1stg3QufNq27r18ZDT8evXqsYrJV2PTeShtDN38PD5PDQy3L+MQLWCRjezDhgltpGSXqJ9Uhm394v5jnuq/E6I52bB9JU/U
+        bh=Ifyc4fH/kFDEqeceRrQ3ZkuA6rTJWmoCsIUJpFjE3aE=;
+        b=11MQqR+JQdwKn5xTm3sPSwSf+0QMkdvCCNDOXsr+k1byKPik+FxEFo7icEPmZ9/IFu
+         Fbh0vduTytpGDw0AenflXb49hvJjR+jDMiZIcDIXdUP/1s0LHaW6Y/1drwndvniUsxiH
+         v+REfk9wRxkjvgoKh2kMC3QLb5b7/MEuixjeI5DSMOj+FA9s3zFj91Rklrxq4U7psw3W
+         mg7XEEw7xeX6cvhmV7WlKnr3SxCiwPStjOevjO1Hgh8aXiEtbcUZ7E3rEKMqqkUmwYog
+         NB8ILK+vunXoKnO67KlPJOuuDeWUAGEZHfCOvCqESYm3gWDmhLAiSm2Q+ozc3ydGeuHp
+         UJAA==
+X-Gm-Message-State: AJIora/TFTKxLTASL5d4CK73xnmNoP60SWklfUvsSeFmpRAWS869CAvs
+        Qc7eXSKST3aMlt+jAda7t89JveXDms0bmIt5aTSWM45UVyeL
+X-Google-Smtp-Source: AGRyM1uWOaU+rsE7EmoQCnOQQsBPJVvEmN+cxa1YGA6ZoRHw7MDx0WXz7tifZfiH1kvSJerDliaab79YBFdeauaDSAAfSsLn4XwH
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:41a:b0:33f:8881:888c with SMTP id
- q26-20020a056638041a00b0033f8881888cmr4039712jap.110.1657800505951; Thu, 14
- Jul 2022 05:08:25 -0700 (PDT)
-Date:   Thu, 14 Jul 2022 05:08:25 -0700
+X-Received: by 2002:a05:6e02:1b01:b0:2dc:7472:a5d1 with SMTP id
+ i1-20020a056e021b0100b002dc7472a5d1mr4313757ilv.62.1657800506151; Thu, 14 Jul
+ 2022 05:08:26 -0700 (PDT)
+Date:   Thu, 14 Jul 2022 05:08:26 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000044115e05e3c2c2fb@google.com>
-Subject: [syzbot] WARNING in ext4_iomap_begin
-From:   syzbot <syzbot+c97a5f91bbd6de05e1c2@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+Message-ID: <000000000000471c2905e3c2c2c2@google.com>
+Subject: [syzbot] possible deadlock in start_this_handle (3)
+From:   syzbot <syzbot+2d2aeadc6ce1e1f11d45@syzkaller.appspotmail.com>
+To:     jack@suse.com, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
         tytso@mit.edu
 Content-Type: text/plain; charset="UTF-8"
@@ -57,73 +57,214 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    4a57a8400075 vf/remap: return the amount of bytes actually..
+HEAD commit:    5a29232d870d Merge tag 'for-5.19-rc6-tag' of git://git.ker..
 git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=17460cac080000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=970ac5ffe160d24
-dashboard link: https://syzkaller.appspot.com/bug?extid=c97a5f91bbd6de05e1c2
+console output: https://syzkaller.appspot.com/x/log.txt?x=16619ce8080000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=525bc0635a2b942a
+dashboard link: https://syzkaller.appspot.com/bug?extid=2d2aeadc6ce1e1f11d45
 compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16f964ac080000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15655f92080000
+userspace arch: i386
 
-Bisection is inconclusive: the issue happens on the oldest tested release.
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12083f1c080000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=11083f1c080000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16083f1c080000
+Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c97a5f91bbd6de05e1c2@syzkaller.appspotmail.com
+Reported-by: syzbot+2d2aeadc6ce1e1f11d45@syzkaller.appspotmail.com
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 8422 at fs/ext4/inode.c:3418 ext4_iomap_begin+0x1aa/0x780 fs/ext4/inode.c:3418
-Modules linked in:
-CPU: 0 PID: 8422 Comm: syz-executor260 Not tainted 5.19.0-rc6-syzkaller-00115-g4a57a8400075 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/29/2022
-RIP: 0010:ext4_iomap_begin+0x1aa/0x780 fs/ext4/inode.c:3418
-Code: 83 c0 01 38 d0 7c 08 84 d2 0f 85 d8 05 00 00 41 0f b7 9f c2 05 00 00 31 ff 89 de e8 70 72 5b ff 66 85 db 74 5c e8 46 76 5b ff <0f> 0b 41 bd de ff ff ff e8 39 76 5b ff 48 b8 00 00 00 00 00 fc ff
-RSP: 0018:ffffc9000d87f260 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 00000000000000bc RCX: 0000000000000000
-RDX: ffff88807a848100 RSI: ffffffff821e24ea RDI: 0000000000000003
-RBP: 0000000000000180 R08: 0000000000000003 R09: 0000000000000000
-R10: 00000000000000bc R11: 0000000000000001 R12: 000000000000000c
-R13: ffff88806f0aa6fa R14: ffffc9000d87f550 R15: ffff88806f0aa630
-FS:  00007fcf662ec700(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fcf662cb718 CR3: 0000000021572000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+======================================================
+WARNING: possible circular locking dependency detected
+5.19.0-rc6-syzkaller-00026-g5a29232d870d #0 Not tainted
+------------------------------------------------------
+khugepaged/48 is trying to acquire lock:
+ffff888044598990 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0xfb4/0x14a0 fs/jbd2/transaction.c:461
+
+but task is already holding lock:
+ffffffff8bebdb20 (fs_reclaim){+.+.}-{0:0}, at: __perform_reclaim mm/page_alloc.c:4638 [inline]
+ffffffff8bebdb20 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_direct_reclaim mm/page_alloc.c:4663 [inline]
+ffffffff8bebdb20 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_slowpath.constprop.0+0x9e1/0x2160 mm/page_alloc.c:5066
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (fs_reclaim){+.+.}-{0:0}:
+       __fs_reclaim_acquire mm/page_alloc.c:4589 [inline]
+       fs_reclaim_acquire+0x115/0x160 mm/page_alloc.c:4603
+       might_alloc include/linux/sched/mm.h:271 [inline]
+       slab_pre_alloc_hook mm/slab.h:723 [inline]
+       slab_alloc_node mm/slub.c:3157 [inline]
+       slab_alloc mm/slub.c:3251 [inline]
+       kmem_cache_alloc_trace+0x40/0x3f0 mm/slub.c:3282
+       kmalloc include/linux/slab.h:600 [inline]
+       memory_stat_format+0x95/0xae0 mm/memcontrol.c:1468
+       mem_cgroup_print_oom_meminfo.cold+0x50/0x7e mm/memcontrol.c:1594
+       dump_header+0x13f/0x7f9 mm/oom_kill.c:462
+       oom_kill_process.cold+0x10/0x15 mm/oom_kill.c:1037
+       out_of_memory+0x358/0x14b0 mm/oom_kill.c:1175
+       mem_cgroup_out_of_memory+0x206/0x270 mm/memcontrol.c:1650
+       memory_max_write+0x25c/0x3b0 mm/memcontrol.c:6299
+       cgroup_file_write+0x1de/0x770 kernel/cgroup/cgroup.c:3882
+       kernfs_fop_write_iter+0x3f8/0x610 fs/kernfs/file.c:290
+       call_write_iter include/linux/fs.h:2058 [inline]
+       new_sync_write+0x38a/0x560 fs/read_write.c:504
+       vfs_write+0x7c0/0xac0 fs/read_write.c:591
+       ksys_write+0x127/0x250 fs/read_write.c:644
+       do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+       __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
+       do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:203
+       entry_SYSENTER_compat_after_hwframe+0x53/0x62
+
+-> #1 (oom_lock){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:603 [inline]
+       __mutex_lock+0x12f/0x1350 kernel/locking/mutex.c:747
+       mem_cgroup_out_of_memory+0x8d/0x270 mm/memcontrol.c:1640
+       mem_cgroup_oom mm/memcontrol.c:1880 [inline]
+       try_charge_memcg+0xef9/0x1380 mm/memcontrol.c:2670
+       obj_cgroup_charge_pages mm/memcontrol.c:2999 [inline]
+       obj_cgroup_charge+0x2ab/0x5e0 mm/memcontrol.c:3289
+       memcg_slab_pre_alloc_hook mm/slab.h:505 [inline]
+       slab_pre_alloc_hook mm/slab.h:728 [inline]
+       slab_alloc_node mm/slub.c:3157 [inline]
+       slab_alloc mm/slub.c:3251 [inline]
+       __kmem_cache_alloc_lru mm/slub.c:3258 [inline]
+       kmem_cache_alloc+0x92/0x3b0 mm/slub.c:3268
+       kmem_cache_zalloc include/linux/slab.h:723 [inline]
+       alloc_buffer_head+0x20/0x140 fs/buffer.c:3294
+       alloc_page_buffers+0x285/0x7a0 fs/buffer.c:829
+       grow_dev_page fs/buffer.c:965 [inline]
+       grow_buffers fs/buffer.c:1011 [inline]
+       __getblk_slow+0x525/0x1080 fs/buffer.c:1038
+       __getblk_gfp+0x6e/0x80 fs/buffer.c:1333
+       sb_getblk include/linux/buffer_head.h:326 [inline]
+       ext4_getblk+0x20d/0x7c0 fs/ext4/inode.c:866
+       ext4_bread+0x2a/0x1c0 fs/ext4/inode.c:912
+       ext4_append+0x177/0x3a0 fs/ext4/namei.c:67
+       ext4_init_new_dir+0x25e/0x4d0 fs/ext4/namei.c:2920
+       ext4_mkdir+0x3cf/0xb20 fs/ext4/namei.c:2966
+       vfs_mkdir+0x1c3/0x3b0 fs/namei.c:3975
+       do_mkdirat+0x285/0x300 fs/namei.c:4001
+       __do_sys_mkdirat fs/namei.c:4016 [inline]
+       __se_sys_mkdirat fs/namei.c:4014 [inline]
+       __ia32_sys_mkdirat+0x81/0xa0 fs/namei.c:4014
+       do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+       __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
+       do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:203
+       entry_SYSENTER_compat_after_hwframe+0x53/0x62
+
+-> #0 (jbd2_handle){++++}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:3095 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3214 [inline]
+       validate_chain kernel/locking/lockdep.c:3829 [inline]
+       __lock_acquire+0x2abe/0x5660 kernel/locking/lockdep.c:5053
+       lock_acquire kernel/locking/lockdep.c:5665 [inline]
+       lock_acquire+0x1ab/0x570 kernel/locking/lockdep.c:5630
+       start_this_handle+0xfe7/0x14a0 fs/jbd2/transaction.c:463
+       jbd2__journal_start+0x399/0x930 fs/jbd2/transaction.c:520
+       __ext4_journal_start_sb+0x3a8/0x4a0 fs/ext4/ext4_jbd2.c:105
+       __ext4_journal_start fs/ext4/ext4_jbd2.h:326 [inline]
+       ext4_dirty_inode+0x9d/0x110 fs/ext4/inode.c:5949
+       __mark_inode_dirty+0x495/0x1050 fs/fs-writeback.c:2381
+       mark_inode_dirty_sync include/linux/fs.h:2337 [inline]
+       iput.part.0+0x57/0x820 fs/inode.c:1767
+       iput+0x58/0x70 fs/inode.c:1760
+       dentry_unlink_inode+0x2b1/0x460 fs/dcache.c:401
+       __dentry_kill+0x3c0/0x640 fs/dcache.c:607
+       shrink_dentry_list+0x23c/0x800 fs/dcache.c:1201
+       prune_dcache_sb+0xe7/0x140 fs/dcache.c:1282
+       super_cache_scan+0x336/0x590 fs/super.c:104
+       do_shrink_slab+0x42d/0xbd0 mm/vmscan.c:770
+       shrink_slab+0x17c/0x6f0 mm/vmscan.c:930
+       shrink_node_memcgs mm/vmscan.c:3124 [inline]
+       shrink_node+0x8b3/0x1db0 mm/vmscan.c:3245
+       shrink_zones mm/vmscan.c:3482 [inline]
+       do_try_to_free_pages+0x3b5/0x1700 mm/vmscan.c:3540
+       try_to_free_pages+0x2ac/0x840 mm/vmscan.c:3775
+       __perform_reclaim mm/page_alloc.c:4641 [inline]
+       __alloc_pages_direct_reclaim mm/page_alloc.c:4663 [inline]
+       __alloc_pages_slowpath.constprop.0+0xa8a/0x2160 mm/page_alloc.c:5066
+       __alloc_pages+0x436/0x510 mm/page_alloc.c:5439
+       __alloc_pages_node include/linux/gfp.h:587 [inline]
+       khugepaged_alloc_page+0xa0/0x170 mm/khugepaged.c:859
+       collapse_huge_page mm/khugepaged.c:1062 [inline]
+       khugepaged_scan_pmd mm/khugepaged.c:1348 [inline]
+       khugepaged_scan_mm_slot mm/khugepaged.c:2170 [inline]
+       khugepaged_do_scan mm/khugepaged.c:2251 [inline]
+       khugepaged+0x3473/0x66a0 mm/khugepaged.c:2296
+       kthread+0x2e9/0x3a0 kernel/kthread.c:376
+       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:302
+
+other info that might help us debug this:
+
+Chain exists of:
+  jbd2_handle --> oom_lock --> fs_reclaim
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(fs_reclaim);
+                               lock(oom_lock);
+                               lock(fs_reclaim);
+  lock(jbd2_handle);
+
+ *** DEADLOCK ***
+
+3 locks held by khugepaged/48:
+ #0: ffffffff8bebdb20 (fs_reclaim){+.+.}-{0:0}, at: __perform_reclaim mm/page_alloc.c:4638 [inline]
+ #0: ffffffff8bebdb20 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_direct_reclaim mm/page_alloc.c:4663 [inline]
+ #0: ffffffff8bebdb20 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_slowpath.constprop.0+0x9e1/0x2160 mm/page_alloc.c:5066
+ #1: ffffffff8be7d850 (shrinker_rwsem){++++}-{3:3}, at: shrink_slab+0xc9/0x6f0 mm/vmscan.c:920
+ #2: ffff8880445800e0 (&type->s_umount_key#33){++++}-{3:3}, at: trylock_super fs/super.c:415 [inline]
+ #2: ffff8880445800e0 (&type->s_umount_key#33){++++}-{3:3}, at: super_cache_scan+0x6c/0x590 fs/super.c:79
+
+stack backtrace:
+CPU: 2 PID: 48 Comm: khugepaged Not tainted 5.19.0-rc6-syzkaller-00026-g5a29232d870d #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
 Call Trace:
  <TASK>
- iomap_iter+0x454/0x1110 fs/iomap/iter.c:74
- __iomap_dio_rw+0x6b6/0x1a80 fs/iomap/direct-io.c:600
- iomap_dio_rw+0x3c/0xa0 fs/iomap/direct-io.c:689
- ext4_dio_write_iter fs/ext4/file.c:566 [inline]
- ext4_file_write_iter+0xe50/0x1520 fs/ext4/file.c:677
- call_write_iter include/linux/fs.h:2058 [inline]
- do_iter_readv_writev+0x3d1/0x640 fs/read_write.c:742
- do_iter_write+0x182/0x700 fs/read_write.c:868
- vfs_iter_write+0x70/0xa0 fs/read_write.c:909
- iter_file_splice_write+0x6fa/0xc10 fs/splice.c:689
- do_splice_from fs/splice.c:767 [inline]
- direct_splice_actor+0x110/0x180 fs/splice.c:936
- splice_direct_to_actor+0x34b/0x8c0 fs/splice.c:891
- do_splice_direct+0x1a7/0x270 fs/splice.c:979
- do_sendfile+0xae0/0x1240 fs/read_write.c:1262
- __do_sys_sendfile64 fs/read_write.c:1327 [inline]
- __se_sys_sendfile64 fs/read_write.c:1313 [inline]
- __x64_sys_sendfile64+0x1cc/0x210 fs/read_write.c:1313
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fcf6633fe79
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fcf662ec2f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
-RAX: ffffffffffffffda RBX: 00007fcf663c54c0 RCX: 00007fcf6633fe79
-RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000004
-RBP: 00007fcf663920bc R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffdffa R11: 0000000000000246 R12: 00007fcf663910b8
-R13: 0030656c69662f2e R14: e5d26e84aa4cf3c6 R15: 00007fcf663c54c8
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2175
+ check_prev_add kernel/locking/lockdep.c:3095 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3214 [inline]
+ validate_chain kernel/locking/lockdep.c:3829 [inline]
+ __lock_acquire+0x2abe/0x5660 kernel/locking/lockdep.c:5053
+ lock_acquire kernel/locking/lockdep.c:5665 [inline]
+ lock_acquire+0x1ab/0x570 kernel/locking/lockdep.c:5630
+ start_this_handle+0xfe7/0x14a0 fs/jbd2/transaction.c:463
+ jbd2__journal_start+0x399/0x930 fs/jbd2/transaction.c:520
+ __ext4_journal_start_sb+0x3a8/0x4a0 fs/ext4/ext4_jbd2.c:105
+ __ext4_journal_start fs/ext4/ext4_jbd2.h:326 [inline]
+ ext4_dirty_inode+0x9d/0x110 fs/ext4/inode.c:5949
+ __mark_inode_dirty+0x495/0x1050 fs/fs-writeback.c:2381
+ mark_inode_dirty_sync include/linux/fs.h:2337 [inline]
+ iput.part.0+0x57/0x820 fs/inode.c:1767
+ iput+0x58/0x70 fs/inode.c:1760
+ dentry_unlink_inode+0x2b1/0x460 fs/dcache.c:401
+ __dentry_kill+0x3c0/0x640 fs/dcache.c:607
+ shrink_dentry_list+0x23c/0x800 fs/dcache.c:1201
+ prune_dcache_sb+0xe7/0x140 fs/dcache.c:1282
+ super_cache_scan+0x336/0x590 fs/super.c:104
+ do_shrink_slab+0x42d/0xbd0 mm/vmscan.c:770
+ shrink_slab+0x17c/0x6f0 mm/vmscan.c:930
+ shrink_node_memcgs mm/vmscan.c:3124 [inline]
+ shrink_node+0x8b3/0x1db0 mm/vmscan.c:3245
+ shrink_zones mm/vmscan.c:3482 [inline]
+ do_try_to_free_pages+0x3b5/0x1700 mm/vmscan.c:3540
+ try_to_free_pages+0x2ac/0x840 mm/vmscan.c:3775
+ __perform_reclaim mm/page_alloc.c:4641 [inline]
+ __alloc_pages_direct_reclaim mm/page_alloc.c:4663 [inline]
+ __alloc_pages_slowpath.constprop.0+0xa8a/0x2160 mm/page_alloc.c:5066
+ __alloc_pages+0x436/0x510 mm/page_alloc.c:5439
+ __alloc_pages_node include/linux/gfp.h:587 [inline]
+ khugepaged_alloc_page+0xa0/0x170 mm/khugepaged.c:859
+ collapse_huge_page mm/khugepaged.c:1062 [inline]
+ khugepaged_scan_pmd mm/khugepaged.c:1348 [inline]
+ khugepaged_scan_mm_slot mm/khugepaged.c:2170 [inline]
+ khugepaged_do_scan mm/khugepaged.c:2251 [inline]
+ khugepaged+0x3473/0x66a0 mm/khugepaged.c:2296
+ kthread+0x2e9/0x3a0 kernel/kthread.c:376
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:302
  </TASK>
 
 
@@ -134,6 +275,3 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
