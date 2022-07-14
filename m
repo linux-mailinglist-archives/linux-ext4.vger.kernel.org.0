@@ -2,163 +2,253 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8439D574D61
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Jul 2022 14:24:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDAB0574D6E
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Jul 2022 14:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238955AbiGNMYN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 14 Jul 2022 08:24:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39752 "EHLO
+        id S230354AbiGNM0K (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 14 Jul 2022 08:26:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239053AbiGNMYH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Jul 2022 08:24:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4F5D61E3FB
-        for <linux-ext4@vger.kernel.org>; Thu, 14 Jul 2022 05:23:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1657801436;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MrPaXkPo48S62oyKwvoLWRP8ZNCtWIGO5OoUipqtqks=;
-        b=XvhGV5mA53S2no5sS/w2tcORSoxldssdTehRBSTKP6bFOnal2FYnhXihGc0ZrrC2Py1cJz
-        R/VRN99gGgqJnKKXDaF3CglMMAo05kEVrFa77XF9cx7lZ26ONPsGYohpckFgJVBGgkauSc
-        ebw16LVsGM3PSSHYSCXMj8ASe7bVUAk=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-63-rwE3kNxnPQGg9Awn6Uptgg-1; Thu, 14 Jul 2022 08:23:55 -0400
-X-MC-Unique: rwE3kNxnPQGg9Awn6Uptgg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 40EB038041E1;
-        Thu, 14 Jul 2022 12:23:55 +0000 (UTC)
-Received: from fedora (unknown [10.40.193.131])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 17E93906B6;
-        Thu, 14 Jul 2022 12:23:53 +0000 (UTC)
-Date:   Thu, 14 Jul 2022 14:23:51 +0200
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     Tadeusz Struk <tadeusz.struk@linaro.org>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+15cd994e273307bf5cfa@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ext4: fix kernel BUG in ext4_free_blocks
-Message-ID: <20220714122351.vtiai34zvrrg2np2@fedora>
-References: <20220713185904.64138-1-tadeusz.struk@linaro.org>
- <20220714095300.ffij7re6l5n6ixlg@fedora>
+        with ESMTP id S238050AbiGNM0J (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Jul 2022 08:26:09 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB05629802;
+        Thu, 14 Jul 2022 05:26:05 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 72so1437445pge.0;
+        Thu, 14 Jul 2022 05:26:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=I79IiuSyTbScxKDE1oBqlgf6Ta92KMgwmf6OvnrVqKw=;
+        b=ZkEhYC5KR2v0+mDjrV7aFvuzBowxxNtaROOhM0mmQ+bgMfnRvnBdn9SEXiX59Kp8wV
+         1RY6dk3feK2vLuRmrGJbBvaPTXpTD1JcYwJPXDfNaimaTcj/el7/QBMDjxE2iE7BBu9E
+         4gBkiO/OLKuHAHhoRIO/2Y/CxQ8q9Tiz5jyGsUwBoG/LF6fHHnSEQygnvcJMGavXKJSK
+         V5DmbtwYsOeXfPA6Nket8TAUgog1qCePVFnpXH3TWHKtJE86Qrcv1sfyTHt6SaSGKoCh
+         0Dw/qS94cu1ZjG2gzg46Bm9BDHo+7P5YnfenJCjUj7n7dnbuYJs5B3uzd9Mkdx8N0jCf
+         Yi2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=I79IiuSyTbScxKDE1oBqlgf6Ta92KMgwmf6OvnrVqKw=;
+        b=74Wd3PQ4qW/6+4sZNOVC25s6Kxrgng84057tHYIAQIzG7MZktPwDKAlQ7n20AtHZ5m
+         +mL1C1g2tLeJOS6Dr8NJi6BMqmLbiTuK9jhSVE3IIDoSf0Az7bmJvkYoYDgErwwZXsmk
+         F9h7JBpPYYvZeEHeWolLoSOyqlIBYvQU3mvIdXxmrEy7Z16zxKbbZSw6DOSY30S8u2yC
+         Mu05U4AMrCS2z0l7OGSIh6PuUADSUCU1Yc+aSXMsmSBsVfmI2voVlguE/i/EHQioJIMG
+         VOIL/fnAky5OFWM19WEEnNUFKEOKs5mVHPD0BUjbeAP6S8fgi9obFkw+KWkpjtUHVi6S
+         h2aQ==
+X-Gm-Message-State: AJIora+/e4vWN6kSGFQvOn4uJWtZkTOcDlDthMwU/FX8NJA+z56ML7mG
+        aOvU2nGYmqpnLnknooulMS/9FDThrgE=
+X-Google-Smtp-Source: AGRyM1s0cd5Jp4JYsusASH8XmcHHxYZfpQ0f/B7c7xV9cJ0dRs+YoHCuRLpDZlmVhN1IbyEBYoB0FA==
+X-Received: by 2002:a05:6a00:993:b0:52a:dd93:f02d with SMTP id u19-20020a056a00099300b0052add93f02dmr8454931pfg.12.1657801565182;
+        Thu, 14 Jul 2022 05:26:05 -0700 (PDT)
+Received: from localhost ([2406:7400:63:cb1d:811:33e9:9bc2:d40])
+        by smtp.gmail.com with ESMTPSA id x128-20020a633186000000b00408a9264b36sm1246877pgx.3.2022.07.14.05.26.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jul 2022 05:26:04 -0700 (PDT)
+Date:   Thu, 14 Jul 2022 17:56:00 +0530
+From:   Ritesh Harjani <ritesh.list@gmail.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 05/10] ext4: Fix race when reusing xattr blocks
+Message-ID: <20220714122600.56fqg63ztlrmkn4n@riteshh-domain>
+References: <20220712104519.29887-1-jack@suse.cz>
+ <20220712105436.32204-5-jack@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220714095300.ffij7re6l5n6ixlg@fedora>
-X-Scanned-By: MIMEDefang 2.79 on 10.11.54.5
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220712105436.32204-5-jack@suse.cz>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jul 14, 2022 at 11:53:00AM +0200, Lukas Czerner wrote:
-> On Wed, Jul 13, 2022 at 11:59:04AM -0700, Tadeusz Struk wrote:
-> > Syzbot reported a BUG in ext4_free_blocks.
-> > The issue is triggered from ext4_mb_clear_bb(). What happens is the
-> > block number passed to ext4_get_group_no_and_offset() is 0 and the
-> > es->s_first_data_block is 1. This makes block group number returned
-> > from ext4_get_group_no_and_offset equal to -1. This is then passed to
-> > ext4_get_group_info() and hits a BUG:
-> > BUG_ON(group >= EXT4_SB(sb)->s_groups_count),
-> > what can be seen in the trace below.
-> > This patch adds an assertion to ext4_get_group_no_and_offset() that
-> > checks if block number is not smaller than es->s_first_data_block.
-> > 
-> > kernel BUG at fs/ext4/ext4.h:3319!
-> > invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-> > CPU: 0 PID: 337 Comm: repro Not tainted 5.19.0-rc6-00105-g4e8e898e4107-dirty #14
-> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.0-1.fc36 04/01/2014
-> > RIP: 0010:ext4_mb_clear_bb+0x1bd6/0x1be0
-> > Call Trace:
-> >  <TASK>
-> >  ext4_free_blocks+0x9b3/0xc90
-> >  ext4_clear_blocks+0x344/0x3b0
-> >  ext4_ind_truncate+0x967/0x1050
-> >  ext4_truncate+0xb1b/0x1210
-> >  ext4_evict_inode+0xf06/0x16f0
-> >  evict+0x2a3/0x630
-> >  iput+0x618/0x850
-> >  ext4_enable_quotas+0x578/0x920
-> >  ext4_orphan_cleanup+0x539/0x1200
-> >  ext4_fill_super+0x94d8/0x9bc0
-> >  get_tree_bdev+0x40c/0x630
-> >  ext4_get_tree+0x1c/0x20
-> >  vfs_get_tree+0x88/0x290
-> >  do_new_mount+0x289/0xac0
-> >  path_mount+0x607/0xfd0
-> >  __se_sys_mount+0x2c4/0x3b0
-> >  __x64_sys_mount+0xbf/0xd0
-> >  do_syscall_64+0x3d/0x90
-> >  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> >  </TASK>
-> > 
-> > Link: https://syzkaller.appspot.com/bug?id=5266d464285a03cee9dbfda7d2452a72c3c2ae7c
-> > Reported-by: syzbot+15cd994e273307bf5cfa@syzkaller.appspotmail.com
-> > Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
-> > ---
-> >  fs/ext4/balloc.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
-> > index 78ee3ef795ae..1175750ad05f 100644
-> > --- a/fs/ext4/balloc.c
-> > +++ b/fs/ext4/balloc.c
-> > @@ -56,6 +56,9 @@ void ext4_get_group_no_and_offset(struct super_block *sb, ext4_fsblk_t blocknr,
-> >  	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
-> >  	ext4_grpblk_t offset;
-> >  
-> > +	if (blocknr < le32_to_cpu(es->s_first_data_block))
-> > +		blocknr = le32_to_cpu(es->s_first_data_block);
-> > +
-> 
-> This does not seem right. we should never work with block number smaller
-> than s_first_data_block. The first 1024 bytes of the file system are
-> unused and in case we have 1k block size, the entire first block is
-> unused.
-> 
-> I guess the image we work here with is corrupted, from the log it seems
-> that it was noticed correctly so the question is why did we still ended
-> up calling ext4_free_blocks() ? Seems like this should have been stopped
-> earlier by ext4_clear_blocks() ?
-> 
-> I did notice that in ext4_mb_clear_bb() we call
-> ext4_get_group_no_and_offset() before ext4_inode_block_valid() but
-> again we should have caught this problem earlier.
-> 
-> Can you link me the file system image that generated this problem?
+On 22/07/12 12:54PM, Jan Kara wrote:
+> When ext4_xattr_block_set() decides to remove xattr block the following
+> race can happen:
+>
+> CPU1                                    CPU2
+> ext4_xattr_block_set()                  ext4_xattr_release_block()
+>   new_bh = ext4_xattr_block_cache_find()
+>
+>                                           lock_buffer(bh);
+>                                           ref = le32_to_cpu(BHDR(bh)->h_refcount);
+>                                           if (ref == 1) {
+>                                             ...
+>                                             mb_cache_entry_delete();
+>                                             unlock_buffer(bh);
+>                                             ext4_free_blocks();
+>                                               ...
+>                                               ext4_forget(..., bh, ...);
+>                                                 jbd2_journal_revoke(..., bh);
+>
+>   ext4_journal_get_write_access(..., new_bh, ...)
+>     do_get_write_access()
+>       jbd2_journal_cancel_revoke(..., new_bh);
+>
+> Later the code in ext4_xattr_block_set() finds out the block got freed
+> and cancels reusal of the block but the revoke stays canceled and so in
+> case of block reuse and journal replay the filesystem can get corrupted.
+> If the race works out slightly differently, we can also hit assertions
+> in the jbd2 code.
+>
+> Fix the problem by making sure that once matching mbcache entry is
+> found, code dropping the last xattr block reference (or trying to modify
+> xattr block in place) waits until the mbcache entry reference is
+> dropped. This way code trying to reuse xattr block is protected from
+> someone trying to drop the last reference to xattr block.
+>
+> Reported-and-tested-by: Ritesh Harjani <ritesh.list@gmail.com>
+> CC: stable@vger.kernel.org
+> Fixes: 82939d7999df ("ext4: convert to mbcache2")
+> Signed-off-by: Jan Kara <jack@suse.cz>
 
-ok, I got the syzkaller C repro to work. The problem is that it's
-bigalloc file system and the 'block' and 'count' to free in
-ext4_free_blocks will get adjusted after the ext4_inode_block_valid().
+Thanks Jan,
+Just a note - I retested the patches only till here (marked stable) with
+stress-ng --xattr 16.
+And I didn't find any issues so far for ext2, ext3, ext4 default mkfs options.
 
-We should make sure that if this happens we also clear the
-EXT4_FREE_BLOCKS_VALIDATED. Additonally the ext4_inode_block_valid()
-in ext4_mb_clear_bb() should be called *before* the values are taken for
-granted. I'll prepare a patch to fix this.
+Also I re-ran full v3 patch series with the same test case on all 3 filesystem,
+and I didn't find any failures of the same test case.
 
--Lukas
+-ritesh
 
-> 
-> Thanks!
-> -Lukas
-> 
-> 
-> >  	blocknr = blocknr - le32_to_cpu(es->s_first_data_block);
-> >  	offset = do_div(blocknr, EXT4_BLOCKS_PER_GROUP(sb)) >>
-> >  		EXT4_SB(sb)->s_cluster_bits;
-> > -- 
-> > 2.36.1
-> > 
-> 
 
+
+
+> ---
+>  fs/ext4/xattr.c | 67 +++++++++++++++++++++++++++++++++----------------
+>  1 file changed, 45 insertions(+), 22 deletions(-)
+>
+> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+> index aadfae53d055..3a0928c8720e 100644
+> --- a/fs/ext4/xattr.c
+> +++ b/fs/ext4/xattr.c
+> @@ -439,9 +439,16 @@ static int ext4_xattr_inode_iget(struct inode *parent, unsigned long ea_ino,
+>  /* Remove entry from mbcache when EA inode is getting evicted */
+>  void ext4_evict_ea_inode(struct inode *inode)
+>  {
+> -	if (EA_INODE_CACHE(inode))
+> -		mb_cache_entry_delete(EA_INODE_CACHE(inode),
+> -			ext4_xattr_inode_get_hash(inode), inode->i_ino);
+> +	struct mb_cache_entry *oe;
+> +
+> +	if (!EA_INODE_CACHE(inode))
+> +		return;
+> +	/* Wait for entry to get unused so that we can remove it */
+> +	while ((oe = mb_cache_entry_delete_or_get(EA_INODE_CACHE(inode),
+> +			ext4_xattr_inode_get_hash(inode), inode->i_ino))) {
+> +		mb_cache_entry_wait_unused(oe);
+> +		mb_cache_entry_put(EA_INODE_CACHE(inode), oe);
+> +	}
+>  }
+>
+>  static int
+> @@ -1229,6 +1236,7 @@ ext4_xattr_release_block(handle_t *handle, struct inode *inode,
+>  	if (error)
+>  		goto out;
+>
+> +retry_ref:
+>  	lock_buffer(bh);
+>  	hash = le32_to_cpu(BHDR(bh)->h_hash);
+>  	ref = le32_to_cpu(BHDR(bh)->h_refcount);
+> @@ -1238,9 +1246,18 @@ ext4_xattr_release_block(handle_t *handle, struct inode *inode,
+>  		 * This must happen under buffer lock for
+>  		 * ext4_xattr_block_set() to reliably detect freed block
+>  		 */
+> -		if (ea_block_cache)
+> -			mb_cache_entry_delete(ea_block_cache, hash,
+> -					      bh->b_blocknr);
+> +		if (ea_block_cache) {
+> +			struct mb_cache_entry *oe;
+> +
+> +			oe = mb_cache_entry_delete_or_get(ea_block_cache, hash,
+> +							  bh->b_blocknr);
+> +			if (oe) {
+> +				unlock_buffer(bh);
+> +				mb_cache_entry_wait_unused(oe);
+> +				mb_cache_entry_put(ea_block_cache, oe);
+> +				goto retry_ref;
+> +			}
+> +		}
+>  		get_bh(bh);
+>  		unlock_buffer(bh);
+>
+> @@ -1867,9 +1884,20 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
+>  			 * ext4_xattr_block_set() to reliably detect modified
+>  			 * block
+>  			 */
+> -			if (ea_block_cache)
+> -				mb_cache_entry_delete(ea_block_cache, hash,
+> -						      bs->bh->b_blocknr);
+> +			if (ea_block_cache) {
+> +				struct mb_cache_entry *oe;
+> +
+> +				oe = mb_cache_entry_delete_or_get(ea_block_cache,
+> +					hash, bs->bh->b_blocknr);
+> +				if (oe) {
+> +					/*
+> +					 * Xattr block is getting reused. Leave
+> +					 * it alone.
+> +					 */
+> +					mb_cache_entry_put(ea_block_cache, oe);
+> +					goto clone_block;
+> +				}
+> +			}
+>  			ea_bdebug(bs->bh, "modifying in-place");
+>  			error = ext4_xattr_set_entry(i, s, handle, inode,
+>  						     true /* is_block */);
+> @@ -1885,6 +1913,7 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
+>  				goto cleanup;
+>  			goto inserted;
+>  		}
+> +clone_block:
+>  		unlock_buffer(bs->bh);
+>  		ea_bdebug(bs->bh, "cloning");
+>  		s->base = kmalloc(bs->bh->b_size, GFP_NOFS);
+> @@ -1991,18 +2020,13 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
+>  				lock_buffer(new_bh);
+>  				/*
+>  				 * We have to be careful about races with
+> -				 * freeing, rehashing or adding references to
+> -				 * xattr block. Once we hold buffer lock xattr
+> -				 * block's state is stable so we can check
+> -				 * whether the block got freed / rehashed or
+> -				 * not.  Since we unhash mbcache entry under
+> -				 * buffer lock when freeing / rehashing xattr
+> -				 * block, checking whether entry is still
+> -				 * hashed is reliable. Same rules hold for
+> -				 * e_reusable handling.
+> +				 * adding references to xattr block. Once we
+> +				 * hold buffer lock xattr block's state is
+> +				 * stable so we can check the additional
+> +				 * reference fits.
+>  				 */
+> -				if (hlist_bl_unhashed(&ce->e_hash_list) ||
+> -				    !ce->e_reusable) {
+> +				ref = le32_to_cpu(BHDR(new_bh)->h_refcount) + 1;
+> +				if (ref > EXT4_XATTR_REFCOUNT_MAX) {
+>  					/*
+>  					 * Undo everything and check mbcache
+>  					 * again.
+> @@ -2017,9 +2041,8 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
+>  					new_bh = NULL;
+>  					goto inserted;
+>  				}
+> -				ref = le32_to_cpu(BHDR(new_bh)->h_refcount) + 1;
+>  				BHDR(new_bh)->h_refcount = cpu_to_le32(ref);
+> -				if (ref >= EXT4_XATTR_REFCOUNT_MAX)
+> +				if (ref == EXT4_XATTR_REFCOUNT_MAX)
+>  					ce->e_reusable = 0;
+>  				ea_bdebug(new_bh, "reusing; refcount now=%d",
+>  					  ref);
+> --
+> 2.35.3
+>
