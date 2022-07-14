@@ -2,122 +2,115 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C12A5749EC
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Jul 2022 12:01:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23723574A14
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Jul 2022 12:05:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235697AbiGNKBM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 14 Jul 2022 06:01:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41490 "EHLO
+        id S237658AbiGNKFH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 14 Jul 2022 06:05:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235515AbiGNKBK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Jul 2022 06:01:10 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C449237
-        for <linux-ext4@vger.kernel.org>; Thu, 14 Jul 2022 03:01:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1657792870; x=1689328870;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=efDAd+7JgTLKjA9wG2qUW/eO+wkP/iHL17gNm1UCSfs=;
-  b=NY2eWcq9dZNV329PHsvhC42XdcEIhfEp1M/IezLkF2fX+tf1zNx40x9v
-   OFVkyiB+NFCuCj4djrniOer7bDT3yH/2UKk9tIw4MRLiH+vyjEYlUymkN
-   uh/kQazzrPbAX+RtL9cObXUtrIWxwM4qFKd1Iqi3uF2nPnyfcC/lfOEsV
-   2Zh8i0WhXhw04LqwHnJGEuMYC72aYQA/GqUTf/l11VJD1HzT8komO7Lj3
-   F/aw29SiLLu7ODDCBmKsAstL6bPI6bQUQAf9Sn3evEKkDfrAwNsFQ4mVi
-   sTNWsmFQtCGne2gKAnMQRXeSwd2/3U/YvegswdCm8vIQA6l8UCSljAG93
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10407"; a="265258444"
-X-IronPort-AV: E=Sophos;i="5.92,269,1650956400"; 
-   d="scan'208";a="265258444"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2022 03:01:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,269,1650956400"; 
-   d="scan'208";a="722668106"
-Received: from lkp-server01.sh.intel.com (HELO fd2c14d642b4) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 14 Jul 2022 03:01:08 -0700
-Received: from kbuild by fd2c14d642b4 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1oBved-0000QA-GD;
-        Thu, 14 Jul 2022 10:01:07 +0000
-Date:   Thu, 14 Jul 2022 18:00:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Artem Blagodarenko <artem.blagodarenko@gmail.com>,
-        linux-ext4@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, adilger.kernel@dilger.ca,
-        andrew.perepechko@hpe.com,
-        Artem Blagodarenko <artem.blagodarenko@gmail.com>
-Subject: Re: [PATCH v4] ext4: truncate during setxattr leads to kernel panic
-Message-ID: <202207141731.mergfpu3-lkp@intel.com>
-References: <20220711145735.53676-1-artem.blagodarenko@gmail.com>
+        with ESMTP id S237972AbiGNKE7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Jul 2022 06:04:59 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D124C628;
+        Thu, 14 Jul 2022 03:04:57 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 997261FAAE;
+        Thu, 14 Jul 2022 10:04:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1657793096; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2Op6Yqxo0eUA3M0cvIstD63tWZwIIC5z/12lqmDQcqw=;
+        b=puLzZmrKBUI21sM3c6r7C+q/p2ShjcDYpI2ToKWo4rWtQvjheqj822NTr4JsRFT/c7oZh2
+        +vm/i8yZeJ0hALXMKc+HVjfcd/ynm/XaKTE6PgW1JM9J21GBdW9ARXGwNhr7bxDrt1kHF/
+        vZZEK6f22YF93cl4l2mFhro2lCI2S1M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1657793096;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2Op6Yqxo0eUA3M0cvIstD63tWZwIIC5z/12lqmDQcqw=;
+        b=HXwu2FKVBRKBIkzyo5zkxg7DPBSfcULECIKbZTGYCahKLmQJcoEgGxia25epKV8YSEEUH6
+        S58h4ewdFFxhraDg==
+Received: from quack3.suse.cz (unknown [10.100.224.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 1D6372C141;
+        Thu, 14 Jul 2022 10:04:55 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 803BCA05FB; Thu, 14 Jul 2022 12:04:54 +0200 (CEST)
+Date:   Thu, 14 Jul 2022 12:04:54 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Jiangshan Yi <13667453960@163.com>
+Cc:     jack@suse.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jiangshan Yi <yijiangshan@kylinos.cn>
+Subject: Re: [PATCH] fs/ext2: replace ternary operator with min_t()
+Message-ID: <20220714100454.zjcm4bnmygq3ryqb@quack3>
+References: <20220714063318.1777139-1-13667453960@163.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220711145735.53676-1-artem.blagodarenko@gmail.com>
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220714063318.1777139-1-13667453960@163.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Artem,
+On Thu 14-07-22 14:33:18, Jiangshan Yi wrote:
+> From: Jiangshan Yi <yijiangshan@kylinos.cn>
+> 
+> Fix the following coccicheck warning:
+> 
+> fs/ext2/super.c:1494: WARNING opportunity for min().
+> fs/ext2/super.c:1533: WARNING opportunity for min().
+> 
+> min_t() macro is defined in include/linux/minmax.h. It avoids
+> multiple evaluations of the arguments when non-constant and performs
+> strict type-checking.
+> 
+> Signed-off-by: Jiangshan Yi <yijiangshan@kylinos.cn>
 
-Thank you for the patch! Perhaps something to improve:
+Yeah, looks like a good cleanup. Merged to my tree. Thanks!
 
-[auto build test WARNING on tytso-ext4/dev]
-[also build test WARNING on linus/master v5.19-rc6 next-20220713]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+								Honza
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Artem-Blagodarenko/ext4-truncate-during-setxattr-leads-to-kernel-panic/20220711-232350
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-config: um-x86_64_defconfig (https://download.01.org/0day-ci/archive/20220714/202207141731.mergfpu3-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-3) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/600aeea1cc6d36f380862bb88e50b670e0a57e4f
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Artem-Blagodarenko/ext4-truncate-during-setxattr-leads-to-kernel-panic/20220711-232350
-        git checkout 600aeea1cc6d36f380862bb88e50b670e0a57e4f
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=um SUBARCH=x86_64 SHELL=/bin/bash fs/ext4/
-
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
->> fs/ext4/xattr.c:1563:15: warning: no previous prototype for 'delayed_iput' [-Wmissing-prototypes]
-    1563 | noinline void delayed_iput(struct inode *inode, struct delayed_iput_work *work)
-         |               ^~~~~~~~~~~~
-
-
-vim +/delayed_iput +1563 fs/ext4/xattr.c
-
-  1562	
-> 1563	noinline void delayed_iput(struct inode *inode, struct delayed_iput_work *work)
-  1564	{
-  1565		if (!inode) {
-  1566			kfree(work);
-  1567			return;
-  1568		}
-  1569	
-  1570		if (!work) {
-  1571			iput(inode);
-  1572		} else {
-  1573			INIT_WORK(&work->work, delayed_iput_fn);
-  1574			work->inode = inode;
-  1575			queue_work(EXT4_SB(inode->i_sb)->s_misc_wq, &work->work);
-  1576		}
-  1577	}
-  1578	
-
+> ---
+>  fs/ext2/super.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/ext2/super.c b/fs/ext2/super.c
+> index f6a19f6d9f6d..300f2f0cf566 100644
+> --- a/fs/ext2/super.c
+> +++ b/fs/ext2/super.c
+> @@ -1490,8 +1490,7 @@ static ssize_t ext2_quota_read(struct super_block *sb, int type, char *data,
+>  		len = i_size-off;
+>  	toread = len;
+>  	while (toread > 0) {
+> -		tocopy = sb->s_blocksize - offset < toread ?
+> -				sb->s_blocksize - offset : toread;
+> +		tocopy = min_t(size_t, sb->s_blocksize - offset, toread);
+>  
+>  		tmp_bh.b_state = 0;
+>  		tmp_bh.b_size = sb->s_blocksize;
+> @@ -1529,8 +1528,7 @@ static ssize_t ext2_quota_write(struct super_block *sb, int type,
+>  	struct buffer_head *bh;
+>  
+>  	while (towrite > 0) {
+> -		tocopy = sb->s_blocksize - offset < towrite ?
+> -				sb->s_blocksize - offset : towrite;
+> +		tocopy = min_t(size_t, sb->s_blocksize - offset, towrite);
+>  
+>  		tmp_bh.b_state = 0;
+>  		tmp_bh.b_size = sb->s_blocksize;
+> -- 
+> 2.25.1
+> 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
