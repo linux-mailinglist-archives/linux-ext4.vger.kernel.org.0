@@ -2,99 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7BA575292
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Jul 2022 18:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D99E57529A
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Jul 2022 18:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236130AbiGNQPa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 14 Jul 2022 12:15:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44610 "EHLO
+        id S234681AbiGNQRO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 14 Jul 2022 12:17:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232196AbiGNQP3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Jul 2022 12:15:29 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2065.outbound.protection.outlook.com [40.107.223.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 125096170C;
-        Thu, 14 Jul 2022 09:15:28 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CovdJ7uZ7Dj5pOF9u/Y09OVGpxV0+YkxkI6Sl0jmXS4Rum+7OJjMVaCWnV0fO+PcUsrLGyMGIomjpT+8LIdP3AkGbsrDJxl3xQIk9Tj6XgaR/RFjL4upW2/jaAWBlRtoAEQvAEpuDzNAwJ5UXI8MnS1jMkzQa8Tq78d/MUuoI6K66ppkDS4cJapTBKZURaVJxQcBpiZUuZACK6/tA3oT/FxRocOWjOyrgjbxBLxzDCztXUpWxQs0KLl5IyE+PrtxActGR5jy03/vFar405qJy6DXysdXOFbzrZVeNFupT4wq2+O+vCQ9sGcCWzFU35FVFTgXiRY8UgeDun1wWbYGzw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mBW4h10J7XAhyaHtTT9wydlVynoCzg0kQPS8qrn77OY=;
- b=E9AFdvpIHiCakbRHeXs/zFChKoyEZsb/N5TCgG01MkcvpOekWPZcS/rizToW4N3HxnFw36FmHaJVGwsUK/B2Hdodix1S/ZEfjL9Pe7h9BCIw/3wu2IeNPrCHY6aaIb17IUhUzhRkLizBKuKgcR9bQiNIe4IPkfYGv89l36Buj04h90TOTjrHvTtOT9wZgF3YxHTmtjhNcneCV8LeoFT+/bMHVmcjlInKNBQy8S6nTH0WZdZcqu2Qv113pF03Ss6epoIJnFWxI7Djb6raylSPWAalmxIOmHgfSzvDF5dQHobSvud5/lFlnW8wBEYfGpxJp80mv7sYU1Zrt17tjanxAQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=nvidia.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mBW4h10J7XAhyaHtTT9wydlVynoCzg0kQPS8qrn77OY=;
- b=UR7I4fciUr13WZTPdogePnJvmE21pXwuR5A6D4Duh76WYBGky6dt378HKtn7C5n7eLMZbWB/93Atm3fgCr8SPaXrPD1N8XjWKK7VJuI6tO+VAEoRUx6PlpOgKaWiZrcQ4RzTT+UhfyKLwV7VbABzqcZSKmrNuYG2qSmdeRO5SR8=
-Received: from BN9PR03CA0152.namprd03.prod.outlook.com (2603:10b6:408:f4::7)
- by IA1PR12MB6258.namprd12.prod.outlook.com (2603:10b6:208:3e6::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5438.14; Thu, 14 Jul
- 2022 16:15:26 +0000
-Received: from BN8NAM11FT051.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:f4:cafe::a0) by BN9PR03CA0152.outlook.office365.com
- (2603:10b6:408:f4::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.22 via Frontend
- Transport; Thu, 14 Jul 2022 16:15:26 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN8NAM11FT051.mail.protection.outlook.com (10.13.177.66) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.5438.12 via Frontend Transport; Thu, 14 Jul 2022 16:15:26 +0000
-Received: from alex-MS-7B09.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Thu, 14 Jul
- 2022 11:15:25 -0500
-From:   Alex Sierra <alex.sierra@amd.com>
-To:     <jgg@nvidia.com>
-CC:     <david@redhat.com>, <Felix.Kuehling@amd.com>, <linux-mm@kvack.org>,
-        <rcampbell@nvidia.com>, <linux-ext4@vger.kernel.org>,
-        <linux-xfs@vger.kernel.org>, <amd-gfx@lists.freedesktop.org>,
-        <dri-devel@lists.freedesktop.org>, <hch@lst.de>,
-        <jglisse@redhat.com>, <apopple@nvidia.com>, <willy@infradead.org>,
-        <akpm@linux-foundation.org>
-Subject: [PATCH] mm: move page zone helpers from mm.h to mmzone.h
-Date:   Thu, 14 Jul 2022 11:15:15 -0500
-Message-ID: <20220714161515.17107-1-alex.sierra@amd.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <715fc1ae-7bd3-5b96-175c-e1cc74920739@amd.com>
-References: <715fc1ae-7bd3-5b96-175c-e1cc74920739@amd.com>
+        with ESMTP id S229493AbiGNQRN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Jul 2022 12:17:13 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 688D261D5B
+        for <linux-ext4@vger.kernel.org>; Thu, 14 Jul 2022 09:17:12 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id c6so837721pla.6
+        for <linux-ext4@vger.kernel.org>; Thu, 14 Jul 2022 09:17:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LpP+5F2CiErgCX4jg/dDEbcd9sY5qbBV3D47hgTaYWc=;
+        b=oG+JOno4R2qaCShKnZODb0q2W9ZslW06s+7LDGTbiIme9mMAucV2P1mB4d0m6SwC8Z
+         KxjHEjAJqdTtus0lzFmkS6mNYXNCLPnAiQBCbbuC9lisWx19lyh7Wo0GA+HgNrqnoLsS
+         mbOy65+FeAHBfUmPskUvnFQCkU9sO7LQJdiLjIdh+N2KpS9uYwpQFn5KA8eH2jM7Xama
+         iMPKqjcj0Y+7wuX3fNigb9ivAZt3xxZStOb/MuKADMI7JLzUeCgLenbzwTVaY0yoJUjg
+         4Cw0upaLpDNbS7K6S6iiLbfVs5TZIg90Ju7xRNPhclsY+6H/tyBOcSS20YbDJO4skXjN
+         zCkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LpP+5F2CiErgCX4jg/dDEbcd9sY5qbBV3D47hgTaYWc=;
+        b=6QT6IwAtFG1ePQyTl3dGWQwpVFwdet874upTvEkut6/5UzPxvrmlD/EmoOI8+5tGXR
+         ZSh21M1swAKFhmf7FAtWjnE3M1vCZK4EhxgAA5pd1W71apcgKZ2pcHC4lNjmbtVXINKl
+         mIsF1xqJp1mkpX6X8BEoyQoiozgi8Ehoy/vIfVIfT86r3LO/dKgeGHpE8Anza3NggF8G
+         RVw6CPhGlABNiLGTY3qRk8e6AlubvnUqprQA4bWzm1nYNhoQKbOJ9KeqKhfFbTLd7J80
+         sF4lhtMfpL8sk639qsPChnJg6XgcTGidVPsVvVAcPN983EDPxsPzuN6pbkoGNHEj9n/V
+         s9dQ==
+X-Gm-Message-State: AJIora9gkZEcvvD6u78Bu1r+k/X2q3l14n3CUy4jY249LNdb/0wxEVVb
+        PGlA42eBJTVlbd33SWSNPiA=
+X-Google-Smtp-Source: AGRyM1uEzhTpRK0cTLcN4Lc21Hr2g4OSD5DMsqA68VCfSarB/4mY+8qODGHzEAW/kuXq4dOL4mFb+g==
+X-Received: by 2002:a17:903:120c:b0:167:8847:21f2 with SMTP id l12-20020a170903120c00b00167884721f2mr8920755plh.11.1657815431806;
+        Thu, 14 Jul 2022 09:17:11 -0700 (PDT)
+Received: from localhost ([2406:7400:63:cb1d:811:33e9:9bc2:d40])
+        by smtp.gmail.com with ESMTPSA id z1-20020aa79581000000b0052895642037sm1885410pfj.139.2022.07.14.09.17.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jul 2022 09:17:11 -0700 (PDT)
+Date:   Thu, 14 Jul 2022 21:47:06 +0530
+From:   Ritesh Harjani <ritesh.list@gmail.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 06/10] ext2: Factor our freeing of xattr block reference
+Message-ID: <20220714161706.7itdgwl5cjbgdwzs@riteshh-domain>
+References: <20220712104519.29887-1-jack@suse.cz>
+ <20220712105436.32204-6-jack@suse.cz>
+ <20220714123714.xxqo7nnde6xacriu@riteshh-domain>
+ <20220714145538.jbrbobhi5ppvuxka@quack3>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1fff5c00-939f-40c7-d969-08da65b40ffb
-X-MS-TrafficTypeDiagnostic: IA1PR12MB6258:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LOt8OaMcxbvk/8bRPeWzsR5xD09xpNKObGHaO4UDM71RlO/RCFQlISmp+C6iv+U2Yj97I/fluhNQIkkKqWO75ecziVxqW87R8j9MpCfmcuJA/aucy7AEvKMGUMCI0KnQvyJE/EKQRa1CW62fgESnZtsdZdTiynJfZMNNgAqjwB0O8ppvu3a4YhWZnzCt020TifLfYHxBZ2O6F2EkT4+9zVbmhLVEM8FBohQYno6NcLhqCHVrR0j3l7iAwjBMm1pUlHfNrolWQ0NOfJkpyaTJB6cBr7WI4PLo6w3S0m6zR9bN54Iwj09iGFjvPQvMl6tzggvmVg4aqbxr2sT1DEtYtQGYCAGysYOYRmfguhQ9wHEwiWj4XJ+56uHXDM1vCvIBaIRbwuF3C1C5q6J5BIVnyNrDjLvrXZLEabPpbkvFCK5Nr6ieNErkzPzN8vZmKzwHtwRWNrC7saa4FK0h4+l4qsMze59lgpcqJodsF6qV/EGwTAHCvtV6SlT1LaBLmDZpgHU15kkIgNWv/BSigO8NLgHi2x//ZHjgTksT3LhBpj+sBViqanaT3U5LVjm+xIzRPxrDH0KdcxmctFQ52GNc1tSmW8HHsJudCoSGqCDpvLzfPDBfyGoktbwXXtIQRmNeyKAuiNyPagC9fJ5C0HfnRTlOFWKwadHDZjWGsr3gYY+w6UrSR7wMskwzh/BWI/e2/jRUoWKUJ/UKtEqjaRHtDpmBOpZl0WXarcVbOnQmyu24EIsksflPo+Y/PF53i91M+NhOv6r6mn3MKlrNnt+83Bv56r+BfWD5NMLw0uoUMjHVzS9cFNV3Xg8IpvawkpXQRPss3U4MngGrrbwn7nGgM3Si8SMhd1sWPz+Olwg29uQ=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230016)(4636009)(396003)(136003)(39860400002)(376002)(346002)(40470700004)(46966006)(36840700001)(336012)(44832011)(5660300002)(26005)(81166007)(8936002)(7696005)(7416002)(16526019)(36860700001)(186003)(40460700003)(40480700001)(36756003)(8676002)(316002)(86362001)(1076003)(4326008)(70586007)(70206006)(426003)(82310400005)(54906003)(478600001)(2616005)(82740400003)(83380400001)(356005)(2906002)(47076005)(41300700001)(6916009)(6666004)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2022 16:15:26.2247
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1fff5c00-939f-40c7-d969-08da65b40ffb
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT051.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6258
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220714145538.jbrbobhi5ppvuxka@quack3>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -102,210 +71,110 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-[WHY]
-It makes more sense to have these helpers in zone specific header
-file, rather than the generic mm.h
+On 22/07/14 04:55PM, Jan Kara wrote:
+> On Thu 14-07-22 18:07:14, Ritesh Harjani wrote:
+> > On 22/07/12 12:54PM, Jan Kara wrote:
+> > > Free of xattr block reference is opencode in two places. Factor it out
+> > > into a separate function and use it.
+> >
+> > Looked into the refactoring logic. The patch looks good to me.
+> > Small queries below -
+> >
+> > >
+> > > Signed-off-by: Jan Kara <jack@suse.cz>
+> > > ---
+> > >  fs/ext2/xattr.c | 90 +++++++++++++++++++++----------------------------
+> > >  1 file changed, 38 insertions(+), 52 deletions(-)
+> > >
+> > > diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
+> > > index 841fa6d9d744..9885294993ef 100644
+> > > --- a/fs/ext2/xattr.c
+> > > +++ b/fs/ext2/xattr.c
+> > > @@ -651,6 +651,42 @@ ext2_xattr_set(struct inode *inode, int name_index, const char *name,
+> > >  	return error;
+> > >  }
+> > >
+> > > +static void ext2_xattr_release_block(struct inode *inode,
+> > > +				     struct buffer_head *bh)
+> > > +{
+> > > +	struct mb_cache *ea_block_cache = EA_BLOCK_CACHE(inode);
+> > > +
+> > > +	lock_buffer(bh);
+> > > +	if (HDR(bh)->h_refcount == cpu_to_le32(1)) {
+> > > +		__u32 hash = le32_to_cpu(HDR(bh)->h_hash);
+> > > +
+> > > +		/*
+> > > +		 * This must happen under buffer lock for
+> > > +		 * ext2_xattr_set2() to reliably detect freed block
+> > > +		 */
+> > > +		mb_cache_entry_delete(ea_block_cache, hash,
+> > > +				      bh->b_blocknr);
+> > > +		/* Free the old block. */
+> > > +		ea_bdebug(bh, "freeing");
+> > > +		ext2_free_blocks(inode, bh->b_blocknr, 1);
+> > > +		/* We let our caller release bh, so we
+> > > +		 * need to duplicate the buffer before. */
+> > > +		get_bh(bh);
+> > > +		bforget(bh);
+> > > +		unlock_buffer(bh);
+> > > +	} else {
+> > > +		/* Decrement the refcount only. */
+> > > +		le32_add_cpu(&HDR(bh)->h_refcount, -1);
+> > > +		dquot_free_block(inode, 1);
+> > > +		mark_buffer_dirty(bh);
+> > > +		unlock_buffer(bh);
+> > > +		ea_bdebug(bh, "refcount now=%d",
+> > > +			le32_to_cpu(HDR(bh)->h_refcount));
+> > > +		if (IS_SYNC(inode))
+> > > +			sync_dirty_buffer(bh);
+> > > +	}
+> > > +}
+> > > +
+> > >  /*
+> > >   * Second half of ext2_xattr_set(): Update the file system.
+> > >   */
+> > > @@ -747,34 +783,7 @@ ext2_xattr_set2(struct inode *inode, struct buffer_head *old_bh,
+> > >  		 * If there was an old block and we are no longer using it,
+> > >  		 * release the old block.
+> > >  		 */
+> > > -		lock_buffer(old_bh);
+> > > -		if (HDR(old_bh)->h_refcount == cpu_to_le32(1)) {
+> > > -			__u32 hash = le32_to_cpu(HDR(old_bh)->h_hash);
+> > > -
+> > > -			/*
+> > > -			 * This must happen under buffer lock for
+> > > -			 * ext2_xattr_set2() to reliably detect freed block
+> > > -			 */
+> > > -			mb_cache_entry_delete(ea_block_cache, hash,
+> > > -					      old_bh->b_blocknr);
+> > > -			/* Free the old block. */
+> > > -			ea_bdebug(old_bh, "freeing");
+> > > -			ext2_free_blocks(inode, old_bh->b_blocknr, 1);
+> > > -			mark_inode_dirty(inode);
+> >
+> > ^^^ this is not needed because ext2_free_blocks() will take care of it.
+> > Hence you have dropped this in ext2_xattr_release_block()
+>
+> Correct. ext2_free_blocks() always dirties the inode (unless there is
+> metadata inconsistency found in which case we don't really care).
+>
+> > > -			/* We let our caller release old_bh, so we
+> > > -			 * need to duplicate the buffer before. */
+> > > -			get_bh(old_bh);
+> > > -			bforget(old_bh);
+> > > -		} else {
+> > > -			/* Decrement the refcount only. */
+> > > -			le32_add_cpu(&HDR(old_bh)->h_refcount, -1);
+> > > -			dquot_free_block_nodirty(inode, 1);
+> > > -			mark_inode_dirty(inode);
+> >
+> > Quick qn -> Don't we need mark_inode_dirty() here?
+>
+> Notice that I've changed dquot_free_block_nodirty() to dquot_free_block()
+> because quota info update is the only reason why we need to dirty the inode
+> so why not let quota code handle it...
+>
 
-Signed-off-by: Alex Sierra <alex.sierra@amd.com>
----
- include/linux/memremap.h |  2 +-
- include/linux/mm.h       | 78 ---------------------------------------
- include/linux/mmzone.h   | 80 ++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 81 insertions(+), 79 deletions(-)
+Ok, yes. Missed it. Thanks for pointing it out.
 
-diff --git a/include/linux/memremap.h b/include/linux/memremap.h
-index 8af304f6b504..77229165c914 100644
---- a/include/linux/memremap.h
-+++ b/include/linux/memremap.h
-@@ -2,7 +2,7 @@
- #ifndef _LINUX_MEMREMAP_H_
- #define _LINUX_MEMREMAP_H_
- 
--#include <linux/mm.h>
-+#include <linux/mmzone.h>
- #include <linux/range.h>
- #include <linux/ioport.h>
- #include <linux/percpu-refcount.h>
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 3b31b33bd5be..2df8c2b98d36 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1049,84 +1049,6 @@ vm_fault_t finish_mkwrite_fault(struct vm_fault *vmf);
-  *   back into memory.
-  */
- 
--/*
-- * The zone field is never updated after free_area_init_core()
-- * sets it, so none of the operations on it need to be atomic.
-- */
--
--/* Page flags: | [SECTION] | [NODE] | ZONE | [LAST_CPUPID] | ... | FLAGS | */
--#define SECTIONS_PGOFF		((sizeof(unsigned long)*8) - SECTIONS_WIDTH)
--#define NODES_PGOFF		(SECTIONS_PGOFF - NODES_WIDTH)
--#define ZONES_PGOFF		(NODES_PGOFF - ZONES_WIDTH)
--#define LAST_CPUPID_PGOFF	(ZONES_PGOFF - LAST_CPUPID_WIDTH)
--#define KASAN_TAG_PGOFF		(LAST_CPUPID_PGOFF - KASAN_TAG_WIDTH)
--
--/*
-- * Define the bit shifts to access each section.  For non-existent
-- * sections we define the shift as 0; that plus a 0 mask ensures
-- * the compiler will optimise away reference to them.
-- */
--#define SECTIONS_PGSHIFT	(SECTIONS_PGOFF * (SECTIONS_WIDTH != 0))
--#define NODES_PGSHIFT		(NODES_PGOFF * (NODES_WIDTH != 0))
--#define ZONES_PGSHIFT		(ZONES_PGOFF * (ZONES_WIDTH != 0))
--#define LAST_CPUPID_PGSHIFT	(LAST_CPUPID_PGOFF * (LAST_CPUPID_WIDTH != 0))
--#define KASAN_TAG_PGSHIFT	(KASAN_TAG_PGOFF * (KASAN_TAG_WIDTH != 0))
--
--/* NODE:ZONE or SECTION:ZONE is used to ID a zone for the buddy allocator */
--#ifdef NODE_NOT_IN_PAGE_FLAGS
--#define ZONEID_SHIFT		(SECTIONS_SHIFT + ZONES_SHIFT)
--#define ZONEID_PGOFF		((SECTIONS_PGOFF < ZONES_PGOFF)? \
--						SECTIONS_PGOFF : ZONES_PGOFF)
--#else
--#define ZONEID_SHIFT		(NODES_SHIFT + ZONES_SHIFT)
--#define ZONEID_PGOFF		((NODES_PGOFF < ZONES_PGOFF)? \
--						NODES_PGOFF : ZONES_PGOFF)
--#endif
--
--#define ZONEID_PGSHIFT		(ZONEID_PGOFF * (ZONEID_SHIFT != 0))
--
--#define ZONES_MASK		((1UL << ZONES_WIDTH) - 1)
--#define NODES_MASK		((1UL << NODES_WIDTH) - 1)
--#define SECTIONS_MASK		((1UL << SECTIONS_WIDTH) - 1)
--#define LAST_CPUPID_MASK	((1UL << LAST_CPUPID_SHIFT) - 1)
--#define KASAN_TAG_MASK		((1UL << KASAN_TAG_WIDTH) - 1)
--#define ZONEID_MASK		((1UL << ZONEID_SHIFT) - 1)
--
--static inline enum zone_type page_zonenum(const struct page *page)
--{
--	ASSERT_EXCLUSIVE_BITS(page->flags, ZONES_MASK << ZONES_PGSHIFT);
--	return (page->flags >> ZONES_PGSHIFT) & ZONES_MASK;
--}
--
--static inline enum zone_type folio_zonenum(const struct folio *folio)
--{
--	return page_zonenum(&folio->page);
--}
--
--#ifdef CONFIG_ZONE_DEVICE
--static inline bool is_zone_device_page(const struct page *page)
--{
--	return page_zonenum(page) == ZONE_DEVICE;
--}
--extern void memmap_init_zone_device(struct zone *, unsigned long,
--				    unsigned long, struct dev_pagemap *);
--#else
--static inline bool is_zone_device_page(const struct page *page)
--{
--	return false;
--}
--#endif
--
--static inline bool folio_is_zone_device(const struct folio *folio)
--{
--	return is_zone_device_page(&folio->page);
--}
--
--static inline bool is_zone_movable_page(const struct page *page)
--{
--	return page_zonenum(page) == ZONE_MOVABLE;
--}
--
- #if defined(CONFIG_ZONE_DEVICE) && defined(CONFIG_FS_DAX)
- DECLARE_STATIC_KEY_FALSE(devmap_managed_key);
- 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index aab70355d64f..47fc41f43c48 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -730,6 +730,86 @@ static inline bool zone_is_empty(struct zone *zone)
- 	return zone->spanned_pages == 0;
- }
- 
-+#ifndef BUILD_VDSO32_64
-+/*
-+ * The zone field is never updated after free_area_init_core()
-+ * sets it, so none of the operations on it need to be atomic.
-+ */
-+
-+/* Page flags: | [SECTION] | [NODE] | ZONE | [LAST_CPUPID] | ... | FLAGS | */
-+#define SECTIONS_PGOFF		((sizeof(unsigned long)*8) - SECTIONS_WIDTH)
-+#define NODES_PGOFF		(SECTIONS_PGOFF - NODES_WIDTH)
-+#define ZONES_PGOFF		(NODES_PGOFF - ZONES_WIDTH)
-+#define LAST_CPUPID_PGOFF	(ZONES_PGOFF - LAST_CPUPID_WIDTH)
-+#define KASAN_TAG_PGOFF		(LAST_CPUPID_PGOFF - KASAN_TAG_WIDTH)
-+
-+/*
-+ * Define the bit shifts to access each section.  For non-existent
-+ * sections we define the shift as 0; that plus a 0 mask ensures
-+ * the compiler will optimise away reference to them.
-+ */
-+#define SECTIONS_PGSHIFT	(SECTIONS_PGOFF * (SECTIONS_WIDTH != 0))
-+#define NODES_PGSHIFT		(NODES_PGOFF * (NODES_WIDTH != 0))
-+#define ZONES_PGSHIFT		(ZONES_PGOFF * (ZONES_WIDTH != 0))
-+#define LAST_CPUPID_PGSHIFT	(LAST_CPUPID_PGOFF * (LAST_CPUPID_WIDTH != 0))
-+#define KASAN_TAG_PGSHIFT	(KASAN_TAG_PGOFF * (KASAN_TAG_WIDTH != 0))
-+
-+/* NODE:ZONE or SECTION:ZONE is used to ID a zone for the buddy allocator */
-+#ifdef NODE_NOT_IN_PAGE_FLAGS
-+#define ZONEID_SHIFT		(SECTIONS_SHIFT + ZONES_SHIFT)
-+#define ZONEID_PGOFF		((SECTIONS_PGOFF < ZONES_PGOFF) ? \
-+						SECTIONS_PGOFF : ZONES_PGOFF)
-+#else
-+#define ZONEID_SHIFT		(NODES_SHIFT + ZONES_SHIFT)
-+#define ZONEID_PGOFF		((NODES_PGOFF < ZONES_PGOFF) ? \
-+						NODES_PGOFF : ZONES_PGOFF)
-+#endif
-+
-+#define ZONEID_PGSHIFT		(ZONEID_PGOFF * (ZONEID_SHIFT != 0))
-+
-+#define ZONES_MASK		((1UL << ZONES_WIDTH) - 1)
-+#define NODES_MASK		((1UL << NODES_WIDTH) - 1)
-+#define SECTIONS_MASK		((1UL << SECTIONS_WIDTH) - 1)
-+#define LAST_CPUPID_MASK	((1UL << LAST_CPUPID_SHIFT) - 1)
-+#define KASAN_TAG_MASK		((1UL << KASAN_TAG_WIDTH) - 1)
-+#define ZONEID_MASK		((1UL << ZONEID_SHIFT) - 1)
-+
-+static inline enum zone_type page_zonenum(const struct page *page)
-+{
-+	ASSERT_EXCLUSIVE_BITS(page->flags, ZONES_MASK << ZONES_PGSHIFT);
-+	return (page->flags >> ZONES_PGSHIFT) & ZONES_MASK;
-+}
-+
-+static inline enum zone_type folio_zonenum(const struct folio *folio)
-+{
-+	return page_zonenum(&folio->page);
-+}
-+
-+#ifdef CONFIG_ZONE_DEVICE
-+static inline bool is_zone_device_page(const struct page *page)
-+{
-+	return page_zonenum(page) == ZONE_DEVICE;
-+}
-+extern void memmap_init_zone_device(struct zone *, unsigned long,
-+				    unsigned long, struct dev_pagemap *);
-+#else
-+static inline bool is_zone_device_page(const struct page *page)
-+{
-+	return false;
-+}
-+#endif
-+
-+static inline bool folio_is_zone_device(const struct folio *folio)
-+{
-+	return is_zone_device_page(&folio->page);
-+}
-+
-+static inline bool is_zone_movable_page(const struct page *page)
-+{
-+	return page_zonenum(page) == ZONE_MOVABLE;
-+}
-+#endif
-+
- /*
-  * Return true if [start_pfn, start_pfn + nr_pages) range has a non-empty
-  * intersection with the given zone
--- 
-2.32.0
-
+-ritesh
