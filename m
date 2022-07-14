@@ -2,179 +2,128 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D99E57529A
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Jul 2022 18:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D50375752BF
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Jul 2022 18:28:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234681AbiGNQRO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 14 Jul 2022 12:17:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45758 "EHLO
+        id S239229AbiGNQ2r (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 14 Jul 2022 12:28:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbiGNQRN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Jul 2022 12:17:13 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 688D261D5B
-        for <linux-ext4@vger.kernel.org>; Thu, 14 Jul 2022 09:17:12 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id c6so837721pla.6
-        for <linux-ext4@vger.kernel.org>; Thu, 14 Jul 2022 09:17:12 -0700 (PDT)
+        with ESMTP id S239053AbiGNQ2l (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Jul 2022 12:28:41 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A90EB1FD
+        for <linux-ext4@vger.kernel.org>; Thu, 14 Jul 2022 09:28:40 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id cp18-20020a17090afb9200b001ef79e8484aso6352183pjb.1
+        for <linux-ext4@vger.kernel.org>; Thu, 14 Jul 2022 09:28:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LpP+5F2CiErgCX4jg/dDEbcd9sY5qbBV3D47hgTaYWc=;
-        b=oG+JOno4R2qaCShKnZODb0q2W9ZslW06s+7LDGTbiIme9mMAucV2P1mB4d0m6SwC8Z
-         KxjHEjAJqdTtus0lzFmkS6mNYXNCLPnAiQBCbbuC9lisWx19lyh7Wo0GA+HgNrqnoLsS
-         mbOy65+FeAHBfUmPskUvnFQCkU9sO7LQJdiLjIdh+N2KpS9uYwpQFn5KA8eH2jM7Xama
-         iMPKqjcj0Y+7wuX3fNigb9ivAZt3xxZStOb/MuKADMI7JLzUeCgLenbzwTVaY0yoJUjg
-         4Cw0upaLpDNbS7K6S6iiLbfVs5TZIg90Ju7xRNPhclsY+6H/tyBOcSS20YbDJO4skXjN
-         zCkA==
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:in-reply-to:references:subject:message-id:date
+         :mime-version:content-transfer-encoding;
+        bh=51FMChkJehx7pHQ73T1R4wuQ3K5opuWy1ShYWSXgcLc=;
+        b=2bg3ecZuRFVjrx0xZziz+wHecVVGRtdcCdgSMS92KHHiTPhlz0piUC25EoCFkiNcXD
+         ZrtVuuscGJ3ZnZfBTgChXQnCFyfUBrhPX5e8M/zFNjSoVGmOABMfhOMMc1VXJeZde9yF
+         rkhBC/zlk12GZPYcdOE70ojApWUfJrQ4v8wfHrqZpA5XAHgkgkqr0BJRHbcyKTV9uRWM
+         yZunbnmee68SYkDf5V4/Nt2oZmzcf/IUmstH+wxkeEimDPJbvqE9p7Zx5YNXRPqCEw54
+         Z8ZJSqV8x7AwD/xypaV8GyHoC46hA1ZkCv7+2DReyqjnduqQHonXixJQXYq22vERL21P
+         m8SQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LpP+5F2CiErgCX4jg/dDEbcd9sY5qbBV3D47hgTaYWc=;
-        b=6QT6IwAtFG1ePQyTl3dGWQwpVFwdet874upTvEkut6/5UzPxvrmlD/EmoOI8+5tGXR
-         ZSh21M1swAKFhmf7FAtWjnE3M1vCZK4EhxgAA5pd1W71apcgKZ2pcHC4lNjmbtVXINKl
-         mIsF1xqJp1mkpX6X8BEoyQoiozgi8Ehoy/vIfVIfT86r3LO/dKgeGHpE8Anza3NggF8G
-         RVw6CPhGlABNiLGTY3qRk8e6AlubvnUqprQA4bWzm1nYNhoQKbOJ9KeqKhfFbTLd7J80
-         sF4lhtMfpL8sk639qsPChnJg6XgcTGidVPsVvVAcPN983EDPxsPzuN6pbkoGNHEj9n/V
-         s9dQ==
-X-Gm-Message-State: AJIora9gkZEcvvD6u78Bu1r+k/X2q3l14n3CUy4jY249LNdb/0wxEVVb
-        PGlA42eBJTVlbd33SWSNPiA=
-X-Google-Smtp-Source: AGRyM1uEzhTpRK0cTLcN4Lc21Hr2g4OSD5DMsqA68VCfSarB/4mY+8qODGHzEAW/kuXq4dOL4mFb+g==
-X-Received: by 2002:a17:903:120c:b0:167:8847:21f2 with SMTP id l12-20020a170903120c00b00167884721f2mr8920755plh.11.1657815431806;
-        Thu, 14 Jul 2022 09:17:11 -0700 (PDT)
-Received: from localhost ([2406:7400:63:cb1d:811:33e9:9bc2:d40])
-        by smtp.gmail.com with ESMTPSA id z1-20020aa79581000000b0052895642037sm1885410pfj.139.2022.07.14.09.17.10
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
+         :message-id:date:mime-version:content-transfer-encoding;
+        bh=51FMChkJehx7pHQ73T1R4wuQ3K5opuWy1ShYWSXgcLc=;
+        b=vw2UKzoFXVI+nkl3Ru53UAz1vVYkot6PFJMN80NyFzOItSvK/TkaywZ0nh9pvW6yw1
+         2fS6GJR64AcYX4ZwaBFNZqL+qEZfGfi6GZoWlTOsWft711WZ+INGKO0YP8Rfp95p4Fgh
+         wvKak0JXKhVG37SsydbWJLhw7PQCw5/2E96FemGPxH/g+G3QW3VneWUicV/Z3jblXCb2
+         47DRWr6MyRN3KLyxvfvs2NZegJ6buUy1U5Q9/U5S/mH+i3+edmRxN0NAHyeC6LOGj/rs
+         Ql+QTC6bXIg+V7aLDXfiBDWNZAG0B5IxOKlaaUm8Cp4+1Pr+XGcWDSIAthO6g+LL8ehj
+         MacQ==
+X-Gm-Message-State: AJIora8aN4gxUKxqyzuz7CCIT3x7skrcNukzQCJ5c4mCxdVca8E1WYSC
+        VKEkPtoVwry/imCd8TFut6Q6dg==
+X-Google-Smtp-Source: AGRyM1sNF6svcWGxSuUx8Ka7ezTADczi0FQJjbOAHkM55oW99hTvyuSUoBOHMICbkM3Ftbz1hcJ25g==
+X-Received: by 2002:a17:90b:3c4f:b0:1f0:b59f:8b86 with SMTP id pm15-20020a17090b3c4f00b001f0b59f8b86mr5752596pjb.225.1657816119680;
+        Thu, 14 Jul 2022 09:28:39 -0700 (PDT)
+Received: from [127.0.1.1] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id mv2-20020a17090b198200b001f0ade18babsm2395855pjb.55.2022.07.14.09.28.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jul 2022 09:17:11 -0700 (PDT)
-Date:   Thu, 14 Jul 2022 21:47:06 +0530
-From:   Ritesh Harjani <ritesh.list@gmail.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 06/10] ext2: Factor our freeing of xattr block reference
-Message-ID: <20220714161706.7itdgwl5cjbgdwzs@riteshh-domain>
-References: <20220712104519.29887-1-jack@suse.cz>
- <20220712105436.32204-6-jack@suse.cz>
- <20220714123714.xxqo7nnde6xacriu@riteshh-domain>
- <20220714145538.jbrbobhi5ppvuxka@quack3>
+        Thu, 14 Jul 2022 09:28:39 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
+        jinpu.wang@ionos.com, christoph.boehmwalder@linbit.com,
+        linux-raid@vger.kernel.org, song@kernel.org, mark@fasheh.com,
+        tytso@mit.edu, linux-ext4@vger.kernel.org,
+        adilger.kernel@dilger.ca, ocfs2-devel@oss.oracle.com,
+        joseph.qi@linux.alibaba.com, jack@suse.com, haris.iqbal@ionos.com,
+        jlbec@evilplan.org
+In-Reply-To: <20220713055317.1888500-1-hch@lst.de>
+References: <20220713055317.1888500-1-hch@lst.de>
+Subject: Re: remove bdevname
+Message-Id: <165781611803.623079.18294279066897804471.b4-ty@kernel.dk>
+Date:   Thu, 14 Jul 2022 10:28:38 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220714145538.jbrbobhi5ppvuxka@quack3>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22/07/14 04:55PM, Jan Kara wrote:
-> On Thu 14-07-22 18:07:14, Ritesh Harjani wrote:
-> > On 22/07/12 12:54PM, Jan Kara wrote:
-> > > Free of xattr block reference is opencode in two places. Factor it out
-> > > into a separate function and use it.
-> >
-> > Looked into the refactoring logic. The patch looks good to me.
-> > Small queries below -
-> >
-> > >
-> > > Signed-off-by: Jan Kara <jack@suse.cz>
-> > > ---
-> > >  fs/ext2/xattr.c | 90 +++++++++++++++++++++----------------------------
-> > >  1 file changed, 38 insertions(+), 52 deletions(-)
-> > >
-> > > diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-> > > index 841fa6d9d744..9885294993ef 100644
-> > > --- a/fs/ext2/xattr.c
-> > > +++ b/fs/ext2/xattr.c
-> > > @@ -651,6 +651,42 @@ ext2_xattr_set(struct inode *inode, int name_index, const char *name,
-> > >  	return error;
-> > >  }
-> > >
-> > > +static void ext2_xattr_release_block(struct inode *inode,
-> > > +				     struct buffer_head *bh)
-> > > +{
-> > > +	struct mb_cache *ea_block_cache = EA_BLOCK_CACHE(inode);
-> > > +
-> > > +	lock_buffer(bh);
-> > > +	if (HDR(bh)->h_refcount == cpu_to_le32(1)) {
-> > > +		__u32 hash = le32_to_cpu(HDR(bh)->h_hash);
-> > > +
-> > > +		/*
-> > > +		 * This must happen under buffer lock for
-> > > +		 * ext2_xattr_set2() to reliably detect freed block
-> > > +		 */
-> > > +		mb_cache_entry_delete(ea_block_cache, hash,
-> > > +				      bh->b_blocknr);
-> > > +		/* Free the old block. */
-> > > +		ea_bdebug(bh, "freeing");
-> > > +		ext2_free_blocks(inode, bh->b_blocknr, 1);
-> > > +		/* We let our caller release bh, so we
-> > > +		 * need to duplicate the buffer before. */
-> > > +		get_bh(bh);
-> > > +		bforget(bh);
-> > > +		unlock_buffer(bh);
-> > > +	} else {
-> > > +		/* Decrement the refcount only. */
-> > > +		le32_add_cpu(&HDR(bh)->h_refcount, -1);
-> > > +		dquot_free_block(inode, 1);
-> > > +		mark_buffer_dirty(bh);
-> > > +		unlock_buffer(bh);
-> > > +		ea_bdebug(bh, "refcount now=%d",
-> > > +			le32_to_cpu(HDR(bh)->h_refcount));
-> > > +		if (IS_SYNC(inode))
-> > > +			sync_dirty_buffer(bh);
-> > > +	}
-> > > +}
-> > > +
-> > >  /*
-> > >   * Second half of ext2_xattr_set(): Update the file system.
-> > >   */
-> > > @@ -747,34 +783,7 @@ ext2_xattr_set2(struct inode *inode, struct buffer_head *old_bh,
-> > >  		 * If there was an old block and we are no longer using it,
-> > >  		 * release the old block.
-> > >  		 */
-> > > -		lock_buffer(old_bh);
-> > > -		if (HDR(old_bh)->h_refcount == cpu_to_le32(1)) {
-> > > -			__u32 hash = le32_to_cpu(HDR(old_bh)->h_hash);
-> > > -
-> > > -			/*
-> > > -			 * This must happen under buffer lock for
-> > > -			 * ext2_xattr_set2() to reliably detect freed block
-> > > -			 */
-> > > -			mb_cache_entry_delete(ea_block_cache, hash,
-> > > -					      old_bh->b_blocknr);
-> > > -			/* Free the old block. */
-> > > -			ea_bdebug(old_bh, "freeing");
-> > > -			ext2_free_blocks(inode, old_bh->b_blocknr, 1);
-> > > -			mark_inode_dirty(inode);
-> >
-> > ^^^ this is not needed because ext2_free_blocks() will take care of it.
-> > Hence you have dropped this in ext2_xattr_release_block()
->
-> Correct. ext2_free_blocks() always dirties the inode (unless there is
-> metadata inconsistency found in which case we don't really care).
->
-> > > -			/* We let our caller release old_bh, so we
-> > > -			 * need to duplicate the buffer before. */
-> > > -			get_bh(old_bh);
-> > > -			bforget(old_bh);
-> > > -		} else {
-> > > -			/* Decrement the refcount only. */
-> > > -			le32_add_cpu(&HDR(old_bh)->h_refcount, -1);
-> > > -			dquot_free_block_nodirty(inode, 1);
-> > > -			mark_inode_dirty(inode);
-> >
-> > Quick qn -> Don't we need mark_inode_dirty() here?
->
-> Notice that I've changed dquot_free_block_nodirty() to dquot_free_block()
-> because quota info update is the only reason why we need to dirty the inode
-> so why not let quota code handle it...
->
+On Wed, 13 Jul 2022 07:53:08 +0200, Christoph Hellwig wrote:
+> this series removes the final uses and the implementation of the bdevname()
+> function.
+> 
+> Diffstat:
+>  block/bdev.c                        |   10 ++---
+>  block/blk-lib.c                     |    6 +--
+>  block/genhd.c                       |   23 ------------
+>  drivers/block/drbd/drbd_req.c       |    6 +--
+>  drivers/block/pktcdvd.c             |   10 +----
+>  drivers/block/rnbd/rnbd-srv-dev.c   |    1
+>  drivers/block/rnbd/rnbd-srv-dev.h   |    1
+>  drivers/block/rnbd/rnbd-srv-sysfs.c |    5 +-
+>  drivers/block/rnbd/rnbd-srv.c       |    9 ++---
+>  drivers/block/rnbd/rnbd-srv.h       |    3 -
+>  drivers/md/md.c                     |    2 -
+>  drivers/md/raid1.c                  |    2 -
+>  drivers/md/raid10.c                 |    2 -
+>  fs/ext4/mmp.c                       |    9 ++---
+>  fs/jbd2/journal.c                   |    6 ++-
+>  fs/ocfs2/cluster/heartbeat.c        |   64 ++++++++++++++++--------------------
+>  include/linux/blkdev.h              |    1
+>  kernel/trace/blktrace.c             |    4 +-
+>  18 files changed, 62 insertions(+), 102 deletions(-)
+> 
+> [...]
 
-Ok, yes. Missed it. Thanks for pointing it out.
+Applied, thanks!
 
--ritesh
+[1/9] block: stop using bdevname in bdev_write_inode
+      commit: 5bf83e9a14ddae994d783dee96b91bf46f04839c
+[2/9] block: stop using bdevname in __blkdev_issue_discard
+      commit: 02ff3dd20f512cf811ae8028c44fdb212b5f2bf7
+[3/9] drbd: stop using bdevname in drbd_report_io_error
+      commit: 1b70ccecaed4c3c50239e8409156fb447f965554
+[4/9] pktcdvd: stop using bdevname in pkt_seq_show
+      commit: fa070a3b50a17506a230e72bd48dba89e7bb5fea
+[5/9] pktcdvd: stop using bdevname in pkt_new_dev
+      commit: beecf70ee84363e92f3bf783b74da5f26e765d8d
+[6/9] rnbd-srv: remove the name field from struct rnbd_dev
+      commit: 6e880cf59932a14bca128fc8e8faae0554932942
+[7/9] ocfs2/cluster: remove the hr_dev_name field from struct o2hb_region
+      commit: 4664954c9421ce326bb5c84f175902b03f17237e
+[8/9] ext4: only initialize mmp_bdevname once
+      commit: c5b045b9838972cc4c4985a32fa5d35ecf2ab15a
+[9/9] block: remove bdevname
+      commit: 900d156bac2bc474cf7c7bee4efbc6c83ec5ae58
+
+Best regards,
+-- 
+Jens Axboe
+
+
