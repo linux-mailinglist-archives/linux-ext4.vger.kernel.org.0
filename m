@@ -2,276 +2,240 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0F4574D1C
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Jul 2022 14:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 983F8574D45
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Jul 2022 14:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239015AbiGNMKG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 14 Jul 2022 08:10:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48820 "EHLO
+        id S238711AbiGNMPk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 14 Jul 2022 08:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239055AbiGNMJv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Jul 2022 08:09:51 -0400
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A6D4B0E4
-        for <linux-ext4@vger.kernel.org>; Thu, 14 Jul 2022 05:08:52 -0700 (PDT)
-Received: by mail-io1-f69.google.com with SMTP id h7-20020a05660224c700b0067898a33ceaso626588ioe.13
-        for <linux-ext4@vger.kernel.org>; Thu, 14 Jul 2022 05:08:52 -0700 (PDT)
+        with ESMTP id S230220AbiGNMPj (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Jul 2022 08:15:39 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E98275D3;
+        Thu, 14 Jul 2022 05:15:38 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id fz10so2717848pjb.2;
+        Thu, 14 Jul 2022 05:15:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XpMOn6GHmpbn67dLURX5KQmmlMf+JtWjMyaO5NMuNA0=;
+        b=hFPn5UlXDky5uKdnyyRZW7Ryj6M2C8b0tpXo3aq53nbNtfv2RQw2pmcz0NkTm5CIfF
+         /fkK1juklP+/m9dqAdzNJQjboMpR7VDmYcvQtyqpqdnH96TuiBvnkco3KwKpr5CXX0+J
+         nB7VirN6mllO989cwXczrRzFfrejllwyr0tIz3n9J9aBNzgQmIE0fquxbqIcO/KoAwqc
+         5PFpxwTG/QC7Bgm3YFvlqN11KJc/m8cb/JorBKKlNFYwGiA8xo5XVUgchdXesIzQbACe
+         wUehsYdU/uUki42bYNVvhl85yoHgPU/Q7a3DGvhlM7l0Iu6oygz5u+p0eOrcMLr6Y9YS
+         U2DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Ifyc4fH/kFDEqeceRrQ3ZkuA6rTJWmoCsIUJpFjE3aE=;
-        b=11MQqR+JQdwKn5xTm3sPSwSf+0QMkdvCCNDOXsr+k1byKPik+FxEFo7icEPmZ9/IFu
-         Fbh0vduTytpGDw0AenflXb49hvJjR+jDMiZIcDIXdUP/1s0LHaW6Y/1drwndvniUsxiH
-         v+REfk9wRxkjvgoKh2kMC3QLb5b7/MEuixjeI5DSMOj+FA9s3zFj91Rklrxq4U7psw3W
-         mg7XEEw7xeX6cvhmV7WlKnr3SxCiwPStjOevjO1Hgh8aXiEtbcUZ7E3rEKMqqkUmwYog
-         NB8ILK+vunXoKnO67KlPJOuuDeWUAGEZHfCOvCqESYm3gWDmhLAiSm2Q+ozc3ydGeuHp
-         UJAA==
-X-Gm-Message-State: AJIora/TFTKxLTASL5d4CK73xnmNoP60SWklfUvsSeFmpRAWS869CAvs
-        Qc7eXSKST3aMlt+jAda7t89JveXDms0bmIt5aTSWM45UVyeL
-X-Google-Smtp-Source: AGRyM1uWOaU+rsE7EmoQCnOQQsBPJVvEmN+cxa1YGA6ZoRHw7MDx0WXz7tifZfiH1kvSJerDliaab79YBFdeauaDSAAfSsLn4XwH
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XpMOn6GHmpbn67dLURX5KQmmlMf+JtWjMyaO5NMuNA0=;
+        b=a9IpUUCpl/tdLMIL33AsY19i7Je4wt7oz570JOVJPWwkhElYm4szqr9fXbVu7GV4WK
+         q0HVCPutMKbfJdlFFPGL9T2JBtMlZCfzwognQcYkOaIIjFMD5/wdVNLNgDOhsJsM8oJK
+         HXuBQuEOwGf91LMeDOdYOdzNh6oaOqjsDffZuI0BDF0IEy5HOSFatYCoXk3JLUWf7y0Z
+         lT1Ev1hboJRbhEI8euhBIbqwkfXKlpthmYHGiuw0E/cllnxwbIB1xc9DOElbVZykO5Rt
+         SfSlivFL+s1E1kj0vmaVzoMxqHcnd1oGDAeQQ1uOvTy710YV6X3Rn/M41xZM0n7YU0/V
+         lpEw==
+X-Gm-Message-State: AJIora+q03bm83SQxXi9U3oEUtli1sxIGx5RgKnl2bmCFgya+/rO5LWd
+        UOyQE7QLLuqf3TQXH3VQR2zJTZDVc4A=
+X-Google-Smtp-Source: AGRyM1vh3892D+nLD1T9HewwIjBPUf6QJ3X0Z0V+orXUeRT4shcRtJ+VZFRhMBYd8u3mhIJ3Dmaegg==
+X-Received: by 2002:a17:903:1109:b0:16c:b5e7:652f with SMTP id n9-20020a170903110900b0016cb5e7652fmr1456156plh.142.1657800937621;
+        Thu, 14 Jul 2022 05:15:37 -0700 (PDT)
+Received: from localhost ([2406:7400:63:cb1d:811:33e9:9bc2:d40])
+        by smtp.gmail.com with ESMTPSA id d7-20020a170902cec700b0016c4f0065b4sm1345759plg.84.2022.07.14.05.15.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jul 2022 05:15:37 -0700 (PDT)
+Date:   Thu, 14 Jul 2022 17:45:32 +0530
+From:   Ritesh Harjani <ritesh.list@gmail.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 02/10] mbcache: Add functions to delete entry if unused
+Message-ID: <20220714121532.xwh72dnys3ngg37k@riteshh-domain>
+References: <20220712104519.29887-1-jack@suse.cz>
+ <20220712105436.32204-2-jack@suse.cz>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1b01:b0:2dc:7472:a5d1 with SMTP id
- i1-20020a056e021b0100b002dc7472a5d1mr4313757ilv.62.1657800506151; Thu, 14 Jul
- 2022 05:08:26 -0700 (PDT)
-Date:   Thu, 14 Jul 2022 05:08:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000471c2905e3c2c2c2@google.com>
-Subject: [syzbot] possible deadlock in start_this_handle (3)
-From:   syzbot <syzbot+2d2aeadc6ce1e1f11d45@syzkaller.appspotmail.com>
-To:     jack@suse.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220712105436.32204-2-jack@suse.cz>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On 22/07/12 12:54PM, Jan Kara wrote:
+> Add function mb_cache_entry_delete_or_get() to delete mbcache entry if
+> it is unused and also add a function to wait for entry to become unused
+> - mb_cache_entry_wait_unused(). We do not share code between the two
+> deleting function as one of them will go away soon.
+>
+> CC: stable@vger.kernel.org
+> Fixes: 82939d7999df ("ext4: convert to mbcache2")
+> Signed-off-by: Jan Kara <jack@suse.cz>
+> ---
+>  fs/mbcache.c            | 66 +++++++++++++++++++++++++++++++++++++++--
+>  include/linux/mbcache.h | 10 ++++++-
+>  2 files changed, 73 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/mbcache.c b/fs/mbcache.c
+> index cfc28129fb6f..2010bc80a3f2 100644
+> --- a/fs/mbcache.c
+> +++ b/fs/mbcache.c
+> @@ -11,7 +11,7 @@
+>  /*
+>   * Mbcache is a simple key-value store. Keys need not be unique, however
+>   * key-value pairs are expected to be unique (we use this fact in
+> - * mb_cache_entry_delete()).
+> + * mb_cache_entry_delete_or_get()).
+>   *
+>   * Ext2 and ext4 use this cache for deduplication of extended attribute blocks.
+>   * Ext4 also uses it for deduplication of xattr values stored in inodes.
+> @@ -125,6 +125,19 @@ void __mb_cache_entry_free(struct mb_cache_entry *entry)
+>  }
+>  EXPORT_SYMBOL(__mb_cache_entry_free);
+>
+> +/*
+> + * mb_cache_entry_wait_unused - wait to be the last user of the entry
+> + *
+> + * @entry - entry to work on
+> + *
+> + * Wait to be the last user of the entry.
+> + */
+> +void mb_cache_entry_wait_unused(struct mb_cache_entry *entry)
+> +{
+> +	wait_var_event(&entry->e_refcnt, atomic_read(&entry->e_refcnt) <= 3);
 
-syzbot found the following issue on:
+It's not very intuitive of why we check for refcnt <= 3.
+A small note at top of this function might be helpful.
+IIUC, it is because by default when anyone creates an entry we start with
+a refcnt of 2 (in mb_cache_entry_create.
+- Now when the user of the entry wants to delete this, it will try and call
+  mb_cache_entry_delete_or_get(). If during this function call it sees that the
+  refcnt is elevated more than 2, that means there is another user of this entry
+  currently active and hence we should wait before we remove this entry from the
+  cache. So it will take an extra refcnt and return.
+- So then this caller will call mb_cache_entry_wait_unused() for the refcnt to
+  be <= 3, so that the entry can be deleted.
 
-HEAD commit:    5a29232d870d Merge tag 'for-5.19-rc6-tag' of git://git.ker..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16619ce8080000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=525bc0635a2b942a
-dashboard link: https://syzkaller.appspot.com/bug?extid=2d2aeadc6ce1e1f11d45
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-userspace arch: i386
+Quick qn -
+So now is the design like, ext4_evict_ea_inode() will be waiting indefinitely
+until the other user of this mb_cache entry releases the reference right?
+And that will not happen until,
+- either the shrinker removes this entry from the cache during which we are
+  checking if the refcnt <= 3, then we call a wakeup event
+- Or the user removes/deletes the xattr entry
+Is the above understanding correct?
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2d2aeadc6ce1e1f11d45@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-5.19.0-rc6-syzkaller-00026-g5a29232d870d #0 Not tainted
-------------------------------------------------------
-khugepaged/48 is trying to acquire lock:
-ffff888044598990 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0xfb4/0x14a0 fs/jbd2/transaction.c:461
-
-but task is already holding lock:
-ffffffff8bebdb20 (fs_reclaim){+.+.}-{0:0}, at: __perform_reclaim mm/page_alloc.c:4638 [inline]
-ffffffff8bebdb20 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_direct_reclaim mm/page_alloc.c:4663 [inline]
-ffffffff8bebdb20 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_slowpath.constprop.0+0x9e1/0x2160 mm/page_alloc.c:5066
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #2 (fs_reclaim){+.+.}-{0:0}:
-       __fs_reclaim_acquire mm/page_alloc.c:4589 [inline]
-       fs_reclaim_acquire+0x115/0x160 mm/page_alloc.c:4603
-       might_alloc include/linux/sched/mm.h:271 [inline]
-       slab_pre_alloc_hook mm/slab.h:723 [inline]
-       slab_alloc_node mm/slub.c:3157 [inline]
-       slab_alloc mm/slub.c:3251 [inline]
-       kmem_cache_alloc_trace+0x40/0x3f0 mm/slub.c:3282
-       kmalloc include/linux/slab.h:600 [inline]
-       memory_stat_format+0x95/0xae0 mm/memcontrol.c:1468
-       mem_cgroup_print_oom_meminfo.cold+0x50/0x7e mm/memcontrol.c:1594
-       dump_header+0x13f/0x7f9 mm/oom_kill.c:462
-       oom_kill_process.cold+0x10/0x15 mm/oom_kill.c:1037
-       out_of_memory+0x358/0x14b0 mm/oom_kill.c:1175
-       mem_cgroup_out_of_memory+0x206/0x270 mm/memcontrol.c:1650
-       memory_max_write+0x25c/0x3b0 mm/memcontrol.c:6299
-       cgroup_file_write+0x1de/0x770 kernel/cgroup/cgroup.c:3882
-       kernfs_fop_write_iter+0x3f8/0x610 fs/kernfs/file.c:290
-       call_write_iter include/linux/fs.h:2058 [inline]
-       new_sync_write+0x38a/0x560 fs/read_write.c:504
-       vfs_write+0x7c0/0xac0 fs/read_write.c:591
-       ksys_write+0x127/0x250 fs/read_write.c:644
-       do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
-       __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
-       do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:203
-       entry_SYSENTER_compat_after_hwframe+0x53/0x62
-
--> #1 (oom_lock){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:603 [inline]
-       __mutex_lock+0x12f/0x1350 kernel/locking/mutex.c:747
-       mem_cgroup_out_of_memory+0x8d/0x270 mm/memcontrol.c:1640
-       mem_cgroup_oom mm/memcontrol.c:1880 [inline]
-       try_charge_memcg+0xef9/0x1380 mm/memcontrol.c:2670
-       obj_cgroup_charge_pages mm/memcontrol.c:2999 [inline]
-       obj_cgroup_charge+0x2ab/0x5e0 mm/memcontrol.c:3289
-       memcg_slab_pre_alloc_hook mm/slab.h:505 [inline]
-       slab_pre_alloc_hook mm/slab.h:728 [inline]
-       slab_alloc_node mm/slub.c:3157 [inline]
-       slab_alloc mm/slub.c:3251 [inline]
-       __kmem_cache_alloc_lru mm/slub.c:3258 [inline]
-       kmem_cache_alloc+0x92/0x3b0 mm/slub.c:3268
-       kmem_cache_zalloc include/linux/slab.h:723 [inline]
-       alloc_buffer_head+0x20/0x140 fs/buffer.c:3294
-       alloc_page_buffers+0x285/0x7a0 fs/buffer.c:829
-       grow_dev_page fs/buffer.c:965 [inline]
-       grow_buffers fs/buffer.c:1011 [inline]
-       __getblk_slow+0x525/0x1080 fs/buffer.c:1038
-       __getblk_gfp+0x6e/0x80 fs/buffer.c:1333
-       sb_getblk include/linux/buffer_head.h:326 [inline]
-       ext4_getblk+0x20d/0x7c0 fs/ext4/inode.c:866
-       ext4_bread+0x2a/0x1c0 fs/ext4/inode.c:912
-       ext4_append+0x177/0x3a0 fs/ext4/namei.c:67
-       ext4_init_new_dir+0x25e/0x4d0 fs/ext4/namei.c:2920
-       ext4_mkdir+0x3cf/0xb20 fs/ext4/namei.c:2966
-       vfs_mkdir+0x1c3/0x3b0 fs/namei.c:3975
-       do_mkdirat+0x285/0x300 fs/namei.c:4001
-       __do_sys_mkdirat fs/namei.c:4016 [inline]
-       __se_sys_mkdirat fs/namei.c:4014 [inline]
-       __ia32_sys_mkdirat+0x81/0xa0 fs/namei.c:4014
-       do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
-       __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
-       do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:203
-       entry_SYSENTER_compat_after_hwframe+0x53/0x62
-
--> #0 (jbd2_handle){++++}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:3095 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3214 [inline]
-       validate_chain kernel/locking/lockdep.c:3829 [inline]
-       __lock_acquire+0x2abe/0x5660 kernel/locking/lockdep.c:5053
-       lock_acquire kernel/locking/lockdep.c:5665 [inline]
-       lock_acquire+0x1ab/0x570 kernel/locking/lockdep.c:5630
-       start_this_handle+0xfe7/0x14a0 fs/jbd2/transaction.c:463
-       jbd2__journal_start+0x399/0x930 fs/jbd2/transaction.c:520
-       __ext4_journal_start_sb+0x3a8/0x4a0 fs/ext4/ext4_jbd2.c:105
-       __ext4_journal_start fs/ext4/ext4_jbd2.h:326 [inline]
-       ext4_dirty_inode+0x9d/0x110 fs/ext4/inode.c:5949
-       __mark_inode_dirty+0x495/0x1050 fs/fs-writeback.c:2381
-       mark_inode_dirty_sync include/linux/fs.h:2337 [inline]
-       iput.part.0+0x57/0x820 fs/inode.c:1767
-       iput+0x58/0x70 fs/inode.c:1760
-       dentry_unlink_inode+0x2b1/0x460 fs/dcache.c:401
-       __dentry_kill+0x3c0/0x640 fs/dcache.c:607
-       shrink_dentry_list+0x23c/0x800 fs/dcache.c:1201
-       prune_dcache_sb+0xe7/0x140 fs/dcache.c:1282
-       super_cache_scan+0x336/0x590 fs/super.c:104
-       do_shrink_slab+0x42d/0xbd0 mm/vmscan.c:770
-       shrink_slab+0x17c/0x6f0 mm/vmscan.c:930
-       shrink_node_memcgs mm/vmscan.c:3124 [inline]
-       shrink_node+0x8b3/0x1db0 mm/vmscan.c:3245
-       shrink_zones mm/vmscan.c:3482 [inline]
-       do_try_to_free_pages+0x3b5/0x1700 mm/vmscan.c:3540
-       try_to_free_pages+0x2ac/0x840 mm/vmscan.c:3775
-       __perform_reclaim mm/page_alloc.c:4641 [inline]
-       __alloc_pages_direct_reclaim mm/page_alloc.c:4663 [inline]
-       __alloc_pages_slowpath.constprop.0+0xa8a/0x2160 mm/page_alloc.c:5066
-       __alloc_pages+0x436/0x510 mm/page_alloc.c:5439
-       __alloc_pages_node include/linux/gfp.h:587 [inline]
-       khugepaged_alloc_page+0xa0/0x170 mm/khugepaged.c:859
-       collapse_huge_page mm/khugepaged.c:1062 [inline]
-       khugepaged_scan_pmd mm/khugepaged.c:1348 [inline]
-       khugepaged_scan_mm_slot mm/khugepaged.c:2170 [inline]
-       khugepaged_do_scan mm/khugepaged.c:2251 [inline]
-       khugepaged+0x3473/0x66a0 mm/khugepaged.c:2296
-       kthread+0x2e9/0x3a0 kernel/kthread.c:376
-       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:302
-
-other info that might help us debug this:
-
-Chain exists of:
-  jbd2_handle --> oom_lock --> fs_reclaim
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(fs_reclaim);
-                               lock(oom_lock);
-                               lock(fs_reclaim);
-  lock(jbd2_handle);
-
- *** DEADLOCK ***
-
-3 locks held by khugepaged/48:
- #0: ffffffff8bebdb20 (fs_reclaim){+.+.}-{0:0}, at: __perform_reclaim mm/page_alloc.c:4638 [inline]
- #0: ffffffff8bebdb20 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_direct_reclaim mm/page_alloc.c:4663 [inline]
- #0: ffffffff8bebdb20 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_slowpath.constprop.0+0x9e1/0x2160 mm/page_alloc.c:5066
- #1: ffffffff8be7d850 (shrinker_rwsem){++++}-{3:3}, at: shrink_slab+0xc9/0x6f0 mm/vmscan.c:920
- #2: ffff8880445800e0 (&type->s_umount_key#33){++++}-{3:3}, at: trylock_super fs/super.c:415 [inline]
- #2: ffff8880445800e0 (&type->s_umount_key#33){++++}-{3:3}, at: super_cache_scan+0x6c/0x590 fs/super.c:79
-
-stack backtrace:
-CPU: 2 PID: 48 Comm: khugepaged Not tainted 5.19.0-rc6-syzkaller-00026-g5a29232d870d #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2175
- check_prev_add kernel/locking/lockdep.c:3095 [inline]
- check_prevs_add kernel/locking/lockdep.c:3214 [inline]
- validate_chain kernel/locking/lockdep.c:3829 [inline]
- __lock_acquire+0x2abe/0x5660 kernel/locking/lockdep.c:5053
- lock_acquire kernel/locking/lockdep.c:5665 [inline]
- lock_acquire+0x1ab/0x570 kernel/locking/lockdep.c:5630
- start_this_handle+0xfe7/0x14a0 fs/jbd2/transaction.c:463
- jbd2__journal_start+0x399/0x930 fs/jbd2/transaction.c:520
- __ext4_journal_start_sb+0x3a8/0x4a0 fs/ext4/ext4_jbd2.c:105
- __ext4_journal_start fs/ext4/ext4_jbd2.h:326 [inline]
- ext4_dirty_inode+0x9d/0x110 fs/ext4/inode.c:5949
- __mark_inode_dirty+0x495/0x1050 fs/fs-writeback.c:2381
- mark_inode_dirty_sync include/linux/fs.h:2337 [inline]
- iput.part.0+0x57/0x820 fs/inode.c:1767
- iput+0x58/0x70 fs/inode.c:1760
- dentry_unlink_inode+0x2b1/0x460 fs/dcache.c:401
- __dentry_kill+0x3c0/0x640 fs/dcache.c:607
- shrink_dentry_list+0x23c/0x800 fs/dcache.c:1201
- prune_dcache_sb+0xe7/0x140 fs/dcache.c:1282
- super_cache_scan+0x336/0x590 fs/super.c:104
- do_shrink_slab+0x42d/0xbd0 mm/vmscan.c:770
- shrink_slab+0x17c/0x6f0 mm/vmscan.c:930
- shrink_node_memcgs mm/vmscan.c:3124 [inline]
- shrink_node+0x8b3/0x1db0 mm/vmscan.c:3245
- shrink_zones mm/vmscan.c:3482 [inline]
- do_try_to_free_pages+0x3b5/0x1700 mm/vmscan.c:3540
- try_to_free_pages+0x2ac/0x840 mm/vmscan.c:3775
- __perform_reclaim mm/page_alloc.c:4641 [inline]
- __alloc_pages_direct_reclaim mm/page_alloc.c:4663 [inline]
- __alloc_pages_slowpath.constprop.0+0xa8a/0x2160 mm/page_alloc.c:5066
- __alloc_pages+0x436/0x510 mm/page_alloc.c:5439
- __alloc_pages_node include/linux/gfp.h:587 [inline]
- khugepaged_alloc_page+0xa0/0x170 mm/khugepaged.c:859
- collapse_huge_page mm/khugepaged.c:1062 [inline]
- khugepaged_scan_pmd mm/khugepaged.c:1348 [inline]
- khugepaged_scan_mm_slot mm/khugepaged.c:2170 [inline]
- khugepaged_do_scan mm/khugepaged.c:2251 [inline]
- khugepaged+0x3473/0x66a0 mm/khugepaged.c:2296
- kthread+0x2e9/0x3a0 kernel/kthread.c:376
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:302
- </TASK>
+-ritesh
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> +}
+> +EXPORT_SYMBOL(mb_cache_entry_wait_unused);
+> +
+>  static struct mb_cache_entry *__entry_find(struct mb_cache *cache,
+>  					   struct mb_cache_entry *entry,
+>  					   u32 key)
+> @@ -217,7 +230,7 @@ struct mb_cache_entry *mb_cache_entry_get(struct mb_cache *cache, u32 key,
+>  }
+>  EXPORT_SYMBOL(mb_cache_entry_get);
+>
+> -/* mb_cache_entry_delete - remove a cache entry
+> +/* mb_cache_entry_delete - try to remove a cache entry
+>   * @cache - cache we work with
+>   * @key - key
+>   * @value - value
+> @@ -254,6 +267,55 @@ void mb_cache_entry_delete(struct mb_cache *cache, u32 key, u64 value)
+>  }
+>  EXPORT_SYMBOL(mb_cache_entry_delete);
+>
+> +/* mb_cache_entry_delete_or_get - remove a cache entry if it has no users
+> + * @cache - cache we work with
+> + * @key - key
+> + * @value - value
+> + *
+> + * Remove entry from cache @cache with key @key and value @value. The removal
+> + * happens only if the entry is unused. The function returns NULL in case the
+> + * entry was successfully removed or there's no entry in cache. Otherwise the
+> + * function grabs reference of the entry that we failed to delete because it
+> + * still has users and return it.
+> + */
+> +struct mb_cache_entry *mb_cache_entry_delete_or_get(struct mb_cache *cache,
+> +						    u32 key, u64 value)
+> +{
+> +	struct hlist_bl_node *node;
+> +	struct hlist_bl_head *head;
+> +	struct mb_cache_entry *entry;
+> +
+> +	head = mb_cache_entry_head(cache, key);
+> +	hlist_bl_lock(head);
+> +	hlist_bl_for_each_entry(entry, node, head, e_hash_list) {
+> +		if (entry->e_key == key && entry->e_value == value) {
+> +			if (atomic_read(&entry->e_refcnt) > 2) {
+> +				atomic_inc(&entry->e_refcnt);
+> +				hlist_bl_unlock(head);
+> +				return entry;
+> +			}
+> +			/* We keep hash list reference to keep entry alive */
+> +			hlist_bl_del_init(&entry->e_hash_list);
+> +			hlist_bl_unlock(head);
+> +			spin_lock(&cache->c_list_lock);
+> +			if (!list_empty(&entry->e_list)) {
+> +				list_del_init(&entry->e_list);
+> +				if (!WARN_ONCE(cache->c_entry_count == 0,
+> +		"mbcache: attempt to decrement c_entry_count past zero"))
+> +					cache->c_entry_count--;
+> +				atomic_dec(&entry->e_refcnt);
+> +			}
+> +			spin_unlock(&cache->c_list_lock);
+> +			mb_cache_entry_put(cache, entry);
+> +			return NULL;
+> +		}
+> +	}
+> +	hlist_bl_unlock(head);
+> +
+> +	return NULL;
+> +}
+> +EXPORT_SYMBOL(mb_cache_entry_delete_or_get);
+> +
+>  /* mb_cache_entry_touch - cache entry got used
+>   * @cache - cache the entry belongs to
+>   * @entry - entry that got used
+> diff --git a/include/linux/mbcache.h b/include/linux/mbcache.h
+> index 20f1e3ff6013..8eca7f25c432 100644
+> --- a/include/linux/mbcache.h
+> +++ b/include/linux/mbcache.h
+> @@ -30,15 +30,23 @@ void mb_cache_destroy(struct mb_cache *cache);
+>  int mb_cache_entry_create(struct mb_cache *cache, gfp_t mask, u32 key,
+>  			  u64 value, bool reusable);
+>  void __mb_cache_entry_free(struct mb_cache_entry *entry);
+> +void mb_cache_entry_wait_unused(struct mb_cache_entry *entry);
+>  static inline int mb_cache_entry_put(struct mb_cache *cache,
+>  				     struct mb_cache_entry *entry)
+>  {
+> -	if (!atomic_dec_and_test(&entry->e_refcnt))
+> +	unsigned int cnt = atomic_dec_return(&entry->e_refcnt);
+> +
+> +	if (cnt > 0) {
+> +		if (cnt <= 3)
+> +			wake_up_var(&entry->e_refcnt);
+>  		return 0;
+> +	}
+>  	__mb_cache_entry_free(entry);
+>  	return 1;
+>  }
+>
+> +struct mb_cache_entry *mb_cache_entry_delete_or_get(struct mb_cache *cache,
+> +						    u32 key, u64 value);
+>  void mb_cache_entry_delete(struct mb_cache *cache, u32 key, u64 value);
+>  struct mb_cache_entry *mb_cache_entry_get(struct mb_cache *cache, u32 key,
+>  					  u64 value);
+> --
+> 2.35.3
+>
