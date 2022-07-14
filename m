@@ -2,197 +2,163 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47C8C574D4F
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Jul 2022 14:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8439D574D61
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Jul 2022 14:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238354AbiGNMUG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 14 Jul 2022 08:20:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36688 "EHLO
+        id S238955AbiGNMYN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 14 Jul 2022 08:24:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230220AbiGNMUF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Jul 2022 08:20:05 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A545D1FCC8;
-        Thu, 14 Jul 2022 05:20:04 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id g16-20020a17090a7d1000b001ea9f820449so8449407pjl.5;
-        Thu, 14 Jul 2022 05:20:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZOVjcdt9wEMFP8TEqOCpAFX4T/nzoeDiNa12y9FfkJ0=;
-        b=eXQ9JaehgvFOp6AVRKUS8z+2L6GcbXS20TD90h1haT9zxFMhs5eCr/woSQdaxLuywV
-         P4rK6nh3A5fGaki0rmKB6SgMzRkI8pSCZJsc1/RKOpSrDXZgFekQkOGXeT35XS/T6lot
-         3lxUGQ5WzLHFS5f8D/Hl9rXik1t+WAyrXF6VDfClB0PoK2QN3M51+xhbabrxgSfj6jq8
-         ChlOVw5/19Beqt6Bd6CDR4w7lfuws0WHteVYOIVFjE/dE6sc6/GdAAlcHcenNhmWLFJI
-         himHc9bUrcLc6rDSZul8r1O0bPku/xqzv+nYKu98i2fXkweDmUQMKZ0iWkTWytq0RJhe
-         uoRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZOVjcdt9wEMFP8TEqOCpAFX4T/nzoeDiNa12y9FfkJ0=;
-        b=hZ5RDThr5XEk1LELcRJL0NUNDS1yApPzLt5aqUHcc+2UfCS8xPD8MxmSqiybd+eiyU
-         +UcpIt9aMeT0KVEsTbBRvHAMWobTcva+KB1L+lgA5pTI5STtA4jbZ1ypFgDFx+1AyPkw
-         /b1yzG+gnBEWMrI3i7IutjNQxD1h4/RdvRU+9Y+JonF7NRuZKG1mpRIy1ka17HyHSTsx
-         LxAgH4/UkW0cWJiDIput4mO7imYzH9XandTUG6yOokoYhyLD1N+y4GzUcCGEtu8UyIcC
-         kdj5cruS7xZIUnYK7dzr+afdGo8OwO4NspVN4pLqMKYmd716HBTsc25mPa3+gpj6G3U0
-         Hdxg==
-X-Gm-Message-State: AJIora8v9Dt/0akh78OCmvKhnm6S8byxmG4gltegr7YsbhBU8Xt7YWM5
-        kEVz6XQsM7NdUaY3RbeKNJA=
-X-Google-Smtp-Source: AGRyM1t0+N5Le2Rf9fiCU5cSchb3BdUi3MbJhf+yDXLrZC9Qc+SabGlpnW5YekS80WlBF54RFAlVzA==
-X-Received: by 2002:a17:90b:1b51:b0:1f0:3350:6854 with SMTP id nv17-20020a17090b1b5100b001f033506854mr16296686pjb.52.1657801204153;
-        Thu, 14 Jul 2022 05:20:04 -0700 (PDT)
-Received: from localhost ([2406:7400:63:cb1d:811:33e9:9bc2:d40])
-        by smtp.gmail.com with ESMTPSA id e4-20020aa79804000000b0051b9ecb53e6sm1498467pfl.105.2022.07.14.05.20.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jul 2022 05:20:03 -0700 (PDT)
-Date:   Thu, 14 Jul 2022 17:49:59 +0530
-From:   Ritesh Harjani <ritesh.list@gmail.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 04/10] ext4: Unindent codeblock in ext4_xattr_block_set()
-Message-ID: <20220714121959.kiyxjv7uorjup5qo@riteshh-domain>
-References: <20220712104519.29887-1-jack@suse.cz>
- <20220712105436.32204-4-jack@suse.cz>
+        with ESMTP id S239053AbiGNMYH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Jul 2022 08:24:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4F5D61E3FB
+        for <linux-ext4@vger.kernel.org>; Thu, 14 Jul 2022 05:23:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1657801436;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MrPaXkPo48S62oyKwvoLWRP8ZNCtWIGO5OoUipqtqks=;
+        b=XvhGV5mA53S2no5sS/w2tcORSoxldssdTehRBSTKP6bFOnal2FYnhXihGc0ZrrC2Py1cJz
+        R/VRN99gGgqJnKKXDaF3CglMMAo05kEVrFa77XF9cx7lZ26ONPsGYohpckFgJVBGgkauSc
+        ebw16LVsGM3PSSHYSCXMj8ASe7bVUAk=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-63-rwE3kNxnPQGg9Awn6Uptgg-1; Thu, 14 Jul 2022 08:23:55 -0400
+X-MC-Unique: rwE3kNxnPQGg9Awn6Uptgg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 40EB038041E1;
+        Thu, 14 Jul 2022 12:23:55 +0000 (UTC)
+Received: from fedora (unknown [10.40.193.131])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 17E93906B6;
+        Thu, 14 Jul 2022 12:23:53 +0000 (UTC)
+Date:   Thu, 14 Jul 2022 14:23:51 +0200
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     Tadeusz Struk <tadeusz.struk@linaro.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+15cd994e273307bf5cfa@syzkaller.appspotmail.com
+Subject: Re: [PATCH] ext4: fix kernel BUG in ext4_free_blocks
+Message-ID: <20220714122351.vtiai34zvrrg2np2@fedora>
+References: <20220713185904.64138-1-tadeusz.struk@linaro.org>
+ <20220714095300.ffij7re6l5n6ixlg@fedora>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220712105436.32204-4-jack@suse.cz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220714095300.ffij7re6l5n6ixlg@fedora>
+X-Scanned-By: MIMEDefang 2.79 on 10.11.54.5
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22/07/12 12:54PM, Jan Kara wrote:
-> Remove unnecessary else (and thus indentation level) from a code block
-> in ext4_xattr_block_set(). It will also make following code changes
-> easier. No functional changes.
+On Thu, Jul 14, 2022 at 11:53:00AM +0200, Lukas Czerner wrote:
+> On Wed, Jul 13, 2022 at 11:59:04AM -0700, Tadeusz Struk wrote:
+> > Syzbot reported a BUG in ext4_free_blocks.
+> > The issue is triggered from ext4_mb_clear_bb(). What happens is the
+> > block number passed to ext4_get_group_no_and_offset() is 0 and the
+> > es->s_first_data_block is 1. This makes block group number returned
+> > from ext4_get_group_no_and_offset equal to -1. This is then passed to
+> > ext4_get_group_info() and hits a BUG:
+> > BUG_ON(group >= EXT4_SB(sb)->s_groups_count),
+> > what can be seen in the trace below.
+> > This patch adds an assertion to ext4_get_group_no_and_offset() that
+> > checks if block number is not smaller than es->s_first_data_block.
+> > 
+> > kernel BUG at fs/ext4/ext4.h:3319!
+> > invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+> > CPU: 0 PID: 337 Comm: repro Not tainted 5.19.0-rc6-00105-g4e8e898e4107-dirty #14
+> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.0-1.fc36 04/01/2014
+> > RIP: 0010:ext4_mb_clear_bb+0x1bd6/0x1be0
+> > Call Trace:
+> >  <TASK>
+> >  ext4_free_blocks+0x9b3/0xc90
+> >  ext4_clear_blocks+0x344/0x3b0
+> >  ext4_ind_truncate+0x967/0x1050
+> >  ext4_truncate+0xb1b/0x1210
+> >  ext4_evict_inode+0xf06/0x16f0
+> >  evict+0x2a3/0x630
+> >  iput+0x618/0x850
+> >  ext4_enable_quotas+0x578/0x920
+> >  ext4_orphan_cleanup+0x539/0x1200
+> >  ext4_fill_super+0x94d8/0x9bc0
+> >  get_tree_bdev+0x40c/0x630
+> >  ext4_get_tree+0x1c/0x20
+> >  vfs_get_tree+0x88/0x290
+> >  do_new_mount+0x289/0xac0
+> >  path_mount+0x607/0xfd0
+> >  __se_sys_mount+0x2c4/0x3b0
+> >  __x64_sys_mount+0xbf/0xd0
+> >  do_syscall_64+0x3d/0x90
+> >  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> >  </TASK>
+> > 
+> > Link: https://syzkaller.appspot.com/bug?id=5266d464285a03cee9dbfda7d2452a72c3c2ae7c
+> > Reported-by: syzbot+15cd994e273307bf5cfa@syzkaller.appspotmail.com
+> > Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
+> > ---
+> >  fs/ext4/balloc.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
+> > index 78ee3ef795ae..1175750ad05f 100644
+> > --- a/fs/ext4/balloc.c
+> > +++ b/fs/ext4/balloc.c
+> > @@ -56,6 +56,9 @@ void ext4_get_group_no_and_offset(struct super_block *sb, ext4_fsblk_t blocknr,
+> >  	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
+> >  	ext4_grpblk_t offset;
+> >  
+> > +	if (blocknr < le32_to_cpu(es->s_first_data_block))
+> > +		blocknr = le32_to_cpu(es->s_first_data_block);
+> > +
+> 
+> This does not seem right. we should never work with block number smaller
+> than s_first_data_block. The first 1024 bytes of the file system are
+> unused and in case we have 1k block size, the entire first block is
+> unused.
+> 
+> I guess the image we work here with is corrupted, from the log it seems
+> that it was noticed correctly so the question is why did we still ended
+> up calling ext4_free_blocks() ? Seems like this should have been stopped
+> earlier by ext4_clear_blocks() ?
+> 
+> I did notice that in ext4_mb_clear_bb() we call
+> ext4_get_group_no_and_offset() before ext4_inode_block_valid() but
+> again we should have caught this problem earlier.
+> 
+> Can you link me the file system image that generated this problem?
 
-The patch looks good to me. Just a note, while applying this patch on ext4-dev
-tree, I found a minor conflict with below patch.
+ok, I got the syzkaller C repro to work. The problem is that it's
+bigalloc file system and the 'block' and 'count' to free in
+ext4_free_blocks will get adjusted after the ext4_inode_block_valid().
 
-ext4: use kmemdup() to replace kmalloc + memcpy
+We should make sure that if this happens we also clear the
+EXT4_FREE_BLOCKS_VALIDATED. Additonally the ext4_inode_block_valid()
+in ext4_mb_clear_bb() should be called *before* the values are taken for
+granted. I'll prepare a patch to fix this.
 
-Replace kmalloc + memcpy with kmemdup()
+-Lukas
 
--ritesh
+> 
+> Thanks!
+> -Lukas
+> 
+> 
+> >  	blocknr = blocknr - le32_to_cpu(es->s_first_data_block);
+> >  	offset = do_div(blocknr, EXT4_BLOCKS_PER_GROUP(sb)) >>
+> >  		EXT4_SB(sb)->s_cluster_bits;
+> > -- 
+> > 2.36.1
+> > 
+> 
 
->
-> CC: stable@vger.kernel.org
-> Fixes: 82939d7999df ("ext4: convert to mbcache2")
-> Signed-off-by: Jan Kara <jack@suse.cz>
-> ---
->  fs/ext4/xattr.c | 79 ++++++++++++++++++++++++-------------------------
->  1 file changed, 39 insertions(+), 40 deletions(-)
->
-> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-> index 7fc40fb1e6b3..aadfae53d055 100644
-> --- a/fs/ext4/xattr.c
-> +++ b/fs/ext4/xattr.c
-> @@ -1850,6 +1850,8 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
->  #define header(x) ((struct ext4_xattr_header *)(x))
->
->  	if (s->base) {
-> +		int offset = (char *)s->here - bs->bh->b_data;
-> +
->  		BUFFER_TRACE(bs->bh, "get_write_access");
->  		error = ext4_journal_get_write_access(handle, sb, bs->bh,
->  						      EXT4_JTR_NONE);
-> @@ -1882,50 +1884,47 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
->  			if (error)
->  				goto cleanup;
->  			goto inserted;
-> -		} else {
-> -			int offset = (char *)s->here - bs->bh->b_data;
-> +		}
-> +		unlock_buffer(bs->bh);
-> +		ea_bdebug(bs->bh, "cloning");
-> +		s->base = kmalloc(bs->bh->b_size, GFP_NOFS);
-> +		error = -ENOMEM;
-> +		if (s->base == NULL)
-> +			goto cleanup;
-> +		memcpy(s->base, BHDR(bs->bh), bs->bh->b_size);
-> +		s->first = ENTRY(header(s->base)+1);
-> +		header(s->base)->h_refcount = cpu_to_le32(1);
-> +		s->here = ENTRY(s->base + offset);
-> +		s->end = s->base + bs->bh->b_size;
->
-> -			unlock_buffer(bs->bh);
-> -			ea_bdebug(bs->bh, "cloning");
-> -			s->base = kmalloc(bs->bh->b_size, GFP_NOFS);
-> -			error = -ENOMEM;
-> -			if (s->base == NULL)
-> +		/*
-> +		 * If existing entry points to an xattr inode, we need
-> +		 * to prevent ext4_xattr_set_entry() from decrementing
-> +		 * ref count on it because the reference belongs to the
-> +		 * original block. In this case, make the entry look
-> +		 * like it has an empty value.
-> +		 */
-> +		if (!s->not_found && s->here->e_value_inum) {
-> +			ea_ino = le32_to_cpu(s->here->e_value_inum);
-> +			error = ext4_xattr_inode_iget(inode, ea_ino,
-> +				      le32_to_cpu(s->here->e_hash),
-> +				      &tmp_inode);
-> +			if (error)
->  				goto cleanup;
-> -			memcpy(s->base, BHDR(bs->bh), bs->bh->b_size);
-> -			s->first = ENTRY(header(s->base)+1);
-> -			header(s->base)->h_refcount = cpu_to_le32(1);
-> -			s->here = ENTRY(s->base + offset);
-> -			s->end = s->base + bs->bh->b_size;
->
-> -			/*
-> -			 * If existing entry points to an xattr inode, we need
-> -			 * to prevent ext4_xattr_set_entry() from decrementing
-> -			 * ref count on it because the reference belongs to the
-> -			 * original block. In this case, make the entry look
-> -			 * like it has an empty value.
-> -			 */
-> -			if (!s->not_found && s->here->e_value_inum) {
-> -				ea_ino = le32_to_cpu(s->here->e_value_inum);
-> -				error = ext4_xattr_inode_iget(inode, ea_ino,
-> -					      le32_to_cpu(s->here->e_hash),
-> -					      &tmp_inode);
-> -				if (error)
-> -					goto cleanup;
-> -
-> -				if (!ext4_test_inode_state(tmp_inode,
-> -						EXT4_STATE_LUSTRE_EA_INODE)) {
-> -					/*
-> -					 * Defer quota free call for previous
-> -					 * inode until success is guaranteed.
-> -					 */
-> -					old_ea_inode_quota = le32_to_cpu(
-> -							s->here->e_value_size);
-> -				}
-> -				iput(tmp_inode);
-> -
-> -				s->here->e_value_inum = 0;
-> -				s->here->e_value_size = 0;
-> +			if (!ext4_test_inode_state(tmp_inode,
-> +					EXT4_STATE_LUSTRE_EA_INODE)) {
-> +				/*
-> +				 * Defer quota free call for previous
-> +				 * inode until success is guaranteed.
-> +				 */
-> +				old_ea_inode_quota = le32_to_cpu(
-> +						s->here->e_value_size);
->  			}
-> +			iput(tmp_inode);
-> +
-> +			s->here->e_value_inum = 0;
-> +			s->here->e_value_size = 0;
->  		}
->  	} else {
->  		/* Allocate a buffer where we construct the new block. */
-> --
-> 2.35.3
->
