@@ -2,46 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E50025761FC
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Jul 2022 14:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A094C57636D
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Jul 2022 16:10:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229452AbiGOMj4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 15 Jul 2022 08:39:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54844 "EHLO
+        id S233583AbiGOOKq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 15 Jul 2022 10:10:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234937AbiGOMjr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 15 Jul 2022 08:39:47 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 201758734E;
-        Fri, 15 Jul 2022 05:39:44 -0700 (PDT)
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LkrSF56qHzVft5;
-        Fri, 15 Jul 2022 20:35:57 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 15 Jul 2022 20:39:33 +0800
-Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
- (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Fri, 15 Jul
- 2022 20:39:32 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <tytso@mit.edu>, <jack@suse.com>, <ritesh.list@gmail.com>,
-        <lczerner@redhat.com>, <akpm@osdl.org>, <shaggy@austin.ibm.com>
-CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH] jbd2: Fix assertion 'jh->b_frozen_data == NULL' failure when journal aborted
-Date:   Fri, 15 Jul 2022 20:51:52 +0800
-Message-ID: <20220715125152.4022726-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S231184AbiGOOKp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 15 Jul 2022 10:10:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C06768719;
+        Fri, 15 Jul 2022 07:10:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E76E260A10;
+        Fri, 15 Jul 2022 14:10:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAAFDC34115;
+        Fri, 15 Jul 2022 14:10:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1657894242;
+        bh=kj4NlOqJqu0Eo6svXbTTcXeN2gwq/QeqbAMzhuAB04A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hrS7rNNWglr3i7GG8Pv6TyZOA0bF5OoOoTlexqNeuS4qER+zreY2m54z1+fmW7WnF
+         ZSgiYxmuZ1NyrKk/kV8sEutwL5ABk/0vUsDR6b3V2gYQerAH7Dv9++okJhsZdVu1Gt
+         KSHTfOp3t6R78EWDgN4gEsqy4QuP7RX2t/OFYbtc=
+Date:   Fri, 15 Jul 2022 16:10:39 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     stable@vger.kernel.org, linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+        lczerner@redhat.com, enwlinux@gmail.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yebin10@huawei.com, yukuai3@huawei.com,
+        Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH 4.19] ext4: fix race condition between
+ ext4_ioctl_setflags and ext4_fiemap
+Message-ID: <YtF1XygwvIo2Dwae@kroah.com>
+References: <20220715023928.2701166-1-libaokun1@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220715023928.2701166-1-libaokun1@huawei.com>
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,100 +54,75 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Following process will fail assertion 'jh->b_frozen_data == NULL' in
-jbd2_journal_dirty_metadata():
+On Fri, Jul 15, 2022 at 10:39:28AM +0800, Baokun Li wrote:
+> This patch and problem analysis is based on v4.19 LTS.
+> The d3b6f23f7167("ext4: move ext4_fiemap to use iomap framework") patch
+> is incorporated in v5.7-rc1. This patch avoids this problem by switching
+> to iomap in ext4_fiemap.
+> 
+> Hulk Robot reported a BUG on stable 4.19.252:
+> ==================================================================
+> kernel BUG at fs/ext4/extents_status.c:762!
+> invalid opcode: 0000 [#1] SMP KASAN PTI
+> CPU: 7 PID: 2845 Comm: syz-executor Not tainted 4.19.252 #46
+> RIP: 0010:ext4_es_cache_extent+0x30e/0x370
+> [...]
+> Call Trace:
+>  ext4_cache_extents+0x238/0x2f0
+>  ext4_find_extent+0x785/0xa40
+>  ext4_fiemap+0x36d/0xe90
+>  do_vfs_ioctl+0x6af/0x1200
+> [...]
+> ==================================================================
+> 
+> Above issue may happen as follows:
+> -------------------------------------
+>            cpu1		    cpu2
+> _____________________|_____________________
+> do_vfs_ioctl
+>  ext4_ioctl
+>   ext4_ioctl_setflags
+>    ext4_ind_migrate
+>                         do_vfs_ioctl
+>                          ioctl_fiemap
+>                           ext4_fiemap
+>                            ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)
+>                            ext4_fill_fiemap_extents
+>     down_write(&EXT4_I(inode)->i_data_sem);
+>     ext4_ext_check_inode
+>     ext4_clear_inode_flag(inode, EXT4_INODE_EXTENTS)
+>     memset(ei->i_data, 0, sizeof(ei->i_data))
+>     up_write(&EXT4_I(inode)->i_data_sem);
+>                             down_read(&EXT4_I(inode)->i_data_sem);
+>                             ext4_find_extent
+>                              ext4_cache_extents
+>                               ext4_es_cache_extent
+>                                BUG_ON(end < lblk)
+> 
+> We can easily reproduce this problem with the syzkaller testcase:
+> ```
+> 02:37:07 executing program 3:
+> r0 = openat(0xffffffffffffff9c, &(0x7f0000000040)='./file0\x00', 0x26e1, 0x0)
+> ioctl$FS_IOC_FSSETXATTR(r0, 0x40086602, &(0x7f0000000080)={0x17e})
+> mkdirat(0xffffffffffffff9c, &(0x7f00000000c0)='./file1\x00', 0x1ff)
+> r1 = openat(0xffffffffffffff9c, &(0x7f0000000100)='./file1\x00', 0x0, 0x0)
+> ioctl$FS_IOC_FIEMAP(r1, 0xc020660b, &(0x7f0000000180)={0x0, 0x1, 0x0, 0xef3, 0x6, []}) (async, rerun: 32)
+> ioctl$FS_IOC_FSSETXATTR(r1, 0x40086602, &(0x7f0000000140)={0x17e}) (rerun: 32)
+> ```
+> 
+> To solve this issue, we use __generic_block_fiemap() instead of
+> generic_block_fiemap() and add inode_lock_shared to avoid race condition.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ---
+>  fs/ext4/extents.c | 15 +++++++++++----
+>  1 file changed, 11 insertions(+), 4 deletions(-)
 
-                   jbd2_journal_commit_transaction
-unlink(dir/a)
- jh->b_transaction = trans1
- jh->b_jlist = BJ_Metadata
-                    journal->j_running_transaction = NULL
-                    trans1->t_state = T_COMMIT
-unlink(dir/b)
- handle->h_trans = trans2
- do_get_write_access
-  jh->b_modified = 0
-  jh->b_frozen_data = frozen_buffer
-  jh->b_next_transaction = trans2
- jbd2_journal_dirty_metadata
-  is_handle_aborted
-   is_journal_aborted // return false
+What is the git commit id of this change in Linus's tree?
 
-           --> jbd2 abort <--
+If it is not in Linus's tree, why not?
 
-                     while (commit_transaction->t_buffers)
-                      if (is_journal_aborted)
-                       jbd2_journal_refile_buffer
-                        __jbd2_journal_refile_buffer
-                         WRITE_ONCE(jh->b_transaction,
-						jh->b_next_transaction)
-                         WRITE_ONCE(jh->b_next_transaction, NULL)
-                         __jbd2_journal_file_buffer(jh, BJ_Reserved)
-        J_ASSERT_JH(jh, jh->b_frozen_data == NULL) // assertion failure !
+confused,
 
-The reproducer (See detail in [Link]) reports:
- ------------[ cut here ]------------
- kernel BUG at fs/jbd2/transaction.c:1629!
- invalid opcode: 0000 [#1] PREEMPT SMP
- CPU: 2 PID: 584 Comm: unlink Tainted: G        W
- 5.19.0-rc6-00115-g4a57a8400075-dirty #697
- RIP: 0010:jbd2_journal_dirty_metadata+0x3c5/0x470
- RSP: 0018:ffffc90000be7ce0 EFLAGS: 00010202
- Call Trace:
-  <TASK>
-  __ext4_handle_dirty_metadata+0xa0/0x290
-  ext4_handle_dirty_dirblock+0x10c/0x1d0
-  ext4_delete_entry+0x104/0x200
-  __ext4_unlink+0x22b/0x360
-  ext4_unlink+0x275/0x390
-  vfs_unlink+0x20b/0x4c0
-  do_unlinkat+0x42f/0x4c0
-  __x64_sys_unlink+0x37/0x50
-  do_syscall_64+0x35/0x80
-
-After journal aborting, __jbd2_journal_refile_buffer() is executed with
-holding @jh->b_state_lock, we can fix it by moving 'is_handle_aborted()'
-into the area protected by @jh->b_state_lock.
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=216251
-Fixes: 470decc613ab20 ("[PATCH] jbd2: initial copy of files from jbd")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- fs/jbd2/transaction.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index e9c308ae475f..e0377f558eb1 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -1486,8 +1486,6 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
- 	struct journal_head *jh;
- 	int ret = 0;
- 
--	if (is_handle_aborted(handle))
--		return -EROFS;
- 	if (!buffer_jbd(bh))
- 		return -EUCLEAN;
- 
-@@ -1534,6 +1532,18 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
- 	journal = transaction->t_journal;
- 	spin_lock(&jh->b_state_lock);
- 
-+	if (is_handle_aborted(handle)) {
-+		/*
-+		 * Check journal aborting with @jh->b_state_lock locked,
-+		 * since 'jh->b_transaction' could be replaced with
-+		 * 'jh->b_next_transaction' during old transaction
-+		 * committing if journal aborted, which may fail
-+		 * assertion on 'jh->b_frozen_data == NULL'.
-+		 */
-+		ret = -EROFS;
-+		goto out_unlock_bh;
-+	}
-+
- 	if (jh->b_modified == 0) {
- 		/*
- 		 * This buffer's got modified and becoming part
--- 
-2.31.1
-
+greg k-h
