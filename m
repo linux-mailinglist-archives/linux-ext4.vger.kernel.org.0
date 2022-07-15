@@ -2,314 +2,153 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18BBB57597D
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Jul 2022 04:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52AF857598E
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Jul 2022 04:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232394AbiGOCLY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 14 Jul 2022 22:11:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59460 "EHLO
+        id S241095AbiGOC1L (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 14 Jul 2022 22:27:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbiGOCLW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Jul 2022 22:11:22 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2050.outbound.protection.outlook.com [40.107.223.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1074CEA;
-        Thu, 14 Jul 2022 19:11:21 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ALOWZ6E9MZecGGTl6DkVfNENGX8aLQ0FsrvTvs2zOgmVgCh2/fwtt9xMzw6X/tugb+zcfN5UslgOnXMW0PnEh5/R4h8VK4Ls2xw2qU8kLdqTxPclW3Hp34Ie2xXOR/vgmfkNmRbQDZhp61lm89kjjsKN37cC/dttA3QsZoPjKtD/Rh9SlWRxYH/PllV9LGTSJgZ8eplLjiUjhvsEg7IWspm4sziooS1NrJsNp/oPjx1rs4MzvE52Hn8MCvXSEYeBnkX2L5YAZgYmlL7ZxgBT2psuicRNbGyv9XlqBSQOA0wue8d6bPLoUZW/TLO+KQ1LZeRjUHtf11IKFUC0LFxUuA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NHVDkFGU/1iCEavcNoOsyIBjDg/tjdhLr3cQyUbdW9g=;
- b=mlQy+8FxkyPMwDT8L0o8MFqat5+juX2yT79hJnz/dy3AEv4JvpnhDKO4wUhcgUy5ioHt+fa7VemK44A+LLYoGW3XvBwHsi2JfBquxz8X9XzCg6m7gSqmIUoctnlNdAvXcV0a2rW3VAir4JiZO+cQdH2XGYgNyvYR8PiINdGifyWXt4z8RGYvoVIHSVcvsJVzrFhReqX0udcwRDiJWsKMTKixjOSKmG9RL1/YOfisuurrm047AJiYsZPjjKszFlZzShoPnGLIFzkXlA1SgzNICqhf3mmksiHspcc+cow3geXZPeRE/ULzXKeDX+IZWrae8nUPQ/Rxlb0eSFUYOXgYAQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NHVDkFGU/1iCEavcNoOsyIBjDg/tjdhLr3cQyUbdW9g=;
- b=mWTfC1JQlSDtZnVaLc/SjdxqP0IItHA+NR3G4OjY3MG2f2543Tdgpc7DSzqLWSrC4kdlupmXsDYDIOYaJuVsQALG6tSfws362QsCBTHtfzM4FXqwHMglukUMp8juIeF8/uSICEkXvaKZkgc8ySL/7m4OdNPcaTMPgUg7hVZUaFWOw5whS/BNHjz5BvtPPceFJd9bUPCvNFJVidfsMkR+TWQ/iTL9AufnNPdqzvUSumAihjDRTU49Jk5BXUj5Lnhvp5/IC7eq482/tW4eAKhnC+CeEKtH0/NVuo7+oKo2OuZwY1AJgehKPLZJsXE61MET6bjv9VXkYFn3o9Ncp0OqSA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
- by SN7PR12MB6713.namprd12.prod.outlook.com (2603:10b6:806:273::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.25; Fri, 15 Jul
- 2022 02:11:19 +0000
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::eca6:a4a7:e2b2:27e7]) by BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::eca6:a4a7:e2b2:27e7%5]) with mapi id 15.20.5417.020; Fri, 15 Jul 2022
- 02:11:19 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Alex Sierra <alex.sierra@amd.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, jgg@nvidia.com,
-        Felix.Kuehling@amd.com, linux-mm@kvack.org, rcampbell@nvidia.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        hch@lst.de, jglisse@redhat.com, akpm@linux-foundation.org,
-        Alistair Popple <apopple@nvidia.com>
-Subject: [PATCH] mm/gup: migrate device coherent pages when pinning instead of failing
-Date:   Fri, 15 Jul 2022 12:11:09 +1000
-Message-Id: <20220715021109.2225886-1-apopple@nvidia.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <4b2f9a61-ca67-6a34-41c9-c191cac756b3@redhat.com>
-References: <4b2f9a61-ca67-6a34-41c9-c191cac756b3@redhat.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR07CA0101.namprd07.prod.outlook.com
- (2603:10b6:a03:12b::42) To BYAPR12MB3176.namprd12.prod.outlook.com
- (2603:10b6:a03:134::26)
+        with ESMTP id S229541AbiGOC1L (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Jul 2022 22:27:11 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E90122B39;
+        Thu, 14 Jul 2022 19:27:08 -0700 (PDT)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LkZvt2q8FzlVxh;
+        Fri, 15 Jul 2022 10:25:30 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
+ (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Fri, 15 Jul
+ 2022 10:27:06 +0800
+From:   Baokun Li <libaokun1@huawei.com>
+To:     <stable@vger.kernel.org>, <linux-ext4@vger.kernel.org>
+CC:     <gregkh@linuxfoundation.org>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+        <ritesh.list@gmail.com>, <lczerner@redhat.com>,
+        <enwlinux@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>, <yebin10@huawei.com>, <yukuai3@huawei.com>,
+        <libaokun1@huawei.com>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH 4.19] ext4: fix race condition between ext4_ioctl_setflags and ext4_fiemap
+Date:   Fri, 15 Jul 2022 10:39:28 +0800
+Message-ID: <20220715023928.2701166-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 502c5fc0-8641-4698-9ed3-08da66074e5e
-X-MS-TrafficTypeDiagnostic: SN7PR12MB6713:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: swSXb2xi6beWEb1/7R071vtcQ75Sqp8C98IFL1fIJi1oadZjpPE+jbA2SBYK3xPhtiKAWnOSOthPpuO2MwdtgApN5wAfP5OWERUGFmYu9vl9BOTjWT1AFms9dOAaETnIvbgXNkKmT0Ee5GfmU2LxUziBHdmFWT9rORXQZ1on5L/NrucO/wLy7jB0EkxEbfZ0feZyJiPyExrnlwQYRGfgCt0qw/heHHHUEUtDLbO02SPaKuGxeSzvmtZMyabW+PqVYNT4Y7KA1Cfq9z/aSr/csuWqStrZeuE5tdy8/OPG+2TtqobJsQXTsFO4VzI7t56SFRdtvo7VM2Ye31oWu/fJjWn7D+SimwGMAz+v8m5h+AFrXej0esxHtQzdailEJU3/dMNzwHONNXaOo1i4W7qXGPHUUJkej0M79AoGaBQBhaAE72w67GhI58WelDYhpV8SfgkzjMXFGjexfUAKX3Xh69qw/LqtJXenyB6ePrOp/jWQdnG9xKIVAG21dmfpvTl44C4Tuo3ObINJI8luYaZSwDwYa7IuqXJ9iyk+41+A9qgGCJm8q+JpeFSX6re7HkpjsArEc9ZCyFlmfuBArdD7Q+fvDP8csKKh0YjvPeWeAb5loIuWA0Ppz6CjWa2gh/rWgNU+BQY4ToT3OZO1M7G00uMA46ZhDCAe9HVJN66EnU5LRrz2o7f+L3u5LO2md27kWx3ViTrgWiwz/1DTY1F+kzFRAgFEg6PJyHQMlwYq3fZF0omjTuNePiXTjGUS/D26
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(39860400002)(136003)(396003)(366004)(376002)(346002)(2616005)(186003)(86362001)(478600001)(1076003)(107886003)(41300700001)(6486002)(6506007)(26005)(6666004)(7416002)(2906002)(8936002)(6512007)(36756003)(38100700002)(5660300002)(6916009)(54906003)(316002)(83380400001)(66556008)(4326008)(66476007)(8676002)(66946007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?iBhQqZsOOjiTrewLReeC6gLXWIdLbuLaqimZoyZLJd+HsSaFoRkSV3p7SvRP?=
- =?us-ascii?Q?cd0NkeTmPdUZsryp9AqUt1589jstVylek7bDwq3l7KM/IV3je3iQkqdIPtik?=
- =?us-ascii?Q?HkJbgSHc5R/bAbLI5IEW37vGhp27RwxbDQu1L/DUb3HgUtg/bFzJuDa6TIQh?=
- =?us-ascii?Q?tvxWY6YOvtIksprpc+Usnk9iC04U3Bq7PwOeSloXinh203rOwUR0EerZ/cKx?=
- =?us-ascii?Q?We2QECXybZmEtR5xAt72wUcNW+gVGn6WGlLsBLDydlYcF4LRCR52k25ORPfu?=
- =?us-ascii?Q?JNslK7PsTXI4VbbHgYwHEky3I4MaPRAcNkxpkaNdJSFAjh563rOL7ZvSo8Ft?=
- =?us-ascii?Q?tyZYKE9Kewq1Ge+9cK62DLQHz+wRyPIJ72/ZMTJ0n6P2DqCSM9Q/HUgAZb0S?=
- =?us-ascii?Q?ehmS9CigD/ZX8zztX8W2/gJsjQ+woMPJG1yr2UPQ1ARU9G7HurE+M7EMaYUO?=
- =?us-ascii?Q?pCSrhPz3XK6bTf7krPhozgoLU/CJQcRcxHyuUl3INguX7I9cnCxhS9++V5Ne?=
- =?us-ascii?Q?fVQ9GB1/II/ZSZz52yNlU6Ap3EMThQZpl6a8W6Rhl1KQe3dusVsCpxkqtyTh?=
- =?us-ascii?Q?WC5oCUeFlk4F1A4pt/E8qT0Rqsep4EffZbYOjKLhMYj7DIPrwwdJ+3LU+iMq?=
- =?us-ascii?Q?PwvxRngR0M0K/VrpQym8/ik5jhwxpQXqFS9egXPTCIQSY/UMCI7Km2DAsOD9?=
- =?us-ascii?Q?PTAraTb6J2ZRYCAln0xnq5zFJcs71zNPHtcT1J4u77wsMyDs8p7IZcOZQDT7?=
- =?us-ascii?Q?DhSvYMsQ5xnWbvpdx1erhv4TBshfA9OmZYD6njbY7xC12AqGL/jZ4TvRAMct?=
- =?us-ascii?Q?S2XO9012sqT/fe0LCCbnqThIuFpZLP/krTvJEFCFYP1uL8CiCWY/YK/KECVB?=
- =?us-ascii?Q?gCu5nt1A8neW8icGqw72NF64BUMBU8xdvodPW9+kYgP2SqymrwdgQWH6+6ud?=
- =?us-ascii?Q?+jdHdtoadZRDFQTgZW/R0P6CCjVeMlYvVOseWbqTcDu8eoBgFwOPo2k8LCuC?=
- =?us-ascii?Q?zH7O1v6/o3xcV5vA88gZDRCmPgNkSzPzlk2juxDBGzwRzGQGQft7Vftgx/iD?=
- =?us-ascii?Q?v+2XxPVKXfYJYRn2kOY1f6f7bgRQ98aq+rKoZ5JDMzFADsi7LbhbpFDSk/Df?=
- =?us-ascii?Q?AJNc5hYWZpy9LrymjsXjVDYySEp0/O2RG4t9dV7cIwe2AZusxBlwRSDqTu6P?=
- =?us-ascii?Q?xl36tHFF8zZvQ3FULOcA55QWiE5ZvNTHbzVtzj3cp+GXw6gqQQDWB4lOSwdg?=
- =?us-ascii?Q?DTMpRy6UZcITLexgrhhvwGcfJM2iCp9wEa2JkEXimUBFJoO/84WYbM7wdZwp?=
- =?us-ascii?Q?GfoWWP5Jd75Ef4tB4PewA/Ap6qsn1Zb/9FCj9SsH40C7natpHEnNqxToOgfu?=
- =?us-ascii?Q?56Z/aEMbi5W9ABwLHc+r0LxOd8rInjUUH4aF3llLobvpd5gursYBK0t7nwfA?=
- =?us-ascii?Q?Ws448UwSUEhgibhI3KOjwPhzVc1Q/reNQhETBLLhYsJb2McvCJqjErV8aOMJ?=
- =?us-ascii?Q?cDmaCo/N7E4us9tV5/q4Q+DxsZW0xgt+yHge3AcLrUdAR6GYEII/Za91l3NR?=
- =?us-ascii?Q?pin0/ui7/SAH3sZA4JJdU5jK7SWUuqNmy5vkgnuH?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 502c5fc0-8641-4698-9ed3-08da66074e5e
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2022 02:11:19.3380
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: S0NQT8/Qj7uT4XEhklgm2elFJ9pE05n0Dxfx2qiwXmbHvUxHdexZ5jEIIS6ue5EOQX1hW84B7nvpb8x9bp5KaA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6713
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Currently any attempts to pin a device coherent page will fail. This is
-because device coherent pages need to be managed by a device driver, and
-pinning them would prevent a driver from migrating them off the device.
+This patch and problem analysis is based on v4.19 LTS.
+The d3b6f23f7167("ext4: move ext4_fiemap to use iomap framework") patch
+is incorporated in v5.7-rc1. This patch avoids this problem by switching
+to iomap in ext4_fiemap.
 
-However this is no reason to fail pinning of these pages. These are
-coherent and accessible from the CPU so can be migrated just like
-pinning ZONE_MOVABLE pages. So instead of failing all attempts to pin
-them first try migrating them out of ZONE_DEVICE.
+Hulk Robot reported a BUG on stable 4.19.252:
+==================================================================
+kernel BUG at fs/ext4/extents_status.c:762!
+invalid opcode: 0000 [#1] SMP KASAN PTI
+CPU: 7 PID: 2845 Comm: syz-executor Not tainted 4.19.252 #46
+RIP: 0010:ext4_es_cache_extent+0x30e/0x370
+[...]
+Call Trace:
+ ext4_cache_extents+0x238/0x2f0
+ ext4_find_extent+0x785/0xa40
+ ext4_fiemap+0x36d/0xe90
+ do_vfs_ioctl+0x6af/0x1200
+[...]
+==================================================================
 
-[hch: rebased to the split device memory checks,
-      moved migrate_device_page to migrate_device.c]
+Above issue may happen as follows:
+-------------------------------------
+           cpu1		    cpu2
+_____________________|_____________________
+do_vfs_ioctl
+ ext4_ioctl
+  ext4_ioctl_setflags
+   ext4_ind_migrate
+                        do_vfs_ioctl
+                         ioctl_fiemap
+                          ext4_fiemap
+                           ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)
+                           ext4_fill_fiemap_extents
+    down_write(&EXT4_I(inode)->i_data_sem);
+    ext4_ext_check_inode
+    ext4_clear_inode_flag(inode, EXT4_INODE_EXTENTS)
+    memset(ei->i_data, 0, sizeof(ei->i_data))
+    up_write(&EXT4_I(inode)->i_data_sem);
+                            down_read(&EXT4_I(inode)->i_data_sem);
+                            ext4_find_extent
+                             ext4_cache_extents
+                              ext4_es_cache_extent
+                               BUG_ON(end < lblk)
 
-Signed-off-by: Alistair Popple <apopple@nvidia.com>
-Acked-by: Felix Kuehling <Felix.Kuehling@amd.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+We can easily reproduce this problem with the syzkaller testcase:
+```
+02:37:07 executing program 3:
+r0 = openat(0xffffffffffffff9c, &(0x7f0000000040)='./file0\x00', 0x26e1, 0x0)
+ioctl$FS_IOC_FSSETXATTR(r0, 0x40086602, &(0x7f0000000080)={0x17e})
+mkdirat(0xffffffffffffff9c, &(0x7f00000000c0)='./file1\x00', 0x1ff)
+r1 = openat(0xffffffffffffff9c, &(0x7f0000000100)='./file1\x00', 0x0, 0x0)
+ioctl$FS_IOC_FIEMAP(r1, 0xc020660b, &(0x7f0000000180)={0x0, 0x1, 0x0, 0xef3, 0x6, []}) (async, rerun: 32)
+ioctl$FS_IOC_FSSETXATTR(r1, 0x40086602, &(0x7f0000000140)={0x17e}) (rerun: 32)
+```
+
+To solve this issue, we use __generic_block_fiemap() instead of
+generic_block_fiemap() and add inode_lock_shared to avoid race condition.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
 ---
+ fs/ext4/extents.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-This patch hopefully addresses all of David's comments. It replaces both my "mm:
-remove the vma check in migrate_vma_setup()" and "mm/gup: migrate device
-coherent pages when pinning instead of failing" patches. I'm not sure what the
-best way of including this is, perhaps Alex can respin the series with this
-patch instead?
-
- - Alistair
-
- mm/gup.c            | 50 +++++++++++++++++++++++++++++++++++++------
- mm/internal.h       |  1 +
- mm/migrate_device.c | 52 +++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 96 insertions(+), 7 deletions(-)
-
-diff --git a/mm/gup.c b/mm/gup.c
-index b65fe8bf5af4..22b97ab61cd9 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -1881,7 +1881,7 @@ static long check_and_migrate_movable_pages(unsigned long nr_pages,
- 	unsigned long isolation_error_count = 0, i;
- 	struct folio *prev_folio = NULL;
- 	LIST_HEAD(movable_page_list);
--	bool drain_allow = true;
-+	bool drain_allow = true, coherent_pages = false;
- 	int ret = 0;
- 
- 	for (i = 0; i < nr_pages; i++) {
-@@ -1891,9 +1891,38 @@ static long check_and_migrate_movable_pages(unsigned long nr_pages,
- 			continue;
- 		prev_folio = folio;
- 
--		if (folio_is_longterm_pinnable(folio))
-+		/*
-+		 * Device coherent pages are managed by a driver and should not
-+		 * be pinned indefinitely as it prevents the driver moving the
-+		 * page. So when trying to pin with FOLL_LONGTERM instead try
-+		 * to migrate the page out of device memory.
-+		 */
-+		if (folio_is_device_coherent(folio)) {
-+			/*
-+			 * We always want a new GUP lookup with device coherent
-+			 * pages.
-+			 */
-+			pages[i] = 0;
-+			coherent_pages = true;
-+
-+			/*
-+			 * Migration will fail if the page is pinned, so convert
-+			 * the pin on the source page to a normal reference.
-+			 */
-+			if (gup_flags & FOLL_PIN) {
-+				get_page(&folio->page);
-+				unpin_user_page(&folio->page);
-+			}
-+
-+			ret = migrate_device_coherent_page(&folio->page);
-+			if (ret)
-+				goto unpin_pages;
-+
- 			continue;
-+		}
- 
-+		if (folio_is_longterm_pinnable(folio))
-+			continue;
- 		/*
- 		 * Try to move out any movable page before pinning the range.
- 		 */
-@@ -1919,7 +1948,8 @@ static long check_and_migrate_movable_pages(unsigned long nr_pages,
- 				    folio_nr_pages(folio));
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 6c492fca60c4..38aaf48e94cb 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -5198,13 +5198,18 @@ int ext4_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+ 			return error;
  	}
  
--	if (!list_empty(&movable_page_list) || isolation_error_count)
-+	if (!list_empty(&movable_page_list) || isolation_error_count
-+		|| coherent_pages)
- 		goto unpin_pages;
- 
- 	/*
-@@ -1929,10 +1959,16 @@ static long check_and_migrate_movable_pages(unsigned long nr_pages,
- 	return nr_pages;
- 
- unpin_pages:
--	if (gup_flags & FOLL_PIN) {
--		unpin_user_pages(pages, nr_pages);
--	} else {
--		for (i = 0; i < nr_pages; i++)
-+	/*
-+	 * pages[i] might be NULL if any device coherent pages were found.
-+	 */
-+	for (i = 0; i < nr_pages; i++) {
-+		if (!pages[i])
-+			continue;
-+
-+		if (gup_flags & FOLL_PIN)
-+			unpin_user_page(pages[i]);
-+		else
- 			put_page(pages[i]);
- 	}
- 
-diff --git a/mm/internal.h b/mm/internal.h
-index c0f8fbe0445b..899dab512c5a 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -853,6 +853,7 @@ int numa_migrate_prep(struct page *page, struct vm_area_struct *vma,
- 		      unsigned long addr, int page_nid, int *flags);
- 
- void free_zone_device_page(struct page *page);
-+int migrate_device_coherent_page(struct page *page);
- 
- /*
-  * mm/gup.c
-diff --git a/mm/migrate_device.c b/mm/migrate_device.c
-index 18bc6483f63a..7feeb447e3b9 100644
---- a/mm/migrate_device.c
-+++ b/mm/migrate_device.c
-@@ -686,6 +686,12 @@ void migrate_vma_pages(struct migrate_vma *migrate)
- 		}
- 
- 		if (!page) {
-+			/*
-+			 * The only time there is no vma is when called from
-+			 * migrate_device_coherent_page(). However this isn't
-+			 * called if the page could not be unmapped.
-+			 */
-+			VM_BUG_ON(!migrate->vma);
- 			if (!(migrate->src[i] & MIGRATE_PFN_MIGRATE))
- 				continue;
- 			if (!notified) {
-@@ -794,3 +800,49 @@ void migrate_vma_finalize(struct migrate_vma *migrate)
- 	}
- }
- EXPORT_SYMBOL(migrate_vma_finalize);
-+
-+/*
-+ * Migrate a device coherent page back to normal memory. The caller should have
-+ * a reference on page which will be copied to the new page if migration is
-+ * successful or dropped on failure.
-+ */
-+int migrate_device_coherent_page(struct page *page)
-+{
-+	unsigned long src_pfn, dst_pfn = 0;
-+	struct migrate_vma args;
-+	struct page *dpage;
-+
-+	WARN_ON_ONCE(PageCompound(page));
-+
-+	lock_page(page);
-+	src_pfn = migrate_pfn(page_to_pfn(page)) | MIGRATE_PFN_MIGRATE;
-+	args.src = &src_pfn;
-+	args.dst = &dst_pfn;
-+	args.cpages = 1;
-+	args.npages = 1;
-+	args.vma = NULL;
-+
-+	/*
-+	 * We don't have a VMA and don't need to walk the page tables to find
-+	 * the source page. So call migrate_vma_unmap() directly to unmap the
-+	 * page as migrate_vma_setup() will fail if args.vma == NULL.
-+	 */
-+	migrate_vma_unmap(&args);
-+	if (!(src_pfn & MIGRATE_PFN_MIGRATE))
-+		return -EBUSY;
-+
-+	dpage = alloc_page(GFP_USER | __GFP_NOWARN);
-+	if (dpage) {
-+		lock_page(dpage);
-+		dst_pfn = migrate_pfn(page_to_pfn(dpage));
++	inode_lock_shared(inode);
+ 	/* fallback to generic here if not in extents fmt */
+-	if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)))
+-		return generic_block_fiemap(inode, fieinfo, start, len,
++	if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))) {
++		error = __generic_block_fiemap(inode, fieinfo, start, len,
+ 			ext4_get_block);
++		goto out_unlock;
 +	}
-+
-+	migrate_vma_pages(&args);
-+	if (src_pfn & MIGRATE_PFN_MIGRATE)
-+		copy_highpage(dpage, page);
-+	migrate_vma_finalize(&args);
-+
-+	if (src_pfn & MIGRATE_PFN_MIGRATE)
-+		return 0;
-+	return -EBUSY;
-+}
+ 
+-	if (fiemap_check_flags(fieinfo, EXT4_FIEMAP_FLAGS))
+-		return -EBADR;
++	if (fiemap_check_flags(fieinfo, EXT4_FIEMAP_FLAGS)) {
++		error = -EBADR;
++		goto out_unlock;
++	}
+ 
+ 	if (fieinfo->fi_flags & FIEMAP_FLAG_XATTR) {
+ 		error = ext4_xattr_fiemap(inode, fieinfo);
+@@ -5225,6 +5230,8 @@ int ext4_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+ 		error = ext4_fill_fiemap_extents(inode, start_blk,
+ 						 len_blks, fieinfo);
+ 	}
++out_unlock:
++	inode_unlock_shared(inode);
+ 	return error;
+ }
+ 
 -- 
-2.35.1
+2.31.1
 
