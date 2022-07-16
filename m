@@ -2,115 +2,154 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6210576AD8
-	for <lists+linux-ext4@lfdr.de>; Sat, 16 Jul 2022 01:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC83D576B54
+	for <lists+linux-ext4@lfdr.de>; Sat, 16 Jul 2022 04:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229507AbiGOXwi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 15 Jul 2022 19:52:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41488 "EHLO
+        id S230078AbiGPCdf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 15 Jul 2022 22:33:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbiGOXwh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 15 Jul 2022 19:52:37 -0400
-Received: from smtp-fw-9102.amazon.com (smtp-fw-9102.amazon.com [207.171.184.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EABEC6C117
-        for <linux-ext4@vger.kernel.org>; Fri, 15 Jul 2022 16:52:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1657929156; x=1689465156;
-  h=from:to:cc:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version:subject;
-  bh=12G5vfObsFHYgM2xAW2erNrvONRQKINyfebPIzerN3A=;
-  b=WRTnh0UnVKrLAlFBTb4rXGtO8CRzHwT/MH0cqFHvV5i7NV54WenIjL+F
-   xbui08wiAhEQCSOenj1UWNe6bUFmWibAVT3rEtPpTMjMTk//xql59QoPS
-   TeXDgnV7tewhEcM0hdmwICSvhMIKL0y/aiITidtS+ZzASeOa5onGcIyXf
-   c=;
-X-IronPort-AV: E=Sophos;i="5.92,275,1650931200"; 
-   d="scan'208";a="238950493"
-Subject: Re: [PATCH 1/2] ext4: reduce computation of overhead during resize
-Thread-Topic: [PATCH 1/2] ext4: reduce computation of overhead during resize
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1a-87b71607.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 15 Jul 2022 23:52:35 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-iad-1a-87b71607.us-east-1.amazon.com (Postfix) with ESMTPS id E7C49140FE8;
-        Fri, 15 Jul 2022 23:52:33 +0000 (UTC)
-Received: from EX13D23UWA003.ant.amazon.com (10.43.160.194) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.36; Fri, 15 Jul 2022 23:52:33 +0000
-Received: from EX13D23UWA003.ant.amazon.com (10.43.160.194) by
- EX13D23UWA003.ant.amazon.com (10.43.160.194) with Microsoft SMTP Server (TLS)
- id 15.0.1497.36; Fri, 15 Jul 2022 23:52:32 +0000
-Received: from EX13D23UWA003.ant.amazon.com ([10.43.160.194]) by
- EX13D23UWA003.ant.amazon.com ([10.43.160.194]) with mapi id 15.00.1497.036;
- Fri, 15 Jul 2022 23:52:32 +0000
-From:   "Kiselev, Oleg" <okiselev@amazon.com>
-To:     Jan Kara <jack@suse.cz>
-CC:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>
-Thread-Index: AQHYjCeH91+dMyGz00Kz59z9i8AzhK19+ACAgABmgYCAAONsAIAA72YA
-Date:   Fri, 15 Jul 2022 23:52:32 +0000
-Message-ID: <23CB6B29-F40D-4359-B7E3-85515217D45B@amazon.com>
-References: <D03FEE2D-DCAE-44A7-B0D3-0047808426BB@amazon.com>
- <20220714134645.r4gqax4au5el2pox@quack3>
- <63A35E4E-C7B9-4B2C-BBCC-F43BECDFEA6A@amazon.com>
- <20220715092736.oa2tfcgh5a6dcpnf@quack3>
-In-Reply-To: <20220715092736.oa2tfcgh5a6dcpnf@quack3>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3696.100.31)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.43.160.111]
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <08A746C65FE92C4EBA5B6B9A9BD23E18@amazon.com>
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S229507AbiGPCde (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 15 Jul 2022 22:33:34 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F42618377;
+        Fri, 15 Jul 2022 19:33:33 -0700 (PDT)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4LlBzc6WHpz1M7tN;
+        Sat, 16 Jul 2022 10:30:52 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Sat, 16 Jul 2022 10:33:30 +0800
+Message-ID: <425ab528-7d9a-975a-7f4c-5f903cedd8bc@huawei.com>
+Date:   Sat, 16 Jul 2022 10:33:30 +0800
 MIME-Version: 1.0
-X-Spam-Status: No, score=-15.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: Re: [PATCH 4.19] ext4: fix race condition between ext4_ioctl_setflags
+ and ext4_fiemap
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     <stable@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
+        <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+        <ritesh.list@gmail.com>, <lczerner@redhat.com>,
+        <enwlinux@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>, <yebin10@huawei.com>, <yukuai3@huawei.com>,
+        Hulk Robot <hulkci@huawei.com>,
+        Baokun Li <libaokun1@huawei.com>
+References: <20220715023928.2701166-1-libaokun1@huawei.com>
+ <YtF1XygwvIo2Dwae@kroah.com>
+From:   Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <YtF1XygwvIo2Dwae@kroah.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+在 2022/7/15 22:10, Greg KH 写道:
+> On Fri, Jul 15, 2022 at 10:39:28AM +0800, Baokun Li wrote:
+>> This patch and problem analysis is based on v4.19 LTS.
+>> The d3b6f23f7167("ext4: move ext4_fiemap to use iomap framework") patch
+>> is incorporated in v5.7-rc1. This patch avoids this problem by switching
+>> to iomap in ext4_fiemap.
+>>
+>> Hulk Robot reported a BUG on stable 4.19.252:
+>> ==================================================================
+>> kernel BUG at fs/ext4/extents_status.c:762!
+>> invalid opcode: 0000 [#1] SMP KASAN PTI
+>> CPU: 7 PID: 2845 Comm: syz-executor Not tainted 4.19.252 #46
+>> RIP: 0010:ext4_es_cache_extent+0x30e/0x370
+>> [...]
+>> Call Trace:
+>>   ext4_cache_extents+0x238/0x2f0
+>>   ext4_find_extent+0x785/0xa40
+>>   ext4_fiemap+0x36d/0xe90
+>>   do_vfs_ioctl+0x6af/0x1200
+>> [...]
+>> ==================================================================
+>>
+>> Above issue may happen as follows:
+>> -------------------------------------
+>>             cpu1		    cpu2
+>> _____________________|_____________________
+>> do_vfs_ioctl
+>>   ext4_ioctl
+>>    ext4_ioctl_setflags
+>>     ext4_ind_migrate
+>>                          do_vfs_ioctl
+>>                           ioctl_fiemap
+>>                            ext4_fiemap
+>>                             ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)
+>>                             ext4_fill_fiemap_extents
+>>      down_write(&EXT4_I(inode)->i_data_sem);
+>>      ext4_ext_check_inode
+>>      ext4_clear_inode_flag(inode, EXT4_INODE_EXTENTS)
+>>      memset(ei->i_data, 0, sizeof(ei->i_data))
+>>      up_write(&EXT4_I(inode)->i_data_sem);
+>>                              down_read(&EXT4_I(inode)->i_data_sem);
+>>                              ext4_find_extent
+>>                               ext4_cache_extents
+>>                                ext4_es_cache_extent
+>>                                 BUG_ON(end < lblk)
+>>
+>> We can easily reproduce this problem with the syzkaller testcase:
+>> ```
+>> 02:37:07 executing program 3:
+>> r0 = openat(0xffffffffffffff9c, &(0x7f0000000040)='./file0\x00', 0x26e1, 0x0)
+>> ioctl$FS_IOC_FSSETXATTR(r0, 0x40086602, &(0x7f0000000080)={0x17e})
+>> mkdirat(0xffffffffffffff9c, &(0x7f00000000c0)='./file1\x00', 0x1ff)
+>> r1 = openat(0xffffffffffffff9c, &(0x7f0000000100)='./file1\x00', 0x0, 0x0)
+>> ioctl$FS_IOC_FIEMAP(r1, 0xc020660b, &(0x7f0000000180)={0x0, 0x1, 0x0, 0xef3, 0x6, []}) (async, rerun: 32)
+>> ioctl$FS_IOC_FSSETXATTR(r1, 0x40086602, &(0x7f0000000140)={0x17e}) (rerun: 32)
+>> ```
+>>
+>> To solve this issue, we use __generic_block_fiemap() instead of
+>> generic_block_fiemap() and add inode_lock_shared to avoid race condition.
+>>
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>> ---
+>>   fs/ext4/extents.c | 15 +++++++++++----
+>>   1 file changed, 11 insertions(+), 4 deletions(-)
+> What is the git commit id of this change in Linus's tree?
+>
+> If it is not in Linus's tree, why not?
+>
+> confused,
+>
+> greg k-h
+> .
 
-> On Jul 15, 2022, at 2:27 AM, Jan Kara <jack@suse.cz> wrote:
->=20
-> CAUTION: This email originated from outside of the organization. Do not c=
-lick links or open attachments unless you can confirm the sender and know t=
-he content is safe.
->=20
->=20
->=20
-> On Thu 14-07-22 19:53:38, Kiselev, Oleg wrote:
->>>=20
->>>> +       sbi->s_overhead +=3D overhead;
->>>> +       es->s_overhead_clusters =3D cpu_to_le32((unsigned long) sbi->s=
-_overhead);
->>>                                               ^^^ the typecast looks
->>> bogus here...
->>=20
->> This cast is the reverse of le32_to_cpu() cast done in fs/ext4/super.c:_=
-_ext4_fill_super():
->>        sbi->s_overhead =3D le32_to_cpu(es->s_overhead_clusters);
->> And follows the logic of casting done in fs/ext4/ioctl.c:set_overhead() =
-and fs/ext4/ioctl.c:ext4_update_overhead().
->=20
-> I didn't mean the cpu_to_le32() call but rather the (unsigned long) part.
-> That is pointless because sbi->s_overhead is already 'unsigned long' and
-> even if it was not, I have hard time seeing a reason why would casting to
-> unsigned long make any difference here.
+This patch does not exist in the Linus' tree.
 
-Got it.  You are right.  The indent of your comment got mangled by mail, so=
- it looked like it was directed to cpu_to_ie32()! =20
+This problem persists until the patch d3b6f23f7167("ext4: move 
+ext4_fiemap to use iomap framework") is incorporated in v5.7-rc1.
 
->=20
->                                                                        Ho=
-nza
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+However, this problem can be found by asserting  after patch 
+4068664e3cd2 ("ext4: fix extent_status fragmentation for plain files") 
+is incorporated into v5.6-rc1.
+
+If someone don't want to convert ext4_fiemap to iomap, this patch may help.
+
+I also CC linux-ext4 in hopes of getting some advice.
+
+Feel free to improve it if something wrong.
+
+Thanks a lot!
+
+-- 
+With Best Regards,
+Baokun Li
+
+
+
 
