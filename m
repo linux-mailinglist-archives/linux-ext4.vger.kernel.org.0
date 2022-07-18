@@ -2,65 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F183E578028
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 Jul 2022 12:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2468B57802F
+	for <lists+linux-ext4@lfdr.de>; Mon, 18 Jul 2022 12:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233633AbiGRKuj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 18 Jul 2022 06:50:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56976 "EHLO
+        id S233969AbiGRKva (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 18 Jul 2022 06:51:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232964AbiGRKuj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Jul 2022 06:50:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6BB561EC60
-        for <linux-ext4@vger.kernel.org>; Mon, 18 Jul 2022 03:50:38 -0700 (PDT)
+        with ESMTP id S233202AbiGRKv2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Jul 2022 06:51:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D21F01FCE7
+        for <linux-ext4@vger.kernel.org>; Mon, 18 Jul 2022 03:51:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1658141437;
+        s=mimecast20190719; t=1658141487;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GELRdaJJQzNGu42HwXNvH14oS2HiNBL5HZCcGuN9ch4=;
-        b=HjG6XownoJIGB9yL6tcxVNkAa/mj2slwD0GF7RDg/AuUCHbonqGSa2lOjrE+zjMWPtGF6Q
-        Qa29JmKrw2P5FI7C/1MpwoMDYvkhLON6GVhNDSmAV5LnuB5L62GdiN5RQjwcmGNDU5uXH8
-        OSJAY1w7tQ2bbxrNdeVKxL0TI7sInQM=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=QQ3EHE5Y/uXmTBk59WY/sBfkyYOaAyrJ99vyQlUJOsY=;
+        b=KtnHMQ45H6fUTApqJwQks4id7VGvoA60j+53ASM+EkgRLuiDz+S/mgikM2b2Jifu72jhmU
+        WKTSPM3Vg+PYvCqgxkwJ2M0NSZvfQCB3uwVG3eB3UK7TO8sygSGBDC14khGRFGLC3GLQhe
+        egm5yHoMlfMTr3t+MBDGvflqEHJfbvk=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-552-sc5QaOFvMYaFwZKTlHLysA-1; Mon, 18 Jul 2022 06:50:36 -0400
-X-MC-Unique: sc5QaOFvMYaFwZKTlHLysA-1
-Received: by mail-wm1-f71.google.com with SMTP id a18-20020a05600c225200b003a30355c0feso3810330wmm.6
-        for <linux-ext4@vger.kernel.org>; Mon, 18 Jul 2022 03:50:36 -0700 (PDT)
+ us-mta-517-n8whcaIePbWy9vZj_3FoqQ-1; Mon, 18 Jul 2022 06:51:25 -0400
+X-MC-Unique: n8whcaIePbWy9vZj_3FoqQ-1
+Received: by mail-wm1-f70.google.com with SMTP id k27-20020a05600c1c9b00b003a2fee19a80so7508073wms.1
+        for <linux-ext4@vger.kernel.org>; Mon, 18 Jul 2022 03:51:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:organization:in-reply-to
          :content-transfer-encoding;
-        bh=GELRdaJJQzNGu42HwXNvH14oS2HiNBL5HZCcGuN9ch4=;
-        b=a0A2LwdWjc9dIszQehULZjDXr4A3aGBNRzd1wYe11IxA2y/WxIOnfWsBkd4Dpoo1cI
-         pUXG0OQIemYZbppv7a7DbOLzFtU5tbv79/nv7DTLPuXKEk6Wg/7+ieMndTlllYiWMF62
-         DpwXCoZ+rLQ5qRKGE6LhAKk0tES7pxeNZb9y2rdO958TgIY3yGcIdPgy3nnS8NPc17BO
-         8kc5gtPFdSMuHlWyOuE/oE0jkzOS+yvAuRBLNK9zbddmuDJATZhmQ+yWDq1Nb5HYltC3
-         K97zKLMzLi/nLVVmb0yx8F49m1cBETAE6N8/vbF0zGNdM4hxx2pGlm3Tpy0GSWw1XiB5
-         5mKA==
-X-Gm-Message-State: AJIora8sQ65JtkfQwz2/RjiDxo+/jdQuJe8dCASE9sTwR5Ogh1Q/hGQS
-        s0IWMH7wCJFynS+GmEzUuy6oVhMHNzPtMbEcxEp9cGyNMzj6HVaTp8gQ3FJ1oIBBDMfm8NNaxhE
-        5QDtclfJ4uMDXYF08kLiKFg==
-X-Received: by 2002:a05:600c:4f43:b0:3a2:ee79:2dd5 with SMTP id m3-20020a05600c4f4300b003a2ee792dd5mr25587638wmq.143.1658141435075;
-        Mon, 18 Jul 2022 03:50:35 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1t3TjHUzmOv6ybcclnybN9UPY7Bi+An5DlmuQSPxVe4SOYbaL5tYKsRuXtw0aDU3ti4mHhI6A==
-X-Received: by 2002:a05:600c:4f43:b0:3a2:ee79:2dd5 with SMTP id m3-20020a05600c4f4300b003a2ee792dd5mr25587621wmq.143.1658141434838;
-        Mon, 18 Jul 2022 03:50:34 -0700 (PDT)
+        bh=QQ3EHE5Y/uXmTBk59WY/sBfkyYOaAyrJ99vyQlUJOsY=;
+        b=V2IOA2BnQtyk27R9Ol9XTPIzTAEjhXGIppRg9VfoBRsKTn5zCrUF1Dq3tsuL8QOJwo
+         ywXwliQUfqSlAzGvWnQ47+u5NwuKRLkQ7qZKCRwqTdrn9Vh2Mv9PTGvRpBDOhQ3YyYf7
+         TjwzcjUkN/RK8H/mTFTX2BxEbQLc7swTirRGAAv/fSPEAl8PQzMqeKZ4LrJTSwYbvly5
+         +UD9RVLFzbYEbr57yL3ox92gHmMNxHFdUsUPBH/0PBUkBZwl2o1GUxRaCi9hhstnL/K0
+         +C/bgOitxXLDRFbPAxRbGpmySV6qMIDSmaFKbwbE3U4Nwrpfi/LTdOvgfPcQQpwJfW67
+         Zr8g==
+X-Gm-Message-State: AJIora/uBQ8tOLdWFqh/hdFJKeoDudPBVzvcV4cvn5cX5Fk6X/wyOyPv
+        NvQExt09XyvXT2nDrpLEUNMqLtHYHIItFcE1B9lCqq4/2FNaQM22P0nTgnJRkbdns3KHgCcoWJh
+        mNVM7b6kkLTJNo5Dfc0c86A==
+X-Received: by 2002:adf:f905:0:b0:21d:f460:1acf with SMTP id b5-20020adff905000000b0021df4601acfmr7759756wrr.108.1658141484510;
+        Mon, 18 Jul 2022 03:51:24 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1vOXS/jyYuLht99baWDw+JXGFOCaonutnGNWmhXXtQ2efKyLTqtTuwadUZoGMqOmdhX/IMMMw==
+X-Received: by 2002:adf:f905:0:b0:21d:f460:1acf with SMTP id b5-20020adff905000000b0021df4601acfmr7759740wrr.108.1658141484280;
+        Mon, 18 Jul 2022 03:51:24 -0700 (PDT)
 Received: from ?IPV6:2003:cb:c705:7400:6b3a:a74a:bd53:a018? (p200300cbc70574006b3aa74abd53a018.dip0.t-ipconnect.de. [2003:cb:c705:7400:6b3a:a74a:bd53:a018])
-        by smtp.gmail.com with ESMTPSA id d5-20020a5d6445000000b0021bae66362esm10526543wrw.58.2022.07.18.03.50.33
+        by smtp.gmail.com with ESMTPSA id z11-20020a05600c0a0b00b003a033177655sm21076465wmp.29.2022.07.18.03.51.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jul 2022 03:50:34 -0700 (PDT)
-Message-ID: <12b40848-2e38-df0b-8300-0d338315e9b2@redhat.com>
-Date:   Mon, 18 Jul 2022 12:50:33 +0200
+        Mon, 18 Jul 2022 03:51:23 -0700 (PDT)
+Message-ID: <95b3c8f3-2e4d-fa2f-1552-580236eea485@redhat.com>
+Date:   Mon, 18 Jul 2022 12:51:23 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
-Subject: Re: [PATCH v9 02/14] mm: move page zone helpers from mm.h to mmzone.h
+Subject: Re: [PATCH v9 04/14] mm: handling Non-LRU pages returned by
+ vm_normal_pages
 Content-Language: en-US
 To:     Alex Sierra <alex.sierra@amd.com>, jgg@nvidia.com
 Cc:     Felix.Kuehling@amd.com, linux-mm@kvack.org, rcampbell@nvidia.com,
@@ -69,15 +70,15 @@ Cc:     Felix.Kuehling@amd.com, linux-mm@kvack.org, rcampbell@nvidia.com,
         hch@lst.de, jglisse@redhat.com, apopple@nvidia.com,
         willy@infradead.org, akpm@linux-foundation.org
 References: <20220715150521.18165-1-alex.sierra@amd.com>
- <20220715150521.18165-3-alex.sierra@amd.com>
+ <20220715150521.18165-5-alex.sierra@amd.com>
 From:   David Hildenbrand <david@redhat.com>
 Organization: Red Hat
-In-Reply-To: <20220715150521.18165-3-alex.sierra@amd.com>
+In-Reply-To: <20220715150521.18165-5-alex.sierra@amd.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,14 +87,21 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 On 15.07.22 17:05, Alex Sierra wrote:
-> [WHY]
-> It makes more sense to have these helpers in zone specific header
-> file, rather than the generic mm.h
+> With DEVICE_COHERENT, we'll soon have vm_normal_pages() return
+> device-managed anonymous pages that are not LRU pages. Although they
+> behave like normal pages for purposes of mapping in CPU page, and for
+> COW. They do not support LRU lists, NUMA migration or THP.
+> 
+> Callers to follow_page() currently don't expect ZONE_DEVICE pages,
+> however, with DEVICE_COHERENT we might now return ZONE_DEVICE. Check
+> for ZONE_DEVICE pages in applicable users of follow_page() as well.
 > 
 > Signed-off-by: Alex Sierra <alex.sierra@amd.com>
+> Acked-by: Felix Kuehling <Felix.Kuehling@amd.com> (v2)
+> Reviewed-by: Alistair Popple <apopple@nvidia.com> (v6)
+>
 
 Acked-by: David Hildenbrand <david@redhat.com>
-
 
 -- 
 Thanks,
