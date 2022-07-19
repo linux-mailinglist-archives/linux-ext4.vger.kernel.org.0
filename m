@@ -2,76 +2,79 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E0857A11A
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Jul 2022 16:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C450E57A147
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Jul 2022 16:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238889AbiGSOSY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Jul 2022 10:18:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59940 "EHLO
+        id S238289AbiGSOXP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Jul 2022 10:23:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238209AbiGSOSF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Jul 2022 10:18:05 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C11823BC;
-        Tue, 19 Jul 2022 06:51:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D08D5B81B8D;
-        Tue, 19 Jul 2022 13:51:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6C4FC341CB;
-        Tue, 19 Jul 2022 13:51:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658238695;
-        bh=QeJAInDIAJS0bLSuxg3SAOrNlCEwmo7FtjC5iNw55Cc=;
-        h=Subject:From:To:Cc:Date:From;
-        b=NByfDd0VTuQejMs7cFfZb+YnuLYZqh4cuTBui2YfKAyY+Fsd5qoN17Ay19jQ/fEXb
-         ZmwvYlspN8yOA7rMIj5mJ60bcqyq13tUPv6IDGFyFlYuWm3vHOj7CtUsyi9QSXnwX/
-         LZlGZ96Ehol1ZsCKhVD7frWZRwkroJAQ4W4SlfRMHpMqhvAiHqP4RFAodFsYDERVUE
-         7BAqL4HEzPVWcN67poka6etAJ9isBl2E4LmLlOkByN8EjQqlp2EPsYfY8BdsDB2HX8
-         is76RIwC4u+kM52uqkYur4ztvuxb7nUarUmU7rcmwcNqLZXLV5TFKdT2VER1gs1yw2
-         JX4TR3/7HIufg==
-Message-ID: <69ac1d3ef0f63b309204a570ef4922d2684ed7f9.camel@kernel.org>
-Subject: should we make "-o iversion" the default on ext4 ?
-From:   Jeff Layton <jlayton@kernel.org>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        lczerner@redhat.com, Benjamin Coddington <bcodding@redhat.com>
-Date:   Tue, 19 Jul 2022 09:51:33 -0400
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.3 (3.44.3-1.fc36) 
+        with ESMTP id S238340AbiGSOW7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Jul 2022 10:22:59 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 980FB48C94;
+        Tue, 19 Jul 2022 07:06:32 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-118-63.bstnma.fios.verizon.net [173.48.118.63])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 26JE64Hc032665
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Jul 2022 10:06:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1658239567; bh=pFRhtD0UYXegEYar/cYUoYiQFDVavLLZf/TJ5SxzjKk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=pyGsb0Tfd4JJA+w/5eG0B95/9hfD4SG6u4KsBEoSxCrMF0ybcPQrYIlylp7JLQlYv
+         nP09zeoD07k7y4ujU+gT4zDxYrZV1IKtksbIsKMLv4J4tU5fabUfLQ8sU0BVlYw/sV
+         O1sUlDX3YQkCcrRw/3ijBTgaZJSMRemagBBWv+6WE+iSYQwAs1/96nmr6V6Fk/wT2t
+         XAZ5g7SaN+/h5WNxMFrzGebpflAFrD1nkxO7ghfHUQpp74Nw6TFtpJ4tXaPIHjCkxH
+         LSRSYPAoou8dJ1SqJOSiVyLm3/PWASj7OxHp/CqegeG3nlc93wQHxAuSz13m3GXF5o
+         CiaLe4ypKE2mw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 7BEB815C00E4; Tue, 19 Jul 2022 10:06:04 -0400 (EDT)
+Date:   Tue, 19 Jul 2022 10:06:04 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Baokun Li <libaokun1@huawei.com>, stable@vger.kernel.org,
+        linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
+        ritesh.list@gmail.com, lczerner@redhat.com, enwlinux@gmail.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yebin10@huawei.com, yukuai3@huawei.com,
+        Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH 4.19] ext4: fix race condition between
+ ext4_ioctl_setflags and ext4_fiemap
+Message-ID: <Yta6THyDwHulhfi5@mit.edu>
+References: <20220715023928.2701166-1-libaokun1@huawei.com>
+ <YtF1XygwvIo2Dwae@kroah.com>
+ <425ab528-7d9a-975a-7f4c-5f903cedd8bc@huawei.com>
+ <YtaVAWMlxrQNcS34@kroah.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YtaVAWMlxrQNcS34@kroah.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Back in 2018, I did a patchset [1] to rework the inode->i_version
-counter handling to be much less expensive, particularly when no-one is
-querying for it.
+On Tue, Jul 19, 2022 at 01:26:57PM +0200, Greg KH wrote:
+> On Sat, Jul 16, 2022 at 10:33:30AM +0800, Baokun Li wrote:
+> > This problem persists until the patch d3b6f23f7167("ext4: move ext4_fiemap
+> > to use iomap framework") is incorporated in v5.7-rc1.
+> 
+> Then why not ask for that change to be added instead?
 
-Testing at the time showed that the cost of enabling i_version on ext4
-was close to 0 when nothing is querying it, but I stopped short of
-trying to make it the default at the time (mostly out of an abundance of
-caution). Since then, we still see a steady stream of cache-coherency
-problems with NFSv4 on ext4 when this option is disabled (e.g. [2]).
+Switching over to use the iomap framework is a quite invasive change,
+which is fraught with danager and potential performance regressions.
+So it's really not something that would be considered safe for an LTS
+kernel.
 
-Is it time to go ahead and make this option the default on ext4? I don't
-see a real downside to doing so, though I'm unclear on how we should
-approach this. Currently the option is twiddled using MS_I_VERSION flag,
-and it's unclear to me how we can reverse the sense of such a flag.
+As an upstream developer I'd ask why are people trying to use a kernel
+as old as 4.19, but RHEL has done more insane things than that.  Also,
+I know what the answer is, and it's just too depressing for a nice
+summer day like this.  :-)
 
-Thoughts?
-
-[1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/com=
-mit/?id=3Da4b7fd7d34de5765dece2dd08060d2e1f7be3b39
-[2]: https://bugzilla.redhat.com/show_bug.cgi?id=3D2107587
-
---=20
-Jeff Layton <jlayton@kernel.org>
+       	  	    	     	       - Ted
