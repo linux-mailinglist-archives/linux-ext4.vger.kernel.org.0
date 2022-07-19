@@ -2,165 +2,141 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F3E579F94
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Jul 2022 15:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A49CA579FC6
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Jul 2022 15:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237520AbiGSN0j (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Jul 2022 09:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55734 "EHLO
+        id S238402AbiGSNg0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Jul 2022 09:36:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237477AbiGSN02 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Jul 2022 09:26:28 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4456FD8126;
-        Tue, 19 Jul 2022 05:42:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D5562B81B29;
-        Tue, 19 Jul 2022 12:42:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC2B0C341C6;
-        Tue, 19 Jul 2022 12:42:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1658234523;
-        bh=6dQmBIkrc9O8Sm5HFnAjLAH6QQP59ojwGuIzKpNYx4Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zI22xcAZGR1yt20Zri4/DwWeKPMu0qNTVL1ixAWASobCz555vTgO+5cfBz6h9VFKj
-         kj+TqhsE99D469y2cEQyUnEQe1s9wLC+TK3P2ap2J4pJHNlXTPbwUtgnRNoPwcGOgl
-         j7bbTH2w83ENv19t0RU/eB1TlcDo9gj1toQyO/zc=
-Date:   Tue, 19 Jul 2022 14:25:18 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     stable@vger.kernel.org, linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
-        lczerner@redhat.com, enwlinux@gmail.com,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yebin10@huawei.com, yukuai3@huawei.com,
-        Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH 4.19] ext4: fix race condition between
- ext4_ioctl_setflags and ext4_fiemap
-Message-ID: <YtairkXvrX6IZfrR@kroah.com>
-References: <20220715023928.2701166-1-libaokun1@huawei.com>
- <YtF1XygwvIo2Dwae@kroah.com>
- <425ab528-7d9a-975a-7f4c-5f903cedd8bc@huawei.com>
- <YtaVAWMlxrQNcS34@kroah.com>
- <ffb13c36-521e-0e06-8fd6-30b0fec727da@huawei.com>
+        with ESMTP id S238385AbiGSNgP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Jul 2022 09:36:15 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D4A659258;
+        Tue, 19 Jul 2022 05:51:05 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-118-63.bstnma.fios.verizon.net [173.48.118.63])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 26JCoxkA026760
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Jul 2022 08:50:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1658235060; bh=GYUat2R3yPsKAwD3MsZ21EEQ34Qz8Au2by9MurkA7ho=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=PLRkMVjqwkoWFTm133zDvtIVBqWVOYV4UaWYxvQgoXaGBoWsLmDOQigtbCdr+EoqP
+         Uxq2XnUIUtOPnlvojjR+V5zEiX2KxvtHXqNUy8m229654By36Awiim4FPH5Q+N5ono
+         nsJRfuH/7SulBrAfuDi47NjEt8Pc5Ahf5tlWHQvfRSkh3WUqntVabgrNN5PEx4OqSw
+         AbRupZMEgbV8cFRJcu2knodKUTLugoOJO/5jeQGO0mo8Z63sEonMB3kteAxDenks7H
+         9zUuh4vId9ylQ4Cb76vHKAb+Ool2g7njEUG/kUouCcx1aOcnVRvXzf9IFkaTOUoydu
+         /VxsaisIclSQw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id C2DDC15C00E4; Tue, 19 Jul 2022 08:50:58 -0400 (EDT)
+Date:   Tue, 19 Jul 2022 08:50:58 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Jeremy Bongio <bongiojp@gmail.com>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH v3] Add ioctls to get/set the ext4 superblock uuid.
+Message-ID: <YtaosutXNdSvgwvP@mit.edu>
+References: <20220719065551.154132-1-bongiojp@gmail.com>
+ <CAK8P3a17LZNXDW9r3ixfMg_c-vtqqT51MCLEsyF4Loh8VfDw7w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ffb13c36-521e-0e06-8fd6-30b0fec727da@huawei.com>
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAK8P3a17LZNXDW9r3ixfMg_c-vtqqT51MCLEsyF4Loh8VfDw7w@mail.gmail.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jul 19, 2022 at 08:15:13PM +0800, Baokun Li wrote:
-> 在 2022/7/19 19:26, Greg KH 写道:
-> > On Sat, Jul 16, 2022 at 10:33:30AM +0800, Baokun Li wrote:
-> > > 在 2022/7/15 22:10, Greg KH 写道:
-> > > > On Fri, Jul 15, 2022 at 10:39:28AM +0800, Baokun Li wrote:
-> > > > > This patch and problem analysis is based on v4.19 LTS.
-> > > > > The d3b6f23f7167("ext4: move ext4_fiemap to use iomap framework") patch
-> > > > > is incorporated in v5.7-rc1. This patch avoids this problem by switching
-> > > > > to iomap in ext4_fiemap.
-> > > > > 
-> > > > > Hulk Robot reported a BUG on stable 4.19.252:
-> > > > > ==================================================================
-> > > > > kernel BUG at fs/ext4/extents_status.c:762!
-> > > > > invalid opcode: 0000 [#1] SMP KASAN PTI
-> > > > > CPU: 7 PID: 2845 Comm: syz-executor Not tainted 4.19.252 #46
-> > > > > RIP: 0010:ext4_es_cache_extent+0x30e/0x370
-> > > > > [...]
-> > > > > Call Trace:
-> > > > >    ext4_cache_extents+0x238/0x2f0
-> > > > >    ext4_find_extent+0x785/0xa40
-> > > > >    ext4_fiemap+0x36d/0xe90
-> > > > >    do_vfs_ioctl+0x6af/0x1200
-> > > > > [...]
-> > > > > ==================================================================
-> > > > > 
-> > > > > Above issue may happen as follows:
-> > > > > -------------------------------------
-> > > > >              cpu1		    cpu2
-> > > > > _____________________|_____________________
-> > > > > do_vfs_ioctl
-> > > > >    ext4_ioctl
-> > > > >     ext4_ioctl_setflags
-> > > > >      ext4_ind_migrate
-> > > > >                           do_vfs_ioctl
-> > > > >                            ioctl_fiemap
-> > > > >                             ext4_fiemap
-> > > > >                              ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)
-> > > > >                              ext4_fill_fiemap_extents
-> > > > >       down_write(&EXT4_I(inode)->i_data_sem);
-> > > > >       ext4_ext_check_inode
-> > > > >       ext4_clear_inode_flag(inode, EXT4_INODE_EXTENTS)
-> > > > >       memset(ei->i_data, 0, sizeof(ei->i_data))
-> > > > >       up_write(&EXT4_I(inode)->i_data_sem);
-> > > > >                               down_read(&EXT4_I(inode)->i_data_sem);
-> > > > >                               ext4_find_extent
-> > > > >                                ext4_cache_extents
-> > > > >                                 ext4_es_cache_extent
-> > > > >                                  BUG_ON(end < lblk)
-> > > > > 
-> > > > > We can easily reproduce this problem with the syzkaller testcase:
-> > > > > ```
-> > > > > 02:37:07 executing program 3:
-> > > > > r0 = openat(0xffffffffffffff9c, &(0x7f0000000040)='./file0\x00', 0x26e1, 0x0)
-> > > > > ioctl$FS_IOC_FSSETXATTR(r0, 0x40086602, &(0x7f0000000080)={0x17e})
-> > > > > mkdirat(0xffffffffffffff9c, &(0x7f00000000c0)='./file1\x00', 0x1ff)
-> > > > > r1 = openat(0xffffffffffffff9c, &(0x7f0000000100)='./file1\x00', 0x0, 0x0)
-> > > > > ioctl$FS_IOC_FIEMAP(r1, 0xc020660b, &(0x7f0000000180)={0x0, 0x1, 0x0, 0xef3, 0x6, []}) (async, rerun: 32)
-> > > > > ioctl$FS_IOC_FSSETXATTR(r1, 0x40086602, &(0x7f0000000140)={0x17e}) (rerun: 32)
-> > > > > ```
-> > > > > 
-> > > > > To solve this issue, we use __generic_block_fiemap() instead of
-> > > > > generic_block_fiemap() and add inode_lock_shared to avoid race condition.
-> > > > > 
-> > > > > Reported-by: Hulk Robot <hulkci@huawei.com>
-> > > > > Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> > > > > ---
-> > > > >    fs/ext4/extents.c | 15 +++++++++++----
-> > > > >    1 file changed, 11 insertions(+), 4 deletions(-)
-> > > > What is the git commit id of this change in Linus's tree?
-> > > > 
-> > > > If it is not in Linus's tree, why not?
-> > > > 
-> > > > confused,
-> > > > 
-> > > > greg k-h
-> > > > .
-> > > This patch does not exist in the Linus' tree.
-> > > 
-> > > This problem persists until the patch d3b6f23f7167("ext4: move ext4_fiemap
-> > > to use iomap framework") is incorporated in v5.7-rc1.
-> > Then why not ask for that change to be added instead?
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > .
+On Tue, Jul 19, 2022 at 09:30:23AM +0200, Arnd Bergmann wrote:
+> On Tue, Jul 19, 2022 at 8:55 AM Jeremy Bongio <bongiojp@gmail.com> wrote:
+> > This pair of ioctls may be implemented in more filesystems in the future,
+> > namely XFS.
+> >
 > 
-> If we want to switch to the iomap framework, we need to analyze and
-> integrate about 60 patches.
+> > +++ b/fs/ext4/ext4.h
+> > @@ -724,6 +724,8 @@ enum {
+> > +#define EXT4_IOC_GETFSUUID             _IOR('f', 44, struct fsuuid)
+> > +#define EXT4_IOC_SETFSUUID             _IOW('f', 44, struct fsuuid)
 > 
-> The workload may be greater than that of solving this problem alone.
+> The implementation looks good to me, but maybe it should be defined in
+> the UAPI headers in a filesystem-independent way? Having it in a private
+> header means it will not be available to portable user programs, and will
+> be hidden from tools like strace that parse the uapi headers to find
+> ioctl definitions.
 
-95% of the time we take a patch that is not in Linus's tree, it is buggy
-and causes problems in the long run.  See what those 60 patches really
-require and if this issue really does need all of that.
+The plan is that when another file system implements it, we'll promote
+this to be a include/uapi/linux/fs.h.  For e2fsprogs, we've always
+hard-coded the ioctl definitions as a default, because we don't want
+to be tied to having the correct version for the kernel header files
+--- I consider it important that there aren't variences in what kind
+of functionality you get if you build e2fsprogs on RHEL vs Fedora vs
+Debian Stable.  And at least initially, the primary consumer of the
+ioctl will be tune2fs.
 
-Or better yet, take the effort here and move off of 4.19 to a newer
-kernel without this problem in it.  What is preventing you from doing
-that today?  4.19 is not going to be around for forever, and will
-probably not even be getting fixes for stuff like RETBLEED, so are you
-_SURE_ you want to keep using it?
+As to why we define things first in the file system header, part of
+this is due to some interesting dynamics around bike-shedding.  It is
+perceived that there are times when the bike-shed brigade comes up in
+full force, giving conflicting demands, and generally preventing
+forward progress, and so one of the reasons why file system developers
+often want to define things first a file-system dependent way is as a
+safety value so that we can blow past "unreasonable" demands.  This
+recently came up in a LSF/MM discussion where Kent Overstreet proposed
+a new "ioctl" mechanism which promised that all ioctls would go
+through the full strict syscall ABI review and that there be no way to
+bypass it --- and in his view, this was considered a feature, and not
+a bug.  Interestingly, after this LSF/MM discussion, a certain major
+file system maintainer (not myself) stated in a hallway coversation
+that due to unreasonable bike-sheeding, he was planning on bypassing
+the whole review process and just defining in an fs-dependent ioctl in
+an fs-specific header file because he was so f***** frustrated by the
+process.
 
-thanks,
+Of course, for every unreasonable bike-shedding, there are cases like
+the dedup ioctl which has recently observed that the interface was
+terrible, and it *should* have gone through more careful review before
+making it be a user-visible interface that multiple file systems now
+have to deal with.
 
-greg k-h
+At this point, my personal "Via Media" approach to this is to send the
+patches for full review to all of the usual places, so we *can* get
+the benefits of interfave review.  However, if things go pear-shaped,
+since the ioctl's are defined as fs-specific I can pull the "I'm the
+XXX fs maintainer" card, and just include it in my next pull request
+to Linus.
+
+If ioctl has a reasonable interface, then other file system
+maintainers can choose to adopt it, at which point we promote it to be
+an fs-independent ioctl.  Or maybe they'll define their own
+fs-depedent ioctl, and we iterate in that way, using a market-forces
+dynamics ala how we have independent Linux distributions which compete
+with one another to provide a better use experience, as opposed to a
+single One True Userspace under the authority of the NetBSD or FreeBSD
+core team.
+
+It's not a perfect mechanism, but given that we don't have something
+like an Architectural Review Board with appeals up to some management
+chain if said ARB becomes obstructive (which is how things might work
+in a corporate environment), it's the best approach I've been able to
+come up with.
+
+						- Ted
+
+P.S.  BTW, this isn't a problem which is unique to system calls, but
+new file system icotls seem to be defined much more often than system
+calls.  Whether that's because we naturally need many more of these
+interfaces, many of which are used by primarily by the XXX-fsprogs
+utilities, or because it's an escape hatch when the system call review
+process is perceived, correctly, or incorrectly, in too heavy-weight
+and prone to bike-shedding, is certainly a debatable point.  But
+perhaps this is more of a Maintainer's Summit topic, although I don't
+think there really is a good solution other than "sometimes, someone
+in a position of power, whether it's Linus or a fs maintainer, has to
+be able to use an escape hatch when the process goes sideways.
