@@ -2,82 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D0957A6BA
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Jul 2022 20:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4603057A6D8
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Jul 2022 20:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbiGSStb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Jul 2022 14:49:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44936 "EHLO
+        id S235219AbiGSS6F (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Jul 2022 14:58:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237103AbiGSSta (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Jul 2022 14:49:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 109AA564C2;
-        Tue, 19 Jul 2022 11:49:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9C7BA61639;
-        Tue, 19 Jul 2022 18:49:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE970C341C6;
-        Tue, 19 Jul 2022 18:49:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658256568;
-        bh=/K91o+qKLCbtKDi3/tG73ZWIzxIa2IRxn4bwgg8SU6s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TsFKLx4sa6WI7xRr8hTRSHdiETDX2u3xEXj/tlEC+1Mu31zXJrvYI9xURGhNqpvv9
-         Xw5+dYbEKmi3mHt6FnWaQjGenneQUuX/FaRUs10zZ81E+9Jerlw+s9wJ0+Ajm/ra14
-         5aJMLLJs7mEPG03TE9mbq4q9RQy+Ua/jQ6IeRIqDpdZ3l37548dMP/JJKn4eapN21r
-         gk900x3bkTn5tkq9RZghLYoJ3Xh1rP2qIWVmhtwpA77VS5HuTiLxV/xiGroLDuWidY
-         CZxany2wmb4+hrU1m+Jc0SClz/Dv39lFIVoaPIPexo8HhhCRJEbmqteDXodOOeOxeE
-         12Nwjs9wLN4RA==
-Date:   Tue, 19 Jul 2022 11:49:27 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH 0/2] ext4, f2fs: stop using PG_error for fscrypt and
- fsverity
-Message-ID: <Ytb8typAESKplJAN@sol.localdomain>
-References: <20220627065050.274716-1-ebiggers@kernel.org>
+        with ESMTP id S232034AbiGSS6B (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Jul 2022 14:58:01 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F5F371A7;
+        Tue, 19 Jul 2022 11:57:58 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-118-63.bstnma.fios.verizon.net [173.48.118.63])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 26JIvIO3024559
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Jul 2022 14:57:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1658257041; bh=BIjtyFIgMPnChoE7vwY9XWlVWzUjFB9JtmI293znBvw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=E4xS15bHFDIay7XDBxKgPt+kzSB6T2hLWBbV8afitS4YkEkBwTWZM/wvXJ05JPEal
+         AKRPosIRGIcP7M4GY4jHxEmF8OIcUmFhQWPrk2bM740qic4yxE3Gdj9rCrCSrriRE5
+         xTVLL4VSZGJ5RzEHxkDFwj4PiEiVw168lRaHjmRyOu3TriXFe+UC8XyW7dJIYVcjnG
+         wSO1H3JvTH6eKZnd3mRQa0iK6X4GzbkHWLzsTYOtYgVwBIOOlU+nCEdItmbA/UQUhS
+         uWTnXK7UNs+I9G5aa6Mvu9Yxe8MKNJP7qxkBnHD9vfvDnc93E62JdFXmW9NH3IvnsC
+         s1yvW5za9VSvg==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id A79AE15C00E4; Tue, 19 Jul 2022 14:57:18 -0400 (EDT)
+Date:   Tue, 19 Jul 2022 14:57:18 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Baokun Li <libaokun1@huawei.com>, stable@vger.kernel.org,
+        linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
+        ritesh.list@gmail.com, lczerner@redhat.com, enwlinux@gmail.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yebin10@huawei.com, yukuai3@huawei.com,
+        Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH 4.19] ext4: fix race condition between
+ ext4_ioctl_setflags and ext4_fiemap
+Message-ID: <Ytb+ji56S/de/5Rm@mit.edu>
+References: <20220715023928.2701166-1-libaokun1@huawei.com>
+ <YtF1XygwvIo2Dwae@kroah.com>
+ <425ab528-7d9a-975a-7f4c-5f903cedd8bc@huawei.com>
+ <YtaVAWMlxrQNcS34@kroah.com>
+ <ffb13c36-521e-0e06-8fd6-30b0fec727da@huawei.com>
+ <YtairkXvrX6IZfrR@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220627065050.274716-1-ebiggers@kernel.org>
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <YtairkXvrX6IZfrR@kroah.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, Jun 26, 2022 at 11:50:48PM -0700, Eric Biggers wrote:
-> This series changes ext4 and f2fs to stop using PG_error to track
-> decryption and verity errors.  This is a step towards freeing up
-> PG_error for other uses, as discussed at
-> https://lore.kernel.org/linux-fsdevel/Yn10Iz1mJX1Mu1rv@casper.infradead.org
+On Tue, Jul 19, 2022 at 02:25:18PM +0200, Greg KH wrote:
 > 
-> Note: due to the interdependencies with fs/crypto/ and fs/verity/, I
-> couldn't split this up into separate patches for each filesystem.
-> 
-> Eric Biggers (2):
->   fscrypt: stop using PG_error to track error status
->   fsverity: stop using PG_error to track error status
-> 
->  fs/crypto/bio.c         | 16 +++++++----
->  fs/ext4/readpage.c      | 16 +++++------
->  fs/f2fs/compress.c      | 61 ++++++++++++++++++++---------------------
->  fs/f2fs/data.c          | 60 +++++++++++++++++++++-------------------
->  fs/verity/verify.c      | 12 ++++----
->  include/linux/fscrypt.h |  5 ++--
->  6 files changed, 88 insertions(+), 82 deletions(-)
-> 
-> 
-> base-commit: 0840a7914caa14315a3191178a9f72c742477860
+> 95% of the time we take a patch that is not in Linus's tree, it is buggy
+> and causes problems in the long run.
 
-Any thoughts on this patchset from anyone?
+So if we really want a 4.19 LTS specific patch, I'd be OK with signing
+off on it from an ext4 perspective.... IF AND ONLY IF someone is
+willing to tell me that they ran "kvm-xfstests -c ext4/all -g auto" or
+the equivalent before and after applying the patch, and is willing to
+certify that there are no test regressions.
 
-- Eric
+Helpful links:
+
+  * https://thunk.org/gce-xfstests
+  * https://thunk.org/android-xfstests
+  * Documentation links from https://github.com/tytso/xfstests-bld
+      * https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-quickstart.md
+      * https://github.com/tytso/xfstests-bld/blob/master/Documentation/gce-xfstests.md
+
+(Note that running "-c ext4/all -g auto" will take some 12+ hours if
+the tests are run serially, which is why using gce-xfstests's
+lightweight test manager to run the file system test configurations in
+parallel is a big win.)
+
+> Or better yet, take the effort here and move off of 4.19 to a newer
+> kernel without this problem in it.  What is preventing you from doing
+> that today?  4.19 is not going to be around for forever, and will
+> probably not even be getting fixes for stuff like RETBLEED, so are you
+> _SURE_ you want to keep using it?
+
+Or yeah, maybe it's better/cheaper/time for you to move off of 4.19.  :-)
+
+   	       	    	    	       - Ted
+
+P.S.  If we go down this path, Greg K-H may also insist on getting the
+bug fix to the 5.4 LTS kernel, so that a bug isn't just fixed in 4.19
+LTS but not 5.4 LTS.  In which case, the same requirement of running
+"-c ext4/all -g auto" and showing that there are no test regressions
+is going to be a requirement for 5.4 LTS as well.
