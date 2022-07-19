@@ -2,127 +2,143 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7110957980D
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Jul 2022 12:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E7A57986C
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Jul 2022 13:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233150AbiGSK7w (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Jul 2022 06:59:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45046 "EHLO
+        id S237103AbiGSL1O (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Jul 2022 07:27:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231484AbiGSK7w (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Jul 2022 06:59:52 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93338402DE;
-        Tue, 19 Jul 2022 03:59:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1658228391; x=1689764391;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bSmUzbv50MoCMtRypEXtfh6RjAfCJIPeIp2ZKzXLmPw=;
-  b=NuXsTLBh+99g5BaRITW96wzxIdEHJESN09WwY6pDWD3hHM6gX/Zui4R8
-   7yaRwsFCQiXpOmCsNvX1Z7a5Q3TEhdtHVnh/G5qA/8QXIgzZeZUQUnL5j
-   hV+/a7/ZjRYuXtGour4YqTpLaDjqz711TN/cT0XQOt0HwZNjanJpQeAcg
-   pv62uY2GGDDbrQtem0lFtCWyVN7EUIRNVeelXV+IFLSIMnEoSLXzcMkPx
-   Vbbh3hs9+lhMhyWGmvxExKqpPkS9XlX2LDLPi3/zFkE45hQwNIevx8mO2
-   geetoTE1OW9EEscEHB3bzRi+xBzPlr4jwGbzlOh6V5YsQ7yTTLotJNMIS
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10412"; a="350424566"
-X-IronPort-AV: E=Sophos;i="5.92,283,1650956400"; 
-   d="scan'208";a="350424566"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2022 03:59:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,283,1650956400"; 
-   d="scan'208";a="724219420"
-Received: from lkp-server02.sh.intel.com (HELO ff137eb26ff1) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 19 Jul 2022 03:59:49 -0700
-Received: from kbuild by ff137eb26ff1 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1oDkxA-0005a6-Vg;
-        Tue, 19 Jul 2022 10:59:48 +0000
-Date:   Tue, 19 Jul 2022 18:59:25 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jeremy Bongio <bongiojp@gmail.com>, Ted Tso <tytso@mit.edu>
-Cc:     kbuild-all@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Jeremy Bongio <bongiojp@gmail.com>
-Subject: Re: [PATCH v3] Add ioctls to get/set the ext4 superblock uuid.
-Message-ID: <202207191835.R8aDmooK-lkp@intel.com>
-References: <20220719065551.154132-1-bongiojp@gmail.com>
+        with ESMTP id S236801AbiGSL1K (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Jul 2022 07:27:10 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F7A340BD5;
+        Tue, 19 Jul 2022 04:27:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 15803B81B0F;
+        Tue, 19 Jul 2022 11:27:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 171E8C341C6;
+        Tue, 19 Jul 2022 11:27:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1658230020;
+        bh=0e5caRh/O6xZWbchcZURz8uAai9+ssg5tyfnNLgTryA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ynN2LM/bbmw7CFbLNn5vVrrb3YcmVViIWVx4AGayvVwHIjTqTOq5nn8Jd/1LyPdtu
+         DXoqnC+qx4yXhFQcNNTR+W5C1/RXTRruUFFJshu5xNmmNAvw7l81tJH8q0c/drKI0z
+         +eNpRUab2VZ+RNLVVrWCQU1Ptc8DFlo65Ab4nkMA=
+Date:   Tue, 19 Jul 2022 13:26:57 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     stable@vger.kernel.org, linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+        lczerner@redhat.com, enwlinux@gmail.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yebin10@huawei.com, yukuai3@huawei.com,
+        Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH 4.19] ext4: fix race condition between
+ ext4_ioctl_setflags and ext4_fiemap
+Message-ID: <YtaVAWMlxrQNcS34@kroah.com>
+References: <20220715023928.2701166-1-libaokun1@huawei.com>
+ <YtF1XygwvIo2Dwae@kroah.com>
+ <425ab528-7d9a-975a-7f4c-5f903cedd8bc@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20220719065551.154132-1-bongiojp@gmail.com>
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <425ab528-7d9a-975a-7f4c-5f903cedd8bc@huawei.com>
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Jeremy,
+On Sat, Jul 16, 2022 at 10:33:30AM +0800, Baokun Li wrote:
+> 在 2022/7/15 22:10, Greg KH 写道:
+> > On Fri, Jul 15, 2022 at 10:39:28AM +0800, Baokun Li wrote:
+> > > This patch and problem analysis is based on v4.19 LTS.
+> > > The d3b6f23f7167("ext4: move ext4_fiemap to use iomap framework") patch
+> > > is incorporated in v5.7-rc1. This patch avoids this problem by switching
+> > > to iomap in ext4_fiemap.
+> > > 
+> > > Hulk Robot reported a BUG on stable 4.19.252:
+> > > ==================================================================
+> > > kernel BUG at fs/ext4/extents_status.c:762!
+> > > invalid opcode: 0000 [#1] SMP KASAN PTI
+> > > CPU: 7 PID: 2845 Comm: syz-executor Not tainted 4.19.252 #46
+> > > RIP: 0010:ext4_es_cache_extent+0x30e/0x370
+> > > [...]
+> > > Call Trace:
+> > >   ext4_cache_extents+0x238/0x2f0
+> > >   ext4_find_extent+0x785/0xa40
+> > >   ext4_fiemap+0x36d/0xe90
+> > >   do_vfs_ioctl+0x6af/0x1200
+> > > [...]
+> > > ==================================================================
+> > > 
+> > > Above issue may happen as follows:
+> > > -------------------------------------
+> > >             cpu1		    cpu2
+> > > _____________________|_____________________
+> > > do_vfs_ioctl
+> > >   ext4_ioctl
+> > >    ext4_ioctl_setflags
+> > >     ext4_ind_migrate
+> > >                          do_vfs_ioctl
+> > >                           ioctl_fiemap
+> > >                            ext4_fiemap
+> > >                             ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)
+> > >                             ext4_fill_fiemap_extents
+> > >      down_write(&EXT4_I(inode)->i_data_sem);
+> > >      ext4_ext_check_inode
+> > >      ext4_clear_inode_flag(inode, EXT4_INODE_EXTENTS)
+> > >      memset(ei->i_data, 0, sizeof(ei->i_data))
+> > >      up_write(&EXT4_I(inode)->i_data_sem);
+> > >                              down_read(&EXT4_I(inode)->i_data_sem);
+> > >                              ext4_find_extent
+> > >                               ext4_cache_extents
+> > >                                ext4_es_cache_extent
+> > >                                 BUG_ON(end < lblk)
+> > > 
+> > > We can easily reproduce this problem with the syzkaller testcase:
+> > > ```
+> > > 02:37:07 executing program 3:
+> > > r0 = openat(0xffffffffffffff9c, &(0x7f0000000040)='./file0\x00', 0x26e1, 0x0)
+> > > ioctl$FS_IOC_FSSETXATTR(r0, 0x40086602, &(0x7f0000000080)={0x17e})
+> > > mkdirat(0xffffffffffffff9c, &(0x7f00000000c0)='./file1\x00', 0x1ff)
+> > > r1 = openat(0xffffffffffffff9c, &(0x7f0000000100)='./file1\x00', 0x0, 0x0)
+> > > ioctl$FS_IOC_FIEMAP(r1, 0xc020660b, &(0x7f0000000180)={0x0, 0x1, 0x0, 0xef3, 0x6, []}) (async, rerun: 32)
+> > > ioctl$FS_IOC_FSSETXATTR(r1, 0x40086602, &(0x7f0000000140)={0x17e}) (rerun: 32)
+> > > ```
+> > > 
+> > > To solve this issue, we use __generic_block_fiemap() instead of
+> > > generic_block_fiemap() and add inode_lock_shared to avoid race condition.
+> > > 
+> > > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > > Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> > > ---
+> > >   fs/ext4/extents.c | 15 +++++++++++----
+> > >   1 file changed, 11 insertions(+), 4 deletions(-)
+> > What is the git commit id of this change in Linus's tree?
+> > 
+> > If it is not in Linus's tree, why not?
+> > 
+> > confused,
+> > 
+> > greg k-h
+> > .
+> 
+> This patch does not exist in the Linus' tree.
+> 
+> This problem persists until the patch d3b6f23f7167("ext4: move ext4_fiemap
+> to use iomap framework") is incorporated in v5.7-rc1.
 
-Thank you for the patch! Perhaps something to improve:
+Then why not ask for that change to be added instead?
 
-[auto build test WARNING on tytso-ext4/dev]
-[also build test WARNING on linus/master v5.19-rc7 next-20220718]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+thanks,
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Jeremy-Bongio/Add-ioctls-to-get-set-the-ext4-superblock-uuid/20220719-145724
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-config: i386-defconfig (https://download.01.org/0day-ci/archive/20220719/202207191835.R8aDmooK-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-3) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/d53b0a271606a7f5c7b0f1a1f3fec9a34e771205
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Jeremy-Bongio/Add-ioctls-to-get-set-the-ext4-superblock-uuid/20220719-145724
-        git checkout d53b0a271606a7f5c7b0f1a1f3fec9a34e771205
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash fs/ext4/
-
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
-   fs/ext4/ioctl.c: In function 'ext4_ioctl_getuuid':
->> fs/ext4/ioctl.c:1149:13: warning: unused variable 'ret' [-Wunused-variable]
-    1149 |         int ret = 0;
-         |             ^~~
-
-
-vim +/ret +1149 fs/ext4/ioctl.c
-
-  1145	
-  1146	static int ext4_ioctl_getuuid(struct ext4_sb_info *sbi,
-  1147				struct fsuuid __user *ufsuuid)
-  1148	{
-> 1149		int ret = 0;
-  1150		struct fsuuid fsuuid;
-  1151		__u8 uuid[UUID_SIZE];
-  1152	
-  1153		if (copy_from_user(&fsuuid, ufsuuid, sizeof(fsuuid)))
-  1154			return -EFAULT;
-  1155	
-  1156		if (fsuuid.fsu_len != UUID_SIZE || fsuuid.fsu_flags != 0)
-  1157			return -EINVAL;
-  1158	
-  1159		lock_buffer(sbi->s_sbh);
-  1160		memcpy(uuid, sbi->s_es->s_uuid, UUID_SIZE);
-  1161		unlock_buffer(sbi->s_sbh);
-  1162	
-  1163		if (copy_to_user(&ufsuuid->fsu_uuid[0], uuid, UUID_SIZE))
-  1164			return -EFAULT;
-  1165		return 0;
-  1166	}
-  1167	
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+greg k-h
