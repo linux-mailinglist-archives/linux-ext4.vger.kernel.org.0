@@ -2,58 +2,64 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2AF557A8CD
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Jul 2022 23:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ACF857A90A
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Jul 2022 23:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233316AbiGSVQv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Jul 2022 17:16:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58246 "EHLO
+        id S239771AbiGSVfT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Jul 2022 17:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbiGSVQt (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Jul 2022 17:16:49 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75A211468
-        for <linux-ext4@vger.kernel.org>; Tue, 19 Jul 2022 14:16:48 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id 125so4201928vsd.5
-        for <linux-ext4@vger.kernel.org>; Tue, 19 Jul 2022 14:16:48 -0700 (PDT)
+        with ESMTP id S232712AbiGSVfR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Jul 2022 17:35:17 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF8DE08E
+        for <linux-ext4@vger.kernel.org>; Tue, 19 Jul 2022 14:35:15 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id l14so9732203qtv.4
+        for <linux-ext4@vger.kernel.org>; Tue, 19 Jul 2022 14:35:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tYOQ5FpxyPJTidYtmT7od7Xt1E+geWmRSC6sk5ZFN+Y=;
-        b=hOH7mK+Zc3JZJTBRzN3U0x3COH7bnNJAoXafl6ICDkmURstc5c7bLWMCtQxBRxtRHi
-         uwU+0g4JejekFSfkTKTcDUd6eNMqN2APkMWK0KnQZyJn9oP2T7eUNc9OaeeNacImItEA
-         MF4EJcTLNSdLCcz/iCg8uOT+8XVHUpefNxhPxvpEpQHLwce9unk65USWumSlEtgIwUL3
-         5CixVrcU+ZctP/qwGfQHnSAiHYytAMr6jbuC5vJjzeGyjExunwHbOJaUY6/2gSN9ln4+
-         3E6ZyqIu6VJXrAkM+pg1jZCf/LlLWx2l3EHEI3vJTZnBrI6M4hG0X4qQnCvTzQXdD2ML
-         6FCw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gNyRolRa4SDv5wmylpdgPdd+HZ/UQh7gluwNd9i869E=;
+        b=JMMDfsolJ5eWGe2gzdFYRAz/7aTPF2k7FSyOFqubmzcrCti/hyccem/94leLCYuvWk
+         EjAkXg3Vrkff4r6CzGrX11IXUuZY73I5qpZXw8UBcU0dzMUoLu1m+L0fEmUdrfcwTNT2
+         2Z9bJ5rGiOCwWbUzlbYkCVxHkr+OnL1OC4k699wlCTwWh6V5rLbsrtnvdZEfYrJd+26x
+         CiWRkKdPBgnS8qzSS4Okba872MLLzpkds3jP986GjVEHXlrEMymH8j2LU6c2k0SH1Syg
+         rpKl5W0H8YWaiZthB3UER80uGm4UWnmjr606eVxBDOSkiOAP10SkhXD6JcFzcmVeqXhs
+         Np2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tYOQ5FpxyPJTidYtmT7od7Xt1E+geWmRSC6sk5ZFN+Y=;
-        b=GCDzQHNXprGuDaFIgUNE9etBqRehUkH9gJ1i7iThFCg70SBBD0oiXQuyKAyfPLFXAa
-         OGcsiWWcsxXQTk7FiPOC7bl2zsGABaGA3gvEKXJibiQNEXpGYFcWTjQMSHjuEBQxvSFP
-         3aq6QPMVHkv5Emhhzcv9S9DUWVTonqIQ42N9UOIpqyX4Z3j86bpD86KGSqgX67m94ic0
-         2Yzm9UK2i13uPWug0y83PtE5os1q0kS2gRArQihRHBehfmAB6hegSmXoNhCdPUTwx3Vy
-         /cTFlrbD/7TjvqAFtU7KWsrC70wZDCaVQR92PNs0KCebE4MF7mo/xP/f3S+brQSvM2uS
-         4OFQ==
-X-Gm-Message-State: AJIora/4tldXseoNoOs+CzoOCzYjtnFWUVThXORnlzOfuX3l72lAYXfX
-        6VBFO48XzzkUi5uM0iW+SQMRJ9cyz2gOw0FcPiw=
-X-Google-Smtp-Source: AGRyM1v/NSjGEcVIo/9kmC7sQ4JH91VZEPsHIKHjIeyoyvNvRjKRKJtdJP8COBkzHxnFfhr2c3MOMUA75RElA//GLgk=
-X-Received: by 2002:a67:ac05:0:b0:357:ccab:9a7a with SMTP id
- v5-20020a67ac05000000b00357ccab9a7amr4918122vse.86.1658265407868; Tue, 19 Jul
- 2022 14:16:47 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gNyRolRa4SDv5wmylpdgPdd+HZ/UQh7gluwNd9i869E=;
+        b=CiO3OCD6Jgz7eGZRNZ7S4Jpg1ZXuTzNYnMS1EL2wxYG8DdZTJk5whvJrx/4MM16mru
+         10QVXGaOR95CeE7dQfLiIqyC4F8sD0ZRCsCEsDN0K7KS18bBHxLUQWkNgl23h934iiHO
+         OgbpdNhyBaBDgfAltx7YpR2GbSfZE0E2eBiMBhTXL4hrfZf9PV3Inb0PCGM1RxDibgFv
+         4cdjaiSolV+m+fK0lQjXv/+7R8Cj85M+wwD0Pbv+CIwFJEjSI15WNkP8Elq2J1IBbCcz
+         grh8ObK3AHh3vKgcdNShoNASD5v1V/4Y9PFCDlbMQ/7wHSfImWHWynB4PJnefzQG5RBa
+         WmBg==
+X-Gm-Message-State: AJIora+M1fdbyLC7vPgAzVBPLgc36dSkNt6+lrduO+tnP0alTxdKOoIe
+        IXZmzCkF358BAqDFQxA32F4LPwzNTPI=
+X-Google-Smtp-Source: AGRyM1s8MizoVUDIgO08j3TuSGemZ9TuCi7yo80bSFTHXahi9jy5x4x5vhkTQOck/UF8hnZirlJ6lQ==
+X-Received: by 2002:ac8:5a50:0:b0:31e:f587:f891 with SMTP id o16-20020ac85a50000000b0031ef587f891mr7316042qta.10.1658266514108;
+        Tue, 19 Jul 2022 14:35:14 -0700 (PDT)
+Received: from debian-BULLSEYE-live-builder-AMD64 (h96-61-90-13.cntcnh.broadband.dynamic.tds.net. [96.61.90.13])
+        by smtp.gmail.com with ESMTPSA id u5-20020a05620a430500b006b5bf5d45casm16389070qko.27.2022.07.19.14.35.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jul 2022 14:35:13 -0700 (PDT)
+Date:   Tue, 19 Jul 2022 17:35:12 -0400
+From:   Eric Whitney <enwlinux@gmail.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Eric Whitney <enwlinux@gmail.com>, linux-ext4@vger.kernel.org,
+        tytso@mit.edu
+Subject: Re: [PATCH] ext4: minor defrag code improvements
+Message-ID: <YtcjkMcYQCATlt0Y@debian-BULLSEYE-live-builder-AMD64>
+References: <20220621143340.2268087-1-enwlinux@gmail.com>
+ <20220714115326.qhjsrchoepnnsffu@quack3>
 MIME-Version: 1.0
-References: <20220719065637.154309-1-bongiojp@gmail.com> <YtbK8LJSYfCRx5B1@magnolia>
-In-Reply-To: <YtbK8LJSYfCRx5B1@magnolia>
-From:   Jeremy Bongio <bongiojp@gmail.com>
-Date:   Tue, 19 Jul 2022 14:16:36 -0700
-Message-ID: <CANfQU3yFomkM9Gfhnz=FfkzJj0MtPMGTrXMHnnBRzLPQk7imbg@mail.gmail.com>
-Subject: Re: [PATCH v2] Add support for get/set UUID ioctls.
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220714115326.qhjsrchoepnnsffu@quack3>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -64,231 +70,115 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jul 19, 2022 at 8:17 AM Darrick J. Wong <djwong@kernel.org> wrote:
->
-> > Subject: [PATCH v2] Add support for get/set UUID ioctls.
->
-> Quick tip: Many people explicitly tag these userspace patches with the
-> name of the tool in the subject line, e.g.
->
-> [PATCH v2] tune2fs: add support for get/set UUID ioctls.
+* Jan Kara <jack@suse.cz>:
+> On Tue 21-06-22 10:33:40, Eric Whitney wrote:
+> > Modify two error paths returning EBUSY for bad argument file types to
+> > return EOPNOTSUPP instead.  Move an extent tree search whose results are
+> > only occasionally required to the site always requiring them for
+> > improved efficiency.  Address a few typos.
+> > 
+> > Signed-off-by: Eric Whitney <enwlinux@gmail.com>
+> 
+> So why is EOPNOTSUPP better than EBUSY? Honestly we are rather inconsistent
+> with errors returned for various operations on swapfile -
+> read/write/fallocate/truncate return ETXTBSY, unlink returns EPERM, some
+> ext4 ioctls return EINVAL... I guess ETXTBSY is the most common return
+> value?
+> 
+> Otherwise the patch looks good.
+> 
+> 								Honza
 
-Oh good idea. I will do that in the next version.
+Hi Jan - thanks for your review.
 
->
-> On Mon, Jul 18, 2022 at 11:56:37PM -0700, Jeremy Bongio wrote:
-> > When mounted, there is a race condition between changing the filesystem
-> > UUID and changing other aspects of the filesystem, like mounting, resizing,
-> > changing features, etc. Using these ioctls to get/set the UUID ensures the
-> > filesystem is not being resized.
-> >
-> > Signed-off-by: Jeremy Bongio <bongiojp@gmail.com>
+I think EOPNOTSUPP is better than EBUSY when EXT4_IOC_MOVE_EXT is applied to
+a swap file because it's a much more direct message indicating that ext4
+doesn't support swap file defragmentation.  With the exception of the two
+sites modified by this patch, all the other sites in the defrag code where
+checks are made for unsupported file types or file system configurations,
+EOPNOTSUPP is returned.  Because EBUSY really doesn't seem to convey what's
+happening here very well - this isn't so much a case of a potentially
+temporarily busy resource as an attempt to perform an operation that will
+never succeed - another choice seemed more appropriate.  I picked EOPNOTSUPP
+simply because it's used in those other sites in the defrag code, and was
+trying to be consistent. (The defrag code reports EBUSYs when it can't
+release pages with references on them.)
+
+EINVAL could be an alternative.  It's not quite as direct but it does
+convey the idea that an argument to the ioctl is wrong.  The defrag code
+uses it (a little inconsistently) when argument values are out of range or
+otherwise invalid.
+
+Is ETXTBUSY still reported by the kernel?  I couldn't find it in a search after
+reading this:  lwn.net/Articles/866493/
+I didn't consider that because an executable wasn't involved - interesting that
+it was used for some operations applied to swap files.
+
+At any rate, I'm open to suggestions here - just trying to clean up a few
+things after a little code review.
+
+Thanks,
+Eric
+
+> 
 > > ---
-> >
-> > fu_* fields are now named fsu_*.
-> >
-> > Removed EXT4_IOC_SETFSUUID_FLAG_BLOCKING flag.
-> >
-> > fsu_flags is initialized to 0.
-> >
-> >  misc/tune2fs.c | 104 ++++++++++++++++++++++++++++++++++++++++---------
-> >  1 file changed, 86 insertions(+), 18 deletions(-)
-> >
-> > diff --git a/misc/tune2fs.c b/misc/tune2fs.c
-> > index 6c162ba5..39399d83 100644
-> > --- a/misc/tune2fs.c
-> > +++ b/misc/tune2fs.c
-> > @@ -82,11 +82,25 @@ extern int optind;
-> >  #define FS_IOC_GETFSLABEL    _IOR(0x94, 49, char[FSLABEL_MAX])
-> >  #endif
-> >
-> > +struct fsuuid {
-> > +     __u32   fsu_len;
-> > +     __u32   fsu_flags;
-> > +     __u8    fsu_uuid[];
-> > +};
-> > +
-> > +#ifndef EXT4_IOC_GETFSUUID
-> > +#define EXT4_IOC_GETFSUUID   _IOR('f', 44, struct fsuuid)
-> > +#endif
-> > +
-> > +#ifndef EXT4_IOC_SETFSUUID
-> > +#define EXT4_IOC_SETFSUUID   _IOW('f', 44, struct fsuuid)
-> > +#endif
-> > +
-> >  extern int ask_yn(const char *string, int def);
-> >
-> >  const char *program_name = "tune2fs";
-> >  char *device_name;
-> > -char *new_label, *new_last_mounted, *new_UUID;
-> > +char *new_label, *new_last_mounted, *requested_uuid;
-> >  char *io_options;
-> >  static int c_flag, C_flag, e_flag, f_flag, g_flag, i_flag, l_flag, L_flag;
-> >  static int m_flag, M_flag, Q_flag, r_flag, s_flag = -1, u_flag, U_flag, T_flag;
-> > @@ -2102,7 +2116,7 @@ static void parse_tune2fs_options(int argc, char **argv)
-> >                               open_flag = EXT2_FLAG_RW;
-> >                               break;
-> >               case 'U':
-> > -                     new_UUID = optarg;
-> > +                     requested_uuid = optarg;
-> >                       U_flag = 1;
-> >                       open_flag = EXT2_FLAG_RW |
-> >                               EXT2_FLAG_JOURNAL_DEV_OK;
-> > @@ -3078,6 +3092,52 @@ int handle_fslabel(int setlabel) {
-> >       return 0;
-> >  }
-> >
-> > +/*
-> > + * Use EXT4_IOC_GETFSUUID/EXT4_IOC_SETFSUUID to get/set file system UUID.
-> > + * Return:   0 on success
-> > + *           1 on error
-> > + *           -1 when the old method should be used
-> > + */
-> > +int handle_fsuuid(__u8 *uuid, bool get)
-> > +{
-> > +     errcode_t ret;
-> > +     int mnt_flags, fd;
-> > +     char label[FSLABEL_MAX];
-> > +     int maxlen = FSLABEL_MAX - 1;
-> > +     char mntpt[PATH_MAX + 1];
-> > +     struct fsuuid *fsuuid = NULL;
-> > +
-> > +     fsuuid = malloc(sizeof(*fsuuid) + UUID_SIZE);
-> > +     if (!fsuuid)
-> > +             return -1;
-> > +
-> > +     memcpy(fsuuid->fsu_uuid, uuid, UUID_SIZE);
-> > +     fsuuid->fsu_len = UUID_SIZE;
-> > +     fsuuid->fsu_flags = 0;
-> > +
-> > +     ret = ext2fs_check_mount_point(device_name, &mnt_flags,
-> > +                                       mntpt, sizeof(mntpt));
-> > +     if (ret || !(mnt_flags & EXT2_MF_MOUNTED) ||
-> > +             (!get && (mnt_flags & EXT2_MF_READONLY)) ||
-> > +             !mntpt[0])
-> > +             return -1;
-> > +
-> > +     fd = open(mntpt, O_RDONLY);
-> > +     if (fd < 0)
-> > +             return -1;
-> > +
-> > +     if (get) {
-> > +             if (ioctl(fd, EXT4_IOC_GETFSUUID, fsuuid))
-> > +                     ret = -1;
-> > +     } else {
-> > +             if (ioctl(fd, EXT4_IOC_SETFSUUID, fsuuid))
-> > +                     ret = -1;
-> > +     }
-> > +     close(fd);
-> > +     return ret;
->
-> ret is probably zero here, right?
-
-No, it could be -1 if the ioctls return an error.
-
->
-> That said, I don't think it's a great idea to go mixing errcode_t and
-> "the normal libc int return value" like that, since (a) that's type
-> confusion and (b)
->
-> return 0;
->
-> gets the point across with less effort.
-
-I'm also never returning 1 on error. I'll clean this up.
-
->
-> > +}
-> > +
-> > +
-> >  #ifndef BUILD_AS_LIB
-> >  int main(int argc, char **argv)
-> >  #else
-> > @@ -3454,6 +3514,7 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
-> >               dgrp_t i;
-> >               char buf[SUPERBLOCK_SIZE] __attribute__ ((aligned(8)));
-> >               __u8 old_uuid[UUID_SIZE];
-> > +             uuid_t new_uuid;
-> >
-> >               if (ext2fs_has_feature_stable_inodes(fs->super)) {
-> >                       fputs(_("Cannot change the UUID of this filesystem "
-> > @@ -3507,25 +3568,34 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
-> >                               set_csum = 1;
-> >               }
-> >
-> > -             memcpy(old_uuid, sb->s_uuid, UUID_SIZE);
-> > -             if ((strcasecmp(new_UUID, "null") == 0) ||
-> > -                 (strcasecmp(new_UUID, "clear") == 0)) {
-> > -                     uuid_clear(sb->s_uuid);
-> > -             } else if (strcasecmp(new_UUID, "time") == 0) {
-> > -                     uuid_generate_time(sb->s_uuid);
-> > -             } else if (strcasecmp(new_UUID, "random") == 0) {
-> > -                     uuid_generate(sb->s_uuid);
-> > -             } else if (uuid_parse(new_UUID, sb->s_uuid)) {
-> > +             rc = handle_fsuuid(old_uuid, true);
->
-> Might also be helpful to readers to wrap handle_fsuuid with something
-> containing "get" and "set" in the name explicitly, e.g.
->
-> static inline int get_mounted_fsuuid(__u8 *old_uuid)
-> {
->         return handle_fssuid(old_uuid, true);
-> }
-
-sgtm. I'll put it in the next version.
-
-
->
-> I /think/ the rest looks plausible, but oof tune2fs is a bear to read.
-> My apologies for all the random cruft I've contributed over the years
-> (rewriting every inode on the filesystem to add checksums? seriously??)
->
-> --D
->
-> > +             if (rc == -1)
-> > +                     memcpy(old_uuid, sb->s_uuid, UUID_SIZE);
-> > +
-> > +             if ((strcasecmp(requested_uuid, "null") == 0) ||
-> > +                 (strcasecmp(requested_uuid, "clear") == 0)) {
-> > +                     uuid_clear(new_uuid);
-> > +             } else if (strcasecmp(requested_uuid, "time") == 0) {
-> > +                     uuid_generate_time(new_uuid);
-> > +             } else if (strcasecmp(requested_uuid, "random") == 0) {
-> > +                     uuid_generate(new_uuid);
-> > +             } else if (uuid_parse(requested_uuid, new_uuid)) {
-> >                       com_err(program_name, 0, "%s",
-> >                               _("Invalid UUID format\n"));
-> >                       rc = 1;
-> >                       goto closefs;
-> >               }
-> > -             ext2fs_init_csum_seed(fs);
-> > -             if (set_csum) {
-> > -                     for (i = 0; i < fs->group_desc_count; i++)
-> > -                             ext2fs_group_desc_csum_set(fs, i);
-> > -                     fs->flags &= ~EXT2_FLAG_SUPER_ONLY;
-> > +
-> > +             rc = handle_fsuuid(new_uuid, false);
-> > +             if (rc == -1) {
-> > +                     memcpy(sb->s_uuid, new_uuid, UUID_SIZE);
-> > +                     ext2fs_init_csum_seed(fs);
-> > +                     if (set_csum) {
-> > +                             for (i = 0; i < fs->group_desc_count; i++)
-> > +                                     ext2fs_group_desc_csum_set(fs, i);
-> > +                             fs->flags &= ~EXT2_FLAG_SUPER_ONLY;
-> > +                     }
-> > +                     ext2fs_mark_super_dirty(fs);
-> >               }
-> >
-> >               /* If this is a journal dev, we need to copy UUID into jsb */
-> > @@ -3549,8 +3619,6 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
-> >                       if ((rc = fs_update_journal_user(sb, old_uuid)))
-> >                               goto closefs;
-> >               }
-> > -
-> > -             ext2fs_mark_super_dirty(fs);
-> >       }
-> >
-> >       if (I_flag) {
-> > --
-> > 2.37.0.170.g444d1eabd0-goog
-> >
+> >  fs/ext4/move_extent.c | 16 +++++++---------
+> >  1 file changed, 7 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
+> > index 701f1d6a217f..4e4b0452106e 100644
+> > --- a/fs/ext4/move_extent.c
+> > +++ b/fs/ext4/move_extent.c
+> > @@ -472,19 +472,17 @@ mext_check_arguments(struct inode *orig_inode,
+> >  	if (IS_IMMUTABLE(donor_inode) || IS_APPEND(donor_inode))
+> >  		return -EPERM;
+> >  
+> > -	/* Ext4 move extent does not support swapfile */
+> > +	/* Ext4 move extent does not support swap files */
+> >  	if (IS_SWAPFILE(orig_inode) || IS_SWAPFILE(donor_inode)) {
+> > -		ext4_debug("ext4 move extent: The argument files should "
+> > -			"not be swapfile [ino:orig %lu, donor %lu]\n",
+> > +		ext4_debug("ext4 move extent: The argument files should not be swap files [ino:orig %lu, donor %lu]\n",
+> >  			orig_inode->i_ino, donor_inode->i_ino);
+> > -		return -EBUSY;
+> > +		return -EOPNOTSUPP;
+> >  	}
+> >  
+> >  	if (ext4_is_quota_file(orig_inode) && ext4_is_quota_file(donor_inode)) {
+> > -		ext4_debug("ext4 move extent: The argument files should "
+> > -			"not be quota files [ino:orig %lu, donor %lu]\n",
+> > +		ext4_debug("ext4 move extent: The argument files should not be quota files [ino:orig %lu, donor %lu]\n",
+> >  			orig_inode->i_ino, donor_inode->i_ino);
+> > -		return -EBUSY;
+> > +		return -EOPNOTSUPP;
+> >  	}
+> >  
+> >  	/* Ext4 move extent supports only extent based file */
+> > @@ -631,11 +629,11 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp, __u64 orig_blk,
+> >  		if (ret)
+> >  			goto out;
+> >  		ex = path[path->p_depth].p_ext;
+> > -		next_blk = ext4_ext_next_allocated_block(path);
+> >  		cur_blk = le32_to_cpu(ex->ee_block);
+> >  		cur_len = ext4_ext_get_actual_len(ex);
+> >  		/* Check hole before the start pos */
+> >  		if (cur_blk + cur_len - 1 < o_start) {
+> > +			next_blk = ext4_ext_next_allocated_block(path);
+> >  			if (next_blk == EXT_MAX_BLOCKS) {
+> >  				ret = -ENODATA;
+> >  				goto out;
+> > @@ -663,7 +661,7 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp, __u64 orig_blk,
+> >  		donor_page_index = d_start >> (PAGE_SHIFT -
+> >  					       donor_inode->i_blkbits);
+> >  		offset_in_page = o_start % blocks_per_page;
+> > -		if (cur_len > blocks_per_page- offset_in_page)
+> > +		if (cur_len > blocks_per_page - offset_in_page)
+> >  			cur_len = blocks_per_page - offset_in_page;
+> >  		/*
+> >  		 * Up semaphore to avoid following problems:
+> > -- 
+> > 2.30.2
+> > 
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
