@@ -2,136 +2,127 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44132579562
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Jul 2022 10:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7110957980D
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Jul 2022 12:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232245AbiGSIlS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Jul 2022 04:41:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48842 "EHLO
+        id S233150AbiGSK7w (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Jul 2022 06:59:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231337AbiGSIlE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Jul 2022 04:41:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 95377BF71
-        for <linux-ext4@vger.kernel.org>; Tue, 19 Jul 2022 01:41:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1658220062;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aCQLJQOHcJOJ8JmCqZRzHzMUpESxVjd3NNjhzKxLWQs=;
-        b=Sk9pVL3nLTNm+GI2UzYgk45qGkMGxqaDTToP1XCcg5rG21ST6Mc/cGy56bbRxVk4oH3FW2
-        dCBpyqFP/rK+T0gbeyQuDiE/eFoU0ZTDGHLm+5DoQiDa/VMbgCfw4LpFTpzACdZDk+V7nM
-        nFLLkX4+j6eVLz3hIfH52RN/PZk9qgY=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-630-YjvEdISlPayj2_NNlxf-Ag-1; Tue, 19 Jul 2022 04:40:58 -0400
-X-MC-Unique: YjvEdISlPayj2_NNlxf-Ag-1
-Received: by mail-wr1-f69.google.com with SMTP id n10-20020a5d6b8a000000b0021da91e4a64so2349707wrx.8
-        for <linux-ext4@vger.kernel.org>; Tue, 19 Jul 2022 01:40:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=aCQLJQOHcJOJ8JmCqZRzHzMUpESxVjd3NNjhzKxLWQs=;
-        b=gUyI7xIPShbxn1JH8+jZ0YTcf0PXp+ZJLWz5jTNfkbBJlbCGjZa4PUDDLsLAGv6Civ
-         LYGgi4wVg/EqOUoD7XUGla+EtxBTHra7uk3xBoK2Ush04HpBdJD3yC6kh38cWp6U7E+B
-         +buN6shrPrqKholG2J1K1Obu7vhTEf8X1rQmHl6vbGN6dJucLY/qN3t8UddDfyS4mzyy
-         g4304XciGTq47rQcOYClhbIRL+P0d6H53YDwADzZFHgJSUK4z0I9XVuXMdHI2zqFh9Fq
-         /drrp0Yi0a91rjO5jJcHFLWuOWK/qL3ARTJe6PuK1xFF4kRPhm+jymURSuWodugbTTJw
-         IkaA==
-X-Gm-Message-State: AJIora/FJUAwQbDXbisyc/nQXO20kDleUMiaooBv0nOQBl1lj92dan6Q
-        +7bBKrybGWCyHEKysQdPRBZbS2nwM/tchLMjuYiYxXaswu4Md8UTwzFy5E58sY6jYSuKrGkRAm7
-        zvi6WK39FHuVpdlFYYZZEHQ==
-X-Received: by 2002:a7b:c381:0:b0:3a2:aef9:8df4 with SMTP id s1-20020a7bc381000000b003a2aef98df4mr37053741wmj.7.1658220057355;
-        Tue, 19 Jul 2022 01:40:57 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1toW+ZoFXTJPEFs8reXmrBMtF0NaGli8q7vJKFZ+PCo4DXMfNrAYpetGiTuQdFEWq6RXg/h9w==
-X-Received: by 2002:a7b:c381:0:b0:3a2:aef9:8df4 with SMTP id s1-20020a7bc381000000b003a2aef98df4mr37053722wmj.7.1658220057065;
-        Tue, 19 Jul 2022 01:40:57 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c709:600:7807:c947:bc5a:1aea? (p200300cbc70906007807c947bc5a1aea.dip0.t-ipconnect.de. [2003:cb:c709:600:7807:c947:bc5a:1aea])
-        by smtp.gmail.com with ESMTPSA id j23-20020a05600c1c1700b003a32251c3f9sm1833646wms.5.2022.07.19.01.40.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Jul 2022 01:40:56 -0700 (PDT)
-Message-ID: <d0e631e1-c7ef-4e03-6c34-189042b84005@redhat.com>
-Date:   Tue, 19 Jul 2022 10:40:55 +0200
+        with ESMTP id S231484AbiGSK7w (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Jul 2022 06:59:52 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93338402DE;
+        Tue, 19 Jul 2022 03:59:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1658228391; x=1689764391;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=bSmUzbv50MoCMtRypEXtfh6RjAfCJIPeIp2ZKzXLmPw=;
+  b=NuXsTLBh+99g5BaRITW96wzxIdEHJESN09WwY6pDWD3hHM6gX/Zui4R8
+   7yaRwsFCQiXpOmCsNvX1Z7a5Q3TEhdtHVnh/G5qA/8QXIgzZeZUQUnL5j
+   hV+/a7/ZjRYuXtGour4YqTpLaDjqz711TN/cT0XQOt0HwZNjanJpQeAcg
+   pv62uY2GGDDbrQtem0lFtCWyVN7EUIRNVeelXV+IFLSIMnEoSLXzcMkPx
+   Vbbh3hs9+lhMhyWGmvxExKqpPkS9XlX2LDLPi3/zFkE45hQwNIevx8mO2
+   geetoTE1OW9EEscEHB3bzRi+xBzPlr4jwGbzlOh6V5YsQ7yTTLotJNMIS
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10412"; a="350424566"
+X-IronPort-AV: E=Sophos;i="5.92,283,1650956400"; 
+   d="scan'208";a="350424566"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2022 03:59:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,283,1650956400"; 
+   d="scan'208";a="724219420"
+Received: from lkp-server02.sh.intel.com (HELO ff137eb26ff1) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 19 Jul 2022 03:59:49 -0700
+Received: from kbuild by ff137eb26ff1 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1oDkxA-0005a6-Vg;
+        Tue, 19 Jul 2022 10:59:48 +0000
+Date:   Tue, 19 Jul 2022 18:59:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jeremy Bongio <bongiojp@gmail.com>, Ted Tso <tytso@mit.edu>
+Cc:     kbuild-all@lists.01.org, linux-ext4@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Jeremy Bongio <bongiojp@gmail.com>
+Subject: Re: [PATCH v3] Add ioctls to get/set the ext4 superblock uuid.
+Message-ID: <202207191835.R8aDmooK-lkp@intel.com>
+References: <20220719065551.154132-1-bongiojp@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH v9 06/14] mm/gup: migrate device coherent pages when
- pinning instead of failing
-Content-Language: en-US
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alex Sierra <alex.sierra@amd.com>, jgg@nvidia.com,
-        Felix.Kuehling@amd.com, linux-mm@kvack.org, rcampbell@nvidia.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        hch@lst.de, jglisse@redhat.com, apopple@nvidia.com,
-        willy@infradead.org
-References: <20220715150521.18165-1-alex.sierra@amd.com>
- <20220715150521.18165-7-alex.sierra@amd.com>
- <225554c2-9174-555e-ddc0-df95c39211bc@redhat.com>
- <20220718133235.4fdbd6ec303219e5a3ba49cf@linux-foundation.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20220718133235.4fdbd6ec303219e5a3ba49cf@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220719065551.154132-1-bongiojp@gmail.com>
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 18.07.22 22:32, Andrew Morton wrote:
-> On Mon, 18 Jul 2022 12:56:29 +0200 David Hildenbrand <david@redhat.com> wrote:
-> 
->>>  		/*
->>>  		 * Try to move out any movable page before pinning the range.
->>>  		 */
->>> @@ -1919,7 +1948,8 @@ static long check_and_migrate_movable_pages(unsigned long nr_pages,
->>>  				    folio_nr_pages(folio));
->>>  	}
->>>  
->>> -	if (!list_empty(&movable_page_list) || isolation_error_count)
->>> +	if (!list_empty(&movable_page_list) || isolation_error_count
->>> +		|| coherent_pages)
->>
->> The common style is to
->>
->> a) add the || to the end of the previous line
->> b) indent such the we have a nice-to-read alignment
->>
->> if (!list_empty(&movable_page_list) || isolation_error_count ||
->>     coherent_pages)
->>
-> 
-> I missed that.  This series is now in mm-stable so any fix will need to
-> be a standalone followup patch, please.
-> 
->> Apart from that lgtm.
->>
->> Reviewed-by: David Hildenbrand <david@redhat.com>
-> 
-> And your reviewed-by's will be lost.  Stupid git.
+Hi Jeremy,
 
-I know, I already raised my concerns regarding the new workflow, so I
-won't repeat that. I can understand (too some degree) that we don't want
-code to change just before the new merge window opens.
+Thank you for the patch! Perhaps something to improve:
 
-But I do wonder if we really don't even want to do subject+description
-updates. Sure, the commit IDs will change. Who cares?
+[auto build test WARNING on tytso-ext4/dev]
+[also build test WARNING on linus/master v5.19-rc7 next-20220718]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Anyhow, it is what it is.
+url:    https://github.com/intel-lab-lkp/linux/commits/Jeremy-Bongio/Add-ioctls-to-get-set-the-ext4-superblock-uuid/20220719-145724
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+config: i386-defconfig (https://download.01.org/0day-ci/archive/20220719/202207191835.R8aDmooK-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-3) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/d53b0a271606a7f5c7b0f1a1f3fec9a34e771205
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Jeremy-Bongio/Add-ioctls-to-get-set-the-ext4-superblock-uuid/20220719-145724
+        git checkout d53b0a271606a7f5c7b0f1a1f3fec9a34e771205
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash fs/ext4/
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+   fs/ext4/ioctl.c: In function 'ext4_ioctl_getuuid':
+>> fs/ext4/ioctl.c:1149:13: warning: unused variable 'ret' [-Wunused-variable]
+    1149 |         int ret = 0;
+         |             ^~~
+
+
+vim +/ret +1149 fs/ext4/ioctl.c
+
+  1145	
+  1146	static int ext4_ioctl_getuuid(struct ext4_sb_info *sbi,
+  1147				struct fsuuid __user *ufsuuid)
+  1148	{
+> 1149		int ret = 0;
+  1150		struct fsuuid fsuuid;
+  1151		__u8 uuid[UUID_SIZE];
+  1152	
+  1153		if (copy_from_user(&fsuuid, ufsuuid, sizeof(fsuuid)))
+  1154			return -EFAULT;
+  1155	
+  1156		if (fsuuid.fsu_len != UUID_SIZE || fsuuid.fsu_flags != 0)
+  1157			return -EINVAL;
+  1158	
+  1159		lock_buffer(sbi->s_sbh);
+  1160		memcpy(uuid, sbi->s_es->s_uuid, UUID_SIZE);
+  1161		unlock_buffer(sbi->s_sbh);
+  1162	
+  1163		if (copy_to_user(&ufsuuid->fsu_uuid[0], uuid, UUID_SIZE))
+  1164			return -EFAULT;
+  1165		return 0;
+  1166	}
+  1167	
 
 -- 
-Thanks,
-
-David / dhildenb
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
