@@ -2,64 +2,61 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ACF857A90A
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Jul 2022 23:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A1357AA8A
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Jul 2022 01:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239771AbiGSVfT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Jul 2022 17:35:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43872 "EHLO
+        id S238982AbiGSXlj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Jul 2022 19:41:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232712AbiGSVfR (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Jul 2022 17:35:17 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF8DE08E
-        for <linux-ext4@vger.kernel.org>; Tue, 19 Jul 2022 14:35:15 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id l14so9732203qtv.4
-        for <linux-ext4@vger.kernel.org>; Tue, 19 Jul 2022 14:35:15 -0700 (PDT)
+        with ESMTP id S232291AbiGSXlj (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Jul 2022 19:41:39 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D7104D17C;
+        Tue, 19 Jul 2022 16:41:38 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id p8so3628555plq.13;
+        Tue, 19 Jul 2022 16:41:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gNyRolRa4SDv5wmylpdgPdd+HZ/UQh7gluwNd9i869E=;
-        b=JMMDfsolJ5eWGe2gzdFYRAz/7aTPF2k7FSyOFqubmzcrCti/hyccem/94leLCYuvWk
-         EjAkXg3Vrkff4r6CzGrX11IXUuZY73I5qpZXw8UBcU0dzMUoLu1m+L0fEmUdrfcwTNT2
-         2Z9bJ5rGiOCwWbUzlbYkCVxHkr+OnL1OC4k699wlCTwWh6V5rLbsrtnvdZEfYrJd+26x
-         CiWRkKdPBgnS8qzSS4Okba872MLLzpkds3jP986GjVEHXlrEMymH8j2LU6c2k0SH1Syg
-         rpKl5W0H8YWaiZthB3UER80uGm4UWnmjr606eVxBDOSkiOAP10SkhXD6JcFzcmVeqXhs
-         Np2w==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PqsR5Qa41uqsmBSwrGwuBGBYHH2ruR9RmWHJJrYHuuw=;
+        b=Cm3VoniwbPwxVmYtpDACUHbb+TC1ngFQZjr2AVqXutU05iMZG+Y2QnuITneZhJXqm1
+         dpukrVAgu1e7Li/UzuJ2qD+FiofXucgeDuCrChnp7AnDjpQnQh3OpEa+HST2QJQPG9in
+         4NptzAmJaq/zVgR+1SFppTKqAElLWfoT7Id8sLoR9N1HDOXtZpRhkPqfOyl0L2tLoyee
+         iY54ayQtBx6BDrbTdU9mjzQid+mPFu53xjMsomrpb0NXMQUuNNvuh1tHeYN46t0NVj5+
+         52gBbu24jGKQflICTKKHV3c/zg5zFOHfnYBDrnw6lJpMnAaA+axT7fdzMRth8I2V/5dF
+         KnUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gNyRolRa4SDv5wmylpdgPdd+HZ/UQh7gluwNd9i869E=;
-        b=CiO3OCD6Jgz7eGZRNZ7S4Jpg1ZXuTzNYnMS1EL2wxYG8DdZTJk5whvJrx/4MM16mru
-         10QVXGaOR95CeE7dQfLiIqyC4F8sD0ZRCsCEsDN0K7KS18bBHxLUQWkNgl23h934iiHO
-         OgbpdNhyBaBDgfAltx7YpR2GbSfZE0E2eBiMBhTXL4hrfZf9PV3Inb0PCGM1RxDibgFv
-         4cdjaiSolV+m+fK0lQjXv/+7R8Cj85M+wwD0Pbv+CIwFJEjSI15WNkP8Elq2J1IBbCcz
-         grh8ObK3AHh3vKgcdNShoNASD5v1V/4Y9PFCDlbMQ/7wHSfImWHWynB4PJnefzQG5RBa
-         WmBg==
-X-Gm-Message-State: AJIora+M1fdbyLC7vPgAzVBPLgc36dSkNt6+lrduO+tnP0alTxdKOoIe
-        IXZmzCkF358BAqDFQxA32F4LPwzNTPI=
-X-Google-Smtp-Source: AGRyM1s8MizoVUDIgO08j3TuSGemZ9TuCi7yo80bSFTHXahi9jy5x4x5vhkTQOck/UF8hnZirlJ6lQ==
-X-Received: by 2002:ac8:5a50:0:b0:31e:f587:f891 with SMTP id o16-20020ac85a50000000b0031ef587f891mr7316042qta.10.1658266514108;
-        Tue, 19 Jul 2022 14:35:14 -0700 (PDT)
-Received: from debian-BULLSEYE-live-builder-AMD64 (h96-61-90-13.cntcnh.broadband.dynamic.tds.net. [96.61.90.13])
-        by smtp.gmail.com with ESMTPSA id u5-20020a05620a430500b006b5bf5d45casm16389070qko.27.2022.07.19.14.35.13
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PqsR5Qa41uqsmBSwrGwuBGBYHH2ruR9RmWHJJrYHuuw=;
+        b=VXYYzeiVNVqhJ7QrN8CgcRhUcBlMMeBWwAZ9KVglAXPEMIs7R6WTI1CKohWhrWprOE
+         BdbWGoADc+ZgsJhnxNSNjNCBJeqLFXw3o4m/0DvlT+kyqnrX+OyzEsKMhegRvo2O1EF0
+         PiJGlup0PnDduZvUSmY+/ASHEXH5E2hb5OWeTMbSHKLkZ4x1Oo0g7KKps+sh1LDIH1j1
+         TuRpH11KlFBOAjxPdkHqODnsIGtI4uBDiJDGIBTcGlKbknOL0uibNmkTfMxIlEz5RwLE
+         TCGAqKGFqlT4YiquhzPBUPkq8Y2p60y4H5/QWF4RMqrVzGtXnwobNDzAAfOokKyXJm/2
+         SOiA==
+X-Gm-Message-State: AJIora/ys+aoItPsLbKsM8MWNFI12vtUCqHxc6rPrzHZmlVMrOsuEifQ
+        +x0j5S1ltoq4UED0Ck/UiAOXlD59l5UKMg==
+X-Google-Smtp-Source: AGRyM1ul9g2AM6xEXtrh38YKk/niq2P7kj2874xrO8q5T5qlbwx87fUqcA4buHJWN1LNKyr7OesT7A==
+X-Received: by 2002:a17:902:f546:b0:16b:e4c7:671b with SMTP id h6-20020a170902f54600b0016be4c7671bmr36069613plf.129.1658274097670;
+        Tue, 19 Jul 2022 16:41:37 -0700 (PDT)
+Received: from jbongio9100214.corp.google.com ([2620:0:102f:1:c88e:7520:969d:1265])
+        by smtp.googlemail.com with ESMTPSA id w3-20020a626203000000b005253bf1e4d0sm11900379pfb.24.2022.07.19.16.41.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jul 2022 14:35:13 -0700 (PDT)
-Date:   Tue, 19 Jul 2022 17:35:12 -0400
-From:   Eric Whitney <enwlinux@gmail.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Eric Whitney <enwlinux@gmail.com>, linux-ext4@vger.kernel.org,
-        tytso@mit.edu
-Subject: Re: [PATCH] ext4: minor defrag code improvements
-Message-ID: <YtcjkMcYQCATlt0Y@debian-BULLSEYE-live-builder-AMD64>
-References: <20220621143340.2268087-1-enwlinux@gmail.com>
- <20220714115326.qhjsrchoepnnsffu@quack3>
+        Tue, 19 Jul 2022 16:41:37 -0700 (PDT)
+From:   Jeremy Bongio <bongiojp@gmail.com>
+To:     Ted Tso <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Jeremy Bongio <bongiojp@gmail.com>
+Subject: [PATCH v4] Add ioctls to get/set the ext4 superblock uuid.
+Date:   Tue, 19 Jul 2022 16:41:31 -0700
+Message-Id: <20220719234131.235187-1-bongiojp@gmail.com>
+X-Mailer: git-send-email 2.37.0.170.g444d1eabd0-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220714115326.qhjsrchoepnnsffu@quack3>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -70,115 +67,164 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-* Jan Kara <jack@suse.cz>:
-> On Tue 21-06-22 10:33:40, Eric Whitney wrote:
-> > Modify two error paths returning EBUSY for bad argument file types to
-> > return EOPNOTSUPP instead.  Move an extent tree search whose results are
-> > only occasionally required to the site always requiring them for
-> > improved efficiency.  Address a few typos.
-> > 
-> > Signed-off-by: Eric Whitney <enwlinux@gmail.com>
-> 
-> So why is EOPNOTSUPP better than EBUSY? Honestly we are rather inconsistent
-> with errors returned for various operations on swapfile -
-> read/write/fallocate/truncate return ETXTBSY, unlink returns EPERM, some
-> ext4 ioctls return EINVAL... I guess ETXTBSY is the most common return
-> value?
-> 
-> Otherwise the patch looks good.
-> 
-> 								Honza
+This fixes a race between changing the ext4 superblock uuid and operations
+like mounting, resizing, changing features, etc.
 
-Hi Jan - thanks for your review.
+Reviewed-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Jeremy Bongio <bongiojp@gmail.com>
+---
 
-I think EOPNOTSUPP is better than EBUSY when EXT4_IOC_MOVE_EXT is applied to
-a swap file because it's a much more direct message indicating that ext4
-doesn't support swap file defragmentation.  With the exception of the two
-sites modified by this patch, all the other sites in the defrag code where
-checks are made for unsupported file types or file system configurations,
-EOPNOTSUPP is returned.  Because EBUSY really doesn't seem to convey what's
-happening here very well - this isn't so much a case of a potentially
-temporarily busy resource as an attempt to perform an operation that will
-never succeed - another choice seemed more appropriate.  I picked EOPNOTSUPP
-simply because it's used in those other sites in the defrag code, and was
-trying to be consistent. (The defrag code reports EBUSYs when it can't
-release pages with references on them.)
+Changes in v4:
+Removed unused variable.
 
-EINVAL could be an alternative.  It's not quite as direct but it does
-convey the idea that an argument to the ioctl is wrong.  The defrag code
-uses it (a little inconsistently) when argument values are out of range or
-otherwise invalid.
+ fs/ext4/ext4.h  | 11 +++++++
+ fs/ext4/ioctl.c | 76 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 87 insertions(+)
 
-Is ETXTBUSY still reported by the kernel?  I couldn't find it in a search after
-reading this:  lwn.net/Articles/866493/
-I didn't consider that because an executable wasn't involved - interesting that
-it was used for some operations applied to swap files.
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 75b8d81b2469..b760d669a1ca 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -724,6 +724,8 @@ enum {
+ #define EXT4_IOC_GETSTATE		_IOW('f', 41, __u32)
+ #define EXT4_IOC_GET_ES_CACHE		_IOWR('f', 42, struct fiemap)
+ #define EXT4_IOC_CHECKPOINT		_IOW('f', 43, __u32)
++#define EXT4_IOC_GETFSUUID		_IOR('f', 44, struct fsuuid)
++#define EXT4_IOC_SETFSUUID		_IOW('f', 44, struct fsuuid)
+ 
+ #define EXT4_IOC_SHUTDOWN _IOR ('X', 125, __u32)
+ 
+@@ -753,6 +755,15 @@ enum {
+ 						EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT | \
+ 						EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN)
+ 
++/*
++ * Structure for EXT4_IOC_GETFSUUID/EXT4_IOC_SETFSUUID
++ */
++struct fsuuid {
++	__u32       fsu_len;
++	__u32       fsu_flags;
++	__u8        fsu_uuid[];
++};
++
+ #if defined(__KERNEL__) && defined(CONFIG_COMPAT)
+ /*
+  * ioctl commands in 32 bit emulation
+diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+index cb01c1da0f9d..2c4c3eedfb7b 100644
+--- a/fs/ext4/ioctl.c
++++ b/fs/ext4/ioctl.c
+@@ -20,6 +20,7 @@
+ #include <linux/delay.h>
+ #include <linux/iversion.h>
+ #include <linux/fileattr.h>
++#include <linux/uuid.h>
+ #include "ext4_jbd2.h"
+ #include "ext4.h"
+ #include <linux/fsmap.h>
+@@ -41,6 +42,15 @@ static void ext4_sb_setlabel(struct ext4_super_block *es, const void *arg)
+ 	memcpy(es->s_volume_name, (char *)arg, EXT4_LABEL_MAX);
+ }
+ 
++/*
++ * Superblock modification callback function for changing file system
++ * UUID.
++ */
++static void ext4_sb_setuuid(struct ext4_super_block *es, const void *arg)
++{
++	memcpy(es->s_uuid, (__u8 *)arg, UUID_SIZE);
++}
++
+ static
+ int ext4_update_primary_sb(struct super_block *sb, handle_t *handle,
+ 			   ext4_update_sb_callback func,
+@@ -1131,6 +1141,66 @@ static int ext4_ioctl_getlabel(struct ext4_sb_info *sbi, char __user *user_label
+ 	return 0;
+ }
+ 
++static int ext4_ioctl_getuuid(struct ext4_sb_info *sbi,
++			struct fsuuid __user *ufsuuid)
++{
++	struct fsuuid fsuuid;
++	__u8 uuid[UUID_SIZE];
++
++	if (copy_from_user(&fsuuid, ufsuuid, sizeof(fsuuid)))
++		return -EFAULT;
++
++	if (fsuuid.fsu_len != UUID_SIZE || fsuuid.fsu_flags != 0)
++		return -EINVAL;
++
++	lock_buffer(sbi->s_sbh);
++	memcpy(uuid, sbi->s_es->s_uuid, UUID_SIZE);
++	unlock_buffer(sbi->s_sbh);
++
++	if (copy_to_user(&ufsuuid->fsu_uuid[0], uuid, UUID_SIZE))
++		return -EFAULT;
++	return 0;
++}
++
++static int ext4_ioctl_setuuid(struct file *filp,
++			const struct fsuuid __user *ufsuuid)
++{
++	int ret = 0;
++	struct super_block *sb = file_inode(filp)->i_sb;
++	struct fsuuid fsuuid;
++	__u8 uuid[UUID_SIZE];
++
++	if (!capable(CAP_SYS_ADMIN))
++		return -EPERM;
++
++	/*
++	 * If any checksums (group descriptors or metadata) are being used
++	 * then the checksum seed feature is required to change the UUID.
++	 */
++	if (((ext4_has_feature_gdt_csum(sb) || ext4_has_metadata_csum(sb))
++			&& !ext4_has_feature_csum_seed(sb))
++		|| ext4_has_feature_stable_inodes(sb))
++		return -EOPNOTSUPP;
++
++	if (copy_from_user(&fsuuid, ufsuuid, sizeof(fsuuid)))
++		return -EFAULT;
++
++	if (fsuuid.fsu_len != UUID_SIZE || fsuuid.fsu_flags != 0)
++		return -EINVAL;
++
++	if (copy_from_user(uuid, &ufsuuid->fsu_uuid[0], UUID_SIZE))
++		return -EFAULT;
++
++	ret = mnt_want_write_file(filp);
++	if (ret)
++		return ret;
++
++	ret = ext4_update_superblocks_fn(sb, ext4_sb_setuuid, &uuid);
++	mnt_drop_write_file(filp);
++
++	return ret;
++}
++
+ static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ {
+ 	struct inode *inode = file_inode(filp);
+@@ -1509,6 +1579,10 @@ static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ 		return ext4_ioctl_setlabel(filp,
+ 					   (const void __user *)arg);
+ 
++	case EXT4_IOC_GETFSUUID:
++		return ext4_ioctl_getuuid(EXT4_SB(sb), (void __user *)arg);
++	case EXT4_IOC_SETFSUUID:
++		return ext4_ioctl_setuuid(filp, (const void __user *)arg);
+ 	default:
+ 		return -ENOTTY;
+ 	}
+@@ -1586,6 +1660,8 @@ long ext4_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	case EXT4_IOC_CHECKPOINT:
+ 	case FS_IOC_GETFSLABEL:
+ 	case FS_IOC_SETFSLABEL:
++	case EXT4_IOC_GETFSUUID:
++	case EXT4_IOC_SETFSUUID:
+ 		break;
+ 	default:
+ 		return -ENOIOCTLCMD;
+-- 
+2.37.0.170.g444d1eabd0-goog
 
-At any rate, I'm open to suggestions here - just trying to clean up a few
-things after a little code review.
-
-Thanks,
-Eric
-
-> 
-> > ---
-> >  fs/ext4/move_extent.c | 16 +++++++---------
-> >  1 file changed, 7 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
-> > index 701f1d6a217f..4e4b0452106e 100644
-> > --- a/fs/ext4/move_extent.c
-> > +++ b/fs/ext4/move_extent.c
-> > @@ -472,19 +472,17 @@ mext_check_arguments(struct inode *orig_inode,
-> >  	if (IS_IMMUTABLE(donor_inode) || IS_APPEND(donor_inode))
-> >  		return -EPERM;
-> >  
-> > -	/* Ext4 move extent does not support swapfile */
-> > +	/* Ext4 move extent does not support swap files */
-> >  	if (IS_SWAPFILE(orig_inode) || IS_SWAPFILE(donor_inode)) {
-> > -		ext4_debug("ext4 move extent: The argument files should "
-> > -			"not be swapfile [ino:orig %lu, donor %lu]\n",
-> > +		ext4_debug("ext4 move extent: The argument files should not be swap files [ino:orig %lu, donor %lu]\n",
-> >  			orig_inode->i_ino, donor_inode->i_ino);
-> > -		return -EBUSY;
-> > +		return -EOPNOTSUPP;
-> >  	}
-> >  
-> >  	if (ext4_is_quota_file(orig_inode) && ext4_is_quota_file(donor_inode)) {
-> > -		ext4_debug("ext4 move extent: The argument files should "
-> > -			"not be quota files [ino:orig %lu, donor %lu]\n",
-> > +		ext4_debug("ext4 move extent: The argument files should not be quota files [ino:orig %lu, donor %lu]\n",
-> >  			orig_inode->i_ino, donor_inode->i_ino);
-> > -		return -EBUSY;
-> > +		return -EOPNOTSUPP;
-> >  	}
-> >  
-> >  	/* Ext4 move extent supports only extent based file */
-> > @@ -631,11 +629,11 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp, __u64 orig_blk,
-> >  		if (ret)
-> >  			goto out;
-> >  		ex = path[path->p_depth].p_ext;
-> > -		next_blk = ext4_ext_next_allocated_block(path);
-> >  		cur_blk = le32_to_cpu(ex->ee_block);
-> >  		cur_len = ext4_ext_get_actual_len(ex);
-> >  		/* Check hole before the start pos */
-> >  		if (cur_blk + cur_len - 1 < o_start) {
-> > +			next_blk = ext4_ext_next_allocated_block(path);
-> >  			if (next_blk == EXT_MAX_BLOCKS) {
-> >  				ret = -ENODATA;
-> >  				goto out;
-> > @@ -663,7 +661,7 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp, __u64 orig_blk,
-> >  		donor_page_index = d_start >> (PAGE_SHIFT -
-> >  					       donor_inode->i_blkbits);
-> >  		offset_in_page = o_start % blocks_per_page;
-> > -		if (cur_len > blocks_per_page- offset_in_page)
-> > +		if (cur_len > blocks_per_page - offset_in_page)
-> >  			cur_len = blocks_per_page - offset_in_page;
-> >  		/*
-> >  		 * Up semaphore to avoid following problems:
-> > -- 
-> > 2.30.2
-> > 
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
