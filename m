@@ -2,112 +2,203 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CE8757BF26
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Jul 2022 22:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B6257C113
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Jul 2022 01:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbiGTUXl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 20 Jul 2022 16:23:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45808 "EHLO
+        id S231389AbiGTXpV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 20 Jul 2022 19:45:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbiGTUXl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 Jul 2022 16:23:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 180B52E9CC;
-        Wed, 20 Jul 2022 13:23:40 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A85EA61B59;
-        Wed, 20 Jul 2022 20:23:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AE72C3411E;
-        Wed, 20 Jul 2022 20:23:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658348619;
-        bh=lW21q/FRWjWE3vtmO3DcbyopA+xnj8cd4DOAyFf9cFI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oR/7zkojZptHam4OYQI7P7DJlDQqa1dO4av9TIdH9p+bSc+42SdnW88iuyCahtEH7
-         pb5B6olrLeICizfdZrb8CPU9Ap2HwcGkVT/qGIKgcZtZja4OPRwKTiBKmRTmOsj4EV
-         9boJElTA9daYSGFLWehsII5ydSGJDxoBhwfac78Scy5LeaBvWAEpDXu6Kc0/lYq/8v
-         pR/Em443K3NvHJ1W+fMGILjCxkbCy81uYia3Q0li5RIHsCDVE1bUXaZPgO9d1DjK+H
-         dNnrdABwRJeE+jls2LZr0JBc26AMON2mSmtfrCF+SRYlDN+mZg9xwqI+ggA+D8/Bbw
-         D2M0opea0CuSw==
-Date:   Wed, 20 Jul 2022 13:23:38 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Jeremy Bongio <bongiojp@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v4] Add ioctls to get/set the ext4 superblock uuid.
-Message-ID: <YthkSsZNA5g2Pqkn@magnolia>
-References: <20220719234131.235187-1-bongiojp@gmail.com>
- <Ytd0G0glVWdv+iaD@casper.infradead.org>
- <Ytd28d36kwdYWkVZ@magnolia>
- <YtgNCfMcuX7DGg7z@casper.infradead.org>
- <YthCucuMk/SAL0qN@mit.edu>
- <YthI9qp+VeNbFQP3@casper.infradead.org>
- <YthNrO4PMR+5ao+6@magnolia>
- <YthSysIGldWhK6f+@casper.infradead.org>
- <CANfQU3xMtYE8egLim0MS6N0SCCNX5yihQgafptop6ACrO8MGbw@mail.gmail.com>
+        with ESMTP id S229550AbiGTXpU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 Jul 2022 19:45:20 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61256DE;
+        Wed, 20 Jul 2022 16:45:17 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id q16so82663pgq.6;
+        Wed, 20 Jul 2022 16:45:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZEaKQvm/NxARytV46Yo0/098MQt6QtYcYVz7xqviJd4=;
+        b=dkkvcOmipq3l/S9vFdOtqMRcATTOhf/0PsKkjbKggBqjMI3Bo/oMmQ3PKYxyICyjmU
+         bHnHwfMGsZlKGbBZ3YHm2wqBnqTqp22EiQEexS64OeaxlQ6KX+dMBsPQ/rKPlXOx3NST
+         bEIUk8fT0ZTxO2jFnx4X2N8Upzm92jBvY39jHd/HVrB81+EhKOastI7ujKoUH+c46Y3N
+         EySqi5B0Mn8hALfqNsFvabIg7ubZI/PrT8L54x1HDA7FwANcTlVGL+r8gtC3whUf+r5Y
+         jdMx71R/RZkaelSyBi0JDyKUsJZO9bxLfzodei6TYMYWv8fSM06GiB9ZQvxejeBUqVwl
+         4+uQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZEaKQvm/NxARytV46Yo0/098MQt6QtYcYVz7xqviJd4=;
+        b=xfqVjrlkR6ylX0xFSisNjqzWWbegSU1OostP7JGf1R19u9jMi8Y2trfjsz0qn+Zlss
+         6p70lsIAEFrW5sl16tLBMLH0P50Ao2h9q5ksWv8aDLTbqwJ2OOjWuSbbpZflCJgmy6fz
+         4IZ8w/F63UAb/GTEKKjevmvH7gKbOJXAOFoJZblS4xiRn6+zzZfuzBGQ4+iLvVpwk/pG
+         XJxHswwkcubcH8sQGLo/r+LAA7fFGZR60J4N3eibTHMZrC2hq4NIWhHRtNarAFh3kplE
+         UWjSUkB1RSzTPm8a0vaku7qIyioohoC+5u/kmyUPN/Azg5TnBJRTD50m4d/+F2LCpBeY
+         b8ew==
+X-Gm-Message-State: AJIora+zLUqkyy+Tg6/g9G1+kfbMwZuLkxf7gDU3vweYCsPMFxv4qg+q
+        gaAUqEJuPfFnt94IUccNOTgyI5Qgpt2j8enA
+X-Google-Smtp-Source: AGRyM1vFFzYOJBeKbSpBufrB70dlsWT9nvYD6ZrpKFS66NicfhO4SkGs4/p13KSWfIf5JGAW7wiODQ==
+X-Received: by 2002:a63:fb01:0:b0:419:699f:a0bb with SMTP id o1-20020a63fb01000000b00419699fa0bbmr35309139pgh.4.1658360716885;
+        Wed, 20 Jul 2022 16:45:16 -0700 (PDT)
+Received: from jbongio9100214.roam.corp.google.com (cpe-104-173-199-31.socal.res.rr.com. [104.173.199.31])
+        by smtp.googlemail.com with ESMTPSA id mm3-20020a17090b358300b001ef95232570sm2192339pjb.52.2022.07.20.16.45.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jul 2022 16:45:16 -0700 (PDT)
+From:   Jeremy Bongio <bongiojp@gmail.com>
+To:     Ted Tso <tytso@mit.edu>, "Darrick J . Wong" <djwong@kernel.org>
+Cc:     linux-ext4@vger.kernel.org, linux-man@vger.kernel.org,
+        Jeremy Bongio <bongiojp@gmail.com>
+Subject: [PATCH v2] Add manpage for get/set fsuuid ioctl for ext4 filesystem.
+Date:   Wed, 20 Jul 2022 16:45:12 -0700
+Message-Id: <20220720234512.354076-1-bongiojp@gmail.com>
+X-Mailer: git-send-email 2.37.0.170.g444d1eabd0-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANfQU3xMtYE8egLim0MS6N0SCCNX5yihQgafptop6ACrO8MGbw@mail.gmail.com>
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jul 20, 2022 at 01:11:25PM -0700, Jeremy Bongio wrote:
-> On Wed, Jul 20, 2022 at 12:09 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Wed, Jul 20, 2022 at 11:47:08AM -0700, Darrick J. Wong wrote:
-> > > On Wed, Jul 20, 2022 at 07:27:02PM +0100, Matthew Wilcox wrote:
-> > > > On Wed, Jul 20, 2022 at 02:00:25PM -0400, Theodore Ts'o wrote:
-> > > > > On Wed, Jul 20, 2022 at 03:11:21PM +0100, Matthew Wilcox wrote:
-> > > > > > Uhhh.  So what are the semantics of len?  That is, on SET, what does
-> > > > > > a filesystem do if userspace says "Here's 8 bytes" but the filesystem
-> > > > > > usually uses 16 bytes?  What does the same filesystem do if userspace
-> > > > > > offers it 32 bytes?  If the answer is "returns -EINVAL", how does
-> > > > > > userspace discover what size of volume ID is acceptable to a particular
-> > > > > > filesystem?
-> > > > > >
-> > > > > > And then, on GET, does 'len' just mean "here's the length of the buffer,
-> > > > > > put however much will fit into it"?  Should filesystems update it to
-> > > > > > inform userspace how much was transferred?
-> > > > >
-> > > > > What I'd suggest is that for GET, the length field when called should
-> > > > > be the length of the buffer, and if the length is too small, we should
-> > > > > return some error --- probably EINVAL or ENOSPC.  If the buffer size
-> > > > > length is larger than what is needed, having the file system update it
-> > > > > with the size of the UUID that was returned.
-> > >
-> > > I'd suggest something different -- calling the getfsuuid ioctl with a
-> > > null argument should return the filesystem's volid/uuid size as the
-> > > return value.  If userspace supplies a non-null argument, then fsu_len
-> > > has to match the filesystem's volid/uuid size or else you get EINVAL.
-> >
-> > Or userspace passes in 0 for the len and the filesystem returns -EINVAL
-> > and sets ->len to what the valid size would be?  There's a few ways of
-> > solving this.
-> 
-> This solution seems more intuitive to me. If EXT4_IOCTL_GETFSUUID is
-> called with fsu_len set to 0, then fsu_len will be set to the required
-> UUID length and return with an error code.
+Signed-off-by: Jeremy Bongio <bongiojp@gmail.com>
+---
 
-Works for me!
+This is a ext4 filesystem specific ioctl. However, this ioctl will
+likely be implemented for multiple filesystems at which point this
+manpage will be updated.
 
-> I discussed this solution when first developing the ioctl, but I left
-> it out since for ext4 I don't have a use case. However since other
-> filesystems will likely implement this ioctl, it makes sense to add.
+ man2/ioctl_fsuuid.2 | 115 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 115 insertions(+)
+ create mode 100644 man2/ioctl_fsuuid.2
 
-Hee hee, future thinking.  That's what a good ARB should be for <cough>.
+diff --git a/man2/ioctl_fsuuid.2 b/man2/ioctl_fsuuid.2
+new file mode 100644
+index 000000000..53747684f
+--- /dev/null
++++ b/man2/ioctl_fsuuid.2
+@@ -0,0 +1,115 @@
++.\" Copyright (c) 2022 Google, Inc., written by Jeremy Bongio <bongiojp@gmail.com>
++.\"
++.\" SPDX-License-Identifier: Linux-man-pages-copyleft
++.TH IOCTL_FSUUID 2 2022-07-20 "Linux" "Linux Programmer's Manual"
++.SH NAME
++ioctl_fsuuid \- get or set an ext4 filesystem uuid
++.SH LIBRARY
++Standard C library
++.RI ( libc ", " \-lc )
++.SH SYNOPSIS
++.nf
++.B #include <sys/ioctl.h>
++.PP
++.BI "int ioctl(int " fd ", EXT4_IOC_GETFSUUID, struct " fsuuid ");"
++.BI "int ioctl(int " fd ", EXT4_IOC_SETFSUUID, struct " fsuuid ");"
++.fi
++.SH DESCRIPTION
++If an ext4 filesystem supports uuid manipulation, these
++.BR ioctl (2)
++operations can be used to get or set the uuid for the ext4 filesystem
++on which
++.I fd
++resides.
++.PP
++The argument to these operations should be a pointer to a
++.IR "struct fsuuid" ":"
++.PP
++.in +4n
++.EX
++struct fsuuid {
++       __u32 fsu_len;      /* Number of bytes in a uuid */
++       __u32 fsu_flags;    /* Mapping flags */
++       __u8  fsu_uuid[];   /* Byte array for uuid */
++};
++.EE
++.PP
++The
++.I fsu_flags
++field must be set to 0. 
++.PP
++If an
++.BR EXT4_IOC_GETFSUUID
++operation is called with
++.I fsu_len
++set to 0,
++.I fsu_len
++will be reassigned the number of bytes in an ext4 filesystem uuid
++and the return code will be -EINVAL.
++.PP
++If an
++.BR EXT4_IOC_GETFSUUID
++operation is called with
++.I fsu_len
++set to the number of bytes in an ext4 filesystem uuid and
++.I fsu_uuid
++is allocated at least that many bytes, then
++the filesystem uuid will be written to
++.I fsu_uuid.
++.PP
++If an
++.BR EXT4_IOC_SETFSUUID
++operation is called with
++.I fsu_len
++set to the number of bytes in an ext4 filesystem uuid and
++.I fsu_uuid
++contains a uuid with 
++.I fsu_uuid
++bytes, then
++the filesystem uuid will be set to
++.I fsu_uuid.
++.PP
++The
++.B FS_IOC_SETFSUUID
++operation requires privilege
++.RB ( CAP_SYS_ADMIN ).
++If the filesystem is currently being resized, an
++.B EXT4_IOC_SETFSUUID
++operation will wait until the resize is finished and the uuid can safely be set.
++This may take a long time.
++.PP
++.SH RETURN VALUE
++On success zero is returned.
++On error, \-1 is returned, and
++.I errno
++is set to indicate the error.
++.SH ERRORS
++Possible errors include (but are not limited to) the following:
++.TP
++.B EFAULT
++Either the pointer to the
++.I fsuuid
++structure is invalid or
++.I fsu_uuid
++has not been initialized properly.
++.TP
++.B EINVAL
++The specified arguments are invalid.
++.I fsu_len
++did not match the filesystem uuid length or
++.I fsu_flags
++has bits set that are not implemented.
++.TP
++.B ENOTTY
++The filesystem does not support the ioctl.
++.TP
++.B EOPNOTSUPP
++The filesystem does not currently support changing the uuid through this
++ioctl. This may be due to incompatible feature flags.
++.TP
++.B EPERM
++The calling process does not have sufficient permissions to set the uuid.
++.SH CONFORMING TO
++This API is Linux-specific.
++.SH SEE ALSO
++.BR ioctl (2)
+-- 
+2.37.0.170.g444d1eabd0-goog
 
-> I'll send out a new manpage with that detail added and update the code.
-
-I'll look forward to it. :)
-
---D
