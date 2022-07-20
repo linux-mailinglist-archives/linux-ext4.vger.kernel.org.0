@@ -2,194 +2,126 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ADFD57B93F
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Jul 2022 17:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9FC057B980
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Jul 2022 17:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241132AbiGTPLp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 20 Jul 2022 11:11:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47284 "EHLO
+        id S235149AbiGTPXN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 20 Jul 2022 11:23:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241084AbiGTPLn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 Jul 2022 11:11:43 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B3052FF9
-        for <linux-ext4@vger.kernel.org>; Wed, 20 Jul 2022 08:11:41 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id h22so13536468qta.3
-        for <linux-ext4@vger.kernel.org>; Wed, 20 Jul 2022 08:11:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+fyOSDGFhiRg3U5D3lu09JNRPejVKpHF7EXIm583gb0=;
-        b=VG0Mdy9OVVMctpa+RajbkcrTqgg0awPph0h9S40RZzWdg4urSpyIre1LsETyx8C1cM
-         E4ZE9nB/Mx3t9XFgdQBAwNOr/LlWRrzyz9R8QrAZ57AMphoT6hMhGZoFZVKFvuXeHakg
-         k5UYNgP7cXST0zubrwM8jdleBlxz8YIK2kTcpxbVUfnRgpS9Wb/WFn4uLT005b2rZL0w
-         YOse4ZgYFuD92y6PGjREIaPVf/BkUV1bDIpl8CXyK+ncu8ZWqWWS6Vode1gCLUJ2rncW
-         kDd6AhiQRRuweZU//3GcCAP1FlfEo54ryOHu4C1lERSh983bJ7utTyYDx4jiPCGMYKu3
-         pcXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+fyOSDGFhiRg3U5D3lu09JNRPejVKpHF7EXIm583gb0=;
-        b=DKtZmZeOPY80+N+kqKtdRER1rzOUogPxgsBgibNwlJFyQ/GVpoJPcr6uxa5gbGQpO9
-         7BMY2UCX95QFkZI4TuozqISH/0o5ZgTfJdS11XGYnSWFRTVfylW9njjq///Ab5BWpmVD
-         wicflk4ca7PSrmCR2GVEMySNyQFsaKYhzIi/LRzPWZovflc2nIJRA0XoKtBlLdMS1bPC
-         NP6Vs0J+CEkpCR3+kXi3+A7gnRCsFVHTGrhSq9tmRpC/jolm5t16fQizz0uFdXxmi3yN
-         bkt4bw4TYt2eJ6Q9UFyjuoYt+BihERcfGlMSxic7OJT49ndwUc9zrpG5GgnQEMfRpGYj
-         qzQA==
-X-Gm-Message-State: AJIora8mzBVnSbz+/ccrFk20EbKOaEoSX7tMk7Nj1AncH5WqtE/tc3+d
-        F1HSlTuemoajWfupuANb5n8=
-X-Google-Smtp-Source: AGRyM1st7LzqSMO7h+v0qLs4M80kCekYT1PLxfi2kDSXJV8FDa0Ruce6rk38yS+oDR0DaVPfOQ6F/A==
-X-Received: by 2002:a05:622a:1052:b0:31e:fcb3:4aa2 with SMTP id f18-20020a05622a105200b0031efcb34aa2mr7134095qte.399.1658329900440;
-        Wed, 20 Jul 2022 08:11:40 -0700 (PDT)
-Received: from debian-BULLSEYE-live-builder-AMD64 (h96-61-90-13.cntcnh.broadband.dynamic.tds.net. [96.61.90.13])
-        by smtp.gmail.com with ESMTPSA id z11-20020ac86b8b000000b0031ee738fe1dsm7664536qts.67.2022.07.20.08.11.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jul 2022 08:11:40 -0700 (PDT)
-Date:   Wed, 20 Jul 2022 11:11:38 -0400
-From:   Eric Whitney <enwlinux@gmail.com>
-To:     Eric Whitney <enwlinux@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, tytso@mit.edu
-Subject: Re: [PATCH] ext4: minor defrag code improvements
-Message-ID: <YtgbKhYxbX4NPJts@debian-BULLSEYE-live-builder-AMD64>
-References: <20220621143340.2268087-1-enwlinux@gmail.com>
- <20220714115326.qhjsrchoepnnsffu@quack3>
- <YtcjkMcYQCATlt0Y@debian-BULLSEYE-live-builder-AMD64>
+        with ESMTP id S232825AbiGTPXG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 Jul 2022 11:23:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 50F855C94E
+        for <linux-ext4@vger.kernel.org>; Wed, 20 Jul 2022 08:23:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1658330584;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KUcxIoB2J7OZSdoCp00xQlFV5PxUPCmzZjIlgAQpABg=;
+        b=fUvzYkgk23cyN7Bv3up2RpfOnbhvTZueJfjvkdkzKTgy2La5CSJFEYUUyj3QRGyvh5tvWw
+        R+OBq2w6hTaeUqKwaHq4VYUnBsKyCmPbWV8aNznON5EArjnMn4o8H5OEELyLCArIAXpO2p
+        D1IzFxdvvyJgttuxAZLNW0CeANbMcVQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-593-NSpBIl2VOkWCl7pVBu4WtA-1; Wed, 20 Jul 2022 11:23:01 -0400
+X-MC-Unique: NSpBIl2VOkWCl7pVBu4WtA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 508538F3EE0;
+        Wed, 20 Jul 2022 15:23:00 +0000 (UTC)
+Received: from fedora (unknown [10.40.194.108])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 419AE1121314;
+        Wed, 20 Jul 2022 15:22:59 +0000 (UTC)
+Date:   Wed, 20 Jul 2022 17:22:57 +0200
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Benjamin Coddington <bcodding@redhat.com>
+Subject: Re: should we make "-o iversion" the default on ext4 ?
+Message-ID: <20220720152257.t67grnm4wdi3dpld@fedora>
+References: <69ac1d3ef0f63b309204a570ef4922d2684ed7f9.camel@kernel.org>
+ <20220720141546.46l2d7bxwukjhtl7@fedora>
+ <ad7218a41fa8ac26911a9ccb79c87609d4279fea.camel@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YtcjkMcYQCATlt0Y@debian-BULLSEYE-live-builder-AMD64>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ad7218a41fa8ac26911a9ccb79c87609d4279fea.camel@kernel.org>
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.3
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-* Eric Whitney <enwlinux@gmail.com>:
-> * Jan Kara <jack@suse.cz>:
-> > On Tue 21-06-22 10:33:40, Eric Whitney wrote:
-> > > Modify two error paths returning EBUSY for bad argument file types to
-> > > return EOPNOTSUPP instead.  Move an extent tree search whose results are
-> > > only occasionally required to the site always requiring them for
-> > > improved efficiency.  Address a few typos.
-> > > 
-> > > Signed-off-by: Eric Whitney <enwlinux@gmail.com>
+On Wed, Jul 20, 2022 at 10:38:31AM -0400, Jeff Layton wrote:
+> On Wed, 2022-07-20 at 16:15 +0200, Lukas Czerner wrote:
+
+--snip--
+
+> > How would we approach making iversion a default? libmount is passing
+> > this option to the kernel as just a MS_I_VERSION flag that is set when
+> > -o iversion is used and left empty when the -o noiversion is used. This
+> > means that while we could make it a default in ext4, we don't have any
+> > way of knowing whether the user asked for -o noiversion. So that's not
+> > really an option.
 > > 
-> > So why is EOPNOTSUPP better than EBUSY? Honestly we are rather inconsistent
-> > with errors returned for various operations on swapfile -
-> > read/write/fallocate/truncate return ETXTBSY, unlink returns EPERM, some
-> > ext4 ioctls return EINVAL... I guess ETXTBSY is the most common return
-> > value?
+> > Updating the mke2fs/tune2fs to allow setting iversion as a default mount
+> > option I think has the same problem.
 > > 
-> > Otherwise the patch looks good.
+> > So the only way I can see ATM would be to introduce another mountflag
+> > for libmount to indicate -o noiversion. This way we can make iversion a
+> > default on ext4 without loosing the information about user provided -o
+> > noiversion option.
 > > 
-> > 								Honza
+> > Is there a different way I am not seeing?
+> > 
 > 
-> Hi Jan - thanks for your review.
+> Right, implementing this is the difficult bit actually since this uses a
+> MS_* flag. If we do make this the default, we'd definitely want to
+> continue allowing "-o noiversion" to disable it.
 > 
-> I think EOPNOTSUPP is better than EBUSY when EXT4_IOC_MOVE_EXT is applied to
-> a swap file because it's a much more direct message indicating that ext4
-> doesn't support swap file defragmentation.  With the exception of the two
-> sites modified by this patch, all the other sites in the defrag code where
-> checks are made for unsupported file types or file system configurations,
-> EOPNOTSUPP is returned.  Because EBUSY really doesn't seem to convey what's
-> happening here very well - this isn't so much a case of a potentially
-> temporarily busy resource as an attempt to perform an operation that will
-> never succeed - another choice seemed more appropriate.  I picked EOPNOTSUPP
-> simply because it's used in those other sites in the defrag code, and was
-> trying to be consistent. (The defrag code reports EBUSYs when it can't
-> release pages with references on them.)
-> 
-> EINVAL could be an alternative.  It's not quite as direct but it does
-> convey the idea that an argument to the ioctl is wrong.  The defrag code
-> uses it (a little inconsistently) when argument values are out of range or
-> otherwise invalid.
-> 
-> Is ETXTBUSY still reported by the kernel?  I couldn't find it in a search after
-> reading this:  lwn.net/Articles/866493/
-> I didn't consider that because an executable wasn't involved - interesting that
-> it was used for some operations applied to swap files.
+> Could we just reverse the default in libmount? It might cause this to
+> suddenly be enabled in some deployments, but in most cases, people
+> wouldn't even notice and they could still specify -o noiversion to turn
+> it off.
 
-And of course I botched my search - ETXTBSY, not ETXTBUSY. 50+ instances
-remain in the kernel.
+Can be done, but that would change the default for everyone. Not sure if
+that desirable. Also I can image this being a bit confusing. I still
+think the best approach would be to introduce another MS_ flag for
+noiversion case. I think there is precedence in the case of
+MS_STRICTATIME - not exactly the same but similar enough.
 
-So, EOPNOTSUPP or EINVAL would be a clearer indication that the move extents
-ioctl is being applied to a file type it can't defrag.  I can go with ETXTBSY
-if you really prefer - any of these is better than EBUSY in this case, IMHO.
-
-Eric
-
-> 
-> At any rate, I'm open to suggestions here - just trying to clean up a few
-> things after a little code review.
-> 
-> Thanks,
-> Eric
+> Another idea would be to introduce new mount options for this, but
+> that's kind of nasty from a UI standpoint.
 > 
 > > 
-> > > ---
-> > >  fs/ext4/move_extent.c | 16 +++++++---------
-> > >  1 file changed, 7 insertions(+), 9 deletions(-)
-> > > 
-> > > diff --git a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
-> > > index 701f1d6a217f..4e4b0452106e 100644
-> > > --- a/fs/ext4/move_extent.c
-> > > +++ b/fs/ext4/move_extent.c
-> > > @@ -472,19 +472,17 @@ mext_check_arguments(struct inode *orig_inode,
-> > >  	if (IS_IMMUTABLE(donor_inode) || IS_APPEND(donor_inode))
-> > >  		return -EPERM;
-> > >  
-> > > -	/* Ext4 move extent does not support swapfile */
-> > > +	/* Ext4 move extent does not support swap files */
-> > >  	if (IS_SWAPFILE(orig_inode) || IS_SWAPFILE(donor_inode)) {
-> > > -		ext4_debug("ext4 move extent: The argument files should "
-> > > -			"not be swapfile [ino:orig %lu, donor %lu]\n",
-> > > +		ext4_debug("ext4 move extent: The argument files should not be swap files [ino:orig %lu, donor %lu]\n",
-> > >  			orig_inode->i_ino, donor_inode->i_ino);
-> > > -		return -EBUSY;
-> > > +		return -EOPNOTSUPP;
-> > >  	}
-> > >  
-> > >  	if (ext4_is_quota_file(orig_inode) && ext4_is_quota_file(donor_inode)) {
-> > > -		ext4_debug("ext4 move extent: The argument files should "
-> > > -			"not be quota files [ino:orig %lu, donor %lu]\n",
-> > > +		ext4_debug("ext4 move extent: The argument files should not be quota files [ino:orig %lu, donor %lu]\n",
-> > >  			orig_inode->i_ino, donor_inode->i_ino);
-> > > -		return -EBUSY;
-> > > +		return -EOPNOTSUPP;
-> > >  	}
-> > >  
-> > >  	/* Ext4 move extent supports only extent based file */
-> > > @@ -631,11 +629,11 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp, __u64 orig_blk,
-> > >  		if (ret)
-> > >  			goto out;
-> > >  		ex = path[path->p_depth].p_ext;
-> > > -		next_blk = ext4_ext_next_allocated_block(path);
-> > >  		cur_blk = le32_to_cpu(ex->ee_block);
-> > >  		cur_len = ext4_ext_get_actual_len(ex);
-> > >  		/* Check hole before the start pos */
-> > >  		if (cur_blk + cur_len - 1 < o_start) {
-> > > +			next_blk = ext4_ext_next_allocated_block(path);
-> > >  			if (next_blk == EXT_MAX_BLOCKS) {
-> > >  				ret = -ENODATA;
-> > >  				goto out;
-> > > @@ -663,7 +661,7 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp, __u64 orig_blk,
-> > >  		donor_page_index = d_start >> (PAGE_SHIFT -
-> > >  					       donor_inode->i_blkbits);
-> > >  		offset_in_page = o_start % blocks_per_page;
-> > > -		if (cur_len > blocks_per_page- offset_in_page)
-> > > +		if (cur_len > blocks_per_page - offset_in_page)
-> > >  			cur_len = blocks_per_page - offset_in_page;
-> > >  		/*
-> > >  		 * Up semaphore to avoid following problems:
-> > > -- 
-> > > 2.30.2
-> > > 
-> > -- 
-> > Jan Kara <jack@suse.com>
-> > SUSE Labs, CR
+> > If we can do reasonably extensive testing that will indeed show
+> > negligible impact when nothing is querying i_version, then I would be in
+> > favor of the change.
+> > 
+> 
+> Excellent! I think that would be best if we can get away with it. A lot
+> of people are currently running ext4-backed nfs servers and aren't using
+> that mount option.
+
+Could you provide some performance numbers for iversion case?
+
+Thanks!
+-Lukas
+
+> -- 
+> Jeff Layton <jlayton@kernel.org>
+> 
+
