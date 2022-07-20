@@ -2,65 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E54C57AACA
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Jul 2022 02:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C372C57AD64
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Jul 2022 03:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230229AbiGTADR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Jul 2022 20:03:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44102 "EHLO
+        id S240101AbiGTBwb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Jul 2022 21:52:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237198AbiGTADC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Jul 2022 20:03:02 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 857CA4D4C0;
-        Tue, 19 Jul 2022 17:03:01 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id o12so15085169pfp.5;
-        Tue, 19 Jul 2022 17:03:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kdSHvmbmyAj+9ykXc7qcs33xg1FviflBgJ25mAdK2E8=;
-        b=DyWdlL9QGFjnJgA91Ab4/GVEuluYobh11+984KAbVkmRGgojvdtRQyjh4kvmHypLm7
-         FcpzEcmliYC+2qp96PfWDUW8heJbH87Im165cqG2dfdbqZbDqEaKjEurfo2G9et6qn+6
-         jztT4vjoOekWm1hyqyGiv3hmG8w7oJPpMNDaeGGM9dX4We8gPiVERN4AjrU9dMdxUfNx
-         UmaodKPx7WGsKpmB4lCwRKa0BUxvbIVYN1olA9GD7zIfc/9CArkqKpW7BrNbcowpC0Ew
-         rrLuLuVsJCeF8rA4oGSGvkfcBuxV6t2EcMvxxGfPz+g91j7gB2ec+ugUYVn12piBUrRS
-         cSjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kdSHvmbmyAj+9ykXc7qcs33xg1FviflBgJ25mAdK2E8=;
-        b=31Ey1Blmk2fwJCkPSu50zbVi3fNrEPu9Dax2SM4SiQcKKr5lJ4vAZpeg+d8qV1PwrG
-         sEDIBBIZInD9SDgGCAtaIWznBLhGQr75puW6Nc3Xy7CsRU2x19V20faEBI4vPH2IzLcZ
-         KBVpspR80623xTvo7n0DVVIBwC0E9sl4JTPJdEOyhDOXVFpLHXwHoYlvfE5jVx0Ew2kt
-         xdnVfpfHjFaxZp6fI3tDiFeJXPtql5TTIq9lg+e1FiycSikRcgKzQg1jYGRjRwVvhJg7
-         fLOcPGt5ds+sKJ+u/XhXBfpluSjWSB7e+dvnujV6b1QcSJ8SH2hc8TkehTKLq0P0Cefs
-         v2Vg==
-X-Gm-Message-State: AJIora/8TasVruZuxN+KDoXBf3GbcyQvTClWD+SEZEDHPX7bw3htPo2U
-        5SlOJj5OadXCzIZMSt6ptcw=
-X-Google-Smtp-Source: AGRyM1vXEvMQsMAHbQp2/rVjkxhY1sbGnKOHVFgrSPqIUY8h6GqA0vROIek2oZLfaiFyf8bK5FFrUQ==
-X-Received: by 2002:a05:6a00:114c:b0:528:2c7a:6302 with SMTP id b12-20020a056a00114c00b005282c7a6302mr36261499pfm.37.1658275380928;
-        Tue, 19 Jul 2022 17:03:00 -0700 (PDT)
-Received: from jbongio9100214.corp.google.com ([2620:0:102f:1:c88e:7520:969d:1265])
-        by smtp.googlemail.com with ESMTPSA id m6-20020a17090a7f8600b001f2157fdfbbsm172712pjl.19.2022.07.19.17.03.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jul 2022 17:03:00 -0700 (PDT)
-From:   Jeremy Bongio <bongiojp@gmail.com>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org, fstests@vger.kernel.org,
-        Jeremy Bongio <bongiojp@gmail.com>,
-        "Darrick J . Wong" <djwong@kernel.org>
-Subject: [PATCH v5] ext4/056: add a check to make sure ext4 uuid ioctls get/set during fsstress.
-Date:   Tue, 19 Jul 2022 17:02:56 -0700
-Message-Id: <20220720000256.239531-1-bongiojp@gmail.com>
-X-Mailer: git-send-email 2.37.0.170.g444d1eabd0-goog
+        with ESMTP id S235626AbiGTBwa (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Jul 2022 21:52:30 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 574354D150;
+        Tue, 19 Jul 2022 18:52:29 -0700 (PDT)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Lndtj5kMJzkX6g;
+        Wed, 20 Jul 2022 09:50:05 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Wed, 20 Jul 2022 09:52:27 +0800
+Message-ID: <a49ccfcd-51ae-eade-8c76-08c4d5d10afc@huawei.com>
+Date:   Wed, 20 Jul 2022 09:52:26 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: Re: [PATCH 4.19] ext4: fix race condition between ext4_ioctl_setflags
+ and ext4_fiemap
+To:     Theodore Ts'o <tytso@mit.edu>, Greg KH <gregkh@linuxfoundation.org>
+CC:     <stable@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
+        <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+        <ritesh.list@gmail.com>, <lczerner@redhat.com>,
+        <enwlinux@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>, <yebin10@huawei.com>, <yukuai3@huawei.com>,
+        Hulk Robot <hulkci@huawei.com>,
+        Baokun Li <libaokun1@huawei.com>
+References: <20220715023928.2701166-1-libaokun1@huawei.com>
+ <YtF1XygwvIo2Dwae@kroah.com>
+ <425ab528-7d9a-975a-7f4c-5f903cedd8bc@huawei.com>
+ <YtaVAWMlxrQNcS34@kroah.com> <Yta6THyDwHulhfi5@mit.edu>
+From:   Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <Yta6THyDwHulhfi5@mit.edu>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,254 +57,28 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Adds a utility to set/get uuid through ext4 ioctl. Executes the ioctls
-while running fsstress. These ioctls are used by tune2fs to safely change
-the uuid without racing other filesystem modifications.
+在 2022/7/19 22:06, Theodore Ts'o 写道:
+> On Tue, Jul 19, 2022 at 01:26:57PM +0200, Greg KH wrote:
+>> On Sat, Jul 16, 2022 at 10:33:30AM +0800, Baokun Li wrote:
+>>> This problem persists until the patch d3b6f23f7167("ext4: move ext4_fiemap
+>>> to use iomap framework") is incorporated in v5.7-rc1.
+>> Then why not ask for that change to be added instead?
+> Switching over to use the iomap framework is a quite invasive change,
+> which is fraught with danager and potential performance regressions.
+> So it's really not something that would be considered safe for an LTS
+> kernel.
+>
+> As an upstream developer I'd ask why are people trying to use a kernel
+> as old as 4.19, but RHEL has done more insane things than that.  Also,
+> I know what the answer is, and it's just too depressing for a nice
+> summer day like this.  :-)
+>
+>         	  	    	     	       - Ted
+> .
 
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-Signed-off-by: Jeremy Bongio <bongiojp@gmail.com>
----
+Indeed.
 
-Changes in v5:
-
-Added reviewed-by tag.
-
-Added wait after killing fsstress pids.
-
-Removed _scratch_mount output redirection.
-
- .gitignore         |   1 +
- src/Makefile       |   4 +-
- src/uuid_ioctl.c   | 105 +++++++++++++++++++++++++++++++++++++++++++++
- tests/ext4/056     |  64 +++++++++++++++++++++++++++
- tests/ext4/056.out |   2 +
- 5 files changed, 174 insertions(+), 2 deletions(-)
- create mode 100644 src/uuid_ioctl.c
- create mode 100755 tests/ext4/056
- create mode 100644 tests/ext4/056.out
-
-diff --git a/.gitignore b/.gitignore
-index ba0c572b..dab24d68 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -169,6 +169,7 @@ tags
- /src/unwritten_mmap
- /src/unwritten_sync
- /src/usemem
-+/src/uuid_ioctl
- /src/writemod
- /src/writev_on_pagefault
- /src/xfsctl
-diff --git a/src/Makefile b/src/Makefile
-index 111ce1d9..e33e04de 100644
---- a/src/Makefile
-+++ b/src/Makefile
-@@ -31,14 +31,14 @@ LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
- 	dio-invalidate-cache stat_test t_encrypted_d_revalidate \
- 	attr_replace_test swapon mkswap t_attr_corruption t_open_tmpfiles \
- 	fscrypt-crypt-util bulkstat_null_ocount splice-test chprojid_fail \
--	detached_mounts_propagation ext4_resize
-+	detached_mounts_propagation ext4_resize uuid_ioctl
- 
- EXTRA_EXECS = dmerror fill2attr fill2fs fill2fs_check scaleread.sh \
- 	      btrfs_crc32c_forged_name.py
- 
- SUBDIRS = log-writes perf
- 
--LLDLIBS = $(LIBHANDLE) $(LIBACL) -lpthread -lrt
-+LLDLIBS = $(LIBHANDLE) $(LIBACL) -lpthread -lrt -luuid
- 
- ifeq ($(HAVE_XLOG_ASSIGN_LSN), true)
- LINUX_TARGETS += loggen
-diff --git a/src/uuid_ioctl.c b/src/uuid_ioctl.c
-new file mode 100644
-index 00000000..89a9b5d8
---- /dev/null
-+++ b/src/uuid_ioctl.c
-@@ -0,0 +1,105 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2022 Google, Inc. All Rights Reserved.
-+ *
-+ * Test program which uses the raw ext4 set_fsuuid ioctl directly.
-+ * SYNOPSIS:
-+ *   $0 COMMAND MOUNT_POINT [UUID]
-+ *
-+ * COMMAND must be either "get" or "set".
-+ * The UUID must be a 16 octet sequence represented as 32 hexadecimal digits in
-+ * canonical textual representation, e.g. output from `uuidgen`.
-+ *
-+ */
-+
-+#include <stdio.h>
-+#include <fcntl.h>
-+#include <errno.h>
-+#include <unistd.h>
-+#include <stdint.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <sys/ioctl.h>
-+#include <uuid/uuid.h>
-+#include <linux/fs.h>
-+
-+struct fsuuid {
-+	__u32   fsu_len;
-+	__u32   fsu_flags;
-+	__u8    fsu_uuid[];
-+};
-+
-+#ifndef EXT4_IOC_GETFSUUID
-+#define EXT4_IOC_GETFSUUID      _IOR('f', 44, struct fsuuid)
-+#endif
-+
-+#ifndef EXT4_IOC_SETFSUUID
-+#define EXT4_IOC_SETFSUUID      _IOW('f', 44, struct fsuuid)
-+#endif
-+
-+int main(int argc, char **argv)
-+{
-+	int error, fd;
-+	struct fsuuid *fsuuid = NULL;
-+
-+	if (argc < 3) {
-+		fprintf(stderr, "Invalid arguments\n");
-+		return 1;
-+	}
-+
-+	fd = open(argv[2], O_RDONLY);
-+	if (!fd) {
-+		perror(argv[2]);
-+		return 1;
-+	}
-+
-+	fsuuid = malloc(sizeof(*fsuuid) + sizeof(uuid_t));
-+	if (!fsuuid) {
-+		perror("malloc");
-+		return 1;
-+	}
-+	fsuuid->fsu_len = sizeof(uuid_t);
-+	fsuuid->fsu_flags = 0;
-+
-+	if (strcmp(argv[1], "get") == 0) {
-+		uuid_t uuid;
-+		char uuid_str[37];
-+
-+		if (ioctl(fd, EXT4_IOC_GETFSUUID, fsuuid)) {
-+			fprintf(stderr, "%s while trying to get fs uuid\n",
-+				strerror(errno));
-+			return 1;
-+		}
-+
-+		memcpy(&uuid, fsuuid->fsu_uuid, sizeof(uuid));
-+		uuid_unparse(uuid, uuid_str);
-+		printf("%s\n", uuid_str);
-+	} else if (strcmp(argv[1], "set") == 0) {
-+		uuid_t uuid;
-+
-+		if (argc != 4) {
-+			fprintf(stderr, "UUID argument missing.\n");
-+			return 1;
-+		}
-+
-+		error = uuid_parse(argv[3], uuid);
-+		if (error < 0) {
-+			fprintf(stderr, "Invalid UUID. The UUID should be in "
-+				"canonical format. Example: "
-+				"8c628557-6987-42b2-ba16-b7cc79ddfb43\n");
-+			return 1;
-+		}
-+
-+		memcpy(&fsuuid->fsu_uuid, uuid, sizeof(uuid));
-+		if (ioctl(fd, EXT4_IOC_SETFSUUID, fsuuid)) {
-+			fprintf(stderr, "%s while trying to set fs uuid\n",
-+				strerror(errno));
-+			return 1;
-+		}
-+	} else {
-+		fprintf(stderr, "Invalid command\n");
-+		return 1;
-+	}
-+
-+	return 0;
-+}
-diff --git a/tests/ext4/056 b/tests/ext4/056
-new file mode 100755
-index 00000000..376f2972
---- /dev/null
-+++ b/tests/ext4/056
-@@ -0,0 +1,64 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2022 Google, Inc. All Rights Reserved.
-+#
-+# Test the set/get UUID ioctl.
-+#
-+
-+. ./common/preamble
-+_begin_fstest auto ioctl
-+
-+# Override the default cleanup function.
-+_cleanup()
-+{
-+        cd /
-+        rm -r -f $tmp.*
-+        kill -9 $fsstress_pid 2>/dev/null;
-+        wait $fsstress_pid > /dev/null 2>&1
-+}
-+
-+# Import common functions.
-+. ./common/filter
-+
-+# real QA test starts here
-+_supported_fs ext4
-+_require_scratch
-+_require_test_program uuid_ioctl
-+_require_command $UUIDGEN_PROG uuidgen
-+
-+UUID_IOCTL=$here/src/uuid_ioctl
-+
-+# If the ioctl is not supported by the kernel, then skip test.
-+current_uuid=$($UUID_IOCTL get $SCRATCH_MNT 2>&1)
-+if [[ "$current_uuid" =~ ^Inappropriate[[:space:]]ioctl ]]; then
-+        _notrun "UUID ioctls are not supported by kernel."
-+fi
-+
-+# metadata_csum_seed must be set to decouple checksums from the uuid.
-+# Otherwise, checksums need to be recomputed when the uuid changes, which
-+# is not supported by the ioctl.
-+_scratch_mkfs_ext4 -O metadata_csum_seed >> $seqres.full 2>&1
-+_scratch_mount
-+
-+# Begin fsstress while modifying UUID
-+fsstress_args=$(_scale_fsstress_args -d $SCRATCH_MNT -p 15 -n 999999)
-+$FSSTRESS_PROG $fsstress_args > /dev/null 2>&1 &
-+fsstress_pid=$!
-+
-+for n in $(seq 1 20); do
-+        new_uuid=$($UUIDGEN_PROG)
-+
-+        echo "Setting UUID to ${new_uuid}" >> $seqres.full 2>&1
-+        $UUID_IOCTL set $SCRATCH_MNT $new_uuid
-+
-+        current_uuid=$($UUID_IOCTL get $SCRATCH_MNT)
-+        echo "$UUID_IOCTL get $SCARTCH_MNT: $current_uuid" >> $seqres.full 2>&1
-+        if [[ "$current_uuid" != "$new_uuid" ]]; then
-+                echo "Current UUID ($current_uuid) does not equal what was sent with the ioctl ($new_uuid)"
-+        fi
-+done
-+
-+# success, all done
-+echo "Silence is golden"
-+status=0
-+exit
-diff --git a/tests/ext4/056.out b/tests/ext4/056.out
-new file mode 100644
-index 00000000..6142fcd2
---- /dev/null
-+++ b/tests/ext4/056.out
-@@ -0,0 +1,2 @@
-+QA output created by 056
-+Silence is golden
 -- 
-2.37.0.170.g444d1eabd0-goog
+With Best Regards,
+Baokun Li
 
