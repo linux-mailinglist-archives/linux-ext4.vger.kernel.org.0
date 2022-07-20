@@ -2,90 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0825057BB2A
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Jul 2022 18:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B3DB57BB6A
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Jul 2022 18:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbiGTQPK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 20 Jul 2022 12:15:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45934 "EHLO
+        id S230368AbiGTQ3f (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 20 Jul 2022 12:29:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230220AbiGTQPJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 Jul 2022 12:15:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D50AF0E;
-        Wed, 20 Jul 2022 09:15:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S229581AbiGTQ3e (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 Jul 2022 12:29:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7D6F4186F8
+        for <linux-ext4@vger.kernel.org>; Wed, 20 Jul 2022 09:29:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1658334572;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ucQ5TaXTrdPuaudEuwd2XaNeFmVaJveBPL1sbMmyZv8=;
+        b=jSAc2gfKe4gfyxAGYGpCuknJqYuXScn/FlPKq4VrJBSamSf1aIgt/vFhVH47zSlb3zW2rv
+        rULIL/Qy95NPUXMsBc+4lQ8twglRcr5XavcuWW22+t0jusYdyAsSDBSnVX5M5H3fsYVH5v
+        gnNCBOCDwSxfDwL89TZ8g/IdEz9hq58=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-474-nTPgxi46P460zz5tdxR5iw-1; Wed, 20 Jul 2022 12:29:15 -0400
+X-MC-Unique: nTPgxi46P460zz5tdxR5iw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AE02061D1D;
-        Wed, 20 Jul 2022 16:15:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82EEDC3411E;
-        Wed, 20 Jul 2022 16:15:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658333707;
-        bh=rxI3LP4BmU7HyWe6RwKURqMvWZyaTCQ8VTqau3Ip4A0=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=IadZMCr4r4xWpHT68Qd7cVCjAuQlf8gaWXcAiY/WbaOJMhO2KBDsKbpadNXO6PNTK
-         10SYVBq3qnGg085OBTaCnjZF8FXRVOijm0VUUZ14v1cCUA3PnnpJ7GI878ur2BodIH
-         r1DFzYXdckUSnhDQ8pMd3KCQWv9UGufp1rPdAkT4kawrgCAiIj+f/GSKV1B9q2iiAp
-         wy40jDfezknP4k5+qqSK5G8YhDgGoTamiNTLHjPCd/cwNBDyz1TVkK3l3wfDrsT9re
-         HEAot+EmBKb5gemV3SNYa0DlgAAiwq8P95yOa5gByh1QEOSbL4YF68E333ybzSf/mJ
-         w/HyY/jZy3gOA==
-Message-ID: <e84b9caf376a9b958a95ca4e0d088808c482f109.camel@kernel.org>
-Subject: Re: should we make "-o iversion" the default on ext4 ?
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Benjamin Coddington <bcodding@redhat.com>
-Cc:     Lukas Czerner <lczerner@redhat.com>, tytso@mit.edu,
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 50FF0801755;
+        Wed, 20 Jul 2022 16:29:15 +0000 (UTC)
+Received: from [172.16.176.1] (unknown [10.22.48.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 087C61121315;
+        Wed, 20 Jul 2022 16:29:13 +0000 (UTC)
+From:   "Benjamin Coddington" <bcodding@redhat.com>
+To:     "Jeff Layton" <jlayton@kernel.org>
+Cc:     "Lukas Czerner" <lczerner@redhat.com>, tytso@mit.edu,
         adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
         linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Date:   Wed, 20 Jul 2022 12:15:05 -0400
-In-Reply-To: <BAFC8295-B629-49DB-A381-DD592182055D@redhat.com>
+Subject: Re: should we make "-o iversion" the default on ext4 ?
+Date:   Wed, 20 Jul 2022 12:29:12 -0400
+Message-ID: <7F6417C7-1261-4C98-96B1-CB15744C04C1@redhat.com>
+In-Reply-To: <e84b9caf376a9b958a95ca4e0d088808c482f109.camel@kernel.org>
 References: <69ac1d3ef0f63b309204a570ef4922d2684ed7f9.camel@kernel.org>
-         <20220720141546.46l2d7bxwukjhtl7@fedora>
-         <ad7218a41fa8ac26911a9ccb79c87609d4279fea.camel@kernel.org>
-         <BAFC8295-B629-49DB-A381-DD592182055D@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.3 (3.44.3-1.fc36) 
+ <20220720141546.46l2d7bxwukjhtl7@fedora>
+ <ad7218a41fa8ac26911a9ccb79c87609d4279fea.camel@kernel.org>
+ <BAFC8295-B629-49DB-A381-DD592182055D@redhat.com>
+ <e84b9caf376a9b958a95ca4e0d088808c482f109.camel@kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.3
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 2022-07-20 at 11:56 -0400, Benjamin Coddington wrote:
-> On 20 Jul 2022, at 10:38, Jeff Layton wrote:
-> > On Wed, 2022-07-20 at 16:15 +0200, Lukas Czerner wrote:
-> > >=20
-> > > Is there a different way I am not seeing?
-> > >=20
-> >=20
-> > Right, implementing this is the difficult bit actually since this uses =
-a
-> > MS_* flag.=A0If we do make this the default, we'd definitely want to
-> > continue allowing "-o noiversion" to disable it.
-> >=20
-> > Could we just reverse the default in libmount? It might cause this to
-> > suddenly be enabled in some deployments, but in most cases, people
-> > wouldn't even notice and they could still specify -o noiversion to turn
-> > it off.
-> >=20
-> > Another idea would be to introduce new mount options for this, but
-> > that's kind of nasty from a UI standpoint.
->=20
-> Is it safe to set SB_I_VERSION at export time?  If so, export_operations
-> could grow an ->enable_iversion().
->=20
+On 20 Jul 2022, at 12:15, Jeff Layton wrote:
 
-That sounds like it might be problematic.
+> On Wed, 2022-07-20 at 11:56 -0400, Benjamin Coddington wrote:
+>> On 20 Jul 2022, at 10:38, Jeff Layton wrote:
+>>> On Wed, 2022-07-20 at 16:15 +0200, Lukas Czerner wrote:
+>>>>
+>>>> Is there a different way I am not seeing?
+>>>>
+>>>
+>>> Right, implementing this is the difficult bit actually since this uses a
+>>> MS_* flag. If we do make this the default, we'd definitely want to
+>>> continue allowing "-o noiversion" to disable it.
+>>>
+>>> Could we just reverse the default in libmount? It might cause this to
+>>> suddenly be enabled in some deployments, but in most cases, people
+>>> wouldn't even notice and they could still specify -o noiversion to turn
+>>> it off.
+>>>
+>>> Another idea would be to introduce new mount options for this, but
+>>> that's kind of nasty from a UI standpoint.
+>>
+>> Is it safe to set SB_I_VERSION at export time?  If so, export_operations
+>> could grow an ->enable_iversion().
+>>
+>
+> That sounds like it might be problematic.
+>
+> Consider the case where a NFSv4 client has cached file data and the
+> change attribute for the file. Server then reboots, but before the
+> export happens a local user makes a change to the file and it doesn't
+> update the i_version.
 
-Consider the case where a NFSv4 client has cached file data and the
-change attribute for the file. Server then reboots, but before the
-export happens a local user makes a change to the file and it doesn't
-update the i_version.
---=20
-Jeff Layton <jlayton@kernel.org>
+Nfsd currently uses both ctime and i_version if its available, I'd expect
+that eliminates this case.
+
