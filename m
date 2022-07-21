@@ -2,55 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2230E57D22C
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Jul 2022 19:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F3857D2FF
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Jul 2022 20:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229475AbiGURDm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 21 Jul 2022 13:03:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37294 "EHLO
+        id S229540AbiGUSMX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 21 Jul 2022 14:12:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbiGURDl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Jul 2022 13:03:41 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA9D52E77;
-        Thu, 21 Jul 2022 10:03:40 -0700 (PDT)
+        with ESMTP id S229449AbiGUSMW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Jul 2022 14:12:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5439A31385;
+        Thu, 21 Jul 2022 11:12:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id EBD14B8258F;
-        Thu, 21 Jul 2022 17:03:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6C82C3411E;
-        Thu, 21 Jul 2022 17:03:36 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E336661F93;
+        Thu, 21 Jul 2022 18:12:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B154C3411E;
+        Thu, 21 Jul 2022 18:12:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658423017;
-        bh=MEAgg5xlrSHfw/vB4g6gAKIOOIm5YlQdbo6WnU3fPZg=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=An2Lwwt92uepwUVcj/p4G2J4HnEQIBfCm/MNLeQVKlwYrJ+NeK5RKbOGjr3rMNxRL
-         LksKCwP1/f1kK8cqD31t8+SRx0pjGAuSuaNJUo5oJ6QDPSyCwCPfrZxEQTBj80JigI
-         3pE4fYDkQGVmR/s3T8Ilms7GC2eS+aiJLiKqjgVgLvodEM1PWsQHuERpMo8r3+YTTE
-         zBFzWE7ahkjDal9SMOujhg/uYj/zxGxcglDRnhsHoIp3CjFAuvhsEDMRLyBpKQyOn0
-         d/EY9aEGbBhRHDyqsYSHApK8+bi004OLTI2XwcArTX3e5XaFx6saku/hfkreJdeALZ
-         oLsRJYlFGDxWQ==
-Message-ID: <b4fc03c6c770e0f91f546619741c6a98361f2316.camel@kernel.org>
-Subject: Re: should we make "-o iversion" the default on ext4 ?
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Lukas Czerner <lczerner@redhat.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>
-Date:   Thu, 21 Jul 2022 13:03:35 -0400
-In-Reply-To: <20220721140606.btqznsqqdpn4h3wm@fedora>
-References: <69ac1d3ef0f63b309204a570ef4922d2684ed7f9.camel@kernel.org>
-         <20220720141546.46l2d7bxwukjhtl7@fedora>
-         <ad7218a41fa8ac26911a9ccb79c87609d4279fea.camel@kernel.org>
-         <20220720152257.t67grnm4wdi3dpld@fedora>
-         <5533aca629bf17b517e33f0b7edb02550b7548a7.camel@kernel.org>
-         <20220721140606.btqznsqqdpn4h3wm@fedora>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.3 (3.44.3-1.fc36) 
+        s=k20201202; t=1658427140;
+        bh=5nTWpDRIopP+J/Wzcq+D+bUTThpaXXKcFMiclbj+jiY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nmLNKCsu5n53a2HbQWxj67VEwv4KFKHDcvzNRC5/itaC+pjlB6ekLsZnZ1DYnoSfX
+         IEjRbpEYbEFmNq3EVHTGSUTK7+xYhEZaiXLIqTzF26yMfAsV7jdFJh+5w2ZMHu0uaU
+         mCdasYUHb0AVIVPuwoWVM2W9FahS24RLRPZkA1tufwAshWrAMTQ4yvtvmcaADlgsBQ
+         bdAgdPS43yzl35Bll4o0tq/uwVTpFd34VQPQfQyzwgga4Ck7WT9EjjqtacXapF/36o
+         JuKDuK9ABrTPqL5giKVsS3dyHtrYSBd+TI/vk/qkCbQH6HT9z9rXhsg96PYlHRe4SV
+         s8YKm0HyCqtIg==
+Date:   Thu, 21 Jul 2022 11:12:19 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Alejandro Colomar <alx.manpages@gmail.com>
+Cc:     Jeremy Bongio <bongiojp@gmail.com>, Ted Tso <tytso@mit.edu>,
+        linux-ext4@vger.kernel.org, linux-man@vger.kernel.org
+Subject: Re: [PATCH v2] Add manpage for get/set fsuuid ioctl for ext4
+ filesystem.
+Message-ID: <YtmXAyoF2PXstnLY@magnolia>
+References: <20220720234512.354076-1-bongiojp@gmail.com>
+ <YtiZ+gOmOFTpiAjW@magnolia>
+ <e503645b-e665-50c4-37a9-cdc8637ba1d8@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e503645b-e665-50c4-37a9-cdc8637ba1d8@gmail.com>
 X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -60,194 +56,265 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 2022-07-21 at 16:06 +0200, Lukas Czerner wrote:
-> On Wed, Jul 20, 2022 at 12:42:11PM -0400, Jeff Layton wrote:
-> > On Wed, 2022-07-20 at 17:22 +0200, Lukas Czerner wrote:
-> >=20
-> > >  But not zero, at least
-> > > every time the inode is loaded from disk it is scheduled for i_versio=
-n
-> > > update on the next attempted increment. Could that have an effect on
-> > > some particular common workload you can think of?
-> > >=20
-> >=20
-> > FWIW, it's doubtful that you'd even notice this. You'd almost certainly
-> > be updating the mtime or ctime on the next change anyway, so updating
-> > the i_version in that case is basically free. You will probably need to
-> > do some a few extra atomic in-memory operations, but that's probably no=
-t
-> > noticeable in something I/O constrained.
-> >=20
-> > >=20
-> > > Could you provide some performance numbers for iversion case?
-> > >=20
-> >=20
-> > I'm writing to a LVM volume on a no-name-brand ssd I have sitting
-> > around. fio jobfile is here:
->=20
-> That's very simplistic test, but fair enough. I've ran 10 iterations of
-> xfstests with and without iversion and there is no significant
-> difference, in fact it's all well within run by run variation. That's
-> true in aggregate as well for individual tests.
->=20
+On Thu, Jul 21, 2022 at 03:04:23PM +0200, Alejandro Colomar wrote:
+> Hi Jeremy and Darrick,
+> 
+> On 7/21/22 02:12, Darrick J. Wong wrote:
+> > On Wed, Jul 20, 2022 at 04:45:12PM -0700, Jeremy Bongio wrote:
+> > > Signed-off-by: Jeremy Bongio <bongiojp@gmail.com>
+> > > ---
+> > > 
+> > > This is a ext4 filesystem specific ioctl. However, this ioctl will
+> > > likely be implemented for multiple filesystems at which point this
+> > > manpage will be updated.
+> > > 
+> > >   man2/ioctl_fsuuid.2 | 115 ++++++++++++++++++++++++++++++++++++++++++++
+> > >   1 file changed, 115 insertions(+)
+> > >   create mode 100644 man2/ioctl_fsuuid.2
+> > > 
+> > > diff --git a/man2/ioctl_fsuuid.2 b/man2/ioctl_fsuuid.2
+> > > new file mode 100644
+> > > index 000000000..53747684f
+> > > --- /dev/null
+> > > +++ b/man2/ioctl_fsuuid.2
+> > > @@ -0,0 +1,115 @@
+> > > +.\" Copyright (c) 2022 Google, Inc., written by Jeremy Bongio <bongiojp@gmail.com>
+> > > +.\"
+> > > +.\" SPDX-License-Identifier: Linux-man-pages-copyleft
+> > > +.TH IOCTL_FSUUID 2 2022-07-20 "Linux" "Linux Programmer's Manual"
+> > > +.SH NAME
+> > > +ioctl_fsuuid \- get or set an ext4 filesystem uuid
+> > > +.SH LIBRARY
+> > > +Standard C library
+> > > +.RI ( libc ", " \-lc )
+> > 
+> > I'm not sure if libc will actually wrap this one, they often won't do
+> > that for ioctls.
+> 
+> Actually, we also specify libc for syscalls without a wrapper (e.g., see
+> membarrier(2)).  That rationale is that you need libc even if you use
+> syscall(SYS_membarrier, ...), since syscall(2) is provided by libc.
+> 
+> However, there's a difference in the synopsis:
+> If syscall(2) needs to be used to call the syscall, we document it as such.
+> Again, see membarrier(2) for an example of how we document that.
 
-Yeah. This change was most evident with small I/O sizes, so if there is
-an effect here it'll likely show up there.
-=20
-> However there are problems to solve before we attempt to make it a
-> default. With -o iversion ext4/026 and generic/622 fails. The ext4/026
-> seems to be a real bug and I am not sure about the other one yet.
->=20
-> I'll look into it.
->=20
+I understand that manpages for system calls that don't have a libc
+wrapper document the use of syscall(SYS_fubar...) to call them.  But
+this is an ioctl, not a kernel system call that has no convenient libc
+wrapper.  ioctl(2) has been part of the Unix programming manual since
+1979 or so, and it's been in Linux since v0.99.  I think we can take for
+granted that programmers can figure out 'man -s2 ioctl' if we tell them
+to.
 
-Interesting, thanks. Lack of testing with that option enabled is
-probably another good reason to go ahead and make it the default. Let me
-know what you find.
+> > 
+> > > +.SH SYNOPSIS
+> > > +.nf
+> > > +.B #include <sys/ioctl.h>
+> > > +.PP
+> > > +.BI "int ioctl(int " fd ", EXT4_IOC_GETFSUUID, struct " fsuuid ");"
+> > > +.BI "int ioctl(int " fd ", EXT4_IOC_SETFSUUID, struct " fsuuid ");"
+> 
+> Can we use ioctl(2), or do we need syscall(SYS_ioctl, ...)?
 
-> -Lukas
->=20
-> >=20
-> > [global]
-> > name=3Dfio-seq-write
-> > filename=3Dfio-seq-write
-> > rw=3Dwrite
-> > bs=3D4k
-> > direct=3D0
-> > numjobs=3D1
-> > time_based
-> > runtime=3D300
-> >=20
-> > [file1]
-> > size=3D1G
-> > ioengine=3Dlibaio
-> > iodepth=3D16
-> >=20
-> > iversion support disabled:
-> >=20
-> > $ fio ./4k-write.fio
-> > file1: (g=3D0): rw=3Dwrite, bs=3D(R) 4096B-4096B, (W) 4096B-4096B, (T) =
-4096B-4096B, ioengine=3Dlibaio, iodepth=3D16
-> > fio-3.27
-> > Starting 1 process
-> > file1: Laying out IO file (1 file / 1024MiB)
-> > Jobs: 1 (f=3D1): [W(1)][100.0%][w=3D52.5MiB/s][w=3D13.4k IOPS][eta 00m:=
-00s]
-> > file1: (groupid=3D0, jobs=3D1): err=3D 0: pid=3D10056: Wed Jul 20 12:28=
-:21 2022
-> >   write: IOPS=3D96.3k, BW=3D376MiB/s (394MB/s)(110GiB/300001msec); 0 zo=
-ne resets
-> >     slat (nsec): min=3D1112, max=3D5727.5k, avg=3D1917.70, stdev=3D1300=
-.30
-> >     clat (nsec): min=3D1112, max=3D2146.5M, avg=3D156067.38, stdev=3D15=
-568002.13
-> >      lat (usec): min=3D3, max=3D2146.5k, avg=3D158.03, stdev=3D15568.00
-> >     clat percentiles (usec):
-> >      |  1.00th=3D[   36],  5.00th=3D[   36], 10.00th=3D[   37], 20.00th=
-=3D[   37],
-> >      | 30.00th=3D[   38], 40.00th=3D[   38], 50.00th=3D[   38], 60.00th=
-=3D[   39],
-> >      | 70.00th=3D[   39], 80.00th=3D[   40], 90.00th=3D[   42], 95.00th=
-=3D[   44],
-> >      | 99.00th=3D[   52], 99.50th=3D[   59], 99.90th=3D[   77], 99.95th=
-=3D[   88],
-> >      | 99.99th=3D[  169]
-> >    bw (  KiB/s): min=3D15664, max=3D1599456, per=3D100.00%, avg=3D89776=
-1.07, stdev=3D504329.17, samples=3D257
-> >    iops        : min=3D 3916, max=3D399864, avg=3D224440.26, stdev=3D12=
-6082.33, samples=3D257
-> >   lat (usec)   : 2=3D0.01%, 4=3D0.01%, 10=3D0.01%, 20=3D0.01%, 50=3D98.=
-80%
-> >   lat (usec)   : 100=3D1.18%, 250=3D0.02%, 500=3D0.01%
-> >   lat (msec)   : 10=3D0.01%, 2000=3D0.01%, >=3D2000=3D0.01%
-> >   cpu          : usr=3D5.45%, sys=3D23.92%, ctx=3D78418, majf=3D0, minf=
-=3D14
-> >   IO depths    : 1=3D0.1%, 2=3D0.1%, 4=3D0.1%, 8=3D0.1%, 16=3D100.0%, 3=
-2=3D0.0%, >=3D64=3D0.0%
-> >      submit    : 0=3D0.0%, 4=3D100.0%, 8=3D0.0%, 16=3D0.0%, 32=3D0.0%, =
-64=3D0.0%, >=3D64=3D0.0%
-> >      complete  : 0=3D0.0%, 4=3D100.0%, 8=3D0.0%, 16=3D0.1%, 32=3D0.0%, =
-64=3D0.0%, >=3D64=3D0.0%
-> >      issued rwts: total=3D0,28889786,0,0 short=3D0,0,0,0 dropped=3D0,0,=
-0,0
-> >      latency   : target=3D0, window=3D0, percentile=3D100.00%, depth=3D=
-16
-> >=20
-> > Run status group 0 (all jobs):
-> >   WRITE: bw=3D376MiB/s (394MB/s), 376MiB/s-376MiB/s (394MB/s-394MB/s), =
-io=3D110GiB (118GB), run=3D300001-300001msec
-> >=20
-> > Disk stats (read/write):
-> >     dm-7: ios=3D0/22878, merge=3D0/0, ticks=3D0/373254, in_queue=3D3732=
-54, util=3D43.89%, aggrios=3D0/99746, aggrmerge=3D0/9246, aggrticks=3D0/140=
-6831, aggrin_queue=3D1408420, aggrutil=3D73.56%
-> >   sda: ios=3D0/99746, merge=3D0/9246, ticks=3D0/1406831, in_queue=3D140=
-8420, util=3D73.56%
-> >=20
-> > mounted with -o iversion:
-> >=20
-> > $ fio ./4k-write.fio
-> > file1: (g=3D0): rw=3Dwrite, bs=3D(R) 4096B-4096B, (W) 4096B-4096B, (T) =
-4096B-4096B, ioengine=3Dlibaio, iodepth=3D16
-> > fio-3.27
-> > Starting 1 process
-> > Jobs: 1 (f=3D1): [W(1)][100.0%][eta 00m:00s]                         =
-=20
-> > file1: (groupid=3D0, jobs=3D1): err=3D 0: pid=3D10369: Wed Jul 20 12:33=
-:57 2022
-> >   write: IOPS=3D96.2k, BW=3D376MiB/s (394MB/s)(110GiB/300001msec); 0 zo=
-ne resets
-> >     slat (nsec): min=3D1112, max=3D1861.5k, avg=3D1994.58, stdev=3D890.=
-78
-> >     clat (nsec): min=3D1392, max=3D2113.3M, avg=3D156252.71, stdev=3D15=
-409487.99
-> >      lat (usec): min=3D3, max=3D2113.3k, avg=3D158.30, stdev=3D15409.49
-> >     clat percentiles (usec):
-> >      |  1.00th=3D[   37],  5.00th=3D[   38], 10.00th=3D[   38], 20.00th=
-=3D[   38],
-> >      | 30.00th=3D[   39], 40.00th=3D[   39], 50.00th=3D[   40], 60.00th=
-=3D[   40],
-> >      | 70.00th=3D[   41], 80.00th=3D[   42], 90.00th=3D[   43], 95.00th=
-=3D[   45],
-> >      | 99.00th=3D[   53], 99.50th=3D[   60], 99.90th=3D[   79], 99.95th=
-=3D[   90],
-> >      | 99.99th=3D[  174]
-> >    bw (  KiB/s): min=3D  304, max=3D1540000, per=3D100.00%, avg=3D87072=
-7.42, stdev=3D499371.78, samples=3D265
-> >    iops        : min=3D   76, max=3D385000, avg=3D217681.82, stdev=3D12=
-4842.94, samples=3D265
-> >   lat (usec)   : 2=3D0.01%, 4=3D0.01%, 10=3D0.01%, 20=3D0.01%, 50=3D98.=
-49%
-> >   lat (usec)   : 100=3D1.48%, 250=3D0.02%, 500=3D0.01%
-> >   lat (msec)   : 2=3D0.01%, 2000=3D0.01%, >=3D2000=3D0.01%
-> >   cpu          : usr=3D5.71%, sys=3D24.49%, ctx=3D52874, majf=3D0, minf=
-=3D18
-> >   IO depths    : 1=3D0.1%, 2=3D0.1%, 4=3D0.1%, 8=3D0.1%, 16=3D100.0%, 3=
-2=3D0.0%, >=3D64=3D0.0%
-> >      submit    : 0=3D0.0%, 4=3D100.0%, 8=3D0.0%, 16=3D0.0%, 32=3D0.0%, =
-64=3D0.0%, >=3D64=3D0.0%
-> >      complete  : 0=3D0.0%, 4=3D100.0%, 8=3D0.0%, 16=3D0.1%, 32=3D0.0%, =
-64=3D0.0%, >=3D64=3D0.0%
-> >      issued rwts: total=3D0,28856695,0,0 short=3D0,0,0,0 dropped=3D0,0,=
-0,0
-> >      latency   : target=3D0, window=3D0, percentile=3D100.00%, depth=3D=
-16
-> >=20
-> > Run status group 0 (all jobs):
-> >   WRITE: bw=3D376MiB/s (394MB/s), 376MiB/s-376MiB/s (394MB/s-394MB/s), =
-io=3D110GiB (118GB), run=3D300001-300001msec
-> >=20
-> > Disk stats (read/write):
-> >     dm-7: ios=3D1/16758, merge=3D0/0, ticks=3D2/341817, in_queue=3D3418=
-19, util=3D47.93%, aggrios=3D1/98153, aggrmerge=3D0/5691, aggrticks=3D2/139=
-9496, aggrin_queue=3D1400893, aggrutil=3D73.42%
-> >   sda: ios=3D1/98153, merge=3D0/5691, ticks=3D2/1399496, in_queue=3D140=
-0893, util=3D73.42%
-> >=20
-> > --=20
-> > Jeff Layton <jlayton@kernel.org>
-> >=20
->=20
+So yes, technically an ioctl_XXX manpage should document the fact that
+it depends on the existence of an ioctl(fd, number, param...) call, and
+that in turn depends on syscall(SYS_ioctl, fd, number, param...) if
+somehow ioctl() itself is not available and that in turn depends on
+using any of the usual Linux C libraries, but this seems very pedantic
+to repeat that for every single ioctl manpage in existence.
 
---=20
-Jeff Layton <jlayton@kernel.org>
+IOWS, I think we can take for granted that most C programmers on Linux
+are working with a conventional C library, so it's sufficient to put:
+
+SEE ALSO
+	ioctl(2)
+
+at the end of an ioctl_XXX manpage like this one.
+
+> 
+> > > +.fi
+> > > +.SH DESCRIPTION
+> > > +If an ext4 filesystem supports uuid manipulation, these
+> > > +.BR ioctl (2)
+> > > +operations can be used to get or set the uuid for the ext4 filesystem
+> > > +on which
+> > > +.I fd
+> > > +resides.
+> > > +.PP
+> > > +The argument to these operations should be a pointer to a
+> > > +.IR "struct fsuuid" ":"
+> > > +.PP
+> > > +.in +4n
+> > > +.EX
+> > > +struct fsuuid {
+> 
+> Would you consider documenting the type separate manual page?
+> See for example man2/open_how.2type and man3/tm.3type.
+
+Why?  There's only one user of this struct, there's no need to waste
+people's time making them look up the third ioctl argument in a separate
+manpage.  If some other ioctl/syscall/whatever wants to start using
+struct fsuuid then yes, this should be hoisted to a separate file so
+that both manpages can reference it.
+
+> > > +       __u32 fsu_len;      /* Number of bytes in a uuid */
+> > > +       __u32 fsu_flags;    /* Mapping flags */
+> > > +       __u8  fsu_uuid[];   /* Byte array for uuid */
+> 
+> We use 4-space indents for code.
+> 
+> > > +};
+> > > +.EE
+> > > +.PP
+> > > +The
+> > > +.I fsu_flags
+> > > +field must be set to 0.
+> > 
+> > Nit: whitespace at the end of the line.
+> > 
+> > > +.PP
+> > > +If an
+> > > +.BR EXT4_IOC_GETFSUUID
+> > > +operation is called with
+> > > +.I fsu_len
+> > > +set to 0,
+> > > +.I fsu_len
+> > > +will be reassigned the number of bytes in an ext4 filesystem uuid
+> > 
+> > "...will be set to the number of bytes..." ?
+> > 
+> > > +and the return code will be -EINVAL.
+> > > +.PP
+> > > +If an
+> > > +.BR EXT4_IOC_GETFSUUID
+> > > +operation is called with
+> > > +.I fsu_len
+> > > +set to the number of bytes in an ext4 filesystem uuid and
+> > > +.I fsu_uuid
+> > > +is allocated at least that many bytes, then
+> > > +the filesystem uuid will be written to
+> > > +.I fsu_uuid.
+> > 
+> > Hm.  It's not like the kernel actually checks the allocation -- if
+> > fsu_len is set to the length of the filesystem's volume uuid, then
+> > the that volume uuid will be written to fsu_uuid[].  How about:
+> > 
+> > "If EXT4_IOC_GETFSUUID is called with fsu_len matching the length of the
+> > ext4 filesystem uuid, then that uuid will be written to fsu_uuid[] and
+> > the return value will be zero.
+> > If fsu_len does not match, the return value will be -EINVAL."
+> > 
+> > > +.PP
+> > > +If an
+> > > +.BR EXT4_IOC_SETFSUUID
+> > > +operation is called with
+> > > +.I fsu_len
+> > > +set to the number of bytes in an ext4 filesystem uuid and
+> > > +.I fsu_uuid
+> > > +contains a uuid with
+> > 
+> > Nit: whitespace at EOL.
+> > 
+> > > +.I fsu_uuid
+> > > +bytes, then
+> > > +the filesystem uuid will be set to
+> > > +.I fsu_uuid.
+> > 
+> > "If EXT4_IOC_SETFSUUID is called with fsu_len matching the length of the
+> > ext4 filesystem uuid, then the filesystem uuid will be set to the
+> > contents of fsu_uuid[] and the return value will reflect the outcome of
+> > the update operation.
+> > If fsu_len does not match, the return value will be -EINVAL."
+> > 
+> > > +.PP
+> > > +The
+> > > +.B FS_IOC_SETFSUUID
+> > > +operation requires privilege
+> > > +.RB ( CAP_SYS_ADMIN ).
+> > > +If the filesystem is currently being resized, an
+> > > +.B EXT4_IOC_SETFSUUID
+> > > +operation will wait until the resize is finished and the uuid can safely be set.
+> > > +This may take a long time.
+> > 
+> > Why is resize called out here specifically?  Won't setfsuuid block on
+> > /any/ operation that has tied up the filesystem superblocks?  I think
+> > this could be more general:
+> > 
+> > "If the filesystem is busy, an EXT4_IOC_SETFSUUID operation will wait
+> > until it can apply the uuid changes.
+> > This may take a long time."
+> > 
+> > > +.PP
+> > > +.SH RETURN VALUE
+> > > +On success zero is returned.
+> > > +On error, \-1 is returned, and
+> > > +.I errno
+> > > +is set to indicate the error.
+> > > +.SH ERRORS
+> > > +Possible errors include (but are not limited to) the following:
+> > > +.TP
+> > > +.B EFAULT
+> > > +Either the pointer to the
+> > > +.I fsuuid
+> > > +structure is invalid or
+> > > +.I fsu_uuid
+> > > +has not been initialized properly.
+> > 
+> > Invalid?  Isn't that what EINVAL is for?
+> > 
+> > I think EFAULT is for "could not copy to/from userspace".
+> > 
+> > > +.TP
+> > > +.B EINVAL
+> > > +The specified arguments are invalid.
+> > > +.I fsu_len
+> > > +did not match the filesystem uuid length or
+> > > +.I fsu_flags
+> > > +has bits set that are not implemented.
+> > 
+> > "...not recognized."
+> > 
+> > If they're not implemented, shouldn't that be EOPNOTSUPP?
+> > 
+> > --D
+> > 
+> > > +.TP
+> > > +.B ENOTTY
+> > > +The filesystem does not support the ioctl.
+> > > +.TP
+> > > +.B EOPNOTSUPP
+> > > +The filesystem does not currently support changing the uuid through this
+> > > +ioctl. This may be due to incompatible feature flags.
+> 
+> Please see the following paragraph from man-pages(7):
+>    Use semantic newlines
+>        In the source of a manual page, new sentences  should  be
+>        started on new lines, long sentences should be split into
+>        lines  at  clause breaks (commas, semicolons, colons, and
+>        so on), and long clauses should be split at phrase bound‐
+>        aries.  This convention,  sometimes  known  as  "semantic
+>        newlines",  makes it easier to see the effect of patches,
+>        which often operate at the level of individual sentences,
+>        clauses, or phrases.
+
+Agreed.
+
+--D
+
+> 
+> Cheers,
+> 
+> Alex
+> 
+> 
+> > > +.TP
+> > > +.B EPERM
+> > > +The calling process does not have sufficient permissions to set the uuid.
+> > > +.SH CONFORMING TO
+> > > +This API is Linux-specific.
+> > > +.SH SEE ALSO
+> > > +.BR ioctl (2)
+> > > -- 
+> > > 2.37.0.170.g444d1eabd0-goog
+> > > 
