@@ -2,57 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17D6D57C411
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Jul 2022 08:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A28E57C412
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Jul 2022 08:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231835AbiGUGDR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 21 Jul 2022 02:03:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53296 "EHLO
+        id S231845AbiGUGDS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 21 Jul 2022 02:03:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231908AbiGUGDE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Jul 2022 02:03:04 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 720287AB00
-        for <linux-ext4@vger.kernel.org>; Wed, 20 Jul 2022 23:03:02 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id e16so817993pfm.11
-        for <linux-ext4@vger.kernel.org>; Wed, 20 Jul 2022 23:03:02 -0700 (PDT)
+        with ESMTP id S231883AbiGUGDO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Jul 2022 02:03:14 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA14D7AB35
+        for <linux-ext4@vger.kernel.org>; Wed, 20 Jul 2022 23:03:03 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id k16so858616pls.8
+        for <linux-ext4@vger.kernel.org>; Wed, 20 Jul 2022 23:03:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=PGAGNpawL/u7W8Xz6zunSJw4vTxtsiclV0M76QUq9aE=;
-        b=ePiII6fqRq4HLP2bz2zP0693CqxfQQ6qgkVrqvEd0zDlET2JsD/Rwq0wvlllPBXsjZ
-         TwbRzW4SrlDbqb6hs5Zc0/HI3/xk3pOET6ta0e50RZGiMr/bVgAmlnQjJSw0wjlCDY10
-         i3QLURY4WafdJLJd8R2d37fU2r0nqE+d50LZr9IwS0cOXXZm6bn3y9jBCcVjJKEixQSN
-         FtFTyPkJ/VXYAdVDY7RtgTWoUYDOQtox6maWojTRBO5P5twbF2qxM89PRTC+nxpW3UVV
-         9VlGeDE9YriX3T2A+W28ExVgCLAoYihM7CPcG9SZ7avx9Ur98F92+Ot0oywrdmUwPB24
-         V/mw==
+        bh=RyJ/2ovef+Q1/jKxQ9/xhbRuIU47cSBso2MBQ15p+0w=;
+        b=l49nNg/RxE+hO9L4OR1icl2zJRiDb4bdPpvAWun/lbU7AfZw62J02Y0/q7yRj0EPua
+         3s+SNLH1/18ZLbHaC3v2KXV5IkBhsslfKX3miJhTk/jsuvB6Zelw6ISQ5u/5xgXQ81rG
+         spWMr8P5aJesK1V3CrgVFIdNdxcB7PahnOUmyiatTgbfuENzkki3plhC4rfty2VRUIzr
+         bph8AAqbEWGv2jE50KnIkWFJsk0hy3pjQDWyhGffMrExhXlb1lLwY/TTdAKEAS6699YQ
+         VaJgKbtZnInS06LozxvbHTLJL9G6qLyHum7WuyhkuILomDzsgZtI/EU5v2GSlIJaHQpx
+         rAHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PGAGNpawL/u7W8Xz6zunSJw4vTxtsiclV0M76QUq9aE=;
-        b=RTXXZFtmxxLluoE488hPlGK1/WsW+rsfVhLqT+QZRgZU/IaNu3uVQ6JXzlhYfxi7Br
-         giNmYY9ccATMNwjIQd2QkFmjZKVtHYzNYIvr06m/Y0hNKaaNfDY9ykRZ9Tm9xd5Q6jGX
-         XoPENM9RRvtvXIOuFd23BfZ+pPtAVG8FJBQtOQulttaNkDSJvlUeBgHNsJbTUSCHidWL
-         B8K1lRJT+3zB6bN8OxIrJIoC5KgVGKckA8PN+mfRnushVUDIjmNxyXK3dggi9L5Sqkve
-         Oh3bX6jpOkNsvdreVhq7/iRqnfxrWP60kqk4h6vU80e6Z1v5QDJqh+5DuXvS59ZAzC2j
-         UBcw==
-X-Gm-Message-State: AJIora8vW0WRNdQ99pk3VqRcNmvr2Qp4u5VR5kblwF55TVDRrPwxVCyw
-        7calDKebKqvUGMihsNWEKdvTninRfDA+xCzy
-X-Google-Smtp-Source: AGRyM1uTIZn8Ctj6tmUHxi2UdsYSKxvznxBQuQkrt8ZDXz81/gbYt4DP449GpBsDVCTt1ZtFY3RSfw==
-X-Received: by 2002:a05:6a00:84e:b0:52b:a5fd:f0bc with SMTP id q14-20020a056a00084e00b0052ba5fdf0bcmr7066611pfk.86.1658383381460;
-        Wed, 20 Jul 2022 23:03:01 -0700 (PDT)
+        bh=RyJ/2ovef+Q1/jKxQ9/xhbRuIU47cSBso2MBQ15p+0w=;
+        b=Jha7JhRpgzkTovnPj0qsiaA8BvRzi2TaaWqMSlErWKSLidQA0Rj6b0CFor89SJsxBT
+         nE0WCPY5V/1DLf+MBgktgUOMHHDMqi1WnDHGNOZ1b6LJ+gW997apIhBtWWI4FHQRKkU7
+         bQRCoMxgOeE6Av2dPKI/OcQ2qaKUvuQgUL2tTp/iPGCPNp8oO8hcTmSNBKwr9l0AO2sn
+         mlItSzUkLyxwrfUnyRuVwFOEUOJLTFZ1Nk0FGT1UVUCmLpQA85R+t7tmo9EfKrtEV2RG
+         jTyQmY5FBgCvyp0wOqBE0d9D6/mqreSMXwGCo+cZc31tyOWpdGFaRYC3kdy45cSlHa+G
+         HO7w==
+X-Gm-Message-State: AJIora/LUExogSCYyi27oNfsbbJWSdxWmA+La6gTTd+x/MuvBqXnZknR
+        p6SO9d6ikzb6tg3H3OYUNVzHW6+GkNPrWRjQ
+X-Google-Smtp-Source: AGRyM1sBHDiKBI1dl8yBUUuCG22gijD+vRo3KaYHJzx66WMiwILq+GLi6Kh9Vye/v35BkAzdAyGEbw==
+X-Received: by 2002:a17:90a:4e0f:b0:1f2:10b0:2f60 with SMTP id n15-20020a17090a4e0f00b001f210b02f60mr9567190pjh.161.1658383382577;
+        Wed, 20 Jul 2022 23:03:02 -0700 (PDT)
 Received: from harshads.c.googlers.com.com (34.133.83.34.bc.googleusercontent.com. [34.83.133.34])
-        by smtp.googlemail.com with ESMTPSA id rm10-20020a17090b3eca00b001ed27d132c1sm9105377pjb.2.2022.07.20.23.03.00
+        by smtp.googlemail.com with ESMTPSA id rm10-20020a17090b3eca00b001ed27d132c1sm9105377pjb.2.2022.07.20.23.03.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jul 2022 23:03:00 -0700 (PDT)
+        Wed, 20 Jul 2022 23:03:01 -0700 (PDT)
 From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [RFC PATCH v4 7/8] ext4: add lockdep annotation in fc commit path
-Date:   Thu, 21 Jul 2022 06:02:45 +0000
-Message-Id: <20220721060246.1696852-8-harshadshirwadkar@gmail.com>
+Cc:     tytso@mit.edu, Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        Jan Kara <jack@suse.cz>
+Subject: [RFC PATCH v4 8/8] ext4: update code documentation
+Date:   Thu, 21 Jul 2022 06:02:46 +0000
+Message-Id: <20220721060246.1696852-9-harshadshirwadkar@gmail.com>
 X-Mailer: git-send-email 2.37.0.170.g444d1eabd0-goog
 In-Reply-To: <20220721060246.1696852-1-harshadshirwadkar@gmail.com>
 References: <20220721060246.1696852-1-harshadshirwadkar@gmail.com>
@@ -68,78 +69,81 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This patch adds lockdep annotation in fast commit commit path.
+This patch updates code documentation to reflect the commit path changes
+made in this series.
 
 Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
 ---
- fs/ext4/ext4.h        |  9 +++++++++
- fs/ext4/fast_commit.c | 12 ++++++++++--
- 2 files changed, 19 insertions(+), 2 deletions(-)
+ fs/ext4/fast_commit.c | 39 ++++++++++++++++++++++++++-------------
+ 1 file changed, 26 insertions(+), 13 deletions(-)
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 51ed372faff0..eabf0c9a3765 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1070,6 +1070,15 @@ struct ext4_inode_info {
- 	 */
- 	spinlock_t i_fc_lock;
- 
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+	/*
-+	 * Lockdep entity to track fast commit waiting dependencies. Any caller
-+	 * who sets / resets EXT4_STATE_FC_COMMITTING flag should let lockdep
-+	 * know that they are doing so by locking / unlocking fc_commit_map.
-+	 */
-+	struct lockdep_map	i_fc_commit_map;
-+	struct lock_class_key	i_fc_commit_key;
-+#endif
- 	/*
- 	 * i_disksize keeps track of what the inode size is ON DISK, not
- 	 * in memory.  During truncate, i_size is set to the new size by
 diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index a9cac460de26..727a87073e6a 100644
+index 727a87073e6a..7a7bb540904f 100644
 --- a/fs/ext4/fast_commit.c
 +++ b/fs/ext4/fast_commit.c
-@@ -201,6 +201,8 @@ void ext4_fc_init_inode(struct inode *inode)
- 	INIT_LIST_HEAD(&ei->i_fc_list);
- 	INIT_LIST_HEAD(&ei->i_fc_dilist);
- 	init_waitqueue_head(&ei->i_fc_wait);
-+	lockdep_init_map(&ei->i_fc_commit_map, "i_fc_commit",
-+			 &ei->i_fc_commit_key, 0);
- }
+@@ -49,14 +49,21 @@
+  * that need to be committed during a fast commit in another in memory queue of
+  * inodes. During the commit operation, we commit in the following order:
+  *
+- * [1] Lock inodes for any further data updates by setting COMMITTING state
+- * [2] Submit data buffers of all the inodes
+- * [3] Wait for [2] to complete
+- * [4] Commit all the directory entry updates in the fast commit space
+- * [5] Commit all the changed inode structures
+- * [6] Write tail tag (this tag ensures the atomicity, please read the following
++ * [1] Lock the journal by calling jbd2_journal_lock_updates. This ensures that
++ *     all the exsiting handles finish and no new handles can start.
++ * [2] Mark all the fast commit eligible inodes as undergoing fast commit
++ *     by setting "EXT4_STATE_FC_COMMITTING" state.
++ * [3] Unlock the journal by calling jbd2_journal_unlock_updates. This allows
++ *     starting of new handles. If new handles try to start an update on
++ *     any of the inodes that are being committed, ext4_fc_track_inode()
++ *     will block until those inodes have finished the fast commit.
++ * [4] Submit data buffers of all the committing inodes.
++ * [5] Wait for [4] to complete.
++ * [6] Commit all the directory entry updates in the fast commit space.
++ * [7] Commit all the changed inodes in the fast commit space and clear
++ *     "EXT4_STATE_FC_COMMITTING" for these inodes.
++ * [8] Write tail tag (this tag ensures the atomicity, please read the following
+  *     section for more details).
+- * [7] Wait for [4], [5] and [6] to complete.
+  *
+  * All the inode updates must call ext4_fc_start_update() before starting an
+  * update. If such an ongoing update is present, fast commit waits for it to
+@@ -142,6 +149,13 @@
+  * similarly. Thus, by converting a non-idempotent procedure into a series of
+  * idempotent outcomes, fast commits ensured idempotence during the replay.
+  *
++ * Locking
++ * -------
++ * sbi->s_fc_lock protects the fast commit inodes queue and the fast commit
++ * dentry queue. ei->i_fc_lock protects the fast commit related info in a given
++ * inode. Most of the code avoids acquiring both the locks, but if one must do
++ * that then sbi->s_fc_lock must be acquired before ei->i_fc_lock.
++ *
+  * TODOs
+  * -----
+  *
+@@ -156,13 +170,12 @@
+  *    fast commit recovery even if that area is invalidated by later full
+  *    commits.
+  *
+- * 1) Fast commit's commit path locks the entire file system during fast
+- *    commit. This has significant performance penalty. Instead of that, we
+- *    should use ext4_fc_start/stop_update functions to start inode level
+- *    updates from ext4_journal_start/stop. Once we do that we can drop file
+- *    system locking during commit path.
++ * 1) Handle more ineligible cases.
+  *
+- * 2) Handle more ineligible cases.
++ * 2) Change ext4_fc_commit() to lookup logical to physical mapping using extent
++ *    status tree. This would get rid of the need to call ext4_fc_track_inode()
++ *    before acquiring i_data_sem. To do that we would need to ensure that
++ *    modified extents from the extent status tree are not evicted from memory.
+  */
  
- /*
-@@ -1061,6 +1063,7 @@ static int ext4_fc_perform_commit(journal_t *journal)
- 	list_for_each_entry(iter, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
- 		ext4_set_inode_state(&iter->vfs_inode,
- 				     EXT4_STATE_FC_COMMITTING);
-+		mutex_acquire(&iter->i_fc_commit_map, 0, 0, _THIS_IP_);
- 	}
- 	spin_unlock(&sbi->s_fc_lock);
- 	jbd2_journal_unlock_updates(journal);
-@@ -1119,6 +1122,7 @@ static int ext4_fc_perform_commit(journal_t *journal)
- 	}
- 	list_for_each_entry(iter, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
- 		ext4_clear_inode_state(inode, EXT4_STATE_FC_COMMITTING);
-+		mutex_release(&iter->i_fc_commit_map, _THIS_IP_);
- 		/*
- 		 * Make sure clearing of EXT4_STATE_FC_COMMITTING is
- 		 * visible before we send the wakeup. Pairs with implicit
-@@ -1266,8 +1270,12 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
- 	spin_lock(&sbi->s_fc_lock);
- 	list_for_each_entry_safe(iter, iter_n, &sbi->s_fc_q[FC_Q_MAIN],
- 				 i_fc_list) {
--		ext4_clear_inode_state(&iter->vfs_inode,
--				       EXT4_STATE_FC_COMMITTING);
-+		if (ext4_test_inode_state(&iter->vfs_inode,
-+						EXT4_STATE_FC_COMMITTING)) {
-+			ext4_clear_inode_state(&iter->vfs_inode,
-+					       EXT4_STATE_FC_COMMITTING);
-+			mutex_release(&iter->i_fc_commit_map, _THIS_IP_);
-+		}
- 		if (iter->i_sync_tid <= tid)
- 			ext4_fc_reset_inode(&iter->vfs_inode);
- 		/*
+ #include <trace/events/ext4.h>
 -- 
 2.37.0.170.g444d1eabd0-goog
 
