@@ -2,61 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0AE157D70E
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Jul 2022 00:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F4C57D746
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Jul 2022 01:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbiGUWof (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 21 Jul 2022 18:44:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49380 "EHLO
+        id S233095AbiGUXNe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 21 Jul 2022 19:13:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbiGUWoe (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Jul 2022 18:44:34 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719EE78589;
-        Thu, 21 Jul 2022 15:44:32 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id f65so2921394pgc.12;
-        Thu, 21 Jul 2022 15:44:32 -0700 (PDT)
+        with ESMTP id S229739AbiGUXNd (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Jul 2022 19:13:33 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82AB84E600;
+        Thu, 21 Jul 2022 16:13:32 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id d187so2903688vsd.10;
+        Thu, 21 Jul 2022 16:13:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aC/fs4gtBUPJ1XcqWtBzIeZ4t21NIE+hcHDSProhOug=;
-        b=qC1wIJyYzHPWuck+8MLr7C9b2GkXmDg8+fanLUyFhQDiVbqopXUKtwAn7WkUeVbceZ
-         JuvR1Yns9S0Lb7RkXe3P+m+Ci1phq6/CREbX6gxLBy/zvZmCTkQL9IpENp/55JENABYF
-         QKX42Kvs0dHBOUDF2MRPqNDK62r09Bs8f/DXHxxmt5jRt1Ia+r3DM2chl+8lVoVqHv+d
-         Uulvnr6tveWFmcSu+11iCEu3kqAH/LpXc8HzuijFhgMMLWdgsHns8T5dOcCkvo6e4pAp
-         Q9wyCv7PHQe4L0JxXJBIuvOxLt/ZDX1gtt7s8KdHYjSugSdDSszmjFqvmbT9WL5WdDyQ
-         +ELg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VEm39c/KgOfoYMOeSll5ocVLqvVQCAlLbsYoDSKO20k=;
+        b=FrLo4m53+ay2ODbgDWr3cpcxuaz2Hiamferz4XoN1Opj/yS1WJIioaY72QJVT+O2Qv
+         tI8NG7v1jZ6uxgU6Cg+fweZWFueD5OrNpNXV0yZtVyy5tP60FkQgzWi2yf24WVv3ahno
+         4eliJctBinJMxVrVCdaLr8Rf6noD/E4rwv2jXQTP0b8p5cYU8nspICkM+u1gmt4B6roz
+         /nZPky00MsiLCZKrdV0rrDbnoo5O9LOQ5KsaUEvwP7uoRTZQQaoFuVZOkX0ms72dmBFM
+         kV+O6gWSSPxhQD7Nscw8xi2NYw/MMOsFrAYI+jKW6MvRd/97sv3w5J5XottM/65Zfyng
+         K33g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aC/fs4gtBUPJ1XcqWtBzIeZ4t21NIE+hcHDSProhOug=;
-        b=20aM+gJbkHxP0V9BNnvQumQybUuqj+shXymEJOayVvjd1YiIninDY3E1u+DHJSzuCf
-         llPPGEXmKG4hKdIzpu8cVEezzSFY6arPowTLXqgeNFdOPtinuAngyaPhECaBrTDhqq5o
-         UIM3bFcr847/ToTAAZsc3i+iqK4cQvEij0QuBbLSiYVQyvNVvLwAuDn3k5hn0wFsU/Pi
-         /JyIUK9zd1UaPp+87ZR5tyteXy3ze/vXZ6RXjHwIM61LSDLblSdUBnT28dtjWAJuWP2x
-         KfZRwNapbsposBX6Vrup8LvKwK+GjDf/Fndy5BE5HgQpo9GvUrINJf//iM4wkkNxtA/l
-         2oXA==
-X-Gm-Message-State: AJIora9px6Rt/wv5A1egW9P8bg5jUCLYiL/Ua4uA7fZd5GMJsMe5ZV6X
-        uBh+cb4tkMAICDHewL3XDms=
-X-Google-Smtp-Source: AGRyM1ukQpMK3hp0P+IfFqpQKVG3XEKbxoJBsNJC1WdQjp4Po/ys+k7iHQB6drUHxaZZfLxSzgqTNQ==
-X-Received: by 2002:a65:6c08:0:b0:3f2:6a6a:98d with SMTP id y8-20020a656c08000000b003f26a6a098dmr562003pgu.30.1658443471471;
-        Thu, 21 Jul 2022 15:44:31 -0700 (PDT)
-Received: from jbongio9100214.roam.corp.google.com (cpe-104-173-199-31.socal.res.rr.com. [104.173.199.31])
-        by smtp.googlemail.com with ESMTPSA id pj5-20020a17090b4f4500b001df264610c4sm9925763pjb.0.2022.07.21.15.44.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jul 2022 15:44:30 -0700 (PDT)
-From:   Jeremy Bongio <bongiojp@gmail.com>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jeremy Bongio <bongiojp@gmail.com>
-Subject: [PATCH v5] Add ioctls to get/set the ext4 superblock uuid.
-Date:   Thu, 21 Jul 2022 15:44:22 -0700
-Message-Id: <20220721224422.438351-1-bongiojp@gmail.com>
-X-Mailer: git-send-email 2.37.1.359.gd136c6c3e2-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VEm39c/KgOfoYMOeSll5ocVLqvVQCAlLbsYoDSKO20k=;
+        b=7+gbxfl57jQNbVeGd0EU+z10K8y/8L7OgVLqcBTUZpaH1hGchZbJp80OqK3OC2Bmtg
+         KBQ2dDgZUkmN6iH0dedhz8XmA8yMK9mJ9KJbUNeAttfiGugAMWl0hHJQwmoL+bWQFQwO
+         7zy+zrevipjx+fYH5EKidD+dSOMEfePhoETalZETMVjlfzjLBhndoFvA+eXbFxkSmTiT
+         fLsdtlyqjF4mLHYuh6QdYzhVJqkLAEqfAJ3zwYJDQs6G5wgvOrl7MfG0sX6vFpropLi/
+         18KR7XAOnnY3OJjLNY8fWDga2C92jLzTygfnywYdWYpvIgaBshCKIR2DJzhC7QtJeLYD
+         vv4A==
+X-Gm-Message-State: AJIora+GR51VqZ66ziKvh6uZhiZU4Y17mxPA8tg8IMOPltfCE7718bq5
+        A7CHtw/8scHvJ+i6zbVevZQsjNO+NFV/BWPkuiIGhjvukFqbxw==
+X-Google-Smtp-Source: AGRyM1tstxWNsyxualcL85+eKvM/UwwiZUJYiIK2Dmx8csYRYvsI/n5EPa1s0YveYrl20uBht4nMw2zeoPzn7WZ+vVI=
+X-Received: by 2002:a05:6102:3e23:b0:357:4974:e07e with SMTP id
+ j35-20020a0561023e2300b003574974e07emr258330vsv.31.1658445211533; Thu, 21 Jul
+ 2022 16:13:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20220720234512.354076-1-bongiojp@gmail.com> <YtiZ+gOmOFTpiAjW@magnolia>
+In-Reply-To: <YtiZ+gOmOFTpiAjW@magnolia>
+From:   Jeremy Bongio <bongiojp@gmail.com>
+Date:   Thu, 21 Jul 2022 16:13:20 -0700
+Message-ID: <CANfQU3w8yFpSC0=S4KSxG9g5pUCCRfAYdVgDr8Ey9c+Q7tovbw@mail.gmail.com>
+Subject: Re: [PATCH v2] Add manpage for get/set fsuuid ioctl for ext4 filesystem.
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        linux-man@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -67,172 +65,196 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This fixes a race between changing the ext4 superblock uuid and operations
-like mounting, resizing, changing features, etc.
+On Wed, Jul 20, 2022 at 5:12 PM Darrick J. Wong <djwong@kernel.org> wrote:
+>
+> On Wed, Jul 20, 2022 at 04:45:12PM -0700, Jeremy Bongio wrote:
+> > Signed-off-by: Jeremy Bongio <bongiojp@gmail.com>
+> > ---
+> >
+> > This is a ext4 filesystem specific ioctl. However, this ioctl will
+> > likely be implemented for multiple filesystems at which point this
+> > manpage will be updated.
+> >
+> >  man2/ioctl_fsuuid.2 | 115 ++++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 115 insertions(+)
+> >  create mode 100644 man2/ioctl_fsuuid.2
+> >
+> > diff --git a/man2/ioctl_fsuuid.2 b/man2/ioctl_fsuuid.2
+> > new file mode 100644
+> > index 000000000..53747684f
+> > --- /dev/null
+> > +++ b/man2/ioctl_fsuuid.2
+> > @@ -0,0 +1,115 @@
+> > +.\" Copyright (c) 2022 Google, Inc., written by Jeremy Bongio <bongiojp@gmail.com>
+> > +.\"
+> > +.\" SPDX-License-Identifier: Linux-man-pages-copyleft
+> > +.TH IOCTL_FSUUID 2 2022-07-20 "Linux" "Linux Programmer's Manual"
+> > +.SH NAME
+> > +ioctl_fsuuid \- get or set an ext4 filesystem uuid
+> > +.SH LIBRARY
+> > +Standard C library
+> > +.RI ( libc ", " \-lc )
+>
+> I'm not sure if libc will actually wrap this one, they often won't do
+> that for ioctls.
+>
+> > +.SH SYNOPSIS
+> > +.nf
+> > +.B #include <sys/ioctl.h>
+> > +.PP
+> > +.BI "int ioctl(int " fd ", EXT4_IOC_GETFSUUID, struct " fsuuid ");"
+> > +.BI "int ioctl(int " fd ", EXT4_IOC_SETFSUUID, struct " fsuuid ");"
+> > +.fi
+> > +.SH DESCRIPTION
+> > +If an ext4 filesystem supports uuid manipulation, these
+> > +.BR ioctl (2)
+> > +operations can be used to get or set the uuid for the ext4 filesystem
+> > +on which
+> > +.I fd
+> > +resides.
+> > +.PP
+> > +The argument to these operations should be a pointer to a
+> > +.IR "struct fsuuid" ":"
+> > +.PP
+> > +.in +4n
+> > +.EX
+> > +struct fsuuid {
+> > +       __u32 fsu_len;      /* Number of bytes in a uuid */
+> > +       __u32 fsu_flags;    /* Mapping flags */
+> > +       __u8  fsu_uuid[];   /* Byte array for uuid */
+> > +};
+> > +.EE
+> > +.PP
+> > +The
+> > +.I fsu_flags
+> > +field must be set to 0.
+>
+> Nit: whitespace at the end of the line.
+>
+> > +.PP
+> > +If an
+> > +.BR EXT4_IOC_GETFSUUID
+> > +operation is called with
+> > +.I fsu_len
+> > +set to 0,
+> > +.I fsu_len
+> > +will be reassigned the number of bytes in an ext4 filesystem uuid
+>
+> "...will be set to the number of bytes..." ?
+>
+> > +and the return code will be -EINVAL.
+> > +.PP
+> > +If an
+> > +.BR EXT4_IOC_GETFSUUID
+> > +operation is called with
+> > +.I fsu_len
+> > +set to the number of bytes in an ext4 filesystem uuid and
+> > +.I fsu_uuid
+> > +is allocated at least that many bytes, then
+> > +the filesystem uuid will be written to
+> > +.I fsu_uuid.
+>
+> Hm.  It's not like the kernel actually checks the allocation -- if
+> fsu_len is set to the length of the filesystem's volume uuid, then
+> the that volume uuid will be written to fsu_uuid[].  How about:
+>
+> "If EXT4_IOC_GETFSUUID is called with fsu_len matching the length of the
+> ext4 filesystem uuid, then that uuid will be written to fsu_uuid[] and
+> the return value will be zero.
+> If fsu_len does not match, the return value will be -EINVAL."
+>
+> > +.PP
+> > +If an
+> > +.BR EXT4_IOC_SETFSUUID
+> > +operation is called with
+> > +.I fsu_len
+> > +set to the number of bytes in an ext4 filesystem uuid and
+> > +.I fsu_uuid
+> > +contains a uuid with
+>
+> Nit: whitespace at EOL.
+>
+> > +.I fsu_uuid
+> > +bytes, then
+> > +the filesystem uuid will be set to
+> > +.I fsu_uuid.
+>
+> "If EXT4_IOC_SETFSUUID is called with fsu_len matching the length of the
+> ext4 filesystem uuid, then the filesystem uuid will be set to the
+> contents of fsu_uuid[] and the return value will reflect the outcome of
+> the update operation.
+> If fsu_len does not match, the return value will be -EINVAL."
+>
+> > +.PP
+> > +The
+> > +.B FS_IOC_SETFSUUID
+> > +operation requires privilege
+> > +.RB ( CAP_SYS_ADMIN ).
+> > +If the filesystem is currently being resized, an
+> > +.B EXT4_IOC_SETFSUUID
+> > +operation will wait until the resize is finished and the uuid can safely be set.
+> > +This may take a long time.
+>
+> Why is resize called out here specifically?  Won't setfsuuid block on
+> /any/ operation that has tied up the filesystem superblocks?  I think
+> this could be more general:
+>
+> "If the filesystem is busy, an EXT4_IOC_SETFSUUID operation will wait
+> until it can apply the uuid changes.
+> This may take a long time."
+>
+> > +.PP
+> > +.SH RETURN VALUE
+> > +On success zero is returned.
+> > +On error, \-1 is returned, and
+> > +.I errno
+> > +is set to indicate the error.
+> > +.SH ERRORS
+> > +Possible errors include (but are not limited to) the following:
+> > +.TP
+> > +.B EFAULT
+> > +Either the pointer to the
+> > +.I fsuuid
+> > +structure is invalid or
+> > +.I fsu_uuid
+> > +has not been initialized properly.
+>
+> Invalid?  Isn't that what EINVAL is for?
+>
+> I think EFAULT is for "could not copy to/from userspace".
+>
+> > +.TP
+> > +.B EINVAL
+> > +The specified arguments are invalid.
+> > +.I fsu_len
+> > +did not match the filesystem uuid length or
+> > +.I fsu_flags
+> > +has bits set that are not implemented.
+>
+> "...not recognized."
+>
+> If they're not implemented, shouldn't that be EOPNOTSUPP?
 
-Reviewed-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Jeremy Bongio <bongiojp@gmail.com>
----
+I see some ioctls that use EINVAL when an ioctl's flag is not recognized,
+but yes, EOPNOTSUPP looks more common.
 
-Changes in v5:
-
-Return size of uuid in a EXT4_IOC_GETFSUUID operation if fsu_len is 0.
-
- fs/ext4/ext4.h  | 11 +++++++
- fs/ext4/ioctl.c | 83 +++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 94 insertions(+)
-
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 75b8d81b2469..b760d669a1ca 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -724,6 +724,8 @@ enum {
- #define EXT4_IOC_GETSTATE		_IOW('f', 41, __u32)
- #define EXT4_IOC_GET_ES_CACHE		_IOWR('f', 42, struct fiemap)
- #define EXT4_IOC_CHECKPOINT		_IOW('f', 43, __u32)
-+#define EXT4_IOC_GETFSUUID		_IOR('f', 44, struct fsuuid)
-+#define EXT4_IOC_SETFSUUID		_IOW('f', 44, struct fsuuid)
- 
- #define EXT4_IOC_SHUTDOWN _IOR ('X', 125, __u32)
- 
-@@ -753,6 +755,15 @@ enum {
- 						EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT | \
- 						EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN)
- 
-+/*
-+ * Structure for EXT4_IOC_GETFSUUID/EXT4_IOC_SETFSUUID
-+ */
-+struct fsuuid {
-+	__u32       fsu_len;
-+	__u32       fsu_flags;
-+	__u8        fsu_uuid[];
-+};
-+
- #if defined(__KERNEL__) && defined(CONFIG_COMPAT)
- /*
-  * ioctl commands in 32 bit emulation
-diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-index cb01c1da0f9d..b7c9bf9e7864 100644
---- a/fs/ext4/ioctl.c
-+++ b/fs/ext4/ioctl.c
-@@ -20,6 +20,7 @@
- #include <linux/delay.h>
- #include <linux/iversion.h>
- #include <linux/fileattr.h>
-+#include <linux/uuid.h>
- #include "ext4_jbd2.h"
- #include "ext4.h"
- #include <linux/fsmap.h>
-@@ -41,6 +42,15 @@ static void ext4_sb_setlabel(struct ext4_super_block *es, const void *arg)
- 	memcpy(es->s_volume_name, (char *)arg, EXT4_LABEL_MAX);
- }
- 
-+/*
-+ * Superblock modification callback function for changing file system
-+ * UUID.
-+ */
-+static void ext4_sb_setuuid(struct ext4_super_block *es, const void *arg)
-+{
-+	memcpy(es->s_uuid, (__u8 *)arg, UUID_SIZE);
-+}
-+
- static
- int ext4_update_primary_sb(struct super_block *sb, handle_t *handle,
- 			   ext4_update_sb_callback func,
-@@ -1131,6 +1141,73 @@ static int ext4_ioctl_getlabel(struct ext4_sb_info *sbi, char __user *user_label
- 	return 0;
- }
- 
-+static int ext4_ioctl_getuuid(struct ext4_sb_info *sbi,
-+			struct fsuuid __user *ufsuuid)
-+{
-+	struct fsuuid fsuuid;
-+	__u8 uuid[UUID_SIZE];
-+
-+	if (copy_from_user(&fsuuid, ufsuuid, sizeof(fsuuid)))
-+		return -EFAULT;
-+
-+	if (fsuuid.fsu_len == 0) {
-+		fsuuid.fsu_len = UUID_SIZE;
-+		if (copy_to_user(ufsuuid, &fsuuid, sizeof(fsuuid.fsu_len)))
-+			return -EFAULT;
-+		return -EINVAL;
-+	}
-+
-+	if (fsuuid.fsu_len != UUID_SIZE || fsuuid.fsu_flags != 0)
-+		return -EINVAL;
-+
-+	lock_buffer(sbi->s_sbh);
-+	memcpy(uuid, sbi->s_es->s_uuid, UUID_SIZE);
-+	unlock_buffer(sbi->s_sbh);
-+
-+	if (copy_to_user(&ufsuuid->fsu_uuid[0], uuid, UUID_SIZE))
-+		return -EFAULT;
-+	return 0;
-+}
-+
-+static int ext4_ioctl_setuuid(struct file *filp,
-+			const struct fsuuid __user *ufsuuid)
-+{
-+	int ret = 0;
-+	struct super_block *sb = file_inode(filp)->i_sb;
-+	struct fsuuid fsuuid;
-+	__u8 uuid[UUID_SIZE];
-+
-+	if (!capable(CAP_SYS_ADMIN))
-+		return -EPERM;
-+
-+	/*
-+	 * If any checksums (group descriptors or metadata) are being used
-+	 * then the checksum seed feature is required to change the UUID.
-+	 */
-+	if (((ext4_has_feature_gdt_csum(sb) || ext4_has_metadata_csum(sb))
-+			&& !ext4_has_feature_csum_seed(sb))
-+		|| ext4_has_feature_stable_inodes(sb))
-+		return -EOPNOTSUPP;
-+
-+	if (copy_from_user(&fsuuid, ufsuuid, sizeof(fsuuid)))
-+		return -EFAULT;
-+
-+	if (fsuuid.fsu_len != UUID_SIZE || fsuuid.fsu_flags != 0)
-+		return -EINVAL;
-+
-+	if (copy_from_user(uuid, &ufsuuid->fsu_uuid[0], UUID_SIZE))
-+		return -EFAULT;
-+
-+	ret = mnt_want_write_file(filp);
-+	if (ret)
-+		return ret;
-+
-+	ret = ext4_update_superblocks_fn(sb, ext4_sb_setuuid, &uuid);
-+	mnt_drop_write_file(filp);
-+
-+	return ret;
-+}
-+
- static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- {
- 	struct inode *inode = file_inode(filp);
-@@ -1509,6 +1586,10 @@ static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 		return ext4_ioctl_setlabel(filp,
- 					   (const void __user *)arg);
- 
-+	case EXT4_IOC_GETFSUUID:
-+		return ext4_ioctl_getuuid(EXT4_SB(sb), (void __user *)arg);
-+	case EXT4_IOC_SETFSUUID:
-+		return ext4_ioctl_setuuid(filp, (const void __user *)arg);
- 	default:
- 		return -ENOTTY;
- 	}
-@@ -1586,6 +1667,8 @@ long ext4_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	case EXT4_IOC_CHECKPOINT:
- 	case FS_IOC_GETFSLABEL:
- 	case FS_IOC_SETFSLABEL:
-+	case EXT4_IOC_GETFSUUID:
-+	case EXT4_IOC_SETFSUUID:
- 		break;
- 	default:
- 		return -ENOIOCTLCMD;
--- 
-2.37.1.359.gd136c6c3e2-goog
-
+>
+> --D
+>
+> > +.TP
+> > +.B ENOTTY
+> > +The filesystem does not support the ioctl.
+> > +.TP
+> > +.B EOPNOTSUPP
+> > +The filesystem does not currently support changing the uuid through this
+> > +ioctl. This may be due to incompatible feature flags.
+> > +.TP
+> > +.B EPERM
+> > +The calling process does not have sufficient permissions to set the uuid.
+> > +.SH CONFORMING TO
+> > +This API is Linux-specific.
+> > +.SH SEE ALSO
+> > +.BR ioctl (2)
+> > --
+> > 2.37.0.170.g444d1eabd0-goog
+> >
