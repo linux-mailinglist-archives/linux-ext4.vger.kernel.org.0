@@ -2,305 +2,195 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1290157CB55
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Jul 2022 15:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2510657CCD4
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Jul 2022 16:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233955AbiGUNFt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 21 Jul 2022 09:05:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35410 "EHLO
+        id S229480AbiGUOGV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 21 Jul 2022 10:06:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233937AbiGUNFd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Jul 2022 09:05:33 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6EC86888;
-        Thu, 21 Jul 2022 06:04:27 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id h9so2221174wrm.0;
-        Thu, 21 Jul 2022 06:04:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=HM/2yDkiUzm/nm8ARsJ+710GiW/0usRzfLrjCBZ+q5M=;
-        b=E2Z31Svpd5o8C3sO6c9DJ2WB0jUOfwYd1iwN8mTkFXjQbbvlE+ZXPKzagOIB3VtaKn
-         Z+chyL0Jswot/p+gFpG6Qxr+0l4sUr6tUBxMBksG0p1ymSY4wQLxCk5jvkKtOeBFK8hr
-         RpTiBA9ngHNxrzP5goZM1U3EzYKRTKok853PighXUEoVgKMiYwaAT8GXNhSTRJ0UZG8x
-         F6p3n6/J2j3uYwLm8GLyUYJeMWbiM5lSPEkjhtpoj8K9/KhERjeVci3zFPNaRvgSpf5y
-         GaSGAE7vORkJQ4SrP2/DkflP5wc23tbiFdeFobF40m5HK5rjsjAKcVXg13NcyurLB6Tx
-         yvbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
-         :subject:content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=HM/2yDkiUzm/nm8ARsJ+710GiW/0usRzfLrjCBZ+q5M=;
-        b=P5vsgfdQSqRq19fXb7qEDZvu82BuUtP6Sd+eP9H3rp3mKBC2fm7kANnhRBM/dOa1UC
-         o68ZQAB+EsgJRevC+xBBLv+XbGp8ae+aPaJnnB2vglRL3OAORMbtwL49fiSwx1olNufJ
-         gJWNaBaIhthvaLUJ+gWEcwO1GHMLSRT2i5/G9REZoIlQl/jfHLp3JyoaD9GgyPdTk2gk
-         LWeiky94LRFWHjpzMNiYxB161WOSlBauC+0M7S8wzVwpEF9PL67+AEJrjWVxXYwhRZwW
-         NiltdlaVMEl9YmgOAHjCjRhZfnnBefq4kTE/3vN/PSxc2ka/ci/j9Y+IndEKBR/vm1bZ
-         BTBQ==
-X-Gm-Message-State: AJIora8HVWBwJ3KqNVnTS8ciEMU9v6nOKfjkDcXf5rTGRgtCJIb/8tpr
-        tuM2NBMRJgiG1r4xpa04sMI=
-X-Google-Smtp-Source: AGRyM1sGTruxUd+ggKgNLZy5vzF5yjLNSXQnPBdKO0k1UilttK4mR2FWRcOdhy6ZOWEBhKaNfIQ5XA==
-X-Received: by 2002:a05:6000:1549:b0:21d:bdce:1d01 with SMTP id 9-20020a056000154900b0021dbdce1d01mr35147418wry.373.1658408665266;
-        Thu, 21 Jul 2022 06:04:25 -0700 (PDT)
-Received: from [192.168.0.160] ([170.253.36.171])
-        by smtp.gmail.com with ESMTPSA id 9-20020a05600c268900b003a31ca9dfb6sm2226887wmt.32.2022.07.21.06.04.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jul 2022 06:04:24 -0700 (PDT)
-Sender: Alejandro Colomar <alx.mailinglists@gmail.com>
-Message-ID: <e503645b-e665-50c4-37a9-cdc8637ba1d8@gmail.com>
-Date:   Thu, 21 Jul 2022 15:04:23 +0200
+        with ESMTP id S229462AbiGUOGU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Jul 2022 10:06:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 514DFD108
+        for <linux-ext4@vger.kernel.org>; Thu, 21 Jul 2022 07:06:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1658412377;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=thw1S0e0Dg+KcPwvjZ5RpwYG+skkK1oazdujMWDMVCc=;
+        b=TDPrJcU+Q1RfFXAcA8SH5z9xyOFwb5AkflMa1uu8PrbpL7rqqyGeJUUa59JFT3jFVTpgI4
+        gr/fp57GQD9q+Tyrw7pw1G+nOjiwdZ1fNCKv28v7W47ICJXCHoLPPfZ2lvJDr5fugXaFmt
+        cGGgKhrbq/UhbiYrqHoEjdGWaFjmPrI=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-612-eLm3LXfOPwqouxzbLDmtuQ-1; Thu, 21 Jul 2022 10:06:10 -0400
+X-MC-Unique: eLm3LXfOPwqouxzbLDmtuQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id ECEF33806649;
+        Thu, 21 Jul 2022 14:06:09 +0000 (UTC)
+Received: from fedora (unknown [10.40.194.108])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C44DF40D2962;
+        Thu, 21 Jul 2022 14:06:08 +0000 (UTC)
+Date:   Thu, 21 Jul 2022 16:06:06 +0200
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Benjamin Coddington <bcodding@redhat.com>
+Subject: Re: should we make "-o iversion" the default on ext4 ?
+Message-ID: <20220721140606.btqznsqqdpn4h3wm@fedora>
+References: <69ac1d3ef0f63b309204a570ef4922d2684ed7f9.camel@kernel.org>
+ <20220720141546.46l2d7bxwukjhtl7@fedora>
+ <ad7218a41fa8ac26911a9ccb79c87609d4279fea.camel@kernel.org>
+ <20220720152257.t67grnm4wdi3dpld@fedora>
+ <5533aca629bf17b517e33f0b7edb02550b7548a7.camel@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.0.2
-Subject: Re: [PATCH v2] Add manpage for get/set fsuuid ioctl for ext4
- filesystem.
-Content-Language: en-US
-To:     "Darrick J. Wong" <djwong@kernel.org>,
-        Jeremy Bongio <bongiojp@gmail.com>
-Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        linux-man@vger.kernel.org
-References: <20220720234512.354076-1-bongiojp@gmail.com>
- <YtiZ+gOmOFTpiAjW@magnolia>
-From:   Alejandro Colomar <alx.manpages@gmail.com>
-In-Reply-To: <YtiZ+gOmOFTpiAjW@magnolia>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5533aca629bf17b517e33f0b7edb02550b7548a7.camel@kernel.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.11.54.2
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Jeremy and Darrick,
-
-On 7/21/22 02:12, Darrick J. Wong wrote:
-> On Wed, Jul 20, 2022 at 04:45:12PM -0700, Jeremy Bongio wrote:
->> Signed-off-by: Jeremy Bongio <bongiojp@gmail.com>
->> ---
->>
->> This is a ext4 filesystem specific ioctl. However, this ioctl will
->> likely be implemented for multiple filesystems at which point this
->> manpage will be updated.
->>
->>   man2/ioctl_fsuuid.2 | 115 ++++++++++++++++++++++++++++++++++++++++++++
->>   1 file changed, 115 insertions(+)
->>   create mode 100644 man2/ioctl_fsuuid.2
->>
->> diff --git a/man2/ioctl_fsuuid.2 b/man2/ioctl_fsuuid.2
->> new file mode 100644
->> index 000000000..53747684f
->> --- /dev/null
->> +++ b/man2/ioctl_fsuuid.2
->> @@ -0,0 +1,115 @@
->> +.\" Copyright (c) 2022 Google, Inc., written by Jeremy Bongio <bongiojp@gmail.com>
->> +.\"
->> +.\" SPDX-License-Identifier: Linux-man-pages-copyleft
->> +.TH IOCTL_FSUUID 2 2022-07-20 "Linux" "Linux Programmer's Manual"
->> +.SH NAME
->> +ioctl_fsuuid \- get or set an ext4 filesystem uuid
->> +.SH LIBRARY
->> +Standard C library
->> +.RI ( libc ", " \-lc )
+On Wed, Jul 20, 2022 at 12:42:11PM -0400, Jeff Layton wrote:
+> On Wed, 2022-07-20 at 17:22 +0200, Lukas Czerner wrote:
 > 
-> I'm not sure if libc will actually wrap this one, they often won't do
-> that for ioctls.
+> >  But not zero, at least
+> > every time the inode is loaded from disk it is scheduled for i_version
+> > update on the next attempted increment. Could that have an effect on
+> > some particular common workload you can think of?
+> > 
+> 
+> FWIW, it's doubtful that you'd even notice this. You'd almost certainly
+> be updating the mtime or ctime on the next change anyway, so updating
+> the i_version in that case is basically free. You will probably need to
+> do some a few extra atomic in-memory operations, but that's probably not
+> noticeable in something I/O constrained.
+> 
+> > 
+> > Could you provide some performance numbers for iversion case?
+> > 
+> 
+> I'm writing to a LVM volume on a no-name-brand ssd I have sitting
+> around. fio jobfile is here:
 
-Actually, we also specify libc for syscalls without a wrapper (e.g., see 
-membarrier(2)).  That rationale is that you need libc even if you use 
-syscall(SYS_membarrier, ...), since syscall(2) is provided by libc.
+That's very simplistic test, but fair enough. I've ran 10 iterations of
+xfstests with and without iversion and there is no significant
+difference, in fact it's all well within run by run variation. That's
+true in aggregate as well for individual tests.
 
-However, there's a difference in the synopsis:
-If syscall(2) needs to be used to call the syscall, we document it as 
-such.  Again, see membarrier(2) for an example of how we document that.
+However there are problems to solve before we attempt to make it a
+default. With -o iversion ext4/026 and generic/622 fails. The ext4/026
+seems to be a real bug and I am not sure about the other one yet.
+
+I'll look into it.
+
+-Lukas
 
 > 
->> +.SH SYNOPSIS
->> +.nf
->> +.B #include <sys/ioctl.h>
->> +.PP
->> +.BI "int ioctl(int " fd ", EXT4_IOC_GETFSUUID, struct " fsuuid ");"
->> +.BI "int ioctl(int " fd ", EXT4_IOC_SETFSUUID, struct " fsuuid ");"
+> [global]
+> name=fio-seq-write
+> filename=fio-seq-write
+> rw=write
+> bs=4k
+> direct=0
+> numjobs=1
+> time_based
+> runtime=300
+> 
+> [file1]
+> size=1G
+> ioengine=libaio
+> iodepth=16
+> 
+> iversion support disabled:
+> 
+> $ fio ./4k-write.fio
+> file1: (g=0): rw=write, bs=(R) 4096B-4096B, (W) 4096B-4096B, (T) 4096B-4096B, ioengine=libaio, iodepth=16
+> fio-3.27
+> Starting 1 process
+> file1: Laying out IO file (1 file / 1024MiB)
+> Jobs: 1 (f=1): [W(1)][100.0%][w=52.5MiB/s][w=13.4k IOPS][eta 00m:00s]
+> file1: (groupid=0, jobs=1): err= 0: pid=10056: Wed Jul 20 12:28:21 2022
+>   write: IOPS=96.3k, BW=376MiB/s (394MB/s)(110GiB/300001msec); 0 zone resets
+>     slat (nsec): min=1112, max=5727.5k, avg=1917.70, stdev=1300.30
+>     clat (nsec): min=1112, max=2146.5M, avg=156067.38, stdev=15568002.13
+>      lat (usec): min=3, max=2146.5k, avg=158.03, stdev=15568.00
+>     clat percentiles (usec):
+>      |  1.00th=[   36],  5.00th=[   36], 10.00th=[   37], 20.00th=[   37],
+>      | 30.00th=[   38], 40.00th=[   38], 50.00th=[   38], 60.00th=[   39],
+>      | 70.00th=[   39], 80.00th=[   40], 90.00th=[   42], 95.00th=[   44],
+>      | 99.00th=[   52], 99.50th=[   59], 99.90th=[   77], 99.95th=[   88],
+>      | 99.99th=[  169]
+>    bw (  KiB/s): min=15664, max=1599456, per=100.00%, avg=897761.07, stdev=504329.17, samples=257
+>    iops        : min= 3916, max=399864, avg=224440.26, stdev=126082.33, samples=257
+>   lat (usec)   : 2=0.01%, 4=0.01%, 10=0.01%, 20=0.01%, 50=98.80%
+>   lat (usec)   : 100=1.18%, 250=0.02%, 500=0.01%
+>   lat (msec)   : 10=0.01%, 2000=0.01%, >=2000=0.01%
+>   cpu          : usr=5.45%, sys=23.92%, ctx=78418, majf=0, minf=14
+>   IO depths    : 1=0.1%, 2=0.1%, 4=0.1%, 8=0.1%, 16=100.0%, 32=0.0%, >=64=0.0%
+>      submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+>      complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.1%, 32=0.0%, 64=0.0%, >=64=0.0%
+>      issued rwts: total=0,28889786,0,0 short=0,0,0,0 dropped=0,0,0,0
+>      latency   : target=0, window=0, percentile=100.00%, depth=16
+> 
+> Run status group 0 (all jobs):
+>   WRITE: bw=376MiB/s (394MB/s), 376MiB/s-376MiB/s (394MB/s-394MB/s), io=110GiB (118GB), run=300001-300001msec
+> 
+> Disk stats (read/write):
+>     dm-7: ios=0/22878, merge=0/0, ticks=0/373254, in_queue=373254, util=43.89%, aggrios=0/99746, aggrmerge=0/9246, aggrticks=0/1406831, aggrin_queue=1408420, aggrutil=73.56%
+>   sda: ios=0/99746, merge=0/9246, ticks=0/1406831, in_queue=1408420, util=73.56%
+> 
+> mounted with -o iversion:
+> 
+> $ fio ./4k-write.fio
+> file1: (g=0): rw=write, bs=(R) 4096B-4096B, (W) 4096B-4096B, (T) 4096B-4096B, ioengine=libaio, iodepth=16
+> fio-3.27
+> Starting 1 process
+> Jobs: 1 (f=1): [W(1)][100.0%][eta 00m:00s]                          
+> file1: (groupid=0, jobs=1): err= 0: pid=10369: Wed Jul 20 12:33:57 2022
+>   write: IOPS=96.2k, BW=376MiB/s (394MB/s)(110GiB/300001msec); 0 zone resets
+>     slat (nsec): min=1112, max=1861.5k, avg=1994.58, stdev=890.78
+>     clat (nsec): min=1392, max=2113.3M, avg=156252.71, stdev=15409487.99
+>      lat (usec): min=3, max=2113.3k, avg=158.30, stdev=15409.49
+>     clat percentiles (usec):
+>      |  1.00th=[   37],  5.00th=[   38], 10.00th=[   38], 20.00th=[   38],
+>      | 30.00th=[   39], 40.00th=[   39], 50.00th=[   40], 60.00th=[   40],
+>      | 70.00th=[   41], 80.00th=[   42], 90.00th=[   43], 95.00th=[   45],
+>      | 99.00th=[   53], 99.50th=[   60], 99.90th=[   79], 99.95th=[   90],
+>      | 99.99th=[  174]
+>    bw (  KiB/s): min=  304, max=1540000, per=100.00%, avg=870727.42, stdev=499371.78, samples=265
+>    iops        : min=   76, max=385000, avg=217681.82, stdev=124842.94, samples=265
+>   lat (usec)   : 2=0.01%, 4=0.01%, 10=0.01%, 20=0.01%, 50=98.49%
+>   lat (usec)   : 100=1.48%, 250=0.02%, 500=0.01%
+>   lat (msec)   : 2=0.01%, 2000=0.01%, >=2000=0.01%
+>   cpu          : usr=5.71%, sys=24.49%, ctx=52874, majf=0, minf=18
+>   IO depths    : 1=0.1%, 2=0.1%, 4=0.1%, 8=0.1%, 16=100.0%, 32=0.0%, >=64=0.0%
+>      submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+>      complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.1%, 32=0.0%, 64=0.0%, >=64=0.0%
+>      issued rwts: total=0,28856695,0,0 short=0,0,0,0 dropped=0,0,0,0
+>      latency   : target=0, window=0, percentile=100.00%, depth=16
+> 
+> Run status group 0 (all jobs):
+>   WRITE: bw=376MiB/s (394MB/s), 376MiB/s-376MiB/s (394MB/s-394MB/s), io=110GiB (118GB), run=300001-300001msec
+> 
+> Disk stats (read/write):
+>     dm-7: ios=1/16758, merge=0/0, ticks=2/341817, in_queue=341819, util=47.93%, aggrios=1/98153, aggrmerge=0/5691, aggrticks=2/1399496, aggrin_queue=1400893, aggrutil=73.42%
+>   sda: ios=1/98153, merge=0/5691, ticks=2/1399496, in_queue=1400893, util=73.42%
+> 
+> -- 
+> Jeff Layton <jlayton@kernel.org>
+> 
 
-Can we use ioctl(2), or do we need syscall(SYS_ioctl, ...)?
-
->> +.fi
->> +.SH DESCRIPTION
->> +If an ext4 filesystem supports uuid manipulation, these
->> +.BR ioctl (2)
->> +operations can be used to get or set the uuid for the ext4 filesystem
->> +on which
->> +.I fd
->> +resides.
->> +.PP
->> +The argument to these operations should be a pointer to a
->> +.IR "struct fsuuid" ":"
->> +.PP
->> +.in +4n
->> +.EX
->> +struct fsuuid {
-
-Would you consider documenting the type separate manual page?
-See for example man2/open_how.2type and man3/tm.3type.
-
->> +       __u32 fsu_len;      /* Number of bytes in a uuid */
->> +       __u32 fsu_flags;    /* Mapping flags */
->> +       __u8  fsu_uuid[];   /* Byte array for uuid */
-
-We use 4-space indents for code.
-
->> +};
->> +.EE
->> +.PP
->> +The
->> +.I fsu_flags
->> +field must be set to 0.
-> 
-> Nit: whitespace at the end of the line.
-> 
->> +.PP
->> +If an
->> +.BR EXT4_IOC_GETFSUUID
->> +operation is called with
->> +.I fsu_len
->> +set to 0,
->> +.I fsu_len
->> +will be reassigned the number of bytes in an ext4 filesystem uuid
-> 
-> "...will be set to the number of bytes..." ?
-> 
->> +and the return code will be -EINVAL.
->> +.PP
->> +If an
->> +.BR EXT4_IOC_GETFSUUID
->> +operation is called with
->> +.I fsu_len
->> +set to the number of bytes in an ext4 filesystem uuid and
->> +.I fsu_uuid
->> +is allocated at least that many bytes, then
->> +the filesystem uuid will be written to
->> +.I fsu_uuid.
-> 
-> Hm.  It's not like the kernel actually checks the allocation -- if
-> fsu_len is set to the length of the filesystem's volume uuid, then
-> the that volume uuid will be written to fsu_uuid[].  How about:
-> 
-> "If EXT4_IOC_GETFSUUID is called with fsu_len matching the length of the
-> ext4 filesystem uuid, then that uuid will be written to fsu_uuid[] and
-> the return value will be zero.
-> If fsu_len does not match, the return value will be -EINVAL."
-> 
->> +.PP
->> +If an
->> +.BR EXT4_IOC_SETFSUUID
->> +operation is called with
->> +.I fsu_len
->> +set to the number of bytes in an ext4 filesystem uuid and
->> +.I fsu_uuid
->> +contains a uuid with
-> 
-> Nit: whitespace at EOL.
-> 
->> +.I fsu_uuid
->> +bytes, then
->> +the filesystem uuid will be set to
->> +.I fsu_uuid.
-> 
-> "If EXT4_IOC_SETFSUUID is called with fsu_len matching the length of the
-> ext4 filesystem uuid, then the filesystem uuid will be set to the
-> contents of fsu_uuid[] and the return value will reflect the outcome of
-> the update operation.
-> If fsu_len does not match, the return value will be -EINVAL."
-> 
->> +.PP
->> +The
->> +.B FS_IOC_SETFSUUID
->> +operation requires privilege
->> +.RB ( CAP_SYS_ADMIN ).
->> +If the filesystem is currently being resized, an
->> +.B EXT4_IOC_SETFSUUID
->> +operation will wait until the resize is finished and the uuid can safely be set.
->> +This may take a long time.
-> 
-> Why is resize called out here specifically?  Won't setfsuuid block on
-> /any/ operation that has tied up the filesystem superblocks?  I think
-> this could be more general:
-> 
-> "If the filesystem is busy, an EXT4_IOC_SETFSUUID operation will wait
-> until it can apply the uuid changes.
-> This may take a long time."
-> 
->> +.PP
->> +.SH RETURN VALUE
->> +On success zero is returned.
->> +On error, \-1 is returned, and
->> +.I errno
->> +is set to indicate the error.
->> +.SH ERRORS
->> +Possible errors include (but are not limited to) the following:
->> +.TP
->> +.B EFAULT
->> +Either the pointer to the
->> +.I fsuuid
->> +structure is invalid or
->> +.I fsu_uuid
->> +has not been initialized properly.
-> 
-> Invalid?  Isn't that what EINVAL is for?
-> 
-> I think EFAULT is for "could not copy to/from userspace".
-> 
->> +.TP
->> +.B EINVAL
->> +The specified arguments are invalid.
->> +.I fsu_len
->> +did not match the filesystem uuid length or
->> +.I fsu_flags
->> +has bits set that are not implemented.
-> 
-> "...not recognized."
-> 
-> If they're not implemented, shouldn't that be EOPNOTSUPP?
-> 
-> --D
-> 
->> +.TP
->> +.B ENOTTY
->> +The filesystem does not support the ioctl.
->> +.TP
->> +.B EOPNOTSUPP
->> +The filesystem does not currently support changing the uuid through this
->> +ioctl. This may be due to incompatible feature flags.
-
-Please see the following paragraph from man-pages(7):
-    Use semantic newlines
-        In the source of a manual page, new sentences  should  be
-        started on new lines, long sentences should be split into
-        lines  at  clause breaks (commas, semicolons, colons, and
-        so on), and long clauses should be split at phrase bound‐
-        aries.  This convention,  sometimes  known  as  "semantic
-        newlines",  makes it easier to see the effect of patches,
-        which often operate at the level of individual sentences,
-        clauses, or phrases.
-
-Cheers,
-
-Alex
-
-
->> +.TP
->> +.B EPERM
->> +The calling process does not have sufficient permissions to set the uuid.
->> +.SH CONFORMING TO
->> +This API is Linux-specific.
->> +.SH SEE ALSO
->> +.BR ioctl (2)
->> -- 
->> 2.37.0.170.g444d1eabd0-goog
->>
