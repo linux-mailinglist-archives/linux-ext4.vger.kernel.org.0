@@ -2,58 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6801A57C40A
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Jul 2022 08:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6663A57C40C
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Jul 2022 08:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231706AbiGUGC5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 21 Jul 2022 02:02:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53120 "EHLO
+        id S231872AbiGUGDC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 21 Jul 2022 02:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231707AbiGUGC4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Jul 2022 02:02:56 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF437A536
-        for <linux-ext4@vger.kernel.org>; Wed, 20 Jul 2022 23:02:55 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id go3so684837pjb.0
-        for <linux-ext4@vger.kernel.org>; Wed, 20 Jul 2022 23:02:55 -0700 (PDT)
+        with ESMTP id S231835AbiGUGC5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Jul 2022 02:02:57 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFD47A536
+        for <linux-ext4@vger.kernel.org>; Wed, 20 Jul 2022 23:02:57 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id h132so707481pgc.10
+        for <linux-ext4@vger.kernel.org>; Wed, 20 Jul 2022 23:02:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=15ANQp0dwnsCHTF03pUt3yxdPH7n6txqP2v/xxtddnc=;
-        b=kPB8fWONO8F8QzDLidnwEWAXYm4XPbTfALoAWHIJzS3ogycNUg3itIgRDQ46PDQ63f
-         /F7LlhP3Twbpki5I1vArlQewmHzzoxnOjUtynmAC4ysWX9mjz6pSha4kiYVr3ro5h4/S
-         UdrvB3amqiaW5AMB+eMawQ6n27wHc6jUOPEFLsGKVEiPolg+ONy7h5jraXQgxAZNUAPF
-         tq0ZmxbeCfqHoNfA4K3KDM2IxPOLeZd1DAH1lsa0Ct33a2CaXxA+abqxJ0FWtoL+GtZH
-         8vP81Rs7z+NYjd49eIKgGP6WiJu32cNj2jT7nXS1+NtBLLEexOgXDjJFyaIoVmslEWbZ
-         27pA==
+        bh=9zgv8W9ohloZRX9vqO+xpKxAioSV1XlBjrfd2i4B79U=;
+        b=WGm8o0lPCZhvf8pYzYirB8Wyg/NR/KU3v8XmFbMj8D3VInjpq0Ips264ipxlIjCw/n
+         9MNSrA7GyT5F68hBvn8n+ujoTuVYxmI0lOQ/DWMYGjatuC2EeicFOJ40YMD58gTIrURS
+         OjENq+JG+Nbuq1OkYQhCVRVdhJGYLjFFqYliWvRCWc7TczuW8KTiGgQLE+tSrZKNmJc3
+         6APxW36nTJotd1ABSsq6bJ9ygENQOcPFbKXaMTIg8cmER7R0Ca2adWGO1zSf0TRy4hIG
+         Cp5WUhOpAEsmM4knmzQIzLI/de0MJxm8m5DNVvILNTUdDUx6MX8FQSZ+SfR33JD9SvxP
+         inCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=15ANQp0dwnsCHTF03pUt3yxdPH7n6txqP2v/xxtddnc=;
-        b=u9VIJ21WsjDqHl+WjPo+NnfiqoFsS/dUkr8L4gcFmL5URPqUH9V3TIMQnfAhuPWCEq
-         g7tQd0/SjDaYXgJ59NAteTAJKfIZQSBthb/lye2VKIr4UJSmgBO5irWQqcZP0MpuzYiX
-         /h474wEHg5cO1xY7nd9ZHvOOFp2nGBRNm3mMWtHuXBfoYEOXxtzyek23OmuRi5bdgzOD
-         6LUCMtbRR4xzBEoBRPUTjKn506C+wjQ0fAR5lmTtb4ojiSPUXOTojEeInNWrFCs8RTfv
-         /3uscH6lrYtg6z2Sfiq/0V6httVHPEn4HOWIj3Up0WwxVRzEEUjlyb0yaoLOYFIVuX0m
-         AxsQ==
-X-Gm-Message-State: AJIora9zLL7TGAeIjdnufUbfulDIKFP7NftGne+TRW+wfid3x16JbbH5
-        sR8uHO307AhAIWqDSc6NOUKFrwr4/QhIEQ==
-X-Google-Smtp-Source: AGRyM1v4phghZLcK1n4NGB2onC9yEdOHcrEuecOikp5hf4rSP6519PR+L62gUzAe8jz6rUoH+/vwQA==
-X-Received: by 2002:a17:902:8ec9:b0:16b:d5bf:c465 with SMTP id x9-20020a1709028ec900b0016bd5bfc465mr19934960plo.128.1658383374530;
-        Wed, 20 Jul 2022 23:02:54 -0700 (PDT)
+        bh=9zgv8W9ohloZRX9vqO+xpKxAioSV1XlBjrfd2i4B79U=;
+        b=n+ui+kLbpVleS/BH8f+QOboyYXqVfZD8OnzSLrCbJwj81oNpiS41eUhUbuVgLm2wLT
+         bl0k5dDonspNqIoLnNXxVkCeoqexwg13bmfqLGv7mh19eDAgHajaJ02P1+Y7s1fjehgl
+         BEhppNg1CfjC7oM0blzUZ/9JHJzmjgvJjugIVefcnAXW5kwXLQz/QHWG0Rb2x9hOKQhQ
+         YsYjnGD3hBENF8ZMwoK1psCPDLg9v+RbRL+IJgXMa2Hm0Hv1Df/JmzkAy+eqR20qHxq7
+         VhdGadqXSrxQOTBt+QqAdsRhop1Tums2zGWW6/UdR7TCHusc3aJoonSeRmAQzLvEdn9m
+         UOeQ==
+X-Gm-Message-State: AJIora8nVOUKM8MZLxqS7eHutoFLdo8dzevNP+rgdZpVdPyZu6fKCi0x
+        noQ+ClV/veBVV7IvvfA+2pQ/xwaCX7ww0A==
+X-Google-Smtp-Source: AGRyM1v1KRYf7EuZxHhI9+MWLLyNIFvZCtHWuPvOXpJEc6RUEjubqs1DzfdWPBR4MbPwfWffgvCDqg==
+X-Received: by 2002:aa7:8318:0:b0:528:c331:e576 with SMTP id bk24-20020aa78318000000b00528c331e576mr43040947pfb.58.1658383375707;
+        Wed, 20 Jul 2022 23:02:55 -0700 (PDT)
 Received: from harshads.c.googlers.com.com (34.133.83.34.bc.googleusercontent.com. [34.83.133.34])
-        by smtp.googlemail.com with ESMTPSA id rm10-20020a17090b3eca00b001ed27d132c1sm9105377pjb.2.2022.07.20.23.02.53
+        by smtp.googlemail.com with ESMTPSA id rm10-20020a17090b3eca00b001ed27d132c1sm9105377pjb.2.2022.07.20.23.02.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jul 2022 23:02:53 -0700 (PDT)
+        Wed, 20 Jul 2022 23:02:54 -0700 (PDT)
 From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        Jan Kara <jack@suse.cz>
-Subject: [RFC PATCH v4 1/8] ext4: convert i_fc_lock to spinlock
-Date:   Thu, 21 Jul 2022 06:02:39 +0000
-Message-Id: <20220721060246.1696852-2-harshadshirwadkar@gmail.com>
+Cc:     tytso@mit.edu, Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: [RFC PATCH v4 2/8] ext4: for committing inode, make ext4_fc_track_inode wait
+Date:   Thu, 21 Jul 2022 06:02:40 +0000
+Message-Id: <20220721060246.1696852-3-harshadshirwadkar@gmail.com>
 X-Mailer: git-send-email 2.37.0.170.g444d1eabd0-goog
 In-Reply-To: <20220721060246.1696852-1-harshadshirwadkar@gmail.com>
 References: <20220721060246.1696852-1-harshadshirwadkar@gmail.com>
@@ -69,133 +68,139 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Convert ext4_inode_info->i_fc_lock to spinlock to avoid sleeping
-in invalid contexts.
+If the inode that's being requested to track using ext4_fc_track_inode
+is being committed, then wait until the inode finishes the
+commit. Also, add calls to ext4_fc_track_inode at the right places.
+
+With this patch, now calling ext4_reserve_inode_write() results in
+inode being tracked for next fast commit. A subtle lock ordering
+requirement with i_data_sem (which is documented in the code) requires
+that ext4_fc_track_inode() be called before grabbing i_data_sem. So,
+this patch also adds explicit ext4_fc_track_inode() calls in places
+where i_data_sem grabbed.
 
 Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
 ---
- fs/ext4/ext4.h        |  7 +++++--
- fs/ext4/fast_commit.c | 22 ++++++++++------------
- fs/ext4/super.c       |  2 +-
- 3 files changed, 16 insertions(+), 15 deletions(-)
+ fs/ext4/fast_commit.c | 30 ++++++++++++++++++++++++++++++
+ fs/ext4/inline.c      |  3 +++
+ fs/ext4/inode.c       |  5 ++++-
+ 3 files changed, 37 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 75b8d81b2469..12c8691f08d3 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1067,8 +1067,11 @@ struct ext4_inode_info {
- 	/* Fast commit wait queue for this inode */
- 	wait_queue_head_t i_fc_wait;
- 
--	/* Protect concurrent accesses on i_fc_lblk_start, i_fc_lblk_len */
--	struct mutex i_fc_lock;
-+	/*
-+	 * Protect concurrent accesses on i_fc_lblk_start, i_fc_lblk_len
-+	 * and inode's EXT4_FC_STATE_COMMITTING state bit.
-+	 */
-+	spinlock_t i_fc_lock;
- 
- 	/*
- 	 * i_disksize keeps track of what the inode size is ON DISK, not
 diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 795a60ad1897..8d6d5155a646 100644
+index 8d6d5155a646..4d2384adcbb0 100644
 --- a/fs/ext4/fast_commit.c
 +++ b/fs/ext4/fast_commit.c
-@@ -380,7 +380,7 @@ static int ext4_fc_track_template(
- 	int ret;
- 
- 	tid = handle->h_transaction->t_tid;
--	mutex_lock(&ei->i_fc_lock);
-+	spin_lock(&ei->i_fc_lock);
- 	if (tid == ei->i_sync_tid) {
- 		update = true;
- 	} else {
-@@ -388,7 +388,7 @@ static int ext4_fc_track_template(
- 		ei->i_sync_tid = tid;
- 	}
- 	ret = __fc_track_fn(inode, args, update);
--	mutex_unlock(&ei->i_fc_lock);
-+	spin_unlock(&ei->i_fc_lock);
- 
- 	if (!enqueue)
- 		return ret;
-@@ -420,11 +420,11 @@ static int __track_dentry_update(struct inode *inode, void *arg, bool update)
- 	struct dentry *dentry = dentry_update->dentry;
- 	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
- 
--	mutex_unlock(&ei->i_fc_lock);
-+	spin_unlock(&ei->i_fc_lock);
- 	node = kmem_cache_alloc(ext4_fc_dentry_cachep, GFP_NOFS);
- 	if (!node) {
- 		ext4_fc_mark_ineligible(inode->i_sb, EXT4_FC_REASON_NOMEM, NULL);
--		mutex_lock(&ei->i_fc_lock);
-+		spin_lock(&ei->i_fc_lock);
- 		return -ENOMEM;
- 	}
- 
-@@ -437,7 +437,7 @@ static int __track_dentry_update(struct inode *inode, void *arg, bool update)
- 			kmem_cache_free(ext4_fc_dentry_cachep, node);
- 			ext4_fc_mark_ineligible(inode->i_sb,
- 				EXT4_FC_REASON_NOMEM, NULL);
--			mutex_lock(&ei->i_fc_lock);
-+			spin_lock(&ei->i_fc_lock);
- 			return -ENOMEM;
- 		}
- 		memcpy((u8 *)node->fcd_name.name, dentry->d_name.name,
-@@ -471,7 +471,7 @@ static int __track_dentry_update(struct inode *inode, void *arg, bool update)
- 		list_add_tail(&node->fcd_dilist, &ei->i_fc_dilist);
- 	}
- 	spin_unlock(&sbi->s_fc_lock);
--	mutex_lock(&ei->i_fc_lock);
-+	spin_lock(&ei->i_fc_lock);
- 
+@@ -574,8 +574,14 @@ static int __track_inode(struct inode *inode, void *arg, bool update)
  	return 0;
  }
-@@ -611,10 +611,8 @@ static int __track_range(struct inode *inode, void *arg, bool update)
- 	struct __track_range_args *__arg =
- 		(struct __track_range_args *)arg;
  
--	if (inode->i_ino < EXT4_FIRST_INO(inode->i_sb)) {
--		ext4_debug("Special inode %ld being modified\n", inode->i_ino);
-+	if (inode->i_ino < EXT4_FIRST_INO(inode->i_sb))
- 		return -ECANCELED;
--	}
- 
- 	oldstart = ei->i_fc_lblk_start;
- 
-@@ -906,15 +904,15 @@ static int ext4_fc_write_inode_data(struct inode *inode, u32 *crc)
- 	struct ext4_extent *ex;
++/*
++ * Track inode as part of the next fast commit. If the inode is being
++ * committed, this function will wait for the commit to finish.
++ */
+ void ext4_fc_track_inode(handle_t *handle, struct inode *inode)
+ {
++	struct ext4_inode_info *ei = EXT4_I(inode);
++	wait_queue_head_t *wq;
+ 	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
  	int ret;
  
--	mutex_lock(&ei->i_fc_lock);
-+	spin_lock(&ei->i_fc_lock);
- 	if (ei->i_fc_lblk_len == 0) {
--		mutex_unlock(&ei->i_fc_lock);
-+		spin_unlock(&ei->i_fc_lock);
- 		return 0;
- 	}
- 	old_blk_size = ei->i_fc_lblk_start;
- 	new_blk_size = ei->i_fc_lblk_start + ei->i_fc_lblk_len - 1;
- 	ei->i_fc_lblk_len = 0;
--	mutex_unlock(&ei->i_fc_lock);
-+	spin_unlock(&ei->i_fc_lock);
+@@ -595,6 +601,30 @@ void ext4_fc_track_inode(handle_t *handle, struct inode *inode)
+ 	if (ext4_test_mount_flag(inode->i_sb, EXT4_MF_FC_INELIGIBLE))
+ 		return;
  
- 	cur_lblk_off = old_blk_size;
- 	jbd_debug(1, "%s: will try writing %d to %d for inode %ld\n",
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 845f2f8aee5f..307871359e23 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1354,7 +1354,7 @@ static struct inode *ext4_alloc_inode(struct super_block *sb)
- 	atomic_set(&ei->i_unwritten, 0);
- 	INIT_WORK(&ei->i_rsv_conversion_work, ext4_end_io_rsv_work);
- 	ext4_fc_init_inode(&ei->vfs_inode);
--	mutex_init(&ei->i_fc_lock);
-+	spin_lock_init(&ei->i_fc_lock);
- 	return &ei->vfs_inode;
++	if (!test_opt2(inode->i_sb, JOURNAL_FAST_COMMIT) ||
++	    (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY) ||
++		ext4_test_mount_flag(inode->i_sb, EXT4_MF_FC_INELIGIBLE) ||
++		!list_empty(&ei->i_fc_list))
++		return;
++
++	while (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING)) {
++#if (BITS_PER_LONG < 64)
++		DEFINE_WAIT_BIT(wait, &ei->i_state_flags,
++				EXT4_STATE_FC_COMMITTING);
++		wq = bit_waitqueue(&ei->i_state_flags,
++				   EXT4_STATE_FC_COMMITTING);
++#else
++		DEFINE_WAIT_BIT(wait, &ei->i_flags,
++				EXT4_STATE_FC_COMMITTING);
++		wq = bit_waitqueue(&ei->i_flags,
++				   EXT4_STATE_FC_COMMITTING);
++#endif
++		prepare_to_wait(wq, &wait.wq_entry, TASK_UNINTERRUPTIBLE);
++		if (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING))
++			schedule();
++		finish_wait(wq, &wait.wq_entry);
++	}
++
+ 	ret = ext4_fc_track_template(handle, inode, __track_inode, NULL, 1);
+ 	trace_ext4_fc_track_inode(handle, inode, ret);
  }
+diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+index cff52ff6549d..7f5edfb34095 100644
+--- a/fs/ext4/inline.c
++++ b/fs/ext4/inline.c
+@@ -586,6 +586,7 @@ static int ext4_convert_inline_data_to_extent(struct address_space *mapping,
+ 			goto out;
+ 	}
  
++	ext4_fc_track_inode(handle, inode);
+ 	ret = ext4_destroy_inline_data_nolock(handle, inode);
+ 	if (ret)
+ 		goto out;
+@@ -686,6 +687,7 @@ int ext4_try_to_write_inline_data(struct address_space *mapping,
+ 		goto convert;
+ 	}
+ 
++	ext4_fc_track_inode(handle, inode);
+ 	ret = ext4_journal_get_write_access(handle, inode->i_sb, iloc.bh,
+ 					    EXT4_JTR_NONE);
+ 	if (ret)
+@@ -964,6 +966,7 @@ int ext4_da_write_inline_data_begin(struct address_space *mapping,
+ 		if (ret < 0)
+ 			goto out_release_page;
+ 	}
++	ext4_fc_track_inode(handle, inode);
+ 	ret = ext4_journal_get_write_access(handle, inode->i_sb, iloc.bh,
+ 					    EXT4_JTR_NONE);
+ 	if (ret)
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 84c0eb55071d..f3de6748a96b 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -627,6 +627,7 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
+ 	 */
+ 	map->m_flags &= ~EXT4_MAP_FLAGS;
+ 
++	ext4_fc_track_inode(handle, inode);
+ 	/*
+ 	 * New blocks allocate and/or writing to unwritten extent
+ 	 * will possibly result in updating i_data, so we take
+@@ -4076,7 +4077,7 @@ int ext4_punch_hole(struct file *file, loff_t offset, loff_t length)
+ 
+ 	/* If there are blocks to remove, do it */
+ 	if (stop_block > first_block) {
+-
++		ext4_fc_track_inode(handle, inode);
+ 		down_write(&EXT4_I(inode)->i_data_sem);
+ 		ext4_discard_preallocations(inode, 0);
+ 
+@@ -4232,6 +4233,7 @@ int ext4_truncate(struct inode *inode)
+ 	if (err)
+ 		goto out_stop;
+ 
++	ext4_fc_track_inode(handle, inode);
+ 	down_write(&EXT4_I(inode)->i_data_sem);
+ 
+ 	ext4_discard_preallocations(inode, 0);
+@@ -5752,6 +5754,7 @@ ext4_reserve_inode_write(handle_t *handle, struct inode *inode,
+ 			brelse(iloc->bh);
+ 			iloc->bh = NULL;
+ 		}
++		ext4_fc_track_inode(handle, inode);
+ 	}
+ 	ext4_std_error(inode->i_sb, err);
+ 	return err;
 -- 
 2.37.0.170.g444d1eabd0-goog
 
