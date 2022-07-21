@@ -2,58 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08D3D57C40E
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Jul 2022 08:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F1AB57C40F
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Jul 2022 08:03:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231876AbiGUGDF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 21 Jul 2022 02:03:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53282 "EHLO
+        id S231708AbiGUGDG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 21 Jul 2022 02:03:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231708AbiGUGDC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Jul 2022 02:03:02 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0529C7AB16
-        for <linux-ext4@vger.kernel.org>; Wed, 20 Jul 2022 23:02:59 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id s206so738741pgs.3
-        for <linux-ext4@vger.kernel.org>; Wed, 20 Jul 2022 23:02:59 -0700 (PDT)
+        with ESMTP id S231883AbiGUGDD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Jul 2022 02:03:03 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE1E7A539
+        for <linux-ext4@vger.kernel.org>; Wed, 20 Jul 2022 23:03:00 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id x24-20020a17090ab01800b001f21556cf48so4210343pjq.4
+        for <linux-ext4@vger.kernel.org>; Wed, 20 Jul 2022 23:03:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gw1tvgmsX9USbUcdfOLPUt99Xa2Ep6XpIu5vjIGEUvo=;
-        b=nCb28GiVKxZCIe7IIj0IF27PzIkSbJF7/pLTWMD/RL50OURnTVn3SFxGMIBqngVZ8Q
-         gMBLW+X07ent8Scqm/NM7itoFSBBAViyuxjgwZSjm2n7JCh89deSsiUIUrFioYOS254x
-         BpXrDWFJ5b6mN9URSsj5rfzNwusksWCxvflknrQyNGswIVD1mzLY+Dw84iLYuBFJf3T2
-         yVm7R2Pgzb/VLUKVBq57bHJcgzvOaSEtBO5Tcd3RIMtKXW4dI2IuUbD+AQuI1V9uRAHK
-         4mxfMtf/jnxtvjVdcnoXDjUCxsDnzlhQYC5iOwtvRGz5IYs5ECfDdMG7uMYGjKyFDmh1
-         YRcQ==
+        bh=fNljEoovjwlVcxzjjsT9XVt70W1NHTNB2v0mAFC2T40=;
+        b=q5MOXOfAO1VDPfxXwVeEi9RorbFccWyUjIWyA/dogeiQC2k9pxWXEPSaeJtw8Jy6Gb
+         JhkpVBQoxyModQVz4aIsV/g3Be2mehlkqwUWKw6/FNJpg6+rqsjqV5oQYsDU9PLSHZdh
+         Ngw2NXCMFH5edBycmFQt5dSjpe7nLXf8e7mxdEPUxXPYBYLgyiNmTRFSG3Wf8nqGjGHs
+         9/msype5n6eVJOnx5XEHVc4IYds7FYvRW5C6APa960mEIXP4AEeCJSXBWu+w17ExQ/l5
+         xYbEkyC+4dCS3BKzuyuXBfrj/idNsVsd1PNnCzkc28sqxQFIdcLtdLMPgv6FI49apV44
+         2Lfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gw1tvgmsX9USbUcdfOLPUt99Xa2Ep6XpIu5vjIGEUvo=;
-        b=O+CoszHa+3VXHuRNApSLSWn63FEKOwcljt4eku/aD5Ybc4CNTuWbrh5t64geiSU42G
-         06gWXevWqES5MrWpltjb3rUvFwyyHXEyl/u64Y9CUMlF4j6ZVj9QBtVixKOyvCkSsYm6
-         leB21QHG97JVMVfxDIKwGAWjGegLY8FS4sM5FGe8rX2mAEnei5ehuTVubX3kcvLfgyUA
-         2TljL62+1bnKmOq04ciaTYGhPuYcb9qzfcX6tJ7rX7O6QsqrO/vxtGTtCyLkhtxOnk5F
-         dAzL/4f5id/0W096Onqi8cRWmhZP4uZK7Uo0H7CcUDZ0aQJyrjelb49GBBZ40wb2BkhV
-         OZhA==
-X-Gm-Message-State: AJIora+0gdx8rInXfopwkHUDjj7zbA7T/IB7ah2wKFXxaX93VumdqK+r
-        eTQpR9UbGs34PR8sJ4A9hHuC+NwFr4Y0EczL
-X-Google-Smtp-Source: AGRyM1vgncA7xegLkUWultJwUPcGnKYK1p9uDt7aHxEsetgPH5/UOHZIw7JZHzS6vOq558i+VKxxeg==
-X-Received: by 2002:a05:6a00:174f:b0:525:518e:71d6 with SMTP id j15-20020a056a00174f00b00525518e71d6mr43458840pfc.68.1658383377897;
-        Wed, 20 Jul 2022 23:02:57 -0700 (PDT)
+        bh=fNljEoovjwlVcxzjjsT9XVt70W1NHTNB2v0mAFC2T40=;
+        b=ptg+wlRWJm7byzhAaf9b2SbW/7AYuApUxn2bTpEa7TxIUA1Nh6E0DUFqVXCFrer4Pn
+         o0x1OXvzzh3+1B7fxr/c8vM3suG2jxujEEGq4RNr0lMx54eEEbPC0StlGH+gQIlHd7j6
+         ihq/UQ/7ezMCLezpWjzlCqARhDSiUEp6QvSkkfyPsGd9EpNrMfJ2CmKMGrugNOLdgBKk
+         1BJi2LGbZdPCrrk+mof1c7D47tYSQ0PVgATJrV9qSypeJL0aCdTSNLZIJegyhlfdJaHZ
+         gGQK+dcRtr7r246JCb/eiYM+p3X8F+7/GoAhLDh6uVRnCWwbXD4cVEuM4dOHUTt5m/Jo
+         URYg==
+X-Gm-Message-State: AJIora/TMBADMiJKsBOtATBxdJvQhyhl9bhzQqyJuaBJo6F8ZY0Vc5X3
+        E5OFn47/TLmyehzxu0nUMV3wkpXwwm/xjqaj
+X-Google-Smtp-Source: AGRyM1u7e8n4dKE6BXK/TbheJ4mDSIMYeZrQ1oEIIUwDxoClx+wyFiYVOh1swMklrSTizdFZJmGxOg==
+X-Received: by 2002:a17:902:ce0e:b0:16c:7977:9d74 with SMTP id k14-20020a170902ce0e00b0016c79779d74mr42761036plg.92.1658383379052;
+        Wed, 20 Jul 2022 23:02:59 -0700 (PDT)
 Received: from harshads.c.googlers.com.com (34.133.83.34.bc.googleusercontent.com. [34.83.133.34])
-        by smtp.googlemail.com with ESMTPSA id rm10-20020a17090b3eca00b001ed27d132c1sm9105377pjb.2.2022.07.20.23.02.56
+        by smtp.googlemail.com with ESMTPSA id rm10-20020a17090b3eca00b001ed27d132c1sm9105377pjb.2.2022.07.20.23.02.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jul 2022 23:02:57 -0700 (PDT)
+        Wed, 20 Jul 2022 23:02:58 -0700 (PDT)
 From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        Jan Kara <jack@suse.cz>
-Subject: [RFC PATCH v4 4/8] ext4: rework fast commit commit path
-Date:   Thu, 21 Jul 2022 06:02:42 +0000
-Message-Id: <20220721060246.1696852-5-harshadshirwadkar@gmail.com>
+Cc:     tytso@mit.edu, Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: [RFC PATCH v4 5/8] ext4: ext4_fc_track_inode() bug fix
+Date:   Thu, 21 Jul 2022 06:02:43 +0000
+Message-Id: <20220721060246.1696852-6-harshadshirwadkar@gmail.com>
 X-Mailer: git-send-email 2.37.0.170.g444d1eabd0-goog
 In-Reply-To: <20220721060246.1696852-1-harshadshirwadkar@gmail.com>
 References: <20220721060246.1696852-1-harshadshirwadkar@gmail.com>
@@ -69,168 +68,32 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This patch reworks fast commit's commit path to remove locking the
-journal for the entire duration of a fast commit. Instead, we only lock
-the journal while marking all the eligible inodes as "committing". This
-allows handles to make progress in parallel with the fast commit.
+This patch fixes a bug in ext4_fc_track_inode() where we should not
+immediately return from ext4_fc_track_inode() if the inode is on fast
+commit list. It is possible that the inode is on fast commit list and
+then somebody calls ext4_fc_track_inode(). If we immediately return if
+the inode is on fc list, we will let the caller modify the inode while
+it is being committed.
 
 Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
 ---
- fs/ext4/fast_commit.c | 73 ++++++++++++++++++++++++++++---------------
- fs/jbd2/journal.c     |  2 --
- 2 files changed, 48 insertions(+), 27 deletions(-)
+ fs/ext4/fast_commit.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 916f62cfa7f7..608ae16afcd6 100644
+index 608ae16afcd6..0307e21e5b29 100644
 --- a/fs/ext4/fast_commit.c
 +++ b/fs/ext4/fast_commit.c
-@@ -287,20 +287,30 @@ void ext4_fc_del(struct inode *inode)
- 	    (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY))
+@@ -611,8 +611,7 @@ void ext4_fc_track_inode(handle_t *handle, struct inode *inode)
+ 
+ 	if (!test_opt2(inode->i_sb, JOURNAL_FAST_COMMIT) ||
+ 	    (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY) ||
+-		ext4_test_mount_flag(inode->i_sb, EXT4_MF_FC_INELIGIBLE) ||
+-		!list_empty(&ei->i_fc_list))
++	    ext4_test_mount_flag(inode->i_sb, EXT4_MF_FC_INELIGIBLE))
  		return;
  
--restart:
- 	spin_lock(&EXT4_SB(inode->i_sb)->s_fc_lock);
- 	if (list_empty(&ei->i_fc_list) && list_empty(&ei->i_fc_dilist)) {
- 		spin_unlock(&EXT4_SB(inode->i_sb)->s_fc_lock);
- 		return;
- 	}
- 
--	if (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING)) {
--		ext4_fc_wait_committing_inode(inode);
--		goto restart;
--	}
--
--	if (!list_empty(&ei->i_fc_list))
--		list_del_init(&ei->i_fc_list);
-+	/*
-+	 * Since ext4_fc_del is called from ext4_evict_inode while having a
-+	 * handle open, there is no need for us to wait here even if a fast
-+	 * commit is going on. That is because, if this inode is being
-+	 * committed, ext4_mark_inode_dirty would have waited for inode commit
-+	 * operation to finish before we come here. So, by the time we come
-+	 * here, inode's EXT4_STATE_FC_COMMITTING would have been cleared. So,
-+	 * we shouldn't see EXT4_STATE_FC_COMMITTING to be set on this inode
-+	 * here.
-+	 *
-+	 * We may come here without any handles open in the "no_delete" case of
-+	 * ext4_evict_inode as well. However, if that happens, we first mark the
-+	 * file system as fast commit ineligible anyway. So, even in that case,
-+	 * it is okay to remove the inode from the fc list.
-+	 */
-+	WARN_ON(ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING)
-+		&& !ext4_test_mount_flag(inode->i_sb, EXT4_MF_FC_INELIGIBLE));
-+	list_del_init(&ei->i_fc_list);
- 
- 	/*
- 	 * Since this inode is getting removed, let's also remove all FC
-@@ -323,8 +333,6 @@ void ext4_fc_del(struct inode *inode)
- 		fc_dentry->fcd_name.len > DNAME_INLINE_LEN)
- 		kfree(fc_dentry->fcd_name.name);
- 	kmem_cache_free(ext4_fc_dentry_cachep, fc_dentry);
--
--	return;
- }
- 
- /*
-@@ -1006,19 +1014,6 @@ static int ext4_fc_submit_inode_data_all(journal_t *journal)
- 
- 	spin_lock(&sbi->s_fc_lock);
- 	list_for_each_entry(ei, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
--		ext4_set_inode_state(&ei->vfs_inode, EXT4_STATE_FC_COMMITTING);
--		while (atomic_read(&ei->i_fc_updates)) {
--			DEFINE_WAIT(wait);
--
--			prepare_to_wait(&ei->i_fc_wait, &wait,
--						TASK_UNINTERRUPTIBLE);
--			if (atomic_read(&ei->i_fc_updates)) {
--				spin_unlock(&sbi->s_fc_lock);
--				schedule();
--				spin_lock(&sbi->s_fc_lock);
--			}
--			finish_wait(&ei->i_fc_wait, &wait);
--		}
- 		spin_unlock(&sbi->s_fc_lock);
- 		ret = jbd2_submit_inode_data(ei->jinode);
- 		if (ret)
-@@ -1131,6 +1126,16 @@ static int ext4_fc_perform_commit(journal_t *journal)
- 	int ret = 0;
- 	u32 crc = 0;
- 
-+	/* Lock the journal */
-+	jbd2_journal_lock_updates(journal);
-+	spin_lock(&sbi->s_fc_lock);
-+	list_for_each_entry(iter, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
-+		ext4_set_inode_state(&iter->vfs_inode,
-+				     EXT4_STATE_FC_COMMITTING);
-+	}
-+	spin_unlock(&sbi->s_fc_lock);
-+	jbd2_journal_unlock_updates(journal);
-+
- 	ret = ext4_fc_submit_inode_data_all(journal);
- 	if (ret)
- 		return ret;
-@@ -1183,6 +1188,20 @@ static int ext4_fc_perform_commit(journal_t *journal)
- 			goto out;
- 		spin_lock(&sbi->s_fc_lock);
- 	}
-+	list_for_each_entry(iter, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
-+		ext4_clear_inode_state(inode, EXT4_STATE_FC_COMMITTING);
-+		/*
-+		 * Make sure clearing of EXT4_STATE_FC_COMMITTING is
-+		 * visible before we send the wakeup. Pairs with implicit
-+		 * barrier in prepare_to_wait() in ext4_fc_track_inode().
-+		 */
-+		smp_mb();
-+#if (BITS_PER_LONG < 64)
-+		wake_up_bit(&iter->i_state_flags, EXT4_STATE_FC_COMMITTING);
-+#else
-+		wake_up_bit(&iter->i_flags, EXT4_STATE_FC_COMMITTING);
-+#endif
-+	}
- 	spin_unlock(&sbi->s_fc_lock);
- 
- 	ret = ext4_fc_write_tail(sb, crc);
-@@ -1318,13 +1337,17 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
- 	spin_lock(&sbi->s_fc_lock);
- 	list_for_each_entry_safe(iter, iter_n, &sbi->s_fc_q[FC_Q_MAIN],
- 				 i_fc_list) {
--		list_del_init(&iter->i_fc_list);
- 		ext4_clear_inode_state(&iter->vfs_inode,
- 				       EXT4_STATE_FC_COMMITTING);
- 		if (iter->i_sync_tid <= tid)
- 			ext4_fc_reset_inode(&iter->vfs_inode);
--		/* Make sure EXT4_STATE_FC_COMMITTING bit is clear */
-+		/*
-+		 * Make sure clearing of EXT4_STATE_FC_COMMITTING is
-+		 * visible before we send the wakeup. Pairs with implicit
-+		 * barrier in prepare_to_wait() in ext4_fc_track_inode().
-+		 */
- 		smp_mb();
-+		list_del_init(&iter->i_fc_list);
- #if (BITS_PER_LONG < 64)
- 		wake_up_bit(&iter->i_state_flags, EXT4_STATE_FC_COMMITTING);
- #else
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index c0cbeeaec2d1..64b56bf02c52 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -757,7 +757,6 @@ int jbd2_fc_begin_commit(journal_t *journal, tid_t tid)
- 	}
- 	journal->j_flags |= JBD2_FAST_COMMIT_ONGOING;
- 	write_unlock(&journal->j_state_lock);
--	jbd2_journal_lock_updates(journal);
- 
- 	return 0;
- }
-@@ -769,7 +768,6 @@ EXPORT_SYMBOL(jbd2_fc_begin_commit);
-  */
- static int __jbd2_fc_end_commit(journal_t *journal, tid_t tid, bool fallback)
- {
--	jbd2_journal_unlock_updates(journal);
- 	if (journal->j_fc_cleanup_callback)
- 		journal->j_fc_cleanup_callback(journal, 0, tid);
- 	write_lock(&journal->j_state_lock);
+ 	while (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING)) {
 -- 
 2.37.0.170.g444d1eabd0-goog
 
