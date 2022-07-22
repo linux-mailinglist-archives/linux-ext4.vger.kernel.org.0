@@ -2,120 +2,97 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED7157E375
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Jul 2022 17:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE15257E44B
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Jul 2022 18:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231700AbiGVPL0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 22 Jul 2022 11:11:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58542 "EHLO
+        id S229850AbiGVQYm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 22 Jul 2022 12:24:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235573AbiGVPLY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 22 Jul 2022 11:11:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 95306951DD
-        for <linux-ext4@vger.kernel.org>; Fri, 22 Jul 2022 08:11:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1658502682;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xi8dTMRGNSd0HqoORa/8kAp5M9DPhO5fCb8gODNwrS8=;
-        b=MnFVpx0VJ6kxOx/a+a/i1bUR7wl48ZN6Ipbuf7B6tNAke8QRJmOiXCnHfuBLJO9MPCCm2Y
-        7rZXbcR/by06jKJkwBQuI4xPKrkv8M4GVn3oniRGZ9VSUzJDx92RQ3FrsZBwc94ZVafwTZ
-        A5PqWWIbaPwHQ3yKmgg6VW7edTRiHXk=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-470-si0x10VPMpqew8MZpJwMgg-1; Fri, 22 Jul 2022 11:11:21 -0400
-X-MC-Unique: si0x10VPMpqew8MZpJwMgg-1
-Received: by mail-qk1-f198.google.com with SMTP id k190-20020a37bac7000000b006af6d953751so3929527qkf.13
-        for <linux-ext4@vger.kernel.org>; Fri, 22 Jul 2022 08:11:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Xi8dTMRGNSd0HqoORa/8kAp5M9DPhO5fCb8gODNwrS8=;
-        b=IUntI1sD5PSSY3JHibPDJ4lcgN0sxFyDWWoblgYbn0EkYB7Ni27zzyT5BNGQc7gKjV
-         QoEI5E/f7geQIgD4CXrGgA6qpv8xldFkEZPfGO5J1jieq4acchyD7XlA6ZpQwlNpC/o8
-         wyb/FJNxEmy4bpsuv3EakpUY/ORzarzekaH7r6q32M8u9TVByNPkoIwljpKWNqSndx5r
-         esMNLjwq2U5+H9RTcdDm+Hg8Em0wa2ktEViOTfWQmDdsMsSJm1RQ629hTf+Wb8BieQxF
-         QdgrULGrLCCCDCNEpP3sN4LduDfRiawT69zwtPrEVNwkueNAD39JAKLX6kihuLV4uKfV
-         42Rw==
-X-Gm-Message-State: AJIora9JThsjGT5k2E/Twu94LRLLeXH7otVRQfnJ4mXPOQlocrBQ1sQz
-        w4q1yMP/NLZfF4ugO0FcYcLzais5nguYS3dccEUwEjG9Lqt8m9N9HOwbjNa+aNdgkv96ycc4fiJ
-        hMTRcJk3Hh1BQKI1d5GcMiA==
-X-Received: by 2002:a37:b03:0:b0:6b5:e533:e984 with SMTP id 3-20020a370b03000000b006b5e533e984mr281230qkl.364.1658502680842;
-        Fri, 22 Jul 2022 08:11:20 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1uq3flzgxrqK1gQXJEHFwK4uxREs0DKbcZ8RAp9PLHwPr7/n5KyiFPkrP0IlE4UhjA3p2EX5A==
-X-Received: by 2002:a37:b03:0:b0:6b5:e533:e984 with SMTP id 3-20020a370b03000000b006b5e533e984mr281210qkl.364.1658502680564;
-        Fri, 22 Jul 2022 08:11:20 -0700 (PDT)
-Received: from zlang-mailbox ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id d17-20020ac81191000000b0031ee3449f34sm2933907qtj.86.2022.07.22.08.11.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jul 2022 08:11:20 -0700 (PDT)
-Date:   Fri, 22 Jul 2022 23:11:14 +0800
-From:   Zorro Lang <zlang@redhat.com>
-To:     Sun Ke <sunke32@huawei.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>, fstests@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] ext4: resize fs after resize_inode without e2fsck
-Message-ID: <20220722151114.c4w7s6v6fu5hphf5@zlang-mailbox>
-References: <20220713092859.3881376-1-sunke32@huawei.com>
- <20220713092859.3881376-2-sunke32@huawei.com>
- <20220714154607.qq6cqgvncxhsn66w@zlang-mailbox>
- <YtCSAjiMc9RElnHu@mit.edu>
- <20220715180815.gegmapvruor6vin3@zlang-mailbox>
- <b424fd69-aeb4-f749-d09b-5d824454dd94@huawei.com>
- <YtqPXcFbbrFBr1om@mit.edu>
+        with ESMTP id S229593AbiGVQYm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 22 Jul 2022 12:24:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A1F58AB31;
+        Fri, 22 Jul 2022 09:24:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 245A2621BD;
+        Fri, 22 Jul 2022 16:24:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 801EFC341C6;
+        Fri, 22 Jul 2022 16:24:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1658507080;
+        bh=ERD6L0tGWO0x9Vzt+94y6IPYs2il1yz7+hLCIIQ9VMQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M7syBNh7Q+slzlSg95Ty+U3caUx3OkvdZKYgFaT6zO7YKN9OsdTxAXKpzM/fQ8EUj
+         8laTCMg9BidYfI43AVNQjAskrSgTEIhdawoWcCWFN1EAKRyOqivbfv7qK9N59+Vvnq
+         ixHzlI/3Lkn2UIyRqLOaAICt3NyJKQeAO9La4LBsM3B/cUM9f6Cxa2XXZSNWSWP4n7
+         eKglhO2cux23pKTuvR31k1jROOcx4Jvj6L34W3fwmJ0EjPxsmlZpViqsKNhWnWhV8U
+         qZwtGZ8Kg87h7OJAYIWHEdlyKK+giZJRMb/S/JIukT8Eyn8v4Et7jPN0R8WTIdRmRv
+         SETEtPcVhPZPQ==
+Date:   Fri, 22 Jul 2022 09:24:39 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Keith Busch <kbusch@kernel.org>
+Subject: Re: [PATCH v4 9/9] xfs: support STATX_DIOALIGN
+Message-ID: <YtrPRysafr5KK3NQ@magnolia>
+References: <20220722071228.146690-1-ebiggers@kernel.org>
+ <20220722071228.146690-10-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YtqPXcFbbrFBr1om@mit.edu>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220722071228.146690-10-ebiggers@kernel.org>
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jul 22, 2022 at 07:51:57AM -0400, Theodore Ts'o wrote:
-> On Fri, Jul 22, 2022 at 04:16:26PM +0800, Sun Ke wrote:
-> > 
-> > 1. The test run fsck automatically, and complain inconsistent，I think it
-> > need not run fsck.
+On Fri, Jul 22, 2022 at 12:12:28AM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> The check script always run fscks after the test.  In order to
-> suppress the fsck complaint, we'll need to add this after the
-> resize2fs invocation:
+> Add support for STATX_DIOALIGN to xfs, so that direct I/O alignment
+> restrictions are exposed to userspace in a generic way.
 > 
-> _scratch_unmount
-> $DEBUGFS_PROG -w -R "set_super_value s_reserved_gdt_blocks 0" $SCRATCH_DEV \
->         >>$seqres.full 2>&1
-> 
-> This resets the s_reserved_gdt_blocks field back to zero, so the fsck
-> doesn't fail.  Which is fine, because the point of the test is to see
-> whether the kernel dereferences a NULL pointer or not.
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Or maybe just replace _reuqire_scratch with _require_scratch_nocheck, if we
-corrupt the fs on SCRATCH_DEV intentionally?
+LGTM
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-Thanks,
-Zorro
+--D
 
+> ---
+>  fs/xfs/xfs_iops.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
-> > 2. It warn missing kernel fix, but the commit had merged.
+> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> index 29f5b8b8aca69a..bac3f56141801e 100644
+> --- a/fs/xfs/xfs_iops.c
+> +++ b/fs/xfs/xfs_iops.c
+> @@ -605,6 +605,15 @@ xfs_vn_getattr(
+>  		stat->blksize = BLKDEV_IOSIZE;
+>  		stat->rdev = inode->i_rdev;
+>  		break;
+> +	case S_IFREG:
+> +		if (request_mask & STATX_DIOALIGN) {
+> +			struct xfs_buftarg	*target = xfs_inode_buftarg(ip);
+> +
+> +			stat->result_mask |= STATX_DIOALIGN;
+> +			stat->dio_mem_align = target->bt_logical_sectorsize;
+> +			stat->dio_offset_align = target->bt_logical_sectorsize;
+> +		}
+> +		fallthrough;
+>  	default:
+>  		stat->blksize = xfs_stat_blksize(ip);
+>  		stat->rdev = 0;
+> -- 
+> 2.37.0
 > 
-> The way _fixed_by_kernel_commit works is if the test fails (for any
-> reason), it prints that you MAY be missing the bugfix commit:
-> 
-> > HINT: You _MAY_ be missing kernel fix:
-> >       b55c3cd102a6 ext4: add reserved GDT blocks check
-> 
-> 		     	       		- Ted
-> 
-
