@@ -2,183 +2,204 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73BA057E5CC
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Jul 2022 19:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A00A757E64B
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Jul 2022 20:11:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230453AbiGVRqI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 22 Jul 2022 13:46:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37346 "EHLO
+        id S236033AbiGVSLO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 22 Jul 2022 14:11:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235585AbiGVRqH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 22 Jul 2022 13:46:07 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F312ED5A;
-        Fri, 22 Jul 2022 10:46:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B0BF2B829D7;
-        Fri, 22 Jul 2022 17:46:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E327C341C6;
-        Fri, 22 Jul 2022 17:46:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658511963;
-        bh=XZZJmzeJO/5mk40jvpARF6vwsesp+pzNXLCOtSZI65Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oF79YoCi2IgeGTUYIDgHVMfWe9u4z1PIXD1k6fpjw0vmpUlQwkAy4wrFO/aTG71SR
-         aRJNbpLp4jWA+kIAf/J7kjBixjOh1aNRNkSTgPlXzOtnDH8tFS3hHv+ss5xVbor6DI
-         txLxprNUAnhHN5p6WU26cn2NCL47pSfWgD9sKW/p8gXKDgNkblHiT4Wq5d2LBcZS7k
-         7OOMFtCy42cqiAicYxzAqjwjsEd973IfdhVlsFwz9iZUmnxdRrlrhKs9PnbpIXNWXd
-         og/xhF7oUKkY5CGMj5Vd7+LAsr2zr4TTdV3vM8Qg26EdLpn95UBJjI2H6wkzJnKvSp
-         BOXPZc7/DMLFQ==
-Date:   Fri, 22 Jul 2022 10:46:02 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Alejandro Colomar <alx.manpages@gmail.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>, Jeremy Bongio <bongiojp@gmail.com>,
-        linux-ext4@vger.kernel.org, linux-man@vger.kernel.org
+        with ESMTP id S232444AbiGVSLN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 22 Jul 2022 14:11:13 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E6DB6B27F;
+        Fri, 22 Jul 2022 11:11:12 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id u14-20020a05600c00ce00b003a323062569so2914128wmm.4;
+        Fri, 22 Jul 2022 11:11:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to;
+        bh=6bhINipkuISMye/v/enOK2bYVnVGplP4utVhoyD/Xq0=;
+        b=JIYGndWXTy6DSmLZU8vix4fauYixYn/LSaITBbjwe8mV0VuV3uxoZUpMa5DTGLSJpR
+         GfMyF4Eq4ZlBY7WD5gUnCVOJPxUy4hPPN+LJnEQAyRwmsBazKoSNCg0tjvxZBJGwhElz
+         h68+lvIUbhF4lwO0PkBMwUBox/4iUhEl4uvea/I+aaO/iymKtabTp3bxG5OxRQ5b5PLr
+         PcE4Tbfq3Hn87d6YAEU05yLKdLMpfr7ViKQCjirMWSurNUhiOY47ZDsQfmjEjccwLR6a
+         dB9/WqhcQxAw0VSf6bH5y9pTB9PUEZLMZ5Eh9O9YGPS6d5v33GCmrF8Vq5phPFtMSSxr
+         +4sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to;
+        bh=6bhINipkuISMye/v/enOK2bYVnVGplP4utVhoyD/Xq0=;
+        b=3An+7H0QYkRlF0aTDEdx7mVI1oDgR0XJvOol8pZlQwHlDq6CSMXpNgWyNqrx231iWz
+         lKybAZHQUZYu7Zc0Mc2cIGFWvdV5ZFCgL4pWA/jwOgzljoH/3qEOKBEnWVVkErgsJau+
+         BZVJ6n/yLd28cig0n30aCsjDcm7v+JtLv8M1KGsNfR92Q5sTFG9BUNVPDPhE3J7T7bKb
+         BPhWD3z1Kpizqxe/neiSYi9VYQZ7qZm7eujtBUfTeHetuBsxjBQLM0eVE6I//ueQCnJT
+         5BuXQtDwrVzka6rcOK7ALBqhOw3QV6hrWT7NJg0Z43b4Nw4HAriOLvG9sIB6VwPKE9GB
+         iLcg==
+X-Gm-Message-State: AJIora9qPmBENnoL7QA4T34lJkWIERm4BgMKRcwGdSkYI23IJ1tJUUSY
+        3O8YyTDaZfgGzlWl3uELAy4=
+X-Google-Smtp-Source: AGRyM1sed6IhPu/ANsspiDAdWReAVAKSw79KxbYqQ29xF2Lupj+DNDwVDUxuy+yf3rZo0zIPYa9Gxg==
+X-Received: by 2002:a1c:f208:0:b0:3a2:dc06:f3fe with SMTP id s8-20020a1cf208000000b003a2dc06f3femr13315155wmc.119.1658513470977;
+        Fri, 22 Jul 2022 11:11:10 -0700 (PDT)
+Received: from [192.168.0.160] ([170.253.36.171])
+        by smtp.gmail.com with ESMTPSA id b6-20020a056000054600b0021badf3cb26sm6538301wrf.63.2022.07.22.11.11.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Jul 2022 11:11:10 -0700 (PDT)
+Message-ID: <1266e2ec-2f26-b465-c1a8-3d4c7136a0f1@gmail.com>
+Date:   Fri, 22 Jul 2022 20:11:02 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0.2
 Subject: Re: [PATCH v2] Add manpage for get/set fsuuid ioctl for ext4
  filesystem.
-Message-ID: <YtriWvxMcNMUPBry@magnolia>
+Content-Language: en-US
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>, Jeremy Bongio <bongiojp@gmail.com>,
+        linux-ext4@vger.kernel.org, linux-man@vger.kernel.org
 References: <20220720234512.354076-1-bongiojp@gmail.com>
- <YtiZ+gOmOFTpiAjW@magnolia>
- <e503645b-e665-50c4-37a9-cdc8637ba1d8@gmail.com>
- <YtmXAyoF2PXstnLY@magnolia>
- <e1573002-7ea3-2636-b2d2-331767a5622f@gmail.com>
- <YtqsTM2qXyR+dlz6@mit.edu>
- <c1bcaed9-0711-83de-f823-c38ba0302b4b@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c1bcaed9-0711-83de-f823-c38ba0302b4b@gmail.com>
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+ <YtiZ+gOmOFTpiAjW@magnolia> <e503645b-e665-50c4-37a9-cdc8637ba1d8@gmail.com>
+ <YtmXAyoF2PXstnLY@magnolia> <e1573002-7ea3-2636-b2d2-331767a5622f@gmail.com>
+ <YtqsTM2qXyR+dlz6@mit.edu> <c1bcaed9-0711-83de-f823-c38ba0302b4b@gmail.com>
+ <YtriWvxMcNMUPBry@magnolia>
+From:   Alejandro Colomar <alx.manpages@gmail.com>
+In-Reply-To: <YtriWvxMcNMUPBry@magnolia>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------kUGXG1KWt7yMUAl6tcXkTjQk"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jul 22, 2022 at 04:32:45PM +0200, Alejandro Colomar wrote:
-> Hi Ted,
-> 
-> On 7/22/22 15:55, Theodore Ts'o wrote:
-> > On Fri, Jul 22, 2022 at 12:03:23PM +0200, Alejandro Colomar (man-pages) wrote:
-> > > > SEE ALSO
-> > > > 	ioctl(2)
-> > > > 
-> > > > at the end of an ioctl_XXX manpage like this one.
-> > > > 
-> > > 
-> > > Okay.  Then may I ask for an EXAMPLES section with a program that
-> > > unequivocally shows users how to use it?
-> > 
-> > I'll note that existing ioctl man pages don't have an explicit
-> > statement that a libc is required --- nor do we do this for open(2),
-> > stat(2), etc.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------kUGXG1KWt7yMUAl6tcXkTjQk
+Content-Type: multipart/mixed; boundary="------------0cX1IdPrN9OwH00kjO3bOpGa";
+ protected-headers="v1"
+From: Alejandro Colomar <alx.manpages@gmail.com>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Theodore Ts'o <tytso@mit.edu>, Jeremy Bongio <bongiojp@gmail.com>,
+ linux-ext4@vger.kernel.org, linux-man@vger.kernel.org
+Message-ID: <1266e2ec-2f26-b465-c1a8-3d4c7136a0f1@gmail.com>
+Subject: Re: [PATCH v2] Add manpage for get/set fsuuid ioctl for ext4
+ filesystem.
+References: <20220720234512.354076-1-bongiojp@gmail.com>
+ <YtiZ+gOmOFTpiAjW@magnolia> <e503645b-e665-50c4-37a9-cdc8637ba1d8@gmail.com>
+ <YtmXAyoF2PXstnLY@magnolia> <e1573002-7ea3-2636-b2d2-331767a5622f@gmail.com>
+ <YtqsTM2qXyR+dlz6@mit.edu> <c1bcaed9-0711-83de-f823-c38ba0302b4b@gmail.com>
+ <YtriWvxMcNMUPBry@magnolia>
+In-Reply-To: <YtriWvxMcNMUPBry@magnolia>
 
-I think you and I missed that discussion:
-https://lore.kernel.org/linux-man/20210911160117.552617-1-alx.manpages@gmail.com/ 
+--------------0cX1IdPrN9OwH00kjO3bOpGa
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-> That's because there hasn't been a man-pages release in around a year.
-> If you see the man-pages git repo, you'll see that (almost) all man pages in
-> sections 2 and 3 have a new LIBRARY section.
-> 
-> ioctl(2) pages now have this LIBRARY section:
-> <https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/tree/man2/ioctl_fat.2>
-> 
-> This was based on FreeBSD's man pages:
-> <https://www.freebsd.org/cgi/man.cgi?query=stat&apropos=0&sektion=2&manpath=FreeBSD+13.1-RELEASE+and+Ports&arch=default&format=html>
-> >   (And that's especially necessary for stat(2), BTW!)
-> 
-> stat(2) now says <https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/tree/man2/stat.2#n22>:
-> 
-> LIBRARY
->        Standard C library (libc, -lc)
-> 
-> 
-> If you would like to improve on that, I'm open to ideas, or patches from
-> programmers who know the syscalls much better than I do.
+SGkgRGFycmljaywNCg0KT24gNy8yMi8yMiAxOTo0NiwgRGFycmljayBKLiBXb25nIHdyb3Rl
+Og0KPj4gTm93IHRoYXQgeW91IHNheSBpdCwgSSBmb3Jnb3QgdG8gZG9jdW1lbnQgdGhlIExJ
+QlJBUlkgc2VjdGlvbiBpbg0KPj4gbWFuLXBhZ2VzKDcpLiAgVGhlcmUncyBzb21ldGhpbmcg
+YWJvdXQgaXQsIGJ1dCBJIGZvcmdvdCB0byBhZGQgYSBwYXJhZ3JhcGgNCj4+IGRlc2NyaWJp
+bmcgaXQgaW4gZGV0YWlsLg0KPiANCj4gVGhhdCB3b3VsZCd2ZSBoZWxwZWQsIHNpbmNlIEkg
+c2Nhbm5lZA0KPiBodHRwczovL21hbjcub3JnL2xpbnV4L21hbi1wYWdlcy9tYW43L21hbi1w
+YWdlcy43Lmh0bWwNCj4gYW5kIGRpZG4ndCBzZWUgbXVjaCBhYm91dCB3aGF0IGdvZXMgaW4g
+dGhpcyBzZWN0aW9uLi4uDQoNClRoZXNlIGNoYW5nZXMgaGF2ZSBiZWVuIGludHJvZHVjZWQg
+YWZ0ZXIgdGhlIGxhc3QgcmVsZWFzZSB3YXMgbWFkZSwgc28gDQpldmVuIGlmIEkgaGFkIGRv
+Y3VtZW50ZWQgaXQsIGl0IHdvdWxkbid0IGhhdmUgcmVhY2hlZCA8bWFuNy5vcmc+LiAgSSdk
+IA0KcmVjb21tZW5kIHlvdSB0byBpbnN0YWxsIHRoZSBtYW4gcGFnZXMgZnJvbSBzb3VyY2Ug
+KGBzdWRvIG1ha2UgaW5zdGFsbGApLg0KDQo+IA0KPj4gUmVnYXJkaW5nIHRoZSBFWEFNUExF
+UyBzZWN0aW9uLCBldmVyeSBwYWdlIGluIG1hbjIgb3IgbWFuMyBzaG91bGQgaGF2ZSBhbg0K
+Pj4gZXhhbXBsZSBwcm9ncmFtLCBJTU8uICBDb25zaWRlciB0aGF0IHRoZXJlIGFyZSBwcm9n
+cmFtbWVycyB0aGF0IG1heSBmaW5kIGl0DQo+PiBlYXNpZXIgdG8gbGVhcm4gYSBmdW5jdGlv
+biBieSBleHBlcmltZW50aW5nIHdpdGggYSB3b3JraW5nIGV4YW1wbGUgb2YgQw0KPj4gY29k
+ZSwgcmF0aGVyIHRoYW4gYSBkZW5zZSB0ZXh0dWFsIGRlc2NyaXB0aW9uIGluIGEgbGFuZ3Vh
+Z2UgdGhhdCBtYXkgbm90IGJlDQo+PiBuYXRpdmUgdG8gdGhlIHByb2dyYW1tZXIuDQo+IA0K
+PiBGcmFua2x5IEknZCByYXRoZXIgcHVzaCBwZW9wbGUgdG8gaGF2ZSBleGFtcGxlIGNvZGUg
+b3ZlciBkb2N1bWVudGluZw0KPiB0aGF0IHN0YW5kYXJkIEMgbGlicmFyeSBmdW5jdGlvbnMg
+cmVxdWlyZSB0aGUgc3RhbmRhcmQgQyBsaWJyYXJ5LiA6KQ0KDQpBZ3JlZWQgOikNCg0KPiAN
+Cj4gVGhhdCBzYWlkLCBJIGRvbid0IGFsd2F5cyBlbmpveSB0aGUgdGV4dGJvb2sgZXhhbXBs
+ZXMgdGhhdCBoYXZlIGJlZW4NCj4gc2xpbW1lZCBkb3duIGZvciBtYW5wYWdlcyAtLSBJIHBy
+ZWZlciBhIGxpbmsgdG8gYSByZWFsIGltcGxlbWVudGF0aW9uDQo+IGluIChzYXkpIHRoZSB0
+ZXN0IHN1aXRlIHNvIHRoYXQgSSBjYW4gc2VlIGNvZGUgdGhhdCAob25lIHdvdWxkIGhvcGUp
+DQo+IGV4ZXJjaXNlcyBhbGwgdGhlIGZ1bmN0aW9uYWxpdHkgZXhwb3NlZCB0aHJvdWdoIHRo
+ZSBpbnRlcmZhY2UuDQo+IA0KPiBCdXQgSSBndWVzcyB0aGF0J3MgcmVhbGx5IHVwIHRvIHRo
+ZSBtYW5wYWdlIGF1dGhvciB0byBkZWNpZGUuDQoNClRoZXkncmUgbm90IGV4Y2x1c2l2ZS4g
+IEl0J3Mgd2VsY29tZSB0byBwb2ludCB0byBhIChzdGFibGUpIGxpbmsgc2hvd2luZyANCmEg
+bW9yZSBjb21wbGV4IGV4YW1wbGUgYWZ0ZXIgc2hvd2luZyBhIHNpbXBsZSBleGFtcGxlIHRo
+YXQgZml0cyB0aGUgcGFnZS4NCg0KPiANCj4+IFRoZXJlIGFyZSBtYW55IHBhZ2VzIHRoYXQg
+bGFjayBleGFtcGxlcywgYnV0IHRoYXQncyBub3Qgc29tZXRoaW5nIEkgd291bGQNCj4+IGNv
+bnNpZGVyIGEgZ29vZCB0aGluZy4NCj4+DQo+Pj4NCj4+PiBTb21lIHRoZSBzdWdnZXN0aW9u
+cyB5b3UgYXJlIG1ha2luZyBkb24ndCBzZWVtIHRvIGJlIGFkaGVyZWQgdG8gYnkNCj4+PiB0
+aGUgZXhpc3RpbmcgbWFuIHBhZ2VzLCBhbmQgbW9yZSB0ZXh0IGlzIG5vdCBhbHdheXMgYmV0
+dGVyLg0KPj4NCj4+IFRoZSBuZXh0IHJlbGVhc2Ugb2YgdGhlIG1hbi1wYWdlcyBpcyBjZXJ0
+YWlubHkgZ29pbmcgdG8gYmUgYW4gaW1wb3J0YW50IG9uZS4NCj4+IEl0IG1heSBiZSBoYXRl
+ZCBieSBtYW55LCBsb3ZlZCBieSBtYW55IG90aGVycy4gIEkgaG9wZSBvdmVyYWxsIEkgZGlk
+IGENCj4+IHNpZ25pZmljYW50IGltcHJvdmVtZW50IGluIGJvdGggaW1wcm92aW5nIHRoZSB0
+cmFuc21pc3Npb24gb2YgaW5mb3JtYXRpb24NCj4+IGFuZCBzaW1wbGlmeWluZyBtYWludGVu
+YW5jZS4NCj4gDQo+IEknbSBub3QgY29udmluY2VkIHRoYXQgaGF2aW5nIHRvIG9wZW4gKnR3
+byogbWFucGFnZXMganVzdCB0byBmaWd1cmUgb3V0DQo+IGhvdyB0byBjYWxsIGFuIGlvY3Rs
+IGlzIGdvaW5nIHRvIHNpbXBsaWZ5IG1haW50ZW5hbmNlIHVubGVzcyB0aGUgc3RydWN0DQo+
+IGlzIHNoYXJlZCBhY3Jvc3MgbW9yZSB0aGFuIG9uZSBtYW5wYWdlLCBidXQgSSd2ZSBhbHJl
+YWR5IG1hZGUgdGhhdA0KPiBwb2ludC4NCg0KV2VsbCwgSSdkIHNheSBpdCBzaW1wbGlmaWVz
+IG1haW50ZW5hbmNlIGluIHRoZSBjYXNlIHRoYXQgYW5vdGhlciBwYWdlIA0KYWRkcyBpbmZv
+cm1hdGlvbiBhYm91dCB0aGlzIHR5cGU6IHdoZW4gSSByZWNlaXZlIGEgcGF0Y2gsIEknbSBu
+b3QgDQpncmVwcGluZyBhbGwgb2YgdGhlIHBhZ2VzIHRvIHNlZSBpZiBvbmUgYWxyZWFkeSBk
+b2N1bWVudHMgYSB0eXBlLCB0byANCmRlY2lkZSB0byBtb3ZlIGl0IHRvIGEgc2VwYXJhdGUg
+cGFnZS4gIEl0J3MgbGlrZWx5IHRvIGJlIGZvcmdvdHRlbiwgYW5kIA0KdGhlIGRvY3VtZW50
+YXRpb24gYWJvdXQgdGhlIHR5cGUgZHVwbGljYXRlZCAoYW5kIHRoZXkgYXJlIGxpa2VseSB0
+byBnZXQgDQpvdXQgb2Ygc3luYykuDQoNCldoZW4gSSBhZGRlZCB0aGUgdHlwZSBwYWdlcywg
+SSBmb3VuZCBtYW55IHR5cGVzIHRvIGJlIGRvY3VtZW50ZWQgDQpkaWZmZXJlbnRseSBvbiBk
+aWZmZXJlbnQgcGFnZXMsIG5lZWRpbmcgdG8gY29weSBwYXJ0cyBvZiBldmVyeSBwYWdlIHRv
+IA0KZ2V0IHRoZSBmdWxsIHBpY3R1cmUsIGJlY2F1c2Ugbm9uZSBvZiB0aGVtIHdhcyBjb21w
+bGV0ZS4gIFRoYXQncyANCmVzcGVjaWFsbHkgd2hhdCBJJ20gdHJ5aW5nIHRvIGF2b2lkLg0K
+DQpTdGlsbCwgdGhlcmUgYXJlIG1hbnkgbW9yZSBpbXBvcnRhbnQgdHlwZXMgdG8gZG9jdW1l
+bnQgaW4gdGhlIHR5cGUgDQpwYWdlcywgYW5kIGlmIHlvdSBjb25zaWRlciB0aGF0IHRoaXMg
+b25lIGlzIHZlcnkgdW5saWtlbHkgdG8gYmUgc2hhcmVkIA0KaW4gdGhlIGxvbmcgdGVybSwg
+dGhlbiBJIGRvbid0IHN0cm9uZ2x5IG9wcG9zZSB0byBpdCBiZWluZyBpbiB0aGUgc2FtZSAN
+CnBhZ2UgYXMgdGhlIGlvY3RsIHRoYXQgdXNlcyBpdCBmb3Igbm93Lg0KDQo+IA0KPiAoVGhl
+cmUgaXNuJ3QgYW55IG1hZ2ljYWwgd2F5IHRvICNpbmNsdWRlIGEgbWFucGFnZSB3aXRoaW4g
+YW5vdGhlcg0KPiBtYW5wYWdlLCBpcyB0aGVyZT8pDQoNCk9oLCB0aGVyZSBpcy4gIEl0J3Mg
+dGhlIGdyb2ZmKDcpIC5zbyByZXF1ZXN0LCB3aGljaCBpcyBiYXNpY2FsbHkgdGhlIA0Kc2Ft
+ZSBhcyBDJ3MgI2luY2x1ZGUgZGlyZWN0aXZlLiAgV2UgYWN0dWFsbHkgdXNlIGl0IGEgbG90
+IGluIHRoZSANCm1hbi1wYWdlcywgdG8gY3JlYXRlIGxpbmsgcGFnZXMgKGEgcGFnZSB3aG9z
+ZSBvbmx5IGNvbnRlbnQgaXMgYSAuc28gDQpyZXF1ZXN0LCB3aGljaCBiYXNpY2FsbHkgbWVh
+bnMgaXRzIGNvbnRlbnRzIGFyZSB0aGUgc2FtZSBhcyBhbm90aGVyIA0KcGFnZXMnKS4gIFNl
+ZSBmb3IgZXhhbXBsZToNCg0KJCBjYXQgbWFuMi9sc3RhdC4yDQouc28gbWFuMi9zdGF0LjIN
+Cg0KDQpUZWNobmljYWxseSwgaXQgY291bGQgYmUgdXNlZCBkaWZmZXJlbnRseSwgdG8gaW5j
+bHVkZSBhIG1hbiBwYWdlIGFzIHBhcnQgDQpvZiBhbm90aGVyIHBhZ2UsIGJ1dCBpdCBoYXNu
+J3QgYmVlbiBkb25lIGV2ZXIsIGFzIGl0IHdvdWxkIHByb2JhYmx5IA0KY29tcGxpY2F0ZSBo
+b3cgbWFuIHBhZ2VzIGFyZSBzdG9yZWQsIGluZGV4ZWQsIGFuZCBzZWFyY2hlZCBpbiB0aGUg
+DQpmaWxlc3lzdGVtICh0aGVyZSdzIG5vIDwvdXNyL3NoYXJlL21hbi9pbmNsdWRlLz4gb3Ig
+PC91c3IvaW5sdWNkZS9tYW4vPiANCmRpcmVjdG9yeSBvciBzb21ldGhpbmcgbGlrZSB0aGF0
+KS4NCg0KQ2hlZXJzLA0KDQpBbGV4DQoNCi0tIA0KQWxlamFuZHJvIENvbG9tYXINCjxodHRw
+Oi8vd3d3LmFsZWphbmRyby1jb2xvbWFyLmVzLz4NCg==
 
-I still think it's redundant to say that you have to link against the
-standard C library -- it's a standard feature on Linux, and you have to
-pass -nolibc to opt out of it.  Libraries that have to be opted-into
-(e.g. -lpthread) should be documented here, but not stuff that's enabled
-by default.
+--------------0cX1IdPrN9OwH00kjO3bOpGa--
 
-Oh well, you're the maintainer, it is your prerogative.
+--------------kUGXG1KWt7yMUAl6tcXkTjQk
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-> > Many of the ioctl man pages (or other system call man pages, for that
-> > matter) also don't have an EXAMPLES section, either.
-> > 
-> > Perhaps it would be useful to have a discussion over what the
-> > standards are for man pages in section 2, and when we need to state
-> > things that seem to be rather obvious (like "you must have a C
-> > library") and when there should be things like an EXAMPLES section?
-> 
-> Now that you say it, I forgot to document the LIBRARY section in
-> man-pages(7).  There's something about it, but I forgot to add a paragraph
-> describing it in detail.
+-----BEGIN PGP SIGNATURE-----
 
-That would've helped, since I scanned
-https://man7.org/linux/man-pages/man7/man-pages.7.html
-and didn't see much about what goes in this section...
+iQIzBAEBCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmLa6DYACgkQnowa+77/
+2zILjg//RPuFfnWCw7rsGeytiI3V3MBESbTTJlmwNgOkamB2wwnySVyiJnM/0yIy
+TIlJrt4c4+pytH07JR98h97ap2ZVtFABHDLAE2uz+v7TvB2inQQLRTlbJKALYw8B
+9KrTDzWkH+IclM1i5YGZ293xWtnFYA0Q2tcmDpOSdVfepIldG4qOeSezFyOtey04
+ERk6+Rq8DIHkLtjT99izqovoPqovbeIhjlCE1EKqXT6W4WGgI845y6rPg8M+M23q
+sgcpz2ka1itRTUCECRlhdmOzKUDgDFDRG2sLBO5Of9i9Edl++QrGteFyB4aA73sh
+UtF1Q4UG+QmslGcegGKK4QV4NkEQvBpjlfFS3awocEKCI3oyiWVuBNlP9qNHKuFx
+efilQklBaOPNhlasTbtzhuJjuQXkzH65o2n3uTZ0DspwsWyT6FauXszxYYbteVzi
+iHWEc7yL6qYkkpiaLsNq4o8l/Iim4G5OfHwHbQq6TZKC4qys1mm8/Ura8scnv0lI
+6ukYmx6mt+OduKShnh5XMAkAR6TR4vRLpNtkQO5j0tVhiCiVHgw/qtKYqlZIDv8U
+F6jzsWLN03dEz8DcIun2RPmxLXMlgG6CI9ve4kht0POVAmUM9OO8OkzTJzXiK/aX
+c7pdcwUMqjnTdgzuqOZi6lVMo1mBFNPGs4It89bszClV1h8VCpk=
+=iiIM
+-----END PGP SIGNATURE-----
 
-> Regarding the EXAMPLES section, every page in man2 or man3 should have an
-> example program, IMO.  Consider that there are programmers that may find it
-> easier to learn a function by experimenting with a working example of C
-> code, rather than a dense textual description in a language that may not be
-> native to the programmer.
-
-Frankly I'd rather push people to have example code over documenting
-that standard C library functions require the standard C library. :)
-
-That said, I don't always enjoy the textbook examples that have been
-slimmed down for manpages -- I prefer a link to a real implementation
-in (say) the test suite so that I can see code that (one would hope)
-exercises all the functionality exposed through the interface.
-
-But I guess that's really up to the manpage author to decide.
-
-> There are many pages that lack examples, but that's not something I would
-> consider a good thing.
-> 
-> > 
-> > Some the suggestions you are making don't seem to be adhered to by
-> > the existing man pages, and more text is not always better.
-> 
-> The next release of the man-pages is certainly going to be an important one.
-> It may be hated by many, loved by many others.  I hope overall I did a
-> significant improvement in both improving the transmission of information
-> and simplifying maintenance.
-
-I'm not convinced that having to open *two* manpages just to figure out
-how to call an ioctl is going to simplify maintenance unless the struct
-is shared across more than one manpage, but I've already made that
-point.
-
-(There isn't any magical way to #include a manpage within another
-manpage, is there?)
-
---D
-
-> 
-> > 
-> > https://www.npr.org/sections/13.7/2014/02/03/270680304/this-could-have-been-shorter
-> 
-> Sorry, but I'm not able to read that page.  It prompts the usual GPDR
-> notice, and doesn't give me the option to reject cookies (only accept).
-> 
-> Anyway, I guess what it says.  I hope I wasn't too much verbose with my many
-> changes.
-> 
-> Cheers,
-> 
-> Alex
-> 
-> -- 
-> Alejandro Colomar
-> <http://www.alejandro-colomar.es/>
-
-
-
+--------------kUGXG1KWt7yMUAl6tcXkTjQk--
