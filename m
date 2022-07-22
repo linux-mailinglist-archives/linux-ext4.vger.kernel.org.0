@@ -2,47 +2,45 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A94C057E2C5
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Jul 2022 16:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E1857E2B9
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Jul 2022 15:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235600AbiGVN7o (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 22 Jul 2022 09:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35752 "EHLO
+        id S235443AbiGVN7N (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 22 Jul 2022 09:59:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235292AbiGVN7S (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 22 Jul 2022 09:59:18 -0400
+        with ESMTP id S235292AbiGVN6v (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 22 Jul 2022 09:58:51 -0400
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9CC2951FA;
-        Fri, 22 Jul 2022 06:58:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC4792869;
+        Fri, 22 Jul 2022 06:58:43 -0700 (PDT)
 Received: from cwcc.thunk.org (pool-173-48-118-63.bstnma.fios.verizon.net [173.48.118.63])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 26MDwRTk016698
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 26MDwR84016700
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Fri, 22 Jul 2022 09:58:28 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1658498310; bh=4+vO+WIfQKGSK9kCqxVpJgJwhESrD6cShHZGDaMVna4=;
+        t=1658498309; bh=7n681hZd+dwrHFbW5+woRzLcfpQI3pxHEssya9/He1U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=ZJAWxRJmO9eUyE+fcbQ9xDgP/T2r4Dn63PqY0TAuqg0RmicWBcGdM/sI6ztxka/Ul
-         54vEXcjdVkE65vruh1Jw6Hev6MwemKXqAceaidYJ22oyVkmb+EjNpF2fN3Cc7ON1V8
-         9EjkI85eNoselNSvL4WzLuWhyn9UKW2yYhhCKK4s1u3Zsk4g9Ma8cpRjKWwLzS3jMl
-         0kONs06opV8mxUjg2RTiL0sXThUpAxd16DH+oUCvblNL56BQVlLdHHyUtj520BSiQ7
-         FbN9rDkwIGStOWTnvf9syMf9Ab4kl1vzIJjKqI3MtiqM2ZDRl6jJ9OVJqBdba/cw8s
-         YZsIrdalVmuGw==
+        b=AKyxFvEBnZqeN4JyETkpWdhOS3+uv/c2N2pWZBXPKYloPTW2sQbn8iJUNZeLN0r1E
+         1MDb5trwcLkiB80P+6dsI/skKLyNuwMHARZFr/ouTOh+P8cmSwNRJwxH1US0C2R86d
+         TCgbWI72sjO3HdJeWKmC4pGYkfrHX8BRR+gKRJSq+AsGUKu9gyOmksJfkY/wdAbd1T
+         RZ1NZrP/Awdgvmy+EgnhkBFPZr6tJkkONtrnAJGCghKjglhQmD3yVT2m0nPwPUTwMR
+         c4zD7iJOUVShbRhH/bIpe8/uApMiqLlQzFPkRaKEns+4PppuYhdMXYqM8A4djTM183
+         usFxghWp9mTLA==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 695A615C3EFE; Fri, 22 Jul 2022 09:58:27 -0400 (EDT)
+        id 6B2BB15C3F00; Fri, 22 Jul 2022 09:58:27 -0400 (EDT)
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     chengzhihao1@huawei.com, lczerner@redhat.com,
-        ritesh.list@gmail.com, akpm@osdl.org, shaggy@austin.ibm.com,
-        jack@suse.com
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, yukuai3@huawei.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] jbd2: Fix assertion 'jh->b_frozen_data == NULL' failure when journal aborted
-Date:   Fri, 22 Jul 2022 09:58:13 -0400
-Message-Id: <165849767595.303416.7829836253620190185.b4-ty@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Ritesh Harjani <ritesh.list@gmail.com>, stable@vger.kernel.org
+Subject: Re: [PATCH 01/10] mbcache: Don't reclaim used entries
+Date:   Fri, 22 Jul 2022 09:58:14 -0400
+Message-Id: <165849767595.303416.835565204310722952.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20220715125152.4022726-1-chengzhihao1@huawei.com>
-References: <20220715125152.4022726-1-chengzhihao1@huawei.com>
+In-Reply-To: <20220712105436.32204-1-jack@suse.cz>
+References: <20220712104519.29887-1-jack@suse.cz> <20220712105436.32204-1-jack@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -55,32 +53,36 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, 15 Jul 2022 20:51:52 +0800, Zhihao Cheng wrote:
-> Following process will fail assertion 'jh->b_frozen_data == NULL' in
-> jbd2_journal_dirty_metadata():
+On Tue, 12 Jul 2022 12:54:20 +0200, Jan Kara wrote:
+> Do not reclaim entries that are currently used by somebody from a
+> shrinker. Firstly, these entries are likely useful. Secondly, we will
+> need to keep such entries to protect pending increment of xattr block
+> refcount.
 > 
->                    jbd2_journal_commit_transaction
-> unlink(dir/a)
->  jh->b_transaction = trans1
->  jh->b_jlist = BJ_Metadata
->                     journal->j_running_transaction = NULL
->                     trans1->t_state = T_COMMIT
-> unlink(dir/b)
->  handle->h_trans = trans2
->  do_get_write_access
->   jh->b_modified = 0
->   jh->b_frozen_data = frozen_buffer
->   jh->b_next_transaction = trans2
->  jbd2_journal_dirty_metadata
->   is_handle_aborted
->    is_journal_aborted // return false
-> 
-> [...]
 
-Applied, thanks!
+Applied, thanks!  (Some slight adjustments were needed to resolve a
+merge conflict.)
 
-[1/1] jbd2: Fix assertion 'jh->b_frozen_data == NULL' failure when journal aborted
-      commit: 4b18734448a3ee7100c5936a7fc0f9b1f2567e07
+[01/10] mbcache: Don't reclaim used entries
+        commit: ee595bcf21a86af4cff673000e2728d61c7c0e7b
+[02/10] mbcache: Add functions to delete entry if unused
+        commit: ad3923aa44185f5f65e17764fe5c30501c6dfd22
+[03/10] ext4: Remove EA inode entry from mbcache on inode eviction
+        commit: 428dc374a6cb6c0cbbf6fe8984b667ef78dc7d75
+[04/10] ext4: Unindent codeblock in ext4_xattr_block_set()
+        commit: d52086dcf26a6284b08b5544210a7475b4837d52
+[05/10] ext4: Fix race when reusing xattr blocks
+        commit: 132991ed28822cfb4be41ac72195f00fc0baf3c8
+[06/10] ext2: Factor our freeing of xattr block reference
+        commit: c30e78a5f165244985aa346bdd460d459094470e
+[07/10] ext2: Unindent codeblock in ext2_xattr_set()
+        commit: 0e85fb030d13e427deca44a95aabb2475614f8d2
+[08/10] ext2: Avoid deleting xattr block that is being reused
+        commit: 44ce98e77ab4583b17ff4f501c2076eec3b759d7
+[09/10] mbcache: Remove mb_cache_entry_delete()
+        commit: c3671ffa0919f2d433576c99c4e211cd367afda0
+[10/10] mbcache: Automatically delete entries from cache on freeing
+        commit: b51539a7d04fb7d05b28ab9387364ccde88b6b6d
 
 Best regards,
 -- 
