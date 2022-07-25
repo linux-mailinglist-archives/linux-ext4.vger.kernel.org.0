@@ -2,145 +2,175 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B4E5806EB
-	for <lists+linux-ext4@lfdr.de>; Mon, 25 Jul 2022 23:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8FA4580898
+	for <lists+linux-ext4@lfdr.de>; Tue, 26 Jul 2022 01:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229739AbiGYVtN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 25 Jul 2022 17:49:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39188 "EHLO
+        id S235544AbiGYX6k (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 25 Jul 2022 19:58:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbiGYVtM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 25 Jul 2022 17:49:12 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B17721E15
-        for <linux-ext4@vger.kernel.org>; Mon, 25 Jul 2022 14:49:11 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 40BC4B8112D
-        for <linux-ext4@vger.kernel.org>; Mon, 25 Jul 2022 21:49:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5B26C341C6;
-        Mon, 25 Jul 2022 21:49:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658785748;
-        bh=2r5SilhtOnCqVZ96ClvpcjrJbBlPCZd0aKNu7qOn3fE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W87xeuuAOXsF35Qyvjf6oMPj04mLKDET2/avMIaJGjX85AgzuheJp2aQjiOY7zNhc
-         ccJ5Sde24b0jlKY2B2UrcBCv2Jri3EKir+iYq4t7q0Msla1g1yJI8a/2KNCvkGeLyQ
-         YSzrZut5JJELNEAcxcgwCCAR77z7M0/2+E1qsuUy/UsBGsqnTRQ64QtHNOtcUqy/5V
-         SrAQ41z4ob5RzXJlwsLNX1K69DhDD67kLiWm7mOFfV7SPQ0bzLk/lils3DOgzTFkYE
-         2WmrTdpoXv/h0Nm3Kf4/15ynP1pq0gFv7HcpyK0krcHQJOzH3PwGnA1jiA8SrUxH4Q
-         ntgjSXeyNq7EQ==
-Date:   Mon, 25 Jul 2022 14:49:08 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, Dave Chinner <david@fromorbit.com>,
-        Lukas Czerner <lczerner@redhat.com>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH] ext4: unconditionally enable the i_version counter
-Message-ID: <Yt8P1HmV//iX9XWC@magnolia>
-References: <20220725192946.330619-1-jlayton@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220725192946.330619-1-jlayton@kernel.org>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S231325AbiGYX6j (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 25 Jul 2022 19:58:39 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C490B27FC7
+        for <linux-ext4@vger.kernel.org>; Mon, 25 Jul 2022 16:58:36 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id 12so11509886pga.1
+        for <linux-ext4@vger.kernel.org>; Mon, 25 Jul 2022 16:58:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20210112.gappssmtp.com; s=20210112;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=Ojaa/UU8B50WRImEMgYvPwV6uUe5mTD3KQg4CpEBv6U=;
+        b=PkQ/Af+T+bA+/HBQemEG7rZ7dPDvjPWBs3HhdBpZabOE+c1rBlVlPIz1r+rHpdv09X
+         hB/EyFoWNzuccoVADcy4Vdl0PLaNW6AiPxDyeJbUvnDe/d0KvCIQjhAOcQQ6b24XQJYg
+         8/PAIEY6L4XYgwJFXkpYL6jJ6xqV0QHoFCBKZuCOOlwPSQ9LL/4PuyVrqBEmhxUVKhgq
+         +5HJCiX+CYP8vccNJNvOCHb5WsnAQn5aouKG55wjmwwCi36yEZd/bT00fkiGHByJF0de
+         LcwGyirkTcqrv4ntzC3qtmLHmekGwpixqOSlqyQo5wyaYQWrvN7MIDDe1tW66CN4d0X1
+         CgSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=Ojaa/UU8B50WRImEMgYvPwV6uUe5mTD3KQg4CpEBv6U=;
+        b=1bWpcoZYcDbMUORU0L528wIEVwQQK38fNjSMG8QSnk25R8K4SV+9kAImirDsAXUiLB
+         Dh8X2iC4gxTNi3KwyFlCWsqcosSZOJfPGAwsRmt7VOEw9pRDClKqy7QWBKkYY4BouT/v
+         /XTQ6G4WZuPc92HTo+sv7coXnWlJXAmvQ/rf6SCpw8tdW3enWe8pW+msoo/fVhLmI1Ym
+         QnMhxXdB/Lt64eudndwQO+zlMpyHla7tJsH1qWqhHUhDX+saWAiF7UpOQ6FZODusITx5
+         ZheM86q6hZu1gZzXq2PFdkW/SBGQodsclyaOD86jvISmF7jnIAv+8RsN9vUvIQIr8lat
+         4l/g==
+X-Gm-Message-State: AJIora/YWNfqY/OCv+AP+ktM/NhYl1jctzV7fZApA3Nhi9zFDtrM2wg2
+        xt/Tbv52ZOJV9Eg/G6qlen9Hdg==
+X-Google-Smtp-Source: AGRyM1syH3Cbkf+bRQQU5ivPuhB3TZd0qaZdIG1SBv9zyCS0k235ZiPGksi9iuxNjB1O939AUiI02Q==
+X-Received: by 2002:a65:57c2:0:b0:41a:ff04:694c with SMTP id q2-20020a6557c2000000b0041aff04694cmr5997273pgr.573.1658793516160;
+        Mon, 25 Jul 2022 16:58:36 -0700 (PDT)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id p2-20020a170902780200b00168dadc7354sm9859676pll.78.2022.07.25.16.58.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 25 Jul 2022 16:58:35 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <EC8AF6A7-9A90-4C21-8A1F-4AE936776876@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_DB83B9B8-69A7-4FD9-B14D-F8B77FC7C0F2";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v4 6/9] f2fs: don't allow DIO reads but not DIO writes
+Date:   Mon, 25 Jul 2022 17:58:31 -0600
+In-Reply-To: <Yt7dCcG0ns85QqJe@sol.localdomain>
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-xfs@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+References: <20220722071228.146690-1-ebiggers@kernel.org>
+ <20220722071228.146690-7-ebiggers@kernel.org> <YtyoF89iOg8gs7hj@google.com>
+ <Yt7dCcG0ns85QqJe@sol.localdomain>
+X-Mailer: Apple Mail (2.3273)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jul 25, 2022 at 03:29:46PM -0400, Jeff Layton wrote:
-> The original i_version implementation was pretty expensive, requiring a
-> log flush on every change. Because of this, it was gated behind a mount
-> option (implemented via the MS_I_VERSION mountoption flag).
-> 
-> Commit ae5e165d855d (fs: new API for handling inode->i_version) made the
-> i_version flag much less expensive, so there is no longer a performance
-> penalty from enabling it.
-> 
-> Have ext4 ignore the SB_I_VERSION flag, and just enable it
-> unconditionally.
-> 
-> Cc: Dave Chinner <david@fromorbit.com>
-> Cc: Lukas Czerner <lczerner@redhat.com>
-> Cc: Benjamin Coddington <bcodding@redhat.com>
-> Cc: Christoph Hellwig <hch@infradead.org>
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  fs/ext4/inode.c | 5 ++---
->  fs/ext4/super.c | 8 ++++----
->  2 files changed, 6 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 84c0eb55071d..c785c0b72116 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -5411,7 +5411,7 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
->  			return -EINVAL;
->  		}
->  
-> -		if (IS_I_VERSION(inode) && attr->ia_size != inode->i_size)
-> +		if (attr->ia_size != inode->i_size)
->  			inode_inc_iversion(inode);
->  
->  		if (shrink) {
-> @@ -5717,8 +5717,7 @@ int ext4_mark_iloc_dirty(handle_t *handle,
->  	}
->  	ext4_fc_track_inode(handle, inode);
->  
-> -	if (IS_I_VERSION(inode))
-> -		inode_inc_iversion(inode);
-> +	inode_inc_iversion(inode);
->  
->  	/* the do_update_inode consumes one bh->b_count */
->  	get_bh(iloc->bh);
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 845f2f8aee5f..30645d4343b6 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -2142,8 +2142,7 @@ static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *param)
->  		return 0;
->  	case Opt_i_version:
->  		ext4_msg(NULL, KERN_WARNING, deprecated_msg, param->key, "5.20");
 
-Perhaps it's time to kill off Opt_i_version, since we're now at 5.20?
+--Apple-Mail=_DB83B9B8-69A7-4FD9-B14D-F8B77FC7C0F2
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-(For that matter, noacl/nouser_xattr were supposed to be gone by 3.5 and
-they're clearly still there, so either they ought to go as well?)
+On Jul 25, 2022, at 12:12 PM, Eric Biggers <ebiggers@kernel.org> wrote:
+>=20
+> On Sat, Jul 23, 2022 at 07:01:59PM -0700, Jaegeuk Kim wrote:
+>> On 07/22, Eric Biggers wrote:
+>>> From: Eric Biggers <ebiggers@google.com>
+>>>=20
+>>> Currently, if an f2fs filesystem is mounted with the mode=3Dlfs and
+>>> io_bits mount options, DIO reads are allowed but DIO writes are not.
+>>> Allowing DIO reads but not DIO writes is an unusual restriction, =
+which
+>>> is likely to be surprising to applications, namely any application =
+that
+>>> both reads and writes from a file (using O_DIRECT).  This behavior =
+is
+>>> also incompatible with the proposed STATX_DIOALIGN extension to =
+statx.
+>>> Given this, let's drop the support for DIO reads in this =
+configuration.
+>>=20
+>> IIRC, we allowed DIO reads since applications complained a lower =
+performance.
+>> So, I'm afraid this change will make another confusion to users. =
+Could
+>> you please apply the new bahavior only for STATX_DIOALIGN?
+>>=20
+>=20
+> Well, the issue is that the proposed STATX_DIOALIGN fields cannot =
+represent this
+> weird case where DIO reads are allowed but not DIO writes.  So the =
+question is
+> whether this case actually matters, in which case we should make =
+STATX_DIOALIGN
+> distinguish between DIO reads and DIO writes, or whether it's some odd =
+edge case
+> that doesn't really matter, in which case we could just fix it or make
+> STATX_DIOALIGN report that DIO is unsupported.  I was hoping that you =
+had some
+> insight here.  What sort of applications want DIO reads but not DIO =
+writes?
+> Is this common at all?
 
---D
+I don't think this is f2fs related, but some backup applications I'm =
+aware
+of are using DIO reads to avoid polluting the page cache when reading =
+large
+numbers of files. They don't care about DIO writes, since that is =
+usually
+slower than async writes due to the sync before returning from the =
+syscall.
 
-> -		ext4_msg(NULL, KERN_WARNING, "Use iversion instead\n");
-> -		ctx_set_flags(ctx, SB_I_VERSION);
-> +		ext4_msg(NULL, KERN_WARNING, "i_version counter is always enabled.\n");
->  		return 0;
->  	case Opt_inlinecrypt:
->  #ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
-> @@ -2970,8 +2969,6 @@ static int _ext4_show_options(struct seq_file *seq, struct super_block *sb,
->  		SEQ_OPTS_PRINT("min_batch_time=%u", sbi->s_min_batch_time);
->  	if (nodefs || sbi->s_max_batch_time != EXT4_DEF_MAX_BATCH_TIME)
->  		SEQ_OPTS_PRINT("max_batch_time=%u", sbi->s_max_batch_time);
-> -	if (sb->s_flags & SB_I_VERSION)
-> -		SEQ_OPTS_PUTS("i_version");
->  	if (nodefs || sbi->s_stripe)
->  		SEQ_OPTS_PRINT("stripe=%lu", sbi->s_stripe);
->  	if (nodefs || EXT4_MOUNT_DATA_FLAGS &
-> @@ -4630,6 +4627,9 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
->  	sb->s_flags = (sb->s_flags & ~SB_POSIXACL) |
->  		(test_opt(sb, POSIX_ACL) ? SB_POSIXACL : 0);
->  
-> +	/* i_version is always enabled now */
-> +	sb->s_flags |= SB_I_VERSION;
-> +
->  	if (le32_to_cpu(es->s_rev_level) == EXT4_GOOD_OLD_REV &&
->  	    (ext4_has_compat_features(sb) ||
->  	     ext4_has_ro_compat_features(sb) ||
-> -- 
-> 2.37.1
-> 
+Also, IMHO it doesn't make sense to remove useful functionality because =
+the
+new STATX_DIOALIGN fields don't handle this.  At worst the application =
+will
+still get an error when trying a DIO write, but in most cases they will
+not use the brand new STATX call in the first place, and if this is =
+documented
+then any application that starts to use it should be able to handle it.
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_DB83B9B8-69A7-4FD9-B14D-F8B77FC7C0F2
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmLfLigACgkQcqXauRfM
+H+DIjBAAuhcCUrRZxLbIIbGQiYg9WA8Kq1A3wSBPDzMet5t78gjiKUo6y+RE2w0X
+O2Be8DY9X8x4OIpbD4jiFAe7TiVDAHAYjjrzKFMykU63wB4nJELcIZrqELT/O1qg
+9Zi1+hqoXK+WcCcC8IEh52+ypABRczFIb9OF6RPR450wAxc+0x7lXfyZ/TzBcRyl
++NeWbyLAQfW+VRViN/re9tlticLobDklbfgNC0rNuhp1CawlnMVsqWSxx/F9WT3s
+RjdsJ8hzDqLEpPv6Sgd30T9U4UaoLEpRe36CMuT4/SYx6h6SR2Kv61+Z3IihAp41
+utLypsHnpswfLjF3KmxusOMLZGmCG1EFazn/gMi6WuccfBaI+m7OXeUvvlLGnzn4
+9RJWpVHy3TVTWdikFE/LVP9L7D8rj2jos9UVpFE8QUO2Gu1NNf6C5lIg3iXlvcvn
+uxuqCpYcPCCwYosLSNcpi9tNW/p3aS0WNNfGlqWfB8Au4S/91sMJsGKkON+jwsMs
+cMiUECc+eFc7HuCrP80IW+N8asiaGrTWGrrg+EpxFtl12OzKyn4OnoY5NxWuLXLF
+3lSS1IZWudfgO1TD/5sUmvsHtUS4Rd3akslKsAQyavGxszDWvxIGvU0kABSb8k1P
+q3CXMHx8oG9FooyoP3FnfUzDrZXf40Sk28cCsqOa09926JUbhqY=
+=zitC
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_DB83B9B8-69A7-4FD9-B14D-F8B77FC7C0F2--
