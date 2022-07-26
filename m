@@ -2,48 +2,47 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48E065811A1
-	for <lists+linux-ext4@lfdr.de>; Tue, 26 Jul 2022 13:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B09FD5811BE
+	for <lists+linux-ext4@lfdr.de>; Tue, 26 Jul 2022 13:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233006AbiGZLJb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 26 Jul 2022 07:09:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57138 "EHLO
+        id S238811AbiGZLPm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 26 Jul 2022 07:15:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232978AbiGZLJa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 26 Jul 2022 07:09:30 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F33B30F57
-        for <linux-ext4@vger.kernel.org>; Tue, 26 Jul 2022 04:09:29 -0700 (PDT)
+        with ESMTP id S232759AbiGZLPh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 26 Jul 2022 07:15:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7739A959C
+        for <linux-ext4@vger.kernel.org>; Tue, 26 Jul 2022 04:15:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3648FB8154D
-        for <linux-ext4@vger.kernel.org>; Tue, 26 Jul 2022 11:09:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 416ACC341C0;
-        Tue, 26 Jul 2022 11:09:26 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 131FE612B9
+        for <linux-ext4@vger.kernel.org>; Tue, 26 Jul 2022 11:15:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD226C341C0;
+        Tue, 26 Jul 2022 11:15:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658833767;
-        bh=MZYLlW7NhkEXvfC/RBqMJ2WBA/a9ttyUbHn1UKJOZJA=;
+        s=k20201202; t=1658834134;
+        bh=KhXWbKLsIy6Jg1PSa14rbyRXbMp+QWTFRcAxTSDOA14=;
         h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=ITYpsgmJuhSwNPOzXKbXJtm/qkzLiZwcVvJVdnqK4NuXxzIOj7CKi5SmMX707LkvK
-         6oDZQ3sVNgbVwE7tRp9tvFZBPFLCv0axN0AKw5BSF8MCXsL2TnbZOMNGzs9y7R5/WA
-         HuCQSHSWaZAHJERwjVuhe5BWAav0xCkVPaSLtr1zRDBazvlD47A8zTyHxn4jtsw64F
-         v/0I5+WdTpbmCtlNwHct8ulQsVU5mWNiXg0oPp9ROGtNLixKvlIQmBU4CJ4JaPVGoT
-         8XpZHjW9KcXOwzgDHE2sfg/hRGFQI126KUY/Hr/chyj0OPfhpHHPAf8i+a5ZaH9GUp
-         N781jpLYuGIRg==
-Message-ID: <0ac7580af2fc8dd65976939b05bd52ca12cd9dc4.camel@kernel.org>
+        b=Etg5szNm6u9sFSz5wLJdq3ynNqCahxhM5Cxs5V80Ke+3hFAS7lv/ztP5RD5bJlGmy
+         mmB+GrTxwIwgz3pHJP9qohrXhK6EcBh7D2tS3ph0QMlt7+6eZfNnWx5Uk77vC9GiSS
+         53XSlBsQhECq7Y0IaczkUE4ne06sRRcZ4SLbyXU9S/cyz8R8F5CeMX7Uk7XXw0UMug
+         xMcSgf3+w6ZCLZcVn8jyAzLfq9juzSr2c1ObuHmCop0zfQfK42lsIf0d4ArS0WCj74
+         a/O/npWjuMep1OhMC7wytv3ollbfri4/XkEV2vHDDR0S1ay2xptEsmjF1vtljcpeZD
+         p3m8xX9laHUaA==
+Message-ID: <08e2ca4c8f6344bdcd76d75b821116c6147fd57a.camel@kernel.org>
 Subject: Re: [PATCH] ext4: unconditionally enable the i_version counter
 From:   Jeff Layton <jlayton@kernel.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
+To:     Lukas Czerner <lczerner@redhat.com>
 Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
         linux-ext4@vger.kernel.org, Dave Chinner <david@fromorbit.com>,
-        Lukas Czerner <lczerner@redhat.com>,
         Benjamin Coddington <bcodding@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>
-Date:   Tue, 26 Jul 2022 07:09:24 -0400
-In-Reply-To: <Yt8P1HmV//iX9XWC@magnolia>
+        Christoph Hellwig <hch@infradead.org>, kzak@redhat.com
+Date:   Tue, 26 Jul 2022 07:15:32 -0400
+In-Reply-To: <20220726071001.j3ox56jjuzltrsrg@fedora>
 References: <20220725192946.330619-1-jlayton@kernel.org>
-         <Yt8P1HmV//iX9XWC@magnolia>
+         <20220726071001.j3ox56jjuzltrsrg@fedora>
 Content-Type: text/plain; charset="ISO-8859-15"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.44.3 (3.44.3-1.fc36) 
@@ -57,7 +56,7 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, 2022-07-25 at 14:49 -0700, Darrick J. Wong wrote:
+On Tue, 2022-07-26 at 09:10 +0200, Lukas Czerner wrote:
 > On Mon, Jul 25, 2022 at 03:29:46PM -0400, Jeff Layton wrote:
 > > The original i_version implementation was pretty expensive, requiring a
 > > log flush on every change. Because of this, it was gated behind a mount
@@ -70,6 +69,38 @@ e
 > >=20
 > > Have ext4 ignore the SB_I_VERSION flag, and just enable it
 > > unconditionally.
+>=20
+> Hi Jeff,
+>=20
+> the ext4 specific i_version option is deprecated and it's perfect time
+> to remove it as well.
+>=20
+> As for enabling iversion by default, as I said before I am fine with
+> that. With this patch we're left with no means of disabling it, which
+> might be ok, I don't have a strong opinion.
+>=20
+> However I don't like the fact that the noiversion mount option is going
+> to be just silently ignored and only on some file systems. The
+> inconsistency bugs me and will create confusion when things go wrong.
+>=20
+> Shouldn't we introduce something like SB_NOIVERSION to give fs a clean
+> way to inform user we're ignoring it, or even change the default? Or
+> perhaps 'noinversion' should be removed?
+>=20
+
+Ordinarily, I'd agree here. I like leaving some mechanism to revert an
+unconditional change like this.
+
+Unfortunately, the problem here is that the original mount option was
+implemented via a mountflag and was parsed by the userland helper.
+Trying to rework how "-o {no}iversion" options work is going to be
+messy. We can't rely on /bin/mount and the kernel being in sync.
+
+If we did want to add something like this, then we might need to add a
+new mount option that doesn't match the old one (e.g. -o no_i_version).
+Alternately, could that be made settable via mkfs/tune2fs?
+
+>=20
 > >=20
 > > Cc: Dave Chinner <david@fromorbit.com>
 > > Cc: Lukas Czerner <lczerner@redhat.com>
@@ -114,20 +145,6 @@ s, struct dentry *dentry,
 > >  		return 0;
 > >  	case Opt_i_version:
 > >  		ext4_msg(NULL, KERN_WARNING, deprecated_msg, param->key, "5.20");
->=20
-> Perhaps it's time to kill off Opt_i_version, since we're now at 5.20?
->=20
-
-Ok. I'll plan to remove that instead of altering it like this.
-
-> (For that matter, noacl/nouser_xattr were supposed to be gone by 3.5 and
-> they're clearly still there, so either they ought to go as well?)
->=20
-
-I'll leave that for a separate patch.
-
-> --D
->=20
 > > -		ext4_msg(NULL, KERN_WARNING, "Use iversion instead\n");
 > > -		ctx_set_flags(ctx, SB_I_VERSION);
 > > +		ext4_msg(NULL, KERN_WARNING, "i_version counter is always enabled.\n=
@@ -159,6 +176,7 @@ c, struct super_block *sb)
 > > --=20
 > > 2.37.1
 > >=20
+>=20
 
 --=20
 Jeff Layton <jlayton@kernel.org>
