@@ -2,53 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32098583599
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Jul 2022 01:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD1B58359A
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Jul 2022 01:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbiG0XWd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Jul 2022 19:22:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49206 "EHLO
+        id S232097AbiG0XWh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 Jul 2022 19:22:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231382AbiG0XW3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Jul 2022 19:22:29 -0400
-Received: from mail105.syd.optusnet.com.au (mail105.syd.optusnet.com.au [211.29.132.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 449485927F
-        for <linux-ext4@vger.kernel.org>; Wed, 27 Jul 2022 16:22:28 -0700 (PDT)
-Received: from dread.disaster.area (pa49-195-20-138.pa.nsw.optusnet.com.au [49.195.20.138])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id E512410C895B;
-        Thu, 28 Jul 2022 09:22:25 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1oGqMC-0065wU-QA; Thu, 28 Jul 2022 09:22:24 +1000
-Date:   Thu, 28 Jul 2022 09:22:24 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Lukas Czerner <lczerner@redhat.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>, bugzilla-daemon@kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: [Bug 216283] New: FUZZ: BUG() triggered in
+        with ESMTP id S231382AbiG0XWg (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Jul 2022 19:22:36 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1EA65A17F
+        for <linux-ext4@vger.kernel.org>; Wed, 27 Jul 2022 16:22:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 5C502B82292
+        for <linux-ext4@vger.kernel.org>; Wed, 27 Jul 2022 23:22:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E2D76C433D7
+        for <linux-ext4@vger.kernel.org>; Wed, 27 Jul 2022 23:22:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1658964151;
+        bh=wBA24UdoKE0hU43dwxI5ytSHTMmwhYnasvJAuJsZO+0=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=eaTHQsYFnIU41VVw23rGW3/VMmfVv7CKX5dGocHXQP8c8KrLHXtXZ1SlMwLWeKFGc
+         OzfD3QFC1LitvPXOC/H1n/+YYWQxlQQDBeBoPW7vif2f9BDvhuiMF0p9OKdvtj8Tpt
+         bIJx//xJytGrpsJzgzWbXRBHj8TSIcBgflQ6c0vT3pJwWs1YflZL/XtLWyVTFpW3Qu
+         xwDOx9WMBkby2ISqLjdveNbbvumOtjazqsLOkwavv43Afk1pT4TxFE69HrZmDpFL6E
+         f1lxniu1I8z2hQwJQVBHZhKBtwGMOUvBkYY42nQKNGUWaeO9OTlOvYQCZ2LBxllJiF
+         xCNapDKHZWemw==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+        id CC418C433EA; Wed, 27 Jul 2022 23:22:31 +0000 (UTC)
+From:   bugzilla-daemon@kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 216283] FUZZ: BUG() triggered in
  fs/ext4/extent.c:ext4_ext_insert_extent() when mount and operate on crafted
  image
-Message-ID: <20220727232224.GW3600936@dread.disaster.area>
+Date:   Wed, 27 Jul 2022 23:22:31 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: david@fromorbit.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-216283-13602-slKg997shQ@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-216283-13602@https.bugzilla.kernel.org/>
 References: <bug-216283-13602@https.bugzilla.kernel.org/>
- <YuBKMLw6dpERM95F@magnolia>
- <20220727115307.qco6dn2tqqw52pl7@fedora>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220727115307.qco6dn2tqqw52pl7@fedora>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.4 cv=OJNEYQWB c=1 sm=1 tr=0 ts=62e1c8b2
-        a=cxZHBGNDieHvTKNp/pucQQ==:117 a=cxZHBGNDieHvTKNp/pucQQ==:17
-        a=kj9zAlcOel0A:10 a=RgO8CyIxsXoA:10 a=7-415B0cAAAA:8
-        a=MTImU-Fj9aQAwu4MaV8A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+https://bugzilla.kernel.org/show_bug.cgi?id=3D216283
+
+--- Comment #3 from Dave Chinner (david@fromorbit.com) ---
 On Wed, Jul 27, 2022 at 01:53:07PM +0200, Lukas Czerner wrote:
 > On Tue, Jul 26, 2022 at 01:10:24PM -0700, Darrick J. Wong wrote:
 > > If you are going to run some scripted tool to randomly
@@ -56,13 +81,13 @@ On Wed, Jul 27, 2022 at 01:53:07PM +0200, Lukas Czerner wrote:
 > > ethical and moral responsibility to do some of the work to
 > > narrow down and identify the cause of the failure, not just
 > > throw them at someone to do all the work.
-> > 
+> >=20
 > > --D
-> 
+>=20
 > While I understand the frustration with the fuzzer bug reports like this
 > I very much disagree with your statement about ethical and moral
 > responsibility.
-> 
+>=20
 > The bug is in the code, it would have been there even if Wenqing Liu
 > didn't run the tool.
 
@@ -73,7 +98,7 @@ Yes, but it's not just a bug. It's a format parser exploit.
 > bit more about at least one of them. That's at least a little useful.
 > But you seem to argue that the reporter should put more work in, or not
 > bother at all.
-> 
+>=20
 > That's wrong. Really, Wenqing Liu has no more ethical and moral
 > responsibility than you finding and fixing the problem regardless of the
 > bug report.
@@ -141,6 +166,9 @@ perspective, _everything changes_.
 Cheers,
 
 Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
