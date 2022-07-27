@@ -2,170 +2,183 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5037F5831F9
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Jul 2022 20:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71F858322D
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Jul 2022 20:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231463AbiG0S1N (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Jul 2022 14:27:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39658 "EHLO
+        id S233870AbiG0Sj1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 Jul 2022 14:39:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239173AbiG0S0y (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Jul 2022 14:26:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C774E9C25F
-        for <linux-ext4@vger.kernel.org>; Wed, 27 Jul 2022 10:25:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1658942734;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        with ESMTP id S234134AbiG0SjF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Jul 2022 14:39:05 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B819C116EC4
+        for <linux-ext4@vger.kernel.org>; Wed, 27 Jul 2022 10:36:13 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 3D5AD3831F;
+        Wed, 27 Jul 2022 17:36:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1658943371; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=xI0tNVEQ4QF856krL574dmH7GWXh+Ia0PGG2VcgVgaA=;
-        b=SLdvHojSg70zObt5Rci6dlQvXF+RdF/lKhpUDrr4BkfOhgKeHTRkVAm3RYGFlLoQnoFeSQ
-        ZX+V9qyIKU8QhBO+kxANMVG7i9vkGaopbzKfHGYVULt8rBSuZWwYxMKiael3hg0ir1FQM8
-        f6NjzlW6HJv2mTEDduFMb5pkzJ2Z0i8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-590-KGze-vjcM3CPjB45oqV-HA-1; Wed, 27 Jul 2022 13:25:21 -0400
-X-MC-Unique: KGze-vjcM3CPjB45oqV-HA-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        bh=jZj0ir5x8I6+Ky+gYPWT2LdsscH9PDsYnHuC++RfyQs=;
+        b=hjW1GmChc3G3GLOsLqNNJMboLYoMx/mvlbvkGEcpoM0x0+Kss1dRiHoL6OchEJR852P9Mf
+        iYPWnzgpk0w0yNMbWA/bZQLDwJUkqSVcNVNKOxmrYC+ta4lKdWLmktxKTO07b62xyiL9Sz
+        PXqkbo9eMPwfvhPl8i5HnZv+HoR/wa8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1658943371;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jZj0ir5x8I6+Ky+gYPWT2LdsscH9PDsYnHuC++RfyQs=;
+        b=hCJgaJXV5wuezFjp89Y7IzQW9EzTT3pRAb3gdCaWWNJw+kvf/1uLbRd4c0kLE3B0BM+Rc1
+        h2xxt+ZBkkTg5RDA==
+Received: from quack3.suse.cz (unknown [10.163.28.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E9CE085A586;
-        Wed, 27 Jul 2022 17:25:20 +0000 (UTC)
-Received: from fedora (unknown [10.40.192.210])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BFE1840315E;
-        Wed, 27 Jul 2022 17:25:19 +0000 (UTC)
-Date:   Wed, 27 Jul 2022 19:25:17 +0200
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     Tadeusz Struk <tadeusz.struk@linaro.org>
-Cc:     Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+bd13648a53ed6933ca49@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ext4: try to flush inline data before calling BUG in
- writepages
-Message-ID: <20220727172517.bv2bflydy2urqttv@fedora>
-References: <983bb802-d883-18d4-7945-dbfa209c1cc8@linaro.org>
- <20220726224428.407887-1-tadeusz.struk@linaro.org>
+        by relay2.suse.de (Postfix) with ESMTPS id 13B4E2C141;
+        Wed, 27 Jul 2022 17:36:11 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 95862A0662; Wed, 27 Jul 2022 19:36:09 +0200 (CEST)
+Date:   Wed, 27 Jul 2022 19:36:09 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ritesh Harjani <ritesh.list@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
+        Ted Tso <tytso@mit.edu>,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Subject: Re: Ext4 mballoc behavior with mb_optimize_scan=1
+Message-ID: <20220727173609.xcfy6u4b3kvw5p2k@quack3>
+References: <20220727105123.ckwrhbilzrxqpt24@quack3>
+ <20220727170704.h4zli4ujer6a5cp2@riteshh-domain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220726224428.407887-1-tadeusz.struk@linaro.org>
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.10
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220727170704.h4zli4ujer6a5cp2@riteshh-domain>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jul 26, 2022 at 03:44:28PM -0700, Tadeusz Struk wrote:
-> Fix a syzbot issue, which triggers a BUG in ext4_writepags.
-> The syzbot creates and monuts an ext4 fs image on /dev/loop0.
-> The image is corrupted, which is probably the source of the
-> problems, but the mount operation finishes successfully.
-> Then the repro program creates a file on the mounted fs, and
-> eventually it writes a buff of 22 zero bytes to it as below:
+On Wed 27-07-22 22:37:04, Ritesh Harjani wrote:
+> On 22/07/27 12:51PM, Jan Kara wrote:
+> > Hello,
+> >
+> > before going on vacation I was tracking down why reaim benchmark regresses
+> > (10-20%) with larger number of processes with the new mb_optimize_scan
+> > strategy of mballoc. After a while I have reproduced the regression with a
+> > simple benchmark that just creates, fsyncs, and deletes lots of small files
+> > (22k) from 16 processes, each process has its own directory. The immediate
+> > reason for the slow down is that with mb_optimize_scan=1 the file blocks
+> > are spread among more block groups and thus we have more bitmaps to update
+> > in each transaction.
 > 
-> memfd_create("syzkaller", 0) = 3
-> ftruncate(3, 2097152)       = 0
-> pwrite64(3, " \0\0\0\0\2\0\0\31\0\0\0\220\1\0\0\17\0\0\0\0\0\0\0\2\0\0\0\6\0\0\0"..., 102, 1024) = 102
-> pwrite64(3, "\0\0\0\0\0\0\0\0\0\0\0\0\202\343g$\306\363L\252\204n\322\345'p3x\1\0@", 31, 1248) = 31
-> pwrite64(3, "\2\0\0\0\3\0\0\0\4\0\0\0\31\0\17\0\3\0\4\0\0\0\0\0\0\0\0\0\17\0.i", 32, 4096) = 32
-> pwrite64(3, "\177\0\0\0\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"..., 4098, 8192) = 4098
-> pwrite64(3, "\355A\0\0\20\0\0\0\332\364e_\333\364e_\333\364e_\0\0\0\0\0\0\4\0\200\0\0\0"..., 61, 17408) = 61
-> openat(AT_FDCWD, "/dev/loop0", O_RDWR) = 4
-> ioctl(4, LOOP_SET_FD, 3)    = 0
-> mkdir("./file0", 0777)      = -1 EEXIST (File exists)
-> mount("/dev/loop0", "./file0", "ext4", 0, ",errors=continue") = 0
-> openat(AT_FDCWD, "./file0", O_RDONLY|O_DIRECTORY) = 5
-> ioctl(4, LOOP_CLR_FD)       = 0
-> close(4)                    = 0
-> close(3)                    = 0
-> chdir("./file0")            = 0
-> creat("./bus", 000)         = 3
-> open("./bus", O_RDWR|O_CREAT|O_NONBLOCK|O_SYNC|O_DIRECT|O_LARGEFILE|O_NOATIME, 000) = 4
-> openat(AT_FDCWD, "/proc/self/exe", O_RDONLY) = 6
-> sendfile(4, 6, NULL, 2147483663) = 1638400
-> open("./bus", O_RDWR|O_CREAT|O_SYNC|O_NOATIME, 000) = 7
-> write(7, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0", 22) <unfinished ...>
+> To add a little more info to why maybe this regression is getting noticed this late
+> is that initially the patch series had a bug where the optimization was never
+> getting enabled for files with extents until it got fixed by this patch.
 > 
-> This triggers a BUG in ext4_writepages(), where it checks if
-> the inode has inline data, just before deleting it:
-> 
-> kernel BUG at fs/ext4/inode.c:2721!
-> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-> CPU: 0 PID: 359 Comm: repro Not tainted 5.19.0-rc8-00001-g31ba1e3b8305-dirty #15
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.0-1.fc36 04/01/2014
-> RIP: 0010:ext4_writepages+0x363d/0x3660
-> RSP: 0018:ffffc90000ccf260 EFLAGS: 00010293
-> RAX: ffffffff81e1abcd RBX: 0000008000000000 RCX: ffff88810842a180
-> RDX: 0000000000000000 RSI: 0000008000000000 RDI: 0000000000000000
-> RBP: ffffc90000ccf650 R08: ffffffff81e17d58 R09: ffffed10222c680b
-> R10: dfffe910222c680c R11: 1ffff110222c680a R12: ffff888111634128
-> R13: ffffc90000ccf880 R14: 0000008410000000 R15: 0000000000000001
-> FS:  00007f72635d2640(0000) GS:ffff88811b000000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000565243379180 CR3: 000000010aa74000 CR4: 0000000000150eb0
-> Call Trace:
->  <TASK>
->  do_writepages+0x397/0x640
->  filemap_fdatawrite_wbc+0x151/0x1b0
->  file_write_and_wait_range+0x1c9/0x2b0
->  ext4_sync_file+0x19e/0xa00
->  vfs_fsync_range+0x17b/0x190
->  ext4_buffered_write_iter+0x488/0x530
->  ext4_file_write_iter+0x449/0x1b90
->  vfs_write+0xbcd/0xf40
->  ksys_write+0x198/0x2c0
->  __x64_sys_write+0x7b/0x90
->  do_syscall_64+0x3d/0x90
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
->  </TASK>
-> 
-> This can be prevented by forcing the inline data to be converted
-> and/or flushed beforehand.
-> This patch adds a call to ext4_convert_inline_data() just before
-> the BUG, which fixes the issue.
-> 
-> Link: https://syzkaller.appspot.com/bug?id=a1e89d09bbbcbd5c4cb45db230ee28c822953984
-> Reported-by: syzbot+bd13648a53ed6933ca49@syzkaller.appspotmail.com
-> Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
-> ---
->  fs/ext4/inode.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 84c0eb55071d..de2aa2e79052 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -2717,6 +2717,10 @@ static int ext4_writepages(struct address_space *mapping,
->  			ret = PTR_ERR(handle);
->  			goto out_writepages;
->  		}
-> +
-> +		if (ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA))
-> +			WARN_ON(ext4_convert_inline_data(inode));
-> +
+> https://lore.kernel.org/linux-ext4/fc9a48f7f8dcfc83891a8b21f6dd8cdf056ed810.1646732698.git.ojaswin@linux.ibm.com/#t
 
-Hi Tadeusz,
+Yes. Also it took me quite some time to get to analyzing the regression
+reported by our automated testing and understand what's going on...
 
-I don't think this is the right fix. We're in ext4_writepages, so at
-this point I don't think an inode should have any actual inline data in
-it. If it does it's a bug and the question is how did this get here?
-
-The inode is likely corrupted and it should have been noticed earliler
-and it should never get here.
-
--Lukas
-
->  		BUG_ON(ext4_test_inode_state(inode,
->  				EXT4_STATE_MAY_INLINE_DATA));
->  		ext4_destroy_inline_data(handle, inode);
-> -- 
-> 2.37.1
+> > So the question is why mballoc with mb_optimize_scan=1 spreads allocations
+> > more among block groups. The situation is somewhat obscured by group
+> > preallocation feature of mballoc where each *CPU* holds a preallocation and
+> > small (below 64k) allocations on that CPU are allocated from this
+> > preallocation. If I trace creating of these group preallocations I can see
+> > that the block groups they are taken from look like:
+> >
+> > mb_optimize_scan=0:
+> > 49 81 113 97 17 33 113 49 81 33 97 113 81 1 17 33 33 81 1 113 97 17 113 113
+> > 33 33 97 81 49 81 17 49
+> >
+> > mb_optimize_scan=1:
+> > 127 126 126 125 126 127 125 126 127 124 123 124 122 122 121 120 119 118 117
+> > 116 115 116 114 113 111 110 109 108 107 106 105 104 104
+> >
+> > So we can see that while with mb_optimize_scan=0 the preallocation is
+> > always take from one of a few groups (among which we jump mostly randomly)
+> > which mb_optimize_scan=1 we consistently drift from higher block groups to
+> > lower block groups.
+> >
+> > The mb_optimize_scan=0 behavior is given by the fact that search for free
+> > space always starts in the same block group where the inode is allocated
+> > and the inode is always allocated in the same block group as its parent
+> > directory. So the create-delete benchmark generally keeps all inodes for
+> > one process in the same block group and thus allocations are always
+> > starting in that block group. Because files are small, we always succeed in
+> > finding free space in the starting block group and thus allocations are
+> > generally restricted to the several block groups where parent directories
+> > were originally allocated.
+> >
+> > With mb_optimize_scan=1 the block group to allocate from is selected by
+> > ext4_mb_choose_next_group_cr0() so in this mode we completely ignore the
+> > "pack inode with data in the same group" rule. The reason why we keep
+> > drifting among block groups is that whenever free space in a block group is
+> > updated (blocks allocated / freed) we recalculate largest free order (see
+> > mb_mark_used() and mb_free_blocks()) and as a side effect that removes
+> > group from the bb_largest_free_order_node list and reinserts the group at
+> > the tail.
 > 
+> One thing which comes to mind is maybe to cache the last block group from
+> which the allocation was satisfied and only if that fails, we could then try
+> the largest_free_order() bg.
 
+Yes, this sounds like a reasonable heuristic to me.
+
+> > I have two questions about the mb_optimize_scan=1 strategy:
+> >
+> > 1) Shouldn't we respect the initial goal group and try to allocate from it
+> > in ext4_mb_regular_allocator() before calling ext4_mb_choose_next_group()?
+> 
+> I remember discussing this problem and I think the argument that time was...
+> 
+> """ ...snip from the cover letter.
+> These changes may result in allocations to be spread across the block
+> device. While that would not matter some block devices (such as flash)
+> it may be a cause of concern for other block devices that benefit from
+> storing related content togetther such as disk. However, it can be
+> argued that in high fragmentation scenrio, especially for large disks,
+> it's still worth optimizing the scanning since in such cases, we get
+> cpu bound on group scanning instead of getting IO bound. Perhaps, in
+> future, we could dynamically turn this new optimization on based on
+> fragmentation levels for such devices.
+> """
+> 
+> ...but maybe more explainations can be added by others.
+
+But this reasoning seems to be explaining that selecting group by the
+largest free order may spread allocations more (as the group fill up,
+group's largest free order will decrease and we'll get to next group) and
+that faster allocation is worth the spreading. But I don't think it
+justifies why is it good to rotate among groups that have the same largest
+free order...
+
+> > 2) The rotation of groups in mb_set_largest_free_order() seems a bit
+> > undesirable to me. In particular it seems pointless if the largest free
+> > order does not change. Was there some rationale behind it?
+> 
+> Agree.
+> 
+> Also,
+> I am wondering on whether there is a bot which does reaim benchmark
+> testing too on any of the performance patches. For e.g. [1].
+> 
+> [1]: https://github.com/intel/lkp-tests/blob/3fece75132266f680047f4e1740b39c5b3faabbf/tests/reaim
+> 
+> Can submitter of a patch also trigger this performance benchmark testing?
+> I have generally seen some kernel test bot reports with performace score
+> results, but I am not sure if there is a easy way to trigger this like
+> how we have for syzbot. Any idea?
+
+I don't think there's a way to trigger this from the outside.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
