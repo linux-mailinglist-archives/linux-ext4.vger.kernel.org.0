@@ -2,183 +2,97 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B71F858322D
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Jul 2022 20:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B66B258323D
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Jul 2022 20:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233870AbiG0Sj1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Jul 2022 14:39:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48914 "EHLO
+        id S242958AbiG0Snl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 Jul 2022 14:43:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234134AbiG0SjF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Jul 2022 14:39:05 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B819C116EC4
-        for <linux-ext4@vger.kernel.org>; Wed, 27 Jul 2022 10:36:13 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 3D5AD3831F;
-        Wed, 27 Jul 2022 17:36:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1658943371; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jZj0ir5x8I6+Ky+gYPWT2LdsscH9PDsYnHuC++RfyQs=;
-        b=hjW1GmChc3G3GLOsLqNNJMboLYoMx/mvlbvkGEcpoM0x0+Kss1dRiHoL6OchEJR852P9Mf
-        iYPWnzgpk0w0yNMbWA/bZQLDwJUkqSVcNVNKOxmrYC+ta4lKdWLmktxKTO07b62xyiL9Sz
-        PXqkbo9eMPwfvhPl8i5HnZv+HoR/wa8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1658943371;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jZj0ir5x8I6+Ky+gYPWT2LdsscH9PDsYnHuC++RfyQs=;
-        b=hCJgaJXV5wuezFjp89Y7IzQW9EzTT3pRAb3gdCaWWNJw+kvf/1uLbRd4c0kLE3B0BM+Rc1
-        h2xxt+ZBkkTg5RDA==
-Received: from quack3.suse.cz (unknown [10.163.28.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 13B4E2C141;
-        Wed, 27 Jul 2022 17:36:11 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 95862A0662; Wed, 27 Jul 2022 19:36:09 +0200 (CEST)
-Date:   Wed, 27 Jul 2022 19:36:09 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ritesh Harjani <ritesh.list@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
-        Ted Tso <tytso@mit.edu>,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Subject: Re: Ext4 mballoc behavior with mb_optimize_scan=1
-Message-ID: <20220727173609.xcfy6u4b3kvw5p2k@quack3>
-References: <20220727105123.ckwrhbilzrxqpt24@quack3>
- <20220727170704.h4zli4ujer6a5cp2@riteshh-domain>
+        with ESMTP id S234064AbiG0SnU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Jul 2022 14:43:20 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CACF11CCC7
+        for <linux-ext4@vger.kernel.org>; Wed, 27 Jul 2022 10:40:28 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id h21-20020a17090aa89500b001f31a61b91dso112972pjq.4
+        for <linux-ext4@vger.kernel.org>; Wed, 27 Jul 2022 10:40:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:content-language:to:cc
+         :references:from:subject:in-reply-to:content-transfer-encoding;
+        bh=9ODf3/7a0YWthMFUbQSzorMWt+mXId+4ZYKev6XizEA=;
+        b=oeYciCEYMx/K9VImyELz6jlH+XHh46HGEMQxt3c84YhX/td2/rS+FvJsqTK6woA1AO
+         IZAiiwjFZL/2hSb38TJjx4ST45zgM9t/j6p5luheuQqBlX4ejrvWRqR0xYdJq9wVU7Ug
+         Ij49DaJgPk5LVwdTM2GMB5okdgTpp3+UXCzLMbaTSfoVPQEKiGcL36bJYVrSfc+jW+Bh
+         AkYrL3LVjx+M+F085Dm/UzF0SlxCJGk2G34MRNTUZ8au7T2Oo2P/A6uTYKt5JZ3N3rav
+         3LcGrCaO33Ue/kBIsq0b2y7+DwBHlZMWCBTWi8iWcLH0W7CIQ0SG0Q9gjO/oT8V64WKW
+         u5oA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:subject:in-reply-to
+         :content-transfer-encoding;
+        bh=9ODf3/7a0YWthMFUbQSzorMWt+mXId+4ZYKev6XizEA=;
+        b=Cb8XMf63o712n+sRjjeQKNre8ZcugXHg+FPdP4aFv2HQDnQ+dqvrIf1pk4PZlJ+pxD
+         JV/oBLs6vn85mYqZpafw52T2GYm/VCL3gIx3FDfcAs56hXInJoEiVdyipFlzdi/XOxNd
+         3mclWZbXIaxZZFJE7CFVD2Zsj8X7W/Qd/uPq/bx/cRNs4M7Iwe6TKqxZLRWrAj1ZDrWP
+         FREg9qp/DpTIxzC/nXNq/IMNZI+aXH6I57CKZH0ZKAxBhmSEuFQPWDwd+XFquXnjeQvi
+         XBgbrrae6RriV/SpRSmwpEQFP3fnSnA65YxICUFvLe+Nl+htt+aLZKkyg9Pp6xalmqgt
+         yC8Q==
+X-Gm-Message-State: AJIora/ubLhhYz1yPzy5y1/Ecqnmf8PA+ffS9qlATZG7qgcX77emM0Ub
+        aCOGTkZ7DwNa35WfLRbFcgqsuw==
+X-Google-Smtp-Source: AGRyM1s13Fa1EJMrBTGTG+hbpfKcUTOSzkwGqNkTWYvWM2uPpC7aXcj3AZSburuigniRBSjn0/LFTw==
+X-Received: by 2002:a17:902:7290:b0:16c:cbcb:3971 with SMTP id d16-20020a170902729000b0016ccbcb3971mr22265567pll.165.1658943627157;
+        Wed, 27 Jul 2022 10:40:27 -0700 (PDT)
+Received: from ?IPV6:2601:1c0:4c00:ad20:feaa:14ff:fe3a:b225? ([2601:1c0:4c00:ad20:feaa:14ff:fe3a:b225])
+        by smtp.gmail.com with ESMTPSA id l14-20020a170903244e00b0016d9e53c138sm4480741pls.17.2022.07.27.10.40.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Jul 2022 10:40:26 -0700 (PDT)
+Message-ID: <29a17172-c8c6-0e69-6e38-e482500d2ae3@linaro.org>
+Date:   Wed, 27 Jul 2022 10:40:25 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220727170704.h4zli4ujer6a5cp2@riteshh-domain>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Content-Language: en-US
+To:     Lukas Czerner <lczerner@redhat.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+bd13648a53ed6933ca49@syzkaller.appspotmail.com
+References: <983bb802-d883-18d4-7945-dbfa209c1cc8@linaro.org>
+ <20220726224428.407887-1-tadeusz.struk@linaro.org>
+ <20220727172517.bv2bflydy2urqttv@fedora>
+From:   Tadeusz Struk <tadeusz.struk@linaro.org>
+Subject: Re: [PATCH] ext4: try to flush inline data before calling BUG in
+ writepages
+In-Reply-To: <20220727172517.bv2bflydy2urqttv@fedora>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 27-07-22 22:37:04, Ritesh Harjani wrote:
-> On 22/07/27 12:51PM, Jan Kara wrote:
-> > Hello,
-> >
-> > before going on vacation I was tracking down why reaim benchmark regresses
-> > (10-20%) with larger number of processes with the new mb_optimize_scan
-> > strategy of mballoc. After a while I have reproduced the regression with a
-> > simple benchmark that just creates, fsyncs, and deletes lots of small files
-> > (22k) from 16 processes, each process has its own directory. The immediate
-> > reason for the slow down is that with mb_optimize_scan=1 the file blocks
-> > are spread among more block groups and thus we have more bitmaps to update
-> > in each transaction.
+Hi Lukas,
+On 7/27/22 10:25, Lukas Czerner wrote:
+> I don't think this is the right fix. We're in ext4_writepages, so at
+> this point I don't think an inode should have any actual inline data in
+> it. If it does it's a bug and the question is how did this get here?
 > 
-> To add a little more info to why maybe this regression is getting noticed this late
-> is that initially the patch series had a bug where the optimization was never
-> getting enabled for files with extents until it got fixed by this patch.
-> 
-> https://lore.kernel.org/linux-ext4/fc9a48f7f8dcfc83891a8b21f6dd8cdf056ed810.1646732698.git.ojaswin@linux.ibm.com/#t
+> The inode is likely corrupted and it should have been noticed earliler
+> and it should never get here.
 
-Yes. Also it took me quite some time to get to analyzing the regression
-reported by our automated testing and understand what's going on...
+Yes, that was just an attempt fix something that I'm not quite familiar
+with.
 
-> > So the question is why mballoc with mb_optimize_scan=1 spreads allocations
-> > more among block groups. The situation is somewhat obscured by group
-> > preallocation feature of mballoc where each *CPU* holds a preallocation and
-> > small (below 64k) allocations on that CPU are allocated from this
-> > preallocation. If I trace creating of these group preallocations I can see
-> > that the block groups they are taken from look like:
-> >
-> > mb_optimize_scan=0:
-> > 49 81 113 97 17 33 113 49 81 33 97 113 81 1 17 33 33 81 1 113 97 17 113 113
-> > 33 33 97 81 49 81 17 49
-> >
-> > mb_optimize_scan=1:
-> > 127 126 126 125 126 127 125 126 127 124 123 124 122 122 121 120 119 118 117
-> > 116 115 116 114 113 111 110 109 108 107 106 105 104 104
-> >
-> > So we can see that while with mb_optimize_scan=0 the preallocation is
-> > always take from one of a few groups (among which we jump mostly randomly)
-> > which mb_optimize_scan=1 we consistently drift from higher block groups to
-> > lower block groups.
-> >
-> > The mb_optimize_scan=0 behavior is given by the fact that search for free
-> > space always starts in the same block group where the inode is allocated
-> > and the inode is always allocated in the same block group as its parent
-> > directory. So the create-delete benchmark generally keeps all inodes for
-> > one process in the same block group and thus allocations are always
-> > starting in that block group. Because files are small, we always succeed in
-> > finding free space in the starting block group and thus allocations are
-> > generally restricted to the several block groups where parent directories
-> > were originally allocated.
-> >
-> > With mb_optimize_scan=1 the block group to allocate from is selected by
-> > ext4_mb_choose_next_group_cr0() so in this mode we completely ignore the
-> > "pack inode with data in the same group" rule. The reason why we keep
-> > drifting among block groups is that whenever free space in a block group is
-> > updated (blocks allocated / freed) we recalculate largest free order (see
-> > mb_mark_used() and mb_free_blocks()) and as a side effect that removes
-> > group from the bb_largest_free_order_node list and reinserts the group at
-> > the tail.
-> 
-> One thing which comes to mind is maybe to cache the last block group from
-> which the allocation was satisfied and only if that fails, we could then try
-> the largest_free_order() bg.
+Jan sent already a patch for that fixes it:
+https://lore.kernel.org/all/20220727155753.13969-1-jack@suse.cz/
 
-Yes, this sounds like a reasonable heuristic to me.
-
-> > I have two questions about the mb_optimize_scan=1 strategy:
-> >
-> > 1) Shouldn't we respect the initial goal group and try to allocate from it
-> > in ext4_mb_regular_allocator() before calling ext4_mb_choose_next_group()?
-> 
-> I remember discussing this problem and I think the argument that time was...
-> 
-> """ ...snip from the cover letter.
-> These changes may result in allocations to be spread across the block
-> device. While that would not matter some block devices (such as flash)
-> it may be a cause of concern for other block devices that benefit from
-> storing related content togetther such as disk. However, it can be
-> argued that in high fragmentation scenrio, especially for large disks,
-> it's still worth optimizing the scanning since in such cases, we get
-> cpu bound on group scanning instead of getting IO bound. Perhaps, in
-> future, we could dynamically turn this new optimization on based on
-> fragmentation levels for such devices.
-> """
-> 
-> ...but maybe more explainations can be added by others.
-
-But this reasoning seems to be explaining that selecting group by the
-largest free order may spread allocations more (as the group fill up,
-group's largest free order will decrease and we'll get to next group) and
-that faster allocation is worth the spreading. But I don't think it
-justifies why is it good to rotate among groups that have the same largest
-free order...
-
-> > 2) The rotation of groups in mb_set_largest_free_order() seems a bit
-> > undesirable to me. In particular it seems pointless if the largest free
-> > order does not change. Was there some rationale behind it?
-> 
-> Agree.
-> 
-> Also,
-> I am wondering on whether there is a bot which does reaim benchmark
-> testing too on any of the performance patches. For e.g. [1].
-> 
-> [1]: https://github.com/intel/lkp-tests/blob/3fece75132266f680047f4e1740b39c5b3faabbf/tests/reaim
-> 
-> Can submitter of a patch also trigger this performance benchmark testing?
-> I have generally seen some kernel test bot reports with performace score
-> results, but I am not sure if there is a easy way to trigger this like
-> how we have for syzbot. Any idea?
-
-I don't think there's a way to trigger this from the outside.
-
-								Honza
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks,
+Tadeusz
