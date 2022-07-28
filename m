@@ -2,68 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 640DA583976
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Jul 2022 09:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25678583999
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Jul 2022 09:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234386AbiG1HZ1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 28 Jul 2022 03:25:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50868 "EHLO
+        id S234074AbiG1HiG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 28 Jul 2022 03:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234263AbiG1HZ0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 28 Jul 2022 03:25:26 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD98F2D1F4
-        for <linux-ext4@vger.kernel.org>; Thu, 28 Jul 2022 00:25:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 78533B8232F
-        for <linux-ext4@vger.kernel.org>; Thu, 28 Jul 2022 07:25:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EBE6BC4347C
-        for <linux-ext4@vger.kernel.org>; Thu, 28 Jul 2022 07:25:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658993122;
-        bh=OPTrZhn5Ik+G0+TBXCiPMmRQD+MX6VOHzBvOpv+/xZg=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=P3TwLmE+hdPT1PeAgPsbQHvWea0QliMpsTfTeWoUQN9bhdF7Hf9ev20GG88fNz8pH
-         xtcgG376kFg1qBpj+yZJuirTk1dkP0pF9ygd9QEj5VLmj6rE87dy2xYhPV4ykLKdQb
-         UGzc+a1dfFNipE+YnHvX+N81XlsQ40NFeQU+UKNPUr07kCD/FRxcQkwMhdtGZ1Jzlw
-         fW7rn86zgUoFaZvljc6JbB2Fj0xkS2/vWFmH/oxzBUBjyvh6D1z+CBK7XgfTvYtmwV
-         4SnliFSkAYpjnlfM948ZuqxnEqrugi9u3TlVkMo7t8m5mwxbn/1H98bUFflbvnJlHe
-         RHyYrxjQAmDmw==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-        id DCDE7C433EA; Thu, 28 Jul 2022 07:25:21 +0000 (UTC)
-From:   bugzilla-daemon@kernel.org
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 216283] FUZZ: BUG() triggered in
- fs/ext4/extent.c:ext4_ext_insert_extent() when mount and operate on crafted
- image
-Date:   Thu, 28 Jul 2022 07:25:21 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: lczerner@redhat.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-216283-13602-KdopaN4QWH@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-216283-13602@https.bugzilla.kernel.org/>
-References: <bug-216283-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        with ESMTP id S233032AbiG1HiF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 28 Jul 2022 03:38:05 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4A6452E54;
+        Thu, 28 Jul 2022 00:38:02 -0700 (PDT)
+Received: from [2a02:8108:963f:de38:eca4:7d19:f9a2:22c5]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1oGy5o-0000kv-Ci; Thu, 28 Jul 2022 09:38:00 +0200
+Message-ID: <62df64ca-dc79-c308-a8e0-7c2b2c45248a@leemhuis.info>
+Date:   Thu, 28 Jul 2022 09:37:59 +0200
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Content-Language: en-US
+To:     Stefan Wahren <stefan.wahren@i2se.com>,
+        Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc:     linux-ext4@vger.kernel.org,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        linux-fsdevel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Geetika.Moolchandani1@ibm.com, regressions@lists.linux.dev,
+        Jan Kara <jack@suse.cz>
+References: <0d81a7c2-46b7-6010-62a4-3e6cfc1628d6@i2se.com>
+ <Yt6xsyy3+qEMn08y@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <0840b428-3a77-2339-354f-7fbd3295bb4d@i2se.com>
+ <Yt+M+JgW6KuZFMvc@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <e9aa5629-b6a8-3e5d-422e-eb79ac333fdc@i2se.com>
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+Subject: Re: [Regression] ext4: changes to mb_optimize_scan cause issues on
+ Raspberry Pi
+In-Reply-To: <e9aa5629-b6a8-3e5d-422e-eb79ac333fdc@i2se.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1658993883;e2a7abd8;
+X-HE-SMSGID: 1oGy5o-0000kv-Ci
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,71 +54,138 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D216283
 
---- Comment #5 from Lukas Czerner (lczerner@redhat.com) ---
-On Thu, Jul 28, 2022 at 09:22:24AM +1000, Dave Chinner wrote:
-> On Wed, Jul 27, 2022 at 01:53:07PM +0200, Lukas Czerner wrote:
-> > On Tue, Jul 26, 2022 at 01:10:24PM -0700, Darrick J. Wong wrote:
-> > > If you are going to run some scripted tool to randomly
-> > > corrupt the filesystem to find failures, then you have an
-> > > ethical and moral responsibility to do some of the work to
-> > > narrow down and identify the cause of the failure, not just
-> > > throw them at someone to do all the work.
-> > >=20
-> > > --D
-> >=20
-> > While I understand the frustration with the fuzzer bug reports like this
-> > I very much disagree with your statement about ethical and moral
-> > responsibility.
-> >=20
-> > The bug is in the code, it would have been there even if Wenqing Liu
-> > didn't run the tool.
->=20
-> Yes, but it's not just a bug. It's a format parser exploit.
 
-And what do you think this is exploiting? A bug in a "format parser"
-perhaps?
+On 26.07.22 17:54, Stefan Wahren wrote:
+> Hi Ojaswin,
+> 
+> Am 26.07.22 um 08:43 schrieb Ojaswin Mujoo:
+>> On Mon, Jul 25, 2022 at 09:09:32PM +0200, Stefan Wahren wrote:
+>>> Hi Ojaswin,
+>>>
+>>> Am 25.07.22 um 17:07 schrieb Ojaswin Mujoo:
+>>>> On Mon, Jul 18, 2022 at 03:29:47PM +0200, Stefan Wahren wrote:
+>>>>> Hi,
+>>>>>
+>>>>> i noticed that since Linux 5.18 (Linux 5.19-rc6 is still affected) i'm
+>>>>> unable to run "rpi-update" without massive performance regression
+>>>>> on my
+>>>>> Raspberry Pi 4 (multi_v7_defconfig + CONFIG_ARM_LPAE). Using Linux
+>>>>> 5.17 this
+>>>>> tool successfully downloads the latest firmware (> 100 MB) on my
+>>>>> development
+>>>>> micro SD card (Kingston 16 GB Industrial) with a ext4 filesystem
+>>>>> within ~ 1
+>>>>> min. The same scenario on Linux 5.18 shows the following symptoms:
+>>>>>
+>>>>> - download takes endlessly much time and leads to an abort by
+>>>>> userspace in
+>>>>> most cases because of the poor performance
+>>>>> - massive system load during download even after download has been
+>>>>> aborted
+>>>>> (heartbeat LED goes wild)
+>>>>> - whole system becomes nearly unresponsive
+>>>>> - system load goes back to normal after > 10 min
+>>>>> - dmesg doesn't show anything suspicious
+>>>>>
+>>>>> I was able to bisect this issue:
+>>>>>
+>>>>> ff042f4a9b050895a42cae893cc01fa2ca81b95c good
+>>>>> 4b0986a3613c92f4ec1bdc7f60ec66fea135991f bad
+>>>>> 25fd2d41b505d0640bdfe67aa77c549de2d3c18a bad
+>>>>> b4bc93bd76d4da32600795cd323c971f00a2e788 bad
+>>>>> 3fe2f7446f1e029b220f7f650df6d138f91651f2 bad
+>>>>> b080cee72ef355669cbc52ff55dc513d37433600 good
+>>>>> ad9c6ee642a61adae93dfa35582b5af16dc5173a good
+>>>>> 9b03992f0c88baef524842e411fbdc147780dd5d bad
+>>>>> aab4ed5816acc0af8cce2680880419cd64982b1d good
+>>>>> 14705fda8f6273501930dfe1d679ad4bec209f52 good
+>>>>> 5c93e8ecd5bd3bfdee013b6da0850357eb6ca4d8 good
+>>>>> 8cb5a30372ef5cf2b1d258fce1711d80f834740a bad
+>>>>> 077d0c2c78df6f7260cdd015a991327efa44d8ad bad
+>>>>> cc5095747edfb054ca2068d01af20be3fcc3634f good
+>>>>> 27b38686a3bb601db48901dbc4e2fc5d77ffa2c1 good
+>>>>>
+>>>>> commit 077d0c2c78df6f7260cdd015a991327efa44d8ad
+>>>>> Author: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+>>>>> Date:   Tue Mar 8 15:22:01 2022 +0530
+>>>>>
+>>>>> ext4: make mb_optimize_scan performance mount option work with extents
+>>>>>
+>>>>> If i revert this commit with Linux 5.19-rc6 the performance regression
+>>>>> disappears.
+>>>>>
+>>>>> Please ask if you need more information.
+>>>> Hi Stefan,
+>>>>
+>>>> Apologies, I had missed this email initially. So this particular patch
+>>>> simply changed a typo in an if condition which was preventing the
+>>>> mb_optimize_scan option to be enabled correctly (This feature was
+>>>> introduced in the following commit [1]). I think with the
+>>>> mb_optimize_scan now working, it is somehow causing the firmware
+>>>> download/update to take a longer time.
+>>>>
+>>>> I'll try to investigate this and get back with my findings.
+>>> thanks. I wasn't able to reproduce this heavy load symptoms with
+>>> every SD
+>>> card. Maybe this depends on the write performance of the SD card to
+>>> trigger
+>>> the situation (used command to measure write performance: dd
+>>> if=/dev/zero
+>>> of=/boot/test bs=1M count=30 oflag=dsync,direct ).
+>>>
+>>> I tested a Kingston consumer 32 GB which had nearly constant write
+>>> performance of 13 MB/s and didn't had the heavy load symptoms. The
+>>> firmware
+>>> update was done in a few seconds, so hard to say that at least the
+>>> performance regression is reproducible.
+>>>
+>>> I also tested 2x Kingston industrial 16 GB which had a floating write
+>>> performance between 5 and 10 MB/s (wear leveling?) and both had the
+>>> heavy
+>>> load symptoms.
+>>>
+>>> All SD cards has been detected as ultra high speed DDR50 by the emmc2
+>>> interface.
+>>>
+>>> Best regards
+>>>
+>>>> Regard,
+>>>> Ojaswin
+>>>>
+>>>> [1]
+>>>>     commit 196e402adf2e4cd66f101923409f1970ec5f1af3
+>>>>     From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+>>>>     Date: Thu, 1 Apr 2021 10:21:27 -0700
+>>>>     
+>>>>     ext4: improve cr 0 / cr 1 group scanning
+>>>>
+>>>>> Regards
+>>>>>
+>> Thanks for the info Stefan, I'm still trying to reproduce the issue but
+>> it's slightly challenging since I don't have my RPi handy at the moment.
+>>
+>> In the meantime, would you please try out the mb_optmize_scan=0 command
+>> line options to see if that helps bypass the issue. This will help
+>> confirm if the issue lies in mb_optmize_scan itself or if its something
+>> else.
+>>
+> I run the firmware update 5 times with mb_optimize_scan=0 on my
+> Raspberry Pi 4 and the industrial SD card and everytime the update worked.
+>>
 
-Are you trying both downplay it to not-a-bug and elevate it to 'security
-vulnerability' at the same time ? ;)
+[CCing Jan]
 
->=20
-> > We know there are bugs in the code we just don't
-> > know where all of them are. Now, thanks to this report, we know a little
-> > bit more about at least one of them. That's at least a little useful.
-> > But you seem to argue that the reporter should put more work in, or not
-> > bother at all.
-> >=20
-> > That's wrong. Really, Wenqing Liu has no more ethical and moral
-> > responsibility than you finding and fixing the problem regardless of the
-> > bug report.
->=20
-> By this reasoning, the researchers that discovered RetBleed
-> should have just published their findings without notify any of the
-> affected parties.
->=20
-> i.e. your argument implies they have no responsibility and hence are
-> entitled to say "We aren't responsible for helping anyone understand
-> the problem or mitigating the impact of the flaw - we've got our
-> publicity and secured tenure with discovery and publication!"
->=20
-> That's not _responsible disclosure_.
+FYI, Jan yesterday reported benchmark regresses that might or might not
+be related Stefan's regression on the Raspberry Pi:
+https://lore.kernel.org/all/20220727105123.ckwrhbilzrxqpt24@quack3/
 
-Look, your entire argument hinges on the assumption that this is a
-security vulnerability that could be exploited and the report makes the
-situation worse. And that's very much debatable. I don't think it is and
-Ted described it very well in his comment.
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
 
-Asking for more information, or even asking reported to try to narrow
-down the problem is of course fine. But making sweeping claims about
-moral and ethical responsibilities is always a little suspicious and
-completely bogus in this case IMO.
+P.S.: As the Linux kernel's regression tracker I deal with a lot of
+reports and sometimes miss something important when writing mails like
+this. If that's the case here, don't hesitate to tell me in a public
+reply, it's in everyone's interest to set the public record straight.
 
--Lukas
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+#regzbot monitor
+https://lore.kernel.org/all/20220727105123.ckwrhbilzrxqpt24@quack3/
