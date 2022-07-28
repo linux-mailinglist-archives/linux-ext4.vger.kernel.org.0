@@ -2,56 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF153583B50
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Jul 2022 11:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 471D5583BA2
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Jul 2022 12:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235539AbiG1Jfk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 28 Jul 2022 05:35:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42884 "EHLO
+        id S235277AbiG1KA7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 28 Jul 2022 06:00:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235655AbiG1Jfi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 28 Jul 2022 05:35:38 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D99A65D47
-        for <linux-ext4@vger.kernel.org>; Thu, 28 Jul 2022 02:35:37 -0700 (PDT)
+        with ESMTP id S234953AbiG1KA6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 28 Jul 2022 06:00:58 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79EEA167E5;
+        Thu, 28 Jul 2022 03:00:57 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 48F50345E7;
-        Thu, 28 Jul 2022 09:35:36 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 376741FFA3;
+        Thu, 28 Jul 2022 10:00:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1659000936; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1659002456; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qOCCR6VsFaKf7gwfYA1f8qaSGg5iLo750ZQdlSPR91s=;
-        b=gT+Fj9ADZy4tDokKk2DFqplzUjLoacbOyY00N0w3hz9HeH4IDk+RVuiLkhAi/Fv8w1hSGo
-        SIQK2KWq0LwLBVkU2Ye2RLflmAvsuvAbo3FxiLoSrxb45hOe0RqzZdmXEOdiQF61UkNH7d
-        LgmrcVM8g8PX2rRcr2MQWzh2HLbHbKo=
+        bh=7MjBR5d5iF90QgK09LCBa7b8puT8yJDuRAnIWGff5/g=;
+        b=p3SWZtJOXud4Li8R6rfKe2x881b6TTDg8HOqBY1Bty2qZUV/BOw4oHBobvYWKg7PKIeaav
+        O+88qm2XQv3t098vubRxl0M7XSJB/WTtPoPPcDJpVY4r+VKbRUP/3aIzvOtfpdW9mTihy4
+        AVuxtH5f4JfWxIkD4pGQBru+WRuOCu0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1659000936;
+        s=susede2_ed25519; t=1659002456;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qOCCR6VsFaKf7gwfYA1f8qaSGg5iLo750ZQdlSPR91s=;
-        b=JhodxkBaJXY99npoaZndEYizcAIhiHbTSGKsUQ0W3wCa8/5jW9MRrXLRuB+xJAoCqUY4K/
-        WfCKHpfve/y0OdAg==
+        bh=7MjBR5d5iF90QgK09LCBa7b8puT8yJDuRAnIWGff5/g=;
+        b=T8jJtrsDU6q84QyDoCMshrYrfIFt+wL3JI2SNyqF0xECz3qBuyImj/AAPEERFnFhYssjVH
+        /ZM5bBJdClR670Ag==
 Received: from quack3.suse.cz (unknown [10.163.43.118])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 1F0802C141;
-        Thu, 28 Jul 2022 09:35:36 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTPS id 9D5F82C141;
+        Thu, 28 Jul 2022 10:00:55 +0000 (UTC)
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 9B2CDA0664; Thu, 28 Jul 2022 11:35:35 +0200 (CEST)
-Date:   Thu, 28 Jul 2022 11:35:35 +0200
+        id 21874A0664; Thu, 28 Jul 2022 12:00:55 +0200 (CEST)
+Date:   Thu, 28 Jul 2022 12:00:55 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Yang Xu <xuyang2018.jy@fujitsu.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu, lczerner@redhat.com,
-        djwong@kernel.org, jlayton@kernel.org, jack@suse.cz
-Subject: Re: [PATCH v1] ext4: Remove deprecated noacl/nouser_xattr options
-Message-ID: <20220728093535.6bus4bvkxi3zzs5a@quack3>
-References: <1658977369-2478-1-git-send-email-xuyang2018.jy@fujitsu.com>
+To:     Stefan Wahren <stefan.wahren@i2se.com>
+Cc:     linux-ext4@vger.kernel.org, Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        linux-fsdevel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Geetika.Moolchandani1@ibm.com, regressions@lists.linux.dev
+Subject: Re: [Regression] ext4: changes to mb_optimize_scan cause issues on
+ Raspberry Pi
+Message-ID: <20220728100055.efbvaudwp3ofolpi@quack3>
+References: <0d81a7c2-46b7-6010-62a4-3e6cfc1628d6@i2se.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1658977369-2478-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0d81a7c2-46b7-6010-62a4-3e6cfc1628d6@i2se.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -61,78 +70,87 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 28-07-22 11:02:49, Yang Xu wrote:
-> These two options should have been removed since 3.5, but none notices it.
-> Recently, I and Darrick found this. Also, have some discussion for this[1][2][3].
+Hello!
+
+On Mon 18-07-22 15:29:47, Stefan Wahren wrote:
+> i noticed that since Linux 5.18 (Linux 5.19-rc6 is still affected) i'm
+> unable to run "rpi-update" without massive performance regression on my
+> Raspberry Pi 4 (multi_v7_defconfig + CONFIG_ARM_LPAE). Using Linux 5.17 this
+> tool successfully downloads the latest firmware (> 100 MB) on my development
+> micro SD card (Kingston 16 GB Industrial) with a ext4 filesystem within ~ 1
+> min. The same scenario on Linux 5.18 shows the following symptoms:
+
+Thanks for report and the bisection!
+ 
+> - download takes endlessly much time and leads to an abort by userspace in
+> most cases because of the poor performance
+> - massive system load during download even after download has been aborted
+> (heartbeat LED goes wild)
+
+OK, is it that the CPU is busy or are we waiting on the storage card?
+Observing top(1) for a while should be enough to get the idea.  (sorry, I'm
+not very familiar with RPi so I'm not sure what heartbeat LED shows).
+
+> - whole system becomes nearly unresponsive
+> - system load goes back to normal after > 10 min
+
+So what likely happens is that the downloaded data is in the pagecache and
+what is causing the stuckage is that we are writing it back to the SD card
+that somehow is much less efficient with mb_optimize_scan=1 for your setup.
+Even if you stop the download, we still have dirty data in the page cache
+which we need to write out so that is the reason why the system takes so
+long to return back to normal.
+
+> - dmesg doesn't show anything suspicious
 > 
-> So now, let's remove them.
+> I was able to bisect this issue:
 > 
-> Link: https://lore.kernel.org/linux-ext4/6258F7BB.8010104@fujitsu.com/T/#u[1]
-> Link: https://lore.kernel.org/linux-ext4/20220602110421.ymoug3rwfspmryqg@fedora/T/#t[2]
-> Link: https://lore.kernel.org/linux-ext4/08e2ca4c8f6344bdcd76d75b821116c6147fd57a.camel@kernel.org/T/#t[3]
-> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+> ff042f4a9b050895a42cae893cc01fa2ca81b95c good
+> 4b0986a3613c92f4ec1bdc7f60ec66fea135991f bad
+> 25fd2d41b505d0640bdfe67aa77c549de2d3c18a bad
+> b4bc93bd76d4da32600795cd323c971f00a2e788 bad
+> 3fe2f7446f1e029b220f7f650df6d138f91651f2 bad
+> b080cee72ef355669cbc52ff55dc513d37433600 good
+> ad9c6ee642a61adae93dfa35582b5af16dc5173a good
+> 9b03992f0c88baef524842e411fbdc147780dd5d bad
+> aab4ed5816acc0af8cce2680880419cd64982b1d good
+> 14705fda8f6273501930dfe1d679ad4bec209f52 good
+> 5c93e8ecd5bd3bfdee013b6da0850357eb6ca4d8 good
+> 8cb5a30372ef5cf2b1d258fce1711d80f834740a bad
+> 077d0c2c78df6f7260cdd015a991327efa44d8ad bad
+> cc5095747edfb054ca2068d01af20be3fcc3634f good
+> 27b38686a3bb601db48901dbc4e2fc5d77ffa2c1 good
+> 
+> commit 077d0c2c78df6f7260cdd015a991327efa44d8ad
+> Author: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> Date:   Tue Mar 8 15:22:01 2022 +0530
+> 
+> ext4: make mb_optimize_scan performance mount option work with extents
+> 
+> If i revert this commit with Linux 5.19-rc6 the performance regression
+> disappears.
+> 
+> Please ask if you need more information.
 
-Yeah, long overdue :) Feel free to add:
+Can you run "iostat -x 1" while the download is running so that we can see
+roughly how the IO pattern looks?
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Also can get filesystem metadata image of your card like:
+  e2image -r <fs-device> - | gzip >/tmp/ext4-image.gz
 
+and put it somewhere for download? The image will contain only fs metadata,
+not data so it should be relatively small and we won't have access to your
+secrets ;). With the image we'd be able to see how the free space looks
+like and whether it perhaps does not trigger some pathological behavior.
+
+My current suspicion is that because the new allocator strategy spreads
+allocations over more block groups, we end up with more open erase blocks
+on the SD card which forces the firmware to do more garbage collection and
+RMW of erase blocks and write performance tanks...
+
+Thanks.
 								Honza
 
-> ---
->  fs/ext4/super.c | 11 +----------
->  1 file changed, 1 insertion(+), 10 deletions(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 845f2f8aee5f..1eff864069c1 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -1576,7 +1576,7 @@ enum {
->  	Opt_bsd_df, Opt_minix_df, Opt_grpid, Opt_nogrpid,
->  	Opt_resgid, Opt_resuid, Opt_sb,
->  	Opt_nouid32, Opt_debug, Opt_removed,
-> -	Opt_user_xattr, Opt_nouser_xattr, Opt_acl, Opt_noacl,
-> +	Opt_user_xattr, Opt_acl,
->  	Opt_auto_da_alloc, Opt_noauto_da_alloc, Opt_noload,
->  	Opt_commit, Opt_min_batch_time, Opt_max_batch_time, Opt_journal_dev,
->  	Opt_journal_path, Opt_journal_checksum, Opt_journal_async_commit,
-> @@ -1662,9 +1662,7 @@ static const struct fs_parameter_spec ext4_param_specs[] = {
->  	fsparam_flag	("oldalloc",		Opt_removed),
->  	fsparam_flag	("orlov",		Opt_removed),
->  	fsparam_flag	("user_xattr",		Opt_user_xattr),
-> -	fsparam_flag	("nouser_xattr",	Opt_nouser_xattr),
->  	fsparam_flag	("acl",			Opt_acl),
-> -	fsparam_flag	("noacl",		Opt_noacl),
->  	fsparam_flag	("norecovery",		Opt_noload),
->  	fsparam_flag	("noload",		Opt_noload),
->  	fsparam_flag	("bh",			Opt_removed),
-> @@ -1814,13 +1812,10 @@ static const struct mount_opts {
->  	{Opt_journal_ioprio, 0, MOPT_NO_EXT2},
->  	{Opt_data, 0, MOPT_NO_EXT2},
->  	{Opt_user_xattr, EXT4_MOUNT_XATTR_USER, MOPT_SET},
-> -	{Opt_nouser_xattr, EXT4_MOUNT_XATTR_USER, MOPT_CLEAR},
->  #ifdef CONFIG_EXT4_FS_POSIX_ACL
->  	{Opt_acl, EXT4_MOUNT_POSIX_ACL, MOPT_SET},
-> -	{Opt_noacl, EXT4_MOUNT_POSIX_ACL, MOPT_CLEAR},
->  #else
->  	{Opt_acl, 0, MOPT_NOSUPPORT},
-> -	{Opt_noacl, 0, MOPT_NOSUPPORT},
->  #endif
->  	{Opt_nouid32, EXT4_MOUNT_NO_UID32, MOPT_SET},
->  	{Opt_debug, EXT4_MOUNT_DEBUG, MOPT_SET},
-> @@ -2120,10 +2115,6 @@ static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *param)
->  		else
->  			return note_qf_name(fc, GRPQUOTA, param);
->  #endif
-> -	case Opt_noacl:
-> -	case Opt_nouser_xattr:
-> -		ext4_msg(NULL, KERN_WARNING, deprecated_msg, param->key, "3.5");
-> -		break;
->  	case Opt_sb:
->  		if (fc->purpose == FS_CONTEXT_FOR_RECONFIGURE) {
->  			ext4_msg(NULL, KERN_WARNING,
-> -- 
-> 2.27.0
-> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
