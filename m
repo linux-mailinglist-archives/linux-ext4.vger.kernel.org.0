@@ -2,76 +2,92 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2DF658372D
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Jul 2022 04:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2237E58372C
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Jul 2022 04:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229446AbiG1CrQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Jul 2022 22:47:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43168 "EHLO
+        id S232869AbiG1CrP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 Jul 2022 22:47:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232484AbiG1CrP (ORCPT
+        with ESMTP id S229446AbiG1CrP (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Jul 2022 22:47:15 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F594AD61
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95AA4AD56
         for <linux-ext4@vger.kernel.org>; Wed, 27 Jul 2022 19:47:10 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-118-63.bstnma.fios.verizon.net [173.48.118.63])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 26S2kscZ022654
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jul 2022 22:46:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1658976415; bh=ejSHHiLjBcMpnwLBkyTMf+ExkkZ3cdcIkm+gshBhsYs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=aj4DEkjfY9KpmSLMl8WIosfRSIbnNgqojWHC+qJhn6W9QeP1+cksDpLg0YsgUlOvH
-         YuJIZTAWjHbAeb43e5p608BSFhIpgDvK1fd2PUsXFK6v/3volvnd5/9c872FpH5Csi
-         EN0kw9eOVz0F41P+VFiw0ZGqMM1Fk7X2c4b8vtlU3N3vXLhXrbfYL1xHTDVXPeBzu/
-         DIrHE0vIkf7i+lDCMkLkctwOkse9EgKJorJIdCR3SJuE04I6gJG4EpRlonpDwLX5RU
-         cBKWJexcuRkWa4xaoDb2JrhCVWsldy61a+G4SyzuD/aqXt6+jTfBJIFdgTeer91yf4
-         i35lrLf0szkCg==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id D289C15C3487; Wed, 27 Jul 2022 22:46:53 -0400 (EDT)
-Date:   Wed, 27 Jul 2022 22:46:53 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Lukas Czerner <lczerner@redhat.com>,
-        "Darrick J. Wong" <djwong@kernel.org>, bugzilla-daemon@kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: [Bug 216283] New: FUZZ: BUG() triggered in
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 67D96B8224E
+        for <linux-ext4@vger.kernel.org>; Thu, 28 Jul 2022 02:47:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1C55BC433D6
+        for <linux-ext4@vger.kernel.org>; Thu, 28 Jul 2022 02:47:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1658976428;
+        bh=4ZYxHOSsOj2GXrTjrmj9ByLKBcJyH2ft/w1rDGPkiJ0=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=ZdOFFiBpJ9htP7np86rd+42K0VeKJLcOrchG/tkSjB207awHNp74s95tcAJ5xfTh5
+         IyNog3L/DpTa6WpXLf28nlI7PcPIK8+3MLuQqPQhyAksdKEmu5EP89hwEd8t2op1O3
+         187OgqI3bKKtZipjWblGhDwGyPhGYVGIhoyd0gjYy6HbQNGlhCgc+9wAS48kh97Z4H
+         R3c9vF2pmeiVOGFto+d6U585j9+C1Wlp8ZYLO62ARbRAsfHbrEumH88gKZ7OocWy95
+         43tGke2quhThe1C8RJEmAcFTWVNXpNBrrW4+iIFxtcIJL6W2/6dChJ7EqdK6mI222j
+         XskoBSQiA5HFQ==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+        id 07512C433E4; Thu, 28 Jul 2022 02:47:07 +0000 (UTC)
+From:   bugzilla-daemon@kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 216283] FUZZ: BUG() triggered in
  fs/ext4/extent.c:ext4_ext_insert_extent() when mount and operate on crafted
  image
-Message-ID: <YuH4nY6DGodheXoE@mit.edu>
+Date:   Thu, 28 Jul 2022 02:47:06 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: tytso@mit.edu
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-216283-13602-P62ZexpGfa@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-216283-13602@https.bugzilla.kernel.org/>
 References: <bug-216283-13602@https.bugzilla.kernel.org/>
- <YuBKMLw6dpERM95F@magnolia>
- <20220727115307.qco6dn2tqqw52pl7@fedora>
- <20220727232224.GW3600936@dread.disaster.area>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220727232224.GW3600936@dread.disaster.area>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+https://bugzilla.kernel.org/show_bug.cgi?id=3D216283
+
+--- Comment #4 from Theodore Tso (tytso@mit.edu) ---
 On Thu, Jul 28, 2022 at 09:22:24AM +1000, Dave Chinner wrote:
 > On Wed, Jul 27, 2022 at 01:53:07PM +0200, Lukas Czerner wrote:
 > > While I understand the frustration with the fuzzer bug reports like this
 > > I very much disagree with your statement about ethical and moral
 > > responsibility.
-> > 
+> >=20
 > > The bug is in the code, it would have been there even if Wenqing Liu
 > > didn't run the tool.
-> 
+>=20
 > i.e. your argument implies they have no responsibility and hence are
 > entitled to say "We aren't responsible for helping anyone understand
 > the problem or mitigating the impact of the flaw - we've got our
 > publicity and secured tenure with discovery and publication!"
-> 
+>=20
 > That's not _responsible disclosure_.
 
 So I'm going to disagree here.  I understand that this is the XFS
@@ -124,13 +140,13 @@ zero.  This should never happen:
 debugfs: extents <16>
 Level Entries       Logical      Physical Length Flags
  0/ 2   1/  1     0 - 98030  9284          98031
- 1/ 2   1/  0     0 - 98030  9282          98031 <======
+ 1/ 2   1/  0     0 - 98030  9282          98031 <=3D=3D=3D=3D=3D=3D
           ^^^
- 2/ 2   1/ 84     0 -     0  9730 -  9730      1 
- 2/ 2   2/ 84     5 -     7  9739 -  9741      3 
- 2/ 2   3/ 84    16 -    17  9750 -  9751      2 
- 2/ 2   4/ 84    26 -    26  9768 -  9768      1 
- 2/ 2   5/ 84    36 -    36  9787 -  9787      1 
+ 2/ 2   1/ 84     0 -     0  9730 -  9730      1=20
+ 2/ 2   2/ 84     5 -     7  9739 -  9741      3=20
+ 2/ 2   3/ 84    16 -    17  9750 -  9751      2=20
+ 2/ 2   4/ 84    26 -    26  9768 -  9768      1=20
+ 2/ 2   5/ 84    36 -    36  9787 -  9787      1=20
 
 This causes len to go negative in ext4_extent_insert_extent:
 
@@ -148,4 +164,10 @@ quality of our implementation.  And since it's not an urgent issue,
 concerns of "responsble disclosure" don't arise, at least not in my
 opinion.
 
-					- Ted
+                                        - Ted
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
