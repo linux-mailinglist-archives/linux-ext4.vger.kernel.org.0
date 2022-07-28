@@ -2,82 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A662A58369D
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Jul 2022 04:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2DF658372D
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Jul 2022 04:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232834AbiG1CCL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Jul 2022 22:02:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39114 "EHLO
+        id S229446AbiG1CrQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 Jul 2022 22:47:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234325AbiG1CCK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Jul 2022 22:02:10 -0400
-Received: from mail1.bemta32.messagelabs.com (mail1.bemta32.messagelabs.com [195.245.230.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D29B5004A
-        for <linux-ext4@vger.kernel.org>; Wed, 27 Jul 2022 19:02:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
-        s=170520fj; t=1658973727; i=@fujitsu.com;
-        bh=XbNBJ5Nf6zmJfAYotmbOD2uKkJrmWYl5t+6u/wuFs9Q=;
-        h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
-        b=kmiyAbSDbRti8NQnbjaQC0GEQa5iLlRcbNNY7clhZLLCcPC/EIvpkDX5WNG1utfR/
-         6KRTiuZ3B2PI1s3pEGP7uXk73zC4UsQI3SK4cs0AD3pqey3iQ61jG6ufe9wUnqkOSx
-         LusOgBqyyaggayrR9o2eXDH9s7bIov+Kwr9WzGoc60S2sQ2Scwp6Fz1r57KioOh6fR
-         VolGkxh1p3hryY+RnlB+F6M3C8SVT/G2Bt9/WleIN+G1Hz/uTvg7sOfAZgfNcaW9r3
-         cw6fSrBiR0w7Benzzz9UXq8gjzkzNWnLljCw24z+B+VMFCphUGFQRtC4WgyXCTc34L
-         BPtLASMIyF1PA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrHIsWRWlGSWpSXmKPExsViZ8ORqCv37mG
-  SwdEeHYvLT/gsZk9vZrL4uWwVu8WyB5tZLGbOu8Nm0drzk92BzWPTqk42j6YzR5k93u+7yuZx
-  ZsERdo/Pm+QCWKNYM/OS8isSWDOWf9rKUvBLuOLpgl/sDYwnBbsYuTiEBLYwSnS2bGKBcJYzS
-  Zz+1ssI4exhlLi15gtQhpODTUBT4lnnAmYQW0RAQWL5nf2sIDazQDejxJVtpSC2sICbRNuEU2
-  D1LAKqElNOPGACsXkFPCS27ZzJCGJLAPVOefieGSIuKHFy5hMWiDkSEgdfvGCGqFGUuNTxDaq
-  +QuL14UtQcTWJq+c2MU9g5J+FpH0WkvYFjEyrGK2SijLTM0pyEzNzdA0NDHQNDU11TXWNTE31
-  Eqt0E/VSS3XLU4tLdA31EsuL9VKLi/WKK3OTc1L08lJLNjECgz2lmPX/Dsbuvp96hxglOZiUR
-  HlnLnyYJMSXlJ9SmZFYnBFfVJqTWnyIUYaDQ0mCd9MroJxgUWp6akVaZg4w8mDSEhw8SiK8US
-  Bp3uKCxNzizHSI1ClGRSlxXvv7QAkBkERGaR5cGyzaLzHKSgnzMjIwMAjxFKQW5WaWoMq/YhT
-  nYFQS5t3wDGgKT2ZeCdz0V0CLmYAWb1F4ALK4JBEhJdXAtGyJwJHak4XMxwIn8z8SV6rP4Fij
-  Xnj8zIq1/7KN2/aYLfecb9B6Pt7zT17gPyWuWxdqNzlHRs5W3qvd9jTw+LuWz2zbpi3u/L38e
-  wvjmigVa+ebbSdi+gW6LaNDK//v+LQ/7fjMV5uVb3t/XpPwpCfzxA2fZ6sN5qinxPdwatmfuv
-  /XOPTHvLcy2boZzseePs64PPN32nKN0icHOqeU/JiuuLhLrObuvwdTtws4yoqwNmZOPbueoTO
-  sra5AfcGeV2/E8wOTl1+J3afnePx9wv/o7a3vH7TmzJNNmPvkvQ+TPINy/KrmW08qjG9fPDC3
-  8rPPoowCGd2/QfZeu9JKc6T7yy27udauk7js92DOVyWW4oxEQy3mouJEANw/9EpxAwAA
-X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-9.tower-587.messagelabs.com!1658973726!275102!1
-X-Originating-IP: [62.60.8.97]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.87.3; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 28741 invoked from network); 28 Jul 2022 02:02:06 -0000
-Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
-  by server-9.tower-587.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 28 Jul 2022 02:02:06 -0000
-Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
-        by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id 45103100197;
-        Thu, 28 Jul 2022 03:02:06 +0100 (BST)
-Received: from R01UKEXCASM126.r01.fujitsu.local (R01UKEXCASM126 [10.183.43.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id 38FBA100043;
-        Thu, 28 Jul 2022 03:02:06 +0100 (BST)
-Received: from localhost.localdomain (10.167.220.84) by
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.32; Thu, 28 Jul 2022 03:02:03 +0100
-From:   Yang Xu <xuyang2018.jy@fujitsu.com>
-To:     <linux-ext4@vger.kernel.org>
-CC:     <tytso@mit.edu>, <lczerner@redhat.com>, <djwong@kernel.org>,
-        <jlayton@kernel.org>, <jack@suse.cz>,
-        Yang Xu <xuyang2018.jy@fujitsu.com>
-Subject: [PATCH v1] ext4: Remove deprecated noacl/nouser_xattr options
-Date:   Thu, 28 Jul 2022 11:02:49 +0800
-Message-ID: <1658977369-2478-1-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
+        with ESMTP id S232484AbiG1CrP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Jul 2022 22:47:15 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F594AD61
+        for <linux-ext4@vger.kernel.org>; Wed, 27 Jul 2022 19:47:10 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-118-63.bstnma.fios.verizon.net [173.48.118.63])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 26S2kscZ022654
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jul 2022 22:46:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1658976415; bh=ejSHHiLjBcMpnwLBkyTMf+ExkkZ3cdcIkm+gshBhsYs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=aj4DEkjfY9KpmSLMl8WIosfRSIbnNgqojWHC+qJhn6W9QeP1+cksDpLg0YsgUlOvH
+         YuJIZTAWjHbAeb43e5p608BSFhIpgDvK1fd2PUsXFK6v/3volvnd5/9c872FpH5Csi
+         EN0kw9eOVz0F41P+VFiw0ZGqMM1Fk7X2c4b8vtlU3N3vXLhXrbfYL1xHTDVXPeBzu/
+         DIrHE0vIkf7i+lDCMkLkctwOkse9EgKJorJIdCR3SJuE04I6gJG4EpRlonpDwLX5RU
+         cBKWJexcuRkWa4xaoDb2JrhCVWsldy61a+G4SyzuD/aqXt6+jTfBJIFdgTeer91yf4
+         i35lrLf0szkCg==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id D289C15C3487; Wed, 27 Jul 2022 22:46:53 -0400 (EDT)
+Date:   Wed, 27 Jul 2022 22:46:53 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Lukas Czerner <lczerner@redhat.com>,
+        "Darrick J. Wong" <djwong@kernel.org>, bugzilla-daemon@kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: [Bug 216283] New: FUZZ: BUG() triggered in
+ fs/ext4/extent.c:ext4_ext_insert_extent() when mount and operate on crafted
+ image
+Message-ID: <YuH4nY6DGodheXoE@mit.edu>
+References: <bug-216283-13602@https.bugzilla.kernel.org/>
+ <YuBKMLw6dpERM95F@magnolia>
+ <20220727115307.qco6dn2tqqw52pl7@fedora>
+ <20220727232224.GW3600936@dread.disaster.area>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.167.220.84]
-X-ClientProxiedBy: G08CNEXCHPEKD08.g08.fujitsu.local (10.167.33.83) To
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
-X-Virus-Scanned: ClamAV using ClamSMTP
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220727232224.GW3600936@dread.disaster.area>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,67 +58,94 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-These two options should have been removed since 3.5, but none notices it.
-Recently, I and Darrick found this. Also, have some discussion for this[1][2][3].
+On Thu, Jul 28, 2022 at 09:22:24AM +1000, Dave Chinner wrote:
+> On Wed, Jul 27, 2022 at 01:53:07PM +0200, Lukas Czerner wrote:
+> > While I understand the frustration with the fuzzer bug reports like this
+> > I very much disagree with your statement about ethical and moral
+> > responsibility.
+> > 
+> > The bug is in the code, it would have been there even if Wenqing Liu
+> > didn't run the tool.
+> 
+> i.e. your argument implies they have no responsibility and hence are
+> entitled to say "We aren't responsible for helping anyone understand
+> the problem or mitigating the impact of the flaw - we've got our
+> publicity and secured tenure with discovery and publication!"
+> 
+> That's not _responsible disclosure_.
 
-So now, let's remove them.
+So I'm going to disagree here.  I understand that this is the XFS
+position, and so a few years back, the Georgia Tech folks who were
+responsible for Janus and Hydra decided not to engage with the XFS
+community and stopped reporting XFS bugs.  They continued to engage
+with the ext4 community, and I found their reports to be helpful.  We
+found and fixed quite a few bugs as a result of their work, and I
+sponsored them to get some research funding from Google so they could
+do more file system fuzzing work, because I thought their work was a
+useful contribution.
 
-Link: https://lore.kernel.org/linux-ext4/6258F7BB.8010104@fujitsu.com/T/#u[1]
-Link: https://lore.kernel.org/linux-ext4/20220602110421.ymoug3rwfspmryqg@fedora/T/#t[2]
-Link: https://lore.kernel.org/linux-ext4/08e2ca4c8f6344bdcd76d75b821116c6147fd57a.camel@kernel.org/T/#t[3]
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- fs/ext4/super.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
+I don't particularly worry about "responsible disclosure" because I
+don't consider fuzzed file system crashes to be a particularly serious
+security concern.  There are some crazy container folks who think
+containers are just as secure(tm) as VM's, and who advocate allowing
+untrusted containers to mount arbitrary file system images and expect
+that this not cause the "host" OS to crash or get compromised.  Those
+people are insane(tm), and I don't particularly worry about their use
+cases.
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 845f2f8aee5f..1eff864069c1 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1576,7 +1576,7 @@ enum {
- 	Opt_bsd_df, Opt_minix_df, Opt_grpid, Opt_nogrpid,
- 	Opt_resgid, Opt_resuid, Opt_sb,
- 	Opt_nouid32, Opt_debug, Opt_removed,
--	Opt_user_xattr, Opt_nouser_xattr, Opt_acl, Opt_noacl,
-+	Opt_user_xattr, Opt_acl,
- 	Opt_auto_da_alloc, Opt_noauto_da_alloc, Opt_noload,
- 	Opt_commit, Opt_min_batch_time, Opt_max_batch_time, Opt_journal_dev,
- 	Opt_journal_path, Opt_journal_checksum, Opt_journal_async_commit,
-@@ -1662,9 +1662,7 @@ static const struct fs_parameter_spec ext4_param_specs[] = {
- 	fsparam_flag	("oldalloc",		Opt_removed),
- 	fsparam_flag	("orlov",		Opt_removed),
- 	fsparam_flag	("user_xattr",		Opt_user_xattr),
--	fsparam_flag	("nouser_xattr",	Opt_nouser_xattr),
- 	fsparam_flag	("acl",			Opt_acl),
--	fsparam_flag	("noacl",		Opt_noacl),
- 	fsparam_flag	("norecovery",		Opt_noload),
- 	fsparam_flag	("noload",		Opt_noload),
- 	fsparam_flag	("bh",			Opt_removed),
-@@ -1814,13 +1812,10 @@ static const struct mount_opts {
- 	{Opt_journal_ioprio, 0, MOPT_NO_EXT2},
- 	{Opt_data, 0, MOPT_NO_EXT2},
- 	{Opt_user_xattr, EXT4_MOUNT_XATTR_USER, MOPT_SET},
--	{Opt_nouser_xattr, EXT4_MOUNT_XATTR_USER, MOPT_CLEAR},
- #ifdef CONFIG_EXT4_FS_POSIX_ACL
- 	{Opt_acl, EXT4_MOUNT_POSIX_ACL, MOPT_SET},
--	{Opt_noacl, EXT4_MOUNT_POSIX_ACL, MOPT_CLEAR},
- #else
- 	{Opt_acl, 0, MOPT_NOSUPPORT},
--	{Opt_noacl, 0, MOPT_NOSUPPORT},
- #endif
- 	{Opt_nouid32, EXT4_MOUNT_NO_UID32, MOPT_SET},
- 	{Opt_debug, EXT4_MOUNT_DEBUG, MOPT_SET},
-@@ -2120,10 +2115,6 @@ static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 		else
- 			return note_qf_name(fc, GRPQUOTA, param);
- #endif
--	case Opt_noacl:
--	case Opt_nouser_xattr:
--		ext4_msg(NULL, KERN_WARNING, deprecated_msg, param->key, "3.5");
--		break;
- 	case Opt_sb:
- 		if (fc->purpose == FS_CONTEXT_FOR_RECONFIGURE) {
- 			ext4_msg(NULL, KERN_WARNING,
--- 
-2.27.0
+If you have a Linux laptop with an automounter enabled it's possible
+that when you plug in a USB stick containing a corrupted file system,
+it could cause the system to crash.  But that requires physical access
+to the machine, and if you have physical access, there is no shortage
+of problems you could cause in any case.
 
+
+> Public reports like this require immediate work to determine the
+> scope, impact and risk of the problem to decide what needs to be
+> done next.  All public disclosure does is start a race and force
+> developers to have to address it immediately.
+
+Nope.  I'll address these when I have time, and I don't consider them
+to be particularly urgent, for the reasons described above.
+
+I actually consider this fuzzer bug report to be particularly
+well-formed.  Unlike Syzkaller, the file system image was in a
+separate file, and wasn't embedded in the reproducer.c file in a way
+that made it super-inconvenient to extract.  Furthermore, like the
+Georgia Tech fuzzing reports, I appreciate that it was filed in
+Bugzilla, since it won't easily get lost, with all of the information
+that we need.
+
+In any case, I've taken a closer look at this report, and it's
+actually quite the interesting problem.  The issue is that we have an
+non-leaf node in the extent tree where eh_entries header field is
+zero.  This should never happen:
+
+debugfs: extents <16>
+Level Entries       Logical      Physical Length Flags
+ 0/ 2   1/  1     0 - 98030  9284          98031
+ 1/ 2   1/  0     0 - 98030  9282          98031 <======
+          ^^^
+ 2/ 2   1/ 84     0 -     0  9730 -  9730      1 
+ 2/ 2   2/ 84     5 -     7  9739 -  9741      3 
+ 2/ 2   3/ 84    16 -    17  9750 -  9751      2 
+ 2/ 2   4/ 84    26 -    26  9768 -  9768      1 
+ 2/ 2   5/ 84    36 -    36  9787 -  9787      1 
+
+This causes len to go negative in ext4_extent_insert_extent:
+
+[   26.419401] ino 16 len -1 logical 98040 eh_entries 0 eh_max 84 depth 1
+
+... which is what triggers the BUG_ON(len < 0).
+
+What makes this particularly interesting is that neither the kernel
+*nor* e2fsck is flagging this extent tree as corrupt.  So this is an
+opportunity to improve both the kernel as well as fsck.ext4.
+
+Again, it's not an *urgent* issue, but it is something that is worth
+trying to improve in ext4 from the perspective of improving the
+quality of our implementation.  And since it's not an urgent issue,
+concerns of "responsble disclosure" don't arise, at least not in my
+opinion.
+
+					- Ted
