@@ -2,80 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F186B586164
-	for <lists+linux-ext4@lfdr.de>; Sun, 31 Jul 2022 22:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 551F15861EF
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Aug 2022 00:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238260AbiGaUnU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 31 Jul 2022 16:43:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46314 "EHLO
+        id S238665AbiGaW7N (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 31 Jul 2022 18:59:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237775AbiGaUnR (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 31 Jul 2022 16:43:17 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A57FFD2F;
-        Sun, 31 Jul 2022 13:43:15 -0700 (PDT)
-Received: from [192.168.1.107] ([37.4.248.80]) by mrelayeu.kundenserver.de
- (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MEVqu-1oFTpL2Yuo-00FyFa; Sun, 31 Jul 2022 22:42:57 +0200
-Message-ID: <76a9b920-0937-7bef-db55-844f0f5f6c1b@i2se.com>
-Date:   Sun, 31 Jul 2022 22:42:56 +0200
+        with ESMTP id S238443AbiGaW7H (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 31 Jul 2022 18:59:07 -0400
+Received: from mail105.syd.optusnet.com.au (mail105.syd.optusnet.com.au [211.29.132.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 87579DF3B;
+        Sun, 31 Jul 2022 15:59:05 -0700 (PDT)
+Received: from dread.disaster.area (pa49-195-20-138.pa.nsw.optusnet.com.au [49.195.20.138])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 27E3710C8BBC;
+        Mon,  1 Aug 2022 08:59:02 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1oIHtl-007fFO-Bv; Mon, 01 Aug 2022 08:59:01 +1000
+Date:   Mon, 1 Aug 2022 08:59:01 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: generic/471 failing on linux-next -- KI?
+Message-ID: <20220731225901.GY3600936@dread.disaster.area>
+References: <YubHAqTCPvNj10Mx@mit.edu>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [Regression] ext4: changes to mb_optimize_scan cause issues on
- Raspberry Pi
-Content-Language: en-US
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-ext4@vger.kernel.org, Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        linux-fsdevel@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Geetika.Moolchandani1@ibm.com, regressions@lists.linux.dev
-References: <0d81a7c2-46b7-6010-62a4-3e6cfc1628d6@i2se.com>
- <20220728100055.efbvaudwp3ofolpi@quack3>
-From:   Stefan Wahren <stefan.wahren@i2se.com>
-In-Reply-To: <20220728100055.efbvaudwp3ofolpi@quack3>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:Dcd8RCHyhpHavJXYcw0hQDX5NYRw1s/4sRLNcrD7ilRyJnQ+eOe
- I2GXOt7ObjklURZGQq0007jadzrUxUzw1kcMzl2gv5jlTmU17Y9ZJecZYfQ5mte4hwSBzyw
- tFtMtXB6BDvYY2+SMP1tX1iHwumVsvk6zRCoxlntAr/gLkKR+OgB1cgyPL5EvWBsXBFYMXE
- dDVOaIPd/si0MUBXs+U5A==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:aZq7BjSyy7U=:22e74Qq48gKwrtv3X2UXIw
- AUdFiP5e2GbAb1Hizhf4KNy8b8KMkAZ28cGfeCdqiSwL/zUs7Z0GbiLdwBjlz8uYtO0g8eRyW
- f1bYDyOpSnsrJPRLa/KKJYrKcWsmtqxtFNWOM8482l9PIgMzvVx3qBBGS8nGRO0D4miU71PNt
- CR+PWAcS4NV251fE/Yh9iBv5Xo5pGkYLlKE4meem9KORB//fAk/NAHzIAO4zo28YMR5DCA2Il
- U3igwmdouxxlUqzQCrO7LM9vm9PICNndeBc5dHJUdnZydwL7zWPg9bMcuuOoFwKFUMYQj2Zoy
- LFDD4Rv0TjFubZR+po4LExGoetVZljgWRCPqYfzpf8RrD6Ojjzrlwn70qO8VR8aL1kuUIitnv
- /0C5etsXucvuXIXbWCCI1MTaaNwErzq7c1+WszgnvyF99BwM3DQJopgZKN7joqseANWM+RbEm
- jfF4AdXxIg0KnGxKYw4CKte661FLJQ1JC8eJuUEDE8eoDPcmJ1oMVzMAknlMKiTJPKZm4Btep
- 60RyLWEUuw1KwybLFSenGSo4nPW+4TrQDt0AhAt+8CJMaNdxMK3wvMqY5MYPeTc3ZVz6iu/vZ
- /nHvpzvo+l436Y7hivCLoiQFnfos3aP+AkpxSZyC00JVyLyHTVCRi6lqWiJxp2gjePUyhYAIy
- Qtixh/eD8eFmC/fct4e5OgNA1wCU5Ijup9HyfjDn7EemhdwlsCvTY+e+Uk8cwDYUqgWqT/88m
- wj2kB10Wg601jHFKK/0jH8g3kA3CRqvIpYWgCdlqQqD0YL26YPdtWllcBSU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YubHAqTCPvNj10Mx@mit.edu>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=VuxAv86n c=1 sm=1 tr=0 ts=62e70937
+        a=cxZHBGNDieHvTKNp/pucQQ==:117 a=cxZHBGNDieHvTKNp/pucQQ==:17
+        a=kj9zAlcOel0A:10 a=biHskzXt2R4A:10 a=VwQbUJbxAAAA:8 a=7-415B0cAAAA:8
+        a=cIk7g4KtTNeGpiLFBgIA:9 a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Jan,
+On Sun, Jul 31, 2022 at 02:16:34PM -0400, Theodore Ts'o wrote:
+> I was just doing a last test of ext4 merged with linux-next before the
+> merge window opened, and I noticed generic/471 is now failing.  After
+> some more investigation it's failing for xfs and ext4, with the same
+> problem:
+> 
+>     --- tests/generic/471.out   2022-07-31 00:02:23.000000000 -0400
+>     +++ /results/xfs/results-4k/generic/471.out.bad     2022-07-31 14:11:47.045330411 0
+>     @@ -2,12 +2,10 @@
+>      pwrite: Resource temporarily unavailable
+>      wrote 8388608/8388608 bytes at offset 0
+>      XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>     -RWF_NOWAIT time is within limits.
+>     +pwrite: Resource temporarily unavailable
+>     +(standard_in) 1: syntax error
+>     +RWF_NOWAIT took  seconds
+>     ...
+> 
+> I haven't had a chance to bisect this yet, and for a day or two --- so
+> I figured I would ask --- is this a known issue?
 
-Am 28.07.22 um 12:00 schrieb Jan Kara:
->
-> Also can get filesystem metadata image of your card like:
->    e2image -r <fs-device> - | gzip >/tmp/ext4-image.gz
->
-> and put it somewhere for download? The image will contain only fs metadata,
-> not data so it should be relatively small and we won't have access to your
-> secrets ;). With the image we'd be able to see how the free space looks
-> like and whether it perhaps does not trigger some pathological behavior.
-i've problems with this. If i try store uncompressed the metadata of the 
-second SD card partition (/dev/sdb2 = rootfs) the generated image file 
-is nearly big as the whole partition. In compressed state it's 25 MB. Is 
-this expected?
+Might have something to do with this set of changes:
+
+https://lore.kernel.org/io-uring/c737af00-e879-fe01-380c-ba95b555f423@kernel.dk/
+
+as it adds new places in the VFS that check for IOCB_NOWAIT.  Pretty
+sure it triggers -EAGAIN on timestamp updates now (in
+file_modified() calls), which is probably what is happening here....
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
