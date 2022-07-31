@@ -2,41 +2,46 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D40585DBD
-	for <lists+linux-ext4@lfdr.de>; Sun, 31 Jul 2022 08:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5A1586052
+	for <lists+linux-ext4@lfdr.de>; Sun, 31 Jul 2022 20:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235920AbiGaGSb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 31 Jul 2022 02:18:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43502 "EHLO
+        id S232585AbiGaSQm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 31 Jul 2022 14:16:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231243AbiGaGSa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 31 Jul 2022 02:18:30 -0400
-Received: from smtp.smtpout.orange.fr (smtp04.smtpout.orange.fr [80.12.242.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C121813D6C
-        for <linux-ext4@vger.kernel.org>; Sat, 30 Jul 2022 23:18:28 -0700 (PDT)
-Received: from pop-os.home ([90.11.190.129])
-        by smtp.orange.fr with ESMTPA
-        id I2HRo3vdL5V1hI2HRokPDz; Sun, 31 Jul 2022 08:18:27 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Sun, 31 Jul 2022 08:18:27 +0200
-X-ME-IP: 90.11.190.129
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Wang Jianjian <wangjianjian3@huawei.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-ext4@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: [PATCH] ext4, doc: Fix a broken layout
-Date:   Sun, 31 Jul 2022 08:18:24 +0200
-Message-Id: <d3ec14afe2396272da6353162b3081a0c92de313.1659248273.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S229495AbiGaSQl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 31 Jul 2022 14:16:41 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE80DF2;
+        Sun, 31 Jul 2022 11:16:40 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-118-63.bstnma.fios.verizon.net [173.48.118.63])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 26VIGYWH020810
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 31 Jul 2022 14:16:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1659291396; bh=gv3k/I3ni2BhAZC2iVsrn3pdkotSOs6VFQxiCCl/mzQ=;
+        h=Date:From:To:Subject;
+        b=jIiubI3HD7ZcoHRCMus3PuAy3MI9npQvnQ1edZor24IgjQbz7P/wV/98kzQDe7H6K
+         SUUc6hCxt5B+G3hJs7G23qNFiPf8UGHGaUG1ZAVhH20pP/6umq9//iaYvaJkM2r1XS
+         yWQspI0NM3DbsnyvtG7GnGdQuv+nv4ITs0juO0YGGOFBSYWJCOwTYiTW4KEzlr49iC
+         lcsiUyk/pda5gxvbuDGhSGlKrmYzVgLJkcZp4ms7+ShZYqpSyBbAuqPJ+E5CV0bTqh
+         qCAgo/fW0qmcUGQPWf4WeJ6QyOi+cQjdi05iDU/057c77TQ82k9ksVFNpOsGh6dPcS
+         p7zvV0dAKqDXA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 76A4815C458B; Sun, 31 Jul 2022 14:16:34 -0400 (EDT)
+Date:   Sun, 31 Jul 2022 14:16:34 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: generic/471 failing on linux-next -- KI?
+Message-ID: <YubHAqTCPvNj10Mx@mit.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -44,30 +49,27 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The commit in Fixes: has removed an escaping character without updating
-the layout of the table.
+I was just doing a last test of ext4 merged with linux-next before the
+merge window opened, and I noticed generic/471 is now failing.  After
+some more investigation it's failing for xfs and ext4, with the same
+problem:
 
-Add the missing space.
+    --- tests/generic/471.out   2022-07-31 00:02:23.000000000 -0400
+    +++ /results/xfs/results-4k/generic/471.out.bad     2022-07-31 14:11:47.045330411 0
+    @@ -2,12 +2,10 @@
+     pwrite: Resource temporarily unavailable
+     wrote 8388608/8388608 bytes at offset 0
+     XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+    -RWF_NOWAIT time is within limits.
+    +pwrite: Resource temporarily unavailable
+    +(standard_in) 1: syntax error
+    +RWF_NOWAIT took  seconds
+    ...
 
-Fixes: 3103084afcf2 ("ext4, doc: remove unnecessary escaping")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- Documentation/filesystems/ext4/blockmap.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I haven't had a chance to bisect this yet, and for a day or two --- so
+I figured I would ask --- is this a known issue?
 
-diff --git a/Documentation/filesystems/ext4/blockmap.rst b/Documentation/filesystems/ext4/blockmap.rst
-index 2bd990402a5c..cc596541ce79 100644
---- a/Documentation/filesystems/ext4/blockmap.rst
-+++ b/Documentation/filesystems/ext4/blockmap.rst
-@@ -1,7 +1,7 @@
- .. SPDX-License-Identifier: GPL-2.0
- 
- +---------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
--| i.i_block Offset   | Where It Points                                                                                                                                                                                                              |
-+| i.i_block Offset    | Where It Points                                                                                                                                                                                                              |
- +=====================+==============================================================================================================================================================================================================================+
- | 0 to 11             | Direct map to file blocks 0 to 11.                                                                                                                                                                                           |
- +---------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
--- 
-2.34.1
+This test was *not* failing on a kernel based on 5.19-rc5, so it looks
+like something that got added in linux-next.
 
+       	     	     	  	 - Ted
