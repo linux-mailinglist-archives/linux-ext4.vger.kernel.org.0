@@ -2,82 +2,209 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 551F15861EF
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Aug 2022 00:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ACA258622B
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Aug 2022 03:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238665AbiGaW7N (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 31 Jul 2022 18:59:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45548 "EHLO
+        id S235716AbiHABUI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 31 Jul 2022 21:20:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238443AbiGaW7H (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 31 Jul 2022 18:59:07 -0400
-Received: from mail105.syd.optusnet.com.au (mail105.syd.optusnet.com.au [211.29.132.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 87579DF3B;
-        Sun, 31 Jul 2022 15:59:05 -0700 (PDT)
-Received: from dread.disaster.area (pa49-195-20-138.pa.nsw.optusnet.com.au [49.195.20.138])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 27E3710C8BBC;
-        Mon,  1 Aug 2022 08:59:02 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1oIHtl-007fFO-Bv; Mon, 01 Aug 2022 08:59:01 +1000
-Date:   Mon, 1 Aug 2022 08:59:01 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: generic/471 failing on linux-next -- KI?
-Message-ID: <20220731225901.GY3600936@dread.disaster.area>
-References: <YubHAqTCPvNj10Mx@mit.edu>
+        with ESMTP id S232372AbiHABUH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 31 Jul 2022 21:20:07 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61497DEB3
+        for <linux-ext4@vger.kernel.org>; Sun, 31 Jul 2022 18:20:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1659316806; x=1690852806;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=gHkuu++NAnbB111PoO2MdrNE3Nq2B9BFkqXlW71qDj8=;
+  b=EEKv4jN75oMXGFIqE1VrA/O8E22P/z74bh+TcWvc1sWK1VZh3EuCwFJL
+   56ZqT9NCYgOsph1vvwWpKpRPEI67o/gpyKKz9uJhwV018LMYibWXSTse0
+   xXRdplAtW/qyyUo62Y0Rgdbsj3Ba6UnuwLcgDIYDYOc6AYKx1mwFOz2YD
+   pmEFlVJhM5hnjrGKisBRIf8U8bVdUecnNMGuAAY9hckpEwZv5pkbzLmGk
+   jQGCH5IZVyxN/qPBnVrKzL2iUGNxNnvwWBdFvUvlc3QECInbz8kTnkr5I
+   yV2qw+ed4LjMfoA27r6hbZwrDBSB62Y2ACag5F1djhPj0ZX+MFyHN/9du
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10425"; a="275940193"
+X-IronPort-AV: E=Sophos;i="5.93,206,1654585200"; 
+   d="scan'208";a="275940193"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2022 18:20:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,206,1654585200"; 
+   d="scan'208";a="577603069"
+Received: from lkp-server01.sh.intel.com (HELO e0eace57cfef) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 31 Jul 2022 18:20:04 -0700
+Received: from kbuild by e0eace57cfef with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oIK6G-000EgB-0V;
+        Mon, 01 Aug 2022 01:20:04 +0000
+Date:   Mon, 01 Aug 2022 09:19:07 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:dev] BUILD SUCCESS
+ 2cdc09d757bf2cefe5de132076eb5d0a8e8df384
+Message-ID: <62e72a0b.jdTPzArf/YyS31dg%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YubHAqTCPvNj10Mx@mit.edu>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.4 cv=VuxAv86n c=1 sm=1 tr=0 ts=62e70937
-        a=cxZHBGNDieHvTKNp/pucQQ==:117 a=cxZHBGNDieHvTKNp/pucQQ==:17
-        a=kj9zAlcOel0A:10 a=biHskzXt2R4A:10 a=VwQbUJbxAAAA:8 a=7-415B0cAAAA:8
-        a=cIk7g4KtTNeGpiLFBgIA:9 a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22
-        a=biEYGPWJfzWAr4FL6Ov7:22
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, Jul 31, 2022 at 02:16:34PM -0400, Theodore Ts'o wrote:
-> I was just doing a last test of ext4 merged with linux-next before the
-> merge window opened, and I noticed generic/471 is now failing.  After
-> some more investigation it's failing for xfs and ext4, with the same
-> problem:
-> 
->     --- tests/generic/471.out   2022-07-31 00:02:23.000000000 -0400
->     +++ /results/xfs/results-4k/generic/471.out.bad     2022-07-31 14:11:47.045330411 0
->     @@ -2,12 +2,10 @@
->      pwrite: Resource temporarily unavailable
->      wrote 8388608/8388608 bytes at offset 0
->      XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->     -RWF_NOWAIT time is within limits.
->     +pwrite: Resource temporarily unavailable
->     +(standard_in) 1: syntax error
->     +RWF_NOWAIT took  seconds
->     ...
-> 
-> I haven't had a chance to bisect this yet, and for a day or two --- so
-> I figured I would ask --- is this a known issue?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: 2cdc09d757bf2cefe5de132076eb5d0a8e8df384  ext4: add ioctls to get/set the ext4 superblock uuid
 
-Might have something to do with this set of changes:
+elapsed time: 719m
 
-https://lore.kernel.org/io-uring/c737af00-e879-fe01-380c-ba95b555f423@kernel.dk/
+configs tested: 128
+configs skipped: 2
 
-as it adds new places in the VFS that check for IOCB_NOWAIT.  Pretty
-sure it triggers -EAGAIN on timestamp updates now (in
-file_modified() calls), which is probably what is happening here....
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Cheers,
+gcc tested configs:
+um                             i386_defconfig
+um                           x86_64_defconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+i386                                defconfig
+x86_64                              defconfig
+x86_64                          rhel-8.3-func
+x86_64                         rhel-8.3-kunit
+x86_64                           rhel-8.3-kvm
+x86_64                    rhel-8.3-kselftests
+x86_64                           rhel-8.3-syz
+arc                  randconfig-r043-20220731
+x86_64                        randconfig-a013
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+m68k                             allyesconfig
+mips                             allyesconfig
+x86_64                        randconfig-a004
+x86_64                               rhel-8.3
+x86_64                        randconfig-a002
+m68k                             allmodconfig
+sh                               allmodconfig
+riscv                randconfig-r042-20220731
+x86_64                        randconfig-a011
+s390                 randconfig-r044-20220731
+x86_64                           allyesconfig
+i386                             allyesconfig
+x86_64                        randconfig-a006
+i386                          randconfig-a014
+x86_64                        randconfig-a015
+i386                          randconfig-a012
+i386                          randconfig-a016
+i386                          randconfig-a001
+i386                          randconfig-a003
+arm                                 defconfig
+powerpc                      pcm030_defconfig
+arm                        realview_defconfig
+arc                         haps_hs_defconfig
+arm                              allyesconfig
+i386                          randconfig-a005
+arc                               allnoconfig
+arm64                            allyesconfig
+alpha                             allnoconfig
+csky                              allnoconfig
+riscv                             allnoconfig
+arm                            zeus_defconfig
+xtensa                generic_kc705_defconfig
+ia64                             allmodconfig
+i386                          randconfig-c001
+arm                        trizeps4_defconfig
+m68k                       m5249evb_defconfig
+powerpc                       eiger_defconfig
+sh                        sh7763rdp_defconfig
+powerpc                      makalu_defconfig
+arc                        nsimosci_defconfig
+parisc                generic-64bit_defconfig
+arm                          pxa910_defconfig
+loongarch                           defconfig
+loongarch                         allnoconfig
+powerpc                     ep8248e_defconfig
+arm                      footbridge_defconfig
+arm                        mvebu_v7_defconfig
+xtensa                  cadence_csp_defconfig
+powerpc                      chrp32_defconfig
+parisc64                         alldefconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+i386                          debian-10.3-kvm
+i386                        debian-10.3-kunit
+i386                         debian-10.3-func
+arm                          simpad_defconfig
+arm                          iop32x_defconfig
+powerpc                    amigaone_defconfig
+powerpc                      mgcoge_defconfig
+arm                           h3600_defconfig
+mips                       bmips_be_defconfig
+m68k                         apollo_defconfig
+arm                        multi_v7_defconfig
+sh                          rsk7264_defconfig
+sh                        sh7757lcr_defconfig
+mips                 randconfig-c004-20220731
+arm                         lubbock_defconfig
+powerpc                 mpc834x_itx_defconfig
+sparc                               defconfig
+sh                          r7780mp_defconfig
+sparc                            allyesconfig
+xtensa                          iss_defconfig
+m68k                            q40_defconfig
+powerpc                  iss476-smp_defconfig
+sh                          rsk7269_defconfig
+ia64                                defconfig
+mips                        vocore2_defconfig
+i386                 randconfig-a016-20220801
+i386                 randconfig-a013-20220801
+i386                 randconfig-a015-20220801
+i386                 randconfig-a012-20220801
+i386                 randconfig-a011-20220801
+i386                 randconfig-a014-20220801
+s390                 randconfig-r044-20220801
+arc                  randconfig-r043-20220801
+riscv                randconfig-r042-20220801
 
-Dave.
+clang tested configs:
+hexagon              randconfig-r041-20220731
+hexagon              randconfig-r045-20220731
+x86_64                        randconfig-a005
+x86_64                        randconfig-a001
+i386                          randconfig-a013
+i386                          randconfig-a015
+x86_64                        randconfig-a016
+x86_64                        randconfig-a012
+x86_64                        randconfig-a003
+i386                          randconfig-a011
+x86_64                        randconfig-a014
+i386                          randconfig-a002
+i386                          randconfig-a004
+i386                          randconfig-a006
+x86_64                        randconfig-k001
+x86_64               randconfig-a002-20220801
+x86_64               randconfig-a001-20220801
+x86_64               randconfig-a006-20220801
+x86_64               randconfig-a003-20220801
+x86_64               randconfig-a004-20220801
+x86_64               randconfig-a005-20220801
+mips                     loongson1c_defconfig
+powerpc                     kmeter1_defconfig
+hexagon                             defconfig
+
 -- 
-Dave Chinner
-david@fromorbit.com
+0-DAY CI Kernel Test Service
+https://01.org/lkp
