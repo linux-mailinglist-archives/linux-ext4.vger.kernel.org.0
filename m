@@ -2,59 +2,77 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ACA258622B
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Aug 2022 03:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EAF558630C
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Aug 2022 05:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235716AbiHABUI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 31 Jul 2022 21:20:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40074 "EHLO
+        id S237876AbiHADZA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 31 Jul 2022 23:25:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232372AbiHABUH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 31 Jul 2022 21:20:07 -0400
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61497DEB3
-        for <linux-ext4@vger.kernel.org>; Sun, 31 Jul 2022 18:20:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1659316806; x=1690852806;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=gHkuu++NAnbB111PoO2MdrNE3Nq2B9BFkqXlW71qDj8=;
-  b=EEKv4jN75oMXGFIqE1VrA/O8E22P/z74bh+TcWvc1sWK1VZh3EuCwFJL
-   56ZqT9NCYgOsph1vvwWpKpRPEI67o/gpyKKz9uJhwV018LMYibWXSTse0
-   xXRdplAtW/qyyUo62Y0Rgdbsj3Ba6UnuwLcgDIYDYOc6AYKx1mwFOz2YD
-   pmEFlVJhM5hnjrGKisBRIf8U8bVdUecnNMGuAAY9hckpEwZv5pkbzLmGk
-   jQGCH5IZVyxN/qPBnVrKzL2iUGNxNnvwWBdFvUvlc3QECInbz8kTnkr5I
-   yV2qw+ed4LjMfoA27r6hbZwrDBSB62Y2ACag5F1djhPj0ZX+MFyHN/9du
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10425"; a="275940193"
-X-IronPort-AV: E=Sophos;i="5.93,206,1654585200"; 
-   d="scan'208";a="275940193"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2022 18:20:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,206,1654585200"; 
-   d="scan'208";a="577603069"
-Received: from lkp-server01.sh.intel.com (HELO e0eace57cfef) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 31 Jul 2022 18:20:04 -0700
-Received: from kbuild by e0eace57cfef with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oIK6G-000EgB-0V;
-        Mon, 01 Aug 2022 01:20:04 +0000
-Date:   Mon, 01 Aug 2022 09:19:07 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: [tytso-ext4:dev] BUILD SUCCESS
- 2cdc09d757bf2cefe5de132076eb5d0a8e8df384
-Message-ID: <62e72a0b.jdTPzArf/YyS31dg%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S237074AbiHADY6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 31 Jul 2022 23:24:58 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C3AB65B1;
+        Sun, 31 Jul 2022 20:24:56 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id B1E785C00A3;
+        Sun, 31 Jul 2022 23:24:55 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Sun, 31 Jul 2022 23:24:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        joshtriplett.org; h=cc:cc:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1659324295; x=1659410695; bh=gMZgdyYp8c
+        FAC5VD+4qabL5nDDePRou6YT7DYrrfPjI=; b=cOU1dy4e8cSqv41xnwzteNFNTM
+        yLE3XusVWrc5D34bS8wI8UVs2plXSb9iuRTBydERXAlTqQi4MRp0ZPBOGRNGgi+c
+        Web5EEeo514X0BI3sQ00PIGxwlto7di0tdXlS+D7i8ZgpzdpTHby96nOffG5jspa
+        VhD9Il85hJriaZ2W0SDiQAcqv9vWt7HyVmaAzmBYTrMqf6Ri9Pu3WqY4XKnj5zM0
+        Sb9082pKnqiCkyKnC3OLCWCTtfCxhvlX9tHhWWOBZDaO8wBy/hE0GUUye8aomAXH
+        f6e32YK4blQFiuC+5IVLtGyyXL/rHRihrjM/GoS4vOnmOYUe3siQi+1nvelA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:message-id:mime-version
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1659324295; x=
+        1659410695; bh=gMZgdyYp8cFAC5VD+4qabL5nDDePRou6YT7DYrrfPjI=; b=t
+        PwRgE+PoeSiq4n7416AuxSOid+gooUjbYYiYkeHsncZvHfQBdstXrGzbsa92uGq8
+        piVNLSRVZKHvmaLRGE1DSIeCmlRQ34cgm/2hLyGEE5bufq1o7iNvFPbgOGk59rto
+        YvLsAsKueVvZ0TekZCAOn2YNLMWRrMz6NCvOyylilHPlZGDPvHx2JQMYkyMbM5ru
+        cjOIu0jN2Q5slDhlG5JGWX17LJ975J9IffLvVkRV38vRS3IcgWOXYMBX2prpMDSF
+        rYXqsX4k8yIb5/Ta1yZ04hBiF81t0wy5Ff4aRI2uS/G66rC6FXArFVMzEtn7NhAZ
+        mAQlSsUrxEfxjiMp/rqyA==
+X-ME-Sender: <xms:h0fnYlAVX4pNoPFhzBWB41kNZQSD4IKQG0fbnzQUpjg1gBDZ6eypFw>
+    <xme:h0fnYjgPWKVZhOrX2Av5Srtf0UZfhtu_AsrA_L2CqaBGI5pjTN74vD1MNCObcQRu5
+    Swmyv3LlUEh7qb2J10>
+X-ME-Received: <xmr:h0fnYgkjKxMhknC1NkFT6WlregqnYpbwPTsUSirve480khPASnZsmLlwrrI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvddvvddgieduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfggtggusehttdertd
+    dttddvnecuhfhrohhmpeflohhshhcuvfhrihhplhgvthhtuceojhhoshhhsehjohhshhht
+    rhhiphhlvghtthdrohhrgheqnecuggftrfgrthhtvghrnhepuddvleehtedtgfdvvdelge
+    eufedugeduveffkeejgefffedvieekhedvheelkefhnecuvehluhhsthgvrhfuihiivgep
+    tdenucfrrghrrghmpehmrghilhhfrhhomhepjhhoshhhsehjohhshhhtrhhiphhlvghtth
+    drohhrgh
+X-ME-Proxy: <xmx:h0fnYvxsB0p9BJz792N_8H5fz-qSJM7a_s3NAY7shvDAOvuD0AeVJw>
+    <xmx:h0fnYqSTp23QqTuoKS9BftPlqkEgYltpNqkoFM8oTEnuVXge_wCCMg>
+    <xmx:h0fnYibRFRPP4szCY83D61k-oP-YOhCNBO_-yzsdFKAVqQlNzYmMFA>
+    <xmx:h0fnYlfxyyb1Yr6c5qqGi-2BGHSwk1RKLLYmaMPeQM0qMCfisage1w>
+Feedback-ID: i83e94755:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 31 Jul 2022 23:24:54 -0400 (EDT)
+Date:   Sun, 31 Jul 2022 20:24:53 -0700
+From:   Josh Triplett <josh@joshtriplett.org>
+To:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ext4: Don't run ext4lazyinit for read-only filesystems
+Message-ID: <48b41da1498fcac3287e2e06b660680646c1c050.1659323972.git.josh@joshtriplett.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,149 +80,44 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-branch HEAD: 2cdc09d757bf2cefe5de132076eb5d0a8e8df384  ext4: add ioctls to get/set the ext4 superblock uuid
+On a read-only filesystem, we won't invoke the block allocator, so we
+don't need to prefetch the block bitmaps.
 
-elapsed time: 719m
+This avoids starting and running the ext4lazyinit thread at all on a
+system with no read-write ext4 filesystems (for instance, a container VM
+with read-only filesystems underneath an overlayfs).
 
-configs tested: 128
-configs skipped: 2
+Fixes: 21175ca434c5 ("ext4: make prefetch_block_bitmaps default")
+Signed-off-by: Josh Triplett <josh@joshtriplett.org>
+---
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Tested in a VM, with a read-only ext4 root filesystem. Confirmed that
+ext4lazyinit starts without this patch, and does not start with this
+patch.
 
-gcc tested configs:
-um                             i386_defconfig
-um                           x86_64_defconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-i386                                defconfig
-x86_64                              defconfig
-x86_64                          rhel-8.3-func
-x86_64                         rhel-8.3-kunit
-x86_64                           rhel-8.3-kvm
-x86_64                    rhel-8.3-kselftests
-x86_64                           rhel-8.3-syz
-arc                  randconfig-r043-20220731
-x86_64                        randconfig-a013
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-m68k                             allyesconfig
-mips                             allyesconfig
-x86_64                        randconfig-a004
-x86_64                               rhel-8.3
-x86_64                        randconfig-a002
-m68k                             allmodconfig
-sh                               allmodconfig
-riscv                randconfig-r042-20220731
-x86_64                        randconfig-a011
-s390                 randconfig-r044-20220731
-x86_64                           allyesconfig
-i386                             allyesconfig
-x86_64                        randconfig-a006
-i386                          randconfig-a014
-x86_64                        randconfig-a015
-i386                          randconfig-a012
-i386                          randconfig-a016
-i386                          randconfig-a001
-i386                          randconfig-a003
-arm                                 defconfig
-powerpc                      pcm030_defconfig
-arm                        realview_defconfig
-arc                         haps_hs_defconfig
-arm                              allyesconfig
-i386                          randconfig-a005
-arc                               allnoconfig
-arm64                            allyesconfig
-alpha                             allnoconfig
-csky                              allnoconfig
-riscv                             allnoconfig
-arm                            zeus_defconfig
-xtensa                generic_kc705_defconfig
-ia64                             allmodconfig
-i386                          randconfig-c001
-arm                        trizeps4_defconfig
-m68k                       m5249evb_defconfig
-powerpc                       eiger_defconfig
-sh                        sh7763rdp_defconfig
-powerpc                      makalu_defconfig
-arc                        nsimosci_defconfig
-parisc                generic-64bit_defconfig
-arm                          pxa910_defconfig
-loongarch                           defconfig
-loongarch                         allnoconfig
-powerpc                     ep8248e_defconfig
-arm                      footbridge_defconfig
-arm                        mvebu_v7_defconfig
-xtensa                  cadence_csp_defconfig
-powerpc                      chrp32_defconfig
-parisc64                         alldefconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                    nommu_k210_defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-i386                          debian-10.3-kvm
-i386                        debian-10.3-kunit
-i386                         debian-10.3-func
-arm                          simpad_defconfig
-arm                          iop32x_defconfig
-powerpc                    amigaone_defconfig
-powerpc                      mgcoge_defconfig
-arm                           h3600_defconfig
-mips                       bmips_be_defconfig
-m68k                         apollo_defconfig
-arm                        multi_v7_defconfig
-sh                          rsk7264_defconfig
-sh                        sh7757lcr_defconfig
-mips                 randconfig-c004-20220731
-arm                         lubbock_defconfig
-powerpc                 mpc834x_itx_defconfig
-sparc                               defconfig
-sh                          r7780mp_defconfig
-sparc                            allyesconfig
-xtensa                          iss_defconfig
-m68k                            q40_defconfig
-powerpc                  iss476-smp_defconfig
-sh                          rsk7269_defconfig
-ia64                                defconfig
-mips                        vocore2_defconfig
-i386                 randconfig-a016-20220801
-i386                 randconfig-a013-20220801
-i386                 randconfig-a015-20220801
-i386                 randconfig-a012-20220801
-i386                 randconfig-a011-20220801
-i386                 randconfig-a014-20220801
-s390                 randconfig-r044-20220801
-arc                  randconfig-r043-20220801
-riscv                randconfig-r042-20220801
+(For a future merge window, not the current one. Please let me know if I
+need to re-send this at a later, more convenient time.)
 
-clang tested configs:
-hexagon              randconfig-r041-20220731
-hexagon              randconfig-r045-20220731
-x86_64                        randconfig-a005
-x86_64                        randconfig-a001
-i386                          randconfig-a013
-i386                          randconfig-a015
-x86_64                        randconfig-a016
-x86_64                        randconfig-a012
-x86_64                        randconfig-a003
-i386                          randconfig-a011
-x86_64                        randconfig-a014
-i386                          randconfig-a002
-i386                          randconfig-a004
-i386                          randconfig-a006
-x86_64                        randconfig-k001
-x86_64               randconfig-a002-20220801
-x86_64               randconfig-a001-20220801
-x86_64               randconfig-a006-20220801
-x86_64               randconfig-a003-20220801
-x86_64               randconfig-a004-20220801
-x86_64               randconfig-a005-20220801
-mips                     loongson1c_defconfig
-powerpc                     kmeter1_defconfig
-hexagon                             defconfig
+ fs/ext4/super.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 845f2f8aee5f..20437acc8865 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -3973,9 +3973,9 @@ int ext4_register_li_request(struct super_block *sb,
+ 		goto out;
+ 	}
+ 
+-	if (test_opt(sb, NO_PREFETCH_BLOCK_BITMAPS) &&
+-	    (first_not_zeroed == ngroups || sb_rdonly(sb) ||
+-	     !test_opt(sb, INIT_INODE_TABLE)))
++	if (sb_rdonly(sb) ||
++	    (test_opt(sb, NO_PREFETCH_BLOCK_BITMAPS) &&
++	     (first_not_zeroed == ngroups || !test_opt(sb, INIT_INODE_TABLE))))
+ 		goto out;
+ 
+ 	elr = ext4_li_request_new(sb, first_not_zeroed);
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.36.1
+
