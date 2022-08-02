@@ -2,120 +2,77 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86AA55874F2
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Aug 2022 03:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F6658756D
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Aug 2022 04:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229551AbiHBBG6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 1 Aug 2022 21:06:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42168 "EHLO
+        id S232476AbiHBCLD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 1 Aug 2022 22:11:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbiHBBG5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 1 Aug 2022 21:06:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B00218375
-        for <linux-ext4@vger.kernel.org>; Mon,  1 Aug 2022 18:06:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E72FD60FED
-        for <linux-ext4@vger.kernel.org>; Tue,  2 Aug 2022 01:06:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4B59FC43470
-        for <linux-ext4@vger.kernel.org>; Tue,  2 Aug 2022 01:06:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659402415;
-        bh=I/a58rWKRG5/Fw8ExkMiEP8PQdWTvktQfUM2uRgKZcA=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=MsqMjZ4NJS36p/Cb+Meb9qiy9zbvw1m4YM7RvrfqtYhlVuSdOfYAfGhx3Blpl/GuV
-         1YGiCPRvga3HR2ezm1a1fPxY+Mbll07vSbjYFEhWzjTRNhvbLadTrYbJR+hoJgTkhp
-         a71Sr1sbvEJw98saC+6rP23esalRnN36c3IdLi3B7QHDnWEeJyu/XQULQ3UwfXWodX
-         Bd8ETQWwa9gnMt/+RCF5tYaEa41AxBVanlRFuY9DqYkx8v1ywvnNlNc6vbbNBtxfi0
-         1m1HLQudKu0DggUU+HC3FwRVz5vCN7nIRtZCXucg1SAbuA8ZwuRSws9mYgq7wdfMFj
-         2YvNTZyR9FjCA==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-        id 325D5C433E7; Tue,  2 Aug 2022 01:06:55 +0000 (UTC)
-From:   bugzilla-daemon@kernel.org
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 216283] FUZZ: BUG() triggered in
- fs/ext4/extent.c:ext4_ext_insert_extent() when mount and operate on crafted
- image
-Date:   Tue, 02 Aug 2022 01:06:54 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: tytso@mit.edu
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-216283-13602-rQFJ8C4k0S@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-216283-13602@https.bugzilla.kernel.org/>
-References: <bug-216283-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        with ESMTP id S230338AbiHBCLC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 1 Aug 2022 22:11:02 -0400
+Received: from out29-77.mail.aliyun.com (out29-77.mail.aliyun.com [115.124.29.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BCC1B84E;
+        Mon,  1 Aug 2022 19:10:51 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08153923|-1;BR=01201311R701S18rulernew998_84748_2000303;CH=blue;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00132903-2.06163e-05-0.99865;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047212;MF=michael@allwinnertech.com;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.Ojh14Qc_1659406238;
+Received: from SunxiBot.allwinnertech.com(mailfrom:michael@allwinnertech.com fp:SMTPD_---.Ojh14Qc_1659406238)
+          by smtp.aliyun-inc.com;
+          Tue, 02 Aug 2022 10:10:39 +0800
+From:   Michael Wu <michael@allwinnertech.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        allwinner-opensource-support@allwinnertech.com
+Subject: [PATCH] ext4: fix error when itable blocks is greater than s_itb_per_group
+Date:   Tue,  2 Aug 2022 10:10:29 +0800
+Message-Id: <20220802021029.16046-1-michael@allwinnertech.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D216283
+The following error occurs when mounting the ext4 image made by image
+making tool:
+"ext4_init_inode_table:1301:comm ext4lazyinit:Something is wrong with group
+0: used itable blocks: 491; itable unused count: 0."
 
---- Comment #7 from Theodore Tso (tytso@mit.edu) ---
-On Tue, Aug 02, 2022 at 08:45:51AM +1000, Dave Chinner wrote:
->=20
-> On systems that automount filesytsems when you plug in a USB drive
-> (which most distros do out of the box) then a crash bug during mount
-> is, at minimum, an annoying DOS vector. And if it can result in a
-> buffer overflow, then....
+Currently all the inodes in block group0 and ext4 image is divided by
+s_inodes_per_group. That leads to a hazard: we can't ensure all
+s_inodes_per_group are divisible by s_inodes_per_block. For example, when
+the s_inodes_per_group (equals to 7851) is divided by s_inodes_per_block
+(which is 16), because 7851 is undivisible by 16, we get the wrong result
+490, while 491 is expected.
 
-You need physical access to plug in a USB drive, and if you can do
-that, the number of potential attack vectors are numerous.  eSATA,
-Firewire, etc., gives the potential hardware device direct access to
-the PCI bus and the ability to issue arbitrary DMA requests.  Badly
-implemented Thunderbolt devices can have the same vulnerability, and
-badly implemented USB controllers have their own entertaining issues.
-And if attackers have a bit more unguarded physical access time, there
-are no shortage of "evil maid" attacks that can be carried out.
+So, we suggest that s_itb_per_group should equal to
+DIV_ROUND_UP(s_inodes_per_group, s_inodes_per_block) instead of directly
+getting the result from s_inodes_per_group/s_inodes_per_block.
 
-As far as I'm concerned a secure system has automounters disabled, and
-comptent distributions should disable the automounter when the laptop
-is locked.  Enterprise class server class machines running enterprise
-distros have no business having the automounter enabled at all, and
-careful datacenter managers should fill in the USB ports with epoxy.
-For more common sense tips, see:
-https://www.youtube.com/watch?v=3Dkd33UVZhnAA
+Signed-off-by: Michael Wu <michael@allwinnertech.com>
+---
+ fs/ext4/super.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Look, bad buys have the time and energy to run file system fuzzers
-(many of which are open source and can be easily found on github).
-I'm sure our good friends at the NSA, MSS, and KGB know all of this
-already; and the NSO group is apparently happy to make them available
-to anyone willing to pay, no matter what their human rights record
-might be.
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 845f2f8aee5f..76cbd638ea10 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -4796,8 +4796,8 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+ 			 sbi->s_inodes_per_group);
+ 		goto failed_mount;
+ 	}
+-	sbi->s_itb_per_group = sbi->s_inodes_per_group /
+-					sbi->s_inodes_per_block;
++	sbi->s_itb_per_group = DIV_ROUND_UP(sbi->s_inodes_per_group,
++					    sbi->s_inodes_per_block);
+ 	sbi->s_desc_per_block = blocksize / EXT4_DESC_SIZE(sb);
+ 	sbi->s_sbh = bh;
+ 	sbi->s_mount_state = le16_to_cpu(es->s_state) & ~EXT4_FC_REPLAY;
+-- 
+2.29.0
 
-Security by obscurity never works, and as far as I am concerned, I am
-grateful when academics run fuzzers and report bugs to us.  Especially
-since attacks which require physical access or root privs are going to
-have low CVE Security Scores *anyway*.
-
-Cheers,
-
-                                                - Ted
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
