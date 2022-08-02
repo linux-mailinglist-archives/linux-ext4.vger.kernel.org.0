@@ -2,47 +2,49 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B819D587B83
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Aug 2022 13:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02373587BDC
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Aug 2022 13:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236817AbiHBLXx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 2 Aug 2022 07:23:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56062 "EHLO
+        id S233762AbiHBL6R (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 2 Aug 2022 07:58:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231860AbiHBLXw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Aug 2022 07:23:52 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC9BC4A836
-        for <linux-ext4@vger.kernel.org>; Tue,  2 Aug 2022 04:23:50 -0700 (PDT)
-Received: from dggpeml500022.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LxsyT0Fc5zmVcq;
-        Tue,  2 Aug 2022 19:21:53 +0800 (CST)
-Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
- dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 2 Aug 2022 19:23:48 +0800
-Received: from [10.174.176.102] (10.174.176.102) by
- dggpeml100016.china.huawei.com (7.185.36.216) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 2 Aug 2022 19:23:48 +0800
-Message-ID: <3d484b33-410a-c912-a776-28767b381f7a@huawei.com>
-Date:   Tue, 2 Aug 2022 19:23:48 +0800
+        with ESMTP id S231208AbiHBL6R (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Aug 2022 07:58:17 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D454AD7A;
+        Tue,  2 Aug 2022 04:58:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 06746B81EF5;
+        Tue,  2 Aug 2022 11:58:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38397C433D6;
+        Tue,  2 Aug 2022 11:58:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1659441493;
+        bh=aPuGftVIsDG7Y7CdPuQDLSg2l7bYocqX44l5KaPCV+o=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=nN7B7dn6pf45P3zOzbiq/D/QsHIPhcIQJxRRRdP80mViCmLjfmn1Fr733ERmKNFY/
+         7EyBNhoEuUPE9zwfw+nAtWUzDeZrN19Hd9Y4tmTaqpPrmEIZabnHwqYDcHGKcQxl0j
+         I/m+3+bHkgApXESFafCUKfUoRxhK4HPAqPfTzebOnRYqCzOStVuAJrjCYIs0g4KQwE
+         cExhU9aovDx36rWpC/nlYkGxIgwcdRa0625TpIPcxqqHqvTf/qxWdup8ZYpvTxA8Zu
+         jUZTdXhAXSo+q1G75f1C8zgL0shOCpNETKSji4liF2tUg41uYn26LsIyfvJfaQDI/j
+         phixbeomx1jJg==
+Message-ID: <ec2d4a30372548ad0e7fa2c72c10e527f95aa6f2.camel@kernel.org>
+Subject: Re: [PATCH 1/2] ext4: don't increase iversion counter for ea_inodes
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Lukas Czerner <lczerner@redhat.com>, linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, linux-fsdevel@vger.kernel.org
+Date:   Tue, 02 Aug 2022 07:58:11 -0400
+In-Reply-To: <20220728133914.49890-1-lczerner@redhat.com>
+References: <20220728133914.49890-1-lczerner@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.3 (3.44.3-1.fc36) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-To:     Theodore Ts'o <tytso@mit.edu>
-CC:     <linux-ext4@vger.kernel.org>, linfeilong <linfeilong@huawei.com>,
-        <liuzhiqiang26@huawei.com>, <liangyun2@huawei.com>
-From:   zhanchengbin <zhanchengbin1@huawei.com>
-Subject: [BUG] Tune2fs and fuse2fs do not change j_tail_sequence in journal
- superblock
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.102]
-X-ClientProxiedBy: dggpeml100001.china.huawei.com (7.185.36.47) To
- dggpeml100016.china.huawei.com (7.185.36.216)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,100 +52,36 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-There are two recover_ext3_journal functions in e2fsprogs, the 
-recover_ext3_journal
-function in debugfs/journal.c is called when the programs tune2fs and 
-fuse2fs do
-log replay, but in this recover_ext3_journal function, after the log 
-replay is over,
-the j_tail_sequence in journal superblock is not changed to the value of 
-the last
-transaction sequence, this will cause subsequent log commitids to count 
-from the
-commitid in last time.
-```
-e2fsck/journal.c
-static errcode_t recover_ext3_journal(e2fsck_t ctx)
-{
-     ... ...
-         journal->j_superblock->s_errno = -EINVAL;
-         mark_buffer_dirty(journal->j_sb_buffer);
-     }
+On Thu, 2022-07-28 at 15:39 +0200, Lukas Czerner wrote:
+> ea_inodes are using i_version for storing part of the reference count so
+> we really need to leave it alone.
+>=20
+> The problem can be reproduced by xfstest ext4/026 when iversion is
+> enabled. Fix it by not calling inode_inc_iversion() for EXT4_EA_INODE_FL
+> inodes in ext4_mark_iloc_dirty().
+>=20
+> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+> ---
+>  fs/ext4/inode.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 84c0eb55071d..b76554124224 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -5717,7 +5717,12 @@ int ext4_mark_iloc_dirty(handle_t *handle,
+>  	}
+>  	ext4_fc_track_inode(handle, inode);
+> =20
+> -	if (IS_I_VERSION(inode))
+> +	/*
+> +	 * ea_inodes are using i_version for storing reference count, don't
+> +	 * mess with it
+> +	 */
+> +	if (IS_I_VERSION(inode) &&
+> +	    !(EXT4_I(inode)->i_flags & EXT4_EA_INODE_FL))
+>  		inode_inc_iversion(inode);
+> =20
+>  	/* the do_update_inode consumes one bh->b_count */
 
-     journal->j_tail_sequence = journal->j_transaction_sequence;
-
-errout:
-     journal_destroy_revoke(journal);
-     ... ...
-}
-```
-```
-debugfs/journal.c
-static errcode_t recover_ext3_journal(ext2_filsys fs)
-{
-     ... ...
-         journal->j_superblock->s_errno = -EINVAL;
-         mark_buffer_dirty(journal->j_sb_buffer);
-     }
-
-errout:
-     journal_destroy_revoke(journal);
-     ... ...
-}
-```
-result:
-After tune2fs -e, the log commitid is counted from the commitid in last 
-time, if
-the log ID of the current operation overlaps with that of the last 
-operation, this
-will cause logs that were previously replayed by tune2fs to be replayed 
-here. The
-code used by tune2fs to determine whether to replay the transaction is 
-as follows:
-```
-static int do_one_pass(journal_t *journal,
-             struct recovery_info *info, enum passtype pass)
-{
-     ... ...
-     while (1) {
-         ... ...
-         if (sequence != next_commit_ID) {
-             brelse(bh);
-             break;
-         }
-         ... ...
-         next_commit_ID++;
-     }
-     ... ...
-}
-```
-     This moment, commitid is "34 c7", commit time stamp is "62 e0 f7 a5"
-     004aa000  c0 3b 39 98 00 00 00 02  00 00 34 c7 00 00 00 00 
-|.;9.......4.....|
-     004aa010  4e 93 2f fb 00 00 00 00  00 00 00 00 00 00 00 00 
-|N./.............|
-     004aa020  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 
-|................|
-     004aa030  00 00 00 00 62 e0 f7 a5  0a 16 56 20 00 00 00 00 
-|....b.....V ....|
-     --
-     This moment, commitid is "34 c8", commit time stamp is "62 e0 e7 1e"
-     004ad000  c0 3b 39 98 00 00 00 02  00 00 34 c8 00 00 00 00 
-|.;9.......4.....|
-     004ad010  75 a6 12 01 00 00 00 00  00 00 00 00 00 00 00 00 
-|u...............|
-     004ad020  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 
-|................|
-     004ad030  00 00 00 00 62 e0 e7 1e  18 32 cf 18 00 00 00 00 
-|....b....2......|
-     --
-The probability of this happening is very small, but we do, and I think 
-it's a problem.
-
-There are two existing solutions:
-1) Add "journal->j_tail_sequence = journal->j_transaction_sequence" in 
-to the
-recover_ext3_journal in debugfs/journal.c.
-2) There is a timestamp in the commit block, so we can add timestamp 
-check when
-the log is replayed.
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
