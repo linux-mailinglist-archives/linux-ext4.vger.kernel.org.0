@@ -2,88 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C7B587703
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Aug 2022 08:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C76B587816
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Aug 2022 09:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232576AbiHBGOR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 2 Aug 2022 02:14:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44986 "EHLO
+        id S236000AbiHBHoW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 2 Aug 2022 03:44:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbiHBGOP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Aug 2022 02:14:15 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE04BE12
-        for <linux-ext4@vger.kernel.org>; Mon,  1 Aug 2022 23:14:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id AEC92B816A3
-        for <linux-ext4@vger.kernel.org>; Tue,  2 Aug 2022 06:14:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 64759C433D6
-        for <linux-ext4@vger.kernel.org>; Tue,  2 Aug 2022 06:14:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659420852;
-        bh=H9x/fqsppYqe4tldOvjfW6pJeeFyCWsFCI5jbECgJQs=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=HlG91rUnnLT16w9z/57vif78rIwus8WedzsNJKCeWCLg3tfR389oVnn2MXJYL7mka
-         vkBY92PQ9ZGuTCR+JeAA31Hy5VT9HUYtRvKK5kNj5qXuQRpHutzJSv5KbJADoQlgnv
-         ebtUVSgmWXx0+LXkln7HWwUkMb1P1ji5TFUlBy15w70ZeAcNdz6ZIIAhzwG4ewICEA
-         BjvNzhyti3T9XCHsNNWAEFO19AjnmGfiEFZkygeyFd4kWN8GIQZM/EjNa0JZaBWD5i
-         pHLsltJp0DObS0ke5p2eOEcn3xvApcS/Xb6XqaP608LGg/7h/bBzQeqkF7kW4/cRgi
-         uWohncSIiVGrw==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-        id 52256C433E7; Tue,  2 Aug 2022 06:14:12 +0000 (UTC)
-From:   bugzilla-daemon@kernel.org
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 216317] "ext4: lblock 0 mapped to illegal pblock" after
- upgrading to 5.19.0
-Date:   Tue, 02 Aug 2022 06:14:12 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: high
-X-Bugzilla-Who: gerbilsoft@gerbilsoft.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-216317-13602-7HItArPNRt@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-216317-13602@https.bugzilla.kernel.org/>
-References: <bug-216317-13602@https.bugzilla.kernel.org/>
+        with ESMTP id S235945AbiHBHoV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Aug 2022 03:44:21 -0400
+X-Greylist: delayed 496 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 02 Aug 2022 00:44:21 PDT
+Received: from mail.lokoho.com (mail.lokoho.com [217.61.105.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49699B86E
+        for <linux-ext4@vger.kernel.org>; Tue,  2 Aug 2022 00:44:21 -0700 (PDT)
+Received: by mail.lokoho.com (Postfix, from userid 1001)
+        id 8FB708246C; Tue,  2 Aug 2022 08:35:59 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lokoho.com; s=mail;
+        t=1659425763; bh=Z0N5VlX9/JlryGOL5I747Le9USomZJCRNNGRT3LbbKc=;
+        h=Date:From:To:Subject:From;
+        b=jjXZkMILSeoI36tyreRZruAU+CtnSPUOnzWHW4vAkSa9QpchhsMPwhUzk60HMeMPd
+         RQsIXVQqRAU4+7zx0Nj9g9Tzm7O0+8/zFtKWA+vQvZC7iJ1Y3mV+mIiCje5rH4wPgW
+         aHErA6Y146cMuPzrW9CziMZ8HzpOvTGDe6a6yXP3PHoFf1GMWo21uLf0khzKKGQ2Vb
+         2h2J00WCRwqk56cy69Rv3fLUeyfYPWLSKGoOnfPvkCofLjKWd1Lg8TwJrQ+upqEIld
+         bDTMByZT3QcbJUCisF5YEWNbOHCYtQQcPxN2PCKmHgZTBRhZOJPHHO/9Aw+hx3zeFm
+         yfa66xcNPeG0w==
+Received: by mail.lokoho.com for <linux-ext4@vger.kernel.org>; Tue,  2 Aug 2022 07:35:51 GMT
+Message-ID: <20220802074500-0.1.d.m33.0.1yh5m61g8p@lokoho.com>
+Date:   Tue,  2 Aug 2022 07:35:51 GMT
+From:   "Adam Charachuta" <adam.charachuta@lokoho.com>
+To:     <linux-ext4@vger.kernel.org>
+Subject: =?UTF-8?Q?S=C5=82owa_kluczowe_do_wypozycjonowania?=
+X-Mailer: mail.lokoho.com
+MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
-MIME-Version: 1.0
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_40,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_FMBLA_NEWDOM28,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D216317
+Dzie=C5=84 dobry,
 
---- Comment #3 from David Korth (gerbilsoft@gerbilsoft.com) ---
-Reading the various commits, it seems that ext4's inline_data option previo=
-usly
-supported inlining symlinks, but as of v5.19.0, that's no longer supported.=
- The
-patch restores read-only compatibility, but new symlinks will not be inline=
-d.
-Is there any particular reason why symlink inlining was removed, and/or does
-the new method work better than inlining?
+zapozna=C5=82em si=C4=99 z Pa=C5=84stwa ofert=C4=85 i z przyjemno=C5=9Bci=
+=C4=85 przyznaj=C4=99, =C5=BCe przyci=C4=85ga uwag=C4=99 i zach=C4=99ca d=
+o dalszych rozm=C3=B3w.=20
 
---=20
-You may reply to this email to add a comment.
+Pomy=C5=9Bla=C5=82em, =C5=BCe mo=C5=BCe m=C3=B3g=C5=82bym mie=C4=87 sw=C3=
+=B3j wk=C5=82ad w Pa=C5=84stwa rozw=C3=B3j i pom=C3=B3c dotrze=C4=87 z t=C4=
+=85 ofert=C4=85 do wi=C4=99kszego grona odbiorc=C3=B3w. Pozycjonuj=C4=99 =
+strony www, dzi=C4=99ki czemu generuj=C4=85 =C5=9Bwietny ruch w sieci.
 
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+Mo=C5=BCemy porozmawia=C4=87 w najbli=C5=BCszym czasie?
+
+
+Pozdrawiam
+Adam Charachuta
