@@ -2,95 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B485879D4
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Aug 2022 11:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CB45879D5
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Aug 2022 11:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232773AbiHBJ2u (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 2 Aug 2022 05:28:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50254 "EHLO
+        id S235912AbiHBJ24 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 2 Aug 2022 05:28:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232771AbiHBJ2s (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Aug 2022 05:28:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 598641BE8E
-        for <linux-ext4@vger.kernel.org>; Tue,  2 Aug 2022 02:28:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1659432526;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qxPWtHy/Rc7WpmYKejrALDu7klNSMC4Sh6u+LbIhZcE=;
-        b=EKqTyIpukCRSn7SSfJT6z3PGuphncK2LZfDQIlOkYk5jk+CXUv6hkv1FXH8iRcjJ5p+FUZ
-        VQrEOPjfWGCAa4ZN9JFi2fqjVyr2dlyxxsXIjslLqtGw7YVM9eGsma9MDQ8DUYZ3Pm8JQI
-        9NCGFNTyvpp+WdTZ0JaENmif9nRo7xo=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-271-lA9qFvPzMw6kcD-jkF7Zhg-1; Tue, 02 Aug 2022 05:28:41 -0400
-X-MC-Unique: lA9qFvPzMw6kcD-jkF7Zhg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S232771AbiHBJ2w (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Aug 2022 05:28:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5388B21267
+        for <linux-ext4@vger.kernel.org>; Tue,  2 Aug 2022 02:28:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A230E8037B5;
-        Tue,  2 Aug 2022 09:28:40 +0000 (UTC)
-Received: from fedora (unknown [10.40.194.249])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D71901410F38;
-        Tue,  2 Aug 2022 09:28:39 +0000 (UTC)
-Date:   Tue, 2 Aug 2022 11:28:37 +0200
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>, bugzilla-daemon@kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: [Bug 216283] New: FUZZ: BUG() triggered in
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E321D60DDF
+        for <linux-ext4@vger.kernel.org>; Tue,  2 Aug 2022 09:28:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 4FF76C433B5
+        for <linux-ext4@vger.kernel.org>; Tue,  2 Aug 2022 09:28:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1659432530;
+        bh=ccjVgYefmrc7qhORwuXL/VFNffd6gCGZRB2XX93iwUc=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=fk9fpP5Cr9KUIj5f593xKeVS4BguEB1wjy8zGiQEh4TgJHVSwWBEbAvgv3RVurkqv
+         AEhmjkxP/HiiAISG4JUT9Sy4dRQdgv++INmcK4zTEyoyOQIXbEgZZBGqOjSJYB7yhQ
+         bv2uQ1dC/mosvNUvP3m+SZm7gnKCKeLuxibO6CRJwi9XkqzEklj9+JSQLkr2zSNt7r
+         PkTN0m7DNeSmNqr5yhKiWbkCblpHKEoh0wRRg6mtXzWbcV/6wcnPbYwszi3uovniPc
+         PtOeaJ3nT3SLtJsHcWmr6TDWMxKlE4M9E31W6k+JayQESppbmat50wWwebu2lQr7m1
+         FI6g/15eY1L+Q==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+        id 1F723C433E7; Tue,  2 Aug 2022 09:28:50 +0000 (UTC)
+From:   bugzilla-daemon@kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 216283] FUZZ: BUG() triggered in
  fs/ext4/extent.c:ext4_ext_insert_extent() when mount and operate on crafted
  image
-Message-ID: <20220802092837.wqgut2i6kkbehcof@fedora>
+Date:   Tue, 02 Aug 2022 09:28:49 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: lczerner@redhat.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-216283-13602-kIr7jya5F4@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-216283-13602@https.bugzilla.kernel.org/>
 References: <bug-216283-13602@https.bugzilla.kernel.org/>
- <YuBKMLw6dpERM95F@magnolia>
- <20220727115307.qco6dn2tqqw52pl7@fedora>
- <20220727232224.GW3600936@dread.disaster.area>
- <20220728072510.yunkzplfqx2vt4wb@fedora>
- <20220801224551.GA3861211@dread.disaster.area>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220801224551.GA3861211@dread.disaster.area>
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.7
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+https://bugzilla.kernel.org/show_bug.cgi?id=3D216283
+
+--- Comment #9 from Lukas Czerner (lczerner@redhat.com) ---
 On Tue, Aug 02, 2022 at 08:45:51AM +1000, Dave Chinner wrote:
 
 --- snip ---
 
-> > 
+> >=20
 > > Look, your entire argument hinges on the assumption that this is a
 > > security vulnerability that could be exploited and the report makes the
 > > situation worse. And that's very much debatable. I don't think it is and
 > > Ted described it very well in his comment.
-> 
+>=20
 > On systems that automount filesytsems when you plug in a USB drive
 > (which most distros do out of the box) then a crash bug during mount
 > is, at minimum, an annoying DOS vector. And if it can result in a
 > buffer overflow, then....
-> 
+>=20
 > > Asking for more information, or even asking reported to try to narrow
 > > down the problem is of course fine.
-> 
+>=20
 > Sure, nobody is questioning how we triage these issues - the
 > question is over how they are reported and the forum under which the
 > initial triage takes place
-> 
+>=20
 > > But making sweeping claims about
 > > moral and ethical responsibilities is always a little suspicious and
 > > completely bogus in this case IMO.
-> 
+>=20
 > Hand waving away the fact that fuzzer crash bugs won't be a security
 > issue without having done any investigation is pretty much the whole
 > problem here. This is not responsible behaviour.
@@ -104,12 +113,17 @@ Problem solved and no moralizing needed.
 
 -Lukas
 
-> 
+>=20
 > Cheers,
-> 
+>=20
 > Dave.
-> -- 
+> --=20
 > Dave Chinner
 > david@fromorbit.com
-> 
+>
 
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
