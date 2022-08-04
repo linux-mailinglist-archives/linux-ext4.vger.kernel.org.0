@@ -2,107 +2,138 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1EFA589429
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Aug 2022 23:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F11DC58954B
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 Aug 2022 02:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236115AbiHCVwn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 3 Aug 2022 17:52:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
+        id S236937AbiHDAZO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 3 Aug 2022 20:25:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230499AbiHCVwm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 3 Aug 2022 17:52:42 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94FDF5A3DA
-        for <linux-ext4@vger.kernel.org>; Wed,  3 Aug 2022 14:52:40 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id e15so18220849lfs.0
-        for <linux-ext4@vger.kernel.org>; Wed, 03 Aug 2022 14:52:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc;
-        bh=jZzlbYad3RAe1QGeDgm//GXYN4JcEyAlGqRtF/xVcXU=;
-        b=Tczj+UmcfihgKEqZA3SSCkmUpzmsNJIiAv+0DtiRfi6y1zLMp6Iner7ZeS2BshA/pm
-         jnTmWk2k2IQTm1YAe/4pkJY3v2Wyz7z4QcmxYl2CoDNEMDV59KmTMv2EeA0o19rXbhA1
-         tz2bVN8ZkIiYHAYd2CvYYBDvQE4lzhGN2G3pjqVL0t/9zLNLXpjkd6MNpPeXePOzhsO3
-         v6Sl7K4lAae7s+ive54Id+RlC8VQAzBoz88zOonxMjMYLFmWmub4wwBNyzViydyvnh4f
-         itrdLmof2PlXCsIxQLP8hosVk0OR+CPKDrG1vQALxBoHSP36lUJpdRM3mecbIGNjaZko
-         kjYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc;
-        bh=jZzlbYad3RAe1QGeDgm//GXYN4JcEyAlGqRtF/xVcXU=;
-        b=0UMIL3UM3GhYeh32vdQ0bEUIDhSEK5O1kpUrUGy57lOVy/tjkq/zw8e2MtkFxTF9fJ
-         QqCaN87XgHsOjTrDP758lLE0ns7NvGFlIEoGEDBt/dW20C/U6i4Hav9VfM5rTm8h9/uS
-         QuXXZ0vsM5Pv5cwi4VvXY7vxqfzCD8NjbzIVEynytOWzF7ryWI6gZ8lkM68dGELnyq/X
-         oEKE3aheUYFYrLxE5s2sf3Xw5OXbB50YD4LLGK8vlaFqNdCOJ/kMaUqffmED2bZqNFGp
-         yc2Vgr274XE+FHLESVBTE8t83rcsE+gSBRrYK7etauJCsR3B1NlfFMji+SJN6DrNiZo2
-         xi+Q==
-X-Gm-Message-State: ACgBeo0iALx3fOkdJZLsZnxlqkPSjOJoZbzEpoxnhm5z14sTSNU0zft1
-        7d3Glz/fo43gliIEckAx++A=
-X-Google-Smtp-Source: AA6agR556ETkqxGgeGXiDM4eYC/YiWRmVxqIIOOF9Ovd7LIQxP+aro8v2wgtIUQorLOT6T3cFVEFkw==
-X-Received: by 2002:ac2:4e11:0:b0:48b:16d8:fbe6 with SMTP id e17-20020ac24e11000000b0048b16d8fbe6mr2817333lfr.640.1659563558829;
-        Wed, 03 Aug 2022 14:52:38 -0700 (PDT)
-Received: from smtpclient.apple ([46.246.86.69])
-        by smtp.gmail.com with ESMTPSA id y17-20020a2e3211000000b0025e4e7c016dsm1241339ljy.16.2022.08.03.14.52.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Aug 2022 14:52:38 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH] e2fsprogs: avoid code duplication
-From:   Alexey Lyahkov <alexey.lyashkov@gmail.com>
-In-Reply-To: <YurTVlGWqwym2Hgg@mit.edu>
-Date:   Thu, 4 Aug 2022 00:52:34 +0300
-Cc:     linux-ext4 <linux-ext4@vger.kernel.org>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Artem Blagodarenko <artem.blagodarenko@gmail.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <A850E8AB-1B4D-4956-9933-CF32DF0762BC@gmail.com>
-References: <20220803075407.538398-1-alexey.lyashkov@gmail.com>
- <YurTVlGWqwym2Hgg@mit.edu>
-To:     Theodore Ts'o <tytso@mit.edu>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S236904AbiHDAZO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 3 Aug 2022 20:25:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0679B52;
+        Wed,  3 Aug 2022 17:25:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6C99B61737;
+        Thu,  4 Aug 2022 00:25:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C88FDC433D6;
+        Thu,  4 Aug 2022 00:25:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1659572711;
+        bh=kqKZ7ISpCOBkkf9SIOPno19SY8z+jeRc+EusXoBgFgA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p0zK5xCZh1z2AWHnjsB8hd9Vaa1oXPh+RkQWeXSRJzjy8gHy5X+pilsNL6+VHf8zG
+         LI8lyn8NmmWsUskgL6VxHGzk1BMOjk8cd2/U9w0Fs2EkozH5hfM7MgzWQTnY89Y8dM
+         BqqLFzcH4Y87m+UI+JEqXXof/E8h7POS03yOcLgSbcnabewtlNvppvs4kJPVu9NWRK
+         /mTWSEY2rVnENtROP4cOKi2j3j1WhyQITMT2KJgj+jZVc/5QGQTYbLrWvAQr9A6AgV
+         9DiyBXr8Ew8wuC0Q1mG++3+UHop9E/g/4SsOLaKzsrXwbMwZGCtK5FbfM8AqYAxdPb
+         wmqexXhwKlj4g==
+Date:   Wed, 3 Aug 2022 17:25:11 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     guaneryu@gmail.com, zlang@redhat.com
+Cc:     linux-xfs@vger.kernel.org, fstests@vger.kernel.org, guan@eryu.me,
+        tytso@mit.edu, linux-ext4@vger.kernel.org
+Subject: [PATCH v1.2 3/3] common/ext4: provide custom ext4 scratch fs options
+Message-ID: <YusR5ww7Y4+/HXTt@magnolia>
+References: <165950050051.198922.13423077997881086438.stgit@magnolia>
+ <165950051745.198922.6487109955066878945.stgit@magnolia>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <165950051745.198922.6487109955066878945.stgit@magnolia>
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks for pointing to the libsupport. I looking into kernel-jbd.h as =
-example (it also don=E2=80=99t export outside of e2fsprogs),
-but  libsupport is lost from my radar.
+From: Darrick J. Wong <djwong@kernel.org>
 
-Lack of tag v3 is big lost also. It mean debugfs don=E2=80=99t able to =
-print log records correctly if block number over 2^32.
+Create a _scratch_options backend for ext* so that we can inject
+pathnames to external log devices into the scratch fs mount options.
+This enables common/dm* to install block device filters, e.g. dm-error
+for stress testing.
 
-Alex
+Signed-off-by: Darrick J. Wong <djwong@kernel.org>
+v1.2: refactor _scratch_mkfs_ext4 to use _scratch_options too
+---
+ common/ext4 |   34 +++++++++++++++++++++++++++++++---
+ common/rc   |    3 +++
+ 2 files changed, 34 insertions(+), 3 deletions(-)
 
-> On 3 Aug 2022, at 22:58, Theodore Ts'o <tytso@mit.edu> wrote:
->=20
-> On Wed, Aug 03, 2022 at 10:54:07AM +0300, Alexey Lyashkov wrote:
->> debugfs and e2fsck have a so much code duplication in journal =
-handing.
->> debugfs have lack a many journal features handing also.
->> Let's start code merging to avoid code duplication and lack features.
->=20
-> This is definitely worth doing, and as you've pointed out, there are a
-> number of features which are in e2fsck/journal.c, which are not in
-> debugfs/journal.c.  The most notable one which I picked up on is the
-> fast_commit code --- which is in the master/next branch, but not in
-> the maint branch.
->=20
-> I suggest that we move the functionality into the libsupport library
-> first.  I want to make sure we get the abstractions right before we
-> "cast them into stone" by moving the functions to libext2fs.
-> Libsupport is not exported outside of e2fsprogs, so if we decide we
-> want to change function signatures, or make some functions private, we
-> can do that more easily if we experiment with moving things into
-> libsupport first.
->=20
-> 						- Ted
-
+diff --git a/common/ext4 b/common/ext4
+index 287705af..8a3385af 100644
+--- a/common/ext4
++++ b/common/ext4
+@@ -63,16 +63,24 @@ _setup_large_ext4_fs()
+ 	return 0
+ }
+ 
++_scratch_mkfs_ext4_opts()
++{
++	mkfs_opts=$*
++
++	_scratch_options mkfs
++
++	echo "$MKFS_EXT4_PROG -F $SCRATCH_OPTIONS $mkfs_opts"
++}
++
+ _scratch_mkfs_ext4()
+ {
+-	local mkfs_cmd="$MKFS_EXT4_PROG -F"
++	local mkfs_cmd="`_scratch_mkfs_ext4_opts`"
+ 	local mkfs_filter="grep -v -e ^Warning: -e \"^mke2fs \" | grep -v \"^$\""
+ 	local tmp=`mktemp -u`
+ 	local mkfs_status
+ 
+ 	[ "$USE_EXTERNAL" = yes -a ! -z "$SCRATCH_LOGDEV" ] && \
+-	    $mkfs_cmd -O journal_dev $MKFS_OPTIONS $SCRATCH_LOGDEV && \
+-	    mkfs_cmd="$mkfs_cmd -J device=$SCRATCH_LOGDEV"
++	    $MKFS_EXT4_PROG -F -O journal_dev $MKFS_OPTIONS $SCRATCH_LOGDEV
+ 
+ 	_scratch_do_mkfs "$mkfs_cmd" "$mkfs_filter" $* 2>$tmp.mkfserr 1>$tmp.mkfsstd
+ 	mkfs_status=$?
+@@ -154,3 +162,23 @@ _require_scratch_richacl_ext4()
+ 		|| _notrun "kernel doesn't support richacl feature on $FSTYP"
+ 	_scratch_unmount
+ }
++
++_scratch_ext4_options()
++{
++    local type=$1
++    local log_opt=""
++
++    case $type in
++    mkfs)
++        log_opt="-J device=$SCRATCH_LOGDEV"
++	;;
++    mount)
++	# As of kernel 5.19, the kernel mount option path parser only accepts
++	# direct paths to block devices--the final path component cannot be a
++	# symlink.
++        log_opt="-o journal_path=$(realpath $SCRATCH_LOGDEV)"
++	;;
++    esac
++    [ "$USE_EXTERNAL" = yes -a ! -z "$SCRATCH_LOGDEV" ] && \
++	SCRATCH_OPTIONS="$SCRATCH_OPTIONS ${log_opt}"
++}
+diff --git a/common/rc b/common/rc
+index dc1d65c3..b82bb36b 100644
+--- a/common/rc
++++ b/common/rc
+@@ -178,6 +178,9 @@ _scratch_options()
+     "xfs")
+ 	_scratch_xfs_options "$@"
+ 	;;
++    ext2|ext3|ext4|ext4dev)
++	_scratch_ext4_options "$@"
++	;;
+     esac
+ }
+ 
