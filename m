@@ -2,53 +2,52 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1307E58A900
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Aug 2022 11:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A13758AA4E
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Aug 2022 13:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236639AbiHEJrL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 5 Aug 2022 05:47:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47244 "EHLO
+        id S237631AbiHELqf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 5 Aug 2022 07:46:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240547AbiHEJrK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 5 Aug 2022 05:47:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 28A0E76470
-        for <linux-ext4@vger.kernel.org>; Fri,  5 Aug 2022 02:47:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1659692828;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=8z2Kj3907lEXVZ9DLaFoKqri5ViNBbkkIHfStV+wjZo=;
-        b=S/gBpu1YuNP0+JjWvLQJlgezDXXwnalUzQjzUm+o/VG8fhQWtP+h1f2d9UJbqL0CE0Y+nl
-        YREqLJhamnSqBBz0gmpODgUlvdyDnfMKRBgRLUJPchRCrsAsDcoU6aMquPvWNBEakMYoG1
-        LwRm8i9X6OYELvOITh934huO5K/YOLk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-128-CEDWWleNPquQnNItprQgSw-1; Fri, 05 Aug 2022 05:47:05 -0400
-X-MC-Unique: CEDWWleNPquQnNItprQgSw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B4162101A586;
-        Fri,  5 Aug 2022 09:47:04 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.40.193.205])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 100AA2026D4C;
-        Fri,  5 Aug 2022 09:47:03 +0000 (UTC)
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, Daniel Ng <danielng@google.com>
-Subject: [PATCH] e2fsprogs: fix device name parsing to resolve names containing '='
-Date:   Fri,  5 Aug 2022 11:47:03 +0200
-Message-Id: <20220805094703.155967-1-lczerner@redhat.com>
+        with ESMTP id S235249AbiHELqe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 5 Aug 2022 07:46:34 -0400
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E60931238
+        for <linux-ext4@vger.kernel.org>; Fri,  5 Aug 2022 04:46:33 -0700 (PDT)
+Received: by mail-io1-f72.google.com with SMTP id z11-20020a05660217cb00b0067c63cf0236so1256776iox.13
+        for <linux-ext4@vger.kernel.org>; Fri, 05 Aug 2022 04:46:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc;
+        bh=0VzqJygc5Za6Af8Uvt2WofNNb8ZfUsjKpLmF8pLSvZk=;
+        b=QJPGLfq66i6gkYHxzlkjq8kRcU2QhMyP99PBUWWCjF/rl3cxufIvXFU8D92uXdmFEa
+         f0ZL27kN18SM8zeK7ky5gEyQsDe8XFDgsgKcqqVkMVKYpL6AbBUk9j50w/nqmxjziGYe
+         UZ4cAmX+/Rrsm50I4V+K4F065b8z9YeG/Ro1H04E46EsMjEdxaLJYBfr3huAO0gicRVs
+         vwAdlAHaW9lCzh8gG8nTWq82wLE31x/CanZO4GzMdR2sIf23WSkdi1KpCJd2jrkEj4UH
+         yB5KkJj7D+CqageALN44tvTlwGd63Hb22B+VrBQgZd1AWrn/jK4c9jNVqTcPaokyZtz2
+         iIHw==
+X-Gm-Message-State: ACgBeo1KeFfjRAGOZpAa9Ztvrci1C9mxA3ftfyzh3VXL2HaR30YQRjdD
+        SCiyQ+ovVupI1Gmv/csVp1aoOVz32wlemQI9xa2e5F80vVub
+X-Google-Smtp-Source: AA6agR7Cipv2HUy00gO8pSrxtUAcvbMrVKwx77m//+jLEVApWjB/QxRWVj/of4qt3UGst/LEqj9r4gC9iaNUN/3II7mQs+huBpr1
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.78 on 10.11.54.4
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Received: by 2002:a05:6e02:1c0e:b0:2df:622c:37cd with SMTP id
+ l14-20020a056e021c0e00b002df622c37cdmr2989419ilh.234.1659699992516; Fri, 05
+ Aug 2022 04:46:32 -0700 (PDT)
+Date:   Fri, 05 Aug 2022 04:46:32 -0700
+In-Reply-To: <0000000000008f6d2005c9e53c59@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007ce13a05e57d0418@google.com>
+Subject: Re: [syzbot] kernel BUG in ext4_get_group_info
+From:   syzbot <syzbot+e2efa3efc15a1c9e95c3@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,267 +55,89 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Currently in varisous e2fsprogs tools, most notably tune2fs and e2fsck
-we will get the device name by passing the user provided string into
-blkid_get_devname(). This library function however is primarily intended
-for parsing "NAME=value" tokens. It will return the device matching the
-specified token, NULL if nothing is found, or copy of the string if it's
-not in "NAME=value" format.
+syzbot has found a reproducer for the following issue on:
 
-However in case where we're passing in a file name that contains an
-equal sign blkid_get_devname() will treat it as a token and will attempt
-to find the device with the match. Likely finding nothing.
+HEAD commit:    200e340f2196 Merge tag 'pull-work.dcache' of git://git.ker..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=15a655b6080000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a3f4d6985d3164cd
+dashboard link: https://syzkaller.appspot.com/bug?extid=e2efa3efc15a1c9e95c3
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13b248e1080000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11ba3e3e080000
 
-Fix it by checking existence of the file first and then attempt to call
-blkid_get_devname(). In case of a collision, notify the user and
-automatically prefer the one returned by blkid_get_devname(). Otherwise
-return either the existing file, or NULL.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e2efa3efc15a1c9e95c3@syzkaller.appspotmail.com
 
-We do it this way to avoid some existing file in working directory (for
-example LABEL=volume-name) masking an actual device containing the
-matchin LABEL. User can specify full, or relative path (e.g.
-./LABEL=volume-name) to make sure the file is used instead.
-
-Signed-off-by: Lukas Czerner <lczerner@redhat.com>
-Reported-by: Daniel Ng <danielng@google.com>
----
- e2fsck/unix.c           |  6 +++---
- lib/support/plausible.c | 35 ++++++++++++++++++++++++++++++++++-
- lib/support/plausible.h |  3 +++
- misc/Makefile.in        |  9 +++++----
- misc/e2initrd_helper.c  |  5 +++--
- misc/fsck.c             |  5 +++--
- misc/tune2fs.c          |  4 ++--
- misc/util.c             |  3 ++-
- 8 files changed, 55 insertions(+), 15 deletions(-)
-
-diff --git a/e2fsck/unix.c b/e2fsck/unix.c
-index ae231f93..edd7b9b2 100644
---- a/e2fsck/unix.c
-+++ b/e2fsck/unix.c
-@@ -939,8 +939,8 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
- 				goto sscanf_err;
- 			break;
- 		case 'j':
--			ctx->journal_name = blkid_get_devname(ctx->blkid,
--							      optarg, NULL);
-+			ctx->journal_name = get_devname(ctx->blkid,
-+							optarg, NULL);
- 			if (!ctx->journal_name) {
- 				com_err(ctx->program_name, 0,
- 					_("Unable to resolve '%s'"),
-@@ -1019,7 +1019,7 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
- 	ctx->io_options = strchr(argv[optind], '?');
- 	if (ctx->io_options)
- 		*ctx->io_options++ = 0;
--	ctx->filesystem_name = blkid_get_devname(ctx->blkid, argv[optind], 0);
-+	ctx->filesystem_name = get_devname(ctx->blkid, argv[optind], 0);
- 	if (!ctx->filesystem_name) {
- 		com_err(ctx->program_name, 0, _("Unable to resolve '%s'"),
- 			argv[optind]);
-diff --git a/lib/support/plausible.c b/lib/support/plausible.c
-index bbed2a70..864a7a5e 100644
---- a/lib/support/plausible.c
-+++ b/lib/support/plausible.c
-@@ -35,7 +35,6 @@
- #include "plausible.h"
- #include "ext2fs/ext2fs.h"
- #include "nls-enable.h"
--#include "blkid/blkid.h"
- 
- #ifdef HAVE_MAGIC_H
- static magic_t (*dl_magic_open)(int);
-@@ -290,3 +289,37 @@ int check_plausibility(const char *device, int flags, int *ret_is_dev)
- 	return 1;
- }
- 
-+
-+char *get_devname(blkid_cache cache, const char *token, const char *value)
-+{
-+	int is_file = 0;
-+	char *ret = NULL;
-+
-+	if (!token)
-+		goto out;
-+
-+	if (value) {
-+		ret = blkid_get_devname(cache, token, value);
-+		goto out;
-+	}
-+
-+	if (access(token, F_OK) == 0)
-+		is_file = 1;
-+
-+	ret = blkid_get_devname(cache, token, NULL);
-+	if (ret) {
-+		if (is_file && (strcmp(ret, token) != 0)) {
-+			fprintf(stderr,
-+				_("Collision found: '%s' refers to both '%s' "
-+				  "and a file '%s'. Using '%s'!\n"),
-+				token, ret, token, ret);
-+		}
-+		goto out;
-+	}
-+
-+out_strdup:
-+	if (is_file)
-+		ret = strdup(token);
-+out:
-+	return ret;
-+}
-diff --git a/lib/support/plausible.h b/lib/support/plausible.h
-index b85150c7..8eb6817f 100644
---- a/lib/support/plausible.h
-+++ b/lib/support/plausible.h
-@@ -13,6 +13,8 @@
- #ifndef PLAUSIBLE_H_
- #define PLAUSIBLE_H_
- 
-+#include "blkid/blkid.h"
-+
- /*
-  * Flags for check_plausibility()
-  */
-@@ -25,5 +27,6 @@
- 
- extern int check_plausibility(const char *device, int flags,
- 			      int *ret_is_dev);
-+char *get_devname(blkid_cache cache, const char *token, const char *value);
- 
- #endif /* PLAUSIBLE_H_ */
-diff --git a/misc/Makefile.in b/misc/Makefile.in
-index 4db59cdf..5187883f 100644
---- a/misc/Makefile.in
-+++ b/misc/Makefile.in
-@@ -360,12 +360,12 @@ dumpe2fs.static: $(DUMPE2FS_OBJS) $(DEPLIBS) $(DEPLIBS_E2P) $(DEPLIBUUID) $(DEPL
- 		$(STATIC_LIBS) $(STATIC_LIBE2P) $(STATIC_LIBUUID) \
- 		$(LIBINTL) $(SYSLIBS) $(STATIC_LIBBLKID) $(LIBMAGIC)
- 
--fsck: $(FSCK_OBJS) $(DEPLIBBLKID)
-+fsck: $(FSCK_OBJS) $(DEPLIBBLKID) $(DEPLIBS)
- 	$(E) "	LD $@"
- 	$(Q) $(CC) $(ALL_LDFLAGS) -o fsck $(FSCK_OBJS) $(LIBBLKID) \
--		$(LIBINTL) $(SYSLIBS)
-+		$(LIBINTL) $(SYSLIBS) $(LIBS) $(LIBEXT2FS) $(LIBCOM_ERR)
- 
--fsck.profiled: $(FSCK_OBJS) $(PROFILED_DEPLIBBLKID)
-+fsck.profiled: $(FSCK_OBJS) $(PROFILED_DEPLIBBLKID) $(PROFILED_DEPLIBS)
- 	$(E) "	LD $@"
- 	$(Q) $(CC) $(ALL_LDFLAGS) -g -pg -o fsck.profiled $(PROFILED_FSCK_OBJS) \
- 		$(PROFILED_LIBBLKID) $(LIBINTL) $(SYSLIBS)
-@@ -799,7 +799,8 @@ badblocks.o: $(srcdir)/badblocks.c $(top_builddir)/lib/config.h \
-  $(top_srcdir)/lib/ext2fs/bitops.h $(top_srcdir)/lib/support/nls-enable.h
- fsck.o: $(srcdir)/fsck.c $(top_builddir)/lib/config.h \
-  $(top_builddir)/lib/dirpaths.h $(top_srcdir)/version.h \
-- $(top_srcdir)/lib/support/nls-enable.h $(srcdir)/fsck.h
-+ $(top_srcdir)/lib/support/nls-enable.h $(srcdir)/fsck.h \
-+ $(top_srcdir)/lib/support/plausible.h
- util.o: $(srcdir)/util.c $(top_builddir)/lib/config.h \
-  $(top_builddir)/lib/dirpaths.h $(top_srcdir)/lib/et/com_err.h \
-  $(top_srcdir)/lib/e2p/e2p.h $(top_srcdir)/lib/ext2fs/ext2_fs.h \
-diff --git a/misc/e2initrd_helper.c b/misc/e2initrd_helper.c
-index 436aab8c..bfa294fa 100644
---- a/misc/e2initrd_helper.c
-+++ b/misc/e2initrd_helper.c
-@@ -36,6 +36,7 @@ extern char *optarg;
- #include "ext2fs/ext2fs.h"
- #include "blkid/blkid.h"
- #include "support/nls-enable.h"
-+#include "support/plausible.h"
- 
- #include "../version.h"
- 
-@@ -262,7 +263,7 @@ static int parse_fstab_line(char *line, struct fs_info *fs)
- 	parse_escape(freq);
- 	parse_escape(passno);
- 
--	dev = blkid_get_devname(cache, device, NULL);
-+	dev = get_devname(cache, device, NULL);
- 	if (dev)
- 		device = dev;
- 
-@@ -325,7 +326,7 @@ static void PRS(int argc, char **argv)
- 	}
- 	if (optind < argc - 1 || optind == argc)
- 		usage();
--	device_name = blkid_get_devname(NULL, argv[optind], NULL);
-+	device_name = get_devname(NULL, argv[optind], NULL);
- 	if (!device_name) {
- 		com_err(program_name, 0, _("Unable to resolve '%s'"),
- 			argv[optind]);
-diff --git a/misc/fsck.c b/misc/fsck.c
-index 4efe10ec..75c520ee 100644
---- a/misc/fsck.c
-+++ b/misc/fsck.c
-@@ -59,6 +59,7 @@
- #endif
- 
- #include "../version.h"
-+#include "support/plausible.h"
- #include "support/nls-enable.h"
- #include "fsck.h"
- #include "blkid/blkid.h"
-@@ -297,7 +298,7 @@ static int parse_fstab_line(char *line, struct fs_info **ret_fs)
- 	parse_escape(freq);
- 	parse_escape(passno);
- 
--	dev = blkid_get_devname(cache, device, NULL);
-+	dev = get_devname(cache, device, NULL);
- 	if (dev)
- 		device = dev;
- 
-@@ -1128,7 +1129,7 @@ static void PRS(int argc, char *argv[])
- 					progname);
- 				exit(EXIT_ERROR);
- 			}
--			dev = blkid_get_devname(cache, arg, NULL);
-+			dev = get_devname(cache, arg, NULL);
- 			if (!dev && strchr(arg, '=')) {
- 				/*
- 				 * Check to see if we failed because
-diff --git a/misc/tune2fs.c b/misc/tune2fs.c
-index 6c162ba5..dfa7427b 100644
---- a/misc/tune2fs.c
-+++ b/misc/tune2fs.c
-@@ -1839,7 +1839,7 @@ static void parse_e2label_options(int argc, char ** argv)
- 	io_options = strchr(argv[1], '?');
- 	if (io_options)
- 		*io_options++ = 0;
--	device_name = blkid_get_devname(NULL, argv[1], NULL);
-+	device_name = get_devname(NULL, argv[1], NULL);
- 	if (!device_name) {
- 		com_err("e2label", 0, _("Unable to resolve '%s'"),
- 			argv[1]);
-@@ -2139,7 +2139,7 @@ static void parse_tune2fs_options(int argc, char **argv)
- 	io_options = strchr(argv[optind], '?');
- 	if (io_options)
- 		*io_options++ = 0;
--	device_name = blkid_get_devname(NULL, argv[optind], NULL);
-+	device_name = get_devname(NULL, argv[optind], NULL);
- 	if (!device_name) {
- 		com_err(program_name, 0, _("Unable to resolve '%s'"),
- 			argv[optind]);
-diff --git a/misc/util.c b/misc/util.c
-index 48e623dc..2b2ad07b 100644
---- a/misc/util.c
-+++ b/misc/util.c
-@@ -45,6 +45,7 @@
- #include "ext2fs/ext2_fs.h"
- #include "ext2fs/ext2fs.h"
- #include "support/nls-enable.h"
-+#include "support/plausible.h"
- #include "blkid/blkid.h"
- #include "util.h"
- 
-@@ -183,7 +184,7 @@ void parse_journal_opts(const char *opts)
- 		       arg ? arg : "NONE");
- #endif
- 		if (strcmp(token, "device") == 0) {
--			journal_device = blkid_get_devname(NULL, arg, NULL);
-+			journal_device = get_devname(NULL, arg, NULL);
- 			if (!journal_device) {
- 				if (arg)
- 					fprintf(stderr, _("\nCould not find "
--- 
-2.37.1
+EXT4-fs (loop0): ext4_check_descriptors: Checksum for group 0 failed (14603!=0)
+EXT4-fs (loop0): orphan cleanup on readonly fs
+EXT4-fs error (device loop0): ext4_mb_clear_bb:5962: comm syz-executor137: Freeing blocks in system zone - Block = 16, count = 16
+EXT4-fs (loop0): Remounting filesystem read-only
+------------[ cut here ]------------
+kernel BUG at fs/ext4/ext4.h:3319!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 3607 Comm: syz-executor137 Not tainted 5.19.0-syzkaller-02972-g200e340f2196 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/22/2022
+RIP: 0010:ext4_get_group_info+0x36e/0x3d0 fs/ext4/ext4.h:3319
+Code: ff 48 c7 c2 a0 b5 e2 89 be c3 02 00 00 48 c7 c7 00 b6 e2 89 c6 05 39 e3 89 0b 01 e8 fc 1d 16 07 e9 d9 fd ff ff e8 22 af 5d ff <0f> 0b e8 9b 76 aa ff e9 ea fc ff ff e8 91 76 aa ff e9 24 fd ff ff
+RSP: 0018:ffffc90002fcf210 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 00000000ffffffff RCX: 0000000000000000
+RDX: ffff888024b99d80 RSI: ffffffff821d2a9e RDI: 0000000000000004
+RBP: ffff888021e86000 R08: 0000000000000004 R09: 0000000000000001
+R10: 00000000ffffffff R11: 0000000000000001 R12: ffff888021ee2000
+R13: ffff888021ee2678 R14: 0000000000000001 R15: dffffc0000000000
+FS:  00005555570a1300(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000005ded08 CR3: 0000000025559000 CR4: 0000000000350ee0
+Call Trace:
+ <TASK>
+ ext4_mb_clear_bb fs/ext4/mballoc.c:5935 [inline]
+ ext4_free_blocks+0x4a2/0x2060 fs/ext4/mballoc.c:6185
+ ext4_clear_blocks+0x329/0x430 fs/ext4/indirect.c:880
+ ext4_free_data+0x1a3/0x3e0 fs/ext4/indirect.c:954
+ ext4_ind_truncate+0x6a2/0x950 fs/ext4/indirect.c:1146
+ ext4_truncate+0x696/0x1440 fs/ext4/inode.c:4244
+ ext4_evict_inode+0xa5f/0x1970 fs/ext4/inode.c:284
+ evict+0x2ed/0x6b0 fs/inode.c:664
+ iput_final fs/inode.c:1744 [inline]
+ iput.part.0+0x562/0x820 fs/inode.c:1770
+ iput+0x58/0x70 fs/inode.c:1760
+ ext4_quota_enable fs/ext4/super.c:6781 [inline]
+ ext4_enable_quotas+0x5c4/0xb70 fs/ext4/super.c:6804
+ ext4_orphan_cleanup+0xde1/0x10f0 fs/ext4/orphan.c:432
+ __ext4_fill_super fs/ext4/super.c:5368 [inline]
+ ext4_fill_super+0xac9a/0xe830 fs/ext4/super.c:5507
+ get_tree_bdev+0x440/0x760 fs/super.c:1292
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1497
+ do_new_mount fs/namespace.c:3040 [inline]
+ path_mount+0x1320/0x1fa0 fs/namespace.c:3370
+ do_mount fs/namespace.c:3383 [inline]
+ __do_sys_mount fs/namespace.c:3591 [inline]
+ __se_sys_mount fs/namespace.c:3568 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3568
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fa6cfe974da
+Code: 83 c4 08 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc803cf6f8 EFLAGS: 00000206 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffc803cf750 RCX: 00007fa6cfe974da
+RDX: 0000000020000000 RSI: 0000000020000040 RDI: 00007ffc803cf710
+RBP: 00007ffc803cf710 R08: 00007ffc803cf750 R09: 0000000800000015
+R10: 0000000000000081 R11: 0000000000000206 R12: 0000000000000004
+R13: 0000000000000003 R14: 0000000000000003 R15: 0000000000000010
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:ext4_get_group_info+0x36e/0x3d0 fs/ext4/ext4.h:3319
+Code: ff 48 c7 c2 a0 b5 e2 89 be c3 02 00 00 48 c7 c7 00 b6 e2 89 c6 05 39 e3 89 0b 01 e8 fc 1d 16 07 e9 d9 fd ff ff e8 22 af 5d ff <0f> 0b e8 9b 76 aa ff e9 ea fc ff ff e8 91 76 aa ff e9 24 fd ff ff
+RSP: 0018:ffffc90002fcf210 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 00000000ffffffff RCX: 0000000000000000
+RDX: ffff888024b99d80 RSI: ffffffff821d2a9e RDI: 0000000000000004
+RBP: ffff888021e86000 R08: 0000000000000004 R09: 0000000000000001
+R10: 00000000ffffffff R11: 0000000000000001 R12: ffff888021ee2000
+R13: ffff888021ee2678 R14: 0000000000000001 R15: dffffc0000000000
+FS:  00005555570a1300(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffc803d0000 CR3: 0000000025559000 CR4: 0000000000350ef0
 
