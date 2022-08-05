@@ -2,111 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4871758AFE4
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Aug 2022 20:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B4658B01C
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Aug 2022 20:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241130AbiHESgH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 5 Aug 2022 14:36:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38866 "EHLO
+        id S241261AbiHES6a (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 5 Aug 2022 14:58:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238385AbiHESfy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 5 Aug 2022 14:35:54 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77369DFE2;
-        Fri,  5 Aug 2022 11:35:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 28C2EB80D83;
-        Fri,  5 Aug 2022 18:35:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5675C433D7;
-        Fri,  5 Aug 2022 18:35:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659724550;
-        bh=EQv+UvsRrAxVqCjRTPFq4HNln4t/Rpaq3UXlIzOheYI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FC6xPAsfpgcjFytX4DmHj01ESIMdhFh7ovpKkoggYZ9EpfrYbn1X/E2JTI7yulhK/
-         4/ULxbe2w2QSI32YMFAKYSFzte0w1qId2bfa4WWSWVBzRVJv3YlIGy62ihTO4cRLgF
-         2z3un+siyUbZVmTGCU9+GWfJYBDnaHodnaTDgBcmnlLlslUB7DFB8YDivMsfKB2GG5
-         s51GWHlxMxI90kl9c9rZTo2qJmIGYCmWgXkH7DdI4l8ZKauM7cyNAnn+5Ie0TKLR4/
-         +hU43YIkqc4ljEG3uuoPtDMLFNwZWO2WFcj0KgJ39ZdxpGzng9RpBIFk2YBT6Yt5TV
-         F8YHIVWRPTSag==
-From:   Jeff Layton <jlayton@kernel.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     dhowells@redhat.com, lczerner@redhat.com, bxue@redhat.com,
-        ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-afs@lists.infradead.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: [RFC PATCH 4/4] ceph: fill in the change attribute in statx requests
-Date:   Fri,  5 Aug 2022 14:35:43 -0400
-Message-Id: <20220805183543.274352-5-jlayton@kernel.org>
-X-Mailer: git-send-email 2.37.1
-In-Reply-To: <20220805183543.274352-1-jlayton@kernel.org>
+        with ESMTP id S237004AbiHES63 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 5 Aug 2022 14:58:29 -0400
+X-Greylist: delayed 356 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 05 Aug 2022 11:58:27 PDT
+Received: from mta-102a.earthlink-vadesecure.net (mta-102a.earthlink-vadesecure.net [51.81.61.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B7EF51A3A;
+        Fri,  5 Aug 2022 11:58:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; bh=xRsDc1qDSJw6d5P2BwD3yzRvNWXzLa25kh4CKC
+ 4heBo=; c=relaxed/relaxed; d=earthlink.net; h=from:reply-to:subject:
+ date:to:cc:resent-date:resent-from:resent-to:resent-cc:in-reply-to:
+ references:list-id:list-help:list-unsubscribe:list-subscribe:list-post:
+ list-owner:list-archive; q=dns/txt; s=dk12062016; t=1659725543;
+ x=1660330343; b=ZOCJ2QXBuVa9fLssHWMhpl3eaY+Uvfz5UgIVMdSmuSfXL54t08qjc4W
+ XuMhPdWj90+wkiRM9+zhl4cHnNmw/1r2asvCVFnUD7/CZBLYUDgv0wbJZguzs9cfEkT4jh3
+ WVZyTedMIsJEpFhqY/IzOVN11P0ziYpmnbYaNkv3Mrk9d7nOt0I4mJIxrdDdWo9TYNFPh18
+ sRXW6S8abeCD6q+tqF0FzfEZUiAiLMsE1fVFIPg7pKD49LRX/Tzh9lqwdtD+BMJmB1C2Y1S
+ i/nNkxB27CXwv7EhHx2j8vZZdDxSCI3wT/Rs+LR+lXTsh/RA6qZUL/j5Zpa/RVhs/rUOLD1
+ Khg==
+Received: from FRANKSTHINKPAD ([76.105.143.216])
+ by smtp.earthlink-vadesecure.net ESMTP vsel1nmtao02p with ngmta
+ id da041a6f-170887961dc98578; Fri, 05 Aug 2022 18:52:22 +0000
+From:   "Frank Filz" <ffilzlnx@mindspring.com>
+To:     "'Jeff Layton'" <jlayton@kernel.org>,
+        <linux-fsdevel@vger.kernel.org>
+Cc:     <dhowells@redhat.com>, <lczerner@redhat.com>, <bxue@redhat.com>,
+        <ceph-devel@vger.kernel.org>, <linux-nfs@vger.kernel.org>,
+        <linux-afs@lists.infradead.org>, <linux-ext4@vger.kernel.org>,
+        <linux-xfs@vger.kernel.org>, <linux-btrfs@vger.kernel.org>
 References: <20220805183543.274352-1-jlayton@kernel.org>
+In-Reply-To: <20220805183543.274352-1-jlayton@kernel.org>
+Subject: RE: [RFC PATCH 0/4] vfs: allow querying i_version via statx
+Date:   Fri, 5 Aug 2022 11:52:21 -0700
+Message-ID: <030701d8a8fc$7fae8b80$7f0ba280$@mindspring.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 15.0
+Content-Language: en-us
+Thread-Index: AQEtGZTJQmRjw345ne5MFo8sgZw3IK73xOQQ
+Authentication-Results: earthlink-vadesecure.net;
+ auth=pass smtp.auth=ffilzlnx@mindspring.com smtp.mailfrom=ffilzlnx@mindspring.com;
+X-Spam-Status: No, score=1.5 required=5.0 tests=BAYES_05,DKIM_SIGNED,
+        DKIM_VALID,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-When statx requests the change attribute, request the full gamut of caps
-(similarly to how ctime is handled). When the change attribute seems to
-be valid, return it in the chgattr field.
+> Recently I posted a patch to turn on the i_version counter unconditionally
+in
+> ext4, and Lukas rightly pointed out that we don't currently have an easy
+way to
+> validate its functionality. You can fetch it via NFS (and see it in
+network traces),
+> but there's no way to get to it from userland.
+> 
+> Besides testing, this may also be of use for userland NFS servers, or by
+any
+> program that wants to accurately check for file changes, and not be
+subject to
+> mtime granularity problems.
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- fs/ceph/inode.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+This would definitely be useful for NFS Ganesha.
 
-diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
-index 56c53ab3618e..fb2ed85f9083 100644
---- a/fs/ceph/inode.c
-+++ b/fs/ceph/inode.c
-@@ -2408,10 +2408,10 @@ static int statx_to_caps(u32 want, umode_t mode)
- {
- 	int mask = 0;
- 
--	if (want & (STATX_MODE|STATX_UID|STATX_GID|STATX_CTIME|STATX_BTIME))
-+	if (want & (STATX_MODE|STATX_UID|STATX_GID|STATX_CTIME|STATX_BTIME|STATX_CHGATTR))
- 		mask |= CEPH_CAP_AUTH_SHARED;
- 
--	if (want & (STATX_NLINK|STATX_CTIME)) {
-+	if (want & (STATX_NLINK|STATX_CTIME|STATX_CHGATTR)) {
- 		/*
- 		 * The link count for directories depends on inode->i_subdirs,
- 		 * and that is only updated when Fs caps are held.
-@@ -2422,11 +2422,10 @@ static int statx_to_caps(u32 want, umode_t mode)
- 			mask |= CEPH_CAP_LINK_SHARED;
- 	}
- 
--	if (want & (STATX_ATIME|STATX_MTIME|STATX_CTIME|STATX_SIZE|
--		    STATX_BLOCKS))
-+	if (want & (STATX_ATIME|STATX_MTIME|STATX_CTIME|STATX_SIZE| STATX_BLOCKS|STATX_CHGATTR))
- 		mask |= CEPH_CAP_FILE_SHARED;
- 
--	if (want & (STATX_CTIME))
-+	if (want & (STATX_CTIME|STATX_CHGATTR))
- 		mask |= CEPH_CAP_XATTR_SHARED;
- 
- 	return mask;
-@@ -2468,6 +2467,11 @@ int ceph_getattr(struct user_namespace *mnt_userns, const struct path *path,
- 		valid_mask |= STATX_BTIME;
- 	}
- 
-+	if (request_mask & STATX_CHGATTR) {
-+		stat->chgattr = inode_peek_iversion_raw(inode);
-+		valid_mask |= STATX_CHGATTR;
-+	}
-+
- 	if (ceph_snap(inode) == CEPH_NOSNAP)
- 		stat->dev = inode->i_sb->s_dev;
- 	else
--- 
-2.37.1
+Thanks
+
+Frank
+
+> Comments and suggestions welcome. I'm not 100% convinced that this is a
+> great idea, but we've had people ask for it before and it seems like a
+reasonable
+> thing to provide.
+> 
+> Jeff Layton (4):
+>   vfs: report change attribute in statx for IS_I_VERSION inodes
+>   nfs: report the change attribute if requested
+>   afs: fill out change attribute in statx replies
+>   ceph: fill in the change attribute in statx requests
+> 
+>  fs/afs/inode.c            |  2 ++
+>  fs/ceph/inode.c           | 14 +++++++++-----
+>  fs/nfs/inode.c            |  3 +++
+>  fs/stat.c                 |  7 +++++++
+>  include/linux/stat.h      |  1 +
+>  include/uapi/linux/stat.h |  3 ++-
+>  samples/vfs/test-statx.c  |  4 +++-
+>  7 files changed, 27 insertions(+), 7 deletions(-)
+> 
+> --
+> 2.37.1
 
