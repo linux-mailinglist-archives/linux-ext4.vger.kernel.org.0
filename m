@@ -2,81 +2,44 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C7C358B250
-	for <lists+linux-ext4@lfdr.de>; Sat,  6 Aug 2022 00:06:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D2058B25D
+	for <lists+linux-ext4@lfdr.de>; Sat,  6 Aug 2022 00:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241667AbiHEWGo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 5 Aug 2022 18:06:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57122 "EHLO
+        id S241438AbiHEWN3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 5 Aug 2022 18:13:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241626AbiHEWGn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 5 Aug 2022 18:06:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D121211C32
-        for <linux-ext4@vger.kernel.org>; Fri,  5 Aug 2022 15:06:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1659737199;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zlDrYXgDCUthUhiy73M1xjmezLFpu3vi4ADVmnqoFtM=;
-        b=IZZ179FP/9ItWRAObFFeQllCWkBijN1zarTlzOSekT8m1c3A8iTVUmVaq6T5F7iDd3PmTb
-        avuzWnfr3EWEru75w6hpPOONLYmtIZMJBYkkUKxndsoiko79gOZyrc2zPbaS+/0Crwpt9o
-        StmUl+KbQGTVG1O0yGhpdxAnAfcClWo=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-135-KpOga47ZNQSju1wEwxPoig-1; Fri, 05 Aug 2022 18:06:38 -0400
-X-MC-Unique: KpOga47ZNQSju1wEwxPoig-1
-Received: by mail-qv1-f71.google.com with SMTP id op9-20020a056214458900b00475a72eeb4dso2111789qvb.11
-        for <linux-ext4@vger.kernel.org>; Fri, 05 Aug 2022 15:06:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc;
-        bh=zlDrYXgDCUthUhiy73M1xjmezLFpu3vi4ADVmnqoFtM=;
-        b=VflJZp8jm4UyR7+hHHvzzNV8Oa28onhnM8fPJiRwhbPfnvOS9J1Lekdi9+4ZCnnrbi
-         oGMB4K0FQ4Jjk45i57upwzIrZN3dlHgFCfN7mUt7wnahwipYN9hD2iyj7qE1LrlJrQ03
-         hOQKU+putv5u+sezxMZC6zPG187pIbzvRxEZJ16v5aLLOg+ZrXT4ikgYOj00DKXB0KEQ
-         3u9cxM+4bndeStvEnCYhyQeLBpmwTd99C3UoQGFFHQHqJ24Xy2P6+rGP77erioRthqN7
-         3ZnV+JX1xPuswt+g3UVGCAKEEJhfYmWHTnIoHjf/kAdlI6X54oh3bUo3lNb19u/7fJfn
-         zrrQ==
-X-Gm-Message-State: ACgBeo0UcqTUOGum00wrcQBk5qqNJKWTBE+UC9znA3Q0Oy3AasXtzVYV
-        v8L76qhPKG5k0P5lo92kGnV3ltreGtFv0eYBl/0WblRPdq7efA1Oj4slFQK8Yjk76mSe1xE4ppd
-        wOiVbHBflOAWuk3WxgVnm5Q==
-X-Received: by 2002:a05:620a:170e:b0:6b8:fa02:6110 with SMTP id az14-20020a05620a170e00b006b8fa026110mr6704342qkb.184.1659737198077;
-        Fri, 05 Aug 2022 15:06:38 -0700 (PDT)
-X-Google-Smtp-Source: AA6agR7xEDaXjDnYGgwNPYVw0vUMBp/ecTy5raNl40Xwriy8H7D/VAv8N6Y/Htlz8LTyvWjvxbIRbw==
-X-Received: by 2002:a05:620a:170e:b0:6b8:fa02:6110 with SMTP id az14-20020a05620a170e00b006b8fa026110mr6704322qkb.184.1659737197860;
-        Fri, 05 Aug 2022 15:06:37 -0700 (PDT)
-Received: from [192.168.1.3] (68-20-15-154.lightspeed.rlghnc.sbcglobal.net. [68.20.15.154])
-        by smtp.gmail.com with ESMTPSA id g18-20020a05620a40d200b006b5f9b7ac87sm4514981qko.26.2022.08.05.15.06.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Aug 2022 15:06:37 -0700 (PDT)
-Message-ID: <c10e4aa381aea86bb51b005887533e28f9c7302b.camel@redhat.com>
-Subject: Re: [RFC PATCH 1/4] vfs: report change attribute in statx for
- IS_I_VERSION inodes
-From:   Jeff Layton <jlayton@redhat.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
-        lczerner@redhat.com, bxue@redhat.com, ceph-devel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Date:   Fri, 05 Aug 2022 18:06:36 -0400
-In-Reply-To: <20220805220136.GG3600936@dread.disaster.area>
-References: <20220805183543.274352-1-jlayton@kernel.org>
-         <20220805183543.274352-2-jlayton@kernel.org>
-         <20220805220136.GG3600936@dread.disaster.area>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.3 (3.44.3-1.fc36) 
+        with ESMTP id S241320AbiHEWN2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 5 Aug 2022 18:13:28 -0400
+Received: from omta002.cacentral1.a.cloudfilter.net (omta002.cacentral1.a.cloudfilter.net [3.97.99.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5794175BB
+        for <linux-ext4@vger.kernel.org>; Fri,  5 Aug 2022 15:13:26 -0700 (PDT)
+Received: from shw-obgw-4002a.ext.cloudfilter.net ([10.228.9.250])
+        by cmsmtp with ESMTP
+        id K0X7oYX5aSp39K5ZOoM5CK; Fri, 05 Aug 2022 22:13:26 +0000
+Received: from webber.adilger.int ([174.0.67.248])
+        by cmsmtp with ESMTP
+        id K5ZMol0YSC3uhK5ZMoFyVy; Fri, 05 Aug 2022 22:13:25 +0000
+X-Authority-Analysis: v=2.4 cv=a6MjSGeF c=1 sm=1 tr=0 ts=62ed9605
+ a=5skvQWjG3xExD1Ft+FuDHA==:117 a=5skvQWjG3xExD1Ft+FuDHA==:17 a=RPJ6JBhKAAAA:8
+ a=MvuuwTCpAAAA:8 a=lB0dNpNiAAAA:8 a=gNVM8dTUbziaowDnDuEA:9
+ a=fa_un-3J20JGBB2Tu-mn:22 a=dVHiktpip_riXrfdqayU:22 a=c-ZiYqmG3AbHTdtsH08C:22
+From:   Andreas Dilger <adilger@dilger.ca>
+To:     tytso@mit.edu
+Cc:     linux-ext4@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>,
+        Artem Blagodarenko <artem.blagodarenko@hpe.com>,
+        Li Dongyang <dongyangli@ddn.com>
+Subject: [PATCH resend] tests: fix ACL-printing tests
+Date:   Fri,  5 Aug 2022 16:13:00 -0600
+Message-Id: <20220805221259.23896-1-adilger@dilger.ca>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfDCpi4bJul5RDFUPcmfFb0i435tkAyjUVvRf5+AjI/Gs2MvrXshLg8cR8Nc8NCh+7oN4hF/owA1ruM76fcoaG0G9ygkUXmBxAJYQ0BwiHEeqe920uGWf
+ vzYgmNGD0y+ekd1l/OqTVLeMHrMu35mEQx/I3ufq+LY+ZP49ufJ+GbJVYmdlQ1SUTq/FsTRic38RayDVZ+3FnX11Sr37GUPY6I+gKdXG9WIiTyDL8teC2f3y
+ Osf3Jab20A6ztXsy9lCXsYkKzjmMilfRIxEMxKi7dOOIE+fOLTFBpbhdo9nYQuSL/s3r9d2PS1j4URAEIfFrNg==
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,60 +47,134 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, 2022-08-06 at 08:01 +1000, Dave Chinner wrote:
-> On Fri, Aug 05, 2022 at 02:35:40PM -0400, Jeff Layton wrote:
-> > From: Jeff Layton <jlayton@redhat.com>
-> >=20
-> > Claim one of the spare fields in struct statx to hold a 64-bit change
-> > attribute. When statx requests this attribute, do an
-> > inode_query_iversion and fill the result in the field.
-> >=20
-> > Also update the test-statx.c program to fetch the change attribute as
-> > well.
-> >=20
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > ---
-> >  fs/stat.c                 | 7 +++++++
-> >  include/linux/stat.h      | 1 +
-> >  include/uapi/linux/stat.h | 3 ++-
-> >  samples/vfs/test-statx.c  | 4 +++-
-> >  4 files changed, 13 insertions(+), 2 deletions(-)
-> >=20
-> > diff --git a/fs/stat.c b/fs/stat.c
-> > index 9ced8860e0f3..976e0a59ab23 100644
-> > --- a/fs/stat.c
-> > +++ b/fs/stat.c
-> > @@ -17,6 +17,7 @@
-> >  #include <linux/syscalls.h>
-> >  #include <linux/pagemap.h>
-> >  #include <linux/compat.h>
-> > +#include <linux/iversion.h>
-> > =20
-> >  #include <linux/uaccess.h>
-> >  #include <asm/unistd.h>
-> > @@ -118,6 +119,11 @@ int vfs_getattr_nosec(const struct path *path, str=
-uct kstat *stat,
-> >  	stat->attributes_mask |=3D (STATX_ATTR_AUTOMOUNT |
-> >  				  STATX_ATTR_DAX);
-> > =20
-> > +	if ((request_mask & STATX_CHGATTR) && IS_I_VERSION(inode)) {
-> > +		stat->result_mask |=3D STATX_CHGATTR;
-> > +		stat->chgattr =3D inode_query_iversion(inode);
-> > +	}
->=20
-> If you're going to add generic support for it, shouldn't there be a
-> generic test in fstests that ensures that filesystems that advertise
-> STATX_CHGATTR support actually behave correctly? Including across
-> mounts, and most importantly, that it is made properly stable by
-> fsync?
->=20
-> i.e. what good is this if different filesystems have random quirks
-> that mean it can't be relied on by userspace to tell it changes have
-> occurred?
+Fix the ACL-printing tests to be more flexible for different configs.
+If the MKFS_DIR is on tmpfs, it will not list "system.posix_acl*"
+xattrs, so they will not be copied.  Create this on a real filesystem
+or skip the test if that doesn't work.
 
-Absolutely. Being able to better test the i_version field for consistent
-behavior is a primary goal. I haven't yet written any yet, but we'd
-definitely want something in xfstests if we decide this is worthwhile.
---=20
-Jeff Layton <jlayton@redhat.com>
+Filter out the security.selinux xattr if it is printed, since this
+depends on the selinux configuration of the host system.  However,
+this also spills xattrs for "acl_dir/file" into an external xattr
+block, and causes it to fail due to different block allocations.
+Increase the filesystem inode size so that the allocation is the same
+regardless of whether selinux is enabled or not.
+
+Change-Id: I82d2795f9fde7420f36d7c468a96ebe5f448a491
+Fixes: 67e6ae0a35 ("mke2fs: fix a importing a directory with an ACL")
+Signed-off-by: Andreas Dilger <adilger@dilger.ca>
+Reviewed-by: Artem Blagodarenko <artem.blagodarenko@hpe.com>
+Reviewed-by: Li Dongyang <dongyangli@ddn.com>
+---
+ tests/filter.sed           |  1 +
+ tests/m_rootdir_acl/expect | 18 +++++++++---------
+ tests/m_rootdir_acl/script | 13 +++++++++----
+ 3 files changed, 19 insertions(+), 13 deletions(-)
+
+diff --git a/tests/filter.sed b/tests/filter.sed
+index 796186e7..5fd68f34 100644
+--- a/tests/filter.sed
++++ b/tests/filter.sed
+@@ -20,6 +20,7 @@ s/\\015//g
+ /^Maximum mount count:/d
+ /^Next check after:/d
+ /^Suggestion:/d
++/security.selinux/d
+ /Reserved blocks uid:/s/ (user .*)//
+ /Reserved blocks gid:/s/ (group .*)//
+ /whichever comes first/d
+diff --git a/tests/m_rootdir_acl/expect b/tests/m_rootdir_acl/expect
+index babd8025..57f03e5c 100644
+--- a/tests/m_rootdir_acl/expect
++++ b/tests/m_rootdir_acl/expect
+@@ -10,8 +10,8 @@ Filesystem OS type:       Linux
+ Inode count:              1024
+ Block count:              16384
+ Reserved block count:     819
+-Overhead clusters:        1543
+-Free blocks:              14788
++Overhead clusters:        1799
++Free blocks:              14533
+ Free inodes:              1003
+ First block:              1
+ Block size:               1024
+@@ -21,14 +21,14 @@ Reserved GDT blocks:      127
+ Blocks per group:         8192
+ Fragments per group:      8192
+ Inodes per group:         512
+-Inode blocks per group:   128
++Inode blocks per group:   256
+ Flex block group size:    16
+ Mount count:              0
+ Check interval:           15552000 (6 months)
+ Reserved blocks uid:      0
+ Reserved blocks gid:      0
+ First inode:              11
+-Inode size:	          256
++Inode size:	          512
+ Required extra isize:     32
+ Desired extra isize:      32
+ Journal inode:            8
+@@ -49,16 +49,16 @@ Group 0: (Blocks 1-8192)
+   Reserved GDT blocks at 3-129
+   Block bitmap at 130 (+129)
+   Inode bitmap at 132 (+131)
+-  Inode table at 134-261 (+133)
+-  7750 free blocks, 491 free inodes, 5 directories, 491 unused inodes
+-  Free blocks: 443-8192
++  Inode table at 134-389 (+133)
++  7495 free blocks, 491 free inodes, 5 directories, 491 unused inodes
++  Free blocks: 698-8192
+   Free inodes: 22-512
+ Group 1: (Blocks 8193-16383) [INODE_UNINIT]
+   Backup superblock at 8193, Group descriptors at 8194-8194
+   Reserved GDT blocks at 8195-8321
+   Block bitmap at 131 (bg #0 + 130)
+   Inode bitmap at 133 (bg #0 + 132)
+-  Inode table at 262-389 (bg #0 + 261)
++  Inode table at 390-645 (bg #0 + 389)
+   7038 free blocks, 512 free inodes, 0 directories, 512 unused inodes
+   Free blocks: 9346-16383
+   Free inodes: 513-1024
+@@ -116,4 +116,4 @@ Pass 2: Checking directory structure
+ Pass 3: Checking directory connectivity
+ Pass 4: Checking reference counts
+ Pass 5: Checking group summary information
+-test.img: 21/1024 files (0.0% non-contiguous), 1596/16384 blocks
++test.img: 21/1024 files (0.0% non-contiguous), 1851/16384 blocks
+diff --git a/tests/m_rootdir_acl/script b/tests/m_rootdir_acl/script
+index e81c82ce..a00e4c42 100644
+--- a/tests/m_rootdir_acl/script
++++ b/tests/m_rootdir_acl/script
+@@ -16,12 +16,10 @@ if [ "$os" = "GNU" ]; then
+ 	return 0
+ fi
+ 
+-MKFS_DIR=$TMPFILE.dir
++MKFS_DIR=$(mktemp -d ./$test_name-XXXXXX.tmp)
+ OUT=$test_name.log
+ EXP=$test_dir/expect
+ 
+-rm -rf $MKFS_DIR
+-mkdir -p $MKFS_DIR
+ touch $MKFS_DIR/emptyfile
+ dd if=/dev/zero bs=1024 count=32 2> /dev/null | tr '\0' 'a' > $MKFS_DIR/bigfile
+ echo "M" | dd of=$MKFS_DIR/sparsefile bs=1 count=1 seek=1024 2> /dev/null
+@@ -60,7 +58,14 @@ mask::r-x
+ other::r-x
+ EOF
+ 
+-$MKE2FS -q -F -o Linux -T ext4 -O metadata_csum,inline_data,64bit -E lazy_itable_init=1 -b 1024 -d $MKFS_DIR $TMPFILE 16384 > $OUT 2>&1
++if ! getfattr -d -m - $MKFS_DIR/acl_dir | grep -q posix_acl; then
++	echo "$test_name: $test_description: skipped (no posix_acl xattrs)"
++	rm -rf $MKFS_DIR
++	return 0
++fi
++
++# use 512-byte inodes so with/out security.selinux xattr doesn't fail
++$MKE2FS -q -F -o Linux -T ext4 -I 512 -O metadata_csum,inline_data,64bit -E lazy_itable_init=1 -b 1024 -d $MKFS_DIR $TMPFILE 16384 > $OUT 2>&1
+ 
+ $DUMPE2FS $TMPFILE >> $OUT 2>&1
+ cat > $TMPFILE.cmd << ENDL
+-- 
+2.25.1
 
