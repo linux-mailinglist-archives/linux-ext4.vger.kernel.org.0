@@ -2,52 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A13758AA4E
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Aug 2022 13:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 831B058AAD1
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Aug 2022 14:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237631AbiHELqf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 5 Aug 2022 07:46:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34382 "EHLO
+        id S240671AbiHEMXV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 5 Aug 2022 08:23:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235249AbiHELqe (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 5 Aug 2022 07:46:34 -0400
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E60931238
-        for <linux-ext4@vger.kernel.org>; Fri,  5 Aug 2022 04:46:33 -0700 (PDT)
-Received: by mail-io1-f72.google.com with SMTP id z11-20020a05660217cb00b0067c63cf0236so1256776iox.13
-        for <linux-ext4@vger.kernel.org>; Fri, 05 Aug 2022 04:46:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc;
-        bh=0VzqJygc5Za6Af8Uvt2WofNNb8ZfUsjKpLmF8pLSvZk=;
-        b=QJPGLfq66i6gkYHxzlkjq8kRcU2QhMyP99PBUWWCjF/rl3cxufIvXFU8D92uXdmFEa
-         f0ZL27kN18SM8zeK7ky5gEyQsDe8XFDgsgKcqqVkMVKYpL6AbBUk9j50w/nqmxjziGYe
-         UZ4cAmX+/Rrsm50I4V+K4F065b8z9YeG/Ro1H04E46EsMjEdxaLJYBfr3huAO0gicRVs
-         vwAdlAHaW9lCzh8gG8nTWq82wLE31x/CanZO4GzMdR2sIf23WSkdi1KpCJd2jrkEj4UH
-         yB5KkJj7D+CqageALN44tvTlwGd63Hb22B+VrBQgZd1AWrn/jK4c9jNVqTcPaokyZtz2
-         iIHw==
-X-Gm-Message-State: ACgBeo1KeFfjRAGOZpAa9Ztvrci1C9mxA3ftfyzh3VXL2HaR30YQRjdD
-        SCiyQ+ovVupI1Gmv/csVp1aoOVz32wlemQI9xa2e5F80vVub
-X-Google-Smtp-Source: AA6agR7Cipv2HUy00gO8pSrxtUAcvbMrVKwx77m//+jLEVApWjB/QxRWVj/of4qt3UGst/LEqj9r4gC9iaNUN/3II7mQs+huBpr1
+        with ESMTP id S236449AbiHEMXU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 5 Aug 2022 08:23:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 02B8D264B
+        for <linux-ext4@vger.kernel.org>; Fri,  5 Aug 2022 05:23:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1659702197;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6XfQitbedfzAjVF7NuSHjlQLXbv3BgZJq1rQlqHH/PQ=;
+        b=IlZPTxndxSVA/CizdjUBuWKiIF6lIO08dcp/DDEK7XjDG0Ku4hgJ1iuRLM87A2q4VNjbJr
+        Qe1fBf9Ui4HlYYeKKm3j5M0MRZ9/PrE8sKyKEabKXw5ge+XFnkCnoBHHIh11/Z0iGjwjh4
+        UqGavuY/cn8yqzx/Jy3T+Aq5Yo1Btsc=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-367-vEsnCNv3NgqZcY_wQER0ng-1; Fri, 05 Aug 2022 08:23:13 -0400
+X-MC-Unique: vEsnCNv3NgqZcY_wQER0ng-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9C2893C138B3;
+        Fri,  5 Aug 2022 12:23:10 +0000 (UTC)
+Received: from fedora (unknown [10.40.193.205])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0F6392026D4C;
+        Fri,  5 Aug 2022 12:23:08 +0000 (UTC)
+Date:   Fri, 5 Aug 2022 14:23:06 +0200
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-ext4@vger.kernel.org, jlayton@kernel.org, tytso@mit.edu,
+        linux-fsdevel@vger.kernel.org, Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH v2 2/3] fs: record I_DIRTY_TIME even if inode already has
+ I_DIRTY_INODE
+Message-ID: <20220805122306.anavrrmt6lqwd2yt@fedora>
+References: <20220803105340.17377-1-lczerner@redhat.com>
+ <20220803105340.17377-2-lczerner@redhat.com>
+ <YuzPWfCuVNkmar2n@sol.localdomain>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c0e:b0:2df:622c:37cd with SMTP id
- l14-20020a056e021c0e00b002df622c37cdmr2989419ilh.234.1659699992516; Fri, 05
- Aug 2022 04:46:32 -0700 (PDT)
-Date:   Fri, 05 Aug 2022 04:46:32 -0700
-In-Reply-To: <0000000000008f6d2005c9e53c59@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007ce13a05e57d0418@google.com>
-Subject: Re: [syzbot] kernel BUG in ext4_get_group_info
-From:   syzbot <syzbot+e2efa3efc15a1c9e95c3@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YuzPWfCuVNkmar2n@sol.localdomain>
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.4
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,89 +63,74 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Fri, Aug 05, 2022 at 01:05:45AM -0700, Eric Biggers wrote:
+> On Wed, Aug 03, 2022 at 12:53:39PM +0200, Lukas Czerner wrote:
+> > diff --git a/include/linux/fs.h b/include/linux/fs.h
+> > index 9ad5e3520fae..2243797badf2 100644
+> > --- a/include/linux/fs.h
+> > +++ b/include/linux/fs.h
+> > @@ -2245,9 +2245,9 @@ static inline void kiocb_clone(struct kiocb *kiocb, struct kiocb *kiocb_src,
+> >   *			The inode itself only has dirty timestamps, and the
+> >   *			lazytime mount option is enabled.  We keep track of this
+> >   *			separately from I_DIRTY_SYNC in order to implement
+> >   *			lazytime.  This gets cleared if I_DIRTY_INODE
+> > - *			(I_DIRTY_SYNC and/or I_DIRTY_DATASYNC) gets set.  I.e.
+> > - *			either I_DIRTY_TIME *or* I_DIRTY_INODE can be set in
+> > - *			i_state, but not both.  I_DIRTY_PAGES may still be set.
+> > + *			(I_DIRTY_SYNC and/or I_DIRTY_DATASYNC) gets set. But
+> > + *			I_DIRTY_TIME can still be set if I_DIRTY_SYNC is already
+> > + *			in place.
+> 
+> I'm still having a hard time understanding the new semantics.  The first
+> sentence above needs to be updated since I_DIRTY_TIME no longer means "the inode
+> itself only has dirty timestamps", right?
 
-HEAD commit:    200e340f2196 Merge tag 'pull-work.dcache' of git://git.ker..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=15a655b6080000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a3f4d6985d3164cd
-dashboard link: https://syzkaller.appspot.com/bug?extid=e2efa3efc15a1c9e95c3
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13b248e1080000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11ba3e3e080000
+The problem is that it was always assumed that I_DIRTY_INODE superseeds
+I_DIRTY_TIME and so it would get cleared in __mark_inode_dirty() when we
+have I_DIRTY_INODE. That's true, we call sb->s_op->dirty_inode(), the
+time update gets pushed into on-disk inode structure, I_DIRTY_TIME
+cleared and it will get queued for writeback.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e2efa3efc15a1c9e95c3@syzkaller.appspotmail.com
+Any subsequent dirtying with I_DIRTY_TIME gets ignored simply because
+I_DIRTY_INODE is already set in i_state. But in ext4 this time update
+will never get pushed into on disk inode and there is no I_DIRTY_TIME so
+once the writeback is done we've lost all those I_DIRTY_TIME updates in
+between even if there was a sync.
 
-EXT4-fs (loop0): ext4_check_descriptors: Checksum for group 0 failed (14603!=0)
-EXT4-fs (loop0): orphan cleanup on readonly fs
-EXT4-fs error (device loop0): ext4_mb_clear_bb:5962: comm syz-executor137: Freeing blocks in system zone - Block = 16, count = 16
-EXT4-fs (loop0): Remounting filesystem read-only
-------------[ cut here ]------------
-kernel BUG at fs/ext4/ext4.h:3319!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 3607 Comm: syz-executor137 Not tainted 5.19.0-syzkaller-02972-g200e340f2196 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/22/2022
-RIP: 0010:ext4_get_group_info+0x36e/0x3d0 fs/ext4/ext4.h:3319
-Code: ff 48 c7 c2 a0 b5 e2 89 be c3 02 00 00 48 c7 c7 00 b6 e2 89 c6 05 39 e3 89 0b 01 e8 fc 1d 16 07 e9 d9 fd ff ff e8 22 af 5d ff <0f> 0b e8 9b 76 aa ff e9 ea fc ff ff e8 91 76 aa ff e9 24 fd ff ff
-RSP: 0018:ffffc90002fcf210 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 00000000ffffffff RCX: 0000000000000000
-RDX: ffff888024b99d80 RSI: ffffffff821d2a9e RDI: 0000000000000004
-RBP: ffff888021e86000 R08: 0000000000000004 R09: 0000000000000001
-R10: 00000000ffffffff R11: 0000000000000001 R12: ffff888021ee2000
-R13: ffff888021ee2678 R14: 0000000000000001 R15: dffffc0000000000
-FS:  00005555570a1300(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000005ded08 CR3: 0000000025559000 CR4: 0000000000350ee0
-Call Trace:
- <TASK>
- ext4_mb_clear_bb fs/ext4/mballoc.c:5935 [inline]
- ext4_free_blocks+0x4a2/0x2060 fs/ext4/mballoc.c:6185
- ext4_clear_blocks+0x329/0x430 fs/ext4/indirect.c:880
- ext4_free_data+0x1a3/0x3e0 fs/ext4/indirect.c:954
- ext4_ind_truncate+0x6a2/0x950 fs/ext4/indirect.c:1146
- ext4_truncate+0x696/0x1440 fs/ext4/inode.c:4244
- ext4_evict_inode+0xa5f/0x1970 fs/ext4/inode.c:284
- evict+0x2ed/0x6b0 fs/inode.c:664
- iput_final fs/inode.c:1744 [inline]
- iput.part.0+0x562/0x820 fs/inode.c:1770
- iput+0x58/0x70 fs/inode.c:1760
- ext4_quota_enable fs/ext4/super.c:6781 [inline]
- ext4_enable_quotas+0x5c4/0xb70 fs/ext4/super.c:6804
- ext4_orphan_cleanup+0xde1/0x10f0 fs/ext4/orphan.c:432
- __ext4_fill_super fs/ext4/super.c:5368 [inline]
- ext4_fill_super+0xac9a/0xe830 fs/ext4/super.c:5507
- get_tree_bdev+0x440/0x760 fs/super.c:1292
- vfs_get_tree+0x89/0x2f0 fs/super.c:1497
- do_new_mount fs/namespace.c:3040 [inline]
- path_mount+0x1320/0x1fa0 fs/namespace.c:3370
- do_mount fs/namespace.c:3383 [inline]
- __do_sys_mount fs/namespace.c:3591 [inline]
- __se_sys_mount fs/namespace.c:3568 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3568
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fa6cfe974da
-Code: 83 c4 08 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc803cf6f8 EFLAGS: 00000206 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffc803cf750 RCX: 00007fa6cfe974da
-RDX: 0000000020000000 RSI: 0000000020000040 RDI: 00007ffc803cf710
-RBP: 00007ffc803cf710 R08: 00007ffc803cf750 R09: 0000000800000015
-R10: 0000000000000081 R11: 0000000000000206 R12: 0000000000000004
-R13: 0000000000000003 R14: 0000000000000003 R15: 0000000000000010
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:ext4_get_group_info+0x36e/0x3d0 fs/ext4/ext4.h:3319
-Code: ff 48 c7 c2 a0 b5 e2 89 be c3 02 00 00 48 c7 c7 00 b6 e2 89 c6 05 39 e3 89 0b 01 e8 fc 1d 16 07 e9 d9 fd ff ff e8 22 af 5d ff <0f> 0b e8 9b 76 aa ff e9 ea fc ff ff e8 91 76 aa ff e9 24 fd ff ff
-RSP: 0018:ffffc90002fcf210 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 00000000ffffffff RCX: 0000000000000000
-RDX: ffff888024b99d80 RSI: ffffffff821d2a9e RDI: 0000000000000004
-RBP: ffff888021e86000 R08: 0000000000000004 R09: 0000000000000001
-R10: 00000000ffffffff R11: 0000000000000001 R12: ffff888021ee2000
-R13: ffff888021ee2678 R14: 0000000000000001 R15: dffffc0000000000
-FS:  00005555570a1300(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffc803d0000 CR3: 0000000025559000 CR4: 0000000000350ef0
+Now, we still clear I_DIRTY_TIME when we get I_DIRTY_INODE, but any
+subsequent I_DIRTY_TIME only updates won't be ignored and we set it into
+i_state. After the writeback is done it'll be moved to b_dirty_time
+list.
+
+So I am not sure how would you like it to be re-worded, simply removing
+the 'only' would be ok?
+
+> 
+> Also, have you checked all the places that I_DIRTY_TIME is used and verified
+> they do the right thing now?  What about inode_is_dirtytime_only()?
+
+Yes, that's fine, despite the slightly misleading name ;)
+
+> 
+> Also what is the precise meaning of the flags argument to ->dirty_inode now?
+> 
+> 	sb->s_op->dirty_inode(inode,
+> 			flags & (I_DIRTY_INODE | I_DIRTY_TIME));
+> 
+> Note that dirty_inode is documented in Documentation/filesystems/vfs.rst.
+
+Don't know. It alredy don't mention I_DIRTY_SYNC that can be there as
+well. Additionaly it can have I_DIRTY_TIME to inform the fs we have a
+dirty timestamp as well (in case of lazytime).
+
+Perhaps we can add:
+
+If the inode has dirty timestamp and lazytime is enabled I_DIRTY_TIME
+will be set in the flags.
+
+-Lukas
+
+> 
+> - Eric
+> 
 
