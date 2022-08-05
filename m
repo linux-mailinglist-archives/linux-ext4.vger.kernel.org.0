@@ -2,49 +2,43 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3284358B247
-	for <lists+linux-ext4@lfdr.de>; Sat,  6 Aug 2022 00:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9523658B256
+	for <lists+linux-ext4@lfdr.de>; Sat,  6 Aug 2022 00:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241705AbiHEWCZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 5 Aug 2022 18:02:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53110 "EHLO
+        id S241674AbiHEWHF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 5 Aug 2022 18:07:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241752AbiHEWCG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 5 Aug 2022 18:02:06 -0400
-Received: from mail105.syd.optusnet.com.au (mail105.syd.optusnet.com.au [211.29.132.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 89869C56;
-        Fri,  5 Aug 2022 15:01:41 -0700 (PDT)
-Received: from dread.disaster.area (pa49-181-193-158.pa.nsw.optusnet.com.au [49.181.193.158])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id F185C10C8D49;
-        Sat,  6 Aug 2022 08:01:38 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1oK5Nw-009cbF-Vo; Sat, 06 Aug 2022 08:01:37 +1000
-Date:   Sat, 6 Aug 2022 08:01:36 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
-        lczerner@redhat.com, bxue@redhat.com, ceph-devel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, Jeff Layton <jlayton@redhat.com>
-Subject: Re: [RFC PATCH 1/4] vfs: report change attribute in statx for
- IS_I_VERSION inodes
-Message-ID: <20220805220136.GG3600936@dread.disaster.area>
-References: <20220805183543.274352-1-jlayton@kernel.org>
- <20220805183543.274352-2-jlayton@kernel.org>
+        with ESMTP id S241779AbiHEWHC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 5 Aug 2022 18:07:02 -0400
+Received: from omta002.cacentral1.a.cloudfilter.net (omta002.cacentral1.a.cloudfilter.net [3.97.99.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A50E1263D
+        for <linux-ext4@vger.kernel.org>; Fri,  5 Aug 2022 15:07:00 -0700 (PDT)
+Received: from shw-obgw-4002a.ext.cloudfilter.net ([10.228.9.250])
+        by cmsmtp with ESMTP
+        id K0X7oYX5VSp39K5TAoM3Yt; Fri, 05 Aug 2022 22:07:00 +0000
+Received: from webber.adilger.int ([174.0.67.248])
+        by cmsmtp with ESMTP
+        id K5T9okyXUC3uhK5T9oFxTi; Fri, 05 Aug 2022 22:07:00 +0000
+X-Authority-Analysis: v=2.4 cv=a6MjSGeF c=1 sm=1 tr=0 ts=62ed9484
+ a=5skvQWjG3xExD1Ft+FuDHA==:117 a=5skvQWjG3xExD1Ft+FuDHA==:17 a=RPJ6JBhKAAAA:8
+ a=lB0dNpNiAAAA:8 a=3-nrOBMCGvy0Alq09_cA:9 a=fa_un-3J20JGBB2Tu-mn:22
+ a=c-ZiYqmG3AbHTdtsH08C:22
+From:   Andreas Dilger <adilger@dilger.ca>
+To:     tytso@mit.edu
+Cc:     linux-ext4@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>,
+        Dongyang Li <dongyang@ddn.com>
+Subject: [PATCH] debugfs: quiet debugfs 'catastrophic' message
+Date:   Fri,  5 Aug 2022 16:06:07 -0600
+Message-Id: <20220805220606.11994-1-adilger@dilger.ca>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220805183543.274352-2-jlayton@kernel.org>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.4 cv=OJNEYQWB c=1 sm=1 tr=0 ts=62ed9344
-        a=SeswVvpAPK2RnNNwqI8AaA==:117 a=SeswVvpAPK2RnNNwqI8AaA==:17
-        a=kj9zAlcOel0A:10 a=biHskzXt2R4A:10 a=20KFwNOVAAAA:8 a=VwQbUJbxAAAA:8
-        a=7-415B0cAAAA:8 a=eNa5g1wEO3mvbst8HCwA:9 a=CjuIK1q_8ugA:10
-        a=AjGcO6oz07-iQ99wixmX:22 a=biEYGPWJfzWAr4FL6Ov7:22
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfFZbv4t6dnrvukfs30rdBQwXSzwqqGB3rMJy1yZH07Elwf0LAt1HFWueOT+a6S48uxGu3//U2RJ7jHFFD/RgxWm9esiP3pWM0i/3adKV2QEMzO0Pp+Wu
+ jnY0zl+oR06wH17V/3H/BAR6kHig8z2on/BJu+Iqh7FwSeJULSzI3z9oEjRHelSwHWNpl05U+4BWSZDKxdjVB61Lr2UjIDrnsDyElVdZzY1sTrwjIrlBqKoi
+ qe1qPW/18MGe1hv48wB9Y6AGnLabQXT/uruo7xcI+Z4=
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,58 +46,45 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Aug 05, 2022 at 02:35:40PM -0400, Jeff Layton wrote:
-> From: Jeff Layton <jlayton@redhat.com>
-> 
-> Claim one of the spare fields in struct statx to hold a 64-bit change
-> attribute. When statx requests this attribute, do an
-> inode_query_iversion and fill the result in the field.
-> 
-> Also update the test-statx.c program to fetch the change attribute as
-> well.
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  fs/stat.c                 | 7 +++++++
->  include/linux/stat.h      | 1 +
->  include/uapi/linux/stat.h | 3 ++-
->  samples/vfs/test-statx.c  | 4 +++-
->  4 files changed, 13 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/stat.c b/fs/stat.c
-> index 9ced8860e0f3..976e0a59ab23 100644
-> --- a/fs/stat.c
-> +++ b/fs/stat.c
-> @@ -17,6 +17,7 @@
->  #include <linux/syscalls.h>
->  #include <linux/pagemap.h>
->  #include <linux/compat.h>
-> +#include <linux/iversion.h>
->  
->  #include <linux/uaccess.h>
->  #include <asm/unistd.h>
-> @@ -118,6 +119,11 @@ int vfs_getattr_nosec(const struct path *path, struct kstat *stat,
->  	stat->attributes_mask |= (STATX_ATTR_AUTOMOUNT |
->  				  STATX_ATTR_DAX);
->  
-> +	if ((request_mask & STATX_CHGATTR) && IS_I_VERSION(inode)) {
-> +		stat->result_mask |= STATX_CHGATTR;
-> +		stat->chgattr = inode_query_iversion(inode);
-> +	}
+When debugfs runs with "-c", it prints a scary-looking message:
 
-If you're going to add generic support for it, shouldn't there be a
-generic test in fstests that ensures that filesystems that advertise
-STATX_CHGATTR support actually behave correctly? Including across
-mounts, and most importantly, that it is made properly stable by
-fsync?
+    catastrophic mode - not reading inode or group bitmaps
 
-i.e. what good is this if different filesystems have random quirks
-that mean it can't be relied on by userspace to tell it changes have
-occurred?
+that is often misunderstood by users to mean that there is something
+wrong with the filesystem, when there is no problem at all.
 
-Cheers,
+Not reading the bitmaps is totally normal and expected behavior for
+the "-c" option, which is used to significantly shorten the debugfs
+command execution time by not reading metadata that isn't needed for
+commands run against very large filesystems.
 
-Dave.
+Since there is often confusion about what this message means, it
+would be better to just avoid printing anything at all, since the
+use of "-c" is expressly requesting this behavior, and there are
+no messages printed out for other options.
+
+Signed-off-by: Andreas Dilger <adilger@dilger.ca>
+Reviewed-by: Dongyang Li <dongyang@ddn.com>
+Change-Id: I59b26a601780544ab995aa4ca7ab0c2123c70118
+---
+ debugfs/debugfs.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/debugfs/debugfs.c b/debugfs/debugfs.c
+index b67a88bc..78b93eda 100644
+--- a/debugfs/debugfs.c
++++ b/debugfs/debugfs.c
+@@ -195,9 +195,7 @@ try_open_again:
+ 	}
+ 	current_fs->default_bitmap_type = EXT2FS_BMAP64_RBTREE;
+ 
+-	if (catastrophic)
+-		com_err(device, 0, "catastrophic mode - not reading inode or group bitmaps");
+-	else {
++	if (!catastrophic) {
+ 		retval = ext2fs_read_bitmaps(current_fs);
+ 		if (retval) {
+ 			com_err(device, retval,
 -- 
-Dave Chinner
-david@fromorbit.com
+2.25.1
+
