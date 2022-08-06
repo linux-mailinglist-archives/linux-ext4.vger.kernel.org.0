@@ -2,44 +2,43 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D2058B25D
-	for <lists+linux-ext4@lfdr.de>; Sat,  6 Aug 2022 00:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 734BB58B3A3
+	for <lists+linux-ext4@lfdr.de>; Sat,  6 Aug 2022 06:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241438AbiHEWN3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 5 Aug 2022 18:13:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
+        id S239002AbiHFEDG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 6 Aug 2022 00:03:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241320AbiHEWN2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 5 Aug 2022 18:13:28 -0400
-Received: from omta002.cacentral1.a.cloudfilter.net (omta002.cacentral1.a.cloudfilter.net [3.97.99.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5794175BB
-        for <linux-ext4@vger.kernel.org>; Fri,  5 Aug 2022 15:13:26 -0700 (PDT)
-Received: from shw-obgw-4002a.ext.cloudfilter.net ([10.228.9.250])
-        by cmsmtp with ESMTP
-        id K0X7oYX5aSp39K5ZOoM5CK; Fri, 05 Aug 2022 22:13:26 +0000
-Received: from webber.adilger.int ([174.0.67.248])
-        by cmsmtp with ESMTP
-        id K5ZMol0YSC3uhK5ZMoFyVy; Fri, 05 Aug 2022 22:13:25 +0000
-X-Authority-Analysis: v=2.4 cv=a6MjSGeF c=1 sm=1 tr=0 ts=62ed9605
- a=5skvQWjG3xExD1Ft+FuDHA==:117 a=5skvQWjG3xExD1Ft+FuDHA==:17 a=RPJ6JBhKAAAA:8
- a=MvuuwTCpAAAA:8 a=lB0dNpNiAAAA:8 a=gNVM8dTUbziaowDnDuEA:9
- a=fa_un-3J20JGBB2Tu-mn:22 a=dVHiktpip_riXrfdqayU:22 a=c-ZiYqmG3AbHTdtsH08C:22
-From:   Andreas Dilger <adilger@dilger.ca>
-To:     tytso@mit.edu
-Cc:     linux-ext4@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>,
-        Artem Blagodarenko <artem.blagodarenko@hpe.com>,
-        Li Dongyang <dongyangli@ddn.com>
-Subject: [PATCH resend] tests: fix ACL-printing tests
-Date:   Fri,  5 Aug 2022 16:13:00 -0600
-Message-Id: <20220805221259.23896-1-adilger@dilger.ca>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S241461AbiHFEDF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 6 Aug 2022 00:03:05 -0400
+Received: from out28-74.mail.aliyun.com (out28-74.mail.aliyun.com [115.124.28.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643A214014;
+        Fri,  5 Aug 2022 21:03:00 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08715575|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.154924-0.00444291-0.840633;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047201;MF=michael@allwinnertech.com;NM=1;PH=DS;RN=6;RT=6;SR=0;TI=SMTPD_---.OnDAFCd_1659758542;
+Received: from 192.168.220.136(mailfrom:michael@allwinnertech.com fp:SMTPD_---.OnDAFCd_1659758542)
+          by smtp.aliyun-inc.com;
+          Sat, 06 Aug 2022 12:02:25 +0800
+Message-ID: <ff062259-3c94-ddd2-4376-53b4cbd25e7d@allwinnertech.com>
+Date:   Sat, 6 Aug 2022 12:02:22 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfDCpi4bJul5RDFUPcmfFb0i435tkAyjUVvRf5+AjI/Gs2MvrXshLg8cR8Nc8NCh+7oN4hF/owA1ruM76fcoaG0G9ygkUXmBxAJYQ0BwiHEeqe920uGWf
- vzYgmNGD0y+ekd1l/OqTVLeMHrMu35mEQx/I3ufq+LY+ZP49ufJ+GbJVYmdlQ1SUTq/FsTRic38RayDVZ+3FnX11Sr37GUPY6I+gKdXG9WIiTyDL8teC2f3y
- Osf3Jab20A6ztXsy9lCXsYkKzjmMilfRIxEMxKi7dOOIE+fOLTFBpbhdo9nYQuSL/s3r9d2PS1j4URAEIfFrNg==
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH] ext4: fix error when itable blocks is greater than
+ s_itb_per_group
+Content-Language: en-US
+To:     Theodore Ts'o <tytso@mit.edu>, Lukas Czerner <lczerner@redhat.com>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        allwinner-opensource-support@allwinnertech.com
+References: <20220802021029.16046-1-michael@allwinnertech.com>
+ <20220803071859.elywnni2yfol4bea@fedora> <Yussl4uRWAAO3TtT@mit.edu>
+From:   Michael Wu <michael@allwinnertech.com>
+In-Reply-To: <Yussl4uRWAAO3TtT@mit.edu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -47,134 +46,46 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Fix the ACL-printing tests to be more flexible for different configs.
-If the MKFS_DIR is on tmpfs, it will not list "system.posix_acl*"
-xattrs, so they will not be copied.  Create this on a real filesystem
-or skip the test if that doesn't work.
+On 8/4/2022 10:19 AM, Theodore Ts'o wrote:
+> On Wed, Aug 03, 2022 at 09:18:59AM +0200, Lukas Czerner wrote:
+>>
+>> Hi Michael,
+>>
+>> mke2fs is making sure that we completely fill the inote table blocks.
+>> This is a corrupted image and so AFAICT ext4 is doing the right thing
+>> here. There does not seem to be a problem to fix, unless you can somehow
+>> trick mke2fs to make a file system like this.
+> 
+> Several years ago, android was shipping a bogus/busted
+> reimeplementation of mke2fs, reportedly because a certain founder of
+> Android (cough, Andy Rubin, cough) was alergic to the GPL.  ("The
+> problem with GPL in embedded systems [such as smartphones and tablets]
+> is that it's viral...")  This bogus reimplementation would create file
+> systems where the number of inodes per block group was a multiple of 4
+> instead of 8.  But, it was under the BSD license, so it was all good!   :-/
+> 
+> This bogus reimplementation of mkfs would, 50% of the time, create
+> busted file systems which couldn't be fixed, if they got corrupted, by
+> e2fsck.  This is because e2fsprogs' allocation bitmap code assumes
+> that you can back the bitarray into a single contiguous memory block
+> --- and this doesn't work if the number of inodes per block group is
+> not a multiple of 8.  If the file system got corrupted, the only
+> recourse was to wipe the user partition and the user would lose any
+> data that wasn't backed up to the cloud.
+> 
+> This has since been fixed for quite some time, but if there is some
+> low-end Android manufacturer is using an ancient version of AOSP, this
+> could be happening even in 2022 --- but that doesn't mean we need to
+> support such broken file systems.  As far as I'm concerned the only
+> way to make valid Android ext4 system images is the combination of
+> mke2fs and e2fsdroid, which is what modern versions of AOSP do.
+> 
+>      	       	     	     	    	     	- Ted
 
-Filter out the security.selinux xattr if it is printed, since this
-depends on the selinux configuration of the host system.  However,
-this also spills xattrs for "acl_dir/file" into an external xattr
-block, and causes it to fail due to different block allocations.
-Increase the filesystem inode size so that the allocation is the same
-regardless of whether selinux is enabled or not.
+Dear Ted & Lukas,
+Thanks for your clarification. I did several tests, turned outs Ted was 
+right. I'm clear now.
 
-Change-Id: I82d2795f9fde7420f36d7c468a96ebe5f448a491
-Fixes: 67e6ae0a35 ("mke2fs: fix a importing a directory with an ACL")
-Signed-off-by: Andreas Dilger <adilger@dilger.ca>
-Reviewed-by: Artem Blagodarenko <artem.blagodarenko@hpe.com>
-Reviewed-by: Li Dongyang <dongyangli@ddn.com>
----
- tests/filter.sed           |  1 +
- tests/m_rootdir_acl/expect | 18 +++++++++---------
- tests/m_rootdir_acl/script | 13 +++++++++----
- 3 files changed, 19 insertions(+), 13 deletions(-)
-
-diff --git a/tests/filter.sed b/tests/filter.sed
-index 796186e7..5fd68f34 100644
---- a/tests/filter.sed
-+++ b/tests/filter.sed
-@@ -20,6 +20,7 @@ s/\\015//g
- /^Maximum mount count:/d
- /^Next check after:/d
- /^Suggestion:/d
-+/security.selinux/d
- /Reserved blocks uid:/s/ (user .*)//
- /Reserved blocks gid:/s/ (group .*)//
- /whichever comes first/d
-diff --git a/tests/m_rootdir_acl/expect b/tests/m_rootdir_acl/expect
-index babd8025..57f03e5c 100644
---- a/tests/m_rootdir_acl/expect
-+++ b/tests/m_rootdir_acl/expect
-@@ -10,8 +10,8 @@ Filesystem OS type:       Linux
- Inode count:              1024
- Block count:              16384
- Reserved block count:     819
--Overhead clusters:        1543
--Free blocks:              14788
-+Overhead clusters:        1799
-+Free blocks:              14533
- Free inodes:              1003
- First block:              1
- Block size:               1024
-@@ -21,14 +21,14 @@ Reserved GDT blocks:      127
- Blocks per group:         8192
- Fragments per group:      8192
- Inodes per group:         512
--Inode blocks per group:   128
-+Inode blocks per group:   256
- Flex block group size:    16
- Mount count:              0
- Check interval:           15552000 (6 months)
- Reserved blocks uid:      0
- Reserved blocks gid:      0
- First inode:              11
--Inode size:	          256
-+Inode size:	          512
- Required extra isize:     32
- Desired extra isize:      32
- Journal inode:            8
-@@ -49,16 +49,16 @@ Group 0: (Blocks 1-8192)
-   Reserved GDT blocks at 3-129
-   Block bitmap at 130 (+129)
-   Inode bitmap at 132 (+131)
--  Inode table at 134-261 (+133)
--  7750 free blocks, 491 free inodes, 5 directories, 491 unused inodes
--  Free blocks: 443-8192
-+  Inode table at 134-389 (+133)
-+  7495 free blocks, 491 free inodes, 5 directories, 491 unused inodes
-+  Free blocks: 698-8192
-   Free inodes: 22-512
- Group 1: (Blocks 8193-16383) [INODE_UNINIT]
-   Backup superblock at 8193, Group descriptors at 8194-8194
-   Reserved GDT blocks at 8195-8321
-   Block bitmap at 131 (bg #0 + 130)
-   Inode bitmap at 133 (bg #0 + 132)
--  Inode table at 262-389 (bg #0 + 261)
-+  Inode table at 390-645 (bg #0 + 389)
-   7038 free blocks, 512 free inodes, 0 directories, 512 unused inodes
-   Free blocks: 9346-16383
-   Free inodes: 513-1024
-@@ -116,4 +116,4 @@ Pass 2: Checking directory structure
- Pass 3: Checking directory connectivity
- Pass 4: Checking reference counts
- Pass 5: Checking group summary information
--test.img: 21/1024 files (0.0% non-contiguous), 1596/16384 blocks
-+test.img: 21/1024 files (0.0% non-contiguous), 1851/16384 blocks
-diff --git a/tests/m_rootdir_acl/script b/tests/m_rootdir_acl/script
-index e81c82ce..a00e4c42 100644
---- a/tests/m_rootdir_acl/script
-+++ b/tests/m_rootdir_acl/script
-@@ -16,12 +16,10 @@ if [ "$os" = "GNU" ]; then
- 	return 0
- fi
- 
--MKFS_DIR=$TMPFILE.dir
-+MKFS_DIR=$(mktemp -d ./$test_name-XXXXXX.tmp)
- OUT=$test_name.log
- EXP=$test_dir/expect
- 
--rm -rf $MKFS_DIR
--mkdir -p $MKFS_DIR
- touch $MKFS_DIR/emptyfile
- dd if=/dev/zero bs=1024 count=32 2> /dev/null | tr '\0' 'a' > $MKFS_DIR/bigfile
- echo "M" | dd of=$MKFS_DIR/sparsefile bs=1 count=1 seek=1024 2> /dev/null
-@@ -60,7 +58,14 @@ mask::r-x
- other::r-x
- EOF
- 
--$MKE2FS -q -F -o Linux -T ext4 -O metadata_csum,inline_data,64bit -E lazy_itable_init=1 -b 1024 -d $MKFS_DIR $TMPFILE 16384 > $OUT 2>&1
-+if ! getfattr -d -m - $MKFS_DIR/acl_dir | grep -q posix_acl; then
-+	echo "$test_name: $test_description: skipped (no posix_acl xattrs)"
-+	rm -rf $MKFS_DIR
-+	return 0
-+fi
-+
-+# use 512-byte inodes so with/out security.selinux xattr doesn't fail
-+$MKE2FS -q -F -o Linux -T ext4 -I 512 -O metadata_csum,inline_data,64bit -E lazy_itable_init=1 -b 1024 -d $MKFS_DIR $TMPFILE 16384 > $OUT 2>&1
- 
- $DUMPE2FS $TMPFILE >> $OUT 2>&1
- cat > $TMPFILE.cmd << ENDL
 -- 
-2.25.1
-
+Regards,
+Michael Wu
