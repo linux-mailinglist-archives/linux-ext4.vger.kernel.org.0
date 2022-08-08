@@ -2,47 +2,47 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC8C58BFFC
-	for <lists+linux-ext4@lfdr.de>; Mon,  8 Aug 2022 03:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 359A358C072
+	for <lists+linux-ext4@lfdr.de>; Mon,  8 Aug 2022 03:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242633AbiHHBq6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 7 Aug 2022 21:46:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50846 "EHLO
+        id S243214AbiHHBwS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 7 Aug 2022 21:52:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243198AbiHHBqV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 7 Aug 2022 21:46:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F185514D11;
-        Sun,  7 Aug 2022 18:36:34 -0700 (PDT)
+        with ESMTP id S243422AbiHHBu4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 7 Aug 2022 21:50:56 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CE4218E3F;
+        Sun,  7 Aug 2022 18:37:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A1CD760DF5;
-        Mon,  8 Aug 2022 01:36:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4428AC4347C;
-        Mon,  8 Aug 2022 01:36:32 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 62562B80E0F;
+        Mon,  8 Aug 2022 01:37:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B7B6C43470;
+        Mon,  8 Aug 2022 01:37:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659922593;
-        bh=//pzvalXiDFERDVTn7mkwh9A1vGWIPKab/JROE8rypI=;
+        s=k20201202; t=1659922672;
+        bh=Hyuywz+z7CWKpmEKM5kFQPCFcyHEzObPK3WHe3L0lew=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aKIn97kgsGr867rED3cJUOEvdmGh89StgYV4a0Y8PiThHUd385oE8OTr5Z9B0FH+l
-         G/8ERvDauK6ovMhzr+qYblUO85lrO6TqR/El7IyQX5iBENTHEERW0FlOeQJuGiVtWR
-         4z8yVvipseoPV5F+sjeRVysJzLcw3jOyOAzlT9ysJEXcbTzr8iL8ZaNnrWOr0zCANv
-         6RGBzGmDP12CHoakoYV2XtmP/d/2PKghv9bBIl7WYxJCRuZgf1/lF3I8HYxDDAT0aB
-         CPDFXZv18sZV7wE0OD9qp6vOlbW0ook1jzOAMd4ZZ3OJt8+kcZodIeAbEQ5L8ocaIy
-         jc3ldx86n1blQ==
+        b=HpQmOu89Gj+ByApr6Vj91vO9ZM/gduta4w9jALl3Qg7eteYLI2Y3F9PfUeVODjXXl
+         86znIumB0pAXXgM3iN1E+4JZynpUikMKmRaTNj8LZMf9JlsB2TNB7PohetJ/l1mrxl
+         KZjsfVgA8jelNhM8QG07k5lRNoIKRyWPsQvNRU+63iQN9MeSbXxdZ0qbD4ZZvbZHMr
+         E4BrkxBPZYnYW2iUNHO+8UhWjjDTC6FIeVg9cqSOrd3Y3IIkpUeko3PdP9vmFw806l
+         bGVjFXgtbSz1Gs0Uv9bHDuRm/2QJRkvCvtktsIWaCZhOvtINskp2Rxf1nfDv6MYQ8h
+         e26yRqWGQg/2Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Jan Kara <jack@suse.cz>,
         syzbot+d273f7d7f58afd93be48@syzkaller.appspotmail.com,
         Sasha Levin <sashal@kernel.org>, jack@suse.com,
         linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 10/45] ext2: Add more validity checks for inode counts
-Date:   Sun,  7 Aug 2022 21:35:14 -0400
-Message-Id: <20220808013551.315446-10-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 04/29] ext2: Add more validity checks for inode counts
+Date:   Sun,  7 Aug 2022 21:37:14 -0400
+Message-Id: <20220808013741.316026-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220808013551.315446-1-sashal@kernel.org>
-References: <20220808013551.315446-1-sashal@kernel.org>
+In-Reply-To: <20220808013741.316026-1-sashal@kernel.org>
+References: <20220808013741.316026-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -74,10 +74,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 10 insertions(+), 2 deletions(-)
 
 diff --git a/fs/ext2/super.c b/fs/ext2/super.c
-index 3d21279fe2cb..fd855574ef09 100644
+index b6314d3c6a87..9a6475b2ab28 100644
 --- a/fs/ext2/super.c
 +++ b/fs/ext2/super.c
-@@ -1058,9 +1058,10 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
+@@ -1060,9 +1060,10 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
  			sbi->s_frags_per_group);
  		goto failed_mount;
  	}
@@ -90,7 +90,7 @@ index 3d21279fe2cb..fd855574ef09 100644
  			sbi->s_inodes_per_group);
  		goto failed_mount;
  	}
-@@ -1070,6 +1071,13 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
+@@ -1072,6 +1073,13 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
  	sbi->s_groups_count = ((le32_to_cpu(es->s_blocks_count) -
  				le32_to_cpu(es->s_first_data_block) - 1)
  					/ EXT2_BLOCKS_PER_GROUP(sb)) + 1;
@@ -103,7 +103,7 @@ index 3d21279fe2cb..fd855574ef09 100644
 +	}
  	db_count = (sbi->s_groups_count + EXT2_DESC_PER_BLOCK(sb) - 1) /
  		   EXT2_DESC_PER_BLOCK(sb);
- 	sbi->s_group_desc = kmalloc_array(db_count,
+ 	sbi->s_group_desc = kmalloc_array (db_count,
 -- 
 2.35.1
 
