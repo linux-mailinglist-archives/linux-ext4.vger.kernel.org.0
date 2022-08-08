@@ -2,338 +2,221 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63C7258C1FD
-	for <lists+linux-ext4@lfdr.de>; Mon,  8 Aug 2022 05:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF9258C401
+	for <lists+linux-ext4@lfdr.de>; Mon,  8 Aug 2022 09:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235132AbiHHDOU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 7 Aug 2022 23:14:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55852 "EHLO
+        id S233965AbiHHHdZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 8 Aug 2022 03:33:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234723AbiHHDOS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 7 Aug 2022 23:14:18 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBC6DED8
-        for <linux-ext4@vger.kernel.org>; Sun,  7 Aug 2022 20:14:17 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id 66so7671930vse.4
-        for <linux-ext4@vger.kernel.org>; Sun, 07 Aug 2022 20:14:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=JBaNNGCvW628WcQc5fnXkd66KFwsLo1I7l2/Lrq2jwY=;
-        b=n0hrs8BAO6/mMQKBRzYwaZLiXxXTUovrD3I/rKxggepEXiLmLQz837svF3y/MMoqPc
-         CiGxPWoo5gcx/dDXzNLgZ3yGaUG0RC86k1C8wKc0hlGr5VxGPXCI+ZrDLNKtcKJ2ruBD
-         ME8eor3eRi8yrqarWlYw1OM2lyHbOaLBeL4mMWD4pUtL+ZQs0Su4t/HLbCwXcexmTZVN
-         Hg/VxoYQo8vi6xm4MQxVStWLVtIiJhgRlbox4C/bc/aMERk9hqWYrewCPWo1ZGLT+ll3
-         vxy5kxS0xNqdyGv3F5vMVXbjd5rFdtU2TAwAzSIDcYb2v61us3/lhlrmmpoHesh1x4v9
-         EZNA==
+        with ESMTP id S235718AbiHHHdY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 8 Aug 2022 03:33:24 -0400
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E25CE6323
+        for <linux-ext4@vger.kernel.org>; Mon,  8 Aug 2022 00:33:22 -0700 (PDT)
+Received: by mail-io1-f69.google.com with SMTP id c5-20020a5ea805000000b00684468c5005so3338005ioa.15
+        for <linux-ext4@vger.kernel.org>; Mon, 08 Aug 2022 00:33:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=JBaNNGCvW628WcQc5fnXkd66KFwsLo1I7l2/Lrq2jwY=;
-        b=HMZfXpbDN2gRx85T9KM+6WQbxMjq2UQDslT1FCvpnO1sTxa9LTy4PRoLqf1BzYeTyu
-         mAxWaqWTMXbEP9zfVuHIwwp8dzsqxVcjBLVsmMGGxw/Lk3B+V4LKfUiMOtiudt36vyac
-         YNO+TRDOsIawqDpl4Dgnpvo7/es/UC9QIZzQcWNw4RhKUZJ9qNGx/Pwk3SVY/fmMyvU3
-         RklNBpv5fplsNhlg7YWlAx4gchop8XWDd92RRrJjXKKNwabJdNQlsccd+JEqYx7NWT6R
-         OXOe8gyd1HjcT9pONy5qfGkbMW8b94AZ3OOGEkWl0pn3BGIDCImYPMYLZcHB8rFPL39V
-         wlhg==
-X-Gm-Message-State: ACgBeo3GsPov9nNsh5WtEpI/IPP7UintqD/SPkZJn+IqYellNR0y6L6Z
-        uTq9M+WXo6ViGyVttTcXBwaed8kaWsQWGjBeZy/tfIpMS7Y=
-X-Google-Smtp-Source: AA6agR7wySdfHSlKF7tpyKdJTvVDKK5ATEisTXKONDwu3An4W7n5ZmO/g1488IyJKzGqRJ7yH9k+qcJHSAoCBwMwkt4=
-X-Received: by 2002:a67:d90e:0:b0:36b:7848:ba99 with SMTP id
- t14-20020a67d90e000000b0036b7848ba99mr6874086vsj.81.1659928456094; Sun, 07
- Aug 2022 20:14:16 -0700 (PDT)
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc;
+        bh=Ll8lnnKrxnKYgqNtsLbJ5AyFsT37/qiByMcezJF+Tp8=;
+        b=gl6uaT1BGNW3YladF1yArrPsTsani5GS0KmygmVwPJqncAcA8L2HH3GWf6HtMXwegH
+         3OguF3hFc4eyxbTmQdxqFYHuhXPpxUSguemKINhEB0FIdMV+n5fU334DOjVP0TqIXEUx
+         qnE/iXGONcKTz8wHL4IB5ObwFYDfrbJo22fFWJ3U81BL+cMZhdETFkI24+auO/CO22N7
+         4UZXRaXndYriuN5qwjsO8pzO4vbeXlC0+dVkS+BhWOenHpR1VXzh8IKLDvw4DxGyPOGF
+         l6sLuBTinecmLkaDhOqftKPtBITFoIXX6VKAPjeL1WGb4vutzMiCWTRSOS7iE/dtT+rP
+         efYA==
+X-Gm-Message-State: ACgBeo1SAIG12ZOaWEwv4yvpYT6fFZML3E6vVbnr4Mr0zv2NPNxQyYwY
+        8D4BTw/M2OPaoV5OUa62QRLVxAnqNMGNdjngDxPZU/s4Mfv1
+X-Google-Smtp-Source: AA6agR7X7EF0brrvIfV6ih3crwSbgyrfOgS3AVWdmjC9l6xp95Z8Ej8L6Ug0C4bbX3GX0lzER6XVSk1PUKchtSLEIW0KdnGRNXZa
 MIME-Version: 1.0
-References: <20220805094703.155967-1-lczerner@redhat.com>
-In-Reply-To: <20220805094703.155967-1-lczerner@redhat.com>
-From:   Daniel Ng <danielng@google.com>
-Date:   Mon, 8 Aug 2022 13:13:39 +1000
-Message-ID: <CANFuW3fxUehk7FPTpgesrudYTOX05J6MszyeifRR6VX-cePPOw@mail.gmail.com>
-Subject: Re: [PATCH] e2fsprogs: fix device name parsing to resolve names
- containing '='
-To:     Lukas Czerner <lczerner@redhat.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu
+X-Received: by 2002:a05:6e02:188c:b0:2e0:efaf:2d12 with SMTP id
+ o12-20020a056e02188c00b002e0efaf2d12mr2156064ilu.103.1659944002208; Mon, 08
+ Aug 2022 00:33:22 -0700 (PDT)
+Date:   Mon, 08 Aug 2022 00:33:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000994fbe05e5b5d4d9@google.com>
+Subject: [syzbot] possible deadlock in __jbd2_log_wait_for_space
+From:   syzbot <syzbot+fa1bbda326271b8808c9@syzkaller.appspotmail.com>
+To:     jack@suse.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks Lukas. Thanks for elaborating on your reasoning too - the
-ordering makes sense to me. Generally lgtm (though I'm not an
-owner/maintainer).
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    ca688bff68bc Add linux-next specific files for 20220808
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1376e68e080000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4c20e006003cdecb
+dashboard link: https://syzkaller.appspot.com/bug?extid=fa1bbda326271b8808c9
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+fa1bbda326271b8808c9@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+5.19.0-next-20220808-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor.4/19227 is trying to acquire lock:
+ffff8880272aa3f8 (&journal->j_checkpoint_mutex){+.+.}-{3:3}, at: __jbd2_log_wait_for_space+0x234/0x460 fs/jbd2/checkpoint.c:110
+
+but task is already holding lock:
+ffff888076d40e08 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: inode_lock include/linux/fs.h:761 [inline]
+ffff888076d40e08 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: ext4_dio_write_iter fs/ext4/file.c:510 [inline]
+ffff888076d40e08 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: ext4_file_write_iter+0xbea/0x1660 fs/ext4/file.c:677
+
+which lock already depends on the new lock.
 
 
-On Fri, Aug 5, 2022 at 7:47 PM Lukas Czerner <lczerner@redhat.com> wrote:
->
-> Currently in varisous e2fsprogs tools, most notably tune2fs and e2fsck
-> we will get the device name by passing the user provided string into
-> blkid_get_devname(). This library function however is primarily intended
-> for parsing "NAME=value" tokens. It will return the device matching the
-> specified token, NULL if nothing is found, or copy of the string if it's
-> not in "NAME=value" format.
->
-> However in case where we're passing in a file name that contains an
-> equal sign blkid_get_devname() will treat it as a token and will attempt
-> to find the device with the match. Likely finding nothing.
->
-> Fix it by checking existence of the file first and then attempt to call
-> blkid_get_devname(). In case of a collision, notify the user and
-> automatically prefer the one returned by blkid_get_devname(). Otherwise
-> return either the existing file, or NULL.
->
-> We do it this way to avoid some existing file in working directory (for
-> example LABEL=volume-name) masking an actual device containing the
-> matchin LABEL. User can specify full, or relative path (e.g.
-> ./LABEL=volume-name) to make sure the file is used instead.
->
-> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
-> Reported-by: Daniel Ng <danielng@google.com>
-> ---
->  e2fsck/unix.c           |  6 +++---
->  lib/support/plausible.c | 35 ++++++++++++++++++++++++++++++++++-
->  lib/support/plausible.h |  3 +++
->  misc/Makefile.in        |  9 +++++----
->  misc/e2initrd_helper.c  |  5 +++--
->  misc/fsck.c             |  5 +++--
->  misc/tune2fs.c          |  4 ++--
->  misc/util.c             |  3 ++-
->  8 files changed, 55 insertions(+), 15 deletions(-)
->
-> diff --git a/e2fsck/unix.c b/e2fsck/unix.c
-> index ae231f93..edd7b9b2 100644
-> --- a/e2fsck/unix.c
-> +++ b/e2fsck/unix.c
-> @@ -939,8 +939,8 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
->                                 goto sscanf_err;
->                         break;
->                 case 'j':
-> -                       ctx->journal_name = blkid_get_devname(ctx->blkid,
-> -                                                             optarg, NULL);
-> +                       ctx->journal_name = get_devname(ctx->blkid,
-> +                                                       optarg, NULL);
->                         if (!ctx->journal_name) {
->                                 com_err(ctx->program_name, 0,
->                                         _("Unable to resolve '%s'"),
-> @@ -1019,7 +1019,7 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
->         ctx->io_options = strchr(argv[optind], '?');
->         if (ctx->io_options)
->                 *ctx->io_options++ = 0;
-> -       ctx->filesystem_name = blkid_get_devname(ctx->blkid, argv[optind], 0);
-> +       ctx->filesystem_name = get_devname(ctx->blkid, argv[optind], 0);
->         if (!ctx->filesystem_name) {
->                 com_err(ctx->program_name, 0, _("Unable to resolve '%s'"),
->                         argv[optind]);
-> diff --git a/lib/support/plausible.c b/lib/support/plausible.c
-> index bbed2a70..864a7a5e 100644
-> --- a/lib/support/plausible.c
-> +++ b/lib/support/plausible.c
-> @@ -35,7 +35,6 @@
->  #include "plausible.h"
->  #include "ext2fs/ext2fs.h"
->  #include "nls-enable.h"
-> -#include "blkid/blkid.h"
->
->  #ifdef HAVE_MAGIC_H
->  static magic_t (*dl_magic_open)(int);
-> @@ -290,3 +289,37 @@ int check_plausibility(const char *device, int flags, int *ret_is_dev)
->         return 1;
->  }
->
-> +
-> +char *get_devname(blkid_cache cache, const char *token, const char *value)
-> +{
-> +       int is_file = 0;
-> +       char *ret = NULL;
-> +
-> +       if (!token)
-> +               goto out;
-> +
-> +       if (value) {
-> +               ret = blkid_get_devname(cache, token, value);
-> +               goto out;
-> +       }
-> +
-> +       if (access(token, F_OK) == 0)
-> +               is_file = 1;
-> +
-> +       ret = blkid_get_devname(cache, token, NULL);
-> +       if (ret) {
-> +               if (is_file && (strcmp(ret, token) != 0)) {
-> +                       fprintf(stderr,
-> +                               _("Collision found: '%s' refers to both '%s' "
-> +                                 "and a file '%s'. Using '%s'!\n"),
-> +                               token, ret, token, ret);
-> +               }
-> +               goto out;
-> +       }
-> +
-> +out_strdup:
-> +       if (is_file)
-> +               ret = strdup(token);
-> +out:
-> +       return ret;
-> +}
-> diff --git a/lib/support/plausible.h b/lib/support/plausible.h
-> index b85150c7..8eb6817f 100644
-> --- a/lib/support/plausible.h
-> +++ b/lib/support/plausible.h
-> @@ -13,6 +13,8 @@
->  #ifndef PLAUSIBLE_H_
->  #define PLAUSIBLE_H_
->
-> +#include "blkid/blkid.h"
-> +
->  /*
->   * Flags for check_plausibility()
->   */
-> @@ -25,5 +27,6 @@
->
->  extern int check_plausibility(const char *device, int flags,
->                               int *ret_is_dev);
-> +char *get_devname(blkid_cache cache, const char *token, const char *value);
->
->  #endif /* PLAUSIBLE_H_ */
-> diff --git a/misc/Makefile.in b/misc/Makefile.in
-> index 4db59cdf..5187883f 100644
-> --- a/misc/Makefile.in
-> +++ b/misc/Makefile.in
-> @@ -360,12 +360,12 @@ dumpe2fs.static: $(DUMPE2FS_OBJS) $(DEPLIBS) $(DEPLIBS_E2P) $(DEPLIBUUID) $(DEPL
->                 $(STATIC_LIBS) $(STATIC_LIBE2P) $(STATIC_LIBUUID) \
->                 $(LIBINTL) $(SYSLIBS) $(STATIC_LIBBLKID) $(LIBMAGIC)
->
-> -fsck: $(FSCK_OBJS) $(DEPLIBBLKID)
-> +fsck: $(FSCK_OBJS) $(DEPLIBBLKID) $(DEPLIBS)
->         $(E) "  LD $@"
->         $(Q) $(CC) $(ALL_LDFLAGS) -o fsck $(FSCK_OBJS) $(LIBBLKID) \
-> -               $(LIBINTL) $(SYSLIBS)
-> +               $(LIBINTL) $(SYSLIBS) $(LIBS) $(LIBEXT2FS) $(LIBCOM_ERR)
->
-> -fsck.profiled: $(FSCK_OBJS) $(PROFILED_DEPLIBBLKID)
-> +fsck.profiled: $(FSCK_OBJS) $(PROFILED_DEPLIBBLKID) $(PROFILED_DEPLIBS)
->         $(E) "  LD $@"
->         $(Q) $(CC) $(ALL_LDFLAGS) -g -pg -o fsck.profiled $(PROFILED_FSCK_OBJS) \
->                 $(PROFILED_LIBBLKID) $(LIBINTL) $(SYSLIBS)
-> @@ -799,7 +799,8 @@ badblocks.o: $(srcdir)/badblocks.c $(top_builddir)/lib/config.h \
->   $(top_srcdir)/lib/ext2fs/bitops.h $(top_srcdir)/lib/support/nls-enable.h
->  fsck.o: $(srcdir)/fsck.c $(top_builddir)/lib/config.h \
->   $(top_builddir)/lib/dirpaths.h $(top_srcdir)/version.h \
-> - $(top_srcdir)/lib/support/nls-enable.h $(srcdir)/fsck.h
-> + $(top_srcdir)/lib/support/nls-enable.h $(srcdir)/fsck.h \
-> + $(top_srcdir)/lib/support/plausible.h
->  util.o: $(srcdir)/util.c $(top_builddir)/lib/config.h \
->   $(top_builddir)/lib/dirpaths.h $(top_srcdir)/lib/et/com_err.h \
->   $(top_srcdir)/lib/e2p/e2p.h $(top_srcdir)/lib/ext2fs/ext2_fs.h \
-> diff --git a/misc/e2initrd_helper.c b/misc/e2initrd_helper.c
-> index 436aab8c..bfa294fa 100644
-> --- a/misc/e2initrd_helper.c
-> +++ b/misc/e2initrd_helper.c
-> @@ -36,6 +36,7 @@ extern char *optarg;
->  #include "ext2fs/ext2fs.h"
->  #include "blkid/blkid.h"
->  #include "support/nls-enable.h"
-> +#include "support/plausible.h"
->
->  #include "../version.h"
->
-> @@ -262,7 +263,7 @@ static int parse_fstab_line(char *line, struct fs_info *fs)
->         parse_escape(freq);
->         parse_escape(passno);
->
-> -       dev = blkid_get_devname(cache, device, NULL);
-> +       dev = get_devname(cache, device, NULL);
->         if (dev)
->                 device = dev;
->
-> @@ -325,7 +326,7 @@ static void PRS(int argc, char **argv)
->         }
->         if (optind < argc - 1 || optind == argc)
->                 usage();
-> -       device_name = blkid_get_devname(NULL, argv[optind], NULL);
-> +       device_name = get_devname(NULL, argv[optind], NULL);
->         if (!device_name) {
->                 com_err(program_name, 0, _("Unable to resolve '%s'"),
->                         argv[optind]);
-> diff --git a/misc/fsck.c b/misc/fsck.c
-> index 4efe10ec..75c520ee 100644
-> --- a/misc/fsck.c
-> +++ b/misc/fsck.c
-> @@ -59,6 +59,7 @@
->  #endif
->
->  #include "../version.h"
-> +#include "support/plausible.h"
->  #include "support/nls-enable.h"
->  #include "fsck.h"
->  #include "blkid/blkid.h"
-> @@ -297,7 +298,7 @@ static int parse_fstab_line(char *line, struct fs_info **ret_fs)
->         parse_escape(freq);
->         parse_escape(passno);
->
-> -       dev = blkid_get_devname(cache, device, NULL);
-> +       dev = get_devname(cache, device, NULL);
->         if (dev)
->                 device = dev;
->
-> @@ -1128,7 +1129,7 @@ static void PRS(int argc, char *argv[])
->                                         progname);
->                                 exit(EXIT_ERROR);
->                         }
-> -                       dev = blkid_get_devname(cache, arg, NULL);
-> +                       dev = get_devname(cache, arg, NULL);
->                         if (!dev && strchr(arg, '=')) {
->                                 /*
->                                  * Check to see if we failed because
-> diff --git a/misc/tune2fs.c b/misc/tune2fs.c
-> index 6c162ba5..dfa7427b 100644
-> --- a/misc/tune2fs.c
-> +++ b/misc/tune2fs.c
-> @@ -1839,7 +1839,7 @@ static void parse_e2label_options(int argc, char ** argv)
->         io_options = strchr(argv[1], '?');
->         if (io_options)
->                 *io_options++ = 0;
-> -       device_name = blkid_get_devname(NULL, argv[1], NULL);
-> +       device_name = get_devname(NULL, argv[1], NULL);
->         if (!device_name) {
->                 com_err("e2label", 0, _("Unable to resolve '%s'"),
->                         argv[1]);
-> @@ -2139,7 +2139,7 @@ static void parse_tune2fs_options(int argc, char **argv)
->         io_options = strchr(argv[optind], '?');
->         if (io_options)
->                 *io_options++ = 0;
-> -       device_name = blkid_get_devname(NULL, argv[optind], NULL);
-> +       device_name = get_devname(NULL, argv[optind], NULL);
->         if (!device_name) {
->                 com_err(program_name, 0, _("Unable to resolve '%s'"),
->                         argv[optind]);
-> diff --git a/misc/util.c b/misc/util.c
-> index 48e623dc..2b2ad07b 100644
-> --- a/misc/util.c
-> +++ b/misc/util.c
-> @@ -45,6 +45,7 @@
->  #include "ext2fs/ext2_fs.h"
->  #include "ext2fs/ext2fs.h"
->  #include "support/nls-enable.h"
-> +#include "support/plausible.h"
->  #include "blkid/blkid.h"
->  #include "util.h"
->
-> @@ -183,7 +184,7 @@ void parse_journal_opts(const char *opts)
->                        arg ? arg : "NONE");
->  #endif
->                 if (strcmp(token, "device") == 0) {
-> -                       journal_device = blkid_get_devname(NULL, arg, NULL);
-> +                       journal_device = get_devname(NULL, arg, NULL);
->                         if (!journal_device) {
->                                 if (arg)
->                                         fprintf(stderr, _("\nCould not find "
-> --
-> 2.37.1
->
+the existing dependency chain (in reverse order) is:
+
+-> #1 (&sb->s_type->i_mutex_key#8){++++}-{3:3}:
+       down_read+0x98/0x450 kernel/locking/rwsem.c:1499
+       inode_lock_shared include/linux/fs.h:771 [inline]
+       ext4_bmap+0x4e/0x460 fs/ext4/inode.c:3157
+       bmap+0xaa/0x120 fs/inode.c:1799
+       jbd2_journal_bmap+0xa8/0x180 fs/jbd2/journal.c:971
+       __jbd2_journal_erase fs/jbd2/journal.c:1784 [inline]
+       jbd2_journal_flush+0x84f/0xc00 fs/jbd2/journal.c:2490
+       ext4_ioctl_checkpoint fs/ext4/ioctl.c:1082 [inline]
+       __ext4_ioctl+0x28fd/0x4ab0 fs/ext4/ioctl.c:1586
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:870 [inline]
+       __se_sys_ioctl fs/ioctl.c:856 [inline]
+       __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:856
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+-> #0 (&journal->j_checkpoint_mutex){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3095 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3214 [inline]
+       validate_chain kernel/locking/lockdep.c:3829 [inline]
+       __lock_acquire+0x2a43/0x56d0 kernel/locking/lockdep.c:5053
+       lock_acquire kernel/locking/lockdep.c:5666 [inline]
+       lock_acquire+0x1ab/0x570 kernel/locking/lockdep.c:5631
+       __mutex_lock_common kernel/locking/mutex.c:603 [inline]
+       mutex_lock_io_nested+0x13f/0x1190 kernel/locking/mutex.c:833
+       __jbd2_log_wait_for_space+0x234/0x460 fs/jbd2/checkpoint.c:110
+       add_transaction_credits+0xa2d/0xb70 fs/jbd2/transaction.c:298
+       start_this_handle+0x3ae/0x14a0 fs/jbd2/transaction.c:422
+       jbd2__journal_start+0x38c/0x910 fs/jbd2/transaction.c:520
+       __ext4_journal_start_sb+0x3a3/0x490 fs/ext4/ext4_jbd2.c:105
+       __ext4_journal_start fs/ext4/ext4_jbd2.h:326 [inline]
+       ext4_handle_inode_extension+0x312/0x870 fs/ext4/file.c:325
+       ext4_dio_write_iter fs/ext4/file.c:573 [inline]
+       ext4_file_write_iter+0x12df/0x1660 fs/ext4/file.c:677
+       call_write_iter include/linux/fs.h:2192 [inline]
+       do_iter_readv_writev+0x20b/0x3b0 fs/read_write.c:729
+       do_iter_write+0x182/0x700 fs/read_write.c:855
+       vfs_iter_write+0x70/0xa0 fs/read_write.c:896
+       iter_file_splice_write+0x741/0xc90 fs/splice.c:686
+       do_splice_from fs/splice.c:764 [inline]
+       direct_splice_actor+0x110/0x180 fs/splice.c:931
+       splice_direct_to_actor+0x331/0x8a0 fs/splice.c:886
+       do_splice_direct+0x1a7/0x270 fs/splice.c:974
+       do_sendfile+0xb19/0x1270 fs/read_write.c:1249
+       __do_sys_sendfile64 fs/read_write.c:1317 [inline]
+       __se_sys_sendfile64 fs/read_write.c:1303 [inline]
+       __x64_sys_sendfile64+0x1cc/0x210 fs/read_write.c:1303
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&sb->s_type->i_mutex_key#8);
+                               lock(&journal->j_checkpoint_mutex);
+                               lock(&sb->s_type->i_mutex_key#8);
+  lock(&journal->j_checkpoint_mutex);
+
+ *** DEADLOCK ***
+
+2 locks held by syz-executor.4/19227:
+ #0: ffff88801c596460 (sb_writers#4){.+.+}-{0:0}, at: __do_sys_sendfile64 fs/read_write.c:1317 [inline]
+ #0: ffff88801c596460 (sb_writers#4){.+.+}-{0:0}, at: __se_sys_sendfile64 fs/read_write.c:1303 [inline]
+ #0: ffff88801c596460 (sb_writers#4){.+.+}-{0:0}, at: __x64_sys_sendfile64+0x1cc/0x210 fs/read_write.c:1303
+ #1: ffff888076d40e08 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: inode_lock include/linux/fs.h:761 [inline]
+ #1: ffff888076d40e08 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: ext4_dio_write_iter fs/ext4/file.c:510 [inline]
+ #1: ffff888076d40e08 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: ext4_file_write_iter+0xbea/0x1660 fs/ext4/file.c:677
+
+stack backtrace:
+CPU: 1 PID: 19227 Comm: syz-executor.4 Not tainted 5.19.0-next-20220808-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/22/2022
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2175
+ check_prev_add kernel/locking/lockdep.c:3095 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3214 [inline]
+ validate_chain kernel/locking/lockdep.c:3829 [inline]
+ __lock_acquire+0x2a43/0x56d0 kernel/locking/lockdep.c:5053
+ lock_acquire kernel/locking/lockdep.c:5666 [inline]
+ lock_acquire+0x1ab/0x570 kernel/locking/lockdep.c:5631
+ __mutex_lock_common kernel/locking/mutex.c:603 [inline]
+ mutex_lock_io_nested+0x13f/0x1190 kernel/locking/mutex.c:833
+ __jbd2_log_wait_for_space+0x234/0x460 fs/jbd2/checkpoint.c:110
+ add_transaction_credits+0xa2d/0xb70 fs/jbd2/transaction.c:298
+ start_this_handle+0x3ae/0x14a0 fs/jbd2/transaction.c:422
+ jbd2__journal_start+0x38c/0x910 fs/jbd2/transaction.c:520
+ __ext4_journal_start_sb+0x3a3/0x490 fs/ext4/ext4_jbd2.c:105
+ __ext4_journal_start fs/ext4/ext4_jbd2.h:326 [inline]
+ ext4_handle_inode_extension+0x312/0x870 fs/ext4/file.c:325
+ ext4_dio_write_iter fs/ext4/file.c:573 [inline]
+ ext4_file_write_iter+0x12df/0x1660 fs/ext4/file.c:677
+ call_write_iter include/linux/fs.h:2192 [inline]
+ do_iter_readv_writev+0x20b/0x3b0 fs/read_write.c:729
+ do_iter_write+0x182/0x700 fs/read_write.c:855
+ vfs_iter_write+0x70/0xa0 fs/read_write.c:896
+ iter_file_splice_write+0x741/0xc90 fs/splice.c:686
+ do_splice_from fs/splice.c:764 [inline]
+ direct_splice_actor+0x110/0x180 fs/splice.c:931
+ splice_direct_to_actor+0x331/0x8a0 fs/splice.c:886
+ do_splice_direct+0x1a7/0x270 fs/splice.c:974
+ do_sendfile+0xb19/0x1270 fs/read_write.c:1249
+ __do_sys_sendfile64 fs/read_write.c:1317 [inline]
+ __se_sys_sendfile64 fs/read_write.c:1303 [inline]
+ __x64_sys_sendfile64+0x1cc/0x210 fs/read_write.c:1303
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f0ff2c89279
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f0ff3d23168 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 00007f0ff2d9bf80 RCX: 00007f0ff2c89279
+RDX: 0000000000000000 RSI: 0000000000000005 RDI: 0000000000000004
+RBP: 00007f0ff2ce3189 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000f03b2900 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffcbe563eef R14: 00007f0ff3d23300 R15: 0000000000022000
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
