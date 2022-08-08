@@ -2,47 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D00B858BE47
-	for <lists+linux-ext4@lfdr.de>; Mon,  8 Aug 2022 01:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4F1B58BEDD
+	for <lists+linux-ext4@lfdr.de>; Mon,  8 Aug 2022 03:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbiHGXIS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 7 Aug 2022 19:08:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59164 "EHLO
+        id S242197AbiHHBdV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 7 Aug 2022 21:33:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbiHGXIQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 7 Aug 2022 19:08:16 -0400
-Received: from mail104.syd.optusnet.com.au (mail104.syd.optusnet.com.au [211.29.132.246])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5DAA33891;
-        Sun,  7 Aug 2022 16:08:15 -0700 (PDT)
-Received: from dread.disaster.area (pa49-181-193-158.pa.nsw.optusnet.com.au [49.181.193.158])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id E13F762CFE2;
-        Mon,  8 Aug 2022 09:08:11 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1oKpNS-00AQOr-2N; Mon, 08 Aug 2022 09:08:10 +1000
-Date:   Mon, 8 Aug 2022 09:08:10 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Lukas Czerner <lczerner@redhat.com>
-Cc:     linux-ext4@vger.kernel.org, jlayton@kernel.org, tytso@mit.edu,
-        linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH v2 2/3] fs: record I_DIRTY_TIME even if inode already has
- I_DIRTY_INODE
-Message-ID: <20220807230810.GF3861211@dread.disaster.area>
-References: <20220803105340.17377-1-lczerner@redhat.com>
- <20220803105340.17377-2-lczerner@redhat.com>
+        with ESMTP id S242126AbiHHBcp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 7 Aug 2022 21:32:45 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F0ECE08;
+        Sun,  7 Aug 2022 18:32:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1D060B80DC0;
+        Mon,  8 Aug 2022 01:32:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0ED1EC433C1;
+        Mon,  8 Aug 2022 01:32:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1659922342;
+        bh=Ll3VrOpxsVmeadqheby9L6HRHAFePhaWMYtkUoqpQtY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=T/+xKW8foK/5W1nr9jPRLOlhEHRHv1Z/jZabrfga+FDoDdkIa3BH+Wy5L2SDjpMoy
+         8Ay5cAYZ1eCK6LR0bpYh922qnJXQWhd7PF586SJZC7lwzkMituCvn9uOgzOT/3gNnB
+         ACPRBlRBY+5Dy6ibFF/TmcpF+OJPjwODnYPw1llRTM/Gdc/Z3kDyo0RH9ZiPWiVDyJ
+         Je8Uj81+X5NO7ZQOCmdJ43HxK71nfmBisq7/tuLL+37nMsNtWKpjlYiTDVYOG9NQLX
+         J8/JQsRqOG6zQshzAVceqqXmstBqlRf0EPD19gzKP/uXHpIdctAZ5/PeXs6HbrwGQj
+         CcWiMCIjREnuQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Jan Kara <jack@suse.cz>,
+        syzbot+d273f7d7f58afd93be48@syzkaller.appspotmail.com,
+        Sasha Levin <sashal@kernel.org>, jack@suse.com,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.19 15/58] ext2: Add more validity checks for inode counts
+Date:   Sun,  7 Aug 2022 21:30:33 -0400
+Message-Id: <20220808013118.313965-15-sashal@kernel.org>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220808013118.313965-1-sashal@kernel.org>
+References: <20220808013118.313965-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220803105340.17377-2-lczerner@redhat.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.4 cv=e9dl9Yl/ c=1 sm=1 tr=0 ts=62f045dd
-        a=SeswVvpAPK2RnNNwqI8AaA==:117 a=SeswVvpAPK2RnNNwqI8AaA==:17
-        a=kj9zAlcOel0A:10 a=biHskzXt2R4A:10 a=7-415B0cAAAA:8 a=JfrnYn6hAAAA:8
-        a=20KFwNOVAAAA:8 a=DIIZEVAEUkBuOxPNP6QA:9 a=CjuIK1q_8ugA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22 a=1CNFftbPRP8L7MoqJWF3:22
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,66 +57,53 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Aug 03, 2022 at 12:53:39PM +0200, Lukas Czerner wrote:
-> Currently the I_DIRTY_TIME will never get set if the inode already has
-> I_DIRTY_INODE with assumption that it supersedes I_DIRTY_TIME.  That's
-> true, however ext4 will only update the on-disk inode in
-> ->dirty_inode(), not on actual writeback. As a result if the inode
-> already has I_DIRTY_INODE state by the time we get to
-> __mark_inode_dirty() only with I_DIRTY_TIME, the time was already filled
-> into on-disk inode and will not get updated until the next I_DIRTY_INODE
-> update, which might never come if we crash or get a power failure.
-> 
-> The problem can be reproduced on ext4 by running xfstest generic/622
-> with -o iversion mount option.
-> 
-> Fix it by allowing I_DIRTY_TIME to be set even if the inode already has
-> I_DIRTY_INODE. Also make sure that the case is properly handled in
-> writeback_single_inode() as well. Additionally changes in
-> xfs_fs_dirty_inode() was made to accommodate for I_DIRTY_TIME in flag.
-> 
-> Thanks Jan Kara for suggestions on how to make this work properly.
-> 
-> Cc: Dave Chinner <david@fromorbit.com>
-> Cc: Christoph Hellwig <hch@infradead.org>
-> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
-> Suggested-by: Jan Kara <jack@suse.cz>
-> ---
-> v2: Reworked according to suggestions from Jan
+From: Jan Kara <jack@suse.cz>
 
-....
+[ Upstream commit fa78f336937240d1bc598db817d638086060e7e9 ]
 
-> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-> index aa977c7ea370..cff05a4771b5 100644
-> --- a/fs/xfs/xfs_super.c
-> +++ b/fs/xfs/xfs_super.c
-> @@ -658,7 +658,8 @@ xfs_fs_dirty_inode(
->  
->  	if (!(inode->i_sb->s_flags & SB_LAZYTIME))
->  		return;
-> -	if (flag != I_DIRTY_SYNC || !(inode->i_state & I_DIRTY_TIME))
-> +	if ((flag & ~I_DIRTY_TIME) != I_DIRTY_SYNC ||
-> +	    !((inode->i_state | flag) & I_DIRTY_TIME))
->  		return;
+Add checks verifying number of inodes stored in the superblock matches
+the number computed from number of inodes per group. Also verify we have
+at least one block worth of inodes per group. This prevents crashes on
+corrupted filesystems.
 
-My eyes, they bleed. The dirty time code was already a horrid
-abomination, and this makes it worse.
+Reported-by: syzbot+d273f7d7f58afd93be48@syzkaller.appspotmail.com
+Signed-off-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/ext2/super.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-From looking at the code, I cannot work out what the new semantics
-for I_DIRTY_TIME and I_DIRTY_SYNC are supposed to be, nor can I work
-out what the condition this is new code is supposed to be doing. I
-*can't verify it is correct* by reading the code.
-
-Can you please add a comment here explaining the conditions where we
-don't have to log a new timestamp update?
-
-Also, if "flag" now contains multiple flags, can you rename it
-"flags"?
-
-Cheers,
-
-Dave.
-
+diff --git a/fs/ext2/super.c b/fs/ext2/super.c
+index f6a19f6d9f6d..cdffa2a041af 100644
+--- a/fs/ext2/super.c
++++ b/fs/ext2/super.c
+@@ -1059,9 +1059,10 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
+ 			sbi->s_frags_per_group);
+ 		goto failed_mount;
+ 	}
+-	if (sbi->s_inodes_per_group > sb->s_blocksize * 8) {
++	if (sbi->s_inodes_per_group < sbi->s_inodes_per_block ||
++	    sbi->s_inodes_per_group > sb->s_blocksize * 8) {
+ 		ext2_msg(sb, KERN_ERR,
+-			"error: #inodes per group too big: %lu",
++			"error: invalid #inodes per group: %lu",
+ 			sbi->s_inodes_per_group);
+ 		goto failed_mount;
+ 	}
+@@ -1071,6 +1072,13 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
+ 	sbi->s_groups_count = ((le32_to_cpu(es->s_blocks_count) -
+ 				le32_to_cpu(es->s_first_data_block) - 1)
+ 					/ EXT2_BLOCKS_PER_GROUP(sb)) + 1;
++	if ((u64)sbi->s_groups_count * sbi->s_inodes_per_group !=
++	    le32_to_cpu(es->s_inodes_count)) {
++		ext2_msg(sb, KERN_ERR, "error: invalid #inodes: %u vs computed %llu",
++			 le32_to_cpu(es->s_inodes_count),
++			 (u64)sbi->s_groups_count * sbi->s_inodes_per_group);
++		goto failed_mount;
++	}
+ 	db_count = (sbi->s_groups_count + EXT2_DESC_PER_BLOCK(sb) - 1) /
+ 		   EXT2_DESC_PER_BLOCK(sb);
+ 	sbi->s_group_desc = kmalloc_array(db_count,
 -- 
-Dave Chinner
-david@fromorbit.com
+2.35.1
+
