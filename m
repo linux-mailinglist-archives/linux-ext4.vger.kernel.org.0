@@ -2,109 +2,148 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 066F258DC60
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Aug 2022 18:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56F4D58DD6E
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 Aug 2022 19:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238960AbiHIQqk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 9 Aug 2022 12:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59758 "EHLO
+        id S235267AbiHIRsS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 9 Aug 2022 13:48:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234359AbiHIQqj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 9 Aug 2022 12:46:39 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8CBC6301;
-        Tue,  9 Aug 2022 09:46:38 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id j1so14994357wrw.1;
-        Tue, 09 Aug 2022 09:46:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc;
-        bh=nHbf2R9YS+QLu619Bbr1qiSpwX/gscQK0/msY+tSKMI=;
-        b=qqPEBjrFDDiTHnkldL0thOUFkPzpTaagqYKlKsEpeHnOLD6l34Im7Wo+giaBoFCbbv
-         ZxBacHL6RuNnvNa7fLbWME0f1A/TVhIlVHUNXzushW3adHNO6l4mqzBiQJZIs7pOoDf1
-         Qn5cxTgzmUkwgk6Ow1CzlcirntGHBTJ9AdOxA1EG6mvA30D09vikY1qfDRYpxEjeCdpZ
-         lQ16LnpMlDrjOlZRLJCJavmAZYHbnIaHKLlN5o4M3lbJof5l3FngELdyAyMSY9U7iOwj
-         k/nt4TKPEV8WjbPoD7ryg4D5dhZWzpDcO6FlvsUrzcOR1sl/xLn1S2heZ0+Qv769jEd9
-         OjcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc;
-        bh=nHbf2R9YS+QLu619Bbr1qiSpwX/gscQK0/msY+tSKMI=;
-        b=w7bRzwecR5VCjXGqJyDJzi2LeX8UEXi8Fi1GQ0/9JqNhVumTCh+FWHbdhQFqGkPx2g
-         83KI3qOdDTdnESaNs/WqnqVLKekqtmefiPfbINVnBC+Qoqsaqz1Wed8u6FuMn0tbvxb5
-         2v9k7CMSSewBOUB8x50Y7wsbQFXc0O4mPGAZzK7L/+QZoy/NZUK1jTjF7RzEE0udYgaT
-         tNS6UbBcOjUKBmVMWvgWrZ/MgFZYm67wmjW0IX0V5jpwYWvOgUlgxvxySYq0RIAQ+UB4
-         9hQiLi88uv+gXJgWPxW0epRKFmvInTrkNmQE97NslRbQEd52/s91G7oOecmVmCxsQUla
-         tN2g==
-X-Gm-Message-State: ACgBeo0BsahrB1TzQPELOg94hNx6fyVJ1D6tunGPVwVPAyUxgrwTUIFq
-        5xIvKgdDzX7rlKm+sMSr+gUoackYAPPP6g==
-X-Google-Smtp-Source: AA6agR49xb05WczEjMdPv3pwaVlpJVUONYbN5CbNDLIce+skzs9XuuAUuI9NJ/o7BJdSJVOzNOp+Yg==
-X-Received: by 2002:adf:f38b:0:b0:21e:c041:7726 with SMTP id m11-20020adff38b000000b0021ec0417726mr14724896wro.394.1660063597100;
-        Tue, 09 Aug 2022 09:46:37 -0700 (PDT)
-Received: from localhost.localdomain ([46.248.82.114])
-        by smtp.gmail.com with ESMTPSA id b6-20020a5d6346000000b0022063e5228bsm14002083wrw.93.2022.08.09.09.46.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Aug 2022 09:46:36 -0700 (PDT)
-From:   Uros Bizjak <ubizjak@gmail.com>
-To:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Uros Bizjak <ubizjak@gmail.com>, "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Subject: [PATCH] fs/ext4: Use try_cmpxchg in ext4_update_bh_state
-Date:   Tue,  9 Aug 2022 18:46:26 +0200
-Message-Id: <20220809164626.8999-1-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.37.1
+        with ESMTP id S229452AbiHIRsR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 9 Aug 2022 13:48:17 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34FC635E
+        for <linux-ext4@vger.kernel.org>; Tue,  9 Aug 2022 10:48:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7D03CB816ED
+        for <linux-ext4@vger.kernel.org>; Tue,  9 Aug 2022 17:48:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2B0E1C433C1
+        for <linux-ext4@vger.kernel.org>; Tue,  9 Aug 2022 17:48:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1660067294;
+        bh=nbk2KKjzuhiPf4oxPz45BoThCRZ9BDKOKFMGWP2FYWg=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=juxKaw+QLoBTlNP18XyW2iNU26zSimNkvQ2sVQngKhHNKMIVFRD1akr326ry7omNh
+         VYm0AMzncbqm2w/uZGNuKvtM6ZqgdwtAIZhfg03skemjNwS8cImO8qulCS5BMKmhZe
+         ZnLQv0H6Q5waT4fsovBZSsrmUvIF+Cz64dq2Z7e4stfYuIXYkLIn4/d1PJ9JXbpJ1Y
+         S80mvQJ1eDpwa1FoZckHnidCTyzrsFvz1lZMUHBSrrVs7vFHV5A2IVmVz0pAaVuA/8
+         b/smaOq3O48PVsFxilSnlK6IrTfd5w6RdZGJ/y7z80q+2bfD2s1Lg7dlBvuw+BDbQ+
+         ZeRyrdOWC7uKA==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+        id 13CCAC433E6; Tue,  9 Aug 2022 17:48:14 +0000 (UTC)
+From:   bugzilla-daemon@kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 216322] Freezing of tasks failed after 60.004 seconds (1 tasks
+ refusing to freeze... task:fstrim  ext4_trim_fs - Dell XPS 13 9310
+Date:   Tue, 09 Aug 2022 17:48:13 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: tytso@mit.edu
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-216322-13602-tTepK30xfV@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-216322-13602@https.bugzilla.kernel.org/>
+References: <bug-216322-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Use `!try_cmpxchg(ptr, &old, new)` instead of
-`cmpxchg(ptr, old, new) != old` in ext4_update_bh_state. This
-has two benefits:
+https://bugzilla.kernel.org/show_bug.cgi?id=3D216322
 
-- The x86 cmpxchg instruction returns success in the ZF flag, so this
-  change saves a compare after cmpxchg, as well as a related move
-  instruction in the front of cmpxchg.
+--- Comment #7 from Theodore Tso (tytso@mit.edu) ---
+I suspect you got lucky.  Depending on the SSD's performance in processing
+discard requests, the size of the file system, and how fragmented the free
+space might be, it could take several minutes for the FITRIM as executed by
+fstrim(8) to complete.   At the moment, it can be interrupted via a kill -9,
+but not anything else.
 
-- atomic_try_cmpxchg implicitly assigns the *ptr value to &old when
-  cmpxchg fails, enabling further code simplifications.
+It wasn't a matter of the FITRIM failing to make progress; it was making
+progress, and it was busy sending tons of discard requests to the storage
+device.  It was just that it currently ignores "fake signal" sent by the ke=
+rnel
+when it attempts to suspend userspace processes until it completes its task.
 
-This patch has no functional change.
+So if the FITRIM normally takes 3 minutes on that particular storage device,
+and it suspend was triggered 90 seconds after fstrim(8) was triggered by
+cron/systemd, the 60 second timeout would have caused the suspend to fail, =
+and
+then the next suspend would have worked since the FITRIM would have complet=
+ed
+before the 60 second timeout expired.
 
-Cc: "Theodore Ts'o" <tytso@mit.edu>
-Cc: Andreas Dilger <adilger.kernel@dilger.ca>
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
----
- fs/ext4/inode.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+To reproduce this failure, presumably what you would want to do is to mount=
+ and
+unmount the file system, since FITRIM sets a flag on a block group after it=
+ has
+been trimmed, which is cleared when blocks are freed in that block group, a=
+nd a
+subsequent FITRIM will skip block groups that still have the flag set.   Th=
+en
+trigger the fstrim, and immediately try to suspend the laptop.   If your SS=
+D is
+sufficiently slow, and your file system is sufficiently large and fragmente=
+d,
+then you should see it fail.   If not, you could try changing the kernel
+timeout to a smaller value, to a value smaller than the time it takes for t=
+he
+command "time fstrim <mntpnt>":
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 601214453c3a..ce2f03621be8 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -780,11 +780,10 @@ static void ext4_update_bh_state(struct buffer_head *bh, unsigned long flags)
- 	 * once we get rid of using bh as a container for mapping information
- 	 * to pass to / from get_block functions, this can go away.
- 	 */
-+	old_state = READ_ONCE(bh->b_state);
- 	do {
--		old_state = READ_ONCE(bh->b_state);
- 		new_state = (old_state & ~EXT4_MAP_FLAGS) | flags;
--	} while (unlikely(
--		 cmpxchg(&bh->b_state, old_state, new_state) != old_state));
-+	} while (unlikely(!try_cmpxchg(&bh->b_state, &old_state, new_state)));
- }
- 
- static int _ext4_get_block(struct inode *inode, sector_t iblock,
--- 
-2.37.1
+For example, on my new laptop (a 2021 Samsung Galaxy Pro 360):
 
+% sudo time fstrim /
+0.00user 1.32system 1:14.57elapsed 1%CPU (0avgtext+0avgdata 2732maxresident=
+)k
+176inputs+0outputs (0major+137minor)pagefaults 0swaps
+% df -h /
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p7  1.1T   28G  996G   3% /
+
+This is a 2TB, so if root file system used the full 2TB of space, it would =
+have
+taken roughly 2 minutes for fstrim to run, and FITRIM is uninterruptible
+(except via a kill -9 signal).
+
+On my Dell Precision Tower development machine, which has an older SSD, thi=
+ngs
+are even worse:
+
+% sudo time fstrim /
+[sudo] password for tytso:=20
+0.00user 34.56system 13:27.21elapsed 4%CPU (0avgtext+0avgdata 2724maxreside=
+nt)k
+10184inputs+0outputs (2major+131minor)pagefaults 0swaps
+% df -h /
+Filesystem                 Size  Used Avail Use% Mounted on
+/dev/mapper/cwcc--vg-root  824G  283G  499G  37% /
+
+Please note, I'm not requesting that the kernel timeout be extended from 60
+seconds to 15 minutes.   We need to find some different solution.  :-)
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
