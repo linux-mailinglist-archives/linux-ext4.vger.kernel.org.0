@@ -2,69 +2,81 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A976C58E0F8
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Aug 2022 22:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9743858E169
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 Aug 2022 23:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344444AbiHIUVV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 9 Aug 2022 16:21:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44586 "EHLO
+        id S229568AbiHIVB1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 9 Aug 2022 17:01:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344990AbiHIUUf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 9 Aug 2022 16:20:35 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7772C27178
-        for <linux-ext4@vger.kernel.org>; Tue,  9 Aug 2022 13:20:34 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id tl27so24206925ejc.1
-        for <linux-ext4@vger.kernel.org>; Tue, 09 Aug 2022 13:20:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:from:to:cc;
-        bh=ZdcTFPnj3kr6eSToYVIu3MzXc/qLgflbjGOKVRzqc2o=;
-        b=oZrlUcaK7tU1WtM508E7I2/J7pr9FGzjzFmjHrviYPzGvF+ZtwkKtIVDbKjNVeqB75
-         g8F8MsnTsB0ogx9NEFjPDXIZamc53HVWxN8cXyIqn/D2NrC2ezS5AioOklLQsEDd9jM3
-         QSMQRf69c6mTlZ1efHZZzQkLfXZ5Dicp9Xn2rOrokhyUNTUKpZ81aJspM9UwDjcjnRZi
-         AQjIdOb+0/ZFg4KFuguotg6d2O1Zpt0obTMFLmz1kep/S1U03DNDQKf26LB0d0hV9mYp
-         9eLQsKAiOJ4nhYBnKGdV0FVG4Oqeaq6otC5Os0k4+hFUFaxUACKdcQw7Qa0VhZlFD5so
-         9AcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=ZdcTFPnj3kr6eSToYVIu3MzXc/qLgflbjGOKVRzqc2o=;
-        b=uHKbfP/ALxoxs9ptjhShMejUPegPjxaxOmqSjkWe3xBknfvDkuHYT9LhWHNsl8letB
-         iEI/Zlb+egB9AMrsGKhiRBSYdDwN5jwVtl9rzzTVF+qXSxK3f+Xl2esdj1F1+dVoLhOm
-         2ZDh9VFPBbDZo/6Je++dYqtF/hLDUftZ074XK98hNgKSLYSMvOFuzoGBgsi8LaCd2Xjq
-         Iid85nHkuTxRv+KL3jQPyBF0acxAgCVuG64ztNCy3Ew4+l86YXnSdsn6Ymdx2srHQNuS
-         VFlBmfpapESfGjaDG0sKKwVe+QwzRQ6hdMNppVpAKzOAv/cO1YYRdD7jfaZLfG7gQOTT
-         TDaQ==
-X-Gm-Message-State: ACgBeo0yMzd0oZtXG5KG0xFWsPm07+5JAKbNEb3NDgVvvGQgmYWKMh21
-        rH7ywWGZqBamSWYkOIwqYqEQOpUceHErfimUcd0=
-X-Google-Smtp-Source: AA6agR5ZnCLOrWFUn9SiHj4iFceDzNVtVlJ9U1OnkbFXhBAiLjTUj/k382Z1EQoGKWC0KB259SeRzWF9x71KgPk69W4=
-X-Received: by 2002:a17:907:9493:b0:72f:40ca:fe79 with SMTP id
- dm19-20020a170907949300b0072f40cafe79mr17883105ejc.511.1660076432981; Tue, 09
- Aug 2022 13:20:32 -0700 (PDT)
+        with ESMTP id S230370AbiHIVAs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 9 Aug 2022 17:00:48 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44D42BB10;
+        Tue,  9 Aug 2022 14:00:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id DF7D0B818AD;
+        Tue,  9 Aug 2022 21:00:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4A85C433C1;
+        Tue,  9 Aug 2022 21:00:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1660078841;
+        bh=G4ciTDdVWftbBrneKFQEpoKRpzfbHXtSvwynYLfG3Sc=;
+        h=Subject:From:To:Cc:Date:From;
+        b=DOaxHb1iyZb5l8C0ArGEC1QMy9I5LmXhiT/XUooTtgKzieDmA/DLEXrRCt/fwNnIW
+         wm3chSWf+DIaVjhcAdiLALO+eQeDc7OFt+RpNMWZLHnou5UpAgl+ARhpEvZY7p+vW4
+         ndKFLkhftHBUKJX+FQuXvmLL8kGOwCaMRT5wzn5rGCIXgkF+xOI8kA7rI5zF4N9j7k
+         6AFEq4Mbk9y6xLRCCtMUlRoNGIHzEWBR7Ednmp+wQLaZ+wCOW1wIyXz/508YVocxsO
+         x9o+b7LHOoBM0lkE6wV0YH4oARQSW9URCbPoAUS7BweIaDZy6BCIPxRpYQs98twEXQ
+         7Hk1XYXQkioPQ==
+Subject: [PATCHSET v2 0/3] fstests: refactor ext4-specific code
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     djwong@kernel.org, guaneryu@gmail.com, zlang@redhat.com
+Cc:     linux-xfs@vger.kernel.org, fstests@vger.kernel.org, guan@eryu.me,
+        tytso@mit.edu, linux-ext4@vger.kernel.org
+Date:   Tue, 09 Aug 2022 14:00:41 -0700
+Message-ID: <166007884125.3276300.15348421560641051945.stgit@magnolia>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Received: by 2002:a05:6f02:a451:b0:20:8718:9430 with HTTP; Tue, 9 Aug 2022
- 13:20:31 -0700 (PDT)
-Reply-To: plawrence@simplelifestyleloan.com
-From:   Lawrence E Pennisi <meurerskennedy@gmail.com>
-Date:   Tue, 9 Aug 2022 21:20:31 +0100
-Message-ID: <CAC2R2RRgsuDB2zGnr6X3U0_mMUEEaGQvHFiHiE22C7=tX3yRcA@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
---=20
-ARBEITEN SIE MIT UNS (VERDIENEN SIE 7,5 % PRO TRANSAKTION) Antworten
-Sie f=C3=BCr Details.
+Hi all,
+
+This series aims to make it so that fstests can install device mapper
+filters for external log devices.  Before we can do that, however, we
+need to change fstests to pass the device path of the jbd2 device to
+mount and mkfs.  Before we can do /that/, refactor all the ext4-specific
+code out of common/rc into a separate common/ext4 file.
+
+v2: fix _scratch_mkfs_sized for ext4, don't clutter up the outputs
+
+If you're going to start using this mess, you probably ought to just
+pull from my git trees, which are linked below.
+
+This is an extraordinary way to destroy everything.  Enjoy!
+Comments and questions are, as always, welcome.
+
+--D
+
+fstests git tree:
+https://git.kernel.org/cgit/linux/kernel/git/djwong/xfstests-dev.git/log/?h=refactor-ext4-helpers
+---
+ common/config |    4 +
+ common/ext4   |  193 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ common/rc     |  186 ++++---------------------------------------------------
+ common/xfs    |   23 +++++++
+ 4 files changed, 233 insertions(+), 173 deletions(-)
+ create mode 100644 common/ext4
+
