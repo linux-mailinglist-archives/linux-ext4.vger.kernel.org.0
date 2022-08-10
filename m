@@ -2,106 +2,152 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE5E58E2D2
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Aug 2022 00:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BBB358E412
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Aug 2022 02:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229894AbiHIWQP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 9 Aug 2022 18:16:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37264 "EHLO
+        id S229534AbiHJA3t (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 9 Aug 2022 20:29:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbiHIWPI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 9 Aug 2022 18:15:08 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D7171EECD
-        for <linux-ext4@vger.kernel.org>; Tue,  9 Aug 2022 15:15:04 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d20so12033044pfq.5
-        for <linux-ext4@vger.kernel.org>; Tue, 09 Aug 2022 15:15:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc;
-        bh=GI1h58u9NHz7rI/vIwOU5DkUcoHPmL+b4tk5i/xxv5Y=;
-        b=QTP95oQi+RYhXbI8sz4RyTZp0RSE4jP48cyyUmWbTiK1ItvOHbADVtjkGHK/8zFbqv
-         EIzUG3d4HgG5eAQxnVHuBpH33ycuIiNpMEXk8S0LHARhhQGb6AufQVVn/40aQfLvP77W
-         778oK7qnpGZXO0Q2aGCYT4Mad4FGDHlh1br3s7D4D+9Vr7gPQrhXDR8bwR1fyz6kQ1n2
-         /mI7/+oIm6xqfpBjeRephfywWnzvzUcqvvdKwYuFsxmTm/GRVEQb9jKfBsLPvHEPeyBR
-         SLk52BQ10Zm7GZ4Mv5gugSKJZhGFXVOipaGDVsAOq6ABLyMrmGMv+5RYTjL3cqduwO+M
-         O1Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc;
-        bh=GI1h58u9NHz7rI/vIwOU5DkUcoHPmL+b4tk5i/xxv5Y=;
-        b=bu3XfsJk2yCdO+tWm4CFgYqwb2i+RzBXCbb8gFPfgYNZUcp0rvgFAIiPI7saPQ5Dsf
-         HRP3qEdCBvKgZAetnzzOO9VF31MYRCUziSyme1gq+DPkpRBf0lVOu/jhSaufacKsVzV4
-         pH9rx8Agu4vz1FRYPGh2m+PfogAhY5qYcpoL3jBrsVm9pgxsn0pucBXtrr/UmED7waQa
-         P0kHvFyKevxgJAZVvA4eJwoZ716PVF78Z26voZsH6M+TxXmmvr07XUz8FMMHs9H59tB4
-         V1olD7uzS90I0hOVSyPREesmGkOYTOHvBmSqhoJId0jS1k4fJTPEcklhvayhRI8aiGTD
-         qezw==
-X-Gm-Message-State: ACgBeo3KEMkSgs9G3zzVlg7pe0Qkissm1PZ6ha5Wji9de3FgUv7uPlMi
-        MUgnOSd5vYD/VvmhAjZs4FX3gv7cOl4jA4U/7B4=
-X-Google-Smtp-Source: AA6agR7pJ6r7fhR2kV9XLe+oV3h+/ej1weqLnpTQS1YP5ule1vsDwGSNCnOW6LlEIY2xTapZFY+hu5KXPqSjTYpoaJM=
-X-Received: by 2002:a63:4642:0:b0:41b:d353:c5c7 with SMTP id
- v2-20020a634642000000b0041bd353c5c7mr20359415pgk.568.1660083303718; Tue, 09
- Aug 2022 15:15:03 -0700 (PDT)
+        with ESMTP id S229475AbiHJA3s (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 9 Aug 2022 20:29:48 -0400
+Received: from mail104.syd.optusnet.com.au (mail104.syd.optusnet.com.au [211.29.132.246])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A5EF41AD81
+        for <linux-ext4@vger.kernel.org>; Tue,  9 Aug 2022 17:29:47 -0700 (PDT)
+Received: from dread.disaster.area (pa49-181-193-158.pa.nsw.optusnet.com.au [49.181.193.158])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 7EE1E62D628;
+        Wed, 10 Aug 2022 10:29:46 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1oLZbV-00BEms-F3; Wed, 10 Aug 2022 10:29:45 +1000
+Date:   Wed, 10 Aug 2022 10:29:45 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     bugzilla-daemon@kernel.org
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [Bug 216322] Freezing of tasks failed after 60.004 seconds (1
+ tasks refusing to freeze... task:fstrim  ext4_trim_fs - Dell XPS 13 9310
+Message-ID: <20220810002945.GK3861211@dread.disaster.area>
+References: <bug-216322-13602@https.bugzilla.kernel.org/>
+ <bug-216322-13602-2MvUDlAfJU@https.bugzilla.kernel.org/>
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:e8a6:b0:2d4:fb1c:cc5e with HTTP; Tue, 9 Aug 2022
- 15:15:03 -0700 (PDT)
-Reply-To: wijh555@gmail.com
-From:   "Dr. Ali Moses" <alimoses07@gmail.com>
-Date:   Tue, 9 Aug 2022 15:15:03 -0700
-Message-ID: <CADWzZe65tcOX2+bMZfMLLauGpHEQ9Cdv814nLU=uQvKzDFrEVg@mail.gmail.com>
-Subject: Good Day,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.2 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:429 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [alimoses07[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [wijh555[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [alimoses07[at]gmail.com]
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  3.1 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bug-216322-13602-2MvUDlAfJU@https.bugzilla.kernel.org/>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=VuxAv86n c=1 sm=1 tr=0 ts=62f2fbfa
+        a=SeswVvpAPK2RnNNwqI8AaA==:117 a=SeswVvpAPK2RnNNwqI8AaA==:17
+        a=ZCXp25Omcg5n1RXD:21 a=kj9zAlcOel0A:10 a=biHskzXt2R4A:10 a=VwQbUJbxAAAA:8
+        a=20KFwNOVAAAA:8 a=7-415B0cAAAA:8 a=Qzhb2gN4u6QXIkT9oDwA:9
+        a=CjuIK1q_8ugA:10 a=hP7KuYlNnP_hzIlKH_V0:22 a=AjGcO6oz07-iQ99wixmX:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Thu, Aug 04, 2022 at 11:47:47AM +0000, bugzilla-daemon@kernel.org wrote:
+> https://bugzilla.kernel.org/show_bug.cgi?id=216322
+> 
+> --- Comment #4 from Lukas Czerner (lczerner@redhat.com) ---
+> On Thu, Aug 04, 2022 at 12:44:45AM +0000, bugzilla-daemon@kernel.org wrote:
+> > https://bugzilla.kernel.org/show_bug.cgi?id=216322
+> > 
+> > Theodore Tso (tytso@mit.edu) changed:
+> > 
+> >            What    |Removed                     |Added
+> > ----------------------------------------------------------------------------
+> >                  CC|                            |tytso@mit.edu
+> > 
+> > --- Comment #2 from Theodore Tso (tytso@mit.edu) ---
+> > So the problem is that the FITRIM ioctl does not check if a signal is
+> > pending,
+> > and so if the fstrim program requests that the entire SSD (len=ULLONG_MAX),
+> > like the broomstick set off by Mickey Mouse in Fantasia's "Sorcerer's
+> > Apprentive", it will mindlessly send discard requests for any blocks not in
+> > use
+> > by the file system until it is done.   Or to put it another way, "Neither
+> > rain,
+> > nor snow, or a request to freeze the OS, shall stop the FITRIM ioctl from its
+> > appointed task."  :-)
+> > 
+> > The question is how to fix things.   The problem is that the FITRIM ioctl
+> > interface is pretty horrible.   The fstrim_range.len variable is an IN/OUT
+> > field where on the input it is the number of bytes that should be trimmed
+> > (from
+> > start to start+len) and when the ioctl returns fstrm_range.len is the number
+> > of
+> > bytes that were actually trimmed.   So this is not really amenable for
+> > -ERESTARTSYS.
+> > 
+> > Worse, the fstrim program in util-linux doesn't handle an EAGAIN error return
+> > code, so if it gets the EAGAIN after try_to_freeze_tasks send the fake signal
+> > to the process, fstrim will print to stderr "fstrim: FITRIM ioctl failed" and
+> > the rest of the file system trim operation will be aborted.
+> > 
+> > It might be that the only way we can fix this is to have FITRIM return
+> > EAGAIN,
+> > which will stop the fstrim in its tracks.  This is... not great, but
+> > typically
+> > fstrim is run out of crontab or a systemd timer once a month, so if the user
+> > tries to suspend right as the fstrim is running, hopefully we'll get lucky
+> > next
+> > month.    We can then try teach fstrim to do the right thing, and so this
+> > lossage mode would only happen in the combination of a new kernel and an
+> > older
+> > version of util-linux.
+> > 
+> > I'm not happy with that solution, but the alternative of creating a new
+> > FITRIM2
+> > ioctl that has a sane interface means that you need an new kernel and a new
+> > util-linux package, and if you don't, the user will have to deal with a hot
+> > laptop bag and a drained battery.   And not changing FITRIM's behaviour will
+> > have the same potential end result, if the user gets unlucky and tries to
+> > suspend the laptop when there is more than 60 seconds left before FITRIM to
+> > complete.   :-/
+> > 
+> > The other thing I'll note is that every file system has its own FITRIM
+> > implementation, and I suspect they all have this issue, because the FITRIM
+> > interface is fundamentally flawed.
+> 
+> I agree that the FITRIM interface is flawed in this way. But
+> ext4_try_to_trim_range() actually does have fatal_signal_pending() and
+> will return -ERESTARTSYS if that's true. Or did you have something else in
+> mind?
+
+Why not just do:
+
+	if (freezing(current))
+		break;
+
+After the call to fatal_signal_pending()?
+
+Remember: FITRIM is an -advisory- API. It does not provide any
+guarantees that the free space in the filesystem has any specific
+operation done on it, nor does the backing store guarantee that it
+performs GC on ranges the filesystem discards because discards are
+advisory as well!
+
+Hence the FITRIM API isn't a problem here at all - it's purely an
+advosiry interface and does not guarantee storage level garbage
+collection. Hence if filesystems skip the remaining requested range
+because the system is being suspended, then it isn't the end of the
+world.  Userspace already has to expect that FITRIM will *do
+nothing*, and if userspace is doing FITRIM often enough that suspend
+is an issue, the next scheduled userspace FITRIM pass will clean up
+what this one skipped...
+
+Hence I don't see any problem with just stopping FITRIM and
+returning "no error" if it detects a suspend operation in progress.
+Simple logic, easy to retrofit to all filesystems, and doesn't
+require any userspace awareness of the issue at all...
+
+Cheers,
+
+Dave.
 -- 
-Hello,
-We the Board Directors believe you are in good health, doing great and
-with the hope that this mail will meet you in good condition, We are
-privileged and delighted to reach you via email" And we are urgently
-waiting to hear from you. and again your number is not connecting.
-
-My regards,
-Dr. Ali Moses..
-
-Sincerely,
-Prof. Chin Guang
+Dave Chinner
+david@fromorbit.com
