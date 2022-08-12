@@ -2,48 +2,44 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61597590A4E
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 Aug 2022 04:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2FCE590A5F
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Aug 2022 04:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236815AbiHLCdY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 11 Aug 2022 22:33:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40692 "EHLO
+        id S235271AbiHLCqY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 11 Aug 2022 22:46:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235200AbiHLCdX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 11 Aug 2022 22:33:23 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8033C9E136;
-        Thu, 11 Aug 2022 19:33:22 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4M3nhH0kWRz1M8fd;
-        Fri, 12 Aug 2022 10:30:07 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+        with ESMTP id S235200AbiHLCqX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 11 Aug 2022 22:46:23 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72979F0FB;
+        Thu, 11 Aug 2022 19:46:20 -0700 (PDT)
+Received: from canpemm500004.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4M3nzY4bPgzlW8Q;
+        Fri, 12 Aug 2022 10:43:21 +0800 (CST)
+Received: from [10.174.179.14] (10.174.179.14) by
+ canpemm500004.china.huawei.com (7.192.104.92) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 12 Aug 2022 10:33:20 +0800
-Message-ID: <e10617e8-1a21-a046-8256-66ffc6500ae9@huawei.com>
-Date:   Fri, 12 Aug 2022 10:33:20 +0800
+ 15.1.2375.24; Fri, 12 Aug 2022 10:46:17 +0800
+Subject: Re: [syzbot] possible deadlock in ext4_bmap
+To:     syzbot <syzbot+9543479984ae9e576000@syzkaller.appspotmail.com>,
+        <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <syzkaller-bugs@googlegroups.com>,
+        <tytso@mit.edu>
+References: <000000000000967c2805e5b5d4ed@google.com>
+From:   Jason Yan <yanaijie@huawei.com>
+Message-ID: <cad2edc1-57dd-1d79-0f2f-966e6fb31d5b@huawei.com>
+Date:   Fri, 12 Aug 2022 10:46:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-From:   Baokun Li <libaokun1@huawei.com>
-Subject: Re: [PATCH] ext4: fix bug in extents parsing when number of entries
- in header is zero
-To:     =?UTF-8?Q?Lu=c3=ads_Henriques?= <lhenriques@suse.de>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-CC:     <wenqingliu0120@gmail.com>, <linux-ext4@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        "zhangyi (F)" <yi.zhang@huawei.com>, <yebin10@huawei.com>,
-        "yukuai (C)" <yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
-References: <bug-215941-13602@https.bugzilla.kernel.org/>
- <20220805140025.26295-1-lhenriques@suse.de>
-In-Reply-To: <20220805140025.26295-1-lhenriques@suse.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500021.china.huawei.com (7.185.36.21)
+In-Reply-To: <000000000000967c2805e5b5d4ed@google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.14]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500004.china.huawei.com (7.192.104.92)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -54,110 +50,169 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-在 2022/8/5 22:00, Luís Henriques 写道:
-> When walking through an inode extents, the ext4_ext_binsearch_idx() function
-> assumes that the extent header has been previously validated.  However,
-> there are no checks that verify that the number of entries (eh->eh_entries)
-> is non-zero.  And this will lead to problems because the EXT_FIRST_INDEX()
-> and EXT_LAST_INDEX() will return garbage and result in this:
->
-> [  135.245946] ------------[ cut here ]------------
-> [  135.247579] kernel BUG at fs/ext4/extents.c:2258!
-> [  135.249045] invalid opcode: 0000 [#1] PREEMPT SMP
-> [  135.250320] CPU: 2 PID: 238 Comm: tmp118 Not tainted 5.19.0-rc8+ #4
-> [  135.252067] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.15.0-0-g2dd4b9b-rebuilt.opensuse.org 04/01/2014
-> [  135.255065] RIP: 0010:ext4_ext_map_blocks+0xc20/0xcb0
-> [  135.256475] Code:
-> [  135.261433] RSP: 0018:ffffc900005939f8 EFLAGS: 00010246
-> [  135.262847] RAX: 0000000000000024 RBX: ffffc90000593b70 RCX: 0000000000000023
-> [  135.264765] RDX: ffff8880038e5f10 RSI: 0000000000000003 RDI: ffff8880046e922c
-> [  135.266670] RBP: ffff8880046e9348 R08: 0000000000000001 R09: ffff888002ca580c
-> [  135.268576] R10: 0000000000002602 R11: 0000000000000000 R12: 0000000000000024
-> [  135.270477] R13: 0000000000000000 R14: 0000000000000024 R15: 0000000000000000
-> [  135.272394] FS:  00007fdabdc56740(0000) GS:ffff88807dd00000(0000) knlGS:0000000000000000
-> [  135.274510] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  135.276075] CR2: 00007ffc26bd4f00 CR3: 0000000006261004 CR4: 0000000000170ea0
-> [  135.277952] Call Trace:
-> [  135.278635]  <TASK>
-> [  135.279247]  ? preempt_count_add+0x6d/0xa0
-> [  135.280358]  ? percpu_counter_add_batch+0x55/0xb0
-> [  135.281612]  ? _raw_read_unlock+0x18/0x30
-> [  135.282704]  ext4_map_blocks+0x294/0x5a0
-> [  135.283745]  ? xa_load+0x6f/0xa0
-> [  135.284562]  ext4_mpage_readpages+0x3d6/0x770
-> [  135.285646]  read_pages+0x67/0x1d0
-> [  135.286492]  ? folio_add_lru+0x51/0x80
-> [  135.287441]  page_cache_ra_unbounded+0x124/0x170
-> [  135.288510]  filemap_get_pages+0x23d/0x5a0
-> [  135.289457]  ? path_openat+0xa72/0xdd0
-> [  135.290332]  filemap_read+0xbf/0x300
-> [  135.291158]  ? _raw_spin_lock_irqsave+0x17/0x40
-> [  135.292192]  new_sync_read+0x103/0x170
-> [  135.293014]  vfs_read+0x15d/0x180
-> [  135.293745]  ksys_read+0xa1/0xe0
-> [  135.294461]  do_syscall_64+0x3c/0x80
-> [  135.295284]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
->
-> Unfortunately, __ext4_ext_check() only verifies that eh->eh_entries doesn't
-> exceed eh->eh_max.  And since an empty leaf seems to be a valid value in
-> same cases, adding this extra check there isn't an option.
->
-> This patch simply adds the check directly in ext4_ext_binsearch_idx() and
-> propagates this error so that the kernel doesn't hit this BUG_ON() in
-> ext4_ext_determine_hole().
->
-> Link:https://bugzilla.kernel.org/show_bug.cgi?id=215941
-> Signed-off-by: Luís Henriques<lhenriques@suse.de>
+The inode_lock(inode) in vfs_fileattr_set() is a regular file inode and 
+inode_lock_shared(inode) in ext4_bmap() is a journal inode.
+
+So this might be a false positive deadlock warning.
+
+Thanks,
+Jason
+
+On 2022/8/8 15:33, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    ca688bff68bc Add linux-next specific files for 20220808
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=177eb001080000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=4c20e006003cdecb
+> dashboard link: https://syzkaller.appspot.com/bug?extid=9543479984ae9e576000
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+9543479984ae9e576000@syzkaller.appspotmail.com
+> 
+> ======================================================
+> WARNING: possible circular locking dependency detected
+> 5.19.0-next-20220808-syzkaller #0 Not tainted
+> ------------------------------------------------------
+> syz-executor.3/15950 is trying to acquire lock:
+> ffff88801b348400 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: inode_lock_shared include/linux/fs.h:771 [inline]
+> ffff88801b348400 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: ext4_bmap+0x4e/0x460 fs/ext4/inode.c:3157
+> 
+> but task is already holding lock:
+> ffff88814bede3f8 (&journal->j_checkpoint_mutex){+.+.}-{3:3}, at: jbd2_journal_flush+0x487/0xc00 fs/jbd2/journal.c:2472
+> 
+> which lock already depends on the new lock.
+> 
+> 
+> the existing dependency chain (in reverse order) is:
+> 
+> -> #1 (&journal->j_checkpoint_mutex){+.+.}-{3:3}:
+>         __mutex_lock_common kernel/locking/mutex.c:603 [inline]
+>         mutex_lock_io_nested+0x13f/0x1190 kernel/locking/mutex.c:833
+>         __jbd2_log_wait_for_space+0x234/0x460 fs/jbd2/checkpoint.c:110
+>         add_transaction_credits+0xa2d/0xb70 fs/jbd2/transaction.c:298
+>         start_this_handle+0x3ae/0x14a0 fs/jbd2/transaction.c:422
+>         jbd2__journal_start+0x38c/0x910 fs/jbd2/transaction.c:520
+>         __ext4_journal_start_sb+0x3a3/0x490 fs/ext4/ext4_jbd2.c:105
+>         __ext4_journal_start fs/ext4/ext4_jbd2.h:326 [inline]
+>         ext4_dirty_inode+0x9d/0x110 fs/ext4/inode.c:5963
+>         __mark_inode_dirty+0x48b/0x1040 fs/fs-writeback.c:2381
+>         mark_inode_dirty include/linux/fs.h:2467 [inline]
+>         generic_write_end+0x350/0x440 fs/buffer.c:2199
+>         ext4_da_write_end+0x16e/0x9a0 fs/ext4/inode.c:3089
+>         generic_perform_write+0x306/0x560 mm/filemap.c:3749
+>         ext4_buffered_write_iter+0x15b/0x460 fs/ext4/file.c:270
+>         ext4_file_write_iter+0x44a/0x1660 fs/ext4/file.c:679
+>         call_write_iter include/linux/fs.h:2192 [inline]
+>         do_iter_readv_writev+0x20b/0x3b0 fs/read_write.c:729
+>         do_iter_write+0x182/0x700 fs/read_write.c:855
+>         vfs_iter_write+0x70/0xa0 fs/read_write.c:896
+>         iter_file_splice_write+0x741/0xc90 fs/splice.c:686
+>         do_splice_from fs/splice.c:764 [inline]
+>         direct_splice_actor+0x110/0x180 fs/splice.c:931
+>         splice_direct_to_actor+0x331/0x8a0 fs/splice.c:886
+>         do_splice_direct+0x1a7/0x270 fs/splice.c:974
+>         do_sendfile+0xb19/0x1270 fs/read_write.c:1249
+>         __do_sys_sendfile64 fs/read_write.c:1311 [inline]
+>         __se_sys_sendfile64 fs/read_write.c:1303 [inline]
+>         __x64_sys_sendfile64+0x149/0x210 fs/read_write.c:1303
+>         do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>         do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>         entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> 
+> -> #0 (&sb->s_type->i_mutex_key#8){++++}-{3:3}:
+>         check_prev_add kernel/locking/lockdep.c:3095 [inline]
+>         check_prevs_add kernel/locking/lockdep.c:3214 [inline]
+>         validate_chain kernel/locking/lockdep.c:3829 [inline]
+>         __lock_acquire+0x2a43/0x56d0 kernel/locking/lockdep.c:5053
+>         lock_acquire kernel/locking/lockdep.c:5666 [inline]
+>         lock_acquire+0x1ab/0x570 kernel/locking/lockdep.c:5631
+>         down_read+0x98/0x450 kernel/locking/rwsem.c:1499
+>         inode_lock_shared include/linux/fs.h:771 [inline]
+>         ext4_bmap+0x4e/0x460 fs/ext4/inode.c:3157
+>         bmap+0xaa/0x120 fs/inode.c:1799
+>         jbd2_journal_bmap+0xa8/0x180 fs/jbd2/journal.c:971
+>         __jbd2_journal_erase fs/jbd2/journal.c:1784 [inline]
+>         jbd2_journal_flush+0x84f/0xc00 fs/jbd2/journal.c:2490
+>         ext4_ioctl_checkpoint fs/ext4/ioctl.c:1082 [inline]
+>         __ext4_ioctl+0x28fd/0x4ab0 fs/ext4/ioctl.c:1586
+>         vfs_ioctl fs/ioctl.c:51 [inline]
+>         __do_sys_ioctl fs/ioctl.c:870 [inline]
+>         __se_sys_ioctl fs/ioctl.c:856 [inline]
+>         __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:856
+>         do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>         do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>         entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> 
+> other info that might help us debug this:
+> 
+>   Possible unsafe locking scenario:
+> 
+>         CPU0                    CPU1
+>         ----                    ----
+>    lock(&journal->j_checkpoint_mutex);
+>                                 lock(&sb->s_type->i_mutex_key#8);
+>                                 lock(&journal->j_checkpoint_mutex);
+>    lock(&sb->s_type->i_mutex_key#8);
+> 
+>   *** DEADLOCK ***
+> 
+> 2 locks held by syz-executor.3/15950:
+>   #0: ffff88814bede170 (&journal->j_barrier){+.+.}-{3:3}, at: jbd2_journal_lock_updates+0x15e/0x310 fs/jbd2/transaction.c:904
+>   #1: ffff88814bede3f8 (&journal->j_checkpoint_mutex){+.+.}-{3:3}, at: jbd2_journal_flush+0x487/0xc00 fs/jbd2/journal.c:2472
+> 
+> stack backtrace:
+> CPU: 1 PID: 15950 Comm: syz-executor.3 Not tainted 5.19.0-next-20220808-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/22/2022
+> Call Trace:
+>   <TASK>
+>   __dump_stack lib/dump_stack.c:88 [inline]
+>   dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+>   check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2175
+>   check_prev_add kernel/locking/lockdep.c:3095 [inline]
+>   check_prevs_add kernel/locking/lockdep.c:3214 [inline]
+>   validate_chain kernel/locking/lockdep.c:3829 [inline]
+>   __lock_acquire+0x2a43/0x56d0 kernel/locking/lockdep.c:5053
+>   lock_acquire kernel/locking/lockdep.c:5666 [inline]
+>   lock_acquire+0x1ab/0x570 kernel/locking/lockdep.c:5631
+>   down_read+0x98/0x450 kernel/locking/rwsem.c:1499
+>   inode_lock_shared include/linux/fs.h:771 [inline]
+>   ext4_bmap+0x4e/0x460 fs/ext4/inode.c:3157
+>   bmap+0xaa/0x120 fs/inode.c:1799
+>   jbd2_journal_bmap+0xa8/0x180 fs/jbd2/journal.c:971
+>   __jbd2_journal_erase fs/jbd2/journal.c:1784 [inline]
+>   jbd2_journal_flush+0x84f/0xc00 fs/jbd2/journal.c:2490
+>   ext4_ioctl_checkpoint fs/ext4/ioctl.c:1082 [inline]
+>   __ext4_ioctl+0x28fd/0x4ab0 fs/ext4/ioctl.c:1586
+>   vfs_ioctl fs/ioctl.c:51 [inline]
+>   __do_sys_ioctl fs/ioctl.c:870 [inline]
+>   __se_sys_ioctl fs/ioctl.c:856 [inline]
+>   __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:856
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x7feb4e689279
+> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007feb4f798168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> RAX: ffffffffffffffda RBX: 00007feb4e79bf80 RCX: 00007feb4e689279
+> RDX: 0000000020000000 RSI: 000000004004662b RDI: 0000000000000005
+> RBP: 00007feb4e6e3189 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+> R13: 00007ffc38bb538f R14: 00007feb4f798300 R15: 0000000000022000
+>   </TASK>
+> 
+> 
 > ---
->   fs/ext4/extents.c | 13 ++++++++++---
->   1 file changed, 10 insertions(+), 3 deletions(-)
->
-> Hi!
->
-> This bug is easily reproducible using the filesystem image provided --
-> it's just a matter of mounting it and run:
->
->      $ cat /mnt/foo/bar/xattr
-
-Hi Luís,
-yeah, that's a good catch!
-> Anyway, I hope my analysis of the bug is correct -- the root cause seems
-> to be an extent header with an invalid value for in eh_entries, which will
-> later cause the BUG_ON().
->
-> Cheers,
-> --
-> Luís
-But there's a little bit of a deviation in your understanding of the 
-problem,
-so the patch doesn't look good.
-The issue is caused by the contradiction between eh_entries and eh_depth.
-Therefore, we need to check the contradiction instead of adding a 
-judgment to ext4_ext_binsearch_idx.
-So the right fix is to add a check to __ext4_ext_check like:
-
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index c148bb97b527..2dfd35f727cb 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -460,6 +460,10 @@ static int __ext4_ext_check(const char *function, 
-unsigned int line,
-                 error_msg = "invalid eh_entries";
-                 goto corrupted;
-         }
-+       if (unlikely((eh->eh_entries == 0) && (depth > 0))) {
-+               error_msg = "contradictory eh_entries and eh_depth";
-+               goto corrupted;
-+       }
-         if (!ext4_valid_extent_entries(inode, eh, lblk, &pblk, depth)) {
-                 error_msg = "invalid extent entries";
-                 goto corrupted;
-
-In this way, we can fix this issue and check for header exceptions 
-before calling ext4_ext_binsearch_idx.
-
-Thanks!
--- 
-With Best Regards,
-Baokun Li
-
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> .
+> 
