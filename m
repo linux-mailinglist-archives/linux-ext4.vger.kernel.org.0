@@ -2,87 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 945965905CC
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Aug 2022 19:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61597590A4E
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Aug 2022 04:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236251AbiHKRYB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 11 Aug 2022 13:24:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60050 "EHLO
+        id S236815AbiHLCdY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 11 Aug 2022 22:33:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236419AbiHKRXq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 11 Aug 2022 13:23:46 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A28E61AD;
-        Thu, 11 Aug 2022 10:23:44 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 5833B5CB44;
-        Thu, 11 Aug 2022 17:23:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1660238623; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iEdSNyfC3VGLN2jVH0DGoe7jxGtZO7JN96FRrYgGpgw=;
-        b=tu5BL9bnrdZsKpjjpTXmGCymwSqjkHhyCALmZ7eB62W9SvoCKK0oPeaR/DDnHr0zkPP6fY
-        4F/2icJww3LkJ5/z45J0d+zn0awvWeSh0kSCVodLIEDdtA/L1AwceIiwDv4XZjkwYQLS0o
-        qwLdWHDErQDoIGWZiQOzclkJctmi3YA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1660238623;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iEdSNyfC3VGLN2jVH0DGoe7jxGtZO7JN96FRrYgGpgw=;
-        b=9sPZ/LH9roQ2mVsABTu5Fe59CQL5jkpVLaTBrl3pYyGg+xDUHZTSuwULxE+j3KvRA1Ei8x
-        Zh+nK9zz+IfcdbCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ED27913A9B;
-        Thu, 11 Aug 2022 17:23:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id U5lHNh479WLUUgAAMHmgww
-        (envelope-from <lhenriques@suse.de>); Thu, 11 Aug 2022 17:23:42 +0000
-Received: from localhost (brahms.olymp [local])
-        by brahms.olymp (OpenSMTPD) with ESMTPA id 4a847266;
-        Thu, 11 Aug 2022 17:24:27 +0000 (UTC)
-Date:   Thu, 11 Aug 2022 18:24:27 +0100
-From:   =?iso-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Cc:     wenqingliu0120@gmail.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        with ESMTP id S235200AbiHLCdX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 11 Aug 2022 22:33:23 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8033C9E136;
+        Thu, 11 Aug 2022 19:33:22 -0700 (PDT)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4M3nhH0kWRz1M8fd;
+        Fri, 12 Aug 2022 10:30:07 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 12 Aug 2022 10:33:20 +0800
+Message-ID: <e10617e8-1a21-a046-8256-66ffc6500ae9@huawei.com>
+Date:   Fri, 12 Aug 2022 10:33:20 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+From:   Baokun Li <libaokun1@huawei.com>
 Subject: Re: [PATCH] ext4: fix bug in extents parsing when number of entries
  in header is zero
-Message-ID: <YvU7S2v3zrcnS4iR@suse.de>
+To:     =?UTF-8?Q?Lu=c3=ads_Henriques?= <lhenriques@suse.de>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>
+CC:     <wenqingliu0120@gmail.com>, <linux-ext4@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        "zhangyi (F)" <yi.zhang@huawei.com>, <yebin10@huawei.com>,
+        "yukuai (C)" <yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
 References: <bug-215941-13602@https.bugzilla.kernel.org/>
  <20220805140025.26295-1-lhenriques@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
 In-Reply-To: <20220805140025.26295-1-lhenriques@suse.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Aug 05, 2022 at 03:00:25PM +0100, Lu�s Henriques wrote:
+在 2022/8/5 22:00, Luís Henriques 写道:
 > When walking through an inode extents, the ext4_ext_binsearch_idx() function
 > assumes that the extent header has been previously validated.  However,
 > there are no checks that verify that the number of entries (eh->eh_entries)
 > is non-zero.  And this will lead to problems because the EXT_FIRST_INDEX()
 > and EXT_LAST_INDEX() will return garbage and result in this:
-> 
+>
 > [  135.245946] ------------[ cut here ]------------
 > [  135.247579] kernel BUG at fs/ext4/extents.c:2258!
 > [  135.249045] invalid opcode: 0000 [#1] PREEMPT SMP
@@ -119,94 +97,67 @@ On Fri, Aug 05, 2022 at 03:00:25PM +0100, Lu�s Henriques wrote:
 > [  135.293745]  ksys_read+0xa1/0xe0
 > [  135.294461]  do_syscall_64+0x3c/0x80
 > [  135.295284]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
-> 
+>
 > Unfortunately, __ext4_ext_check() only verifies that eh->eh_entries doesn't
 > exceed eh->eh_max.  And since an empty leaf seems to be a valid value in
 > same cases, adding this extra check there isn't an option.
-> 
+>
 > This patch simply adds the check directly in ext4_ext_binsearch_idx() and
 > propagates this error so that the kernel doesn't hit this BUG_ON() in
 > ext4_ext_determine_hole().
-> 
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=215941
-> Signed-off-by: Lu�s Henriques <lhenriques@suse.de>
+>
+> Link:https://bugzilla.kernel.org/show_bug.cgi?id=215941
+> Signed-off-by: Luís Henriques<lhenriques@suse.de>
 > ---
->  fs/ext4/extents.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
-> 
+>   fs/ext4/extents.c | 13 ++++++++++---
+>   1 file changed, 10 insertions(+), 3 deletions(-)
+>
 > Hi!
-> 
+>
 > This bug is easily reproducible using the filesystem image provided --
 > it's just a matter of mounting it and run:
-> 
->     $ cat /mnt/foo/bar/xattr
-> 
+>
+>      $ cat /mnt/foo/bar/xattr
+
+Hi Luís,
+yeah, that's a good catch!
 > Anyway, I hope my analysis of the bug is correct -- the root cause seems
 > to be an extent header with an invalid value for in eh_entries, which will
 > later cause the BUG_ON().
-
-Although I did got any feedback yet, it looks like this patch also fixes
-bugzilla #216283.  This issue is quite similar, but the BUG_ON() (a
-different one) is hit on the write path.  Doing something like:
-
-  $ echo 123 > /mnt/foo/bar/acl ; sync
-
-is enough to crash the kernel with that image.  Also, in the bug my patch
-initially refers to, the eh_entries field is '0' right on the root inode
-(i.e., in the extent header in the inode.i_block).  For this other bug,
-this happens in a non-root node.
-
-Cheers,
---
-Lu�s
-
-> 
+>
 > Cheers,
 > --
-> Lu�s
-> 
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index c148bb97b527..53cfe2c681c4 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -738,7 +738,7 @@ void ext4_ext_drop_refs(struct ext4_ext_path *path)
->   * binary search for the closest index of the given block
->   * the header must be checked before calling this
->   */
-> -static void
-> +static int
->  ext4_ext_binsearch_idx(struct inode *inode,
->  			struct ext4_ext_path *path, ext4_lblk_t block)
->  {
-> @@ -748,6 +748,11 @@ ext4_ext_binsearch_idx(struct inode *inode,
->  
->  	ext_debug(inode, "binsearch for %u(idx):  ", block);
->  
-> +	if (eh->eh_entries == 0) {
-> +		EXT4_ERROR_INODE(inode, "No entries in extent header!");
-> +		return -EFSCORRUPTED;
-> +	}
-> +
->  	l = EXT_FIRST_INDEX(eh) + 1;
->  	r = EXT_LAST_INDEX(eh);
->  	while (l <= r) {
-> @@ -791,7 +796,7 @@ ext4_ext_binsearch_idx(struct inode *inode,
->  		BUG_ON(chix != path->p_idx);
->  	}
->  #endif
-> -
-> +	return 0;
->  }
->  
->  /*
-> @@ -919,7 +924,9 @@ ext4_find_extent(struct inode *inode, ext4_lblk_t block,
->  		ext_debug(inode, "depth %d: num %d, max %d\n",
->  			  ppos, le16_to_cpu(eh->eh_entries), le16_to_cpu(eh->eh_max));
->  
-> -		ext4_ext_binsearch_idx(inode, path + ppos, block);
-> +		ret = ext4_ext_binsearch_idx(inode, path + ppos, block);
-> +		if (ret < 0)
-> +			goto err;
->  		path[ppos].p_block = ext4_idx_pblock(path[ppos].p_idx);
->  		path[ppos].p_depth = i;
->  		path[ppos].p_ext = NULL;
+> Luís
+But there's a little bit of a deviation in your understanding of the 
+problem,
+so the patch doesn't look good.
+The issue is caused by the contradiction between eh_entries and eh_depth.
+Therefore, we need to check the contradiction instead of adding a 
+judgment to ext4_ext_binsearch_idx.
+So the right fix is to add a check to __ext4_ext_check like:
+
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index c148bb97b527..2dfd35f727cb 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -460,6 +460,10 @@ static int __ext4_ext_check(const char *function, 
+unsigned int line,
+                 error_msg = "invalid eh_entries";
+                 goto corrupted;
+         }
++       if (unlikely((eh->eh_entries == 0) && (depth > 0))) {
++               error_msg = "contradictory eh_entries and eh_depth";
++               goto corrupted;
++       }
+         if (!ext4_valid_extent_entries(inode, eh, lblk, &pblk, depth)) {
+                 error_msg = "invalid extent entries";
+                 goto corrupted;
+
+In this way, we can fix this issue and check for header exceptions 
+before calling ext4_ext_binsearch_idx.
+
+Thanks!
+-- 
+With Best Regards,
+Baokun Li
+
