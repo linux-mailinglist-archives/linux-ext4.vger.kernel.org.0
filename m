@@ -2,111 +2,142 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CCB959516D
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Aug 2022 06:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 444F759518E
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Aug 2022 07:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233896AbiHPE5F (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 16 Aug 2022 00:57:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56376 "EHLO
+        id S231869AbiHPFBs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 16 Aug 2022 01:01:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234167AbiHPE40 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 16 Aug 2022 00:56:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879A6BB6A8;
-        Mon, 15 Aug 2022 13:51:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8225861089;
-        Mon, 15 Aug 2022 20:51:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71D06C433D6;
-        Mon, 15 Aug 2022 20:51:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1660596681;
-        bh=eSju7C3yRhZNi5hkK0/J5yLVf4TRaMXFKrFi3jlI5tg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Nbhw+fo/PrWwYh3m9ohE5rU3dmDz5HEbDYYrIL7o6dbUORHDFnkOQHr6aBhSnlsuL
-         fAnL6MFjNaHjgK6fJm9aAN8bBBqnnCJyBB2lShPBfDQj9xmQD+FTIKiK0QMiqZ1djV
-         joah2hZaO3kR/XjPJuszHuFc/6tN/wAtJ2FbrLXI=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Wang Jianjian <wangjianjian3@huawei.com>,
-        linux-ext4@vger.kernel.org, Bagas Sanjaya <bagasdotme@gmail.com>,
-        Theodore Tso <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.19 1124/1157] Documentation: ext4: fix cell spacing of table heading on blockmap table
-Date:   Mon, 15 Aug 2022 20:08:00 +0200
-Message-Id: <20220815180525.307454244@linuxfoundation.org>
-X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20220815180439.416659447@linuxfoundation.org>
-References: <20220815180439.416659447@linuxfoundation.org>
-User-Agent: quilt/0.67
+        with ESMTP id S234628AbiHPFBP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 16 Aug 2022 01:01:15 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26B54F196
+        for <linux-ext4@vger.kernel.org>; Mon, 15 Aug 2022 13:56:33 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-108-49-209-117.bstnma.fios.verizon.net [108.49.209.117])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 27FKuN1n000856
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Aug 2022 16:56:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1660596985; bh=FPmQ7+KASqmRhZVSXfu+kgAWp5LQmPKz4FRQZJYRP9U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=YCg2rMZM8OAjOqcCHM30A9yp1J6T8xLGMwqL+r79/XwAxtVXVIiunK88zmATRMaM9
+         kANDI2xf306YWWqJ610nHD3pTdnEPyC/kXYZZXeCyq6i1TVT1ThHIHWhXMma6ML/xz
+         zCqCA38ILMyPh8Z/ai1nQj/wlq926aMlFQ7oNxGRZdazqyI9Sfb+ruiiklicHf4uol
+         xIpg5+4uYE2j8UPgx7PBRf5UZfvpHHt51U1/drWyHZW0yAJAOId3pYWbpLSrxxM7cp
+         0+krMGr8TS+auYSEIWDh2QBTfuTmeboG2s/mjdUp9z0rNXi7x0B7NPi98rFNz4nc3s
+         RxKB6a9zc1SCw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 7EC6215C350A; Mon, 15 Aug 2022 16:56:23 -0400 (EDT)
+Date:   Mon, 15 Aug 2022 16:56:23 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Jeremy Bongio <bongiojp@gmail.com>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v3] tune2fs: Add support for get/set UUID ioctls.
+Message-ID: <Yvqy93lxTBWGeuxw@mit.edu>
+References: <20220719235204.237526-1-bongiojp@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220719235204.237526-1-bongiojp@gmail.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Bagas Sanjaya <bagasdotme@gmail.com>
+On Tue, Jul 19, 2022 at 04:52:04PM -0700, Jeremy Bongio wrote:
+> +/*
+> + * Use EXT4_IOC_GETFSUUID/EXT4_IOC_SETFSUUID to get/set file system UUID.
+> + * Return:	0 on success
+> + *             -1 when the old method should be used
+> + */
+> +int handle_fsuuid(__u8 *uuid, bool get)
+> +{
+> +	errcode_t ret;
+> +	int mnt_flags, fd;
+> +	char label[FSLABEL_MAX];
+> +	int maxlen = FSLABEL_MAX - 1;
+> +	char mntpt[PATH_MAX + 1];
+> +	struct fsuuid *fsuuid = NULL;
+> +
+> +	fsuuid = malloc(sizeof(*fsuuid) + UUID_SIZE);
+> +	if (!fsuuid)
+> +		return -1;
 
-[ Upstream commit 442ec1e5bb7c46c72c41898e13a5744c84cadf51 ]
+fsuuid is not getting freed in this function, so this will leak
+memory.
 
-Commit 3103084afcf234 ("ext4, doc: remove unnecessary escaping") removes
-redundant underscore escaping, however the cell spacing in heading row of
-blockmap table became not aligned anymore, hence triggers malformed table
-warning:
+	...
+> +	if (get)
+> +		ret = ioctl(fd, EXT4_IOC_GETFSUUID, fsuuid);
+> +	else
+> +		ret = ioctl(fd, EXT4_IOC_SETFSUUID, fsuuid);
 
-Documentation/filesystems/ext4/blockmap.rst:3: WARNING: Malformed table.
-
-+---------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| i.i_block Offset   | Where It Points                                                                                                                                                                                                              |
-<snipped>...
-
-The warning caused the table not being loaded.
-
-Realign the heading row cell by adding missing space at the first cell
-to fix the warning.
-
-Fixes: 3103084afcf234 ("ext4, doc: remove unnecessary escaping")
-Cc: stable@kernel.org
-Cc: Andreas Dilger <adilger.kernel@dilger.ca>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Wang Jianjian <wangjianjian3@huawei.com>
-Cc: linux-ext4@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
-Link: https://lore.kernel.org/r/20220619072938.7334-1-bagasdotme@gmail.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- Documentation/filesystems/ext4/blockmap.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/filesystems/ext4/blockmap.rst b/Documentation/filesystems/ext4/blockmap.rst
-index 2bd990402a5c..cc596541ce79 100644
---- a/Documentation/filesystems/ext4/blockmap.rst
-+++ b/Documentation/filesystems/ext4/blockmap.rst
-@@ -1,7 +1,7 @@
- .. SPDX-License-Identifier: GPL-2.0
- 
- +---------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
--| i.i_block Offset   | Where It Points                                                                                                                                                                                                              |
-+| i.i_block Offset    | Where It Points                                                                                                                                                                                                              |
- +=====================+==============================================================================================================================================================================================================================+
- | 0 to 11             | Direct map to file blocks 0 to 11.                                                                                                                                                                                           |
- +---------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
--- 
-2.35.1
+In the EXT4_IOC_GETFSUUID case, you need to copy fsuuid->fsu_uuid to
+uuid, so it is returned to the caller.
 
 
+> +	ret = ext2fs_check_mount_point(device_name, &mnt_flags,
+> +					  mntpt, sizeof(mntpt));
+> +	if (ret || !(mnt_flags & EXT2_MF_MOUNTED) ||
+> +		(!get && (mnt_flags & EXT2_MF_READONLY)) ||
+> +		!mntpt[0])
+> +		return -1;
 
+handle_fsuuid() is getting called twice by tune2fs when handling the
+-U option, which means we're calling ext2fs_check_mount_point() twice.
+
+And around line 3364, tune2fs calls ext2fs_check_if_mounted() which
+fetches the mnt_flags but which doesn't get the mountpoint.
+
+So I wonder if wouldn't be better off changing tune2fs's main() to
+call ext2fs_check_mount_point() instead of ext2fs_check_if_mounted(),
+and we can just determine the mountpoint once.
+
+Then, instead of calling handle_fsuuid/[gs]et_mounted_fsuuid, in the
+handling of -U, we can do something like this:
+
+	if (U_flag) {
+		int fd = -1;
+		struct fsuuid *fsuuid = NULL;
+		...
+
+		if ((mnt_flags & EXT2_MF_MOUNTED) &&
+		    !(mnt_flags & EXT2_MF_READONLY) && mntpt) {
+			fd = open(mntpt, O_RDONLY);
+			if (fd >= 0) {
+				fsuuid = malloc(sizeof(*fsuuid) + UUID_SIZE);
+				if (!fsuuid) {
+					close(fd);
+					fd = -1;
+				}
+			}
+		}		
+				
+
+In other words, we can just inline all of handle_fsuuid, and the call
+to get_mounted_fsuuid() just becomes:
+
+	if (fd >= 0) {
+		fsuuid->fsu_len - UUID_SIZE;
+		fsuuid->fsu_flags = 0;
+		ret = ioctl(fd, EXT4_IOC_GETFSUUID, fsuuid);
+	}
+
+... and similarly for set_mounted_fsuuid().
+
+
+Then at the end of tune2fs -U processing, we can do something like this:
+
+	if (fd >= 0)
+		close(fd);
+	free(fsuuid);
+
+						- Ted
+					
