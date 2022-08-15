@@ -2,113 +2,133 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64CE4592C93
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Aug 2022 12:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B08592D22
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Aug 2022 12:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232840AbiHOJSf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 15 Aug 2022 05:18:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43304 "EHLO
+        id S240924AbiHOJWU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 15 Aug 2022 05:22:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231893AbiHOJSY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 15 Aug 2022 05:18:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 121FB22286
-        for <linux-ext4@vger.kernel.org>; Mon, 15 Aug 2022 02:18:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1660555103;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YzEAatXqK5JK8Pdw/RfxQTXvV1F1gOUlndcdx4iLrdU=;
-        b=TBkTKcAXpyd8bjrPIsYKfJ1zTgr+9xj1SOkh/ict1KCIlvstZGvQD1OjnBkNw0MHmCXuDj
-        ppSJt9eonfzdurLgjgXOYrE1pAOvGCSnE7UWtEWCtSXdl/R9kP1+2+oCExDAcmBd7gBS4Y
-        XQH6jTTTj7W7ZUhN4TGBLUrloCDcMmg=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-508-yRbOkHIcNjaX3elHgKFjXg-1; Mon, 15 Aug 2022 05:18:21 -0400
-X-MC-Unique: yRbOkHIcNjaX3elHgKFjXg-1
-Received: by mail-pl1-f199.google.com with SMTP id h12-20020a170902f54c00b0016f8858ce9bso4607368plf.9
-        for <linux-ext4@vger.kernel.org>; Mon, 15 Aug 2022 02:18:21 -0700 (PDT)
+        with ESMTP id S241982AbiHOJVn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 15 Aug 2022 05:21:43 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36EB269;
+        Mon, 15 Aug 2022 02:21:42 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id s206so6073244pgs.3;
+        Mon, 15 Aug 2022 02:21:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc;
+        bh=TPo4myNvedxf2zJziNLj/Kjv2Ce8wy378bNxAOqAgGs=;
+        b=HcsZiMic2kGmXl+Ny2fECbX3sMem0/SLa9bpatg9QGLYIDIAZZoSh5yOviRybn4I19
+         VZMXJLtpgkL731A6sepmW/tcHEO4HabXJTPt6+qJpAC1Uj0szPzJYfaNd1Iy4CRpuZhV
+         Kmu7OP4Eo3Lt2F65IlEgcSc1z7ntVXzpc8PfU/HYAu8CTxi+tgmAKmxZfUSSdETNpZYQ
+         rCV+eWCxTKfaVfUxOrv28xIr1JaLRwgrjrYkqN8447UowBlkknD/T+anLQSJ+gdJTI6O
+         xVMks3xkdfASQWPxSMvM2WrHJlDUDgwDjoaMd68df76kjAg4mldXqKpuqneAjOWcH83M
+         JAcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
-        bh=YzEAatXqK5JK8Pdw/RfxQTXvV1F1gOUlndcdx4iLrdU=;
-        b=7LROM9heA7k4rTpikWlnEkrOJMihNzgMzVDDUCvwiCKqOwcCtTgb0Vtov3OkYRqzi8
-         27QcOdbooZSiyR0F9damDDwnV8OeNyxem1NUu4iulZQhXwuyoYZC8KpxaYb6G5gxt2bt
-         gEqqlpMTRdLuVdJ6FZiMEbNjRA1ATg8flsIL6L/NUIhAoJXU+qAiMSMyWn6RWI2hx9H7
-         rEBVr1BLC48+v0VWZ864/JLMm95/4+b35LPqAcOVHIqwlcYWzabXVaSpXQp1TA0CfzGL
-         n0KSF+OyJQglYVlRBeyK0ql0lj5x3e+4imUqiMtKxg2G4UEmAt7TyovioWD0ZY8qRJ2R
-         7vCw==
-X-Gm-Message-State: ACgBeo2fqjAcIS5gQbXg591j7C1dL38kv6HpXcMUshYD2137k7PwHrMG
-        MTWeCMChx+35EGyLCllaPD8ixGrieI28JbFmhGDipMna9JlunOuKOv1/LXYhlmxXTTFm9tAHDOD
-        0E83aWB9Tn2WrHR/1cj8Ipg==
-X-Received: by 2002:a63:5f86:0:b0:41c:f1:f494 with SMTP id t128-20020a635f86000000b0041c00f1f494mr13512003pgb.51.1660555100406;
-        Mon, 15 Aug 2022 02:18:20 -0700 (PDT)
-X-Google-Smtp-Source: AA6agR4YDWquTXSOMm1jdVzubIv7EShj6C0xfymKBr/e9wAjBfj/MNhGAfZ1BvMKB3jFHoKLk6gs+w==
-X-Received: by 2002:a63:5f86:0:b0:41c:f1:f494 with SMTP id t128-20020a635f86000000b0041c00f1f494mr13511990pgb.51.1660555100054;
-        Mon, 15 Aug 2022 02:18:20 -0700 (PDT)
-Received: from zlang-mailbox ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id d2-20020a631d02000000b0041b823d4179sm5478507pgd.22.2022.08.15.02.18.17
+        bh=TPo4myNvedxf2zJziNLj/Kjv2Ce8wy378bNxAOqAgGs=;
+        b=FeudICjZG5A3j8rK88W8OvRLxM0+ytFYulskphqSoQ8tudZd5xAxjtFZ9Ett34sIiU
+         umAZuGWWcftbF2vHaxwS6YqqI2GyvyJA0NimFbnNILUmZzb7nn80oxjwP7wbnjZEomVr
+         EY3ux73vL12vMiTv1PdmZJ+RD1ECdcRj7+raaylzeBN94EFGFBUVF5/6eOui89Ly9wKV
+         kDzmLW5qjHfumSEMYpthddmwtKjM4zLdHs/1hKrML5bWq9vWEvUzKovvD6ijSDwAzEG6
+         lkH5FN9JITMrzrfcnLwN8D9J85GrMrVJjzAsszqmph1DHUsNzP2yrtTn2U2sdW9LkXBk
+         YTTw==
+X-Gm-Message-State: ACgBeo15NfvyP9QPclgDarc3MDNe1JniF8b4EMwDNKJGT1Y0ec/vBnjt
+        x72W6tTNudPDag2gFrSqPls=
+X-Google-Smtp-Source: AA6agR5+Kf1N9dgRiucGStDKUErlRK8bV+X2mSNkdWlZWahHc0C5G9ZelFNGzk2GTT/y4aRiMJ1fiw==
+X-Received: by 2002:a63:cc51:0:b0:41f:12f5:675b with SMTP id q17-20020a63cc51000000b0041f12f5675bmr12775932pgi.69.1660555302430;
+        Mon, 15 Aug 2022 02:21:42 -0700 (PDT)
+Received: from debian.me (subs03-180-214-233-81.three.co.id. [180.214.233.81])
+        by smtp.gmail.com with ESMTPSA id l11-20020a17090a660b00b001f510175984sm4141895pjj.41.2022.08.15.02.21.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Aug 2022 02:18:19 -0700 (PDT)
-Date:   Mon, 15 Aug 2022 17:18:14 +0800
-From:   Zorro Lang <zlang@redhat.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     linux-xfs@vger.kernel.org, fstests@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCHSET v2 0/3] fstests: refactor ext4-specific code
-Message-ID: <20220815091814.eybgwyf4bjg6m4dx@zlang-mailbox>
-References: <166007884125.3276300.15348421560641051945.stgit@magnolia>
+        Mon, 15 Aug 2022 02:21:42 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id F1C45100014; Mon, 15 Aug 2022 16:21:38 +0700 (WIB)
+Date:   Mon, 15 Aug 2022 16:21:38 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     JunChao Sun <sunjunchao2870@gmail.com>
+Cc:     linux-ext4@vger.kernel.org, linux-doc@vger.kernel.org,
+        tytso@mit.edu, corbet@lwn.net
+Subject: Re: [PATCH] Documentation: ext4: correct the document about
+ superblock
+Message-ID: <YvoQIvIlMsADeG2H@debian.me>
+References: <20220814090016.3160-1-sunjunchao2870@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="C0wGcx6yGLwGR1Gt"
 Content-Disposition: inline
-In-Reply-To: <166007884125.3276300.15348421560641051945.stgit@magnolia>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220814090016.3160-1-sunjunchao2870@gmail.com>
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Aug 09, 2022 at 02:00:41PM -0700, Darrick J. Wong wrote:
-> Hi all,
-> 
-> This series aims to make it so that fstests can install device mapper
-> filters for external log devices.  Before we can do that, however, we
-> need to change fstests to pass the device path of the jbd2 device to
-> mount and mkfs.  Before we can do /that/, refactor all the ext4-specific
-> code out of common/rc into a separate common/ext4 file.
-> 
-> v2: fix _scratch_mkfs_sized for ext4, don't clutter up the outputs
-> 
-> If you're going to start using this mess, you probably ought to just
-> pull from my git trees, which are linked below.
-> 
-> This is an extraordinary way to destroy everything.  Enjoy!
-> Comments and questions are, as always, welcome.
 
-Two weeks passed, this patchset is good to me, I'd like to merge this patchset
-with "[PATCH 1/1] dmerror: support external log and realtime devices" together
-this week.
+--C0wGcx6yGLwGR1Gt
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Zorro Lang <zlang@redhat.com>
+On Sun, Aug 14, 2022 at 02:00:16AM -0700, JunChao Sun wrote:
+> Correct some questions like this:
+> s_lastcheck_hi field should be upper 8 bits of the
+> s_lastcheck field, rather than itself.
+>=20
+> diff --git a/Documentation/filesystems/ext4/super.rst b/Documentation/fil=
+esystems/ext4/super.rst
+> index 268888522e35..0152888cac29 100644
+> --- a/Documentation/filesystems/ext4/super.rst
+> +++ b/Documentation/filesystems/ext4/super.rst
+> @@ -456,15 +456,15 @@ The ext4 superblock is laid out as follows in
+>     * - 0x277
+>       - __u8
+>       - s_lastcheck_hi
+> -     - Upper 8 bits of the s_lastcheck_hi field.
+> +     - Upper 8 bits of the s_lastcheck field.
+>     * - 0x278
+>       - __u8
+>       - s_first_error_time_hi
+> -     - Upper 8 bits of the s_first_error_time_hi field.
+> +     - Upper 8 bits of the s_first_error_time field.
+>     * - 0x279
+>       - __u8
+>       - s_last_error_time_hi
+> -     - Upper 8 bits of the s_last_error_time_hi field.
+> +     - Upper 8 bits of the s_last_error_time field.
+>     * - 0x27A
+>       - __u8
+>       - s_pad[2]
 
-> 
-> --D
-> 
-> fstests git tree:
-> https://git.kernel.org/cgit/linux/kernel/git/djwong/xfstests-dev.git/log/?h=refactor-ext4-helpers
-> ---
->  common/config |    4 +
->  common/ext4   |  193 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  common/rc     |  186 ++++---------------------------------------------------
->  common/xfs    |   23 +++++++
->  4 files changed, 233 insertions(+), 173 deletions(-)
->  create mode 100644 common/ext4
-> 
+The diff looks OK, but the description should be:
+"The description of s_lastcheck_hi, s_first_error_time_hi, and
+s_last_error_time_hi fields refer to themselves, while these means
+referring to upper 8 bits (byte) of corresponding fields (s_lastcheck,
+s_first_error_time, and s_last_error_time). Correct the mistake."
 
+Thanks.
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--C0wGcx6yGLwGR1Gt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCYvoQGgAKCRD2uYlJVVFO
+o8oJAP97K4ZlgfWXsNm5/qWKaC8pdT9u15ITW3FP3IOOfqdZ1QD/ReUqmfzowVR1
+j997tJPJsMkXr5EFR7kDt+LXBKUv6wA=
+=aUqt
+-----END PGP SIGNATURE-----
+
+--C0wGcx6yGLwGR1Gt--
