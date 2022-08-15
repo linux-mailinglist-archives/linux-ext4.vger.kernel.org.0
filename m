@@ -2,99 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A875922D1
-	for <lists+linux-ext4@lfdr.de>; Sun, 14 Aug 2022 17:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 550BA59275B
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Aug 2022 03:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241925AbiHNPwZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 14 Aug 2022 11:52:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40028 "EHLO
+        id S229623AbiHOBIM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 14 Aug 2022 21:08:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242186AbiHNPvX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 14 Aug 2022 11:51:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 075F71AD96;
-        Sun, 14 Aug 2022 08:37:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7A56B60DD3;
-        Sun, 14 Aug 2022 15:37:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34053C43148;
-        Sun, 14 Aug 2022 15:37:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660491424;
-        bh=JDjptrvKjJqW3xN16G0npcUJ09mDN43wulCP7Pndw5w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C2Te9zSeG4ovfUetrFeu6GCwR3H4Jglx6UOn0zigMN+Ib33uwgbUZtDaKCW2vNd22
-         Y9y6O6BAuzkWus6M0hHjGLmd6DGJFWcsJRv3cenxcGqyQ7Cxeqb60Xeud36p4OyJQD
-         AeHB390P7JDbXcuws7wrdvgO48+n+7+/eeGUVYlK5E5BFUjHvxW0lAb0fDeFVn0fWe
-         YGvATBMCkGQwk0lmzCRxT/3E0nBZJFFXqIBuJ44jGUsukm6MSogZbPE9oapNe3d157
-         Fq51i6BDdEnClOq9EVM3gGFtXhynXF7yQKd44VaNzzub4Dw9RFdjWEsZMOmtXAjNwk
-         cnkhy5Oee0xGg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Kiselev, Oleg" <okiselev@amazon.com>,
-        Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 7/7] ext4: avoid resizing to a partial cluster size
-Date:   Sun, 14 Aug 2022 11:36:52 -0400
-Message-Id: <20220814153652.2380549-7-sashal@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220814153652.2380549-1-sashal@kernel.org>
-References: <20220814153652.2380549-1-sashal@kernel.org>
+        with ESMTP id S229612AbiHOBIM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 14 Aug 2022 21:08:12 -0400
+Received: from resqmta-c1p-023464.sys.comcast.net (resqmta-c1p-023464.sys.comcast.net [IPv6:2001:558:fd00:56::b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F83C1116A
+        for <linux-ext4@vger.kernel.org>; Sun, 14 Aug 2022 18:08:10 -0700 (PDT)
+Received: from resomta-c1p-023411.sys.comcast.net ([96.102.18.231])
+        by resqmta-c1p-023464.sys.comcast.net with ESMTP
+        id NNaroQsIJNtPXNOaPoWUFa; Mon, 15 Aug 2022 01:08:09 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=comcast.net;
+        s=20190202a; t=1660525689;
+        bh=ptZZDHo/TjeQHCRToZtWF9/iyZ+0AQpDGCx8I8iLPw4=;
+        h=Received:Received:Date:From:To:Message-ID:Subject:MIME-Version:
+         Content-Type;
+        b=iO5yXDshQzJ/7/hMxIqzqbkktOPKPV1zpSpHG/4rCZI1BB4I2r23XBVqyHzHIrVeg
+         ZF2Gga5pNpd7yq+IgeK22JixsK2I29rugLJqWQQq/Ne9c7FBtlOXVVnsl9M3HsVFBH
+         yYiw4mpXFVYbpOGy19H/6KW2ZejsGXNX4YYWpvQzPfFIaTo0/c+Vbrrnih3v4vRP/y
+         q/1WDy1r3I3P8LFYkObnZ5cEgfSasOnER/qmIEQzJDuJaER9Q2xv9DqEqUP6u3IUsP
+         olpZA0W9r3fNlC3Q3Tssuim0nRSrgaFhqHN7+1MxqlbBK6DAXhO145wA+6PjuuUHkI
+         yGmKyYRMieCLw==
+Received: from oxapp-hob-43o.email.comcast.net ([96.118.26.7])
+        by resomta-c1p-023411.sys.comcast.net with ESMTPS
+        id NOaOoUxAkLVVcNOaPoVvHM; Mon, 15 Aug 2022 01:08:09 +0000
+X-Xfinity-VAAS: gggruggvucftvghtrhhoucdtuddrgedvfedrvdehuddggeehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuvehomhgtrghsthdqtfgvshhipdfqfgfvpdfpqffurfetoffkrfenuceurghilhhouhhtmecufedtudenucenucfjughrpeffhffvkffugggtgffrkgfoihesthejsgdtredtjeenucfhrhhomhepfdffrdcuufhtihhmihhtshdfuceoshhtihhmihhtshestghomhgtrghsthdrnhgvtheqnecuggftrfgrthhtvghrnhephfehffdtgeeghedvledtledvudegjefhtdevueeuueehgfeufeejveffvedtudffnecukfhppeeliedruddukedrvdeirdejpddviedtudemvdekfeemkedttddumegrudgutdemmehfheelleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhephhgvlhhopehogigrphhpqdhhohgsqdegfehordgvmhgrihhlrdgtohhmtggrshhtrdhnvghtpdhinhgvthepleeirdduudekrddviedrjedpmhgrihhlfhhrohhmpehsthhimhhithhssegtohhmtggrshhtrdhnvghtpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqvgigthegsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-Xfinity-VMeta: sc=0.00;st=legit
+Date:   Sun, 14 Aug 2022 19:08:08 -0600 (MDT)
+From:   "D. Stimits" <stimits@comcast.net>
+To:     linux-ext4 <linux-ext4@vger.kernel.org>
+Message-ID: <108000349.529858.1660525688786@connect.xfinity.com>
+Subject: Find Path by Inode For Multiple Hard Links?
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.5-Rev21
+X-Originating-IP: 2601:283:8001:a1d0::f599
+X-Originating-Client: open-xchange-appsuite
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: "Kiselev, Oleg" <okiselev@amazon.com>
+Hi, 
 
-[ Upstream commit 69cb8e9d8cd97cdf5e293b26d70a9dee3e35e6bd ]
+I'm writing a simple tool to find the locations and dates of regular files on an ext4 filesystem which are unexpectedly showing up with multiple hard links (perhaps a script using "ln" without "-s" somewhere else). I'm trying to do this only in user space, and the naive approach would be that if I have a file name path with a known inode number, that I would then scan the entire partition for all files, and note when the inode matches. Then create my report based on details of each full path. What I am wondering is if there is a more efficient way (in user space) to present an inode number, and enumerate all file paths with that inode, and not have to scan the entire disk? If there is no other way I could do it the slow way, but I'm thinking someone here might know of a simple way to bypass scanning an entire partition. So far I don't know how to extract paths given an inode number other than brute force searching.
 
-This patch avoids an attempt to resize the filesystem to an
-unaligned cluster boundary.  An online resize to a size that is not
-integral to cluster size results in the last iteration attempting to
-grow the fs by a negative amount, which trips a BUG_ON and leaves the fs
-with a corrupted in-memory superblock.
-
-Signed-off-by: Oleg Kiselev <okiselev@amazon.com>
-Link: https://lore.kernel.org/r/0E92A0AB-4F16-4F1A-94B7-702CC6504FDE@amazon.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/ext4/resize.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
-index c367129dcdc1..c16bcd3f2e6d 100644
---- a/fs/ext4/resize.c
-+++ b/fs/ext4/resize.c
-@@ -1940,6 +1940,16 @@ int ext4_resize_fs(struct super_block *sb, ext4_fsblk_t n_blocks_count)
- 	}
- 	brelse(bh);
- 
-+	/*
-+	 * For bigalloc, trim the requested size to the nearest cluster
-+	 * boundary to avoid creating an unusable filesystem. We do this
-+	 * silently, instead of returning an error, to avoid breaking
-+	 * callers that blindly resize the filesystem to the full size of
-+	 * the underlying block device.
-+	 */
-+	if (ext4_has_feature_bigalloc(sb))
-+		n_blocks_count &= ~((1 << EXT4_CLUSTER_BITS(sb)) - 1);
-+
- retry:
- 	o_blocks_count = ext4_blocks_count(es);
- 
--- 
-2.35.1
-
+Thanks!
