@@ -2,142 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 444F759518E
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Aug 2022 07:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34BED594F57
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Aug 2022 06:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231869AbiHPFBs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 16 Aug 2022 01:01:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41338 "EHLO
+        id S229515AbiHPEXL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 16 Aug 2022 00:23:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234628AbiHPFBP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 16 Aug 2022 01:01:15 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26B54F196
-        for <linux-ext4@vger.kernel.org>; Mon, 15 Aug 2022 13:56:33 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-108-49-209-117.bstnma.fios.verizon.net [108.49.209.117])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 27FKuN1n000856
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Aug 2022 16:56:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1660596985; bh=FPmQ7+KASqmRhZVSXfu+kgAWp5LQmPKz4FRQZJYRP9U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=YCg2rMZM8OAjOqcCHM30A9yp1J6T8xLGMwqL+r79/XwAxtVXVIiunK88zmATRMaM9
-         kANDI2xf306YWWqJ610nHD3pTdnEPyC/kXYZZXeCyq6i1TVT1ThHIHWhXMma6ML/xz
-         zCqCA38ILMyPh8Z/ai1nQj/wlq926aMlFQ7oNxGRZdazqyI9Sfb+ruiiklicHf4uol
-         xIpg5+4uYE2j8UPgx7PBRf5UZfvpHHt51U1/drWyHZW0yAJAOId3pYWbpLSrxxM7cp
-         0+krMGr8TS+auYSEIWDh2QBTfuTmeboG2s/mjdUp9z0rNXi7x0B7NPi98rFNz4nc3s
-         RxKB6a9zc1SCw==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 7EC6215C350A; Mon, 15 Aug 2022 16:56:23 -0400 (EDT)
-Date:   Mon, 15 Aug 2022 16:56:23 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Jeremy Bongio <bongiojp@gmail.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v3] tune2fs: Add support for get/set UUID ioctls.
-Message-ID: <Yvqy93lxTBWGeuxw@mit.edu>
-References: <20220719235204.237526-1-bongiojp@gmail.com>
+        with ESMTP id S229541AbiHPEW4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 16 Aug 2022 00:22:56 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C58337BB3D;
+        Mon, 15 Aug 2022 17:55:48 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4303A6125E;
+        Tue, 16 Aug 2022 00:55:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5212EC433C1;
+        Tue, 16 Aug 2022 00:55:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1660611347;
+        bh=iu6B25e0sTxWSWP58J3cvJLRVLHWY1NS7egktCILRVc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=krd6+dWmORUQTM50F/8J5UTDFvQpmjgyE2xt2quw2vdfZh6niGmFxiiV4AIz32H48
+         v/54PgeHP2vwqXwK32ajRlxpPJzlh1estyjWKs69bXa2t8XK5AILpoD8G+6e6l6TN2
+         JacTQRI/ggjw/oFEBUWvGlPNpoBqWi7pvwHjXWTNYZ4waocnQ7ZvCRK+HV+rcPvgUj
+         rn2X10wArCcnKg5D/Bt2iE7+193xqZkmDFK77dfsfvgi03cysOyvwTWWYr7n7HZDYk
+         5Leu70it3DTXaYFTpbub7m2JQZmVrC/jYpJVhrCsVduHmj+8JAVU1IiAScCxzXl5Gb
+         5hx6GXtLZcXBw==
+Date:   Mon, 15 Aug 2022 17:55:45 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Keith Busch <kbusch@kernel.org>
+Subject: Re: [PATCH v4 6/9] f2fs: don't allow DIO reads but not DIO writes
+Message-ID: <YvrrEcw4E+rpDLwM@sol.localdomain>
+References: <20220722071228.146690-1-ebiggers@kernel.org>
+ <20220722071228.146690-7-ebiggers@kernel.org>
+ <YtyoF89iOg8gs7hj@google.com>
+ <Yt7dCcG0ns85QqJe@sol.localdomain>
+ <YuXyKh8Zvr56rR4R@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220719235204.237526-1-bongiojp@gmail.com>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <YuXyKh8Zvr56rR4R@google.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jul 19, 2022 at 04:52:04PM -0700, Jeremy Bongio wrote:
-> +/*
-> + * Use EXT4_IOC_GETFSUUID/EXT4_IOC_SETFSUUID to get/set file system UUID.
-> + * Return:	0 on success
-> + *             -1 when the old method should be used
-> + */
-> +int handle_fsuuid(__u8 *uuid, bool get)
-> +{
-> +	errcode_t ret;
-> +	int mnt_flags, fd;
-> +	char label[FSLABEL_MAX];
-> +	int maxlen = FSLABEL_MAX - 1;
-> +	char mntpt[PATH_MAX + 1];
-> +	struct fsuuid *fsuuid = NULL;
-> +
-> +	fsuuid = malloc(sizeof(*fsuuid) + UUID_SIZE);
-> +	if (!fsuuid)
-> +		return -1;
+On Sat, Jul 30, 2022 at 08:08:26PM -0700, Jaegeuk Kim wrote:
+> On 07/25, Eric Biggers wrote:
+> > On Sat, Jul 23, 2022 at 07:01:59PM -0700, Jaegeuk Kim wrote:
+> > > On 07/22, Eric Biggers wrote:
+> > > > From: Eric Biggers <ebiggers@google.com>
+> > > > 
+> > > > Currently, if an f2fs filesystem is mounted with the mode=lfs and
+> > > > io_bits mount options, DIO reads are allowed but DIO writes are not.
+> > > > Allowing DIO reads but not DIO writes is an unusual restriction, which
+> > > > is likely to be surprising to applications, namely any application that
+> > > > both reads and writes from a file (using O_DIRECT).  This behavior is
+> > > > also incompatible with the proposed STATX_DIOALIGN extension to statx.
+> > > > Given this, let's drop the support for DIO reads in this configuration.
+> > > 
+> > > IIRC, we allowed DIO reads since applications complained a lower performance.
+> > > So, I'm afraid this change will make another confusion to users. Could
+> > > you please apply the new bahavior only for STATX_DIOALIGN?
+> > > 
+> > 
+> > Well, the issue is that the proposed STATX_DIOALIGN fields cannot represent this
+> > weird case where DIO reads are allowed but not DIO writes.  So the question is
+> > whether this case actually matters, in which case we should make STATX_DIOALIGN
+> > distinguish between DIO reads and DIO writes, or whether it's some odd edge case
+> > that doesn't really matter, in which case we could just fix it or make
+> > STATX_DIOALIGN report that DIO is unsupported.  I was hoping that you had some
+> > insight here.  What sort of applications want DIO reads but not DIO writes?
+> > Is this common at all?
+> 
+> I think there's no specific application to use the LFS mode at this
+> moment, but I'd like to allow DIO read for zoned device which will be
+> used for Android devices.
+> 
 
-fsuuid is not getting freed in this function, so this will leak
-memory.
+So if the zoned device feature becomes widely adopted, then STATX_DIOALIGN will
+be useless on all Android devices?  That sounds undesirable.  Are you sure that
+supporting DIO reads but not DIO writes actually works?  Does it not cause
+problems for existing applications?
 
-	...
-> +	if (get)
-> +		ret = ioctl(fd, EXT4_IOC_GETFSUUID, fsuuid);
-> +	else
-> +		ret = ioctl(fd, EXT4_IOC_SETFSUUID, fsuuid);
+What we need to do is make a decision about whether this means we should build
+in a stx_dio_direction field (indicating no support / readonly support /
+writeonly support / readwrite support) into the API from the beginning.  If we
+don't do that, then I don't think we could simply add such a field later, as the
+statx_dio_*_align fields will have already been assigned their meaning.  I think
+we'd instead have to "duplicate" the API, with STATX_DIOROALIGN and
+statx_dio_ro_*_align fields.  That seems uglier than building a directional
+indicator into the API from the beginning.  On the other hand, requiring all
+programs to check stx_dio_direction would add complexity to using the API.
 
-In the EXT4_IOC_GETFSUUID case, you need to copy fsuuid->fsu_uuid to
-uuid, so it is returned to the caller.
+Any thoughts on this?
 
-
-> +	ret = ext2fs_check_mount_point(device_name, &mnt_flags,
-> +					  mntpt, sizeof(mntpt));
-> +	if (ret || !(mnt_flags & EXT2_MF_MOUNTED) ||
-> +		(!get && (mnt_flags & EXT2_MF_READONLY)) ||
-> +		!mntpt[0])
-> +		return -1;
-
-handle_fsuuid() is getting called twice by tune2fs when handling the
--U option, which means we're calling ext2fs_check_mount_point() twice.
-
-And around line 3364, tune2fs calls ext2fs_check_if_mounted() which
-fetches the mnt_flags but which doesn't get the mountpoint.
-
-So I wonder if wouldn't be better off changing tune2fs's main() to
-call ext2fs_check_mount_point() instead of ext2fs_check_if_mounted(),
-and we can just determine the mountpoint once.
-
-Then, instead of calling handle_fsuuid/[gs]et_mounted_fsuuid, in the
-handling of -U, we can do something like this:
-
-	if (U_flag) {
-		int fd = -1;
-		struct fsuuid *fsuuid = NULL;
-		...
-
-		if ((mnt_flags & EXT2_MF_MOUNTED) &&
-		    !(mnt_flags & EXT2_MF_READONLY) && mntpt) {
-			fd = open(mntpt, O_RDONLY);
-			if (fd >= 0) {
-				fsuuid = malloc(sizeof(*fsuuid) + UUID_SIZE);
-				if (!fsuuid) {
-					close(fd);
-					fd = -1;
-				}
-			}
-		}		
-				
-
-In other words, we can just inline all of handle_fsuuid, and the call
-to get_mounted_fsuuid() just becomes:
-
-	if (fd >= 0) {
-		fsuuid->fsu_len - UUID_SIZE;
-		fsuuid->fsu_flags = 0;
-		ret = ioctl(fd, EXT4_IOC_GETFSUUID, fsuuid);
-	}
-
-... and similarly for set_mounted_fsuuid().
-
-
-Then at the end of tune2fs -U processing, we can do something like this:
-
-	if (fd >= 0)
-		close(fd);
-	free(fsuuid);
-
-						- Ted
-					
+- Eric
