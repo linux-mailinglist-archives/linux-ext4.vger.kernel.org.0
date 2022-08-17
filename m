@@ -2,21 +2,21 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2C7A596F86
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Aug 2022 15:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2BD4596F8A
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Aug 2022 15:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239375AbiHQNQU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        id S239914AbiHQNQU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
         Wed, 17 Aug 2022 09:16:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46706 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239685AbiHQNPp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 17 Aug 2022 09:15:45 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B85F86FE4;
+        with ESMTP id S232671AbiHQNP4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 17 Aug 2022 09:15:56 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7154C870B1;
         Wed, 17 Aug 2022 06:15:29 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4M77gk3m1czXdqH;
-        Wed, 17 Aug 2022 21:11:14 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4M77hj6KHrzkWPY;
+        Wed, 17 Aug 2022 21:12:05 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
  (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Wed, 17 Aug
@@ -28,9 +28,9 @@ CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
         <enwlinux@gmail.com>, <linux-kernel@vger.kernel.org>,
         <yi.zhang@huawei.com>, <yebin10@huawei.com>, <yukuai3@huawei.com>,
         <libaokun1@huawei.com>
-Subject: [PATCH 1/2] ext4: fix GDT corruption after online resizing with bigalloc enable and blocksize is 1024
-Date:   Wed, 17 Aug 2022 21:27:00 +0800
-Message-ID: <20220817132701.3015912-2-libaokun1@huawei.com>
+Subject: [PATCH 2/2] ext4: add inode table check in __ext4_get_inode_loc to aovid possible infinite loop
+Date:   Wed, 17 Aug 2022 21:27:01 +0800
+Message-ID: <20220817132701.3015912-3-libaokun1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220817132701.3015912-1-libaokun1@huawei.com>
 References: <20220817132701.3015912-1-libaokun1@huawei.com>
@@ -50,62 +50,77 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-When the backup superblock is updated in update_backups, the offset of
-the current superblock in the group (that is, sbi->s_sbh->b_blocknr)
-is used as the offset of the backup superblock in the group where the
-backup superblock resides.
+In do_writepages, if the value returned by ext4_writepages is "-ENOMEM"
+and "wbc->sync_mode == WB_SYNC_ALL", retry until the condition is not met.
 
-When blocksize==1024, sbi->s_sbh->b_blocknr is 1. Their block distribution
-of groups is {0: 1-8192, 1:8193-16384...}, so the location of the backup
-superblock is still the first block in each group.
+In __ext4_get_inode_loc, if the bh returned by sb_getblk is NULL,
+the function returns -ENOMEM.
 
-If bigalloc is enabled at the same time, the block distribution of each
-group changes to {0: 0-131071, 1:131072-262143...}. In this case,
-update_backups overwrites the second block instead of the first block in
-each group that contains backup superblocks with the current superblock.
-As a result, both the backup superblock and the backup GDT are incorrect.
-This is nothing, after all, the backup GDT is only used when the disk is
-repaired.
+In __getblk_slow, if the return value of grow_buffers is less than 0,
+the function returns NULL.
 
-However, in some cases, this may cause file system corruption, data loss,
-and even some programs stuck in the D state. We can easily reproduce this
-problem with the following commands:
+When the three processes are connected in series like the following stack,
+an infinite loop may occur:
 
-  mkfs.ext4 -F -O ^resize_inode,^sparse_super,bigalloc -b 1024 /dev/sdb 4M
-  mount /dev/sdb /tmp/test
-  resize2fs /dev/sdb 4G
+do_writepages					<--- keep retrying
+ ext4_writepages
+  mpage_map_and_submit_extent
+   mpage_map_one_extent
+    ext4_map_blocks
+     ext4_ext_map_blocks
+      ext4_ext_handle_unwritten_extents
+       ext4_ext_convert_to_initialized
+        ext4_split_extent
+         ext4_split_extent_at
+          __ext4_ext_dirty
+           __ext4_mark_inode_dirty
+            ext4_reserve_inode_write
+             ext4_get_inode_loc
+              __ext4_get_inode_loc		<--- return -ENOMEM
+               sb_getblk
+                __getblk_gfp
+                 __getblk_slow			<--- return NULL
+                  grow_buffers
+                   grow_dev_page		<--- return -ENXIO
+                    ret = (block < end_block) ? 1 : -ENXIO;
 
-This is because the GDT for each meta_bg is placed in its first group. When
-sparse_super is disabled, backup superblocks exist in each group. In this
-case, the GDT of the new meta_bg obtained by online resizing is corrupt.
+In this issue, bg_inode_table_hi is overwritten as an incorrect value.
+As a result, `block < end_block` cannot be met in grow_dev_page.
+Therefore, __ext4_get_inode_loc always returns '-ENOMEM' and do_writepages
+keeps retrying. As a result, the writeback process is in the D state due
+to an infinite loop.
 
-To solve this issue, we only need to specify the offset of the backup
-superblock in the group to 0 when bigalloc is enabled.
+Add a check on inode table block in the __ext4_get_inode_loc function by
+referring to ext4_read_inode_bitmap to avoid this infinite loop.
 
-Fixes: d77147ff443b ("ext4: add support for online resizing with bigalloc")
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
 ---
- fs/ext4/resize.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ fs/ext4/inode.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
-index fea2a68d067b..0146a11efd06 100644
---- a/fs/ext4/resize.c
-+++ b/fs/ext4/resize.c
-@@ -1590,8 +1590,12 @@ static int ext4_flex_group_add(struct super_block *sb,
- 				   EXT4_DESC_PER_BLOCK(sb));
- 		int meta_bg = ext4_has_feature_meta_bg(sb);
- 		sector_t old_gdb = 0;
-+		sector_t blk_off = sbi->s_sbh->b_blocknr;
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 601214453c3a..5e171879fa23 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -4466,9 +4466,17 @@ static int __ext4_get_inode_loc(struct super_block *sb, unsigned long ino,
+ 	inodes_per_block = EXT4_SB(sb)->s_inodes_per_block;
+ 	inode_offset = ((ino - 1) %
+ 			EXT4_INODES_PER_GROUP(sb));
+-	block = ext4_inode_table(sb, gdp) + (inode_offset / inodes_per_block);
+ 	iloc->offset = (inode_offset % inodes_per_block) * EXT4_INODE_SIZE(sb);
  
--		update_backups(sb, sbi->s_sbh->b_blocknr, (char *)es,
-+		if (ext4_has_feature_bigalloc(sb))
-+			blk_off = 0;
++	block = ext4_inode_table(sb, gdp);
++	if ((block <= le32_to_cpu(EXT4_SB(sb)->s_es->s_first_data_block)) ||
++	    (block >= ext4_blocks_count(EXT4_SB(sb)->s_es))) {
++		ext4_error(sb, "Invalid inode table block %llu in "
++			   "block_group %u", block, iloc->block_group);
++		return -EFSCORRUPTED;
++	}
++	block += (inode_offset / inodes_per_block);
 +
-+		update_backups(sb, blk_off, (char *)es,
- 			       sizeof(struct ext4_super_block), 0);
- 		for (; gdb_num <= gdb_num_end; gdb_num++) {
- 			struct buffer_head *gdb_bh;
+ 	bh = sb_getblk(sb, block);
+ 	if (unlikely(!bh))
+ 		return -ENOMEM;
 -- 
 2.31.1
 
