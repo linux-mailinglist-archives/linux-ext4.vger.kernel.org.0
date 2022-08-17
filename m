@@ -2,157 +2,241 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA858596894
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Aug 2022 07:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34857596A02
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Aug 2022 09:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229758AbiHQFZN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 17 Aug 2022 01:25:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47674 "EHLO
+        id S238638AbiHQHCc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 17 Aug 2022 03:02:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232789AbiHQFZM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 17 Aug 2022 01:25:12 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1377A5FAFF;
-        Tue, 16 Aug 2022 22:25:09 -0700 (PDT)
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27H4kqG7012871;
-        Wed, 17 Aug 2022 05:24:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=xjYCcnPE+FviXf6beLMD7vOup6H7R4aerrF4Ld4Rfq0=;
- b=cJ41wWIQx1NgIlWobMRzRKla1fV1CvtPe0xQ4xyjaMYmNYAB7naeHvKM/XzTgy6MuyNB
- vzdVb3Gkp5rRZioDT8L94RMXBDZjo5BQNpavr2hOfBnBdWCV5uzGAWTqunEXisEdC3hu
- ADMr1JXu3BVc2RLFppc4tZbryV/xQcn7d6txO76RBSHf5E+iNzmxliL2Ui1YeKF/yiIH
- o5VAI9H0r67r/nmiFESFzHwA3D6OPeAD4X7TDAeZ3OUv404DYsuxvwSPz2efiCy903cM
- vgDTPMJzezgnPrVRUpIopj21w04es7KdNmWGcAhDNBzTamXiMppuXyZ3r08ktox94huM oA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3j0skw0t6n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Aug 2022 05:24:59 +0000
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 27H58axd026488;
-        Wed, 17 Aug 2022 05:24:58 GMT
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3j0skw0t5w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Aug 2022 05:24:58 +0000
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 27H55L2Y009924;
-        Wed, 17 Aug 2022 05:24:56 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma05fra.de.ibm.com with ESMTP id 3hyp8shg1m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Aug 2022 05:24:56 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 27H5Ospo27132208
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Aug 2022 05:24:54 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0F30B11C04C;
-        Wed, 17 Aug 2022 05:24:54 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C368D11C052;
-        Wed, 17 Aug 2022 05:24:50 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.75.30])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed, 17 Aug 2022 05:24:50 +0000 (GMT)
-Date:   Wed, 17 Aug 2022 10:54:47 +0530
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     Stefan Wahren <stefan.wahren@i2se.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        linux-fsdevel@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Geetika.Moolchandani1@ibm.com, regressions@lists.linux.dev,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [Regression] ext4: changes to mb_optimize_scan cause issues on
- Raspberry Pi
-Message-ID: <Yvx7i7QthoTgykeE@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <0d81a7c2-46b7-6010-62a4-3e6cfc1628d6@i2se.com>
- <20220728100055.efbvaudwp3ofolpi@quack3>
- <64b7899f-d84d-93de-f9c5-49538bd080d0@i2se.com>
- <20220816093421.ok26tcyvf6bm3ngy@quack3>
- <b8a5e43a-4d1e-aede-e0f7-f731fd8acf1d@i2se.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b8a5e43a-4d1e-aede-e0f7-f731fd8acf1d@i2se.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: n6F6GPtpYlL38AaBfAxyPlhOQJY2r__6
-X-Proofpoint-GUID: sK8sZS9P8BD1hOVTPEnkoE-5YCoAxPmv
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S238717AbiHQHC0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 17 Aug 2022 03:02:26 -0400
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A169679EE3
+        for <linux-ext4@vger.kernel.org>; Wed, 17 Aug 2022 00:02:22 -0700 (PDT)
+Received: by mail-il1-f197.google.com with SMTP id h25-20020a056e021d9900b002e069b96119so8593994ila.14
+        for <linux-ext4@vger.kernel.org>; Wed, 17 Aug 2022 00:02:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc;
+        bh=AVy8zYCWjiIYaAwAGw4xq9fAnoGnbLuxa0nQhh+cRCs=;
+        b=LSnD5PLYrOdtAN8v81L2kSNnfN03F+tQT3Q/jC8WKcGyNDcgYMxsGM1R8iWN0Xh0ja
+         FYdSPMUaKxBVTKTzbyF0KEZx3t9YLSuhJXosTIgOng1+WKCblVH/EC8uHhnrhYWxXxTN
+         1q/0nedL2g0IjGYFqPPF+tLfTrQDEsC4Kc8wPCZOyv9kLn5mMS9pznun5rCibC/3zkC+
+         wZspjmAOX+scVzhDs7XERk+/6KV68ojBMO3EqCWU7KQyC0XY9hvD7Ji4WE/OJuLrP7rW
+         z5vpDfWvYYYUhPvlvEmq4KVbc587HI6O0HVhQme/eyRAiEEkxuu4D7JBo6Q5fWoFqIyW
+         g+Yg==
+X-Gm-Message-State: ACgBeo085b2a4QLJzW83nN8UgXl7+LLe3xEx8kryLMd6wSRC926Pg0DS
+        cNN0imyQm+ttsxJlMw21LUjAqYaTUwT5Tab//2Nbc8AUpNEE
+X-Google-Smtp-Source: AA6agR6rN7dhNVaxttfrEsOm5NHuRq2p14qzf5syX0piTZG3OQJsWMw/voN29CUtiLfIvSTED5mjAUWS+WLDv+bhtyGbp7TgauI7
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-08-17_02,2022-08-16_02,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- suspectscore=0 lowpriorityscore=0 clxscore=1011 phishscore=0
- mlxlogscore=999 spamscore=0 bulkscore=0 malwarescore=0 impostorscore=0
- mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2207270000 definitions=main-2208170021
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6e02:1c8b:b0:2de:ec44:e139 with SMTP id
+ w11-20020a056e021c8b00b002deec44e139mr10522256ill.215.1660719742003; Wed, 17
+ Aug 2022 00:02:22 -0700 (PDT)
+Date:   Wed, 17 Aug 2022 00:02:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004b320405e66a72cf@google.com>
+Subject: [syzbot] possible deadlock in ext4_writepages
+From:   syzbot <syzbot+c8139688c30ecca75857@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Aug 16, 2022 at 10:45:48PM +0200, Stefan Wahren wrote:
-> Hi Jan,
-> 
-> Am 16.08.22 um 11:34 schrieb Jan Kara:
-> > Hi Stefan!
-> > So this is interesting. We can see the card is 100% busy. The IO submitted
-> > to the card is formed by small requests - 18-38 KB per request - and each
-> > request takes 0.3-0.5s to complete. So the resulting throughput is horrible
-> > - only tens of KB/s. Also we can see there are many IOs queued for the
-> > device in parallel (aqu-sz columnt). This does not look like load I would
-> > expect to be generated by download of a large file from the web.
-> > 
-> > You have mentioned in previous emails that with dd(1) you can do couple
-> > MB/s writing to this card which is far more than these tens of KB/s. So the
-> > file download must be doing something which really destroys the IO pattern
-> > (and with mb_optimize_scan=0 ext4 happened to be better dealing with it and
-> > generating better IO pattern). Can you perhaps strace the process doing the
-> > download (or perhaps strace -f the whole rpi-update process) so that we can
-> > see how does the load generated on the filesystem look like? Thanks!
-> 
-> i didn't create the strace yet, but i looked at the source of rpi-update. At
-> the end the download phase is a curl call to download a tar archive and pipe
-> it directly to tar.
-> 
-> You can find the content list of the tar file here:
-> 
-> https://raw.githubusercontent.com/lategoodbye/mb_optimize_scan_regress/main/rpi-firmware-tar-content-list.txt
-> 
-> Best regards
-> 
-> > 
-> > 								Honza
-Hi Jan and Stefan,
+Hello,
 
-I did some analysis of this on my Raspberry Pi 3B+. Not sure of the root
-cause yet but here is what I observed:
+syzbot found the following issue on:
 
-1. So I noticed that the download itself is not causing any issues in my
-case, but the download with a pipe to tar is what causes the degradation.
-With the pipe to tar, mb_optimize_scan=1 takes around 7mins whereas
-mb_optimize_scan=0 takes 1 min
+HEAD commit:    7ebfc85e2cd7 Merge tag 'net-6.0-rc1' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16fdc2f3080000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=20bc0b329895d963
+dashboard link: https://syzkaller.appspot.com/bug?extid=c8139688c30ecca75857
+compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
 
-2. I tried to replicate this performance degradation by running untar
-on an x86 machine but I not able to get the degradation. It is
-reproducible pretty consistently on my Raspberry Pi though (w/ an 8GB
-memory card).
+Unfortunately, I don't have any reproducer for this issue yet.
 
-3. I did analyse the resulting mb_optimize_scan=0 vs mb_optmize_scan=1
-filesystem and seems like the allocated blocks are more spread out in
-mb_optmize_scan=1 case but not yet sure if that is the issue.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c8139688c30ecca75857@syzkaller.appspotmail.com
 
-Will update here if I notice anything else.
+======================================================
+WARNING: possible circular locking dependency detected
+5.19.0-syzkaller-13930-g7ebfc85e2cd7 #0 Not tainted
+------------------------------------------------------
+syz-executor.1/6130 is trying to acquire lock:
+ffff88814b25cbd8 (&sbi->s_writepages_rwsem){.+.+}-{0:0}, at: ext4_writepages+0x1e7/0x3be0 fs/ext4/inode.c:2687
 
-Regards,
-Ojaswin
+but task is already holding lock:
+ffff88803dd0ca38 (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at: inode_lock_shared include/linux/fs.h:771 [inline]
+ffff88803dd0ca38 (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at: ext4_dio_read_iter fs/ext4/file.c:63 [inline]
+ffff88803dd0ca38 (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at: ext4_file_read_iter+0x26b/0x740 fs/ext4/file.c:130
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (&sb->s_type->i_mutex_key#7){++++}-{3:3}:
+       lock_acquire+0x1a7/0x400 kernel/locking/lockdep.c:5666
+       down_read+0x39/0x50 kernel/locking/rwsem.c:1499
+       inode_lock_shared include/linux/fs.h:771 [inline]
+       ext4_bmap+0x55/0x410 fs/ext4/inode.c:3157
+       bmap+0xa1/0xd0 fs/inode.c:1799
+       jbd2_journal_bmap fs/jbd2/journal.c:971 [inline]
+       __jbd2_journal_erase fs/jbd2/journal.c:1784 [inline]
+       jbd2_journal_flush+0x5d0/0xca0 fs/jbd2/journal.c:2490
+       ext4_ioctl_checkpoint fs/ext4/ioctl.c:1082 [inline]
+       __ext4_ioctl fs/ext4/ioctl.c:1586 [inline]
+       ext4_ioctl+0x378a/0x55c0 fs/ext4/ioctl.c:1606
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:870 [inline]
+       __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:856
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x2b/0x70 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+-> #1 (&journal->j_checkpoint_mutex){+.+.}-{3:3}:
+       lock_acquire+0x1a7/0x400 kernel/locking/lockdep.c:5666
+       __mutex_lock_common+0x1de/0x26c0 kernel/locking/mutex.c:603
+       mutex_lock_io_nested+0x43/0x60 kernel/locking/mutex.c:833
+       __jbd2_log_wait_for_space+0x22d/0x790 fs/jbd2/checkpoint.c:110
+       add_transaction_credits+0x936/0xbf0 fs/jbd2/transaction.c:298
+       start_this_handle+0x758/0x1660 fs/jbd2/transaction.c:422
+       jbd2__journal_start+0x2ca/0x5b0 fs/jbd2/transaction.c:520
+       __ext4_journal_start_sb+0x111/0x1d0 fs/ext4/ext4_jbd2.c:105
+       __ext4_journal_start fs/ext4/ext4_jbd2.h:326 [inline]
+       ext4_writepages+0x1181/0x3be0 fs/ext4/inode.c:2810
+       do_writepages+0x3c3/0x690 mm/page-writeback.c:2468
+       filemap_fdatawrite_wbc+0x11e/0x170 mm/filemap.c:388
+       __filemap_fdatawrite_range mm/filemap.c:421 [inline]
+       file_write_and_wait_range+0x1e7/0x2f0 mm/filemap.c:773
+       ext4_sync_file+0x1b0/0x850 fs/ext4/fsync.c:151
+       generic_write_sync include/linux/fs.h:2874 [inline]
+       ext4_buffered_write_iter+0x308/0x3a0 fs/ext4/file.c:277
+       ext4_file_write_iter+0xabb/0x1ae0
+       do_iter_write+0x6f0/0xc50 fs/read_write.c:855
+       iter_file_splice_write+0x830/0xff0 fs/splice.c:686
+       do_splice_from fs/splice.c:764 [inline]
+       direct_splice_actor+0xe6/0x1c0 fs/splice.c:931
+       splice_direct_to_actor+0x4e4/0xc00 fs/splice.c:886
+       do_splice_direct+0x2a0/0x3f0 fs/splice.c:974
+       do_sendfile+0x641/0xfd0 fs/read_write.c:1249
+       __do_sys_sendfile64 fs/read_write.c:1311 [inline]
+       __se_sys_sendfile64+0xfc/0x1e0 fs/read_write.c:1303
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x2b/0x70 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+-> #0 (&sbi->s_writepages_rwsem){.+.+}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:3095 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3214 [inline]
+       validate_chain+0x1872/0x6600 kernel/locking/lockdep.c:3829
+       __lock_acquire+0x1292/0x1f60 kernel/locking/lockdep.c:5053
+       lock_acquire+0x1a7/0x400 kernel/locking/lockdep.c:5666
+       percpu_down_read+0x44/0x190 include/linux/percpu-rwsem.h:51
+       ext4_writepages+0x1e7/0x3be0 fs/ext4/inode.c:2687
+       do_writepages+0x3c3/0x690 mm/page-writeback.c:2468
+       filemap_fdatawrite_wbc+0x11e/0x170 mm/filemap.c:388
+       __filemap_fdatawrite_range mm/filemap.c:421 [inline]
+       filemap_write_and_wait_range+0x1c1/0x2c0 mm/filemap.c:673
+       __iomap_dio_rw+0xb25/0x20e0 fs/iomap/direct-io.c:573
+       iomap_dio_rw+0x42/0xa0 fs/iomap/direct-io.c:690
+       ext4_dio_read_iter fs/ext4/file.c:79 [inline]
+       ext4_file_read_iter+0x595/0x740 fs/ext4/file.c:130
+       call_read_iter include/linux/fs.h:2186 [inline]
+       generic_file_splice_read+0x24e/0x650 fs/splice.c:309
+       do_splice_to fs/splice.c:793 [inline]
+       splice_direct_to_actor+0x41b/0xc00 fs/splice.c:865
+       do_splice_direct+0x2a0/0x3f0 fs/splice.c:974
+       do_sendfile+0x641/0xfd0 fs/read_write.c:1249
+       __do_sys_sendfile64 fs/read_write.c:1317 [inline]
+       __se_sys_sendfile64+0x178/0x1e0 fs/read_write.c:1303
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x2b/0x70 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+other info that might help us debug this:
+
+Chain exists of:
+  &sbi->s_writepages_rwsem --> &journal->j_checkpoint_mutex --> &sb->s_type->i_mutex_key#7
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&sb->s_type->i_mutex_key#7);
+                               lock(&journal->j_checkpoint_mutex);
+                               lock(&sb->s_type->i_mutex_key#7);
+  lock(&sbi->s_writepages_rwsem);
+
+ *** DEADLOCK ***
+
+2 locks held by syz-executor.1/6130:
+ #0: ffff88814b25a460 (sb_writers#4){.+.+}-{0:0}, at: do_sendfile+0x61c/0xfd0 fs/read_write.c:1248
+ #1: ffff88803dd0ca38 (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at: inode_lock_shared include/linux/fs.h:771 [inline]
+ #1: ffff88803dd0ca38 (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at: ext4_dio_read_iter fs/ext4/file.c:63 [inline]
+ #1: ffff88803dd0ca38 (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at: ext4_file_read_iter+0x26b/0x740 fs/ext4/file.c:130
+
+stack backtrace:
+CPU: 1 PID: 6130 Comm: syz-executor.1 Not tainted 5.19.0-syzkaller-13930-g7ebfc85e2cd7 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/22/2022
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e3/0x2cb lib/dump_stack.c:106
+ check_noncircular+0x2f9/0x3b0 kernel/locking/lockdep.c:2175
+ check_prev_add kernel/locking/lockdep.c:3095 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3214 [inline]
+ validate_chain+0x1872/0x6600 kernel/locking/lockdep.c:3829
+ __lock_acquire+0x1292/0x1f60 kernel/locking/lockdep.c:5053
+ lock_acquire+0x1a7/0x400 kernel/locking/lockdep.c:5666
+ percpu_down_read+0x44/0x190 include/linux/percpu-rwsem.h:51
+ ext4_writepages+0x1e7/0x3be0 fs/ext4/inode.c:2687
+ do_writepages+0x3c3/0x690 mm/page-writeback.c:2468
+ filemap_fdatawrite_wbc+0x11e/0x170 mm/filemap.c:388
+ __filemap_fdatawrite_range mm/filemap.c:421 [inline]
+ filemap_write_and_wait_range+0x1c1/0x2c0 mm/filemap.c:673
+ __iomap_dio_rw+0xb25/0x20e0 fs/iomap/direct-io.c:573
+ iomap_dio_rw+0x42/0xa0 fs/iomap/direct-io.c:690
+ ext4_dio_read_iter fs/ext4/file.c:79 [inline]
+ ext4_file_read_iter+0x595/0x740 fs/ext4/file.c:130
+ call_read_iter include/linux/fs.h:2186 [inline]
+ generic_file_splice_read+0x24e/0x650 fs/splice.c:309
+ do_splice_to fs/splice.c:793 [inline]
+ splice_direct_to_actor+0x41b/0xc00 fs/splice.c:865
+ do_splice_direct+0x2a0/0x3f0 fs/splice.c:974
+ do_sendfile+0x641/0xfd0 fs/read_write.c:1249
+ __do_sys_sendfile64 fs/read_write.c:1317 [inline]
+ __se_sys_sendfile64+0x178/0x1e0 fs/read_write.c:1303
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x2b/0x70 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fce42889279
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fce4395e168 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 00007fce4299c1f0 RCX: 00007fce42889279
+RDX: 0000000000000000 RSI: 0000000000000008 RDI: 0000000000000003
+RBP: 00007fce428e3189 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000010000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fffdba263bf R14: 00007fce4395e300 R15: 0000000000022000
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
