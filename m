@@ -2,221 +2,161 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C72459759D
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Aug 2022 20:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81C6E597B38
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Aug 2022 03:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237352AbiHQSTH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 17 Aug 2022 14:19:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54168 "EHLO
+        id S234003AbiHRByv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 17 Aug 2022 21:54:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231196AbiHQSTG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 17 Aug 2022 14:19:06 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD810564F9;
-        Wed, 17 Aug 2022 11:19:05 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 6E31B3394D;
-        Wed, 17 Aug 2022 18:19:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1660760344; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xs0Q66IkFtdZTDwgXU8QcYDnXShb/7ltOn497tvw0Dc=;
-        b=OMs2+IwLHbsppviqw3H4dq6TwTNLm6yJ0jIvf6rFsXDCSVDvOAKTj9onSBR/xDoFVa8qni
-        8EsJpl8zH2z2P/wYFyPl8RK01L9MweSrl/DoRWNVFNY/+joV+RFle0nednqrKIEL/jaaHk
-        fZs2F7cXwBJhvql9NPXxawI2EnKri8E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1660760344;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xs0Q66IkFtdZTDwgXU8QcYDnXShb/7ltOn497tvw0Dc=;
-        b=KJ1QfBbOImYe07nQb7ufJYvuA4xsHw3c8oX3ykYVhzY+rhG+x9ac5M5UeSDyuAyRsTBB9Q
-        NsEFJ8mWJx0XCxCQ==
-Received: from quack3.suse.cz (unknown [10.100.224.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id E03082C177;
-        Wed, 17 Aug 2022 18:19:03 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 1FA8FA066B; Wed, 17 Aug 2022 20:19:03 +0200 (CEST)
-Date:   Wed, 17 Aug 2022 20:19:03 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Lukas Czerner <lczerner@redhat.com>,
-        Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH v2] ext4: fix i_version handling in ext4
-Message-ID: <20220817181903.3qqqzqvgghr2lqgm@quack3>
-References: <20220817162638.133341-1-jlayton@kernel.org>
+        with ESMTP id S229802AbiHRByu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 17 Aug 2022 21:54:50 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C34F44563;
+        Wed, 17 Aug 2022 18:54:48 -0700 (PDT)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4M7SZB1yK4zmVwD;
+        Thu, 18 Aug 2022 09:52:34 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Thu, 18 Aug 2022 09:54:46 +0800
+Message-ID: <803e4ab0-e336-5434-2827-a5091eefad59@huawei.com>
+Date:   Thu, 18 Aug 2022 09:54:45 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220817162638.133341-1-jlayton@kernel.org>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH 2/2] ext4: add inode table check in __ext4_get_inode_loc
+ to aovid possible infinite loop
+Content-Language: en-US
+To:     Jan Kara <jack@suse.cz>
+CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>, <ritesh.list@gmail.com>,
+        <lczerner@redhat.com>, <enwlinux@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
+        <yebin10@huawei.com>, <yukuai3@huawei.com>,
+        Baokun Li <libaokun1@huawei.com>
+References: <20220817132701.3015912-1-libaokun1@huawei.com>
+ <20220817132701.3015912-3-libaokun1@huawei.com>
+ <20220817143138.7krkxzoa3skruiyx@quack3>
+From:   Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20220817143138.7krkxzoa3skruiyx@quack3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 17-08-22 12:26:38, Jeff Layton wrote:
-> ext4 currently updates the i_version counter when the atime is updated
-> during a read. This is less than ideal as it can cause unnecessary cache
-> invalidations with NFSv4 and unnecessary remeasurements for IMA. The
-> increment in ext4_mark_iloc_dirty is also problematic since it can also
-> corrupt the i_version counter for ea_inodes. We aren't bumping the file
-> times in ext4_mark_iloc_dirty, so changing the i_version there seems
-> wrong, and is the cause of both problems.
-> 
-> Remove that callsite and add increments to the setattr, setxattr and
-> ioctl codepaths (at the same time that we update the ctime). The
-> i_version bump that already happens during timestamp updates should take
-> care of the rest.
-> 
-> In ext4_move_extents, increment the i_version on both inodes, and also
-> add in missing ctime updates.
-> 
-> Cc: Lukas Czerner <lczerner@redhat.com>
-> Cc: Christian Brauner <brauner@kernel.org>
-> Cc: Jan Kara <jack@suse.cz>
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+On 8/17/2022 10:31 PM, Jan Kara wrote:
+> On Wed 17-08-22 21:27:01, Baokun Li wrote:
+>> In do_writepages, if the value returned by ext4_writepages is "-ENOMEM"
+>> and "wbc->sync_mode == WB_SYNC_ALL", retry until the condition is not met.
+>>
+>> In __ext4_get_inode_loc, if the bh returned by sb_getblk is NULL,
+>> the function returns -ENOMEM.
+>>
+>> In __getblk_slow, if the return value of grow_buffers is less than 0,
+>> the function returns NULL.
+>>
+>> When the three processes are connected in series like the following stack,
+>> an infinite loop may occur:
+>>
+>> do_writepages					<--- keep retrying
+>>   ext4_writepages
+>>    mpage_map_and_submit_extent
+>>     mpage_map_one_extent
+>>      ext4_map_blocks
+>>       ext4_ext_map_blocks
+>>        ext4_ext_handle_unwritten_extents
+>>         ext4_ext_convert_to_initialized
+>>          ext4_split_extent
+>>           ext4_split_extent_at
+>>            __ext4_ext_dirty
+>>             __ext4_mark_inode_dirty
+>>              ext4_reserve_inode_write
+>>               ext4_get_inode_loc
+>>                __ext4_get_inode_loc		<--- return -ENOMEM
+>>                 sb_getblk
+>>                  __getblk_gfp
+>>                   __getblk_slow			<--- return NULL
+>>                    grow_buffers
+>>                     grow_dev_page		<--- return -ENXIO
+>>                      ret = (block < end_block) ? 1 : -ENXIO;
+>>
+>> In this issue, bg_inode_table_hi is overwritten as an incorrect value.
+>> As a result, `block < end_block` cannot be met in grow_dev_page.
+>> Therefore, __ext4_get_inode_loc always returns '-ENOMEM' and do_writepages
+>> keeps retrying. As a result, the writeback process is in the D state due
+>> to an infinite loop.
+>>
+>> Add a check on inode table block in the __ext4_get_inode_loc function by
+>> referring to ext4_read_inode_bitmap to avoid this infinite loop.
+>>
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> Thanks for the fixes. Normally, we check that inode table is fine in
+> ext4_check_descriptors() (and those checks are much stricter) so it seems
+Yes, when I first found this problem, I thought that the inode table was 
+an abnormal value
+when the disk was mounted. However, in ext4_ check_ Descriptors see the 
+inspection of inode table.
+ext4_ check_ Descriptors is more strict, and it also checks blocks_ 
+Bitmap and inode_ bitmap。
 
-Hopefully all cases covered ;) Feel free to add:
+However, in addition to mounting, I can't find any changes to 
+bg_inode_table_hi  in other parts of
+the kernel, which makes me very confused. It wasn't until I tracked the 
+address of the variable that
+I found it was modified by memcpy.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+This check is added here to facilitate us to find problems and avoid 
+dead loops. Otherwise,
+we may not find problems until the write back process is stuck in the D 
+state for several hours.
+  At this time, the file system may be in a mess.
+> unnecessary to check it again here. I understand that in your case it was
+> resize that corrupted the group descriptor after the filesystem was mounted
+> which is nasty but there's much more metadata that can be corrupted like
+> this and it's infeasible to check each metadata block before we use it.
+Indeed, But is it true that checking for inode_bitmap in 
+ext4_read_inode_bitmap and
+checking for block_bitmap in ext4_read_block_bitmap_nowait also 
+unnecessary?
+After all, inode_bitmap and block_bitmap may be faulty only when the 
+metadata  is corrupted.
+I think it seems unreasonable that both block_bitmap and inode_bitmap 
+have checks and inode_table does not.
+>
+> IMHO a proper fix to this class of issues would be for sb_getblk() to
+> return proper error so that we can distinguish ENOMEM from other errors.
 
-								Honza
+Totally agree! There is a FIXME in the comments of __getblk_gfp:
 
-> ---
->  fs/ext4/inode.c       | 10 +++++-----
->  fs/ext4/ioctl.c       |  4 ++++
->  fs/ext4/move_extent.c |  6 ++++++
->  fs/ext4/xattr.c       |  2 ++
->  4 files changed, 17 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 601214453c3a..a70921df89a5 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -5342,6 +5342,7 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
->  	int error, rc = 0;
->  	int orphan = 0;
->  	const unsigned int ia_valid = attr->ia_valid;
-> +	bool inc_ivers = IS_IVERSION(inode);
->  
->  	if (unlikely(ext4_forced_shutdown(EXT4_SB(inode->i_sb))))
->  		return -EIO;
-> @@ -5425,8 +5426,8 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
->  			return -EINVAL;
->  		}
->  
-> -		if (IS_I_VERSION(inode) && attr->ia_size != inode->i_size)
-> -			inode_inc_iversion(inode);
-> +		if (attr->ia_size == inode->i_size)
-> +			inc_ivers = false;
->  
->  		if (shrink) {
->  			if (ext4_should_order_data(inode)) {
-> @@ -5528,6 +5529,8 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
->  	}
->  
->  	if (!error) {
-> +		if (inc_ivers)
-> +			inode_inc_iversion(inode);
->  		setattr_copy(mnt_userns, inode, attr);
->  		mark_inode_dirty(inode);
->  	}
-> @@ -5731,9 +5734,6 @@ int ext4_mark_iloc_dirty(handle_t *handle,
->  	}
->  	ext4_fc_track_inode(handle, inode);
->  
-> -	if (IS_I_VERSION(inode))
-> -		inode_inc_iversion(inode);
-> -
->  	/* the do_update_inode consumes one bh->b_count */
->  	get_bh(iloc->bh);
->  
-> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-> index 3cf3ec4b1c21..ad3a294a88eb 100644
-> --- a/fs/ext4/ioctl.c
-> +++ b/fs/ext4/ioctl.c
-> @@ -452,6 +452,7 @@ static long swap_inode_boot_loader(struct super_block *sb,
->  	swap_inode_data(inode, inode_bl);
->  
->  	inode->i_ctime = inode_bl->i_ctime = current_time(inode);
-> +	inode_inc_iversion(inode);
->  
->  	inode->i_generation = prandom_u32();
->  	inode_bl->i_generation = prandom_u32();
-> @@ -665,6 +666,7 @@ static int ext4_ioctl_setflags(struct inode *inode,
->  	ext4_set_inode_flags(inode, false);
->  
->  	inode->i_ctime = current_time(inode);
-> +	inode_inc_iversion(inode);
->  
->  	err = ext4_mark_iloc_dirty(handle, inode, &iloc);
->  flags_err:
-> @@ -775,6 +777,7 @@ static int ext4_ioctl_setproject(struct inode *inode, __u32 projid)
->  
->  	EXT4_I(inode)->i_projid = kprojid;
->  	inode->i_ctime = current_time(inode);
-> +	inode_inc_iversion(inode);
->  out_dirty:
->  	rc = ext4_mark_iloc_dirty(handle, inode, &iloc);
->  	if (!err)
-> @@ -1257,6 +1260,7 @@ static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->  		err = ext4_reserve_inode_write(handle, inode, &iloc);
->  		if (err == 0) {
->  			inode->i_ctime = current_time(inode);
-> +			inode_inc_iversion(inode);
->  			inode->i_generation = generation;
->  			err = ext4_mark_iloc_dirty(handle, inode, &iloc);
->  		}
-> diff --git a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
-> index 701f1d6a217f..285700b00d38 100644
-> --- a/fs/ext4/move_extent.c
-> +++ b/fs/ext4/move_extent.c
-> @@ -6,6 +6,7 @@
->   */
->  
->  #include <linux/fs.h>
-> +#include <linux/iversion.h>
->  #include <linux/quotaops.h>
->  #include <linux/slab.h>
->  #include <linux/sched/mm.h>
-> @@ -683,6 +684,11 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp, __u64 orig_blk,
->  			break;
->  		o_start += cur_len;
->  		d_start += cur_len;
-> +
-> +		orig_inode->i_ctime = current_time(orig_inode);
-> +		donor_inode->i_ctime = current_time(donor_inode);
-> +		inode_inc_iversion(orig_inode);
-> +		inode_inc_iversion(donor_inode);
->  	}
->  	*moved_len = o_start - orig_blk;
->  	if (*moved_len > len)
-> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-> index 533216e80fa2..4d84919d1c9c 100644
-> --- a/fs/ext4/xattr.c
-> +++ b/fs/ext4/xattr.c
-> @@ -2412,6 +2412,8 @@ ext4_xattr_set_handle(handle_t *handle, struct inode *inode, int name_index,
->  	if (!error) {
->  		ext4_xattr_update_super_block(handle, inode->i_sb);
->  		inode->i_ctime = current_time(inode);
-> +		if (IS_IVERSION(inode))
-> +			inode_inc_iversion(inode);
->  		if (!value)
->  			no_expand = 0;
->  		error = ext4_mark_iloc_dirty(handle, inode, &is.iloc);
-> -- 
-> 2.37.2
-> 
+` ` `
+__getblk_gfp() will lock up the machine if grow_dev_page's
+try_to_free_buffers() attempt is failing. FIXME, perhaps?
+` ` `
+
+This is the same as this issue because the return value of the 
+grow_buffers function is not propagated correctly.
+
+> But that will be a larger undertaking...
+>
+> 								Honza
+Yes, this function can be called in many places, and external interface 
+changes are involved.
+>> ---
+>>   fs/ext4/inode.c | 10 +++++++++-
+>>   1 file changed, 9 insertions(+), 1 deletion(-)
+Thanks!
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+With Best Regards,
+Baokun Li
