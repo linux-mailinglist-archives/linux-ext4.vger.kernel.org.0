@@ -2,85 +2,81 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53286599192
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Aug 2022 02:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079CD5995DE
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Aug 2022 09:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240125AbiHSAIE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 18 Aug 2022 20:08:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51534 "EHLO
+        id S245741AbiHSHSQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 19 Aug 2022 03:18:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234482AbiHSAID (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 18 Aug 2022 20:08:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF266C8741;
-        Thu, 18 Aug 2022 17:08:02 -0700 (PDT)
+        with ESMTP id S242189AbiHSHSQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 19 Aug 2022 03:18:16 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB0EE51;
+        Fri, 19 Aug 2022 00:18:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7BD4961780;
-        Fri, 19 Aug 2022 00:08:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB419C433D6;
-        Fri, 19 Aug 2022 00:08:01 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id CE0CEB824F4;
+        Fri, 19 Aug 2022 07:18:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43A9EC433C1;
+        Fri, 19 Aug 2022 07:18:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660867681;
-        bh=DB5w81cqKm2F5lETmS4LCW82uo9MUw7j0b6cKhvjPgc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cqSlQanCirhntV3BXdcMMmvvjx/Emgg7+Lhjgq5V8zDG55Yd67QcDGxxL085wovIz
-         CzodBqIGBF2qfjqDl0HLA7dDL2I9JTUANHSy/0iA++tRv3UcsJx2jRTqdzlyt4RSXA
-         v6Pt40ZAz6LlqMAYgKFlAOl9TtIpJd+RXdKs53IUU9hQJtjameznnmM2/zP52Qamnv
-         imB/KrfG5+piZK9bfR8lG2eWA2as88SvelzwDSuYtxvNxgZyfs7nu8y2TMbv0F2Rj8
-         ASKT+4QqUja7ccsFDaBFTduQt6l2fjO/jkrM2xaIl2qtTJVgeF1WAMHLZXYoG9w9vz
-         82BUAJCEwhIvg==
-Date:   Thu, 18 Aug 2022 17:08:01 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Lalith Rajendran <lalithkraj@google.com>
-Cc:     tytso@mit.edu, dilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: Make ext4_lazyinit_thread freezable.
-Message-ID: <Yv7UYfFBmRTKXNc7@magnolia>
-References: <20220818214049.1519544-1-lalithkraj@google.com>
+        s=k20201202; t=1660893490;
+        bh=urBqd6sIRU3x6OGrBbvlSl/MLtqpjSnSa5yBG6LG85U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EzTgxveXKG6RaPuiWCg5OL1nA6+W37vbIimNvAC3Mb3YdTdUMG7GirW7dF3s8YHGw
+         7o2yhmFGYeuJPsb/xi8MA+QezhLDSy+m3VVxblZ813u3QfeWCh4OFiZnSqxcANQ6bi
+         63pBjUwT4SMVj2xq4i5HpmhbZm4eSgjbRL0ka3B6kvbE8wUdyb12CHrxFVzQ14doVZ
+         ZGoT13lAoImOFb45KcpBRN+HHzL2t/YhIsaaIl8bLYOE3VBIlWmZavxCATAMmwAHbi
+         hG507ZrXL6BfEm03BNMLq3HrNE9X3GjxEs4FZvqaB9kqGh0M/F2Gd58fxURFZROJ6B
+         0OcOmQDnPTHjQ==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 0/2] fscrypt: rework filesystem-level keyring
+Date:   Fri, 19 Aug 2022 00:15:30 -0700
+Message-Id: <20220819071532.221026-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220818214049.1519544-1-lalithkraj@google.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Aug 18, 2022 at 09:40:49PM +0000, Lalith Rajendran wrote:
-> ext4_lazyinit_thread is not set freezable. Hence when the thread calls
-> try_to_freeze it doesn't freeze during suspend and continues to send
-> requests to the storage during suspend, resulting in suspend failures.
+This series reworks the filesystem-level keyring to not use the keyrings
+subsystem as part of its internal implementation (except for ->mk_users,
+which remains unchanged for now).  This fixes several issues, described
+in the first patch.  This is also a prerequisite for removing the direct
+use of struct request_queue from filesystem code, as discussed at
+https://lore.kernel.org/linux-fscrypt/20220721125929.1866403-1-hch@lst.de/T/#u
 
-Maybe we should just make suspend freeze all the filesystems in order?
+Eric Biggers (2):
+  fscrypt: stop using keyrings subsystem for fscrypt_master_key
+  fscrypt: stop holding extra request_queue references
 
-https://lore.kernel.org/linux-fsdevel/20210417001026.23858-1-mcgrof@kernel.org/ 
+ fs/crypto/fscrypt_private.h |  74 ++++--
+ fs/crypto/hooks.c           |  10 +-
+ fs/crypto/inline_crypt.c    |  83 +++----
+ fs/crypto/keyring.c         | 476 +++++++++++++++++++-----------------
+ fs/crypto/keysetup.c        |  89 +++----
+ fs/crypto/keysetup_v1.c     |   4 +-
+ fs/crypto/policy.c          |   8 +-
+ fs/super.c                  |   2 +-
+ include/linux/fs.h          |   2 +-
+ include/linux/fscrypt.h     |   4 +-
+ 10 files changed, 387 insertions(+), 365 deletions(-)
 
---D
 
-> Signed-off-by: Lalith Rajendran <lalithkraj@google.com>
-> ---
->  fs/ext4/super.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 9a66abcca1a85..d77e0904a1327 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -3767,6 +3767,7 @@ static int ext4_lazyinit_thread(void *arg)
->  	unsigned long next_wakeup, cur;
->  
->  	BUG_ON(NULL == eli);
-> +	set_freezable();
->  
->  cont_thread:
->  	while (true) {
-> -- 
-> 2.31.0
-> 
+base-commit: 568035b01cfb107af8d2e4bd2fb9aea22cf5b868
+-- 
+2.37.1
+
