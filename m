@@ -2,346 +2,149 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC3F59AFD8
-	for <lists+linux-ext4@lfdr.de>; Sat, 20 Aug 2022 21:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B82A59B0D7
+	for <lists+linux-ext4@lfdr.de>; Sun, 21 Aug 2022 00:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbiHTTK5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 20 Aug 2022 15:10:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57016 "EHLO
+        id S232051AbiHTWv1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 20 Aug 2022 18:51:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbiHTTKy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 20 Aug 2022 15:10:54 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235A928735;
-        Sat, 20 Aug 2022 12:10:52 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 6A63FB80AB2;
-        Sat, 20 Aug 2022 19:10:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8C00C433B5;
-        Sat, 20 Aug 2022 19:10:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661022650;
-        bh=4UhuGA2Y/YyBxxbJkeQ5kOcFtuuvinbvpzFPOMxkJSE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q/06RnHsDm9FhPJ4jki/F5SO4TTov/PBhPxOWgiU+FBcMfKne61nP6Agqr6ZXEAcp
-         EbxIIn4NJ0GmTzNuURxAyP4PPj7bZPpg32+bdSmbQSkJY1ECRPhFeYyTYHym/tyDlG
-         3g8HfMNxtwM0QomlOT21mr0c/dxibHHjd5r9nAmk1HzwAOU3K7IHZrSmVfk6MHtzRh
-         74FBeFrSProNUrSxgLOU1Wvrm8ez0yuI7AG3gR3itxs6M1GcV+a85phPnq/qg7Hwi7
-         GaeaRTX6w9VOVXPrROPtWwRmGaqDUl0kBjA7AUGenqtPIOYKtbwxvqy8kgbO3s/imr
-         XBc8Iu+hcwCRg==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH v2 2/2] fscrypt: stop holding extra request_queue references
-Date:   Sat, 20 Aug 2022 12:02:10 -0700
-Message-Id: <20220820190210.169734-3-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.37.1
-In-Reply-To: <20220820190210.169734-1-ebiggers@kernel.org>
-References: <20220820190210.169734-1-ebiggers@kernel.org>
+        with ESMTP id S230371AbiHTWvZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 20 Aug 2022 18:51:25 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39AB825E94;
+        Sat, 20 Aug 2022 15:51:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1661035882; x=1692571882;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=BMC9c98PYAsxMWUPCS4FPSTVdvVtrr6r3fNBNU+hp4s=;
+  b=a6RfjFP0aYR7PnSQJ13CXvNsB+h5eyhR9M0reGF4ZcUnISRGFEt4WOE2
+   toPwQzNr9JT5dMKCcDKR5IyJx1Hh0PsR4lriCVKnHI+GRkxiIgdzOimou
+   urtvvheSaFWJMF9hb6MPEYaaMfLCDnaPseCJHjjyCBI5poSCTD/2ul0KF
+   vIFIM9YGj00bCGPj3BbCd5dEUH1B5mRpg3C9rXRE5g95FyWwZT9jiW4Nw
+   gTo8/kRIMHArV09vs9xHUYgNkB6pekv+eJFabXT/xiMvUoQG9V3pOcExj
+   Ls7hiMjsyzT+dqz18SaevKb7y9gbWsCUBC4G3edzBvHy/TNndN28MgcsF
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10445"; a="280171632"
+X-IronPort-AV: E=Sophos;i="5.93,251,1654585200"; 
+   d="scan'208";a="280171632"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2022 15:51:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,251,1654585200"; 
+   d="scan'208";a="676800072"
+Received: from lkp-server01.sh.intel.com (HELO 44b6dac04a33) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 20 Aug 2022 15:51:18 -0700
+Received: from kbuild by 44b6dac04a33 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oPXJF-0003JD-2E;
+        Sat, 20 Aug 2022 22:51:17 +0000
+Date:   Sun, 21 Aug 2022 06:50:24 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jiangshan Yi <13667453960@163.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca
+Cc:     kbuild-all@lists.01.org, lczerner@redhat.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiangshan Yi <yijiangshan@kylinos.cn>
+Subject: Re: [PATCH v3] fs/ext4: replace ternary operator with min()/max()
+ and min_t()
+Message-ID: <202208210652.VUSXxffI-lkp@intel.com>
+References: <20220816011553.2912926-1-13667453960@163.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220816011553.2912926-1-13667453960@163.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+Hi Jiangshan,
 
-Now that the fscrypt_master_key lifetime has been reworked to not be
-subject to the quirks of the keyrings subsystem, blk_crypto_evict_key()
-no longer gets called after the filesystem has already been unmounted.
-Therefore, there is no longer any need to hold extra references to the
-filesystem's request_queue(s).  (And these references didn't always do
-their intended job anyway, as pinning a request_queue doesn't
-necessarily pin the corresponding blk_crypto_profile.)
+Thank you for the patch! Perhaps something to improve:
 
-Stop taking these extra references.  Instead, just pass the super_block
-to fscrypt_destroy_inline_crypt_key(), and use it to get the list of
-block devices the key needs to be evicted from.
+[auto build test WARNING on tytso-ext4/dev]
+[also build test WARNING on linus/master v6.0-rc1 next-20220819]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/crypto/fscrypt_private.h | 11 +++--
- fs/crypto/inline_crypt.c    | 83 ++++++++++++++++---------------------
- fs/crypto/keyring.c         |  9 ++--
- fs/crypto/keysetup.c        |  8 ++--
- fs/crypto/keysetup_v1.c     |  4 +-
- 5 files changed, 57 insertions(+), 58 deletions(-)
+url:    https://github.com/intel-lab-lkp/linux/commits/Jiangshan-Yi/fs-ext4-replace-ternary-operator-with-min-max-and-min_t/20220816-144454
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+config: parisc-randconfig-s041-20220821 (https://download.01.org/0day-ci/archive/20220821/202208210652.VUSXxffI-lkp@intel.com/config)
+compiler: hppa-linux-gcc (GCC) 12.1.0
+reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # apt-get install sparse
+        # sparse version: v0.6.4-39-gce1a6720-dirty
+        # https://github.com/intel-lab-lkp/linux/commit/cdc8d157495f1a1cbf921569e2babf14446058cf
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Jiangshan-Yi/fs-ext4-replace-ternary-operator-with-min-max-and-min_t/20220816-144454
+        git checkout cdc8d157495f1a1cbf921569e2babf14446058cf
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=parisc SHELL=/bin/bash fs/ext4/
 
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index 0e2d3b0af0f79e..dcc005e3491453 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -184,7 +184,7 @@ struct fscrypt_symlink_data {
- struct fscrypt_prepared_key {
- 	struct crypto_skcipher *tfm;
- #ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
--	struct fscrypt_blk_crypto_key *blk_key;
-+	struct blk_crypto_key *blk_key;
- #endif
- };
- 
-@@ -344,7 +344,8 @@ int fscrypt_prepare_inline_crypt_key(struct fscrypt_prepared_key *prep_key,
- 				     const u8 *raw_key,
- 				     const struct fscrypt_info *ci);
- 
--void fscrypt_destroy_inline_crypt_key(struct fscrypt_prepared_key *prep_key);
-+void fscrypt_destroy_inline_crypt_key(struct super_block *sb,
-+				      struct fscrypt_prepared_key *prep_key);
- 
- /*
-  * Check whether the crypto transform or blk-crypto key has been allocated in
-@@ -390,7 +391,8 @@ fscrypt_prepare_inline_crypt_key(struct fscrypt_prepared_key *prep_key,
- }
- 
- static inline void
--fscrypt_destroy_inline_crypt_key(struct fscrypt_prepared_key *prep_key)
-+fscrypt_destroy_inline_crypt_key(struct super_block *sb,
-+				 struct fscrypt_prepared_key *prep_key)
- {
- }
- 
-@@ -600,7 +602,8 @@ extern struct fscrypt_mode fscrypt_modes[];
- int fscrypt_prepare_key(struct fscrypt_prepared_key *prep_key,
- 			const u8 *raw_key, const struct fscrypt_info *ci);
- 
--void fscrypt_destroy_prepared_key(struct fscrypt_prepared_key *prep_key);
-+void fscrypt_destroy_prepared_key(struct super_block *sb,
-+				  struct fscrypt_prepared_key *prep_key);
- 
- int fscrypt_set_per_file_enc_key(struct fscrypt_info *ci, const u8 *raw_key);
- 
-diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
-index 90f3e68f166e39..a3225fe2291361 100644
---- a/fs/crypto/inline_crypt.c
-+++ b/fs/crypto/inline_crypt.c
-@@ -21,12 +21,6 @@
- 
- #include "fscrypt_private.h"
- 
--struct fscrypt_blk_crypto_key {
--	struct blk_crypto_key base;
--	int num_devs;
--	struct request_queue *devs[];
--};
--
- static int fscrypt_get_num_devices(struct super_block *sb)
- {
- 	if (sb->s_cop->get_num_devices)
-@@ -162,47 +156,37 @@ int fscrypt_prepare_inline_crypt_key(struct fscrypt_prepared_key *prep_key,
- 	const struct inode *inode = ci->ci_inode;
- 	struct super_block *sb = inode->i_sb;
- 	enum blk_crypto_mode_num crypto_mode = ci->ci_mode->blk_crypto_mode;
--	int num_devs = fscrypt_get_num_devices(sb);
--	int queue_refs = 0;
--	struct fscrypt_blk_crypto_key *blk_key;
-+	struct blk_crypto_key *blk_key;
-+	int num_devs;
-+	struct request_queue **devs = NULL;
- 	int err;
- 	int i;
- 
--	blk_key = kzalloc(struct_size(blk_key, devs, num_devs), GFP_KERNEL);
-+	blk_key = kmalloc(sizeof(*blk_key), GFP_KERNEL);
- 	if (!blk_key)
- 		return -ENOMEM;
- 
--	blk_key->num_devs = num_devs;
--	fscrypt_get_devices(sb, num_devs, blk_key->devs);
--
--	err = blk_crypto_init_key(&blk_key->base, raw_key, crypto_mode,
-+	err = blk_crypto_init_key(blk_key, raw_key, crypto_mode,
- 				  fscrypt_get_dun_bytes(ci), sb->s_blocksize);
- 	if (err) {
- 		fscrypt_err(inode, "error %d initializing blk-crypto key", err);
--		goto fail;
-+		goto out;
- 	}
- 
--	/*
--	 * We have to start using blk-crypto on all the filesystem's devices.
--	 * We also have to save all the request_queue's for later so that the
--	 * key can be evicted from them.  This is needed because some keys
--	 * aren't destroyed until after the filesystem was already unmounted
--	 * (namely, the per-mode keys in struct fscrypt_master_key).
--	 */
-+	/* Start using blk-crypto on all the filesystem's block devices. */
-+	num_devs = fscrypt_get_num_devices(sb);
-+	devs = kmalloc_array(num_devs, sizeof(*devs), GFP_KERNEL);
-+	if (!devs) {
-+		err = -ENOMEM;
-+		goto out;
-+	}
-+	fscrypt_get_devices(sb, num_devs, devs);
- 	for (i = 0; i < num_devs; i++) {
--		if (!blk_get_queue(blk_key->devs[i])) {
--			fscrypt_err(inode, "couldn't get request_queue");
--			err = -EAGAIN;
--			goto fail;
--		}
--		queue_refs++;
--
--		err = blk_crypto_start_using_key(&blk_key->base,
--						 blk_key->devs[i]);
-+		err = blk_crypto_start_using_key(blk_key, devs[i]);
- 		if (err) {
- 			fscrypt_err(inode,
- 				    "error %d starting to use blk-crypto", err);
--			goto fail;
-+			goto out;
- 		}
- 	}
- 	/*
-@@ -212,27 +196,32 @@ int fscrypt_prepare_inline_crypt_key(struct fscrypt_prepared_key *prep_key,
- 	 * possible for per-mode keys, not for per-file keys.
- 	 */
- 	smp_store_release(&prep_key->blk_key, blk_key);
--	return 0;
--
--fail:
--	for (i = 0; i < queue_refs; i++)
--		blk_put_queue(blk_key->devs[i]);
-+	blk_key = NULL;
-+	err = 0;
-+out:
-+	kfree(devs);
- 	kfree_sensitive(blk_key);
- 	return err;
- }
- 
--void fscrypt_destroy_inline_crypt_key(struct fscrypt_prepared_key *prep_key)
-+void fscrypt_destroy_inline_crypt_key(struct super_block *sb,
-+				      struct fscrypt_prepared_key *prep_key)
- {
--	struct fscrypt_blk_crypto_key *blk_key = prep_key->blk_key;
-+	struct blk_crypto_key *blk_key = prep_key->blk_key;
-+	int num_devs;
-+	struct request_queue **devs;
- 	int i;
- 
--	if (blk_key) {
--		for (i = 0; i < blk_key->num_devs; i++) {
--			blk_crypto_evict_key(blk_key->devs[i], &blk_key->base);
--			blk_put_queue(blk_key->devs[i]);
--		}
--		kfree_sensitive(blk_key);
-+	/* Evict the key from all the filesystem's block devices. */
-+	num_devs = fscrypt_get_num_devices(sb);
-+	devs = kmalloc_array(num_devs, sizeof(*devs), GFP_KERNEL);
-+	if (devs) {
-+		fscrypt_get_devices(sb, num_devs, devs);
-+		for (i = 0; i < num_devs; i++)
-+			blk_crypto_evict_key(devs[i], blk_key);
-+		kfree(devs);
- 	}
-+	kfree_sensitive(blk_key);
- }
- 
- bool __fscrypt_inode_uses_inline_crypto(const struct inode *inode)
-@@ -282,7 +271,7 @@ void fscrypt_set_bio_crypt_ctx(struct bio *bio, const struct inode *inode,
- 	ci = inode->i_crypt_info;
- 
- 	fscrypt_generate_dun(ci, first_lblk, dun);
--	bio_crypt_set_ctx(bio, &ci->ci_enc_key.blk_key->base, dun, gfp_mask);
-+	bio_crypt_set_ctx(bio, ci->ci_enc_key.blk_key, dun, gfp_mask);
- }
- EXPORT_SYMBOL_GPL(fscrypt_set_bio_crypt_ctx);
- 
-@@ -369,7 +358,7 @@ bool fscrypt_mergeable_bio(struct bio *bio, const struct inode *inode,
- 	 * uses the same pointer.  I.e., there's currently no need to support
- 	 * merging requests where the keys are the same but the pointers differ.
- 	 */
--	if (bc->bc_key != &inode->i_crypt_info->ci_enc_key.blk_key->base)
-+	if (bc->bc_key != inode->i_crypt_info->ci_enc_key.blk_key)
- 		return false;
- 
- 	fscrypt_generate_dun(inode->i_crypt_info, next_lblk, next_dun);
-diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
-index 9b98d6a576e6a0..1cca09aa43f8b3 100644
---- a/fs/crypto/keyring.c
-+++ b/fs/crypto/keyring.c
-@@ -105,9 +105,12 @@ void fscrypt_put_master_key_activeref(struct fscrypt_master_key *mk)
- 	WARN_ON(!list_empty(&mk->mk_decrypted_inodes));
- 
- 	for (i = 0; i <= FSCRYPT_MODE_MAX; i++) {
--		fscrypt_destroy_prepared_key(&mk->mk_direct_keys[i]);
--		fscrypt_destroy_prepared_key(&mk->mk_iv_ino_lblk_64_keys[i]);
--		fscrypt_destroy_prepared_key(&mk->mk_iv_ino_lblk_32_keys[i]);
-+		fscrypt_destroy_prepared_key(
-+				sb, &mk->mk_direct_keys[i]);
-+		fscrypt_destroy_prepared_key(
-+				sb, &mk->mk_iv_ino_lblk_64_keys[i]);
-+		fscrypt_destroy_prepared_key(
-+				sb, &mk->mk_iv_ino_lblk_32_keys[i]);
- 	}
- 	memzero_explicit(&mk->mk_ino_hash_key,
- 			 sizeof(mk->mk_ino_hash_key));
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index e037a7b8e9e42b..f7407071a95242 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -154,10 +154,11 @@ int fscrypt_prepare_key(struct fscrypt_prepared_key *prep_key,
- }
- 
- /* Destroy a crypto transform object and/or blk-crypto key. */
--void fscrypt_destroy_prepared_key(struct fscrypt_prepared_key *prep_key)
-+void fscrypt_destroy_prepared_key(struct super_block *sb,
-+				  struct fscrypt_prepared_key *prep_key)
- {
- 	crypto_free_skcipher(prep_key->tfm);
--	fscrypt_destroy_inline_crypt_key(prep_key);
-+	fscrypt_destroy_inline_crypt_key(sb, prep_key);
- 	memzero_explicit(prep_key, sizeof(*prep_key));
- }
- 
-@@ -494,7 +495,8 @@ static void put_crypt_info(struct fscrypt_info *ci)
- 	if (ci->ci_direct_key)
- 		fscrypt_put_direct_key(ci->ci_direct_key);
- 	else if (ci->ci_owns_key)
--		fscrypt_destroy_prepared_key(&ci->ci_enc_key);
-+		fscrypt_destroy_prepared_key(ci->ci_inode->i_sb,
-+					     &ci->ci_enc_key);
- 
- 	mk = ci->ci_master_key;
- 	if (mk) {
-diff --git a/fs/crypto/keysetup_v1.c b/fs/crypto/keysetup_v1.c
-index 2762c53504323f..75dabd9b27f9b6 100644
---- a/fs/crypto/keysetup_v1.c
-+++ b/fs/crypto/keysetup_v1.c
-@@ -143,6 +143,7 @@ find_and_lock_process_key(const char *prefix,
- 
- /* Master key referenced by DIRECT_KEY policy */
- struct fscrypt_direct_key {
-+	struct super_block		*dk_sb;
- 	struct hlist_node		dk_node;
- 	refcount_t			dk_refcount;
- 	const struct fscrypt_mode	*dk_mode;
-@@ -154,7 +155,7 @@ struct fscrypt_direct_key {
- static void free_direct_key(struct fscrypt_direct_key *dk)
- {
- 	if (dk) {
--		fscrypt_destroy_prepared_key(&dk->dk_key);
-+		fscrypt_destroy_prepared_key(dk->dk_sb, &dk->dk_key);
- 		kfree_sensitive(dk);
- 	}
- }
-@@ -231,6 +232,7 @@ fscrypt_get_direct_key(const struct fscrypt_info *ci, const u8 *raw_key)
- 	dk = kzalloc(sizeof(*dk), GFP_KERNEL);
- 	if (!dk)
- 		return ERR_PTR(-ENOMEM);
-+	dk->dk_sb = ci->ci_inode->i_sb;
- 	refcount_set(&dk->dk_refcount, 1);
- 	dk->dk_mode = ci->ci_mode;
- 	err = fscrypt_prepare_key(&dk->dk_key, raw_key, ci);
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+sparse warnings: (new ones prefixed by >>)
+>> fs/ext4/super.c:6907:26: sparse: sparse: incompatible types in comparison expression (different type sizes):
+>> fs/ext4/super.c:6907:26: sparse:    unsigned long *
+>> fs/ext4/super.c:6907:26: sparse:    unsigned int *
+   fs/ext4/super.c:992:6: sparse: sparse: context imbalance in '__ext4_grp_locked_error' - different lock contexts for basic block
+   fs/ext4/super.c:3266:9: sparse: sparse: context imbalance in 'ext4_check_descriptors' - different lock contexts for basic block
+
+vim +6907 fs/ext4/super.c
+
+  6885	
+  6886	/* Read data from quotafile - avoid pagecache and such because we cannot afford
+  6887	 * acquiring the locks... As quota files are never truncated and quota code
+  6888	 * itself serializes the operations (and no one else should touch the files)
+  6889	 * we don't have to be afraid of races */
+  6890	static ssize_t ext4_quota_read(struct super_block *sb, int type, char *data,
+  6891				       size_t len, loff_t off)
+  6892	{
+  6893		struct inode *inode = sb_dqopt(sb)->files[type];
+  6894		ext4_lblk_t blk = off >> EXT4_BLOCK_SIZE_BITS(sb);
+  6895		int offset = off & (sb->s_blocksize - 1);
+  6896		int tocopy;
+  6897		size_t toread;
+  6898		struct buffer_head *bh;
+  6899		loff_t i_size = i_size_read(inode);
+  6900	
+  6901		if (off > i_size)
+  6902			return 0;
+  6903		if (off+len > i_size)
+  6904			len = i_size-off;
+  6905		toread = len;
+  6906		while (toread > 0) {
+> 6907			tocopy = min(sb->s_blocksize - offset, toread);
+  6908			bh = ext4_bread(NULL, inode, blk, 0);
+  6909			if (IS_ERR(bh))
+  6910				return PTR_ERR(bh);
+  6911			if (!bh)	/* A hole? */
+  6912				memset(data, 0, tocopy);
+  6913			else
+  6914				memcpy(data, bh->b_data+offset, tocopy);
+  6915			brelse(bh);
+  6916			offset = 0;
+  6917			toread -= tocopy;
+  6918			data += tocopy;
+  6919			blk++;
+  6920		}
+  6921		return len;
+  6922	}
+  6923	
+
 -- 
-2.37.1
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
