@@ -2,76 +2,93 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D9259B664
-	for <lists+linux-ext4@lfdr.de>; Sun, 21 Aug 2022 22:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FF6859BBB7
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 Aug 2022 10:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbiHUU7S (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 21 Aug 2022 16:59:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40376 "EHLO
+        id S234028AbiHVIde (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 22 Aug 2022 04:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231777AbiHUU7R (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 21 Aug 2022 16:59:17 -0400
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA6312D0F
-        for <linux-ext4@vger.kernel.org>; Sun, 21 Aug 2022 13:59:16 -0700 (PDT)
-Received: by mail-il1-f199.google.com with SMTP id o5-20020a056e02102500b002ddcc65029cso7099830ilj.8
-        for <linux-ext4@vger.kernel.org>; Sun, 21 Aug 2022 13:59:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc;
-        bh=iV6gcKM1GJJSWkpDC+Iv2PckRjW/iBIbJSlzEPuB9vg=;
-        b=aPU179021GM76t+LeSwZ0stZgx1IUkBp2kCg/Zcqm7tDKherAb9sAdXGkmsaOqW2ZS
-         +tkGj6cHCasCjIgr7gT+VeTv+5SdwSi2Q02uRxPY/SiCG5TlmgXSkBN/C7dVQyIa/aEA
-         hirNhvfGftY/tIJ9zTY9TU5JqGAfrRBSIR8hSbV+bmQysQ0zKweRssFU4WYPcR/Eb20E
-         kh3ReP3Jt7tEmQiMK2JPkZHMoOYcG8x5vLGdph1d5OuaddJt+VxYtbyrOuNDUHm8sNsA
-         5OJC10tlf1YgTA20aT00Wxn6ZqJDKWaKORpWtVdmkZ0xUjUhpBHKCOhvtrnxr1zAWK4B
-         lpow==
-X-Gm-Message-State: ACgBeo2++P81RVaK6JH31W8jp3x5QvaBS3FYio6LpesPRWLb6zWUvvui
-        H19ClxYDa6UAi/UxT25PGz/78Iy5JfUcrYL1uwfBdeoIMP8U
-X-Google-Smtp-Source: AA6agR7l7mj/dIeDXCF3s+KvdeZo7E4WFlUBD1ZSnhSSVaC4zdn5pb++CpLMUyYPWXSln22thqPqX8FUtzhtArZ5Y6pEJDmpXKHq
+        with ESMTP id S234015AbiHVIdc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 Aug 2022 04:33:32 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E48CDA1AF;
+        Mon, 22 Aug 2022 01:33:29 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 0BCC41FAE9;
+        Mon, 22 Aug 2022 08:33:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1661157208; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wNrEwveCSL7WYjQAcGTc/DSIBycLUN2ZDQvXyHz1zWo=;
+        b=vWK48HYG4BgRPuC85lafn2WpteGe08QpmeMSY8dZRDbMMi67ySk2ZgxXWyd9iLtOxKnLET
+        UcCXci9zlVMEE4hua2htQhBKXvBKBIEIWbm2irSoPYEDrl4ZUPCZ5eCFksDhns5vMcCIk2
+        KDlg+W/iitMyVoMyfyLyJ07F+QucSMc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1661157208;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wNrEwveCSL7WYjQAcGTc/DSIBycLUN2ZDQvXyHz1zWo=;
+        b=GDd78NkhVZC8uqOnzv7XAPpvzLhInFDp864DZTLnrMzc8PbiYCJYb+zTain/xwWv6at8pD
+        mclaru2UTR3mYrBQ==
+Received: from quack3.suse.cz (unknown [10.100.200.198])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id E92022C141;
+        Mon, 22 Aug 2022 08:33:27 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 54059A066D; Mon, 22 Aug 2022 10:33:24 +0200 (CEST)
+Date:   Mon, 22 Aug 2022 10:33:24 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jan Kara <jack@suse.cz>, Eric Biggers <ebiggers@kernel.org>,
+        Lukas Czerner <lczerner@redhat.com>,
+        linux-ext4@vger.kernel.org, tytso@mit.edu, jlayton@kernel.org,
+        linux-fsdevel@vger.kernel.org, david@fromorbit.com
+Subject: Re: [PATCH v3 2/3] fs: record I_DIRTY_TIME even if inode already has
+ I_DIRTY_INODE
+Message-ID: <20220822083324.q7qcxtkfji66ho4l@quack3>
+References: <20220812123727.46397-1-lczerner@redhat.com>
+ <20220812123727.46397-2-lczerner@redhat.com>
+ <YvaYC+LRFqQJT0U9@sol.localdomain>
+ <20220816112124.taqvli527475gwv4@quack3>
+ <YwHNTSUBEQFPgUhL@infradead.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:160a:b0:2e9:763c:485b with SMTP id
- t10-20020a056e02160a00b002e9763c485bmr3272522ilu.173.1661115556242; Sun, 21
- Aug 2022 13:59:16 -0700 (PDT)
-Date:   Sun, 21 Aug 2022 13:59:16 -0700
-In-Reply-To: <20220821114816.24193-1-code@siddh.me>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a92b9305e6c69a3f@google.com>
-Subject: Re: [syzbot] WARNING in iomap_iter
-From:   syzbot <syzbot+a8e049cd3abd342936b6@syzkaller.appspotmail.com>
-To:     code@siddh.me, david@fromorbit.com, djwong@kernel.org,
-        fgheet255t@gmail.com, hch@infradead.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        riteshh@linux.ibm.com, syzkaller-bugs@googlegroups.com,
-        willy@infradead.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YwHNTSUBEQFPgUhL@infradead.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Sat 20-08-22 23:14:37, Christoph Hellwig wrote:
+> On Tue, Aug 16, 2022 at 01:21:24PM +0200, Jan Kara wrote:
+> > 2) I_DIRTY_TIME flag passed to ->dirty_inode() callback. This is admittedly
+> > bit of a hack. Currently XFS relies on the fact that the only time its
+> > ->dirty_inode() callback needs to do anything is when VFS decides it is
+> > time to writeback timestamps and XFS detects this situation by checking for
+> > I_DIRTY_TIME in inode->i_state. Now to fix the race, we need to first clear
+> > I_DIRTY_TIME in inode->i_state and only then call the ->dirty_inode()
+> > callback (otherwise timestamp update can get lost). So the solution I've
+> > suggested was to propagate the information "timestamp update needed" to XFS
+> > through I_DIRTY_TIME in flags passed to ->dirty_inode().
+> 
+> Maybe we should just add a separate update_lazy_time method to make this
+> a little more clear?
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Yes, we could do that if people prefer this. Although I'd say that good
+documentation at the place in __mark_inode_dirty() where this gets used and
+in documentation of .dirty_inode might clear the confusion as well.
 
-Reported-and-tested-by: syzbot+a8e049cd3abd342936b6@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         e3f259d3 Merge tag 'i2c-for-6.0-rc2' of git://git.kern..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=16085295080000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3babfbf8c1ad1951
-dashboard link: https://syzkaller.appspot.com/bug?extid=a8e049cd3abd342936b6
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=13c53aa5080000
-
-Note: testing is done by a robot and is best-effort only.
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
