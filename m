@@ -2,100 +2,146 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D292959C8C5
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 Aug 2022 21:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA2159CBA5
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Aug 2022 00:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236593AbiHVT0M (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 22 Aug 2022 15:26:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32910 "EHLO
+        id S238508AbiHVWm0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 22 Aug 2022 18:42:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238611AbiHVTYJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 Aug 2022 15:24:09 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30EC91583A;
-        Mon, 22 Aug 2022 12:21:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S237790AbiHVWm0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 Aug 2022 18:42:26 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3106150716;
+        Mon, 22 Aug 2022 15:42:24 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id BD949B818AB;
-        Mon, 22 Aug 2022 19:21:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 532E8C433D7;
-        Mon, 22 Aug 2022 19:21:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661196116;
-        bh=mgWtjVWoyx6ivVv6KqvRp9PNUZE+61+wnocBktCea/A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CIFs7w+cOjoG4BduE0LbUS1ENxhhjU7JJzqn72xXr+ZLB3RpzO/QkWWY3ng4xKySB
-         YXFCYUBJtkKG/eskdtYg/+xKiscWgupSY2/uxcdx7uc8dwA8KxDcetGyqgmWWRoUil
-         XYqsqkCEKihHOJiDYVY/gmdt8gPwBs8ROSzQSXnx8EATmxvwAn4uB5a0X+MZZDFBCv
-         F1EGyec7neAHgHcZVfCqAKNaFBZNaaxOl1VYe1j0sGVtblXVdiUXVSTnOQEhS6tH/b
-         XIUEqTfRRK4c8OPWdupcRVgBwEZmSKKXgPoHKkZQGh18LOwgjjXU42YapqtH7v7Csl
-         1P4cEan3FnB1A==
-Date:   Mon, 22 Aug 2022 12:21:54 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-f2fs-devel@lists.sourceforge.net,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-ext4@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH v2 0/2] ext4, f2fs: stop using PG_error for fscrypt and
- fsverity
-Message-ID: <YwPXUrawcKdy9qDx@sol.localdomain>
-References: <20220815235052.86545-1-ebiggers@kernel.org>
- <YwPKh9fWUJLnSEF/@sol.localdomain>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3D8FC374F3;
+        Mon, 22 Aug 2022 22:42:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1661208143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=L8tdsVzVyDJM4BV8U6INcBMyETt5VDqLfPWrM+9ANZU=;
+        b=Wr3CoLUChRliBIcsKBEP1ARTBdMKIOxqorZDI5PC02cuVv0LuNzxNwZ1mFTqVb+7JBZfoX
+        LL26ihunLovvcTYQcNmjUYPDT4M9P9JN52Z6d716ibtdAE1bnPXlUzvKCWl56tXGcZft6y
+        NhQsHRd9e09zuZfA90lOARNSJ6/HILI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1661208143;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=L8tdsVzVyDJM4BV8U6INcBMyETt5VDqLfPWrM+9ANZU=;
+        b=qZqaiUA+p1D36amScnShCHJ24rJTyLaa5teureTyNmBQZIY+cXaWtrvpBQYngEYOJIQLbp
+        dy+/koo412I3GbAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7967F1332D;
+        Mon, 22 Aug 2022 22:42:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 0pRhDUwGBGPzJAAAMHmgww
+        (envelope-from <neilb@suse.de>); Mon, 22 Aug 2022 22:42:20 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YwPKh9fWUJLnSEF/@sol.localdomain>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Jeff Layton" <jlayton@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        "Trond Myklebust" <trondmy@hammerspace.com>,
+        "Dave Chinner" <david@fromorbit.com>
+Subject: Re: [PATCH] iversion: update comments with info about atime updates
+In-reply-to: <20220822133309.86005-1-jlayton@kernel.org>
+References: <20220822133309.86005-1-jlayton@kernel.org>
+Date:   Tue, 23 Aug 2022 08:42:15 +1000
+Message-id: <166120813594.23264.3095357572943917078@noble.neil.brown.name>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Aug 22, 2022 at 11:27:19AM -0700, Eric Biggers wrote:
-> On Mon, Aug 15, 2022 at 04:50:50PM -0700, Eric Biggers wrote:
-> > This series changes ext4 and f2fs to stop using PG_error to track
-> > decryption and verity errors.  This is a step towards freeing up
-> > PG_error for other uses, as discussed at
-> > https://lore.kernel.org/linux-fsdevel/Yn10Iz1mJX1Mu1rv@casper.infradead.org
-> > 
-> > Note: due to the interdependencies with fs/crypto/ and fs/verity/,
-> > I couldn't split this up into separate patches for each filesystem.
-> > I'd appreciate Acks from the ext4 and f2fs maintainers so that I can
-> > take these patches.  Otherwise I'm not sure how to move them forward.
-> > 
-> > Changed v1 => v2:
-> >    - Rebased onto v6.0-rc1 and resolved conflicts in f2fs.
-> > 
-> > Eric Biggers (2):
-> >   fscrypt: stop using PG_error to track error status
-> >   fsverity: stop using PG_error to track error status
-> > 
-> >  fs/crypto/bio.c         | 16 +++++++----
-> >  fs/ext4/readpage.c      | 16 +++++------
-> >  fs/f2fs/compress.c      | 64 ++++++++++++++++++++---------------------
-> >  fs/f2fs/data.c          | 64 +++++++++++++++++++++++------------------
-> >  fs/verity/verify.c      | 12 ++++----
-> >  include/linux/fscrypt.h |  5 ++--
-> >  6 files changed, 93 insertions(+), 84 deletions(-)
-> > 
-> > 
-> > base-commit: 568035b01cfb107af8d2e4bd2fb9aea22cf5b868
-> 
-> I'd appreciate review from the f2fs folks on this series, as that's where the
-> most complex changes are.
-> 
+On Mon, 22 Aug 2022, Jeff Layton wrote:
+> Add an explicit paragraph codifying that atime updates due to reads
+> should not be counted against the i_version counter. None of the
+> existing subsystems that use the i_version want those counted, and
+> there is an easy workaround for those that do.
+>=20
+> Cc: NeilBrown <neilb@suse.de>
+> Cc: Trond Myklebust <trondmy@hammerspace.com>
+> Cc: Dave Chinner <david@fromorbit.com>
+> Link: https://lore.kernel.org/linux-xfs/166086932784.5425.17134712694961326=
+033@noble.neil.brown.name/#t
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  include/linux/iversion.h | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/include/linux/iversion.h b/include/linux/iversion.h
+> index 3bfebde5a1a6..da6cc1cc520a 100644
+> --- a/include/linux/iversion.h
+> +++ b/include/linux/iversion.h
+> @@ -9,8 +9,8 @@
+>   * ---------------------------
+>   * The change attribute (i_version) is mandated by NFSv4 and is mostly for
+>   * knfsd, but is also used for other purposes (e.g. IMA). The i_version mu=
+st
+> - * appear different to observers if there was a change to the inode's data=
+ or
+> - * metadata since it was last queried.
+> + * appear different to observers if there was an explicit change to the in=
+ode's
+> + * data or metadata since it was last queried.
 
-There's already a merge conflict with f2fs/dev, in the second patch :-(
+Should rename change the i_version?
+It does not explicitly change data or metadata, though it seems to
+implicitly change the ctime.
 
-It's going to be hard get this series merged, due to cross-tree dependencies.
+>   *
+>   * Observers see the i_version as a 64-bit number that never decreases. If=
+ it
+>   * remains the same since it was last checked, then nothing has changed in=
+ the
+> @@ -18,6 +18,12 @@
+>   * anything about the nature or magnitude of the changes from the value, o=
+nly
+>   * that the inode has changed in some fashion.
+>   *
+> + * Note that atime updates due to reads or similar activity do _not_ repre=
+sent
+> + * an explicit change to the inode. If the only change is to the atime and=
+ it
+> + * wasn't set via utimes() or a similar mechanism, then i_version should n=
+ot be
+> + * incremented. If an observer cares about atime updates, it should plan to
+> + * fetch and store them in conjunction with the i_version.
+> + *
 
-I'll try to take the first patch (which handles decryption only, and is smaller)
-through the fscrypt tree for 6.1.  Then maybe the second patch can go through
-the f2fs tree later.
+If an implicit atime update happened to make the atime go backwards
+(possible, but not common), the updating i_version should be permitted,
+and possibly should be preferred.
 
-- Eric
+NeilBrown
+
+
+>   * Not all filesystems properly implement the i_version counter. Subsystem=
+s that
+>   * want to use i_version field on an inode should first check whether the
+>   * filesystem sets the SB_I_VERSION flag (usually via the IS_I_VERSION mac=
+ro).
+> --=20
+> 2.37.2
+>=20
+>=20
