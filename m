@@ -2,162 +2,203 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6981C59CC39
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Aug 2022 01:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A8C59CF61
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Aug 2022 05:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231496AbiHVXcj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 22 Aug 2022 19:32:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38038 "EHLO
+        id S240047AbiHWDWT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 22 Aug 2022 23:22:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231396AbiHVXci (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 Aug 2022 19:32:38 -0400
-Received: from mail105.syd.optusnet.com.au (mail105.syd.optusnet.com.au [211.29.132.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 12D6E5007D;
-        Mon, 22 Aug 2022 16:32:37 -0700 (PDT)
-Received: from dread.disaster.area (pa49-195-4-169.pa.nsw.optusnet.com.au [49.195.4.169])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id A96D610E8D1E;
-        Tue, 23 Aug 2022 09:32:33 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1oQGuF-00GLi4-GX; Tue, 23 Aug 2022 09:32:31 +1000
-Date:   Tue, 23 Aug 2022 09:32:31 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, NeilBrown <neilb@suse.de>,
-        Trond Myklebust <trondmy@hammerspace.com>
-Subject: Re: [PATCH] iversion: update comments with info about atime updates
-Message-ID: <20220822233231.GJ3600936@dread.disaster.area>
-References: <20220822133309.86005-1-jlayton@kernel.org>
- <ceb8f09a4cb2de67f40604d03ee0c475feb3130a.camel@linux.ibm.com>
- <f17b9d627703bee2a7b531a051461671648a9dbd.camel@kernel.org>
- <18827b350fbf6719733fda814255ec20d6dcf00f.camel@linux.ibm.com>
- <4cc84440d954c022d0235bf407a60da66a6ccc39.camel@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4cc84440d954c022d0235bf407a60da66a6ccc39.camel@kernel.org>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.4 cv=e9dl9Yl/ c=1 sm=1 tr=0 ts=63041213
-        a=FOdsZBbW/tHyAhIVFJ0pRA==:117 a=FOdsZBbW/tHyAhIVFJ0pRA==:17
-        a=kj9zAlcOel0A:10 a=biHskzXt2R4A:10 a=7-415B0cAAAA:8
-        a=ibcKH8McQ3gcoEwbJu8A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S239169AbiHWDWS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 Aug 2022 23:22:18 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28FE555084
+        for <linux-ext4@vger.kernel.org>; Mon, 22 Aug 2022 20:22:16 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id x14-20020a17090a8a8e00b001fb61a71d99so741339pjn.2
+        for <linux-ext4@vger.kernel.org>; Mon, 22 Aug 2022 20:22:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20210112.gappssmtp.com; s=20210112;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc;
+        bh=t5TO7xdQGMXaC5TRTQFcqhFSnLRjgf1D8C0Y6A6YDxE=;
+        b=WmzvvmXH5e7wP/UE3SOCEoTxUnalykJ3N3TkckdsZzxqPN6OxAvOMEhsFJIg72/pec
+         dV+HIGE92uLWsaavfgjKM+C+A5n4EiV88XdKFsoxydVAFe5nmQZ3wXK7pbUiZnpPSViH
+         9wcRuFbEeMk6CuUC5TU2Fsvnjo++S7A79RBLzB6Aur+2C1mdRPNWR6V9hkWGd33kuaZ6
+         xcCba0irYI0fzWODf7B+oUYh3cw5uD53qZpQUEbxAvY5/4dbEDBWYTz1DS09LYro3uwm
+         G9+kpUhWzIhcfbKMcEQU1XlfvHYa+Duf15Pq6vyDet2odUshI95kkV9niiVxvoEj4EEl
+         OWIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc;
+        bh=t5TO7xdQGMXaC5TRTQFcqhFSnLRjgf1D8C0Y6A6YDxE=;
+        b=xeN0VlREdkjz928Cq4x48QVovWwSSG3LOqvPz0K0GPoqKZUuULEpPVI2kAUNrubh6t
+         M+tkYH+tejXG//VfxMWjUhhBUBKaonCCF2EO/jQf9kyXxjfY+F2GBUxT9IWAC1lWlM9M
+         ef/ykwLOXp3HFHvIl3SJRNTB1NAYsRTzosYM09TzlnJ66aU0/GQ5hJ0WExjJY7At+foq
+         T7h7av6H1WM94UDw/2/KpVcTQBgrMeQrFOx++uC4ybCygFugY45zDvA6MyIhKc9vnlr4
+         aklYI916wzaI+RwpBJQwHEeAi5iFu+YRyBl8/+WCjtEy3TjKx4ciOg76A7qY9RFeSFVE
+         EWyA==
+X-Gm-Message-State: ACgBeo0Ay5yvF38ni3QloahkP9z7d7NeBBE/fjbkOb9x4x0YsU/jXMWM
+        ECNrGDtsR5d5god4MO7V0kpL/w==
+X-Google-Smtp-Source: AA6agR6bYAoLnjuq/NI/816MPUccS4/TdIQzRNkgRVQfsY/JSoRbcW6B7pyoAJACabZ0K9rJNxD0pA==
+X-Received: by 2002:a17:903:18b:b0:16e:f09c:919b with SMTP id z11-20020a170903018b00b0016ef09c919bmr23613380plg.135.1661224935485;
+        Mon, 22 Aug 2022 20:22:15 -0700 (PDT)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id b9-20020a1709027e0900b00172d52b7c03sm5372011plm.125.2022.08.22.20.22.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 22 Aug 2022 20:22:14 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <21923F1E-1C54-44FB-AF7C-4CD8B4B35433@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_8E3621BA-8A02-4654-8DC0-856F43CB7C0C";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v4 6/9] f2fs: don't allow DIO reads but not DIO writes
+Date:   Mon, 22 Aug 2022 21:22:11 -0600
+In-Reply-To: <YwAYPFxW7VV4M9D1@sol.localdomain>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        xfs <linux-xfs@vger.kernel.org>, linux-api@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Keith Busch <kbusch@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+References: <20220722071228.146690-1-ebiggers@kernel.org>
+ <20220722071228.146690-7-ebiggers@kernel.org> <YtyoF89iOg8gs7hj@google.com>
+ <Yt7dCcG0ns85QqJe@sol.localdomain> <YuXyKh8Zvr56rR4R@google.com>
+ <YvrrEcw4E+rpDLwM@sol.localdomain>
+ <20220816090312.GU3600936@dread.disaster.area>
+ <D1CDACE3-EC7E-43E4-8F49-EEA2B6E71A41@dilger.ca>
+ <YwAYPFxW7VV4M9D1@sol.localdomain>
+X-Mailer: Apple Mail (2.3273)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Aug 22, 2022 at 02:22:20PM -0400, Jeff Layton wrote:
-> diff --git a/include/linux/iversion.h b/include/linux/iversion.h
-> index 3bfebde5a1a6..524abd372100 100644
-> --- a/include/linux/iversion.h
-> +++ b/include/linux/iversion.h
-> @@ -9,8 +9,8 @@
->   * ---------------------------
->   * The change attribute (i_version) is mandated by NFSv4 and is mostly for
->   * knfsd, but is also used for other purposes (e.g. IMA). The i_version must
-> - * appear different to observers if there was a change to the inode's data or
-> - * metadata since it was last queried.
-> + * appear different to observers if there was an explicit change to the inode's
-> + * data or metadata since it was last queried.
->   *
->   * Observers see the i_version as a 64-bit number that never decreases. If it
->   * remains the same since it was last checked, then nothing has changed in the
-> @@ -18,6 +18,13 @@
->   * anything about the nature or magnitude of the changes from the value, only
->   * that the inode has changed in some fashion.
->   *
-> + * Note that atime updates due to reads or similar activity do not represent
 
-What does "or similar activity" mean?
+--Apple-Mail=_8E3621BA-8A02-4654-8DC0-856F43CB7C0C
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-This whole atime vs iversion issue is arising because "or any
-metadata change" was interpretted literally by filesystems to mean
-"any metadata change" without caveats or exclusions. Now you're both
-changing that definition and making things *worse* by adding
-explicit wiggle-room for future changes in behaviour to persistent
-change counter behaviour.
+On Aug 19, 2022, at 5:09 PM, Eric Biggers <ebiggers@kernel.org> wrote:
+>=20
+> On Tue, Aug 16, 2022 at 10:42:29AM -0600, Andreas Dilger wrote:
+>>=20
+>> IMHO, this whole discussion is putting the cart before the horse.
+>> Changing existing (and useful) IO behavior to accommodate an API that
+>> nobody has ever used, and is unlikely to even be widely used, doesn't
+>> make sense to me.  Most applications won't check or care about the =
+new
+>> DIO size fields, since they've lived this long without statx() =
+returning
+>> this info, and will just pick a "large enough" size (4KB, 1MB, =
+whatever)
+>> that gives them the performance they need.  They *WILL* care if the =
+app
+>> is suddenly unable to read data from a file in ways that have worked =
+for
+>> a long time.
+>>=20
+>> Even if apps are modified to check these new DIO size fields, and =
+then
+>> try to DIO write to a file in f2fs that doesn't allow it, then f2fs =
+will
+>> return an error, which is what it would have done without the statx()
+>> changes, so no harm done AFAICS.
+>>=20
+>> Even with a more-complex DIO status return that handles a "direction"
+>> field (which IMHO is needlessly complex), there is always the =
+potential
+>> for a TOCTOU race where a file changes between checking and access, =
+so
+>> the userspace code would need to handle this.
+>=20
+> I'm having trouble making sense of your argument here; you seem to be =
+saying
+> that STATX_DIOALIGN isn't useful, so it doesn't matter if we design it
+> correctly?  That line of reasoning is concerning, as it's certainly =
+intended
+> to be useful, and if it's not useful there's no point in adding it.
+>=20
+> Are there any specific concerns that you have, besides TOCTOU races =
+and the
+> lack of support for read-only DIO?
 
-iversion is going to be exposed to userspace, so we *can't change
-the definition in future* because behaviour is bound by "changes may
-break userspace apps" constraints. IOWs, we cannot justify changes
-in behaviour with "but there are only in-kernel users" like is being
-done for this change.
+My main concern is disabling useful functionality that exists today to =
+appease
+the new DIO size API.  Whether STATX_DIOALIGN will become widely used by
+applications or not is hard to say at this point.
 
-It's only a matter of time before someone is going to complain about
-the fact that filesystems bump the change counter for internal
-metadata modifications as they make changes to the persistent state
-of data and metadata. These existing behaviours will almost
-certainly causes visible NFS quirks due to unexpected
-iversion bumps.
+If there were separate STATX_DIOREAD and STATX_DIOWRITE flags in the =
+returned
+data, and the alignment is provided as it is today, that would be enough =
+IMHO
+to address the original use case without significant complexity.
 
-In case you didn't realise, XFS can bump iversion 500+ times for a
-single 1MB write() on a 4kB block size filesytem, and only one of
-them is initial write() system call that copies the data into the
-page cache. The other 500+ are all the extent allocation and
-manipulation transactions that we might run when persisting the data
-to disk tens of seconds later. This is how iversion on XFS has
-behaved for the past decade.
+> I don't think that TOCTOU races are a real concern here.  Generally =
+DIO
+> constraints would only change if the application doing DIO =
+intentionally does
+> something to the file, or if there are changes that involve the =
+filesystem
+> being taken offline, e.g. the filesystem being mounted with =
+significantly
+> different options or being moved to a different block device.  And, =
+well,
+> everything else in stat()/statx() is subject to TOCTOU as well, but is =
+still
+> used...
 
-Right now, both ext4 and XFS conform to the exact definition that is
-in this file. Trond has outlines that NFS wants iversion to behave
-exactly like c/mtime changes, but that is fundamentally different to
-how both ext4 and XFS have implemented the persistent change
-counters.
+I was thinking of background filesystem operations like compression, LVM
+migration to new storage with a different sector size, etc. that may =
+change
+the DIO characteristics of the file even while it is open.  Not that I =
+think
+this will happen frequently, but it is possible, and applications =
+shouldn't
+explode if the DIO parameters change and they get an error.
 
-IOWs, if we are going to start randomly excluding specific metadata
-from the iversion API, then we need a full definition of exactly
-what operations are supposed to trigger an iversion bump.
-API-design-by-application-deficiency-whack-a-mole is not appropriate
-for persistent structures, nor is it appropriate for information
-that is going to be exposed to userspace via the kernel ABI.
+Cheers, Andreas
 
-Therefore, before we change behaviour in the filesystems or expose
-it to userspace, we need to define *exactly* what changes are
-covered by iversion. Once we have that definition, then we can
-modify the filesytems appropriately to follow the required
-definition and only change the persistent iversion counter when the
-definition says we should change it.
 
-While Trond's description is a useful definition from the
-application perspective - and I'm not opposed to making it behave
-like that (i.e. iversion only bumped with c/mtime changes) - it
-requires a fundamentally different implementation in filesystems.
 
-We must no longer capture *every metadata change* as we are
-currently doing as per the current specification, and instead only
-capture *application metadata changes* only.  i.e.  we are going to
-need an on-disk format change of some kind because the two
-behaviours are not compatible.
 
-Further, if iversion is going to be extended to userspace, we most
-definitely need to decouple it from our internal "change on every
-metadata change" behaviour. We change how we persist metadata to
-disk over time and if we don't abstract that away from the
-persistent change counter we expose to userspace then this will lead
-to random user visible changes in iversion behaviour in future.
 
-Any way I look at it, we're at the point where filesystems now need
-a real, fixed definition of what changes require an iversion bump
-and which don't. The other option is that move the iversion bumping
-completely up into the VFS where it happens consistently for every
-filesystem whether they persist it or not. We also need a set of
-test code for fstests that check that iversion performs as expected
-and to the specification that the VFS defines for statx.
 
-Either way we chose, one of these options are the only way that we
-will end up with a consistent implementation of a change counter
-across all the filesystems. And, quite frankly, that's exactly is
-needed if we are going to present this information to userspace
-forever more.
+--Apple-Mail=_8E3621BA-8A02-4654-8DC0-856F43CB7C0C
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmMER+MACgkQcqXauRfM
+H+D5gBAAjf5qhCdnFlyRgIkdcPs1zELiCu4+Jw0PH5rkavcu3tVPwEBTCbHxXVMN
+6ZsFra7ARjxxj58mUSEtN9NDHwpiQreGlgqDoP+uYYb3EwiFZstja2fl0mTAytE5
+lMb8zBxkfCh8xexTnnVk7ULsOrTO+/xYTUbmRIqQvK6PTicVuO6H8FtzYFHjilnn
+/RZ8yRCndDsFmRpZCApwy26cPcP3UyrtUqz8rKk1iy5oBIC1ALvx8baYjY/Wi7Fs
+vMq1ExdKsjPPVQT5dmj1ISPRXpxTGezKhqvxNvbR/IMwKW2PzEMZzClRQnYKuWe5
+GBu6zW0mWe5l+Bg1amzve/WteBX/5i6rrkknoD58zBL8SL4LDh+uQGaM2q7EzegR
+lEc1/IpOtR1WrfmP+tOqEIfdwa4jMikNm4NKHYoQA2OQcxEzmYgtBHeeVbGOFCEq
+PRKVZbxxF2bVFWuBVbsSbAar9o6G6Ucm11LBDHkKEpn8RTqN/UeXBrcslIk9NczK
+2qtnn0jbek1OgtMEpGaajobjeqBqQUIC6/cUkU0S7Ga1LsV7D8eH5TV9EF3rWwLe
+0MJ2IWgAmbMDp7gYNVZYrsJJMrqcjphRO33u2JvwFisboKU1DD4qtfnG1vvF8u1n
+RHpWdRBE/l0VC15dWox4zVKfVgH52rkeKE8ZVkTj83NDSIidz94=
+=WmyJ
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_8E3621BA-8A02-4654-8DC0-856F43CB7C0C--
