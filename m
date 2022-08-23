@@ -2,203 +2,174 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81A8C59CF61
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Aug 2022 05:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0458559CFDC
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Aug 2022 06:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240047AbiHWDWT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 22 Aug 2022 23:22:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48646 "EHLO
+        id S237641AbiHWEUG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 23 Aug 2022 00:20:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239169AbiHWDWS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 Aug 2022 23:22:18 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28FE555084
-        for <linux-ext4@vger.kernel.org>; Mon, 22 Aug 2022 20:22:16 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id x14-20020a17090a8a8e00b001fb61a71d99so741339pjn.2
-        for <linux-ext4@vger.kernel.org>; Mon, 22 Aug 2022 20:22:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20210112.gappssmtp.com; s=20210112;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc;
-        bh=t5TO7xdQGMXaC5TRTQFcqhFSnLRjgf1D8C0Y6A6YDxE=;
-        b=WmzvvmXH5e7wP/UE3SOCEoTxUnalykJ3N3TkckdsZzxqPN6OxAvOMEhsFJIg72/pec
-         dV+HIGE92uLWsaavfgjKM+C+A5n4EiV88XdKFsoxydVAFe5nmQZ3wXK7pbUiZnpPSViH
-         9wcRuFbEeMk6CuUC5TU2Fsvnjo++S7A79RBLzB6Aur+2C1mdRPNWR6V9hkWGd33kuaZ6
-         xcCba0irYI0fzWODf7B+oUYh3cw5uD53qZpQUEbxAvY5/4dbEDBWYTz1DS09LYro3uwm
-         G9+kpUhWzIhcfbKMcEQU1XlfvHYa+Duf15Pq6vyDet2odUshI95kkV9niiVxvoEj4EEl
-         OWIA==
+        with ESMTP id S235781AbiHWEUF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 23 Aug 2022 00:20:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 812BC5E318
+        for <linux-ext4@vger.kernel.org>; Mon, 22 Aug 2022 21:20:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1661228402;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=tsW9Qubr1PtTTYMn36tQKaje9CJLhaJWoU401/ORweU=;
+        b=dYAgj6bb4KZgebuRIE8r3PWwjFEFgkb0FpPlt+HvEGY+BKaQ3mrWS5jfT5uwp4pYy5tEsr
+        L1PGH04WYF3a8HwOYiHHeWvvloOpu8dKzc3FBzlimtA3kJZ6HyVLMOLdrTU2pTNOoIGzI4
+        3MuRPWogdq7cI6pjWxP0TXO/WbiWnj8=
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
+ [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-637-T4vVJ2V-N8K-B6Ia5Sbrgg-1; Tue, 23 Aug 2022 00:16:59 -0400
+X-MC-Unique: T4vVJ2V-N8K-B6Ia5Sbrgg-1
+Received: by mail-pf1-f199.google.com with SMTP id cg5-20020a056a00290500b0053511889856so5429743pfb.18
+        for <linux-ext4@vger.kernel.org>; Mon, 22 Aug 2022 21:16:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc;
-        bh=t5TO7xdQGMXaC5TRTQFcqhFSnLRjgf1D8C0Y6A6YDxE=;
-        b=xeN0VlREdkjz928Cq4x48QVovWwSSG3LOqvPz0K0GPoqKZUuULEpPVI2kAUNrubh6t
-         M+tkYH+tejXG//VfxMWjUhhBUBKaonCCF2EO/jQf9kyXxjfY+F2GBUxT9IWAC1lWlM9M
-         ef/ykwLOXp3HFHvIl3SJRNTB1NAYsRTzosYM09TzlnJ66aU0/GQ5hJ0WExjJY7At+foq
-         T7h7av6H1WM94UDw/2/KpVcTQBgrMeQrFOx++uC4ybCygFugY45zDvA6MyIhKc9vnlr4
-         aklYI916wzaI+RwpBJQwHEeAi5iFu+YRyBl8/+WCjtEy3TjKx4ciOg76A7qY9RFeSFVE
-         EWyA==
-X-Gm-Message-State: ACgBeo0Ay5yvF38ni3QloahkP9z7d7NeBBE/fjbkOb9x4x0YsU/jXMWM
-        ECNrGDtsR5d5god4MO7V0kpL/w==
-X-Google-Smtp-Source: AA6agR6bYAoLnjuq/NI/816MPUccS4/TdIQzRNkgRVQfsY/JSoRbcW6B7pyoAJACabZ0K9rJNxD0pA==
-X-Received: by 2002:a17:903:18b:b0:16e:f09c:919b with SMTP id z11-20020a170903018b00b0016ef09c919bmr23613380plg.135.1661224935485;
-        Mon, 22 Aug 2022 20:22:15 -0700 (PDT)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id b9-20020a1709027e0900b00172d52b7c03sm5372011plm.125.2022.08.22.20.22.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 22 Aug 2022 20:22:14 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <21923F1E-1C54-44FB-AF7C-4CD8B4B35433@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_8E3621BA-8A02-4654-8DC0-856F43CB7C0C";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v4 6/9] f2fs: don't allow DIO reads but not DIO writes
-Date:   Mon, 22 Aug 2022 21:22:11 -0600
-In-Reply-To: <YwAYPFxW7VV4M9D1@sol.localdomain>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        xfs <linux-xfs@vger.kernel.org>, linux-api@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Keith Busch <kbusch@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-References: <20220722071228.146690-1-ebiggers@kernel.org>
- <20220722071228.146690-7-ebiggers@kernel.org> <YtyoF89iOg8gs7hj@google.com>
- <Yt7dCcG0ns85QqJe@sol.localdomain> <YuXyKh8Zvr56rR4R@google.com>
- <YvrrEcw4E+rpDLwM@sol.localdomain>
- <20220816090312.GU3600936@dread.disaster.area>
- <D1CDACE3-EC7E-43E4-8F49-EEA2B6E71A41@dilger.ca>
- <YwAYPFxW7VV4M9D1@sol.localdomain>
-X-Mailer: Apple Mail (2.3273)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc;
+        bh=tsW9Qubr1PtTTYMn36tQKaje9CJLhaJWoU401/ORweU=;
+        b=jbBK7q2av4hiwFCppfymZpM45PDI9tY6Ir1LtqVgaZ0OkPc390hEAXZ/aBsRNnZQ/+
+         to0anZGQPEM9vAAkC7/53bAdcCdzGdeA0RtWfbW94uU0iI3k19gTFvBt9rWmmsys0Mbn
+         LLwhVIxU7bgZ8RT/ZQG0R5Bz3BmMwPxpe6eHaUUN14a5hCSAIFdSOPCnB6iqSlFtQNJ2
+         SJ8Z+jILPvf+nZ9V+GvYfXv8qEItRwwK2ALqTT79UpGaQQxKzxkss2G3Farr7uApwI2H
+         EBfNKfOjUHYHIYMcJaeQPA2hrO+CRsucd0fzNWBuGDUnHx2NRAS4hUTm0kvyPCclp6YJ
+         40wg==
+X-Gm-Message-State: ACgBeo0WCf17c0WkoQM0Z/jrGktd+9RakQb6zrEJVChrxR0JiqSwK/Fe
+        1X4hQvHVGCuAuyRz3Q62Q02jY3CIqdFlsSueBMV3J/FAfX521AV0c1ZB+DtjS6ff0JlA2yzy7AS
+        6tsyrt78v5mNmVbxsMgHuwT4X5QhnuiXVfC7zMw==
+X-Received: by 2002:a63:ea11:0:b0:41d:9296:21e6 with SMTP id c17-20020a63ea11000000b0041d929621e6mr18760872pgi.603.1661228217953;
+        Mon, 22 Aug 2022 21:16:57 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR6/9w3ZXhaTOMyPo/2Z3zgJaSIgiqLF2jVltGdJ37OsWg5Ko7C5K6lX76JNRmYw0KOVAjedKRxplXY43zF1eDg=
+X-Received: by 2002:a63:ea11:0:b0:41d:9296:21e6 with SMTP id
+ c17-20020a63ea11000000b0041d929621e6mr18760859pgi.603.1661228217682; Mon, 22
+ Aug 2022 21:16:57 -0700 (PDT)
+MIME-Version: 1.0
+From:   Boyang Xue <bxue@redhat.com>
+Date:   Tue, 23 Aug 2022 12:16:46 +0800
+Message-ID: <CAHLe9YZvOcbimNsaYa=jk27uUR1jgVDtXXztLEa0AVnqveOoyQ@mail.gmail.com>
+Subject: [bug report] disk quota exceed after multiple write/delete loops
+To:     linux-ext4@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, Lukas Czerner <lczerner@redhat.com>
+Content-Type: multipart/mixed; boundary="000000000000ce7bc605e6e0d5f3"
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+--000000000000ce7bc605e6e0d5f3
+Content-Type: text/plain; charset="UTF-8"
 
---Apple-Mail=_8E3621BA-8A02-4654-8DC0-856F43CB7C0C
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+On the latest kernel 6.0.0-0.rc2, I find the user quota limit in an
+ext4 mount is unstable, that after several successful "write file then
+delete" loops, it will finally fail with "Disk quota exceeded". This
+bug can be reproduced on at least kernel-6.0.0-0.rc2 and
+kernel-5.14.0-*, but can't be reproduced on kernel-4.18.0 based RHEL8
+kernel.
 
-On Aug 19, 2022, at 5:09 PM, Eric Biggers <ebiggers@kernel.org> wrote:
->=20
-> On Tue, Aug 16, 2022 at 10:42:29AM -0600, Andreas Dilger wrote:
->>=20
->> IMHO, this whole discussion is putting the cart before the horse.
->> Changing existing (and useful) IO behavior to accommodate an API that
->> nobody has ever used, and is unlikely to even be widely used, doesn't
->> make sense to me.  Most applications won't check or care about the =
-new
->> DIO size fields, since they've lived this long without statx() =
-returning
->> this info, and will just pick a "large enough" size (4KB, 1MB, =
-whatever)
->> that gives them the performance they need.  They *WILL* care if the =
-app
->> is suddenly unable to read data from a file in ways that have worked =
-for
->> a long time.
->>=20
->> Even if apps are modified to check these new DIO size fields, and =
-then
->> try to DIO write to a file in f2fs that doesn't allow it, then f2fs =
-will
->> return an error, which is what it would have done without the statx()
->> changes, so no harm done AFAICS.
->>=20
->> Even with a more-complex DIO status return that handles a "direction"
->> field (which IMHO is needlessly complex), there is always the =
-potential
->> for a TOCTOU race where a file changes between checking and access, =
-so
->> the userspace code would need to handle this.
->=20
-> I'm having trouble making sense of your argument here; you seem to be =
-saying
-> that STATX_DIOALIGN isn't useful, so it doesn't matter if we design it
-> correctly?  That line of reasoning is concerning, as it's certainly =
-intended
-> to be useful, and if it's not useful there's no point in adding it.
->=20
-> Are there any specific concerns that you have, besides TOCTOU races =
-and the
-> lack of support for read-only DIO?
+Reproducer (can also be found as the attachment):
+```
+#!/bin/bash
 
-My main concern is disabling useful functionality that exists today to =
-appease
-the new DIO size API.  Whether STATX_DIOALIGN will become widely used by
-applications or not is hard to say at this point.
+# setup
+groupadd -f quota_test
+useradd -g quota_test quota_test_user1
+dd if=/dev/null of=ext4_5G.img bs=1G seek=5
+lo_dev=$(losetup -f --show ext4_5G.img)
+mkdir /mntpt
+mkfs.ext4 -F ext4_5G.img
+mount -o usrquota ext4_5G.img /mntpt
+chmod 777 /mntpt
+quotacheck -u /mntpt
+setquota -u quota_test_user1 200000 300000 2000 3000 /mntpt
+quotaon -u /mntpt
 
-If there were separate STATX_DIOREAD and STATX_DIOWRITE flags in the =
-returned
-data, and the alignment is provided as it is today, that would be enough =
-IMHO
-to address the original use case without significant complexity.
+# test
+for i in $(seq 1 100); do
+    echo "*** Run#$((i++)) ***"
+    echo "--- Quota before writing file ---"; quota -uv
+quota_test_user1; echo "--- ---"
+    su - quota_test_user1 -c "dd if=/dev/zero of=/mntpt/test_300m
+bs=1024 count=300000" || break_flag=1
+    echo "--- Quota after writing file ---"; quota -uv
+quota_test_user1; echo "--- ---"
+    rm -f /mntpt/test_300m
+    sleep 10s # in case slow deletion
+    echo "--- Quota after deleting file ---"; quota -uv
+quota_test_user1; echo "--- ---"
+    [[ $break_flag -eq 1 ]] && break
+done
 
-> I don't think that TOCTOU races are a real concern here.  Generally =
-DIO
-> constraints would only change if the application doing DIO =
-intentionally does
-> something to the file, or if there are changes that involve the =
-filesystem
-> being taken offline, e.g. the filesystem being mounted with =
-significantly
-> different options or being moved to a different block device.  And, =
-well,
-> everything else in stat()/statx() is subject to TOCTOU as well, but is =
-still
-> used...
+# cleanup
+umount /mntpt
+losetup -D
+rm -rf ext4_5G.img /mntpt
+userdel -r quota_test_user1
+groupdel quota_test
+```
 
-I was thinking of background filesystem operations like compression, LVM
-migration to new storage with a different sector size, etc. that may =
-change
-the DIO characteristics of the file even while it is open.  Not that I =
-think
-this will happen frequently, but it is possible, and applications =
-shouldn't
-explode if the DIO parameters change and they get an error.
+Run log on kernel-6.0.0-0.rc2
+```
+(...skip successful Run#[1-2]...)
+*** Run#3 ***
+--- Quota before writing file ---
+Disk quotas for user quota_test_user1 (uid 1003):
+     Filesystem  blocks   quota   limit   grace   files   quota   limit   grace
+     /dev/loop0       0  200000  300000               0    2000    3000
+--- ---
+dd: error writing '/mntpt/test_300m': Disk quota exceeded
+299997+0 records in
+299996+0 records out
+307195904 bytes (307 MB, 293 MiB) copied, 1.44836 s, 212 MB/s
+--- Quota after writing file ---
+Disk quotas for user quota_test_user1 (uid 1003):
+     Filesystem  blocks   quota   limit   grace   files   quota   limit   grace
+     /dev/loop0  300000* 200000  300000   7days       1    2000    3000
+--- ---
+--- Quota after deleting file ---
+Disk quotas for user quota_test_user1 (uid 1003):
+     Filesystem  blocks   quota   limit   grace   files   quota   limit   grace
+     /dev/loop0       0  200000  300000               0    2000    3000
+--- ---
+```
 
-Cheers, Andreas
+The kernel in test can be found at
+https://koji.fedoraproject.org/koji/buildinfo?buildID=2050107
 
+--000000000000ce7bc605e6e0d5f3
+Content-Type: application/x-sh; name="test_quota_v01.sh"
+Content-Disposition: attachment; filename="test_quota_v01.sh"
+Content-Transfer-Encoding: base64
+Content-ID: <f_l75o5cw00>
+X-Attachment-Id: f_l75o5cw00
 
+IyEvYmluL2Jhc2gKCiMgc2V0dXAKZ3JvdXBhZGQgLWYgcXVvdGFfdGVzdAp1c2VyYWRkIC1nIHF1
+b3RhX3Rlc3QgcXVvdGFfdGVzdF91c2VyMQpkZCBpZj0vZGV2L251bGwgb2Y9ZXh0NF81Ry5pbWcg
+YnM9MUcgc2Vlaz01CmxvX2Rldj0kKGxvc2V0dXAgLWYgLS1zaG93IGV4dDRfNUcuaW1nKQpta2Rp
+ciAvbW50cHQKbWtmcy5leHQ0IC1GIGV4dDRfNUcuaW1nCm1vdW50IC1vIHVzcnF1b3RhIGV4dDRf
+NUcuaW1nIC9tbnRwdApjaG1vZCA3NzcgL21udHB0CnF1b3RhY2hlY2sgLXUgL21udHB0CnNldHF1
+b3RhIC11IHF1b3RhX3Rlc3RfdXNlcjEgMjAwMDAwIDMwMDAwMCAyMDAwIDMwMDAgL21udHB0CnF1
+b3Rhb24gLXUgL21udHB0CgojIHRlc3QKZm9yIGkgaW4gJChzZXEgMSAxMDApOyBkbwogICAgICAg
+IGVjaG8gIioqKiBSdW4jJCgoaSsrKSkgKioqIgoJZWNobyAiLS0tIFF1b3RhIGJlZm9yZSB3cml0
+aW5nIGZpbGUgLS0tIjsgcXVvdGEgLXV2IHF1b3RhX3Rlc3RfdXNlcjE7IGVjaG8gIi0tLSAtLS0i
+CglzdSAtIHF1b3RhX3Rlc3RfdXNlcjEgLWMgImRkIGlmPS9kZXYvemVybyBvZj0vbW50cHQvdGVz
+dF8zMDBtIGJzPTEwMjQgY291bnQ9MzAwMDAwIiB8fCBicmVha19mbGFnPTEKCWVjaG8gIi0tLSBR
+dW90YSBhZnRlciB3cml0aW5nIGZpbGUgLS0tIjsgcXVvdGEgLXV2IHF1b3RhX3Rlc3RfdXNlcjE7
+IGVjaG8gIi0tLSAtLS0iCglybSAtZiAvbW50cHQvdGVzdF8zMDBtCglzbGVlcCAxMHMgIyBpbiBj
+YXNlIHNsb3cgZGVsZXRpb24KCWVjaG8gIi0tLSBRdW90YSBhZnRlciBkZWxldGluZyBmaWxlIC0t
+LSI7IHF1b3RhIC11diBxdW90YV90ZXN0X3VzZXIxOyBlY2hvICItLS0gLS0tIgoJW1sgJGJyZWFr
+X2ZsYWcgLWVxIDEgXV0gJiYgYnJlYWsKZG9uZQoKIyBjbGVhbnVwCnVtb3VudCAvbW50cHQKbG9z
+ZXR1cCAtRApybSAtcmYgZXh0NF81Ry5pbWcgL21udHB0CnVzZXJkZWwgLXIgcXVvdGFfdGVzdF91
+c2VyMQpncm91cGRlbCBxdW90YV90ZXN0Cg==
+--000000000000ce7bc605e6e0d5f3--
 
-
-
-
---Apple-Mail=_8E3621BA-8A02-4654-8DC0-856F43CB7C0C
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmMER+MACgkQcqXauRfM
-H+D5gBAAjf5qhCdnFlyRgIkdcPs1zELiCu4+Jw0PH5rkavcu3tVPwEBTCbHxXVMN
-6ZsFra7ARjxxj58mUSEtN9NDHwpiQreGlgqDoP+uYYb3EwiFZstja2fl0mTAytE5
-lMb8zBxkfCh8xexTnnVk7ULsOrTO+/xYTUbmRIqQvK6PTicVuO6H8FtzYFHjilnn
-/RZ8yRCndDsFmRpZCApwy26cPcP3UyrtUqz8rKk1iy5oBIC1ALvx8baYjY/Wi7Fs
-vMq1ExdKsjPPVQT5dmj1ISPRXpxTGezKhqvxNvbR/IMwKW2PzEMZzClRQnYKuWe5
-GBu6zW0mWe5l+Bg1amzve/WteBX/5i6rrkknoD58zBL8SL4LDh+uQGaM2q7EzegR
-lEc1/IpOtR1WrfmP+tOqEIfdwa4jMikNm4NKHYoQA2OQcxEzmYgtBHeeVbGOFCEq
-PRKVZbxxF2bVFWuBVbsSbAar9o6G6Ucm11LBDHkKEpn8RTqN/UeXBrcslIk9NczK
-2qtnn0jbek1OgtMEpGaajobjeqBqQUIC6/cUkU0S7Ga1LsV7D8eH5TV9EF3rWwLe
-0MJ2IWgAmbMDp7gYNVZYrsJJMrqcjphRO33u2JvwFisboKU1DD4qtfnG1vvF8u1n
-RHpWdRBE/l0VC15dWox4zVKfVgH52rkeKE8ZVkTj83NDSIidz94=
-=WmyJ
------END PGP SIGNATURE-----
-
---Apple-Mail=_8E3621BA-8A02-4654-8DC0-856F43CB7C0C--
