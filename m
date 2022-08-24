@@ -2,54 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D40A659FA34
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Aug 2022 14:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0768D59FA89
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Aug 2022 14:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236040AbiHXMpJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 24 Aug 2022 08:45:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42620 "EHLO
+        id S237583AbiHXMyA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 24 Aug 2022 08:54:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234401AbiHXMpI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 24 Aug 2022 08:45:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 530D980F51;
-        Wed, 24 Aug 2022 05:45:07 -0700 (PDT)
+        with ESMTP id S237558AbiHXMx6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 24 Aug 2022 08:53:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64B7995E4F;
+        Wed, 24 Aug 2022 05:53:57 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E32066104A;
-        Wed, 24 Aug 2022 12:45:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D0F7C433C1;
-        Wed, 24 Aug 2022 12:45:05 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 828B16138B;
+        Wed, 24 Aug 2022 12:53:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF8C2C433D6;
+        Wed, 24 Aug 2022 12:53:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661345106;
-        bh=AP8SI+V9Klense0pUNrysUm/tjBGKltTnwuRKTrq6i4=;
+        s=k20201202; t=1661345635;
+        bh=9qKTFfSvvv3odyymWozZ3aH/e3Es4L33cC41zZfYrDE=;
         h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=APbx8hhN+doVOvFz00b6oh0mDFxX1SxfZeqMZYe/1APFBYyGn5ddQ/sosvTM7Zabk
-         1PSez+pJnh2tKMcH03GiqL0e/kiMiMISA1QtUjFVEx0WOLnQXHWBNYX0GgfMFa8z6Y
-         c3AXNxkKSOv4jHKhV4RxRJB+3eCY1UMzg2IQQ0HPsXVvctESAElsI7ss8Yg6D0Ul/P
-         mpa06NBka6sRQ8nAUSP97Lo5sfnsvTJQ+MqRWWXGZ+9ExxnCT/IvDkXmuJAkldxUQd
-         AZG7Y4QL/F0k7AkfnqnVPZePk3G53gsUBvQagNsOCZ3z/uFX1gFjE0GSCmdLpPSqoA
-         mjw96BnT9EkfQ==
-Message-ID: <6fc746c24be6f2c28ea39e76f01e57b14f91b90d.camel@kernel.org>
+        b=Hk1K3btiYElGBvohLpvnxQA2OisfrjMc8S/kg7OoZJF85mm9jLVcvTTAZ2Lw3evSf
+         +sk8cPvrEnDfRUlkNaDMbeNAim0UmwOmrY2pIWcRft2vYW4uPpmhpNvFOWSEFl9mf3
+         QLay6v3wIZsAU5jfFCs7L1BJGnXS/W03OFJ0YDMp4gY37+neRradBW1qYmAIK/3vXZ
+         rH0cBEQjhvbko4l7YDHO4ZvHkKsW6ii/iQNe7zRcOO0XiedDIeQ1GB55rvhtyCgtDT
+         MTwkOUMyoB8htAc5+QUeCwDFg2s1hrRx+bU8zr99viJWCFLcJrbgo2GNfUpBcdOvDe
+         UEdrfsdXKJDGw==
+Message-ID: <5f248d934ec5d2345986fd75d7d12bcd9e2f32b9.camel@kernel.org>
 Subject: Re: [PATCH] iversion: update comments with info about atime updates
 From:   Jeff Layton <jlayton@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, NeilBrown <neilb@suse.de>,
+To:     NeilBrown <neilb@suse.de>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
         Trond Myklebust <trondmy@hammerspace.com>
-Date:   Wed, 24 Aug 2022 08:45:03 -0400
-In-Reply-To: <20220823232537.GP3600936@dread.disaster.area>
+Date:   Wed, 24 Aug 2022 08:53:53 -0400
+In-Reply-To: <166129348704.23264.10381335282721356873@noble.neil.brown.name>
 References: <20220822133309.86005-1-jlayton@kernel.org>
-         <ceb8f09a4cb2de67f40604d03ee0c475feb3130a.camel@linux.ibm.com>
-         <f17b9d627703bee2a7b531a051461671648a9dbd.camel@kernel.org>
-         <18827b350fbf6719733fda814255ec20d6dcf00f.camel@linux.ibm.com>
-         <4cc84440d954c022d0235bf407a60da66a6ccc39.camel@kernel.org>
-         <20220822233231.GJ3600936@dread.disaster.area>
-         <6cbcb33d33613f50dd5e485ecbf6ce7e305f3d6f.camel@kernel.org>
-         <20220823232537.GP3600936@dread.disaster.area>
+        , <ceb8f09a4cb2de67f40604d03ee0c475feb3130a.camel@linux.ibm.com>
+        , <f17b9d627703bee2a7b531a051461671648a9dbd.camel@kernel.org>
+        , <18827b350fbf6719733fda814255ec20d6dcf00f.camel@linux.ibm.com>
+        , <4cc84440d954c022d0235bf407a60da66a6ccc39.camel@kernel.org>
+        , <20220822233231.GJ3600936@dread.disaster.area>
+        , <6cbcb33d33613f50dd5e485ecbf6ce7e305f3d6f.camel@kernel.org>
+        , <166125468756.23264.2859374883806269821@noble.neil.brown.name>
+        , <df469d936b2e1c1a8c9c947896fa8a160f33b0e8.camel@kernel.org>
+         <166129348704.23264.10381335282721356873@noble.neil.brown.name>
 Content-Type: text/plain; charset="ISO-8859-15"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
@@ -64,237 +67,81 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 2022-08-24 at 09:25 +1000, Dave Chinner wrote:
-> On Tue, Aug 23, 2022 at 07:21:36AM -0400, Jeff Layton wrote:
-> > On Tue, 2022-08-23 at 09:32 +1000, Dave Chinner wrote:
-> > > On Mon, Aug 22, 2022 at 02:22:20PM -0400, Jeff Layton wrote:
-> > > > diff --git a/include/linux/iversion.h b/include/linux/iversion.h
-> > > > index 3bfebde5a1a6..524abd372100 100644
-> > > > --- a/include/linux/iversion.h
-> > > > +++ b/include/linux/iversion.h
-> > > > @@ -9,8 +9,8 @@
-> > > >   * ---------------------------
-> > > >   * The change attribute (i_version) is mandated by NFSv4 and is mo=
-stly for
-> > > >   * knfsd, but is also used for other purposes (e.g. IMA). The i_ve=
-rsion must
-> > > > - * appear different to observers if there was a change to the inod=
-e's data or
-> > > > - * metadata since it was last queried.
-> > > > + * appear different to observers if there was an explicit change t=
-o the inode's
-> > > > + * data or metadata since it was last queried.
-> > > >   *
-> > > >   * Observers see the i_version as a 64-bit number that never decre=
-ases. If it
-> > > >   * remains the same since it was last checked, then nothing has ch=
-anged in the
-> > > > @@ -18,6 +18,13 @@
-> > > >   * anything about the nature or magnitude of the changes from the =
-value, only
-> > > >   * that the inode has changed in some fashion.
-> > > >   *
-> > > > + * Note that atime updates due to reads or similar activity do not=
- represent
+On Wed, 2022-08-24 at 08:24 +1000, NeilBrown wrote:
+> On Tue, 23 Aug 2022, Jeff Layton wrote:
+> > On Tue, 2022-08-23 at 21:38 +1000, NeilBrown wrote:
+> > > On Tue, 23 Aug 2022, Jeff Layton wrote:
+> > > > So, we can refer to that and simply say:
+> > > >=20
+> > > > "If the function updates the mtime or ctime on the inode, then the
+> > > > i_version should be incremented. If only the atime is being updated=
+,
+> > > > then the i_version should not be incremented. The exception to this=
+ rule
+> > > > is explicit atime updates via utimes() or similar mechanism, which
+> > > > should result in the i_version being incremented."
 > > >=20
-> > > What does "or similar activity" mean?
+> > > Is that exception needed? utimes() updates ctime.
+> > >=20
+> > > https://man7.org/linux/man-pages/man2/utimes.2.html
+> > >=20
+> > > doesn't say that, but
+> > >=20
+> > > https://pubs.opengroup.org/onlinepubs/007904875/functions/utimes.html
+> > >=20
+> > > does, as does the code.
 > > >=20
 > >=20
-> > Some examples:
-> >=20
-> > - readdir() in a directory
-> > - readlink() on symlink
-> > - mmap reads
-> >=20
-> > ...basically, things that access data without materially changing it.
+> > Oh, good point! I think we can leave that out. Even better!
 >=20
-> What happens if we have buffered dirty data in the page cache, and a
-> DIO read is done at that location?
+> Further, implicit mtime updates (file_update_time()) also update ctime.
+> So all you need is
+>  If the function updates the ctime, then i_version should be
+>  incremented.
 >=20
-> This doesn't materially change data, but it forces writeback of the
-> cached data, and that means XFS will bump iversion because of the
-> data writeback changing inode metadata.
+> and I have to ask - why not just use the ctime? Why have another number
+> that is parallel?
 >=20
+> Timestamps are updated at HZ (ktime_get_course) which is at most every
+> millisecond.
+> xfs stores nanosecond resolution, so about 20 bits are currently wasted.
+> We could put a counter like i_version in there that only increments
+> after it is viewed, then we can get all the precision we need but with
+> exactly ctime semantics.
+>=20
+> The 64 change-id could comprise
+>  35 bits of seconds (nearly a millenium)
+>  16 bits of sub-seconds (just in case a higher precision time was wanted
+>  one day)
+>  13 bits of counter. - 8192 changes per tick
 
-Ideally, the i_version should not change in this case.
+We'd need a "seen" flag too, so maybe only 4096 changes per tick...
 
-> i can think of several scenarios where a pure data access operation
-> that does not materially change user data but will cause an iversion
-> change because those access operations imply some level of data
-> persistence.
 >=20
-> > > In case you didn't realise, XFS can bump iversion 500+ times for a
-> > > single 1MB write() on a 4kB block size filesytem, and only one of
-> > > them is initial write() system call that copies the data into the
-> > > page cache. The other 500+ are all the extent allocation and
-> > > manipulation transactions that we might run when persisting the data
-> > > to disk tens of seconds later. This is how iversion on XFS has
-> > > behaved for the past decade.
-> > >=20
-> >=20
-> > Bumping the change count multiple times internally for a single change
-> > is not a problem. From the comments in iversion.h:
-> >=20
-> >  * Observers see the i_version as a 64-bit number that never decreases.=
- If it
-> >  * remains the same since it was last checked, then nothing has changed=
- in the
-> >  * inode. If it's different then something has changed. Observers canno=
-t infer
-> >  * anything about the nature or magnitude of the changes from the value=
-, only
-> >  * that the inode has changed in some fashion.
-> >=20
-> > Bumping it once or multiple times still conforms to how we have this
-> > defined.
+> The value exposed in i_ctime would hide the counter and just show the
+> timestamp portion of what the filesystem stores. This would ensure we
+> never get changes on different files that happen in one order leaving
+> timestamps with the reversed order (the timestamps could be the same,
+> but that is expected).
 >=20
-> Sure, it conforms to this piece of the specification. But the
-> temporal aspect of the filesystem bumping iversion due to background
-> operations most definitely conflicts with the new definition of
-> iversion only changing when operations that change c/mtime are
-> performed.
->=20
-> i.e.  if we're to take the "iversion changes only when c/mtime is
-> changed" definition at face value, then the filesystem is not free
-> to modify iversion when it modifies metadata during background
-> writeback. It's not free to bump iversion during fsync(). i.e. it's
-> not free to bump iversion on any operation that implies data
-> writeback is necessary.
->=20
-> That makes the existing XFS di_changecount implementation
-> incompatible with the newly redefined iversion semantics being
-> pushed and wanting to be exposed to userspace. If the filesystem
-> implementation can't meet the specification of the change attribute
-> being exposed to userspace then we *must not expose that information
-> to userspace*.
->=20
-> This restriction does not prevent us from using our existing
-> iversion implementation for NFS and IMA because the worst that
-> happens is users occasionally have to refetch information from the
-> server as has already been occurring for the past decade or so.
-> Indeed, there's an argument to be made that the periodic IMA
-> revalidation that relatime + iversion causes for the data at rest in
-> the page cache is actually a good security practice and not a
-> behaviour that we should be trying to optimise away.
->=20
-> All I want from this process is a *solid definition* of what
-> iversion is supposed to represent and what will be exposed to
-> userspace and the ability for the filesystem to decide itself
-> whether to expose it's persistent change counter to userspace. Us
-> filesystem developers can take it from there to provide a change
-> attribute that conforms to the contract we form with userspace by
-> exposing this information to statx().
->=20
-> > > Either way we chose, one of these options are the only way that we
-> > > will end up with a consistent implementation of a change counter
-> > > across all the filesystems. And, quite frankly, that's exactly is
-> > > needed if we are going to present this information to userspace
-> > > forever more.
-> > >=20
-> >=20
-> > I agree that we need a real definition of what changes should be
-> > represented in this value. My intent was to add that to the statx
-> > manpage once we had gotten a little further along, but it won't hurt to
-> > hash that out first.
->=20
-> How have so many experienced engineers forgotten basic engineering
-> processes they were taught as an undergrad? i.e. that requirements
-> and specification come first, then the implementation is derived
-> from the specification?
->=20
-> And why do they keep "forgetting" this over and over again?
->=20
+> This scheme could be made to handle a sustained update rate of 1
+> increment every 8 nanoseconds (if the counter were allowed to overflow
+> into unused bits of the sub-second field). This is one ever 24 CPU
+> cycles. Incrementing a counter and making it visible to all CPUs can
+> probably be done in 24 cycles. Accessing it and setting the "seen" flag
+> as well might just fit with faster memory. Getting any other useful
+> work done while maintaining that rate on a single file seems unlikely.
 
-The sanctimonious comments are really unnecessary.
+This is an interesting idea.
 
-YOU are the person who asked me to write testcases for this. The only
-reasonable way to do that is to expose this attribute to userland.
+So, for NFSv4 you'd just mask off the counter bits (and "seen" flag) to
+get the ctime, and for the change attribute we'd just mask off the
+"seen" flag and put it all in there.
 
-I would certainly have approached all of this differently had I been
-implementing the i_version counter from scratch. The time to write a
-specification for i_version was when it was created (>20 years ago).
-That predates my involvement in Linux kernel development. I'm doing what
-I can to remedy it now. Be patient, please.
-
-> > I do not intend to exhaustively list all possible activities that shoul=
-d
-> > and shouldn't update the i_version. It's as difficult to put together a
-> > comprehensive list of what activities should and shouldn't change the
-> > i_version as it is to list what activities should and shouldn't cause
-> > the mtime/ctime/atime to change. The list is also going to constantly
-> > change as our interfaces change.
->=20
-> If this change attribute is not going to specified in a way that
-> userspace cannot rely on it's behaviour not changing in incompatible
-> ways, then it should not be exposed to userspace at all. Both
-> userspace and the filesystems need an unambiguous definition so that
-> userspace applications can rely on the behaviour that the kernel
-> and filesystems guarantee will be provided.
->=20
-> > What may be best is to just define this value in terms of how timestamp=
-s
-> > get updated, since POSIX already specifies that. Section 4.9 in the
-> > POSIX spec discusses file time updates:
-> >=20
-> >     https://pubs.opengroup.org/onlinepubs/9699919799/
-> >=20
-> > It says:
-> >=20
-> > "Each function or utility in POSIX.1-2017 that reads or writes data
-> > (even if the data does not change) or performs an operation to change
-> > file status (even if the file status does not change) indicates which o=
-f
-> > the appropriate timestamps shall be marked for update."
-> >=20
-> > So, we can refer to that and simply say:
-> >=20
-> > "If the function updates the mtime or ctime on the inode, then the
-> > i_version should be incremented. If only the atime is being updated,
-> > then the i_version should not be incremented. The exception to this rul=
-e
-> > is explicit atime updates via utimes() or similar mechanism, which
-> > should result in the i_version being incremented."
->=20
-> I'd almost be fine with that definition for iversion being exposed
-> to userspace, but it doesn't say anything about metadata changes
-> that don't change c/mtime. i.e. this needs to define iversion as
-> "_Only_ operations that modify user data and/or c/mtime on the inode
-> should increment the change attribute", not leave it ambiguous as to
-> whether other operations can bump the change attribute or not.
->=20
-
-Good, this is probably how we'll end up defining it. Doing anything else
-is going to be too difficult, I think.
-
-> Of course, this new iversion deinition is most definitely
-> incompatible with the existing specification of the XFS persistent
-> change attribute.....
->=20
-
-We could also allow for a conformant implementation to have i_version
-bumps even when something "invisible" happens, and just mention that the
-consumer of it (i.e. application or subsystem) must allow for that
-possibility.
-
-With that, a change in i_version would mean that something _might_ have
-changed instead of something having definitely changed. Ideally, an
-implementation wouldn't do that, since doing so would likely have
-measurable performance performance impact.
-
-If we did that, it would mean that the xfs implementation currently
-conforms to the proposed spec. Then it would just be a matter of trying
-to optimize away the i_version bumps that occur during read-like
-activity.
-
-I think it's probably best to define this as loosely as possible so that
-we can make it easier for a broad range of filesystems to implement it.
-All of the existing consumers can (and do) work with i_version today,
-it's just that the extra i_version bumps are terrible for performance
-(particularly with NFS).
-
-If we get a spurious bump just occasionally, then it's not too awful
-(particularly when the file is being written to anyway, and we'll need
-to dump the cache for it). The biggest pain point is i_version being
-updated on all atime updates though.
+ * Implementing that for all filesystems would be a huge project though.
+   If we were implementing the i_version counter from scratch, I'd
+   probably do something along these lines. Given that we already have
+   an existing i_version counter, would there be any real benefit to
+   pursuing this avenue instead?
 --=20
 Jeff Layton <jlayton@kernel.org>
