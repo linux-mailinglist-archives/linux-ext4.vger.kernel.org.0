@@ -2,131 +2,299 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F1259F7F2
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Aug 2022 12:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D40A659FA34
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Aug 2022 14:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236887AbiHXKkQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 24 Aug 2022 06:40:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57498 "EHLO
+        id S236040AbiHXMpJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 24 Aug 2022 08:45:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236890AbiHXKkN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 24 Aug 2022 06:40:13 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AAC180F6A
-        for <linux-ext4@vger.kernel.org>; Wed, 24 Aug 2022 03:40:12 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S234401AbiHXMpI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 24 Aug 2022 08:45:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 530D980F51;
+        Wed, 24 Aug 2022 05:45:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3E11020488;
-        Wed, 24 Aug 2022 10:40:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1661337611; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NfJHy3InzW1oMtUZUiCWo1JwYLeSydo4JFoewElY3I4=;
-        b=ioQsressDeK2roKJLCSGLu0CY0cK6Twj1BftpkF2mUVvtP58jyraNS2f8/bFOcGV/wMKYt
-        Y/+t+VwS4PnFIFnvfYk7EgpR7dui6kgavfYLqsA+mo+g3Nf0d8pjOrylUi3MZ/YESu4bEj
-        92IRdsKkCaUlOuKIjX3WydZwU/e2hwU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1661337611;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NfJHy3InzW1oMtUZUiCWo1JwYLeSydo4JFoewElY3I4=;
-        b=MBXubwSl39fHcdp8nHigfiuYgB6eExOJZ4kQ4TVjgImkQKZeRhygq2yBGVNiZvHOXBW7BP
-        b6YGWWSz0CaR9ZCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2CAEA13780;
-        Wed, 24 Aug 2022 10:40:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id X5/XCgsABmO1IAAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 24 Aug 2022 10:40:11 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id B88F6A0679; Wed, 24 Aug 2022 12:40:10 +0200 (CEST)
-Date:   Wed, 24 Aug 2022 12:40:10 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Stefan Wahren <stefan.wahren@i2se.com>
-Cc:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>,
-        linux-ext4@vger.kernel.org,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: Re: [PATCH 0/2] ext4: Fix performance regression with mballoc
-Message-ID: <20220824104010.4qvw46zmf42te53n@quack3>
-References: <20220823134508.27854-1-jack@suse.cz>
- <8e164532-c436-241f-33be-4b41f7f67235@i2se.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E32066104A;
+        Wed, 24 Aug 2022 12:45:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D0F7C433C1;
+        Wed, 24 Aug 2022 12:45:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661345106;
+        bh=AP8SI+V9Klense0pUNrysUm/tjBGKltTnwuRKTrq6i4=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=APbx8hhN+doVOvFz00b6oh0mDFxX1SxfZeqMZYe/1APFBYyGn5ddQ/sosvTM7Zabk
+         1PSez+pJnh2tKMcH03GiqL0e/kiMiMISA1QtUjFVEx0WOLnQXHWBNYX0GgfMFa8z6Y
+         c3AXNxkKSOv4jHKhV4RxRJB+3eCY1UMzg2IQQ0HPsXVvctESAElsI7ss8Yg6D0Ul/P
+         mpa06NBka6sRQ8nAUSP97Lo5sfnsvTJQ+MqRWWXGZ+9ExxnCT/IvDkXmuJAkldxUQd
+         AZG7Y4QL/F0k7AkfnqnVPZePk3G53gsUBvQagNsOCZ3z/uFX1gFjE0GSCmdLpPSqoA
+         mjw96BnT9EkfQ==
+Message-ID: <6fc746c24be6f2c28ea39e76f01e57b14f91b90d.camel@kernel.org>
+Subject: Re: [PATCH] iversion: update comments with info about atime updates
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, NeilBrown <neilb@suse.de>,
+        Trond Myklebust <trondmy@hammerspace.com>
+Date:   Wed, 24 Aug 2022 08:45:03 -0400
+In-Reply-To: <20220823232537.GP3600936@dread.disaster.area>
+References: <20220822133309.86005-1-jlayton@kernel.org>
+         <ceb8f09a4cb2de67f40604d03ee0c475feb3130a.camel@linux.ibm.com>
+         <f17b9d627703bee2a7b531a051461671648a9dbd.camel@kernel.org>
+         <18827b350fbf6719733fda814255ec20d6dcf00f.camel@linux.ibm.com>
+         <4cc84440d954c022d0235bf407a60da66a6ccc39.camel@kernel.org>
+         <20220822233231.GJ3600936@dread.disaster.area>
+         <6cbcb33d33613f50dd5e485ecbf6ce7e305f3d6f.camel@kernel.org>
+         <20220823232537.GP3600936@dread.disaster.area>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8e164532-c436-241f-33be-4b41f7f67235@i2se.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Stefan!
+On Wed, 2022-08-24 at 09:25 +1000, Dave Chinner wrote:
+> On Tue, Aug 23, 2022 at 07:21:36AM -0400, Jeff Layton wrote:
+> > On Tue, 2022-08-23 at 09:32 +1000, Dave Chinner wrote:
+> > > On Mon, Aug 22, 2022 at 02:22:20PM -0400, Jeff Layton wrote:
+> > > > diff --git a/include/linux/iversion.h b/include/linux/iversion.h
+> > > > index 3bfebde5a1a6..524abd372100 100644
+> > > > --- a/include/linux/iversion.h
+> > > > +++ b/include/linux/iversion.h
+> > > > @@ -9,8 +9,8 @@
+> > > >   * ---------------------------
+> > > >   * The change attribute (i_version) is mandated by NFSv4 and is mo=
+stly for
+> > > >   * knfsd, but is also used for other purposes (e.g. IMA). The i_ve=
+rsion must
+> > > > - * appear different to observers if there was a change to the inod=
+e's data or
+> > > > - * metadata since it was last queried.
+> > > > + * appear different to observers if there was an explicit change t=
+o the inode's
+> > > > + * data or metadata since it was last queried.
+> > > >   *
+> > > >   * Observers see the i_version as a 64-bit number that never decre=
+ases. If it
+> > > >   * remains the same since it was last checked, then nothing has ch=
+anged in the
+> > > > @@ -18,6 +18,13 @@
+> > > >   * anything about the nature or magnitude of the changes from the =
+value, only
+> > > >   * that the inode has changed in some fashion.
+> > > >   *
+> > > > + * Note that atime updates due to reads or similar activity do not=
+ represent
+> > >=20
+> > > What does "or similar activity" mean?
+> > >=20
+> >=20
+> > Some examples:
+> >=20
+> > - readdir() in a directory
+> > - readlink() on symlink
+> > - mmap reads
+> >=20
+> > ...basically, things that access data without materially changing it.
+>=20
+> What happens if we have buffered dirty data in the page cache, and a
+> DIO read is done at that location?
+>=20
+> This doesn't materially change data, but it forces writeback of the
+> cached data, and that means XFS will bump iversion because of the
+> data writeback changing inode metadata.
+>=20
 
-On Wed 24-08-22 12:17:14, Stefan Wahren wrote:
-> Am 23.08.22 um 22:15 schrieb Jan Kara:
-> > Hello,
-> > 
-> > So I have implemented mballoc improvements to avoid spreading allocations
-> > even with mb_optimize_scan=1. It fixes the performance regression I was able
-> > to reproduce with reaim on my test machine:
-> > 
-> >                       mb_optimize_scan=0     mb_optimize_scan=1     patched
-> > Hmean     disk-1       2076.12 (   0.00%)     2099.37 (   1.12%)     2032.52 (  -2.10%)
-> > Hmean     disk-41     92481.20 (   0.00%)    83787.47 *  -9.40%*    90308.37 (  -2.35%)
-> > Hmean     disk-81    155073.39 (   0.00%)   135527.05 * -12.60%*   154285.71 (  -0.51%)
-> > Hmean     disk-121   185109.64 (   0.00%)   166284.93 * -10.17%*   185298.62 (   0.10%)
-> > Hmean     disk-161   229890.53 (   0.00%)   207563.39 *  -9.71%*   232883.32 *   1.30%*
-> > Hmean     disk-201   223333.33 (   0.00%)   203235.59 *  -9.00%*   221446.93 (  -0.84%)
-> > Hmean     disk-241   235735.25 (   0.00%)   217705.51 *  -7.65%*   239483.27 *   1.59%*
-> > Hmean     disk-281   266772.15 (   0.00%)   241132.72 *  -9.61%*   263108.62 (  -1.37%)
-> > Hmean     disk-321   265435.50 (   0.00%)   245412.84 *  -7.54%*   267277.27 (   0.69%)
-> > 
-> > Stefan, can you please test whether these patches fix the problem for you as
-> > well? Comments & review welcome.
-> 
-> i tested the whole series against 5.19 and 6.0.0-rc2. In both cases the
-> update process succeed which is a improvement, but the download + unpack
-> duration ( ~ 7 minutes ) is not as good as with mb_optimize_scan=0 ( ~ 1
-> minute ).
+Ideally, the i_version should not change in this case.
 
-OK, thanks for testing! I'll try to check specifically untar whether I can
-still see some differences in the IO pattern on my test machine.
+> i can think of several scenarios where a pure data access operation
+> that does not materially change user data but will cause an iversion
+> change because those access operations imply some level of data
+> persistence.
+>=20
+> > > In case you didn't realise, XFS can bump iversion 500+ times for a
+> > > single 1MB write() on a 4kB block size filesytem, and only one of
+> > > them is initial write() system call that copies the data into the
+> > > page cache. The other 500+ are all the extent allocation and
+> > > manipulation transactions that we might run when persisting the data
+> > > to disk tens of seconds later. This is how iversion on XFS has
+> > > behaved for the past decade.
+> > >=20
+> >=20
+> > Bumping the change count multiple times internally for a single change
+> > is not a problem. From the comments in iversion.h:
+> >=20
+> >  * Observers see the i_version as a 64-bit number that never decreases.=
+ If it
+> >  * remains the same since it was last checked, then nothing has changed=
+ in the
+> >  * inode. If it's different then something has changed. Observers canno=
+t infer
+> >  * anything about the nature or magnitude of the changes from the value=
+, only
+> >  * that the inode has changed in some fashion.
+> >=20
+> > Bumping it once or multiple times still conforms to how we have this
+> > defined.
+>=20
+> Sure, it conforms to this piece of the specification. But the
+> temporal aspect of the filesystem bumping iversion due to background
+> operations most definitely conflicts with the new definition of
+> iversion only changing when operations that change c/mtime are
+> performed.
+>=20
+> i.e.  if we're to take the "iversion changes only when c/mtime is
+> changed" definition at face value, then the filesystem is not free
+> to modify iversion when it modifies metadata during background
+> writeback. It's not free to bump iversion during fsync(). i.e. it's
+> not free to bump iversion on any operation that implies data
+> writeback is necessary.
+>=20
+> That makes the existing XFS di_changecount implementation
+> incompatible with the newly redefined iversion semantics being
+> pushed and wanting to be exposed to userspace. If the filesystem
+> implementation can't meet the specification of the change attribute
+> being exposed to userspace then we *must not expose that information
+> to userspace*.
+>=20
+> This restriction does not prevent us from using our existing
+> iversion implementation for NFS and IMA because the worst that
+> happens is users occasionally have to refetch information from the
+> server as has already been occurring for the past decade or so.
+> Indeed, there's an argument to be made that the periodic IMA
+> revalidation that relatime + iversion causes for the data at rest in
+> the page cache is actually a good security practice and not a
+> behaviour that we should be trying to optimise away.
+>=20
+> All I want from this process is a *solid definition* of what
+> iversion is supposed to represent and what will be exposed to
+> userspace and the ability for the filesystem to decide itself
+> whether to expose it's persistent change counter to userspace. Us
+> filesystem developers can take it from there to provide a change
+> attribute that conforms to the contract we form with userspace by
+> exposing this information to statx().
+>=20
+> > > Either way we chose, one of these options are the only way that we
+> > > will end up with a consistent implementation of a change counter
+> > > across all the filesystems. And, quite frankly, that's exactly is
+> > > needed if we are going to present this information to userspace
+> > > forever more.
+> > >=20
+> >=20
+> > I agree that we need a real definition of what changes should be
+> > represented in this value. My intent was to add that to the statx
+> > manpage once we had gotten a little further along, but it won't hurt to
+> > hash that out first.
+>=20
+> How have so many experienced engineers forgotten basic engineering
+> processes they were taught as an undergrad? i.e. that requirements
+> and specification come first, then the implementation is derived
+> from the specification?
+>=20
+> And why do they keep "forgetting" this over and over again?
+>=20
 
-> Unfortuntately i don't have much time this week and next week i'm in
-> holidays.
+The sanctimonious comments are really unnecessary.
 
-No problem.
+YOU are the person who asked me to write testcases for this. The only
+reasonable way to do that is to expose this attribute to userland.
 
-> Just a question, my tests always had MBCACHE=y . Is it possible that the
-> mb_optimize_scan is counterproductive for MBCACHE in this case?
+I would certainly have approached all of this differently had I been
+implementing the i_version counter from scratch. The time to write a
+specification for i_version was when it was created (>20 years ago).
+That predates my involvement in Linux kernel development. I'm doing what
+I can to remedy it now. Be patient, please.
 
-MBCACHE (despite similar name) is actually related to extended attributes
-so it likely has no impact on your workload.
+> > I do not intend to exhaustively list all possible activities that shoul=
+d
+> > and shouldn't update the i_version. It's as difficult to put together a
+> > comprehensive list of what activities should and shouldn't change the
+> > i_version as it is to list what activities should and shouldn't cause
+> > the mtime/ctime/atime to change. The list is also going to constantly
+> > change as our interfaces change.
+>=20
+> If this change attribute is not going to specified in a way that
+> userspace cannot rely on it's behaviour not changing in incompatible
+> ways, then it should not be exposed to userspace at all. Both
+> userspace and the filesystems need an unambiguous definition so that
+> userspace applications can rely on the behaviour that the kernel
+> and filesystems guarantee will be provided.
+>=20
+> > What may be best is to just define this value in terms of how timestamp=
+s
+> > get updated, since POSIX already specifies that. Section 4.9 in the
+> > POSIX spec discusses file time updates:
+> >=20
+> >     https://pubs.opengroup.org/onlinepubs/9699919799/
+> >=20
+> > It says:
+> >=20
+> > "Each function or utility in POSIX.1-2017 that reads or writes data
+> > (even if the data does not change) or performs an operation to change
+> > file status (even if the file status does not change) indicates which o=
+f
+> > the appropriate timestamps shall be marked for update."
+> >=20
+> > So, we can refer to that and simply say:
+> >=20
+> > "If the function updates the mtime or ctime on the inode, then the
+> > i_version should be incremented. If only the atime is being updated,
+> > then the i_version should not be incremented. The exception to this rul=
+e
+> > is explicit atime updates via utimes() or similar mechanism, which
+> > should result in the i_version being incremented."
+>=20
+> I'd almost be fine with that definition for iversion being exposed
+> to userspace, but it doesn't say anything about metadata changes
+> that don't change c/mtime. i.e. this needs to define iversion as
+> "_Only_ operations that modify user data and/or c/mtime on the inode
+> should increment the change attribute", not leave it ambiguous as to
+> whether other operations can bump the change attribute or not.
+>=20
 
-> I'm asking because before the download the update script removes the files
-> from the previous update process which already cause a high load.
+Good, this is probably how we'll end up defining it. Doing anything else
+is going to be too difficult, I think.
 
-Do you mean already the removal step is noticeably slower with
-mb_optimize_scan=1? The removal will be modifying directory blocks, inode
-table blocks, block & inode bitmaps, and group descriptors. So if block
-allocations are more spread (due to mb_optimize_scan=1 used during the
-untar), the removal may also take somewhat longer.
+> Of course, this new iversion deinition is most definitely
+> incompatible with the existing specification of the XFS persistent
+> change attribute.....
+>=20
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+We could also allow for a conformant implementation to have i_version
+bumps even when something "invisible" happens, and just mention that the
+consumer of it (i.e. application or subsystem) must allow for that
+possibility.
+
+With that, a change in i_version would mean that something _might_ have
+changed instead of something having definitely changed. Ideally, an
+implementation wouldn't do that, since doing so would likely have
+measurable performance performance impact.
+
+If we did that, it would mean that the xfs implementation currently
+conforms to the proposed spec. Then it would just be a matter of trying
+to optimize away the i_version bumps that occur during read-like
+activity.
+
+I think it's probably best to define this as loosely as possible so that
+we can make it easier for a broad range of filesystems to implement it.
+All of the existing consumers can (and do) work with i_version today,
+it's just that the extra i_version bumps are terrible for performance
+(particularly with NFS).
+
+If we get a spurious bump just occasionally, then it's not too awful
+(particularly when the file is being written to anyway, and we'll need
+to dump the cache for it). The biggest pain point is i_version being
+updated on all atime updates though.
+--=20
+Jeff Layton <jlayton@kernel.org>
