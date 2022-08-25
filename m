@@ -2,23 +2,23 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E80B25A161C
-	for <lists+linux-ext4@lfdr.de>; Thu, 25 Aug 2022 17:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8155D5A174D
+	for <lists+linux-ext4@lfdr.de>; Thu, 25 Aug 2022 18:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234877AbiHYPss (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 25 Aug 2022 11:48:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45182 "EHLO
+        id S236250AbiHYQ5Y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 25 Aug 2022 12:57:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234511AbiHYPsq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 25 Aug 2022 11:48:46 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C49B69FC
-        for <linux-ext4@vger.kernel.org>; Thu, 25 Aug 2022 08:48:45 -0700 (PDT)
+        with ESMTP id S234911AbiHYQ5W (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 25 Aug 2022 12:57:22 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB28B028A
+        for <linux-ext4@vger.kernel.org>; Thu, 25 Aug 2022 09:57:21 -0700 (PDT)
 Received: from [192.168.1.138] ([37.4.248.80]) by mrelayeu.kundenserver.de
- (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MdNTy-1p0InR20My-00ZNb7; Thu, 25 Aug 2022 17:48:33 +0200
-Message-ID: <596afc6f-4c54-3269-ac84-36bc266cc898@i2se.com>
-Date:   Thu, 25 Aug 2022 17:48:32 +0200
+ (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MrOq7-1pBa8Q24Rj-00oW0M; Thu, 25 Aug 2022 18:57:09 +0200
+Message-ID: <0a01dfee-59bf-7a16-6272-683a886e1299@i2se.com>
+Date:   Thu, 25 Aug 2022 18:57:08 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
@@ -37,23 +37,23 @@ References: <20220823134508.27854-1-jack@suse.cz>
 From:   Stefan Wahren <stefan.wahren@i2se.com>
 In-Reply-To: <20220825091842.fybrfgdzd56xi53i@quack3>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:e57VonK/wigfgHprU+z/kMIDLoBGnbfkE+ZnCkBUqa4zSAaufWi
- tW1ZMUXCqmXpzZhMvj8tmHEEx20HzFoto3xeJy95MDOEIO0iaLInEtMDm4MDJacBr84vywn
- bxQB7Qc/N+v6s+rbpaFR0DYcuTQlbt6RohMD6x50ehxTc+VQ0ymE6tE7vvYbgZscvj8WlRt
- 5Qieob9mSuwT4LcUELgKw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:OjaCrHXfCF4=:PvpLYVCLTH+TqYvEUIhubX
- BejOhVVRUuzZ76b74FiyEKoeZ8wGb1ACqWrHJfcSEd00QgH5DMG6PhDZnK2erhI8kvWFFnTDg
- /HXBI5vpDo5m6KCkD8kQ5eZvFdUWsNIOPm98njdnU5Vu272mDiO1P6q7FIwgYAwnTgb9C3r1O
- JxR2UU071ZfpySImuDIM8gRQRyu4pySUdLiZ7UL2lZSPPt32q61pWIrZN4B6EUXUItitYqFlJ
- udcUoqIpNpeaMluCKlISZ1DvRn3OAyU0WZbEkTPybgNHoxwXjtMASVGoLHL/2rRkoPIfFplLj
- cui037pqbb4MvBQbsPNm8OBedKKVc2CCVeodqfGzR9pSxHGcM8sQwaNerO4QFCl+4HukcU5tq
- 5YVA9jLHiMhBSdqh5tym5eNgUQReMGDrStkRBQzapSXg+m777LD2NWFSxBqyr5uh8gVi9LyaA
- 1AanIQC++ATH9LzOiLQSnlhGepuns729AcwkED9J6wYyPlxFQTdlQiydU9Hz6Dko0b+ZmreOb
- W4Eb2hBp6QrWmx4XlaAODGrYErhM30GX8qAV2EEbI16J9TMdp6ikaOLf+Weqv7UagFQoPh3H+
- j59yqu6VJDaTxOlYLvhcxs+8/nU5pNsw1vyDYm4wIEYFxjoeDkvBOs6qjp+lOH5CGZOE/TIyS
- Ri8bQYXBepfaQoT4Gqa9JOAVBG+HTc0PI4FmVxjv75P9keNHsMV+SjlFh3PV/URlzsbq/yMQI
- EL9Wci2B6T407DJ0zC3pKPDlDRFm2SKiB/wI6KDGt0aq93JYAIQBEwAGItg=
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:FixAXPqKDvSoAQ+eJ0RZbsqImZgHDBbhTuxA5t9qrqkyTCduHBA
+ YU0Mx3fubYVR1LUQ8kVZ2OdVKttOdUJ9hd1Lw9nw4Nt/2qZTrX+LZInxbiCNSzC+DtqIMyc
+ WFab2zmoH7HwD2rP3j6JUm7ODChLw41F7XAaED5zZ8jAH1XJ4FwB0bobUlwAlCQ9sLEL9ys
+ V2xmiX7f/5+EapeEgHxVA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3FTU1Qt1qr8=:Hmal0FvZQuR+PnOtzSJ9//
+ +/K3LZ4Shwc+6KrKXn1Sh5Usm/gujSmek4eX7sWuJ7S0BsmglEubruCsR1AkE3AqNorq92+m5
+ +ovgPB5vxU8tlGah26RkAsM7mt3JhxnuOXt5g1X/noKx3yD8Mf+nKsXMv7RwNuEfcAJCtBMDZ
+ jN57HiZwPasmqb0WmmwsN70HmtfRj6dzMSGQwwH1nWq32j+Zl8PIM272gs6x+tIzc9JofHzIE
+ n56GqO7l07pDLVYswg5ztcXPW9cim+qDPa1sbWPC7Oqd1LWcsv4+0mWdaEqTYO/4nKiNe213v
+ 2fscp4K1VIrPfnukeM8L5NrGQbZrbIxXF7EYcZFlwOIJ3RgmC9iqvIJPWHsWd/vGn3/pK0UaZ
+ LBUaB6QbR1XrtazY75v5dsFtZViFe2z6LtXa1UajrOdLLDzOx8gpn+5Kpx67efRa0Smk5gVYH
+ qWVd7uBePBOpCmSnYWAIBO5XEtvSzQCK/2ShTjK2z67e5/Sg1TInx6p44G7tCAks5ZahSpwMl
+ 4Yzc9th6Ab1+nyP4jvlNRh8hGII5c0FyzrsOrt6uxZ/pl260LFlTwcpwHcOgPLX1S0TP2kJjX
+ R4WRIopG3GwONcwtE059Cl/QzsRVxm5/nzk/z/aOsdAX/gOkPojUQIiv9NU7T3vG47jgoqRA8
+ hwGtUNQWxQdJrxnyB1R9BtZsIv93KmOl/qT5xUKXgqtBp0Gr16tWIQNwQnXfFtTSb3SQvlBAV
+ xS2KHv2Wq7DbHl0eEE/lGSKQS9V8Ttid8mEIMvzUgKLN7UX2jWZ73T3stUk=
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
@@ -137,37 +137,11 @@ Am 25.08.22 um 11:18 schrieb Jan Kara:
 > rpi-update does a lot of other deleting & copying as the part of the
 > update)? Thanks.
 
-I will provide those iostats.
+mb_optimize_scan=0 -> almost 5 minutes
 
-Btw i untar the firmware archive (mb_optimized_scan=1 and your patch) 
-and got following:
+mb_optimize_scan=1 -> almost 18 minutes
 
-cat /proc/fs/ext4/mmcblk1p2/mb_structs_summary
-
-
-optimize_scan: 1
-max_free_order_lists:
-         list_order_0_groups: 5
-         list_order_1_groups: 0
-         list_order_2_groups: 0
-         list_order_3_groups: 0
-         list_order_4_groups: 1
-         list_order_5_groups: 0
-         list_order_6_groups: 1
-         list_order_7_groups: 1
-         list_order_8_groups: 10
-         list_order_9_groups: 1
-         list_order_10_groups: 2
-         list_order_11_groups: 0
-         list_order_12_groups: 2
-         list_order_13_groups: 55
-fragment_size_tree:
-         tree_min: 1
-         tree_max: 31249
-
-         tree_nodes: 79
-
-Is this expected?
+https://github.com/lategoodbye/mb_optimize_scan_regress/commit/3f3fe8f87881687bb654051942923a6b78f16dec
 
 >
 > 								Honza
