@@ -2,214 +2,141 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B67E95A2C0A
-	for <lists+linux-ext4@lfdr.de>; Fri, 26 Aug 2022 18:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C58AF5A2CE1
+	for <lists+linux-ext4@lfdr.de>; Fri, 26 Aug 2022 18:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245401AbiHZQLa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 26 Aug 2022 12:11:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41604 "EHLO
+        id S234340AbiHZQx3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 26 Aug 2022 12:53:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245404AbiHZQL2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 26 Aug 2022 12:11:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E80BFEAA;
-        Fri, 26 Aug 2022 09:11:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9393F61536;
-        Fri, 26 Aug 2022 16:11:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7A72C433C1;
-        Fri, 26 Aug 2022 16:11:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661530286;
-        bh=JSeMen8SetgWyHW9e0jV2DvDLj+pOkxKSayMoGi2e7M=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=JAJyeSeQMsj05NnaiNlJEY8zKuT087qXYlEbXu5tbK4FEH+THb50YRtWyV4EkKMiu
-         4qult11Xx0E/ft/MBdhoUGyH4hTbVTOyazrMgE8MmEwpkzgSFlYBw2H9yXS4Qpvf6X
-         czPkD1sieO4aNyuuKNJP8pFDAoR+fAh7SrGsl4BeFNejDjfu8NgTMhC1Yg0hE03KMz
-         sOwDjsHyWLu+iTgXmzjIQzHjd4VfkHpgtXwj4bxB7G2CDbTauPPVNMTT6/IC77OoNt
-         fXFfFJUPwzLRBoul1ZSss82krmcp7mOKlJ1ZDRVXVnHxvbwlv+0rzPw21RPplleKma
-         6aDvciV4eeNdg==
-Message-ID: <e6c92d29cb399ba8cf3cf8b9a3cb532b1287a649.camel@kernel.org>
-Subject: Re: [PATCH v4 3/3] ext4: unconditionally enable the i_version
- counter
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Lukas Czerner <lczerner@redhat.com>, linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, jack@suse.cz, linux-fsdevel@vger.kernel.org,
-        ebiggers@kernel.org, david@fromorbit.com,
-        Benjamin Coddington <bcodding@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Christian Brauner <brauner@kernel.org>
-Date:   Fri, 26 Aug 2022 12:11:23 -0400
-In-Reply-To: <20220824160349.39664-3-lczerner@redhat.com>
-References: <20220824160349.39664-1-lczerner@redhat.com>
-         <20220824160349.39664-3-lczerner@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
+        with ESMTP id S1344544AbiHZQx1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 26 Aug 2022 12:53:27 -0400
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 947964E848
+        for <linux-ext4@vger.kernel.org>; Fri, 26 Aug 2022 09:53:26 -0700 (PDT)
+Received: by mail-io1-f70.google.com with SMTP id q10-20020a0566022f0a00b00688d703717bso1232388iow.9
+        for <linux-ext4@vger.kernel.org>; Fri, 26 Aug 2022 09:53:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc;
+        bh=O4xE16U1PcNmJvjpOhAN7LuGuI92F91Ca8SLJk21uSE=;
+        b=ZEEv0qyuZsfSv/0YfkOt+tJ/FIw4RgafljCYFKEH5oNVNg8QIodNzPPkwRzz0ewxI4
+         AWm/NS6ysvN/L54m1Jjs44VGKR/3hdK6ZlOlJWpha15YEmCjwgKEGkTxz4ka298zxlTf
+         8SzSuDQ/8FCsrXE4kY3HKzHBbHUpkg198Ey9k2Nf/kvmcciWE9bLSJnXZFbJuhGsCRwD
+         fR0agBhO0FeqVxWDB9lFfqiHfpeyjFnqiNgixuYQ6hCk2Q7wRZYnX8rmz96722JeKHu/
+         2HL9IdyHjGJxOItJ9wVkBvEvLq6IaLvFXeqkPAJu3zC+5WI36TGlM4dTHkEQg00KjZSA
+         FoiA==
+X-Gm-Message-State: ACgBeo3OFbCswxLTmh5dpaI0D20ZmBp4E8CxbHNa/X8CmBP+NLv3mAie
+        wp+pWsu1zibIj7qR1tH4kS7YokJwXefc5Ldgwo7Z5dKF7KBz
+X-Google-Smtp-Source: AA6agR7FLZVFUv6fjm0fltgjZs2aUZj2vnwWLzSsh6q6zjMQGFJlD1zJQcmnGG2dzIdVBHU48SGqk269+nAQkilpTFXQFflmqzYt
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a92:511:0:b0:2ea:9574:c6b8 with SMTP id
+ q17-20020a920511000000b002ea9574c6b8mr2299310ile.31.1661532805948; Fri, 26
+ Aug 2022 09:53:25 -0700 (PDT)
+Date:   Fri, 26 Aug 2022 09:53:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ae6d9205e727c0f5@google.com>
+Subject: [syzbot] WARNING in ext2_fill_super
+From:   syzbot <syzbot+0f2f7e65a3007d39539f@syzkaller.appspotmail.com>
+To:     jack@suse.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 2022-08-24 at 18:03 +0200, Lukas Czerner wrote:
-> From: Jeff Layton <jlayton@kernel.org>
->=20
-> The original i_version implementation was pretty expensive, requiring a
-> log flush on every change. Because of this, it was gated behind a mount
-> option (implemented via the MS_I_VERSION mountoption flag).
->=20
-> Commit ae5e165d855d (fs: new API for handling inode->i_version) made the
-> i_version flag much less expensive, so there is no longer a performance
-> penalty from enabling it. xfs and btrfs already enable it
-> unconditionally when the on-disk format can support it.
->=20
-> Have ext4 ignore the SB_I_VERSION flag, and just enable it
-> unconditionally. While we're in here, remove the handling of
-> Opt_i_version as well, since we're almost to 5.20 anyway.
->=20
-> Ideally, we'd couple this change with a way to disable the i_version
-> counter (just in case), but the way the iversion mount option was
-> implemented makes that difficult to do. We'd need to add a new mount
-> option altogether or do something with tune2fs. That's probably best
-> left to later patches if it turns out to be needed.
->=20
-> [ Removed leftover bits of i_version from ext4_apply_options() since it
-> now can't ever be set in ctx->mask_s_flags -- lczerner ]
->=20
-> Cc: Dave Chinner <david@fromorbit.com>
-> Cc: Benjamin Coddington <bcodding@redhat.com>
-> Cc: Christoph Hellwig <hch@infradead.org>
-> Cc: Darrick J. Wong <djwong@kernel.org>
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
-> Reviewed-by: Christian Brauner (Microsoft) <brauner@kernel.org>
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> ---
-> v3: Removed leftover bits of i_version from ext4_apply_options
-> v4: no change
->=20
->  fs/ext4/inode.c |  5 ++---
->  fs/ext4/super.c | 21 ++++-----------------
->  2 files changed, 6 insertions(+), 20 deletions(-)
->=20
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 2a220be34caa..c77d40f05763 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -5425,7 +5425,7 @@ int ext4_setattr(struct user_namespace *mnt_userns,=
- struct dentry *dentry,
->  			return -EINVAL;
->  		}
-> =20
-> -		if (IS_I_VERSION(inode) && attr->ia_size !=3D inode->i_size)
-> +		if (attr->ia_size !=3D inode->i_size)
->  			inode_inc_iversion(inode);
-> =20
->  		if (shrink) {
-> @@ -5735,8 +5735,7 @@ int ext4_mark_iloc_dirty(handle_t *handle,
->  	 * ea_inodes are using i_version for storing reference count, don't
->  	 * mess with it
->  	 */
-> -	if (IS_I_VERSION(inode) &&
-> -	    !(EXT4_I(inode)->i_flags & EXT4_EA_INODE_FL))
-> +	if (!(EXT4_I(inode)->i_flags & EXT4_EA_INODE_FL))
->  		inode_inc_iversion(inode);
-> =20
->  	/* the do_update_inode consumes one bh->b_count */
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 9a66abcca1a8..1c953f6d400e 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -1585,7 +1585,7 @@ enum {
->  	Opt_inlinecrypt,
->  	Opt_usrjquota, Opt_grpjquota, Opt_quota,
->  	Opt_noquota, Opt_barrier, Opt_nobarrier, Opt_err,
-> -	Opt_usrquota, Opt_grpquota, Opt_prjquota, Opt_i_version,
-> +	Opt_usrquota, Opt_grpquota, Opt_prjquota,
->  	Opt_dax, Opt_dax_always, Opt_dax_inode, Opt_dax_never,
->  	Opt_stripe, Opt_delalloc, Opt_nodelalloc, Opt_warn_on_error,
->  	Opt_nowarn_on_error, Opt_mblk_io_submit, Opt_debug_want_extra_isize,
-> @@ -1694,7 +1694,6 @@ static const struct fs_parameter_spec ext4_param_sp=
-ecs[] =3D {
->  	fsparam_flag	("barrier",		Opt_barrier),
->  	fsparam_u32	("barrier",		Opt_barrier),
->  	fsparam_flag	("nobarrier",		Opt_nobarrier),
-> -	fsparam_flag	("i_version",		Opt_i_version),
->  	fsparam_flag	("dax",			Opt_dax),
->  	fsparam_enum	("dax",			Opt_dax_type, ext4_param_dax),
->  	fsparam_u32	("stripe",		Opt_stripe),
-> @@ -2140,11 +2139,6 @@ static int ext4_parse_param(struct fs_context *fc,=
- struct fs_parameter *param)
->  	case Opt_abort:
->  		ctx_set_mount_flag(ctx, EXT4_MF_FS_ABORTED);
->  		return 0;
-> -	case Opt_i_version:
-> -		ext4_msg(NULL, KERN_WARNING, deprecated_msg, param->key, "5.20");
-> -		ext4_msg(NULL, KERN_WARNING, "Use iversion instead\n");
-> -		ctx_set_flags(ctx, SB_I_VERSION);
-> -		return 0;
->  	case Opt_inlinecrypt:
->  #ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
->  		ctx_set_flags(ctx, SB_INLINECRYPT);
-> @@ -2814,14 +2808,6 @@ static void ext4_apply_options(struct fs_context *=
-fc, struct super_block *sb)
->  	sb->s_flags &=3D ~ctx->mask_s_flags;
->  	sb->s_flags |=3D ctx->vals_s_flags;
-> =20
-> -	/*
-> -	 * i_version differs from common mount option iversion so we have
-> -	 * to let vfs know that it was set, otherwise it would get cleared
-> -	 * on remount
-> -	 */
-> -	if (ctx->mask_s_flags & SB_I_VERSION)
-> -		fc->sb_flags |=3D SB_I_VERSION;
-> -
->  #define APPLY(X) ({ if (ctx->spec & EXT4_SPEC_##X) sbi->X =3D ctx->X; })
->  	APPLY(s_commit_interval);
->  	APPLY(s_stripe);
-> @@ -2970,8 +2956,6 @@ static int _ext4_show_options(struct seq_file *seq,=
- struct super_block *sb,
->  		SEQ_OPTS_PRINT("min_batch_time=3D%u", sbi->s_min_batch_time);
->  	if (nodefs || sbi->s_max_batch_time !=3D EXT4_DEF_MAX_BATCH_TIME)
->  		SEQ_OPTS_PRINT("max_batch_time=3D%u", sbi->s_max_batch_time);
-> -	if (sb->s_flags & SB_I_VERSION)
-> -		SEQ_OPTS_PUTS("i_version");
->  	if (nodefs || sbi->s_stripe)
->  		SEQ_OPTS_PRINT("stripe=3D%lu", sbi->s_stripe);
->  	if (nodefs || EXT4_MOUNT_DATA_FLAGS &
-> @@ -4640,6 +4624,9 @@ static int __ext4_fill_super(struct fs_context *fc,=
- struct super_block *sb)
->  	sb->s_flags =3D (sb->s_flags & ~SB_POSIXACL) |
->  		(test_opt(sb, POSIX_ACL) ? SB_POSIXACL : 0);
-> =20
-> +	/* i_version is always enabled now */
-> +	sb->s_flags |=3D SB_I_VERSION;
-> +
->  	if (le32_to_cpu(es->s_rev_level) =3D=3D EXT4_GOOD_OLD_REV &&
->  	    (ext4_has_compat_features(sb) ||
->  	     ext4_has_ro_compat_features(sb) ||
+Hello,
 
-Hi Lukas,
+syzbot found the following issue on:
 
-I know I had originally asked you to shepherd this patch into mainline,
-but I think it may be better to wait on it for now. Since I asked that,
-we've since found out that ext4 is bumping the i_version counter on
-atime updates. It'd be best to get that fixed before we turn this on
-unconditionally, since it could cause a performance regression in some
-cases. I'll plan to pick this back up for my latest i_version series if
-that sounds ok to you.
+HEAD commit:    680fb5b009e8 Merge tag 'arm64-upstream' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=13afe5e3080000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4557ad2600fc45f4
+dashboard link: https://syzkaller.appspot.com/bug?extid=0f2f7e65a3007d39539f
+compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14ea730d080000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1546af0d080000
 
-Sorry for the back and forth, and thanks again!
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0f2f7e65a3007d39539f@syzkaller.appspotmail.com
 
-Cheers,
---=20
-Jeff Layton <jlayton@kernel.org>
+loop0: detected capacity change from 0 to 15
+Dev loop0: unable to read RDB block 15
+ loop0: unable to read partition table
+loop0: partition table beyond EOD, truncated
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 3025 at mm/page_alloc.c:5403 __alloc_pages+0x150/0x1fc mm/page_alloc.c:5403
+Modules linked in:
+CPU: 0 PID: 3025 Comm: syz-executor332 Not tainted 5.19.0-rc8-syzkaller-01618-g680fb5b009e8 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/20/2022
+pstate: 20400005 (nzCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : __alloc_pages+0x150/0x1fc mm/page_alloc.c:5403
+lr : alloc_pages+0x2fc/0x404
+sp : ffff80000fee3960
+x29: ffff80000fee39a0 x28: 00000000000007c0 x27: ffff0000ca8a0800
+x26: ffff80000ef11938 x25: ffff0000c5470000 x24: ffff80000ee71730
+x23: 0000000000000000 x22: 0000000000000000 x21: 0000000000000000
+x20: 0000000000000000 x19: 000000000000000c x18: 00000000000000c0
+x17: 0000000000000009 x16: 0000000000000000 x15: 0000000000000000
+x14: 0000000000000000 x13: 0000000000000005 x12: ffff80000d468290
+x11: ff808000084ff6a0 x10: 0000000000000000 x9 : 0000000000000001
+x8 : ffff80000d8c1000 x7 : ffff80000856455c x6 : 0000000000000000
+x5 : 0000000000000000 x4 : 0000000000000002 x3 : 0000000000000000
+x2 : 0000000000000000 x1 : 000000000000000c x0 : 0000000000040dc0
+Call trace:
+ __alloc_pages+0x150/0x1fc mm/page_alloc.c:5403
+ alloc_pages+0x2fc/0x404
+ kmalloc_order+0x34/0x104 mm/slab_common.c:945
+ kmalloc_order_trace+0x2c/0x7c mm/slab_common.c:961
+ kmalloc_large include/linux/slab.h:529 [inline]
+ __kmalloc+0x2cc/0x374 mm/slub.c:4435
+ kmalloc_array include/linux/slab.h:640 [inline]
+ kcalloc include/linux/slab.h:671 [inline]
+ ext2_fill_super+0xad0/0xfe0 fs/ext2/super.c:1085
+ mount_bdev+0x1b8/0x210 fs/super.c:1367
+ ext2_mount+0x44/0x58 fs/ext2/super.c:1465
+ legacy_get_tree+0x30/0x74 fs/fs_context.c:610
+ vfs_get_tree+0x40/0x140 fs/super.c:1497
+ do_new_mount+0x1dc/0x4e4 fs/namespace.c:3040
+ path_mount+0x358/0x8b0 fs/namespace.c:3370
+ do_mount fs/namespace.c:3383 [inline]
+ __do_sys_mount fs/namespace.c:3591 [inline]
+ __se_sys_mount fs/namespace.c:3568 [inline]
+ __arm64_sys_mount+0x2f8/0x408 fs/namespace.c:3568
+ __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+ invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
+ el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
+ do_el0_svc+0x48/0x154 arch/arm64/kernel/syscall.c:206
+ el0_svc+0x58/0x14c arch/arm64/kernel/entry-common.c:624
+ el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:642
+ el0t_64_sync+0x18c/0x190
+irq event stamp: 12290
+hardirqs last  enabled at (12289): [<ffff800008438d28>] mod_lruvec_page_state include/linux/vmstat.h:569 [inline]
+hardirqs last  enabled at (12289): [<ffff800008438d28>] kmalloc_order+0xac/0x104 mm/slab_common.c:948
+hardirqs last disabled at (12290): [<ffff80000bfa4314>] el1_dbg+0x24/0x5c arch/arm64/kernel/entry-common.c:395
+softirqs last  enabled at (12146): [<ffff8000080102e4>] _stext+0x2e4/0x37c
+softirqs last disabled at (12129): [<ffff800008101e20>] do_softirq_own_stack include/asm-generic/softirq_stack.h:10 [inline]
+softirqs last disabled at (12129): [<ffff800008101e20>] invoke_softirq+0x70/0xbc kernel/softirq.c:452
+---[ end trace 0000000000000000 ]---
+EXT2-fs (loop0): error: not enough memory
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
