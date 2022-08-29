@@ -2,225 +2,167 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 280F75A44D7
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Aug 2022 10:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3A75A45AF
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Aug 2022 11:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229899AbiH2IR5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 29 Aug 2022 04:17:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42168 "EHLO
+        id S229869AbiH2JEj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 29 Aug 2022 05:04:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229948AbiH2IR4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 29 Aug 2022 04:17:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D3F0564D6
-        for <linux-ext4@vger.kernel.org>; Mon, 29 Aug 2022 01:17:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1661761074;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M8qhh8A7qmGVA2oouepaFv/Ne8S7Z/q3dBHtI7QCqR0=;
-        b=ZjEv3c0zVOU+aPZp0U/zeqkSgRqFVUqgGtIA9Fy2ErNeeSMuQkccG6WJH68mhPoEgqCdAp
-        sXql0/V9qYhHt8m1Sy4Jb05Az8QECEUkiYLffWAWxnsnBhAAvj4tDy5R3hAQ+UlXzi17x4
-        S9CnpGGuVeJWeGkbwW1cojaQU1f9S7g=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-184-2vI_MvfJPbuK3eeAzVUgzQ-1; Mon, 29 Aug 2022 04:17:50 -0400
-X-MC-Unique: 2vI_MvfJPbuK3eeAzVUgzQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S229788AbiH2JEh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 29 Aug 2022 05:04:37 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 376C05A3D0
+        for <linux-ext4@vger.kernel.org>; Mon, 29 Aug 2022 02:04:36 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E8D768039A2;
-        Mon, 29 Aug 2022 08:17:47 +0000 (UTC)
-Received: from fedora (unknown [10.40.192.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3005DC15BBA;
-        Mon, 29 Aug 2022 08:17:46 +0000 (UTC)
-Date:   Mon, 29 Aug 2022 10:17:43 +0200
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu, jack@suse.cz,
-        linux-fsdevel@vger.kernel.org, ebiggers@kernel.org,
-        david@fromorbit.com, Benjamin Coddington <bcodding@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH v4 3/3] ext4: unconditionally enable the i_version counter
-Message-ID: <20220829081743.2w4qi3j5o5m4qygi@fedora>
-References: <20220824160349.39664-1-lczerner@redhat.com>
- <20220824160349.39664-3-lczerner@redhat.com>
- <e6c92d29cb399ba8cf3cf8b9a3cb532b1287a649.camel@kernel.org>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C85A31F9B4;
+        Mon, 29 Aug 2022 09:04:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1661763874; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XZgBZ0UjxV3NhRmoxt3daPk3erKHgHAsqa3xw2RObig=;
+        b=3cOvnbyJwr1k08t6qC3m/rTEpS+ryvdrQYS6+CUOWOoL52Ghc3xzxigbKPDO2JCBSyOjX/
+        RFOeVsZVLWncfqfiKPTgNW4bWM/Mq9Kfg0VbwJJSQMCUN65NByeD9lJsBF5v8Pz4gzDDm1
+        JuzGGkotxFaTPz+kJCDYw41yCCrSamo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1661763874;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XZgBZ0UjxV3NhRmoxt3daPk3erKHgHAsqa3xw2RObig=;
+        b=N/TwuyVliN31haKK5kSehMKsP05UZ899KpstMK324xVhYUVggvcCxcEJJxNP2Ndl4beCdn
+        xjoz0SZrlbW2NlAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A588C1352A;
+        Mon, 29 Aug 2022 09:04:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 8rtdKCKBDGNiHwAAMHmgww
+        (envelope-from <jack@suse.cz>); Mon, 29 Aug 2022 09:04:34 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 0ADDEA066D; Mon, 29 Aug 2022 11:04:34 +0200 (CEST)
+Date:   Mon, 29 Aug 2022 11:04:34 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc:     Jan Kara <jack@suse.cz>, Stefan Wahren <stefan.wahren@i2se.com>,
+        Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: Re: [PATCH 0/2] ext4: Fix performance regression with mballoc
+Message-ID: <20220829090434.sfxv3rrma32apbi2@quack3>
+References: <20220823134508.27854-1-jack@suse.cz>
+ <8e164532-c436-241f-33be-4b41f7f67235@i2se.com>
+ <20220824104010.4qvw46zmf42te53n@quack3>
+ <743489b4-4f9d-3a4d-d87e-e6bf981027c4@i2se.com>
+ <20220825091842.fybrfgdzd56xi53i@quack3>
+ <0a01dfee-59bf-7a16-6272-683a886e1299@i2se.com>
+ <20220826101522.b552tn646qobrjdx@quack3>
+ <Ywor0BFVnLYj2bxH@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e6c92d29cb399ba8cf3cf8b9a3cb532b1287a649.camel@kernel.org>
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <Ywor0BFVnLYj2bxH@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Aug 26, 2022 at 12:11:23PM -0400, Jeff Layton wrote:
-> On Wed, 2022-08-24 at 18:03 +0200, Lukas Czerner wrote:
-> > From: Jeff Layton <jlayton@kernel.org>
+On Sat 27-08-22 20:06:00, Ojaswin Mujoo wrote:
+> On Fri, Aug 26, 2022 at 12:15:22PM +0200, Jan Kara wrote:
+> > Hi Stefan,
 > > 
-> > The original i_version implementation was pretty expensive, requiring a
-> > log flush on every change. Because of this, it was gated behind a mount
-> > option (implemented via the MS_I_VERSION mountoption flag).
+> > On Thu 25-08-22 18:57:08, Stefan Wahren wrote:
+> > > > Perhaps if you just download the archive manually, call sync(1), and measure
+> > > > how long it takes to (untar the archive + sync) in mb_optimize_scan=0/1 we
+> > > > can see whether plain untar is indeed making the difference or there's
+> > > > something else influencing the result as well (I have checked and
+> > > > rpi-update does a lot of other deleting & copying as the part of the
+> > > > update)? Thanks.
+> > > 
+> > > mb_optimize_scan=0 -> almost 5 minutes
+> > > 
+> > > mb_optimize_scan=1 -> almost 18 minutes
+> > > 
+> > > https://github.com/lategoodbye/mb_optimize_scan_regress/commit/3f3fe8f87881687bb654051942923a6b78f16dec
 > > 
-> > Commit ae5e165d855d (fs: new API for handling inode->i_version) made the
-> > i_version flag much less expensive, so there is no longer a performance
-> > penalty from enabling it. xfs and btrfs already enable it
-> > unconditionally when the on-disk format can support it.
+> > Thanks! So now the iostat data indeed looks substantially different.
 > > 
-> > Have ext4 ignore the SB_I_VERSION flag, and just enable it
-> > unconditionally. While we're in here, remove the handling of
-> > Opt_i_version as well, since we're almost to 5.20 anyway.
+> > 			nooptimize	optimize
+> > Total written		183.6 MB	190.5 MB
+> > Time (recorded)		283 s		1040 s
+> > Avg write request size	79 KB		41 KB
 > > 
-> > Ideally, we'd couple this change with a way to disable the i_version
-> > counter (just in case), but the way the iversion mount option was
-> > implemented makes that difficult to do. We'd need to add a new mount
-> > option altogether or do something with tune2fs. That's probably best
-> > left to later patches if it turns out to be needed.
+> > So indeed with mb_optimize_scan=1 we do submit substantially smaller
+> > requests on average. So far I'm not sure why that is. Since Ojaswin can
+> > reproduce as well, let's see what he can see from block location info.
+> > Thanks again for help with debugging this and enjoy your vacation!
 > > 
-> > [ Removed leftover bits of i_version from ext4_apply_options() since it
-> > now can't ever be set in ctx->mask_s_flags -- lczerner ]
-> > 
-> > Cc: Dave Chinner <david@fromorbit.com>
-> > Cc: Benjamin Coddington <bcodding@redhat.com>
-> > Cc: Christoph Hellwig <hch@infradead.org>
-> > Cc: Darrick J. Wong <djwong@kernel.org>
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > Signed-off-by: Lukas Czerner <lczerner@redhat.com>
-> > Reviewed-by: Christian Brauner (Microsoft) <brauner@kernel.org>
-> > Reviewed-by: Jan Kara <jack@suse.cz>
-> > ---
-> > v3: Removed leftover bits of i_version from ext4_apply_options
-> > v4: no change
-> > 
-> >  fs/ext4/inode.c |  5 ++---
-> >  fs/ext4/super.c | 21 ++++-----------------
-> >  2 files changed, 6 insertions(+), 20 deletions(-)
-> > 
-> > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> > index 2a220be34caa..c77d40f05763 100644
-> > --- a/fs/ext4/inode.c
-> > +++ b/fs/ext4/inode.c
-> > @@ -5425,7 +5425,7 @@ int ext4_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
-> >  			return -EINVAL;
-> >  		}
-> >  
-> > -		if (IS_I_VERSION(inode) && attr->ia_size != inode->i_size)
-> > +		if (attr->ia_size != inode->i_size)
-> >  			inode_inc_iversion(inode);
-> >  
-> >  		if (shrink) {
-> > @@ -5735,8 +5735,7 @@ int ext4_mark_iloc_dirty(handle_t *handle,
-> >  	 * ea_inodes are using i_version for storing reference count, don't
-> >  	 * mess with it
-> >  	 */
-> > -	if (IS_I_VERSION(inode) &&
-> > -	    !(EXT4_I(inode)->i_flags & EXT4_EA_INODE_FL))
-> > +	if (!(EXT4_I(inode)->i_flags & EXT4_EA_INODE_FL))
-> >  		inode_inc_iversion(inode);
-> >  
-> >  	/* the do_update_inode consumes one bh->b_count */
-> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> > index 9a66abcca1a8..1c953f6d400e 100644
-> > --- a/fs/ext4/super.c
-> > +++ b/fs/ext4/super.c
-> > @@ -1585,7 +1585,7 @@ enum {
-> >  	Opt_inlinecrypt,
-> >  	Opt_usrjquota, Opt_grpjquota, Opt_quota,
-> >  	Opt_noquota, Opt_barrier, Opt_nobarrier, Opt_err,
-> > -	Opt_usrquota, Opt_grpquota, Opt_prjquota, Opt_i_version,
-> > +	Opt_usrquota, Opt_grpquota, Opt_prjquota,
-> >  	Opt_dax, Opt_dax_always, Opt_dax_inode, Opt_dax_never,
-> >  	Opt_stripe, Opt_delalloc, Opt_nodelalloc, Opt_warn_on_error,
-> >  	Opt_nowarn_on_error, Opt_mblk_io_submit, Opt_debug_want_extra_isize,
-> > @@ -1694,7 +1694,6 @@ static const struct fs_parameter_spec ext4_param_specs[] = {
-> >  	fsparam_flag	("barrier",		Opt_barrier),
-> >  	fsparam_u32	("barrier",		Opt_barrier),
-> >  	fsparam_flag	("nobarrier",		Opt_nobarrier),
-> > -	fsparam_flag	("i_version",		Opt_i_version),
-> >  	fsparam_flag	("dax",			Opt_dax),
-> >  	fsparam_enum	("dax",			Opt_dax_type, ext4_param_dax),
-> >  	fsparam_u32	("stripe",		Opt_stripe),
-> > @@ -2140,11 +2139,6 @@ static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *param)
-> >  	case Opt_abort:
-> >  		ctx_set_mount_flag(ctx, EXT4_MF_FS_ABORTED);
-> >  		return 0;
-> > -	case Opt_i_version:
-> > -		ext4_msg(NULL, KERN_WARNING, deprecated_msg, param->key, "5.20");
-> > -		ext4_msg(NULL, KERN_WARNING, "Use iversion instead\n");
-> > -		ctx_set_flags(ctx, SB_I_VERSION);
-> > -		return 0;
-> >  	case Opt_inlinecrypt:
-> >  #ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
-> >  		ctx_set_flags(ctx, SB_INLINECRYPT);
-> > @@ -2814,14 +2808,6 @@ static void ext4_apply_options(struct fs_context *fc, struct super_block *sb)
-> >  	sb->s_flags &= ~ctx->mask_s_flags;
-> >  	sb->s_flags |= ctx->vals_s_flags;
-> >  
-> > -	/*
-> > -	 * i_version differs from common mount option iversion so we have
-> > -	 * to let vfs know that it was set, otherwise it would get cleared
-> > -	 * on remount
-> > -	 */
-> > -	if (ctx->mask_s_flags & SB_I_VERSION)
-> > -		fc->sb_flags |= SB_I_VERSION;
-> > -
-> >  #define APPLY(X) ({ if (ctx->spec & EXT4_SPEC_##X) sbi->X = ctx->X; })
-> >  	APPLY(s_commit_interval);
-> >  	APPLY(s_stripe);
-> > @@ -2970,8 +2956,6 @@ static int _ext4_show_options(struct seq_file *seq, struct super_block *sb,
-> >  		SEQ_OPTS_PRINT("min_batch_time=%u", sbi->s_min_batch_time);
-> >  	if (nodefs || sbi->s_max_batch_time != EXT4_DEF_MAX_BATCH_TIME)
-> >  		SEQ_OPTS_PRINT("max_batch_time=%u", sbi->s_max_batch_time);
-> > -	if (sb->s_flags & SB_I_VERSION)
-> > -		SEQ_OPTS_PUTS("i_version");
-> >  	if (nodefs || sbi->s_stripe)
-> >  		SEQ_OPTS_PRINT("stripe=%lu", sbi->s_stripe);
-> >  	if (nodefs || EXT4_MOUNT_DATA_FLAGS &
-> > @@ -4640,6 +4624,9 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
-> >  	sb->s_flags = (sb->s_flags & ~SB_POSIXACL) |
-> >  		(test_opt(sb, POSIX_ACL) ? SB_POSIXACL : 0);
-> >  
-> > +	/* i_version is always enabled now */
-> > +	sb->s_flags |= SB_I_VERSION;
-> > +
-> >  	if (le32_to_cpu(es->s_rev_level) == EXT4_GOOD_OLD_REV &&
-> >  	    (ext4_has_compat_features(sb) ||
-> >  	     ext4_has_ro_compat_features(sb) ||
 > 
-> Hi Lukas,
+> Hi Jan and Stefan,
 > 
-> I know I had originally asked you to shepherd this patch into mainline,
-> but I think it may be better to wait on it for now. Since I asked that,
-> we've since found out that ext4 is bumping the i_version counter on
-> atime updates. It'd be best to get that fixed before we turn this on
-> unconditionally, since it could cause a performance regression in some
-> cases. I'll plan to pick this back up for my latest i_version series if
-> that sounds ok to you.
+> Apologies for the delay, I was on leave yesterday and couldn't find time to get to this.
 > 
-> Sorry for the back and forth, and thanks again!
-
-Hi Jeff,
-
-sure, no problem. I can drop the patch. The rest of the series is still
-valid though.
-
-Thanks!
--Lukas
-
+> So I was able to collect the block numbers using the method you suggested. I converted the 
+> blocks numbers to BG numbers and plotted that data to visualze the allocation spread. You can 
+> find them here:
 > 
-> Cheers,
-> -- 
-> Jeff Layton <jlayton@kernel.org>
+> mb-opt=0, patched kernel: https://github.com/OjaswinM/mbopt-bug/blob/master/grpahs/mbopt-0-patched.png
+> mb-opt=1, patched kernel: https://github.com/OjaswinM/mbopt-bug/blob/master/grpahs/mbopt-1-patched.png
+> mb-opt=1, unpatched kernel: https://github.com/OjaswinM/mbopt-bug/blob/master/grpahs/mbopt-1-unpatched.png
 > 
+> Observations:
+> * Before the patched mb_optimize_scan=1 allocations were way more spread out in
+>   40 different BGs.
+> * With the patch, we still allocate in 36 different BGs but majority happen in
+>   just 1 or 2 BGs.
+> * With mb_optimize_scan=0, we only allocate in just 7 unique BGs, which could
+>   explain why this is faster.
 
+Thanks for testing Ojaswin! Based on iostats from Stefan, I'm relatively
+confident the spread between block groups is responsible for the
+performance regression. Iostats show pretty clearly that the write
+throughput is determined by the average write request size which is
+directly related to the number of block groups we allocate from.
+
+Your stats for patched kernel show that there are two block groups which
+get big part of allocations (these are likely the target block groups) but
+then remaining ~1/3 is spread a lot. I'm not yet sure why that is... I
+guess I will fiddle some more with my test VM and try to reproduce these
+allocation differences (on my test server the allocation pattern on patched
+kernel is very similar with mb_optimize_scan=0/1).
+
+> Also, one strange thing I'm seeing is that the perfs don't really show any
+> particular function causing the regression, which is surprising considering
+> mb_optimize_scan=1 almost takes 10 times more time.
+
+Well, the time is not spent by CPU. We spend more time waiting for IO which
+is not visible in perf profiles. You could plot something like offcpu flame
+graphs, there the difference would be visible but I don't expect you'd see
+anything more than just we spend more time in functions waiting for
+writeback to complete.
+
+> Lastly, FWIW I'm not able to replicate the regression when using loop devices
+> and mb_optmize_scan=1 performs similar to mb-opmtimize_scan=0 (without patches
+> as well). Not sure if this is related to the issue or just some side effect of
+> using loop devices.
+
+This is because eMMC devices seem to be very sensitive to IO pattern (and
+write request size). For loop devices, we don't care about request size
+much so that's why mb_optimize_scan makes no big difference. But can you
+still see the difference in the allocation pattern with the loop device?
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
