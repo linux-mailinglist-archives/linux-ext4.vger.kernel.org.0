@@ -2,109 +2,211 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDF7D5A6888
-	for <lists+linux-ext4@lfdr.de>; Tue, 30 Aug 2022 18:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE7C5A692A
+	for <lists+linux-ext4@lfdr.de>; Tue, 30 Aug 2022 19:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbiH3QjQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 30 Aug 2022 12:39:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42590 "EHLO
+        id S230217AbiH3RDQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 30 Aug 2022 13:03:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbiH3QjN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 30 Aug 2022 12:39:13 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34FE9D8E2D
-        for <linux-ext4@vger.kernel.org>; Tue, 30 Aug 2022 09:39:12 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id 69so9512551pgb.13
-        for <linux-ext4@vger.kernel.org>; Tue, 30 Aug 2022 09:39:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc;
-        bh=M2Mp9f5DVJxTpoZI1oYE8MHOlo/U4X+ZxTmE6/qXS28=;
-        b=C2c7iQJMDRXzRJu2vklzu1zX6R7d9/ScH6eqBq4M7g1lEVX/Lfl6QDWOT0+HZ84nnU
-         w10Ds9iNb7xLiUsSlXwCb9TnpjDxATe85QlJ7WGgALbZ/OpifmoTfBsDDmB5KN4nb+BG
-         0e/kwN720QLQdIb8D7EgT3lM8z60UyJB63eLwdqYGoKxhyaI1NRx8A3uLXBejOmnYwyy
-         xUAUxGJp/xQ6lvMca5zI+fgQ0Sx/bg9lx4QRaG7SdyGNVvh2ZLeoLixQf/J2s32dKuL2
-         RmlhNLKZEcAbeMdC2p/7e2yUJkurgV7nauVkJqUtpjS5oPR4OkwU+6Ij1Xv7XOwOI3lJ
-         PGuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc;
-        bh=M2Mp9f5DVJxTpoZI1oYE8MHOlo/U4X+ZxTmE6/qXS28=;
-        b=HMGT3p3gIVNun3LNcfFyWgS4D9Wbx9wBTOyi9YSlXJV0D7exJxWSNlawH8ZHTzFGb/
-         yDIkzgHGukPPGp3JzfTp9HiZwINQFMn0HEwvdz9Zchc79AZzeeH4DHhrtdbA8Bx51/pl
-         XskfF8MixJnQzE1ERE32pu4BHKly759RoScSU20hl4uSnhCFFX4T2nH1hmDZ4Of3o++V
-         7cwrL1eFd+cCq7WiMkMnHB8dP+b5/N6CoyxOqFRD92QGacLWSHc5sBlOZnluhimUheRJ
-         EcnpxQmo95A9QlioqnxoAvQqRyDyfDlXC9+jmOp3QqNGx37b6d2kTiiRmz1JqS7uyYPL
-         7luQ==
-X-Gm-Message-State: ACgBeo286QQkqaWmtOKN3n0FRzR7qZSTckwNHkLs6jG9qG2yO5XNWr4i
-        CCy63h1/7uG6m+ge0D3T3Gcnog==
-X-Google-Smtp-Source: AA6agR53IfXEN9fumeIPX3d8S1mf4AjvuydUxVyJ28R0nBXWbQXmOoHd0FrjDOEHUv5YYNTVrw7F8Q==
-X-Received: by 2002:a63:fa53:0:b0:42c:18d3:6a6 with SMTP id g19-20020a63fa53000000b0042c18d306a6mr8736105pgk.79.1661877551522;
-        Tue, 30 Aug 2022 09:39:11 -0700 (PDT)
-Received: from C02GD5ZHMD6R.bytedance.net ([139.177.225.250])
-        by smtp.gmail.com with ESMTPSA id h6-20020a170902680600b001749381ed8csm6303855plk.254.2022.08.30.09.39.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Aug 2022 09:39:09 -0700 (PDT)
-From:   Jinke Han <hanjinke.666@bytedance.com>
-X-Google-Original-From: Jinke Han <hnajinke.666@bytedance>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        yi.zhang@huawei.com, Jinke Han <hanjinke.666@bytedance.com>
-Subject: [PATCH] ext4: place buffer head allocation before handle start
-Date:   Wed, 31 Aug 2022 00:38:55 +0800
-Message-Id: <20220830163855.87496-1-hanjinke.666@bytedance.com>
-X-Mailer: git-send-email 2.32.0 (Apple Git-132)
+        with ESMTP id S229550AbiH3RDA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 30 Aug 2022 13:03:00 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 860F51094;
+        Tue, 30 Aug 2022 10:02:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id DF960CE18FF;
+        Tue, 30 Aug 2022 17:02:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9D27C433C1;
+        Tue, 30 Aug 2022 17:02:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661878974;
+        bh=A1/OrWAmF4tVj/1o13SDFHfQO6YqKZ788Ss2rMX0LCM=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Q4+ycBFZEzObq72/7BDzPaQ4ZxVKPUWf5eZOubnxrdoYDlfyeI2+kEETrRXdY++W6
+         YkdLAHIrCmWfn25iSx2vJHS+HJUFiQu46mhPxvOjOz+VHKst5lWmfYr0QuKaAzZ8Id
+         Q+c+HFdoODsRrVdDcWVJuUq+Tmbei9JQgHiMnWm2zxLJtwQxOCHe06vs5W2YobbGuO
+         ZqzSu6vqB4cYWPaXWlifJbDQkwGjKuGoPcxrnfPUAO2HBZSLWGSucdsNo1YZhKq3zM
+         KPlwZHAJxcWHarG/dn2DQhlhOVNbJ6BkwrE18OmaYEj/dz3ftG/o2iUlssS1Ke7sRp
+         D4M90SisHpVWw==
+Message-ID: <4adb2abd1890b147dbc61a06413f35d2f147c43a.camel@kernel.org>
+Subject: Re: [PATCH v3 1/7] iversion: update comments with info about atime
+ updates
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Trond Myklebust <trondmy@hammerspace.com>,
+        "bfields@fieldses.org" <bfields@fieldses.org>
+Cc:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "djwong@kernel.org" <djwong@kernel.org>,
+        "xiubli@redhat.com" <xiubli@redhat.com>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "neilb@suse.de" <neilb@suse.de>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
+        "linux-ceph@vger.kernel.org" <linux-ceph@vger.kernel.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "tytso@mit.edu" <tytso@mit.edu>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "jack@suse.cz" <jack@suse.cz>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "lczerner@redhat.com" <lczerner@redhat.com>,
+        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
+        "walters@verbum.org" <walters@verbum.org>
+Date:   Tue, 30 Aug 2022 13:02:50 -0400
+In-Reply-To: <3e8c7af5d39870c5b0dc61736a79bd134be5a9b3.camel@hammerspace.com>
+References: <20220826214703.134870-1-jlayton@kernel.org>
+         <20220826214703.134870-2-jlayton@kernel.org>
+         <20220829075651.GS3600936@dread.disaster.area>
+         <549776abfaddcc936c6de7800b6d8249d97d9f28.camel@kernel.org>
+         <166181389550.27490.8200873228292034867@noble.neil.brown.name>
+         <f5c42c0d87dfa45188c2109ccf9baeb7a42aa27e.camel@kernel.org>
+         <20220830132443.GA26330@fieldses.org>
+         <a07686e7e1d1ef15720194be2abe5681f6a6c78e.camel@kernel.org>
+         <20220830144430.GD26330@fieldses.org>
+         <e4815337177c74a9928098940dfdcb371017a40c.camel@hammerspace.com>
+         <20220830151715.GE26330@fieldses.org>
+         <3e8c7af5d39870c5b0dc61736a79bd134be5a9b3.camel@hammerspace.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Jinke Han <hanjinke.666@bytedance.com>
+On Tue, 2022-08-30 at 15:43 +0000, Trond Myklebust wrote:
+> On Tue, 2022-08-30 at 11:17 -0400, J. Bruce Fields wrote:
+> > On Tue, Aug 30, 2022 at 02:58:27PM +0000, Trond Myklebust wrote:
+> > > On Tue, 2022-08-30 at 10:44 -0400, J. Bruce Fields wrote:
+> > > > On Tue, Aug 30, 2022 at 09:50:02AM -0400, Jeff Layton wrote:
+> > > > > On Tue, 2022-08-30 at 09:24 -0400, J. Bruce Fields wrote:
+> > > > > > On Tue, Aug 30, 2022 at 07:40:02AM -0400, Jeff Layton wrote:
+> > > > > > > Yes, saying only that it must be different is intentional.
+> > > > > > > What
+> > > > > > > we
+> > > > > > > really want is for consumers to treat this as an opaque
+> > > > > > > value
+> > > > > > > for the
+> > > > > > > most part [1]. Therefore an implementation based on hashing
+> > > > > > > would
+> > > > > > > conform to the spec, I'd think, as long as all of the
+> > > > > > > relevant
+> > > > > > > info is
+> > > > > > > part of the hash.
+> > > > > >=20
+> > > > > > It'd conform, but it might not be as useful as an increasing
+> > > > > > value.
+> > > > > >=20
+> > > > > > E.g. a client can use that to work out which of a series of
+> > > > > > reordered
+> > > > > > write replies is the most recent, and I seem to recall that
+> > > > > > can
+> > > > > > prevent
+> > > > > > unnecessary invalidations in some cases.
+> > > > > >=20
+> > > > >=20
+> > > > > That's a good point; the linux client does this. That said,
+> > > > > NFSv4
+> > > > > has a
+> > > > > way for the server to advertise its change attribute behavior
+> > > > > [1]
+> > > > > (though nfsd hasn't implemented this yet).
+> > > >=20
+> > > > It was implemented and reverted.=A0 The issue was that I thought
+> > > > nfsd
+> > > > should mix in the ctime to prevent the change attribute going
+> > > > backwards
+> > > > on reboot (see fs/nfsd/nfsfh.h:nfsd4_change_attribute()), but
+> > > > Trond
+> > > > was
+> > > > concerned about the possibility of time going backwards.=A0 See
+> > > > 1631087ba872 "Revert "nfsd4: support change_attr_type
+> > > > attribute"".
+> > > > There's some mailing list discussion to that I'm not turning up
+> > > > right
+> > > > now.
+> >=20
+> > https://lore.kernel.org/linux-nfs/a6294c25cb5eb98193f609a52aa8f4b5d4e81=
+279.camel@hammerspace.com/
+> > is what I was thinking of but it isn't actually that interesting.
+> >=20
+> > > My main concern was that some filesystems (e.g. ext3) were failing
+> > > to
+> > > provide sufficient timestamp resolution to actually label the
+> > > resulting
+> > > 'change attribute' as being updated monotonically. If the time
+> > > stamp
+> > > doesn't change when the file data or metadata are changed, then the
+> > > client has to perform extra checks to try to figure out whether or
+> > > not
+> > > its caches are up to date.
+> >=20
+> > That's a different issue from the one you were raising in that
+> > discussion.
+> >=20
+> > > > Did NFSv4 add change_attr_type because some implementations
+> > > > needed
+> > > > the
+> > > > unordered case, or because they realized ordering was useful but
+> > > > wanted
+> > > > to keep backwards compatibility?=A0 I don't know which it was.
+> > >=20
+> > > We implemented it because, as implied above, knowledge of whether
+> > > or
+> > > not the change attribute behaves monotonically, or strictly
+> > > monotonically, enables a number of optimisations.
+> >=20
+> > Of course, but my question was about the value of the old behavior,
+> > not
+> > about the value of the monotonic behavior.
+> >=20
+> > Put differently, if we could redesign the protocol from scratch would
+> > we
+> > actually have included the option of non-monotonic behavior?
+> >=20
+>=20
+> If we could design the filesystems from scratch, we probably would not.
+> The protocol ended up being as it is because people were trying to make
+> it as easy to implement as possible.
+>=20
+> So if we could design the filesystem from scratch, we would have
+> probably designed it along the lines of what AFS does.
+> i.e. each explicit change is accompanied by a single bump of the change
+> attribute, so that the clients can not only decide the order of the
+> resulting changes, but also if they have missed a change (that might
+> have been made by a different client).
+>=20
+> However that would be a requirement that is likely to be very specific
+> to distributed caches (and hence distributed filesystems). I doubt
+> there are many user space applications that would need that high
+> precision. Maybe MPI, but that's the only candidate I can think of for
+> now?
+>=20
 
-On our online environment, we encounter some jbd hung waiting handles to
-stop while several writters were doing memory reclaim for buffer head
-allocation in delay alloc write path. Ext4 do buffer head allocation with
-holding transaction handle which may be blocked too long if the reclaim
-works not so smooth. This is more likely to happen considering docker
-environment.
+The fact that NFS kept this more loosely-defined is what allowed us to
+elide some of the i_version bumps and regain a fair bit of performance
+for local filesystems [1]. If the change attribute had been more
+strictly defined like you mention, then that particular optimization
+would not have been possible.
 
-Just like page cache allocation, we should also place the buffer head
-allocation before startting the handle.
+This sort of thing is why I'm a fan of not defining this any more
+strictly than we require. Later on, maybe we'll come up with a way for
+filesystems to advertise that they can offer stronger guarantees.
+--=20
+Jeff Layton <jlayton@kernel.org>
 
-After commit:cc883236b792, no nore need to do for delay alloc path, just
-do it for no delay alloc code.
-
-Signed-off-by: Jinke Han <hanjinke.666@bytedance.com>
----
- fs/ext4/inode.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 601214453c3a..0d6c4ec7c840 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -1188,6 +1188,13 @@ static int ext4_write_begin(struct file *file, struct address_space *mapping,
- 	page = grab_cache_page_write_begin(mapping, index);
- 	if (!page)
- 		return -ENOMEM;
-+	/*
-+	 * The same as page allocation, we prealloc buffer heads before
-+	 * starting the handle.
-+	 */
-+	if (!page_has_buffers(page))
-+		create_empty_buffers(page, inode->i_sb->s_blocksize, 0);
-+
- 	unlock_page(page);
- 
- retry_journal:
--- 
-2.20.1
-
+[1]:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?=
+id=3Df02a9ad1f15d
