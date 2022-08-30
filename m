@@ -2,33 +2,33 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DD25A627C
+	by mail.lfdr.de (Postfix) with ESMTP id 41E235A627B
 	for <lists+linux-ext4@lfdr.de>; Tue, 30 Aug 2022 13:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbiH3LxR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 30 Aug 2022 07:53:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51086 "EHLO
+        id S229547AbiH3LxQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 30 Aug 2022 07:53:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229734AbiH3LxJ (ORCPT
+        with ESMTP id S229508AbiH3LxJ (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Tue, 30 Aug 2022 07:53:09 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C15A2A95
-        for <linux-ext4@vger.kernel.org>; Tue, 30 Aug 2022 04:53:05 -0700 (PDT)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FB80A3D2F
+        for <linux-ext4@vger.kernel.org>; Tue, 30 Aug 2022 04:53:06 -0700 (PDT)
 Received: from canpemm500004.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MH5DT0YH2zYcqv;
-        Tue, 30 Aug 2022 19:48:41 +0800 (CST)
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MH5Gl067DznTs5;
+        Tue, 30 Aug 2022 19:50:39 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by canpemm500004.china.huawei.com
  (7.192.104.92) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Tue, 30 Aug
- 2022 19:53:03 +0800
+ 2022 19:53:04 +0800
 From:   Jason Yan <yanaijie@huawei.com>
 To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
         <ritesh.list@gmail.com>, <lczerner@redhat.com>,
         <linux-ext4@vger.kernel.org>
 CC:     Jason Yan <yanaijie@huawei.com>
-Subject: [PATCH 07/13] ext4: factor out ext4_encoding_init()
-Date:   Tue, 30 Aug 2022 20:04:05 +0800
-Message-ID: <20220830120411.2371968-8-yanaijie@huawei.com>
+Subject: [PATCH 08/13] ext4: factor out ext4_handle_csum()
+Date:   Tue, 30 Aug 2022 20:04:06 +0800
+Message-ID: <20220830120411.2371968-9-yanaijie@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220830120411.2371968-1-yanaijie@huawei.com>
 References: <20220830120411.2371968-1-yanaijie@huawei.com>
@@ -48,111 +48,115 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Factor out ext4_encoding_init(). No functional change.
+Factor out ext4_handle_csum(). No functional change.
 
 Signed-off-by: Jason Yan <yanaijie@huawei.com>
 ---
- fs/ext4/super.c | 80 +++++++++++++++++++++++++++----------------------
- 1 file changed, 44 insertions(+), 36 deletions(-)
+ fs/ext4/super.c | 83 +++++++++++++++++++++++++++----------------------
+ 1 file changed, 46 insertions(+), 37 deletions(-)
 
 diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 458d146149b2..9ee27472b802 100644
+index 9ee27472b802..96cf23787bba 100644
 --- a/fs/ext4/super.c
 +++ b/fs/ext4/super.c
-@@ -4521,6 +4521,48 @@ static int ext4_inode_info_init(struct super_block *sb,
+@@ -4563,6 +4563,50 @@ static int ext4_encoding_init(struct super_block *sb, struct ext4_super_block *e
  	return 0;
  }
  
-+static int ext4_encoding_init(struct super_block *sb, struct ext4_super_block *es)
++static int ext4_handle_csum(struct super_block *sb, struct ext4_super_block *es)
 +{
-+#if IS_ENABLED(CONFIG_UNICODE)
-+	const struct ext4_sb_encodings *encoding_info;
-+	struct unicode_map *encoding;
-+	__u16 encoding_flags = le16_to_cpu(es->s_encoding_flags);
++	struct ext4_sb_info *sbi = EXT4_SB(sb);
 +
-+	if (!ext4_has_feature_casefold(sb) || sb->s_encoding)
-+		return 0;
++	/* Warn if metadata_csum and gdt_csum are both set. */
++	if (ext4_has_feature_metadata_csum(sb) &&
++	    ext4_has_feature_gdt_csum(sb))
++		ext4_warning(sb, "metadata_csum and uninit_bg are "
++			     "redundant flags; please run fsck.");
 +
-+	encoding_info = ext4_sb_read_encoding(es);
-+	if (!encoding_info) {
-+		ext4_msg(sb, KERN_ERR,
-+			"Encoding requested by superblock is unknown");
++	/* Check for a known checksum algorithm */
++	if (!ext4_verify_csum_type(sb, es)) {
++		ext4_msg(sb, KERN_ERR, "VFS: Found ext4 filesystem with "
++			 "unknown checksum algorithm.");
 +		return -EINVAL;
 +	}
++	ext4_setup_csum_trigger(sb, EXT4_JTR_ORPHAN_FILE,
++				ext4_orphan_file_block_trigger);
 +
-+	encoding = utf8_load(encoding_info->version);
-+	if (IS_ERR(encoding)) {
-+		ext4_msg(sb, KERN_ERR,
-+			"can't mount with superblock charset: %s-%u.%u.%u "
-+			"not supported by the kernel. flags: 0x%x.",
-+			encoding_info->name,
-+			unicode_major(encoding_info->version),
-+			unicode_minor(encoding_info->version),
-+			unicode_rev(encoding_info->version),
-+			encoding_flags);
-+		return -EINVAL;
++	/* Load the checksum driver */
++	sbi->s_chksum_driver = crypto_alloc_shash("crc32c", 0, 0);
++	if (IS_ERR(sbi->s_chksum_driver)) {
++		int ret = PTR_ERR(sbi->s_chksum_driver);
++		ext4_msg(sb, KERN_ERR, "Cannot load crc32c driver.");
++		sbi->s_chksum_driver = NULL;
++		return ret;
 +	}
-+	ext4_msg(sb, KERN_INFO,"Using encoding defined by superblock: "
-+		"%s-%u.%u.%u with flags 0x%hx", encoding_info->name,
-+		unicode_major(encoding_info->version),
-+		unicode_minor(encoding_info->version),
-+		unicode_rev(encoding_info->version),
-+		encoding_flags);
 +
-+	sb->s_encoding = encoding;
-+	sb->s_encoding_flags = encoding_flags;
-+#endif
++	/* Check superblock checksum */
++	if (!ext4_superblock_csum_verify(sb, es)) {
++		ext4_msg(sb, KERN_ERR, "VFS: Found ext4 filesystem with "
++			 "invalid superblock checksum.  Run e2fsck?");
++		return -EFSBADCRC;
++	}
++
++	/* Precompute checksum seed for all metadata */
++	if (ext4_has_feature_csum_seed(sb))
++		sbi->s_csum_seed = le32_to_cpu(es->s_checksum_seed);
++	else if (ext4_has_metadata_csum(sb) || ext4_has_feature_ea_inode(sb))
++		sbi->s_csum_seed = ext4_chksum(sbi, ~0, es->s_uuid,
++					       sizeof(es->s_uuid));
 +	return 0;
 +}
 +
  static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
  {
  	struct buffer_head *bh, **group_desc;
-@@ -4678,42 +4720,8 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+@@ -4632,44 +4676,9 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
  
- 	ext4_apply_options(fc, sb);
+ 	sbi->s_kbytes_written = le64_to_cpu(es->s_kbytes_written);
  
--#if IS_ENABLED(CONFIG_UNICODE)
--	if (ext4_has_feature_casefold(sb) && !sb->s_encoding) {
--		const struct ext4_sb_encodings *encoding_info;
--		struct unicode_map *encoding;
--		__u16 encoding_flags = le16_to_cpu(es->s_encoding_flags);
+-	/* Warn if metadata_csum and gdt_csum are both set. */
+-	if (ext4_has_feature_metadata_csum(sb) &&
+-	    ext4_has_feature_gdt_csum(sb))
+-		ext4_warning(sb, "metadata_csum and uninit_bg are "
+-			     "redundant flags; please run fsck.");
 -
--		encoding_info = ext4_sb_read_encoding(es);
--		if (!encoding_info) {
--			ext4_msg(sb, KERN_ERR,
--				 "Encoding requested by superblock is unknown");
--			goto failed_mount;
--		}
--
--		encoding = utf8_load(encoding_info->version);
--		if (IS_ERR(encoding)) {
--			ext4_msg(sb, KERN_ERR,
--				 "can't mount with superblock charset: %s-%u.%u.%u "
--				 "not supported by the kernel. flags: 0x%x.",
--				 encoding_info->name,
--				 unicode_major(encoding_info->version),
--				 unicode_minor(encoding_info->version),
--				 unicode_rev(encoding_info->version),
--				 encoding_flags);
--			goto failed_mount;
--		}
--		ext4_msg(sb, KERN_INFO,"Using encoding defined by superblock: "
--			 "%s-%u.%u.%u with flags 0x%hx", encoding_info->name,
--			 unicode_major(encoding_info->version),
--			 unicode_minor(encoding_info->version),
--			 unicode_rev(encoding_info->version),
--			 encoding_flags);
--
--		sb->s_encoding = encoding;
--		sb->s_encoding_flags = encoding_flags;
+-	/* Check for a known checksum algorithm */
+-	if (!ext4_verify_csum_type(sb, es)) {
+-		ext4_msg(sb, KERN_ERR, "VFS: Found ext4 filesystem with "
+-			 "unknown checksum algorithm.");
+-		goto failed_mount;
 -	}
--#endif
-+	if (ext4_encoding_init(sb, es))
-+		goto failed_mount;
+-	ext4_setup_csum_trigger(sb, EXT4_JTR_ORPHAN_FILE,
+-				ext4_orphan_file_block_trigger);
+-
+-	/* Load the checksum driver */
+-	sbi->s_chksum_driver = crypto_alloc_shash("crc32c", 0, 0);
+-	if (IS_ERR(sbi->s_chksum_driver)) {
+-		ext4_msg(sb, KERN_ERR, "Cannot load crc32c driver.");
+-		ret = PTR_ERR(sbi->s_chksum_driver);
+-		sbi->s_chksum_driver = NULL;
+-		goto failed_mount;
+-	}
+-
+-	/* Check superblock checksum */
+-	if (!ext4_superblock_csum_verify(sb, es)) {
+-		ext4_msg(sb, KERN_ERR, "VFS: Found ext4 filesystem with "
+-			 "invalid superblock checksum.  Run e2fsck?");
+-		ret = -EFSBADCRC;
++	err = ext4_handle_csum(sb, es);
++	if (err)
+ 		goto failed_mount;
+-	}
+-
+-	/* Precompute checksum seed for all metadata */
+-	if (ext4_has_feature_csum_seed(sb))
+-		sbi->s_csum_seed = le32_to_cpu(es->s_checksum_seed);
+-	else if (ext4_has_metadata_csum(sb) || ext4_has_feature_ea_inode(sb))
+-		sbi->s_csum_seed = ext4_chksum(sbi, ~0, es->s_uuid,
+-					       sizeof(es->s_uuid));
  
- 	if (test_opt(sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA) {
- 		printk_once(KERN_WARNING "EXT4-fs: Warning: mounting with data=journal disables delayed allocation, dioread_nolock, O_DIRECT and fast_commit support!\n");
+ 	ext4_set_def_opts(sb, es);
+ 
 -- 
 2.31.1
 
