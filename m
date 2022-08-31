@@ -2,172 +2,131 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 311AD5A7CE5
-	for <lists+linux-ext4@lfdr.de>; Wed, 31 Aug 2022 14:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E76EB5A7E54
+	for <lists+linux-ext4@lfdr.de>; Wed, 31 Aug 2022 15:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbiHaMG7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 31 Aug 2022 08:06:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43326 "EHLO
+        id S231697AbiHaNLr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 31 Aug 2022 09:11:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229927AbiHaMG6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 31 Aug 2022 08:06:58 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B879D2B3C
-        for <linux-ext4@vger.kernel.org>; Wed, 31 Aug 2022 05:06:54 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D0F421F9EA;
-        Wed, 31 Aug 2022 12:06:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1661947612; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sb0H8DxMXD7MyPLypHxfJKEFscJpyzPksQ7Qn9V+6bc=;
-        b=KtTVwfRf4/f+5k7Rk/VA18I7c4rLc5oXTlgRhTX/DMUwimUd/+QRH08KQ655fU2zIjE4AK
-        ONVJLbgYeVk5j+ypXM9f0X5xef/QhmCNI2o3u/quSe/emTxsKmXpMK82kLWHDEQAPraO05
-        v2taifH209mqVJk3p86ZMvroc0FkFPQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1661947612;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sb0H8DxMXD7MyPLypHxfJKEFscJpyzPksQ7Qn9V+6bc=;
-        b=3NUbIRDmdzAxf0GBef9zpMe9pyBCnEhaPfKsSkvmSKRAz3ux5ibH1pdxS3fhW5vjzCqU0u
-        bvHtHR24D/HCzSCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BE4221332D;
-        Wed, 31 Aug 2022 12:06:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id u21jLtxOD2MREQAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 31 Aug 2022 12:06:52 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 52172A067B; Wed, 31 Aug 2022 14:06:52 +0200 (CEST)
-Date:   Wed, 31 Aug 2022 14:06:52 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-        ritesh.list@gmail.com, lczerner@redhat.com,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 13/13] ext4: factor out ext4_journal_data_check()
-Message-ID: <20220831120652.rovamxbtt4ibutar@quack3>
-References: <20220830120411.2371968-1-yanaijie@huawei.com>
- <20220830120411.2371968-14-yanaijie@huawei.com>
+        with ESMTP id S229862AbiHaNLp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 31 Aug 2022 09:11:45 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4043DC1670;
+        Wed, 31 Aug 2022 06:11:41 -0700 (PDT)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MHkzg3p9pzHnY6;
+        Wed, 31 Aug 2022 21:09:51 +0800 (CST)
+Received: from [10.174.178.134] (10.174.178.134) by
+ canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Wed, 31 Aug 2022 21:11:38 +0800
+Subject: Re: [PATCH 02/14] fs/buffer: add some new buffer read helpers
+To:     Jan Kara <jack@suse.cz>
+CC:     <linux-ext4@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <cluster-devel@redhat.com>,
+        <ntfs3@lists.linux.dev>, <ocfs2-devel@oss.oracle.com>,
+        <reiserfs-devel@vger.kernel.org>, <tytso@mit.edu>,
+        <akpm@linux-foundation.org>, <axboe@kernel.dk>,
+        <viro@zeniv.linux.org.uk>, <rpeterso@redhat.com>,
+        <agruenba@redhat.com>, <almaz.alexandrovich@paragon-software.com>,
+        <mark@fasheh.com>, <dushistov@mail.ru>, <hch@infradead.org>,
+        <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
+References: <20220831072111.3569680-1-yi.zhang@huawei.com>
+ <20220831072111.3569680-3-yi.zhang@huawei.com>
+ <20220831113029.fsywbjzk4qw24qdc@quack3>
+From:   Zhang Yi <yi.zhang@huawei.com>
+Message-ID: <df2738e4-493f-0dfd-95c4-b5f763561c63@huawei.com>
+Date:   Wed, 31 Aug 2022 21:11:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220830120411.2371968-14-yanaijie@huawei.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20220831113029.fsywbjzk4qw24qdc@quack3>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.134]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500005.china.huawei.com (7.192.104.229)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 30-08-22 20:04:11, Jason Yan wrote:
-> Factor out ext4_journal_data_check(). No functional change.
+Thanks for the review and suggestions.
+
+On 2022/8/31 19:30, Jan Kara wrote:
+> On Wed 31-08-22 15:20:59, Zhang Yi wrote:
+>> Current ll_rw_block() helper is fragile because it assumes that locked
+>> buffer means it's under IO which is submitted by some other who hold
+>> the lock, it skip buffer if it failed to get the lock, so it's only
+>> safe on the readahead path. Unfortunately, now that most filesystems
+>> still use this helper mistakenly on the sync metadata read path. There
+>> is no guarantee that the one who hold the buffer lock always submit IO
+>> (e.g. buffer_migrate_folio_norefs() after commit 88dbcbb3a484 ("blkdev:
+>> avoid migration stalls for blkdev pages"), it could lead to false
+>> positive -EIO when submitting reading IO.
+>>
+>> This patch add some friendly buffer read helpers to prepare replace
+>> ll_rw_block() and similar calls. We can only call bh_readahead_[]
+>> helpers for the readahead paths.
+>>
+>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 > 
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
-> ---
->  fs/ext4/super.c | 60 ++++++++++++++++++++++++++++---------------------
->  1 file changed, 35 insertions(+), 25 deletions(-)
+> This looks mostly good. Just a few small nits below.
 > 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 95e70f0316db..c070d4f5ecc4 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -4910,6 +4910,39 @@ static int ext4_load_and_init_journal(struct super_block *sb,
->  	return err;
->  }
->  
-> +static int ext4_journal_data_check(struct super_block *sb)
-
-Perhaps name this ext4_journal_data_mode_check()? Otherwise feel free to
-add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> +{
-> +	if (test_opt(sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA) {
-> +		printk_once(KERN_WARNING "EXT4-fs: Warning: mounting with "
-> +			    "data=journal disables delayed allocation, "
-> +			    "dioread_nolock, O_DIRECT and fast_commit support!\n");
-> +		/* can't mount with both data=journal and dioread_nolock. */
-> +		clear_opt(sb, DIOREAD_NOLOCK);
-> +		clear_opt2(sb, JOURNAL_FAST_COMMIT);
-> +		if (test_opt2(sb, EXPLICIT_DELALLOC)) {
-> +			ext4_msg(sb, KERN_ERR, "can't mount with "
-> +				 "both data=journal and delalloc");
-> +			return -EINVAL;
-> +		}
-> +		if (test_opt(sb, DAX_ALWAYS)) {
-> +			ext4_msg(sb, KERN_ERR, "can't mount with "
-> +				 "both data=journal and dax");
-> +			return -EINVAL;
-> +		}
-> +		if (ext4_has_feature_encrypt(sb)) {
-> +			ext4_msg(sb, KERN_WARNING,
-> +				 "encrypted files will use data=ordered "
-> +				 "instead of data journaling mode");
-> +		}
-> +		if (test_opt(sb, DELALLOC))
-> +			clear_opt(sb, DELALLOC);
-> +	} else {
-> +		sb->s_iflags |= SB_I_CGROUPWB;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
->  {
->  	struct buffer_head *bh;
-> @@ -5033,31 +5066,8 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
->  	if (ext4_encoding_init(sb, es))
->  		goto failed_mount;
->  
-> -	if (test_opt(sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA) {
-> -		printk_once(KERN_WARNING "EXT4-fs: Warning: mounting with data=journal disables delayed allocation, dioread_nolock, O_DIRECT and fast_commit support!\n");
-> -		/* can't mount with both data=journal and dioread_nolock. */
-> -		clear_opt(sb, DIOREAD_NOLOCK);
-> -		clear_opt2(sb, JOURNAL_FAST_COMMIT);
-> -		if (test_opt2(sb, EXPLICIT_DELALLOC)) {
-> -			ext4_msg(sb, KERN_ERR, "can't mount with "
-> -				 "both data=journal and delalloc");
-> -			goto failed_mount;
-> -		}
-> -		if (test_opt(sb, DAX_ALWAYS)) {
-> -			ext4_msg(sb, KERN_ERR, "can't mount with "
-> -				 "both data=journal and dax");
-> -			goto failed_mount;
-> -		}
-> -		if (ext4_has_feature_encrypt(sb)) {
-> -			ext4_msg(sb, KERN_WARNING,
-> -				 "encrypted files will use data=ordered "
-> -				 "instead of data journaling mode");
-> -		}
-> -		if (test_opt(sb, DELALLOC))
-> -			clear_opt(sb, DELALLOC);
-> -	} else {
-> -		sb->s_iflags |= SB_I_CGROUPWB;
-> -	}
-> +	if (ext4_journal_data_check(sb))
-> +		goto failed_mount;
->  
->  	sb->s_flags = (sb->s_flags & ~SB_POSIXACL) |
->  		(test_opt(sb, POSIX_ACL) ? SB_POSIXACL : 0);
-> -- 
-> 2.31.1
+[..]
+>> diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
+>> index c3863c417b00..8a01c07c0418 100644
+>> --- a/include/linux/buffer_head.h
+>> +++ b/include/linux/buffer_head.h
+[..]
+>> +static inline void bh_read_nowait(struct buffer_head *bh, blk_opf_t op_flags)
+>> +{
+>> +	lock_buffer(bh);
+>> +	__bh_read(bh, op_flags, false);
+>> +}
+>> +
+>> +static inline int bh_read(struct buffer_head *bh, blk_opf_t op_flags)
+>> +{
+>> +	lock_buffer(bh);
+>> +	return __bh_read(bh, op_flags, true);
+>> +}
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> I would use bh_uptodate_or_lock() helper in the above two functions to
+> avoid locking the buffer in case it is already uptodate.
+> 
+Yes, it's a good point, it seems we could also remove "if (!buffer_uptodate(bh))"
+before above two helpers in the latter patches, like in fs/jbd2/journal.c.
+
+@@ -1893,15 +1893,14 @@ static int journal_get_superblock(journal_t *journal)
+ {
+ 	struct buffer_head *bh;
+ 	journal_superblock_t *sb;
+-	int err = -EIO;
++	int err;
+
+ 	bh = journal->j_sb_buffer;
+
+ 	J_ASSERT(bh != NULL);
+- 	if (!buffer_uptodate(bh)) {
+-		ll_rw_block(REQ_OP_READ, 1, &bh);
+-		wait_on_buffer(bh);
+-		if (!buffer_uptodate(bh)) {
++	err = bh_read(bh, 0);
++	if (err) {
+-			printk(KERN_ERR
+-				"JBD2: IO error reading journal superblock\n");
+-			goto out;
++		printk(KERN_ERR
++			"JBD2: IO error reading journal superblock\n");
++		goto out;
+...
+
+Thanks,
+Yi.
