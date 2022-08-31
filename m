@@ -2,66 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2360D5A7B62
-	for <lists+linux-ext4@lfdr.de>; Wed, 31 Aug 2022 12:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2632C5A7B6A
+	for <lists+linux-ext4@lfdr.de>; Wed, 31 Aug 2022 12:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229512AbiHaKgR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 31 Aug 2022 06:36:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52534 "EHLO
+        id S229518AbiHaKhd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 31 Aug 2022 06:37:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbiHaKgP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 31 Aug 2022 06:36:15 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D53CA98EA
-        for <linux-ext4@vger.kernel.org>; Wed, 31 Aug 2022 03:36:12 -0700 (PDT)
+        with ESMTP id S229658AbiHaKhc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 31 Aug 2022 06:37:32 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A28ECBFC77;
+        Wed, 31 Aug 2022 03:37:27 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 6785922278;
-        Wed, 31 Aug 2022 10:36:11 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5CBCE1F950;
+        Wed, 31 Aug 2022 10:37:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1661942171; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1661942246; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=9a0XRLI3pHJPAV1Dyp7l1aWwOveshnTtNyRtnpeBbOI=;
-        b=e+er0KXHOZWmcrAnNv0hJIXZJuElfDpSTqZ02nbpdeOWyH8KvdrN74EarKTUV6gkaLfn4l
-        KhmHJvpkLl2/7pnDuLBO0G9MrXuCbbcIuJeVg99SrhDRBrgygiyhkBTa4n1fk0SLKBgH3T
-        qxKaoT6J3eHK8mbJR20ZQuhnQgwQUkw=
+        bh=oAVbXh8Sv4Kg7ajdiS+SYvzgFKQFZzIUQa2MG93qgpo=;
+        b=umyq3H6nRIV03g50IC2i4MwmzWhTX1ghqj5L+iJOX33dKCUD4ASbsYwtx4DBm3CNoCMvkW
+        /13xidmFGiSczFx7mi00CgOmj0duFNykK0wA4liwa5uFJLccutK203KfJXCO6HDV630lZZ
+        ompXQ3SI2D9q5SFllAyx+iruF44srmQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1661942171;
+        s=susede2_ed25519; t=1661942246;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=9a0XRLI3pHJPAV1Dyp7l1aWwOveshnTtNyRtnpeBbOI=;
-        b=hWcr44w+zyqbedOLAmWb4pnBnt93x45bW2A0wHO7VAiX2EyKiBDeGq2y8+ukeO9UbbmcLw
-        RXf2WtjKxTv88aBQ==
+        bh=oAVbXh8Sv4Kg7ajdiS+SYvzgFKQFZzIUQa2MG93qgpo=;
+        b=qIrrCmxOq6U1Kslfi91K8+95+8zh9JJlffaohDkTuLa121tAIAze/Xch1l9Gf7icgrNqF0
+        HnRuhit5ITd3ecAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 562E813A7C;
-        Wed, 31 Aug 2022 10:36:11 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 46FEC13A7C;
+        Wed, 31 Aug 2022 10:37:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id BVEAFZs5D2P8ZgAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 31 Aug 2022 10:36:11 +0000
+        id XFREEeY5D2OCZwAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 31 Aug 2022 10:37:26 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id BB756A067B; Wed, 31 Aug 2022 12:36:10 +0200 (CEST)
-Date:   Wed, 31 Aug 2022 12:36:10 +0200
+        id CE2A0A067B; Wed, 31 Aug 2022 12:37:25 +0200 (CEST)
+Date:   Wed, 31 Aug 2022 12:37:25 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Zhang Yi <yi.zhang@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, openglfreak@googlemail.com,
-        yukuai3@huawei.com
-Subject: Re: [PATCH] ext4: ext4_read_bh_lock() should submit IO if the buffer
- isn't uptodate
-Message-ID: <20220831103610.mlucilhxbho4ry25@quack3>
-References: <20220831074629.3755110-1-yi.zhang@huawei.com>
+To:     Zorro Lang <zlang@redhat.com>
+Cc:     Jan Kara <jack@suse.cz>, Yang Xu <xuyang2018.jy@fujitsu.com>,
+        fstests@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
+        linux-ext4@vger.kernel.org, tytso@mit.edu, lczerner@redhat.com
+Subject: Re: [PATCH] ext4/053: Remove nouser_xattr test
+Message-ID: <20220831103725.j4fpbi75oxzqhyi6@quack3>
+References: <1660705823-2172-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <20220828024858.cf5awn2uksbpchb3@zlang-mailbox>
+ <20220829100657.wunvx2twhjzuqckk@quack3>
+ <20220831093148.twysch2nhpajrxpq@zlang-mailbox>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220831074629.3755110-1-yi.zhang@huawei.com>
+In-Reply-To: <20220831093148.twysch2nhpajrxpq@zlang-mailbox>
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL,
         T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
@@ -71,84 +73,59 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 31-08-22 15:46:29, Zhang Yi wrote:
-> Recently we notice that ext4 filesystem occasionally fail to read
-> metadata from disk and report error message, but the disk and block
-> layer looks fine. After analyse, we lockon commit 88dbcbb3a484
-> ("blkdev: avoid migration stalls for blkdev pages"). It provide a
-> migration method for the bdev, we could move page that has buffers
-> without extra users now, but it lock the buffers on the page, which
-> breaks the fragile metadata read operation on ext4 filesystem,
-> ext4_read_bh_lock() was copied from ll_rw_block(), it depends on the
-> assumption of that locked buffer means it is under IO. So it just
-> trylock the buffer and skip submit IO if it lock failed, after
-> wait_on_buffer() we conclude IO error because the buffer is not
-> uptodate.
+On Wed 31-08-22 17:31:48, Zorro Lang wrote:
+> On Mon, Aug 29, 2022 at 12:06:57PM +0200, Jan Kara wrote:
+> > On Sun 28-08-22 10:48:58, Zorro Lang wrote:
+> > > On Wed, Aug 17, 2022 at 11:10:23AM +0800, Yang Xu wrote:
+> > > > Plan to remove noacl and nouser_xattr mount option in kernel because they
+> > > > are deprecated[1]. So remove nouser_xattr test in here.
+> > > 
+> > > What's the [1]?
+> > > 
+> > > We'd better to be careful when we want to remove a testing coverage. I'm not
+> > > sure if they've decided to removed this mount option, the ext4/053 is an
+> > > important test case for ext4, so I'd like to hear their opinion.
+> > 
+> > Yes, the option is long deprecated and we want to remove it from ext4. But
+> > I think you might want to see official ack from Ted as a maintainer on this
+> > :). Ted?
 > 
-> This issue could be easily reproduced by add some delay just after
-> buffer_migrate_lock_buffers() in __buffer_migrate_folio() and do
-> fsstress on ext4 filesystem.
-> 
->   EXT4-fs error (device pmem1): __ext4_find_entry:1658: inode #73193:
->   comm fsstress: reading directory lblock 0
->   EXT4-fs error (device pmem1): __ext4_find_entry:1658: inode #75334:
->   comm fsstress: reading directory lblock 0
-> 
-> Fix it by removing the trylock logic in ext4_read_bh_lock(), just lock
-> the buffer and submit IO if it's not uptodate, and also leave over
-> readahead helper.
-> 
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> It's fine for me, if anyone stand for ext4 list to give this patch a RVB, due
+> to it's not a bug fix or new testing, it's a testing deduction, and only affect
+> ext4 testing.
 
-Thanks for the fix. It looks good to me. Feel free to add:
+Sure, feel free to add:
 
 Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
 
-> ---
->  fs/ext4/super.c | 16 +++++-----------
->  1 file changed, 5 insertions(+), 11 deletions(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 9a66abcca1a8..629bba3fa99a 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -205,19 +205,12 @@ int ext4_read_bh(struct buffer_head *bh, blk_opf_t op_flags, bh_end_io_t *end_io
->  
->  int ext4_read_bh_lock(struct buffer_head *bh, blk_opf_t op_flags, bool wait)
->  {
-> -	if (trylock_buffer(bh)) {
-> -		if (wait)
-> -			return ext4_read_bh(bh, op_flags, NULL);
-> +	lock_buffer(bh);
-> +	if (!wait) {
->  		ext4_read_bh_nowait(bh, op_flags, NULL);
->  		return 0;
->  	}
-> -	if (wait) {
-> -		wait_on_buffer(bh);
-> -		if (buffer_uptodate(bh))
-> -			return 0;
-> -		return -EIO;
-> -	}
-> -	return 0;
-> +	return ext4_read_bh(bh, op_flags, NULL);
->  }
->  
->  /*
-> @@ -264,7 +257,8 @@ void ext4_sb_breadahead_unmovable(struct super_block *sb, sector_t block)
->  	struct buffer_head *bh = sb_getblk_gfp(sb, block, 0);
->  
->  	if (likely(bh)) {
-> -		ext4_read_bh_lock(bh, REQ_RAHEAD, false);
-> +		if (trylock_buffer(bh))
-> +			ext4_read_bh_nowait(bh, REQ_RAHEAD, NULL);
->  		brelse(bh);
->  	}
->  }
-> -- 
-> 2.31.1
+> > > > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > > > Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+> > > > ---
+> > > >  tests/ext4/053 | 1 -
+> > > >  1 file changed, 1 deletion(-)
+> > > > 
+> > > > diff --git a/tests/ext4/053 b/tests/ext4/053
+> > > > index 555e474e..5d2c478a 100755
+> > > > --- a/tests/ext4/053
+> > > > +++ b/tests/ext4/053
+> > > > @@ -439,7 +439,6 @@ for fstype in ext2 ext3 ext4; do
+> > > >  	mnt oldalloc removed
+> > > >  	mnt orlov removed
+> > > >  	mnt -t user_xattr
+> > > > -	mnt nouser_xattr
+> > > >  
+> > > >  	if _has_kernel_config CONFIG_EXT4_FS_POSIX_ACL; then
+> > > >  		mnt -t acl
+> > > > -- 
+> > > > 2.27.0
+> > > > 
+> > > 
+> > -- 
+> > Jan Kara <jack@suse.com>
+> > SUSE Labs, CR
+> > 
 > 
 -- 
 Jan Kara <jack@suse.com>
