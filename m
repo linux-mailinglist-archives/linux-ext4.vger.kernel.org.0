@@ -2,137 +2,115 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBA3F5A88CD
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Sep 2022 00:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4BCC5A8908
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Sep 2022 00:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbiHaWJN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 31 Aug 2022 18:09:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33304 "EHLO
+        id S232065AbiHaWdD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 31 Aug 2022 18:33:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbiHaWJM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 31 Aug 2022 18:09:12 -0400
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9038582D11;
-        Wed, 31 Aug 2022 15:09:11 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 5062C5C01A1;
-        Wed, 31 Aug 2022 18:09:08 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Wed, 31 Aug 2022 18:09:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        joshtriplett.org; h=cc:cc:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm3; t=1661983748; x=
-        1662070148; bh=WIYFoaMKZoiJHnHUDZlxG0jiUy1Dk24eCrFgiVdOiyk=; b=c
-        qKWiLl2QVz/BiKw4yh4hFF813J5C30ZKIixDq59fAstDAsNhcFCsk41vOQoBIuPF
-        GteoF56ydpmBeeiK3SFVRQS2JRVDdXO2HiyNykd15cW3Ys7NmapdqLpOotT/464l
-        ouYoIxA8ZsQMxjotbLvI8NqcvgC/rGvhQ57Hoqqb6TkLQkvQz1es7nD33Mtkirwm
-        jrDuPcMNuD3tE3TkXhN9RimS23tzytC6GYezS7H6kuCnCJpT0CgBgf65p8H+D5ix
-        0/MwWdbw9dE+KK1CFwqRgZ3CroFgxIFtpDWb/AaIQ59XMtcWpkOJvcfnSt3Oai8y
-        Zkp9nozZIIgKaCI5S1voA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; t=1661983748; x=1662070148; bh=WIYFoaMKZoiJHnHUDZlxG0jiUy1D
-        k24eCrFgiVdOiyk=; b=O9gAW2mGnwtDMRwMaRX020Zt1+P3WrBjl5ydDY5ynikl
-        hTeO2bqgxXXZkdFEeb70fvwza2Fob8yxFDn4lv5qrzGevrHSb+osjR13HmUrhQJR
-        6cat51cxS8iw1QNGueMuS3fDPMNQaTbctFgYxIEY8fjJRuW7bCsNJ9hiwed7HUj/
-        2OOCPDDG3mciV1b7WXTvvjjUoYmuruIk0ZNvqbn2MCQgEpnGehvbe5t7JSxv1UAO
-        tp7Vh/vYoKfF0jgRnDw4rbtYcZhjhoiDxRWG5UXE7ahpmyhlEk2Fv3FY+5Ywg/d6
-        7xYy3fG+VoUSv2wz/6cxiZpVeLW4xxIWJC9nFXpl1g==
-X-ME-Sender: <xms:A9wPY0VtuUqZ09U4ehnp19qRU6uqVcJF2X0hj5fPiZtnBJGsWvluNQ>
-    <xme:A9wPY4mgsUKYlF0vm_oVH074JQ0PkWwyQyyoah-PzmZP-daQvs__0zoDlweWS8m9Q
-    28G4Dv8_pIpWhssVGk>
-X-ME-Received: <xmr:A9wPY4bIiL-kCzqXYwlb-D-7Z5D7twkLPDM-skaybNpmr8aasx85SjyEs633xpnB7CTcravK927TCwANV26xu1tw494qq0q64Y6K>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdekjedgtdekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomheplfhoshhh
-    ucfvrhhiphhlvghtthcuoehjohhshhesjhhoshhhthhrihhplhgvthhtrdhorhhgqeenuc
-    ggtffrrghtthgvrhhnpeduieegheeijeeuvdetudefvedtjeefgeeufefghfekgfelfeet
-    teelvddtffetgfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpehjohhshhesjhhoshhhthhrihhplhgvthhtrdhorhhg
-X-ME-Proxy: <xmx:BNwPYzUx0cUvls28QLdYRc5wwsZ8Q3wyY1nekKKU95rF2lzPESDlig>
-    <xmx:BNwPY-lVZ7umfkuAyGiGh0l3CX8P-3-Pt2BZyNzToA0vOzMBKQdXxA>
-    <xmx:BNwPY4eG4WNWd4deOsha2lEN9r_FSti06YT7NO4Gt1Ptj3G56cLdBA>
-    <xmx:BNwPYwiWyyLTAt8Sz0_CYLyGlEPB0UX1NGQALcFtDvYPRT3beIWdHA>
-Feedback-ID: i83e94755:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 31 Aug 2022 18:09:06 -0400 (EDT)
-Date:   Thu, 1 Sep 2022 00:09:04 +0200
-From:   Josh Triplett <josh@joshtriplett.org>
-To:     Lukas Czerner <lczerner@redhat.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: Don't run ext4lazyinit for read-only filesystems
-Message-ID: <Yw/cANWSlKYqiT9L@localhost>
-References: <48b41da1498fcac3287e2e06b660680646c1c050.1659323972.git.josh@joshtriplett.org>
- <20220803070001.iygdreewgveotfwx@fedora>
+        with ESMTP id S231700AbiHaWdC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 31 Aug 2022 18:33:02 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D606D6D9E3
+        for <linux-ext4@vger.kernel.org>; Wed, 31 Aug 2022 15:33:01 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id x23so15428787pll.7
+        for <linux-ext4@vger.kernel.org>; Wed, 31 Aug 2022 15:33:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc;
+        bh=bHtvVuvZrK8uzIZMh2KLQe7LmhlFcgk20dbkjCziIhU=;
+        b=YU4kmgITC7TAKFYKMZJtei6ein3xaK4Anz2efbxYXk4snMZbE9T2qRi/9KMGFD2ZSv
+         8Ho1I/3kCh6GCit2FAy3zIWVH+m+dlboG2RVesP3veUqIbFRdce23smPTfuRcfoleuHt
+         JTKORnPTAXbcnHP3GvbIH+nFD3R6+zn0D/KuPC9bi5C6MZ0p0pN8qZI+ERF03sn6bPPS
+         HCgVsT52ZkeiSpU3RLembWWAz5a6pzZKlWxtlsfAGyGuZbuErhruB/ERDHFKdPn7v704
+         tiq7ZN1atYIlJLge+orVTX7LkBYuos92n5tqOx0wwqyyN0E4Y1J+3Tk9pw2seyEBVQOs
+         lKEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc;
+        bh=bHtvVuvZrK8uzIZMh2KLQe7LmhlFcgk20dbkjCziIhU=;
+        b=5hPgkOK/e2bbRTVUwkcLTZVBrlB+Idx66r3mzyQUZm/aISA5TCbzRavJtNfAB08S3e
+         TGz0hm86U0WiABGh7XTUJaIb4crOkRAlofoshqtyHWE2/aYBjbIoBC/R/8ZCQezbn1zh
+         rm6mcsqgluOSy/wxUCRwOWRwQ6YgGZPoKiF7qmFfbSYtg36Qzn/Js1iGKg5b7eh4R0DH
+         zbC/Mripleh/n9mZUx7FimOoALHstpAnVQYZtGXipB2736awUrrK7FHZub+8Dh/JhoRw
+         K8wAtAjwwrD7m4B0k0RKGAiFYMt6VO0fwD8HuYSodbSyB61hqFKajiRZy0lOKn/vFLqC
+         ezMg==
+X-Gm-Message-State: ACgBeo0VfsuHtl5ScTmZT5OpnzlPi2xKCcSEZuFn4pbGjD1S/EoXBkln
+        emUtDTMj+p5jnxml5x9P2dwB+9W1ADHS55dpV5Q=
+X-Google-Smtp-Source: AA6agR6l9ZfhtmnnehBCpaPxXAmoJdjwlOLkPvk96MTj36rC2Q4cxMavoypItM07eRoLii1z4ykmiobFNTlU5ZXFewk=
+X-Received: by 2002:a17:902:70c8:b0:175:368b:1255 with SMTP id
+ l8-20020a17090270c800b00175368b1255mr7504128plt.83.1661985181424; Wed, 31 Aug
+ 2022 15:33:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220803070001.iygdreewgveotfwx@fedora>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:7022:252b:b0:43:8b67:16a0 with HTTP; Wed, 31 Aug 2022
+ 15:33:00 -0700 (PDT)
+Reply-To: Illuminatilord1945@gmail.com
+From:   Gomez Sanana <gomezsanana21@gmail.com>
+Date:   Wed, 31 Aug 2022 23:33:00 +0100
+Message-ID: <CAHa5-kSF9RVzidQyQv1ZJhotKdLgzEV+ZO54+005g3HCQSTNSQ@mail.gmail.com>
+Subject: WELCOME TO THE ILLUMINATI..
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=7.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FILL_THIS_FORM,
+        FILL_THIS_FORM_LONG,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+        FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:630 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5380]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [illuminatilord1945[at]gmail.com]
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [gomezsanana21[at]gmail.com]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [gomezsanana21[at]gmail.com]
+        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  3.2 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  0.0 FILL_THIS_FORM Fill in a form with personal information
+        *  2.0 FILL_THIS_FORM_LONG Fill in a form with personal information
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Aug 03, 2022 at 09:00:01AM +0200, Lukas Czerner wrote:
-> On Sun, Jul 31, 2022 at 08:24:53PM -0700, Josh Triplett wrote:
-> > On a read-only filesystem, we won't invoke the block allocator, so we
-> > don't need to prefetch the block bitmaps.
-> > 
-> > This avoids starting and running the ext4lazyinit thread at all on a
-> > system with no read-write ext4 filesystems (for instance, a container VM
-> > with read-only filesystems underneath an overlayfs).
-> > 
-> > Fixes: 21175ca434c5 ("ext4: make prefetch_block_bitmaps default")
-> > Signed-off-by: Josh Triplett <josh@joshtriplett.org>
-> > ---
-> 
-> Looks good to me.
-> 
-> Reviewed-by: Lukas Czerner <lczerner@redhat.com>
-> 
-> > Tested in a VM, with a read-only ext4 root filesystem. Confirmed that
-> > ext4lazyinit starts without this patch, and does not start with this
-> > patch.
-> > 
-> > (For a future merge window, not the current one. Please let me know if I
-> > need to re-send this at a later, more convenient time.)
+-- 
+WELCOME TO THE WORLD OF THE ILLUMINATI...
 
-Now that the merge window has been closed for a while, I wanted to
-follow up on this to see if it could get into next.
+Congratulations To You...
+You have been selected among those given the Opportunity of coming
+rich and famous by joining the Illuminati Society this week, Kindly
+get the below informations to the below Illuminati email.
 
-> >  fs/ext4/super.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> > index 845f2f8aee5f..20437acc8865 100644
-> > --- a/fs/ext4/super.c
-> > +++ b/fs/ext4/super.c
-> > @@ -3973,9 +3973,9 @@ int ext4_register_li_request(struct super_block *sb,
-> >  		goto out;
-> >  	}
-> >  
-> > -	if (test_opt(sb, NO_PREFETCH_BLOCK_BITMAPS) &&
-> > -	    (first_not_zeroed == ngroups || sb_rdonly(sb) ||
-> > -	     !test_opt(sb, INIT_INODE_TABLE)))
-> > +	if (sb_rdonly(sb) ||
-> > +	    (test_opt(sb, NO_PREFETCH_BLOCK_BITMAPS) &&
-> > +	     (first_not_zeroed == ngroups || !test_opt(sb, INIT_INODE_TABLE))))
-> >  		goto out;
-> >  
-> >  	elr = ext4_li_request_new(sb, first_not_zeroed);
-> > -- 
-> > 2.36.1
-> > 
-> 
+Full Names:
+Country:
+Age:
+Occupation:
+Monthly Income:
+Marital Status:
+Whatsapp Number
+
+EMAIL: Illuminatilord1945@gmail.com
