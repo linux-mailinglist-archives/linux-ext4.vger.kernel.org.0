@@ -2,115 +2,114 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F6F5A98BF
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Sep 2022 15:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C9A65A9ABD
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Sep 2022 16:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234386AbiIAN0U (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 1 Sep 2022 09:26:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33714 "EHLO
+        id S233582AbiIAOpj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 1 Sep 2022 10:45:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234385AbiIANYd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Sep 2022 09:24:33 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4580813D5B;
-        Thu,  1 Sep 2022 06:24:13 -0700 (PDT)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MJM9T646DzkWrK;
-        Thu,  1 Sep 2022 21:20:29 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by canpemm500005.china.huawei.com
- (7.192.104.229) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 1 Sep
- 2022 21:24:09 +0800
-From:   Zhang Yi <yi.zhang@huawei.com>
-To:     <linux-ext4@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <cluster-devel@redhat.com>,
-        <ntfs3@lists.linux.dev>, <ocfs2-devel@oss.oracle.com>,
-        <reiserfs-devel@vger.kernel.org>, <jack@suse.cz>
-CC:     <tytso@mit.edu>, <akpm@linux-foundation.org>, <axboe@kernel.dk>,
-        <viro@zeniv.linux.org.uk>, <rpeterso@redhat.com>,
-        <agruenba@redhat.com>, <almaz.alexandrovich@paragon-software.com>,
-        <mark@fasheh.com>, <dushistov@mail.ru>, <hch@infradead.org>,
-        <yi.zhang@huawei.com>, <chengzhihao1@huawei.com>,
-        <yukuai3@huawei.com>
-Subject: [PATCH v2 14/14] fs/buffer: remove bh_submit_read() helper
-Date:   Thu, 1 Sep 2022 21:35:05 +0800
-Message-ID: <20220901133505.2510834-15-yi.zhang@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20220901133505.2510834-1-yi.zhang@huawei.com>
-References: <20220901133505.2510834-1-yi.zhang@huawei.com>
+        with ESMTP id S233911AbiIAOpi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Sep 2022 10:45:38 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 354665EDE6;
+        Thu,  1 Sep 2022 07:45:35 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 281EjFOD004671
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 1 Sep 2022 10:45:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1662043518; bh=bpdZctrJ7OUX89e0S3lWbLtS591k81nuNM5uHLftVZs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=bxWbk2rUOq9nJo9jirI8Hotsuvah16gBPIibrkdVIQmDdk8S+CGmgXCYwkK2luRfK
+         cqzwBAJy3TXwBIqZSa4gEdQDQLQeFqHdFF6wGJCMlo2L5RwvBU2teceH4ay09r9X9X
+         y9N6XdLBmsKyOkjlJO+Ds0foEUpQpPaRtDBgI0qhYlPjmEbI1cp5K9UrAwuxUxb95h
+         7XSHkHVxdWNweLKuf5q2JFc2ipLGBzKox6ZkS2uqSq4frDmglBA8LxgWJZI9VDy+cU
+         KPdgMgUv1iQOm0lM96YK+Pm5Rb4gXx6Oq/s0bVuBBsJc+QbN587jLrBRsVnWJeaTQ+
+         CtffHOlilmNrw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id A1E7915C525C; Thu,  1 Sep 2022 10:45:15 -0400 (EDT)
+Date:   Thu, 1 Sep 2022 10:45:15 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Zhang Yi <yi.zhang@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, Ye Bin <yebin10@huawei.com>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] ext4: ensure data forced to disk when rename
+Message-ID: <YxDFewyU6orvSfZX@mit.edu>
+References: <20220901062657.1192732-1-yebin10@huawei.com>
+ <20220901083706.mjewb45dufzxcfdk@quack3>
+ <ce8666e2-c224-79f9-7770-f87b31d122e3@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500005.china.huawei.com (7.192.104.229)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ce8666e2-c224-79f9-7770-f87b31d122e3@huawei.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-bh_submit_read() has no user anymore, just remove it.
+On Thu, Sep 01, 2022 at 09:19:04PM +0800, Zhang Yi wrote:
+> 
+> Our case is modifing a no-empty file names "data.conf" through vim, it will
+> cp "data.conf" to ".data.conf.swp" firstly, overwrite rename ".data.conf.swp"
+> back to "data.conf" and fsync after modifying. If we power down between rename
+> and fsync, we may lose all data in the original "data.conf" and get a whole
+> zero file. Before we enable dioread_nolock by defalut, the newly appending data
+> may lost, but at least we will not lose the original data in the default
+> data=ordered and auto_da_alloc mode. It seems that dioread_nolock breaks the
+> guarantee provide by auto_da_alloc. Maybe we should add a fsync before rename
+> in vim ?
 
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- fs/buffer.c                 | 25 -------------------------
- include/linux/buffer_head.h |  1 -
- 2 files changed, 26 deletions(-)
+What I normally recommend is to write the new contents of "data.conf"
+to "data.conf.new".  Then fsync the file descriptor corresponding to
+data.conf.new.  If you want to backup data.conf, you can create a hard
+link of data.conf to data.conf.bak, then rename data.conf.new on top
+of data.conf.
 
-diff --git a/fs/buffer.c b/fs/buffer.c
-index 2cccc7586b99..b4c9fff3ab6c 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -3025,31 +3025,6 @@ void __bh_read_batch(int nr, struct buffer_head *bhs[],
- }
- EXPORT_SYMBOL(__bh_read_batch);
- 
--/**
-- * bh_submit_read - Submit a locked buffer for reading
-- * @bh: struct buffer_head
-- *
-- * Returns zero on success and -EIO on error.
-- */
--int bh_submit_read(struct buffer_head *bh)
--{
--	BUG_ON(!buffer_locked(bh));
--
--	if (buffer_uptodate(bh)) {
--		unlock_buffer(bh);
--		return 0;
--	}
--
--	get_bh(bh);
--	bh->b_end_io = end_buffer_read_sync;
--	submit_bh(REQ_OP_READ, bh);
--	wait_on_buffer(bh);
--	if (buffer_uptodate(bh))
--		return 0;
--	return -EIO;
--}
--EXPORT_SYMBOL(bh_submit_read);
--
- void __init buffer_init(void)
- {
- 	unsigned long nrpages;
-diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
-index b415d8bc2a09..9b6556d3f110 100644
---- a/include/linux/buffer_head.h
-+++ b/include/linux/buffer_head.h
-@@ -230,7 +230,6 @@ int submit_bh(blk_opf_t, struct buffer_head *);
- void write_boundary_block(struct block_device *bdev,
- 			sector_t bblock, unsigned blocksize);
- int bh_uptodate_or_lock(struct buffer_head *bh);
--int bh_submit_read(struct buffer_head *bh);
- int __bh_read(struct buffer_head *bh, blk_opf_t op_flags, bool wait);
- void __bh_read_batch(int nr, struct buffer_head *bhs[],
- 		     blk_opf_t op_flags, bool force_lock);
--- 
-2.31.1
+The auto_da_alloc mode is a best effort attempt to protect against bad
+application programs, and it never was a guarantee that it would
+*always* protect against data loss if you had a overwriting rename
+racing against a power failure.  Without auto_da_alloc mode, the
+window where the user might lose data if they application failed to do
+the fsync() was 30 seconds.  With auto_da_alloc (and if dioread_nolock
+was disabled), that window was reduced to say, a few hundred
+milliseconds.  With dioread_nolock, that window was increased to
+somehwere between 0 and 5 seconds (on average, 2.5 seconds) plus the
+time for the write to complete (a few hundred milliseconds).
 
+But note that your proposed patch doesn't actually really improve
+things all that much.  That's because calling filemap_datawrite() only
+waits for the write request to complete.  But you still need to update
+the metadata before the blocks become visible after a crash.  That
+requires forcing a journal commit, and waiting for that commit to
+complete, which is what ext4_sync_file() does, and which is of course,
+quite expensive.
+
+We could add something to the end of ext4_convert_unwritten_io_end_vec()
+where if the inode is da_alloc eligible, we trigger an asynchronous
+journal commit; that is, once we converted all of the unwritten extents,
+if the file has been closed after being opened with O_TRUNC, or the file has
+been renamed on top of a pre-existing file and there were dirty blocks
+that were flushed out when we called ext4_alloc_da_blocks(), that
+ext4_convert_unwritten_io_end_vec() would then request that a journal
+commit be started.   But we'd want to see what sort of performance regression
+this adds, since nothing is for free, and the goal here is to paper over
+buggy applications without imposing too much of a performance cost.
+
+But it should be clear that this is *buggy* applications, and
+applications SHOULD be calling fsync() before an overwriting rename()
+if they care about data not being lost if there is a power failure at
+an inconvenient point.   All we are trying to do here is to reduce the
+probability of data loss caused by buggy applications.  There was never
+any guarantees.
+
+Cheers,
+
+						- Ted
