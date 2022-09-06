@@ -2,97 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D98B95ADCC8
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 Sep 2022 03:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43C275AE20F
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 Sep 2022 10:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232640AbiIFBGb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 5 Sep 2022 21:06:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42104 "EHLO
+        id S239048AbiIFILR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 6 Sep 2022 04:11:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbiIFBGb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 5 Sep 2022 21:06:31 -0400
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 032C352460;
-        Mon,  5 Sep 2022 18:06:28 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0VOZFNX5_1662426383;
-Received: from 30.221.128.209(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0VOZFNX5_1662426383)
-          by smtp.aliyun-inc.com;
-          Tue, 06 Sep 2022 09:06:25 +0800
-Message-ID: <65f66ce6-7695-2884-23a9-378b5c9ca04f@linux.alibaba.com>
-Date:   Tue, 6 Sep 2022 09:06:24 +0800
+        with ESMTP id S239036AbiIFIK5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 6 Sep 2022 04:10:57 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CB5875495;
+        Tue,  6 Sep 2022 01:10:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=; b=klyWaOF4WmfA4dIwI3lZfLPkSG
+        tpKU2Q5BYUmoGb/uBH4bh3jK4g5YuWtkRUj35SA5pBENmcdWMVRS2IFLxzzjqrj65Mc2ygV+oT8cN
+        +Mi0Dt34EhpRmGVfqsqQJ7CuZPaHj6yL1TC4c27gaeBVSc/6i4LZEI2mX+WMCpv7/SOemwYkUKjah
+        CdJIIq65kqs777xYIW++zRzFK51/M+axkdxQ7NvXvDh8anoXs3AoLy5TFVlorLiIVjfx3OxfzHLyw
+        5HoLsusspZLnLBqGnqbF8xYKcoRUhIUmlsUhzTEMpFy3dZQOusr9UIDhAhLbbJ+0k+EqT+2IRGZnO
+        Sx8oOmSA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1oVTfb-00B7TK-QX; Tue, 06 Sep 2022 08:10:55 +0000
+Date:   Tue, 6 Sep 2022 01:10:55 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Keith Busch <kbusch@kernel.org>
+Subject: Re: [PATCH v5 2/8] vfs: support STATX_DIOALIGN on block devices
+Message-ID: <YxcAjwjhFApxbDez@infradead.org>
+References: <20220827065851.135710-1-ebiggers@kernel.org>
+ <20220827065851.135710-3-ebiggers@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.13.0
-Subject: Re: [Ocfs2-devel] [PATCH v2 08/14] ocfs2: replace ll_rw_block()
-Content-Language: en-US
-To:     Zhang Yi <yi.zhang@huawei.com>, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cluster-devel@redhat.com, ntfs3@lists.linux.dev,
-        ocfs2-devel@oss.oracle.com, reiserfs-devel@vger.kernel.org,
-        jack@suse.cz
-Cc:     axboe@kernel.dk, hch@infradead.org, tytso@mit.edu,
-        agruenba@redhat.com, almaz.alexandrovich@paragon-software.com,
-        viro@zeniv.linux.org.uk, yukuai3@huawei.com, rpeterso@redhat.com,
-        dushistov@mail.ru, chengzhihao1@huawei.com
-References: <20220901133505.2510834-1-yi.zhang@huawei.com>
- <20220901133505.2510834-9-yi.zhang@huawei.com>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-In-Reply-To: <20220901133505.2510834-9-yi.zhang@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.6 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220827065851.135710-3-ebiggers@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Looks good:
 
-
-On 9/1/22 9:34 PM, Zhang Yi via Ocfs2-devel wrote:
-> ll_rw_block() is not safe for the sync read path because it cannot
-> guarantee that submitting read IO if the buffer has been locked. We
-> could get false positive EIO after wait_on_buffer() if the buffer has
-> been locked by others. So stop using ll_rw_block() in ocfs2.
-> 
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-
-Looks good to me.
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-
-> ---
->  fs/ocfs2/aops.c  | 2 +-
->  fs/ocfs2/super.c | 4 +---
->  2 files changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/ocfs2/aops.c b/fs/ocfs2/aops.c
-> index af4157f61927..1d65f6ef00ca 100644
-> --- a/fs/ocfs2/aops.c
-> +++ b/fs/ocfs2/aops.c
-> @@ -636,7 +636,7 @@ int ocfs2_map_page_blocks(struct page *page, u64 *p_blkno,
->  			   !buffer_new(bh) &&
->  			   ocfs2_should_read_blk(inode, page, block_start) &&
->  			   (block_start < from || block_end > to)) {
-> -			ll_rw_block(REQ_OP_READ, 1, &bh);
-> +			bh_read_nowait(bh, 0);
->  			*wait_bh++=bh;
->  		}
->  
-> diff --git a/fs/ocfs2/super.c b/fs/ocfs2/super.c
-> index e2cc9eec287c..26b4c2bfee49 100644
-> --- a/fs/ocfs2/super.c
-> +++ b/fs/ocfs2/super.c
-> @@ -1764,9 +1764,7 @@ static int ocfs2_get_sector(struct super_block *sb,
->  	if (!buffer_dirty(*bh))
->  		clear_buffer_uptodate(*bh);
->  	unlock_buffer(*bh);
-> -	ll_rw_block(REQ_OP_READ, 1, bh);
-> -	wait_on_buffer(*bh);
-> -	if (!buffer_uptodate(*bh)) {
-> +	if (bh_read(*bh, 0) < 0) {
->  		mlog_errno(-EIO);
->  		brelse(*bh);
->  		*bh = NULL;
+Reviewed-by: Christoph Hellwig <hch@lst.de>
