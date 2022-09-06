@@ -2,51 +2,48 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6CB85AD6B6
-	for <lists+linux-ext4@lfdr.de>; Mon,  5 Sep 2022 17:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D98B95ADCC8
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 Sep 2022 03:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237446AbiIEPkJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 5 Sep 2022 11:40:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60236 "EHLO
+        id S232640AbiIFBGb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 5 Sep 2022 21:06:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237013AbiIEPkI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 5 Sep 2022 11:40:08 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84BB711839
-        for <linux-ext4@vger.kernel.org>; Mon,  5 Sep 2022 08:40:06 -0700 (PDT)
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MLszW3p8wzZcKr;
-        Mon,  5 Sep 2022 23:35:35 +0800 (CST)
-Received: from kwepemm600003.china.huawei.com (7.193.23.202) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Mon, 5 Sep 2022 23:40:03 +0800
-Received: from [127.0.0.1] (10.174.177.249) by kwepemm600003.china.huawei.com
- (7.193.23.202) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 5 Sep
- 2022 23:40:03 +0800
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-CC:     linfeilong <linfeilong@huawei.com>,
-        wuguanghao <wuguanghao3@huawei.com>
-From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
-Subject: [PATCH] tune2fs: tune2fs_main() should return rc when some error,
- occurs
-Message-ID: <7a6e1a43-d041-c3cf-a3dd-a9761d8dd4d6@huawei.com>
-Date:   Mon, 5 Sep 2022 23:40:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        with ESMTP id S229787AbiIFBGb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 5 Sep 2022 21:06:31 -0400
+Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 032C352460;
+        Mon,  5 Sep 2022 18:06:28 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0VOZFNX5_1662426383;
+Received: from 30.221.128.209(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0VOZFNX5_1662426383)
+          by smtp.aliyun-inc.com;
+          Tue, 06 Sep 2022 09:06:25 +0800
+Message-ID: <65f66ce6-7695-2884-23a9-378b5c9ca04f@linux.alibaba.com>
+Date:   Tue, 6 Sep 2022 09:06:24 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.13.0
+Subject: Re: [Ocfs2-devel] [PATCH v2 08/14] ocfs2: replace ll_rw_block()
 Content-Language: en-US
+To:     Zhang Yi <yi.zhang@huawei.com>, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cluster-devel@redhat.com, ntfs3@lists.linux.dev,
+        ocfs2-devel@oss.oracle.com, reiserfs-devel@vger.kernel.org,
+        jack@suse.cz
+Cc:     axboe@kernel.dk, hch@infradead.org, tytso@mit.edu,
+        agruenba@redhat.com, almaz.alexandrovich@paragon-software.com,
+        viro@zeniv.linux.org.uk, yukuai3@huawei.com, rpeterso@redhat.com,
+        dushistov@mail.ru, chengzhihao1@huawei.com
+References: <20220901133505.2510834-1-yi.zhang@huawei.com>
+ <20220901133505.2510834-9-yi.zhang@huawei.com>
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+In-Reply-To: <20220901133505.2510834-9-yi.zhang@huawei.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.249]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600003.china.huawei.com (7.193.23.202)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-11.6 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -54,35 +51,48 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
-If some error occurs, tune2fs_main() will go to closefs tag for
-releasing resource, and it should return correct value (rc) instead
-of 0 when ext2fs_close_free(&fs) successes.
 
-Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
----
- misc/tune2fs.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+On 9/1/22 9:34 PM, Zhang Yi via Ocfs2-devel wrote:
+> ll_rw_block() is not safe for the sync read path because it cannot
+> guarantee that submitting read IO if the buffer has been locked. We
+> could get false positive EIO after wait_on_buffer() if the buffer has
+> been locked by others. So stop using ll_rw_block() in ocfs2.
+> 
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 
-diff --git a/misc/tune2fs.c b/misc/tune2fs.c
-index 25ade2fa..088f87e5 100644
---- a/misc/tune2fs.c
-+++ b/misc/tune2fs.c
-@@ -3481,6 +3481,7 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
- 			fputs(_("Error in using clear_mmp. "
- 				"It must be used with -f\n"),
- 			      stderr);
-+			rc = 1;
- 			goto closefs;
- 		}
- 	}
-@@ -3744,5 +3745,5 @@ closefs:
+Looks good to me.
+Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
 
- 	if (feature_64bit)
- 		convert_64bit(fs, feature_64bit);
--	return (ext2fs_close_free(&fs) ? 1 : 0);
-+	return (ext2fs_close_free(&fs) ? 1 : rc);
- }
--- 
-2.33.0
-
-
+> ---
+>  fs/ocfs2/aops.c  | 2 +-
+>  fs/ocfs2/super.c | 4 +---
+>  2 files changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/ocfs2/aops.c b/fs/ocfs2/aops.c
+> index af4157f61927..1d65f6ef00ca 100644
+> --- a/fs/ocfs2/aops.c
+> +++ b/fs/ocfs2/aops.c
+> @@ -636,7 +636,7 @@ int ocfs2_map_page_blocks(struct page *page, u64 *p_blkno,
+>  			   !buffer_new(bh) &&
+>  			   ocfs2_should_read_blk(inode, page, block_start) &&
+>  			   (block_start < from || block_end > to)) {
+> -			ll_rw_block(REQ_OP_READ, 1, &bh);
+> +			bh_read_nowait(bh, 0);
+>  			*wait_bh++=bh;
+>  		}
+>  
+> diff --git a/fs/ocfs2/super.c b/fs/ocfs2/super.c
+> index e2cc9eec287c..26b4c2bfee49 100644
+> --- a/fs/ocfs2/super.c
+> +++ b/fs/ocfs2/super.c
+> @@ -1764,9 +1764,7 @@ static int ocfs2_get_sector(struct super_block *sb,
+>  	if (!buffer_dirty(*bh))
+>  		clear_buffer_uptodate(*bh);
+>  	unlock_buffer(*bh);
+> -	ll_rw_block(REQ_OP_READ, 1, bh);
+> -	wait_on_buffer(*bh);
+> -	if (!buffer_uptodate(*bh)) {
+> +	if (bh_read(*bh, 0) < 0) {
+>  		mlog_errno(-EIO);
+>  		brelse(*bh);
+>  		*bh = NULL;
