@@ -2,61 +2,71 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8BB75B047B
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Sep 2022 14:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC97C5B048E
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Sep 2022 15:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbiIGM63 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Sep 2022 08:58:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41990 "EHLO
+        id S229480AbiIGNCe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 7 Sep 2022 09:02:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbiIGM60 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Sep 2022 08:58:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E7B726A3;
-        Wed,  7 Sep 2022 05:58:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S229473AbiIGNCd (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Sep 2022 09:02:33 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34AEDBC2
+        for <linux-ext4@vger.kernel.org>; Wed,  7 Sep 2022 06:02:30 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 04364618D9;
-        Wed,  7 Sep 2022 12:58:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55D42C433D7;
-        Wed,  7 Sep 2022 12:58:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662555504;
-        bh=tnWjtscBr1iju0x5maeHzqeJywQFydfQoFg86LROAMI=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=ajaFuOOK6mbkWRbqz1kq1RN9dl7hA1dDMLwcmdFVVRCk/Qp9WESIgYX/KYV7UrD0v
-         7hqoIG1CwoRNIQVUgNnDwXcFGHihXJJgbbUzHJwG+Hw+H5Ar4hc4mbKDL8TrPc7IUc
-         lhSFko+Fuk5H4DPBaUBZX3xYQaMC0ScKGiA9QHPBY3OqOgfmb09/Kivz1fiWW6XjHs
-         3UCcEXlEGlCeVA1KZJfRBQpIFrd486CgoO9gdiNucz3fJNy8bzL7mQ/HagxnmlENW5
-         EijrR5GwK3FqCXab1oMQOxjtiiY8meWLWNxBJ9c4yqwZnfo7f5v472jmJJK0l+F5v+
-         skW4ovgx6O5/w==
-Message-ID: <c11babc93b5feadc77da3dd3eecd535e90ead844.camel@kernel.org>
-Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
- STATX_INO_VERSION field
-From:   Jeff Layton <jlayton@kernel.org>
-To:     "J. Bruce Fields" <bfields@fieldses.org>, NeilBrown <neilb@suse.de>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, djwong@kernel.org,
-        david@fromorbit.com, trondmy@hammerspace.com,
-        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
-        chuck.lever@oracle.com, lczerner@redhat.com, jack@suse.cz,
-        brauner@kernel.org, fweimer@redhat.com, linux-man@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Date:   Wed, 07 Sep 2022 08:58:20 -0400
-In-Reply-To: <20220907122033.GA17729@fieldses.org>
-References: <20220907111606.18831-1-jlayton@kernel.org>
-         <166255065346.30452.6121947305075322036@noble.neil.brown.name>
-         <20220907122033.GA17729@fieldses.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C1C871FA48;
+        Wed,  7 Sep 2022 13:02:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1662555748; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jyg12W4NeuKeaXVcjcVPJ1k1jGUoCkGWdbVeMUykGT4=;
+        b=DKrPn/UWMxlKzNbtBKrB5TvZPn+pHCYIO6WQPpcPXKOXhptq6lN+SsUH2SggY6rYVFsjtg
+        IEYJsVULguUc+Dx+pcov/T7MbOHI8PISZBtuLiVxgmHerp3tBplMYQCRerdI+L9/4YK3Xj
+        AvoJhW15cXZdCEynZoFbCgbb+PSQdY8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1662555748;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jyg12W4NeuKeaXVcjcVPJ1k1jGUoCkGWdbVeMUykGT4=;
+        b=rGhdbAw673tiaxBLpyLSVdpK8JniQKkwFlD+71Ny/ZJRSduJ5eP1rmSqqa7g+UY4QLZXRy
+        6QFj9Tvm0hEEyWAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 45F0C13A66;
+        Wed,  7 Sep 2022 13:02:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id T5MIEWSWGGO7EQAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 07 Sep 2022 13:02:28 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 617A6A067E; Wed,  7 Sep 2022 15:02:26 +0200 (CEST)
+Date:   Wed, 7 Sep 2022 15:02:26 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Stefan Wahren <stefan.wahren@i2se.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        Ted Tso <tytso@mit.edu>, Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>
+Subject: Re: [PATCH 0/5 v2] ext4: Fix performance regression with mballoc
+Message-ID: <20220907130226.da6urgbj3ayaa2qn@quack3>
+References: <20220906150803.375-1-jack@suse.cz>
+ <e4902794-9073-20eb-596a-5aa327adbabe@i2se.com>
+ <20220907104947.fwbmewmgbnkug6dl@quack3>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: multipart/mixed; boundary="5zjbrcqp6kgrp75a"
+Content-Disposition: inline
+In-Reply-To: <20220907104947.fwbmewmgbnkug6dl@quack3>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL,
+        T_FILL_THIS_FORM_SHORT,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,52 +74,563 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 2022-09-07 at 08:20 -0400, J. Bruce Fields wrote:
-> On Wed, Sep 07, 2022 at 09:37:33PM +1000, NeilBrown wrote:
-> > On Wed, 07 Sep 2022, Jeff Layton wrote:
-> > > +The change to \fIstatx.stx_ino_version\fP is not atomic with respect=
- to the
-> > > +other changes in the inode. On a write, for instance, the i_version =
-it usually
-> > > +incremented before the data is copied into the pagecache. Therefore =
-it is
-> > > +possible to see a new i_version value while a read still shows the o=
-ld data.
-> >=20
-> > Doesn't that make the value useless?  Surely the change number must
-> > change no sooner than the change itself is visible, otherwise stale dat=
-a
-> > could be cached indefinitely.
->=20
-> For the purposes of NFS close-to-open, I guess all we need is for the
-> change attribute increment to happen sometime between the open and the
-> close.
->=20
-> But, yes, it'd seem a lot more useful if it was guaranteed to happen
-> after.  (Or before and after both--extraneous increments aren't a big
-> problem here.)
->=20
->=20
 
-For NFS I don't think they would be.
+--5zjbrcqp6kgrp75a
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-We don't want increments due to reads that may happen well after the
-initial write, but as long as the second increment comes in fairly soon
-after the initial one, the extra invalidations shouldn't be _too_ bad.
+On Wed 07-09-22 12:49:47, Jan Kara wrote:
+> > Here the iostat as usual:
+> > 
+> > https://github.com/lategoodbye/mb_optimize_scan_regress/commit/f4ad188e0feee60bffa23a8e1ad254544768c3bd
+> > 
+> > There is just one thing, but not sure this if this comes from these patches.
+> > If i call
+> > 
+> > cat /proc/fs/ext4/mmcblk1p2/mb_structs_summary
+> > 
+> > The kernel throw a NULL pointer derefence in
+> > ext4_mb_seq_structs_summary_show
+> 
+> Yeah, likely a bug in my last patch. I didn't test my changes to the sysfs
+> interface. Thanks for testing this, I'll have a look.
 
-You might have a reader race in and see the interim value, but we'd
-probably want the reader to invalidate the cache soon after that anyway.
-The file was clearly in flux at the time of the read.
+Indeed the procfs interface update was buggy. Attached is a new version of
+patch 5 to fixup the interface (and a couple of whitespace issues) in the
+previous version. I will resend the full series but I'll wait some more
+time whether there are not other comments.
 
-Allowing for this sort of thing is why I've been advocating against
-trying to define this value too strictly. If we were to confine
-ourselves to "one bump per change" then it'd be hard to pull this off.
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
-Maybe this is what we should be doing?
+--5zjbrcqp6kgrp75a
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment;
+	filename="0005-ext4-Use-buckets-for-cr-1-block-scan-instead-of-rbtr.patch"
 
-> >=20
-> > If currently implementations behave this way, surely they are broken.
-> >=20
+From 5bfd6973184e8ab7180cfebdf0e71e6dc9b7af7a Mon Sep 17 00:00:00 2001
+From: Jan Kara <jack@suse.cz>
+Date: Fri, 2 Sep 2022 18:28:30 +0200
+Subject: [PATCH 5/5] ext4: Use buckets for cr 1 block scan instead of rbtree
 
---=20
-Jeff Layton <jlayton@kernel.org>
+Using rbtree for sorting groups by average fragment size is relatively
+expensive (needs rbtree update on every block freeing or allocation) and
+leads to wide spreading of allocations because selection of block group
+is very sentitive both to changes in free space and amount of blocks
+allocated. Furthermore selecting group with the best matching average
+fragment size is not necessary anyway, even more so because the
+variability of fragment sizes within a group is likely large so average
+is not telling much. We just need a group with large enough average
+fragment size so that we have high probability of finding large enough
+free extent and we don't want average fragment size to be too big so
+that we are likely to find free extent only somewhat larger than what we
+need.
+
+So instead of maintaing rbtree of groups sorted by fragment size keep
+bins (lists) or groups where average fragment size is in the interval
+[2^i, 2^(i+1)). This structure requires less updates on block allocation
+/ freeing, generally avoids chaotic spreading of allocations into block
+groups, and still is able to quickly (even faster that the rbtree)
+provide a block group which is likely to have a suitably sized free
+space extent.
+
+This patch reduces number of block groups used when untarring archive
+with medium sized files (size somewhat above 64k which is default
+mballoc limit for avoiding locality group preallocation) to about half
+and thus improves write speeds for eMMC flash significantly.
+
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext4/ext4.h    |  10 +-
+ fs/ext4/mballoc.c | 247 ++++++++++++++++++++--------------------------
+ fs/ext4/mballoc.h |   1 -
+ 3 files changed, 110 insertions(+), 148 deletions(-)
+
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 9bca5565547b..3bf9a6926798 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -167,8 +167,6 @@ enum SHIFT_DIRECTION {
+ #define EXT4_MB_CR0_OPTIMIZED		0x8000
+ /* Avg fragment size rb tree lookup succeeded at least once for cr = 1 */
+ #define EXT4_MB_CR1_OPTIMIZED		0x00010000
+-/* Perform linear traversal for one group */
+-#define EXT4_MB_SEARCH_NEXT_LINEAR	0x00020000
+ struct ext4_allocation_request {
+ 	/* target inode for block we're allocating */
+ 	struct inode *inode;
+@@ -1600,8 +1598,8 @@ struct ext4_sb_info {
+ 	struct list_head s_discard_list;
+ 	struct work_struct s_discard_work;
+ 	atomic_t s_retry_alloc_pending;
+-	struct rb_root s_mb_avg_fragment_size_root;
+-	rwlock_t s_mb_rb_lock;
++	struct list_head *s_mb_avg_fragment_size;
++	rwlock_t *s_mb_avg_fragment_size_locks;
+ 	struct list_head *s_mb_largest_free_orders;
+ 	rwlock_t *s_mb_largest_free_orders_locks;
+ 
+@@ -3413,6 +3411,8 @@ struct ext4_group_info {
+ 	ext4_grpblk_t	bb_first_free;	/* first free block */
+ 	ext4_grpblk_t	bb_free;	/* total free blocks */
+ 	ext4_grpblk_t	bb_fragments;	/* nr of freespace fragments */
++	int		bb_avg_fragment_size_order;	/* order of average
++							   fragment in BG */
+ 	ext4_grpblk_t	bb_largest_free_order;/* order of largest frag in BG */
+ 	ext4_group_t	bb_group;	/* Group number */
+ 	struct          list_head bb_prealloc_list;
+@@ -3420,7 +3420,7 @@ struct ext4_group_info {
+ 	void            *bb_bitmap;
+ #endif
+ 	struct rw_semaphore alloc_sem;
+-	struct rb_node	bb_avg_fragment_size_rb;
++	struct list_head bb_avg_fragment_size_node;
+ 	struct list_head bb_largest_free_order_node;
+ 	ext4_grpblk_t	bb_counters[];	/* Nr of free power-of-two-block
+ 					 * regions, index is order.
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index af1e49c3603f..3cf1de0f8f68 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -140,13 +140,15 @@
+  *    number of buddy bitmap orders possible) number of lists. Group-infos are
+  *    placed in appropriate lists.
+  *
+- * 2) Average fragment size rb tree (sbi->s_mb_avg_fragment_size_root)
++ * 2) Average fragment size lists (sbi->s_mb_avg_fragment_size)
+  *
+- *    Locking: sbi->s_mb_rb_lock (rwlock)
++ *    Locking: sbi->s_mb_avg_fragment_size_locks(array of rw locks)
+  *
+- *    This is a red black tree consisting of group infos and the tree is sorted
+- *    by average fragment sizes (which is calculated as ext4_group_info->bb_free
+- *    / ext4_group_info->bb_fragments).
++ *    This is an array of lists where in the i-th list there are groups with
++ *    average fragment size >= 2^i and < 2^(i+1). The average fragment size
++ *    is computed as ext4_group_info->bb_free / ext4_group_info->bb_fragments.
++ *    Note that we don't bother with a special list for completely empty groups
++ *    so we only have MB_NUM_ORDERS(sb) lists.
+  *
+  * When "mb_optimize_scan" mount option is set, mballoc consults the above data
+  * structures to decide the order in which groups are to be traversed for
+@@ -160,7 +162,8 @@
+  *
+  * At CR = 1, we only consider groups where average fragment size > request
+  * size. So, we lookup a group which has average fragment size just above or
+- * equal to request size using our rb tree (data structure 2) in O(log N) time.
++ * equal to request size using our average fragment size group lists (data
++ * structure 2) in O(1) time.
+  *
+  * If "mb_optimize_scan" mount option is not set, mballoc traverses groups in
+  * linear order which requires O(N) search time for each CR 0 and CR 1 phase.
+@@ -802,65 +805,51 @@ static void ext4_mb_mark_free_simple(struct super_block *sb,
+ 	}
+ }
+ 
+-static void ext4_mb_rb_insert(struct rb_root *root, struct rb_node *new,
+-			int (*cmp)(struct rb_node *, struct rb_node *))
++static int mb_avg_fragment_size_order(struct super_block *sb, ext4_grpblk_t len)
+ {
+-	struct rb_node **iter = &root->rb_node, *parent = NULL;
++	int order;
+ 
+-	while (*iter) {
+-		parent = *iter;
+-		if (cmp(new, *iter) > 0)
+-			iter = &((*iter)->rb_left);
+-		else
+-			iter = &((*iter)->rb_right);
+-	}
+-
+-	rb_link_node(new, parent, iter);
+-	rb_insert_color(new, root);
+-}
+-
+-static int
+-ext4_mb_avg_fragment_size_cmp(struct rb_node *rb1, struct rb_node *rb2)
+-{
+-	struct ext4_group_info *grp1 = rb_entry(rb1,
+-						struct ext4_group_info,
+-						bb_avg_fragment_size_rb);
+-	struct ext4_group_info *grp2 = rb_entry(rb2,
+-						struct ext4_group_info,
+-						bb_avg_fragment_size_rb);
+-	int num_frags_1, num_frags_2;
+-
+-	num_frags_1 = grp1->bb_fragments ?
+-		grp1->bb_free / grp1->bb_fragments : 0;
+-	num_frags_2 = grp2->bb_fragments ?
+-		grp2->bb_free / grp2->bb_fragments : 0;
+-
+-	return (num_frags_2 - num_frags_1);
++	/*
++	 * We don't bother with a special lists groups with only 1 block free
++	 * extents and for completely empty groups.
++	 */
++	order = fls(len) - 2;
++	if (order < 0)
++		return 0;
++	if (order == MB_NUM_ORDERS(sb))
++		order--;
++	return order;
+ }
+ 
+-/*
+- * Reinsert grpinfo into the avg_fragment_size tree with new average
+- * fragment size.
+- */
++/* Move group to appropriate avg_fragment_size list */
+ static void
+ mb_update_avg_fragment_size(struct super_block *sb, struct ext4_group_info *grp)
+ {
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
++	int new_order;
+ 
+ 	if (!test_opt2(sb, MB_OPTIMIZE_SCAN) || grp->bb_free == 0)
+ 		return;
+ 
+-	write_lock(&sbi->s_mb_rb_lock);
+-	if (!RB_EMPTY_NODE(&grp->bb_avg_fragment_size_rb)) {
+-		rb_erase(&grp->bb_avg_fragment_size_rb,
+-				&sbi->s_mb_avg_fragment_size_root);
+-		RB_CLEAR_NODE(&grp->bb_avg_fragment_size_rb);
+-	}
++	new_order = mb_avg_fragment_size_order(sb,
++					grp->bb_free / grp->bb_fragments);
++	if (new_order == grp->bb_avg_fragment_size_order)
++		return;
+ 
+-	ext4_mb_rb_insert(&sbi->s_mb_avg_fragment_size_root,
+-		&grp->bb_avg_fragment_size_rb,
+-		ext4_mb_avg_fragment_size_cmp);
+-	write_unlock(&sbi->s_mb_rb_lock);
++	if (grp->bb_avg_fragment_size_order != -1) {
++		write_lock(&sbi->s_mb_avg_fragment_size_locks[
++					grp->bb_avg_fragment_size_order]);
++		list_del(&grp->bb_avg_fragment_size_node);
++		write_unlock(&sbi->s_mb_avg_fragment_size_locks[
++					grp->bb_avg_fragment_size_order]);
++	}
++	grp->bb_avg_fragment_size_order = new_order;
++	write_lock(&sbi->s_mb_avg_fragment_size_locks[
++					grp->bb_avg_fragment_size_order]);
++	list_add_tail(&grp->bb_avg_fragment_size_node,
++		&sbi->s_mb_avg_fragment_size[grp->bb_avg_fragment_size_order]);
++	write_unlock(&sbi->s_mb_avg_fragment_size_locks[
++					grp->bb_avg_fragment_size_order]);
+ }
+ 
+ /*
+@@ -909,86 +898,56 @@ static void ext4_mb_choose_next_group_cr0(struct ext4_allocation_context *ac,
+ 		*new_cr = 1;
+ 	} else {
+ 		*group = grp->bb_group;
+-		ac->ac_last_optimal_group = *group;
+ 		ac->ac_flags |= EXT4_MB_CR0_OPTIMIZED;
+ 	}
+ }
+ 
+ /*
+  * Choose next group by traversing average fragment size tree. Updates *new_cr
+- * if cr lvel needs an update. Sets EXT4_MB_SEARCH_NEXT_LINEAR to indicate that
+- * the linear search should continue for one iteration since there's lock
+- * contention on the rb tree lock.
++ * if cr level needs an update.
+  */
+ static void ext4_mb_choose_next_group_cr1(struct ext4_allocation_context *ac,
+ 		int *new_cr, ext4_group_t *group, ext4_group_t ngroups)
+ {
+ 	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
+-	int avg_fragment_size, best_so_far;
+-	struct rb_node *node, *found;
+-	struct ext4_group_info *grp;
+-
+-	/*
+-	 * If there is contention on the lock, instead of waiting for the lock
+-	 * to become available, just continue searching lineraly. We'll resume
+-	 * our rb tree search later starting at ac->ac_last_optimal_group.
+-	 */
+-	if (!read_trylock(&sbi->s_mb_rb_lock)) {
+-		ac->ac_flags |= EXT4_MB_SEARCH_NEXT_LINEAR;
+-		return;
+-	}
++	struct ext4_group_info *grp, *iter;
++	int i;
+ 
+ 	if (unlikely(ac->ac_flags & EXT4_MB_CR1_OPTIMIZED)) {
+ 		if (sbi->s_mb_stats)
+ 			atomic_inc(&sbi->s_bal_cr1_bad_suggestions);
+-		/* We have found something at CR 1 in the past */
+-		grp = ext4_get_group_info(ac->ac_sb, ac->ac_last_optimal_group);
+-		for (found = rb_next(&grp->bb_avg_fragment_size_rb); found != NULL;
+-		     found = rb_next(found)) {
+-			grp = rb_entry(found, struct ext4_group_info,
+-				       bb_avg_fragment_size_rb);
++	}
++
++	for (i = mb_avg_fragment_size_order(ac->ac_sb, ac->ac_g_ex.fe_len);
++	     i < MB_NUM_ORDERS(ac->ac_sb); i++) {
++		if (list_empty(&sbi->s_mb_avg_fragment_size[i]))
++			continue;
++		read_lock(&sbi->s_mb_avg_fragment_size_locks[i]);
++		if (list_empty(&sbi->s_mb_avg_fragment_size[i])) {
++			read_unlock(&sbi->s_mb_largest_free_orders_locks[i]);
++			continue;
++		}
++		grp = NULL;
++		list_for_each_entry(iter, &sbi->s_mb_avg_fragment_size[i],
++				    bb_avg_fragment_size_node) {
+ 			if (sbi->s_mb_stats)
+ 				atomic64_inc(&sbi->s_bal_cX_groups_considered[1]);
+-			if (likely(ext4_mb_good_group(ac, grp->bb_group, 1)))
++			if (likely(ext4_mb_good_group(ac, iter->bb_group, 1))) {
++				grp = iter;
+ 				break;
+-		}
+-		goto done;
+-	}
+-
+-	node = sbi->s_mb_avg_fragment_size_root.rb_node;
+-	best_so_far = 0;
+-	found = NULL;
+-
+-	while (node) {
+-		grp = rb_entry(node, struct ext4_group_info,
+-			       bb_avg_fragment_size_rb);
+-		avg_fragment_size = 0;
+-		if (ext4_mb_good_group(ac, grp->bb_group, 1)) {
+-			avg_fragment_size = grp->bb_fragments ?
+-				grp->bb_free / grp->bb_fragments : 0;
+-			if (!best_so_far || avg_fragment_size < best_so_far) {
+-				best_so_far = avg_fragment_size;
+-				found = node;
+ 			}
+ 		}
+-		if (avg_fragment_size > ac->ac_g_ex.fe_len)
+-			node = node->rb_right;
+-		else
+-			node = node->rb_left;
++		read_unlock(&sbi->s_mb_avg_fragment_size_locks[i]);
++		if (grp)
++			break;
+ 	}
+ 
+-done:
+-	if (found) {
+-		grp = rb_entry(found, struct ext4_group_info,
+-			       bb_avg_fragment_size_rb);
++	if (grp) {
+ 		*group = grp->bb_group;
+ 		ac->ac_flags |= EXT4_MB_CR1_OPTIMIZED;
+ 	} else {
+ 		*new_cr = 2;
+ 	}
+-
+-	read_unlock(&sbi->s_mb_rb_lock);
+-	ac->ac_last_optimal_group = *group;
+ }
+ 
+ static inline int should_optimize_scan(struct ext4_allocation_context *ac)
+@@ -1017,11 +976,6 @@ next_linear_group(struct ext4_allocation_context *ac, int group, int ngroups)
+ 		goto inc_and_return;
+ 	}
+ 
+-	if (ac->ac_flags & EXT4_MB_SEARCH_NEXT_LINEAR) {
+-		ac->ac_flags &= ~EXT4_MB_SEARCH_NEXT_LINEAR;
+-		goto inc_and_return;
+-	}
+-
+ 	return group;
+ inc_and_return:
+ 	/*
+@@ -1152,13 +1106,13 @@ void ext4_mb_generate_buddy(struct super_block *sb,
+ 					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
+ 	}
+ 	mb_set_largest_free_order(sb, grp);
++	mb_update_avg_fragment_size(sb, grp);
+ 
+ 	clear_bit(EXT4_GROUP_INFO_NEED_INIT_BIT, &(grp->bb_state));
+ 
+ 	period = get_cycles() - period;
+ 	atomic_inc(&sbi->s_mb_buddies_generated);
+ 	atomic64_add(period, &sbi->s_mb_generation_time);
+-	mb_update_avg_fragment_size(sb, grp);
+ }
+ 
+ /* The buddy information is attached the buddy cache inode
+@@ -2711,7 +2665,6 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+ 		 * from the goal value specified
+ 		 */
+ 		group = ac->ac_g_ex.fe_group;
+-		ac->ac_last_optimal_group = group;
+ 		ac->ac_groups_linear_remaining = sbi->s_mb_max_linear_groups;
+ 		prefetch_grp = group;
+ 
+@@ -2993,9 +2946,7 @@ __acquires(&EXT4_SB(sb)->s_mb_rb_lock)
+ 	struct super_block *sb = pde_data(file_inode(seq->file));
+ 	unsigned long position;
+ 
+-	read_lock(&EXT4_SB(sb)->s_mb_rb_lock);
+-
+-	if (*pos < 0 || *pos >= MB_NUM_ORDERS(sb) + 1)
++	if (*pos < 0 || *pos >= 2*MB_NUM_ORDERS(sb))
+ 		return NULL;
+ 	position = *pos + 1;
+ 	return (void *) ((unsigned long) position);
+@@ -3007,7 +2958,7 @@ static void *ext4_mb_seq_structs_summary_next(struct seq_file *seq, void *v, lof
+ 	unsigned long position;
+ 
+ 	++*pos;
+-	if (*pos < 0 || *pos >= MB_NUM_ORDERS(sb) + 1)
++	if (*pos < 0 || *pos >= 2*MB_NUM_ORDERS(sb))
+ 		return NULL;
+ 	position = *pos + 1;
+ 	return (void *) ((unsigned long) position);
+@@ -3019,29 +2970,22 @@ static int ext4_mb_seq_structs_summary_show(struct seq_file *seq, void *v)
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	unsigned long position = ((unsigned long) v);
+ 	struct ext4_group_info *grp;
+-	struct rb_node *n;
+-	unsigned int count, min, max;
++	unsigned int count;
+ 
+ 	position--;
+ 	if (position >= MB_NUM_ORDERS(sb)) {
+-		seq_puts(seq, "fragment_size_tree:\n");
+-		n = rb_first(&sbi->s_mb_avg_fragment_size_root);
+-		if (!n) {
+-			seq_puts(seq, "\ttree_min: 0\n\ttree_max: 0\n\ttree_nodes: 0\n");
+-			return 0;
+-		}
+-		grp = rb_entry(n, struct ext4_group_info, bb_avg_fragment_size_rb);
+-		min = grp->bb_fragments ? grp->bb_free / grp->bb_fragments : 0;
+-		count = 1;
+-		while (rb_next(n)) {
+-			count++;
+-			n = rb_next(n);
+-		}
+-		grp = rb_entry(n, struct ext4_group_info, bb_avg_fragment_size_rb);
+-		max = grp->bb_fragments ? grp->bb_free / grp->bb_fragments : 0;
++		position -= MB_NUM_ORDERS(sb);
++		if (position == 0)
++			seq_puts(seq, "avg_fragment_size_lists:\n");
+ 
+-		seq_printf(seq, "\ttree_min: %u\n\ttree_max: %u\n\ttree_nodes: %u\n",
+-			   min, max, count);
++		count = 0;
++		read_lock(&sbi->s_mb_avg_fragment_size_locks[position]);
++		list_for_each_entry(grp, &sbi->s_mb_avg_fragment_size[position],
++				    bb_avg_fragment_size_node)
++			count++;
++		read_unlock(&sbi->s_mb_avg_fragment_size_locks[position]);
++		seq_printf(seq, "\tlist_order_%u_groups: %u\n",
++					(unsigned int)position, count);
+ 		return 0;
+ 	}
+ 
+@@ -3051,9 +2995,11 @@ static int ext4_mb_seq_structs_summary_show(struct seq_file *seq, void *v)
+ 		seq_puts(seq, "max_free_order_lists:\n");
+ 	}
+ 	count = 0;
++	read_lock(&sbi->s_mb_largest_free_orders_locks[position]);
+ 	list_for_each_entry(grp, &sbi->s_mb_largest_free_orders[position],
+ 			    bb_largest_free_order_node)
+ 		count++;
++	read_unlock(&sbi->s_mb_largest_free_orders_locks[position]);
+ 	seq_printf(seq, "\tlist_order_%u_groups: %u\n",
+ 		   (unsigned int)position, count);
+ 
+@@ -3061,11 +3007,7 @@ static int ext4_mb_seq_structs_summary_show(struct seq_file *seq, void *v)
+ }
+ 
+ static void ext4_mb_seq_structs_summary_stop(struct seq_file *seq, void *v)
+-__releases(&EXT4_SB(sb)->s_mb_rb_lock)
+ {
+-	struct super_block *sb = pde_data(file_inode(seq->file));
+-
+-	read_unlock(&EXT4_SB(sb)->s_mb_rb_lock);
+ }
+ 
+ const struct seq_operations ext4_mb_seq_structs_summary_ops = {
+@@ -3178,8 +3120,9 @@ int ext4_mb_add_groupinfo(struct super_block *sb, ext4_group_t group,
+ 	init_rwsem(&meta_group_info[i]->alloc_sem);
+ 	meta_group_info[i]->bb_free_root = RB_ROOT;
+ 	INIT_LIST_HEAD(&meta_group_info[i]->bb_largest_free_order_node);
+-	RB_CLEAR_NODE(&meta_group_info[i]->bb_avg_fragment_size_rb);
++	INIT_LIST_HEAD(&meta_group_info[i]->bb_avg_fragment_size_node);
+ 	meta_group_info[i]->bb_largest_free_order = -1;  /* uninit */
++	meta_group_info[i]->bb_avg_fragment_size_order = -1;  /* uninit */
+ 	meta_group_info[i]->bb_group = group;
+ 
+ 	mb_group_bb_bitmap_alloc(sb, meta_group_info[i], group);
+@@ -3428,7 +3371,24 @@ int ext4_mb_init(struct super_block *sb)
+ 		i++;
+ 	} while (i < MB_NUM_ORDERS(sb));
+ 
+-	sbi->s_mb_avg_fragment_size_root = RB_ROOT;
++	sbi->s_mb_avg_fragment_size =
++		kmalloc_array(MB_NUM_ORDERS(sb), sizeof(struct list_head),
++			GFP_KERNEL);
++	if (!sbi->s_mb_avg_fragment_size) {
++		ret = -ENOMEM;
++		goto out;
++	}
++	sbi->s_mb_avg_fragment_size_locks =
++		kmalloc_array(MB_NUM_ORDERS(sb), sizeof(rwlock_t),
++			GFP_KERNEL);
++	if (!sbi->s_mb_avg_fragment_size_locks) {
++		ret = -ENOMEM;
++		goto out;
++	}
++	for (i = 0; i < MB_NUM_ORDERS(sb); i++) {
++		INIT_LIST_HEAD(&sbi->s_mb_avg_fragment_size[i]);
++		rwlock_init(&sbi->s_mb_avg_fragment_size_locks[i]);
++	}
+ 	sbi->s_mb_largest_free_orders =
+ 		kmalloc_array(MB_NUM_ORDERS(sb), sizeof(struct list_head),
+ 			GFP_KERNEL);
+@@ -3447,7 +3407,6 @@ int ext4_mb_init(struct super_block *sb)
+ 		INIT_LIST_HEAD(&sbi->s_mb_largest_free_orders[i]);
+ 		rwlock_init(&sbi->s_mb_largest_free_orders_locks[i]);
+ 	}
+-	rwlock_init(&sbi->s_mb_rb_lock);
+ 
+ 	spin_lock_init(&sbi->s_md_lock);
+ 	sbi->s_mb_free_pending = 0;
+@@ -3518,6 +3477,8 @@ int ext4_mb_init(struct super_block *sb)
+ 	free_percpu(sbi->s_locality_groups);
+ 	sbi->s_locality_groups = NULL;
+ out:
++	kfree(sbi->s_mb_avg_fragment_size);
++	kfree(sbi->s_mb_avg_fragment_size_locks);
+ 	kfree(sbi->s_mb_largest_free_orders);
+ 	kfree(sbi->s_mb_largest_free_orders_locks);
+ 	kfree(sbi->s_mb_offsets);
+@@ -3584,6 +3545,8 @@ int ext4_mb_release(struct super_block *sb)
+ 		kvfree(group_info);
+ 		rcu_read_unlock();
+ 	}
++	kfree(sbi->s_mb_avg_fragment_size);
++	kfree(sbi->s_mb_avg_fragment_size_locks);
+ 	kfree(sbi->s_mb_largest_free_orders);
+ 	kfree(sbi->s_mb_largest_free_orders_locks);
+ 	kfree(sbi->s_mb_offsets);
+diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
+index 39da92ceabf8..dcda2a943cee 100644
+--- a/fs/ext4/mballoc.h
++++ b/fs/ext4/mballoc.h
+@@ -178,7 +178,6 @@ struct ext4_allocation_context {
+ 	/* copy of the best found extent taken before preallocation efforts */
+ 	struct ext4_free_extent ac_f_ex;
+ 
+-	ext4_group_t ac_last_optimal_group;
+ 	__u32 ac_groups_considered;
+ 	__u32 ac_flags;		/* allocation hints */
+ 	__u16 ac_groups_scanned;
+-- 
+2.35.3
+
+
+--5zjbrcqp6kgrp75a--
