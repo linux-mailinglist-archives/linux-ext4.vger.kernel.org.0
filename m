@@ -2,55 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DACC85B098F
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Sep 2022 18:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65BE95B0ADC
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Sep 2022 19:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbiIGQEd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Sep 2022 12:04:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49792 "EHLO
+        id S229436AbiIGRA0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 7 Sep 2022 13:00:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbiIGQEE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Sep 2022 12:04:04 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8119A5C7E
-        for <linux-ext4@vger.kernel.org>; Wed,  7 Sep 2022 09:02:39 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id 65so4851698pfx.0
-        for <linux-ext4@vger.kernel.org>; Wed, 07 Sep 2022 09:02:39 -0700 (PDT)
+        with ESMTP id S229459AbiIGRA0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Sep 2022 13:00:26 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD036C131
+        for <linux-ext4@vger.kernel.org>; Wed,  7 Sep 2022 10:00:24 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id x14so8045006lfu.10
+        for <linux-ext4@vger.kernel.org>; Wed, 07 Sep 2022 10:00:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date;
-        bh=12IUsA/cMwBIxeadxv4/3ocGPLCW9oxNtzio7zkZo5s=;
-        b=iLmbipR98L0CUjb8dbJDqB4BFFegLd3o46lQmJv/oUKKR6MYjTvTI6TbdmUnlZUsMB
-         1e6ZPjpZ7WaYuzfcR19RLDfGQwGfSgqCHfYc2ycU078nuMEULAMNMvmJwl//yvrjdTOx
-         kLJ2mSCQdVE8a+TMW3N9iq7qut+2br5cDf1qbxWxHKKtQRtlNfeywsg72m95ZamLm+Jb
-         NNTLVeDBaIoaJWrn0qeIHqBwdp13fx0j9k3FZ3+1CbzoVTEPensfG+DMHWCEri7LSOCZ
-         IvmZPUqKA5IVjCRYrxN0h2Ovj8Hv7MU0KcEmiT+5O5QJJeKqFXa0U0g6i1vyYM8pC7xV
-         iI1A==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date;
+        bh=YxYyEpXTezQXVffhIeYXtYjNeSo7ODcPJSN5kU6n0fI=;
+        b=Ocw5LCvYnCHvG4q9hOFGAfFWdx5F96sf89u08WUCVmfSueuA9NUz+/zkqvr1hLofVN
+         iQDrpDsZj6jZOeuQwUX09wLVOVlO7xkqQCsnRn2Rj1yUPxLbhV72Tzx08EarJJK5Dbfi
+         cb+VSr6JrtBEcOBVHXdU1ynGqjaTx97kgpCy5iKQhHnWAiWsK3JNLaSUOcswA5mSZOFE
+         GNTjkIK82k1z9d9rk30cojMwjJZR1IFAfJ8WDsO5uJQC+JunqLqBvEfXUJ+hKojuFM4L
+         n4GibHi4IBZR7f9hyN1RXoCLY5hbCdB+4n8xTE5i2an/kSJN0mNkqg3jsZQbJ03NRb5R
+         VF5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date;
-        bh=12IUsA/cMwBIxeadxv4/3ocGPLCW9oxNtzio7zkZo5s=;
-        b=qfc7gSJN6i3pnf5XEmuLUr8zvKBQdYIbVQydhj5KvIYGB1H9jMGkkmftKaZDaydPCN
-         weqNe8ONakK/Mljvucvl/GOydF0Pc7cJ3NRVMaFXkUv0sv28XftNFxzNQydDtv4HjDk0
-         VpioboHQtZGmeqwqlChDnx7bRxVZveq6dC2WipySsw+UAIvUJLCAPGk5jK7RS2riMn7t
-         4x6klTvruIQDuVctDR7r9B2fL31vnwxLVGVN5LwetrhuakU+oUzO4F4DP2ffHqViguLK
-         S9/TCT/EwiCrBVFJRt41qtoBVjwsmyOylbKjegHROHX3k76XDPl4sQlwtRTOLGKU4z9a
-         /E+A==
-X-Gm-Message-State: ACgBeo1aftzAwWVw/qYABlvvENbudLM3/h2QvLYblmq3OFgKE9lsPatd
-        84aswiUtN/LsfqeWg/sNOFcw9/KA8HQzP143dRlQl1eYMlU=
-X-Google-Smtp-Source: AA6agR4j6iFKRk59npYGg1dIx4kt8YC4qjfdMVfbKycTBsi6/0NPkLWmb0jTab4Bsmd2cZiim9nBBIdNyqYsWCXUpBI=
-X-Received: by 2002:aa7:9532:0:b0:53e:7875:39e1 with SMTP id
- c18-20020aa79532000000b0053e787539e1mr3253419pfp.82.1662566539868; Wed, 07
- Sep 2022 09:02:19 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=YxYyEpXTezQXVffhIeYXtYjNeSo7ODcPJSN5kU6n0fI=;
+        b=2/8NrvF4mxfIZ+jlKA34Vkuk5R0AAU8SQcA8aqFcOlw0cxlQdFxx24O8Z4p4b9u/AC
+         Ss/pi7eBnFZlHgjG1+VfmgZ56sf24IFGkUnylYKxeAzfiSmSRTt819c57sJCMS1zcgZd
+         3CTfDiPSpkcx9HZon344VWicajkgYYOsfP5LAzeME6j6D3K78JgeMP4KZHT3PaYLC1kX
+         /RgoLGxg6GILPEpxoNfWdCR4Dy2Ub7YTRtxkQLj8D2q9EVumfYaJH/APfEHO6YIc7Lln
+         D0lEpxDd8qVZ2dDf4VShBTdreFsZ4+oAHetNKq1hHWf37jYAHcrKLX2ypeWIccfpuxd0
+         BpLQ==
+X-Gm-Message-State: ACgBeo2kYnrxvghml8vaY9rUhbiIgdvygPJTBJmqWmMo4Qan7VvwsJmX
+        Fm1KXxD2vdUjtkH1sMbjRKmmstJRYwiknQ==
+X-Google-Smtp-Source: AA6agR65kK61d9HWOapDo5xUChRrpvh7cdL4whnqObUwK7pfM+CAlzgnlmtfr91xO3CCgz1xq7Mgtg==
+X-Received: by 2002:a05:6512:ad3:b0:492:d78f:2c09 with SMTP id n19-20020a0565120ad300b00492d78f2c09mr1319917lfu.99.1662570023192;
+        Wed, 07 Sep 2022 10:00:23 -0700 (PDT)
+Received: from lustre.shadowland ([46.246.26.67])
+        by smtp.gmail.com with ESMTPSA id 18-20020a2eb952000000b00268335eaa8asm2781829ljs.51.2022.09.07.10.00.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Sep 2022 10:00:20 -0700 (PDT)
+From:   Alexey Lyashkov <alexey.lyashkov@gmail.com>
+To:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Artem Blagodarenko <artem.blagodarenko@gmail.com>
+Cc:     Andrew Perepechko <anserper@ya.ru>,
+        Alexey Lyashkov <alexey.lyashkov@gmail.com>
+Subject: [PATCH] jbd2: wake up journal waiters in FIFO order, not  LIFO
+Date:   Wed,  7 Sep 2022 19:59:59 +0300
+Message-Id: <20220907165959.1137482-1-alexey.lyashkov@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-From:   Luigi Fabio <luigi.fabio@gmail.com>
-Date:   Wed, 7 Sep 2022 12:01:45 -0400
-Message-ID: <CAJJqR22VOFHTrvE6uc02bcoCsSFck7JX-bJYr4TbJCVhpftCwg@mail.gmail.com>
-Subject: Ext4 filesystem recovery after mdraid failure -2
-To:     linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -61,90 +69,64 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-I am encountering an unusual problem after an mdraid failure, I'll
-summarise briefly and can provide further details as required.
+From: Andrew Perepechko <anserper@ya.ru>
 
-First of all, the context. This is happening on a Debian 11 system,
-amd64 arch, with current updates (kernel 5.10.136-1, util-linux
-2.36.1).
+LIFO wakeup order is unfair and sometimes leads to a journal
+user not being able to get a journal handle for hundreds of
+transactions in a row.
 
-The system has a 12 drive mdraid RAID5 for data, recently migrated to
-LSI 2308 HBAs.
-This is relevant because yesterday, at around 13,00 local (EST), four
-drives, an entire HBA channel, decided to drop from the RAID.
+FIFO wakeup can make things more fair.
 
-Of course, mdraid didn't like that and stopped the arrays. I reverted
-to best practice and shut down the system first of all.
+Signed-off-by: Alexey Lyashkov <alexey.lyashkov@gmail.com>
+---
+ fs/jbd2/commit.c      | 2 +-
+ fs/jbd2/transaction.c | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-Further context: the filesystem in the array is ancient - I am vaguely
-proud of that - from 2001.
-It started as ext2, grew to ext3, then to ext4 and finally to ext4 with 64 bits.
-Because I am paranoid, I always mount ext4 with nodelalloc and data=journal.
-The journal is external on a RAID1 of SSDs.
-I recently (within the last ~3 months) enabled metadata_csum, which is
-relevant to the following - the filesystem had never had metadata_csum
-enabled before.
+diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
+index b2b2bc9b88d9..ec2b55879e3a 100644
+--- a/fs/jbd2/commit.c
++++ b/fs/jbd2/commit.c
+@@ -570,7 +570,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
+ 	journal->j_running_transaction = NULL;
+ 	start_time = ktime_get();
+ 	commit_transaction->t_log_start = journal->j_head;
+-	wake_up(&journal->j_wait_transaction_locked);
++	wake_up_all(&journal->j_wait_transaction_locked);
+ 	write_unlock(&journal->j_state_lock);
+ 
+ 	jbd2_debug(3, "JBD2: commit phase 2a\n");
+diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+index e1be93ccd81c..6a404ac1c178 100644
+--- a/fs/jbd2/transaction.c
++++ b/fs/jbd2/transaction.c
+@@ -168,7 +168,7 @@ static void wait_transaction_locked(journal_t *journal)
+ 	int need_to_start;
+ 	tid_t tid = journal->j_running_transaction->t_tid;
+ 
+-	prepare_to_wait(&journal->j_wait_transaction_locked, &wait,
++	prepare_to_wait_exclusive(&journal->j_wait_transaction_locked, &wait,
+ 			TASK_UNINTERRUPTIBLE);
+ 	need_to_start = !tid_geq(journal->j_commit_request, tid);
+ 	read_unlock(&journal->j_state_lock);
+@@ -194,7 +194,7 @@ static void wait_transaction_switching(journal_t *journal)
+ 		read_unlock(&journal->j_state_lock);
+ 		return;
+ 	}
+-	prepare_to_wait(&journal->j_wait_transaction_locked, &wait,
++	prepare_to_wait_exclusive(&journal->j_wait_transaction_locked, &wait,
+ 			TASK_UNINTERRUPTIBLE);
+ 	read_unlock(&journal->j_state_lock);
+ 	/*
+@@ -920,7 +920,7 @@ void jbd2_journal_unlock_updates (journal_t *journal)
+ 	write_lock(&journal->j_state_lock);
+ 	--journal->j_barrier_count;
+ 	write_unlock(&journal->j_state_lock);
+-	wake_up(&journal->j_wait_transaction_locked);
++	wake_up_all(&journal->j_wait_transaction_locked);
+ }
+ 
+ static void warn_dirty_buffer(struct buffer_head *bh)
+-- 
+2.31.1
 
-Upon reboot, the arrays would not reassemble - this is expected,
-because 4/12 drives were marked faulty. So I re--created the array
-using the same parameters as were used back when the array was built.
-Unfortunately, I had a moment of stupid and didn't specify metadata
-0.90 in the re--create, so it was recreated with metadata 1.2... which
-writes its data block at the beginning of the components, not at the
-end. I noticed it, restopped the array and recreated with the correct
-0.90, but the damage was done: the 256 byte + 12 * 20 header was
-written at the beginning of each of the 12 components.
-Still, unless I am mistaken, this just means that at worst 12x (second
-block of each component) were damaged, which shouldn't be too bad. The
-only further possibility is that mdraid also zeroed out the 'blank
-space' that it puts AFTER the header block and BEFORE the data, but
-according to documentation it shouldn't do that.
-In any case, I subsequently reassembled the array 'correctly' to match
-the previous order and settings and I believe I got it right. I kept
-the array RO and tried fsck -n, which gave me this:
-
-ext2fs_check_desc: Corrupt group descriptor: bad block for block bitmap
-fsck.ext4: Group descriptors look bad... trying backup blocks...
-
-It then warns that it won't attempt journal recovery because it's in
-RO mode and declares the fs clean - with a reasonable looking number
-of files and blocks.
-
-If I try to mount -t ext4 -o ro, I get :
-
-mount: /mnt: mount(2) system call failed: Structure needs cleaning.
-
-so before anything else, I tried fsck -nf to make sure that the REST
-of the filesystem is in one logical piece.
-THAT painted a very different picture:
-On pass 1, I get approximately 980k (almost 10^6) of
-Inode nnnnn passes checks, but checksum does not match inode
-and ~ 2000
-Inode nnnnn contains garbage
-Plus some 'tree not optimised' which are technically not errors, from
-what I understand.
-After ~11 hours, it switches to 1b, tells me that inode 12 has a long
-list of duplicate blocks
-
-Running additional passes to resolve blocks claimed by more than one inode...
-Pass 1B: Rescanning for multiply-claimed blocks
-Multiply-claimed block(s) in inode 12: 2928004133 [....]
-
-And ends after the list of multiply claimed blocks with:
-
-e2fsck: aborted
-Error while scanning inodes (8193): Inode checksum does not match inode
-
-/dev/md123: ********** WARNING: Filesystem still has errors **********
-
-
-/dev/md123: ********** WARNING: Filesystem still has errors **********
-
-So, what is my next step? I realise I should NOT have touched the
-original drives and dd-ed images to a separate array to work on those,
-but I believe the only writing that occurred were the mdraid
-superblocks.
-
-Where do I go from here?
-
-Thanks!
