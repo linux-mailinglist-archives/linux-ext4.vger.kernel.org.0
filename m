@@ -2,113 +2,154 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 593645B1704
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 Sep 2022 10:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91BEC5B1719
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Sep 2022 10:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbiIHIaY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 8 Sep 2022 04:30:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51796 "EHLO
+        id S230168AbiIHIdf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 8 Sep 2022 04:33:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbiIHIaX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Sep 2022 04:30:23 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472194C617
-        for <linux-ext4@vger.kernel.org>; Thu,  8 Sep 2022 01:30:22 -0700 (PDT)
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2887fkqg013972;
-        Thu, 8 Sep 2022 08:30:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=+PmpHeSCe/w/YZD9Z9S+DUytMidEWOkGUD6M/XlkWJ4=;
- b=qoZ9YenKd+CBZBPlsirZ9lplg4di/b6yijvMC1DLowlV2ZWHwvK4qPPRCNzTmO+Qashm
- QA/xe+KYa8i9W4Tm7xDc/kpxR1YZ7Z7XuLVk0JKlToPRAvtWnzpDIp5u69kP6pzY1KZN
- ZI5NCTym/pbj8ghUeao5AB8kgHOJSzC/R4baZziqaBZ8wSrYBwiNEzwLPj9konpdMH5y
- qUToDxhPy6pMkAkQyZWIYNDr1ALKOmPAZjEyMQxCiCFvR0kFk0dXWkA3OFXk212fCmzz
- jEs46ZmYIHkfjOr7bdzfA90Sua+73EQESnXL2d4WKUnJpDVakEa21mQvbcu5ypEEP8DM Tg== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3jfc7s9jga-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Sep 2022 08:30:09 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2888KSNJ007320;
-        Thu, 8 Sep 2022 08:30:07 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 3jbx6hp9xs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Sep 2022 08:30:06 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2888U42d38207988
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 8 Sep 2022 08:30:04 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B805A11C04A;
-        Thu,  8 Sep 2022 08:30:04 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6CCC611C05E;
-        Thu,  8 Sep 2022 08:30:02 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.112.167])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu,  8 Sep 2022 08:30:02 +0000 (GMT)
-Date:   Thu, 8 Sep 2022 13:59:58 +0530
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Subject: Re: [PATCH 5/5] ext4: Use buckets for cr 1 block scan instead of
- rbtree
-Message-ID: <YxmoBpQdRqh/e4ol@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <20220906150803.375-1-jack@suse.cz>
- <20220906152920.25584-5-jack@suse.cz>
+        with ESMTP id S230377AbiIHId3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Sep 2022 04:33:29 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4450E1A96;
+        Thu,  8 Sep 2022 01:33:28 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 7CA5F22486;
+        Thu,  8 Sep 2022 08:33:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1662626007; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8sjzYxBjz9/JeFT8Y7oHbqmg7W+DAyx1ya6iI90ZaMQ=;
+        b=G99I5obrt4hV3c27dz2o4YfAIhoIVrbbH3dfLPAMW0LzbBqu0EvtmmhrUcACOb2o9ed70/
+        cNXhGP9N/+SW8xSfPOoGS+uL+IcwKESwEcFuRCZSQaJZZy4oj7W1K/mG+gn7S20YmAbsz1
+        rqsKa2EzYzVRz173gUhOyD7GM3th61E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1662626007;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8sjzYxBjz9/JeFT8Y7oHbqmg7W+DAyx1ya6iI90ZaMQ=;
+        b=+whd4o3JKfEbh5M21ThDe8yY7TUw+sX0ZNwz+FFg91wQqsJpbtfAwaWS5pMeJQ6pxu12Mo
+        I/KruOUqr3Z7G+Bg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 68BFC1322C;
+        Thu,  8 Sep 2022 08:33:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 95yKGdeoGWNILwAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 08 Sep 2022 08:33:27 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id EE081A067E; Thu,  8 Sep 2022 10:33:26 +0200 (CEST)
+Date:   Thu, 8 Sep 2022 10:33:26 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Jan Kara <jack@suse.cz>, Jeff Layton <jlayton@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>, tytso@mit.edu,
+        adilger.kernel@dilger.ca, djwong@kernel.org, david@fromorbit.com,
+        trondmy@hammerspace.com, viro@zeniv.linux.org.uk,
+        zohar@linux.ibm.com, xiubli@redhat.com, chuck.lever@oracle.com,
+        lczerner@redhat.com, brauner@kernel.org, fweimer@redhat.com,
+        linux-man@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-xfs@vger.kernel.org
+Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
+ STATX_INO_VERSION field
+Message-ID: <20220908083326.3xsanzk7hy3ff4qs@quack3>
+References: <20220907111606.18831-1-jlayton@kernel.org>
+ <166255065346.30452.6121947305075322036@noble.neil.brown.name>
+ <79aaf122743a295ddab9525d9847ac767a3942aa.camel@kernel.org>
+ <20220907125211.GB17729@fieldses.org>
+ <771650a814ab1ff4dc5473d679936b747d9b6cf5.camel@kernel.org>
+ <20220907135153.qvgibskeuz427abw@quack3>
+ <166259786233.30452.5417306132987966849@noble.neil.brown.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220906152920.25584-5-jack@suse.cz>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: OmoWm3wpEkT5gGvEUJpKAJRj5SiuECEO
-X-Proofpoint-ORIG-GUID: OmoWm3wpEkT5gGvEUJpKAJRj5SiuECEO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
- definitions=2022-09-08_06,2022-09-07_02,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- clxscore=1015 malwarescore=0 adultscore=0 mlxlogscore=999 phishscore=0
- bulkscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2207270000 definitions=main-2209080028
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <166259786233.30452.5417306132987966849@noble.neil.brown.name>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Jan,
+On Thu 08-09-22 10:44:22, NeilBrown wrote:
+> On Wed, 07 Sep 2022, Jan Kara wrote:
+> > On Wed 07-09-22 09:12:34, Jeff Layton wrote:
+> > > On Wed, 2022-09-07 at 08:52 -0400, J. Bruce Fields wrote:
+> > > > On Wed, Sep 07, 2022 at 08:47:20AM -0400, Jeff Layton wrote:
+> > > > > On Wed, 2022-09-07 at 21:37 +1000, NeilBrown wrote:
+> > > > > > On Wed, 07 Sep 2022, Jeff Layton wrote:
+> > > > > > > +The change to \fIstatx.stx_ino_version\fP is not atomic with respect to the
+> > > > > > > +other changes in the inode. On a write, for instance, the i_version it usually
+> > > > > > > +incremented before the data is copied into the pagecache. Therefore it is
+> > > > > > > +possible to see a new i_version value while a read still shows the old data.
+> > > > > > 
+> > > > > > Doesn't that make the value useless?
+> > > > > > 
+> > > > > 
+> > > > > No, I don't think so. It's only really useful for comparing to an older
+> > > > > sample anyway. If you do "statx; read; statx" and the value hasn't
+> > > > > changed, then you know that things are stable. 
+> > > > 
+> > > > I don't see how that helps.  It's still possible to get:
+> > > > 
+> > > > 		reader		writer
+> > > > 		------		------
+> > > > 				i_version++
+> > > > 		statx
+> > > > 		read
+> > > > 		statx
+> > > > 				update page cache
+> > > > 
+> > > > right?
+> > > > 
+> > > 
+> > > Yeah, I suppose so -- the statx wouldn't necessitate any locking. In
+> > > that case, maybe this is useless then other than for testing purposes
+> > > and userland NFS servers.
+> > > 
+> > > Would it be better to not consume a statx field with this if so? What
+> > > could we use as an alternate interface? ioctl? Some sort of global
+> > > virtual xattr? It does need to be something per-inode.
+> > 
+> > I was thinking how hard would it be to increment i_version after updating
+> > data but it will be rather hairy. In particular because of stuff like
+> > IOCB_NOWAIT support which needs to bail if i_version update is needed. So
+> > yeah, I don't think there's an easy way how to provide useful i_version for
+> > general purpose use.
+> > 
+> 
+> Why cannot IOCB_NOWAIT update i_version?  Do we not want to wait on the
+> cmp_xchg loop in inode_maybe_inc_iversion(), or do we not want to
+> trigger an inode update?
+> 
+> The first seems unlikely, but the second seems unreasonable.  We already
+> acknowledge that after a crash iversion might go backwards and/or miss
+> changes.
 
-On Tue, Sep 06, 2022 at 05:29:11PM +0200, Jan Kara wrote:
->  
->  ** snip **
->  /*
->   * Choose next group by traversing average fragment size tree. Updates *new_cr
-Maybe we can change this to "average fragment size list of suitable
-order"
-> - * if cr lvel needs an update. Sets EXT4_MB_SEARCH_NEXT_LINEAR to indicate that
-> - * the linear search should continue for one iteration since there's lock
-> - * contention on the rb tree lock.
-> + * if cr level needs an update. 
->   */
->  static void ext4_mb_choose_next_group_cr1(struct ext4_allocation_context *ac,
->  		int *new_cr, ext4_group_t *group, ext4_group_t ngroups)
->  {
->  	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
-> -	int avg_fragment_size, best_so_far;
-> -	struct rb_node *node, *found;
-> -	struct ext4_group_info *grp;
+It boils down to the fact that we don't want to call mark_inode_dirty()
+from IOCB_NOWAIT path because for lots of filesystems that means journal
+operation and there are high chances that may block.
 
-Other than that, this patch along with the updated mb_structs_summary
-proc file change looks good to me.
+Presumably we could treat inode dirtying after i_version change similarly
+to how we handle timestamp updates with lazytime mount option (i.e., not
+dirty the inode immediately but only with a delay) but then the time window
+for i_version inconsistencies due to a crash would be much larger.
 
-Regards,
-Ojaswin
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
