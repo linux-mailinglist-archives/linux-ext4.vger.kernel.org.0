@@ -2,127 +2,84 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC7D5B17D9
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 Sep 2022 10:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE445B17DA
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Sep 2022 10:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229502AbiIHI5U (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 8 Sep 2022 04:57:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52990 "EHLO
+        id S229673AbiIHI6J (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 8 Sep 2022 04:58:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbiIHI5U (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Sep 2022 04:57:20 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CF1BF756A
-        for <linux-ext4@vger.kernel.org>; Thu,  8 Sep 2022 01:57:19 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id DC87F1F8A3;
-        Thu,  8 Sep 2022 08:57:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1662627437; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=obl0mTcf7xhT0XStiytJVYagY1eGg64RuTPV72/pNOo=;
-        b=wPsdN3eNtdUTcCyAWBuD/YTG/dZhHTUpmOAwdbx8sM95T3PzdX8N9i71q1b6dTbpwYcJRJ
-        CvBL6eZpUSSa3b2xoEzoUp1izuYBu1BaqDpuv/Mp2ZdU8OSRuqB9x4Jzt+Ic6vecMEGZ8E
-        k0fskYYP5f4g7NF3ClBLB3Ke+pQgKj4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1662627437;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=obl0mTcf7xhT0XStiytJVYagY1eGg64RuTPV72/pNOo=;
-        b=SW81Khjh20Tc+GRypl/i6RETa56n2PRC3pUa4nd/qKHjjWkSfH7RYQpZByzXI1Tx/OZY8C
-        jeLD29bSXTUKtNCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CBF9C1322C;
-        Thu,  8 Sep 2022 08:57:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id FLrDMW2uGWMcOgAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 08 Sep 2022 08:57:17 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 39B35A067E; Thu,  8 Sep 2022 10:57:17 +0200 (CEST)
-Date:   Thu, 8 Sep 2022 10:57:17 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>,
-        linux-ext4@vger.kernel.org,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Subject: Re: [PATCH 2/5] ext4: Avoid unnecessary spreading of allocations
- among groups
-Message-ID: <20220908085717.2kln432koqxbz3ja@quack3>
-References: <20220906150803.375-1-jack@suse.cz>
- <20220906152920.25584-2-jack@suse.cz>
- <20220907180507.3byq5uts42e6dpkn@riteshh-domain>
+        with ESMTP id S229445AbiIHI6I (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Sep 2022 04:58:08 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA67F7740
+        for <linux-ext4@vger.kernel.org>; Thu,  8 Sep 2022 01:58:08 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id q3so17094250pjg.3
+        for <linux-ext4@vger.kernel.org>; Thu, 08 Sep 2022 01:58:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=pdyhBZUaAo+ER9GYk+jaASHhMFffnCyLX6id27pqjbA=;
+        b=TRVS8om6skDKPyy5cNODcgExt2ZzZguLsWTy1NxRr7a/D1C+iTGk92QfTagKEB4gzX
+         LbVD9nCTUL1ZQKZ0eXz79e3B9e6tEzPdwOvckfqbiO7H6x/r/Uk0dyCatx9CSQGXHPD+
+         hcE0CS1sCdpYNWjlybblHau5U7X7w+hHoGosgVYztQxuLeJ9U07njs4kUleIS6+dm1ES
+         huw5KQFwv0VkiIwR+JCC5ong0JIqxiOhIaASPEQHmZv1bylhCHgT/b0hxBIxCk06Uyl1
+         LZXa/fI0F8hNx8jCuGAiMxTVpykWQbo/mP4t5Qy4VMZK2qGJNgG/JoUkn16RlUbLAfPC
+         MYlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=pdyhBZUaAo+ER9GYk+jaASHhMFffnCyLX6id27pqjbA=;
+        b=w1ZjvISs1nwu/DEIPInkKpkV23kpaIONigdWfw2wYgOa8tBVTBjPTzP8CIhroChVRr
+         5jC8YZLBPIVq3n7dYGswT7LaZVkAbMYX2915BO7sgRaBczcX5DhRZ4NlBBEWiagFiAMW
+         TgoLUJMaFq8xPRJbIzhddC+iL4mjazfy37Z8kLGFyd3rYZoA3g11UZbo5ik2MJ+Bx1SG
+         V/66T59FO8XiOEZBtP7DAgAWRLJe8wKHd/wC2bhXq1JBrKpy8+C8yzrHi3JIGH7xwK9n
+         edhbe/8499R2+FTpC/DPJBFRGj4kHJPfPaHBbEEXeSLKuen5p5P2clOXMauYKEG8PtQ5
+         qgQw==
+X-Gm-Message-State: ACgBeo2Z7AKL7vx1pM4lXjvk2XpU1JiMYR9y2tFtKPLDjmGqRQcb84qG
+        Rp2O9MW7AWlGYzJ5lnsgAQc=
+X-Google-Smtp-Source: AA6agR7RPaVSr7/x1ClKX7XtrI4RMQzfdsA46Jbq1hWHccdR1bIrO5Lj0hcm9zflxRhGNxUGw60cKw==
+X-Received: by 2002:a17:90b:17cc:b0:200:1df0:5130 with SMTP id me12-20020a17090b17cc00b002001df05130mr3104523pjb.125.1662627487699;
+        Thu, 08 Sep 2022 01:58:07 -0700 (PDT)
+Received: from localhost ([2406:7400:63:83c4:f166:555c:90a1:a48d])
+        by smtp.gmail.com with ESMTPSA id a7-20020aa78e87000000b0053bb934eaa9sm10043217pfr.201.2022.09.08.01.58.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Sep 2022 01:58:07 -0700 (PDT)
+Date:   Thu, 8 Sep 2022 14:28:02 +0530
+From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+To:     Jason Yan <yanaijie@huawei.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+        lczerner@redhat.com, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v2 09/13] ext4: factor out
+ ext4_check_feature_compatibility()
+Message-ID: <20220908085802.pc5sm4vvy6ll24td@riteshh-domain>
+References: <20220903030156.770313-1-yanaijie@huawei.com>
+ <20220903030156.770313-10-yanaijie@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220907180507.3byq5uts42e6dpkn@riteshh-domain>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220903030156.770313-10-yanaijie@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 07-09-22 23:35:07, Ritesh Harjani (IBM) wrote:
-> On 22/09/06 05:29PM, Jan Kara wrote:
-> > mb_set_largest_free_order() updates lists containing groups with largest
-> > chunk of free space of given order. The way it updates it leads to
-> > always moving the group to the tail of the list. Thus allocations
-> > looking for free space of given order effectively end up cycling through
-> > all groups (and due to initialization in last to first order). This
-> > spreads allocations among block groups which reduces performance for
-> > rotating disks or low-end flash media. Change
-> > mb_set_largest_free_order() to only update lists if the order of the
-> > largest free chunk in the group changed.
+On 22/09/03 11:01AM, Jason Yan wrote:
+> Factor out ext4_check_feature_compatibility(). No functional change.
 > 
-> Nice and clear explaination. Thanks :)
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> ---
+>  fs/ext4/super.c | 144 ++++++++++++++++++++++++++----------------------
+>  1 file changed, 77 insertions(+), 67 deletions(-)
 > 
-> This change also looks good to me.
-> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
-Thanks for review!
-
-> One other thought to further optimize - 
-> Will it make a difference if rather then adding the group to the tail of the list, 
-> we add that group to the head of sbi->s_mb_largest_free_orders[new_order]. 
-> 
-> This is because this group is the latest from where blocks were allocated/freed,
-> and hence the next allocation should first try from this group in order to keep 
-> the files/extents blocks close to each other? 
-> (That sometimes might help with disk firmware to avoid doing discards if the freed 
-> block can be reused?)
-> 
-> Or does goal block will always cover that case by default and we might never
-> require this? Maybe in a case of a new file within the same directory where 
-> the goal group has no free blocks, but the last group attempted should be 
-> retried first?
-
-So I was also wondering about this somewhat. I think that goal group will
-take care of keeping file data together so head/tail insertion should not
-matter too much for one file. Maybe if the allocation comes from a
-different inode, then the head/tail insertion matters but then it is not
-certain whether the allocation is actually related and what its order is
-(depending on that we might prefer same / different group) so I've decided
-to just keep things as they are. I agree it might be interesting to
-investigate and experiment with various workloads and see whether the
-head/tail insertion makes a difference for some workload but I think it's a
-separate project.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Looks good to me. 
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
