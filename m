@@ -2,158 +2,109 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E885B17EC
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 Sep 2022 11:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9448C5B17EE
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Sep 2022 11:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbiIHJBn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 8 Sep 2022 05:01:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33828 "EHLO
+        id S230115AbiIHJD1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 8 Sep 2022 05:03:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230115AbiIHJBl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Sep 2022 05:01:41 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A47FD22C
-        for <linux-ext4@vger.kernel.org>; Thu,  8 Sep 2022 02:01:40 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id EE18233E62;
-        Thu,  8 Sep 2022 09:01:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1662627698; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LhZQ5z9ejj0Z2DOJLU1WXVxG50cvWY2jHB0z+Fj1BK0=;
-        b=XMRyhxx27wc9C0XjF/Zo6v13pqnzFwJ3A/hc45aH6npul8/Hk52xCbPOivzQApOqyq1ubv
-        C+tsowLuIsO5CIQetxe1ME1Iqg7he6EKxmbYO65TY6v9zuQp2I7I/JUCF+1qvcyD8D3+bL
-        QI1mbtgrPiSu1BHdpslWoc3O9knCGQ0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1662627698;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LhZQ5z9ejj0Z2DOJLU1WXVxG50cvWY2jHB0z+Fj1BK0=;
-        b=ls3C7PIx/Cjb5yWtzejp+o/+sUS0QqmxEFuxMBy31btGXBFXwHu/jdvpPADnYF90jGTsTX
-        5kUAUr1X4mB1iGDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CBBBC1322C;
-        Thu,  8 Sep 2022 09:01:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id +Ha7MXKvGWMsPAAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 08 Sep 2022 09:01:38 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id C39B4A067E; Thu,  8 Sep 2022 11:01:37 +0200 (CEST)
-Date:   Thu, 8 Sep 2022 11:01:37 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>,
-        linux-ext4@vger.kernel.org,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Subject: Re: [PATCH 5/5] ext4: Use buckets for cr 1 block scan instead of
- rbtree
-Message-ID: <20220908090137.ojysovmucdmlfbti@quack3>
-References: <20220906150803.375-1-jack@suse.cz>
- <20220906152920.25584-5-jack@suse.cz>
- <20220907184110.wu2uqs7s3hggdtj2@riteshh-domain>
+        with ESMTP id S229609AbiIHJD0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Sep 2022 05:03:26 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5D6EF7577
+        for <linux-ext4@vger.kernel.org>; Thu,  8 Sep 2022 02:03:25 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id m3so6512534pjo.1
+        for <linux-ext4@vger.kernel.org>; Thu, 08 Sep 2022 02:03:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=U5l4s9dEaUIPCl/QmrOpIinbJY+eoGy9YHOo3H3/ByE=;
+        b=KbCD1aQ047YzFbZj5LxtggTZcq1SAkRFUOrucrg3VujMw26vH1bewIiQWVeB5kWTcz
+         DqqgIMAhPgcgh0ltcLgYsT+co/9p7mRjE+NRaii49d4O284fWCjO9jkeIaSBGkvPrOk+
+         1qItDCz/37zQb99SN5HcmQ0o/lyGDp09Zgjlrz+k6DhfmeaF7+1Wo9zr4Zv6YVIyi/m1
+         QOtV02Kq0m0T5jOkJoXnmyIKw/cSUidzqB40ofsMZmQqrb5CYTVyB+UsNW9GPnpnLhKM
+         h7aXUFIAZNF1F6fmJWODDhCdqmGyQ37csbBCrTL++OU3L6z8OkstSh6qdAv6H2DOWSvz
+         wZsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=U5l4s9dEaUIPCl/QmrOpIinbJY+eoGy9YHOo3H3/ByE=;
+        b=rXqBIDoqu3cm7wHGRR1nLgicGKpxjOmk02hwzvseBP+y1gxUr7f/Of5JZdN7nI9flO
+         XmuJHnTZk1cYDINOmQFcQL9i2oHpopPNzOcP2Wvq9u9XolWgU8OhKBNz8hAG3A09AUfu
+         H0EzRwxQCxVq58DQgP0FFVizK//sQCykyHLq0cDSKrP2mrm9XkwtdI/A9jV1J1liyocy
+         f2SZrf2kaWB7F7kUN0VY6lpjbHga+GsrviP75WGjlZJeMaMORDGU1oP2nxfkEn2lBqY/
+         BMB0GmC6AcOC1foESxjAM4FGCjibv1xGHPoUhwiu5/wOHrgbJ1XdhDN+ZiSPB6akIvVb
+         j6IQ==
+X-Gm-Message-State: ACgBeo205bBOcaTkOEpjMRI5YHj3SQaYor+8QF53D4U1Ow5o2X1hObWM
+        A3evHpb2/ArVNZsDNUeDN/c=
+X-Google-Smtp-Source: AA6agR6SaPh6TQR2jrGqMuxokjkztVuOb+FBs79oKi9ri7z5vq1qD6tfoTAmHRJ5JuPpurGESx0MTA==
+X-Received: by 2002:a17:902:ced2:b0:177:fa1f:4ac4 with SMTP id d18-20020a170902ced200b00177fa1f4ac4mr362135plg.20.1662627805474;
+        Thu, 08 Sep 2022 02:03:25 -0700 (PDT)
+Received: from localhost ([2406:7400:63:83c4:f166:555c:90a1:a48d])
+        by smtp.gmail.com with ESMTPSA id f21-20020a623815000000b0053e99f2bf16sm2136000pfa.78.2022.09.08.02.03.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Sep 2022 02:03:24 -0700 (PDT)
+Date:   Thu, 8 Sep 2022 14:33:20 +0530
+From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+To:     Jason Yan <yanaijie@huawei.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+        lczerner@redhat.com, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v2 11/13] ext4: factor out ext4_group_desc_init() and
+ ext4_group_desc_free()
+Message-ID: <20220908090320.tykdh44uhxgimwzf@riteshh-domain>
+References: <20220903030156.770313-1-yanaijie@huawei.com>
+ <20220903030156.770313-12-yanaijie@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220907184110.wu2uqs7s3hggdtj2@riteshh-domain>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220903030156.770313-12-yanaijie@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 08-09-22 00:11:10, Ritesh Harjani (IBM) wrote:
-> On 22/09/06 05:29PM, Jan Kara wrote:
-> > Using rbtree for sorting groups by average fragment size is relatively
-> > expensive (needs rbtree update on every block freeing or allocation) and
-> > leads to wide spreading of allocations because selection of block group
-> > is very sentitive both to changes in free space and amount of blocks
-> > allocated. Furthermore selecting group with the best matching average
-> > fragment size is not necessary anyway, even more so because the
-> > variability of fragment sizes within a group is likely large so average
-> > is not telling much. We just need a group with large enough average
-> > fragment size so that we have high probability of finding large enough
-> > free extent and we don't want average fragment size to be too big so
-> > that we are likely to find free extent only somewhat larger than what we
-> > need.
-> > 
-> > So instead of maintaing rbtree of groups sorted by fragment size keep
-> > bins (lists) or groups where average fragment size is in the interval
-> > [2^i, 2^(i+1)). This structure requires less updates on block allocation
-> > / freeing, generally avoids chaotic spreading of allocations into block
-> > groups, and still is able to quickly (even faster that the rbtree)
-> > provide a block group which is likely to have a suitably sized free
-> > space extent.
+On 22/09/03 11:01AM, Jason Yan wrote:
+> Factor out ext4_group_desc_init() and ext4_group_desc_free(). No
+> functional change.
 > 
-> This makes sense because we anyways maintain buddy bitmap for MB_NUM_ORDERS
-> bitmaps. Hence our data structure to maintain different lists of groups, with 
-> their average fragments size can be bounded within MB_NUM_ORDERS lists.
-> This also makes it for amortized O(1) search time for finding the right group
-> in CR1 search.
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> ---
+>  fs/ext4/super.c | 143 ++++++++++++++++++++++++++++--------------------
+>  1 file changed, 84 insertions(+), 59 deletions(-)
 > 
-> > 
-> > This patch reduces number of block groups used when untarring archive
-> > with medium sized files (size somewhat above 64k which is default
-> > mballoc limit for avoiding locality group preallocation) to about half
-> > and thus improves write speeds for eMMC flash significantly.
-> > 
-> 
-> Indeed a nice change. More inline with the how we maintain
-> sbi->s_mb_largest_free_orders lists.
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 69921a850644..468a958cf414 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -4743,9 +4743,89 @@ static int ext4_geometry_check(struct super_block *sb,
+>  	return 0;
+>  }
+>  
+> +static void ext4_group_desc_free(struct ext4_sb_info *sbi)
+> +{
+> +	struct buffer_head **group_desc;
+> +	int i;
+> +
+> +	rcu_read_lock();
+> +	group_desc = rcu_dereference(sbi->s_group_desc);
+> +	for (i = 0; i < sbi->s_gdb_count; i++)
+> +		brelse(group_desc[i]);
+> +	kvfree(group_desc);
+> +	rcu_read_unlock();
+> +}
 
-I didn't really find more comments than the one below?
+I thought we could use ext4_group_desc_free() in ext4_put_super() too. 
+But I guess in there within the same rcu_read_lock/unlock() we call for 
+kvfree of flex_groups as well. 
 
-> I think as you already noted there are few minor checkpatch errors,
-> other than that one small query below.
-
-Yep, some checkpatch errors + procfs file handling bugs + one bad unlock in
-an error recovery path. All fixed up locally :)
-
-> > -/*
-> > - * Reinsert grpinfo into the avg_fragment_size tree with new average
-> > - * fragment size.
-> > - */
-> > +/* Move group to appropriate avg_fragment_size list */
-> >  static void
-> >  mb_update_avg_fragment_size(struct super_block *sb, struct ext4_group_info *grp)
-> >  {
-> >  	struct ext4_sb_info *sbi = EXT4_SB(sb);
-> > +	int new_order;
-> >  
-> >  	if (!test_opt2(sb, MB_OPTIMIZE_SCAN) || grp->bb_free == 0)
-> >  		return;
-> >  
-> > -	write_lock(&sbi->s_mb_rb_lock);
-> > -	if (!RB_EMPTY_NODE(&grp->bb_avg_fragment_size_rb)) {
-> > -		rb_erase(&grp->bb_avg_fragment_size_rb,
-> > -				&sbi->s_mb_avg_fragment_size_root);
-> > -		RB_CLEAR_NODE(&grp->bb_avg_fragment_size_rb);
-> > -	}
-> > +	new_order = mb_avg_fragment_size_order(sb,
-> > +					grp->bb_free / grp->bb_fragments);
-> 
-> Previous rbtree change was always checking for if grp->bb_fragments for 0.
-> Can grp->bb_fragments be 0 here?
-
-Since grp->bb_free is greater than zero, there should be at least one
-fragment...
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+But this change looks good to me. 
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
