@@ -2,181 +2,149 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3ABC5B1BA0
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 Sep 2022 13:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B07FC5B1C72
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Sep 2022 14:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbiIHLhN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 8 Sep 2022 07:37:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44634 "EHLO
+        id S231566AbiIHMJe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 8 Sep 2022 08:09:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbiIHLhM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Sep 2022 07:37:12 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 505807D7A9;
-        Thu,  8 Sep 2022 04:37:11 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 07D9BB820BD;
-        Thu,  8 Sep 2022 11:37:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74312C433D6;
-        Thu,  8 Sep 2022 11:37:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662637028;
-        bh=nFaIloh72XswjqLypFm7qEwZe0n6G6z7SXTNzBgCMjg=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=T8fy2B8GzUAkzTIPSAwnHwIr6BrIEln2MeWmJAxpt9MOd925gW1B2lQhZYSO4COYu
-         B2O8n2i73wr8nQ+Xl9fXqr5P9fydyAptj/hEQAIeJ51Xa/wC8HJ39zNDiXvXlWzeAH
-         Yda5slhtPSR7aZt2pwMzXhhFhRe5nrfP+UOan5Gou2I7n4cg45cMkkZXhJqXnq7/W9
-         aIDWYDkMNc0c9V1oMyr0Ojcp8Tb3pXVFnJPg/eIRJfpXyzU5wP48Yb60jYJPaVcfwS
-         jtr/wUtGXPernRKRBPdv9HqXzzQo9VLCkAV2iNdNCznGAQGrXT/r2lX5iXbMgopjjo
-         jBbL/T/kwrleQ==
-Message-ID: <c15f58c78e560bb9a597db6d22c317f98f020435.camel@kernel.org>
-Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
- STATX_INO_VERSION field
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        "neilb@suse.de" <neilb@suse.de>
-Cc:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "xiubli@redhat.com" <xiubli@redhat.com>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "bfields@fieldses.org" <bfields@fieldses.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "lczerner@redhat.com" <lczerner@redhat.com>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>
-Date:   Thu, 08 Sep 2022 07:37:05 -0400
-In-Reply-To: <9f8b9ee28dcc479ab6fb1105fc12ff190a9b5c48.camel@hammerspace.com>
-References: <20220907111606.18831-1-jlayton@kernel.org>
-                , <166255065346.30452.6121947305075322036@noble.neil.brown.name>
-                , <79aaf122743a295ddab9525d9847ac767a3942aa.camel@kernel.org>
-                , <20220907125211.GB17729@fieldses.org>
-                , <771650a814ab1ff4dc5473d679936b747d9b6cf5.camel@kernel.org>
-                , <8a71986b4fb61cd9b4adc8b4250118cbb19eec58.camel@hammerspace.com>
-         <166259706887.30452.6749778447732126953@noble.neil.brown.name>
-         <9f8b9ee28dcc479ab6fb1105fc12ff190a9b5c48.camel@hammerspace.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
+        with ESMTP id S231577AbiIHMJN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Sep 2022 08:09:13 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0005DE559C
+        for <linux-ext4@vger.kernel.org>; Thu,  8 Sep 2022 05:08:53 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id b16so24039798edd.4
+        for <linux-ext4@vger.kernel.org>; Thu, 08 Sep 2022 05:08:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:from:to:cc:subject:date;
+        bh=61JNgHFLNVCOHtS3GBlVT+sTDzg02TjYElOUCZQYEf8=;
+        b=TlvWZGvy2q3E24gzGuXuCrXjIP91baX19lrAUviaJ3hMoqJLxz1+gHXIikJMH1edQy
+         11+SQewlhVG7Vn9lKmMjf1segyOAK+DwM9O8bLQ6DL1PQ7h09ExGsRBrnH+/4VBjz2jM
+         YNF1f2ATuvmF70d8DtoDb19e058w7WlC2DDqJRZf/+1kPtSMcxQ/t7J3kTJt0IcHp+1+
+         gB/ZwmEEbJfMRB+dG2kcHcIFB5jzuFu/JiyYCh9k2wrT3qUCTlF4trLXSumM5rxEEZKx
+         SJFEe17bDdrhvCJFAWvGeeqZFC/ws7jTPdcdYgD3cB1rr0g9y7VYcKDBv4m2Xbv8ou8X
+         Yjcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=61JNgHFLNVCOHtS3GBlVT+sTDzg02TjYElOUCZQYEf8=;
+        b=D5kL0Pe3ItPlqzl/4FCGQZ4irn/di+VZgjQEWMcwcioQ9KZyKIAp6nbsY/EgLeJMS+
+         osvHcXY7S84X+bKQUBKFYjGXKsLTzqpf6b3Ijq/dRjIeiyuvS5+bzVw6kM69ZrvBKbYP
+         PFa+8syHRRuICiRJ4RYlY4nXMTZEaER0cmua89UIXtQs/6sF9RiQNAHbesQf96VyrUkQ
+         /VmXJ2JzpJebEp85OoGuj7mwA2Oy6tPPtauc0FSfBMZMV8roVoOSlWzr2s1Vrr7xpogW
+         pIaIrLxKVOK6qydqP3BypSqZKCGak3bd3OzzV2JXxj6IxBvL4ycqQmir/y/4gXyrjgTo
+         M/oQ==
+X-Gm-Message-State: ACgBeo3/YkQRZaf6c1vWEFmQPcxUXqNAtWpTaoyWtK/YQ3ZCGH+ghcd6
+        1SOYIsDSxcl3VWXW31sPNZTiVze/8Z2MnneoQJM=
+X-Google-Smtp-Source: AA6agR6dPrL2a0yucF7k/GpsT0Zy8AQP/JD+9gwi54DEWIaYLU4qPI8wu2I4uiZxSnqOAHtzo0f1b2JOX266ttN+ZnI=
+X-Received: by 2002:a05:6402:5202:b0:448:ab5d:3b89 with SMTP id
+ s2-20020a056402520200b00448ab5d3b89mr7081238edd.343.1662638931605; Thu, 08
+ Sep 2022 05:08:51 -0700 (PDT)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Received: by 2002:a17:906:749d:b0:743:2e24:e8cd with HTTP; Thu, 8 Sep 2022
+ 05:08:50 -0700 (PDT)
+Reply-To: mrtonyelumelu98@gmail.com
+From:   "Mrs. Cristalina Georgieva" <nastyanastya88889@gmail.com>
+Date:   Thu, 8 Sep 2022 13:08:50 +0100
+Message-ID: <CADsX60Bj9Xf39JrWDf_y6K-X+DcHqyvyr40Bv3xhQ3LXd77_5Q@mail.gmail.com>
+Subject: hi
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
+        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 2022-09-08 at 00:41 +0000, Trond Myklebust wrote:
-> On Thu, 2022-09-08 at 10:31 +1000, NeilBrown wrote:
-> > On Wed, 07 Sep 2022, Trond Myklebust wrote:
-> > > On Wed, 2022-09-07 at 09:12 -0400, Jeff Layton wrote:
-> > > > On Wed, 2022-09-07 at 08:52 -0400, J. Bruce Fields wrote:
-> > > > > On Wed, Sep 07, 2022 at 08:47:20AM -0400, Jeff Layton wrote:
-> > > > > > On Wed, 2022-09-07 at 21:37 +1000, NeilBrown wrote:
-> > > > > > > On Wed, 07 Sep 2022, Jeff Layton wrote:
-> > > > > > > > +The change to \fIstatx.stx_ino_version\fP is not atomic
-> > > > > > > > with
-> > > > > > > > respect to the
-> > > > > > > > +other changes in the inode. On a write, for instance,
-> > > > > > > > the
-> > > > > > > > i_version it usually
-> > > > > > > > +incremented before the data is copied into the
-> > > > > > > > pagecache.
-> > > > > > > > Therefore it is
-> > > > > > > > +possible to see a new i_version value while a read still
-> > > > > > > > shows the old data.
-> > > > > > >=20
-> > > > > > > Doesn't that make the value useless?
-> > > > > > >=20
-> > > > > >=20
-> > > > > > No, I don't think so. It's only really useful for comparing
-> > > > > > to an
-> > > > > > older
-> > > > > > sample anyway. If you do "statx; read; statx" and the value
-> > > > > > hasn't
-> > > > > > changed, then you know that things are stable.=20
-> > > > >=20
-> > > > > I don't see how that helps.=A0 It's still possible to get:
-> > > > >=20
-> > > > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0reader=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0writer
-> > > > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0------=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0------
-> > > > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0i_version++
-> > > > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0statx
-> > > > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0read
-> > > > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0statx
-> > > > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0update page cache
-> > > > >=20
-> > > > > right?
-> > > > >=20
-> > > >=20
-> > > > Yeah, I suppose so -- the statx wouldn't necessitate any locking.
-> > > > In
-> > > > that case, maybe this is useless then other than for testing
-> > > > purposes
-> > > > and userland NFS servers.
-> > > >=20
-> > > > Would it be better to not consume a statx field with this if so?
-> > > > What
-> > > > could we use as an alternate interface? ioctl? Some sort of
-> > > > global
-> > > > virtual xattr? It does need to be something per-inode.
-> > >=20
-> > > I don't see how a non-atomic change attribute is remotely useful
-> > > even
-> > > for NFS.
-> > >=20
-> > > The main problem is not so much the above (although NFS clients are
-> > > vulnerable to that too) but the behaviour w.r.t. directory changes.
-> > >=20
-> > > If the server can't guarantee that file/directory/... creation and
-> > > unlink are atomically recorded with change attribute updates, then
-> > > the
-> > > client has to always assume that the server is lying, and that it
-> > > has
-> > > to revalidate all its caches anyway. Cue endless
-> > > readdir/lookup/getattr
-> > > requests after each and every directory modification in order to
-> > > check
-> > > that some other client didn't also sneak in a change of their own.
-> >=20
-> > NFS re-export doesn't support atomic change attributes on
-> > directories.
-> > Do we see the endless revalidate requests after directory
-> > modification
-> > in that situation?=A0 Just curious.
->=20
-> Why wouldn't NFS re-export be capable of supporting atomic change
-> attributes in those cases, provided that the server does? It seems to
-> me that is just a question of providing the correct information w.r.t.
-> atomicity to knfsd.
->=20
-> ...but yes, a quick glance at nfs4_update_changeattr_locked(), and what
-> happens when !cinfo->atomic should tell you all you need to know.
-
-The main reason we disabled atomic change attribute updates was that
-getattr calls on NFS can be pretty expensive. By setting the NOWCC flag,
-we can avoid those for WCC info, but at the expense of the client having
-to do more revalidation on its own.
---=20
-Jeff Layton <jlayton@kernel.org>
+2LXZhtiv2YjZgiDYp9mE2YbZgtivINin2YTYr9mI2YTZiiAoSS5NLkYpDQrYtNi52KjYqSDYpdiv
+2KfYsdipINin2YTYr9mK2YjZhiDYp9mE2K/ZiNmE2YrYqSDYjA0KIyAxOTAwINiMINi02KfYsdi5
+INin2YTYsdim2YrYsw0KDQrZhdix2K3YqNmL2Kcg2KjZg9mFINmB2Yog2LnZhtmI2KfZhiDYp9mE
+2KjYsdmK2K8g2KfZhNil2YTZg9iq2LHZiNmG2Yog2KfZhNix2LPZhdmKINmE2YTZhdiv2YrYsSBJ
+Lk0uRi4g2YPYsdmK2LPYqtin2YTZitmG2Kcg2KzZiNix2KzZitmB2KcNCg0KDQrYudiy2YrYstmK
+INin2YTZhdiz2KrZgdmK2K8hDQoNCtmE2YLYryDYs9mF2K0g2YTZhtinINmI2LLZitixINin2YTY
+rtiy2KfZhtipINin2YTZhdi52YrZhiDYrdiv2YrYq9mL2Kcg2YjYp9mE2YfZitim2Kkg2KfZhNit
+2KfZg9mF2Kkg2YTZhNiz2YTYt9ipINin2YTZhtmC2K/ZitipDQrZhNmE2KPZhdmFINin2YTZhdiq
+2K3Yr9ipINio2YHYrdi1INin2YTYo9mF2YjYp9mEINin2YTYqtmKINmE2YUg2KrYqtmFINin2YTZ
+hdi32KfZhNio2Kkg2KjZh9inINmI2KfZhNiq2Yog2YTYt9in2YTZhdinINmD2KfZhtiqDQrZhdiv
+2YrZhtipINmE2K3Zg9mI2YXYqSDYp9mE2KPZhdmFINin2YTZhdiq2K3Yr9ipINiMINmE2LDZhNmD
+INiq2YUg2KfYqtmH2KfZhSDZhdin2YTZg9mK2YfYpyDYqNin2YTYp9it2KrZitin2YQuDQrYp9mE
+2YXYrdiq2KfZhNmI2YYg2KfZhNiw2YrZhiDZitiz2KrYrtiv2YXZiNmGINin2LPZhSDYp9mE2KPZ
+hdmFINin2YTZhdiq2K3Yr9ipINiMINmI2YHZgtmL2Kcg2YTYs9is2YQg2KrYrtiy2YrZhiDYp9mE
+2KjZitin2YbYp9iqDQrZhdi5INi52YbZiNin2YYg2KfZhNio2LHZitivINin2YTYpdmE2YPYqtix
+2YjZhtmKINmE2YbYuNin2YXZhtinINij2KvZhtin2KEg2KfZhNiq2K3ZgtmK2YIg2KfZhNiw2Yog
+2KPYrNix2YrZhtin2Ycg2Iwg2YHYpdmGDQrYr9mB2LnYqtmDINmF2K/Ysdis2Kkg2YHZiiDZgtin
+2KbZhdipINiq2LbZhSAxNTAg2YXYs9iq2YHZitiv2YvYpyDZgdmKINin2YTZgdim2KfYqiDYp9mE
+2KrYp9mE2YrYqTog2LXZhtiv2YjZgiDZitin2YbYtdmK2KgNCti62YrYsSDZhdmP2LPZhNmO2ZHZ
+hSAvINi12YbYr9mI2YIg2YrYp9mG2LXZitioINi62YrYsSDZhdiv2YHZiNi5IC8g2YjYsdin2KvY
+qSDZhtmC2YQg2LrZitixINmF2YPYqtmF2YTYqSAvINij2YXZiNin2YQNCtin2YTYudmC2K8uDQoN
+CtmC2KfZhSDZhdiz2KTZiNmE2Ygg2KfZhNio2YbZgyDYp9mE2YHYp9iz2K8g2Iwg2KfZhNiw2YrZ
+hiDYp9ix2KrZg9io2YjYpyDYp9mE2YHYs9in2K8g2YXZhiDYo9is2YQg2KfZhNin2K3YqtmK2KfZ
+hCDYudmE2YkNCtij2YXZiNin2YTZgyDYjCDYqNiq2KPYrtmK2LEg2K/Zgdi52YMg2KjYtNmD2YQg
+2LrZitixINmF2LnZgtmI2YQg2Iwg2YXZhdinINij2K/ZiSDYpdmE2Ykg2KrYrdmF2YTZgyDYp9mE
+2YPYq9mK2LEg2YXZhg0K2KfZhNiq2YPYp9mE2YrZgSDZiNiq2KPYrtmK2LEg2LrZitixINmF2LnZ
+gtmI2YQg2YHZiiDZgtio2YjZhCDZhdiv2YHZiNi52KfYqtmDLiDYp9iu2KrYp9ix2Kog2KfZhNij
+2YXZhSDYp9mE2YXYqtit2K/YqQ0K2YjYtdmG2K/ZiNmCINin2YTZhtmC2K8g2KfZhNiv2YjZhNmK
+IChJTUYpINiv2YHYuSDYrNmF2YrYuSDYp9mE2KrYudmI2YrYttin2Kog2YTZgCAxNTAg2YXYs9iq
+2YHZitiv2YvYpyDYqNin2LPYqtiu2K/Yp9mFDQrYqNi32KfZgtin2KogVmlzYSBBVE0g2YXZhiDY
+o9mF2LHZitmD2Kcg2KfZhNi02YXYp9mE2YrYqSDZiNij2YXYsdmK2YPYpyDYp9mE2KzZhtmI2KjZ
+itipINmI2KfZhNmI2YTYp9mK2KfYqiDYp9mE2YXYqtit2K/YqQ0K2YjYo9mI2LHZiNio2Kcg2YjY
+otiz2YrYpyDZiNit2YjZhCDYp9mE2LnYp9mE2YUg2Iwg2K3ZitirINiq2KrZiNmB2LEg2KrZgtmG
+2YrYqSDYp9mE2K/Zgdi5INin2YTYudin2YTZhdmK2Kkg2YfYsNmHDQrZhNmE2YXYs9iq2YfZhNmD
+2YrZhiDZiNin2YTYtNix2YPYp9iqINmI2KfZhNmF2KTYs9iz2KfYqiDYp9mE2YXYp9mE2YrYqS4g
+2YjZitiz2YXYrSDZhNmE2K3Zg9mI2YXYp9iqINio2KfYs9iq2K7Yr9in2YUg2KfZhNi52YXZhNin
+2KoNCtin2YTYsdmC2YXZitipINio2K/ZhNin2Ysg2YXZhiDYp9mE2YbZgtivINmI2KfZhNi02YrZ
+g9in2KouDQoNCtmE2YLYryDZgtmF2YbYpyDYqNin2YTYqtix2KrZitioINmE2LPYr9in2K8g2YXY
+r9mB2YjYudin2KrZgyDYqNin2LPYqtiu2K/Yp9mFINio2LfYp9mC2KkgVmlzYSBBVE0g2YjYs9mK
+2KrZhSDYpdi12K/Yp9ix2YfYpw0K2YTZgyDZiNil2LHYs9in2YTZh9inINmF2KjYp9i02LHYqdmL
+INil2YTZiSDYudmG2YjYp9mG2YMg2LnYqNixINij2Yog2K7Yr9mF2KfYqiDYqNix2YrYryDYs9ix
+2YrYuSDZhdiq2KfYrdipLiDYqNi52K8NCtin2YTYp9iq2LXYp9mEINio2YbYpyDYjCDYs9mK2KrZ
+hSDYqtit2YjZitmEINmF2KjZhNi6IDHYjDUwMNiMMDAwLjAwINiv2YjZhNin2LEg2KPZhdix2YrZ
+g9mKINil2YTZiSDYqNi32KfZgtipIFZpc2ENCkFUTSDYjCDZiNin2YTYqtmKINiz2KrYs9mF2K0g
+2YTZgyDYqNiz2K3YqCDYo9mF2YjYp9mE2YMg2LnZhiDYt9ix2YrZgiDYs9it2Kgg2YXYpyDZhNin
+INmK2YLZhCDYudmGIDEw2IwwMDAg2K/ZiNmE2KfYsQ0K2KPZhdix2YrZg9mKINmB2Yog2KfZhNmK
+2YjZhSDZhdmGINij2Yog2YXYp9mD2YrZhtipINi12LHYp9mBINii2YTZiiDZgdmKINio2YTYr9mD
+LiDYqNmG2KfYodmLINi52YTZiSDYt9mE2KjZgyDYjCDZitmF2YPZhtmDDQrYstmK2KfYr9ipINin
+2YTYrdivINil2YTZiSAyMNiMMDAwLjAwINiv2YjZhNin2LEg2YHZiiDYp9mE2YrZiNmFLiDZgdmK
+INmH2LDYpyDYp9mE2LXYr9ivINiMINmK2KzYqCDYudmE2YrZgw0K2KfZhNin2KrYtdin2YQg2KjY
+pdiv2KfYsdipINin2YTZhdiv2YHZiNi52KfYqiDZiNin2YTYqtit2YjZitmE2KfYqiDYp9mE2K/Z
+iNmE2YrYqSDZiNiq2YLYr9mK2YUg2KfZhNmF2LnZhNmI2YXYp9iqINin2YTZhdi32YTZiNio2KkN
+CtmF2YYg2K7ZhNin2YQ6DQoNCjEuINin2LPZhdmDINin2YTZg9in2YXZhCAuLi4uLi4uLi4uLi4u
+Lg0KMi4g2LnZhtmI2KfZhtmDINin2YTZg9in2YXZhCAuLi4NCjMuINin2YTYrNmG2LPZitipIC4u
+Li4uLi4uLi4uLi4uLi4NCjQuINiq2KfYsdmK2K4g2KfZhNmF2YrZhNin2K8gLyDYp9mE2KzZhtiz
+IC4uLi4uLi4uLg0KNS4g2KfZhNiq2K7Ytdi1IC4uLg0KNi4g2LHZgtmFINin2YTZh9in2KrZgSAu
+Li4uLi4uLi4NCjcuINi52YbZiNin2YYg2KfZhNio2LHZitivINin2YTYpdmE2YPYqtix2YjZhtmK
+INmE2LTYsdmD2KrZgyAuLi4uLi4NCjguINi52YbZiNin2YYg2KfZhNio2LHZitivINin2YTYpdmE
+2YPYqtix2YjZhtmKINin2YTYtNiu2LXZiiAuLi4uLi4NCg0KDQrZhNiq2K3Yr9mK2K8g2YfYsNin
+INin2YTYsdmF2LIgKNin2YTYsdin2KjYtzogQ0xJRU5ULTk2Ni8xNikg2Iwg2KfYs9iq2K7Yr9mF
+2Ycg2YPZhdmI2LbZiNi5INmE2YTYqNix2YrYrw0K2KfZhNil2YTZg9iq2LHZiNmG2Yog2KfZhNiu
+2KfYtSDYqNmDINmI2K3Yp9mI2YQg2KrZgtiv2YrZhSDYp9mE2YXYudmE2YjZhdin2Kog2KfZhNmF
+2LDZg9mI2LHYqSDYo9i52YTYp9mHINil2YTZiSDYp9mE2YXZiNi42YHZitmGDQrYp9mE2KrYp9mE
+2YrZitmGINmE2KXYtdiv2KfYsSDZiNiq2LPZhNmK2YUg2KjYt9in2YLYqSBWaXNhIEFUTSDYmw0K
+DQrZhtmI2LXZitmDINio2YHYqtitINi52YbZiNin2YYg2KjYsdmK2K8g2KXZhNmD2KrYsdmI2YbZ
+iiDYtNiu2LXZiiDYqNix2YLZhSDYrNiv2YrYryDZhNmE2LPZhdin2K0g2YTZiNmD2YrZhCDYp9mE
+2KjZhtmDINio2KrYqtio2LkNCtmH2LDZhyDYp9mE2YXYr9mB2YjYudin2Kog2YjYqtio2KfYr9mE
+INin2YTYsdiz2KfYptmEINmE2YXZhti5INin2YTZhdiy2YrYryDZhdmGINin2YTYqtij2K7Zitix
+INij2Ygg2KfZhNiq2YjYrNmK2Ycg2KfZhNiu2KfYt9imDQrZhNij2YXZiNin2YTZgy4g2KfYqti1
+2YQg2KjZiNmD2YrZhCDYp9mE2KjZhtmDINin2YTYpdmB2LHZitmC2Yog2KfZhNmF2KrYrdivINin
+2YTYotmGINio2KfYs9iq2K7Yr9in2YUg2YXYudmE2YjZhdin2KoNCtin2YTYp9iq2LXYp9mEINij
+2K/Zhtin2Yc6DQoNCtin2YTYtNiu2LUg2KfZhNmF2LPYpNmI2YQ6INin2YTYs9mK2K8g2KrZiNmG
+2Yog2KXZhNmI2YXZitmE2YgNCtil2K/Yp9ix2Kkg2KrYrdmI2YrZhCDYo9mF2YjYp9mEINin2YTY
+qti52YjZiti22KfYqiDYjCDYrNmH2Kkg2KfZhNin2KrYtdin2YQg2KjYp9mE2KjYsdmK2K8g2KfZ
+hNil2YTZg9iq2LHZiNmG2Yog2YTYqNmG2YMNCtil2YHYsdmK2YLZitinINin2YTZhdiq2K3Yrzog
+KG1ydG9ueWVsdW1lbHU5OEBnbWFpbC5jb20pDQoNCtmG2K3Yqtin2Kwg2KXZhNmJINix2K8g2LPY
+sdmK2Lkg2LnZhNmJINmH2LDYpyDYp9mE2KjYsdmK2K8g2KfZhNil2YTZg9iq2LHZiNmG2Yog2YTY
+qtis2YbYqCDYp9mE2YXYstmK2K8g2YXZhiDYp9mE2KrYo9iu2YrYsS4NCg0K2LXYr9mK2YLZgyDY
+p9mE2YXYrtmE2LUNCtin2YTYs9mR2YrYr9ipLiDZg9ix2YrYs9iq2KfZhNmK2YbYpyDYrNmI2LHY
+rNmK2YHYpw0K
