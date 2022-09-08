@@ -2,85 +2,128 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E15995B17F5
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 Sep 2022 11:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8445B181D
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Sep 2022 11:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229899AbiIHJG0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 8 Sep 2022 05:06:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40674 "EHLO
+        id S231716AbiIHJK5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 8 Sep 2022 05:10:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231272AbiIHJGZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Sep 2022 05:06:25 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FBB1A024B
-        for <linux-ext4@vger.kernel.org>; Thu,  8 Sep 2022 02:06:24 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id jm11so17142277plb.13
-        for <linux-ext4@vger.kernel.org>; Thu, 08 Sep 2022 02:06:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=/qxgNeQTTfDgcvL0EKTWk+U8QhzpgFCJdugMGsDjXlw=;
-        b=npGwxfxW7UWy8M0ka7LNJzaUAdJQy/CiQ2h5bYRPxvXMoeEHAhWmwJr06BrBs7e6QY
-         GsGSepgwOXlHmgd3E0DbL6mQrXwXyEkfCVtRr91+Kg1PSXsNmzTqvN7s+ljSWOxUPwNG
-         j6DPJsTdO/V//G6hOcPqNRB175weSlz26oUcSMx2B0q7zjRm9FV+PifCenPzm1muY+AI
-         PauXAX1TGHyzUURZwvFRbQd1HVnHRb7Sd8UkQ/W3z7F6S4elLGm/Px3JuA24MxihV87h
-         FYqUI2LKEZA1N91GBmo1+QAv6BebKfcwYA1stCHfhumX5A8o5PRbImrEf1DieMa1UEhU
-         2vWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=/qxgNeQTTfDgcvL0EKTWk+U8QhzpgFCJdugMGsDjXlw=;
-        b=a3+bdJzIWgjLV9lJCkMliqrW1Ci8HBnfuyUdfpukvWbBdpCRd5SHGl7XHNu5KpTGKt
-         0XJBWFKBsEpDfm8nIJOOKNCcOUTDja35Qzg6Gt0ES5MX+ETrnXr+rcUOLgnUPOieoK55
-         kV2rqwmcymDxSPlNmOXQPemiqfsEYk/xiJ9pBnIlr51gFFkjlPU96bWLtXci6aXVJiPp
-         hBL3azIuDz/tiKw7tcVdrrXWoiwJXTSHU/jXhzDAiARzRIXs/I8dg/Br0Wu6Y2Oe+plR
-         gZe61ISX1u+1IjGktYs4dO0v8OhMozFg41P823/gQXEdjuphvZaeOfmZpMMxpQ1pU4BP
-         9RSw==
-X-Gm-Message-State: ACgBeo2iFE5XiYBSd4C+GxAxDehfrUmGP1p+sFedYDTql/ItsfksF3z5
-        pxX/XEm9zdga4X1b8kWIgJY=
-X-Google-Smtp-Source: AA6agR7UbnuTH+ekxwk1VjRI5zTESOFZGa43jX9k6kTgAPsIxh4/9E0oL+x6mYseK/oLQjlvgt/2PA==
-X-Received: by 2002:a17:90b:3a8e:b0:200:5585:4099 with SMTP id om14-20020a17090b3a8e00b0020055854099mr3256662pjb.70.1662627983942;
-        Thu, 08 Sep 2022 02:06:23 -0700 (PDT)
-Received: from localhost ([2406:7400:63:83c4:f166:555c:90a1:a48d])
-        by smtp.gmail.com with ESMTPSA id w20-20020a656954000000b0043093ec77ddsm12007325pgq.29.2022.09.08.02.06.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Sep 2022 02:06:23 -0700 (PDT)
-Date:   Thu, 8 Sep 2022 14:36:18 +0530
-From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-        lczerner@redhat.com, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v2 13/13] ext4: factor out ext4_journal_data_mode_check()
-Message-ID: <20220908090618.k2q5ocifngd5kz4j@riteshh-domain>
-References: <20220903030156.770313-1-yanaijie@huawei.com>
- <20220903030156.770313-14-yanaijie@huawei.com>
+        with ESMTP id S231737AbiIHJKv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Sep 2022 05:10:51 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C698A99B7D;
+        Thu,  8 Sep 2022 02:10:41 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 67D6622AE9;
+        Thu,  8 Sep 2022 09:10:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1662628240; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=TxW0nswTE1xcIJ8762DBIkIeOfhvNnUbpYK3mr2ADcA=;
+        b=omOTbZnG7ZtT/+msLgPFiupSzqzfz6PWf0ZQzyxsFvr+2w41Ovp5KbqnsO2nSPmK5atgqf
+        XA1PeM6WBHR8k7y3u9CIY2NRE5GCUZCn7O2NG5RoI9/NM88Kzoy0RW9PSNY0ZBICwGc0Ii
+        byZwKXbeOzfsDd2ogPZTwt/lotlKJ3w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1662628240;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=TxW0nswTE1xcIJ8762DBIkIeOfhvNnUbpYK3mr2ADcA=;
+        b=mBBSmJSDnX2+tMF/6jNewVNM2OLQE8EZ3WWhaspIV6rFaUTlJLnckb3cZlzzmveU/7aKLN
+        3E6QQBa8KKatrfBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5BDAA13A6D;
+        Thu,  8 Sep 2022 09:10:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ualkFpCxGWPWPwAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 08 Sep 2022 09:10:40 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id E48C1A067E; Thu,  8 Sep 2022 11:10:39 +0200 (CEST)
+From:   Jan Kara <jack@suse.cz>
+To:     Ted Tso <tytso@mit.edu>
+Cc:     <linux-ext4@vger.kernel.org>, Mike Galbraith <efault@gmx.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, Jan Kara <jack@suse.cz>
+Subject: [PATCH] mbcache: Avoid nesting of cache->c_list_lock under bit locks
+Date:   Thu,  8 Sep 2022 11:10:32 +0200
+Message-Id: <20220908091032.10513-1-jack@suse.cz>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220903030156.770313-14-yanaijie@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2089; h=from:subject; bh=dRJj3j9qfjEl6wYp/YsGfWVb12vOG36l+ern9zbLpCQ=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBjGbGC9duuau5H/8u1XvR/jnI288SB12rOUZo41awT Mr3qGX+JATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCYxmxggAKCRCcnaoHP2RA2VC4CA DSr6mnDQ+GmRI+9UKxbEX6oPTOMrtelKFNhJ6dGLD/AuClpviLsxHcQrJFTSSKfOQb9jHpD/f4mQbB 9hmkpA6NnNaOVxkooLs8khFseUVaH2m3q/sND/Lxh2e705O429Tmt1i+5wp175Y3anzV6V7IA+cdm0 U963MgZusPasmH78DdAXEC32I5Z3TcQnbVSR0jSB4hH8sTVvYm1mJ5q++sVcuaWUSP/vO4HA8zMOqT t+jwOULBptCfgsx3jGM2/y8NGBMAE6Xvu42d3jlWLcqX1dKxcffgIaWIXXNewVWJ59gt6hGI8uUo7k Pwuqt7qw86iRm9BkGYo+hZu/ZhSZuC
+X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22/09/03 11:01AM, Jason Yan wrote:
-> Factor out ext4_journal_data_mode_check(). No functional change.
-> 
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
-> Reviewed-by: Jan Kara<jack@suse.cz>
-> ---
->  fs/ext4/super.c | 60 ++++++++++++++++++++++++++++---------------------
->  1 file changed, 35 insertions(+), 25 deletions(-)
+Commit 307af6c87937 ("mbcache: automatically delete entries from cache
+on freeing") started nesting cache->c_list_lock under the bit locks
+protecting hash buckets of the mbcache hash table in
+mb_cache_entry_create(). This causes problems for real-time kernels
+because there spinlocks are sleeping locks while bitlocks stay atomic.
+Luckily the nesting is easy to avoid by holding entry reference until
+the entry is added to the LRU list. This makes sure we cannot race with
+entry deletion.
 
-Looks good to me. Thanks overall for the nice refactoring.
-Function __ext4_fill_super() indeed looks a lot better now :)
+Fixes: 307af6c87937 ("mbcache: automatically delete entries from cache on freeing")
+Reported-by: Mike Galbraith <efault@gmx.de>
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/mbcache.c | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+diff --git a/fs/mbcache.c b/fs/mbcache.c
+index 47ccfcbe0a22..e272ad738faf 100644
+--- a/fs/mbcache.c
++++ b/fs/mbcache.c
+@@ -90,8 +90,14 @@ int mb_cache_entry_create(struct mb_cache *cache, gfp_t mask, u32 key,
+ 		return -ENOMEM;
+ 
+ 	INIT_LIST_HEAD(&entry->e_list);
+-	/* Initial hash reference */
+-	atomic_set(&entry->e_refcnt, 1);
++	/*
++	 * We create entry with two references. One reference is kept by the
++	 * hash table, the other reference is used to protect us from
++	 * mb_cache_entry_delete_or_get() until the entry is fully setup. This
++	 * avoids nesting of cache->c_list_lock into hash table bit locks which
++	 * is problematic for RT.
++	 */
++	atomic_set(&entry->e_refcnt, 2);
+ 	entry->e_key = key;
+ 	entry->e_value = value;
+ 	entry->e_reusable = reusable;
+@@ -106,15 +112,12 @@ int mb_cache_entry_create(struct mb_cache *cache, gfp_t mask, u32 key,
+ 		}
+ 	}
+ 	hlist_bl_add_head(&entry->e_hash_list, head);
+-	/*
+-	 * Add entry to LRU list before it can be found by
+-	 * mb_cache_entry_delete() to avoid races
+-	 */
++	hlist_bl_unlock(head);
+ 	spin_lock(&cache->c_list_lock);
+ 	list_add_tail(&entry->e_list, &cache->c_list);
+ 	cache->c_entry_count++;
+ 	spin_unlock(&cache->c_list_lock);
+-	hlist_bl_unlock(head);
++	mb_cache_entry_put(cache, entry);
+ 
+ 	return 0;
+ }
+-- 
+2.35.3
 
