@@ -2,154 +2,131 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91BEC5B1719
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 Sep 2022 10:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 348E45B1750
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Sep 2022 10:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230168AbiIHIdf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 8 Sep 2022 04:33:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56706 "EHLO
+        id S231193AbiIHIjs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 8 Sep 2022 04:39:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbiIHId3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Sep 2022 04:33:29 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4450E1A96;
-        Thu,  8 Sep 2022 01:33:28 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7CA5F22486;
-        Thu,  8 Sep 2022 08:33:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1662626007; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8sjzYxBjz9/JeFT8Y7oHbqmg7W+DAyx1ya6iI90ZaMQ=;
-        b=G99I5obrt4hV3c27dz2o4YfAIhoIVrbbH3dfLPAMW0LzbBqu0EvtmmhrUcACOb2o9ed70/
-        cNXhGP9N/+SW8xSfPOoGS+uL+IcwKESwEcFuRCZSQaJZZy4oj7W1K/mG+gn7S20YmAbsz1
-        rqsKa2EzYzVRz173gUhOyD7GM3th61E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1662626007;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8sjzYxBjz9/JeFT8Y7oHbqmg7W+DAyx1ya6iI90ZaMQ=;
-        b=+whd4o3JKfEbh5M21ThDe8yY7TUw+sX0ZNwz+FFg91wQqsJpbtfAwaWS5pMeJQ6pxu12Mo
-        I/KruOUqr3Z7G+Bg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 68BFC1322C;
-        Thu,  8 Sep 2022 08:33:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 95yKGdeoGWNILwAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 08 Sep 2022 08:33:27 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id EE081A067E; Thu,  8 Sep 2022 10:33:26 +0200 (CEST)
-Date:   Thu, 8 Sep 2022 10:33:26 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Jan Kara <jack@suse.cz>, Jeff Layton <jlayton@kernel.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, djwong@kernel.org, david@fromorbit.com,
-        trondmy@hammerspace.com, viro@zeniv.linux.org.uk,
-        zohar@linux.ibm.com, xiubli@redhat.com, chuck.lever@oracle.com,
-        lczerner@redhat.com, brauner@kernel.org, fweimer@redhat.com,
-        linux-man@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
- STATX_INO_VERSION field
-Message-ID: <20220908083326.3xsanzk7hy3ff4qs@quack3>
-References: <20220907111606.18831-1-jlayton@kernel.org>
- <166255065346.30452.6121947305075322036@noble.neil.brown.name>
- <79aaf122743a295ddab9525d9847ac767a3942aa.camel@kernel.org>
- <20220907125211.GB17729@fieldses.org>
- <771650a814ab1ff4dc5473d679936b747d9b6cf5.camel@kernel.org>
- <20220907135153.qvgibskeuz427abw@quack3>
- <166259786233.30452.5417306132987966849@noble.neil.brown.name>
+        with ESMTP id S231171AbiIHIjc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Sep 2022 04:39:32 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A4764EF
+        for <linux-ext4@vger.kernel.org>; Thu,  8 Sep 2022 01:39:28 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id u22so17095396plq.12
+        for <linux-ext4@vger.kernel.org>; Thu, 08 Sep 2022 01:39:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=FbL6wbQTIIA+Tbn+IEhcdmbXS3h7pNSPA7zhMvPEliY=;
+        b=UkA8q9My1o0gUvxofouecCNQyUvkIokIJy2tbzGIAGx5XDFqKrwcFWUQG5rrcAay8h
+         S3vV2yzQ1NwUD0xPlrnC5U+PT8KWJOdx2MQNXInL5I5puTP/quwmArjUnKY9vnhGvSnb
+         cvadn32jzVljiUYXNSi1Mq1H2iHAp/iSKh7TGtPZ2/WMtkpvfvykfCyKvTAec9SR7Lkz
+         8Hji8lNQ5l116YF5c7I69PGsfKyUbFpKwAGfTmtSvjfsq19V4Xx5ShH7tr3FBTTJ0cwy
+         e1SEOXhfOy8QOCk8ADG+TmdUfi1rO79S/d71ZzlVLkakOr8jRzrCcbL9MZexjAWWZo//
+         h01A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=FbL6wbQTIIA+Tbn+IEhcdmbXS3h7pNSPA7zhMvPEliY=;
+        b=JdZaC7cAianXlgyiK/Wkq9lHu+2FfNImgQbsIn1z2m9ySxEXOQxpEhJoTdxfLeer9i
+         IFXpsYwYCnqk54I3nBvkyuk+RR4OvvmfIahTnRl1sWjaxvQyYFP6Zn235Px4Uq/ZjOzE
+         QLrZWIOI+5zX90uEpUSP1RaPpH2nknDe1T/EKG/Rl1kMFlPacXgSwmaMEX0T1IK2XyHI
+         eR5oX3ZYO/8nFl6rN2nabQRCi0DO13VrVdxOhbqm6Dhv0Dv/8xjcqvrdONZ5rkla4vze
+         hP4M8Fd5iejCNzPq0OBOv+ksnlkWqlXTZ/OZ0nTD2OPGugOP+wVlKPJiKcyN2prSkZQI
+         GbEw==
+X-Gm-Message-State: ACgBeo0vf9Dy4TgkAW+kwGyZIN2pEuYt5oasob0OPK1CLpOOuZr+Ysoh
+        3LCkTD4Xkkz66+UAVHKX0eo=
+X-Google-Smtp-Source: AA6agR7XXnP0j/aQoxJS3UnCeHHtKWkL8ol2vS82+gWBOtvDXBzIpOA8ZoGn8wDnX2I4RxGeN6oZHw==
+X-Received: by 2002:a17:90b:1c11:b0:202:5301:a820 with SMTP id oc17-20020a17090b1c1100b002025301a820mr3095471pjb.193.1662626368311;
+        Thu, 08 Sep 2022 01:39:28 -0700 (PDT)
+Received: from localhost ([2406:7400:63:83c4:f166:555c:90a1:a48d])
+        by smtp.gmail.com with ESMTPSA id w24-20020aa79558000000b0053725e331a1sm14019586pfq.82.2022.09.08.01.39.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Sep 2022 01:39:27 -0700 (PDT)
+Date:   Thu, 8 Sep 2022 14:09:22 +0530
+From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+To:     Jason Yan <yanaijie@huawei.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+        lczerner@redhat.com, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v2 01/13] ext4: goto right label 'failed_mount3a'
+Message-ID: <20220908083922.cbwpwp7lmr3wqco3@riteshh-domain>
+References: <20220903030156.770313-1-yanaijie@huawei.com>
+ <20220903030156.770313-2-yanaijie@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <166259786233.30452.5417306132987966849@noble.neil.brown.name>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20220903030156.770313-2-yanaijie@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 08-09-22 10:44:22, NeilBrown wrote:
-> On Wed, 07 Sep 2022, Jan Kara wrote:
-> > On Wed 07-09-22 09:12:34, Jeff Layton wrote:
-> > > On Wed, 2022-09-07 at 08:52 -0400, J. Bruce Fields wrote:
-> > > > On Wed, Sep 07, 2022 at 08:47:20AM -0400, Jeff Layton wrote:
-> > > > > On Wed, 2022-09-07 at 21:37 +1000, NeilBrown wrote:
-> > > > > > On Wed, 07 Sep 2022, Jeff Layton wrote:
-> > > > > > > +The change to \fIstatx.stx_ino_version\fP is not atomic with respect to the
-> > > > > > > +other changes in the inode. On a write, for instance, the i_version it usually
-> > > > > > > +incremented before the data is copied into the pagecache. Therefore it is
-> > > > > > > +possible to see a new i_version value while a read still shows the old data.
-> > > > > > 
-> > > > > > Doesn't that make the value useless?
-> > > > > > 
-> > > > > 
-> > > > > No, I don't think so. It's only really useful for comparing to an older
-> > > > > sample anyway. If you do "statx; read; statx" and the value hasn't
-> > > > > changed, then you know that things are stable. 
-> > > > 
-> > > > I don't see how that helps.  It's still possible to get:
-> > > > 
-> > > > 		reader		writer
-> > > > 		------		------
-> > > > 				i_version++
-> > > > 		statx
-> > > > 		read
-> > > > 		statx
-> > > > 				update page cache
-> > > > 
-> > > > right?
-> > > > 
-> > > 
-> > > Yeah, I suppose so -- the statx wouldn't necessitate any locking. In
-> > > that case, maybe this is useless then other than for testing purposes
-> > > and userland NFS servers.
-> > > 
-> > > Would it be better to not consume a statx field with this if so? What
-> > > could we use as an alternate interface? ioctl? Some sort of global
-> > > virtual xattr? It does need to be something per-inode.
-> > 
-> > I was thinking how hard would it be to increment i_version after updating
-> > data but it will be rather hairy. In particular because of stuff like
-> > IOCB_NOWAIT support which needs to bail if i_version update is needed. So
-> > yeah, I don't think there's an easy way how to provide useful i_version for
-> > general purpose use.
-> > 
+On 22/09/03 11:01AM, Jason Yan wrote:
+> Before these two branches neither loaded the journal nor created the
+> xattr cache. So the right label to goto is 'failed_mount3a'. Although
+> this did not cause any issues because the error handler validated if the
+> pointer is null. However this still made me confused when reading
+> the code. So it's still worth to modify to goto the right label.
 > 
-> Why cannot IOCB_NOWAIT update i_version?  Do we not want to wait on the
-> cmp_xchg loop in inode_maybe_inc_iversion(), or do we not want to
-> trigger an inode update?
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> ---
+>  fs/ext4/super.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+
+This looks good to me. 
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+
 > 
-> The first seems unlikely, but the second seems unreasonable.  We already
-> acknowledge that after a crash iversion might go backwards and/or miss
-> changes.
-
-It boils down to the fact that we don't want to call mark_inode_dirty()
-from IOCB_NOWAIT path because for lots of filesystems that means journal
-operation and there are high chances that may block.
-
-Presumably we could treat inode dirtying after i_version change similarly
-to how we handle timestamp updates with lazytime mount option (i.e., not
-dirty the inode immediately but only with a delay) but then the time window
-for i_version inconsistencies due to a crash would be much larger.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 9a66abcca1a8..6126da867b26 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -5079,30 +5079,30 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+>  		   ext4_has_feature_journal_needs_recovery(sb)) {
+>  		ext4_msg(sb, KERN_ERR, "required journal recovery "
+>  		       "suppressed and not mounted read-only");
+> -		goto failed_mount_wq;
+> +		goto failed_mount3a;
+>  	} else {
+>  		/* Nojournal mode, all journal mount options are illegal */
+>  		if (test_opt2(sb, EXPLICIT_JOURNAL_CHECKSUM)) {
+>  			ext4_msg(sb, KERN_ERR, "can't mount with "
+>  				 "journal_checksum, fs mounted w/o journal");
+> -			goto failed_mount_wq;
+> +			goto failed_mount3a;
+>  		}
+>  		if (test_opt(sb, JOURNAL_ASYNC_COMMIT)) {
+>  			ext4_msg(sb, KERN_ERR, "can't mount with "
+>  				 "journal_async_commit, fs mounted w/o journal");
+> -			goto failed_mount_wq;
+> +			goto failed_mount3a;
+>  		}
+>  		if (sbi->s_commit_interval != JBD2_DEFAULT_MAX_COMMIT_AGE*HZ) {
+>  			ext4_msg(sb, KERN_ERR, "can't mount with "
+>  				 "commit=%lu, fs mounted w/o journal",
+>  				 sbi->s_commit_interval / HZ);
+> -			goto failed_mount_wq;
+> +			goto failed_mount3a;
+>  		}
+>  		if (EXT4_MOUNT_DATA_FLAGS &
+>  		    (sbi->s_mount_opt ^ sbi->s_def_mount_opt)) {
+>  			ext4_msg(sb, KERN_ERR, "can't mount with "
+>  				 "data=, fs mounted w/o journal");
+> -			goto failed_mount_wq;
+> +			goto failed_mount3a;
+>  		}
+>  		sbi->s_def_mount_opt &= ~EXT4_MOUNT_JOURNAL_CHECKSUM;
+>  		clear_opt(sb, JOURNAL_CHECKSUM);
+> -- 
+> 2.31.1
+> 
