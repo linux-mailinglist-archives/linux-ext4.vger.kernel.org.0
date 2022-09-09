@@ -2,273 +2,113 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C415B36BB
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Sep 2022 13:53:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 266355B3774
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Sep 2022 14:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231272AbiIILxS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 9 Sep 2022 07:53:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47220 "EHLO
+        id S230463AbiIIMOu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 9 Sep 2022 08:14:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231250AbiIILxR (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Sep 2022 07:53:17 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A397E1228C4;
-        Fri,  9 Sep 2022 04:53:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 30E61B824F4;
-        Fri,  9 Sep 2022 11:53:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABA48C433D6;
-        Fri,  9 Sep 2022 11:53:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662724392;
-        bh=uG4ZyMQFoBQKsOPNCQvYKzi85qeTGEYNE6qpE9fsmu8=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=buo6FK+9uFa0Thih9CGgikfS3PBPtA7APWZePrqOsOiklmsqJ4uySBKdhEjYHccqF
-         kCOCaxgRCAkpq4t45XtXFyMOBWuPgjildydglrYD8J/TZQC6bknf9ofLPra8GtCHNs
-         qDRdgvywtGfjUVr9AELnignfxeUeJ5bL3kpLxdTvqs6xmdHnhxU1WlTPxQjvrafnUK
-         3vfmKYwf0xsz/CLa+4vcHwY+IO7EF+oXZOQYxXGDNGrQQpGQggySc27dq8gwJ/xq+V
-         S3JNBD5P9FiaLePdavJWfeUGWHPtozHbuOxJW8NeSBr9brSpyrmCmUdtSANqsI2xg2
-         8aZ9db/istzSQ==
-Message-ID: <68049377014e7c4ba9552cf2913fa7de2a013f87.camel@kernel.org>
+        with ESMTP id S230505AbiIIMOW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Sep 2022 08:14:22 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAEA213FA7F;
+        Fri,  9 Sep 2022 05:12:11 -0700 (PDT)
+Received: from letrec.thunk.org (guestnat-104-133-160-102.corp.google.com [104.133.160.102] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 289CB71n002170
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 9 Sep 2022 08:11:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1662725472; bh=rkVib4zKXNES9ZZ4tMSEKXn2YQ6HSV5vUTDr92XDkhU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=GUfSWT2qQ/AJie7hxQCJZt8BAL8wLB2wXXt3lpNzwVcJDfxeA3n4X9UaHMr+LKaji
+         zb8pN4awcYOraVhbePEtz4sCuIcEMxDO2V92UeCIRI87pI75/6Euq2NTZWvCPaRsmz
+         DlR2DlvtPX7EziCMExCNHJHLF80Kja7xArncG3AABgQbBA7F8u2okXCFadky2FAyPZ
+         ZEVZ5zWSVzlIFf8gSeITjbPkBF1rXnXYwy3TAT0rzEQUsrD4xD5MFcwTetP4Z+bsqn
+         5hn1WHr+o8drixmoUTatgnnzVOC8xFKnKtCU1Rq9PX4TQiWPhk9jx/EanCDjjweVSe
+         56cLzlKnr1a1Q==
+Received: by letrec.thunk.org (Postfix, from userid 15806)
+        id CD6C38C2B49; Fri,  9 Sep 2022 08:11:06 -0400 (EDT)
+Date:   Fri, 9 Sep 2022 08:11:06 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     "J. Bruce Fields" <bfields@fieldses.org>, Jan Kara <jack@suse.cz>,
+        NeilBrown <neilb@suse.de>, adilger.kernel@dilger.ca,
+        djwong@kernel.org, david@fromorbit.com, trondmy@hammerspace.com,
+        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
+        chuck.lever@oracle.com, lczerner@redhat.com, brauner@kernel.org,
+        fweimer@redhat.com, linux-man@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
 Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
  STATX_INO_VERSION field
-From:   Jeff Layton <jlayton@kernel.org>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Trond Myklebust <trondmy@hammerspace.com>,
-        "bfields@fieldses.org" <bfields@fieldses.org>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "xiubli@redhat.com" <xiubli@redhat.com>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "lczerner@redhat.com" <lczerner@redhat.com>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>
-Date:   Fri, 09 Sep 2022 07:53:09 -0400
-In-Reply-To: <166267618149.30452.1385850427092221026@noble.neil.brown.name>
-References: <20220907111606.18831-1-jlayton@kernel.org>
-        , <166255065346.30452.6121947305075322036@noble.neil.brown.name>
-        , <79aaf122743a295ddab9525d9847ac767a3942aa.camel@kernel.org>
-        , <20220907125211.GB17729@fieldses.org>
-        , <771650a814ab1ff4dc5473d679936b747d9b6cf5.camel@kernel.org>
-        , <8a71986b4fb61cd9b4adc8b4250118cbb19eec58.camel@hammerspace.com>
-        , <c22baa64133a23be3aba81df23b4af866df51343.camel@kernel.org>
-        , <166259764365.30452.5588074352157110414@noble.neil.brown.name>
-        , <f7f852c2cd7757646d9ad8e822f7fd04c467df7d.camel@kernel.org>
-         <166267618149.30452.1385850427092221026@noble.neil.brown.name>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
+Message-ID: <YxstWiu34TfJ6muW@mit.edu>
+References: <79aaf122743a295ddab9525d9847ac767a3942aa.camel@kernel.org>
+ <20220907125211.GB17729@fieldses.org>
+ <771650a814ab1ff4dc5473d679936b747d9b6cf5.camel@kernel.org>
+ <20220907135153.qvgibskeuz427abw@quack3>
+ <166259786233.30452.5417306132987966849@noble.neil.brown.name>
+ <20220908083326.3xsanzk7hy3ff4qs@quack3>
+ <YxoIjV50xXKiLdL9@mit.edu>
+ <02928a8c5718590bea5739b13d6b6ebe66cac577.camel@kernel.org>
+ <20220908155605.GD8951@fieldses.org>
+ <9e06c506fd6b3e3118da0ec24276e85ea3ee45a1.camel@kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9e06c506fd6b3e3118da0ec24276e85ea3ee45a1.camel@kernel.org>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, 2022-09-09 at 08:29 +1000, NeilBrown wrote:
-> On Thu, 08 Sep 2022, Jeff Layton wrote:
-> > On Thu, 2022-09-08 at 10:40 +1000, NeilBrown wrote:
-> > > On Thu, 08 Sep 2022, Jeff Layton wrote:
-> > > > On Wed, 2022-09-07 at 13:55 +0000, Trond Myklebust wrote:
-> > > > > On Wed, 2022-09-07 at 09:12 -0400, Jeff Layton wrote:
-> > > > > > On Wed, 2022-09-07 at 08:52 -0400, J. Bruce Fields wrote:
-> > > > > > > On Wed, Sep 07, 2022 at 08:47:20AM -0400, Jeff Layton wrote:
-> > > > > > > > On Wed, 2022-09-07 at 21:37 +1000, NeilBrown wrote:
-> > > > > > > > > On Wed, 07 Sep 2022, Jeff Layton wrote:
-> > > > > > > > > > +The change to \fIstatx.stx_ino_version\fP is not atomi=
-c with
-> > > > > > > > > > respect to the
-> > > > > > > > > > +other changes in the inode. On a write, for instance, =
-the
-> > > > > > > > > > i_version it usually
-> > > > > > > > > > +incremented before the data is copied into the pagecac=
-he.
-> > > > > > > > > > Therefore it is
-> > > > > > > > > > +possible to see a new i_version value while a read sti=
-ll
-> > > > > > > > > > shows the old data.
-> > > > > > > > >=20
-> > > > > > > > > Doesn't that make the value useless?
-> > > > > > > > >=20
-> > > > > > > >=20
-> > > > > > > > No, I don't think so. It's only really useful for comparing=
- to an
-> > > > > > > > older
-> > > > > > > > sample anyway. If you do "statx; read; statx" and the value
-> > > > > > > > hasn't
-> > > > > > > > changed, then you know that things are stable.=20
-> > > > > > >=20
-> > > > > > > I don't see how that helps.=A0 It's still possible to get:
-> > > > > > >=20
-> > > > > > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0reader=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0writer
-> > > > > > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0------=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0------
-> > > > > > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0i_version++
-> > > > > > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0statx
-> > > > > > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0read
-> > > > > > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0statx
-> > > > > > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0update page cache
-> > > > > > >=20
-> > > > > > > right?
-> > > > > > >=20
-> > > > > >=20
-> > > > > > Yeah, I suppose so -- the statx wouldn't necessitate any lockin=
-g. In
-> > > > > > that case, maybe this is useless then other than for testing pu=
-rposes
-> > > > > > and userland NFS servers.
-> > > > > >=20
-> > > > > > Would it be better to not consume a statx field with this if so=
-? What
-> > > > > > could we use as an alternate interface? ioctl? Some sort of glo=
-bal
-> > > > > > virtual xattr? It does need to be something per-inode.
-> > > > >=20
-> > > > > I don't see how a non-atomic change attribute is remotely useful =
-even
-> > > > > for NFS.
-> > > > >=20
-> > > > > The main problem is not so much the above (although NFS clients a=
-re
-> > > > > vulnerable to that too) but the behaviour w.r.t. directory change=
-s.
-> > > > >=20
-> > > > > If the server can't guarantee that file/directory/... creation an=
-d
-> > > > > unlink are atomically recorded with change attribute updates, the=
-n the
-> > > > > client has to always assume that the server is lying, and that it=
- has
-> > > > > to revalidate all its caches anyway. Cue endless readdir/lookup/g=
-etattr
-> > > > > requests after each and every directory modification in order to =
-check
-> > > > > that some other client didn't also sneak in a change of their own=
-.
-> > > > >=20
-> > > >=20
-> > > > We generally hold the parent dir's inode->i_rwsem exclusively over =
-most
-> > > > important directory changes, and the times/i_version are also updat=
-ed
-> > > > while holding it. What we don't do is serialize reads of this value=
- vs.
-> > > > the i_rwsem, so you could see new directory contents alongside an o=
-ld
-> > > > i_version. Maybe we should be taking it for read when we query it o=
-n a
-> > > > directory?
-> > >=20
-> > > We do hold i_rwsem today.  I'm working on changing that.  Preserving
-> > > atomic directory changeinfo will be a challenge.  The only mechanism =
-I
-> > > can think if is to pass a "u64*" to all the directory modification op=
-s,
-> > > and they fill in the version number at the point where it is incremen=
-ted
-> > > (inode_maybe_inc_iversion_return()).  The (nfsd) caller assumes that
-> > > "before" was one less than "after".  If you don't want to internally
-> > > require single increments, then you would need to pass a 'u64 [2]' to
-> > > get two iversions back.
-> > >=20
-> >=20
-> > That's a major redesign of what the i_version counter is today. It may
-> > very well end up being needed, but that's going to touch a lot of stuff
-> > in the VFS. Are you planning to do that as a part of your locking
-> > changes?
-> >=20
->=20
-> "A major design"?  How?  The "one less than" might be, but allowing a
-> directory morphing op to fill in a "u64 [2]" is just a new interface to
-> existing data.  One that allows fine grained atomicity.
->=20
-> This would actually be really good for NFS.  nfs_mkdir (for example)
-> could easily have access to the atomic pre/post changedid provided by
-> the server, and so could easily provide them to nfsd.
->=20
-> I'm not planning to do this as part of my locking changes.  In the first
-> instance only NFS changes behaviour, and it doesn't provide atomic
-> changeids, so there is no loss of functionality.
->=20
-> When some other filesystem wants to opt-in to shared-locking on
-> directories - that would be the time to push through a better interface.
->=20
+On Thu, Sep 08, 2022 at 01:40:11PM -0400, Jeff Layton wrote:
+> 
+> Ted, how would we access this? Maybe we could just add a new (generic)
+> super_block field for this that ext4 (and other filesystems) could
+> populate at mount time?
 
-I think nfsd does provide atomic changeids for directory operations
-currently. AFAICT, any operation where we're changing directory contents
-is done while holding the i_rwsem exclusively, and we hold that lock
-over the pre and post i_version fetch for the change_info4.
+Yeah, I was thinking about just adding it to struct super, with some
+value (perhaps 0 or ~0) meaning that the file system didn't support
+it.  If people were concerned about struct super bloat, we could also
+add some new function to struct super_ops that would return one or
+more values that are used rarely by most of the kernel code, and so
+doesn't need to be in the struct super data structure.  I don't have
+strong feelings one way or another.
 
-If you change nfsd to allow parallel directory morphing operations
-without addressing this, then I think that would be a regression.
+On another note, my personal opinion is that at least as far as ext4
+is concerned, i_version on disk's only use is for NFS's convenience,
+and so I have absolutely no problem with changing how and when
+i_version gets updated modulo concerns about impacting performance.
+That's one of the reasons why being able to update i_version only
+lazily, so that if we had, say, some workload that was doing O_DIRECT
+writes followed by fdatasync(), there wouldn't be any obligation to
+flush the inode out to disk just because we had bumped i_version
+appeals to me.
 
->=20
-> > > >=20
-> > > > Achieving atomicity with file writes though is another matter entir=
-ely.
-> > > > I'm not sure that's even doable or how to approach it if so.
-> > > > Suggestions?
-> > >=20
-> > > Call inode_maybe_inc_version(page->host) in __folio_mark_dirty() ??
-> > >=20
-> >=20
-> > Writes can cover multiple folios so we'd be doing several increments pe=
-r
-> > write. Maybe that's ok? Should we also be updating the ctime at that
-> > point as well?
->=20
-> You would only do several increments if something was reading the value
-> concurrently, and then you really should to several increments for
-> correctness.
->=20
+But aside from that, I don't consider when i_version gets updated on
+disk, especially what the semantics are after a crash, and if we need
+to change things so that NFS can be more performant, I'm happy to
+accomodate.  One of the reasons why we implemented the ext4 fast
+commit feature was to improve performance for NFS workloads.
 
-Agreed.
+I know some XFS developers have some concerns here, but I just wanted
+to make it be explicit that (a) I'm not aware of any users who are
+depending on the i_version on-disk semantics, and (b) if they are
+depending on something which as far as I'm concerned in an internal
+implementation detail, we've made no promises to them, and they can
+get to keep both pieces.  :-)  This is especially since up until now,
+there is no supported, portable userspace interface to make i_version
+available to userspace.
 
-> >=20
-> > Fetching the i_version under the i_rwsem is probably sufficient to fix
-> > this though. Most of the write_iter ops already bump the i_version whil=
-e
-> > holding that lock, so this wouldn't add any extra locking to the write
-> > codepaths.
->=20
-> Adding new locking doesn't seem like a good idea.  It's bound to have
-> performance implications.  It may well end up serialising the directory
-> op that I'm currently trying to make parallelisable.
->=20
+Cheers,
 
-The new locking would only be in the NFSv4 GETATTR codepath:
-
-    https://lore.kernel.org/linux-nfs/20220908172448.208585-9-jlayton@kerne=
-l.org/T/#u
-
-Maybe we'd still better off taking a hit in the write codepath instead
-of doing this, but with this, most of the penalty would be paid by nfsd
-which I would think would be preferred here.
-
-The problem of mmap writes is another matter though. Not sure what we
-can do about that without making i_version bumps a lot more expensive.
---=20
-Jeff Layton <jlayton@kernel.org>
+					- Ted
