@@ -2,39 +2,31 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC255B3B4C
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Sep 2022 16:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8076A5B3C46
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Sep 2022 17:45:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230424AbiIIO6b (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 9 Sep 2022 10:58:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50258 "EHLO
+        id S230183AbiIIPpK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 9 Sep 2022 11:45:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231419AbiIIO6a (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Sep 2022 10:58:30 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5277138646;
-        Fri,  9 Sep 2022 07:58:27 -0700 (PDT)
-Received: from letrec.thunk.org (guestnat-104-133-160-102.corp.google.com [104.133.160.102] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 289Ew10l001494
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 9 Sep 2022 10:58:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1662735488; bh=vltgW/497ssICvI79c1LZB9Nq2N7w8/7ZtnVK7GOrnY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=PBG3ECnnbpz5+0FPCf1CST7S2mVOTUFasSMo2qCEMH6AjNmVT/HXG6grbqsIUHl3G
-         YFKHEdghRHcjIvEkkAlUGYa9cLBlLOgJxYhj+H+cGwimW6d8pzzjMtRhi3PwAMfZiU
-         0pw0rsHe4w7aRhL65LKCVzDJNqOQI2IV0FPN8xtJrtEwtyRt9zA16CET3GiI4dQPMs
-         jyWnNImoG/W/Advyk1y/QSJcyfrwvyCThvaS75Mfb0VDQUlDPcP8k2N/ivM0LRT/GV
-         gUJ60dijj5TAUfNZZvG23IFwn3xb8ptevIy5SiWd/bsTBFSlkOYmFP9v+6tYrWdCot
-         nWzEbsJsOmujA==
-Received: by letrec.thunk.org (Postfix, from userid 15806)
-        id B63508C2B49; Fri,  9 Sep 2022 10:58:00 -0400 (EDT)
-Date:   Fri, 9 Sep 2022 10:58:00 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
+        with ESMTP id S230108AbiIIPpJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Sep 2022 11:45:09 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048067391B;
+        Fri,  9 Sep 2022 08:45:07 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 090513EFA; Fri,  9 Sep 2022 11:45:07 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 090513EFA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1662738307;
+        bh=V/DLdRPq1zvs/q2asuE3/COTboZaddvEjKL48nZq+Ag=;
+        h=Date:To:Cc:Subject:References:In-Reply-To:From:From;
+        b=nst+nwaO6YbS4rXF/b6lFwOretBhbDsuXZPoezitk+nlqiztyBadpNSM4FUr7jnwg
+         8MJVasi6mMG6bgkD27Rw1rr7K/yhOcWkv0PLxFUO25Jk7I2jBCLUizMlSPpqpB05Pm
+         j19t4ySKDY3IIRE1n2ES5Fq9mNY9GKx9BLcF0ZUY=
+Date:   Fri, 9 Sep 2022 11:45:06 -0400
 To:     Jeff Layton <jlayton@kernel.org>
-Cc:     "J. Bruce Fields" <bfields@fieldses.org>, Jan Kara <jack@suse.cz>,
+Cc:     Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
         NeilBrown <neilb@suse.de>, adilger.kernel@dilger.ca,
         djwong@kernel.org, david@fromorbit.com, trondmy@hammerspace.com,
         viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
@@ -46,23 +38,25 @@ Cc:     "J. Bruce Fields" <bfields@fieldses.org>, Jan Kara <jack@suse.cz>,
         linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
 Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
  STATX_INO_VERSION field
-Message-ID: <YxtUeE4OouV7jUF9@mit.edu>
-References: <166259786233.30452.5417306132987966849@noble.neil.brown.name>
+Message-ID: <20220909154506.GB5674@fieldses.org>
+References: <771650a814ab1ff4dc5473d679936b747d9b6cf5.camel@kernel.org>
+ <20220907135153.qvgibskeuz427abw@quack3>
+ <166259786233.30452.5417306132987966849@noble.neil.brown.name>
  <20220908083326.3xsanzk7hy3ff4qs@quack3>
  <YxoIjV50xXKiLdL9@mit.edu>
  <02928a8c5718590bea5739b13d6b6ebe66cac577.camel@kernel.org>
  <20220908155605.GD8951@fieldses.org>
  <9e06c506fd6b3e3118da0ec24276e85ea3ee45a1.camel@kernel.org>
- <YxstWiu34TfJ6muW@mit.edu>
- <6173b33e43ac8b0e4377b5d65fec7231608f71f7.camel@kernel.org>
- <YxtEHIkfX0nQQC0n@mit.edu>
- <8b556c2dadb717a25ab47f02f70cfaaa6c6074c7.camel@kernel.org>
+ <20220908182252.GA18939@fieldses.org>
+ <44efe219dbf511492b21a653905448d43d0f3363.camel@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8b556c2dadb717a25ab47f02f70cfaaa6c6074c7.camel@kernel.org>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+In-Reply-To: <44efe219dbf511492b21a653905448d43d0f3363.camel@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+From:   bfields@fieldses.org (J. Bruce Fields)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,31 +64,44 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Sep 09, 2022 at 10:43:30AM -0400, Jeff Layton wrote:
+On Thu, Sep 08, 2022 at 03:07:58PM -0400, Jeff Layton wrote:
+> On Thu, 2022-09-08 at 14:22 -0400, J. Bruce Fields wrote:
+> > On Thu, Sep 08, 2022 at 01:40:11PM -0400, Jeff Layton wrote:
+> > > Yeah, ok. That does make some sense. So we would mix this into the
+> > > i_version instead of the ctime when it was available. Preferably, we'd
+> > > mix that in when we store the i_version rather than adding it afterward.
+> > > 
+> > > Ted, how would we access this? Maybe we could just add a new (generic)
+> > > super_block field for this that ext4 (and other filesystems) could
+> > > populate at mount time?
+> > 
+> > Couldn't the filesystem just return an ino_version that already includes
+> > it?
+> > 
+> 
+> Yes. That's simple if we want to just fold it in during getattr. If we
+> want to fold that into the values stored on disk, then I'm a little less
+> clear on how that will work.
+> 
+> Maybe I need a concrete example of how that will work:
+> 
+> Suppose we have an i_version value X with the previous crash counter
+> already factored in that makes it to disk. We hand out a newer version
+> X+1 to a client, but that value never makes it to disk.
+> 
+> The machine crashes and comes back up, and we get a query for i_version
+> and it comes back as X. Fine, it's an old version. Now there is a write.
+> What do we do to ensure that the new value doesn't collide with X+1? 
 
-> In general, we want to bump i_version if the ctime changes. I'm guessing
-> that we don't change ctime on a delalloc? If it's not visible to NFS,
-> then NFS won't care about it.  We can't project FIEMAP info across the
-> wire at this time, so we'd probably like to avoid seeing an i_version
-> bump in due to delalloc.
+I was assuming we could partition i_version's 64 bits somehow: e.g., top
+16 bits store the crash counter.  You increment the i_version by: 1)
+replacing the top bits by the new crash counter, if it has changed, and
+2) incrementing.
 
-Right, currently nothing user-visible changes when delayed allocation
-is resolved; ctime isn't bumped, and i_version shouldn't be bumped
-either.
+Do the numbers work out?  2^16 mounts after unclean shutdowns sounds
+like a lot for one filesystem, as does 2^48 changes to a single file,
+but people do weird things.  Maybe there's a better partitioning, or
+some more flexible way of maintaining an i_version that still allows you
+to identify whether a given i_version preceded a crash.
 
-If we crash before delayed allocation is resolved, there might be
-cases (mounting with data=writeback is the one which I'm most worried
-about, but I haven't experimented to be sure) where the inode might
-become a zero-length file after the reboot without i_version or ctime
-changing, but given that NFS forces a fsync(2) before it acknowledges
-a client request, that shouldn't be an issue for NFS.
-
-This is where as far I'm concerned, for ext4, i_version has only one
-customer to keep happy, and it's NFS.  :-)    Now, if we expose i_version
-via statx(2), we might need to be a tad bit more careful about what
-semantics we guarantee to userspace, especially with respect to what
-might be returned before and after a crash recovery.  If we can leave
-things such that there is maximal freedom for file system
-implementations, that would be my preference.
-
-						- Ted
+--b.
