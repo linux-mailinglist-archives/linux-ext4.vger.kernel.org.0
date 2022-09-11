@@ -2,121 +2,138 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 611595B4AB8
-	for <lists+linux-ext4@lfdr.de>; Sun, 11 Sep 2022 01:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 894F45B4BDA
+	for <lists+linux-ext4@lfdr.de>; Sun, 11 Sep 2022 06:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229766AbiIJXA0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 10 Sep 2022 19:00:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42072 "EHLO
+        id S229892AbiIKElK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 11 Sep 2022 00:41:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbiIJXAY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 10 Sep 2022 19:00:24 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1760727B36;
-        Sat, 10 Sep 2022 16:00:24 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C14851F385;
-        Sat, 10 Sep 2022 23:00:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1662850822; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SEZa31fS3EA9aFsPGWU6D91+fQNEkWOjOiZMWEVbOm8=;
-        b=D2nGQ+KmyoT+3CB9WFqrOvSdTCTC7vLDI6lvwiyiHKx1KRh/hVQcC1Kyz0pAWNWFH6DVsU
-        oYPaZqJklzpxIdT0Kd5P9Oyjb0H9pGpXDZ3uFtk4/vxZx1JUV4VqaWxROrNytO57a7bi6i
-        wlncE/a53qalNImF/4VgojhyTUI9QgM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1662850822;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SEZa31fS3EA9aFsPGWU6D91+fQNEkWOjOiZMWEVbOm8=;
-        b=/7aLYuKDFocxpJ7Wq/t+4PhxPCMT/enTqz6zz/P8FeBaUvb/PmzRyHfFPSyewk9Cg5nGxr
-        LoooUzXWIOKYwxCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 48FBE133B7;
-        Sat, 10 Sep 2022 23:00:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id iys6AP8WHWNKRgAAMHmgww
-        (envelope-from <neilb@suse.de>); Sat, 10 Sep 2022 23:00:15 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        with ESMTP id S229636AbiIKElJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 11 Sep 2022 00:41:09 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F8B541D17;
+        Sat, 10 Sep 2022 21:41:07 -0700 (PDT)
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MQH7G6hG9zHnkn;
+        Sun, 11 Sep 2022 12:39:06 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Sun, 11 Sep 2022 12:41:05 +0800
+Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
+ (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Sun, 11 Sep
+ 2022 12:41:04 +0800
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+To:     <jack@suse.cz>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>
+CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
+Subject: [PATCH v2] ext4: Fix dir corruption when ext4_dx_add_entry() fails
+Date:   Sun, 11 Sep 2022 12:52:04 +0800
+Message-ID: <20220911045204.516460-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Al Viro" <viro@zeniv.linux.org.uk>
-Cc:     "Jeff Layton" <jlayton@kernel.org>,
-        "Trond Myklebust" <trondmy@hammerspace.com>,
-        "bfields@fieldses.org" <bfields@fieldses.org>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "xiubli@redhat.com" <xiubli@redhat.com>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>, "jack@suse.cz" <jack@suse.cz>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "lczerner@redhat.com" <lczerner@redhat.com>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>
-Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
- STATX_INO_VERSION field
-In-reply-to: <Yxzpsdn4S6mTToct@ZenIV>
-References: <20220907111606.18831-1-jlayton@kernel.org>,
- <166255065346.30452.6121947305075322036@noble.neil.brown.name>,
- <79aaf122743a295ddab9525d9847ac767a3942aa.camel@kernel.org>,
- <20220907125211.GB17729@fieldses.org>,
- <771650a814ab1ff4dc5473d679936b747d9b6cf5.camel@kernel.org>,
- <8a71986b4fb61cd9b4adc8b4250118cbb19eec58.camel@hammerspace.com>,
- <c22baa64133a23be3aba81df23b4af866df51343.camel@kernel.org>,
- <166259764365.30452.5588074352157110414@noble.neil.brown.name>,
- <Yxzpsdn4S6mTToct@ZenIV>
-Date:   Sun, 11 Sep 2022 09:00:10 +1000
-Message-id: <166285081066.30452.6346804601094610224@noble.neil.brown.name>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, 11 Sep 2022, Al Viro wrote:
-> On Thu, Sep 08, 2022 at 10:40:43AM +1000, NeilBrown wrote:
-> 
-> > We do hold i_rwsem today.  I'm working on changing that.  Preserving
-> > atomic directory changeinfo will be a challenge.  The only mechanism I
-> > can think if is to pass a "u64*" to all the directory modification ops,
-> > and they fill in the version number at the point where it is incremented
-> > (inode_maybe_inc_iversion_return()).  The (nfsd) caller assumes that
-> > "before" was one less than "after".  If you don't want to internally
-> > require single increments, then you would need to pass a 'u64 [2]' to
-> > get two iversions back.
-> 
-> Are you serious?  What kind of boilerplate would that inflict on the
-> filesystems not, er, opting in for that... scalability improvement
-> experiment?
-> 
+Following process may lead to fs corruption:
+1. ext4_create(dir/foo)
+ ext4_add_nondir
+  ext4_add_entry
+   ext4_dx_add_entry
+     a. add_dirent_to_buf
+      ext4_mark_inode_dirty
+      ext4_handle_dirty_metadata   // dir inode bh is recorded into journal
+     b. ext4_append    // dx_get_count(entries) == dx_get_limit(entries)
+       ext4_bread(EXT4_GET_BLOCKS_CREATE)
+        ext4_getblk
+         ext4_map_blocks
+          ext4_ext_map_blocks
+            ext4_mb_new_blocks
+             dquot_alloc_block
+              dquot_alloc_space_nodirty
+               inode_add_bytes    // update dir's i_blocks
+            ext4_ext_insert_extent
+	     ext4_ext_dirty  // record extent bh into journal
+              ext4_handle_dirty_metadata(bh)
+	      // record new block into journal
+       inode->i_size += inode->i_sb->s_blocksize   // new size(in mem)
+     c. ext4_handle_dirty_dx_node(bh2)
+	// record dir's new block(dx_node) into journal
+     d. ext4_handle_dirty_dx_node((frame - 1)->bh)
+     e. ext4_handle_dirty_dx_node(frame->bh)
+     f. do_split    // ret err!
+     g. add_dirent_to_buf
+	 ext4_mark_inode_dirty(dir)  // update raw_inode on disk(skipped)
+2. fsck -a /dev/sdb
+ drop last block(dx_node) which beyonds dir's i_size.
+  /dev/sdb: recovering journal
+  /dev/sdb contains a file system with errors, check forced.
+  /dev/sdb: Inode 12, end of extent exceeds allowed value
+	(logical block 128, physical block 3938, len 1)
+3. fsck -fn /dev/sdb
+ dx_node->entry[i].blk > dir->i_size
+  Pass 2: Checking directory structure
+  Problem in HTREE directory inode 12 (/dir): bad block number 128.
+  Clear HTree index? no
+  Problem in HTREE directory inode 12: block #3 has invalid depth (2)
+  Problem in HTREE directory inode 12: block #3 has bad max hash
+  Problem in HTREE directory inode 12: block #3 not referenced
 
-Why would you think there would be any boiler plate?  Only filesystems
-that opt in would need to do anything, and only when the caller asked
-(by passing a non-NULL array pointer).
+Fix it by marking inode dirty directly inside ext4_append().
+Fetch a reproducer in [Link].
 
-NeilBrown
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=216466
+CC: stable@vger.kernel.org
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ v1->v2: mark inode dirty inside ext4_append().
+ fs/ext4/namei.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index 3a31b662f661..0d0e41d2dee8 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -85,15 +85,20 @@ static struct buffer_head *ext4_append(handle_t *handle,
+ 		return bh;
+ 	inode->i_size += inode->i_sb->s_blocksize;
+ 	EXT4_I(inode)->i_disksize = inode->i_size;
++	err = ext4_mark_inode_dirty(handle, inode);
++	if (err)
++		goto out;
+ 	BUFFER_TRACE(bh, "get_write_access");
+ 	err = ext4_journal_get_write_access(handle, inode->i_sb, bh,
+ 					    EXT4_JTR_NONE);
+-	if (err) {
+-		brelse(bh);
+-		ext4_std_error(inode->i_sb, err);
+-		return ERR_PTR(err);
+-	}
++	if (err)
++		goto out;
+ 	return bh;
++
++out:
++	brelse(bh);
++	ext4_std_error(inode->i_sb, err);
++	return ERR_PTR(err);
+ }
+ 
+ static int ext4_dx_csum_verify(struct inode *inode,
+-- 
+2.31.1
+
