@@ -2,138 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 894F45B4BDA
-	for <lists+linux-ext4@lfdr.de>; Sun, 11 Sep 2022 06:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A69A45B4ECB
+	for <lists+linux-ext4@lfdr.de>; Sun, 11 Sep 2022 14:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229892AbiIKElK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 11 Sep 2022 00:41:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46914 "EHLO
+        id S230128AbiIKMdB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 11 Sep 2022 08:33:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229636AbiIKElJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 11 Sep 2022 00:41:09 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F8B541D17;
-        Sat, 10 Sep 2022 21:41:07 -0700 (PDT)
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MQH7G6hG9zHnkn;
-        Sun, 11 Sep 2022 12:39:06 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Sun, 11 Sep 2022 12:41:05 +0800
-Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
- (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Sun, 11 Sep
- 2022 12:41:04 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <jack@suse.cz>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>
-CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH v2] ext4: Fix dir corruption when ext4_dx_add_entry() fails
-Date:   Sun, 11 Sep 2022 12:52:04 +0800
-Message-ID: <20220911045204.516460-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S230202AbiIKMdA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 11 Sep 2022 08:33:00 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E16003DF04
+        for <linux-ext4@vger.kernel.org>; Sun, 11 Sep 2022 05:32:58 -0700 (PDT)
+Received: from [192.168.1.138] ([37.4.248.23]) by mrelayeu.kundenserver.de
+ (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MqatE-1pApkk1U5A-00mZ0h; Sun, 11 Sep 2022 14:32:46 +0200
+Message-ID: <2eff8cbd-2d9c-0fb8-cfdb-31ce3534e466@i2se.com>
+Date:   Sun, 11 Sep 2022 14:32:45 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH 0/5 v3] ext4: Fix performance regression with mballoc
+Content-Language: en-US
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        Ted Tso <tytso@mit.edu>
+References: <20220908091301.147-1-jack@suse.cz>
+ <4826b1af-1264-3b3a-e71c-38937c75641c@i2se.com>
+ <20220909104014.xgzdlzem3f7mbccd@quack3>
+From:   Stefan Wahren <stefan.wahren@i2se.com>
+In-Reply-To: <20220909104014.xgzdlzem3f7mbccd@quack3>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:DAtqdQOrf2R6VUVNAmS2z6QAru755n5u3lUgf8Jp6DvscHKK270
+ q6wQSnwozKJAec/4Ft6//hVqrmsdUnK7pXdrbAQ0X5P0C5ocRwbeqopO8u4loSPppW9nN4L
+ jghLrHpBQef5RgAGFQg0RZ/lvW/QM4ZtCdUbP0jUBEPkKoFFfIeiyldBiqCS/t/ak2dk/CH
+ s2flBvKMeSiqO1FSbiD1A==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:5o4Kz0j7QX4=:PWr3bx+/ZTePuptzRHi79y
+ KmFzmm2xJOgK+9Y+W+XC53SGsgVm9sNLgxdTcZv60CZ8ykme76wQJe4NqXGp5snCmvfAW5VSQ
+ LjvW2PWnovTlH42DtAdoOUHDtQZw3OpPx51OvfHEk5MUmix9NWoNaGvOnieidWz19N0sR20da
+ HtzmK6XlEbpcwnFqBGNZlLDhwM0sVS3gJkiWHNaTiPWo3E58CqBhA7v912CAgbf7YKhpHNekz
+ Fbw2a1ZjpExBRJoPABLocBShRgg2HpAJHiw1hXMHdO9P2Aq/3lRyDRHGzIlzZ0WPdcuEW5YmO
+ V8d6eYm+vfnEwvgpx+sC9fzbYXaq1p7aMKpf4VnS8w0hBdDqYuc9moWk3ylkWuxGdbXWHUnso
+ 6ZvwSqF1IXEqWR4CJjy3fuyoKMo/8DXlqAlprN4O2kKIoWado/WhVR4Th3Le+SLWFXFhdcTfE
+ 84JCxagJHOcCOhaSYC1oYUP/i9OKvOktMM9aNy9qxfTZoWWsBVdSJP728ebVzSAr974MEMFNV
+ AhpwANfvd/LGv1UvhIsVbjcaepr9KtCL+RpM41p2xf6xch7KdgI3Ul0drKJ6wwIM1+uU8X2KO
+ Z/XFr2Z7dlIb4W5mLMWmTGf+YDC/YXHGP+X7fLLNyfHySW+xOnlyLGx98YdSDnC7cv3vuR/v3
+ xs6dGHIpuidwpXIdqHMUZ6U3DuT7c14lBW88AZ7ODpyflCliOFsin08QFJQNx7k/pW4dHU3MB
+ P0idaH10JBAevzSRPvB7zcqU0My04b7G4tkUad5G7/Hq4PSXljpjVHlajBflnpjJzkwXf32pt
+ tuWqTV0
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Following process may lead to fs corruption:
-1. ext4_create(dir/foo)
- ext4_add_nondir
-  ext4_add_entry
-   ext4_dx_add_entry
-     a. add_dirent_to_buf
-      ext4_mark_inode_dirty
-      ext4_handle_dirty_metadata   // dir inode bh is recorded into journal
-     b. ext4_append    // dx_get_count(entries) == dx_get_limit(entries)
-       ext4_bread(EXT4_GET_BLOCKS_CREATE)
-        ext4_getblk
-         ext4_map_blocks
-          ext4_ext_map_blocks
-            ext4_mb_new_blocks
-             dquot_alloc_block
-              dquot_alloc_space_nodirty
-               inode_add_bytes    // update dir's i_blocks
-            ext4_ext_insert_extent
-	     ext4_ext_dirty  // record extent bh into journal
-              ext4_handle_dirty_metadata(bh)
-	      // record new block into journal
-       inode->i_size += inode->i_sb->s_blocksize   // new size(in mem)
-     c. ext4_handle_dirty_dx_node(bh2)
-	// record dir's new block(dx_node) into journal
-     d. ext4_handle_dirty_dx_node((frame - 1)->bh)
-     e. ext4_handle_dirty_dx_node(frame->bh)
-     f. do_split    // ret err!
-     g. add_dirent_to_buf
-	 ext4_mark_inode_dirty(dir)  // update raw_inode on disk(skipped)
-2. fsck -a /dev/sdb
- drop last block(dx_node) which beyonds dir's i_size.
-  /dev/sdb: recovering journal
-  /dev/sdb contains a file system with errors, check forced.
-  /dev/sdb: Inode 12, end of extent exceeds allowed value
-	(logical block 128, physical block 3938, len 1)
-3. fsck -fn /dev/sdb
- dx_node->entry[i].blk > dir->i_size
-  Pass 2: Checking directory structure
-  Problem in HTREE directory inode 12 (/dir): bad block number 128.
-  Clear HTree index? no
-  Problem in HTREE directory inode 12: block #3 has invalid depth (2)
-  Problem in HTREE directory inode 12: block #3 has bad max hash
-  Problem in HTREE directory inode 12: block #3 not referenced
+Hi Jan,
 
-Fix it by marking inode dirty directly inside ext4_append().
-Fetch a reproducer in [Link].
+Am 09.09.22 um 12:40 schrieb Jan Kara:
+> On Thu 08-09-22 12:36:10, Stefan Wahren wrote:
+>> Hi Jan,
+>>
+>> Am 08.09.22 um 11:21 schrieb Jan Kara:
+>>> Hello,
+>>>
+>>> Here is the third version of my mballoc improvements to avoid spreading
+>>> allocations with mb_optimize_scan=1. Since v2 there are only small changes and
+>>> fixes found during review and testing. Overall the series looks mostly ready to
+>>> go, I just didn't see any comments regarding patch 3 - a fix of metabg handling
+>>> in the Orlov allocator which is kind of independent, I've just found it when
+>>> reading the code. Also patch 5 needs final review after all the fixes.
+>>>
+>>> Changes since v1:
+>>> - reworked data structure for CR 1 scan
+>>> - make small closed files use locality group preallocation
+>>> - fix metabg handling in the Orlov allocator
+>>>
+>>> Changes since v2:
+>>> - whitespace fixes
+>>> - fix outdated comment
+>>> - fix handling of mb_structs_summary procfs file
+>>> - fix bad unlock on error recovery path
+>> unfortunately the real patches doesn't have v3 which leads to confusion.
+> Yeah, OK, I've updated my scripting for posting patches to include version
+> in each posted patch :)
+>
+>> Just a note: in case this series cannot be applied for stable (5.15), we
+>> need a second solution to fix the regression there.
+> My plan is to backport the current series. It is not that invasive so it
+> should be doable...
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=216466
-CC: stable@vger.kernel.org
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- v1->v2: mark inode dirty inside ext4_append().
- fs/ext4/namei.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+This would be great.
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 3a31b662f661..0d0e41d2dee8 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -85,15 +85,20 @@ static struct buffer_head *ext4_append(handle_t *handle,
- 		return bh;
- 	inode->i_size += inode->i_sb->s_blocksize;
- 	EXT4_I(inode)->i_disksize = inode->i_size;
-+	err = ext4_mark_inode_dirty(handle, inode);
-+	if (err)
-+		goto out;
- 	BUFFER_TRACE(bh, "get_write_access");
- 	err = ext4_journal_get_write_access(handle, inode->i_sb, bh,
- 					    EXT4_JTR_NONE);
--	if (err) {
--		brelse(bh);
--		ext4_std_error(inode->i_sb, err);
--		return ERR_PTR(err);
--	}
-+	if (err)
-+		goto out;
- 	return bh;
-+
-+out:
-+	brelse(bh);
-+	ext4_std_error(inode->i_sb, err);
-+	return ERR_PTR(err);
- }
- 
- static int ext4_dx_csum_verify(struct inode *inode,
--- 
-2.31.1
+Btw i retested this version and i can confirm the procfs crash is fixed.
 
+>
+> 								Honza
