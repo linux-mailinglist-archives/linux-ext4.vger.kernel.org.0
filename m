@@ -2,141 +2,171 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 130B35B52CB
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Sep 2022 05:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9D55B5622
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Sep 2022 10:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229583AbiILDM5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 11 Sep 2022 23:12:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44086 "EHLO
+        id S230313AbiILI2A (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 12 Sep 2022 04:28:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbiILDMy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 11 Sep 2022 23:12:54 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF8A24F13
-        for <linux-ext4@vger.kernel.org>; Sun, 11 Sep 2022 20:12:51 -0700 (PDT)
-Received: from canpemm500004.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MQs4k3S5Mz14QPy;
-        Mon, 12 Sep 2022 11:08:54 +0800 (CST)
-Received: from [10.174.179.14] (10.174.179.14) by
- canpemm500004.china.huawei.com (7.192.104.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 12 Sep 2022 11:12:48 +0800
-Subject: Re: [PATCH v2 07/13] ext4: factor out ext4_encoding_init()
-From:   Jason Yan <yanaijie@huawei.com>
-To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-        <lczerner@redhat.com>, <linux-ext4@vger.kernel.org>
-References: <20220903030156.770313-1-yanaijie@huawei.com>
- <20220903030156.770313-8-yanaijie@huawei.com>
- <20220908085625.r3xsfvdgn7ibykt2@riteshh-domain>
- <2ef9347c-b7b8-d219-d6bb-3c9fa611506a@huawei.com>
-Message-ID: <7b5a5907-a0bf-58a5-f4d7-f42a9b4755de@huawei.com>
-Date:   Mon, 12 Sep 2022 11:12:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        with ESMTP id S230372AbiILI1g (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Sep 2022 04:27:36 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE812018B;
+        Mon, 12 Sep 2022 01:26:39 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5AD3B226F4;
+        Mon, 12 Sep 2022 08:25:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1662971128; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AmLitHuJb9zxnWIayBW40PsD0jUE9DwA8Hdr0sEGwOU=;
+        b=DoGJkxDfS8XfTUElxx6PiNjpb2X45CJzrmVQgQyjUfEd8XVON3A+8NBcWMGeMM2qRBvqQB
+        m63S5+msQqnbKtyqz92C22+jPNZlb5OmqZjyUW3h/g0CAhil2eOE9RlgXNey0K1QfdUVCo
+        0xHKxm+B0SmDb4moMu07E9n/ggHZ6aw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1662971128;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AmLitHuJb9zxnWIayBW40PsD0jUE9DwA8Hdr0sEGwOU=;
+        b=kLYQofUgp3PxTc+4vNeRg44Q5h3zZShQ4p9Ua4l1FOg6ZfwdqTghKlP1AeuLG1nuy8qvnw
+        0NSodnaIlG5cTQCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 471FF139E0;
+        Mon, 12 Sep 2022 08:25:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id kphbEfjsHmNMKAAAMHmgww
+        (envelope-from <jack@suse.cz>); Mon, 12 Sep 2022 08:25:28 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 6E889A067E; Mon, 12 Sep 2022 10:25:27 +0200 (CEST)
+Date:   Mon, 12 Sep 2022 10:25:27 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Zhihao Cheng <chengzhihao1@huawei.com>
+Cc:     jack@suse.cz, tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yukuai3@huawei.com
+Subject: Re: [PATCH v2] ext4: Fix dir corruption when ext4_dx_add_entry()
+ fails
+Message-ID: <20220912082527.36ywlkeie5he6guq@quack3>
+References: <20220911045204.516460-1-chengzhihao1@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <2ef9347c-b7b8-d219-d6bb-3c9fa611506a@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.14]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500004.china.huawei.com (7.192.104.92)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220911045204.516460-1-chengzhihao1@huawei.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
-On 2022/9/12 10:30, Jason Yan wrote:
+On Sun 11-09-22 12:52:04, Zhihao Cheng wrote:
+> Following process may lead to fs corruption:
+> 1. ext4_create(dir/foo)
+>  ext4_add_nondir
+>   ext4_add_entry
+>    ext4_dx_add_entry
+>      a. add_dirent_to_buf
+>       ext4_mark_inode_dirty
+>       ext4_handle_dirty_metadata   // dir inode bh is recorded into journal
+>      b. ext4_append    // dx_get_count(entries) == dx_get_limit(entries)
+>        ext4_bread(EXT4_GET_BLOCKS_CREATE)
+>         ext4_getblk
+>          ext4_map_blocks
+>           ext4_ext_map_blocks
+>             ext4_mb_new_blocks
+>              dquot_alloc_block
+>               dquot_alloc_space_nodirty
+>                inode_add_bytes    // update dir's i_blocks
+>             ext4_ext_insert_extent
+> 	     ext4_ext_dirty  // record extent bh into journal
+>               ext4_handle_dirty_metadata(bh)
+> 	      // record new block into journal
+>        inode->i_size += inode->i_sb->s_blocksize   // new size(in mem)
+>      c. ext4_handle_dirty_dx_node(bh2)
+> 	// record dir's new block(dx_node) into journal
+>      d. ext4_handle_dirty_dx_node((frame - 1)->bh)
+>      e. ext4_handle_dirty_dx_node(frame->bh)
+>      f. do_split    // ret err!
+>      g. add_dirent_to_buf
+> 	 ext4_mark_inode_dirty(dir)  // update raw_inode on disk(skipped)
+> 2. fsck -a /dev/sdb
+>  drop last block(dx_node) which beyonds dir's i_size.
+>   /dev/sdb: recovering journal
+>   /dev/sdb contains a file system with errors, check forced.
+>   /dev/sdb: Inode 12, end of extent exceeds allowed value
+> 	(logical block 128, physical block 3938, len 1)
+> 3. fsck -fn /dev/sdb
+>  dx_node->entry[i].blk > dir->i_size
+>   Pass 2: Checking directory structure
+>   Problem in HTREE directory inode 12 (/dir): bad block number 128.
+>   Clear HTree index? no
+>   Problem in HTREE directory inode 12: block #3 has invalid depth (2)
+>   Problem in HTREE directory inode 12: block #3 has bad max hash
+>   Problem in HTREE directory inode 12: block #3 not referenced
 > 
-> On 2022/9/8 16:56, Ritesh Harjani (IBM) wrote:
->> On 22/09/03 11:01AM, Jason Yan wrote:
->>> Factor out ext4_encoding_init(). No functional change.
->>>
->>> Signed-off-by: Jason Yan <yanaijie@huawei.com>
->>> Reviewed-by: Jan Kara <jack@suse.cz>
->>> ---
->>>   fs/ext4/super.c | 80 +++++++++++++++++++++++++++----------------------
->>>   1 file changed, 44 insertions(+), 36 deletions(-)
->>>
->>> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
->>> index f8806226b796..67972b0218c0 100644
->>> --- a/fs/ext4/super.c
->>> +++ b/fs/ext4/super.c
->>> @@ -4521,6 +4521,48 @@ static int ext4_inode_info_init(struct 
->>> super_block *sb,
->>>       return 0;
->>>   }
->>> +static int ext4_encoding_init(struct super_block *sb, struct 
->>> ext4_super_block *es)
->>> +{
->>> +#if IS_ENABLED(CONFIG_UNICODE)
->>
->> How about simplying it like below.
->>         if (!IS_ENABLED(CONFIG_UNICODE))
->>             return 0;
->>
->>         <...>
->>
->> Then we don't need #ifdef CONFIG_UNICODE
->>
+> Fix it by marking inode dirty directly inside ext4_append().
+> Fetch a reproducer in [Link].
 > 
-> Nice idea. Will update.
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=216466
+> CC: stable@vger.kernel.org
+> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+
+Thanks! The patch looks good. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  v1->v2: mark inode dirty inside ext4_append().
+>  fs/ext4/namei.c | 15 ++++++++++-----
+>  1 file changed, 10 insertions(+), 5 deletions(-)
 > 
-
-Sorry I tried to compile with this change but the compiler is not clever 
-enough to ignore the code down if CONFIG_UNICODE is not enabled.
-
-
-fs/ext4/super.c: In function ‘ext4_encoding_init’:
-fs/ext4/super.c:4529:2: warning: ISO C90 forbids mixed declarations and 
-code [-Wdeclaration-after-statement]
-  4529 |  const struct ext4_sb_encodings *encoding_info;
-       |  ^~~~~
-fs/ext4/super.c:4533:42: error: ‘struct super_block’ has no member named 
-‘s_encoding’
-  4533 |  if (!ext4_has_feature_casefold(sb) || sb->s_encoding)
-       |                                          ^~
-fs/ext4/super.c:4536:18: error: implicit declaration of function 
-‘ext4_sb_read_encoding’; did you mean ‘ext4_sb_bread_unmovable’? 
-[-Werror=implicit-function-declaration]
-  4536 |  encoding_info = ext4_sb_read_encoding(es);
-       |                  ^~~~~~~~~~~~~~~~~~~~~
-       |                  ext4_sb_bread_unmovable
-fs/ext4/super.c:4536:16: warning: assignment to ‘const struct 
-ext4_sb_encodings *’ from ‘int’ makes pointer from integer without a 
-cast [-Wint-conversion]
-  4536 |  encoding_info = ext4_sb_read_encoding(es);
-       |                ^
-fs/ext4/super.c:4543:36: error: dereferencing pointer to incomplete type 
-‘const struct ext4_sb_encodings’
-  4543 |  encoding = utf8_load(encoding_info->version);
-       |                                    ^~
-fs/ext4/super.c:4562:4: error: ‘struct super_block’ has no member named 
-‘s_encoding’
-  4562 |  sb->s_encoding = encoding;
-       |    ^~
-fs/ext4/super.c:4563:4: error: ‘struct super_block’ has no member named 
-‘s_encoding_flags’
-  4563 |  sb->s_encoding_flags = encoding_flags;
-       |    ^~
-cc1: some warnings being treated as errors
-make[2]: *** [scripts/Makefile.build:249: fs/ext4/super.o] Error 1
-make[1]: *** [scripts/Makefile.build:465: fs/ext4] Error 2
-make: *** [Makefile:1852: fs] Error 2
-
-
-
-
-> Thanks
-> Jason
-> .
-
-
-
+> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+> index 3a31b662f661..0d0e41d2dee8 100644
+> --- a/fs/ext4/namei.c
+> +++ b/fs/ext4/namei.c
+> @@ -85,15 +85,20 @@ static struct buffer_head *ext4_append(handle_t *handle,
+>  		return bh;
+>  	inode->i_size += inode->i_sb->s_blocksize;
+>  	EXT4_I(inode)->i_disksize = inode->i_size;
+> +	err = ext4_mark_inode_dirty(handle, inode);
+> +	if (err)
+> +		goto out;
+>  	BUFFER_TRACE(bh, "get_write_access");
+>  	err = ext4_journal_get_write_access(handle, inode->i_sb, bh,
+>  					    EXT4_JTR_NONE);
+> -	if (err) {
+> -		brelse(bh);
+> -		ext4_std_error(inode->i_sb, err);
+> -		return ERR_PTR(err);
+> -	}
+> +	if (err)
+> +		goto out;
+>  	return bh;
+> +
+> +out:
+> +	brelse(bh);
+> +	ext4_std_error(inode->i_sb, err);
+> +	return ERR_PTR(err);
+>  }
+>  
+>  static int ext4_dx_csum_verify(struct inode *inode,
+> -- 
+> 2.31.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
