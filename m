@@ -2,69 +2,103 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC47B5B59B3
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Sep 2022 13:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D383F5B59FF
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Sep 2022 14:13:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbiILLzj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 12 Sep 2022 07:55:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49896 "EHLO
+        id S229781AbiILMNW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 12 Sep 2022 08:13:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbiILLzi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Sep 2022 07:55:38 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5791024BDD
-        for <linux-ext4@vger.kernel.org>; Mon, 12 Sep 2022 04:55:37 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 28CBtIBo031213
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Sep 2022 07:55:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1662983720; bh=NDs8KLQZaV5wUG7roVC8z1/M8hrq6vyq+n80fEuy6Dg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=grz9sIJWa62zL5EYTy6SonMTUmJJVa2lpranmh0rpiZjhbGmVpUAJ6PVjvj1LAGu0
-         cRPXAH+Gqg4KStjKVkVcCWlEkDwcruq7E2e9sNBNtbUwmG83bq07iuYyE4hnV26k+R
-         M4dbiVu5pv2zpHpamPrOkRd9dCfqMBdYa02fdOAp4su/oGW9Mg5REoDFk5wpdpA0z5
-         lltL15nzo4XXY+QB7Jk5DDUD3Uc95OjNIG5WhoU8LbqmqU555MhomOfiUTvlR71NCI
-         DQ47OX6qszTVZBklhEFBvjfOTcqsZRbjwyzoC1/ljktb0rKO2sog0ede4p5iqWu637
-         VQ9Gw/N1elRhA==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id A58F515C526D; Mon, 12 Sep 2022 07:55:18 -0400 (EDT)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     linux-ext4@vger.kernel.org, liuzhiqiang26@huawei.com
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, wuguanghao3@huawei.com,
-        linfeilong@huawei.com
-Subject: Re: [PATCH] tune2fs: tune2fs_main() should return rc when some error, occurs
-Date:   Mon, 12 Sep 2022 07:55:15 -0400
-Message-Id: <166298370796.2551439.3699391083170476441.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <7a6e1a43-d041-c3cf-a3dd-a9761d8dd4d6@huawei.com>
-References: <7a6e1a43-d041-c3cf-a3dd-a9761d8dd4d6@huawei.com>
+        with ESMTP id S229718AbiILMNU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Sep 2022 08:13:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA16F33435
+        for <linux-ext4@vger.kernel.org>; Mon, 12 Sep 2022 05:13:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1662984797;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mrkO2o7NLCcYAn3dzHQJOYSP8ki543AiPRGrSsHduoY=;
+        b=E+gNMrN73+ChfhEJELXK7O7i3LKWcBDvinjyE6LM6VFvXyFKzMYNAZpI6L/7e1tR/yDlYm
+        eOPyKgL34K/sNTkaQg/xIo3/QdTSN/EfSyUOiZOttzbqbRaa9t3zQq9d7NQn2tK/lWiC9q
+        Kc/200yD2ICIQx399q6t4oYz53UXm30=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-146-fPG4ltTxOjK_xKdfMFGHXQ-1; Mon, 12 Sep 2022 08:13:13 -0400
+X-MC-Unique: fPG4ltTxOjK_xKdfMFGHXQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8D7F43C0D848;
+        Mon, 12 Sep 2022 12:13:12 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (unknown [10.39.193.57])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 21BFE2166B26;
+        Mon, 12 Sep 2022 12:13:06 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
+        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        NeilBrown <neilb@suse.de>, adilger.kernel@dilger.ca,
+        djwong@kernel.org, david@fromorbit.com, trondmy@hammerspace.com,
+        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
+        chuck.lever@oracle.com, lczerner@redhat.com, brauner@kernel.org,
+        linux-man@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-xfs@vger.kernel.org
+Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
+ STATX_INO_VERSION field
+References: <166259786233.30452.5417306132987966849@noble.neil.brown.name>
+        <20220908083326.3xsanzk7hy3ff4qs@quack3> <YxoIjV50xXKiLdL9@mit.edu>
+        <02928a8c5718590bea5739b13d6b6ebe66cac577.camel@kernel.org>
+        <20220908155605.GD8951@fieldses.org>
+        <9e06c506fd6b3e3118da0ec24276e85ea3ee45a1.camel@kernel.org>
+        <20220908182252.GA18939@fieldses.org>
+        <44efe219dbf511492b21a653905448d43d0f3363.camel@kernel.org>
+        <20220909154506.GB5674@fieldses.org>
+        <125df688dbebaf06478b0911e76e228e910b04b3.camel@kernel.org>
+        <20220910145600.GA347@fieldses.org>
+        <9eaed9a47d1aef11fee95f0079e302bc776bc7ff.camel@kernel.org>
+Date:   Mon, 12 Sep 2022 14:13:05 +0200
+In-Reply-To: <9eaed9a47d1aef11fee95f0079e302bc776bc7ff.camel@kernel.org> (Jeff
+        Layton's message of "Mon, 12 Sep 2022 07:42:16 -0400")
+Message-ID: <87a67423la.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, 5 Sep 2022 23:40:01 +0800, Zhiqiang Liu wrote:
-> If some error occurs, tune2fs_main() will go to closefs tag for
-> releasing resource, and it should return correct value (rc) instead
-> of 0 when ext2fs_close_free(&fs) successes.
-> 
-> 
+* Jeff Layton:
 
-Applied, thanks!
+> To do this we'd need 2 64-bit fields in the on-disk and in-memory 
+> superblocks for ext4, xfs and btrfs. On the first mount after a crash,
+> the filesystem would need to bump s_version_max by the significant
+> increment (2^40 bits or whatever). On a "clean" mount, it wouldn't need
+> to do that.
+>
+> Would there be a way to ensure that the new s_version_max value has made
+> it to disk? Bumping it by a large value and hoping for the best might be
+> ok for most cases, but there are always outliers, so it might be
+> worthwhile to make an i_version increment wait on that if necessary. 
 
-[1/1] tune2fs: tune2fs_main() should return rc when some error, occurs
-      commit: 77ac16dfba42e0d152b1e99359e01a933f8cc6f9
+How common are unclean shutdowns in practice?  Do ex64/XFS/btrfs keep
+counters in the superblocks for journal replays that can be read easily?
 
-Best regards,
--- 
-Theodore Ts'o <tytso@mit.edu>
+Several useful i_version applications could be negatively impacted by
+frequent i_version invalidation.
+
+Thanks,
+Florian
+
