@@ -2,73 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2ECC5B5C27
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Sep 2022 16:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F03C5B5C96
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Sep 2022 16:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbiILO0E (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 12 Sep 2022 10:26:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60040 "EHLO
+        id S229746AbiILOrd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 12 Sep 2022 10:47:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbiILOZ5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Sep 2022 10:25:57 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEEA02D1C4;
-        Mon, 12 Sep 2022 07:25:55 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id E9892200FE;
-        Mon, 12 Sep 2022 14:25:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1662992753; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CQ816uq/z72h01vUJ3WqCOqE0rBSfyAYPOG1bRSmGEU=;
-        b=t7mrZjRhOopakSQTCP0Fl9xQuAjyYgCTr6Gzk4Iq3U3adDGwB/3yw8e6pUqOUyl1CAmcu+
-        4UnRA7+r6SS4W1tH1JxveYYCUw7Up4wr9eS4qCR0igZiGjYRWCn2+Cn/DVBkGofk4B6cUX
-        CnuWsecIrEeLgI4fMW0hGPcMBcMSKgg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1662992753;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CQ816uq/z72h01vUJ3WqCOqE0rBSfyAYPOG1bRSmGEU=;
-        b=tIHy8hhDKDLLP+9AI60M7pgy8tF+VM0uyaFTyjEknOMr4UIr2yXj46OpMGsz774UkvH6de
-        8L2r3wZlsp/1ZMAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6A8DD139C8;
-        Mon, 12 Sep 2022 14:25:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id lqwYF3FBH2M6RwAAMHmgww
-        (envelope-from <lhenriques@suse.de>); Mon, 12 Sep 2022 14:25:53 +0000
-Received: from localhost (brahms.olymp [local])
-        by brahms.olymp (OpenSMTPD) with ESMTPA id fe7b8088;
-        Mon, 12 Sep 2022 14:26:45 +0000 (UTC)
-References: <20220822094235.2690-1-lhenriques@suse.de>
-From:   =?utf-8?Q?Lu=C3=ADs?= Henriques <lhenriques@suse.de>
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Cc:     wenqingliu0120@gmail.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?utf-8?Q?Lu=C3=ADs?= Henriques <lhenriques@suse.de>,
-        Baokun Li <libaokun1@huawei.com>
-Subject: Re: [PATCH v4] ext4: fix bug in extents parsing when eh_entries ==
- 0 and eh_depth > 0
-Date:   Mon, 12 Sep 2022 15:23:14 +0100
-In-reply-to: <20220822094235.2690-1-lhenriques@suse.de>
-Message-ID: <87h71cwtwa.fsf@suse.de>
+        with ESMTP id S229718AbiILOrc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Sep 2022 10:47:32 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9424223BC1;
+        Mon, 12 Sep 2022 07:47:31 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id CFBAA1C5A; Mon, 12 Sep 2022 10:47:30 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org CFBAA1C5A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1662994050;
+        bh=KrCKV+nSm550BbWCcA/q//1uO/LeSXqDHyHCbzO1WJk=;
+        h=Date:To:Cc:Subject:References:In-Reply-To:From:From;
+        b=Dfx5+C/kD+osKxTq13Gb2GCFlVdcialgctzJi05n2pAIbusLp1G06ffaXC3Eac1yY
+         H7CWy0N5muuBjXNSIiooqAQzv7jet1zI4xWjxBmZys9o1JABAQIakYevKUN79sli9L
+         81iLAHBR1MuyfGYXr065a8FUKIoL1YQtZ2Xs+16o=
+Date:   Mon, 12 Sep 2022 10:47:30 -0400
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Florian Weimer <fweimer@redhat.com>, Theodore Ts'o <tytso@mit.edu>,
+        Jan Kara <jack@suse.cz>, NeilBrown <neilb@suse.de>,
+        adilger.kernel@dilger.ca, djwong@kernel.org, david@fromorbit.com,
+        trondmy@hammerspace.com, viro@zeniv.linux.org.uk,
+        zohar@linux.ibm.com, xiubli@redhat.com, chuck.lever@oracle.com,
+        lczerner@redhat.com, brauner@kernel.org, linux-man@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
+ STATX_INO_VERSION field
+Message-ID: <20220912144730.GD9304@fieldses.org>
+References: <20220908182252.GA18939@fieldses.org>
+ <44efe219dbf511492b21a653905448d43d0f3363.camel@kernel.org>
+ <20220909154506.GB5674@fieldses.org>
+ <125df688dbebaf06478b0911e76e228e910b04b3.camel@kernel.org>
+ <20220910145600.GA347@fieldses.org>
+ <9eaed9a47d1aef11fee95f0079e302bc776bc7ff.camel@kernel.org>
+ <87a67423la.fsf@oldenburg.str.redhat.com>
+ <7c71050e139a479e08ab7cf95e9e47da19a30687.camel@kernel.org>
+ <20220912135131.GC9304@fieldses.org>
+ <1abae98579030d437224ae24f73fffaabb3f64c1.camel@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1abae98579030d437224ae24f73fffaabb3f64c1.camel@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+From:   bfields@fieldses.org (J. Bruce Fields)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,108 +65,42 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Mon, Sep 12, 2022 at 10:02:27AM -0400, Jeff Layton wrote:
+> On Mon, 2022-09-12 at 09:51 -0400, J. Bruce Fields wrote:
+> > On Mon, Sep 12, 2022 at 08:55:04AM -0400, Jeff Layton wrote:
+> > > Because of the "seen" flag, we have a 63 bit counter to play with. Could
+> > > we use a similar scheme to the one we use to handle when "jiffies"
+> > > wraps? Assume that we'd never compare two values that were more than
+> > > 2^62 apart? We could add i_version_before/i_version_after macros to make
+> > > it simple to handle this.
+> > 
+> > As far as I recall the protocol just assumes it can never wrap.  I guess
+> > you could add a new change_attr_type that works the way you describe.
+> > But without some new protocol clients aren't going to know what to do
+> > with a change attribute that wraps.
+> > 
+> 
+> Right, I think that's the case now, and with contemporary hardware that
+> shouldn't ever happen, but in 10 years when we're looking at femtosecond
+> latencies, could this be different? I don't know.
 
-Ping?
+That doesn't sound likely.  We probably need not just 2^63 writes to a
+single file, but a dependent sequence of 2^63 interspersed writes and
+change attribute reads.
 
-I have written an fstest for this fix, but since it generates a corrupted
-image that crashes the kernel I'd rather have the bug fixed before
-submitting it.
+Then there's the question of how many crashes and remounts are possible
+for a single filesystem in the worst case.
 
-Cheers,
---=20
-Lu=C3=ADs
+> 
+> > I think this just needs to be designed so that wrapping is impossible in
+> > any realistic scenario.  I feel like that's doable?
+> > 
+> > If we feel we have to catch that case, the only 100% correct behavior
+> > would probably be to make the filesystem readonly.
+> 
+> What would be the recourse at that point? Rebuild the fs from scratch, I
+> guess?
 
-Lu=C3=ADs Henriques <lhenriques@suse.de> writes:
+I guess.
 
-> When walking through an inode extents, the ext4_ext_binsearch_idx() funct=
-ion
-> assumes that the extent header has been previously validated.  However, t=
-here
-> are no checks that verify that the number of entries (eh->eh_entries) is
-> non-zero when depth is > 0.  And this will lead to problems because the
-> EXT_FIRST_INDEX() and EXT_LAST_INDEX() will return garbage and result in =
-this:
->
-> [  135.245946] ------------[ cut here ]------------
-> [  135.247579] kernel BUG at fs/ext4/extents.c:2258!
-> [  135.249045] invalid opcode: 0000 [#1] PREEMPT SMP
-> [  135.250320] CPU: 2 PID: 238 Comm: tmp118 Not tainted 5.19.0-rc8+ #4
-> [  135.252067] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIO=
-S rel-1.15.0-0-g2dd4b9b-rebuilt.opensuse.org 04/01/2014
-> [  135.255065] RIP: 0010:ext4_ext_map_blocks+0xc20/0xcb0
-> [  135.256475] Code:
-> [  135.261433] RSP: 0018:ffffc900005939f8 EFLAGS: 00010246
-> [  135.262847] RAX: 0000000000000024 RBX: ffffc90000593b70 RCX: 000000000=
-0000023
-> [  135.264765] RDX: ffff8880038e5f10 RSI: 0000000000000003 RDI: ffff88800=
-46e922c
-> [  135.266670] RBP: ffff8880046e9348 R08: 0000000000000001 R09: ffff88800=
-2ca580c
-> [  135.268576] R10: 0000000000002602 R11: 0000000000000000 R12: 000000000=
-0000024
-> [  135.270477] R13: 0000000000000000 R14: 0000000000000024 R15: 000000000=
-0000000
-> [  135.272394] FS:  00007fdabdc56740(0000) GS:ffff88807dd00000(0000) knlG=
-S:0000000000000000
-> [  135.274510] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  135.276075] CR2: 00007ffc26bd4f00 CR3: 0000000006261004 CR4: 000000000=
-0170ea0
-> [  135.277952] Call Trace:
-> [  135.278635]  <TASK>
-> [  135.279247]  ? preempt_count_add+0x6d/0xa0
-> [  135.280358]  ? percpu_counter_add_batch+0x55/0xb0
-> [  135.281612]  ? _raw_read_unlock+0x18/0x30
-> [  135.282704]  ext4_map_blocks+0x294/0x5a0
-> [  135.283745]  ? xa_load+0x6f/0xa0
-> [  135.284562]  ext4_mpage_readpages+0x3d6/0x770
-> [  135.285646]  read_pages+0x67/0x1d0
-> [  135.286492]  ? folio_add_lru+0x51/0x80
-> [  135.287441]  page_cache_ra_unbounded+0x124/0x170
-> [  135.288510]  filemap_get_pages+0x23d/0x5a0
-> [  135.289457]  ? path_openat+0xa72/0xdd0
-> [  135.290332]  filemap_read+0xbf/0x300
-> [  135.291158]  ? _raw_spin_lock_irqsave+0x17/0x40
-> [  135.292192]  new_sync_read+0x103/0x170
-> [  135.293014]  vfs_read+0x15d/0x180
-> [  135.293745]  ksys_read+0xa1/0xe0
-> [  135.294461]  do_syscall_64+0x3c/0x80
-> [  135.295284]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
->
-> This patch simply adds an extra check in __ext4_ext_check(), verifying th=
-at
-> eh_entries is not 0 when eh_depth is > 0.
->
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D215941
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D216283
-> Cc: Baokun Li <libaokun1@huawei.com>
-> Signed-off-by: Lu=C3=ADs Henriques <lhenriques@suse.de>
-> ---
->  fs/ext4/extents.c | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> Changes since v3:
-> - Fixed typo (I had 'eh_depth' instead of 'depth')
->
-> Changes since v2:
-> - Dropped usage of le16_to_cpu() because we're comparing values against 0
-> - Use 'depth' instead of 'eh->eh_depth' because we've checked earlier that
->   both have the same value.
->
->
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index c148bb97b527..5235974126bd 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -460,6 +460,10 @@ static int __ext4_ext_check(const char *function, un=
-signed int line,
->  		error_msg =3D "invalid eh_entries";
->  		goto corrupted;
->  	}
-> +	if (unlikely((eh->eh_entries =3D=3D 0) && (depth > 0))) {
-> +		error_msg =3D "eh_entries is 0 but eh_depth is > 0";
-> +		goto corrupted;
-> +	}
->  	if (!ext4_valid_extent_entries(inode, eh, lblk, &pblk, depth)) {
->  		error_msg =3D "invalid extent entries";
->  		goto corrupted;
-
+--b.
