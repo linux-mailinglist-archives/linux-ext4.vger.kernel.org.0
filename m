@@ -2,201 +2,148 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6071C5B5DA3
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Sep 2022 17:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA8C5B5E4B
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Sep 2022 18:33:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbiILPtm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 12 Sep 2022 11:49:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55146 "EHLO
+        id S229577AbiILQd0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 12 Sep 2022 12:33:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230354AbiILPtk (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Sep 2022 11:49:40 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66FCB6419;
-        Mon, 12 Sep 2022 08:49:39 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 01429B80DB9;
-        Mon, 12 Sep 2022 15:49:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84D37C433C1;
-        Mon, 12 Sep 2022 15:49:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662997776;
-        bh=Y9o8zlfMXVNo23NhygxCl5rFupwZ9JDKU3q8+i8soGs=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=VgtwOgaOC5ZZZKkHfIbpB574JJEJoW23SXv6vimyQ2E1GZB5xR05EY54KK2XjKTQL
-         RuWGai+VBLlIHFi7nY6rbzs9+SbPCKNiChnIdOWdNfZ/GHCGtjH0ZzOdaYHWLEKBBQ
-         rcAw9ghpBEVXcE8bjP4GrwYj1Ahu4PzyQ3EEfVbx+NaXmVeffa939fEiix8ie8z9TR
-         i8iTLXaYSq9HD9AFPkI/HN5maYCq4lDKoCuMvS/tqG7CFhcIT0iQ4ePyQY0SsUI0HT
-         vMiIPRHoFzoXgYtCZ8+s4l/lefw4tdfUv3svux60hS94qA8CxQc+bobZwTg5Cq9PpS
-         LREs3tt82vYCw==
-Message-ID: <f50919004f95782f0e8f26d9ac0513ee0c7ee432.camel@kernel.org>
-Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
- STATX_INO_VERSION field
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        "bfields@fieldses.org" <bfields@fieldses.org>
-Cc:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "neilb@suse.de" <neilb@suse.de>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "xiubli@redhat.com" <xiubli@redhat.com>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "lczerner@redhat.com" <lczerner@redhat.com>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>
-Date:   Mon, 12 Sep 2022 11:49:33 -0400
-In-Reply-To: <44884eeb662c2e304ba644d585b14c65b7dc1a0a.camel@hammerspace.com>
-References: <20220908182252.GA18939@fieldses.org>
-         <44efe219dbf511492b21a653905448d43d0f3363.camel@kernel.org>
-         <20220909154506.GB5674@fieldses.org>
-         <125df688dbebaf06478b0911e76e228e910b04b3.camel@kernel.org>
-         <20220910145600.GA347@fieldses.org>
-         <9eaed9a47d1aef11fee95f0079e302bc776bc7ff.camel@kernel.org>
-         <87a67423la.fsf@oldenburg.str.redhat.com>
-         <7c71050e139a479e08ab7cf95e9e47da19a30687.camel@kernel.org>
-         <20220912135131.GC9304@fieldses.org>
-         <aeb314e7104647ccfd83a82bd3092005c337d953.camel@hammerspace.com>
-         <20220912145057.GE9304@fieldses.org>
-         <626f7e46aa25d967b3b92be61cf7059067d1a9c3.camel@hammerspace.com>
-         <44884eeb662c2e304ba644d585b14c65b7dc1a0a.camel@hammerspace.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
+        with ESMTP id S229520AbiILQdZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Sep 2022 12:33:25 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63C7E1D0C6
+        for <linux-ext4@vger.kernel.org>; Mon, 12 Sep 2022 09:33:24 -0700 (PDT)
+Received: from letrec.thunk.org ([185.122.133.20])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 28CGXK10012981
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Sep 2022 12:33:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1663000402; bh=RcmKQ1oUq86NGMt5DT+r6zQ6gcil2DxrxqDAHJbW/zg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=oX9yQuEatWjAVDmG3khDD2TYfqHaLLXUuSiqJocgBBkaFddFA7BEyh2v/qYQwFCzr
+         hb1AZFdR66GSombbSkbYqotAvGsu4/poroO9armNVVszC9a/BRLlkqEwJAMfRk8lic
+         Fo9xZvjTc8lvMkyk6Cyh4rZFxoukgqh4gsg0MBdVnW9KrLOPTLFywfcPDg0V4uzNXK
+         n0dCOzpvsCniFWhkG2MtVFDs6f87K9uh1pi7OR5BViqKSJl+POn/WxytaZtf76WpOQ
+         4RajO/ZzJUNTpn9wbnBHxhCwgbP0np2/X2GQu9zPjO8XzDzwh9YuB3Agt9RYqhXo2Z
+         LVNkiPatIqAIA==
+Received: by letrec.thunk.org (Postfix, from userid 15806)
+        id 9C5D18C3EB0; Mon, 12 Sep 2022 12:33:20 -0400 (EDT)
+Date:   Mon, 12 Sep 2022 12:33:20 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     JunChao Sun <sunjunchao2870@gmail.com>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: How does newbie find bugs in ext4?
+Message-ID: <Yx9fUHiiZaKXeLUw@mit.edu>
+References: <CAHB1NahK6LMggGEcoCfhun6rAWiyrANnNR5+d93c07WsZk6Kvg@mail.gmail.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHB1NahK6LMggGEcoCfhun6rAWiyrANnNR5+d93c07WsZk6Kvg@mail.gmail.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, 2022-09-12 at 15:32 +0000, Trond Myklebust wrote:
-> On Mon, 2022-09-12 at 14:56 +0000, Trond Myklebust wrote:
-> > On Mon, 2022-09-12 at 10:50 -0400, J. Bruce Fields wrote:
-> > > On Mon, Sep 12, 2022 at 02:15:16PM +0000, Trond Myklebust wrote:
-> > > > On Mon, 2022-09-12 at 09:51 -0400, J. Bruce Fields wrote:
-> > > > > On Mon, Sep 12, 2022 at 08:55:04AM -0400, Jeff Layton wrote:
-> > > > > > Because of the "seen" flag, we have a 63 bit counter to play
-> > > > > > with.
-> > > > > > Could
-> > > > > > we use a similar scheme to the one we use to handle when
-> > > > > > "jiffies"
-> > > > > > wraps?=A0Assume that we'd never compare two values that were
-> > > > > > more
-> > > > > > than
-> > > > > > 2^62 apart? We could add i_version_before/i_version_after
-> > > > > > macros to
-> > > > > > make
-> > > > > > it simple to handle this.
-> > > > >=20
-> > > > > As far as I recall the protocol just assumes it can never
-> > > > > wrap.=A0
-> > > > > I
-> > > > > guess
-> > > > > you could add a new change_attr_type that works the way you
-> > > > > describe.
-> > > > > But without some new protocol clients aren't going to know what
-> > > > > to do
-> > > > > with a change attribute that wraps.
-> > > > >=20
-> > > > > I think this just needs to be designed so that wrapping is
-> > > > > impossible
-> > > > > in
-> > > > > any realistic scenario.=A0 I feel like that's doable?
-> > > > >=20
-> > > > > If we feel we have to catch that case, the only 100% correct
-> > > > > behavior
-> > > > > would probably be to make the filesystem readonly.
-> > > > >=20
-> > > >=20
-> > > > Which protocol? If you're talking about basic NFSv4, it doesn't
-> > > > assume
-> > > > anything about the change attribute and wrapping.
-> > > >=20
-> > > > The NFSv4.2 protocol did introduce the optional attribute
-> > > > 'change_attr_type' that tries to describe the change attribute
-> > > > behaviour to the client. It tells you if the behaviour is
-> > > > monotonically
-> > > > increasing, but doesn't say anything about the behaviour when the
-> > > > attribute value overflows.
-> > > >=20
-> > > > That said, the Linux NFSv4.2 client, which uses that
-> > > > change_attr_type
-> > > > attribute does deal with overflow by assuming standard uint64_t
-> > > > wrap
-> > > > around rules. i.e. it assumes bit values > 63 are truncated,
-> > > > meaning
-> > > > that the value obtained by incrementing (2^64-1) is 0.
-> > >=20
-> > > Yeah, it was the MONOTONIC_INCRE case I was thinking of.=A0 That's
-> > > interesting, I didn't know the client did that.
-> > >=20
-> >=20
-> > If you look at where we compare version numbers, it is always some
-> > variant of the following:
-> >=20
-> > static int nfs_inode_attrs_cmp_monotonic(const struct nfs_fattr
-> > *fattr,
-> > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 const struct inode *ino=
-de)
-> > {
-> > =A0=A0=A0=A0=A0=A0=A0 s64 diff =3D fattr->change_attr -
-> > inode_peek_iversion_raw(inode);
-> > =A0=A0=A0=A0=A0=A0=A0 if (diff > 0)
-> > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return 1;
-> > =A0=A0=A0=A0=A0=A0=A0 return diff =3D=3D 0 ? 0 : -1;
-> > }
-> >=20
-> > i.e. we do an unsigned 64-bit subtraction, and then cast it to the
-> > signed 64-bit equivalent in order to figure out which is the more
-> > recent value.
-> >=20
+Hi,
 
-Good! This seems like the reasonable thing to do, given that the spec
-doesn't really say that the change attribute has to start at low values.
+So first of all, I would recommend that you learn how to use
+kvm-xfstests.  The reason for this is that kvm-xfstests is very useful
+for testing any changes that you make.  The same test appliance can be
+used for testing file systems for Android and using Google Compute
+Engine VM's (which is one of the best ways to use it).  Please take a
+look at these references:
 
->=20
-> ...and by the way, yes this does mean that if you suddenly add a value
-> of 2^63 to the change attribute, then you are likely to cause the
-> client to think that you just handed it an old value.
->=20
-> i.e. you're better off having the crash counter increment the change
-> attribute by a relatively small value. One that is guaranteed to be
-> larger than the values that may have been lost, but that is not
-> excessively large.
->=20
+      https://thunk.org/gce-xfstests
+      https://github.com/tytso/xfstests-bld/blob/master/Documentation/what-is-xfstests.md
+      https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-quickstart.md
+      https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-xfstests.md
 
-Yeah.
+In addition to using this as a way of a quick "playground" where you
+can test patches, this can also be a good way to (for example) test
+syzbot reports.
 
-Like with jiffies, you need to make sure the samples you're comparing
-aren't _too_ far off. That should be doable here -- 62 bits is plenty of
-room to store a lot of change values.
+Another thing which you could potentially do is to manual backporting
+of ext4 patches which didn't automatically get applied because the
+patch required some adjustments (or required backporting some
+additional commits, etc.) to fix a particular problem.  So for
+example, you could try running xfstests using the latest 5.10.y or
+5.15.y stable kernels, since as we fix bugs, we often add tests to
+check for regressions.  For example, if you look at the header of the
+test ext4/058, you'll find:
 
-My benchmark (maybe wrong, but maybe good enough) is to figure on an
-increment per nanosecond for a worst-case scenario. With that, 2^40
-nanoseconds is >12 days. Maybe that's overkill.
+# Set 256 blocks in a block group, then inject I/O pressure,
+# it will trigger off kernel BUG in ext4_mb_mark_diskspace_used
+#
+# Regression test for commit
+# a08f789d2ab5 ext4: fix bug_on ext4_mb_use_inode_pa
 
-2^32 ns is about an hour and 20 mins. That's probably a reasonable value
-to use. If we can't get a a new value onto disk in that time then
-something is probably very wrong.
---=20
-Jeff Layton <jlayton@kernel.org>
+So if you find out that a particular test fails on an LTS kernel
+(e.g., 5.15.y or 5.10.y), but it passes on upstream, it could be that
+a missing commit needs to be backported.  We don't currently have
+anyone doing this on a regular basis for the LTS kernels (I maybe will
+do this once every few months, when I have time), so this could be a
+good way for you to contribute and also learn more about ext4 as you
+go.
+
+Finally, I'll note that although I do run xfstests regularly, and will
+reject patches that cause regressions, but there are still some tests
+that fail.  For example, here is my latest test report:
+
+TESTRUNID: ltm-20220912073217
+KERNEL:    kernel 6.0.0-rc4-xfstests #760 SMP PREEMPT_DYNAMIC Mon Sep 12 07:23:13 EDT 2022 x86_64
+CMDLINE:   full --kernel gs://gce-xfstests/kernel.deb
+CPUS:      4
+MEM:       7680
+
+ext4/4k: 515 tests, 27 skipped, 4093 seconds
+ext4/1k: 511 tests, 2 failures, 40 skipped, 5095 seconds
+  Flaky: generic/475: 40% (2/5)   generic/476: 40% (2/5)
+ext4/ext3: 507 tests, 115 skipped, 3514 seconds
+ext4/encrypt: 493 tests, 3 failures, 129 skipped, 2583 seconds
+  Failures: generic/681 generic/682 generic/691
+ext4/nojournal: 510 tests, 4 failures, 94 skipped, 3610 seconds
+  Failures: ext4/301 ext4/304 generic/455
+  Flaky: generic/077: 40% (2/5)
+ext4/ext3conv: 512 tests, 27 skipped, 3650 seconds
+ext4/adv: 512 tests, 3 failures, 34 skipped, 3860 seconds
+  Failures: generic/475 generic/477
+  Flaky: generic/455: 80% (4/5)
+ext4/dioread_nolock: 513 tests, 27 skipped, 4235 seconds
+ext4/data_journal: 511 tests, 2 failures, 87 skipped, 3647 seconds
+  Failures: generic/231 generic/455
+ext4/bigalloc: 489 tests, 2 failures, 34 skipped, 3904 seconds
+  Failures: generic/455 shared/298
+ext4/bigalloc_1k: 488 tests, 2 failures, 51 skipped, 3826 seconds
+  Failures: generic/455 shared/298
+ext4/dax: 502 tests, 127 skipped, 2520 seconds
+Totals: 6135 tests, 792 skipped, 80 failures, 0 errors, 44288s
+
+(This was done by using gce-xfstests, which is a cloud VM variant of
+kvm-xfstests.  The equivalant would take roughly 12 to 24 hours using
+kvm-xfstests, whichj gets run on multiple VM times, so the wall clock
+time needed is perhaps two to two and a half hours.)
+
+In general, I try very hard to make sure that ext4/4k (ext4 with the
+default 4k block size) to be free of failures hen running the xfstests
+"auto" group.  However, you'll see that there are other configs where
+there are failures, some of which have been around for a while.
+However, the challenge is that these are bugs that often, more senior
+ext4 developers have tried looking at for, say, an hour or two, and
+then said, "I have higher priority fires to fight".  But these might
+not be the best tests failures to ask a ext4 newbie to debug.  That
+being said, if you don't mind a bit (or a lot) of frustration, it
+could be that you might be able root cause soe of these failed tests.
+
+(But starting with testing the LTS kernels might be a better place to
+start.)
+
+Cheers,
+
+					- Ted
