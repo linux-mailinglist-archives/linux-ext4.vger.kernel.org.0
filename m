@@ -2,55 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E0A5B5AA4
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Sep 2022 14:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 997E45B5ABA
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Sep 2022 14:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbiILMzz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 12 Sep 2022 08:55:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34296 "EHLO
+        id S229544AbiILM7g (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 12 Sep 2022 08:59:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbiILMz3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Sep 2022 08:55:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62386101F9;
-        Mon, 12 Sep 2022 05:55:09 -0700 (PDT)
+        with ESMTP id S229511AbiILM7f (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Sep 2022 08:59:35 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF7B6C7F;
+        Mon, 12 Sep 2022 05:59:31 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B02C7611E4;
-        Mon, 12 Sep 2022 12:55:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E91E9C433C1;
-        Mon, 12 Sep 2022 12:55:05 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 80C6DB80B21;
+        Mon, 12 Sep 2022 12:59:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 174FEC433D6;
+        Mon, 12 Sep 2022 12:59:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662987308;
-        bh=kXVl3lKGhuGMB8e8q0RvmHygAe7Nq48CUY69vkKdMNw=;
+        s=k20201202; t=1662987569;
+        bh=pHJ7AkTbTBW4OmGY68+VWU0dmsFeRL0c8rCpvJCVi+U=;
         h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=LSPyR/AGEvllwX8KzbZK8QLpzGQtSj8nQM5ONoAzIq54XZLFnZ7SrmnP+cfaRQ+nS
-         phTff8vWAEihEOnYF9G89DfKxUUfX3K4BBiBqGpc5gfn3X5mhy8/jDg92GRproCe6L
-         Jm7sz55mjQ07qJlwM2lc1Pd1OjOPykqy6rWb14Pl4iGhwsLId0QYizMl4dP2HGTBb9
-         kwayjFy56Ogq7SybiITPST8FdEyP9vstDvIWuFlwHPFO6f/QOC8SpScApFo6yPnWLd
-         FuDBKBF5U2U6jv3QBn/w0V7PjG0kxDYoZM1WlAncS3bUEjIknhtrlECkhUkWU7Q0L/
-         USm1GJ8xJ1pkw==
-Message-ID: <7c71050e139a479e08ab7cf95e9e47da19a30687.camel@kernel.org>
+        b=awlRC/ah/zOC3/n+4eKeP0zjpI/WLVz/QauQ7KH+wgSAZU11j8fFn0sJybstsAvVl
+         L2TnyK8D1aWG0V1G44z4i34wM7a/3QMmrzwbsGYRdDkYpyrJy4jUM3yg7HFR14syod
+         Hnv3cHu8vB6P46n0MU/Mnw8BfBnME+kD/IC5b05z9OQy0c8oDjbprW+rd4u2QLGIn3
+         Ixy8kWYpLTa8B9xvh9LtEzS+u8PJHo7m9N39pEcxtStd5lorIsi3HX5ALJOh1eCvwk
+         Lz+MtgwtaJcGb4CyO9t2EctV9/mK93ip0f+QLCx7mI6q1txn8BXJyCnEb6ZJHuPXbN
+         GxX6wdqFh/Fpw==
+Message-ID: <9d6052680b2a86bee7f016401e1a06a63ec35cc1.camel@kernel.org>
 Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
  STATX_INO_VERSION field
 From:   Jeff Layton <jlayton@kernel.org>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
-        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+To:     "J. Bruce Fields" <bfields@fieldses.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
         NeilBrown <neilb@suse.de>, adilger.kernel@dilger.ca,
         djwong@kernel.org, david@fromorbit.com, trondmy@hammerspace.com,
         viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
         chuck.lever@oracle.com, lczerner@redhat.com, brauner@kernel.org,
-        linux-man@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Date:   Mon, 12 Sep 2022 08:55:04 -0400
-In-Reply-To: <87a67423la.fsf@oldenburg.str.redhat.com>
-References: <166259786233.30452.5417306132987966849@noble.neil.brown.name>
-         <20220908083326.3xsanzk7hy3ff4qs@quack3> <YxoIjV50xXKiLdL9@mit.edu>
+        fweimer@redhat.com, linux-man@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Date:   Mon, 12 Sep 2022 08:59:25 -0400
+In-Reply-To: <20220912125425.GA9304@fieldses.org>
+References: <YxoIjV50xXKiLdL9@mit.edu>
          <02928a8c5718590bea5739b13d6b6ebe66cac577.camel@kernel.org>
          <20220908155605.GD8951@fieldses.org>
          <9e06c506fd6b3e3118da0ec24276e85ea3ee45a1.camel@kernel.org>
@@ -60,7 +58,7 @@ References: <166259786233.30452.5417306132987966849@noble.neil.brown.name>
          <125df688dbebaf06478b0911e76e228e910b04b3.camel@kernel.org>
          <20220910145600.GA347@fieldses.org>
          <9eaed9a47d1aef11fee95f0079e302bc776bc7ff.camel@kernel.org>
-         <87a67423la.fsf@oldenburg.str.redhat.com>
+         <20220912125425.GA9304@fieldses.org>
 Content-Type: text/plain; charset="ISO-8859-15"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
@@ -75,9 +73,13 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, 2022-09-12 at 14:13 +0200, Florian Weimer wrote:
-> * Jeff Layton:
->=20
+On Mon, 2022-09-12 at 08:54 -0400, J. Bruce Fields wrote:
+> On Mon, Sep 12, 2022 at 07:42:16AM -0400, Jeff Layton wrote:
+> > A scheme like that could work. It might be hard to do it without a
+> > spinlock or something, but maybe that's ok. Thinking more about how we'=
+d
+> > implement this in the underlying filesystems:
+> >=20
 > > To do this we'd need 2 64-bit fields in the on-disk and in-memory=20
 > > superblocks for ext4, xfs and btrfs. On the first mount after a crash,
 > > the filesystem would need to bump s_version_max by the significant
@@ -92,42 +94,24 @@ e
 > > worthwhile to make an i_version increment wait on that if necessary.=
 =20
 >=20
-> How common are unclean shutdowns in practice?  Do ex64/XFS/btrfs keep
-> counters in the superblocks for journal replays that can be read easily?
->=20
-> Several useful i_version applications could be negatively impacted by
-> frequent i_version invalidation.
+> I was imagining that when you recognize you're getting close, you kick
+> off something which writes s_version_max+2^40 to disk, and then updates
+> s_version_max to that new value on success of the write.
 >=20
 
-One would hope "not very often", but Oopses _are_ something that happens
-occasionally, even in very stable environments, and it would be best if
-what we're building can cope with them. Consider:
+Ok, that makes sense.
 
-reader				writer
-----------------------------------------------------------
-start with i_version 1
-				inode updated in memory, i_version++
-query, get i_version 2
+> The code that increments i_version checks to make sure it wouldn't
+> exceed s_version_max.  If it would, something has gone wrong--a write
+> has failed or taken a long time--so it waits or errors out or something,
+> depending on desired filesystem behavior in that case.
+>=20
 
- <<< CRASH : update never makes it to disk, back at 1 after reboot >>>
+Maybe could just throw a big scary pr_warn too? I'd have to think about
+how we'd want to handle this case.
 
-query, get i_version 1
-				application restarts and redoes write, i_version at 2^40+1
-query, get i_version 2^40+1=20
+> No locking required in the normal case?
 
-The main thing we have to avoid here is giving out an i_version that
-represents two different states of the same inode. This should achieve
-that.
-
-Something else we should consider though is that with enough crashes on
-a long-lived filesystem, the value could eventually wrap. I think we
-should acknowledge that fact in advance, and plan to deal with it
-(particularly if we're going to expose this to userland eventually).
-
-Because of the "seen" flag, we have a 63 bit counter to play with. Could
-we use a similar scheme to the one we use to handle when "jiffies"
-wraps?=A0Assume that we'd never compare two values that were more than
-2^62 apart? We could add i_version_before/i_version_after macros to make
-it simple to handle this.
+Yeah, maybe not.
 --=20
 Jeff Layton <jlayton@kernel.org>
