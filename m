@@ -2,120 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C4F5B7D7A
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 Sep 2022 01:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9691F5B7D9A
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 Sep 2022 01:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229478AbiIMXYS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 13 Sep 2022 19:24:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40396 "EHLO
+        id S229499AbiIMXmD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 13 Sep 2022 19:42:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbiIMXYR (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Sep 2022 19:24:17 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9778227DE6;
-        Tue, 13 Sep 2022 16:24:16 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        with ESMTP id S229459AbiIMXmC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Sep 2022 19:42:02 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB7A3E775
+        for <linux-ext4@vger.kernel.org>; Tue, 13 Sep 2022 16:42:01 -0700 (PDT)
+Received: from localhost (modemcable141.102-20-96.mc.videotron.ca [96.20.102.141])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 111195C81A;
-        Tue, 13 Sep 2022 23:24:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1663111455; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lCZbTt8MqzDxXBhNECVaeYq92wrfjuXQyXb1QCL9L08=;
-        b=xlbgGCcX1vaqfVo0T7/7HHkGJClHbYwVmCkEjYU+yukwvWlmi/KV4I9oCfaEa4wMX0rAE+
-        SEsmeldoOIOeCxP5qYRC+CdkHQdKTtaC4+4AbfA5fyhqvZZp3SIKD2vcprwsRNYTCxFz9M
-        JLUB3aTflnqVKCKYq+IrL7uyVXYqhBc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1663111455;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lCZbTt8MqzDxXBhNECVaeYq92wrfjuXQyXb1QCL9L08=;
-        b=f3V4jz9cjD4/+YabArl2nlr3TvCKBf+HRA2DIYhIcYM7hGDyhFP9+9JyddEfjRtGauQ9MS
-        eeY+o8dgRHryQzBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A5AC313AB5;
-        Tue, 13 Sep 2022 23:24:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id DEmgFxYRIWMlZgAAMHmgww
-        (envelope-from <neilb@suse.de>); Tue, 13 Sep 2022 23:24:06 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        (Authenticated sender: krisman)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 5CB626601FB9;
+        Wed, 14 Sep 2022 00:41:59 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1663112519;
+        bh=NkYVyeuwI/2gBd1BQe2j2SOPCFHneHhCTKmec17TYMo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=g+iniuRQu5VXHNund2XMCfZ2vMLAqfVZ2Ls+dexJ2CwAzNMjXu9EGk/8Y5+Rv7AQn
+         fKCXKFPH4GMCEAAZkAHBvXZScoOdOyCn2/OBA4kMC/GrSxAJOnIJUekA5DWpb5HAlY
+         xRbStlOQPcULVG8KAtl8oi5mLlGNN1/VBwI7NedFrgdjKlngOD1tg+qEHGCymSAEyp
+         1HDjulkiZ7a2G5dqyvpmmbIEgFeCj8rQ/Y5CDW2ybqFbfQ6qtu+qCEefk/CRWsiwWd
+         HaSMRO02UFmpahzjKOuvbriBn+tmdIYuKcxIo78Leck8iROr9PaJUUFN6+LesOyF4w
+         ZqLedh7gaqocg==
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+        ebiggers@kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel@collabora.com
+Subject: [PATCH v9 0/8] Clean up the case-insensitive lookup path
+Date:   Tue, 13 Sep 2022 19:41:42 -0400
+Message-Id: <20220913234150.513075-1-krisman@collabora.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Jeff Layton" <jlayton@kernel.org>
-Cc:     "Dave Chinner" <david@fromorbit.com>,
-        "Trond Myklebust" <trondmy@hammerspace.com>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "xiubli@redhat.com" <xiubli@redhat.com>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "bfields@fieldses.org" <bfields@fieldses.org>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "lczerner@redhat.com" <lczerner@redhat.com>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>
-Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
- STATX_INO_VERSION field
-In-reply-to: <b67fe8b26977dc1213deb5ec815a53a26d31fbc0.camel@kernel.org>
-References: <91e31d20d66d6f47fe12c80c34b1cffdfc202b6a.camel@hammerspace.com>,
- <166268467103.30452.1687952324107257676@noble.neil.brown.name>,
- <166268566751.30452.13562507405746100242@noble.neil.brown.name>,
- <29a6c2e78284e7947ddedf71e5cb9436c9330910.camel@hammerspace.com>,
- <8d638cb3c63b0d2da8679b5288d1622fdb387f83.camel@hammerspace.com>,
- <166270570118.30452.16939807179630112340@noble.neil.brown.name>,
- <33d058be862ccc0ccaf959f2841a7e506e51fd1f.camel@kernel.org>,
- <166285038617.30452.11636397081493278357@noble.neil.brown.name>,
- <2e34a7d4e1a3474d80ee0402ed3bc0f18792443a.camel@kernel.org>,
- <166302538820.30452.7783524836504548113@noble.neil.brown.name>,
- <20220913011518.GE3600936@dread.disaster.area>,
- <b67fe8b26977dc1213deb5ec815a53a26d31fbc0.camel@kernel.org>
-Date:   Wed, 14 Sep 2022 09:24:02 +1000
-Message-id: <166311144203.20483.1888757883086697314@noble.neil.brown.name>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 14 Sep 2022, Jeff Layton wrote:
->
-> At that point, bumping i_version both before and after makes a bit more
-> sense, since it better ensures that a change will be noticed, whether
-> the related read op comes before or after the statx.
+Hi,
 
-How does bumping it before make any sense at all?  Maybe it wouldn't
-hurt much, but how does it help anyone at all?
+I'm resubmitting this as v9 since I think it has fallen through the
+cracks :).  It is a collection of trivial fixes for casefold support on
+ext4/f2fs. More details below.
 
-  i_version must appear to change no sooner than the change it reflects
-  becomes visible and no later than the request which initiated that
-  change is acknowledged as complete.
+It has been sitting on the list for a while and most of it is r-b
+already. I'm keeping the tags for this submission, since there is no
+modifications from previous submissions, apart from a minor conflict
+resolution when merging to linus/master.
 
-Why would that definition ever not be satisfactory?
+Thanks,
 
-NeilBrown
+v8: https://patchwork.ozlabs.org/project/linux-ext4/cover/20220519212359.19442-1-krisman@collabora.com/
+
+* Original commit letter
+
+The case-insensitive implementations in f2fs and ext4 have quite a bit
+of duplicated code.  This series simplifies the ext4 version, with the
+goal of extracting ext4_ci_compare into a helper library that can be
+used by both filesystems.  It also reduces the clutter from many
+codeguards for CONFIG_UNICODE; as requested by Linus, they are part of
+the codeflow now.
+
+While there, I noticed we can leverage the utf8 functions to detect
+encoded names that are corrupted in the filesystem. Therefore, it also
+adds an ext4 error on that scenario, to mark the filesystem as
+corrupted.
+
+This series survived passes of xfstests -g quick.
+
+Gabriel Krisman Bertazi (8):
+  ext4: Simplify the handling of cached insensitive names
+  f2fs: Simplify the handling of cached insensitive names
+  libfs: Introduce case-insensitive string comparison helper
+  ext4: Reuse generic_ci_match for ci comparisons
+  f2fs: Reuse generic_ci_match for ci comparisons
+  ext4: Log error when lookup of encoded dentry fails
+  ext4: Move CONFIG_UNICODE defguards into the code flow
+  f2fs: Move CONFIG_UNICODE defguards into the code flow
+
+ fs/ext4/crypto.c   |  15 ++----
+ fs/ext4/ext4.h     |  34 +++++++-----
+ fs/ext4/namei.c    | 130 ++++++++++++++++-----------------------------
+ fs/ext4/super.c    |   4 +-
+ fs/f2fs/dir.c      | 105 +++++++++++-------------------------
+ fs/f2fs/f2fs.h     |  15 +++++-
+ fs/f2fs/namei.c    |  11 ++--
+ fs/f2fs/recovery.c |   5 +-
+ fs/f2fs/super.c    |   8 +--
+ fs/libfs.c         |  68 ++++++++++++++++++++++++
+ include/linux/fs.h |   4 ++
+ 11 files changed, 198 insertions(+), 201 deletions(-)
+
+-- 
+2.37.3
+
