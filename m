@@ -2,52 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F425B7DA4
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 Sep 2022 01:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0FF5B7DC3
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 Sep 2022 02:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229585AbiIMXmh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 13 Sep 2022 19:42:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35422 "EHLO
+        id S229511AbiINAIv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 13 Sep 2022 20:08:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbiIMXmd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Sep 2022 19:42:33 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3D8752FE8
-        for <linux-ext4@vger.kernel.org>; Tue, 13 Sep 2022 16:42:32 -0700 (PDT)
-Received: from localhost (modemcable141.102-20-96.mc.videotron.ca [96.20.102.141])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: krisman)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 5728F6602033;
-        Wed, 14 Sep 2022 00:42:31 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1663112551;
-        bh=MZQbRUazF2vg4Tg978XNZC0bZGGWs1+KayZdfr4nmDg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cPPc7Pa0OPPQPm+v7ijRy+jPvVM8ChYaO0lb96yEtuq6kvBzPggB1gapwJF+7pJfr
-         QclxIPGpEyHXcm0XyxNuJQM/sktZsQeWHH8VOsWHON/OfYe7XW1hBypf+3sGgW9nse
-         vNDXJ88EBv8TCXcGwl49ArCU88wfCXlklKqk7FXldamHsY8JExEcfIF6TlYuuVpACu
-         jA59parZn6SVCDJl/dLgN0NS+bEsG1vj3/50HXRacKA6PrlK6fNsW7e5lHLb1IH6gA
-         kfocSlUWDrOPf3mzLwWOWK48I9u42LtjrobkEGhyjV1x20douTORMUEYKfZFfMGHiA
-         eAplXxelPhmsw==
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
-        ebiggers@kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel@collabora.com, Eric Biggers <ebiggers@google.com>,
-        Chao Yu <chao@kernel.org>
-Subject: [PATCH v9 8/8] f2fs: Move CONFIG_UNICODE defguards into the code flow
-Date:   Tue, 13 Sep 2022 19:41:50 -0400
-Message-Id: <20220913234150.513075-9-krisman@collabora.com>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <20220913234150.513075-1-krisman@collabora.com>
-References: <20220913234150.513075-1-krisman@collabora.com>
+        with ESMTP id S229494AbiINAIu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Sep 2022 20:08:50 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA4262A95;
+        Tue, 13 Sep 2022 17:08:49 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 74A4EBCE; Tue, 13 Sep 2022 20:08:48 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 74A4EBCE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1663114128;
+        bh=E9WEzEar/6VJErlxq0icil2vqwzUNkdFMHHx75MNPGk=;
+        h=Date:To:Cc:Subject:References:In-Reply-To:From:From;
+        b=gbzbUdAw9tQbApBKPqCcLDaprymqGt1ZMnsxKY2ZvOplS6yqAodJy/iaWkqufRExJ
+         fCKIdC9SJKsHpIw5KnLOhMQm2UVX/RKMaTclCJzV7X4HnaBhdJ0wbD9HhMcPI07tFG
+         GAxZc03ETKVHcTcXtNtSGu96B8Jx5HwFmjs1fk3Q=
+Date:   Tue, 13 Sep 2022 20:08:48 -0400
+To:     NeilBrown <neilb@suse.de>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        adilger.kernel@dilger.ca, djwong@kernel.org,
+        trondmy@hammerspace.com, viro@zeniv.linux.org.uk,
+        zohar@linux.ibm.com, xiubli@redhat.com, chuck.lever@oracle.com,
+        lczerner@redhat.com, brauner@kernel.org, fweimer@redhat.com,
+        linux-man@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-xfs@vger.kernel.org
+Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
+ STATX_INO_VERSION field
+Message-ID: <20220914000848.GB11958@fieldses.org>
+References: <20220908182252.GA18939@fieldses.org>
+ <44efe219dbf511492b21a653905448d43d0f3363.camel@kernel.org>
+ <20220909154506.GB5674@fieldses.org>
+ <125df688dbebaf06478b0911e76e228e910b04b3.camel@kernel.org>
+ <20220910145600.GA347@fieldses.org>
+ <9eaed9a47d1aef11fee95f0079e302bc776bc7ff.camel@kernel.org>
+ <20220913004146.GD3600936@dread.disaster.area>
+ <166303374350.30452.17386582960615006566@noble.neil.brown.name>
+ <20220913190226.GA11958@fieldses.org>
+ <166311116291.20483.960025733349761945@noble.neil.brown.name>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <166311116291.20483.960025733349761945@noble.neil.brown.name>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+From:   bfields@fieldses.org (J. Bruce Fields)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,93 +66,63 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Instead of a bunch of ifdefs, make the unicode built checks part of the
-code flow where possible, as requested by Torvalds.
+On Wed, Sep 14, 2022 at 09:19:22AM +1000, NeilBrown wrote:
+> On Wed, 14 Sep 2022, J. Bruce Fields wrote:
+> > On Tue, Sep 13, 2022 at 11:49:03AM +1000, NeilBrown wrote:
+> > > Invalidating the client cache on EVERY unmount/mount could impose
+> > > unnecessary cost.  Imagine a client that caches a lot of data (several
+> > > large files) from a server which is expected to fail-over from one
+> > > cluster node to another from time to time.  Adding extra delays to a
+> > > fail-over is not likely to be well received.
+> > > 
+> > > I don't *know* this cost would be unacceptable, and I *would* like to
+> > > leave it to the filesystem to decide how to manage its own i_version
+> > > values.  So maybe XFS can use the LSN for a salt.  If people notice the
+> > > extra cost, they can complain.
+> > 
+> > I'd expect complaints.
+> > 
+> > NFS is actually even worse than this: it allows clients to reacquire
+> > file locks across server restart and unmount/remount, even though
+> > obviously the kernel will do nothing to prevent someone else from
+> > locking (or modifying) the file in between.
+> 
+> I don't understand this comment.  You seem to be implying that changing
+> the i_version during a server restart would stop a client from
+> reclaiming locks.  Is that correct?
 
-Reviewed-by: Eric Biggers <ebiggers@google.com>
-Reviewed-by: Chao Yu <chao@kernel.org>
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
----
-Changes since v4:
-  - Drop stub removal for !CONFIG_UNICODE case (eric)
----
- fs/f2fs/namei.c | 11 +++++------
- fs/f2fs/super.c |  8 ++++----
- 2 files changed, 9 insertions(+), 10 deletions(-)
+No, sorry, I'm probably being confusing.
 
-diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
-index bf00d5057abb..46325cac4fb6 100644
---- a/fs/f2fs/namei.c
-+++ b/fs/f2fs/namei.c
-@@ -571,8 +571,7 @@ static struct dentry *f2fs_lookup(struct inode *dir, struct dentry *dentry,
- 		goto out_iput;
- 	}
- out_splice:
--#if IS_ENABLED(CONFIG_UNICODE)
--	if (!inode && IS_CASEFOLDED(dir)) {
-+	if (IS_ENABLED(CONFIG_UNICODE) && !inode && IS_CASEFOLDED(dir)) {
- 		/* Eventually we want to call d_add_ci(dentry, NULL)
- 		 * for negative dentries in the encoding case as
- 		 * well.  For now, prevent the negative dentry
-@@ -581,7 +580,7 @@ static struct dentry *f2fs_lookup(struct inode *dir, struct dentry *dentry,
- 		trace_f2fs_lookup_end(dir, dentry, ino, err);
- 		return NULL;
- 	}
--#endif
-+
- 	new = d_splice_alias(inode, dentry);
- 	err = PTR_ERR_OR_ZERO(new);
- 	trace_f2fs_lookup_end(dir, dentry, ino, !new ? -ENOENT : err);
-@@ -632,16 +631,16 @@ static int f2fs_unlink(struct inode *dir, struct dentry *dentry)
- 		goto fail;
- 	}
- 	f2fs_delete_entry(de, page, dir, inode);
--#if IS_ENABLED(CONFIG_UNICODE)
-+
- 	/* VFS negative dentries are incompatible with Encoding and
- 	 * Case-insensitiveness. Eventually we'll want avoid
- 	 * invalidating the dentries here, alongside with returning the
- 	 * negative dentries at f2fs_lookup(), when it is better
- 	 * supported by the VFS for the CI case.
- 	 */
--	if (IS_CASEFOLDED(dir))
-+	if (IS_ENABLED(CONFIG_UNICODE) && IS_CASEFOLDED(dir))
- 		d_invalidate(dentry);
--#endif
-+
- 	f2fs_unlock_op(sbi);
- 
- 	if (IS_DIRSYNC(dir))
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 2451623c05a7..636488d65342 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -284,7 +284,7 @@ struct kmem_cache *f2fs_cf_name_slab;
- static int __init f2fs_create_casefold_cache(void)
- {
- 	f2fs_cf_name_slab = f2fs_kmem_cache_create("f2fs_casefolded_name",
--							F2FS_NAME_LEN);
-+						   F2FS_NAME_LEN);
- 	if (!f2fs_cf_name_slab)
- 		return -ENOMEM;
- 	return 0;
-@@ -1273,13 +1273,13 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
- 		return -EINVAL;
- 	}
- #endif
--#if !IS_ENABLED(CONFIG_UNICODE)
--	if (f2fs_sb_has_casefold(sbi)) {
-+
-+	if (!IS_ENABLED(CONFIG_UNICODE) && f2fs_sb_has_casefold(sbi)) {
- 		f2fs_err(sbi,
- 			"Filesystem with casefold feature cannot be mounted without CONFIG_UNICODE");
- 		return -EINVAL;
- 	}
--#endif
-+
- 	/*
- 	 * The BLKZONED feature indicates that the drive was formatted with
- 	 * zone alignment optimization. This is optional for host-aware
--- 
-2.37.3
+I was just saying: we've always depended in a lot of ways on the
+assumption that filesystems aren't messed with while nfsd's not running.
+You can produce all sorts of incorrect behavior by violating that
+assumption.  That tools might fool with unmounted filesystems is just
+another such example, and fixing that wouldn't be very high on my list
+of priorities.
 
+??
+
+--b.
+
+> I would have thought that the client would largely ignore i_version
+> while it has a lock or open or delegation, as these tend to imply some
+> degree of exclusive access ("open" being least exclusive).
+> 
+> Thanks,
+> NeilBrown
+> 
+> 
+> > 
+> > Administrators are just supposed to know not to allow other applications
+> > access to the filesystem until nfsd's started.  It's always been this
+> > way.
+> > 
+> > You can imagine all sorts of measures to prevent that, and if anyone
+> > wants to work on ways to prevent people from shooting themselves in the
+> > foot here, great.
+> > 
+> > Just taking away the ability to cache or lock across reboots wouldn't
+> > make people happy, though....
+> > 
+> > --b.
+> > 
