@@ -2,49 +2,49 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7925B9FF3
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Sep 2022 18:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE7C5B9FF6
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Sep 2022 18:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbiIOQtp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 15 Sep 2022 12:49:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49914 "EHLO
+        id S229728AbiIOQt4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 15 Sep 2022 12:49:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbiIOQtZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Sep 2022 12:49:25 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D4E9E6A3
-        for <linux-ext4@vger.kernel.org>; Thu, 15 Sep 2022 09:48:55 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id b23so18618441pfp.9
-        for <linux-ext4@vger.kernel.org>; Thu, 15 Sep 2022 09:48:55 -0700 (PDT)
+        with ESMTP id S230094AbiIOQt0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Sep 2022 12:49:26 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD5E78BDC
+        for <linux-ext4@vger.kernel.org>; Thu, 15 Sep 2022 09:48:58 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id fs14so18342844pjb.5
+        for <linux-ext4@vger.kernel.org>; Thu, 15 Sep 2022 09:48:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=lepBsWytyJc7odlmE2pOVLJDHfEg/6nqSBO25R2FRqw=;
-        b=dRYPidNB4qr/PThCP2DZvS52KW2vSmy9pm3afLiJJETIx42RmwEKAGSyFrbhz878PJ
-         PbszA/tTAvFSMGbxN2kh3CFn+XIu17dnVbAV4wFsI8NNGMYygeWgn2PXa/4BJeXuIQVZ
-         mJ498MmM/GTV3SCimynfUDHw4QKdTRpYJKfNI=
+        bh=CC2AT69XGg5wm3bSeW54GIGYiTC1rZqaZVqT6NInl68=;
+        b=mu3+zu2fHkK18fyK8GquthMgCh0knmNuo1AuOv6/5p4XsIu5amJTOn6ebMi5f22/na
+         PdmtAwktXThz7euWyzkdNELKrfRtOJwgowVocLAbaPOqQuLnlvONAH9Ktcv8xh5VTMrL
+         zfixw/KKn7UoVL8Jol7k9Cf7o8+gbedJGP27U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=lepBsWytyJc7odlmE2pOVLJDHfEg/6nqSBO25R2FRqw=;
-        b=oLFF2czqOl05UfjThYY9K/puwcxZN74GZWWcjgUXSUaJtc5LURuoS4C13gubSjhw9l
-         oeP+czdOYP3ARrcN6R/L+FpBN+g7E/SnkrgYMcYw697ClSZbwNQRgzPP1x7Tjo2QCEVp
-         WDqckKN/BxE0PvGz3ROL11xwFdWKxqqh/Z/U+UeDkUrIqpabPW3WA/NOEiHWBt7GSBis
-         4nMAA8b8hednln1DfEWmSIwzkH2opPqG9mMmipsTWjlRq8o3HjnY+JTVbtYesHtRdDeL
-         H1y1zxmmD6IXpb7M2UQ51OBdMK5he2y83X/+wS3ZxftzagqmHBc7084mMY+/kEA3lih1
-         K+Pg==
-X-Gm-Message-State: ACrzQf2mYufryE+JXyRWpR5MMkU8eCgrKsUiBFY12O7SqhjabQmK1T4K
-        23uqkyB59S1KO+R6ia58CIJyuw==
-X-Google-Smtp-Source: AMsMyM4mYzeO6kY8V14FHKZ6sRCrfG/b2+9U/J91HawWbKAVnfznpfZpifb9zuLeuSrNWkeoxFzUpA==
-X-Received: by 2002:aa7:9f0c:0:b0:546:c556:ac86 with SMTP id g12-20020aa79f0c000000b00546c556ac86mr327926pfr.55.1663260535338;
-        Thu, 15 Sep 2022 09:48:55 -0700 (PDT)
+        bh=CC2AT69XGg5wm3bSeW54GIGYiTC1rZqaZVqT6NInl68=;
+        b=4juReMYqDZ+i12PulwGm0OQC5tTxoRxprxEhNaXAIJT3cqYxgY0mKXiQkmR1+dQUMG
+         SzPgS6fTZJs+pX8Xv2QjdKOYZgVLkya3X9sd8RYGdw3X0d3CKlU/MPL8bxHikXSL2rug
+         ufqzCaQF5G7fn5FjQB/aof8rBFXrU3C9g7rmJrdLq09wv1JIjh0GIDRHyQPgqHg6AacY
+         MVUumiyS6sQvghzdWnFeQt3CwH4fOsD3BVoLndhzAKi+8PRvnlJeWUKVwIuqIIoRkFpp
+         DA0r1P3cPw3slL0PXbA0SG5CYDQwGTmxV1sMeDAT8u35YiQTcdSP05AGFZRj/ZKPtPFT
+         rR4A==
+X-Gm-Message-State: ACrzQf1O/lnqFZt+q5kaILDJdtiFk2dLFxnAI5PYvTLsYsUUtVGJQuEF
+        5ZPf5q6a3ZOK9JdeaMOHurDBXA==
+X-Google-Smtp-Source: AMsMyM7xQDECJlshM1y7hrMSNYPc8bpR0IMtAX/vgFfB37FWYtZxA5MaaTnkclE6b1SXhntNfjnk0g==
+X-Received: by 2002:a17:902:b7c3:b0:176:b7e6:ae6c with SMTP id v3-20020a170902b7c300b00176b7e6ae6cmr292383plz.163.1663260537835;
+        Thu, 15 Sep 2022 09:48:57 -0700 (PDT)
 Received: from sarthakkukreti-glaptop.hsd1.ca.comcast.net ([2601:647:4200:b5b0:3af2:34b2:a98a:a652])
-        by smtp.gmail.com with ESMTPSA id o4-20020a170902bcc400b00177ee563b6dsm13174970pls.33.2022.09.15.09.48.53
+        by smtp.gmail.com with ESMTPSA id o4-20020a170902bcc400b00177ee563b6dsm13174970pls.33.2022.09.15.09.48.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Sep 2022 09:48:54 -0700 (PDT)
+        Thu, 15 Sep 2022 09:48:56 -0700 (PDT)
 From:   Sarthak Kukreti <sarthakkukreti@chromium.org>
 X-Google-Original-From: Sarthak Kukreti <sarthakkukreti@google.com>
 To:     dm-devel@redhat.com, linux-block@vger.kernel.org,
@@ -64,9 +64,9 @@ Cc:     Jens Axboe <axboe@kernel.dk>,
         Evan Green <evgreen@google.com>,
         Gwendal Grignou <gwendal@google.com>,
         Sarthak Kukreti <sarthakkukreti@chromium.org>
-Subject: [PATCH RFC 7/8] ext4: Add mount option for provisioning blocks during allocations
-Date:   Thu, 15 Sep 2022 09:48:25 -0700
-Message-Id: <20220915164826.1396245-8-sarthakkukreti@google.com>
+Subject: [PATCH RFC 8/8] ext4: Add a per-file provision override xattr
+Date:   Thu, 15 Sep 2022 09:48:26 -0700
+Message-Id: <20220915164826.1396245-9-sarthakkukreti@google.com>
 X-Mailer: git-send-email 2.37.2.789.g6183377224-goog
 In-Reply-To: <20220915164826.1396245-1-sarthakkukreti@google.com>
 References: <20220915164826.1396245-1-sarthakkukreti@google.com>
@@ -74,7 +74,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -83,85 +84,87 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Sarthak Kukreti <sarthakkukreti@chromium.org>
 
-Add a mount option that sets the default provisioning mode for
-all files within the filesystem.
+Adds a per-file provision override that allows select files to
+override the per-mount setting for provisioning blocks on allocation.
+
+This acts as a mechanism to allow mounts using provision to
+replicate the current behavior for fallocate() and only preserve
+space at the filesystem level.
 
 Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
 ---
- fs/ext4/ext4.h    | 1 +
- fs/ext4/extents.c | 7 +++++++
- fs/ext4/super.c   | 7 +++++++
- 3 files changed, 15 insertions(+)
+ fs/ext4/extents.c | 32 ++++++++++++++++++++++++++++++++
+ fs/ext4/xattr.h   |  1 +
+ 2 files changed, 33 insertions(+)
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index ec0871e687c1..75f6e7f2f90b 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1271,6 +1271,7 @@ struct ext4_inode_info {
- #define EXT4_MOUNT2_MB_OPTIMIZE_SCAN	0x00000080 /* Optimize group
- 						    * scanning in mballoc
- 						    */
-+#define EXT4_MOUNT2_PROVISION		0x00000100 /* Provision while allocating file blocks */
- 
- #define clear_opt(sb, opt)		EXT4_SB(sb)->s_mount_opt &= \
- 						~EXT4_MOUNT_##opt
 diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 7a096144b7f8..746213b5ec3d 100644
+index 746213b5ec3d..a9ed908b2ebe 100644
 --- a/fs/ext4/extents.c
 +++ b/fs/ext4/extents.c
-@@ -4437,6 +4437,13 @@ static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
+@@ -4424,6 +4424,26 @@ int ext4_ext_truncate(handle_t *handle, struct inode *inode)
+ 	return err;
+ }
+ 
++int ext4_provision_support(struct inode *inode)
++{
++	char provision;
++	int ret =
++		ext4_xattr_get(inode, EXT4_XATTR_INDEX_TRUSTED,
++			       EXT4_XATTR_NAME_PROVISION_POLICY, &provision, 1);
++
++	if (ret < 0)
++		return ret;
++
++	switch (provision) {
++	case 'y':
++		return 1;
++	case 'n':
++		return 0;
++	default:
++		return -EINVAL;
++	}
++}
++
+ static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
+ 				  ext4_lblk_t len, loff_t new_size,
+ 				  int flags)
+@@ -4436,12 +4456,24 @@ static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
+ 	struct ext4_map_blocks map;
  	unsigned int credits;
  	loff_t epos;
++	bool provision = false;
++	int file_provision_override = -1;
  
-+	/*
-+	 * Attempt to provision file blocks if the mount is mounted with
-+	 * provision.
-+	 */
-+	if (test_opt2(inode->i_sb, PROVISION))
-+		flags |= EXT4_GET_BLOCKS_PROVISION;
+ 	/*
+ 	 * Attempt to provision file blocks if the mount is mounted with
+ 	 * provision.
+ 	 */
+ 	if (test_opt2(inode->i_sb, PROVISION))
++		provision = true;
 +
++	/*
++	 * Use file-specific override, if available.
++	 */
++	file_provision_override = ext4_provision_support(inode);
++	if (file_provision_override >= 0)
++		provision &= file_provision_override;
++
++	if (provision)
+ 		flags |= EXT4_GET_BLOCKS_PROVISION;
+ 
  	BUG_ON(!ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS));
- 	map.m_lblk = offset;
- 	map.m_len = len;
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 9a66abcca1a8..5ece1868f332 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1596,6 +1596,7 @@ enum {
- 	Opt_max_dir_size_kb, Opt_nojournal_checksum, Opt_nombcache,
- 	Opt_no_prefetch_block_bitmaps, Opt_mb_optimize_scan,
- 	Opt_errors, Opt_data, Opt_data_err, Opt_jqfmt, Opt_dax_type,
-+	Opt_provision, Opt_noprovision,
- #ifdef CONFIG_EXT4_DEBUG
- 	Opt_fc_debug_max_replay, Opt_fc_debug_force
- #endif
-@@ -1744,6 +1745,8 @@ static const struct fs_parameter_spec ext4_param_specs[] = {
- 	fsparam_flag	("reservation",		Opt_removed),	/* mount option from ext2/3 */
- 	fsparam_flag	("noreservation",	Opt_removed),	/* mount option from ext2/3 */
- 	fsparam_u32	("journal",		Opt_removed),	/* mount option from ext2/3 */
-+	fsparam_flag	("discard",		Opt_provision),
-+	fsparam_flag	("noprovision",		Opt_noprovision),
- 	{}
- };
+diff --git a/fs/ext4/xattr.h b/fs/ext4/xattr.h
+index 824faf0b15a8..69e97f853b0c 100644
+--- a/fs/ext4/xattr.h
++++ b/fs/ext4/xattr.h
+@@ -140,6 +140,7 @@ extern const struct xattr_handler ext4_xattr_security_handler;
+ extern const struct xattr_handler ext4_xattr_hurd_handler;
  
-@@ -1840,6 +1843,8 @@ static const struct mount_opts {
- 	{Opt_nombcache, EXT4_MOUNT_NO_MBCACHE, MOPT_SET},
- 	{Opt_no_prefetch_block_bitmaps, EXT4_MOUNT_NO_PREFETCH_BLOCK_BITMAPS,
- 	 MOPT_SET},
-+	{Opt_provision, EXT4_MOUNT2_PROVISION, MOPT_SET | MOPT_2},
-+	{Opt_noprovision, EXT4_MOUNT2_PROVISION, MOPT_CLEAR | MOPT_2},
- #ifdef CONFIG_EXT4_DEBUG
- 	{Opt_fc_debug_force, EXT4_MOUNT2_JOURNAL_FAST_COMMIT,
- 	 MOPT_SET | MOPT_2 | MOPT_EXT4_ONLY},
-@@ -3010,6 +3015,8 @@ static int _ext4_show_options(struct seq_file *seq, struct super_block *sb,
- 		SEQ_OPTS_PUTS("dax=never");
- 	} else if (test_opt2(sb, DAX_INODE)) {
- 		SEQ_OPTS_PUTS("dax=inode");
-+	} else if (test_opt2(sb, PROVISION)) {
-+		SEQ_OPTS_PUTS("provision");
- 	}
+ #define EXT4_XATTR_NAME_ENCRYPTION_CONTEXT "c"
++#define EXT4_XATTR_NAME_PROVISION_POLICY "provision"
  
- 	if (sbi->s_groups_count >= MB_DEFAULT_LINEAR_SCAN_THRESHOLD &&
+ /*
+  * The EXT4_STATE_NO_EXPAND is overloaded and used for two purposes.
 -- 
 2.31.0
 
