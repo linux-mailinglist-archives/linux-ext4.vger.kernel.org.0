@@ -2,49 +2,49 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B615B9FE6
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Sep 2022 18:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7387F5B9FE8
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Sep 2022 18:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbiIOQtA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 15 Sep 2022 12:49:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49906 "EHLO
+        id S229712AbiIOQtC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 15 Sep 2022 12:49:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229873AbiIOQs5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Sep 2022 12:48:57 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8440B7C1D7
-        for <linux-ext4@vger.kernel.org>; Thu, 15 Sep 2022 09:48:45 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id a80so10058483pfa.4
-        for <linux-ext4@vger.kernel.org>; Thu, 15 Sep 2022 09:48:45 -0700 (PDT)
+        with ESMTP id S229953AbiIOQs6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Sep 2022 12:48:58 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D3994EE2
+        for <linux-ext4@vger.kernel.org>; Thu, 15 Sep 2022 09:48:48 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id 9so7538964pfz.12
+        for <linux-ext4@vger.kernel.org>; Thu, 15 Sep 2022 09:48:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=8dGdE7yXwxpNJrtc0jzeOng2rxu8z4FK39IlQ5rLaw4=;
-        b=EbErGLA/VINLfRbp4zcUbZBx85wcqmWWZ+b0wvu85Q2UUUeZQBQzI+ibcnOvQrL1/1
-         SpTBeWGXbbH7aJQQssASqOwJ392q4ULOBRqDM6uMUsq9W98Jxjsk1XvASOhF/X7whgnI
-         cQc9io4mtSftKYU7SXF5cXqbt8EGpd2/X9S3E=
+        bh=8C9PF5fV/n/yVA3OaBrI0F0iBecyk+zvR56xPQZ3IDQ=;
+        b=j9UNt0PdafuY8eG1vCRzjZeZim0lhfvAaWOmUVbnBHmUWqdPZZ3auOQ0xlsq4Yg25G
+         ssysjc8iJfcpwF872sxTnDKV+At5Lq1lz2NHw7y/c/HRgBxSyb3/AQ8kCSa9CzRaimvX
+         fDowBy/9vfz+mH7HubnE6gAWlEVC/vOtMbAIU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=8dGdE7yXwxpNJrtc0jzeOng2rxu8z4FK39IlQ5rLaw4=;
-        b=oPQFYqsu4AsbBvQxqseHATNjhkpX2ft9xIylL+mCQHwKno/F9YNY8AQHSvUzwR4F0D
-         8Cn9s6Cvo6tp2JWeh3BJLrcgeuD0+vMZw3U/qPjjbCvzdVdI84SMajfZNQCSeqL9CLLn
-         4/VkPS+P5n0v3l6r0+yWexu+nVypT2sdcQvNtqQUs4ZwKMc44SaOnKXRE5h7gP3Hj/fQ
-         6Tscxr2V0p5QJHO+Fd6pGKhKdY5hrfjQefuT2LuDFhV2wfHpvD/bmRdBdfrg9GrIbNZS
-         dpyvsw6cFOU5Ju376LDYm/UhGaUDP3ZhrUpe42j+rKHu4Si7pOicymC+XcI01GQxLWmy
-         hS1A==
-X-Gm-Message-State: ACrzQf3KOgNjL1Pjz/kh/SyoXND/0pXIZezkLOIolT+VY0YsimM3lHbj
-        os3AdPo/94y7BeQ0ycFVn6Bxrw==
-X-Google-Smtp-Source: AMsMyM4ZjbUOIq/Q41w/OvvKUkmXpRr0bP+C56mI+0JSOF5eLhseKC9OgxfT03jMUgCb5sBQJ9O12g==
-X-Received: by 2002:a63:1d25:0:b0:437:ec38:bd0e with SMTP id d37-20020a631d25000000b00437ec38bd0emr675973pgd.478.1663260525220;
-        Thu, 15 Sep 2022 09:48:45 -0700 (PDT)
+        bh=8C9PF5fV/n/yVA3OaBrI0F0iBecyk+zvR56xPQZ3IDQ=;
+        b=QhW+1xAZZ1leWyV+LkMMunLnc3rURjJUmTjuE6yBBW3LRe5QC7Yc+G3snlgOfROBbx
+         g339EqUQ2f98BDUW1GcXO5IDGUhQsyL4KZnaOesiaf3VM6EEMOUIp/cpeEYveigLoKt9
+         eM6xdKS6N5aoO58/L98iYiD0f0N7Ys5t29jeE74oiKp+dhgxeo5eRio59hvMCHEqeDVK
+         WkFJaTsnT0n5u9BeDCy5cOh46nC8UGSYQWd74/9FhjW10I1F0AgYpjw9im0DkL6f0VPs
+         12BmlA8/+jo9PksjE5wwZRpvNXWkrzNVuZLHfHA4W+EuJcXygmiMIy/zaHVNR9gJ2LbM
+         3X7Q==
+X-Gm-Message-State: ACrzQf2A1KP8wC/HuFwvycUrSZEyk98+fpdCY1sQV0prl0XDOVVQ58SZ
+        DAXCt4G8GMAjbpcOQw7suBJr3g==
+X-Google-Smtp-Source: AMsMyM74NUJEGoCBWxXp6ovjj8HVrZVtuoYCAa5cO2wk9AivcidhyvEFeO548cRZFdt3fQKWpEtWLA==
+X-Received: by 2002:a05:6a00:1691:b0:53b:3f2c:3257 with SMTP id k17-20020a056a00169100b0053b3f2c3257mr882622pfc.21.1663260527748;
+        Thu, 15 Sep 2022 09:48:47 -0700 (PDT)
 Received: from sarthakkukreti-glaptop.hsd1.ca.comcast.net ([2601:647:4200:b5b0:3af2:34b2:a98a:a652])
-        by smtp.gmail.com with ESMTPSA id o4-20020a170902bcc400b00177ee563b6dsm13174970pls.33.2022.09.15.09.48.42
+        by smtp.gmail.com with ESMTPSA id o4-20020a170902bcc400b00177ee563b6dsm13174970pls.33.2022.09.15.09.48.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Sep 2022 09:48:44 -0700 (PDT)
+        Thu, 15 Sep 2022 09:48:46 -0700 (PDT)
 From:   Sarthak Kukreti <sarthakkukreti@chromium.org>
 X-Google-Original-From: Sarthak Kukreti <sarthakkukreti@google.com>
 To:     dm-devel@redhat.com, linux-block@vger.kernel.org,
@@ -64,9 +64,9 @@ Cc:     Jens Axboe <axboe@kernel.dk>,
         Evan Green <evgreen@google.com>,
         Gwendal Grignou <gwendal@google.com>,
         Sarthak Kukreti <sarthakkukreti@chromium.org>
-Subject: [PATCH RFC 3/8] virtio_blk: Add support for provision requests
-Date:   Thu, 15 Sep 2022 09:48:21 -0700
-Message-Id: <20220915164826.1396245-4-sarthakkukreti@google.com>
+Subject: [PATCH RFC 4/8] fs: Introduce FALLOC_FL_PROVISION
+Date:   Thu, 15 Sep 2022 09:48:22 -0700
+Message-Id: <20220915164826.1396245-5-sarthakkukreti@google.com>
 X-Mailer: git-send-email 2.37.2.789.g6183377224-goog
 In-Reply-To: <20220915164826.1396245-1-sarthakkukreti@google.com>
 References: <20220915164826.1396245-1-sarthakkukreti@google.com>
@@ -83,136 +83,73 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Sarthak Kukreti <sarthakkukreti@chromium.org>
 
-Adds support for provision requests. Provision requests act like
-the inverse of discards.
+FALLOC_FL_PROVISION is a new fallocate() allocation mode that
+sends a hint to (supported) thinly provisioned block devices to
+allocate space for the given range of sectors via REQ_OP_PROVISION.
 
 Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
 ---
- drivers/block/virtio_blk.c      | 48 +++++++++++++++++++++++++++++++++
- include/uapi/linux/virtio_blk.h |  9 +++++++
- 2 files changed, 57 insertions(+)
+ block/fops.c                | 7 ++++++-
+ include/linux/falloc.h      | 3 ++-
+ include/uapi/linux/falloc.h | 8 ++++++++
+ 3 files changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
-index 30255fcaf181..eacc2bffe1d1 100644
---- a/drivers/block/virtio_blk.c
-+++ b/drivers/block/virtio_blk.c
-@@ -178,6 +178,39 @@ static int virtblk_setup_discard_write_zeroes(struct request *req, bool unmap)
- 	return 0;
- }
+diff --git a/block/fops.c b/block/fops.c
+index b90742595317..a436a7596508 100644
+--- a/block/fops.c
++++ b/block/fops.c
+@@ -605,7 +605,8 @@ static ssize_t blkdev_read_iter(struct kiocb *iocb, struct iov_iter *to)
  
-+static int virtblk_setup_provision(struct request *req)
-+{
-+	unsigned short segments = blk_rq_nr_discard_segments(req);
-+	unsigned short n = 0;
-+
-+	struct virtio_blk_discard_write_zeroes *range;
-+	struct bio *bio;
-+	u32 flags = 0;
-+
-+	range = kmalloc_array(segments, sizeof(*range), GFP_ATOMIC);
-+	if (!range)
-+		return -ENOMEM;
-+
-+	__rq_for_each_bio(bio, req) {
-+		u64 sector = bio->bi_iter.bi_sector;
-+		u32 num_sectors = bio->bi_iter.bi_size >> SECTOR_SHIFT;
-+
-+		range[n].flags = cpu_to_le32(flags);
-+		range[n].num_sectors = cpu_to_le32(num_sectors);
-+		range[n].sector = cpu_to_le64(sector);
-+		n++;
-+	}
-+
-+	WARN_ON_ONCE(n != segments);
-+
-+	req->special_vec.bv_page = virt_to_page(range);
-+	req->special_vec.bv_offset = offset_in_page(range);
-+	req->special_vec.bv_len = sizeof(*range) * segments;
-+	req->rq_flags |= RQF_SPECIAL_PAYLOAD;
-+
-+	return 0;
-+}
-+
- static void virtblk_unmap_data(struct request *req, struct virtblk_req *vbr)
- {
- 	if (blk_rq_nr_phys_segments(req))
-@@ -243,6 +276,9 @@ static blk_status_t virtblk_setup_cmd(struct virtio_device *vdev,
- 	case REQ_OP_DRV_IN:
- 		type = VIRTIO_BLK_T_GET_ID;
+ #define	BLKDEV_FALLOC_FL_SUPPORTED					\
+ 		(FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE |		\
+-		 FALLOC_FL_ZERO_RANGE | FALLOC_FL_NO_HIDE_STALE)
++		 FALLOC_FL_ZERO_RANGE | FALLOC_FL_NO_HIDE_STALE |	\
++		 FALLOC_FL_PROVISION)
+ 
+ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
+ 			     loff_t len)
+@@ -661,6 +662,10 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
+ 		error = blkdev_issue_discard(bdev, start >> SECTOR_SHIFT,
+ 					     len >> SECTOR_SHIFT, GFP_KERNEL);
  		break;
-+	case REQ_OP_PROVISION:
-+		type = VIRTIO_BLK_T_PROVISION;
++	case FALLOC_FL_PROVISION:
++		error = blkdev_issue_provision(bdev, start >> SECTOR_SHIFT,
++					       len >> SECTOR_SHIFT, GFP_KERNEL);
 +		break;
  	default:
- 		WARN_ON_ONCE(1);
- 		return BLK_STS_IOERR;
-@@ -256,6 +292,11 @@ static blk_status_t virtblk_setup_cmd(struct virtio_device *vdev,
- 			return BLK_STS_RESOURCE;
+ 		error = -EOPNOTSUPP;
  	}
+diff --git a/include/linux/falloc.h b/include/linux/falloc.h
+index f3f0b97b1675..a0e506255b20 100644
+--- a/include/linux/falloc.h
++++ b/include/linux/falloc.h
+@@ -30,7 +30,8 @@ struct space_resv {
+ 					 FALLOC_FL_COLLAPSE_RANGE |	\
+ 					 FALLOC_FL_ZERO_RANGE |		\
+ 					 FALLOC_FL_INSERT_RANGE |	\
+-					 FALLOC_FL_UNSHARE_RANGE)
++					 FALLOC_FL_UNSHARE_RANGE |                          \
++					 FALLOC_FL_PROVISION)
  
-+	if (type == VIRTIO_BLK_T_PROVISION) {
-+		if (virtblk_setup_provision(req))
-+			return BLK_STS_RESOURCE;
-+	}
+ /* on ia32 l_start is on a 32-bit boundary */
+ #if defined(CONFIG_X86_64)
+diff --git a/include/uapi/linux/falloc.h b/include/uapi/linux/falloc.h
+index 51398fa57f6c..2d323d113eed 100644
+--- a/include/uapi/linux/falloc.h
++++ b/include/uapi/linux/falloc.h
+@@ -77,4 +77,12 @@
+  */
+ #define FALLOC_FL_UNSHARE_RANGE		0x40
+ 
++/*
++ * FALLOC_FL_PROVISION acts as a hint for thinly provisioned devices to allocate
++ * blocks for the range/EOF.
++ *
++ * FALLOC_FL_PROVISION can only be used with allocate-mode fallocate.
++ */
++#define FALLOC_FL_PROVISION		0x80
 +
- 	return 0;
- }
- 
-@@ -1075,6 +1116,12 @@ static int virtblk_probe(struct virtio_device *vdev)
- 		blk_queue_max_write_zeroes_sectors(q, v ? v : UINT_MAX);
- 	}
- 
-+	if (virtio_has_feature(vdev, VIRTIO_BLK_F_PROVISION)) {
-+		virtio_cread(vdev, struct virtio_blk_config,
-+			     max_provision_sectors, &v);
-+		q->limits.max_provision_sectors = v ? v : UINT_MAX;
-+	}
-+
- 	virtblk_update_capacity(vblk, false);
- 	virtio_device_ready(vdev);
- 
-@@ -1177,6 +1224,7 @@ static unsigned int features[] = {
- 	VIRTIO_BLK_F_RO, VIRTIO_BLK_F_BLK_SIZE,
- 	VIRTIO_BLK_F_FLUSH, VIRTIO_BLK_F_TOPOLOGY, VIRTIO_BLK_F_CONFIG_WCE,
- 	VIRTIO_BLK_F_MQ, VIRTIO_BLK_F_DISCARD, VIRTIO_BLK_F_WRITE_ZEROES,
-+	VIRTIO_BLK_F_PROVISION,
- };
- 
- static struct virtio_driver virtio_blk = {
-diff --git a/include/uapi/linux/virtio_blk.h b/include/uapi/linux/virtio_blk.h
-index d888f013d9ff..184f8cf6d185 100644
---- a/include/uapi/linux/virtio_blk.h
-+++ b/include/uapi/linux/virtio_blk.h
-@@ -40,6 +40,7 @@
- #define VIRTIO_BLK_F_MQ		12	/* support more than one vq */
- #define VIRTIO_BLK_F_DISCARD	13	/* DISCARD is supported */
- #define VIRTIO_BLK_F_WRITE_ZEROES	14	/* WRITE ZEROES is supported */
-+#define VIRTIO_BLK_F_PROVISION	15	/* provision is supported */
- 
- /* Legacy feature bits */
- #ifndef VIRTIO_BLK_NO_LEGACY
-@@ -120,6 +121,11 @@ struct virtio_blk_config {
- 	 */
- 	__u8 write_zeroes_may_unmap;
- 
-+	/*
-+	 * The maximum number of sectors in a provision request.
-+	 */
-+	__virtio32 max_provision_sectors;
-+
- 	__u8 unused1[3];
- } __attribute__((packed));
- 
-@@ -155,6 +161,9 @@ struct virtio_blk_config {
- /* Write zeroes command */
- #define VIRTIO_BLK_T_WRITE_ZEROES	13
- 
-+/* Provision command */
-+#define VIRTIO_BLK_T_PROVISION	14
-+
- #ifndef VIRTIO_BLK_NO_LEGACY
- /* Barrier before this op. */
- #define VIRTIO_BLK_T_BARRIER	0x80000000
+ #endif /* _UAPI_FALLOC_H_ */
 -- 
 2.31.0
 
