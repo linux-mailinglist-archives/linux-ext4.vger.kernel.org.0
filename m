@@ -2,182 +2,123 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 086FC5B9FD3
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Sep 2022 18:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E2345B9FDE
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Sep 2022 18:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230030AbiIOQpn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 15 Sep 2022 12:45:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46322 "EHLO
+        id S229606AbiIOQsn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 15 Sep 2022 12:48:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230023AbiIOQpj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Sep 2022 12:45:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D2414F3B4;
-        Thu, 15 Sep 2022 09:45:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 27F8662564;
-        Thu, 15 Sep 2022 16:45:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5302EC433D6;
-        Thu, 15 Sep 2022 16:45:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1663260336;
-        bh=7QoGPp9vcUcB7hhq18SRD+bpB1C1+NfYZZj7FAZ+E6M=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=W9rgNJ3SH7gXXgofN1CZth0elGN3abwdqgo2Y0QWRD8eUiSpo+Y206ovGRYQfqui0
-         q5xxRGnTsy6dzWM+neWHODXDMDnV8+DvNG5Mvkmpg9ygkX/57vfwUXyzNrcUzk5lvf
-         BSbX2qCxR6tAQ182JQVnx28qST05Z8cBNxn1PEcu9k1YTEHlicuihj88WrVaZ3/7nR
-         cTm/ZCZSAQ3vOH7tYLWPyWVX0lwQIhX9fQyD0YL03uge+2XKGqUJXUR7pvaR/++ezg
-         225t/vogg+gUbu/v+PCFQqXhd2O8Bv3YbvtAgiXaSe9+HT2bjV16fhDd2uzPS4H7M7
-         lOcBnwZO87Lvg==
-Message-ID: <1a968b8e87f054e360877c9ab8cdfc4cfdfc8740.camel@kernel.org>
-Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
- STATX_INO_VERSION field
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        "bfields@fieldses.org" <bfields@fieldses.org>,
-        "neilb@suse.de" <neilb@suse.de>
-Cc:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "xiubli@redhat.com" <xiubli@redhat.com>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "lczerner@redhat.com" <lczerner@redhat.com>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>
-Date:   Thu, 15 Sep 2022 12:45:32 -0400
-In-Reply-To: <577b6d8a7243aeee37eaa4bbb00c90799586bc48.camel@hammerspace.com>
-References: <20220908083326.3xsanzk7hy3ff4qs@quack3>
-         <YxoIjV50xXKiLdL9@mit.edu>
-         <02928a8c5718590bea5739b13d6b6ebe66cac577.camel@kernel.org>
-         <20220908155605.GD8951@fieldses.org>
-         <9e06c506fd6b3e3118da0ec24276e85ea3ee45a1.camel@kernel.org>
-         <20220908182252.GA18939@fieldses.org>
-         <44efe219dbf511492b21a653905448d43d0f3363.camel@kernel.org>
-         <166284799157.30452.4308111193560234334@noble.neil.brown.name>
-         <20220912134208.GB9304@fieldses.org>
-         <166302447257.30452.6751169887085269140@noble.neil.brown.name>
-         <20220915140644.GA15754@fieldses.org>
-         <577b6d8a7243aeee37eaa4bbb00c90799586bc48.camel@hammerspace.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
+        with ESMTP id S229554AbiIOQsm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Sep 2022 12:48:42 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB53972B5B
+        for <linux-ext4@vger.kernel.org>; Thu, 15 Sep 2022 09:48:38 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id u132so18628850pfc.6
+        for <linux-ext4@vger.kernel.org>; Thu, 15 Sep 2022 09:48:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date;
+        bh=zlA6ptTTn1LB8f3ds6R6bK3ndLgpFyQYa5/cgjmBz0k=;
+        b=EkH8vzH6AY/x2FDEot3lJqk0qgC1I0+W6noGE8h+Y7T5NdA67sJRGO99osypN4wxjP
+         si3T4JRl24o/N1JFcREcZ+zhM49Wim0sKm0xkSF0UULLVn87ChuPX89dvF+y0pdogAfr
+         dKUfrjDX9+mkcQ0KQAMMNZU7EcTIPVzAUmPLA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=zlA6ptTTn1LB8f3ds6R6bK3ndLgpFyQYa5/cgjmBz0k=;
+        b=NEpM7lectArZiGjLyT55yuNGIx9DV8Nfp+plbJNe3YZiHJ8beL3JpXvSh3jBY1wpn8
+         O7H0Xt+GpbauvA83qtn4NrLAygiFhUgu47VJC/8l1OoQnltge/ZP4vRR3vk2mM3KZLHT
+         /QZZ+Xmu5Zty9RNdDq638KUD45Z/hadl+kpWFMC75KTn39+0QD/iG8c+jpMjo+Ryb83e
+         SO1H2ESP8oBfZOTe0mxKHLgJidirzTuT+llr/VLvutH2QkEXdAcQLkQSV6VR+9fNr2sw
+         pc1dcxEIwlfW6fJA1IRBK7Cf2oXhBXsBrdsQl7Qv7mpdGDs7gryGmZXQXv8o0w0PEW6c
+         dhkw==
+X-Gm-Message-State: ACrzQf1erK8xLWpANumIpF9j851AuI/Q8wyNi4Nn2bBIqCQBrfxjpNvP
+        bDwMelA7UcKvbmlt5z8UnU6Kog==
+X-Google-Smtp-Source: AMsMyM4FdBRmEUaoFqZ1ZX6Vh6XtevMCEGOiKjv87UB8WmxxEo9+INCb9SpLcAAa5zOhruJLuTG+QQ==
+X-Received: by 2002:aa7:8892:0:b0:540:edcb:4773 with SMTP id z18-20020aa78892000000b00540edcb4773mr674454pfe.19.1663260517947;
+        Thu, 15 Sep 2022 09:48:37 -0700 (PDT)
+Received: from sarthakkukreti-glaptop.hsd1.ca.comcast.net ([2601:647:4200:b5b0:3af2:34b2:a98a:a652])
+        by smtp.gmail.com with ESMTPSA id o4-20020a170902bcc400b00177ee563b6dsm13174970pls.33.2022.09.15.09.48.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Sep 2022 09:48:37 -0700 (PDT)
+From:   Sarthak Kukreti <sarthakkukreti@chromium.org>
+X-Google-Original-From: Sarthak Kukreti <sarthakkukreti@google.com>
+To:     dm-devel@redhat.com, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Bart Van Assche <bvanassche@google.com>,
+        Daniil Lunev <dlunev@google.com>,
+        Evan Green <evgreen@google.com>,
+        Gwendal Grignou <gwendal@google.com>,
+        Sarthak Kukreti <sarthakkukreti@chromium.org>
+Subject: [PATCH RFC 0/8] Introduce provisioning primitives for thinly provisioned storage
+Date:   Thu, 15 Sep 2022 09:48:18 -0700
+Message-Id: <20220915164826.1396245-1-sarthakkukreti@google.com>
+X-Mailer: git-send-email 2.37.2.789.g6183377224-goog
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 2022-09-15 at 15:08 +0000, Trond Myklebust wrote:
-> On Thu, 2022-09-15 at 10:06 -0400, J. Bruce Fields wrote:
-> > On Tue, Sep 13, 2022 at 09:14:32AM +1000, NeilBrown wrote:
-> > > On Mon, 12 Sep 2022, J. Bruce Fields wrote:
-> > > > On Sun, Sep 11, 2022 at 08:13:11AM +1000, NeilBrown wrote:
-> > > > > On Fri, 09 Sep 2022, Jeff Layton wrote:
-> > > > > >=20
-> > > > > > The machine crashes and comes back up, and we get a query for
-> > > > > > i_version
-> > > > > > and it comes back as X. Fine, it's an old version. Now there
-> > > > > > is a write.
-> > > > > > What do we do to ensure that the new value doesn't collide
-> > > > > > with X+1?=20
-> > > > >=20
-> > > > > (I missed this bit in my earlier reply..)
-> > > > >=20
-> > > > > How is it "Fine" to see an old version?
-> > > > > The file could have changed without the version changing.
-> > > > > And I thought one of the goals of the crash-count was to be
-> > > > > able to
-> > > > > provide a monotonic change id.
-> > > >=20
-> > > > I was still mainly thinking about how to provide reliable close-
-> > > > to-open
-> > > > semantics between NFS clients.=A0 In the case the writer was an NFS
-> > > > client, it wasn't done writing (or it would have COMMITted), so
-> > > > those
-> > > > writes will come in and bump the change attribute soon, and as
-> > > > long as
-> > > > we avoid the small chance of reusing an old change attribute,
-> > > > we're OK,
-> > > > and I think it'd even still be OK to advertise
-> > > > CHANGE_TYPE_IS_MONOTONIC_INCR.
-> > >=20
-> > > You seem to be assuming that the client doesn't crash at the same
-> > > time
-> > > as the server (maybe they are both VMs on a host that lost
-> > > power...)
-> > >=20
-> > > If client A reads and caches, client B writes, the server crashes
-> > > after
-> > > writing some data (to already allocated space so no inode update
-> > > needed)
-> > > but before writing the new i_version, then client B crashes.
-> > > When server comes back the i_version will be unchanged but the data
-> > > has
-> > > changed.=A0 Client A will cache old data indefinitely...
-> >=20
-> > I guess I assume that if all we're promising is close-to-open, then a
-> > client isn't allowed to trust its cache in that situation.=A0 Maybe
-> > that's
-> > an overly draconian interpretation of close-to-open.
-> >=20
-> > Also, I'm trying to think about how to improve things incrementally.
-> > Incorporating something like a crash count into the on-disk i_version
-> > fixes some cases without introducing any new ones or regressing
-> > performance after a crash.
-> >=20
-> > If we subsequently wanted to close those remaining holes, I think
-> > we'd
-> > need the change attribute increment to be seen as atomic with respect
-> > to
-> > its associated change, both to clients and (separately) on disk.=A0
-> > (That
-> > would still allow the change attribute to go backwards after a crash,
-> > to
-> > the value it held as of the on-disk state of the file.=A0 I think
-> > clients
-> > should be able to deal with that case.)
-> >=20
-> > But, I don't know, maybe a bigger hammer would be OK:
-> >=20
->=20
-> If you're not going to meet the minimum bar of data integrity, then
-> this whole exercise is just a massive waste of everyone's time. The
-> answer then going forward is just to recommend never using Linux as an
-> NFS server. Makes my life much easier, because I no longer have to
-> debug any of the issues.
->=20
->=20
+From: Sarthak Kukreti <sarthakkukreti@chromium.org>
 
-To be clear, you believe any scheme that would allow the client to see
-an old change attr after a crash is insufficient?
+Hi,
 
-The only way I can see to fix that (at least with only a crash counter)
-would be to factor it in at presentation time like Neil suggested.
-Basically we'd just mask off the top 16 bits and plop the crash counter
-in there before presenting it.
+This patch series is an RFC of a mechanism to pass through provision requests on stacked thinly provisioned storage devices/filesystems.
 
-In principle, I suppose we could do that at the nfsd level as well (and
-that might be the simplest way to fix this). We probably wouldn't be
-able to advertise a change attr type of MONOTONIC with this scheme
-though.
---=20
-Jeff Layton <jlayton@kernel.org>
+The linux kernel provides several mechanisms to set up thinly provisioned block storage abstractions (eg. dm-thin, loop devices over sparse files), either directly as block devices or backing storage for filesystems. Currently, short of writing data to either the device or filesystem, there is no way for users to pre-allocate space for use in such storage setups. Consider the following use-cases:
+
+1) Suspend-to-disk and resume from a dm-thin device: In order to ensure that the underlying thinpool metadata is not modified during the suspend mechanism, the dm-thin device needs to be fully provisioned.
+2) If a filesystem uses a loop device over a sparse file, fallocate() on the filesystem will allocate blocks for files but the underlying sparse file will remain intact.
+3) Another example is virtual machine using a sparse file/dm-thin as a storage device; by default, allocations within the VM boundaries will not affect the host.
+4) Several storage standards support mechanisms for thin provisioning on real hardware devices. For example:
+  a. The NVMe spec 1.0b section 2.1.1 loosely talks about thin provisioning: "When the THINP bit in the NSFEAT field of the Identify Namespace data structure is set to ‘1’, the controller ... shall track the number of allocated blocks in the Namespace Utilization field"
+  b. The SCSi Block Commands reference - 4 section references "Thin provisioned logical units",
+  c. UFS 3.0 spec section 13.3.3 references "Thin provisioning".
+
+In all of the above situations, currently the only way for pre-allocating space is to issue writes (or use WRITE_ZEROES/WRITE_SAME). However, that does not scale well with larger pre-allocation sizes. 
+
+This patchset introduces primitives to support block-level provisioning (note: the term 'provisioning' is used to prevent overloading the term 'allocations/pre-allocations') requests across filesystems and block devices. This allows fallocate() and file creation requests to reserve space across stacked layers of block devices and filesystems. Currently, the patchset covers a prototype on the device-mapper targets, loop device and ext4, but the same mechanism can be extended to other filesystems/block devices as well as extended for use with devices in 4 a-c.
+
+Patch 1 introduces REQ_OP_PROVISION as a new request type. The provision request acts like the inverse of a discard request; instead of notifying lower layers that the block range will no longer be used, provision acts as a request to lower layers to provision disk space for the given block range. Real hardware storage devices will currently disable the provisioing capability but for the standards listed in 4a.-c., REQ_OP_PROVISION can be overloaded for use as the provisioing primitive for future devices.
+
+Patch 2 implements REQ_OP_PROVISION handling for some of the device-mapper targets. This additionally adds support for pre-allocating space for thinly provisioned logical volumes via fallocate()
+
+Patch 3 implements the handling for virtio-blk.
+
+Patch 4 introduces an fallocate() mode (FALLOC_FL_PROVISION) that sends a provision request to the underlying block device (and beyond). This acts as the primary mechanism for file-level provisioing.
+
+Patch 5 wires up the loop device handling of REQ_OP_PROVISION.
+
+Patches 6-8 cover a prototype implementation for ext4, which includes wiring up the fallocate() implementation, introducing a filesystem level option (called 'provision') to control the default allocation behaviour and finally a file level override to retain current handling, even on filesystems mounted with 'provision'
+
+Testing:
+--------
+- A backport of this patch series was tested on ChromiumOS using a 5.10 kernel.
+- File on ext4 on a thin logical volume: fallocate(FALLOC_FL_PROVISION) : 4.6s, dd if=/dev/zero of=...: 6 mins.
+
+TODOs:
+------
+1) The stacked block devices (dm-*, loop etc.) currently unconditionally pass through provision requests. Add support for provision, similar to how discard handling is set up (with options to disable, passdown or passthrough requests).
+2) Blktests and Xfstests for validating provisioning.
+
