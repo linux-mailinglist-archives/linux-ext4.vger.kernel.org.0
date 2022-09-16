@@ -2,61 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAC755BA577
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Sep 2022 05:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8CE95BA67F
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Sep 2022 07:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbiIPDiH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 15 Sep 2022 23:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58488 "EHLO
+        id S229888AbiIPFsP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 16 Sep 2022 01:48:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbiIPDhB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Sep 2022 23:37:01 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9819D9E0DB;
-        Thu, 15 Sep 2022 20:36:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1663299419; x=1694835419;
-  h=subject:from:to:cc:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=shTt/uNd4pi9Ct2gNVWBBoQz77p4cEL4DPuvM6dkcww=;
-  b=fVQpPTu6xRLB42XdMaWSav7NeKLffvWUAZ8CUH2aLg/bE+b4nHB9vb6C
-   Z/9CmzWRiAwjeb0Fztk4c8jdcSTwnsY6yJFhThGBFRUwDyLljH/BvHjKP
-   U0BlysFLx91tAoYJoxZ4wvpy7OWlIZQzMnVUkBf/4Wx1dqlIgGfNY7j4f
-   UBdOyYzZeqZRhl8gRNYSOpDwpBxHYF/8WCvYgWT3tNS5FJ8SgIh9WdQM1
-   Iv6HSxfQ0oDWL/ZAql2pyzqp4+clnzrCMtDyTmIIGC1L7PGLevyEdCKfB
-   HEUJPyiT3uAbVLDzusBoTWqYS9Ck3FKU4dKCub1lDiB/vMnzl5BVP0kaQ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10471"; a="360643403"
-X-IronPort-AV: E=Sophos;i="5.93,319,1654585200"; 
-   d="scan'208";a="360643403"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2022 20:36:56 -0700
-X-IronPort-AV: E=Sophos;i="5.93,319,1654585200"; 
-   d="scan'208";a="743194587"
-Received: from colinlix-mobl.amr.corp.intel.com (HELO dwillia2-xfh.jf.intel.com) ([10.209.29.52])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2022 20:36:56 -0700
-Subject: [PATCH v2 18/18] mm/gup: Drop DAX pgmap accounting
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     akpm@linux-foundation.org
-Cc:     Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        linux-fsdevel@vger.kernel.org, nvdimm@lists.linux.dev,
-        linux-xfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-ext4@vger.kernel.org
-Date:   Thu, 15 Sep 2022 20:36:56 -0700
-Message-ID: <166329941594.2786261.16402766003789003164.stgit@dwillia2-xfh.jf.intel.com>
-In-Reply-To: <166329930818.2786261.6086109734008025807.stgit@dwillia2-xfh.jf.intel.com>
-References: <166329930818.2786261.6086109734008025807.stgit@dwillia2-xfh.jf.intel.com>
-User-Agent: StGit/0.18-3-g996c
+        with ESMTP id S229916AbiIPFsN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Sep 2022 01:48:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 884A981688
+        for <linux-ext4@vger.kernel.org>; Thu, 15 Sep 2022 22:48:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1663307289;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Dp2JKtQVEofdHF26h3kvOuW3Y1aGTMJaeJlmu8zOc8w=;
+        b=TQLylNQkOGs9hkLRO5hAaWqnLoGZ4cOzV/+b1j23eAWBJi/kFUhPan53AJinj0QT8/r5mq
+        DlquE9poAXh2ZsrVMWtaPq2BsCqHmAiwxD5m4pAWjlqOhvBgrPqVDlURq2vyafpsvQoPxC
+        jEVGC2bf1J6vBR8bBUErxiyJyXZ1umI=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-515-RIjpoBLVMJyIY7KDULPO8g-1; Fri, 16 Sep 2022 01:48:08 -0400
+X-MC-Unique: RIjpoBLVMJyIY7KDULPO8g-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 748218027EA;
+        Fri, 16 Sep 2022 05:48:07 +0000 (UTC)
+Received: from localhost (unknown [10.39.192.86])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A3A32492CA4;
+        Fri, 16 Sep 2022 05:48:06 +0000 (UTC)
+Date:   Fri, 16 Sep 2022 06:48:05 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
+Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Jens Axboe <axboe@kernel.dk>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Bart Van Assche <bvanassche@google.com>,
+        Daniil Lunev <dlunev@google.com>,
+        Evan Green <evgreen@google.com>,
+        Gwendal Grignou <gwendal@google.com>
+Subject: Re: [PATCH RFC 3/8] virtio_blk: Add support for provision requests
+Message-ID: <YyQOFTI4CWn041UM@fedora>
+References: <20220915164826.1396245-1-sarthakkukreti@google.com>
+ <20220915164826.1396245-4-sarthakkukreti@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="WxlpI8UNA4dyQSlO"
+Content-Disposition: inline
+In-Reply-To: <20220915164826.1396245-4-sarthakkukreti@google.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,383 +73,175 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Now that pgmap accounting is handled at map time, it can be dropped from
-gup time.
 
-A hurdle still remains that filesystem-DAX huge pages are not compound
-pages which still requires infrastructure like
-__gup_device_huge_p{m,u}d() to stick around.
+--WxlpI8UNA4dyQSlO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Additionally, ZONE_DEVICE pages with this change are still not suitable
-to be returned from vm_normal_page(), so this cleanup is limited to
-deleting pgmap reference manipulation. This is an incremental step on
-the path to removing pte_devmap() altogether.
+On Thu, Sep 15, 2022 at 09:48:21AM -0700, Sarthak Kukreti wrote:
+> From: Sarthak Kukreti <sarthakkukreti@chromium.org>
+>=20
+> Adds support for provision requests. Provision requests act like
+> the inverse of discards.
+>=20
+> Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
+> ---
+>  drivers/block/virtio_blk.c      | 48 +++++++++++++++++++++++++++++++++
+>  include/uapi/linux/virtio_blk.h |  9 +++++++
+>  2 files changed, 57 insertions(+)
 
-Note that follow_pmd_devmap() can be deleted entirely since a few
-additions of pmd_devmap() allows the transparent huge page path to be
-reused.
+Please send a VIRTIO spec patch too:
+https://github.com/oasis-tcs/virtio-spec#providing-feedback
 
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Jan Kara <jack@suse.cz>
-Cc: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: John Hubbard <jhubbard@nvidia.com>
-Reported-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
----
- include/linux/huge_mm.h |   12 +------
- mm/gup.c                |   83 +++++++++++------------------------------------
- mm/huge_memory.c        |   54 +------------------------------
- 3 files changed, 22 insertions(+), 127 deletions(-)
+Stefan
 
-diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-index de73f5a16252..b8ed373c6090 100644
---- a/include/linux/huge_mm.h
-+++ b/include/linux/huge_mm.h
-@@ -263,10 +263,8 @@ static inline bool folio_test_pmd_mappable(struct folio *folio)
- 	return folio_order(folio) >= HPAGE_PMD_ORDER;
- }
- 
--struct page *follow_devmap_pmd(struct vm_area_struct *vma, unsigned long addr,
--		pmd_t *pmd, int flags, struct dev_pagemap **pgmap);
- struct page *follow_devmap_pud(struct vm_area_struct *vma, unsigned long addr,
--		pud_t *pud, int flags, struct dev_pagemap **pgmap);
-+		pud_t *pud, int flags);
- 
- vm_fault_t do_huge_pmd_numa_page(struct vm_fault *vmf);
- 
-@@ -418,14 +416,8 @@ static inline void mm_put_huge_zero_page(struct mm_struct *mm)
- 	return;
- }
- 
--static inline struct page *follow_devmap_pmd(struct vm_area_struct *vma,
--	unsigned long addr, pmd_t *pmd, int flags, struct dev_pagemap **pgmap)
--{
--	return NULL;
--}
--
- static inline struct page *follow_devmap_pud(struct vm_area_struct *vma,
--	unsigned long addr, pud_t *pud, int flags, struct dev_pagemap **pgmap)
-+	unsigned long addr, pud_t *pud, int flags)
- {
- 	return NULL;
- }
-diff --git a/mm/gup.c b/mm/gup.c
-index c6d060dee9e0..8e6dd4308e19 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -25,7 +25,6 @@
- #include "internal.h"
- 
- struct follow_page_context {
--	struct dev_pagemap *pgmap;
- 	unsigned int page_mask;
- };
- 
-@@ -487,8 +486,7 @@ static inline bool can_follow_write_pte(pte_t pte, unsigned int flags)
- }
- 
- static struct page *follow_page_pte(struct vm_area_struct *vma,
--		unsigned long address, pmd_t *pmd, unsigned int flags,
--		struct dev_pagemap **pgmap)
-+		unsigned long address, pmd_t *pmd, unsigned int flags)
- {
- 	struct mm_struct *mm = vma->vm_mm;
- 	struct page *page;
-@@ -532,17 +530,13 @@ static struct page *follow_page_pte(struct vm_area_struct *vma,
- 	}
- 
- 	page = vm_normal_page(vma, address, pte);
--	if (!page && pte_devmap(pte) && (flags & (FOLL_GET | FOLL_PIN))) {
-+	if (!page && pte_devmap(pte)) {
- 		/*
--		 * Only return device mapping pages in the FOLL_GET or FOLL_PIN
--		 * case since they are only valid while holding the pgmap
--		 * reference.
-+		 * ZONE_DEVICE pages are not yet treated as vm_normal_page()
-+		 * instances, with respect to mapcount and compound-page
-+		 * metadata
- 		 */
--		*pgmap = get_dev_pagemap(pte_pfn(pte), *pgmap);
--		if (*pgmap)
--			page = pte_page(pte);
--		else
--			goto no_page;
-+		page = pte_page(pte);
- 	} else if (unlikely(!page)) {
- 		if (flags & FOLL_DUMP) {
- 			/* Avoid special (like zero) pages in core dumps */
-@@ -660,15 +654,8 @@ static struct page *follow_pmd_mask(struct vm_area_struct *vma,
- 			return no_page_table(vma, flags);
- 		goto retry;
- 	}
--	if (pmd_devmap(pmdval)) {
--		ptl = pmd_lock(mm, pmd);
--		page = follow_devmap_pmd(vma, address, pmd, flags, &ctx->pgmap);
--		spin_unlock(ptl);
--		if (page)
--			return page;
--	}
--	if (likely(!pmd_trans_huge(pmdval)))
--		return follow_page_pte(vma, address, pmd, flags, &ctx->pgmap);
-+	if (likely(!(pmd_trans_huge(pmdval) || pmd_devmap(pmdval))))
-+		return follow_page_pte(vma, address, pmd, flags);
- 
- 	if ((flags & FOLL_NUMA) && pmd_protnone(pmdval))
- 		return no_page_table(vma, flags);
-@@ -686,9 +673,9 @@ static struct page *follow_pmd_mask(struct vm_area_struct *vma,
- 		pmd_migration_entry_wait(mm, pmd);
- 		goto retry_locked;
- 	}
--	if (unlikely(!pmd_trans_huge(*pmd))) {
-+	if (unlikely(!(pmd_trans_huge(*pmd) || pmd_devmap(pmdval)))) {
- 		spin_unlock(ptl);
--		return follow_page_pte(vma, address, pmd, flags, &ctx->pgmap);
-+		return follow_page_pte(vma, address, pmd, flags);
- 	}
- 	if (flags & FOLL_SPLIT_PMD) {
- 		int ret;
-@@ -706,7 +693,7 @@ static struct page *follow_pmd_mask(struct vm_area_struct *vma,
- 		}
- 
- 		return ret ? ERR_PTR(ret) :
--			follow_page_pte(vma, address, pmd, flags, &ctx->pgmap);
-+			follow_page_pte(vma, address, pmd, flags);
- 	}
- 	page = follow_trans_huge_pmd(vma, address, pmd, flags);
- 	spin_unlock(ptl);
-@@ -743,7 +730,7 @@ static struct page *follow_pud_mask(struct vm_area_struct *vma,
- 	}
- 	if (pud_devmap(*pud)) {
- 		ptl = pud_lock(mm, pud);
--		page = follow_devmap_pud(vma, address, pud, flags, &ctx->pgmap);
-+		page = follow_devmap_pud(vma, address, pud, flags);
- 		spin_unlock(ptl);
- 		if (page)
- 			return page;
-@@ -790,9 +777,6 @@ static struct page *follow_p4d_mask(struct vm_area_struct *vma,
-  *
-  * @flags can have FOLL_ flags set, defined in <linux/mm.h>
-  *
-- * When getting pages from ZONE_DEVICE memory, the @ctx->pgmap caches
-- * the device's dev_pagemap metadata to avoid repeating expensive lookups.
-- *
-  * When getting an anonymous page and the caller has to trigger unsharing
-  * of a shared anonymous page first, -EMLINK is returned. The caller should
-  * trigger a fault with FAULT_FLAG_UNSHARE set. Note that unsharing is only
-@@ -847,7 +831,7 @@ static struct page *follow_page_mask(struct vm_area_struct *vma,
- struct page *follow_page(struct vm_area_struct *vma, unsigned long address,
- 			 unsigned int foll_flags)
- {
--	struct follow_page_context ctx = { NULL };
-+	struct follow_page_context ctx = { 0 };
- 	struct page *page;
- 
- 	if (vma_is_secretmem(vma))
-@@ -857,8 +841,6 @@ struct page *follow_page(struct vm_area_struct *vma, unsigned long address,
- 		return NULL;
- 
- 	page = follow_page_mask(vma, address, foll_flags, &ctx);
--	if (ctx.pgmap)
--		put_dev_pagemap(ctx.pgmap);
- 	return page;
- }
- 
-@@ -1118,7 +1100,7 @@ static long __get_user_pages(struct mm_struct *mm,
- {
- 	long ret = 0, i = 0;
- 	struct vm_area_struct *vma = NULL;
--	struct follow_page_context ctx = { NULL };
-+	struct follow_page_context ctx = { 0 };
- 
- 	if (!nr_pages)
- 		return 0;
-@@ -1241,8 +1223,6 @@ static long __get_user_pages(struct mm_struct *mm,
- 		nr_pages -= page_increm;
- 	} while (nr_pages);
- out:
--	if (ctx.pgmap)
--		put_dev_pagemap(ctx.pgmap);
- 	return i ? i : ret;
- }
- 
-@@ -2322,9 +2302,8 @@ static void __maybe_unused undo_dev_pagemap(int *nr, int nr_start,
- static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
- 			 unsigned int flags, struct page **pages, int *nr)
- {
--	struct dev_pagemap *pgmap = NULL;
--	int nr_start = *nr, ret = 0;
- 	pte_t *ptep, *ptem;
-+	int ret = 0;
- 
- 	ptem = ptep = pte_offset_map(&pmd, addr);
- 	do {
-@@ -2345,12 +2324,6 @@ static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
- 		if (pte_devmap(pte)) {
- 			if (unlikely(flags & FOLL_LONGTERM))
- 				goto pte_unmap;
--
--			pgmap = get_dev_pagemap(pte_pfn(pte), pgmap);
--			if (unlikely(!pgmap)) {
--				undo_dev_pagemap(nr, nr_start, flags, pages);
--				goto pte_unmap;
--			}
- 		} else if (pte_special(pte))
- 			goto pte_unmap;
- 
-@@ -2397,8 +2370,6 @@ static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
- 	ret = 1;
- 
- pte_unmap:
--	if (pgmap)
--		put_dev_pagemap(pgmap);
- 	pte_unmap(ptem);
- 	return ret;
- }
-@@ -2425,28 +2396,17 @@ static int __gup_device_huge(unsigned long pfn, unsigned long addr,
- 			     unsigned long end, unsigned int flags,
- 			     struct page **pages, int *nr)
- {
--	int nr_start = *nr;
--	struct dev_pagemap *pgmap = NULL;
--
- 	do {
- 		struct page *page = pfn_to_page(pfn);
- 
--		pgmap = get_dev_pagemap(pfn, pgmap);
--		if (unlikely(!pgmap)) {
--			undo_dev_pagemap(nr, nr_start, flags, pages);
--			break;
--		}
- 		SetPageReferenced(page);
- 		pages[*nr] = page;
--		if (unlikely(!try_grab_page(page, flags))) {
--			undo_dev_pagemap(nr, nr_start, flags, pages);
-+		if (unlikely(!try_grab_page(page, flags)))
- 			break;
--		}
- 		(*nr)++;
- 		pfn++;
- 	} while (addr += PAGE_SIZE, addr != end);
- 
--	put_dev_pagemap(pgmap);
- 	return addr == end;
- }
- 
-@@ -2455,16 +2415,14 @@ static int __gup_device_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
- 				 struct page **pages, int *nr)
- {
- 	unsigned long fault_pfn;
--	int nr_start = *nr;
- 
- 	fault_pfn = pmd_pfn(orig) + ((addr & ~PMD_MASK) >> PAGE_SHIFT);
- 	if (!__gup_device_huge(fault_pfn, addr, end, flags, pages, nr))
- 		return 0;
- 
--	if (unlikely(pmd_val(orig) != pmd_val(*pmdp))) {
--		undo_dev_pagemap(nr, nr_start, flags, pages);
-+	if (unlikely(pmd_val(orig) != pmd_val(*pmdp)))
- 		return 0;
--	}
-+
- 	return 1;
- }
- 
-@@ -2473,16 +2431,13 @@ static int __gup_device_huge_pud(pud_t orig, pud_t *pudp, unsigned long addr,
- 				 struct page **pages, int *nr)
- {
- 	unsigned long fault_pfn;
--	int nr_start = *nr;
- 
- 	fault_pfn = pud_pfn(orig) + ((addr & ~PUD_MASK) >> PAGE_SHIFT);
- 	if (!__gup_device_huge(fault_pfn, addr, end, flags, pages, nr))
- 		return 0;
- 
--	if (unlikely(pud_val(orig) != pud_val(*pudp))) {
--		undo_dev_pagemap(nr, nr_start, flags, pages);
-+	if (unlikely(pud_val(orig) != pud_val(*pudp)))
- 		return 0;
--	}
- 	return 1;
- }
- #else
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 8a7c1b344abe..ef68296f2158 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -1031,55 +1031,6 @@ static void touch_pmd(struct vm_area_struct *vma, unsigned long addr,
- 		update_mmu_cache_pmd(vma, addr, pmd);
- }
- 
--struct page *follow_devmap_pmd(struct vm_area_struct *vma, unsigned long addr,
--		pmd_t *pmd, int flags, struct dev_pagemap **pgmap)
--{
--	unsigned long pfn = pmd_pfn(*pmd);
--	struct mm_struct *mm = vma->vm_mm;
--	struct page *page;
--
--	assert_spin_locked(pmd_lockptr(mm, pmd));
--
--	/*
--	 * When we COW a devmap PMD entry, we split it into PTEs, so we should
--	 * not be in this function with `flags & FOLL_COW` set.
--	 */
--	WARN_ONCE(flags & FOLL_COW, "mm: In follow_devmap_pmd with FOLL_COW set");
--
--	/* FOLL_GET and FOLL_PIN are mutually exclusive. */
--	if (WARN_ON_ONCE((flags & (FOLL_PIN | FOLL_GET)) ==
--			 (FOLL_PIN | FOLL_GET)))
--		return NULL;
--
--	if (flags & FOLL_WRITE && !pmd_write(*pmd))
--		return NULL;
--
--	if (pmd_present(*pmd) && pmd_devmap(*pmd))
--		/* pass */;
--	else
--		return NULL;
--
--	if (flags & FOLL_TOUCH)
--		touch_pmd(vma, addr, pmd, flags & FOLL_WRITE);
--
--	/*
--	 * device mapped pages can only be returned if the
--	 * caller will manage the page reference count.
--	 */
--	if (!(flags & (FOLL_GET | FOLL_PIN)))
--		return ERR_PTR(-EEXIST);
--
--	pfn += (addr & ~PMD_MASK) >> PAGE_SHIFT;
--	*pgmap = get_dev_pagemap(pfn, *pgmap);
--	if (!*pgmap)
--		return ERR_PTR(-EFAULT);
--	page = pfn_to_page(pfn);
--	if (!try_grab_page(page, flags))
--		page = ERR_PTR(-ENOMEM);
--
--	return page;
--}
--
- int copy_huge_pmd(struct mm_struct *dst_mm, struct mm_struct *src_mm,
- 		  pmd_t *dst_pmd, pmd_t *src_pmd, unsigned long addr,
- 		  struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma)
-@@ -1196,7 +1147,7 @@ static void touch_pud(struct vm_area_struct *vma, unsigned long addr,
- }
- 
- struct page *follow_devmap_pud(struct vm_area_struct *vma, unsigned long addr,
--		pud_t *pud, int flags, struct dev_pagemap **pgmap)
-+			       pud_t *pud, int flags)
- {
- 	unsigned long pfn = pud_pfn(*pud);
- 	struct mm_struct *mm = vma->vm_mm;
-@@ -1230,9 +1181,6 @@ struct page *follow_devmap_pud(struct vm_area_struct *vma, unsigned long addr,
- 		return ERR_PTR(-EEXIST);
- 
- 	pfn += (addr & ~PUD_MASK) >> PAGE_SHIFT;
--	*pgmap = get_dev_pagemap(pfn, *pgmap);
--	if (!*pgmap)
--		return ERR_PTR(-EFAULT);
- 	page = pfn_to_page(pfn);
- 	if (!try_grab_page(page, flags))
- 		page = ERR_PTR(-ENOMEM);
+>=20
+> diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+> index 30255fcaf181..eacc2bffe1d1 100644
+> --- a/drivers/block/virtio_blk.c
+> +++ b/drivers/block/virtio_blk.c
+> @@ -178,6 +178,39 @@ static int virtblk_setup_discard_write_zeroes(struct=
+ request *req, bool unmap)
+>  	return 0;
+>  }
+> =20
+> +static int virtblk_setup_provision(struct request *req)
+> +{
+> +	unsigned short segments =3D blk_rq_nr_discard_segments(req);
+> +	unsigned short n =3D 0;
+> +
+> +	struct virtio_blk_discard_write_zeroes *range;
+> +	struct bio *bio;
+> +	u32 flags =3D 0;
+> +
+> +	range =3D kmalloc_array(segments, sizeof(*range), GFP_ATOMIC);
+> +	if (!range)
+> +		return -ENOMEM;
+> +
+> +	__rq_for_each_bio(bio, req) {
+> +		u64 sector =3D bio->bi_iter.bi_sector;
+> +		u32 num_sectors =3D bio->bi_iter.bi_size >> SECTOR_SHIFT;
+> +
+> +		range[n].flags =3D cpu_to_le32(flags);
+> +		range[n].num_sectors =3D cpu_to_le32(num_sectors);
+> +		range[n].sector =3D cpu_to_le64(sector);
+> +		n++;
+> +	}
+> +
+> +	WARN_ON_ONCE(n !=3D segments);
+> +
+> +	req->special_vec.bv_page =3D virt_to_page(range);
+> +	req->special_vec.bv_offset =3D offset_in_page(range);
+> +	req->special_vec.bv_len =3D sizeof(*range) * segments;
+> +	req->rq_flags |=3D RQF_SPECIAL_PAYLOAD;
+> +
+> +	return 0;
+> +}
+> +
+>  static void virtblk_unmap_data(struct request *req, struct virtblk_req *=
+vbr)
+>  {
+>  	if (blk_rq_nr_phys_segments(req))
+> @@ -243,6 +276,9 @@ static blk_status_t virtblk_setup_cmd(struct virtio_d=
+evice *vdev,
+>  	case REQ_OP_DRV_IN:
+>  		type =3D VIRTIO_BLK_T_GET_ID;
+>  		break;
+> +	case REQ_OP_PROVISION:
+> +		type =3D VIRTIO_BLK_T_PROVISION;
+> +		break;
+>  	default:
+>  		WARN_ON_ONCE(1);
+>  		return BLK_STS_IOERR;
+> @@ -256,6 +292,11 @@ static blk_status_t virtblk_setup_cmd(struct virtio_=
+device *vdev,
+>  			return BLK_STS_RESOURCE;
+>  	}
+> =20
+> +	if (type =3D=3D VIRTIO_BLK_T_PROVISION) {
+> +		if (virtblk_setup_provision(req))
+> +			return BLK_STS_RESOURCE;
+> +	}
+> +
+>  	return 0;
+>  }
+> =20
+> @@ -1075,6 +1116,12 @@ static int virtblk_probe(struct virtio_device *vde=
+v)
+>  		blk_queue_max_write_zeroes_sectors(q, v ? v : UINT_MAX);
+>  	}
+> =20
+> +	if (virtio_has_feature(vdev, VIRTIO_BLK_F_PROVISION)) {
+> +		virtio_cread(vdev, struct virtio_blk_config,
+> +			     max_provision_sectors, &v);
+> +		q->limits.max_provision_sectors =3D v ? v : UINT_MAX;
+> +	}
+> +
+>  	virtblk_update_capacity(vblk, false);
+>  	virtio_device_ready(vdev);
+> =20
+> @@ -1177,6 +1224,7 @@ static unsigned int features[] =3D {
+>  	VIRTIO_BLK_F_RO, VIRTIO_BLK_F_BLK_SIZE,
+>  	VIRTIO_BLK_F_FLUSH, VIRTIO_BLK_F_TOPOLOGY, VIRTIO_BLK_F_CONFIG_WCE,
+>  	VIRTIO_BLK_F_MQ, VIRTIO_BLK_F_DISCARD, VIRTIO_BLK_F_WRITE_ZEROES,
+> +	VIRTIO_BLK_F_PROVISION,
+>  };
+> =20
+>  static struct virtio_driver virtio_blk =3D {
+> diff --git a/include/uapi/linux/virtio_blk.h b/include/uapi/linux/virtio_=
+blk.h
+> index d888f013d9ff..184f8cf6d185 100644
+> --- a/include/uapi/linux/virtio_blk.h
+> +++ b/include/uapi/linux/virtio_blk.h
+> @@ -40,6 +40,7 @@
+>  #define VIRTIO_BLK_F_MQ		12	/* support more than one vq */
+>  #define VIRTIO_BLK_F_DISCARD	13	/* DISCARD is supported */
+>  #define VIRTIO_BLK_F_WRITE_ZEROES	14	/* WRITE ZEROES is supported */
+> +#define VIRTIO_BLK_F_PROVISION	15	/* provision is supported */
+> =20
+>  /* Legacy feature bits */
+>  #ifndef VIRTIO_BLK_NO_LEGACY
+> @@ -120,6 +121,11 @@ struct virtio_blk_config {
+>  	 */
+>  	__u8 write_zeroes_may_unmap;
+> =20
+> +	/*
+> +	 * The maximum number of sectors in a provision request.
+> +	 */
+> +	__virtio32 max_provision_sectors;
+> +
+>  	__u8 unused1[3];
+>  } __attribute__((packed));
+> =20
+> @@ -155,6 +161,9 @@ struct virtio_blk_config {
+>  /* Write zeroes command */
+>  #define VIRTIO_BLK_T_WRITE_ZEROES	13
+> =20
+> +/* Provision command */
+> +#define VIRTIO_BLK_T_PROVISION	14
+> +
+>  #ifndef VIRTIO_BLK_NO_LEGACY
+>  /* Barrier before this op. */
+>  #define VIRTIO_BLK_T_BARRIER	0x80000000
+> --=20
+> 2.31.0
+>=20
+
+--WxlpI8UNA4dyQSlO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmMkDhUACgkQnKSrs4Gr
+c8gBhQgAj+eIGn+EzZHnyfSo8pzDA7drzmOv94LW83kiyVOI6JYdh+aEYYM6sHMf
+gTVFR82rkR3Jpj8bMomZZJIkz09CWWsK9XZkdcWQmzpxhYzm84OeHzXPsntLROaV
+8G0rf2XUIw/g4LfPPklrIu0MVRVv5vQLEM5u081LPctLvVBcyfB4t71eAuHU8+Ie
+sIK/jDO6DNq2mTF9WGQGI8woLPJfAYEdX+la5V0rbYnVlhgGOqDcYItfU4O7anIf
+vLoxcSpIcERwLOpTkgI4OWFHUx1GAVNLKHSqlOQ2DA9E3nt6+N0GSdl8qkduMTbz
+CuMD4dvXFaIBzJR3jQvZbvWblmORmg==
+=oVLJ
+-----END PGP SIGNATURE-----
+
+--WxlpI8UNA4dyQSlO--
 
