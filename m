@@ -2,21 +2,21 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA44E5BAED8
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Sep 2022 16:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F17805BAEDC
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Sep 2022 16:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbiIPOEt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 16 Sep 2022 10:04:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40042 "EHLO
+        id S231858AbiIPOEz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 16 Sep 2022 10:04:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231868AbiIPOEq (ORCPT
+        with ESMTP id S231880AbiIPOEq (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Sep 2022 10:04:46 -0400
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1EE15818
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC0F15828
         for <linux-ext4@vger.kernel.org>; Fri, 16 Sep 2022 07:04:44 -0700 (PDT)
-Received: from canpemm500004.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MTbNQ50CbznVGB;
-        Fri, 16 Sep 2022 22:01:58 +0800 (CST)
+Received: from canpemm500004.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MTbNR1FPgznVGM;
+        Fri, 16 Sep 2022 22:01:59 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by canpemm500004.china.huawei.com
  (7.192.104.92) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Fri, 16 Sep
@@ -26,9 +26,9 @@ To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
         <ritesh.list@gmail.com>, <lczerner@redhat.com>,
         <linux-ext4@vger.kernel.org>
 CC:     Jason Yan <yanaijie@huawei.com>
-Subject: [PATCH v3 04/16] ext4: factor out ext4_handle_clustersize()
-Date:   Fri, 16 Sep 2022 22:15:15 +0800
-Message-ID: <20220916141527.1012715-5-yanaijie@huawei.com>
+Subject: [PATCH v3 05/16] ext4: factor out ext4_fast_commit_init()
+Date:   Fri, 16 Sep 2022 22:15:16 +0800
+Message-ID: <20220916141527.1012715-6-yanaijie@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220916141527.1012715-1-yanaijie@huawei.com>
 References: <20220916141527.1012715-1-yanaijie@huawei.com>
@@ -47,150 +47,76 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Factor out ext4_handle_clustersize(). No functional change.
+Factor out ext4_fast_commit_init(). No functional change.
 
 Signed-off-by: Jason Yan <yanaijie@huawei.com>
 Reviewed-by: Jan Kara <jack@suse.cz>
 Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 ---
- fs/ext4/super.c | 110 +++++++++++++++++++++++++++---------------------
- 1 file changed, 61 insertions(+), 49 deletions(-)
+ fs/ext4/super.c | 43 +++++++++++++++++++++++++------------------
+ 1 file changed, 25 insertions(+), 18 deletions(-)
 
 diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 7cc499a221ff..09b3c51d472b 100644
+index 09b3c51d472b..3d58c2d889d5 100644
 --- a/fs/ext4/super.c
 +++ b/fs/ext4/super.c
-@@ -4366,6 +4366,64 @@ static void ext4_set_def_opts(struct super_block *sb,
- 		set_opt(sb, DELALLOC);
+@@ -4424,6 +4424,30 @@ static int ext4_handle_clustersize(struct super_block *sb, int blocksize)
+ 	return 0;
  }
  
-+static int ext4_handle_clustersize(struct super_block *sb, int blocksize)
++static void ext4_fast_commit_init(struct super_block *sb)
 +{
 +	struct ext4_sb_info *sbi = EXT4_SB(sb);
-+	struct ext4_super_block *es = sbi->s_es;
-+	int clustersize;
 +
-+	/* Handle clustersize */
-+	clustersize = BLOCK_SIZE << le32_to_cpu(es->s_log_cluster_size);
-+	if (ext4_has_feature_bigalloc(sb)) {
-+		if (clustersize < blocksize) {
-+			ext4_msg(sb, KERN_ERR,
-+				 "cluster size (%d) smaller than "
-+				 "block size (%d)", clustersize, blocksize);
-+			return -EINVAL;
-+		}
-+		sbi->s_cluster_bits = le32_to_cpu(es->s_log_cluster_size) -
-+			le32_to_cpu(es->s_log_block_size);
-+		sbi->s_clusters_per_group =
-+			le32_to_cpu(es->s_clusters_per_group);
-+		if (sbi->s_clusters_per_group > blocksize * 8) {
-+			ext4_msg(sb, KERN_ERR,
-+				 "#clusters per group too big: %lu",
-+				 sbi->s_clusters_per_group);
-+			return -EINVAL;
-+		}
-+		if (sbi->s_blocks_per_group !=
-+		    (sbi->s_clusters_per_group * (clustersize / blocksize))) {
-+			ext4_msg(sb, KERN_ERR, "blocks per group (%lu) and "
-+				 "clusters per group (%lu) inconsistent",
-+				 sbi->s_blocks_per_group,
-+				 sbi->s_clusters_per_group);
-+			return -EINVAL;
-+		}
-+	} else {
-+		if (clustersize != blocksize) {
-+			ext4_msg(sb, KERN_ERR,
-+				 "fragment/cluster size (%d) != "
-+				 "block size (%d)", clustersize, blocksize);
-+			return -EINVAL;
-+		}
-+		if (sbi->s_blocks_per_group > blocksize * 8) {
-+			ext4_msg(sb, KERN_ERR,
-+				 "#blocks per group too big: %lu",
-+				 sbi->s_blocks_per_group);
-+			return -EINVAL;
-+		}
-+		sbi->s_clusters_per_group = sbi->s_blocks_per_group;
-+		sbi->s_cluster_bits = 0;
-+	}
-+	sbi->s_cluster_ratio = clustersize / blocksize;
-+
-+	/* Do we have standard group size of clustersize * 8 blocks ? */
-+	if (sbi->s_blocks_per_group == clustersize << 3)
-+		set_opt2(sb, STD_GROUP_SIZE);
-+
-+	return 0;
++	/* Initialize fast commit stuff */
++	atomic_set(&sbi->s_fc_subtid, 0);
++	INIT_LIST_HEAD(&sbi->s_fc_q[FC_Q_MAIN]);
++	INIT_LIST_HEAD(&sbi->s_fc_q[FC_Q_STAGING]);
++	INIT_LIST_HEAD(&sbi->s_fc_dentry_q[FC_Q_MAIN]);
++	INIT_LIST_HEAD(&sbi->s_fc_dentry_q[FC_Q_STAGING]);
++	sbi->s_fc_bytes = 0;
++	ext4_clear_mount_flag(sb, EXT4_MF_FC_INELIGIBLE);
++	sbi->s_fc_ineligible_tid = 0;
++	spin_lock_init(&sbi->s_fc_lock);
++	memset(&sbi->s_fc_stats, 0, sizeof(sbi->s_fc_stats));
++	sbi->s_fc_replay_state.fc_regions = NULL;
++	sbi->s_fc_replay_state.fc_regions_size = 0;
++	sbi->s_fc_replay_state.fc_regions_used = 0;
++	sbi->s_fc_replay_state.fc_regions_valid = 0;
++	sbi->s_fc_replay_state.fc_modified_inodes = NULL;
++	sbi->s_fc_replay_state.fc_modified_inodes_size = 0;
++	sbi->s_fc_replay_state.fc_modified_inodes_used = 0;
 +}
 +
  static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
  {
  	struct buffer_head *bh, **group_desc;
-@@ -4377,7 +4435,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 	unsigned long offset = 0;
- 	struct inode *root;
- 	int ret = -ENOMEM;
--	int blocksize, clustersize;
-+	int blocksize;
- 	unsigned int db_count;
- 	unsigned int i;
- 	int needs_recovery, has_huge_files;
-@@ -4847,54 +4905,8 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 		}
- 	}
+@@ -5059,24 +5083,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+ 	INIT_LIST_HEAD(&sbi->s_orphan); /* unlinked but open files */
+ 	mutex_init(&sbi->s_orphan_lock);
  
--	/* Handle clustersize */
--	clustersize = BLOCK_SIZE << le32_to_cpu(es->s_log_cluster_size);
--	if (ext4_has_feature_bigalloc(sb)) {
--		if (clustersize < blocksize) {
--			ext4_msg(sb, KERN_ERR,
--				 "cluster size (%d) smaller than "
--				 "block size (%d)", clustersize, blocksize);
--			goto failed_mount;
--		}
--		sbi->s_cluster_bits = le32_to_cpu(es->s_log_cluster_size) -
--			le32_to_cpu(es->s_log_block_size);
--		sbi->s_clusters_per_group =
--			le32_to_cpu(es->s_clusters_per_group);
--		if (sbi->s_clusters_per_group > blocksize * 8) {
--			ext4_msg(sb, KERN_ERR,
--				 "#clusters per group too big: %lu",
--				 sbi->s_clusters_per_group);
--			goto failed_mount;
--		}
--		if (sbi->s_blocks_per_group !=
--		    (sbi->s_clusters_per_group * (clustersize / blocksize))) {
--			ext4_msg(sb, KERN_ERR, "blocks per group (%lu) and "
--				 "clusters per group (%lu) inconsistent",
--				 sbi->s_blocks_per_group,
--				 sbi->s_clusters_per_group);
--			goto failed_mount;
--		}
--	} else {
--		if (clustersize != blocksize) {
--			ext4_msg(sb, KERN_ERR,
--				 "fragment/cluster size (%d) != "
--				 "block size (%d)", clustersize, blocksize);
--			goto failed_mount;
--		}
--		if (sbi->s_blocks_per_group > blocksize * 8) {
--			ext4_msg(sb, KERN_ERR,
--				 "#blocks per group too big: %lu",
--				 sbi->s_blocks_per_group);
--			goto failed_mount;
--		}
--		sbi->s_clusters_per_group = sbi->s_blocks_per_group;
--		sbi->s_cluster_bits = 0;
--	}
--	sbi->s_cluster_ratio = clustersize / blocksize;
--
--	/* Do we have standard group size of clustersize * 8 blocks ? */
--	if (sbi->s_blocks_per_group == clustersize << 3)
--		set_opt2(sb, STD_GROUP_SIZE);
-+	if (ext4_handle_clustersize(sb, blocksize))
-+		goto failed_mount;
+-	/* Initialize fast commit stuff */
+-	atomic_set(&sbi->s_fc_subtid, 0);
+-	INIT_LIST_HEAD(&sbi->s_fc_q[FC_Q_MAIN]);
+-	INIT_LIST_HEAD(&sbi->s_fc_q[FC_Q_STAGING]);
+-	INIT_LIST_HEAD(&sbi->s_fc_dentry_q[FC_Q_MAIN]);
+-	INIT_LIST_HEAD(&sbi->s_fc_dentry_q[FC_Q_STAGING]);
+-	sbi->s_fc_bytes = 0;
+-	ext4_clear_mount_flag(sb, EXT4_MF_FC_INELIGIBLE);
+-	sbi->s_fc_ineligible_tid = 0;
+-	spin_lock_init(&sbi->s_fc_lock);
+-	memset(&sbi->s_fc_stats, 0, sizeof(sbi->s_fc_stats));
+-	sbi->s_fc_replay_state.fc_regions = NULL;
+-	sbi->s_fc_replay_state.fc_regions_size = 0;
+-	sbi->s_fc_replay_state.fc_regions_used = 0;
+-	sbi->s_fc_replay_state.fc_regions_valid = 0;
+-	sbi->s_fc_replay_state.fc_modified_inodes = NULL;
+-	sbi->s_fc_replay_state.fc_modified_inodes_size = 0;
+-	sbi->s_fc_replay_state.fc_modified_inodes_used = 0;
++	ext4_fast_commit_init(sb);
  
- 	/*
- 	 * Test whether we have more sectors than will fit in sector_t,
+ 	sb->s_root = NULL;
+ 
 -- 
 2.31.1
 
