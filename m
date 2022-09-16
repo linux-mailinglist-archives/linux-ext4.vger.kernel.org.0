@@ -2,51 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DDB95BB324
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Sep 2022 22:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F8B5BB3BE
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Sep 2022 23:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229682AbiIPUBX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 16 Sep 2022 16:01:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56714 "EHLO
+        id S230082AbiIPVCt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 16 Sep 2022 17:02:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230171AbiIPUBO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Sep 2022 16:01:14 -0400
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338CE85AA3;
-        Fri, 16 Sep 2022 13:01:13 -0700 (PDT)
-Received: by mail-pf1-f171.google.com with SMTP id d82so22214916pfd.10;
-        Fri, 16 Sep 2022 13:01:13 -0700 (PDT)
+        with ESMTP id S229588AbiIPVCr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Sep 2022 17:02:47 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE26BADBB
+        for <linux-ext4@vger.kernel.org>; Fri, 16 Sep 2022 14:02:45 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id 13so23141276ejn.3
+        for <linux-ext4@vger.kernel.org>; Fri, 16 Sep 2022 14:02:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=ILArVDBbPD4DYvc4WcNH9L/Vbo3duNMUewcYiSCb3to=;
+        b=V9ioKCULq/q77olFQ4fr8uIX+yPFR1d+2Z9v1Tjsa85cfvem3mvythub2kg+RORThJ
+         NkkY5D3+5R6as1cJb4Tih3rvX2kOA3PBCBmEokcFGS7i4K51gnCTCtL6t8Kpepcfe7pa
+         H9I05CsSCNWqQ+aJ6FxtoKvgIgOgs3ImtQMfE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=aI55elBM47AbpRIfEoRwcS12RWAxkruf3PuVmLaNsIw=;
-        b=F93+3ZCuhoW4ubfMQpiKJx3jYO2YUlD99AS4TKVJFHr2cITbQE1c4KZZRs/b07IsrF
-         71vE+0oKcC+g33vygMudbCM9cwLfEffrCHL8/A/+L/clX/M+Y9qZPw4M/qjDFlIgXdu4
-         QiO4Re/9Ms2VZfqmDL+rR2Vc0KfXNS97qFssyM8LltJkjy0UzXrAgw7IfaoaWtutTmPU
-         i42jQJyTI0fiwaWDcW6yNDeBQ7uzf4Q7b4FmBsIt3OmzSMNf0HxsoeQSuyI6hq4igsq5
-         qPNbUBmnVVZqo5KKMlr1eusMZHJQQlmIRO2tUv5DYbp0P95iFjeEvAADhNcuahj3X1zI
-         PSFg==
-X-Gm-Message-State: ACrzQf38Z+mWYa2pf9O4zTOOmr4B3B0I5QexSTkZ0OfBjQqItPY8DDxb
-        tshmutsszHKV1RTldP+BpHQ=
-X-Google-Smtp-Source: AMsMyM7BtRpoBGm+25ZIcjQ1eDg7usENuczHgm9wgE8Sus1sUlVcptKPjg/7yVuSQ/Mc/WEtnHJpcQ==
-X-Received: by 2002:a63:e452:0:b0:42c:60ce:8b78 with SMTP id i18-20020a63e452000000b0042c60ce8b78mr5917990pgk.453.1663358472565;
-        Fri, 16 Sep 2022 13:01:12 -0700 (PDT)
-Received: from ?IPV6:2620:15c:211:201:e470:c0f8:8896:5368? ([2620:15c:211:201:e470:c0f8:8896:5368])
-        by smtp.gmail.com with ESMTPSA id n10-20020a170902d2ca00b00174c235e1fdsm15550309plc.199.2022.09.16.13.01.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Sep 2022 13:01:11 -0700 (PDT)
-Message-ID: <0be0e378-1601-678c-247a-ba24d111b934@acm.org>
-Date:   Fri, 16 Sep 2022 13:01:08 -0700
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=ILArVDBbPD4DYvc4WcNH9L/Vbo3duNMUewcYiSCb3to=;
+        b=69c1Rc22wqhAoFs7PypIVpWCSQ8M6dg7t3geE+S27YQb9iMxp/vwRPC+WUYrtMNhMx
+         oQeVI7XCe/viGDpRB864ixypnBb3AaTMZAE2XgASCLh3A8iBTQiW2FLHxs9NWAngLk8U
+         yitDByF5lS6H3y3xYhYiq3nvvBk2Ki/abVFuxkkmfBltN/yLExtmCEZTNb9CsqFdHiOc
+         Kk9ygXB+4OiyN7SNy6T3F/nc0j+LMwzZhWz8bSzApQEIqWatRHLTcZHsYhVTnz6wnqov
+         iG+8qg+85r+DXokny8zgd/B0bxTo860tZbPGO0AwSK5wG4PLzGDRfcRBA1tP46mR5pe8
+         Qilw==
+X-Gm-Message-State: ACrzQf3t7uFVV5pYymGWv77syWytUDel0wHbLTGGs09PJNnW+fV5PEf7
+        MvkrDidE9wWAPnaYh6ykl2KV91kYmaOlWyvfsr/vwA==
+X-Google-Smtp-Source: AMsMyM7yjz817X2cNCMMoIWuND6ZNvSpqS/C+VnwUrinVTEaoueq6vAfAEatlaA/XE4XwC75LT10Q4V9txuf53dmXIE=
+X-Received: by 2002:a17:907:7289:b0:780:2017:3898 with SMTP id
+ dt9-20020a170907728900b0078020173898mr4850266ejc.276.1663362163871; Fri, 16
+ Sep 2022 14:02:43 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.12.0
-Subject: Re: [PATCH RFC 0/8] Introduce provisioning primitives for thinly
- provisioned storage
-Content-Language: en-US
-To:     Sarthak Kukreti <sarthakkukreti@chromium.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>
+References: <20220915164826.1396245-1-sarthakkukreti@google.com>
+ <20220915164826.1396245-5-sarthakkukreti@google.com> <YyRkd8YAH1lal8/N@bfoster>
+In-Reply-To: <YyRkd8YAH1lal8/N@bfoster>
+From:   Sarthak Kukreti <sarthakkukreti@chromium.org>
+Date:   Fri, 16 Sep 2022 14:02:31 -0700
+Message-ID: <CAG9=OMNL1Z3DiO-usdH0k90NDsDkDQ7A7CHc4Nu6MCXKNKjWdw@mail.gmail.com>
+Subject: Re: [PATCH RFC 4/8] fs: Introduce FALLOC_FL_PROVISION
+To:     Brian Foster <bfoster@redhat.com>
 Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
         virtualization@lists.linux-foundation.org,
@@ -54,50 +57,143 @@ Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
         "Michael S . Tsirkin" <mst@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
         Paolo Bonzini <pbonzini@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
         Alasdair Kergon <agk@redhat.com>,
         Mike Snitzer <snitzer@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
+        "Theodore Ts'o" <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Bart Van Assche <bvanassche@google.com>,
         Daniil Lunev <dlunev@google.com>,
         Evan Green <evgreen@google.com>,
         Gwendal Grignou <gwendal@google.com>
-References: <20220915164826.1396245-1-sarthakkukreti@google.com>
- <YyQTM5PRT2o/GDwy@fedora>
- <CAG9=OMPHZqdDhX=M+ovdg5fa3x4-Q_1r5SWPa8pMTQw0mr5fPg@mail.gmail.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <CAG9=OMPHZqdDhX=M+ovdg5fa3x4-Q_1r5SWPa8pMTQw0mr5fPg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 9/16/22 11:48, Sarthak Kukreti wrote:
-> Yes. On ChromiumOS, we regularly deal with storage devices that don't
-> support WRITE_ZEROES or that need to have it disabled, via a quirk,
-> due to a bug in the vendor's implementation. Using WRITE_ZEROES for
-> allocation makes the allocation path quite slow for such devices (not
-> to mention the effect on storage lifetime), so having a separate
-> provisioning construct is very appealing. Even for devices that do
-> support an efficient WRITE_ZEROES implementation but don't support
-> logical provisioning per-se, I suppose that the allocation path might
-> be a bit faster (the device driver's request queue would report
-> 'max_provision_sectors'=0 and the request would be short circuited
-> there) although I haven't benchmarked the difference.
+On Fri, Sep 16, 2022 at 4:56 AM Brian Foster <bfoster@redhat.com> wrote:
+>
+> On Thu, Sep 15, 2022 at 09:48:22AM -0700, Sarthak Kukreti wrote:
+> > From: Sarthak Kukreti <sarthakkukreti@chromium.org>
+> >
+> > FALLOC_FL_PROVISION is a new fallocate() allocation mode that
+> > sends a hint to (supported) thinly provisioned block devices to
+> > allocate space for the given range of sectors via REQ_OP_PROVISION.
+> >
+> > Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
+> > ---
+> >  block/fops.c                | 7 ++++++-
+> >  include/linux/falloc.h      | 3 ++-
+> >  include/uapi/linux/falloc.h | 8 ++++++++
+> >  3 files changed, 16 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/block/fops.c b/block/fops.c
+> > index b90742595317..a436a7596508 100644
+> > --- a/block/fops.c
+> > +++ b/block/fops.c
+> ...
+> > @@ -661,6 +662,10 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
+> >               error = blkdev_issue_discard(bdev, start >> SECTOR_SHIFT,
+> >                                            len >> SECTOR_SHIFT, GFP_KERNEL);
+> >               break;
+> > +     case FALLOC_FL_PROVISION:
+> > +             error = blkdev_issue_provision(bdev, start >> SECTOR_SHIFT,
+> > +                                            len >> SECTOR_SHIFT, GFP_KERNEL);
+> > +             break;
+> >       default:
+> >               error = -EOPNOTSUPP;
+> >       }
+>
+> Hi Sarthak,
+>
+> Neat mechanism.. I played with something very similar in the past (that
+> was much more crudely hacked up to target dm-thin) to allow filesystems
+> to request a thinly provisioned device to allocate blocks and try to do
+> a better job of avoiding inactivation when overprovisioned.
+>
+> One thing I'm a little curious about here.. what's the need for a new
+> fallocate mode? On a cursory glance, the provision mode looks fairly
+> analogous to normal (mode == 0) allocation mode with the exception of
+> sending the request down to the bdev. blkdev_fallocate() already maps
+> some of the logical falloc modes (i.e. punch hole, zero range) to
+> sending write sames or discards, etc., and it doesn't currently look
+> like it supports allocation mode, so could it not map such requests to
+> the underlying REQ_OP_PROVISION op?
+>
+> I guess the difference would be at the filesystem level where we'd
+> probably need to rely on a mount option or some such to control whether
+> traditional fallocate issues provision ops (like you've implemented for
+> ext4) vs. the specific falloc command, but that seems fairly consistent
+> with historical punch hole/discard behavior too. Hm? You might want to
+> cc linux-fsdevel in future posts in any event to get some more feedback
+> on how other filesystems might want to interact with such a thing.
+>
+Thanks for the feedback!
+Argh, I completely forgot that I should add linux-fsdevel. Let me
+re-send this with linux-fsdevel cc'd
 
-Some background information about why ChromiumOS uses thin provisioning 
-instead of a single filesystem across the entire storage device would be 
-welcome. Although UFS devices support thin provisioning I am not aware 
-of any use cases in Android that would benefit from UFS thin 
-provisioning support.
+There's a slight distinction is that the current filesystem-level
+controls are usually for default handling, but userspace can still
+call the relevant functions manually if they need to. For example, for
+ext4, the 'discard' mount option dictates whether free blocks are
+discarded, but it doesn't set the policy to allow/disallow userspace
+from manually punching holes into files even if the mount opt is
+'nodiscard'. FALLOC_FL_PROVISION is similar in that regard; it adds a
+manual mechanism for users to provision the files' extents, that is
+separate from the filesystems' default handling of provisioning files.
 
-Thanks,
+> BTW another thing that might be useful wrt to dm-thin is to support
+> FALLOC_FL_UNSHARE. I.e., it looks like the previous dm-thin patch only
+> checks that blocks are allocated, but not whether those blocks are
+> shared (re: lookup_result.shared). It might be useful to do the COW in
+> such cases if the caller passes down a REQ_UNSHARE or some such flag.
+>
+That's an interesting idea! There's a few more things on the TODO list
+for this patch series but I think we can follow up with a patch to
+handle that as well.
 
-Bart.
+Sarthak
+
+> Brian
+>
+> > diff --git a/include/linux/falloc.h b/include/linux/falloc.h
+> > index f3f0b97b1675..a0e506255b20 100644
+> > --- a/include/linux/falloc.h
+> > +++ b/include/linux/falloc.h
+> > @@ -30,7 +30,8 @@ struct space_resv {
+> >                                        FALLOC_FL_COLLAPSE_RANGE |     \
+> >                                        FALLOC_FL_ZERO_RANGE |         \
+> >                                        FALLOC_FL_INSERT_RANGE |       \
+> > -                                      FALLOC_FL_UNSHARE_RANGE)
+> > +                                      FALLOC_FL_UNSHARE_RANGE |                          \
+> > +                                      FALLOC_FL_PROVISION)
+> >
+> >  /* on ia32 l_start is on a 32-bit boundary */
+> >  #if defined(CONFIG_X86_64)
+> > diff --git a/include/uapi/linux/falloc.h b/include/uapi/linux/falloc.h
+> > index 51398fa57f6c..2d323d113eed 100644
+> > --- a/include/uapi/linux/falloc.h
+> > +++ b/include/uapi/linux/falloc.h
+> > @@ -77,4 +77,12 @@
+> >   */
+> >  #define FALLOC_FL_UNSHARE_RANGE              0x40
+> >
+> > +/*
+> > + * FALLOC_FL_PROVISION acts as a hint for thinly provisioned devices to allocate
+> > + * blocks for the range/EOF.
+> > + *
+> > + * FALLOC_FL_PROVISION can only be used with allocate-mode fallocate.
+> > + */
+> > +#define FALLOC_FL_PROVISION          0x80
+> > +
+> >  #endif /* _UAPI_FALLOC_H_ */
+> > --
+> > 2.31.0
+> >
+>
