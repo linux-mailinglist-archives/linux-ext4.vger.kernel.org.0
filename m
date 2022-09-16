@@ -2,150 +2,188 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A0F85BAC84
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Sep 2022 13:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF195BACD1
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Sep 2022 13:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231221AbiIPLg0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 16 Sep 2022 07:36:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43410 "EHLO
+        id S231196AbiIPL4s (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 16 Sep 2022 07:56:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbiIPLgZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Sep 2022 07:36:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F203ECF2;
-        Fri, 16 Sep 2022 04:36:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0173362B08;
-        Fri, 16 Sep 2022 11:36:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C602C433D6;
-        Fri, 16 Sep 2022 11:36:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1663328183;
-        bh=ja/9EJVsKPTgFZeYyJH2ug/aulAQTiLYqdvlooelnH8=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=oihM0Kd14upZF19siU0+t7a01Rxpt2MJyV0MERiYdu4qdQzVqisOIUAdF4bX0ugfp
-         F5VFxtpSqMnIlSOvG4jr+6UeIfn98qcwj+pttgxeTwgAHaNG3tcQoqxrRsm4ehXz43
-         sWqkT3Qh+jhg+aNB+eW5ONz3qA8zT6AdHKKJnrZaZm9mX/e56rC/Bi3Xvu76rmK+p6
-         grIpwi75+faH6ARSabDtLgPg+j175jvDdSPdmY3Bj++pZaaKDDxx2yr6zYmEarA6CU
-         1sSUtmQ8X0PaVwDeQum5iKC+E5KtimDtRWva9eHGQvtkAuF2FOFFCyP44AILVG4Wk2
-         n//jhCUxUe6wQ==
-Message-ID: <7027d1c2923053fe763e9218d10ce8634b56e81d.camel@kernel.org>
-Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
- STATX_INO_VERSION field
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Theodore Ts'o <tytso@mit.edu>, NeilBrown <neilb@suse.de>
-Cc:     Trond Myklebust <trondmy@hammerspace.com>,
-        "bfields@fieldses.org" <bfields@fieldses.org>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "xiubli@redhat.com" <xiubli@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "lczerner@redhat.com" <lczerner@redhat.com>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Date:   Fri, 16 Sep 2022 07:36:19 -0400
-In-Reply-To: <YyQdmLpiAMvl5EkU@mit.edu>
-References: <20220912134208.GB9304@fieldses.org>
-         <166302447257.30452.6751169887085269140@noble.neil.brown.name>
-         <20220915140644.GA15754@fieldses.org>
-         <577b6d8a7243aeee37eaa4bbb00c90799586bc48.camel@hammerspace.com>
-         <1a968b8e87f054e360877c9ab8cdfc4cfdfc8740.camel@kernel.org>
-         <0646410b6d2a5d19d3315f339b2928dfa9f2d922.camel@hammerspace.com>
-         <34e91540c92ad6980256f6b44115cf993695d5e1.camel@kernel.org>
-         <871f9c5153ddfe760854ca31ee36b84655959b83.camel@hammerspace.com>
-         <e8922bc821a40f5a3f0a1301583288ed19b6891b.camel@kernel.org>
-         <166328063547.15759.12797959071252871549@noble.neil.brown.name>
-         <YyQdmLpiAMvl5EkU@mit.edu>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
+        with ESMTP id S230488AbiIPL4r (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Sep 2022 07:56:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A61AF483
+        for <linux-ext4@vger.kernel.org>; Fri, 16 Sep 2022 04:56:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1663329404;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=chTOa9nfsN85Mo0aKyNtpBSHWBBmRSbzW50vElTD5ws=;
+        b=UKun8Ewy1oTFH7z+6pR3ovwkjbeMs+vsG3TZfRUu6q6jVKRI8mpY+lgKtZWaoTLYTgYzEZ
+        6/1OdYRI+dSCDLCY+9pioPBvtyeO0vEOodJbFZudgGd8qhcJ2HK+MffhzHWP0Y/EmRTYFb
+        EeXDqrzfYjvaDbkR7xtyYP16LqEnKN4=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-524-5u09khYCMP2OxKJ63xuN3w-1; Fri, 16 Sep 2022 07:56:43 -0400
+X-MC-Unique: 5u09khYCMP2OxKJ63xuN3w-1
+Received: by mail-qt1-f198.google.com with SMTP id d20-20020a05622a05d400b00344997f0537so17015696qtb.0
+        for <linux-ext4@vger.kernel.org>; Fri, 16 Sep 2022 04:56:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=chTOa9nfsN85Mo0aKyNtpBSHWBBmRSbzW50vElTD5ws=;
+        b=qXB9AIMfHoaKdSSyPGoj/qCw6Mg3SZREXdfFaZkTIXWZ2mptLOH7JTlBdutEipCQFz
+         gvzJcvbAYpjpO3zvtbbE+S7Aupki5C63gspqYtbVy36NNRkEcsAEEu2DrpANMo+N7l1J
+         HwbV0QZLBqmwa+64polh/xNh9s9lWF+mNeMslJJg2QWl4M77ZAsLzsY1a9mU5VdxkqQT
+         9kxArj77BCF/Afipx+CWqBp8eiAFMI88Jgv+nMnkR8kboDmsapeDLWcTLEa2BOcYH9ZT
+         Gk2On4MzwqJ6r0NVr5/WumaFyldrKeIXffI3/EKDtNk6NHxAiQIxSQq8JbBeHri8Vzti
+         /WEg==
+X-Gm-Message-State: ACrzQf2slVDsAVypcMD1aWfPgq4FBdtfPVuWTbZp7RfcS7FXovF0gA0A
+        AL4kq9PCOVk3SSJm1z1BKV4NZuud9B5iZCCvfu9M1xcsyEqiiMgIeKj9fi1KakrIqQx4XezCUTr
+        hHSMAf0SogvARypQfucanqA==
+X-Received: by 2002:a05:622a:1a96:b0:35b:b868:fb1 with SMTP id s22-20020a05622a1a9600b0035bb8680fb1mr3907090qtc.116.1663329403274;
+        Fri, 16 Sep 2022 04:56:43 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM61rQguxip3VopENuW5BChfGUPbrsDyfGFwkeqvgW8D2mtv8HxW9f+7RmfWCZydcsFZ19h22g==
+X-Received: by 2002:a05:622a:1a96:b0:35b:b868:fb1 with SMTP id s22-20020a05622a1a9600b0035bb8680fb1mr3907066qtc.116.1663329403013;
+        Fri, 16 Sep 2022 04:56:43 -0700 (PDT)
+Received: from bfoster (c-24-61-119-116.hsd1.ma.comcast.net. [24.61.119.116])
+        by smtp.gmail.com with ESMTPSA id f16-20020a05620a20d000b006b95b0a714esm5498036qka.17.2022.09.16.04.56.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Sep 2022 04:56:42 -0700 (PDT)
+Date:   Fri, 16 Sep 2022 07:56:39 -0400
+From:   Brian Foster <bfoster@redhat.com>
+To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
+Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Jens Axboe <axboe@kernel.dk>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Bart Van Assche <bvanassche@google.com>,
+        Daniil Lunev <dlunev@google.com>,
+        Evan Green <evgreen@google.com>,
+        Gwendal Grignou <gwendal@google.com>
+Subject: Re: [PATCH RFC 4/8] fs: Introduce FALLOC_FL_PROVISION
+Message-ID: <YyRkd8YAH1lal8/N@bfoster>
+References: <20220915164826.1396245-1-sarthakkukreti@google.com>
+ <20220915164826.1396245-5-sarthakkukreti@google.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220915164826.1396245-5-sarthakkukreti@google.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, 2022-09-16 at 02:54 -0400, Theodore Ts'o wrote:
-> On Fri, Sep 16, 2022 at 08:23:55AM +1000, NeilBrown wrote:
-> > > > If the answer is that 'all values change', then why store the crash
-> > > > counter in the inode at all? Why not just add it as an offset when
-> > > > you're generating the user-visible change attribute?
-> > > >=20
-> > > > i.e. statx.change_attr =3D inode->i_version + (crash counter * offs=
-et)
->=20
-> I had suggested just hashing the crash counter with the file system's
-> on-disk i_version number, which is essentially what you are suggested.
->=20
-> > > Yes, if we plan to ensure that all the change attrs change after a
-> > > crash, we can do that.
-> > >=20
-> > > So what would make sense for an offset? Maybe 2**12? One would hope t=
-hat
-> > > there wouldn't be more than 4k increments before one of them made it =
-to
-> > > disk. OTOH, maybe that can happen with teeny-tiny writes.
-> >=20
-> > Leave it up the to filesystem to decide.  The VFS and/or NFSD should
-> > have not have part in calculating the i_version.  It should be entirely
-> > in the filesystem - though support code could be provided if common
-> > patterns exist across filesystems.
->=20
-> Oh, *heck* no.  This parameter is for the NFS implementation to
-> decide, because it's NFS's caching algorithms which are at stake here.
->=20
-> As a the file system maintainer, I had offered to make an on-disk
-> "crash counter" which would get updated when the journal had gotten
-> replayed, in addition to the on-disk i_version number.  This will be
-> available for the Linux implementation of NFSD to use, but that's up
-> to *you* to decide how you want to use them.
->=20
-> I was perfectly happy with hashing the crash counter and the i_version
-> because I had assumed that not *that* much stuff was going to be
-> cached, and so invalidating all of the caches in the unusual case
-> where there was a crash was acceptable.  After all it's a !@#?!@
-> cache.  Caches sometimmes get invalidated.  "That is the order of
-> things." (as Ramata'Klan once said in "Rocks and Shoals")
->=20
-> But if people expect that multiple TB's of data is going to be stored;
-> that cache invalidation is unacceptable; and that a itsy-weeny chance
-> of false negative failures which might cause data corruption might be
-> acceptable tradeoff, hey, that's for the system which is providing
-> caching semantics to determine.
->=20
-> PLEASE don't put this tradeoff on the file system authors; I would
-> much prefer to leave this tradeoff in the hands of the system which is
-> trying to do the caching.
->=20
+On Thu, Sep 15, 2022 at 09:48:22AM -0700, Sarthak Kukreti wrote:
+> From: Sarthak Kukreti <sarthakkukreti@chromium.org>
+> 
+> FALLOC_FL_PROVISION is a new fallocate() allocation mode that
+> sends a hint to (supported) thinly provisioned block devices to
+> allocate space for the given range of sectors via REQ_OP_PROVISION.
+> 
+> Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
+> ---
+>  block/fops.c                | 7 ++++++-
+>  include/linux/falloc.h      | 3 ++-
+>  include/uapi/linux/falloc.h | 8 ++++++++
+>  3 files changed, 16 insertions(+), 2 deletions(-)
+> 
+> diff --git a/block/fops.c b/block/fops.c
+> index b90742595317..a436a7596508 100644
+> --- a/block/fops.c
+> +++ b/block/fops.c
+...
+> @@ -661,6 +662,10 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
+>  		error = blkdev_issue_discard(bdev, start >> SECTOR_SHIFT,
+>  					     len >> SECTOR_SHIFT, GFP_KERNEL);
+>  		break;
+> +	case FALLOC_FL_PROVISION:
+> +		error = blkdev_issue_provision(bdev, start >> SECTOR_SHIFT,
+> +					       len >> SECTOR_SHIFT, GFP_KERNEL);
+> +		break;
+>  	default:
+>  		error = -EOPNOTSUPP;
+>  	}
 
-Yeah, if we were designing this from scratch, I might agree with leaving
-more up to the filesystem, but the existing users all have pretty much
-the same needs. I'm going to plan to try to keep most of this in the
-common infrastructure defined in iversion.h.
+Hi Sarthak,
 
-Ted, for the ext4 crash counter, what wordsize were you thinking? I
-doubt we'll be able to use much more than 32 bits so a larger integer is
-probably not worthwhile. There are several holes in struct super_block
-(at least on x86_64), so adding this field to the generic structure
-needn't grow it.
---=20
-Jeff Layton <jlayton@kernel.org>
+Neat mechanism.. I played with something very similar in the past (that
+was much more crudely hacked up to target dm-thin) to allow filesystems
+to request a thinly provisioned device to allocate blocks and try to do
+a better job of avoiding inactivation when overprovisioned.
+
+One thing I'm a little curious about here.. what's the need for a new
+fallocate mode? On a cursory glance, the provision mode looks fairly
+analogous to normal (mode == 0) allocation mode with the exception of
+sending the request down to the bdev. blkdev_fallocate() already maps
+some of the logical falloc modes (i.e. punch hole, zero range) to
+sending write sames or discards, etc., and it doesn't currently look
+like it supports allocation mode, so could it not map such requests to
+the underlying REQ_OP_PROVISION op?
+
+I guess the difference would be at the filesystem level where we'd
+probably need to rely on a mount option or some such to control whether
+traditional fallocate issues provision ops (like you've implemented for
+ext4) vs. the specific falloc command, but that seems fairly consistent
+with historical punch hole/discard behavior too. Hm? You might want to
+cc linux-fsdevel in future posts in any event to get some more feedback
+on how other filesystems might want to interact with such a thing.
+
+BTW another thing that might be useful wrt to dm-thin is to support
+FALLOC_FL_UNSHARE. I.e., it looks like the previous dm-thin patch only
+checks that blocks are allocated, but not whether those blocks are
+shared (re: lookup_result.shared). It might be useful to do the COW in
+such cases if the caller passes down a REQ_UNSHARE or some such flag.
+
+Brian
+
+> diff --git a/include/linux/falloc.h b/include/linux/falloc.h
+> index f3f0b97b1675..a0e506255b20 100644
+> --- a/include/linux/falloc.h
+> +++ b/include/linux/falloc.h
+> @@ -30,7 +30,8 @@ struct space_resv {
+>  					 FALLOC_FL_COLLAPSE_RANGE |	\
+>  					 FALLOC_FL_ZERO_RANGE |		\
+>  					 FALLOC_FL_INSERT_RANGE |	\
+> -					 FALLOC_FL_UNSHARE_RANGE)
+> +					 FALLOC_FL_UNSHARE_RANGE |                          \
+> +					 FALLOC_FL_PROVISION)
+>  
+>  /* on ia32 l_start is on a 32-bit boundary */
+>  #if defined(CONFIG_X86_64)
+> diff --git a/include/uapi/linux/falloc.h b/include/uapi/linux/falloc.h
+> index 51398fa57f6c..2d323d113eed 100644
+> --- a/include/uapi/linux/falloc.h
+> +++ b/include/uapi/linux/falloc.h
+> @@ -77,4 +77,12 @@
+>   */
+>  #define FALLOC_FL_UNSHARE_RANGE		0x40
+>  
+> +/*
+> + * FALLOC_FL_PROVISION acts as a hint for thinly provisioned devices to allocate
+> + * blocks for the range/EOF.
+> + *
+> + * FALLOC_FL_PROVISION can only be used with allocate-mode fallocate.
+> + */
+> +#define FALLOC_FL_PROVISION		0x80
+> +
+>  #endif /* _UAPI_FALLOC_H_ */
+> -- 
+> 2.31.0
+> 
+
