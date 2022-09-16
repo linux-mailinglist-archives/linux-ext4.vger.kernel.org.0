@@ -2,148 +2,133 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF4955BA69A
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Sep 2022 08:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A57185BA70D
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Sep 2022 08:55:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbiIPGKM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 16 Sep 2022 02:10:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45570 "EHLO
+        id S229725AbiIPGy7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 16 Sep 2022 02:54:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbiIPGKL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Sep 2022 02:10:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D5E9F758
-        for <linux-ext4@vger.kernel.org>; Thu, 15 Sep 2022 23:10:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1663308607;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WexFcKZFirN/jM+xTeznAj7e5nDORoI0aBqRUMifb8Y=;
-        b=dB73TdfALZQrmJem+qHY9x+vNt8hVPxFisOARLGncQFyvicFDonLtJVjxIqntp8j16l7RP
-        2t5AtHt74h9f08diPuRlkN1PxQMpanC2aB7ODVGYnkHzcOnw8kpxrpcghOJ9q3Wp3G3d7C
-        z+nL4LUWUnxnQVMI379BW4eMGKpx5VI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-292-jZYnFVjgP6GqmjFBWdto1w-1; Fri, 16 Sep 2022 02:09:58 -0400
-X-MC-Unique: jZYnFVjgP6GqmjFBWdto1w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7BE48882822;
-        Fri, 16 Sep 2022 06:09:57 +0000 (UTC)
-Received: from localhost (unknown [10.39.192.86])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 46FC3C15BA4;
-        Fri, 16 Sep 2022 06:09:56 +0000 (UTC)
-Date:   Fri, 16 Sep 2022 07:09:55 +0100
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
-Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Jens Axboe <axboe@kernel.dk>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Bart Van Assche <bvanassche@google.com>,
-        Daniil Lunev <dlunev@google.com>,
-        Evan Green <evgreen@google.com>,
-        Gwendal Grignou <gwendal@google.com>
-Subject: Re: [PATCH RFC 0/8] Introduce provisioning primitives for thinly
- provisioned storage
-Message-ID: <YyQTM5PRT2o/GDwy@fedora>
-References: <20220915164826.1396245-1-sarthakkukreti@google.com>
+        with ESMTP id S229637AbiIPGy5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Sep 2022 02:54:57 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 341373D594;
+        Thu, 15 Sep 2022 23:54:55 -0700 (PDT)
+Received: from letrec.thunk.org ([185.122.133.20])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 28G6sHId010783
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Sep 2022 02:54:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1663311263; bh=jqjwwvRnowqEU63Vd3ESTJA7Bt/dd4WUfiC93PuK8ls=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=Ai5m0LTYmY21j+kf5nN3AizGJqlL/LrHVN1RgeEb+xCpZq0dS80CsVUaeGrp98Dzh
+         /KpNaDuaR7sdPespuANIxRXxOyJEXCv8YP7HHs2NCGva/CMwd9ztDxuSA4uGkFo05H
+         m+484K+K47AEq0mdO2BBceyISweo4B9/3sD3aRpUSS8DKXRwERiKgcvzzZ3t0zRzeb
+         4yhRPmfhY/O1AoNMNCo8EXkA4kIWgQA918ZNtRWlEzn9yy/oOXt0goj0JAxUXZ9wzi
+         fn5oc7nYYk3Jh7xY+PyIyKNHh2Wy6eSJnvowA19Qdruqe56Le+KFdzwfNySaWQOCb7
+         TopHTQvd4l2ow==
+Received: by letrec.thunk.org (Postfix, from userid 15806)
+        id 8A0D68C2B4B; Fri, 16 Sep 2022 02:54:16 -0400 (EDT)
+Date:   Fri, 16 Sep 2022 02:54:16 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        "bfields@fieldses.org" <bfields@fieldses.org>,
+        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "djwong@kernel.org" <djwong@kernel.org>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "fweimer@redhat.com" <fweimer@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
+        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "jack@suse.cz" <jack@suse.cz>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "xiubli@redhat.com" <xiubli@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
+        "lczerner@redhat.com" <lczerner@redhat.com>,
+        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
+ STATX_INO_VERSION field
+Message-ID: <YyQdmLpiAMvl5EkU@mit.edu>
+References: <20220912134208.GB9304@fieldses.org>
+ <166302447257.30452.6751169887085269140@noble.neil.brown.name>
+ <20220915140644.GA15754@fieldses.org>
+ <577b6d8a7243aeee37eaa4bbb00c90799586bc48.camel@hammerspace.com>
+ <1a968b8e87f054e360877c9ab8cdfc4cfdfc8740.camel@kernel.org>
+ <0646410b6d2a5d19d3315f339b2928dfa9f2d922.camel@hammerspace.com>
+ <34e91540c92ad6980256f6b44115cf993695d5e1.camel@kernel.org>
+ <871f9c5153ddfe760854ca31ee36b84655959b83.camel@hammerspace.com>
+ <e8922bc821a40f5a3f0a1301583288ed19b6891b.camel@kernel.org>
+ <166328063547.15759.12797959071252871549@noble.neil.brown.name>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="w/wnRFkY16cMLsvF"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220915164826.1396245-1-sarthakkukreti@google.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <166328063547.15759.12797959071252871549@noble.neil.brown.name>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Fri, Sep 16, 2022 at 08:23:55AM +1000, NeilBrown wrote:
+> > > If the answer is that 'all values change', then why store the crash
+> > > counter in the inode at all? Why not just add it as an offset when
+> > > you're generating the user-visible change attribute?
+> > > 
+> > > i.e. statx.change_attr = inode->i_version + (crash counter * offset)
 
---w/wnRFkY16cMLsvF
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I had suggested just hashing the crash counter with the file system's
+on-disk i_version number, which is essentially what you are suggested.
 
-On Thu, Sep 15, 2022 at 09:48:18AM -0700, Sarthak Kukreti wrote:
-> From: Sarthak Kukreti <sarthakkukreti@chromium.org>
->=20
-> Hi,
->=20
-> This patch series is an RFC of a mechanism to pass through provision requ=
-ests on stacked thinly provisioned storage devices/filesystems.
->=20
-> The linux kernel provides several mechanisms to set up thinly provisioned=
- block storage abstractions (eg. dm-thin, loop devices over sparse files), =
-either directly as block devices or backing storage for filesystems. Curren=
-tly, short of writing data to either the device or filesystem, there is no =
-way for users to pre-allocate space for use in such storage setups. Conside=
-r the following use-cases:
->=20
-> 1) Suspend-to-disk and resume from a dm-thin device: In order to ensure t=
-hat the underlying thinpool metadata is not modified during the suspend mec=
-hanism, the dm-thin device needs to be fully provisioned.
-> 2) If a filesystem uses a loop device over a sparse file, fallocate() on =
-the filesystem will allocate blocks for files but the underlying sparse fil=
-e will remain intact.
-> 3) Another example is virtual machine using a sparse file/dm-thin as a st=
-orage device; by default, allocations within the VM boundaries will not aff=
-ect the host.
-> 4) Several storage standards support mechanisms for thin provisioning on =
-real hardware devices. For example:
->   a. The NVMe spec 1.0b section 2.1.1 loosely talks about thin provisioni=
-ng: "When the THINP bit in the NSFEAT field of the Identify Namespace data =
-structure is set to =E2=80=981=E2=80=99, the controller ... shall track the=
- number of allocated blocks in the Namespace Utilization field"
->   b. The SCSi Block Commands reference - 4 section references "Thin provi=
-sioned logical units",
->   c. UFS 3.0 spec section 13.3.3 references "Thin provisioning".
+> > Yes, if we plan to ensure that all the change attrs change after a
+> > crash, we can do that.
+> > 
+> > So what would make sense for an offset? Maybe 2**12? One would hope that
+> > there wouldn't be more than 4k increments before one of them made it to
+> > disk. OTOH, maybe that can happen with teeny-tiny writes.
+> 
+> Leave it up the to filesystem to decide.  The VFS and/or NFSD should
+> have not have part in calculating the i_version.  It should be entirely
+> in the filesystem - though support code could be provided if common
+> patterns exist across filesystems.
 
-When REQ_OP_PROVISION is sent on an already-allocated range of blocks,
-are those blocks zeroed? NVMe Write Zeroes with Deallocate=3D0 works this
-way, for example. That behavior is counterintuitive since the operation
-name suggests it just affects the logical block's provisioning state,
-not the contents of the blocks.
+Oh, *heck* no.  This parameter is for the NFS implementation to
+decide, because it's NFS's caching algorithms which are at stake here.
 
-> In all of the above situations, currently the only way for pre-allocating=
- space is to issue writes (or use WRITE_ZEROES/WRITE_SAME). However, that d=
-oes not scale well with larger pre-allocation sizes.=20
+As a the file system maintainer, I had offered to make an on-disk
+"crash counter" which would get updated when the journal had gotten
+replayed, in addition to the on-disk i_version number.  This will be
+available for the Linux implementation of NFSD to use, but that's up
+to *you* to decide how you want to use them.
 
-What exactly is the issue with WRITE_ZEROES scalability? Are you
-referring to cases where the device doesn't support an efficient
-WRITE_ZEROES command and actually writes blocks filled with zeroes
-instead of updating internal allocation metadata cheaply?
+I was perfectly happy with hashing the crash counter and the i_version
+because I had assumed that not *that* much stuff was going to be
+cached, and so invalidating all of the caches in the unusual case
+where there was a crash was acceptable.  After all it's a !@#?!@
+cache.  Caches sometimmes get invalidated.  "That is the order of
+things." (as Ramata'Klan once said in "Rocks and Shoals")
 
-Stefan
+But if people expect that multiple TB's of data is going to be stored;
+that cache invalidation is unacceptable; and that a itsy-weeny chance
+of false negative failures which might cause data corruption might be
+acceptable tradeoff, hey, that's for the system which is providing
+caching semantics to determine.
 
---w/wnRFkY16cMLsvF
-Content-Type: application/pgp-signature; name="signature.asc"
+PLEASE don't put this tradeoff on the file system authors; I would
+much prefer to leave this tradeoff in the hands of the system which is
+trying to do the caching.
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmMkEzMACgkQnKSrs4Gr
-c8hn3wgAjJDAhaMbZwpCmdUdohpKtyMia1I6OsTlcURdfUV2iu1afmfcG5c7Q2pV
-ZPZC+DZhgUOEkpD1Aj5gCjpi8/1EXpmCwDGB36AgVnwzCMV9QLdW7B3xoCvJipNa
-b+KGhLFliE0pBX9ZGYqCZ7a8Tuz2OGtNhpAsd/tUOMYCLzc6WTqTIeB6Wv6rYrw4
-kIF+kP7pEK4INQYAav+pYDzZxqd4yrKINa6PEOZUMxzuLnH4eW8l+xrsTDIMbA+e
-ummgls1ZrhgPhUJNqscmevqfJMLqMsZTxN6+B9zH+G6GrxAc1rqeRTdlMAwwYxYg
-DIMeBAXmfutiQDOVF8Tj6W1p7wrNLw==
-=s/zf
------END PGP SIGNATURE-----
-
---w/wnRFkY16cMLsvF--
-
+						- Ted
