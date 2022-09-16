@@ -2,39 +2,40 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB73E5BA791
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Sep 2022 09:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 194BD5BA835
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Sep 2022 10:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbiIPHnH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 16 Sep 2022 03:43:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49572 "EHLO
+        id S230367AbiIPI1r (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 16 Sep 2022 04:27:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbiIPHnF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Sep 2022 03:43:05 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F657A2239
-        for <linux-ext4@vger.kernel.org>; Fri, 16 Sep 2022 00:43:03 -0700 (PDT)
-Received: from canpemm500008.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MTQwn4nSNzBsJp;
-        Fri, 16 Sep 2022 15:40:57 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by canpemm500008.china.huawei.com
- (7.192.105.151) with Microsoft SMTP Server (version=TLS1_2,
+        with ESMTP id S230274AbiIPI1p (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Sep 2022 04:27:45 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B580A6C61;
+        Fri, 16 Sep 2022 01:27:43 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MTRvZ1lJJznVGg;
+        Fri, 16 Sep 2022 16:24:58 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Fri, 16 Sep
- 2022 15:43:01 +0800
-From:   Li Jinlin <lijinlin3@huawei.com>
-To:     <tytso@mit.edu>, <adilger@whamcloud.com>
-CC:     <linux-ext4@vger.kernel.org>, <linfeilong@huawei.com>,
-        <liuzhiqiang26@huawei.com>
-Subject: [PATCH] tune2fs: exit directly when fs freed in ext2fs_run_ext3_journal
-Date:   Fri, 16 Sep 2022 15:42:23 +0800
-Message-ID: <20220916074223.8885-1-lijinlin3@huawei.com>
-X-Mailer: git-send-email 2.23.0
+ 2022 16:27:41 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
+        Ye Bin <yebin10@huawei.com>
+Subject: [PATCH -next v2 0/2] some refactor of ext4_fc_track_inode
+Date:   Fri, 16 Sep 2022 16:38:34 +0800
+Message-ID: <20220916083836.388347-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500008.china.huawei.com (7.192.105.151)
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500010.china.huawei.com (7.192.105.118)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -44,34 +45,18 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-In ext2fs_run_ext3_journal(), fs will be free and reallocate. But
-reallocating by ext2fs_open() may fail in some cases, such as device
-being offline at the same time. In these cases, goto closefs will
-cause segfault, fix it by exiting directly.
+diff v2 vs v1:
+Add detail changelog for patch:"ext4: adjust fast commit disable judgement
+order in ext4_fc_track_inode".
 
-Signed-off-by: Li Jinlin <lijinlin3@huawei.com>
----
- misc/tune2fs.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Ye Bin (2):
+  ext4: factor out ext4_fc_disabled()
+  ext4: adjust fast commit disable judgement order in
+    ext4_fc_track_inode
 
-diff --git a/misc/tune2fs.c b/misc/tune2fs.c
-index 088f87e5..ee57dc7c 100644
---- a/misc/tune2fs.c
-+++ b/misc/tune2fs.c
-@@ -3344,8 +3344,11 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
- 			com_err("tune2fs", retval,
- 				"while recovering journal.\n");
- 			printf(_("Please run e2fsck -fy %s.\n"), argv[1]);
--			rc = 1;
--			goto closefs;
-+			if (fs) {
-+				rc = 1;
-+				goto closefs;
-+			}
-+			exit(1);
- 		}
- 		sb = fs->super;
- 	}
+ fs/ext4/fast_commit.c | 42 +++++++++++++++++-------------------------
+ 1 file changed, 17 insertions(+), 25 deletions(-)
+
 -- 
-2.23.0
+2.31.1
 
