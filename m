@@ -2,192 +2,160 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E24AA5BD24B
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Sep 2022 18:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00DCB5BD3CB
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Sep 2022 19:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230025AbiISQhE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 19 Sep 2022 12:37:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40368 "EHLO
+        id S230133AbiISRe4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 19 Sep 2022 13:34:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229896AbiISQhB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 19 Sep 2022 12:37:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF50E356E0
-        for <linux-ext4@vger.kernel.org>; Mon, 19 Sep 2022 09:36:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1663605418;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Mchxf99lMev1aFGv2K+bOlvQAf7i2XmiTm89Tkqpih0=;
-        b=Jd+MzNEriGTjP16ZUou8mauS7K1ZNN9pUEC6sDfqvt9SpdXWh1nmbp161ByoGb8XcRyDjJ
-        dAefJ3ub49zMO+5LEBNp0xbbOt5eMp0Wlvh73dQ6UgKqwWgFi1hUNAlGRe1Fb/GUX2aJt0
-        zz5oRrReUMUbXcz2pVahRa8iKZvjHHk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-168-e-vBbojmMZqRGk6nJlTDWA-1; Mon, 19 Sep 2022 12:36:52 -0400
-X-MC-Unique: e-vBbojmMZqRGk6nJlTDWA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2DC3B811E67;
-        Mon, 19 Sep 2022 16:36:52 +0000 (UTC)
-Received: from localhost (unknown [10.39.192.144])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E3F74207B34A;
-        Mon, 19 Sep 2022 16:36:50 +0000 (UTC)
-Date:   Mon, 19 Sep 2022 12:36:48 -0400
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Gwendal Grignou <gwendal@google.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bart Van Assche <bvanassche@google.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        Evan Green <evgreen@google.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Daniil Lunev <dlunev@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>
-Subject: Re: [dm-devel] [PATCH RFC 0/8] Introduce provisioning primitives for
- thinly provisioned storage
-Message-ID: <YyiaoHcueK9g5KVy@fedora>
-References: <20220915164826.1396245-1-sarthakkukreti@google.com>
- <YyU5CyQfS+64xmnm@magnolia>
- <CAG9=OMNPnsjaUw2EUG0XFjV94-V1eD63V+1anoGM=EWKyzXEfg@mail.gmail.com>
+        with ESMTP id S230309AbiISRey (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 19 Sep 2022 13:34:54 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2764224BE1;
+        Mon, 19 Sep 2022 10:34:53 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id r34-20020a05683044a200b0065a12392fd7so43977otv.3;
+        Mon, 19 Sep 2022 10:34:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=kdS9QD9VodJFlDe/hzPt/fIHrfeguLlK063E4oft3xY=;
+        b=RSsN1QZHs/TmzsGp1gwypXdKb/ST8jjoxnGgjyJpGV7sq5aaYponooE63RtJDRuoFk
+         4VXjc4NPaG7MQomjEcSt+y7p4ZVGuVPclZGjlL/vQiCR0Me8vanyEOYot/zi8Qsubu9j
+         Ix69jBgynF7tCkr+xxKol7c7kNhnVS8KJgxgKk0lyolCfmfJb+3zoq8Vz25NtkyW/5RJ
+         p2+8AeVSPil9bJICaFxtsaSaqUw5Kt5tKUWnYm/Zm3aB+7O1VaahZGVySmK2tZf55QM0
+         YghzgAsvx0sqLEfTTQQuMHFJo6+U/klj2pt5kixy16lXa6EmRGn5eHCZGXkCezFh7SPi
+         kjXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=kdS9QD9VodJFlDe/hzPt/fIHrfeguLlK063E4oft3xY=;
+        b=SbguzxJyq7PJFCL1+mck1F+Cr3HG4z21EO4jQ6MNzua4D84s6vNsQ8jPCkaxg1nUPq
+         V+nA0uP5DdD7UYCozggMhtOkkbP8663qRdb1RuVLfXhtyBkgJJzGhpzMJ6wq0TLYtEIY
+         Lk8PXTmZG8uCDgzWaXT13AxAlF53Pf2j2T0AY9VQKGzY5ZCBQ0MRH0pIvfKeUgZUFnQL
+         ShY3gNpPecpmbq89zksg9BDrLshSHVVi7M/L1OUVyKht0RoaGH574ToAnq2LC4CRRENI
+         O8sVoTkzHT5ASlQ5JzhnBTt7FE/E4D8ROcae1oVn8HmJTBw2FKabkiaOJTKvC0MDDHqP
+         elPw==
+X-Gm-Message-State: ACrzQf1bcT6uPi0zdPPgs7Vkgf1VhABB8iIo5F6OqZDNC18KqqZUkDlC
+        aWxPVTwVc1msbXng6/Oowcjrj8eBZEkjFYChKa9ES6rf7p5xPQ==
+X-Google-Smtp-Source: AMsMyM5sQYgUol/jmTSw3stKiJsYQ02a9vmJcS7x25EvIWll4MwqWjrE0KfujNT4rW/qZrnmuFrh2hzLLcoYzG7yGfA=
+X-Received: by 2002:a05:6830:d8c:b0:639:6034:b3d7 with SMTP id
+ bv12-20020a0568300d8c00b006396034b3d7mr8692869otb.125.1663608892048; Mon, 19
+ Sep 2022 10:34:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="FvyRLtY8FNQa7tFK"
-Content-Disposition: inline
-In-Reply-To: <CAG9=OMNPnsjaUw2EUG0XFjV94-V1eD63V+1anoGM=EWKyzXEfg@mail.gmail.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20220912182224.514561-1-vishal.moola@gmail.com>
+In-Reply-To: <20220912182224.514561-1-vishal.moola@gmail.com>
+From:   Vishal Moola <vishal.moola@gmail.com>
+Date:   Mon, 19 Sep 2022 10:34:40 -0700
+Message-ID: <CAOzc2pznw0qp3xVm98-TdU=JBVxintYN1Q4Ci9qTQkBYRxi9QQ@mail.gmail.com>
+Subject: Re: [PATCH v2 00/23] Convert to filemap_get_folios_tag()
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nilfs@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Mon, Sep 12, 2022 at 11:25 AM Vishal Moola (Oracle)
+<vishal.moola@gmail.com> wrote:
+>
+> This patch series replaces find_get_pages_range_tag() with
+> filemap_get_folios_tag(). This also allows the removal of multiple
+> calls to compound_head() throughout.
+> It also makes a good chunk of the straightforward conversions to folios,
+> and takes the opportunity to introduce a function that grabs a folio
+> from the pagecache.
+>
+> F2fs and Ceph have quite alot of work to be done regarding folios, so
+> for now those patches only have the changes necessary for the removal of
+> find_get_pages_range_tag(), and only support folios of size 1 (which is
+> all they use right now anyways).
+>
+> I've run xfstests on btrfs, ext4, f2fs, and nilfs2, but more testing may be
+> beneficial. The page-writeback and filemap changes implicitly work. Testing
+> and review of the other changes (afs, ceph, cifs, gfs2) would be appreciated.
+> ---
+> v2:
+>   Got Acked-By tags for nilfs and btrfs changes
+>   Fixed an error arising in f2fs
+>   - Reported-by: kernel test robot <lkp@intel.com>
+>
+> Vishal Moola (Oracle) (23):
+>   pagemap: Add filemap_grab_folio()
+>   filemap: Added filemap_get_folios_tag()
+>   filemap: Convert __filemap_fdatawait_range() to use
+>     filemap_get_folios_tag()
+>   page-writeback: Convert write_cache_pages() to use
+>     filemap_get_folios_tag()
+>   afs: Convert afs_writepages_region() to use filemap_get_folios_tag()
+>   btrfs: Convert btree_write_cache_pages() to use
+>     filemap_get_folio_tag()
+>   btrfs: Convert extent_write_cache_pages() to use
+>     filemap_get_folios_tag()
+>   ceph: Convert ceph_writepages_start() to use filemap_get_folios_tag()
+>   cifs: Convert wdata_alloc_and_fillpages() to use
+>     filemap_get_folios_tag()
+>   ext4: Convert mpage_prepare_extent_to_map() to use
+>     filemap_get_folios_tag()
+>   f2fs: Convert f2fs_fsync_node_pages() to use filemap_get_folios_tag()
+>   f2fs: Convert f2fs_flush_inline_data() to use filemap_get_folios_tag()
+>   f2fs: Convert f2fs_sync_node_pages() to use filemap_get_folios_tag()
+>   f2fs: Convert f2fs_write_cache_pages() to use filemap_get_folios_tag()
+>   f2fs: Convert last_fsync_dnode() to use filemap_get_folios_tag()
+>   f2fs: Convert f2fs_sync_meta_pages() to use filemap_get_folios_tag()
+>   gfs2: Convert gfs2_write_cache_jdata() to use filemap_get_folios_tag()
+>   nilfs2: Convert nilfs_lookup_dirty_data_buffers() to use
+>     filemap_get_folios_tag()
+>   nilfs2: Convert nilfs_lookup_dirty_node_buffers() to use
+>     filemap_get_folios_tag()
+>   nilfs2: Convert nilfs_btree_lookup_dirty_buffers() to use
+>     filemap_get_folios_tag()
+>   nilfs2: Convert nilfs_copy_dirty_pages() to use
+>     filemap_get_folios_tag()
+>   nilfs2: Convert nilfs_clear_dirty_pages() to use
+>     filemap_get_folios_tag()
+>   filemap: Remove find_get_pages_range_tag()
+>
+>  fs/afs/write.c          | 114 +++++++++++++++++----------------
+>  fs/btrfs/extent_io.c    |  57 +++++++++--------
+>  fs/ceph/addr.c          | 138 ++++++++++++++++++++--------------------
+>  fs/cifs/file.c          |  33 +++++++++-
+>  fs/ext4/inode.c         |  55 ++++++++--------
+>  fs/f2fs/checkpoint.c    |  49 +++++++-------
+>  fs/f2fs/compress.c      |  13 ++--
+>  fs/f2fs/data.c          |  69 ++++++++++----------
+>  fs/f2fs/f2fs.h          |   5 +-
+>  fs/f2fs/node.c          |  72 +++++++++++----------
+>  fs/gfs2/aops.c          |  64 ++++++++++---------
+>  fs/nilfs2/btree.c       |  14 ++--
+>  fs/nilfs2/page.c        |  59 ++++++++---------
+>  fs/nilfs2/segment.c     |  44 +++++++------
+>  include/linux/pagemap.h |  32 +++++++---
+>  include/linux/pagevec.h |   8 ---
+>  mm/filemap.c            |  87 ++++++++++++-------------
+>  mm/page-writeback.c     |  44 +++++++------
+>  mm/swap.c               |  10 ---
+>  19 files changed, 507 insertions(+), 460 deletions(-)
+>
+> --
+> 2.36.1
+>
 
---FvyRLtY8FNQa7tFK
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Just following up on these patches. Many of the changes still need review.
+If anyone has time this week to look over any of the affected areas (pagecache,
+afs, ceph, ciph, ext4, f2fs, or gfs) feedback would be much appreciated.
 
-On Sat, Sep 17, 2022 at 12:46:33PM -0700, Sarthak Kukreti wrote:
-> On Fri, Sep 16, 2022 at 8:03 PM Darrick J. Wong <djwong@kernel.org> wrote:
-> >
-> > On Thu, Sep 15, 2022 at 09:48:18AM -0700, Sarthak Kukreti wrote:
-> > > From: Sarthak Kukreti <sarthakkukreti@chromium.org>
-> > >
-> > > Hi,
-> > >
-> > > This patch series is an RFC of a mechanism to pass through provision
-> > > requests on stacked thinly provisioned storage devices/filesystems.
-> >
-> > [Reflowed text]
-> >
-> > > The linux kernel provides several mechanisms to set up thinly
-> > > provisioned block storage abstractions (eg. dm-thin, loop devices over
-> > > sparse files), either directly as block devices or backing storage for
-> > > filesystems. Currently, short of writing data to either the device or
-> > > filesystem, there is no way for users to pre-allocate space for use in
-> > > such storage setups. Consider the following use-cases:
-> > >
-> > > 1) Suspend-to-disk and resume from a dm-thin device: In order to
-> > > ensure that the underlying thinpool metadata is not modified during
-> > > the suspend mechanism, the dm-thin device needs to be fully
-> > > provisioned.
-> > > 2) If a filesystem uses a loop device over a sparse file, fallocate()
-> > > on the filesystem will allocate blocks for files but the underlying
-> > > sparse file will remain intact.
-> > > 3) Another example is virtual machine using a sparse file/dm-thin as a
-> > > storage device; by default, allocations within the VM boundaries will
-> > > not affect the host.
-> > > 4) Several storage standards support mechanisms for thin provisioning
-> > > on real hardware devices. For example:
-> > >   a. The NVMe spec 1.0b section 2.1.1 loosely talks about thin
-> > >   provisioning: "When the THINP bit in the NSFEAT field of the
-> > >   Identify Namespace data structure is set to =E2=80=981=E2=80=99, th=
-e controller ...
-> > >   shall track the number of allocated blocks in the Namespace
-> > >   Utilization field"
-> > >   b. The SCSi Block Commands reference - 4 section references "Thin
-> > >   provisioned logical units",
-> > >   c. UFS 3.0 spec section 13.3.3 references "Thin provisioning".
-> > >
-> > > In all of the above situations, currently the only way for
-> > > pre-allocating space is to issue writes (or use
-> > > WRITE_ZEROES/WRITE_SAME). However, that does not scale well with
-> > > larger pre-allocation sizes.
-> > >
-> > > This patchset introduces primitives to support block-level
-> > > provisioning (note: the term 'provisioning' is used to prevent
-> > > overloading the term 'allocations/pre-allocations') requests across
-> > > filesystems and block devices. This allows fallocate() and file
-> > > creation requests to reserve space across stacked layers of block
-> > > devices and filesystems. Currently, the patchset covers a prototype on
-> > > the device-mapper targets, loop device and ext4, but the same
-> > > mechanism can be extended to other filesystems/block devices as well
-> > > as extended for use with devices in 4 a-c.
-> >
-> > If you call REQ_OP_PROVISION on an unmapped LBA range of a block device
-> > and then try to read the provisioned blocks, what do you get?  Zeroes?
-> > Random stale disk contents?
-> >
-> > I think I saw elsewhere in the thread that any mapped LBAs within the
-> > provisioning range are left alone (i.e. not zeroed) so I'll proceed on
-> > that basis.
-> >
-> For block devices, I'd say it's definitely possible to get stale data, de=
-pending
-> on the implementation of the allocation layer; for example, with dm-thinp=
-ool,
-> the default setting via using LVM2 tools is to zero out blocks on allocat=
-ion.
-> But that's configurable and can be turned off to improve performance.
->=20
-> Similarly, for actual devices that end up supporting thin provisioning, u=
-nless
-> the specification absolutely mandates that an LBA contains zeroes post
-> allocation, some implementations will definitely miss out on that (probab=
-ly
-> similar to the semantics of discard_zeroes_data today). I'm operating und=
-er
-> the assumption that it's possible to get stale data from LBAs allocated u=
-sing
-> provision requests at the block layer and trying to see if we can create a
-> safe default operating model from that.
-
-Please explain the semantics of REQ_OP_PROVISION in the
-code/documentation in the next revision.
-
-Thanks,
-Stefan
-
---FvyRLtY8FNQa7tFK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmMomqAACgkQnKSrs4Gr
-c8g4vQf/TYZDC6JT8LCVfsDWkwegZYqhX4pz86cryayWYFUYe3u9UmLPrY/TuE1y
-XQwzM9jsI+LdCcQtLZtvre/JsJB6esC/LGv+FTGOSju2n0FLXTS7v80LujcoHnKE
-7RZ0eliz4XGK/X1Q6rLVgNFhFUcQIM4yYNKsAklXpSApXwgQ5W8mKI7GVqi+rhds
-UynMkkK2XKPIeBVRJg7gNCx4vTnwas+AQ5QCuAoGpRxvTcPmKlP9krCi0owiGZKR
-08ORDLnl4g8uxmkJQoYR6Ep6bnJY4mq9XSeNMYwOEWAd63h3aYO27kxvClgMo0mV
-wb0jbsC1V0Qd8XvrdufP80ym3TVKCg==
-=HyVg
------END PGP SIGNATURE-----
-
---FvyRLtY8FNQa7tFK--
-
+Also, Thanks to David for looking at btrfs and Ryusuke for looking at
+nilfs already.
