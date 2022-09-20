@@ -2,141 +2,148 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E798A5BE7D4
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Sep 2022 16:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 330CD5BE8F3
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Sep 2022 16:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231226AbiITOAT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 20 Sep 2022 10:00:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58164 "EHLO
+        id S231330AbiITO34 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 20 Sep 2022 10:29:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230269AbiITOAN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 20 Sep 2022 10:00:13 -0400
-Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B121583D;
-        Tue, 20 Sep 2022 07:00:12 -0700 (PDT)
-Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-11e9a7135easo4291044fac.6;
-        Tue, 20 Sep 2022 07:00:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date;
-        bh=anwJ1q9b14QesSLm4IQZ3eD0Se0ge7to/g7pHbX3jG0=;
-        b=bjlAlEIklUV7hPttdA8fDtvgyEyudwFcvTMbEssKiC6eBOZ2O2xFGl6XCcfc1SRiIE
-         P/HW32nak3/AIw3q5NBSb9foiDz5+hzuTrEbGwyWvDrVar82JqUksGtwB9Wj6YVnX5ON
-         RESLXA9eGCW8TdchEApJwPj07cv5HWqFSngD1AYH4BEJAVWe/BTDL/N7y9XqF8vbEg/A
-         LBJikXoE9bT7BEaOWOLwWt52owdDJjZr8s2DsRTuc7OwUSokcsYM4+onJnfGO0sEfb4r
-         NVIXIqtqiYYKv4ow15IcC2xT7DYCohO9dGIrJb9rr1BrRsBURg8/M7aBsepO1/bcxuRm
-         lWTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=anwJ1q9b14QesSLm4IQZ3eD0Se0ge7to/g7pHbX3jG0=;
-        b=JQM3in13kfbbhOVKWwuUGpcKeOn1EydYkkJWzSGi9Sy7b/njMM0Ag5RfBQi3qq2AW4
-         9UmBZcxgLqxqtHm92UpM30VVlSEM+XgcgCMYPGCXmrpM0a2tzO0JZQnl+9LjFdm7X34g
-         H+IXHg3844z+UobDCcjXFZ47KHOoyFnO7aPWvOpV0N+dz0reJ1pluIWyEKk28BsYuT+M
-         mWMGSv3rEf1orj5wtmkCGh1QvY8p7MQxdQAeoDudLuiRBa+w+HU9hTj8G2+3QIBzd+Uf
-         FA/1z+uUCG3oJi1fGVen/oTGMtNQx9frNag1gRIxOBKZp6+i8dItvLTSxihdQUJKHu05
-         ywtw==
-X-Gm-Message-State: ACrzQf2lELR0fw9baA87bsRzMJyCWOqTyoJkn6XJHdY+c5g2m0AkXCEe
-        Hp3QxnOCxyFJBZIqp88JDOd4PhbRQKuRM8KIFZw=
-X-Google-Smtp-Source: AMsMyM7M1YKMioaUgRWcbL23K4TaHKNh67DDfmsw8bUBSbp1bz0bgqIHBrVEMt51SFoqWOPTeCbJrP/ViUnRkbqN54M=
-X-Received: by 2002:a05:6870:c1c6:b0:12c:8311:8f3c with SMTP id
- i6-20020a056870c1c600b0012c83118f3cmr2206076oad.158.1663682411217; Tue, 20
- Sep 2022 07:00:11 -0700 (PDT)
+        with ESMTP id S231207AbiITO3y (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 20 Sep 2022 10:29:54 -0400
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam07on2058.outbound.protection.outlook.com [40.107.212.58])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B73361182E;
+        Tue, 20 Sep 2022 07:29:52 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BU2t8vy++EU71lYosktFe0Uo3+9WYFNXZ48hAiWp0DoApzzMff4gxz6He1rkJ9OndQBZd2xyvZjRd4y3AiZQIboHu92aeETxFxcGv+gSVnucHE3NtHqiJqsdkiDSJc2C2GfVv9p4YV98D4b6fZ1SH/BQcq5CNuVsuHCCHtwGUtNIFZHzSSCI8ddkxJJcP1vJZnDzxE7IWqx9geXe+gBvITEHlCVS5HFU2+V1Bn0kJk5Qc6r8SSDSeIyyMw4EGY8FbLdH0vazxbg0WV01841OPpnYqgIYSOt0zHKl3MMz4RJSupY+Sil9RGpUmr54ODzf+y4kY92cWl7CLbz2S1BzxQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/4QxQOF3j4N4ok5PxUm3x8trDAWeL4/L1R6hAgNqXBw=;
+ b=Iaxh2yjAwT5j4C0emxxgPryI2jQ8dHvCWmXi8K+Q8+10vWfXcQTym6tJ0mcsj/Wnc51UQHgXuzmFDlD3YYYN/q0tFLh/3SIGz0us9rlXZ0H5pejuuIJiL8mYR6matQGIaszkwOFjr71h9JmoiCh+alp4gn54t6S3TAo+HiTxNF61tXPMf5yc3IleGfqGtMuyjXrcUQKABC3gF6HvBWz4XpjptQkWrZ077BobuR9CUwoTdRrpl1isJwbT5T1EZ1HtmRFglg0t8R+HXiuTRIcO+uzQUnZ/F759EnQFisIi646Oj8a9kKfAe44d1+mLD2oonTCkHsDUKlfK3PiFLCiaxQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/4QxQOF3j4N4ok5PxUm3x8trDAWeL4/L1R6hAgNqXBw=;
+ b=oRD7O0qlDKXneF92dqI1k9b9R/iCBzwtdMjo0IJfpAUlYaiDfZDG5SQcAcvQSKPN5iGaF98at650sGLVVbT09I977cKFDuhF0uqu9mMVljai1idcqoxw1XNWqUNlugMLuHJBbts+pWIKdZRbHWYvX8kGryAOYlzgIhmrehrf2apjD7QdJ9mm/IIMU2Qs7RVVv+VhWfpyMXebaW/gDaxKHdIXePbcY/DtpdxNQLboUUqfpslPZIkcyrBQFXvotWtMFSERMbdQ5iqlC2J3y+06jLfjzlRYB+SxrWia0F6iI8GpaMcnJOZI+jzHmjeKx/oIAtcbepW23cvzRxiPJRxA0Q==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
+ by CH2PR12MB4232.namprd12.prod.outlook.com (2603:10b6:610:a4::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5632.21; Tue, 20 Sep
+ 2022 14:29:50 +0000
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::462:7fe:f04f:d0d5]) by MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::462:7fe:f04f:d0d5%7]) with mapi id 15.20.5632.021; Tue, 20 Sep 2022
+ 14:29:50 +0000
+Date:   Tue, 20 Sep 2022 11:29:49 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     akpm@linux-foundation.org, Jan Kara <jack@suse.cz>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        linux-fsdevel@vger.kernel.org, nvdimm@lists.linux.dev,
+        linux-xfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v2 00/18] Fix the DAX-gup mistake
+Message-ID: <YynOXa8+jxxCjH5k@nvidia.com>
+References: <166329930818.2786261.6086109734008025807.stgit@dwillia2-xfh.jf.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <166329930818.2786261.6086109734008025807.stgit@dwillia2-xfh.jf.intel.com>
+X-ClientProxiedBy: BL1PR13CA0309.namprd13.prod.outlook.com
+ (2603:10b6:208:2c1::14) To MN2PR12MB4192.namprd12.prod.outlook.com
+ (2603:10b6:208:1d5::15)
 MIME-Version: 1.0
-References: <CACX6voDfcTQzQJj=5Q-SLi0in1hXpo=Ri28rX73Og3GTObPBWA@mail.gmail.com>
- <48bb6266-2d5c-ffcd-6982-4fd02bfdcfc3@leemhuis.info>
-In-Reply-To: <48bb6266-2d5c-ffcd-6982-4fd02bfdcfc3@leemhuis.info>
-From:   hazem ahmed mohamed <hazem.ahmed.abuelfotoh@gmail.com>
-Date:   Tue, 20 Sep 2022 14:59:34 +0100
-Message-ID: <CACX6voDhGxiyAxaEu0OL+hHFDD9kigso-YVrWTk4jcbvYZKVew@mail.gmail.com>
-Subject: Re: Ext4: Buffered random writes performance regression with
- dioread_nolock enabled
-To:     Thorsten Leemhuis <regressions@leemhuis.info>
-Cc:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "Mohamed Abuelfotoh, Hazem" <abuehaze@amazon.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4192:EE_|CH2PR12MB4232:EE_
+X-MS-Office365-Filtering-Correlation-Id: 063f9051-4695-436d-66ad-08da9b14939a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0nNvbL6k9eF2Muvpmm6pB3hcO87Ndwqcs+TgH10p2YAUYVXT0Wv2iCnw2XmyVtowoKO0SCWeobHvmHMTGDgEHiknqqiO00Z2Ty5vLZPJclHzogvAsn2kcLiqMWW14Y3ysc5DQhgg303Ldup1VTP6D+9zS0JFpAlQ1uB0GCBnMI+PApJVBHQ1qvdX1feDZXwv3bBpONGA6iUXAbGZjEMgxfGFWjoNU3grx9uwFe+pNrzpCAgVPRJXg542drvKyRnhUeHVTvo1AYRMiUlzUllNw8/Zhd9DtSCku0vOnOiP9ZKTPfKrSQjNaPgRtcb6gPaKhZGRErHGPJ+vUk5QrJIRPK6Vd4bcgMPE/bukU8ZXlQOCkOVXRhtSdG1Dv8sx52cSALcYDnRRls89ZxNVr4+JmEYyViELL6rxrUwsgTAHJuAfVa3nlqJI8mMe35kO5/PHx0OlQEWCRKzDxqxcvo5ONIFkIOOnlWFerEP/I+3eDdfTbjMl+7prH9fAW+BSxVYrcJuQxGPAEb9l3nEYarX/XwKIzhQT0K80O/GK6yVdsyr6BFfrAQ+GprBPsnNnkMh8pBr15wArggdNaLhng70oqKthFtyCZmzvSemCfp/13AsrWk9wYyQSZnq0Wqw8VzvgO0vLd0acpnKRXmuWR0Wn9oQmQF1fuc0ktsko3HAOM3y3KMOh+DgdUhjDCS1VPrFzJLvBi0UHmG1IAVx8GFfkZkUybev59XL9Fu7wdDomJ2JQW/nlb3pxvw+4BHZtCifl
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(136003)(396003)(376002)(366004)(39860400002)(346002)(451199015)(38100700002)(36756003)(86362001)(2906002)(186003)(6506007)(6512007)(7416002)(478600001)(2616005)(41300700001)(26005)(6486002)(6916009)(5660300002)(54906003)(8936002)(316002)(66946007)(8676002)(4326008)(66476007)(66556008)(67856001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gzVaANg579vVe4vzhgXTFXWoUc/WexrGwFPl6BPoT8XWigRo/llEmYbLPJEU?=
+ =?us-ascii?Q?bXZrQt94EjB+3E3M9+OBEFujemBOWS0ACcNA4+CwB65Ws+YqFjrkqZMI9mwQ?=
+ =?us-ascii?Q?cIFx5iIMaIiXxv3XwXMJGUmAvV3+w9PJk9JZ8Jso/oO/OGqHX2bhpLq6zRbm?=
+ =?us-ascii?Q?JmvW9Ooi97LT3teJ0clqqoLLZWe6GrebU7cJ3komYPWqQ1pyu3BTSkb1o17c?=
+ =?us-ascii?Q?Jy44NHnLBkQ9leUlXsgzDl4z4OybA8N25baTK/yKhCMORHi2cxHaKa2GdrQx?=
+ =?us-ascii?Q?GKnzaxdYRczEwTdJIFXJH2Oej4y1xC0j/aRy8HkU8b3eEJtRvAkiU7Igqpc3?=
+ =?us-ascii?Q?/xDf7thqTkNBOpiHpHWs0VLDjaY1j1JooZUYOvxBpgfdZf8TYbKLRobTlrM3?=
+ =?us-ascii?Q?X84Uao9Dv6B+QVLuV+Re+8oQQI4IGDdkyvmjnzkfWUl+AcH51Xs8lWr8PDes?=
+ =?us-ascii?Q?etyLSSN+/47Bk7gZwSXFeuE/erpCEGpQ+9Nlg8M8BLya6/oh8RFvFiHgi9hT?=
+ =?us-ascii?Q?fMPKtR4Y+xXgJAHkaSiQ6Sb4tz6unmSeQ3DkSbmzgZPq+YXDNZQ3W5duf7yd?=
+ =?us-ascii?Q?QHytrIDKXWsTJ0KILJo2WZ+wJaP5ciovWWuP/2cKpLOgZu33PGDKyvXI8iJz?=
+ =?us-ascii?Q?ku/0K6UlCCFNOhET3/RuKTlgKiPA+mmKXCLbsmuQzGMqOLsyez8fnwTS+s4I?=
+ =?us-ascii?Q?MbckTDVCS0Tpm5PFECOj0ZToZUq+E1ARHAv/uoAHpmFHrWhSNiy/0V7pJOFJ?=
+ =?us-ascii?Q?hOP406UWVvkJ2RwfS8HtXi9esQw/LzPMfKP3WpC6LmSZ/NLANscR3BzG0F0K?=
+ =?us-ascii?Q?n3pRYV3j0gFWH5+/glxptb8TV1Buc1MiIArh8mLdgCZhMtyukaRJjLIeMWWV?=
+ =?us-ascii?Q?ArP+k8Z+ZuX2V96KjxjhMDSVUixDfP9CQbg0VXNL69cam4nRBqfL28gZGH0M?=
+ =?us-ascii?Q?HlwDMRFxIaJRgY9sjpGDHhvVfzSvHjqmM45kAxiK3Wx1uC9v1xi1gPoIouC9?=
+ =?us-ascii?Q?eg3NuFTzFUs/4Jw6TLqHxkp8lZw8YFHhAdPQ/7MMUh6/WhkzL7maapcxs3ha?=
+ =?us-ascii?Q?uChi5MTfpv9zXQpJgiwdwSabjJr+HpZDLEp6If3Pmzphs7DtMcdCEgtKzmgG?=
+ =?us-ascii?Q?jq1j992jaxnQ+f/6wx0hjvIlNYQ5KhuQ1byQonmgpySOIzR4kxD+yQXjhaes?=
+ =?us-ascii?Q?Ynym1fTEcFyCrv/0oBIghO3qTG/lKfhdrwZQ2idbftwUBogxMUfNAct7fNev?=
+ =?us-ascii?Q?kLRqrmaR7Mp9fmO+eHajfbB6kc7DMQTS1btXm1cC6354Q7DnPUsgEpYyya3/?=
+ =?us-ascii?Q?7YR8ftbJ70cqCfaYiRRz28/PxR5T8Tfw/8AsQpV/jyxweKbkaHlM7xLhLuFB?=
+ =?us-ascii?Q?OSlYoqzY+UgK+6JfzHbdGQ8nNCrhPtwILIcSmsT4PJnzOZEzsUtADH3fqMuW?=
+ =?us-ascii?Q?/BvjPigMOXFyMAdGlclqVqV31VA0ncI1Wc9nGIZkQccJK5o5qhRUJ+6FykdV?=
+ =?us-ascii?Q?/07fkfrO/h/o23vaMb2E1WARMvivAv110hSRrAlNWoltQT0+8S33DleM1qs8?=
+ =?us-ascii?Q?b25UWbBeLooc1d1gQu6d9D9d86ikXbVpgIHCdCV9?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 063f9051-4695-436d-66ad-08da9b14939a
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2022 14:29:50.5617
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yKuWuXlai2SPubKRoaJMF8x1l9G5YVHbP6IZFK7Pd7d+6qgbVpWVklpGJcq1ewAJ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4232
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Looks like I replied only on Thorsten insteading of replying to all so
-moving the discussion to the wider thread for better visibility.
+On Thu, Sep 15, 2022 at 08:35:08PM -0700, Dan Williams wrote:
 
----------- Forwarded message ---------
-From: Thorsten Leemhuis <regressions@leemhuis.info>
-Date: Tue, 20 Sept 2022 at 14:31
-Subject: Re: Ext4: Buffered random writes performance regression with
-dioread_nolock enabled
-To: hazem ahmed mohamed <hazem.ahmed.abuelfotoh@gmail.com>
+> This hackery continues the status of DAX pages as special cases in the
+> VM. The thought being carrying the Xarray / mapping infrastructure
+> forward still allows for the continuation of the page-less DAX effort.
+> Otherwise, the work to convert DAX pages to behave like typical
+> vm_normal_page() needs more investigation to untangle transparent huge
+> page assumptions.
 
+I see it differently, ZONE_DEVICE by definition is page-based. As long
+as DAX is using ZONE_DEVICE it should follow the normal struct page
+rules, including proper reference counting everywhere.
 
-On 20.09.22 15:21, hazem ahmed mohamed wrote:
-> Thanks Thorsten, I am surprised that we merged this commit while it
-> has been showing regression since Day-0, unless there is an objection
-> I will submit a revert patch until we know what's going on here.
+By not doing this DAX is causing all ZONE_DEVICE users to suffer
+because we haven't really special cased just DAX out of all the other
+users.
 
-Please keep replies online, then others can learn from the conversation
-and weight in. In this particular case I'd explained that a quick revert
-after all this time is likely a bad thing, as there is always a risk
-that is creates regressions of its own. :-/
+If there is some kind of non-struct page future, then it will not be
+ZONE_DEVICE and it will have its own mechanisms, somehow.
 
-Ciao, Thorsten
-> On 19.09.22 17:18, hazem ahmed mohamed wrote:
-> >
-> > I am sending this e-mail to report a performance regression that=E2=80=
-=99s
-> > caused by commit 244adf6426(ext4: make dioread_nolock the default) , I
-> > am listing the performance regression symptoms below & our analysis
-> > for the reported regression.
->
-> FWIW, that patch went into v5.6-rc1~113^2~12
->
-> And BTW: it seems 0-day back then noticed that 244adf6426 caused a
-> performance regression as well, but it seems that was ignored:
-> https://lore.kernel.org/all/20201024120829.GK31092@shao2-debian/
->
-> Anyway, now to the main reason why I write this mail:
->
-> [TLDR: I'm adding this regression report to the list of tracked
-> regressions; all text from me you find below is based on a few templates
-> paragraphs you might have encountered already already in similar form.]
->
-> Thanks for the report. To be sure below issue doesn't fall through the
-> cracks unnoticed, I'm adding it to regzbot, my Linux kernel regression
-> tracking bot:
->
-> #regzbot ^introduced 244adf6426
-> #regzbot ignore-activity
->
-> This isn't a regression? This issue or a fix for it are already
-> discussed somewhere else? It was fixed already? You want to clarify when
-> the regression started to happen? Or point out I got the title or
-> something else totally wrong? Then just reply -- ideally with also
-> telling regzbot about it, as explained here:
-> https://linux-regtracking.leemhuis.info/tracked-regression/
->
-> Reminder for developers: When fixing the issue, add 'Link:' tags
-> pointing to the report (the mail this one replies to), as explained for
-> in the Linux kernel's documentation; the webpage mention at the end of
-> the last para explains why this is important for tracked regressions.
->
-> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
->
-> P.S.: As the Linux kernel's regression tracker I deal with a lot of
-> reports and sometimes miss something important when writing mails like
-> this. If that's the case here, don't hesitate to tell me in a public
-> reply, it's in everyone's interest to set the public record straight.
+So, we should be systematically stripping away all the half-backed
+non-struct page stuff from ZONE_DEVICE as a matter of principle. DAX
+included, whatever DAX's future may hold.
+
+The pte bit and the missing refcounting in the page table paths is the
+remaining big issue and I hope we fix it. The main problem is that
+FS-DAX must create compound pages for the 2M page size.
+
+Jason
