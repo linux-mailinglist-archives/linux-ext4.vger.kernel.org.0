@@ -2,76 +2,92 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 859785BDEC7
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Sep 2022 09:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C14025BDF5F
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Sep 2022 10:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230471AbiITHuf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 20 Sep 2022 03:50:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33364 "EHLO
+        id S230462AbiITIL1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 20 Sep 2022 04:11:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229926AbiITHt7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 20 Sep 2022 03:49:59 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEDB9219D;
-        Tue, 20 Sep 2022 00:49:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=AU0mZCMIx8JARy0byW2BmRzgYXSYzSXxAhWcU08IaqY=; b=aUezXLcVpUDpj+rBGwR2e2Dq+j
-        +m8n/y4046APNRMEDTF0ZqaDkAxglTlVUNTJr9E1Z6iC226V1Bog1WEQ2+K4ikDCcQlgIfO79QYEn
-        goQtBRPP+NXjgTSijBjOyUanFbCeVbhd0zVD0jL5AzO3eoXRAf7sgibPwBwjIJpBRSuo6MlMOJVkH
-        45Z1TPzd/6ND3EgH8tHfjOOybk9MqFcjdvPfa8IIrKATJFRTJJ/ua6OyNsUaM6kt5wiagvMuJ7Cav
-        WHJ9MvPeN6mIa0F7Nz1cmXZ0IlQ7xW2U8RmCkN9IPpyqtDS+bJksjLZ3l0EsO/cbt4ePE8hMqOnbn
-        EqnTWtdQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oaY0H-001Ung-4F; Tue, 20 Sep 2022 07:49:13 +0000
-Date:   Tue, 20 Sep 2022 00:49:13 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
-Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Jens Axboe <axboe@kernel.dk>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Bart Van Assche <bvanassche@google.com>,
-        Daniil Lunev <dlunev@google.com>,
-        Evan Green <evgreen@google.com>,
-        Gwendal Grignou <gwendal@google.com>
-Subject: Re: [PATCH RFC 4/8] fs: Introduce FALLOC_FL_PROVISION
-Message-ID: <YylweQAZkIdb5ixo@infradead.org>
-References: <20220915164826.1396245-1-sarthakkukreti@google.com>
- <20220915164826.1396245-5-sarthakkukreti@google.com>
+        with ESMTP id S229717AbiITIK6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 20 Sep 2022 04:10:58 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 210976716A;
+        Tue, 20 Sep 2022 01:07:10 -0700 (PDT)
+Received: from [2a02:8108:963f:de38:eca4:7d19:f9a2:22c5]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1oaYHc-0007Gk-En; Tue, 20 Sep 2022 10:07:08 +0200
+Message-ID: <48bb6266-2d5c-ffcd-6982-4fd02bfdcfc3@leemhuis.info>
+Date:   Tue, 20 Sep 2022 10:07:07 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220915164826.1396245-5-sarthakkukreti@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.1
+Content-Language: en-US, de-DE
+To:     hazem ahmed mohamed <hazem.ahmed.abuelfotoh@gmail.com>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "tytso@mit.edu" <tytso@mit.edu>,
+        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Cc:     "Mohamed Abuelfotoh, Hazem" <abuehaze@amazon.com>
+References: <CACX6voDfcTQzQJj=5Q-SLi0in1hXpo=Ri28rX73Og3GTObPBWA@mail.gmail.com>
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+Subject: Re: Ext4: Buffered random writes performance regression with
+ dioread_nolock enabled
+In-Reply-To: <CACX6voDfcTQzQJj=5Q-SLi0in1hXpo=Ri28rX73Og3GTObPBWA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1663661230;c62e95cb;
+X-HE-SMSGID: 1oaYHc-0007Gk-En
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Sep 15, 2022 at 09:48:22AM -0700, Sarthak Kukreti wrote:
-> From: Sarthak Kukreti <sarthakkukreti@chromium.org>
+On 19.09.22 17:18, hazem ahmed mohamed wrote:
 > 
-> FALLOC_FL_PROVISION is a new fallocate() allocation mode that
-> sends a hint to (supported) thinly provisioned block devices to
-> allocate space for the given range of sectors via REQ_OP_PROVISION.
+> I am sending this e-mail to report a performance regression that’s
+> caused by commit 244adf6426(ext4: make dioread_nolock the default) , I
+> am listing the performance regression symptoms below & our analysis
+> for the reported regression.
 
-So, how does that "provisioning" actually work in todays world where
-storage is usually doing out of place writes in one or more layers,
-including the flash storage everyone is using.  Does it give you one
-write?  And unlimited number?  Some undecided number inbetween?  How
-is it affected by write zeroes to that range or a discard?
+FWIW, that patch went into v5.6-rc1~113^2~12
+
+And BTW: it seems 0-day back then noticed that 244adf6426 caused a
+performance regression as well, but it seems that was ignored:
+https://lore.kernel.org/all/20201024120829.GK31092@shao2-debian/
+
+Anyway, now to the main reason why I write this mail:
+
+[TLDR: I'm adding this regression report to the list of tracked
+regressions; all text from me you find below is based on a few templates
+paragraphs you might have encountered already already in similar form.]
+
+Thanks for the report. To be sure below issue doesn't fall through the
+cracks unnoticed, I'm adding it to regzbot, my Linux kernel regression
+tracking bot:
+
+#regzbot ^introduced 244adf6426
+#regzbot ignore-activity
+
+This isn't a regression? This issue or a fix for it are already
+discussed somewhere else? It was fixed already? You want to clarify when
+the regression started to happen? Or point out I got the title or
+something else totally wrong? Then just reply -- ideally with also
+telling regzbot about it, as explained here:
+https://linux-regtracking.leemhuis.info/tracked-regression/
+
+Reminder for developers: When fixing the issue, add 'Link:' tags
+pointing to the report (the mail this one replies to), as explained for
+in the Linux kernel's documentation; the webpage mention at the end of
+the last para explains why this is important for tracked regressions.
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+
+P.S.: As the Linux kernel's regression tracker I deal with a lot of
+reports and sometimes miss something important when writing mails like
+this. If that's the case here, don't hesitate to tell me in a public
+reply, it's in everyone's interest to set the public record straight.
