@@ -2,144 +2,345 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F11C5BE912
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Sep 2022 16:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E395BEB4B
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Sep 2022 18:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230426AbiITObw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 20 Sep 2022 10:31:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33550 "EHLO
+        id S231444AbiITQpD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 20 Sep 2022 12:45:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230122AbiITObu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 20 Sep 2022 10:31:50 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2083.outbound.protection.outlook.com [40.107.237.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 108FE286E7;
-        Tue, 20 Sep 2022 07:31:49 -0700 (PDT)
+        with ESMTP id S231446AbiITQpB (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 20 Sep 2022 12:45:01 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86C7A14029;
+        Tue, 20 Sep 2022 09:44:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1663692299; x=1695228299;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=SwZAVtmv557URZ+Ud5sixxV1LFPXBL7n7iPtBR0CqB4=;
+  b=dgAVFpvoReAQPI5rQPwkAO6xuLlR5FDX8K9d5nSCze6WrMO+u3ejtGAf
+   2RPeVqTuXvXBH3XlEp4Vc109c0yj0cTB1N37M2wCJG4LEIST4hA3nMqtN
+   K6zGMkbno0zd/tZoPK6WLnJBotOIehUhrDcG65ggFKfhYK3Lfg7ZjdjQZ
+   6lr+vkg18m/1quoxekdU5Ba3vK9ylFUNwSThpfjHrOGnyk6N5EklVHt+X
+   u7hmYEqTQC3m21g0jzCGmSY8Nc/+/nKfdMghobzIBoNK0qsbgEpt4+F8Q
+   RjT+90y86w2EOt8f7XcKosH/3JQOzEeMwepbjzhqy257b9qnlDFowAmfG
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10476"; a="326058147"
+X-IronPort-AV: E=Sophos;i="5.93,331,1654585200"; 
+   d="scan'208";a="326058147"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2022 09:44:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,331,1654585200"; 
+   d="scan'208";a="618978728"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga002.jf.intel.com with ESMTP; 20 Sep 2022 09:44:59 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 20 Sep 2022 09:44:58 -0700
+Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 20 Sep 2022 09:44:58 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31 via Frontend Transport; Tue, 20 Sep 2022 09:44:58 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.172)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2375.31; Tue, 20 Sep 2022 09:44:58 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fjy/4/ZC4PVT5PSsuoR1B0uzK3u5Mgx6BFawG7/HJ/ige8FQFajXSYw4uhq7w4X29plriYqQc319gnOGen360XM3jst4rxPR4+ycUVJ3J7vNogShLTFMY14YJdZaXqGGtTPs25kB52Efv8434a6D6Yh21CsyGRys+6xhXAWxglYZX2jAzNfbKMecXYbeihfGG7cQYIrvJCvkDZFNMUGEZ6gpZ86AheVwvF2K5zdCRNkW8Mw8WNdi5q14GjvDgVt1qL0YdMuB7jUN7pvPr1o2yfnaKkutof87/oRLkTu7xw3MMMLbq5SCXGYfxIfYGr96iJJOKnwxUoE7U+RP9W4wpg==
+ b=YGBodfw2huVmkWncqv9czxY1MOUf4ktM0jN8X7fblnoNFoYvyGkK/VPZGEDnxfAH+BNbQAqGr4IhCKb9+0rDhu6rTCkgeucHcGY19wf6GcOtDwBZ8IRDyBYFiax1DpvfbvnUk80ruJSkMLFkonfS+FuQoFIOO2nUe7BQpgxxeolQcBPxzN+B7SnXDzNzRlcQmbo1YYHtK7jmSpbY9fUkkKEL6AiiHd9erTaIlj/LpfstAZyaBNwxv7osLGnHHTDhFE/eDr6Wn/2J9zqUPoNbPxbNULa5sLjCs6xV3YYaI0vXxwlSjO2ow2CCkYLvVXXQ1GvXcMp1P0UmyuDDoi6Zog==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tDsQpYNxDD2GqwJG7F3KSLxoYbr6RroQzx7f4K1MQTU=;
- b=eoyL5aoBSS6bN+RCEuPKrukE8oiLeuxIYSIHXyQMTy/KON1MMUhGJYEHl1Z0bCI44LVGgqq094+NBypOv10vf0PPVJr1tl4EkbsL1iTf1J8pxZL70RU/qR6eHj4aNzCGCsiusckFp+CrIz56rQeG9jZbfVDpf3neGlPx7Koq4T09UYO4/x0phz2qc8ZgrKlv+OfYzTDi3mak8IHSxzdc7eWCsfQzD7KDLwwn94zagTpM5gqc5xqa9fcc7rNvfayM9MYYNRKSuWSRC0Re1GsxDqR9iBh83Zr1ShRxSRn9v43YtuAUmEb0brF5z6QzSWArHipc4N+wD0rIk75oQ2Gi8Q==
+ bh=B28IJM1Vgv2KTOEAnbSgAwquXlOVRz6pWbbkvJpyy9k=;
+ b=A5Hc//rFMmhzVgND2ui2h+9ShtWyTUXDoBbgnS3fBac0FNVw7Q8yEcdNF36hhbCTcvS3yMBCzE+Qu++stkao7PN6leu0qKKqAZXfvNMSl/y/VeUjrrjiltsd2cITKlroO2IPRu5eFhknGCNLNdzpFVtvrWdZFyb/ni3MKdQhDbdTixkXE5vUieEK1cwvilhFSeRpp9wqALcOIvBETA5OgfHr26gwlEi3/s/T5S6LjhZ1goxTYSHIiODPtB5xzRT47Z0+ftbVZPgqBm+lQwU3+SSu7IDSzvugC2lGvengZo+tHvB3+cbezMnDKQ2f6Fjiw+ztSWwbEoRl8TKeSPJyGQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tDsQpYNxDD2GqwJG7F3KSLxoYbr6RroQzx7f4K1MQTU=;
- b=UqBg6t+52goBTDv0hUOdf88OAnwoMcwG9EOFu5+I7kqlG9d7HUq0p0YlrZF/1mEo3yUsVk3F+JUP75EkpTWyyYCoHEMKxdLINy3XOgXxWkB7I1Pm5F8fM8FJdksIeXmxTGQtDSvLsvLhFM/lxnBw34Ey9Dlal58V1FYwJPYeJiculhT7vq4HYgJc88sp/kGu5ZweSV58LX5memFTIzpU/7PFPmXmIH+B0S6ipMYnoim1hOpQ1x8u08l6qxy7xz5Hq8nmBl5FxhQLx6GVMSfk3mjD5OQjxMTXaQH55iykU6PZnjfshbJHXA/zOHFf08Ns9KIl6lQyt6+H9JtBpq7rCw==
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
- by DM4PR12MB5117.namprd12.prod.outlook.com (2603:10b6:5:390::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5632.21; Tue, 20 Sep
- 2022 14:31:47 +0000
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::462:7fe:f04f:d0d5]) by MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::462:7fe:f04f:d0d5%7]) with mapi id 15.20.5632.021; Tue, 20 Sep 2022
- 14:31:47 +0000
-Date:   Tue, 20 Sep 2022 11:31:45 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     akpm@linux-foundation.org, Matthew Wilcox <willy@infradead.org>,
-        Jan Kara <jack@suse.cz>, "Darrick J. Wong" <djwong@kernel.org>,
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MWHPR1101MB2126.namprd11.prod.outlook.com
+ (2603:10b6:301:50::20) by SN7PR11MB7092.namprd11.prod.outlook.com
+ (2603:10b6:806:29b::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5632.19; Tue, 20 Sep
+ 2022 16:44:56 +0000
+Received: from MWHPR1101MB2126.namprd11.prod.outlook.com
+ ([fe80::9847:345e:4c5b:ca12]) by MWHPR1101MB2126.namprd11.prod.outlook.com
+ ([fe80::9847:345e:4c5b:ca12%6]) with mapi id 15.20.5654.014; Tue, 20 Sep 2022
+ 16:44:56 +0000
+Date:   Tue, 20 Sep 2022 09:44:52 -0700
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     Dave Chinner <david@fromorbit.com>,
+        Dan Williams <dan.j.williams@intel.com>
+CC:     <akpm@linux-foundation.org>, Matthew Wilcox <willy@infradead.org>,
+        "Jan Kara" <jack@suse.cz>, "Darrick J. Wong" <djwong@kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Christoph Hellwig <hch@lst.de>,
         John Hubbard <jhubbard@nvidia.com>,
-        linux-fsdevel@vger.kernel.org, nvdimm@lists.linux.dev,
-        linux-xfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v2 02/18] fsdax: Use dax_page_idle() to document DAX busy
- page checking
-Message-ID: <YynO0Yse0hh9mdyh@nvidia.com>
+        <linux-fsdevel@vger.kernel.org>, <nvdimm@lists.linux.dev>,
+        <linux-xfs@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH v2 05/18] xfs: Add xfs_break_layouts() to the inode
+ eviction path
+Message-ID: <6329ee04c9272_2a6ded294bf@dwillia2-xfh.jf.intel.com.notmuch>
 References: <166329930818.2786261.6086109734008025807.stgit@dwillia2-xfh.jf.intel.com>
- <166329932151.2786261.15762187070104795379.stgit@dwillia2-xfh.jf.intel.com>
-Content-Type: text/plain; charset=us-ascii
+ <166329933874.2786261.18236541386474985669.stgit@dwillia2-xfh.jf.intel.com>
+ <20220918225731.GG3600936@dread.disaster.area>
+ <632894c4738d8_2a6ded294a@dwillia2-xfh.jf.intel.com.notmuch>
+ <20220919212959.GL3600936@dread.disaster.area>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <166329932151.2786261.15762187070104795379.stgit@dwillia2-xfh.jf.intel.com>
-X-ClientProxiedBy: BL1PR13CA0001.namprd13.prod.outlook.com
- (2603:10b6:208:256::6) To MN2PR12MB4192.namprd12.prod.outlook.com
- (2603:10b6:208:1d5::15)
+In-Reply-To: <20220919212959.GL3600936@dread.disaster.area>
+X-ClientProxiedBy: SJ0PR05CA0017.namprd05.prod.outlook.com
+ (2603:10b6:a03:33b::22) To MWHPR1101MB2126.namprd11.prod.outlook.com
+ (2603:10b6:301:50::20)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4192:EE_|DM4PR12MB5117:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1872365c-f96c-4b5c-5466-08da9b14d945
+X-MS-TrafficTypeDiagnostic: MWHPR1101MB2126:EE_|SN7PR11MB7092:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6ecfa690-a4fa-454a-58a7-08da9b2772aa
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xaqAeEZX0AY+uX5tgTh93jiubXUeFTQqVBbUmsULD6OVqWbRT+3g+z6xpVZ6ZO602hhAsunFaLrvCCWYPKuyLpsnvyT4INxEy7zKPo875Bx5j1DzgWV3E2ra1/WP50VRgNvpcOT8r8W9mCyFdwUsuxD31VR0XyQuSTSGMOwPRkxvmG++i5B/cNlANxLmuH+6rRzQAsuBQcxD+QggO07l0c2Q5q1VyinPnIDPux7ep8ipNNz9dQH/9ItzUuJ7wuwljXKjO/1cMTN+rY/Y/x+PO35GhpobzxlhrSDNZQCYETnmOwU2x+yCy10AJkYMI5uCAOrUr266+DyZKVXQOJSipmKiMc498gSNSE9GDJg92S0iDEcIJ72qwue6KIBMvSJ42Kyj9ytrcJ7EIVq85MCDvCPVU+eRIXhCNzs/OMvPdErfza4Un2bHMQDtWGEY7zBPtOyHkP4/hxkUu5lclHUn/1O+PjF6QWGj/EwJoFCSAHVius69PgZAWQndc8MABoFjB0es8fqMjiUl4VvkswOAKkJE9A4LRUGPDSnncmr6y47IP2Pwd0OskmvLn7jn84dUibS5xAjPqdPOzq6mduHtbRYXUq0w+F8BkUIDK9mR01w48PPIZ7LRYdY1kR/K8fX4M3hIWpl0M3I/5VQQLptgs514E035M9TCWt1zGmbagTE5D1B4xOc0Ns+aMM9aDDTTCXWIfPodZxJaNszazXEc8w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(376002)(346002)(396003)(136003)(366004)(39860400002)(451199015)(38100700002)(6512007)(26005)(6506007)(8676002)(4326008)(4744005)(54906003)(2906002)(2616005)(66946007)(41300700001)(186003)(7416002)(5660300002)(36756003)(478600001)(66556008)(86362001)(8936002)(66476007)(6916009)(83380400001)(6486002)(316002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: d1xzaTygrnwi03TzNeiNLhwmTgZwYuNrv6sHz1WeBo5JeKrFiykMxzbFu4CxJOK4DbXNpXdbrZM/zTMH1V0YmsACVqzBRe9kqn/8cVCb/Ac5Nb0/CVjsw37YEiNrEp9hd3LOiMHcYqbuCQw2vwoLft6F+Mxzbp37DtSSSbeVr2MvLMsaC1DYCXA3pQTgUoKOyRVARR9HQFTYos0sC2QGiwSYjLcN8IIU3NLELIgh6nPx6RtgZ7sup1DIRKmTYtBmDtncesip62yZ31wqB33CEw2HujFOu48bRGzbXkBystrBcOQfI1/v1flmrqC/IwGSB5gKlWVu0iU4J0Ol8xZrcZmHs9q0Co7Yc5xyTuy522vcJMa+PxUfYt5+4KwYuYVTlPokZsNoLwDhx5zW+4rDJgqEMiO223U7ddnS7Eyxx3cIXKFnxDWY0sKsQEZo1Jubb1SpResQ1zEIb4deKNa3oa/WzawLi3khLSm7acgXVbtBcWDeLYlAHEtUoDlYgN6DCKFByWDj8t1g7qlui46EAVWkJgSaza1UVPFhs/qgEGF++/LwYew7aRAbTmu4HvY3Ykt8FczWVUvxoTsg10HE+LEvGjUa+4CC3KYmK2yu8xsXIN0JCQLa6ZxtnzyP7VYMEOuT92e4Z55AMhbNpYAAAGgvj10eTHUsAP5vsWWRqQb8d1MYdiWIexsKTVp+nvo3gz7Cj4fwtCrrdhnZyOicLQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1101MB2126.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(396003)(39860400002)(376002)(366004)(136003)(346002)(451199015)(26005)(6512007)(9686003)(6506007)(8676002)(7416002)(82960400001)(66946007)(478600001)(6486002)(5660300002)(38100700002)(2906002)(66476007)(186003)(6666004)(41300700001)(83380400001)(4326008)(86362001)(66556008)(316002)(54906003)(8936002)(110136005);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?oDnYb9ebqg6rzzwXtT/Ue4+0+ztlaO5Yx25yiXAFlEFYNImtwYpNX69lA5Kx?=
- =?us-ascii?Q?i29jq+mo6sMxI/TBBr+80u9OPVO0ZRXXUlGsaQeQTLTSwm4GuDTnX3Uujar2?=
- =?us-ascii?Q?IN6mdVaaaeJ0VP12qTHihUntOQrAPvZIHtAw8JJwwGseJp4vHsk/NChLn/HE?=
- =?us-ascii?Q?Q9ssuasN+P+tpo5mrDy84T3Qgi+X98guZQtdwK48z8J1/P2wdS/Dj4DagYS4?=
- =?us-ascii?Q?S/6liuTJIZ5D5Bo/O6RUH0CCuv/2IjxtliqjJvHmPXws72Qbdi4jUu8WGQ81?=
- =?us-ascii?Q?+nfM/5/ewGIDwpAOSYh5eZKmzcDozPZsnrDBJdGkQ4h2l/Sv8R7YjfZP2ZKG?=
- =?us-ascii?Q?l3H3yCdpGSLBFpHuqh9UccHej0+r2gcQPlVeKE1O4Ihtp9BJbTO78M1TTbr5?=
- =?us-ascii?Q?fpLo2fp+8DVHUYKp+EWGAMKvOjobCTyz3x6B2s9e65pxiicE6ZFqMXB9ODDF?=
- =?us-ascii?Q?8Ikc9SWEduQXfZICPtw3fmUoIM4Lf6hm0U8/fSyZkl8Yez5DTFdejPDRebcr?=
- =?us-ascii?Q?pwCZM4U8HWpKn8H2UKVlbAlJ8DEsz2kOcVTD/jHN2Wh11BRNz2BdFKbKVgI6?=
- =?us-ascii?Q?tgxyZ9XtV1+wv7IegC+kRCemsWg2aQxnGlex8qwT5JHg/FTh0NMUbHXtqNlq?=
- =?us-ascii?Q?U+tX3G4pENF1WGcmGJEHpnHJtYLOwqQfPSxYBnpbIs5iGMWc4bI9HrXHwnDu?=
- =?us-ascii?Q?Sr4XlJDj+P+NSxMCv5m/9xG9eXKU9B+r9I0qsm4r12HcH7NuvqtvZyY0ax4C?=
- =?us-ascii?Q?6B+gFRtZS0PgCOqdXKEivnxpO1uYI6+F18BtQFh/Vq0l0/YXqCNh7g8MeApx?=
- =?us-ascii?Q?ZdN/uW41pC7HQTAL1Da0XwvGcx4l/rhKjgdQykbMakihBIwt4iQ+jauaIy7x?=
- =?us-ascii?Q?UDBiQD/y46uKyTwKGPlOq596xbkJfChu7CIzxRoeww2/yP+gkPDJGAtsLj+G?=
- =?us-ascii?Q?/822MxJfGa8a9m0qOZIyDydTYHXR7Je4QrLzJgMC+dYv5g949MP/J2EGWUhO?=
- =?us-ascii?Q?GkPfS3KLFrYlpuXRMjGW3yqak91cUsVPIlFFMafqs2f1EL23O6WiP+MmWfYl?=
- =?us-ascii?Q?5W/nr2yu/exXzoA7Uq+iN0xFqZ0jBLKaVtC3W7K4BXU6fqVL7vaWpv0nrqX0?=
- =?us-ascii?Q?HXO9N/uPYyw9N9eBIQUVJQfdnDLZWfSujB77OA5fiGpYlryyHnFlvzZNgFl1?=
- =?us-ascii?Q?sIJyfANlDTFLl3SLXdlsSaebekDQPv8hftI+PcnFTYHIu4kT2GW99VUd4tE5?=
- =?us-ascii?Q?BeovQ5wDMapy2OQKpHpRVPlBvxNCoYC+QMLTQxvTQgMinH//zWJF8erdtvkL?=
- =?us-ascii?Q?76chW1Pgn0YR4hDaeFuZ3P23huHfUMZOjaQuKIiBc3WWFnp3vOWsNjUv2HuX?=
- =?us-ascii?Q?5b6uuEHdWeToQCJ6NJCAczYzoDmuff+/CroFaMRkb+rB8ybQIaRf2aJfUcFA?=
- =?us-ascii?Q?rbAZXbdmNFC8d+shfQBbDAuT9CeVM28ofKq7RKomfiorvYsUUaS7htVYWSSu?=
- =?us-ascii?Q?SFcV/LNDtCWDBQj8XKGcNTIZcOEJ3I9l4VyA/0a9z9Nye9fzffzOCY/lMmhZ?=
- =?us-ascii?Q?HAimPzjpKXlq9tr8PlhFTKaPphBp6RdGKFldwQCR?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1872365c-f96c-4b5c-5466-08da9b14d945
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RrzhfptgIjy0w5nkRMqa3vu++Hn9s3YdAbjrTBpHdlzk2ofsFF8nyAzvltJD?=
+ =?us-ascii?Q?5yb72cicfqG75jf1G1gDa8hRqpjVBfd21FjcfGQMtm35qT1HX5/vO07DGmab?=
+ =?us-ascii?Q?S2Rh56lRLDFJ4+NRJlFy0JwYwlNZHjpLXlOQONIdrSEzF/tNY7YgSe0kfyAl?=
+ =?us-ascii?Q?2f9jOir7BQb9QvQD+BiRiTWnkdwDm/E8PTM4XH3ROcus0Bd8KK8FcK7lbk/A?=
+ =?us-ascii?Q?5DWnnWSI8ZndLF+qbkgP7ovNaO5PNY6LWnkHQzhJVU5+FgBLaJv+jcfJ9Vza?=
+ =?us-ascii?Q?hs2O/uFLVCDx6O7IAFM3iEuNCzWjNAkj/hgT6GcyxzjSCHsqbILQ2fR92Sv0?=
+ =?us-ascii?Q?LF/S/J0cmB3+wMb1PcDs0wRoQ6FBVM3aM6pFHwKkQGjBQxtYMUdlJaB+lILX?=
+ =?us-ascii?Q?B9MBDk2sKnSPu34C3G0fbnETGCARGZ/Qlkq9mE6Z+J29ZbYO95tb/We4wzEo?=
+ =?us-ascii?Q?lMU03LHYXDlE2kTYuTUHseoE17ZzHR2zAYRydBE+R3KGMEa1KNcWTz+vcF9B?=
+ =?us-ascii?Q?GT34JSKkdN5KxvjBlrQTCFTfEB5Znqm4CjGc6GOJQS8EjIL7ZfdU6qUk3IM9?=
+ =?us-ascii?Q?6RY6EYJmx+8U+RTK+e+JEmgA9LtRALqaaPuPIjegFWgQBweEBII8zk4bY8hW?=
+ =?us-ascii?Q?e1JFCxZgvVbMzuGFFPLgt5tY95edaD1PFSG3/BZrWm6xiMshW2Ogo0xCg+Bs?=
+ =?us-ascii?Q?3fEpYvC1bXjW8AUsTS9ZbGRAO/Oc3sxria6f9g1JnFJ4bw1cK7XsQXMDpwMY?=
+ =?us-ascii?Q?FFUsqKxK9k51CH+D7v1gKdcMKfXmsd3vFsyvNoJyXPilQLZsPKZIfEFfjNV7?=
+ =?us-ascii?Q?mpQy0LSNEJ52hsrYN7X3521yVNSeGwf9MKWVZnFumgXIP5f0OQiEMSdFHUkA?=
+ =?us-ascii?Q?ecpPCVES+mem5zjpVRPJ5LSLQHPkDh340agJ8CVsxGfx6wO3nEC1kIDeVwLQ?=
+ =?us-ascii?Q?6/21jautINMdUxPz0Yr3oixh2oMnaJ1XmZbc9idFSeUO8mXy74Lg7dQCxrsm?=
+ =?us-ascii?Q?2gLczDK+3Oc3ELhawfKtZiZvBDtnsKkbgJ0nxGiepTg5efEn9sKrmkqOFcrr?=
+ =?us-ascii?Q?u8SxONk/Jl2X0ybAYrgsPSrGydUAgfv0WNd3vzFf2mfjzPfIzdsbMKta65go?=
+ =?us-ascii?Q?0F2zO0KTDKmOISx2Mog1ti4XKmarRgGpyDxFbPwaUvfsQhsD/lFd1FmzzyTH?=
+ =?us-ascii?Q?IWq1KcP6q6cDkEIVQZhUbyLESyEFsQi2gsNfzxWupcuQqAM+CQi5+UeHjE2a?=
+ =?us-ascii?Q?aZhjC6vA54E3wY1SahlqehZOGHMVJwZKOX5s38rMOTwWRe0y90CPI0gKEDbQ?=
+ =?us-ascii?Q?/6TBFl3KiWQYLP7BZgKKYnHf/LNs1SdrBKrKss7H4vjJueaZtv+ZdB8Q1h6g?=
+ =?us-ascii?Q?uXLalOiq5uMZQbJr/anroJpRb07zTTKgmhOBXzI3NUeanmDMoRJ4qP+Anji8?=
+ =?us-ascii?Q?e419bcuDyQbU6twmfH8Q5SSilnuOUImjU4NWaRtgtXG9xKMBxjC2VjwIszNj?=
+ =?us-ascii?Q?ZXwMdgMmKN2YFFbRamifW65dWF4+IOKwJTwGEeELJz+bHNijjsQAu3dPzJoi?=
+ =?us-ascii?Q?PKI81rUh3aR4NUoWesetFPa0BtVdSEjQ18TH/I+Ln9ZGv0qSXkmyIDhqq3ax?=
+ =?us-ascii?Q?Nw=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ecfa690-a4fa-454a-58a7-08da9b2772aa
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1101MB2126.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2022 14:31:47.4603
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2022 16:44:56.0204
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UHFV/bDnqirPSqyqf4LSPJCMvsP+AynYxK9MTTweDjN9WS1q1xeYttmiMmfS2VfL
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5117
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: L6CnmtZ/BF505GImRiMfsnsM7LRl0Z+bMpOPGQcT7xITwpUovawhQJ5F4tyyiaJwN95sJMhNu62H+VAmXVeVY9MIq933K6eTxJ1hhnNzCxs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7092
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Sep 15, 2022 at 08:35:21PM -0700, Dan Williams wrote:
-> In advance of converting DAX pages to be 0-based, use a new
-> dax_page_idle() helper to both simplify that future conversion, but also
-> document all the kernel locations that are watching for DAX page idle
-> events.
+Dave Chinner wrote:
+> On Mon, Sep 19, 2022 at 09:11:48AM -0700, Dan Williams wrote:
+> > Dave Chinner wrote:
+> > > On Thu, Sep 15, 2022 at 08:35:38PM -0700, Dan Williams wrote:
+> > > > In preparation for moving DAX pages to be 0-based rather than 1-based
+> > > > for the idle refcount, the fsdax core wants to have all mappings in a
+> > > > "zapped" state before truncate. For typical pages this happens naturally
+> > > > via unmap_mapping_range(), for DAX pages some help is needed to record
+> > > > this state in the 'struct address_space' of the inode(s) where the page
+> > > > is mapped.
+> > > > 
+> > > > That "zapped" state is recorded in DAX entries as a side effect of
+> > > > xfs_break_layouts(). Arrange for it to be called before all truncation
+> > > > events which already happens for truncate() and PUNCH_HOLE, but not
+> > > > truncate_inode_pages_final(). Arrange for xfs_break_layouts() before
+> > > > truncate_inode_pages_final().
+> ....
+> > > > diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+> > > > index 9ac59814bbb6..ebb4a6eba3fc 100644
+> > > > --- a/fs/xfs/xfs_super.c
+> > > > +++ b/fs/xfs/xfs_super.c
+> > > > @@ -725,6 +725,27 @@ xfs_fs_drop_inode(
+> > > >  	return generic_drop_inode(inode);
+> > > >  }
+> > > >  
+> > > > +STATIC void
+> > > > +xfs_fs_evict_inode(
+> > > > +	struct inode		*inode)
+> > > > +{
+> > > > +	struct xfs_inode	*ip = XFS_I(inode);
+> > > > +	uint			iolock = XFS_IOLOCK_EXCL | XFS_MMAPLOCK_EXCL;
+> > > > +	long			error;
+> > > > +
+> > > > +	xfs_ilock(ip, iolock);
+> > > 
+> > > I'm guessing you never ran this through lockdep.
+> > 
+> > I always run with lockdep enabled in my development kernels, but maybe my
+> > testing was insufficient? Somewhat moot with your concerns below...
 > 
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: "Darrick J. Wong" <djwong@kernel.org>
-> Cc: Jason Gunthorpe <jgg@nvidia.com>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: John Hubbard <jhubbard@nvidia.com>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> ---
->  fs/dax.c            |    4 ++--
->  fs/ext4/inode.c     |    3 +--
->  fs/fuse/dax.c       |    5 ++---
->  fs/xfs/xfs_file.c   |    5 ++---
->  include/linux/dax.h |    9 +++++++++
->  5 files changed, 16 insertions(+), 10 deletions(-)
+> I'm guessing your testing doesn't generate inode cache pressure and
+> then have direct memory reclaim inodes. e.g. on a directory inode
+> this will trigger lockdep immediately because readdir locks with
+> XFS_IOLOCK_SHARED and then does GFP_KERNEL memory reclaim. If we try
+> to take XFS_IOLOCK_EXCL from memory reclaim of directory inodes,
+> lockdep will then shout from the rooftops...
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Got it.
 
-Jason
+> 
+> > > > +
+> > > > +	truncate_inode_pages_final(&inode->i_data);
+> > > > +	clear_inode(inode);
+> > > > +
+> > > > +	xfs_iunlock(ip, iolock);
+> > > > +}
+> > > 
+> > > That all said, this really looks like a bit of a band-aid.
+> > 
+> > It definitely is since DAX is in this transitory state between doing
+> > some activities page-less and others with page metadata. If DAX was
+> > fully committed to behaving like a typical page then
+> > unmap_mapping_range() would have already satisfied this reference
+> > counting situation.
+> > 
+> > > I can't work out why would we we ever have an actual layout lease
+> > > here that needs breaking given they are file based and active files
+> > > hold a reference to the inode. If we ever break that, then I suspect
+> > > this change will cause major problems for anyone using pNFS with XFS
+> > > as xfs_break_layouts() can end up waiting for NFS delegation
+> > > revocation. This is something we should never be doing in inode
+> > > eviction/memory reclaim.
+> > > 
+> > > Hence I have to ask why this lease break is being done
+> > > unconditionally for all inodes, instead of only calling
+> > > xfs_break_dax_layouts() directly on DAX enabled regular files?  I
+> > > also wonder what exciting new system deadlocks this will create
+> > > because BREAK_UNMAP_FINAL can essentially block forever waiting on
+> > > dax mappings going away. If that DAX mapping reclaim requires memory
+> > > allocations.....
+> > 
+> > There should be no memory allocations in the DAX mapping reclaim path.
+> > Also, the page pins it waits for are precluded from being GUP_LONGTERM.
+> 
+> So if the task that holds the pin needs memory allocation before it
+> can unpin the page to allow direct inode reclaim to make progress?
+
+No, it couldn't, and I realize now that GUP_LONGTERM has nothing to do
+with this hang since any GFP_KERNEL in a path that took a DAX page pin
+path could run afoul of this need to wait.
+
+So, this has me looking at invalidate_inodes() and iput_final(), where I
+did not see the reclaim entanglement, and thinking DAX has the unique
+requirement to make sure that no access to a page outlives the hosting
+inode.
+
+Not that I need to tell you, but to get my own thinking straight,
+compare that to typical page cache as the pinner can keep a pinned
+page-cache page as long as it wants even after it has been truncated.
+DAX needs to make sure that truncate_inode_pages() ceases all access to
+the page synchronous with the truncate. The typical page-cache will
+ensure that the next mapping of the file will get a new page if the page
+previously pinned for that offset is still in use, DAX can not offer
+that as the same page that was previously pinned is always used.
+
+So I think this means something like this:
+
+diff --git a/fs/inode.c b/fs/inode.c
+index 6462276dfdf0..ab16772b9a8d 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -784,6 +784,11 @@ int invalidate_inodes(struct super_block *sb, bool kill_dirty)
+                        continue;
+                }
+ 
++               if (dax_inode_busy(inode)) {
++                       busy = 1;
++                       continue;
++               }
++
+                inode->i_state |= I_FREEING;
+                inode_lru_list_del(inode);
+                spin_unlock(&inode->i_lock);
+@@ -1733,6 +1738,8 @@ static void iput_final(struct inode *inode)
+                spin_unlock(&inode->i_lock);
+ 
+                write_inode_now(inode, 1);
++               if (IS_DAX(inode))
++                       dax_break_layouts(inode);
+ 
+                spin_lock(&inode->i_lock);
+                state = inode->i_state;
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 9eced4cc286e..e4a74ab310b5 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -3028,8 +3028,20 @@ extern struct inode * igrab(struct inode *);
+ extern ino_t iunique(struct super_block *, ino_t);
+ extern int inode_needs_sync(struct inode *inode);
+ extern int generic_delete_inode(struct inode *inode);
++
++static inline bool dax_inode_busy(struct inode *inode)
++{
++       if (!IS_DAX(inode))
++               return false;
++
++       return dax_zap_pages(inode) != NULL;
++}
++
+ static inline int generic_drop_inode(struct inode *inode)
+ {
++       if (dax_inode_busy(inode))
++               return 0;
++
+        return !inode->i_nlink || inode_unhashed(inode);
+ }
+ extern void d_mark_dontcache(struct inode *inode);
+
+...where generic code skips over dax-inodes with pinned pages.
+
+> 
+> > > /me looks deeper into the dax_layout_busy_page() stuff and realises
+> > > that both ext4 and XFS implementations of ext4_break_layouts() and
+> > > xfs_break_dax_layouts() are actually identical.
+> > > 
+> > > That is, filemap_invalidate_unlock() and xfs_iunlock(ip,
+> > > XFS_MMAPLOCK_EXCL) operate on exactly the same
+> > > inode->i_mapping->invalidate_lock. Hence the implementations in ext4
+> > > and XFS are both functionally identical.
+> > 
+> > I assume you mean for the purposes of this "final" break since
+> > xfs_file_allocate() holds XFS_IOLOCK_EXCL over xfs_break_layouts().
+> 
+> No, I'm just looking at the two *dax* functions - we don't care what
+> locks xfs_break_layouts() requires - dax mapping manipulation is
+> covered by the mapping->invalidate_lock and not the inode->i_rwsem.
+> This is explicitly documented in the code by the the asserts in both
+> ext4_break_layouts() and xfs_break_dax_layouts().
+> 
+> XFS holds the inode->i_rwsem over xfs_break_layouts() because we
+> have to break *file layout leases* from there, too. These are
+> serialised by the inode->i_rwsem, not the mapping->invalidate_lock.
+
+Got it, will make generic helpers for the scenario where only
+dax-break-layouts needs to be performed.
