@@ -2,98 +2,129 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 520105BF58A
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Sep 2022 06:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56C1D5BF5FE
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Sep 2022 07:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbiIUEo1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 21 Sep 2022 00:44:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51422 "EHLO
+        id S229877AbiIUFyu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 21 Sep 2022 01:54:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbiIUEo0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 21 Sep 2022 00:44:26 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8CD97E827;
-        Tue, 20 Sep 2022 21:44:25 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id b23so4730717pfp.9;
-        Tue, 20 Sep 2022 21:44:25 -0700 (PDT)
+        with ESMTP id S229846AbiIUFys (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 21 Sep 2022 01:54:48 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 756B0DFEA
+        for <linux-ext4@vger.kernel.org>; Tue, 20 Sep 2022 22:54:45 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id lc7so11311913ejb.0
+        for <linux-ext4@vger.kernel.org>; Tue, 20 Sep 2022 22:54:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date;
-        bh=QvCStQH9wWobodRWutr5mV7TPPRrro8caiAVbbSMeAw=;
-        b=M9IoHazJ/8Rc9MI/UxoGN6jKsOSMKrX35y2GS7AqghechlMDFEjsoh1s/lf+GHffGG
-         UaBc4NhH61owmUpUxeestiA8RxhGObHEfx2yiSd+YoUTeV/TJKq90ORHobvV67mo3Y3x
-         2mUwTHxUiObzLSMGR0lUfDfjapQYbQjI4GUaSmUt1A16poWNCsuW9O1meos3q6Mlp17o
-         sZQ86rPyOt2FSoIVVO9bjxCGs/BD/alvJ5a7X3PuQOE4vP5YsnK8A5l5+jlgWu7Vpp9J
-         UpkHkXGLUCBbjSEe83weEn089+idev3Ij8hfatBBkMM0nY9QK9vjFW84yppYqr0CFlrD
-         CaTg==
+        d=chromium.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=O+/FFDzqjGUa/uvDMSfAuiQjEkg5o9+lgPvGbc+n8wE=;
+        b=M2HNg17GHPWM6YaoxXWHCj0Bj4Qcb3SFiebct60i4Kq2DeqFUCVSkSFeGDa1eQr76o
+         QAj9qXjArpAvj6pZoapjSa8fvl8Ybj74urvoPRvvb8029qo35RLoAiKXpoM02YxOoaPP
+         SEPdHtwtTdLozFOWHQQfD0FaI1vBycLifzNug=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=QvCStQH9wWobodRWutr5mV7TPPRrro8caiAVbbSMeAw=;
-        b=wPfep5jGyrywNvtg02dvgIrhRnOs9DA5a2fxe5HfXfFA/oHxMIRtbE4qPctzj5Ewn7
-         wvm0xOpV6lx+A5J+AanlN1FvN5yDLeggxVQMB+TvEYanyXn4rYLp9zzUdHxi4o44ZuQh
-         q8h9IW/REovB+hQTzNWdbHpIAb/cQ+/IZ7QZhjNkLkmfyF5lFo1vXf8OHznk7qZrNwmT
-         lfdL//NOm8zDHeaRfkQDQzC32Ac/MTB9Orc4RDionMVOnVLiXZg7WyIHBYfAliQ1S8bS
-         fObgCsTUAqJY1hRTwvAG6vIZEeeTWPvuQHaoJVJ3pt2YHsDfhL0o2GNS78hzdMg1GMX9
-         JZwQ==
-X-Gm-Message-State: ACrzQf1Jc89CkE6Q8QGWCKaSpftQI4WuFQzgU8WX3HXkFQq/c3ivYTvT
-        xC/Mpv2HX2IOhSlI0Yxm+To=
-X-Google-Smtp-Source: AMsMyM7XhRL4gXDZPwHm37mPuhOCN3dCuo6MXMRo9ipXtoy/jcC/OZmhnXvBwwsLUo5tYDBrbSy20g==
-X-Received: by 2002:a63:86c6:0:b0:43a:bd68:5075 with SMTP id x189-20020a6386c6000000b0043abd685075mr8103197pgd.512.1663735465393;
-        Tue, 20 Sep 2022 21:44:25 -0700 (PDT)
-Received: from localhost ([2406:7400:63:83c4:dfab:3b6f:2c7f:db86])
-        by smtp.gmail.com with ESMTPSA id r2-20020a170902c60200b0016dc2366722sm825262plr.77.2022.09.20.21.44.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Sep 2022 21:44:24 -0700 (PDT)
-Date:   Wed, 21 Sep 2022 10:14:19 +0530
-From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-To:     hazem ahmed mohamed <hazem.ahmed.abuelfotoh@gmail.com>
-Cc:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "Mohamed Abuelfotoh, Hazem" <abuehaze@amazon.com>
-Subject: Re: Ext4: Buffered random writes performance regression with
- dioread_nolock enabled
-Message-ID: <20220921044419.epojssm3g4j3qkup@riteshh-domain>
-References: <CACX6voDfcTQzQJj=5Q-SLi0in1hXpo=Ri28rX73Og3GTObPBWA@mail.gmail.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=O+/FFDzqjGUa/uvDMSfAuiQjEkg5o9+lgPvGbc+n8wE=;
+        b=ypVnpKokElOyMB1NpWDRXnnhQl6Yvrkq0bxNoIdWoMFHiQRS8ZRZMzP21FunTLW+ov
+         1ihjMpexUhx4q9OnXcdn9hf0yoWgCMuyhN2gIyxPaJ7jAo9Kirs6gpz+AD7TZqIpZsNn
+         IbDeNjrP+Yt65RAywgU9lpyaBdAIzMBqAmJ8jQVOttdoWqvZ2klA7+UAITH7FbGoJ6Ko
+         gfrMw87+Y0T0SMj6jwt8ozYWISYI2gdev5n/5ZUEMbTbZD2i2DNDHwsdhECBW3EFBlKD
+         cvgldXMWYMaiwlwHIYjB93jI1WVuMHL2prryhfrKSN5Cj5Xbx5vyrHVzzdG1hc/JLIID
+         0e9g==
+X-Gm-Message-State: ACrzQf07rG6YU4DLPp96aD6Cl8Bfr16u4591j0aLqyOq765VZ+PLMoPN
+        gmmfACJ6UFWjV4UaY8ijNYCVWYgB+I37iNF/gNj+7Q==
+X-Google-Smtp-Source: AMsMyM7DwZfJgUBj+Jcm+ahguQtT7+RYi7n81t2AfUSbJlFqnH/D7ZLc78O5AtvKtve14UtIE21JWlJbn+K5xTQxSGs=
+X-Received: by 2002:a17:907:7289:b0:780:2017:3898 with SMTP id
+ dt9-20020a170907728900b0078020173898mr19775359ejc.276.1663739683574; Tue, 20
+ Sep 2022 22:54:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACX6voDfcTQzQJj=5Q-SLi0in1hXpo=Ri28rX73Og3GTObPBWA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220915164826.1396245-1-sarthakkukreti@google.com>
+ <20220915164826.1396245-5-sarthakkukreti@google.com> <YylweQAZkIdb5ixo@infradead.org>
+In-Reply-To: <YylweQAZkIdb5ixo@infradead.org>
+From:   Sarthak Kukreti <sarthakkukreti@chromium.org>
+Date:   Tue, 20 Sep 2022 22:54:32 -0700
+Message-ID: <CAG9=OMNoG01UUStNs_Zhsv6mXZw0M0q2v54ZriJvHZ4aspvjEQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 4/8] fs: Introduce FALLOC_FL_PROVISION
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Jens Axboe <axboe@kernel.dk>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Bart Van Assche <bvanassche@google.com>,
+        Daniil Lunev <dlunev@google.com>,
+        Evan Green <evgreen@google.com>,
+        Gwendal Grignou <gwendal@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22/09/19 04:18PM, hazem ahmed mohamed wrote:
-> Hey Team,
-> 
-> 
-> 
-> I am sending this e-mail to report a performance regression that’s
-> caused by commit 244adf6426(ext4: make dioread_nolock the default) , I
-> am listing the performance regression symptoms below & our analysis
-> for the reported regression.
-> 
+On Tue, Sep 20, 2022 at 12:49 AM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Thu, Sep 15, 2022 at 09:48:22AM -0700, Sarthak Kukreti wrote:
+> > From: Sarthak Kukreti <sarthakkukreti@chromium.org>
+> >
+> > FALLOC_FL_PROVISION is a new fallocate() allocation mode that
+> > sends a hint to (supported) thinly provisioned block devices to
+> > allocate space for the given range of sectors via REQ_OP_PROVISION.
+>
+> So, how does that "provisioning" actually work in todays world where
+> storage is usually doing out of place writes in one or more layers,
+> including the flash storage everyone is using.  Does it give you one
+> write?  And unlimited number?  Some undecided number inbetween?
 
-Although you did mention you already tested on the latest kernel too and there
-too you saw a similar performance regression.
-But no harm in also double checking if you have this patch [1]. 
-This does fixes a similar problem AFAIU.
+Apologies, the patchset was a bit short on describing the semantics so
+I'll expand more in the next revision; I'd say that it's the minimum
+of regular mode fallocate() guarantees at each allocation layer. For
+example, the guarantees from a contrived storage stack like (left to
+right is bottom to top):
 
+[ mmc0blkp1 | ext4(1) | sparse file | loop | dm-thinp | dm-thin | ext4(2) ]
 
-[1]: https://lore.kernel.org/linux-ext4/20200520133119.1383-1-jack@suse.cz/
+would be predicated on the guarantees of fallocate() per allocation
+layer; if ext4(1) was replaced by a filesystem that did not support
+fallocate(), then there would be no guarantee that a write to a file
+on ext4(2) succeeds.
 
--ritesh
+For dm-thinp, in the current implementation, the provision request
+allocates blocks for the range specified and adds the mapping to the
+thinpool metadata. All subsequent writes are to the same block, so
+you'll be able to write to the same block inifinitely. Brian mentioned
+this above, one case it doesn't cover is if provision is called on a
+shared block, but the natural extension would be to allocate and
+assign a new block and copy the contents of the shared block (kind of
+like copy-on-provision).
+
+[reflowed]
+> How is it affected by write zeroes to that range or a discard?
+
+The current semantics of discards for dm-thinp/ext4/sparse files will
+apply as they do today; discards will unmap the dm-thin block/free the
+file extent. Write zeroes is more interesting; dm-thinp will treat the
+command as usual. ext4_zero_range will mark the extents as unwritten,
+so essentially if a user did provision + write to a block, write zeros
+to the block would essentially leave it in the original provisioned
+state, but ext4 would now show the contents of the block as zero on
+the next read. I think, similar to above, the semantics of a request
+will depend on each layer that it passes through.
+
+Best
+Sarthak
