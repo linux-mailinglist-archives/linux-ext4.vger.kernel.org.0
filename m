@@ -2,106 +2,200 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69CA95BFDC4
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Sep 2022 14:23:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F135BFF08
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Sep 2022 15:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbiIUMXr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 21 Sep 2022 08:23:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50630 "EHLO
+        id S229590AbiIUNhU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 21 Sep 2022 09:37:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbiIUMXg (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 21 Sep 2022 08:23:36 -0400
-Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7961A97EC6;
-        Wed, 21 Sep 2022 05:23:32 -0700 (PDT)
-Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-1280590722dso8809378fac.1;
-        Wed, 21 Sep 2022 05:23:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date;
-        bh=3aJj791SFi8MBmk/3DDeNGs8qJFxgSOFtNXhCuwyFlE=;
-        b=gZm6pXwMq2/JC/UTzDilnXvNNyRSckcot0YJ/NTaLbwgqLHVdBCLiaVvIB0NkJ3bmZ
-         1nk1BYSkGZOBASjKxyjllVNk8cab+Hm+DELpIecZjGPDzX2v6JwuUZjXls2mHcirK/+e
-         GjHbLX+FHDyaNPWfCqF087+Pmtdly7g0V902It5/Dx8SAE/K1+IM5JFG6ucNTT+cOkQf
-         m8u3mwFCbWbPL8pqwWcIkjsxR8riTQ9TH/I8mBcIyfB08ZYi+DoeoHcsYYgHLNBEQyFC
-         KgihHc1TC+jck3iRBGiWUKBctERjn3cr1gNKfLL4FDlLcx9b8NBlZbFIrHHHViZYVUGz
-         VmkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=3aJj791SFi8MBmk/3DDeNGs8qJFxgSOFtNXhCuwyFlE=;
-        b=dhJkOts+5k8Wmkk4KRUUXuZG7kvFYSYZdW/pxM8N9fwHiKWVFEaPocwtjchslb/fNe
-         ZZAO4kt1vt6ShQw+GBZi5OknO0QEa+RcVcZWSx39knPDwwXg4+f0JGm3dCTWtS9toSg1
-         fi574GFxSgF6181Vjdpk8lrToTN8MQdSaYy7mBJwp+YH72O87PCP0q9/iSb753SL8Wv9
-         G6jDWZkv8YZen26m3kjXFf/xPzSLchymxLH8etEn9Nm77fzgqjoea9Iv9UT7TLANae3r
-         o9v0TAbgORbEPy7FKfQUMrnwuSo+cDGywzGVAKT0Nz8qXQZWF8c4Mbk3CNBY3VULWXPB
-         G1QA==
-X-Gm-Message-State: ACrzQf3NaDW5cjC2ZhUHmKSKtUKU/WAtFiJU7DQ/+fND3AmbqXMVdAdP
-        9O10kfacZ3BBjNagu01Zz09YfR4N+kZQDNT9F1Y=
-X-Google-Smtp-Source: AMsMyM5ErvoOnIfJMUuBO4BbuAQd4iK1fvd9USzMtEX4sLhb80TdK3rfkL+JCPZ9lgL8+EHwcHMCghXo3GDIFPNl3xA=
-X-Received: by 2002:a05:6870:a78e:b0:12b:542b:e5b2 with SMTP id
- x14-20020a056870a78e00b0012b542be5b2mr4900564oao.112.1663763011355; Wed, 21
- Sep 2022 05:23:31 -0700 (PDT)
+        with ESMTP id S229762AbiIUNhS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 21 Sep 2022 09:37:18 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 997817285C;
+        Wed, 21 Sep 2022 06:37:17 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4BAF321A0F;
+        Wed, 21 Sep 2022 13:37:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1663767436; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4ylSKvd0aYxKEDLTkKv0Q1hmaMWKUMWHX4BYfXBmAW4=;
+        b=t5ICRRPW2WPstvfbXz8mvH/FyMnoYTudZqv2jCgW8JV6iEmQK5oapD4aUKNw7D0zrK3kKZ
+        uc/nkpJGVWasO3Ta/hep8V6CC4jfYE2/AG0IAasaZCZE/m+jOBqhvMbnzO8tRvJe0DAbVF
+        rTb61XIyrWbgyWlUqyL7+woH14UdXXQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1663767436;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4ylSKvd0aYxKEDLTkKv0Q1hmaMWKUMWHX4BYfXBmAW4=;
+        b=B6hH3EpXwyYL87Uq4xZjGNoLA4KhoaHFggxjIYWK9rIu6hKtOEt6liUjXx4P3byiqqxhEp
+        2C8tFD9F/VJVUXAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3B30813A00;
+        Wed, 21 Sep 2022 13:37:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id wTtrDowTK2OpQAAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 21 Sep 2022 13:37:16 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id BCAF9A0684; Wed, 21 Sep 2022 15:37:15 +0200 (CEST)
+Date:   Wed, 21 Sep 2022 15:37:15 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Zhihao Cheng <chengzhihao1@huawei.com>
+Cc:     jack@suse.com, tytso@mit.edu, brauner@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yukuai3@huawei.com
+Subject: Re: [PATCH 1/3] quota: Check next/prev free block number after
+ reading from quota file
+Message-ID: <20220921133715.7tesk3qylombwmyk@quack3>
+References: <20220820110514.881373-1-chengzhihao1@huawei.com>
+ <20220820110514.881373-2-chengzhihao1@huawei.com>
 MIME-Version: 1.0
-References: <CACX6voDfcTQzQJj=5Q-SLi0in1hXpo=Ri28rX73Og3GTObPBWA@mail.gmail.com>
- <20220921044419.epojssm3g4j3qkup@riteshh-domain>
-In-Reply-To: <20220921044419.epojssm3g4j3qkup@riteshh-domain>
-From:   hazem ahmed mohamed <hazem.ahmed.abuelfotoh@gmail.com>
-Date:   Wed, 21 Sep 2022 13:22:55 +0100
-Message-ID: <CACX6voCxHGd46ehrsys+3sVrA2Stq++O2ofh7E6f4MTN59Z2NQ@mail.gmail.com>
-Subject: Re: Ext4: Buffered random writes performance regression with
- dioread_nolock enabled
-To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Cc:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "Mohamed Abuelfotoh, Hazem" <abuehaze@amazon.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220820110514.881373-2-chengzhihao1@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks for sharing that unfortunately this patch has been merged to
-kernel 5.7 and I am still seeing that regression with later versions
-that include that patch.
+On Sat 20-08-22 19:05:12, Zhihao Cheng wrote:
+> Following process:
+>  Init: v2_read_file_info: <3> dqi_free_blk 0 dqi_free_entry 5 dqi_blks 6
+> 
+>  Step 1. chown bin f_a -> dquot_acquire -> v2_write_dquot:
+>   qtree_write_dquot
+>    do_insert_tree
+>     find_free_dqentry
+>      get_free_dqblk
+>       write_blk(info->dqi_blocks) // info->dqi_blocks = 6, failure. The
+> 	   content in physical block (corresponding to blk 6) is random.
+> 
+>  Step 2. chown root f_a -> dquot_transfer -> dqput_all -> dqput ->
+>          ext4_release_dquot -> v2_release_dquot -> qtree_delete_dquot:
+>   dquot_release
+>    remove_tree
+>     free_dqentry
+>      put_free_dqblk(6)
+>       info->dqi_free_blk = blk    // info->dqi_free_blk = 6
+> 
+>  Step 3. drop cache (buffer head for block 6 is released)
+> 
+>  Step 4. chown bin f_b -> dquot_acquire -> commit_dqblk -> v2_write_dquot:
+>   qtree_write_dquot
+>    do_insert_tree
+>     find_free_dqentry
+>      get_free_dqblk
+>       dh = (struct qt_disk_dqdbheader *)buf
+>       blk = info->dqi_free_blk     // 6
+>       ret = read_blk(info, blk, buf)  // The content of buf is random
+>       info->dqi_free_blk = le32_to_cpu(dh->dqdh_next_free)  // random blk
+> 
+>  Step 5. chown bin f_c -> notify_change -> ext4_setattr -> dquot_transfer:
+>   dquot = dqget -> acquire_dquot -> ext4_acquire_dquot -> dquot_acquire ->
+>           commit_dqblk -> v2_write_dquot -> dq_insert_tree:
+>    do_insert_tree
+>     find_free_dqentry
+>      get_free_dqblk
+>       blk = info->dqi_free_blk    // If blk < 0 and blk is not an error
+> 				     code, it will be returned as dquot
+> 
+>   transfer_to[USRQUOTA] = dquot  // A random negative value
+>   __dquot_transfer(transfer_to)
+>    dquot_add_inodes(transfer_to[cnt])
+>     spin_lock(&dquot->dq_dqb_lock)  // page fault
+> 
+> , which will lead to kernel page fault:
+>  Quota error (device sda): qtree_write_dquot: Error -8000 occurred
+>  while creating quota
+>  BUG: unable to handle page fault for address: ffffffffffffe120
+>  #PF: supervisor write access in kernel mode
+>  #PF: error_code(0x0002) - not-present page
+>  Oops: 0002 [#1] PREEMPT SMP
+>  CPU: 0 PID: 5974 Comm: chown Not tainted 6.0.0-rc1-00004
+>  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996)
+>  RIP: 0010:_raw_spin_lock+0x3a/0x90
+>  Call Trace:
+>   dquot_add_inodes+0x28/0x270
+>   __dquot_transfer+0x377/0x840
+>   dquot_transfer+0xde/0x540
+>   ext4_setattr+0x405/0x14d0
+>   notify_change+0x68e/0x9f0
+>   chown_common+0x300/0x430
+>   __x64_sys_fchownat+0x29/0x40
+> 
+> In order to avoid accessing invalid quota memory address, this patch adds
+> block number checking of next/prev free block read from quota file.
+> 
+> Fetch a reproducer in [Link].
+> 
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=216372
+> Fixes: 1da177e4c3f4152 ("Linux-2.6.12-rc2")
 
-Hazem.
+It's better to just have:
 
-On Wed, 21 Sept 2022 at 05:44, Ritesh Harjani (IBM)
-<ritesh.list@gmail.com> wrote:
->
-> On 22/09/19 04:18PM, hazem ahmed mohamed wrote:
-> > Hey Team,
-> >
-> >
-> >
-> > I am sending this e-mail to report a performance regression that=E2=80=
-=99s
-> > caused by commit 244adf6426(ext4: make dioread_nolock the default) , I
-> > am listing the performance regression symptoms below & our analysis
-> > for the reported regression.
-> >
->
-> Although you did mention you already tested on the latest kernel too and =
-there
-> too you saw a similar performance regression.
-> But no harm in also double checking if you have this patch [1].
-> This does fixes a similar problem AFAIU.
->
->
-> [1]: https://lore.kernel.org/linux-ext4/20200520133119.1383-1-jack@suse.c=
-z/
->
-> -ritesh
+CC: stable@vger.kernel.org
+
+here. Fixes tag pointing to kernel release is not very useful.
+
+> --- a/fs/quota/quota_tree.c
+> +++ b/fs/quota/quota_tree.c
+> @@ -71,6 +71,35 @@ static ssize_t write_blk(struct qtree_mem_dqinfo *info, uint blk, char *buf)
+>  	return ret;
+>  }
+>  
+> +static inline int do_check_range(struct super_block *sb, uint val, uint max_val)
+> +{
+> +	if (val >= max_val) {
+> +		quota_error(sb, "Getting block too big (%u >= %u)",
+> +			    val, max_val);
+> +		return -EUCLEAN;
+> +	}
+> +
+> +	return 0;
+> +}
+
+I'd already provide min_val and the string for the message here as well (as
+you do in patch 2). It is less churn in the next patch and free blocks
+checking actually needs that as well. See below.
+
+> +
+> +static int check_free_block(struct qtree_mem_dqinfo *info,
+> +			    struct qt_disk_dqdbheader *dh)
+> +{
+> +	int err = 0;
+> +	uint nextblk, prevblk;
+> +
+> +	nextblk = le32_to_cpu(dh->dqdh_next_free);
+> +	err = do_check_range(info->dqi_sb, nextblk, info->dqi_blocks);
+> +	if (err)
+> +		return err;
+> +	prevblk = le32_to_cpu(dh->dqdh_prev_free);
+> +	err = do_check_range(info->dqi_sb, prevblk, info->dqi_blocks);
+> +	if (err)
+> +		return err;
+
+The free block should actually be > QT_TREEOFF so I'd add the check to
+do_check_range().
+
+Also rather than having check_free_block(), I'd provide a helper function
+like check_dquot_block_header() which will check only free blocks pointers
+now and in later patches you can add other checks there.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
