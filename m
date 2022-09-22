@@ -2,138 +2,141 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 270F05E5D10
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Sep 2022 10:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B8755E5D25
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Sep 2022 10:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbiIVIIT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 22 Sep 2022 04:08:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46698 "EHLO
+        id S229977AbiIVIOF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 22 Sep 2022 04:14:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbiIVIIS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 22 Sep 2022 04:08:18 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C62CC8EB
-        for <linux-ext4@vger.kernel.org>; Thu, 22 Sep 2022 01:08:16 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id bj12so19144504ejb.13
-        for <linux-ext4@vger.kernel.org>; Thu, 22 Sep 2022 01:08:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=iXb0cbDYs80FVQvp3dlURrNlpg98/EoNXEVRyzUkW50=;
-        b=IHpFXTxMzEFLQHuCqKnKjLgk03sYFq1tMjEvHAzozOB9BfCb+i3KBMhvs3JlKgQj/+
-         bEMZSL0mvAsy3XH8Hmf/XLkjX9u4gNiXsuA45KPErhXW9/EHW/LMcxrQm6ohuyOJEzLP
-         WpezbHIfEgfsuCUS3VzgSBfjXcGiuMBnnuLlI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=iXb0cbDYs80FVQvp3dlURrNlpg98/EoNXEVRyzUkW50=;
-        b=4doqN9ZFgBQj0tII41pB2hnq2Rd5n/a2rP7BAp3Nc/FVv0sTdMmB5GKWWihLtjsjG2
-         eu3KemWBInPnP38N/peOg+je7jM7/r7dODZJLrcILpIxChIHHSG+5O4r3pdWIWSM5Wml
-         E9cqBMwt1DnX+k67S1G/EpxI/7bCTtXUqdMEdiaoECwk4V1h6zf8XQCKW3PT6K9ceiyO
-         M8fbb5fjeaWOLhAvl9FNOQRNKhphGkHeRp7SfJ9JGxCrUhiuoP28KZyPkmaSXTSGLPRq
-         Jdxlx9FklFx2T2zI93PECcZ433ILJTs/BqglQP4nD8IUSxVj0KsN8AeetrdrM6rw25xa
-         mSWg==
-X-Gm-Message-State: ACrzQf2WPHRh/A0c8odgGGc3gfwYQEdIMyCPbk7zU0xn3UUyioUrA8uB
-        loLDuBcdLxJNfXXG2mwo4AM3Rb7+xgZTE+f7fLaaNw==
-X-Google-Smtp-Source: AMsMyM7i6u9R9wd6F2HsmOaCSgsITPCe9fOhLfptS21SS36RpCCdvJBHZsBH+Qgv2Rg77TzYFsaXYBngYZEeV1fxkLM=
-X-Received: by 2002:a17:907:968d:b0:782:66dc:4b89 with SMTP id
- hd13-20020a170907968d00b0078266dc4b89mr478912ejc.386.1663834095090; Thu, 22
- Sep 2022 01:08:15 -0700 (PDT)
+        with ESMTP id S229819AbiIVIOE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 22 Sep 2022 04:14:04 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA3567CB2;
+        Thu, 22 Sep 2022 01:14:03 -0700 (PDT)
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MY7Kf6d7jzHply;
+        Thu, 22 Sep 2022 16:11:50 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 22 Sep 2022 16:14:01 +0800
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 22 Sep 2022 16:14:00 +0800
+Subject: Re: [PATCH 1/3] quota: Check next/prev free block number after
+ reading from quota file
+To:     Jan Kara <jack@suse.cz>
+CC:     <jack@suse.com>, <tytso@mit.edu>, <brauner@kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>
+References: <20220820110514.881373-1-chengzhihao1@huawei.com>
+ <20220820110514.881373-2-chengzhihao1@huawei.com>
+ <20220921133715.7tesk3qylombwmyk@quack3>
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <41578612-d582-79ea-bb8e-89fa19d4406e@huawei.com>
+Date:   Thu, 22 Sep 2022 16:13:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20220915164826.1396245-1-sarthakkukreti@google.com>
- <20220915164826.1396245-5-sarthakkukreti@google.com> <YylweQAZkIdb5ixo@infradead.org>
- <CAG9=OMNoG01UUStNs_Zhsv6mXZw0M0q2v54ZriJvHZ4aspvjEQ@mail.gmail.com> <YyssAb/zTcIG2bev@redhat.com>
-In-Reply-To: <YyssAb/zTcIG2bev@redhat.com>
-From:   Sarthak Kukreti <sarthakkukreti@chromium.org>
-Date:   Thu, 22 Sep 2022 01:08:03 -0700
-Message-ID: <CAG9=OMN6+ra3W2VcyvnnxRvxQz6uncSCNZvxZ8x9HgvV4GGB6w@mail.gmail.com>
-Subject: Re: [PATCH RFC 4/8] fs: Introduce FALLOC_FL_PROVISION
-To:     Mike Snitzer <snitzer@redhat.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Jens Axboe <axboe@kernel.dk>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Bart Van Assche <bvanassche@google.com>,
-        Daniil Lunev <dlunev@google.com>,
-        Evan Green <evgreen@google.com>,
-        Gwendal Grignou <gwendal@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220921133715.7tesk3qylombwmyk@quack3>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Sep 21, 2022 at 8:21 AM Mike Snitzer <snitzer@redhat.com> wrote:
->
-> On Wed, Sep 21 2022 at  1:54P -0400,
-> Sarthak Kukreti <sarthakkukreti@chromium.org> wrote:
->
-> > On Tue, Sep 20, 2022 at 12:49 AM Christoph Hellwig <hch@infradead.org> wrote:
-> > >
-> > > On Thu, Sep 15, 2022 at 09:48:22AM -0700, Sarthak Kukreti wrote:
-> > > > From: Sarthak Kukreti <sarthakkukreti@chromium.org>
-> > > >
-> > > > FALLOC_FL_PROVISION is a new fallocate() allocation mode that
-> > > > sends a hint to (supported) thinly provisioned block devices to
-> > > > allocate space for the given range of sectors via REQ_OP_PROVISION.
-> > >
-> > > So, how does that "provisioning" actually work in todays world where
-> > > storage is usually doing out of place writes in one or more layers,
-> > > including the flash storage everyone is using.  Does it give you one
-> > > write?  And unlimited number?  Some undecided number inbetween?
-> >
-> > Apologies, the patchset was a bit short on describing the semantics so
-> > I'll expand more in the next revision; I'd say that it's the minimum
-> > of regular mode fallocate() guarantees at each allocation layer. For
-> > example, the guarantees from a contrived storage stack like (left to
-> > right is bottom to top):
-> >
-> > [ mmc0blkp1 | ext4(1) | sparse file | loop | dm-thinp | dm-thin | ext4(2) ]
-> >
-> > would be predicated on the guarantees of fallocate() per allocation
-> > layer; if ext4(1) was replaced by a filesystem that did not support
-> > fallocate(), then there would be no guarantee that a write to a file
-> > on ext4(2) succeeds.
-> >
-> > For dm-thinp, in the current implementation, the provision request
-> > allocates blocks for the range specified and adds the mapping to the
-> > thinpool metadata. All subsequent writes are to the same block, so
-> > you'll be able to write to the same block inifinitely. Brian mentioned
-> > this above, one case it doesn't cover is if provision is called on a
-> > shared block, but the natural extension would be to allocate and
-> > assign a new block and copy the contents of the shared block (kind of
-> > like copy-on-provision).
->
-> It follows that ChromiumOS isn't using dm-thinp's snapshot support?
->
-Not at the moment, but we definitely have ideas to explore re:snapshot
-and dm-thinp (like A-B updates with thin volume snapshots), where this
-would definitely be useful!
+ÔÚ 2022/9/21 21:37, Jan Kara Ð´µÀ:
+Hi Jan,
+> On Sat 20-08-22 19:05:12, Zhihao Cheng wrote:
+>> Following process:
+[...]
+>>
+>> Link: https://bugzilla.kernel.org/show_bug.cgi?id=216372
+>> Fixes: 1da177e4c3f4152 ("Linux-2.6.12-rc2")
+> 
+> It's better to just have:
+> 
+> CC: stable@vger.kernel.org
+> 
+> here. Fixes tag pointing to kernel release is not very useful.
+Will add in v2.
+> 
+>> --- a/fs/quota/quota_tree.c
+>> +++ b/fs/quota/quota_tree.c
+>> @@ -71,6 +71,35 @@ static ssize_t write_blk(struct qtree_mem_dqinfo *info, uint blk, char *buf)
+>>   	return ret;
+>>   }
+>>   
+>> +static inline int do_check_range(struct super_block *sb, uint val, uint max_val)
+>> +{
+>> +	if (val >= max_val) {
+>> +		quota_error(sb, "Getting block too big (%u >= %u)",
+>> +			    val, max_val);
+>> +		return -EUCLEAN;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+> 
+> I'd already provide min_val and the string for the message here as well (as
+> you do in patch 2). It is less churn in the next patch and free blocks
+> checking actually needs that as well. See below.
+> 
+>> +
+>> +static int check_free_block(struct qtree_mem_dqinfo *info,
+>> +			    struct qt_disk_dqdbheader *dh)
+>> +{
+>> +	int err = 0;
+>> +	uint nextblk, prevblk;
+>> +
+>> +	nextblk = le32_to_cpu(dh->dqdh_next_free);
+>> +	err = do_check_range(info->dqi_sb, nextblk, info->dqi_blocks);
+>> +	if (err)
+>> +		return err;
+>> +	prevblk = le32_to_cpu(dh->dqdh_prev_free);
+>> +	err = do_check_range(info->dqi_sb, prevblk, info->dqi_blocks);
+>> +	if (err)
+>> +		return err;
+> 
+> The free block should actually be > QT_TREEOFF so I'd add the check to
+> do_check_range().
 
-> But please do fold in incremental dm-thinp support to properly handle
-> shared blocks (dm-thinp already handles breaking sharing, etc.. so
-> I'll need to see where you're hooking into that you don't get this
-> "for free").
->
-Will do in v2. Thanks for the feedback.
+'dh->dqdh_next_free' may be updated when quota entry removed, 
+'dh->dqdh_next_free' can be used for next new quota entris.
+Before sending v2, I found 'dh->dqdh_next_free' and 'dh->dqdh_prev_free' 
+can easily be zero in newly allocated blocks when continually creating 
+files onwed by different users:
+find_free_dqentry
+   get_free_dqblk
+     write_blk(info, info->dqi_blocks, buf)  // zero'd qt_disk_dqdbheader
+     blk = info->dqi_blocks++   // allocate new one block
+   info->dqi_free_entry = blk   // will be used for new quota entries
 
-Best
-Sarthak
+find_free_dqentry
+   if (info->dqi_free_entry)
+     blk = info->dqi_free_entry
+     read_blk(info, blk, buf)   // dh->dqdh_next_free = 
+dh->dqdh_prev_free = 0
 
-> Mike
->
+I think it's normal when 'dh->dqdh_next_free' or 'dh->dqdh_prev_free' 
+equals to 0.
+> 
+> Also rather than having check_free_block(), I'd provide a helper function
+> like check_dquot_block_header() which will check only free blocks pointers
+> now and in later patches you can add other checks there.
+OK, will be updated in v2.
+> 
+> 								Honza
+> 
+
