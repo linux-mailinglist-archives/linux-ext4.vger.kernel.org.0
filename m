@@ -2,163 +2,175 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A82795E5E38
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Sep 2022 11:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3423A5E5FA8
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Sep 2022 12:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbiIVJPr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 22 Sep 2022 05:15:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54176 "EHLO
+        id S230133AbiIVKS2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 22 Sep 2022 06:18:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbiIVJPq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 22 Sep 2022 05:15:46 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C3CB40F6;
-        Thu, 22 Sep 2022 02:15:44 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S230125AbiIVKS1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 22 Sep 2022 06:18:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70697DC127;
+        Thu, 22 Sep 2022 03:18:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id AFA9C219C9;
-        Thu, 22 Sep 2022 09:15:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1663838142; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0nJel4HKBq2pcIN2vnt5G5EqJOO7OGmT27bntvu5tyU=;
-        b=CJH0ulDFIv8vK/NuyJes/w7roVw9H/+UgNa06LoVK7HfKdODqCZ8nJnClJEXmvTl6a0wnZ
-        Q4dMkFSI0KkBaM5571DRHzB8S/3x5M0hgwOd3UiT5zI1xqQ6ve6UbrZ0LpADN4LqITcXj/
-        rTCl8fGm5Zs44lNPKtCmV6jnTFowo6o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1663838142;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0nJel4HKBq2pcIN2vnt5G5EqJOO7OGmT27bntvu5tyU=;
-        b=S0hdF5Z8mcPMmf5P6KcwiWlAmzMCm35hcToHrAfDUDOHwnYSNeQKrP1bS6baOECOqdkoQf
-        xuRf6nVcMOtCqrAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8F5EF1346B;
-        Thu, 22 Sep 2022 09:15:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id +Iv0Ir4nLGNxeQAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 22 Sep 2022 09:15:42 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 0C796A0684; Thu, 22 Sep 2022 11:15:42 +0200 (CEST)
-Date:   Thu, 22 Sep 2022 11:15:42 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     jack@suse.cz, harshadshirwadkar@gmail.com, stable@vger.kernel.org,
-        ritesh.list@gmail.com, stefan.wahren@i2se.com,
-        ojaswin@linux.ibm.com, linux-ext4@vger.kernel.org,
-        regressions@leemhuis.info
-Subject: Re: [PATCH 1/5] ext4: Make mballoc try target group first even with
- mb_optimize_scan
-Message-ID: <20220922091542.pkhedytey7wzp5fi@quack3>
-References: <20220908091301.147-1-jack@suse.cz>
- <20220908092136.11770-1-jack@suse.cz>
- <166381513758.2957616.15274082762134894004.b4-ty@mit.edu>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0CCA062B00;
+        Thu, 22 Sep 2022 10:18:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35CF4C433C1;
+        Thu, 22 Sep 2022 10:18:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1663841905;
+        bh=unHNLjgsxiDp0S08RPmDJfG3btH8Okc+VlSD5IufLJI=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=M1OQe0cNsUxh7Q+Z8ii8q5aOdDgyIr1XG8dnke5SmJWCwHFnkij36gn/docRxA4yM
+         MuSoMVc/vYqYek/J5ljXykCsW/Yt2ds9nyIixqYhufxTMhY6oJxNVFkoWFncYeK0m3
+         B/nJNnHLSEQTDexJE9j9Vb3wh8FEM9lYjwpjP2gyi9PXGutwpEZWhrE3k508Za1OgR
+         LZ40Tq/pBypLlYOgS1YZq0P5n9qlmjmKTHq0R5Mvvb+Y1DgbfstiLRyhIFCk4NhAXp
+         9g4LRA9fYfU87UeWRmcF5b0izvQ9a6mwlwm75HPt8ZDaOPLnhtBnw+emqSPML4Jk0r
+         GZZonnTYPze8Q==
+Message-ID: <e04e349170bc227b330556556d0592a53692b5b5.camel@kernel.org>
+Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
+ STATX_INO_VERSION field
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>, NeilBrown <neilb@suse.de>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        "bfields@fieldses.org" <bfields@fieldses.org>,
+        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "djwong@kernel.org" <djwong@kernel.org>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "fweimer@redhat.com" <fweimer@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
+        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "jack@suse.cz" <jack@suse.cz>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "xiubli@redhat.com" <xiubli@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
+        "lczerner@redhat.com" <lczerner@redhat.com>,
+        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Date:   Thu, 22 Sep 2022 06:18:21 -0400
+In-Reply-To: <20220921214124.GS3600936@dread.disaster.area>
+References: <166328063547.15759.12797959071252871549@noble.neil.brown.name>
+         <YyQdmLpiAMvl5EkU@mit.edu>
+         <7027d1c2923053fe763e9218d10ce8634b56e81d.camel@kernel.org>
+         <24005713ad25370d64ab5bd0db0b2e4fcb902c1c.camel@kernel.org>
+         <20220918235344.GH3600936@dread.disaster.area>
+         <87fb43b117472c0a4c688c37a925ac51738c8826.camel@kernel.org>
+         <20220920001645.GN3600936@dread.disaster.area>
+         <5832424c328ea427b5c6ecdaa6dd53f3b99c20a0.camel@kernel.org>
+         <20220921000032.GR3600936@dread.disaster.area>
+         <93b6d9f7cf997245bb68409eeb195f9400e55cd0.camel@kernel.org>
+         <20220921214124.GS3600936@dread.disaster.area>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="sufjmcoi5s6ibxqm"
-Content-Disposition: inline
-In-Reply-To: <166381513758.2957616.15274082762134894004.b4-ty@mit.edu>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Thu, 2022-09-22 at 07:41 +1000, Dave Chinner wrote:
+> On Wed, Sep 21, 2022 at 06:33:28AM -0400, Jeff Layton wrote:
+> > On Wed, 2022-09-21 at 10:00 +1000, Dave Chinner wrote:
+> > > > How do we determine what that offset should be? Your last email
+> > > > suggested that there really is no limit to the number of i_version =
+bumps
+> > > > that can happen in memory before one of them makes it to disk. What=
+ can
+> > > > we do to address that?
+> > >=20
+> > > <shrug>
+> > >=20
+> > > I'm just pointing out problems I see when defining this as behaviour
+> > > for on-disk format purposes. If we define it as part of the on-disk
+> > > format, then we have to be concerned about how it may be used
+> > > outside the scope of just the NFS server application.=20
+> > >=20
+> > > However, If NFS keeps this metadata and functionaly entirely
+> > > contained at the application level via xattrs, I really don't care
+> > > what algorithm NFS developers decides to use for their crash
+> > > sequencing. It's not my concern at this point, and that's precisely
+> > > why NFS should be using xattrs for this NFS specific functionality.
+> > >=20
+> >=20
+> > I get it: you'd rather not have to deal with what you see as an NFS
+> > problem, but I don't get how what you're proposing solves anything. We
+> > might be able to use that scheme to detect crashes, but that's only par=
+t
+> > of the problem (and it's a relatively simple part of the problem to
+> > solve, really).
+> >=20
+> > Maybe you can clarify it for me:
+> >=20
+> > Suppose we go with what you're saying and store some information in
+> > xattrs that allows us to detect crashes in some fashion. The server
+> > crashes and comes back up and we detect that there was a crash earlier.
+> >=20
+> > What does nfsd need to do now to ensure that it doesn't hand out a
+> > duplicate change attribute?=20
+>=20
+> As I've already stated, the NFS server can hold the persistent NFS
+> crash counter value in a second xattr that it bumps whenever it
+> detects a crash and hence we take the local filesystem completely
+> out of the equation.  How the crash counter is then used by the nfsd
+> to fold it into the NFS protocol change attribute is a nfsd problem,
+> not a local filesystem problem.
+>=20
 
---sufjmcoi5s6ibxqm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Ok, assuming you mean put this in an xattr that lives at the root of the
+export? We only need this for IS_I_VERSION filesystems (btrfs, xfs, and
+ext4), and they all support xattrs so this scheme should work.
 
-On Wed 21-09-22 22:52:34, Theodore Ts'o wrote:
-> On Thu, 8 Sep 2022 11:21:24 +0200, Jan Kara wrote:
-> > One of the side-effects of mb_optimize_scan was that the optimized
-> > functions to select next group to try were called even before we tried
-> > the goal group. As a result we no longer allocate files close to
-> > corresponding inodes as well as we don't try to expand currently
-> > allocated extent in the same group. This results in reaim regression
-> > with workfile.disk workload of upto 8% with many clients on my test
-> > machine:
-> > 
-> > [...]
-> 
-> Applied, thanks!
-> 
-> [1/5] ext4: Make mballoc try target group first even with mb_optimize_scan
->       commit: 4fca50d440cc5d4dc570ad5484cc0b70b381bc2a
-> [2/5] ext4: Avoid unnecessary spreading of allocations among groups
->       commit: 1940265ede6683f6317cba0d428ce6505eaca944
-> [3/5] ext4: Make directory inode spreading reflect flexbg size
->       commit: 613c5a85898d1cd44e68f28d65eccf64a8ace9cf
-> [4/5] ext4: Use locality group preallocation for small closed files
->       commit: a9f2a2931d0e197ab28c6007966053fdababd53f
-> [5/5] ext4: Use buckets for cr 1 block scan instead of rbtree
->       commit: 83e80a6e3543f37f74c8e48a5f305b054b65ce2a
+> If you're worried about maximum number of writes outstanding vs
+> i_version bumps that are held in memory, then *bound the maximum
+> number of uncommitted i_version changes that the NFS server will
+> allow to build up in memory*. By moving the crash counter to being a
+> NFS server only function, the NFS server controls the entire
+> algorithm and it doesn't have to care about external 3rd party
+> considerations like local filesystems have to.
+>=20
 
-Thanks Ted! I just have locally a small fixup to the series that was reported
-by Smatch. It is attached, either fold it into the last patch or just merge
-it as a separate patch. Thanks!
+Yeah, this is the bigger consideration.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> e.g. The NFS server can track the i_version values when the NFSD
+> syncs/commits a given inode. The nfsd can sample i_version it when
+> calls ->commit_metadata or flushed data on the inode, and then when
+> it peeks at i_version when gathering post-op attrs (or any other
+> getattr op) it can decide that there is too much in-memory change
+> (e.g. 10,000 counts since last sync) and sync the inode.
+>=20
+> i.e. the NFS server can trivially cap the maximum number of
+> uncommitted NFS change attr bumps it allows to build up in memory.
+> At that point, the NFS server has a bound "maximum write count" that
+> can be used in conjunction with the xattr based crash counter to
+> determine how the change_attr is bumped by the crash counter.
 
---sufjmcoi5s6ibxqm
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment;
-	filename="0001-ext4-Fixup-possible-uninitialized-variable-access-in.patch"
+Well, not "trivially". This is the bit where we have to grow struct
+inode (or the fs-specific inode), as we'll need to know what the latest
+on-disk value is for the inode.
 
-From 8885b11fb253e08ecfa90a28beffb01719af84f5 Mon Sep 17 00:00:00 2001
-From: Jan Kara <jack@suse.cz>
-Date: Thu, 22 Sep 2022 11:09:29 +0200
-Subject: [PATCH] ext4: Fixup possible uninitialized variable access in
- ext4_mb_choose_next_group_cr1()
+I'm leaning toward doing this on the query side. Basically, when nfsd
+goes to query the i_version, it'll check the delta between the current
+version and the latest one on disk. If it's bigger than X then we'd just
+return NFS4ERR_DELAY to the client.
 
-Variable 'grp' may be left uninitialized if there's no group with
-suitable average fragment size (or larger). Fix the problem by
-initializing it earlier.
-
-Fixes: 83e80a6e3543 ("ext4: use buckets for cr 1 block scan instead of rbtree")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/mballoc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 71f5b67d7f28..9dad93059945 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -910,7 +910,7 @@ static void ext4_mb_choose_next_group_cr1(struct ext4_allocation_context *ac,
- 		int *new_cr, ext4_group_t *group, ext4_group_t ngroups)
- {
- 	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
--	struct ext4_group_info *grp, *iter;
-+	struct ext4_group_info *grp = NULL, *iter;
- 	int i;
- 
- 	if (unlikely(ac->ac_flags & EXT4_MB_CR1_OPTIMIZED)) {
-@@ -927,7 +927,6 @@ static void ext4_mb_choose_next_group_cr1(struct ext4_allocation_context *ac,
- 			read_unlock(&sbi->s_mb_avg_fragment_size_locks[i]);
- 			continue;
- 		}
--		grp = NULL;
- 		list_for_each_entry(iter, &sbi->s_mb_avg_fragment_size[i],
- 				    bb_avg_fragment_size_node) {
- 			if (sbi->s_mb_stats)
--- 
-2.35.3
-
-
---sufjmcoi5s6ibxqm--
+If the delta is >X/2, maybe it can kick off a workqueue job or something
+that calls write_inode with WB_SYNC_ALL to try to get the thing onto the
+platter ASAP.
+--=20
+Jeff Layton <jlayton@kernel.org>
