@@ -2,141 +2,140 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B8755E5D25
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Sep 2022 10:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 866E05E5E12
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Sep 2022 11:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbiIVIOF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 22 Sep 2022 04:14:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54318 "EHLO
+        id S229470AbiIVJAv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 22 Sep 2022 05:00:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbiIVIOE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 22 Sep 2022 04:14:04 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA3567CB2;
-        Thu, 22 Sep 2022 01:14:03 -0700 (PDT)
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MY7Kf6d7jzHply;
-        Thu, 22 Sep 2022 16:11:50 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 22 Sep 2022 16:14:01 +0800
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 22 Sep 2022 16:14:00 +0800
-Subject: Re: [PATCH 1/3] quota: Check next/prev free block number after
- reading from quota file
-To:     Jan Kara <jack@suse.cz>
-CC:     <jack@suse.com>, <tytso@mit.edu>, <brauner@kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>
-References: <20220820110514.881373-1-chengzhihao1@huawei.com>
- <20220820110514.881373-2-chengzhihao1@huawei.com>
- <20220921133715.7tesk3qylombwmyk@quack3>
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <41578612-d582-79ea-bb8e-89fa19d4406e@huawei.com>
-Date:   Thu, 22 Sep 2022 16:13:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        with ESMTP id S229461AbiIVJAt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 22 Sep 2022 05:00:49 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81BEC90C79;
+        Thu, 22 Sep 2022 02:00:48 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 807521F37F;
+        Thu, 22 Sep 2022 09:00:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1663837245; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZOc07hI/fXyP1LUQlxgxxUDV+HgejEBOXvhqSCkzves=;
+        b=Ta3ASpkhxk5y0XEhr2ctyQY9Wz8L3VdF1sFkYW0cOFF/HmLlD5r4/eODCHWUsVONbLeeIu
+        FrZpTMp47UGIG50UND4f+rvB9kaLgAaN5pPEYZQA1ZPuIiq0YJzg1A0PA+1KbnkN6Z+G9r
+        zk3R3K1yatgFWFPFdyzoP8WbGoDfJG8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1663837245;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZOc07hI/fXyP1LUQlxgxxUDV+HgejEBOXvhqSCkzves=;
+        b=8JbX2hGfZF3eogC7UiTq6BddSiX+USLQxadE40PtiAEscE2bkFWnFzjdm1i1LoZsRmdgEo
+        rvBVnTT6SCu/p9BQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 64EAC1346B;
+        Thu, 22 Sep 2022 09:00:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id UR2YGD0kLGNkcgAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 22 Sep 2022 09:00:45 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id CB985A0684; Thu, 22 Sep 2022 11:00:44 +0200 (CEST)
+Date:   Thu, 22 Sep 2022 11:00:44 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+        lczerner@redhat.com, enwlinux@gmail.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yebin10@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH] ext4: fix use-after-free in ext4_ext_shift_extents
+Message-ID: <20220922090044.stl32ssbzpebcx7d@quack3>
+References: <20220921134218.3577001-1-libaokun1@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20220921133715.7tesk3qylombwmyk@quack3>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220921134218.3577001-1-libaokun1@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-ÔÚ 2022/9/21 21:37, Jan Kara Ð´µÀ:
-Hi Jan,
-> On Sat 20-08-22 19:05:12, Zhihao Cheng wrote:
->> Following process:
-[...]
->>
->> Link: https://bugzilla.kernel.org/show_bug.cgi?id=216372
->> Fixes: 1da177e4c3f4152 ("Linux-2.6.12-rc2")
+On Wed 21-09-22 21:42:18, Baokun Li wrote:
+> If the starting position of our insert range happens to be in the hole
+> between the two ext4_extent_idx, because the lblk of the ext4_extent in
+> the previous ext4_extent_idx is always less than the start, which leads
+> to the "extent" variable access across the boundary, the following UAF is
+> triggered:
+> ==================================================================
+> BUG: KASAN: use-after-free in ext4_ext_shift_extents+0x257/0x790
+> Read of size 4 at addr ffff88819807a008 by task fallocate/8010
+> CPU: 3 PID: 8010 Comm: fallocate Tainted: G            E     5.10.0+ #492
+> Call Trace:
+>  dump_stack+0x7d/0xa3
+>  print_address_description.constprop.0+0x1e/0x220
+>  kasan_report.cold+0x67/0x7f
+>  ext4_ext_shift_extents+0x257/0x790
+>  ext4_insert_range+0x5b6/0x700
+>  ext4_fallocate+0x39e/0x3d0
+>  vfs_fallocate+0x26f/0x470
+>  ksys_fallocate+0x3a/0x70
+>  __x64_sys_fallocate+0x4f/0x60
+>  do_syscall_64+0x33/0x40
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> ==================================================================
 > 
-> It's better to just have:
+> To solve this issue, when the ee_block of the last extent is less than
+> the start, exit the loop in advance to avoid UAF.
 > 
-> CC: stable@vger.kernel.org
-> 
-> here. Fixes tag pointing to kernel release is not very useful.
-Will add in v2.
-> 
->> --- a/fs/quota/quota_tree.c
->> +++ b/fs/quota/quota_tree.c
->> @@ -71,6 +71,35 @@ static ssize_t write_blk(struct qtree_mem_dqinfo *info, uint blk, char *buf)
->>   	return ret;
->>   }
->>   
->> +static inline int do_check_range(struct super_block *sb, uint val, uint max_val)
->> +{
->> +	if (val >= max_val) {
->> +		quota_error(sb, "Getting block too big (%u >= %u)",
->> +			    val, max_val);
->> +		return -EUCLEAN;
->> +	}
->> +
->> +	return 0;
->> +}
-> 
-> I'd already provide min_val and the string for the message here as well (as
-> you do in patch 2). It is less churn in the next patch and free blocks
-> checking actually needs that as well. See below.
-> 
->> +
->> +static int check_free_block(struct qtree_mem_dqinfo *info,
->> +			    struct qt_disk_dqdbheader *dh)
->> +{
->> +	int err = 0;
->> +	uint nextblk, prevblk;
->> +
->> +	nextblk = le32_to_cpu(dh->dqdh_next_free);
->> +	err = do_check_range(info->dqi_sb, nextblk, info->dqi_blocks);
->> +	if (err)
->> +		return err;
->> +	prevblk = le32_to_cpu(dh->dqdh_prev_free);
->> +	err = do_check_range(info->dqi_sb, prevblk, info->dqi_blocks);
->> +	if (err)
->> +		return err;
-> 
-> The free block should actually be > QT_TREEOFF so I'd add the check to
-> do_check_range().
+> Fixes: 331573febb6a ("ext4: Add support FALLOC_FL_INSERT_RANGE for fallocate")
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 
-'dh->dqdh_next_free' may be updated when quota entry removed, 
-'dh->dqdh_next_free' can be used for next new quota entris.
-Before sending v2, I found 'dh->dqdh_next_free' and 'dh->dqdh_prev_free' 
-can easily be zero in newly allocated blocks when continually creating 
-files onwed by different users:
-find_free_dqentry
-   get_free_dqblk
-     write_blk(info, info->dqi_blocks, buf)  // zero'd qt_disk_dqdbheader
-     blk = info->dqi_blocks++   // allocate new one block
-   info->dqi_free_entry = blk   // will be used for new quota entries
+Nice catch. The fix looks mostly good, just one small thing noted below.
 
-find_free_dqentry
-   if (info->dqi_free_entry)
-     blk = info->dqi_free_entry
-     read_blk(info, blk, buf)   // dh->dqdh_next_free = 
-dh->dqdh_prev_free = 0
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index c148bb97b527..25fc1f4b35a5 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -5216,11 +5216,18 @@ ext4_ext_shift_extents(struct inode *inode, handle_t *handle,
+>  		}
+>  
+>  		tmp = *iterator;
+> +		extent = EXT_LAST_EXTENT(path[depth].p_hdr);
+>  		if (SHIFT == SHIFT_LEFT) {
+> -			extent = EXT_LAST_EXTENT(path[depth].p_hdr);
+>  			*iterator = le32_to_cpu(extent->ee_block) +
+>  					ext4_ext_get_actual_len(extent);
+>  		} else {
+> +			/*
+> +			 * start happens to be in the hole between
+> +			 * the two ext4_extent_idx.
+> +			 */
+> +			if (le32_to_cpu(extent->ee_block) < start)
+> +				break;
 
-I think it's normal when 'dh->dqdh_next_free' or 'dh->dqdh_prev_free' 
-equals to 0.
-> 
-> Also rather than having check_free_block(), I'd provide a helper function
-> like check_dquot_block_header() which will check only free blocks pointers
-> now and in later patches you can add other checks there.
-OK, will be updated in v2.
-> 
-> 								Honza
-> 
+I think you need to initialize 'ret' somewhere (probably just after the
+again: label would make most sense) so that we don't accidentally return
+-EAGAIN here.
 
+> +
+>  			extent = EXT_FIRST_EXTENT(path[depth].p_hdr);
+>  			if (le32_to_cpu(extent->ee_block) > 0)
+>  				*iterator = le32_to_cpu(extent->ee_block) - 1;
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
