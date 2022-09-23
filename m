@@ -2,164 +2,138 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 088005E7DD7
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Sep 2022 17:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 572D25E7E09
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Sep 2022 17:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231371AbiIWPFI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 23 Sep 2022 11:05:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37454 "EHLO
+        id S231160AbiIWPPc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 23 Sep 2022 11:15:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbiIWPFH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Sep 2022 11:05:07 -0400
-X-Greylist: delayed 327 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 23 Sep 2022 08:05:00 PDT
-Received: from mta-102a.earthlink-vadesecure.net (mta-102a.earthlink-vadesecure.net [51.81.61.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECAB452FE3;
-        Fri, 23 Sep 2022 08:04:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; bh=N+Y2Asvd9JPiLkBH1FxZjhC7Kvt1Am28CEudYX
- K+k9M=; c=relaxed/relaxed; d=earthlink.net; h=from:reply-to:subject:
- date:to:cc:resent-date:resent-from:resent-to:resent-cc:in-reply-to:
- references:list-id:list-help:list-unsubscribe:list-subscribe:list-post:
- list-owner:list-archive; q=dns/txt; s=dk12062016; t=1663945138;
- x=1664549938; b=QzIpgTeRhzk+oXAG0w2wXTk3knt7B6hPDgYBU9ZvjKI0wg8sqPEQWaq
- gYfzosQZ/cIs1/vwH3hunDFSzEloIxot7aQ6GlAMW3axqZdwRDbcZgLWVdJHrFVwc5fXxuU
- Pcsfdc8kPelR3ruy9zezXHbqo+aZEcZpKPDyspB1RJOfBlzMphkoI/s6yyuXpGEZUmN0HQu
- xtqzMM2an+D6o9ulXwtv6R/ro4om2RpGMUnUA33qDOTFfeYCLUxojgy5vz8vrg8My0jkRLx
- xUACYrUDkw91O3ZAOmZbMVrAhRXehF3V0zflpsm1oL41wD5r7q4pCMkHy/qEE4K+tId4gYL
- H1g==
-Received: from FRANKSTHINKPAD ([76.105.143.216])
- by smtp.earthlink-vadesecure.net ESMTP vsel1nmtao02p with ngmta
- id 22c3a592-17178548f48eb86d; Fri, 23 Sep 2022 14:58:57 +0000
-From:   "Frank Filz" <ffilzlnx@mindspring.com>
-To:     "'Jeff Layton'" <jlayton@kernel.org>,
-        "'Trond Myklebust'" <trondmy@hammerspace.com>, <jack@suse.cz>
-Cc:     <zohar@linux.ibm.com>, <djwong@kernel.org>, <brauner@kernel.org>,
-        <linux-xfs@vger.kernel.org>, <bfields@fieldses.org>,
-        <linux-api@vger.kernel.org>, <neilb@suse.de>,
-        <david@fromorbit.com>, <fweimer@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <chuck.lever@oracle.com>,
-        <linux-man@vger.kernel.org>, <linux-nfs@vger.kernel.org>,
-        <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
-        <viro@zeniv.linux.org.uk>, <xiubli@redhat.com>,
-        <linux-fsdevel@vger.kernel.org>, <adilger.kernel@dilger.ca>,
-        <lczerner@redhat.com>, <ceph-devel@vger.kernel.org>,
-        <linux-btrfs@vger.kernel.org>
-References: <24005713ad25370d64ab5bd0db0b2e4fcb902c1c.camel@kernel.org>         <20220918235344.GH3600936@dread.disaster.area>         <87fb43b117472c0a4c688c37a925ac51738c8826.camel@kernel.org>         <20220920001645.GN3600936@dread.disaster.area>         <5832424c328ea427b5c6ecdaa6dd53f3b99c20a0.camel@kernel.org>         <20220921000032.GR3600936@dread.disaster.area>         <93b6d9f7cf997245bb68409eeb195f9400e55cd0.camel@kernel.org>         <20220921214124.GS3600936@dread.disaster.area>         <e04e349170bc227b330556556d0592a53692b5b5.camel@kernel.org>         <1ef261e3ff1fa7fcd0d75ed755931aacb8062de2.camel@kernel.org>         <20220923095653.5c63i2jgv52j3zqp@quack3>         <2d41c08e1fd96d55c794c3b4cd43a51a0494bfcf.camel@hammerspace.com> <baf852dfb57aaf5a670bc88236f8d62c99668fcc.camel@kernel.org>
-In-Reply-To: <baf852dfb57aaf5a670bc88236f8d62c99668fcc.camel@kernel.org>
-Subject: RE: [man-pages RFC PATCH v4] statx, inode: document the new STATX_INO_VERSION field
-Date:   Fri, 23 Sep 2022 07:58:55 -0700
-Message-ID: <01ae01d8cf5d$023474d0$069d5e70$@mindspring.com>
+        with ESMTP id S232525AbiIWPPV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Sep 2022 11:15:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58574055C
+        for <linux-ext4@vger.kernel.org>; Fri, 23 Sep 2022 08:15:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1663946108;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=i/7qErjHQwpjdxeuxG56UOY53/Pb3ceXUixswzrpqTk=;
+        b=bFBFyrGJUWMRmMxQa1IWFql0ZOi36fAqmXNFYBD2AqxN0IGNlLlB6ZsBVYjErT8abruYl4
+        hs8yrfeK/BXujeLGn3BX+RPGUGW5sx5lfESinS/GuarSlOoYTJ65+S6z6H3uk1OtnZCeWo
+        onUxdw3ygOUJUFcp0wQi3kjVr5agmE8=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-312-jRum1SovPUivFiyxVM4fNg-1; Fri, 23 Sep 2022 11:15:07 -0400
+X-MC-Unique: jRum1SovPUivFiyxVM4fNg-1
+Received: by mail-qk1-f198.google.com with SMTP id bs33-20020a05620a472100b006cef8cfabe2so226602qkb.12
+        for <linux-ext4@vger.kernel.org>; Fri, 23 Sep 2022 08:15:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=i/7qErjHQwpjdxeuxG56UOY53/Pb3ceXUixswzrpqTk=;
+        b=eQRnRY5WWI1zaMkWTIeA1q74qXkh3lh6qUeWwMFiLjJUh3uenX7R6oJbGBbPUigoT6
+         or1VUr4QXQgaAuiLuY3K2zQvSPQsCcy89xd4vzzwEt57u0Z4hN81RtZ3os33yo6tEJxB
+         S0nANgLOjbWQGug/RJUsjxMIy8yGKuegrHBziy/b0lfr6XZa3piUXdNyMUKG9IZj0Her
+         N4RK8tt9vbCb9Cs9RclyIyRw7Bj6oVEsOmjsHU73qIvZ86XYLDU50n5Dkdcw+06pANwZ
+         ikFun0N5vZF+OZrGhRibIkDagCqb/tA5Ywl4D+dbVrCAiTBoueay2VLGn0lIPX/RiNbY
+         p/TA==
+X-Gm-Message-State: ACrzQf1kZuzTFmaoGTwQ0aX4NBdXwMeQh9F1bC3cMY29IsrlMDi1QffZ
+        cNG7H0/2KKUuBbw3Vd9hCAM4MTKAJWLp4qeBCvy7HI4zF5yQWzWRFUcnWFO2HnEsQ7VWTp6QBX7
+        w4RP/McsQSJAuEwAa0A5z
+X-Received: by 2002:a05:6214:76b:b0:4ac:be62:d2e5 with SMTP id f11-20020a056214076b00b004acbe62d2e5mr7176235qvz.91.1663946106769;
+        Fri, 23 Sep 2022 08:15:06 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM5Jg5JqThdy0P5kS2uSLUoQ3+kfdp9Ppg4QGXjxFRDk5XYyybGVmtH43Lh/lTr6N1EDYoCkpg==
+X-Received: by 2002:a05:6214:76b:b0:4ac:be62:d2e5 with SMTP id f11-20020a056214076b00b004acbe62d2e5mr7176213qvz.91.1663946106592;
+        Fri, 23 Sep 2022 08:15:06 -0700 (PDT)
+Received: from localhost (pool-68-160-173-162.bstnma.fios.verizon.net. [68.160.173.162])
+        by smtp.gmail.com with ESMTPSA id g12-20020ac8468c000000b0035cb9531851sm5432876qto.65.2022.09.23.08.15.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Sep 2022 08:15:06 -0700 (PDT)
+Date:   Fri, 23 Sep 2022 11:15:05 -0400
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
+Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Jens Axboe <axboe@kernel.dk>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Bart Van Assche <bvanassche@google.com>,
+        Daniil Lunev <dlunev@google.com>,
+        Evan Green <evgreen@google.com>,
+        Gwendal Grignou <gwendal@google.com>
+Subject: Re: [PATCH RFC 1/8] block: Introduce provisioning primitives
+Message-ID: <Yy3NeY02zEMLTdsa@redhat.com>
+References: <20220915164826.1396245-1-sarthakkukreti@google.com>
+ <20220915164826.1396245-2-sarthakkukreti@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQFW5LMVvccUT9xKG5h5MPweA5KIXgISgRYwAs1S4t4CKHGUMgGdhacVAWuMxX0CYnVaogHQtV08AvqrgvECS3OfOAJ2umjmAsymCyIDAUdIdq4SdV6g
-Content-Language: en-us
-Authentication-Results: earthlink-vadesecure.net;
- auth=pass smtp.auth=ffilzlnx@mindspring.com smtp.mailfrom=ffilzlnx@mindspring.com;
-X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220915164826.1396245-2-sarthakkukreti@google.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Thu, Sep 15 2022 at 12:48P -0400,
+Sarthak Kukreti <sarthakkukreti@chromium.org> wrote:
 
-
-> -----Original Message-----
-> From: Jeff Layton [mailto:jlayton@kernel.org]
-> Sent: Friday, September 23, 2022 6:50 AM
-> To: Trond Myklebust <trondmy@hammerspace.com>; jack@suse.cz
-> Cc: zohar@linux.ibm.com; djwong@kernel.org; brauner@kernel.org; linux-
-> xfs@vger.kernel.org; bfields@fieldses.org; linux-api@vger.kernel.org;
-> neilb@suse.de; david@fromorbit.com; fweimer@redhat.com; linux-
-> kernel@vger.kernel.org; chuck.lever@oracle.com; linux-man@vger.kernel.org;
-> linux-nfs@vger.kernel.org; linux-ext4@vger.kernel.org; tytso@mit.edu;
-> viro@zeniv.linux.org.uk; xiubli@redhat.com; linux-fsdevel@vger.kernel.org;
-> adilger.kernel@dilger.ca; lczerner@redhat.com; ceph-devel@vger.kernel.org;
-> linux-btrfs@vger.kernel.org
-> Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
-> STATX_INO_VERSION field
+> From: Sarthak Kukreti <sarthakkukreti@chromium.org>
 > 
-> On Fri, 2022-09-23 at 13:44 +0000, Trond Myklebust wrote:
-> > On Fri, 2022-09-23 at 11:56 +0200, Jan Kara wrote:
-> > > On Thu 22-09-22 16:18:02, Jeff Layton wrote:
-> > > > On Thu, 2022-09-22 at 06:18 -0400, Jeff Layton wrote:
-> > > > > On Thu, 2022-09-22 at 07:41 +1000, Dave Chinner wrote:
-> > > > > > e.g. The NFS server can track the i_version values when the
-> > > > > > NFSD syncs/commits a given inode. The nfsd can sample
-> > > > > > i_version it when calls ->commit_metadata or flushed data on
-> > > > > > the inode, and then when it peeks at i_version when gathering
-> > > > > > post-op attrs (or any other getattr op) it can decide that
-> > > > > > there is too much in-memory change (e.g. 10,000 counts since
-> > > > > > last sync) and sync the inode.
-> > > > > >
-> > > > > > i.e. the NFS server can trivially cap the maximum number of
-> > > > > > uncommitted NFS change attr bumps it allows to build up in
-> > > > > > memory.
-> > > > > > At that point, the NFS server has a bound "maximum write count"
-> > > > > > that
-> > > > > > can be used in conjunction with the xattr based crash counter
-> > > > > > to determine how the change_attr is bumped by the crash
-> > > > > > counter.
-> > > > >
-> > > > > Well, not "trivially". This is the bit where we have to grow
-> > > > > struct inode (or the fs-specific inode), as we'll need to know
-> > > > > what the latest on-disk value is for the inode.
-> > > > >
-> > > > > I'm leaning toward doing this on the query side. Basically, when
-> > > > > nfsd goes to query the i_version, it'll check the delta between
-> > > > > the current version and the latest one on disk. If it's bigger
-> > > > > than X then we'd just return NFS4ERR_DELAY to the client.
-> > > > >
-> > > > > If the delta is >X/2, maybe it can kick off a workqueue job or
-> > > > > something that calls write_inode with WB_SYNC_ALL to try to get
-> > > > > the thing onto the platter ASAP.
-> > > >
-> > > > Still looking at this bit too. Probably we can just kick off a
-> > > > WB_SYNC_NONE filemap_fdatawrite at that point and hope for the
-> > > > best?
-> > >
-> > > "Hope" is not a great assurance regarding data integrity ;) Anyway,
-> > > it depends on how you imagine the "i_version on disk" is going to be
-> > > maintained. It could be maintained by NFSD inside
-> > > commit_inode_metadata() -
-> > > fetch current i_version value before asking filesystem for the sync
-> > > and by the time commit_metadata() returns we know that value is on
-> > > disk. If we detect the current - on_disk is > X/2, we call
-> > > commit_inode_metadata() and we are done. It is not even *that*
-> > > expensive because usually filesystems optimize away unnecessary IO
-> > > when the inode didn't change since last time it got synced.
-> > >
-> >
-> > Note that these approaches requiring 3rd party help in order to track
-> > i_version integrity across filesystem crashes all make the idea of
-> > adding i_version to statx() a no-go.
-> >
-> > It is one thing for knfsd to add specialised machinery for integrity
-> > checking, but if all applications need to do so, then they are highly
-> > unlikely to want to adopt this attribute.
-> >
-> >
+> Introduce block request REQ_OP_PROVISION. The intent of this request
+> is to request underlying storage to preallocate disk space for the given
+> block range. Block device that support this capability will export
+> a provision limit within their request queues.
 > 
-> Absolutely. That is the downside of this approach, but the priority here
-has
-> always been to improve nfsd. If we don't get the ability to present this
-info via
-> statx, then so be it. Later on, I suppose we can move that handling into
-the
-> kernel in some fashion if we decide it's worthwhile.
+> Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
+> ---
+>  block/blk-core.c          |  5 ++++
+>  block/blk-lib.c           | 55 +++++++++++++++++++++++++++++++++++++++
+>  block/blk-merge.c         | 17 ++++++++++++
+>  block/blk-settings.c      | 19 ++++++++++++++
+>  block/blk-sysfs.c         |  8 ++++++
+>  block/bounce.c            |  1 +
+>  include/linux/bio.h       |  6 +++--
+>  include/linux/blk_types.h |  5 +++-
+>  include/linux/blkdev.h    | 16 ++++++++++++
+>  9 files changed, 129 insertions(+), 3 deletions(-)
 > 
-> That said, not having this in statx makes it more difficult to test
-i_version
-> behavior. Maybe we can add a generic ioctl for that in the interim?
+> diff --git a/block/blk-settings.c b/block/blk-settings.c
+> index 8bb9eef5310e..be79ad68b330 100644
+> --- a/block/blk-settings.c
+> +++ b/block/blk-settings.c
+> @@ -57,6 +57,7 @@ void blk_set_default_limits(struct queue_limits *lim)
+>  	lim->misaligned = 0;
+>  	lim->zoned = BLK_ZONED_NONE;
+>  	lim->zone_write_granularity = 0;
+> +	lim->max_provision_sectors = 0;
+>  }
+>  EXPORT_SYMBOL(blk_set_default_limits);
+>  
+> @@ -81,6 +82,7 @@ void blk_set_stacking_limits(struct queue_limits *lim)
+>  	lim->max_dev_sectors = UINT_MAX;
+>  	lim->max_write_zeroes_sectors = UINT_MAX;
+>  	lim->max_zone_append_sectors = UINT_MAX;
+> +	lim->max_provision_sectors = UINT_MAX;
+>  }
+>  EXPORT_SYMBOL(blk_set_stacking_limits);
+>  
 
-Having i_version in statx would be really nice for nfs-ganesha. I would
-consider doing the extra integrity stuff or we may in some cases be able to
-rely on the filesystem, but in any case, i_version would be an improvement
-over using ctime or mtime for a change attribute.
-
-Frank
+Please work through the blk_stack_limits() implementation too (simple
+min_not_zero?).
 
