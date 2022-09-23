@@ -2,126 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 008545E71C3
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Sep 2022 04:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B40375E7290
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Sep 2022 05:49:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232193AbiIWCKU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 22 Sep 2022 22:10:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45154 "EHLO
+        id S232459AbiIWDsv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 22 Sep 2022 23:48:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232173AbiIWCKT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 22 Sep 2022 22:10:19 -0400
-Received: from mail105.syd.optusnet.com.au (mail105.syd.optusnet.com.au [211.29.132.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 69F2A81685;
-        Thu, 22 Sep 2022 19:10:16 -0700 (PDT)
-Received: from dread.disaster.area (pa49-181-106-210.pa.nsw.optusnet.com.au [49.181.106.210])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id C1A911100A56;
-        Fri, 23 Sep 2022 12:10:14 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1obY8q-00B1Gp-Qs; Fri, 23 Sep 2022 12:10:12 +1000
-Date:   Fri, 23 Sep 2022 12:10:12 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, akpm@linux-foundation.org,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        John Hubbard <jhubbard@nvidia.com>,
-        linux-fsdevel@vger.kernel.org, nvdimm@lists.linux.dev,
-        linux-xfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v2 05/18] xfs: Add xfs_break_layouts() to the inode
- eviction path
-Message-ID: <20220923021012.GZ3600936@dread.disaster.area>
-References: <166329930818.2786261.6086109734008025807.stgit@dwillia2-xfh.jf.intel.com>
- <166329933874.2786261.18236541386474985669.stgit@dwillia2-xfh.jf.intel.com>
- <20220918225731.GG3600936@dread.disaster.area>
- <632894c4738d8_2a6ded294a@dwillia2-xfh.jf.intel.com.notmuch>
- <20220919212959.GL3600936@dread.disaster.area>
- <6329ee04c9272_2a6ded294bf@dwillia2-xfh.jf.intel.com.notmuch>
- <20220921221416.GT3600936@dread.disaster.area>
- <YyuQI08LManypG6u@nvidia.com>
- <20220923001846.GX3600936@dread.disaster.area>
- <632d00a491d0d_4a67429488@dwillia2-xfh.jf.intel.com.notmuch>
+        with ESMTP id S232307AbiIWDst (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 22 Sep 2022 23:48:49 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB658118B3D
+        for <linux-ext4@vger.kernel.org>; Thu, 22 Sep 2022 20:48:48 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 708D6B819DB
+        for <linux-ext4@vger.kernel.org>; Fri, 23 Sep 2022 03:48:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E123AC433C1;
+        Fri, 23 Sep 2022 03:48:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1663904926;
+        bh=+Q6aM8zRScMQ2iGfiaiyZLKK4o8MFTRoU/8COnemOPs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QnpbsClmfb04NpMflLccEzDO4mH4k4XIK7/Gmrmco139wpNzgmh4kahmkGWQLi1Zr
+         iQASs7IboeOiZzRlNykeekuhqyul+tH9QhLGPPQTyXv55lvTcMtX8NWaLiP7jdxIH1
+         zeBYSen8kwQ0//cUVukq3dNdIs5aawFAt8teaJQZPRipqF4Q2JxFAysRBTdFG15lVY
+         nRFktK2/1kSSY17d5zOYIl7otCJvOw6V7zg2BpWw+dMN9BF1jECviMzgj46xAD3Lxc
+         ShGZmgLDzOpX1TfExaeYPhkAkuqxuHkeu4J+WhAJWAhR72xesrl6UxjJc9/UYtsbL1
+         6qfjUOX8+krJA==
+Date:   Thu, 22 Sep 2022 20:48:44 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        kernel@collabora.com
+Subject: Re: [PATCH v9 4/8] ext4: Reuse generic_ci_match for ci comparisons
+Message-ID: <Yy0snGZYtLKtORT7@sol.localdomain>
+References: <20220913234150.513075-1-krisman@collabora.com>
+ <20220913234150.513075-5-krisman@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <632d00a491d0d_4a67429488@dwillia2-xfh.jf.intel.com.notmuch>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.4 cv=VuxAv86n c=1 sm=1 tr=0 ts=632d1587
-        a=j6JUzzrSC7wlfFge/rmVbg==:117 a=j6JUzzrSC7wlfFge/rmVbg==:17
-        a=kj9zAlcOel0A:10 a=xOM3xZuef0cA:10 a=VwQbUJbxAAAA:8 a=Ikd4Dj_1AAAA:8
-        a=7-415B0cAAAA:8 a=-v9MXSeZNPeA8zCCQKoA:9 a=CjuIK1q_8ugA:10
-        a=AjGcO6oz07-iQ99wixmX:22 a=biEYGPWJfzWAr4FL6Ov7:22
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220913234150.513075-5-krisman@collabora.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Sep 22, 2022 at 05:41:08PM -0700, Dan Williams wrote:
-> Dave Chinner wrote:
-> > On Wed, Sep 21, 2022 at 07:28:51PM -0300, Jason Gunthorpe wrote:
-> > > On Thu, Sep 22, 2022 at 08:14:16AM +1000, Dave Chinner wrote:
-> > > 
-> > > > Where are these DAX page pins that don't require the pin holder to
-> > > > also hold active references to the filesystem objects coming from?
-> > > 
-> > > O_DIRECT and things like it.
-> > 
-> > O_DIRECT IO to a file holds a reference to a struct file which holds
-> > an active reference to the struct inode. Hence you can't reclaim an
-> > inode while an O_DIRECT IO is in progress to it. 
-> > 
-> > Similarly, file-backed pages pinned from user vmas have the inode
-> > pinned by the VMA having a reference to the struct file passed to
-> > them when they are instantiated. Hence anything using mmap() to pin
-> > file-backed pages (i.e. applications using FSDAX access from
-> > userspace) should also have a reference to the inode that prevents
-> > the inode from being reclaimed.
-> > 
-> > So I'm at a loss to understand what "things like it" might actually
-> > mean. Can you actually describe a situation where we actually permit
-> > (even temporarily) these use-after-free scenarios?
+On Tue, Sep 13, 2022 at 07:41:46PM -0400, Gabriel Krisman Bertazi wrote:
+> Instead of reimplementing ext4_match_ci, use the new libfs helper.
 > 
-> Jason mentioned a scenario here:
+> It also adds a comment explaining why fname->cf_name.name must be
+> checked prior to the encryption hash optimization, because that tripped
+> me before.
 > 
-> https://lore.kernel.org/all/YyuoE8BgImRXVkkO@nvidia.com/
-> 
-> Multi-thread process where thread1 does open(O_DIRECT)+mmap()+read() and
-> thread2 does memunmap()+close() while the read() is inflight.
+> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 
-And, ah, what production application does this and expects to be
-able to process the result of the read() operation without getting a
-SEGV?
+Reviewed-by: Eric Biggers <ebiggers@google.com>
 
-There's a huge difference between an unlikely scenario which we need
-to work (such as O_DIRECT IO to/from a mmap() buffer at a different
-offset on the same file) and this sort of scenario where even if we
-handle it correctly, the application can't do anything with the
-result and will crash immediately....
-
-> Sounds plausible to me, but I have not tried to trigger it with a focus
-> test.
-
-If there really are applications this .... broken, then it's not the
-responsibility of the filesystem to paper over the low level page
-reference tracking issues that cause it.
-
-i.e. The underlying problem here is that memunmap() frees the VMA
-while there are still active task-based references to the pages in
-that VMA. IOWs, the VMA should not be torn down until the O_DIRECT
-read has released all the references to the pages mapped into the
-task address space.
-
-This just doesn't seem like an issue that we should be trying to fix
-by adding band-aids to the inode life-cycle management.
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+- Eric
