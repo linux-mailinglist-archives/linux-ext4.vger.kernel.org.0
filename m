@@ -2,193 +2,413 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 395575E70F3
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Sep 2022 02:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB9545E7158
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Sep 2022 03:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231591AbiIWAzS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 22 Sep 2022 20:55:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39970 "EHLO
+        id S229647AbiIWBWM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 22 Sep 2022 21:22:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231556AbiIWAzQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 22 Sep 2022 20:55:16 -0400
-Received: from smtp-fw-33001.amazon.com (smtp-fw-33001.amazon.com [207.171.190.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F3578222;
-        Thu, 22 Sep 2022 17:55:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1663894517; x=1695430517;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=YgcEuKjEWfOKVyJG17iTn15cj0QAKaMPA6iEniYStng=;
-  b=Obuy8krZLvurCU9RDI8ntBhdW6dsivW3+feM8sohxwcd2gPNfPWkYDEA
-   fymfY4AYjAVmfQT4GO2taFa8WJC6t850IfX7rWhMu5WddUpBwfUkB9DiJ
-   HzqTPFxTWKEcP0j+LIwXT4FaPbLBbBWYjGZXRP0ogRww5oul1DVdL+dCF
-   M=;
-X-Amazon-filename: ftest_write.sh, allow more ext4-rsv-conversion workqueue.patch
-X-IronPort-AV: E=Sophos;i="5.93,337,1654560000"; 
-   d="sh'?scan'208,223";a="227962107"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-828bd003.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-33001.sea14.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2022 00:55:02 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-iad-1a-828bd003.us-east-1.amazon.com (Postfix) with ESMTPS id 9CAAF80E93;
-        Fri, 23 Sep 2022 00:55:00 +0000 (UTC)
-Received: from EX13D23UWC002.ant.amazon.com (10.43.162.22) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.38; Fri, 23 Sep 2022 00:55:00 +0000
-Received: from EX19D017UWC003.ant.amazon.com (10.13.139.227) by
- EX13D23UWC002.ant.amazon.com (10.43.162.22) with Microsoft SMTP Server (TLS)
- id 15.0.1497.38; Fri, 23 Sep 2022 00:54:59 +0000
-Received: from EX19D017UWC003.ant.amazon.com ([fe80::78e9:1d67:81fd:68c5]) by
- EX19D017UWC003.ant.amazon.com ([fe80::78e9:1d67:81fd:68c5%6]) with mapi id
- 15.02.1118.012; Fri, 23 Sep 2022 00:54:59 +0000
-From:   "Lu, Davina" <davinalu@amazon.com>
-To:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "Kiselev, Oleg" <okiselev@amazon.com>,
-        "Liu, Frank" <franklmz@amazon.com>
-Subject: significant drop  fio IOPS performance on v5.10
-Thread-Topic: significant drop  fio IOPS performance on v5.10
-Thread-Index: AdjO5vTzPItE0he4TsCHXHwBRGK6iA==
-Date:   Fri, 23 Sep 2022 00:54:59 +0000
-Message-ID: <357ace228adf4e859df5e9f3f4f18b49@amazon.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: yes
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.43.160.104]
-Content-Type: multipart/mixed;
-        boundary="_003_357ace228adf4e859df5e9f3f4f18b49amazoncom_"
+        with ESMTP id S229545AbiIWBWM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 22 Sep 2022 21:22:12 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89D20F8C0F;
+        Thu, 22 Sep 2022 18:22:10 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MYZ5h0LtQz1P6nG;
+        Fri, 23 Sep 2022 09:18:00 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Fri, 23 Sep
+ 2022 09:22:08 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
+        Ye Bin <yebin10@huawei.com>
+Subject: [PATCH -next] ext4: factor out ext4_free_ext_path()
+Date:   Fri, 23 Sep 2022 09:32:54 +0800
+Message-ID: <20220923013254.3581264-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-Spam-Status: No, score=-11.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
---_003_357ace228adf4e859df5e9f3f4f18b49amazoncom_
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Factor out ext4_free_ext_path(). No functional change.
 
-SGVsbG8sDQoNCkkgd2FzIHByb2ZpbGluZyB0aGUgNS4xMCBrZXJuZWwgYW5kIGNvbXBhcmluZyBp
-dCB0byA0LjE0LiAgT24gYSBzeXN0ZW0gd2l0aCA2NCB2aXJ0dWFsIENQVXMgYW5kIDI1NiBHaUIg
-b2YgUkFNLCBJIGFtIG9ic2VydmluZyBhIHNpZ25pZmljYW50IGRyb3AgaW4gSU8gcGVyZm9ybWFu
-Y2UuIFVzaW5nIHRoZSBmb2xsb3dpbmcgRklPIHdpdGggdGhlIHNjcmlwdCAic3VkbyBmdGVzdF93
-cml0ZS5zaCA8ZGV2X25hbWU+IiBpbiBhdHRhY2htZW50LCBJIHNhdyBGSU8gaW9wcyByZXN1bHQg
-ZHJvcCBmcm9tIDIySyB0byBsZXNzIHRoYW4gMUsuIA0KVGhlIHNjcmlwdCBzaW1wbHkgZG9lczog
-bW91bnQgYSB0aGUgRVhUNCAxNkdpQiB2b2x1bWUgd2l0aCBtYXggSU9QUyA2NDAwMEssIG1vdW50
-aW5nIG9wdGlvbiBpcyAiIC1vIG5vYXRpbWUsbm9kaXJhdGltZSxkYXRhPW9yZGVyZWQiLCB0aGVu
-IHJ1biBmaW8gd2l0aCAyMDQ4IGZpbyB3cmluZyB0aHJlYWQgd2l0aCAyODgwMDAwMCBmaWxlIHNp
-emUgd2l0aCB7IC0tbmFtZT0xNmtiX3JhbmRfd3JpdGVfb25seV8yMDQ4X2pvYnMgLS1kaXJlY3Rv
-cnk9L3Jkc2RiZGF0YTEgLS1ydz1yYW5kd3JpdGUgLS1pb2VuZ2luZT1zeW5jIC0tYnVmZmVyZWQ9
-MSAtLWJzPTE2ayAtLW1heC1qb2JzPTIwNDggLS1udW1qb2JzPTIwNDggLS1ydW50aW1lPTYwIC0t
-dGltZV9iYXNlZCAtLXRocmVhZCAtLWZpbGVzaXplPTI4ODAwMDAwIC0tZnN5bmM9MSAtLWdyb3Vw
-X3JlcG9ydGluZyB9Lg0KDQpNeSBhbmFseXppbmcgaXMgdGhhdCB0aGUgZGVncmFkYXRpb24gaXMg
-aW50cm9kdWNlIGJ5IGNvbW1pdCB7MjQ0YWRmNjQyNmVlMzFhODNmMzk3YjcwMGQ5NjRjZmYxMmEy
-NDdkM30gYW5kIHRoZSBpc3N1ZSBpcyB0aGUgY29udGVudGlvbiBvbiByc3ZfY29udmVyc2lvbl93
-cS4gIFRoZSBzaW1wbGVzdCBvcHRpb24gaXMgdG8gaW5jcmVhc2UgdGhlIGpvdXJuYWwgc2l6ZSwg
-YnV0IHRoYXQgaW50cm9kdWNlcyBtb3JlIG9wZXJhdGlvbmFsIGNvbXBsZXhpdHkuICBBbm90aGVy
-IG9wdGlvbiBpcyB0byBhZGQgdGhlIGZvbGxvd2luZyBjaGFuZ2UgaW4gYXR0YWNobWVudCAiYWxs
-b3cgbW9yZSBleHQ0LXJzdi1jb252ZXJzaW9uIHdvcmtxdWV1ZS5wYXRjaCINCg0KRnJvbSAyN2Ux
-YjBlMTQyNzVhMjgxYjM1MjlmNmE2MGM3YjIzYTgxMzU2NzUxIE1vbiBTZXAgMTcgMDA6MDA6MDAg
-MjAwMQ0KRnJvbTogZGF2aW5hbHUgPGRhdmluYWx1QGFtYXpvbi5jb20+DQpEYXRlOiBGcmksIDIz
-IFNlcCAyMDIyIDAwOjQzOjUzICswMDAwDQpTdWJqZWN0OiBbUEFUQ0hdIGFsbG93IG1vcmUgZXh0
-NC1yc3YtY29udmVyc2lvbiB3b3JrcXVldWUgdG8gc3BlZWR1cCBmaW8gIHdyaXRpbmcNCi0tLQ0K
-IGZzL2V4dDQvc3VwZXIuYyB8IDIgKy0NCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyks
-IDEgZGVsZXRpb24oLSkNCg0KZGlmZiAtLWdpdCBhL2ZzL2V4dDQvc3VwZXIuYyBiL2ZzL2V4dDQv
-c3VwZXIuYw0KaW5kZXggYTBhZjgzM2Y3ZGE3Li42YjM0Mjk4Y2RjM2IgMTAwNjQ0DQotLS0gYS9m
-cy9leHQ0L3N1cGVyLmMNCisrKyBiL2ZzL2V4dDQvc3VwZXIuYw0KQEAgLTQ5NjMsNyArNDk2Myw3
-IEBAIHN0YXRpYyBpbnQgZXh0NF9maWxsX3N1cGVyKHN0cnVjdCBzdXBlcl9ibG9jayAqc2IsIHZv
-aWQgKmRhdGEsIGludCBzaWxlbnQpDQogICAgICAgICAqIGNvbmN1cnJlbmN5IGlzbid0IHJlYWxs
-eSBuZWNlc3NhcnkuICBMaW1pdCBpdCB0byAxLg0KICAgICAgICAgKi8NCiAgICAgICAgRVhUNF9T
-QihzYiktPnJzdl9jb252ZXJzaW9uX3dxID0NCi0gICAgICAgICAgICAgICBhbGxvY193b3JrcXVl
-dWUoImV4dDQtcnN2LWNvbnZlcnNpb24iLCBXUV9NRU1fUkVDTEFJTSB8IFdRX1VOQk9VTkQsIDEp
-Ow0KKyAgICAgICAgICAgICAgIGFsbG9jX3dvcmtxdWV1ZSgiZXh0NC1yc3YtY29udmVyc2lvbiIs
-IFdRX01FTV9SRUNMQUlNIHwgV1FfVU5CT1VORCB8IF9fV1FfT1JERVJFRCwgMCk7DQogICAgICAg
-IGlmICghRVhUNF9TQihzYiktPnJzdl9jb252ZXJzaW9uX3dxKSB7DQogICAgICAgICAgICAgICAg
-cHJpbnRrKEtFUk5fRVJSICJFWFQ0LWZzOiBmYWlsZWQgdG8gY3JlYXRlIHdvcmtxdWV1ZVxuIik7
-DQogICAgICAgICAgICAgICAgcmV0ID0gLUVOT01FTTsNCg0KTXkgdGhvdWdodCBpczogSWYgdGhl
-IG1heF9hY3RpdmUgaXMgMSwgaXQgbWVhbnMgdGhlICJfX1dRX09SREVSRUQiIGNvbWJpbmVkIHdp
-dGggV1FfVU5CT1VORCBzZXR0aW5nLCBiYXNlZCBvbiBhbGxvY193b3JrcXVldWUoKS4gU28gSSBh
-ZGRlZCBpdCAuDQpJIGFtIG5vdCBzdXJlIHNob3VsZCB3ZSBuZWVkICJfX1dRX09SREVSRUQiIG9y
-IG5vdD8gd2l0aG91dCAiX19XUV9PUkRFUkVEIiBpdCBsb29rcyBhbHNvIHdvcmsgYXQgbXkgdGVz
-dGJlZCwgYnV0IEkgYWRkZWQgc2luY2Ugbm90IG11Y2ggZmlvIFRQIGRpZmZlcmVuY2Ugb24gbXkg
-dGVzdGJlZCByZXN1bHQgd2l0aC9vdXQgIl9fV1FfT1JERVJFRCIuDQoNCkZyb20gTXkgdW5kZXJz
-dGFuZGluZyBhbmQgb2JzZXJ2YXRpb246IHdpdGggZGlvcmVhZF91bmxvY2sgYW5kIGRlbGF5X2Fs
-bG9jIGJvdGggZW5hYmxlZCwgIHRoZSAgYmlvX2VuZGlvKCkgYW5kIGV4dDRfd3JpdGVwYWdlcygp
-IHdpbGwgdHJpZ2dlciB0aGlzIHdvcmsgcXVldWUgdG8gZXh0NF9kb19mbHVzaF9jb21wbGV0ZWRf
-SU8oKS4gTG9va3MgbGlrZSB0aGUgd29yayBxdWV1ZSBpcyBhbiBvbmUtYnktb25lIHVwZGF0aW5n
-OiBhdCBFWFQ0IGV4dGVuZC5jIGlvX2VuZC0+bGlzdF92ZWMgIGxpc3Qgb25seSBoYXZlIG9uZSBp
-b19lbmRfdmVjIGVhY2ggdGltZS4gU28gaWYgdGhlIEJJTyBoYXMgaGlnaCBwZXJmb3JtYW5jZSwg
-YW5kIHdlIGhhdmUgb25seSBvbmUgdGhyZWFkIHRvIGRvIEVYVDQgZmx1c2ggd2lsbCBiZSBhbiBi
-b3R0bGVuZWNrIGhlcmUuIFRoZSAiZXh0NC1yc3YtY29udmVyc2lvbiIgdGhpcyB3b3JrcXVldWUg
-aXMgbWFpbmx5IGZvciB1cGRhdGUgdGhlIEVYVDRfSU9fRU5EX1VOV1JJVFRFTiBleHRlbmQgYmxv
-Y2sob25seSBleGlzdCBvbiBkaW9yZWFkX3VubG9jayBhbmQgZGVsYXlfYWxsb2Mgb3B0aW9ucyBh
-cmUgc2V0KSBhbmQgZXh0ZW5kIHN0YXR1cyAgaWYgSSB1bmRlcnN0YW5kIGNvcnJlY3RseSBoZXJl
-LiBBbSAgSSBjb3JyZWN0Pw0KDQpUaGlzIHdvcmtzIG9uIG15IHRlc3Qgc3lzdGVtIGFuZCBwYXNz
-ZXMgeGZzdGVzdHMsIGJ1dCAgd2lsbCB0aGlzIGNhdXNlIGFueSBjb3JydXB0aW9uIG9uIGV4dDQg
-ZXh0ZW5kcyBibG9ja3MgdXBkYXRlcywgbm90IGV2ZW4gc3VyZSBhYm91dCB0aGUgam91cm5hbCB0
-cmFuc2FjdGlvbiB1cGRhdGVzIGVpdGhlcj8NCkNhbiB5b3UgdGVsbCBtZSB3aGF0IEkgd2lsbCBi
-cmVhayBpZiB0aGlzIGNoYW5nZSBpcyBtYWRlPw0KDQpUaGFua3MNCkRhdmluYQ0KDQo=
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ fs/ext4/ext4.h           |  6 ++++
+ fs/ext4/extents.c        | 75 ++++++++++++++--------------------------
+ fs/ext4/extents_status.c |  3 +-
+ fs/ext4/fast_commit.c    |  6 ++--
+ fs/ext4/migrate.c        |  3 +-
+ fs/ext4/move_extent.c    |  9 ++---
+ fs/ext4/verity.c         |  6 ++--
+ 7 files changed, 40 insertions(+), 68 deletions(-)
 
---_003_357ace228adf4e859df5e9f3f4f18b49amazoncom_
-Content-Type: application/octet-stream; name="ftest_write.sh"
-Content-Description: ftest_write.sh
-Content-Disposition: attachment; filename="ftest_write.sh"; size=1068;
-	creation-date="Fri, 23 Sep 2022 00:11:42 GMT";
-	modification-date="Fri, 23 Sep 2022 00:11:36 GMT"
-Content-Transfer-Encoding: base64
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index e6674504ca2a..0583e5c8d395 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -3786,6 +3786,12 @@ extern void ext4_orphan_file_block_trigger(
+ 				struct buffer_head *bh,
+ 				void *data, size_t size);
+ 
++static inline void ext4_free_ext_path(struct ext4_ext_path *path)
++{
++	ext4_ext_drop_refs(path);
++	kfree(path);
++}
++
+ /*
+  * Add new method to test whether block and inode bitmaps are properly
+  * initialized. With uninit_bg reading the block from disk is not enough
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index c148bb97b527..60ff1a764f52 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -632,8 +632,7 @@ int ext4_ext_precache(struct inode *inode)
+ 	ext4_set_inode_state(inode, EXT4_STATE_EXT_PRECACHED);
+ out:
+ 	up_read(&ei->i_data_sem);
+-	ext4_ext_drop_refs(path);
+-	kfree(path);
++	ext4_free_ext_path(path);
+ 	return ret;
+ }
+ 
+@@ -951,8 +950,7 @@ ext4_find_extent(struct inode *inode, ext4_lblk_t block,
+ 	return path;
+ 
+ err:
+-	ext4_ext_drop_refs(path);
+-	kfree(path);
++	ext4_free_ext_path(path);
+ 	if (orig_path)
+ 		*orig_path = NULL;
+ 	return ERR_PTR(ret);
+@@ -2170,8 +2168,7 @@ int ext4_ext_insert_extent(handle_t *handle, struct inode *inode,
+ 	err = ext4_ext_dirty(handle, inode, path + path->p_depth);
+ 
+ cleanup:
+-	ext4_ext_drop_refs(npath);
+-	kfree(npath);
++	ext4_free_ext_path(npath);
+ 	return err;
+ }
+ 
+@@ -3057,8 +3054,7 @@ int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
+ 		}
+ 	}
+ out:
+-	ext4_ext_drop_refs(path);
+-	kfree(path);
++	ext4_free_ext_path(path);
+ 	path = NULL;
+ 	if (err == -EAGAIN)
+ 		goto again;
+@@ -4371,8 +4367,7 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
+ 	allocated = map->m_len;
+ 	ext4_ext_show_leaf(inode, path);
+ out:
+-	ext4_ext_drop_refs(path);
+-	kfree(path);
++	ext4_free_ext_path(path);
+ 
+ 	trace_ext4_ext_map_blocks_exit(inode, flags, map,
+ 				       err ? err : allocated);
+@@ -5241,8 +5236,7 @@ ext4_ext_shift_extents(struct inode *inode, handle_t *handle,
+ 			break;
+ 	}
+ out:
+-	ext4_ext_drop_refs(path);
+-	kfree(path);
++	ext4_free_ext_path(path);
+ 	return ret;
+ }
+ 
+@@ -5534,15 +5528,13 @@ static int ext4_insert_range(struct file *file, loff_t offset, loff_t len)
+ 					EXT4_GET_BLOCKS_METADATA_NOFAIL);
+ 		}
+ 
+-		ext4_ext_drop_refs(path);
+-		kfree(path);
++		ext4_free_ext_path(path);
+ 		if (ret < 0) {
+ 			up_write(&EXT4_I(inode)->i_data_sem);
+ 			goto out_stop;
+ 		}
+ 	} else {
+-		ext4_ext_drop_refs(path);
+-		kfree(path);
++		ext4_free_ext_path(path);
+ 	}
+ 
+ 	ret = ext4_es_remove_extent(inode, offset_lblk,
+@@ -5762,10 +5754,8 @@ ext4_swap_extents(handle_t *handle, struct inode *inode1,
+ 		count -= len;
+ 
+ 	repeat:
+-		ext4_ext_drop_refs(path1);
+-		kfree(path1);
+-		ext4_ext_drop_refs(path2);
+-		kfree(path2);
++		ext4_free_ext_path(path1);
++		ext4_free_ext_path(path2);
+ 		path1 = path2 = NULL;
+ 	}
+ 	return replaced_count;
+@@ -5844,8 +5834,7 @@ int ext4_clu_mapped(struct inode *inode, ext4_lblk_t lclu)
+ 	}
+ 
+ out:
+-	ext4_ext_drop_refs(path);
+-	kfree(path);
++	ext4_free_ext_path(path);
+ 
+ 	return err ? err : mapped;
+ }
+@@ -5912,8 +5901,7 @@ int ext4_ext_replay_update_ex(struct inode *inode, ext4_lblk_t start,
+ 	ret = ext4_ext_dirty(NULL, inode, &path[path->p_depth]);
+ 	up_write(&EXT4_I(inode)->i_data_sem);
+ out:
+-	ext4_ext_drop_refs(path);
+-	kfree(path);
++	ext4_free_ext_path(path);
+ 	ext4_mark_inode_dirty(NULL, inode);
+ 	return ret;
+ }
+@@ -5931,8 +5919,7 @@ void ext4_ext_replay_shrink_inode(struct inode *inode, ext4_lblk_t end)
+ 			return;
+ 		ex = path[path->p_depth].p_ext;
+ 		if (!ex) {
+-			ext4_ext_drop_refs(path);
+-			kfree(path);
++			ext4_free_ext_path(path);
+ 			ext4_mark_inode_dirty(NULL, inode);
+ 			return;
+ 		}
+@@ -5945,8 +5932,7 @@ void ext4_ext_replay_shrink_inode(struct inode *inode, ext4_lblk_t end)
+ 		ext4_ext_dirty(NULL, inode, &path[path->p_depth]);
+ 		up_write(&EXT4_I(inode)->i_data_sem);
+ 		ext4_mark_inode_dirty(NULL, inode);
+-		ext4_ext_drop_refs(path);
+-		kfree(path);
++		ext4_free_ext_path(path);
+ 	}
+ }
+ 
+@@ -5985,13 +5971,11 @@ int ext4_ext_replay_set_iblocks(struct inode *inode)
+ 		return PTR_ERR(path);
+ 	ex = path[path->p_depth].p_ext;
+ 	if (!ex) {
+-		ext4_ext_drop_refs(path);
+-		kfree(path);
++		ext4_free_ext_path(path);
+ 		goto out;
+ 	}
+ 	end = le32_to_cpu(ex->ee_block) + ext4_ext_get_actual_len(ex);
+-	ext4_ext_drop_refs(path);
+-	kfree(path);
++	ext4_free_ext_path(path);
+ 
+ 	/* Count the number of data blocks */
+ 	cur = 0;
+@@ -6021,30 +6005,26 @@ int ext4_ext_replay_set_iblocks(struct inode *inode)
+ 	if (IS_ERR(path))
+ 		goto out;
+ 	numblks += path->p_depth;
+-	ext4_ext_drop_refs(path);
+-	kfree(path);
++	ext4_free_ext_path(path);
+ 	while (cur < end) {
+ 		path = ext4_find_extent(inode, cur, NULL, 0);
+ 		if (IS_ERR(path))
+ 			break;
+ 		ex = path[path->p_depth].p_ext;
+ 		if (!ex) {
+-			ext4_ext_drop_refs(path);
+-			kfree(path);
++			ext4_free_ext_path(path);
+ 			return 0;
+ 		}
+ 		cur = max(cur + 1, le32_to_cpu(ex->ee_block) +
+ 					ext4_ext_get_actual_len(ex));
+ 		ret = skip_hole(inode, &cur);
+ 		if (ret < 0) {
+-			ext4_ext_drop_refs(path);
+-			kfree(path);
++			ext4_free_ext_path(path);
+ 			break;
+ 		}
+ 		path2 = ext4_find_extent(inode, cur, NULL, 0);
+ 		if (IS_ERR(path2)) {
+-			ext4_ext_drop_refs(path);
+-			kfree(path);
++			ext4_free_ext_path(path);
+ 			break;
+ 		}
+ 		for (i = 0; i <= max(path->p_depth, path2->p_depth); i++) {
+@@ -6058,10 +6038,8 @@ int ext4_ext_replay_set_iblocks(struct inode *inode)
+ 			if (cmp1 != cmp2 && cmp2 != 0)
+ 				numblks++;
+ 		}
+-		ext4_ext_drop_refs(path);
+-		ext4_ext_drop_refs(path2);
+-		kfree(path);
+-		kfree(path2);
++		ext4_free_ext_path(path);
++		ext4_free_ext_path(path2);
+ 	}
+ 
+ out:
+@@ -6088,13 +6066,11 @@ int ext4_ext_clear_bb(struct inode *inode)
+ 		return PTR_ERR(path);
+ 	ex = path[path->p_depth].p_ext;
+ 	if (!ex) {
+-		ext4_ext_drop_refs(path);
+-		kfree(path);
++		ext4_free_ext_path(path);
+ 		return 0;
+ 	}
+ 	end = le32_to_cpu(ex->ee_block) + ext4_ext_get_actual_len(ex);
+-	ext4_ext_drop_refs(path);
+-	kfree(path);
++	ext4_free_ext_path(path);
+ 
+ 	cur = 0;
+ 	while (cur < end) {
+@@ -6113,8 +6089,7 @@ int ext4_ext_clear_bb(struct inode *inode)
+ 					ext4_fc_record_regions(inode->i_sb, inode->i_ino,
+ 							0, path[j].p_block, 1, 1);
+ 				}
+-				ext4_ext_drop_refs(path);
+-				kfree(path);
++				ext4_free_ext_path(path);
+ 			}
+ 			ext4_mb_mark_bb(inode->i_sb, map.m_pblk, map.m_len, 0);
+ 			ext4_fc_record_regions(inode->i_sb, inode->i_ino,
+diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
+index 23167efda95e..cd0a861853e3 100644
+--- a/fs/ext4/extents_status.c
++++ b/fs/ext4/extents_status.c
+@@ -667,8 +667,7 @@ static void ext4_es_insert_extent_ext_check(struct inode *inode,
+ 		}
+ 	}
+ out:
+-	ext4_ext_drop_refs(path);
+-	kfree(path);
++	ext4_free_ext_path(path);
+ }
+ 
+ static void ext4_es_insert_extent_ind_check(struct inode *inode,
+diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+index 9549d89b3519..54ccc61c713a 100644
+--- a/fs/ext4/fast_commit.c
++++ b/fs/ext4/fast_commit.c
+@@ -1770,8 +1770,7 @@ static int ext4_fc_replay_add_range(struct super_block *sb,
+ 			ret = ext4_ext_insert_extent(
+ 				NULL, inode, &path, &newex, 0);
+ 			up_write((&EXT4_I(inode)->i_data_sem));
+-			ext4_ext_drop_refs(path);
+-			kfree(path);
++			ext4_free_ext_path(path);
+ 			if (ret)
+ 				goto out;
+ 			goto next;
+@@ -1926,8 +1925,7 @@ static void ext4_fc_set_bitmaps_and_counters(struct super_block *sb)
+ 					for (j = 0; j < path->p_depth; j++)
+ 						ext4_mb_mark_bb(inode->i_sb,
+ 							path[j].p_block, 1, 1);
+-					ext4_ext_drop_refs(path);
+-					kfree(path);
++					ext4_free_ext_path(path);
+ 				}
+ 				cur += ret;
+ 				ext4_mb_mark_bb(inode->i_sb, map.m_pblk,
+diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
+index 54e7d3c95fd7..0a220ec9862d 100644
+--- a/fs/ext4/migrate.c
++++ b/fs/ext4/migrate.c
+@@ -56,8 +56,7 @@ static int finish_range(handle_t *handle, struct inode *inode,
+ 	retval = ext4_ext_insert_extent(handle, inode, &path, &newext, 0);
+ err_out:
+ 	up_write((&EXT4_I(inode)->i_data_sem));
+-	ext4_ext_drop_refs(path);
+-	kfree(path);
++	ext4_free_ext_path(path);
+ 	lb->first_pblock = 0;
+ 	return retval;
+ }
+diff --git a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
+index 701f1d6a217f..69e5e6a639cc 100644
+--- a/fs/ext4/move_extent.c
++++ b/fs/ext4/move_extent.c
+@@ -32,8 +32,7 @@ get_ext_path(struct inode *inode, ext4_lblk_t lblock,
+ 	if (IS_ERR(path))
+ 		return PTR_ERR(path);
+ 	if (path[ext_depth(inode)].p_ext == NULL) {
+-		ext4_ext_drop_refs(path);
+-		kfree(path);
++		ext4_free_ext_path(path);
+ 		*ppath = NULL;
+ 		return -ENODATA;
+ 	}
+@@ -107,8 +106,7 @@ mext_check_coverage(struct inode *inode, ext4_lblk_t from, ext4_lblk_t count,
+ 	}
+ 	ret = 1;
+ out:
+-	ext4_ext_drop_refs(path);
+-	kfree(path);
++	ext4_free_ext_path(path);
+ 	return ret;
+ }
+ 
+@@ -694,8 +692,7 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp, __u64 orig_blk,
+ 		ext4_discard_preallocations(donor_inode, 0);
+ 	}
+ 
+-	ext4_ext_drop_refs(path);
+-	kfree(path);
++	ext4_free_ext_path(path);
+ 	ext4_double_up_write_data_sem(orig_inode, donor_inode);
+ 	unlock_two_nondirectories(orig_inode, donor_inode);
+ 
+diff --git a/fs/ext4/verity.c b/fs/ext4/verity.c
+index b051d19b5c8a..20cadfb740dc 100644
+--- a/fs/ext4/verity.c
++++ b/fs/ext4/verity.c
+@@ -298,16 +298,14 @@ static int ext4_get_verity_descriptor_location(struct inode *inode,
+ 	last_extent = path[path->p_depth].p_ext;
+ 	if (!last_extent) {
+ 		EXT4_ERROR_INODE(inode, "verity file has no extents");
+-		ext4_ext_drop_refs(path);
+-		kfree(path);
++		ext4_free_ext_path(path);
+ 		return -EFSCORRUPTED;
+ 	}
+ 
+ 	end_lblk = le32_to_cpu(last_extent->ee_block) +
+ 		   ext4_ext_get_actual_len(last_extent);
+ 	desc_size_pos = (u64)end_lblk << inode->i_blkbits;
+-	ext4_ext_drop_refs(path);
+-	kfree(path);
++	ext4_free_ext_path(path);
+ 
+ 	if (desc_size_pos < sizeof(desc_size_disk))
+ 		goto bad;
+-- 
+2.31.1
 
-IyEvYmluL2Jhc2gNCg0KIyBzZXR1cCwgbWFrZSBzdXJlIGluc3RhbGwgZmlvIGFuZCBlMmZzcHJv
-ZyB0b29scyBmaXJzdA0KaWYgWyAteiAiJDEiIF07dGhlbg0KICAgICAgICBlY2hvICdVc2FnZTpm
-dGVzdCA8ZGV2X25hbWU+Jw0KICAgICAgICBleGl0IDANCmZpDQplY2hvICJDcmVhdGUgL3Jkc2Ri
-ZGF0YTEvIg0KbWtkaXIgL3Jkc2RiZGF0YTEvDQpta2UyZnMgLW0gMSAtdCBleHQ0IC1iIDQwOTYg
-LUwgL3Jkc2RiZGF0YSAvZGV2LyQxIC1KIHNpemU9MTI4DQpzbGVlcCAxDQptb3VudCAtdCBleHQ0
-IC1vIG5vYXRpbWUsbm9kaXJhdGltZSxkYXRhPW9yZGVyZWQgL2Rldi8kMSAvcmRzZGJkYXRhMQ0K
-DQojIHRlc3QNCiNmb3IgaSBpbiBgc2VxIDEgMTBgOyBkbw0KICAgICAgICBybSAtcmYgL3Jkc2Ri
-ZGF0YTEvKg0KICAgICAgICAvdXNyL2Jpbi9maW8gLS1uYW1lPTE2a2JfcmFuZF93cml0ZV9vbmx5
-XzIwNDhfam9icyAtLWRpcmVjdG9yeT0vcmRzZGJkYXRhMSAtLXJ3PXJhbmR3cml0ZSAtLWlvZW5n
-aW5lPXN5bmMgLS1idWZmZXJlZD0xIC0tYnM9MTZrIC0tbWF4LWpvYnM9MjA0OCAtLW51bWpvYnM9
-MjA0OCAtLXJ1bnRpbWU9MzAgLS10aHJlYWQgLS1maWxlc2l6ZT0yODgwMDAwMCAtLWZzeW5jPTEg
-LS1ncm91cF9yZXBvcnRpbmcgLS1jcmVhdGVfb25seT0xID4gL2Rldi9udWxsDQogICAgICAgIHN1
-ZG8gZWNobyAxID4gL3Byb2Mvc3lzL3ZtL2Ryb3BfY2FjaGVzDQogICAgICAgIGVjaG8gInN0YXJ0
-IHRlc3QgJHtpfSINCiAgICAgICAgL3Vzci9iaW4vZmlvIC0tbmFtZT0xNmtiX3JhbmRfd3JpdGVf
-b25seV8yMDQ4X2pvYnMgLS1kaXJlY3Rvcnk9L3Jkc2RiZGF0YTEgLS1ydz1yYW5kd3JpdGUgLS1p
-b2VuZ2luZT1zeW5jIC0tYnVmZmVyZWQ9MSAtLWJzPTE2ayAtLW1heC1qb2JzPTIwNDggLS1udW1q
-b2JzPTIwNDggLS1ydW50aW1lPTYwIC0tdGltZV9iYXNlZCAtLXRocmVhZCAtLWZpbGVzaXplPTI4
-ODAwMDAwIC0tZnN5bmM9MSAtLWdyb3VwX3JlcG9ydGluZw0KI2RvbmUNCg0KIyBjbGVhbnVwDQp1
-bW91bnQgL3Jkc2RiZGF0YTENCnJtIC9yZHNkYmRhdGExLyAtcmYNCg0K
-
---_003_357ace228adf4e859df5e9f3f4f18b49amazoncom_
-Content-Type: application/octet-stream;
-	name="allow more ext4-rsv-conversion workqueue.patch"
-Content-Description: allow more ext4-rsv-conversion workqueue.patch
-Content-Disposition: attachment;
-	filename="allow more ext4-rsv-conversion workqueue.patch"; size=1027;
-	creation-date="Fri, 23 Sep 2022 00:47:51 GMT";
-	modification-date="Fri, 23 Sep 2022 00:47:42 GMT"
-Content-Transfer-Encoding: base64
-
-RnJvbSAyN2UxYjBlMTQyNzVhMjgxYjM1MjlmNmE2MGM3YjIzYTgxMzU2NzUxIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQ0KRnJvbTogZGF2aW5hbHUgPGRhdmluYWx1QGFtYXpvbi5jb20+DQpEYXRl
-OiBGcmksIDIzIFNlcCAyMDIyIDAwOjQzOjUzICswMDAwDQpTdWJqZWN0OiBbUEFUQ0hdIGFsbG93
-IG1vcmUgZXh0NC1yc3YtY29udmVyc2lvbiB3b3JrcXVldWUgdG8gc3BlZWR1cCBmaW8NCiB3cml0
-aW5nDQoNCi0tLQ0KIGZzL2V4dDQvc3VwZXIuYyB8IDIgKy0NCiAxIGZpbGUgY2hhbmdlZCwgMSBp
-bnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCg0KZGlmZiAtLWdpdCBhL2ZzL2V4dDQvc3VwZXIu
-YyBiL2ZzL2V4dDQvc3VwZXIuYw0KaW5kZXggYTBhZjgzM2Y3ZGE3Li42YjM0Mjk4Y2RjM2IgMTAw
-NjQ0DQotLS0gYS9mcy9leHQ0L3N1cGVyLmMNCisrKyBiL2ZzL2V4dDQvc3VwZXIuYw0KQEAgLTQ5
-NjMsNyArNDk2Myw3IEBAIHN0YXRpYyBpbnQgZXh0NF9maWxsX3N1cGVyKHN0cnVjdCBzdXBlcl9i
-bG9jayAqc2IsIHZvaWQgKmRhdGEsIGludCBzaWxlbnQpDQogICAgICAgICAqIGNvbmN1cnJlbmN5
-IGlzbid0IHJlYWxseSBuZWNlc3NhcnkuICBMaW1pdCBpdCB0byAxLg0KICAgICAgICAgKi8NCiAg
-ICAgICAgRVhUNF9TQihzYiktPnJzdl9jb252ZXJzaW9uX3dxID0NCi0gICAgICAgICAgICAgICBh
-bGxvY193b3JrcXVldWUoImV4dDQtcnN2LWNvbnZlcnNpb24iLCBXUV9NRU1fUkVDTEFJTSB8IFdR
-X1VOQk9VTkQsIDEpOw0KKyAgICAgICAgICAgICAgIGFsbG9jX3dvcmtxdWV1ZSgiZXh0NC1yc3Yt
-Y29udmVyc2lvbiIsIFdRX01FTV9SRUNMQUlNIHwgV1FfVU5CT1VORCB8IF9fV1FfT1JERVJFRCwg
-MCk7DQogICAgICAgIGlmICghRVhUNF9TQihzYiktPnJzdl9jb252ZXJzaW9uX3dxKSB7DQogICAg
-ICAgICAgICAgICAgcHJpbnRrKEtFUk5fRVJSICJFWFQ0LWZzOiBmYWlsZWQgdG8gY3JlYXRlIHdv
-cmtxdWV1ZVxuIik7DQogICAgICAgICAgICAgICAgcmV0ID0gLUVOT01FTTsNCi0tDQoyLjM3LjEN
-Cg==
-
---_003_357ace228adf4e859df5e9f3f4f18b49amazoncom_--
