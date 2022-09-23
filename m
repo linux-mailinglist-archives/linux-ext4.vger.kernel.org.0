@@ -2,175 +2,173 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A85C5E7C42
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Sep 2022 15:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB7F5E7C7F
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Sep 2022 16:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbiIWNue (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 23 Sep 2022 09:50:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40700 "EHLO
+        id S231738AbiIWOIU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 23 Sep 2022 10:08:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbiIWNud (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Sep 2022 09:50:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB16B115F5F;
-        Fri, 23 Sep 2022 06:50:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 90E586116E;
-        Fri, 23 Sep 2022 13:50:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C265FC433D6;
-        Fri, 23 Sep 2022 13:50:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1663941031;
-        bh=OvlHBUH4cE19BPnZAbqrOC7wiAUY/u0qRpZ5QBiaIbE=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Tno5cfqjSZOTCNZ4YM4mZTji5DCfZsL67reLTAxUKxtR3aWVu5Dwgh4BtVJ9tr5tD
-         q6BZKpGhrsFsskSTD860t1s22/EGmqG9tI3XhyDC26Rb9AJeZ8emEXSU+PxZWMX/GS
-         jrHrJZ1guJpieJHbFSkRLhNbWORlxQ25ztCgYQBYqgmmsg3m0sGRAr+fXV7d9hNtTQ
-         4/+hVplSz/T7X1kezp4SpM7L5SciTl0oRyUHTw1GTNuW7PwAzGV8Bv6NR8tKqh7gUU
-         U6H+Q3G0H9KQUUr0fNCwjGa8xnnnXJeRTWfeaj3r8b2l8YjFTSev4xL3qGPoaBOrjD
-         DOuz+PsPp+j9A==
-Message-ID: <baf852dfb57aaf5a670bc88236f8d62c99668fcc.camel@kernel.org>
-Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
- STATX_INO_VERSION field
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        "jack@suse.cz" <jack@suse.cz>
-Cc:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "bfields@fieldses.org" <bfields@fieldses.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "neilb@suse.de" <neilb@suse.de>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "xiubli@redhat.com" <xiubli@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "lczerner@redhat.com" <lczerner@redhat.com>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Date:   Fri, 23 Sep 2022 09:50:27 -0400
-In-Reply-To: <2d41c08e1fd96d55c794c3b4cd43a51a0494bfcf.camel@hammerspace.com>
-References: <24005713ad25370d64ab5bd0db0b2e4fcb902c1c.camel@kernel.org>
-         <20220918235344.GH3600936@dread.disaster.area>
-         <87fb43b117472c0a4c688c37a925ac51738c8826.camel@kernel.org>
-         <20220920001645.GN3600936@dread.disaster.area>
-         <5832424c328ea427b5c6ecdaa6dd53f3b99c20a0.camel@kernel.org>
-         <20220921000032.GR3600936@dread.disaster.area>
-         <93b6d9f7cf997245bb68409eeb195f9400e55cd0.camel@kernel.org>
-         <20220921214124.GS3600936@dread.disaster.area>
-         <e04e349170bc227b330556556d0592a53692b5b5.camel@kernel.org>
-         <1ef261e3ff1fa7fcd0d75ed755931aacb8062de2.camel@kernel.org>
-         <20220923095653.5c63i2jgv52j3zqp@quack3>
-         <2d41c08e1fd96d55c794c3b4cd43a51a0494bfcf.camel@hammerspace.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
+        with ESMTP id S229993AbiIWOIS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Sep 2022 10:08:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC6F148A0F
+        for <linux-ext4@vger.kernel.org>; Fri, 23 Sep 2022 07:08:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1663942095;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LBYIB5Hr/s79C5MbXbGY0mfsUxmhEdiC6zxTkuGSCwk=;
+        b=e/BXz5Xapq4s3pC2kT3QKRkV6RWRq6Hr2uZWd5oEduEc6OJLod7lun/dWD5FpzI5IsI/uV
+        LQKL+yzlxEEXH+/vOuQrQtC32AnMrCxvHiyUKvQ3Vrg8LxFdJJDbNCL/P4B8vvAYDH1jhb
+        v+R7n59y0s8E5sescrHadnuFsHCfL/0=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-465-Jiyrdi7_NkOxOTe1ZQuC_g-1; Fri, 23 Sep 2022 10:08:13 -0400
+X-MC-Unique: Jiyrdi7_NkOxOTe1ZQuC_g-1
+Received: by mail-qt1-f200.google.com with SMTP id g21-20020ac87d15000000b0035bb6f08778so54374qtb.2
+        for <linux-ext4@vger.kernel.org>; Fri, 23 Sep 2022 07:08:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=LBYIB5Hr/s79C5MbXbGY0mfsUxmhEdiC6zxTkuGSCwk=;
+        b=MIQhS2GhZrHD5ILjx2WPnGsYxspmQjkZrxw8vNXqh496Ka42ZcV/5OPItMnPNPZYgC
+         DWHZM/KB8404q5j/iuED1guB/2fweJw7GcK/3O8z/FZzaY7Rk9pj0X6UK/Be3VO/+kQt
+         NKFVsyM9tUOsYus6QknnxdX9h44US5B0RuTnnoQny0PN0NxJ8mM5SKAqx12rMAXWF7l7
+         s99VMf4iPmWVR8ws7/+OrmFqWOM7cWKPNTwtTZTL+go8TItiSgWH08YFR+sALdAxN4p7
+         27g89hVhywyyIjmMNX2zL1EYoZZneSFCODgFOZl0XmEQpj6qJw6gAUHYUzRU+yePNf8b
+         7ewQ==
+X-Gm-Message-State: ACrzQf3ESoe3U1qjGrtFz/7TQphsMnUIAEO8HEX5ketJ5zcmwxfW0PXB
+        Mom6p+cldd6TYOqugt9ZyCVjHDFE+AxaUvf5fUzC+L1rq0JsasZuXIxCcC+QBiQMGjcfRx60hRW
+        5I9umIjjKpV9Ly2q3r0uQ
+X-Received: by 2002:ac8:5dc9:0:b0:35c:dac8:a141 with SMTP id e9-20020ac85dc9000000b0035cdac8a141mr7271310qtx.229.1663942093306;
+        Fri, 23 Sep 2022 07:08:13 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM4hP35ZcbFzjjav7W2Ml66N3dqlsgPCpf9kKzESU216uoZsCAsOatn0mJ4gZX5U/fSihe9dkw==
+X-Received: by 2002:ac8:5dc9:0:b0:35c:dac8:a141 with SMTP id e9-20020ac85dc9000000b0035cdac8a141mr7271263qtx.229.1663942092916;
+        Fri, 23 Sep 2022 07:08:12 -0700 (PDT)
+Received: from localhost (pool-68-160-173-162.bstnma.fios.verizon.net. [68.160.173.162])
+        by smtp.gmail.com with ESMTPSA id cq3-20020a05622a424300b0035ced0a8382sm5566028qtb.54.2022.09.23.07.08.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Sep 2022 07:08:12 -0700 (PDT)
+Date:   Fri, 23 Sep 2022 10:08:11 -0400
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Daniil Lunev <dlunev@google.com>, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Sarthak Kukreti <sarthakkukreti@chromium.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bart Van Assche <bvanassche@google.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        linux-kernel@vger.kernel.org, Gwendal Grignou <gwendal@google.com>,
+        virtualization@lists.linux-foundation.org, dm-devel@redhat.com,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-ext4@vger.kernel.org, Evan Green <evgreen@google.com>,
+        Alasdair Kergon <agk@redhat.com>
+Subject: Re: [PATCH RFC 0/8] Introduce provisioning primitives for thinly
+ provisioned storage
+Message-ID: <Yy29y/jUvWM6GRZ5@redhat.com>
+References: <20220915164826.1396245-1-sarthakkukreti@google.com>
+ <YyQTM5PRT2o/GDwy@fedora>
+ <CAG9=OMPHZqdDhX=M+ovdg5fa3x4-Q_1r5SWPa8pMTQw0mr5fPg@mail.gmail.com>
+ <Yylvvm3zVgqpqDrm@infradead.org>
+ <CAAKderPF5Z5QLxyEb80Y+90+eR0sfRmL-WfgXLp=eL=HxWSZ9g@mail.gmail.com>
+ <YymkSDsFVVg1nbDP@infradead.org>
+ <CAAKderNcHpbBqWqqd5-WuKLRCQQUt7a_4D4ti4gy15+fKGK0vQ@mail.gmail.com>
+ <Yy1zkMH0f9ski4Sg@infradead.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Yy1zkMH0f9ski4Sg@infradead.org>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, 2022-09-23 at 13:44 +0000, Trond Myklebust wrote:
-> On Fri, 2022-09-23 at 11:56 +0200, Jan Kara wrote:
-> > On Thu 22-09-22 16:18:02, Jeff Layton wrote:
-> > > On Thu, 2022-09-22 at 06:18 -0400, Jeff Layton wrote:
-> > > > On Thu, 2022-09-22 at 07:41 +1000, Dave Chinner wrote:
-> > > > > e.g. The NFS server can track the i_version values when the
-> > > > > NFSD
-> > > > > syncs/commits a given inode. The nfsd can sample i_version it
-> > > > > when
-> > > > > calls ->commit_metadata or flushed data on the inode, and then
-> > > > > when
-> > > > > it peeks at i_version when gathering post-op attrs (or any
-> > > > > other
-> > > > > getattr op) it can decide that there is too much in-memory
-> > > > > change
-> > > > > (e.g. 10,000 counts since last sync) and sync the inode.
-> > > > >=20
-> > > > > i.e. the NFS server can trivially cap the maximum number of
-> > > > > uncommitted NFS change attr bumps it allows to build up in
-> > > > > memory.
-> > > > > At that point, the NFS server has a bound "maximum write count"
-> > > > > that
-> > > > > can be used in conjunction with the xattr based crash counter
-> > > > > to
-> > > > > determine how the change_attr is bumped by the crash counter.
-> > > >=20
-> > > > Well, not "trivially". This is the bit where we have to grow
-> > > > struct
-> > > > inode (or the fs-specific inode), as we'll need to know what the
-> > > > latest
-> > > > on-disk value is for the inode.
-> > > >=20
-> > > > I'm leaning toward doing this on the query side. Basically, when
-> > > > nfsd
-> > > > goes to query the i_version, it'll check the delta between the
-> > > > current
-> > > > version and the latest one on disk. If it's bigger than X then
-> > > > we'd just
-> > > > return NFS4ERR_DELAY to the client.
-> > > >=20
-> > > > If the delta is >X/2, maybe it can kick off a workqueue job or
-> > > > something
-> > > > that calls write_inode with WB_SYNC_ALL to try to get the thing
-> > > > onto the
-> > > > platter ASAP.
-> > >=20
-> > > Still looking at this bit too. Probably we can just kick off a
-> > > WB_SYNC_NONE filemap_fdatawrite at that point and hope for the
-> > > best?
-> >=20
-> > "Hope" is not a great assurance regarding data integrity ;) Anyway,
-> > it
-> > depends on how you imagine the "i_version on disk" is going to be
-> > maintained. It could be maintained by NFSD inside
-> > commit_inode_metadata() -
-> > fetch current i_version value before asking filesystem for the sync
-> > and by the
-> > time commit_metadata() returns we know that value is on disk. If we
-> > detect the
-> > current - on_disk is > X/2, we call commit_inode_metadata() and we
-> > are
-> > done. It is not even *that* expensive because usually filesystems
-> > optimize
-> > away unnecessary IO when the inode didn't change since last time it
-> > got
-> > synced.
-> >=20
->=20
-> Note that these approaches requiring 3rd party help in order to track
-> i_version integrity across filesystem crashes all make the idea of
-> adding i_version to statx() a no-go.
->=20
-> It is one thing for knfsd to add specialised machinery for integrity
-> checking, but if all applications need to do so, then they are highly
-> unlikely to want to adopt this attribute.
->=20
->=20
+On Fri, Sep 23 2022 at  4:51P -0400,
+Christoph Hellwig <hch@infradead.org> wrote:
 
-Absolutely. That is the downside of this approach, but the priority here
-has always been to improve nfsd. If we don't get the ability to present
-this info via statx, then so be it. Later on, I suppose we can move that
-handling into the kernel in some fashion if we decide it's worthwhile.
+> On Wed, Sep 21, 2022 at 07:48:50AM +1000, Daniil Lunev wrote:
+> > > There is no such thing as WRITE UNAVAILABLE in NVMe.
+> > Apologize, that is WRITE UNCORRECTABLE. Chapter 3.2.7 of
+> > NVM Express NVM Command Set Specification 1.0b
+> 
+> Write uncorrectable is a very different thing, and the equivalent of the
+> horribly misnamed SCSI WRITE LONG COMMAND.  It injects an unrecoverable
+> error, and does not provision anything.
+> 
+> > * Each application is potentially allowed to consume the entirety
+> >   of the disk space - there is no strict size limit for application
+> > * Applications need to pre-allocate space sometime, for which
+> >   they use fallocate. Once the operation succeeded, the application
+> >   assumed the space is guaranteed to be there for it.
+> > * Since filesystems on the volumes are independent, filesystem
+> >   level enforcement of size constraints is impossible and the only
+> >   common level is the thin pool, thus, each fallocate has to find its
+> >   representation in thin pool one way or another - otherwise you
+> >   may end up in the situation, where FS thinks it has allocated space
+> >   but when it tries to actually write it, the thin pool is already
+> >   exhausted.
+> > * Hole-Punching fallocate will not reach the thin pool, so the only
+> >   solution presently is zero-writing pre-allocate.
+> 
+> To me it sounds like you want a non-thin pool in dm-thin and/or
+> guaranted space reservations for it.
 
-That said, not having this in statx makes it more difficult to test
-i_version behavior. Maybe we can add a generic ioctl for that in the
-interim?
---=20
-Jeff Layton <jlayton@kernel.org>
+What is implemented in this patchset: enablement for dm-thinp to
+actually provide guarantees which fallocate requires.
+
+Seems you're getting hung up on the finishing details in HW (details
+which are _not_ the point of this patchset).
+
+The proposed changes are in service to _Linux_ code. The patchset
+implements the primitive from top (ext4) to bottom (dm-thinp, loop).
+It stops short of implementing handling everywhere that'd need it
+(e.g. in XFS, etc). But those changes can come as follow-on work once
+the primitive is established top to bottom.
+
+But you know all this ;)
+
+> > * Thus, a provisioning block operation allows an interface specific
+> >   operation that guarantees the presence of the block in the
+> >   mapped space. LVM Thin-pool itself is the primary target for our
+> >   use case but the argument is that this operation maps well to
+> >   other interfaces which allow thinly provisioned units.
+> 
+> I think where you are trying to go here is badly mistaken.  With flash
+> (or hard drive SMR) there is no such thing as provisioning LBAs.  Every
+> write is out of place, and a one time space allocation does not help
+> you at all.  So fundamentally what you try to here just goes against
+> the actual physics of modern storage media.  While there are some
+> layers that keep up a pretence, trying to that an an exposed API
+> level is a really bad idea.
+
+This doesn't need to be so feudal.  Reserving an LBA in physical HW
+really isn't the point.
+
+Fact remains: an operation that ensures space is actually reserved via
+fallocate is long overdue (just because an FS did its job doesn't mean
+underlying layers reflect that). And certainly useful, even if "only"
+benefiting dm-thinp and the loop driver. Like other block primitives,
+REQ_OP_PROVISION is filtered out by block core if the device doesn't
+support it.
+
+That said, I agree with Brian Foster that we need really solid
+documentation and justification for why fallocate mode=0 cannot be
+used (but the case has been made in this thread).
+
+Also, I do see an issue with the implementation (relative to stacked
+devices): dm_table_supports_provision() is too myopic about DM. It
+needs to go a step further and verify that some layer in the stack
+actually services REQ_OP_PROVISION. Will respond to DM patch too.
+
