@@ -2,72 +2,140 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 068135EB313
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Sep 2022 23:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B8485EB4B5
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Sep 2022 00:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230158AbiIZV2N (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 26 Sep 2022 17:28:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51136 "EHLO
+        id S229717AbiIZWoL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 26 Sep 2022 18:44:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbiIZV2M (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Sep 2022 17:28:12 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D8EA2231;
-        Mon, 26 Sep 2022 14:28:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S229605AbiIZWoJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Sep 2022 18:44:09 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A2D9E2E5;
+        Mon, 26 Sep 2022 15:44:08 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2F2F9B811CE;
-        Mon, 26 Sep 2022 21:28:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D0ABBC433C1;
-        Mon, 26 Sep 2022 21:28:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664227686;
-        bh=YniGDJvhgWvXx0tSXMolKeJckrcNppbLd/3jlGQpUVg=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=mkmzBaKMq+QfzYjMNSV9EAbUoFPa4JwS/wqybxLK+E7QtzHwAaVnh9sRCecnGyT0e
-         MhcyT4wURl3xGMtDJ0S1sauOHh1zHAYhI92eywpxC/ntjQur/gBknuj/p4TYtux80i
-         IRfj7VtYY4OYgPHvwC6tmmp8kmRBxZuxEOXuvITAPblEoGPZHTQfcbQsULtqexkhPM
-         7pbwOxFL2HhlXxcqxwmQIhj9NyU6Y+ISJbqhCRoxGsnEbHsriJbaeLjFlL/31et2LX
-         a3eFJoIUZvdzUOmnXZ7Q3/kMb8Fz7lVzMNoordVG7Ck9v1G6bJ/8+xHf39wg+H7kH8
-         KXaYRN14k5OaQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BC134C070C8;
-        Mon, 26 Sep 2022 21:28:06 +0000 (UTC)
-Subject: Re: [GIT PULL] ext4 last-minute fixup
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YzHqqg46Y34PX0Yq@mit.edu>
-References: <YzHqqg46Y34PX0Yq@mit.edu>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YzHqqg46Y34PX0Yq@mit.edu>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_fixes2
-X-PR-Tracked-Commit-Id: a078dff870136090b5779ca2831870a6c5539d36
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3a710532cfe586710738670fb7e1ee44fc3c9b5c
-Message-Id: <166422768676.13634.1452641480416843872.pr-tracker-bot@kernel.org>
-Date:   Mon, 26 Sep 2022 21:28:06 +0000
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C24DA2199A;
+        Mon, 26 Sep 2022 22:44:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1664232246; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3wqBvT1Pdp5nBIwk7f69QChWKcic6sFvlcDIXYHLhVw=;
+        b=bp3sjpaKgKxakHrVYbA6MiKdHvmDJOaK7Knl9ZekzxVGGvefEZtlBRay9JdXNdvtsI1FeT
+        BFiGJDTn7+nBrNUAcYcwtC/v/cFeQlQAXMryESS37gkkS89krmeCqqd4ZQnBlnku1Qj9nT
+        bHo5wmUgv+yvxmGT2ireKVPFG/FEpiA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1664232246;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3wqBvT1Pdp5nBIwk7f69QChWKcic6sFvlcDIXYHLhVw=;
+        b=KNEYqmH80A7uU4gjB/CKhQ0gmEKPEUyR2v8DIyep3Ttnd3fg3CE5jdzAdX4shiTSaiECHR
+        w+8QIdUkTfKWlFCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B2E7213486;
+        Mon, 26 Sep 2022 22:43:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id oE9qGi8rMmOyQwAAMHmgww
+        (envelope-from <neilb@suse.de>); Mon, 26 Sep 2022 22:43:59 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Jeff Layton" <jlayton@kernel.org>
+Cc:     "Trond Myklebust" <trondmy@hammerspace.com>,
+        "jack@suse.cz" <jack@suse.cz>,
+        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "djwong@kernel.org" <djwong@kernel.org>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "bfields@fieldses.org" <bfields@fieldses.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "fweimer@redhat.com" <fweimer@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
+        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "tytso@mit.edu" <tytso@mit.edu>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "xiubli@redhat.com" <xiubli@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
+        "lczerner@redhat.com" <lczerner@redhat.com>,
+        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
+ STATX_INO_VERSION field
+In-reply-to: <baf852dfb57aaf5a670bc88236f8d62c99668fcc.camel@kernel.org>
+References: <24005713ad25370d64ab5bd0db0b2e4fcb902c1c.camel@kernel.org>,
+ <20220918235344.GH3600936@dread.disaster.area>,
+ <87fb43b117472c0a4c688c37a925ac51738c8826.camel@kernel.org>,
+ <20220920001645.GN3600936@dread.disaster.area>,
+ <5832424c328ea427b5c6ecdaa6dd53f3b99c20a0.camel@kernel.org>,
+ <20220921000032.GR3600936@dread.disaster.area>,
+ <93b6d9f7cf997245bb68409eeb195f9400e55cd0.camel@kernel.org>,
+ <20220921214124.GS3600936@dread.disaster.area>,
+ <e04e349170bc227b330556556d0592a53692b5b5.camel@kernel.org>,
+ <1ef261e3ff1fa7fcd0d75ed755931aacb8062de2.camel@kernel.org>,
+ <20220923095653.5c63i2jgv52j3zqp@quack3>,
+ <2d41c08e1fd96d55c794c3b4cd43a51a0494bfcf.camel@hammerspace.com>,
+ <baf852dfb57aaf5a670bc88236f8d62c99668fcc.camel@kernel.org>
+Date:   Tue, 27 Sep 2022 08:43:56 +1000
+Message-id: <166423223623.17572.7229091435446226718@noble.neil.brown.name>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The pull request you sent on Mon, 26 Sep 2022 14:08:42 -0400:
+On Fri, 23 Sep 2022, Jeff Layton wrote:
+> 
+> Absolutely. That is the downside of this approach, but the priority here
+> has always been to improve nfsd. If we don't get the ability to present
+> this info via statx, then so be it. Later on, I suppose we can move that
+> handling into the kernel in some fashion if we decide it's worthwhile.
+> 
+> That said, not having this in statx makes it more difficult to test
+> i_version behavior. Maybe we can add a generic ioctl for that in the
+> interim?
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_fixes2
+I wonder if we are over-thinking this, trying too hard, making "perfect"
+the enemy of "good".
+While we agree that the current implementation of i_version is
+imperfect, it isn't causing major data corruption all around the world.
+I don't think there are even any known bug reports are there?
+So while we do want to fix it as best we can, we don't need to make that
+the first priority.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3a710532cfe586710738670fb7e1ee44fc3c9b5c
+I think the first priority should be to document how we want it to work,
+which is what this thread is really all about.  The documentation can
+note that some (all) filesystems do not provide perfect semantics across
+unclean restarts, and can list any other anomalies that we are aware of.
+And on that basis we can export the current i_version to user-space via
+statx and start trying to write some test code.
 
-Thank you!
+We can then look at moving the i_version/ctime update from *before* the
+write to *after* the write, and any other improvements that can be
+achieved easily in common code.  We can then update the man page to say
+"since Linux 6.42, this list of anomalies is no longer present".
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Then we can explore some options for handling unclean restart - in a
+context where we can write tests and maybe even demonstrate a concrete
+problem before we start trying to fix it.
+
+NeilBrown
