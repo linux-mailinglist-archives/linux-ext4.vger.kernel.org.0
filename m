@@ -2,185 +2,337 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D262E5EA8C7
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Sep 2022 16:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C71F5EA8CB
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Sep 2022 16:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235179AbiIZOnG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 26 Sep 2022 10:43:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42924 "EHLO
+        id S234189AbiIZOn6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 26 Sep 2022 10:43:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234532AbiIZOmS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Sep 2022 10:42:18 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2049.outbound.protection.outlook.com [40.107.244.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED395E094;
-        Mon, 26 Sep 2022 06:04:36 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GoC7HkvJ0exoTiJcXbr2+ElQzVNusEehjar/yhtdelC9JCoqTt+o4O6SsDg5MK2f9tdRm8V4rhs1ViInJz/9Dss6979AIirM8g3QavOiaI6s8CPm9bKcxaeCMhKyZFaSvZs7rhoYayd/p2zWL9MpPTvZ0D7AzTjJwNvZAjZjts+hK3fkWTzU5ORO1S54b/14Yi24ZMur6qgNeRPeRw2Z9OS2jA60sustZyryejYpxd+cqkXQR6h8sAO7tMiVD9xqlHYk872lrEnOha8LhGtc7EoRBt5KviquIxTCvwTLrX4poC8AdECkCHNq/OJvqEjlA+CbDQab9Eh5QmMFH8DXYw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jByy82CZvmD3fQwIONP/yYPDjOSS094TCQc9FI6DTkk=;
- b=bysbuFoVKbY/nMpzIvChJvoGTghAM4Sp4bGy4uMyL2sJuQDxw8PEtrvDFc8iwsxyhOpnEyE28WJtn7OtMB+bDL9EgaOfsGZZWX4Etu5O9sKEA1jdjDtxBj32cY+sLpO3m3xUbxl7vPnuZOVYa/Tm+zsVE32AKbLQfyeFdRn9ZKtPcmLP0HPiIkN5q6335kUrsGjgCKp2q82GdsmI7DZza1L4A7CQrVN/5dbF3TkvpAUJC06rX7Gbwq66iJVpSfBauBvuOsZmP2wENHWqYjyBMlG5rf/N7OQSW9kxslJMuLMIe0wNR/Kq4AQhtgNZsD0OBMFkBEamnJLoov8vLs2iOw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jByy82CZvmD3fQwIONP/yYPDjOSS094TCQc9FI6DTkk=;
- b=bnrOd1MXrauda92TNBci2VK04NSTM6+HanwMhOypQ+BnnR4+NJx/SUSIu02ykPdbw8ZtdDVdJDgeyUG2cjEqLNC0A5EnTdts6ouGJdxt7GBq6L+kp3xFfGjrWgIxVy6QeJ8wLphapjfk08Ry/PTF+GJJofv5621QXIt18LeY52tQVOUyijR8cA3C+nuKq3nf1KV4oMnaxPBnrtbxqEJQDvwA1/ShJcX/8s7mVvwQhgOj0KCwh2bZPwtXJfcArM8qITxKc6NWh304NnFpcB1DtZkk0P02G5987LQrYeA6YuN90kiendCWKDndbLSAHNuEzhiGpfSOMTUs3IB7tPtQyQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
- by CH2PR12MB4908.namprd12.prod.outlook.com (2603:10b6:610:6b::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5654.25; Mon, 26 Sep
- 2022 13:04:35 +0000
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::462:7fe:f04f:d0d5]) by MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::462:7fe:f04f:d0d5%8]) with mapi id 15.20.5654.025; Mon, 26 Sep 2022
- 13:04:34 +0000
-Date:   Mon, 26 Sep 2022 10:04:33 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>, akpm@linux-foundation.org,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        John Hubbard <jhubbard@nvidia.com>,
-        linux-fsdevel@vger.kernel.org, nvdimm@lists.linux.dev,
-        linux-xfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v2 05/18] xfs: Add xfs_break_layouts() to the inode
- eviction path
-Message-ID: <YzGjYZGFBBWBfUbK@nvidia.com>
-References: <632894c4738d8_2a6ded294a@dwillia2-xfh.jf.intel.com.notmuch>
- <20220919212959.GL3600936@dread.disaster.area>
- <6329ee04c9272_2a6ded294bf@dwillia2-xfh.jf.intel.com.notmuch>
- <20220921221416.GT3600936@dread.disaster.area>
- <YyuQI08LManypG6u@nvidia.com>
- <20220923001846.GX3600936@dread.disaster.area>
- <632d00a491d0d_4a67429488@dwillia2-xfh.jf.intel.com.notmuch>
- <20220923021012.GZ3600936@dread.disaster.area>
- <Yy2pC/upZNEkVmc5@nvidia.com>
- <20220926003430.GB3600936@dread.disaster.area>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220926003430.GB3600936@dread.disaster.area>
-X-ClientProxiedBy: BL0PR01CA0036.prod.exchangelabs.com (2603:10b6:208:71::49)
- To MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
+        with ESMTP id S235094AbiIZOnf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Sep 2022 10:43:35 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A309785AB
+        for <linux-ext4@vger.kernel.org>; Mon, 26 Sep 2022 06:06:16 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E5E961F385;
+        Mon, 26 Sep 2022 13:06:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1664197574; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=sDa980gmFs/Sf8xH4iBz70exbRowIvlH5is0xLFORak=;
+        b=LpFuVsVv9Nyt2KjpfZAbO8Id7+QbXREq1m4izwENQxRh204byEKFYm4JOXcV17GA3ln7ZX
+        pk/jICh9bVB2qYwKQ3QiNT040V6CG1PLQJ1/Ye8AgDDJI/4YAN/uGVinGlCSwnrOIRKjAR
+        GEnSqBqa0orH98PBnIxS/ULlvRewNCo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1664197574;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=sDa980gmFs/Sf8xH4iBz70exbRowIvlH5is0xLFORak=;
+        b=zn3EcrSjlzTpvMVlKJT1OWi5OwDck58bBanH7INHwG1w4Pwhng7IoKxtpLizKdbqQm9KgR
+        MUeIHc9A36T/5OBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9F9C413486;
+        Mon, 26 Sep 2022 13:06:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id SprzI8ajMWN/YgAAMHmgww
+        (envelope-from <lhenriques@suse.de>); Mon, 26 Sep 2022 13:06:14 +0000
+Received: from localhost (brahms.olymp [local])
+        by brahms.olymp (OpenSMTPD) with ESMTPA id 17a5b84e;
+        Mon, 26 Sep 2022 13:07:09 +0000 (UTC)
+From:   =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
+To:     linux-ext4@vger.kernel.org
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
+Subject: [RFC PATCH] debugfs: add commands to dump and change extent header fields
+Date:   Mon, 26 Sep 2022 14:07:08 +0100
+Message-Id: <20220926130708.15476-1-lhenriques@suse.de>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4192:EE_|CH2PR12MB4908:EE_
-X-MS-Office365-Filtering-Correlation-Id: a8f66eb4-808a-4fc0-41be-08da9fbfa8e5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2cPyffG5EPmGUMIbiisGHk79xQ05ur+1RUgaakC9MZ8ZggOVS9+PHQP3K6M8baWvNlxKw8v70NRZOdIUIRSYgLqTGsbLrVXS7xSyRUzSoQ1ArdC1r8oR1Vu8UznnChS+GA8JRUFA+nypxdSfKUZYOMI+hubSAycrcGh2djxoKnARsi+jpWkH6OpVd9qYeV0SLCP8BfAzm7EdLeHvSquU3qzlcqLD3VxKtMYL7d4KShK1qnMI3y/G/HSUb7Mt8oE7yYHg/cTBhjrd5NN/tAHonQbjTLWb/UvBWPPsZWZZU1zNSgYl2CXRipHIvFPuxgczS6JxJsmMeI2+IslQJvVkNr357rCZGIPvF66STwRgzCcUMG59jL2UyWYWmZ6M/coYNWw5QxlQHCpAExZiHzV0LROfOKVdQ6Zg1w5UY/PmM5FfyE0ubxucXmarPoT6Yb6NZSSI4NiWA6BGfNlWBkoukY78SLgBV976EaxsJ6iV9EbdVgIoBucgS7DAA1DmT7rK40DEh4edrTeIrNs74mhm0bD3NafT8NlGhDJm4bZiLOr7xsRrr/hvO1NOeGeyzhOUQwiVJa/woCawMNd2HVzIm5LQENtzWV0VE2ZuHRdgP9Nz/9oTi7vXGU3lKEAA/BtMBvKP/1o53jlWWNWPm7Z/FCDnkfTHyt2IvWisg39YxYGtJZkJvdIvDKrCUoN2YQJa1ZenZPWEji8u90OjMkyYOg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(366004)(136003)(376002)(346002)(39860400002)(451199015)(316002)(6486002)(478600001)(8676002)(4326008)(66946007)(66476007)(66556008)(5660300002)(26005)(6512007)(7416002)(8936002)(6506007)(186003)(2616005)(36756003)(2906002)(41300700001)(38100700002)(54906003)(6916009)(83380400001)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MXde3lf9tv8ekvWqoykQN7bpPVQ2LxQqAnxXU5xCbO6Dw9EDFvxJmumCraZz?=
- =?us-ascii?Q?KyvOGn2R5lnFjI4rDvwHnudUQvUYwmpUBoNbktKqHbnIDQiZSwaJFW3tStT1?=
- =?us-ascii?Q?6LIYX4iDyG6rGVHWMgd1jt/5kaWLd4gnZOTxDNKksu498LSU8R4fcPNwdb3R?=
- =?us-ascii?Q?QjS6cxEk04az0Dn1WSNxjJztie9Gu26Cof9az1Q2WpsvUYvX/zknZfp4MYDk?=
- =?us-ascii?Q?C4rurqSX2ZCdyC77mXAFPckqYGZlvz2wVabBAmiZhhv8S44ccAmW4RDdWAwU?=
- =?us-ascii?Q?X1STIztxLTUsTVgAnFKAr3W1hL5wNlvzHLEJekBjhinUPRluOSO+Rrzjx6t/?=
- =?us-ascii?Q?wVITO1GJ7JfmdobRMb3HVy2k+pxQem0dGTGpo1Sm1e0BD0nvdXQ7wN4c7Zry?=
- =?us-ascii?Q?ghe47YOpG6LmW2vlKsIQVcTCCCrqhX20ZhBe6xHTQujGilwReU+loatCvWzo?=
- =?us-ascii?Q?e8Jl+SsX9olAqGJ5/6cUjIqILP9w0dpaPnoFbvxzj90r/5LhSSj0hoPTZqPM?=
- =?us-ascii?Q?D61CGlvdLzP/fQnBvQ5eZ6nFuEd43pFi5fkVRUsHPtwvolLdv3+rGOm1OUvh?=
- =?us-ascii?Q?ZwMMwCcAT+JvTKuJgsGtkr4yqF3riN3Tmm09H7XdnzQCpMzUhlDXKIM/J4wb?=
- =?us-ascii?Q?N1TQU1QTPYpWCv7D38mUgm8ldKb9wxw8f/g+dF4RZOsgzvy8UzjlKrnekhCw?=
- =?us-ascii?Q?ahPrR8B9SYzh1HeXFaipsjIyX4cU0SYXYgo8jI8QRhtwxyIlITAmC/Bn1wUg?=
- =?us-ascii?Q?gcC7VwjGPqnVG5tJDATsb+6fyuskQa75IrYg4TwArEBqyUwKSQc8tnpVGZnw?=
- =?us-ascii?Q?z6TEtN9tQH2A9NAeObkppL48QeALXPXORBWmPgDdi3vXHOcRwb+JF75r79L6?=
- =?us-ascii?Q?UGRm3wkxqEe19fv3DoCBtrr+IkDxzU9TiwGyqDp1nH0cpOfG7zPfFixi73zG?=
- =?us-ascii?Q?izKWBM+BKWU9RE4FjxpPPXLFwbQAK2n0gRVrjGy7xab9Mwni3Fc1Q9qYNsQw?=
- =?us-ascii?Q?FiVpe0JpeXAWJ5oY8GuPYNVd0EcWx7d5RXplPP4mPoMm3ClEMhlORvM/ClNq?=
- =?us-ascii?Q?4lPDkc43G04+K4/hsH0t8MiQ8e8uRmsGfV3zbaK6YDMhApUrNQPAd5jHPZZg?=
- =?us-ascii?Q?cEBDmXkwuXgvawuy4p4iEEwtTjjYH4sjrvdZddwW8hfF922Am8vgfu3qotMX?=
- =?us-ascii?Q?BdmDCjC5T8U6Bwp5Aewz175b7Xd978x6B2Vmdm5+40fPqbTa4DpqQwkPU96t?=
- =?us-ascii?Q?N5FlJIfVSJAbZiSv8qsWgdy3wLP9TXBl63xg7MgDfzhdQoXIgriOcSgOht18?=
- =?us-ascii?Q?RqtnKe86ONnQ5D3FQWVHOKNzH+t8oFw9t0f0GTsfWlwuXhSyoQdXQ3n2Jhk2?=
- =?us-ascii?Q?fGuhacVagqAu55OHuQiLSXK/hpMb103f1ytRV3Y1XedraKNz4ll0ITDGhbBw?=
- =?us-ascii?Q?eSOJwZnY4zT4lB03Lilo/FTOcczYDnQf/DbzWyfxhcBnVehIG07+0zFjZV9F?=
- =?us-ascii?Q?Q25bFXKq7FSJlKt0+ru0h9C5c6Wvoizl0KPOrDCpPpYL2nd8AxXP9aNTcsDN?=
- =?us-ascii?Q?kzJmoQ8Oe7FWaAuRp+I=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a8f66eb4-808a-4fc0-41be-08da9fbfa8e5
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2022 13:04:34.9088
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 81WnVfNDspiAMNnRAPtRNiICqR1zrjAAfrjTXptWgPijdoxfDYoz5w+dipZ2r+aA
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4908
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Sep 26, 2022 at 10:34:30AM +1000, Dave Chinner wrote:
+This commit adds two new commands to debugfs:
 
-> > It is not about sane applications, it is about kernel security against
-> > hostile userspace.
-> 
-> Turning this into a UAF doesn't provide any security at all. It
-> makes this measurable worse from a security POV as it provides a
-> channel for data leakage (read() case) or system unstability or
-> compromise (the write() case).
+* dump_extent_header - dump an extent header
+* set_extent_header_field - modifying an extent header field
 
-You asked what the concern is, I think you get it, you explained it to
-Jan in another email.
+These commands take a block number as an argument, and will take the extent
+header from the beginning of this block.  Basic validation of the header
+data is done, but it is possible to override this validation when modifying
+the header.
 
-We have this issue where if we are not careful we can create a UAF bug
-through GUP. It is not something a real application will hit, this is
-kernel self-protection against hostile user space trying to trigger a
-UAF. The issue arises from both the FS and the MM having their own
-lifecycle models for the same memory page.
+Signed-off-by: Luís Henriques <lhenriques@suse.de>
+---
+ debugfs/debug_cmds.ct |  6 +++
+ debugfs/debugfs.8.in  | 24 +++++++++++
+ debugfs/debugfs.c     | 50 +++++++++++++++++++++++
+ debugfs/debugfs.h     |  2 +
+ debugfs/set_fields.c  | 94 +++++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 176 insertions(+)
 
-I'm still not clear on exactly what the current state of affairs is,
-Dan?
-
-The DAX/FSDAX stuff currently has a wait on the struct page - does
-that wait protect against these UAFs? It looks to me like that is what
-it is suppposed to do?
-
-If so, that wait simply needs to be transformed into a wait for the
-refcount to be 0 when you rework the refcounting. 
-
-This is not the same FOLL_LONGTERM discussion rehashed, all the
-FOLL_LONGTERM discussions were predicated on the idea that GUP
-actually worked and doesn't have UAF bugs.
-
-> The *storage media* must not be reused until the filesystem says it
-> can be reused. And for that to work, nothing is allowed to keep an
-> anonymous, non-filesystem reference to the storage media. It has
-> nothing to do with struct page reference counts, and everything to
-> do with ensuring that filesystem objects are correctly referenced
-> while the storage media is in direct use by an application.
-
-The trouble is we have *two* things that think they own the media -
-the mm through pgmap clearly is the owner of the struct page and has
-its own well defined lifecycle model for it.
-
-And the FS has its model. We have to ensure the two models are tied
-together, a page in the media cannot be considered free until both
-lifecycle models agree it is free.
-
-This is a side effect of using the struct pages in the first place,
-currently the FS can't use struct page but opt out of the mm's
-lifecycle model for struct page!
-
-If we want the FS to own everything exclusively we should purge the
-struct pages completely and give up all the features that come with
-them (like GUP)
-
-Jason
+diff --git a/debugfs/debug_cmds.ct b/debugfs/debug_cmds.ct
+index 1ff6c9dcd6b5..4ed613627258 100644
+--- a/debugfs/debug_cmds.ct
++++ b/debugfs/debug_cmds.ct
+@@ -49,6 +49,12 @@ request do_stat, "Show inode information ",
+ request do_dump_extents, "Dump extents information ",
+ 	dump_extents, extents, ex;
+ 
++request do_dump_extent_header, "Dump extent header information",
++	dump_extent_header, deh;
++
++request do_set_extent_header_field, "Sets an extent header field",
++	set_extent_header_field, seh;
++
+ request do_blocks, "Dump blocks used by an inode ",
+ 	blocks;
+ 
+diff --git a/debugfs/debugfs.8.in b/debugfs/debugfs.8.in
+index a3227a80ab24..f50fd6d9e987 100644
+--- a/debugfs/debugfs.8.in
++++ b/debugfs/debugfs.8.in
+@@ -298,6 +298,13 @@ not stored in file system data structures.   Hence, the values displayed
+ may not necessarily by accurate and does not indicate a problem or
+ corruption in the file system.)
+ .TP
++.BI dump_extent_header " block"
++Dump the contents of the extent header at the beginning of block
++.IR block .
++A warning will be emitted if the block doesn't start with a valid extent
++header (for example, if the extent header doesn't start with the '0xf30a'
++magic value).
++.TP
+ .B dump_unused
+ Dump unused blocks which contain non-null bytes.
+ .TP
+@@ -739,6 +746,23 @@ can be displayed by using the command:
+ Also available as
+ .BR ssv .
+ .TP
++.BI set_extent_header_field " -l | block field value"
++Change the value of
++.IR field
++to
++.IR value
++in the extent header at the beginning of
++.IR block.
++If
++.IR block
++doesn't start with a valid extent header, a warning will be emitted and field
++isn't changed.  To force the change, the
++.IR -f
++flag can be used.
++The fields that may be changed with this command can be listed by using the
++.IR -l
++flag.
++.TP
+ .B show_debugfs_params
+ Display
+ .B debugfs
+diff --git a/debugfs/debugfs.c b/debugfs/debugfs.c
+index 78b93eda7b61..f9fb0dc9b347 100644
+--- a/debugfs/debugfs.c
++++ b/debugfs/debugfs.c
+@@ -1079,6 +1079,56 @@ void do_dump_extents(int argc, char **argv, int sci_idx EXT2FS_ATTR((unused)),
+ 	return;
+ }
+ 
++void do_dump_extent_header(int argc, char **argv,
++			   int sci_idx EXT2FS_ATTR((unused)),
++			   void *infop EXT2FS_ATTR((unused)))
++{
++	struct ext3_extent_header *eh;
++	errcode_t	errcode;
++	blk64_t		block;
++	unsigned char	*buf;
++	int		err;
++
++	if (check_fs_open(argv[0]))
++		return;
++
++	if (common_args_process(argc, argv, 2, 2, argv[0], "<block>",
++				CHECK_FS_BITMAPS)) {
++		return;
++	}
++	err = strtoblk(argv[0], argv[1], "physical block", &block);
++	if (err)
++		return;
++
++	buf = malloc(current_fs->blocksize);
++	if (!buf) {
++		com_err(argv[0], 0, "Couldn't allocate block buffer");
++		return;
++	}
++
++	errcode = io_channel_read_blk64(current_fs->io, block, 1, buf);
++	if (errcode) {
++		com_err(argv[0], errcode, "while reading block %llu\n",
++			(unsigned long long) block);
++		goto errout;
++	}
++
++	eh = (struct ext3_extent_header *)buf;
++	if (ext2fs_extent_header_verify(eh, current_fs->blocksize))
++		fprintf(stdout, "Warning: block %llu doesn't seem to contain a "
++			"valid extent header\n", block);
++	fprintf(stdout,
++		"header: magic=%x entries=%u max=%u depth=%u generation=%u\n",
++		ext2fs_le16_to_cpu(eh->eh_magic),
++		ext2fs_le16_to_cpu(eh->eh_entries),
++		ext2fs_le16_to_cpu(eh->eh_max),
++		ext2fs_le16_to_cpu(eh->eh_depth),
++		ext2fs_le32_to_cpu(eh->eh_generation));
++
++errout:
++	free(buf);
++}
++
+ static int print_blocks_proc(ext2_filsys fs EXT2FS_ATTR((unused)),
+ 			     blk64_t *blocknr,
+ 			     e2_blkcnt_t blockcnt EXT2FS_ATTR((unused)),
+diff --git a/debugfs/debugfs.h b/debugfs/debugfs.h
+index 39bc0247f527..f1797c660f55 100644
+--- a/debugfs/debugfs.h
++++ b/debugfs/debugfs.h
+@@ -144,6 +144,8 @@ extern void do_find_free_block(int argc, char **argv, int sci_idx, void *infop);
+ extern void do_find_free_inode(int argc, char **argv, int sci_idx, void *infop);
+ extern void do_stat(int argc, char **argv, int sci_idx, void *infop);
+ extern void do_dump_extents(int argc, char **argv, int sci_idx, void *infop);
++extern void do_dump_extent_header(int argc, char **argv, int sci_idx, void *infop);
++extern void do_set_extent_header_field(int argc, char **argv, int sci_idx, void *infop);
+ extern void do_blocks(int argc, char *argv[], int sci_idx, void *infop);
+ 
+ extern void do_chroot(int argc, char **argv, int sci_idx, void *infop);
+diff --git a/debugfs/set_fields.c b/debugfs/set_fields.c
+index f916deab8cea..3f74331ae85c 100644
+--- a/debugfs/set_fields.c
++++ b/debugfs/set_fields.c
+@@ -47,6 +47,7 @@ static struct ext2_inode_large set_inode;
+ static struct ext2_group_desc set_gd;
+ static struct ext4_group_desc set_gd4;
+ static struct mmp_struct set_mmp;
++static struct ext3_extent_header set_eh;
+ static dgrp_t set_bg;
+ static ext2_ino_t set_ino;
+ static int array_idx;
+@@ -297,6 +298,16 @@ static struct field_set_info mmp_fields[] = {
+ 	{ "checksum", &set_mmp.mmp_checksum, NULL, 4, parse_uint },
+ 	{ 0, 0, 0, 0 }
+ };
++
++static struct field_set_info extent_header_fields[] = {
++	{"magic", &set_eh.eh_magic, NULL, 2, parse_uint },
++	{"entries", &set_eh.eh_entries, NULL, 2, parse_uint },
++	{"max", &set_eh.eh_max, NULL, 2, parse_uint },
++	{"depth", &set_eh.eh_depth, NULL, 2, parse_uint },
++	{"generation", &set_eh.eh_generation, NULL, 4, parse_uint },
++	{0, 0, 0, 0 }
++};
++
+ #if __GNUC_PREREQ (4, 6)
+ #pragma GCC diagnostic pop
+ #endif
+@@ -1022,3 +1033,86 @@ void do_set_mmp_value(int argc EXT2FS_ATTR((unused)),
+ }
+ #endif
+ 
++void do_set_extent_header_field(int argc, char **argv,
++				int sci_idx EXT2FS_ATTR((unused)),
++				void *infop EXT2FS_ATTR((unused)))
++{
++	struct ext3_extent_header *eh;
++	struct field_set_info	*ss;
++	const char		*usage = "-l | <block> <field> <value>";
++	errcode_t		errcode;
++	blk64_t			block;
++	unsigned char		*buf;
++	int			c, err, force = 0;
++
++	if (check_fs_open(argv[0]) || check_fs_read_write(argv[0]) ||
++	    check_fs_bitmaps(argv[0]))
++		return;
++
++	reset_getopt();
++	while ((c = getopt(argc, argv, "lf")) != EOF) {
++		switch (c) {
++		case 'l':
++			print_possible_fields(extent_header_fields);
++			return;
++			break;
++		case 'f':
++			force = 1;
++			break;
++		default:
++			com_err(argv[0], 0, usage);
++			return;
++		}
++	}
++	if (argc != optind + 3) {
++		com_err(argv[0], 0, usage);
++		return;
++	}
++
++	err = strtoblk(argv[0], argv[optind++], "physical block", &block);
++	if (err)
++		return;
++
++	ss = find_field(extent_header_fields, argv[optind]);
++	if (ss == 0) {
++		com_err(argv[0], 0, "invalid field specifier: %s",
++			argv[optind]);
++		return;
++	}
++
++	buf = malloc(current_fs->blocksize);
++	if (!buf) {
++		com_err(argv[0], 0, "Couldn't allocate block buffer");
++		return;
++	}
++
++	errcode = io_channel_read_blk64(current_fs->io, block, 1, buf);
++	if (errcode) {
++		com_err(argv[0], errcode, "while reading block %llu\n",
++			(unsigned long long) block);
++		goto errout;
++	}
++
++	eh = (struct ext3_extent_header *)buf;
++	if (ext2fs_extent_header_verify(eh, current_fs->blocksize)) {
++		fprintf(stdout, "Warning: block %llu doesn't seem to contain a "
++			"valid extent header.  ", block);
++		if (!force) {
++			fprintf(stdout, "Use '-f' to force\n");
++			goto errout;
++		} else
++			fprintf(stdout, "Forcing write.\n");
++	}
++	memcpy(&set_eh, eh, sizeof(set_eh));
++	if (ss->func(ss, argv[optind], argv[optind + 1]) == 0) {
++		memcpy(eh, &set_eh, sizeof(set_eh));
++		errcode = io_channel_write_blk(current_fs->io, block, 1, buf);
++		if (errcode) {
++			com_err(argv[0], errcode, "while writing block %llu\n",
++				(unsigned long long) block);
++		}
++	}
++
++errout:
++	free(buf);
++}
