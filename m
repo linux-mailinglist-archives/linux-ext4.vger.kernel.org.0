@@ -2,72 +2,72 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FB445EAF72
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Sep 2022 20:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 068135EB313
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Sep 2022 23:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbiIZSSM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 26 Sep 2022 14:18:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59732 "EHLO
+        id S230158AbiIZV2N (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 26 Sep 2022 17:28:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbiIZSRw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Sep 2022 14:17:52 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA82474CF;
-        Mon, 26 Sep 2022 11:08:47 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 28QI8gQ3023305
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 26 Sep 2022 14:08:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1664215724; bh=syJbDzzk3vzCCtQWfbwxW952B4bzj79gnrZUWWp8YPw=;
-        h=Date:From:To:Cc:Subject;
-        b=SqNN2f8qchXfC7jyMhWCK95q2iNKw2VO2DQEtSmTgEXWeTnb3ZaTWeLVo0V6z1Yp2
-         NlNOGknCBU1CGIwb9hhC8cVQY82Gb3SQEQSSUzLBcfrlTaTPbRnKJuhBhqUqJGtREJ
-         /nCrTpK4VEUWvecCef2NII43FWD7xQrdYUWmHicgQek+L1u68rPbL7CRo0euP+yIOa
-         FTl3r598GDiBx2Y6Llc9CTe67OLdYivvJ2jNlbiVV4Z49SShzGrtaNeyQuHyYqgwB/
-         mnK/3sDxqglzMOiv4DRitwO9Dl8zGHXfBG97hz37Yr8yN38d76CLxbwl6pNGOmSidm
-         bplAp49AC7uHQ==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id B4B7315C526C; Mon, 26 Sep 2022 14:08:42 -0400 (EDT)
-Date:   Mon, 26 Sep 2022 14:08:42 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] ext4 last-minute fixup
-Message-ID: <YzHqqg46Y34PX0Yq@mit.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S230106AbiIZV2M (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Sep 2022 17:28:12 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D8EA2231;
+        Mon, 26 Sep 2022 14:28:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2F2F9B811CE;
+        Mon, 26 Sep 2022 21:28:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D0ABBC433C1;
+        Mon, 26 Sep 2022 21:28:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1664227686;
+        bh=YniGDJvhgWvXx0tSXMolKeJckrcNppbLd/3jlGQpUVg=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=mkmzBaKMq+QfzYjMNSV9EAbUoFPa4JwS/wqybxLK+E7QtzHwAaVnh9sRCecnGyT0e
+         MhcyT4wURl3xGMtDJ0S1sauOHh1zHAYhI92eywpxC/ntjQur/gBknuj/p4TYtux80i
+         IRfj7VtYY4OYgPHvwC6tmmp8kmRBxZuxEOXuvITAPblEoGPZHTQfcbQsULtqexkhPM
+         7pbwOxFL2HhlXxcqxwmQIhj9NyU6Y+ISJbqhCRoxGsnEbHsriJbaeLjFlL/31et2LX
+         a3eFJoIUZvdzUOmnXZ7Q3/kMb8Fz7lVzMNoordVG7Ck9v1G6bJ/8+xHf39wg+H7kH8
+         KXaYRN14k5OaQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BC134C070C8;
+        Mon, 26 Sep 2022 21:28:06 +0000 (UTC)
+Subject: Re: [GIT PULL] ext4 last-minute fixup
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YzHqqg46Y34PX0Yq@mit.edu>
+References: <YzHqqg46Y34PX0Yq@mit.edu>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YzHqqg46Y34PX0Yq@mit.edu>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_fixes2
+X-PR-Tracked-Commit-Id: a078dff870136090b5779ca2831870a6c5539d36
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 3a710532cfe586710738670fb7e1ee44fc3c9b5c
+Message-Id: <166422768676.13634.1452641480416843872.pr-tracker-bot@kernel.org>
+Date:   Mon, 26 Sep 2022 21:28:06 +0000
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The following changes since commit 80fa46d6b9e7b1527bfd2197d75431fd9c382161:
+The pull request you sent on Mon, 26 Sep 2022 14:08:42 -0400:
 
-  ext4: limit the number of retries after discarding preallocations blocks (2022-09-22 10:51:19 -0400)
+> https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_fixes2
 
-are available in the Git repository at:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/3a710532cfe586710738670fb7e1ee44fc3c9b5c
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_fixes2
+Thank you!
 
-for you to fetch changes up to a078dff870136090b5779ca2831870a6c5539d36:
-
-  ext4: fixup possible uninitialized variable access in ext4_mb_choose_next_group_cr1() (2022-09-26 13:21:05 -0400)
-
-----------------------------------------------------------------
-Fix an potential unitialzied variable bug; this was a fixup that I had
-forgotten to apply before the last pull request for ext4.  My bad.
-
-----------------------------------------------------------------
-Jan Kara (1):
-      ext4: fixup possible uninitialized variable access in ext4_mb_choose_next_group_cr1()
-
- fs/ext4/mballoc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
