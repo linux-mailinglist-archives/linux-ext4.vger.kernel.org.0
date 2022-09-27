@@ -2,179 +2,215 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50A425EB6BA
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Sep 2022 03:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6558E5EBA78
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Sep 2022 08:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229680AbiI0BRb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 26 Sep 2022 21:17:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43004 "EHLO
+        id S229571AbiI0GT2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 27 Sep 2022 02:19:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbiI0BRa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Sep 2022 21:17:30 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B19C67163
-        for <linux-ext4@vger.kernel.org>; Mon, 26 Sep 2022 18:17:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 42A97B816EA
-        for <linux-ext4@vger.kernel.org>; Tue, 27 Sep 2022 01:17:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A284C433D6;
-        Tue, 27 Sep 2022 01:17:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664241445;
-        bh=omNLUPEUvZRricyz4MwOlHbbzYTBCy5G/swpivEfH+U=;
-        h=Date:From:To:Cc:Subject:From;
-        b=DhEeQ6tXii3h3jT1Amtw5kIhQ8NEzj3RHRzfRshp/7zn2CeSgDKtpKVj+SJKc4ntw
-         CFxQD/s9A1BKJC7w5nzA9tNPX5Q1DHDXkimrfW3zdnWtKfm+9TEDV+gbn8WV9wiiR0
-         PAdFr2dBU4NUfPy8arVLjj9fJDOt1llGi9oWc9dTZW2NwtCjkIhHPr4DlMZsAE0nKZ
-         iGubkA7vOlaArVRe77JyLrCEXz4ALgzs4xvWPJW/Ks2mh6mMDpz/nICqDEo6VROwzk
-         gleFS7FAOXyFQvgNe3kjRn2NPlqIRRZ6yndHPOumJ38OOGwz0R9w2mN38Ve6bqulgL
-         tYdtKPIphXYOQ==
-Date:   Tue, 27 Sep 2022 09:17:20 +0800
-From:   Zorro Lang <zlang@kernel.org>
-To:     linux-mm@kvack.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-ext4@vger.kernel.org
-Subject: [Bug report] BUG: Kernel NULL pointer dereference at 0x00000069,
- filemap_release_folio+0x88/0xb0
-Message-ID: <20220927011720.7jmugevxc7ax26qw@zlang-mailbox>
+        with ESMTP id S229437AbiI0GT1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Sep 2022 02:19:27 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2066.outbound.protection.outlook.com [40.107.220.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A43846564D;
+        Mon, 26 Sep 2022 23:19:26 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QUpVQtUzMbCkXXFEUH3+xW4XsR7WIfEQJKWSnHkDy4MRSfWhSJxKSzDNCtpTQkG62Rw40HJu5ePnYrKmM16GhIbh7RseaPF6o78gmYQx8/CAUteZ3WNnruA3iLJfrpkDDffdLHOynKzSWUpybxPHHGoyUhSg9kBInIX4blTtxS4zhHlKjg0KIJoKLGCIpGgmpQQkXVuaNt0E4yJ3JPpmYSv3sXnOyoDUIBmrKk+Yi5ykNXjaYNpP0Pl/ECe4L8oe06bRMQf/jcAiYtJ0mltUKIXStvXVdNcn1z1Hx3PXjsz8bpUTtcFFr0AJ5HNdKXOPRurbSTrjgVrXFOHyMI41pQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wGtjP5vcPZ3DK4sGhHjIlMyi905GAQXL8vOk+v/btow=;
+ b=JkbPMFuWyHujzr7Zv1aMhP4veYFsc2NaAwZTXw04sgV+BwczLIwzhkN1U6v7CvycxS0tsHkOSBbx4HeDdYih/aWCE5p+7WpHdK2HGI28ELMalvLeVeP2Bo6d8XbNBlKwbCWxv1Qebz2enuQOZrJKUWmk4VrpNceat1rbbLlPPtBIQJ2oMQTwraniHOeOB0iF50WH+RqLAJqXjIMfta9WRYWm2vwrkxzhirRdoJBj0dZ7qzFhLKXaf2DxPgROoLzNDCmD+sFy3nRpMqZKo7XPLiBmM2zD/Z1Gu7DBdgjf4R79a/Jg+y8PPGT78s9YZvBsBViKi86ViqXletlxK/p+1Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wGtjP5vcPZ3DK4sGhHjIlMyi905GAQXL8vOk+v/btow=;
+ b=gbsev0kEv12WZB6R4A+i1tiSOPPBi8dUwL8T9FFuU8dvFBgVo2nh2dWPES8i54dauo8rRCca0yYOqqiEfUOuRf9rrWFh5iUUdIKVHWKWUnTPxQJJzZagubE8CC/PcdXAYATI7/xx7UqiJUG99wyNSZsMVDTlOME6tdEkAQXARPg53deVOP+F23TIn3bPgxHAPIBie3uGrK77HgYTw+Lc7yA2cuHnQWEJk0rFJ8861PUsROPMGTz0pPMNUJ151UKfGkdG5GHl/wFeftsZGY+kBVPpVDr22yzfajB48YOlNdqbG5SDkG4gNBbZD9vfSqZNwyNjyeW/IIoQX7NviOyngA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
+ by DM6PR12MB4912.namprd12.prod.outlook.com (2603:10b6:5:20b::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5676.15; Tue, 27 Sep
+ 2022 06:19:24 +0000
+Received: from BYAPR12MB3176.namprd12.prod.outlook.com
+ ([fe80::4064:6c13:72e5:a936]) by BYAPR12MB3176.namprd12.prod.outlook.com
+ ([fe80::4064:6c13:72e5:a936%5]) with mapi id 15.20.5654.026; Tue, 27 Sep 2022
+ 06:19:24 +0000
+References: <632b8470d34a6_34962946d@dwillia2-xfh.jf.intel.com.notmuch>
+ <YyuLLsindwo0prz4@nvidia.com>
+ <632ba8eaa5aea_349629422@dwillia2-xfh.jf.intel.com.notmuch>
+ <YyurdXnW7SyEndHV@nvidia.com>
+ <632bc5c4363e9_349629486@dwillia2-xfh.jf.intel.com.notmuch>
+ <YyyhrTxFJZlMGYY6@nvidia.com>
+ <632cd9a2a023_3496294da@dwillia2-xfh.jf.intel.com.notmuch>
+ <Yy2ziac3GdHrpxuh@nvidia.com>
+ <632ddeffd86ff_33d629490@dwillia2-xfh.jf.intel.com.notmuch>
+ <Yy3wA7/bkza7NO1J@nvidia.com>
+ <632e031958740_33d629428@dwillia2-xfh.jf.intel.com.notmuch>
+User-agent: mu4e 1.6.9; emacs 27.1
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, akpm@linux-foundation.org,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        John Hubbard <jhubbard@nvidia.com>,
+        linux-fsdevel@vger.kernel.org, nvdimm@lists.linux.dev,
+        linux-xfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v2 10/18] fsdax: Manage pgmap references at entry
+ insertion and deletion
+Date:   Tue, 27 Sep 2022 16:07:05 +1000
+In-reply-to: <632e031958740_33d629428@dwillia2-xfh.jf.intel.com.notmuch>
+Message-ID: <8735cdl4pk.fsf@nvdebian.thelocal>
+Content-Type: text/plain
+X-ClientProxiedBy: SYXPR01CA0085.ausprd01.prod.outlook.com
+ (2603:10c6:0:2e::18) To BYAPR12MB3176.namprd12.prod.outlook.com
+ (2603:10b6:a03:134::26)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR12MB3176:EE_|DM6PR12MB4912:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5826157f-9fde-4ffb-d427-08daa0503964
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: S2T/hg8HZPyiw3ppsuGnS9MKPdPh50XBPc1MGINWOS7lmIKQB232nhY9xOUcS3YWnTDM/k5ERUNYRUmcfqiFZSI7UUWHEjNYNZvVd+K3/vwdvjf+J9vJ85Hof6bxogQBw7e+p14E26Ho3KAz591mQ+H3CntSXPHTyUUnoWok8rTRaDdBQebC7qKf26XJqgDYbLrRHXiLk2f7BtOXBLxv5KZkpSow24MwJY9/W8ilLXGzGvbQ4OJswG0Rb8oSf2PPFCkt3zuQiiOYPyb1gIlZ8cLRnZoFejb4orG6RNW298zh+cR3v2vhtR6/L0+6LH2cUwxx1JQzHVIl0VsYvx/UkbY4OH3CMRUG7ZWvvB+lS+JiVibOFjResQ00/+b52seyCPF/255EJ4DZ+VKO4he/kNCcwDBHr2xOQ4D62L+RYqrhiPkW0iclP3hZEV4DXK+IJmJZKjb0fVviTg1fJReYExNPxGPcO4ECFP6fNk0gx3X2/csh/pWWa8TX7g7EuqENZR5Qb3ZmR4TL7It+jLzkXw8TsMbQg/5h+Qr/Xr6603sXylkbu2m0kdbVi4VDp+MnZJKnaMAp1Hpds5IWxoQQCFZS1TVYf1w4RUzrLl2+KnrsFitDnj13xptuBl5I9Vwfa7Zq73KG5HAZYp0CfQSH9+h4U24+QRwPpFIqAGHcSaxBK5zPnVvltP5CGPP9EoOiSLJKQDzRlmwRqzCSDSWKEw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(346002)(376002)(136003)(366004)(396003)(451199015)(41300700001)(7416002)(2906002)(5660300002)(478600001)(6486002)(86362001)(26005)(6512007)(9686003)(8936002)(83380400001)(6666004)(6506007)(66946007)(4326008)(8676002)(66476007)(66556008)(186003)(316002)(54906003)(6916009)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?TAH10BDh5iSFUab6wUF8By6PKcLhxwiyyDpPNPP6z6FDlK5I4/j/g4z/AWWw?=
+ =?us-ascii?Q?g57dDWeywTgn8j8qbWcz/aatKdm9ASiM+qE6wAUtxwZk4S/4xNJaDjELiBvL?=
+ =?us-ascii?Q?u4qNbTr4Uv+Snh9RdGbi/ck1TZukACxL8+42mzA5kh58zFpjdhnhdVO0/ZTF?=
+ =?us-ascii?Q?4EcNI1/EkSQVKObUbRQh0dHuvnv9JW6p+C7ACnA53A/Ey6Wq96fF12+r+UQx?=
+ =?us-ascii?Q?pv5JBbWbzj5qCXgkH6ngwiJ7NEikAocbIT6leIU7GNc7xmROa2qLpgPSm/E6?=
+ =?us-ascii?Q?oZP2pyVxlUzFTpDvy/PUZYxddkQsYP/+Y1qJ2UfWd8RbNt8RFzzijCVPdl5R?=
+ =?us-ascii?Q?gyi+5OaUsr2P7MYQm0sSEJ7Be9LJVC2+7BqU4xlH4mY4YvNORE6JT51Vh+cp?=
+ =?us-ascii?Q?rzfaCP/SgtMjyDe3510e4NVRYjXU2lrW9w2FtEdfVF8rGnW4qzQ0R00vkF96?=
+ =?us-ascii?Q?IaU2rA1h4WivnD1ka+Qq1sBLv+WWgjQh+PLxuYtw/4PmGYv7+CHcHUUEwAnV?=
+ =?us-ascii?Q?zsck1HWt+ggYHVcV+eiSr4dsjPt0wqMO7yRpobHXVZpWG8lbx/yQJkGveRnd?=
+ =?us-ascii?Q?wxYPW7N65UZA092n6lFA/HWKhg619l0eIZAoPKEayKJK5rxcMVzbjthWe2KA?=
+ =?us-ascii?Q?P55XRZGtlBEjaKN9TXF/zGfEefTJtX3iY0PgluKZtcXwLen7vpa3MrbapdMu?=
+ =?us-ascii?Q?S4ZrwBoieq2MDMESMRS6WybZi6MrdHHKArahud7RolsSB1t/S4cOYCdt1X3b?=
+ =?us-ascii?Q?OfKTYx5m9G6JxGKChTpaiVSmGuNduU/G+AYb9bLtNS5GNPP9RXQK1Pl/fvTQ?=
+ =?us-ascii?Q?hfPO77he0wO5X6lLLyx9h6wUrBrDrf8VM47juEsOkrF5Zu7WKljXDTQq6GbS?=
+ =?us-ascii?Q?T+nvFhEYjlZraVoLeAaajnr4tdqYs777Yk5PqXpylRSvZcNANEQ/eqVB23mP?=
+ =?us-ascii?Q?3Baj4bZChtz2VebWyR2bsENKSPbnLQukS/FbZ7RiNkRv491qxINrPHPB0WRg?=
+ =?us-ascii?Q?WvxLTpB3ik3Tj2NlQJ+51msye2lJT3kf/AVM8SK6WNURlBAY/diCuhBImMUJ?=
+ =?us-ascii?Q?hxiZsYY8qjIb+YGHDcO+0++0HypoGuxkbffYYp6YbSGm2jx/E5K4w79vovPb?=
+ =?us-ascii?Q?vqnxYaFPhL++A5fQXzBg45QRj9KWZxcl05W68LzFs3OdMR+rUTlnBSYi0oct?=
+ =?us-ascii?Q?HqL2l9bdklr2bY0A+uZvVp0dCAU8qWFXX4s8rIa5pP1ZTT3ku1F9Z4RCGj6g?=
+ =?us-ascii?Q?G0+rNR3yQp+2OSZWHd3ppZa/hrPLxKNG1/AO1RiQ/L6WUdM+EIm7BbORaN30?=
+ =?us-ascii?Q?64r7vUArUkjJ87c0UiSZJluMYuME7hAZkXfyN0Miwl7WgtotGsC+jtC+Kus2?=
+ =?us-ascii?Q?oCcatgU778+Mn0y6QLR/kP2jKZXfO/cbSsMt2f+Xz/g+aEMvnxRhL4YJXB84?=
+ =?us-ascii?Q?KQXoKNNNAsO0Uw/dvB0UUrHSXFLuwc0EtpBY5pUOQns7OohgYQo0jZVlnHlM?=
+ =?us-ascii?Q?6uNCD2KYNYO7QFJk3uuK+0zYp5AjUj/sIqhiZIfl5c7bzN1w4Ed/xnAsWLH3?=
+ =?us-ascii?Q?sENdl2IPmoU98EoBd1XoZph8TROAkP8HrWRU2IPK?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5826157f-9fde-4ffb-d427-08daa0503964
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2022 06:19:24.8645
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2YDXtOYAG1RrKWkGKjftnOWfgkHwJvkQgJofFT1VVIlQoYCjpbbExSoyHllrRxvboWAZOYq7GT+GA/iUw2VBlw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4912
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi mm and ppc list,
 
-Recently I started to hit a kernel panic [2] rarely on *ppc64le* with *1k
-blocksize* ext4. It's not easy to reproduce, but still has chance to trigger
-by loop running generic/048 on ppc64le (not sure all kind of ppc64le can
-reproduce it).
+Dan Williams <dan.j.williams@intel.com> writes:
 
-Although I've reported a bug to ext4 [1] (more details refer to [1]), but I only
-hit it on ppc64le until now, and I'm not sure if it's an ext4 related bug, more
-likes folio related issue, so I cc mm and ppc mail list, hope to get more
-reviewing.
+> Jason Gunthorpe wrote:
+>> On Fri, Sep 23, 2022 at 09:29:51AM -0700, Dan Williams wrote:
+>> > > > /**
+>> > > >  * pgmap_get_folio() - reference a folio in a live @pgmap by @pfn
+>> > > >  * @pgmap: live pgmap instance, caller ensures this does not race @pgmap death
+>> > > >  * @pfn: page frame number covered by @pgmap
+>> > > >  */
+>> > > > struct folio *pgmap_get_folio(struct dev_pagemap *pgmap,
+>> > > > unsigned long pfn)
+>>
+>> Maybe should be not be pfn but be 'offset from the first page of the
+>> pgmap' ? Then we don't need the xa_load stuff, since it cann't be
+>> wrong by definition.
+>>
+>> > > > {
+>> > > >         struct page *page;
+>> > > >
+>> > > >         VM_WARN_ONCE(pgmap != xa_load(&pgmap_array, PHYS_PFN(phys)));
+>> > > >
+>> > > >         if (WARN_ONCE(percpu_ref_is_dying(&pgmap->ref)))
+>> > > >                 return NULL;
+>> > >
+>> > > This shouldn't be a WARN?
+>> >
+>> > It's a bug if someone calls this after killing the pgmap. I.e.  the
+>> > expectation is that the caller is synchronzing this. The only reason
+>> > this isn't a VM_WARN_ONCE is because the sanity check is cheap, but I do
+>> > not expect it to fire on anything but a development kernel.
+>>
+>> OK, that makes sense
+>>
+>> But shouldn't this get the pgmap refcount here? The reason we started
+>> talking about this was to make all the pgmap logic self contained so
+>> that the pgmap doesn't pass its own destroy until all the all the
+>> page_free()'s have been done.
 
-Thanks,
-Zorro
+That sounds good to me at least. I just noticed we introduced this exact
+bug for device private/coherent pages when making their refcounts zero
+based. Nothing currently takes pgmap->ref when a private/coherent page
+is mapped. Therefore memunmap_pages() will complete and pgmap destroyed
+while pgmap pages are still mapped.
 
-[1]
-https://bugzilla.kernel.org/show_bug.cgi?id=216529
+So I think we need to call put_dev_pagemap() as part of
+free_zone_device_page().
 
-[2]
-[ 4638.919160] run fstests generic/048 at 2022-09-23 21:00:41 
-[ 4641.700564] EXT4-fs (sda3): mounted filesystem with ordered data mode. Quota mode: none. 
-[ 4641.710999] EXT4-fs (sda3): shut down requested (1) 
-[ 4641.718544] Aborting journal on device sda3-8. 
-[ 4641.740342] EXT4-fs (sda3): unmounting filesystem. 
-[ 4643.000415] EXT4-fs (sda3): mounted filesystem with ordered data mode. Quota mode: none. 
-[ 4681.230907] BUG: Kernel NULL pointer dereference at 0x00000069 
-[ 4681.230922] Faulting instruction address: 0xc00000000068ee0c 
-[ 4681.230929] Oops: Kernel access of bad area, sig: 11 [#1] 
-[ 4681.230934] LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries 
-[ 4681.230942] Modules linked in: dm_flakey ext2 dm_snapshot dm_bufio dm_zero dm_mod loop ext4 mbcache jbd2 bonding rfkill tls sunrpc pseries_rng drm fuse drm_panel_orientation_quirks xfs libcrc32c sd_mod t10_pi sg ibmvscsi ibmveth scsi_transport_srp vmx_crypto 
-[ 4681.230991] CPU: 0 PID: 82 Comm: kswapd0 Kdump: loaded Not tainted 6.0.0-rc6+ #1 
-[ 4681.230999] NIP:  c00000000068ee0c LR: c00000000068f2b8 CTR: 0000000000000000 
-[ 4681.238525] REGS: c000000006c0b560 TRAP: 0380   Not tainted  (6.0.0-rc6+) 
-[ 4681.238532] MSR:  800000000280b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 24028242  XER: 00000000 
-[ 4681.238556] CFAR: c00000000068edf4 IRQMASK: 0  
-[ 4681.238556] GPR00: c00000000068f2b8 c000000006c0b800 c000000002cf1700 c00c00000042f1c0  
-[ 4681.238556] GPR04: c000000006c0b860 0000000000000000 0000000000000002 0000000000000000  
-[ 4681.238556] GPR08: c000000002d404b0 0000000000000000 c00c00000042f1c0 0000000000000000  
-[ 4681.238556] GPR12: c0000000001cf080 c000000005100000 c000000000194298 c0000001fff9c480  
-[ 4681.238556] GPR16: c000000048cdb850 0000000000000007 0000000000000000 0000000000000000  
-[ 4681.238556] GPR20: 0000000000000001 c000000006c0b8f8 c00000000146b9d8 5deadbeef0000100  
-[ 4681.238556] GPR24: 5deadbeef0000122 c000000048cdb800 c000000006c0bc00 c000000006c0b8e8  
-[ 4681.238556] GPR28: c000000006c0b860 c00c00000042f1c0 0000000000000009 0000000000000009  
-[ 4681.238634] NIP [c00000000068ee0c] drop_buffers.constprop.0+0x4c/0x1c0 
-[ 4681.238643] LR [c00000000068f2b8] try_to_free_buffers+0x128/0x150 
-[ 4681.238650] Call Trace: 
-[ 4681.238654] [c000000006c0b800] [c000000006c0b880] 0xc000000006c0b880 (unreliable) 
-[ 4681.238663] [c000000006c0b840] [c000000006c0bc00] 0xc000000006c0bc00 
-[ 4681.238670] [c000000006c0b890] [c000000000498708] filemap_release_folio+0x88/0xb0 
-[ 4681.238679] [c000000006c0b8b0] [c0000000004c51c0] shrink_active_list+0x490/0x750 
-[ 4681.238688] [c000000006c0b9b0] [c0000000004c9f88] shrink_lruvec+0x3f8/0x430 
-[ 4681.238697] [c000000006c0baa0] [c0000000004ca1f4] shrink_node_memcgs+0x234/0x290 
-[ 4681.238704] [c000000006c0bb10] [c0000000004ca3c4] shrink_node+0x174/0x6b0 
-[ 4681.238711] [c000000006c0bbc0] [c0000000004cacf0] balance_pgdat+0x3f0/0x970 
-[ 4681.238718] [c000000006c0bd20] [c0000000004cb440] kswapd+0x1d0/0x450 
-[ 4681.238726] [c000000006c0bdc0] [c0000000001943d8] kthread+0x148/0x150 
-[ 4681.238735] [c000000006c0be10] [c00000000000cbe4] ret_from_kernel_thread+0x5c/0x64 
-[ 4681.238745] Instruction dump: 
-[ 4681.238749] fbc1fff0 f821ffc1 7c7d1b78 7c9c2378 ebc30028 7fdff378 48000018 60000000  
-[ 4681.238765] 60000000 ebff0008 7c3ef840 41820048 <815f0060> e93f0000 5529077c 7d295378  
-[ 4681.238782] ---[ end trace 0000000000000000 ]--- 
-[ 4681.270607]  
-[ 4681.337460] Kernel attempted to read user page (6a) - exploit attempt? (uid: 0) 
-[ 4681.337469] BUG: Kernel NULL pointer dereference on read at 0x0000006a 
-[ 4681.337474] Faulting instruction address: 0xc00000000068ee0c 
-[ 4681.337478] Oops: Kernel access of bad area, sig: 11 [#2] 
-[ 4681.337481] LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries 
-[ 4681.337486] Modules linked in: dm_flakey ext2 dm_snapshot dm_bufio dm_zero dm_mod loop ext4 mbcache jbd2 bonding rfkill tls sunrpc pseries_rng drm fuse drm_panel_orientation_quirks xfs libcrc32c sd_mod t10_pi sg ibmvscsi ibmveth scsi_transport_srp vmx_crypto 
-[ 4681.337517] CPU: 2 PID: 704157 Comm: xfs_io Kdump: loaded Tainted: G      D            6.0.0-rc6+ #1 
-[ 4681.337523] NIP:  c00000000068ee0c LR: c00000000068f2b8 CTR: 0000000000000000 
-[ 4681.337527] REGS: c000000036006ef0 TRAP: 0300   Tainted: G      D             (6.0.0-rc6+) 
-[ 4681.337532] MSR:  800000000280b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 28428242  XER: 00000001 
-[ 4681.337546] CFAR: c00000000000c80c DAR: 000000000000006a DSISR: 40000000 IRQMASK: 0  
-[ 4681.337546] GPR00: c00000000068f2b8 c000000036007190 c000000002cf1700 c00c000000424740  
-[ 4681.337546] GPR04: c0000000360071f0 0000000000000000 0000000000000002 0000000000000000  
-[ 4681.337546] GPR08: c000000002d404b0 0000000000000000 c00c000000424740 0000000000000002  
-[ 4681.337546] GPR12: 0000000000000000 c00000000ffce400 0000000000000000 c0000001fff9c480  
-[ 4681.337546] GPR16: c00000004960e050 0000000000000007 0000000000000000 0000000000000000  
-[ 4681.337546] GPR20: 0000000000000001 c000000036007288 c00000000146b9d8 5deadbeef0000100  
-[ 4681.337546] GPR24: 5deadbeef0000122 c00000004960e000 c000000036007678 c000000036007278  
-[ 4681.337546] GPR28: c0000000360071f0 c00c000000424740 000000000000000a 000000000000000a  
-[ 4681.337602] NIP [c00000000068ee0c] drop_buffers.constprop.0+0x4c/0x1c0 
-[ 4681.337608] LR [c00000000068f2b8] try_to_free_buffers+0x128/0x150 
-[ 4681.337613] Call Trace: 
-[ 4681.337616] [c000000036007190] [c000000036007210] 0xc000000036007210 (unreliable) 
-[ 4681.337622] [c0000000360071d0] [c000000036007678] 0xc000000036007678 
-[ 4681.337627] [c000000036007220] [c000000000498708] filemap_release_folio+0x88/0xb0 
-[ 4681.337633] [c000000036007240] [c0000000004c51c0] shrink_active_list+0x490/0x750 
-[ 4681.337640] [c000000036007340] [c0000000004c9f88] shrink_lruvec+0x3f8/0x430 
-[ 4681.337645] [c000000036007430] [c0000000004ca1f4] shrink_node_memcgs+0x234/0x290 
-[ 4681.337651] [c0000000360074a0] [c0000000004ca3c4] shrink_node+0x174/0x6b0 
-[ 4681.337656] [c000000036007550] [c0000000004cbd34] shrink_zones.constprop.0+0xd4/0x3e0 
-[ 4681.337661] [c0000000360075d0] [c0000000004cc158] do_try_to_free_pages+0x118/0x470 
-[ 4681.337667] [c000000036007650] [c0000000004cd084] try_to_free_pages+0x194/0x4c0 
-[ 4681.337673] [c000000036007720] [c00000000054cca4] __alloc_pages_slowpath.constprop.0+0x4f4/0xd80 
-[ 4681.337680] [c000000036007880] [c00000000054d95c] __alloc_pages+0x42c/0x580 
-[ 4681.337686] [c000000036007910] [c000000000587d88] alloc_pages+0xd8/0x1d0 
-[ 4681.337692] [c000000036007960] [c000000000587eb4] folio_alloc+0x34/0x90 
-[ 4681.337698] [c000000036007990] [c000000000498bc0] filemap_alloc_folio+0x40/0x60 
-[ 4681.337703] [c0000000360079b0] [c0000000004a0f54] __filemap_get_folio+0x224/0x790 
-[ 4681.337709] [c000000036007ab0] [c0000000004b4830] pagecache_get_page+0x30/0xb0 
-[ 4681.337715] [c000000036007ae0] [c008000003a9e4dc] ext4_da_write_begin+0x1a4/0x4f0 [ext4] 
-[ 4681.337742] [c000000036007b70] [c000000000498e54] generic_perform_write+0xf4/0x2b0 
-[ 4681.337748] [c000000036007c20] [c008000003a7d190] ext4_buffered_write_iter+0xa8/0x1a0 [ext4] 
-[ 4681.337770] [c000000036007c70] [c000000000615fc8] vfs_write+0x358/0x4b0 
-[ 4681.337776] [c000000036007d40] [c0000000006161f4] sys_pwrite64+0xd4/0x120 
-[ 4681.337782] [c000000036007da0] [c0000000000318d0] system_call_exception+0x180/0x430 
-[ 4681.337788] [c000000036007e10] [c00000000000be68] system_call_vectored_common+0xe8/0x278 
-[ 4681.337795] --- interrupt: 3000 at 0x7fff95651da4 
-[ 4681.337799] NIP:  00007fff95651da4 LR: 0000000000000000 CTR: 0000000000000000 
-[ 4681.337803] REGS: c000000036007e80 TRAP: 3000   Tainted: G      D             (6.0.0-rc6+) 
-[ 4681.337807] MSR:  800000000280f033 <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 48082402  XER: 00000000 
-[ 4681.337822] IRQMASK: 0  
-[ 4681.337822] GPR00: 00000000000000b4 00007ffffaa52530 00007fff95767200 0000000000000003  
-[ 4681.337822] GPR04: 0000010031ac0000 0000000000010000 0000000000490000 00007fff9581a5a0  
-[ 4681.337822] GPR08: 00007fff95812e68 0000000000000000 0000000000000000 0000000000000000  
-[ 4681.337822] GPR12: 0000000000000000 00007fff9581a5a0 0000000000a00000 ffffffffffffffff  
-[ 4681.337822] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000  
-[ 4681.337822] GPR20: 0000000000000000 0000000000000000 0000000000000000 0000000000490000  
-[ 4681.337822] GPR24: 0000000000000049 0000000000000000 0000000000000000 0000000000010000  
-[ 4681.337822] GPR28: 0000010031ac0000 0000000000000003 0000000000000000 0000000000490000  
-[ 4681.337875] NIP [00007fff95651da4] 0x7fff95651da4 
-[ 4681.337878] LR [0000000000000000] 0x0 
-[ 4681.337881] --- interrupt: 3000 
-[ 4681.337884] Instruction dump: 
-[ 4681.337887] fbc1fff0 f821ffc1 7c7d1b78 7c9c2378 ebc30028 7fdff378 48000018 60000000  
-[ 4681.337897] 60000000 ebff0008 7c3ef840 41820048 <815f0060> e93f0000 5529077c 7d295378  
-[ 4681.337908] ---[ end trace 0000000000000000 ]---
+ - Alistair
+
+>> > > > This does not create compound folios, that needs to be coordinated with
+>> > > > the caller and likely needs an explicit
+>> > >
+>> > > Does it? What situations do you think the caller needs to coordinate
+>> > > the folio size? Caller should call the function for each logical unit
+>> > > of storage it wants to allocate from the pgmap..
+>> >
+>> > The problem for fsdax is that it needs to gather all the PTEs, hold a
+>> > lock to synchronize against events that would shatter a huge page, and
+>> > then build up the compound folio metadata before inserting the PMD.
+>>
+>> Er, at this point we are just talking about acquiring virgin pages
+>> nobody else is using, not inserting things. There is no possibility of
+>> conurrent shattering because, by definition, nothing else can
+>> reference these struct pages at this instant.
+>>
+>> Also, the caller must already be serializating pgmap_get_folio()
+>> against concurrent calls on the same pfn (since it is an error to call
+>> pgmap_get_folio() on an non-free pfn)
+>>
+>> So, I would expect the caller must already have all the necessary
+>> locking to accept maximally sized folios.
+>>
+>> eg if it has some reason to punch a hole in the contiguous range
+>> (shatter the folio) it must *already* serialize against
+>> pgmap_get_folio(), since something like punching a hole must know with
+>> certainty if any struct pages are refcount != 0 or not, and must not
+>> race with something trying to set their refcount to 1.
+>
+> Perhaps, I'll take a look. The scenario I am more concerned about is
+> processA sets up a VMA of PAGE_SIZE and races processB to fault in the
+> same filesystem block with a VMA of PMD_SIZE. Right now processA gets a
+> PTE mapping and processB gets a PMD mapping, but the refcounting is all
+> handled in small pages. I need to investigate more what is needed for
+> fsdax to support folio_size() > mapping entry size.
