@@ -2,52 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9EF5EDDF2
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Sep 2022 15:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1324C5EE943
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Sep 2022 00:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233338AbiI1NmJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 28 Sep 2022 09:42:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60554 "EHLO
+        id S233350AbiI1WR3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 28 Sep 2022 18:17:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231567AbiI1NmI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 28 Sep 2022 09:42:08 -0400
+        with ESMTP id S232166AbiI1WR2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 28 Sep 2022 18:17:28 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 204F16E2F4;
-        Wed, 28 Sep 2022 06:42:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91281E21F7
+        for <linux-ext4@vger.kernel.org>; Wed, 28 Sep 2022 15:17:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9F8F761EB1;
-        Wed, 28 Sep 2022 13:42:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB686C433D6;
-        Wed, 28 Sep 2022 13:42:01 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 09CF36200B
+        for <linux-ext4@vger.kernel.org>; Wed, 28 Sep 2022 22:17:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6B9D3C43140
+        for <linux-ext4@vger.kernel.org>; Wed, 28 Sep 2022 22:17:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664372524;
-        bh=PDniZhspoAjFGFPMZfaZ8GgB4DLLy5mz44zztNU7B+8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=DqtgQ/m//i1BdMXDYXkHNALzJc+Fb2CkxwupnjD5iFoPUOy+RjGzDkBw6u16woact
-         Ek+6D4V044/DHPxZTiHl8kuYrAVeeMg2TUGzyu9mlJpBrkxFJqDxhyeySNUTWPuyDE
-         hkbGAN5/XfCvtPpm39Zv+BugYwMfdEX6eE42uDuYEIIMtghXn56j8tNz+CdNoTpYGY
-         oLA0DJOske77HfN24JeefL9hG37cIs4JMzuBMxszwi1t7W9Jgu94CxlxxpRk9x88qB
-         1bv9fv5W8vrBkEn3A2+rUfg9FkuebF8rP6DNdglXtFDEV9ehvhMRQoF+tvVevKpvLP
-         8XuQDoIktoBXA==
-From:   Jeff Layton <jlayton@kernel.org>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca, djwong@kernel.org,
-        david@fromorbit.com, trondmy@hammerspace.com, neilb@suse.de,
-        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
-        chuck.lever@oracle.com, lczerner@redhat.com, jack@suse.cz,
-        bfields@fieldses.org, brauner@kernel.org, fweimer@redhat.com,
-        linux-man@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: [man-pages RFC PATCH v6] statx, inode: document the new STATX_VERSION field
-Date:   Wed, 28 Sep 2022 09:42:00 -0400
-Message-Id: <20220928134200.28741-1-jlayton@kernel.org>
-X-Mailer: git-send-email 2.37.3
+        s=k20201202; t=1664403446;
+        bh=LKMg3OdYnZeNwlF+n/ZWF8ssJl/vuibO91hG5HlAZ/0=;
+        h=From:To:Subject:Date:From;
+        b=l/DzOGOd0GnXMtDYcEyPiv8sG4AyebiiHuzv8uzRTmNTitVR88SZ+B1C5fY+PGNBP
+         G7g325Yo9g1ZP2a4H0cxbANdoYiDSL9e6RfiV8t9RcIRN0+IcwyPMRP4gyn+Fc5MXE
+         BbFTGlKWcBylR+KF9N3fwmze1g7it532XFSo74j5H/hmoI3ZFGGQghZpUbe5+1P0Tm
+         GtwaLXKfQKqVwQPOo/cbrOFvhTi/nY85EbIRBPAbTGoQf97Bvn40ec9/DnFC3PFAX1
+         ysMH/+BWQIQQknzkMclPvpTmNhVhi1G8L+7Wecjg6wZr5jJDpV6NQgAGouy6l7uEOK
+         JyNkQQC5ln0/Q==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+        id 571CCC433E7; Wed, 28 Sep 2022 22:17:26 +0000 (UTC)
+From:   bugzilla-daemon@kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 216539] New: FUZZ: general protection fault, KASAN:
+ null-ptr-deref at fs/ext4/ext4.h:ext4_free_blocks() when mount a corrupted
+ image
+Date:   Wed, 28 Sep 2022 22:17:26 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: new
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: wenqingliu0120@gmail.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_id short_desc product version
+ cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
+ priority component assigned_to reporter cf_regression attachments.created
+Message-ID: <bug-216539-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -57,126 +71,187 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-I'm proposing to expose the inode change attribute via statx [1]. Document
-what this value means and what an observer can infer from it changing.
+https://bugzilla.kernel.org/show_bug.cgi?id=3D216539
 
-NB: this will probably have conflicts with the STATX_DIOALIGN doc
-patches, but we should be able to resolve those before merging anything.
+            Bug ID: 216539
+           Summary: FUZZ: general protection fault, KASAN: null-ptr-deref
+                    at fs/ext4/ext4.h:ext4_free_blocks() when mount a
+                    corrupted image
+           Product: File System
+           Version: 2.5
+    Kernel Version: 5.15.71, 6.0-rc7
+          Hardware: All
+                OS: Linux
+              Tree: Mainline
+            Status: NEW
+          Severity: normal
+          Priority: P1
+         Component: ext4
+          Assignee: fs_ext4@kernel-bugs.osdl.org
+          Reporter: wenqingliu0120@gmail.com
+        Regression: No
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
+Created attachment 301890
+  --> https://bugzilla.kernel.org/attachment.cgi?id=3D301890&action=3Dedit
+corrupted image and .config
 
-[1]: https://lore.kernel.org/linux-nfs/20220826214703.134870-1-jlayton@kernel.org/T/#t
----
- man2/statx.2 | 13 +++++++++++++
- man7/inode.7 | 36 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 49 insertions(+)
+- Overview=20
+FUZZ: general protection fault, KASAN: null-ptr-deref at
+fs/ext4/ext4.h:ext4_free_blocks() when mount a corrupted image
 
-v6: incorporate Neil's suggestions
-    clarify how well-behaved filesystems should order things
+- Reproduce=20
+Tested on kernel 5.15.71, 6.0-rc7
 
-diff --git a/man2/statx.2 b/man2/statx.2
-index 0d1b4591f74c..ee7005334a2f 100644
---- a/man2/statx.2
-+++ b/man2/statx.2
-@@ -62,6 +62,7 @@ struct statx {
-     __u32 stx_dev_major;   /* Major ID */
-     __u32 stx_dev_minor;   /* Minor ID */
-     __u64 stx_mnt_id;      /* Mount ID */
-+    __u64 stx_version;     /* Inode change attribute */
- };
- .EE
- .in
-@@ -247,6 +248,7 @@ STATX_BTIME	Want stx_btime
- STATX_ALL	The same as STATX_BASIC_STATS | STATX_BTIME.
- 	It is deprecated and should not be used.
- STATX_MNT_ID	Want stx_mnt_id (since Linux 5.8)
-+STATX_VERSION	Want stx_version (DRAFT)
- .TE
- .in
- .PP
-@@ -407,10 +409,16 @@ This is the same number reported by
- .BR name_to_handle_at (2)
- and corresponds to the number in the first field in one of the records in
- .IR /proc/self/mountinfo .
-+.TP
-+.I stx_version
-+The inode version, also known as the inode change attribute. See
-+.BR inode (7)
-+for details.
- .PP
- For further information on the above fields, see
- .BR inode (7).
- .\"
-+.TP
- .SS File attributes
- The
- .I stx_attributes
-@@ -489,6 +497,11 @@ without an explicit
- See
- .BR mmap (2)
- for more information.
-+.TP
-+.BR STATX_ATTR_VERSION_MONOTONIC " (since Linux 6.?)"
-+The stx_version value monotonically increases over time and will never appear
-+to go backward, even in the event of a crash. This can allow an application to
-+make a better determination about ordering when viewing different versions.
- .SH RETURN VALUE
- On success, zero is returned.
- On error, \-1 is returned, and
-diff --git a/man7/inode.7 b/man7/inode.7
-index 9b255a890720..e8adb63b1f6a 100644
---- a/man7/inode.7
-+++ b/man7/inode.7
-@@ -184,6 +184,12 @@ Last status change timestamp (ctime)
- This is the file's last status change timestamp.
- It is changed by writing or by setting inode information
- (i.e., owner, group, link count, mode, etc.).
-+.TP
-+Inode version (version)
-+(not returned in the \fIstat\fP structure); \fIstatx.stx_version\fP
-+.IP
-+This is the inode change counter. See the discussion of
-+\fBthe inode version counter\fP, below.
- .PP
- The timestamp fields report time measured with a zero point at the
- .IR Epoch ,
-@@ -424,6 +430,36 @@ on a directory means that a file
- in that directory can be renamed or deleted only by the owner
- of the file, by the owner of the directory, and by a privileged
- process.
-+.SS The inode version counter
-+.PP
-+The \fIstatx.stx_version\fP field is the inode change counter. Any operation
-+that could result in a change to \fIstatx.stx_ctime\fP must result in an
-+increase to this value. Soon after a change has been made, an stx_version value
-+should appear to be larger than previous readings. This is the case even
-+when a ctime change is not evident due to coarse timestamp granularity.
-+.PP
-+An observer cannot infer anything from amount of increase about the
-+nature or magnitude of the change. In fact, a single increment can reflect
-+multiple discrete changes if the value was not checked while those changes
-+were being processed.
-+.PP
-+Changes to stx_version are not necessarily atomic with the change itself, but
-+well-behaved filesystems should increment stx_version after a change has been
-+made visible to observers rather than before. This is especially important for
-+read-caching algorithms which could be fooled into associating a newer
-+stx_version with an older version of data. Note that this does leave a window
-+of time where a change may be visible, but the old stx_version is still being
-+reported.
-+.PP
-+In the event of a system crash, this value can appear to go backward if it was
-+queried before ever being written to the backing store. Applications that
-+persist stx_version values across a reboot should take care to mitigate this.
-+If the filesystem reports \fISTATX_ATTR_VERSION_MONOTONIC\fP in
-+\fIstatx.stx_attributes\fP, then it is not subject to this problem.
-+.PP
-+The stx_version is a Linux extension and is not supported by all filesystems.
-+The application must verify that the \fISTATX_VERSION\fP bit is set in the
-+returned \fIstatx.stx_mask\fP before relying on this field.
- .SH STANDARDS
- If you need to obtain the definition of the
- .I blkcnt_t
--- 
-2.37.3
+# mkdir mnt
+# mount tmp19.img mnt
 
+-Kernel dump
+[  487.033334] loop5: detected capacity change from 0 to 32768
+[  487.064295] EXT4-fs (loop5): warning: mounting unchecked fs, running e2f=
+sck
+is recommended
+[  487.067570] general protection fault, probably for non-canonical address
+0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN NOPTI
+[  487.067697] KASAN: null-ptr-deref in range
+[0x0000000000000000-0x0000000000000007]
+[  487.067753] CPU: 1 PID: 1099 Comm: mount Not tainted 6.0.0-rc7 #1
+[  487.067802] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+1.15.0-1 04/01/2014
+[  487.067858] RIP: 0010:ext4_free_blocks+0x7c1/0x1e30
+[  487.067907] Code: 49 8d bf b8 02 00 00 48 89 f8 48 c1 e8 03 80 3c 18 00 =
+0f
+85 42 11 00 00 49 8b 87 b8 02 00 00 4e 8d 24 e0 4c 89 e0 48 c1 e8 03 <80> 3=
+c 18
+00 0f 85 30 11 00 00 4d 8b 24 24 e8 4c df 71 ff 4f 8d 24
+[  487.068031] RSP: 0018:ffffc9000085f3c0 EFLAGS: 00010246
+[  487.068075] RAX: 0000000000000000 RBX: dffffc0000000000 RCX:
+0000000000000005
+[  487.068125] RDX: 0000000000000000 RSI: 0000000000001c06 RDI:
+ffff8881260a82b8
+[  487.068175] RBP: ffff88812a6c8000 R08: 00000000000000fe R09:
+0000000000000030
+[  487.068226] R10: ffff8881260a8000 R11: 00000000000000fe R12:
+0000000000000000
+[  487.068276] R13: ffff888108f9fec8 R14: 0000000000000001 R15:
+ffff8881260a8000
+[  487.068326] FS:  00007f6c2fd0c840(0000) GS:ffff888293680000(0000)
+knlGS:0000000000000000
+[  487.068382] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  487.068439] CR2: 00007f9e763a6400 CR3: 00000001058e6006 CR4:
+0000000000370ee0
+[  487.068493] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+0000000000000000
+[  487.068542] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+0000000000000400
+[  487.068596] Call Trace:
+[  487.068617]  <TASK>
+[  487.068637]  ? ext4_mb_new_blocks+0x4030/0x4030
+[  487.068677]  ? ext4_sb_block_valid+0x257/0x380
+[  487.068712]  ? __ext4_ext_check+0x689/0x13c0
+[  487.068746]  ext4_ext_remove_space+0x12d2/0x3b40
+[  487.068785]  ? _raw_write_lock+0x87/0xe0
+[  487.068816]  ? ext4_ext_index_trans_blocks+0x100/0x100
+[  487.068855]  ? _raw_write_unlock+0x39/0x70
+[  487.068886]  ? ext4_es_remove_extent+0x170/0x260
+[  487.068922]  ? ext4_es_lookup_extent+0x960/0x960
+[  487.068957]  ? down_write+0xad/0x120
+[  487.068987]  ext4_ext_truncate+0x261/0x300
+[  487.069020]  ext4_truncate+0x9f8/0xef0
+[  487.069049]  ? ext4_punch_hole+0x1030/0x1030
+[  487.069082]  ? __ext4_journal_start_sb+0x23f/0x2d0
+[  487.069119]  ext4_evict_inode+0x7e6/0x14e0
+[  487.069151]  ? complete_all+0xc0/0xc0
+[  487.069182]  ? ext4_da_write_begin+0x6b0/0x6b0
+[  487.069215]  ? _raw_spin_lock_irqsave+0xf0/0xf0
+[  487.069249]  ? _raw_spin_lock_irqsave+0xf0/0xf0
+[  487.069284]  evict+0x284/0x4e0
+[  487.069310]  ext4_setup_system_zone+0x66c/0x840
+[  487.069345]  ? preempt_schedule_common+0x5e/0xd0
+[  487.069381]  ? ext4_exit_system_zone+0x20/0x20
+[  487.069416]  ? ext4_setup_super+0x3b7/0x8e0
+[  487.070661]  ? _raw_spin_unlock+0x15/0x30
+[  487.071887]  ext4_fill_super+0x999c/0xea10
+[  487.073131]  ? ext4_reconfigure+0x2250/0x2250
+[  487.074317]  ? down_write+0xad/0x120
+[  487.075454]  ? snprintf+0x9e/0xd0
+[  487.076571]  ? vsprintf+0x10/0x10
+[  487.077645]  ? mutex_unlock+0x80/0xd0
+[  487.078695]  ? __mutex_unlock_slowpath.isra.0+0x2d0/0x2d0
+[  487.079740]  ? sget_fc+0x4e9/0x6b0
+[  487.080753]  ? get_tree_bdev+0x388/0x660
+[  487.081715]  get_tree_bdev+0x388/0x660
+[  487.082649]  ? ext4_reconfigure+0x2250/0x2250
+[  487.083627]  vfs_get_tree+0x81/0x2b0
+[  487.084608]  ? ns_capable_common+0x57/0xe0
+[  487.085534]  path_mount+0x47e/0x19d0
+[  487.086463]  ? kasan_quarantine_put+0x55/0x180
+[  487.087400]  ? finish_automount+0x5f0/0x5f0
+[  487.088314]  ? user_path_at_empty+0x45/0x60
+[  487.089217]  ? kmem_cache_free+0x1c2/0x4e0
+[  487.090086]  do_mount+0xce/0xf0
+[  487.090859]  ? path_mount+0x19d0/0x19d0
+[  487.091624]  ? _copy_from_user+0x50/0x80
+[  487.092373]  ? memdup_user+0x4e/0xa0
+[  487.093161]  __x64_sys_mount+0x12c/0x1a0
+[  487.093918]  do_syscall_64+0x38/0x90
+[  487.094678]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+[  487.095355] RIP: 0033:0x7f6c2ff6cc7e
+[  487.096039] Code: 48 8b 0d 15 c2 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 =
+2e
+0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 49 89 ca b8 a5 00 00 00 0f 05 <48> 3=
+d 01
+f0 ff ff 73 01 c3 48 8b 0d e2 c1 0c 00 f7 d8 64 89 01 48
+[  487.097528] RSP: 002b:00007fffe10578f8 EFLAGS: 00000246 ORIG_RAX:
+00000000000000a5
+[  487.098292] RAX: ffffffffffffffda RBX: 00007f6c3009e204 RCX:
+00007f6c2ff6cc7e
+[  487.099064] RDX: 000055b42bbf1e90 RSI: 000055b42bbeb370 RDI:
+000055b42bbf1e30
+[  487.099839] RBP: 000055b42bbe9460 R08: 0000000000000000 R09:
+00007f6c30039d60
+[  487.100548] R10: 0000000000000000 R11: 0000000000000246 R12:
+0000000000000000
+[  487.101256] R13: 000055b42bbf1e30 R14: 000055b42bbf1e90 R15:
+000055b42bbe9460
+[  487.101971]  </TASK>
+[  487.102677] Modules linked in: joydev input_leds serio_raw qemu_fw_cfg x=
+fs
+autofs4 raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor
+async_tx raid1 raid0 multipath linear qxl hid_generic usbhid drm_ttm_helper=
+ hid
+ttm drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops drm
+crct10dif_pclmul crc32_pclmul ghash_clmulni_intel aesni_intel psmouse
+crypto_simd cryptd
+[  487.105863] ---[ end trace 0000000000000000 ]---
+[  487.106628] RIP: 0010:ext4_free_blocks+0x7c1/0x1e30
+[  487.107444] Code: 49 8d bf b8 02 00 00 48 89 f8 48 c1 e8 03 80 3c 18 00 =
+0f
+85 42 11 00 00 49 8b 87 b8 02 00 00 4e 8d 24 e0 4c 89 e0 48 c1 e8 03 <80> 3=
+c 18
+00 0f 85 30 11 00 00 4d 8b 24 24 e8 4c df 71 ff 4f 8d 24
+[  487.109121] RSP: 0018:ffffc9000085f3c0 EFLAGS: 00010246
+[  487.109947] RAX: 0000000000000000 RBX: dffffc0000000000 RCX:
+0000000000000005
+[  487.110724] RDX: 0000000000000000 RSI: 0000000000001c06 RDI:
+ffff8881260a82b8
+[  487.111503] RBP: ffff88812a6c8000 R08: 00000000000000fe R09:
+0000000000000030
+[  487.112324] R10: ffff8881260a8000 R11: 00000000000000fe R12:
+0000000000000000
+[  487.113231] R13: ffff888108f9fec8 R14: 0000000000000001 R15:
+ffff8881260a8000
+[  487.114146] FS:  00007f6c2fd0c840(0000) GS:ffff888293680000(0000)
+knlGS:0000000000000000
+[  487.115238] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  487.116093] CR2: 00007f9e763a6400 CR3: 00000001058e6006 CR4:
+0000000000370ee0
+[  487.117089] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+0000000000000000
+[  487.117994] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+0000000000000400
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
