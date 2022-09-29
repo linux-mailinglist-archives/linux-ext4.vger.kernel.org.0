@@ -2,185 +2,147 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FA245EF444
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Sep 2022 13:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 110915EF44B
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Sep 2022 13:28:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235220AbiI2L0U (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 29 Sep 2022 07:26:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35788 "EHLO
+        id S234738AbiI2L2X (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 29 Sep 2022 07:28:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235238AbiI2L0Q (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Sep 2022 07:26:16 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6EB114D499;
-        Thu, 29 Sep 2022 04:26:14 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 999F121AC4;
-        Thu, 29 Sep 2022 11:26:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1664450773; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        with ESMTP id S234420AbiI2L2X (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Sep 2022 07:28:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4F7014DAE2
+        for <linux-ext4@vger.kernel.org>; Thu, 29 Sep 2022 04:28:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1664450900;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=xR0Nk/sNdu7ZIksq1QM9BpsUZ7c9WAN9HzxGcxznGh8=;
-        b=eWZ6pckQkn9K9so0gwaSOPZYDVisZoKZCRWvlgJqKa91lxa6/rMj8cF5cLlb4Oz/xClmMh
-        ayOMr/thsavR1xSGL2VS9/g4ekWEjCpbQpAbDyAwE+eaQm79eQI5ykdQ0vhmms120wegKs
-        s8h8Qd1OzsoOt2vvoRCN1DjYW/fd+8Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1664450773;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xR0Nk/sNdu7ZIksq1QM9BpsUZ7c9WAN9HzxGcxznGh8=;
-        b=0vrkJcKs5owgAhMtnaaFjHjz8yhK07c0yKtelN1aE1gcPn/xzsi/FHy+fRq0jBFlduGhOs
-        +JsRklu3ycgtc9DA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        bh=4GxfhUQzWAjNatHzE6mNj5r3EmwAQjHNiFbVJfquhLg=;
+        b=Y9yTOrza60LeZNhbX1WDL5ASVGHqyQgTJdiYPYzzdMzUOrFqaG35MFiXILsbHP5URzmdGN
+        L7XTGku1tehiAzcwp1494l51Aei622wYt+5NvkGXYrUs6zw/oOPeb5dmDmWUCGrq1tV1ut
+        tdvDQuWedXefSTPf811Kh6Fl2/tgn+Y=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-353-IHnwxnDiNAWYxqiPVs1cyw-1; Thu, 29 Sep 2022 07:28:18 -0400
+X-MC-Unique: IHnwxnDiNAWYxqiPVs1cyw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8B86B1348E;
-        Thu, 29 Sep 2022 11:26:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 6n8OItWANWPobQAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 29 Sep 2022 11:26:13 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 27719A0681; Thu, 29 Sep 2022 13:26:13 +0200 (CEST)
-Date:   Thu, 29 Sep 2022 13:26:13 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, rookxu <brookxu.cn@gmail.com>,
-        Ritesh Harjani <ritesh.list@gmail.com>
-Subject: Re: [RFC v3 2/8] ext4: Refactor code related to freeing PAs
-Message-ID: <20220929112613.3pwvxod3tpkbvmc2@quack3>
-References: <cover.1664269665.git.ojaswin@linux.ibm.com>
- <dd083c3e6db5c2938bcaecbd247bc9ecd6646d89.1664269665.git.ojaswin@linux.ibm.com>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 83E293C0F224;
+        Thu, 29 Sep 2022 11:28:17 +0000 (UTC)
+Received: from fedora (unknown [10.40.193.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7FE314EA48;
+        Thu, 29 Sep 2022 11:28:16 +0000 (UTC)
+Date:   Thu, 29 Sep 2022 13:28:13 +0200
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     zhanchengbin <zhanchengbin1@huawei.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        liuzhiqiang26@huawei.com, linfeilong <linfeilong@huawei.com>
+Subject: Re: [bug report] misc/fsck.c: Processes may kill other processes.
+Message-ID: <20220929112813.6aqtktwaff2m7fh2@fedora>
+References: <4ffe3143-fc53-7178-cf44-f3481eb96ae4@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <dd083c3e6db5c2938bcaecbd247bc9ecd6646d89.1664269665.git.ojaswin@linux.ibm.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <4ffe3143-fc53-7178-cf44-f3481eb96ae4@huawei.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 27-09-22 14:46:42, Ojaswin Mujoo wrote:
-> This patch makes the following changes:
-> 
-> *  Rename ext4_mb_pa_free to ext4_mb_pa_put_free
->    to better reflect its purpose
-> 
-> *  Add new ext4_mb_pa_free() which only handles freeing
-> 
-> *  Refactor ext4_mb_pa_callback() to use ext4_mb_pa_free()
-> 
-> There are no functional changes in this patch
-> 
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+On Thu, Sep 29, 2022 at 03:39:57PM +0800, zhanchengbin wrote:
+> Hi Tytso,
+> I find a error in misc/fsck.c, if run the fsck -N command, processes
+> don't execute, just show what would be done. However, the pid whose
+> value is -1 is added to the instance_list list in the execute
+> function,if the kill_all function is called later, kill(-1, signum)
+> is executed, Signals are sent to all processes except the number one
+> process and itself. Other processes will be killed if they use the
+> default signal processing function.
 
-Looks good. Feel free to add:
+Hi,
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+indeed we'd like to avoid killing the instance that was not ran because
+of noexecute. Can you try the following patch?
 
-								Honza
+Thanks!
+-Lukas
 
-> ---
->  fs/ext4/mballoc.c | 29 ++++++++++++++++++++---------
->  1 file changed, 20 insertions(+), 9 deletions(-)
+
+diff --git a/misc/fsck.c b/misc/fsck.c
+index 1f6ec7d9..8fae7730 100644
+--- a/misc/fsck.c
++++ b/misc/fsck.c
+@@ -497,9 +497,10 @@ static int execute(const char *type, const char *device, const char *mntpt,
+ 	}
+ 
+ 	/* Fork and execute the correct program. */
+-	if (noexecute)
++	if (noexecute) {
+ 		pid = -1;
+-	else if ((pid = fork()) < 0) {
++		inst->flags |= FLAG_DONE;
++	} else if ((pid = fork()) < 0) {
+ 		perror("fork");
+ 		free(inst);
+ 		return errno;
+@@ -544,6 +545,9 @@ static int kill_all(int signum)
+ 	struct fsck_instance *inst;
+ 	int	n = 0;
+ 
++	if (noexecute)
++		return 0;
++
+ 	for (inst = instance_list; inst; inst = inst->next) {
+ 		if (inst->flags & FLAG_DONE)
+ 			continue;
+
+
 > 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 2e3eb632a216..8be6f8765a6f 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -4531,16 +4531,21 @@ static void ext4_mb_mark_pa_deleted(struct super_block *sb,
->  	}
->  }
->  
-> -static void ext4_mb_pa_callback(struct rcu_head *head)
-> +static void inline ext4_mb_pa_free(struct ext4_prealloc_space *pa)
->  {
-> -	struct ext4_prealloc_space *pa;
-> -	pa = container_of(head, struct ext4_prealloc_space, u.pa_rcu);
-> -
-> +	BUG_ON(!pa);
->  	BUG_ON(atomic_read(&pa->pa_count));
->  	BUG_ON(pa->pa_deleted == 0);
->  	kmem_cache_free(ext4_pspace_cachep, pa);
->  }
->  
-> +static void ext4_mb_pa_callback(struct rcu_head *head)
-> +{
-> +	struct ext4_prealloc_space *pa;
-> +	pa = container_of(head, struct ext4_prealloc_space, u.pa_rcu);
-> +	ext4_mb_pa_free(pa);
-> +}
-> +
->  /*
->   * drops a reference to preallocated space descriptor
->   * if this was the last reference and the space is consumed
-> @@ -5067,14 +5072,20 @@ static int ext4_mb_pa_alloc(struct ext4_allocation_context *ac)
->  	return 0;
->  }
->  
-> -static void ext4_mb_pa_free(struct ext4_allocation_context *ac)
-> +static void ext4_mb_pa_put_free(struct ext4_allocation_context *ac)
->  {
->  	struct ext4_prealloc_space *pa = ac->ac_pa;
->  
->  	BUG_ON(!pa);
->  	ac->ac_pa = NULL;
->  	WARN_ON(!atomic_dec_and_test(&pa->pa_count));
-> -	kmem_cache_free(ext4_pspace_cachep, pa);
-> +	/*
-> +	 * current function is only called due to an error or due to
-> +	 * len of found blocks < len of requested blocks hence the PA has not
-> +	 * been added to grp->bb_prealloc_list. So we don't need to lock it
-> +	 */
-> +	pa->pa_deleted = 1;
-> +	ext4_mb_pa_free(pa);
->  }
->  
->  #ifdef CONFIG_EXT4_DEBUG
-> @@ -5623,13 +5634,13 @@ ext4_fsblk_t ext4_mb_new_blocks(handle_t *handle,
->  		 * So we have to free this pa here itself.
->  		 */
->  		if (*errp) {
-> -			ext4_mb_pa_free(ac);
-> +			ext4_mb_pa_put_free(ac);
->  			ext4_discard_allocated_blocks(ac);
->  			goto errout;
->  		}
->  		if (ac->ac_status == AC_STATUS_FOUND &&
->  			ac->ac_o_ex.fe_len >= ac->ac_f_ex.fe_len)
-> -			ext4_mb_pa_free(ac);
-> +			ext4_mb_pa_put_free(ac);
->  	}
->  	if (likely(ac->ac_status == AC_STATUS_FOUND)) {
->  		*errp = ext4_mb_mark_diskspace_used(ac, handle, reserv_clstrs);
-> @@ -5648,7 +5659,7 @@ ext4_fsblk_t ext4_mb_new_blocks(handle_t *handle,
->  		 * If block allocation fails then the pa allocated above
->  		 * needs to be freed here itself.
->  		 */
-> -		ext4_mb_pa_free(ac);
-> +		ext4_mb_pa_put_free(ac);
->  		*errp = -ENOSPC;
->  	}
->  
-> -- 
-> 2.31.1
+> execute:
+>     if (noexecute)
+>         pid = -1;
+>     inst->pid = pid;
+>     // Find the end of the list, so we add the instance on at the end.
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> kill_all:
+>     for (inst = instance_list; inst; inst = inst->next) {
+>         kill(inst->pid, signum);
+>     }
+> 
+> misc/fsck.c:
+> main:
+>     ->PRS
+>         case 'N':
+>             noexecute++;
+>     for (num_devices) {
+>         if (cancel_requested) {
+>             ->kill_all(SIGTERM);
+>         }
+>         ->fsck_device
+>             ->execute
+>     }
+> 
+> (gdb) bt
+> #0  execute (type=<optimized out>, type@entry=0x412cd0 "ext4",
+> device=0x412b00 "/root/a.img", mntpt=<optimized out>,
+> interactive=interactive@entry=1) at fsck.c:523
+> #1  0x0000000000404959 in fsck_device (fs=fs@entry=0x412ac0,
+> interactive=interactive@entry=1) at fsck.c:727
+> #2  0x0000000000402704 in main (argc=<optimized out>, argv=<optimized out>)
+> at fsck.c:1333
+> (gdb) p inst->pid
+> $7 = -1
+> 
+> regards,
+> Zhan Chengbin
+> 
+
