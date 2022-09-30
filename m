@@ -2,112 +2,107 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F205F139C
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 Sep 2022 22:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0ADA5F162E
+	for <lists+linux-ext4@lfdr.de>; Sat,  1 Oct 2022 00:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231310AbiI3U0F (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 30 Sep 2022 16:26:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43150 "EHLO
+        id S232091AbiI3Wcc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 30 Sep 2022 18:32:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231157AbiI3U0D (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 30 Sep 2022 16:26:03 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C70169E44
-        for <linux-ext4@vger.kernel.org>; Fri, 30 Sep 2022 13:26:01 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id o59-20020a17090a0a4100b0020a6d5803dfso429266pjo.4
-        for <linux-ext4@vger.kernel.org>; Fri, 30 Sep 2022 13:26:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date;
-        bh=YE0SZ4gBncQDeK9j3l04fLVzWw7p9nvQyXdyQahbHpU=;
-        b=MHuWmCgd4y4F8BHQakd4cyxU1e11wTMNHKWT5HVecIMb91/uknuOliHQyHF6xInjg4
-         Sh8r647iHiEAXt1VUR2TW8sU4fW5H++kG9eFIeh/bG/dPm/kOTzjgt9gKQb45f2ss51R
-         Z0Ud32t/dpzUpAmjITNzp6f6cIFkV2jSnwqhIehBt56431J5ZGvZwkW2WOtVtQiMp/TE
-         35UceN9gk4izAiscbq5emiwV8Wn/DPe/aBP9jAPuq0LBK35c51MlV2U3PCQel04EpvUE
-         o5zqEhq+9LPlNIdx1fy2Zmah67OPUm8TPHn/CVTpvzb5NUa1dBuw+q7ol+vX9tZGUtyn
-         9yNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=YE0SZ4gBncQDeK9j3l04fLVzWw7p9nvQyXdyQahbHpU=;
-        b=hh9aYCuv17u+RZwYn0eP3vFB+WL6Pk5Ax6otkW01RefM74tPkkx/vAwbKgK1LywLtr
-         Irqb2cdDE9bwtlq5DhzNURXmoX4+ycGRf+L+26JDeIJRtPCL3Y09qEH3pDWqnIbD75fW
-         uvjBrvoTLuACCU2w+BRhA+VaBAvLWhmELGG2L/fd8d4qtGF8MrhqR+ZngDidfu1Ovrsp
-         EjMFZYw3ev7fta5d6QIYQNKsUGvwGN2RW5sMMLSqB0dYk3cTc9vKm1aDWMjYGT9Ipp2T
-         IkQolbNeTMknFzx2WSqsUVPNAg0znLtKnuho/+DT5HQelQxMxdPh6kZxKtcauLNMM6p3
-         /MHQ==
-X-Gm-Message-State: ACrzQf18hyJlCZr4RPOubtem1tzMyO2Wgj/g9fChWgBZ0MIHuxjJaT70
-        aX47S4eCPj2EkHygV+RxeHRcIQ==
-X-Google-Smtp-Source: AMsMyM4kckeDXdDRB8vLlvF8nF4/llXkzukZDaKrRq5NNopR/Xxw1hp5Jbv+YJlNvL4dg2C+zRTvQQ==
-X-Received: by 2002:a17:902:dac4:b0:178:2a6f:bc7f with SMTP id q4-20020a170902dac400b001782a6fbc7fmr10891894plx.129.1664569561528;
-        Fri, 30 Sep 2022 13:26:01 -0700 (PDT)
-Received: from desktop.hsd1.or.comcast.net ([2601:1c0:4c81:c480:feaa:14ff:fe3a:b225])
-        by smtp.gmail.com with ESMTPSA id i7-20020a170902c94700b0016d9d6d05f7sm2342237pla.273.2022.09.30.13.26.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Sep 2022 13:26:00 -0700 (PDT)
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Tadeusz Struk <tadeusz.struk@linaro.org>,
-        "Andreas Dilger" <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        syzbot+a22dc4b0744ac658ed9b@syzkaller.appspotmail.com
-Subject: [PATCH] ext4: Add extend check to prevent BUG() in ext4_es_end
-Date:   Fri, 30 Sep 2022 13:25:36 -0700
-Message-Id: <20220930202536.697396-1-tadeusz.struk@linaro.org>
-X-Mailer: git-send-email 2.37.3
+        with ESMTP id S232158AbiI3Wc3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 30 Sep 2022 18:32:29 -0400
+Received: from mail104.syd.optusnet.com.au (mail104.syd.optusnet.com.au [211.29.132.246])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BEE69166489;
+        Fri, 30 Sep 2022 15:32:24 -0700 (PDT)
+Received: from dread.disaster.area (pa49-181-106-210.pa.nsw.optusnet.com.au [49.181.106.210])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 078B88AB6CD;
+        Sat,  1 Oct 2022 08:32:19 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1oeOYM-00E7kF-Mx; Sat, 01 Oct 2022 08:32:18 +1000
+Date:   Sat, 1 Oct 2022 08:32:18 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Chuck Lever III <chuck.lever@oracle.com>
+Cc:     Jeff Layton <jlayton@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
+        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Neil Brown <neilb@suse.de>, Al Viro <viro@zeniv.linux.org.uk>,
+        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "xiubli@redhat.com" <xiubli@redhat.com>,
+        Lukas Czerner <lczerner@redhat.com>, Jan Kara <jack@suse.cz>,
+        Bruce Fields <bfields@fieldses.org>,
+        Christian Brauner <brauner@kernel.org>,
+        "fweimer@redhat.com" <fweimer@redhat.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+Subject: Re: [PATCH v6 6/9] nfsd: use the getattr operation to fetch i_version
+Message-ID: <20220930223218.GL3600936@dread.disaster.area>
+References: <20220930111840.10695-1-jlayton@kernel.org>
+ <20220930111840.10695-7-jlayton@kernel.org>
+ <D7DAB33E-BB23-45A9-BE2C-DBF9B5D62EF8@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <D7DAB33E-BB23-45A9-BE2C-DBF9B5D62EF8@oracle.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=VuxAv86n c=1 sm=1 tr=0 ts=63376e77
+        a=j6JUzzrSC7wlfFge/rmVbg==:117 a=j6JUzzrSC7wlfFge/rmVbg==:17
+        a=kj9zAlcOel0A:10 a=Qawa6l4ZSaYA:10 a=VwQbUJbxAAAA:8 a=7-415B0cAAAA:8
+        a=P6V2cQqVOOyE__6v1BQA:9 a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Syzbot reported an issue with ext4 extents. The reproducer creates
-a corrupted ext4 fs image in memory, and mounts it as a loop device.
-It invokes the ext4_cache_extents() and ext4_find_extent(), which
-eventually triggers a BUG() in ext4_es_end() causing a kernel crash.
-It triggers on mainline, and every kernel version back to v4.14.
-Add a call ext4_ext_check_inode() in ext4_find_extent() to prevent
-the crash.
+On Fri, Sep 30, 2022 at 02:34:51PM +0000, Chuck Lever III wrote:
+> 
+> 
+> > On Sep 30, 2022, at 7:18 AM, Jeff Layton <jlayton@kernel.org> wrote:
+> > 
+> > Now that we can call into vfs_getattr to get the i_version field, use
+> > that facility to fetch it instead of doing it in nfsd4_change_attribute.
+> > 
+> > Neil also pointed out recently that IS_I_VERSION directory operations
+> > are always logged,
+> 
+> ^logged^synchronous maybe?
 
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: "Andreas Dilger" <adilger.kernel@dilger.ca>
-Cc: <linux-ext4@vger.kernel.org>
-Cc: <linux-kernel@vger.kernel.org>
-Cc: <stable@vger.kernel.org>
+A pedantic note, but I think necessary because so many people still
+get this wrong when it comes to filesystems and IO: synchronous !=
+persistent.
 
-Link: https://syzkaller.appspot.com/bug?id=641e7a4b900015c5d7a729d6cc1fba7a928a88f9
-Reported-by: syzbot+a22dc4b0744ac658ed9b@syzkaller.appspotmail.com
-Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
----
- fs/ext4/extents.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Ext4 and XFS both use *asynchronous journalling* - they journal
+changes first to memory buffers, and only make those recorded
+changes persistent when they hit internal checkpoint thresholds or
+something external requires persistence to be guaranteed.
 
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 5235974126bd..c7b5a11e1abc 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -897,6 +897,12 @@ ext4_find_extent(struct inode *inode, ext4_lblk_t block,
- 		goto err;
- 	}
- 
-+	ret = ext4_ext_check_inode(inode);
-+	if (ret) {
-+		EXT4_ERROR_INODE(inode, "inode has invalid extent");
-+		goto err;
-+	}
-+
- 	if (path) {
- 		ext4_ext_drop_refs(path);
- 		if (depth > path[0].p_maxdepth) {
+->commit_metadata is the operation filesystems provide the NFS
+server to *guarantee persistence*. This allows filesystems to use
+asynchronous journalling for most operations, right up to the point
+the NFS server requires a change to be persistent. "synchronous
+operation" is a side effect of guaranteeing persistence on some
+filesytems and storage media, whereas "synchronous operation"
+does not provide any guarantee of persistence...
+
+IOWs, please talk about persistence guarantees the NFS server
+application requires and implements, not about the operations (or
+the nature of the operations) that may be performed by the
+underlying filesystems to provide that persistence guarantee.
+
+Cheers,
+
+Dave.
 -- 
-2.37.3
-
+Dave Chinner
+david@fromorbit.com
