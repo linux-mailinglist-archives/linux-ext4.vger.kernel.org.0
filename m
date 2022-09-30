@@ -2,129 +2,122 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AFB75F059B
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 Sep 2022 09:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F655F0A15
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 Sep 2022 13:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbiI3HU5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 30 Sep 2022 03:20:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41414 "EHLO
+        id S231805AbiI3L04 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 30 Sep 2022 07:26:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbiI3HU4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 30 Sep 2022 03:20:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BDF7123848
-        for <linux-ext4@vger.kernel.org>; Fri, 30 Sep 2022 00:20:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1664522452;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oiQbNrtfmXMC5cy1TkFU4ki7ghnl5s6b1zmYauHjwMw=;
-        b=fy04RRvINjyh0RnJrhsHOhU4ftEfZBceAvZFzIey8tWRNiGEmgTemlfhABiUbdKU3RNlUc
-        TrxM159NlHtRWgplP+1Ft69IjulNgZZPc1tJtmrk+7y3R42q+leN0ZpJJ05v4/AX779WTQ
-        qOGaEOdKHAPnZwzRBnIDZnBk15/vCfY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-441-eqb_9zyvMoGQ9MSNRYePrA-1; Fri, 30 Sep 2022 03:20:46 -0400
-X-MC-Unique: eqb_9zyvMoGQ9MSNRYePrA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S230085AbiI3L02 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 30 Sep 2022 07:26:28 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC56FAEA;
+        Fri, 30 Sep 2022 04:18:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4451B811E67;
-        Fri, 30 Sep 2022 07:20:46 +0000 (UTC)
-Received: from fedora (unknown [10.40.193.165])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 54E021121315;
-        Fri, 30 Sep 2022 07:20:45 +0000 (UTC)
-Date:   Fri, 30 Sep 2022 09:20:42 +0200
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     zhanchengbin <zhanchengbin1@huawei.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        liuzhiqiang26@huawei.com, linfeilong <linfeilong@huawei.com>
-Subject: Re: [bug report] misc/fsck.c: Processes may kill other processes.
-Message-ID: <20220930072042.dwakvbnefctk2jyd@fedora>
-References: <4ffe3143-fc53-7178-cf44-f3481eb96ae4@huawei.com>
- <20220929112813.6aqtktwaff2m7fh2@fedora>
- <470ea2ee-54fd-3dd5-2500-36fb82665c11@huawei.com>
+        by ams.source.kernel.org (Postfix) with ESMTPS id AC356B827AA;
+        Fri, 30 Sep 2022 11:18:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5374EC433C1;
+        Fri, 30 Sep 2022 11:18:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1664536724;
+        bh=qW5czRWn4GLiEtwmzJqFOMVb5w3oIFlZuNEbzaPShnI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=qclGvuAaez5oX3gT5MUceMEYs9CNEX5R4R1bJF3WZ+L0+aYeWJ84DC5WTsT2xi8ia
+         U6cqxRjw80Txiw9vnu1hf973zEHsjPBWdl8q8vj7PSw8GbhVSfgi/4a5NVCGKZOFIU
+         BpT/1wGxzvsMtbjFGbXSIjk1VDdol6BqOFBhGa/z+KyWOLCN3krK9RFIpF/7dg0cLx
+         p6ye45BNLcd1z55bJMnBvTPVQcy4ZQA0nChO3ZKY63MmuWekHHjZTQnp5zC7tNugQh
+         FNt3Gv9RE0QvUuoMNl57bfwV9VVo6BLFr0yJH7M/cCMBzImSL2XuPSc1fpR8Xthb0H
+         z2UeJq0yMeptA==
+From:   Jeff Layton <jlayton@kernel.org>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, djwong@kernel.org,
+        david@fromorbit.com, trondmy@hammerspace.com, neilb@suse.de,
+        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
+        chuck.lever@oracle.com, lczerner@redhat.com, jack@suse.cz,
+        bfields@fieldses.org, brauner@kernel.org, fweimer@redhat.com
+Cc:     linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-xfs@vger.kernel.org
+Subject: [PATCH v6 0/9] vfs/nfsd: clean up handling of i_version counter
+Date:   Fri, 30 Sep 2022 07:18:31 -0400
+Message-Id: <20220930111840.10695-1-jlayton@kernel.org>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <470ea2ee-54fd-3dd5-2500-36fb82665c11@huawei.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Sep 30, 2022 at 09:42:52AM +0800, zhanchengbin wrote:
-> 
-> 
-> On 2022/9/29 19:28, Lukas Czerner wrote:
-> > Hi,
-> > 
-> > indeed we'd like to avoid killing the instance that was not ran because
-> > of noexecute. Can you try the following patch?
-> > 
-> > Thanks!
-> > -Lukas
-> 
-> Yes, you're right, I think we can fix it in this way.
-> 
-> diff --git a/misc/fsck.c b/misc/fsck.c
-> index 1f6ec7d9..91edbf17 100644
-> --- a/misc/fsck.c
-> +++ b/misc/fsck.c
-> @@ -547,6 +547,8 @@ static int kill_all(int signum)
->         for (inst = instance_list; inst; inst = inst->next) {
->                 if (inst->flags & FLAG_DONE)
->                         continue;
-> +               if (inst->pid == -1)
-> +                       continue;
+v6: add support for STATX_ATTR_VERSION_MONOTONIC
+    add patch to expose i_version counter to userland
+    patches to update times/version after copying write data
 
-Yeah, that works as well although I find the "if (noexecute)" condition
-more obvious. We can do both. Also rather than checking for -1 we can
-check for <= 0 since anything other than real pid at this point is a bug.
+An updated set of i_version handling changes! I've dropped the earlier
+ext4 patches since Ted has picked up the relevant ext4 ones.
 
-Feel free to send a proper patch.
+This set is based on linux-next, to make sure we don't collide with the
+statx DIO alignment patches, and some other i_version cleanups that are
+in flight.  I'm hoping those land in 6.1.
 
-Thanks!
--Lukas
+There are a few changes since v5, mostly centered around adding
+STATX_ATTR_VERSION_MONOTONIC. I've also re-added the patch to expose
+STATX_VERSION to userland via statx. What I'm proposing should now
+(mostly) conform to the semantics I layed out in the manpage patch I
+sent recently [1].
 
->                 kill(inst->pid, signum);
->                 n++;
->         }
-> > 
-> > 
-> > diff --git a/misc/fsck.c b/misc/fsck.c
-> > index 1f6ec7d9..8fae7730 100644
-> > --- a/misc/fsck.c
-> > +++ b/misc/fsck.c
-> > @@ -497,9 +497,10 @@ static int execute(const char *type, const char *device, const char *mntpt,
-> >   	}
-> >   	/* Fork and execute the correct program. */
-> > -	if (noexecute)
-> > +	if (noexecute) {
-> >   		pid = -1;
-> > -	else if ((pid = fork()) < 0) {
-> > +		inst->flags |= FLAG_DONE;
-> > +	} else if ((pid = fork()) < 0) {
-> >   		perror("fork");
-> >   		free(inst);
-> >   		return errno;
-> > @@ -544,6 +545,9 @@ static int kill_all(int signum)
-> >   	struct fsck_instance *inst;
-> >   	int	n = 0;
-> > +	if (noexecute)
-> > +		return 0;
-> > +
-> >   	for (inst = instance_list; inst; inst = inst->next) {
-> >   		if (inst->flags & FLAG_DONE)
-> >   			continue;
-> regards,
-> Zhan Chengbin
-> 
+Finally, I've added two patches to make __generic_file_write_iter and
+ext4 update the c/mtime after copying file data instead of before, which
+Neil pointed out makes for better cache-coherency handling. Those should
+take care of ext4 and tmpfs. xfs and btrfs will need to make the same
+changes.
+
+One thing I'm not sure of is what we should do if update_times fails
+after an otherwise successful write. Should we just ignore that and move
+on (and maybe WARN)? Return an error? Set a writeback error? What's the
+right recourse there?
+
+I'd like to go ahead and get the first 6 patches from this series into
+linux-next fairly soon, so if anyone has objections, please speak up!
+
+[1]: https://lore.kernel.org/linux-nfs/20220928134200.28741-1-jlayton@kernel.org/T/#u
+
+Jeff Layton (9):
+  iversion: move inode_query_iversion to libfs.c
+  iversion: clarify when the i_version counter must be updated
+  vfs: plumb i_version handling into struct kstat
+  nfs: report the inode version in getattr if requested
+  ceph: report the inode version in getattr if requested
+  nfsd: use the getattr operation to fetch i_version
+  vfs: expose STATX_VERSION to userland
+  vfs: update times after copying data in __generic_file_write_iter
+  ext4: update times after I/O in write codepaths
+
+ fs/ceph/inode.c           | 16 +++++++++----
+ fs/ext4/file.c            | 20 +++++++++++++---
+ fs/libfs.c                | 36 +++++++++++++++++++++++++++++
+ fs/nfs/export.c           |  7 ------
+ fs/nfs/inode.c            | 10 ++++++--
+ fs/nfsd/nfs4xdr.c         |  4 +++-
+ fs/nfsd/nfsfh.c           | 40 ++++++++++++++++++++++++++++++++
+ fs/nfsd/nfsfh.h           | 29 +----------------------
+ fs/nfsd/vfs.h             |  7 +++++-
+ fs/stat.c                 |  7 ++++++
+ include/linux/exportfs.h  |  1 -
+ include/linux/iversion.h  | 48 ++++++++-------------------------------
+ include/linux/stat.h      |  2 +-
+ include/uapi/linux/stat.h |  6 +++--
+ mm/filemap.c              | 17 ++++++++++----
+ samples/vfs/test-statx.c  |  8 +++++--
+ 16 files changed, 163 insertions(+), 95 deletions(-)
+
+-- 
+2.37.3
 
