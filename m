@@ -2,208 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D9C65F1208
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 Sep 2022 20:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F205F139C
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 Sep 2022 22:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232101AbiI3S7e (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 30 Sep 2022 14:59:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50232 "EHLO
+        id S231310AbiI3U0F (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 30 Sep 2022 16:26:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231281AbiI3S7e (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 30 Sep 2022 14:59:34 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9582A635A
-        for <linux-ext4@vger.kernel.org>; Fri, 30 Sep 2022 11:59:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9dj1jhAGMTHN2/6AAUKuXgSvGwSMSEl8zR34eq2mx8g=; b=G5nVp/66wxO6RY4OPbTB8ro8ff
-        gxnb9x2yKBAzjtghAJ7lq/fByquHHvpCvqpNpeNqmEG5umHbTCjqc5QGywcrt4vF1A+GhThAh6fVg
-        AU9qNXKUUHQPHNwjSeGKcK2zbqwwGlYnnNq7uLBwm4UycPBvyr3Nl3wTbtTn8L/HQhiXJE0dUCVwp
-        qmoPMHUo28tmmJt5ckwceCOVoTkB0XqEcH2XafmmA4dSyMH1v1yC0jd27HDVmbPFdzIhzwLB97jYa
-        6mJpn81Ukz2nzbU6ewpfAMMlJDZS6Gaz72GYmAPHDGNTYBhYPfAmGvtSSggCa0XEEP3dIvd1z6UIA
-        01dB9/dw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oeLEC-00ETvN-Jb; Fri, 30 Sep 2022 18:59:16 +0000
-Date:   Fri, 30 Sep 2022 19:59:16 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Zorro Lang <zlang@kernel.org>, linux-mm@kvack.org,
-        linux-ext4@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [Bug report] BUG: Kernel NULL pointer dereference at 0x00000069,
- filemap_release_folio+0x88/0xb0
-Message-ID: <Yzc8hJL6cqxXCKaJ@casper.infradead.org>
-References: <20220927011720.7jmugevxc7ax26qw@zlang-mailbox>
- <YzYN4JqbKdxLd6oA@casper.infradead.org>
- <87wn9lei2x.fsf@mpe.ellerman.id.au>
+        with ESMTP id S231157AbiI3U0D (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 30 Sep 2022 16:26:03 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C70169E44
+        for <linux-ext4@vger.kernel.org>; Fri, 30 Sep 2022 13:26:01 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id o59-20020a17090a0a4100b0020a6d5803dfso429266pjo.4
+        for <linux-ext4@vger.kernel.org>; Fri, 30 Sep 2022 13:26:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date;
+        bh=YE0SZ4gBncQDeK9j3l04fLVzWw7p9nvQyXdyQahbHpU=;
+        b=MHuWmCgd4y4F8BHQakd4cyxU1e11wTMNHKWT5HVecIMb91/uknuOliHQyHF6xInjg4
+         Sh8r647iHiEAXt1VUR2TW8sU4fW5H++kG9eFIeh/bG/dPm/kOTzjgt9gKQb45f2ss51R
+         Z0Ud32t/dpzUpAmjITNzp6f6cIFkV2jSnwqhIehBt56431J5ZGvZwkW2WOtVtQiMp/TE
+         35UceN9gk4izAiscbq5emiwV8Wn/DPe/aBP9jAPuq0LBK35c51MlV2U3PCQel04EpvUE
+         o5zqEhq+9LPlNIdx1fy2Zmah67OPUm8TPHn/CVTpvzb5NUa1dBuw+q7ol+vX9tZGUtyn
+         9yNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=YE0SZ4gBncQDeK9j3l04fLVzWw7p9nvQyXdyQahbHpU=;
+        b=hh9aYCuv17u+RZwYn0eP3vFB+WL6Pk5Ax6otkW01RefM74tPkkx/vAwbKgK1LywLtr
+         Irqb2cdDE9bwtlq5DhzNURXmoX4+ycGRf+L+26JDeIJRtPCL3Y09qEH3pDWqnIbD75fW
+         uvjBrvoTLuACCU2w+BRhA+VaBAvLWhmELGG2L/fd8d4qtGF8MrhqR+ZngDidfu1Ovrsp
+         EjMFZYw3ev7fta5d6QIYQNKsUGvwGN2RW5sMMLSqB0dYk3cTc9vKm1aDWMjYGT9Ipp2T
+         IkQolbNeTMknFzx2WSqsUVPNAg0znLtKnuho/+DT5HQelQxMxdPh6kZxKtcauLNMM6p3
+         /MHQ==
+X-Gm-Message-State: ACrzQf18hyJlCZr4RPOubtem1tzMyO2Wgj/g9fChWgBZ0MIHuxjJaT70
+        aX47S4eCPj2EkHygV+RxeHRcIQ==
+X-Google-Smtp-Source: AMsMyM4kckeDXdDRB8vLlvF8nF4/llXkzukZDaKrRq5NNopR/Xxw1hp5Jbv+YJlNvL4dg2C+zRTvQQ==
+X-Received: by 2002:a17:902:dac4:b0:178:2a6f:bc7f with SMTP id q4-20020a170902dac400b001782a6fbc7fmr10891894plx.129.1664569561528;
+        Fri, 30 Sep 2022 13:26:01 -0700 (PDT)
+Received: from desktop.hsd1.or.comcast.net ([2601:1c0:4c81:c480:feaa:14ff:fe3a:b225])
+        by smtp.gmail.com with ESMTPSA id i7-20020a170902c94700b0016d9d6d05f7sm2342237pla.273.2022.09.30.13.26.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Sep 2022 13:26:00 -0700 (PDT)
+From:   Tadeusz Struk <tadeusz.struk@linaro.org>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Tadeusz Struk <tadeusz.struk@linaro.org>,
+        "Andreas Dilger" <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        syzbot+a22dc4b0744ac658ed9b@syzkaller.appspotmail.com
+Subject: [PATCH] ext4: Add extend check to prevent BUG() in ext4_es_end
+Date:   Fri, 30 Sep 2022 13:25:36 -0700
+Message-Id: <20220930202536.697396-1-tadeusz.struk@linaro.org>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87wn9lei2x.fsf@mpe.ellerman.id.au>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Sep 30, 2022 at 12:01:26PM +1000, Michael Ellerman wrote:
-> Matthew Wilcox <willy@infradead.org> writes:
-> >> [ 4681.238745] Instruction dump: 
-> >> [ 4681.238749] fbc1fff0 f821ffc1 7c7d1b78 7c9c2378 ebc30028 7fdff378 48000018 60000000  
-> >> [ 4681.238765] 60000000 ebff0008 7c3ef840 41820048 <815f0060> e93f0000 5529077c 7d295378  
-> >
-> > Running that through scripts/decodecode (with some minor hacks .. how
-> > do PPC people do this properly?)
-> 
-> We've just always used our own scripts. Mine is here: https://github.com/mpe/misc-scripts/blob/master/ppc/ppc-disasm
-> 
-> I've added an issue to our tracker for us to get scripts/decodecode
-> working on our oopses (eventually).
+Syzbot reported an issue with ext4 extents. The reproducer creates
+a corrupted ext4 fs image in memory, and mounts it as a loop device.
+It invokes the ext4_cache_extents() and ext4_find_extent(), which
+eventually triggers a BUG() in ext4_es_end() causing a kernel crash.
+It triggers on mainline, and every kernel version back to v4.14.
+Add a call ext4_ext_check_inode() in ext4_find_extent() to prevent
+the crash.
 
-Would you be open to changing your oops printer to do
-s/Instruction dump/Code/ ?  That would make it work without any other
-changes.
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: "Andreas Dilger" <adilger.kernel@dilger.ca>
+Cc: <linux-ext4@vger.kernel.org>
+Cc: <linux-kernel@vger.kernel.org>
+Cc: <stable@vger.kernel.org>
 
-$ CROSS_COMPILE=powerpc-linux-gnu- ./scripts/decodecode
-Code:
-fbc1fff0 f821ffc1 7c7d1b78 7c9c2378 ebc30028 7fdff378 48000018 60000000
-60000000 ebff0008 7c3ef840 41820048 <815f0060> e93f0000 5529077c 7d295378
-^D
+Link: https://syzkaller.appspot.com/bug?id=641e7a4b900015c5d7a729d6cc1fba7a928a88f9
+Reported-by: syzbot+a22dc4b0744ac658ed9b@syzkaller.appspotmail.com
+Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
+---
+ fs/ext4/extents.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-gives the right answer.  You could also do like x86 and put Code: on
-the same line as the first set of hex (not that it matters; the parser
-is fairly flexible).  This would also work ...
-
-diff --git a/scripts/decodecode b/scripts/decodecode
-index c711a196511c..0cadf1a37cbf 100755
---- a/scripts/decodecode
-+++ b/scripts/decodecode
-@@ -27,8 +27,8 @@ cont=
- while read i ; do
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 5235974126bd..c7b5a11e1abc 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -897,6 +897,12 @@ ext4_find_extent(struct inode *inode, ext4_lblk_t block,
+ 		goto err;
+ 	}
  
- case "$i" in
--*Code:*)
--       code=$i
-+*Code:* | *'Instruction dump':*)
-+       code=${i##*:}
-        cont=yes
-        ;;
- *)
-@@ -51,7 +51,7 @@ if [ -z "$code" ]; then
- fi
- 
- echo $code
--code=`echo $code | sed -e 's/.*Code: //'`
-+code=`echo $code`
- 
- width=`expr index "$code" ' '`
- width=$((($width-1)/2))
++	ret = ext4_ext_check_inode(inode);
++	if (ret) {
++		EXT4_ERROR_INODE(inode, "inode has invalid extent");
++		goto err;
++	}
++
+ 	if (path) {
+ 		ext4_ext_drop_refs(path);
+ 		if (depth > path[0].p_maxdepth) {
+-- 
+2.37.3
 
-(no, i don't know why i need that echo $code line; trimming trailing
-spaces, maybe? shell is a terrible language)
-
-> $ ./scripts/faddr2line .build/vmlinux drop_buffers.constprop.0+0x4c
-> drop_buffers.constprop.0+0x4c/0x170:
-> arch_atomic_read at arch/powerpc/include/asm/atomic.h:30
-> (inlined by) atomic_read at include/linux/atomic/atomic-instrumented.h:28
-> (inlined by) buffer_busy at fs/buffer.c:2859
-> (inlined by) drop_buffers at fs/buffer.c:2871
-> 
-> static inline int buffer_busy(struct buffer_head *bh)
-> {
-> 	return atomic_read(&bh->b_count) |
-> 		(bh->b_state & ((1 << BH_Dirty) | (1 << BH_Lock)));
-> }
-> 
-> struct folio {
->         union {
->                 struct {
->                         long unsigned int flags;         /*     0     8 */
->                         union {
->                                 struct list_head lru;    /*     8    16 */
->                                 struct {
->                                         void * __filler; /*     8     8 */
->                                         unsigned int mlock_count; /*    16     4 */
->                                 };                       /*     8    16 */
->                         };                               /*     8    16 */
->                         struct address_space * mapping;  /*    24     8 */
->                         long unsigned int index;         /*    32     8 */
->                         void *     private;              /*    40     8 */      <----
-> 
-> struct buffer_head {
->         long unsigned int          b_state;              /*     0     8 */
->         struct buffer_head *       b_this_page;          /*     8     8 */
->         struct page *              b_page;               /*    16     8 */
->         sector_t                   b_blocknr;            /*    24     8 */
->         size_t                     b_size;               /*    32     8 */
->         char *                     b_data;               /*    40     8 */
->         struct block_device *      b_bdev;               /*    48     8 */
->         bh_end_io_t *              b_end_io;             /*    56     8 */
->         void *                     b_private;            /*    64     8 */
->         struct list_head           b_assoc_buffers;      /*    72    16 */
->         struct address_space *     b_assoc_map;          /*    88     8 */
->         atomic_t                   b_count;              /*    96     4 */      <----
-> 
-> The buffer_head comes from folio_buffers(folio):
-> 
-> static bool
-> drop_buffers(struct folio *folio, struct buffer_head **buffers_to_free)
-> {
-> 	struct buffer_head *head = folio_buffers(folio);
-> 
-> Which is == folio_get_private()
-> 
-> r3 and r29 still hold folio = c00c00000042f1c0 
-> 
-> That's a valid looking vmemmap address.
-> 
-> So we have a valid folio, but its private field == 9 ?
-> 
-> Seems like all sorts of things get stuffed into page->private, so
-> presumably 9 is not necessarily a corrupt value, just not what we're
-> expecting. But I'm out of my depth so over to you :)
-
-Yes, all kinds of things do get stuffed into folio->private, alas.
-However, for an ext4 folio, it should either be NULL or a pointer to
-a buffer_head.  It'd be interesting to insert ...
-
-	if ((long)head < 4096) dump_page(&folio->page, "bad bh");
-
-in drop_buffers() before we actually dereference the 'head'.
-
-My suspicion is that page->private and PagePrivate have got out of sync
-somehow; we're trying to reclaim the PG_private bit and there have been
-some similar problems of this type in the past.
-
-I had success debugging this kind of problem with this patch:
-
-commit 80eba374eab3
-Author: Matthew Wilcox (Oracle) <willy@infradead.org>
-Date:   Tue Jun 21 07:04:32 2022 -0400
-
-    mm: Add an assertion that PG_private and folio->private are in sync
-    
-    We are trying to eliminate the use of the PG_private flag.  To do so,
-    it must be in sync with the use of the ->private field.  It usually
-    is, and this assert should catch any cases where it isn't.
-    
-    Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 15800334147b..2f26c32ea1cd 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -1529,6 +1529,9 @@ void folio_unlock(struct folio *folio)
- 	BUILD_BUG_ON(PG_waiters != 7);
- 	BUILD_BUG_ON(PG_locked > 7);
- 	VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
-+	VM_BUG_ON_FOLIO(!folio_test_swapbacked(folio) &&
-+			(folio_test_private(folio) ==
-+			 !folio_get_private(folio)), folio);
- 	if (clear_bit_unlock_is_negative_byte(PG_locked, folio_flags(folio, 0)))
- 		folio_wake_bit(folio, PG_locked);
- }
