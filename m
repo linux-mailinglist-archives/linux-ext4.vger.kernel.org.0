@@ -2,139 +2,107 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 033C35F2200
-	for <lists+linux-ext4@lfdr.de>; Sun,  2 Oct 2022 10:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D951B5F27BC
+	for <lists+linux-ext4@lfdr.de>; Mon,  3 Oct 2022 05:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229747AbiJBITY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 2 Oct 2022 04:19:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51838 "EHLO
+        id S229477AbiJCDAI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 2 Oct 2022 23:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbiJBITX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 2 Oct 2022 04:19:23 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABB7C3F1EF
-        for <linux-ext4@vger.kernel.org>; Sun,  2 Oct 2022 01:19:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1664698762; x=1696234762;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=H9c/fS28AtFBFIA1ugW205KDzXEAWty4BCsijPT4/0Y=;
-  b=ipViIjmxydjo3/6hXT7n45UG/8Q+06z0H9Xi/v09XOIF46OTPoj+EN9u
-   G/udMlyJBjNFz9+shclYPqMdX0tkxmbID9rpWISEm4tvmNNt2PixIcQdk
-   ivb8au5zS+bqsjMTrDK6gcTuz2JA1LqoMzDKQGrs/ZYumd+7ypy/m7rMD
-   vxqoPeYsmjdYk1DEON+/PQSUkjpy0yxq5zCxlLIr6maYdQvlay5j6F1A2
-   BPcW1Gt9tbMXRItOkDR0iT6djoPGpPH3t1Llej9yxkJ0Dageschi0iMP4
-   i4C9MJTLhbXb/xxpMI9QqdNe4xp3KjOJacuA8OVKUjWDELBmntYoQvVig
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10487"; a="282827019"
-X-IronPort-AV: E=Sophos;i="5.93,361,1654585200"; 
-   d="scan'208";a="282827019"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2022 01:19:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10487"; a="574312379"
-X-IronPort-AV: E=Sophos;i="5.93,361,1654585200"; 
-   d="scan'208";a="574312379"
-Received: from lkp-server01.sh.intel.com (HELO 14cc182da2d0) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 02 Oct 2022 01:19:21 -0700
-Received: from kbuild by 14cc182da2d0 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oeuC0-0003LK-1A;
-        Sun, 02 Oct 2022 08:19:20 +0000
-Date:   Sun, 02 Oct 2022 16:18:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: [tytso-ext4:dev] BUILD SUCCESS
- 1b45cc5c7b920fd8bf72e5a888ec7abeadf41e09
-Message-ID: <63394965.dV5aAQQAcbRFwiSO%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S229469AbiJCDAI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 2 Oct 2022 23:00:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 680CA1D0F1;
+        Sun,  2 Oct 2022 20:00:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D96F060F27;
+        Mon,  3 Oct 2022 03:00:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D313FC433C1;
+        Mon,  3 Oct 2022 03:00:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1664766005;
+        bh=JYBkVcaOXXe8vI72bVILJ80jmdMXI/PWcJhDdaOi1eo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Jf7WrTz0W2FFkAao26q5gpx54IiqqroOtfgzWpihbzU7Sq4Ta6O1quMFAwmrRyIJj
+         7cjy6UwRwYaU/s4xNs06a8Bgoy0YgBC7oRpvR57AtYAhifsSmOisRXC/WDND8ahLCD
+         DgF/CImCdGe0u7BATfHZ44SZOzj6V/J+Ot165m1K9dLdeIvWC2++wm8Vx+KkmP67UH
+         Pchqhs/MIGYE6Uxe8C0KWfeXi5O/rQ7KUVYW4G5/kdo0ZI/SkDKNQVEoGdHb5D7eYt
+         krVNBQc5Q5o6BNX9gOvyQzJUrQpps65LW/A1kUXqnk+Fo4wtwPN0u+aJFkjDXv2B2j
+         Ccx4+R6MJsswA==
+Date:   Sun, 2 Oct 2022 20:00:03 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: [GIT PULL] fscrypt updates for 6.1
+Message-ID: <YzpQMx1FiZp/PsM3@quark>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Disposition: inline
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-branch HEAD: 1b45cc5c7b920fd8bf72e5a888ec7abeadf41e09  ext4: fix potential out of bound read in ext4_fc_replay_scan()
+The following changes since commit 1c23f9e627a7b412978b4e852793c5e3c3efc555:
 
-elapsed time: 1680m
+  Linux 6.0-rc2 (2022-08-21 17:32:54 -0700)
 
-configs tested: 58
-configs skipped: 2
+are available in the Git repository at:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
 
-gcc tested configs:
-um                             i386_defconfig
-um                           x86_64_defconfig
-arm                                 defconfig
-x86_64                              defconfig
-arc                                 defconfig
-s390                             allmodconfig
-alpha                               defconfig
-x86_64                               rhel-8.3
-s390                                defconfig
-x86_64                          rhel-8.3-func
-powerpc                           allnoconfig
-x86_64                    rhel-8.3-kselftests
-i386                                defconfig
-s390                             allyesconfig
-i386                 randconfig-a001-20220926
-i386                 randconfig-a004-20220926
-i386                 randconfig-a002-20220926
-arm64                            allyesconfig
-i386                 randconfig-a003-20220926
-i386                 randconfig-a005-20220926
-arm                              allyesconfig
-x86_64                        randconfig-a004
-x86_64                           allyesconfig
-x86_64                           rhel-8.3-syz
-sh                               allmodconfig
-i386                 randconfig-a006-20220926
-x86_64                         rhel-8.3-kunit
-mips                             allyesconfig
-x86_64                        randconfig-a002
-powerpc                          allmodconfig
-x86_64                           rhel-8.3-kvm
-i386                             allyesconfig
-arc                  randconfig-r043-20220926
-x86_64                        randconfig-a006
-m68k                             allmodconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-m68k                             allyesconfig
-ia64                             allmodconfig
+for you to fetch changes up to 0e91fc1e0f5c70ce575451103ec66c2ec21f1a6e:
 
-clang tested configs:
-hexagon              randconfig-r045-20220926
-x86_64               randconfig-a012-20220926
-riscv                randconfig-r042-20220926
-x86_64                        randconfig-a005
-x86_64               randconfig-a014-20220926
-x86_64               randconfig-a013-20220926
-s390                 randconfig-r044-20220926
-x86_64               randconfig-a011-20220926
-hexagon              randconfig-r041-20220926
-x86_64                        randconfig-a001
-x86_64                        randconfig-a003
-x86_64               randconfig-a016-20220926
-x86_64               randconfig-a015-20220926
-i386                 randconfig-a011-20220926
-i386                 randconfig-a014-20220926
-i386                 randconfig-a013-20220926
-i386                 randconfig-a012-20220926
-i386                 randconfig-a015-20220926
-i386                 randconfig-a016-20220926
+  fscrypt: work on block_devices instead of request_queues (2022-09-21 20:33:06 -0700)
 
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+----------------------------------------------------------------
+
+This release contains some implementation changes, but no new features:
+
+- Rework the implementation of the fscrypt filesystem-level keyring to
+  not be as tightly coupled to the keyrings subsystem.  This resolves
+  several issues.
+
+- Eliminate most direct uses of struct request_queue from fs/crypto/,
+  since struct request_queue is considered to be a block layer
+  implementation detail.
+
+- Stop using the PG_error flag to track decryption failures.  This is a
+  prerequisite for freeing up PG_error for other uses.
+
+----------------------------------------------------------------
+Christoph Hellwig (1):
+      fscrypt: work on block_devices instead of request_queues
+
+Eric Biggers (4):
+      fscrypt: remove fscrypt_set_test_dummy_encryption()
+      fscrypt: stop using PG_error to track error status
+      fscrypt: stop using keyrings subsystem for fscrypt_master_key
+      fscrypt: stop holding extra request_queue references
+
+ fs/crypto/bio.c             |  16 +-
+ fs/crypto/fscrypt_private.h |  82 +++++---
+ fs/crypto/hooks.c           |  10 +-
+ fs/crypto/inline_crypt.c    | 147 +++++++------
+ fs/crypto/keyring.c         | 495 ++++++++++++++++++++++++--------------------
+ fs/crypto/keysetup.c        |  89 ++++----
+ fs/crypto/keysetup_v1.c     |   4 +-
+ fs/crypto/policy.c          |  21 +-
+ fs/ext4/readpage.c          |  10 +-
+ fs/f2fs/data.c              |  18 +-
+ fs/f2fs/super.c             |  24 +--
+ fs/super.c                  |   2 +-
+ include/linux/fs.h          |   2 +-
+ include/linux/fscrypt.h     |  32 ++-
+ 14 files changed, 495 insertions(+), 457 deletions(-)
