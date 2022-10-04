@@ -2,195 +2,142 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 573C75F48D2
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Oct 2022 19:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1461A5F4963
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Oct 2022 20:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbiJDRoT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 4 Oct 2022 13:44:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52332 "EHLO
+        id S229763AbiJDSrx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 4 Oct 2022 14:47:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbiJDRoQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Oct 2022 13:44:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 878D657887;
-        Tue,  4 Oct 2022 10:44:15 -0700 (PDT)
+        with ESMTP id S229681AbiJDSrw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Oct 2022 14:47:52 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D9CC69F62;
+        Tue,  4 Oct 2022 11:47:51 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 24F6E614ED;
-        Tue,  4 Oct 2022 17:44:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39833C433C1;
-        Tue,  4 Oct 2022 17:44:14 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C889AB81B7D;
+        Tue,  4 Oct 2022 18:47:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 661F6C433C1;
+        Tue,  4 Oct 2022 18:47:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664905454;
-        bh=Rte1HvtfgvFRVjI9vmQSmn8KC1YqoQCVVzKzmhIF2f8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=TXoomx0Fwgy3RlDGeKpNyJvQKJXILM0zhFXPxPg0RxBKHgGPZLtzxY9O8ROE7lIo1
-         S6oXgY/E1bP+73sU9RMOO0BCkm+WUGpaXZgeoozXSkMqPJVBG2G+cfL1lXx4rP1MWx
-         iDklhkM0ofevngD3ygTIu3fQDaNt1wk95jKbntv8AoBAE3T78h0Ye0GbXizhIFwM/c
-         l4NZ6B/vRH++0uutSiyEWPZLYnLcvPOziMdVgQ5RNsqV4NsP8XGw0Qxv+Zdl/2m8ht
-         TJ/m1byfhSfKmoWqIj1g6HydyWV31REWXwDD8zCXYmZh48HljZ7H7C9IRiw1kZGixU
-         h+1fTlkD57ACA==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-man@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-        "Darrick J. Wong" <djwong@kernel.org>
-Subject: [man-pages PATCH v3] statx.2, open.2: document STATX_DIOALIGN
-Date:   Tue,  4 Oct 2022 10:43:07 -0700
-Message-Id: <20221004174307.6022-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.37.3
+        s=k20201202; t=1664909268;
+        bh=+jQe3PZzLX/Ohw+7uBm6AvctKlwxHWI9Sloe5IY9do4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=X/dAARORqwZuJPZk+360LY6CP3JVSJ102GxnYysu/oEznVEoHCsANDdBHxh+dLw1y
+         OZo3GQbKnH1HOUmVVjSW+ZZl2J0VQ+GqZmudtHw337ErwiICwHGAq+7O6R9FLwGHpf
+         I+6KQ9Oc2SLXUvzdfwwJ2FkT6Gt5zgvBQjwDvBSTD22gjOLKPgKsUoLpKx4xom4r1n
+         xkiI3BpLnEZqjoZSs+YiQx1+R+NrV+McTUnlS25kdq1nbgHpKEYCEyuicNigKAPD70
+         epbc/txKzArgVGbfPmhZYF0a+vpkHQzxk/sIbMim8gpZa3B1UBOwkv/zYhDvfKxU2i
+         n4cBgoITlSM4Q==
+Date:   Tue, 4 Oct 2022 11:47:47 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Lukas Czerner <lczerner@redhat.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] ext4: journal_path mount options should follow links
+Message-ID: <Yzx/08kWtzX8HR5i@magnolia>
+References: <20221004135803.32283-1-lczerner@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221004135803.32283-1-lczerner@redhat.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Tue, Oct 04, 2022 at 03:58:03PM +0200, Lukas Czerner wrote:
+> Before the commit 461c3af045d3 ("ext4: Change handle_mount_opt() to use
+> fs_parameter") ext4 mount option journal_path did follow links in the
+> provided path.
+> 
+> Bring this behavior back by allowing to pass pathwalk flags to
+> fs_lookup_param().
+> 
+> Fixes: 461c3af045d3 ("ext4: Change handle_mount_opt() to use fs_parameter")
+> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
 
-Document the STATX_DIOALIGN support for statx()
-(https://git.kernel.org/linus/725737e7c21d2d25).
+This bit me recently when I was debugging an old system that used an
+external journal on an LVM LV and I wanted to know if the bug I was
+chasing also reproduced on upstream.  Thanks for fixing this before I
+got around to making a patch:
 
 Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
 
-I'm resending this now that support for STATX_DIOALIGN has been merged
-upstream.
+--D
 
-v3: updated mentions of Linux version, fixed some punctuation, and added
-    a Reviewed-by
-
-v2: rebased onto man-pages master branch, mentioned xfs, and updated
-    link to patchset
-
- man2/open.2  | 43 ++++++++++++++++++++++++++++++++-----------
- man2/statx.2 | 29 +++++++++++++++++++++++++++++
- 2 files changed, 61 insertions(+), 11 deletions(-)
-
-diff --git a/man2/open.2 b/man2/open.2
-index deba7e4ea..b8617e0d2 100644
---- a/man2/open.2
-+++ b/man2/open.2
-@@ -1732,21 +1732,42 @@ of user-space buffers and the file offset of I/Os.
- In Linux alignment
- restrictions vary by filesystem and kernel version and might be
- absent entirely.
--However there is currently no filesystem\-independent
--interface for an application to discover these restrictions for a given
--file or filesystem.
--Some filesystems provide their own interfaces
--for doing so, for example the
-+The handling of misaligned
-+.B O_DIRECT
-+I/Os also varies; they can either fail with
-+.B EINVAL
-+or fall back to buffered I/O.
-+.PP
-+Since Linux 6.1,
-+.B O_DIRECT
-+support and alignment restrictions for a file can be queried using
-+.BR statx (2),
-+using the
-+.B STATX_DIOALIGN
-+flag.
-+Support for
-+.B STATX_DIOALIGN
-+varies by filesystem; see
-+.BR statx (2).
-+.PP
-+Some filesystems provide their own interfaces for querying
-+.B O_DIRECT
-+alignment restrictions, for example the
- .B XFS_IOC_DIOINFO
- operation in
- .BR xfsctl (3).
-+.B STATX_DIOALIGN
-+should be used instead when it is available.
- .PP
--Under Linux 2.4, transfer sizes, the alignment of the user buffer,
--and the file offset must all be multiples of the logical block size
--of the filesystem.
--Since Linux 2.6.0, alignment to the logical block size of the
--underlying storage (typically 512 bytes) suffices.
--The logical block size can be determined using the
-+If none of the above is available, then direct I/O support and alignment
-+restrictions can only be assumed from known characteristics of the filesystem,
-+the individual file, the underlying storage device(s), and the kernel version.
-+In Linux 2.4, most block device based filesystems require that the file offset
-+and the length and memory address of all I/O segments be multiples of the
-+filesystem block size (typically 4096 bytes).
-+In Linux 2.6.0, this was relaxed to the logical block size of the block device
-+(typically 512 bytes).
-+A block device's logical block size can be determined using the
- .BR ioctl (2)
- .B BLKSSZGET
- operation or from the shell using the command:
-diff --git a/man2/statx.2 b/man2/statx.2
-index 0d1b4591f..50397057d 100644
---- a/man2/statx.2
-+++ b/man2/statx.2
-@@ -61,7 +61,12 @@ struct statx {
-        containing the filesystem where the file resides */
-     __u32 stx_dev_major;   /* Major ID */
-     __u32 stx_dev_minor;   /* Minor ID */
-+
-     __u64 stx_mnt_id;      /* Mount ID */
-+
-+    /* Direct I/O alignment restrictions */
-+    __u32 stx_dio_mem_align;
-+    __u32 stx_dio_offset_align;
- };
- .EE
- .in
-@@ -247,6 +252,8 @@ STATX_BTIME	Want stx_btime
- STATX_ALL	The same as STATX_BASIC_STATS | STATX_BTIME.
- 	It is deprecated and should not be used.
- STATX_MNT_ID	Want stx_mnt_id (since Linux 5.8)
-+STATX_DIOALIGN	Want stx_dio_mem_align and stx_dio_offset_align
-+	(since Linux 6.1; support varies by filesystem)
- .TE
- .in
- .PP
-@@ -407,6 +414,28 @@ This is the same number reported by
- .BR name_to_handle_at (2)
- and corresponds to the number in the first field in one of the records in
- .IR /proc/self/mountinfo .
-+.TP
-+.I stx_dio_mem_align
-+The alignment (in bytes) required for user memory buffers for direct I/O
-+.BR "" ( O_DIRECT )
-+on this file, or 0 if direct I/O is not supported on this file.
-+.IP
-+.B STATX_DIOALIGN
-+.IR "" ( stx_dio_mem_align
-+and
-+.IR stx_dio_offset_align )
-+is supported on block devices since Linux 6.1.
-+The support on regular files varies by filesystem; it is supported by ext4,
-+f2fs, and xfs since Linux 6.1.
-+.TP
-+.I stx_dio_offset_align
-+The alignment (in bytes) required for file offsets and I/O segment lengths for
-+direct I/O
-+.BR "" ( O_DIRECT )
-+on this file, or 0 if direct I/O is not supported on this file.
-+This will only be nonzero if
-+.I stx_dio_mem_align
-+is nonzero, and vice versa.
- .PP
- For further information on the above fields, see
- .BR inode (7).
-
-base-commit: bc28d289e5066fc626df260bafc249846a0f6ae6
--- 
-2.37.3
-
+> ---
+>  Documentation/filesystems/mount_api.rst | 1 +
+>  fs/ext4/super.c                         | 2 +-
+>  fs/fs_parser.c                          | 3 ++-
+>  include/linux/fs_parser.h               | 1 +
+>  4 files changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/filesystems/mount_api.rst b/Documentation/filesystems/mount_api.rst
+> index eb358a00be27..1d16787a00e9 100644
+> --- a/Documentation/filesystems/mount_api.rst
+> +++ b/Documentation/filesystems/mount_api.rst
+> @@ -814,6 +814,7 @@ process the parameters it is given.
+>         int fs_lookup_param(struct fs_context *fc,
+>  			   struct fs_parameter *value,
+>  			   bool want_bdev,
+> +			   unsigned int flags,
+>  			   struct path *_path);
+>  
+>       This takes a parameter that carries a string or filename type and attempts
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 9a66abcca1a8..4c1b3972d53f 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -2271,7 +2271,7 @@ static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *param)
+>  			return -EINVAL;
+>  		}
+>  
+> -		error = fs_lookup_param(fc, param, 1, &path);
+> +		error = fs_lookup_param(fc, param, 1, LOOKUP_FOLLOW, &path);
+>  		if (error) {
+>  			ext4_msg(NULL, KERN_ERR, "error: could not find "
+>  				 "journal device path");
+> diff --git a/fs/fs_parser.c b/fs/fs_parser.c
+> index ed40ce5742fd..edb3712dcfa5 100644
+> --- a/fs/fs_parser.c
+> +++ b/fs/fs_parser.c
+> @@ -138,15 +138,16 @@ EXPORT_SYMBOL(__fs_parse);
+>   * @fc: The filesystem context to log errors through.
+>   * @param: The parameter.
+>   * @want_bdev: T if want a blockdev
+> + * @flags: Pathwalk flags passed to filename_lookup()
+>   * @_path: The result of the lookup
+>   */
+>  int fs_lookup_param(struct fs_context *fc,
+>  		    struct fs_parameter *param,
+>  		    bool want_bdev,
+> +		    unsigned int flags,
+>  		    struct path *_path)
+>  {
+>  	struct filename *f;
+> -	unsigned int flags = 0;
+>  	bool put_f;
+>  	int ret;
+>  
+> diff --git a/include/linux/fs_parser.h b/include/linux/fs_parser.h
+> index f103c91139d4..01542c4b87a2 100644
+> --- a/include/linux/fs_parser.h
+> +++ b/include/linux/fs_parser.h
+> @@ -76,6 +76,7 @@ static inline int fs_parse(struct fs_context *fc,
+>  extern int fs_lookup_param(struct fs_context *fc,
+>  			   struct fs_parameter *param,
+>  			   bool want_bdev,
+> +			   unsigned int flags,
+>  			   struct path *_path);
+>  
+>  extern int lookup_constant(const struct constant_table tbl[], const char *name, int not_found);
+> -- 
+> 2.37.3
+> 
