@@ -2,95 +2,134 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA92F5F41E1
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Oct 2022 13:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BBC05F44EA
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Oct 2022 15:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbiJDLVT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 4 Oct 2022 07:21:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52166 "EHLO
+        id S229592AbiJDN6L (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 4 Oct 2022 09:58:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbiJDLVS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Oct 2022 07:21:18 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79AF72528C;
-        Tue,  4 Oct 2022 04:21:17 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id b4so13857833wrs.1;
-        Tue, 04 Oct 2022 04:21:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date;
-        bh=1QAq0ZB7d697dN0IELqCuGwbuQ5Z9A2pkxg2ywRmtdE=;
-        b=jM323eB2g5fAgVAWEO1hWaRRCadCPBnaVxmK05FjpCjF4ZfLFAC780ab8ZIuiUx+7c
-         rNZSpRoGuGTJKJ9fCMtaakzI4SAT1Mrcp9+lNVf4EK2KIMrBDv2yVp+kWCo7io1q5M6I
-         tFaFUFjM9ynXQMvHbsvJx+XRbNBg/1oApBVWeT29mnZZ0yqZbeCUq/3x6thVvhwE5Yjs
-         m4p8LQbmACB/rd/x1hBf5bKEfsonMhKG7q/0/p0FOC5ilxIpmamPpxAkC5YpfIixThvl
-         ncFLZOenIrCLL4qOlOauuM3c/JdR/WE1S+MA7e7sMU8gdtd148PT3h3sX+9FIN/njJZn
-         42Cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=1QAq0ZB7d697dN0IELqCuGwbuQ5Z9A2pkxg2ywRmtdE=;
-        b=Y1et7jsrE7xQF2REsVFhWJJRaybrXBVqJzoQsu5WwlSnXPZgTNNHCpm9X81Dh5gupW
-         8dM01J9Oqrc1zZ52eJwzH81gxp9uDzVKYMKsCpabMTNGlajR1lqU5GYflshM0MMRIslZ
-         1TfMseeIievl0PUe/k0UHT5nldP/jsuSiNTEXkBqrrGZ9leOUCS8efCF9MPY/0KQZ2QZ
-         i5RfkOlzd0KPk2bpUrQzOnCe+J791GrYwDP52t6H1xzE6SNfETxw/8NugE6lvkaYYa8P
-         od5OV9DtN+Fe9iMv6lEscMcvTluVBv5FAVAicmcA9O5XXSPJVZsHEqMbPFeXJ/BbFeYU
-         rXEQ==
-X-Gm-Message-State: ACrzQf0I+dEfQT3ozp4MZQbwF1Ive182IXRihy/iXyg0/oACC8I/PH8k
-        rKGJKkWpePtKG4nL8O/q2JtfQVSvztVjnDtx
-X-Google-Smtp-Source: AMsMyM4oBKuoBytdgFMbR9qvtjAtRFcdKPN7/YAAA6qgcfyTQrzQ/cClTaJUauazxwnYt84GNNED6g==
-X-Received: by 2002:a5d:5b18:0:b0:22b:1c7:6f8 with SMTP id bx24-20020a5d5b18000000b0022b01c706f8mr15885925wrb.502.1664882475880;
-        Tue, 04 Oct 2022 04:21:15 -0700 (PDT)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id p8-20020a05600c358800b003b4868eb71bsm20648240wmq.25.2022.10.04.04.21.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Oct 2022 04:21:15 -0700 (PDT)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] ext4: remove unused string "deprecated_msg"
-Date:   Tue,  4 Oct 2022 12:21:14 +0100
-Message-Id: <20221004112114.101799-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.37.1
+        with ESMTP id S229733AbiJDN6K (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Oct 2022 09:58:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C1F5C34D
+        for <linux-ext4@vger.kernel.org>; Tue,  4 Oct 2022 06:58:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1664891888;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=FovgkzjBCd5eiueFMUNM+DsFnQ3oZ8WMZkVXqv5D0IQ=;
+        b=GHtT+ehXFErbEsM4kOMManWp1hbIOrjk4EjVqab9nLTTVjKUesbzO0TQ3QcSdUW458ZFbN
+        3m6Ald6V2bFhDauJAPaqcfPoYJF8Y1MZ2lleyIsGjMxTGoyBtwvrLI/vC3AJ9RZ4BsqUkJ
+        5P1vk+YlgDff3a/c0+EE0r43TSgyMOw=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-486-xLaMWaGeOfewNU4n5bQEYQ-1; Tue, 04 Oct 2022 09:58:05 -0400
+X-MC-Unique: xLaMWaGeOfewNU4n5bQEYQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 42B32857D0B;
+        Tue,  4 Oct 2022 13:58:05 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.40.193.104])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9249214152E8;
+        Tue,  4 Oct 2022 13:58:04 +0000 (UTC)
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, linux-fsdevel@vger.kernel.org
+Subject: [PATCH] ext4: journal_path mount options should follow links
+Date:   Tue,  4 Oct 2022 15:58:03 +0200
+Message-Id: <20221004135803.32283-1-lczerner@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The string deprecated_msg is no longer being used, remove it.
+Before the commit 461c3af045d3 ("ext4: Change handle_mount_opt() to use
+fs_parameter") ext4 mount option journal_path did follow links in the
+provided path.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+Bring this behavior back by allowing to pass pathwalk flags to
+fs_lookup_param().
+
+Fixes: 461c3af045d3 ("ext4: Change handle_mount_opt() to use fs_parameter")
+Signed-off-by: Lukas Czerner <lczerner@redhat.com>
 ---
- fs/ext4/super.c | 4 ----
- 1 file changed, 4 deletions(-)
+ Documentation/filesystems/mount_api.rst | 1 +
+ fs/ext4/super.c                         | 2 +-
+ fs/fs_parser.c                          | 3 ++-
+ include/linux/fs_parser.h               | 1 +
+ 4 files changed, 5 insertions(+), 2 deletions(-)
 
+diff --git a/Documentation/filesystems/mount_api.rst b/Documentation/filesystems/mount_api.rst
+index eb358a00be27..1d16787a00e9 100644
+--- a/Documentation/filesystems/mount_api.rst
++++ b/Documentation/filesystems/mount_api.rst
+@@ -814,6 +814,7 @@ process the parameters it is given.
+        int fs_lookup_param(struct fs_context *fc,
+ 			   struct fs_parameter *value,
+ 			   bool want_bdev,
++			   unsigned int flags,
+ 			   struct path *_path);
+ 
+      This takes a parameter that carries a string or filename type and attempts
 diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 2335452efed0..981563c8245e 100644
+index 9a66abcca1a8..4c1b3972d53f 100644
 --- a/fs/ext4/super.c
 +++ b/fs/ext4/super.c
-@@ -1740,10 +1740,6 @@ static const struct fs_parameter_spec ext4_param_specs[] = {
+@@ -2271,7 +2271,7 @@ static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 			return -EINVAL;
+ 		}
  
- #define DEFAULT_JOURNAL_IOPRIO (IOPRIO_PRIO_VALUE(IOPRIO_CLASS_BE, 3))
+-		error = fs_lookup_param(fc, param, 1, &path);
++		error = fs_lookup_param(fc, param, 1, LOOKUP_FOLLOW, &path);
+ 		if (error) {
+ 			ext4_msg(NULL, KERN_ERR, "error: could not find "
+ 				 "journal device path");
+diff --git a/fs/fs_parser.c b/fs/fs_parser.c
+index ed40ce5742fd..edb3712dcfa5 100644
+--- a/fs/fs_parser.c
++++ b/fs/fs_parser.c
+@@ -138,15 +138,16 @@ EXPORT_SYMBOL(__fs_parse);
+  * @fc: The filesystem context to log errors through.
+  * @param: The parameter.
+  * @want_bdev: T if want a blockdev
++ * @flags: Pathwalk flags passed to filename_lookup()
+  * @_path: The result of the lookup
+  */
+ int fs_lookup_param(struct fs_context *fc,
+ 		    struct fs_parameter *param,
+ 		    bool want_bdev,
++		    unsigned int flags,
+ 		    struct path *_path)
+ {
+ 	struct filename *f;
+-	unsigned int flags = 0;
+ 	bool put_f;
+ 	int ret;
  
--static const char deprecated_msg[] =
--	"Mount option \"%s\" will be removed by %s\n"
--	"Contact linux-ext4@vger.kernel.org if you think we should keep it.\n";
--
- #define MOPT_SET	0x0001
- #define MOPT_CLEAR	0x0002
- #define MOPT_NOSUPPORT	0x0004
+diff --git a/include/linux/fs_parser.h b/include/linux/fs_parser.h
+index f103c91139d4..01542c4b87a2 100644
+--- a/include/linux/fs_parser.h
++++ b/include/linux/fs_parser.h
+@@ -76,6 +76,7 @@ static inline int fs_parse(struct fs_context *fc,
+ extern int fs_lookup_param(struct fs_context *fc,
+ 			   struct fs_parameter *param,
+ 			   bool want_bdev,
++			   unsigned int flags,
+ 			   struct path *_path);
+ 
+ extern int lookup_constant(const struct constant_table tbl[], const char *name, int not_found);
 -- 
-2.37.1
+2.37.3
 
