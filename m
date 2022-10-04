@@ -2,59 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 467B55F3BC1
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Oct 2022 05:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5FA95F3BC4
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Oct 2022 05:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbiJDDpR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 3 Oct 2022 23:45:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36648 "EHLO
+        id S229840AbiJDDpT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 3 Oct 2022 23:45:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229758AbiJDDpB (ORCPT
+        with ESMTP id S229757AbiJDDpB (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Mon, 3 Oct 2022 23:45:01 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C49B55A9;
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C0DB11C36;
         Mon,  3 Oct 2022 20:44:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id AC895B818FD;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 989D0B818EA;
         Tue,  4 Oct 2022 03:44:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 7667EC433B5;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5ECE5C433D7;
         Tue,  4 Oct 2022 03:44:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1664855093;
-        bh=x7gd+EVcFPH1Kgn1LX7rIu4VGEoIDc3NvqgSFQjUiWw=;
+        bh=QXEoLo1dKWbjRA3Zt6TXmiZvUSJjyNbwwOlKDlL1NAs=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=I0UwOOhK97s2oF2aqiE7cewDDiztY8T0WCXjsrNazD/FWEE05CALJvtw3qrRK5OMi
-         lemOjZK+zG38BXijAeWL5bnJpDoZ7CjMNaX9RZbrkdMt/SqWtjYc2Wo5535LLLlg4b
-         rgsgn/lLL2aINK8qD/wSaCyQjD87gW3PJ0DXB2zatZQr054jYoEw8QkHfPmasVKjNt
-         tCsywGL5a0MDmxStLXSnh3CaUz1zeq2eSAwYfkerGx9aXg9SI0yRyMQdiJst3qrGJl
-         Thao8PDDusuXGMO6EhmoUyZr3JJiRDZW7L/Pyho0Q6r3o+Gpq80YA+xACzUPAv2p0M
-         CZXDZURGiYlPw==
+        b=gWveEPYzx5AH+T1YmlA4iOwhhrea6wFD5bVYGBs1il6oYjkJ4bivt+5qY5sYi8hg6
+         8IMzvdujb+Z3atrRc0rjQn8yScBSUXJDYb6VBspkMNns+rurWIEI4aV2KGzRsrzNby
+         zNslCoPpfkkvURRdX7x+WaHPZI4CEJxj9kSUBxpXh6pHA8cZFoDjVawUAFfTHajOd3
+         8ghbr/pXYQPRRmhLwUYm7igpANf0DG30ZLXZah3FDSx4hJTj6g82UpAIiSXbO5z3B2
+         KyQ9BrawmXWNu16KqBBwVkiLF6DRXCwa1sN6KQSdsM71hNEyYE0OLuhDD4lvcXS+Io
+         qyZTK0tnCGoJg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6318AE4D013;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 44292C072E7;
         Tue,  4 Oct 2022 03:44:53 +0000 (UTC)
-Subject: Re: [GIT PULL] STATX_DIOALIGN for 6.1
+Subject: Re: [GIT PULL] fscrypt updates for 6.1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YzpXpalOcvwp+keu@quark>
-References: <YzpXpalOcvwp+keu@quark>
+In-Reply-To: <YzpQMx1FiZp/PsM3@quark>
+References: <YzpQMx1FiZp/PsM3@quark>
 X-PR-Tracked-List-Id: <linux-ext4.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YzpXpalOcvwp+keu@quark>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git tags/statx-dioalign-for-linus
-X-PR-Tracked-Commit-Id: 61a223df421f698c253143014cfd384255b3cf1e
+X-PR-Tracked-Message-Id: <YzpQMx1FiZp/PsM3@quark>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
+X-PR-Tracked-Commit-Id: 0e91fc1e0f5c70ce575451103ec66c2ec21f1a6e
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 725737e7c21d2d25a4312c2aaa82a52bd03e3126
-Message-Id: <166485509340.18435.16538782233401144601.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 438b2cdd17a6c9df607f574bd13b6b637795a411
+Message-Id: <166485509327.18435.1743382934950044503.pr-tracker-bot@kernel.org>
 Date:   Tue, 04 Oct 2022 03:44:53 +0000
 To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-xfs@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Christoph Hellwig <hch@lst.de>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -64,12 +64,12 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The pull request you sent on Sun, 2 Oct 2022 20:31:49 -0700:
+The pull request you sent on Sun, 2 Oct 2022 20:00:03 -0700:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git tags/statx-dioalign-for-linus
+> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/725737e7c21d2d25a4312c2aaa82a52bd03e3126
+https://git.kernel.org/torvalds/c/438b2cdd17a6c9df607f574bd13b6b637795a411
 
 Thank you!
 
