@@ -2,66 +2,52 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE6F5F49DC
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Oct 2022 21:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DF0D5F4BC0
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Oct 2022 00:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229786AbiJDTsx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 4 Oct 2022 15:48:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42944 "EHLO
+        id S231618AbiJDWTl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 4 Oct 2022 18:19:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbiJDTsw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Oct 2022 15:48:52 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10BD75A800
-        for <linux-ext4@vger.kernel.org>; Tue,  4 Oct 2022 12:48:49 -0700 (PDT)
+        with ESMTP id S231303AbiJDWSm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Oct 2022 18:18:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FCA369F55;
+        Tue,  4 Oct 2022 15:18:41 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id F132DCE1162
-        for <linux-ext4@vger.kernel.org>; Tue,  4 Oct 2022 19:48:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0DCD8C4314D
-        for <linux-ext4@vger.kernel.org>; Tue,  4 Oct 2022 19:48:46 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D029C614B2;
+        Tue,  4 Oct 2022 22:18:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 353ABC433D6;
+        Tue,  4 Oct 2022 22:18:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664912926;
-        bh=zsLcacBOTdqU/bF8JXnKTMup5ZEjIaEu+spW332vWh0=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=CssxSVlch3+pgoo7PAwyj0yNk1STuGSvYSW5nUln8gZ1jCfvi0yQWei0GV/92TK9S
-         fRVMCNSFN4u3+pjY+PeQP3zsz5fWhKt+yql679icldI07PSsO82WSqlRo84mhz/Qqk
-         XY4FT2vlTm6l3T4UEUnip9EkeVS9OgDkFp/Upp+QvGGw+Uf6aibWzVivUqG6+t1fWg
-         Wjc2Oq3WVoOwHOsrn1kMPEbXlt8GXhtLrdtO6IKTMA+PJTF6ixP0CoUndZ4hOmb60v
-         XGx+pTLwRB2xFuxvGpmTeF6u8J3/NmFkVSGycBpX9DkYvPgeL87pR3DtF0DoCQqsD0
-         0jmNU0G9OGa2g==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-        id E4AB9C433EA; Tue,  4 Oct 2022 19:48:45 +0000 (UTC)
-From:   bugzilla-daemon@kernel.org
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 215941] FUZZ: BUG() triggered in
- fs/ext4/extent.c:ext4_ext_determine_hole() when mount and operate on crafted
- image
-Date:   Tue, 04 Oct 2022 19:48:45 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: tytso@mit.edu
-X-Bugzilla-Status: RESOLVED
-X-Bugzilla-Resolution: CODE_FIX
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: bug_status cc resolution
-Message-ID: <bug-215941-13602-TD2vt8VuRR@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-215941-13602@https.bugzilla.kernel.org/>
-References: <bug-215941-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        s=k20201202; t=1664921920;
+        bh=3OSNGb6eczbbTEHdSyw0AJmcW1Gd0forZ+L7hKDOImU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g96s3fHsBQiMBtHOiWUWkcF04ehUH4sAH28zokPRfYfJfiW+vupPchlaH2EO0P704
+         IYJbqbC86ttuyYpH4dKLCDVmY6NnkGSQ8VGGaz/AzsGnM9YiiH7IaD2o/7baYYCOU3
+         K8txGUWfwz7mcUr0xbZIBt4qmTdV9w3OlCmOY9zq4hd0p0k/QZQcwYUEP+ECI3gkU8
+         xnFLs7iR3XPoeKgYfU977ceRc6V/zXQhSaoy6gLyTOV4XvXhD4emLns2oSO/qh5K9e
+         PrV1U+3oMv0o/8ic7bQitPusSsuRG38ajwFhbtGYgpcENrRoPE4Yr1iiK5voX/7WEa
+         Fv2/Kj1Awfg8g==
+Date:   Tue, 4 Oct 2022 15:18:39 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Lukas Czerner <lczerner@redhat.com>
+Cc:     zhanchengbin <zhanchengbin1@huawei.com>,
+        Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        liuzhiqiang26@huawei.com, linfeilong <linfeilong@huawei.com>,
+        kzak@redhat.com, util-linux@vger.kernel.org
+Subject: Re: [bug report] misc/fsck.c: Processes may kill other processes.
+Message-ID: <YzyxP8o7V7Q6xaS7@magnolia>
+References: <4ffe3143-fc53-7178-cf44-f3481eb96ae4@huawei.com>
+ <20220929112813.6aqtktwaff2m7fh2@fedora>
+ <470ea2ee-54fd-3dd5-2500-36fb82665c11@huawei.com>
+ <20220930072042.dwakvbnefctk2jyd@fedora>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220930072042.dwakvbnefctk2jyd@fedora>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -71,21 +57,125 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D215941
+[cc util-linux and karel zak]
 
-Theodore Tso (tytso@mit.edu) changed:
+TLDR: util-linux's fsck program has an interesting bug in it where if
+someone runs "fsck -N", it will set up a fsck_instance context for each
+filesystem with inst->pid = -1.  If someone sends the fsck process a
+SIGINT/SIGTERM before it finishes enumerating filesystems, it will try
+to kill all the fsck instances via "kill(inst->pid, ...);" which will
+terminate every process on the system.
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-             Status|NEW                         |RESOLVED
-                 CC|                            |tytso@mit.edu
-         Resolution|---                         |CODE_FIX
+On Fri, Sep 30, 2022 at 09:20:42AM +0200, Lukas Czerner wrote:
+> On Fri, Sep 30, 2022 at 09:42:52AM +0800, zhanchengbin wrote:
+> > 
+> > 
+> > On 2022/9/29 19:28, Lukas Czerner wrote:
+> > > Hi,
+> > > 
+> > > indeed we'd like to avoid killing the instance that was not ran because
+> > > of noexecute. Can you try the following patch?
+> > > 
+> > > Thanks!
+> > > -Lukas
+> > 
+> > Yes, you're right, I think we can fix it in this way.
+> > 
+> > diff --git a/misc/fsck.c b/misc/fsck.c
+> > index 1f6ec7d9..91edbf17 100644
+> > --- a/misc/fsck.c
+> > +++ b/misc/fsck.c
+> > @@ -547,6 +547,8 @@ static int kill_all(int signum)
+> >         for (inst = instance_list; inst; inst = inst->next) {
+> >                 if (inst->flags & FLAG_DONE)
+> >                         continue;
+> > +               if (inst->pid == -1)
+> > +                       continue;
+> 
+> Yeah, that works as well although I find the "if (noexecute)" condition
+> more obvious. We can do both. Also rather than checking for -1 we can
+> check for <= 0 since anything other than real pid at this point is a bug.
+> 
+> Feel free to send a proper patch.
 
---- Comment #2 from Theodore Tso (tytso@mit.edu) ---
-Indeed, thanks for the patch!
+I was about to ask why we even care about misc/fsck.c because it's
+clearly a weird old program that has been bitrotting for years and
+likely replaced by some other code in util-linux.  Then I thought I had
+better check util-linux, and...
 
---=20
-You may reply to this email to add a comment.
+https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git/tree/disk-utils/fsck.c
 
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+/*
+ * fsck --- A generic, parallelizing front-end for the fsck program.
+ * It will automatically try to run fsck programs in parallel if the
+ * devices are on separate spindles.  It is based on the same ideas as
+ * the generic front end for fsck by David Engel and Fred van Kempen,
+ * but it has been completely rewritten from scratch to support
+ * parallel execution.
+ *
+ * Written by Theodore Ts'o, <tytso@mit.edu>
+
+LOL, it's the same source code, and I think it has the same bug, since
+"noexecute" mode sets pid = -1 at like 688:
+
+	/* Fork and execute the correct program. */
+	if (noexecute)
+		pid = -1;
+
+and then sets inst->pid = pid at line 703:
+
+	inst->pid = pid;
+
+and kill_all() passes that to kill() at line 733:
+
+	for (inst = instance_list; inst; inst = inst->next) {
+		if (inst->flags & FLAG_DONE)
+			continue;
+		kill(inst->pid, signum);
+		n++;
+	}
+
+From that I conclude that this is a real bug in util-linux, and we
+ought to be talking to them about this.  Evidently this has been broken
+since e2fsprogs commit 33922999 in January 1999, though it was only
+added to util-linux in commit 607c2a72952f in February 2009.
+
+--D
+
+> Thanks!
+> -Lukas
+> 
+> >                 kill(inst->pid, signum);
+> >                 n++;
+> >         }
+> > > 
+> > > 
+> > > diff --git a/misc/fsck.c b/misc/fsck.c
+> > > index 1f6ec7d9..8fae7730 100644
+> > > --- a/misc/fsck.c
+> > > +++ b/misc/fsck.c
+> > > @@ -497,9 +497,10 @@ static int execute(const char *type, const char *device, const char *mntpt,
+> > >   	}
+> > >   	/* Fork and execute the correct program. */
+> > > -	if (noexecute)
+> > > +	if (noexecute) {
+> > >   		pid = -1;
+> > > -	else if ((pid = fork()) < 0) {
+> > > +		inst->flags |= FLAG_DONE;
+> > > +	} else if ((pid = fork()) < 0) {
+> > >   		perror("fork");
+> > >   		free(inst);
+> > >   		return errno;
+> > > @@ -544,6 +545,9 @@ static int kill_all(int signum)
+> > >   	struct fsck_instance *inst;
+> > >   	int	n = 0;
+> > > +	if (noexecute)
+> > > +		return 0;
+> > > +
+> > >   	for (inst = instance_list; inst; inst = inst->next) {
+> > >   		if (inst->flags & FLAG_DONE)
+> > >   			continue;
+> > regards,
+> > Zhan Chengbin
+> > 
+> 
