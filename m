@@ -2,123 +2,195 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD635F482C
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Oct 2022 19:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 573C75F48D2
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Oct 2022 19:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230138AbiJDRTd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 4 Oct 2022 13:19:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56880 "EHLO
+        id S229916AbiJDRoT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 4 Oct 2022 13:44:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229886AbiJDRTb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Oct 2022 13:19:31 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A204D5F133;
-        Tue,  4 Oct 2022 10:19:30 -0700 (PDT)
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 294GHr3Y016325;
-        Tue, 4 Oct 2022 17:19:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=vf+odzlmoDUyIdjb+isG/QhQ2gJ91ocADZn/u9Tew+Y=;
- b=YsWT6FPFxaK2W5FllWUki+j0H0ddgdVQ3A6A1gBhwaANSwVyOpOo316vFSPGwFoPnjFQ
- 4lcZrtTZ9on06hqw3xirg0jVIiFNgUfArojAnqbLpCRKaTclSlJAfXH3SCUcaY6sH97X
- 4mKoI0Y/hL4wk3ues2/WYKKlZB6A6Cm4b+8KmUuvcMcQB4MfELFQTuhGNW7SmBBTaHM6
- 9ZLgCDWfcsQRVQSahmFOOQNqrFCMwcPdOZJPzyIKsNzUxUY6e1nV6hvLcqWhqPOU4zIU
- rSq6w4GY/g3SnH6NtI8wgabnKIQA3sODTYbbqm8o6Tw9FfmK2D3U9cFcOjq2UsVcinPR Aw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3k0bdsrefa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 04 Oct 2022 17:19:27 +0000
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 294FjRRv020177;
-        Tue, 4 Oct 2022 17:19:27 GMT
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3k0bdsreea-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 04 Oct 2022 17:19:27 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 294H5wq1030419;
-        Tue, 4 Oct 2022 17:19:25 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06ams.nl.ibm.com with ESMTP id 3jxctj4gsf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 04 Oct 2022 17:19:25 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 294HJNXf59179436
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 4 Oct 2022 17:19:23 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5CC8211C04C;
-        Tue,  4 Oct 2022 17:19:23 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9866311C04A;
-        Tue,  4 Oct 2022 17:19:21 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.28.148])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue,  4 Oct 2022 17:19:21 +0000 (GMT)
-Date:   Tue, 4 Oct 2022 22:49:18 +0530
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     Colin Ian King <colin.i.king@gmail.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] ext4: remove unused string "deprecated_msg"
-Message-ID: <Yzxq/pGpMxz2CRj8@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <20221004112114.101799-1-colin.i.king@gmail.com>
+        with ESMTP id S229803AbiJDRoQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Oct 2022 13:44:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 878D657887;
+        Tue,  4 Oct 2022 10:44:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 24F6E614ED;
+        Tue,  4 Oct 2022 17:44:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39833C433C1;
+        Tue,  4 Oct 2022 17:44:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1664905454;
+        bh=Rte1HvtfgvFRVjI9vmQSmn8KC1YqoQCVVzKzmhIF2f8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TXoomx0Fwgy3RlDGeKpNyJvQKJXILM0zhFXPxPg0RxBKHgGPZLtzxY9O8ROE7lIo1
+         S6oXgY/E1bP+73sU9RMOO0BCkm+WUGpaXZgeoozXSkMqPJVBG2G+cfL1lXx4rP1MWx
+         iDklhkM0ofevngD3ygTIu3fQDaNt1wk95jKbntv8AoBAE3T78h0Ye0GbXizhIFwM/c
+         l4NZ6B/vRH++0uutSiyEWPZLYnLcvPOziMdVgQ5RNsqV4NsP8XGw0Qxv+Zdl/2m8ht
+         TJ/m1byfhSfKmoWqIj1g6HydyWV31REWXwDD8zCXYmZh48HljZ7H7C9IRiw1kZGixU
+         h+1fTlkD57ACA==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-man@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        "Darrick J. Wong" <djwong@kernel.org>
+Subject: [man-pages PATCH v3] statx.2, open.2: document STATX_DIOALIGN
+Date:   Tue,  4 Oct 2022 10:43:07 -0700
+Message-Id: <20221004174307.6022-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221004112114.101799-1-colin.i.king@gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: atK1SsYVzz3aUWMvYXU829hZ3raR-31I
-X-Proofpoint-GUID: kWybiqWaUv9WeRnYytwAkaDEh0xa86TI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
- definitions=2022-10-04_08,2022-09-29_03,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- mlxlogscore=999 impostorscore=0 suspectscore=0 lowpriorityscore=0
- clxscore=1011 spamscore=0 mlxscore=0 adultscore=0 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2209130000 definitions=main-2210040111
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Oct 04, 2022 at 12:21:14PM +0100, Colin Ian King wrote:
-> The string deprecated_msg is no longer being used, remove it.
+From: Eric Biggers <ebiggers@google.com>
 
-So if IIUC we use this string as a standard message whenever we use any
-mount options about to be deprecated. We don't seem to have any
-deprecated mount options right now but we might want to keep the string
-around for future?
+Document the STATX_DIOALIGN support for statx()
+(https://git.kernel.org/linus/725737e7c21d2d25).
 
-> 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
->  fs/ext4/super.c | 4 ----
->  1 file changed, 4 deletions(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 2335452efed0..981563c8245e 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -1740,10 +1740,6 @@ static const struct fs_parameter_spec ext4_param_specs[] = {
->  
->  #define DEFAULT_JOURNAL_IOPRIO (IOPRIO_PRIO_VALUE(IOPRIO_CLASS_BE, 3))
->  
-> -static const char deprecated_msg[] =
-> -	"Mount option \"%s\" will be removed by %s\n"
-> -	"Contact linux-ext4@vger.kernel.org if you think we should keep it.\n";
-> -
->  #define MOPT_SET	0x0001
->  #define MOPT_CLEAR	0x0002
->  #define MOPT_NOSUPPORT	0x0004
-> -- 
-> 2.37.1
-> 
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+
+I'm resending this now that support for STATX_DIOALIGN has been merged
+upstream.
+
+v3: updated mentions of Linux version, fixed some punctuation, and added
+    a Reviewed-by
+
+v2: rebased onto man-pages master branch, mentioned xfs, and updated
+    link to patchset
+
+ man2/open.2  | 43 ++++++++++++++++++++++++++++++++-----------
+ man2/statx.2 | 29 +++++++++++++++++++++++++++++
+ 2 files changed, 61 insertions(+), 11 deletions(-)
+
+diff --git a/man2/open.2 b/man2/open.2
+index deba7e4ea..b8617e0d2 100644
+--- a/man2/open.2
++++ b/man2/open.2
+@@ -1732,21 +1732,42 @@ of user-space buffers and the file offset of I/Os.
+ In Linux alignment
+ restrictions vary by filesystem and kernel version and might be
+ absent entirely.
+-However there is currently no filesystem\-independent
+-interface for an application to discover these restrictions for a given
+-file or filesystem.
+-Some filesystems provide their own interfaces
+-for doing so, for example the
++The handling of misaligned
++.B O_DIRECT
++I/Os also varies; they can either fail with
++.B EINVAL
++or fall back to buffered I/O.
++.PP
++Since Linux 6.1,
++.B O_DIRECT
++support and alignment restrictions for a file can be queried using
++.BR statx (2),
++using the
++.B STATX_DIOALIGN
++flag.
++Support for
++.B STATX_DIOALIGN
++varies by filesystem; see
++.BR statx (2).
++.PP
++Some filesystems provide their own interfaces for querying
++.B O_DIRECT
++alignment restrictions, for example the
+ .B XFS_IOC_DIOINFO
+ operation in
+ .BR xfsctl (3).
++.B STATX_DIOALIGN
++should be used instead when it is available.
+ .PP
+-Under Linux 2.4, transfer sizes, the alignment of the user buffer,
+-and the file offset must all be multiples of the logical block size
+-of the filesystem.
+-Since Linux 2.6.0, alignment to the logical block size of the
+-underlying storage (typically 512 bytes) suffices.
+-The logical block size can be determined using the
++If none of the above is available, then direct I/O support and alignment
++restrictions can only be assumed from known characteristics of the filesystem,
++the individual file, the underlying storage device(s), and the kernel version.
++In Linux 2.4, most block device based filesystems require that the file offset
++and the length and memory address of all I/O segments be multiples of the
++filesystem block size (typically 4096 bytes).
++In Linux 2.6.0, this was relaxed to the logical block size of the block device
++(typically 512 bytes).
++A block device's logical block size can be determined using the
+ .BR ioctl (2)
+ .B BLKSSZGET
+ operation or from the shell using the command:
+diff --git a/man2/statx.2 b/man2/statx.2
+index 0d1b4591f..50397057d 100644
+--- a/man2/statx.2
++++ b/man2/statx.2
+@@ -61,7 +61,12 @@ struct statx {
+        containing the filesystem where the file resides */
+     __u32 stx_dev_major;   /* Major ID */
+     __u32 stx_dev_minor;   /* Minor ID */
++
+     __u64 stx_mnt_id;      /* Mount ID */
++
++    /* Direct I/O alignment restrictions */
++    __u32 stx_dio_mem_align;
++    __u32 stx_dio_offset_align;
+ };
+ .EE
+ .in
+@@ -247,6 +252,8 @@ STATX_BTIME	Want stx_btime
+ STATX_ALL	The same as STATX_BASIC_STATS | STATX_BTIME.
+ 	It is deprecated and should not be used.
+ STATX_MNT_ID	Want stx_mnt_id (since Linux 5.8)
++STATX_DIOALIGN	Want stx_dio_mem_align and stx_dio_offset_align
++	(since Linux 6.1; support varies by filesystem)
+ .TE
+ .in
+ .PP
+@@ -407,6 +414,28 @@ This is the same number reported by
+ .BR name_to_handle_at (2)
+ and corresponds to the number in the first field in one of the records in
+ .IR /proc/self/mountinfo .
++.TP
++.I stx_dio_mem_align
++The alignment (in bytes) required for user memory buffers for direct I/O
++.BR "" ( O_DIRECT )
++on this file, or 0 if direct I/O is not supported on this file.
++.IP
++.B STATX_DIOALIGN
++.IR "" ( stx_dio_mem_align
++and
++.IR stx_dio_offset_align )
++is supported on block devices since Linux 6.1.
++The support on regular files varies by filesystem; it is supported by ext4,
++f2fs, and xfs since Linux 6.1.
++.TP
++.I stx_dio_offset_align
++The alignment (in bytes) required for file offsets and I/O segment lengths for
++direct I/O
++.BR "" ( O_DIRECT )
++on this file, or 0 if direct I/O is not supported on this file.
++This will only be nonzero if
++.I stx_dio_mem_align
++is nonzero, and vice versa.
+ .PP
+ For further information on the above fields, see
+ .BR inode (7).
+
+base-commit: bc28d289e5066fc626df260bafc249846a0f6ae6
+-- 
+2.37.3
+
