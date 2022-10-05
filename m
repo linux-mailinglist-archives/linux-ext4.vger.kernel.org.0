@@ -2,233 +2,331 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E56B85F5870
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Oct 2022 18:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A45B25F5B49
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Oct 2022 22:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbiJEQk1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 5 Oct 2022 12:40:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35320 "EHLO
+        id S230178AbiJEU6k (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 5 Oct 2022 16:58:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbiJEQk0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Oct 2022 12:40:26 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE7F20356;
-        Wed,  5 Oct 2022 09:40:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B0FA0B81DE0;
-        Wed,  5 Oct 2022 16:40:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43E3EC433D6;
-        Wed,  5 Oct 2022 16:40:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664988022;
-        bh=PFLhkFtwkoFOvEH1cLHwmK2JKBgWdlPw1bvH2RLTQS8=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=M+QxPavX/Wlovs2EPzg2SZ1esj4fmGj0ZmvQ3FhBVmGprs3Jxml3XOq95uMdt+Mqz
-         VWLkvXn5NHEO2utNC6f31e7iZv9vn8sXdQFmPEjUxmVQyxqHCMLShMv+sjAvulnfE3
-         K2aA2/0urEAUWbh/6LGrZFgU3DoMSGPQ6YdsuV15/i8VRuze/1vsTmnKcF45y8DEq+
-         QF3/ZwvNUf+LegLBGXsDappNcIHH0BZM5OmwhAPGLEwbdmk/Jyb1xE1MzmyTYJCU+D
-         zWi5UEj+zAM5SsH9dZBHc/4GMGziiZwGiiHKAwDEg7lqo2HzbbWQm5Wfd3XEtWE6zK
-         RbxSVjsJW0/aw==
-Message-ID: <66714195b93e05a97c2cd09e5d21ca47203366cf.camel@kernel.org>
-Subject: Re: [PATCH v6 8/9] vfs: update times after copying data in
- __generic_file_write_iter
-From:   Jeff Layton <jlayton@kernel.org>
-To:     NeilBrown <neilb@suse.de>, Amir Goldstein <amir73il@gmail.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, djwong@kernel.org,
-        david@fromorbit.com, trondmy@hammerspace.com,
-        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
-        chuck.lever@oracle.com, lczerner@redhat.com, jack@suse.cz,
-        bfields@fieldses.org, brauner@kernel.org, fweimer@redhat.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Date:   Wed, 05 Oct 2022 12:40:18 -0400
-In-Reply-To: <166483780286.14457.1388505585556274283@noble.neil.brown.name>
-References: <20220930111840.10695-1-jlayton@kernel.org>
-        , <20220930111840.10695-9-jlayton@kernel.org>
-        , <CAOQ4uxgofERYwN7AfYFWqQMpQH5y3LV+6UuGfjU29gZXNf7-vQ@mail.gmail.com>
-        , <df91b9ec61bc49aa5330714e3319dcea2531953b.camel@kernel.org>
-        , <CAOQ4uxi6pPDexF7Z1wshnpV0kbSKsHUeawaUkhjq4FNGbqWU+A@mail.gmail.com>
-         <166483780286.14457.1388505585556274283@noble.neil.brown.name>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+        with ESMTP id S229771AbiJEU6j (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Oct 2022 16:58:39 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D4E7D7A3;
+        Wed,  5 Oct 2022 13:58:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1665003517; x=1696539517;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=5wlRgmXMX0YGl2ggsHILuTzXon7D/FQk/Yadywfyb3M=;
+  b=PW+ikKgdsSw8fAXHFCpIFW+3CG4L9wmBRTvXyVdX5hQzUzwnA/ZjnZ6w
+   HiDd1OA0JmSRf36qcBHxL/K3YRT/dpWVNFonym1LR2TahQ4ghJlpYguol
+   nXbtQQmoAJnrkbtiy6VtMLrZ+PhL4HdzkfCQo13vFJYNwP3/1qmNpGYDn
+   FqGTGwbsqa4MKpx4oLI71W/mZLjDW/bT3bj5tuSGjK9uaS2SEf7Wpus+Q
+   ICIbX7dennFN0cptgn7uA71VR50Mzob/X3Xxu3kxBcnqXTPUeO0fouBCL
+   oQd+MB0PfshX3Exz5ipW4JD5zS7L6BwllnH1QqhK9pJRCByJLtmpN1LX6
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10491"; a="389558801"
+X-IronPort-AV: E=Sophos;i="5.95,161,1661842800"; 
+   d="scan'208";a="389558801"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2022 13:58:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10491"; a="953343839"
+X-IronPort-AV: E=Sophos;i="5.95,161,1661842800"; 
+   d="scan'208";a="953343839"
+Received: from lkp-server01.sh.intel.com (HELO d4f44333118a) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 05 Oct 2022 13:58:32 -0700
+Received: from kbuild by d4f44333118a with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1ogBTM-0001d5-07;
+        Wed, 05 Oct 2022 20:58:32 +0000
+Date:   Thu, 06 Oct 2022 04:58:28 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     loongarch@lists.linux.dev, linux-wireless@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-ext4@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvm@vger.kernel.org, iommu@lists.linux.dev,
+        dri-devel@lists.freedesktop.org, bpf@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: [linux-next:master] BUILD REGRESSION
+ 67ae4f7434cee86ee318d46fb10b8a9840ad2e81
+Message-ID: <633deff4.q8bW3fyM79Uz0A/F%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 2022-10-04 at 09:56 +1100, NeilBrown wrote:
-> On Tue, 04 Oct 2022, Amir Goldstein wrote:
-> > On Mon, Oct 3, 2022 at 4:01 PM Jeff Layton <jlayton@kernel.org> wrote:
-> > >=20
-> > > On Sun, 2022-10-02 at 10:08 +0300, Amir Goldstein wrote:
-> > > > On Fri, Sep 30, 2022 at 2:30 PM Jeff Layton <jlayton@kernel.org> wr=
-ote:
-> > > > >=20
-> > > > > The c/mtime and i_version currently get updated before the data i=
-s
-> > > > > copied (or a DIO write is issued), which is problematic for NFS.
-> > > > >=20
-> > > > > READ+GETATTR can race with a write (even a local one) in such a w=
-ay as
-> > > > > to make the client associate the state of the file with the wrong=
- change
-> > > > > attribute. That association can persist indefinitely if the file =
-sees no
-> > > > > further changes.
-> > > > >=20
-> > > > > Move the setting of times to the bottom of the function in
-> > > > > __generic_file_write_iter and only update it if something was
-> > > > > successfully written.
-> > > > >=20
-> > > >=20
-> > > > This solution is wrong for several reasons:
-> > > >=20
-> > > > 1. There is still file_update_time() in ->page_mkwrite() so you hav=
-en't
-> > > >     solved the problem completely
-> > >=20
-> > > Right. I don't think there is a way to solve the problem vs. mmap.
-> > > Userland can write to a writeable mmap'ed page at any time and we'd
-> > > never know. We have to specifically carve out mmap as an exception he=
-re.
-> > > I'll plan to add something to the manpage patch for this.
-> > >=20
-> > > > 2. The other side of the coin is that post crash state is more like=
-ly to end
-> > > >     up data changes without mtime/ctime change
-> > > >=20
-> > >=20
-> > > Is this really something filesystems rely on? I suppose the danger is
-> > > that some cached data gets written to disk before the write returns a=
-nd
-> > > the inode on disk never gets updated.
-> > >=20
-> > > But...isn't that a danger now? Some of the cached data could get writ=
-ten
-> > > out and the updated inode just never makes it to disk before a crash
-> > > (AFAIU). I'm not sure that this increases our exposure to that proble=
-m.
-> > >=20
-> > >=20
-> >=20
-> > You are correct that that danger exists, but it only exists for overwri=
-ting
-> > to allocated blocks.
-> >=20
-> > For writing to new blocks, mtime change is recorded in transaction
-> > before the block mapping is recorded in transaction so there is no
-> > danger in this case (before your patch).
-> >=20
-> > Also, observing size change without observing mtime change
-> > after crash seems like a very bad outcome that may be possible
-> > after your change.
-> >=20
-> > These are just a few cases that I could think of, they may be filesyste=
-m
-> > dependent, but my gut feeling is that if you remove the time update bef=
-ore
-> > the operation, that has been like that forever, a lot of s#!t is going =
-to float
-> > for various filesystems and applications.
-> >=20
-> > And it is not one of those things that are discovered  during rc or eve=
-n
-> > stable kernel testing - they are discovered much later when users start=
- to
-> > realize their applications got bogged up after crash, so it feels like =
-to me
-> > like playing with fire.
-> >=20
-> > > > If I read the problem description correctly, then a solution that i=
-nvalidates
-> > > > the NFS cache before AND after the write would be acceptable. Right=
-?
-> > > > Would an extra i_version bump after the write solve the race?
-> > > >=20
-> > >=20
-> > > I based this patch on Neil's assertion that updating the time before =
-an
-> > > operation was pointless if we were going to do it afterward. The NFS
-> > > client only really cares about seeing it change after a write.
-> > >=20
-> >=20
-> > Pointless to NFS client maybe.
-> > Whether or not this is not changing user behavior for other application=
-s
-> > is up to you to prove and I doubt that you can prove it because I doubt
-> > that it is true.
-> >=20
-> > > Doing both would be fine from a correctness standpoint, and in most
-> > > cases, the second would be a no-op anyway since a query would have to
-> > > race in between the two for that to happen.
-> > >=20
-> > > FWIW, I think we should update the m/ctime and version at the same ti=
-me.
-> > > If the version changes, then there is always the potential that a tim=
-er
-> > > tick has occurred. So, that would translate to a second call to
-> > > file_update_time in here.
-> > >=20
-> > > The downside of bumping the times/version both before and after is th=
-at
-> > > these are hot codepaths, and we'd be adding extra operations there. E=
-ven
-> > > in the case where nothing has changed, we'd have to call
-> > > inode_needs_update_time a second time for every write. Is that worth =
-the
-> > > cost?
-> >=20
-> > Is there a practical cost for iversion bump AFTER write as I suggested?
-> > If you NEED m/ctime update AFTER write and iversion update is not enoug=
-h
-> > then I did not understand from your commit message why that is.
-> >=20
-> > Thanks,
-> > Amir.
-> >=20
->=20
-> Maybe we should split i_version updates from ctime updates.
->=20
-> While it isn't true that ctime updates have happened before the write
-> "forever" it has been true since 2.3.43[1] which is close to forever.
->=20
-> For ctime there doesn't appear to be a strong specification of when the
-> change happens, so history provides a good case for leaving it before.
-> For i_version we want to provide clear and unambiguous semantics.
-> Performing 2 updates makes the specification muddy.
->=20
-> So I would prefer a single update for i_version, performed after the
-> change becomes visible.  If that means it has to be separate from ctime,
-> then so be it.
->=20
-> NeilBrown
->=20
->=20
-> [1]:  https://git.kernel.org/pub/scm/linux/kernel/git/history/history.git=
-/commit/?id=3D636b38438001a00b25f23e38747a91cb8428af29
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: 67ae4f7434cee86ee318d46fb10b8a9840ad2e81  Add linux-next specific files for 20221005
 
+Error/Warning reports:
 
-Not necessarily. We can document it in such a way that bumping it twice
-is allowed, but not required.
+https://lore.kernel.org/linux-mm/202209060229.dVuyxjBv-lkp@intel.com
+https://lore.kernel.org/llvm/202209220019.Yr2VuXhg-lkp@intel.com
+https://lore.kernel.org/llvm/202210041553.k9dc1Joc-lkp@intel.com
+https://lore.kernel.org/llvm/202210060148.UXBijOcS-lkp@intel.com
 
-My main concern with splitting them up is that we'd have to dirty the
-inode twice if both the times and the i_version need updating. If the
-inode gets written out in between, then we end up doing twice the I/O.
-The interim on-disk metadata would be in sort of a weird state too --
-the ctime would have changed but the version would still be old.
+Error/Warning: (recently discovered and may have been fixed)
 
-It might be worthwhile to just go ahead and continue bumping it in
-file_update_time, and then we'd just attempt to bump the i_version again
-afterward. The second bump will almost always be a no-op anyway.
---=20
-Jeff Layton <jlayton@kernel.org>
+ERROR: modpost: "devm_ioremap_resource" [drivers/dma/fsl-edma.ko] undefined!
+ERROR: modpost: "devm_ioremap_resource" [drivers/dma/idma64.ko] undefined!
+ERROR: modpost: "devm_ioremap_resource" [drivers/dma/qcom/hdma.ko] undefined!
+ERROR: modpost: "devm_memremap" [drivers/misc/open-dice.ko] undefined!
+ERROR: modpost: "devm_memunmap" [drivers/misc/open-dice.ko] undefined!
+ERROR: modpost: "devm_platform_ioremap_resource" [drivers/char/xillybus/xillybus_of.ko] undefined!
+ERROR: modpost: "ioremap" [drivers/net/ethernet/8390/pcnet_cs.ko] undefined!
+ERROR: modpost: "ioremap" [drivers/tty/ipwireless/ipwireless.ko] undefined!
+ERROR: modpost: "iounmap" [drivers/net/ethernet/8390/pcnet_cs.ko] undefined!
+ERROR: modpost: "iounmap" [drivers/tty/ipwireless/ipwireless.ko] undefined!
+arch/arm64/kernel/alternative.c:199:6: warning: no previous prototype for 'apply_alternatives_vdso' [-Wmissing-prototypes]
+arch/arm64/kernel/alternative.c:295:14: warning: no previous prototype for 'alt_cb_patch_nops' [-Wmissing-prototypes]
+arch/loongarch/kernel/traps.c:250 die() warn: variable dereferenced before check 'regs' (see line 244)
+arch/loongarch/mm/init.c:166:24: warning: variable 'new' set but not used [-Wunused-but-set-variable]
+drivers/gpu/drm/amd/amdgpu/../display/dc/virtual/virtual_link_hwss.c:40:6: warning: no previous prototype for 'virtual_disable_link_output' [-Wmissing-prototypes]
+drivers/gpu/drm/bridge/ite-it6505.c:2712 it6505_extcon_work() warn: pm_runtime_get_sync() also returns 1 on success
+drivers/platform/loongarch/loongson-laptop.c:377 loongson_laptop_get_brightness() warn: impossible condition '(level < 0) => (0-255 < 0)'
+drivers/vfio/pci/vfio_pci_core.c:775 vfio_pci_ioctl_get_region_info() warn: potential spectre issue 'pdev->resource' [w]
+drivers/vfio/pci/vfio_pci_core.c:855 vfio_pci_ioctl_get_region_info() warn: potential spectre issue 'vdev->region' [r]
+fs/ext4/super.c:1744:19: warning: 'deprecated_msg' defined but not used [-Wunused-const-variable=]
+include/linux/compiler_types.h:357:45: error: call to '__compiletime_assert_417' declared with attribute error: FIELD_GET: mask is not constant
+kernel/bpf/memalloc.c:500 bpf_mem_alloc_destroy() error: potentially dereferencing uninitialized 'c'.
+net/mac80211/iface.c:251 ieee80211_can_powered_addr_change() warn: inconsistent returns '&local->mtx'.
+
+Unverified Error/Warning (likely false positive, please contact us if interested):
+
+ERROR: modpost: "__tsan_memcpy" [arch/s390/crypto/ghash_s390.ko] undefined!
+ERROR: modpost: "__tsan_memcpy" [arch/s390/crypto/sha512_s390.ko] undefined!
+ERROR: modpost: "__tsan_memcpy" [fs/binfmt_misc.ko] undefined!
+ERROR: modpost: "__tsan_memcpy" [fs/pstore/ramoops.ko] undefined!
+ERROR: modpost: "__tsan_memset" [arch/s390/crypto/ghash_s390.ko] undefined!
+ERROR: modpost: "__tsan_memset" [arch/s390/crypto/sha512_s390.ko] undefined!
+ERROR: modpost: "__tsan_memset" [fs/autofs/autofs4.ko] undefined!
+ERROR: modpost: "__tsan_memset" [fs/binfmt_misc.ko] undefined!
+ERROR: modpost: "__tsan_memset" [fs/cramfs/cramfs.ko] undefined!
+ERROR: modpost: "__tsan_memset" [fs/pstore/ramoops.ko] undefined!
+s390x-linux-ld: self.c:(.text+0xf6): undefined reference to `__tsan_memcpy'
+thread_self.c:(.text+0xe4): undefined reference to `__tsan_memcpy'
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- alpha-allyesconfig
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-virtual_disable_link_output
+|-- alpha-randconfig-s042-20221002
+|   |-- drivers-thermal-broadcom-ns-thermal.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-data-got-void-noderef-__iomem-assigned-pvtmon
+|   |-- drivers-thermal-broadcom-ns-thermal.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-void-noderef-__iomem-pvtmon-got-void
+|   |-- drivers-thermal-broadcom-ns-thermal.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-void-noderef-__iomem-pvtmon-got-void-devdata
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-priv1-got-restricted-__le16-addressable-usertype-fc_len
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-tag-got-restricted-__le16-addressable-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-short-usertype-tag-got-restricted-__le16-addressable-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_len-got-unsigned-short-usertype
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_tag-got-unsigned-short-usertype
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-initializer-(different-base-types)-expected-int-tag-got-restricted-__le16-usertype-fc_tag
+|   `-- fs-ext4-fast_commit.c:sparse:sparse:restricted-__le16-degrades-to-integer
+|-- arc-randconfig-s051-20221002
+|   |-- drivers-gpu-drm-tiny-simpledrm.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-void-vaddr-got-void-noderef-__iomem-screen_base
+|   |-- drivers-gpu-drm-vkms-vkms_formats.c:sparse:sparse:cast-to-restricted-__le16
+|   |-- drivers-gpu-drm-vkms-vkms_formats.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-unsigned-short-usertype-got-restricted-__le16-usertype
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-priv1-got-restricted-__le16-addressable-usertype-fc_len
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-tag-got-restricted-__le16-addressable-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-short-usertype-tag-got-restricted-__le16-addressable-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_len-got-unsigned-short-usertype
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_tag-got-unsigned-short-usertype
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-initializer-(different-base-types)-expected-int-tag-got-restricted-__le16-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:restricted-__le16-degrades-to-integer
+|   |-- kernel-bpf-hashtab.c:sparse:sparse:cast-removes-address-space-__percpu-of-expression
+|   |-- kernel-bpf-hashtab.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-void-noderef-__percpu-assigned-pptr-got-void
+|   |-- kernel-bpf-hashtab.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-void-ptr_to_pptr-got-void-noderef-__percpu-assigned-pptr
+|   |-- kernel-bpf-memalloc.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-noderef-__percpu-__pdata-got-void
+|   |-- kernel-bpf-memalloc.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-noderef-__percpu-__pdata-got-void-pptr
+|   `-- kernel-bpf-memalloc.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-void-pptr-got-void-noderef-__percpu
+|-- arc-randconfig-s053-20221002
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-priv1-got-restricted-__le16-addressable-usertype-fc_len
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-tag-got-restricted-__le16-addressable-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-short-usertype-tag-got-restricted-__le16-addressable-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_len-got-unsigned-short-usertype
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_tag-got-unsigned-short-usertype
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-initializer-(different-base-types)-expected-int-tag-got-restricted-__le16-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:restricted-__le16-degrades-to-integer
+|   |-- kernel-bpf-hashtab.c:sparse:sparse:cast-removes-address-space-__percpu-of-expression
+|   |-- kernel-bpf-hashtab.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-void-noderef-__percpu-assigned-pptr-got-void
+|   |-- kernel-bpf-hashtab.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-void-ptr_to_pptr-got-void-noderef-__percpu-assigned-pptr
+|   |-- kernel-bpf-memalloc.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-noderef-__percpu-__pdata-got-void
+|   |-- kernel-bpf-memalloc.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-noderef-__percpu-__pdata-got-void-pptr
+|   `-- kernel-bpf-memalloc.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-void-pptr-got-void-noderef-__percpu
+|-- arm64-allyesconfig
+|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-alt_cb_patch_nops
+|   `-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-apply_alternatives_vdso
+|-- arm64-randconfig-c023-20221005
+|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-alt_cb_patch_nops
+|   `-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-apply_alternatives_vdso
+clang_recent_errors
+|-- arm-randconfig-r016-20221003
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-function-virtual_disable_link_output
+|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|   `-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|-- arm-randconfig-r033-20221002
+|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|-- arm64-buildonly-randconfig-r002-20221003
+|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-function-apply_alternatives_vdso
+|   `-- ld.lld:error:assignment-to-symbol-__efistub_kernel_size-does-not-converge
+|-- hexagon-randconfig-r013-20221002
+|   |-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-__vmnewmap
+|   |-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-__vmsetvec
+|   `-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-memset
+|-- hexagon-randconfig-r025-20221003
+|   |-- drivers-phy-mediatek-phy-mtk-tphy.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(unsigned-c
+|   |-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-__vmnewmap
+|   |-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-__vmsetvec
+|   `-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-memset
+|-- hexagon-randconfig-r031-20221002
+|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|   `-- drivers-phy-mediatek-phy-mtk-tphy.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(unsigned-c
+|-- hexagon-randconfig-r041-20221003
+|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|-- hexagon-randconfig-r045-20221002
+|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|-- i386-randconfig-a002-20221003
+|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|-- i386-randconfig-a005-20221003
+|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|-- i386-randconfig-a006-20221003
+|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|-- i386-randconfig-r001-20221003
+|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|-- mips-loongson1c_defconfig
+|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|-- mips-randconfig-r006-20221002
+|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt2701.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
+|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
+|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|-- powerpc-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-function-virtual_disable_link_output
+|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt2701.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
+|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
+|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+
+elapsed time: 729m
+
+configs tested: 94
+configs skipped: 3
+
+gcc tested configs:
+i386                                defconfig
+arc                                 defconfig
+x86_64                          rhel-8.3-func
+s390                             allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
+um                           x86_64_defconfig
+alpha                               defconfig
+s390                                defconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+x86_64                           rhel-8.3-syz
+mips                             allyesconfig
+s390                             allyesconfig
+x86_64                         rhel-8.3-kunit
+x86_64                              defconfig
+x86_64                           rhel-8.3-kvm
+arm                            pleb_defconfig
+alpha                             allnoconfig
+powerpc                      chrp32_defconfig
+i386                             allyesconfig
+arc                          axs101_defconfig
+x86_64                               rhel-8.3
+riscv                             allnoconfig
+arc                    vdk_hs38_smp_defconfig
+arm                                 defconfig
+powerpc                 linkstation_defconfig
+i386                 randconfig-a014-20221003
+sh                             espt_defconfig
+sh                               allmodconfig
+csky                              allnoconfig
+x86_64                           allyesconfig
+i386                 randconfig-a011-20221003
+arc                               allnoconfig
+arm                           h3600_defconfig
+x86_64               randconfig-a011-20221003
+i386                 randconfig-a012-20221003
+arm64                            allyesconfig
+s390                       zfcpdump_defconfig
+sparc64                             defconfig
+x86_64               randconfig-a015-20221003
+i386                 randconfig-a013-20221003
+sh                   sh7770_generic_defconfig
+m68k                             allmodconfig
+x86_64               randconfig-a014-20221003
+arm                              allyesconfig
+powerpc                       maple_defconfig
+arc                              allyesconfig
+sh                             shx3_defconfig
+ia64                             allmodconfig
+m68k                            q40_defconfig
+i386                 randconfig-a015-20221003
+x86_64               randconfig-a012-20221003
+arm                       imx_v6_v7_defconfig
+i386                 randconfig-a016-20221003
+mips                            ar7_defconfig
+alpha                            allyesconfig
+x86_64               randconfig-a013-20221003
+arm                          gemini_defconfig
+m68k                                defconfig
+x86_64               randconfig-a016-20221003
+m68k                             allyesconfig
+i386                          randconfig-c001
+mips                          rb532_defconfig
+riscv                randconfig-r042-20221003
+arc                  randconfig-r043-20221003
+arc                  randconfig-r043-20221002
+s390                 randconfig-r044-20221003
+riscv                            allyesconfig
+
+clang tested configs:
+x86_64               randconfig-a003-20221003
+x86_64               randconfig-a002-20221003
+x86_64               randconfig-a001-20221003
+x86_64               randconfig-a004-20221003
+x86_64               randconfig-a006-20221003
+arm                        neponset_defconfig
+x86_64               randconfig-a005-20221003
+i386                 randconfig-a003-20221003
+i386                 randconfig-a002-20221003
+i386                 randconfig-a001-20221003
+i386                 randconfig-a004-20221003
+riscv                          rv32_defconfig
+i386                 randconfig-a005-20221003
+hexagon              randconfig-r041-20221003
+x86_64                        randconfig-k001
+riscv                randconfig-r042-20221002
+i386                 randconfig-a006-20221003
+hexagon              randconfig-r041-20221002
+s390                 randconfig-r044-20221002
+mips                     loongson1c_defconfig
+hexagon              randconfig-r045-20221002
+powerpc                 mpc8272_ads_defconfig
+hexagon              randconfig-r045-20221003
+powerpc                          allyesconfig
+x86_64                          rhel-8.3-rust
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
