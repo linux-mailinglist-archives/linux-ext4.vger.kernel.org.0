@@ -2,235 +2,80 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CF9E5F523E
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Oct 2022 12:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 798575F5330
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Oct 2022 13:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbiJEKIk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 5 Oct 2022 06:08:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36214 "EHLO
+        id S229539AbiJELNt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 5 Oct 2022 07:13:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbiJEKIj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Oct 2022 06:08:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F435A2FC;
-        Wed,  5 Oct 2022 03:08:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S229812AbiJELNr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Oct 2022 07:13:47 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76CC965577
+        for <linux-ext4@vger.kernel.org>; Wed,  5 Oct 2022 04:13:44 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C27D5615C0;
-        Wed,  5 Oct 2022 10:08:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28711C433D6;
-        Wed,  5 Oct 2022 10:08:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664964517;
-        bh=lmKpPN4jK/UeVcNOmKsqFBoj/He9Psi/sFsMJE7FYS4=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=txxMe3DoW42qelwB3CR0n4mx2jieb7LcK5K7H9w4RC9fWiWnQAGh4DOgJDkDpPRdw
-         2eF5ZfOP9KJU7DDh60uhjDZdtQbm4irf1+60pr3kmSsOizXX7S5JUzuj4DjRkC1OsR
-         rRAcOmT3SrmAoTssUj1txx7BjHhHZ5tZgtFCi2Rit/NLTMGihFzZltPlWHmg9htS09
-         +g1VVyZgs4b6VgkmFrQvt1CZAGVjbJTEHEwI35V0DzamWff6L9tdbe9g4kDYdahP+0
-         3FWc2cPb/MdFCF4SOHvNK9yyBllVYzJcYvnsivn7MlFWYO3dkoS3e6mulSYtFQ1SDZ
-         V5lDlJ1xgQQ0A==
-Message-ID: <8442c467b93d0b3e37ecb2142755d274252884b6.camel@kernel.org>
-Subject: Re: [PATCH v6 7/9] vfs: expose STATX_VERSION to userland
-From:   Jeff Layton <jlayton@kernel.org>
-To:     NeilBrown <neilb@suse.de>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, djwong@kernel.org,
-        david@fromorbit.com, trondmy@hammerspace.com,
-        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
-        chuck.lever@oracle.com, lczerner@redhat.com, jack@suse.cz,
-        bfields@fieldses.org, brauner@kernel.org, fweimer@redhat.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Date:   Wed, 05 Oct 2022 06:08:33 -0400
-In-Reply-To: <166484055905.14457.14231369028013027820@noble.neil.brown.name>
-References: <20220930111840.10695-1-jlayton@kernel.org>
-        , <20220930111840.10695-8-jlayton@kernel.org>
-         <166484055905.14457.14231369028013027820@noble.neil.brown.name>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4MjBlR6ZKrz4xGd;
+        Wed,  5 Oct 2022 22:13:39 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1664968420;
+        bh=9HmsuI6bN6wZ0OmFrg/5trofe++PshYJIEAHR8fCgZc=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=oQR5HYB7QRlnc4kszi7gr/iQtJdEgryI8YUjeBqWlCZBpOvcMVvmCc+rfYL7dGWkj
+         dfR3MT2InRSmaLFJHvABjeSJqqrJgyaHOYTtUyi9EZoDN6b/k2MTKXWST46yHtdaSN
+         E8V0GCbPZ+DvQtaiyvvUaNFSUYGkLOLptHXvTBN39HN3wQ2iiHxWLN/BcpGjmRFja6
+         JvoFE1GhsAuH/wzYVfCSYOxo7f9H+ve2OmXAuSFFJxUxDuRSRBEljXzTMlory3KmKc
+         Gqzln2dVT42SqEfcmUtjMATNh5ySD9N9H6XFUqlQcf32Fb3A4I8GwZ7Q9SBHxpziZX
+         IlK/ThR/PX6lQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Zorro Lang <zlang@kernel.org>, linux-mm@kvack.org,
+        linux-ext4@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [Bug report] BUG: Kernel NULL pointer dereference at
+ 0x00000069, filemap_release_folio+0x88/0xb0
+In-Reply-To: <Yzc8hJL6cqxXCKaJ@casper.infradead.org>
+References: <20220927011720.7jmugevxc7ax26qw@zlang-mailbox>
+ <YzYN4JqbKdxLd6oA@casper.infradead.org>
+ <87wn9lei2x.fsf@mpe.ellerman.id.au>
+ <Yzc8hJL6cqxXCKaJ@casper.infradead.org>
+Date:   Wed, 05 Oct 2022 22:13:35 +1100
+Message-ID: <87bkqqplpc.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 2022-10-04 at 10:42 +1100, NeilBrown wrote:
-> On Fri, 30 Sep 2022, Jeff Layton wrote:
-> > From: Jeff Layton <jlayton@redhat.com>
-> >=20
-> > Claim one of the spare fields in struct statx to hold a 64-bit inode
-> > version attribute. When userland requests STATX_VERSION, copy the
-> > value from the kstat struct there, and stop masking off
-> > STATX_ATTR_VERSION_MONOTONIC.
-> >=20
-> > Update the test-statx sample program to output the change attr and
-> > MountId.
-> >=20
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > ---
-> >  fs/stat.c                 | 12 +++---------
-> >  include/linux/stat.h      |  9 ---------
-> >  include/uapi/linux/stat.h |  6 ++++--
-> >  samples/vfs/test-statx.c  |  8 ++++++--
-> >  4 files changed, 13 insertions(+), 22 deletions(-)
-> >=20
-> > diff --git a/fs/stat.c b/fs/stat.c
-> > index e7f8cd4b24e1..8396c372022f 100644
-> > --- a/fs/stat.c
-> > +++ b/fs/stat.c
-> > @@ -593,11 +593,9 @@ cp_statx(const struct kstat *stat, struct statx __=
-user *buffer)
-> > =20
-> >  	memset(&tmp, 0, sizeof(tmp));
-> > =20
-> > -	/* STATX_VERSION is kernel-only for now */
-> > -	tmp.stx_mask =3D stat->result_mask & ~STATX_VERSION;
-> > +	tmp.stx_mask =3D stat->result_mask;
-> >  	tmp.stx_blksize =3D stat->blksize;
-> > -	/* STATX_ATTR_VERSION_MONOTONIC is kernel-only for now */
-> > -	tmp.stx_attributes =3D stat->attributes & ~STATX_ATTR_VERSION_MONOTON=
-IC;
-> > +	tmp.stx_attributes =3D stat->attributes;
-> >  	tmp.stx_nlink =3D stat->nlink;
-> >  	tmp.stx_uid =3D from_kuid_munged(current_user_ns(), stat->uid);
-> >  	tmp.stx_gid =3D from_kgid_munged(current_user_ns(), stat->gid);
-> > @@ -621,6 +619,7 @@ cp_statx(const struct kstat *stat, struct statx __u=
-ser *buffer)
-> >  	tmp.stx_mnt_id =3D stat->mnt_id;
-> >  	tmp.stx_dio_mem_align =3D stat->dio_mem_align;
-> >  	tmp.stx_dio_offset_align =3D stat->dio_offset_align;
-> > +	tmp.stx_version =3D stat->version;
-> > =20
-> >  	return copy_to_user(buffer, &tmp, sizeof(tmp)) ? -EFAULT : 0;
-> >  }
-> > @@ -636,11 +635,6 @@ int do_statx(int dfd, struct filename *filename, u=
-nsigned int flags,
-> >  	if ((flags & AT_STATX_SYNC_TYPE) =3D=3D AT_STATX_SYNC_TYPE)
-> >  		return -EINVAL;
-> > =20
-> > -	/* STATX_VERSION is kernel-only for now. Ignore requests
-> > -	 * from userland.
-> > -	 */
-> > -	mask &=3D ~STATX_VERSION;
-> > -
-> >  	error =3D vfs_statx(dfd, filename, flags, &stat, mask);
-> >  	if (error)
-> >  		return error;
-> > diff --git a/include/linux/stat.h b/include/linux/stat.h
-> > index 4e9428d86a3a..69c79e4fd1b1 100644
-> > --- a/include/linux/stat.h
-> > +++ b/include/linux/stat.h
-> > @@ -54,13 +54,4 @@ struct kstat {
-> >  	u32		dio_offset_align;
-> >  	u64		version;
-> >  };
-> > -
-> > -/* These definitions are internal to the kernel for now. Mainly used b=
-y nfsd. */
-> > -
-> > -/* mask values */
-> > -#define STATX_VERSION		0x40000000U	/* Want/got stx_change_attr */
-> > -
-> > -/* file attribute values */
-> > -#define STATX_ATTR_VERSION_MONOTONIC	0x8000000000000000ULL /* version =
-monotonically increases */
-> > -
-> >  #endif
-> > diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
-> > index 7cab2c65d3d7..4a0a1f27c059 100644
-> > --- a/include/uapi/linux/stat.h
-> > +++ b/include/uapi/linux/stat.h
-> > @@ -127,7 +127,8 @@ struct statx {
-> >  	__u32	stx_dio_mem_align;	/* Memory buffer alignment for direct I/O */
-> >  	__u32	stx_dio_offset_align;	/* File offset alignment for direct I/O *=
-/
-> >  	/* 0xa0 */
-> > -	__u64	__spare3[12];	/* Spare space for future expansion */
-> > +	__u64	stx_version; /* Inode change attribute */
-> > +	__u64	__spare3[11];	/* Spare space for future expansion */
-> >  	/* 0x100 */
-> >  };
-> > =20
-> > @@ -154,6 +155,7 @@ struct statx {
-> >  #define STATX_BTIME		0x00000800U	/* Want/got stx_btime */
-> >  #define STATX_MNT_ID		0x00001000U	/* Got stx_mnt_id */
-> >  #define STATX_DIOALIGN		0x00002000U	/* Want/got direct I/O alignment i=
-nfo */
-> > +#define STATX_VERSION		0x00004000U	/* Want/got stx_version */
-> > =20
-> >  #define STATX__RESERVED		0x80000000U	/* Reserved for future struct sta=
-tx expansion */
-> > =20
-> > @@ -189,6 +191,6 @@ struct statx {
-> >  #define STATX_ATTR_MOUNT_ROOT		0x00002000 /* Root of a mount */
-> >  #define STATX_ATTR_VERITY		0x00100000 /* [I] Verity protected file */
-> >  #define STATX_ATTR_DAX			0x00200000 /* File is currently in DAX state =
-*/
-> > -
-> > +#define STATX_ATTR_VERSION_MONOTONIC	0x00400000 /* stx_version increas=
-es w/ every change */
-> > =20
-> >  #endif /* _UAPI_LINUX_STAT_H */
-> > diff --git a/samples/vfs/test-statx.c b/samples/vfs/test-statx.c
-> > index 49c7a46cee07..bdbc371c9774 100644
-> > --- a/samples/vfs/test-statx.c
-> > +++ b/samples/vfs/test-statx.c
-> > @@ -107,6 +107,8 @@ static void dump_statx(struct statx *stx)
-> >  	printf("Device: %-15s", buffer);
-> >  	if (stx->stx_mask & STATX_INO)
-> >  		printf(" Inode: %-11llu", (unsigned long long) stx->stx_ino);
-> > +	if (stx->stx_mask & STATX_MNT_ID)
-> > +		printf(" MountId: %llx", stx->stx_mnt_id);
-> >  	if (stx->stx_mask & STATX_NLINK)
-> >  		printf(" Links: %-5u", stx->stx_nlink);
-> >  	if (stx->stx_mask & STATX_TYPE) {
-> > @@ -145,7 +147,9 @@ static void dump_statx(struct statx *stx)
-> >  	if (stx->stx_mask & STATX_CTIME)
-> >  		print_time("Change: ", &stx->stx_ctime);
-> >  	if (stx->stx_mask & STATX_BTIME)
-> > -		print_time(" Birth: ", &stx->stx_btime);
-> > +		print_time("Birth: ", &stx->stx_btime);
-> > +	if (stx->stx_mask & STATX_VERSION)
-> > +		printf("Inode Version: 0x%llx\n", stx->stx_version);
->=20
-> Why hex? not decimal?  I don't really care but it seems like an odd choic=
-e.
->=20
+Matthew Wilcox <willy@infradead.org> writes:
+> On Fri, Sep 30, 2022 at 12:01:26PM +1000, Michael Ellerman wrote:
+>> Matthew Wilcox <willy@infradead.org> writes:
+>> >> [ 4681.238745] Instruction dump: 
+>> >> [ 4681.238749] fbc1fff0 f821ffc1 7c7d1b78 7c9c2378 ebc30028 7fdff378 48000018 60000000  
+>> >> [ 4681.238765] 60000000 ebff0008 7c3ef840 41820048 <815f0060> e93f0000 5529077c 7d295378  
+>> >
+>> > Running that through scripts/decodecode (with some minor hacks .. how
+>> > do PPC people do this properly?)
+>> 
+>> We've just always used our own scripts. Mine is here: https://github.com/mpe/misc-scripts/blob/master/ppc/ppc-disasm
+>> 
+>> I've added an issue to our tracker for us to get scripts/decodecode
+>> working on our oopses (eventually).
+>
+> Would you be open to changing your oops printer to do
+> s/Instruction dump/Code/ ?  That would make it work without any other
+> changes.
 
-Habit. You're probably right that this is better viewed in decimal. I'll
-change it in the next iteration. We should probably also have this
-display the new DIOALIGN fields as well. I'll roll that in too.
+Yeah, we're the only arch that uses "Instruction dump".
+For userspace instructions we already print "code".
 
-> > =20
-> >  	if (stx->stx_attributes_mask) {
-> >  		unsigned char bits, mbits;
-> > @@ -218,7 +222,7 @@ int main(int argc, char **argv)
-> >  	struct statx stx;
-> >  	int ret, raw =3D 0, atflag =3D AT_SYMLINK_NOFOLLOW;
-> > =20
-> > -	unsigned int mask =3D STATX_BASIC_STATS | STATX_BTIME;
-> > +	unsigned int mask =3D STATX_BASIC_STATS | STATX_BTIME | STATX_MNT_ID =
-| STATX_VERSION;
-> > =20
-> >  	for (argv++; *argv; argv++) {
-> >  		if (strcmp(*argv, "-F") =3D=3D 0) {
-> > --=20
-> > 2.37.3
-> >=20
-> >=20
->=20
-> Reviewed-by: NeilBrown <neilb@suse.de>
->=20
-> Thanks,
-> NeilBrown
+I'll send a patch switching to "Code:".
 
---=20
-Jeff Layton <jlayton@kernel.org>
+cheers
