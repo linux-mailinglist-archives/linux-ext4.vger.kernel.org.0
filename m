@@ -2,204 +2,235 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A91FD5F4BD6
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Oct 2022 00:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D4C25F4EFC
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Oct 2022 06:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbiJDW1b (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 4 Oct 2022 18:27:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34706 "EHLO
+        id S229530AbiJEEDL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 5 Oct 2022 00:03:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbiJDW1a (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Oct 2022 18:27:30 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6193C24F16;
-        Tue,  4 Oct 2022 15:27:29 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0845321905;
-        Tue,  4 Oct 2022 22:27:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1664922448; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7vzITPki9DergJeVn+XOP8XeqEJQp0G0OTrwXmCSGUY=;
-        b=GBmgeralmG280qmuwML4DqNserODcQNyzIAWsmjbLUFRPA2y9Rj6dP3hxFYsttwcjhDljL
-        GUyKwcox5P78LOMWWFfpeM1qj+Ew1gAkmcnn4S9dVbeX8+itMrHtWqSYbXMVvN0APxf8Ju
-        YqSC2wNUrd6iOOQYHu8S33WPfd4N1Dk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1664922448;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7vzITPki9DergJeVn+XOP8XeqEJQp0G0OTrwXmCSGUY=;
-        b=vkUAcjh89hN6EXp3oxhoNf7BpGR04jBmI0o8jkLw5yNE9jcJ20XekNbJPiLQHNh6iwi2/H
-        RbAwfnqrkCjYZgAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 68B9D139D2;
-        Tue,  4 Oct 2022 22:27:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id jQedCEmzPGNgKwAAMHmgww
-        (envelope-from <neilb@suse.de>); Tue, 04 Oct 2022 22:27:21 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S229455AbiJEEDK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Oct 2022 00:03:10 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323F438A1A;
+        Tue,  4 Oct 2022 21:03:08 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2954346Y016346
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 5 Oct 2022 00:03:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1664942586; bh=N3HFCZ/oTNqAcXJpI/zlIBM/Py4SJWDHmTVs4uW72as=;
+        h=Date:From:To:Cc:Subject;
+        b=YtdieY1OT+GpFR9CCm1wXoWM8o6qvgF85ARYUvrbOlJCwLMMWFzbaQmqPp6SlA18y
+         eYsfqSisQFZ7zLTulNLklA6hGdeVc6lm7gsQua9eX7gGFyf8NlwFr4bFhyms+Ksg/b
+         lXucOf4DDAylHROKx+Kp6xzyW3w2yIrG4v8fOOYWiB3lPV6cwPsB1y0uSmA+XYLJ/p
+         wWd96pWOo65engwcnTMFDkNJwWUgoEZ8hO7De/h4D9DGcGEAsMTyn3ekdftsuMenDx
+         GHjgrH4/sA9rj/7lZGjABt+0fX3ym63f8uq7rkgDum0TtNPyeIDF2cwMjCepGGAIae
+         xQLr3+IiTXcgQ==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 66CE815C35F2; Wed,  5 Oct 2022 00:03:04 -0400 (EDT)
+Date:   Wed, 5 Oct 2022 00:03:04 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: [GIT PULL] ext4 changes for 6.1
+Message-ID: <Yz0B+L+vHKIARzKj@mit.edu>
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Jeff Layton" <jlayton@kernel.org>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, djwong@kernel.org,
-        david@fromorbit.com, trondmy@hammerspace.com,
-        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
-        chuck.lever@oracle.com, lczerner@redhat.com, jack@suse.cz,
-        bfields@fieldses.org, brauner@kernel.org, fweimer@redhat.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v6 4/9] nfs: report the inode version in getattr if requested
-In-reply-to: <822ce678d47be0767464fc580d04981c24ccd28e.camel@kernel.org>
-References: <20220930111840.10695-1-jlayton@kernel.org>,
- <20220930111840.10695-5-jlayton@kernel.org>,
- <166483977325.14457.7085950126736913468@noble.neil.brown.name>,
- <822ce678d47be0767464fc580d04981c24ccd28e.camel@kernel.org>
-Date:   Wed, 05 Oct 2022 09:27:15 +1100
-Message-id: <166492243554.14457.1530520033894290024@noble.neil.brown.name>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 04 Oct 2022, Jeff Layton wrote:
-> On Tue, 2022-10-04 at 10:29 +1100, NeilBrown wrote:
-> > On Fri, 30 Sep 2022, Jeff Layton wrote:
-> > > Allow NFS to report the i_version in getattr requests. Since the cost to
-> > > fetch it is relatively cheap, do it unconditionally and just set the
-> > > flag if it looks like it's valid. Also, conditionally enable the
-> > > MONOTONIC flag when the server reports its change attr type as such.
-> > >=20
-> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > > ---
-> > >  fs/nfs/inode.c | 10 ++++++++--
-> > >  1 file changed, 8 insertions(+), 2 deletions(-)
-> > >=20
-> > > diff --git a/fs/nfs/inode.c b/fs/nfs/inode.c
-> > > index bea7c005119c..5cb7017e5089 100644
-> > > --- a/fs/nfs/inode.c
-> > > +++ b/fs/nfs/inode.c
-> > > @@ -830,6 +830,8 @@ static u32 nfs_get_valid_attrmask(struct inode *ino=
-de)
-> > >  		reply_mask |=3D STATX_UID | STATX_GID;
-> > >  	if (!(cache_validity & NFS_INO_INVALID_BLOCKS))
-> > >  		reply_mask |=3D STATX_BLOCKS;
-> > > +	if (!(cache_validity & NFS_INO_INVALID_CHANGE))
-> > > +		reply_mask |=3D STATX_VERSION;
-> > >  	return reply_mask;
-> > >  }
-> > > =20
-> > > @@ -848,7 +850,7 @@ int nfs_getattr(struct user_namespace *mnt_userns, =
-const struct path *path,
-> > > =20
-> > >  	request_mask &=3D STATX_TYPE | STATX_MODE | STATX_NLINK | STATX_UID |
-> > >  			STATX_GID | STATX_ATIME | STATX_MTIME | STATX_CTIME |
-> > > -			STATX_INO | STATX_SIZE | STATX_BLOCKS;
-> > > +			STATX_INO | STATX_SIZE | STATX_BLOCKS | STATX_VERSION;
-> > > =20
-> > >  	if ((query_flags & AT_STATX_DONT_SYNC) && !force_sync) {
-> > >  		if (readdirplus_enabled)
-> > > @@ -877,7 +879,7 @@ int nfs_getattr(struct user_namespace *mnt_userns, =
-const struct path *path,
-> > >  	/* Is the user requesting attributes that might need revalidation? */
-> > >  	if (!(request_mask & (STATX_MODE|STATX_NLINK|STATX_ATIME|STATX_CTIME|
-> > >  					STATX_MTIME|STATX_UID|STATX_GID|
-> > > -					STATX_SIZE|STATX_BLOCKS)))
-> > > +					STATX_SIZE|STATX_BLOCKS|STATX_VERSION)))
-> > >  		goto out_no_revalidate;
-> > > =20
-> > >  	/* Check whether the cached attributes are stale */
-> > > @@ -915,6 +917,10 @@ int nfs_getattr(struct user_namespace *mnt_userns,=
- const struct path *path,
-> > > =20
-> > >  	generic_fillattr(&init_user_ns, inode, stat);
-> > >  	stat->ino =3D nfs_compat_user_ino64(NFS_FILEID(inode));
-> > > +	stat->version =3D inode_peek_iversion_raw(inode);
-> >=20
-> > This looks wrong.
-> > 1/ it includes the I_VERSION_QUERIED bit, which should be hidden.
-> > 2/ it doesn't set that bit.
-> >=20
-> > I understand that the bit was already set when the generic code called
-> > inode_query_iversion(), but it might have changed if we needed to
-> > refresh the attrs.
-> >=20
-> > I'm beginning to think I shouldn't have approved the 3/9 patch.  The
-> > stat->version shouldn't be set in vfs_getattr_nosec() - maybe in
-> > generic_fillattr(), but not a lot of point.
-> >=20
->=20
-> NFS (and Ceph),=C2=A0do not set the SB_I_VERSION flag and they don't use the
-> QUERIED bit. These are "server managed" implementations of i_version.
-> The server is responsible for incrementing the value, and we just store
-> the result in the i_version field and present it when needed. That's why
-> the patch for NFS is using the "raw" API.
+The following changes since commit a078dff870136090b5779ca2831870a6c5539d36:
 
-Ahh - of course.  I got confused because the "raw" api is used by code
-(in iversion.h) that wants to access the QUERIED bit.  Maybe having
-different names would help.  Or maybe me re-familiarising myself with
-the interfaces would help...
+  ext4: fixup possible uninitialized variable access in ext4_mb_choose_next_group_cr1() (2022-09-26 13:21:05 -0400)
 
-Reviewed-by: NeilBrown <neilb@suse.de>
+are available in the Git repository at:
 
+  https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
 
->=20
-> > > +	stat->attributes_mask |=3D STATX_ATTR_VERSION_MONOTONIC;
-> > > +	if (server->change_attr_type !=3D NFS4_CHANGE_TYPE_IS_UNDEFINED)
-> > > +		stat->attributes |=3D STATX_ATTR_VERSION_MONOTONIC;
-> >=20
-> > So if the server tells us that the change attrs is based on time
-> > metadata, we accept that it will be monotonic (and RFC7862 encourages
-> > this), even though we seem to worry about timestamps going backwards
-> > (which we know that can)...  Interesting.
-> >=20
-> >=20
->=20
-> I followed suit from nfs_inode_attrs_cmp(). It seems to treat any value
-> that isn't UNDEFINED as MONOTONIC, though it does use a less strict
-> comparator for NFS4_CHANGE_TYPE_IS_TIME_METADATA. It may make sense to
-> carve that out as an exception.
->=20
-> This is probably an indicator that we need a more strict definition for
-> STATX_ATTR_VERSION_MONOTONIC.
+for you to fetch changes up to 1b45cc5c7b920fd8bf72e5a888ec7abeadf41e09:
 
-Maybe.  Or maybe we decide that if the system time goes backwards and
-things break, then you get to keep both halves.
-The pedant in me want to handle that properly.  The pragmatist doesn't
-think it is worth it.
+  ext4: fix potential out of bound read in ext4_fc_replay_scan() (2022-09-30 23:46:54 -0400)
 
-Thanks,
-NeilBrown
+----------------------------------------------------------------
+The first two changes that involve files outside of fs/ext4:
 
+- submit_bh() can never return an error, so change it to return void,
+  and remove the unused checks from its callers
 
->=20
->=20
-> >=20
-> > >  	if (S_ISDIR(inode->i_mode))
-> > >  		stat->blksize =3D NFS_SERVER(inode)->dtsize;
-> > >  out:
-> > > --=20
-> > > 2.37.3
-> > >=20
-> > >=20
->=20
-> --=20
-> Jeff Layton <jlayton@kernel.org>
->=20
+- fix I_DIRTY_TIME handling so it will be set even if the inode
+  already has I_DIRTY_INODE
+
+Performance:
+
+- Always enable i_version counter (as btrfs and xfs already do).
+  Remove some uneeded i_version bumps to avoid unnecessary nfs cache
+  invalidations.
+
+- Wake up journal waters in FIFO order, to avoid some journal users
+  from not getting a journal handle for an unfairly long time.
+
+- In ext4_write_begin() allocate any necessary buffer heads before
+  starting the journal handle.
+
+- Don't try to prefetch the block allocation bitmaps for a read-only
+  file system.
+
+Bug Fixes:
+
+- Fix a number of fast commit bugs, including resources leaks and out
+  of bound references in various error handling paths and/or if the fast
+  commit log is corrupted.
+
+- Avoid stopping the online resize early when expanding a file system
+  which is less than 16TiB to a size greater than 16TiB.
+
+- Fix apparent metadata corruption caused by a race with a metadata
+  buffer head getting migrated while it was trying to be read.
+
+- Mark the lazy initialization thread freezable to prevent suspend
+  failures.
+
+- Other miscellaneous bug fixes.
+
+Cleanups:
+
+- Break up the incredibly long ext4_full_super() function by
+  refactoring to move code into more understandable, smaller
+  functions.
+
+- Remove the deprecated (and ignored) noacl and nouser_attr mount
+  option.
+
+- Factor out some common code in fast commit handling.
+
+- Other miscellaneous cleanups.
+
+----------------------------------------------------------------
+Andrew Perepechko (1):
+      jbd2: wake up journal waiters in FIFO order, not LIFO
+
+Baokun Li (1):
+      ext4: fix null-ptr-deref in ext4_write_info
+
+Eric Whitney (1):
+      ext4: minor defrag code improvements
+
+Gaosheng Cui (1):
+      ext4: remove ext4_inline_data_fiemap() declaration
+
+Guoqing Jiang (1):
+      ext4: remove redundant checking in ext4_ioctl_checkpoint
+
+Jan Kara (3):
+      ext4: avoid crash when inline data creation follows DIO write
+      ext4: fix check for block being out of directory size
+      mbcache: Avoid nesting of cache->c_list_lock under bit locks
+
+Jason Yan (16):
+      ext4: goto right label 'failed_mount3a'
+      ext4: remove cantfind_ext4 error handler
+      ext4: factor out ext4_set_def_opts()
+      ext4: factor out ext4_handle_clustersize()
+      ext4: factor out ext4_fast_commit_init()
+      ext4: factor out ext4_inode_info_init()
+      ext4: factor out ext4_encoding_init()
+      ext4: factor out ext4_init_metadata_csum()
+      ext4: factor out ext4_check_feature_compatibility()
+      ext4: factor out ext4_geometry_check()
+      ext4: factor out ext4_group_desc_init() and ext4_group_desc_free()
+      ext4: factor out ext4_load_and_init_journal()
+      ext4: factor out ext4_journal_data_mode_check()
+      ext4: unify the ext4 super block loading operation
+      ext4: remove useless local variable 'blocksize'
+      ext4: move DIOREAD_NOLOCK setting to ext4_set_def_opts()
+
+Jeff Layton (2):
+      ext4: unconditionally enable the i_version counter
+      ext4: fix i_version handling in ext4
+
+Jerry Lee 李修賢 (1):
+      ext4: continue to expand file system when the target size doesn't reach
+
+Jinke Han (1):
+      ext4: place buffer head allocation before handle start
+
+Josh Triplett (1):
+      ext4: don't run ext4lazyinit for read-only filesystems
+
+Lalith Rajendran (1):
+      ext4: make ext4_lazyinit_thread freezable
+
+Lukas Czerner (2):
+      ext4: don't increase iversion counter for ea_inodes
+      fs: record I_DIRTY_TIME even if inode already has I_DIRTY_INODE
+
+Ritesh Harjani (IBM) (4):
+      jbd2: drop useless return value of submit_bh
+      fs/ntfs: drop useless return value of submit_bh from ntfs_submit_bh_for_read
+      fs/buffer: drop useless return value of submit_bh
+      fs/buffer: make submit_bh & submit_bh_wbc return type as void
+
+Yang Xu (1):
+      ext4: remove deprecated noacl/nouser_xattr options
+
+Ye Bin (14):
+      jbd2: fix potential buffer head reference count leak
+      jbd2: fix potential use-after-free in jbd2_fc_wait_bufs
+      ext4: fix miss release buffer head in ext4_fc_write_inode
+      ext4: factor out ext4_fc_disabled()
+      ext4: adjust fast commit disable judgement order in ext4_fc_track_inode
+      jbd2: add miss release buffer head in fc_do_one_pass()
+      ext4: fix potential memory leak in ext4_fc_record_modified_inode()
+      ext4: fix potential memory leak in ext4_fc_record_regions()
+      ext4: update 'state->fc_regions_size' after successful memory allocation
+      ext4: remove unnecessary drop path references in mext_check_coverage()
+      ext4: factor out ext4_free_ext_path()
+      ext4: introduce EXT4_FC_TAG_BASE_LEN helper
+      ext4: factor out ext4_fc_get_tl()
+      ext4: fix potential out of bound read in ext4_fc_replay_scan()
+
+Zhang Yi (1):
+      ext4: ext4_read_bh_lock() should submit IO if the buffer isn't uptodate
+
+Zhihao Cheng (1):
+      ext4: fix dir corruption when ext4_dx_add_entry() fails
+
+ Documentation/filesystems/vfs.rst |    3 +
+ fs/buffer.c                       |   23 +-
+ fs/ext4/ext4.h                    |    5 +-
+ fs/ext4/extents.c                 |  107 ++--
+ fs/ext4/extents_status.c          |    3 +-
+ fs/ext4/fast_commit.c             |  210 +++++---
+ fs/ext4/fast_commit.h             |    3 +
+ fs/ext4/file.c                    |    6 +
+ fs/ext4/inode.c                   |   17 +-
+ fs/ext4/ioctl.c                   |    7 +-
+ fs/ext4/migrate.c                 |    3 +-
+ fs/ext4/move_extent.c             |   26 +-
+ fs/ext4/namei.c                   |   17 +-
+ fs/ext4/resize.c                  |    2 +-
+ fs/ext4/super.c                   | 1253 ++++++++++++++++++++++++--------------------
+ fs/ext4/verity.c                  |    6 +-
+ fs/ext4/xattr.c                   |    1 +
+ fs/fs-writeback.c                 |   37 +-
+ fs/jbd2/commit.c                  |   12 +-
+ fs/jbd2/journal.c                 |   19 +-
+ fs/jbd2/recovery.c                |    1 +
+ fs/jbd2/transaction.c             |    6 +-
+ fs/mbcache.c                      |   17 +-
+ fs/ntfs/file.c                    |    4 +-
+ fs/xfs/xfs_super.c                |   10 +-
+ include/linux/buffer_head.h       |    2 +-
+ include/linux/fs.h                |    9 +-
+ 27 files changed, 998 insertions(+), 811 deletions(-)
