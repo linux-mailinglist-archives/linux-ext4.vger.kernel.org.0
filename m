@@ -2,235 +2,178 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D4C25F4EFC
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Oct 2022 06:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA225F504B
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Oct 2022 09:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229530AbiJEEDL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 5 Oct 2022 00:03:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58634 "EHLO
+        id S229539AbiJEHYj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 5 Oct 2022 03:24:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbiJEEDK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Oct 2022 00:03:10 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323F438A1A;
-        Tue,  4 Oct 2022 21:03:08 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2954346Y016346
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 5 Oct 2022 00:03:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1664942586; bh=N3HFCZ/oTNqAcXJpI/zlIBM/Py4SJWDHmTVs4uW72as=;
-        h=Date:From:To:Cc:Subject;
-        b=YtdieY1OT+GpFR9CCm1wXoWM8o6qvgF85ARYUvrbOlJCwLMMWFzbaQmqPp6SlA18y
-         eYsfqSisQFZ7zLTulNLklA6hGdeVc6lm7gsQua9eX7gGFyf8NlwFr4bFhyms+Ksg/b
-         lXucOf4DDAylHROKx+Kp6xzyW3w2yIrG4v8fOOYWiB3lPV6cwPsB1y0uSmA+XYLJ/p
-         wWd96pWOo65engwcnTMFDkNJwWUgoEZ8hO7De/h4D9DGcGEAsMTyn3ekdftsuMenDx
-         GHjgrH4/sA9rj/7lZGjABt+0fX3ym63f8uq7rkgDum0TtNPyeIDF2cwMjCepGGAIae
-         xQLr3+IiTXcgQ==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 66CE815C35F2; Wed,  5 Oct 2022 00:03:04 -0400 (EDT)
-Date:   Wed, 5 Oct 2022 00:03:04 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: [GIT PULL] ext4 changes for 6.1
-Message-ID: <Yz0B+L+vHKIARzKj@mit.edu>
+        with ESMTP id S229573AbiJEHYi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Oct 2022 03:24:38 -0400
+Received: from smtp-fw-6002.amazon.com (smtp-fw-6002.amazon.com [52.95.49.90])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5449CCE;
+        Wed,  5 Oct 2022 00:24:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1664954676; x=1696490676;
+  h=from:to:cc:date:message-id:references:in-reply-to:
+   content-transfer-encoding:mime-version:subject;
+  bh=sAnwOBup503KhTsZYl8bBrVGrc8jgV4o1uRbH+z5bFA=;
+  b=ma0xgp4812ggD9BvCDWYXiXfq6cjdXO6KgE41RxIA+KS/1QGdcUI65pJ
+   vJg8q7/YP4p+y3el395U+4qJu+7giRQnLRvPUwszu4LRCVe5z5r8kXlUD
+   Tgs6/fVdkcE+fDCEhvxRUJbbsNS4roXK1S5H7YOtY5B0jpHqQYnSbuE7Y
+   U=;
+X-IronPort-AV: E=Sophos;i="5.95,159,1661817600"; 
+   d="scan'208";a="251968327"
+Subject: RE: significant drop  fio IOPS performance on v5.10
+Thread-Topic: significant drop  fio IOPS performance on v5.10
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1d-1c3c2014.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-6002.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2022 07:24:24 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-iad-1d-1c3c2014.us-east-1.amazon.com (Postfix) with ESMTPS id 393D7E018F;
+        Wed,  5 Oct 2022 07:24:21 +0000 (UTC)
+Received: from EX19D045UWC004.ant.amazon.com (10.13.139.203) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.38; Wed, 5 Oct 2022 07:24:21 +0000
+Received: from EX19D017UWC003.ant.amazon.com (10.13.139.227) by
+ EX19D045UWC004.ant.amazon.com (10.13.139.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.12; Wed, 5 Oct 2022 07:24:21 +0000
+Received: from EX19D017UWC003.ant.amazon.com ([fe80::78e9:1d67:81fd:68c5]) by
+ EX19D017UWC003.ant.amazon.com ([fe80::78e9:1d67:81fd:68c5%6]) with mapi id
+ 15.02.1118.012; Wed, 5 Oct 2022 07:24:21 +0000
+From:   "Lu, Davina" <davinalu@amazon.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+CC:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "Mohamed Abuelfotoh, Hazem" <abuehaze@amazon.com>,
+        hazem ahmed mohamed <hazem.ahmed.abuelfotoh@gmail.com>,
+        "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+        "Kiselev, Oleg" <okiselev@amazon.com>,
+        "Liu, Frank" <franklmz@amazon.com>
+Thread-Index: AdjO5vTzPItE0he4TsCHXHwBRGK6iAB1NzvQAJElJTAAIpWHgAE+4VbA
+Date:   Wed, 5 Oct 2022 07:24:21 +0000
+Message-ID: <b7aaf155f80f4605aff2ccbc4067d9a6@amazon.com>
+References: <357ace228adf4e859df5e9f3f4f18b49@amazon.com>
+ <1cdc68e6a98d4e93a95be5d887bcc75d@amazon.com>
+ <5c819c9d6190452f9b10bb78a72cb47f@amazon.com> <YzTMZ26AfioIbl27@mit.edu>
+In-Reply-To: <YzTMZ26AfioIbl27@mit.edu>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.43.160.95]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-11.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The following changes since commit a078dff870136090b5779ca2831870a6c5539d36:
+Hi Ted,
 
-  ext4: fixup possible uninitialized variable access in ext4_mb_choose_next_group_cr1() (2022-09-26 13:21:05 -0400)
+Thanks for your reply! Sorry for the late reply since I was busy on another=
+ urgent EXT4 issue recently.
 
-are available in the Git repository at:
+Understood the concern about the patch here-- the patch is just a simple st=
+art and good suggestions on to make it safe update in multiple CPUs.
+1.  Max thread number could not really need 256. From my side, ~30 could be=
+ good enough and this only apply with cpu_num >=3D some_threads (E.g. 16), =
+we can do this in a sysctl/mount option etc...
+2. Definitely agree that we need to make safe way and thanks for clear expl=
+anation.  A quick question, so if we make sure converting unwritten extents=
+ on same inode  is in "atomic" way, then it should be a good patch to start=
+ with?
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
+About the larger the journal size -- which can help this IOPS issue, I foun=
+d is, with small journal size with bad IOPS, journal transaction are more f=
+requently (e.g. from 450 to 700 in a period of time) and each transaction h=
+as very less handlers (e.g from 1000 to 70).
+Tracing the code, I found: the reserved block exists in each journal update=
+ in EXT4 which requires more blocks, then in=20
+add_transaction_credits()
+if (jbd2_log_space_left(journal) < journal->j_max_transaction_buffers) { //=
+since journal size is too small, it has less change to goes into this if to=
+ start an journal update.
+            if (jbd2_log_space_left(journal) <
+                                                journal->j_max_transaction_=
+buffers)=20
+                   __jbd2_log_wait_for_space(journal); // good to trigger c=
+ommit->=20
+                   jbd2_log_do_checkpoint() ->  jbd2_log_start_commit() ->
+                    __jbd2_log_start_commit  -> journal->j_commit_request =
+=3D target;
 
-for you to fetch changes up to 1b45cc5c7b920fd8bf72e5a888ec7abeadf41e09:
+So most of time, in this func, it has to wait for journal commit... The slo=
+wer journal update could affect the IO performance from my understanding (f=
+io test is like: one pwrite64 and then followed one fsync). Therefore if we=
+ larger the journal size from 128M to 2GB, mostly the "if" condition can go=
+ into to ease this problem.
 
-  ext4: fix potential out of bound read in ext4_fc_replay_scan() (2022-09-30 23:46:54 -0400)
+Thanks
+Davina
 
-----------------------------------------------------------------
-The first two changes that involve files outside of fs/ext4:
+-----Original Message-----
+From: Theodore Ts'o <tytso@mit.edu>=20
+Sent: Thursday, September 29, 2022 8:36 AM
+To: Lu, Davina <davinalu@amazon.com>
+Cc: linux-ext4@vger.kernel.org; adilger.kernel@dilger.ca; regressions@lists=
+.linux.dev; stable@vger.kernel.org; Mohamed Abuelfotoh, Hazem <abuehaze@ama=
+zon.com>; hazem ahmed mohamed <hazem.ahmed.abuelfotoh@gmail.com>; Ritesh Ha=
+rjani (IBM) <ritesh.list@gmail.com>; Kiselev, Oleg <okiselev@amazon.com>; L=
+iu, Frank <franklmz@amazon.com>
+Subject: RE: [EXTERNAL]significant drop fio IOPS performance on v5.10
 
-- submit_bh() can never return an error, so change it to return void,
-  and remove the unused checks from its callers
+CAUTION: This email originated from outside of the organization. Do not cli=
+ck links or open attachments unless you can confirm the sender and know the=
+ content is safe.
 
-- fix I_DIRTY_TIME handling so it will be set even if the inode
-  already has I_DIRTY_INODE
 
-Performance:
 
-- Always enable i_version counter (as btrfs and xfs already do).
-  Remove some uneeded i_version bumps to avoid unnecessary nfs cache
-  invalidations.
+On Wed, Sep 28, 2022 at 06:07:34AM +0000, Lu, Davina wrote:
+>
+> Hello,
+>
+> My analyzing is that the degradation is introduce by commit=20
+> {244adf6426ee31a83f397b700d964cff12a247d3} and the issue is the=20
+> contention on rsv_conversion_wq.  The simplest option is to increase=20
+> the journal size, but that introduces more operational complexity.
+> Another option is to add the following change in attachment "allow=20
+> more ext4-rsv-conversion workqueue.patch"
 
-- Wake up journal waters in FIFO order, to avoid some journal users
-  from not getting a journal handle for an unfairly long time.
+Hi, thanks for the patch.  However, I don't believe as written it is safe. =
+ That's because your patch will allow multiple CPU's to run ext4_flush_comp=
+leted_IO(), and this function is not set up to be safe to be run concurrent=
+ly.  That is, I don't see the necessary locking if we have two CPU's trying=
+ to convert unwritten extents on the same inode.
 
-- In ext4_write_begin() allocate any necessary buffer heads before
-  starting the journal handle.
+It could be made safe, and certainly if the problem is that you are worried=
+ about contention across multiple inodes being written to by different FIO =
+jobs, then certainly this could be a potential contention issue.
 
-- Don't try to prefetch the block allocation bitmaps for a read-only
-  file system.
+However, what doesn't make sense is that increasing the journal size also s=
+eems to fix the issue for you.  That implies the problem is one of the jour=
+nal being to small, and so you are running into an issue of stalls caused b=
+y the need to do a synchronous checkpoint to clear space in the journal.  T=
+hat is a different problem than one of there being a contention problem wit=
+h rsv_conversion_wq.
 
-Bug Fixes:
+So I want to make sure we understand what you are seeing before we make suc=
+h a change.  One potential concern is that will cause a large number of add=
+itional kernel threads.  Now, if these extra kernel threads are doing usefu=
+l work, then that's not necessarily an issue.
+But if not, then it's going to be burning a large amount of kernel memory (=
+especially for a system with a large number of CPU cores).
 
-- Fix a number of fast commit bugs, including resources leaks and out
-  of bound references in various error handling paths and/or if the fast
-  commit log is corrupted.
+Regards,
 
-- Avoid stopping the online resize early when expanding a file system
-  which is less than 16TiB to a size greater than 16TiB.
-
-- Fix apparent metadata corruption caused by a race with a metadata
-  buffer head getting migrated while it was trying to be read.
-
-- Mark the lazy initialization thread freezable to prevent suspend
-  failures.
-
-- Other miscellaneous bug fixes.
-
-Cleanups:
-
-- Break up the incredibly long ext4_full_super() function by
-  refactoring to move code into more understandable, smaller
-  functions.
-
-- Remove the deprecated (and ignored) noacl and nouser_attr mount
-  option.
-
-- Factor out some common code in fast commit handling.
-
-- Other miscellaneous cleanups.
-
-----------------------------------------------------------------
-Andrew Perepechko (1):
-      jbd2: wake up journal waiters in FIFO order, not LIFO
-
-Baokun Li (1):
-      ext4: fix null-ptr-deref in ext4_write_info
-
-Eric Whitney (1):
-      ext4: minor defrag code improvements
-
-Gaosheng Cui (1):
-      ext4: remove ext4_inline_data_fiemap() declaration
-
-Guoqing Jiang (1):
-      ext4: remove redundant checking in ext4_ioctl_checkpoint
-
-Jan Kara (3):
-      ext4: avoid crash when inline data creation follows DIO write
-      ext4: fix check for block being out of directory size
-      mbcache: Avoid nesting of cache->c_list_lock under bit locks
-
-Jason Yan (16):
-      ext4: goto right label 'failed_mount3a'
-      ext4: remove cantfind_ext4 error handler
-      ext4: factor out ext4_set_def_opts()
-      ext4: factor out ext4_handle_clustersize()
-      ext4: factor out ext4_fast_commit_init()
-      ext4: factor out ext4_inode_info_init()
-      ext4: factor out ext4_encoding_init()
-      ext4: factor out ext4_init_metadata_csum()
-      ext4: factor out ext4_check_feature_compatibility()
-      ext4: factor out ext4_geometry_check()
-      ext4: factor out ext4_group_desc_init() and ext4_group_desc_free()
-      ext4: factor out ext4_load_and_init_journal()
-      ext4: factor out ext4_journal_data_mode_check()
-      ext4: unify the ext4 super block loading operation
-      ext4: remove useless local variable 'blocksize'
-      ext4: move DIOREAD_NOLOCK setting to ext4_set_def_opts()
-
-Jeff Layton (2):
-      ext4: unconditionally enable the i_version counter
-      ext4: fix i_version handling in ext4
-
-Jerry Lee 李修賢 (1):
-      ext4: continue to expand file system when the target size doesn't reach
-
-Jinke Han (1):
-      ext4: place buffer head allocation before handle start
-
-Josh Triplett (1):
-      ext4: don't run ext4lazyinit for read-only filesystems
-
-Lalith Rajendran (1):
-      ext4: make ext4_lazyinit_thread freezable
-
-Lukas Czerner (2):
-      ext4: don't increase iversion counter for ea_inodes
-      fs: record I_DIRTY_TIME even if inode already has I_DIRTY_INODE
-
-Ritesh Harjani (IBM) (4):
-      jbd2: drop useless return value of submit_bh
-      fs/ntfs: drop useless return value of submit_bh from ntfs_submit_bh_for_read
-      fs/buffer: drop useless return value of submit_bh
-      fs/buffer: make submit_bh & submit_bh_wbc return type as void
-
-Yang Xu (1):
-      ext4: remove deprecated noacl/nouser_xattr options
-
-Ye Bin (14):
-      jbd2: fix potential buffer head reference count leak
-      jbd2: fix potential use-after-free in jbd2_fc_wait_bufs
-      ext4: fix miss release buffer head in ext4_fc_write_inode
-      ext4: factor out ext4_fc_disabled()
-      ext4: adjust fast commit disable judgement order in ext4_fc_track_inode
-      jbd2: add miss release buffer head in fc_do_one_pass()
-      ext4: fix potential memory leak in ext4_fc_record_modified_inode()
-      ext4: fix potential memory leak in ext4_fc_record_regions()
-      ext4: update 'state->fc_regions_size' after successful memory allocation
-      ext4: remove unnecessary drop path references in mext_check_coverage()
-      ext4: factor out ext4_free_ext_path()
-      ext4: introduce EXT4_FC_TAG_BASE_LEN helper
-      ext4: factor out ext4_fc_get_tl()
-      ext4: fix potential out of bound read in ext4_fc_replay_scan()
-
-Zhang Yi (1):
-      ext4: ext4_read_bh_lock() should submit IO if the buffer isn't uptodate
-
-Zhihao Cheng (1):
-      ext4: fix dir corruption when ext4_dx_add_entry() fails
-
- Documentation/filesystems/vfs.rst |    3 +
- fs/buffer.c                       |   23 +-
- fs/ext4/ext4.h                    |    5 +-
- fs/ext4/extents.c                 |  107 ++--
- fs/ext4/extents_status.c          |    3 +-
- fs/ext4/fast_commit.c             |  210 +++++---
- fs/ext4/fast_commit.h             |    3 +
- fs/ext4/file.c                    |    6 +
- fs/ext4/inode.c                   |   17 +-
- fs/ext4/ioctl.c                   |    7 +-
- fs/ext4/migrate.c                 |    3 +-
- fs/ext4/move_extent.c             |   26 +-
- fs/ext4/namei.c                   |   17 +-
- fs/ext4/resize.c                  |    2 +-
- fs/ext4/super.c                   | 1253 ++++++++++++++++++++++++--------------------
- fs/ext4/verity.c                  |    6 +-
- fs/ext4/xattr.c                   |    1 +
- fs/fs-writeback.c                 |   37 +-
- fs/jbd2/commit.c                  |   12 +-
- fs/jbd2/journal.c                 |   19 +-
- fs/jbd2/recovery.c                |    1 +
- fs/jbd2/transaction.c             |    6 +-
- fs/mbcache.c                      |   17 +-
- fs/ntfs/file.c                    |    4 +-
- fs/xfs/xfs_super.c                |   10 +-
- include/linux/buffer_head.h       |    2 +-
- include/linux/fs.h                |    9 +-
- 27 files changed, 998 insertions(+), 811 deletions(-)
+                                        - Ted
