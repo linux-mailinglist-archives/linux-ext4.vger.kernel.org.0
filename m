@@ -2,176 +2,295 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E16995F6414
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Oct 2022 12:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D9D35F650D
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Oct 2022 13:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbiJFKDW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 Oct 2022 06:03:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53632 "EHLO
+        id S230489AbiJFLPM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Oct 2022 07:15:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbiJFKDV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Oct 2022 06:03:21 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C4925FFF;
-        Thu,  6 Oct 2022 03:03:20 -0700 (PDT)
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2968S0QB027707;
-        Thu, 6 Oct 2022 10:03:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=sc6ywt4PYRnSaY2927m3UgSYYMr2GXpfzNA26Mz0ai8=;
- b=Znu9/rp1Mp8OF+fgX5YRbeCz7fGF2+HM9AOx3BprMv3Lg3oeVWrjVz12lF9H44UPOm3p
- fafoZ60aPXu0eU4e9sU81zWi2UzCq9f9yTuQH+B1CMJUVwTsQ+1uj8SuVBl04ie7+/mS
- 2PQO9F7gn9JHJ8dNwCrlNpNhNR2zZXTbc0d8KY2L2tqSx5iANRXvIZ+ZK6ZUCg7Efrzx
- FmFIFnLHvsKk7DnC5i+RIcT+61PW0iLCSfbV7pElSRaa+HhhqrJzRdWM4yy4itMpk3Dz
- s1G1iv23QJTJ1LyRng+uTvHE2jByf2kxd0t4R3IAhjXSt6UJUCiqUhHuzfR0GYDdigkf mg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3k1uhe2jbh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 Oct 2022 10:03:16 +0000
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2969JC4N030271;
-        Thu, 6 Oct 2022 10:03:15 GMT
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3k1uhe2ja2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 Oct 2022 10:03:15 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2969qMg9009139;
-        Thu, 6 Oct 2022 10:03:13 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 3jxctj6uub-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 Oct 2022 10:03:13 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 296A3BBo1966814
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 6 Oct 2022 10:03:11 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 10DFEAE051;
-        Thu,  6 Oct 2022 10:03:11 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B4BB0AE04D;
-        Thu,  6 Oct 2022 10:03:08 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.110.181])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu,  6 Oct 2022 10:03:08 +0000 (GMT)
-Date:   Thu, 6 Oct 2022 15:33:05 +0530
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        rookxu <brookxu.cn@gmail.com>,
-        Ritesh Harjani <ritesh.list@gmail.com>
-Subject: Re: [RFC v3 8/8] ext4: Remove the logic to trim inode PAs
-Message-ID: <Yz6n2XJLtg3McbSp@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <cover.1664269665.git.ojaswin@linux.ibm.com>
- <a26fdd12f4f60cf506a42b6a95e8014e5f380b05.1664269665.git.ojaswin@linux.ibm.com>
- <20220929125311.bmkta7gp4a2hmcny@quack3>
- <Yz57xJSoksI5rHwL@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <20221006085958.l2yfkqkupqsxiqbv@quack3>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221006085958.l2yfkqkupqsxiqbv@quack3>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: BZtUU8BzCOsW6mpgVTPAA_9fb9Vcco9d
-X-Proofpoint-GUID: b6WJsf20I9CFx8Mt66jY8aqFPPlumalt
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S230446AbiJFLPL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Oct 2022 07:15:11 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 937B4B4B;
+        Thu,  6 Oct 2022 04:15:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 27A58B82064;
+        Thu,  6 Oct 2022 11:15:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6832C433C1;
+        Thu,  6 Oct 2022 11:15:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1665054906;
+        bh=i83rk773bIlMl/lhhxfKiM+2pC52aLVNb2rW7QrbO70=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=h67zJZiksKPfsBZ9je/AlkhyI2X9dBWVPgzV2Qv/KbcJman8cpJqgavb3G14je7JU
+         nFdBXFD3j2F2rSz8neXCEPJf+pN/E+/6szcQ5lgmugB7Yl4yc3tqrHt4IGDyv/1HH/
+         eCwzZ783f9Wqm+xcaIz/OeDiEMhoEt6aZW/QU7Usr/bjvqteYeio7qhJh3qGLA4oAj
+         zuKSlPDjOFcWmjgmG0LjFZzVISBCOuMQcM4w1xuyhkGgJkWiDvZ1lbeqraJyMs+GTy
+         Y896eWsAIXs7JvOzQ4Q2rK/8jwGK0Tfw9rEB8VXyTH4n0PPeqSqI3DAW9z0oIx2Uju
+         qU3YMqOlKxI+Q==
+Message-ID: <c1a669c511c758bd22796f0c285e0c8097de06dd.camel@kernel.org>
+Subject: Re: [PATCH v6 6/9] nfsd: use the getattr operation to fetch
+ i_version
+From:   Jeff Layton <jlayton@kernel.org>
+To:     NeilBrown <neilb@suse.de>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, djwong@kernel.org,
+        david@fromorbit.com, trondmy@hammerspace.com,
+        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
+        chuck.lever@oracle.com, lczerner@redhat.com, jack@suse.cz,
+        bfields@fieldses.org, brauner@kernel.org, fweimer@redhat.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-xfs@vger.kernel.org
+Date:   Thu, 06 Oct 2022 07:15:03 -0400
+In-Reply-To: <166500444418.16615.7547789313879225413@noble.neil.brown.name>
+References: <20220930111840.10695-1-jlayton@kernel.org>
+        , <20220930111840.10695-7-jlayton@kernel.org>
+        , <166484034920.14457.15225090674729127890@noble.neil.brown.name>
+        , <13714490816df1ff36ab06bbf32df5440cad7913.camel@kernel.org>
+         <166500444418.16615.7547789313879225413@noble.neil.brown.name>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
- definitions=2022-10-05_05,2022-10-06_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- impostorscore=0 lowpriorityscore=0 spamscore=0 phishscore=0 mlxscore=0
- malwarescore=0 mlxlogscore=673 clxscore=1015 adultscore=0
- priorityscore=1501 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2209130000 definitions=main-2210060057
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Oct 06, 2022 at 10:59:58AM +0200, Jan Kara wrote:
-> On Thu 06-10-22 12:25:00, Ojaswin Mujoo wrote:
-> > On Thu, Sep 29, 2022 at 02:53:11PM +0200, Jan Kara wrote:
-> > > On Tue 27-09-22 14:46:48, Ojaswin Mujoo wrote:
-> > > > Earlier, inode PAs were stored in a linked list. This caused a need to
-> > > > periodically trim the list down inorder to avoid growing it to a very
-> > > > large size, as this would severly affect performance during list
-> > > > iteration.
-> > > > 
-> > > > Recent patches changed this list to an rbtree, and since the tree scales
-> > > > up much better, we no longer need to have the trim functionality, hence
-> > > > remove it.
-> > > > 
-> > > > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> > > > Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-> > > 
-> > > I'm kind of wondering: Now there won't be performance issues with much
-> > > more inode PAs but probably we don't want to let them grow completely out
-> > > of control? E.g. I can imagine that if we'd have 1 billion of inode PAs
-> > > attached to an inode, things would get wonky both in terms of memory
-> > > consumption and also in terms of CPU time spent for the cases where we
-> > > still do iterate all of the PAs... Is there anything which keeps inode PAs
-> > > reasonably bounded?
-> > > 
-> > > 								Honza
-> > > 
-> > Hi Jan,
-> > 
-> > Sorry for the delay in response, I was on leave for the last few days.
-> > 
-> > So as per my understanding, after this patch, the only path where we
-> > would need to traverse all the PAs is the ext4_discard_preallocations()
-> > call where we discard all the PAs of an inode one by one (eg when
-> > closing the file etc).  Such a discard is a colder path as we don't
-> > usually expect to do it as often as say allocating blocks to an inode.
-> > 
-> > Originally, the limit was added in this patch [1] because of the time
-> > lost in O(N) traversal in the allocation path (ext4_mb_use_preallocated
-> > and ext4_mb_normalize_request). Since the rbtree addressed this
-> > scalability issue we had decided to remove the trim logic in this
-> > patchset.
-> > 
-> > [1]
-> > https://lore.kernel.org/all/d7a98178-056b-6db5-6bce-4ead23f4a257@gmail.com/
-> 
-> I agree the O(N) traversal is not in any performance sensitive path.
-> 
-> > That being said, I do agree that there should be some way to limit the
-> > PAs from taking up an unreasonable amount of buddy space, memory and CPU
-> > cycles in use cases like database files and disk files of long running
-> > VMs. Previously the limit was 512 PAs per inode and trim was happening
-> > in an LRU fashion, which is not very straightforward to implement in
-> > trees. 
-> > 
-> > Another approach is rather than having a hard limit, we can throttle the
-> > PAs based on some parameter like total active PAs in FS or FSUtil% of
-> > the PAs but we might need to take care of fairness so one inode is not
-> > holding all the PAs while others get throttled.
-> > 
-> > Anyways, I think the trimming part would need some brainstorming to get
-> > right so just wondering if we could keep that as part of a separate
-> > patchset and remove the trimming logic for now since rbtree has
-> > addressed the scalability concerns in allocation path.
-> 
-> I agree the fact it took until 2020 for someone to notice inode PAs can
-> be cumulating enough for full scan to matter on block allocation means that
-> this is not a pressing issue. So I'm OK postponing it for now since I also
-> don't have a great idea how to best trim excessive preallocations.
-> 
-> 								Honza
-Right, so I think I'll post a [PATCH v1] with the changes you suggested
-and keep this patch as it is for now.
+On Thu, 2022-10-06 at 08:14 +1100, NeilBrown wrote:
+> On Wed, 05 Oct 2022, Jeff Layton wrote:
+> > On Tue, 2022-10-04 at 10:39 +1100, NeilBrown wrote:
+> > > On Fri, 30 Sep 2022, Jeff Layton wrote:
+> > > > Now that we can call into vfs_getattr to get the i_version field, u=
+se
+> > > > that facility to fetch it instead of doing it in nfsd4_change_attri=
+bute.
+> > > >=20
+> > > > Neil also pointed out recently that IS_I_VERSION directory operatio=
+ns
+> > > > are always logged, and so we only need to mitigate the rollback pro=
+blem
+> > > > on regular files. Also, we don't need to factor in the ctime when
+> > > > reexporting NFS or Ceph.
+> > > >=20
+> > > > Set the STATX_VERSION (and BTIME) bits in the request when we're de=
+aling
+> > > > with a v4 request. Then, instead of looking at IS_I_VERSION when
+> > > > generating the change attr, look at the result mask and only use it=
+ if
+> > > > STATX_VERSION is set. With this change, we can drop the fetch_ivers=
+ion
+> > > > export operation as well.
+> > > >=20
+> > > > Move nfsd4_change_attribute into nfsfh.c, and change it to only fac=
+tor
+> > > > in the ctime if it's a regular file and the fs doesn't advertise
+> > > > STATX_ATTR_VERSION_MONOTONIC.
+> > > >=20
+> > > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > > > ---
+> > > >  fs/nfs/export.c          |  7 -------
+> > > >  fs/nfsd/nfs4xdr.c        |  4 +++-
+> > > >  fs/nfsd/nfsfh.c          | 40 ++++++++++++++++++++++++++++++++++++=
+++++
+> > > >  fs/nfsd/nfsfh.h          | 29 +----------------------------
+> > > >  fs/nfsd/vfs.h            |  7 ++++++-
+> > > >  include/linux/exportfs.h |  1 -
+> > > >  6 files changed, 50 insertions(+), 38 deletions(-)
+> > > >=20
+> > > > diff --git a/fs/nfs/export.c b/fs/nfs/export.c
+> > > > index 01596f2d0a1e..1a9d5aa51dfb 100644
+> > > > --- a/fs/nfs/export.c
+> > > > +++ b/fs/nfs/export.c
+> > > > @@ -145,17 +145,10 @@ nfs_get_parent(struct dentry *dentry)
+> > > >  	return parent;
+> > > >  }
+> > > > =20
+> > > > -static u64 nfs_fetch_iversion(struct inode *inode)
+> > > > -{
+> > > > -	nfs_revalidate_inode(inode, NFS_INO_INVALID_CHANGE);
+> > > > -	return inode_peek_iversion_raw(inode);
+> > > > -}
+> > > > -
+> > > >  const struct export_operations nfs_export_ops =3D {
+> > > >  	.encode_fh =3D nfs_encode_fh,
+> > > >  	.fh_to_dentry =3D nfs_fh_to_dentry,
+> > > >  	.get_parent =3D nfs_get_parent,
+> > > > -	.fetch_iversion =3D nfs_fetch_iversion,
+> > > >  	.flags =3D EXPORT_OP_NOWCC|EXPORT_OP_NOSUBTREECHK|
+> > > >  		EXPORT_OP_CLOSE_BEFORE_UNLINK|EXPORT_OP_REMOTE_FS|
+> > > >  		EXPORT_OP_NOATOMIC_ATTR,
+> > > > diff --git a/fs/nfsd/nfs4xdr.c b/fs/nfsd/nfs4xdr.c
+> > > > index 1e9690a061ec..779c009314c6 100644
+> > > > --- a/fs/nfsd/nfs4xdr.c
+> > > > +++ b/fs/nfsd/nfs4xdr.c
+> > > > @@ -2869,7 +2869,9 @@ nfsd4_encode_fattr(struct xdr_stream *xdr, st=
+ruct svc_fh *fhp,
+> > > >  			goto out;
+> > > >  	}
+> > > > =20
+> > > > -	err =3D vfs_getattr(&path, &stat, STATX_BASIC_STATS, AT_STATX_SYN=
+C_AS_STAT);
+> > > > +	err =3D vfs_getattr(&path, &stat,
+> > > > +			  STATX_BASIC_STATS | STATX_BTIME | STATX_VERSION,
+> > > > +			  AT_STATX_SYNC_AS_STAT);
+> > > >  	if (err)
+> > > >  		goto out_nfserr;
+> > > >  	if (!(stat.result_mask & STATX_BTIME))
+> > > > diff --git a/fs/nfsd/nfsfh.c b/fs/nfsd/nfsfh.c
+> > > > index a5b71526cee0..9168bc657378 100644
+> > > > --- a/fs/nfsd/nfsfh.c
+> > > > +++ b/fs/nfsd/nfsfh.c
+> > > > @@ -634,6 +634,10 @@ void fh_fill_pre_attrs(struct svc_fh *fhp)
+> > > >  		stat.mtime =3D inode->i_mtime;
+> > > >  		stat.ctime =3D inode->i_ctime;
+> > > >  		stat.size  =3D inode->i_size;
+> > > > +		if (v4 && IS_I_VERSION(inode)) {
+> > > > +			stat.version =3D inode_query_iversion(inode);
+> > > > +			stat.result_mask |=3D STATX_VERSION;
+> > > > +		}
+> > >=20
+> > > This is increasingly ugly.  I wonder if it is justified at all...
+> > >=20
+> >=20
+> > I'm fine with dropping that. So if the getattrs fail, we should just no=
+t
+> > offer up pre/post attrs?
+> >=20
+> > > >  	}
+> > > >  	if (v4)
+> > > >  		fhp->fh_pre_change =3D nfsd4_change_attribute(&stat, inode);
+> > > > @@ -665,6 +669,8 @@ void fh_fill_post_attrs(struct svc_fh *fhp)
+> > > >  	if (err) {
+> > > >  		fhp->fh_post_saved =3D false;
+> > > >  		fhp->fh_post_attr.ctime =3D inode->i_ctime;
+> > > > +		if (v4 && IS_I_VERSION(inode))
+> > > > +			fhp->fh_post_attr.version =3D inode_query_iversion(inode);
+> > >=20
+> > > ... ditto ...
+> > >=20
+> > > >  	} else
+> > > >  		fhp->fh_post_saved =3D true;
+> > > >  	if (v4)
+> > > > @@ -754,3 +760,37 @@ enum fsid_source fsid_source(const struct svc_=
+fh *fhp)
+> > > >  		return FSIDSOURCE_UUID;
+> > > >  	return FSIDSOURCE_DEV;
+> > > >  }
+> > > > +
+> > > > +/*
+> > > > + * We could use i_version alone as the change attribute.  However,=
+ i_version
+> > > > + * can go backwards on a regular file after an unclean shutdown.  =
+On its own
+> > > > + * that doesn't necessarily cause a problem, but if i_version goes=
+ backwards
+> > > > + * and then is incremented again it could reuse a value that was p=
+reviously
+> > > > + * used before boot, and a client who queried the two values might=
+ incorrectly
+> > > > + * assume nothing changed.
+> > > > + *
+> > > > + * By using both ctime and the i_version counter we guarantee that=
+ as long as
+> > > > + * time doesn't go backwards we never reuse an old value. If the f=
+ilesystem
+> > > > + * advertises STATX_ATTR_VERSION_MONOTONIC, then this mitigation i=
+s not needed.
+> > > > + *
+> > > > + * We only need to do this for regular files as well. For director=
+ies, we
+> > > > + * assume that the new change attr is always logged to stable stor=
+age in some
+> > > > + * fashion before the results can be seen.
+> > > > + */
+> > > > +u64 nfsd4_change_attribute(struct kstat *stat, struct inode *inode=
+)
+> > > > +{
+> > > > +	u64 chattr;
+> > > > +
+> > > > +	if (stat->result_mask & STATX_VERSION) {
+> > > > +		chattr =3D stat->version;
+> > > > +
+> > > > +		if (S_ISREG(inode->i_mode) &&
+> > > > +		    !(stat->attributes & STATX_ATTR_VERSION_MONOTONIC)) {
+> > >=20
+> > > I would really rather that the fs got to make this decision.
+> > > If it can guarantee that the i_version is monotonic even over a crash
+> > > (which is probably can for directory, and might need changes to do fo=
+r
+> > > files) then it sets STATX_ATTR_VERSION_MONOTONIC and nfsd trusts it
+> > > completely.
+> > > If it cannot, then it doesn't set the flag.
+> > > i.e. the S_ISREG() test should be in the filesystem, not in nfsd.
+> > >=20
+> >=20
+> > This sounds reasonable, but for one thing.
+> >=20
+> > From RFC 7862:
+> >=20
+> >    While Section 5.4 of [RFC5661] discusses
+> >    per-file system attributes, it is expected that the value of
+> >    change_attr_type will not depend on the value of "homogeneous" and
+> >    will only change in the event of a migration.
+> >=20
+> > The change_attr_type4 must be the same for all filehandles under a
+> > particular filesystem.
+> >=20
+> > If we do what you suggest though, then it's easily possible for the fs
+> > to set STATX_ATTR_VERSION_MONOTONIC on=A0directories but not files. If =
+we
+> > later want to allow nfsd to advertise a change_attr_type4, we won't be
+> > able to rely on the STATX_ATTR_VERSION_MONOTONIC to tell us how to fill
+> > that out.
+> >=20
+> > Maybe that's ok. I suppose we could add a new field to the export
+> > options that filesystems can set to advertise what sort of change attr
+> > they offer?
+> >=20
+>=20
+> There are 3 cases:
+> 1/ a file/dir which advertises MONOTONIC is easy to handle.
+> 2/ an IS_I_VERSION file/dir that does not advertise MONOTONIC will only f=
+ail
+>    to be MONOTONIC across unclean restart (correct?).  nfsd can
+>    compensate using an xattr on the root to count crashes, or just adding=
+ ctime.
+> 3/ a non-IS_I_VERSION fs that does not advertise MONOTONIC cannot
+>    be compensated for by nfsd.
+>=20
+> If we ever want nfsd to advertise MONOTONIC, then we must be able to
+> reject non-IS_I_VERSION filesystems that don't advertise MONOTONIC on
+> all files.
+>=20
+> Maybe we need a global nfsd option which defaults to "monotoric" and
+> causes those files to be rejected, but can be set to "non-monotonic" and
+> then allows all files to be exported.
+>=20
+> It would be nice to make it easy to run multiple nfsd instances each on a
+> different IP address.  Each can then have different options.  This could
+> also be used to reexport an NFS mount using unmodified filehandles.
+>=20
+> Currently you need a network namespace to create a new nfsd.  I wonder
+> if that is a little too much of a barrier.  But maybe we could automate
+> the creation of working network namespaces for nfsd....
+>=20
 
-Thanks,
-Ojaswin
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+My current thinking is to just allow the filesystem to set
+STATX_ATTR_VERSION_MONOTONIC flag on a per-inode basis, and create a new
+change_attr_type() export operation and leave it up to the filesystem to
+fill that out appropriately.
+
+I think that'll give us maximum flexibility, and would also allow NFS to
+pass the change attr type from the server directly through to the client
+when reexporting.
+--=20
+Jeff Layton <jlayton@kernel.org>
