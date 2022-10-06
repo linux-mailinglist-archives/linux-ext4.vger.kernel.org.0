@@ -2,310 +2,229 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E05095F6EA3
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Oct 2022 22:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 888B85F6F96
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Oct 2022 22:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230285AbiJFUIu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 Oct 2022 16:08:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54658 "EHLO
+        id S232002AbiJFUqh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Oct 2022 16:46:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231542AbiJFUIt (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Oct 2022 16:08:49 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60100BF8;
-        Thu,  6 Oct 2022 13:08:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1665086928; x=1696622928;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=swAucizbwUxhdAX/SMI13ZfrywiGOKfoDpdfjfgG+SE=;
-  b=a/Kdo3ZASmyCLvKpJqe5xiNpaIWikZNbEJIq2WEyXp3udkS+Y9EgGu7r
-   R0G0APPs8r5A+eFkFW/St74w2tPtb/L5M/4lSnowqsbI/5OEVLJT7aho2
-   ElhSsaG4yC5+npqBUZAqMCyyOhzTW2Nv10i7uN6OL+5aX9sQqEfTri7Cl
-   kkjtnWhk6bjMUQezI6y8pmAqT9Dwx5qQGF5U0SgHlJD6mjxd1BXBABfOa
-   wHSzYSIxOoKc+kMGOSx8XOjQfq9PLCldgP+jew/ez5IwzNgrmdWTnQVwG
-   MXH5eFYR7eZJMr/GM9xGVIemtMd/QQPYwjS5HSNUUB75UEb5ol3BNJgu/
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10492"; a="365499871"
-X-IronPort-AV: E=Sophos;i="5.95,164,1661842800"; 
-   d="scan'208";a="365499871"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2022 13:08:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10492"; a="953763896"
-X-IronPort-AV: E=Sophos;i="5.95,164,1661842800"; 
-   d="scan'208";a="953763896"
-Received: from lkp-server01.sh.intel.com (HELO 3c15167049b7) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 06 Oct 2022 13:08:43 -0700
-Received: from kbuild by 3c15167049b7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1ogXAh-0000QR-0v;
-        Thu, 06 Oct 2022 20:08:43 +0000
-Date:   Fri, 07 Oct 2022 04:07:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     netdev@vger.kernel.org, loongarch@lists.linux.dev,
-        linuxppc-dev@lists.ozlabs.org, linux-nvme@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-ext4@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, bpf@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: [linux-next:master] BUILD REGRESSION
- 7da9fed0474b4cd46055dd92d55c42faf32c19ac
-Message-ID: <633f3591.GEF0zMh+7lpySqUP%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S229540AbiJFUqg (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Oct 2022 16:46:36 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48462BEFBB;
+        Thu,  6 Oct 2022 13:46:35 -0700 (PDT)
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 296KiP5i011718;
+        Thu, 6 Oct 2022 20:46:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=pp1; bh=tkwKchqQhsxu80vxhDIwDpPXnBStBGzdkGiCMr5xzKY=;
+ b=NlHbmfZHDu3HoDouHu1+gH67Yv1IrJRN1M9M+IoIwesazOYGPAxoJRu2jUQsdplcnQpF
+ VkkyBMtHBMprjxfTOIYG21gLok00IV1Y5P8EeMcKA3Ta8iMsq3Kj8rAwYCooorgXUSUV
+ B/0Gn0BIMBEQeIl9HmwThkIruzxWrHufZaeK2G4wmdTRdAcCg95zJ/dpPtPOt+I6HD6U
+ LgxN8M+CbusZO1AwXxio92LjpP4gr5iZBPXrqvonXx3l1ma6E8gsQcZxshWfWedFt2We
+ 00liyGnxje+Zm7qD4gmSiK31wNGNMchDuoIL4k9hisyi+eVQtMfMkiFTLZbBCgZntGba Dg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3k26ag024r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 Oct 2022 20:46:29 +0000
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 296KjCCn016687;
+        Thu, 6 Oct 2022 20:46:29 GMT
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3k26ag0240-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 Oct 2022 20:46:29 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 296KaRpF026140;
+        Thu, 6 Oct 2022 20:46:27 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 3jxd697mva-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 Oct 2022 20:46:27 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 296Kktg939059916
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 6 Oct 2022 20:46:55 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 12BACA4060;
+        Thu,  6 Oct 2022 20:46:25 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4C58AA4054;
+        Thu,  6 Oct 2022 20:46:22 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.110.181])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  6 Oct 2022 20:46:22 +0000 (GMT)
+From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Ritesh Harjani <riteshh@linux.ibm.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, rookxu <brookxu.cn@gmail.com>
+Subject: [PATCH 0/8] ext4: Convert inode preallocation list to an rbtree
+Date:   Fri,  7 Oct 2022 02:16:11 +0530
+Message-Id: <cover.1665088164.git.ojaswin@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
+Content-Type: text/plain; charset=UTF-8
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: aY-RiCjWIc75NBip4TDUuS56jbfTgCQ3
+X-Proofpoint-GUID: MgPBV1_eMAnLs29TZZ_k0XbITXlciHPz
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
+ definitions=2022-10-06_04,2022-10-06_02,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 mlxscore=0 adultscore=0 malwarescore=0 mlxlogscore=868
+ priorityscore=1501 impostorscore=0 spamscore=0 phishscore=0 clxscore=1015
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2209130000 definitions=main-2210060121
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: 7da9fed0474b4cd46055dd92d55c42faf32c19ac  Add linux-next specific files for 20221006
+This patch series aim to improve the performance and scalability of
+inode preallocation by changing inode preallocation linked list to an
+rbtree. I've ran xfstests quick on this series and plan to run auto group
+as well to confirm we have no regressions.
 
-Error/Warning reports:
+** Shortcomings of existing implementation **
 
-https://lore.kernel.org/linux-doc/202210070057.NpbaMyxB-lkp@intel.com
-https://lore.kernel.org/llvm/202209220019.Yr2VuXhg-lkp@intel.com
-https://lore.kernel.org/llvm/202210062012.XvdAjoOT-lkp@intel.com
+Right now, we add all the inode preallocations(PAs) to a per inode linked
+list ei->i_prealloc_list. To prevent the list from growing infinitely
+during heavy sparse workloads, the lenght of this list was capped at 512
+and a trimming logic was added to trim the list whenever it grew over
+this threshold, in patch 27bc446e2. This was discussed in detail in the
+following lore thread [1].
 
-Error/Warning: (recently discovered and may have been fixed)
+[1] https://lore.kernel.org/all/d7a98178-056b-6db5-6bce-4ead23f4a257@gmail.com/
 
-ERROR: modpost: "devm_ioremap_resource" [drivers/dma/fsl-edma.ko] undefined!
-ERROR: modpost: "devm_ioremap_resource" [drivers/dma/idma64.ko] undefined!
-ERROR: modpost: "devm_ioremap_resource" [drivers/dma/qcom/hdma.ko] undefined!
-ERROR: modpost: "devm_memremap" [drivers/misc/open-dice.ko] undefined!
-ERROR: modpost: "devm_memunmap" [drivers/misc/open-dice.ko] undefined!
-ERROR: modpost: "devm_platform_ioremap_resource" [drivers/char/xillybus/xillybus_of.ko] undefined!
-ERROR: modpost: "ioremap" [drivers/net/ethernet/8390/pcnet_cs.ko] undefined!
-ERROR: modpost: "ioremap" [drivers/tty/ipwireless/ipwireless.ko] undefined!
-ERROR: modpost: "iounmap" [drivers/net/ethernet/8390/pcnet_cs.ko] undefined!
-ERROR: modpost: "iounmap" [drivers/tty/ipwireless/ipwireless.ko] undefined!
-Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
-arch/arm64/kernel/alternative.c:199:6: warning: no previous prototype for 'apply_alternatives_vdso' [-Wmissing-prototypes]
-arch/arm64/kernel/alternative.c:295:14: warning: no previous prototype for 'alt_cb_patch_nops' [-Wmissing-prototypes]
-arch/loongarch/mm/init.c:166:24: warning: variable 'new' set but not used [-Wunused-but-set-variable]
-drivers/gpu/drm/amd/amdgpu/../display/dc/virtual/virtual_link_hwss.c:40:6: warning: no previous prototype for 'virtual_disable_link_output' [-Wmissing-prototypes]
-drivers/net/ethernet/freescale/fman/fman_memac.c:1246 memac_initialization() error: uninitialized symbol 'fixed_link'.
-drivers/nvme/target/loop.c:578 nvme_loop_create_ctrl() warn: 'opts->queue_size - 1' 4294967295 can't fit into 65535 'ctrl->ctrl.sqsize'
-drivers/vfio/pci/mlx5/cmd.c:432 combine_ranges() error: uninitialized symbol 'last'.
-drivers/vfio/pci/mlx5/cmd.c:453 combine_ranges() error: potentially dereferencing uninitialized 'comb_end'.
-drivers/vfio/pci/mlx5/cmd.c:453 combine_ranges() error: potentially dereferencing uninitialized 'comb_start'.
-drivers/vfio/pci/vfio_pci_core.c:1035 vfio_pci_ioctl_get_region_info() warn: potential spectre issue 'vdev->region' [r]
-drivers/vfio/pci/vfio_pci_core.c:958 vfio_pci_ioctl_get_region_info() warn: potential spectre issue 'pdev->resource' [w]
-fs/ext4/super.c:1744:19: warning: 'deprecated_msg' defined but not used [-Wunused-const-variable=]
-include/linux/compiler_types.h:357:45: error: call to '__compiletime_assert_417' declared with attribute error: FIELD_GET: mask is not constant
-lib/test_vmalloc.c:154 random_size_alloc_test() error: uninitialized symbol 'n'.
+But from our testing, we noticed that the current implementation still
+had issues with scalability as the performance degraded when the PAs
+stored in the list grew. Most of the degradation was seen in
+ext4_mb_normalize_request() and ext4_mb_use_preallocated() functions as
+they iterated the inode PA list.
 
-Error/Warning ids grouped by kconfigs:
+** Improvements in this patchset **
 
-gcc_recent_errors
-|-- alpha-allyesconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-virtual_disable_link_output
-|-- arc-allyesconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-virtual_disable_link_output
-|-- arm-allyesconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-virtual_disable_link_output
-|-- arm64-allyesconfig
-|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-alt_cb_patch_nops
-|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-apply_alternatives_vdso
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-virtual_disable_link_output
-|-- arm64-randconfig-r006-20221002
-|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-alt_cb_patch_nops
-|   `-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-apply_alternatives_vdso
-|-- arm64-randconfig-r016-20221003
-|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-alt_cb_patch_nops
-|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-apply_alternatives_vdso
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-virtual_disable_link_output
-|-- csky-buildonly-randconfig-r005-20221002
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-virtual_disable_link_output
-|-- i386-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-virtual_disable_link_output
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- i386-defconfig
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- i386-randconfig-a013-20221003
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- i386-randconfig-a014-20221003
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- i386-randconfig-a015-20221003
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- i386-randconfig-c001
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- i386-randconfig-c021
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- i386-randconfig-r024-20221003
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- ia64-allmodconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-virtual_disable_link_output
-|-- ia64-randconfig-r026-20221003
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-virtual_disable_link_output
-|-- loongarch-alldefconfig
-|   `-- arch-loongarch-mm-init.c:warning:variable-new-set-but-not-used
-|-- loongarch-randconfig-c024-20221002
-|   |-- arch-loongarch-mm-init.c:warning:variable-new-set-but-not-used
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-virtual_disable_link_output
-|-- loongarch-randconfig-c44-20221002
-|   `-- arch-loongarch-mm-init.c:warning:variable-new-set-but-not-used
-|-- m68k-randconfig-c041-20221002
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-virtual_disable_link_output
-|-- m68k-randconfig-s051-20221002
-clang_recent_errors
-|-- arm-omap1_defconfig
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- arm-pcm027_defconfig
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- hexagon-buildonly-randconfig-r005-20221003
-|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-|   `-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-|-- hexagon-randconfig-r011-20221002
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- hexagon-randconfig-r015-20221003
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- hexagon-randconfig-r041-20221003
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- i386-randconfig-a002-20221003
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- i386-randconfig-a005-20221003
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- i386-randconfig-a006-20221003
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- mips-malta_defconfig
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- mips-rs90_defconfig
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- powerpc-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-function-virtual_disable_link_output
-|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt2701.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
-|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
-|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-|   |-- drivers-phy-mediatek-phy-mtk-tphy.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(unsigned-c
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- powerpc-mvme5100_defconfig
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- riscv-buildonly-randconfig-r002-20221002
-|   `-- ERROR:riscv_cbom_block_size-arch-riscv-kvm-kvm.ko-undefined
-|-- riscv-randconfig-r031-20221003
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-function-virtual_disable_link_output
-|-- riscv-rv32_defconfig
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- s390-randconfig-r005-20221003
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- x86_64-randconfig-a001-20221003
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- x86_64-randconfig-a003-20221003
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- x86_64-randconfig-a005-20221003
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-`-- x86_64-rhel-8.3-rust
-    `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+To counter the above shortcomings, this patch series modifies the inode
+PA list to an rbtree, which:
 
-elapsed time: 731m
+- improves the performance of functions discussed above due to the
+  improved lookup speed.
+  
+- improves scalability by changing lookup complexity from O(n) to
+  O(logn). We no longer need the trimming logic as well.
 
-configs tested: 87
-configs skipped: 5
+As a result, the RCU implementation was needed to be changed since
+lockless lookups of rbtrees do have some issues like skipping
+subtrees. Hence, RCU was replaced with read write locks for inode
+PAs. More information can be found in Patch 7 (that has the core
+changes).
 
-gcc tested configs:
-arc                                 defconfig
-arc                               allnoconfig
-alpha                             allnoconfig
-alpha                               defconfig
-riscv                             allnoconfig
-um                             i386_defconfig
-powerpc                           allnoconfig
-csky                              allnoconfig
-um                           x86_64_defconfig
-arm                                 defconfig
-s390                             allmodconfig
-riscv                randconfig-r042-20221003
-i386                 randconfig-a014-20221003
-arc                  randconfig-r043-20221003
-s390                                defconfig
-i386                                defconfig
-x86_64                          rhel-8.3-func
-i386                 randconfig-a011-20221003
-x86_64               randconfig-a011-20221003
-i386                 randconfig-a012-20221003
-x86_64                           rhel-8.3-syz
-i386                 randconfig-a013-20221003
-arc                        nsim_700_defconfig
-arm                          simpad_defconfig
-i386                 randconfig-a015-20221003
-mips                        bcm47xx_defconfig
-x86_64                              defconfig
-s390                 randconfig-r044-20221003
-sh                          r7780mp_defconfig
-i386                 randconfig-a016-20221003
-s390                             allyesconfig
-x86_64                         rhel-8.3-kunit
-x86_64                               rhel-8.3
-x86_64               randconfig-a012-20221003
-x86_64                    rhel-8.3-kselftests
-x86_64                           rhel-8.3-kvm
-x86_64               randconfig-a013-20221003
-xtensa                              defconfig
-x86_64               randconfig-a016-20221003
-x86_64               randconfig-a015-20221003
-x86_64               randconfig-a014-20221003
-x86_64                           allyesconfig
-sh                               allmodconfig
-arm64                            allyesconfig
-m68k                             allmodconfig
-mips                  decstation_64_defconfig
-i386                             allyesconfig
-mips                             allyesconfig
-arm                              allyesconfig
-m68k                            q40_defconfig
-powerpc                          allmodconfig
-powerpc                     tqm8548_defconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-m68k                             allyesconfig
-arc                           tb10x_defconfig
-powerpc                       eiger_defconfig
-powerpc                 mpc85xx_cds_defconfig
-powerpc                     taishan_defconfig
-ia64                             allmodconfig
-parisc                generic-64bit_defconfig
-loongarch                        alldefconfig
-arm                       omap2plus_defconfig
-i386                          randconfig-c001
+** Performance Numbers **
 
-clang tested configs:
-hexagon              randconfig-r045-20221003
-arm                          pcm027_defconfig
-hexagon              randconfig-r041-20221003
-arm                           omap1_defconfig
-x86_64               randconfig-a003-20221003
-x86_64               randconfig-a005-20221003
-mips                           rs90_defconfig
-x86_64               randconfig-a002-20221003
-x86_64               randconfig-a001-20221003
-riscv                          rv32_defconfig
-x86_64               randconfig-a004-20221003
-x86_64               randconfig-a006-20221003
-powerpc                    mvme5100_defconfig
-powerpc                     ppa8548_defconfig
-mips                           ip28_defconfig
-i386                 randconfig-a004-20221003
-i386                 randconfig-a003-20221003
-i386                 randconfig-a002-20221003
-i386                 randconfig-a001-20221003
-i386                 randconfig-a005-20221003
-i386                 randconfig-a006-20221003
-mips                          malta_defconfig
-powerpc                          allmodconfig
-x86_64                          rhel-8.3-rust
+Performance numbers were collected with and without these patches, using an
+nvme device. Details of tests/benchmarks used are as follows:
+
+Test 1: 200,000 1KiB sparse writes using (fio)
+Test 2: Fill 5GiB w/ random writes, 1KiB burst size using (fio)
+Test 3: Test 2, but do 4 sequential writes before jumping to random
+        offset (fio)
+Test 4: Fill 8GB FS w/ 2KiB files, 64 threads in parallel (fsmark)
+
++──────────+──────────────────+────────────────+──────────────────+──────────────────+
+|          |            nodelalloc             |              delalloc               |
++──────────+──────────────────+────────────────+──────────────────+──────────────────+
+|          | Unpatched        | Patched        | Unpatched        | Patched          |
++──────────+──────────────────+────────────────+──────────────────+──────────────────+
+| Test 1   | 11.8 MB/s        | 23.3 MB/s      | 27.2 MB/s        | 63.7 MB/s        |
+| Test 2   | 1617 MB/s        | 1740 MB/s      | 2223 MB/s        | 2208 MB/s        |
+| Test 3   | 1715 MB/s        | 1823 MB/s      | 2346 MB/s        | 2364 MB/s        |
+| Test 4   | 14284 files/sec  | 14347 files/s  | 13762 files/sec  | 13882 files/sec  |
++──────────+──────────────────+────────────────+──────────────────+──────────────────+
+
+In test 1, we almost see 100 to 200% increase in performance due to the high number
+of sparse writes highlighting the bottleneck in the unpatched kernel. Further, on running
+"perf diff patched.data unpatched.data" for test 1, we see something as follows:
+
+     2.83%    +29.67%  [kernel.vmlinux]          [k] _raw_spin_lock
+												...
+               +3.33%  [ext4]                    [k] ext4_mb_normalize_request.constprop.30
+     0.25%     +2.81%  [ext4]                    [k] ext4_mb_use_preallocated
+
+Here we can see that the biggest different is in the _raw_spin_lock() function
+of unpatched kernel, that is called from `ext4_mb_normalize_request()` as seen
+here:
+
+    32.47%  fio              [kernel.vmlinux]            [k] _raw_spin_lock
+            |
+            ---_raw_spin_lock
+               |          
+                --32.22%--ext4_mb_normalize_request.constprop.30
+
+This is comming from the spin_lock(&pa->pa_lock) that is called for
+each PA that we iterate over, in ext4_mb_normalize_request(). Since in rbtrees,
+we lookup log(n) PAs rather than n PAs, this spin lock is taken less frequently,
+as evident in the perf. 
+
+Furthermore, we see some improvements in other tests however since they don't
+exercise the PA traversal path as much as test 1, the improvements are relatively
+smaller. 
+
+** Summary of patches **
+
+- Patch 1-5: Abstractions/Minor optimizations
+- Patch 6: Split common inode & locality group specific fields to a union
+- Patch 7: Core changes to move inode PA logic from list to rbtree
+- Patch 8: Remove the trim logic as it is not needed
+
+** Changes since RFC v3 [2] **
+- Changed while loops to for loops in patch 7
+- Fixed some data types
+- Made rbtree comparison logic more intuitive. The
+  rbtree insertion function still kept separate from
+  comparison function for reusability.
+
+** Changes since RFC v2 **
+- Added a function definition that was deleted during v2 rebase
+
+** Changes since RFC v1 **
+
+- Rebased over ext4 dev branch which includes Jan's patchset [1]
+  that changed some code in mballoc.c
+
+[1] https://lore.kernel.org/all/20220908091301.147-1-jack@suse.cz/
+[2]
+https://lore.kernel.org/all/113e30014fdcf409680e20ec1ef4455ace33884d.1664269665.git.ojaswin@linux.ibm.com/
+
+Ojaswin Mujoo (8):
+  ext4: Stop searching if PA doesn't satisfy non-extent file
+  ext4: Refactor code related to freeing PAs
+  ext4: Refactor code in ext4_mb_normalize_request() and
+    ext4_mb_use_preallocated()
+  ext4: Move overlap assert logic into a separate function
+  ext4: Abstract out overlap fix/check logic in
+    ext4_mb_normalize_request()
+  ext4: Convert pa->pa_inode_list and pa->pa_obj_lock into a union
+  ext4: Use rbtrees to manage PAs instead of inode i_prealloc_list
+  ext4: Remove the logic to trim inode PAs
+
+ Documentation/admin-guide/ext4.rst |   3 -
+ fs/ext4/ext4.h                     |   5 +-
+ fs/ext4/mballoc.c                  | 429 ++++++++++++++++++-----------
+ fs/ext4/mballoc.h                  |  17 +-
+ fs/ext4/super.c                    |   4 +-
+ fs/ext4/sysfs.c                    |   2 -
+ 6 files changed, 285 insertions(+), 175 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.31.1
+
