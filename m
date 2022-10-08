@@ -2,304 +2,234 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E755F7E4F
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Oct 2022 21:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 771705F822E
+	for <lists+linux-ext4@lfdr.de>; Sat,  8 Oct 2022 03:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbiJGTvF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 7 Oct 2022 15:51:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33404 "EHLO
+        id S229591AbiJHB42 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 7 Oct 2022 21:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbiJGTvE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 Oct 2022 15:51:04 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F4810452D;
-        Fri,  7 Oct 2022 12:51:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1665172262; x=1696708262;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=2mUVVnEhhVz5K6WJjVV+fjQCUzcnfkngvr4G4fFNzko=;
-  b=oJ29wexzyZ/6IK1uva6jIKcfvIzzqLiA1Z6UBsuqNBfMbugbTbM94d9O
-   moNJl5oml7i2Dz2lwN4FIl2Zvoi1XT6gBiiCDbbKrvz0hG4r/T4nxPkeY
-   +YMJLvkLSk12RyfkKnZsYTuoxmDLgoIZcMH3y5SRbAFEIoMGfz8xIG0Fc
-   EhTMHuAZ9icf1ympHUidOQchlb1pF3Xb0vUkb3gd3VKdSQ5jVGc/Ng7Fk
-   Nwp0fn986vvA866QOcF/h58O+pRVWY0uIu/a+WRnMW0gkfIZl12Tnfa6d
-   soFWjKpIcubRa+f3B69uKrC0jqA/2dQO38AOp95e3kzDDzo0qvl/ZKAHf
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10493"; a="301421453"
-X-IronPort-AV: E=Sophos;i="5.95,167,1661842800"; 
-   d="scan'208";a="301421453"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2022 12:51:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10493"; a="767690832"
-X-IronPort-AV: E=Sophos;i="5.95,167,1661842800"; 
-   d="scan'208";a="767690832"
-Received: from lkp-server01.sh.intel.com (HELO 3c15167049b7) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 07 Oct 2022 12:50:59 -0700
-Received: from kbuild by 3c15167049b7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1ogtN4-0001Sx-3A;
-        Fri, 07 Oct 2022 19:50:58 +0000
-Date:   Sat, 08 Oct 2022 03:50:57 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     loongarch@lists.linux.dev, linux-nvme@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-iio@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: [linux-next:master] BUILD REGRESSION
- 082fce125e57cff60687181c97f3a8ee620c38f5
-Message-ID: <63408321.qp0XTNE6XF5r/1+X%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S229468AbiJHB41 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 Oct 2022 21:56:27 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA69BBEAF0;
+        Fri,  7 Oct 2022 18:56:25 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id c3-20020a1c3503000000b003bd21e3dd7aso5491800wma.1;
+        Fri, 07 Oct 2022 18:56:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:from:references:cc:to:content-language:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gtt8Sd1iGvBuE6r8qw66viAhLvTlUSClwTSyeRVy/5s=;
+        b=MlnO6IzMqSsdHgJfSn9GuImG8SiiU8gEa577JRbAfC9M5MT+fV3LtYjofrrzC542qh
+         SM17l9Y/FWKLhbVPZoK/voLcK41mEwlW9pW+ts6Blqhl1H/+tvtSRwrv8YCkKWt83G1/
+         SZNal9HjHUgkCq+zkq2X4Sm3j+IZ4Bj3ZIXdbCcG3Lzbvk7sPLcFC2Y87r5WZlHGh4r3
+         3jvTt7HuOiBSp/DOY/B04RoFUBYvmqnapONbzpBqKkDRIyscw+M3Mr6fF6bAY/UM1kpF
+         ihSa7DtsnGDwJziaEP7e49+RVSUau/E4i+ETknql5kSXtbqY/ulmPOJ8yk7bXK12p1qD
+         XYVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:from:references:cc:to:content-language:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=gtt8Sd1iGvBuE6r8qw66viAhLvTlUSClwTSyeRVy/5s=;
+        b=H4USI0e4yrdsB0J7LgM4xNur4CCxErm993ycu6jSwnCQP726IZtXO+VZSx7tI36wrX
+         e1VaR/SAL4KajBhMtFzrfwPbulMERoU2cYHcXRxZtgRN7Cj7ZI8Tx/Cv9nCza44rOty7
+         dhe058sEYgjYBOII8FA5fbUxGo+mCwpVslL8aIASMd0iKoBEj3vxMG3Mqr4quEHqGiHu
+         oqKlKoRwLyvEh5NjjV41S2kuACQTUbQL57QMn8IAAqY/7B+0uoByrhsXpW1AT+8Q/F+2
+         MfnUKmZON+KG7OMMhBsnVTBQ4m9SuOag11B6CkRrtDRhKGncc9FUPHEYx6mTC6OUHAed
+         k2uA==
+X-Gm-Message-State: ACrzQf3b0mBe1MbfDtuE5umqwru4S0BN7NmZFJ7sH5YAPywN2RdakyXn
+        jrcZx6P3ScOhA1p/FyinZcXkOH3mSUQ=
+X-Google-Smtp-Source: AMsMyM6HyGtxtWyy2bSr683HtwijJ2P4jcCtuTJjIlcmddwD3D8OauMqDtzRyaCGy96ZwITPylXXgw==
+X-Received: by 2002:a7b:c341:0:b0:3c4:552d:2ea7 with SMTP id l1-20020a7bc341000000b003c4552d2ea7mr820449wmj.82.1665194184239;
+        Fri, 07 Oct 2022 18:56:24 -0700 (PDT)
+Received: from [192.168.0.160] ([170.253.36.171])
+        by smtp.gmail.com with ESMTPSA id s4-20020adff804000000b00226dedf1ab7sm3299967wrp.76.2022.10.07.18.56.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 07 Oct 2022 18:56:23 -0700 (PDT)
+Message-ID: <26cafc28-e63a-6f13-df70-8ccec85a4ef0@gmail.com>
+Date:   Sat, 8 Oct 2022 03:56:22 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE,SUSPICIOUS_RECIPS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.2
+Subject: Re: [man-pages PATCH v3] statx.2, open.2: document STATX_DIOALIGN
+Content-Language: en-US
+To:     Eric Biggers <ebiggers@kernel.org>, linux-man@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        "Darrick J. Wong" <djwong@kernel.org>
+References: <20221004174307.6022-1-ebiggers@kernel.org>
+From:   Alejandro Colomar <alx.manpages@gmail.com>
+In-Reply-To: <20221004174307.6022-1-ebiggers@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------x4E24oHe3w0nvhvCysX22mSr"
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: 082fce125e57cff60687181c97f3a8ee620c38f5  Add linux-next specific files for 20221007
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------x4E24oHe3w0nvhvCysX22mSr
+Content-Type: multipart/mixed; boundary="------------NegtShqtP2zaLlI3tpK20uRp";
+ protected-headers="v1"
+From: Alejandro Colomar <alx.manpages@gmail.com>
+To: Eric Biggers <ebiggers@kernel.org>, linux-man@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+ linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+ "Darrick J. Wong" <djwong@kernel.org>
+Message-ID: <26cafc28-e63a-6f13-df70-8ccec85a4ef0@gmail.com>
+Subject: Re: [man-pages PATCH v3] statx.2, open.2: document STATX_DIOALIGN
+References: <20221004174307.6022-1-ebiggers@kernel.org>
+In-Reply-To: <20221004174307.6022-1-ebiggers@kernel.org>
 
-Error/Warning reports:
+--------------NegtShqtP2zaLlI3tpK20uRp
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-https://lore.kernel.org/linux-doc/202209201326.sY9kHOLm-lkp@intel.com
-https://lore.kernel.org/linux-doc/202209231933.vcyETtUl-lkp@intel.com
-https://lore.kernel.org/linux-doc/202210070057.NpbaMyxB-lkp@intel.com
-https://lore.kernel.org/llvm/202209220019.Yr2VuXhg-lkp@intel.com
+SGkgRXJpYywNCg0KT24gMTAvNC8yMiAxOTo0MywgRXJpYyBCaWdnZXJzIHdyb3RlOg0KPiBG
+cm9tOiBFcmljIEJpZ2dlcnMgPGViaWdnZXJzQGdvb2dsZS5jb20+DQo+IA0KPiBEb2N1bWVu
+dCB0aGUgU1RBVFhfRElPQUxJR04gc3VwcG9ydCBmb3Igc3RhdHgoKQ0KPiAoaHR0cHM6Ly9n
+aXQua2VybmVsLm9yZy9saW51cy83MjU3MzdlN2MyMWQyZDI1KS4NCj4gDQo+IFJldmlld2Vk
+LWJ5OiBEYXJyaWNrIEouIFdvbmcgPGRqd29uZ0BrZXJuZWwub3JnPg0KPiBTaWduZWQtb2Zm
+LWJ5OiBFcmljIEJpZ2dlcnMgPGViaWdnZXJzQGdvb2dsZS5jb20+DQoNClBsZWFzZSBzZWUg
+c29tZSBmb3JtYXR0aW5nIGNvbW1lbnRzIGJlbG93Lg0KDQo+IC0tLQ0KPiANCj4gSSdtIHJl
+c2VuZGluZyB0aGlzIG5vdyB0aGF0IHN1cHBvcnQgZm9yIFNUQVRYX0RJT0FMSUdOIGhhcyBi
+ZWVuIG1lcmdlZA0KPiB1cHN0cmVhbS4NCg0KVGhhbmtzLg0KDQpDaGVlcnMsDQpBbGV4DQoN
+Cj4gDQo+IHYzOiB1cGRhdGVkIG1lbnRpb25zIG9mIExpbnV4IHZlcnNpb24sIGZpeGVkIHNv
+bWUgcHVuY3R1YXRpb24sIGFuZCBhZGRlZA0KPiAgICAgIGEgUmV2aWV3ZWQtYnkNCj4gDQo+
+IHYyOiByZWJhc2VkIG9udG8gbWFuLXBhZ2VzIG1hc3RlciBicmFuY2gsIG1lbnRpb25lZCB4
+ZnMsIGFuZCB1cGRhdGVkDQo+ICAgICAgbGluayB0byBwYXRjaHNldA0KPiANCj4gICBtYW4y
+L29wZW4uMiAgfCA0MyArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0t
+LS0tDQo+ICAgbWFuMi9zdGF0eC4yIHwgMjkgKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysNCj4gICAyIGZpbGVzIGNoYW5nZWQsIDYxIGluc2VydGlvbnMoKyksIDExIGRlbGV0aW9u
+cygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL21hbjIvb3Blbi4yIGIvbWFuMi9vcGVuLjINCj4g
+aW5kZXggZGViYTdlNGVhLi5iODYxN2UwZDIgMTAwNjQ0DQo+IC0tLSBhL21hbjIvb3Blbi4y
+DQo+ICsrKyBiL21hbjIvb3Blbi4yDQo+IEBAIC0xNzMyLDIxICsxNzMyLDQyIEBAIG9mIHVz
+ZXItc3BhY2UgYnVmZmVycyBhbmQgdGhlIGZpbGUgb2Zmc2V0IG9mIEkvT3MuDQo+ICAgSW4g
+TGludXggYWxpZ25tZW50DQo+ICAgcmVzdHJpY3Rpb25zIHZhcnkgYnkgZmlsZXN5c3RlbSBh
+bmQga2VybmVsIHZlcnNpb24gYW5kIG1pZ2h0IGJlDQo+ICAgYWJzZW50IGVudGlyZWx5Lg0K
+PiAtSG93ZXZlciB0aGVyZSBpcyBjdXJyZW50bHkgbm8gZmlsZXN5c3RlbVwtaW5kZXBlbmRl
+bnQNCj4gLWludGVyZmFjZSBmb3IgYW4gYXBwbGljYXRpb24gdG8gZGlzY292ZXIgdGhlc2Ug
+cmVzdHJpY3Rpb25zIGZvciBhIGdpdmVuDQo+IC1maWxlIG9yIGZpbGVzeXN0ZW0uDQo+IC1T
+b21lIGZpbGVzeXN0ZW1zIHByb3ZpZGUgdGhlaXIgb3duIGludGVyZmFjZXMNCj4gLWZvciBk
+b2luZyBzbywgZm9yIGV4YW1wbGUgdGhlDQo+ICtUaGUgaGFuZGxpbmcgb2YgbWlzYWxpZ25l
+ZA0KPiArLkIgT19ESVJFQ1QNCj4gK0kvT3MgYWxzbyB2YXJpZXM7IHRoZXkgY2FuIGVpdGhl
+ciBmYWlsIHdpdGgNCj4gKy5CIEVJTlZBTA0KPiArb3IgZmFsbCBiYWNrIHRvIGJ1ZmZlcmVk
+IEkvTy4NCj4gKy5QUA0KPiArU2luY2UgTGludXggNi4xLA0KPiArLkIgT19ESVJFQ1QNCj4g
+K3N1cHBvcnQgYW5kIGFsaWdubWVudCByZXN0cmljdGlvbnMgZm9yIGEgZmlsZSBjYW4gYmUg
+cXVlcmllZCB1c2luZw0KPiArLkJSIHN0YXR4ICgyKSwNCj4gK3VzaW5nIHRoZQ0KPiArLkIg
+U1RBVFhfRElPQUxJR04NCj4gK2ZsYWcuDQo+ICtTdXBwb3J0IGZvcg0KPiArLkIgU1RBVFhf
+RElPQUxJR04NCj4gK3ZhcmllcyBieSBmaWxlc3lzdGVtOyBzZWUNCj4gKy5CUiBzdGF0eCAo
+MikuDQo+ICsuUFANCj4gK1NvbWUgZmlsZXN5c3RlbXMgcHJvdmlkZSB0aGVpciBvd24gaW50
+ZXJmYWNlcyBmb3IgcXVlcnlpbmcNCj4gKy5CIE9fRElSRUNUDQo+ICthbGlnbm1lbnQgcmVz
+dHJpY3Rpb25zLCBmb3IgZXhhbXBsZSB0aGUNCj4gICAuQiBYRlNfSU9DX0RJT0lORk8NCj4g
+ICBvcGVyYXRpb24gaW4NCj4gICAuQlIgeGZzY3RsICgzKS4NCj4gKy5CIFNUQVRYX0RJT0FM
+SUdODQo+ICtzaG91bGQgYmUgdXNlZCBpbnN0ZWFkIHdoZW4gaXQgaXMgYXZhaWxhYmxlLg0K
+PiAgIC5QUA0KPiAtVW5kZXIgTGludXggMi40LCB0cmFuc2ZlciBzaXplcywgdGhlIGFsaWdu
+bWVudCBvZiB0aGUgdXNlciBidWZmZXIsDQo+IC1hbmQgdGhlIGZpbGUgb2Zmc2V0IG11c3Qg
+YWxsIGJlIG11bHRpcGxlcyBvZiB0aGUgbG9naWNhbCBibG9jayBzaXplDQo+IC1vZiB0aGUg
+ZmlsZXN5c3RlbS4NCj4gLVNpbmNlIExpbnV4IDIuNi4wLCBhbGlnbm1lbnQgdG8gdGhlIGxv
+Z2ljYWwgYmxvY2sgc2l6ZSBvZiB0aGUNCj4gLXVuZGVybHlpbmcgc3RvcmFnZSAodHlwaWNh
+bGx5IDUxMiBieXRlcykgc3VmZmljZXMuDQo+IC1UaGUgbG9naWNhbCBibG9jayBzaXplIGNh
+biBiZSBkZXRlcm1pbmVkIHVzaW5nIHRoZQ0KPiArSWYgbm9uZSBvZiB0aGUgYWJvdmUgaXMg
+YXZhaWxhYmxlLCB0aGVuIGRpcmVjdCBJL08gc3VwcG9ydCBhbmQgYWxpZ25tZW50DQoNClBs
+ZWFzZSB1c2Ugc2VtYW50aWMgbmV3bGluZXMuDQoNClNlZSBtYW4tcGFnZXMoNyk6DQogICAg
+VXNlIHNlbWFudGljIG5ld2xpbmVzDQogICAgICAgIEluIHRoZSBzb3VyY2Ugb2YgYSBtYW51
+YWwgcGFnZSwgbmV3IHNlbnRlbmNlcyAgc2hvdWxkICBiZQ0KICAgICAgICBzdGFydGVkIG9u
+IG5ldyBsaW5lcywgbG9uZyBzZW50ZW5jZXMgc2hvdWxkIGJlIHNwbGl0IGludG8NCiAgICAg
+ICAgbGluZXMgIGF0ICBjbGF1c2UgYnJlYWtzIChjb21tYXMsIHNlbWljb2xvbnMsIGNvbG9u
+cywgYW5kDQogICAgICAgIHNvIG9uKSwgYW5kIGxvbmcgY2xhdXNlcyBzaG91bGQgYmUgc3Bs
+aXQgYXQgcGhyYXNlIGJvdW5k4oCQDQogICAgICAgIGFyaWVzLiAgVGhpcyBjb252ZW50aW9u
+LCAgc29tZXRpbWVzICBrbm93biAgYXMgICJzZW1hbnRpYw0KICAgICAgICBuZXdsaW5lcyIs
+ICBtYWtlcyBpdCBlYXNpZXIgdG8gc2VlIHRoZSBlZmZlY3Qgb2YgcGF0Y2hlcywNCiAgICAg
+ICAgd2hpY2ggb2Z0ZW4gb3BlcmF0ZSBhdCB0aGUgbGV2ZWwgb2YgaW5kaXZpZHVhbCBzZW50
+ZW5jZXMsDQogICAgICAgIGNsYXVzZXMsIG9yIHBocmFzZXMuDQoNCg0KPiArcmVzdHJpY3Rp
+b25zIGNhbiBvbmx5IGJlIGFzc3VtZWQgZnJvbSBrbm93biBjaGFyYWN0ZXJpc3RpY3Mgb2Yg
+dGhlIGZpbGVzeXN0ZW0sDQo+ICt0aGUgaW5kaXZpZHVhbCBmaWxlLCB0aGUgdW5kZXJseWlu
+ZyBzdG9yYWdlIGRldmljZShzKSwgYW5kIHRoZSBrZXJuZWwgdmVyc2lvbi4NCj4gK0luIExp
+bnV4IDIuNCwgbW9zdCBibG9jayBkZXZpY2UgYmFzZWQgZmlsZXN5c3RlbXMgcmVxdWlyZSB0
+aGF0IHRoZSBmaWxlIG9mZnNldA0KPiArYW5kIHRoZSBsZW5ndGggYW5kIG1lbW9yeSBhZGRy
+ZXNzIG9mIGFsbCBJL08gc2VnbWVudHMgYmUgbXVsdGlwbGVzIG9mIHRoZQ0KPiArZmlsZXN5
+c3RlbSBibG9jayBzaXplICh0eXBpY2FsbHkgNDA5NiBieXRlcykuDQo+ICtJbiBMaW51eCAy
+LjYuMCwgdGhpcyB3YXMgcmVsYXhlZCB0byB0aGUgbG9naWNhbCBibG9jayBzaXplIG9mIHRo
+ZSBibG9jayBkZXZpY2UNCj4gKyh0eXBpY2FsbHkgNTEyIGJ5dGVzKS4NCj4gK0EgYmxvY2sg
+ZGV2aWNlJ3MgbG9naWNhbCBibG9jayBzaXplIGNhbiBiZSBkZXRlcm1pbmVkIHVzaW5nIHRo
+ZQ0KPiAgIC5CUiBpb2N0bCAoMikNCj4gICAuQiBCTEtTU1pHRVQNCj4gICBvcGVyYXRpb24g
+b3IgZnJvbSB0aGUgc2hlbGwgdXNpbmcgdGhlIGNvbW1hbmQ6DQo+IGRpZmYgLS1naXQgYS9t
+YW4yL3N0YXR4LjIgYi9tYW4yL3N0YXR4LjINCj4gaW5kZXggMGQxYjQ1OTFmLi41MDM5NzA1
+N2QgMTAwNjQ0DQo+IC0tLSBhL21hbjIvc3RhdHguMg0KPiArKysgYi9tYW4yL3N0YXR4LjIN
+Cj4gQEAgLTYxLDcgKzYxLDEyIEBAIHN0cnVjdCBzdGF0eCB7DQo+ICAgICAgICAgIGNvbnRh
+aW5pbmcgdGhlIGZpbGVzeXN0ZW0gd2hlcmUgdGhlIGZpbGUgcmVzaWRlcyAqLw0KPiAgICAg
+ICBfX3UzMiBzdHhfZGV2X21ham9yOyAgIC8qIE1ham9yIElEICovDQo+ICAgICAgIF9fdTMy
+IHN0eF9kZXZfbWlub3I7ICAgLyogTWlub3IgSUQgKi8NCj4gKw0KPiAgICAgICBfX3U2NCBz
+dHhfbW50X2lkOyAgICAgIC8qIE1vdW50IElEICovDQo+ICsNCj4gKyAgICAvKiBEaXJlY3Qg
+SS9PIGFsaWdubWVudCByZXN0cmljdGlvbnMgKi8NCj4gKyAgICBfX3UzMiBzdHhfZGlvX21l
+bV9hbGlnbjsNCj4gKyAgICBfX3UzMiBzdHhfZGlvX29mZnNldF9hbGlnbjsNCj4gICB9Ow0K
+PiAgIC5FRQ0KPiAgIC5pbg0KPiBAQCAtMjQ3LDYgKzI1Miw4IEBAIFNUQVRYX0JUSU1FCVdh
+bnQgc3R4X2J0aW1lDQo+ICAgU1RBVFhfQUxMCVRoZSBzYW1lIGFzIFNUQVRYX0JBU0lDX1NU
+QVRTIHwgU1RBVFhfQlRJTUUuDQo+ICAgCUl0IGlzIGRlcHJlY2F0ZWQgYW5kIHNob3VsZCBu
+b3QgYmUgdXNlZC4NCj4gICBTVEFUWF9NTlRfSUQJV2FudCBzdHhfbW50X2lkIChzaW5jZSBM
+aW51eCA1LjgpDQo+ICtTVEFUWF9ESU9BTElHTglXYW50IHN0eF9kaW9fbWVtX2FsaWduIGFu
+ZCBzdHhfZGlvX29mZnNldF9hbGlnbg0KPiArCShzaW5jZSBMaW51eCA2LjE7IHN1cHBvcnQg
+dmFyaWVzIGJ5IGZpbGVzeXN0ZW0pDQo+ICAgLlRFDQo+ICAgLmluDQo+ICAgLlBQDQo+IEBA
+IC00MDcsNiArNDE0LDI4IEBAIFRoaXMgaXMgdGhlIHNhbWUgbnVtYmVyIHJlcG9ydGVkIGJ5
+DQo+ICAgLkJSIG5hbWVfdG9faGFuZGxlX2F0ICgyKQ0KPiAgIGFuZCBjb3JyZXNwb25kcyB0
+byB0aGUgbnVtYmVyIGluIHRoZSBmaXJzdCBmaWVsZCBpbiBvbmUgb2YgdGhlIHJlY29yZHMg
+aW4NCj4gICAuSVIgL3Byb2Mvc2VsZi9tb3VudGluZm8gLg0KPiArLlRQDQo+ICsuSSBzdHhf
+ZGlvX21lbV9hbGlnbg0KPiArVGhlIGFsaWdubWVudCAoaW4gYnl0ZXMpIHJlcXVpcmVkIGZv
+ciB1c2VyIG1lbW9yeSBidWZmZXJzIGZvciBkaXJlY3QgSS9PDQo+ICsuQlIgIiIgKCBPX0RJ
+UkVDVCApDQoNCi5SQiBhbmQgcmVtb3ZlIHRoZSAiIi4NCg0KPiArb24gdGhpcyBmaWxlLCBv
+ciAwIGlmIGRpcmVjdCBJL08gaXMgbm90IHN1cHBvcnRlZCBvbiB0aGlzIGZpbGUuDQo+ICsu
+SVANCj4gKy5CIFNUQVRYX0RJT0FMSUdODQo+ICsuSVIgIiIgKCBzdHhfZGlvX21lbV9hbGln
+bg0KDQouUkkNCg0KPiArYW5kDQo+ICsuSVIgc3R4X2Rpb19vZmZzZXRfYWxpZ24gKQ0KPiAr
+aXMgc3VwcG9ydGVkIG9uIGJsb2NrIGRldmljZXMgc2luY2UgTGludXggNi4xLg0KPiArVGhl
+IHN1cHBvcnQgb24gcmVndWxhciBmaWxlcyB2YXJpZXMgYnkgZmlsZXN5c3RlbTsgaXQgaXMg
+c3VwcG9ydGVkIGJ5IGV4dDQsDQo+ICtmMmZzLCBhbmQgeGZzIHNpbmNlIExpbnV4IDYuMS4N
+Cj4gKy5UUA0KPiArLkkgc3R4X2Rpb19vZmZzZXRfYWxpZ24NCj4gK1RoZSBhbGlnbm1lbnQg
+KGluIGJ5dGVzKSByZXF1aXJlZCBmb3IgZmlsZSBvZmZzZXRzIGFuZCBJL08gc2VnbWVudCBs
+ZW5ndGhzIGZvcg0KPiArZGlyZWN0IEkvTw0KPiArLkJSICIiICggT19ESVJFQ1QgKQ0KPiAr
+b24gdGhpcyBmaWxlLCBvciAwIGlmIGRpcmVjdCBJL08gaXMgbm90IHN1cHBvcnRlZCBvbiB0
+aGlzIGZpbGUuDQo+ICtUaGlzIHdpbGwgb25seSBiZSBub256ZXJvIGlmDQo+ICsuSSBzdHhf
+ZGlvX21lbV9hbGlnbg0KPiAraXMgbm9uemVybywgYW5kIHZpY2UgdmVyc2EuDQo+ICAgLlBQ
+DQo+ICAgRm9yIGZ1cnRoZXIgaW5mb3JtYXRpb24gb24gdGhlIGFib3ZlIGZpZWxkcywgc2Vl
+DQo+ICAgLkJSIGlub2RlICg3KS4NCj4gDQo+IGJhc2UtY29tbWl0OiBiYzI4ZDI4OWU1MDY2
+ZmM2MjZkZjI2MGJhZmMyNDk4NDZhMGY2YWU2DQoNCi0tIA0KPGh0dHA6Ly93d3cuYWxlamFu
+ZHJvLWNvbG9tYXIuZXMvPg0K
 
-Error/Warning: (recently discovered and may have been fixed)
+--------------NegtShqtP2zaLlI3tpK20uRp--
 
-ERROR: modpost: "devm_ioremap_resource" [drivers/dma/fsl-edma.ko] undefined!
-ERROR: modpost: "devm_ioremap_resource" [drivers/dma/idma64.ko] undefined!
-ERROR: modpost: "devm_ioremap_resource" [drivers/dma/qcom/hdma.ko] undefined!
-ERROR: modpost: "devm_memremap" [drivers/misc/open-dice.ko] undefined!
-ERROR: modpost: "devm_memunmap" [drivers/misc/open-dice.ko] undefined!
-ERROR: modpost: "devm_platform_ioremap_resource" [drivers/char/xillybus/xillybus_of.ko] undefined!
-ERROR: modpost: "ioremap" [drivers/net/ethernet/8390/pcnet_cs.ko] undefined!
-ERROR: modpost: "ioremap" [drivers/tty/ipwireless/ipwireless.ko] undefined!
-ERROR: modpost: "iounmap" [drivers/net/ethernet/8390/pcnet_cs.ko] undefined!
-ERROR: modpost: "iounmap" [drivers/tty/ipwireless/ipwireless.ko] undefined!
-Warning: Documentation/translations/zh_CN/devicetree/kernel-api.rst references a file that doesn't exist: Documentation/Devicetree/kernel-api.rst
-Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/clock/microchip,mpfs.yaml
-Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
-arch/arm64/kernel/alternative.c:199:6: warning: no previous prototype for 'apply_alternatives_vdso' [-Wmissing-prototypes]
-arch/arm64/kernel/alternative.c:295:14: warning: no previous prototype for 'alt_cb_patch_nops' [-Wmissing-prototypes]
-arch/loongarch/mm/init.c:166:24: warning: variable 'new' set but not used [-Wunused-but-set-variable]
-drivers/gpu/drm/amd/amdgpu/../display/dc/virtual/virtual_link_hwss.c:40:6: warning: no previous prototype for 'virtual_disable_link_output' [-Wmissing-prototypes]
-drivers/iio/adc/mcp3911.c:252 mcp3911_write_raw() error: buffer overflow 'mcp3911_osr_table' 8 <= 31
-drivers/iio/adc/mcp3911.c:441 mcp3911_probe() warn: passing zero to 'PTR_ERR'
-drivers/iio/adc/mcp3911.c:499 mcp3911_probe() warn: passing zero to 'PTR_ERR'
-drivers/nvme/target/loop.c:578 nvme_loop_create_ctrl() warn: 'opts->queue_size - 1' 4294967295 can't fit into 65535 'ctrl->ctrl.sqsize'
-fs/ext4/super.c:1744:19: warning: 'deprecated_msg' defined but not used [-Wunused-const-variable=]
-pahole: .tmp_vmlinux.btf: No such file or directory
+--------------x4E24oHe3w0nvhvCysX22mSr
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-Error/Warning ids grouped by kconfigs:
+-----BEGIN PGP SIGNATURE-----
 
-gcc_recent_errors
-|-- alpha-allyesconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-virtual_disable_link_output
-|-- alpha-buildonly-randconfig-r003-20221003
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-virtual_disable_link_output
-|-- arc-allyesconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-virtual_disable_link_output
-|-- arm-allyesconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-virtual_disable_link_output
-|-- arm64-allyesconfig
-|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-alt_cb_patch_nops
-|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-apply_alternatives_vdso
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-virtual_disable_link_output
-|-- arm64-randconfig-r004-20221002
-|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-alt_cb_patch_nops
-|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-apply_alternatives_vdso
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-virtual_disable_link_output
-|-- arm64-randconfig-r014-20221003
-|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-alt_cb_patch_nops
-|   `-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-apply_alternatives_vdso
-|-- csky-randconfig-m041-20221002
-|   |-- drivers-iio-adc-mcp3911.c-mcp3911_probe()-warn:passing-zero-to-PTR_ERR
-|   |-- drivers-iio-adc-mcp3911.c-mcp3911_write_raw()-error:buffer-overflow-mcp3911_osr_table
-|   `-- drivers-nvme-target-loop.c-nvme_loop_create_ctrl()-warn:opts-queue_size-can-t-fit-into-ctrl-ctrl.sqsize
-|-- i386-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-virtual_disable_link_output
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- i386-defconfig
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- i386-randconfig-a013-20221003
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- i386-randconfig-a014-20221003
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- i386-randconfig-a015-20221003
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- i386-randconfig-c001
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- i386-randconfig-c021
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- ia64-allmodconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-virtual_disable_link_output
-|-- ia64-buildonly-randconfig-r003-20221002
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-virtual_disable_link_output
-|-- loongarch-randconfig-c024-20221002
-|   |-- arch-loongarch-mm-init.c:warning:variable-new-set-but-not-used
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-virtual_disable_link_output
-|-- loongarch-randconfig-m031-20221003
-|   |-- drivers-iio-adc-mcp3911.c-mcp3911_probe()-warn:passing-zero-to-PTR_ERR
-|   `-- drivers-iio-adc-mcp3911.c-mcp3911_write_raw()-error:buffer-overflow-mcp3911_osr_table
-|-- loongarch-randconfig-r001-20221002
-|   `-- arch-loongarch-mm-init.c:warning:variable-new-set-but-not-used
-clang_recent_errors
-|-- arm-buildonly-randconfig-r005-20221003
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- arm-randconfig-r016-20221003
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-function-virtual_disable_link_output
-|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-|   `-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-|-- arm-randconfig-r022-20221003
-|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt2701.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
-|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
-|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-|   `-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-|-- hexagon-randconfig-r005-20221002
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- hexagon-randconfig-r005-20221003
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- hexagon-randconfig-r013-20221002
-|   |-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-__vmnewmap
-|   |-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-__vmsetvec
-|   `-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-memset
-|-- hexagon-randconfig-r041-20221003
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- hexagon-randconfig-r041-20221007
-|   `-- drivers-phy-mediatek-phy-mtk-tphy.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(unsigned-c
-|-- hexagon-randconfig-r045-20221002
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- i386-randconfig-a002-20221003
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- i386-randconfig-a005-20221003
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- i386-randconfig-a006-20221003
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- mips-cu1830-neo_defconfig
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- mips-mtx1_defconfig
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- mips-randconfig-r003-20221002
-|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt2701.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
-|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- mips-randconfig-r016-20221007
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- mips-randconfig-r031-20221002
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- riscv-randconfig-r042-20221002
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-function-virtual_disable_link_output
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- s390-randconfig-r026-20221002
-|   |-- ERROR:devm_ioremap_resource-drivers-dma-idma64.ko-undefined
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- x86_64-randconfig-a001-20221003
+iQIzBAEBCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmNA2MYACgkQnowa+77/
+2zK5kw//fXQx4S3OL/pT8fA6cPcGbkKppj3y8jm224xgNltGQMKb7Cak0stDmGKO
+d2DKLfWtEAdWovBJcryyjjyLrHtsYbvUff4ulx74wiUAmxOMmTvFIbmvhK6DJDUe
+PIswvZEb0/XkX9oOYvXf24ZTX3HcIpXGZYuCCgmTyCbEFYtBj/50YoScoffCW6DY
+kYdQK92kixPFv2Dy8TtO9Eo+J7c7TuNuZWpU9/3HMT+gQavNfwtSR+wHoeZEur+M
+wso6Ydm662Fm8hWzMddVPSV1wDYfbNShbQNYuTB0LBef+7X/rLDK2b3xcC8JPk1R
+87i3LCdju4Byqpb9IhaMaNDE1zSowYst+wSg4ArGsCi5TJ9X2CSy0peewSW/sUqq
+7YPXyTepTRSUoFGNpvAguhAqoYAkpxV0ZwrMZ2GhyeSUMQtZc2PB3px+87l8Zua9
++lL0BRttlGau7BbURhvvYqvlKDLzemqh0YXXMhtbCBD2YCQEtuCDEoC1fsbU5Ayn
+XBXDDlxCX+fJ31MgW606xLgCgqPuzIHQPX04/fsRy4YdnC4u+A8r8R92mhoojVws
+rC2z4qx9JB+UvcNZvyycP1YyBCZthMBYOj3PyBLCSRSCAWugC9x7TsO0I2GPjSej
+vIEb4e9Q2WDQQCGVGMwtvqX/zPvrXMDEFQ0cZYL1FPPRFDGAMZc=
+=xGWP
+-----END PGP SIGNATURE-----
 
-elapsed time: 724m
-
-configs tested: 83
-configs skipped: 4
-
-gcc tested configs:
-um                             i386_defconfig
-arc                                 defconfig
-um                           x86_64_defconfig
-alpha                               defconfig
-powerpc                           allnoconfig
-s390                             allmodconfig
-i386                                defconfig
-s390                                defconfig
-x86_64                           rhel-8.3-syz
-x86_64                         rhel-8.3-kunit
-x86_64                           rhel-8.3-kvm
-arm                                 defconfig
-i386                 randconfig-a014-20221003
-m68k                             allyesconfig
-x86_64                          rhel-8.3-func
-m68k                             allmodconfig
-x86_64                              defconfig
-i386                 randconfig-a011-20221003
-csky                              allnoconfig
-s390                             allyesconfig
-x86_64                    rhel-8.3-kselftests
-arc                              allyesconfig
-arc                               allnoconfig
-sh                               allmodconfig
-i386                 randconfig-a012-20221003
-mips                             allyesconfig
-i386                 randconfig-a013-20221003
-alpha                            allyesconfig
-i386                 randconfig-a015-20221003
-x86_64                           allyesconfig
-alpha                             allnoconfig
-powerpc                          allmodconfig
-riscv                             allnoconfig
-x86_64                               rhel-8.3
-arm64                            allyesconfig
-i386                 randconfig-a016-20221003
-i386                             allyesconfig
-arm                              allyesconfig
-x86_64                        randconfig-a013
-x86_64                        randconfig-a011
-riscv                randconfig-r042-20221007
-arc                  randconfig-r043-20221007
-x86_64                        randconfig-a015
-riscv                randconfig-r042-20221003
-arc                  randconfig-r043-20221003
-arc                  randconfig-r043-20221002
-ia64                             allmodconfig
-s390                 randconfig-r044-20221007
-m68k                       m5249evb_defconfig
-s390                 randconfig-r044-20221003
-i386                          randconfig-c001
-mips                        bcm47xx_defconfig
-powerpc                 mpc85xx_cds_defconfig
-powerpc                      tqm8xx_defconfig
-nios2                            alldefconfig
-sh                            migor_defconfig
-powerpc                     tqm8555_defconfig
-
-clang tested configs:
-x86_64               randconfig-a003-20221003
-x86_64               randconfig-a005-20221003
-i386                 randconfig-a003-20221003
-x86_64                        randconfig-a014
-x86_64               randconfig-a002-20221003
-i386                 randconfig-a002-20221003
-x86_64               randconfig-a001-20221003
-hexagon              randconfig-r041-20221003
-x86_64               randconfig-a004-20221003
-riscv                randconfig-r042-20221002
-x86_64               randconfig-a006-20221003
-i386                 randconfig-a001-20221003
-x86_64                        randconfig-a012
-hexagon              randconfig-r041-20221002
-i386                 randconfig-a004-20221003
-s390                 randconfig-r044-20221002
-i386                 randconfig-a005-20221003
-i386                 randconfig-a006-20221003
-x86_64                        randconfig-a016
-hexagon              randconfig-r045-20221002
-hexagon              randconfig-r045-20221007
-hexagon              randconfig-r041-20221007
-hexagon              randconfig-r045-20221003
-mips                          ath79_defconfig
-mips                     cu1830-neo_defconfig
-mips                           mtx1_defconfig
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+--------------x4E24oHe3w0nvhvCysX22mSr--
