@@ -2,136 +2,97 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 721C25FA045
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Oct 2022 16:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA5B5FA0C4
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Oct 2022 16:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229471AbiJJOfq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 10 Oct 2022 10:35:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58684 "EHLO
+        id S229597AbiJJO62 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 10 Oct 2022 10:58:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbiJJOfp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 10 Oct 2022 10:35:45 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F10F3E02F;
-        Mon, 10 Oct 2022 07:35:44 -0700 (PDT)
-Received: from canpemm500004.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MmLxP0jLszwPKp;
-        Mon, 10 Oct 2022 22:33:13 +0800 (CST)
-Received: from [10.174.179.14] (10.174.179.14) by
- canpemm500004.china.huawei.com (7.192.104.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 10 Oct 2022 22:35:42 +0800
-Subject: Re: [PATCH -next] jbd2: use the correct print format
-To:     Bixuan Cui <cuibixuan@linux.alibaba.com>, <rostedt@goodmis.org>,
-        <mhiramat@kernel.org>, <bvanassche@acm.org>, <axboe@kernel.dk>,
-        <tytso@mit.edu>, <linux-kernel@vger.kernel.org>,
-        <linux-ext4@vger.kernel.org>
-References: <1665389343-35572-1-git-send-email-cuibixuan@linux.alibaba.com>
-From:   Jason Yan <yanaijie@huawei.com>
-Message-ID: <c30377f7-f9b8-5774-b509-a4285210b40f@huawei.com>
-Date:   Mon, 10 Oct 2022 22:35:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        with ESMTP id S230023AbiJJO6H (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 10 Oct 2022 10:58:07 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C9A74CD7
+        for <linux-ext4@vger.kernel.org>; Mon, 10 Oct 2022 07:57:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 02484B80C90
+        for <linux-ext4@vger.kernel.org>; Mon, 10 Oct 2022 14:57:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FDB1C433D6;
+        Mon, 10 Oct 2022 14:57:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1665413837;
+        bh=xiSHqu+Yq6V1t4rTQ0v2ZquPscVGf30SjcHdk4O0WQI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QNfa+gO9r/57T6FqVLCHMJ3dIE+gl7AGIWKYoO1D8P9ilJrRaRTU1cVFZrjoxIHs+
+         7zpqfJhvBFdbIn5gWCprO/fb166JTHvT8rn6Zn35RW6QzvrMDInfIqkDoUK8kt4jW2
+         ILxuQ5rdLeFNhRCSm9yV5+tBZ7ghIbikdg8W0gDUBb9aeqgS/Yrl6rSCZfiKiHBIOG
+         xWYyZZ7/XYXiV1gia+qx3Ad8sY1Emia7XDw0qFv1Qf/m+vP46rD22qINaKQiPhOT2o
+         E6h8+Z2seyDvnhBGqA0hYzrA8acrOXa+JM9CeeLAnK1XDoF0OkhavCzvDTrALsFSe+
+         1xOYB7+5exvkg==
+Date:   Mon, 10 Oct 2022 07:57:16 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     zhanchengbin <zhanchengbin1@huawei.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Lukas Czerner <lczerner@redhat.com>, liuzhiqiang26@huawei.com,
+        linfeilong <linfeilong@huawei.com>
+Subject: Re: [PATCH v2] misc/fsck.c: Processes may kill other processes.
+Message-ID: <Y0QyzHbcnBrUBlkP@magnolia>
+References: <2c8f3b3a-b6d1-9b8b-27c7-2df51236fe8c@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <1665389343-35572-1-git-send-email-cuibixuan@linux.alibaba.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.14]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500004.china.huawei.com (7.192.104.92)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2c8f3b3a-b6d1-9b8b-27c7-2df51236fe8c@huawei.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Bixuan,
+On Mon, Oct 10, 2022 at 04:56:58PM +0800, zhanchengbin wrote:
+> I find a error in misc/fsck.c, if run the fsck -N command, processes
+> don't execute, just show what would be done. However, the pid whose
+> value is -1 is added to the instance_list list in the execute
+> function,if the kill_all function is called later, kill(-1, signum)
+> is executed, Signals are sent to all processes except the number one
+> process and itself. Other processes will be killed if they use the
+> default signal processing function.
+> 
+> Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
 
-On 2022/10/10 16:09, Bixuan Cui wrote:
-> The print format error was found when using ftrace event:
->      <...>-1406 [000] .... 23599442.895823: jbd2_end_commit: dev 252,8 transaction -1866216965 sync 0 head -1866217368
->      <...>-1406 [000] .... 23599442.896299: jbd2_start_commit: dev 252,8 transaction -1866216964 sync 0
-> 
-> Print transaction and head with the unsigned format "%u" instead.
-> 
-> Fixes: 879c5e6b7cb4 ('jbd2: convert instrumentation from markers to tracepoints')
-> Signed-off-by: Bixuan Cui <cuibixuan@linux.alibaba.com>
+Looks good to me,
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+
+Ted: Perhaps it's time to retire fsck.c in the e2fsprogs distribution?
+
+--D
+
 > ---
->   include/trace/events/jbd2.h | 10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
+> V1->V2:
+>   Anything <= 0 is a bug and can have unexpected consequences if
+> we actually call the kill(). So change inst->pid==-1 to inst->pid<=0.
 > 
-> diff --git a/include/trace/events/jbd2.h b/include/trace/events/jbd2.h
-> index 99f783c..ce9accb 100644
-> --- a/include/trace/events/jbd2.h
-> +++ b/include/trace/events/jbd2.h
-> @@ -40,7 +40,7 @@
->   	TP_STRUCT__entry(
->   		__field(	dev_t,	dev			)
->   		__field(	char,	sync_commit		  )
-> -		__field(	int,	transaction		  )
-> +		__field(	tid_t,	transaction		  )
-
-While you are at it, can you make all the tid tracing consistent. Some 
-tracing points using unsigned long such as:
-
-TRACE_EVENT(jbd2_handle_extend,
-	TP_PROTO(dev_t dev, unsigned long tid, unsigned int type,
-		 unsigned int line_no, int buffer_credits,
-		 int requested_blocks),
-
-	TP_ARGS(dev, tid, type, line_no, buffer_credits, requested_blocks),
-
-
-and the caller passing transaction->t_tid which is tid_t(unsigned int).
-
-	trace_jbd2_handle_extend(journal->j_fs_dev->bd_dev,
-				 transaction->t_tid,
-				 handle->h_type, handle->h_line_no,
-				 handle->h_total_credits,
-				 nblocks);
-
-Thanks,
-Jason
-
->   	),
->   
->   	TP_fast_assign(
-> @@ -49,7 +49,7 @@
->   		__entry->transaction	= commit_transaction->t_tid;
->   	),
->   
-> -	TP_printk("dev %d,%d transaction %d sync %d",
-> +	TP_printk("dev %d,%d transaction %u sync %d",
-
-
-
-
->   		  MAJOR(__entry->dev), MINOR(__entry->dev),
->   		  __entry->transaction, __entry->sync_commit)
->   );
-> @@ -97,8 +97,8 @@
->   	TP_STRUCT__entry(
->   		__field(	dev_t,	dev			)
->   		__field(	char,	sync_commit		  )
-> -		__field(	int,	transaction		  )
-> -		__field(	int,	head		  	  )
-> +		__field(	tid_t,	transaction		  )
-> +		__field(	tid_t,	head		  	  )
->   	),
->   
->   	TP_fast_assign(
-> @@ -108,7 +108,7 @@
->   		__entry->head		= journal->j_tail_sequence;
->   	),
->   
-> -	TP_printk("dev %d,%d transaction %d sync %d head %d",
-> +	TP_printk("dev %d,%d transaction %u sync %d head %u",
->   		  MAJOR(__entry->dev), MINOR(__entry->dev),
->   		  __entry->transaction, __entry->sync_commit, __entry->head)
->   );
+>  misc/fsck.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/misc/fsck.c b/misc/fsck.c
+> index 4efe10ec..c56d1b00 100644
+> --- a/misc/fsck.c
+> +++ b/misc/fsck.c
+> @@ -546,6 +546,8 @@ static int kill_all(int signum)
+>  	for (inst = instance_list; inst; inst = inst->next) {
+>  		if (inst->flags & FLAG_DONE)
+>  			continue;
+> +		if (inst->pid <= 0)
+> +			continue;
+>  		kill(inst->pid, signum);
+>  		n++;
+>  	}
+> -- 
+> 2.27.0
 > 
