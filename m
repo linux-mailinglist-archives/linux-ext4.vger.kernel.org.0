@@ -2,71 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EBF65F8921
-	for <lists+linux-ext4@lfdr.de>; Sun,  9 Oct 2022 05:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE5B5F9A0D
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Oct 2022 09:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229463AbiJIDZt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 8 Oct 2022 23:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52788 "EHLO
+        id S232401AbiJJHf6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 10 Oct 2022 03:35:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbiJIDZm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 8 Oct 2022 23:25:42 -0400
-Received: from out30-44.freemail.mail.aliyun.com (out30-44.freemail.mail.aliyun.com [115.124.30.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC715286DA;
-        Sat,  8 Oct 2022 20:25:40 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0VRgUfzb_1665285934;
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0VRgUfzb_1665285934)
-          by smtp.aliyun-inc.com;
-          Sun, 09 Oct 2022 11:25:37 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     tytso@mit.edu
-Cc:     adilger.kernel@dilger.ca, nathan@kernel.org,
-        ndesaulniers@google.com, trix@redhat.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH] ext4: remove deprecated_msg
-Date:   Sun,  9 Oct 2022 11:25:20 +0800
-Message-Id: <20221009032520.108294-1-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+        with ESMTP id S231282AbiJJHfk (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 10 Oct 2022 03:35:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A4A46BD4F
+        for <linux-ext4@vger.kernel.org>; Mon, 10 Oct 2022 00:29:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1665386940;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yGHAxr3mVA+vcN45KyLOwqZpMifu62QDb5EHFrMont0=;
+        b=dWdrcnk3GqNg7ziRzm1ZV38qHtxNlDkGcEHe5aZVeP4L5GvEKCuqSiavzZ8fX53gUF9GcD
+        fxAzm2SrwCNwt2dduSOqA56iSHqZhJvYXhE5LoPk4ITmFByAU4PE7U/V/AzNSpnwPCHdYT
+        BCyFNVgtskaIwMgUv5LXrpho2a0pqKU=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-353-cHUbfYkQPp-gaQBsvy6kwA-1; Mon, 10 Oct 2022 03:17:30 -0400
+X-MC-Unique: cHUbfYkQPp-gaQBsvy6kwA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 836713804061;
+        Mon, 10 Oct 2022 07:17:29 +0000 (UTC)
+Received: from fedora (unknown [10.40.193.105])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9323E40FF706;
+        Mon, 10 Oct 2022 07:17:27 +0000 (UTC)
+Date:   Mon, 10 Oct 2022 09:17:25 +0200
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     zhanchengbin <zhanchengbin1@huawei.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        liuzhiqiang26@huawei.com, linfeilong <linfeilong@huawei.com>
+Subject: Re: [PATCH] misc/fsck.c: Processes may kill other processes.
+Message-ID: <20221010071725.ghflyqxj7poqlwtq@fedora>
+References: <01783b8c-2a39-73ec-c537-cc1df82643e2@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <01783b8c-2a39-73ec-c537-cc1df82643e2@huawei.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-fs/ext4/super.c:1744:19: warning: ‘deprecated_msg’ defined but not used.
+On Sat, Oct 08, 2022 at 11:05:48AM +0800, zhanchengbin wrote:
+> If run the fsck -N command, processes don't execute, just show what
+> would be done. However, the pid whose value is -1 is added to the
+> instance_list list in the execute function,if the kill_all function
+> is called later, kill(-1, signum) is executed, Signals are sent to
+> all processes except the number one process and itself. Other
+> processes will be killed if they use the default signal processing
+> function.
+> 
+> Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+> ---
+>  misc/fsck.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/misc/fsck.c b/misc/fsck.c
+> index 4efe10ec..faf7789d 100644
+> --- a/misc/fsck.c
+> +++ b/misc/fsck.c
+> @@ -546,6 +546,8 @@ static int kill_all(int signum)
+>  	for (inst = instance_list; inst; inst = inst->next) {
+>  		if (inst->flags & FLAG_DONE)
+>  			continue;
+> +		if (inst->pid == -1)
+> +			continue;
 
-Link: https://bugzilla.openanolis.cn/show_bug.cgi?id=2346
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- fs/ext4/super.c | 4 ----
- 1 file changed, 4 deletions(-)
+That works, but I think we can afford to be a little defensive here.
+Anything <= 0 is a bug and can have unexpected consequences if we
+actually call the kill().
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 989365b878a6..7950904fbf04 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1741,10 +1741,6 @@ static const struct fs_parameter_spec ext4_param_specs[] = {
- 
- #define DEFAULT_JOURNAL_IOPRIO (IOPRIO_PRIO_VALUE(IOPRIO_CLASS_BE, 3))
- 
--static const char deprecated_msg[] =
--	"Mount option \"%s\" will be removed by %s\n"
--	"Contact linux-ext4@vger.kernel.org if you think we should keep it.\n";
--
- #define MOPT_SET	0x0001
- #define MOPT_CLEAR	0x0002
- #define MOPT_NOSUPPORT	0x0004
--- 
-2.20.1.7.g153144c
+		if (inst->pid <= 0)
+			continue;
+
+
+Also as Darrick pointed out we need to send the patch to util-linux
+(disk-utils/fsck.c) as well if you haven't already.
+
+-Lukas
+
+
+>  		kill(inst->pid, signum);
+>  		n++;
+>  	}
+> -- 
+> 2.27.0
+> 
 
