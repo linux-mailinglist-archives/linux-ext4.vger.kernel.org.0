@@ -2,91 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A8415FB7D4
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Oct 2022 17:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46AD25FBA86
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Oct 2022 20:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbiJKP5M (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 11 Oct 2022 11:57:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48804 "EHLO
+        id S229715AbiJKSin (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 11 Oct 2022 14:38:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230113AbiJKP5G (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Oct 2022 11:57:06 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B12FA3386A;
-        Tue, 11 Oct 2022 08:57:05 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 31F5921CE7;
-        Tue, 11 Oct 2022 15:57:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1665503824; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Oe3uf25AYWfevc4VWeTIQ/nmsX2KXKvM05hFxfYN5OQ=;
-        b=avEuPDsPps5iS5JDhk27pl2qhuo/E5/sBdSb11ciEFMxouA6ko0QieAf5wfwp3qow9lV2J
-        pR0ghazPSlsHa9lnhfF2sss2OniNLaIq0zmJWsHEU/b38PuDK8zIvlg38VLcUxyvsXIg09
-        Hem3zPFKrVGV/0/PSFaSRDimnZoByic=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1665503824;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Oe3uf25AYWfevc4VWeTIQ/nmsX2KXKvM05hFxfYN5OQ=;
-        b=k32d+WKmjpCdYsXKOQ/pCjbdzYqQlvSAwygbKvI4QCPKWBpQd1eyWktleSXiRH7CXGA5cP
-        c8zxF+G5P75VGlAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B9AB613AAC;
-        Tue, 11 Oct 2022 15:57:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id +AdsKk+SRWPEYwAAMHmgww
-        (envelope-from <lhenriques@suse.de>); Tue, 11 Oct 2022 15:57:03 +0000
-Received: from localhost (brahms.olymp [local])
-        by brahms.olymp (OpenSMTPD) with ESMTPA id 72d8e8ec;
-        Tue, 11 Oct 2022 15:58:00 +0000 (UTC)
-From:   =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
-Subject: [PATCH] ext4: remove trailing newline from ext4_msg() message
-Date:   Tue, 11 Oct 2022 16:57:58 +0100
-Message-Id: <20221011155758.15287-1-lhenriques@suse.de>
+        with ESMTP id S229748AbiJKSik (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Oct 2022 14:38:40 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2314057E21
+        for <linux-ext4@vger.kernel.org>; Tue, 11 Oct 2022 11:38:39 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id 67so14295082pfz.12
+        for <linux-ext4@vger.kernel.org>; Tue, 11 Oct 2022 11:38:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=J0agk2sWS+Mi5h9dV51Nsg3RqUCciA5PQ2AzXKmTmwY=;
+        b=UX8F1Qqg05k15VubNsjsrQCFZOGSL2y0dqQMfjdUJ5WFjv7HnAp/smRP0rDpDY/GqW
+         fnYLtcH++lhV99URB/TalAcFo2q6HMMdYZGREMDhZNOvhA/QPEBRnQs+Bnof/+pmxavj
+         6uvlK8Gru67aKDmcnOimQXP1r58Bv9pxtA0rCC8CMz7qI/BAEokgOuCfUQ+0dpN3Of1a
+         2nprNkxXV92wa6SSDIht/xWKrLQZxHP+VSz8WCcYaFn3i6Rp9XKUjpoAS6zunbwGuJgq
+         w0vrv8lb9f0sl5MQ0gFE8NIOOvntLUnS4sAWwTf8riT2L3jLRU1bv6JlpJQfM0CtCsoW
+         yJaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=J0agk2sWS+Mi5h9dV51Nsg3RqUCciA5PQ2AzXKmTmwY=;
+        b=eGhzjPSF/q9Q81LVIOrdsEovGB+Ek5J6bVONzBCAYzQLsu5FtUOFSURU88ThsDlcr5
+         TIz87ZtCFpnju8Pd9ymH3xfaiE0olssaJ1dcaWdr0zBdWcXRz0hnAJGrAaozDAqfLQVM
+         vLvfMuI+IQ3VLAo/PuwykxHGkM6E8S/YcqB3Gi4sbKiyHxGTEPHjAqxNS1fCau0G3d+x
+         ekYCyP/438JDB9FOoylhwyR/OuKR1YKzObi/RNiB9qfPVcX7qflGWrltFORKjWCgV+zb
+         ai958B2a40iNvwwekVXqSNhFxf+M738NCLQu+mRszBR65BtouLtB1McKjaIL7nUB0txX
+         h3sw==
+X-Gm-Message-State: ACrzQf3H4UieoT2sFojQ5EPB0+p7fEl5H852pZr6BslIhm7rABFL1exn
+        FNw7Qlp9TXdxFJGFnRnN8PD5zA==
+X-Google-Smtp-Source: AMsMyM7hgCm3o1frXwV8MfCXr7f55woi1BDbvv8MgkVy9eZI9ul9Q/2X5LsWM8EICdoc/uDAmwo6pQ==
+X-Received: by 2002:aa7:9107:0:b0:553:92a4:d930 with SMTP id 7-20020aa79107000000b0055392a4d930mr26239125pfh.72.1665513518634;
+        Tue, 11 Oct 2022 11:38:38 -0700 (PDT)
+Received: from ?IPV6:2601:1c0:4c81:c480:feaa:14ff:fe3a:b225? ([2601:1c0:4c81:c480:feaa:14ff:fe3a:b225])
+        by smtp.gmail.com with ESMTPSA id c195-20020a621ccc000000b00541c68a0689sm9343155pfc.7.2022.10.11.11.38.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 Oct 2022 11:38:38 -0700 (PDT)
+Message-ID: <e1e227a4-4f71-3a01-2bd1-beaf6c52e02a@linaro.org>
+Date:   Tue, 11 Oct 2022 11:38:37 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.1
+Subject: Re: [PATCH] ext4: Add extend check to prevent BUG() in ext4_es_end
+Content-Language: en-US
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        syzbot+a22dc4b0744ac658ed9b@syzkaller.appspotmail.com
+References: <20220930202536.697396-1-tadeusz.struk@linaro.org>
+From:   Tadeusz Struk <tadeusz.struk@linaro.org>
+In-Reply-To: <20220930202536.697396-1-tadeusz.struk@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The ext4_msg() function adds a new line to the message.  Remove extra '\n'
-from call to ext4_msg() in ext4_orphan_cleanup().
+On 9/30/22 13:25, Tadeusz Struk wrote:
+> Syzbot reported an issue with ext4 extents. The reproducer creates
+> a corrupted ext4 fs image in memory, and mounts it as a loop device.
+> It invokes the ext4_cache_extents() and ext4_find_extent(), which
+> eventually triggers a BUG() in ext4_es_end() causing a kernel crash.
+> It triggers on mainline, and every kernel version back to v4.14.
+> Add a call ext4_ext_check_inode() in ext4_find_extent() to prevent
+> the crash.
+> 
+> To: "Theodore Ts'o"<tytso@mit.edu>
+> Cc: "Andreas Dilger"<adilger.kernel@dilger.ca>
+> Cc:<linux-ext4@vger.kernel.org>
+> Cc:<linux-kernel@vger.kernel.org>
+> Cc:<stable@vger.kernel.org>
+> 
+> Link:https://syzkaller.appspot.com/bug?id=641e7a4b900015c5d7a729d6cc1fba7a928a88f9
+> Reported-by:syzbot+a22dc4b0744ac658ed9b@syzkaller.appspotmail.com
+> Signed-off-by: Tadeusz Struk<tadeusz.struk@linaro.org>
 
-Signed-off-by: Luís Henriques <lhenriques@suse.de>
----
- fs/ext4/orphan.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi,
+Any comments/feedback on this one?
 
-diff --git a/fs/ext4/orphan.c b/fs/ext4/orphan.c
-index 69a9cf9137a6..e5b47dda3317 100644
---- a/fs/ext4/orphan.c
-+++ b/fs/ext4/orphan.c
-@@ -412,7 +412,7 @@ void ext4_orphan_cleanup(struct super_block *sb, struct ext4_super_block *es)
- 		/* don't clear list on RO mount w/ errors */
- 		if (es->s_last_orphan && !(s_flags & SB_RDONLY)) {
- 			ext4_msg(sb, KERN_INFO, "Errors on filesystem, "
--				  "clearing orphan list.\n");
-+				  "clearing orphan list.");
- 			es->s_last_orphan = 0;
- 		}
- 		ext4_debug("Skipping orphan recovery on fs with errors.\n");
+-- 
+Thanks,
+Tadeusz
+
