@@ -2,111 +2,115 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D5075FC829
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Oct 2022 17:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 708B35FCB7D
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Oct 2022 21:26:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229475AbiJLPR4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 12 Oct 2022 11:17:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42726 "EHLO
+        id S229813AbiJLT0d convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Wed, 12 Oct 2022 15:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbiJLPRx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Oct 2022 11:17:53 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D579D18C9;
-        Wed, 12 Oct 2022 08:17:48 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 8B28A1F381;
-        Wed, 12 Oct 2022 15:17:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1665587864; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YUQdCV8qiu2z5cZbzxSEaEkk7or+cErTkTgKM6DkvSE=;
-        b=TQBH6wZEfg2J4/JXfuz2CUfAw1+Wpt5z7yW90MCznNrPc1PrIJijJ1VCqid5Cvm+eI60qQ
-        5WWug0YABffQ/hGUHPcDgZhagmRKLa90pB0Wew+DeotunOyVKjqfwfB6eOJem5VKN1lmll
-        uCEHtshMka44Sj3n5sJJu1jBIKwEHAQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1665587864;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YUQdCV8qiu2z5cZbzxSEaEkk7or+cErTkTgKM6DkvSE=;
-        b=ZGqGu7Q+iBgrLcvuZ+tMwCZGjy+Qc/1rmPnZpoX8IMOOWToDcLWEdjt38F6XYNAO2Xee72
-        Q3pu8bOFCyF3fiDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1219F13ACD;
-        Wed, 12 Oct 2022 15:17:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 78FiAZjaRmM4PAAAMHmgww
-        (envelope-from <lhenriques@suse.de>); Wed, 12 Oct 2022 15:17:44 +0000
-Received: from localhost (brahms.olymp [local])
-        by brahms.olymp (OpenSMTPD) with ESMTPA id a8723c1a;
-        Wed, 12 Oct 2022 15:18:39 +0000 (UTC)
-Date:   Wed, 12 Oct 2022 16:18:39 +0100
-From:   =?iso-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] ext4: fix BUG_ON() when directory entry has invalid
- rec_len
-Message-ID: <Y0baz6C1aKRjKzvJ@suse.de>
-References: <20221010142035.2051-1-lhenriques@suse.de>
- <20221012131330.32456-1-lhenriques@suse.de>
- <Y0a+Ommsgm4ogo7u@suse.de>
- <Y0bNc9XZA5wXNJMX@mit.edu>
+        with ESMTP id S229748AbiJLT0b (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Oct 2022 15:26:31 -0400
+Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A9910251A;
+        Wed, 12 Oct 2022 12:26:30 -0700 (PDT)
+Received: from omf12.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay01.hostedemail.com (Postfix) with ESMTP id 2096E1C6C41;
+        Wed, 12 Oct 2022 19:17:09 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf12.hostedemail.com (Postfix) with ESMTPA id AB9FC17;
+        Wed, 12 Oct 2022 19:16:43 +0000 (UTC)
+Message-ID: <f8ad3ba44d28dec1a5f7626b82c5e9c2aeefa729.camel@perches.com>
+Subject: Re: [PATCH v1 3/5] treewide: use get_random_u32() when possible
+From:   Joe Perches <joe@perches.com>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        linux-kernel@vger.kernel.org
+Cc:     brcm80211-dev-list.pdl@broadcom.com, cake@lists.bufferbloat.net,
+        ceph-devel@vger.kernel.org, coreteam@netfilter.org,
+        dccp@vger.kernel.org, dev@openvswitch.org,
+        dmaengine@vger.kernel.org, drbd-dev@lists.linbit.com,
+        dri-devel@lists.freedesktop.org, kasan-dev@googlegroups.com,
+        linux-actions@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-fbdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-hams@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-mm@kvack.org, linux-mmc@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-raid@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-sctp@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        lvs-devel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, rds-devel@oss.oracle.com,
+        SHA-cyfmac-dev-list@infineon.com, target-devel@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net
+Date:   Wed, 12 Oct 2022 12:16:53 -0700
+In-Reply-To: <20221005214844.2699-4-Jason@zx2c4.com>
+References: <20221005214844.2699-1-Jason@zx2c4.com>
+         <20221005214844.2699-4-Jason@zx2c4.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Y0bNc9XZA5wXNJMX@mit.edu>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
+        SPF_NONE,UNPARSEABLE_RELAY autolearn=no autolearn_force=no
+        version=3.4.6
+X-Stat-Signature: c3d78nppyrywoyngway5d943fw3wwtdu
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: AB9FC17
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/Qw27OeRP8/mQW0Su38d7rwhSo1NO9QCw=
+X-HE-Tag: 1665602203-428634
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Oct 12, 2022 at 10:21:39AM -0400, Theodore Ts'o wrote:
-> On Wed, Oct 12, 2022 at 02:16:42PM +0100, Luís Henriques wrote:
-> > Grr, looks like I accidentally reused a 'git send-email' from shell
-> > history which had a '--in-reply-to' in it.  Please ignore and sorry about
-> > that.  I've just resent a new email.
-> 
-> No worries!  The --in-reply-to wasn't actually a problem, since b4
-> generally will do the right thing (and sometimes humans prefer the
-> in-reply-to since they can more easily see the patch that it is
-> replacing/obsoleting).
-> 
-> b4 can sometimes get confused when a patch series gets split, and both
-> parts of the patch series are in a reply-to mail thread to the
-> original patch series, since if it can't use the -vn+1 hueristic or
-> the "subject line has stayed the same but has a newer date" hueristic,
-> it falls back to "latest patch in the mail thread".  So if there are
-> two "valid" patches or patch series in an e-mail thread, b4 -c
-> (--check-newer-revisions) can get confused.  But even in that case,
-> that it's more a minor annoyance than anything else.
-> 
-> So in the future, don't feel that you need to resend a patch if
-> there's an incorrect/older --in-reply-to; it's not a big deal.
+On Wed, 2022-10-05 at 23:48 +0200, Jason A. Donenfeld wrote:
+> The prandom_u32() function has been a deprecated inline wrapper around
+> get_random_u32() for several releases now, and compiles down to the
+> exact same code. Replace the deprecated wrapper with a direct call to
+> the real function.
+[]
+> diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
+[]
+> @@ -734,7 +734,7 @@ static int send_connect(struct c4iw_ep *ep)
+>  				   &ep->com.remote_addr;
+>  	int ret;
+>  	enum chip_type adapter_type = ep->com.dev->rdev.lldi.adapter_type;
+> -	u32 isn = (prandom_u32() & ~7UL) - 1;
+> +	u32 isn = (get_random_u32() & ~7UL) - 1;
 
-Great, I haven't yet included b4 in my workflow so, to be honest, I didn't
-really thought about that tool being confused.  What really made me resend
-the patch was that I used the *wrong message-ID in the "--in-reply-to"!
-And that thread already had a v2 patch, which would could easily confuse
-humans.  Hopefully, b4 won't be confused by that either.
+trivia:
 
-Cheers,
---
-Luís
+There are somewhat odd size mismatches here.
+
+I had to think a tiny bit if random() returned a value from 0 to 7
+and was promoted to a 64 bit value then truncated to 32 bit.
+
+Perhaps these would be clearer as ~7U and not ~7UL
+
+>  	struct net_device *netdev;
+>  	u64 params;
+>  
+> @@ -2469,7 +2469,7 @@ static int accept_cr(struct c4iw_ep *ep, struct sk_buff *skb,
+>  	}
+>  
+>  	if (!is_t4(adapter_type)) {
+> -		u32 isn = (prandom_u32() & ~7UL) - 1;
+> +		u32 isn = (get_random_u32() & ~7UL) - 1;
+
+etc...
+
+drivers/infiniband/hw/cxgb4/cm.c:	u32 isn = (prandom_u32() & ~7UL) - 1;
+drivers/infiniband/hw/cxgb4/cm.c:		u32 isn = (prandom_u32() & ~7UL) - 1;
+drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c:	rpl5->iss = cpu_to_be32((prandom_u32() & ~7UL) - 1);
+drivers/scsi/cxgbi/cxgb4i/cxgb4i.c:		u32 isn = (prandom_u32() & ~7UL) - 1;
+drivers/scsi/cxgbi/cxgb4i/cxgb4i.c:		u32 isn = (prandom_u32() & ~7UL) - 1;
+drivers/target/iscsi/cxgbit/cxgbit_cm.c:	rpl5->iss = cpu_to_be32((prandom_u32() & ~7UL) - 1);
+
