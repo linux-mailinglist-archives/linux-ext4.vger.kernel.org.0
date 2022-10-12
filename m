@@ -2,55 +2,52 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6D545FBE23
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Oct 2022 01:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 108A05FBEC6
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Oct 2022 02:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229616AbiJKXCl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 11 Oct 2022 19:02:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42650 "EHLO
+        id S229492AbiJLA5Q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 11 Oct 2022 20:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229656AbiJKXCj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Oct 2022 19:02:39 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C5167C8A;
-        Tue, 11 Oct 2022 16:02:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 31B14B817BB;
-        Tue, 11 Oct 2022 23:02:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8717FC433D6;
-        Tue, 11 Oct 2022 23:02:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665529355;
-        bh=y4Ano1StaiQUYrKYxW/krjKkHKYUUCVRriaLSIOEAic=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hZIFsAjLpJlnbBWUJKuBh0F5S/GKgabGfqQTZt8SwwkP/J7rmJxFBmdvyxWpJY1Y9
-         3QW5uMvFKuAe9HRFYlHKD4pi0/xv9MO0iWOnIf2AaqjytVfWJr8aVejJeLExJ/5KZ3
-         FrlFesvrqUYR/3JbrOA9OamXCfJjwQ/ne2rrxCnn7+JkgnaUtxq8jzzju5lNX9VZMj
-         OGx/bWnGyw+FFs/AoVq28SHVdUyPbpIo9h4hq6hcEOD4KPNhe0MRYfhZxFJTCExz4F
-         W36vvHtVIwfEG0+ZL+Eohic99c9jg9AxKCclN8amYinpbZSG2RDhRYsGaXHRgXP5kM
-         kAk+ZlelP4YYA==
-Date:   Tue, 11 Oct 2022 16:02:33 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Alejandro Colomar <alx.manpages@gmail.com>
-Cc:     linux-man@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-xfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-block@vger.kernel.org, "Darrick J. Wong" <djwong@kernel.org>
-Subject: Re: [man-pages PATCH v3] statx.2, open.2: document STATX_DIOALIGN
-Message-ID: <Y0X2CbXstn8qojPF@sol.localdomain>
-References: <20221004174307.6022-1-ebiggers@kernel.org>
- <26cafc28-e63a-6f13-df70-8ccec85a4ef0@gmail.com>
+        with ESMTP id S229470AbiJLA5P (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Oct 2022 20:57:15 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A5776554;
+        Tue, 11 Oct 2022 17:57:14 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 29C0v7uB018230
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 11 Oct 2022 20:57:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1665536229; bh=SJ07M6yWasK9iiukuBymLIFLZ79Thg5ed7O8f39WZrc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=Ug7qUNgYjI4okdf7skzS7qOcEr0wFx1ngm9zBQqLkFxgOlFFK0eU8Zy/xeUjvF71n
+         faZCktFmQ9bE/y3gyiYNBsec+ihxyygklUprfVyxNoaa6/Yuz1BokK3VVNDlzRhvE6
+         EBaUCK6FFQyv+SLTSbc4wEAGb6XoHFe1TwjWFiXlhe/dlid/O/gpP06GckatNAT8bI
+         t+3JhmOAb3h5/K7nBo16RGEWN6KKVzDiLDZZeLC7/0RZcXRSieXKPNey/auVQmWJ8x
+         VzQiVo8R1xSkGkH1Mgz0lXiiw1/cCN6bwSzA51wHLG/HWATOfSDGryaUoi0Pm2z9wm
+         CzVU28suFpoWA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 171F915C3AC9; Tue, 11 Oct 2022 20:57:07 -0400 (EDT)
+Date:   Tue, 11 Oct 2022 20:57:07 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     =?iso-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] ext4: fix BUG_ON() when a directory entry has an invalid
+ rec_len
+Message-ID: <Y0YQ42Z/XPuHZRS8@mit.edu>
+References: <20221011155745.15264-1-lhenriques@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <26cafc28-e63a-6f13-df70-8ccec85a4ef0@gmail.com>
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS autolearn=ham
+In-Reply-To: <20221011155745.15264-1-lhenriques@suse.de>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,29 +55,28 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Alejandro,
+On Tue, Oct 11, 2022 at 04:57:45PM +0100, Luís Henriques wrote:
+> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+> index 3a31b662f661..06803292e394 100644
+> --- a/fs/ext4/namei.c
+> +++ b/fs/ext4/namei.c
+> @@ -2254,8 +2254,18 @@ static int make_indexed_dir(handle_t *handle, struct ext4_filename *fname,
+>  	memset(de, 0, len); /* wipe old data */
+>  	de = (struct ext4_dir_entry_2 *) data2;
+>  	top = data2 + len;
+> -	while ((char *)(de2 = ext4_next_entry(de, blocksize)) < top)
+> +	while ((char *)(de2 = ext4_next_entry(de, blocksize)) < top) {
+> +		if (de->rec_len & 3) {
 
-On Sat, Oct 08, 2022 at 03:56:22AM +0200, Alejandro Colomar wrote:
-> > +If none of the above is available, then direct I/O support and alignment
-> 
-> Please use semantic newlines.
-> 
-> See man-pages(7):
->    Use semantic newlines
->        In the source of a manual page, new sentences  should  be
->        started on new lines, long sentences should be split into
->        lines  at  clause breaks (commas, semicolons, colons, and
->        so on), and long clauses should be split at phrase boundâ€
->        aries.  This convention,  sometimes  known  as  "semantic
->        newlines",  makes it easier to see the effect of patches,
->        which often operate at the level of individual sentences,
->        clauses, or phrases.
+As the kernel test bot as flaged, de->rec_len needs to be byte swapped
+on big endian machines.  Also, for block sizes larger than 64k the low
+2 bits are used to encode rec_len sizes 256k-4.  All of this is
+encoded in ext4_rec_len_from_disk().
 
-I tried to do this in v4.  It seems very arbitrary, though, so if you want
-further changes to the newlines I recommend just making them when committing the
-patch.
+However, I think a better thing to do is instead of doing this one
+check on rec len, that instead we call ext4_check_dir_entry(), which
+will do this check, and many more besides.  It will also avoid some
+code duplication, since it will take care of calling EXT4_ERROR_INODE
+with the appropriate explanatory message.
 
-Note that a better way to review changes to text is to do a word diff instead of
-a line diff.
-
-- Eric
+					- Ted
