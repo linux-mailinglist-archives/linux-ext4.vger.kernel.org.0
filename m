@@ -2,110 +2,232 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 910B25FF198
-	for <lists+linux-ext4@lfdr.de>; Fri, 14 Oct 2022 17:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E8425FF49B
+	for <lists+linux-ext4@lfdr.de>; Fri, 14 Oct 2022 22:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229511AbiJNPoT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 14 Oct 2022 11:44:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40308 "EHLO
+        id S229832AbiJNUgr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 14 Oct 2022 16:36:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbiJNPoS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 14 Oct 2022 11:44:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF6A027B16;
-        Fri, 14 Oct 2022 08:44:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4B52C61BB3;
-        Fri, 14 Oct 2022 15:44:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91F66C433D6;
-        Fri, 14 Oct 2022 15:44:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665762256;
-        bh=a5ohXX2HljiK2lNNucw1xbywST/b4xYjzGhuCnryDTo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BojrB6HSrEMn1FhOgfcP/WBFDRf35mrgRpMiajKBb27i/tgA0yefz/nT4qQzAhWud
-         I2BIVssXLeiYN1j+rCLBf8YukEVGRs/Yo7TcK41ggGHF1t8gNqn7JmlWjM9nbQTpay
-         Bo6K8LKowNqInWjustkMtzWpwqYUb3dK79HqY6jzscgi+4qSDsEd54sSQ98ZxN9SSg
-         WbN6PEb8FHoe6zPwitBWhHa8UGo/t58coOzis1+FRAp3U8lEIgrB9QvPSd9PYSHaIC
-         +IEzfryV+tWCKGx95u9xR0HrB9NwDP3GqRC4BFQFgbqBZlGnfqVyboxmulVghVWA3B
-         Xo1doKeBNsfuQ==
-Date:   Fri, 14 Oct 2022 08:44:16 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Hrutvik Kanabar <hrkanabar@gmail.com>
-Cc:     Hrutvik Kanabar <hrutvik@google.com>,
-        Marco Elver <elver@google.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        kasan-dev@googlegroups.com,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
+        with ESMTP id S231269AbiJNUgq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 14 Oct 2022 16:36:46 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C94EE09DC;
+        Fri, 14 Oct 2022 13:36:45 -0700 (PDT)
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29EKTOsp000689;
+        Fri, 14 Oct 2022 20:36:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=pp1; bh=bindc1fvcFi+DBVoPCkVh4Kmo4x+uf3LRrw5U92XjqI=;
+ b=ltNUZysWhCCKaLw9A95oZngVvo3HLpHzT5zc64Qvp8DDkQkLI+7Bxiv929VFhVoijylb
+ QAiYtt1V0HEiYrgc3LQkE+V0YZlil+TJSR7Z9Bmo/icyRsBjWbB8LX2cGJkQzt28mK8R
+ rPvtA3DL0NHn5Bf5Csz1lVMw5ZPtbA4vgX/CivTVrX0TWK1lzG1o2tyD4fepw63oIYFP
+ NFm3ehtOV91e1wijCJXh1zTtcSkm5c0WGjZPpU6Xv1O/GI6CL8ABBh3krt15eAyFLEMM
+ L30/WXiq+V19NmAEF7cE3rra59OHdKLPr+1Q7CDCxZ7GXeBtuwdwZnH57CvsJVRgV7Y2 /g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3k7euq8561-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Oct 2022 20:36:40 +0000
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 29EKUErX003493;
+        Fri, 14 Oct 2022 20:36:39 GMT
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3k7euq855b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Oct 2022 20:36:39 +0000
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 29EKZtDa024850;
+        Fri, 14 Oct 2022 20:36:37 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03fra.de.ibm.com with ESMTP id 3k30u9fhax-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Oct 2022 20:36:37 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 29EKaZOa23855442
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 Oct 2022 20:36:35 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4999442041;
+        Fri, 14 Oct 2022 20:36:35 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1EBC94203F;
+        Fri, 14 Oct 2022 20:36:33 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.122.214])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 14 Oct 2022 20:36:32 +0000 (GMT)
+From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Ritesh Harjani <riteshh@linux.ibm.com>,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        linux-ntfs-dev@lists.sourceforge.net
-Subject: Re: [PATCH RFC 5/7] fs/xfs: support `DISABLE_FS_CSUM_VERIFICATION`
- config option
-Message-ID: <Y0mD0LcNvu+QTlQ9@magnolia>
-References: <20221014084837.1787196-1-hrkanabar@gmail.com>
- <20221014084837.1787196-6-hrkanabar@gmail.com>
+        Jan Kara <jack@suse.cz>, rookxu <brookxu.cn@gmail.com>
+Subject: [PATCH v2 0/8] ext4: Convert inode preallocation list to an rbtree
+Date:   Sat, 15 Oct 2022 02:06:22 +0530
+Message-Id: <cover.1665776268.git.ojaswin@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
+Content-Type: text/plain; charset=UTF-8
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Gqawbq0LXxbrwp-qBhws_c8QOkWQwwc3
+X-Proofpoint-ORIG-GUID: 1j3EuVa6sZ5Qi4uJDfb5Pi4HmOG-uqPm
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221014084837.1787196-6-hrkanabar@gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-10-14_10,2022-10-14_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0
+ spamscore=0 impostorscore=0 clxscore=1015 mlxscore=0 bulkscore=0
+ priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2209130000 definitions=main-2210140112
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Oct 14, 2022 at 08:48:35AM +0000, Hrutvik Kanabar wrote:
-> From: Hrutvik Kanabar <hrutvik@google.com>
-> 
-> When `DISABLE_FS_CSUM_VERIFICATION` is enabled, return truthy value for
-> `xfs_verify_cksum`, which is the key function implementing checksum
-> verification for XFS.
-> 
-> Signed-off-by: Hrutvik Kanabar <hrutvik@google.com>
+This patch series aim to improve the performance and scalability of
+inode preallocation by changing inode preallocation linked list to an
+rbtree. I've ran xfstests quick on this series and plan to run auto group
+as well to confirm we have no regressions.
 
-NAK, we're not going to break XFS for the sake of automated fuzz tools.
+** Shortcomings of existing implementation **
 
-You'll have to adapt your fuzzing tools to rewrite the block header
-checksums, like the existing xfs fuzz testing framework does.  See
-the xfs_db 'fuzz -d' command and the relevant fstests.
+Right now, we add all the inode preallocations(PAs) to a per inode linked
+list ei->i_prealloc_list. To prevent the list from growing infinitely
+during heavy sparse workloads, the length of this list was capped at 512
+and a trimming logic was added to trim the list whenever it grew over
+this threshold, in patch 27bc446e2. This was discussed in detail in the
+following lore thread [1].
 
---D
+[1] https://lore.kernel.org/all/d7a98178-056b-6db5-6bce-4ead23f4a257@gmail.com/
 
-> ---
->  fs/xfs/libxfs/xfs_cksum.h | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/xfs/libxfs/xfs_cksum.h b/fs/xfs/libxfs/xfs_cksum.h
-> index 999a290cfd72..ba55b1afa382 100644
-> --- a/fs/xfs/libxfs/xfs_cksum.h
-> +++ b/fs/xfs/libxfs/xfs_cksum.h
-> @@ -76,7 +76,10 @@ xfs_verify_cksum(char *buffer, size_t length, unsigned long cksum_offset)
->  {
->  	uint32_t crc = xfs_start_cksum_safe(buffer, length, cksum_offset);
->  
-> -	return *(__le32 *)(buffer + cksum_offset) == xfs_end_cksum(crc);
-> +	if (IS_ENABLED(CONFIG_DISABLE_FS_CSUM_VERIFICATION))
-> +		return 1;
-> +	else
-> +		return *(__le32 *)(buffer + cksum_offset) == xfs_end_cksum(crc);
->  }
->  
->  #endif /* _XFS_CKSUM_H */
-> -- 
-> 2.38.0.413.g74048e4d9e-goog
-> 
+But from our testing, we noticed that the current implementation still
+had issues with scalability as the performance degraded when the PAs
+stored in the list grew. Most of the degradation was seen in
+ext4_mb_normalize_request() and ext4_mb_use_preallocated() functions as
+they iterated the inode PA list.
+
+** Improvements in this patchset **
+
+To counter the above shortcomings, this patch series modifies the inode
+PA list to an rbtree, which:
+
+- improves the performance of functions discussed above due to the
+  improved lookup speed.
+  
+- improves scalability by changing lookup complexity from O(n) to
+  O(logn). We no longer need the trimming logic as well.
+
+As a result, the RCU implementation was needed to be changed since
+lockless lookups of rbtrees do have some issues like skipping
+subtrees. Hence, RCU was replaced with read write locks for inode
+PAs. More information can be found in Patch 7 (that has the core
+changes).
+
+** Performance Numbers **
+
+Performance numbers were collected with and without these patches, using an
+nvme device. Details of tests/benchmarks used are as follows:
+
+Test 1: 200,000 1KiB sparse writes using (fio)
+Test 2: Fill 5GiB w/ random writes, 1KiB burst size using (fio)
+Test 3: Test 2, but do 4 sequential writes before jumping to random
+        offset (fio)
+Test 4: Fill 8GB FS w/ 2KiB files, 64 threads in parallel (fsmark)
+
++──────────+──────────────────+────────────────+──────────────────+──────────────────+
+|          |            nodelalloc             |              delalloc               |
++──────────+──────────────────+────────────────+──────────────────+──────────────────+
+|          | Unpatched        | Patched        | Unpatched        | Patched          |
++──────────+──────────────────+────────────────+──────────────────+──────────────────+
+| Test 1   | 11.8 MB/s        | 23.3 MB/s      | 27.2 MB/s        | 63.7 MB/s        |
+| Test 2   | 1617 MB/s        | 1740 MB/s      | 2223 MB/s        | 2208 MB/s        |
+| Test 3   | 1715 MB/s        | 1823 MB/s      | 2346 MB/s        | 2364 MB/s        |
+| Test 4   | 14284 files/sec  | 14347 files/s  | 13762 files/sec  | 13882 files/sec  |
++──────────+──────────────────+────────────────+──────────────────+──────────────────+
+
+In test 1, we almost see 100 to 200% increase in performance due to the high number
+of sparse writes highlighting the bottleneck in the unpatched kernel. Further, on running
+"perf diff patched.data unpatched.data" for test 1, we see something as follows:
+
+     2.83%    +29.67%  [kernel.vmlinux]          [k] _raw_spin_lock
+												...
+               +3.33%  [ext4]                    [k] ext4_mb_normalize_request.constprop.30
+     0.25%     +2.81%  [ext4]                    [k] ext4_mb_use_preallocated
+
+Here we can see that the biggest different is in the _raw_spin_lock() function
+of unpatched kernel, that is called from `ext4_mb_normalize_request()` as seen
+here:
+
+    32.47%  fio              [kernel.vmlinux]            [k] _raw_spin_lock
+            |
+            ---_raw_spin_lock
+               |          
+                --32.22%--ext4_mb_normalize_request.constprop.30
+
+This is coming from the spin_lock(&pa->pa_lock) that is called for
+each PA that we iterate over, in ext4_mb_normalize_request(). Since in rbtrees,
+we lookup log(n) PAs rather than n PAs, this spin lock is taken less frequently,
+as evident in the perf. 
+
+Furthermore, we see some improvements in other tests however since they don't
+exercise the PA traversal path as much as test 1, the improvements are relatively
+smaller. 
+
+** Summary of patches **
+
+- Patch 1-5: Abstractions/Minor optimizations
+- Patch 6: Split common inode & locality group specific fields to a union
+- Patch 7: Core changes to move inode PA logic from list to rbtree
+- Patch 8: Remove the trim logic as it is not needed
+
+** Changes since PATCH v1 **
+- fixed styling issue
+- merged ext4_mb_rb_insert() and ext4_mb_pa_cmp()
+
+** Changes since RFC v3 **
+- Changed while loops to for loops in patch 7
+- Fixed some data types
+- Made rbtree comparison logic more intuitive. The
+  rbtree insertion function still kept separate from
+  comparison function for reusability.
+
+** Changes since RFC v2 **
+- Added a function definition that was deleted during v2 rebase
+
+** Changes since RFC v1 **
+- Rebased over ext4 dev branch which includes Jan's patchset [1]
+  that changed some code in mballoc.c
+
+[1] https://lore.kernel.org/all/20220908091301.147-1-jack@suse.cz/
+
+*** BLURB HERE ***
+
+Ojaswin Mujoo (8):
+  ext4: Stop searching if PA doesn't satisfy non-extent file
+  ext4: Refactor code related to freeing PAs
+  ext4: Refactor code in ext4_mb_normalize_request() and
+    ext4_mb_use_preallocated()
+  ext4: Move overlap assert logic into a separate function
+  ext4: Abstract out overlap fix/check logic in
+    ext4_mb_normalize_request()
+  ext4: Convert pa->pa_inode_list and pa->pa_obj_lock into a union
+  ext4: Use rbtrees to manage PAs instead of inode i_prealloc_list
+  ext4: Remove the logic to trim inode PAs
+
+ Documentation/admin-guide/ext4.rst |   3 -
+ fs/ext4/ext4.h                     |   5 +-
+ fs/ext4/mballoc.c                  | 418 ++++++++++++++++++-----------
+ fs/ext4/mballoc.h                  |  17 +-
+ fs/ext4/super.c                    |   4 +-
+ fs/ext4/sysfs.c                    |   2 -
+ 6 files changed, 274 insertions(+), 175 deletions(-)
+
+-- 
+2.31.1
+
