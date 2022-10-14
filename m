@@ -2,51 +2,81 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7645FE91E
-	for <lists+linux-ext4@lfdr.de>; Fri, 14 Oct 2022 08:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB735FEAF2
+	for <lists+linux-ext4@lfdr.de>; Fri, 14 Oct 2022 10:49:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229660AbiJNGwt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 14 Oct 2022 02:52:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40802 "EHLO
+        id S229563AbiJNItq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 14 Oct 2022 04:49:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbiJNGwt (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 14 Oct 2022 02:52:49 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE7261669B6
-        for <linux-ext4@vger.kernel.org>; Thu, 13 Oct 2022 23:52:46 -0700 (PDT)
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MpcTF36jRzDsXs;
-        Fri, 14 Oct 2022 14:50:09 +0800 (CST)
-Received: from kwepemm600003.china.huawei.com (7.193.23.202) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 14 Oct 2022 14:52:43 +0800
-Received: from [127.0.0.1] (10.174.179.254) by kwepemm600003.china.huawei.com
- (7.193.23.202) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Fri, 14 Oct
- 2022 14:52:42 +0800
-Subject: Re: [PATCH v2] misc/fsck.c: Processes may kill other processes.
-To:     zhanchengbin <zhanchengbin1@huawei.com>,
-        Theodore Ts'o <tytso@mit.edu>
-CC:     <linux-ext4@vger.kernel.org>, Lukas Czerner <lczerner@redhat.com>,
-        linfeilong <linfeilong@huawei.com>
-References: <2c8f3b3a-b6d1-9b8b-27c7-2df51236fe8c@huawei.com>
-From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
-Message-ID: <2dd75638-de3b-64cf-4f7c-d68388fa06fe@huawei.com>
-Date:   Fri, 14 Oct 2022 14:52:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        with ESMTP id S229504AbiJNItq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 14 Oct 2022 04:49:46 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD2151030;
+        Fri, 14 Oct 2022 01:49:42 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id n9so2680888wms.1;
+        Fri, 14 Oct 2022 01:49:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wHqdtxQx6Lod0jir/zBNpgI20jHW/S0hFQeJ5vK6PO4=;
+        b=N9gYQbXaDNOz60O1rGTwGAjGRkq26mCTJsSZ3Jl4CQJYVz6LnL3CEIbjWZXe/YyMjs
+         gtwg7xQGLuu25bH8Bj/nCImI1XEQqMT17gdEQdSE8inJ9hRursDVOO4SFDpS+j7vXzDp
+         l9Eyv8vq99kfP/PU6beqm5XC047H5YCmiZX7f2rYy+M+dj9XByokyFDl0TfAweEpLaMt
+         jsdjn9arPU57YQ4xvGsoTMVznDmE3IQJMkoVxedNqoNcxAJztCc76He+bvHxvG0KegSr
+         EpetSFUehs8I/SNoIWsmR5gk3XJ8CZ590VLkdE2nJzu7l5EBmxruFF9o54RIGIJrl3Di
+         iLZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wHqdtxQx6Lod0jir/zBNpgI20jHW/S0hFQeJ5vK6PO4=;
+        b=W3fpSPGEFQ8ry3+Tfxj4LVoNRrTQEYV0GZkJicS/EeTpxWl6AQqdAgdA+PeUIkCliy
+         NrzeIN0F2sxIeaoeC0HSsrn5xuuHLYXBk9gc72qB+2puevrMo09ljWAd4vXsb78YCWTH
+         MWdjztoPIHn0OUL7EDW+tBbAoFtm0DGDErfVP2M68N8PbhUpNaCto6BDC0S/0pZOrQQV
+         qFSOA1KfCLX146xsVC2IxeDrgAqY2qLS5m7PpWo/ignHJXJU8DkRuBltkMcDHQZ4pHZX
+         LCuRwSpSnzX7JN18TtD5/5hWkWU2svYzoPueu1+JGgqqwCsssH4kKZtRZoy+ZPeCOMUf
+         AKcQ==
+X-Gm-Message-State: ACrzQf3CVxwf0iM0sZhNDBWoTOIY8d1Ejv/J8nn9w4MgfIsfbVeLaqc/
+        OWYqjMKxo/wKwcEH6XZQJ8EnjEbopwXEA+b2Kr8=
+X-Google-Smtp-Source: AMsMyM6mWW8W5+zs3haCkV7ucZ6ZM2NWaZWE4PI1Pq5xhk7qS5b4ull48XoOSMyebfkTABFFU7lq3A==
+X-Received: by 2002:a05:600c:19c9:b0:3c2:7fff:a689 with SMTP id u9-20020a05600c19c900b003c27fffa689mr9647430wmq.85.1665737380822;
+        Fri, 14 Oct 2022 01:49:40 -0700 (PDT)
+Received: from hrutvik.c.googlers.com.com (120.142.205.35.bc.googleusercontent.com. [35.205.142.120])
+        by smtp.gmail.com with ESMTPSA id 123-20020a1c1981000000b003c6c4639ac6sm1547372wmz.34.2022.10.14.01.49.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Oct 2022 01:49:40 -0700 (PDT)
+From:   Hrutvik Kanabar <hrkanabar@gmail.com>
+To:     Hrutvik Kanabar <hrutvik@google.com>
+Cc:     Marco Elver <elver@google.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        kasan-dev@googlegroups.com,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        linux-ntfs-dev@lists.sourceforge.net
+Subject: [PATCH RFC 0/7] fs: Debug config option to disable filesystem checksum verification for fuzzing
+Date:   Fri, 14 Oct 2022 08:48:30 +0000
+Message-Id: <20221014084837.1787196-1-hrkanabar@gmail.com>
+X-Mailer: git-send-email 2.38.0.413.g74048e4d9e-goog
 MIME-Version: 1.0
-In-Reply-To: <2c8f3b3a-b6d1-9b8b-27c7-2df51236fe8c@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.254]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600003.china.huawei.com (7.193.23.202)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,40 +84,93 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+From: Hrutvik Kanabar <hrutvik@google.com>
+
+Fuzzing is a proven technique to discover exploitable bugs in the Linux
+kernel. But fuzzing filesystems is tricky: highly structured disk images
+use redundant checksums to verify data integrity. Therefore,
+randomly-mutated images are quickly rejected as corrupt, testing only
+error-handling code effectively.
+
+The Janus [1] and Hydra [2] projects probe filesystem code deeply by
+correcting checksums after mutation. But their ad-hoc
+checksum-correcting code supports only a few filesystems, and it is
+difficult to support new ones - requiring significant duplication of
+filesystem logic which must also be kept in sync with upstream changes.
+Corrected checksums cannot be guaranteed to be valid, and reusing this
+code across different fuzzing frameworks is non-trivial.
+
+Instead, this RFC suggests a config option:
+`DISABLE_FS_CSUM_VERIFICATION`. When it is enabled, all filesystems
+should bypass redundant checksum verification, proceeding as if
+checksums are valid. Setting of checksums should be unaffected. Mutated
+images will no longer be rejected due to invalid checksums, allowing
+testing of deeper code paths. Though some filesystems implement their
+own flags to disable some checksums, this option should instead disable
+all checksums for all filesystems uniformly. Critically, any bugs found
+remain reproducible on production systems: redundant checksums in
+mutated images can be fixed up to satisfy verification.
+
+The patches below suggest a potential implementation for a few
+filesystems, though we may have missed some checksums. The option
+requires `DEBUG_KERNEL` and is not intended for production systems.
+
+The first user of the option would be syzbot. We ran preliminary local
+syzkaller tests to compare behaviour with and without these patches.
+With the patches, we found a 19% increase in coverage, as well as many
+new crash types and increases in the total number of crashes:
+
+Filesystem | % new crash types | % increase in crashes
+—----------|-------------------|----------------------
+  ext4     |        60%        |         1400%
+  btrfs    |        25%        |         185%
+  f2fs     |        63%        |         16%
 
 
-On 2022/10/10 16:56, zhanchengbin wrote:
-> I find a error in misc/fsck.c, if run the fsck -N command, processes
-> don't execute, just show what would be done. However, the pid whose
-> value is -1 is added to the instance_list list in the execute
-> function,if the kill_all function is called later, kill(-1, signum)
-> is executed, Signals are sent to all processes except the number one
-> process and itself. Other processes will be killed if they use the
-> default signal processing function.
-> 
-Looks good to me,
-Reviewed-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
-> Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
-> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
-> ---
-> V1->V2:
->   Anything <= 0 is a bug and can have unexpected consequences if
-> we actually call the kill(). So change inst->pid==-1 to inst->pid<=0.
-> 
->  misc/fsck.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/misc/fsck.c b/misc/fsck.c
-> index 4efe10ec..c56d1b00 100644
-> --- a/misc/fsck.c
-> +++ b/misc/fsck.c
-> @@ -546,6 +546,8 @@ static int kill_all(int signum)
->      for (inst = instance_list; inst; inst = inst->next) {
->          if (inst->flags & FLAG_DONE)
->              continue;
-> +        if (inst->pid <= 0)
-> +            continue;
->          kill(inst->pid, signum);
->          n++;
->      }
+[1] Fuzzing file systems via two-dimensional input space exploration,
+    Xu et al., 2019, IEEE Symposium on Security and Privacy,
+    doi: 10.1109/SP.2019.00035
+[2] Finding semantic bugs in file systems with an extensible fuzzing
+    framework, Kim et al., 2019, ACM Symposium on Operating Systems
+    Principles, doi: 10.1145/3341301.3359662
+
+
+Hrutvik Kanabar (7):
+  fs: create `DISABLE_FS_CSUM_VERIFICATION` config option
+  fs/ext4: support `DISABLE_FS_CSUM_VERIFICATION` config option
+  fs/btrfs: support `DISABLE_FS_CSUM_VERIFICATION` config option
+  fs/exfat: support `DISABLE_FS_CSUM_VERIFICATION` config option
+  fs/xfs: support `DISABLE_FS_CSUM_VERIFICATION` config option
+  fs/ntfs: support `DISABLE_FS_CSUM_VERIFICATION` config option
+  fs/f2fs: support `DISABLE_FS_CSUM_VERIFICATION` config option
+
+ fs/Kconfig.debug            | 20 ++++++++++++++++++++
+ fs/btrfs/check-integrity.c  |  3 ++-
+ fs/btrfs/disk-io.c          |  6 ++++--
+ fs/btrfs/free-space-cache.c |  3 ++-
+ fs/btrfs/inode.c            |  3 ++-
+ fs/btrfs/scrub.c            |  9 ++++++---
+ fs/exfat/nls.c              |  3 ++-
+ fs/exfat/super.c            |  3 +++
+ fs/ext4/bitmap.c            |  6 ++++--
+ fs/ext4/extents.c           |  3 ++-
+ fs/ext4/inode.c             |  3 ++-
+ fs/ext4/ioctl.c             |  3 ++-
+ fs/ext4/mmp.c               |  3 ++-
+ fs/ext4/namei.c             |  6 ++++--
+ fs/ext4/orphan.c            |  3 ++-
+ fs/ext4/super.c             |  6 ++++--
+ fs/ext4/xattr.c             |  3 ++-
+ fs/f2fs/checkpoint.c        |  3 ++-
+ fs/f2fs/compress.c          |  3 ++-
+ fs/f2fs/f2fs.h              |  2 ++
+ fs/f2fs/inode.c             |  3 +++
+ fs/ntfs/super.c             |  3 ++-
+ fs/xfs/libxfs/xfs_cksum.h   |  5 ++++-
+ lib/Kconfig.debug           |  6 ++++++
+ 24 files changed, 86 insertions(+), 25 deletions(-)
+ create mode 100644 fs/Kconfig.debug
+
+-- 
+2.38.0.413.g74048e4d9e-goog
 
