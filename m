@@ -2,62 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7076012DE
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 Oct 2022 17:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3568F6019A7
+	for <lists+linux-ext4@lfdr.de>; Mon, 17 Oct 2022 22:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229687AbiJQPpb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 17 Oct 2022 11:45:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60330 "EHLO
+        id S231140AbiJQU1C (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 17 Oct 2022 16:27:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbiJQPp3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Oct 2022 11:45:29 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D1A4D248
-        for <linux-ext4@vger.kernel.org>; Mon, 17 Oct 2022 08:45:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1666021528; x=1697557528;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=3v629TfnQ6eCHCvRptZHiwXoRTAfdgVXR3TJuTbFQ10=;
-  b=R+g0xXErCOfMuK1e8br1ZzMoenQtl92y+dQNxZai9CLApCuLwfbuxFBK
-   iTVuSwNINdI+pg/SLd9iKQw3evIjU3h3Pv6qAWz9QMPKxxa+2C+AK03/u
-   1sT+gYyEltgbIGOWNBj6hw2YXo6vh0hgwUzvLjzeER4HMAXt1bZXq/Hp1
-   OLB5McAvHZ3VdCBF4BnFT9D4zL4sQTtzly87hS60MsqkQU7Ph2B7zaQS/
-   pfT68s2F27L/VbcpoXFLXSTgq8C0eAFsU7ikbjuThG4IdtJQOKzrpzkoX
-   gzR6rsi5gxPsGrF1pZto9HFEUMjK3cHM+0gSIYcyu53YiYOZ5mKK4rtxS
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="286228422"
-X-IronPort-AV: E=Sophos;i="5.95,191,1661842800"; 
-   d="scan'208";a="286228422"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2022 08:45:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="717537483"
-X-IronPort-AV: E=Sophos;i="5.95,191,1661842800"; 
-   d="scan'208";a="717537483"
-Received: from lkp-server01.sh.intel.com (HELO 8381f64adc98) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 17 Oct 2022 08:45:25 -0700
-Received: from kbuild by 8381f64adc98 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1okSIu-0000fA-28;
-        Mon, 17 Oct 2022 15:45:24 +0000
-Date:   Mon, 17 Oct 2022 23:44:24 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     ntfs3@lists.linux.dev, linux-mediatek@lists.infradead.org,
-        linux-ext4@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: [linux-next:master] BUILD REGRESSION
- 77d8bf70fac0900844491376bc18b491710168bf
-Message-ID: <634d7858.CIIfTENtfSUJb4x+%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S231311AbiJQU0m (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Oct 2022 16:26:42 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19AA2326CF;
+        Mon, 17 Oct 2022 13:24:56 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id i3so12108430pfc.11;
+        Mon, 17 Oct 2022 13:24:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GDF0HteevzYNLv2uN0Cib6K7paWLvmyKD/8WXFsjE5M=;
+        b=aY4b63NZqQCKvU20ZoDK++qZhACS2e4aeBRsuuopLKG1Ytlt2bf9tD+JujcCPXLwaZ
+         Sc/sT6V3+o3kVy28NBqwCDqZZrw6g9Fs5MQlfvUWn3V1lSG2rAI2su5+aaHC5Bk54jld
+         mValP1FoKNSZ7hECNNOhR50m1PC55zjwk4nMgeoqCE9b0x+D0KWvwxgyobqS9JUMepUM
+         zoylWXqCOD4Erjg4B4JH20iK300YiMzqbUBmkV8B6s3BWy8zw1Q4HVQBjXeu7RvRa4oK
+         JxMpnpHEjCRLimm43OE5MLtZsYG5G/gI4dWGzotWFSr9mYgloWVKNp5Nq+BYtExGElaC
+         bqhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GDF0HteevzYNLv2uN0Cib6K7paWLvmyKD/8WXFsjE5M=;
+        b=qU1O1IPiDKPW1b8XGiKtO4A9gtJg+dGwwWif5f9k9dcjm/Hdj1fGGwuMuUK8qR5vCQ
+         c72nG4h2JxBSx56zM+ZWA4K968M4aptDJLk8/LgnoJ53+ZKsDS4Oal2dGTLpJS18HaoP
+         fU0/hipzrzOQbUkdI9Cm0TutfWfaYLJxTVYhDhhp0bVINThQPhuYX9oWJUh9/Lltdj+b
+         LvYKUo6LwaGJKXZouxK1XrztF8H3FXEQUXVfrnWDqkp6Gpfy4zusNj+h89+yIJyiYZue
+         argBVcqIRVK8w7RgFfO0NZAWGiORGkhMUKi71m/a46OP7ZeU9EvG1OBds619/OrGlzzR
+         JQkA==
+X-Gm-Message-State: ACrzQf2Ok+kLjXkUtyvynqPe4686iL19LdwSts7VnhFFpdvC/gnb9BFt
+        QW+kGtIkMzGWrl7WQLS1vAjhM2nRxrCscA==
+X-Google-Smtp-Source: AMsMyM5ZBQ4ulLEerblhN4dY+KgGrViyV8tdaDAbkTMfDdZ5KC19A4m0FrTCeDWfYdUkGvRrnROusw==
+X-Received: by 2002:a05:6a00:2402:b0:52c:81cf:8df8 with SMTP id z2-20020a056a00240200b0052c81cf8df8mr14608634pfh.60.1666038294629;
+        Mon, 17 Oct 2022 13:24:54 -0700 (PDT)
+Received: from vmfolio.. (c-76-102-73-225.hsd1.ca.comcast.net. [76.102.73.225])
+        by smtp.googlemail.com with ESMTPSA id pj12-20020a17090b4f4c00b00200b12f2bf5sm145037pjb.1.2022.10.17.13.24.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Oct 2022 13:24:54 -0700 (PDT)
+From:   "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nilfs@vger.kernel.org, linux-mm@kvack.org,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Subject: [PATCH v3 00/23] Convert to filemap_get_folios_tag()
+Date:   Mon, 17 Oct 2022 13:24:28 -0700
+Message-Id: <20221017202451.4951-1-vishal.moola@gmail.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,SUSPICIOUS_RECIPS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,173 +72,92 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: 77d8bf70fac0900844491376bc18b491710168bf  Add linux-next specific files for 20221017
+This patch series replaces find_get_pages_range_tag() with
+filemap_get_folios_tag(). This also allows the removal of multiple
+calls to compound_head() throughout.
+It also makes a good chunk of the straightforward conversions to folios,
+and takes the opportunity to introduce a function that grabs a folio
+from the pagecache.
 
-Error/Warning reports:
+F2fs and Ceph have quite alot of work to be done regarding folios, so
+for now those patches only have the changes necessary for the removal of
+find_get_pages_range_tag(), and only support folios of size 1 (which is
+all they use right now anyways).
 
-https://lore.kernel.org/linux-mm/202210110857.9s0tXVNn-lkp@intel.com
+I've run xfstests on btrfs, ext4, f2fs, and nilfs2, but more testing may be
+beneficial. The page-writeback and filemap changes implicitly work. Testing
+and review of the other changes (afs, ceph, cifs, gfs2) would be appreciated.
 
-Error/Warning: (recently discovered and may have been fixed)
+---
+v3:
+  Rebased onto upstream 6.1
+  Simplified the ceph patch to only necessary changes
+  Changed commit messages throughout to be clearer
+  Got an Acked-by for another nilfs patch
+  Got Tested-by for afs
 
-ERROR: modpost: "devm_ioremap_resource" [drivers/dma/idma64.ko] undefined!
-ERROR: modpost: "devm_ioremap_resource" [drivers/dma/qcom/hdma.ko] undefined!
-arch/arm64/kernel/alternative.c:199:6: warning: no previous prototype for 'apply_alternatives_vdso' [-Wmissing-prototypes]
-arch/arm64/kernel/alternative.c:295:14: warning: no previous prototype for 'alt_cb_patch_nops' [-Wmissing-prototypes]
-fs/ext4/super.c:1744:19: warning: 'deprecated_msg' defined but not used [-Wunused-const-variable=]
+v2:
+  Got Acked-By tags for nilfs and btrfs changes
+  Fixed an error arising in f2fs
+  - Reported-by: kernel test robot <lkp@intel.com>
 
-Error/Warning ids grouped by kconfigs:
+Vishal Moola (Oracle) (23):
+  pagemap: Add filemap_grab_folio()
+  filemap: Added filemap_get_folios_tag()
+  filemap: Convert __filemap_fdatawait_range() to use
+    filemap_get_folios_tag()
+  page-writeback: Convert write_cache_pages() to use
+    filemap_get_folios_tag()
+  afs: Convert afs_writepages_region() to use filemap_get_folios_tag()
+  btrfs: Convert btree_write_cache_pages() to use
+    filemap_get_folio_tag()
+  btrfs: Convert extent_write_cache_pages() to use
+    filemap_get_folios_tag()
+  ceph: Convert ceph_writepages_start() to use filemap_get_folios_tag()
+  cifs: Convert wdata_alloc_and_fillpages() to use
+    filemap_get_folios_tag()
+  ext4: Convert mpage_prepare_extent_to_map() to use
+    filemap_get_folios_tag()
+  f2fs: Convert f2fs_fsync_node_pages() to use filemap_get_folios_tag()
+  f2fs: Convert f2fs_flush_inline_data() to use filemap_get_folios_tag()
+  f2fs: Convert f2fs_sync_node_pages() to use filemap_get_folios_tag()
+  f2fs: Convert f2fs_write_cache_pages() to use filemap_get_folios_tag()
+  f2fs: Convert last_fsync_dnode() to use filemap_get_folios_tag()
+  f2fs: Convert f2fs_sync_meta_pages() to use filemap_get_folios_tag()
+  gfs2: Convert gfs2_write_cache_jdata() to use filemap_get_folios_tag()
+  nilfs2: Convert nilfs_lookup_dirty_data_buffers() to use
+    filemap_get_folios_tag()
+  nilfs2: Convert nilfs_lookup_dirty_node_buffers() to use
+    filemap_get_folios_tag()
+  nilfs2: Convert nilfs_btree_lookup_dirty_buffers() to use
+    filemap_get_folios_tag()
+  nilfs2: Convert nilfs_copy_dirty_pages() to use
+    filemap_get_folios_tag()
+  nilfs2: Convert nilfs_clear_dirty_pages() to use
+    filemap_get_folios_tag()
+  filemap: Remove find_get_pages_range_tag()
 
-gcc_recent_errors
-|-- arm64-allyesconfig
-|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-alt_cb_patch_nops
-|   `-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-apply_alternatives_vdso
-|-- i386-allyesconfig
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- i386-defconfig
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- i386-randconfig-a003-20221017
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- s390-allmodconfig
-|   |-- ERROR:devm_ioremap_resource-drivers-dma-idma64.ko-undefined
-|   `-- ERROR:devm_ioremap_resource-drivers-dma-qcom-hdma.ko-undefined
-|-- x86_64-allyesconfig
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- x86_64-buildonly-randconfig-r003-20221017
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- x86_64-defconfig
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- x86_64-randconfig-a001-20221017
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- x86_64-randconfig-a002-20221017
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- x86_64-randconfig-a003-20221017
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- x86_64-randconfig-a004-20221017
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- x86_64-randconfig-a005-20221017
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- x86_64-randconfig-a006-20221017
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- x86_64-randconfig-r002-20221017
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- x86_64-rhel-8.3
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- x86_64-rhel-8.3-func
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- x86_64-rhel-8.3-kselftests
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- x86_64-rhel-8.3-kvm
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-`-- x86_64-rhel-8.3-syz
-    `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-clang_recent_errors
-|-- arm64-randconfig-r011-20221017
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- arm64-randconfig-r024-20221017
-|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
-|-- hexagon-buildonly-randconfig-r006-20221017
-|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-|   `-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-|-- hexagon-randconfig-r041-20221017
-|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
-|-- i386-randconfig-a013-20221017
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- i386-randconfig-a014-20221017
-|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
-|-- i386-randconfig-a016-20221017
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- mips-randconfig-r005-20221017
-|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
-|-- riscv-randconfig-r042-20221017
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- s390-randconfig-r044-20221017
-|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
-|-- x86_64-randconfig-a011-20221017
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- x86_64-randconfig-a012-20221017
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- x86_64-randconfig-a016-20221017
-|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
-|-- x86_64-randconfig-r013-20221017
-|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
-`-- x86_64-rhel-8.3-rust
-    `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-
-elapsed time: 726m
-
-configs tested: 59
-configs skipped: 2
-
-gcc tested configs:
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                          rhel-8.3-func
-x86_64                    rhel-8.3-kselftests
-arc                  randconfig-r043-20221017
-i386                 randconfig-a001-20221017
-i386                                defconfig
-i386                 randconfig-a002-20221017
-i386                 randconfig-a003-20221017
-x86_64                              defconfig
-i386                 randconfig-a005-20221017
-i386                 randconfig-a004-20221017
-i386                 randconfig-a006-20221017
-x86_64                               rhel-8.3
-x86_64                           rhel-8.3-kvm
-arc                                 defconfig
-powerpc                           allnoconfig
-x86_64                           rhel-8.3-syz
-s390                             allmodconfig
-alpha                               defconfig
-x86_64                         rhel-8.3-kunit
-i386                             allyesconfig
-s390                                defconfig
-x86_64                           allyesconfig
-sh                               allmodconfig
-mips                             allyesconfig
-s390                             allyesconfig
-powerpc                          allmodconfig
-m68k                             allmodconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-m68k                             allyesconfig
-x86_64               randconfig-a002-20221017
-arm                                 defconfig
-x86_64               randconfig-a003-20221017
-x86_64               randconfig-a004-20221017
-x86_64               randconfig-a001-20221017
-x86_64               randconfig-a005-20221017
-x86_64               randconfig-a006-20221017
-arm64                            allyesconfig
-arm                              allyesconfig
-ia64                             allmodconfig
-
-clang tested configs:
-hexagon              randconfig-r041-20221017
-hexagon              randconfig-r045-20221017
-s390                 randconfig-r044-20221017
-riscv                randconfig-r042-20221017
-x86_64               randconfig-a013-20221017
-i386                 randconfig-a011-20221017
-x86_64               randconfig-a012-20221017
-x86_64                          rhel-8.3-rust
-i386                 randconfig-a013-20221017
-x86_64               randconfig-a015-20221017
-x86_64               randconfig-a016-20221017
-i386                 randconfig-a012-20221017
-i386                 randconfig-a014-20221017
-x86_64               randconfig-a011-20221017
-i386                 randconfig-a016-20221017
-x86_64               randconfig-a014-20221017
-i386                 randconfig-a015-20221017
+ fs/afs/write.c          | 114 +++++++++++++++++++++-------------------
+ fs/btrfs/extent_io.c    |  57 ++++++++++----------
+ fs/ceph/addr.c          |  58 ++++++++++----------
+ fs/cifs/file.c          |  33 ++++++++++--
+ fs/ext4/inode.c         |  55 ++++++++++---------
+ fs/f2fs/checkpoint.c    |  49 +++++++++--------
+ fs/f2fs/compress.c      |  13 ++---
+ fs/f2fs/data.c          |  69 +++++++++++++-----------
+ fs/f2fs/f2fs.h          |   5 +-
+ fs/f2fs/node.c          |  72 +++++++++++++------------
+ fs/gfs2/aops.c          |  64 ++++++++++++----------
+ fs/nilfs2/btree.c       |  14 ++---
+ fs/nilfs2/page.c        |  59 +++++++++++----------
+ fs/nilfs2/segment.c     |  44 ++++++++--------
+ include/linux/pagemap.h |  32 +++++++----
+ include/linux/pagevec.h |   8 ---
+ mm/filemap.c            |  87 +++++++++++++++---------------
+ mm/page-writeback.c     |  44 ++++++++--------
+ mm/swap.c               |  10 ----
+ 19 files changed, 467 insertions(+), 420 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.36.1
+
