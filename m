@@ -2,208 +2,260 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B09265FF92B
-	for <lists+linux-ext4@lfdr.de>; Sat, 15 Oct 2022 10:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E86A9600536
+	for <lists+linux-ext4@lfdr.de>; Mon, 17 Oct 2022 04:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229498AbiJOIfn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 15 Oct 2022 04:35:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48554 "EHLO
+        id S230180AbiJQCXZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 16 Oct 2022 22:23:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbiJOIfm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 15 Oct 2022 04:35:42 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C3843E75C
-        for <linux-ext4@vger.kernel.org>; Sat, 15 Oct 2022 01:35:38 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MqGg53K6SzmVMX;
-        Sat, 15 Oct 2022 16:30:57 +0800 (CST)
-Received: from dggpeml500016.china.huawei.com (7.185.36.70) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sat, 15 Oct 2022 16:35:36 +0800
-Received: from [10.174.176.102] (10.174.176.102) by
- dggpeml500016.china.huawei.com (7.185.36.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sat, 15 Oct 2022 16:35:35 +0800
-Message-ID: <115aa2d8-0c05-df99-518c-99211762b6c8@huawei.com>
-Date:   Sat, 15 Oct 2022 16:35:35 +0800
+        with ESMTP id S230181AbiJQCXX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 16 Oct 2022 22:23:23 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 687204448F
+        for <linux-ext4@vger.kernel.org>; Sun, 16 Oct 2022 19:23:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1665973402; x=1697509402;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=w/9wgLLkQxOK8Tg28c8PqY358W9RRELtu/wARxQvJ/I=;
+  b=DiEx7XTCtqwYtzAV+SSFPLl1FOdVTUyltWC456WMX7uoFxqmY1en89sD
+   k0jUUaOW73YCt/zG6OXnpxFm2J4Gs2W15BOM7w7i3Qn2a948eBgFKmEJu
+   MdCTuWnY2n0LZv5I7xcuI2j0bxwO7NuSKnrHjMrsnVVWuC10GfnTHPnui
+   YzG3/PTXS8jbMkK+hlfvnDbBjoId2ubkpvpfQhK9p6zPAswBNcnVJ8+/P
+   3KsdYAdPrth6xcoiD9px3h/UYJPRknnYfxFjPoS2kXKbgE8tYAIZNthrw
+   zid5ugYfUJt1EXKhgJFXuypN9VBIvL5cG1u2+sNBTimOFKJvzf2j1eBL2
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10502"; a="293052499"
+X-IronPort-AV: E=Sophos;i="5.95,190,1661842800"; 
+   d="scan'208";a="293052499"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2022 19:23:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10502"; a="661325783"
+X-IronPort-AV: E=Sophos;i="5.95,190,1661842800"; 
+   d="scan'208";a="661325783"
+Received: from lkp-server02.sh.intel.com (HELO 8556ec0e0fdc) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 16 Oct 2022 19:23:19 -0700
+Received: from kbuild by 8556ec0e0fdc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1okFmh-00004g-0g;
+        Mon, 17 Oct 2022 02:23:19 +0000
+Date:   Mon, 17 Oct 2022 10:23:11 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     ntfs3@lists.linux.dev, linux-mediatek@lists.infradead.org,
+        linux-ext4@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: [linux-next:master] BUILD REGRESSION
+ dca0a0385a4963145593ba417e1417af88a7c18d
+Message-ID: <634cbc8f.WxvxsYX7nHpBItJN%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-To:     Theodore Ts'o <tytso@mit.edu>
-CC:     <linux-ext4@vger.kernel.org>, <liuzhiqiang26@huawei.com>,
-        linfeilong <linfeilong@huawei.com>
-From:   zhanchengbin <zhanchengbin1@huawei.com>
-Subject: [PATCH] lib/ext2fs/unix_io.c: add flock operation to
- struct_unix_manager in e2fsprogs
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.102]
-X-ClientProxiedBy: dggpeml100010.china.huawei.com (7.185.36.14) To
- dggpeml500016.china.huawei.com (7.185.36.70)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        SUSPICIOUS_RECIPS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-We noticed that systemd has an issue about symlink unreliable caused by
-formatting filesystem and systemd operating on same device.
-Issue Link: https://github.com/systemd/systemd/issues/23746
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: dca0a0385a4963145593ba417e1417af88a7c18d  Add linux-next specific files for 20221014
 
-According to systemd doc, a BSD flock needs to be acquired before
-formatting the device.
-Related Link: https://systemd.io/BLOCK_DEVICE_LOCKING/
+Error/Warning reports:
 
-So we acquire flock after opening the device but before
-writing superblock.
+https://lore.kernel.org/linux-doc/202210070057.NpbaMyxB-lkp@intel.com
+https://lore.kernel.org/linux-mm/202210110857.9s0tXVNn-lkp@intel.com
 
-Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
----
-  lib/ext2fs/unix_io.c  | 90 +++++++++++++++++++++++++++++++++++++++++--
-  util/android_config.h |  1 +
-  2 files changed, 87 insertions(+), 4 deletions(-)
+Error/Warning: (recently discovered and may have been fixed)
 
-diff --git a/lib/ext2fs/unix_io.c b/lib/ext2fs/unix_io.c
-index e53db333..a0ca8b37 100644
---- a/lib/ext2fs/unix_io.c
-+++ b/lib/ext2fs/unix_io.c
-@@ -61,6 +61,9 @@
-  #if HAVE_SYS_STAT_H
-  #include <sys/stat.h>
-  #endif
-+#if HAVE_SYS_FILE_H
-+#include <sys/file.h>
-+#endif
-  #if HAVE_SYS_RESOURCE_H
-  #include <sys/resource.h>
-  #endif
-@@ -634,18 +637,93 @@ static errcode_t flush_cached_blocks(io_channel 
-channel,
-  #endif
-  #endif
+ERROR: modpost: "devm_ioremap_resource" [drivers/dma/fsl-edma.ko] undefined!
+ERROR: modpost: "devm_ioremap_resource" [drivers/dma/idma64.ko] undefined!
+ERROR: modpost: "devm_ioremap_resource" [drivers/dma/qcom/hdma.ko] undefined!
+ERROR: modpost: "devm_memremap" [drivers/misc/open-dice.ko] undefined!
+ERROR: modpost: "devm_memunmap" [drivers/misc/open-dice.ko] undefined!
+ERROR: modpost: "devm_platform_ioremap_resource" [drivers/char/xillybus/xillybus_of.ko] undefined!
+ERROR: modpost: "ioremap" [drivers/net/ethernet/8390/pcnet_cs.ko] undefined!
+ERROR: modpost: "ioremap" [drivers/tty/ipwireless/ipwireless.ko] undefined!
+ERROR: modpost: "iounmap" [drivers/net/ethernet/8390/pcnet_cs.ko] undefined!
+ERROR: modpost: "iounmap" [drivers/tty/ipwireless/ipwireless.ko] undefined!
+Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+arch/arm64/kernel/alternative.c:199:6: warning: no previous prototype for 'apply_alternatives_vdso' [-Wmissing-prototypes]
+arch/arm64/kernel/alternative.c:295:14: warning: no previous prototype for 'alt_cb_patch_nops' [-Wmissing-prototypes]
+fs/ext4/super.c:1744:19: warning: 'deprecated_msg' defined but not used [-Wunused-const-variable=]
+pahole: .tmp_vmlinux.btf: No such file or directory
 
-+/* return 0 on success */
-+int blkdev_lock(int fd, const char *devname)
-+{
-+	int oper, rc;
-+	char *lock_mode = NULL;
-+
-+	lock_mode = getenv("LOCK_BLOCK_DEVICE");
-+	if (!lock_mode)
-+		lock_mode = "1";
-+
-+	if (strcasecmp(lock_mode, "yes") == 0 ||
-+	    strcmp(lock_mode, "1") == 0)
-+		oper = LOCK_EX;
-+
-+	else if (strcasecmp(lock_mode, "nonblock") == 0)
-+		oper = LOCK_EX | LOCK_NB;
-+
-+	else if (strcasecmp(lock_mode, "no") == 0 ||
-+		 strcmp(lock_mode, "0") == 0)
-+		return 0;
-+	else {
-+		printf("unsupported lock mode: %s", lock_mode);
-+		return -EINVAL;
-+	}
-+
-+	if (!(oper & LOCK_NB)) {
-+		/* Try non-block first to provide message */
-+		rc = flock(fd, oper | LOCK_NB);
-+		if (rc == 0)
-+			return 0;
-+		if (rc != 0 && errno == EWOULDBLOCK) {
-+			fprintf(stderr, "%s: device already locked, waiting to get lock ... ",
-+					devname);
-+		}
-+	}
-+	rc = flock(fd, oper);
-+	if (rc != 0) {
-+		switch (errno) {
-+		case EWOULDBLOCK: /* LOCK_NB */
-+			printf("%s: device already locked", devname);
-+			break;
-+		default:
-+			printf("%s: failed to get lock", devname);
-+		}
-+	}
-+	return rc;
-+}
-+
-+/* return 0 on success */
-+int blkdev_unlock(int fd)
-+{
-+	int oper, rc;
-+	char *lock_mode = NULL;
-+
-+	lock_mode = getenv("LOCK_BLOCK_DEVICE");
-+	if (!lock_mode)
-+		lock_mode = "1";
-+
-+	if (strcasecmp(lock_mode, "no") == 0 ||
-+		 strcmp(lock_mode, "0") == 0)
-+		return 0;
-+	else
-+		oper = LOCK_UN;
-+
-+	rc = flock(fd, oper);
-+	return rc;
-+}
-+
-  int ext2fs_open_file(const char *pathname, int flags, mode_t mode)
-  {
-+	int fd = -1;
-  	if (mode)
-  #if defined(HAVE_OPEN64) && !defined(__OSX_AVAILABLE_BUT_DEPRECATED)
--		return open64(pathname, flags, mode);
-+		fd = open64(pathname, flags, mode);
-  	else
--		return open64(pathname, flags);
-+		fd = open64(pathname, flags);
-  #else
--		return open(pathname, flags, mode);
-+		fd = open(pathname, flags, mode);
-  	else
--		return open(pathname, flags);
-+		fd = open(pathname, flags);
-  #endif
-+	if (blkdev_lock(fd, pathname) != 0) {
-+		printf("File %s is locked\n", pathname);
-+		exit(-1);
-+	}
-+
-+	return fd;
-  }
+Error/Warning ids grouped by kconfigs:
 
-  int ext2fs_stat(const char *path, ext2fs_struct_stat *buf)
-@@ -926,6 +1004,10 @@ static errcode_t unix_close(io_channel channel)
-  	retval = flush_cached_blocks(channel, data, 0);
-  #endif
+gcc_recent_errors
+|-- arm64-allyesconfig
+|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-alt_cb_patch_nops
+|   `-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-apply_alternatives_vdso
+|-- csky-randconfig-r034-20221012
+|   `-- pahole:.tmp_vmlinux.btf:No-such-file-or-directory
+|-- i386-allyesconfig
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- i386-defconfig
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- i386-randconfig-a003
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- i386-randconfig-a005
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- i386-randconfig-a012
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- i386-randconfig-a014
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- i386-randconfig-a016
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- s390-allmodconfig
+|   |-- ERROR:devm_ioremap_resource-drivers-dma-fsl-edma.ko-undefined
+|   |-- ERROR:devm_ioremap_resource-drivers-dma-idma64.ko-undefined
+|   |-- ERROR:devm_ioremap_resource-drivers-dma-qcom-hdma.ko-undefined
+|   |-- ERROR:devm_memremap-drivers-misc-open-dice.ko-undefined
+|   |-- ERROR:devm_memunmap-drivers-misc-open-dice.ko-undefined
+|   |-- ERROR:devm_platform_ioremap_resource-drivers-char-xillybus-xillybus_of.ko-undefined
+|   |-- ERROR:ioremap-drivers-net-ethernet-pcnet_cs.ko-undefined
+|   |-- ERROR:ioremap-drivers-tty-ipwireless-ipwireless.ko-undefined
+|   |-- ERROR:iounmap-drivers-net-ethernet-pcnet_cs.ko-undefined
+|   `-- ERROR:iounmap-drivers-tty-ipwireless-ipwireless.ko-undefined
+|-- x86_64-allnoconfig
+|   `-- Warning:MAINTAINERS-references-a-file-that-doesn-t-exist:Documentation-devicetree-bindings-mtd-amlogic-meson-nand.txt
+|-- x86_64-allyesconfig
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- x86_64-defconfig
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- x86_64-randconfig-a002
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- x86_64-randconfig-a006
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- x86_64-randconfig-a011
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- x86_64-randconfig-a015
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- x86_64-rhel-8.3
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- x86_64-rhel-8.3-func
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- x86_64-rhel-8.3-kselftests
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+clang_recent_errors
+|-- arm-randconfig-r012-20221014
+|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|   |-- drivers-phy-mediatek-phy-mtk-tphy.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(unsigned-c
+|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|-- hexagon-randconfig-r004-20221012
+|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|   |-- drivers-phy-mediatek-phy-mtk-tphy.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(unsigned-c
+|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- hexagon-randconfig-r041-20221012
+|   |-- drivers-phy-mediatek-phy-mtk-tphy.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(unsigned-c
+|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|-- hexagon-randconfig-r045-20221012
+|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|-- i386-randconfig-a002
+|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- i386-randconfig-a004
+|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- i386-randconfig-a011
+|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- i386-randconfig-a013
+|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|-- i386-randconfig-a015
+|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- x86_64-randconfig-a005
+|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- x86_64-randconfig-a012
+|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+`-- x86_64-randconfig-a014
+    |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+    `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
 
-+	if(blkdev_unlock(data->dev) != 0){
-+		printf("blkdev unlock error\n");
-+		retval = errno;
-+        }
-  	if (close(data->dev) < 0)
-  		retval = errno;
-  	free_cache(data);
-diff --git a/util/android_config.h b/util/android_config.h
-index 6ac16fec..4dd3b69f 100644
---- a/util/android_config.h
-+++ b/util/android_config.h
-@@ -28,6 +28,7 @@
-  #define HAVE_UTIME_H 1
+elapsed time: 4290m
 
-  #define HAVE_SYS_STAT_H 1
-+#define HAVE_SYS_FILE_H 1
-  #if !defined(__APPLE__)
-  # define HAVE_SYS_SYSMACROS_H 1
-  #endif
+configs tested: 62
+configs skipped: 2
+
+gcc tested configs:
+arc                                 defconfig
+alpha                               defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+csky                              allnoconfig
+arc                               allnoconfig
+s390                                defconfig
+alpha                             allnoconfig
+s390                             allmodconfig
+riscv                             allnoconfig
+x86_64                        randconfig-a002
+x86_64                           rhel-8.3-kvm
+i386                          randconfig-a001
+x86_64                         rhel-8.3-kunit
+i386                          randconfig-a003
+powerpc                           allnoconfig
+x86_64                        randconfig-a004
+i386                          randconfig-a005
+x86_64                           rhel-8.3-syz
+mips                             allyesconfig
+m68k                             allmodconfig
+x86_64                          rhel-8.3-func
+riscv                randconfig-r042-20221012
+s390                             allyesconfig
+i386                                defconfig
+x86_64                              defconfig
+powerpc                          allmodconfig
+x86_64                    rhel-8.3-kselftests
+arc                  randconfig-r043-20221012
+x86_64                        randconfig-a006
+arc                              allyesconfig
+x86_64                               rhel-8.3
+sh                               allmodconfig
+alpha                            allyesconfig
+arm                                 defconfig
+m68k                             allyesconfig
+x86_64                           allyesconfig
+s390                 randconfig-r044-20221012
+x86_64                        randconfig-a015
+i386                             allyesconfig
+x86_64                        randconfig-a013
+ia64                             allmodconfig
+x86_64                        randconfig-a011
+i386                          randconfig-a014
+arm64                            allyesconfig
+arm                              allyesconfig
+i386                          randconfig-a012
+i386                          randconfig-a016
+
+clang tested configs:
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+i386                          randconfig-a002
+x86_64                        randconfig-a005
+i386                          randconfig-a004
+i386                          randconfig-a006
+hexagon              randconfig-r045-20221012
+hexagon              randconfig-r041-20221012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+x86_64                        randconfig-a012
+i386                          randconfig-a013
+i386                          randconfig-a011
+i386                          randconfig-a015
+
 -- 
-2.33.0
-
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
