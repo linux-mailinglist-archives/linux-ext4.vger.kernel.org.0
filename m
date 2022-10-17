@@ -2,111 +2,236 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 818AF600E7F
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 Oct 2022 14:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE7076012DE
+	for <lists+linux-ext4@lfdr.de>; Mon, 17 Oct 2022 17:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbiJQMDT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 17 Oct 2022 08:03:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57772 "EHLO
+        id S229687AbiJQPpb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 17 Oct 2022 11:45:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229762AbiJQMDS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Oct 2022 08:03:18 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799405D739;
-        Mon, 17 Oct 2022 05:03:06 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 22E24205DF;
-        Mon, 17 Oct 2022 12:03:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1666008185;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H9rmmj8x9/pRGSP0rhWzAN2XdXyBU8aire6+hcOWaqg=;
-        b=EinRM8cmED2AkAp5rHQ9Q/lhD8djKWOsD88oc+NtD13fI7XxVo1WUUyzmKt/GVSI6gbzAB
-        avLzqrApgtjFLBBG/xJ+AFWnU8r7YZVrpEWdvAM7p60Y5lEedj8arNYOaEbKzaLwxt/Hc/
-        U1NJTeEZ2sDSl3Q+1AEau/ybC7ZtAR8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1666008185;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H9rmmj8x9/pRGSP0rhWzAN2XdXyBU8aire6+hcOWaqg=;
-        b=+HpnUQkgMm3dqcglnnoPcbVqtG7gqDj2H/lOtRIyBB+kZhaON0Kk1MTD50LMU/hFLdJhAr
-        f8WVAuBtfTzw7QAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9608D13398;
-        Mon, 17 Oct 2022 12:03:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ovthI3hETWM0JQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 17 Oct 2022 12:03:04 +0000
-Date:   Mon, 17 Oct 2022 14:02:55 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     dsterba@suse.cz, Hrutvik Kanabar <hrkanabar@gmail.com>,
-        Hrutvik Kanabar <hrutvik@google.com>,
-        Marco Elver <elver@google.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        kasan-dev@googlegroups.com,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        linux-ntfs-dev@lists.sourceforge.net
-Subject: Re: [PATCH RFC 0/7] fs: Debug config option to disable filesystem
- checksum verification for fuzzing
-Message-ID: <20221017120255.GM13389@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20221014084837.1787196-1-hrkanabar@gmail.com>
- <20221014091503.GA13389@twin.jikos.cz>
- <CACT4Y+as3SA6C_QFLSeb5JYY30O1oGAh-FVMLCS2NrNahycSoQ@mail.gmail.com>
+        with ESMTP id S229900AbiJQPp3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Oct 2022 11:45:29 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D1A4D248
+        for <linux-ext4@vger.kernel.org>; Mon, 17 Oct 2022 08:45:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1666021528; x=1697557528;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=3v629TfnQ6eCHCvRptZHiwXoRTAfdgVXR3TJuTbFQ10=;
+  b=R+g0xXErCOfMuK1e8br1ZzMoenQtl92y+dQNxZai9CLApCuLwfbuxFBK
+   iTVuSwNINdI+pg/SLd9iKQw3evIjU3h3Pv6qAWz9QMPKxxa+2C+AK03/u
+   1sT+gYyEltgbIGOWNBj6hw2YXo6vh0hgwUzvLjzeER4HMAXt1bZXq/Hp1
+   OLB5McAvHZ3VdCBF4BnFT9D4zL4sQTtzly87hS60MsqkQU7Ph2B7zaQS/
+   pfT68s2F27L/VbcpoXFLXSTgq8C0eAFsU7ikbjuThG4IdtJQOKzrpzkoX
+   gzR6rsi5gxPsGrF1pZto9HFEUMjK3cHM+0gSIYcyu53YiYOZ5mKK4rtxS
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="286228422"
+X-IronPort-AV: E=Sophos;i="5.95,191,1661842800"; 
+   d="scan'208";a="286228422"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2022 08:45:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="717537483"
+X-IronPort-AV: E=Sophos;i="5.95,191,1661842800"; 
+   d="scan'208";a="717537483"
+Received: from lkp-server01.sh.intel.com (HELO 8381f64adc98) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 17 Oct 2022 08:45:25 -0700
+Received: from kbuild by 8381f64adc98 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1okSIu-0000fA-28;
+        Mon, 17 Oct 2022 15:45:24 +0000
+Date:   Mon, 17 Oct 2022 23:44:24 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     ntfs3@lists.linux.dev, linux-mediatek@lists.infradead.org,
+        linux-ext4@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: [linux-next:master] BUILD REGRESSION
+ 77d8bf70fac0900844491376bc18b491710168bf
+Message-ID: <634d7858.CIIfTENtfSUJb4x+%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+as3SA6C_QFLSeb5JYY30O1oGAh-FVMLCS2NrNahycSoQ@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,SUSPICIOUS_RECIPS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Oct 17, 2022 at 10:31:03AM +0200, Dmitry Vyukov wrote:
-> On Fri, 14 Oct 2022 at 11:15, David Sterba <dsterba@suse.cz> wrote:
-> > On Fri, Oct 14, 2022 at 08:48:30AM +0000, Hrutvik Kanabar wrote:
-> > > From: Hrutvik Kanabar <hrutvik@google.com>
-> > I think the build-time option inflexible, but I see the point when
-> > you're testing several filesystems that it's one place to set up the
-> > environment. Alternatively I suggest to add sysfs knob available in
-> > debuging builds to enable/disable checksum verification per filesystem.
-> 
-> What usage scenarios do you have in mind for runtime changing of this option?
-> I see this option intended only for very narrow use cases which
-> require a specially built kernel in a number of other ways (lots of
-> which are not tunable at runtime, e.g. debugging configs).
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: 77d8bf70fac0900844491376bc18b491710168bf  Add linux-next specific files for 20221017
 
-For my own development and testing usecase I'd like to build the kernel
-from the same config all the time, then start a VM and run random tests
-that do not skip the checksum verification. Then as the last also run
-fuzzing with checksums skipped. The debugging (lockdep, various sanity
-checks, ...) config options are enabled. We both have a narrow usecase,
-what I'm suggesting is a common way to enable them.
+Error/Warning reports:
+
+https://lore.kernel.org/linux-mm/202210110857.9s0tXVNn-lkp@intel.com
+
+Error/Warning: (recently discovered and may have been fixed)
+
+ERROR: modpost: "devm_ioremap_resource" [drivers/dma/idma64.ko] undefined!
+ERROR: modpost: "devm_ioremap_resource" [drivers/dma/qcom/hdma.ko] undefined!
+arch/arm64/kernel/alternative.c:199:6: warning: no previous prototype for 'apply_alternatives_vdso' [-Wmissing-prototypes]
+arch/arm64/kernel/alternative.c:295:14: warning: no previous prototype for 'alt_cb_patch_nops' [-Wmissing-prototypes]
+fs/ext4/super.c:1744:19: warning: 'deprecated_msg' defined but not used [-Wunused-const-variable=]
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- arm64-allyesconfig
+|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-alt_cb_patch_nops
+|   `-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-apply_alternatives_vdso
+|-- i386-allyesconfig
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- i386-defconfig
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- i386-randconfig-a003-20221017
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- s390-allmodconfig
+|   |-- ERROR:devm_ioremap_resource-drivers-dma-idma64.ko-undefined
+|   `-- ERROR:devm_ioremap_resource-drivers-dma-qcom-hdma.ko-undefined
+|-- x86_64-allyesconfig
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- x86_64-buildonly-randconfig-r003-20221017
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- x86_64-defconfig
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- x86_64-randconfig-a001-20221017
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- x86_64-randconfig-a002-20221017
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- x86_64-randconfig-a003-20221017
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- x86_64-randconfig-a004-20221017
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- x86_64-randconfig-a005-20221017
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- x86_64-randconfig-a006-20221017
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- x86_64-randconfig-r002-20221017
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- x86_64-rhel-8.3
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- x86_64-rhel-8.3-func
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- x86_64-rhel-8.3-kselftests
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- x86_64-rhel-8.3-kvm
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+`-- x86_64-rhel-8.3-syz
+    `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+clang_recent_errors
+|-- arm64-randconfig-r011-20221017
+|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|-- arm64-randconfig-r024-20221017
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- hexagon-buildonly-randconfig-r006-20221017
+|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|   `-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|-- hexagon-randconfig-r041-20221017
+|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- i386-randconfig-a013-20221017
+|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|-- i386-randconfig-a014-20221017
+|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- i386-randconfig-a016-20221017
+|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|-- mips-randconfig-r005-20221017
+|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- riscv-randconfig-r042-20221017
+|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|-- s390-randconfig-r044-20221017
+|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- x86_64-randconfig-a011-20221017
+|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|-- x86_64-randconfig-a012-20221017
+|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|-- x86_64-randconfig-a016-20221017
+|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- x86_64-randconfig-r013-20221017
+|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+`-- x86_64-rhel-8.3-rust
+    `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+
+elapsed time: 726m
+
+configs tested: 59
+configs skipped: 2
+
+gcc tested configs:
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                          rhel-8.3-func
+x86_64                    rhel-8.3-kselftests
+arc                  randconfig-r043-20221017
+i386                 randconfig-a001-20221017
+i386                                defconfig
+i386                 randconfig-a002-20221017
+i386                 randconfig-a003-20221017
+x86_64                              defconfig
+i386                 randconfig-a005-20221017
+i386                 randconfig-a004-20221017
+i386                 randconfig-a006-20221017
+x86_64                               rhel-8.3
+x86_64                           rhel-8.3-kvm
+arc                                 defconfig
+powerpc                           allnoconfig
+x86_64                           rhel-8.3-syz
+s390                             allmodconfig
+alpha                               defconfig
+x86_64                         rhel-8.3-kunit
+i386                             allyesconfig
+s390                                defconfig
+x86_64                           allyesconfig
+sh                               allmodconfig
+mips                             allyesconfig
+s390                             allyesconfig
+powerpc                          allmodconfig
+m68k                             allmodconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+m68k                             allyesconfig
+x86_64               randconfig-a002-20221017
+arm                                 defconfig
+x86_64               randconfig-a003-20221017
+x86_64               randconfig-a004-20221017
+x86_64               randconfig-a001-20221017
+x86_64               randconfig-a005-20221017
+x86_64               randconfig-a006-20221017
+arm64                            allyesconfig
+arm                              allyesconfig
+ia64                             allmodconfig
+
+clang tested configs:
+hexagon              randconfig-r041-20221017
+hexagon              randconfig-r045-20221017
+s390                 randconfig-r044-20221017
+riscv                randconfig-r042-20221017
+x86_64               randconfig-a013-20221017
+i386                 randconfig-a011-20221017
+x86_64               randconfig-a012-20221017
+x86_64                          rhel-8.3-rust
+i386                 randconfig-a013-20221017
+x86_64               randconfig-a015-20221017
+x86_64               randconfig-a016-20221017
+i386                 randconfig-a012-20221017
+i386                 randconfig-a014-20221017
+x86_64               randconfig-a011-20221017
+i386                 randconfig-a016-20221017
+x86_64               randconfig-a014-20221017
+i386                 randconfig-a015-20221017
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
