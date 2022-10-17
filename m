@@ -2,87 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E666005C7
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 Oct 2022 05:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 577CB600841
+	for <lists+linux-ext4@lfdr.de>; Mon, 17 Oct 2022 10:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232439AbiJQDgk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 16 Oct 2022 23:36:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34314 "EHLO
+        id S229974AbiJQIBv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 17 Oct 2022 04:01:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232432AbiJQDgi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 16 Oct 2022 23:36:38 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2FA4F39C
-        for <linux-ext4@vger.kernel.org>; Sun, 16 Oct 2022 20:36:36 -0700 (PDT)
-Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MrMx54vrczmVww;
-        Mon, 17 Oct 2022 11:31:53 +0800 (CST)
-Received: from dggpeml500016.china.huawei.com (7.185.36.70) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 17 Oct 2022 11:36:14 +0800
-Received: from [10.174.176.102] (10.174.176.102) by
- dggpeml500016.china.huawei.com (7.185.36.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 17 Oct 2022 11:36:13 +0800
-Message-ID: <1a96f570-cdb4-35e7-60ad-d1a9d8b03ce4@huawei.com>
-Date:   Mon, 17 Oct 2022 11:36:13 +0800
+        with ESMTP id S229818AbiJQIBu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Oct 2022 04:01:50 -0400
+Received: from mail.fadrush.pl (mail.fadrush.pl [54.37.225.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C4D5C345
+        for <linux-ext4@vger.kernel.org>; Mon, 17 Oct 2022 01:01:43 -0700 (PDT)
+Received: by mail.fadrush.pl (Postfix, from userid 1002)
+        id 4F8DF227B8; Mon, 17 Oct 2022 08:00:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fadrush.pl; s=mail;
+        t=1665993701; bh=bD6j9gIFU6CLTaCGl0Ow9oeIxtirvTfMeNZSfLEZQ+I=;
+        h=Date:From:To:Subject:From;
+        b=UP9QA9RjJRReRlp/GbmL9FLRNAx+E/vt+2ysKMv2krf4gr83/e5iWHQn/98EK35wQ
+         RDnxsb1t2PIojIPcQ2b/Y/hqFMRDMoOkX9ID1GNbbiZhBtDPWeE4TJcHoYjxjKKz24
+         KhbgxjgNeENkF2wdqtvt4d1Z495JVDDNtSSZYfHRtL+3zVLq3FF+HZW0AgXH8Uv68S
+         5fALmEQibaypLKcYjAXHjT7OayYd99hPtgctSLZEaRmLh32UykflYgnKTCDnP1WXQ5
+         fyzVgYCk9JpygyO/3MvvZtRnCoK1Hc8OVSxyJSqBdE2WiH6TKjr3s/8W5+SKnm9P1t
+         0bEis2hzNPePw==
+Received: by mail.fadrush.pl for <linux-ext4@vger.kernel.org>; Mon, 17 Oct 2022 08:00:39 GMT
+Message-ID: <20221017064500-0.1.29.mk0p.0.n6frm982d7@fadrush.pl>
+Date:   Mon, 17 Oct 2022 08:00:39 GMT
+From:   "Jakub Olejniczak" <jakub.olejniczak@fadrush.pl>
+To:     <linux-ext4@vger.kernel.org>
+Subject: =?UTF-8?Q?Zwi=C4=99kszenie_p=C5=82ynno=C5=9Bci_finansowej?=
+X-Mailer: mail.fadrush.pl
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Subject: Re: [PATCH v2] misc/fsck.c: Processes may kill other processes.
-From:   zhanchengbin <zhanchengbin1@huawei.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-CC:     <linux-ext4@vger.kernel.org>, Lukas Czerner <lczerner@redhat.com>,
-        <liuzhiqiang26@huawei.com>, linfeilong <linfeilong@huawei.com>
-References: <2c8f3b3a-b6d1-9b8b-27c7-2df51236fe8c@huawei.com>
-In-Reply-To: <2c8f3b3a-b6d1-9b8b-27c7-2df51236fe8c@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.102]
-X-ClientProxiedBy: dggpeml500012.china.huawei.com (7.185.36.15) To
- dggpeml500016.china.huawei.com (7.185.36.70)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_VALIDITY_RPBL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-friendly ping, thanks.
+Dzie=C5=84 dobry,
 
-On 2022/10/10 16:56, zhanchengbin wrote:
-> I find a error in misc/fsck.c, if run the fsck -N command, processes
-> don't execute, just show what would be done. However, the pid whose
-> value is -1 is added to the instance_list list in the execute
-> function,if the kill_all function is called later, kill(-1, signum)
-> is executed, Signals are sent to all processes except the number one
-> process and itself. Other processes will be killed if they use the
-> default signal processing function.
-> 
-> Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
-> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
-> ---
-> V1->V2:
->    Anything <= 0 is a bug and can have unexpected consequences if
-> we actually call the kill(). So change inst->pid==-1 to inst->pid<=0.
-> 
->   misc/fsck.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/misc/fsck.c b/misc/fsck.c
-> index 4efe10ec..c56d1b00 100644
-> --- a/misc/fsck.c
-> +++ b/misc/fsck.c
-> @@ -546,6 +546,8 @@ static int kill_all(int signum)
->       for (inst = instance_list; inst; inst = inst->next) {
->           if (inst->flags & FLAG_DONE)
->               continue;
-> +        if (inst->pid <= 0)
-> +            continue;
->           kill(inst->pid, signum);
->           n++;
->       }
+kontaktuj=C4=99 si=C4=99 z Pa=C5=84stwem, poniewa=C5=BC chcia=C5=82bym za=
+proponowa=C4=87 wygodne rozwi=C4=85zanie, kt=C3=B3re umo=C5=BCliwi Pa=C5=84=
+stwa firmie stabilny rozw=C3=B3j.=20
+
+Konkurencyjne otoczenie wymaga ci=C4=85g=C5=82ego ulepszania i poszerzeni=
+a oferty, co z kolei wi=C4=85=C5=BCe si=C4=99 z konieczno=C5=9Bci=C4=85 i=
+nwestowania. Brak odpowiedniego kapita=C5=82u powa=C5=BCnie ogranicza tem=
+po rozwoju firmy.
+
+Od wielu lat z powodzeniem pomagam firmom w uzyskaniu najlepszej formy fi=
+nansowania z banku oraz UE. Mam sta=C5=82ych Klient=C3=B3w, kt=C3=B3rzy n=
+adal ch=C4=99tnie korzystaj=C4=85 z moich us=C5=82ug, a tak=C5=BCe poleca=
+j=C4=85 je innym.
+
+Czy chcieliby Pa=C5=84stwo skorzysta=C4=87 z pomocy wykwalifikowanego i d=
+o=C5=9Bwiadczonego doradcy finansowego?
+
+
+Pozdrawiam
+Jakub Olejniczak
