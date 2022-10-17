@@ -2,72 +2,52 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C90B36019E2
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 Oct 2022 22:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A03E0601C21
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Oct 2022 00:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230482AbiJQU3P (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 17 Oct 2022 16:29:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55698 "EHLO
+        id S230187AbiJQWOt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 17 Oct 2022 18:14:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231277AbiJQU1I (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Oct 2022 16:27:08 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F49E7F0A8;
-        Mon, 17 Oct 2022 13:26:08 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id y8so12098851pfp.13;
-        Mon, 17 Oct 2022 13:26:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uFc4CQLspR/Ieyg1375xMFBigqFCNsd92Gu75fIF35o=;
-        b=E2HrY593yhwBzKPuOHKDhfi7y0nx9yb5fVLhengIBmZ32w3tOZyumhviSaH5sejg6d
-         cXIbW2kBAlqCzMIuFNALX410/lKWAaVyF/nPC+box19yMoAf45T8bwJvOot6q/x2bZo9
-         BWkaNTXy4/u7sIhcqFgjXMyziDNGnBPaOAkMC+I0A3f5atFA1gL+cBgYrRLHgSu4FbXR
-         rmn0/zR4OQ1idgzRTlVeLxmGLfK+2zxyPHFFtwszyNI0ipZywzpx/Iy1Xgs26j64wa+a
-         oMjuQUet9ZqqLrnd5wLntdj6lh+4K4G85SYoxS+pr0LF7K0Xj8Jv+ifbo1jiVJEiEW1q
-         TnCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uFc4CQLspR/Ieyg1375xMFBigqFCNsd92Gu75fIF35o=;
-        b=ETRVubRFuP0H63c4A1GMY1Skx8MFHc6vVjhZ1BZRKsumHI18RZe11KL82DiGODZW4+
-         /rmglViiTh1Hkb+bvZgHDRi7hHVfHU9BIE4V8glfNl0S3J2N7WsM8k2tfekhIsthLMpS
-         4sTVYH6ho3eXjWAx52cT/rR0ggB2qsIDnztrRkRXluxBGHWDjsu9MHSfKW+d6w1KhMKq
-         OST4CIpa45UPBnTNDE6VZFlyPxFdNjijFrDtJ7qtpygKFY6ciVwv7hTgXW8vgjOacOoI
-         7tzvQvjU87Ve1gKBJ816eOl7VuvlGurf1Was4wKAk4csS9+K2n05oOS3Y/SSEA/+i3kz
-         FthQ==
-X-Gm-Message-State: ACrzQf0+g5FEJSjkqfEQ6KoxzeswP5ZEEenJFD0nlkDLPCNBgronQ3yO
-        Zs/+s63bQtN6uM86w73ugIopfdATAqOcpA==
-X-Google-Smtp-Source: AMsMyM6if6wczGFzL0eJx7bjhvBAIxGaMkCm0/7LXBeccVH5nxKFikZq20y7iSZcIYfZKW75aig6ew==
-X-Received: by 2002:a05:6a00:8cc:b0:52c:7ab5:2ce7 with SMTP id s12-20020a056a0008cc00b0052c7ab52ce7mr14226045pfu.28.1666038318537;
-        Mon, 17 Oct 2022 13:25:18 -0700 (PDT)
-Received: from vmfolio.. (c-76-102-73-225.hsd1.ca.comcast.net. [76.102.73.225])
-        by smtp.googlemail.com with ESMTPSA id pj12-20020a17090b4f4c00b00200b12f2bf5sm145037pjb.1.2022.10.17.13.25.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Oct 2022 13:25:18 -0700 (PDT)
-From:   "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nilfs@vger.kernel.org, linux-mm@kvack.org,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Subject: [PATCH v3 23/23] filemap: Remove find_get_pages_range_tag()
-Date:   Mon, 17 Oct 2022 13:24:51 -0700
-Message-Id: <20221017202451.4951-24-vishal.moola@gmail.com>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20221017202451.4951-1-vishal.moola@gmail.com>
-References: <20221017202451.4951-1-vishal.moola@gmail.com>
+        with ESMTP id S230179AbiJQWOp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Oct 2022 18:14:45 -0400
+Received: from mail105.syd.optusnet.com.au (mail105.syd.optusnet.com.au [211.29.132.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6F5D11A223;
+        Mon, 17 Oct 2022 15:14:42 -0700 (PDT)
+Received: from dread.disaster.area (pa49-181-106-210.pa.nsw.optusnet.com.au [49.181.106.210])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id E29F0110211B;
+        Tue, 18 Oct 2022 09:14:35 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1okYNV-003Do8-W5; Tue, 18 Oct 2022 09:14:34 +1100
+Date:   Tue, 18 Oct 2022 09:14:33 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, djwong@kernel.org,
+        trondmy@hammerspace.com, neilb@suse.de, viro@zeniv.linux.org.uk,
+        zohar@linux.ibm.com, xiubli@redhat.com, chuck.lever@oracle.com,
+        lczerner@redhat.com, jack@suse.cz, bfields@fieldses.org,
+        brauner@kernel.org, fweimer@redhat.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-xfs@vger.kernel.org, Jeff Layton <jlayton@redhat.com>
+Subject: Re: [RFC PATCH v7 9/9] vfs: expose STATX_VERSION to userland
+Message-ID: <20221017221433.GT3600936@dread.disaster.area>
+References: <20221017105709.10830-1-jlayton@kernel.org>
+ <20221017105709.10830-10-jlayton@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221017105709.10830-10-jlayton@kernel.org>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=VuxAv86n c=1 sm=1 tr=0 ts=634dd3d0
+        a=j6JUzzrSC7wlfFge/rmVbg==:117 a=j6JUzzrSC7wlfFge/rmVbg==:17
+        a=kj9zAlcOel0A:10 a=Qawa6l4ZSaYA:10 a=20KFwNOVAAAA:8 a=VwQbUJbxAAAA:8
+        a=7-415B0cAAAA:8 a=-cKyABg0kL-CqEoa6E0A:9 a=CjuIK1q_8ugA:10
+        a=AjGcO6oz07-iQ99wixmX:22 a=biEYGPWJfzWAr4FL6Ov7:22
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,149 +55,115 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-All callers to find_get_pages_range_tag(), find_get_pages_tag(),
-pagevec_lookup_range_tag(), and pagevec_lookup_tag() have been removed.
+On Mon, Oct 17, 2022 at 06:57:09AM -0400, Jeff Layton wrote:
+> From: Jeff Layton <jlayton@redhat.com>
+> 
+> Claim one of the spare fields in struct statx to hold a 64-bit inode
+> version attribute. When userland requests STATX_VERSION, copy the
+> value from the kstat struct there, and stop masking off
+> STATX_ATTR_VERSION_MONOTONIC.
 
-Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
----
- include/linux/pagemap.h | 10 -------
- include/linux/pagevec.h |  8 ------
- mm/filemap.c            | 60 -----------------------------------------
- mm/swap.c               | 10 -------
- 4 files changed, 88 deletions(-)
+Can we please make the name more sepcific than "version"? It's way
+too generic and - we already have userspace facing "version" fields
+for inodes that refer to the on-disk format version exposed in
+various UAPIs. It's common for UAPI structures used for file
+operations to have a "version" field that refers to the *UAPI
+structure version* rather than file metadata or data being retrieved
+from the file in question.
 
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index 28275eecb949..c83dfcbc19b3 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -742,16 +742,6 @@ unsigned filemap_get_folios_contig(struct address_space *mapping,
- 		pgoff_t *start, pgoff_t end, struct folio_batch *fbatch);
- unsigned filemap_get_folios_tag(struct address_space *mapping, pgoff_t *start,
- 		pgoff_t end, xa_mark_t tag, struct folio_batch *fbatch);
--unsigned find_get_pages_range_tag(struct address_space *mapping, pgoff_t *index,
--			pgoff_t end, xa_mark_t tag, unsigned int nr_pages,
--			struct page **pages);
--static inline unsigned find_get_pages_tag(struct address_space *mapping,
--			pgoff_t *index, xa_mark_t tag, unsigned int nr_pages,
--			struct page **pages)
--{
--	return find_get_pages_range_tag(mapping, index, (pgoff_t)-1, tag,
--					nr_pages, pages);
--}
- 
- struct page *grab_cache_page_write_begin(struct address_space *mapping,
- 			pgoff_t index);
-diff --git a/include/linux/pagevec.h b/include/linux/pagevec.h
-index 215eb6c3bdc9..a520632297ac 100644
---- a/include/linux/pagevec.h
-+++ b/include/linux/pagevec.h
-@@ -26,14 +26,6 @@ struct pagevec {
- };
- 
- void __pagevec_release(struct pagevec *pvec);
--unsigned pagevec_lookup_range_tag(struct pagevec *pvec,
--		struct address_space *mapping, pgoff_t *index, pgoff_t end,
--		xa_mark_t tag);
--static inline unsigned pagevec_lookup_tag(struct pagevec *pvec,
--		struct address_space *mapping, pgoff_t *index, xa_mark_t tag)
--{
--	return pagevec_lookup_range_tag(pvec, mapping, index, (pgoff_t)-1, tag);
--}
- 
- static inline void pagevec_init(struct pagevec *pvec)
- {
-diff --git a/mm/filemap.c b/mm/filemap.c
-index d78d62a7e44a..f303b8bd7dfa 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2317,66 +2317,6 @@ unsigned filemap_get_folios_tag(struct address_space *mapping, pgoff_t *start,
- }
- EXPORT_SYMBOL(filemap_get_folios_tag);
- 
--/**
-- * find_get_pages_range_tag - Find and return head pages matching @tag.
-- * @mapping:	the address_space to search
-- * @index:	the starting page index
-- * @end:	The final page index (inclusive)
-- * @tag:	the tag index
-- * @nr_pages:	the maximum number of pages
-- * @pages:	where the resulting pages are placed
-- *
-- * Like find_get_pages_range(), except we only return head pages which are
-- * tagged with @tag.  @index is updated to the index immediately after the
-- * last page we return, ready for the next iteration.
-- *
-- * Return: the number of pages which were found.
-- */
--unsigned find_get_pages_range_tag(struct address_space *mapping, pgoff_t *index,
--			pgoff_t end, xa_mark_t tag, unsigned int nr_pages,
--			struct page **pages)
--{
--	XA_STATE(xas, &mapping->i_pages, *index);
--	struct folio *folio;
--	unsigned ret = 0;
--
--	if (unlikely(!nr_pages))
--		return 0;
--
--	rcu_read_lock();
--	while ((folio = find_get_entry(&xas, end, tag))) {
--		/*
--		 * Shadow entries should never be tagged, but this iteration
--		 * is lockless so there is a window for page reclaim to evict
--		 * a page we saw tagged.  Skip over it.
--		 */
--		if (xa_is_value(folio))
--			continue;
--
--		pages[ret] = &folio->page;
--		if (++ret == nr_pages) {
--			*index = folio->index + folio_nr_pages(folio);
--			goto out;
--		}
--	}
--
--	/*
--	 * We come here when we got to @end. We take care to not overflow the
--	 * index @index as it confuses some of the callers. This breaks the
--	 * iteration when there is a page at index -1 but that is already
--	 * broken anyway.
--	 */
--	if (end == (pgoff_t)-1)
--		*index = (pgoff_t)-1;
--	else
--		*index = end + 1;
--out:
--	rcu_read_unlock();
--
--	return ret;
--}
--EXPORT_SYMBOL(find_get_pages_range_tag);
--
- /*
-  * CD/DVDs are error prone. When a medium error occurs, the driver may fail
-  * a _large_ part of the i/o request. Imagine the worst scenario:
-diff --git a/mm/swap.c b/mm/swap.c
-index 955930f41d20..89351b6dd149 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -1098,16 +1098,6 @@ void folio_batch_remove_exceptionals(struct folio_batch *fbatch)
- 	fbatch->nr = j;
- }
- 
--unsigned pagevec_lookup_range_tag(struct pagevec *pvec,
--		struct address_space *mapping, pgoff_t *index, pgoff_t end,
--		xa_mark_t tag)
--{
--	pvec->nr = find_get_pages_range_tag(mapping, index, end, tag,
--					PAGEVEC_SIZE, pvec->pages);
--	return pagevec_count(pvec);
--}
--EXPORT_SYMBOL(pagevec_lookup_range_tag);
--
- /*
-  * Perform any setup for the swap system
-  */
+The need for an explanatory comment like this:
+
+> +	__u64	stx_version; /* Inode change attribute */
+
+demonstrates it is badly named. If you want it known as an inode
+change attribute, then don't name the variable "version". In
+reality, it really needs to be an opaque cookie, not something
+applications need to decode directly to make sense of.
+
+> Update the test-statx sample program to output the change attr and
+> MountId.
+> 
+> Reviewed-by: NeilBrown <neilb@suse.de>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  fs/stat.c                 | 12 +++---------
+>  include/linux/stat.h      |  9 ---------
+>  include/uapi/linux/stat.h |  6 ++++--
+>  samples/vfs/test-statx.c  |  8 ++++++--
+>  4 files changed, 13 insertions(+), 22 deletions(-)
+> 
+> Posting this as an RFC as we're still trying to sort out what semantics
+> we want to present to userland. In particular, this patch leaves the
+> problem of crash resilience in to userland applications on filesystems
+> that don't report as MONOTONIC.
+
+Firstly, if userspace wants to use the change attribute, they are
+going to have to detect crashes themselves anyway because no fs in
+the kernel can set the MONOTONIC flag right now and it may be years
+before kernels/filesystems actually support it in production
+systems.
+
+But more fundamentally, I think this monotonic increase guarantee is
+completely broken by the presence of snapshots and snapshot
+rollbacks. If you change something, then a while later decide it
+broke (e.g. a production system upgrade went awry) and you roll back
+the filesystem to the pre-upgrade snapshot, then all the change
+counters and m/ctimes are guaranteed to go backwards because they
+will revert to the snapshot values. Maybe the filesystem can bump
+some internal counter for the snapshot when the revert happens, but
+until that is implemented, filesystems that support snapshots and
+rollback can't assert MONOTONIC.
+
+And that's worse for other filesystems, because if you put them on
+dm-thinp and roll them back, they are completely unaware of the fact
+that a rollback happened and there's *nothing* the filesystem can do
+about this. Indeed, snapshots are suppose to be done on clean
+filesystems so snapshot images don't require journal recovery, so
+any crash detection put in the filesystem recovery code to guarantee
+MONOTONIC behaviour will be soundly defeated by such block device
+snapshot rollbacks.
+
+Hence I think MONOTONIC is completely unworkable for most existing
+filesystems because snapshots and rollbacks completely break the
+underlying assumption MONOTONIC relies on: that filesystem
+modifications always move forwards in both the time and modification
+order dimensions....
+
+This means that monotonicity is probably not acheivable by any
+existing filesystem and so should not ever be mentioned in the UAPI.
+I think userspace semantics can be simplified down to "if the change
+cookie does not match exactly, caches are invalid" combined with
+"applications are responsible for detecting temporal discontiguities
+in filesystem presentation at start up (e.g. after a crash, unclean
+shutdown, restoration from backup, snapshot rollback, etc) for
+persistent cache invalidation purposes"....
+
+> Trond is of the opinion that monotonicity is a hard requirement, and
+> that we should not allow filesystems that can't provide that quality to
+> report STATX_VERSION at all.  His rationale is that one of the main uses
+> for this is for backup applications, and for those a counter that could
+> go backward is worse than useless.
+
+From the perspective of a backup program doing incremental backups,
+an inode with a change counter that has a different value to the
+current backup inventory means the file contains different
+information than what the current backup inventory holds. Again,
+snapshots, rollbacks, etc.
+
+Therefore, regardless of whether the change counter has gone
+forwards or backwards, the backup program needs to back up this
+current version of the file in this backup because it is different
+to the inventory copy.  Hence if the backup program fails to back it
+up, it will not be creating an exact backup of the user's data at
+the point in time the backup is run...
+
+Hence I don't see that MONOTONIC is a requirement for backup
+programs - they really do have to be able to handle filesystems that
+have modifications that move backwards in time as well as forwards...
+
+Cheers,
+
+Dave.
 -- 
-2.36.1
-
+Dave Chinner
+david@fromorbit.com
