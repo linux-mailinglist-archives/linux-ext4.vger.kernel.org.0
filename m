@@ -2,175 +2,179 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2BC602DA2
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Oct 2022 15:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA912602E45
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Oct 2022 16:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbiJRN6L (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Oct 2022 09:58:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45312 "EHLO
+        id S231503AbiJROV4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Oct 2022 10:21:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230087AbiJRN6K (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Oct 2022 09:58:10 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 017E4D01A6;
-        Tue, 18 Oct 2022 06:58:04 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S231321AbiJROVg (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Oct 2022 10:21:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED51F9C2EE;
+        Tue, 18 Oct 2022 07:21:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 9DC95207F2;
-        Tue, 18 Oct 2022 13:58:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1666101483; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hjPGH/f+XfkkPdSrr08xl26lKkygGjOFS9Er+Ciw6FE=;
-        b=VOptv98TbFtNOIxZIJ8r1uZnCc7mDFayvHLPzorFbsqv//VuXCNdNGjv5nhEwo999SD8er
-        P354UqvD/sEFh0EsxxdOE0jo8GexykuAD0sIHpYDdDVBcSmlg22qvovtvmaBFXC//sOTDa
-        sQw8FoXdffFnxp4R5+9tbJyN30Ys11U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1666101483;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hjPGH/f+XfkkPdSrr08xl26lKkygGjOFS9Er+Ciw6FE=;
-        b=L+XWq/Iu5TsIEsACXdnZQohYWH1am4WwNMS7V6JqLzGYMONJiyYQHlDbEvyF4M3h754M0e
-        agF6Du+bt5w8BTAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8F22513480;
-        Tue, 18 Oct 2022 13:58:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ZPLtIuuwTmMNLgAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 18 Oct 2022 13:58:03 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 1E120A06EE; Tue, 18 Oct 2022 15:58:03 +0200 (CEST)
-Date:   Tue, 18 Oct 2022 15:58:03 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ye Bin <yebin10@huawei.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jack@suse.cz, syzbot+c740bb18df70ad00952e@syzkaller.appspotmail.com
-Subject: Re: [PATCH -next v2] ext4: fix warning in 'ext4_da_release_space'
-Message-ID: <20221018135803.lt3ia4mqwlmnwd5s@quack3>
-References: <20221018022701.683489-1-yebin10@huawei.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 88413615AE;
+        Tue, 18 Oct 2022 14:21:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2B23C433D6;
+        Tue, 18 Oct 2022 14:21:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666102872;
+        bh=55bQHB+WjSBUXWHhVZsz39JliyTH3ce5NbGUN3TOoiM=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=tr45N7iF0mc2KUeRnM9/A9JhZd7/U22GyrFHvEUutjRjJCh5j0QCmmGK88a6JcXsN
+         nbMNqjvE54H5AijupL1GbiE+fXuIo/OL+lWmzdR0WdIX0HPTw89uf7uUSP6dj3Cd3u
+         bunQ1S5EVPlBqX1d7pyW6bkWTc5+N1xqieGOiwyAlv/gSZ+7s3ICZzwV52Mnx6xw5i
+         QlMUsCeQdO8sEYkRgNDAulTaRiEDnqM17XTMA9HxnFOcKuVCdi3+fbiVvShLN0tVjY
+         YCbtm+/blYEIoQnoZCxModsrkU1bSheNwrkkJGYnP5Wlqev2DkJQ5i80qdKjoHLPvv
+         p/ee7Equqs9Dw==
+Message-ID: <28a3d6b9978cf0280961385e28ae52f278d65d92.camel@kernel.org>
+Subject: Re: [RFC PATCH v7 9/9] vfs: expose STATX_VERSION to userland
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Dave Chinner <david@fromorbit.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca, djwong@kernel.org,
+        trondmy@hammerspace.com, neilb@suse.de, viro@zeniv.linux.org.uk,
+        zohar@linux.ibm.com, xiubli@redhat.com, chuck.lever@oracle.com,
+        lczerner@redhat.com, bfields@fieldses.org, brauner@kernel.org,
+        fweimer@redhat.com, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Date:   Tue, 18 Oct 2022 10:21:08 -0400
+In-Reply-To: <20221018134910.v4jim6jyjllykcaf@quack3>
+References: <20221017105709.10830-1-jlayton@kernel.org>
+         <20221017105709.10830-10-jlayton@kernel.org>
+         <20221017221433.GT3600936@dread.disaster.area>
+         <1e01f88bcde1b7963e504e0fd9cfb27495eb03ca.camel@kernel.org>
+         <20221018134910.v4jim6jyjllykcaf@quack3>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221018022701.683489-1-yebin10@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 18-10-22 10:27:01, Ye Bin wrote:
-> Syzkaller report issue as follows:
-> EXT4-fs (loop0): Free/Dirty block details
-> EXT4-fs (loop0): free_blocks=0
-> EXT4-fs (loop0): dirty_blocks=0
-> EXT4-fs (loop0): Block reservation details
-> EXT4-fs (loop0): i_reserved_data_blocks=0
-> EXT4-fs warning (device loop0): ext4_da_release_space:1527: ext4_da_release_space: ino 18, to_free 1 with only 0 reserved data blocks
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 92 at fs/ext4/inode.c:1528 ext4_da_release_space+0x25e/0x370 fs/ext4/inode.c:1524
-> Modules linked in:
-> CPU: 0 PID: 92 Comm: kworker/u4:4 Not tainted 6.0.0-syzkaller-09423-g493ffd6605b2 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/22/2022
-> Workqueue: writeback wb_workfn (flush-7:0)
-> RIP: 0010:ext4_da_release_space+0x25e/0x370 fs/ext4/inode.c:1528
-> RSP: 0018:ffffc900015f6c90 EFLAGS: 00010296
-> RAX: 42215896cd52ea00 RBX: 0000000000000000 RCX: 42215896cd52ea00
-> RDX: 0000000000000000 RSI: 0000000080000001 RDI: 0000000000000000
-> RBP: 1ffff1100e907d96 R08: ffffffff816aa79d R09: fffff520002bece5
-> R10: fffff520002bece5 R11: 1ffff920002bece4 R12: ffff888021fd2000
-> R13: ffff88807483ecb0 R14: 0000000000000001 R15: ffff88807483e740
-> FS:  0000000000000000(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00005555569ba628 CR3: 000000000c88e000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  ext4_es_remove_extent+0x1ab/0x260 fs/ext4/extents_status.c:1461
->  mpage_release_unused_pages+0x24d/0xef0 fs/ext4/inode.c:1589
->  ext4_writepages+0x12eb/0x3be0 fs/ext4/inode.c:2852
->  do_writepages+0x3c3/0x680 mm/page-writeback.c:2469
->  __writeback_single_inode+0xd1/0x670 fs/fs-writeback.c:1587
->  writeback_sb_inodes+0xb3b/0x18f0 fs/fs-writeback.c:1870
->  wb_writeback+0x41f/0x7b0 fs/fs-writeback.c:2044
->  wb_do_writeback fs/fs-writeback.c:2187 [inline]
->  wb_workfn+0x3cb/0xef0 fs/fs-writeback.c:2227
->  process_one_work+0x877/0xdb0 kernel/workqueue.c:2289
->  worker_thread+0xb14/0x1330 kernel/workqueue.c:2436
->  kthread+0x266/0x300 kernel/kthread.c:376
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
->  </TASK>
-> 
-> Above issue may happens as follows:
-> ext4_da_write_begin
->   ext4_create_inline_data
->     ext4_clear_inode_flag(inode, EXT4_INODE_EXTENTS);
->     ext4_set_inode_flag(inode, EXT4_INODE_INLINE_DATA);
-> __ext4_ioctl
->   ext4_ext_migrate -> will lead to eh->eh_entries not zero, and set extent flag
-> ext4_da_write_begin
->   ext4_da_convert_inline_data_to_extent
->     ext4_da_write_inline_data_begin
->       ext4_da_map_blocks
->         ext4_insert_delayed_block
-> 	  if (!ext4_es_scan_clu(inode, &ext4_es_is_delonly, lblk))
-> 	    if (!ext4_es_scan_clu(inode, &ext4_es_is_mapped, lblk))
-> 	      ext4_clu_mapped(inode, EXT4_B2C(sbi, lblk)); -> will return 1
-> 	       allocated = true;
->           ext4_es_insert_delayed_block(inode, lblk, allocated);
-> ext4_writepages
->   mpage_map_and_submit_extent(handle, &mpd, &give_up_on_write); -> return -ENOSPC
->   mpage_release_unused_pages(&mpd, give_up_on_write); -> give_up_on_write == 1
->     ext4_es_remove_extent
->       ext4_da_release_space(inode, reserved);
->         if (unlikely(to_free > ei->i_reserved_data_blocks))
-> 	  -> to_free == 1  but ei->i_reserved_data_blocks == 0
-> 	  -> then trigger warning as above
-> 
-> To solve above issue, forbid inode do migrate which has inline data.
-> 
-> Reported-by: syzbot+c740bb18df70ad00952e@syzkaller.appspotmail.com
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
+On Tue, 2022-10-18 at 15:49 +0200, Jan Kara wrote:
+> On Tue 18-10-22 06:35:14, Jeff Layton wrote:
+> > On Tue, 2022-10-18 at 09:14 +1100, Dave Chinner wrote:
+> > > On Mon, Oct 17, 2022 at 06:57:09AM -0400, Jeff Layton wrote:
+> > > > Trond is of the opinion that monotonicity is a hard requirement, an=
+d
+> > > > that we should not allow filesystems that can't provide that qualit=
+y to
+> > > > report STATX_VERSION at all.  His rationale is that one of the main=
+ uses
+> > > > for this is for backup applications, and for those a counter that c=
+ould
+> > > > go backward is worse than useless.
+> > >=20
+> > > From the perspective of a backup program doing incremental backups,
+> > > an inode with a change counter that has a different value to the
+> > > current backup inventory means the file contains different
+> > > information than what the current backup inventory holds. Again,
+> > > snapshots, rollbacks, etc.
+> > >=20
+> > > Therefore, regardless of whether the change counter has gone
+> > > forwards or backwards, the backup program needs to back up this
+> > > current version of the file in this backup because it is different
+> > > to the inventory copy.  Hence if the backup program fails to back it
+> > > up, it will not be creating an exact backup of the user's data at
+> > > the point in time the backup is run...
+> > >=20
+> > > Hence I don't see that MONOTONIC is a requirement for backup
+> > > programs - they really do have to be able to handle filesystems that
+> > > have modifications that move backwards in time as well as forwards...
+> >=20
+> > Rolling backward is not a problem in and of itself. The big issue is
+> > that after a crash, we can end up with a change attr seen before the
+> > crash that is now associated with a completely different inode state.
+> >=20
+> > The scenario is something like:
+> >=20
+> > - Change attr for an empty file starts at 1
+> >=20
+> > - Write "A" to file, change attr goes to 2
+> >=20
+> > - Read and statx happens (client sees "A" with change attr 2)
+> >=20
+> > - Crash (before last change is logged to disk)
+> >=20
+> > - Machine reboots, inode is empty, change attr back to 1
+> >=20
+> > - Write "B" to file, change attr goes to 2
+> >=20
+> > - Client stat's file, sees change attr 2 and assumes its cache is
+> > correct when it isn't (should be "B" not "A" now).
+> >=20
+> > The real danger comes not from the thing going backward, but the fact
+> > that it can march forward again after going backward, and then the
+> > client can see two different inode states associated with the same
+> > change attr value. Jumping all the change attributes forward by a
+> > significant amount after a crash should avoid this issue.
+>=20
+> As Dave pointed out, the problem with change attr having the same value f=
+or
+> a different inode state (after going backwards) holds not only for the
+> crashes but also for restore from backups, fs snapshots, device snapshots
+> etc. So relying on change attr only looks a bit fragile. It works for the
+> common case but the edge cases are awkward and there's no easy way to
+> detect you are in the edge case.
+>=20
 
-Yeah, makes sense. Feel free to add:
+This is true. In fact in the snapshot case you can't even rely on doing
+anything at reboot since you won't necessarily need to reboot to make it
+roll backward.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Whether that obviates the use of this value altogether, I'm not sure.
 
-								Honza 
+> So I think any implementation caring about data integrity would have to
+> include something like ctime into the picture anyway. Or we could just
+> completely give up any idea of monotonicity and on each mount select rand=
+om
+> prime P < 2^64 and instead of doing inc when advancing the change
+> attribute, we'd advance it by P. That makes collisions after restore /
+> crash fairly unlikely.
 
-> ---
->  fs/ext4/migrate.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
-> index 0a220ec9862d..a19a9661646e 100644
-> --- a/fs/ext4/migrate.c
-> +++ b/fs/ext4/migrate.c
-> @@ -424,7 +424,8 @@ int ext4_ext_migrate(struct inode *inode)
->  	 * already is extent-based, error out.
->  	 */
->  	if (!ext4_has_feature_extents(inode->i_sb) ||
-> -	    (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)))
-> +	    ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS) ||
-> +	    ext4_has_inline_data(inode))
->  		return -EINVAL;
->  
->  	if (S_ISLNK(inode->i_mode) && inode->i_blocks == 0)
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Part of the goal (at least for NFS) is to avoid unnecessary cache
+invalidations.
+
+If we just increment it by a particular offset on every reboot, then
+every time the server reboots, the clients will invalidate all of their
+cached inodes, and proceed to hammer the server with READ calls just as
+it's having to populate its own caches from disk.
+
+IOW, that will not be good for performance. Doing that after a crash is
+also less than ideal, but crashes should (hopefully) be rare enough that
+it's not a major issue.
+
+In any case, we need to decide whether and what to present to userland.
+There is a lot of disagreement here, and we need to come to a consensus.
+I think we have to answer 2 questions:
+
+1/ Is this counter useful enough on its own, without any baked-in
+rollback=A0resilience to justify exposing it via statx()?
+
+2/ if the answer above is "yes", then is there any value to the
+MONOTONIC flag, given that we can't really do anything about snapshot
+rollbacks and the like?
+
+I tend to be in the camp of "let's make the raw counter available and
+leave it up to userland to deal with the potential issues". After all,
+the c/mtime are still widely used today to detect changes and they have
+many of the same problems.
+
+Trying to do anything more elaborate than that will lead to a lot of
+extra complexity in the kernel, and make it a lot more difficult for any
+filesystem to report this at all.
+--=20
+Jeff Layton <jlayton@kernel.org>
