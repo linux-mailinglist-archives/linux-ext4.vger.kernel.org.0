@@ -2,81 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1FE9603490
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Oct 2022 23:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4714660351E
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Oct 2022 23:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230247AbiJRVDF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Oct 2022 17:03:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47004 "EHLO
+        id S229915AbiJRVqI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Oct 2022 17:46:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230034AbiJRVDE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Oct 2022 17:03:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8621AC5103
-        for <linux-ext4@vger.kernel.org>; Tue, 18 Oct 2022 14:02:43 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 373D1616EA
-        for <linux-ext4@vger.kernel.org>; Tue, 18 Oct 2022 21:02:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C9ACC433C1;
-        Tue, 18 Oct 2022 21:02:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1666126957;
-        bh=JDhxV9cE13wlutpbfNljUnqD44+JRDKvWdOIX7KOd/s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=idDLL4RT67Sjajpxw+ttUmOc9YmTfDmZqrqlHXN51XeJ41bzqMmUjKERDU7gPUAYt
-         tfRRHEUZ/U+aUqw7/ED82CckMzY5/bN7ukjeWfrynZKOQ5rUavxXyZkdpEQt/s16N/
-         GY7U3DckdJVdwsEbUbxKvBTYdDCRJh7IwBbH9L6w=
-Date:   Tue, 18 Oct 2022 14:02:36 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     ntfs3@lists.linux.dev, linux-mm@kvack.org,
-        linux-ext4@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        jfs-discussion@lists.sourceforge.net,
-        Liam Howlett <liam.howlett@oracle.com>
-Subject: Re: [linux-next:master] BUILD REGRESSION
- 4ca786ae6681b90b0ec3f4c55c89d12f835f8944
-Message-Id: <20221018140236.f55b76d77f5b872edf9bfdce@linux-foundation.org>
-In-Reply-To: <634eca23.ML3KLI/hjp2jt28w%lkp@intel.com>
-References: <634eca23.ML3KLI/hjp2jt28w%lkp@intel.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229841AbiJRVps (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Oct 2022 17:45:48 -0400
+Received: from mail105.syd.optusnet.com.au (mail105.syd.optusnet.com.au [211.29.132.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 15ED067071;
+        Tue, 18 Oct 2022 14:45:47 -0700 (PDT)
+Received: from dread.disaster.area (pa49-181-106-210.pa.nsw.optusnet.com.au [49.181.106.210])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 3E48911021F6;
+        Wed, 19 Oct 2022 08:45:46 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1okuPA-003bsw-Bg; Wed, 19 Oct 2022 08:45:44 +1100
+Date:   Wed, 19 Oct 2022 08:45:44 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, linux-nilfs@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 00/23] Convert to filemap_get_folios_tag()
+Message-ID: <20221018214544.GI2703033@dread.disaster.area>
+References: <20220901220138.182896-1-vishal.moola@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220901220138.182896-1-vishal.moola@gmail.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=VuxAv86n c=1 sm=1 tr=0 ts=634f1e8b
+        a=j6JUzzrSC7wlfFge/rmVbg==:117 a=j6JUzzrSC7wlfFge/rmVbg==:17
+        a=kj9zAlcOel0A:10 a=Qawa6l4ZSaYA:10 a=7-415B0cAAAA:8
+        a=A9Ajo3xi_aTsyj5e4eYA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 18 Oct 2022 23:45:39 +0800 kernel test robot <lkp@intel.com> wrote:
-
-> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-> branch HEAD: 4ca786ae6681b90b0ec3f4c55c89d12f835f8944  Add linux-next specific files for 20221018
+On Thu, Sep 01, 2022 at 03:01:15PM -0700, Vishal Moola (Oracle) wrote:
+> This patch series replaces find_get_pages_range_tag() with
+> filemap_get_folios_tag(). This also allows the removal of multiple
+> calls to compound_head() throughout.
+> It also makes a good chunk of the straightforward conversions to folios,
+> and takes the opportunity to introduce a function that grabs a folio
+> from the pagecache.
 > 
-> ...
->
-> mm/mmap.c:802 __vma_adjust() error: uninitialized symbol 'next_next'.
+> F2fs and Ceph have quite alot of work to be done regarding folios, so
+> for now those patches only have the changes necessary for the removal of
+> find_get_pages_range_tag(), and only support folios of size 1 (which is
+> all they use right now anyways).
 > 
+> I've run xfstests on btrfs, ext4, f2fs, and nilfs2, but more testing may be
+> beneficial.
 
-The code's OK but I guess we should make this warning go away.
+Well, that answers my question about how filesystems that enable
+multi-page folios were tested: they weren't. 
 
---- a/mm/mmap.c~a
-+++ a/mm/mmap.c
-@@ -618,7 +618,8 @@ int __vma_adjust(struct vm_area_struct *
- 	struct vm_area_struct *expand)
- {
- 	struct mm_struct *mm = vma->vm_mm;
--	struct vm_area_struct *next_next, *next = find_vma(mm, vma->vm_end);
-+	struct vm_area_struct *next_next = NULL;	/* uninit var warning */
-+	struct vm_area_struct *next = find_vma(mm, vma->vm_end);
- 	struct vm_area_struct *orig_vma = vma;
- 	struct address_space *mapping = NULL;
- 	struct rb_root_cached *root = NULL;
-_
+I'd suggest that anyone working on further extending the
+filemap/folio infrastructure really needs to be testing XFS as a
+first priority, and then other filesystems as a secondary concern.
 
+That's because XFS (via the fs/iomap infrastructure) is one of only
+3 filesystems in the kernel (AFS and tmpfs are the others) that
+interact with the page cache and page cache "pages" solely via folio
+interfaces. As such they are able to support multi-page folios in
+the page cache. All of the tested filesystems still use the fixed
+PAGE_SIZE page interfaces to interact with the page cache, so they
+don't actually exercise interactions with multi-page folios at all.
 
+Hence if you are converting generic infrastructure that looks up
+pages in the page cache to look up folios in the page cache, the
+code that processes the returned folios also needs to be updated and
+validated to ensure that it correctly handles multi-page folios. And
+the only way you can do that fully at this point in time is via
+testing XFS or AFS...
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
