@@ -2,40 +2,40 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4317F60200F
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Oct 2022 03:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B198602113
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Oct 2022 04:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229932AbiJRBCQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 17 Oct 2022 21:02:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46132 "EHLO
+        id S230239AbiJRCUu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 17 Oct 2022 22:20:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230387AbiJRBCQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Oct 2022 21:02:16 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E3CA696FF;
-        Mon, 17 Oct 2022 18:02:14 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MrwVt3N85zJn6V;
-        Tue, 18 Oct 2022 08:59:34 +0800 (CST)
+        with ESMTP id S230165AbiJRCUo (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Oct 2022 22:20:44 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4112D7E026;
+        Mon, 17 Oct 2022 19:20:37 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Mrxs22v4XzVhwZ;
+        Tue, 18 Oct 2022 10:00:22 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
  (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Tue, 18 Oct
- 2022 09:02:11 +0800
+ 2022 10:04:57 +0800
 From:   Ye Bin <yebin10@huawei.com>
 To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
         <linux-ext4@vger.kernel.org>
 CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
         Ye Bin <yebin10@huawei.com>,
         <syzbot+c740bb18df70ad00952e@syzkaller.appspotmail.com>
-Subject: [PATCH -next] ext4: fix warning in 'ext4_da_release_space'
-Date:   Tue, 18 Oct 2022 09:24:16 +0800
-Message-ID: <20221018012416.373869-1-yebin10@huawei.com>
+Subject: [PATCH -next v2] ext4: fix warning in 'ext4_da_release_space'
+Date:   Tue, 18 Oct 2022 10:27:01 +0800
+Message-ID: <20221018022701.683489-1-yebin10@huawei.com>
 X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
 X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  canpemm500010.china.huawei.com (7.192.105.118)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
@@ -123,7 +123,7 @@ Signed-off-by: Ye Bin <yebin10@huawei.com>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
-index 0a220ec9862d..1c2e998f3256 100644
+index 0a220ec9862d..a19a9661646e 100644
 --- a/fs/ext4/migrate.c
 +++ b/fs/ext4/migrate.c
 @@ -424,7 +424,8 @@ int ext4_ext_migrate(struct inode *inode)
@@ -132,7 +132,7 @@ index 0a220ec9862d..1c2e998f3256 100644
  	if (!ext4_has_feature_extents(inode->i_sb) ||
 -	    (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)))
 +	    ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS) ||
-+	    ext4_test_inode_flag(inode, EXT4_INODE_INLINE_DATA))
++	    ext4_has_inline_data(inode))
  		return -EINVAL;
  
  	if (S_ISLNK(inode->i_mode) && inode->i_blocks == 0)
