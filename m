@@ -2,168 +2,140 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A03E0601C21
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Oct 2022 00:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4317F60200F
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Oct 2022 03:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbiJQWOt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 17 Oct 2022 18:14:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46908 "EHLO
+        id S229932AbiJRBCQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 17 Oct 2022 21:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230179AbiJQWOp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Oct 2022 18:14:45 -0400
-Received: from mail105.syd.optusnet.com.au (mail105.syd.optusnet.com.au [211.29.132.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6F5D11A223;
-        Mon, 17 Oct 2022 15:14:42 -0700 (PDT)
-Received: from dread.disaster.area (pa49-181-106-210.pa.nsw.optusnet.com.au [49.181.106.210])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id E29F0110211B;
-        Tue, 18 Oct 2022 09:14:35 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1okYNV-003Do8-W5; Tue, 18 Oct 2022 09:14:34 +1100
-Date:   Tue, 18 Oct 2022 09:14:33 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, djwong@kernel.org,
-        trondmy@hammerspace.com, neilb@suse.de, viro@zeniv.linux.org.uk,
-        zohar@linux.ibm.com, xiubli@redhat.com, chuck.lever@oracle.com,
-        lczerner@redhat.com, jack@suse.cz, bfields@fieldses.org,
-        brauner@kernel.org, fweimer@redhat.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-xfs@vger.kernel.org, Jeff Layton <jlayton@redhat.com>
-Subject: Re: [RFC PATCH v7 9/9] vfs: expose STATX_VERSION to userland
-Message-ID: <20221017221433.GT3600936@dread.disaster.area>
-References: <20221017105709.10830-1-jlayton@kernel.org>
- <20221017105709.10830-10-jlayton@kernel.org>
+        with ESMTP id S230387AbiJRBCQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Oct 2022 21:02:16 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E3CA696FF;
+        Mon, 17 Oct 2022 18:02:14 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MrwVt3N85zJn6V;
+        Tue, 18 Oct 2022 08:59:34 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Tue, 18 Oct
+ 2022 09:02:11 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
+        Ye Bin <yebin10@huawei.com>,
+        <syzbot+c740bb18df70ad00952e@syzkaller.appspotmail.com>
+Subject: [PATCH -next] ext4: fix warning in 'ext4_da_release_space'
+Date:   Tue, 18 Oct 2022 09:24:16 +0800
+Message-ID: <20221018012416.373869-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221017105709.10830-10-jlayton@kernel.org>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.4 cv=VuxAv86n c=1 sm=1 tr=0 ts=634dd3d0
-        a=j6JUzzrSC7wlfFge/rmVbg==:117 a=j6JUzzrSC7wlfFge/rmVbg==:17
-        a=kj9zAlcOel0A:10 a=Qawa6l4ZSaYA:10 a=20KFwNOVAAAA:8 a=VwQbUJbxAAAA:8
-        a=7-415B0cAAAA:8 a=-cKyABg0kL-CqEoa6E0A:9 a=CjuIK1q_8ugA:10
-        a=AjGcO6oz07-iQ99wixmX:22 a=biEYGPWJfzWAr4FL6Ov7:22
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Oct 17, 2022 at 06:57:09AM -0400, Jeff Layton wrote:
-> From: Jeff Layton <jlayton@redhat.com>
-> 
-> Claim one of the spare fields in struct statx to hold a 64-bit inode
-> version attribute. When userland requests STATX_VERSION, copy the
-> value from the kstat struct there, and stop masking off
-> STATX_ATTR_VERSION_MONOTONIC.
+Syzkaller report issue as follows:
+EXT4-fs (loop0): Free/Dirty block details
+EXT4-fs (loop0): free_blocks=0
+EXT4-fs (loop0): dirty_blocks=0
+EXT4-fs (loop0): Block reservation details
+EXT4-fs (loop0): i_reserved_data_blocks=0
+EXT4-fs warning (device loop0): ext4_da_release_space:1527: ext4_da_release_space: ino 18, to_free 1 with only 0 reserved data blocks
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 92 at fs/ext4/inode.c:1528 ext4_da_release_space+0x25e/0x370 fs/ext4/inode.c:1524
+Modules linked in:
+CPU: 0 PID: 92 Comm: kworker/u4:4 Not tainted 6.0.0-syzkaller-09423-g493ffd6605b2 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/22/2022
+Workqueue: writeback wb_workfn (flush-7:0)
+RIP: 0010:ext4_da_release_space+0x25e/0x370 fs/ext4/inode.c:1528
+RSP: 0018:ffffc900015f6c90 EFLAGS: 00010296
+RAX: 42215896cd52ea00 RBX: 0000000000000000 RCX: 42215896cd52ea00
+RDX: 0000000000000000 RSI: 0000000080000001 RDI: 0000000000000000
+RBP: 1ffff1100e907d96 R08: ffffffff816aa79d R09: fffff520002bece5
+R10: fffff520002bece5 R11: 1ffff920002bece4 R12: ffff888021fd2000
+R13: ffff88807483ecb0 R14: 0000000000000001 R15: ffff88807483e740
+FS:  0000000000000000(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005555569ba628 CR3: 000000000c88e000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ ext4_es_remove_extent+0x1ab/0x260 fs/ext4/extents_status.c:1461
+ mpage_release_unused_pages+0x24d/0xef0 fs/ext4/inode.c:1589
+ ext4_writepages+0x12eb/0x3be0 fs/ext4/inode.c:2852
+ do_writepages+0x3c3/0x680 mm/page-writeback.c:2469
+ __writeback_single_inode+0xd1/0x670 fs/fs-writeback.c:1587
+ writeback_sb_inodes+0xb3b/0x18f0 fs/fs-writeback.c:1870
+ wb_writeback+0x41f/0x7b0 fs/fs-writeback.c:2044
+ wb_do_writeback fs/fs-writeback.c:2187 [inline]
+ wb_workfn+0x3cb/0xef0 fs/fs-writeback.c:2227
+ process_one_work+0x877/0xdb0 kernel/workqueue.c:2289
+ worker_thread+0xb14/0x1330 kernel/workqueue.c:2436
+ kthread+0x266/0x300 kernel/kthread.c:376
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
+ </TASK>
 
-Can we please make the name more sepcific than "version"? It's way
-too generic and - we already have userspace facing "version" fields
-for inodes that refer to the on-disk format version exposed in
-various UAPIs. It's common for UAPI structures used for file
-operations to have a "version" field that refers to the *UAPI
-structure version* rather than file metadata or data being retrieved
-from the file in question.
+Above issue may happens as follows:
+ext4_da_write_begin
+  ext4_create_inline_data
+    ext4_clear_inode_flag(inode, EXT4_INODE_EXTENTS);
+    ext4_set_inode_flag(inode, EXT4_INODE_INLINE_DATA);
+__ext4_ioctl
+  ext4_ext_migrate -> will lead to eh->eh_entries not zero, and set extent flag
+ext4_da_write_begin
+  ext4_da_convert_inline_data_to_extent
+    ext4_da_write_inline_data_begin
+      ext4_da_map_blocks
+        ext4_insert_delayed_block
+	  if (!ext4_es_scan_clu(inode, &ext4_es_is_delonly, lblk))
+	    if (!ext4_es_scan_clu(inode, &ext4_es_is_mapped, lblk))
+	      ext4_clu_mapped(inode, EXT4_B2C(sbi, lblk)); -> will return 1
+	       allocated = true;
+          ext4_es_insert_delayed_block(inode, lblk, allocated);
+ext4_writepages
+  mpage_map_and_submit_extent(handle, &mpd, &give_up_on_write); -> return -ENOSPC
+  mpage_release_unused_pages(&mpd, give_up_on_write); -> give_up_on_write == 1
+    ext4_es_remove_extent
+      ext4_da_release_space(inode, reserved);
+        if (unlikely(to_free > ei->i_reserved_data_blocks))
+	  -> to_free == 1  but ei->i_reserved_data_blocks == 0
+	  -> then trigger warning as above
 
-The need for an explanatory comment like this:
+To solve above issue, forbid inode do migrate which has inline data.
 
-> +	__u64	stx_version; /* Inode change attribute */
+Reported-by: syzbot+c740bb18df70ad00952e@syzkaller.appspotmail.com
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ fs/ext4/migrate.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-demonstrates it is badly named. If you want it known as an inode
-change attribute, then don't name the variable "version". In
-reality, it really needs to be an opaque cookie, not something
-applications need to decode directly to make sense of.
-
-> Update the test-statx sample program to output the change attr and
-> MountId.
-> 
-> Reviewed-by: NeilBrown <neilb@suse.de>
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  fs/stat.c                 | 12 +++---------
->  include/linux/stat.h      |  9 ---------
->  include/uapi/linux/stat.h |  6 ++++--
->  samples/vfs/test-statx.c  |  8 ++++++--
->  4 files changed, 13 insertions(+), 22 deletions(-)
-> 
-> Posting this as an RFC as we're still trying to sort out what semantics
-> we want to present to userland. In particular, this patch leaves the
-> problem of crash resilience in to userland applications on filesystems
-> that don't report as MONOTONIC.
-
-Firstly, if userspace wants to use the change attribute, they are
-going to have to detect crashes themselves anyway because no fs in
-the kernel can set the MONOTONIC flag right now and it may be years
-before kernels/filesystems actually support it in production
-systems.
-
-But more fundamentally, I think this monotonic increase guarantee is
-completely broken by the presence of snapshots and snapshot
-rollbacks. If you change something, then a while later decide it
-broke (e.g. a production system upgrade went awry) and you roll back
-the filesystem to the pre-upgrade snapshot, then all the change
-counters and m/ctimes are guaranteed to go backwards because they
-will revert to the snapshot values. Maybe the filesystem can bump
-some internal counter for the snapshot when the revert happens, but
-until that is implemented, filesystems that support snapshots and
-rollback can't assert MONOTONIC.
-
-And that's worse for other filesystems, because if you put them on
-dm-thinp and roll them back, they are completely unaware of the fact
-that a rollback happened and there's *nothing* the filesystem can do
-about this. Indeed, snapshots are suppose to be done on clean
-filesystems so snapshot images don't require journal recovery, so
-any crash detection put in the filesystem recovery code to guarantee
-MONOTONIC behaviour will be soundly defeated by such block device
-snapshot rollbacks.
-
-Hence I think MONOTONIC is completely unworkable for most existing
-filesystems because snapshots and rollbacks completely break the
-underlying assumption MONOTONIC relies on: that filesystem
-modifications always move forwards in both the time and modification
-order dimensions....
-
-This means that monotonicity is probably not acheivable by any
-existing filesystem and so should not ever be mentioned in the UAPI.
-I think userspace semantics can be simplified down to "if the change
-cookie does not match exactly, caches are invalid" combined with
-"applications are responsible for detecting temporal discontiguities
-in filesystem presentation at start up (e.g. after a crash, unclean
-shutdown, restoration from backup, snapshot rollback, etc) for
-persistent cache invalidation purposes"....
-
-> Trond is of the opinion that monotonicity is a hard requirement, and
-> that we should not allow filesystems that can't provide that quality to
-> report STATX_VERSION at all.  His rationale is that one of the main uses
-> for this is for backup applications, and for those a counter that could
-> go backward is worse than useless.
-
-From the perspective of a backup program doing incremental backups,
-an inode with a change counter that has a different value to the
-current backup inventory means the file contains different
-information than what the current backup inventory holds. Again,
-snapshots, rollbacks, etc.
-
-Therefore, regardless of whether the change counter has gone
-forwards or backwards, the backup program needs to back up this
-current version of the file in this backup because it is different
-to the inventory copy.  Hence if the backup program fails to back it
-up, it will not be creating an exact backup of the user's data at
-the point in time the backup is run...
-
-Hence I don't see that MONOTONIC is a requirement for backup
-programs - they really do have to be able to handle filesystems that
-have modifications that move backwards in time as well as forwards...
-
-Cheers,
-
-Dave.
+diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
+index 0a220ec9862d..1c2e998f3256 100644
+--- a/fs/ext4/migrate.c
++++ b/fs/ext4/migrate.c
+@@ -424,7 +424,8 @@ int ext4_ext_migrate(struct inode *inode)
+ 	 * already is extent-based, error out.
+ 	 */
+ 	if (!ext4_has_feature_extents(inode->i_sb) ||
+-	    (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)))
++	    ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS) ||
++	    ext4_test_inode_flag(inode, EXT4_INODE_INLINE_DATA))
+ 		return -EINVAL;
+ 
+ 	if (S_ISLNK(inode->i_mode) && inode->i_blocks == 0)
 -- 
-Dave Chinner
-david@fromorbit.com
+2.31.1
+
