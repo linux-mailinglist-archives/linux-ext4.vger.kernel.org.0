@@ -2,140 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B198602113
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Oct 2022 04:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA38602384
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Oct 2022 06:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbiJRCUu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 17 Oct 2022 22:20:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40660 "EHLO
+        id S229770AbiJREzr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Oct 2022 00:55:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230165AbiJRCUo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Oct 2022 22:20:44 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4112D7E026;
-        Mon, 17 Oct 2022 19:20:37 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Mrxs22v4XzVhwZ;
-        Tue, 18 Oct 2022 10:00:22 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Tue, 18 Oct
- 2022 10:04:57 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
-        Ye Bin <yebin10@huawei.com>,
-        <syzbot+c740bb18df70ad00952e@syzkaller.appspotmail.com>
-Subject: [PATCH -next v2] ext4: fix warning in 'ext4_da_release_space'
-Date:   Tue, 18 Oct 2022 10:27:01 +0800
-Message-ID: <20221018022701.683489-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S229926AbiJREzh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Oct 2022 00:55:37 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E35986525F;
+        Mon, 17 Oct 2022 21:55:31 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Ms1l168BWz4xFy;
+        Tue, 18 Oct 2022 15:55:25 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1666068926;
+        bh=CRrHBDsNdrBb28hzgQhlrZd26ZKphtFKLFjDwU/ABaM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KoC6hrmzAs9HidJRRxkubIdSZ+CjOXbnqlKmiHN7K59O4vyWF8oo7vyiGEjyg7cjM
+         j9OfGRfnR4pdnCe9OvqaTMWdp3Nh9N4O6NDTIi7tQDrRHuJpfWswZRBizWuWkpLraD
+         T8/8zHB9obIaN+1OkMvUam8/bJvmm4Vp0YGFRSIS2chyfJObRcOgUXMm7IWZW+JV31
+         d6yXY9OxqMxwPepR6E2dTpRBFoM3s+6EXJS9ypIHF0f+/gUr1Qihyah9UO9arldiSe
+         bBQ8e3h6lXBihlsh6XhoNxGpldR6cG2UsZSpxg4Yv2h1xearu5CHhfU0i9qSeV47x7
+         sfeLbfH8NQ8eg==
+Date:   Tue, 18 Oct 2022 15:55:24 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-next@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        Keith Busch <kbusch@kernel.org>, linux-fscrypt@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH v5 0/8] make statx() return DIO alignment information
+Message-ID: <20221018155524.5fc4e421@canb.auug.org.au>
+In-Reply-To: <20220913063025.4815466c@canb.auug.org.au>
+References: <20220827065851.135710-1-ebiggers@kernel.org>
+        <YxfE8zjqkT6Zn+Vn@quark>
+        <Yx6DNIorJ86IWk5q@quark>
+        <20220913063025.4815466c@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/Ta.nZamROACWUZnFj4i7MWy";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Syzkaller report issue as follows:
-EXT4-fs (loop0): Free/Dirty block details
-EXT4-fs (loop0): free_blocks=0
-EXT4-fs (loop0): dirty_blocks=0
-EXT4-fs (loop0): Block reservation details
-EXT4-fs (loop0): i_reserved_data_blocks=0
-EXT4-fs warning (device loop0): ext4_da_release_space:1527: ext4_da_release_space: ino 18, to_free 1 with only 0 reserved data blocks
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 92 at fs/ext4/inode.c:1528 ext4_da_release_space+0x25e/0x370 fs/ext4/inode.c:1524
-Modules linked in:
-CPU: 0 PID: 92 Comm: kworker/u4:4 Not tainted 6.0.0-syzkaller-09423-g493ffd6605b2 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/22/2022
-Workqueue: writeback wb_workfn (flush-7:0)
-RIP: 0010:ext4_da_release_space+0x25e/0x370 fs/ext4/inode.c:1528
-RSP: 0018:ffffc900015f6c90 EFLAGS: 00010296
-RAX: 42215896cd52ea00 RBX: 0000000000000000 RCX: 42215896cd52ea00
-RDX: 0000000000000000 RSI: 0000000080000001 RDI: 0000000000000000
-RBP: 1ffff1100e907d96 R08: ffffffff816aa79d R09: fffff520002bece5
-R10: fffff520002bece5 R11: 1ffff920002bece4 R12: ffff888021fd2000
-R13: ffff88807483ecb0 R14: 0000000000000001 R15: ffff88807483e740
-FS:  0000000000000000(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005555569ba628 CR3: 000000000c88e000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- ext4_es_remove_extent+0x1ab/0x260 fs/ext4/extents_status.c:1461
- mpage_release_unused_pages+0x24d/0xef0 fs/ext4/inode.c:1589
- ext4_writepages+0x12eb/0x3be0 fs/ext4/inode.c:2852
- do_writepages+0x3c3/0x680 mm/page-writeback.c:2469
- __writeback_single_inode+0xd1/0x670 fs/fs-writeback.c:1587
- writeback_sb_inodes+0xb3b/0x18f0 fs/fs-writeback.c:1870
- wb_writeback+0x41f/0x7b0 fs/fs-writeback.c:2044
- wb_do_writeback fs/fs-writeback.c:2187 [inline]
- wb_workfn+0x3cb/0xef0 fs/fs-writeback.c:2227
- process_one_work+0x877/0xdb0 kernel/workqueue.c:2289
- worker_thread+0xb14/0x1330 kernel/workqueue.c:2436
- kthread+0x266/0x300 kernel/kthread.c:376
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
- </TASK>
+--Sig_/Ta.nZamROACWUZnFj4i7MWy
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Above issue may happens as follows:
-ext4_da_write_begin
-  ext4_create_inline_data
-    ext4_clear_inode_flag(inode, EXT4_INODE_EXTENTS);
-    ext4_set_inode_flag(inode, EXT4_INODE_INLINE_DATA);
-__ext4_ioctl
-  ext4_ext_migrate -> will lead to eh->eh_entries not zero, and set extent flag
-ext4_da_write_begin
-  ext4_da_convert_inline_data_to_extent
-    ext4_da_write_inline_data_begin
-      ext4_da_map_blocks
-        ext4_insert_delayed_block
-	  if (!ext4_es_scan_clu(inode, &ext4_es_is_delonly, lblk))
-	    if (!ext4_es_scan_clu(inode, &ext4_es_is_mapped, lblk))
-	      ext4_clu_mapped(inode, EXT4_B2C(sbi, lblk)); -> will return 1
-	       allocated = true;
-          ext4_es_insert_delayed_block(inode, lblk, allocated);
-ext4_writepages
-  mpage_map_and_submit_extent(handle, &mpd, &give_up_on_write); -> return -ENOSPC
-  mpage_release_unused_pages(&mpd, give_up_on_write); -> give_up_on_write == 1
-    ext4_es_remove_extent
-      ext4_da_release_space(inode, reserved);
-        if (unlikely(to_free > ei->i_reserved_data_blocks))
-	  -> to_free == 1  but ei->i_reserved_data_blocks == 0
-	  -> then trigger warning as above
+Hi Eric,
 
-To solve above issue, forbid inode do migrate which has inline data.
+On Tue, 13 Sep 2022 06:30:25 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>=20
+> On Sun, 11 Sep 2022 19:54:12 -0500 Eric Biggers <ebiggers@kernel.org> wro=
+te:
+> >
+> > Stephen, can you add my git branch for this patchset to linux-next?
+> >=20
+> > URL: https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git
+> > Branch: statx-dioalign
+> >=20
+> > This is targeting the 6.1 merge window with a pull request to Linus. =20
+>=20
+> Added from today.
 
-Reported-by: syzbot+c740bb18df70ad00952e@syzkaller.appspotmail.com
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- fs/ext4/migrate.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+I notice that this branch has been removed.  Are you finished with it
+(i.e. should I remove it from linux-next)?
 
-diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
-index 0a220ec9862d..a19a9661646e 100644
---- a/fs/ext4/migrate.c
-+++ b/fs/ext4/migrate.c
-@@ -424,7 +424,8 @@ int ext4_ext_migrate(struct inode *inode)
- 	 * already is extent-based, error out.
- 	 */
- 	if (!ext4_has_feature_extents(inode->i_sb) ||
--	    (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)))
-+	    ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS) ||
-+	    ext4_has_inline_data(inode))
- 		return -EINVAL;
- 
- 	if (S_ISLNK(inode->i_mode) && inode->i_blocks == 0)
--- 
-2.31.1
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/Ta.nZamROACWUZnFj4i7MWy
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmNOMbwACgkQAVBC80lX
+0GxBPwf+NK66Affcx+uOwICiv+ovQ21QIlPm9IJ5LvIoFwf8a6p0CBBV0D87Lz3O
+gTyOmmIln6foey0EDLUonmx0R/g/NmDIqlmlTokCTOS3W06Rg+Q/ura6Xy2e16yX
+jkvcXxu3VueNdLN/MgKin6PjnB77DyhjPo1xuyXxHE39/XO0h8vTMY9OL44Zg8E9
+ZEnV4lTb/mUKb1DU0SiFrM2hcFfCG09gEnUGsA7P/dQnwrHHkD+vWPDsX5yWHX3P
+bKtAFYG/Z17S8nIzUbQG+A19u19ajcQasGjV8jDLEERPDX3bOg91nR33ahR4rfQb
+T/Xadfe0rtdAKEqBLhNafzUpmGIqxg==
+=DyWQ
+-----END PGP SIGNATURE-----
+
+--Sig_/Ta.nZamROACWUZnFj4i7MWy--
