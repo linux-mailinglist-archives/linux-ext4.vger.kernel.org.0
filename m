@@ -2,133 +2,216 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2BF9604C24
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Oct 2022 17:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65E48604E86
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Oct 2022 19:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232597AbiJSPvR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 19 Oct 2022 11:51:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56542 "EHLO
+        id S231137AbiJSRXr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 19 Oct 2022 13:23:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232336AbiJSPup (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Oct 2022 11:50:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97980153E24;
-        Wed, 19 Oct 2022 08:46:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S230441AbiJSRXq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Oct 2022 13:23:46 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB19F191D7E;
+        Wed, 19 Oct 2022 10:23:43 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2B60561846;
-        Wed, 19 Oct 2022 15:45:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B874C433C1;
-        Wed, 19 Oct 2022 15:45:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666194328;
-        bh=Xth0BtK1NQ1Hk2Nxe9JXu1D9E0ErD3wODQtzBi2ym5s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X7NCLo3rLbHHL28m3K6awBgXXuVSRkVx/W/iNG72TgwHP/QGzlwE5aXWsyqVDL8a1
-         wEVxfc5KbVlEy75SJuZbRbwsJMOnhIXDkwx1son+cOITqQlDQ0QvLnM/3vpOUpWxDb
-         HbLPdNtqJWl5O8o1UbYh7zlAgnkN32FTKdxPKV6wyhB1WYcOsSnpdoj0ZTRn99gZMr
-         iPhGYAE8dvgo6TX0YdBSx5q+k+NEbWsJ6hLnHxKQFgp4pZ3B6IICxoSEwrXnHdKp2B
-         ZpdJhpUPWZk7qd6TWC3l1w3pOqDI5/xWccZqWU7R9AWYAYZ+3zLVIvBcRFWN20aSYA
-         oDW8DAuiVCriw==
-Date:   Wed, 19 Oct 2022 08:45:28 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 92A2E1F962;
+        Wed, 19 Oct 2022 17:23:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1666200220; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zBLt6q8KXfJFLr7EVMsuPkUznxswdTgkCJUV+ihP7yk=;
+        b=i5kB35BR3upviPoVK/txtf5k6fvvZqh97WJbApv7JQ9lgcsCo8iYvqX8WWFKxbhiOrD/U3
+        SwGu8H2HAX+kUGQT77uRq35XOlX23pp8Ovw+PO0T50jHiEDeOuvjNvCkTRV9Otkkda5aWc
+        mPqGfU9L/JwIcfwOjNf0G6RUD9M2nMo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1666200220;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zBLt6q8KXfJFLr7EVMsuPkUznxswdTgkCJUV+ihP7yk=;
+        b=mVuAgZonBuN7XivtjSYju4RklCbIycM/QgQkdlxn+eTp5HQ42i8ZI/BLdy0zqD1QhUL2jm
+        XNRH/UTFz1PoKyAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5EC2613A36;
+        Wed, 19 Oct 2022 17:23:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 4CwUF5wyUGPUCgAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 19 Oct 2022 17:23:40 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 998CCA06F7; Wed, 19 Oct 2022 19:23:39 +0200 (CEST)
+Date:   Wed, 19 Oct 2022 19:23:39 +0200
+From:   Jan Kara <jack@suse.cz>
 To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Christian Brauner <brauner@kernel.org>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, david@fromorbit.com,
+Cc:     Jan Kara <jack@suse.cz>, Dave Chinner <david@fromorbit.com>,
+        tytso@mit.edu, adilger.kernel@dilger.ca, djwong@kernel.org,
         trondmy@hammerspace.com, neilb@suse.de, viro@zeniv.linux.org.uk,
         zohar@linux.ibm.com, xiubli@redhat.com, chuck.lever@oracle.com,
-        lczerner@redhat.com, jack@suse.cz, bfields@fieldses.org,
+        lczerner@redhat.com, bfields@fieldses.org, brauner@kernel.org,
         fweimer@redhat.com, linux-btrfs@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 0/9] fs: clean up handling of i_version counter
-Message-ID: <Y1AbmIYEhUwfFHDx@magnolia>
+Subject: Re: [RFC PATCH v7 9/9] vfs: expose STATX_VERSION to userland
+Message-ID: <20221019172339.f5dxek5yjposst5g@quack3>
 References: <20221017105709.10830-1-jlayton@kernel.org>
- <20221019111315.hpilifogyvf3bixh@wittgenstein>
- <2b167dd9bda17f1324e9c526d868cc0d995dc660.camel@kernel.org>
+ <20221017105709.10830-10-jlayton@kernel.org>
+ <20221017221433.GT3600936@dread.disaster.area>
+ <1e01f88bcde1b7963e504e0fd9cfb27495eb03ca.camel@kernel.org>
+ <20221018134910.v4jim6jyjllykcaf@quack3>
+ <28a3d6b9978cf0280961385e28ae52f278d65d92.camel@kernel.org>
+ <20221018151721.cl6dbupqjkkivxyf@quack3>
+ <fcd35c14353ae859d778a23f80249047819bc4b0.camel@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2b167dd9bda17f1324e9c526d868cc0d995dc660.camel@kernel.org>
-X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <fcd35c14353ae859d778a23f80249047819bc4b0.camel@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Oct 19, 2022 at 08:18:15AM -0400, Jeff Layton wrote:
-> On Wed, 2022-10-19 at 13:13 +0200, Christian Brauner wrote:
-> > On Mon, Oct 17, 2022 at 06:57:00AM -0400, Jeff Layton wrote:
-> > > This patchset is intended to clean up the handling of the i_version
-> > > counter by nfsd. Most of the changes are to internal interfaces.
+On Tue 18-10-22 13:04:34, Jeff Layton wrote:
+> On Tue, 2022-10-18 at 17:17 +0200, Jan Kara wrote:
+> > On Tue 18-10-22 10:21:08, Jeff Layton wrote:
+> > > On Tue, 2022-10-18 at 15:49 +0200, Jan Kara wrote:
+> > > > On Tue 18-10-22 06:35:14, Jeff Layton wrote:
+> > > > > On Tue, 2022-10-18 at 09:14 +1100, Dave Chinner wrote:
+> > > > > > On Mon, Oct 17, 2022 at 06:57:09AM -0400, Jeff Layton wrote:
+> > > > > > > Trond is of the opinion that monotonicity is a hard requirement, and
+> > > > > > > that we should not allow filesystems that can't provide that quality to
+> > > > > > > report STATX_VERSION at all.  His rationale is that one of the main uses
+> > > > > > > for this is for backup applications, and for those a counter that could
+> > > > > > > go backward is worse than useless.
+> > > > > > 
+> > > > > > From the perspective of a backup program doing incremental backups,
+> > > > > > an inode with a change counter that has a different value to the
+> > > > > > current backup inventory means the file contains different
+> > > > > > information than what the current backup inventory holds. Again,
+> > > > > > snapshots, rollbacks, etc.
+> > > > > > 
+> > > > > > Therefore, regardless of whether the change counter has gone
+> > > > > > forwards or backwards, the backup program needs to back up this
+> > > > > > current version of the file in this backup because it is different
+> > > > > > to the inventory copy.  Hence if the backup program fails to back it
+> > > > > > up, it will not be creating an exact backup of the user's data at
+> > > > > > the point in time the backup is run...
+> > > > > > 
+> > > > > > Hence I don't see that MONOTONIC is a requirement for backup
+> > > > > > programs - they really do have to be able to handle filesystems that
+> > > > > > have modifications that move backwards in time as well as forwards...
+> > > > > 
+> > > > > Rolling backward is not a problem in and of itself. The big issue is
+> > > > > that after a crash, we can end up with a change attr seen before the
+> > > > > crash that is now associated with a completely different inode state.
+> > > > > 
+> > > > > The scenario is something like:
+> > > > > 
+> > > > > - Change attr for an empty file starts at 1
+> > > > > 
+> > > > > - Write "A" to file, change attr goes to 2
+> > > > > 
+> > > > > - Read and statx happens (client sees "A" with change attr 2)
+> > > > > 
+> > > > > - Crash (before last change is logged to disk)
+> > > > > 
+> > > > > - Machine reboots, inode is empty, change attr back to 1
+> > > > > 
+> > > > > - Write "B" to file, change attr goes to 2
+> > > > > 
+> > > > > - Client stat's file, sees change attr 2 and assumes its cache is
+> > > > > correct when it isn't (should be "B" not "A" now).
+> > > > > 
+> > > > > The real danger comes not from the thing going backward, but the fact
+> > > > > that it can march forward again after going backward, and then the
+> > > > > client can see two different inode states associated with the same
+> > > > > change attr value. Jumping all the change attributes forward by a
+> > > > > significant amount after a crash should avoid this issue.
+> > > > 
+> > > > As Dave pointed out, the problem with change attr having the same value for
+> > > > a different inode state (after going backwards) holds not only for the
+> > > > crashes but also for restore from backups, fs snapshots, device snapshots
+> > > > etc. So relying on change attr only looks a bit fragile. It works for the
+> > > > common case but the edge cases are awkward and there's no easy way to
+> > > > detect you are in the edge case.
+> > > > 
 > > > 
-> > > This set is not intended to address crash resilience, or the fact that
-> > > the counter is bumped before a change and not after. I intend to tackle
-> > > those in follow-on patchsets.
+> > > This is true. In fact in the snapshot case you can't even rely on doing
+> > > anything at reboot since you won't necessarily need to reboot to make it
+> > > roll backward.
 > > > 
-> > > My intention is to get this series included into linux-next soon, with
-> > > an eye toward merging most of it during the v6.2 merge window. The last
-> > > patch in the series is probably not suitable for merge as-is, at least
-> > > until we sort out the semantics we want to present to userland for it.
+> > > Whether that obviates the use of this value altogether, I'm not sure.
+> > > 
+> > > > So I think any implementation caring about data integrity would have to
+> > > > include something like ctime into the picture anyway. Or we could just
+> > > > completely give up any idea of monotonicity and on each mount select random
+> > > > prime P < 2^64 and instead of doing inc when advancing the change
+> > > > attribute, we'd advance it by P. That makes collisions after restore /
+> > > > crash fairly unlikely.
+> > > 
+> > > Part of the goal (at least for NFS) is to avoid unnecessary cache
+> > > invalidations.
+> > > 
+> > > If we just increment it by a particular offset on every reboot, then
+> > > every time the server reboots, the clients will invalidate all of their
+> > > cached inodes, and proceed to hammer the server with READ calls just as
+> > > it's having to populate its own caches from disk.
 > > 
-> > Over the course of the series I struggled a bit - and sorry for losing
-> > focus - with what i_version is supposed to represent for userspace. So I
-> > would support not exposing it to userspace before that. But that
-> > shouldn't affect your other changes iiuc.
+> > Note that I didn't propose to increment by offset on every reboot or mount.
+> > I have proposed that inode_maybe_inc_iversion() would not increment
+> > i_version by 1 (in fact 1 << I_VERSION_QUERIED_SHIFT) but rather by P (or P
+> > << I_VERSION_QUERIED_SHIFT) where P is a suitable number randomly selected
+> > on filesystem mount.
+> > 
+> > This will not cause cache invalidation after a clean unmount + remount. It
+> > will cause cache invalidation after a crash, snapshot rollback etc., only for
+> > inodes where i_version changed. If P is suitably selected (e.g. as being a
+> > prime), then the chances of collisions (even after a snapshot rollback) are
+> > very low (on the order of 2^(-50) if my piece of envelope calculations are
+> > right).
+> >
+> > So this should nicely deal with all the problems we've spotted so far. But
+> > I may be missing something...
 > 
-> Thanks Christian,
 > 
-> It has been a real struggle to nail this down, and yeah I too am not
-> planning to expose this to userland until we have this much better
-> defined. Patch #9 is just to give you an idea of what this would
-> ultimately look like. I intend to re-post the first 8 patches with an
-> eye toward merge in v6.2, once we've settled on the naming. On that
-> note...
+> Got it! That makes a lot more sense. Thinking about this some more...
 > 
-> I believe you had mentioned that you didn't like STATX_CHANGE_ATTR for
-> the name, and suggested STATX_I_VERSION (or something similar), which I
-> later shortened to STATX_VERSION.
+> What sort of range for P would be suitable?
 > 
-> Dave C. objected to STATX_VERSION, as "version" fields in a struct
-> usually refer to the version of the struct itself rather than the
-> version of the thing it describes. It also sort of implies a monotonic
-> counter, and I'm not ready to require that just yet.
-> 
-> What about STATX_CHANGE for the name (with corresponding names for the
-> field and other flags)? That drops the redundant "_ATTR" postfix, while
-> being sufficiently vague to allow for alternative implementations in the
-> future.
-> 
-> Do you (or anyone else) have other suggestions for a name?
+> Every increment would need to be by (shifted) P, so we can't choose too
+> large a number. Queries are pretty rare vs. writes though, so that
+> mitigates the issue somewhat.
 
-Welllll it's really a u32 whose value doesn't have any intrinsic meaning
-other than "if (value_now != value_before) flush_cache();" right?
-I think it really only tracks changes to file data, right?
+Well, I agree that for large P the counter would wrap earlier. But is that
+a problem? Note that if P is a prime (indivisible by 2 is enough), then the
+counter would get to already used value still only after 2^63 steps. Thus if
+we give up monotonicity and just treat the counter as an opaque cookie, we
+do not have to care about wrapping.
 
-STATX_CHANGE_COOKIE	(wait, does this cookie augment i_ctime?)
+Sure given different P is selected for each mount the wrapping argument
+does not hold 100% but here comes the advantage of primes - if you have two
+different primes P and Q, then a collision means that k*P mod 2^63 = l*Q
+mod 2^63 and that holds for exactly one pair k,l from 1..2^63 range. So the
+chances of early collision even after selecting a different prime on each
+mount are *very* low.
 
-STATX_MOD_COOKIE	(...or just file modifications/i_mtime?)
+So I think we should select from a relatively large set of primes so that
+the chance of randomly selecting the same prime (and thus reissuing the
+same change attr for different inode state sometime later) are small.
 
-STATX_MONITOR_COOKIE	(...what are we monitoring??)
-
-STATX_MON_COOKIE
-
-STATX_COOKIE_MON
-
-STATX_COOKIE_MONSTER
-
-There we go. ;)
-
-In seriousness, I'd probably go with one of the first two.  I wouldn't
-be opposed to the last one, either, but others may disagree. ;)
-
---D
-
-> -- 
-> Jeff Layton <jlayton@kernel.org>
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
