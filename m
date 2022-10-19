@@ -2,107 +2,280 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F056045E9
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Oct 2022 14:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA466049BB
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Oct 2022 16:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbiJSMwK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 19 Oct 2022 08:52:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44904 "EHLO
+        id S230250AbiJSOv2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 19 Oct 2022 10:51:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233424AbiJSMv2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Oct 2022 08:51:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2515A18B770;
-        Wed, 19 Oct 2022 05:33:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8E80D61856;
-        Wed, 19 Oct 2022 12:18:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0384CC433C1;
-        Wed, 19 Oct 2022 12:18:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666181899;
-        bh=NFx7T5AV9TikRajerIi5olcWAo+wSsuF+tytHODHH38=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=nOo1Jz+UyXwVHHtW++IKcWZBt19vd6ZBVFIaSn8D07FUWrQEve3Bf++KiBzlELiSt
-         Q8S+ehdSo69noRSLSnbT4trkoSrnL8euyTk3Wr2nrYrEQ5SvCg3QJ2llYolCkH2hTx
-         lGns8jIcYH7eMaRVK78MIsvy0Pgbolv+g3nHIL3d281e+0qtfI43S+mTE2EMhRL0DG
-         JhD6qd6L2dnklpO27Dbf3UjVLfOgKMoL8yTX1HJ/xjgIAilk+QbpvBjGA9FGiUPCyJ
-         5u1Rq8HsOG7WWUWGvPVxIVIJUj5AdHiiGWfRRKPrP2rAB5iAXA8F3dUhnC7jNV/MY2
-         MOwKXym29YQwg==
-Message-ID: <2b167dd9bda17f1324e9c526d868cc0d995dc660.camel@kernel.org>
-Subject: Re: [PATCH v7 0/9] fs: clean up handling of i_version counter
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, djwong@kernel.org,
-        david@fromorbit.com, trondmy@hammerspace.com, neilb@suse.de,
-        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
-        chuck.lever@oracle.com, lczerner@redhat.com, jack@suse.cz,
-        bfields@fieldses.org, fweimer@redhat.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Date:   Wed, 19 Oct 2022 08:18:15 -0400
-In-Reply-To: <20221019111315.hpilifogyvf3bixh@wittgenstein>
-References: <20221017105709.10830-1-jlayton@kernel.org>
-         <20221019111315.hpilifogyvf3bixh@wittgenstein>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+        with ESMTP id S230248AbiJSOvO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Oct 2022 10:51:14 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9060F17FD5F
+        for <linux-ext4@vger.kernel.org>; Wed, 19 Oct 2022 07:40:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1666190458; x=1697726458;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=6v6qLdtYAoaiS5TSUCzJk/2BpQGCWyMLYrB07TdQAKY=;
+  b=ZXor/nD60uTXYOwyOksfu/OahjI3LwHhQMRgU5yGgLKjlQVsqILGIweV
+   nd1EAzzJ5zxVFZJC5gQymnDzcCXm2SwK6OhpZIROdLFGzIvpIrMB2WReh
+   6p7gtsaCivBMIt9aYWWn6JYB1j/WAPVIOLdkR3WDoOHRv1mnxaBlzZCps
+   p2+8/SIGGjASrZ0gwp6ysM5rATYPcZDiWCnWkKijwtptSlCWEF93FA2KR
+   n80/fM+5CsT/Kj0Wm9yeODCdF9AqYQYHjZUpa0mLugxx1XUT66YFdUJIK
+   ULO4XJdrgCMVmM1DLw1zpw+92lQne+riFqznftjGh/j7G47eMuRmG2rfo
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="286146515"
+X-IronPort-AV: E=Sophos;i="5.95,196,1661842800"; 
+   d="scan'208";a="286146515"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2022 07:40:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="692416016"
+X-IronPort-AV: E=Sophos;i="5.95,196,1661842800"; 
+   d="scan'208";a="692416016"
+Received: from lkp-server02.sh.intel.com (HELO b6d29c1a0365) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 19 Oct 2022 07:40:55 -0700
+Received: from kbuild by b6d29c1a0365 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1olAFV-00006T-2P;
+        Wed, 19 Oct 2022 14:40:49 +0000
+Date:   Wed, 19 Oct 2022 22:40:39 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     ntfs3@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+        linux-mediatek@lists.infradead.org, linux-ext4@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: [linux-next:master] BUILD REGRESSION
+ a72b55bc981b62f7186600d06d1824f1d0612b27
+Message-ID: <63500c67.OtDDn8C+xvHrmrIj%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,SUSPICIOUS_RECIPS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 2022-10-19 at 13:13 +0200, Christian Brauner wrote:
-> On Mon, Oct 17, 2022 at 06:57:00AM -0400, Jeff Layton wrote:
-> > This patchset is intended to clean up the handling of the i_version
-> > counter by nfsd. Most of the changes are to internal interfaces.
-> >=20
-> > This set is not intended to address crash resilience, or the fact that
-> > the counter is bumped before a change and not after. I intend to tackle
-> > those in follow-on patchsets.
-> >=20
-> > My intention is to get this series included into linux-next soon, with
-> > an eye toward merging most of it during the v6.2 merge window. The last
-> > patch in the series is probably not suitable for merge as-is, at least
-> > until we sort out the semantics we want to present to userland for it.
->=20
-> Over the course of the series I struggled a bit - and sorry for losing
-> focus - with what i_version is supposed to represent for userspace. So I
-> would support not exposing it to userspace before that. But that
-> shouldn't affect your other changes iiuc.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: a72b55bc981b62f7186600d06d1824f1d0612b27  Add linux-next specific files for 20221019
 
-Thanks Christian,
+Error/Warning reports:
 
-It has been a real struggle to nail this down, and yeah I too am not
-planning to expose this to userland until we have this much better
-defined.=A0Patch #9 is just to give you an idea of what this would
-ultimately look like. I intend to re-post the first 8 patches with an
-eye toward merge in v6.2, once we've settled on the naming. On that
-note...
+https://lore.kernel.org/linux-mm/202210090954.pTR6m6rj-lkp@intel.com
+https://lore.kernel.org/linux-mm/202210110857.9s0tXVNn-lkp@intel.com
+https://lore.kernel.org/linux-mm/202210111318.mbUfyhps-lkp@intel.com
+https://lore.kernel.org/llvm/202210060148.UXBijOcS-lkp@intel.com
 
-I believe you had mentioned that you didn't like STATX_CHANGE_ATTR for
-the name, and suggested STATX_I_VERSION (or something similar), which I
-later shortened to STATX_VERSION.
+Error/Warning: (recently discovered and may have been fixed)
 
-Dave C. objected to STATX_VERSION, as "version" fields in a struct
-usually refer to the version of the struct itself rather than the
-version of the thing it describes. It also sort of implies a monotonic
-counter, and I'm not ready to require that just yet.
+ERROR: modpost: "devm_ioremap_resource" [drivers/dma/idma64.ko] undefined!
+ERROR: modpost: "devm_ioremap_resource" [drivers/dma/qcom/hdma.ko] undefined!
+arch/arm64/kernel/alternative.c:199:6: warning: no previous prototype for 'apply_alternatives_vdso' [-Wmissing-prototypes]
+arch/arm64/kernel/alternative.c:295:14: warning: no previous prototype for 'alt_cb_patch_nops' [-Wmissing-prototypes]
+arch/powerpc/mm/nohash/e500.c:314:21: error: no previous prototype for 'relocate_init' [-Werror=missing-prototypes]
+fs/ext4/super.c:1744:19: warning: 'deprecated_msg' defined but not used [-Wunused-const-variable=]
 
-What about STATX_CHANGE for the name (with corresponding names for the
-field and other flags)? That drops the redundant "_ATTR" postfix, while
-being sufficiently vague to allow for alternative implementations in the
-future.
+Error/Warning ids grouped by kconfigs:
 
-Do you (or anyone else) have other suggestions for a name?
---=20
-Jeff Layton <jlayton@kernel.org>
+gcc_recent_errors
+|-- arm64-allyesconfig
+|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-alt_cb_patch_nops
+|   `-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-apply_alternatives_vdso
+|-- arm64-randconfig-c041-20221019
+|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-alt_cb_patch_nops
+|   `-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-apply_alternatives_vdso
+|-- arm64-randconfig-s031-20221019
+|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-alt_cb_patch_nops
+|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-apply_alternatives_vdso
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-priv1-got-restricted-__le16-addressable-usertype-fc_len
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-tag-got-restricted-__le16-addressable-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-short-usertype-tag-got-restricted-__le16-addressable-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_len-got-unsigned-short-usertype
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_tag-got-unsigned-short-usertype
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-initializer-(different-base-types)-expected-int-tag-got-restricted-__le16-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:restricted-__le16-degrades-to-integer
+|   |-- fs-ntfs3-index.c:sparse:sparse:restricted-__le32-degrades-to-integer
+|   |-- fs-ntfs3-namei.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__le16-const-usertype-s1-got-unsigned-short
+|   `-- fs-ntfs3-namei.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__le16-const-usertype-s2-got-unsigned-short
+|-- i386-allyesconfig
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- i386-defconfig
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- i386-randconfig-a003
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- i386-randconfig-a005
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- i386-randconfig-a012
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- i386-randconfig-a014
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- i386-randconfig-a016
+|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
+|-- microblaze-randconfig-s033-20221019
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-priv1-got-restricted-__le16-addressable-usertype-fc_len
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-tag-got-restricted-__le16-addressable-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-short-usertype-tag-got-restricted-__le16-addressable-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_len-got-unsigned-short-usertype
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_tag-got-unsigned-short-usertype
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-initializer-(different-base-types)-expected-int-tag-got-restricted-__le16-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:restricted-__le16-degrades-to-integer
+|   |-- fs-ntfs3-index.c:sparse:sparse:restricted-__le32-degrades-to-integer
+|   |-- fs-ntfs3-namei.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__le16-const-usertype-s1-got-unsigned-short
+|   `-- fs-ntfs3-namei.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__le16-const-usertype-s2-got-unsigned-short
+|-- openrisc-randconfig-s052-20221019
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-priv1-got-restricted-__le16-addressable-usertype-fc_len
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-tag-got-restricted-__le16-addressable-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-short-usertype-tag-got-restricted-__le16-addressable-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_len-got-unsigned-short-usertype
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_tag-got-unsigned-short-usertype
+clang_recent_errors
+|-- hexagon-defconfig
+|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|-- hexagon-randconfig-r013-20221019
+|   |-- drivers-phy-mediatek-phy-mtk-tphy.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(unsigned-c
+|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- hexagon-randconfig-r031-20221019
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- hexagon-randconfig-r036-20221019
+|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|   |-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-__vmnewmap
+|   |-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-__vmsetvec
+|   `-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-memset
+|-- hexagon-randconfig-r041-20221018
+|   |-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-__vmnewmap
+|   |-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-__vmsetvec
+|   `-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-memset
+|-- hexagon-randconfig-r045-20221018
+|   |-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-__vmnewmap
+|   |-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-__vmsetvec
+|   `-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-memset
+|-- i386-randconfig-a002
+|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- i386-randconfig-a004
+|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- i386-randconfig-a011
+|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- i386-randconfig-a013
+|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|-- i386-randconfig-a015
+|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- powerpc-buildonly-randconfig-r004-20221019
+|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt2701.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
+|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
+|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|   `-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|-- powerpc-mvme5100_defconfig
+|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|-- riscv-randconfig-r024-20221019
+|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
+|   |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-get_symbol_pos:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_num_syms
+|   |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-get_symbol_pos:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_offsets
+|   |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-kallsyms_lookup_name:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_names
+|   |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-kallsyms_lookup_name:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_num_syms
+|   |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-kallsyms_lookup_name:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_offsets
+|   |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-kallsyms_lookup_name:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_relative_base
+
+elapsed time: 725m
+
+configs tested: 77
+configs skipped: 3
+
+gcc tested configs:
+arc                              alldefconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+m68k                       m5208evb_defconfig
+powerpc                    klondike_defconfig
+x86_64                          rhel-8.3-func
+i386                                defconfig
+x86_64                    rhel-8.3-kselftests
+arc                                 defconfig
+x86_64                           rhel-8.3-syz
+arm                                 defconfig
+x86_64                        randconfig-a013
+i386                          randconfig-a014
+x86_64                        randconfig-a004
+x86_64                              defconfig
+x86_64                        randconfig-a011
+arc                  randconfig-r043-20221018
+x86_64                         rhel-8.3-kunit
+loongarch                         allnoconfig
+x86_64                        randconfig-a002
+riscv                randconfig-r042-20221018
+x86_64                           rhel-8.3-kvm
+alpha                               defconfig
+i386                             allyesconfig
+x86_64                        randconfig-a015
+i386                          randconfig-a012
+s390                 randconfig-r044-20221018
+x86_64                        randconfig-a006
+arm64                            allyesconfig
+i386                          randconfig-a016
+x86_64                               rhel-8.3
+sh                          polaris_defconfig
+i386                          randconfig-a001
+arm                              allyesconfig
+i386                          randconfig-a003
+mips                         cobalt_defconfig
+x86_64                           allyesconfig
+sh                             shx3_defconfig
+i386                          randconfig-a005
+powerpc                           allnoconfig
+m68k                             allmodconfig
+powerpc                          allmodconfig
+arc                              allyesconfig
+mips                             allyesconfig
+s390                             allmodconfig
+alpha                            allyesconfig
+s390                                defconfig
+sh                               allmodconfig
+arc                         haps_hs_defconfig
+ia64                             allmodconfig
+arc                           tb10x_defconfig
+sparc                             allnoconfig
+m68k                             allyesconfig
+m68k                        mvme16x_defconfig
+s390                             allyesconfig
+arm                         cm_x300_defconfig
+sh                   sh7724_generic_defconfig
+sh                           se7712_defconfig
+
+clang tested configs:
+hexagon                             defconfig
+hexagon              randconfig-r045-20221018
+i386                          randconfig-a013
+x86_64                        randconfig-a016
+i386                          randconfig-a011
+x86_64                        randconfig-a012
+mips                        bcm63xx_defconfig
+x86_64                        randconfig-a005
+x86_64                        randconfig-a001
+x86_64                        randconfig-a014
+hexagon              randconfig-r041-20221018
+x86_64                        randconfig-a003
+i386                          randconfig-a015
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+powerpc                      obs600_defconfig
+x86_64                          rhel-8.3-rust
+powerpc                    mvme5100_defconfig
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
