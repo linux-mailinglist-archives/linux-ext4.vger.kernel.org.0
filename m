@@ -2,65 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E1F36065D9
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Oct 2022 18:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 925106066C0
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Oct 2022 19:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbiJTQcj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 20 Oct 2022 12:32:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59364 "EHLO
+        id S230041AbiJTRIg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 20 Oct 2022 13:08:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbiJTQcd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Oct 2022 12:32:33 -0400
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C17D1AA26B
-        for <linux-ext4@vger.kernel.org>; Thu, 20 Oct 2022 09:32:32 -0700 (PDT)
-Received: by mail-il1-f197.google.com with SMTP id s2-20020a056e02216200b002f9de38e484so305270ilv.8
-        for <linux-ext4@vger.kernel.org>; Thu, 20 Oct 2022 09:32:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UKNN3axs1y811QkhsVcYtMf113asLOYvCITq8yCsIOI=;
-        b=GM0KQTjVZx7ceSAEtnHUBubynHqVdg6MeqVqxRqBrThdhqfNLyevdh5H8Avbi+OZFw
-         N/qo5U9jw7jSprijw7afTOYma7BlAVIfEs1AhxDgKt2yOpsHv/6TcqnFgy6G3O4ypkvH
-         HoQJU5Bd4pjPuNDArr4MBRZS3Z8jV+nsipOhrE8R1nnr2XXpmcUtIg3DAaEJZsf5QWxt
-         Lwfr86r4l/kL04rkIWbkcfXqCNL/LAN8WbLtu2sQY9Q81sh3S/re4g0/ZPGlQt2tlw6m
-         0snXywtBBLk0eLlifdBNzjGLO8mNfLlQqYLy5Rfg5ChTxowheApqqaJ8jJ87buzrn8y9
-         vBYg==
-X-Gm-Message-State: ACrzQf2XA4lEPGjBc2MtECXgl06C3ZBVdcE1fkTt8dAcYGRpodJ4d3b0
-        q+YNantmCJlbj+skXfnJcot1blFrA0f3+rZa9fRFLXHe2Dzr
-X-Google-Smtp-Source: AMsMyM4FPk0iRiokf85qWc1ZXECTEgMCQq+Q8VRal+EfXVpDu+LSoILYcUwg/tzPl125RD3+HZ/hveGyU+kyJ/AQ4rT8VBRuhcH/
+        with ESMTP id S230074AbiJTRIf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Oct 2022 13:08:35 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 875A11D20D5
+        for <linux-ext4@vger.kernel.org>; Thu, 20 Oct 2022 10:08:33 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 29KH8C7b000645
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Oct 2022 13:08:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1666285694; bh=9/GCzYBu3HD6nrPKV9PLKrFEm8Vu7uup0HyZifYqPGo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=BBZG0nv2GmLeTT22W1zI+B1bUELmnqe+jqlIRjqSrjXO06g0HYLSrZ+d/xZyjbevL
+         Cn8VMz77JnasHGvzP6+6oFwADpAKH3TpuD62s00PXPI3tWXQUaG9mrpPc+tgtkbrre
+         SI0waQwys/5IVcGv4uWrSV9p4cYRnA3Qsd1P5apb1tAHZ53RFqAa3mCMW40zlvcLHo
+         jmWNsTebItbvHCeWjU51LMm2fMGwrK9srLFQL4AtK5PJDtZsM0dkNH9z65PSXufks0
+         rtoDiJsmHmMarTNjW+kjL52aDyyvyGP/n/qh1E+m26U59+jP8GtXhJzkTsstMVI2Rt
+         HGZWAfTibgO3Q==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id D677815C3AD1; Thu, 20 Oct 2022 13:08:12 -0400 (EDT)
+Date:   Thu, 20 Oct 2022 13:08:12 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Li Jinlin <lijinlin3@huawei.com>
+Cc:     adilger@whamcloud.com, linux-ext4@vger.kernel.org,
+        linfeilong@huawei.com, liuzhiqiang26@huawei.com
+Subject: Re: [PATCH] tune2fs: exit directly when fs freed in
+ ext2fs_run_ext3_journal
+Message-ID: <Y1GAfCVhruEJ+5IL@mit.edu>
+References: <20220916074223.8885-1-lijinlin3@huawei.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:2164:b0:2fa:e426:dc5e with SMTP id
- s4-20020a056e02216400b002fae426dc5emr10321935ilv.213.1666283551925; Thu, 20
- Oct 2022 09:32:31 -0700 (PDT)
-Date:   Thu, 20 Oct 2022 09:32:31 -0700
-In-Reply-To: <0000000000006c411605e2f127e5@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000352cf605eb79dfde@google.com>
-Subject: Re: kernel BUG in ext4_free_blocks (2)
-From:   syzbot <syzbot+15cd994e273307bf5cfa@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, gregkh@linuxfoundation.org,
-        lczerner@redhat.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sashal@kernel.org,
-        stable@vger.kernel.org, syzkaller-android-bugs@googlegroups.com,
-        tadeusz.struk@linaro.org, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220916074223.8885-1-lijinlin3@huawei.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This bug is marked as fixed by commit:
-ext4: block range must be validated before use in ext4_mb_clear_bb()
-But I can't find it in any tested tree for more than 90 days.
-Is it a correct commit? Please update it by replying:
-#syz fix: exact-commit-title
-Until then the bug is still considered open and
-new crashes with the same signature are ignored.
+On Fri, Sep 16, 2022 at 03:42:23PM +0800, Li Jinlin wrote:
+> In ext2fs_run_ext3_journal(), fs will be free and reallocate. But
+> reallocating by ext2fs_open() may fail in some cases, such as device
+> being offline at the same time. In these cases, goto closefs will
+> cause segfault, fix it by exiting directly.
+> 
+> Signed-off-by: Li Jinlin <lijinlin3@huawei.com>
+
+Thanks, applied, although I simplified the patch a little:
+
+@@ -3106,6 +3106,8 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
+                        com_err("tune2fs", retval,
+                                "while recovering journal.\n");
+                        printf(_("Please run e2fsck -fy %s.\n"), argv[1]);
++                       if (!fs)
++                               exit(1);
+                        rc = 1;
+                        goto closefs;
+                }
+
+					- Ted
