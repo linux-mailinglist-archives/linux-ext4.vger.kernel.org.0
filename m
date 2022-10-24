@@ -2,115 +2,167 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C99609F48
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Oct 2022 12:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1E160AF2C
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Oct 2022 17:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229562AbiJXKqh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Oct 2022 06:46:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46316 "EHLO
+        id S229717AbiJXPjI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Oct 2022 11:39:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbiJXKqh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Oct 2022 06:46:37 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A328175BF
-        for <linux-ext4@vger.kernel.org>; Mon, 24 Oct 2022 03:46:36 -0700 (PDT)
+        with ESMTP id S231264AbiJXPir (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Oct 2022 11:38:47 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F60937411;
+        Mon, 24 Oct 2022 07:27:50 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id EC8F822166;
-        Mon, 24 Oct 2022 10:46:34 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 6D9411FD61;
+        Mon, 24 Oct 2022 14:16:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1666608394; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1666620991; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=2FvHy61zNNsqFHsuY2jmJJqiKx6vhdiyCJYsyr/Sidg=;
-        b=eXh+WShiPYnDYKYQ6u0ryuOLEHmYI/11W0LGpSdT/qPMlMT2v29xXszs6xSMlSNSiDHI2h
-        p+5E6QVsFp8r5oMF+YrgxSeS37vQzJ9lxoqL94bTLf+KKIvRvtzNbRrnPqrKtmUv7lODjn
-        OFS5f7KixEhDDzWFRImFbBLWSa3X/vw=
+        bh=vJ2wR6Zs4NDW7+j78vUKNgsX+D+jjW3vlssS3QCAyi0=;
+        b=Ux5HwhnjywJtzadVuzkIAscV0LhnnNRQS45hoH11cPEcBeYemBivTgkeGqCQjCMjoQoGRc
+        l+uMN0ESsfa3jGvFnfTWV1WEKUDncS5BWTj2S+ZzCrE5m/jRpEUtMWQRLRPfpw54yCHJpR
+        unbgwxac2T6OigJRsURGFTodksBTGMM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1666608394;
+        s=susede2_ed25519; t=1666620991;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=2FvHy61zNNsqFHsuY2jmJJqiKx6vhdiyCJYsyr/Sidg=;
-        b=ifyagaWfmcOvEz4qUSEN+bMJaHFbO1WYNzZpEcj3UkbGGH6tY419BT6Z0eO8cyKZ/I/NON
-        sW49orQPm2Yc7aDA==
+        bh=vJ2wR6Zs4NDW7+j78vUKNgsX+D+jjW3vlssS3QCAyi0=;
+        b=a7oZt+cTuml392yi5/T+rxFCGl76sIBl5Rqowpr+CGJ7imxfLPrj/fgArrraSYwujadlL1
+        C8fJ1Uqr8sVsrXDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3AFD313357;
-        Mon, 24 Oct 2022 10:46:34 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 50F3613A79;
+        Mon, 24 Oct 2022 14:16:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id vuZVDgptVmOAHgAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 24 Oct 2022 10:46:34 +0000
+        id UTe6Ez+eVmPdGQAAMHmgww
+        (envelope-from <jack@suse.cz>); Mon, 24 Oct 2022 14:16:31 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 2A7AFA06F6; Mon, 24 Oct 2022 12:46:28 +0200 (CEST)
-Date:   Mon, 24 Oct 2022 12:46:28 +0200
+        id A7796A06F6; Mon, 24 Oct 2022 16:16:30 +0200 (CEST)
+Date:   Mon, 24 Oct 2022 16:16:30 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Thilo Fromm <t-lo@linux.microsoft.com>
-Cc:     Jan Kara <jack@suse.cz>, Ye Bin <yebin10@huawei.com>,
-        jack@suse.com, tytso@mit.edu, linux-ext4@vger.kernel.org,
-        regressions@lists.linux.dev,
-        Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-Subject: Re: [syzbot] possible deadlock in jbd2_journal_lock_updates
-Message-ID: <20221024104628.ozxjtdrotysq2haj@quack3>
-References: <20220929082716.5urzcfk4hnapd3cr@quack3>
- <d8b18ba8-ea12-b617-6b5e-455a1d7b5e21@linux.microsoft.com>
- <20221004063807.GA30205@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20221004091035.idjgo2xyscf6ovnv@quack3>
- <eeb17fca-4e79-b39f-c394-a6fa6873eb26@linux.microsoft.com>
- <20221005151053.7jjgc7uhvquo6a5n@quack3>
- <20221010142410.GA1689@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <2ede5fce-7077-6e64-93a9-a7d993bc498f@linux.microsoft.com>
- <20221014132543.i3aiyx4ent4qwy4i@quack3>
- <d30f4e74-aa75-743d-3c89-80ec61d67c6c@linux.microsoft.com>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yukuai3@huawei.com
+Subject: Re: [PATCH v2 1/2] ext4: fix bug_on in __es_tree_search caused by
+ wrong s_usr_quota_inum
+Message-ID: <20221024141630.r6egasefk744taxi@quack3>
+References: <20221021040731.4180649-1-libaokun1@huawei.com>
+ <20221021040731.4180649-2-libaokun1@huawei.com>
+ <20221024141053.n3ds3q37abdajrto@quack3>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d30f4e74-aa75-743d-3c89-80ec61d67c6c@linux.microsoft.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20221024141053.n3ds3q37abdajrto@quack3>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 21-10-22 12:23:41, Thilo Fromm wrote:
-> Hello Honza,
-> 
-> > > Just want to make sure this does not get lost - as mentioned earlier,
-> > > reverting 51ae846cff5 leads to a kernel build that does not have this issue.
+On Mon 24-10-22 16:10:53, Jan Kara wrote:
+> On Fri 21-10-22 12:07:30, Baokun Li wrote:
+> > We got a issue as fllows:
+> > ==================================================================
+> >  kernel BUG at fs/ext4/extents_status.c:202!
+> >  invalid opcode: 0000 [#1] PREEMPT SMP
+> >  CPU: 1 PID: 810 Comm: mount Not tainted 6.1.0-rc1-next-g9631525255e3 #352
+> >  RIP: 0010:__es_tree_search.isra.0+0xb8/0xe0
+> >  RSP: 0018:ffffc90001227900 EFLAGS: 00010202
+> >  RAX: 0000000000000000 RBX: 0000000077512a0f RCX: 0000000000000000
+> >  RDX: 0000000000000002 RSI: 0000000000002a10 RDI: ffff8881004cd0c8
+> >  RBP: ffff888177512ac8 R08: 47ffffffffffffff R09: 0000000000000001
+> >  R10: 0000000000000001 R11: 00000000000679af R12: 0000000000002a10
+> >  R13: ffff888177512d88 R14: 0000000077512a10 R15: 0000000000000000
+> >  FS: 00007f4bd76dbc40(0000)GS:ffff88842fd00000(0000)knlGS:0000000000000000
+> >  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >  CR2: 00005653bf993cf8 CR3: 000000017bfdf000 CR4: 00000000000006e0
+> >  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> >  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> >  Call Trace:
+> >   <TASK>
+> >   ext4_es_cache_extent+0xe2/0x210
+> >   ext4_cache_extents+0xd2/0x110
+> >   ext4_find_extent+0x5d5/0x8c0
+> >   ext4_ext_map_blocks+0x9c/0x1d30
+> >   ext4_map_blocks+0x431/0xa50
+> >   ext4_getblk+0x82/0x340
+> >   ext4_bread+0x14/0x110
+> >   ext4_quota_read+0xf0/0x180
+> >   v2_read_header+0x24/0x90
+> >   v2_check_quota_file+0x2f/0xa0
+> >   dquot_load_quota_sb+0x26c/0x760
+> >   dquot_load_quota_inode+0xa5/0x190
+> >   ext4_enable_quotas+0x14c/0x300
+> >   __ext4_fill_super+0x31cc/0x32c0
+> >   ext4_fill_super+0x115/0x2d0
+> >   get_tree_bdev+0x1d2/0x360
+> >   ext4_get_tree+0x19/0x30
+> >   vfs_get_tree+0x26/0xe0
+> >   path_mount+0x81d/0xfc0
+> >   do_mount+0x8d/0xc0
+> >   __x64_sys_mount+0xc0/0x160
+> >   do_syscall_64+0x35/0x80
+> >   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> >   </TASK>
+> > ==================================================================
 > > 
-> > Yes, I'm aware of this and still cannot quite wrap my head how it could be
-> > given the stacktraces I see :) They do not seem to come anywhere near that
-> > code...
+> > Above issue may happen as follows:
+> > -------------------------------------
+> > ext4_fill_super
+> >  ext4_orphan_cleanup
+> >   ext4_enable_quotas
+> >    ext4_quota_enable
+> >     ext4_iget --> get error inode <5>
+> >      ext4_ext_check_inode --> Wrong imode makes it escape inspection
+> >      make_bad_inode(inode) --> EXT4_BOOT_LOADER_INO set imode
+> >     dquot_load_quota_inode
+> >      vfs_setup_quota_inode --> check pass
+> >      dquot_load_quota_sb
+> >       v2_check_quota_file
+> >        v2_read_header
+> >         ext4_quota_read
+> >          ext4_bread
+> >           ext4_getblk
+> >            ext4_map_blocks
+> >             ext4_ext_map_blocks
+> >              ext4_find_extent
+> >               ext4_cache_extents
+> >                ext4_es_cache_extent
+> >                 __es_tree_search.isra.0
+> >                  ext4_es_end --> Wrong extents trigger BUG_ON
+> > 
+> > In the above issue, s_usr_quota_inum is set to 5, but inode<5> contains
+> > incorrect imode and disordered extents. Because 5 is EXT4_BOOT_LOADER_INO,
+> > the ext4_ext_check_inode check in the ext4_iget function can be bypassed,
+> > finally, the extents that are not checked trigger the BUG_ON in the
+> > __es_tree_search function. To solve this issue, check whether qf_inode
+> > obtained by ext4_iget is bad_inode.
+> > 
+> > Signed-off-by: Baokun Li <libaokun1@huawei.com>
 > 
-> Just reaching out to let folks know that we see more reports on this issue
-> coming in for kernels >=5.15.63, see
-> https://github.com/flatcar/Flatcar/issues/847#issuecomment-1286523602.
+> Looks good to me. Feel free to add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
 
-Yeah, I was pondering about this for some time but still I have no clue who
-could be holding the buffer lock (which blocks the task holding the
-transaction open) or how this could related to the commit you have
-identified. I have two things to try:
-
-1) Can you please check whether the deadlock reproduces also with 6.0
-kernel? The thing is that xattr handling code in ext4 has there some
-additional changes, commit 307af6c8793 ("mbcache: automatically delete
-entries from cache on freeing") in particular. 
-
-2) I have created a debug patch (against 5.15.x stable kernel). Can you
-please reproduce the failure with it and post the output of "echo w
->/proc/sysrq-trigger" and also the output the debug patch will put into the
-kernel log? It will dump the information about buffer lock owner if we
-cannot get the lock for more than 32 seconds.
-
-Thanks for your help and patience.
+Hum, on a second thought: Would not it be better if vfs_setup_quota_inode()
+actually checked for bad inode and refused it with EUCLEAN? That would
+sound like a more generic approach (covers all filesystems) to this
+problem.
 
 								Honza
 -- 
