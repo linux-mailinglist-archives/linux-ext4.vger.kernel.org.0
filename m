@@ -2,54 +2,71 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7177A60C333
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 Oct 2022 07:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAC0560C6FF
+	for <lists+linux-ext4@lfdr.de>; Tue, 25 Oct 2022 10:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbiJYFYf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 25 Oct 2022 01:24:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44438 "EHLO
+        id S231352AbiJYI4G (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 25 Oct 2022 04:56:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230228AbiJYFYe (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 Oct 2022 01:24:34 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF1991F607;
-        Mon, 24 Oct 2022 22:24:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S231244AbiJYI4F (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 Oct 2022 04:56:05 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C491153E22
+        for <linux-ext4@vger.kernel.org>; Tue, 25 Oct 2022 01:56:03 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 61148B81A49;
-        Tue, 25 Oct 2022 05:24:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCC2CC433D7;
-        Tue, 25 Oct 2022 05:24:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666675471;
-        bh=dF49dTW/qT+v3oJiK1K3/C1aumfpE7sXiBGXB2F/8l8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hlUZ1IwcOMNkZ38elGsKCy6rF73OkwlQt8JQRkjYWFrq2pQn27I2nDUmOE/tEf3Kw
-         zImfgEn8IoIZ/S4SxG3N/31ZcQvlxyWGW8GM5iaZdKN37bYK0fzD/W7IqNHjYrVatz
-         c0fAxVtMvaNvHazGXLmG48scNHatmty/SVNYvq9FaZ/14FJIu7c8l6kXhwgEaYvr1A
-         nJDHYi4cs59AuY1eHQTqfaznnKce23WOHZJp37aPHLWO1TdVDnG0T5jt5KI3rgW4to
-         9F+dz21hzxE9Rf4NeC0NgXiDTR4tmBh5EuGZdW+xDogMiscNzm9vrlfLaH+Q6MpFQj
-         w81NEUrvj5Cxg==
-Date:   Mon, 24 Oct 2022 22:24:29 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Lukas Czerner <lczerner@redhat.com>
-Cc:     hirofumi@mail.parknet.co.jp, jack@suse.cz,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu,
-        syzbot <syzbot+6ba92bd00d5093f7e371@syzkaller.appspotmail.com>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [syzbot] KASAN: use-after-free Read in move_expired_inodes (2)
-Message-ID: <Y1dzDVZQ49nQdMUv@sol.localdomain>
-References: <00000000000037b96205eabe49b5@google.com>
- <000000000000673b6305eac37e1f@google.com>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 25A3B220B5;
+        Tue, 25 Oct 2022 08:56:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1666688162; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PnP93ZsW3QY9+WM94FhgAgSIsKs88K2mdQVVyO6Nn08=;
+        b=S+oDBjyVzQF4oD9tFWAJx8nXnf4aBiNvoqq3OJ6AafupLYxPdHF7TDhE5Mm2s9/yvAsvBD
+        9yy8GMbL1y+64jyevgJgkl6ENQipJRB7Z4tNfMC/Fomvi6KyPmZMqTyryidUgXgbtqwW5w
+        RZjxNljtnjdMBqaO2xnoxS7Eol0j1a8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1666688162;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PnP93ZsW3QY9+WM94FhgAgSIsKs88K2mdQVVyO6Nn08=;
+        b=GIPDrMxs/4KpF/AvBJXJht1jVw6Iu/eeszwa29HLLHnwDZ8y1Oas/oOf4R8IUDz1E9PdlA
+        uxs9o+y0R1Pdb6Ag==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 170E713A98;
+        Tue, 25 Oct 2022 08:56:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id wl8UBaKkV2PiLgAAMHmgww
+        (envelope-from <jack@suse.cz>); Tue, 25 Oct 2022 08:56:02 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 9470CA06F5; Tue, 25 Oct 2022 10:56:01 +0200 (CEST)
+Date:   Tue, 25 Oct 2022 10:56:01 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Jason Yan <yanaijie@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, adilger.kernel@dilger.ca,
+        ritesh.list@gmail.com, lczerner@redhat.com,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] ext4: fix wrong return err in
+ ext4_load_and_init_journal()
+Message-ID: <20221025085601.gpxh5stotqx7to54@quack3>
+References: <20221022130739.2515834-1-yanaijie@huawei.com>
+ <20221024152946.gafegxwrv5i5djvn@quack3>
+ <8b2e325c-057b-3287-c38e-0ca5b936d4db@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <000000000000673b6305eac37e1f@google.com>
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+In-Reply-To: <8b2e325c-057b-3287-c38e-0ca5b936d4db@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,30 +74,43 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Oct 11, 2022 at 07:57:23AM -0700, syzbot wrote:
-> syzbot has bisected this issue to:
+On Tue 25-10-22 11:27:01, Jason Yan wrote:
 > 
-> commit cbfecb927f429a6fa613d74b998496bd71e4438a
-> Author: Lukas Czerner <lczerner@redhat.com>
-> Date:   Thu Aug 25 10:06:57 2022 +0000
+> On 2022/10/24 23:29, Jan Kara wrote:
+> > On Sat 22-10-22 21:07:39, Jason Yan wrote:
+> > > The return value is wrong in ext4_load_and_init_journal(). The local
+> > > variable 'err' need to be initialized before goto out. The original code
+> > > in __ext4_fill_super() is fine because it has two return values 'ret'
+> > > and 'err' and 'ret' is initialized as -EINVAL. After we factor out
+> > > ext4_load_and_init_journal(), this code is broken. So fix it by directly
+> > > returning -EINVAL in the error handler path.
+> > > 
+> > > Fixes: 9c1dd22d7422 (ext4: factor out ext4_load_and_init_journal())
+> > 
+> > We format the tag usually as:
+> > 
+> > Fixes: 9c1dd22d7422 ("ext4: factor out ext4_load_and_init_journal()")
+> > 
 > 
->     fs: record I_DIRTY_TIME even if inode already has I_DIRTY_INODE
+> Oh, sorry I didn't notice it. Thank you so much.
 > 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17e93452880000
-> start commit:   493ffd6605b2 Merge tag 'ucount-rlimits-cleanups-for-v5.19'..
-> git tree:       upstream
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=14193452880000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=10193452880000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=d19f5d16783f901
-> dashboard link: https://syzkaller.appspot.com/bug?extid=6ba92bd00d5093f7e371
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1724028a880000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17419234880000
+> I generate this tag by the following script:
 > 
-> Reported-by: syzbot+6ba92bd00d5093f7e371@syzkaller.appspotmail.com
-> Fixes: cbfecb927f42 ("fs: record I_DIRTY_TIME even if inode already has I_DIRTY_INODE")
+> #cat .gitconfig
+>  [alias]
+>          fixes = log --abbrev=12 -1 --format='Fixes: %h ("%s")'
 > 
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> 
+> #git fixes 9c1dd22d742249cfae7bbf3680a7c188d194d3ce
+> Fixes: 9c1dd22d7422 (ext4: factor out ext4_load_and_init_journal())
+> 
+> This works fine before but it fails recently. I don't know what makes the
+> behavior changed.
 
-Lukas, are you looking into this?
+I guess something does one more round of expansion on the string. I guess
+you could trace it with strace and see where the quotes get lost...
 
-- Eric
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
