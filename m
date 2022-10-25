@@ -2,173 +2,158 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C5360BEED
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 Oct 2022 01:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 134CF60C1AB
+	for <lists+linux-ext4@lfdr.de>; Tue, 25 Oct 2022 04:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbiJXXsZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Oct 2022 19:48:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46250 "EHLO
+        id S229785AbiJYC0V (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Oct 2022 22:26:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbiJXXrx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Oct 2022 19:47:53 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24E8C2FC5A3;
-        Mon, 24 Oct 2022 15:06:05 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Mwtxh3dNszKFN2;
-        Mon, 24 Oct 2022 20:03:04 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.127.227])
-        by APP4 (Coremail) with SMTP id gCh0CgC3xuiJf1ZjjtV9AA--.11645S4;
-        Mon, 24 Oct 2022 20:05:31 +0800 (CST)
-From:   Ye Bin <yebin@huaweicloud.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, jack@suse.cz,
-        Ye Bin <yebin10@huawei.com>
-Subject: [PATCH RFC] ext4:record error information when insert extent failed in 'ext4_split_extent_at'
-Date:   Mon, 24 Oct 2022 20:27:25 +0800
-Message-Id: <20221024122725.3083432-1-yebin@huaweicloud.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S230379AbiJYC0U (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Oct 2022 22:26:20 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 409308708A;
+        Mon, 24 Oct 2022 19:26:18 -0700 (PDT)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MxG2V12TLzJnCG;
+        Tue, 25 Oct 2022 10:23:30 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 25 Oct 2022 10:26:14 +0800
+Message-ID: <c29e93a7-d4c8-6126-2046-830f43d9adc6@huawei.com>
+Date:   Tue, 25 Oct 2022 10:26:14 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgC3xuiJf1ZjjtV9AA--.11645S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxZFWfWr13Jr1UKr4UGr4DArb_yoWrWrWrpr
-        Z3Cr1xGr15J3WUCrZ7AFs2gryI9a17Gw1UJFyfGr1fJFyUZrWUWFn8KF1FvFy8WrW8Ga45
-        XFW8trW5WF1DCa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUgKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1F6r1fM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Y
-        z7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zV
-        AF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4l
-        IxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s
-        0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBI
-        daVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: p1hex046kxt4xhlfz01xgou0bp/
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH v2 2/2] ext4: fix bug_on in __es_tree_search caused by
+ wrong boot loader inode
+Content-Language: en-US
+To:     Jan Kara <jack@suse.cz>
+CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>, <ritesh.list@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
+        <yukuai3@huawei.com>
+References: <20221021040731.4180649-1-libaokun1@huawei.com>
+ <20221021040731.4180649-3-libaokun1@huawei.com>
+ <20221024142527.avwgiztqvzmeo4se@quack3>
+From:   Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20221024142527.avwgiztqvzmeo4se@quack3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Ye Bin <yebin10@huawei.com>
+On 2022/10/24 22:25, Jan Kara wrote:
+> On Fri 21-10-22 12:07:31, Baokun Li wrote:
+>> We got a issue as fllows:
+>> ...
+>>
+>> In the above issue, ioctl invokes the swap_inode_boot_loader function to
+>> swap inode<5> and inode<12>. However, inode<5> contain incorrect imode and
+>> disordered extents, and i_nlink is set to 1. The extents check for inode in
+>> the ext4_iget function can be bypassed bacause 5 is EXT4_BOOT_LOADER_INO.
+>> While links_count is set to 1, the extents are not initialized in
+>> swap_inode_boot_loader. After the ioctl command is executed successfully,
+>> the extents are swapped to inode<12>, in this case, run the `cat` command
+>> to view inode<12>. And Bug_ON is triggered due to the incorrect extents.
+>>
+>> When the boot loader inode is not initialized, its imode can be one of the
+>> following:
+>> 1) the imode is a bad type, which is marked as bad_inode in ext4_iget and
+>>     set to S_IFREG.
+>> 2) the imode is good type but not S_IFREG.
+>> 3) the imode is S_IFREG.
+>>
+>> The BUG_ON may be triggered by bypassing the check in cases 1 and 2.
+>> Therefore, when the boot loader inode is bad_inode or its imode is not
+>> S_IFREG, initialize the inode to avoid triggering the BUG.
+>>
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> Grepping for calls to ext4_iget() in the ext4 code shows there are many
+> more places that will get unhappy (and crash) when ext4_iget() returns a
+> bad inode. In fact, I didn't find a place when returning bad inode would be
+> useful for anything. So why don't we just return EFSCORRUPTED instead of
+> returning a bad inode?
+>
+> 								Honza
 
-There's issue as follows when do test with memory fault injection:
-[localhost]# fsck.ext4 -a image
-image: clean, 45595/655360 files, 466841/2621440 blocks
-[localhost]# fsck.ext4 -fn image
-Pass 1: Checking inodes, blocks, and sizes
-Pass 2: Checking directory structure
-Pass 3: Checking directory connectivity
-Pass 4: Checking reference counts
-Pass 5: Checking group summary information
-Block bitmap differences:  -(1457230--1457256)
-Fix? no
+Hello Honza,
 
-image: ********** WARNING: Filesystem still has errors **********
+In ext4_iget(), the inode is marked as bad and returned only when ino is 
+equal to
+EXT4_BOOT_LOADER_INO. In the error branch bad_inode, although the inode is
+marked as bad, the returned value is the corresponding error number.
+The boot loader inode is not initialized during mkfs. Therefore, when 
+ext4_iget() is
+entered for the first time, imode of the inode is bad type. However, the
+swap_inode_boot_loader() needs to obtain the inode for initialization 
+and swap.
+Therefore, a bad_inode is returned in ext4_iget.
 
-image: 45595/655360 files (12.4% non-contiguous), 466841/2621440 blocks
+Generally, ext4_iget() does not get the boot loader inode. Therefore, we 
+only need
+to pay attention to the special inodes that can be specified.
+The following figure shows the check result:
 
-Inject context:
- -----------------------------------------------------------
- Inject function:kmem_cache_alloc (pid:177858) (return: 0)
- Calltrace Context:
- mem_cache_allock+0x73/0xcc
- ext4_mb_new_blocks+0x32e/0x540 [ext4]
- ext4_new_meta_blocks+0xc4/0x110 [ext4]
- ext4_ext_grow_indepth+0x68/0x250 [ext4]
- ext4_ext_create_new_leaf+0xc5/0x120 [ext4]
- ext4_ext_insert_extent+0x1bf/0x670 [ext4]
- ext4_split_extent_at+0x212/0x530 [ext4]
- ext4_split_extent+0x13a/0x1a0 [ext4]
- ext4_ext_handle_unwritten_extents+0x13d/0x240 [ext4]
- ext4_ext_map_blocks+0x459/0x8f0 [ext4]
- ext4_map_blocks+0x18e/0x5a0 [ext4]
- ext4_iomap_alloc+0xb0/0x1b0 [ext4]
- ext4_iomap_begin+0xb0/0x130 [ext4]
- iomap_apply+0x95/0x2e0
- __iomap_dio_rw+0x1cc/0x4b0
- iomap_dio_rw+0xe/0x40
- ext4_dio_write_iter+0x1a9/0x390 [ext4]
- new_sync_write+0x113/0x1b0
- vfs_write+0x1b7/0x250
- ksys_write+0x5f/0xe0
- do_syscall_64+0x33/0x40
- entry_SYSCALL_64_after_hwframe+0x61/0xc6
+1) usr_quota_inum/grp_quota_inum/prj_quota_inum
+These inodes may be faulty. In the first patch, this situation is 
+intercepted.
+At the beginning, FUZZ found that the quota inode was faulty. Later, we 
+found that
+the operation function swap_inode_boot_loader() related to inode 5 was 
+also faulty.
 
-Compare extent change in journal:
-Start:
-ee_block      ee_len        ee_start
-75            32798         1457227  -> unwritten len=30
-308           12            434489
-355           5             442492
-=>
-ee_block      ee_len        ee_start
-11            2             951584
-74            32769         951647   -> unwritten  len=1
-75            32771         1457227  -> unwritten  len=3, length decreased 27
-211           15            960906
-308           12            434489
-355           5             442492
+2) journal_inum
+In ext4_get_journal_inode(), the system checks whether the imode is 
+S_IFREG. Then,
+the bmap in jbd2_journal_init_inode() checks whether the inode has 
+a_ops->bmap
+operation. The bad inode does not set the bmap operation, so there is no 
+problem.
 
-Acctually, above issue can repaired by 'fsck -fa'. But file system is 'clean',
-'fsck' will not do deep repair.
-Obviously, final lost 27 blocks. Above issue may happens as follows:
-ext4_split_extent_at
-...
-err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags); -> return -ENOMEM
-if (err != -ENOSPC && err != -EDQUOT）
-	goto out; -> goto 'out' will not fix extent length, will
-...
-fix_extent_len:
-        ex->ee_len = orig_ex.ee_len;
-        /*
-         * Ignore ext4_ext_dirty return value since we are already in error path
-         * and err is a non-zero error code.
-         */
-        ext4_ext_dirty(handle, inode, path + path->p_depth);
-        return err;
-out:
-        ext4_ext_show_leaf(inode, path);
-        return err;
-If 'ext4_ext_insert_extent' return '-ENOMEM' which will not fix 'ex->ee_len' by
-old length. 'ext4_ext_insert_extent' will trigger extent tree merge, fix like
-'ex->ee_len = orig_ex.ee_len' may lead to new issues.
-To solve above issue, record error messages when 'ext4_ext_insert_extent' return
-'err' not equal '(-ENOSPC && -EDQUOT)'. If filesysten is mounted with 'errors=continue'
-as filesystem is not clean 'fsck' will repair issue. If filesystem is mounted with
-'errors=remount-ro' filesystem will be remounted by read-only.
+3) last_orphan
+In ext4_orphan_get(), it checks if the imode is normal and if the inode 
+is bad inode,
+so there is no problem.
 
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- fs/ext4/extents.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+4) snapshot_inum
+No place to use snapshot_inum was found in the kernel, so there is no 
+kernel issue.
 
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index f1956288307f..582a7d59d6e3 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -3252,8 +3252,13 @@ static int ext4_split_extent_at(handle_t *handle,
- 		ext4_ext_mark_unwritten(ex2);
- 
- 	err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
--	if (err != -ENOSPC && err != -EDQUOT)
-+	if (err != -ENOSPC && err != -EDQUOT) {
-+		if (err)
-+			EXT4_ERROR_INODE_ERR(inode, -err,
-+			"insert extent failed block = %d len = %d",
-+			ex2->ee_block, ex2->ee_len);
- 		goto out;
-+	}
- 
- 	if (EXT4_EXT_MAY_ZEROOUT & split_flag) {
- 		if (split_flag & (EXT4_EXT_DATA_VALID1|EXT4_EXT_DATA_VALID2)) {
+
+>> ---
+>>   fs/ext4/ioctl.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+>> index ded535535b27..c41210706ea7 100644
+>> --- a/fs/ext4/ioctl.c
+>> +++ b/fs/ext4/ioctl.c
+>> @@ -425,7 +425,7 @@ static long swap_inode_boot_loader(struct super_block *sb,
+>>   	/* Protect extent tree against block allocations via delalloc */
+>>   	ext4_double_down_write_data_sem(inode, inode_bl);
+>>   
+>> -	if (inode_bl->i_nlink == 0) {
+>> +	if (is_bad_inode(inode_bl) || !S_ISREG(inode_bl->i_mode)) {
+>>   		/* this inode has never been used as a BOOT_LOADER */
+>>   		set_nlink(inode_bl, 1);
+>>   		i_uid_write(inode_bl, 0);
+>> -- 
+>> 2.31.1
+>>
+
+Thank you for your review!
 -- 
-2.31.1
-
+With Best Regards,
+Baokun Li
