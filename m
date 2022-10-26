@@ -2,68 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45FE160DEAB
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Oct 2022 12:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8E560DEC2
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Oct 2022 12:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233126AbiJZKMP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Oct 2022 06:12:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51288 "EHLO
+        id S229551AbiJZKS6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Oct 2022 06:18:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233111AbiJZKMO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Oct 2022 06:12:14 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092BDCE2D;
-        Wed, 26 Oct 2022 03:12:14 -0700 (PDT)
+        with ESMTP id S232949AbiJZKS4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Oct 2022 06:18:56 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E579DDA5
+        for <linux-ext4@vger.kernel.org>; Wed, 26 Oct 2022 03:18:55 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B88001FD59;
-        Wed, 26 Oct 2022 10:12:12 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9F09021FF0;
+        Wed, 26 Oct 2022 10:18:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1666779132; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1666779534; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=j/Y48pcNkqn3S/xTguuWcH01a65LRpiTF8wppHlOxB8=;
-        b=SZKcYXDOP4ubEKgKj1btbrAef5iNo+hxa02YCl2qpvLOFH9txOYnxt6Ht5JPOCQCD1yz1D
-        1s26gFCSbY/1UlJVCbOe/mO31iQNeVdG0xwYcAs/njtKONGHGoejlA0uWDYMkNzWuHp2NX
-        OPivxQHZ5746mK9VZ/981EaFty4T6hs=
+        bh=oAvOcYJU2msOBRHkSh0/+0oDaMvRVY8cSG8HTw+CrWY=;
+        b=eMdZXaEZ3phILvlTK4oNa4N49tLMVJPQMVtH+pQE8iwId+EUU2F4pEkNQ1837/PP0s4Zcz
+        icARi0n5szrmO1Je0musCYggXmhv9cpid45rkN+YHtAveDF/3jXXwjzvhy6oBFlk/4kMKH
+        eXDn3JrB2RR6GtDCIlw9MJSC4E37ztw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1666779132;
+        s=susede2_ed25519; t=1666779534;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=j/Y48pcNkqn3S/xTguuWcH01a65LRpiTF8wppHlOxB8=;
-        b=qyHz9U4XYPZpk5WUzLX1rGSQGkjpfLeHpTS6Ue00WskBVLYHICly6QrniHDhZhe1oql2r4
-        liViSjGp9ymPLADQ==
+        bh=oAvOcYJU2msOBRHkSh0/+0oDaMvRVY8cSG8HTw+CrWY=;
+        b=BDglwtd5H8NAXqbpcp/PJZCrie7v6PnKglUZk/Y4b63e3eWpfqhaivywzZPYLrPTdJGj8a
+        /X5/sD729E+YZMCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A8CF413A77;
-        Wed, 26 Oct 2022 10:12:12 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9181313A77;
+        Wed, 26 Oct 2022 10:18:54 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id OPo+KfwHWWMJeAAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 26 Oct 2022 10:12:12 +0000
+        id Ljl7I44JWWOUewAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 26 Oct 2022 10:18:54 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 3F26AA06F9; Wed, 26 Oct 2022 12:12:12 +0200 (CEST)
-Date:   Wed, 26 Oct 2022 12:12:12 +0200
+        id 25EBCA06F9; Wed, 26 Oct 2022 12:18:54 +0200 (CEST)
+Date:   Wed, 26 Oct 2022 12:18:54 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yukuai3@huawei.com
-Subject: Re: [PATCH v3 4/4] ext4: fix bug_on in __es_tree_search caused by
- bad boot loader inode
-Message-ID: <20221026101212.q7bhteu3c6g4af25@quack3>
-References: <20221026042310.3839669-1-libaokun1@huawei.com>
- <20221026042310.3839669-5-libaokun1@huawei.com>
+To:     Thilo Fromm <t-lo@linux.microsoft.com>
+Cc:     Jan Kara <jack@suse.cz>, Ye Bin <yebin10@huawei.com>,
+        jack@suse.com, tytso@mit.edu, linux-ext4@vger.kernel.org,
+        regressions@lists.linux.dev,
+        Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+Subject: Re: [syzbot] possible deadlock in jbd2_journal_lock_updates
+Message-ID: <20221026101854.k6qgunxexhxthw64@quack3>
+References: <20221004063807.GA30205@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <20221004091035.idjgo2xyscf6ovnv@quack3>
+ <eeb17fca-4e79-b39f-c394-a6fa6873eb26@linux.microsoft.com>
+ <20221005151053.7jjgc7uhvquo6a5n@quack3>
+ <20221010142410.GA1689@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <2ede5fce-7077-6e64-93a9-a7d993bc498f@linux.microsoft.com>
+ <20221014132543.i3aiyx4ent4qwy4i@quack3>
+ <d30f4e74-aa75-743d-3c89-80ec61d67c6c@linux.microsoft.com>
+ <20221024104628.ozxjtdrotysq2haj@quack3>
+ <643d007e-1041-4b3d-ed5e-ae47804f279d@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed; boundary="byvqmrlegsigjfki"
 Content-Disposition: inline
-In-Reply-To: <20221026042310.3839669-5-libaokun1@huawei.com>
+In-Reply-To: <643d007e-1041-4b3d-ed5e-ae47804f279d@linux.microsoft.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
         SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -74,100 +81,124 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 26-10-22 12:23:10, Baokun Li wrote:
-> We got a issue as fllows:
-> ==================================================================
->  kernel BUG at fs/ext4/extents_status.c:203!
->  invalid opcode: 0000 [#1] PREEMPT SMP
->  CPU: 1 PID: 945 Comm: cat Not tainted 6.0.0-next-20221007-dirty #349
->  RIP: 0010:ext4_es_end.isra.0+0x34/0x42
->  RSP: 0018:ffffc9000143b768 EFLAGS: 00010203
->  RAX: 0000000000000000 RBX: ffff8881769cd0b8 RCX: 0000000000000000
->  RDX: 0000000000000000 RSI: ffffffff8fc27cf7 RDI: 00000000ffffffff
->  RBP: ffff8881769cd0bc R08: 0000000000000000 R09: ffffc9000143b5f8
->  R10: 0000000000000001 R11: 0000000000000001 R12: ffff8881769cd0a0
->  R13: ffff8881768e5668 R14: 00000000768e52f0 R15: 0000000000000000
->  FS: 00007f359f7f05c0(0000)GS:ffff88842fd00000(0000)knlGS:0000000000000000
->  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->  CR2: 00007f359f5a2000 CR3: 000000017130c000 CR4: 00000000000006e0
->  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->  Call Trace:
->   <TASK>
->   __es_tree_search.isra.0+0x6d/0xf5
->   ext4_es_cache_extent+0xfa/0x230
->   ext4_cache_extents+0xd2/0x110
->   ext4_find_extent+0x5d5/0x8c0
->   ext4_ext_map_blocks+0x9c/0x1d30
->   ext4_map_blocks+0x431/0xa50
->   ext4_mpage_readpages+0x48e/0xe40
->   ext4_readahead+0x47/0x50
->   read_pages+0x82/0x530
->   page_cache_ra_unbounded+0x199/0x2a0
->   do_page_cache_ra+0x47/0x70
->   page_cache_ra_order+0x242/0x400
->   ondemand_readahead+0x1e8/0x4b0
->   page_cache_sync_ra+0xf4/0x110
->   filemap_get_pages+0x131/0xb20
->   filemap_read+0xda/0x4b0
->   generic_file_read_iter+0x13a/0x250
->   ext4_file_read_iter+0x59/0x1d0
->   vfs_read+0x28f/0x460
->   ksys_read+0x73/0x160
->   __x64_sys_read+0x1e/0x30
->   do_syscall_64+0x35/0x80
->   entry_SYSCALL_64_after_hwframe+0x63/0xcd
->   </TASK>
-> ==================================================================
-> 
-> In the above issue, ioctl invokes the swap_inode_boot_loader function to
-> swap inode<5> and inode<12>. However, inode<5> contain incorrect imode and
-> disordered extents, and i_nlink is set to 1. The extents check for inode in
-> the ext4_iget function can be bypassed bacause 5 is EXT4_BOOT_LOADER_INO.
-> While links_count is set to 1, the extents are not initialized in
-> swap_inode_boot_loader. After the ioctl command is executed successfully,
-> the extents are swapped to inode<12>, in this case, run the `cat` command
-> to view inode<12>. And Bug_ON is triggered due to the incorrect extents.
-> 
-> When the boot loader inode is not initialized, its imode can be one of the
-> following:
-> 1) the imode is a bad type, which is marked as bad_inode in ext4_iget and
->    set to S_IFREG.
-> 2) the imode is good type but not S_IFREG.
-> 3) the imode is S_IFREG.
-> 
-> The BUG_ON may be triggered by bypassing the check in cases 1 and 2.
-> Therefore, when the boot loader inode is bad_inode or its imode is not
-> S_IFREG, initialize the inode to avoid triggering the BUG.
-> 
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-Looks good to me. Feel free to add:
+--byvqmrlegsigjfki
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+On Mon 24-10-22 18:32:51, Thilo Fromm wrote:
+> Hello Honza,
+> 
+> > Yeah, I was pondering about this for some time but still I have no clue who
+> > could be holding the buffer lock (which blocks the task holding the
+> > transaction open) or how this could related to the commit you have
+> > identified. I have two things to try:
+> > 
+> > 1) Can you please check whether the deadlock reproduces also with 6.0
+> > kernel? The thing is that xattr handling code in ext4 has there some
+> > additional changes, commit 307af6c8793 ("mbcache: automatically delete
+> > entries from cache on freeing") in particular.
+> 
+> This would be complex; we currently do not integrate 6.0 with Flatcar and
+> would need to spend quite some effort ingesting it first (mostly, make sure
+> the new kernel does not break something unrelated). Flatcar is an
+> image-based distro, so kernel updates imply full distro updates.
+
+OK, understood.
+
+> > 2) I have created a debug patch (against 5.15.x stable kernel). Can you
+> > please reproduce the failure with it and post the output of "echo w
+> > > /proc/sysrq-trigger" and also the output the debug patch will put into the
+> > kernel log? It will dump the information about buffer lock owner if we > cannot get the lock for more than 32 seconds.
+> 
+> This would be more straightforward - I can reach out to one of our users
+> suffering from the issue; they can reliably reproduce it and don't shy away
+> from patching their kernel. Where can I find the patch?
+
+Ha, my bad. I forgot to attach it. Here it is.
 
 								Honza
-
-> ---
->  fs/ext4/ioctl.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-> index e0be8026c996..8c7a4ae85e99 100644
-> --- a/fs/ext4/ioctl.c
-> +++ b/fs/ext4/ioctl.c
-> @@ -426,7 +426,7 @@ static long swap_inode_boot_loader(struct super_block *sb,
->  	/* Protect extent tree against block allocations via delalloc */
->  	ext4_double_down_write_data_sem(inode, inode_bl);
->  
-> -	if (inode_bl->i_nlink == 0) {
-> +	if (is_bad_inode(inode_bl) || !S_ISREG(inode_bl->i_mode)) {
->  		/* this inode has never been used as a BOOT_LOADER */
->  		set_nlink(inode_bl, 1);
->  		i_uid_write(inode_bl, 0);
-> -- 
-> 2.31.1
-> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
+
+--byvqmrlegsigjfki
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment;
+	filename="0001-Debug-buffer_head-lock.patch"
+
+From feaf5e5ca0b22da6a285dc97eb756e0190fa7411 Mon Sep 17 00:00:00 2001
+From: Jan Kara <jack@suse.cz>
+Date: Mon, 24 Oct 2022 12:02:59 +0200
+Subject: [PATCH] Debug buffer_head lock
+
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/buffer.c                 | 13 ++++++++++++-
+ include/linux/buffer_head.h | 17 +++++++++++------
+ 2 files changed, 23 insertions(+), 7 deletions(-)
+
+diff --git a/fs/buffer.c b/fs/buffer.c
+index f6d283579491..4514a810f072 100644
+--- a/fs/buffer.c
++++ b/fs/buffer.c
+@@ -66,7 +66,18 @@ EXPORT_SYMBOL(touch_buffer);
+ 
+ void __lock_buffer(struct buffer_head *bh)
+ {
+-	wait_on_bit_lock_io(&bh->b_state, BH_Lock, TASK_UNINTERRUPTIBLE);
++	int loops = 0;
++
++	for (;;) {
++		wait_on_bit_timeout(&bh->b_state, BH_Lock, TASK_UNINTERRUPTIBLE, HZ);
++		if (trylock_buffer(bh))
++			return;
++		loops++;
++		if (WARN_ON(!(loops & 31))) {
++			printk("Waiting for buffer %llu state %lx page flags %lx for %d loops.\n", (unsigned long long)bh->b_blocknr, bh->b_state, bh->b_page->flags, loops);
++			printk("Owner: pid %u file %s:%d\n", bh->lock_pid, bh->lock_file, bh->lock_line);
++		}
++	}
+ }
+ EXPORT_SYMBOL(__lock_buffer);
+ 
+diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
+index 25b4263d66d7..67259a959bac 100644
+--- a/include/linux/buffer_head.h
++++ b/include/linux/buffer_head.h
+@@ -76,6 +76,9 @@ struct buffer_head {
+ 	spinlock_t b_uptodate_lock;	/* Used by the first bh in a page, to
+ 					 * serialise IO completion of other
+ 					 * buffers in the page */
++	char *lock_file;
++	unsigned int lock_line;
++	unsigned int lock_pid;
+ };
+ 
+ /*
+@@ -395,12 +398,14 @@ static inline int trylock_buffer(struct buffer_head *bh)
+ 	return likely(!test_and_set_bit_lock(BH_Lock, &bh->b_state));
+ }
+ 
+-static inline void lock_buffer(struct buffer_head *bh)
+-{
+-	might_sleep();
+-	if (!trylock_buffer(bh))
+-		__lock_buffer(bh);
+-}
++#define lock_buffer(bh) do {		\
++	might_sleep();			\
++	if (!trylock_buffer(bh))	\
++		__lock_buffer(bh);	\
++	(bh)->lock_line = __LINE__;	\
++	(bh)->lock_file = __FILE__;	\
++	(bh)->lock_pid = current->pid;	\
++} while (0)
+ 
+ static inline struct buffer_head *getblk_unmovable(struct block_device *bdev,
+ 						   sector_t block,
+-- 
+2.35.3
+
+
+--byvqmrlegsigjfki--
