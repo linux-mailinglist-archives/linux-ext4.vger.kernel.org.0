@@ -2,127 +2,313 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 841E760E2D6
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Oct 2022 16:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C9060E5FA
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Oct 2022 19:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234127AbiJZOFx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Oct 2022 10:05:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40380 "EHLO
+        id S234023AbiJZRAJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Oct 2022 13:00:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234117AbiJZOFv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Oct 2022 10:05:51 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9B87E01E;
-        Wed, 26 Oct 2022 07:05:49 -0700 (PDT)
-Received: from canpemm500004.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4My9W90kFWzJn7d;
-        Wed, 26 Oct 2022 22:03:01 +0800 (CST)
-Received: from [10.174.179.14] (10.174.179.14) by
- canpemm500004.china.huawei.com (7.192.104.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 26 Oct 2022 22:05:47 +0800
-Subject: Re: [PATCH v3 4/4] ext4: fix bug_on in __es_tree_search caused by bad
- boot loader inode
-To:     Baokun Li <libaokun1@huawei.com>, <linux-ext4@vger.kernel.org>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-        <ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>, <yukuai3@huawei.com>
-References: <20221026042310.3839669-1-libaokun1@huawei.com>
- <20221026042310.3839669-5-libaokun1@huawei.com>
-From:   Jason Yan <yanaijie@huawei.com>
-Message-ID: <2c39db49-2800-d264-6433-48a6382878a4@huawei.com>
-Date:   Wed, 26 Oct 2022 22:05:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        with ESMTP id S234021AbiJZRAI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Oct 2022 13:00:08 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D4425C65;
+        Wed, 26 Oct 2022 10:00:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1666803604; x=1698339604;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=5Z+ixCtjM9zP5Cjx5S+C528BMvr3OqmySU4CCYG0r0g=;
+  b=S20OWHxndiG/Ns7QPB7N4Oqdu1PWBf0RdF7liDuhrrCY6AGhobrkjjLt
+   O4HhH+Ycg/PI0RGnduy1PPxm+WW9/oNqTbeZXNaOyR9gyzykwkmIWerQn
+   SwJsrepx5UU/C/M4vqhshnspciRgiAX+bjg7Oxw8OqQPPK7hvaqoAik4A
+   U0PInw0WX+wnAVhP9fzhUYTBc4VP/mD/2YELgKTIAu3alUx77tAwJ7iON
+   aIBa0AhZIAYTpODcrhJjzReK/8HcG6qh5JxcqOh0GIaAY626q6My+BnXb
+   UbCeo8pRIBhgPtCH01DOHydeblMhAiNirNobFNCgKLbsc5A0jEICDkzkb
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="309695361"
+X-IronPort-AV: E=Sophos;i="5.95,215,1661842800"; 
+   d="scan'208";a="309695361"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2022 10:00:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="665361572"
+X-IronPort-AV: E=Sophos;i="5.95,215,1661842800"; 
+   d="scan'208";a="665361572"
+Received: from lkp-server02.sh.intel.com (HELO b6d29c1a0365) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 26 Oct 2022 10:00:01 -0700
+Received: from kbuild by b6d29c1a0365 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1onjl2-0007dp-25;
+        Wed, 26 Oct 2022 17:00:00 +0000
+Date:   Thu, 27 Oct 2022 00:59:30 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     ntfs3@lists.linux.dev, netdev@vger.kernel.org, linux-mm@kvack.org,
+        linux-mediatek@lists.infradead.org, linux-ext4@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, apparmor@lists.ubuntu.com,
+        amd-gfx@lists.freedesktop.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: [linux-next:master] BUILD SUCCESS WITH WARNING
+ 60eac8672b5b6061ec07499c0f1b79f6d94311ce
+Message-ID: <63596772.FFBtfld6wjE45SXv%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20221026042310.3839669-5-libaokun1@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.14]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500004.china.huawei.com (7.192.104.92)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: 60eac8672b5b6061ec07499c0f1b79f6d94311ce  Add linux-next specific files for 20221026
 
-On 2022/10/26 12:23, Baokun Li wrote:
-> We got a issue as fllows:
-> ==================================================================
->   kernel BUG at fs/ext4/extents_status.c:203!
->   invalid opcode: 0000 [#1] PREEMPT SMP
->   CPU: 1 PID: 945 Comm: cat Not tainted 6.0.0-next-20221007-dirty #349
->   RIP: 0010:ext4_es_end.isra.0+0x34/0x42
->   RSP: 0018:ffffc9000143b768 EFLAGS: 00010203
->   RAX: 0000000000000000 RBX: ffff8881769cd0b8 RCX: 0000000000000000
->   RDX: 0000000000000000 RSI: ffffffff8fc27cf7 RDI: 00000000ffffffff
->   RBP: ffff8881769cd0bc R08: 0000000000000000 R09: ffffc9000143b5f8
->   R10: 0000000000000001 R11: 0000000000000001 R12: ffff8881769cd0a0
->   R13: ffff8881768e5668 R14: 00000000768e52f0 R15: 0000000000000000
->   FS: 00007f359f7f05c0(0000)GS:ffff88842fd00000(0000)knlGS:0000000000000000
->   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->   CR2: 00007f359f5a2000 CR3: 000000017130c000 CR4: 00000000000006e0
->   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->   Call Trace:
->    <TASK>
->    __es_tree_search.isra.0+0x6d/0xf5
->    ext4_es_cache_extent+0xfa/0x230
->    ext4_cache_extents+0xd2/0x110
->    ext4_find_extent+0x5d5/0x8c0
->    ext4_ext_map_blocks+0x9c/0x1d30
->    ext4_map_blocks+0x431/0xa50
->    ext4_mpage_readpages+0x48e/0xe40
->    ext4_readahead+0x47/0x50
->    read_pages+0x82/0x530
->    page_cache_ra_unbounded+0x199/0x2a0
->    do_page_cache_ra+0x47/0x70
->    page_cache_ra_order+0x242/0x400
->    ondemand_readahead+0x1e8/0x4b0
->    page_cache_sync_ra+0xf4/0x110
->    filemap_get_pages+0x131/0xb20
->    filemap_read+0xda/0x4b0
->    generic_file_read_iter+0x13a/0x250
->    ext4_file_read_iter+0x59/0x1d0
->    vfs_read+0x28f/0x460
->    ksys_read+0x73/0x160
->    __x64_sys_read+0x1e/0x30
->    do_syscall_64+0x35/0x80
->    entry_SYSCALL_64_after_hwframe+0x63/0xcd
->    </TASK>
-> ==================================================================
-> 
-> In the above issue, ioctl invokes the swap_inode_boot_loader function to
-> swap inode<5> and inode<12>. However, inode<5> contain incorrect imode and
-> disordered extents, and i_nlink is set to 1. The extents check for inode in
-> the ext4_iget function can be bypassed bacause 5 is EXT4_BOOT_LOADER_INO.
-> While links_count is set to 1, the extents are not initialized in
-> swap_inode_boot_loader. After the ioctl command is executed successfully,
-> the extents are swapped to inode<12>, in this case, run the `cat` command
-> to view inode<12>. And Bug_ON is triggered due to the incorrect extents.
-> 
-> When the boot loader inode is not initialized, its imode can be one of the
-> following:
-> 1) the imode is a bad type, which is marked as bad_inode in ext4_iget and
->     set to S_IFREG.
-> 2) the imode is good type but not S_IFREG.
-> 3) the imode is S_IFREG.
-> 
-> The BUG_ON may be triggered by bypassing the check in cases 1 and 2.
-> Therefore, when the boot loader inode is bad_inode or its imode is not
-> S_IFREG, initialize the inode to avoid triggering the BUG.
-> 
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> ---
->   fs/ext4/ioctl.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+Warning reports:
 
-Looks good,
-Reviewed-by: Jason Yan <yanaijie@huawei.com>
+https://lore.kernel.org/linux-mm/202210090954.pTR6m6rj-lkp@intel.com
+https://lore.kernel.org/linux-mm/202210110857.9s0tXVNn-lkp@intel.com
+https://lore.kernel.org/linux-mm/202210111318.mbUfyhps-lkp@intel.com
+https://lore.kernel.org/linux-mm/202210240729.zs46Cfzo-lkp@intel.com
+https://lore.kernel.org/linux-mm/202210251946.eT92YAhG-lkp@intel.com
+https://lore.kernel.org/linux-mm/202210261404.b6UlzG7H-lkp@intel.com
+https://lore.kernel.org/llvm/202210060148.UXBijOcS-lkp@intel.com
+https://lore.kernel.org/llvm/202210261759.MQ8VLHNW-lkp@intel.com
+
+Warning: (recently discovered and may have been fixed)
+
+lib/zstd/compress/huf_compress.c:460 HUF_getIndex() warn: the 'RANK_POSITION_LOG_BUCKETS_BEGIN' macro might need parens
+security/apparmor/policy_unpack_test.c:149 policy_unpack_test_unpack_array_with_null_name() error: uninitialized symbol 'array_size'.
+security/apparmor/policy_unpack_test.c:164 policy_unpack_test_unpack_array_with_name() error: uninitialized symbol 'array_size'.
+
+Unverified Warning (likely false positive, please contact us if interested):
+
+drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link_dp.c:5230:16: warning: no previous prototype for function 'wake_up_aux_channel' [-Wmissing-prototypes]
+drivers/net/ethernet/microchip/vcap/vcap_api_kunit.c:207:24: sparse: sparse: symbol 'test_callbacks' was not declared. Should it be static?
+drivers/net/ethernet/microchip/vcap/vcap_api_kunit.c:219:21: sparse: sparse: symbol 'test_vctrl' was not declared. Should it be static?
+drivers/net/ethernet/microchip/vcap/vcap_api_kunit.c:245:23: sparse: sparse: Using plain integer as NULL pointer
+lib/zstd/decompress/zstd_decompress_block.c:1009 ZSTD_execSequence() warn: inconsistent indenting
+lib/zstd/decompress/zstd_decompress_block.c:894 ZSTD_execSequenceEnd() warn: inconsistent indenting
+lib/zstd/decompress/zstd_decompress_block.c:942 ZSTD_execSequenceEndSplitLitBuffer() warn: inconsistent indenting
+lib/zstd/decompress/zstd_decompress_internal.h:206 ZSTD_DCtx_get_bmi2() warn: inconsistent indenting
+mm/khugepaged.c:1729:3: warning: variable 'index' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+mm/khugepaged.c:1729:3: warning: variable 'nr' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+mm/khugepaged.c:1729:7: warning: variable 'index' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+mm/khugepaged.c:1729:7: warning: variable 'nr' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+
+Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- arc-randconfig-s051-20221023
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-priv1-got-restricted-__le16-addressable-usertype-fc_len
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-tag-got-restricted-__le16-addressable-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-short-usertype-tag-got-restricted-__le16-addressable-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_len-got-unsigned-short-usertype
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_tag-got-unsigned-short-usertype
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-initializer-(different-base-types)-expected-int-tag-got-restricted-__le16-usertype-fc_tag
+|   `-- fs-ext4-fast_commit.c:sparse:sparse:restricted-__le16-degrades-to-integer
+|-- i386-randconfig-m021
+|   |-- arch-x86-boot-compressed-..-..-..-..-lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequence()-warn:inconsistent-indenting
+|   |-- arch-x86-boot-compressed-..-..-..-..-lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequenceEnd()-warn:inconsistent-indenting
+|   |-- arch-x86-boot-compressed-..-..-..-..-lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequenceEndSplitLitBuffer()-warn:inconsistent-indenting
+|   |-- arch-x86-boot-compressed-..-..-..-..-lib-zstd-decompress-zstd_decompress_internal.h-ZSTD_DCtx_get_bmi2()-warn:inconsistent-indenting
+|   |-- lib-zstd-compress-huf_compress.c-HUF_getIndex()-warn:the-RANK_POSITION_LOG_BUCKETS_BEGIN-macro-might-need-parens
+|   |-- lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequence()-warn:inconsistent-indenting
+|   |-- lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequenceEnd()-warn:inconsistent-indenting
+|   |-- lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequenceEndSplitLitBuffer()-warn:inconsistent-indenting
+|   `-- lib-zstd-decompress-zstd_decompress_internal.h-ZSTD_DCtx_get_bmi2()-warn:inconsistent-indenting
+|-- loongarch-randconfig-s043-20221024
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-priv1-got-restricted-__le16-addressable-usertype-fc_len
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-tag-got-restricted-__le16-addressable-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-short-usertype-tag-got-restricted-__le16-addressable-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_len-got-unsigned-short-usertype
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_tag-got-unsigned-short-usertype
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-initializer-(different-base-types)-expected-int-tag-got-restricted-__le16-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:restricted-__le16-degrades-to-integer
+|   |-- fs-ntfs3-index.c:sparse:sparse:restricted-__le32-degrades-to-integer
+|   |-- fs-ntfs3-namei.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__le16-const-usertype-s1-got-unsigned-short
+|   `-- fs-ntfs3-namei.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__le16-const-usertype-s2-got-unsigned-short
+|-- parisc-randconfig-m031-20221024
+|   |-- security-apparmor-policy_unpack_test.c-policy_unpack_test_unpack_array_with_name()-error:uninitialized-symbol-array_size-.
+|   `-- security-apparmor-policy_unpack_test.c-policy_unpack_test_unpack_array_with_null_name()-error:uninitialized-symbol-array_size-.
+|-- powerpc-randconfig-s053-20221023
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-priv1-got-restricted-__le16-addressable-usertype-fc_len
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-tag-got-restricted-__le16-addressable-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-short-usertype-tag-got-restricted-__le16-addressable-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_len-got-unsigned-short-usertype
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_tag-got-unsigned-short-usertype
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-initializer-(different-base-types)-expected-int-tag-got-restricted-__le16-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:restricted-__le16-degrades-to-integer
+|   |-- fs-ntfs3-index.c:sparse:sparse:restricted-__le32-degrades-to-integer
+|   |-- fs-ntfs3-namei.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__le16-const-usertype-s1-got-unsigned-short
+|   `-- fs-ntfs3-namei.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__le16-const-usertype-s2-got-unsigned-short
+|-- riscv-randconfig-s051-20221026
+|   |-- drivers-net-ethernet-microchip-vcap-vcap_api_kunit.c:sparse:sparse:Using-plain-integer-as-NULL-pointer
+|   |-- drivers-net-ethernet-microchip-vcap-vcap_api_kunit.c:sparse:sparse:symbol-test_callbacks-was-not-declared.-Should-it-be-static
+|   `-- drivers-net-ethernet-microchip-vcap-vcap_api_kunit.c:sparse:sparse:symbol-test_vctrl-was-not-declared.-Should-it-be-static
+`-- x86_64-randconfig-m001
+    |-- arch-x86-boot-compressed-..-..-..-..-lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequence()-warn:inconsistent-indenting
+    |-- arch-x86-boot-compressed-..-..-..-..-lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequenceEnd()-warn:inconsistent-indenting
+clang_recent_errors
+|-- arm-buildonly-randconfig-r002-20221026
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- arm-buildonly-randconfig-r006-20221024
+|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt2701.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
+|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
+|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|   `-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|-- arm64-randconfig-r026-20221023
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_link_dp.c:warning:no-previous-prototype-for-function-wake_up_aux_channel
+|-- arm64-randconfig-r026-20221025
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- hexagon-randconfig-r014-20221024
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- hexagon-randconfig-r015-20221023
+|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt2701.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
+|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
+|   `-- drivers-phy-mediatek-phy-mtk-tphy.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(unsigned-c
+|-- hexagon-randconfig-r045-20221023
+|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt2701.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
+|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
+|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|   |-- drivers-phy-mediatek-phy-mtk-tphy.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(unsigned-c
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- i386-buildonly-randconfig-r002-20221024
+|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt2701.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
+|   `-- drivers-phy-mediatek-phy-mtk-hdmi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
+|-- i386-randconfig-a001-20221024
+|   |-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|   |-- mm-khugepaged.c:warning:variable-index-is-used-uninitialized-whenever-if-condition-is-true
+|   `-- mm-khugepaged.c:warning:variable-nr-is-used-uninitialized-whenever-if-condition-is-true
+|-- i386-randconfig-a006-20221024
+|   |-- mm-khugepaged.c:warning:variable-index-is-used-uninitialized-whenever-if-condition-is-true
+|   `-- mm-khugepaged.c:warning:variable-nr-is-used-uninitialized-whenever-if-condition-is-true
+|-- mips-randconfig-r016-20221024
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- mips-randconfig-r034-20221023
+|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt2701.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
+|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
+|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|   `-- drivers-phy-mediatek-phy-mtk-tphy.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(unsigned-c
+|-- riscv-randconfig-r001-20221026
+|   |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-get_symbol_pos:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_num_syms
+|   |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-get_symbol_pos:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_offsets
+|   |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-kallsyms_lookup_name:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_num_syms
+|   |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-kallsyms_lookup_name:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_offsets
+|   |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-kallsyms_lookup_name:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_relative_base
+|   |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-kallsyms_on_each_symbol:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_num_syms
+|   |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-kallsyms_on_each_symbol:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_offsets
+
+elapsed time: 724m
+
+configs tested: 93
+configs skipped: 2
+
+gcc tested configs:
+um                             i386_defconfig
+um                           x86_64_defconfig
+i386                                defconfig
+arm                                 defconfig
+x86_64                              defconfig
+x86_64                        randconfig-a013
+x86_64                        randconfig-a011
+x86_64                               rhel-8.3
+arc                  randconfig-r043-20221024
+x86_64                        randconfig-a015
+x86_64                           rhel-8.3-syz
+arm                              allyesconfig
+x86_64                           allyesconfig
+x86_64                         rhel-8.3-kunit
+arm64                            allyesconfig
+x86_64                          rhel-8.3-func
+ia64                             allmodconfig
+x86_64                           rhel-8.3-kvm
+arc                                 defconfig
+powerpc                   motionpro_defconfig
+s390                             allmodconfig
+i386                             allyesconfig
+riscv                randconfig-r042-20221024
+x86_64                    rhel-8.3-kselftests
+alpha                               defconfig
+s390                 randconfig-r044-20221024
+s390                                defconfig
+powerpc                           allnoconfig
+sh                        sh7785lcr_defconfig
+i386                 randconfig-a011-20221024
+sh                         ecovec24_defconfig
+m68k                        stmark2_defconfig
+i386                 randconfig-a015-20221024
+i386                 randconfig-a014-20221024
+powerpc                          allmodconfig
+ia64                          tiger_defconfig
+s390                             allyesconfig
+sh                               allmodconfig
+i386                 randconfig-a013-20221024
+mips                             allyesconfig
+arc                         haps_hs_defconfig
+i386                 randconfig-a012-20221024
+sparc                            alldefconfig
+i386                 randconfig-a016-20221024
+csky                                defconfig
+m68k                          hp300_defconfig
+arm                      footbridge_defconfig
+s390                       zfcpdump_defconfig
+loongarch                           defconfig
+mips                     loongson1b_defconfig
+arm                         axm55xx_defconfig
+m68k                          amiga_defconfig
+arm                          gemini_defconfig
+parisc                              defconfig
+m68k                             allmodconfig
+arc                              allyesconfig
+sh                        apsh4ad0a_defconfig
+alpha                            allyesconfig
+i386                          randconfig-c001
+m68k                             allyesconfig
+arc                  randconfig-r043-20221023
+x86_64               randconfig-a013-20221024
+x86_64               randconfig-a012-20221024
+riscv                            allmodconfig
+
+clang tested configs:
+i386                 randconfig-a004-20221024
+i386                 randconfig-a001-20221024
+hexagon              randconfig-r041-20221024
+x86_64                        randconfig-a012
+i386                 randconfig-a002-20221024
+x86_64               randconfig-a001-20221024
+hexagon              randconfig-r045-20221024
+x86_64               randconfig-a003-20221024
+i386                 randconfig-a005-20221024
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+x86_64               randconfig-a004-20221024
+x86_64               randconfig-a002-20221024
+i386                 randconfig-a003-20221024
+x86_64               randconfig-a005-20221024
+x86_64               randconfig-a006-20221024
+i386                 randconfig-a006-20221024
+arm                       spear13xx_defconfig
+arm                      tct_hammer_defconfig
+mips                          rm200_defconfig
+riscv                          rv32_defconfig
+arm                         lpc32xx_defconfig
+powerpc                    socrates_defconfig
+arm                          pxa168_defconfig
+mips                      malta_kvm_defconfig
+riscv                randconfig-r042-20221023
+hexagon              randconfig-r041-20221023
+hexagon              randconfig-r045-20221023
+s390                 randconfig-r044-20221023
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
