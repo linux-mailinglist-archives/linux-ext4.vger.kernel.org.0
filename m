@@ -2,33 +2,33 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD3B60DA20
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Oct 2022 06:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F7560DA1A
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Oct 2022 06:01:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232417AbiJZEBe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Oct 2022 00:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51446 "EHLO
+        id S232788AbiJZEB1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Oct 2022 00:01:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232200AbiJZEBY (ORCPT
+        with ESMTP id S229750AbiJZEBY (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Oct 2022 00:01:24 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92DDB87F92;
-        Tue, 25 Oct 2022 21:01:20 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Mxw3G2F5SzmVPJ;
-        Wed, 26 Oct 2022 11:56:26 +0800 (CST)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 942F487FA7;
+        Tue, 25 Oct 2022 21:01:21 -0700 (PDT)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Mxw8g05WJzHvHm;
+        Wed, 26 Oct 2022 12:01:07 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
  (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Wed, 26 Oct
- 2022 12:01:18 +0800
+ 2022 12:01:19 +0800
 From:   Baokun Li <libaokun1@huawei.com>
 To:     <linux-ext4@vger.kernel.org>
 CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
         <ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
         <yi.zhang@huawei.com>, <yukuai3@huawei.com>, <libaokun1@huawei.com>
-Subject: [PATCH v3 2/4] ext4: add helper to check quota inums
-Date:   Wed, 26 Oct 2022 12:23:08 +0800
-Message-ID: <20221026042310.3839669-3-libaokun1@huawei.com>
+Subject: [PATCH v3 3/4] ext4: add EXT4_IGET_BAD flag to prevent unexpected bad inode
+Date:   Wed, 26 Oct 2022 12:23:09 +0800
+Message-ID: <20221026042310.3839669-4-libaokun1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221026042310.3839669-1-libaokun1@huawei.com>
 References: <20221026042310.3839669-1-libaokun1@huawei.com>
@@ -47,71 +47,69 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Before quota is enabled, a check on the preset quota inums in
-ext4_super_block is added to prevent wrong quota inodes from being loaded.
-In addition, when the quota fails to be enabled, the quota type and quota
-inum are printed to facilitate fault locating.
+There are many places that will get unhappy (and crash) when ext4_iget()
+returns a bad inode. However, if iget the boot loader inode, allows a bad
+inode to be returned, because the inode may not be initialized. This
+mechanism can be used to bypass some checks and cause panic. To solve this
+problem, we add a special iget flag EXT4_IGET_BAD. Only with this flag
+we'd be returning bad inode from ext4_iget(), otherwise we always return
+the error code if the inode is bad inode.(suggested by Jan Kara)
 
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
 ---
- fs/ext4/super.c | 28 +++++++++++++++++++++++++---
- 1 file changed, 25 insertions(+), 3 deletions(-)
+ fs/ext4/ext4.h  | 3 ++-
+ fs/ext4/inode.c | 8 +++++++-
+ fs/ext4/ioctl.c | 3 ++-
+ 3 files changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 34b78f380968..0b4060d52d63 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -6885,6 +6885,20 @@ static int ext4_quota_on(struct super_block *sb, int type, int format_id,
- 	return err;
- }
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 8d5453852f98..2b574b143bde 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -2964,7 +2964,8 @@ int do_journal_get_write_access(handle_t *handle, struct inode *inode,
+ typedef enum {
+ 	EXT4_IGET_NORMAL =	0,
+ 	EXT4_IGET_SPECIAL =	0x0001, /* OK to iget a system inode */
+-	EXT4_IGET_HANDLE = 	0x0002	/* Inode # is from a handle */
++	EXT4_IGET_HANDLE = 	0x0002,	/* Inode # is from a handle */
++	EXT4_IGET_BAD =		0x0004  /* Allow to iget a bad inode */
+ } ext4_iget_flags;
  
-+static inline bool ext4_check_quota_inum(int type, unsigned long qf_inum)
-+{
-+	switch (type) {
-+	case USRQUOTA:
-+		return qf_inum == EXT4_USR_QUOTA_INO;
-+	case GRPQUOTA:
-+		return qf_inum == EXT4_GRP_QUOTA_INO;
-+	case PRJQUOTA:
-+		return qf_inum >= EXT4_GOOD_OLD_FIRST_INO;
-+	default:
-+		BUG();
+ extern struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index ae3a836dd9d7..f767340229fd 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -5043,8 +5043,14 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+ 	if (IS_CASEFOLDED(inode) && !ext4_has_feature_casefold(inode->i_sb))
+ 		ext4_error_inode(inode, function, line, 0,
+ 				 "casefold flag without casefold feature");
+-	brelse(iloc.bh);
++	if (is_bad_inode(inode) && !(flags & EXT4_IGET_BAD)) {
++		ext4_error_inode(inode, function, line, 0,
++				 "bad inode without EXT4_IGET_BAD flag");
++		ret = -EUCLEAN;
++		goto bad_inode;
 +	}
-+}
-+
- static int ext4_quota_enable(struct super_block *sb, int type, int format_id,
- 			     unsigned int flags)
- {
-@@ -6901,9 +6915,16 @@ static int ext4_quota_enable(struct super_block *sb, int type, int format_id,
- 	if (!qf_inums[type])
- 		return -EPERM;
  
-+	if (!ext4_check_quota_inum(type, qf_inums[type])) {
-+		ext4_error(sb, "Bad quota inum: %lu, type: %d",
-+				qf_inums[type], type);
-+		return -EUCLEAN;
-+	}
-+
- 	qf_inode = ext4_iget(sb, qf_inums[type], EXT4_IGET_SPECIAL);
- 	if (IS_ERR(qf_inode)) {
--		ext4_error(sb, "Bad quota inode # %lu", qf_inums[type]);
-+		ext4_error(sb, "Bad quota inode: %lu, type: %d",
-+				qf_inums[type], type);
- 		return PTR_ERR(qf_inode);
- 	}
++	brelse(iloc.bh);
+ 	unlock_new_inode(inode);
+ 	return inode;
  
-@@ -6942,8 +6963,9 @@ int ext4_enable_quotas(struct super_block *sb)
- 			if (err) {
- 				ext4_warning(sb,
- 					"Failed to enable quota tracking "
--					"(type=%d, err=%d). Please run "
--					"e2fsck to fix.", type, err);
-+					"(type=%d, err=%d, ino=%lu). "
-+					"Please run e2fsck to fix.", type,
-+					err, qf_inums[type]);
- 				for (type--; type >= 0; type--) {
- 					struct inode *inode;
+diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+index ded535535b27..e0be8026c996 100644
+--- a/fs/ext4/ioctl.c
++++ b/fs/ext4/ioctl.c
+@@ -375,7 +375,8 @@ static long swap_inode_boot_loader(struct super_block *sb,
+ 	blkcnt_t blocks;
+ 	unsigned short bytes;
  
+-	inode_bl = ext4_iget(sb, EXT4_BOOT_LOADER_INO, EXT4_IGET_SPECIAL);
++	inode_bl = ext4_iget(sb, EXT4_BOOT_LOADER_INO,
++			EXT4_IGET_SPECIAL | EXT4_IGET_BAD);
+ 	if (IS_ERR(inode_bl))
+ 		return PTR_ERR(inode_bl);
+ 	ei_bl = EXT4_I(inode_bl);
 -- 
 2.31.1
 
