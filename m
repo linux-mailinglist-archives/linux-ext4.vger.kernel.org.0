@@ -2,176 +2,152 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A766D610F21
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Oct 2022 12:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 215AD610FFD
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Oct 2022 13:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231201AbiJ1Kzi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 28 Oct 2022 06:55:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56460 "EHLO
+        id S229576AbiJ1Ltw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 28 Oct 2022 07:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231196AbiJ1KzR (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Oct 2022 06:55:17 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6BF2AC5D
-        for <linux-ext4@vger.kernel.org>; Fri, 28 Oct 2022 03:55:11 -0700 (PDT)
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29SAm8R3003109;
-        Fri, 28 Oct 2022 10:55:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- content-transfer-encoding : mime-version; s=pp1;
- bh=iUN2yaz5zlZzxDJhT4/7nVWslNFatdW8SjXBSGuaODo=;
- b=PNMB3RZaOviPwaTc1StJj2dYT6YP3AkqCzwvSGBXtzzQSS0pWwjhgvPh2rECLyjMXiRF
- ifcONU6wQOq//6q/crgyfdgIoV5ACXk2mGWuvUG4KpkI0PcrnI5mxxaQpKOEfKikacIk
- 56ckvtMeL3DbRaUB7DJt5Z3uEBepISasxFxBSbV9gIGEgXy+mvFL/VTYOm1TtyfrF4a/
- sIrcEsf4hJp9GJ2U0muVlRXwm+AsAD9dstC5nPdUns87gFn6fN7b9SlI3IEk+PHeJ8vN
- 2sHiiDR7vSAXyrULiCwK9JnJ1ceqb9iEHUsutYuEe+lKBINAB02SJ2/f+ZcC43ZEzhLZ BA== 
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kgdn606rq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 Oct 2022 10:55:01 +0000
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 29SArAIt013497;
-        Fri, 28 Oct 2022 10:54:59 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03fra.de.ibm.com with ESMTP id 3kfahp2fqa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 Oct 2022 10:54:59 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 29SAsvcj1770104
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 28 Oct 2022 10:54:57 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0C4ADAE051;
-        Fri, 28 Oct 2022 10:54:57 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6D93FAE055;
-        Fri, 28 Oct 2022 10:54:55 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.100.91])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri, 28 Oct 2022 10:54:55 +0000 (GMT)
-Date:   Fri, 28 Oct 2022 16:24:52 +0530
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     Guoqing Jiang <guoqing.jiang@linux.dev>
-Cc:     Jason Yan <yanaijie@huawei.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] ext4: make ext4_mb_initialize_context return void
-Message-ID: <Y1u05l3L/gb/cSYg@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <20221027032435.27374-1-guoqing.jiang@linux.dev>
- <bf9dba6f-50c6-5ba8-31e3-b60de18105f1@huawei.com>
- <23c58b71-8dbc-b314-de53-31e2593f94d4@linux.dev>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <23c58b71-8dbc-b314-de53-31e2593f94d4@linux.dev>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 2RZ69ZQI_K9FlvSRpWTSQ19y2gpoqyia
-X-Proofpoint-GUID: 2RZ69ZQI_K9FlvSRpWTSQ19y2gpoqyia
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S229588AbiJ1Ltu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Oct 2022 07:49:50 -0400
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2065.outbound.protection.outlook.com [40.107.22.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2089D17A93;
+        Fri, 28 Oct 2022 04:49:48 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BtzpSEbKJl9oyC6BZ/uw1ygb88IAXyQs+IHOMUmQdVHzYr3FOl3mMrQB5g2Pj0RwXEHTERyoozUdeLWu4NR2ddyLMXBRQxk58Q29/HOgjwzOJ8toD0aWET2y/yznqPxk9pk3q7Iai/hYcoGxbw5Uws+HSnF/K42nGzRXe42J/nRd4omB29IOa+swMlhNwsMSaaZxHuqvwR9ZI/QNWwaHIR39k3uBoEDoj+6dsASKORPIAvsjGehRxnKSsS10gbueVWZXrqmPHKVEDM+djqIar7Q9aXrKd2dQyeV7hwahjauz9sYJ3SkMw7N0Ch4P4jLKeD/1NKs1R7BkpkP08k1JKA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/cm6cSj+Dms9K7WSVR3ElNwWity2Wlu99q1l5FUBYFg=;
+ b=c+/nGEvh9fY7PcMKfsaGJ9Jk7oqJbQGxrMk+8HnAZUqzLv1wY0srC0y2CE7TGilnrZLuTVzvnx2qkozkL9K1ymU9DJt2A/G3TtQNdF2EZVcQoEfO5SdennqncI9Z3a3WOJpqVezR/ZUBpAXtOedP0nS+ea/yfXhg0qenJ5/Re7N54JP0meJly3lyDVNBjZKkWiHLzNjQL8/XNCmwOYm4pbGwmxR125pxy+1d73wx00SvRYoMZTUj/WBwBIu5DmR/XfeV2Ws2ur5INqKwVnXVtJlxatBEtxzBz0LoJGRMCVsO+s+nx+qYKC4WggbM8mJl3wJWDQsMazwhVTkmCK4b/Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=theobroma-systems.com; dmarc=pass action=none
+ header.from=theobroma-systems.com; dkim=pass header.d=theobroma-systems.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=theobroma-systems.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/cm6cSj+Dms9K7WSVR3ElNwWity2Wlu99q1l5FUBYFg=;
+ b=atNbofhGmlVl8I5s+i9JBswKObcHF22PZS/ZIoxS4WewXzWQz4dHe3p7e7o9yXGy6bNg648eAVSvNQQfm+S3N9JTESnQXqppx0kOE8L5UaNjTQslrBleEOOyhYaEWXCH8NEuFsD432sV0Yy83SqTEl9Vw0n+eKE4K7E6DtIzbqA1DHdbnXLa7LuUgYBP4sz1j3SuFHJi1J558HW9DAmXcSBDXPXFGmDEHB4ddygE4Y28ZahTwH1B6aEgD7ymOv1ucwgJ+ZUlCWXpLO4sHhS8vl0dfW+xLXWrM1eKAo/0VJ2NM8ifVYkt+6JSn9FPCbH4cBdPMJblIiTfBE8F3UVFCw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=theobroma-systems.com;
+Received: from AM6PR04MB6311.eurprd04.prod.outlook.com (2603:10a6:20b:b7::20)
+ by DB9PR04MB8106.eurprd04.prod.outlook.com (2603:10a6:10:24b::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5769.15; Fri, 28 Oct
+ 2022 11:49:44 +0000
+Received: from AM6PR04MB6311.eurprd04.prod.outlook.com
+ ([fe80::2b0d:be6b:edaa:62e7]) by AM6PR04MB6311.eurprd04.prod.outlook.com
+ ([fe80::2b0d:be6b:edaa:62e7%4]) with mapi id 15.20.5746.023; Fri, 28 Oct 2022
+ 11:49:44 +0000
+Message-ID: <04aa2fa5-c04d-d2ad-55e4-f78705b513ac@theobroma-systems.com>
+Date:   Fri, 28 Oct 2022 13:49:42 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.13.1
+Subject: Re: ext4 online resize -> EXT4-fs error (device loop0) in
+ ext4_update_backup_sb:174: Filesystem failed CRC
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Schulz, Quentin" <quentin.schulz@theobroma-systems.com>
+References: <AM6PR04MB63111922B96138C374A39C68C7309@AM6PR04MB6311.eurprd04.prod.outlook.com>
+ <Y1tTk5ILKICjJL82@mit.edu>
+From:   Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
+In-Reply-To: <Y1tTk5ILKICjJL82@mit.edu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR3P281CA0069.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:4b::16) To AM6PR04MB6311.eurprd04.prod.outlook.com
+ (2603:10a6:20b:b7::20)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-10-28_05,2022-10-27_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 phishscore=0 suspectscore=0 priorityscore=1501 mlxscore=0
- bulkscore=0 clxscore=1011 spamscore=0 mlxlogscore=999 lowpriorityscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2210170000 definitions=main-2210280063
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB6311:EE_|DB9PR04MB8106:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2d30e1b5-f5b2-4d5d-b085-08dab8da8184
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kTVDc2Y26wiUnc61V17VwMVRyBug7kEbJCBjB9B438+aqg1E90pdGfCW2BxnAYV2akIdzJeZLFV2Sry2XZYJjMei4yHDklboKmtLHv7v2dnWpKNKytVRJpm49CtfovVV9NEQDY1oMBAMRJ51VWoIIDnPh2NiwMn2RF5KhdxZ375CR4kSP8s1rCVSKJEoHlqQrClZsMNXXsANjAAcjvBZEGTCM9al6LmWMqHcyzycw1L/eijKSsrG1lghG2KXyBESpfVN5aZ4qWZn/IlxFfr8eX5Aejss6QU+X4OcxzVEX5HpQ1y4vdWLRlf90r0vt5SKxHRT+tYnAl6nI7r/7hLl14kDXWwXONQ1ISZasypKHRBdCEWB2zw/YMvmI/NhUt5U55vdFqgMaFh8ga7+ybneBtKDCm63ldGJN5Ku/mVRtDjDhJEr2o84GV0TRPpMkST6Tfb+P3NCrgGumiSm8GTfAUqHJYt4xSUVk33BjiU5R7GyDS+xeldjU+x8wo8joVlEo9WdcNUg5DWg2ieIgwpCbotQuCb8juSfZizFZM5Fjk2UssE4W7PWMTeA0C7fQSLt+cROjoZCSiD+V2zh0Yn1N4v4BZXxZak58Ec6Y6qz62H5dM8MDPuuYO2Jgp1m6thtLXFOB8Wo1+GrnqxxAZ4Xxnbq4EO0BcAWczjUh5E4WJz3+X2LncFLt+EIrwkyNAusoBmyqU9SlO2PvUBfht8/WQ+e5KcQ+w0e/Ii+GXlV6sB5zbsop0K5Dircc9xSbTQDpVuAHl8ha7Hd5+gGoNlpFbMFeveb1PAf0gN4kND9/og=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6311.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(136003)(366004)(396003)(39850400004)(376002)(346002)(451199015)(2906002)(38100700002)(4744005)(44832011)(36756003)(6916009)(41300700001)(8936002)(6512007)(86362001)(31696002)(8676002)(26005)(6506007)(107886003)(2616005)(53546011)(54906003)(186003)(316002)(478600001)(83380400001)(6486002)(66476007)(66556008)(66946007)(4326008)(5660300002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?enZsTDhvOEhsbGF0K244SU1zTU1yR0s4V0J0THRtZTAvNFpnRmM0RU1BOC9P?=
+ =?utf-8?B?WDJYMU1XSys3THZtTzlIT1B1dERoMXBhZEF6RzVVclgzam5jVGRrS1pIVW9L?=
+ =?utf-8?B?dHhDVUt3Sm82ZWJORWFjeWVBZUZ3WjFkN0g0OU44VTdRME8reUkzRkNJb2FV?=
+ =?utf-8?B?ckUyNnByU3orU1pkVlRGUlJPaXg2TU10Smk1c01FclNRVHYxUnJtVVlkTlBD?=
+ =?utf-8?B?ZEJaWG96N2QrZno0NHN3QndoVWhUQ0srakJpRVc4M2F0TFVSYjFabjNKZEFm?=
+ =?utf-8?B?YXhTUkNmK0NYcVZCQlg5cTV3cVFWdGwvRGphNDA0MUZCazhzMW94T0xzamRZ?=
+ =?utf-8?B?RTk3alhtOGZIeDZhRXBSVXlxMG5OQzZJL1lmTGhsb2k4Y3YrUWQ2Ris2SXV0?=
+ =?utf-8?B?TmdvNXhYNFlDMCtiWW9UZnFhaDVHeFV4ZXNiRHNaUC9TODExNkg4Zmo5R0VT?=
+ =?utf-8?B?L1FjZUdONXByK01oM0NBbnE5cktJN2tsd2JRc2puZkNobENKQVpGVlJQY3B0?=
+ =?utf-8?B?RXBWRmpWNjdkb0xBUU9KN09IaEJyK1NVMFllTUZBRnFTbXliOFVQbHd4eFpj?=
+ =?utf-8?B?K2ZabFdwWDhwanRBQ2ZYQTRITFRQR3FXaWY3V2tHYXZEQ3Z5cm1pWmxOMXhB?=
+ =?utf-8?B?UFpLaGw2eW5HK1RCOFV0UGRCRFl3Q2pXZDZUSit5SXFHbmxQN1dlQnBqQW1B?=
+ =?utf-8?B?MW12Y0QzU2NlNndRYitnajdhakVFL3h5dU9xNXBFdXFiN3U4UkZBK1NxYXZM?=
+ =?utf-8?B?b2ZwdStpUmg0cjFpRmpmbUROK1g1dFYyTlpUWEUvNTA4YmxqbHhXV2psY3pj?=
+ =?utf-8?B?bGp6MTNZY3JkSVZiRnFMbHUvTitGZWdTcWlmci9pSCtmbUFBMk1nRkJqQ3RN?=
+ =?utf-8?B?VllQVTdVRmE2M2YvclphM0o5V1VkYXlGM3NVMXdjSDhIbWFEM2tTRnJtMWpZ?=
+ =?utf-8?B?eWw4RU5XUVpQbW5wcEROR2pqSkk0NFZZZGhNVUxLMmF0T3RiNEFCWXd3STVw?=
+ =?utf-8?B?c0JLQnlWQTVOZGczdVhRYVBqZ2NnRG1wSkJuUUh6ejN5ZnNQd0NtT0ZqQ2Z0?=
+ =?utf-8?B?SVNpSTBhRmIyeHRNRkNLa1lDTzlUbllxM0U4V2NXYnZSTEgzWnRRNlNNbGtp?=
+ =?utf-8?B?Q3pLeXBLbnpXSUlZTGl3QlgyaWptY1RWQml1WW5MNHlxbGZFZlhlcWNGYysx?=
+ =?utf-8?B?THZ0cTBOTXN2WnM2VktrN2M4WXdFc1BjYXpSa3IvOGx0bmtPTlVJVGlDdUl1?=
+ =?utf-8?B?SkJIa1ViRkFrbUphK3drUW43dGZCdFo1QlBSSmhkMk1sSGJkaldQd1RHV0Vi?=
+ =?utf-8?B?b3V3WnFwZGR0QXdpT2RQQ2ZVSUlrRythSzVNMzNUOFpuaEdDcHB2SVRwQ0lY?=
+ =?utf-8?B?alk5R0RzYjJES3BNQU5ncG9sN2MwT016YWxPeUNMSkU5V29xS29LbzJPSHNo?=
+ =?utf-8?B?dUpHdy85V3EwSjhTKzZUaDE0aXNxWVZnc0hZcHROSnFsV1hHZlgzeTFCcTJE?=
+ =?utf-8?B?S242bHk3bytSSG90dG9kTDRVWGRDSHdmdnYxRTBaOUoxSkhWZ1lFYUk1ZGdY?=
+ =?utf-8?B?NGsrVThZaDlMV2pLZkRsT2k3UUdCSUo1eEVjUmZGTnNCSWM1bjVEWG1HNHhj?=
+ =?utf-8?B?ZkdpZHIvandxRmdWS1JBdVhlQnRaellTTzJPcm9kZGc4S1hIVjV4VXd5azF3?=
+ =?utf-8?B?RnJnSXpRc1FlRDludUw1RlZOcUtLRzFIalRhUWpZVTBFOVcwWkd6ZXdoNDFE?=
+ =?utf-8?B?Z3pjdnlxa05lbDNqaGIrMkhyUjR4YXdJR1pXQXUxT2ZRUy9wTDlMY1dYUW5H?=
+ =?utf-8?B?Vnp2ZHBIN1FWbWJNV0ZzWFhhNnNsNGV6dXZ6THRubndOSnVmMFdNbTdnODIw?=
+ =?utf-8?B?V0dvdGFoVnRnbG5xRWVCSmdTQ0pmQWdkK0wxTHkzQTU2enByNzB1cjZ5L2sy?=
+ =?utf-8?B?L3duVjlxRDljRFIxeUhIeVVJNXNVU21ybEtlR0ZPaUZ0VldIOVVOblFxZEFW?=
+ =?utf-8?B?N1JZclU2M000WGxVWjlhRytjMGxpb0Z6OTNMZGNJYy90ak1RbkZrWkh6TU55?=
+ =?utf-8?B?bWNKSDhYWmxlbzdyZEVMMXB3ek5XclpCdW8xc0FzWnI0SDBNbEJtS1JXSll0?=
+ =?utf-8?B?eVMvcnlKTXlZQzEranI0RVRubExFR0QzNDRNb3k0YWt3Y0RKZ3pIZWdMVU9W?=
+ =?utf-8?Q?BDOlVbpig8c2aOX+rWRMvGFdJjHM1nxWjausAmC65071?=
+X-OriginatorOrg: theobroma-systems.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d30e1b5-f5b2-4d5d-b085-08dab8da8184
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6311.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2022 11:49:44.2934
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5e0e1b52-21b5-4e7b-83bb-514ec460677e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bA6Djxa5ShB+D1nzgUXr9qZ/WLgHdG9CitT/HxgFVBRs80j19BlxEGqIAyLh0nHHOLwraO7yeLCA5tanOY/xE+fnQ1tzw+ETpGSon01Tc7oZcHw1vRIz79WZvTI0OHVpMDM1YGWhnwymChLBkU50vQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8106
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Oct 27, 2022 at 04:12:45PM +0800, Guoqing Jiang wrote:
+On 28.10.22 05:59, Theodore Ts'o wrote:
 > 
+> Thanks for the reproducer!  The following patch should fix things.
 > 
-> On 10/27/22 2:29 PM, Jason Yan wrote:
-> > 
-> > On 2022/10/27 11:24, Guoqing Jiang wrote:
-> > > Change the return type to void since it always return 0, and no need
-> > > to do the checking in ext4_mb_new_blocks.
-> > > 
-> > > Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
-> > > ---
-> > >   fs/ext4/mballoc.c | 10 ++--------
-> > >   1 file changed, 2 insertions(+), 8 deletions(-)
-> > > 
-> > > diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> > > index 9dad93059945..5b2ae37a8b80 100644
-> > > --- a/fs/ext4/mballoc.c
-> > > +++ b/fs/ext4/mballoc.c
-> > > @@ -5204,7 +5204,7 @@ static void ext4_mb_group_or_file(struct
-> > > ext4_allocation_context *ac)
-> > >       mutex_lock(&ac->ac_lg->lg_mutex);
-> > >   }
-> > >   -static noinline_for_stack int
-> > > +static noinline_for_stack void
-> > >   ext4_mb_initialize_context(struct ext4_allocation_context *ac,
-> > >                   struct ext4_allocation_request *ar)
-> > >   {
-> > > @@ -5253,8 +5253,6 @@ ext4_mb_initialize_context(struct
-> > > ext4_allocation_context *ac,
-> > >               (unsigned) ar->lleft, (unsigned) ar->pleft,
-> > >               (unsigned) ar->lright, (unsigned) ar->pright,
-> > >               inode_is_open_for_write(ar->inode) ? "" : "non-");
-> > > -    return 0;
-> > > -
-> > >   }
-> > >     static noinline_for_stack void
-> > > @@ -5591,11 +5589,7 @@ ext4_fsblk_t ext4_mb_new_blocks(handle_t *handle,
-> > >           goto out;
-> > >       }
-> > >   -    *errp = ext4_mb_initialize_context(ac, ar);
-> > > -    if (*errp) {
-> > > -        ar->len = 0;
-> > > -        goto out;
-> > > -    }
-> > > +    ext4_mb_initialize_context(ac, ar);
-> > 
-> > This changed the logic here slightly. *errp will not be intialized with
-> > zero after this change. So we need to carefully check whether this will
-> > cause any issues.
+>         	       		      		- Ted
 > 
-> Yes, thanks for reminder. I think "*errp" is always set later with below.
-> 
-> https://elixir.bootlin.com/linux/v6.1-rc2/source/fs/ext4/mballoc.c#L5606
-> https://elixir.bootlin.com/linux/v6.1-rc2/source/fs/ext4/mballoc.c#L5611
-> https://elixir.bootlin.com/linux/v6.1-rc2/source/fs/ext4/mballoc.c#L5629
-> https://elixir.bootlin.com/linux/v6.1-rc2/source/fs/ext4/mballoc.c#L5646
-Hi Guoqing,
+>  From 9a8c5b0d061554fedd7dbe894e63aa34d0bac7c4 Mon Sep 17 00:00:00 2001
+> From: Theodore Ts'o <tytso@mit.edu>
+> Date: Thu, 27 Oct 2022 16:04:36 -0400
+> Subject: [PATCH] ext4: update the backup superblock's at the end of the online
+>   resize
 
-I agree, it seems to be intialized correctly later in the code. The
-flow is something like:
+Hi Theodore,
 
-  ext4_fsblk_t ext4_mb_new_blocks(...)
-  {
-      ...
-      ext4_mb_initialize_context(ac, ar);
-      ...
-      if (!ext4_mb_use_preallocated(ac)) {
-          *errp = ext4_mb_pa_alloc(ac);  // *errp init to 0 on success
-          ...
-      }
+I tested the patch on arm64 and it fixes the issue. Now the kernel 
+messages are just this:
 
-      if (likely(ac->ac_status == AC_STATUS_FOUND)) {
-          // *errp init to 0 on success
-          *errp = ext4_mb_mark_diskspace_used(ac, handle, reserv_clstrs);
-          ...
-      } else {
-          ...
-          *errp = -ENOSPC;
-      }
-      ...
-  }
+> [   14.769997] EXT4-fs (mmcblk2p1): resizing filesystem from 139771 to 3888507 blocks
+> [   15.020593] EXT4-fs (mmcblk2p1): resized filesystem to 3888507
+fsck after the resize is happy too.
 
-So it seems like this cleanup won't alter the behavior. Feel free to
-add:
-
-Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-
-Regards,
-ojaswin
+Thank you!
+Jakob
