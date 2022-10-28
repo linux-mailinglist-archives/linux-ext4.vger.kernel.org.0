@@ -2,268 +2,229 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF631611871
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Oct 2022 18:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CACD61191E
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Oct 2022 19:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbiJ1Q6f (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 28 Oct 2022 12:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57028 "EHLO
+        id S230156AbiJ1RVF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 28 Oct 2022 13:21:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbiJ1Q6V (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Oct 2022 12:58:21 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB582248D3;
-        Fri, 28 Oct 2022 09:57:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1666976270; x=1698512270;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=CsAjO6F7Pf0KaWAvJqCa4wx+02xCaYRf2NDvydAD4zc=;
-  b=ZN8WbP8nhWjnYwENkhdqzeV11WtkER/HqawGZGnapp0xfQYQ2nrRzWk2
-   YV+viRu+atU0aUfUT5YplZ2EVoWWOSmh/t2O/rib9z9pT5kgrzUeXCeJe
-   cPDDcMpnZHYVF2WwuViPNfsCjItcB/zijXrCWPmNNoLNzi40IBxJ4SZN0
-   7IY1P01ukI1m0xp5ci3mD0p55uNXtx2tSTVm6F87+WjQXLz9KiYPMumO8
-   U7llrApDNr3dud6HRG9WZNklRT1/nLxdMrd3lNJYpp+PX/BuoaolUpS6A
-   wAwTWnLvCqEhYLIjKs5prl5qoUG6JkwukcGb84gDWJnWt1t/8HXBGEH6I
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10514"; a="372750159"
-X-IronPort-AV: E=Sophos;i="5.95,221,1661842800"; 
-   d="scan'208";a="372750159"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2022 09:57:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10514"; a="583983809"
-X-IronPort-AV: E=Sophos;i="5.95,221,1661842800"; 
-   d="scan'208";a="583983809"
-Received: from lkp-server02.sh.intel.com (HELO b6d29c1a0365) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 28 Oct 2022 09:57:45 -0700
-Received: from kbuild by b6d29c1a0365 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1ooSfx-000A4N-0G;
-        Fri, 28 Oct 2022 16:57:45 +0000
-Date:   Sat, 29 Oct 2022 00:56:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     ntfs3@lists.linux.dev, netdev@vger.kernel.org,
-        linux-wpan@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-hwmon@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: [linux-next:master] BUILD REGRESSION
- fd8dab197cca2746e1fcd399a218eec5164726d4
-Message-ID: <635c09d2.Uo03FEcDk/bchhMt%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S229473AbiJ1RVE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Oct 2022 13:21:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 404161BE402;
+        Fri, 28 Oct 2022 10:21:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EE879629D1;
+        Fri, 28 Oct 2022 17:21:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C8D6C433D7;
+        Fri, 28 Oct 2022 17:21:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666977661;
+        bh=uyJa1FWOnVe5QL+ophLah4CnDuHIHyRvZavEqx4wGzs=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=VAkIZkvbXAh6N0rVrNS2/2gKTqiw6CWJfN/vnT/v0od4lCqyF0FdxSMtViQBVo+YN
+         KcRG899/aEVyj6k7GZ+lmntXgyE9D/SphU9cNVSr0SKp/crjPSV7c2nwszvC2fQQ78
+         ReMCimKePZr4BYBR7fARCrs/A/A6/6hIdQcWumULtGFlLdVDfr9GtafAqGGRaagahA
+         9xNWFRX/z8kjgJStzDo2keSKc/oqfvWRb0OQ53/4eJm4dtdVCBmspSpKDHd6MZ2Fl4
+         pQhJN91cWwJ0N1BpR98RnSDMBEzGhh8KuUi5TSgNwsfjwyhkll6mRBGpekINVKt3uY
+         hIDfCjcCHzMsA==
+Message-ID: <95e1afd00e550ee227dd5d76a5947a2176730e1d.camel@kernel.org>
+Subject: Re: [PATCH v3 08/23] ceph: Convert ceph_writepages_start() to use
+ filemap_get_folios_tag()
+From:   Jeff Layton <jlayton@kernel.org>
+To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        linux-fsdevel@vger.kernel.org, David Howells <dhowells@redhat.com>
+Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nilfs@vger.kernel.org, linux-mm@kvack.org
+Date:   Fri, 28 Oct 2022 13:20:58 -0400
+In-Reply-To: <20221017202451.4951-9-vishal.moola@gmail.com>
+References: <20221017202451.4951-1-vishal.moola@gmail.com>
+         <20221017202451.4951-9-vishal.moola@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: fd8dab197cca2746e1fcd399a218eec5164726d4  Add linux-next specific files for 20221028
+On Mon, 2022-10-17 at 13:24 -0700, Vishal Moola (Oracle) wrote:
+> Convert function to use a folio_batch instead of pagevec. This is in
+> preparation for the removal of find_get_pages_range_tag().
+>=20
+> Also some minor renaming for consistency.
+>=20
+> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+> ---
+>  fs/ceph/addr.c | 58 ++++++++++++++++++++++++++------------------------
+>  1 file changed, 30 insertions(+), 28 deletions(-)
+>=20
+> diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
+> index dcf701b05cc1..d2361d51db39 100644
+> --- a/fs/ceph/addr.c
+> +++ b/fs/ceph/addr.c
+> @@ -792,7 +792,7 @@ static int ceph_writepages_start(struct address_space=
+ *mapping,
+>  	struct ceph_vino vino =3D ceph_vino(inode);
+>  	pgoff_t index, start_index, end =3D -1;
+>  	struct ceph_snap_context *snapc =3D NULL, *last_snapc =3D NULL, *pgsnap=
+c;
+> -	struct pagevec pvec;
+> +	struct folio_batch fbatch;
+>  	int rc =3D 0;
+>  	unsigned int wsize =3D i_blocksize(inode);
+>  	struct ceph_osd_request *req =3D NULL;
+> @@ -821,7 +821,7 @@ static int ceph_writepages_start(struct address_space=
+ *mapping,
+>  	if (fsc->mount_options->wsize < wsize)
+>  		wsize =3D fsc->mount_options->wsize;
+> =20
+> -	pagevec_init(&pvec);
+> +	folio_batch_init(&fbatch);
+> =20
+>  	start_index =3D wbc->range_cyclic ? mapping->writeback_index : 0;
+>  	index =3D start_index;
+> @@ -869,7 +869,7 @@ static int ceph_writepages_start(struct address_space=
+ *mapping,
+> =20
+>  	while (!done && index <=3D end) {
+>  		int num_ops =3D 0, op_idx;
+> -		unsigned i, pvec_pages, max_pages, locked_pages =3D 0;
+> +		unsigned i, nr_folios, max_pages, locked_pages =3D 0;
+>  		struct page **pages =3D NULL, **data_pages;
+>  		struct page *page;
+>  		pgoff_t strip_unit_end =3D 0;
+> @@ -879,13 +879,13 @@ static int ceph_writepages_start(struct address_spa=
+ce *mapping,
+>  		max_pages =3D wsize >> PAGE_SHIFT;
+> =20
+>  get_more_pages:
+> -		pvec_pages =3D pagevec_lookup_range_tag(&pvec, mapping, &index,
+> -						end, PAGECACHE_TAG_DIRTY);
+> -		dout("pagevec_lookup_range_tag got %d\n", pvec_pages);
+> -		if (!pvec_pages && !locked_pages)
+> +		nr_folios =3D filemap_get_folios_tag(mapping, &index,
+> +				end, PAGECACHE_TAG_DIRTY, &fbatch);
+> +		dout("pagevec_lookup_range_tag got %d\n", nr_folios);
+> +		if (!nr_folios && !locked_pages)
+>  			break;
+> -		for (i =3D 0; i < pvec_pages && locked_pages < max_pages; i++) {
+> -			page =3D pvec.pages[i];
+> +		for (i =3D 0; i < nr_folios && locked_pages < max_pages; i++) {
+> +			page =3D &fbatch.folios[i]->page;
+>  			dout("? %p idx %lu\n", page, page->index);
+>  			if (locked_pages =3D=3D 0)
+>  				lock_page(page);  /* first page */
+> @@ -995,7 +995,7 @@ static int ceph_writepages_start(struct address_space=
+ *mapping,
+>  				len =3D 0;
+>  			}
+> =20
+> -			/* note position of first page in pvec */
+> +			/* note position of first page in fbatch */
+>  			dout("%p will write page %p idx %lu\n",
+>  			     inode, page, page->index);
+> =20
+> @@ -1005,30 +1005,30 @@ static int ceph_writepages_start(struct address_s=
+pace *mapping,
+>  				fsc->write_congested =3D true;
+> =20
+>  			pages[locked_pages++] =3D page;
+> -			pvec.pages[i] =3D NULL;
+> +			fbatch.folios[i] =3D NULL;
+> =20
+>  			len +=3D thp_size(page);
+>  		}
+> =20
+>  		/* did we get anything? */
+>  		if (!locked_pages)
+> -			goto release_pvec_pages;
+> +			goto release_folios;
+>  		if (i) {
+>  			unsigned j, n =3D 0;
+> -			/* shift unused page to beginning of pvec */
+> -			for (j =3D 0; j < pvec_pages; j++) {
+> -				if (!pvec.pages[j])
+> +			/* shift unused page to beginning of fbatch */
+> +			for (j =3D 0; j < nr_folios; j++) {
+> +				if (!fbatch.folios[j])
+>  					continue;
+>  				if (n < j)
+> -					pvec.pages[n] =3D pvec.pages[j];
+> +					fbatch.folios[n] =3D fbatch.folios[j];
+>  				n++;
+>  			}
+> -			pvec.nr =3D n;
+> +			fbatch.nr =3D n;
+> =20
+> -			if (pvec_pages && i =3D=3D pvec_pages &&
+> +			if (nr_folios && i =3D=3D nr_folios &&
+>  			    locked_pages < max_pages) {
+> -				dout("reached end pvec, trying for more\n");
+> -				pagevec_release(&pvec);
+> +				dout("reached end fbatch, trying for more\n");
+> +				folio_batch_release(&fbatch);
+>  				goto get_more_pages;
+>  			}
+>  		}
+> @@ -1164,10 +1164,10 @@ static int ceph_writepages_start(struct address_s=
+pace *mapping,
+>  		if (wbc->nr_to_write <=3D 0 && wbc->sync_mode =3D=3D WB_SYNC_NONE)
+>  			done =3D true;
+> =20
+> -release_pvec_pages:
+> -		dout("pagevec_release on %d pages (%p)\n", (int)pvec.nr,
+> -		     pvec.nr ? pvec.pages[0] : NULL);
+> -		pagevec_release(&pvec);
+> +release_folios:
+> +		dout("folio_batch release on %d folios (%p)\n", (int)fbatch.nr,
+> +		     fbatch.nr ? fbatch.folios[0] : NULL);
+> +		folio_batch_release(&fbatch);
+>  	}
+> =20
+>  	if (should_loop && !done) {
+> @@ -1184,15 +1184,17 @@ static int ceph_writepages_start(struct address_s=
+pace *mapping,
+>  			unsigned i, nr;
+>  			index =3D 0;
+>  			while ((index <=3D end) &&
+> -			       (nr =3D pagevec_lookup_tag(&pvec, mapping, &index,
+> -						PAGECACHE_TAG_WRITEBACK))) {
+> +			       (nr =3D filemap_get_folios_tag(mapping, &index,
+> +						(pgoff_t)-1,
+> +						PAGECACHE_TAG_WRITEBACK,
+> +						&fbatch))) {
+>  				for (i =3D 0; i < nr; i++) {
+> -					page =3D pvec.pages[i];
+> +					page =3D &fbatch.folios[i]->page;
+>  					if (page_snap_context(page) !=3D snapc)
+>  						continue;
+>  					wait_on_page_writeback(page);
+>  				}
+> -				pagevec_release(&pvec);
+> +				folio_batch_release(&fbatch);
+>  				cond_resched();
+>  			}
+>  		}
 
-Error/Warning reports:
+I took a brief look and this looks like a fairly straightforward
+conversion. It definitely needs testing however.
 
-https://lore.kernel.org/linux-mm/202210090954.pTR6m6rj-lkp@intel.com
-https://lore.kernel.org/linux-mm/202210111318.mbUfyhps-lkp@intel.com
-https://lore.kernel.org/linux-mm/202210261404.b6UlzG7H-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202210270637.Q5Y7FiKJ-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202210271517.snUEnhD0-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202210281745.XFMUiMEf-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202210282021.SKiobE3i-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202210282125.x112bh8U-lkp@intel.com
+The hope was to get ceph converted over to using the netfs write
+helpers, but that's taking a lot longer than expected. It's really up to
+Xiubo at this point, but I don't have an issue in principle with taking
+this patch in before the netfs conversion, particularly if it's blocking
+other work.
 
-Error/Warning: (recently discovered and may have been fixed)
-
-ERROR: modpost: "__ld_r13_to_r18_ret" [lib/zstd/zstd_decompress.ko] undefined!
-ERROR: modpost: "__ld_r13_to_r22" [lib/zstd/zstd_decompress.ko] undefined!
-arch/mips/pic32/pic32mzda/early_console.c:141:11: warning: result of comparison of constant -1 with expression of type 'char' is always false [-Wtautological-constant-out-of-range-compare]
-drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:4878: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-drivers/hwmon/smpro-hwmon.c:378:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-drivers/phy/mediatek/phy-mtk-hdmi-mt2701.c:116:2: warning: result of comparison of constant 18446744073709551615 with expression of type 'typeof (_Generic((mask_), char: (unsigned char)0, unsigned char: (unsigned char)0, signed char: (unsigned char)0, unsigned short: (unsigned short)0, short: (unsigned short)0, unsigned int: (unsigned int)0, int: (unsigned int)0, unsigned long: (unsigned long)0, long: (unsigned long)0, unsigned long long: (unsigned long long)0, long long: (unsigned long long)0, default: (mask_)))' (aka 'unsigned long') is always false [-Wtautological-constant-out-of-range-compare]
-drivers/phy/mediatek/phy-mtk-hdmi-mt8173.c:160:2: warning: result of comparison of constant 18446744073709551615 with expression of type 'typeof (_Generic((mask_), char: (unsigned char)0, unsigned char: (unsigned char)0, signed char: (unsigned char)0, unsigned short: (unsigned short)0, short: (unsigned short)0, unsigned int: (unsigned int)0, int: (unsigned int)0, unsigned long: (unsigned long)0, long: (unsigned long)0, unsigned long long: (unsigned long long)0, long long: (unsigned long long)0, default: (mask_)))' (aka 'unsigned long') is always false [-Wtautological-constant-out-of-range-compare]
-drivers/phy/mediatek/phy-mtk-mipi-dsi-mt8173.c:207:2: warning: result of comparison of constant 18446744073709551615 with expression of type 'typeof (_Generic((mask_), char: (unsigned char)0, unsigned char: (unsigned char)0, signed char: (unsigned char)0, unsigned short: (unsigned short)0, short: (unsigned short)0, unsigned int: (unsigned int)0, int: (unsigned int)0, unsigned long: (unsigned long)0, long: (unsigned long)0, unsigned long long: (unsigned long long)0, long long: (unsigned long long)0, default: (mask_)))' (aka 'unsigned long') is always false [-Wtautological-constant-out-of-range-compare]
-drivers/phy/mediatek/phy-mtk-mipi-dsi-mt8183.c:83:2: warning: result of comparison of constant 18446744073709551615 with expression of type 'typeof (_Generic((mask_), char: (unsigned char)0, unsigned char: (unsigned char)0, signed char: (unsigned char)0, unsigned short: (unsigned short)0, short: (unsigned short)0, unsigned int: (unsigned int)0, int: (unsigned int)0, unsigned long: (unsigned long)0, long: (unsigned long)0, unsigned long long: (unsigned long long)0, long long: (unsigned long long)0, default: (mask_)))' (aka 'unsigned long') is always false [-Wtautological-constant-out-of-range-compare]
-include/asm-generic/div64.h:222:35: warning: comparison of distinct pointer types lacks a cast
-include/asm-generic/div64.h:234:32: warning: right shift count >= width of type [-Wshift-count-overflow]
-
-Unverified Error/Warning (likely false positive, please contact us if interested):
-
-drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c:555:6: warning: Redundant initialization for 'err'. The initialized value is overwritten before it is read. [redundantInitialization]
-drivers/net/ethernet/microchip/lan743x_ethtool.c:442:33: warning: Parameter 'data' can be declared as pointer to const [constParameter]
-drivers/net/ethernet/microchip/lan743x_main.c:3522:49: warning: Operator '|' with one operand equal to zero is redundant. [badBitmaskCheck]
-drivers/net/ethernet/microchip/lan743x_main.c:532:6: warning: Redundant initialization for 'ret'. The initialized value is overwritten before it is read. [redundantInitialization]
-drivers/net/ieee802154/mcr20a.c:388:54: warning: Operator '|' with one operand equal to zero is redundant. [badBitmaskCheck]
-drivers/net/phy/micrel.c:2043:9: warning: Uninitialized variable: ret [uninitvar]
-drivers/net/phy/micrel.c:2323:24: warning: Uninitialized variable: &rx_ts->seq_id [uninitvar]
-lib/zstd/compress/huf_compress.c:460 HUF_getIndex() warn: the 'RANK_POSITION_LOG_BUCKETS_BEGIN' macro might need parens
-lib/zstd/decompress/zstd_decompress_block.c:1009 ZSTD_execSequence() warn: inconsistent indenting
-lib/zstd/decompress/zstd_decompress_block.c:894 ZSTD_execSequenceEnd() warn: inconsistent indenting
-lib/zstd/decompress/zstd_decompress_block.c:942 ZSTD_execSequenceEndSplitLitBuffer() warn: inconsistent indenting
-lib/zstd/decompress/zstd_decompress_internal.h:206 ZSTD_DCtx_get_bmi2() warn: inconsistent indenting
-
-Error/Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- arc-allyesconfig
-|   |-- include-asm-generic-div64.h:warning:comparison-of-distinct-pointer-types-lacks-a-cast
-|   `-- include-asm-generic-div64.h:warning:right-shift-count-width-of-type
-|-- arc-randconfig-r043-20221028
-|   |-- ERROR:__ld_r13_to_r18_ret-lib-zstd-zstd_decompress.ko-undefined
-|   `-- ERROR:__ld_r13_to_r22-lib-zstd-zstd_decompress.ko-undefined
-|-- arm-allyesconfig
-|   |-- include-asm-generic-div64.h:warning:comparison-of-distinct-pointer-types-lacks-a-cast
-|   `-- include-asm-generic-div64.h:warning:right-shift-count-width-of-type
-|-- arm64-randconfig-s041-20221026
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-priv1-got-restricted-__le16-addressable-usertype-fc_len
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-tag-got-restricted-__le16-addressable-usertype-fc_tag
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-short-usertype-tag-got-restricted-__le16-addressable-usertype-fc_tag
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_len-got-unsigned-short-usertype
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_tag-got-unsigned-short-usertype
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-initializer-(different-base-types)-expected-int-tag-got-restricted-__le16-usertype-fc_tag
-|   `-- fs-ext4-fast_commit.c:sparse:sparse:restricted-__le16-degrades-to-integer
-|-- arm64-randconfig-s053-20221026
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-priv1-got-restricted-__le16-addressable-usertype-fc_len
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-tag-got-restricted-__le16-addressable-usertype-fc_tag
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-short-usertype-tag-got-restricted-__le16-addressable-usertype-fc_tag
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_len-got-unsigned-short-usertype
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_tag-got-unsigned-short-usertype
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-initializer-(different-base-types)-expected-int-tag-got-restricted-__le16-usertype-fc_tag
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:restricted-__le16-degrades-to-integer
-|   |-- fs-ntfs3-index.c:sparse:sparse:restricted-__le32-degrades-to-integer
-|   |-- fs-ntfs3-namei.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__le16-const-usertype-s1-got-unsigned-short
-|   `-- fs-ntfs3-namei.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__le16-const-usertype-s2-got-unsigned-short
-|-- csky-randconfig-r003-20221027
-|   |-- include-asm-generic-div64.h:warning:comparison-of-distinct-pointer-types-lacks-a-cast
-|   `-- include-asm-generic-div64.h:warning:right-shift-count-width-of-type
-|-- csky-randconfig-s033-20221026
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-priv1-got-restricted-__le16-addressable-usertype-fc_len
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-tag-got-restricted-__le16-addressable-usertype-fc_tag
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-short-usertype-tag-got-restricted-__le16-addressable-usertype-fc_tag
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_len-got-unsigned-short-usertype
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_tag-got-unsigned-short-usertype
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-initializer-(different-base-types)-expected-int-tag-got-restricted-__le16-usertype-fc_tag
-|   `-- fs-ext4-fast_commit.c:sparse:sparse:restricted-__le16-degrades-to-integer
-|-- i386-randconfig-m021
-|   |-- arch-x86-boot-compressed-..-..-..-..-lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequence()-warn:inconsistent-indenting
-|   |-- arch-x86-boot-compressed-..-..-..-..-lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequenceEnd()-warn:inconsistent-indenting
-|   |-- arch-x86-boot-compressed-..-..-..-..-lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequenceEndSplitLitBuffer()-warn:inconsistent-indenting
-|   |-- arch-x86-boot-compressed-..-..-..-..-lib-zstd-decompress-zstd_decompress_internal.h-ZSTD_DCtx_get_bmi2()-warn:inconsistent-indenting
-|   |-- lib-zstd-compress-huf_compress.c-HUF_getIndex()-warn:the-RANK_POSITION_LOG_BUCKETS_BEGIN-macro-might-need-parens
-|   |-- lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequence()-warn:inconsistent-indenting
-|   |-- lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequenceEnd()-warn:inconsistent-indenting
-|   |-- lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequenceEndSplitLitBuffer()-warn:inconsistent-indenting
-|   `-- lib-zstd-decompress-zstd_decompress_internal.h-ZSTD_DCtx_get_bmi2()-warn:inconsistent-indenting
-|-- ia64-randconfig-p001-20221026
-clang_recent_errors
-|-- hexagon-randconfig-r034-20221028
-|   `-- drivers-hwmon-smpro-hwmon.c:warning:unannotated-fall-through-between-switch-labels
-|-- hexagon-randconfig-r041-20221027
-|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-|   `-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-|-- mips-pic32mzda_defconfig
-|   `-- arch-mips-pic32-pic32mzda-early_console.c:warning:result-of-comparison-of-constant-with-expression-of-type-char-is-always-false
-`-- powerpc-randconfig-r031-20221026
-    |-- drivers-phy-mediatek-phy-mtk-hdmi-mt2701.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
-    `-- drivers-phy-mediatek-phy-mtk-hdmi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
-
-elapsed time: 726m
-
-configs tested: 78
-configs skipped: 2
-
-gcc tested configs:
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                              defconfig
-i386                                defconfig
-i386                          randconfig-a001
-i386                          randconfig-a003
-arc                                 defconfig
-x86_64                           rhel-8.3-kvm
-x86_64                               rhel-8.3
-s390                             allmodconfig
-x86_64                           rhel-8.3-syz
-ia64                             allmodconfig
-x86_64                         rhel-8.3-kunit
-i386                          randconfig-a005
-arm                                 defconfig
-x86_64                        randconfig-a002
-x86_64                           allyesconfig
-alpha                               defconfig
-arc                  randconfig-r043-20221027
-arc                              allyesconfig
-powerpc                           allnoconfig
-x86_64                        randconfig-a013
-s390                             allyesconfig
-arm                            pleb_defconfig
-s390                                defconfig
-x86_64                          rhel-8.3-func
-arc                    vdk_hs38_smp_defconfig
-x86_64                        randconfig-a011
-alpha                            allyesconfig
-powerpc                    sam440ep_defconfig
-powerpc                          allmodconfig
-i386                             allyesconfig
-x86_64                        randconfig-a015
-x86_64                        randconfig-a006
-arm                              allyesconfig
-x86_64                    rhel-8.3-kselftests
-m68k                             allyesconfig
-sh                               allmodconfig
-i386                          randconfig-a014
-x86_64                        randconfig-a004
-m68k                             allmodconfig
-mips                             allyesconfig
-i386                          randconfig-a012
-arm64                            allyesconfig
-i386                          randconfig-a016
-m68k                        m5307c3_defconfig
-arm                        keystone_defconfig
-arm                        mvebu_v7_defconfig
-x86_64                           alldefconfig
-sh                           sh2007_defconfig
-powerpc                mpc7448_hpc2_defconfig
-riscv                            allmodconfig
-i386                          randconfig-c001
-loongarch                         allnoconfig
-ia64                        generic_defconfig
-
-clang tested configs:
-i386                          randconfig-a002
-x86_64                        randconfig-a014
-hexagon              randconfig-r041-20221027
-i386                          randconfig-a006
-x86_64                        randconfig-a005
-i386                          randconfig-a004
-x86_64                        randconfig-a016
-x86_64                        randconfig-a012
-hexagon              randconfig-r045-20221027
-s390                 randconfig-r044-20221027
-x86_64                        randconfig-a001
-riscv                randconfig-r042-20221027
-i386                          randconfig-a013
-powerpc                     tqm5200_defconfig
-i386                          randconfig-a015
-x86_64                        randconfig-a003
-i386                          randconfig-a011
-powerpc                 mpc836x_mds_defconfig
-arm                         mv78xx0_defconfig
-arm                      pxa255-idp_defconfig
-arm                   milbeaut_m10v_defconfig
-x86_64                          rhel-8.3-rust
-mips                        maltaup_defconfig
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Acked-by: Jeff Layton <jlayton@kernel.org>
