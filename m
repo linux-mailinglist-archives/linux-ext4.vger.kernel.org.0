@@ -2,261 +2,172 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0890060FD35
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Oct 2022 18:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1888861075D
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Oct 2022 03:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235597AbiJ0Qfl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 27 Oct 2022 12:35:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47162 "EHLO
+        id S229531AbiJ1BmA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 27 Oct 2022 21:42:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236628AbiJ0Qfh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 27 Oct 2022 12:35:37 -0400
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16834E850;
-        Thu, 27 Oct 2022 09:35:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1666888536; x=1698424536;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=g8JpxJ/7sThIg/BLIJ/mUFG37Ckprmp4RiCF2hAGE4k=;
-  b=XHmorDFR1vZfe3XVIZA8T0S2WMMT8l6dufUT4YXBpVQhZl311hPJja19
-   8yP0R4NrRBoY6tcH1qE+Q8sT1lckNDRvOy6/8wm3yOYFCLrYZn5mrH7Ni
-   edKt+aBJ7+kUK4h5mqHgGFBFAe2fMnQxDzZZKEydwEkAZ839MUOtO/Csj
-   prVki7swDaw5nd6aJlfvEkOawQIGh4hA/7KGjcaOzR6eFw8zFqeqv/SX2
-   gb3LarnbBshoxbFkA1yu/qYoVVSGB1br/kFbgGmBeo6FCt32umaAXGFAS
-   ybecVBA+eD2gRiqN9lkbl5lJqbT2Bk8wIT7jZBNSR5gLj9igoFD6hHwdG
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10513"; a="295683595"
-X-IronPort-AV: E=Sophos;i="5.95,218,1661842800"; 
-   d="scan'208";a="295683595"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2022 09:35:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10513"; a="757761930"
-X-IronPort-AV: E=Sophos;i="5.95,218,1661842800"; 
-   d="scan'208";a="757761930"
-Received: from lkp-server02.sh.intel.com (HELO b6d29c1a0365) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 27 Oct 2022 09:35:16 -0700
-Received: from kbuild by b6d29c1a0365 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oo5qe-0008zP-0K;
-        Thu, 27 Oct 2022 16:35:16 +0000
-Date:   Fri, 28 Oct 2022 00:34:53 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     ntfs3@lists.linux.dev, netdev@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-mediatek@lists.infradead.org,
-        linux-hwmon@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: [linux-next:master] BUILD SUCCESS WITH WARNING
- ecc4eeb2208ab537a3f3744984cd7f30ac971db8
-Message-ID: <635ab32d.6UouMR1hjiK2K4CL%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S235210AbiJ1Bl7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 27 Oct 2022 21:41:59 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C233DA3B50;
+        Thu, 27 Oct 2022 18:41:58 -0700 (PDT)
+Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Mz4v93NTYzpWFw;
+        Fri, 28 Oct 2022 09:38:29 +0800 (CST)
+Received: from dggpeml500016.china.huawei.com (7.185.36.70) by
+ dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Fri, 28 Oct 2022 09:41:56 +0800
+Received: from [10.174.176.102] (10.174.176.102) by
+ dggpeml500016.china.huawei.com (7.185.36.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Fri, 28 Oct 2022 09:41:56 +0800
+Message-ID: <2ab8e268-4e1a-8e97-4798-48fcdb651cdf@huawei.com>
+Date:   Fri, 28 Oct 2022 09:41:55 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH RFC] ext4:record error information when insert extent
+ failed in 'ext4_split_extent_at'
+To:     Ye Bin <yebin@huaweicloud.com>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
+        Ye Bin <yebin10@huawei.com>
+References: <20221024122725.3083432-1-yebin@huaweicloud.com>
+From:   zhanchengbin <zhanchengbin1@huawei.com>
+In-Reply-To: <20221024122725.3083432-1-yebin@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.102]
+X-ClientProxiedBy: dggpeml100015.china.huawei.com (7.185.36.168) To
+ dggpeml500016.china.huawei.com (7.185.36.70)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: ecc4eeb2208ab537a3f3744984cd7f30ac971db8  Add linux-next specific files for 20221027
+There have been a lot of problems here before, but the problem has not 
+been fundamentally solved.
 
-Warning reports:
-
-https://lore.kernel.org/linux-mm/202210090954.pTR6m6rj-lkp@intel.com
-https://lore.kernel.org/linux-mm/202210111318.mbUfyhps-lkp@intel.com
-https://lore.kernel.org/linux-mm/202210261404.b6UlzG7H-lkp@intel.com
-https://lore.kernel.org/llvm/202210060148.UXBijOcS-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202210270637.Q5Y7FiKJ-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202210271517.snUEnhD0-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202210272129.7rvjxsdk-lkp@intel.com
-
-Warning: (recently discovered and may have been fixed)
-
-arch/loongarch/kernel/traps.c:250 die() warn: variable dereferenced before check 'regs' (see line 244)
-drivers/gpu/drm/amd/amdgpu/../display/dc/dc_dmub_srv.c:615: warning: expecting prototype for setup_subvp_dmub_command(). Prototype was for populate_subvp_cmd_pipe_info() instead
-drivers/hwmon/jc42.c:384 jc42_write() warn: inconsistent returns '&data->update_lock'.
-drivers/net/ethernet/freescale/fman/fman_memac.c:1209 memac_initialization() warn: passing zero to 'PTR_ERR'
-include/asm-generic/div64.h:222:35: warning: comparison of distinct pointer types lacks a cast
-include/asm-generic/div64.h:234:32: warning: right shift count >= width of type [-Wshift-count-overflow]
-lib/zstd/compress/huf_compress.c:460 HUF_getIndex() warn: the 'RANK_POSITION_LOG_BUCKETS_BEGIN' macro might need parens
-
-Unverified Warning (likely false positive, please contact us if interested):
-
-lib/zstd/decompress/zstd_decompress_block.c:1009 ZSTD_execSequence() warn: inconsistent indenting
-lib/zstd/decompress/zstd_decompress_block.c:894 ZSTD_execSequenceEnd() warn: inconsistent indenting
-lib/zstd/decompress/zstd_decompress_block.c:942 ZSTD_execSequenceEndSplitLitBuffer() warn: inconsistent indenting
-lib/zstd/decompress/zstd_decompress_internal.h:206 ZSTD_DCtx_get_bmi2() warn: inconsistent indenting
-
-Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- arc-randconfig-m031-20221025
-|   `-- drivers-net-ethernet-freescale-fman-fman_memac.c-memac_initialization()-warn:passing-zero-to-PTR_ERR
-|-- arm-allmodconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dc_dmub_srv.c:warning:expecting-prototype-for-setup_subvp_dmub_command().-Prototype-was-for-populate_subvp_cmd_pipe_info()-instead
-|-- arm64-randconfig-s041-20221026
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-priv1-got-restricted-__le16-addressable-usertype-fc_len
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-tag-got-restricted-__le16-addressable-usertype-fc_tag
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-short-usertype-tag-got-restricted-__le16-addressable-usertype-fc_tag
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_len-got-unsigned-short-usertype
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_tag-got-unsigned-short-usertype
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-initializer-(different-base-types)-expected-int-tag-got-restricted-__le16-usertype-fc_tag
-|   `-- fs-ext4-fast_commit.c:sparse:sparse:restricted-__le16-degrades-to-integer
-|-- i386-randconfig-m021
-|   |-- arch-x86-boot-compressed-..-..-..-..-lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequence()-warn:inconsistent-indenting
-|   |-- arch-x86-boot-compressed-..-..-..-..-lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequenceEnd()-warn:inconsistent-indenting
-|   |-- arch-x86-boot-compressed-..-..-..-..-lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequenceEndSplitLitBuffer()-warn:inconsistent-indenting
-|   |-- arch-x86-boot-compressed-..-..-..-..-lib-zstd-decompress-zstd_decompress_internal.h-ZSTD_DCtx_get_bmi2()-warn:inconsistent-indenting
-|   |-- lib-zstd-compress-huf_compress.c-HUF_getIndex()-warn:the-RANK_POSITION_LOG_BUCKETS_BEGIN-macro-might-need-parens
-|   |-- lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequence()-warn:inconsistent-indenting
-|   |-- lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequenceEnd()-warn:inconsistent-indenting
-|   |-- lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequenceEndSplitLitBuffer()-warn:inconsistent-indenting
-|   `-- lib-zstd-decompress-zstd_decompress_internal.h-ZSTD_DCtx_get_bmi2()-warn:inconsistent-indenting
-|-- ia64-randconfig-s052-20221026
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-priv1-got-restricted-__le16-addressable-usertype-fc_len
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-tag-got-restricted-__le16-addressable-usertype-fc_tag
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-short-usertype-tag-got-restricted-__le16-addressable-usertype-fc_tag
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_len-got-unsigned-short-usertype
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_tag-got-unsigned-short-usertype
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-initializer-(different-base-types)-expected-int-tag-got-restricted-__le16-usertype-fc_tag
-|   `-- fs-ext4-fast_commit.c:sparse:sparse:restricted-__le16-degrades-to-integer
-|-- loongarch-randconfig-m041-20221026
-|   |-- arch-loongarch-kernel-traps.c-die()-warn:variable-dereferenced-before-check-regs-(see-line-)
-|   |-- drivers-hwmon-jc42.c-jc42_write()-warn:inconsistent-returns-data-update_lock-.
-|   |-- lib-zstd-compress-huf_compress.c-HUF_getIndex()-warn:the-RANK_POSITION_LOG_BUCKETS_BEGIN-macro-might-need-parens
-|   |-- lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequence()-warn:inconsistent-indenting
-|   |-- lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequenceEnd()-warn:inconsistent-indenting
-|   `-- lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequenceEndSplitLitBuffer()-warn:inconsistent-indenting
-|-- mips-randconfig-r013-20221027
-|   |-- include-asm-generic-div64.h:warning:comparison-of-distinct-pointer-types-lacks-a-cast
-|   `-- include-asm-generic-div64.h:warning:right-shift-count-width-of-type
-|-- nios2-randconfig-s042-20221026
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-priv1-got-restricted-__le16-addressable-usertype-fc_len
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-tag-got-restricted-__le16-addressable-usertype-fc_tag
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-short-usertype-tag-got-restricted-__le16-addressable-usertype-fc_tag
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_len-got-unsigned-short-usertype
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_tag-got-unsigned-short-usertype
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-initializer-(different-base-types)-expected-int-tag-got-restricted-__le16-usertype-fc_tag
-|   |-- fs-ext4-fast_commit.c:sparse:sparse:restricted-__le16-degrades-to-integer
-|   |-- fs-ntfs3-index.c:sparse:sparse:restricted-__le32-degrades-to-integer
-|   |-- fs-ntfs3-namei.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__le16-const-usertype-s1-got-unsigned-short
-clang_recent_errors
-|-- arm-buildonly-randconfig-r003-20221026
-|   |-- drivers-pinctrl-qcom-pinctrl-lpass-lpi.c:error:call-to-undeclared-function-FIELD_GET-ISO-C99-and-later-do-not-support-implicit-function-declarations
-|   |-- drivers-pinctrl-qcom-pinctrl-lpass-lpi.c:error:call-to-undeclared-function-u32_encode_bits-ISO-C99-and-later-do-not-support-implicit-function-declarations
-|   `-- drivers-pinctrl-qcom-pinctrl-lpass-lpi.c:error:call-to-undeclared-function-u32p_replace_bits-ISO-C99-and-later-do-not-support-implicit-function-declarations
-|-- hexagon-randconfig-r041-20221026
-|   `-- drivers-phy-mediatek-phy-mtk-tphy.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(unsigned-c
-`-- riscv-randconfig-r001-20221026
-    |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-get_symbol_pos:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_num_syms
-    |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-get_symbol_pos:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_offsets
-    |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-kallsyms_lookup_name:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_num_syms
-    |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-kallsyms_lookup_name:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_offsets
-    |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-kallsyms_lookup_name:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_relative_base
-    |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-kallsyms_on_each_symbol:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_num_syms
-    |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-kallsyms_on_each_symbol:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_offsets
-    `-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-kallsyms_on_each_symbol:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_relative_base
-
-elapsed time: 721m
-
-configs tested: 79
-configs skipped: 2
-
-gcc tested configs:
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                              defconfig
-i386                                defconfig
-i386                          randconfig-a014
-i386                          randconfig-a001
-i386                          randconfig-a012
-i386                          randconfig-a003
-x86_64                               rhel-8.3
-x86_64                           rhel-8.3-syz
-i386                          randconfig-a016
-x86_64                           allyesconfig
-x86_64                        randconfig-a002
-powerpc                           allnoconfig
-i386                             allyesconfig
-arm                                 defconfig
-arc                                 defconfig
-arm                              allyesconfig
-x86_64                         rhel-8.3-kunit
-x86_64                        randconfig-a006
-x86_64                        randconfig-a013
-x86_64                          rhel-8.3-func
-x86_64                        randconfig-a011
-i386                          randconfig-a005
-x86_64                        randconfig-a004
-x86_64                    rhel-8.3-kselftests
-powerpc                          allmodconfig
-x86_64                        randconfig-a015
-m68k                             allmodconfig
-x86_64                           rhel-8.3-kvm
-arm64                            allyesconfig
-sh                               allmodconfig
-arc                              allyesconfig
-alpha                               defconfig
-mips                             allyesconfig
-alpha                            allyesconfig
-m68k                             allyesconfig
-riscv                randconfig-r042-20221026
-s390                                defconfig
-s390                             allmodconfig
-arc                  randconfig-r043-20221026
-s390                 randconfig-r044-20221026
-s390                             allyesconfig
-m68k                        m5272c3_defconfig
-sparc                             allnoconfig
-xtensa                    smp_lx200_defconfig
-i386                          randconfig-c001
-m68k                           sun3_defconfig
-powerpc                 canyonlands_defconfig
-m68k                       m5208evb_defconfig
-riscv                               defconfig
-sh                        dreamcast_defconfig
-microblaze                      mmu_defconfig
-m68k                         amcore_defconfig
-openrisc                  or1klitex_defconfig
-mips                         bigsur_defconfig
-sh                             shx3_defconfig
-arm                           h5000_defconfig
-alpha                            alldefconfig
-m68k                          hp300_defconfig
-
-clang tested configs:
-i386                          randconfig-a013
-i386                          randconfig-a011
-i386                          randconfig-a002
-i386                          randconfig-a004
-x86_64                        randconfig-a005
-x86_64                        randconfig-a001
-i386                          randconfig-a015
-x86_64                        randconfig-a003
-x86_64                        randconfig-a012
-i386                          randconfig-a006
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-hexagon              randconfig-r045-20221026
-hexagon              randconfig-r041-20221026
-arm                        mvebu_v5_defconfig
-powerpc                     ppa8548_defconfig
-arm                  colibri_pxa270_defconfig
-powerpc               mpc834x_itxgp_defconfig
-arm                           spitz_defconfig
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+On 2022/10/24 20:27, Ye Bin wrote:
+> From: Ye Bin <yebin10@huawei.com>
+> 
+> There's issue as follows when do test with memory fault injection:
+> [localhost]# fsck.ext4 -a image
+> image: clean, 45595/655360 files, 466841/2621440 blocks
+> [localhost]# fsck.ext4 -fn image
+> Pass 1: Checking inodes, blocks, and sizes
+> Pass 2: Checking directory structure
+> Pass 3: Checking directory connectivity
+> Pass 4: Checking reference counts
+> Pass 5: Checking group summary information
+> Block bitmap differences:  -(1457230--1457256)
+> Fix? no
+> 
+> image: ********** WARNING: Filesystem still has errors **********
+> 
+> image: 45595/655360 files (12.4% non-contiguous), 466841/2621440 blocks
+> 
+> Inject context:
+>   -----------------------------------------------------------
+>   Inject function:kmem_cache_alloc (pid:177858) (return: 0)
+>   Calltrace Context:
+>   mem_cache_allock+0x73/0xcc
+>   ext4_mb_new_blocks+0x32e/0x540 [ext4]
+>   ext4_new_meta_blocks+0xc4/0x110 [ext4]
+>   ext4_ext_grow_indepth+0x68/0x250 [ext4]
+>   ext4_ext_create_new_leaf+0xc5/0x120 [ext4]
+>   ext4_ext_insert_extent+0x1bf/0x670 [ext4]
+>   ext4_split_extent_at+0x212/0x530 [ext4]
+>   ext4_split_extent+0x13a/0x1a0 [ext4]
+>   ext4_ext_handle_unwritten_extents+0x13d/0x240 [ext4]
+>   ext4_ext_map_blocks+0x459/0x8f0 [ext4]
+>   ext4_map_blocks+0x18e/0x5a0 [ext4]
+>   ext4_iomap_alloc+0xb0/0x1b0 [ext4]
+>   ext4_iomap_begin+0xb0/0x130 [ext4]
+>   iomap_apply+0x95/0x2e0
+>   __iomap_dio_rw+0x1cc/0x4b0
+>   iomap_dio_rw+0xe/0x40
+>   ext4_dio_write_iter+0x1a9/0x390 [ext4]
+>   new_sync_write+0x113/0x1b0
+>   vfs_write+0x1b7/0x250
+>   ksys_write+0x5f/0xe0
+>   do_syscall_64+0x33/0x40
+>   entry_SYSCALL_64_after_hwframe+0x61/0xc6
+> 
+> Compare extent change in journal:
+> Start:
+> ee_block      ee_len        ee_start
+> 75            32798         1457227  -> unwritten len=30
+> 308           12            434489
+> 355           5             442492
+> =>
+> ee_block      ee_len        ee_start
+> 11            2             951584
+> 74            32769         951647   -> unwritten  len=1
+> 75            32771         1457227  -> unwritten  len=3, length decreased 27
+> 211           15            960906
+> 308           12            434489
+> 355           5             442492
+> 
+> Acctually, above issue can repaired by 'fsck -fa'. But file system is 'clean',
+> 'fsck' will not do deep repair.
+> Obviously, final lost 27 blocks. Above issue may happens as follows:
+> ext4_split_extent_at
+> ...
+> err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags); -> return -ENOMEM
+> if (err != -ENOSPC && err != -EDQUOT）
+> 	goto out; -> goto 'out' will not fix extent length, will
+> ...
+> fix_extent_len:
+>          ex->ee_len = orig_ex.ee_len;
+>          /*
+>           * Ignore ext4_ext_dirty return value since we are already in error path
+>           * and err is a non-zero error code.
+>           */
+>          ext4_ext_dirty(handle, inode, path + path->p_depth);
+>          return err;
+> out:
+>          ext4_ext_show_leaf(inode, path);
+>          return err;
+> If 'ext4_ext_insert_extent' return '-ENOMEM' which will not fix 'ex->ee_len' by
+> old length. 'ext4_ext_insert_extent' will trigger extent tree merge, fix like
+> 'ex->ee_len = orig_ex.ee_len' may lead to new issues.
+> To solve above issue, record error messages when 'ext4_ext_insert_extent' return
+> 'err' not equal '(-ENOSPC && -EDQUOT)'. If filesysten is mounted with 'errors=continue'
+> as filesystem is not clean 'fsck' will repair issue. If filesystem is mounted with
+> 'errors=remount-ro' filesystem will be remounted by read-only.
+> 
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> ---
+>   fs/ext4/extents.c | 7 ++++++-
+>   1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index f1956288307f..582a7d59d6e3 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -3252,8 +3252,13 @@ static int ext4_split_extent_at(handle_t *handle,
+>   		ext4_ext_mark_unwritten(ex2);
+>   
+>   	err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
+> -	if (err != -ENOSPC && err != -EDQUOT)
+> +	if (err != -ENOSPC && err != -EDQUOT) {
+> +		if (err)
+> +			EXT4_ERROR_INODE_ERR(inode, -err,
+> +			"insert extent failed block = %d len = %d",
+> +			ex2->ee_block, ex2->ee_len);
+>   		goto out;
+> +	}
+>   
+>   	if (EXT4_EXT_MAY_ZEROOUT & split_flag) {
+>   		if (split_flag & (EXT4_EXT_DATA_VALID1|EXT4_EXT_DATA_VALID2)) {
+> 
