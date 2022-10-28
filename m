@@ -2,125 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 215AD610FFD
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Oct 2022 13:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF631611871
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Oct 2022 18:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229576AbiJ1Ltw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 28 Oct 2022 07:49:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42366 "EHLO
+        id S229952AbiJ1Q6f (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 28 Oct 2022 12:58:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbiJ1Ltu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Oct 2022 07:49:50 -0400
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2065.outbound.protection.outlook.com [40.107.22.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2089D17A93;
-        Fri, 28 Oct 2022 04:49:48 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BtzpSEbKJl9oyC6BZ/uw1ygb88IAXyQs+IHOMUmQdVHzYr3FOl3mMrQB5g2Pj0RwXEHTERyoozUdeLWu4NR2ddyLMXBRQxk58Q29/HOgjwzOJ8toD0aWET2y/yznqPxk9pk3q7Iai/hYcoGxbw5Uws+HSnF/K42nGzRXe42J/nRd4omB29IOa+swMlhNwsMSaaZxHuqvwR9ZI/QNWwaHIR39k3uBoEDoj+6dsASKORPIAvsjGehRxnKSsS10gbueVWZXrqmPHKVEDM+djqIar7Q9aXrKd2dQyeV7hwahjauz9sYJ3SkMw7N0Ch4P4jLKeD/1NKs1R7BkpkP08k1JKA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/cm6cSj+Dms9K7WSVR3ElNwWity2Wlu99q1l5FUBYFg=;
- b=c+/nGEvh9fY7PcMKfsaGJ9Jk7oqJbQGxrMk+8HnAZUqzLv1wY0srC0y2CE7TGilnrZLuTVzvnx2qkozkL9K1ymU9DJt2A/G3TtQNdF2EZVcQoEfO5SdennqncI9Z3a3WOJpqVezR/ZUBpAXtOedP0nS+ea/yfXhg0qenJ5/Re7N54JP0meJly3lyDVNBjZKkWiHLzNjQL8/XNCmwOYm4pbGwmxR125pxy+1d73wx00SvRYoMZTUj/WBwBIu5DmR/XfeV2Ws2ur5INqKwVnXVtJlxatBEtxzBz0LoJGRMCVsO+s+nx+qYKC4WggbM8mJl3wJWDQsMazwhVTkmCK4b/Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=theobroma-systems.com; dmarc=pass action=none
- header.from=theobroma-systems.com; dkim=pass header.d=theobroma-systems.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=theobroma-systems.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/cm6cSj+Dms9K7WSVR3ElNwWity2Wlu99q1l5FUBYFg=;
- b=atNbofhGmlVl8I5s+i9JBswKObcHF22PZS/ZIoxS4WewXzWQz4dHe3p7e7o9yXGy6bNg648eAVSvNQQfm+S3N9JTESnQXqppx0kOE8L5UaNjTQslrBleEOOyhYaEWXCH8NEuFsD432sV0Yy83SqTEl9Vw0n+eKE4K7E6DtIzbqA1DHdbnXLa7LuUgYBP4sz1j3SuFHJi1J558HW9DAmXcSBDXPXFGmDEHB4ddygE4Y28ZahTwH1B6aEgD7ymOv1ucwgJ+ZUlCWXpLO4sHhS8vl0dfW+xLXWrM1eKAo/0VJ2NM8ifVYkt+6JSn9FPCbH4cBdPMJblIiTfBE8F3UVFCw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=theobroma-systems.com;
-Received: from AM6PR04MB6311.eurprd04.prod.outlook.com (2603:10a6:20b:b7::20)
- by DB9PR04MB8106.eurprd04.prod.outlook.com (2603:10a6:10:24b::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5769.15; Fri, 28 Oct
- 2022 11:49:44 +0000
-Received: from AM6PR04MB6311.eurprd04.prod.outlook.com
- ([fe80::2b0d:be6b:edaa:62e7]) by AM6PR04MB6311.eurprd04.prod.outlook.com
- ([fe80::2b0d:be6b:edaa:62e7%4]) with mapi id 15.20.5746.023; Fri, 28 Oct 2022
- 11:49:44 +0000
-Message-ID: <04aa2fa5-c04d-d2ad-55e4-f78705b513ac@theobroma-systems.com>
-Date:   Fri, 28 Oct 2022 13:49:42 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.13.1
-Subject: Re: ext4 online resize -> EXT4-fs error (device loop0) in
- ext4_update_backup_sb:174: Filesystem failed CRC
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Schulz, Quentin" <quentin.schulz@theobroma-systems.com>
-References: <AM6PR04MB63111922B96138C374A39C68C7309@AM6PR04MB6311.eurprd04.prod.outlook.com>
- <Y1tTk5ILKICjJL82@mit.edu>
-From:   Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
-In-Reply-To: <Y1tTk5ILKICjJL82@mit.edu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR3P281CA0069.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:4b::16) To AM6PR04MB6311.eurprd04.prod.outlook.com
- (2603:10a6:20b:b7::20)
+        with ESMTP id S230070AbiJ1Q6V (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Oct 2022 12:58:21 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB582248D3;
+        Fri, 28 Oct 2022 09:57:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1666976270; x=1698512270;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=CsAjO6F7Pf0KaWAvJqCa4wx+02xCaYRf2NDvydAD4zc=;
+  b=ZN8WbP8nhWjnYwENkhdqzeV11WtkER/HqawGZGnapp0xfQYQ2nrRzWk2
+   YV+viRu+atU0aUfUT5YplZ2EVoWWOSmh/t2O/rib9z9pT5kgrzUeXCeJe
+   cPDDcMpnZHYVF2WwuViPNfsCjItcB/zijXrCWPmNNoLNzi40IBxJ4SZN0
+   7IY1P01ukI1m0xp5ci3mD0p55uNXtx2tSTVm6F87+WjQXLz9KiYPMumO8
+   U7llrApDNr3dud6HRG9WZNklRT1/nLxdMrd3lNJYpp+PX/BuoaolUpS6A
+   wAwTWnLvCqEhYLIjKs5prl5qoUG6JkwukcGb84gDWJnWt1t/8HXBGEH6I
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10514"; a="372750159"
+X-IronPort-AV: E=Sophos;i="5.95,221,1661842800"; 
+   d="scan'208";a="372750159"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2022 09:57:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10514"; a="583983809"
+X-IronPort-AV: E=Sophos;i="5.95,221,1661842800"; 
+   d="scan'208";a="583983809"
+Received: from lkp-server02.sh.intel.com (HELO b6d29c1a0365) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 28 Oct 2022 09:57:45 -0700
+Received: from kbuild by b6d29c1a0365 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1ooSfx-000A4N-0G;
+        Fri, 28 Oct 2022 16:57:45 +0000
+Date:   Sat, 29 Oct 2022 00:56:50 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     ntfs3@lists.linux.dev, netdev@vger.kernel.org,
+        linux-wpan@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-hwmon@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: [linux-next:master] BUILD REGRESSION
+ fd8dab197cca2746e1fcd399a218eec5164726d4
+Message-ID: <635c09d2.Uo03FEcDk/bchhMt%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB6311:EE_|DB9PR04MB8106:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2d30e1b5-f5b2-4d5d-b085-08dab8da8184
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kTVDc2Y26wiUnc61V17VwMVRyBug7kEbJCBjB9B438+aqg1E90pdGfCW2BxnAYV2akIdzJeZLFV2Sry2XZYJjMei4yHDklboKmtLHv7v2dnWpKNKytVRJpm49CtfovVV9NEQDY1oMBAMRJ51VWoIIDnPh2NiwMn2RF5KhdxZ375CR4kSP8s1rCVSKJEoHlqQrClZsMNXXsANjAAcjvBZEGTCM9al6LmWMqHcyzycw1L/eijKSsrG1lghG2KXyBESpfVN5aZ4qWZn/IlxFfr8eX5Aejss6QU+X4OcxzVEX5HpQ1y4vdWLRlf90r0vt5SKxHRT+tYnAl6nI7r/7hLl14kDXWwXONQ1ISZasypKHRBdCEWB2zw/YMvmI/NhUt5U55vdFqgMaFh8ga7+ybneBtKDCm63ldGJN5Ku/mVRtDjDhJEr2o84GV0TRPpMkST6Tfb+P3NCrgGumiSm8GTfAUqHJYt4xSUVk33BjiU5R7GyDS+xeldjU+x8wo8joVlEo9WdcNUg5DWg2ieIgwpCbotQuCb8juSfZizFZM5Fjk2UssE4W7PWMTeA0C7fQSLt+cROjoZCSiD+V2zh0Yn1N4v4BZXxZak58Ec6Y6qz62H5dM8MDPuuYO2Jgp1m6thtLXFOB8Wo1+GrnqxxAZ4Xxnbq4EO0BcAWczjUh5E4WJz3+X2LncFLt+EIrwkyNAusoBmyqU9SlO2PvUBfht8/WQ+e5KcQ+w0e/Ii+GXlV6sB5zbsop0K5Dircc9xSbTQDpVuAHl8ha7Hd5+gGoNlpFbMFeveb1PAf0gN4kND9/og=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6311.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(136003)(366004)(396003)(39850400004)(376002)(346002)(451199015)(2906002)(38100700002)(4744005)(44832011)(36756003)(6916009)(41300700001)(8936002)(6512007)(86362001)(31696002)(8676002)(26005)(6506007)(107886003)(2616005)(53546011)(54906003)(186003)(316002)(478600001)(83380400001)(6486002)(66476007)(66556008)(66946007)(4326008)(5660300002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?enZsTDhvOEhsbGF0K244SU1zTU1yR0s4V0J0THRtZTAvNFpnRmM0RU1BOC9P?=
- =?utf-8?B?WDJYMU1XSys3THZtTzlIT1B1dERoMXBhZEF6RzVVclgzam5jVGRrS1pIVW9L?=
- =?utf-8?B?dHhDVUt3Sm82ZWJORWFjeWVBZUZ3WjFkN0g0OU44VTdRME8reUkzRkNJb2FV?=
- =?utf-8?B?ckUyNnByU3orU1pkVlRGUlJPaXg2TU10Smk1c01FclNRVHYxUnJtVVlkTlBD?=
- =?utf-8?B?ZEJaWG96N2QrZno0NHN3QndoVWhUQ0srakJpRVc4M2F0TFVSYjFabjNKZEFm?=
- =?utf-8?B?YXhTUkNmK0NYcVZCQlg5cTV3cVFWdGwvRGphNDA0MUZCazhzMW94T0xzamRZ?=
- =?utf-8?B?RTk3alhtOGZIeDZhRXBSVXlxMG5OQzZJL1lmTGhsb2k4Y3YrUWQ2Ris2SXV0?=
- =?utf-8?B?TmdvNXhYNFlDMCtiWW9UZnFhaDVHeFV4ZXNiRHNaUC9TODExNkg4Zmo5R0VT?=
- =?utf-8?B?L1FjZUdONXByK01oM0NBbnE5cktJN2tsd2JRc2puZkNobENKQVpGVlJQY3B0?=
- =?utf-8?B?RXBWRmpWNjdkb0xBUU9KN09IaEJyK1NVMFllTUZBRnFTbXliOFVQbHd4eFpj?=
- =?utf-8?B?K2ZabFdwWDhwanRBQ2ZYQTRITFRQR3FXaWY3V2tHYXZEQ3Z5cm1pWmxOMXhB?=
- =?utf-8?B?UFpLaGw2eW5HK1RCOFV0UGRCRFl3Q2pXZDZUSit5SXFHbmxQN1dlQnBqQW1B?=
- =?utf-8?B?MW12Y0QzU2NlNndRYitnajdhakVFL3h5dU9xNXBFdXFiN3U4UkZBK1NxYXZM?=
- =?utf-8?B?b2ZwdStpUmg0cjFpRmpmbUROK1g1dFYyTlpUWEUvNTA4YmxqbHhXV2psY3pj?=
- =?utf-8?B?bGp6MTNZY3JkSVZiRnFMbHUvTitGZWdTcWlmci9pSCtmbUFBMk1nRkJqQ3RN?=
- =?utf-8?B?VllQVTdVRmE2M2YvclphM0o5V1VkYXlGM3NVMXdjSDhIbWFEM2tTRnJtMWpZ?=
- =?utf-8?B?eWw4RU5XUVpQbW5wcEROR2pqSkk0NFZZZGhNVUxLMmF0T3RiNEFCWXd3STVw?=
- =?utf-8?B?c0JLQnlWQTVOZGczdVhRYVBqZ2NnRG1wSkJuUUh6ejN5ZnNQd0NtT0ZqQ2Z0?=
- =?utf-8?B?SVNpSTBhRmIyeHRNRkNLa1lDTzlUbllxM0U4V2NXYnZSTEgzWnRRNlNNbGtp?=
- =?utf-8?B?Q3pLeXBLbnpXSUlZTGl3QlgyaWptY1RWQml1WW5MNHlxbGZFZlhlcWNGYysx?=
- =?utf-8?B?THZ0cTBOTXN2WnM2VktrN2M4WXdFc1BjYXpSa3IvOGx0bmtPTlVJVGlDdUl1?=
- =?utf-8?B?SkJIa1ViRkFrbUphK3drUW43dGZCdFo1QlBSSmhkMk1sSGJkaldQd1RHV0Vi?=
- =?utf-8?B?b3V3WnFwZGR0QXdpT2RQQ2ZVSUlrRythSzVNMzNUOFpuaEdDcHB2SVRwQ0lY?=
- =?utf-8?B?alk5R0RzYjJES3BNQU5ncG9sN2MwT016YWxPeUNMSkU5V29xS29LbzJPSHNo?=
- =?utf-8?B?dUpHdy85V3EwSjhTKzZUaDE0aXNxWVZnc0hZcHROSnFsV1hHZlgzeTFCcTJE?=
- =?utf-8?B?S242bHk3bytSSG90dG9kTDRVWGRDSHdmdnYxRTBaOUoxSkhWZ1lFYUk1ZGdY?=
- =?utf-8?B?NGsrVThZaDlMV2pLZkRsT2k3UUdCSUo1eEVjUmZGTnNCSWM1bjVEWG1HNHhj?=
- =?utf-8?B?ZkdpZHIvandxRmdWS1JBdVhlQnRaellTTzJPcm9kZGc4S1hIVjV4VXd5azF3?=
- =?utf-8?B?RnJnSXpRc1FlRDludUw1RlZOcUtLRzFIalRhUWpZVTBFOVcwWkd6ZXdoNDFE?=
- =?utf-8?B?Z3pjdnlxa05lbDNqaGIrMkhyUjR4YXdJR1pXQXUxT2ZRUy9wTDlMY1dYUW5H?=
- =?utf-8?B?Vnp2ZHBIN1FWbWJNV0ZzWFhhNnNsNGV6dXZ6THRubndOSnVmMFdNbTdnODIw?=
- =?utf-8?B?V0dvdGFoVnRnbG5xRWVCSmdTQ0pmQWdkK0wxTHkzQTU2enByNzB1cjZ5L2sy?=
- =?utf-8?B?L3duVjlxRDljRFIxeUhIeVVJNXNVU21ybEtlR0ZPaUZ0VldIOVVOblFxZEFW?=
- =?utf-8?B?N1JZclU2M000WGxVWjlhRytjMGxpb0Z6OTNMZGNJYy90ak1RbkZrWkh6TU55?=
- =?utf-8?B?bWNKSDhYWmxlbzdyZEVMMXB3ek5XclpCdW8xc0FzWnI0SDBNbEJtS1JXSll0?=
- =?utf-8?B?eVMvcnlKTXlZQzEranI0RVRubExFR0QzNDRNb3k0YWt3Y0RKZ3pIZWdMVU9W?=
- =?utf-8?Q?BDOlVbpig8c2aOX+rWRMvGFdJjHM1nxWjausAmC65071?=
-X-OriginatorOrg: theobroma-systems.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2d30e1b5-f5b2-4d5d-b085-08dab8da8184
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6311.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2022 11:49:44.2934
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5e0e1b52-21b5-4e7b-83bb-514ec460677e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bA6Djxa5ShB+D1nzgUXr9qZ/WLgHdG9CitT/HxgFVBRs80j19BlxEGqIAyLh0nHHOLwraO7yeLCA5tanOY/xE+fnQ1tzw+ETpGSon01Tc7oZcHw1vRIz79WZvTI0OHVpMDM1YGWhnwymChLBkU50vQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8106
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -128,26 +69,201 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 28.10.22 05:59, Theodore Ts'o wrote:
-> 
-> Thanks for the reproducer!  The following patch should fix things.
-> 
->         	       		      		- Ted
-> 
->  From 9a8c5b0d061554fedd7dbe894e63aa34d0bac7c4 Mon Sep 17 00:00:00 2001
-> From: Theodore Ts'o <tytso@mit.edu>
-> Date: Thu, 27 Oct 2022 16:04:36 -0400
-> Subject: [PATCH] ext4: update the backup superblock's at the end of the online
->   resize
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: fd8dab197cca2746e1fcd399a218eec5164726d4  Add linux-next specific files for 20221028
 
-Hi Theodore,
+Error/Warning reports:
 
-I tested the patch on arm64 and it fixes the issue. Now the kernel 
-messages are just this:
+https://lore.kernel.org/linux-mm/202210090954.pTR6m6rj-lkp@intel.com
+https://lore.kernel.org/linux-mm/202210111318.mbUfyhps-lkp@intel.com
+https://lore.kernel.org/linux-mm/202210261404.b6UlzG7H-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202210270637.Q5Y7FiKJ-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202210271517.snUEnhD0-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202210281745.XFMUiMEf-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202210282021.SKiobE3i-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202210282125.x112bh8U-lkp@intel.com
 
-> [   14.769997] EXT4-fs (mmcblk2p1): resizing filesystem from 139771 to 3888507 blocks
-> [   15.020593] EXT4-fs (mmcblk2p1): resized filesystem to 3888507
-fsck after the resize is happy too.
+Error/Warning: (recently discovered and may have been fixed)
 
-Thank you!
-Jakob
+ERROR: modpost: "__ld_r13_to_r18_ret" [lib/zstd/zstd_decompress.ko] undefined!
+ERROR: modpost: "__ld_r13_to_r22" [lib/zstd/zstd_decompress.ko] undefined!
+arch/mips/pic32/pic32mzda/early_console.c:141:11: warning: result of comparison of constant -1 with expression of type 'char' is always false [-Wtautological-constant-out-of-range-compare]
+drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:4878: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+drivers/hwmon/smpro-hwmon.c:378:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+drivers/phy/mediatek/phy-mtk-hdmi-mt2701.c:116:2: warning: result of comparison of constant 18446744073709551615 with expression of type 'typeof (_Generic((mask_), char: (unsigned char)0, unsigned char: (unsigned char)0, signed char: (unsigned char)0, unsigned short: (unsigned short)0, short: (unsigned short)0, unsigned int: (unsigned int)0, int: (unsigned int)0, unsigned long: (unsigned long)0, long: (unsigned long)0, unsigned long long: (unsigned long long)0, long long: (unsigned long long)0, default: (mask_)))' (aka 'unsigned long') is always false [-Wtautological-constant-out-of-range-compare]
+drivers/phy/mediatek/phy-mtk-hdmi-mt8173.c:160:2: warning: result of comparison of constant 18446744073709551615 with expression of type 'typeof (_Generic((mask_), char: (unsigned char)0, unsigned char: (unsigned char)0, signed char: (unsigned char)0, unsigned short: (unsigned short)0, short: (unsigned short)0, unsigned int: (unsigned int)0, int: (unsigned int)0, unsigned long: (unsigned long)0, long: (unsigned long)0, unsigned long long: (unsigned long long)0, long long: (unsigned long long)0, default: (mask_)))' (aka 'unsigned long') is always false [-Wtautological-constant-out-of-range-compare]
+drivers/phy/mediatek/phy-mtk-mipi-dsi-mt8173.c:207:2: warning: result of comparison of constant 18446744073709551615 with expression of type 'typeof (_Generic((mask_), char: (unsigned char)0, unsigned char: (unsigned char)0, signed char: (unsigned char)0, unsigned short: (unsigned short)0, short: (unsigned short)0, unsigned int: (unsigned int)0, int: (unsigned int)0, unsigned long: (unsigned long)0, long: (unsigned long)0, unsigned long long: (unsigned long long)0, long long: (unsigned long long)0, default: (mask_)))' (aka 'unsigned long') is always false [-Wtautological-constant-out-of-range-compare]
+drivers/phy/mediatek/phy-mtk-mipi-dsi-mt8183.c:83:2: warning: result of comparison of constant 18446744073709551615 with expression of type 'typeof (_Generic((mask_), char: (unsigned char)0, unsigned char: (unsigned char)0, signed char: (unsigned char)0, unsigned short: (unsigned short)0, short: (unsigned short)0, unsigned int: (unsigned int)0, int: (unsigned int)0, unsigned long: (unsigned long)0, long: (unsigned long)0, unsigned long long: (unsigned long long)0, long long: (unsigned long long)0, default: (mask_)))' (aka 'unsigned long') is always false [-Wtautological-constant-out-of-range-compare]
+include/asm-generic/div64.h:222:35: warning: comparison of distinct pointer types lacks a cast
+include/asm-generic/div64.h:234:32: warning: right shift count >= width of type [-Wshift-count-overflow]
+
+Unverified Error/Warning (likely false positive, please contact us if interested):
+
+drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c:555:6: warning: Redundant initialization for 'err'. The initialized value is overwritten before it is read. [redundantInitialization]
+drivers/net/ethernet/microchip/lan743x_ethtool.c:442:33: warning: Parameter 'data' can be declared as pointer to const [constParameter]
+drivers/net/ethernet/microchip/lan743x_main.c:3522:49: warning: Operator '|' with one operand equal to zero is redundant. [badBitmaskCheck]
+drivers/net/ethernet/microchip/lan743x_main.c:532:6: warning: Redundant initialization for 'ret'. The initialized value is overwritten before it is read. [redundantInitialization]
+drivers/net/ieee802154/mcr20a.c:388:54: warning: Operator '|' with one operand equal to zero is redundant. [badBitmaskCheck]
+drivers/net/phy/micrel.c:2043:9: warning: Uninitialized variable: ret [uninitvar]
+drivers/net/phy/micrel.c:2323:24: warning: Uninitialized variable: &rx_ts->seq_id [uninitvar]
+lib/zstd/compress/huf_compress.c:460 HUF_getIndex() warn: the 'RANK_POSITION_LOG_BUCKETS_BEGIN' macro might need parens
+lib/zstd/decompress/zstd_decompress_block.c:1009 ZSTD_execSequence() warn: inconsistent indenting
+lib/zstd/decompress/zstd_decompress_block.c:894 ZSTD_execSequenceEnd() warn: inconsistent indenting
+lib/zstd/decompress/zstd_decompress_block.c:942 ZSTD_execSequenceEndSplitLitBuffer() warn: inconsistent indenting
+lib/zstd/decompress/zstd_decompress_internal.h:206 ZSTD_DCtx_get_bmi2() warn: inconsistent indenting
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- arc-allyesconfig
+|   |-- include-asm-generic-div64.h:warning:comparison-of-distinct-pointer-types-lacks-a-cast
+|   `-- include-asm-generic-div64.h:warning:right-shift-count-width-of-type
+|-- arc-randconfig-r043-20221028
+|   |-- ERROR:__ld_r13_to_r18_ret-lib-zstd-zstd_decompress.ko-undefined
+|   `-- ERROR:__ld_r13_to_r22-lib-zstd-zstd_decompress.ko-undefined
+|-- arm-allyesconfig
+|   |-- include-asm-generic-div64.h:warning:comparison-of-distinct-pointer-types-lacks-a-cast
+|   `-- include-asm-generic-div64.h:warning:right-shift-count-width-of-type
+|-- arm64-randconfig-s041-20221026
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-priv1-got-restricted-__le16-addressable-usertype-fc_len
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-tag-got-restricted-__le16-addressable-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-short-usertype-tag-got-restricted-__le16-addressable-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_len-got-unsigned-short-usertype
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_tag-got-unsigned-short-usertype
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-initializer-(different-base-types)-expected-int-tag-got-restricted-__le16-usertype-fc_tag
+|   `-- fs-ext4-fast_commit.c:sparse:sparse:restricted-__le16-degrades-to-integer
+|-- arm64-randconfig-s053-20221026
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-priv1-got-restricted-__le16-addressable-usertype-fc_len
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-tag-got-restricted-__le16-addressable-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-short-usertype-tag-got-restricted-__le16-addressable-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_len-got-unsigned-short-usertype
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_tag-got-unsigned-short-usertype
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-initializer-(different-base-types)-expected-int-tag-got-restricted-__le16-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:restricted-__le16-degrades-to-integer
+|   |-- fs-ntfs3-index.c:sparse:sparse:restricted-__le32-degrades-to-integer
+|   |-- fs-ntfs3-namei.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__le16-const-usertype-s1-got-unsigned-short
+|   `-- fs-ntfs3-namei.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__le16-const-usertype-s2-got-unsigned-short
+|-- csky-randconfig-r003-20221027
+|   |-- include-asm-generic-div64.h:warning:comparison-of-distinct-pointer-types-lacks-a-cast
+|   `-- include-asm-generic-div64.h:warning:right-shift-count-width-of-type
+|-- csky-randconfig-s033-20221026
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-priv1-got-restricted-__le16-addressable-usertype-fc_len
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-tag-got-restricted-__le16-addressable-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-short-usertype-tag-got-restricted-__le16-addressable-usertype-fc_tag
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_len-got-unsigned-short-usertype
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_tag-got-unsigned-short-usertype
+|   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-initializer-(different-base-types)-expected-int-tag-got-restricted-__le16-usertype-fc_tag
+|   `-- fs-ext4-fast_commit.c:sparse:sparse:restricted-__le16-degrades-to-integer
+|-- i386-randconfig-m021
+|   |-- arch-x86-boot-compressed-..-..-..-..-lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequence()-warn:inconsistent-indenting
+|   |-- arch-x86-boot-compressed-..-..-..-..-lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequenceEnd()-warn:inconsistent-indenting
+|   |-- arch-x86-boot-compressed-..-..-..-..-lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequenceEndSplitLitBuffer()-warn:inconsistent-indenting
+|   |-- arch-x86-boot-compressed-..-..-..-..-lib-zstd-decompress-zstd_decompress_internal.h-ZSTD_DCtx_get_bmi2()-warn:inconsistent-indenting
+|   |-- lib-zstd-compress-huf_compress.c-HUF_getIndex()-warn:the-RANK_POSITION_LOG_BUCKETS_BEGIN-macro-might-need-parens
+|   |-- lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequence()-warn:inconsistent-indenting
+|   |-- lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequenceEnd()-warn:inconsistent-indenting
+|   |-- lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequenceEndSplitLitBuffer()-warn:inconsistent-indenting
+|   `-- lib-zstd-decompress-zstd_decompress_internal.h-ZSTD_DCtx_get_bmi2()-warn:inconsistent-indenting
+|-- ia64-randconfig-p001-20221026
+clang_recent_errors
+|-- hexagon-randconfig-r034-20221028
+|   `-- drivers-hwmon-smpro-hwmon.c:warning:unannotated-fall-through-between-switch-labels
+|-- hexagon-randconfig-r041-20221027
+|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|   `-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|-- mips-pic32mzda_defconfig
+|   `-- arch-mips-pic32-pic32mzda-early_console.c:warning:result-of-comparison-of-constant-with-expression-of-type-char-is-always-false
+`-- powerpc-randconfig-r031-20221026
+    |-- drivers-phy-mediatek-phy-mtk-hdmi-mt2701.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
+    `-- drivers-phy-mediatek-phy-mtk-hdmi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
+
+elapsed time: 726m
+
+configs tested: 78
+configs skipped: 2
+
+gcc tested configs:
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              defconfig
+i386                                defconfig
+i386                          randconfig-a001
+i386                          randconfig-a003
+arc                                 defconfig
+x86_64                           rhel-8.3-kvm
+x86_64                               rhel-8.3
+s390                             allmodconfig
+x86_64                           rhel-8.3-syz
+ia64                             allmodconfig
+x86_64                         rhel-8.3-kunit
+i386                          randconfig-a005
+arm                                 defconfig
+x86_64                        randconfig-a002
+x86_64                           allyesconfig
+alpha                               defconfig
+arc                  randconfig-r043-20221027
+arc                              allyesconfig
+powerpc                           allnoconfig
+x86_64                        randconfig-a013
+s390                             allyesconfig
+arm                            pleb_defconfig
+s390                                defconfig
+x86_64                          rhel-8.3-func
+arc                    vdk_hs38_smp_defconfig
+x86_64                        randconfig-a011
+alpha                            allyesconfig
+powerpc                    sam440ep_defconfig
+powerpc                          allmodconfig
+i386                             allyesconfig
+x86_64                        randconfig-a015
+x86_64                        randconfig-a006
+arm                              allyesconfig
+x86_64                    rhel-8.3-kselftests
+m68k                             allyesconfig
+sh                               allmodconfig
+i386                          randconfig-a014
+x86_64                        randconfig-a004
+m68k                             allmodconfig
+mips                             allyesconfig
+i386                          randconfig-a012
+arm64                            allyesconfig
+i386                          randconfig-a016
+m68k                        m5307c3_defconfig
+arm                        keystone_defconfig
+arm                        mvebu_v7_defconfig
+x86_64                           alldefconfig
+sh                           sh2007_defconfig
+powerpc                mpc7448_hpc2_defconfig
+riscv                            allmodconfig
+i386                          randconfig-c001
+loongarch                         allnoconfig
+ia64                        generic_defconfig
+
+clang tested configs:
+i386                          randconfig-a002
+x86_64                        randconfig-a014
+hexagon              randconfig-r041-20221027
+i386                          randconfig-a006
+x86_64                        randconfig-a005
+i386                          randconfig-a004
+x86_64                        randconfig-a016
+x86_64                        randconfig-a012
+hexagon              randconfig-r045-20221027
+s390                 randconfig-r044-20221027
+x86_64                        randconfig-a001
+riscv                randconfig-r042-20221027
+i386                          randconfig-a013
+powerpc                     tqm5200_defconfig
+i386                          randconfig-a015
+x86_64                        randconfig-a003
+i386                          randconfig-a011
+powerpc                 mpc836x_mds_defconfig
+arm                         mv78xx0_defconfig
+arm                      pxa255-idp_defconfig
+arm                   milbeaut_m10v_defconfig
+x86_64                          rhel-8.3-rust
+mips                        maltaup_defconfig
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
