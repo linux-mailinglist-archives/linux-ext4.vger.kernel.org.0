@@ -2,104 +2,144 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D01C2611D9A
-	for <lists+linux-ext4@lfdr.de>; Sat, 29 Oct 2022 00:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3854F611F7F
+	for <lists+linux-ext4@lfdr.de>; Sat, 29 Oct 2022 04:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbiJ1Wrx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 28 Oct 2022 18:47:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54818 "EHLO
+        id S229867AbiJ2C5J (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 28 Oct 2022 22:57:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229993AbiJ1Wrt (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Oct 2022 18:47:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD231E1975;
-        Fri, 28 Oct 2022 15:47:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CD66A62ACA;
-        Fri, 28 Oct 2022 22:47:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 172DFC43140;
-        Fri, 28 Oct 2022 22:47:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666997267;
-        bh=TLSDtgBK8VwfTvMigEag46MpMj/1E/6Gz70hTRHuF58=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nL7PsiwDTtGmgJRb1Ml4ZRkAUzl+Hn3bfm/T0QY0nf+V+2s6Lx9cwZRmeec8RdnnT
-         zwd9cZifwQnY0jQBYPGOoJHmnWUnRfYM/nr+n56j5/lB3wpWBX+o/1Taw+KkU9c+Ae
-         MFdnQQBtHyumLYjJl/7OltHD/Cmg5KDUk4pvinxrIgG1dTwRVti2uT5mS1wsOH8/co
-         f4is+iamKC+Lg6cGTQYgM52bmWLhNBlJza7rslc/b6yY45Yh8KV8fXTMk4j/+aiYCA
-         uUKGlXNMteCmwTJijTox6n6z8DHJQymzTS6D/zt2pucmwZZ8GgV1NtTy+RamhQoJ2X
-         91SGzr7N3zDHQ==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-btrfs@vger.kernel.org
-Subject: [PATCH 6/6] ext4: allow verity with fs block size < PAGE_SIZE
-Date:   Fri, 28 Oct 2022 15:45:39 -0700
-Message-Id: <20221028224539.171818-7-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.38.0
-In-Reply-To: <20221028224539.171818-1-ebiggers@kernel.org>
-References: <20221028224539.171818-1-ebiggers@kernel.org>
+        with ESMTP id S229868AbiJ2C5G (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Oct 2022 22:57:06 -0400
+Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D8B1D1AB1
+        for <linux-ext4@vger.kernel.org>; Fri, 28 Oct 2022 19:56:40 -0700 (PDT)
+Subject: Re: [PATCH] ext4: make ext4_mb_initialize_context return void
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1667012198;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CV7a/QQR+oFlpXmsuE3ax28iQ6IKQ/NfmwK7oLCorTg=;
+        b=izY9R0IseBfp2KWE13kPrNeBWS29o2kgwEfHj4ghwGACwGfijaQd03wOggSfub1WVaEOqp
+        JEad5mAAIPPRtzV2Q9RW6uhNHK7ViE3w+oBMS4qLR55EqeXcxpbxOdjFMTMq9bLW2cV4Ao
+        gqgplwUoZ2sagPOGmHoO32EVE1LWEtk=
+To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc:     Jason Yan <yanaijie@huawei.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
+References: <20221027032435.27374-1-guoqing.jiang@linux.dev>
+ <bf9dba6f-50c6-5ba8-31e3-b60de18105f1@huawei.com>
+ <23c58b71-8dbc-b314-de53-31e2593f94d4@linux.dev>
+ <Y1u05l3L/gb/cSYg@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Guoqing Jiang <guoqing.jiang@linux.dev>
+Message-ID: <a0b501bc-296d-dcb9-ebd0-8d2d4498c6c1@linux.dev>
+Date:   Sat, 29 Oct 2022 10:56:26 +0800
 MIME-Version: 1.0
+In-Reply-To: <Y1u05l3L/gb/cSYg@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Language: en-US
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+Hi Ojaswin,
 
-Now that the needed changes have been made to fs/buffer.c, ext4 is ready
-to support the verity feature when the filesystem block size is less
-than the page size.  So remove the mount-time check that prevented this.
+On 10/28/22 6:54 PM, Ojaswin Mujoo wrote:
+> On Thu, Oct 27, 2022 at 04:12:45PM +0800, Guoqing Jiang wrote:
+>>
+>> On 10/27/22 2:29 PM, Jason Yan wrote:
+>>> On 2022/10/27 11:24, Guoqing Jiang wrote:
+>>>> Change the return type to void since it always return 0, and no need
+>>>> to do the checking in ext4_mb_new_blocks.
+>>>>
+>>>> Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
+>>>> ---
+>>>>    fs/ext4/mballoc.c | 10 ++--------
+>>>>    1 file changed, 2 insertions(+), 8 deletions(-)
+>>>>
+>>>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>>>> index 9dad93059945..5b2ae37a8b80 100644
+>>>> --- a/fs/ext4/mballoc.c
+>>>> +++ b/fs/ext4/mballoc.c
+>>>> @@ -5204,7 +5204,7 @@ static void ext4_mb_group_or_file(struct
+>>>> ext4_allocation_context *ac)
+>>>>        mutex_lock(&ac->ac_lg->lg_mutex);
+>>>>    }
+>>>>    -static noinline_for_stack int
+>>>> +static noinline_for_stack void
+>>>>    ext4_mb_initialize_context(struct ext4_allocation_context *ac,
+>>>>                    struct ext4_allocation_request *ar)
+>>>>    {
+>>>> @@ -5253,8 +5253,6 @@ ext4_mb_initialize_context(struct
+>>>> ext4_allocation_context *ac,
+>>>>                (unsigned) ar->lleft, (unsigned) ar->pleft,
+>>>>                (unsigned) ar->lright, (unsigned) ar->pright,
+>>>>                inode_is_open_for_write(ar->inode) ? "" : "non-");
+>>>> -    return 0;
+>>>> -
+>>>>    }
+>>>>      static noinline_for_stack void
+>>>> @@ -5591,11 +5589,7 @@ ext4_fsblk_t ext4_mb_new_blocks(handle_t *handle,
+>>>>            goto out;
+>>>>        }
+>>>>    -    *errp = ext4_mb_initialize_context(ac, ar);
+>>>> -    if (*errp) {
+>>>> -        ar->len = 0;
+>>>> -        goto out;
+>>>> -    }
+>>>> +    ext4_mb_initialize_context(ac, ar);
+>>> This changed the logic here slightly. *errp will not be intialized with
+>>> zero after this change. So we need to carefully check whether this will
+>>> cause any issues.
+>> Yes, thanks for reminder. I think "*errp" is always set later with below.
+>>
+>> https://elixir.bootlin.com/linux/v6.1-rc2/source/fs/ext4/mballoc.c#L5606
+>> https://elixir.bootlin.com/linux/v6.1-rc2/source/fs/ext4/mballoc.c#L5611
+>> https://elixir.bootlin.com/linux/v6.1-rc2/source/fs/ext4/mballoc.c#L5629
+>> https://elixir.bootlin.com/linux/v6.1-rc2/source/fs/ext4/mballoc.c#L5646
+> Hi Guoqing,
+>
+> I agree, it seems to be intialized correctly later in the code. The
+> flow is something like:
+>
+>    ext4_fsblk_t ext4_mb_new_blocks(...)
+>    {
+>        ...
+>        ext4_mb_initialize_context(ac, ar);
+>        ...
+>        if (!ext4_mb_use_preallocated(ac)) {
+>            *errp = ext4_mb_pa_alloc(ac);  // *errp init to 0 on success
+>            ...
+>        }
+>
+>        if (likely(ac->ac_status == AC_STATUS_FOUND)) {
+>            // *errp init to 0 on success
+>            *errp = ext4_mb_mark_diskspace_used(ac, handle, reserv_clstrs);
+>            ...
+>        } else {
+>            ...
+>            *errp = -ENOSPC;
+>        }
+>        ...
+>    }
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- Documentation/filesystems/fsverity.rst | 8 +++++---
- fs/ext4/super.c                        | 5 -----
- 2 files changed, 5 insertions(+), 8 deletions(-)
+Yes, thanks for the above.
 
-diff --git a/Documentation/filesystems/fsverity.rst b/Documentation/filesystems/fsverity.rst
-index 4c202e0dee102..46c344eb41635 100644
---- a/Documentation/filesystems/fsverity.rst
-+++ b/Documentation/filesystems/fsverity.rst
-@@ -497,9 +497,11 @@ To create verity files on an ext4 filesystem, the filesystem must have
- been formatted with ``-O verity`` or had ``tune2fs -O verity`` run on
- it.  "verity" is an RO_COMPAT filesystem feature, so once set, old
- kernels will only be able to mount the filesystem readonly, and old
--versions of e2fsck will be unable to check the filesystem.  Moreover,
--currently ext4 only supports mounting a filesystem with the "verity"
--feature when its block size is equal to PAGE_SIZE (often 4096 bytes).
-+versions of e2fsck will be unable to check the filesystem.
-+
-+Originally, an ext4 filesystem with the "verity" feature could only be
-+mounted when its block size was equal to the system page size
-+(typically 4096 bytes).  In Linux v6.2, this limitation was removed.
- 
- ext4 sets the EXT4_VERITY_FL on-disk inode flag on verity files.  It
- can only be set by `FS_IOC_ENABLE_VERITY`_, and it cannot be cleared.
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 989365b878a67..3e6037a744585 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5339,11 +5339,6 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 		}
- 	}
- 
--	if (ext4_has_feature_verity(sb) && sb->s_blocksize != PAGE_SIZE) {
--		ext4_msg(sb, KERN_ERR, "Unsupported blocksize for fs-verity");
--		goto failed_mount_wq;
--	}
--
- 	/*
- 	 * Get the # of file system overhead blocks from the
- 	 * superblock if present.
--- 
-2.38.0
+> So it seems like this cleanup won't alter the behavior. Feel free to,
+> add:
+>
+> Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 
+Appreciate for your review!
+
+Thanks,
+Guoqing
