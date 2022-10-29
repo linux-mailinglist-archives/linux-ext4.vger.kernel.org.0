@@ -2,144 +2,134 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3854F611F7F
-	for <lists+linux-ext4@lfdr.de>; Sat, 29 Oct 2022 04:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8C65612021
+	for <lists+linux-ext4@lfdr.de>; Sat, 29 Oct 2022 06:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229867AbiJ2C5J (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 28 Oct 2022 22:57:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42112 "EHLO
+        id S229714AbiJ2Eq1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 29 Oct 2022 00:46:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229868AbiJ2C5G (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Oct 2022 22:57:06 -0400
-Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D8B1D1AB1
-        for <linux-ext4@vger.kernel.org>; Fri, 28 Oct 2022 19:56:40 -0700 (PDT)
-Subject: Re: [PATCH] ext4: make ext4_mb_initialize_context return void
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1667012198;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CV7a/QQR+oFlpXmsuE3ax28iQ6IKQ/NfmwK7oLCorTg=;
-        b=izY9R0IseBfp2KWE13kPrNeBWS29o2kgwEfHj4ghwGACwGfijaQd03wOggSfub1WVaEOqp
-        JEad5mAAIPPRtzV2Q9RW6uhNHK7ViE3w+oBMS4qLR55EqeXcxpbxOdjFMTMq9bLW2cV4Ao
-        gqgplwUoZ2sagPOGmHoO32EVE1LWEtk=
-To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc:     Jason Yan <yanaijie@huawei.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
-References: <20221027032435.27374-1-guoqing.jiang@linux.dev>
- <bf9dba6f-50c6-5ba8-31e3-b60de18105f1@huawei.com>
- <23c58b71-8dbc-b314-de53-31e2593f94d4@linux.dev>
- <Y1u05l3L/gb/cSYg@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Guoqing Jiang <guoqing.jiang@linux.dev>
-Message-ID: <a0b501bc-296d-dcb9-ebd0-8d2d4498c6c1@linux.dev>
-Date:   Sat, 29 Oct 2022 10:56:26 +0800
+        with ESMTP id S229580AbiJ2Eq0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 29 Oct 2022 00:46:26 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90920129742;
+        Fri, 28 Oct 2022 21:46:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 45E72B82AA2;
+        Sat, 29 Oct 2022 04:46:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 968C2C433D6;
+        Sat, 29 Oct 2022 04:46:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1667018781;
+        bh=80lU3QpeiitIVawK91PHV+p4z43WIDD4Rouks6i2Gj8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=uStOgrQ+MB0RzqQUR2IfSfKEroJt+tBJ1eUXiuGJdVpHPU65B4Wndy12I7NwulNEH
+         QLUNGsb9gPkhyPjLpOHxZest61y+4N8W4qWlHOMrKXoINg0FcDDDOjXxHaefByx+f/
+         8kBWsq7LLWaUOqILmEqMSRc+s3mc9FckVC7dRltlA3gueYJyLaWQeeWS7ZpJzaVFRR
+         3jqmb9wVl/FmxMezeNEb5Mt6NqqRQIo9nqBur1wO2lEpw78o6TPaG3b+pYYYWCgZiM
+         1KYPHhw1mZSVn8629ziSH0yjYWEjxqX/XkcIejJBjvO5Ogm4Ov/+SG8x91NwiUvL6B
+         J+nrTC2V/HxDA==
+Message-ID: <cee7fa24-5699-9777-d157-f03a8dd18a00@kernel.org>
+Date:   Sat, 29 Oct 2022 12:46:19 +0800
 MIME-Version: 1.0
-In-Reply-To: <Y1u05l3L/gb/cSYg@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
+Subject: Re: [f2fs-dev] [PATCH v3 11/23] f2fs: Convert f2fs_fsync_node_pages()
+ to use filemap_get_folios_tag()
 Content-Language: en-US
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        linux-fsdevel@vger.kernel.org
+Cc:     linux-cifs@vger.kernel.org, linux-nilfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-mm@kvack.org, ceph-devel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org
+References: <20221017202451.4951-1-vishal.moola@gmail.com>
+ <20221017202451.4951-12-vishal.moola@gmail.com>
+From:   Chao Yu <chao@kernel.org>
+In-Reply-To: <20221017202451.4951-12-vishal.moola@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Ojaswin,
+On 2022/10/18 4:24, Vishal Moola (Oracle) wrote:
+> Convert function to use a folio_batch instead of pagevec. This is in
+> preparation for the removal of find_get_pages_range_tag().
+> 
+> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
 
-On 10/28/22 6:54 PM, Ojaswin Mujoo wrote:
-> On Thu, Oct 27, 2022 at 04:12:45PM +0800, Guoqing Jiang wrote:
->>
->> On 10/27/22 2:29 PM, Jason Yan wrote:
->>> On 2022/10/27 11:24, Guoqing Jiang wrote:
->>>> Change the return type to void since it always return 0, and no need
->>>> to do the checking in ext4_mb_new_blocks.
->>>>
->>>> Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
->>>> ---
->>>>    fs/ext4/mballoc.c | 10 ++--------
->>>>    1 file changed, 2 insertions(+), 8 deletions(-)
->>>>
->>>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
->>>> index 9dad93059945..5b2ae37a8b80 100644
->>>> --- a/fs/ext4/mballoc.c
->>>> +++ b/fs/ext4/mballoc.c
->>>> @@ -5204,7 +5204,7 @@ static void ext4_mb_group_or_file(struct
->>>> ext4_allocation_context *ac)
->>>>        mutex_lock(&ac->ac_lg->lg_mutex);
->>>>    }
->>>>    -static noinline_for_stack int
->>>> +static noinline_for_stack void
->>>>    ext4_mb_initialize_context(struct ext4_allocation_context *ac,
->>>>                    struct ext4_allocation_request *ar)
->>>>    {
->>>> @@ -5253,8 +5253,6 @@ ext4_mb_initialize_context(struct
->>>> ext4_allocation_context *ac,
->>>>                (unsigned) ar->lleft, (unsigned) ar->pleft,
->>>>                (unsigned) ar->lright, (unsigned) ar->pright,
->>>>                inode_is_open_for_write(ar->inode) ? "" : "non-");
->>>> -    return 0;
->>>> -
->>>>    }
->>>>      static noinline_for_stack void
->>>> @@ -5591,11 +5589,7 @@ ext4_fsblk_t ext4_mb_new_blocks(handle_t *handle,
->>>>            goto out;
->>>>        }
->>>>    -    *errp = ext4_mb_initialize_context(ac, ar);
->>>> -    if (*errp) {
->>>> -        ar->len = 0;
->>>> -        goto out;
->>>> -    }
->>>> +    ext4_mb_initialize_context(ac, ar);
->>> This changed the logic here slightly. *errp will not be intialized with
->>> zero after this change. So we need to carefully check whether this will
->>> cause any issues.
->> Yes, thanks for reminder. I think "*errp" is always set later with below.
->>
->> https://elixir.bootlin.com/linux/v6.1-rc2/source/fs/ext4/mballoc.c#L5606
->> https://elixir.bootlin.com/linux/v6.1-rc2/source/fs/ext4/mballoc.c#L5611
->> https://elixir.bootlin.com/linux/v6.1-rc2/source/fs/ext4/mballoc.c#L5629
->> https://elixir.bootlin.com/linux/v6.1-rc2/source/fs/ext4/mballoc.c#L5646
-> Hi Guoqing,
->
-> I agree, it seems to be intialized correctly later in the code. The
-> flow is something like:
->
->    ext4_fsblk_t ext4_mb_new_blocks(...)
->    {
->        ...
->        ext4_mb_initialize_context(ac, ar);
->        ...
->        if (!ext4_mb_use_preallocated(ac)) {
->            *errp = ext4_mb_pa_alloc(ac);  // *errp init to 0 on success
->            ...
->        }
->
->        if (likely(ac->ac_status == AC_STATUS_FOUND)) {
->            // *errp init to 0 on success
->            *errp = ext4_mb_mark_diskspace_used(ac, handle, reserv_clstrs);
->            ...
->        } else {
->            ...
->            *errp = -ENOSPC;
->        }
->        ...
->    }
-
-Yes, thanks for the above.
-
-> So it seems like this cleanup won't alter the behavior. Feel free to,
-> add:
->
-> Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-
-Appreciate for your review!
+Acked-by: Chao Yu <chao@kernel.org>
 
 Thanks,
-Guoqing
+
+> ---
+>   fs/f2fs/node.c | 19 ++++++++++---------
+>   1 file changed, 10 insertions(+), 9 deletions(-)
+> 
+> diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+> index 983572f23896..e8b72336c096 100644
+> --- a/fs/f2fs/node.c
+> +++ b/fs/f2fs/node.c
+> @@ -1728,12 +1728,12 @@ int f2fs_fsync_node_pages(struct f2fs_sb_info *sbi, struct inode *inode,
+>   			unsigned int *seq_id)
+>   {
+>   	pgoff_t index;
+> -	struct pagevec pvec;
+> +	struct folio_batch fbatch;
+>   	int ret = 0;
+>   	struct page *last_page = NULL;
+>   	bool marked = false;
+>   	nid_t ino = inode->i_ino;
+> -	int nr_pages;
+> +	int nr_folios;
+>   	int nwritten = 0;
+>   
+>   	if (atomic) {
+> @@ -1742,20 +1742,21 @@ int f2fs_fsync_node_pages(struct f2fs_sb_info *sbi, struct inode *inode,
+>   			return PTR_ERR_OR_ZERO(last_page);
+>   	}
+>   retry:
+> -	pagevec_init(&pvec);
+> +	folio_batch_init(&fbatch);
+>   	index = 0;
+>   
+> -	while ((nr_pages = pagevec_lookup_tag(&pvec, NODE_MAPPING(sbi), &index,
+> -				PAGECACHE_TAG_DIRTY))) {
+> +	while ((nr_folios = filemap_get_folios_tag(NODE_MAPPING(sbi), &index,
+> +					(pgoff_t)-1, PAGECACHE_TAG_DIRTY,
+> +					&fbatch))) {
+>   		int i;
+>   
+> -		for (i = 0; i < nr_pages; i++) {
+> -			struct page *page = pvec.pages[i];
+> +		for (i = 0; i < nr_folios; i++) {
+> +			struct page *page = &fbatch.folios[i]->page;
+>   			bool submitted = false;
+>   
+>   			if (unlikely(f2fs_cp_error(sbi))) {
+>   				f2fs_put_page(last_page, 0);
+> -				pagevec_release(&pvec);
+> +				folio_batch_release(&fbatch);
+>   				ret = -EIO;
+>   				goto out;
+>   			}
+> @@ -1821,7 +1822,7 @@ int f2fs_fsync_node_pages(struct f2fs_sb_info *sbi, struct inode *inode,
+>   				break;
+>   			}
+>   		}
+> -		pagevec_release(&pvec);
+> +		folio_batch_release(&fbatch);
+>   		cond_resched();
+>   
+>   		if (ret || marked)
