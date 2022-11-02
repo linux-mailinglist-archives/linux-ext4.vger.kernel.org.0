@@ -2,64 +2,61 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 341366170D6
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Nov 2022 23:48:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 580F56172F8
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Nov 2022 00:44:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231262AbiKBWse (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 2 Nov 2022 18:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44900 "EHLO
+        id S231283AbiKBXog (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 2 Nov 2022 19:44:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbiKBWsd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Nov 2022 18:48:33 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E13E6348
-        for <linux-ext4@vger.kernel.org>; Wed,  2 Nov 2022 15:48:32 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id b29so3072pfp.13
-        for <linux-ext4@vger.kernel.org>; Wed, 02 Nov 2022 15:48:32 -0700 (PDT)
+        with ESMTP id S231363AbiKBXoW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Nov 2022 19:44:22 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F0313E9A
+        for <linux-ext4@vger.kernel.org>; Wed,  2 Nov 2022 16:41:10 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id b1-20020a17090a7ac100b00213fde52d49so225870pjl.3
+        for <linux-ext4@vger.kernel.org>; Wed, 02 Nov 2022 16:41:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dilger-ca.20210112.gappssmtp.com; s=20210112;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cj171yfmYzsHSXMPz8MM+aTcukwosxuCRyTSCspjm7A=;
-        b=GDavR2PKjclwaPcPgDus/pHDswU0YvdDE3GCccZSg3K+vWok990di8sHqeyu4rOxRl
-         OtndDMqDlaj3iEuPOhbFJ1kHk8hOG9Fn1RgvE3L6Cb8jEWTctPM3UpOnb0aeSzDhIHWH
-         x3RxcQbADtVh9ghhFMUkufRB/krMz79QBBaWiEeItTDdDGSglQLqxln3PWr4QA1JZUrc
-         ARgFWCg9pX+BxmJB52L9HITfBbI4Nlfuplz5ryjTGIBzcXbEzBOaslncu6mCBGk8ZcFN
-         QlR5LJzX4qYujyxZozH9asMRkkBnmndccMvLxeRIcTND/xhIaIaDmiTmYNfFr3mCzZHr
-         KoLQ==
+        h=to:date:message-id:subject:mime-version:from:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=rJxlbqXdP+CrIusjDzh/oVjx3yFbw3NsPbbPFnIK7Ko=;
+        b=BZJwKaY9UrF9O4vqb/ByVAl+NkWMYB6PeluEkmiNNV2Wt4iddeihODNKbdbLENc/D1
+         40MDp6Fnmch/3D7uG4npogA1/WY0qP7pkZC0uACG+E6WaMdFwYdwLpOytp+qYg27sWT5
+         5egSvbFegciebOLrsdmHiKpGQLejJy3zoePNAPFERNpa91FhGNYeTOiJ6j6G7ZKk9MzE
+         piXKolijv/JpZTm8pY5FCzq2ariNahdLgzl2Jb2Q94s+cTNYx3XkAOcyvP1WCNHlrQn3
+         lxZ/QS+rnY3tgsJVcdwoo2pJIplAuclsLumBCnwck1+TiVAqaGWTyhRQJzzmRM6+1DSd
+         PNvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cj171yfmYzsHSXMPz8MM+aTcukwosxuCRyTSCspjm7A=;
-        b=OL2Ytxb1hZq+3E84kzW6LCrOuHoahcQHsvbAmlk1VzkQmejQTeFhmEobBSqauSvoDb
-         7TBw7U4AQnfecKrWM7qlETqMxwVVABX/f7HDRiZRZvtzcn2UjAHQR8zQM5b36jSzebKo
-         Eq1ypWSH2oJtP9iy9VpWLUkxGGydqV1dtGjQ3uS9j0PN6Vt3sD/wWdW+0B5E8JlXj7+X
-         2L/8oA6MBvVLGfA7BzR3M8jYinYsjBPIz+2d2E95QZT2KXwPQJB4uCP7anht7ZPSYP7u
-         Obx28Y2IxbDZN4nm69ULZ3Qcq++/h9uMRzazOHMXcaqc4RvyfjWzevis2hNBfDvG9ml5
-         u6Cg==
-X-Gm-Message-State: ACrzQf22gKHfNKA3bOy2GkOy3n5Jv4HSCuElcLyHSLaOyQLeEfQyEZif
-        tXSRFmmR4pUJCnPuN5GsorGPOg==
-X-Google-Smtp-Source: AMsMyM53HCGUgkyCoxkxdNRiNURlfSxGnzz6hEF/FRMov3WHMgN9jcKZgJgCGSBcrzW7wAUTlEiOgQ==
-X-Received: by 2002:a65:644a:0:b0:470:f04:5b67 with SMTP id s10-20020a65644a000000b004700f045b67mr3617221pgv.586.1667429311502;
-        Wed, 02 Nov 2022 15:48:31 -0700 (PDT)
+        h=to:date:message-id:subject:mime-version:from:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rJxlbqXdP+CrIusjDzh/oVjx3yFbw3NsPbbPFnIK7Ko=;
+        b=7XB+eu08rPMbQmSIaUeI8QLBf5JlG8T3LYe7feWd3+v1Bq6tn3ZayHEtLsvkQXU+bE
+         5GUqR6obpfRe4EvwkYJktZHuU+rDN6IwexHm+q1CWaS5F6qrSO9oaohNOIe/HSGoPVyT
+         jifQUzTHdfOo3XsDgE1nAOC1n2inAS3hEdYzyTuUmVJJJOqHpc5Z4HFiMpdY+4m7M2yq
+         bZRcm3viJW5RCPbWE98rWWkYHyJp6gRvTVoA3KziftCSIdM61AxWXxB1V8sRlerdBsTZ
+         9TwFSaqIlKneNSpSlL0YO7lxnND3lgNViFi/l3q5+Ej6wESu62U+lg7XE6RSnr/trKR5
+         uuQQ==
+X-Gm-Message-State: ACrzQf2cqOq2pCiZ6v1yW+ZAuYav+NAZXgWMmsx+a5JxqMtFJDuI1/DZ
+        TqGN3Z81qvfBi7yC3YL9SugVGYbrV3+eIQ==
+X-Google-Smtp-Source: AMsMyM4ygGjPQYDdWXm4GcNkePUWDZs1fWzFMt8eyglX4aHs3aXw8v5f59h710/Pq4l/7VPJADk90g==
+X-Received: by 2002:a17:90b:33d0:b0:213:137b:1343 with SMTP id lk16-20020a17090b33d000b00213137b1343mr28374828pjb.128.1667432469961;
+        Wed, 02 Nov 2022 16:41:09 -0700 (PDT)
 Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id n126-20020a622784000000b00562ef28aac6sm8906682pfn.185.2022.11.02.15.48.30
+        by smtp.gmail.com with ESMTPSA id n16-20020a635910000000b0046f6d7dcd1dsm8083291pgb.25.2022.11.02.16.41.09
+        for <linux-ext4@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 02 Nov 2022 15:48:30 -0700 (PDT)
+        Wed, 02 Nov 2022 16:41:09 -0700 (PDT)
 From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <41A87324-A905-48A6-93F4-1DCA709B5FAF@dilger.ca>
 Content-Type: multipart/signed;
- boundary="Apple-Mail=_AEB4824A-F0CA-4C11-9F0B-2946649E9988";
+ boundary="Apple-Mail=_17EEC37C-A0E2-44C3-AAA9-050078F7CDDA";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [e2fsprogs PATCH v2] e2fsck: don't allow journal inode to have
- encrypt flag
-Date:   Wed, 2 Nov 2022 16:48:27 -0600
-In-Reply-To: <20221102220551.3940-1-ebiggers@kernel.org>
-Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org
-To:     Eric Biggers <ebiggers@kernel.org>
-References: <20221102220551.3940-1-ebiggers@kernel.org>
+Subject: periodic lifetime_write_kbytes updates?
+Message-Id: <92BC4EEA-69A6-4AE0-ABA8-304E9DE2D4A9@dilger.ca>
+Date:   Wed, 2 Nov 2022 17:41:07 -0600
+To:     linux-ext4@vger.kernel.org
 X-Mailer: Apple Mail (2.3273)
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -71,146 +68,44 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
---Apple-Mail=_AEB4824A-F0CA-4C11-9F0B-2946649E9988
-Content-Transfer-Encoding: quoted-printable
+--Apple-Mail=_17EEC37C-A0E2-44C3-AAA9-050078F7CDDA
+Content-Transfer-Encoding: 7bit
 Content-Type: text/plain;
 	charset=us-ascii
 
-On Nov 2, 2022, at 4:05 PM, Eric Biggers <ebiggers@kernel.org> wrote:
->=20
-> From: Eric Biggers <ebiggers@google.com>
->=20
-> Since the kernel is being fixed to consider journal inodes with the
-> 'encrypt' flag set to be invalid, also update e2fsck accordingly.
->=20
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+I was looking at the /sys/fs/ext4/*/lifetime_write_kbytes counters on
+my home server and wondering about how accurate they are.  That is most
+interesting in the case of flash devices, to get a good idea of the
+lifetime writes vs. actual rated drive writes per day.
 
-Looks good.
+It looks like s_kbytes_written is only updated on clean unmount
+via ext4_commit_super->ext4_update_super() and in a few error handling
+codepaths.  This means any in-memory updates are typically lost if the
+server crashes or loses power (which is typical for long-running servers,
+rather than a clean shutdown).
 
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+It would be useful to periodically update the superblock with the current
+value, maybe once an hour if the value has changed more than some small
+margin (to take into account the *previous* update).  The superblock used
+to be written frequently via ->write_super(), but this has not been the
+case since commit v3.5-rc5-19-g4d47603d9703.
 
-> ---
->=20
-> v2: generate the test filesystem image dynamically.
->=20
-> e2fsck/journal.c                   |  3 ++-
-> tests/f_badjour_encrypted/expect.1 | 30 ++++++++++++++++++++++++++++++
-> tests/f_badjour_encrypted/expect.2 |  7 +++++++
-> tests/f_badjour_encrypted/name     |  1 +
-> tests/f_badjour_encrypted/script   | 11 +++++++++++
-> 5 files changed, 51 insertions(+), 1 deletion(-)
-> create mode 100644 tests/f_badjour_encrypted/expect.1
-> create mode 100644 tests/f_badjour_encrypted/expect.2
-> create mode 100644 tests/f_badjour_encrypted/name
-> create mode 100644 tests/f_badjour_encrypted/script
->=20
-> diff --git a/e2fsck/journal.c b/e2fsck/journal.c
-> index d802c5e9..343e48ba 100644
-> --- a/e2fsck/journal.c
-> +++ b/e2fsck/journal.c
-> @@ -1039,7 +1039,8 @@ static errcode_t e2fsck_get_journal(e2fsck_t =
-ctx, journal_t **ret_journal)
-> 			tried_backup_jnl++;
-> 		}
-> 		if (!j_inode->i_ext2.i_links_count ||
-> -		    !LINUX_S_ISREG(j_inode->i_ext2.i_mode)) {
-> +		    !LINUX_S_ISREG(j_inode->i_ext2.i_mode) ||
-> +		    (j_inode->i_ext2.i_flags & EXT4_ENCRYPT_FL)) {
-> 			retval =3D EXT2_ET_NO_JOURNAL;
-> 			goto try_backup_journal;
-> 		}
-> diff --git a/tests/f_badjour_encrypted/expect.1 =
-b/tests/f_badjour_encrypted/expect.1
-> new file mode 100644
-> index 00000000..0b13b9eb
-> --- /dev/null
-> +++ b/tests/f_badjour_encrypted/expect.1
-> @@ -0,0 +1,30 @@
-> +Superblock has an invalid journal (inode 8).
-> +Clear? yes
-> +
-> +*** journal has been deleted ***
-> +
-> +Pass 1: Checking inodes, blocks, and sizes
-> +Journal inode is not in use, but contains data.  Clear? yes
-> +
-> +Pass 2: Checking directory structure
-> +Pass 3: Checking directory connectivity
-> +Pass 4: Checking reference counts
-> +Pass 5: Checking group summary information
-> +Block bitmap differences:  -(24--25) -(27--41) -(107--1113)
-> +Fix? yes
-> +
-> +Free blocks count wrong for group #0 (934, counted=3D1958).
-> +Fix? yes
-> +
-> +Free blocks count wrong (934, counted=3D1958).
-> +Fix? yes
-> +
-> +Recreate journal? yes
-> +
-> +Creating journal (1024 blocks):  Done.
-> +
-> +*** journal has been regenerated ***
-> +
-> +test_filesys: ***** FILE SYSTEM WAS MODIFIED *****
-> +test_filesys: 11/256 files (0.0% non-contiguous), 1114/2048 blocks
-> +Exit status is 1
-> diff --git a/tests/f_badjour_encrypted/expect.2 =
-b/tests/f_badjour_encrypted/expect.2
-> new file mode 100644
-> index 00000000..76934be2
-> --- /dev/null
-> +++ b/tests/f_badjour_encrypted/expect.2
-> @@ -0,0 +1,7 @@
-> +Pass 1: Checking inodes, blocks, and sizes
-> +Pass 2: Checking directory structure
-> +Pass 3: Checking directory connectivity
-> +Pass 4: Checking reference counts
-> +Pass 5: Checking group summary information
-> +test_filesys: 11/256 files (9.1% non-contiguous), 1114/2048 blocks
-> +Exit status is 0
-> diff --git a/tests/f_badjour_encrypted/name =
-b/tests/f_badjour_encrypted/name
-> new file mode 100644
-> index 00000000..e8f4c04f
-> --- /dev/null
-> +++ b/tests/f_badjour_encrypted/name
-> @@ -0,0 +1 @@
-> +journal inode has encrypt flag
-> diff --git a/tests/f_badjour_encrypted/script =
-b/tests/f_badjour_encrypted/script
-> new file mode 100644
-> index 00000000..e6778f1d
-> --- /dev/null
-> +++ b/tests/f_badjour_encrypted/script
-> @@ -0,0 +1,11 @@
-> +if ! test -x $DEBUGFS_EXE; then
-> +	echo "$test_name: $test_description: skipped (no debugfs)"
-> +	return 0
-> +fi
-> +
-> +touch $TMPFILE
-> +$MKE2FS -t ext4 -b 1024 $TMPFILE 2M
-> +$DEBUGFS -w -R 'set_inode_field <8> flags 0x80800' $TMPFILE
-> +
-> +SKIP_GUNZIP=3D"true"
-> +. $cmd_dir/run_e2fsck
->=20
-> base-commit: aad34909b6648579f42dade5af5b46821aa4d845
-> --
-> 2.38.1
->=20
-
+Any thoughts/objections to a periodic task calling ext4_update_super()
+every hour if there have been any noticeable writes since the last time
+it was called?  This could potentially be more clever so that it only
+writes if the disk is not asleep, and do the writes the next time it wakes,
+but I'm not sure how easy/hard that is to detect at the filesystem level.
 
 Cheers, Andreas
 
+PS: there is *also* a function resize.c::ext4_update_super() for added
+confusion, but that does something completely different...
 
 
 
 
 
---Apple-Mail=_AEB4824A-F0CA-4C11-9F0B-2946649E9988
+--Apple-Mail=_17EEC37C-A0E2-44C3-AAA9-050078F7CDDA
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
 	filename=signature.asc
@@ -221,19 +116,19 @@ Content-Description: Message signed with OpenPGP
 -----BEGIN PGP SIGNATURE-----
 Comment: GPGTools - http://gpgtools.org
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmNi87wACgkQcqXauRfM
-H+BMqQ/8CvUUDekSO4V1Hk3uMLri/tmSxwkFST3cvdwscpN0ffuMVomfjxpkpu6A
-9fdL+vqSM7Z+U1ZCf7A4HE221mQS2BNnqGfOcfJ5oWy/2mZlvp7yRUVWdYhT3iMA
-NIipg4aFDQ2wH86fAY33D3RDWB5glkh78b23W4GqlFJSBVQNAdqd6M4zj31pUkca
-V5Axm3LwVqWy9WofWo3MiBA6dSxIKB9G1k8xCWAzFwjNLDlZPdJCisq6iAbkYHQB
-LFMHq9ZaQdU2SSZFnagwgL2X2dKo4i+9lqDgXvEY/rmvE0OjCmnonFoDUXN1+dOp
-/CLAWCe+p2vxjQ3VfSlEy4TqMUGaduZYQvdS/k2CQtTV+oX+Cnt1m2du3O1/ujRW
-qzlgzfg8SMc7bgy8EQCcQ3kjdykFSEdlhBVDsoH0ce06C3WJvWog3IDIIdW773SD
-zr29YXQp6XTYtgde+dwRkSQAn+t9blBRsr1loAbS80WZYeE1vauIOWwPuTR+e/sg
-EGmX2E09XpVRXx0JQ/XuumRRqVnWCHEK1c/+Qz4+mHBBXjYmdYiLQ/G6rctemGTF
-jxRiQtsSEBJrid14AXeRnU2v+C9eIZHRWgw9i6xhJKESKfus4lbLomh/gws026ii
-wjXH3QGd2ngP+Yls/fXezbO0rfU2orATgkWNxmafmR2wLzpA3aI=
-=sAK+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmNjABMACgkQcqXauRfM
+H+BkbRAAuif5gEFSb4hycovccbB+JKCr6tVBj/w+b4MVFnMKx6NKXtyU83qaDCFC
+HNQY0U9BYd+Z6FPT3nU/Zud8XRvMybFACBky4rfKyMyEG0GWQ2yaLV1ObLfR83I0
+JLVBPIzz+F54sEhQiPhFuny8wqh4x+HOUrKpmz8sqh1J7V4zFD2CUcoHslLTP9zZ
+L0ycn9nqi3JkelEQkh+tA6vfiZ4JGw2hICQwO7iY/pPAtplFK5jKO1U9DrquIfuG
+NFtP7r5jRxzpWSSL8Xx223BjXU3PnZ08+hF3PBWqhn0cXIaxDivfUYeHkVX6lGY8
+6X3kWtndq2wOAVm0qw2/OFxA1FQ4xJotWkqfxYHRpyXpwp89K99fOo7ME5rvQJdK
+pRRtLnAsJ/dG5eMDUB1uSD6TJa3QDK6WeiUPs1qF1cLbs4EZALJtkL0lZ90bqdnJ
+h44QfyvDPCVFs2cZQlcYbF8T1oLParZ0QvRKfpkrjkfvVqhiYSYLiiiSQZveestY
+fkdMJpV7polzbwkYwfsw3EPrryBmLWHa8TtpRFxEhLNVzz3bKjRWg3IVdhLAv0Br
+po36Np8++bQHtLIPTzKmx/u+D1QoeVzKkKemyG4OM7D7KlXr2T9c/a/3WbYabG5Y
+/6C6JNpbLOdyqUVRaJLooJkuXyGg5UvEx/s5rcq7dOSxA9Loxk0=
+=Jnm9
 -----END PGP SIGNATURE-----
 
---Apple-Mail=_AEB4824A-F0CA-4C11-9F0B-2946649E9988--
+--Apple-Mail=_17EEC37C-A0E2-44C3-AAA9-050078F7CDDA--
