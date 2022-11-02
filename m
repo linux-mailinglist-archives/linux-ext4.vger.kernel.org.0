@@ -2,107 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7993A615CC9
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Nov 2022 08:13:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D229D615D15
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Nov 2022 08:45:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbiKBHNE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 2 Nov 2022 03:13:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40336 "EHLO
+        id S229992AbiKBHpD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 2 Nov 2022 03:45:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbiKBHNB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Nov 2022 03:13:01 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B82AF21248;
-        Wed,  2 Nov 2022 00:13:00 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id t25so42893555ejb.8;
-        Wed, 02 Nov 2022 00:13:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=p+IeUzxt6orpOlekXZBA+T9iyN6d3oGAR7wGHMXLHvo=;
-        b=pdtwWebe75iegeVM79otvSfrtFou8j0pW/4zklqkXm7x1R0VadKV/ByxKcv2nu54+u
-         euzuvJRBjjNZl4xS6I3oix2lZYVB1GVbHAGn6TcINY+eK05QfIYGp8ewdPnUM5gN792+
-         MQyEMrE6sA1M6DERuziD66kJ8EDrPpJ3dmSYBek3zAp/MBv1HfT5AbnE//WQJflOmAlE
-         ACyeoNPzPHZbVF4nL/A1w8mAVVv0wCw7FdvXGl7pbJvBpmNxl7q/x6OlfBwYNA6KbTrO
-         G20zpPE7Nqr/UrhMF+nTQSOWK878LOoX72ypgI7Dr6vKUSFfgywyl+uwnyfl8xp3PnRS
-         HzAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=p+IeUzxt6orpOlekXZBA+T9iyN6d3oGAR7wGHMXLHvo=;
-        b=w21zaKWQ1Uz+sH/zRDJOe+dHXoZCctJRuaTYeXGhjaigzQTITnMZzqsnGsgeYRdn6L
-         goeiNkzoeNNutl+u6LMdmCFVEJuHmudi0sK8HcJhTdT/stgzMYNr+PBlu+0r5+8QwA1+
-         sL9QOwUgkVS0eIlnXcHOa4JZy2BKc+dCI+h44GPSIfuiQO8xJAytBaL1lzvHvCi+EGof
-         QNffQxR0t1c8ooZ8R/ekTa1Tm+qFjFWE9WI21ilExya1kNGHChCVM1gcW2GDgyn44ltv
-         RBxbGJbAwTYYGxaK9KFt1USMq8sPeExGecsYNwztN/A/+agv7VMp1GZfHPXFDkUOK3Z5
-         fSaw==
-X-Gm-Message-State: ACrzQf2nwGnSoA2enJtv0vJM+IrwE3BWiBRTcJrQKHJUiGU/0Ff893/K
-        T7vqIjpm4mX3wpvwR37esXcoNiCyNPbHpg==
-X-Google-Smtp-Source: AMsMyM5ARv2QWNszOAthBVutvxps337BuD2bKMwP2sv1ggNbxZoCLIeJ0P3N3tTbqde/yJeqJFqYSg==
-X-Received: by 2002:a17:907:6d88:b0:7ad:b5f1:8ffc with SMTP id sb8-20020a1709076d8800b007adb5f18ffcmr20491200ejc.727.1667373178984;
-        Wed, 02 Nov 2022 00:12:58 -0700 (PDT)
-Received: from localhost.localdomain ([46.248.82.114])
-        by smtp.gmail.com with ESMTPSA id 10-20020a170906218a00b0077205dd15basm5031930eju.66.2022.11.02.00.12.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Nov 2022 00:12:57 -0700 (PDT)
-From:   Uros Bizjak <ubizjak@gmail.com>
-To:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Uros Bizjak <ubizjak@gmail.com>, "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Subject: [PATCH RESEND] fs/ext4: Use try_cmpxchg in ext4_update_bh_state
-Date:   Wed,  2 Nov 2022 08:11:47 +0100
-Message-Id: <20221102071147.6642-1-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.37.3
+        with ESMTP id S229468AbiKBHo4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Nov 2022 03:44:56 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D0C52529B;
+        Wed,  2 Nov 2022 00:44:54 -0700 (PDT)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4N2JkG37PvzJnQ0;
+        Wed,  2 Nov 2022 15:41:58 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
+ (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Wed, 2 Nov
+ 2022 15:44:51 +0800
+From:   Baokun Li <libaokun1@huawei.com>
+To:     <linux-ext4@vger.kernel.org>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+        <ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>, <yukuai3@huawei.com>, <libaokun1@huawei.com>
+Subject: [PATCH] ext4: fix use-after-free in ext4_orphan_cleanup
+Date:   Wed, 2 Nov 2022 16:06:33 +0800
+Message-ID: <20221102080633.1630225-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Use try_cmpxchg instead of cmpxchg (*ptr, old, new) == old in
-ext4_update_bh_state.  x86 CMPXCHG instruction returns success in ZF flag,
-so this change saves a compare after cmpxchg (and related move instruction
-in front of cmpxchg).
+I caught a issue as follows:
+==================================================================
+ BUG: KASAN: use-after-free in __list_add_valid+0x28/0x1a0
+ Read of size 8 at addr ffff88814b13f378 by task mount/710
 
-Also, try_cmpxchg implicitly assigns old *ptr value to "old" when cmpxchg
-fails. There is no need to re-read the value in the loop.
+ CPU: 1 PID: 710 Comm: mount Not tainted 6.1.0-rc3-next #370
+ Call Trace:
+  <TASK>
+  dump_stack_lvl+0x73/0x9f
+  print_report+0x25d/0x759
+  kasan_report+0xc0/0x120
+  __asan_load8+0x99/0x140
+  __list_add_valid+0x28/0x1a0
+  ext4_orphan_cleanup+0x564/0x9d0 [ext4]
+  __ext4_fill_super+0x48e2/0x5300 [ext4]
+  ext4_fill_super+0x19f/0x3a0 [ext4]
+  get_tree_bdev+0x27b/0x450
+  ext4_get_tree+0x19/0x30 [ext4]
+  vfs_get_tree+0x49/0x150
+  path_mount+0xaae/0x1350
+  do_mount+0xe2/0x110
+  __x64_sys_mount+0xf0/0x190
+  do_syscall_64+0x35/0x80
+  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+  </TASK>
+ [...]
+==================================================================
 
-No functional change intended.
+Above issue may happen as follows:
+-------------------------------------
+ext4_fill_super
+  ext4_orphan_cleanup
+   --- loop1: assume last_orphan is 12 ---
+    list_add(&EXT4_I(inode)->i_orphan, &EXT4_SB(sb)->s_orphan)
+    ext4_truncate --> return 0
+      ext4_inode_attach_jinode --> return -ENOMEM
+    iput(inode) --> free inode<12>
+   --- loop2: last_orphan is still 12 ---
+    list_add(&EXT4_I(inode)->i_orphan, &EXT4_SB(sb)->s_orphan);
+    // use inode<12> and trigger UAF
 
-Cc: "Theodore Ts'o" <tytso@mit.edu>
-Cc: Andreas Dilger <adilger.kernel@dilger.ca>
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+To solve this issue, we need to propagate the return value of
+ext4_inode_attach_jinode() appropriately.
+
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
 ---
- fs/ext4/inode.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ fs/ext4/inode.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 2b5ef1b64249..162e39e2f59a 100644
+index fca47470c85a..e7e7561f0baa 100644
 --- a/fs/ext4/inode.c
 +++ b/fs/ext4/inode.c
-@@ -780,11 +780,10 @@ static void ext4_update_bh_state(struct buffer_head *bh, unsigned long flags)
- 	 * once we get rid of using bh as a container for mapping information
- 	 * to pass to / from get_block functions, this can go away.
- 	 */
-+	old_state = READ_ONCE(bh->b_state);
- 	do {
--		old_state = READ_ONCE(bh->b_state);
- 		new_state = (old_state & ~EXT4_MAP_FLAGS) | flags;
--	} while (unlikely(
--		 cmpxchg(&bh->b_state, old_state, new_state) != old_state));
-+	} while (unlikely(!try_cmpxchg(&bh->b_state, &old_state, new_state)));
- }
+@@ -4224,7 +4224,8 @@ int ext4_truncate(struct inode *inode)
  
- static int _ext4_get_block(struct inode *inode, sector_t iblock,
+ 	/* If we zero-out tail of the page, we have to create jinode for jbd2 */
+ 	if (inode->i_size & (inode->i_sb->s_blocksize - 1)) {
+-		if (ext4_inode_attach_jinode(inode) < 0)
++		err = ext4_inode_attach_jinode(inode);
++		if (err)
+ 			goto out_trace;
+ 	}
+ 
 -- 
-2.37.3
+2.31.1
 
