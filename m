@@ -2,145 +2,205 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 491F3618B34
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Nov 2022 23:14:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E92DB618B78
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Nov 2022 23:28:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbiKCWOn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Nov 2022 18:14:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40376 "EHLO
+        id S230511AbiKCW2v (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Nov 2022 18:28:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230099AbiKCWOm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Nov 2022 18:14:42 -0400
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A1021263
-        for <linux-ext4@vger.kernel.org>; Thu,  3 Nov 2022 15:14:40 -0700 (PDT)
-Received: by mail-io1-f69.google.com with SMTP id z15-20020a5e860f000000b006c09237cc06so1920596ioj.21
-        for <linux-ext4@vger.kernel.org>; Thu, 03 Nov 2022 15:14:40 -0700 (PDT)
+        with ESMTP id S231826AbiKCW22 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Nov 2022 18:28:28 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4444B22BF1;
+        Thu,  3 Nov 2022 15:28:14 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id q1so2866738pgl.11;
+        Thu, 03 Nov 2022 15:28:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=04TfsshirPxCNoji6KR6vQQ5/+Nqz1IUHQcJvZJx5NI=;
+        b=i5grfA60bPrUFTlgsPlduW3hAvcmtFixLYcSxpxknTbqWlzA5eSDZo2QxGbmEUX4Ez
+         PFC90kceZfOYR3I9pFhRCfv942PHFd9bUJonaLnIBlhLHWOGJXBFiGYfo6vJUukVtx/7
+         soCCVDQxzU6Aa5VrIKCIba0AAxBy8QcPqjem6y+c0iOC2pXque67sr+L4UHpFitkorkA
+         KMkKnCOU4SFkyF64UZjc/aMbE0utm6aLXgpH+aZ18gtX0Gatb6OKO9Qq/MuBrV4+6ZLy
+         XXGAcHiwHa5E1MOTVLelV8aravzzQvF3MR4c2sDr0OACn3OsrYzVSuuzdbXfd6Ax3gqr
+         R5XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=b+vj0ESjG5r4BIvswDDDboZ1laiioRVaHJ/TmUfSzc4=;
-        b=aX4gqyhlsHfzX3UVmSm+pxnn+rqLpBcpTZAgZL2RbtoNyKM2QpfxNsrbSTkh3sBlX5
-         5x2FRl8ARjUZ6V0fGSXaP8kXp0mMTKZASso9w/WWgIHCufccYiCUymAsSkr8owfVzQIB
-         605N7rJQhl/QtBG2LpiIc910seFX4+LfpAsb8ZsjArmtW3yVQ6Rka/yi9zTpprpKXXVn
-         FrT2/9bHeotns/VdTuijh439sj+fUUVY+087uuWNYNqKoLQ3nVBx6Hu5j0zwrEJZFcd0
-         TdVD1JNi35RzCj6vstMoNcFVQazH6ABR9UL3V+by831ooRFX8PgRNp1EUX7xTnPC+cBj
-         nj/w==
-X-Gm-Message-State: ACrzQf2hXFHSJ3nPWyJfPca6QLeKWWz4olf5j82ofPNeJZZw0IVHFP00
-        qVKVPBiVeLE6bX4eRkKZR1BsPOmd7wYDFRJsb5EdSu9wSZPW
-X-Google-Smtp-Source: AMsMyM4eMH14ozcQ0xczpTX2Mp2+FyiTYDUqAsExiEsaPiJ+i/x28Ew3iMKu6PAmTQRewZIp/QUUaNy5gfLO2HTUW9p3AQjJYRzg
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=04TfsshirPxCNoji6KR6vQQ5/+Nqz1IUHQcJvZJx5NI=;
+        b=rhkIcEs5FvgsvfOqKveINjIkfCy0ZKaTM9AACsu7dyrjTWwn4tmF/x/2S6GvIWxuGq
+         SyNJFWg07vDRYy2K52GtL2+nUHkVD7co+jKv1qY3+7kd5pBTC+P09TGy3BNf5HQy4Iba
+         fF+Damje4uPVVCccC0k9Ov2DyUeqr5ciMHuAGr6PtBNV+yC6XFDLbgT+Z/jI4bd/gzEm
+         CEoyu42Sqgf7U/ShO6808g97ASyv7EOCafuF20Jlc/+BCp8ok527n5v5+YHPCQpbqlWP
+         f2jF3IAyYxbXmDieTR9N4eVhvnkTCZkNg3Ei2IV3U9cOenuRZUz1kDjUC+lZjFQYE47x
+         hQxQ==
+X-Gm-Message-State: ACrzQf3XMHNLEQ0vJIWmNQsk5FSdw4+E0Pz9kW71Jja/E+dz54PbKu/u
+        W74WHPlcF8/DQiePUYmAXyU=
+X-Google-Smtp-Source: AMsMyM7hE1bfSjSUUen+m8TVmotDYU/np98yLJV1t++FadjOyzDId3GOm6PXy0DRJG1AjfsRAwszyw==
+X-Received: by 2002:a05:6a00:1a4d:b0:563:a7c4:f521 with SMTP id h13-20020a056a001a4d00b00563a7c4f521mr32742358pfv.61.1667514488876;
+        Thu, 03 Nov 2022 15:28:08 -0700 (PDT)
+Received: from fedora ([2601:644:8002:1c20::8080])
+        by smtp.gmail.com with ESMTPSA id j16-20020a170902da9000b00186b86ed450sm1169376plx.156.2022.11.03.15.28.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Nov 2022 15:28:08 -0700 (PDT)
+Date:   Thu, 3 Nov 2022 15:28:05 -0700
+From:   Vishal Moola <vishal.moola@gmail.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, linux-nilfs@vger.kernel.org,
+        linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH 04/23] page-writeback: Convert write_cache_pages() to use
+ filemap_get_folios_tag()
+Message-ID: <Y2RAdUtJrOJmYU4L@fedora>
+References: <20220901220138.182896-1-vishal.moola@gmail.com>
+ <20220901220138.182896-5-vishal.moola@gmail.com>
+ <20221018210152.GH2703033@dread.disaster.area>
 MIME-Version: 1.0
-X-Received: by 2002:a02:6a2e:0:b0:363:a0a4:bf24 with SMTP id
- l46-20020a026a2e000000b00363a0a4bf24mr19955068jac.204.1667513679569; Thu, 03
- Nov 2022 15:14:39 -0700 (PDT)
-Date:   Thu, 03 Nov 2022 15:14:39 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000876b4405ec984835@google.com>
-Subject: [syzbot] memory leak in __insert_pending
-From:   syzbot <syzbot+05a0f0ccab4a25626e38@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221018210152.GH2703033@dread.disaster.area>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Wed, Oct 19, 2022 at 08:01:52AM +1100, Dave Chinner wrote:
+> On Thu, Sep 01, 2022 at 03:01:19PM -0700, Vishal Moola (Oracle) wrote:
+> > Converted function to use folios throughout. This is in preparation for
+> > the removal of find_get_pages_range_tag().
+> > 
+> > Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+> > ---
+> >  mm/page-writeback.c | 44 +++++++++++++++++++++++---------------------
+> >  1 file changed, 23 insertions(+), 21 deletions(-)
+> > 
+> > diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+> > index 032a7bf8d259..087165357a5a 100644
+> > --- a/mm/page-writeback.c
+> > +++ b/mm/page-writeback.c
+> > @@ -2285,15 +2285,15 @@ int write_cache_pages(struct address_space *mapping,
+> >  	int ret = 0;
+> >  	int done = 0;
+> >  	int error;
+> > -	struct pagevec pvec;
+> > -	int nr_pages;
+> > +	struct folio_batch fbatch;
+> > +	int nr_folios;
+> >  	pgoff_t index;
+> >  	pgoff_t end;		/* Inclusive */
+> >  	pgoff_t done_index;
+> >  	int range_whole = 0;
+> >  	xa_mark_t tag;
+> >  
+> > -	pagevec_init(&pvec);
+> > +	folio_batch_init(&fbatch);
+> >  	if (wbc->range_cyclic) {
+> >  		index = mapping->writeback_index; /* prev offset */
+> >  		end = -1;
+> > @@ -2313,17 +2313,18 @@ int write_cache_pages(struct address_space *mapping,
+> >  	while (!done && (index <= end)) {
+> >  		int i;
+> >  
+> > -		nr_pages = pagevec_lookup_range_tag(&pvec, mapping, &index, end,
+> > -				tag);
+> > -		if (nr_pages == 0)
+> > +		nr_folios = filemap_get_folios_tag(mapping, &index, end,
+> > +				tag, &fbatch);
+> 
+> This can find and return dirty multi-page folios if the filesystem
+> enables them in the mapping at instantiation time, right?
 
-syzbot found the following issue on:
+Yup, it will.
 
-HEAD commit:    882ad2a2a8ff Merge tag 'random-6.1-rc3-for-linus' of git:/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14aad446880000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8e0c1dbca40c1f1d
-dashboard link: https://syzkaller.appspot.com/bug?extid=05a0f0ccab4a25626e38
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11dc2096880000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13a9300a880000
+> > +
+> > +		if (nr_folios == 0)
+> >  			break;
+> >  
+> > -		for (i = 0; i < nr_pages; i++) {
+> > -			struct page *page = pvec.pages[i];
+> > +		for (i = 0; i < nr_folios; i++) {
+> > +			struct folio *folio = fbatch.folios[i];
+> >  
+> > -			done_index = page->index;
+> > +			done_index = folio->index;
+> >  
+> > -			lock_page(page);
+> > +			folio_lock(folio);
+> >  
+> >  			/*
+> >  			 * Page truncated or invalidated. We can freely skip it
+> > @@ -2333,30 +2334,30 @@ int write_cache_pages(struct address_space *mapping,
+> >  			 * even if there is now a new, dirty page at the same
+> >  			 * pagecache address.
+> >  			 */
+> > -			if (unlikely(page->mapping != mapping)) {
+> > +			if (unlikely(folio->mapping != mapping)) {
+> >  continue_unlock:
+> > -				unlock_page(page);
+> > +				folio_unlock(folio);
+> >  				continue;
+> >  			}
+> >  
+> > -			if (!PageDirty(page)) {
+> > +			if (!folio_test_dirty(folio)) {
+> >  				/* someone wrote it for us */
+> >  				goto continue_unlock;
+> >  			}
+> >  
+> > -			if (PageWriteback(page)) {
+> > +			if (folio_test_writeback(folio)) {
+> >  				if (wbc->sync_mode != WB_SYNC_NONE)
+> > -					wait_on_page_writeback(page);
+> > +					folio_wait_writeback(folio);
+> >  				else
+> >  					goto continue_unlock;
+> >  			}
+> >  
+> > -			BUG_ON(PageWriteback(page));
+> > -			if (!clear_page_dirty_for_io(page))
+> > +			BUG_ON(folio_test_writeback(folio));
+> > +			if (!folio_clear_dirty_for_io(folio))
+> >  				goto continue_unlock;
+> >  
+> >  			trace_wbc_writepage(wbc, inode_to_bdi(mapping->host));
+> > -			error = (*writepage)(page, wbc, data);
+> > +			error = writepage(&folio->page, wbc, data);
+> 
+> Yet, IIUC, this treats all folios as if they are single page folios.
+> i.e. it passes the head page of a multi-page folio to a callback
+> that will treat it as a single PAGE_SIZE page, because that's all
+> the writepage callbacks are currently expected to be passed...
+> 
+> So won't this break writeback of dirty multipage folios?
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/f8f0ce1c9534/disk-882ad2a2.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/206eb0f33f01/vmlinux-882ad2a2.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/13e639ad2934/bzImage-882ad2a2.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/7347d92c0f64/mount_0.gz
+Yes, it appears it would. But it wouldn't because its already 'broken'.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+05a0f0ccab4a25626e38@syzkaller.appspotmail.com
+The current find_get_pages_range_tag() actually has the exact same
+issue. The current code to fill up the pages array is:
 
-BUG: memory leak
-unreferenced object 0xffff888111c8a1e0 (size 32):
-  comm "syz-executor114", pid 3614, jiffies 4294956785 (age 12.710s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff8178729a>] __insert_pending.isra.0+0xaa/0xf0 fs/ext4/extents_status.c:1895
-    [<ffffffff8178b044>] ext4_es_insert_delayed_block+0x224/0x230 fs/ext4/extents_status.c:2018
-    [<ffffffff817a7ae5>] ext4_insert_delayed_block fs/ext4/inode.c:1704 [inline]
-    [<ffffffff817a7ae5>] ext4_da_map_blocks fs/ext4/inode.c:1796 [inline]
-    [<ffffffff817a7ae5>] ext4_da_get_block_prep+0x3a5/0x7e0 fs/ext4/inode.c:1860
-    [<ffffffff81653016>] __block_write_begin_int+0x1d6/0x9d0 fs/buffer.c:1991
-    [<ffffffff8179cf7b>] ext4_da_convert_inline_data_to_extent fs/ext4/inline.c:877 [inline]
-    [<ffffffff8179cf7b>] ext4_da_write_inline_data_begin+0x39b/0xb10 fs/ext4/inline.c:939
-    [<ffffffff817b0307>] ext4_da_write_begin+0x477/0x4e0 fs/ext4/inode.c:2986
-    [<ffffffff8148755f>] generic_perform_write+0xff/0x2b0 mm/filemap.c:3753
-    [<ffffffff8178c54b>] ext4_buffered_write_iter+0xbb/0x1d0 fs/ext4/file.c:285
-    [<ffffffff8178c71f>] ext4_file_write_iter+0xbf/0xbf0 fs/ext4/file.c:700
-    [<ffffffff815d8517>] call_write_iter include/linux/fs.h:2191 [inline]
-    [<ffffffff815d8517>] do_iter_readv_writev+0x147/0x210 fs/read_write.c:735
-    [<ffffffff815d9afc>] do_iter_write+0xdc/0x300 fs/read_write.c:861
-    [<ffffffff815d9d59>] vfs_iter_write+0x39/0x60 fs/read_write.c:902
-    [<ffffffff8163eb44>] iter_file_splice_write+0x434/0x660 fs/splice.c:686
-    [<ffffffff8163c57b>] do_splice_from fs/splice.c:764 [inline]
-    [<ffffffff8163c57b>] direct_splice_actor+0x4b/0x70 fs/splice.c:931
-    [<ffffffff8163cd19>] splice_direct_to_actor+0x149/0x350 fs/splice.c:886
-    [<ffffffff8163d008>] do_splice_direct+0xe8/0x150 fs/splice.c:974
+		pages[ret] = &folio->page;
+		if (++ret == nr_pages) {
+			*index = folio->index + folio_nr_pages(folio);
+			goto out;
 
-BUG: memory leak
-unreferenced object 0xffff888111c8a260 (size 32):
-  comm "syz-executor114", pid 3618, jiffies 4294957317 (age 7.390s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff8178729a>] __insert_pending.isra.0+0xaa/0xf0 fs/ext4/extents_status.c:1895
-    [<ffffffff8178b044>] ext4_es_insert_delayed_block+0x224/0x230 fs/ext4/extents_status.c:2018
-    [<ffffffff817a7ae5>] ext4_insert_delayed_block fs/ext4/inode.c:1704 [inline]
-    [<ffffffff817a7ae5>] ext4_da_map_blocks fs/ext4/inode.c:1796 [inline]
-    [<ffffffff817a7ae5>] ext4_da_get_block_prep+0x3a5/0x7e0 fs/ext4/inode.c:1860
-    [<ffffffff81653016>] __block_write_begin_int+0x1d6/0x9d0 fs/buffer.c:1991
-    [<ffffffff8179cf7b>] ext4_da_convert_inline_data_to_extent fs/ext4/inline.c:877 [inline]
-    [<ffffffff8179cf7b>] ext4_da_write_inline_data_begin+0x39b/0xb10 fs/ext4/inline.c:939
-    [<ffffffff817b0307>] ext4_da_write_begin+0x477/0x4e0 fs/ext4/inode.c:2986
-    [<ffffffff8148755f>] generic_perform_write+0xff/0x2b0 mm/filemap.c:3753
-    [<ffffffff8178c54b>] ext4_buffered_write_iter+0xbb/0x1d0 fs/ext4/file.c:285
-    [<ffffffff8178c71f>] ext4_file_write_iter+0xbf/0xbf0 fs/ext4/file.c:700
-    [<ffffffff815d8517>] call_write_iter include/linux/fs.h:2191 [inline]
-    [<ffffffff815d8517>] do_iter_readv_writev+0x147/0x210 fs/read_write.c:735
-    [<ffffffff815d9afc>] do_iter_write+0xdc/0x300 fs/read_write.c:861
-    [<ffffffff815d9d59>] vfs_iter_write+0x39/0x60 fs/read_write.c:902
-    [<ffffffff8163eb44>] iter_file_splice_write+0x434/0x660 fs/splice.c:686
-    [<ffffffff8163c57b>] do_splice_from fs/splice.c:764 [inline]
-    [<ffffffff8163c57b>] direct_splice_actor+0x4b/0x70 fs/splice.c:931
-    [<ffffffff8163cd19>] splice_direct_to_actor+0x149/0x350 fs/splice.c:886
-    [<ffffffff8163d008>] do_splice_direct+0xe8/0x150 fs/splice.c:974
+which behaves the same way as the issue you pointed out (both break
+large folios). When I spoke to Matthew about this earlier, we decided
+to go ahead with replacing the function and leave it up to the callers
+to fix/handle large folios when the filesystem gets to it.
 
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Its not great to leave it 'broken' but its something that isn't - or at
+least shouldn't be - creating any problems at present. And I believe Matthew
+has plans to address them at some point before they actually become problems?
