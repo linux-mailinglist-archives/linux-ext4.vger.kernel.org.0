@@ -2,126 +2,163 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99571617BFC
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Nov 2022 12:54:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89ADB61830D
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Nov 2022 16:42:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231386AbiKCLya (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Nov 2022 07:54:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58680 "EHLO
+        id S231934AbiKCPmq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Nov 2022 11:42:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231411AbiKCLy1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Nov 2022 07:54:27 -0400
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2086.outbound.protection.outlook.com [40.107.21.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49FFC12A88;
-        Thu,  3 Nov 2022 04:54:25 -0700 (PDT)
+        with ESMTP id S231610AbiKCPmp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Nov 2022 11:42:45 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8126613E3C;
+        Thu,  3 Nov 2022 08:42:44 -0700 (PDT)
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A3FY0a9007655;
+        Thu, 3 Nov 2022 15:42:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2022-7-12;
+ bh=fxAU+KO3uMconJE/g3g8kkRVxAdEZwYV0zGrp5YbguE=;
+ b=BXvZbIcLHYpEZ/pbSKvN/rsbku3WZw4aEQuJNLsdvYYUgrTSl1iDQAseACkLWysTOJaK
+ oc+x+zu2F0byDQLN1zVl+MpPC6/uTblFkHB0pBNVg0/I2PYgZAFabatcSc7xAXvKJlLT
+ iCAwsWZTF/0Zc8nNfFq5ksIvn04yA+X2okRhfG0wnW6TC4sBK5PH+LTB0/zyGigw9OHu
+ uj3kqoIYUtpBYLBk23+SGH/92jKk+SuBnytBhvWiY2Ngb0LyYurvP7rn0Tl3qHoDo/Rq
+ Xwg1A7F/rD6PIZt+sRPhio37nyrPi34lZcoXdhJBoPwaTfU+nsZToXCVLXa34klrhrtI +w== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3kgv2an43x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 03 Nov 2022 15:42:19 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 2A3EoF6h029711;
+        Thu, 3 Nov 2022 15:42:18 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2171.outbound.protection.outlook.com [104.47.57.171])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3kgtm6rde6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 03 Nov 2022 15:42:18 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BHZYE8XAL4HxTJF0SlP+CQgPyKdjnp+REbw1CWU0gIyI6oNf1kEUhWCzl3RDDUkEBFZj5QPZAS1g/TRZW+ToYXUUxojvUK62HLxCPvFPyER7Q+ifgXa6lr98RvTXAHboS+ceFXOqM4upfx54Gck4W0xtdT0mpMVMho9jw8SSU2+h3Xhj0D57/yee29//S04+jdiPKecZ34ZLKenN1RzG8Oea14V4nPZqG7KWCdU3iYizUkut38urjl0+apxkEEC942DoZOwdbqfNuLVrwuVC4b+sLfyaBGTTBQyC5gysQgigAiGVfNPFyubEOQnUv5ECcM0pZA6pr+rUJ3wzW/MXMA==
+ b=n9E2IpiyZ725xisJSJwToP1Enj5yiHhRsdSQDIJmAPrp+2NL2oGnKfD0d3VY9YLfl96CL82ayT2ktMBIlMtc15/ZJ9XdfibUyPrybAn+ZSsIcQ1mfe3tpK/WADMgA7WNA3yufNnCN89SOgUC8VpWRLxaunriUd+U6v1/uHBZ8ORvFP88/Z0PG2BHugziZ3I8voQW7Qfb7sXw9mLuQ6msy19c+DT5HaGRry1p3E6IMmM1tc1FRmeDmrej+F9YCk2Xbdd253HP7Mwy+9Tw8XotY1iuGxo2pWSTVOBstAvnNX8QR/DwKiOjA+LHqJM00RJ2RKBOt4dqpDa1S2AdR2u5lg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=u5c2Rj3ZFhLc0CIr/lVkmCHMswtp9I2UucYMrROOE/Q=;
- b=G6pr3mbTZruVAI5VcG5yBWS9eYvZ59syzqc/JLFWrWB3hFTtn+aeeTCUifG0nLjPL3ZOru+bGDZb7DWm4tF4ZUsfhsuwn4sY4xHbYcawLwtTcGPcj/TU2MgvfobppSzZ/dCNHbDx1DujWDKql4nuYJrz+ZhX3JW1FocNZ4mwEIZVs1fkJwQmBtc6Q8ootA+S2044JI2OlnOPwvB2iVVInLLQb3NpeuoPT4sv5G/AaczNsxiWv1rO3eLWni3jH8vxhtP+kRfWKekYXqkKx0Dups/bR3+PNvqtSCC2tGyhgE8phTxgK0Na9qn148Thid6Asl1cXjikzcvcOsfVNlCkGA==
+ bh=fxAU+KO3uMconJE/g3g8kkRVxAdEZwYV0zGrp5YbguE=;
+ b=CsM40I7EsBbpneA3G/rUNzrjssObKRC9X6RnCmQ5ILQ5nzHXwLMkQPQ50N+zBgzmdgz68Qt07bo1V8sKswT8ioHMLBFdhwuYqNIyXX8JawDJlBRqJ2skNvfFszAhWTFB+Z+WJGmhC4BSxYoRrr6i1zMxpW5PGbgBfM+2Tq4ZpBwAq/R9bbDtQ/y5ctkiFc0ZPPJIO6UZs1JUt03mWVgxemaX3GHHy2NV84Vca3XMcxLmzybWdimfYyA4/u1bFElIKxfcq43zvfbi7me3hRF8OvrcVTxfIBNTfJre648ffjbcgy38Waf4NUBP96QOoKRUBUxHpimuY2hTuturNFPwuw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=theobroma-systems.com; dmarc=pass action=none
- header.from=theobroma-systems.com; dkim=pass header.d=theobroma-systems.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=theobroma-systems.com;
- s=selector1;
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u5c2Rj3ZFhLc0CIr/lVkmCHMswtp9I2UucYMrROOE/Q=;
- b=HKq9ELJ8Mg2/yeazYENguQ0v/cHnhsotCHLQtAVKwQ0Nq3/4Mix3HR5l67b1g0IvxD0QZJPCxVHI67LAs+eNUNwQjFEDhGk/fJ4a17mXrXIe5tF1mhgIYhBJfAPWOalpJNFmgXRknKmH4tFR3FzRwa7f3IgerBT+F9UEW6NfeLp0OqolotnHsYjSOGeRDKtR9hvJXWxcWDaE6Jy2kzGruhw2d/ltRE2ZAmmIkfqvQ/ObtgOZWV0REPFzPriP4/0ulS9s+AKMast6T3sgmM8utg5vKjW5z+/98nJWR2J1r4YLakIbGdmGaCBFNHM5SKaU93g0FBSNUs1dSEoLwy+Zdg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=theobroma-systems.com;
-Received: from DU2PR04MB8536.eurprd04.prod.outlook.com (2603:10a6:10:2d7::10)
- by AS8PR04MB8279.eurprd04.prod.outlook.com (2603:10a6:20b:3f8::18) with
+ bh=fxAU+KO3uMconJE/g3g8kkRVxAdEZwYV0zGrp5YbguE=;
+ b=eVHdWE02IN08zKKrutk4Rv4Fxb6BQAhkR4KhtybrZ34lAyHPlVseQDAQhDUDragedM+PNcgQ2CpTPs/nqguuuLYtjWyclz4+f4hYS7/zjoqZUIVCQKprAlLesXme1XPSa/hFQ4hpgzp199tzq4UckpqUljv5/EWB+TffTtVA3rc=
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
+ by CY5PR10MB6144.namprd10.prod.outlook.com (2603:10b6:930:34::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.22; Thu, 3 Nov
- 2022 11:54:22 +0000
-Received: from DU2PR04MB8536.eurprd04.prod.outlook.com
- ([fe80::5e5e:1989:e5ec:c833]) by DU2PR04MB8536.eurprd04.prod.outlook.com
- ([fe80::5e5e:1989:e5ec:c833%3]) with mapi id 15.20.5791.022; Thu, 3 Nov 2022
- 11:54:22 +0000
-Message-ID: <e7c7d42c-bfb9-b015-fcd2-bfb5e6334e06@theobroma-systems.com>
-Date:   Thu, 3 Nov 2022 12:54:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
-Subject: Re: ext4 online resize -> EXT4-fs error (device loop0) in
- ext4_update_backup_sb:174: Filesystem failed CRC
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5769.19; Thu, 3 Nov
+ 2022 15:42:16 +0000
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::5403:3164:f6c3:d48a]) by BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::5403:3164:f6c3:d48a%3]) with mapi id 15.20.5791.022; Thu, 3 Nov 2022
+ 15:42:16 +0000
+From:   Chuck Lever III <chuck.lever@oracle.com>
+To:     Jeff Layton <jlayton@kernel.org>
+CC:     Theodore Ts'o <tytso@mit.edu>,
+        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Neil Brown <neilb@suse.de>, Al Viro <viro@zeniv.linux.org.uk>,
+        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "xiubli@redhat.com" <xiubli@redhat.com>,
+        Lukas Czerner <lczerner@redhat.com>, Jan Kara <jack@suse.cz>,
+        Bruce Fields <bfields@fieldses.org>,
+        Christian Brauner <brauner@kernel.org>,
+        "fweimer@redhat.com" <fweimer@redhat.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+Subject: Re: [PATCH v7 6/9] nfsd: move nfsd4_change_attribute to nfsfh.c
+Thread-Topic: [PATCH v7 6/9] nfsd: move nfsd4_change_attribute to nfsfh.c
+Thread-Index: AQHY4hdBdnRn2o/trUW2gl8SzYdhC64tcYOA
+Date:   Thu, 3 Nov 2022 15:42:15 +0000
+Message-ID: <732CF94B-CB0C-44E4-8292-F5E248B6560F@oracle.com>
+References: <20221017105709.10830-1-jlayton@kernel.org>
+ <20221017105709.10830-7-jlayton@kernel.org>
+In-Reply-To: <20221017105709.10830-7-jlayton@kernel.org>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Theodore Ts'o <tytso@mit.edu>,
-        "Unterwurzacher, Jakob" <jakob.unterwurzacher@theobroma-systems.com>
-Cc:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <AM6PR04MB63111922B96138C374A39C68C7309@AM6PR04MB6311.eurprd04.prod.outlook.com>
- <Y1tTk5ILKICjJL82@mit.edu>
-From:   Quentin Schulz <quentin.schulz@theobroma-systems.com>
-In-Reply-To: <Y1tTk5ILKICjJL82@mit.edu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AS9PR05CA0042.eurprd05.prod.outlook.com
- (2603:10a6:20b:489::12) To DU2PR04MB8536.eurprd04.prod.outlook.com
- (2603:10a6:10:2d7::10)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3696.120.41.1.1)
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN0PR10MB5128:EE_|CY5PR10MB6144:EE_
+x-ms-office365-filtering-correlation-id: 54de6bc9-6d90-4e5f-3f0e-08dabdb1fbf8
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /LfD6AAbXsA3eHvVrFOjfc/vhoQ0ex/Pyz6389jHS9kDLz1F23e3jp35P59Bg1BEWCBzJigQE8eQm06uXubhdepUpE+ajCYvFvd+cTLr8UzMRLiLBaljUyNuj8Xux3PLDPjRJABRDiea3z0AoitIeIT2vkNXpTixrvHJlKkOljomWNNMkW5DuBE92EwIb30Z8B+XJ57POE/JNdUSp5LdSTkHQdbTfesI2L79EFffKn+0wYCvgZqRhtAcd34uwhVpackKnykhqMBXX1/Kh3NeKe7MZxVFy+5eFlnplbmnPTzXRxMcq/0bFdx0RgkovBPm6EBfvj5/BiiGYNJEznphZfZjLfKCDsYv5gQx8pBjdTy/+8apnHMPHHHk1sjmi1E/TqPgFegTmm8YO9ienmoXG8lSouCf806ACEuMsZOZmoj6R77cd+k4cK23W02fYtyNs8fx0z85/cbjmeDucpnu1VYDC1OZ/iC28v4VckD64llv3ubM2Hes6qLeZozUxU7MBO+5qxfOuJs0sZxRk2NAS4P6QuCveEFX5INZk5bw6Dpj4b3d1l3opXo1fgRwLooCS36DEmk+8+GGv0KxmB6DQrwjASzoanJQ5R3Du5gC+DC6QeisxGSnbFfTCX2E7ZvxlN+48NKoi/TrI/mkYIUdNgqyjGZb3XWMrQ0WKPP/U6DNMayPO41M8diwsgxQSBpxsGOshuWJygOYavllvIxDHbbeCvbB52GlGDqd/kQYawqGUhZsj1mMUOFYbmdQ8POMJCySf0nYDBfCMbz/cfv0dbwGECL9kYBp03kkGjqB0i84Dh8AZyXpkYoC4cZxEUeOEDcYlYh83jUxXE6GHbi5Pw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(366004)(39860400002)(136003)(346002)(396003)(376002)(451199015)(6916009)(2906002)(38070700005)(66476007)(7416002)(71200400001)(41300700001)(76116006)(91956017)(6506007)(6486002)(8936002)(66946007)(33656002)(86362001)(5660300002)(53546011)(66556008)(36756003)(8676002)(38100700002)(2616005)(478600001)(54906003)(6512007)(64756008)(26005)(122000001)(186003)(83380400001)(66446008)(316002)(4326008)(60764002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?abGmgR/UEV90rqSmOspPe8qmNAkahamH+nH6Z9RlT6xmfyi3q8VOqIyk41da?=
+ =?us-ascii?Q?+5LceHyToz9k+stVZpkpbwDihwcYPiqGNImSJlaOrxzfo6xBxFY8L7kvPWjj?=
+ =?us-ascii?Q?0wzqLMJPRCnrF9xAaWjeJpXJt34XS/cGrFQatoIiGhQLBu+b8yn8HHY5+0c+?=
+ =?us-ascii?Q?RAuYWo8+DIPTskyOpPh/cYE6pcOM17uDCUE5z8ay19+PXMs5uGMwpH4NpMAv?=
+ =?us-ascii?Q?ybxB6y9P8QeB5IjDCPY3ZOXbjIEGCgNlQZSXyiRYPApTZSfU8lWKv0SwvOHI?=
+ =?us-ascii?Q?8kLwPHNTYBFhSfWetFNveIMYCuYRPUVSaxIdJG87rwqx5aEbOAB4HPVif/4T?=
+ =?us-ascii?Q?UO91IWtYoK/Yei/feMBRWz0QsxCByR33HllxtSOCB/MZg0K9vS9tNNTq1+6U?=
+ =?us-ascii?Q?NU559ssC5iIy9iNTpzjQujO0FXYE+ovKXsQZT52K651BUdNRxm7v9Q9yM97K?=
+ =?us-ascii?Q?JX7dS88aICVEk9Eba0zPBNa6pAHT/Lur0Tmj7k3l7sY+PWLzh8BDMqE8x8io?=
+ =?us-ascii?Q?REXh+UrIgxEE7FMskFQyeU1a84PrZe+631D/KYPdefBSgaI2HVpqVIMB24It?=
+ =?us-ascii?Q?JqR5I1hzM3TVito5m6cNohib44G5IRCIKJCw7U5WZ6jkexDCe+c+6pTKvDZJ?=
+ =?us-ascii?Q?olGCoPVJ3ozKLFfxYSdrm+YmSX4ihTZEJ7yL0ICEHuO4KLjOPYAgDYdM8Ytq?=
+ =?us-ascii?Q?IKgG7CTgPdijPnl9vNiMFiZ0txU5+rBbfigYI05vL1fYGAq3l2q5cHPBlv8a?=
+ =?us-ascii?Q?IYn83fleloVKxgTI7sjwoy0NFYTM18ZMTQR925N1/BBKg2vaHD1GAJV7DAMR?=
+ =?us-ascii?Q?BzxEzlahMZTmVlz+axQvfQjyJ24We4ck91zeh7hHsmckqzWo5Qyy3Tv+Zmy6?=
+ =?us-ascii?Q?o6gR6nXOieKFzkThFmk45mtBCo+VC4TeT92P50xbnyp8FpqAzmm3NCNuSc+s?=
+ =?us-ascii?Q?Q8XnMvuei7bvlNPfkQ1mOW2LxpORjCq5AsL5Ur1Kn9KkaU0+31v9pFsAE2x2?=
+ =?us-ascii?Q?YvmjNAdpI5ojWVnd0gY0oeppYhd6HhCP8vJj1xeZRv9ACLJXvrvl/169GC5R?=
+ =?us-ascii?Q?hLnVDXL9A4pTULvdYhL4b7CnqtjVBjTACsuihZYk2nmXkdWd3UazRXtyqbtm?=
+ =?us-ascii?Q?c5eyd/OlZaLVuHaQvOju5SuOhwFlW1HwIMXglXZD31VgaSCJ7AnmZ3YldnFW?=
+ =?us-ascii?Q?102ZHuX0cmJrPkHTJGPcdOoCpefsbF1YedjoHCq3sdp4PZ6+rL1XPJSwB/3h?=
+ =?us-ascii?Q?WUXKqMMjevVmcKdZZ2RsLtjAQXKw8aQFmbjgb4y8fYVlv0GI4sE90m3fpoGo?=
+ =?us-ascii?Q?RY6C5ww/FxAQIEUERQ1vKbqswzzoQbHkgsTfEQV7ZmGpRDJOULMqAyTxcvv9?=
+ =?us-ascii?Q?U5nQ9+8kYjvYXul8R+v8slUcf0ZJH9TUnGAXnOF0me8T1nTFrdLQmasw34S2?=
+ =?us-ascii?Q?IgrFJK1zrbJZRpOO4tXEyqHFmzAhfrrR8q7spgbC6mbZk1FPaKmmYhAMmAGO?=
+ =?us-ascii?Q?GtLi+79fHrGk/gsK2CCUC98P/CJifIxE0bhdGGqscCMfHYZQuQZErArsRtvh?=
+ =?us-ascii?Q?SFEQ1R7CCUwrsPCyjWAPFMptmh/Fcjx9lWiHdKLo8P4DxMDAdOUQ+MJQ8673?=
+ =?us-ascii?Q?9Q=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <F01F2D9B0B0D4344BFEED4B60804205A@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU2PR04MB8536:EE_|AS8PR04MB8279:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4e236059-63d1-4221-b61f-08dabd92257d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: INwJjGcwmueLLt5dttmAjpx7WtiLwC/Xspk5hPkfUfnLTRrx5YJZm+R2ZtSlqepKv8UbPeSdW8yKzrBPZHSInW8+icO4aXtpOMtHT2qe4lbQNK2GEmiMyiuNuKtB39B27v3Jex+i9d28Ciz4HOCu3UtTuI94L94CVY3DqfYJwo19PRMMISJuMbpK+CtBYEnLbKh2IODQS/3GX1d6sMvriAZI9UCVm8RnvoanBnLEWbo4plqksq8ygTRZDHQzc7OhsD0WsV9E/+bmTeWMD6BoU7semVX2v7wYMo3rgL4LUNjfcqYaUe6pVTm4oN2Y2eRufuTb9sGct9+ea+9G0w27r3Vw3M4uH3umHJ9vhvrrz3R49E4jt9TKZi1u5rz6AP5E+MW1CB7Wd3m3KWQ1rclsfBpadztQ+eDyhcfwYGazoZaGJ0z8BXOsvp2d0QJNtcguHhDQk8HAc79sKwa2deyqrQgKqWs/9hfE865Sjb+mC0DSbkR8Y1i4p7abYw9HihfzcixaOYc2Hg4HSHUws4OYL7mU6excKX8OsHMDUHcD4w8EbtY5EjKQg4x2dBJvYE8qdmvG6uBaCSPt39qRuDcaReWGY6F4IGGb7f1N5UvYa+BLhAo/6MVU677Xti0wsVL/mw/PWgh4uuxGr3Vb9hDihiW7BPQp1Nzq2JWzDjqAPWhYBreECTfxgb2eqOnW6sKE3g2LZO9JolCU8jyifW4lkgIdYRn6a1N7KDg835H4gWRDJRS8+bX5+KwqD23oT3UO1aKP+BD13esCfDEnnooaeU94akYWsDZvwrNjAHi9WU0ZEwGkmMjSxWOgTl/Y2lGV
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8536.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(376002)(396003)(366004)(39850400004)(136003)(346002)(451199015)(31696002)(36756003)(86362001)(31686004)(83380400001)(38100700002)(186003)(6506007)(26005)(53546011)(6486002)(110136005)(966005)(478600001)(6636002)(8676002)(66946007)(4326008)(66476007)(66556008)(41300700001)(316002)(8936002)(6512007)(5660300002)(2906002)(44832011)(54906003)(66899015)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?V0VodHJ1R2FYUGhhUE9uU1VJaUU4UXNtRitxY0ZRYTRHYVk5SmR5Unp6TE9p?=
- =?utf-8?B?MzhKYjhwdGFyanM2UDZHcDRSSWp1ZjNRaW8rWDR4UGZraGpwZ2R0VWdRMCt2?=
- =?utf-8?B?bWViZFBja2NEUjhxbjJtc2JFWnFKYkFubEVJSFRaWkdvVjdnUmNRWDdHekkz?=
- =?utf-8?B?UHNHMjQxNjZwL3lOajVsNjRsVnlhLzUyR2xUdXUyWEF4S3NsalFScnN3TWpm?=
- =?utf-8?B?OC9uTjltTm80SVB0V1pudUVmUDNPN0JTYldLcDRMMjBOYjQ3S3hoZ2tuZEQx?=
- =?utf-8?B?VFVVVkZVekI2RHZFTkNsWElJdVBLcGtvTTFUSThLcUtvOXljYVcvUjN1bFRm?=
- =?utf-8?B?UjZMTWYzZHBhVENIQTN3bUl4WUZsMys3dVlOZ255c3lVWmlKRkN2NmVWOGVu?=
- =?utf-8?B?WDlWK2YxR0Z5NlNFN3RCSEFycVdLOUtUQ2V2OS9FeDVhTnRBUUlZSnFSSUtO?=
- =?utf-8?B?UUtVUFRkMm8zMVNKUlRSSHVMeTJONEZqUERwcUl0eG85NnY0djZhUEwzRDFx?=
- =?utf-8?B?bjM1Ylk1QkhEOURsTkovWXNQQ1BLV044QmtHY1NnSmhabXBoQ0dITkVhMnlp?=
- =?utf-8?B?S05jZW92RW1lcFhhUnJSTFJCUGh0OFlTdk9NNG52WW50aFJLcnlKOTlIRmdh?=
- =?utf-8?B?cE96SWkrV3ozdUZtNmRUSkpvdEtYbXQ0WVZldzJnQlNjcmg5djBCd1kyWTJm?=
- =?utf-8?B?ZjVSU1lPRjdpQXBCWlBFWjV1TmtiWWYraE1rdDNMSjdWaDBXOHVPZDZCYmRP?=
- =?utf-8?B?ZlU5d3BjSjJyZXN4Qm9vSnFaL3Q3dDltUmdJd3NXQmJjVXdxajk3MCtOd0FK?=
- =?utf-8?B?dlBBaVVyYXB6M0NlYnNrR3dXa095MXhhb0Nyb20zZ2ZraE4vNnZnVWpncktR?=
- =?utf-8?B?Qjl3YzJldnYwMXFnbGxEZFdORVRiWklYS283SXZUOGV3dXU2OGtRZmU2eXpC?=
- =?utf-8?B?ZERlYWpxZG5mZVJUMk5uR3ltaTR3djQyNDlGWWpCYllmOWYvb3ZnYkdrYnhU?=
- =?utf-8?B?ZWgxQkhobldHbWo3eUFCbUdiTC9TMTkvaG5PZ1R5dHFPcjl0bXVzcndTdEVO?=
- =?utf-8?B?eDZWWlY1amN1NkRCd0M2SjZpQjIvRUdLNTloSkhSbUw4dFJmRDFTS1RzblA1?=
- =?utf-8?B?NnhkZEg0aXhYT0xPdVVISXVPelFRRkRIK2dBanhOd1M5bUJTN01MTUdkZVRr?=
- =?utf-8?B?UGNvVVNJeU5BUmVLcStDUys1cUs0ejZGelVjdzRia0srOWNUR0dTMjVXblZZ?=
- =?utf-8?B?a1BCTTU2dWxjdllCck80S0xiVm9LOUFRZ2laWEUrbTZvSmJwcXJuSmNBdFpQ?=
- =?utf-8?B?dXowdUNaTVdpVXJray9Bd0poSnhEZjY5bEwrKzFkbXltVkE5bUdCSitKUEpu?=
- =?utf-8?B?R3dRbFBpN2FFejlNZnIzdWdLSW9FRTluVDJwbzFkM2J1bExsYnBuc0hnWjB5?=
- =?utf-8?B?ek1iL3o3ZnZsQTNlWnFBbW9UcnVyQktsOFFIVXZJQ2FRZHJUNjNta0s0Q3NK?=
- =?utf-8?B?d21QTDlXVW1lT1dyRlZnNHA4QlJwQjYxWnVYcnFZRnBuNkMrZm50MmxVblVz?=
- =?utf-8?B?VnBibjI3enRGMGsrY3YxMzFYbHpHeEE0ak12YWZIYnd6T0ZyVDJiay9hVTVz?=
- =?utf-8?B?UGlHNmwxWTFBV3IwbDJvRTVOREtPSEk3eGN2RXZiUklTeFFzdkpJQythSGI2?=
- =?utf-8?B?Y2wzSzdHdUw4ZUdZME9YLzcrRlZmT1BoQnN3dDN2L1dvb21FcEs0OWlMNWQ3?=
- =?utf-8?B?V0wzR1dYWVdDOTAxREFINUFyUktIMlM2Z21jNUNRSzZ2S3o0aHBoemRzemRE?=
- =?utf-8?B?cmlueHBhTnBsTUNHM2RNaDlKRmh0eFJqVDJ4WTl0enIzQmgxYnV2S2dURzJq?=
- =?utf-8?B?WmEvQlBNbmtSMi85VEdPLytKRkxOS1ZMTHhPU1RsSFNIY3ZxM0REcHUxVDVV?=
- =?utf-8?B?WXYvcEEvd3B1d2FWY2duZ1U4aUxMQXNUSWd0cUR0cWxFeDZ3YkJYcVBscjVT?=
- =?utf-8?B?dVZvY2VqWVQ0dTZIYThqMUptUGhmT1hBOWZPRzJCakdFeEI2NDJKczdnc1FI?=
- =?utf-8?B?R3AyVGo1N2Fkd1NBb3lYTXJPNzFQME9pd3BXbHUrR2o5OXFiVHlibjZxRXBS?=
- =?utf-8?B?aDI1Tnk4YUpQRnZGeFpEWm9ZRzZpTXhqemJMcW90SGNoWEZQTXVIa3R3Y25t?=
- =?utf-8?Q?/f27lpXAPUH1Gl2HFs/787M=3D?=
-X-OriginatorOrg: theobroma-systems.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4e236059-63d1-4221-b61f-08dabd92257d
-X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8536.eurprd04.prod.outlook.com
+X-OriginatorOrg: oracle.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2022 11:54:22.0247
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 54de6bc9-6d90-4e5f-3f0e-08dabdb1fbf8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2022 15:42:15.9932
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5e0e1b52-21b5-4e7b-83bb-514ec460677e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mCwicxaH/LcSljCePpFUh1d3bRH72IWohOwkoQy9mV8W1whRXWlMNQNG2un/dW7rWPUOxtb5Z8CaFp+OHFgWunpv2A266FjjsRwNXlkCGB2LSu91Gleey6bcx1STNTfU
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8279
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: w/hhV4nPXgNDBLv8lfAqgq3RvxeAFNYwn3qDAU7EhFjPcK5EyoCwK0fNpn0aaaS12iDh1jzvh8bRYDn2q0eAIQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR10MB6144
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-03_04,2022-11-03_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 bulkscore=0
+ suspectscore=0 phishscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2210170000
+ definitions=main-2211030104
+X-Proofpoint-ORIG-GUID: 9b5jv_YYu7nUuywBYPAT5lf6mS8X43Dk
+X-Proofpoint-GUID: 9b5jv_YYu7nUuywBYPAT5lf6mS8X43Dk
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -129,77 +166,107 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Theodore,
 
-On 10/28/22 05:59, Theodore Ts'o wrote:
-> On Wed, Oct 26, 2022 at 07:49:56PM +0000, Unterwurzacher, Jakob wrote:
->>
->> it looks like I am hitting a similar issue as reported by Borislav Petkov
->> in April 2022 ( https://urldefense.com/v3/__https://lore.kernel.org/lkml/YmqOqGKajOOx90ZY@zn.tnic/__;!!OOPJP91ZZw!kg_tsVkw00-Mf-bC3nyz9aOxZvEowuWZ19B4d-Vzx22Kd8RwNeAb7lEReLYF4ulwcE_OE0im6sdv3zVWHiLXp8Tafu1i$  ).
->>
->> I'm on kernel 6.0.5 and see this on arm64 as well as x86_64.
->> I have a 100% reproducer using a loop mount, here it is:
->>
->> 	truncate -s 16g ext4.img
->> 	mkfs.ext4 ext4.img 500m
->> 	mkdir ext4.mnt
->> 	mount ext4.img ext4.mnt
->> 	resize2fs ext4.img
-> 
-> Thanks for the reproducer!  The following patch should fix things.
-> 
->         	       		      		- Ted
-> 
->  From 9a8c5b0d061554fedd7dbe894e63aa34d0bac7c4 Mon Sep 17 00:00:00 2001
-> From: Theodore Ts'o <tytso@mit.edu>
-> Date: Thu, 27 Oct 2022 16:04:36 -0400
-> Subject: [PATCH] ext4: update the backup superblock's at the end of the online
->   resize
-> 
-> When expanding a file system using online resize, various fields in
-> the superblock (e.g., s_blocks_count, s_inodes_count, etc.) change.
-> To update the backup superblocks, the online resize uses the function
-> update_backups() in fs/ext4/resize.c.  This function was not updating
-> the checksum field in the backup superblocks.  This wasn't a big deal
-> previously, because e2fsck didn't care about the checksum field in the
-> backup superblock.  (And indeed, update_backups() goes all the way
-> back to the ext3 days, well before we had support for metadata
-> checksums.)
-> 
-> However, there is an alternate, more general way of updating
-> superblock fields, ext4_update_primary_sb() in fs/ext4/ioctl.c.  This
-> function does check the checksum of the backup superblock, and if it
-> doesn't match will mark the file system as corrupted.  That was
-> clearly not the intent, so avoid to aborting the resize when a bad
-> superblock is found.
-> 
-> In addition, teach update_backups() to properly update the checksum in
-> the backup superblocks.  We will eventually want to unify
-> updapte_backups() with the infrasture in ext4_update_primary_sb(), but
-> that's for another day.
-> 
-> Note: The problem has been around for a while; it just didn't really
-> matter until ext4_update_primary_sb() was added by commit bbc605cdb1e1
-> ("ext4: implement support for get/set fs label").  And it became
-> trivially easy to reproduce after commit 827891a38acc ("ext4: update
-> the s_overhead_clusters in the backup sb's when resizing") in v6.0.
-> 
-> Cc: stable@kernel.org # 5.17+
-> Fixes: bbc605cdb1e1 ("ext4: implement support for get/set fs label")
-> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 
-I don't see a formal patch on the linux-ext4 mailing list yet though 
-your previous mail was sent to the ML. Is there any plan to send a 
-formal patch or is your mail enough? I also don't see it on 
-https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git yet.
+> On Oct 17, 2022, at 6:57 AM, Jeff Layton <jlayton@kernel.org> wrote:
+>=20
+> This is a pretty big function for inlining. Move it to being
+> non-inlined.
+>=20
+> Reviewed-by: NeilBrown <neilb@suse.de>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
-Basically asking because we enforce that backporting is only allowed for 
-patches that are sent to mailing lists so it's easier to follow progress 
-were there any update to the patch warranted by reviews/feedback after 
-we backported the patch. (In short, anything that can be fetched with b4 
-shazam can be backported).
+Acked-by: Chuck Lever <chuck.lever@oracle.com>
 
-Let us know if there's anything we can do to help.
 
-Thanks,
-Quentin
+> ---
+> fs/nfsd/nfsfh.c | 27 +++++++++++++++++++++++++++
+> fs/nfsd/nfsfh.h | 29 +----------------------------
+> 2 files changed, 28 insertions(+), 28 deletions(-)
+>=20
+> diff --git a/fs/nfsd/nfsfh.c b/fs/nfsd/nfsfh.c
+> index d73434200df9..7030d9209903 100644
+> --- a/fs/nfsd/nfsfh.c
+> +++ b/fs/nfsd/nfsfh.c
+> @@ -748,3 +748,30 @@ enum fsid_source fsid_source(const struct svc_fh *fh=
+p)
+> 		return FSIDSOURCE_UUID;
+> 	return FSIDSOURCE_DEV;
+> }
+> +
+> +/*
+> + * We could use i_version alone as the change attribute.  However,
+> + * i_version can go backwards after a reboot.  On its own that doesn't
+> + * necessarily cause a problem, but if i_version goes backwards and then
+> + * is incremented again it could reuse a value that was previously used
+> + * before boot, and a client who queried the two values might
+> + * incorrectly assume nothing changed.
+> + *
+> + * By using both ctime and the i_version counter we guarantee that as
+> + * long as time doesn't go backwards we never reuse an old value.
+> + */
+> +u64 nfsd4_change_attribute(struct kstat *stat, struct inode *inode)
+> +{
+> +	if (inode->i_sb->s_export_op->fetch_iversion)
+> +		return inode->i_sb->s_export_op->fetch_iversion(inode);
+> +	else if (IS_I_VERSION(inode)) {
+> +		u64 chattr;
+> +
+> +		chattr =3D  stat->ctime.tv_sec;
+> +		chattr <<=3D 30;
+> +		chattr +=3D stat->ctime.tv_nsec;
+> +		chattr +=3D inode_query_iversion(inode);
+> +		return chattr;
+> +	} else
+> +		return time_to_chattr(&stat->ctime);
+> +}
+> diff --git a/fs/nfsd/nfsfh.h b/fs/nfsd/nfsfh.h
+> index c3ae6414fc5c..4c223a7a91d4 100644
+> --- a/fs/nfsd/nfsfh.h
+> +++ b/fs/nfsd/nfsfh.h
+> @@ -291,34 +291,7 @@ static inline void fh_clear_pre_post_attrs(struct sv=
+c_fh *fhp)
+> 	fhp->fh_pre_saved =3D false;
+> }
+>=20
+> -/*
+> - * We could use i_version alone as the change attribute.  However,
+> - * i_version can go backwards after a reboot.  On its own that doesn't
+> - * necessarily cause a problem, but if i_version goes backwards and then
+> - * is incremented again it could reuse a value that was previously used
+> - * before boot, and a client who queried the two values might
+> - * incorrectly assume nothing changed.
+> - *
+> - * By using both ctime and the i_version counter we guarantee that as
+> - * long as time doesn't go backwards we never reuse an old value.
+> - */
+> -static inline u64 nfsd4_change_attribute(struct kstat *stat,
+> -					 struct inode *inode)
+> -{
+> -	if (inode->i_sb->s_export_op->fetch_iversion)
+> -		return inode->i_sb->s_export_op->fetch_iversion(inode);
+> -	else if (IS_I_VERSION(inode)) {
+> -		u64 chattr;
+> -
+> -		chattr =3D  stat->ctime.tv_sec;
+> -		chattr <<=3D 30;
+> -		chattr +=3D stat->ctime.tv_nsec;
+> -		chattr +=3D inode_query_iversion(inode);
+> -		return chattr;
+> -	} else
+> -		return time_to_chattr(&stat->ctime);
+> -}
+> -
+> +u64 nfsd4_change_attribute(struct kstat *stat, struct inode *inode);
+> extern void fh_fill_pre_attrs(struct svc_fh *fhp);
+> extern void fh_fill_post_attrs(struct svc_fh *fhp);
+> extern void fh_fill_both_attrs(struct svc_fh *fhp);
+> --=20
+> 2.37.3
+>=20
+
+--
+Chuck Lever
+
+
+
