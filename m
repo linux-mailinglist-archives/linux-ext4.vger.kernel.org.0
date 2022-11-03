@@ -2,133 +2,103 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 580F56172F8
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Nov 2022 00:44:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A0F617722
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Nov 2022 08:08:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbiKBXog (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 2 Nov 2022 19:44:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58058 "EHLO
+        id S229975AbiKCHIP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Nov 2022 03:08:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231363AbiKBXoW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Nov 2022 19:44:22 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F0313E9A
-        for <linux-ext4@vger.kernel.org>; Wed,  2 Nov 2022 16:41:10 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id b1-20020a17090a7ac100b00213fde52d49so225870pjl.3
-        for <linux-ext4@vger.kernel.org>; Wed, 02 Nov 2022 16:41:10 -0700 (PDT)
+        with ESMTP id S229742AbiKCHIO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Nov 2022 03:08:14 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C766341
+        for <linux-ext4@vger.kernel.org>; Thu,  3 Nov 2022 00:08:12 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id l22-20020a17090a3f1600b00212fbbcfb78so4369682pjc.3
+        for <linux-ext4@vger.kernel.org>; Thu, 03 Nov 2022 00:08:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20210112.gappssmtp.com; s=20210112;
-        h=to:date:message-id:subject:mime-version:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=rJxlbqXdP+CrIusjDzh/oVjx3yFbw3NsPbbPFnIK7Ko=;
-        b=BZJwKaY9UrF9O4vqb/ByVAl+NkWMYB6PeluEkmiNNV2Wt4iddeihODNKbdbLENc/D1
-         40MDp6Fnmch/3D7uG4npogA1/WY0qP7pkZC0uACG+E6WaMdFwYdwLpOytp+qYg27sWT5
-         5egSvbFegciebOLrsdmHiKpGQLejJy3zoePNAPFERNpa91FhGNYeTOiJ6j6G7ZKk9MzE
-         piXKolijv/JpZTm8pY5FCzq2ariNahdLgzl2Jb2Q94s+cTNYx3XkAOcyvP1WCNHlrQn3
-         lxZ/QS+rnY3tgsJVcdwoo2pJIplAuclsLumBCnwck1+TiVAqaGWTyhRQJzzmRM6+1DSd
-         PNvw==
+        d=fromorbit-com.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UCGx+I//h802HOEchXeQ4l9Uif7TwqahE8c/QVCmorA=;
+        b=Qo0pCYgx3Qq1H7gtsjTo9ahtaWGAPbAqpUUP7w83R+hioFcvnb/Vum4t6njrIqmCbQ
+         9oglIFHFznb8HWDOhJ8VqGBZno5DvMa/i9rWqzvIS3F1Qe6lSOVMpDruWh58G2ZJDVRR
+         +irGuRxsC3szEMLHnbBdSVWy+8gAtIi3/dsdlKShS4dWGsFcwevGYm9bbQNs76cqEy+l
+         a7aTzEEQgFxLLhP1XqsxI1o93xRoLeyOkLszg3jyihUg4tqsI4qRKCp463KDJruVxcER
+         uahSco4O56I/ia+N+pdnGxKbS5y4Jn6JIOipSvnU+FLMXl5F+IFO/pgiKOzrTt8rdoYE
+         jcgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:date:message-id:subject:mime-version:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rJxlbqXdP+CrIusjDzh/oVjx3yFbw3NsPbbPFnIK7Ko=;
-        b=7XB+eu08rPMbQmSIaUeI8QLBf5JlG8T3LYe7feWd3+v1Bq6tn3ZayHEtLsvkQXU+bE
-         5GUqR6obpfRe4EvwkYJktZHuU+rDN6IwexHm+q1CWaS5F6qrSO9oaohNOIe/HSGoPVyT
-         jifQUzTHdfOo3XsDgE1nAOC1n2inAS3hEdYzyTuUmVJJJOqHpc5Z4HFiMpdY+4m7M2yq
-         bZRcm3viJW5RCPbWE98rWWkYHyJp6gRvTVoA3KziftCSIdM61AxWXxB1V8sRlerdBsTZ
-         9TwFSaqIlKneNSpSlL0YO7lxnND3lgNViFi/l3q5+Ej6wESu62U+lg7XE6RSnr/trKR5
-         uuQQ==
-X-Gm-Message-State: ACrzQf2cqOq2pCiZ6v1yW+ZAuYav+NAZXgWMmsx+a5JxqMtFJDuI1/DZ
-        TqGN3Z81qvfBi7yC3YL9SugVGYbrV3+eIQ==
-X-Google-Smtp-Source: AMsMyM4ygGjPQYDdWXm4GcNkePUWDZs1fWzFMt8eyglX4aHs3aXw8v5f59h710/Pq4l/7VPJADk90g==
-X-Received: by 2002:a17:90b:33d0:b0:213:137b:1343 with SMTP id lk16-20020a17090b33d000b00213137b1343mr28374828pjb.128.1667432469961;
-        Wed, 02 Nov 2022 16:41:09 -0700 (PDT)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id n16-20020a635910000000b0046f6d7dcd1dsm8083291pgb.25.2022.11.02.16.41.09
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 02 Nov 2022 16:41:09 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_17EEC37C-A0E2-44C3-AAA9-050078F7CDDA";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: periodic lifetime_write_kbytes updates?
-Message-Id: <92BC4EEA-69A6-4AE0-ABA8-304E9DE2D4A9@dilger.ca>
-Date:   Wed, 2 Nov 2022 17:41:07 -0600
-To:     linux-ext4@vger.kernel.org
-X-Mailer: Apple Mail (2.3273)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UCGx+I//h802HOEchXeQ4l9Uif7TwqahE8c/QVCmorA=;
+        b=s+hwCdAnPPaooGWP3fdQB3DNyQupJHtSYqELAuIlmMZDwHr467MXLRDx3xDFZnQjRq
+         o4/m1XAspC6LvrlkGSP52k4sHWwkoUyi/CzmMWm3nDiFmqOaKUnxPUPbkLezOLcBCTTZ
+         /2MrycgUKkRatgWP+zbMS5r17YHEsSTmVw04jE1uQksGjmn9Z87MbCy1LFbS769Nl+1u
+         EwJ8RPbicMwsi4bNrNOGAkYw9uEijn9mxs5/G/OaI+sjTCnxXRLBBYX214v+BPPMdLVZ
+         tARVqIzE4N1svGNzL1Lr9AqvrqByMdbuuTJ6aPBNhyCVOlrAacyJ5Fm+GpiA03x+bmZM
+         rnHg==
+X-Gm-Message-State: ACrzQf1CR5TZ/1Ao/0Tca1Jsd7OHjHM6zFK2gCFwbMlf8jJQXp7aPEnV
+        IN9DMnWlDDkruv/gZZ+c2mm8Wg==
+X-Google-Smtp-Source: AMsMyM7EbTGuTativfwuYw+G5QrvaMpsSoYHAtMTN9boWfI/C7HSKjfDJIybcNCOqaRH/jY3hHhBSg==
+X-Received: by 2002:a17:902:ed8e:b0:187:1c78:80c2 with SMTP id e14-20020a170902ed8e00b001871c7880c2mr21606400plj.38.1667459292279;
+        Thu, 03 Nov 2022 00:08:12 -0700 (PDT)
+Received: from dread.disaster.area (pa49-181-106-210.pa.nsw.optusnet.com.au. [49.181.106.210])
+        by smtp.gmail.com with ESMTPSA id s7-20020a170902988700b00179e1f08634sm9438901plp.222.2022.11.03.00.08.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Nov 2022 00:08:11 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1oqUKd-009gYz-VX; Thu, 03 Nov 2022 18:08:08 +1100
+Date:   Thu, 3 Nov 2022 18:08:07 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, linux-nilfs@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v4 00/23] Convert to filemap_get_folios_tag()
+Message-ID: <20221103070807.GX2703033@dread.disaster.area>
+References: <20221102161031.5820-1-vishal.moola@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221102161031.5820-1-vishal.moola@gmail.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Wed, Nov 02, 2022 at 09:10:08AM -0700, Vishal Moola (Oracle) wrote:
+> This patch series replaces find_get_pages_range_tag() with
+> filemap_get_folios_tag(). This also allows the removal of multiple
+> calls to compound_head() throughout.
+> It also makes a good chunk of the straightforward conversions to folios,
+> and takes the opportunity to introduce a function that grabs a folio
+> from the pagecache.
+> 
+> F2fs and Ceph have quite a lot of work to be done regarding folios, so
+> for now those patches only have the changes necessary for the removal of
+> find_get_pages_range_tag(), and only support folios of size 1 (which is
+> all they use right now anyways).
+> 
+> I've run xfstests on btrfs, ext4, f2fs, and nilfs2, but more testing may be
+> beneficial. The page-writeback and filemap changes implicitly work. Testing
+> and review of the other changes (afs, ceph, cifs, gfs2) would be appreciated.
 
---Apple-Mail=_17EEC37C-A0E2-44C3-AAA9-050078F7CDDA
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=us-ascii
+Same question as last time: have you tested this with multipage
+folios enabled? If you haven't tested XFS, then I'm guessing the
+answer is no, and you haven't fixed the bug I pointed out in
+the write_cache_pages() implementation....
 
-I was looking at the /sys/fs/ext4/*/lifetime_write_kbytes counters on
-my home server and wondering about how accurate they are.  That is most
-interesting in the case of flash devices, to get a good idea of the
-lifetime writes vs. actual rated drive writes per day.
-
-It looks like s_kbytes_written is only updated on clean unmount
-via ext4_commit_super->ext4_update_super() and in a few error handling
-codepaths.  This means any in-memory updates are typically lost if the
-server crashes or loses power (which is typical for long-running servers,
-rather than a clean shutdown).
-
-It would be useful to periodically update the superblock with the current
-value, maybe once an hour if the value has changed more than some small
-margin (to take into account the *previous* update).  The superblock used
-to be written frequently via ->write_super(), but this has not been the
-case since commit v3.5-rc5-19-g4d47603d9703.
-
-Any thoughts/objections to a periodic task calling ext4_update_super()
-every hour if there have been any noticeable writes since the last time
-it was called?  This could potentially be more clever so that it only
-writes if the disk is not asleep, and do the writes the next time it wakes,
-but I'm not sure how easy/hard that is to detect at the filesystem level.
-
-Cheers, Andreas
-
-PS: there is *also* a function resize.c::ext4_update_super() for added
-confusion, but that does something completely different...
-
-
-
-
-
---Apple-Mail=_17EEC37C-A0E2-44C3-AAA9-050078F7CDDA
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmNjABMACgkQcqXauRfM
-H+BkbRAAuif5gEFSb4hycovccbB+JKCr6tVBj/w+b4MVFnMKx6NKXtyU83qaDCFC
-HNQY0U9BYd+Z6FPT3nU/Zud8XRvMybFACBky4rfKyMyEG0GWQ2yaLV1ObLfR83I0
-JLVBPIzz+F54sEhQiPhFuny8wqh4x+HOUrKpmz8sqh1J7V4zFD2CUcoHslLTP9zZ
-L0ycn9nqi3JkelEQkh+tA6vfiZ4JGw2hICQwO7iY/pPAtplFK5jKO1U9DrquIfuG
-NFtP7r5jRxzpWSSL8Xx223BjXU3PnZ08+hF3PBWqhn0cXIaxDivfUYeHkVX6lGY8
-6X3kWtndq2wOAVm0qw2/OFxA1FQ4xJotWkqfxYHRpyXpwp89K99fOo7ME5rvQJdK
-pRRtLnAsJ/dG5eMDUB1uSD6TJa3QDK6WeiUPs1qF1cLbs4EZALJtkL0lZ90bqdnJ
-h44QfyvDPCVFs2cZQlcYbF8T1oLParZ0QvRKfpkrjkfvVqhiYSYLiiiSQZveestY
-fkdMJpV7polzbwkYwfsw3EPrryBmLWHa8TtpRFxEhLNVzz3bKjRWg3IVdhLAv0Br
-po36Np8++bQHtLIPTzKmx/u+D1QoeVzKkKemyG4OM7D7KlXr2T9c/a/3WbYabG5Y
-/6C6JNpbLOdyqUVRaJLooJkuXyGg5UvEx/s5rcq7dOSxA9Loxk0=
-=Jnm9
------END PGP SIGNATURE-----
-
---Apple-Mail=_17EEC37C-A0E2-44C3-AAA9-050078F7CDDA--
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
