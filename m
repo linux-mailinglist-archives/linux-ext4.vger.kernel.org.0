@@ -2,65 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B302161831C
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Nov 2022 16:43:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49977618326
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Nov 2022 16:44:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232198AbiKCPna (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Nov 2022 11:43:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50930 "EHLO
+        id S231382AbiKCPoW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Nov 2022 11:44:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232257AbiKCPnR (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Nov 2022 11:43:17 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 204231B1C8;
-        Thu,  3 Nov 2022 08:43:16 -0700 (PDT)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A3FXZFl011682;
-        Thu, 3 Nov 2022 15:42:59 GMT
+        with ESMTP id S231610AbiKCPoE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Nov 2022 11:44:04 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 068871145;
+        Thu,  3 Nov 2022 08:44:02 -0700 (PDT)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A3FYOwI005729;
+        Thu, 3 Nov 2022 15:43:46 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : references : in-reply-to : content-type :
  content-id : content-transfer-encoding : mime-version; s=corp-2022-7-12;
- bh=kMlE3y1d7GI290lg12m93JGZ9IegnoZ+8HWwqGzSwUw=;
- b=lLI5mXXvHn0pdozqC8ev7nt4Tq/bmMn21NVWotJVU1wZu5UZr9+zG4FiDe8OwvOBEpSD
- GD/7Hdp4KbXFW2CCIGLVAh5XOpIoCGecHCx/J8BqL3E/TA6ppaTBBo7nWF0XCq9vRLap
- hTUJ64x931wFpJ6xm6rh2FW4qZfFVSXRUcwtVuSvq8hfIsJ5DnKZYV0ZuY5dmgrjo6vO
- UIKI1U5XREAUGSmDN8gjDlh+g+2ayd4kp3XWpkHaBLgzgagwtEwAwmzD65ma9fdRWwDY
- klgGYDZwfYEX/43hyWLI03wWcKlGDGO4rcaoEXXoexIZZNanT/khkw2/369a5SsZpnr4 dQ== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3kgty359e5-1
+ bh=UpDhQNSCLWsP9RD4ICu7pfRekRPsgH+PK+FF+nyOCJo=;
+ b=V7GjQuXtTsDU6qvbzp2Kr+chzBcudORJxW/VUNFQEiw0S0cIN2egWUU65uRu1TVsdvRQ
+ D75DqDsekAwzKgVdlWHPfrpCaSjTdsx8RaIG9AB2wVTzxc60RLrSna7Iqa0ijIE+eSIM
+ Q5VE9A2ge7OzGA+QceFYT6nsoWMFfW4TW+bBenthVc3QyP+J1VTKJ5pWOP/Pc/W5JkRn
+ 29AinPC4P3+r6jC91klhwZU6E7BwSsCfIP0FwIWgYnENWSu8XMRTeVRbuG36E5UhL/2Z
+ zoxdpev7vO5V7mJtJ9bIr4fbaaMoa8tP3/JDvB+rPezMpMZajGnK9XCBwdTPiA5wiIOG Cg== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3kgts1dgd5-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 03 Nov 2022 15:42:59 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 2A3EsEG7035641;
-        Thu, 3 Nov 2022 15:42:58 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2169.outbound.protection.outlook.com [104.47.57.169])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3kgtmcug11-1
+        Thu, 03 Nov 2022 15:43:46 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 2A3F8LEF001299;
+        Thu, 3 Nov 2022 15:43:45 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2108.outbound.protection.outlook.com [104.47.70.108])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3kgtm6rysy-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 03 Nov 2022 15:42:58 +0000
+        Thu, 03 Nov 2022 15:43:45 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dBWWRPlnE0F9HXODCvHK3wrM6exoqOewbUNUTAa2LRxF9jyM1qiPESLjh4gTUHS9lik5dVwNT7b9yFyPO1/8UJ+5sCHaGN5Z29zQ3pGg4maqFbwACVmN0nEQvmgyNQcSInSWvR59nXsVAACJmL5bGNr9ly6l6hkDhW8+lqTcmpOqG0Lvp88oB4YM2K1nHBabDGGyGO9xbsmJtUbLnReHP0j0qi4x4Jc9vGNPCcP336AT9mTpqoxW0LobCTf1ZCiGJDgefQ/1SP2SfFbXN2kag12YWjHynLmNyEocFhQTsJKUWjdfjcNnh6fxR6kEVh6yMyhF4DacFfcjCxUCsj6ArQ==
+ b=AaCg11hOa9dwKEVJyLf4WKTob2SK9fu2GX78hL/b2j+G5S1bGI3yJCitagdbOQ7ro7edKhbpjwpxwEjxzTmUndykBQSJhNsT4W+2R9EXYvN8SB/Rw2jwDkz4QXsY1QTqQE+Sd4krGr7F7MlkG5cBqGTEtRnyx5w7GwlxRodWXPNy5ETvOcu12VZ7HEz9s0lIcJhzLMI8TDVS6W/QHfgCFMvhYi7uHrOsenaEmV1j1Ga7eYtBQGupwJ1GWRWeNOUR8k356rwRFBzAqZz6hDOnM+KR2XclL1NIRvzCNPTvmMeE4VsHUraR3NeNjFZ0pRFLaAxBcNmdupc8iEhukoM8pg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kMlE3y1d7GI290lg12m93JGZ9IegnoZ+8HWwqGzSwUw=;
- b=KE4F/djOyEhKtdPvOtV/L0LzXziW+sUnnh4lX5DaJraFu1qUHBOjvEHzGwO2TuSdDpy2Y4L41mhxwy/DBiSMxFey9GuyYP1IurfCdGdP7mkptFI+HiAAGyVzPoUG6DSHAqbr649HkQr+1iVflfSAkZEV3qvsmPdtGVsB7ZJkkeORyhf1YiqueSeAbojL2gU3b3HrECDjRea0tO04M8RLFDUg97O7K01wwedb6hA1+ijv6NscUsmWqOv7xc0f2mbuscqKfdLQIKbTGHElYvSKrLN7aC7P0XnRVUAKTkZF2+SeeASUKE7PYN+P+WL5NVSrA4E5wElYLAnaKDTDyftfEA==
+ bh=UpDhQNSCLWsP9RD4ICu7pfRekRPsgH+PK+FF+nyOCJo=;
+ b=HTAZ3+ZCdSAVmsVjNwPpNT1Lh1W4wWw4wI/a2t1JumYDEcRgus87vSsCIBFN9sPdQQvy4K2Ex54GfpruvMlXCXNQQVDm3q80a3et95Q+R8CgmQZKIEB7p1q0LT415hO01pEdURPwRicLXm1GTpMZnWI9QwFY6QIFxN2zgd3dW76DyRCDn1rxSRIJyPB+RsmJDKP7/Zwq85yur/YfUdT0EDoytoolDFfkNHL/0+p4W15yELCK4uKZKwsutA5X3wjF27RR3MO+8fPaZxvGw8c44GLMp66QxTDfDI48X8EXPsl3Td9vWq9CIiamaSk4unvm6tcNJTi4mTuZfdHbSgub9Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kMlE3y1d7GI290lg12m93JGZ9IegnoZ+8HWwqGzSwUw=;
- b=fxPW3vaCNb9A1kBoothX+rHHxiQMfxOJ1YLWhTKdr30qH1m9kAS9sryv2HgVGhIgJ7kBAtgDarJSZzGYr9AIHghd1lx/5ujblv7AUZlcYn1CwyJL0z9hhy7v4md6MGtLhr4/dQ4HoMrHlzp9npTSupwsEqTUlquZNfBrGALp3Mk=
+ bh=UpDhQNSCLWsP9RD4ICu7pfRekRPsgH+PK+FF+nyOCJo=;
+ b=ZLLtAASs8Nos8vKAjwUSq6mqDkAays+7/DAc+Eg9lY/HznvgGTb2XcYWT36ld4Qqo7R92PNhkPjlVI3DCrP87I71yqBXnGo/q15AT3kZl76u3NNHrhMb0rwguPK/Owt8wPHf4TVh/R+Skki2KeASErL43cNR3Uq5CH6ApxrlSh0=
 Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
- by CO1PR10MB4402.namprd10.prod.outlook.com (2603:10b6:303:95::7) with
+ by PH7PR10MB5700.namprd10.prod.outlook.com (2603:10b6:510:125::6) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.20; Thu, 3 Nov
- 2022 15:42:56 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5769.16; Thu, 3 Nov
+ 2022 15:43:42 +0000
 Received: from BN0PR10MB5128.namprd10.prod.outlook.com
  ([fe80::5403:3164:f6c3:d48a]) by BN0PR10MB5128.namprd10.prod.outlook.com
  ([fe80::5403:3164:f6c3:d48a%3]) with mapi id 15.20.5791.022; Thu, 3 Nov 2022
- 15:42:56 +0000
+ 15:43:42 +0000
 From:   Chuck Lever III <chuck.lever@oracle.com>
 To:     Jeff Layton <jlayton@kernel.org>
 CC:     Theodore Ts'o <tytso@mit.edu>,
@@ -82,81 +82,80 @@ CC:     Theodore Ts'o <tytso@mit.edu>,
         "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
         Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
         "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
-Subject: Re: [PATCH v7 7/9] nfsd: use the getattr operation to fetch i_version
-Thread-Topic: [PATCH v7 7/9] nfsd: use the getattr operation to fetch
- i_version
-Thread-Index: AQHY4hdEjzJEXJmuz06vp2aYITmsLa4tcbKA
-Date:   Thu, 3 Nov 2022 15:42:56 +0000
-Message-ID: <8E06CE2C-E8FB-4727-9ABF-C1EA6AAC067E@oracle.com>
+Subject: Re: [PATCH v7 8/9] nfsd: remove fetch_iversion export operation
+Thread-Topic: [PATCH v7 8/9] nfsd: remove fetch_iversion export operation
+Thread-Index: AQHY4hdEz9E5Fj2hi0iz4xQvGekkH64tcemA
+Date:   Thu, 3 Nov 2022 15:43:42 +0000
+Message-ID: <4D563C45-38A2-4755-BF06-7A30E0331541@oracle.com>
 References: <20221017105709.10830-1-jlayton@kernel.org>
- <20221017105709.10830-8-jlayton@kernel.org>
-In-Reply-To: <20221017105709.10830-8-jlayton@kernel.org>
+ <20221017105709.10830-9-jlayton@kernel.org>
+In-Reply-To: <20221017105709.10830-9-jlayton@kernel.org>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
 x-mailer: Apple Mail (2.3696.120.41.1.1)
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN0PR10MB5128:EE_|CO1PR10MB4402:EE_
-x-ms-office365-filtering-correlation-id: 9c42ff0c-58c8-494b-6e7e-08dabdb213d0
+x-ms-traffictypediagnostic: BN0PR10MB5128:EE_|PH7PR10MB5700:EE_
+x-ms-office365-filtering-correlation-id: 1985b75a-ae49-4eda-9c89-08dabdb22f6d
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: AYisBUCxb4fA3Dq9ELCnZlIMVyFVulvct4Rj1OddttscCW58p+qiYObaryLsYixtXvar7A28YgKr/eFVc3CTrSJt2GVbcfNibMlW8QP+NEW8pRf+CS9H2Yz292RDx8QCF8IaSe0roKBbXQqC0d3PRD/W2bj+ywY/SuJniqOjYMjsQ3DmZyCrJAQPPS8PDr77QVy5rQHsRBl7AY2pCjb8acyZtD3VifuFIQbLVdLCeYZb4f9HRjs/7OM+N/O+LgIUSEBFD7r9/mFgxioRakybRrknmDNkc07bjn6Rh9hhdArBf4cR/BGFlVKvOG+fqEH6CAWSiAPKGa2uNVWTdGDSporojwCMpzJtEc/BstgAE5tFvKZEB5hJCKb9AQClYD+bEVVnI2LksDA4g9CteS0nJuexGvm7vxLPhGu8hs5h99UTd9b10p507Wo/X8qD6joLThEyVVFm9akGUb55+L9/5gs0OoSBSuvL7dkeZTy+AUQoaVBv/88eWgrdU9B35mXfJORTM4MbLinCWS4nvhYFD6cXZo99Z4ShWX0dF02Q/Vxro4ivmy+ya6vl4NDpCql16+tAAiQmPq2xhQjboGEln+C3UshesThOS9m7REumTzc+jdzfGan/g6JXXNBE+ouS7Jtf5ua9ZP7PaDqHVhrGO/DQ2967embOWKCi6PemsyY6Tm1Eua3iN/ba4SY+8sDlgRMBUKm0/xA6M9LfvDwfWUe39LaGYLqHm+nzKXCzLUmP258XVkN04CyPejouFL98HiYyW1mnkOYn5DVJosPnJRL764Cj+dIyq9Oc+u77zG5WejPXzy/iPwsDJ6kIvuAZ7QMR5czVsySfUUL3v84UMg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(366004)(346002)(136003)(39860400002)(396003)(376002)(451199015)(83380400001)(66899015)(86362001)(71200400001)(2906002)(6506007)(6486002)(38100700002)(38070700005)(4326008)(33656002)(36756003)(53546011)(6512007)(26005)(186003)(478600001)(2616005)(64756008)(66556008)(316002)(66476007)(66946007)(8676002)(66446008)(91956017)(5660300002)(8936002)(54906003)(76116006)(6916009)(41300700001)(122000001)(7416002)(60764002)(45980500001);DIR:OUT;SFP:1101;
+x-microsoft-antispam-message-info: wLQn+5eAaq7EtZT/7oh67vPm9NWAue2YXJk0Cj0Xc35tLOOX3UlvS+Oret5BAQngmTyUjgzJm4Ytu6/ku8iV83yXPXexnd+vQoL3RtVwjo7C75SfhrnDihvQcCrRJpUfY+NxjfXp6fyumtxeWizJ9lGzxKEZHtaNpQa/wnfTgs9zWzpJEijCycsHGQ5ogCcJxpepeic0UGT3+QdUPv3yXoYx8VJjuuBTbVlQHPh+eKRhu6GegAL1X1Ky4UNKIuhHo0WJ4ac28cRLrmxjA28JRosP+kPP+ciC3lNqda9kkg63v5YfQtJhWJAkc0biiIYwQ2Njb7e82AWA80L47X9LXqltPQfxCokexiBC1KF9FCsrx7aOowvoYoPwqs6SKPnYtDuQM/DWySkMbJcuHvJV+gZ3j4moeO/Jw1YBqXc0UDJSvxWwXeZ8ux7LH8Lm2vnqeGxxIJ7T/kKliiTgMK5O+bbHq1ojlKT6zBenfKrDCDxn987/+mqqbC1jVwmTYU4WHbJwL3lNWjQaiWFgJkyrFccOVn3/TaSgpnrAKWRtNFvmgzYaH0mZdfli5g6YEbvEa5ikv/WLkhuqeNnbxfZznS5j4t8iIXrWPoOmZARvSqJDLQ04mKd28UaaErRRm+QZuHAiD5upVZaPiIpZ3DgAfz5AFMXTDtfJ64W+8CDvNDc4+aPYZiF9Ipiq3NUjn3mzqBKkEd/6OZu5pE/1XKhkApNTcOR5UJJWXvaABOAztXTSApDkN+jwHPcMOdx4EXFEzJ8dFD/cQpZUe2tOIqekrS4ak8RBg3CievSR/YE1Qi8=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(346002)(396003)(136003)(366004)(376002)(39860400002)(451199015)(64756008)(66446008)(8676002)(66556008)(4326008)(66476007)(86362001)(7416002)(66946007)(91956017)(41300700001)(5660300002)(8936002)(76116006)(71200400001)(478600001)(6506007)(6486002)(36756003)(2906002)(6512007)(122000001)(83380400001)(6916009)(316002)(38100700002)(33656002)(2616005)(38070700005)(26005)(54906003)(186003)(53546011)(45980500001);DIR:OUT;SFP:1101;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?A9IaI+b+B79yvrfMktONQfhDvbRUwUkYkSCJUlkKdJ8Gzahai2tJjF9M4zi0?=
- =?us-ascii?Q?0qXmNL0cnylM3CjlFCPkwzc5HbIWCHrvVP4KhhSFtydwBiQ3/TQSu/4Euf+v?=
- =?us-ascii?Q?400BQPyknnJhRj7ojV4HWTw3GXkxzl4YsNDztc7fibVNAhQqMs6Q91YDEYI8?=
- =?us-ascii?Q?MC6dAmFHQquxu/hd2YFa8B+MaPXGFFwFGF76g5H5O1hfoJXCivRnkA/lQuPf?=
- =?us-ascii?Q?5tt2hhcTJSb8JTXQfJb78Zhlz7vRKLPWMVr5uJDDHa+ljoXHDP8WCp4Hah92?=
- =?us-ascii?Q?kkkLubMRuQuMZn3tPKs0xxEpBuwCpR28k/EM/sBeLtz8F188z/OO6oBob3nq?=
- =?us-ascii?Q?ijQlw485naT8J7mKYMGysZausplv986wTqcQ1E5WO9+YNAVvSFIiwBY1AOpS?=
- =?us-ascii?Q?53FX7zNj/vwKfrPyPGGnw0MFWDx+peNsVcpe0NeBhvYB4Mv79mB5vt80lWqx?=
- =?us-ascii?Q?wNm3pqg6o5aMLggzWkPLpa5ao2fZSHBJCTOiQH8XG1K+XQtTuKLNHn2xWSuk?=
- =?us-ascii?Q?TH3uyOoj3hg8W61S/YWyfcrUbsvkG8MAqGHdZWs+xpozcdXXGQb63r+++kT/?=
- =?us-ascii?Q?m9gSg0aZi7kJfERm2Xgpu1d3QSQXOkU0/I4gqhHrmKHJdF5y9iR3yjINVGL9?=
- =?us-ascii?Q?Bo3nArU0mJthWoqOlhTkpJ22K21R2Np2EyQc3tkcqmTqUG7Q/s3R2l0FblpR?=
- =?us-ascii?Q?OBEeV2azOFt2MfTqUGzCn47s+RQ+tcA0fLfWbEbb+NQZGUOO1M5ggUUYb8bz?=
- =?us-ascii?Q?U41LkJZ52DXvHe+wCeYbxKMgho1dwA7L947QZNvxvk10QLjFbGv3jyfNUEbf?=
- =?us-ascii?Q?69eoM2tRLWMutIUkvOXzXGJzzqncr66hSiSXDiML56E2LhApmKo6UpDhYhKa?=
- =?us-ascii?Q?llfvIw9pxbbSk8d0ZZGbyjgapZg3U7YMpv1Vb+1RwWTxjbaRXGOwmqKOdFQ0?=
- =?us-ascii?Q?QKoIAoVzqH3r1aQBL2GUPf/8I2gHeZu4DAi/IRkQEqf9usSLsDGiIdNtqJPA?=
- =?us-ascii?Q?da7PW9tTjtT4oOsI8+fNZZTaOc+eMIcp+IVRwH7rUdF5kYrtFM9yZepd2SVA?=
- =?us-ascii?Q?cFDP0m+zNW9dRy+whyM0FVSVDmqyIa/Du3kFvMhoCv7DGTui083sk7VJp3rq?=
- =?us-ascii?Q?MsOyE6Zxfyd2ES+kzBRLIcz74k0giYOPiZLhl/5Odf6F35TeyBMeS0FlBQ3l?=
- =?us-ascii?Q?dwEuK2xsUrP0lRiNG5FbWdX1Lsme0r3P63B1ZAG/y9XV4ULX0WD5ekN/hOT7?=
- =?us-ascii?Q?qeWEnNZsFt3NsJ87xsxNgJ/Fh6qdMUxoovtqIff+vcMfd18d9M1WiqmDbdlW?=
- =?us-ascii?Q?WCcYmR6WkF/LRWwS/zQJJn73ImTFvZYbhQuOezH92x0zHOLTNH/cfkBKE4wc?=
- =?us-ascii?Q?a7JWj/1sPGlWPLYc4DpRWecN1w6fqlPelU2oD6vYG5fQlV01HlIuXRDPU6s5?=
- =?us-ascii?Q?wpdGbMogfRsIp+Yp7PMhQw6yxYovAOC88PEr91SIYGPnU5Awpj7KT2ggoHFj?=
- =?us-ascii?Q?7BGnmLKK4dUo35ND2yFxnuuHWltztS2REIu3GYhzO1soIde3ayopPHveaNyy?=
- =?us-ascii?Q?aEsTDL5nr4fP0ccxK106sDB04F+1PvVOgWm5/5rOYh/aLGunf3MjV9VIbO6n?=
- =?us-ascii?Q?Gw=3D=3D?=
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?IIcHp4I3qeq0zP1dUlGaHf4CXd8dfuYGM9u7lYyid/sRsDjsLvayckYyPTjg?=
+ =?us-ascii?Q?JcjuLfrKNqP41h+RAOs99q86dTkTlvnDqd9KFPwuyL/AdftmMw6a6qprfj8/?=
+ =?us-ascii?Q?8mvFZ6NdubpgmHcJT/FU9/eWc5meZF9cKPvzAsLR8J5ujEJmXKft+80UVOso?=
+ =?us-ascii?Q?SSLxbPe/MyF/64X3jA9jcfziuHL+IzhJ07CS4taVd4kN0uK+3CehloFe2ktI?=
+ =?us-ascii?Q?Sk+GE6PJtPqTFBDAM4iPQiTPRgQBEZ/Mytw5RLeuGVqYcQcrc1UahT1wlTCX?=
+ =?us-ascii?Q?KJhzaM/3Wc6RqqvjKcVbSN0pOLmA16MBoVzgG335to4OQJtasNEV3RJwgS2x?=
+ =?us-ascii?Q?w7/S+41zJbMCkE2brmyq8cIchGuUQWPuF9ifyjzGSZoNK9IGOzszgoZt7ppq?=
+ =?us-ascii?Q?R9WDu4ws+0R19XsbHwLJ1/MHoT3GH7gTa1gT1eb1sTbFrDXqdIO/90/AQVjK?=
+ =?us-ascii?Q?Bm2q7JVUhNU5zZ3j+AWej9DKABV7FpIeL1UdWADZQ/ZkuUKQfqjZlflUwAnI?=
+ =?us-ascii?Q?0Rj7/odpTPxDO6lkcHnr7b5XFRg3MGwkgtu+OWlSf+Z4iT8PKIrTtnhYAjra?=
+ =?us-ascii?Q?nNV8rzQbU/WHfubkxfhnT3Fq8hplVIWLTo0D3KaGBuyef4HZOza3iH1DkNiM?=
+ =?us-ascii?Q?f/f3TDAQYAwboMA7RrLxfJ1QxdmtICZ4Hqjmg1CGm0DfqBBXXluarWAWSE40?=
+ =?us-ascii?Q?g//kEUFQlfWzTwhQnxxjgqnx6Bv03Sp28E0bcpjgKXDXu/M6azwKZw0KOlHx?=
+ =?us-ascii?Q?QyiVnt1Kw9szM0c1Y9TBEIDGVwvUv87kPJ+dKrOemFJ+2SwRhojOeS6iFxEg?=
+ =?us-ascii?Q?hyd+rHmOcQCVCpTmRsC5Nsvwdha90AvvDPvGuJtkaSlsPVXxeXaOD9XU4jCk?=
+ =?us-ascii?Q?7HigPElW5SlZW1LqYHw74CAJ3XEIlxzMc84mw8m84uBxCvEmCRgr/UlXk3KV?=
+ =?us-ascii?Q?gmBR0aDqkg4m/MVSJ/nfkFx9J4/L1cqm4PjD83IyGFZHeQ1fKRUaRE9/7M43?=
+ =?us-ascii?Q?WFRySjoBIqhhnonPnKO1RzingExIawAzvi7t90oy0d2pKv5v+CU/qnlobjw/?=
+ =?us-ascii?Q?Rsrkk1GnYnS4HCfTIT3cH5OzoIAOSLd/cwJdYk41ePRTeK/cEVeNDATkfjA1?=
+ =?us-ascii?Q?q6y7PMdXRHuNKqOwa/qhqILRTyVpD0/XRYFdbWi2xvSH724iIKsHZLwnjsO0?=
+ =?us-ascii?Q?mYR5mnzSlPJJCIeS5L0uCaTy3xkl12z/ct5X9PJu9VtCs7u/O1D7uYnVgE0t?=
+ =?us-ascii?Q?wDJjQ2Vxv8hYojC+X7sERcrsVjXcXq++Js5qt8DCYV5E0Q0Y6W4ySETzpccF?=
+ =?us-ascii?Q?tAVXKyeJY7fl4EZuGHpQy76C8sLx0DBHkG4Kt+B2UwSkCxXDSWY9MPEupoF2?=
+ =?us-ascii?Q?bCEg/TacSpGj3OLR9kQGb3VcfC8n4F5AJkOFpWwoE6pMLdFfdlTO5sU7LxfU?=
+ =?us-ascii?Q?w0uP39uDnzFJQAN2P0ymyPLGVf7RTGX6kD0nFeJzP2sWRej8ufxXm2+AZNOo?=
+ =?us-ascii?Q?6qPCtiQWxB8oLtvjk6YGmDE4DRbhO9z3E39lWKlx2t8rfqgSIukM+W1WsRaH?=
+ =?us-ascii?Q?XKAxto4MiJAQYMjgXtM4Sv4e3rDZmZKnWIb8JcXAn7OtXd2obl88WZpANiCD?=
+ =?us-ascii?Q?gA=3D=3D?=
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <04E6149FF1F8954182B5129EB40715D0@namprd10.prod.outlook.com>
+Content-ID: <FDC10AF60243CE4BAA0502B32F834E51@namprd10.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: oracle.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9c42ff0c-58c8-494b-6e7e-08dabdb213d0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2022 15:42:56.0289
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1985b75a-ae49-4eda-9c89-08dabdb22f6d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2022 15:43:42.3262
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 0za2EW69uoF6SMHvAeywHWvP6carnRxnd4nUKVV4BsVI3ZSdUBRTvj/LFCR0l/LLtAXJmiFmL0gsEWGcCgqD9A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4402
+X-MS-Exchange-CrossTenant-userprincipalname: 1/q0D4NI7YMu8iH7G47TNCagTv/9DVyyDMR+lvnBgeqKGwojhFBVpNvPzCpUDARjwKBtSxbaDtwAVaOsRyPFKA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB5700
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-11-03_04,2022-11-03_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0
- suspectscore=0 malwarescore=0 spamscore=0 adultscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2210170000 definitions=main-2211030104
-X-Proofpoint-ORIG-GUID: _ss5efehKWa17UUB4hWxGa_tsyItVz0i
-X-Proofpoint-GUID: _ss5efehKWa17UUB4hWxGa_tsyItVz0i
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 suspectscore=0
+ mlxlogscore=999 mlxscore=0 adultscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2210170000
+ definitions=main-2211030104
+X-Proofpoint-GUID: Pyr4_bRFeNYsY5qXCIKjfglc1h8rXG0I
+X-Proofpoint-ORIG-GUID: Pyr4_bRFeNYsY5qXCIKjfglc1h8rXG0I
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
@@ -171,22 +170,8 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 > On Oct 17, 2022, at 6:57 AM, Jeff Layton <jlayton@kernel.org> wrote:
 >=20
-> Now that we can call into vfs_getattr to get the i_version field, use
-> that facility to fetch it instead of doing it in nfsd4_change_attribute.
->=20
-> Neil also pointed out recently that IS_I_VERSION directory operations
-> are always logged, and so we only need to mitigate the rollback problem
-> on regular files. Also, we don't need to factor in the ctime when
-> reexporting NFS or Ceph.
->=20
-> Set the STATX_VERSION (and BTIME) bits in the request when we're dealing
-> with a v4 request. Then, instead of looking at IS_I_VERSION when
-> generating the change attr, look at the result mask and only use it if
-> STATX_VERSION is set.
->=20
-> Change nfsd4_change_attribute to only factor in the ctime if it's a regul=
-ar
-> file and the fs doesn't advertise STATX_ATTR_VERSION_MONOTONIC.
+> Now that the i_version counter is reported in struct kstat, there is no
+> need for this export operation.
 >=20
 > Reviewed-by: NeilBrown <neilb@suse.de>
 > Signed-off-by: Jeff Layton <jlayton@kernel.org>
@@ -195,142 +180,60 @@ Acked-by: Chuck Lever <chuck.lever@oracle.com>
 
 
 > ---
-> fs/nfsd/nfs4xdr.c |  4 +++-
-> fs/nfsd/nfsfh.c   | 53 +++++++++++++++++++++++++++++++----------------
-> fs/nfsd/vfs.h     |  7 ++++++-
-> 3 files changed, 44 insertions(+), 20 deletions(-)
+> fs/nfs/export.c          | 7 -------
+> fs/nfsd/nfsfh.c          | 2 --
+> include/linux/exportfs.h | 1 -
+> 3 files changed, 10 deletions(-)
 >=20
-> diff --git a/fs/nfsd/nfs4xdr.c b/fs/nfsd/nfs4xdr.c
-> index bcfeb1a922c0..c19b6b00b620 100644
-> --- a/fs/nfsd/nfs4xdr.c
-> +++ b/fs/nfsd/nfs4xdr.c
-> @@ -2906,7 +2906,9 @@ nfsd4_encode_fattr(struct xdr_stream *xdr, struct s=
-vc_fh *fhp,
-> 			goto out;
-> 	}
+> diff --git a/fs/nfs/export.c b/fs/nfs/export.c
+> index 01596f2d0a1e..1a9d5aa51dfb 100644
+> --- a/fs/nfs/export.c
+> +++ b/fs/nfs/export.c
+> @@ -145,17 +145,10 @@ nfs_get_parent(struct dentry *dentry)
+> 	return parent;
+> }
 >=20
-> -	err =3D vfs_getattr(&path, &stat, STATX_BASIC_STATS, AT_STATX_SYNC_AS_S=
-TAT);
-> +	err =3D vfs_getattr(&path, &stat,
-> +			  STATX_BASIC_STATS | STATX_BTIME | STATX_VERSION,
-> +			  AT_STATX_SYNC_AS_STAT);
-> 	if (err)
-> 		goto out_nfserr;
-> 	if (!(stat.result_mask & STATX_BTIME))
+> -static u64 nfs_fetch_iversion(struct inode *inode)
+> -{
+> -	nfs_revalidate_inode(inode, NFS_INO_INVALID_CHANGE);
+> -	return inode_peek_iversion_raw(inode);
+> -}
+> -
+> const struct export_operations nfs_export_ops =3D {
+> 	.encode_fh =3D nfs_encode_fh,
+> 	.fh_to_dentry =3D nfs_fh_to_dentry,
+> 	.get_parent =3D nfs_get_parent,
+> -	.fetch_iversion =3D nfs_fetch_iversion,
+> 	.flags =3D EXPORT_OP_NOWCC|EXPORT_OP_NOSUBTREECHK|
+> 		EXPORT_OP_CLOSE_BEFORE_UNLINK|EXPORT_OP_REMOTE_FS|
+> 		EXPORT_OP_NOATOMIC_ATTR,
 > diff --git a/fs/nfsd/nfsfh.c b/fs/nfsd/nfsfh.c
-> index 7030d9209903..21b64ac97a06 100644
+> index 21b64ac97a06..9c1f697ffc72 100644
 > --- a/fs/nfsd/nfsfh.c
 > +++ b/fs/nfsd/nfsfh.c
-> @@ -628,6 +628,10 @@ void fh_fill_pre_attrs(struct svc_fh *fhp)
-> 		stat.mtime =3D inode->i_mtime;
-> 		stat.ctime =3D inode->i_ctime;
-> 		stat.size  =3D inode->i_size;
-> +		if (v4 && IS_I_VERSION(inode)) {
-> +			stat.version =3D inode_query_iversion(inode);
-> +			stat.result_mask |=3D STATX_VERSION;
-> +		}
-> 	}
-> 	if (v4)
-> 		fhp->fh_pre_change =3D nfsd4_change_attribute(&stat, inode);
-> @@ -659,6 +663,10 @@ void fh_fill_post_attrs(struct svc_fh *fhp)
-> 	if (err) {
-> 		fhp->fh_post_saved =3D false;
-> 		fhp->fh_post_attr.ctime =3D inode->i_ctime;
-> +		if (v4 && IS_I_VERSION(inode)) {
-> +			fhp->fh_post_attr.version =3D inode_query_iversion(inode);
-> +			fhp->fh_post_attr.result_mask |=3D STATX_VERSION;
-> +		}
-> 	} else
-> 		fhp->fh_post_saved =3D true;
-> 	if (v4)
-> @@ -750,28 +758,37 @@ enum fsid_source fsid_source(const struct svc_fh *f=
-hp)
-> }
->=20
-> /*
-> - * We could use i_version alone as the change attribute.  However,
-> - * i_version can go backwards after a reboot.  On its own that doesn't
-> - * necessarily cause a problem, but if i_version goes backwards and then
-> - * is incremented again it could reuse a value that was previously used
-> - * before boot, and a client who queried the two values might
-> - * incorrectly assume nothing changed.
-> + * We could use i_version alone as the change attribute.  However, i_ver=
-sion
-> + * can go backwards on a regular file after an unclean shutdown.  On its=
- own
-> + * that doesn't necessarily cause a problem, but if i_version goes backw=
-ards
-> + * and then is incremented again it could reuse a value that was previou=
-sly
-> + * used before boot, and a client who queried the two values might incor=
-rectly
-> + * assume nothing changed.
-> + *
-> + * By using both ctime and the i_version counter we guarantee that as lo=
-ng as
-> + * time doesn't go backwards we never reuse an old value. If the filesys=
-tem
-> + * advertises STATX_ATTR_VERSION_MONOTONIC, then this mitigation is not =
-needed.
->  *
-> - * By using both ctime and the i_version counter we guarantee that as
-> - * long as time doesn't go backwards we never reuse an old value.
-> + * We only need to do this for regular files as well. For directories, w=
-e
-> + * assume that the new change attr is always logged to stable storage in=
- some
-> + * fashion before the results can be seen.
->  */
-> u64 nfsd4_change_attribute(struct kstat *stat, struct inode *inode)
+> @@ -777,8 +777,6 @@ u64 nfsd4_change_attribute(struct kstat *stat, struct=
+ inode *inode)
 > {
-> +	u64 chattr;
-> +
-> 	if (inode->i_sb->s_export_op->fetch_iversion)
-> 		return inode->i_sb->s_export_op->fetch_iversion(inode);
-> -	else if (IS_I_VERSION(inode)) {
-> -		u64 chattr;
-> -
-> -		chattr =3D  stat->ctime.tv_sec;
-> -		chattr <<=3D 30;
-> -		chattr +=3D stat->ctime.tv_nsec;
-> -		chattr +=3D inode_query_iversion(inode);
-> -		return chattr;
-> -	} else
-> -		return time_to_chattr(&stat->ctime);
-> +	if (stat->result_mask & STATX_VERSION) {
-> +		chattr =3D stat->version;
-> +
-> +		if (S_ISREG(inode->i_mode) &&
-> +		    !(stat->attributes & STATX_ATTR_VERSION_MONOTONIC)) {
-> +			chattr +=3D (u64)stat->ctime.tv_sec << 30;
-> +			chattr +=3D stat->ctime.tv_nsec;
-> +		}
-> +	} else {
-> +		chattr =3D time_to_chattr(&stat->ctime);
-> +	}
-> +	return chattr;
-> }
-> diff --git a/fs/nfsd/vfs.h b/fs/nfsd/vfs.h
-> index 120521bc7b24..c98e13ec37b2 100644
-> --- a/fs/nfsd/vfs.h
-> +++ b/fs/nfsd/vfs.h
-> @@ -168,9 +168,14 @@ static inline void fh_drop_write(struct svc_fh *fh)
+> 	u64 chattr;
 >=20
-> static inline __be32 fh_getattr(const struct svc_fh *fh, struct kstat *st=
-at)
-> {
-> +	u32 request_mask =3D STATX_BASIC_STATS;
-> 	struct path p =3D {.mnt =3D fh->fh_export->ex_path.mnt,
-> 			 .dentry =3D fh->fh_dentry};
-> -	return nfserrno(vfs_getattr(&p, stat, STATX_BASIC_STATS,
-> +
-> +	if (fh->fh_maxsize =3D=3D NFS4_FHSIZE)
-> +		request_mask |=3D (STATX_BTIME | STATX_VERSION);
-> +
-> +	return nfserrno(vfs_getattr(&p, stat, request_mask,
-> 				    AT_STATX_SYNC_AS_STAT));
-> }
+> -	if (inode->i_sb->s_export_op->fetch_iversion)
+> -		return inode->i_sb->s_export_op->fetch_iversion(inode);
+> 	if (stat->result_mask & STATX_VERSION) {
+> 		chattr =3D stat->version;
 >=20
+> diff --git a/include/linux/exportfs.h b/include/linux/exportfs.h
+> index fe848901fcc3..9f4d4bcbf251 100644
+> --- a/include/linux/exportfs.h
+> +++ b/include/linux/exportfs.h
+> @@ -213,7 +213,6 @@ struct export_operations {
+> 			  bool write, u32 *device_generation);
+> 	int (*commit_blocks)(struct inode *inode, struct iomap *iomaps,
+> 			     int nr_iomaps, struct iattr *iattr);
+> -	u64 (*fetch_iversion)(struct inode *);
+> #define	EXPORT_OP_NOWCC			(0x1) /* don't collect v3 wcc data */
+> #define	EXPORT_OP_NOSUBTREECHK		(0x2) /* no subtree checking */
+> #define	EXPORT_OP_CLOSE_BEFORE_UNLINK	(0x4) /* close files before unlink =
+*/
 > --=20
 > 2.37.3
 >=20
