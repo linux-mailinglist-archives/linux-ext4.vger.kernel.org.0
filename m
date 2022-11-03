@@ -2,103 +2,98 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A0F617722
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Nov 2022 08:08:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 634BC617ADA
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Nov 2022 11:32:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbiKCHIP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Nov 2022 03:08:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43308 "EHLO
+        id S231280AbiKCKcr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Nov 2022 06:32:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229742AbiKCHIO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Nov 2022 03:08:14 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C766341
-        for <linux-ext4@vger.kernel.org>; Thu,  3 Nov 2022 00:08:12 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id l22-20020a17090a3f1600b00212fbbcfb78so4369682pjc.3
-        for <linux-ext4@vger.kernel.org>; Thu, 03 Nov 2022 00:08:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UCGx+I//h802HOEchXeQ4l9Uif7TwqahE8c/QVCmorA=;
-        b=Qo0pCYgx3Qq1H7gtsjTo9ahtaWGAPbAqpUUP7w83R+hioFcvnb/Vum4t6njrIqmCbQ
-         9oglIFHFznb8HWDOhJ8VqGBZno5DvMa/i9rWqzvIS3F1Qe6lSOVMpDruWh58G2ZJDVRR
-         +irGuRxsC3szEMLHnbBdSVWy+8gAtIi3/dsdlKShS4dWGsFcwevGYm9bbQNs76cqEy+l
-         a7aTzEEQgFxLLhP1XqsxI1o93xRoLeyOkLszg3jyihUg4tqsI4qRKCp463KDJruVxcER
-         uahSco4O56I/ia+N+pdnGxKbS5y4Jn6JIOipSvnU+FLMXl5F+IFO/pgiKOzrTt8rdoYE
-         jcgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UCGx+I//h802HOEchXeQ4l9Uif7TwqahE8c/QVCmorA=;
-        b=s+hwCdAnPPaooGWP3fdQB3DNyQupJHtSYqELAuIlmMZDwHr467MXLRDx3xDFZnQjRq
-         o4/m1XAspC6LvrlkGSP52k4sHWwkoUyi/CzmMWm3nDiFmqOaKUnxPUPbkLezOLcBCTTZ
-         /2MrycgUKkRatgWP+zbMS5r17YHEsSTmVw04jE1uQksGjmn9Z87MbCy1LFbS769Nl+1u
-         EwJ8RPbicMwsi4bNrNOGAkYw9uEijn9mxs5/G/OaI+sjTCnxXRLBBYX214v+BPPMdLVZ
-         tARVqIzE4N1svGNzL1Lr9AqvrqByMdbuuTJ6aPBNhyCVOlrAacyJ5Fm+GpiA03x+bmZM
-         rnHg==
-X-Gm-Message-State: ACrzQf1CR5TZ/1Ao/0Tca1Jsd7OHjHM6zFK2gCFwbMlf8jJQXp7aPEnV
-        IN9DMnWlDDkruv/gZZ+c2mm8Wg==
-X-Google-Smtp-Source: AMsMyM7EbTGuTativfwuYw+G5QrvaMpsSoYHAtMTN9boWfI/C7HSKjfDJIybcNCOqaRH/jY3hHhBSg==
-X-Received: by 2002:a17:902:ed8e:b0:187:1c78:80c2 with SMTP id e14-20020a170902ed8e00b001871c7880c2mr21606400plj.38.1667459292279;
-        Thu, 03 Nov 2022 00:08:12 -0700 (PDT)
-Received: from dread.disaster.area (pa49-181-106-210.pa.nsw.optusnet.com.au. [49.181.106.210])
-        by smtp.gmail.com with ESMTPSA id s7-20020a170902988700b00179e1f08634sm9438901plp.222.2022.11.03.00.08.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Nov 2022 00:08:11 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1oqUKd-009gYz-VX; Thu, 03 Nov 2022 18:08:08 +1100
-Date:   Thu, 3 Nov 2022 18:08:07 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com, linux-nilfs@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v4 00/23] Convert to filemap_get_folios_tag()
-Message-ID: <20221103070807.GX2703033@dread.disaster.area>
-References: <20221102161031.5820-1-vishal.moola@gmail.com>
+        with ESMTP id S229791AbiKCKcp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Nov 2022 06:32:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79640DF31
+        for <linux-ext4@vger.kernel.org>; Thu,  3 Nov 2022 03:31:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1667471513;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VGLcnmD6PutmTSm1n72zcGIMTXoaJoPq7ziNFejegjw=;
+        b=Ymbkg30ufampbMDbAlO11CPFiDdzvSIUWAi2OLFNcLdcy1qq5VSV1ryriniqVaPB/9RDam
+        0Skgd+bRAcapvBQjx5SBEsbNOBcNFUF3829W9/xq1w2WDzuWNVWEiHHHWnqO+jGdhJOeHQ
+        M8f7sWLWwtd/Pt9DWqmFGKI4OhNMVng=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-81-LC9J-HzkOfqPjIsjJKrMPg-1; Thu, 03 Nov 2022 06:31:51 -0400
+X-MC-Unique: LC9J-HzkOfqPjIsjJKrMPg-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0F48E3804512;
+        Thu,  3 Nov 2022 10:31:51 +0000 (UTC)
+Received: from fedora (ovpn-192-135.brq.redhat.com [10.40.192.135])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7E742492B06;
+        Thu,  3 Nov 2022 10:31:50 +0000 (UTC)
+Date:   Thu, 3 Nov 2022 11:31:48 +0100
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: periodic lifetime_write_kbytes updates?
+Message-ID: <20221103103148.2r3gcaqpngq6jphg@fedora>
+References: <92BC4EEA-69A6-4AE0-ABA8-304E9DE2D4A9@dilger.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221102161031.5820-1-vishal.moola@gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <92BC4EEA-69A6-4AE0-ABA8-304E9DE2D4A9@dilger.ca>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Nov 02, 2022 at 09:10:08AM -0700, Vishal Moola (Oracle) wrote:
-> This patch series replaces find_get_pages_range_tag() with
-> filemap_get_folios_tag(). This also allows the removal of multiple
-> calls to compound_head() throughout.
-> It also makes a good chunk of the straightforward conversions to folios,
-> and takes the opportunity to introduce a function that grabs a folio
-> from the pagecache.
+On Wed, Nov 02, 2022 at 05:41:07PM -0600, Andreas Dilger wrote:
+> I was looking at the /sys/fs/ext4/*/lifetime_write_kbytes counters on
+> my home server and wondering about how accurate they are.  That is most
+> interesting in the case of flash devices, to get a good idea of the
+> lifetime writes vs. actual rated drive writes per day.
 > 
-> F2fs and Ceph have quite a lot of work to be done regarding folios, so
-> for now those patches only have the changes necessary for the removal of
-> find_get_pages_range_tag(), and only support folios of size 1 (which is
-> all they use right now anyways).
+> It looks like s_kbytes_written is only updated on clean unmount
+> via ext4_commit_super->ext4_update_super() and in a few error handling
+> codepaths.  This means any in-memory updates are typically lost if the
+> server crashes or loses power (which is typical for long-running servers,
+> rather than a clean shutdown).
 > 
-> I've run xfstests on btrfs, ext4, f2fs, and nilfs2, but more testing may be
-> beneficial. The page-writeback and filemap changes implicitly work. Testing
-> and review of the other changes (afs, ceph, cifs, gfs2) would be appreciated.
+> It would be useful to periodically update the superblock with the current
+> value, maybe once an hour if the value has changed more than some small
+> margin (to take into account the *previous* update).  The superblock used
+> to be written frequently via ->write_super(), but this has not been the
+> case since commit v3.5-rc5-19-g4d47603d9703.
+> 
+> Any thoughts/objections to a periodic task calling ext4_update_super()
+> every hour if there have been any noticeable writes since the last time
+> it was called?  This could potentially be more clever so that it only
+> writes if the disk is not asleep, and do the writes the next time it wakes,
+> but I'm not sure how easy/hard that is to detect at the filesystem level.
+> 
+> Cheers, Andreas
+> 
+> PS: there is *also* a function resize.c::ext4_update_super() for added
+> confusion, but that does something completely different...
 
-Same question as last time: have you tested this with multipage
-folios enabled? If you haven't tested XFS, then I'm guessing the
-answer is no, and you haven't fixed the bug I pointed out in
-the write_cache_pages() implementation....
+Hi Andreas,
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+I don't have too much to contribute other than to say I think it's a
+good idea. Having the counter be more precise and as such more reliable
+is a good thing especially with what looks to me like a litte effort
+required.
+
+Thanks!
+-Lukas
+
