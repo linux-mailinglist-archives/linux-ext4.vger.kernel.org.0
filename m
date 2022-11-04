@@ -2,78 +2,247 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 181AA61A583
-	for <lists+linux-ext4@lfdr.de>; Sat,  5 Nov 2022 00:15:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F7461A5CB
+	for <lists+linux-ext4@lfdr.de>; Sat,  5 Nov 2022 00:34:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbiKDXP3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 4 Nov 2022 19:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47180 "EHLO
+        id S229587AbiKDXeq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 4 Nov 2022 19:34:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbiKDXP2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 4 Nov 2022 19:15:28 -0400
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A6382664
-        for <linux-ext4@vger.kernel.org>; Fri,  4 Nov 2022 16:15:28 -0700 (PDT)
-Received: by mail-il1-f200.google.com with SMTP id j20-20020a056e02219400b00300a22a7fe0so4824132ila.3
-        for <linux-ext4@vger.kernel.org>; Fri, 04 Nov 2022 16:15:28 -0700 (PDT)
+        with ESMTP id S229445AbiKDXep (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 4 Nov 2022 19:34:45 -0400
+Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com [IPv6:2001:4860:4864:20::30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F2D26117;
+        Fri,  4 Nov 2022 16:34:43 -0700 (PDT)
+Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-13be3ef361dso7118980fac.12;
+        Fri, 04 Nov 2022 16:34:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6hvd6urNEa2bZ2TTknP5YJ+H72Ja2eceUu/0SfBV1dc=;
+        b=Jg8jucXtBJP8myrTJM3z0Wltiv65Ikg/KpM2vg9+TBoUW8c9U6W60sIjrbQ9g2FcCc
+         31LubanrKiS7Sxd3jWqCYjN51E7mjzHAKTsl2yG3a+PmWqITk6B5s+HGczlPeMYiJFrb
+         vBZoQtVDG0kLRBI424jNNGG2b2bDrcM9K1WztoTH0rQVEK4L8GAlPvrCSGnj6IlV9xUa
+         XQ46HitYNVXogafALOjhYHs25Hj1J/FbNvVDg+CD68rFnvYhDXkugu2K8l076C7M7TZq
+         Qr6xjmcHk7Gk4pAipfE4FkxiMKzRcyJTcom7FrkAkJoEkKmmujHBgxhv3f/neLNWJFlx
+         4OcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Dh6VHIpm1eezFlTH8nL0qyHX0V1j8bdMOwrcsVM6rA8=;
-        b=BCkvDwLqPh35KcAq2eA6J3pdbPX94I7JRdXPEoh2LILRyP47acYGRKYVYsukAg5Ly0
-         iVZoTw9+JpZAdIPS7YAdVRisI9EeTVQ6mdhHFiAVULBuN6La8Vr+n70IDhTx8c1Pq4Iy
-         mi4iG2QbQ76jJ2KPacGc+TAWsN+Vzye0wyl618EqEfoQAzZptllAR94yKkp2Z3VCF8eH
-         voVNUeRK51JF/YOnf4cE2Pih4OdM7O0X3Figx7E409eyUBKS7M6h3+C6wNZUWgt7T6jb
-         xiySpSIjPtzJ2QcUoPpnLRzDOz9kFldqeyj2Vqa3EF/nPm3oZ0Bmg+prG+eED1BHfqBj
-         uvAw==
-X-Gm-Message-State: ACrzQf0fi47HGV8dizQVI7uI1O+1LyNMW8tpiiVSuzOt9tnogRPeiAGI
-        kuZx06rJ53IJVjFAygQ0M3SlViIj0vVsRjU8AtEVQkn5BxaT
-X-Google-Smtp-Source: AMsMyM6Yhhk6S7iWVKjK0DufhE4CY5LjPiIvqTntkN0077ZdHDFfJb4pnUCW2o7r/3LujeDACdaHe1t1hKvTl8SoUx9p1Kuq5wbH
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6hvd6urNEa2bZ2TTknP5YJ+H72Ja2eceUu/0SfBV1dc=;
+        b=X5cKH3F/66QouUPW6NBBA75UrBnbuk/XBDybvyEhkVZT3NRqDW6Lo980Sw/d8jB6Di
+         abIqXu3S+1VtuD2JKDUj7UYYIedXqzmm2arnsEjxHMw1gtiQyC7dzR3xWnI0MMc7xLnX
+         vw3C5ZTMFXSmFhy9oJR19PP6GjG+RyR8KJDp+2tC30j6jNhtZ/T09pLn0AvqWS/89y50
+         IRoQFqpy3DWqRKZWRx8lhC2uDzja2L2B4sQSht5toOqh15uSeejvPcBbaB9KD5wChq08
+         5Vm94hy/LSjNrDn+gU20+9q1akQiy5FaWJFjcTCpynnOVxMj51sTXqh6Kowfzub0pIke
+         jaNg==
+X-Gm-Message-State: ACrzQf0ktMf5+p73LsbFHoq6Ni0Je6tYlC4T/L7ojglKMcwnF/cpa4wf
+        +xVNPPnUNPXjaHRyrepWVHOdREHU5y8=
+X-Google-Smtp-Source: AMsMyM7MF9Q/Pp9YnJEtGj4XwhLtYIPmz5/gJtrzdgqLYVrzm8NOvh6bI3lkPYE6537XupHrGdc+uQ==
+X-Received: by 2002:a05:6870:6717:b0:13d:8222:329e with SMTP id gb23-20020a056870671700b0013d8222329emr7986841oab.128.1667604883046;
+        Fri, 04 Nov 2022 16:34:43 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w29-20020a056870339d00b0011e37fb5493sm183421oae.30.2022.11.04.16.34.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Nov 2022 16:34:41 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 4 Nov 2022 16:34:40 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-edac@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-pm@vger.kernel.org, drbd-dev@lists.linbit.com,
+        linux-bluetooth@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, intel-gfx@lists.freedesktop.org,
+        linux-input@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-leds@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-ext4@vger.kernel.org, linux-nilfs@vger.kernel.org,
+        bridge@lists.linux-foundation.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, lvs-devel@vger.kernel.org,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org
+Subject: Re: [RFC][PATCH v3 00/33] timers: Use timer_shutdown*() before
+ freeing timers
+Message-ID: <20221104233440.GA2443898@roeck-us.net>
+References: <20221104054053.431922658@goodmis.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2b09:b0:67f:c159:91b9 with SMTP id
- p9-20020a0566022b0900b0067fc15991b9mr22856707iov.182.1667603727430; Fri, 04
- Nov 2022 16:15:27 -0700 (PDT)
-Date:   Fri, 04 Nov 2022 16:15:27 -0700
-In-Reply-To: <00000000000082ed3805ea318a4a@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ccbdf705ecad3fda@google.com>
-Subject: Re: [syzbot] kernel BUG in ext4_mb_use_inode_pa
-From:   syzbot <syzbot+4998f18bcd5fc7e40c8b@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, jack@suse.cz, lczerner@redhat.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tadeusz.struk@linaro.org,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221104054053.431922658@goodmis.org>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On Fri, Nov 04, 2022 at 01:40:53AM -0400, Steven Rostedt wrote:
+> 
+> Back in April, I posted an RFC patch set to help mitigate a common issue
+> where a timer gets armed just before it is freed, and when the timer
+> goes off, it crashes in the timer code without any evidence of who the
+> culprit was. I got side tracked and never finished up on that patch set.
+> Since this type of crash is still our #1 crash we are seeing in the field,
+> it has become a priority again to finish it.
+> 
 
-commit 4bb26f2885ac6930984ee451b952c5a6042f2c0e
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Jul 27 15:57:53 2022 +0000
+After applying the patches attached below, everything compiles for me,
+and there are no crashes. There are still various warnings, most in
+networking. I know I need to apply some patch(es) to fix the networking
+warnings, but I didn't entirely understand what exactly to apply, so
+I didn't try.
 
-    ext4: avoid crash when inline data creation follows DIO write
+Complete logs are at https://kerneltests.org/builders, on the bottom half
+of the page (qemu tests, in the 'testing' column).
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14eb2fb6880000
-start commit:   4fe89d07dcc2 Linux 6.0
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=48b99eaecc2b324f
-dashboard link: https://syzkaller.appspot.com/bug?extid=4998f18bcd5fc7e40c8b
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119bc15c880000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13d97bc0880000
+Guenter
 
-If the result looks correct, please mark the issue as fixed by replying with:
+---
+Warnings:
 
-#syz fix: ext4: avoid crash when inline data creation follows DIO write
+ODEBUG: free active (active state 0) object type: timer_list hint: tcp_write_timer+0x0/0x1d0
+	from tcp_close -> __sk_destruct -> tcp_write_timer
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+ODEBUG: free active (active state 0) object type: timer_list hint: tcp_keepalive_timer+0x0/0x4c0
+	from tcp_close -> __sk_destruct -> tcp_keepalive_timer -> __del_timer_sync
+
+ODEBUG: free active (active state 0) object type: timer_list hint: blk_rq_timed_out_timer+0x0/0x40
+	blk_free_queue_rcu -> blk_free_queue_rcu -> blk_rq_timed_out_timer
+
+---
+Changes applied on top of patch set to fix build errors:
+
+diff --git a/arch/arm/mach-spear/time.c b/arch/arm/mach-spear/time.c
+index e979e2197f8e..5371c824786d 100644
+--- a/arch/arm/mach-spear/time.c
++++ b/arch/arm/mach-spear/time.c
+@@ -90,7 +90,7 @@ static void __init spear_clocksource_init(void)
+ 		200, 16, clocksource_mmio_readw_up);
+ }
+ 
+-static inline void timer_shutdown(struct clock_event_device *evt)
++static inline void spear_timer_shutdown(struct clock_event_device *evt)
+ {
+ 	u16 val = readw(gpt_base + CR(CLKEVT));
+ 
+@@ -101,7 +101,7 @@ static inline void timer_shutdown(struct clock_event_device *evt)
+ 
+ static int spear_shutdown(struct clock_event_device *evt)
+ {
+-	timer_shutdown(evt);
++	spear_timer_shutdown(evt);
+ 
+ 	return 0;
+ }
+@@ -111,7 +111,7 @@ static int spear_set_oneshot(struct clock_event_device *evt)
+ 	u16 val;
+ 
+ 	/* stop the timer */
+-	timer_shutdown(evt);
++	spear_timer_shutdown(evt);
+ 
+ 	val = readw(gpt_base + CR(CLKEVT));
+ 	val |= CTRL_ONE_SHOT;
+@@ -126,7 +126,7 @@ static int spear_set_periodic(struct clock_event_device *evt)
+ 	u16 val;
+ 
+ 	/* stop the timer */
+-	timer_shutdown(evt);
++	spear_timer_shutdown(evt);
+ 
+ 	period = clk_get_rate(gpt_clk) / HZ;
+ 	period >>= CTRL_PRESCALER16;
+diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
+index a7ff77550e17..9c3420a0d19d 100644
+--- a/drivers/clocksource/arm_arch_timer.c
++++ b/drivers/clocksource/arm_arch_timer.c
+@@ -687,8 +687,8 @@ static irqreturn_t arch_timer_handler_virt_mem(int irq, void *dev_id)
+ 	return timer_handler(ARCH_TIMER_MEM_VIRT_ACCESS, evt);
+ }
+ 
+-static __always_inline int timer_shutdown(const int access,
+-					  struct clock_event_device *clk)
++static __always_inline int arch_timer_shutdown(const int access,
++					       struct clock_event_device *clk)
+ {
+ 	unsigned long ctrl;
+ 
+@@ -701,22 +701,22 @@ static __always_inline int timer_shutdown(const int access,
+ 
+ static int arch_timer_shutdown_virt(struct clock_event_device *clk)
+ {
+-	return timer_shutdown(ARCH_TIMER_VIRT_ACCESS, clk);
++	return arch_timer_shutdown(ARCH_TIMER_VIRT_ACCESS, clk);
+ }
+ 
+ static int arch_timer_shutdown_phys(struct clock_event_device *clk)
+ {
+-	return timer_shutdown(ARCH_TIMER_PHYS_ACCESS, clk);
++	return arch_timer_shutdown(ARCH_TIMER_PHYS_ACCESS, clk);
+ }
+ 
+ static int arch_timer_shutdown_virt_mem(struct clock_event_device *clk)
+ {
+-	return timer_shutdown(ARCH_TIMER_MEM_VIRT_ACCESS, clk);
++	return arch_timer_shutdown(ARCH_TIMER_MEM_VIRT_ACCESS, clk);
+ }
+ 
+ static int arch_timer_shutdown_phys_mem(struct clock_event_device *clk)
+ {
+-	return timer_shutdown(ARCH_TIMER_MEM_PHYS_ACCESS, clk);
++	return arch_timer_shutdown(ARCH_TIMER_MEM_PHYS_ACCESS, clk);
+ }
+ 
+ static __always_inline void set_next_event(const int access, unsigned long evt,
+diff --git a/drivers/clocksource/timer-sp804.c b/drivers/clocksource/timer-sp804.c
+index e6a87f4af2b5..a3c38e1343f0 100644
+--- a/drivers/clocksource/timer-sp804.c
++++ b/drivers/clocksource/timer-sp804.c
+@@ -155,14 +155,14 @@ static irqreturn_t sp804_timer_interrupt(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static inline void timer_shutdown(struct clock_event_device *evt)
++static inline void sp804_timer_shutdown(struct clock_event_device *evt)
+ {
+ 	writel(0, common_clkevt->ctrl);
+ }
+ 
+ static int sp804_shutdown(struct clock_event_device *evt)
+ {
+-	timer_shutdown(evt);
++	sp804_timer_shutdown(evt);
+ 	return 0;
+ }
+ 
+@@ -171,7 +171,7 @@ static int sp804_set_periodic(struct clock_event_device *evt)
+ 	unsigned long ctrl = TIMER_CTRL_32BIT | TIMER_CTRL_IE |
+ 			     TIMER_CTRL_PERIODIC | TIMER_CTRL_ENABLE;
+ 
+-	timer_shutdown(evt);
++	sp804_timer_shutdown(evt);
+ 	writel(common_clkevt->reload, common_clkevt->load);
+ 	writel(ctrl, common_clkevt->ctrl);
+ 	return 0;
+
