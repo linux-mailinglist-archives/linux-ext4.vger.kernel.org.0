@@ -2,121 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FBE761A287
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Nov 2022 21:43:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 181AA61A583
+	for <lists+linux-ext4@lfdr.de>; Sat,  5 Nov 2022 00:15:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230048AbiKDUm4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 4 Nov 2022 16:42:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41206 "EHLO
+        id S229727AbiKDXP3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 4 Nov 2022 19:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbiKDUmy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 4 Nov 2022 16:42:54 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D132F43AF0;
-        Fri,  4 Nov 2022 13:42:53 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id c129so6419916oia.0;
-        Fri, 04 Nov 2022 13:42:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jQ4gXr1turouEQ95+x3UakyDrVi4g3dT0y7NpfH0qPs=;
-        b=lSF8e6DLqbKKv+/YhmRhAK/T1efgb2O636TOXNjLfcC0viXP62NhHdxomxLJWtIe7d
-         2JndYje5nsRNFlqIXElcBPkKCNEcFme9PlK3C7Q1VMpYaqUkgV/gQHQcIxtcw2fILMZW
-         OKJ4E8wSXhLBL3J9S3NnNPs9rdwe6KKkDhBPqcY/XDJgpqSUigUMcqCvapDa55nrN05q
-         GmtiLLrP+Y0lcIHCsefgW4EhiR9DSJnDXwmLBbW8A31Y89yswej4P9L3XtJNKO8bMaw7
-         4czQwKTd2lx34+qzGmcV/Exm8IIRhuHeavJKESaaJd5m9cQQb9K2fLTxromO6yhuwk2D
-         Ci4w==
+        with ESMTP id S229593AbiKDXP2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 4 Nov 2022 19:15:28 -0400
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A6382664
+        for <linux-ext4@vger.kernel.org>; Fri,  4 Nov 2022 16:15:28 -0700 (PDT)
+Received: by mail-il1-f200.google.com with SMTP id j20-20020a056e02219400b00300a22a7fe0so4824132ila.3
+        for <linux-ext4@vger.kernel.org>; Fri, 04 Nov 2022 16:15:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jQ4gXr1turouEQ95+x3UakyDrVi4g3dT0y7NpfH0qPs=;
-        b=qIaki2KujX4tp/iQcD41IFYZafJq9mMbxWPCQzRiRI6pgVKHolk7EecU6P7Yq6OFcy
-         mcOf6qRXn2Hegeexyjj/J1v2sTzrzOZdJYcKAmBYg+FzfXDxdca/AXl7vNAVxrH1ws54
-         L8c65V6q1TPDdiMXABem8Rfud6yV7r/jp+LCH0dXZbWDUFM7DdbXj7GKKUWXlXDbGixT
-         RJKBgdOwqOdtZ/bvwQ95ajqH2tmOq0ypMEAuMNAp0vV5oLcR0ZxB9ax5J1A3L12ARLyU
-         TNtI14geIOBj/voUEg6r2/QDcHC6YeHfLwAsrEktoTP7qQReCYIsa/yPP/ytWg2/rMCh
-         qSxQ==
-X-Gm-Message-State: ACrzQf30tAcckecIsxC4FpMH/usI2jg7GviEFiGLyX5EMfJyJ8PWbKV+
-        MuBj4mzxlROIXyKD3k2UqBY=
-X-Google-Smtp-Source: AMsMyM6uhfbCXJb2q3AkwRuMO9Mjf9xHTKiSSXkljdTFDkgQ9gIWK1vZZlSecO9utfeB4MFPxnhffw==
-X-Received: by 2002:a54:4587:0:b0:359:c737:b2e8 with SMTP id z7-20020a544587000000b00359c737b2e8mr20212921oib.234.1667594573223;
-        Fri, 04 Nov 2022 13:42:53 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f1-20020a056830204100b006619483182csm162608otp.18.2022.11.04.13.42.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Nov 2022 13:42:52 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 4 Nov 2022 13:42:51 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Anna-Maria Gleixner <anna-maria@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-edac@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-pm@vger.kernel.org, drbd-dev@lists.linbit.com,
-        linux-bluetooth@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, intel-gfx@lists.freedesktop.org,
-        linux-input@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-leds@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-ext4@vger.kernel.org, linux-nilfs@vger.kernel.org,
-        bridge@lists.linux-foundation.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, lvs-devel@vger.kernel.org,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org
-Subject: Re: [RFC][PATCH v3 00/33] timers: Use timer_shutdown*() before
- freeing timers
-Message-ID: <20221104204251.GB506794@roeck-us.net>
-References: <20221104054053.431922658@goodmis.org>
- <20221104192232.GA2520396@roeck-us.net>
- <20221104154209.21b26782@rorschach.local.home>
- <20221104154355.578ab689@rorschach.local.home>
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Dh6VHIpm1eezFlTH8nL0qyHX0V1j8bdMOwrcsVM6rA8=;
+        b=BCkvDwLqPh35KcAq2eA6J3pdbPX94I7JRdXPEoh2LILRyP47acYGRKYVYsukAg5Ly0
+         iVZoTw9+JpZAdIPS7YAdVRisI9EeTVQ6mdhHFiAVULBuN6La8Vr+n70IDhTx8c1Pq4Iy
+         mi4iG2QbQ76jJ2KPacGc+TAWsN+Vzye0wyl618EqEfoQAzZptllAR94yKkp2Z3VCF8eH
+         voVNUeRK51JF/YOnf4cE2Pih4OdM7O0X3Figx7E409eyUBKS7M6h3+C6wNZUWgt7T6jb
+         xiySpSIjPtzJ2QcUoPpnLRzDOz9kFldqeyj2Vqa3EF/nPm3oZ0Bmg+prG+eED1BHfqBj
+         uvAw==
+X-Gm-Message-State: ACrzQf0fi47HGV8dizQVI7uI1O+1LyNMW8tpiiVSuzOt9tnogRPeiAGI
+        kuZx06rJ53IJVjFAygQ0M3SlViIj0vVsRjU8AtEVQkn5BxaT
+X-Google-Smtp-Source: AMsMyM6Yhhk6S7iWVKjK0DufhE4CY5LjPiIvqTntkN0077ZdHDFfJb4pnUCW2o7r/3LujeDACdaHe1t1hKvTl8SoUx9p1Kuq5wbH
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221104154355.578ab689@rorschach.local.home>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6602:2b09:b0:67f:c159:91b9 with SMTP id
+ p9-20020a0566022b0900b0067fc15991b9mr22856707iov.182.1667603727430; Fri, 04
+ Nov 2022 16:15:27 -0700 (PDT)
+Date:   Fri, 04 Nov 2022 16:15:27 -0700
+In-Reply-To: <00000000000082ed3805ea318a4a@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ccbdf705ecad3fda@google.com>
+Subject: Re: [syzbot] kernel BUG in ext4_mb_use_inode_pa
+From:   syzbot <syzbot+4998f18bcd5fc7e40c8b@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, jack@suse.cz, lczerner@redhat.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tadeusz.struk@linaro.org,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Nov 04, 2022 at 04:38:34PM -0400, Steven Rostedt wrote:
-> On Fri, 4 Nov 2022 15:42:09 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
-[ ... ]
-> 
-> > drivers/clocksource/timer-fttmr010.c:   fttmr010->timer_shutdown(evt);
-> > drivers/clocksource/timer-fttmr010.c:   fttmr010->timer_shutdown(evt);
-> > drivers/clocksource/timer-fttmr010.c:   fttmr010->timer_shutdown(evt);
-> > drivers/clocksource/timer-fttmr010.c:           fttmr010->timer_shutdown = ast2600_timer_shutdown;
-> > drivers/clocksource/timer-fttmr010.c:           fttmr010->timer_shutdown = fttmr010_timer_shutdown;
-> > drivers/clocksource/timer-fttmr010.c:   fttmr010->clkevt.set_state_shutdown = fttmr010->timer_shutdown;
-> > drivers/clocksource/timer-fttmr010.c:   fttmr010->clkevt.tick_resume = fttmr010->timer_shutdown;
-> 
-> I won't touch structure fields though.
-> 
+syzbot suspects this issue was fixed by commit:
 
-Agreed, same here.
+commit 4bb26f2885ac6930984ee451b952c5a6042f2c0e
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Jul 27 15:57:53 2022 +0000
 
-Guenter
+    ext4: avoid crash when inline data creation follows DIO write
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14eb2fb6880000
+start commit:   4fe89d07dcc2 Linux 6.0
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=48b99eaecc2b324f
+dashboard link: https://syzkaller.appspot.com/bug?extid=4998f18bcd5fc7e40c8b
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119bc15c880000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13d97bc0880000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: ext4: avoid crash when inline data creation follows DIO write
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
