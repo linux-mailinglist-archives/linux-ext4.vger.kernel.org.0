@@ -2,71 +2,93 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A11F6193F5
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Nov 2022 10:58:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43DC5619B8F
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Nov 2022 16:27:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231393AbiKDJ6o (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 4 Nov 2022 05:58:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35704 "EHLO
+        id S232258AbiKDP12 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 4 Nov 2022 11:27:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbiKDJ6n (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 4 Nov 2022 05:58:43 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF19C1CB0F
-        for <linux-ext4@vger.kernel.org>; Fri,  4 Nov 2022 02:58:41 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <uol@pengutronix.de>)
-        id 1oqtTE-0006PP-8J; Fri, 04 Nov 2022 10:58:40 +0100
-Received: from [2a0a:edc0:0:1101:1d::39] (helo=dude03.red.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <uol@pengutronix.de>)
-        id 1oqtTD-002F02-GC; Fri, 04 Nov 2022 10:58:38 +0100
-Received: from uol by dude03.red.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <uol@pengutronix.de>)
-        id 1oqtTB-004RAW-7i; Fri, 04 Nov 2022 10:58:37 +0100
-From:   =?UTF-8?q?Ulrich=20=C3=96lmann?= <u.oelmann@pengutronix.de>
-To:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-Cc:     =?UTF-8?q?Ulrich=20=C3=96lmann?= <u.oelmann@pengutronix.de>
-Subject: [e2fsprogs PATCH] debugfs.8: fix typo
-Date:   Fri,  4 Nov 2022 10:58:35 +0100
-Message-Id: <20221104095835.1057703-1-u.oelmann@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S232408AbiKDP1P (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 4 Nov 2022 11:27:15 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E532716E;
+        Fri,  4 Nov 2022 08:27:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NRigLoVbg9iNMuo2V8dujDupHLGv4656kHqtcy7GZD8=; b=cC/8pOU9guMXpHbLROmQ2jJkPP
+        fLIJJBoVaFImQSaJFL0EWP8TTGFmm1Fq/sTBJJzHOEsig/P1SI1UBIbnctYsc4kfBpEtbkTVb2mcZ
+        Ox1PTbpiMUHAhUcDFiGqO5ffa8RLcaU4htW4J7D1+QIRrp5YcZ701l+dtCKa0/v+wq867Rzs2qjn5
+        m+hDXZshw76/eeJ25GEvs/oa2Dpn7Gb7+4FfiG7RrZMv4cn4ae/Eyjl07Dbl+O73y7VDkBQtEk8h0
+        f9z379l8811dl922VVtAq9pc8KIqwTp7lj2fnWcgj+lzkCFo5nZGbwWtuSpe8hnrjhN+krL6P+YDR
+        WpFHYXzg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1oqybA-007SeM-OG; Fri, 04 Nov 2022 15:27:12 +0000
+Date:   Fri, 4 Nov 2022 15:27:12 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, linux-nilfs@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 04/23] page-writeback: Convert write_cache_pages() to use
+ filemap_get_folios_tag()
+Message-ID: <Y2UvUOn6hmnqbrA7@casper.infradead.org>
+References: <20220901220138.182896-1-vishal.moola@gmail.com>
+ <20220901220138.182896-5-vishal.moola@gmail.com>
+ <20221018210152.GH2703033@dread.disaster.area>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: uol@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-ext4@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221018210152.GH2703033@dread.disaster.area>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Signed-off-by: Ulrich Ölmann <u.oelmann@pengutronix.de>
----
- debugfs/debugfs.8.in | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Wed, Oct 19, 2022 at 08:01:52AM +1100, Dave Chinner wrote:
+> On Thu, Sep 01, 2022 at 03:01:19PM -0700, Vishal Moola (Oracle) wrote:
+> > @@ -2313,17 +2313,18 @@ int write_cache_pages(struct address_space *mapping,
+> >  	while (!done && (index <= end)) {
+> >  		int i;
+> >  
+> > -		nr_pages = pagevec_lookup_range_tag(&pvec, mapping, &index, end,
+> > -				tag);
+> > -		if (nr_pages == 0)
+> > +		nr_folios = filemap_get_folios_tag(mapping, &index, end,
+> > +				tag, &fbatch);
+> 
+> This can find and return dirty multi-page folios if the filesystem
+> enables them in the mapping at instantiation time, right?
 
-diff --git a/debugfs/debugfs.8.in b/debugfs/debugfs.8.in
-index a3227a80ab24..5b5329c38d6e 100644
---- a/debugfs/debugfs.8.in
-+++ b/debugfs/debugfs.8.in
-@@ -280,7 +280,7 @@ The hash seed specified with
- must be in UUID format.
- .TP
- .BI dump_extents " [-n] [-l] filespec"
--Dump the the extent tree of the inode
-+Dump the extent tree of the inode
- .IR filespec .
- The
- .I -n
--- 
-2.30.2
+Correct.  Just like before the patch.  pagevec_lookup_range_tag() has
+only ever returned head pages, never tail pages.  This is probably
+because shmem (which was our only fs that supported compound pages)
+never supported writeback, so never looked up pages by tag.
+
+> >  			trace_wbc_writepage(wbc, inode_to_bdi(mapping->host));
+> > -			error = (*writepage)(page, wbc, data);
+> > +			error = writepage(&folio->page, wbc, data);
+> 
+> Yet, IIUC, this treats all folios as if they are single page folios.
+> i.e. it passes the head page of a multi-page folio to a callback
+> that will treat it as a single PAGE_SIZE page, because that's all
+> the writepage callbacks are currently expected to be passed...
+> 
+> So won't this break writeback of dirty multipage folios?
+
+No.  A filesystem only sets the flag to create multipage folios once its
+writeback callback handles multipage folios correctly (amongst many other
+things that have to be fixed and tested).  I haven't written down all
+the things that a filesystem maintainer needs to check at least partly
+because I don't know how representative XFS/iomap are of all filesystems.
 
