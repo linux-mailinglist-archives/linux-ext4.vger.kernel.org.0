@@ -2,53 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C6261DBE3
-	for <lists+linux-ext4@lfdr.de>; Sat,  5 Nov 2022 17:07:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0120961DBEB
+	for <lists+linux-ext4@lfdr.de>; Sat,  5 Nov 2022 17:08:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229899AbiKEQHz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 5 Nov 2022 12:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43364 "EHLO
+        id S230043AbiKEQIt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 5 Nov 2022 12:08:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbiKEQHy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 5 Nov 2022 12:07:54 -0400
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C9410073
-        for <linux-ext4@vger.kernel.org>; Sat,  5 Nov 2022 09:07:53 -0700 (PDT)
-Received: by mail-il1-f197.google.com with SMTP id j7-20020a056e02154700b003007885e7beso5848699ilu.20
-        for <linux-ext4@vger.kernel.org>; Sat, 05 Nov 2022 09:07:53 -0700 (PDT)
+        with ESMTP id S229987AbiKEQIt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 5 Nov 2022 12:08:49 -0400
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 519D6DFC0
+        for <linux-ext4@vger.kernel.org>; Sat,  5 Nov 2022 09:08:47 -0700 (PDT)
+Received: by mail-io1-f72.google.com with SMTP id f17-20020a5d8591000000b006bcbe59b6cdso4814166ioj.14
+        for <linux-ext4@vger.kernel.org>; Sat, 05 Nov 2022 09:08:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=P26Tufb5libRVNtGMj36dstv5Fz34ZnElPMtb6a0Uhg=;
-        b=eXX1w1XRMRJVOoqOjnv3Lf41U+pKtns5+rLunPsPoWlvBBeD9Mrf+Pd6GQkmEEDYQz
-         hoeBkkkBAh/GS3WIS+bYT25HWssYgOA1qhh+nt/L6hqMtJYyeRvY7L1aara2GLUToNOl
-         IFJb7kVW+RBxKzVWhR0Z7nsz1liUbdt/NuJ0JSYBC0DJ8RosHw7VB0tupjyJ8EX1onc6
-         ndbTZv19l73UdgEIB9PrPM4f33AD92U/YwgXVqdIc8cIZD5+PP23bEmgJUWY5ccIbSmi
-         MXTqZ8VeaSen0QDGch1EP/MYk2QSSAlyBfm7HQSzRbAkgH13/3PHu9dZ6qa4mPSEouJH
-         GWgQ==
-X-Gm-Message-State: ACrzQf0WBiWTybX2wWXdrzbgNz+4xFJuVBIqSWo24EiJme2yagUcinbg
-        w9vmC7cd5j5XKqVRtTd7fqa13vSOBBK/W3T8bPHeiqC3z6ul
-X-Google-Smtp-Source: AMsMyM7lzq/wnhZ5p4mooUUvzr2G8b1Tq6lQpd394TA+Q9lfRqzxbCflqbEUFzamGIu7GMPo/cN1i+qiUBA0Md2c2SYELM6iIYft
+        bh=SZ1Od+xsdMr6k20I8cvfOK3HexjHYgYidaBXRxxGchc=;
+        b=kXBzrQyxvvjCAu0NNzzWhGnySKf0660+2W3vFxcZFKZ8dMs4GDo26Wop/OxbpvT/DY
+         noSzOsK5kwNnZX36+RtZEy9rYu6Z8k4E16jmcNL1dj35VHtvaL989NG3ObXYRB7R+xxr
+         MmUr8MdPoctW07CZsfh/g9w4TjQAGTGr6z4lVKaRkUkfh9oanXelbrpkMySUthbZKhOu
+         Fv1C210l3ihon17MC7E5wLM8ZGfcMIsmb8cT/Q1c3tvz+sFfLi5TbeA/asLke4myrK6W
+         tJ/esvmU8Y0EMqU6KG3zAkOKWF5z1h2t43dYKjp2sW1EYPBhuPqVChFliI8gpC2X4u4/
+         XrKA==
+X-Gm-Message-State: ACrzQf2NMNAChJIToXRHT7OhSPY5qOIsFyuKv3xWLhHrj8QdBSnfEOJo
+        CdYphLW6GjhORjFxUre0o7GnfNnpyp0YgcAgPF0nhVLlyNom
+X-Google-Smtp-Source: AMsMyM4DhzlDCwFRIPWU7TkkARa055Hu3eF32I5+nCxnZWTv/qA3leVNuCSxwbFXhi9fJ1CXIF+hq0gR8XKckih3XZhmGne3Py9s
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1210:b0:375:4aa6:ff85 with SMTP id
- n16-20020a056638121000b003754aa6ff85mr21924002jas.227.1667664472862; Sat, 05
- Nov 2022 09:07:52 -0700 (PDT)
-Date:   Sat, 05 Nov 2022 09:07:52 -0700
+X-Received: by 2002:a05:6602:168d:b0:6d6:f4e:ddcf with SMTP id
+ s13-20020a056602168d00b006d60f4eddcfmr7612541iow.177.1667664526653; Sat, 05
+ Nov 2022 09:08:46 -0700 (PDT)
+Date:   Sat, 05 Nov 2022 09:08:46 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000082754e05ecbb641e@google.com>
-Subject: [syzbot] WARNING in ext4_enable_quotas
-From:   syzbot <syzbot+77524f55898ea618bfad@syzkaller.appspotmail.com>
+Message-ID: <000000000000b73e8e05ecbb6729@google.com>
+Subject: [syzbot] possible deadlock in ext4_move_extents
+From:   syzbot <syzbot+1fec0eebb32ecfda77fd@syzkaller.appspotmail.com>
 To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        nathan@kernel.org, ndesaulniers@google.com,
-        syzkaller-bugs@googlegroups.com, trix@redhat.com, tytso@mit.edu
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -59,81 +57,188 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    bbed346d5a96 Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=14db1719880000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3a4a45d2d827c1e
-dashboard link: https://syzkaller.appspot.com/bug?extid=77524f55898ea618bfad
+HEAD commit:    64c3dd0b98f5 Merge tag 'xfs-6.1-fixes-4' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1643bf39880000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f7e100ed8aaa828e
+dashboard link: https://syzkaller.appspot.com/bug?extid=1fec0eebb32ecfda77fd
 compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
-userspace arch: arm64
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/e8e91bc79312/disk-bbed346d.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c1cb3fb3b77e/vmlinux-bbed346d.xz
+disk image: https://storage.googleapis.com/syzbot-assets/73b570348401/disk-64c3dd0b.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/e50e0711d5ae/vmlinux-64c3dd0b.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/562350d6d20e/bzImage-64c3dd0b.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+77524f55898ea618bfad@syzkaller.appspotmail.com
+Reported-by: syzbot+1fec0eebb32ecfda77fd@syzkaller.appspotmail.com
 
-EXT4-fs (loop1): orphan cleanup on readonly fs
-------------[ cut here ]------------
-DEBUG_LOCKS_WARN_ON(!key)
-WARNING: CPU: 1 PID: 14778 at kernel/locking/lockdep.c:4831 lockdep_init_map_type+0x284/0x2fc kernel/locking/lockdep.c:4831
-Modules linked in:
-CPU: 1 PID: 14778 Comm: syz-executor.1 Not tainted 6.0.0-rc7-syzkaller-18095-gbbed346d5a96 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/30/2022
-pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : lockdep_init_map_type+0x284/0x2fc kernel/locking/lockdep.c:4831
-lr : lockdep_init_map_type+0x284/0x2fc kernel/locking/lockdep.c:4831
-sp : ffff800013533980
-x29: ffff800013533990 x28: ffff80000cb99126 x27: ffff8000135339c4
-x26: ffff0001156798e0 x25: ffff000115679908 x24: 0000000000000001
-x23: ffff8000135339d0 x22: ffff80000ee2b000 x21: 0000000000000000
-x20: 0000000000000002 x19: ffff0001156798e0 x18: 000000000000034b
-x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
-x14: 0000000000000000 x13: 0000000000000012 x12: 0000000000040000
-x11: 000000000001b6e9 x10: ffff80001b6ed000 x9 : 3b94ef2414331b00
-x8 : 3b94ef2414331b00 x7 : 4e5241575f534b43 x6 : ffff80000819545c
-x5 : 0000000000000000 x4 : 0000000000000001 x3 : 0000000000000000
-x2 : 0000000000000000 x1 : 0000000100000000 x0 : 0000000000000019
-Call trace:
- lockdep_init_map_type+0x284/0x2fc kernel/locking/lockdep.c:4831
- lockdep_set_quota_inode fs/ext4/super.c:6677 [inline]
- ext4_quota_enable fs/ext4/super.c:6787 [inline]
- ext4_enable_quotas+0x1ac/0x378 fs/ext4/super.c:6814
- ext4_orphan_cleanup+0x23c/0x8ec fs/ext4/orphan.c:432
- __ext4_fill_super+0x34a4/0x36d4 fs/ext4/super.c:5378
- ext4_fill_super+0x100/0x2d8 fs/ext4/super.c:5517
- get_tree_bdev+0x1e8/0x2a0 fs/super.c:1323
- ext4_get_tree+0x28/0x38 fs/ext4/super.c:5547
- vfs_get_tree+0x40/0x140 fs/super.c:1530
- do_new_mount+0x1dc/0x4e4 fs/namespace.c:3040
- path_mount+0x358/0x914 fs/namespace.c:3370
- do_mount fs/namespace.c:3383 [inline]
- __do_sys_mount fs/namespace.c:3591 [inline]
- __se_sys_mount fs/namespace.c:3568 [inline]
- __arm64_sys_mount+0x2c4/0x3c4 fs/namespace.c:3568
- __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
- invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
- el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
- do_el0_svc+0x48/0x164 arch/arm64/kernel/syscall.c:206
- el0_svc+0x58/0x150 arch/arm64/kernel/entry-common.c:636
- el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:654
- el0t_64_sync+0x18c/0x190 arch/arm64/kernel/entry.S:581
-irq event stamp: 977
-hardirqs last  enabled at (977): [<ffff800008161dac>] raw_spin_rq_unlock_irq kernel/sched/sched.h:1367 [inline]
-hardirqs last  enabled at (977): [<ffff800008161dac>] finish_lock_switch+0x94/0xe8 kernel/sched/core.c:4942
-hardirqs last disabled at (976): [<ffff80000bfc0a34>] __schedule+0x84/0x5a0 kernel/sched/core.c:6393
-softirqs last  enabled at (200): [<ffff80000801c33c>] local_bh_enable+0x10/0x34 include/linux/bottom_half.h:32
-softirqs last disabled at (198): [<ffff80000801c308>] local_bh_disable+0x10/0x34 include/linux/bottom_half.h:19
----[ end trace 0000000000000000 ]---
-EXT4-fs warning (device loop1): ext4_enable_quotas:6821: Failed to enable quota tracking (type=0, err=-13). Please run e2fsck to fix.
-EXT4-fs (loop1): Cannot turn on quotas: error -13
-EXT4-fs error (device loop1): ext4_orphan_get:1419: comm syz-executor.1: bad orphan inode 11
-EXT4-fs (loop1): Remounting filesystem read-only
-ext4_test_bit(bit=10, block=3) = 0
-EXT4-fs (loop1): mounted filesystem without journal. Quota mode: writeback.
+======================================================
+WARNING: possible circular locking dependency detected
+6.1.0-rc3-syzkaller-00280-g64c3dd0b98f5 #0 Not tainted
+------------------------------------------------------
+syz-executor.4/4429 is trying to acquire lock:
+ffff8880756faaa8 (&ei->i_data_sem/1){+.+.}-{3:3}, at: ext4_move_extents+0x37b/0xe70 fs/ext4/move_extent.c:610
+
+but task is already holding lock:
+ffff88801e7d34b0 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_double_down_write_data_sem+0x28/0x40
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #3 (&ei->i_data_sem/2){++++}-{3:3}:
+       lock_acquire+0x182/0x3c0 kernel/locking/lockdep.c:5668
+       down_read+0x39/0x50 kernel/locking/rwsem.c:1509
+       ext4_map_blocks+0x398/0x1cc0 fs/ext4/inode.c:568
+       ext4_getblk+0x1b9/0x770 fs/ext4/inode.c:858
+       ext4_bread+0x2a/0x170 fs/ext4/inode.c:914
+       ext4_quota_write+0x225/0x570 fs/ext4/super.c:7082
+       write_blk fs/quota/quota_tree.c:64 [inline]
+       get_free_dqblk+0x34a/0x6d0 fs/quota/quota_tree.c:130
+       do_insert_tree+0x271/0x1b50 fs/quota/quota_tree.c:340
+       do_insert_tree+0x744/0x1b50 fs/quota/quota_tree.c:375
+       do_insert_tree+0x744/0x1b50 fs/quota/quota_tree.c:375
+       do_insert_tree+0x744/0x1b50 fs/quota/quota_tree.c:375
+       dq_insert_tree fs/quota/quota_tree.c:401 [inline]
+       qtree_write_dquot+0x3b6/0x530 fs/quota/quota_tree.c:420
+       v2_write_dquot+0x11b/0x190 fs/quota/quota_v2.c:358
+       dquot_acquire+0x348/0x670 fs/quota/dquot.c:444
+       ext4_acquire_dquot+0x2e0/0x400 fs/ext4/super.c:6738
+       dqget+0x999/0xdc0 fs/quota/dquot.c:914
+       __dquot_initialize+0x3d0/0xcf0 fs/quota/dquot.c:1492
+       ext4_create+0xb0/0x560 fs/ext4/namei.c:2794
+       lookup_open fs/namei.c:3413 [inline]
+       open_last_lookups fs/namei.c:3481 [inline]
+       path_openat+0x12d0/0x2df0 fs/namei.c:3710
+       do_filp_open+0x264/0x4f0 fs/namei.c:3740
+       do_sys_openat2+0x124/0x4e0 fs/open.c:1310
+       do_sys_open fs/open.c:1326 [inline]
+       __do_sys_openat fs/open.c:1342 [inline]
+       __se_sys_openat fs/open.c:1337 [inline]
+       __x64_sys_openat+0x243/0x290 fs/open.c:1337
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+-> #2 (&s->s_dquot.dqio_sem){++++}-{3:3}:
+       lock_acquire+0x182/0x3c0 kernel/locking/lockdep.c:5668
+       down_read+0x39/0x50 kernel/locking/rwsem.c:1509
+       v2_read_dquot+0x4a/0x100 fs/quota/quota_v2.c:332
+       dquot_acquire+0x186/0x670 fs/quota/dquot.c:435
+       ext4_acquire_dquot+0x2e0/0x400 fs/ext4/super.c:6738
+       dqget+0x999/0xdc0 fs/quota/dquot.c:914
+       __dquot_initialize+0x291/0xcf0 fs/quota/dquot.c:1492
+       ext4_create+0xb0/0x560 fs/ext4/namei.c:2794
+       lookup_open fs/namei.c:3413 [inline]
+       open_last_lookups fs/namei.c:3481 [inline]
+       path_openat+0x12d0/0x2df0 fs/namei.c:3710
+       do_filp_open+0x264/0x4f0 fs/namei.c:3740
+       do_sys_openat2+0x124/0x4e0 fs/open.c:1310
+       do_sys_open fs/open.c:1326 [inline]
+       __do_sys_open fs/open.c:1334 [inline]
+       __se_sys_open fs/open.c:1330 [inline]
+       __x64_sys_open+0x221/0x270 fs/open.c:1330
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+-> #1 (&dquot->dq_lock){+.+.}-{3:3}:
+       lock_acquire+0x182/0x3c0 kernel/locking/lockdep.c:5668
+       __mutex_lock_common+0x1bd/0x26e0 kernel/locking/mutex.c:603
+       __mutex_lock kernel/locking/mutex.c:747 [inline]
+       mutex_lock_nested+0x17/0x20 kernel/locking/mutex.c:799
+       dquot_commit+0x58/0x4e0 fs/quota/dquot.c:479
+       ext4_write_dquot+0x1e4/0x2b0 fs/ext4/super.c:6722
+       mark_dquot_dirty fs/quota/dquot.c:346 [inline]
+       mark_all_dquot_dirty fs/quota/dquot.c:384 [inline]
+       __dquot_alloc_space+0xa09/0x1030 fs/quota/dquot.c:1722
+       dquot_alloc_space_nodirty include/linux/quotaops.h:300 [inline]
+       dquot_alloc_space include/linux/quotaops.h:313 [inline]
+       swap_inode_boot_loader fs/ext4/ioctl.c:493 [inline]
+       __ext4_ioctl fs/ext4/ioctl.c:1417 [inline]
+       ext4_ioctl+0x4f3a/0x5430 fs/ext4/ioctl.c:1607
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:870 [inline]
+       __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:856
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+-> #0 (&ei->i_data_sem/1){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3097 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3216 [inline]
+       validate_chain+0x1898/0x6ae0 kernel/locking/lockdep.c:3831
+       __lock_acquire+0x1292/0x1f60 kernel/locking/lockdep.c:5055
+       lock_acquire+0x182/0x3c0 kernel/locking/lockdep.c:5668
+       down_write_nested+0xa2/0x280 kernel/locking/rwsem.c:1672
+       ext4_move_extents+0x37b/0xe70 fs/ext4/move_extent.c:610
+       __ext4_ioctl fs/ext4/ioctl.c:1351 [inline]
+       ext4_ioctl+0x36ed/0x5430 fs/ext4/ioctl.c:1607
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:870 [inline]
+       __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:856
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+other info that might help us debug this:
+
+Chain exists of:
+  &ei->i_data_sem/1 --> &s->s_dquot.dqio_sem --> &ei->i_data_sem/2
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ei->i_data_sem/2);
+                               lock(&s->s_dquot.dqio_sem);
+                               lock(&ei->i_data_sem/2);
+  lock(&ei->i_data_sem/1);
+
+ *** DEADLOCK ***
+
+4 locks held by syz-executor.4/4429:
+ #0: ffff88807e866460 (sb_writers#4){.+.+}-{0:0}, at: mnt_want_write_file+0x5a/0x1f0 fs/namespace.c:437
+ #1: ffff88801e7d3628 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: inode_lock include/linux/fs.h:756 [inline]
+ #1: ffff88801e7d3628 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: lock_two_nondirectories+0xdd/0x130 fs/inode.c:1121
+ #2: ffff8880756fac20 (&sb->s_type->i_mutex_key#8/4){+.+.}-{3:3}, at: ext4_move_extents+0x360/0xe70 fs/ext4/move_extent.c:603
+ #3: ffff88801e7d34b0 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_double_down_write_data_sem+0x28/0x40
+
+stack backtrace:
+CPU: 1 PID: 4429 Comm: syz-executor.4 Not tainted 6.1.0-rc3-syzkaller-00280-g64c3dd0b98f5 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1b1/0x28e lib/dump_stack.c:106
+ check_noncircular+0x2cc/0x390 kernel/locking/lockdep.c:2177
+ check_prev_add kernel/locking/lockdep.c:3097 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3216 [inline]
+ validate_chain+0x1898/0x6ae0 kernel/locking/lockdep.c:3831
+ __lock_acquire+0x1292/0x1f60 kernel/locking/lockdep.c:5055
+ lock_acquire+0x182/0x3c0 kernel/locking/lockdep.c:5668
+ down_write_nested+0xa2/0x280 kernel/locking/rwsem.c:1672
+ ext4_move_extents+0x37b/0xe70 fs/ext4/move_extent.c:610
+ __ext4_ioctl fs/ext4/ioctl.c:1351 [inline]
+ ext4_ioctl+0x36ed/0x5430 fs/ext4/ioctl.c:1607
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f47c4e8b5a9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f47c5bf0168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f47c4fac120 RCX: 00007f47c4e8b5a9
+RDX: 00000000200000c0 RSI: 00000000c028660f RDI: 0000000000000003
+RBP: 00007f47c4ee67b0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fff5e92a5bf R14: 00007f47c5bf0300 R15: 0000000000022000
+ </TASK>
 
 
 ---
