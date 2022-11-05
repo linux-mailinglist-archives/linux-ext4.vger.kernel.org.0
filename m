@@ -2,249 +2,251 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0120961DBEB
-	for <lists+linux-ext4@lfdr.de>; Sat,  5 Nov 2022 17:08:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E87B61DC08
+	for <lists+linux-ext4@lfdr.de>; Sat,  5 Nov 2022 17:36:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbiKEQIt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 5 Nov 2022 12:08:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44150 "EHLO
+        id S229770AbiKEQgv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 5 Nov 2022 12:36:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229987AbiKEQIt (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 5 Nov 2022 12:08:49 -0400
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 519D6DFC0
-        for <linux-ext4@vger.kernel.org>; Sat,  5 Nov 2022 09:08:47 -0700 (PDT)
-Received: by mail-io1-f72.google.com with SMTP id f17-20020a5d8591000000b006bcbe59b6cdso4814166ioj.14
-        for <linux-ext4@vger.kernel.org>; Sat, 05 Nov 2022 09:08:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SZ1Od+xsdMr6k20I8cvfOK3HexjHYgYidaBXRxxGchc=;
-        b=kXBzrQyxvvjCAu0NNzzWhGnySKf0660+2W3vFxcZFKZ8dMs4GDo26Wop/OxbpvT/DY
-         noSzOsK5kwNnZX36+RtZEy9rYu6Z8k4E16jmcNL1dj35VHtvaL989NG3ObXYRB7R+xxr
-         MmUr8MdPoctW07CZsfh/g9w4TjQAGTGr6z4lVKaRkUkfh9oanXelbrpkMySUthbZKhOu
-         Fv1C210l3ihon17MC7E5wLM8ZGfcMIsmb8cT/Q1c3tvz+sFfLi5TbeA/asLke4myrK6W
-         tJ/esvmU8Y0EMqU6KG3zAkOKWF5z1h2t43dYKjp2sW1EYPBhuPqVChFliI8gpC2X4u4/
-         XrKA==
-X-Gm-Message-State: ACrzQf2NMNAChJIToXRHT7OhSPY5qOIsFyuKv3xWLhHrj8QdBSnfEOJo
-        CdYphLW6GjhORjFxUre0o7GnfNnpyp0YgcAgPF0nhVLlyNom
-X-Google-Smtp-Source: AMsMyM4DhzlDCwFRIPWU7TkkARa055Hu3eF32I5+nCxnZWTv/qA3leVNuCSxwbFXhi9fJ1CXIF+hq0gR8XKckih3XZhmGne3Py9s
+        with ESMTP id S229453AbiKEQgu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 5 Nov 2022 12:36:50 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88769205C5;
+        Sat,  5 Nov 2022 09:36:48 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4264AB801BE;
+        Sat,  5 Nov 2022 16:36:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75343C433C1;
+        Sat,  5 Nov 2022 16:36:44 +0000 (UTC)
+Date:   Sat, 5 Nov 2022 12:36:42 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-edac@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-pm@vger.kernel.org, drbd-dev@lists.linbit.com,
+        linux-bluetooth@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, intel-gfx@lists.freedesktop.org,
+        linux-input@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-leds@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-ext4@vger.kernel.org, linux-nilfs@vger.kernel.org,
+        bridge@lists.linux-foundation.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, lvs-devel@vger.kernel.org,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org
+Subject: Re: [PATCH v4a 00/38] timers: Use timer_shutdown*() before freeing
+ timers
+Message-ID: <20221105123642.596371c7@rorschach.local.home>
+In-Reply-To: <CAHk-=wi95dGkg7DiuOZ27gGW+mxJipn9ykB6LHB-HrbbLG6OMQ@mail.gmail.com>
+References: <20221105060024.598488967@goodmis.org>
+        <CAHk-=wi95dGkg7DiuOZ27gGW+mxJipn9ykB6LHB-HrbbLG6OMQ@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:168d:b0:6d6:f4e:ddcf with SMTP id
- s13-20020a056602168d00b006d60f4eddcfmr7612541iow.177.1667664526653; Sat, 05
- Nov 2022 09:08:46 -0700 (PDT)
-Date:   Sat, 05 Nov 2022 09:08:46 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b73e8e05ecbb6729@google.com>
-Subject: [syzbot] possible deadlock in ext4_move_extents
-From:   syzbot <syzbot+1fec0eebb32ecfda77fd@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Sat, 5 Nov 2022 08:59:36 -0700
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-syzbot found the following issue on:
+> On Fri, Nov 4, 2022 at 11:01 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > Patch 1 fixes an issue with sunrpc/xprt where it incorrectly uses
+> > del_singleshot_timer_sync() for something that is not a oneshot timer. As this
+> > will be converted to shutdown, this needs to be fixed first.  
+> 
+> So this is the kind of thing that I would *not* want to get eartly.
 
-HEAD commit:    64c3dd0b98f5 Merge tag 'xfs-6.1-fixes-4' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1643bf39880000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f7e100ed8aaa828e
-dashboard link: https://syzkaller.appspot.com/bug?extid=1fec0eebb32ecfda77fd
-compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
+So I'll have to break up patch 5 to not update the
+del_singleshot_timer_sync() to a timer_shutdown_sync(), because that
+breaks this code.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Hmm, since that is a functional change, it probably should wait till
+the merge window. I'll move this patch and that part of patch 5 to the
+second part of the series for the merge window.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/73b570348401/disk-64c3dd0b.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e50e0711d5ae/vmlinux-64c3dd0b.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/562350d6d20e/bzImage-64c3dd0b.xz
+> 
+> I really would want to get just the infrastructure in to let people
+> start doing conversions.
+> 
+> And then the "mindlessly obvious patches that are done by scripting
+> and can not possibly matter".
+> 
+> The kinds that do not *need* review, because they are mechanical, and
+> that just cause pointless noise for the rest of the patches that *do*
+> want review.
+> 
+> Not this kind of thing that is so subtle that you have to explain it.
+> That's not a "scripted patch for no semantic change".
+> 
+> So leave the del_singleshot_timer_sync() cases alone, they are
+> irrelevant for the new infrastructure and for the "mindless scripted
+> conversion" patches.
+> 
+> > Patches 2-4 changes existing timer_shutdown() functions used locally in ARM and
+> > some drivers to better namespace names.  
+> 
+> Ok, these are relevant.
+> 
+> > Patch 5 implements the new timer_shutdown() and timer_shutdown_sync() functions
+> > that disable re-arming the timer after they are called.  
+> 
+> This is obviously what I'd want early so that people can start doign
+> this in their trees.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1fec0eebb32ecfda77fd@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-6.1.0-rc3-syzkaller-00280-g64c3dd0b98f5 #0 Not tainted
-------------------------------------------------------
-syz-executor.4/4429 is trying to acquire lock:
-ffff8880756faaa8 (&ei->i_data_sem/1){+.+.}-{3:3}, at: ext4_move_extents+0x37b/0xe70 fs/ext4/move_extent.c:610
-
-but task is already holding lock:
-ffff88801e7d34b0 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_double_down_write_data_sem+0x28/0x40
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #3 (&ei->i_data_sem/2){++++}-{3:3}:
-       lock_acquire+0x182/0x3c0 kernel/locking/lockdep.c:5668
-       down_read+0x39/0x50 kernel/locking/rwsem.c:1509
-       ext4_map_blocks+0x398/0x1cc0 fs/ext4/inode.c:568
-       ext4_getblk+0x1b9/0x770 fs/ext4/inode.c:858
-       ext4_bread+0x2a/0x170 fs/ext4/inode.c:914
-       ext4_quota_write+0x225/0x570 fs/ext4/super.c:7082
-       write_blk fs/quota/quota_tree.c:64 [inline]
-       get_free_dqblk+0x34a/0x6d0 fs/quota/quota_tree.c:130
-       do_insert_tree+0x271/0x1b50 fs/quota/quota_tree.c:340
-       do_insert_tree+0x744/0x1b50 fs/quota/quota_tree.c:375
-       do_insert_tree+0x744/0x1b50 fs/quota/quota_tree.c:375
-       do_insert_tree+0x744/0x1b50 fs/quota/quota_tree.c:375
-       dq_insert_tree fs/quota/quota_tree.c:401 [inline]
-       qtree_write_dquot+0x3b6/0x530 fs/quota/quota_tree.c:420
-       v2_write_dquot+0x11b/0x190 fs/quota/quota_v2.c:358
-       dquot_acquire+0x348/0x670 fs/quota/dquot.c:444
-       ext4_acquire_dquot+0x2e0/0x400 fs/ext4/super.c:6738
-       dqget+0x999/0xdc0 fs/quota/dquot.c:914
-       __dquot_initialize+0x3d0/0xcf0 fs/quota/dquot.c:1492
-       ext4_create+0xb0/0x560 fs/ext4/namei.c:2794
-       lookup_open fs/namei.c:3413 [inline]
-       open_last_lookups fs/namei.c:3481 [inline]
-       path_openat+0x12d0/0x2df0 fs/namei.c:3710
-       do_filp_open+0x264/0x4f0 fs/namei.c:3740
-       do_sys_openat2+0x124/0x4e0 fs/open.c:1310
-       do_sys_open fs/open.c:1326 [inline]
-       __do_sys_openat fs/open.c:1342 [inline]
-       __se_sys_openat fs/open.c:1337 [inline]
-       __x64_sys_openat+0x243/0x290 fs/open.c:1337
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
--> #2 (&s->s_dquot.dqio_sem){++++}-{3:3}:
-       lock_acquire+0x182/0x3c0 kernel/locking/lockdep.c:5668
-       down_read+0x39/0x50 kernel/locking/rwsem.c:1509
-       v2_read_dquot+0x4a/0x100 fs/quota/quota_v2.c:332
-       dquot_acquire+0x186/0x670 fs/quota/dquot.c:435
-       ext4_acquire_dquot+0x2e0/0x400 fs/ext4/super.c:6738
-       dqget+0x999/0xdc0 fs/quota/dquot.c:914
-       __dquot_initialize+0x291/0xcf0 fs/quota/dquot.c:1492
-       ext4_create+0xb0/0x560 fs/ext4/namei.c:2794
-       lookup_open fs/namei.c:3413 [inline]
-       open_last_lookups fs/namei.c:3481 [inline]
-       path_openat+0x12d0/0x2df0 fs/namei.c:3710
-       do_filp_open+0x264/0x4f0 fs/namei.c:3740
-       do_sys_openat2+0x124/0x4e0 fs/open.c:1310
-       do_sys_open fs/open.c:1326 [inline]
-       __do_sys_open fs/open.c:1334 [inline]
-       __se_sys_open fs/open.c:1330 [inline]
-       __x64_sys_open+0x221/0x270 fs/open.c:1330
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
--> #1 (&dquot->dq_lock){+.+.}-{3:3}:
-       lock_acquire+0x182/0x3c0 kernel/locking/lockdep.c:5668
-       __mutex_lock_common+0x1bd/0x26e0 kernel/locking/mutex.c:603
-       __mutex_lock kernel/locking/mutex.c:747 [inline]
-       mutex_lock_nested+0x17/0x20 kernel/locking/mutex.c:799
-       dquot_commit+0x58/0x4e0 fs/quota/dquot.c:479
-       ext4_write_dquot+0x1e4/0x2b0 fs/ext4/super.c:6722
-       mark_dquot_dirty fs/quota/dquot.c:346 [inline]
-       mark_all_dquot_dirty fs/quota/dquot.c:384 [inline]
-       __dquot_alloc_space+0xa09/0x1030 fs/quota/dquot.c:1722
-       dquot_alloc_space_nodirty include/linux/quotaops.h:300 [inline]
-       dquot_alloc_space include/linux/quotaops.h:313 [inline]
-       swap_inode_boot_loader fs/ext4/ioctl.c:493 [inline]
-       __ext4_ioctl fs/ext4/ioctl.c:1417 [inline]
-       ext4_ioctl+0x4f3a/0x5430 fs/ext4/ioctl.c:1607
-       vfs_ioctl fs/ioctl.c:51 [inline]
-       __do_sys_ioctl fs/ioctl.c:870 [inline]
-       __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:856
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
--> #0 (&ei->i_data_sem/1){+.+.}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3097 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3216 [inline]
-       validate_chain+0x1898/0x6ae0 kernel/locking/lockdep.c:3831
-       __lock_acquire+0x1292/0x1f60 kernel/locking/lockdep.c:5055
-       lock_acquire+0x182/0x3c0 kernel/locking/lockdep.c:5668
-       down_write_nested+0xa2/0x280 kernel/locking/rwsem.c:1672
-       ext4_move_extents+0x37b/0xe70 fs/ext4/move_extent.c:610
-       __ext4_ioctl fs/ext4/ioctl.c:1351 [inline]
-       ext4_ioctl+0x36ed/0x5430 fs/ext4/ioctl.c:1607
-       vfs_ioctl fs/ioctl.c:51 [inline]
-       __do_sys_ioctl fs/ioctl.c:870 [inline]
-       __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:856
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-other info that might help us debug this:
-
-Chain exists of:
-  &ei->i_data_sem/1 --> &s->s_dquot.dqio_sem --> &ei->i_data_sem/2
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&ei->i_data_sem/2);
-                               lock(&s->s_dquot.dqio_sem);
-                               lock(&ei->i_data_sem/2);
-  lock(&ei->i_data_sem/1);
-
- *** DEADLOCK ***
-
-4 locks held by syz-executor.4/4429:
- #0: ffff88807e866460 (sb_writers#4){.+.+}-{0:0}, at: mnt_want_write_file+0x5a/0x1f0 fs/namespace.c:437
- #1: ffff88801e7d3628 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: inode_lock include/linux/fs.h:756 [inline]
- #1: ffff88801e7d3628 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: lock_two_nondirectories+0xdd/0x130 fs/inode.c:1121
- #2: ffff8880756fac20 (&sb->s_type->i_mutex_key#8/4){+.+.}-{3:3}, at: ext4_move_extents+0x360/0xe70 fs/ext4/move_extent.c:603
- #3: ffff88801e7d34b0 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_double_down_write_data_sem+0x28/0x40
-
-stack backtrace:
-CPU: 1 PID: 4429 Comm: syz-executor.4 Not tainted 6.1.0-rc3-syzkaller-00280-g64c3dd0b98f5 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1b1/0x28e lib/dump_stack.c:106
- check_noncircular+0x2cc/0x390 kernel/locking/lockdep.c:2177
- check_prev_add kernel/locking/lockdep.c:3097 [inline]
- check_prevs_add kernel/locking/lockdep.c:3216 [inline]
- validate_chain+0x1898/0x6ae0 kernel/locking/lockdep.c:3831
- __lock_acquire+0x1292/0x1f60 kernel/locking/lockdep.c:5055
- lock_acquire+0x182/0x3c0 kernel/locking/lockdep.c:5668
- down_write_nested+0xa2/0x280 kernel/locking/rwsem.c:1672
- ext4_move_extents+0x37b/0xe70 fs/ext4/move_extent.c:610
- __ext4_ioctl fs/ext4/ioctl.c:1351 [inline]
- ext4_ioctl+0x36ed/0x5430 fs/ext4/ioctl.c:1607
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:856
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f47c4e8b5a9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f47c5bf0168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f47c4fac120 RCX: 00007f47c4e8b5a9
-RDX: 00000000200000c0 RSI: 00000000c028660f RDI: 0000000000000003
-RBP: 00007f47c4ee67b0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007fff5e92a5bf R14: 00007f47c5bf0300 R15: 0000000000022000
- </TASK>
+But will need to remove the part that it changes del_singleshot_timer_sync().
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> > Patches 6-28 change all the locations where there's a kfree(), kfree_rcu(),
+> > kmem_cache_free() and one call_rcu() call where the RCU function frees the
+> > timer (the workqueue patch) in the same function as the del_timer{,_sync}() is
+> > called on that timer, and there's no extra exit path between the del_timer and
+> > freeing of the timer.  
+> 
+> So honestly, I was literally hoping for a "this is the coccinelle
+> script" kind of patch.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+The above actual was, but I walked through them manually too, because I
+don't trust my conccinelle skills. All but the call_rcu() one was
+caught by conccinelle. That's why I pointed out the worqueue one. I'll
+remove that from this series.
+
+> 
+> Now there seems to be a number of patches here that are actualyl
+> really hard to see that they are "obviously correct" and I can't tell
+> if they are actually scripted or not.
+
+Yes they are. The script that found these were:
+
+----------------------8<------------------------
+@@
+identifier ptr, timer, rfield, slab;
+@@
+(
+-	del_timer(&ptr->timer);
++	timer_shutdown(&ptr->timer);
+|
+-	del_timer_sync(&ptr->timer);
++	timer_shutdown_sync(&ptr->timer);
+)
+    ...
+(
+	kfree_rcu(ptr, rfield);
+|
+	kmem_cache_free(slab, ptr);
+|
+	kfree(ptr);
+)
+---------------------->8------------------------
+
+So any function that had a del_timer*(&obj->timer) and then that obj
+was freed with kfree(), kfree_rcu() or kmem_cache_free() was updated.
+
+What I did manually was to make sure there was no exit of the routine
+between those two calls. I'm sure coccinelle could do that too, but I'm
+not good enough at it to add that feature.
+
+The reason the patches don't look obvious is because the distance
+between the del_timer() and the free may be quite far. I walked through
+these patches at least 3 times manually to make sure they are all OK.
+
+
+> 
+> They don't *look* scripted, but I can't really tell.  I looked at the
+> patches with ten lines of context, and I didn't see the immediately
+> following kfree() even in that expanded patch context, so it's fairly
+> far away.
+
+Yes, some are like a 100 lines away.
+
+> 
+> Others in the series were *definitely* not scripted, doing clearly
+> manual cleanups:
+> 
+> -    if (dch->timer.function) {
+> -        del_timer(&dch->timer);
+> -        dch->timer.function = NULL;
+> -    }
+> +    timer_shutdown(&dch->timer);
+> 
+> so no, this does *not* make me feel "ok, this is all trivial".
+
+Sorry, I'll remove that. It's basically open-coding the
+timer_shutdown() as the way it shuts down the timer is simply by
+setting the timer.function to NULL.
+
+> 
+> IOW, I'd really want *just* the infrastructure and *just* the provably
+> trivial stuff. If it wasn't some scripted really obvious thing that
+> cannot possibly change anything and that wasn't then edited manually
+> for some reason, I really don't want it early.
+> 
+> IOW, any early conversions I'd take are literally about removing pure
+> mindless noise. Not about doing conversions.
+> 
+> And I wouldn't mind it as a single conversion patch that has the
+> coccinelle script as the explanation.
+
+I'll need to update the coccinelle script (or ask someone to give me a
+fix) that catches the case of:
+
+	del_timer(&obj->timer);
+
+	if (x)
+		goto out;
+
+	kfree(obj);
+
+out:
+	return;
+
+
+I'm sure it's a trivial change. I'll look into it some more.
+
+I'm guessing you don't care about the case of:
+
+	del_timer(&obj->timer);
+
+	if (x)
+		goto label;
+
+label:
+
+	kfree(obj);
+
+As that's a bit more complex if we avoid the first goto case?
+Even though the second case is obviously correct.
+
+I believe both of these cases exist in the kernel. I manually removed
+the places that my script found for the first case.
+
+> 
+> Really just THAT kind of "100% mindless conversion".
+
+I'll look at making the most obviously correct case, where del_timer
+and kfree have no goto or returns between them. We can always add the
+rest in the merge window.
+
+-- Steve
