@@ -2,175 +2,144 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9263161DBDD
-	for <lists+linux-ext4@lfdr.de>; Sat,  5 Nov 2022 17:05:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C6261DBE3
+	for <lists+linux-ext4@lfdr.de>; Sat,  5 Nov 2022 17:07:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229880AbiKEQFq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 5 Nov 2022 12:05:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43224 "EHLO
+        id S229899AbiKEQHz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 5 Nov 2022 12:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbiKEQFq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 5 Nov 2022 12:05:46 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A21E10068
-        for <linux-ext4@vger.kernel.org>; Sat,  5 Nov 2022 09:05:45 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id h10so5384069qvq.7
-        for <linux-ext4@vger.kernel.org>; Sat, 05 Nov 2022 09:05:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=GP8p4dRzNVpyUotOfaypMmYTGE9lsMcq6qB3gjhmc04=;
-        b=iIDJL03zNkH0lS9YORaCB4Nnx18G1RT5PAxkqTBkren7bOYLdVGnhhilx+OlS481lw
-         gQr71gF/2R0QtX/qOni1Pt9vrqOkIr43rj0MZrH/uG69dzQgSBZeGC3nRHzTa1HEb5Zv
-         OhEAlIPPkZmfK8ER3fSUpMd0BmaBeM97bdw94=
+        with ESMTP id S229814AbiKEQHy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 5 Nov 2022 12:07:54 -0400
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C9410073
+        for <linux-ext4@vger.kernel.org>; Sat,  5 Nov 2022 09:07:53 -0700 (PDT)
+Received: by mail-il1-f197.google.com with SMTP id j7-20020a056e02154700b003007885e7beso5848699ilu.20
+        for <linux-ext4@vger.kernel.org>; Sat, 05 Nov 2022 09:07:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GP8p4dRzNVpyUotOfaypMmYTGE9lsMcq6qB3gjhmc04=;
-        b=JqbNRR8zvqyW32LeZoGJaKRZkfyujoMW+4Ti7VfAmeoFlTvCkOtS+VSgFhv9gxRGKm
-         Nrmgh8eGZBM4yA/O0TufrnbIigENxakl/9O/kkY6Qufh4il5ZOSeK4Bakcyg26xtTfM3
-         raxoZLwFdUMYnfg0XruAnyp17keTHDjyiFiAXkE8c7NiCUO2OsVmoj/gtHDwODuhfGn2
-         GyddRgJDuqvP17jOzxf4d7eTJ6mSltjx+pNyGuHkRIJgrrkfmBeQqycoUaOJOJB+6zPx
-         TXd5OSa9VWtqSMWhGxD+TWqX5werg/4QwyEMi4b1pxFYeleDqoWvEqOpYBeWl//8Y75j
-         fXtQ==
-X-Gm-Message-State: ACrzQf3SR9yHQCfbLDokRg5k/J8QqzpAu4FrPucd9fATDRNb2kYjGTey
-        2zZWJkxgbFbPY4Gjm5P0BiC0MZ4PPKkxUQ==
-X-Google-Smtp-Source: AMsMyM5rzz0J7xAkUw0Ozy/RMruCelWWiJDBIOGq+DvcI2IGSMfUlDnwl4NVE/g53b+UpAUZJL4XmQ==
-X-Received: by 2002:a0c:aa5c:0:b0:4bb:b279:2457 with SMTP id e28-20020a0caa5c000000b004bbb2792457mr38157101qvb.81.1667664344136;
-        Sat, 05 Nov 2022 09:05:44 -0700 (PDT)
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
-        by smtp.gmail.com with ESMTPSA id h12-20020a05620a284c00b006cbc6e1478csm2055448qkp.57.2022.11.05.09.05.43
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 05 Nov 2022 09:05:43 -0700 (PDT)
-Received: by mail-yb1-f169.google.com with SMTP id 131so4653691ybl.3
-        for <linux-ext4@vger.kernel.org>; Sat, 05 Nov 2022 09:05:43 -0700 (PDT)
-X-Received: by 2002:a81:114e:0:b0:36a:fc80:fa62 with SMTP id
- 75-20020a81114e000000b0036afc80fa62mr40431421ywr.58.1667663992806; Sat, 05
- Nov 2022 08:59:52 -0700 (PDT)
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=P26Tufb5libRVNtGMj36dstv5Fz34ZnElPMtb6a0Uhg=;
+        b=eXX1w1XRMRJVOoqOjnv3Lf41U+pKtns5+rLunPsPoWlvBBeD9Mrf+Pd6GQkmEEDYQz
+         hoeBkkkBAh/GS3WIS+bYT25HWssYgOA1qhh+nt/L6hqMtJYyeRvY7L1aara2GLUToNOl
+         IFJb7kVW+RBxKzVWhR0Z7nsz1liUbdt/NuJ0JSYBC0DJ8RosHw7VB0tupjyJ8EX1onc6
+         ndbTZv19l73UdgEIB9PrPM4f33AD92U/YwgXVqdIc8cIZD5+PP23bEmgJUWY5ccIbSmi
+         MXTqZ8VeaSen0QDGch1EP/MYk2QSSAlyBfm7HQSzRbAkgH13/3PHu9dZ6qa4mPSEouJH
+         GWgQ==
+X-Gm-Message-State: ACrzQf0WBiWTybX2wWXdrzbgNz+4xFJuVBIqSWo24EiJme2yagUcinbg
+        w9vmC7cd5j5XKqVRtTd7fqa13vSOBBK/W3T8bPHeiqC3z6ul
+X-Google-Smtp-Source: AMsMyM7lzq/wnhZ5p4mooUUvzr2G8b1Tq6lQpd394TA+Q9lfRqzxbCflqbEUFzamGIu7GMPo/cN1i+qiUBA0Md2c2SYELM6iIYft
 MIME-Version: 1.0
-References: <20221105060024.598488967@goodmis.org>
-In-Reply-To: <20221105060024.598488967@goodmis.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 5 Nov 2022 08:59:36 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi95dGkg7DiuOZ27gGW+mxJipn9ykB6LHB-HrbbLG6OMQ@mail.gmail.com>
-Message-ID: <CAHk-=wi95dGkg7DiuOZ27gGW+mxJipn9ykB6LHB-HrbbLG6OMQ@mail.gmail.com>
-Subject: Re: [PATCH v4a 00/38] timers: Use timer_shutdown*() before freeing timers
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Anna-Maria Gleixner <anna-maria@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-edac@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-pm@vger.kernel.org, drbd-dev@lists.linbit.com,
-        linux-bluetooth@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, intel-gfx@lists.freedesktop.org,
-        linux-input@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-leds@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-ext4@vger.kernel.org, linux-nilfs@vger.kernel.org,
-        bridge@lists.linux-foundation.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, lvs-devel@vger.kernel.org,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org
+X-Received: by 2002:a05:6638:1210:b0:375:4aa6:ff85 with SMTP id
+ n16-20020a056638121000b003754aa6ff85mr21924002jas.227.1667664472862; Sat, 05
+ Nov 2022 09:07:52 -0700 (PDT)
+Date:   Sat, 05 Nov 2022 09:07:52 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000082754e05ecbb641e@google.com>
+Subject: [syzbot] WARNING in ext4_enable_quotas
+From:   syzbot <syzbot+77524f55898ea618bfad@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        nathan@kernel.org, ndesaulniers@google.com,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com, tytso@mit.edu
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Nov 4, 2022 at 11:01 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> Patch 1 fixes an issue with sunrpc/xprt where it incorrectly uses
-> del_singleshot_timer_sync() for something that is not a oneshot timer. As this
-> will be converted to shutdown, this needs to be fixed first.
+Hello,
 
-So this is the kind of thing that I would *not* want to get eartly.
+syzbot found the following issue on:
 
-I really would want to get just the infrastructure in to let people
-start doing conversions.
+HEAD commit:    bbed346d5a96 Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=14db1719880000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3a4a45d2d827c1e
+dashboard link: https://syzkaller.appspot.com/bug?extid=77524f55898ea618bfad
+compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
+userspace arch: arm64
 
-And then the "mindlessly obvious patches that are done by scripting
-and can not possibly matter".
+Unfortunately, I don't have any reproducer for this issue yet.
 
-The kinds that do not *need* review, because they are mechanical, and
-that just cause pointless noise for the rest of the patches that *do*
-want review.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/e8e91bc79312/disk-bbed346d.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c1cb3fb3b77e/vmlinux-bbed346d.xz
 
-Not this kind of thing that is so subtle that you have to explain it.
-That's not a "scripted patch for no semantic change".
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+77524f55898ea618bfad@syzkaller.appspotmail.com
 
-So leave the del_singleshot_timer_sync() cases alone, they are
-irrelevant for the new infrastructure and for the "mindless scripted
-conversion" patches.
+EXT4-fs (loop1): orphan cleanup on readonly fs
+------------[ cut here ]------------
+DEBUG_LOCKS_WARN_ON(!key)
+WARNING: CPU: 1 PID: 14778 at kernel/locking/lockdep.c:4831 lockdep_init_map_type+0x284/0x2fc kernel/locking/lockdep.c:4831
+Modules linked in:
+CPU: 1 PID: 14778 Comm: syz-executor.1 Not tainted 6.0.0-rc7-syzkaller-18095-gbbed346d5a96 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/30/2022
+pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : lockdep_init_map_type+0x284/0x2fc kernel/locking/lockdep.c:4831
+lr : lockdep_init_map_type+0x284/0x2fc kernel/locking/lockdep.c:4831
+sp : ffff800013533980
+x29: ffff800013533990 x28: ffff80000cb99126 x27: ffff8000135339c4
+x26: ffff0001156798e0 x25: ffff000115679908 x24: 0000000000000001
+x23: ffff8000135339d0 x22: ffff80000ee2b000 x21: 0000000000000000
+x20: 0000000000000002 x19: ffff0001156798e0 x18: 000000000000034b
+x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
+x14: 0000000000000000 x13: 0000000000000012 x12: 0000000000040000
+x11: 000000000001b6e9 x10: ffff80001b6ed000 x9 : 3b94ef2414331b00
+x8 : 3b94ef2414331b00 x7 : 4e5241575f534b43 x6 : ffff80000819545c
+x5 : 0000000000000000 x4 : 0000000000000001 x3 : 0000000000000000
+x2 : 0000000000000000 x1 : 0000000100000000 x0 : 0000000000000019
+Call trace:
+ lockdep_init_map_type+0x284/0x2fc kernel/locking/lockdep.c:4831
+ lockdep_set_quota_inode fs/ext4/super.c:6677 [inline]
+ ext4_quota_enable fs/ext4/super.c:6787 [inline]
+ ext4_enable_quotas+0x1ac/0x378 fs/ext4/super.c:6814
+ ext4_orphan_cleanup+0x23c/0x8ec fs/ext4/orphan.c:432
+ __ext4_fill_super+0x34a4/0x36d4 fs/ext4/super.c:5378
+ ext4_fill_super+0x100/0x2d8 fs/ext4/super.c:5517
+ get_tree_bdev+0x1e8/0x2a0 fs/super.c:1323
+ ext4_get_tree+0x28/0x38 fs/ext4/super.c:5547
+ vfs_get_tree+0x40/0x140 fs/super.c:1530
+ do_new_mount+0x1dc/0x4e4 fs/namespace.c:3040
+ path_mount+0x358/0x914 fs/namespace.c:3370
+ do_mount fs/namespace.c:3383 [inline]
+ __do_sys_mount fs/namespace.c:3591 [inline]
+ __se_sys_mount fs/namespace.c:3568 [inline]
+ __arm64_sys_mount+0x2c4/0x3c4 fs/namespace.c:3568
+ __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+ invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
+ el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
+ do_el0_svc+0x48/0x164 arch/arm64/kernel/syscall.c:206
+ el0_svc+0x58/0x150 arch/arm64/kernel/entry-common.c:636
+ el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:654
+ el0t_64_sync+0x18c/0x190 arch/arm64/kernel/entry.S:581
+irq event stamp: 977
+hardirqs last  enabled at (977): [<ffff800008161dac>] raw_spin_rq_unlock_irq kernel/sched/sched.h:1367 [inline]
+hardirqs last  enabled at (977): [<ffff800008161dac>] finish_lock_switch+0x94/0xe8 kernel/sched/core.c:4942
+hardirqs last disabled at (976): [<ffff80000bfc0a34>] __schedule+0x84/0x5a0 kernel/sched/core.c:6393
+softirqs last  enabled at (200): [<ffff80000801c33c>] local_bh_enable+0x10/0x34 include/linux/bottom_half.h:32
+softirqs last disabled at (198): [<ffff80000801c308>] local_bh_disable+0x10/0x34 include/linux/bottom_half.h:19
+---[ end trace 0000000000000000 ]---
+EXT4-fs warning (device loop1): ext4_enable_quotas:6821: Failed to enable quota tracking (type=0, err=-13). Please run e2fsck to fix.
+EXT4-fs (loop1): Cannot turn on quotas: error -13
+EXT4-fs error (device loop1): ext4_orphan_get:1419: comm syz-executor.1: bad orphan inode 11
+EXT4-fs (loop1): Remounting filesystem read-only
+ext4_test_bit(bit=10, block=3) = 0
+EXT4-fs (loop1): mounted filesystem without journal. Quota mode: writeback.
 
-> Patches 2-4 changes existing timer_shutdown() functions used locally in ARM and
-> some drivers to better namespace names.
 
-Ok, these are relevant.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> Patch 5 implements the new timer_shutdown() and timer_shutdown_sync() functions
-> that disable re-arming the timer after they are called.
-
-This is obviously what I'd want early so that people can start doign
-this in their trees.
-
-> Patches 6-28 change all the locations where there's a kfree(), kfree_rcu(),
-> kmem_cache_free() and one call_rcu() call where the RCU function frees the
-> timer (the workqueue patch) in the same function as the del_timer{,_sync}() is
-> called on that timer, and there's no extra exit path between the del_timer and
-> freeing of the timer.
-
-So honestly, I was literally hoping for a "this is the coccinelle
-script" kind of patch.
-
-Now there seems to be a number of patches here that are actualyl
-really hard to see that they are "obviously correct" and I can't tell
-if they are actually scripted or not.
-
-They don't *look* scripted, but I can't really tell.  I looked at the
-patches with ten lines of context, and I didn't see the immediately
-following kfree() even in that expanded patch context, so it's fairly
-far away.
-
-Others in the series were *definitely* not scripted, doing clearly
-manual cleanups:
-
--    if (dch->timer.function) {
--        del_timer(&dch->timer);
--        dch->timer.function = NULL;
--    }
-+    timer_shutdown(&dch->timer);
-
-so no, this does *not* make me feel "ok, this is all trivial".
-
-IOW, I'd really want *just* the infrastructure and *just* the provably
-trivial stuff. If it wasn't some scripted really obvious thing that
-cannot possibly change anything and that wasn't then edited manually
-for some reason, I really don't want it early.
-
-IOW, any early conversions I'd take are literally about removing pure
-mindless noise. Not about doing conversions.
-
-And I wouldn't mind it as a single conversion patch that has the
-coccinelle script as the explanation.
-
-Really just THAT kind of "100% mindless conversion".
-
-               Linus
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
