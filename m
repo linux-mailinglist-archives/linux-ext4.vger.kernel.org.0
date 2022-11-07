@@ -2,53 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86DFA61F317
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:27:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E11AF61F318
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:27:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232183AbiKGM1G (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 7 Nov 2022 07:27:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52234 "EHLO
+        id S232216AbiKGM1K (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 7 Nov 2022 07:27:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232216AbiKGM1B (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:27:01 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6334C6405
-        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:27:00 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id l22-20020a17090a3f1600b00212fbbcfb78so14408467pjc.3
-        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:27:00 -0800 (PST)
+        with ESMTP id S232210AbiKGM1H (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:27:07 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 454616247
+        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:27:06 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id r18so10296258pgr.12
+        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:27:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=333vC0dW8Rw1b9p+EPFXewePT2jZKqjSdzIZxgfazzE=;
-        b=n9m30imDnkpTUetumSqddSfkilD4PFWe0NK9k2bpqWTGPGf0PBcJSCdocXdDTiQ1cO
-         MTuJlMssBLF3ozxr/A6Xc2u19iDxvbs5wCer4Me7Ofp9lUbaZHuWRz5v54VMCyAUBmiJ
-         SqlK+/m8dbhOVWDOTEsNKH8VWgsYoxVLnXnGHNfvdGvgnp1SRXJ3iJ3VL0Eu0XY/GVQ9
-         ksRPsa6rvbQQrCLUxG+MkgQ89tVdo057Pne7XQU3TA8u/FOkAjUil18DDAOIllPk2QM0
-         ySQmAteE0eZjS+ai/IR+L8b8yuiFOO4ML/0TjtV/UTeMev7xLFAPOGCIHKcF23dLy/66
-         g4DA==
+        bh=CZD2Jr2yW63XIeTFZ1Y0HbzT/Is6Ul87Qe/nsH446CI=;
+        b=Y2Vcq8aJzbmapYxHsFQszOfCoQLKuycjBL5CHvWpUW1zNE/nf9NwtGOg7rELVSnag0
+         X6ENNHfuWjzy22RNhVAFVPYInAJLP1o+B4idblrABtwUIdAVYVc0jtCGMqsdinxro0k3
+         P+RDiT2waSY5dchAyAkfJRZu4yEmvGnl8smlnvwMDjdqEN9l+P548guA/t8Dv3YhR/kz
+         IHrh9INgSLt36li124AP6hkY+DY9sows7Af113s1I0CVedjXp25X9e7czoWh3GtzNeLM
+         A7Hk/yog9nu5dZ5snmuXWBd14oV6dMiDv9Cbhqs83BpoHs20tKz4a3KHXSESZNEOXyEK
+         hfmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=333vC0dW8Rw1b9p+EPFXewePT2jZKqjSdzIZxgfazzE=;
-        b=Vf30AHxFJ/DnOcnIOy+/TbRv2MkdKtXf64Imbimpo4crI3EDJiSxfLX8Hd8zR5PoYj
-         L6eGw7HNZKdJFEF9Ftqhn12kFfz5wONYWA/XRLGdsn7uTuhEDQK+4kI1jRPJ5VpbcS4h
-         b9wsgZ/JtCsNuTaAg6EMsFJpt3sosEoz8PC2L2emv9j9kYxAD6R5syrJRgJ+nSfqoA6d
-         YhCAhjw9WJyLqRgW55oXnXxDREmhpTbuYZAzD3TkPJkPjZlKiZRSkcgNkS5LeXJi/lOI
-         mQ41X//bnh3B3tSXH2KNqIqx+SvtFOFQHCQowFivAzq0mzU+Cevwq5ewuqjAnPd7zpVK
-         yEOQ==
-X-Gm-Message-State: ACrzQf0uboTx9X6+yMNppOE6j5fzO/1M4ol1aMQ53duNsqDdMcuqLXb1
-        rcB05Z/l8hdWoQDfq5dG8Ls=
-X-Google-Smtp-Source: AMsMyM7O/8CwMQC1Bov0068xZwKQ69YaLvDQ/zDcAIaFv25PBTwMb/xbU5A0Z2rgzsCtkV0nQ4n9YA==
-X-Received: by 2002:a17:90a:6286:b0:213:b01e:4290 with SMTP id d6-20020a17090a628600b00213b01e4290mr48134128pjj.42.1667824019901;
-        Mon, 07 Nov 2022 04:26:59 -0800 (PST)
+        bh=CZD2Jr2yW63XIeTFZ1Y0HbzT/Is6Ul87Qe/nsH446CI=;
+        b=gdGw4F4AXtiAHYryJPk1Fj3gp70cU+gJqQaP9eS2hBb+yGSsLnaXS8dVlSurzT8HKv
+         tLaFO+i2kl1h3H24aM2mF9zA+4QWd9IRbE7xs/aoRRx2tSMqrkQsnUa3sP3p3NHk5JvK
+         nw33HRXeJfZp4aAg0AQNLUE2lW3Yb0bIozNWYHqTXnydFaMKy51gy4HdjlwFEZLmSN+D
+         JuMaxdhNsppgQK5TvCSd588GQ3L9WZEoyFzuYMKV4/xJLHtd92plNlFJbzdOQ5woV4d9
+         mF6Kab8jCUIUJggrb3bDjqOYVnZN6w03FmAYJffn15AWj1xg3lJNlUQYZmM19QOr0NpJ
+         7ASQ==
+X-Gm-Message-State: ACrzQf3oJYMF1cHZbO9S3WhpGNsUjRvd72NcmIKIHFCRQHeI2M4o+LQj
+        VPPOGybLNoEZ6qeXVNRcSNw=
+X-Google-Smtp-Source: AMsMyM4RpHOh5TKd7rsXDzM2Fm3AdPk74wBz2FP+8M1o5Vt2PhO+iukD+/p1J2jargyDmrB6lE9Ctg==
+X-Received: by 2002:a65:5942:0:b0:46f:f741:8adc with SMTP id g2-20020a655942000000b0046ff7418adcmr27026815pgu.265.1667824025611;
+        Mon, 07 Nov 2022 04:27:05 -0800 (PST)
 Received: from localhost ([2406:7400:63:f20b:312d:45b2:85c1:c486])
-        by smtp.gmail.com with ESMTPSA id d7-20020a170902cec700b00186ff402525sm4892045plg.213.2022.11.07.04.26.58
+        by smtp.gmail.com with ESMTPSA id ei15-20020a17090ae54f00b00213d08fa459sm4260093pjb.17.2022.11.07.04.27.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Nov 2022 04:26:59 -0800 (PST)
+        Mon, 07 Nov 2022 04:27:05 -0800 (PST)
 From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
 To:     Theodore Ts'o <tytso@mit.edu>
 Cc:     linux-ext4@vger.kernel.org,
@@ -56,9 +56,9 @@ Cc:     linux-ext4@vger.kernel.org,
         Wang Shilong <wshilong@ddn.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Li Xi <lixi@ddn.com>, Ritesh Harjani <ritesh.list@gmail.com>
-Subject: [RFCv1 45/72] e2fsck: split and merge invalid bitmaps
-Date:   Mon,  7 Nov 2022 17:51:33 +0530
-Message-Id: <f46742bb7e67f39de947f1cea5406892caabc221.1667822611.git.ritesh.list@gmail.com>
+Subject: [RFCv1 46/72] e2fsck: merge EA blocks properly
+Date:   Mon,  7 Nov 2022 17:51:34 +0530
+Message-Id: <554875d57922b15947ee874e2588d174ec2e6284.1667822611.git.ritesh.list@gmail.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1667822611.git.ritesh.list@gmail.com>
 References: <cover.1667822611.git.ritesh.list@gmail.com>
@@ -76,132 +76,386 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Wang Shilong <wshilong@ddn.com>
 
-Invalid bitmaps are splitted per thread, and we
-should merge them after thread finish.
+EA blocks might be shared, merge them carefully.
 
 Signed-off-by: Wang Shilong <wshilong@ddn.com>
 Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 ---
- e2fsck/pass1.c | 71 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 71 insertions(+)
+ e2fsck/e2fsck.h |   1 +
+ e2fsck/pass1.c  | 244 +++++++++++++++++++++++++++++++++++++++++-------
+ 2 files changed, 212 insertions(+), 33 deletions(-)
 
+diff --git a/e2fsck/e2fsck.h b/e2fsck/e2fsck.h
+index 55f75042..beac7054 100644
+--- a/e2fsck/e2fsck.h
++++ b/e2fsck/e2fsck.h
+@@ -333,6 +333,7 @@ struct e2fsck_struct {
+ 
+ 	ext2_refcount_t	refcount;
+ 	ext2_refcount_t refcount_extra;
++	ext2_refcount_t refcount_orig;
+ 
+ 	/*
+ 	 * Quota blocks and inodes to be charged for each ea block.
 diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
-index f156d4e1..e268441a 100644
+index e268441a..06306a17 100644
 --- a/e2fsck/pass1.c
 +++ b/e2fsck/pass1.c
-@@ -2309,6 +2309,62 @@ static errcode_t e2fsck_open_channel_fs(ext2_filsys dest, e2fsck_t dest_context,
- 	return 0;
+@@ -680,14 +680,14 @@ static void check_is_really_dir(e2fsck_t ctx, struct problem_context *pctx,
+ 	    LINUX_S_ISLNK(inode->i_mode) || inode->i_block[0] == 0)
+ 		return;
+ 
+-	/* 
++	/*
+ 	 * Check the block numbers in the i_block array for validity:
+ 	 * zero blocks are skipped (but the first one cannot be zero -
+ 	 * see above), other blocks are checked against the first and
+ 	 * max data blocks (from the the superblock) and against the
+ 	 * block bitmap. Any invalid block found means this cannot be
+ 	 * a directory.
+-	 * 
++	 *
+ 	 * If there are non-zero blocks past the fourth entry, then
+ 	 * this cannot be a device file: we remember that for the next
+ 	 * check.
+@@ -1234,14 +1234,39 @@ static void e2fsck_pass1_post(e2fsck_t ctx)
+ {
+ 	struct problem_context pctx;
+ 	ext2_filsys fs = ctx->fs;
+-	char *block_buf;
+ 
++	char *block_buf =
++		(char *)e2fsck_allocate_memory(ctx, ctx->fs->blocksize * 3,
++					      "block interate buffer");
+ 	reserve_block_for_root_repair(ctx);
+ 	reserve_block_for_lnf_repair(ctx);
+ 
++	/*
++	 * If any extended attribute blocks' reference counts need to
++	 * be adjusted, either up (ctx->refcount_extra), or down
++	 * (ctx->refcount), then fix them.
++	 */
++	if (ctx->refcount) {
++		adjust_extattr_refcount(ctx, ctx->refcount, block_buf, -1);
++		ea_refcount_free(ctx->refcount);
++		ctx->refcount = 0;
++	}
++	if (ctx->refcount_extra) {
++		adjust_extattr_refcount(ctx, ctx->refcount_extra,
++					block_buf, +1);
++		ea_refcount_free(ctx->refcount_extra);
++		ctx->refcount_extra = 0;
++	}
++
+ 	if (ctx->invalid_bitmaps)
+ 		handle_fs_bad_blocks(ctx);
+ 
++	/* We don't need the block_ea_map any more */
++	if (ctx->block_ea_map) {
++		ext2fs_free_block_bitmap(ctx->block_ea_map);
++		ctx->block_ea_map = 0;
++	}
++
+ 	if (ctx->flags & E2F_FLAG_RESIZE_INODE) {
+ 		struct ext2_inode *inode;
+ 		int inode_size = EXT2_INODE_SIZE(fs->super);
+@@ -1281,10 +1306,6 @@ static void e2fsck_pass1_post(e2fsck_t ctx)
+ 			clear_problem_context(&pctx);
+ 			fix_problem(ctx, PR_1_DUP_BLOCKS_PREENSTOP, &pctx);
+ 		}
+-		block_buf =
+-			(char *)e2fsck_allocate_memory(ctx,
+-					ctx->fs->blocksize * 3,
+-					"block interate buffer");
+ 		e2fsck_pass1_dupblocks(ctx, block_buf);
+ 		ext2fs_free_mem(&block_buf);
+ 	}
+@@ -2145,23 +2166,6 @@ void e2fsck_pass1_run(e2fsck_t ctx)
+ 	ext2fs_close_inode_scan(scan);
+ 	scan = NULL;
+ 
+-	/*
+-	 * If any extended attribute blocks' reference counts need to
+-	 * be adjusted, either up (ctx->refcount_extra), or down
+-	 * (ctx->refcount), then fix them.
+-	 */
+-	if (ctx->refcount) {
+-		adjust_extattr_refcount(ctx, ctx->refcount, block_buf, -1);
+-		ea_refcount_free(ctx->refcount);
+-		ctx->refcount = 0;
+-	}
+-	if (ctx->refcount_extra) {
+-		adjust_extattr_refcount(ctx, ctx->refcount_extra,
+-					block_buf, +1);
+-		ea_refcount_free(ctx->refcount_extra);
+-		ctx->refcount_extra = 0;
+-	}
+-
+ 	if (ctx->ea_block_quota_blocks) {
+ 		ea_refcount_free(ctx->ea_block_quota_blocks);
+ 		ctx->ea_block_quota_blocks = 0;
+@@ -2172,13 +2176,6 @@ void e2fsck_pass1_run(e2fsck_t ctx)
+ 		ctx->ea_block_quota_inodes = 0;
+ 	}
+ 
+-
+-	/* We don't need the block_ea_map any more */
+-	if (ctx->block_ea_map) {
+-		ext2fs_free_block_bitmap(ctx->block_ea_map);
+-		ctx->block_ea_map = 0;
+-	}
+-
+ 	/* We don't need the encryption policy => ID map any more */
+ 	destroy_encryption_policy_map(ctx);
+ 
+@@ -2533,6 +2530,155 @@ static errcode_t e2fsck_pass1_merge_dirs_to_hash(e2fsck_t global_ctx,
+ 	return retval;
  }
  
-+static void e2fsck_pass1_copy_invalid_bitmaps(e2fsck_t global_ctx,
-+					      e2fsck_t thread_ctx)
++static errcode_t e2fsck_pass1_merge_ea_inode_refs(e2fsck_t global_ctx,
++						  e2fsck_t thread_ctx)
 +{
-+	dgrp_t i, j;
-+	dgrp_t grp_start = thread_ctx->thread_info.et_group_start;
-+	dgrp_t grp_end = thread_ctx->thread_info.et_group_end;
-+	dgrp_t total = grp_end - grp_start;
++	ea_value_t count;
++	blk64_t blk;
++	errcode_t retval;
 +
-+	thread_ctx->invalid_inode_bitmap_flag =
-+			e2fsck_allocate_memory(global_ctx, sizeof(int) * total,
-+						"invalid_inode_bitmap");
-+	thread_ctx->invalid_block_bitmap_flag =
-+			e2fsck_allocate_memory(global_ctx, sizeof(int) * total,
-+					       "invalid_block_bitmap");
-+	thread_ctx->invalid_inode_table_flag =
-+			e2fsck_allocate_memory(global_ctx, sizeof(int) * total,
-+					       "invalid_inode_table");
++	if (!thread_ctx->ea_inode_refs)
++		return 0;
 +
-+	memcpy(thread_ctx->invalid_block_bitmap_flag,
-+	       &global_ctx->invalid_block_bitmap_flag[grp_start],
-+	       total * sizeof(int));
-+	memcpy(thread_ctx->invalid_inode_bitmap_flag,
-+	       &global_ctx->invalid_inode_bitmap_flag[grp_start],
-+	       total * sizeof(int));
-+	memcpy(thread_ctx->invalid_inode_table_flag,
-+	       &global_ctx->invalid_inode_table_flag[grp_start],
-+	       total * sizeof(int));
-+
-+	thread_ctx->invalid_bitmaps = 0;
-+	for (i = grp_start, j = 0; i < grp_end; i++, j++) {
-+		if (thread_ctx->invalid_block_bitmap_flag[j])
-+			thread_ctx->invalid_bitmaps++;
-+		if (thread_ctx->invalid_inode_bitmap_flag[j])
-+			thread_ctx->invalid_bitmaps++;
-+		if (thread_ctx->invalid_inode_table_flag[j])
-+			thread_ctx->invalid_bitmaps++;
++	if (!global_ctx->ea_inode_refs) {
++		global_ctx->ea_inode_refs = thread_ctx->ea_inode_refs;
++		thread_ctx->ea_inode_refs = NULL;
++		return 0;
 +	}
++
++	ea_refcount_intr_begin(thread_ctx->ea_inode_refs);
++	while (1) {
++		if ((blk = ea_refcount_intr_next(thread_ctx->ea_inode_refs,
++						 &count)) == 0)
++			break;
++		if (!global_ctx->block_ea_map ||
++		    !ext2fs_fast_test_block_bitmap2(global_ctx->block_ea_map,
++						    blk)) {
++			retval = ea_refcount_store(global_ctx->ea_inode_refs,
++						   blk, count);
++			if (retval)
++				return retval;
++		}
++	}
++
++	return retval;
 +}
 +
-+static void e2fsck_pass1_merge_invalid_bitmaps(e2fsck_t global_ctx,
-+					       e2fsck_t thread_ctx)
++static ea_value_t ea_refcount_usage(e2fsck_t ctx, blk64_t blk,
++				    ea_value_t *orig)
 +{
-+	dgrp_t i, j;
-+	dgrp_t grp_start = thread_ctx->thread_info.et_group_start;
-+	dgrp_t grp_end = thread_ctx->thread_info.et_group_end;
-+	dgrp_t total = grp_end - grp_start;
++	ea_value_t count_cur;
++	ea_value_t count_extra = 0;
++	ea_value_t count_orig;
 +
-+	memcpy(&global_ctx->invalid_block_bitmap_flag[grp_start],
-+	       thread_ctx->invalid_block_bitmap_flag, total * sizeof(int));
-+	memcpy(&global_ctx->invalid_inode_bitmap_flag[grp_start],
-+	       thread_ctx->invalid_inode_bitmap_flag, total * sizeof(int));
-+	memcpy(&global_ctx->invalid_inode_table_flag[grp_start],
-+	       thread_ctx->invalid_inode_table_flag, total * sizeof(int));
-+	global_ctx->invalid_bitmaps += thread_ctx->invalid_bitmaps;
++	ea_refcount_fetch(ctx->refcount_orig, blk, &count_orig);
++	ea_refcount_fetch(ctx->refcount, blk, &count_cur);
++	/* most of time this is not needed */
++	if (ctx->refcount_extra && count_cur == 0)
++		ea_refcount_fetch(ctx->refcount_extra, blk, &count_extra);
++
++	if (!count_orig)
++		count_orig = *orig;
++	else if (orig)
++		*orig = count_orig;
++
++	return count_orig + count_extra - count_cur;
 +}
 +
- static errcode_t e2fsck_pass1_thread_prepare(e2fsck_t global_ctx, e2fsck_t *thread_ctx,
- 					     int thread_index, int num_threads)
++static errcode_t e2fsck_pass1_merge_ea_refcount(e2fsck_t global_ctx,
++						e2fsck_t thread_ctx)
++{
++	ea_value_t count;
++	blk64_t blk;
++	errcode_t retval = 0;
++
++	if (!thread_ctx->refcount)
++		return 0;
++
++	if (!global_ctx->refcount) {
++		global_ctx->refcount = thread_ctx->refcount;
++		thread_ctx->refcount = NULL;
++		global_ctx->refcount_extra = thread_ctx->refcount;
++		thread_ctx->refcount_extra = NULL;
++		return 0;
++	}
++
++	ea_refcount_intr_begin(thread_ctx->refcount);
++	while (1) {
++		if ((blk = ea_refcount_intr_next(thread_ctx->refcount,
++						 &count)) == 0)
++			break;
++		/**
++		 * this EA has never seen before, so just store its
++		 * refcount and refcount_extra into global_ctx if needed.
++		 */
++		if (!global_ctx->block_ea_map ||
++		    !ext2fs_fast_test_block_bitmap2(global_ctx->block_ea_map,
++						    blk)) {
++			ea_value_t extra;
++
++			retval = ea_refcount_store(global_ctx->refcount,
++						   blk, count);
++			if (retval)
++				return retval;
++
++			if (count > 0 || !thread_ctx->refcount_extra)
++				continue;
++			ea_refcount_fetch(thread_ctx->refcount_extra, blk,
++					  &extra);
++			if (extra == 0)
++				continue;
++
++			if (!global_ctx->refcount_extra) {
++				retval = ea_refcount_create(0,
++						&global_ctx->refcount_extra);
++				if (retval)
++					return retval;
++			}
++			retval = ea_refcount_store(global_ctx->refcount_extra,
++						   blk, extra);
++			if (retval)
++				return retval;
++		} else {
++			ea_value_t orig;
++			ea_value_t thread_usage;
++			ea_value_t global_usage;
++			ea_value_t new;
++
++			thread_usage = ea_refcount_usage(thread_ctx,
++							 blk, &orig);
++			global_usage = ea_refcount_usage(global_ctx,
++							 blk, &orig);
++			if (thread_usage + global_usage <= orig) {
++				new = orig - thread_usage - global_usage;
++				retval = ea_refcount_store(global_ctx->refcount,
++							   blk, new);
++				if (retval)
++					return retval;
++				continue;
++			}
++			/* update it is as zero */
++			retval = ea_refcount_store(global_ctx->refcount,
++						   blk, 0);
++			if (retval)
++				return retval;
++			/* Ooops, this EA was referenced more than it stated */
++			if (!global_ctx->refcount_extra) {
++				retval = ea_refcount_create(0,
++						&global_ctx->refcount_extra);
++				if (retval)
++					return retval;
++			}
++			new = global_usage + thread_usage - orig;
++			retval = ea_refcount_store(global_ctx->refcount_extra,
++						   blk, new);
++			if (retval)
++				return retval;
++		}
++	}
++
++	return retval;
++}
+ 
+ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx)
  {
-@@ -2384,6 +2440,7 @@ static errcode_t e2fsck_pass1_thread_prepare(e2fsck_t global_ctx, e2fsck_t *thre
- 		goto out_fs;
- 	}
- 	*thread_ctx = thread_context;
-+	e2fsck_pass1_copy_invalid_bitmaps(global_ctx, thread_context);
- 	return 0;
- out_fs:
- 	ext2fs_merge_fs(&thread_fs);
-@@ -2519,6 +2576,10 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
- 	ext2_ino_t dx_dir_info_count = global_ctx->dx_dir_info_count;
- 	ext2_u32_list dirs_to_hash = global_ctx->dirs_to_hash;
- 	quota_ctx_t qctx = global_ctx->qctx;
-+	int *invalid_block_bitmap_flag = global_ctx->invalid_block_bitmap_flag;
-+	int *invalid_inode_bitmap_flag = global_ctx->invalid_inode_bitmap_flag;
-+	int *invalid_inode_table_flag  = global_ctx->invalid_inode_table_flag;
-+	int invalid_bitmaps = global_ctx->invalid_bitmaps;
+@@ -2551,7 +2697,6 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
+ 	ext2fs_inode_bitmap inode_imagic_map = global_ctx->inode_imagic_map;
+ 	ext2fs_inode_bitmap inode_reg_map = global_ctx->inode_reg_map;
+ 	ext2fs_block_bitmap block_dup_map = global_ctx->block_dup_map;
+-	ext2fs_block_bitmap block_ea_map = global_ctx->block_ea_map;
+ 	ext2fs_block_bitmap inodes_to_rebuild = global_ctx->inodes_to_rebuild;
+ 	ext2_icount_t inode_count = global_ctx->inode_count;
+ 	ext2_icount_t inode_link_info = global_ctx->inode_link_info;
+@@ -2580,6 +2725,13 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
+ 	int *invalid_inode_bitmap_flag = global_ctx->invalid_inode_bitmap_flag;
+ 	int *invalid_inode_table_flag  = global_ctx->invalid_inode_table_flag;
+ 	int invalid_bitmaps = global_ctx->invalid_bitmaps;
++	ext2_refcount_t refcount = global_ctx->refcount;
++	ext2_refcount_t refcount_extra = global_ctx->refcount_extra;
++	ext2_refcount_t refcount_orig = global_ctx->refcount_orig;
++	ext2_refcount_t ea_block_quota_blocks = global_ctx->ea_block_quota_blocks;
++	ext2_refcount_t ea_block_quota_inodes = global_ctx->ea_block_quota_inodes;
++	ext2fs_block_bitmap block_ea_map = global_ctx->block_ea_map;
++	ext2_refcount_t ea_inode_refs = global_ctx->ea_inode_refs;
  
  #ifdef HAVE_SETJMP_H
  	jmp_buf old_jmp;
-@@ -2598,6 +2659,11 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
- 					      thread_ctx->qctx);
- 	if (retval)
+@@ -2598,7 +2750,6 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
+ 	global_ctx->inode_imagic_map = inode_imagic_map;
+ 	global_ctx->inodes_to_rebuild = inodes_to_rebuild;
+ 	global_ctx->inode_reg_map = inode_reg_map;
+-	global_ctx->block_ea_map = block_ea_map;
+ 	global_ctx->block_dup_map = block_dup_map;
+ 	global_ctx->dir_info = dir_info;
+ 	e2fsck_pass1_merge_dir_info(global_ctx, thread_ctx);
+@@ -2608,6 +2759,13 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
+ 	e2fsck_pass1_merge_dx_dir(global_ctx, thread_ctx);
+ 	global_ctx->inode_count = inode_count;
+ 	global_ctx->inode_link_info = inode_link_info;
++	global_ctx->refcount = refcount;
++	global_ctx->refcount_extra = refcount_extra;
++	global_ctx->refcount_orig = refcount_orig;
++	global_ctx->ea_block_quota_blocks = ea_block_quota_blocks;
++	global_ctx->ea_block_quota_inodes = ea_block_quota_inodes;
++	global_ctx->block_ea_map = block_ea_map;
++	global_ctx->ea_inode_refs = ea_inode_refs;
+ 	global_ctx->fs_directory_count += fs_directory_count;
+ 	global_ctx->fs_regular_count += fs_regular_count;
+ 	global_ctx->fs_blockdev_count += fs_blockdev_count;
+@@ -2654,6 +2812,8 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
  		return retval;
-+	global_ctx->invalid_block_bitmap_flag = invalid_block_bitmap_flag;
-+	global_ctx->invalid_inode_bitmap_flag = invalid_inode_bitmap_flag;
-+	global_ctx->invalid_inode_table_flag = invalid_inode_table_flag;
-+	global_ctx->invalid_bitmaps = invalid_bitmaps;
-+	e2fsck_pass1_merge_invalid_bitmaps(global_ctx, thread_ctx);
+ 	}
  
- 	retval = e2fsck_pass1_merge_bitmap(global_fs,
- 				&thread_ctx->inode_used_map,
-@@ -2663,6 +2729,9 @@ static int e2fsck_pass1_thread_join(e2fsck_t global_ctx, e2fsck_t thread_ctx)
- 	if (thread_ctx->dirs_to_hash)
- 		ext2fs_badblocks_list_free(thread_ctx->dirs_to_hash);
- 	quota_release_context(&thread_ctx->qctx);
-+	ext2fs_free_mem(&thread_ctx->invalid_block_bitmap_flag);
-+	ext2fs_free_mem(&thread_ctx->invalid_inode_bitmap_flag);
-+	ext2fs_free_mem(&thread_ctx->invalid_inode_table_flag);
++	e2fsck_pass1_merge_ea_inode_refs(global_ctx, thread_ctx);
++	e2fsck_pass1_merge_ea_refcount(global_ctx, thread_ctx);
+ 	global_ctx->qctx = qctx;
+ 	retval = quota_merge_and_update_usage(global_ctx->qctx,
+ 					      thread_ctx->qctx);
+@@ -2723,6 +2883,14 @@ static int e2fsck_pass1_thread_join(e2fsck_t global_ctx, e2fsck_t thread_ctx)
+ 	e2fsck_pass1_free_bitmap(&thread_ctx->inode_reg_map);
+ 	e2fsck_pass1_free_bitmap(&thread_ctx->inodes_to_rebuild);
+ 	e2fsck_pass1_free_bitmap(&thread_ctx->block_ea_map);
++	if (thread_ctx->refcount)
++		ea_refcount_free(thread_ctx->refcount);
++	if (thread_ctx->refcount_extra)
++		ea_refcount_free(thread_ctx->refcount_extra);
++	if (thread_ctx->ea_inode_refs)
++		ea_refcount_free(thread_ctx->ea_inode_refs);
++	if (thread_ctx->refcount_orig)
++		ea_refcount_free(thread_ctx->refcount_orig);
+ 	e2fsck_free_dir_info(thread_ctx);
+ 	ext2fs_free_icount(thread_ctx->inode_count);
+ 	ext2fs_free_icount(thread_ctx->inode_link_info);
+@@ -3370,6 +3538,15 @@ static int check_ext_attr(e2fsck_t ctx, struct problem_context *pctx,
  
- 	if (thread_ctx->logf)
- 		fclose(thread_ctx->logf);
-@@ -2682,6 +2751,8 @@ static int e2fsck_pass1_threads_join(struct e2fsck_thread_info *infos,
- 	int i;
- 	struct e2fsck_thread_info *pinfo;
+ 	/* Create the EA refcount structure if necessary */
+ 	if (!ctx->refcount) {
++		pctx->errcode = ea_refcount_create(0,
++					&ctx->refcount_orig);
++		if (pctx->errcode) {
++			pctx->num = 1;
++			fix_problem(ctx, PR_1_ALLOCATE_REFCOUNT, pctx);
++			ctx->flags |= E2F_FLAG_ABORT;
++			return 0;
++		}
++
+ 		pctx->errcode = ea_refcount_create(0, &ctx->refcount);
+ 		if (pctx->errcode) {
+ 			pctx->num = 1;
+@@ -3575,6 +3752,7 @@ refcount_fail:
  
-+	/* merge invalid bitmaps will recalculate it */
-+	global_ctx->invalid_bitmaps = 0;
- 	for (i = 0; i < num_threads; i++) {
- 		pinfo = &infos[i];
- 
+ 	inc_ea_inode_refs(ctx, pctx, first, end);
+ 	ea_refcount_store(ctx->refcount, blk, header->h_refcount - 1);
++	ea_refcount_store(ctx->refcount_orig, blk, header->h_refcount);
+ 	mark_block_used(ctx, blk);
+ 	ext2fs_fast_mark_block_bitmap2(ctx->block_ea_map, blk);
+ 	return 1;
 -- 
 2.37.3
 
