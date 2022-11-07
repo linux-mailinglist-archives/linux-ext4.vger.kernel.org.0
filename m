@@ -2,53 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D120361F300
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:25:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E758F61F301
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:25:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232124AbiKGMZQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 7 Nov 2022 07:25:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50862 "EHLO
+        id S232151AbiKGMZS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 7 Nov 2022 07:25:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232231AbiKGMZA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:25:00 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A1E1B1C1
-        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:24:58 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id p21so10900701plr.7
-        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:24:58 -0800 (PST)
+        with ESMTP id S232237AbiKGMZF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:25:05 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD0A163C2
+        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:25:04 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id u8-20020a17090a5e4800b002106dcdd4a0so14430909pji.1
+        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:25:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=caV4R+OWTjHvOPUyveUfpCTXxcmng8ZhQguB5J9grQE=;
-        b=OQoMrQ0i6opj6kTmNXcce/l92K59Fb4sRo0kSWE3wwxHHiTH19bWHOAzC3vVhpeczS
-         AT6C2p/GQWcsA/D2XYVvEEABkevsnMN3gOp4yk3mnGJ6rgoLlZXtQYZGw0u7W2C47arn
-         hqu+nWMC46vHVIso98QTAr2fTgF/bkLnPGZpwe2b/shii0JuKpBZ7bWrGe4cU0YugQOL
-         CWUlXpB4YV8iF8XUSbFR5N6SgFz10/LJQ22SLKS8Maau8cMdaC3TxLMTdHpMaL7Tcax7
-         KVJhJRcA8kLzNQCLXq+opu2S2rWqGar72zywnOzXSNMpnrpJ/JojL3fmqEKQjvtlUtzS
-         PWOw==
+        bh=2PkED8TboI7uLiO3M1yPjVn8xujKFFCJ9w9S0ClkL94=;
+        b=cyDV/b0LX+Q7YRZuVCpIvO9Ov1aoqv8/Kw1PfCvZRyB9PHfNF3uXSABQDAw1WAWVbH
+         yn1sbOXqQPuIbGghaofIiMIunum+wdkG+1+q4AISbpz3xIDNLisOs7l3ZLdkheKpIyy9
+         0pxZv4YJ9B7BTNj7+5u4bu3eG3bgVmddZ+RlLFsCtNFzU4sNYnfhwdi0F9ucCwKnJRl+
+         EZgomZNZmrUxXxcQOiyq0LZxViC2/H1jbC/yNs85UDKUA0auH63BMEN33xV//fvmUkIM
+         mOAlwFd9SsNUpSabO6CoD/RPe+bMaAUTgEqKoDox97B0Sd7I0uUAn1bBJtBvHbz9j6mX
+         x0rQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=caV4R+OWTjHvOPUyveUfpCTXxcmng8ZhQguB5J9grQE=;
-        b=crbQySqcl4MnAQrIU9vaOAiXkY/HqdfMTcHiQnjLgudb5yck4GBgwt5dzGULmmdDag
-         Bz5hcJhNPoEgf2BOdgFJ+qw8iFE7YZq2zFNQWxSStYK2u835pjkK7Ul+WBkpt/XfmOuy
-         JXr/YyPjUEFMtc3OjOLZEvDQk/v9VxpaXFKsP8114hyRKSI0c3f6UkH1ikH6oXfVPrwD
-         SQwLTDGDn6F6JJ1uaD3im3ZVbAATkn44FRONHdp3hbjtCRK7EOthy/O6IRlnqK9ItZ9r
-         Ts0dT7GDN0OgdxNbfnFuZX8ztXhgCQ6Hvmt15q0R1jGVMTI2ngohHGNDK4LST951lmZg
-         sdZQ==
-X-Gm-Message-State: ANoB5plRoJ1GORDxUCJYakekAjxUP7IJvIQie0t523TTFa+SOi0VWXxm
-        7rak/tL++MuM2c+9sEA4bEY=
-X-Google-Smtp-Source: AA0mqf6uQbGc6rfCXRR5e+S0I2IjcCh1khsCtPRs7wW1ZaPhh/olMI+pJNykgHPApT1SuhjQf4ONjQ==
-X-Received: by 2002:a17:903:247:b0:188:88be:4fb1 with SMTP id j7-20020a170903024700b0018888be4fb1mr220789plh.34.1667823898003;
-        Mon, 07 Nov 2022 04:24:58 -0800 (PST)
+        bh=2PkED8TboI7uLiO3M1yPjVn8xujKFFCJ9w9S0ClkL94=;
+        b=GzHk3dBCdH702ezBKmPjSXAIcb7zQoBEp09l2/XBfo3CQmq8BBfWmOt6cbeqtb8WlU
+         v2H8vCCWdobB7HU3WEkxy8fyD5fM9LltY7MjCPEe+8sL4TT7HgQDZZRTEK8IjWT86UPJ
+         wKrW+pMP43eSgr3AZLZ/nLdQo7kqfMpyaCNg+uTAfJpKi7cva1MI+Qv0Iw5NFCMATH6r
+         buBbqeU9JZMETEUW+XIW5TsURyhffoKFC7n6yZjlBlDZr6dPIJDcHpR9XANd/sQLD/WC
+         bHnAG11gfwRi/3GQBKvt+43L7ncPlcB/cMkxHZ80egYNIGMTdwCnfIo0hwkoXQO5og7T
+         Hy0g==
+X-Gm-Message-State: ACrzQf1lyv915v5PrMifiHCYh7Vxa6PVd8uszUOnn4aNpYrFgzOC3Eaf
+        NSSW1CUj0QIvvFmGdKMhKuo=
+X-Google-Smtp-Source: AMsMyM6wlOQ78wzIAhI9mGLcVr6IRFb+xiRkaYNsDCKcjUno5B/w16gh2bMDKaUofuLxXYKSDMcsuA==
+X-Received: by 2002:a17:902:db0e:b0:186:9b38:ad26 with SMTP id m14-20020a170902db0e00b001869b38ad26mr51684040plx.43.1667823904261;
+        Mon, 07 Nov 2022 04:25:04 -0800 (PST)
 Received: from localhost ([2406:7400:63:f20b:312d:45b2:85c1:c486])
-        by smtp.gmail.com with ESMTPSA id o16-20020a170902d4d000b0018157b415dbsm4889228plg.63.2022.11.07.04.24.57
+        by smtp.gmail.com with ESMTPSA id f4-20020a170902860400b001868d4600b8sm4894962plo.158.2022.11.07.04.25.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Nov 2022 04:24:57 -0800 (PST)
+        Mon, 07 Nov 2022 04:25:03 -0800 (PST)
 From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
 To:     Theodore Ts'o <tytso@mit.edu>
 Cc:     linux-ext4@vger.kernel.org,
@@ -57,9 +57,9 @@ Cc:     linux-ext4@vger.kernel.org,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Li Xi <lixi@ddn.com>,
         "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Subject: [RFCv1 25/72] e2fsck: Add e2fsck_pass1_thread_join return value
-Date:   Mon,  7 Nov 2022 17:51:13 +0530
-Message-Id: <44270897e6bf20bdb883d3e3cab43a83806e696c.1667822611.git.ritesh.list@gmail.com>
+Subject: [RFCv1 26/72] e2fsck: Use merge/clone apis of libext2fs
+Date:   Mon,  7 Nov 2022 17:51:14 +0530
+Message-Id: <eb070428f9ba9e0ae53edb71bd453e05a3042183.1667822611.git.ritesh.list@gmail.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1667822611.git.ritesh.list@gmail.com>
 References: <cover.1667822611.git.ritesh.list@gmail.com>
@@ -75,67 +75,117 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This adds the return value to e2fsck_pass1_thread_join() to check for
-any error in pass1 threads join operation.
+This patch makes use of libext2fs merge/clone apis in e2fsck to first
+clone the global_fs based on the passed CLONE_FLAGS. Then once the parallel
+e2fsck operation finishes, it calls for merge fs api which merges it into
+parent fs.
 
 Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 ---
- e2fsck/pass1.c | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
+ e2fsck/pass1.c | 58 +++++++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 55 insertions(+), 3 deletions(-)
 
 diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
-index 596096d1..4b165600 100644
+index 4b165600..040c58ce 100644
 --- a/e2fsck/pass1.c
 +++ b/e2fsck/pass1.c
-@@ -2174,8 +2174,9 @@ static errcode_t e2fsck_pass1_thread_prepare(e2fsck_t global_ctx, e2fsck_t *thre
- 	return 0;
+@@ -2154,10 +2154,36 @@ endit:
  }
  
--static int e2fsck_pass1_thread_join(e2fsck_t global_ctx, e2fsck_t thread_ctx)
-+static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx)
- {
-+	errcode_t retval = 0;
- 	int flags = global_ctx->flags;
- 	FILE *global_logf = global_ctx->logf;
- 	FILE *global_problem_logf = global_ctx->problem_logf;
-@@ -2195,6 +2196,14 @@ static int e2fsck_pass1_thread_join(e2fsck_t global_ctx, e2fsck_t thread_ctx)
- 	global_ctx->fs->priv_data = global_ctx;
- 	global_ctx->logf = global_logf;
- 	global_ctx->problem_logf = global_problem_logf;
-+	return retval;
-+}
-+
-+static int e2fsck_pass1_thread_join(e2fsck_t global_ctx, e2fsck_t thread_ctx)
+ #ifdef HAVE_PTHREAD
++static errcode_t e2fsck_open_channel_fs(ext2_filsys dest, e2fsck_t dest_context, ext2_filsys src)
 +{
 +	errcode_t retval;
 +
-+	retval = e2fsck_pass1_thread_join_one(global_ctx, thread_ctx);
- 	if (thread_ctx->logf)
- 		fclose(thread_ctx->logf);
- 	if (thread_ctx->problem_logf) {
-@@ -2202,7 +2211,7 @@ static int e2fsck_pass1_thread_join(e2fsck_t global_ctx, e2fsck_t thread_ctx)
- 		fclose(thread_ctx->problem_logf);
++	io_channel_flush_cleanup(src->io);
++	retval = dest->io->manager->open(dest->device_name,
++									 IO_FLAG_RW | IO_FLAG_THREADS, &dest->io);
++	if (retval)
++		return retval;
++	dest->image_io = dest->io;
++	dest->io->app_data = dest;
++	/* Block size might not be default */
++	io_channel_set_blksize(dest->io, src->io->block_size);
++	ehandler_init(dest->io);
++
++	dest->priv_data = dest_context;
++	dest_context->fs = dest;
++	/* The data should be written to disk immediately */
++	dest->io->flags |= CHANNEL_FLAGS_WRITETHROUGH;
++	/* icache will be rebuilt if needed, so do not copy from @src */
++	src->icache = NULL;
++	return 0;
++}
++
+ static errcode_t e2fsck_pass1_thread_prepare(e2fsck_t global_ctx, e2fsck_t *thread_ctx)
+ {
+ 	errcode_t retval;
+ 	e2fsck_t thread_context;
++	ext2_filsys thread_fs;
++	ext2_filsys global_fs = global_ctx->fs;
+ 
+ 	retval = ext2fs_get_mem(sizeof(struct e2fsck_struct), &thread_context);
+ 	if (retval) {
+@@ -2165,13 +2191,30 @@ static errcode_t e2fsck_pass1_thread_prepare(e2fsck_t global_ctx, e2fsck_t *thre
+ 		return retval;
  	}
- 	ext2fs_free_mem(&thread_ctx);
--	return 0;
+ 	memcpy(thread_context, global_ctx, sizeof(struct e2fsck_struct));
+-	thread_context->fs->priv_data = thread_context;
+ 	thread_context->global_ctx = global_ctx;
++	retval = ext2fs_clone_fs(global_fs, &thread_fs,
++							 EXT2FS_CLONE_BLOCK | EXT2FS_CLONE_INODE |
++							 EXT2FS_CLONE_BADBLOCKS | EXT2FS_CLONE_DBLIST);
++	if (retval) {
++		com_err(global_ctx->program_name, retval, "while allocating memory");
++		goto out_context;
++	}
++
++	retval = e2fsck_open_channel_fs(thread_fs, thread_context, global_fs);
++	if (retval) {
++		com_err(global_ctx->program_name, retval, "while copying fs");
++		goto out_fs;
++	}
+ 
+ 	thread_context->thread_index = 0;
+ 	set_up_logging(thread_context);
+ 	*thread_ctx = thread_context;
+ 	return 0;
++out_fs:
++	ext2fs_merge_fs(&thread_fs);
++out_context:
++	ext2fs_free_mem(&thread_context);
 +	return retval;
  }
  
- static int e2fsck_pass1_threads_join(struct e2fsck_thread_info *infos,
-@@ -2226,7 +2235,13 @@ static int e2fsck_pass1_threads_join(struct e2fsck_thread_info *infos,
- 			if (ret == 0)
- 				ret = rc;
- 		}
--		e2fsck_pass1_thread_join(global_ctx, infos[i].eti_thread_ctx);
-+		rc = e2fsck_pass1_thread_join(global_ctx, infos[i].eti_thread_ctx);
-+		if (rc) {
-+			com_err(global_ctx->program_name, rc,
-+				_("while joining pass1 thread\n"));
-+			if (ret == 0)
-+				ret = rc;
-+		}
- 	}
- 	free(infos);
+ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx)
+@@ -2180,6 +2223,8 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
+ 	int flags = global_ctx->flags;
+ 	FILE *global_logf = global_ctx->logf;
+ 	FILE *global_problem_logf = global_ctx->problem_logf;
++	ext2_filsys thread_fs = thread_ctx->fs;
++	ext2_filsys global_fs = global_ctx->fs;
+ #ifdef HAVE_SETJMP_H
+ 	jmp_buf old_jmp;
+ 
+@@ -2192,10 +2237,17 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
+ 	/* Keep the global singal flags*/
+ 	global_ctx->flags |= (flags & E2F_FLAG_SIGNAL_MASK) |
+ 			     (global_ctx->flags & E2F_FLAG_SIGNAL_MASK);
+-
+-	global_ctx->fs->priv_data = global_ctx;
+ 	global_ctx->logf = global_logf;
+ 	global_ctx->problem_logf = global_problem_logf;
++
++	global_fs->priv_data = global_ctx;
++	global_ctx->fs = global_fs;
++
++	retval = ext2fs_merge_fs(&(thread_ctx->fs));
++	if (retval) {
++		com_err(global_ctx->program_name, 0, _("while merging fs\n"));
++		return retval;
++	}
+ 	return retval;
+ }
  
 -- 
 2.37.3
