@@ -2,53 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D4C361F2E2
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:23:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B46161F2E3
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:23:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231194AbiKGMXH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 7 Nov 2022 07:23:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49374 "EHLO
+        id S232145AbiKGMXO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 7 Nov 2022 07:23:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232128AbiKGMXG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:23:06 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DEA5633D
-        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:23:06 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id q1-20020a17090a750100b002139ec1e999so10133320pjk.1
-        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:23:06 -0800 (PST)
+        with ESMTP id S232128AbiKGMXN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:23:13 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09FF462DF
+        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:23:12 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id f5-20020a17090a4a8500b002131bb59d61so12428563pjh.1
+        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:23:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ohcYnALKAlw5VG/FCKGNphojrvBOufLF01HC/abJirE=;
-        b=RU74Gbrm8UAIvnuRDq+dwgTB1o/kvDFIhOIumAj1Wo34vKavre1HCd8z7An7aCQJvF
-         O6TkLnBfYpfEgULi0DdeIoNLRaekBA/Wlj2oAoOnJ9oVwT3G9PgFyHK2HsWKHIGyYw75
-         EgTR2eltYagv0Fu2kNn/P5rpW96EtRHaCrVIXcmwGxyMsQHY2mDTs47dMTfqJcm80ygP
-         LcJv2qzHNbcYc2k/vo6YGL8HZ+C4MN/+xZOOlngypCEKbVJn4DdeCq45lNS3oDfEvWzd
-         DUDSUeeej/2WWDxB3XwaXZSHkv7cjnHvHMgX4RQNI+Sk/pfC9TkLp/y4uzHlxdRLX8gu
-         ZIeA==
+        bh=rg7HbLWHsPCyjYPcF7Zv5a4qGG6YFqdd/e9CXoAgVFc=;
+        b=jJ2VwZ0YE3FKUjOuKJ9NmbY/ou6xGILHaN2PLnKiANwK18oGQeUIdu9BT2HLOJR7to
+         L+pboosRbflaig8h3OT746kEXycAuNs0Ow6Cf3ShP6DhkXzIbTDasd93Je9KUbABorvm
+         dGHLHSSzE3bIh/vUIMzi4X8kAnDiI70vcXUwEukomIvLN+8Plj+X4qGNNh9sAbZkXadw
+         jIeuCBZSK3RE8hP9PHSbuIzG9vKx7FhGEoYLlL2a7Br7TA/Y58/OfgprUwomMtoHU4Fz
+         HHC6UP05tdcA6k9UC3z1UHlO4ye9sL+q7LFt9Ocdm9Ugb/mKlmQsuh6dAYWPqV7tLXex
+         srYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ohcYnALKAlw5VG/FCKGNphojrvBOufLF01HC/abJirE=;
-        b=AytWeNgcGwfT7BsI5km1oMvJ7OKVsv11QGOfSpn8kKigsZCEM6V4xsRjKsKhUJmTMu
-         pp626F3pmAYEsfKZa3tHnrBC+2oxB2CeGlL2xmxm8exmDcKv/F/G31QPSfRoRCzuAT5F
-         KeGSj83fuoxubvf9og3cKqLDkafRhekHRuyfT9iwtJxDipauBH7hm8nwfcK5/y07fiE5
-         b/Gm1Htj3MGymTlmA1mkJaxB1yA25chteUy/67YYf0hea+QNc+BZ+SUPD7OTCqAdupLY
-         ZCPRZLfLp3/p9D8Ohe8+DrboJyWtHJsZKYVfpW2bP55eV6BuZ0hLCOSwujm/F2PrqBp9
-         Sehg==
-X-Gm-Message-State: ACrzQf1K/rZDaYxLEqCZ+V9XEGUERdU9cxMCaxiaxVZS9MjBFdyUa75j
-        QTgTqP63giDVxheVnj9BF20=
-X-Google-Smtp-Source: AMsMyM59oazQiin2a7AWOtpIHky1oStc8SX/uJtMsoCiVcCYpwGicgi8mzf1czK/qKsyjyGfsYccLw==
-X-Received: by 2002:a17:90b:1113:b0:216:616c:5fa0 with SMTP id gi19-20020a17090b111300b00216616c5fa0mr21327182pjb.225.1667823785568;
-        Mon, 07 Nov 2022 04:23:05 -0800 (PST)
+        bh=rg7HbLWHsPCyjYPcF7Zv5a4qGG6YFqdd/e9CXoAgVFc=;
+        b=2C6GsjvywTW8CV/KF/EP0CfkZZoJqbnt1FMIQ8Ti6QVCWYL8ciAKe75FjUOTCj9l/6
+         LuwoBkILZB3inwhnZfs+a+yQjZMYUoYrF48K2FTlMjyS6faqaoK5ZzsiXBaOG5fspUjo
+         bhjgKn3wxGBa+qXYZ6y59Dn4YvZ0FRv42h1a+PN8kpx4oxMnpIp0m/rfpKL3GEFGsAgr
+         YdZlK8+DdtS5ApwY82502mKldiUQqpGOwu+U19yReTdzuVfvSyqjcZwNFTDMZd8fOqhI
+         IJS1WtRw6W1KxYvLzmgUQZGXt3RZozEFHjAv20FSH+e77hS0nA0awFD1eSdaM2YtzOYO
+         gyHA==
+X-Gm-Message-State: ACrzQf0ui56Z6elyoR2Z5VsQD3OKXd/nizYhYdE77zyrvALchiC2peCV
+        Y6jKs9ROJY5iqtYFiurTR18=
+X-Google-Smtp-Source: AMsMyM4Z3WUwdoC1VHoeUnZXo7H9+0QvQAixSHnP+LjwooRW0RHa+1Won4KBDFOkN7RC1TmOCIkt5Q==
+X-Received: by 2002:a17:90b:a53:b0:215:d767:4863 with SMTP id gw19-20020a17090b0a5300b00215d7674863mr600683pjb.233.1667823791526;
+        Mon, 07 Nov 2022 04:23:11 -0800 (PST)
 Received: from localhost ([2406:7400:63:f20b:312d:45b2:85c1:c486])
-        by smtp.gmail.com with ESMTPSA id nu14-20020a17090b1b0e00b0020d9c2f6c39sm6095431pjb.34.2022.11.07.04.23.04
+        by smtp.gmail.com with ESMTPSA id b5-20020a170902e94500b00176d218889esm4857443pll.228.2022.11.07.04.23.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Nov 2022 04:23:04 -0800 (PST)
+        Mon, 07 Nov 2022 04:23:10 -0800 (PST)
 From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
 To:     Theodore Ts'o <tytso@mit.edu>
 Cc:     linux-ext4@vger.kernel.org,
@@ -56,9 +56,9 @@ Cc:     linux-ext4@vger.kernel.org,
         Wang Shilong <wshilong@ddn.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Li Xi <lixi@ddn.com>, Ritesh Harjani <ritesh.list@gmail.com>
-Subject: [RFCv1 07/72] libext2fs: Add rbtree bitmap merge logic
-Date:   Mon,  7 Nov 2022 17:50:55 +0530
-Message-Id: <a5e8718e7e5e178f2c6cdefae918c0b64ebe3c15.1667822611.git.ritesh.list@gmail.com>
+Subject: [RFCv1 08/72] libext2fs: Add bitmaps merge ops
+Date:   Mon,  7 Nov 2022 17:50:56 +0530
+Message-Id: <e7d44e0d438f26fee254ba005885f8f7eeb56ddb.1667822611.git.ritesh.list@gmail.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1667822611.git.ritesh.list@gmail.com>
 References: <cover.1667822611.git.ritesh.list@gmail.com>
@@ -76,96 +76,120 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Wang Shilong <wshilong@ddn.com>
 
-This adds rbtree bitmap merge logic.
-
 Signed-off-by: Li Xi <lixi@ddn.com>
 Signed-off-by: Wang Shilong <wshilong@ddn.com>
+[Note: splitted rb merge tree logic patch such that we
+seperate out libext2fs changes from e2fsck specific changes]
 Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 ---
- lib/ext2fs/blkmap64_rb.c | 65 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 65 insertions(+)
+ lib/ext2fs/bitmaps.c      | 10 ++++++++++
+ lib/ext2fs/bmap64.h       |  4 ++++
+ lib/ext2fs/ext2fs.h       |  8 ++++++++
+ lib/ext2fs/gen_bitmap64.c | 29 +++++++++++++++++++++++++++++
+ 4 files changed, 51 insertions(+)
 
-diff --git a/lib/ext2fs/blkmap64_rb.c b/lib/ext2fs/blkmap64_rb.c
-index 0df58dc7..d7c88aef 100644
---- a/lib/ext2fs/blkmap64_rb.c
-+++ b/lib/ext2fs/blkmap64_rb.c
-@@ -977,11 +977,76 @@ static void rb_print_stats(ext2fs_generic_bitmap_64 bitmap EXT2FS_ATTR((unused))
+diff --git a/lib/ext2fs/bitmaps.c b/lib/ext2fs/bitmaps.c
+index 8bfa24b1..9437331e 100644
+--- a/lib/ext2fs/bitmaps.c
++++ b/lib/ext2fs/bitmaps.c
+@@ -45,6 +45,16 @@ errcode_t ext2fs_copy_bitmap(ext2fs_generic_bitmap src,
+ {
+ 	return (ext2fs_copy_generic_bmap(src, dest));
  }
- #endif
- 
-+static errcode_t rb_merge_bmap(ext2fs_generic_bitmap_64 src,
-+			       ext2fs_generic_bitmap_64 dest,
-+			       ext2fs_generic_bitmap_64 dup,
-+			       ext2fs_generic_bitmap_64 dup_allowed)
++
++errcode_t ext2fs_merge_bitmap(ext2fs_generic_bitmap src,
++			      ext2fs_generic_bitmap dest,
++			      ext2fs_generic_bitmap dup,
++			      ext2fs_generic_bitmap dup_allowed)
 +{
-+	struct ext2fs_rb_private *src_bp, *dest_bp, *dup_bp = NULL;
-+	struct bmap_rb_extent *src_ext;
-+	struct rb_node *src_node;
-+	errcode_t retval = 0;
-+	int dup_found = 0;
-+	__u64 i;
-+
-+	src_bp = (struct ext2fs_rb_private *) src->private;
-+	dest_bp = (struct ext2fs_rb_private *) dest->private;
-+	if (dup)
-+		dup_bp = (struct ext2fs_rb_private *)dup->private;
-+	src_bp->rcursor = NULL;
-+	dest_bp->rcursor = NULL;
-+
-+	src_node = ext2fs_rb_first(&src_bp->root);
-+	while (src_node) {
-+		src_ext = node_to_extent(src_node);
-+		retval = rb_test_clear_bmap_extent(dest,
-+					src_ext->start + src->start,
-+					src_ext->count);
-+		if (retval) {
-+			rb_insert_extent(src_ext->start, src_ext->count,
-+					 dest_bp);
-+			goto next;
-+		}
-+
-+		/* unlikely case, do it one by one block */
-+		for (i = src_ext->start;
-+		     i < src_ext->start + src_ext->count; i++) {
-+			retval = rb_test_clear_bmap_extent(dest, i + src->start, 1);
-+			if (retval) {
-+				rb_insert_extent(i, 1, dest_bp);
-+				continue;
-+			}
-+			if (dup_allowed) {
-+				retval = rb_test_clear_bmap_extent(dup_allowed,
-+							i + src->start, 1);
-+				/* not existed in dup_allowed */
-+				if (retval) {
-+					dup_found = 1;
-+					if (dup_bp)
-+						rb_insert_extent(i, 1, dup_bp);
-+				} /* else we conside it not duplicated */
-+			} else {
-+				if (dup_bp)
-+					rb_insert_extent(i, 1, dup_bp);
-+				dup_found = 1;
-+			}
-+		}
-+next:
-+		src_node = ext2fs_rb_next(src_node);
-+	}
-+
-+	if (dup_found && dup)
-+		return EEXIST;
-+
-+	return 0;
++	return ext2fs_merge_generic_bmap(src, dest, dup,
++					 dup_allowed);
 +}
 +
- struct ext2_bitmap_ops ext2fs_blkmap64_rbtree = {
- 	.type = EXT2FS_BMAP64_RBTREE,
- 	.new_bmap = rb_new_bmap,
- 	.free_bmap = rb_free_bmap,
- 	.copy_bmap = rb_copy_bmap,
-+	.merge_bmap = rb_merge_bmap,
- 	.resize_bmap = rb_resize_bmap,
- 	.mark_bmap = rb_mark_bmap,
- 	.unmark_bmap = rb_unmark_bmap,
+ void ext2fs_set_bitmap_padding(ext2fs_generic_bitmap map)
+ {
+ 	ext2fs_set_generic_bmap_padding(map);
+diff --git a/lib/ext2fs/bmap64.h b/lib/ext2fs/bmap64.h
+index de334548..555193ee 100644
+--- a/lib/ext2fs/bmap64.h
++++ b/lib/ext2fs/bmap64.h
+@@ -72,6 +72,10 @@ struct ext2_bitmap_ops {
+ 	void	(*free_bmap)(ext2fs_generic_bitmap_64 bitmap);
+ 	errcode_t (*copy_bmap)(ext2fs_generic_bitmap_64 src,
+ 			     ext2fs_generic_bitmap_64 dest);
++	errcode_t (*merge_bmap)(ext2fs_generic_bitmap_64 src,
++				ext2fs_generic_bitmap_64 dest,
++				ext2fs_generic_bitmap_64 dup,
++				ext2fs_generic_bitmap_64 dup_allowed);
+ 	errcode_t (*resize_bmap)(ext2fs_generic_bitmap_64 bitmap,
+ 			       __u64 new_end,
+ 			       __u64 new_real_end);
+diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
+index 443f93d2..54aed5d1 100644
+--- a/lib/ext2fs/ext2fs.h
++++ b/lib/ext2fs/ext2fs.h
+@@ -870,6 +870,10 @@ extern void ext2fs_free_block_bitmap(ext2fs_block_bitmap bitmap);
+ extern void ext2fs_free_inode_bitmap(ext2fs_inode_bitmap bitmap);
+ extern errcode_t ext2fs_copy_bitmap(ext2fs_generic_bitmap src,
+ 				    ext2fs_generic_bitmap *dest);
++extern errcode_t ext2fs_merge_bitmap(ext2fs_generic_bitmap src,
++			      ext2fs_generic_bitmap dest,
++			      ext2fs_generic_bitmap dup,
++			      ext2fs_generic_bitmap dup_allowed);
+ extern errcode_t ext2fs_allocate_block_bitmap(ext2_filsys fs,
+ 					      const char *descr,
+ 					      ext2fs_block_bitmap *ret);
+@@ -1467,6 +1471,10 @@ void ext2fs_set_generic_bmap_padding(ext2fs_generic_bitmap bmap);
+ errcode_t ext2fs_resize_generic_bmap(ext2fs_generic_bitmap bmap,
+ 				     __u64 new_end,
+ 				     __u64 new_real_end);
++errcode_t ext2fs_merge_generic_bmap(ext2fs_generic_bitmap gen_src,
++                                    ext2fs_generic_bitmap gen_dest,
++				    ext2fs_generic_bitmap gen_dup,
++				    ext2fs_generic_bitmap dup_allowed);
+ errcode_t ext2fs_compare_generic_bmap(errcode_t neq,
+ 				      ext2fs_generic_bitmap bm1,
+ 				      ext2fs_generic_bitmap bm2);
+diff --git a/lib/ext2fs/gen_bitmap64.c b/lib/ext2fs/gen_bitmap64.c
+index f7710afd..c31f942f 100644
+--- a/lib/ext2fs/gen_bitmap64.c
++++ b/lib/ext2fs/gen_bitmap64.c
+@@ -346,6 +346,35 @@ errcode_t ext2fs_copy_generic_bmap(ext2fs_generic_bitmap gen_src,
+ 	return 0;
+ }
+ 
++errcode_t ext2fs_merge_generic_bmap(ext2fs_generic_bitmap gen_src,
++				    ext2fs_generic_bitmap gen_dest,
++				    ext2fs_generic_bitmap gen_dup,
++				    ext2fs_generic_bitmap gen_dup_allowed)
++{
++	ext2fs_generic_bitmap_64 src = (ext2fs_generic_bitmap_64)gen_src;
++	ext2fs_generic_bitmap_64 dest = (ext2fs_generic_bitmap_64)gen_dest;
++	ext2fs_generic_bitmap_64 dup = (ext2fs_generic_bitmap_64)gen_dup;
++	ext2fs_generic_bitmap_64 dup_allowed = (ext2fs_generic_bitmap_64)gen_dup_allowed;
++
++	if (!src || !dest)
++		return EINVAL;
++
++	if (!EXT2FS_IS_64_BITMAP(src) || !EXT2FS_IS_64_BITMAP(dest) ||
++	    (dup && !EXT2FS_IS_64_BITMAP(dup)) ||
++		(dup_allowed && !EXT2FS_IS_64_BITMAP(dup_allowed)))
++		return EINVAL;
++
++	if (src->bitmap_ops != dest->bitmap_ops ||
++	    (dup && src->bitmap_ops != dup->bitmap_ops) ||
++	    (dup_allowed && src->bitmap_ops != dup_allowed->bitmap_ops))
++		return EINVAL;
++
++	if (src->bitmap_ops->merge_bmap == NULL)
++		return EOPNOTSUPP;
++
++	return src->bitmap_ops->merge_bmap(src, dest, dup, dup_allowed);
++}
++
+ errcode_t ext2fs_resize_generic_bmap(ext2fs_generic_bitmap gen_bmap,
+ 				     __u64 new_end,
+ 				     __u64 new_real_end)
 -- 
 2.37.3
 
