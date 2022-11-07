@@ -2,53 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3394661F2EB
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:24:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74CF261F2EE
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:24:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232161AbiKGMX7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 7 Nov 2022 07:23:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49938 "EHLO
+        id S232165AbiKGMYM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 7 Nov 2022 07:24:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231373AbiKGMX5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:23:57 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD11D1B78D
-        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:23:54 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id k15so10456602pfg.2
-        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:23:54 -0800 (PST)
+        with ESMTP id S232168AbiKGMYK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:24:10 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A37014D05
+        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:24:01 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id f63so10320329pgc.2
+        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:24:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Mn1lRc0cP2jFlAAalzrANSO9b0KSj41EtzHe7T6nSJg=;
-        b=BPBcZDLDBLoJsxLMHKXQlNUlf1aRgCgy0M9pSyoXyEOuy5Qo26tqVAoI+CDz8nYj8T
-         y0/YbQ5wtJzwhbPOVJn3O8f546//pk0Qs6UZAZ8/CvVtUqehG122cpy9F0QluZHdK7Fy
-         hwBrOWRjRXYGrEdF0OERcpt/DDu4JI2TOvTw/Q2qC1ePap9e717ugjMoEAZYM+jKKhWs
-         cBOZMy0z9RJ5iQiHUTyfesEEMmApnXyIKTrznCjDNHtaMsdX0s0HS4COhL9OJMTwVgVg
-         IjEAOGpmFdJKRcib2lJjK7/D1mVpT6lBOvQVvRUVpVgPCU+2fg1ucKB3bSEgVOy5yqyQ
-         /Rtw==
+        bh=yBO+k8MBTIYwv4kfPgNFOduT2kfUiX2rHgsZ+dr5Chg=;
+        b=M9uJgPvKATDKnoTVARZLfh9PS41Q8850EGdkB6YMTLsDmVeqi3TML04NkRxbua5jqO
+         P7ksWidPnWx0PFCK4ej1/v7SVdaB3sAmsXZ57H1aO69mbxW6uUxs9NYulHrnD/gh45xR
+         FuhnLxV+z8xLfUUhUU+SXX3tjmYDjVKF+qkWh847+mwh0ajOV0AUc1e6QaJ0wjE+Svz2
+         Gr5MUN2MBlcmb4thehShPP5H9ton1QXYbzjk8wLOc7me6m8r/MY/N6mNxJR8WKiKOVje
+         j36SN12KeQdnvuJiPi+DqiQbNPsM09KleYpC8ROtwOph80+KmLqBimYZdVXE/hggnP2j
+         jQ4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Mn1lRc0cP2jFlAAalzrANSO9b0KSj41EtzHe7T6nSJg=;
-        b=u3BPAWz2RhRTrGn3zIu4V/Tijv6WNQRcSZ3e1LhofmTIDgtvW7cCdolbtXZqcy4Oxz
-         dq0cYCHB7Hh4xn2xSsp9IGrqKxDk8bDjntzsAfGV5h4YBiEu//CT6oVcrLJovnv+jnUJ
-         cx4LLDNClM0IxKNMk1tc40qMEU9/txu0gA8izAa/X+vpe6cUZ4cs0fUjlqNxin5vimKB
-         B5b7PynyenDk64Ryp2Xm712ekpqUalyjo0bcgfbixZN30bq0fMrJKZOHfN05IdrUBbzl
-         LQoC8LoAeeSaIYg99LlwVELDgL39peui9uy0M8Ne9MySUoXC+q6T/VndFndNnHc8xale
-         xgMQ==
-X-Gm-Message-State: ACrzQf0RuZMnuKKyJhKVJvVXLJQc7bv6NFQeEqeYyzX0/oQCtWPLcMxo
-        NwM2ShpiW8XsJRWOjLzfYpg=
-X-Google-Smtp-Source: AMsMyM7rUY1YQGqPRnvlSrFd3THVdgoLiBKiHirpWqGqPfDqi2fFEI2Ug/ort5PFbdjez7FLhtbxzw==
-X-Received: by 2002:a63:6a48:0:b0:43a:18ce:4e08 with SMTP id f69-20020a636a48000000b0043a18ce4e08mr43954917pgc.432.1667823833835;
-        Mon, 07 Nov 2022 04:23:53 -0800 (PST)
+        bh=yBO+k8MBTIYwv4kfPgNFOduT2kfUiX2rHgsZ+dr5Chg=;
+        b=e4Q7+XUcbSLz+y8MA5DQt4PowPorIM1kYj5onKFOXBG4xifM8OKA/G5pfEVL01R1Lv
+         dXmb+vzeWsi1L3vGt3ibdEeXcn3N57hs89ifWJ5M0OL3Fj64AtQLlsRzWa/3kzvaXgQi
+         klWMb8ubAiVrcEZI66G1KfpzvUB+30IndRdwOjbnV4rWap0xWI4Kwmqs8B4/8DAJMYus
+         AMNXT0yKUJcjjh/ZETU1Y6XDaHWve29qH522RgCtNV/+z6unvRwO2R7x5ld9qywdEP0h
+         CaJFFSKByevN7ADCjYw/emUNag9ye/p3X+XMfbXXtIl7JmRAhQUVE87bRBuRwepvBTlK
+         92eA==
+X-Gm-Message-State: ACrzQf0HWxi1CQ+xkgSpaxzzkYw+oVPv/qPABji5yWJRM9q5rCbXnIpE
+        aromfrIDYDPCYWP75q5dXm8=
+X-Google-Smtp-Source: AMsMyM665UF5aeWuxHw1HW76LTFVpGlwkrB48xqt4sLVDEBenDVh8pkFyx2umgtvvEKYR7nAwDD+rg==
+X-Received: by 2002:a65:6404:0:b0:46f:a711:c481 with SMTP id a4-20020a656404000000b0046fa711c481mr37625397pgv.262.1667823840415;
+        Mon, 07 Nov 2022 04:24:00 -0800 (PST)
 Received: from localhost ([2406:7400:63:f20b:312d:45b2:85c1:c486])
-        by smtp.gmail.com with ESMTPSA id j5-20020a170903024500b001785a72d285sm4930509plh.48.2022.11.07.04.23.52
+        by smtp.gmail.com with ESMTPSA id j11-20020a170903024b00b001708c4ebbaesm4827881plh.309.2022.11.07.04.23.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Nov 2022 04:23:53 -0800 (PST)
+        Mon, 07 Nov 2022 04:23:59 -0800 (PST)
 From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
 To:     Theodore Ts'o <tytso@mit.edu>
 Cc:     linux-ext4@vger.kernel.org,
@@ -57,9 +57,9 @@ Cc:     linux-ext4@vger.kernel.org,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Li Xi <lixi@ddn.com>,
         "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Subject: [RFCv1 15/72] tst_bitmaps_pthread: Add merge bitmaps test using pthreads
-Date:   Mon,  7 Nov 2022 17:51:03 +0530
-Message-Id: <c66b3b734a5a98297728786df5fca21a234d5872.1667822611.git.ritesh.list@gmail.com>
+Subject: [RFCv1 16/72] tst_libext2fs_pthread: Add libext2fs merge/clone unit tests
+Date:   Mon,  7 Nov 2022 17:51:04 +0530
+Message-Id: <97f434ef290e793ef050cb5348bda7dd955be937.1667822611.git.ritesh.list@gmail.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1667822611.git.ritesh.list@gmail.com>
 References: <cover.1667822611.git.ritesh.list@gmail.com>
@@ -75,71 +75,75 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This patch adds a test to verify the core bitmaps merge APIs
-for rbtree bitmap type.
+This adds a unit tests for libext2fs merge/clone apis and uses pthreads
+to test the functionality correctly.
+
+TODO:
+We can also add EXT2FS_CLONE_BADBLOCKS and EXT2FS_CLONE_DBLIST test as well
+into it.
 
 Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 ---
- lib/ext2fs/Makefile.in           |  17 ++-
- lib/ext2fs/tst_bitmaps_pthread.c | 247 +++++++++++++++++++++++++++++++
- 2 files changed, 263 insertions(+), 1 deletion(-)
- create mode 100644 lib/ext2fs/tst_bitmaps_pthread.c
+ lib/ext2fs/Makefile.in             |  17 +-
+ lib/ext2fs/tst_libext2fs_pthread.c | 315 +++++++++++++++++++++++++++++
+ 2 files changed, 330 insertions(+), 2 deletions(-)
+ create mode 100644 lib/ext2fs/tst_libext2fs_pthread.c
 
 diff --git a/lib/ext2fs/Makefile.in b/lib/ext2fs/Makefile.in
-index 1692500e..c0694175 100644
+index c0694175..5fde9900 100644
 --- a/lib/ext2fs/Makefile.in
 +++ b/lib/ext2fs/Makefile.in
-@@ -228,6 +228,7 @@ SRCS= ext2_err.c \
- 	$(srcdir)/rbtree.c \
+@@ -229,6 +229,7 @@ SRCS= ext2_err.c \
  	$(srcdir)/tst_libext2fs.c \
  	$(srcdir)/tst_bitmaps_standalone.c \
-+	$(srcdir)/tst_bitmaps_pthread.c \
+ 	$(srcdir)/tst_bitmaps_pthread.c \
++	$(srcdir)/tst_libext2fs_pthread.c \
  	$(DEBUG_SRCS)
  
  HFILES= bitops.h ext2fs.h ext2_io.h ext2_fs.h ext2_ext_attr.h ext3_extents.h \
-@@ -368,6 +369,11 @@ tst_bitmaps_standalone: tst_bitmaps_standalone.o $(STATIC_LIBEXT2FS) $(DEPSTATIC
- 	$(Q) $(CC) -o tst_bitmaps_standalone tst_bitmaps_standalone.o $(ALL_LDFLAGS) \
+@@ -374,6 +375,11 @@ tst_bitmaps_pthread: tst_bitmaps_pthread.o $(STATIC_LIBEXT2FS) $(DEPSTATIC_LIBCO
+ 	$(Q) $(CC) -o tst_bitmaps_pthread tst_bitmaps_pthread.o $(ALL_LDFLAGS) \
  		$(STATIC_LIBEXT2FS) $(STATIC_LIBCOM_ERR) $(SYSLIBS)
  
-+tst_bitmaps_pthread: tst_bitmaps_pthread.o $(STATIC_LIBEXT2FS) $(DEPSTATIC_LIBCOM_ERR)
++tst_libext2fs_pthread: tst_libext2fs_pthread.o $(STATIC_LIBEXT2FS) $(DEPSTATIC_LIBCOM_ERR)
 +	$(E) "	LD $@"
-+	$(Q) $(CC) -o tst_bitmaps_pthread tst_bitmaps_pthread.o $(ALL_LDFLAGS) \
++	$(Q) $(CC) -o tst_libext2fs_pthread tst_libext2fs_pthread.o $(ALL_LDFLAGS) \
 +		$(STATIC_LIBEXT2FS) $(STATIC_LIBCOM_ERR) $(SYSLIBS)
 +
  ext2_tdbtool: tdbtool.o
  	$(E) "	LD $@"
  	$(Q) $(CC) -o ext2_tdbtool tdbtool.o tdb.o $(ALL_LDFLAGS) $(SYSLIBS)
-@@ -539,7 +545,8 @@ mkjournal: mkjournal.c $(STATIC_LIBEXT2FS) $(DEPLIBCOM_ERR)
- fullcheck check:: tst_bitops tst_badblocks tst_iscan tst_types tst_icount \
+@@ -546,7 +552,7 @@ fullcheck check:: tst_bitops tst_badblocks tst_iscan tst_types tst_icount \
      tst_super_size tst_types tst_inode_size tst_csum tst_crc32c tst_bitmaps \
      tst_inline tst_inline_data tst_libext2fs tst_sha256 tst_sha512 \
--    tst_digest_encode tst_getsize tst_getsectsize tst_bitmaps_standalone
-+    tst_digest_encode tst_getsize tst_getsectsize tst_bitmaps_standalone \
-+	tst_bitmaps_pthread
+     tst_digest_encode tst_getsize tst_getsectsize tst_bitmaps_standalone \
+-	tst_bitmaps_pthread
++	tst_bitmaps_pthread tst_libext2fs_pthread
  	$(TESTENV) ./tst_bitops
  	$(TESTENV) ./tst_badblocks
  	$(TESTENV) ./tst_iscan
-@@ -563,6 +570,7 @@ fullcheck check:: tst_bitops tst_badblocks tst_iscan tst_types tst_icount \
- 	diff $(srcdir)/tst_bitmaps_exp tst_bitmaps_out
+@@ -571,6 +577,7 @@ fullcheck check:: tst_bitops tst_badblocks tst_iscan tst_types tst_icount \
  	$(TESTENV) ./tst_digest_encode
  	$(TESTENV) ./tst_bitmaps_standalone
-+	$(TESTENV) ./tst_bitmaps_pthread
+ 	$(TESTENV) ./tst_bitmaps_pthread
++	$(TESTENV) ./tst_libext2fs_pthread
  
  installdirs::
  	$(E) "	MKDIR_P $(libdir) $(includedir)/ext2fs"
-@@ -598,6 +606,7 @@ clean::
+@@ -606,7 +613,7 @@ clean::
  		tst_bitmaps tst_bitmaps_out tst_extents tst_inline \
  		tst_inline_data tst_inode_size tst_bitmaps_cmd.c \
  		tst_digest_encode tst_sha256 tst_sha512  tst_bitmaps_standalone \
-+		tst_bitmaps_pthread \
+-		tst_bitmaps_pthread \
++		tst_bitmaps_pthread tst_libext2fs_pthread \
  		ext2_tdbtool mkjournal debug_cmds.c tst_cmds.c extent_cmds.c \
  		../libext2fs.a ../libext2fs_p.a ../libext2fs_chk.a \
  		crc32c_table.h gen_crc32ctable tst_crc32c tst_libext2fs \
-@@ -1169,6 +1178,12 @@ tst_bitmaps_standalone.o: $(srcdir)/tst_bitmaps_standalone.c $(top_builddir)/lib
+@@ -1184,6 +1191,12 @@ tst_bitmaps_pthread.o: $(srcdir)/tst_bitmaps_pthread.c $(top_builddir)/lib/confi
   $(srcdir)/ext2_fs.h $(srcdir)/ext3_extents.h $(top_srcdir)/lib/et/com_err.h \
   $(srcdir)/ext2_io.h $(top_builddir)/lib/ext2fs/ext2_err.h \
   $(srcdir)/ext2_ext_attr.h $(srcdir)/hashmap.h $(srcdir)/bitops.h
-+tst_bitmaps_pthread.o: $(srcdir)/tst_bitmaps_pthread.c $(top_builddir)/lib/config.h \
++tst_libext2fs_pthread.o: $(srcdir)/tst_libext2fs_pthread.c $(top_builddir)/lib/config.h \
 + $(top_builddir)/lib/dirpaths.h $(srcdir)/ext2_fs.h \
 + $(top_builddir)/lib/ext2fs/ext2_types.h $(srcdir)/ext2fs.h \
 + $(srcdir)/ext2_fs.h $(srcdir)/ext3_extents.h $(top_srcdir)/lib/et/com_err.h \
@@ -148,12 +152,12 @@ index 1692500e..c0694175 100644
  undo_io.o: $(srcdir)/undo_io.c $(top_builddir)/lib/config.h \
   $(top_builddir)/lib/dirpaths.h $(srcdir)/ext2_fs.h \
   $(top_builddir)/lib/ext2fs/ext2_types.h $(srcdir)/ext2fs.h \
-diff --git a/lib/ext2fs/tst_bitmaps_pthread.c b/lib/ext2fs/tst_bitmaps_pthread.c
+diff --git a/lib/ext2fs/tst_libext2fs_pthread.c b/lib/ext2fs/tst_libext2fs_pthread.c
 new file mode 100644
-index 00000000..243810ca
+index 00000000..a5bb6fcd
 --- /dev/null
-+++ b/lib/ext2fs/tst_bitmaps_pthread.c
-@@ -0,0 +1,247 @@
++++ b/lib/ext2fs/tst_libext2fs_pthread.c
+@@ -0,0 +1,315 @@
 +#include "config.h"
 +#include <stdio.h>
 +#include <string.h>
@@ -175,148 +179,213 @@ index 00000000..243810ca
 +#include "ext2_fs.h"
 +#include "ext2fs.h"
 +
-+/*
-+ * In this test we first setup used_bitmap by setting some random bits.
-+ * This used_bitmap is then scanned in parallel by two threads, each scanning
-+ * upto nr_bits/2 and setting their respective child_bitmap.
-+ * Then once both threads finishes, we merge the child_bitmap_1/2 into
-+ * parent_bitmap which then is used to compare against used_bitmap.
-+ * In the end used_bitmap bits should match with parent_bitmap.
-+ *
-+ * Note we use EXT2FS_BMAP64_BITARRAY always for used_bitmap, this is because
-+ * EXT2FS_BMAP64_RBTREE does not support parallel scan due to rcursor
-+ * optimization.
-+ */
-+
++#ifdef HAVE_PTHREAD
 +int test_fail = 0;
-+ext2fs_generic_bitmap child_bitmap1, child_bitmap2, parent_bitmap;
-+ext2fs_generic_bitmap used_bitmap;
++ext2_filsys testfs;
++ext2fs_inode_bitmap	inode_used_map;
++ext2fs_block_bitmap block_used_map;
++ext2_filsys childfs[2];
 +pthread_t pthread_infos[2];
 +
-+#define nr_bits 8192
++#define nr_bits 16384
 +int nr_threads = 2;
-+int bitmap_type[1] = {EXT2FS_BMAP64_RBTREE};
-+
-+void dump_bitmap(ext2fs_generic_bitmap bmap, unsigned int start, unsigned num)
-+{
-+	unsigned char	*buf;
-+	errcode_t	retval;
-+	int	i, len = (num - start + 7) / 8;
-+
-+	buf = malloc(len);
-+	if (!buf) {
-+		com_err("dump_bitmap", 0, "couldn't allocate buffer");
-+		return;
-+	}
-+	memset(buf, 0, len);
-+	retval = ext2fs_get_generic_bmap_range(bmap, (__u64) start, num, buf);
-+	if (retval) {
-+		com_err("dump_bitmap", retval,
-+			"while calling ext2fs_generic_bmap_range");
-+		free(buf);
-+		return;
-+	}
-+	for (i=len-1; i >= 0; i--)
-+		printf("%02x ", buf[i]);
-+	printf("\n");
-+	printf("bits set: %u\n", ext2fs_bitcount(buf, len));
-+	free(buf);
-+}
 +
 +int should_mark_bit()
 +{
 +	return rand() % 2 == 0;
 +}
 +
-+void alloc_bitmaps(int type)
++void setupfs()
 +{
 +	errcode_t retval;
++	struct ext2_super_block param;
 +
-+	retval = ext2fs_alloc_generic_bmap(NULL, EXT2_ET_MAGIC_GENERIC_BITMAP64,
-+							  type, 0, nr_bits, nr_bits,
-+							  "child bitmap1", &child_bitmap1);
++	initialize_ext2_error_table();
++
++	memset(&param, 0, sizeof(param));
++	ext2fs_blocks_count_set(&param, nr_bits);
++	retval = ext2fs_initialize("test fs", EXT2_FLAG_64BITS, &param,
++							   test_io_manager, &testfs);
++	if (retval) {
++		com_err("setup", retval, "while initializing filesystem");
++		exit(1);
++	}
++
++	retval = ext2fs_allocate_tables(testfs);
++	if (retval) {
++		com_err("setup", retval, "while allocating tables for testfs");
++		exit(1);
++	}
++}
++
++void setup_used_bitmaps()
++{
++	int saved_type = testfs->default_bitmap_type;
++	ext2_inode_scan scan;
++	struct ext2_inode inode;
++	ext2_ino_t ino;
++	errcode_t retval;
++	int i;
++
++	testfs->default_bitmap_type = EXT2FS_BMAP64_BITARRAY;
++
++	/* allocate block and inode used bitmaps */
++	retval = ext2fs_allocate_block_bitmap(testfs, "block used map", &block_used_map);
 +	if (retval)
 +		goto out;
 +
-+	retval = ext2fs_alloc_generic_bmap(NULL, EXT2_ET_MAGIC_GENERIC_BITMAP64,
-+							  type, 0, nr_bits, nr_bits,
-+							  "child bitmap2", &child_bitmap2);
++	retval = ext2fs_allocate_inode_bitmap(testfs, "inode used map", &inode_used_map);
 +	if (retval)
 +		goto out;
 +
-+	retval = ext2fs_alloc_generic_bmap(NULL, EXT2_ET_MAGIC_GENERIC_BITMAP64,
-+							  type, 0, nr_bits, nr_bits,
-+							  "parent bitmap", &parent_bitmap);
-+	if (retval)
-+		goto out;
++	/* setup block and inode used bitmaps */
++	for (i = 1; i < nr_bits; i++) {
++		/*
++		 * we check for testfs->block_map as well since there could be some
++		 * blocks already set as part of the FS metadata.
++		 */
++		if (should_mark_bit() || ext2fs_test_block_bitmap2(testfs->block_map, i)) {
++			ext2fs_mark_block_bitmap2(block_used_map, i);
++		}
++	}
 +
-+	/*
-+	 * Note that EXT2FS_BMAP64_RBTREE doesn't support parallel read.
-+	 * this is due to a optimization of maintaining a read cursor within
-+	 * rbtree bitmap implementation.
-+	 */
-+	retval = ext2fs_alloc_generic_bmap(NULL, EXT2_ET_MAGIC_GENERIC_BITMAP64,
-+							  EXT2FS_BMAP64_BITARRAY, 0, nr_bits, nr_bits,
-+							  "used bitmap", &used_bitmap);
-+	if (retval)
-+		goto out;
++	retval = ext2fs_open_inode_scan(testfs, 8, &scan);
++	if (retval) {
++		com_err("setup_inode_map", retval, "while open inode scan");
++		exit(1);
++	}
 +
++	retval = ext2fs_get_next_inode(scan, &ino, &inode);
++	if (retval) {
++		com_err("setup_inode_map", retval, "while getting next inode");
++		exit(1);
++	}
++
++	while (ino) {
++		if (should_mark_bit())
++			ext2fs_mark_inode_bitmap2(inode_used_map, ino);
++
++		retval = ext2fs_get_next_inode(scan, &ino, &inode);
++		if (retval) {
++			com_err("setup_inode_map", retval, "while getting next inode");
++			exit(1);
++		}
++	}
++	ext2fs_close_inode_scan(scan);
++
++	testfs->default_bitmap_type = saved_type;
 +	return;
 +out:
-+	com_err("alloc_bitmaps", retval, "while allocating bitmaps\n");
++	com_err("setup_used_bitmaps", retval, "while setting up bitmaps\n");
 +	exit(1);
 +}
 +
-+void setup_bitmaps()
++void setup_childfs()
 +{
-+	int i = 0;
 +	errcode_t retval;
++	int i;
 +
-+	/*
-+	 * Note we cannot setup used_bitmap in parallel w/o locking.
-+	 * Hence setting up the used_bitmap (random bits) here before
-+	 * starting pthreads.
-+	 */
-+	for (i = 0; i < nr_bits; i++) {
-+		if (should_mark_bit())
-+			ext2fs_mark_generic_bmap(used_bitmap, i);
++	for (i = 0; i < nr_threads; i++) {
++		retval = ext2fs_clone_fs(testfs, &childfs[i], EXT2FS_CLONE_INODE | EXT2FS_CLONE_BLOCK);
++		if (retval) {
++			com_err("setup_childfs", retval, "while clone testfs for childfs");
++			exit(1);
++		}
++
++		retval = childfs[i]->io->manager->open(childfs[i]->device_name,
++											IO_FLAG_THREADS | IO_FLAG_NOCACHE, &childfs[i]->io);
++		if (retval) {
++			com_err("setup_pthread", retval, "while opening childfs");
++			exit(1);
++		}
++		assert(childfs[i]->parent == testfs);
 +	}
++}
++
++static errcode_t scan_callback(ext2_filsys fs,
++			       ext2_inode_scan scan EXT2FS_ATTR((unused)),
++			       dgrp_t group, void *priv_data)
++{
++	pthread_t id = *((pthread_t *)priv_data);
++
++	printf("%s: Called for group %d via thread %d\n", __func__, group,
++			pthread_equal(pthread_infos[1], id));
++	if (pthread_equal(pthread_infos[0], id)) {
++		if (group >= fs->group_desc_count / 2 - 1)
++			return 1;
++	}
++	return 0;
 +}
 +
 +static void *run_pthread(void *arg)
 +{
-+	int i = 0, j = 0, start, end;
-+	ext2fs_generic_bitmap test_bitmap;
 +	errcode_t retval = 0;
++	int i = 0, start, end;
++	ext2fs_block_bitmap test_block_bitmap;
++	ext2fs_inode_bitmap test_inode_bitmap;
++	ext2_inode_scan scan;
++	struct ext2_inode inode;
++	ext2_ino_t ino;
 +	pthread_t id = pthread_self();
 +
 +	if (pthread_equal(pthread_infos[0], id)) {
-+		start = 0;
++		start = 1;
 +		end = nr_bits/2;
-+		test_bitmap = child_bitmap1;
++		test_block_bitmap = childfs[0]->block_map;
++		test_inode_bitmap = childfs[0]->inode_map;
++
++		retval = ext2fs_open_inode_scan(childfs[0], 8, &scan);
++		if (retval) {
++			com_err("setup_inode_map", retval, "while open inode scan");
++			exit(1);
++		}
++
 +	} else {
 +		start = nr_bits / 2 + 1;;
 +		end = nr_bits - 1;
-+		test_bitmap = child_bitmap2;
++		test_block_bitmap = childfs[1]->block_map;
++		test_inode_bitmap = childfs[1]->inode_map;
++
++		retval = ext2fs_open_inode_scan(childfs[1], 8, &scan);
++		if (retval) {
++			com_err("setup_inode_map", retval, "while open inode scan");
++			exit(1);
++		}
++		ext2fs_inode_scan_goto_blockgroup(scan, testfs->group_desc_count/2);
 +	}
 +
++	ext2fs_set_inode_callback(scan, scan_callback, &id);
++
++	/* blocks scan */
 +	for (i = start; i <= end; i++) {
-+		if (ext2fs_test_generic_bmap(used_bitmap, i)) {
-+			retval = ext2fs_mark_generic_bmap(test_bitmap, i);
-+			if (retval) {
-+				com_err("run_pthread", retval, "while marking child bitmaps %d\n", i);
-+				test_fail++;
-+				pthread_exit(&retval);
-+			}
++		if (ext2fs_test_block_bitmap2(block_used_map, i)) {
++			ext2fs_mark_block_bitmap2(test_block_bitmap, i);
 +		}
 +	}
++
++	/* inodes scan */
++	retval = ext2fs_get_next_inode(scan, &ino, &inode);
++	if (retval) {
++		com_err("setup_inode_map", retval, "while getting next inode");
++		exit(1);
++	}
++
++	while (ino) {
++		if (ext2fs_test_inode_bitmap2(inode_used_map, ino)) {
++			ext2fs_mark_inode_bitmap2(test_inode_bitmap, ino);
++		}
++
++		retval = ext2fs_get_next_inode(scan, &ino, &inode);
++		if (retval)
++			break;
++	}
++	ext2fs_close_inode_scan(scan);
 +	return NULL;
 +}
 +
 +void run_pthreads()
 +{
 +	errcode_t retval;
-+	void *retp[2];
 +	int i;
 +
 +	for (i = 0; i < nr_threads; i++) {
@@ -346,60 +415,63 @@ index 00000000..243810ca
 +		printf("Closing thread (%d), ret(%d)\n", i, ret);
 +	}
 +
-+	assert(ext2fs_merge_bitmap(child_bitmap1, parent_bitmap, NULL, NULL) == 0);
-+	assert(ext2fs_merge_bitmap(child_bitmap2, parent_bitmap, NULL, NULL) == 0);
++	assert(ext2fs_merge_fs(&childfs[0]) == 0);
++	assert(ext2fs_merge_fs(&childfs[1]) == 0);
 +}
 +
-+void test_bitmaps(int type)
++void test_bitmaps()
 +{
 +	errcode_t retval;
-+	retval = ext2fs_compare_generic_bmap(EXT2_ET_NEQ_BLOCK_BITMAP, parent_bitmap,
-+				used_bitmap);
++	retval = ext2fs_compare_block_bitmap(testfs->block_map, block_used_map);
 +	if (retval) {
++		printf("Block bitmap compare -- NOT OK!! (%ld)\n", retval);
 +		test_fail++;
-+		printf("Bitmaps compare failed for bitmap type %d err %ld\n", type, retval);
-+		dump_bitmap(parent_bitmap, 0, nr_bits);
-+		dump_bitmap(used_bitmap, 0, nr_bits);
 +	}
++
++	printf("Block compare bitmap  -- OK!!\n");
++	retval = ext2fs_compare_inode_bitmap(testfs->inode_map, inode_used_map);
++	if (retval) {
++		printf("Inode bitmap compare -- NOT OK!! (%ld)\n", retval);
++		test_fail++;
++	}
++	printf("Inode compare bitmap  -- OK!!\n");
 +}
 +
-+void free_bitmaps()
++void free_used_bitmaps()
 +{
-+	ext2fs_free_generic_bmap(child_bitmap1);
-+	ext2fs_free_generic_bmap(child_bitmap2);
-+	ext2fs_free_generic_bmap(parent_bitmap);
-+	ext2fs_free_generic_bmap(used_bitmap);
++	ext2fs_free_block_bitmap(block_used_map);
++	ext2fs_free_inode_bitmap(inode_used_map);
 +}
++
++#endif
 +
 +int main(int argc, char *argv[])
 +{
 +	int i;
-+	int ret = 0;
 +
 +#ifndef HAVE_PTHREAD
 +	printf("No PTHREAD support, exiting...\n");
-+	return ret;
-+#endif
++	return 0;
++#else
 +
 +	srand(time(0));
 +
-+	/* loop to test for bitmap types */
-+	for (i = 0; i < 1; i++) {
-+		test_fail = 0;
-+		alloc_bitmaps(bitmap_type[i]);
-+		setup_bitmaps();
-+		run_pthreads();
-+		test_bitmaps(bitmap_type[i]);
-+		free_bitmaps();
++	setupfs();
++	setup_used_bitmaps();
 +
-+		if (test_fail)
-+			printf("%s: Test with bitmap (%d) NOT OK!!\n", argv[0], bitmap_type[i]);
-+		else
-+			printf("%s: Test with bitmap (%d) OK!!\n", argv[0], bitmap_type[i]);
-+		ret |= test_fail;
-+	}
++	setup_childfs();
++	run_pthreads();
++	test_bitmaps(i);
 +
-+	return ret;
++	if (test_fail)
++		printf("%s: Test libext2fs clone/merge with pthreads NOT OK!!\n", argv[0]);
++	else
++		printf("%s: Test libext2fs clone/merge with pthreads OK!!\n", argv[0]);
++	free_used_bitmaps();
++	ext2fs_free(testfs);
++
++	return test_fail;
++#endif
 +}
 -- 
 2.37.3
