@@ -2,63 +2,64 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5977561F2F2
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:24:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C6361F2F7
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:24:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232173AbiKGMYP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 7 Nov 2022 07:24:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50242 "EHLO
+        id S231803AbiKGMYX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 7 Nov 2022 07:24:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232169AbiKGMYN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:24:13 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 428806247
-        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:24:13 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id k22so10448240pfd.3
-        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:24:13 -0800 (PST)
+        with ESMTP id S232169AbiKGMYT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:24:19 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 236DF63C2
+        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:24:19 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id 64so10309340pgc.5
+        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:24:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/wJhWS2aGvLD1Rzy6m9shGLETN6RBjRGDzQAAEc0ebw=;
-        b=L9zXQk7s1hKr7oC1W6uzkSPg+65h4hWVhusIgbbV3utkHI7OGzUUibHE2tm6yZjxm6
-         K1q/fsDBZxA+xUQxIIGrEFJ/ULylIVupMqvrqkX6seOQ8CQ5G0lAODPThekk7giV+ult
-         kjs0cCcUNpimNfL1pEH1iYNNKHqHS52zeSMm5d50wuxT0zG8JwJLLVb9Dobi9byBmxh3
-         ovhOHqoiB3FEcAD7MiZNvyx/UebBP+0Ar11OD3krGfRyjJNGGNaedZ/aCNtuXk26C/vT
-         FdSLzXz1c4GJio0iQdtM3cuIkahC+0poJZJ+rWw0xB1GR68LDbDTcrkbjHSFBuOkYuUR
-         +zqA==
+        bh=UZ3j7EdKBWVYJUuDDkl+rN6c4DTW2MiR6s2rRB1jtXM=;
+        b=jegXKvA1zOPiYEuuHil8v1JcZvcIoj9uWWdoNHpCuybmAhyzrHMestZ8w/URCdCQdi
+         YEj1RhFO9MDqvR73HLYMRMXQ5GrfTFPbhQojS1tHfCZYkMz6XSvfmhehJ1lmM1Noz1YV
+         OsiqCuCg6sOrm7kWS0+Dd5L0TOwPRfGEdC1p9xhTqeruUl5w/9f2eGU27FpgZEXWK5h8
+         VjWYoAJ+nZchesaPzImiBb7IcYxunFScMNVAY8hdY/jijsQxJZXVRR9Kxakcw5NK9Ut8
+         Qhk/uRhdYxA33j3CR6WyvMqKy9si3NilUGLtQNyNB1kSbiuNhAWgSuKHqZw+44lXbqx7
+         8gdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/wJhWS2aGvLD1Rzy6m9shGLETN6RBjRGDzQAAEc0ebw=;
-        b=CAeJzfgBxUfhd7zJu0Me87he4/C9GcGhXUXY68+3GddBFW45qLpMlQUcIypGraw7PB
-         o8pQwtovnFF/EdpbNcObuR7S1QtjS6KLEEUYOlwsH+hBBqr3Bn2215KmoV2oUPy90TBN
-         f0csjjijG/d8hDokt0L12oAB+F8aZmoCX1lJ5cNLKDVC/IqcLZzpQbsacAKbODvhoZCX
-         8rOfc0IO7wMvmCRiDmvt2PERMLSMbgYlnwkAxZ65/n4C9R9mYTGVu06RFkeEUYDqtQ1J
-         3rGcjVBW2H7alIWvbk0Uk2TRdC+bMtD+C/Td3G5GkACAbORdi/cu4NBoKUsjz/xyx7d2
-         RyFw==
-X-Gm-Message-State: ACrzQf1tx4iTUsnKmKQn6ExYBAyN824NMLOcFTB042Qw23emBaOaJaHR
-        nW+uaYyMmqz/PzUirxbTucQ=
-X-Google-Smtp-Source: AMsMyM6Gyd/1MaafB2gAV1PG0XNj6aF/w4NBWJ7iJ/3C/ea7Jyd/uo774MPJuKwj2rluqYmT2Wvwyg==
-X-Received: by 2002:a65:4d07:0:b0:46f:ed91:a50d with SMTP id i7-20020a654d07000000b0046fed91a50dmr27395440pgt.343.1667823852789;
-        Mon, 07 Nov 2022 04:24:12 -0800 (PST)
+        bh=UZ3j7EdKBWVYJUuDDkl+rN6c4DTW2MiR6s2rRB1jtXM=;
+        b=dwDlN63ArbDNP760TOsdchwAjow+4Y64kzOLryzhG9LyUFNRDFhxu9XtXfaOoBJW86
+         7MmSqy7ORz+nJWP2T6pKRe2CPxNI0nTrfymqJ8XUR4QkQK2XxGz7/OHcP4OtE/cYUaUp
+         bJMjl7GowyRoRIBXGc76UJ2NHEJi1VNS44wuBAta0HWiqqWuXesZdDaGdlBH2dMguGPI
+         TNGaEsuOvR/HRXrvMR5Z0MJmDzVAh8QcLL1GaCTPYargyhXxNej7uaXlhAL1eyvSXmMH
+         TR1G+0DilhwukImSuqFsH2jQYPE0ZeUVvhgSU3iPHrxO7Lue9mh+plC2CEDHGhG6LTyq
+         vnIg==
+X-Gm-Message-State: ACrzQf3d6so81KGFVqZu1rfzeCMF4uPtBLlDL4E8PQGw3RZ+FBn6LMrY
+        qa6Lqtn6yTASChIv9PaOIs4=
+X-Google-Smtp-Source: AMsMyM6sqRdScPwmvX7UxBes8LBeI0whAdz6owYLSSxdaVH+K4dE3EBwYNxJ/wjtRzO9koys38oLTw==
+X-Received: by 2002:a65:4bc3:0:b0:439:103b:fc35 with SMTP id p3-20020a654bc3000000b00439103bfc35mr42555258pgr.248.1667823858666;
+        Mon, 07 Nov 2022 04:24:18 -0800 (PST)
 Received: from localhost ([2406:7400:63:f20b:312d:45b2:85c1:c486])
-        by smtp.gmail.com with ESMTPSA id q66-20020a17090a17c800b0021282014066sm6103510pja.9.2022.11.07.04.24.11
+        by smtp.gmail.com with ESMTPSA id t10-20020a63224a000000b00460d89df1f1sm4079017pgm.57.2022.11.07.04.24.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Nov 2022 04:24:12 -0800 (PST)
+        Mon, 07 Nov 2022 04:24:18 -0800 (PST)
 From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
 To:     Theodore Ts'o <tytso@mit.edu>
 Cc:     linux-ext4@vger.kernel.org,
         Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
         Wang Shilong <wshilong@ddn.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        Li Xi <lixi@ddn.com>, Ritesh Harjani <ritesh.list@gmail.com>
-Subject: [RFCv1 18/72] libext2fs: Add support to get average group count
-Date:   Mon,  7 Nov 2022 17:51:06 +0530
-Message-Id: <7e4f563719aee1970dd1058ca45b0609ae4c7c5f.1667822611.git.ritesh.list@gmail.com>
+        Li Xi <lixi@ddn.com>, Andreas Dilger <adilger@whamcloud.com>,
+        Ritesh Harjani <ritesh.list@gmail.com>
+Subject: [RFCv1 19/72] libext2fs: Misc fixes for struct_ext2_filsys
+Date:   Mon,  7 Nov 2022 17:51:07 +0530
+Message-Id: <d9c1ee96a026bfa4652e1c57d7c7dc40bdf049df.1667822611.git.ritesh.list@gmail.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1667822611.git.ritesh.list@gmail.com>
 References: <cover.1667822611.git.ritesh.list@gmail.com>
@@ -74,78 +75,36 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Wang Shilong <wshilong@ddn.com>
+From: Andreas Dilger <adilger@whamcloud.com>
 
-number of threads in pfsck should not exceed flex bg numbers.
-This patch adds the support in libext2fs to calculate
-ext2fs_get_avg_group() which returns an average group
-count which each thread has to scan.
+Move ext2_filsys fs_num_threads to fit into the __u16 "pad" field
+to avoid consuming one of the few remaining __u32 reserved fields.
 
-fs->fs_num_threads will be set by the client, in this case e2fsck.
-No. of threads will be passed along with -m option while running e2fsck.
-That will also set fs->fs_num_threads, which will help in controlling
-the amount of memory consumed to maintain in memory data structures (per
-thread) in case of multiple parallel threads (pfsck) to avoid oom.
-
-Signed-off-by: Wang Shilong <wshilong@ddn.com>
+Signed-off-by: Andreas Dilger <adilger@whamcloud.com>
 Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 ---
- lib/ext2fs/ext2fs.h | 32 +++++++++++++++++++++++++++++++-
- 1 file changed, 31 insertions(+), 1 deletion(-)
+ lib/ext2fs/ext2fs.h | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
-index b1505f95..6b4926ce 100644
+index 6b4926ce..950ab042 100644
 --- a/lib/ext2fs/ext2fs.h
 +++ b/lib/ext2fs/ext2fs.h
-@@ -279,10 +279,11 @@ struct struct_ext2_filsys {
+@@ -278,12 +278,11 @@ struct struct_ext2_filsys {
+ 	time_t				now;
  	int				cluster_ratio_bits;
  	__u16				default_bitmap_type;
- 	__u16				pad;
-+	__u32				fs_num_threads;
+-	__u16				pad;
+-	__u32				fs_num_threads;
++	__u16				fs_num_threads;
  	/*
  	 * Reserved for future expansion
  	 */
--	__u32				reserved[5];
-+	__u32				reserved[4];
+-	__u32				reserved[4];
++	__u32				reserved[5];
  
  	/*
  	 * Reserved for the use of the calling application.
-@@ -2231,6 +2232,35 @@ ext2fs_orphan_block_tail(ext2_filsys fs, char *buf)
- 		sizeof(struct ext4_orphan_block_tail));
- }
- 
-+static dgrp_t ext2fs_get_avg_group(ext2_filsys fs)
-+{
-+#ifdef HAVE_PTHREAD
-+	dgrp_t average_group;
-+	unsigned flexbg_size;
-+
-+	if (fs->fs_num_threads <= 1)
-+		return fs->group_desc_count;
-+
-+	average_group = fs->group_desc_count / fs->fs_num_threads;
-+	if (average_group <= 1)
-+		return 1;
-+
-+	if (ext2fs_has_feature_flex_bg(fs->super)) {
-+		int times = 1;
-+
-+		flexbg_size = 1 << fs->super->s_log_groups_per_flex;
-+		if (average_group % flexbg_size) {
-+			times = average_group / flexbg_size;
-+			average_group = times * flexbg_size;
-+		}
-+	}
-+
-+	return average_group;
-+#else
-+	return fs->group_desc_count;
-+#endif
-+}
-+
- #undef _INLINE_
- #endif
- 
 -- 
 2.37.3
 
