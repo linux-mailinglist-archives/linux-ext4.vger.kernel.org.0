@@ -2,98 +2,188 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7512E61E878
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 03:01:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F82F61E9AD
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 04:33:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbiKGCBm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 6 Nov 2022 21:01:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47144 "EHLO
+        id S230510AbiKGDdC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 6 Nov 2022 22:33:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbiKGCBl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 6 Nov 2022 21:01:41 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F72DEB8;
-        Sun,  6 Nov 2022 18:01:38 -0800 (PST)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4N5Ds12pM8zpWCN;
-        Mon,  7 Nov 2022 09:57:57 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 7 Nov 2022 10:01:34 +0800
-Message-ID: <230c5303-2aed-7c36-3147-2c05361067ef@huawei.com>
-Date:   Mon, 7 Nov 2022 10:01:34 +0800
+        with ESMTP id S230265AbiKGDdC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 6 Nov 2022 22:33:02 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D587D9FCC;
+        Sun,  6 Nov 2022 19:33:00 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6628D60EA7;
+        Mon,  7 Nov 2022 03:33:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 780BFC433C1;
+        Mon,  7 Nov 2022 03:32:58 +0000 (UTC)
+Date:   Sun, 6 Nov 2022 22:32:56 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Julia Lawall <Julia.Lawall@inria.fr>, linux-sh@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        drbd-dev@lists.linbit.com, linux-bluetooth@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-media@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-ext4@vger.kernel.org, linux-nilfs@vger.kernel.org,
+        bridge@lists.linux-foundation.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, lvs-devel@vger.kernel.org,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org
+Subject: [GIT PULL] treewide: timers: Use timer_shutdown*() before freeing
+ timers
+Message-ID: <20221106223256.4bbdb018@rorschach.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH v2] ext4: fix use-after-free in ext4_ext_shift_extents
-Content-Language: en-US
-To:     Theodore Ts'o <tytso@mit.edu>, <linux-ext4@vger.kernel.org>
-CC:     <lczerner@redhat.com>, <chengzhihao1@huawei.com>,
-        <enwlinux@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <ritesh.list@gmail.com>, <stable@vger.kernel.org>,
-        <adilger.kernel@dilger.ca>, <yebin10@huawei.com>, <jack@suse.cz>,
-        <yi.zhang@huawei.com>, <yukuai3@huawei.com>
-References: <20220922120434.1294789-1-libaokun1@huawei.com>
- <166450797717.256913.12979997291945870141.b4-ty@mit.edu>
-From:   Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <166450797717.256913.12979997291945870141.b4-ty@mit.edu>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2022/9/30 11:19, Theodore Ts'o wrote:
-> On Thu, 22 Sep 2022 20:04:34 +0800, Baokun Li wrote:
->> If the starting position of our insert range happens to be in the hole
->> between the two ext4_extent_idx, because the lblk of the ext4_extent in
->> the previous ext4_extent_idx is always less than the start, which leads
->> to the "extent" variable access across the boundary, the following UAF is
->> triggered:
->> ==================================================================
->> BUG: KASAN: use-after-free in ext4_ext_shift_extents+0x257/0x790
->> Read of size 4 at addr ffff88819807a008 by task fallocate/8010
->> CPU: 3 PID: 8010 Comm: fallocate Tainted: G            E     5.10.0+ #492
->> Call Trace:
->>   dump_stack+0x7d/0xa3
->>   print_address_description.constprop.0+0x1e/0x220
->>   kasan_report.cold+0x67/0x7f
->>   ext4_ext_shift_extents+0x257/0x790
->>   ext4_insert_range+0x5b6/0x700
->>   ext4_fallocate+0x39e/0x3d0
->>   vfs_fallocate+0x26f/0x470
->>   ksys_fallocate+0x3a/0x70
->>   __x64_sys_fallocate+0x4f/0x60
->>   do_syscall_64+0x33/0x40
->>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
->> ==================================================================
->>
->> [...]
-> Applied, thanks!
->
-> [1/1] ext4: fix use-after-free in ext4_ext_shift_extents
->        (no commit info)
->
-> Best regards,
 
-Hi Theodore,
 
-Could you tell me why this patch has been applied, but there is no cmmit 
-info,
+Linus,
 
-and the patch cannot be found on any branch?
+As discussed here:
 
--- 
-With Best Regards,
-Baokun Li
+  https://lore.kernel.org/all/20221106212427.739928660@goodmis.org/
 
+Add a "shutdown" state for timers. This is performed by the new
+timer_shutdown_sync() and timer_shutdown() function calls. When this is
+called on a timer, it will no longer be able to be re-armed. This should
+be called before a timer is freed to prevent it from being re-armed after
+being removed from the timer queue and then causing a crash in the timer
+code when the timer triggers.
+
+This required renaming some functions that were using the name
+timer_shutdown() statically to something more appropriate.
+
+Then a coccinelle script was executed on the entire kernel tree to find
+the trivial locations that remove the timer and then frees the object that
+the timer exists on.
+
+These changes are not enough to solve all the locations where timers may
+be of an issue. But by adding the shutdown infrastructure and the obvious
+cases, the more complex cases can be added after they have been reviewed
+more closely.
+
+
+Please pull the following tree, which can be found at:
+
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+add-timer-shutdown
+
+Tag SHA1: 7685328352dfd2908e23048f563e328dbd3526e9
+Head SHA1: 870556da63870e01ade9bb8418ac5a21862f2f10
+
+
+Steven Rostedt (Google) (5):
+      ARM: spear: Do not use timer namespace for timer_shutdown() function
+      clocksource/drivers/arm_arch_timer: Do not use timer namespace for timer_shutdown() function
+      clocksource/drivers/sp804: Do not use timer namespace for timer_shutdown() function
+      timers: Add timer_shutdown_sync() and timer_shutdown() to be called before freeing timers
+      treewide: Convert del_timer*() to timer_shutdown*()
+
+----
+ .../RCU/Design/Requirements/Requirements.rst       |  2 +-
+ Documentation/core-api/local_ops.rst               |  2 +-
+ Documentation/kernel-hacking/locking.rst           |  5 ++
+ arch/arm/mach-spear/time.c                         |  8 +--
+ arch/sh/drivers/push-switch.c                      |  2 +-
+ block/blk-iocost.c                                 |  2 +-
+ block/blk-iolatency.c                              |  2 +-
+ block/kyber-iosched.c                              |  2 +-
+ drivers/acpi/apei/ghes.c                           |  2 +-
+ drivers/atm/idt77252.c                             |  6 +-
+ drivers/block/drbd/drbd_main.c                     |  2 +-
+ drivers/block/loop.c                               |  2 +-
+ drivers/bluetooth/hci_bcsp.c                       |  2 +-
+ drivers/bluetooth/hci_qca.c                        |  4 +-
+ drivers/clocksource/arm_arch_timer.c               | 12 ++--
+ drivers/clocksource/timer-sp804.c                  |  6 +-
+ drivers/gpu/drm/i915/i915_sw_fence.c               |  2 +-
+ drivers/hid/hid-wiimote-core.c                     |  2 +-
+ drivers/input/keyboard/locomokbd.c                 |  2 +-
+ drivers/input/keyboard/omap-keypad.c               |  2 +-
+ drivers/input/mouse/alps.c                         |  2 +-
+ drivers/isdn/mISDN/l1oip_core.c                    |  4 +-
+ drivers/isdn/mISDN/timerdev.c                      |  4 +-
+ drivers/leds/trigger/ledtrig-activity.c            |  2 +-
+ drivers/leds/trigger/ledtrig-heartbeat.c           |  2 +-
+ drivers/leds/trigger/ledtrig-pattern.c             |  2 +-
+ drivers/leds/trigger/ledtrig-transient.c           |  2 +-
+ drivers/media/pci/ivtv/ivtv-driver.c               |  2 +-
+ drivers/media/usb/pvrusb2/pvrusb2-hdw.c            | 16 +++---
+ drivers/media/usb/s2255/s2255drv.c                 |  4 +-
+ drivers/net/ethernet/intel/i40e/i40e_main.c        |  6 +-
+ drivers/net/ethernet/marvell/sky2.c                |  2 +-
+ drivers/net/ethernet/sun/sunvnet.c                 |  2 +-
+ drivers/net/usb/sierra_net.c                       |  2 +-
+ .../wireless/broadcom/brcm80211/brcmfmac/btcoex.c  |  2 +-
+ drivers/net/wireless/intel/iwlwifi/iwl-dbg-tlv.c   |  2 +-
+ drivers/net/wireless/intel/iwlwifi/mvm/sta.c       |  2 +-
+ drivers/net/wireless/intersil/hostap/hostap_ap.c   |  2 +-
+ drivers/net/wireless/marvell/mwifiex/main.c        |  2 +-
+ drivers/net/wireless/microchip/wilc1000/hif.c      |  6 +-
+ drivers/nfc/pn533/pn533.c                          |  2 +-
+ drivers/nfc/pn533/uart.c                           |  2 +-
+ drivers/pcmcia/bcm63xx_pcmcia.c                    |  2 +-
+ drivers/pcmcia/electra_cf.c                        |  2 +-
+ drivers/pcmcia/omap_cf.c                           |  2 +-
+ drivers/pcmcia/pd6729.c                            |  4 +-
+ drivers/pcmcia/yenta_socket.c                      |  4 +-
+ drivers/scsi/qla2xxx/qla_edif.c                    |  4 +-
+ drivers/staging/media/atomisp/i2c/atomisp-lm3554.c |  2 +-
+ drivers/tty/n_gsm.c                                |  2 +-
+ drivers/tty/sysrq.c                                |  2 +-
+ drivers/usb/gadget/udc/m66592-udc.c                |  2 +-
+ drivers/usb/serial/garmin_gps.c                    |  2 +-
+ drivers/usb/serial/mos7840.c                       |  4 +-
+ fs/ext4/super.c                                    |  2 +-
+ fs/nilfs2/segment.c                                |  2 +-
+ include/linux/timer.h                              | 62 +++++++++++++++++++--
+ kernel/time/timer.c                                | 64 ++++++++++++----------
+ net/802/garp.c                                     |  2 +-
+ net/802/mrp.c                                      |  4 +-
+ net/bridge/br_multicast.c                          |  8 +--
+ net/bridge/br_multicast_eht.c                      |  4 +-
+ net/core/gen_estimator.c                           |  2 +-
+ net/ipv4/ipmr.c                                    |  2 +-
+ net/ipv6/ip6mr.c                                   |  2 +-
+ net/mac80211/mesh_pathtbl.c                        |  2 +-
+ net/netfilter/ipset/ip_set_list_set.c              |  2 +-
+ net/netfilter/ipvs/ip_vs_lblc.c                    |  2 +-
+ net/netfilter/ipvs/ip_vs_lblcr.c                   |  2 +-
+ net/netfilter/xt_IDLETIMER.c                       |  4 +-
+ net/netfilter/xt_LED.c                             |  2 +-
+ net/rxrpc/conn_object.c                            |  2 +-
+ net/sched/cls_flow.c                               |  2 +-
+ net/sunrpc/svc.c                                   |  2 +-
+ net/tipc/discover.c                                |  2 +-
+ net/tipc/monitor.c                                 |  2 +-
+ sound/i2c/other/ak4117.c                           |  2 +-
+ sound/synth/emux/emux.c                            |  2 +-
+ 78 files changed, 207 insertions(+), 148 deletions(-)
+---------------------------
