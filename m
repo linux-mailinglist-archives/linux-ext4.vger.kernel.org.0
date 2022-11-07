@@ -2,53 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A4F61F325
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:27:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5787D61F327
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:27:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232176AbiKGM1q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 7 Nov 2022 07:27:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52486 "EHLO
+        id S232220AbiKGM1t (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 7 Nov 2022 07:27:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232214AbiKGM1l (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:27:41 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 740911B7B0
-        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:27:41 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id 130so10450790pfu.8
-        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:27:41 -0800 (PST)
+        with ESMTP id S232229AbiKGM1r (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:27:47 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B2B1AD9C
+        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:27:47 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id b11so10421483pjp.2
+        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:27:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wxJyL+w+pfAfLkAJLcGqmfLql0/jYkk6WTRWqCNCjIA=;
-        b=kwaVVbb6ud897u5c8jn9pnnK8rc+BYg2iRJGFuxESbXtK/jjXg6Ypf8ybJIUTZj3wO
-         L99T3+ZVuY7DKGnZ7PZE5sAD3wL76cKBejn8YOLPbyR/c0lato4mrdy+X87S/s4Fdzcv
-         cctTzn/U/oozTXzoRUxYS3u7Bhmvjc/VvyzYgSH3uNdq1II1TnaGI9c/qz6GbNxjo8+n
-         wXBuD6he/68uMbQBCQKsU0+d2h0g1UWjPyRYOOXFNfZZQry1E7Qm69vIUdiGEPmGNtat
-         FB1BkZzZ3rF9e9Vra3aAF6XIoTG1NGrOxV+O+YUTqLVIcpXyW0nGHbn0HdLKQY8RzJo9
-         7stQ==
+        bh=lRf7GG49fBpc8qWJATB6Z8IF0kB25ctC/s18amrBQPo=;
+        b=k5L+/hzob9boPoutckNo9yYIyy5p/VzyWQ0QyRYbRxmp1GMvqlpOeUREwBTFGYQYb3
+         60Rn0ijW/HTLYTPTFxGYBmb0DeLY3pFO6aFfqkedCZotXxp8PTtUa1N4y49Jd4u9unu8
+         Qtiy/zEM7kj8zdWE+Kwkjf9hG1w7usJzEVcSSnrJ6tqV2KoH7KNLISh0w1zWAPs7IQqB
+         7dVHRptcKSbci91yTvba0fnr/n7bAR91wSHi7nrLvRNwm7ilcdu3uuTp7iQsVTEAxjV0
+         Opx1sbFiv2siRw8jQu16scqZ9PC4eOxiS1PnAQRt9WZjadXPYIQBCfAgw1v7it2qTT6O
+         aMOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wxJyL+w+pfAfLkAJLcGqmfLql0/jYkk6WTRWqCNCjIA=;
-        b=XTuXkPY5LCzIpLebQOZ6J76fnnlzYlCb7wuhw+1KjsTAzFLvTMx+qwnsOg9f69NH6w
-         882RcEAMkHWKrzc70hK+n4b3Y+moLs6fekWnkPmhLbrbQF9WlwwoNRpjUkPMqY73+ElC
-         aPPDPMtr/no1WwqXTQYGAIRXv0BczFsL2wLufq+ffGgq+lgmCzbCLGcPA/TTewrBJ0ia
-         Mz14vcRRrjw5jLM3KBKPGhM2zBJJ332x2Xl7MbJhZU7+Ejy/Ch/+wao0B0Ozj9ZnXU7h
-         LHzNfMKTKKGpi79/aW+gW+rhw0qcmjOEuEV0I7dFe15ghf9O9VlblKt42a+uuh8/ezkT
-         vUdg==
-X-Gm-Message-State: ACrzQf2lwo93YK4ODZaLJr9ma+G3qu0erc18rOuLKzqxkyO2OykxZcJI
-        RSQB0ftU/FCjCkod8IK/bP0=
-X-Google-Smtp-Source: AMsMyM4x81BZuibCfsIAtkIlHmhcYrNRBJEknXCszdH3/lDZF1JoXH72W5Zie7bFpvoyHuLwenj79w==
-X-Received: by 2002:a05:6a00:1884:b0:56c:636a:d554 with SMTP id x4-20020a056a00188400b0056c636ad554mr50133166pfh.18.1667824061003;
-        Mon, 07 Nov 2022 04:27:41 -0800 (PST)
+        bh=lRf7GG49fBpc8qWJATB6Z8IF0kB25ctC/s18amrBQPo=;
+        b=e6v+uOD67jJq3HzVfKk38RlTTRb2J+pD50KXgCzGVxSVKq6krxIoij+k/shEz6I46B
+         YU9BMMVf19yLEsyFhIZXjoq+REyUMHsgvH7+6MbT337uB7Z94gRNQYZEI5C2cB1Q/AL3
+         boMm6tSmdR6INTv15JYYndR02tBeNsKkcXToNGxLDAKNqtomljjgF21o0A3Bj1umFoab
+         rX2tKDWWkwnvjEGKn9D1L2iKQ5WByz1gHllU2VGpItG5qRiMTRwQCEIzvMntIOXNGbd9
+         hw+35I8tZx6DmKNzjmFHYhgeUef+9fWzQsjq2KmXDUNMDSPsoz2Cej8Icv4rFZ9LeJiC
+         TtPw==
+X-Gm-Message-State: ACrzQf2EDuabGBUTtAmAKt+ZBhOF6bHbyhVvcHLSqQ5WU+J9C0/+Cs3E
+        6jhLgR7h5b5IQcUA2JCEZBo=
+X-Google-Smtp-Source: AMsMyM5XmP2rjf9Ysg8zWeBwdd32hp4Ojv7a5Rb4x/5WT5jYWr64luk7YZRKCtkqAG32af9JYPWFBA==
+X-Received: by 2002:a17:90b:1c8c:b0:203:89fb:ba79 with SMTP id oo12-20020a17090b1c8c00b0020389fbba79mr68670812pjb.92.1667824066759;
+        Mon, 07 Nov 2022 04:27:46 -0800 (PST)
 Received: from localhost ([2406:7400:63:f20b:312d:45b2:85c1:c486])
-        by smtp.gmail.com with ESMTPSA id k64-20020a17090a3ec600b00205f013f275sm6058993pjc.22.2022.11.07.04.27.39
+        by smtp.gmail.com with ESMTPSA id n4-20020a170902e54400b0017f73dc1549sm4859348plf.263.2022.11.07.04.27.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Nov 2022 04:27:40 -0800 (PST)
+        Mon, 07 Nov 2022 04:27:46 -0800 (PST)
 From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
 To:     Theodore Ts'o <tytso@mit.edu>
 Cc:     linux-ext4@vger.kernel.org,
@@ -56,9 +56,9 @@ Cc:     linux-ext4@vger.kernel.org,
         Wang Shilong <wshilong@ddn.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Li Xi <lixi@ddn.com>, Ritesh Harjani <ritesh.list@gmail.com>
-Subject: [RFCv1 52/72] e2fsck: reset lost_and_found after threads finish
-Date:   Mon,  7 Nov 2022 17:51:40 +0530
-Message-Id: <fd281eb3973e723d034de383dab83b229d25b9b0.1667822611.git.ritesh.list@gmail.com>
+Subject: [RFCv1 53/72] e2fsck: merge extent depth count after threads finish
+Date:   Mon,  7 Nov 2022 17:51:41 +0530
+Message-Id: <6a4a5461ba2ca87b7bf1ac6923663d41e3d11677.1667822611.git.ritesh.list@gmail.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1667822611.git.ritesh.list@gmail.com>
 References: <cover.1667822611.git.ritesh.list@gmail.com>
@@ -76,28 +76,41 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Wang Shilong <wshilong@ddn.com>
 
-This should not be kept, the reaons is similar to what
-e2fsck_pass1 has done before.
+tests covered by f_extent_htree.
 
 Signed-off-by: Wang Shilong <wshilong@ddn.com>
 Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 ---
- e2fsck/pass1.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ e2fsck/pass1.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
 diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
-index 59ff888f..1a5fcf66 100644
+index 1a5fcf66..c89c424d 100644
 --- a/e2fsck/pass1.c
 +++ b/e2fsck/pass1.c
-@@ -2925,6 +2925,11 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
- 	global_ctx->logf = global_logf;
- 	global_ctx->problem_logf = global_problem_logf;
- 	global_ctx->global_ctx = NULL;
-+	/*
-+	 * The l+f inode may have been cleared, so zap it now and
-+	 * later passes will recalculate it if necessary
-+	 */
-+	global_ctx->lost_and_found = 0;
+@@ -2866,8 +2866,11 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
+ 	ext2_refcount_t ea_inode_refs = global_ctx->ea_inode_refs;
+ 	ext2fs_block_bitmap  block_found_map = global_ctx->block_found_map;
+ 	ext2fs_block_bitmap  block_dup_map = global_ctx->block_dup_map;
+-	int options = global_ctx->options;
++	int options = global_ctx->options, i;
++	__u32 extent_depth_count[MAX_EXTENT_DEPTH_COUNT];
+ 
++	memcpy(extent_depth_count, global_ctx->extent_depth_count,
++	       sizeof(extent_depth_count));
+ #ifdef HAVE_SETJMP_H
+ 	jmp_buf old_jmp;
+ 
+@@ -2930,6 +2933,12 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
+ 	 * later passes will recalculate it if necessary
+ 	 */
+ 	global_ctx->lost_and_found = 0;
++	memcpy(global_ctx->extent_depth_count, extent_depth_count,
++	       sizeof(extent_depth_count));
++	/* merge extent depth count */
++	for (i = 0; i < MAX_EXTENT_DEPTH_COUNT; i++)
++		global_ctx->extent_depth_count[i] +=
++			thread_ctx->extent_depth_count[i];
  
  	global_fs->priv_data = global_ctx;
  	global_ctx->fs = global_fs;
