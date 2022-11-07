@@ -2,53 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8900361F310
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:26:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D9B61F311
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:26:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231896AbiKGM0W (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 7 Nov 2022 07:26:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51988 "EHLO
+        id S232143AbiKGM02 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 7 Nov 2022 07:26:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232181AbiKGM0R (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:26:17 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 324E063C2
-        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:26:17 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id c2so10887392plz.11
-        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:26:17 -0800 (PST)
+        with ESMTP id S232125AbiKGM0Z (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:26:25 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95BD0140F6
+        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:26:23 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id 4so10956110pli.0
+        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:26:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TO3EAnoyooTXPluco+EV2CzZby3gnXHpq0yhCfmKuV0=;
-        b=ppGOdpzF9PUS/kWQEid5qsV8N6gFSbQr0lT208UCSAbJeRXFxXXiJ/uej5nyFvWiQ6
-         iZTGrDTxJhMq1HO+sF+fFv62ExMZPL29MO7vCw7rjEe3aCTSwucbHcQBkh/IPS54Lwf+
-         j6BIpsz3AzH7OWBgfCr1zElfduP7YRWt0vncBsOHw+uw7dC8OtUq4mcvWvRz900buY2b
-         Gxkj0ndO6es9xZmiQ89qwGGGJ9O2V7MlZnT2AxIR1zGqmhn5TO8Pt+512gybS9X/2Qqk
-         tF6JRYYCTMvtLJ+QyaC/k6L7ScLAsCh9mzuBcsvzy97OaliOy+jJAjpCzE2+uCOYphtb
-         nj9A==
+        bh=V+HeHSxpZtZ5nOaOUqlqkZGRWAIsUwzBESOK8Dchek0=;
+        b=ihAmjaPGcQDy9redWad3uoZ42ppMe4TMvyZ4OW8QDKNJSOBgnC2j4XtnulMWuj3BBo
+         zu5qijV1MGnf+R4gzpqpwV0fhFBNNhQZrF53OQ1BSQ9JzneWaHytXfSakFC0SBVaOSal
+         wI/vB2Nfc/2BAfSqs1gq9f0+uCSsW02grAJKgiIzRWJH1LBNIn+oB12qR+O958KEootg
+         9OZgJsgd1h5we6KRi/xFsL63aL58oatXRceQTlyXJPOZamxvT4CigH+s6qli2DjBjiwJ
+         smnMagNdblxP47DZy4OThyNkeB2yodFK00dg/TP6PZpO09YnQrXM1qnj4otbPQn+Ak8Q
+         rVyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TO3EAnoyooTXPluco+EV2CzZby3gnXHpq0yhCfmKuV0=;
-        b=D7+29AVVySo+WnosjzQdzY0X5TvD93U5etLxiRWpWWJpP9XfWQ6aNtCF50XCkOunV7
-         IuA0430GiAibBb52DEH0oM2pq5GlY5qx4Q7YzApR7LrUGEKpHojFhBUM4rp81WAOPWpI
-         2mvaYuRK+fZmkXxLbP8OD17PBd+4hRtjofBB91DmbvqLHpI6MlKTenfGPER/eaoH6GO4
-         yQ8PWclXroJt8XYgLReA9bz0ncOQKoQVGo6Kz0NT7M4dYOBYIGx2yX6m8FSuBe0Zp7k0
-         I9Zfto/pkVDKShYr3SnsYASMnXIcLcti2OljoYEiArxsjWaqd08RWhKnC00SNY6OqLxR
-         eTWw==
-X-Gm-Message-State: ACrzQf2/ERbavCDfs/sfASAi7SBMQ2ojHVw1bYvDAgxB/2YmoXD11BhN
-        xXoh578S78Rgs42eGwYnEO0=
-X-Google-Smtp-Source: AMsMyM7hAPPxEy9zSFaMI+1sxuomge6Cwkh4qmBHv+jj2oAlb7feQvXL8JrePJmlyBnkXZOAblNMPA==
-X-Received: by 2002:a17:902:e88d:b0:186:f9d4:3fc5 with SMTP id w13-20020a170902e88d00b00186f9d43fc5mr50765294plg.116.1667823976645;
-        Mon, 07 Nov 2022 04:26:16 -0800 (PST)
+        bh=V+HeHSxpZtZ5nOaOUqlqkZGRWAIsUwzBESOK8Dchek0=;
+        b=8JIyk7ZJ4j6kbCZ2UCZycJr5eNY8sp+IoxoFK88c/oCzV9p1hriiFmQcD3TsEOor+f
+         HLkCyfsr+4bLMS5lwQttBGN71ZeOv3WFU5lXihjvdGIXBBtHsFcdb88of5ZKfTPmFbb0
+         uxtDQEbKolh67zmDuOVZpGlznq2HkFqkGzxWcxbpPQfgHhOst7OQo3qcrGLZ52k++xCB
+         UILvym2baSSScdpnElhnYe6XNqfmlOSfOcwpOKiCBGqsAOl9r+RO1Xe8bcC/O+klxcYm
+         9wD21kT2BwQYREcwUWCrceGWOIPTUi8R99U7auqwUlbdDtpYu+GKm9yoNJayBMfEld/k
+         u4Nw==
+X-Gm-Message-State: ACrzQf3Vak+DaVHFdV0Rq0/spAEVQvQaQu0Nq56XiBmP3s+V+VZEtWcx
+        U8fHvz9TruD8wJfHXIV+tlY=
+X-Google-Smtp-Source: AMsMyM4jp6GgnjrfuAxRCjvRbirYJwchwVsVkdGwYv03eFcfNkM1k267uFU/NuEJyfFB6PpSdvQl1g==
+X-Received: by 2002:a17:90b:3696:b0:214:1611:a497 with SMTP id mj22-20020a17090b369600b002141611a497mr33643779pjb.78.1667823983053;
+        Mon, 07 Nov 2022 04:26:23 -0800 (PST)
 Received: from localhost ([2406:7400:63:f20b:312d:45b2:85c1:c486])
-        by smtp.gmail.com with ESMTPSA id 4-20020a170902c10400b00186c3af9644sm4816035pli.273.2022.11.07.04.26.15
+        by smtp.gmail.com with ESMTPSA id i184-20020a6254c1000000b0053e468a78a8sm4344955pfb.158.2022.11.07.04.26.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Nov 2022 04:26:16 -0800 (PST)
+        Mon, 07 Nov 2022 04:26:22 -0800 (PST)
 From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
 To:     Theodore Ts'o <tytso@mit.edu>
 Cc:     linux-ext4@vger.kernel.org,
@@ -56,9 +56,9 @@ Cc:     linux-ext4@vger.kernel.org,
         Wang Shilong <wshilong@ddn.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Li Xi <lixi@ddn.com>, Ritesh Harjani <ritesh.list@gmail.com>
-Subject: [RFCv1 38/72] e2fsck: merge counts after threads finish
-Date:   Mon,  7 Nov 2022 17:51:26 +0530
-Message-Id: <aa2ad3b7525a212b09e125d0a31fefd980cdb444.1667822611.git.ritesh.list@gmail.com>
+Subject: [RFCv1 39/72] e2fsck: merge dx_dir_info after threads finish
+Date:   Mon,  7 Nov 2022 17:51:27 +0530
+Message-Id: <ce0d19896608c68e0e2adabc754961f9ffeb8e27.1667822611.git.ritesh.list@gmail.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1667822611.git.ritesh.list@gmail.com>
 References: <cover.1667822611.git.ritesh.list@gmail.com>
@@ -76,67 +76,165 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Wang Shilong <wshilong@ddn.com>
 
-Merge counts properly.
+Merge properly.
 
-Signed-off-by: Li Xi <lixi@ddn.com>
 Signed-off-by: Wang Shilong <wshilong@ddn.com>
 Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 ---
- e2fsck/pass1.c | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+ e2fsck/dx_dirinfo.c | 64 +++++++++++++++++++++++++++++++++++++++++++++
+ e2fsck/e2fsck.h     |  1 +
+ e2fsck/pass1.c      | 23 ++++++++++++++++
+ 3 files changed, 88 insertions(+)
 
+diff --git a/e2fsck/dx_dirinfo.c b/e2fsck/dx_dirinfo.c
+index caca3e30..91954572 100644
+--- a/e2fsck/dx_dirinfo.c
++++ b/e2fsck/dx_dirinfo.c
+@@ -5,6 +5,7 @@
+  * under the terms of the GNU Public License.
+  */
+ 
++#include <assert.h>
+ #include "config.h"
+ #include "e2fsck.h"
+ 
+@@ -79,6 +80,69 @@ void e2fsck_add_dx_dir(e2fsck_t ctx, ext2_ino_t ino, struct ext2_inode *inode,
+ 				       "dx_block info array");
+ }
+ 
++/*
++ * Merge two sorted dir info to @dest
++ */
++void e2fsck_merge_dx_dir(e2fsck_t global_ctx, e2fsck_t thread_ctx)
++{
++	struct dx_dir_info *src_array = thread_ctx->dx_dir_info;
++	struct dx_dir_info *dest_array = global_ctx->dx_dir_info;
++	size_t size_dx_info = sizeof(struct dx_dir_info);
++	ext2_ino_t size = global_ctx->dx_dir_info_size;
++	ext2_ino_t src_count = thread_ctx->dx_dir_info_count;
++	ext2_ino_t dest_count = global_ctx->dx_dir_info_count;
++	ext2_ino_t total_count = src_count + dest_count;
++	struct dx_dir_info *array;
++	struct dx_dir_info *array_ptr;
++	ext2_ino_t src_index = 0, dest_index = 0;
++
++	if (thread_ctx->dx_dir_info_count == 0)
++		return;
++
++	if (size < total_count)
++		size = total_count;
++
++	array = e2fsck_allocate_memory(global_ctx, size * size_dx_info,
++				       "directory map");
++	array_ptr = array;
++	/*
++	 * This can be improved by binary search and memcpy, but codes
++	 * would be more complex. And if the groups distributed to each
++	 * thread are strided, this implementation won't be too bad
++	 * comparing to the optimiztion.
++	 */
++	while (src_index < src_count || dest_index < dest_count) {
++		if (src_index >= src_count) {
++			memcpy(array_ptr, &dest_array[dest_index],
++			       (dest_count - dest_index) * size_dx_info);
++			break;
++		}
++		if (dest_index >= dest_count) {
++			memcpy(array_ptr, &src_array[src_index],
++			       (src_count - src_index) * size_dx_info);
++			break;
++		}
++		if (src_array[src_index].ino < dest_array[dest_index].ino) {
++			*array_ptr = src_array[src_index];
++			src_index++;
++		} else {
++			assert(src_array[src_index].ino >
++			       dest_array[dest_index].ino);
++			*array_ptr = dest_array[dest_index];
++			dest_index++;
++		}
++		array_ptr++;
++	}
++
++	if (global_ctx->dx_dir_info)
++		ext2fs_free_mem(&global_ctx->dx_dir_info);
++	if (thread_ctx->dx_dir_info)
++		ext2fs_free_mem(&thread_ctx->dx_dir_info);
++	global_ctx->dx_dir_info = array;
++	global_ctx->dx_dir_info_size = size;
++	global_ctx->dx_dir_info_count = total_count;
++}
++
+ /*
+  * get_dx_dir_info() --- given an inode number, try to find the directory
+  * information entry for it.
+diff --git a/e2fsck/e2fsck.h b/e2fsck/e2fsck.h
+index 9b0f5067..26c3b8a5 100644
+--- a/e2fsck/e2fsck.h
++++ b/e2fsck/e2fsck.h
+@@ -578,6 +578,7 @@ extern int e2fsck_dir_info_get_parent(e2fsck_t ctx, ext2_ino_t ino,
+ 				      ext2_ino_t *parent);
+ extern int e2fsck_dir_info_get_dotdot(e2fsck_t ctx, ext2_ino_t ino,
+ 				      ext2_ino_t *dotdot);
++extern void e2fsck_merge_dx_dir(e2fsck_t global_ctx, e2fsck_t thread_ctx);
+ 
+ /* dx_dirinfo.c */
+ extern void e2fsck_add_dx_dir(e2fsck_t ctx, ext2_ino_t ino,
 diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
-index 752dca03..8b502307 100644
+index 8b502307..f998590e 100644
 --- a/e2fsck/pass1.c
 +++ b/e2fsck/pass1.c
-@@ -2398,6 +2398,23 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
- 	ext2fs_block_bitmap inodes_to_rebuild = global_ctx->inodes_to_rebuild;
- 	ext2_icount_t inode_count = global_ctx->inode_count;
- 	ext2_icount_t inode_link_info = global_ctx->inode_link_info;
-+	__u32 fs_directory_count = global_ctx->fs_directory_count;
-+	__u32 fs_regular_count = global_ctx->fs_regular_count;
-+	__u32 fs_blockdev_count = global_ctx->fs_blockdev_count;
-+	__u32 fs_chardev_count = global_ctx->fs_chardev_count;
-+	__u32 fs_links_count = global_ctx->fs_links_count;
-+	__u32 fs_symlinks_count = global_ctx->fs_symlinks_count;
-+	__u32 fs_fast_symlinks_count = global_ctx->fs_fast_symlinks_count;
-+	__u32 fs_fifo_count = global_ctx->fs_fifo_count;
-+	__u32 fs_total_count = global_ctx->fs_total_count;
-+	__u32 fs_badblocks_count = global_ctx->fs_badblocks_count;
-+	__u32 fs_sockets_count = global_ctx->fs_sockets_count;
-+	__u32 fs_ind_count = global_ctx->fs_ind_count;
-+	__u32 fs_dind_count = global_ctx->fs_dind_count;
-+	__u32 fs_tind_count = global_ctx->fs_tind_count;
-+	__u32 fs_fragmented = global_ctx->fs_fragmented;
-+	__u32 fs_fragmented_dir = global_ctx->fs_fragmented_dir;
-+	__u32 large_files = global_ctx->large_files;
+@@ -2341,6 +2341,22 @@ static void e2fsck_pass1_merge_dir_info(e2fsck_t global_ctx, e2fsck_t thread_ctx
+ 			      global_ctx->dir_info);
+ }
+ 
++static void e2fsck_pass1_merge_dx_dir(e2fsck_t global_ctx, e2fsck_t thread_ctx)
++{
++	if (thread_ctx->dx_dir_info == NULL)
++		return;
++
++	if (global_ctx->dx_dir_info == NULL) {
++		global_ctx->dx_dir_info = thread_ctx->dx_dir_info;
++		global_ctx->dx_dir_info_size = thread_ctx->dx_dir_info_size;
++		global_ctx->dx_dir_info_count = thread_ctx->dx_dir_info_count;
++		thread_ctx->dx_dir_info = NULL;
++		return;
++	}
++
++	e2fsck_merge_dx_dir(global_ctx, thread_ctx);
++}
++
+ static inline errcode_t
+ e2fsck_pass1_merge_icount(ext2_icount_t *dest_icount,
+ 			  ext2_icount_t *src_icount)
+@@ -2386,6 +2402,7 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
+ 	ext2_filsys global_fs = global_ctx->fs;
+ 	ext2fs_inode_bitmap inode_bad_map = global_ctx->inode_bad_map;
+ 	struct dir_info_db *dir_info = global_ctx->dir_info;
++	struct dx_dir_info *dx_dir_info = global_ctx->dx_dir_info;
+ 	ext2fs_inode_bitmap inode_used_map = global_ctx->inode_used_map;
+ 	ext2fs_inode_bitmap inode_dir_map = global_ctx->inode_dir_map;
+ 	ext2fs_inode_bitmap inode_bb_map = global_ctx->inode_bb_map;
+@@ -2415,6 +2432,8 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
+ 	__u32 fs_fragmented = global_ctx->fs_fragmented;
+ 	__u32 fs_fragmented_dir = global_ctx->fs_fragmented_dir;
+ 	__u32 large_files = global_ctx->large_files;
++	ext2_ino_t dx_dir_info_size = global_ctx->dx_dir_info_size;
++	ext2_ino_t dx_dir_info_count = global_ctx->dx_dir_info_count;
  
  #ifdef HAVE_SETJMP_H
  	jmp_buf old_jmp;
-@@ -2424,6 +2441,23 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
+@@ -2439,6 +2458,10 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
+ 	global_ctx->block_metadata_map = block_metadata_map;
+ 	global_ctx->dir_info = dir_info;
  	e2fsck_pass1_merge_dir_info(global_ctx, thread_ctx);
++	global_ctx->dx_dir_info = dx_dir_info;
++	global_ctx->dx_dir_info_count = dx_dir_info_count;
++	global_ctx->dx_dir_info_size = dx_dir_info_size;
++	e2fsck_pass1_merge_dx_dir(global_ctx, thread_ctx);
  	global_ctx->inode_count = inode_count;
  	global_ctx->inode_link_info = inode_link_info;
-+	global_ctx->fs_directory_count += fs_directory_count;
-+	global_ctx->fs_regular_count += fs_regular_count;
-+	global_ctx->fs_blockdev_count += fs_blockdev_count;
-+	global_ctx->fs_chardev_count += fs_chardev_count;
-+	global_ctx->fs_links_count += fs_links_count;
-+	global_ctx->fs_symlinks_count += fs_symlinks_count;
-+	global_ctx->fs_fast_symlinks_count += fs_fast_symlinks_count;
-+	global_ctx->fs_fifo_count += fs_fifo_count;
-+	global_ctx->fs_total_count += fs_total_count;
-+	global_ctx->fs_badblocks_count += fs_badblocks_count;
-+	global_ctx->fs_sockets_count += fs_sockets_count;
-+	global_ctx->fs_ind_count += fs_ind_count;
-+	global_ctx->fs_dind_count += fs_dind_count;
-+	global_ctx->fs_tind_count += fs_tind_count;
-+	global_ctx->fs_fragmented += fs_fragmented;
-+	global_ctx->fs_fragmented_dir += fs_fragmented_dir;
-+	global_ctx->large_files += large_files;
- 
- 	/* Keep the global singal flags*/
- 	global_ctx->flags |= (flags & E2F_FLAG_SIGNAL_MASK) |
+ 	global_ctx->fs_directory_count += fs_directory_count;
 -- 
 2.37.3
 
