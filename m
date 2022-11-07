@@ -2,53 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E872A61F31E
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:27:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D22661F320
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:27:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232202AbiKGM1a (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 7 Nov 2022 07:27:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52376 "EHLO
+        id S232106AbiKGM1d (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 7 Nov 2022 07:27:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232220AbiKGM1Z (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:27:25 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 275F11AD9C
-        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:27:24 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id h14so10410304pjv.4
-        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:27:24 -0800 (PST)
+        with ESMTP id S232224AbiKGM1b (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:27:31 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DAE61AD9C
+        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:27:30 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id io19so10902582plb.8
+        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:27:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GliyG/gfgbrd/RaksM0VE0kE757GWQ+YGnDdx0Zlfkc=;
-        b=Iy1pba0/sdFMGQqzSq9ZTNq5snxoqbwSTVIRi4jvw/hPjnXrd1CLdCelQcgycD/Vk2
-         /3b1VGkCxOiV5En72P47BOQeJWQxB4Dj0MmnRQoYqPKYJE16AEc1KIbMgaRZ22DxZvJX
-         BkrXtHLpdwUVkWUg9zACrk3qEQZWSYhWMpyyuLE3ahSt8TshxvLeACDccHUxY1MXeX7u
-         ajSDE+NIK3tYZHuAJcR2kd3d2AIbIgqHzRfynUb2RmCSb5ZRmzQ3fIYqKDAGsGLt57U5
-         068G1p3ZrSnCHMYqRrgbbQh9EyV+z7LGfSzwcbzsLzuIYVEo7Sr/AWbgG2iA5wa4RR8x
-         6+rQ==
+        bh=3vXp8gmCs7RJtvSM1K3okUNxQLRdt0i4KzUMdrYIHMw=;
+        b=ZY/uTqZrOX1BayaeCvfHJBmak+TKfUkEja263WJS+tgEqk0ZGqXUyfyFohSNWW6RSF
+         +IGTjs+Oi/201H79RkHlse85j77kre8kn3NfXA2vOI77pHfHIaekNIdn2Ps1KDYLWIOh
+         w5hP8WGcCMilBloH0m27Al4r0naAHOt2Rid+haClglASWYEy3tVCV2aC2foGUR7cBRGW
+         pG5Ob2wfFFDRIBhY+sFpOC7gd+4eIlC4vwUKODZH+mTYAGqq+NU0Y0hB1an0sNe/Nk3g
+         HtFhfp217opTyykG0wpz6gJtgljqc7i4x12xP8NI2md+GJ/wYniMtsKviZzxGXq64XEe
+         vbGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GliyG/gfgbrd/RaksM0VE0kE757GWQ+YGnDdx0Zlfkc=;
-        b=XhTZgwv83hZrXhUSjwt5BtXfOLXso7q6DS5e9TAfKWU4DEi14pi/xTB2APCZRYk28g
-         2xiWRERHEgFYeoYMqpQFeByGqWt4NzM5urhxEoFfZnytSHZeXVnCfH0GU4DNgvmTC6d4
-         MgMkO0CVpXxlSaE7nV5fdV3IAP+zKaD8k3GVzUknqlPfnW1REbrwTo0xRmJ4WZiB2Rrh
-         91P6+xmFele1q7oMWSqxonDzYnRLM+e2d2og7H8y/UR6fYIwTusApKB9fbTtPrn375Dd
-         EahTq03O2KbF7TnFNDPcqTGyV+uP1SEHmU/w8+4o7+uEkjZQH2CMzeq+vex4F4VsfI0e
-         y7pg==
-X-Gm-Message-State: ACrzQf1jgYEa94I1Ij5CQ6HTvZKxTAxawJFcgcv+TAQbTBZ9/w3dINfm
-        /jbxrd4ZIF9NaYNzUSCxGI4=
-X-Google-Smtp-Source: AMsMyM5GHwheccaNhiFg4HwuyTs17W3vjuWKGnWEgCjbcG3gjHA6zKqwS7SHvrZyFkNfLgKXpfdPYA==
-X-Received: by 2002:a17:90a:578c:b0:213:b509:9474 with SMTP id g12-20020a17090a578c00b00213b5099474mr48745598pji.45.1667824043633;
-        Mon, 07 Nov 2022 04:27:23 -0800 (PST)
+        bh=3vXp8gmCs7RJtvSM1K3okUNxQLRdt0i4KzUMdrYIHMw=;
+        b=dFSWwVc9C/HpSIwmJjCPXN+t2J2wrLSKRVoCwCpzQu9MmA3rzL7kuC8tsWhGNhLZ6J
+         oa/c0puZhx6O+ddmLzK+GAPGR/haYks8OFntRfZJW8X1Pzqsu90xLsqdHHLtPpZlZPjJ
+         eI3WCU+3sQIHbz2GWsDuBQ32Zqn5MLLwwLg2OEAn46dvfqdE0/RFrdsZjsqkbNUwv1Vj
+         qKHKWwIbLR8wVjT+YApHm9K/HVtl5tce7OExmHlB8uB16Tpdw8q0gUPXu7y2G5NkdPvU
+         UDqTYMDLK5vW84kmBzmZcG5g+Twj7crdGLib8helpkjdpyH4Ddd15EaFilBK5Qf3arDh
+         Oj3w==
+X-Gm-Message-State: ACrzQf1Rckt+4v9r21UI15QVQ2S2c+25uDPaX2ZNaksJzoQHIkfoXlRO
+        2KltBY0rLjhAE2AGhTn1t1M=
+X-Google-Smtp-Source: AMsMyM5Ae9XAhgp11eTyPnWSKe22pspMICLnwupLSoNxkwH+9c4sul9qH+BdHyFsr+gy8Q7A/cs6IQ==
+X-Received: by 2002:a17:902:e8cd:b0:186:9efc:6790 with SMTP id v13-20020a170902e8cd00b001869efc6790mr50590382plg.91.1667824049651;
+        Mon, 07 Nov 2022 04:27:29 -0800 (PST)
 Received: from localhost ([2406:7400:63:f20b:312d:45b2:85c1:c486])
-        by smtp.gmail.com with ESMTPSA id q23-20020a170902bd9700b001784a45511asm4885435pls.79.2022.11.07.04.27.22
+        by smtp.gmail.com with ESMTPSA id h20-20020aa796d4000000b00560a25fae1fsm4325343pfq.206.2022.11.07.04.27.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Nov 2022 04:27:22 -0800 (PST)
+        Mon, 07 Nov 2022 04:27:28 -0800 (PST)
 From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
 To:     Theodore Ts'o <tytso@mit.edu>
 Cc:     linux-ext4@vger.kernel.org,
@@ -56,9 +56,9 @@ Cc:     linux-ext4@vger.kernel.org,
         Wang Shilong <wshilong@ddn.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Li Xi <lixi@ddn.com>, Ritesh Harjani <ritesh.list@gmail.com>
-Subject: [RFCv1 49/72] e2fsck: adjust number of threads
-Date:   Mon,  7 Nov 2022 17:51:37 +0530
-Message-Id: <787fea1b97ccfda61736f7a9e07d9eeed17b1bc8.1667822611.git.ritesh.list@gmail.com>
+Subject: [RFCv1 50/72] e2fsck: fix readahead for pfsck of pass1
+Date:   Mon,  7 Nov 2022 17:51:38 +0530
+Message-Id: <7fce79fc82c97b0ff5c9b7e81f3c2f343316c706.1667822611.git.ritesh.list@gmail.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1667822611.git.ritesh.list@gmail.com>
 References: <cover.1667822611.git.ritesh.list@gmail.com>
@@ -76,142 +76,87 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Wang Shilong <wshilong@ddn.com>
 
-number of threads should not exceed flex bg numbers,
-and output messages if we adjust threads number.
+Several improvments for this patch:
+
+1) move readahead_kb detection to preparing phase.
+2) inode readahead should be aware of thread block group
+boundary.
+3) make readahead_kb aware of multiple threads.
 
 Signed-off-by: Wang Shilong <wshilong@ddn.com>
 Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 ---
- e2fsck/pass1.c | 32 +++++++++++++++-----------------
- 1 file changed, 15 insertions(+), 17 deletions(-)
+ e2fsck/pass1.c | 29 ++++++++++++++++++++---------
+ 1 file changed, 20 insertions(+), 9 deletions(-)
 
 diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
-index 5bf6980b..1d4f576c 100644
+index 1d4f576c..5d07daec 100644
 --- a/e2fsck/pass1.c
 +++ b/e2fsck/pass1.c
-@@ -1287,6 +1287,7 @@ static void e2fsck_pass1_set_thread_num(e2fsck_t ctx)
- 	}
- out:
- 	ctx->fs_num_threads = num_threads;
-+	ctx->fs->fs_num_threads = num_threads;
- }
+@@ -1098,16 +1098,20 @@ out:
+ static void pass1_readahead(e2fsck_t ctx, dgrp_t *group, ext2_ino_t *next_ino)
+ {
+ 	ext2_ino_t inodes_in_group = 0, inodes_per_block, inodes_per_buffer;
+-	dgrp_t start = *group, grp;
++	dgrp_t start = *group, grp, grp_end = ctx->fs->group_desc_count;
+ 	blk64_t blocks_to_read = 0;
+ 	errcode_t err = EXT2_ET_INVALID_ARGUMENT;
+ 
++#ifdef HAVE_PTHREAD
++	if (ctx->fs->fs_num_threads > 1)
++		grp_end = ctx->thread_info.et_group_end;
++#endif
+ 	if (ctx->readahead_kb == 0)
+ 		goto out;
+ 
+ 	/* Keep iterating groups until we have enough to readahead */
+ 	inodes_per_block = EXT2_INODES_PER_BLOCK(ctx->fs->super);
+-	for (grp = start; grp < ctx->fs->group_desc_count; grp++) {
++	for (grp = start; grp < grp_end; grp++) {
+ 		if (ext2fs_bg_flags_test(ctx->fs, grp, EXT2_BG_INODE_UNINIT))
+ 			continue;
+ 		inodes_in_group = ctx->fs->super->s_inodes_per_group -
+@@ -1300,12 +1304,25 @@ static errcode_t e2fsck_pass1_prepare(e2fsck_t ctx)
+ {
+ 	struct problem_context pctx;
+ 	ext2_filsys fs = ctx->fs;
++	unsigned long long readahead_kb;
+ 
+ 	init_ext2_max_sizes();
+-#ifdef	HAVE_PTHREAD
++#ifdef HAVE_PTHREAD
+ 	e2fsck_pass1_set_thread_num(ctx);
  #endif
++	/* If we can do readahead, figure out how many groups to pull in. */
++	if (!e2fsck_can_readahead(ctx->fs))
++		ctx->readahead_kb = 0;
++	else if (ctx->readahead_kb == ~0ULL)
++		ctx->readahead_kb = e2fsck_guess_readahead(ctx->fs);
  
-@@ -2481,14 +2482,14 @@ static void e2fsck_pass1_merge_invalid_bitmaps(e2fsck_t global_ctx,
- }
++#ifdef HAVE_PTHREAD
++	/* don't use more than 1/10 of memory for threads checking */
++	readahead_kb = get_memory_size() / (10 * ctx->fs_num_threads);
++	/* maybe better disable RA if this is too small? */
++	if (ctx->readahead_kb > readahead_kb)
++		ctx->readahead_kb = readahead_kb;
++#endif
+ 	clear_problem_context(&pctx);
+ 	if (!(ctx->options & E2F_OPT_PREEN))
+ 		fix_problem(ctx, PR_1_PASS_HEADER, &pctx);
+@@ -1482,13 +1499,7 @@ void e2fsck_pass1_run(e2fsck_t ctx)
+ 	init_resource_track(&rtrack, ctx->fs->io);
+ 	clear_problem_context(&pctx);
  
- static errcode_t e2fsck_pass1_thread_prepare(e2fsck_t global_ctx, e2fsck_t *thread_ctx,
--					     int thread_index, int num_threads)
-+					     int thread_index, int num_threads,
-+					     dgrp_t average_group)
- {
- 	errcode_t retval;
- 	e2fsck_t thread_context;
- 	ext2_filsys thread_fs;
- 	ext2_filsys global_fs = global_ctx->fs;
- 	struct e2fsck_thread *tinfo;
--	dgrp_t average_group;
- 
- 	assert(global_ctx->inode_used_map == NULL);
- 	assert(global_ctx->inode_dir_map == NULL);
-@@ -2535,16 +2536,9 @@ static errcode_t e2fsck_pass1_thread_prepare(e2fsck_t global_ctx, e2fsck_t *thre
- 	thread_context->thread_info.et_thread_index = thread_index;
- 	set_up_logging(thread_context);
- 
--	/*
--	 * Distribute work to multiple threads:
--	 * Each thread work on fs->group_desc_count / nthread groups.
--	 */
- 	tinfo = &thread_context->thread_info;
--	average_group = thread_fs->group_desc_count / num_threads;
--	if (average_group == 0)
--		average_group = 1;
- 	tinfo->et_group_start = average_group * thread_index;
--	if (thread_index == num_threads - 1)
-+	if (thread_index == global_fs->fs_num_threads - 1)
- 		tinfo->et_group_end = thread_fs->group_desc_count;
- 	else
- 		tinfo->et_group_end = average_group * (thread_index + 1);
-@@ -3060,12 +3054,13 @@ static int e2fsck_pass1_thread_join(e2fsck_t global_ctx, e2fsck_t thread_ctx)
- }
- 
- static int e2fsck_pass1_threads_join(struct e2fsck_thread_info *infos,
--				      int num_threads, e2fsck_t global_ctx)
-+				     e2fsck_t global_ctx)
- {
- 	errcode_t rc;
- 	errcode_t ret = 0;
- 	int i;
- 	struct e2fsck_thread_info *pinfo;
-+	int num_threads = global_ctx->fs_num_threads;
- 
- 	/* merge invalid bitmaps will recalculate it */
- 	global_ctx->invalid_bitmaps = 0;
-@@ -3147,7 +3142,7 @@ out:
- }
- 
- static int e2fsck_pass1_threads_start(struct e2fsck_thread_info **pinfo,
--				      int num_threads, e2fsck_t global_ctx)
-+				      e2fsck_t global_ctx)
- {
- 	struct e2fsck_thread_info *infos;
- 	pthread_attr_t attr;
-@@ -3156,6 +3151,8 @@ static int e2fsck_pass1_threads_start(struct e2fsck_thread_info **pinfo,
- 	struct e2fsck_thread_info *tmp_pinfo;
- 	int i;
- 	e2fsck_t thread_ctx;
-+	dgrp_t average_group;
-+	int num_threads = global_ctx->fs_num_threads;
- #ifdef DEBUG_THREADS
- 	struct e2fsck_thread_debug thread_debug =
- 		{PTHREAD_MUTEX_INITIALIZER, PTHREAD_COND_INITIALIZER, 0};
-@@ -3179,6 +3176,7 @@ static int e2fsck_pass1_threads_start(struct e2fsck_thread_info **pinfo,
- 		return retval;
- 	}
- 
-+	average_group = ext2fs_get_avg_group(global_ctx->fs);
- 	for (i = 0; i < num_threads; i++) {
- 		tmp_pinfo = &infos[i];
- 		tmp_pinfo->eti_thread_index = i;
-@@ -3186,7 +3184,8 @@ static int e2fsck_pass1_threads_start(struct e2fsck_thread_info **pinfo,
- 		tmp_pinfo->eti_debug = &thread_debug;
- #endif
- 		retval = e2fsck_pass1_thread_prepare(global_ctx, &thread_ctx,
--						     i, num_threads);
-+						     i, num_threads,
-+						     average_group);
- 		if (retval) {
- 			com_err(global_ctx->program_name, retval,
- 				_("while preparing pass1 thread\n"));
-@@ -3216,7 +3215,7 @@ static int e2fsck_pass1_threads_start(struct e2fsck_thread_info **pinfo,
- 	}
- 
- 	if (retval) {
--		e2fsck_pass1_threads_join(infos, num_threads, global_ctx);
-+		e2fsck_pass1_threads_join(infos, global_ctx);
- 		return retval;
- 	}
- 	*pinfo = infos;
-@@ -3226,17 +3225,16 @@ static int e2fsck_pass1_threads_start(struct e2fsck_thread_info **pinfo,
- static void e2fsck_pass1_multithread(e2fsck_t global_ctx)
- {
- 	struct e2fsck_thread_info *infos = NULL;
--	int num_threads = global_ctx->fs_num_threads;
- 	errcode_t retval;
- 
--	retval = e2fsck_pass1_threads_start(&infos, num_threads, global_ctx);
-+	retval = e2fsck_pass1_threads_start(&infos, global_ctx);
- 	if (retval) {
- 		com_err(global_ctx->program_name, retval,
- 			_("while starting pass1 threads\n"));
- 		goto out_abort;
- 	}
- 
--	retval = e2fsck_pass1_threads_join(infos, num_threads, global_ctx);
-+	retval = e2fsck_pass1_threads_join(infos, global_ctx);
- 	if (retval) {
- 		com_err(global_ctx->program_name, retval,
- 			_("while joining pass1 threads\n"));
+-	/* If we can do readahead, figure out how many groups to pull in. */
+-	if (!e2fsck_can_readahead(ctx->fs))
+-		ctx->readahead_kb = 0;
+-	else if (ctx->readahead_kb == ~0ULL)
+-		ctx->readahead_kb = e2fsck_guess_readahead(ctx->fs);
+ 	pass1_readahead(ctx, &ra_group, &ino_threshold);
+-
+ 	if (ext2fs_has_feature_dir_index(fs->super) &&
+ 	    !(ctx->options & E2F_OPT_NO)) {
+ 		if (ext2fs_u32_list_create(&ctx->dirs_to_hash, 50))
 -- 
 2.37.3
 
