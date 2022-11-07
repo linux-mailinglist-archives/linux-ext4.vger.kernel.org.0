@@ -2,53 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D54D661F333
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:28:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E460361F334
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:28:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232295AbiKGM2h (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 7 Nov 2022 07:28:37 -0500
+        id S232274AbiKGM2n (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 7 Nov 2022 07:28:43 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232256AbiKGM2b (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:28:31 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E40691B9F6
-        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:28:21 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id m6-20020a17090a5a4600b00212f8dffec9so10169204pji.0
-        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:28:21 -0800 (PST)
+        with ESMTP id S232277AbiKGM2g (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:28:36 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3551C12D1B
+        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:28:29 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id j12so10911395plj.5
+        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:28:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=U3+ch67cgLBbn0L6V94LJXJr3S/uxJxECMuGxF8cj5o=;
-        b=BR1hUebDNKgjB1qq+Nzbo6U/Z67vJ78KT3DXNcHZ04c9ShwQ1NU212ueAoMYIc5tHX
-         4FYBGCOZscEXARSdBHn75N8CsaVb69tGYj3UmyiEuwjSDdaa6u8hdQwpQWrnwQXef+EW
-         Zqb9h0a1wfbHywGRH9xWVGxh17yHojwDJnXXqd0a8FlwmxBtz+lZHmbHfENcx73xocQ9
-         sd6ezF4xVRG+AKWapDOvJCpRl5EHpJvYPdkfhj/LHf1z64x64rFdsoVqfeDwjV+0wpQg
-         hzECqBNcTQQnqC265Rw6JH8y5Vm4LIDhv1XL3oUObd8msJ+uJ9VEoI/7GuSKv3+40iuf
-         NGig==
+        bh=jFIewdpm8KInBVBgrg0PGTjUi+OYV8V6Z0qzY/EFJPg=;
+        b=JKu3DYpz7MaA651zSPW2aryhNcbW0+bOB4HrOWsqHRaTIoj6R9dZ8bLAZ9gF9toBjj
+         aemJreuoeR632vtT6O7Y23f26EXQMhQ9+Fdl9Nukr0ZUNwUsuPw48+8uYgVrLtfEOalg
+         cU97O6MwN3zdn2beb/5gjETBabwFTrsp6ElVtgvdYofJjc6gHFukAn/JFDaQhnKfWNqS
+         b2TXN2YBDVuAeTadUwSPSnG4MZn/ICHN3TtNzd3ltOd9eSGrtWSpI9Mg6jd6dg+pnyto
+         jRx3/WcFxM/BNFu+ZwrN8HHcSHVHzzMgWFagl09MYFVSGOOm96SDfPfeBLx1T74R+eDC
+         ZvSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=U3+ch67cgLBbn0L6V94LJXJr3S/uxJxECMuGxF8cj5o=;
-        b=W7bOw0SNqPGRrKjHipVmPjpsKvC5RxgOXzxuXQNLssoXO9lNFcFI5xEyC5X5c4vZh/
-         w8q91fqrRsElkkJE85HHjVM/7qjeEjVYrSbRDnS/Fh7kANWGV+vB9W27EE9qEz91Fvap
-         TW/kGYbOX1dei3upuBJBlG3e+d/kVGlZjKl7ewY9FpIrOkzKgh5k/goE3hnQVRyENiPh
-         6wbnB8SDEEjKCUlEujPSZ9zioFk+UmHfnb0se9muZCnN0QO2tyASe1tDQ4u02IfuR+6w
-         RscWLWQ4t8TOOGEFFTQepLpv32brrzioAHLOY85b1ilveE+dCqFTr6e5ISa/ApTNaUNu
-         R2WA==
-X-Gm-Message-State: ACrzQf0u1jVHkB6AzWEzWT7Erd9uZa9jYcyMok0nuKUrCEhsGP+QSU0o
-        CQBQSK4DZKzIdejfuUx5n8s=
-X-Google-Smtp-Source: AMsMyM74V9jJLYodD/jnz6kQ5A0fU8Q9Y9QJR66D7NDw7GqtXncbVRIjPKuWNDUuzd2IKzxeGiXuEA==
-X-Received: by 2002:a17:90b:19d1:b0:213:7030:6bd9 with SMTP id nm17-20020a17090b19d100b0021370306bd9mr51816168pjb.43.1667824101353;
-        Mon, 07 Nov 2022 04:28:21 -0800 (PST)
+        bh=jFIewdpm8KInBVBgrg0PGTjUi+OYV8V6Z0qzY/EFJPg=;
+        b=TFcsK2iqtCc2GS5Ii/bnxUeoVN0O9XyMR04M9M0CKdQjoSJsYBBP6lWVqOrYKQ7CYS
+         nzM9TOF7xhy+f4J3IEX085SoUNIdKOSJRls623n0Z9rQGB4zjghf0Z25Umam0bHwd7JV
+         Fwwn0PUxjPTSUtosZzQzCf8wjtjrwZe9Bm264CDzmGYXls4ef0SDh2mCsoX/+1Tqm7bI
+         emweB+BGq5xzitisElNkTvK6t9CHQCEjude45s7KyJRrycIxAGw1FAVWUxJ252NdO2gn
+         Xmef3XXW9Lb2ZoP4Dm5SqztwDDYd2suJnFw0E9b9ZOgaTED6Z+9UaEm1lusqn+Y371pF
+         koSw==
+X-Gm-Message-State: ACrzQf1VBKOoCpeeJHbVCr3zakWQvb85n4fd8An2Bi5YMU5iwyzUgLyi
+        /XhSZdwlbsRuzeIqEFHB0Rs=
+X-Google-Smtp-Source: AMsMyM7gc1wNho74ImwF+ZPwBfiqyWsVc9sHBGvveqEuY/bHNQCuf3BH31y3mVdc4Qkq5uuWvf1Ojw==
+X-Received: by 2002:a17:902:ec01:b0:186:748f:e8b6 with SMTP id l1-20020a170902ec0100b00186748fe8b6mr49858814pld.131.1667824108741;
+        Mon, 07 Nov 2022 04:28:28 -0800 (PST)
 Received: from localhost ([2406:7400:63:f20b:312d:45b2:85c1:c486])
-        by smtp.gmail.com with ESMTPSA id y13-20020a170902b48d00b001869f2120a5sm4854904plr.34.2022.11.07.04.28.20
+        by smtp.gmail.com with ESMTPSA id w3-20020a628203000000b00562784609fbsm4332436pfd.209.2022.11.07.04.28.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Nov 2022 04:28:20 -0800 (PST)
+        Mon, 07 Nov 2022 04:28:28 -0800 (PST)
 From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
 To:     Theodore Ts'o <tytso@mit.edu>
 Cc:     linux-ext4@vger.kernel.org,
@@ -56,9 +56,9 @@ Cc:     linux-ext4@vger.kernel.org,
         Wang Shilong <wshilong@ddn.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Li Xi <lixi@ddn.com>, Ritesh Harjani <ritesh.list@gmail.com>
-Subject: [RFCv1 59/72] e2fsck: update mmp block in one thread
-Date:   Mon,  7 Nov 2022 17:51:47 +0530
-Message-Id: <48d152d713a9af21eefbfa69b26a7dd417f0897c.1667822611.git.ritesh.list@gmail.com>
+Subject: [RFCv1 60/72] e2fsck: reset @inodes_to_rebuild if restart
+Date:   Mon,  7 Nov 2022 17:51:48 +0530
+Message-Id: <89bc200265e9aaa5a4d610f0fd18fc7acd934dec.1667822612.git.ritesh.list@gmail.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1667822611.git.ritesh.list@gmail.com>
 References: <cover.1667822611.git.ritesh.list@gmail.com>
@@ -76,89 +76,46 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Wang Shilong <wshilong@ddn.com>
 
-For multiple threads, different threads will try to
-update mmp block at the same time, only allow one
-thread to update it.
+Verify multiple thread on a corrupted images hit following bug:
+
+pass1.c:2902: e2fsck_pass1_thread_prepare:
+Assertion `global_ctx->inodes_to_rebuild == NULL' failed.
+Signal (6) SIGABRT si_code=SI_TKILL
+./e2fsck/e2fsck[0x43829e]
+/lib64/libpthread.so.0(+0x14b20)[0x7f3b45135b20]
+/lib64/libc.so.6(gsignal+0x145)[0x7f3b44f2c625]
+/lib64/libc.so.6(abort+0x12b)[0x7f3b44f158d9]
+/lib64/libc.so.6(+0x257a9)[0x7f3b44f157a9]
+/lib64/libc.so.6(+0x34a66)[0x7f3b44f24a66]
+./e2fsck/e2fsck(e2fsck_pass1+0x1662)[0x423572]
+./e2fsck/e2fsck(e2fsck_run+0x5a)[0x41611a]
+./e2fsck/e2fsck(main+0x1608)[0x4121b8]
+/lib64/libc.so.6(__libc_start_main+0xf3)[0x7f3b44f171a3]
+./e2fsck/e2fsck(_start+0x2e)[0x413dde]
+
+@inodes_to_rebuild could be not NULL after we restart pass1
 
 Signed-off-by: Wang Shilong <wshilong@ddn.com>
 Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 ---
- e2fsck/e2fsck.h |  1 +
- e2fsck/pass1.c  | 34 ++++++++++++++++++++++++++++++++--
- 2 files changed, 33 insertions(+), 2 deletions(-)
+ e2fsck/e2fsck.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/e2fsck/e2fsck.h b/e2fsck/e2fsck.h
-index 01bd9d01..2dd7ba27 100644
---- a/e2fsck/e2fsck.h
-+++ b/e2fsck/e2fsck.h
-@@ -488,6 +488,7 @@ struct e2fsck_struct {
- 
- #ifdef HAVE_PTHREAD
- 	__u32			 fs_num_threads;
-+	__u32			 mmp_update_thread;
- 	int			 fs_need_locking;
- 	/* serialize fix operation for multiple threads */
- 	pthread_rwlock_t	 fs_fix_rwlock;
-diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
-index 93cff80e..ed4275c3 100644
---- a/e2fsck/pass1.c
-+++ b/e2fsck/pass1.c
-@@ -1509,7 +1509,8 @@ void e2fsck_pass1_run(e2fsck_t ctx)
- 	dgrp_t		ra_group = 0;
- 	struct ea_quota	ea_ibody_quota;
- 	struct process_inode_block *inodes_to_process;
--	int process_inode_count;
-+	int process_inode_count, check_mmp;
-+	e2fsck_t global_ctx = ctx->global_ctx ? ctx->global_ctx : ctx;
- 
- 	init_resource_track(&rtrack, ctx->fs->io);
- 	clear_problem_context(&pctx);
-@@ -1672,8 +1673,30 @@ void e2fsck_pass1_run(e2fsck_t ctx)
- #endif
- 
- 	while (1) {
-+		check_mmp = 0;
- 		e2fsck_pass1_check_lock(ctx);
--		if (ino % (fs->super->s_inodes_per_group * 4) == 1) {
-+#ifdef	HAVE_PTHREAD
-+		if (!global_ctx->mmp_update_thread) {
-+			e2fsck_pass1_block_map_w_lock(ctx);
-+			if (!global_ctx->mmp_update_thread) {
-+				global_ctx->mmp_update_thread =
-+					ctx->thread_info.et_thread_index + 1;
-+				check_mmp = 1;
-+			}
-+			e2fsck_pass1_block_map_w_unlock(ctx);
-+		}
-+
-+		/* only one active thread could update mmp block. */
-+		e2fsck_pass1_block_map_r_lock(ctx);
-+		if (global_ctx->mmp_update_thread ==
-+		    ctx->thread_info.et_thread_index + 1)
-+			check_mmp = 1;
-+		e2fsck_pass1_block_map_r_unlock(ctx);
-+#else
-+		check_mmp = 1;
-+#endif
-+
-+		if (check_mmp && (ino % (fs->super->s_inodes_per_group * 4) == 1)) {
- 			if (e2fsck_mmp_update(fs))
- 				fatal_error(ctx, 0);
- 		}
-@@ -2437,6 +2460,13 @@ endit:
- 		print_resource_track(ctx, _("Pass 1"), &rtrack, ctx->fs->io);
- 	else
- 		ctx->invalid_bitmaps++;
-+#ifdef	HAVE_PTHREAD
-+	/* reset update_thread after this thread exit */
-+	e2fsck_pass1_block_map_w_lock(ctx);
-+	if (check_mmp)
-+		global_ctx->mmp_update_thread = 0;
-+	e2fsck_pass1_block_map_w_unlock(ctx);
-+#endif
- }
- 
- #ifdef HAVE_PTHREAD
+diff --git a/e2fsck/e2fsck.c b/e2fsck/e2fsck.c
+index a5150dab..53af8905 100644
+--- a/e2fsck/e2fsck.c
++++ b/e2fsck/e2fsck.c
+@@ -79,6 +79,10 @@ errcode_t e2fsck_reset_context(e2fsck_t ctx)
+ 		ext2fs_free_block_bitmap(ctx->inode_casefold_map);
+ 		ctx->inode_casefold_map = 0;
+ 	}
++	if (ctx->inodes_to_rebuild) {
++		ext2fs_free_inode_bitmap(ctx->inodes_to_rebuild);
++		ctx->inodes_to_rebuild = 0;
++	}
+ 	if (ctx->inode_link_info) {
+ 		ext2fs_free_icount(ctx->inode_link_info);
+ 		ctx->inode_link_info = 0;
 -- 
 2.37.3
 
