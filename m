@@ -2,53 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E1661F346
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:30:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D7A61F348
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:31:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232095AbiKGMay (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 7 Nov 2022 07:30:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53632 "EHLO
+        id S232134AbiKGMbG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 7 Nov 2022 07:31:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231935AbiKGMag (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:30:36 -0500
+        with ESMTP id S232153AbiKGMah (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:30:37 -0500
 Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 661371B9D2
-        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:29:31 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id v4-20020a17090a088400b00212cb0ed97eso10125795pjc.5
-        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:29:31 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EDA91B7AA
+        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:29:37 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id m6-20020a17090a5a4600b00212f8dffec9so10172195pji.0
+        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:29:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7mCTw1xNENoPySQjpxJulxZ+cgE3/DtDrhwZ00hou64=;
-        b=Z5a0TsZ6akgVS5InsU+efI070jXFge2KncXT0iqgNNdAvRawfnCumcq52lAe793gWR
-         81MiIJctZ7WyoIBRzQxsaCdoL+Ct93pXL/qDoBST60CfwPyrPn0zvIWmD87L6Z7ZyUKY
-         em/0x2yaDxmq/1BHUC9ZiMUEjqvi8IPJDisjpE2xBBLdi6HilMcnvSRjNEX07Yi/Wp3p
-         y7KNkG/NOMB+F52TDZFVRoMGz78xEGAnIGdLTs3E5jd0ODvjiqakS0VixeyVrmVrc9fN
-         vvC677Hh1WfYe9tjN4XCUQnoo3Gqjszui7FuVzHwQ43awyTLLDfTuaIure+i+yZ/YVoO
-         4iTQ==
+        bh=brABaUCcI2WmtiC9btp4x4LzbwAmsKEEIExja+PubBU=;
+        b=AKQtLeQj2gU9Cpx6Cgl1I3ItI9fra2tqkX4jvbMRiJfShMzSZNUbaAUatvx26N1kHt
+         jRPTu1tsFWmPGn15HGxgUnS07OiQdDYrBDTnYZtCyRa8FvcstyQl563CaKdNHdzmbkxS
+         fWD7WoqCFQRfPlFiGXyH0WyK9HAaW04+1prO6YGirCtBfFIuiDHfKNZCkO5FLfNbJQI+
+         7W8/PkwGcMhYsYx6sFhbe9u7gDtaLZ7C/b5Ero3mAV3aHcQX16W/xnos3NQMyCSpfZAT
+         lCcj1XSa2Fbm4Hg94v0dvtugcOhfSBm07JsOby5VxLrF8i9LIU2AB/Tc2RggZFVy2oHr
+         j/PA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7mCTw1xNENoPySQjpxJulxZ+cgE3/DtDrhwZ00hou64=;
-        b=7FDKHtWnqYRvDqR0oGPQI9mlGSAdiz3Mpo3G6UPPjb4VCsY083u2DUIgTgBcEbZoe6
-         pqp1arGLBj3nKS/FvTPgdW5Qnb4Gb3ZstmmXVXu/GVBtG2xxyAXpIYhA4vrnKZ/Q+40H
-         ik9IJ6FGf52nrMpNetl9xcO5t36rdM6yT1xMj9bRf6N+dbEczVnu2v1DPcQZ/flBke5E
-         ZEd9NrVwqKHN1SJAONMrnobPqstIAF++LMDDMYKup3FWAqNWpr8fDrMHEWHWF9D7+Au9
-         OkMf0QEA3f2k0QjEEWJNG2cJxBMHDvnU1+KGPfT9X7Fec3aSIGZ7hr4DeHnPjwLdiG8u
-         OG+g==
-X-Gm-Message-State: ACrzQf0yBbg+drtCgrY+LH2jMTVmxP+FyDY7MWTh3tayFwsMSGfzXLuM
-        us+Y346gjbrr08Hh+683mEz6N7f2ZtM=
-X-Google-Smtp-Source: AMsMyM7vVzHUZVeTbOMwSivZ8sak45p3GRBoovd8VcmGTzUmu068MhJGZ/6A/PSkhP8l0eVa23dUhw==
-X-Received: by 2002:a17:90a:a415:b0:20a:f813:83a3 with SMTP id y21-20020a17090aa41500b0020af81383a3mr51751288pjp.238.1667824170932;
-        Mon, 07 Nov 2022 04:29:30 -0800 (PST)
+        bh=brABaUCcI2WmtiC9btp4x4LzbwAmsKEEIExja+PubBU=;
+        b=6EtvtfQgc+b+qs+yowvQL0MdFZBJTQl3U3MgFPo96SRC2vrYlDdDB3UxmgVth6IBnA
+         z7mm7CvaiJDzAcyqdUyKlGg50OsOCTcMoawYwGx38MlSNEGHFRY9fXJjvXeDWx0OWZSM
+         e9v3aNtaYdya1KfXu0bFT1h7nmlEtq0yRDPt6me/tmprxuWP8hS09b9cLy2q3AEF6OrR
+         9G+3miE/jVK6Xti5207aPbcvRYwsKmfjYcDwRNFJFpfAwg3w9Uxrq0RktDVR8oLqcd4V
+         d52X5qxLLHpxhd6PxuRE5K5lu/AygKCpnmOVnhFH9ioRgo05WQeHpOTycPRID7bFioBi
+         Am9Q==
+X-Gm-Message-State: ACrzQf3dqmGNkfJz0KuwilKUER+GXDeIfpuGg//MMdkvn3VSwKnDxKip
+        Kp59VLPdnpTgcGxYYqtSUY0=
+X-Google-Smtp-Source: AMsMyM5xFatw0U4M8F8g/S4R3nOCTABfOUjCvzOEt0WFP4eF4xORPqgPDZBSdcGT4fRi2+JWVuaRGg==
+X-Received: by 2002:a17:90a:20c:b0:213:1179:1fff with SMTP id c12-20020a17090a020c00b0021311791fffmr52845952pjc.23.1667824177086;
+        Mon, 07 Nov 2022 04:29:37 -0800 (PST)
 Received: from localhost ([2406:7400:63:f20b:312d:45b2:85c1:c486])
-        by smtp.gmail.com with ESMTPSA id o22-20020a170902779600b0018668bee7cdsm4877440pll.77.2022.11.07.04.29.29
+        by smtp.gmail.com with ESMTPSA id fy14-20020a17090b020e00b002036006d65bsm4162096pjb.39.2022.11.07.04.29.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Nov 2022 04:29:30 -0800 (PST)
+        Mon, 07 Nov 2022 04:29:36 -0800 (PST)
 From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
 To:     Theodore Ts'o <tytso@mit.edu>
 Cc:     linux-ext4@vger.kernel.org,
@@ -57,9 +57,9 @@ Cc:     linux-ext4@vger.kernel.org,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Li Xi <lixi@ddn.com>,
         "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Subject: [RFCv1 70/72] e2fsck: Fix and simplify update_mmp in case of pfsck
-Date:   Mon,  7 Nov 2022 17:51:58 +0530
-Message-Id: <846558b5f837ed2d32246a072d3b97f584573c7d.1667822612.git.ritesh.list@gmail.com>
+Subject: [RFCv1 71/72] e2fsck: Make threads call log_out after pthread_join
+Date:   Mon,  7 Nov 2022 17:51:59 +0530
+Message-Id: <6a1aa669f380236663941522f84acf840919aac0.1667822612.git.ritesh.list@gmail.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1667822611.git.ritesh.list@gmail.com>
 References: <cover.1667822611.git.ritesh.list@gmail.com>
@@ -75,145 +75,47 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This adds pass1_update_mmp_enter() & pass1_update_mmp_exit() routines
-to update mmp block. This also fixes a data race reported by threadsan
-because of reading and writing to mmp_update_thread variable.
+All fsck threads will call for log_out prints after the pass1 their
+respective pass1 scanning is completed. This patch moves the log_out
+print from to after the pthread_join operation.
+This makes the threads always print the info in order.
 
 Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 ---
- e2fsck/pass1.c | 97 ++++++++++++++++++++++++++++++++------------------
- 1 file changed, 63 insertions(+), 34 deletions(-)
+ e2fsck/pass1.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
-index 4168a45d..2ff83fcb 100644
+index 2ff83fcb..90adc419 100644
 --- a/e2fsck/pass1.c
 +++ b/e2fsck/pass1.c
-@@ -1097,6 +1097,66 @@ out:
- 	return 0;
- }
- 
-+static void pass1_update_mmp_enter(e2fsck_t ctx, ext2_ino_t	ino)
-+{
-+	ext2_filsys fs = ctx->fs;
-+	e2fsck_t global_ctx = ctx->global_ctx ? ctx->global_ctx : ctx;
-+	int check_mmp = 0;
-+	int set_mmp = 0;
-+
-+#ifdef HAVE_PTHREAD
-+	/* only one active thread could update mmp block. */
-+	e2fsck_pass1_block_map_r_lock(ctx);
-+	if (!global_ctx->mmp_update_thread)
-+		set_mmp = 1;
-+	if (global_ctx->mmp_update_thread == ctx->thread_info.et_thread_index + 1)
-+		check_mmp = 1;
-+	e2fsck_pass1_block_map_r_unlock(ctx);
-+
-+	if (!check_mmp && !set_mmp)
-+		return;
-+
-+	if (set_mmp) {
-+		e2fsck_pass1_block_map_w_lock(ctx);
-+		if (!global_ctx->mmp_update_thread) {
-+			global_ctx->mmp_update_thread =
-+				ctx->thread_info.et_thread_index + 1;
-+			check_mmp = 1;
-+		}
-+		e2fsck_pass1_block_map_w_unlock(ctx);
-+	}
-+#else
-+	check_mmp = 1;
-+#endif
-+
-+	if (check_mmp && (ino % (fs->super->s_inodes_per_group * 4) == 1)) {
-+		if (e2fsck_mmp_update(fs))
-+			fatal_error(ctx, 0);
-+	}
-+}
-+
-+static void pass1_update_mmp_exit(e2fsck_t ctx)
-+{
-+	ext2_filsys fs = ctx->fs;
-+	e2fsck_t global_ctx = ctx->global_ctx ? ctx->global_ctx : ctx;
-+	int set_mmp = 0;
-+
-+#ifdef HAVE_PTHREAD
-+	e2fsck_pass1_block_map_r_lock(ctx);
-+	if (global_ctx->mmp_update_thread == ctx->thread_info.et_thread_index + 1)
-+		set_mmp = 1;
-+	e2fsck_pass1_block_map_r_unlock(ctx);
-+
-+	if (!set_mmp)
-+		return;
-+
-+	/* reset update_thread after this thread exit */
-+	e2fsck_pass1_block_map_w_lock(ctx);
-+	global_ctx->mmp_update_thread = 0;
-+	e2fsck_pass1_block_map_w_unlock(ctx);
-+#endif
-+}
-+
- static void pass1_readahead(e2fsck_t ctx, dgrp_t *group, ext2_ino_t *next_ino)
+@@ -3112,6 +3112,12 @@ static int e2fsck_pass1_thread_join(e2fsck_t global_ctx, e2fsck_t thread_ctx)
  {
- 	ext2_ino_t inodes_in_group = 0, inodes_per_block, inodes_per_buffer;
-@@ -1511,7 +1571,7 @@ void e2fsck_pass1_run(e2fsck_t ctx)
- 	dgrp_t		ra_group = 0;
- 	struct ea_quota	ea_ibody_quota;
- 	struct process_inode_block *inodes_to_process;
--	int process_inode_count, check_mmp;
-+	int process_inode_count;
- 	e2fsck_t global_ctx = ctx->global_ctx ? ctx->global_ctx : ctx;
+ 	errcode_t retval;
  
- 	init_resource_track(&rtrack, ctx->fs->io);
-@@ -1675,33 +1735,8 @@ void e2fsck_pass1_run(e2fsck_t ctx)
- #endif
++	log_out(thread_ctx,
++			_("Scanned group range [%u, %u), inodes %u\n"),
++			thread_ctx->thread_info.et_group_start,
++			thread_ctx->thread_info.et_group_end,
++			thread_ctx->thread_info.et_inode_number);
++
+ 	retval = e2fsck_pass1_merge_context(global_ctx, thread_ctx);
  
- 	while (1) {
--		check_mmp = 0;
- 		e2fsck_pass1_check_lock(ctx);
--#ifdef	HAVE_PTHREAD
--		if (!global_ctx->mmp_update_thread) {
--			e2fsck_pass1_block_map_w_lock(ctx);
--			if (!global_ctx->mmp_update_thread) {
--				global_ctx->mmp_update_thread =
--					ctx->thread_info.et_thread_index + 1;
--				check_mmp = 1;
--			}
--			e2fsck_pass1_block_map_w_unlock(ctx);
--		}
+ 	quota_release_context(&thread_ctx->qctx);
+@@ -3203,13 +3209,6 @@ static void *e2fsck_pass1_thread(void *arg)
+ 	e2fsck_pass1_run(thread_ctx);
+ 
+ out:
+-	if (thread_ctx->options & E2F_OPT_MULTITHREAD)
+-		log_out(thread_ctx,
+-			_("Scanned group range [%u, %u), inodes %u\n"),
+-			thread_ctx->thread_info.et_group_start,
+-			thread_ctx->thread_info.et_group_end,
+-			thread_ctx->thread_info.et_inode_number);
 -
--		/* only one active thread could update mmp block. */
--		e2fsck_pass1_block_map_r_lock(ctx);
--		if (global_ctx->mmp_update_thread ==
--		    ctx->thread_info.et_thread_index + 1)
--			check_mmp = 1;
--		e2fsck_pass1_block_map_r_unlock(ctx);
--#else
--		check_mmp = 1;
--#endif
--
--		if (check_mmp && (ino % (fs->super->s_inodes_per_group * 4) == 1)) {
--			if (e2fsck_mmp_update(fs))
--				fatal_error(ctx, 0);
--		}
-+		pass1_update_mmp_enter(ctx, ino);
- 		old_op = ehandler_operation(eop_next_inode);
- 		pctx.errcode = ext2fs_get_next_inode_full(scan, &ino,
- 							  inode, inode_size);
-@@ -2458,13 +2493,7 @@ endit:
- 		print_resource_track(ctx, _("Pass 1"), &rtrack, ctx->fs->io);
- 	else
- 		ctx->invalid_bitmaps++;
--#ifdef	HAVE_PTHREAD
--	/* reset update_thread after this thread exit */
--	e2fsck_pass1_block_map_w_lock(ctx);
--	if (check_mmp)
--		global_ctx->mmp_update_thread = 0;
--	e2fsck_pass1_block_map_w_unlock(ctx);
--#endif
-+	pass1_update_mmp_exit(ctx);
- }
- 
- #ifdef HAVE_PTHREAD
+ #ifdef DEBUG_THREADS
+ 	pthread_mutex_lock(&thread_debug->etd_mutex);
+ 	thread_debug->etd_finished_threads++;
 -- 
 2.37.3
 
