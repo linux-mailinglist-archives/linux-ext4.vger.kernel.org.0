@@ -2,53 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6860461F2FE
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:25:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89C0F61F2FF
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232211AbiKGMY7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 7 Nov 2022 07:24:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50828 "EHLO
+        id S232236AbiKGMZF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 7 Nov 2022 07:25:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232212AbiKGMYr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:24:47 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A32031B7AE
-        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:24:46 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id u6so10881021plq.12
-        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:24:46 -0800 (PST)
+        with ESMTP id S232172AbiKGMYx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:24:53 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B292F140F6
+        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:24:52 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id 4so10952969pli.0
+        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:24:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0NuUxgcrcbyLEt+4D5wU+GVX4W+ksOY5RfbdK0CPaRk=;
-        b=Ix8FHeEmnUoyT5Wiff1YiUOBbkH2ITNogZrk4cgWYfoLnR2RPo2nENzFDS71+kFc2y
-         Qg86ALET1edqF9ZHIy0SYi8cAyqIpVpBoyrIgI47lxS7SgC0/F5UEPOC7aTqA0IfysMb
-         ao1ehlxwodN6taZx0fMxwxb9UXoKKyYGXzevtazfJd1kLVwBkoziV+XQN6JZFJnGVW5c
-         BdS7dcGoBNnL+NQoM9idcmHEgEJeVC0eC02RHGAX4hLlks1G2mTJ9lki7FgGyi5rFyU9
-         WykcCFX3+1Klwote+MFeQ3zfRK8u7EDemrZkO/Ge0DEO07z05lgeUDc2cAlEBnQ3tNSv
-         CVWw==
+        bh=KMUAlTv0xFqkr4yBd3hOL6zg1L92K891HA8xH93YHYc=;
+        b=PpRIw9C97by405j/e3btrx6VItpdNXtv2DAZPfa/VaRb8qcjyb30blV4S7KIyXxzV6
+         t0qvnH3OteQkerC2MWG17nT7GC9cXU49uZwdjgRJKAYJt47EiKuSC28f1pv7nDy63rro
+         m9gPFhHcWtGxxnpvbLEHENdepJPvRDJPTr2ddtayaBZZk3YQnbzHMD7jy+dIqnlYV1d4
+         rFMhK96O8TiwrVaBbQR43g1jjvHvXrYypenR1/0gEJDDfZe0ufDoniUuMnK2tOuvR93U
+         C9So8L0g3X+t2y+XFzyFsYzEfiFK9DtxR2JX9iCUHCILg5sUSTS7F6mk1xByg/lJq6XG
+         AAcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0NuUxgcrcbyLEt+4D5wU+GVX4W+ksOY5RfbdK0CPaRk=;
-        b=A/qnvWryOhNsHDyXReNOl9dSTjPnGhhdhuZpvoBqxZKTkbH35GZNFWVH4l21OB9ukR
-         Q3tLMquo2snh+tamHC7ey2EjrvXjIB5MuLAze2GONCc1eaB5Zmh35E3s4W9OSexPX6Dq
-         HEoLeY4YZoR00NdG+uTZd33v0MDowiRzSIpPQMoPuZGKm1k8SRbkWuZJ6bL+j+M2nvm8
-         0ftC9WrJU8KVUYL9nIuTgE3vOTJqPM+OmdQ8nagupa+dO/KeAz7ZOu8dqLOCF8zmFMP4
-         hRx7OAz7oJ66CtXSgRfFK/MbCQ8/cDV23XZZtQXpgiwYiNePhZ/40WMmq8ZZLsJxAkOt
-         Ce3g==
-X-Gm-Message-State: ACrzQf3n5Ww1HFdf9+VrZgchBC66cAp9fNFHuur/1+3F/pziy/kETepR
-        5zMVK73l1NcL3jl39NCw068=
-X-Google-Smtp-Source: AMsMyM7Xc45YVUVrIbKj33wGGxzZPTVQQLYRkmDpUeF4MD46jIq2xNQeqqQBRg4Rtwr9kvXcQCnoTA==
-X-Received: by 2002:a17:90a:d80a:b0:213:1442:24be with SMTP id a10-20020a17090ad80a00b00213144224bemr751410pjv.15.1667823886170;
-        Mon, 07 Nov 2022 04:24:46 -0800 (PST)
+        bh=KMUAlTv0xFqkr4yBd3hOL6zg1L92K891HA8xH93YHYc=;
+        b=diw+Bp6njgQQs7o/ReWMLT4AJwIKnVFeIvFzw9iLQGCD5n/IjGHP5nK8hC5+3x3tQ0
+         hQhpqhPT6Ox17hQSu/Wb2zSe2yEYBMbBJdGuvtkKnW26JmbyzlzalOnZ89JvXnrcg4cD
+         eszs1Lo8QA40pQK3BMl5/UFYezJ+FlqqJakLI8amedsax//x9n0cLlF15xSDeQ9f5/N5
+         wpiL/JxWb8hp/s2DyaEUaRqje4VPdEKoHpGCcA0lgz8cgMMAklGmq+ijM/cKlZYvexdl
+         PvDw+3HFzWeUOs2mupc4mIfe3NSyjmR3lg/d6YRpkX6vOaDesX8pwMuV1RleDOTe3JkM
+         cK/g==
+X-Gm-Message-State: ACrzQf3aQiPdxeXk0wjxqRr8KZyINBzyScVFsuks6jQi1iKFVc+hJW+/
+        djhdu9+8o1f8ewiUeXYfjdc=
+X-Google-Smtp-Source: AMsMyM5qrnMtyEVlyQajWbXzA6J6jDqMInTe7IBqb4yK3Lt3v2T5szpZ9L34KeWlYLONM/MKj+QRng==
+X-Received: by 2002:a17:903:1381:b0:188:602c:3332 with SMTP id jx1-20020a170903138100b00188602c3332mr19711924plb.122.1667823892062;
+        Mon, 07 Nov 2022 04:24:52 -0800 (PST)
 Received: from localhost ([2406:7400:63:f20b:312d:45b2:85c1:c486])
-        by smtp.gmail.com with ESMTPSA id l5-20020a622505000000b0056be1581126sm4525205pfl.143.2022.11.07.04.24.44
+        by smtp.gmail.com with ESMTPSA id v2-20020aa799c2000000b00561dcfa700asm4358141pfi.107.2022.11.07.04.24.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Nov 2022 04:24:45 -0800 (PST)
+        Mon, 07 Nov 2022 04:24:51 -0800 (PST)
 From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
 To:     Theodore Ts'o <tytso@mit.edu>
 Cc:     linux-ext4@vger.kernel.org,
@@ -56,9 +56,9 @@ Cc:     linux-ext4@vger.kernel.org,
         Wang Shilong <wshilong@ddn.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Li Xi <lixi@ddn.com>, Ritesh Harjani <ritesh.list@gmail.com>
-Subject: [RFCv1 23/72] e2fsck: create logs for multi-threads
-Date:   Mon,  7 Nov 2022 17:51:11 +0530
-Message-Id: <d3c5e6f7a959f865b0bf054778bfb72cccd2476b.1667822611.git.ritesh.list@gmail.com>
+Subject: [RFCv1 24/72] e2fsck: configure one pfsck thread
+Date:   Mon,  7 Nov 2022 17:51:12 +0530
+Message-Id: <0bd43001b7c2d1cb5551564b83baf02bc771dcb6.1667822611.git.ritesh.list@gmail.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1667822611.git.ritesh.list@gmail.com>
 References: <cover.1667822611.git.ritesh.list@gmail.com>
@@ -76,207 +76,350 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Li Xi <lixi@ddn.com>
 
-When multi-threads are used, different logs should be created
-for different threads. Each thread has log files with suffix
-of ".$THREAD_INDEX".
-
-And this patch adds f_multithread_logfile test case.
+This patch creates only one thread to do pass1 check if pthreads are
+enabled. The same codes can be used to create multiple threads, but
+other functions need to be modified to get ready for that.
 
 Signed-off-by: Li Xi <lixi@ddn.com>
 Signed-off-by: Wang Shilong <wshilong@ddn.com>
 Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 ---
- e2fsck/e2fsck.h                      |  6 ++++--
- e2fsck/logfile.c                     | 10 ++++++++-
- e2fsck/pass1.c                       | 12 +++++++++++
- tests/f_multithread_logfile/expect.1 | 23 ++++++++++++++++++++
- tests/f_multithread_logfile/image.gz |  1 +
- tests/f_multithread_logfile/name     |  1 +
- tests/f_multithread_logfile/script   | 32 ++++++++++++++++++++++++++++
- 7 files changed, 82 insertions(+), 3 deletions(-)
- create mode 100644 tests/f_multithread_logfile/expect.1
- create mode 120000 tests/f_multithread_logfile/image.gz
- create mode 100644 tests/f_multithread_logfile/name
- create mode 100644 tests/f_multithread_logfile/script
+ e2fsck/e2fsck.h   |  13 ++++
+ e2fsck/logfile.c  |   2 +
+ e2fsck/pass1.c    | 152 ++++++++++++++++++++++++++++++++++++++++------
+ e2fsck/unix.c     |  10 +++
+ tests/test_one.in |   8 +++
+ 5 files changed, 166 insertions(+), 19 deletions(-)
 
 diff --git a/e2fsck/e2fsck.h b/e2fsck/e2fsck.h
-index f1259728..284bc52e 100644
+index 284bc52e..5bc24c3f 100644
 --- a/e2fsck/e2fsck.h
 +++ b/e2fsck/e2fsck.h
-@@ -342,8 +342,10 @@ struct e2fsck_struct {
- 	/*
- 	 * For pass1_check_directory and pass1_get_blocks
- 	 */
--	ext2_ino_t stashed_ino;
--	struct ext2_inode *stashed_inode;
-+	ext2_ino_t		stashed_ino;
-+	struct ext2_inode	*stashed_inode;
-+	/* Thread index, if global_ctx is null, this field is unused */
-+	int			thread_index;
+@@ -465,6 +465,19 @@ struct e2fsck_struct {
+ 	struct e2fsck_fc_replay_state fc_replay_state;
+ };
  
- 	/*
- 	 * Location of the lost and found directory
++#ifdef HAVE_PTHREAD
++struct e2fsck_thread_info {
++	/* ID returned by pthread_create() */
++	pthread_t		 eti_thread_id;
++	/* Application-defined thread index */
++	int			 eti_thread_index;
++	/* Thread has been started */
++	int			 eti_started;
++	/* Context used for this thread */
++	e2fsck_t		 eti_thread_ctx;
++};
++#endif
++
+ /* Data structures to evaluate whether an extent tree needs rebuilding. */
+ struct extent_tree_level {
+ 	unsigned int	num_extents;
 diff --git a/e2fsck/logfile.c b/e2fsck/logfile.c
-index 9d79eed2..83dbceff 100644
+index 83dbceff..74781f80 100644
 --- a/e2fsck/logfile.c
 +++ b/e2fsck/logfile.c
-@@ -16,6 +16,7 @@
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <fcntl.h>
-+#include <assert.h>
- 
- #include "e2fsck.h"
- #include <pwd.h>
-@@ -294,6 +295,8 @@ static FILE *set_up_log_file(e2fsck_t ctx, const char *key, const char *fn)
- 	struct string s, s1, s2;
- 	char *s0 = 0, *log_dir = 0, *log_fn = 0;
- 	int log_dir_wait = 0;
-+	int string_size;
-+	char string_index[10];
- 
- 	s.s = s1.s = s2.s = 0;
- 
-@@ -310,6 +313,12 @@ static FILE *set_up_log_file(e2fsck_t ctx, const char *key, const char *fn)
+@@ -313,11 +313,13 @@ static FILE *set_up_log_file(e2fsck_t ctx, const char *key, const char *fn)
  		goto out;
  
  	expand_logfn(ctx, log_fn, &s);
-+	if (ctx->global_ctx) {
-+		sprintf(string_index, "%d", ctx->thread_index);
-+		append_string(&s, ".", 1);
-+		append_string(&s, string_index, 0);
-+	}
-+
++#ifdef HAVE_PTHREAD
+ 	if (ctx->global_ctx) {
+ 		sprintf(string_index, "%d", ctx->thread_index);
+ 		append_string(&s, ".", 1);
+ 		append_string(&s, string_index, 0);
+ 	}
++#endif
+ 
  	if ((log_fn[0] == '/') || !log_dir || !log_dir[0])
  		s0 = s.s;
- 
-@@ -328,7 +337,6 @@ static FILE *set_up_log_file(e2fsck_t ctx, const char *key, const char *fn)
- 		append_string(&s2, log_dir, 0);
- 		append_string(&s2, "/", 1);
- 		append_string(&s2, s.s, 0);
--		printf("%s\n", s2.s);
- 	}
- 
- 	if (s0)
 diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
-index 972265b8..2d4e62ca 100644
+index 2d4e62ca..596096d1 100644
 --- a/e2fsck/pass1.c
 +++ b/e2fsck/pass1.c
-@@ -2164,6 +2164,8 @@ static errcode_t e2fsck_pass1_thread_prepare(e2fsck_t global_ctx, e2fsck_t *thre
- 	thread_context->fs->priv_data = thread_context;
- 	thread_context->global_ctx = global_ctx;
+@@ -47,6 +47,9 @@
+ #ifdef HAVE_ERRNO_H
+ #include <errno.h>
+ #endif
++#ifdef HAVE_PTHREAD
++#include <pthread.h>
++#endif
  
-+	thread_context->thread_index = 0;
-+	set_up_logging(thread_context);
- 	*thread_ctx = thread_context;
+ #include "e2fsck.h"
+ #include <ext2fs/ext2_ext_attr.h>
+@@ -1166,7 +1169,7 @@ static int e2fsck_should_abort(e2fsck_t ctx)
  	return 0;
  }
-@@ -2171,6 +2173,8 @@ static errcode_t e2fsck_pass1_thread_prepare(e2fsck_t global_ctx, e2fsck_t *thre
- static int e2fsck_pass1_thread_join(e2fsck_t global_ctx, e2fsck_t thread_ctx)
+ 
+-void e2fsck_pass1_thread(e2fsck_t ctx)
++void e2fsck_pass1_run(e2fsck_t ctx)
  {
- 	int flags = global_ctx->flags;
-+	FILE *global_logf = global_ctx->logf;
-+	FILE *global_problem_logf = global_ctx->problem_logf;
- #ifdef HAVE_SETJMP_H
- 	jmp_buf old_jmp;
+ 	int	i;
+ 	__u64	max_sizes;
+@@ -2150,6 +2153,7 @@ endit:
+ 		ctx->invalid_bitmaps++;
+ }
  
-@@ -2185,6 +2189,14 @@ static int e2fsck_pass1_thread_join(e2fsck_t global_ctx, e2fsck_t thread_ctx)
- 			     (global_ctx->flags & E2F_FLAG_SIGNAL_MASK);
- 
- 	global_ctx->fs->priv_data = global_ctx;
-+	global_ctx->logf = global_logf;
-+	global_ctx->problem_logf = global_problem_logf;
-+	if (thread_ctx->logf)
-+		fclose(thread_ctx->logf);
-+	if (thread_ctx->problem_logf) {
-+		fputs("</problem_log>\n", thread_ctx->problem_logf);
-+		fclose(thread_ctx->problem_logf);
-+	}
- 	ext2fs_free_mem(&thread_ctx);
++#ifdef HAVE_PTHREAD
+ static errcode_t e2fsck_pass1_thread_prepare(e2fsck_t global_ctx, e2fsck_t *thread_ctx)
+ {
+ 	errcode_t retval;
+@@ -2201,18 +2205,38 @@ static int e2fsck_pass1_thread_join(e2fsck_t global_ctx, e2fsck_t thread_ctx)
  	return 0;
  }
-diff --git a/tests/f_multithread_logfile/expect.1 b/tests/f_multithread_logfile/expect.1
-new file mode 100644
-index 00000000..e2b954d0
---- /dev/null
-+++ b/tests/f_multithread_logfile/expect.1
-@@ -0,0 +1,23 @@
-+ext2fs_open2: Bad magic number in super-block
-+../e2fsck/e2fsck: Superblock invalid, trying backup blocks...
-+Pass 1: Checking inodes, blocks, and sizes
-+Pass 2: Checking directory structure
-+Pass 3: Checking directory connectivity
-+Pass 4: Checking reference counts
-+Pass 5: Checking group summary information
-+Free blocks count wrong for group #0 (7987, counted=7982).
-+Fix? yes
+ 
+-void e2fsck_pass1_multithread(e2fsck_t ctx)
++static int e2fsck_pass1_threads_join(struct e2fsck_thread_info *infos,
++				      int num_threads, e2fsck_t global_ctx)
+ {
+-	errcode_t retval;
+-	e2fsck_t thread_ctx;
++	errcode_t rc;
++	errcode_t ret = 0;
++	int i;
++	struct e2fsck_thread_info *pinfo;
+ 
+-	retval = e2fsck_pass1_thread_prepare(ctx, &thread_ctx);
+-	if (retval) {
+-		com_err(ctx->program_name, 0,
+-			_("while preparing pass1 thread\n"));
+-		ctx->flags |= E2F_FLAG_ABORT;
+-		return;
++	for (i = 0; i < num_threads; i++) {
++		pinfo = &infos[i];
 +
-+Free blocks count wrong (11602, counted=11597).
-+Fix? yes
++		if (!pinfo->eti_started)
++			continue;
 +
-+Free inodes count wrong for group #0 (1493, counted=1488).
-+Fix? yes
++		rc = pthread_join(pinfo->eti_thread_id, NULL);
++		if (rc) {
++			com_err(global_ctx->program_name, rc,
++				_("while joining thread\n"));
++			if (ret == 0)
++				ret = rc;
++		}
++		e2fsck_pass1_thread_join(global_ctx, infos[i].eti_thread_ctx);
+ 	}
++	free(infos);
 +
-+Free inodes count wrong (2997, counted=2992).
-+Fix? yes
++	return ret;
++}
 +
++static void *e2fsck_pass1_thread(void *arg)
++{
++	struct e2fsck_thread_info *info = arg;
++	e2fsck_t thread_ctx = info->eti_thread_ctx;
+ 
+ #ifdef HAVE_SETJMP_H
+ 	/*
+@@ -2223,28 +2247,118 @@ void e2fsck_pass1_multithread(e2fsck_t ctx)
+ 	 */
+ 	if (setjmp(thread_ctx->abort_loc)) {
+ 		thread_ctx->flags &= ~E2F_FLAG_SETJMP_OK;
+-		e2fsck_pass1_thread_join(ctx, thread_ctx);
+-		return;
++		goto out;
+ 	}
+ 	thread_ctx->flags |= E2F_FLAG_SETJMP_OK;
+ #endif
+ 
+-	e2fsck_pass1_thread(thread_ctx);
+-	retval = e2fsck_pass1_thread_join(ctx, thread_ctx);
++	e2fsck_pass1_run(thread_ctx);
 +
-+test_filesys: ***** FILE SYSTEM WAS MODIFIED *****
-+test_filesys: 16/3008 files (0.0% non-contiguous), 403/12000 blocks
-+Exit status is 1
-diff --git a/tests/f_multithread_logfile/image.gz b/tests/f_multithread_logfile/image.gz
-new file mode 120000
-index 00000000..0fd40018
---- /dev/null
-+++ b/tests/f_multithread_logfile/image.gz
-@@ -0,0 +1 @@
-+../f_zero_super/image.gz
-\ No newline at end of file
-diff --git a/tests/f_multithread_logfile/name b/tests/f_multithread_logfile/name
-new file mode 100644
-index 00000000..faaabc3b
---- /dev/null
-+++ b/tests/f_multithread_logfile/name
-@@ -0,0 +1 @@
-+test "e2fsck -m" option works with "-E log_filename="
-diff --git a/tests/f_multithread_logfile/script b/tests/f_multithread_logfile/script
-new file mode 100644
-index 00000000..4f9ca6f8
---- /dev/null
-+++ b/tests/f_multithread_logfile/script
-@@ -0,0 +1,32 @@
-+LOG_FNAME="f_multithread_logfile_xxx"
-+FSCK_OPT="-fy -m -y -E log_filename=$LOG_FNAME"
-+SKIP_VERIFY="true"
-+ONE_PASS_ONLY="true"
-+SKIP_CLEANUP="true"
++out:
++	return NULL;
++}
 +
-+rm -f $LOG_FNAME.* $LOG_FNAME
++static int e2fsck_pass1_threads_start(struct e2fsck_thread_info **pinfo,
++				      int num_threads, e2fsck_t global_ctx)
++{
++	struct e2fsck_thread_info *infos;
++	pthread_attr_t attr;
++	errcode_t retval;
++	errcode_t ret;
++	struct e2fsck_thread_info *tmp_pinfo;
++	int i;
++	e2fsck_t thread_ctx;
 +
-+. $cmd_dir/run_e2fsck
++	retval = pthread_attr_init(&attr);
+ 	if (retval) {
+-		com_err(ctx->program_name, 0,
+-			_("while joining pass1 thread\n"));
+-		ctx->flags |= E2F_FLAG_ABORT;
+-		return;
++		com_err(global_ctx->program_name, retval,
++			_("while setting pthread attribute\n"));
++		return retval;
++	}
 +
-+rm -f $test_name.ok $test_name.failed
-+cmp -s $OUT1 $EXP1
-+status1=$?
++	infos = calloc(num_threads, sizeof(struct e2fsck_thread_info));
++	if (infos == NULL) {
++		retval = -ENOMEM;
++		com_err(global_ctx->program_name, retval,
++			_("while allocating memory for threads\n"));
++		pthread_attr_destroy(&attr);
++		return retval;
++	}
 +
-+if [ "$status1" -eq 0 ]; then
-+	if [ ! -f $LOG_FNAME -o ! -f $LOG_FNAME.0 ]; then
-+		echo "$LOG_FNAME or $LOG_FNAME.0 is not created" > $test_name.failed
-+		echo "$test_name: $test_description: failed"
-+	else
-+		echo "$test_name: $test_description: ok"
-+		touch $test_name.ok
-+	fi
-+else
-+	diff $DIFF_OPTS $test_dir/expect.1 \
-+		$test_name.1.log >> $test_name.failed
-+        echo "$test_name: $test_description: failed"
++	for (i = 0; i < num_threads; i++) {
++		tmp_pinfo = &infos[i];
++		tmp_pinfo->eti_thread_index = i;
++		retval = e2fsck_pass1_thread_prepare(global_ctx, &thread_ctx);
++		if (retval) {
++			com_err(global_ctx->program_name, retval,
++				_("while preparing pass1 thread\n"));
++			break;
++		}
++		tmp_pinfo->eti_thread_ctx = thread_ctx;
++
++		retval = pthread_create(&tmp_pinfo->eti_thread_id, &attr,
++					&e2fsck_pass1_thread, tmp_pinfo);
++		if (retval) {
++			com_err(global_ctx->program_name, retval,
++				_("while creating thread\n"));
++			e2fsck_pass1_thread_join(global_ctx, thread_ctx);
++			break;
++		}
++
++		tmp_pinfo->eti_started = 1;
++	}
++
++	/* destroy the thread attribute object, since it is no longer needed */
++	ret = pthread_attr_destroy(&attr);
++	if (ret) {
++		com_err(global_ctx->program_name, ret,
++			_("while destroying thread attribute\n"));
++		if (retval == 0)
++			retval = ret;
++	}
++
++	if (retval) {
++		e2fsck_pass1_threads_join(infos, num_threads, global_ctx);
++		return retval;
+ 	}
++	*pinfo = infos;
++	return 0;
+ }
+ 
++static void e2fsck_pass1_multithread(e2fsck_t global_ctx)
++{
++	struct e2fsck_thread_info *infos = NULL;
++	int num_threads = 1;
++	errcode_t retval;
++
++	retval = e2fsck_pass1_threads_start(&infos, num_threads, global_ctx);
++	if (retval) {
++		com_err(global_ctx->program_name, retval,
++			_("while starting pass1 threads\n"));
++		goto out_abort;
++	}
++
++	retval = e2fsck_pass1_threads_join(infos, num_threads, global_ctx);
++	if (retval) {
++		com_err(global_ctx->program_name, retval,
++			_("while joining pass1 threads\n"));
++		goto out_abort;
++	}
++	return;
++out_abort:
++	global_ctx->flags |= E2F_FLAG_ABORT;
++	return;
++}
++#endif
++
+ void e2fsck_pass1(e2fsck_t ctx)
+ {
++#ifdef HAVE_PTHREAD
+ 	if (ctx->options & E2F_OPT_MULTITHREAD)
+ 		e2fsck_pass1_multithread(ctx);
+ 	else
+-		e2fsck_pass1_thread(ctx);
++#endif
++		e2fsck_pass1_run(ctx);
+ }
+ 
+ #undef FINISH_INODE_LOOP
+diff --git a/e2fsck/unix.c b/e2fsck/unix.c
+index a77041b0..af2457e3 100644
+--- a/e2fsck/unix.c
++++ b/e2fsck/unix.c
+@@ -83,7 +83,9 @@ static void usage(e2fsck_t ctx)
+ 
+ 	fprintf(stderr, "%s", _("\nEmergency help:\n"
+ 		" -p                   Automatic repair (no questions)\n"
++#ifdef HAVE_PTHREAD
+ 		" -m                   multiple threads to speedup fsck\n"
++#endif
+ 		" -n                   Make no changes to the filesystem\n"
+ 		" -y                   Assume \"yes\" to all questions\n"
+ 		" -c                   Check for bad blocks and add them to the badblock list\n"
+@@ -856,7 +858,11 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
+ 	phys_mem_kb = get_memory_size() / 1024;
+ 	ctx->readahead_kb = ~0ULL;
+ 
++#ifdef HAVE_PTHREAD
+ 	while ((c = getopt(argc, argv, "pamnyrcC:B:dE:fvtFVM:b:I:j:P:l:L:N:SsDkz:")) != EOF)
++#else
++	while ((c = getopt(argc, argv, "panyrcC:B:dE:fvtFVM:b:I:j:P:l:L:N:SsDkz:")) != EOF)
++#endif
+ 		switch (c) {
+ 		case 'C':
+ 			ctx->progress = e2fsck_update_progress;
+@@ -897,9 +903,11 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
+ 			}
+ 			ctx->options |= E2F_OPT_PREEN;
+ 			break;
++#ifdef HAVE_PTHREAD
+ 		case 'm':
+ 			ctx->options |= E2F_OPT_MULTITHREAD;
+ 			break;
++#endif
+ 		case 'n':
+ 			if (ctx->options & (E2F_OPT_YES|E2F_OPT_PREEN))
+ 				goto conflict_opt;
+@@ -1019,6 +1027,7 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
+ 			_("The -n and -l/-L options are incompatible."));
+ 		fatal_error(ctx, 0);
+ 	}
++#ifdef HAVE_PTHREAD
+ 	if (ctx->options & E2F_OPT_MULTITHREAD) {
+ 		if ((ctx->options & (E2F_OPT_YES|E2F_OPT_NO|E2F_OPT_PREEN)) == 0) {
+ 			com_err(ctx->program_name, 0, "%s",
+@@ -1031,6 +1040,7 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
+ 			fatal_error(ctx, 0);
+ 		}
+ 	}
++#endif
+ 	if (ctx->options & E2F_OPT_NO)
+ 		ctx->options |= E2F_OPT_READONLY;
+ 
+diff --git a/tests/test_one.in b/tests/test_one.in
+index 78499ad0..a1d46c9c 100644
+--- a/tests/test_one.in
++++ b/tests/test_one.in
+@@ -27,6 +27,7 @@ esac
+ 
+ test_dir=$1
+ cmd_dir=$SRCDIR
++pfsck_enabled="no"
+ 
+ if test "$TEST_CONFIG"x = x; then
+ 	TEST_CONFIG=$SRCDIR/test_config
+@@ -52,6 +53,13 @@ else
+ 	test_description=
+ fi
+ 
++$FSCK --help 2>&1 | grep -q -w -- -m && pfsck_enabled=yes
++if [ "$pfsck_enabled" != "yes" ] ; then
++	echo "$test_dir" | grep -q multithread &&
++	echo "$test_name: $test_description: skipped (pfsck disabled)" &&
++	exit 0
 +fi
 +
-+unset IMAGE FSCK_OPT SECOND_FSCK_OPT OUT1 OUT2 EXP1 EXP2
-+unset SKIP_VERIFY SKIP_CLEANUP SKIP_GUNZIP ONE_PASS_ONLY PREP_CMD
-+unset DESCRIPTION SKIP_UNLINK AFTER_CMD PASS_ZERO
-+unset LOG_FINAME
+ if [ -n "$SKIP_SLOW_TESTS" -a -f $test_dir/is_slow_test ]; then
+     echo "$test_name: $test_description: skipped (slow test)"
+     exit 0
 -- 
 2.37.3
 
