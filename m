@@ -2,53 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B22A761F31D
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:27:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E872A61F31E
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:27:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232169AbiKGM13 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 7 Nov 2022 07:27:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52354 "EHLO
+        id S232202AbiKGM1a (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 7 Nov 2022 07:27:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232258AbiKGM1U (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:27:20 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 621086247
-        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:27:18 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id q9so10453352pfg.5
-        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:27:18 -0800 (PST)
+        with ESMTP id S232220AbiKGM1Z (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:27:25 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 275F11AD9C
+        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:27:24 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id h14so10410304pjv.4
+        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:27:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OeEkOAiz0Ab66xS7o/5LER3ddboExhEpNk0u/MGhN+E=;
-        b=pCOARm7kcBgdAFtONwUIM512UpGNsKFeVDjXd5wGoIJ/cXm7qXk3ldqDJLQ+gYGA3y
-         GuKeNxF82/k2lsCYkTmJTtkxjv36o+N3XkeMgxR3Ve0nVrZUKGMG7XjGdxxutvCUcrkf
-         82Pg7RjFpt0s+IzA0+mYWMYQRxaBsBRcaTmMzqwETU/Wc9EayhL0dCcUJ698isQ/RUS1
-         4uljm0RdbbfLPydstEE1BOSKWH55rUI8AM6buKW20eVvlB2wDB5JAj+YmZgQ/cSJ4kMq
-         xEC3xDdGOBiH6B/XhogYFnTL1/I/5f/l8P51CPUfI2jjRzfJe0k/aZQI75g6ZbG27cRz
-         nFMw==
+        bh=GliyG/gfgbrd/RaksM0VE0kE757GWQ+YGnDdx0Zlfkc=;
+        b=Iy1pba0/sdFMGQqzSq9ZTNq5snxoqbwSTVIRi4jvw/hPjnXrd1CLdCelQcgycD/Vk2
+         /3b1VGkCxOiV5En72P47BOQeJWQxB4Dj0MmnRQoYqPKYJE16AEc1KIbMgaRZ22DxZvJX
+         BkrXtHLpdwUVkWUg9zACrk3qEQZWSYhWMpyyuLE3ahSt8TshxvLeACDccHUxY1MXeX7u
+         ajSDE+NIK3tYZHuAJcR2kd3d2AIbIgqHzRfynUb2RmCSb5ZRmzQ3fIYqKDAGsGLt57U5
+         068G1p3ZrSnCHMYqRrgbbQh9EyV+z7LGfSzwcbzsLzuIYVEo7Sr/AWbgG2iA5wa4RR8x
+         6+rQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OeEkOAiz0Ab66xS7o/5LER3ddboExhEpNk0u/MGhN+E=;
-        b=JmRBOTZUXTsdEYmxceJtr6Cm0pODM55GDNS8a7iKxmtMKtILGWStvxTVR072HndFGQ
-         /D1zRS/4rPDIeequPUqouWCDThBCct3iYtCdG7zWDT66pTQlXpkZvzYCJ7WWGqAigPS1
-         Al9DlL5gEQlANvhfUOyO5vqxHPfC/arsubYIVSC6W4+yag404+AjpaHTpCR6No3/QTXd
-         0nmKBe5KuHOEQGGpuxZuwB78BLKIQrSi0uj26sUgTuz7mNG6oRh0WT1IJu/QGXXLeCGi
-         kQrcLUTqkILMLgtPJEjclMx2d2si2r3JnyB/e5uK+A7tfMsmA5MYR1r5v7G5FZCb6V8S
-         zK9Q==
-X-Gm-Message-State: ACrzQf1Tttic4lTXERzNITxpptI90lj1hSF936JcmpSDCT24f0fcW+y+
-        2upm30U/r5HJ/bVJli6p/Wc=
-X-Google-Smtp-Source: AMsMyM7sU+LvDdqyVejLXCq1MnQ2Uu5qc77wk+2Pa1jKLGRSI5VItBhQ/6MkEZi3YqJVY7ShByMz6g==
-X-Received: by 2002:a05:6a00:98d:b0:56c:7c5c:da30 with SMTP id u13-20020a056a00098d00b0056c7c5cda30mr49471658pfg.22.1667824037822;
-        Mon, 07 Nov 2022 04:27:17 -0800 (PST)
+        bh=GliyG/gfgbrd/RaksM0VE0kE757GWQ+YGnDdx0Zlfkc=;
+        b=XhTZgwv83hZrXhUSjwt5BtXfOLXso7q6DS5e9TAfKWU4DEi14pi/xTB2APCZRYk28g
+         2xiWRERHEgFYeoYMqpQFeByGqWt4NzM5urhxEoFfZnytSHZeXVnCfH0GU4DNgvmTC6d4
+         MgMkO0CVpXxlSaE7nV5fdV3IAP+zKaD8k3GVzUknqlPfnW1REbrwTo0xRmJ4WZiB2Rrh
+         91P6+xmFele1q7oMWSqxonDzYnRLM+e2d2og7H8y/UR6fYIwTusApKB9fbTtPrn375Dd
+         EahTq03O2KbF7TnFNDPcqTGyV+uP1SEHmU/w8+4o7+uEkjZQH2CMzeq+vex4F4VsfI0e
+         y7pg==
+X-Gm-Message-State: ACrzQf1jgYEa94I1Ij5CQ6HTvZKxTAxawJFcgcv+TAQbTBZ9/w3dINfm
+        /jbxrd4ZIF9NaYNzUSCxGI4=
+X-Google-Smtp-Source: AMsMyM5GHwheccaNhiFg4HwuyTs17W3vjuWKGnWEgCjbcG3gjHA6zKqwS7SHvrZyFkNfLgKXpfdPYA==
+X-Received: by 2002:a17:90a:578c:b0:213:b509:9474 with SMTP id g12-20020a17090a578c00b00213b5099474mr48745598pji.45.1667824043633;
+        Mon, 07 Nov 2022 04:27:23 -0800 (PST)
 Received: from localhost ([2406:7400:63:f20b:312d:45b2:85c1:c486])
-        by smtp.gmail.com with ESMTPSA id w69-20020a627b48000000b00545f5046372sm4324904pfc.208.2022.11.07.04.27.16
+        by smtp.gmail.com with ESMTPSA id q23-20020a170902bd9700b001784a45511asm4885435pls.79.2022.11.07.04.27.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Nov 2022 04:27:17 -0800 (PST)
+        Mon, 07 Nov 2022 04:27:22 -0800 (PST)
 From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
 To:     Theodore Ts'o <tytso@mit.edu>
 Cc:     linux-ext4@vger.kernel.org,
@@ -56,9 +56,9 @@ Cc:     linux-ext4@vger.kernel.org,
         Wang Shilong <wshilong@ddn.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Li Xi <lixi@ddn.com>, Ritesh Harjani <ritesh.list@gmail.com>
-Subject: [RFCv1 48/72] e2fsck: allow admin specify number of threads
-Date:   Mon,  7 Nov 2022 17:51:36 +0530
-Message-Id: <e4d9a66512e8c29cc18698f7d33bc9e1cf8b8795.1667822611.git.ritesh.list@gmail.com>
+Subject: [RFCv1 49/72] e2fsck: adjust number of threads
+Date:   Mon,  7 Nov 2022 17:51:37 +0530
+Message-Id: <787fea1b97ccfda61736f7a9e07d9eeed17b1bc8.1667822611.git.ritesh.list@gmail.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1667822611.git.ritesh.list@gmail.com>
 References: <cover.1667822611.git.ritesh.list@gmail.com>
@@ -76,347 +76,142 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Wang Shilong <wshilong@ddn.com>
 
--m option is introduced to specify number of threads for pfsck.
+number of threads should not exceed flex bg numbers,
+and output messages if we adjust threads number.
 
 Signed-off-by: Wang Shilong <wshilong@ddn.com>
 Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 ---
- e2fsck/e2fsck.h                       |   2 +
- e2fsck/pass1.c                        | 154 ++++++++++++++++----------
- e2fsck/unix.c                         |  17 ++-
- tests/f_multithread/script            |   2 +-
- tests/f_multithread_completion/script |   2 +-
- tests/f_multithread_logfile/script    |   2 +-
- tests/f_multithread_no/script         |   2 +-
- tests/f_multithread_preen/script      |   2 +-
- tests/f_multithread_yes/script        |   2 +-
- 9 files changed, 122 insertions(+), 63 deletions(-)
+ e2fsck/pass1.c | 32 +++++++++++++++-----------------
+ 1 file changed, 15 insertions(+), 17 deletions(-)
 
-diff --git a/e2fsck/e2fsck.h b/e2fsck/e2fsck.h
-index 23e8d2ed..e3276924 100644
---- a/e2fsck/e2fsck.h
-+++ b/e2fsck/e2fsck.h
-@@ -487,6 +487,7 @@ struct e2fsck_struct {
- 	char *undo_file;
- 
- #ifdef HAVE_PTHREAD
-+	__u32			 fs_num_threads;
- 	/* serialize fix operation for multiple threads */
- 	pthread_mutex_t		 fs_fix_mutex;
- 	/* protect block_found_map, block_dup_map */
-@@ -727,6 +728,7 @@ void check_resize_inode(e2fsck_t ctx);
- int check_init_orphan_file(e2fsck_t ctx);
- 
- /* util.c */
-+#define E2FSCK_MAX_THREADS	(65536)
- extern void *e2fsck_allocate_memory(e2fsck_t ctx, unsigned long size,
- 				    const char *description);
- extern int ask(e2fsck_t ctx, const char * string, int def);
 diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
-index fdd1f3d6..5bf6980b 100644
+index 5bf6980b..1d4f576c 100644
 --- a/e2fsck/pass1.c
 +++ b/e2fsck/pass1.c
-@@ -1199,6 +1199,97 @@ static int e2fsck_should_abort(e2fsck_t ctx)
- 	return 0;
+@@ -1287,6 +1287,7 @@ static void e2fsck_pass1_set_thread_num(e2fsck_t ctx)
+ 	}
+ out:
+ 	ctx->fs_num_threads = num_threads;
++	ctx->fs->fs_num_threads = num_threads;
+ }
+ #endif
+ 
+@@ -2481,14 +2482,14 @@ static void e2fsck_pass1_merge_invalid_bitmaps(e2fsck_t global_ctx,
  }
  
-+static void init_ext2_max_sizes()
-+{
-+	int i;
-+	__u64 max_sizes;
-+
-+	/*
-+	 * Init ext2_max_sizes which will be immutable and shared between
-+	 * threads
-+	 */
-+#define EXT2_BPP(bits) (1ULL << ((bits) - 2))
-+
-+	for (i = EXT2_MIN_BLOCK_LOG_SIZE; i <= EXT2_MAX_BLOCK_LOG_SIZE; i++) {
-+		max_sizes = EXT2_NDIR_BLOCKS + EXT2_BPP(i);
-+		max_sizes = max_sizes + EXT2_BPP(i) * EXT2_BPP(i);
-+		max_sizes = max_sizes + EXT2_BPP(i) * EXT2_BPP(i) * EXT2_BPP(i);
-+		max_sizes = (max_sizes * (1UL << i));
-+		ext2_max_sizes[i - EXT2_MIN_BLOCK_LOG_SIZE] = max_sizes;
-+	}
-+#undef EXT2_BPP
-+}
-+
-+#ifdef HAVE_PTHREAD
-+/* TODO: tdb needs to be handled properly for multiple threads*/
-+static int multiple_threads_supported(e2fsck_t ctx)
-+{
-+#ifdef	CONFIG_TDB
-+	unsigned int		threshold;
-+	ext2_ino_t		num_dirs;
-+	errcode_t		retval;
-+	char			*tdb_dir;
-+	int			enable;
-+
-+	profile_get_string(ctx->profile, "scratch_files", "directory", 0, 0,
-+			   &tdb_dir);
-+	profile_get_uint(ctx->profile, "scratch_files",
-+			 "numdirs_threshold", 0, 0, &threshold);
-+	profile_get_boolean(ctx->profile, "scratch_files",
-+			    "icount", 0, 1, &enable);
-+
-+	retval = ext2fs_get_num_dirs(ctx->fs, &num_dirs);
-+	if (retval)
-+		num_dirs = 1024;	/* Guess */
-+
-+	/* tdb is unsupported now */
-+	if (enable && tdb_dir && !access(tdb_dir, W_OK) &&
-+	    (!threshold || num_dirs > threshold))
-+		return 0;
-+#endif
-+	return 1;
-+}
-+
-+/**
-+ * Even though we could specify number of threads,
-+ * but it might be more than the whole filesystem
-+ * block groups, correct it here.
-+ */
-+static void e2fsck_pass1_set_thread_num(e2fsck_t ctx)
-+{
-+	unsigned flexbg_size = 1;
-+	ext2_filsys fs = ctx->fs;
-+	int num_threads = ctx->fs_num_threads;
-+	int max_threads;
-+
-+	if (num_threads < 1) {
-+		num_threads = 1;
-+		goto out;
-+	}
-+
-+	if (!multiple_threads_supported(ctx)) {
-+		num_threads = 1;
-+		fprintf(stderr, "Fall through single thread for pass1 "
-+			"because tdb could not handle properly\n");
-+		goto out;
-+	}
-+
-+	if (ext2fs_has_feature_flex_bg(fs->super))
-+		flexbg_size = 1 << fs->super->s_log_groups_per_flex;
-+	max_threads = fs->group_desc_count / flexbg_size;
-+	if (max_threads == 0)
-+		max_threads = 1;
-+
-+	if (num_threads > max_threads) {
-+		fprintf(stderr, "Use max possible thread num: %d instead\n",
-+				max_threads);
-+		num_threads = max_threads;
-+	}
-+out:
-+	ctx->fs_num_threads = num_threads;
-+}
-+#endif
-+
- /*
-  * We need call mark_table_blocks() before multiple
-  * thread start, since all known system blocks should be
-@@ -1209,6 +1300,11 @@ static errcode_t e2fsck_pass1_prepare(e2fsck_t ctx)
- 	struct problem_context pctx;
- 	ext2_filsys fs = ctx->fs;
+ static errcode_t e2fsck_pass1_thread_prepare(e2fsck_t global_ctx, e2fsck_t *thread_ctx,
+-					     int thread_index, int num_threads)
++					     int thread_index, int num_threads,
++					     dgrp_t average_group)
+ {
+ 	errcode_t retval;
+ 	e2fsck_t thread_context;
+ 	ext2_filsys thread_fs;
+ 	ext2_filsys global_fs = global_ctx->fs;
+ 	struct e2fsck_thread *tinfo;
+-	dgrp_t average_group;
  
-+	init_ext2_max_sizes();
-+#ifdef	HAVE_PTHREAD
-+	e2fsck_pass1_set_thread_num(ctx);
-+#endif
-+
- 	clear_problem_context(&pctx);
- 	if (!(ctx->options & E2F_OPT_PREEN))
- 		fix_problem(ctx, PR_1_PASS_HEADER, &pctx);
-@@ -2271,27 +2367,6 @@ endit:
- 		ctx->invalid_bitmaps++;
- }
+ 	assert(global_ctx->inode_used_map == NULL);
+ 	assert(global_ctx->inode_dir_map == NULL);
+@@ -2535,16 +2536,9 @@ static errcode_t e2fsck_pass1_thread_prepare(e2fsck_t global_ctx, e2fsck_t *thre
+ 	thread_context->thread_info.et_thread_index = thread_index;
+ 	set_up_logging(thread_context);
  
--static void init_ext2_max_sizes()
--{
--	int i;
--	__u64 max_sizes;
--
 -	/*
--	 * Init ext2_max_sizes which will be immutable and shared between
--	 * threads
+-	 * Distribute work to multiple threads:
+-	 * Each thread work on fs->group_desc_count / nthread groups.
 -	 */
--#define EXT2_BPP(bits) (1ULL << ((bits) - 2))
--
--	for (i = EXT2_MIN_BLOCK_LOG_SIZE; i <= EXT2_MAX_BLOCK_LOG_SIZE; i++) {
--		max_sizes = EXT2_NDIR_BLOCKS + EXT2_BPP(i);
--		max_sizes = max_sizes + EXT2_BPP(i) * EXT2_BPP(i);
--		max_sizes = max_sizes + EXT2_BPP(i) * EXT2_BPP(i) * EXT2_BPP(i);
--		max_sizes = (max_sizes * (1UL << i));
--		ext2_max_sizes[i - EXT2_MIN_BLOCK_LOG_SIZE] = max_sizes;
--	}
--#undef EXT2_BPP
--}
--
- #ifdef HAVE_PTHREAD
- static errcode_t e2fsck_pass1_merge_bitmap(ext2_filsys fs, ext2fs_generic_bitmap *src,
- 					  ext2fs_generic_bitmap *dest)
-@@ -3151,7 +3226,7 @@ static int e2fsck_pass1_threads_start(struct e2fsck_thread_info **pinfo,
+ 	tinfo = &thread_context->thread_info;
+-	average_group = thread_fs->group_desc_count / num_threads;
+-	if (average_group == 0)
+-		average_group = 1;
+ 	tinfo->et_group_start = average_group * thread_index;
+-	if (thread_index == num_threads - 1)
++	if (thread_index == global_fs->fs_num_threads - 1)
+ 		tinfo->et_group_end = thread_fs->group_desc_count;
+ 	else
+ 		tinfo->et_group_end = average_group * (thread_index + 1);
+@@ -3060,12 +3054,13 @@ static int e2fsck_pass1_thread_join(e2fsck_t global_ctx, e2fsck_t thread_ctx)
+ }
+ 
+ static int e2fsck_pass1_threads_join(struct e2fsck_thread_info *infos,
+-				      int num_threads, e2fsck_t global_ctx)
++				     e2fsck_t global_ctx)
+ {
+ 	errcode_t rc;
+ 	errcode_t ret = 0;
+ 	int i;
+ 	struct e2fsck_thread_info *pinfo;
++	int num_threads = global_ctx->fs_num_threads;
+ 
+ 	/* merge invalid bitmaps will recalculate it */
+ 	global_ctx->invalid_bitmaps = 0;
+@@ -3147,7 +3142,7 @@ out:
+ }
+ 
+ static int e2fsck_pass1_threads_start(struct e2fsck_thread_info **pinfo,
+-				      int num_threads, e2fsck_t global_ctx)
++				      e2fsck_t global_ctx)
+ {
+ 	struct e2fsck_thread_info *infos;
+ 	pthread_attr_t attr;
+@@ -3156,6 +3151,8 @@ static int e2fsck_pass1_threads_start(struct e2fsck_thread_info **pinfo,
+ 	struct e2fsck_thread_info *tmp_pinfo;
+ 	int i;
+ 	e2fsck_t thread_ctx;
++	dgrp_t average_group;
++	int num_threads = global_ctx->fs_num_threads;
+ #ifdef DEBUG_THREADS
+ 	struct e2fsck_thread_debug thread_debug =
+ 		{PTHREAD_MUTEX_INITIALIZER, PTHREAD_COND_INITIALIZER, 0};
+@@ -3179,6 +3176,7 @@ static int e2fsck_pass1_threads_start(struct e2fsck_thread_info **pinfo,
+ 		return retval;
+ 	}
+ 
++	average_group = ext2fs_get_avg_group(global_ctx->fs);
+ 	for (i = 0; i < num_threads; i++) {
+ 		tmp_pinfo = &infos[i];
+ 		tmp_pinfo->eti_thread_index = i;
+@@ -3186,7 +3184,8 @@ static int e2fsck_pass1_threads_start(struct e2fsck_thread_info **pinfo,
+ 		tmp_pinfo->eti_debug = &thread_debug;
+ #endif
+ 		retval = e2fsck_pass1_thread_prepare(global_ctx, &thread_ctx,
+-						     i, num_threads);
++						     i, num_threads,
++						     average_group);
+ 		if (retval) {
+ 			com_err(global_ctx->program_name, retval,
+ 				_("while preparing pass1 thread\n"));
+@@ -3216,7 +3215,7 @@ static int e2fsck_pass1_threads_start(struct e2fsck_thread_info **pinfo,
+ 	}
+ 
+ 	if (retval) {
+-		e2fsck_pass1_threads_join(infos, num_threads, global_ctx);
++		e2fsck_pass1_threads_join(infos, global_ctx);
+ 		return retval;
+ 	}
+ 	*pinfo = infos;
+@@ -3226,17 +3225,16 @@ static int e2fsck_pass1_threads_start(struct e2fsck_thread_info **pinfo,
  static void e2fsck_pass1_multithread(e2fsck_t global_ctx)
  {
  	struct e2fsck_thread_info *infos = NULL;
--	int num_threads = 1;
-+	int num_threads = global_ctx->fs_num_threads;
+-	int num_threads = global_ctx->fs_num_threads;
  	errcode_t retval;
  
- 	retval = e2fsck_pass1_threads_start(&infos, num_threads, global_ctx);
-@@ -3174,48 +3249,15 @@ out_abort:
- }
- #endif
+-	retval = e2fsck_pass1_threads_start(&infos, num_threads, global_ctx);
++	retval = e2fsck_pass1_threads_start(&infos, global_ctx);
+ 	if (retval) {
+ 		com_err(global_ctx->program_name, retval,
+ 			_("while starting pass1 threads\n"));
+ 		goto out_abort;
+ 	}
  
--/* TODO: tdb needs to be handled properly for multiple threads*/
--static int multiple_threads_supported(e2fsck_t ctx)
--{
--#ifdef	CONFIG_TDB
--	unsigned int threshold;
--	ext2_ino_t num_dirs;
--	errcode_t retval;
--	char *tdb_dir;
--	int enable;
--
--	profile_get_string(ctx->profile, "scratch_files", "directory", 0, 0,
--			   &tdb_dir);
--	profile_get_uint(ctx->profile, "scratch_files",
--			 "numdirs_threshold", 0, 0, &threshold);
--	profile_get_boolean(ctx->profile, "scratch_files",
--			    "icount", 0, 1, &enable);
--
--	retval = ext2fs_get_num_dirs(ctx->fs, &num_dirs);
--	if (retval)
--		num_dirs = 1024;	/* Guess */
--
--	/* tdb is unsupported now */
--	if (enable && tdb_dir && !access(tdb_dir, W_OK) &&
--	    (!threshold || num_dirs > threshold)) {
--		fprintf(stderr, "Fall through single thread for pass1 "
--				"because tdb could not handle properly\n");
--		return 0;
--	}
-- #endif
--	return 1;
--}
--
- void e2fsck_pass1(e2fsck_t ctx)
- {
- 	errcode_t retval;
- 
--	init_ext2_max_sizes();
- 	retval = e2fsck_pass1_prepare(ctx);
- 	if (retval)
- 		return;
- #ifdef HAVE_PTHREAD
--	if (ctx->options & E2F_OPT_MULTITHREAD && multiple_threads_supported(ctx))
-+	if (ctx->options & E2F_OPT_MULTITHREAD || ctx->fs_num_threads > 1)
- 		e2fsck_pass1_multithread(ctx);
- 	else
- #endif
-diff --git a/e2fsck/unix.c b/e2fsck/unix.c
-index af2457e3..dfa3f897 100644
---- a/e2fsck/unix.c
-+++ b/e2fsck/unix.c
-@@ -826,6 +826,10 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
- 	int 		res;		/* result of sscanf */
- #ifdef CONFIG_JBD_DEBUG
- 	char 		*jbd_debug;
-+#endif
-+#ifdef HAVE_PTHREAD
-+	char		*pm;
-+	unsigned long	thread_num;
- #endif
- 	unsigned long long phys_mem_kb, blk;
- 
-@@ -859,7 +863,7 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
- 	ctx->readahead_kb = ~0ULL;
- 
- #ifdef HAVE_PTHREAD
--	while ((c = getopt(argc, argv, "pamnyrcC:B:dE:fvtFVM:b:I:j:P:l:L:N:SsDkz:")) != EOF)
-+	while ((c = getopt(argc, argv, "pam:nyrcC:B:dE:fvtFVM:b:I:j:P:l:L:N:SsDkz:")) != EOF)
- #else
- 	while ((c = getopt(argc, argv, "panyrcC:B:dE:fvtFVM:b:I:j:P:l:L:N:SsDkz:")) != EOF)
- #endif
-@@ -905,7 +909,18 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
- 			break;
- #ifdef HAVE_PTHREAD
- 		case 'm':
-+			thread_num = strtoul(optarg, &pm, 0);
-+			if (*pm)
-+				fatal_error(ctx,
-+					_("Invalid multiple thread num.\n"));
-+			if (thread_num > E2FSCK_MAX_THREADS) {
-+				fprintf(stderr,
-+					_("threads %lu too large (max %lu)\n"),
-+					thread_num, E2FSCK_MAX_THREADS);
-+				fatal_error(ctx, 0);
-+			}
- 			ctx->options |= E2F_OPT_MULTITHREAD;
-+			ctx->fs_num_threads = thread_num;
- 			break;
- #endif
- 		case 'n':
-diff --git a/tests/f_multithread/script b/tests/f_multithread/script
-index 0fe96cd0..83cd0f03 100644
---- a/tests/f_multithread/script
-+++ b/tests/f_multithread/script
-@@ -1,4 +1,4 @@
--FSCK_OPT="-fy -m"
-+FSCK_OPT="-fy -m1"
- SECOND_FSCK_OPT=-yf
- 
- . $cmd_dir/run_e2fsck
-diff --git a/tests/f_multithread_completion/script b/tests/f_multithread_completion/script
-index bf23cd61..0ec13816 100644
---- a/tests/f_multithread_completion/script
-+++ b/tests/f_multithread_completion/script
-@@ -1,4 +1,4 @@
--FSCK_OPT="-fy -m -C 1"
-+FSCK_OPT="-fy -m1 -C 1"
- SECOND_FSCK_OPT=-yf
- 
- . $cmd_dir/run_e2fsck
-diff --git a/tests/f_multithread_logfile/script b/tests/f_multithread_logfile/script
-index 4f9ca6f8..dbb65319 100644
---- a/tests/f_multithread_logfile/script
-+++ b/tests/f_multithread_logfile/script
-@@ -1,5 +1,5 @@
- LOG_FNAME="f_multithread_logfile_xxx"
--FSCK_OPT="-fy -m -y -E log_filename=$LOG_FNAME"
-+FSCK_OPT="-fy -m1 -y -E log_filename=$LOG_FNAME"
- SKIP_VERIFY="true"
- ONE_PASS_ONLY="true"
- SKIP_CLEANUP="true"
-diff --git a/tests/f_multithread_no/script b/tests/f_multithread_no/script
-index b93deb3a..db791e11 100644
---- a/tests/f_multithread_no/script
-+++ b/tests/f_multithread_no/script
-@@ -1,4 +1,4 @@
--FSCK_OPT="-fn -m"
-+FSCK_OPT="-fn -m1"
- SECOND_FSCK_OPT=-yf
- 
- . $cmd_dir/run_e2fsck
-diff --git a/tests/f_multithread_preen/script b/tests/f_multithread_preen/script
-index ecb79cd6..8965f4a7 100644
---- a/tests/f_multithread_preen/script
-+++ b/tests/f_multithread_preen/script
-@@ -1,4 +1,4 @@
--FSCK_OPT="-fp -m"
-+FSCK_OPT="-fp -m1"
- SECOND_FSCK_OPT=-yf
- 
- . $cmd_dir/run_e2fsck
-diff --git a/tests/f_multithread_yes/script b/tests/f_multithread_yes/script
-index 38891f6a..8b4aa9b8 100644
---- a/tests/f_multithread_yes/script
-+++ b/tests/f_multithread_yes/script
-@@ -1,4 +1,4 @@
--FSCK_OPT="-f -m"
-+FSCK_OPT="-f -m1"
- SECOND_FSCK_OPT=-yf
- 
- . $cmd_dir/run_e2fsck
+-	retval = e2fsck_pass1_threads_join(infos, num_threads, global_ctx);
++	retval = e2fsck_pass1_threads_join(infos, global_ctx);
+ 	if (retval) {
+ 		com_err(global_ctx->program_name, retval,
+ 			_("while joining pass1 threads\n"));
 -- 
 2.37.3
 
