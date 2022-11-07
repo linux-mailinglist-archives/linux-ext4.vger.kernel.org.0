@@ -2,64 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8C6361F2F7
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:24:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F6EB61F2FA
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Nov 2022 13:24:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231803AbiKGMYX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 7 Nov 2022 07:24:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50328 "EHLO
+        id S232093AbiKGMYi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 7 Nov 2022 07:24:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232169AbiKGMYT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:24:19 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 236DF63C2
-        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:24:19 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id 64so10309340pgc.5
-        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:24:19 -0800 (PST)
+        with ESMTP id S232202AbiKGMY0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Nov 2022 07:24:26 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E826405
+        for <linux-ext4@vger.kernel.org>; Mon,  7 Nov 2022 04:24:25 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id m6so10485950pfb.0
+        for <linux-ext4@vger.kernel.org>; Mon, 07 Nov 2022 04:24:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UZ3j7EdKBWVYJUuDDkl+rN6c4DTW2MiR6s2rRB1jtXM=;
-        b=jegXKvA1zOPiYEuuHil8v1JcZvcIoj9uWWdoNHpCuybmAhyzrHMestZ8w/URCdCQdi
-         YEj1RhFO9MDqvR73HLYMRMXQ5GrfTFPbhQojS1tHfCZYkMz6XSvfmhehJ1lmM1Noz1YV
-         OsiqCuCg6sOrm7kWS0+Dd5L0TOwPRfGEdC1p9xhTqeruUl5w/9f2eGU27FpgZEXWK5h8
-         VjWYoAJ+nZchesaPzImiBb7IcYxunFScMNVAY8hdY/jijsQxJZXVRR9Kxakcw5NK9Ut8
-         Qhk/uRhdYxA33j3CR6WyvMqKy9si3NilUGLtQNyNB1kSbiuNhAWgSuKHqZw+44lXbqx7
-         8gdw==
+        bh=FZkG8P7csv70+FWzJ0hhPsFK2Mt9vIPNTt8Dycvfo50=;
+        b=qaICZGkGuVj5BkgAM3pzst4KYS/Dl+SCU+jpAseiLBv2P/c/0ne73badfeEF8JALBY
+         77u79sBcJN0A+QSq6fBIpgUk4tTYNNp//Yjoq3iVDqIPU2pde+ba7g+6VwY0A8yDPHce
+         GZs4eMUinXZV6Adn+I8oWM5XcF+QhtAYZkRTrArbjP287e3KiTWaQ8l0+udMk/E4/a+Z
+         a1tRebCNSUs/7O7NuyClSogxV26N0Js2wESHdS05QQEtYPRpsYrmslzWndFJDxGDJOQe
+         gR47zQmaeBB5NXXOSrGhAPZh5jhox5ECRnRneRMYFR5/0mjdTPvNNqXNqdaJaHaTihZM
+         xm3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UZ3j7EdKBWVYJUuDDkl+rN6c4DTW2MiR6s2rRB1jtXM=;
-        b=dwDlN63ArbDNP760TOsdchwAjow+4Y64kzOLryzhG9LyUFNRDFhxu9XtXfaOoBJW86
-         7MmSqy7ORz+nJWP2T6pKRe2CPxNI0nTrfymqJ8XUR4QkQK2XxGz7/OHcP4OtE/cYUaUp
-         bJMjl7GowyRoRIBXGc76UJ2NHEJi1VNS44wuBAta0HWiqqWuXesZdDaGdlBH2dMguGPI
-         TNGaEsuOvR/HRXrvMR5Z0MJmDzVAh8QcLL1GaCTPYargyhXxNej7uaXlhAL1eyvSXmMH
-         TR1G+0DilhwukImSuqFsH2jQYPE0ZeUVvhgSU3iPHrxO7Lue9mh+plC2CEDHGhG6LTyq
-         vnIg==
-X-Gm-Message-State: ACrzQf3d6so81KGFVqZu1rfzeCMF4uPtBLlDL4E8PQGw3RZ+FBn6LMrY
-        qa6Lqtn6yTASChIv9PaOIs4=
-X-Google-Smtp-Source: AMsMyM6sqRdScPwmvX7UxBes8LBeI0whAdz6owYLSSxdaVH+K4dE3EBwYNxJ/wjtRzO9koys38oLTw==
-X-Received: by 2002:a65:4bc3:0:b0:439:103b:fc35 with SMTP id p3-20020a654bc3000000b00439103bfc35mr42555258pgr.248.1667823858666;
-        Mon, 07 Nov 2022 04:24:18 -0800 (PST)
+        bh=FZkG8P7csv70+FWzJ0hhPsFK2Mt9vIPNTt8Dycvfo50=;
+        b=n2tgowRVVOQsNjYeq/gRrlDmuR7lxr/nfjzY2Wz3evKVAahjWe0JDpWqy+1b2MPZ7B
+         dHQaF6beoShXfBV2YL5O6doUUgpigN+b6RGGEFhUcm4IrQGdDx1Pdx15M479bGxUCgAI
+         G/9IhDkOLKTf3N1KWlU2xkPWFZQm8q7o3HwahZYU3joQindJP4731WW2xWxc/K7/JY1r
+         jHfNi5WZ6phieXbVAZyqe2byGm64E5fLuuvtUwSTgd51Ro/DsXNkQQuvWAEH0mVK+SXl
+         s3x3U6oveLn9c8udxuvoSu4eLU+3LlcsNxp9t7YeEn7Muz+4gY6nV2DJrFkLEYJBAhAv
+         SoUA==
+X-Gm-Message-State: ACrzQf0vZ+VRF81V02MFUW2Kd1kUyaQrcoWN2A7lKK+mZh9DVhSO7gtF
+        5od0/BkgtSUBTpEgcKMVcxU5wW6pifM=
+X-Google-Smtp-Source: AMsMyM6LP/Yynqsmv/IVMrdYDfqLHqcoIXJPUFF/sN2JoOHtOZymEZ7L2xeH4HzvDnplmRzzbgJn+g==
+X-Received: by 2002:a05:6a00:a15:b0:56e:9b2b:60dd with SMTP id p21-20020a056a000a1500b0056e9b2b60ddmr15952814pfh.35.1667823864951;
+        Mon, 07 Nov 2022 04:24:24 -0800 (PST)
 Received: from localhost ([2406:7400:63:f20b:312d:45b2:85c1:c486])
-        by smtp.gmail.com with ESMTPSA id t10-20020a63224a000000b00460d89df1f1sm4079017pgm.57.2022.11.07.04.24.17
+        by smtp.gmail.com with ESMTPSA id a72-20020a621a4b000000b0056bbeaa82b9sm4348525pfa.113.2022.11.07.04.24.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Nov 2022 04:24:18 -0800 (PST)
+        Mon, 07 Nov 2022 04:24:24 -0800 (PST)
 From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
 To:     Theodore Ts'o <tytso@mit.edu>
 Cc:     linux-ext4@vger.kernel.org,
         Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
         Wang Shilong <wshilong@ddn.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        Li Xi <lixi@ddn.com>, Andreas Dilger <adilger@whamcloud.com>,
-        Ritesh Harjani <ritesh.list@gmail.com>
-Subject: [RFCv1 19/72] libext2fs: Misc fixes for struct_ext2_filsys
-Date:   Mon,  7 Nov 2022 17:51:07 +0530
-Message-Id: <d9c1ee96a026bfa4652e1c57d7c7dc40bdf049df.1667822611.git.ritesh.list@gmail.com>
+        Li Xi <lixi@ddn.com>, Ritesh Harjani <ritesh.list@gmail.com>
+Subject: [RFCv1 20/72] libext2fs: avoid too much memory allocation in case fs_num_threads
+Date:   Mon,  7 Nov 2022 17:51:08 +0530
+Message-Id: <5ae4498b906ea4adffcca5546e2c9deba39dd05a.1667822611.git.ritesh.list@gmail.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1667822611.git.ritesh.list@gmail.com>
 References: <cover.1667822611.git.ritesh.list@gmail.com>
@@ -75,36 +74,57 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Andreas Dilger <adilger@whamcloud.com>
+From: Wang Shilong <wshilong@ddn.com>
 
-Move ext2_filsys fs_num_threads to fit into the __u16 "pad" field
-to avoid consuming one of the few remaining __u32 reserved fields.
+e2fsck init memory according to filesystem inodes/dir numbers
+recorded in the superblock, this should be aware of filesystem
+number of threads, otherwise, oom can happen.
 
-Signed-off-by: Andreas Dilger <adilger@whamcloud.com>
+So in case of fs->fs_num_threads, this patch controls the amount of
+memory consumed for running multiple threads in e2fsck.
+
+Signed-off-by: Wang Shilong <wshilong@ddn.com>
 Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 ---
- lib/ext2fs/ext2fs.h | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ lib/ext2fs/dblist.c | 2 ++
+ lib/ext2fs/icount.c | 4 ++++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
-index 6b4926ce..950ab042 100644
---- a/lib/ext2fs/ext2fs.h
-+++ b/lib/ext2fs/ext2fs.h
-@@ -278,12 +278,11 @@ struct struct_ext2_filsys {
- 	time_t				now;
- 	int				cluster_ratio_bits;
- 	__u16				default_bitmap_type;
--	__u16				pad;
--	__u32				fs_num_threads;
-+	__u16				fs_num_threads;
- 	/*
- 	 * Reserved for future expansion
+diff --git a/lib/ext2fs/dblist.c b/lib/ext2fs/dblist.c
+index 5568b8ec..c19e17bc 100644
+--- a/lib/ext2fs/dblist.c
++++ b/lib/ext2fs/dblist.c
+@@ -58,6 +58,8 @@ static errcode_t make_dblist(ext2_filsys fs, ext2_ino_t size,
+ 		if (retval)
+ 			goto cleanup;
+ 		dblist->size = (num_dirs * 2) + 12;
++		if (fs->fs_num_threads)
++			dblist->size /= fs->fs_num_threads;
+ 	}
+ 	len = (size_t) sizeof(struct ext2_db_entry2) * dblist->size;
+ 	dblist->count = count;
+diff --git a/lib/ext2fs/icount.c b/lib/ext2fs/icount.c
+index 766eccca..48665c7e 100644
+--- a/lib/ext2fs/icount.c
++++ b/lib/ext2fs/icount.c
+@@ -237,6 +237,8 @@ errcode_t ext2fs_create_icount_tdb(ext2_filsys fs EXT2FS_NO_TDB_UNUSED,
+ 	 * value.
  	 */
--	__u32				reserved[4];
-+	__u32				reserved[5];
+ 	num_inodes = fs->super->s_inodes_count - fs->super->s_free_inodes_count;
++	if (fs->fs_num_threads)
++		num_inodes /= fs->fs_num_threads;
  
- 	/*
- 	 * Reserved for the use of the calling application.
+ 	icount->tdb = tdb_open(fn, num_inodes, TDB_NOLOCK | TDB_NOSYNC,
+ 			       O_RDWR | O_CREAT | O_TRUNC, 0600);
+@@ -288,6 +290,8 @@ errcode_t ext2fs_create_icount2(ext2_filsys fs, int flags, unsigned int size,
+ 		if (retval)
+ 			goto errout;
+ 		icount->size += fs->super->s_inodes_count / 50;
++		if (fs->fs_num_threads)
++			icount->size /= fs->fs_num_threads;
+ 	}
+ 
+ 	bytes = (size_t) (icount->size * sizeof(struct ext2_icount_el));
 -- 
 2.37.3
 
