@@ -2,97 +2,184 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C31621659
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Nov 2022 15:27:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B120621648
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Nov 2022 15:26:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233313AbiKHO1H (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 8 Nov 2022 09:27:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36174 "EHLO
+        id S233920AbiKHO03 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 8 Nov 2022 09:26:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234269AbiKHO00 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Nov 2022 09:26:26 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D97F25ED
-        for <linux-ext4@vger.kernel.org>; Tue,  8 Nov 2022 06:25:13 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id d13-20020a17090a3b0d00b00213519dfe4aso13502226pjc.2
-        for <linux-ext4@vger.kernel.org>; Tue, 08 Nov 2022 06:25:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SzBlYeGeT15Xra75w9IZDBjQ7Da3XKSmRdlnDJDYrko=;
-        b=qJPWO9SMfKs9CV4DzOtfpg0tG5L2kEZQtV/LBBChMrnKplvig/HcfOA36QzOFbaour
-         tgINSm9CFH0IH0weUkbi8oL7C5P0uFU99A+FANpQrOPV/x2at1b6HjUUAphEgu/Nt2rO
-         YdZzEeguInvIt6hR0YTDbuGc0g6QmBH3JOdUVEiMakuZ8pUv0rSqDGDPPz36WP9L+M70
-         Yi8Qvn61/fVJa/s6+O6bNGj9Vrx81J7VmEWQcrrTipgg1zMWjvYHOXsRX3Tp8F7t1isZ
-         URWNY0E6DDGhkUjSdRf6tRRt6Dm01iRomcQNGIBkoA7vu4q8ZFmcmXCe9DgPR3TaW/OT
-         odpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SzBlYeGeT15Xra75w9IZDBjQ7Da3XKSmRdlnDJDYrko=;
-        b=tiS7Jai1I4DrAa7/DXAB7GzTN9tmxXidzFMimRSMTFf6nKa42sQd7FPdBrOzqVINTO
-         Wq563oGFo8gSU7vg7lHSTwLtQosOmurbicAC1Sy1uaB6DuF8DL3ZyUINU9pnPXEB8QxW
-         luhFyJgh6C5EYxWFTwyCWPhjFi9nwjAdQHL/VGJO6uFHaDLKmXTPEFDbjMN3BKUZZgbz
-         sBlUaGGml4KeB0LFPLytYh1zZi9N2a/AvcDhugozhWxcPEYwmQMUI0nxMEHbMDIQAYxJ
-         wbVrAox6MqCNeVeYm4DHhuLE5a5ropyTJF9CEgo9Ey7vkFPgxsE3pXYeNHCoRMwpzKly
-         RVpw==
-X-Gm-Message-State: ACrzQf2RgilueFFqkVG/xIdaDT/AEFMwB+/vuoZv/WimV+AnGjzQMTp0
-        6g5rZKYNHsfW46dKH86lIBb+CeQ3NqRPy99TLIE=
-X-Google-Smtp-Source: AMsMyM7xjnW3BCIcPmRXceI8CMPrgJsNpwknP0oXmxg9pb3hPM8UnVyASTbWsNqLc31U8nSLRepoWwOH4L/DHUye4LA=
-X-Received: by 2002:a17:90b:1d90:b0:213:c798:86f6 with SMTP id
- pf16-20020a17090b1d9000b00213c79886f6mr52558648pjb.84.1667917512394; Tue, 08
- Nov 2022 06:25:12 -0800 (PST)
+        with ESMTP id S234063AbiKHO0L (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Nov 2022 09:26:11 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E085C770
+        for <linux-ext4@vger.kernel.org>; Tue,  8 Nov 2022 06:24:50 -0800 (PST)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N69Mr1bYnzHvgR;
+        Tue,  8 Nov 2022 22:24:24 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by canpemm500005.china.huawei.com
+ (7.192.104.229) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Tue, 8 Nov
+ 2022 22:24:47 +0800
+From:   Zhang Yi <yi.zhang@huawei.com>
+To:     <linux-ext4@vger.kernel.org>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+        <yi.zhang@huawei.com>, <yukuai3@huawei.com>
+Subject: [PATCH 00/12] ext4: enhance simulate fail facility
+Date:   Tue, 8 Nov 2022 22:46:05 +0800
+Message-ID: <20221108144617.4159381-1-yi.zhang@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Received: by 2002:a05:7300:5388:b0:85:81c6:896c with HTTP; Tue, 8 Nov 2022
- 06:25:11 -0800 (PST)
-Reply-To: mr.abraham022@gmail.com
-From:   "Mr.Abraham" <davidkekeli11@gmail.com>
-Date:   Tue, 8 Nov 2022 14:25:11 +0000
-Message-ID: <CAPBO+FJ3Nhd2ncX9Z_fDUqYStiGQU821nC6EEFSDx5iCTdXkaQ@mail.gmail.com>
-Subject: Greeting
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:102d listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4990]
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [mr.abraham022[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [davidkekeli11[at]gmail.com]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [davidkekeli11[at]gmail.com]
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
-        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500005.china.huawei.com (7.192.104.229)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-My Greeting, Did you receive the letter i sent to you. Please answer me.
-Regard, Mr.Abraham
+Now we can test ext4's reliability by simulating fail facility introduced
+in commit 46f870d690fe ("ext4: simulate various I/O and checksum errors
+when reading metadata"), it can simulate checksum error or I/O error
+when reading metadata from disk. But it is functional limited, it cannot
+set failure times, probability, filters, etc. Fortunately, we already
+have common fault-injection frame in Linux, so above limitation could be
+easily supplied by using it in ext4. This patch set add ext4
+fault-injection facility to replace the old frame, supply some kinds of
+checksum error and I/O error, and also add group, inode, physical
+block and inode logical block filters. After this patch set, we could
+inject failure more precisly. The facility could be used to do fuzz
+stress test include random errors, and it also could be used to
+reprodece issues more conveniently.
+
+Patch 1: add debugfs for preparing.
+Patch 2: introduce the fault-injection frame for ext4.
+Patch 3-11: add various kinds of faults and also do some cleanup.
+Patch 12: remove the old simulating facility.
+
+It provides a debugfs interface in ext4/<disk>/fault_inject, besides the
+common config interfaces, we give 6 more.
+ - available_faults: present available faults we can inject.
+ - inject_faults: set faults, can set multiple at a time.
+ - inject_inode: set the inode filter, matches all inodes if not set.
+ - inject_group: set the block group filter, similar to inject_inode.
+ - inject_logical_block: set the logical block filter for one inode.
+ - inject_physical_block: set the physical block filter.
+
+Current we add 20 available faults list below, include 8 kinds of
+metadata checksum error, 7 metadata I/O error and 5 journal error.
+After we have this facility, more other faults could be added easily
+in the future.
+ - group_desc_checksum
+ - inode_bitmap_checksum
+ - block_bitmap_checksum
+ - inode_checksum
+ - extent_block_checksum
+ - dir_block_checksum
+ - dir_index_block_checksum
+ - xattr_block_checksum
+ - inode_bitmap_eio
+ - block_bitmap_eio
+ - inode_eio
+ - extent_block_eio
+ - dir_block_eio
+ - xattr_block_eio
+ - symlink_block_eio
+ - journal_start
+ - journal_start_sb
+ - journal_get_create_access
+ - journal_get_write_access
+ - journal_dirty_metadata
+
+For example: inject inode metadata checksum error on file 'foo'.
+
+$ mkfs.ext4 -F /dev/pmem0
+$ mount /dev/pmem0 /mnt
+$ mkdir /mnt/dir
+$ touch /mnt/dir/foo
+$ ls -i /mnt/dir/foo
+  262146 /mnt/foo
+
+$ echo 100 > /sys/kernel/debug/ext4/pmem0/fault_inject/probability
+$ echo 1 > /sys/kernel/debug/ext4/pmem0/fault_inject/times
+$ echo 262146 > /sys/kernel/debug/ext4/pmem0/fault_inject/inject_inode
+$ echo inode_checksum > /sys/kernel/debug/ext4/pmem0/fault_inject/inject_faults
+$ echo 1 > /sys/kernel/debug/ext4/pmem0/fault_inject/enable
+$ echo 3 > /proc/sys/vm/drop_caches ##drop cache
+$ stat /mnt/dir/foo
+  stat: cannot statx '/mnt/dir/foo': Bad message
+
+The kmesg print the injection location.
+
+[  461.433817] FAULT_INJECTION: forcing a failure.
+[  461.433817] name fault_inject, interval 1, probability 100, space 0, times 1
+...
+[  461.438609] Call Trace:
+[  461.438875]  <TASK>
+[  461.439116]  ? dump_stack_lvl+0x73/0xa3
+[  461.439534]  ? dump_stack+0x13/0x1f
+[  461.439909]  ? should_fail.cold+0x4a/0x57
+[  461.440346]  ? ext4_should_fail.cold+0x11f/0x135
+[  461.440833]  ? __ext4_iget+0x407/0x1410
+[  461.441245]  ? ext4_lookup+0x1be/0x350
+[  461.441650]  ? __lookup_slow+0xb9/0x1f0
+[  461.442070]  ? lookup_slow+0x46/0x70
+[  461.442463]  ? walk_component+0x13e/0x230
+[  461.442890]  ? path_lookupat.isra.0+0x8f/0x200
+[  461.443369]  ? filename_lookup+0xd6/0x240
+[  461.443798]  ? vfs_statx+0xa6/0x200
+[  461.444186]  ? do_statx+0x48/0xc0
+[  461.444546]  ? __might_sleep+0x56/0xc0
+[  461.444950]  ? should_fail_usercopy+0x19/0x30
+[  461.445424]  ? strncpy_from_user+0x33/0x2a0
+[  461.445870]  ? getname_flags+0x95/0x330
+[  461.446288]  ? switch_fpu_return+0x27/0x1e0
+[  461.446736]  ? __x64_sys_statx+0x90/0xd0
+[  461.447160]  ? do_syscall_64+0x3b/0x90
+[  461.447563]  ? entry_SYSCALL_64_after_hwframe+0x63/0xcd
+[  461.448122]  </TASK>
+[  461.448395] EXT4-fs error (device pmem0): ext4_lookup:1840: inode #262146: comm stat: iget: checksum invalid
+
+Thanks,
+Yi.
+
+Zhang Yi (12):
+  ext4: add debugfs interface
+  ext4: introduce fault injection facility
+  ext4: add several checksum fault injection
+  ext4: add bitmaps I/O fault injection
+  ext4: add inode I/O fault injection
+  ext4: add extent block I/O fault injection
+  ext4: add dirblock I/O fault injection
+  ext4: call ext4_xattr_get_block() when getting xattr block
+  ext4: add xattr block I/O fault injection
+  ext4: add symlink block I/O fault injection
+  ext4: add journal related fault injection
+  ext4: remove simulate fail facility
+
+ fs/ext4/Kconfig     |   9 ++
+ fs/ext4/balloc.c    |  14 ++-
+ fs/ext4/bitmap.c    |   4 +
+ fs/ext4/dir.c       |   3 +
+ fs/ext4/ext4.h      | 181 +++++++++++++++++++++++++++++--------
+ fs/ext4/ext4_jbd2.c |  22 +++--
+ fs/ext4/ext4_jbd2.h |   5 +
+ fs/ext4/extents.c   |   7 ++
+ fs/ext4/ialloc.c    |  24 +++--
+ fs/ext4/inode.c     |  26 ++++--
+ fs/ext4/namei.c     |  14 ++-
+ fs/ext4/super.c     |   7 +-
+ fs/ext4/symlink.c   |   4 +
+ fs/ext4/sysfs.c     | 183 +++++++++++++++++++++++++++++++++++--
+ fs/ext4/xattr.c     | 216 +++++++++++++++++++-------------------------
+ 15 files changed, 515 insertions(+), 204 deletions(-)
+
+-- 
+2.31.1
+
