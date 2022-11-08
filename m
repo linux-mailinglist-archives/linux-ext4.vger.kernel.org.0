@@ -2,21 +2,21 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B5D62164D
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Nov 2022 15:27:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24508621688
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Nov 2022 15:28:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234395AbiKHO0u (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 8 Nov 2022 09:26:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57800 "EHLO
+        id S234493AbiKHO0y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 8 Nov 2022 09:26:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234093AbiKHO0M (ORCPT
+        with ESMTP id S234084AbiKHO0M (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Nov 2022 09:26:12 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B8AA5C76C
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C395D5C77C
         for <linux-ext4@vger.kernel.org>; Tue,  8 Nov 2022 06:24:53 -0800 (PST)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4N69N81jH9z15MQy;
-        Tue,  8 Nov 2022 22:24:40 +0800 (CST)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4N69Jv40ZHzHqPG;
+        Tue,  8 Nov 2022 22:21:51 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by canpemm500005.china.huawei.com
  (7.192.104.229) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Tue, 8 Nov
@@ -25,9 +25,9 @@ From:   Zhang Yi <yi.zhang@huawei.com>
 To:     <linux-ext4@vger.kernel.org>
 CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
         <yi.zhang@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH 07/12] ext4: add dirblock I/O fault injection
-Date:   Tue, 8 Nov 2022 22:46:12 +0800
-Message-ID: <20221108144617.4159381-8-yi.zhang@huawei.com>
+Subject: [PATCH 08/12] ext4: call ext4_xattr_get_block() when getting xattr block
+Date:   Tue, 8 Nov 2022 22:46:13 +0800
+Message-ID: <20221108144617.4159381-9-yi.zhang@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221108144617.4159381-1-yi.zhang@huawei.com>
 References: <20221108144617.4159381-1-yi.zhang@huawei.com>
@@ -46,89 +46,300 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Add directory block reading I/O fault injection, we can specify the
-inode and logical block to inject. It will return -EIO immediately
-instead of submitting I/O in readdir cases, but in the
-__ext4_find_entry() procedure, it's hard to inject error precisely due
-to the batch count reading, so it simulate error by clearing the
-buffer's uptodate flag after I/O complete.
+We currently open code reading xattr block and checking valid in many
+places where getting xattr block, but we already have a helper function
+ext4_xattr_get_block(), use this helper can unify all of the getting
+xattr block procedure and make them more clean-up.
 
 Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 ---
- fs/ext4/dir.c   | 3 +++
- fs/ext4/ext4.h  | 2 ++
- fs/ext4/namei.c | 4 ++++
- fs/ext4/sysfs.c | 1 +
- 4 files changed, 10 insertions(+)
+ fs/ext4/xattr.c | 197 ++++++++++++++++++++----------------------------
+ 1 file changed, 80 insertions(+), 117 deletions(-)
 
-diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
-index 3985f8c33f95..1cf2b89c9dcd 100644
---- a/fs/ext4/dir.c
-+++ b/fs/ext4/dir.c
-@@ -196,6 +196,9 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
- 					&file->f_ra, file,
- 					index, 1);
- 			file->f_ra.prev_pos = (loff_t)index << PAGE_SHIFT;
-+			err = ext4_fault_dirblock_io(inode, map.m_lblk);
-+			if (err)
-+				goto errout;
- 			bh = ext4_bread(NULL, inode, map.m_lblk, 0);
- 			if (IS_ERR(bh)) {
- 				err = PTR_ERR(bh);
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 9c1dcbed59e6..aaa3a29cd0e7 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1523,6 +1523,7 @@ enum ext4_fault_bits {
- 	EXT4_FAULT_BBITMAP_EIO,		/* block bitmap block */
- 	EXT4_FAULT_INODE_EIO,		/* inode */
- 	EXT4_FAULT_EXTENT_EIO,		/* extent block */
-+	EXT4_FAULT_DIRBLOCK_EIO,	/* directory block */
- 	EXT4_FAULT_MAX
- };
+diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+index 46a87ae9fdc8..39c80565c65d 100644
+--- a/fs/ext4/xattr.c
++++ b/fs/ext4/xattr.c
+@@ -74,6 +74,7 @@
+ # define ea_bdebug(bh, fmt, ...)	no_printk(fmt, ##__VA_ARGS__)
+ #endif
  
-@@ -1626,6 +1627,7 @@ EXT4_FAULT_GRP_FN(IBITMAP_EIO, inode_bitmap_io, -EIO)
- EXT4_FAULT_GRP_FN(BBITMAP_EIO, block_bitmap_io, -EIO)
- EXT4_FAULT_INODE_FN(INODE_EIO, inode_io, -EIO)
- EXT4_FAULT_INODE_PBLOCK_FN(EXTENT_EIO, extent_io, -EIO)
-+EXT4_FAULT_INODE_LBLOCK_FN(DIRBLOCK_EIO, dirblock_io, -EIO)
++static struct buffer_head *ext4_xattr_get_block(struct inode *);
+ static void ext4_xattr_block_cache_insert(struct mb_cache *,
+ 					  struct buffer_head *);
+ static struct buffer_head *
+@@ -542,18 +543,11 @@ ext4_xattr_block_get(struct inode *inode, int name_index, const char *name,
+ 	ea_idebug(inode, "name=%d.%s, buffer=%p, buffer_size=%ld",
+ 		  name_index, name, buffer, (long)buffer_size);
  
- /*
-  * fourth extended-fs super-block data in memory
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 4960ef9f05a0..fa754f1ba4a6 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -140,6 +140,8 @@ static struct buffer_head *__ext4_read_dirblock(struct inode *inode,
+-	if (!EXT4_I(inode)->i_file_acl)
++	bh = ext4_xattr_get_block(inode);
++	if (!bh)
+ 		return -ENODATA;
+-	ea_idebug(inode, "reading block %llu",
+-		  (unsigned long long)EXT4_I(inode)->i_file_acl);
+-	bh = ext4_sb_bread(inode->i_sb, EXT4_I(inode)->i_file_acl, REQ_PRIO);
+ 	if (IS_ERR(bh))
+ 		return PTR_ERR(bh);
+-	ea_bdebug(bh, "b_count=%d, refcount=%d",
+-		atomic_read(&(bh->b_count)), le32_to_cpu(BHDR(bh)->h_refcount));
+-	error = ext4_xattr_check_block(inode, bh);
+-	if (error)
+-		goto cleanup;
+ 	ext4_xattr_block_cache_insert(ea_block_cache, bh);
+ 	entry = BFIRST(bh);
+ 	end = bh->b_data + bh->b_size;
+@@ -715,22 +709,13 @@ ext4_xattr_block_list(struct dentry *dentry, char *buffer, size_t buffer_size)
+ 	ea_idebug(inode, "buffer=%p, buffer_size=%ld",
+ 		  buffer, (long)buffer_size);
  
- 	if (ext4_simulate_fail(inode->i_sb, EXT4_SIM_DIRBLOCK_EIO))
- 		bh = ERR_PTR(-EIO);
-+	else if (ext4_fault_dirblock_io(inode, block))
-+		bh = ERR_PTR(-EIO);
- 	else
- 		bh = ext4_bread(NULL, inode, block, 0);
- 	if (IS_ERR(bh)) {
-@@ -1663,6 +1665,8 @@ static struct buffer_head *__ext4_find_entry(struct inode *dir,
- 		if ((bh = bh_use[ra_ptr++]) == NULL)
- 			goto next;
- 		wait_on_buffer(bh);
-+		if (ext4_fault_dirblock_io(dir, bh->b_blocknr))
-+			clear_buffer_uptodate(bh);
- 		if (!buffer_uptodate(bh)) {
- 			EXT4_ERROR_INODE_ERR(dir, EIO,
- 					     "reading directory lblock %lu",
-diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-index bad4885399dd..0329205a9958 100644
---- a/fs/ext4/sysfs.c
-+++ b/fs/ext4/sysfs.c
-@@ -582,6 +582,7 @@ char *ext4_fault_names[EXT4_FAULT_MAX] = {
- 	"block_bitmap_eio",		/* EXT4_FAULT_BBITMAP_EIO */
- 	"inode_eio",			/* EXT4_FAULT_INODE_EIO */
- 	"extent_block_eio",		/* EXT4_FAULT_EXTENT_EIO */
-+	"dir_block_eio",		/* EXT4_FAULT_DIRBLOCK_EIO */
- };
+-	if (!EXT4_I(inode)->i_file_acl)
+-		return 0;
+-	ea_idebug(inode, "reading block %llu",
+-		  (unsigned long long)EXT4_I(inode)->i_file_acl);
+-	bh = ext4_sb_bread(inode->i_sb, EXT4_I(inode)->i_file_acl, REQ_PRIO);
+-	if (IS_ERR(bh))
++	bh = ext4_xattr_get_block(inode);
++	if (!bh || IS_ERR(bh))
+ 		return PTR_ERR(bh);
+-	ea_bdebug(bh, "b_count=%d, refcount=%d",
+-		atomic_read(&(bh->b_count)), le32_to_cpu(BHDR(bh)->h_refcount));
+-	error = ext4_xattr_check_block(inode, bh);
+-	if (error)
+-		goto cleanup;
++
+ 	ext4_xattr_block_cache_insert(EA_BLOCK_CACHE(inode), bh);
+ 	error = ext4_xattr_list_entries(dentry, BFIRST(bh), buffer,
+ 					buffer_size);
+-cleanup:
+ 	brelse(bh);
+ 	return error;
+ }
+@@ -849,18 +834,13 @@ int ext4_get_inode_usage(struct inode *inode, qsize_t *usage)
+ 				ea_inode_refs++;
+ 	}
  
- static int ext4_fault_available_show(struct seq_file *m, void *v)
+-	if (EXT4_I(inode)->i_file_acl) {
+-		bh = ext4_sb_bread(inode->i_sb, EXT4_I(inode)->i_file_acl, REQ_PRIO);
+-		if (IS_ERR(bh)) {
+-			ret = PTR_ERR(bh);
+-			bh = NULL;
+-			goto out;
+-		}
+-
+-		ret = ext4_xattr_check_block(inode, bh);
+-		if (ret)
+-			goto out;
+-
++	bh = ext4_xattr_get_block(inode);
++	if (IS_ERR(bh)) {
++		ret = PTR_ERR(bh);
++		bh = NULL;
++		goto out;
++	}
++	if (bh) {
+ 		for (entry = BFIRST(bh); !IS_LAST_ENTRY(entry);
+ 		     entry = EXT4_XATTR_NEXT(entry))
+ 			if (entry->e_value_inum)
+@@ -1816,37 +1796,27 @@ static int
+ ext4_xattr_block_find(struct inode *inode, struct ext4_xattr_info *i,
+ 		      struct ext4_xattr_block_find *bs)
+ {
+-	struct super_block *sb = inode->i_sb;
++	struct buffer_head *bh;
+ 	int error;
+ 
+ 	ea_idebug(inode, "name=%d.%s, value=%p, value_len=%ld",
+ 		  i->name_index, i->name, i->value, (long)i->value_len);
+ 
+-	if (EXT4_I(inode)->i_file_acl) {
+-		/* The inode already has an extended attribute block. */
+-		bs->bh = ext4_sb_bread(sb, EXT4_I(inode)->i_file_acl, REQ_PRIO);
+-		if (IS_ERR(bs->bh)) {
+-			error = PTR_ERR(bs->bh);
+-			bs->bh = NULL;
+-			return error;
+-		}
+-		ea_bdebug(bs->bh, "b_count=%d, refcount=%d",
+-			atomic_read(&(bs->bh->b_count)),
+-			le32_to_cpu(BHDR(bs->bh)->h_refcount));
+-		error = ext4_xattr_check_block(inode, bs->bh);
+-		if (error)
+-			return error;
+-		/* Find the named attribute. */
+-		bs->s.base = BHDR(bs->bh);
+-		bs->s.first = BFIRST(bs->bh);
+-		bs->s.end = bs->bh->b_data + bs->bh->b_size;
+-		bs->s.here = bs->s.first;
+-		error = xattr_find_entry(inode, &bs->s.here, bs->s.end,
+-					 i->name_index, i->name, 1);
+-		if (error && error != -ENODATA)
+-			return error;
+-		bs->s.not_found = error;
+-	}
++	bh = ext4_xattr_get_block(inode);
++	if (!bh || IS_ERR(bh))
++		return PTR_ERR(bh);
++
++	/* Find the named attribute. */
++	bs->bh = bh;
++	bs->s.base = BHDR(bs->bh);
++	bs->s.first = BFIRST(bs->bh);
++	bs->s.end = bs->bh->b_data + bs->bh->b_size;
++	bs->s.here = bs->s.first;
++	error = xattr_find_entry(inode, &bs->s.here, bs->s.end,
++				 i->name_index, i->name, 1);
++	if (error && error != -ENODATA)
++		return error;
++	bs->s.not_found = error;
+ 	return 0;
+ }
+ 
+@@ -2260,9 +2230,15 @@ static struct buffer_head *ext4_xattr_get_block(struct inode *inode)
+ 
+ 	if (!EXT4_I(inode)->i_file_acl)
+ 		return NULL;
++
++	ea_idebug(inode, "reading block %llu",
++		  (unsigned long long)EXT4_I(inode)->i_file_acl);
+ 	bh = ext4_sb_bread(inode->i_sb, EXT4_I(inode)->i_file_acl, REQ_PRIO);
+ 	if (IS_ERR(bh))
+ 		return bh;
++
++	ea_bdebug(bh, "b_count=%d, refcount=%d",
++		atomic_read(&(bh->b_count)), le32_to_cpu(BHDR(bh)->h_refcount));
+ 	error = ext4_xattr_check_block(inode, bh);
+ 	if (error) {
+ 		brelse(bh);
+@@ -2703,6 +2679,7 @@ int ext4_expand_extra_isize_ea(struct inode *inode, int new_extra_isize,
+ 	int error = 0, tried_min_extra_isize = 0;
+ 	int s_min_extra_isize = le16_to_cpu(sbi->s_es->s_min_extra_isize);
+ 	int isize_diff;	/* How much do we need to grow i_extra_isize */
++	struct buffer_head *bh;
+ 
+ retry:
+ 	isize_diff = new_extra_isize - EXT4_I(inode)->i_extra_isize;
+@@ -2733,19 +2710,12 @@ int ext4_expand_extra_isize_ea(struct inode *inode, int new_extra_isize,
+ 	 * Enough free space isn't available in the inode, check if
+ 	 * EA block can hold new_extra_isize bytes.
+ 	 */
+-	if (EXT4_I(inode)->i_file_acl) {
+-		struct buffer_head *bh;
+-
+-		bh = ext4_sb_bread(inode->i_sb, EXT4_I(inode)->i_file_acl, REQ_PRIO);
+-		if (IS_ERR(bh)) {
+-			error = PTR_ERR(bh);
+-			goto cleanup;
+-		}
+-		error = ext4_xattr_check_block(inode, bh);
+-		if (error) {
+-			brelse(bh);
+-			goto cleanup;
+-		}
++	bh = ext4_xattr_get_block(inode);
++	if (IS_ERR(bh)) {
++		error = PTR_ERR(bh);
++		goto cleanup;
++	}
++	if (bh) {
+ 		base = BHDR(bh);
+ 		end = bh->b_data + bh->b_size;
+ 		min_offs = end - base;
+@@ -2892,56 +2862,49 @@ int ext4_xattr_delete_inode(handle_t *handle, struct inode *inode,
+ 						     false /* skip_quota */);
+ 	}
+ 
+-	if (EXT4_I(inode)->i_file_acl) {
+-		bh = ext4_sb_bread(inode->i_sb, EXT4_I(inode)->i_file_acl, REQ_PRIO);
+-		if (IS_ERR(bh)) {
+-			error = PTR_ERR(bh);
+-			if (error == -EIO) {
+-				EXT4_ERROR_INODE_ERR(inode, EIO,
+-						     "block %llu read error",
+-						     EXT4_I(inode)->i_file_acl);
+-			}
+-			bh = NULL;
+-			goto cleanup;
++	bh = ext4_xattr_get_block(inode);
++	if (!bh || IS_ERR(bh)) {
++		error = PTR_ERR(bh);
++		bh = NULL;
++		if (error == -EIO) {
++			EXT4_ERROR_INODE_ERR(inode, EIO, "block %llu read error",
++					     EXT4_I(inode)->i_file_acl);
+ 		}
+-		error = ext4_xattr_check_block(inode, bh);
+-		if (error)
+-			goto cleanup;
+-
+-		if (ext4_has_feature_ea_inode(inode->i_sb)) {
+-			for (entry = BFIRST(bh); !IS_LAST_ENTRY(entry);
+-			     entry = EXT4_XATTR_NEXT(entry)) {
+-				if (!entry->e_value_inum)
+-					continue;
+-				error = ext4_xattr_inode_iget(inode,
+-					      le32_to_cpu(entry->e_value_inum),
+-					      le32_to_cpu(entry->e_hash),
+-					      &ea_inode);
+-				if (error)
+-					continue;
+-				ext4_xattr_inode_free_quota(inode, ea_inode,
+-					      le32_to_cpu(entry->e_value_size));
+-				iput(ea_inode);
+-			}
++		goto cleanup;
++	}
+ 
++	if (ext4_has_feature_ea_inode(inode->i_sb)) {
++		for (entry = BFIRST(bh); !IS_LAST_ENTRY(entry);
++		     entry = EXT4_XATTR_NEXT(entry)) {
++			if (!entry->e_value_inum)
++				continue;
++			error = ext4_xattr_inode_iget(inode,
++				      le32_to_cpu(entry->e_value_inum),
++				      le32_to_cpu(entry->e_hash),
++				      &ea_inode);
++			if (error)
++				continue;
++			ext4_xattr_inode_free_quota(inode, ea_inode,
++				      le32_to_cpu(entry->e_value_size));
++			iput(ea_inode);
+ 		}
+ 
+-		ext4_xattr_release_block(handle, inode, bh, ea_inode_array,
+-					 extra_credits);
+-		/*
+-		 * Update i_file_acl value in the same transaction that releases
+-		 * block.
+-		 */
+-		EXT4_I(inode)->i_file_acl = 0;
+-		error = ext4_mark_inode_dirty(handle, inode);
+-		if (error) {
+-			EXT4_ERROR_INODE(inode, "mark inode dirty (error %d)",
+-					 error);
+-			goto cleanup;
+-		}
+-		ext4_fc_mark_ineligible(inode->i_sb, EXT4_FC_REASON_XATTR, handle);
+ 	}
+-	error = 0;
++
++	ext4_xattr_release_block(handle, inode, bh, ea_inode_array,
++				 extra_credits);
++	/*
++	 * Update i_file_acl value in the same transaction that releases
++	 * block.
++	 */
++	EXT4_I(inode)->i_file_acl = 0;
++	error = ext4_mark_inode_dirty(handle, inode);
++	if (error) {
++		EXT4_ERROR_INODE(inode, "mark inode dirty (error %d)",
++				 error);
++		goto cleanup;
++	}
++	ext4_fc_mark_ineligible(inode->i_sb, EXT4_FC_REASON_XATTR, handle);
+ cleanup:
+ 	brelse(iloc.bh);
+ 	brelse(bh);
 -- 
 2.31.1
 
