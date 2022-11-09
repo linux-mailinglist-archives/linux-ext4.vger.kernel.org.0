@@ -2,95 +2,124 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 650CA6228AF
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Nov 2022 11:40:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34AFF622A82
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Nov 2022 12:29:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbiKIKkh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 9 Nov 2022 05:40:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55214 "EHLO
+        id S229567AbiKIL33 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 9 Nov 2022 06:29:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230500AbiKIKkg (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Nov 2022 05:40:36 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C18911BEB6
-        for <linux-ext4@vger.kernel.org>; Wed,  9 Nov 2022 02:40:34 -0800 (PST)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4N6hGr2Y8PzpWK0;
-        Wed,  9 Nov 2022 18:36:52 +0800 (CST)
-Received: from dggpeml500016.china.huawei.com (7.185.36.70) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 9 Nov 2022 18:40:32 +0800
-Received: from [10.174.176.102] (10.174.176.102) by
- dggpeml500016.china.huawei.com (7.185.36.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 9 Nov 2022 18:40:32 +0800
-Message-ID: <30ac384e-a015-259a-3efc-1c9f3ee1dabb@huawei.com>
-Date:   Wed, 9 Nov 2022 18:40:31 +0800
+        with ESMTP id S229527AbiKIL32 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Nov 2022 06:29:28 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A225DDE9A;
+        Wed,  9 Nov 2022 03:29:27 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 617C0224D5;
+        Wed,  9 Nov 2022 11:29:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1667993366; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6t6ywLtduHdfWo42pRm3bPhGBiGRAuMPXEPNm4DRpFk=;
+        b=FCOVDYB4HsskKJ4A6aqxklETHj/nB9bXTGlQ0BZI0yJdxfi3d/4HM5FNN89stnpEBqdPOR
+        KIlRfRbhddC2EJHNkTFsnYhVoPxf8BwMRWhiMw2cUT0tFKLTIEUAq13rb8DSuHsP0pdGk+
+        cH7RRtNEG3otstICBOfLBAfUfhexZUo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1667993366;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6t6ywLtduHdfWo42pRm3bPhGBiGRAuMPXEPNm4DRpFk=;
+        b=ZJZf/mQ1TVNFOUwro7ubr7AUaCD9iTe2tPI09b4LytNwCXjjrr3B/hRwizfA+1Ed/NqUMX
+        kJzOLMViMaZ6RwAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 521F91331F;
+        Wed,  9 Nov 2022 11:29:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Hy3+ExaPa2NtPAAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 09 Nov 2022 11:29:26 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 04FE1A0704; Wed,  9 Nov 2022 12:29:24 +0100 (CET)
+Date:   Wed, 9 Nov 2022 12:29:24 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yukuai3@huawei.com
+Subject: Re: [PATCH] ext4: correct inconsistent error msg in nojournal mode
+Message-ID: <20221109112924.7vl3r47xqmtf3cxo@quack3>
+References: <20221109074343.4184862-1-libaokun1@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-To:     Theodore Ts'o <tytso@mit.edu>
-CC:     <linux-ext4@vger.kernel.org>, linfeilong <linfeilong@huawei.com>,
-        <liuzhiqiang26@huawei.com>
-From:   zhanchengbin <zhanchengbin1@huawei.com>
-Subject: [bug report] e2fsck: The process is deadlocked
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.102]
-X-ClientProxiedBy: dggpeml500012.china.huawei.com (7.185.36.15) To
- dggpeml500016.china.huawei.com (7.185.36.70)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221109074343.4184862-1-libaokun1@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Tytso,
-The process is deadlocked, and an I/O error occurs when logs
-are replayed. Because in the I/O error handling function, I/O
-is sent again and catch the mutexlock.
-stack:
-(gdb) bt
-#0  0x0000ffffa740bc34 in ?? () from /usr/lib64/libc.so.6
-#1  0x0000ffffa7412024 in pthread_mutex_lock () from /usr/lib64/libc.so.6
-#2  0x0000ffffa7654e54 in mutex_lock (kind=CACHE_MTX, 
-data=0xaaaaf5c98f30) at unix_io.c:151
-#3  unix_write_blk64 (channel=0xaaaaf5c98e60, block=2, count=4, 
-buf=0xaaaaf5c9d170) at unix_io.c:1092
-#4  0x0000ffffa762e610 in ext2fs_flush2 (flags=0, fs=0xaaaaf5c98cc0) at 
-closefs.c:401
-#5  ext2fs_flush2 (fs=0xaaaaf5c98cc0, flags=0) at closefs.c:279
-#6  0x0000ffffa762eb14 in ext2fs_close2 (fs=fs@entry=0xaaaaf5c98cc0, 
-flags=flags@entry=0) at closefs.c:510
-#7  0x0000ffffa762eba4 in ext2fs_close_free 
-(fs_ptr=fs_ptr@entry=0xffffc8cbab30) at closefs.c:472
-#8  0x0000aaaadcc39bd8 in preenhalt (ctx=ctx@entry=0xaaaaf5c98460) at 
-util.c:365
-#9  0x0000aaaadcc3bc5c in e2fsck_handle_write_error (channel=<optimized 
-out>, block=262152, count=<optimized out>, data=<optimized out>, 
-size=<optimized out>, actual=<optimized out>, error=5)
-     at ehandler.c:114
-#10 0x0000ffffa7655044 in reuse_cache (block=262206, 
-cache=0xaaaaf5c98f80, data=0xaaaaf5c98f30, channel=0xaaaaf5c98e60) at 
-unix_io.c:583
-#11 unix_write_blk64 (channel=0xaaaaf5c98e60, block=262206, 
-count=<optimized out>, buf=<optimized out>) at unix_io.c:1097
-#12 0x0000aaaadcc3702c in ll_rw_block (rw=rw@entry=1, 
-op_flags=op_flags@entry=0, nr=<optimized out>, nr@entry=1, 
-bhp=0xffffc8cbac60, bhp@entry=0xffffc8cbac58) at journal.c:184
-#13 0x0000aaaadcc375e8 in brelse (bh=<optimized out>, 
-bh@entry=0xaaaaf5cac4a0) at journal.c:217
-#14 0x0000aaaadcc3ebe0 in do_one_pass 
-(journal=journal@entry=0xaaaaf5c9f590, info=info@entry=0xffffc8cbad60, 
-pass=pass@entry=PASS_REPLAY) at recovery.c:693
-#15 0x0000aaaadcc3ee74 in jbd2_journal_recover (journal=0xaaaaf5c9f590) 
-at recovery.c:310
-#16 0x0000aaaadcc386a8 in recover_ext3_journal (ctx=0xaaaaf5c98460) at 
-journal.c:1653
-#17 e2fsck_run_ext3_journal (ctx=0xaaaaf5c98460) at journal.c:1706
-#18 0x0000aaaadcc207e0 in main (argc=<optimized out>, argv=<optimized 
-out>) at unix.c:1791
+On Wed 09-11-22 15:43:43, Baokun Li wrote:
+> When we used the journal_async_commit mounting option in nojournal mode,
+> the kernel told me that "can't mount with journal_checksum", was very
+> confusing. I find that when we mount with journal_async_commit, both the
+> JOURNAL_ASYNC_COMMIT and EXPLICIT_JOURNAL_CHECKSUM flags are set. However,
+> in the error branch, CHECKSUM is checked before ASYNC_COMMIT. As a result,
+> the above inconsistency occurs, and the ASYNC_COMMIT branch becomes dead
+> code that cannot be executed. Therefore, we exchange the positions of the
+> two judgments to make the error msg more accurate.
+> 
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+
+Yeah, this is probably more consistent error message. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/ext4/super.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 63ef74eb8091..e4ababd0f132 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -5286,14 +5286,15 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+>  		goto failed_mount3a;
+>  	} else {
+>  		/* Nojournal mode, all journal mount options are illegal */
+> -		if (test_opt2(sb, EXPLICIT_JOURNAL_CHECKSUM)) {
+> +		if (test_opt(sb, JOURNAL_ASYNC_COMMIT)) {
+>  			ext4_msg(sb, KERN_ERR, "can't mount with "
+> -				 "journal_checksum, fs mounted w/o journal");
+> +				 "journal_async_commit, fs mounted w/o journal");
+>  			goto failed_mount3a;
+>  		}
+> -		if (test_opt(sb, JOURNAL_ASYNC_COMMIT)) {
+> +
+> +		if (test_opt2(sb, EXPLICIT_JOURNAL_CHECKSUM)) {
+>  			ext4_msg(sb, KERN_ERR, "can't mount with "
+> -				 "journal_async_commit, fs mounted w/o journal");
+> +				 "journal_checksum, fs mounted w/o journal");
+>  			goto failed_mount3a;
+>  		}
+>  		if (sbi->s_commit_interval != JBD2_DEFAULT_MAX_COMMIT_AGE*HZ) {
+> -- 
+> 2.31.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
