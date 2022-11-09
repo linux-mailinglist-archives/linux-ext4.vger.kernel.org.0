@@ -2,87 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A872762248C
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Nov 2022 08:22:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F389D6226AB
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Nov 2022 10:17:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229488AbiKIHWR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 9 Nov 2022 02:22:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35558 "EHLO
+        id S229681AbiKIJRt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 9 Nov 2022 04:17:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229849AbiKIHWQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Nov 2022 02:22:16 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 962471CFE8;
-        Tue,  8 Nov 2022 23:22:13 -0800 (PST)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N6bxl1bc1zHvgl;
-        Wed,  9 Nov 2022 15:21:47 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
- (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Wed, 9 Nov
- 2022 15:22:11 +0800
-From:   Baokun Li <libaokun1@huawei.com>
+        with ESMTP id S229686AbiKIJRZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Nov 2022 04:17:25 -0500
+X-Greylist: delayed 985 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 09 Nov 2022 01:17:24 PST
+Received: from mail.lokoho.com (mail.lokoho.com [217.61.105.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3DD2192
+        for <linux-ext4@vger.kernel.org>; Wed,  9 Nov 2022 01:17:24 -0800 (PST)
+Received: by mail.lokoho.com (Postfix, from userid 1001)
+        id 59CED82866; Wed,  9 Nov 2022 09:00:55 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lokoho.com; s=mail;
+        t=1667984457; bh=Z0N5VlX9/JlryGOL5I747Le9USomZJCRNNGRT3LbbKc=;
+        h=Date:From:To:Subject:From;
+        b=WAeNZjq2cvI8C5hIK6z9TTpJVjKoK91u+mkOBEylIJypqNJfD8mdhhnVm3+TpiM3J
+         ztkNjqZhTB1kiiVISprr4eZSWYHkxAoKkhTPLRso0F6IFqoDDjhNOtvEtGIVD1IsMu
+         XT5vTyivuLIfFxsyEWsSS+FBM9tK3y/yGIeKYvLsvEJTSlu+ilPQ4DO90WcnFVKO3b
+         TpLlD6evgPpnGphrCR/QmqUD/qMhJBmCvRDADJChdLlU7ZlMGF/sEwt1GI5BGQChB3
+         MXPCP5rFwkLwDjJ1WudyvKpEa0fZt6kXUOI7DXXpX3t5fp9URIjZZN6ry8RU5cJ39q
+         uzLNQGFjFVyTw==
+Received: by mail.lokoho.com for <linux-ext4@vger.kernel.org>; Wed,  9 Nov 2022 09:00:53 GMT
+Message-ID: <20221109074500-0.1.25.5r60.0.00qj7elcf1@lokoho.com>
+Date:   Wed,  9 Nov 2022 09:00:53 GMT
+From:   "Adam Charachuta" <adam.charachuta@lokoho.com>
 To:     <linux-ext4@vger.kernel.org>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-        <ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>, <yukuai3@huawei.com>, <libaokun1@huawei.com>
-Subject: [PATCH] ext4: correct inconsistent error msg in nojournal mode
-Date:   Wed, 9 Nov 2022 15:43:43 +0800
-Message-ID: <20221109074343.4184862-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+Subject: =?UTF-8?Q?S=C5=82owa_kluczowe_do_wypozycjonowania?=
+X-Mailer: mail.lokoho.com
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_VALIDITY_RPBL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-When we used the journal_async_commit mounting option in nojournal mode,
-the kernel told me that "can't mount with journal_checksum", was very
-confusing. I find that when we mount with journal_async_commit, both the
-JOURNAL_ASYNC_COMMIT and EXPLICIT_JOURNAL_CHECKSUM flags are set. However,
-in the error branch, CHECKSUM is checked before ASYNC_COMMIT. As a result,
-the above inconsistency occurs, and the ASYNC_COMMIT branch becomes dead
-code that cannot be executed. Therefore, we exchange the positions of the
-two judgments to make the error msg more accurate.
+Dzie=C5=84 dobry,
 
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
- fs/ext4/super.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+zapozna=C5=82em si=C4=99 z Pa=C5=84stwa ofert=C4=85 i z przyjemno=C5=9Bci=
+=C4=85 przyznaj=C4=99, =C5=BCe przyci=C4=85ga uwag=C4=99 i zach=C4=99ca d=
+o dalszych rozm=C3=B3w.=20
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 63ef74eb8091..e4ababd0f132 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5286,14 +5286,15 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 		goto failed_mount3a;
- 	} else {
- 		/* Nojournal mode, all journal mount options are illegal */
--		if (test_opt2(sb, EXPLICIT_JOURNAL_CHECKSUM)) {
-+		if (test_opt(sb, JOURNAL_ASYNC_COMMIT)) {
- 			ext4_msg(sb, KERN_ERR, "can't mount with "
--				 "journal_checksum, fs mounted w/o journal");
-+				 "journal_async_commit, fs mounted w/o journal");
- 			goto failed_mount3a;
- 		}
--		if (test_opt(sb, JOURNAL_ASYNC_COMMIT)) {
-+
-+		if (test_opt2(sb, EXPLICIT_JOURNAL_CHECKSUM)) {
- 			ext4_msg(sb, KERN_ERR, "can't mount with "
--				 "journal_async_commit, fs mounted w/o journal");
-+				 "journal_checksum, fs mounted w/o journal");
- 			goto failed_mount3a;
- 		}
- 		if (sbi->s_commit_interval != JBD2_DEFAULT_MAX_COMMIT_AGE*HZ) {
--- 
-2.31.1
+Pomy=C5=9Bla=C5=82em, =C5=BCe mo=C5=BCe m=C3=B3g=C5=82bym mie=C4=87 sw=C3=
+=B3j wk=C5=82ad w Pa=C5=84stwa rozw=C3=B3j i pom=C3=B3c dotrze=C4=87 z t=C4=
+=85 ofert=C4=85 do wi=C4=99kszego grona odbiorc=C3=B3w. Pozycjonuj=C4=99 =
+strony www, dzi=C4=99ki czemu generuj=C4=85 =C5=9Bwietny ruch w sieci.
 
+Mo=C5=BCemy porozmawia=C4=87 w najbli=C5=BCszym czasie?
+
+
+Pozdrawiam
+Adam Charachuta
