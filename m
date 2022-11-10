@@ -2,122 +2,227 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3759D62409B
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Nov 2022 12:02:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D59956242A7
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Nov 2022 13:58:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbiKJLCH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Nov 2022 06:02:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50674 "EHLO
+        id S229625AbiKJM6D (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Nov 2022 07:58:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230384AbiKJLBy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Nov 2022 06:01:54 -0500
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 207BE6C71E
-        for <linux-ext4@vger.kernel.org>; Thu, 10 Nov 2022 03:01:51 -0800 (PST)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-333a4a5d495so11865607b3.10
-        for <linux-ext4@vger.kernel.org>; Thu, 10 Nov 2022 03:01:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bmHpbHS5doLrhzAjJPWJ0TWG+6ktMdA7UyRQfP5yVLQ=;
-        b=PLbZrq9bLdievV0a3Mb3BaXEmA0lIlXEss9RAzy1kIWFQcyoX58mVA9H25RToeQszv
-         5YvjuWvLH/5NrA6TyG40gt3N0kKc23/A76AT88SS5ZTAe2T4n9e5jWLXGZpGYLIXjEqQ
-         Khc8dLGZ8N7MaH3FLaoh08tpHLRjoS7QxA8kr5/5fJgId7Xy8vZ/wOwRGZwr9f6d4282
-         +pnfoWEXAiSc54Zb5MGIncElzoGgObabXLveU3e1AC2ar9FWmubdTRQJwgj+eSJ1gRxV
-         gbiBAeXoiiYsuVJihJyxE1Ps8zJ7mYhKmo3OErMbadxuKY3GcSaJWPGlaCt1AsgWghiJ
-         V5xQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bmHpbHS5doLrhzAjJPWJ0TWG+6ktMdA7UyRQfP5yVLQ=;
-        b=SblhEppGQDE8368cyH8DGTcPd09LlliSJ1RcU3+QjRzsebPVR190U9X6V8HSzolAVd
-         56ZX0gbA0Ogqys3Yr/JkQaOBThgRDB7hUcb6mWpOpMFIrnPrGrPMNNhPFT26+CAVWWaj
-         ErIJPpa29PdinZqBognXjGK8QoDxhyEx9pbACqxW3yWN83sVTti0qg5R3ZRJ2bJvrgtX
-         h2OWpBlURnblXWtCzckobPvK5pe0U4SN9585v0AK1hKzmxiME1nDNA56adh/fnSBe8FP
-         MKLGv8BBEey9NUR5agQO7efSfbqhHhQKsxavEc93SIskgQBx5UIED/BIPcITU36puA1E
-         KnWQ==
-X-Gm-Message-State: ACrzQf1kodZEDEzpoInZSkOiEbQScnw0DIO1aPujnHhB5tgEiKvKWI4Q
-        m2ILzMYaE9D0ubtuZIYn02KJxng0m+9LEf9fTKtRNg==
-X-Google-Smtp-Source: AMsMyM4R1yv3ctd1jPaIemb0nxA+rY5vVqfKSKgK+YNO+lpbSGR7xqL6G42PREeei1JWOBTJSsRAC/uEYrLUaBmIUU0=
-X-Received: by 2002:a0d:da03:0:b0:368:5712:5795 with SMTP id
- c3-20020a0dda03000000b0036857125795mr61929838ywe.428.1668078109722; Thu, 10
- Nov 2022 03:01:49 -0800 (PST)
+        with ESMTP id S229542AbiKJM6D (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Nov 2022 07:58:03 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3BE0C701A2
+        for <linux-ext4@vger.kernel.org>; Thu, 10 Nov 2022 04:57:59 -0800 (PST)
+Received: by linux.microsoft.com (Postfix, from userid 1112)
+        id 0413E20E67C1; Thu, 10 Nov 2022 04:57:59 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0413E20E67C1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1668085079;
+        bh=c/8yTwHNqIAZ34LBEK2zXKFNG3UMsuCzGQykXvc3lFU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IzaCO4LF4vdFmNycLWBPBnSa1krWdxasCclp3R574fgj75Y3i5gCzre8LtiFDPuad
+         iEGXa19foEj7lJakk2aqu8Mkl6/R3u05Gji0q1ckIfzrRDfrftkXjEfnBszdb/oGN6
+         udtKpydv+CzW4TVmEyxHBgVuDfqZ12LJWxP7F0Ao=
+Date:   Thu, 10 Nov 2022 04:57:58 -0800
+From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Thilo Fromm <t-lo@linux.microsoft.com>,
+        Ye Bin <yebin10@huawei.com>, jack@suse.com, tytso@mit.edu,
+        linux-ext4@vger.kernel.org, regressions@lists.linux.dev
+Subject: Re: [syzbot] possible deadlock in jbd2_journal_lock_updates
+Message-ID: <20221110125758.GA6919@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20221004091035.idjgo2xyscf6ovnv@quack3>
+ <eeb17fca-4e79-b39f-c394-a6fa6873eb26@linux.microsoft.com>
+ <20221005151053.7jjgc7uhvquo6a5n@quack3>
+ <20221010142410.GA1689@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <2ede5fce-7077-6e64-93a9-a7d993bc498f@linux.microsoft.com>
+ <20221014132543.i3aiyx4ent4qwy4i@quack3>
+ <d30f4e74-aa75-743d-3c89-80ec61d67c6c@linux.microsoft.com>
+ <20221024104628.ozxjtdrotysq2haj@quack3>
+ <643d007e-1041-4b3d-ed5e-ae47804f279d@linux.microsoft.com>
+ <20221026101854.k6qgunxexhxthw64@quack3>
 MIME-Version: 1.0
-References: <00000000000058d01705ecddccb0@google.com> <CAG_fn=WAyOc+1GEC+P3PpTM2zLcLcepAX1pPXkj5C6aPyrDVUA@mail.gmail.com>
- <Y2lGu/QTIWNpzFI3@sol.localdomain> <CAG_fn=VQBv-sgPhT0gLVChAtMNx0F3RcQYDKdvhBL4mBpiDkFA@mail.gmail.com>
- <CAG_fn=VPvdHxQc3xm5xkqgFq3uo5oTU_w5vyMj-qQD7DvwQ4BA@mail.gmail.com> <Y2qUylpsZcJ7HF0Z@sol.localdomain>
-In-Reply-To: <Y2qUylpsZcJ7HF0Z@sol.localdomain>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Thu, 10 Nov 2022 12:01:13 +0100
-Message-ID: <CAG_fn=WVUmodhyY+bNyKWC6BM5gXaq3fguw70ngsjZWc4mXkPg@mail.gmail.com>
-Subject: Re: [syzbot] KMSAN: uninit-value in pagecache_write
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     syzbot <syzbot+9767be679ef5016b6082@syzkaller.appspotmail.com>,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221026101854.k6qgunxexhxthw64@quack3>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Nov 8, 2022 at 6:41 PM Eric Biggers <ebiggers@kernel.org> wrote:
->
-> On Tue, Nov 08, 2022 at 10:08:36AM +0100, 'Alexander Potapenko' via syzka=
-ller-bugs wrote:
-> > > >
-> > > > Anyway, this patch doesn't hurt, I suppose.  Can please you send it=
- out as a
-> > > > formal patch to linux-ext4?  It would be easy for people to miss th=
-is patch
-> > > > buried in this thread.  Also, can you please send a patch to linux-=
-f2fs-devel
-> > > > for the same code in fs/f2fs/verity.c?
-> > >
-> > > Will do!
-> >
-> > Shall I also initialize fsdata here:
-> >
-> > $ git grep 'void \*fsdata;'
-> > fs/affs/file.c:         void *fsdata;
-> > fs/ext4/verity.c:               void *fsdata;
-> > fs/f2fs/verity.c:               void *fsdata;
-> > fs/hfs/extent.c:                void *fsdata;
-> > fs/hfsplus/extents.c:           void *fsdata;
-> > fs/ocfs2/mmap.c:        void *fsdata;
->
-> Yes, it looks like they all need this.  Except maybe ocfs2?  It's hard to=
- tell.
+On Wed, Oct 26, 2022 at 12:18:54PM +0200, Jan Kara wrote:
+> On Mon 24-10-22 18:32:51, Thilo Fromm wrote:
+> > Hello Honza,
+> > 
+> > > Yeah, I was pondering about this for some time but still I have no clue who
+> > > could be holding the buffer lock (which blocks the task holding the
+> > > transaction open) or how this could related to the commit you have
+> > > identified. I have two things to try:
+> > > 
+> > > 1) Can you please check whether the deadlock reproduces also with 6.0
+> > > kernel? The thing is that xattr handling code in ext4 has there some
+> > > additional changes, commit 307af6c8793 ("mbcache: automatically delete
+> > > entries from cache on freeing") in particular.
+> > 
+> > This would be complex; we currently do not integrate 6.0 with Flatcar and
+> > would need to spend quite some effort ingesting it first (mostly, make sure
+> > the new kernel does not break something unrelated). Flatcar is an
+> > image-based distro, so kernel updates imply full distro updates.
+> 
+> OK, understood.
+> 
+> > > 2) I have created a debug patch (against 5.15.x stable kernel). Can you
+> > > please reproduce the failure with it and post the output of "echo w
+> > > > /proc/sysrq-trigger" and also the output the debug patch will put into the
+> > > kernel log? It will dump the information about buffer lock owner if we > cannot get the lock for more than 32 seconds.
+> > 
+> > This would be more straightforward - I can reach out to one of our users
+> > suffering from the issue; they can reliably reproduce it and don't shy away
+> > from patching their kernel. Where can I find the patch?
+> 
+> Ha, my bad. I forgot to attach it. Here it is.
+> 
 
-For ocfs2 the begin/end functions are always the same, so it's harder
-to mess fsdata up.
-Guess we can say for now that __ocfs2_page_mkwrite() never passes an
-uninitialized variable to another function.
+Unfortunately this patch produced no output, but I have been able to repro so I
+understand why: except for the hung tasks, we have 1+ tasks busy-looping through
+the following code in ext4_xattr_block_set():
 
-> - Eric
+inserted:
+        if (!IS_LAST_ENTRY(s->first)) {
+                new_bh = ext4_xattr_block_cache_find(inode, header(s->base),
+                                                     &ce);
+                if (new_bh) {
+                        /* We found an identical block in the cache. */
+                        if (new_bh == bs->bh)
+                                ea_bdebug(new_bh, "keeping");
+                        else {
+                                u32 ref;
 
+                                WARN_ON_ONCE(dquot_initialize_needed(inode));
 
+                                /* The old block is released after updating
+                                   the inode. */
+                                error = dquot_alloc_block(inode,
+                                                EXT4_C2B(EXT4_SB(sb), 1));
+                                if (error)
+                                        goto cleanup;
+                                BUFFER_TRACE(new_bh, "get_write_access");
+                                error = ext4_journal_get_write_access(
+                                                handle, sb, new_bh,
+                                                EXT4_JTR_NONE);
+                                if (error)
+                                        goto cleanup_dquot;
+                                lock_buffer(new_bh);
+                                /*
+                                 * We have to be careful about races with
+                                 * adding references to xattr block. Once we
+                                 * hold buffer lock xattr block's state is
+                                 * stable so we can check the additional
+                                 * reference fits.
+                                 */
+                                ref = le32_to_cpu(BHDR(new_bh)->h_refcount) + 1;
+                                if (ref > EXT4_XATTR_REFCOUNT_MAX) {
+                                        /*
+                                         * Undo everything and check mbcache
+                                         * again.
+                                         */
+                                        unlock_buffer(new_bh);
+                                        dquot_free_block(inode,
+                                                         EXT4_C2B(EXT4_SB(sb),
+                                                                  1));
+                                        brelse(new_bh);
+                                        mb_cache_entry_put(ea_block_cache, ce);
+                                        ce = NULL;
+                                        new_bh = NULL;
+                                        goto inserted;
+                                }
 
---=20
-Alexander Potapenko
-Software Engineer
+The tasks keep taking the 'goto inserted' branch, and never finish. I've been
+able to repro with kernel v6.0.7 as well.
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
+> 								Honza
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
 
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Liana Sebastian
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+> >From feaf5e5ca0b22da6a285dc97eb756e0190fa7411 Mon Sep 17 00:00:00 2001
+> From: Jan Kara <jack@suse.cz>
+> Date: Mon, 24 Oct 2022 12:02:59 +0200
+> Subject: [PATCH] Debug buffer_head lock
+> 
+> Signed-off-by: Jan Kara <jack@suse.cz>
+> ---
+>  fs/buffer.c                 | 13 ++++++++++++-
+>  include/linux/buffer_head.h | 17 +++++++++++------
+>  2 files changed, 23 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/buffer.c b/fs/buffer.c
+> index f6d283579491..4514a810f072 100644
+> --- a/fs/buffer.c
+> +++ b/fs/buffer.c
+> @@ -66,7 +66,18 @@ EXPORT_SYMBOL(touch_buffer);
+>  
+>  void __lock_buffer(struct buffer_head *bh)
+>  {
+> -	wait_on_bit_lock_io(&bh->b_state, BH_Lock, TASK_UNINTERRUPTIBLE);
+> +	int loops = 0;
+> +
+> +	for (;;) {
+> +		wait_on_bit_timeout(&bh->b_state, BH_Lock, TASK_UNINTERRUPTIBLE, HZ);
+> +		if (trylock_buffer(bh))
+> +			return;
+> +		loops++;
+> +		if (WARN_ON(!(loops & 31))) {
+> +			printk("Waiting for buffer %llu state %lx page flags %lx for %d loops.\n", (unsigned long long)bh->b_blocknr, bh->b_state, bh->b_page->flags, loops);
+> +			printk("Owner: pid %u file %s:%d\n", bh->lock_pid, bh->lock_file, bh->lock_line);
+> +		}
+> +	}
+>  }
+>  EXPORT_SYMBOL(__lock_buffer);
+>  
+> diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
+> index 25b4263d66d7..67259a959bac 100644
+> --- a/include/linux/buffer_head.h
+> +++ b/include/linux/buffer_head.h
+> @@ -76,6 +76,9 @@ struct buffer_head {
+>  	spinlock_t b_uptodate_lock;	/* Used by the first bh in a page, to
+>  					 * serialise IO completion of other
+>  					 * buffers in the page */
+> +	char *lock_file;
+> +	unsigned int lock_line;
+> +	unsigned int lock_pid;
+>  };
+>  
+>  /*
+> @@ -395,12 +398,14 @@ static inline int trylock_buffer(struct buffer_head *bh)
+>  	return likely(!test_and_set_bit_lock(BH_Lock, &bh->b_state));
+>  }
+>  
+> -static inline void lock_buffer(struct buffer_head *bh)
+> -{
+> -	might_sleep();
+> -	if (!trylock_buffer(bh))
+> -		__lock_buffer(bh);
+> -}
+> +#define lock_buffer(bh) do {		\
+> +	might_sleep();			\
+> +	if (!trylock_buffer(bh))	\
+> +		__lock_buffer(bh);	\
+> +	(bh)->lock_line = __LINE__;	\
+> +	(bh)->lock_file = __FILE__;	\
+> +	(bh)->lock_pid = current->pid;	\
+> +} while (0)
+>  
+>  static inline struct buffer_head *getblk_unmovable(struct block_device *bdev,
+>  						   sector_t block,
+> -- 
+> 2.35.3
+> 
+
