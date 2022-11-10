@@ -2,42 +2,42 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D719624B80
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Nov 2022 21:16:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE07624B84
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Nov 2022 21:16:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230424AbiKJUQc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Nov 2022 15:16:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59114 "EHLO
+        id S231580AbiKJUQn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Nov 2022 15:16:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231504AbiKJUQb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Nov 2022 15:16:31 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A225F4D5DD
-        for <linux-ext4@vger.kernel.org>; Thu, 10 Nov 2022 12:16:30 -0800 (PST)
+        with ESMTP id S231626AbiKJUQj (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Nov 2022 15:16:39 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29B343841
+        for <linux-ext4@vger.kernel.org>; Thu, 10 Nov 2022 12:16:38 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3795E61CAD
-        for <linux-ext4@vger.kernel.org>; Thu, 10 Nov 2022 20:16:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D4E2C43142;
-        Thu, 10 Nov 2022 20:16:29 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 3C081CE24C8
+        for <linux-ext4@vger.kernel.org>; Thu, 10 Nov 2022 20:16:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A639C433C1;
+        Thu, 10 Nov 2022 20:16:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668111389;
-        bh=wc22eyHGw2b/YPLdii2igwaFo5ZDgn6bjvKlINXaGZk=;
+        s=k20201202; t=1668111395;
+        bh=lvfocEHnjnGZ0LZx3BIJzkv0kFaM8jAH6ujgOBrvRdY=;
         h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=qWEXo2c/QllZY9OqMa2VPH0/kof6QtIEW+I7j30uG/gZkn/9E21Cp0PWAELadEmN4
-         dKI/0JpSCgYZY6s2K8bcXcG6KS1ynA2uSqwHiCbI7Zs1jGH0pOOlUn3phnBKlN/ZfV
-         msHi0NMCh8OacPxrvm4rBBEG6ghGrgGEgSoa3Ff8DeYI+qAn1bIzQ51RynzMf5l8ZN
-         HzOaHuQuxL4idkbLSG6Menl569p7f3nIyf/X0bt3tNoFW8fhNKo7of/DpjSUNwntJg
-         d50d/qxdOFl8CxHcK4yD3jC3gEDBj/FxgMchS91QVp6ROyj1iCE3Tp5i+2SGV+vE1K
-         2JBT6xvwC2uxQ==
-Subject: [PATCH 1/2] ext4: dont return EINVAL from GETFSUUID when reporting
- UUID length
+        b=caEDb0O/YFmNnsbZrV6R2koc5X7cZBxSTXOUkpc01APUqZjE7Q9QJ25U6BPcnVw90
+         2BvS/h2udA3cN3vsQmTKzcUWEV4jCjYa0d+bm+LGIYDSQMDdjyXMjMCGiYDvm2dG3e
+         5KAj5pQOuYqRU5lZmw9bHYwZCXJE/d67YHTMZ93nV/ZZq/kY68Y7JSlI0zwe7mE17y
+         DVYVskZepxY1gtz8weI6OWq30ulZjT2i7WG0LpRpJki6qDZj3vjU4PLpZy+RIBt7Sa
+         xvbsVCW0IwIJ/7gLzoDlhLKWsN55TVv0kRsIVFzkohgAooNbpRzgvrVxnjZYKVPNlt
+         MG/69LxP7rsHw==
+Subject: [PATCH 2/2] ext4: don't fail GETFSUUID when the caller provides a
+ long buffer
 From:   "Darrick J. Wong" <djwong@kernel.org>
 To:     djwong@kernel.org, tytso@mit.edu
 Cc:     catherine.hoang@oracle.com, linux-ext4@vger.kernel.org
-Date:   Thu, 10 Nov 2022 12:16:29 -0800
-Message-ID: <166811138914.327006.9241306894437166566.stgit@magnolia>
+Date:   Thu, 10 Nov 2022 12:16:34 -0800
+Message-ID: <166811139478.327006.13879198441587445544.stgit@magnolia>
 In-Reply-To: <166811138334.327006.2601737065307668866.stgit@magnolia>
 References: <166811138334.327006.2601737065307668866.stgit@magnolia>
 User-Agent: StGit/0.19
@@ -55,35 +55,40 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-If userspace calls this ioctl with fsu_length (the length of the
-fsuuid.fsu_uuid array) set to zero, ext4 copies the desired uuid length
-out to userspace.  The kernel call returned a result from a valid input,
-so the return value here should be zero, not EINVAL.
-
-While we're at it, fix the copy_to_user call to make it clear that we're
-only copying out fsu_len.
+If userspace provides a longer UUID buffer than is required, we
+shouldn't fail the call with EINVAL -- rather, we can fill the caller's
+buffer with the bytes we /can/ fill, and update the length field to
+reflect what we copied.  This doesn't break the UAPI since we're
+enabling a case that currently fails, and so far Ted hasn't released a
+version of e2fsprogs that uses the new ext4 ioctl.
 
 Signed-off-by: Darrick J. Wong <djwong@kernel.org>
 ---
- fs/ext4/ioctl.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ fs/ext4/ioctl.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 
 diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-index 95dfea28bf4e..5f91f3ad3e50 100644
+index 5f91f3ad3e50..31e643795016 100644
 --- a/fs/ext4/ioctl.c
 +++ b/fs/ext4/ioctl.c
-@@ -1153,9 +1153,10 @@ static int ext4_ioctl_getuuid(struct ext4_sb_info *sbi,
- 
- 	if (fsuuid.fsu_len == 0) {
- 		fsuuid.fsu_len = UUID_SIZE;
--		if (copy_to_user(ufsuuid, &fsuuid, sizeof(fsuuid.fsu_len)))
-+		if (copy_to_user(&ufsuuid->fsu_len, &fsuuid.fsu_len,
-+					sizeof(fsuuid.fsu_len)))
- 			return -EFAULT;
--		return -EINVAL;
-+		return 0;
+@@ -1159,14 +1159,16 @@ static int ext4_ioctl_getuuid(struct ext4_sb_info *sbi,
+ 		return 0;
  	}
  
- 	if (fsuuid.fsu_len != UUID_SIZE || fsuuid.fsu_flags != 0)
+-	if (fsuuid.fsu_len != UUID_SIZE || fsuuid.fsu_flags != 0)
++	if (fsuuid.fsu_len < UUID_SIZE || fsuuid.fsu_flags != 0)
+ 		return -EINVAL;
+ 
+ 	lock_buffer(sbi->s_sbh);
+ 	memcpy(uuid, sbi->s_es->s_uuid, UUID_SIZE);
+ 	unlock_buffer(sbi->s_sbh);
+ 
+-	if (copy_to_user(&ufsuuid->fsu_uuid[0], uuid, UUID_SIZE))
++	fsuuid.fsu_len = UUID_SIZE;
++	if (copy_to_user(ufsuuid, &fsuuid, sizeof(fsuuid)) ||
++	    copy_to_user(&ufsuuid->fsu_uuid[0], uuid, UUID_SIZE))
+ 		return -EFAULT;
+ 	return 0;
+ }
 
