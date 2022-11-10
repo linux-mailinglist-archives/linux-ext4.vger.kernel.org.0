@@ -2,50 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A5C623A8F
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Nov 2022 04:39:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E75D623A97
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Nov 2022 04:44:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232502AbiKJDjj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 9 Nov 2022 22:39:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47010 "EHLO
+        id S231863AbiKJDoY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 9 Nov 2022 22:44:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232364AbiKJDji (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Nov 2022 22:39:38 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA39124
-        for <linux-ext4@vger.kernel.org>; Wed,  9 Nov 2022 19:39:37 -0800 (PST)
-Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4N76yd72jgzmVnD;
-        Thu, 10 Nov 2022 11:39:21 +0800 (CST)
-Received: from dggpeml500016.china.huawei.com (7.185.36.70) by
- dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 10 Nov 2022 11:39:36 +0800
-Received: from [10.174.176.102] (10.174.176.102) by
- dggpeml500016.china.huawei.com (7.185.36.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 10 Nov 2022 11:39:35 +0800
-Content-Type: multipart/mixed;
-        boundary="------------IqDqxF0gINu3Jx70pXlmpvFB"
-Message-ID: <f56b7a5e-4c37-bbdb-5949-e6b18e0f0713@huawei.com>
-Date:   Thu, 10 Nov 2022 11:39:35 +0800
+        with ESMTP id S229784AbiKJDoX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Nov 2022 22:44:23 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86242C77E
+        for <linux-ext4@vger.kernel.org>; Wed,  9 Nov 2022 19:44:22 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id q9so2054013ejd.0
+        for <linux-ext4@vger.kernel.org>; Wed, 09 Nov 2022 19:44:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Y8WZId2TSw8RaIvDs4tBpdJxhCKXLMLpxZx8dLOEdOc=;
+        b=DvTzljAhZY8F7i11zs5ZdiEGjjq1vTow1ed31jnFHIvoZVCcKL6wL6TMJpf1sIvgNW
+         yUEKLejvIUMUKT8hDVSFhSTy4wYbM2gNiKm+N3iYdShzLhAbEbCc2aUz5PFNbU5FTtmb
+         lHpjjJwHZU7sXxgqjd3lXN9oEB+YeEmbTIemlfqL4MHYigDelRBeRHg7NEixHkwtINtj
+         xjHW3Wivzyr9NPhw4pr+rJ6Y2E+xF6IbuMMVP5EUDKv2DdQxiOU0+/PDcjm/e4IHv5Z5
+         o8IuFUB1nIY4Jr8j7NNRlx+5BnBdy5CTUK+23QEYrYWz00YOy0pNRGpebS5dn9TLeFqV
+         XdDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Y8WZId2TSw8RaIvDs4tBpdJxhCKXLMLpxZx8dLOEdOc=;
+        b=Vtre3/AQas4qxUYtoVwv8BDGOpwxTdLdtP3Y0ulIhDLsxnKc4JfYMJg1VPIH9KBkfy
+         MsE50ZoR6PJ+m/T5mzEf1Apb+rFJpZFFLaShh7EMMRLeu6jrmSnTP2NIh/WcJBJ6Xf4U
+         rpLMu8XUyXz2/+zKyO/+BL/67dN9vez1M2z9tJusga3lvx0yepoZkeZ48yCpzJYgBfCC
+         i2NzL1OP1PMiLvC0bzmbD305y+MAGk02EDChCMPsPxjhyo7WSbfnQYaQxzcBYKIU98fY
+         dV80gPdAvV1HEVyJeGbM4JBUkpf3fQ9a+xeh2Zchqpba1piC0/WoJVXJtJeeNPo8YIDb
+         DA8g==
+X-Gm-Message-State: ACrzQf2HK57pQtvtBxls82Lg+//vNMrPJGUX5sBhG9AkQnpMYmkc38NX
+        ToqjbxD/1lICdsYqgX8D0EyUHpu2JeFkbUOYyZDiKP3wvJ0qIw==
+X-Google-Smtp-Source: AMsMyM4KdOvFy93aGZFfGOVZDwH0+BqC4qmWAmKfSL9xeIU7I9w1Aj0enoFg/qhJeucIo4gjJJPQ//iaBHUhsJ3EpSQ=
+X-Received: by 2002:a17:907:2bd1:b0:7ae:41e1:cdfa with SMTP id
+ gv17-20020a1709072bd100b007ae41e1cdfamr24937130ejc.618.1668051861059; Wed, 09
+ Nov 2022 19:44:21 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Subject: Re: [bug report] e2fsck: The process is deadlocked
-To:     Theodore Ts'o <tytso@mit.edu>
-CC:     <linux-ext4@vger.kernel.org>, linfeilong <linfeilong@huawei.com>,
-        <liuzhiqiang26@huawei.com>
-References: <30ac384e-a015-259a-3efc-1c9f3ee1dabb@huawei.com>
- <Y2vKriGCf+qcOgoT@mit.edu>
-From:   zhanchengbin <zhanchengbin1@huawei.com>
-In-Reply-To: <Y2vKriGCf+qcOgoT@mit.edu>
-X-Originating-IP: [10.174.176.102]
-X-ClientProxiedBy: dggpeml500002.china.huawei.com (7.185.36.158) To
- dggpeml500016.china.huawei.com (7.185.36.70)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20221109153822.80250-1-sunjunchao2870@gmail.com>
+ <Y2vqs7/Djy22B6XE@sol.localdomain> <CAHB1NaidN+FquNh2z-UXW8cycM-X5h+6T=XX=fEFyt2VkwXGvw@mail.gmail.com>
+ <Y2xmRmGY7lfg/sbt@sol.localdomain>
+In-Reply-To: <Y2xmRmGY7lfg/sbt@sol.localdomain>
+From:   JunChao Sun <sunjunchao2870@gmail.com>
+Date:   Thu, 10 Nov 2022 11:44:08 +0800
+Message-ID: <CAHB1NagDSOcpf8kS-K--FDUySrikT6GaFKBneFkSx-D8uyhAgA@mail.gmail.com>
+Subject: Re: [PATCH] ext4: replace kmem_cache_create with KMEM_CACHE
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,79 +70,35 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
---------------IqDqxF0gINu3Jx70pXlmpvFB
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Eric Biggers <ebiggers@kernel.org> =E4=BA=8E2022=E5=B9=B411=E6=9C=8810=E6=
+=97=A5=E5=91=A8=E5=9B=9B 10:47=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Thu, Nov 10, 2022 at 08:53:26AM +0800, JunChao Sun wrote:
+> > Yeah, maybe we should remove the SLAB_RECLAIM_ACCOUNT flag for static
+> > slab, and 16828088f9e51815 ("ext4: use KMEM_CACHE instead of
+> > kmem_cache_create") have done so. But should we remove
+> > SLAB_RECLAIM_ACCOUNT in this patch or belong to a separate patch?
+>
+>
+> > I'd just keep the slab flags the same in this patch.  If any flags do n=
+eed to be
+> > changed, that should be a separate patch.
+> >
+> > I think SLAB_RECLAIM_ACCOUNT is meant for for things that are directly
+> > reclaimable, such as struct ext4_inode_info.  Inodes are evictable, and=
+ when
+> > that happens, the corresponding struct ext4_inode_info gets freed.
+> >
+> > bio_post_read_ctx_cache probably should use SLAB_TEMPORARY instead, sin=
+ce it is
+> > only used for temporary structures during I/O.
+> >
+> > That being said, SLAB_TEMPORARY is currently #define'd to SLAB_RECLAIM_=
+ACCOUNT,
+> > so currently it makes no difference in practice...
 
-Version is 1.46.4, I think whether to try to release the mutex lock
-in the ext2fs_close_free, such as CACHE_MTX,BOUNCE_MTX,STATS_MTX. But
-you need to decide if it's the device you're checking, because I've
-checked everyplace where ext2fs_close_free is called, in addition to
-the call in the program end and exception branch, it is also called
-when the journal device is close.
+Thanks for clarifying. I will send a separate patch to remove
+SLAB_RECLAIM_ACCOUNT.
 
-Reliable reproducer is in attachment.
-
-  -zhanchengbin.
-
-On 2022/11/9 23:43, Theodore Ts'o wrote:
-> On Wed, Nov 09, 2022 at 06:40:31PM +0800, zhanchengbin wrote:
->> Hi Tytso,
->> The process is deadlocked, and an I/O error occurs when logs
->> are replayed. Because in the I/O error handling function, I/O
->> is sent again and catch the mutexlock.
-> 
-> What version of e2fsprogs are you using, and do you have a reliable
-> reproducer?
-> 
-> Thanks,
-> 
-> 					- Ted
-> 
-> .
-> 
---------------IqDqxF0gINu3Jx70pXlmpvFB
-Content-Type: text/plain; charset="UTF-8"; name="test.sh"
-Content-Disposition: attachment; filename="test.sh"
-Content-Transfer-Encoding: base64
-
-IyEvYmluL2Jhc2gKZGlzaz0ic2RiIgpkaXI9L21udC8ke2Rpc2t9Cm1rZnMuZXh0NCAtRiAv
-ZGV2LyRkaXNrClsgLWQgJGRpciBdIHx8IG1rZGlyICRkaXIKCmVjaG8gMSA+IC9zeXMva2Vy
-bmVsL2RlYnVnL2ZhaWxfbWFrZV9yZXF1ZXN0L3ZlcmJvc2UKZWNobyA1ID4gL3N5cy9rZXJu
-ZWwvZGVidWcvZmFpbF9tYWtlX3JlcXVlc3QvcHJvYmFiaWxpdHkKZWNobyAxMCA+IC9zeXMv
-a2VybmVsL2RlYnVnL2ZhaWxfbWFrZV9yZXF1ZXN0L2ludGVydmFsCmVjaG8gMTAwMDAwMDAg
-PiAvc3lzL2tlcm5lbC9kZWJ1Zy9mYWlsX21ha2VfcmVxdWVzdC90aW1lcwoKZnVuY3Rpb24g
-c2V0X3N5cygpCnsKCWxvY2FsIHF1ZXVlX2Rpcj0vc3lzL2Jsb2NrLyQxL3F1ZXVlCglpbnRl
-cnZhbD0kMgoJd2hpbGUgdHJ1ZQoJZG8KCQlzbGVlcCAkaW50ZXJ2YWwKCQlsZXQgc19udW09
-UkFORE9NJTQKCQljYXNlICRzX251bSBpbgoJCQkwKQoJCQlzY2hlZHVsZXI9bXEtZGVhZGxp
-bmUKCQkJOzsKCQkJMSkKCQkJc2NoZWR1bGVyPWJmcQoJCQk7OwoJCQkyKQoJCQlzY2hlZHVs
-ZXI9a3liZXIKCQkJOzsKCQkJMykKCQkJc2NoZWR1bGVyPW5vbmUKCQkJOzsKCQllc2FjCgkJ
-ZWNobyAkc2NoZWR1bGVyID4gJHF1ZXVlX2Rpci9zY2hlZHVsZXIKCWRvbmUKfQpzZXRfc3lz
-ICRkaXNrIDEyMCAmPi9kZXYvbnVsbCAmCgppPTAKd2hpbGUgdHJ1ZQpkbwoJbGV0IGZsYWc9
-aSU1CglpZiBbICRmbGFnIC1sZSAyIF07IHRoZW4KCQl0dW5lMmZzIC1sIC9kZXYvJGRpc2sg
-fHwgZXhpdCAxCglmaQoKCW1vdW50IC1vIGVycm9ycz1yZW1vdW50LXJvIC9kZXYvJGRpc2sg
-JGRpciB8fCBleGl0IDEKCXR1bmUyZnMgLWwgL2Rldi8kZGlzayB8fCBleGl0IDEKCWZzc3Ry
-ZXNzIC1kICRkaXIvZnNzIC1sIDIwIC1uIDUwMCAtcCA4ID4gL2Rldi9udWxsIDI+JjEgJgoJ
-c2xlZXAgJCgoMSArIFJBTkRPTSAlIDMpKQoJbW91bnQgfCBncmVwICRkaXIgfCBncmVwICco
-cm8nICYmIGV4aXQgMQoKCWVjaG8gMSA+IC9zeXMvYmxvY2svJGRpc2svbWFrZS1pdC1mYWls
-CglzbGVlcCAkKCgxICsgUkFORE9NICUgMykpCglwcyAtZSB8IGdyZXAgLXcgZnNzdHJlc3Mg
-PiAvZGV2L251bGwgMj4mMQoJd2hpbGUgWyAkPyAtZXEgMCBdCglkbwoJCXNsZWVwIDEKCQlt
-b3VudCB8IGdyZXAgJGRpciB8IGdyZXAgJyhybycgJiYga2lsbGFsbCAtOSBmc3N0cmVzcwoJ
-CXBzIC1lIHwgZ3JlcCAtdyBmc3N0cmVzcyA+IC9kZXYvbnVsbCAyPiYxCglkb25lCgoJZWNo
-byAwID4gL3N5cy9ibG9jay8kZGlzay9tYWtlLWl0LWZhaWwKCXdoaWxlIHRydWUKCWRvCgkJ
-dW1vdW50ICRkaXIgJiYgYnJlYWsKCQlraWxsYWxsIC05IGZzc3RyZXNzID4gL2Rldi9udWxs
-IDI+JjEKCQlzbGVlcCAwLjEKCWRvbmUKCglpZiBbICRmbGFnIC1sZSAxIF07IHRoZW4KCQl0
-dW5lMmZzIC1sIC9kZXYvJGRpc2sgfHwgZXhpdCAxCglmaQoKCWVjaG8gMSA+IC9zeXMvYmxv
-Y2svJGRpc2svbWFrZS1pdC1mYWlsCgllY2hvIDEwID4gL3N5cy9rZXJuZWwvZGVidWcvZmFp
-bF9tYWtlX3JlcXVlc3QvcHJvYmFiaWxpdHkKCWVjaG8gMSA+IC9zeXMva2VybmVsL2RlYnVn
-L2ZhaWxfbWFrZV9yZXF1ZXN0L2ludGVydmFsCgljb3VudD0xMDAKCXdoaWxlIFsgJGNvdW50
-IC1nZSAwIF07IGRvCgkJZnNjayAtYSAvZGV2LyRkaXNrCgkJKChjb3VudCA9IGNvdW50IC0g
-MSkpCglkb25lCgllY2hvIDUgPiAvc3lzL2tlcm5lbC9kZWJ1Zy9mYWlsX21ha2VfcmVxdWVz
-dC9wcm9iYWJpbGl0eQoJZWNobyAxMCA+IC9zeXMva2VybmVsL2RlYnVnL2ZhaWxfbWFrZV9y
-ZXF1ZXN0L2ludGVydmFsCgllY2hvIDAgPiAvc3lzL2Jsb2NrLyRkaXNrL21ha2UtaXQtZmFp
-bAoKICAgICAgICBmc2NrIC1hIC9kZXYvJGRpc2sgJj4gZnNjay0ke2Rpc2t9LmxvZwogICAg
-ICAgIHJldD0kPwogICAgICAgIGlmIFsgJHJldCAtbmUgMCAtYSAkcmV0IC1uZSAxIF07IHRo
-ZW4KCQlleGl0IDEKICAgICAgICBmaQoKCWZzY2sgLWZuIC9kZXYvJGRpc2sKICAgICAgICBy
-ZXQ9JD8KICAgICAgICBpZiBbICRyZXQgLW5lIDAgXTsgdGhlbgoJCWV4aXQgMQogICAgICAg
-IGZpCgkoKGk9aSsxKSkKZG9uZQo=
---------------IqDqxF0gINu3Jx70pXlmpvFB--
+>
+> - Eric
