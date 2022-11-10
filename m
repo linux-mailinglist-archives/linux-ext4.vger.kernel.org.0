@@ -2,32 +2,32 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6ADA623982
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Nov 2022 03:05:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B97362397F
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Nov 2022 03:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232533AbiKJCFI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 9 Nov 2022 21:05:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59112 "EHLO
+        id S232468AbiKJCFC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 9 Nov 2022 21:05:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232586AbiKJCEf (ORCPT
+        with ESMTP id S232588AbiKJCEf (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Nov 2022 21:04:35 -0500
 Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A7E5F4E
-        for <linux-ext4@vger.kernel.org>; Wed,  9 Nov 2022 18:04:33 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B3185FA2
+        for <linux-ext4@vger.kernel.org>; Wed,  9 Nov 2022 18:04:34 -0800 (PST)
 Received: from canpemm500005.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N74s16hn6zRp98;
-        Thu, 10 Nov 2022 10:04:21 +0800 (CST)
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N74s22nHfzRp9C;
+        Thu, 10 Nov 2022 10:04:22 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by canpemm500005.china.huawei.com
  (7.192.104.229) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Thu, 10 Nov
- 2022 10:04:31 +0800
+ 2022 10:04:32 +0800
 From:   Zhang Yi <yi.zhang@huawei.com>
 To:     <linux-ext4@vger.kernel.org>
 CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
         <yi.zhang@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH v2 02/12] ext4: introduce fault injection facility
-Date:   Thu, 10 Nov 2022 10:25:48 +0800
-Message-ID: <20221110022558.7844-3-yi.zhang@huawei.com>
+Subject: [PATCH v2 03/12] ext4: add several checksum fault injection
+Date:   Thu, 10 Nov 2022 10:25:49 +0800
+Message-ID: <20221110022558.7844-4-yi.zhang@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221110022558.7844-1-yi.zhang@huawei.com>
 References: <20221110022558.7844-1-yi.zhang@huawei.com>
@@ -46,340 +46,198 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Introduce fault injection feature for ext4, it depends on the standard
-fault-injection (CONFIG_FAULT_INJECTION) facility. User could test and
-reinforce ext4 by introduce errors like checksum error, metadata I/O
-error, journal error, etc. We could also inject precision fault by set
-filters, such as group, inode, logical block of an inode, physical
-block of filesystem, and so on.
-
-This patch just add fault injection frame and 6 debugfs interfaces, does
-not introduce any concrete faults, later patch will do this
-step-by-step. Lists of debugfs interfaces:
-
- - available_faults: show available faults that we can inject.
- - inject_faults: set faults, can set multiple at one time.
- - inject_inode: set the inode filter, matches all inodes if not set.
- - inject_group: set the block group filter, similar to inject_inode.
- - inject_logical_block: set the logical block filter for one inode.
- - inject_physical_block: set the physical block filter for the fs.
+Add 8 checksum fault injections, include group descriptors, inode
+bitmap, block bitmap, inode, extent block, directory leaf block,
+directory index block and xattr block. They are visable in
+"available_faults" debugfs interface, and can be set and enabled in the
+"inject_faults" interface.
 
 Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 ---
- fs/ext4/Kconfig |   9 +++
- fs/ext4/ext4.h  |  98 ++++++++++++++++++++++++++++++++
- fs/ext4/sysfs.c | 148 ++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 255 insertions(+)
+ fs/ext4/bitmap.c  |  4 ++++
+ fs/ext4/ext4.h    | 18 ++++++++++++++++++
+ fs/ext4/extents.c |  2 ++
+ fs/ext4/inode.c   |  2 ++
+ fs/ext4/namei.c   |  4 ++++
+ fs/ext4/super.c   |  7 ++++---
+ fs/ext4/sysfs.c   |  9 ++++++++-
+ fs/ext4/xattr.c   | 15 +++++++++------
+ 8 files changed, 51 insertions(+), 10 deletions(-)
 
-diff --git a/fs/ext4/Kconfig b/fs/ext4/Kconfig
-index 86699c8cab28..2c01c9b335c3 100644
---- a/fs/ext4/Kconfig
-+++ b/fs/ext4/Kconfig
-@@ -101,6 +101,15 @@ config EXT4_DEBUG
- 	  If you select Y here, then you will be able to turn on debugging
- 	  using dynamic debug control for mb_debug() / ext_debug() msgs.
+diff --git a/fs/ext4/bitmap.c b/fs/ext4/bitmap.c
+index f63e028c638c..c857cff280bb 100644
+--- a/fs/ext4/bitmap.c
++++ b/fs/ext4/bitmap.c
+@@ -26,6 +26,8 @@ int ext4_inode_bitmap_csum_verify(struct super_block *sb, ext4_group_t group,
  
-+config EXT4_FAULT_INJECTION
-+	bool "Ext4 fault injection support"
-+	depends on EXT4_DEBUG && FAULT_INJECTION_DEBUG_FS
-+	help
-+	  Enables fault injecton facility. Allow test ext4 by injecting
-+	  failures like checksum error, EIO, etc. The injection could be
-+	  filtered by block group, inode, logical block of file, pyhsical
-+	  block, and so on.
-+
- config EXT4_KUNIT_TESTS
- 	tristate "KUnit tests for ext4" if !KUNIT_ALL_TESTS
- 	depends on EXT4_FS && KUNIT
+ 	if (!ext4_has_metadata_csum(sb))
+ 		return 1;
++	if (ext4_fault_inode_bitmap_csum(sb, group))
++		return 0;
+ 
+ 	provided = le16_to_cpu(gdp->bg_inode_bitmap_csum_lo);
+ 	calculated = ext4_chksum(sbi, sbi->s_csum_seed, (__u8 *)bh->b_data, sz);
+@@ -65,6 +67,8 @@ int ext4_block_bitmap_csum_verify(struct super_block *sb, ext4_group_t group,
+ 
+ 	if (!ext4_has_metadata_csum(sb))
+ 		return 1;
++	if (ext4_fault_block_bitmap_csum(sb, group))
++		return 0;
+ 
+ 	provided = le16_to_cpu(gdp->bg_block_bitmap_csum_lo);
+ 	calculated = ext4_chksum(sbi, sbi->s_csum_seed, (__u8 *)bh->b_data, sz);
 diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 53099ffe307f..7a030b0b51c7 100644
+index 7a030b0b51c7..4c85cf977bea 100644
 --- a/fs/ext4/ext4.h
 +++ b/fs/ext4/ext4.h
-@@ -37,6 +37,7 @@
- #include <linux/falloc.h>
- #include <linux/percpu-rwsem.h>
- #include <linux/fiemap.h>
-+#include <linux/fault-inject.h>
- #ifdef __KERNEL__
- #include <linux/compat.h>
- #endif
-@@ -1504,6 +1505,100 @@ struct ext4_orphan_info {
- 						 * file blocks */
+@@ -1509,6 +1509,15 @@ struct ext4_orphan_info {
+ #define FAULT_NOTSET	(U64_MAX)
+ 
+ enum ext4_fault_bits {
++	/* inject checksum error */
++	EXT4_FAULT_GRPDESC_CSUM,	/* group descriptor */
++	EXT4_FAULT_IBITMAP_CSUM,	/* inode bitmap block */
++	EXT4_FAULT_BBITMAP_CSUM,	/* block bitmap block */
++	EXT4_FAULT_INODE_CSUM,		/* inode */
++	EXT4_FAULT_EXTENT_CSUM,		/* extent block */
++	EXT4_FAULT_DIRBLOCK_CSUM,	/* directory block */
++	EXT4_FAULT_DIRIDX_CSUM,		/* directory index block */
++	EXT4_FAULT_XATTR_CSUM,		/* xattr block */
+ 	EXT4_FAULT_MAX
  };
  
-+#ifdef CONFIG_EXT4_FAULT_INJECTION
-+#define FAULT_NOTSET	(U64_MAX)
-+
-+enum ext4_fault_bits {
-+	EXT4_FAULT_MAX
-+};
-+
-+struct ext4_fault_attr {
-+	struct fault_attr fa_attr;
-+	struct dentry *fa_dir;
-+	/* filter config */
-+	u64 fa_group;			/* group number */
-+	u64 fa_ino;			/* inode number */
-+	u64 fa_lblock;			/* logical block number */
-+	u64 fa_pblock;			/* pyhsical block number */
-+	/* inject fault operations bitmap */
-+	DECLARE_BITMAP(fail_ops, EXT4_FAULT_MAX);
-+};
-+
-+extern void ext4_init_fault_inject(struct super_block *sb);
-+extern bool ext4_should_fail(struct super_block *sb, unsigned int bit,
-+			     u64 group, u64 ino, u64 lblock, u64 pblock);
-+
-+#define EXT4_FAULT_FN(bit, name, errno)						\
-+static inline int ext4_fault_##name(struct super_block *sb)			\
-+{										\
-+	bool ret = ext4_should_fail(sb, EXT4_FAULT_##bit, FAULT_NOTSET,		\
-+				    FAULT_NOTSET, FAULT_NOTSET, FAULT_NOTSET);	\
-+	return (ret && errno) ? (int)errno : (int)ret;				\
-+}
-+#define EXT4_FAULT_GRP_FN(bit, name, errno)					\
-+static inline int ext4_fault_##name(struct super_block *sb, ext4_group_t group)	\
-+{										\
-+	bool ret = ext4_should_fail(sb, EXT4_FAULT_##bit, group,		\
-+				    FAULT_NOTSET, FAULT_NOTSET, FAULT_NOTSET);	\
-+	return (ret && errno) ? (int)errno : (int)ret;				\
-+}
-+#define EXT4_FAULT_INODE_FN(bit, name, errno)					\
-+static inline int ext4_fault_##name(struct super_block *sb, unsigned long ino)	\
-+{										\
-+	bool ret = ext4_should_fail(sb, EXT4_FAULT_##bit, FAULT_NOTSET,		\
-+				    ino ? : FAULT_NOTSET, FAULT_NOTSET,		\
-+				    FAULT_NOTSET);				\
-+	return (ret && errno) ? (int)errno : (int)ret;				\
-+}
-+#define EXT4_FAULT_INODE_LBLOCK_FN(bit, name, errno)				\
-+static inline int ext4_fault_##name(struct inode *inode, ext4_lblk_t lblock)	\
-+{										\
-+	bool ret = ext4_should_fail(inode->i_sb, EXT4_FAULT_##bit, FAULT_NOTSET,\
-+				    inode->i_ino, lblock, FAULT_NOTSET);	\
-+	return (ret && errno) ? (int)errno : (int)ret;				\
-+}
-+#define EXT4_FAULT_INODE_PBLOCK_FN(bit, name, errno)				\
-+static inline int ext4_fault_##name(struct super_block *sb, unsigned long ino,	\
-+				    ext4_fsblk_t pblock)			\
-+{										\
-+	bool ret = ext4_should_fail(sb, EXT4_FAULT_##bit, FAULT_NOTSET,		\
-+				    ino ? : FAULT_NOTSET, FAULT_NOTSET, pblock);\
-+	return (ret && errno) ? (int)errno : (int)ret;				\
-+}
-+
-+#else
-+static inline void ext4_init_fault_inject(struct super_block *sb)
-+{
-+}
-+#define EXT4_FAULT_FN(bit, name, errno)						\
-+static inline int ext4_fault_##name(struct super_block *sb)			\
-+{										\
-+	return 0;								\
-+}
-+#define EXT4_FAULT_GRP_FN(bit, name, errno)					\
-+static inline int ext4_fault_##name(struct super_block *sb, ext4_group_t group)	\
-+{										\
-+	return 0;								\
-+}
-+#define EXT4_FAULT_INODE_FN(bit, name, errno)					\
-+static inline int ext4_fault_##name(struct super_block *sb, unsigned long ino)	\
-+{										\
-+	return 0;								\
-+}
-+#define EXT4_FAULT_INODE_LBLOCK_FN(bit, name, errno)				\
-+static inline int ext4_fault_##name(struct inode *inode, ext4_lblk_t lblock)	\
-+{										\
-+	return 0;								\
-+}
-+#define EXT4_FAULT_INODE_PBLOCK_FN(bit, name, errno)				\
-+static inline int ext4_fault_##name(struct super_block *sb, unsigned long ino,	\
-+				    ext4_fsblk_t pblock)			\
-+{										\
-+	return 0;								\
-+}
-+
-+#endif /* CONFIG_EXT4_FAULT_INJECTION */
+@@ -1599,6 +1608,15 @@ static inline int ext4_fault_##name(struct super_block *sb, unsigned long ino,	\
+ 
+ #endif /* CONFIG_EXT4_FAULT_INJECTION */
+ 
++EXT4_FAULT_GRP_FN(GRPDESC_CSUM, groupdesc_csum, 1)
++EXT4_FAULT_GRP_FN(IBITMAP_CSUM, inode_bitmap_csum, 1)
++EXT4_FAULT_GRP_FN(BBITMAP_CSUM, block_bitmap_csum, 1)
++EXT4_FAULT_INODE_FN(INODE_CSUM, inode_csum, 1)
++EXT4_FAULT_INODE_FN(EXTENT_CSUM, extent_csum, 1)
++EXT4_FAULT_INODE_FN(DIRBLOCK_CSUM, dirblock_csum, 1)
++EXT4_FAULT_INODE_FN(DIRIDX_CSUM, dirindex_csum, 1)
++EXT4_FAULT_INODE_FN(XATTR_CSUM, xattr_csum, 1)
 +
  /*
   * fourth extended-fs super-block data in memory
   */
-@@ -1710,6 +1805,9 @@ struct ext4_sb_info {
- 	u64 s_dax_part_off;
- #ifdef CONFIG_EXT4_DEBUG
- 	unsigned long s_simulate_fail;
-+#endif
-+#ifdef CONFIG_EXT4_FAULT_INJECTION
-+	struct ext4_fault_attr s_fault_attr;
- #endif
- 	/* Record the errseq of the backing block device */
- 	errseq_t s_bdev_wb_err;
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index f1956288307f..0d07e5cf4dab 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -65,6 +65,8 @@ static int ext4_extent_block_csum_verify(struct inode *inode,
+ 
+ 	if (!ext4_has_metadata_csum(inode->i_sb))
+ 		return 1;
++	if (ext4_fault_extent_csum(inode->i_sb, inode->i_ino))
++		return 0;
+ 
+ 	et = find_ext4_extent_tail(eh);
+ 	if (et->et_checksum != ext4_extent_block_csum(inode, eh))
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 2b5ef1b64249..8bfbc8d100b4 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -90,6 +90,8 @@ static int ext4_inode_csum_verify(struct inode *inode, struct ext4_inode *raw,
+ 	    cpu_to_le32(EXT4_OS_LINUX) ||
+ 	    !ext4_has_metadata_csum(inode->i_sb))
+ 		return 1;
++	if (ext4_fault_inode_csum(inode->i_sb, inode->i_ino))
++		return 0;
+ 
+ 	provided = le16_to_cpu(raw->i_checksum_lo);
+ 	calculated = ext4_inode_csum(inode, raw, ei);
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index d5daaf41e1fc..4960ef9f05a0 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -398,6 +398,8 @@ int ext4_dirblock_csum_verify(struct inode *inode, struct buffer_head *bh)
+ 
+ 	if (!ext4_has_metadata_csum(inode->i_sb))
+ 		return 1;
++	if (ext4_fault_dirblock_csum(inode->i_sb, inode->i_ino))
++		return 0;
+ 
+ 	t = get_dirent_tail(inode, bh);
+ 	if (!t) {
+@@ -493,6 +495,8 @@ static int ext4_dx_csum_verify(struct inode *inode,
+ 
+ 	if (!ext4_has_metadata_csum(inode->i_sb))
+ 		return 1;
++	if (ext4_fault_dirindex_csum(inode->i_sb, inode->i_ino))
++		return 0;
+ 
+ 	c = get_dx_countlimit(inode, dirent, &count_offset);
+ 	if (!c) {
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 7950904fbf04..4ab2f1ad0dd4 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -3194,11 +3194,12 @@ static __le16 ext4_group_desc_csum(struct super_block *sb, __u32 block_group,
+ int ext4_group_desc_csum_verify(struct super_block *sb, __u32 block_group,
+ 				struct ext4_group_desc *gdp)
+ {
+-	if (ext4_has_group_desc_csum(sb) &&
+-	    (gdp->bg_checksum != ext4_group_desc_csum(sb, block_group, gdp)))
++	if (!ext4_has_group_desc_csum(sb))
++		return 1;
++	if (ext4_fault_groupdesc_csum(sb, block_group))
+ 		return 0;
+ 
+-	return 1;
++	return gdp->bg_checksum == ext4_group_desc_csum(sb, block_group, gdp);
+ }
+ 
+ void ext4_group_desc_csum_set(struct super_block *sb, __u32 block_group,
 diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-index f3e4049ec50e..a400b2164b10 100644
+index a400b2164b10..7773c5504174 100644
 --- a/fs/ext4/sysfs.c
 +++ b/fs/ext4/sysfs.c
-@@ -553,6 +553,8 @@ int ext4_register_sysfs(struct super_block *sb)
- 	}
- 	if (ext4_debugfs_root)
- 		sbi->s_debug = debugfs_create_dir(sb->s_id, ext4_debugfs_root);
-+	if (sbi->s_debug)
-+		ext4_init_fault_inject(sb);
- 	return 0;
- }
+@@ -570,7 +570,14 @@ void ext4_unregister_sysfs(struct super_block *sb)
  
-@@ -566,6 +568,152 @@ void ext4_unregister_sysfs(struct super_block *sb)
- 	kobject_del(&sbi->s_kobj);
- }
+ #ifdef CONFIG_EXT4_FAULT_INJECTION
+ char *ext4_fault_names[EXT4_FAULT_MAX] = {
+-	/* empty */
++	"group_desc_checksum",		/* EXT4_FAULT_GRPDESC_CSUM */
++	"inode_bitmap_checksum",	/* EXT4_FAULT_IBITMAP_CSUM */
++	"block_bitmap_checksum",	/* EXT4_FAULT_BBITMAP_CSUM */
++	"inode_checksum",		/* EXT4_FAULT_INODE_CSUM */
++	"extent_block_checksum",	/* EXT4_FAULT_EXTENT_CSUM */
++	"dir_block_checksum",		/* EXT4_FAULT_DIRBLOCK_CSUM */
++	"dir_index_block_checksum",	/* EXT4_FAULT_DIRIDX_CSUM */
++	"xattr_block_checksum",		/* EXT4_FAULT_XATTR_CSUM */
+ };
  
-+#ifdef CONFIG_EXT4_FAULT_INJECTION
-+char *ext4_fault_names[EXT4_FAULT_MAX] = {
-+	/* empty */
-+};
-+
-+static int ext4_fault_available_show(struct seq_file *m, void *v)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(ext4_fault_names); i++)
-+		seq_printf(m, "%s\n", ext4_fault_names[i]);
-+
-+	return 0;
-+}
-+DEFINE_SHOW_ATTRIBUTE(ext4_fault_available);
-+
-+static int ext4_fault_ops_show(struct seq_file *m, void *v)
-+{
-+	struct super_block *sb = m->private;
-+	struct ext4_fault_attr *attr = &EXT4_SB(sb)->s_fault_attr;
-+	int bit = 0;
-+
-+	for_each_set_bit(bit, attr->fail_ops, EXT4_FAULT_MAX)
-+		seq_printf(m, "%s\n", ext4_fault_names[bit]);
-+
-+	return 0;
-+}
-+
-+static int ext4_fault_ops_open(struct inode *inode, struct file *file)
-+{
-+	struct super_block *sb = inode->i_private;
-+	struct ext4_fault_attr *attr = &EXT4_SB(sb)->s_fault_attr;
+ static int ext4_fault_available_show(struct seq_file *m, void *v)
+diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+index 36d6ba7190b6..46a87ae9fdc8 100644
+--- a/fs/ext4/xattr.c
++++ b/fs/ext4/xattr.c
+@@ -152,14 +152,17 @@ static int ext4_xattr_block_csum_verify(struct inode *inode,
+ 					struct buffer_head *bh)
+ {
+ 	struct ext4_xattr_header *hdr = BHDR(bh);
+-	int ret = 1;
 +	int ret;
 +
-+	ret = single_open(file, ext4_fault_ops_show, sb);
-+	if (ret)
-+		return ret;
-+
-+	if (file->f_flags & O_TRUNC)
-+		bitmap_zero(attr->fail_ops, EXT4_FAULT_MAX);
-+	return ret;
-+}
-+
-+static int ext4_fault_ops_release(struct inode *inode, struct file *file)
-+{
-+	return single_release(inode, file);
-+}
-+
-+static ssize_t ext4_fault_ops_write(struct file *file, const char __user *buffer,
-+				    size_t count, loff_t *ppos)
-+{
-+	struct seq_file *m = file->private_data;
-+	struct super_block *sb = m->private;
-+	struct ext4_fault_attr *attr = &EXT4_SB(sb)->s_fault_attr;
-+	char fault_buf[32] = { };
-+	char *fault_op;
-+	int i;
-+
-+	if (count >= sizeof(fault_buf)) {
-+		ext4_msg(sb, KERN_ERR, "fault operation too long %zu", count);
-+		return -EINVAL;
-+	}
-+	if (copy_from_user(fault_buf, buffer, count))
-+		return -EFAULT;
-+
-+	fault_op = strstrip(fault_buf);
-+	for (i = 0; i < ARRAY_SIZE(ext4_fault_names); i++) {
-+		if (!strcmp(fault_op, ext4_fault_names[i])) {
-+			__set_bit(i, attr->fail_ops);
-+			break;
-+		}
-+	}
-+	*ppos += count;
-+	return count;
-+}
-+
-+static const struct file_operations ext4_fault_ops_fops = {
-+	.open = ext4_fault_ops_open,
-+	.read = seq_read,
-+	.write = ext4_fault_ops_write,
-+	.llseek = seq_lseek,
-+	.release = ext4_fault_ops_release,
-+};
-+
-+
-+/*
-+ * Inject fault injection for one operation, it could be filtered by the
-+ * group, inode, logical block and physical block. Return true if we should
-+ * inject fault.
-+ */
-+bool ext4_should_fail(struct super_block *sb, unsigned int bit,
-+		      u64 group, u64 ino, u64 lblock, u64 pblock)
-+{
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
-+	struct ext4_fault_attr *attr = &sbi->s_fault_attr;
-+
-+	if (!test_bit(bit, attr->fail_ops))
-+		return false;
-+
-+#define EXT4_FAIL_FILTER_MATCH(conf, check)		\
-+	((conf == FAULT_NOTSET) || (check == FAULT_NOTSET) || (conf == check))
-+
-+	if (!EXT4_FAIL_FILTER_MATCH(attr->fa_group, group))
-+		return false;
-+	if (!EXT4_FAIL_FILTER_MATCH(attr->fa_ino, ino))
-+		return false;
-+	if (!EXT4_FAIL_FILTER_MATCH(attr->fa_lblock, lblock))
-+		return false;
-+	if (!EXT4_FAIL_FILTER_MATCH(attr->fa_pblock, pblock))
-+		return false;
-+
-+	return should_fail(&attr->fa_attr, 1);
-+}
-+
-+void ext4_init_fault_inject(struct super_block *sb)
-+{
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
-+	struct ext4_fault_attr *attr = &sbi->s_fault_attr;
-+	struct dentry *parent = sbi->s_debug;
-+	struct dentry *dir;
-+
-+	attr->fa_attr = (struct fault_attr) FAULT_ATTR_INITIALIZER;
-+	attr->fa_ino = FAULT_NOTSET;
-+	attr->fa_group = FAULT_NOTSET;
-+	attr->fa_lblock = FAULT_NOTSET;
-+	attr->fa_pblock = FAULT_NOTSET;
-+	memset(attr->fail_ops, 0, sizeof(attr->fail_ops));
-+
-+	dir = fault_create_debugfs_attr("fault_inject", parent, &attr->fa_attr);
-+	if (IS_ERR(dir)) {
-+		ext4_msg(sb, KERN_ERR, "failed to initialize fault_injection %ld",
-+			 PTR_ERR(dir));
-+		return;
-+	}
-+	attr->fa_dir = dir;
-+	debugfs_create_file("available_faults", 0400, dir, sb,
-+			    &ext4_fault_available_fops);
-+	debugfs_create_file("inject_faults", 0600, dir, sb,
-+			    &ext4_fault_ops_fops);
-+	debugfs_create_x64("inject_inode", 0600, dir, &attr->fa_ino);
-+	debugfs_create_x64("inject_group", 0600, dir, &attr->fa_group);
-+	debugfs_create_x64("inject_logical_block", 0600, dir, &attr->fa_lblock);
-+	debugfs_create_x64("inject_physical_block", 0600, dir, &attr->fa_pblock);
-+}
-+#endif /* CONFIG_EXT4_FAULT_INJECTION */
-+
- int __init ext4_init_sysfs(void)
- {
- 	int ret;
++	if (!ext4_has_metadata_csum(inode->i_sb))
++		return 1;
++	if (ext4_fault_xattr_csum(inode->i_sb, inode->i_ino))
++		return 0;
+ 
+-	if (ext4_has_metadata_csum(inode->i_sb)) {
+-		lock_buffer(bh);
+-		ret = (hdr->h_checksum == ext4_xattr_block_csum(inode,
++	lock_buffer(bh);
++	ret = (hdr->h_checksum == ext4_xattr_block_csum(inode,
+ 							bh->b_blocknr, hdr));
+-		unlock_buffer(bh);
+-	}
++	unlock_buffer(bh);
+ 	return ret;
+ }
+ 
 -- 
 2.31.1
 
