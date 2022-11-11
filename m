@@ -2,84 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76BED625406
-	for <lists+linux-ext4@lfdr.de>; Fri, 11 Nov 2022 07:47:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 244266259C2
+	for <lists+linux-ext4@lfdr.de>; Fri, 11 Nov 2022 12:49:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232082AbiKKGrC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 11 Nov 2022 01:47:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37838 "EHLO
+        id S233407AbiKKLtM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 11 Nov 2022 06:49:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbiKKGrB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Nov 2022 01:47:01 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F13D6C72A;
-        Thu, 10 Nov 2022 22:46:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=1onRt5K4sGNiVDTE/QX0/atvlrk7w1JHQuZmkOO66kQ=; b=vC8iWiMJ2a6yfnZdsjfrg1mvIi
-        4DzCFy0syaX81b0Y9rRyTc3hWyeqM6nX/8jppj9cG9exiNofjc4t3hKBPX4JuYYM44o5IhmcNfECu
-        OZ3cha1vIjTfct0dafj/ZMdzxWuwTr2CVhs2v/BWitAl1zqCj8jHfWVHiJT+bVWtABYeQBA4+CMCE
-        FUQHbg9vaM8PXGLZgQDN1uoKsahOsQD00vIW4wS1KMx+47JaKI+8nLERxw5pJhUckG4hUSl7BtMXT
-        9jvOLMuQs9k8XQMnAp1UpguzyiHaM2FAhzGzqAlIzoxtBoE7zHM7RABhFtxQahrcmxkpuZxNmPSO3
-        lB79wDoA==;
-Received: from [2601:1c2:d80:3110::a2e7]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1otNoP-00Dd20-HG; Fri, 11 Nov 2022 06:46:49 +0000
-Message-ID: <482cff27-2364-acbb-576c-e1d16d18334a@infradead.org>
-Date:   Thu, 10 Nov 2022 22:46:46 -0800
+        with ESMTP id S233356AbiKKLtG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Nov 2022 06:49:06 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A63C27910
+        for <linux-ext4@vger.kernel.org>; Fri, 11 Nov 2022 03:49:05 -0800 (PST)
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4N7xmv4nKQzmV6p;
+        Fri, 11 Nov 2022 19:48:47 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Fri, 11 Nov 2022 19:49:03 +0800
+Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
+ (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Fri, 11 Nov
+ 2022 19:49:02 +0800
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+To:     <snitzer@kernel.org>, <Martin.Wilck@suse.com>, <ejt@redhat.com>,
+        <jack@suse.cz>, <tytso@mit.edu>, <yi.zhang@huawei.com>,
+        <chengzhihao1@huawei.com>
+CC:     <dm-devel@redhat.com>, <linux-ext4@vger.kernel.org>
+Subject: [dm-devel] [PATCH 0/3] dm thin: Fix ABBA deadlock between shrink_slab and dm_pool_abort_metadata
+Date:   Fri, 11 Nov 2022 20:10:26 +0800
+Message-ID: <20221111121029.3985561-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.1
-Subject: Re: [PATCH] ext2: Fix some kernel-doc warnings
-Content-Language: en-US
-To:     Bo Liu <liubo03@inspur.com>, jack@suse.com
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20221111064352.2866-1-liubo03@inspur.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20221111064352.2866-1-liubo03@inspur.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Zhihao Cheng (3):
+  dm bufio: Fix missing decrement of no_sleep_enabled if
+    dm_bufio_client_create failed
+  dm bufio: Split main logic out of dm_bufio_client creation/destroy
+  dm thin: Fix ABBA deadlock between shrink_slab and
+    dm_pool_abort_metadata
 
-
-On 11/10/22 22:43, Bo Liu wrote:
-> The current code provokes some kernel-doc warnings:
-> 	fs/ext2/dir.c:417: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-> 
-> Signed-off-by: Bo Liu <liubo03@inspur.com>
-
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
-> ---
->  fs/ext2/dir.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext2/dir.c b/fs/ext2/dir.c
-> index 8f597753ac12..27873733ed8c 100644
-> --- a/fs/ext2/dir.c
-> +++ b/fs/ext2/dir.c
-> @@ -413,7 +413,7 @@ struct ext2_dir_entry_2 *ext2_find_entry (struct inode *dir,
->  	return de;
->  }
->  
-> -/**
-> +/*
->   * Return the '..' directory entry and the page in which the entry was found
->   * (as a parameter - p).
->   *
+ drivers/md/dm-bufio.c                         | 189 +++++++++++++-----
+ drivers/md/dm-thin-metadata.c                 |  36 +++-
+ drivers/md/persistent-data/dm-block-manager.c |  21 ++
+ drivers/md/persistent-data/dm-block-manager.h |   4 +
+ include/linux/dm-bufio.h                      |  14 +-
+ 5 files changed, 214 insertions(+), 50 deletions(-)
 
 -- 
-~Randy
+2.31.1
+
