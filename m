@@ -2,74 +2,157 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03DEE62766D
-	for <lists+linux-ext4@lfdr.de>; Mon, 14 Nov 2022 08:33:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2ED86277A9
+	for <lists+linux-ext4@lfdr.de>; Mon, 14 Nov 2022 09:29:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235785AbiKNHdr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 14 Nov 2022 02:33:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33092 "EHLO
+        id S236450AbiKNI3o (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 14 Nov 2022 03:29:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235115AbiKNHdq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 14 Nov 2022 02:33:46 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BDF5B19
-        for <linux-ext4@vger.kernel.org>; Sun, 13 Nov 2022 23:33:45 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id j2so12450345ybb.6
-        for <linux-ext4@vger.kernel.org>; Sun, 13 Nov 2022 23:33:45 -0800 (PST)
+        with ESMTP id S236449AbiKNI3l (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 14 Nov 2022 03:29:41 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C471B786
+        for <linux-ext4@vger.kernel.org>; Mon, 14 Nov 2022 00:29:39 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id o2-20020a5b0502000000b006cade5e7c07so9970907ybp.10
+        for <linux-ext4@vger.kernel.org>; Mon, 14 Nov 2022 00:29:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/fuJxEvQ8hWJBVA+YQn5WV9w4flp3A4j0tI4rSSd1Ck=;
-        b=fnIJexOrurLq8LJxVcXEJiknMA3dW9UhnBApnJkZZdOQZ7GQAbmzYeMl3RpkpcK9eN
-         ssGJDVCSM/G66oN3l/9N080U0aODjMhnMZCqEBJm9ZMYaY6Aggifa5zAaA7tKIRyCrEo
-         D2OZ+7x3ZXtx+jsJEQPygmnZzCeWOa6EsxMTsWNehw/8wkeN7nHNiyvKiNOZmL5XCLFG
-         sAimVVkazKNjpsa6O+fJ/wFU0daCv/tJgODcigKC8lxyiUaUz4VEamAoi4IarXnImxnh
-         5UsDuqaUIs2ZCBqRhz0yMBCcKzxexWPh5f3wCcSGmA524XDXyHtFFowQmf2vo/n/6G+F
-         GuzQ==
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=tUgTTBqKFuYwrBAzZpO1jGOAUEqlfA9E0Rem6opsB3E=;
+        b=BSUGObCx4CoBl4EPyv/sqdhaIx0lyPbCKwJGuN9W7g/1v2YFv9G3VeL8ZFtRN30qVI
+         it7y8tFgQ5xe97AjVd7P6AdEMjrFOxTFtTqXdJDejlWuivHSS1Van0dRG83qcQsEBMIQ
+         wDOrS1xRqt6t4fC6IUgF/YAiSLRza4BXSkTVHVf3Q9mp+TMdnYUVmajKeWGNJDCrY630
+         G3xQ9DNy0yeZ2IW4yHhx/c+U0uyJ9ezELP1uY9T0vUL0hd0EdQdIgXplU7u9zzcEfiTj
+         UcnCKgMCRUo/KNtTWV133jD+mGzd+CwzVV0ZHUgwY67ZHbo2fPsm+mimnMOZloDW5i+Z
+         QLFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/fuJxEvQ8hWJBVA+YQn5WV9w4flp3A4j0tI4rSSd1Ck=;
-        b=7LJYehNMkBdkdPX+zyUk+pPmprpZSFVdetROMUM5n71Eamrc49CAjP6VktvOE0rBI6
-         u7xykHTsX8NX4eqbdK8NRQXjglHCOvJWq4ro6LKPK/WlovXx/bxrw68uQxPhUen+BRuH
-         jsK9G1H+Edg5V5d0uTeNHC15K1d3fdCljY3h4SIJp11hnkE4CUG68ocqztqS0v1T2gA2
-         PSWQyHQitHL4RNbdUcRc0y8SgzrmAbmABVF1yrvKvulOu9PM4Ox4FcL1xNDs5vKkDVHK
-         9rGvhO529+3bPQ3YJ206vPB8bz+O1GcClmemjuFJy5pxfLu+tKrCqbsferp53Qz3+5L0
-         OVuA==
-X-Gm-Message-State: ANoB5pmhcAiM8M+TQojwxtQZ/bjfkd6BsfcIHdRMhBiwz//aX4HlTLmc
-        jl6zbvrk7KiNaMSFuX+7dfAWO4Y8trds97RgUuY=
-X-Google-Smtp-Source: AA0mqf7yCCMH9O+fvwLxmis2Mymu/MG4XZiNMTatfeYXBnL4w5KvOb71VTFOHBPJLX3gOceWwAZkMF+kleiY4/TRE9U=
-X-Received: by 2002:a05:6902:118e:b0:6be:92a9:c9a8 with SMTP id
- m14-20020a056902118e00b006be92a9c9a8mr11279033ybu.408.1668411224576; Sun, 13
- Nov 2022 23:33:44 -0800 (PST)
-MIME-Version: 1.0
-Received: by 2002:a05:7010:6a91:b0:313:c00e:5dfc with HTTP; Sun, 13 Nov 2022
- 23:33:43 -0800 (PST)
-Reply-To: seyba_daniel@yahoo.com
-From:   Seyba Daniel <abdoulyameogo1234@gmail.com>
-Date:   Mon, 14 Nov 2022 08:33:43 +0100
-Message-ID: <CAA_gp0f4vhLGTqGEMmgnXVWgdUvK_4i1Q2UA3G-mH2uF_FRAKA@mail.gmail.com>
-Subject: Seyba Daniel
-To:     undisclosed-recipients:;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tUgTTBqKFuYwrBAzZpO1jGOAUEqlfA9E0Rem6opsB3E=;
+        b=QxyPdKlsOW97UAMT2qIpu8me03sNEujzBAgjkVTpdaybgy7V4qVhgEvAXgvbW8C/p2
+         PgC90sAKGXNAxuf9ucTP/RCEgQythVaHEn3RaMwJkH1E55jbmFjWyKJEvdcIYzfd5lrw
+         /CfsEqushFPkuzFxQpIl5M9RNcY/M0FZcajrcaK1Liu2eVFmzfmFZ8peOjqrdy6QkiAI
+         8KPtZwErfj/MF9gudAPAaTkDyT7Q2rK8byUAa9drJMGbsNGbfwxeG6zgv4/Mt4s9NbVL
+         FX4lzysG7ofvgkJNu1CjCpgJMja+JA1n+UGC0kySLJvJQeolrQXUSSeGv0/oXjyeNRKv
+         0qzw==
+X-Gm-Message-State: ANoB5pnJLCAz976OQudPD853biaQ/rMQcoyQZmZfliXzBmjGN3Nuxpuq
+        D0vtKxAXqHbhAnMC8YEtQF4YdQ/942Y=
+X-Google-Smtp-Source: AA0mqf6Sled3ymaggMqirPv77RcfKjEQpPjpv0lK3onlVFtDH6YH/gOMt608briDetxvDX9JZVSqqx8k3Ls=
+X-Received: from glider.muc.corp.google.com ([2a00:79e0:9c:201:947a:2eda:94df:cc80])
+ (user=glider job=sendgmr) by 2002:a0d:ca08:0:b0:378:f758:8a5c with SMTP id
+ m8-20020a0dca08000000b00378f7588a5cmr12670700ywd.134.1668414579205; Mon, 14
+ Nov 2022 00:29:39 -0800 (PST)
+Date:   Mon, 14 Nov 2022 09:29:35 +0100
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.38.1.431.g37b22c650d-goog
+Message-ID: <20221114082935.3007497-1-glider@google.com>
+Subject: [PATCH] fs: ext4: initialize fsdata in pagecache_write()
+From:   Alexander Potapenko <glider@google.com>
+To:     glider@google.com
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+        chao@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>,
+        syzbot+9767be679ef5016b6082@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-I urgently seek your service to represent me in investing in
-your region / country and you will be rewarded for your service without
-affecting your present job with very little time invested in it, which you will
-be communicated in details upon response.
+When aops->write_begin() does not initialize fsdata, KMSAN reports
+an error passing the latter to aops->write_end().
 
-My dearest regards
+Fix this by unconditionally initializing fsdata.
 
-Seyba Daniel
+Also speculatively fix similar issues in affs, f2fs, hfs, hfsplus,
+as suggested by Eric Biggers.
+
+Cc: Eric Biggers <ebiggers@kernel.org>
+Fixes: c93d8f885809 ("ext4: add basic fs-verity support")
+Reported-by: syzbot+9767be679ef5016b6082@syzkaller.appspotmail.com
+Signed-off-by: Alexander Potapenko <glider@google.com>
+---
+ fs/affs/file.c       | 2 +-
+ fs/ext4/verity.c     | 2 +-
+ fs/f2fs/verity.c     | 2 +-
+ fs/hfs/extent.c      | 2 +-
+ fs/hfsplus/extents.c | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/fs/affs/file.c b/fs/affs/file.c
+index cefa222f7881c..8daeed31e1af9 100644
+--- a/fs/affs/file.c
++++ b/fs/affs/file.c
+@@ -880,7 +880,7 @@ affs_truncate(struct inode *inode)
+ 	if (inode->i_size > AFFS_I(inode)->mmu_private) {
+ 		struct address_space *mapping = inode->i_mapping;
+ 		struct page *page;
+-		void *fsdata;
++		void *fsdata = NULL;
+ 		loff_t isize = inode->i_size;
+ 		int res;
+ 
+diff --git a/fs/ext4/verity.c b/fs/ext4/verity.c
+index 3c640bd7ecaeb..30e3b65798b50 100644
+--- a/fs/ext4/verity.c
++++ b/fs/ext4/verity.c
+@@ -79,7 +79,7 @@ static int pagecache_write(struct inode *inode, const void *buf, size_t count,
+ 		size_t n = min_t(size_t, count,
+ 				 PAGE_SIZE - offset_in_page(pos));
+ 		struct page *page;
+-		void *fsdata;
++		void *fsdata = NULL;
+ 		int res;
+ 
+ 		res = aops->write_begin(NULL, mapping, pos, n, &page, &fsdata);
+diff --git a/fs/f2fs/verity.c b/fs/f2fs/verity.c
+index c352fff88a5e6..3f4f3295f1c66 100644
+--- a/fs/f2fs/verity.c
++++ b/fs/f2fs/verity.c
+@@ -81,7 +81,7 @@ static int pagecache_write(struct inode *inode, const void *buf, size_t count,
+ 		size_t n = min_t(size_t, count,
+ 				 PAGE_SIZE - offset_in_page(pos));
+ 		struct page *page;
+-		void *fsdata;
++		void *fsdata = NULL;
+ 		int res;
+ 
+ 		res = aops->write_begin(NULL, mapping, pos, n, &page, &fsdata);
+diff --git a/fs/hfs/extent.c b/fs/hfs/extent.c
+index 3f7e9bef98743..6d1878b99b305 100644
+--- a/fs/hfs/extent.c
++++ b/fs/hfs/extent.c
+@@ -486,7 +486,7 @@ void hfs_file_truncate(struct inode *inode)
+ 		inode->i_size);
+ 	if (inode->i_size > HFS_I(inode)->phys_size) {
+ 		struct address_space *mapping = inode->i_mapping;
+-		void *fsdata;
++		void *fsdata = NULL;
+ 		struct page *page;
+ 
+ 		/* XXX: Can use generic_cont_expand? */
+diff --git a/fs/hfsplus/extents.c b/fs/hfsplus/extents.c
+index 721f779b4ec3e..7a542f3dbe502 100644
+--- a/fs/hfsplus/extents.c
++++ b/fs/hfsplus/extents.c
+@@ -554,7 +554,7 @@ void hfsplus_file_truncate(struct inode *inode)
+ 	if (inode->i_size > hip->phys_size) {
+ 		struct address_space *mapping = inode->i_mapping;
+ 		struct page *page;
+-		void *fsdata;
++		void *fsdata = NULL;
+ 		loff_t size = inode->i_size;
+ 
+ 		res = hfsplus_write_begin(NULL, mapping, size, 0,
+-- 
+2.38.1.431.g37b22c650d-goog
+
