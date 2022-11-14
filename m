@@ -2,58 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62550627B12
-	for <lists+linux-ext4@lfdr.de>; Mon, 14 Nov 2022 11:52:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F7C627B80
+	for <lists+linux-ext4@lfdr.de>; Mon, 14 Nov 2022 12:07:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234078AbiKNKwR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 14 Nov 2022 05:52:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49396 "EHLO
+        id S236628AbiKNLH0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 14 Nov 2022 06:07:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbiKNKwQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 14 Nov 2022 05:52:16 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E4F19298;
-        Mon, 14 Nov 2022 02:52:15 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S236619AbiKNLHL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 14 Nov 2022 06:07:11 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2600C1F9F9;
+        Mon, 14 Nov 2022 03:07:11 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2EDFD1FE6D;
-        Mon, 14 Nov 2022 10:52:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1668423134; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=clcJq84x09/0lcWlLPOIuK2xM1hHOs9iOojMYOjosj8=;
-        b=lQu2Pjy3pcp9uwaKFc3jgFAkHtcCek0sMnlUAE6BmF19YIti5i9HZ/q7Nk10ciS9BlKNeN
-        FEU74NgEx7LkiqMQJKzQMvpI9eKeD8eRtQGzkDBgiysrujSGACB7sdURignxiBCVcTV4aW
-        9GVrMofKVCVgS53i4KFkqjdnrD/gQ3Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1668423134;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=clcJq84x09/0lcWlLPOIuK2xM1hHOs9iOojMYOjosj8=;
-        b=r4V7upTQYSfV/3yRbELgnAsYzoLI4t9YZUR2mEvVSkpz2isJwNzAuGEbJHWIJKKfSWt4OX
-        9Z6E2DqrJ96wkmBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1F7F713A8C;
-        Mon, 14 Nov 2022 10:52:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id SPauB94dcmNDaAAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 14 Nov 2022 10:52:14 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 76E40A0709; Mon, 14 Nov 2022 11:52:13 +0100 (CET)
-Date:   Mon, 14 Nov 2022 11:52:13 +0100
-From:   Jan Kara <jack@suse.cz>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B755260FC6;
+        Mon, 14 Nov 2022 11:07:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B6FAC433C1;
+        Mon, 14 Nov 2022 11:07:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668424030;
+        bh=BBQzIyZZF5rlbBw98y1P4gBlWGiyde5VKcuft9ToRAY=;
+        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+        b=A/TWlCEXkE5eooKrE2sEkXhKTjGb3+uPZCt/nWSjrS0c0XadKDRzxeuS7AKBK/yPt
+         T1mF7ErfYbnVFTcUAffc67ZaVM1VXjUavuw9Jh8RXHmQC5lLEJP2rm8+f9O8GxbMlS
+         glXGyBrF6446yghIoXpRloUtXLUSmptRJNSdEtSPc2DnqXKONFWlsmDPs5YwmYYtKa
+         xquA2tJgsHbSwtj78bz+6VAJKxQ9YGL2dXhsWmZXZLAOq14M76EVTsaJnGJlR8Vdux
+         5jT8m1WsqQkVlcD3jEadQzW3SVWoMOasaECwL1e1swUImgx7WnD0qQWyLAujTGgMk5
+         bGdUN6zX46vGQ==
+Received: by mail-oo1-f50.google.com with SMTP id e11-20020a4ab14b000000b0049be568062bso1527106ooo.4;
+        Mon, 14 Nov 2022 03:07:10 -0800 (PST)
+X-Gm-Message-State: ANoB5pk0zpydysJme4Orkqfsh5n+dGtHICl7DHcvYt4XyfCkb3NX/pKM
+        YhFUhFnTdblRamrrEpQ+3aLtMbtjpJgnEAIrmpo=
+X-Google-Smtp-Source: AA0mqf7wDQwPA3pTOSPVjMBQXValCRkcy0eZQuDEsbG8KDjXL393R4wvF7iCYv59B/mzoOk4MhJydooBoEVZepSGpZ0=
+X-Received: by 2002:a4a:b582:0:b0:49d:d7ad:4195 with SMTP id
+ t2-20020a4ab582000000b0049dd7ad4195mr5275628ooo.44.1668424029332; Mon, 14 Nov
+ 2022 03:07:09 -0800 (PST)
+MIME-Version: 1.0
+Received: by 2002:a05:6839:1a4e:0:0:0:0 with HTTP; Mon, 14 Nov 2022 03:07:08
+ -0800 (PST)
+In-Reply-To: <20221113162902.883850-2-hch@lst.de>
+References: <20221113162902.883850-1-hch@lst.de> <20221113162902.883850-2-hch@lst.de>
+From:   Namjae Jeon <linkinjeon@kernel.org>
+Date:   Mon, 14 Nov 2022 20:07:08 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd97CmO5AvKPzziaKiqtUManSgXzFQatynGojTNzaBk9gw@mail.gmail.com>
+Message-ID: <CAKYAXd97CmO5AvKPzziaKiqtUManSgXzFQatynGojTNzaBk9gw@mail.gmail.com>
+Subject: Re: [PATCH 1/9] extfat: remove ->writepage
 To:     Christoph Hellwig <hch@lst.de>
-Cc:     Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>,
+Cc:     Sungjong Seo <sj1557.seo@samsung.com>, Jan Kara <jack@suse.com>,
         OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
         Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
         Dave Kleikamp <shaggy@kernel.org>,
@@ -61,76 +58,25 @@ Cc:     Namjae Jeon <linkinjeon@kernel.org>,
         linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
         jfs-discussion@lists.sourceforge.net,
         linux-karma-devel@lists.sourceforge.net, linux-mm@kvack.org
-Subject: Re: [PATCH 9/9] udf: remove ->writepage
-Message-ID: <20221114105213.v5gby6zngz6y6med@quack3>
-References: <20221113162902.883850-1-hch@lst.de>
- <20221113162902.883850-10-hch@lst.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221113162902.883850-10-hch@lst.de>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun 13-11-22 17:29:02, Christoph Hellwig wrote:
+2022-11-14 1:28 GMT+09:00, Christoph Hellwig <hch@lst.de>:
 > ->writepage is a very inefficient method to write back data, and only
 > used through write_cache_pages or a a fallback when no ->migrate_folio
 > method is present.
-> 
+>
 > Set ->migrate_folio to the generic buffer_head based helper, and remove
-> the ->writepage implementation in extfat.
-> 
+> the ->writepage implementation.
+>
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Namjae Jeon <linkinjeon@kernel.org>
 
-Looks good. Feel free to add:
-
-Acked-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/udf/inode.c | 7 +------
->  1 file changed, 1 insertion(+), 6 deletions(-)
-> 
-> diff --git a/fs/udf/inode.c b/fs/udf/inode.c
-> index dce6ae9ae306c..0246b1b86fb91 100644
-> --- a/fs/udf/inode.c
-> +++ b/fs/udf/inode.c
-> @@ -182,11 +182,6 @@ static void udf_write_failed(struct address_space *mapping, loff_t to)
->  	}
->  }
->  
-> -static int udf_writepage(struct page *page, struct writeback_control *wbc)
-> -{
-> -	return block_write_full_page(page, udf_get_block, wbc);
-> -}
-> -
->  static int udf_writepages(struct address_space *mapping,
->  			struct writeback_control *wbc)
->  {
-> @@ -239,12 +234,12 @@ const struct address_space_operations udf_aops = {
->  	.invalidate_folio = block_invalidate_folio,
->  	.read_folio	= udf_read_folio,
->  	.readahead	= udf_readahead,
-> -	.writepage	= udf_writepage,
->  	.writepages	= udf_writepages,
->  	.write_begin	= udf_write_begin,
->  	.write_end	= generic_write_end,
->  	.direct_IO	= udf_direct_IO,
->  	.bmap		= udf_bmap,
-> +	.migrate_folio	= buffer_migrate_folio,
->  };
->  
->  /*
-> -- 
-> 2.30.2
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks!
