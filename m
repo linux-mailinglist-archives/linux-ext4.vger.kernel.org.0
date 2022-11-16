@@ -2,137 +2,186 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7CC62C26D
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Nov 2022 16:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BEC362C276
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Nov 2022 16:26:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233379AbiKPPZj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Nov 2022 10:25:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44122 "EHLO
+        id S234133AbiKPP0W (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Nov 2022 10:26:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232009AbiKPPZj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Nov 2022 10:25:39 -0500
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A99F25
-        for <linux-ext4@vger.kernel.org>; Wed, 16 Nov 2022 07:25:37 -0800 (PST)
-Received: by mail-il1-f198.google.com with SMTP id d2-20020a056e020be200b00300ecc7e0d4so13352167ilu.5
-        for <linux-ext4@vger.kernel.org>; Wed, 16 Nov 2022 07:25:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=68N2xS9/qlYpCMYhLzwM4pJ45bPpQ706olwGX56CiVI=;
-        b=69MjzKnO7RloRtVI7lMtYLaYF6CgDq+tXwSKuz9UiXb1Ae+pjNRUGBIjZ2mkf5DPcO
-         6JzPJYgokmwWDomiejfKMSQwSSdM5r11SMntlXlXo2nD0o4ho3BojEyDsR5hGbg/YAv0
-         ncdFsz2JDZDroqf3qEo1ZeJG33Kk8Wd88S+idi7HH9M25gPo61nGBX005yVUHJUzRM0a
-         vQyjiRnVrcGlAGX3c2Y7y1E+lt4nYL2QGWyyR8rf6dJjdtHYgJDYFvrA1Y40XARYSHer
-         KV5RIiqFhcjs5Q7ZiQAcuVkB0Q7mV0pQfjpogCsB7NBNmSEEq2k/7OAMye0Xeeqr1Tsq
-         tPog==
-X-Gm-Message-State: ANoB5pmHkFENWRiXtp99RiPW8ftWFf7mjU7S1xBGyGGVulwLO2k5AayN
-        JrIsoCYrceSexuTgp31PunU0U18130ckKXjB0OuDUvsbJTWx
-X-Google-Smtp-Source: AA0mqf774zJLjVplinj2vmnuTWLzr4UQdjD3lomAIdqd7nFEg39qjWi/T6vYXLNSk7awuNtVAgilAIICMAwdVg8u4fJTdGHW05tM
+        with ESMTP id S233931AbiKPP0V (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Nov 2022 10:26:21 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6050EC15;
+        Wed, 16 Nov 2022 07:26:20 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 11FA21F94F;
+        Wed, 16 Nov 2022 15:26:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1668612379; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9rMKo/JLYpljrXCSJYnweC/kZn4pkWFWvqrqNAmzLd0=;
+        b=3bw7D/pSt8z8ktzmPBZSavEE8cSAViw3/kVth0baRs3jo0f/J3skWo2cDGRYX81B9h2ri4
+        n4LXQ8VOuEn+dYwWgLEsDQ9cifGfzrf46zekSrxj6kpTrJgvYnT4c5gHl1a0Cv6PU5MzlP
+        dTjTsiCwyx4F0TkEeiH9whq1gVA2fZM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1668612379;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9rMKo/JLYpljrXCSJYnweC/kZn4pkWFWvqrqNAmzLd0=;
+        b=CtwP63Z0+B7JNsNu7Bx8J+0veMszeSxR92VuoaisnDOprwB8NVtsIKaUqaW2AmIEB+4zhY
+        B/hY+hVZEKHDC+BQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E954813480;
+        Wed, 16 Nov 2022 15:26:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id tHj0OBoBdWPkbQAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 16 Nov 2022 15:26:18 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 26FCBA0709; Wed, 16 Nov 2022 16:26:18 +0100 (CET)
+Date:   Wed, 16 Nov 2022 16:26:18 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, ritesh.list@gmail.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yukuai3@huawei.com
+Subject: Re: [PATCH v2 2/3] ext4: fix corrupt backup group descriptors after
+ online resize
+Message-ID: <20221116152618.hznqamogp2gwpqtp@quack3>
+References: <20221116072802.526990-1-libaokun1@huawei.com>
+ <20221116072802.526990-3-libaokun1@huawei.com>
+ <20221116114929.wmawudyczia55gpe@quack3>
+ <85db0e08-2413-5b6e-1477-47e369cb9f8a@huawei.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:22c8:b0:6de:1179:f429 with SMTP id
- e8-20020a05660222c800b006de1179f429mr6643334ioe.175.1668612337194; Wed, 16
- Nov 2022 07:25:37 -0800 (PST)
-Date:   Wed, 16 Nov 2022 07:25:37 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a05e6705ed98152b@google.com>
-Subject: [syzbot] KMSAN: uninit-value in ext4_evict_inode
-From:   syzbot <syzbot+57b25da729eb0b88177d@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, glider@google.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <85db0e08-2413-5b6e-1477-47e369cb9f8a@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Wed 16-11-22 21:14:16, Baokun Li wrote:
+> On 2022/11/16 19:49, Jan Kara wrote:
+> > On Wed 16-11-22 15:28:01, Baokun Li wrote:
+> > > In commit 9a8c5b0d0615 ("ext4: update the backup superblock's at the end
+> > > of the online resize"), it is assumed that update_backups() only updates
+> > > backup superblocks, so each b_data is treated as a backupsuper block to
+> > > update its s_block_group_nr and s_checksum. However, update_backups()
+> > > also updates the backup group descriptors, which causes the backup group
+> > > descriptors to be corrupted.
+> > > 
+> > > The above commit fixes the problem of invalid checksum of the backup
+> > > superblock. The root cause of this problem is that the checksum of
+> > > ext4_update_super() is not set correctly. This problem has been fixed
+> > > in the previous patch ("ext4: fix bad checksum after online resize").
+> > > Therefore, roll back some modifications in the above commit.
+> > > 
+> > > Fixes: 9a8c5b0d0615 ("ext4: update the backup superblock's at the end of the online resize")
+> > > Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> > So I agree commit 9a8c5b0d0615 is broken and does corrupt group
+> > descriptors. However I don't see how PATCH 1/3 in this series would fix all
+> > the problems commit 9a8c5b0d0615 is trying to fix. In particular checksums
+> > on backup superblocks will not be properly set by the resize code AFAICT.
+> > 
+> > 								Honza
+> I didn't find these two issues to be the same until I researched the problem
+> in
+> PATCH 3/3 and found that commit 9a8c5b0d0615 introduced a similar problem.
+> Then, it is found that the backup superblock is directly copied from the
+> primary
+> superblock. If the backup superblock is faulty, the primary superblock must
+> be
+> faulty. In this case, patch 1 that fixes the primary superblock problem is
+> thought
+> of. So by rolling back commit 9a8c5b0d0615 to verify, I found that patch 1
+> did
+> fix the problem.
+> 
+> Only ext4_flex_group_add() and ext4_group_extend_no_check() call
+> update_backups() to update the backup superblock. Both of these functions
+> correctly set the checksum of the primary superblock. The backup superblocks
+> that are copied from them are also correct.
+> 
+> In ext4_flex_group_add(), we only update the backup superblock if there are
+> no
+> previous errors, indicating that we must have updated the checksum in
+> ext4_update_super() before executing update_backups(). The previous problem
+> was that after we updated the checksum in ext4_update_super(), we modified
+> s_overhead_clusters, so the checksums for both the primary and backup
+> superblocks
+> were incorrect. This problem has been fixed in PATCH 1/3, so checksum is set
+> correctly in ext4_flex_group_add().
+> 
+> The same is true in ext4_group_extend_no_check(), we only update the backup
+> superblock if there are no errors, and we execute ext4_superblock_csum_set()
+> to update the checksum before updating the backup superblock. Therefore,
+> checksum is correctly set in ext4_group_extend_no_check().
+> 
+> I think we only need to ensure that the checksum is set correctly when the
+> buffer
+> lock of sbi->s_sbh is unlocked. Therefore, the checksum should be correct
+> before
+> update_backups() holds the buffer lock. Also, in update_backups() we copy
+> the
+> entire superblock completely, and the checksum is unchanged, so we don't
+> need
+> to reset it.
 
-syzbot found the following issue on:
+So I agree the checksum should be matching but the backup superblock should
+have also s_block_group_nr set properly and after updating that we need to
+recalculate the checksum as well.
 
-HEAD commit:    cb231e2f67ec fs: more fsdata fixes
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=138f5735880000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dc6d7125db95a828
-dashboard link: https://syzkaller.appspot.com/bug?extid=57b25da729eb0b88177d
-compiler:       clang version 15.0.0 (https://github.com/llvm/llvm-project.git 610139d2d9ce6746b3c617fb3e2f7886272d26ff), GNU ld (GNU Binutils for Debian) 2.35.2
-userspace arch: i386
+								Honza
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/6eabbc575a06/disk-cb231e2f.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/01e99c04e1d7/vmlinux-cb231e2f.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/67893482166a/bzImage-cb231e2f.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+57b25da729eb0b88177d@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in ext4_evict_inode+0xdd/0x26b0 fs/ext4/inode.c:180
- ext4_evict_inode+0xdd/0x26b0 fs/ext4/inode.c:180
- evict+0x365/0x9a0 fs/inode.c:664
- iput_final fs/inode.c:1747 [inline]
- iput+0x985/0xdd0 fs/inode.c:1773
- __ext4_new_inode+0xe54/0x7ec0 fs/ext4/ialloc.c:1361
- ext4_mknod+0x376/0x840 fs/ext4/namei.c:2844
- vfs_mknod+0x79d/0x830 fs/namei.c:3914
- do_mknodat+0x47d/0xaa0
- __do_sys_mknodat fs/namei.c:3992 [inline]
- __se_sys_mknodat fs/namei.c:3989 [inline]
- __ia32_sys_mknodat+0xeb/0x150 fs/namei.c:3989
- do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
- __do_fast_syscall_32+0xa2/0x100 arch/x86/entry/common.c:178
- do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
- do_SYSENTER_32+0x1b/0x20 arch/x86/entry/common.c:246
- entry_SYSENTER_compat_after_hwframe+0x70/0x82
-
-Uninit was created at:
- __alloc_pages+0x9f1/0xe80 mm/page_alloc.c:5578
- alloc_pages+0xaae/0xd80 mm/mempolicy.c:2285
- alloc_slab_page mm/slub.c:1794 [inline]
- allocate_slab+0x1b5/0x1010 mm/slub.c:1939
- new_slab mm/slub.c:1992 [inline]
- ___slab_alloc+0x10c3/0x2d60 mm/slub.c:3180
- __slab_alloc mm/slub.c:3279 [inline]
- slab_alloc_node mm/slub.c:3364 [inline]
- slab_alloc mm/slub.c:3406 [inline]
- __kmem_cache_alloc_lru mm/slub.c:3413 [inline]
- kmem_cache_alloc_lru+0x6f3/0xb30 mm/slub.c:3429
- alloc_inode_sb include/linux/fs.h:3117 [inline]
- ext4_alloc_inode+0x5f/0x860 fs/ext4/super.c:1321
- alloc_inode+0x83/0x440 fs/inode.c:259
- new_inode_pseudo fs/inode.c:1018 [inline]
- new_inode+0x3b/0x430 fs/inode.c:1046
- __ext4_new_inode+0x2a7/0x7ec0 fs/ext4/ialloc.c:959
- ext4_mkdir+0x4d5/0x1560 fs/ext4/namei.c:2992
- vfs_mkdir+0x62a/0x870 fs/namei.c:4035
- do_mkdirat+0x466/0x7b0 fs/namei.c:4060
- __do_sys_mkdirat fs/namei.c:4075 [inline]
- __se_sys_mkdirat fs/namei.c:4073 [inline]
- __ia32_sys_mkdirat+0xc4/0x120 fs/namei.c:4073
- do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
- __do_fast_syscall_32+0xa2/0x100 arch/x86/entry/common.c:178
- do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
- do_SYSENTER_32+0x1b/0x20 arch/x86/entry/common.c:246
- entry_SYSENTER_compat_after_hwframe+0x70/0x82
-
-CPU: 1 PID: 4625 Comm: syz-executor.2 Not tainted 6.1.0-rc4-syzkaller-62821-gcb231e2f67ec #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> > > ---
+> > >   fs/ext4/resize.c | 5 -----
+> > >   1 file changed, 5 deletions(-)
+> > > 
+> > > diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
+> > > index cb99b410c9fa..32fbfc173571 100644
+> > > --- a/fs/ext4/resize.c
+> > > +++ b/fs/ext4/resize.c
+> > > @@ -1158,7 +1158,6 @@ static void update_backups(struct super_block *sb, sector_t blk_off, char *data,
+> > >   	while (group < sbi->s_groups_count) {
+> > >   		struct buffer_head *bh;
+> > >   		ext4_fsblk_t backup_block;
+> > > -		struct ext4_super_block *es;
+> > >   		/* Out of journal space, and can't get more - abort - so sad */
+> > >   		err = ext4_resize_ensure_credits_batch(handle, 1);
+> > > @@ -1187,10 +1186,6 @@ static void update_backups(struct super_block *sb, sector_t blk_off, char *data,
+> > >   		memcpy(bh->b_data, data, size);
+> > >   		if (rest)
+> > >   			memset(bh->b_data + size, 0, rest);
+> > > -		es = (struct ext4_super_block *) bh->b_data;
+> > > -		es->s_block_group_nr = cpu_to_le16(group);
+> > > -		if (ext4_has_metadata_csum(sb))
+> > > -			es->s_checksum = ext4_superblock_csum(sb, es);
+> > >   		set_buffer_uptodate(bh);
+> > >   		unlock_buffer(bh);
+> > >   		err = ext4_handle_dirty_metadata(handle, NULL, bh);
+> > > -- 
+> > > 2.31.1
+> > > 
+> Thank you for your review!
+> -- 
+> With Best Regards,
+> Baokun Li
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
