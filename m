@@ -2,34 +2,33 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB73762B3B6
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Nov 2022 08:07:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6723662B3B1
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Nov 2022 08:06:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232594AbiKPHG4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Nov 2022 02:06:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37406 "EHLO
+        id S232210AbiKPHGn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Nov 2022 02:06:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232413AbiKPHGr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Nov 2022 02:06:47 -0500
+        with ESMTP id S232296AbiKPHGl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Nov 2022 02:06:41 -0500
 Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FBD513EBF;
-        Tue, 15 Nov 2022 23:06:46 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4131513EBF;
+        Tue, 15 Nov 2022 23:06:41 -0800 (PST)
 Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NBvGg5tKczRpPD;
-        Wed, 16 Nov 2022 15:06:19 +0800 (CST)
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NBvGT1DdGzHw0l;
+        Wed, 16 Nov 2022 15:06:09 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
  (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Wed, 16 Nov
- 2022 15:06:38 +0800
+ 2022 15:06:39 +0800
 From:   Baokun Li <libaokun1@huawei.com>
 To:     <linux-ext4@vger.kernel.org>
 CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
         <ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>, <yukuai3@huawei.com>,
-        <libaokun1@huawei.com>, "Darrick J . Wong" <djwong@kernel.org>
-Subject: [PATCH v2 1/3] ext4: fix bad checksum after online resize
-Date:   Wed, 16 Nov 2022 15:28:00 +0800
-Message-ID: <20221116072802.526990-2-libaokun1@huawei.com>
+        <yi.zhang@huawei.com>, <yukuai3@huawei.com>, <libaokun1@huawei.com>
+Subject: [PATCH v2 2/3] ext4: fix corrupt backup group descriptors after online resize
+Date:   Wed, 16 Nov 2022 15:28:01 +0800
+Message-ID: <20221116072802.526990-3-libaokun1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221116072802.526990-1-libaokun1@huawei.com>
 References: <20221116072802.526990-1-libaokun1@huawei.com>
@@ -48,49 +47,48 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-When online resizing is performed twice consecutively, the error message
-"Superblock checksum does not match superblock" is displayed for the
-second time. Here's the reproducer:
+In commit 9a8c5b0d0615 ("ext4: update the backup superblock's at the end
+of the online resize"), it is assumed that update_backups() only updates
+backup superblocks, so each b_data is treated as a backupsuper block to
+update its s_block_group_nr and s_checksum. However, update_backups()
+also updates the backup group descriptors, which causes the backup group
+descriptors to be corrupted.
 
-	mkfs.ext4 -F /dev/sdb 100M
-	mount /dev/sdb /tmp/test
-	resize2fs /dev/sdb 5G
-	resize2fs /dev/sdb 6G
+The above commit fixes the problem of invalid checksum of the backup
+superblock. The root cause of this problem is that the checksum of
+ext4_update_super() is not set correctly. This problem has been fixed
+in the previous patch ("ext4: fix bad checksum after online resize").
+Therefore, roll back some modifications in the above commit.
 
-To solve this issue, we moved the update of the checksum after the
-es->s_overhead_clusters is updated.
-
-Fixes: 026d0d27c488 ("ext4: reduce computation of overhead during resize")
-Fixes: de394a86658f ("ext4: update s_overhead_clusters in the superblock during an on-line resize")
+Fixes: 9a8c5b0d0615 ("ext4: update the backup superblock's at the end of the online resize")
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-Reviewed-by: Jan Kara <jack@suse.cz>
 ---
- fs/ext4/resize.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/ext4/resize.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
 diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
-index 46b87ffeb304..cb99b410c9fa 100644
+index cb99b410c9fa..32fbfc173571 100644
 --- a/fs/ext4/resize.c
 +++ b/fs/ext4/resize.c
-@@ -1476,8 +1476,6 @@ static void ext4_update_super(struct super_block *sb,
- 	 * active. */
- 	ext4_r_blocks_count_set(es, ext4_r_blocks_count(es) +
- 				reserved_blocks);
--	ext4_superblock_csum_set(sb);
--	unlock_buffer(sbi->s_sbh);
+@@ -1158,7 +1158,6 @@ static void update_backups(struct super_block *sb, sector_t blk_off, char *data,
+ 	while (group < sbi->s_groups_count) {
+ 		struct buffer_head *bh;
+ 		ext4_fsblk_t backup_block;
+-		struct ext4_super_block *es;
  
- 	/* Update the free space counts */
- 	percpu_counter_add(&sbi->s_freeclusters_counter,
-@@ -1513,6 +1511,8 @@ static void ext4_update_super(struct super_block *sb,
- 		ext4_calculate_overhead(sb);
- 	es->s_overhead_clusters = cpu_to_le32(sbi->s_overhead);
- 
-+	ext4_superblock_csum_set(sb);
-+	unlock_buffer(sbi->s_sbh);
- 	if (test_opt(sb, DEBUG))
- 		printk(KERN_DEBUG "EXT4-fs: added group %u:"
- 		       "%llu blocks(%llu free %llu reserved)\n", flex_gd->count,
+ 		/* Out of journal space, and can't get more - abort - so sad */
+ 		err = ext4_resize_ensure_credits_batch(handle, 1);
+@@ -1187,10 +1186,6 @@ static void update_backups(struct super_block *sb, sector_t blk_off, char *data,
+ 		memcpy(bh->b_data, data, size);
+ 		if (rest)
+ 			memset(bh->b_data + size, 0, rest);
+-		es = (struct ext4_super_block *) bh->b_data;
+-		es->s_block_group_nr = cpu_to_le16(group);
+-		if (ext4_has_metadata_csum(sb))
+-			es->s_checksum = ext4_superblock_csum(sb, es);
+ 		set_buffer_uptodate(bh);
+ 		unlock_buffer(bh);
+ 		err = ext4_handle_dirty_metadata(handle, NULL, bh);
 -- 
 2.31.1
 
