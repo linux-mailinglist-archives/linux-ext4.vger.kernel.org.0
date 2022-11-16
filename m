@@ -2,57 +2,56 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F73362C786
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Nov 2022 19:20:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 394FA62C7CC
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Nov 2022 19:39:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233813AbiKPSUq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Nov 2022 13:20:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59048 "EHLO
+        id S233555AbiKPSjL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Nov 2022 13:39:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234119AbiKPSUo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Nov 2022 13:20:44 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 242DB27CCE;
-        Wed, 16 Nov 2022 10:20:43 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D5A8B2268E;
-        Wed, 16 Nov 2022 18:20:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1668622841; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tSUpoHWr9wnkVn9HOTb7LULYSyBr+07TUIpU4/QTATk=;
-        b=Gx2vckK/5vGEc2zOhBCl7qSITrhTbIWydacZenpqfzShhYxA1nf+4wsQ0nbsIkItym081e
-        b1cwZHpqlbr+RiHEd+XgERCfUUaNxtIntG2iifstEd1kz0FySPSpsFNnoRElSnqXNQVgJA
-        7Sc50zIqGTUS5raTA02gC0xqdyKesdw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1668622841;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tSUpoHWr9wnkVn9HOTb7LULYSyBr+07TUIpU4/QTATk=;
-        b=4KTm6OTcQBsaB9fM00TF0repUhYtweyMkHnBYRRv5HSm2o3zxm3mNwC3J968JAipryjVNx
-        m9mUVu89zejETCDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 91B8F134CE;
-        Wed, 16 Nov 2022 18:20:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 38mGI/kpdWMROAAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 16 Nov 2022 18:20:41 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id B3FABA0709; Wed, 16 Nov 2022 19:20:40 +0100 (CET)
-Date:   Wed, 16 Nov 2022 19:20:40 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
-        Namjae Jeon <linkinjeon@kernel.org>,
+        with ESMTP id S234560AbiKPSjJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Nov 2022 13:39:09 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A2D2A70E;
+        Wed, 16 Nov 2022 10:39:07 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id b185so18265973pfb.9;
+        Wed, 16 Nov 2022 10:39:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hYF3Hj9rSyQp4X4qzG1/mtul7nlvlXjBvw9fIIZhTos=;
+        b=X/3VlFQOq/F4K880LRk9TjjvLSZlvu7/kRCnM9p5B3rYiLfewmE7LcvkodiAPiM7DU
+         raLagsEw7CdstzIfRRDQz9Le/ayij3LC1LTJRZHZxZkqIdDJj+AgU3FGWfWpEYNI63hd
+         JHT6SvBQ94N/ok8vRWKDzFTw0PvRImdHoqK9ezlfgiLhWQpzYE91xtGeyNwOlJistHMc
+         UGjhbEzpM/cIjmxjL/mrzcDHpeePSLDv0f7N4d6JVNznieNE4hs4/NJOZBhlox3hzYej
+         zUlZxtCAbtrkFHhBGxuKAuuS96kObNhGGMwm9Pv+FlRMqdlXaO+8r+jE/zxwLpwZYYsk
+         NOPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hYF3Hj9rSyQp4X4qzG1/mtul7nlvlXjBvw9fIIZhTos=;
+        b=JABuWZBbFW69CwWffnn5zErKb4qbKaqWrJDXR6Cmk7QDJvSczkThiYTfcsoJ3Br1rx
+         yiW07bWmIBLEsKieN88VAlSUyA7EhSML06STtmTgMzM7OWGz/8c8Ebu9LBfCSjjdNuD2
+         M28IgoTTuhozg9zjYUCyOnMT/TMR5y6+VG6aZNQFouAwKodhFRVPt+V/Ua4uGUzSphyg
+         6IukrLOdN1l5QMfZoE74uoBrFa1WQ9fsD3gKTLRd4O3n5i97ycaFB/OTDtPEtekGSoE7
+         xXXLeYLhrf1Vt0EpSNKtxyWzHg0VCJOEVBl0jibSI7YJl+oMmk86FNLnPGmwtmNrMgGG
+         aN7g==
+X-Gm-Message-State: ANoB5plSV5mQjnOT61f/31D49pkClKNRcriJEiYnVGlIsyPO6oi1AuID
+        GFaaQS/F7u0uLmTCSKMw7qY=
+X-Google-Smtp-Source: AA0mqf5CWC9cDzSsVhgoM5hzB1p88qRacHWHl2gRD4exiTbTBQYf+GC47C06p+H1E34QifQ+npSGkQ==
+X-Received: by 2002:a62:1ad4:0:b0:56b:add7:fe2f with SMTP id a203-20020a621ad4000000b0056badd7fe2fmr24188517pfa.51.1668623947228;
+        Wed, 16 Nov 2022 10:39:07 -0800 (PST)
+Received: from localhost ([2406:7400:63:f20b:f6ca:e236:f59f:8c18])
+        by smtp.gmail.com with ESMTPSA id a4-20020aa795a4000000b0056d7cc80ea4sm11234366pfk.110.2022.11.16.10.39.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Nov 2022 10:39:06 -0800 (PST)
+Date:   Thu, 17 Nov 2022 00:09:00 +0530
+From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Namjae Jeon <linkinjeon@kernel.org>,
         Sungjong Seo <sj1557.seo@samsung.com>,
         Jan Kara <jack@suse.com>,
         OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
@@ -62,192 +61,77 @@ Cc:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
         linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
         jfs-discussion@lists.sourceforge.net,
         linux-karma-devel@lists.sourceforge.net, linux-mm@kvack.org
-Subject: Re: [PATCH 2/9] ext2: remove ->writepageo      
-Message-ID: <20221116182040.tecis3dqejsdqnum@quack3>
+Subject: Re: start removing writepage instances
+Message-ID: <20221116183900.yzpcymelnnwppoh7@riteshh-domain>
 References: <20221113162902.883850-1-hch@lst.de>
- <20221113162902.883850-3-hch@lst.de>
- <20221114104927.k5x4i4uanxskfs6m@quack3>
- <Y3UMV2mB5BkMM5PY@infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="p236ichjbcdiibw7"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y3UMV2mB5BkMM5PY@infradead.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20221113162902.883850-1-hch@lst.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
---p236ichjbcdiibw7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed 16-11-22 08:14:15, Christoph Hellwig wrote:
-> On Mon, Nov 14, 2022 at 11:49:27AM +0100, Jan Kara wrote:
-> > On Sun 13-11-22 17:28:55, Christoph Hellwig wrote:
-> > > ->writepage is a very inefficient method to write back data, and only
-> > > used through write_cache_pages or a a fallback when no ->migrate_folio
-> > > method is present.
-> > > 
-> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > 
-> > Looks good! Feel free to add:
+On 22/11/13 05:28PM, Christoph Hellwig wrote:
+> Hi all,
 > 
-> The testbot found a problem with this:
+> The VM doesn't need or want ->writepage for writeback and is fine with
+> just having ->writepages as long as ->migrate_folio is implemented.
+
+Ok, so here is, (what I think) is the motivation for doing this. 
+Please correct me if this is incorrect... 
+1. writepage is mainly called from pageout, which happens as part of the memory
+   reclaim. Now IIUC from previous discussions [1][2][3], reclaims happens from
+   the tail end of the LRU list which could do an I/O of a single page while 
+   an ongoing writeback was in progress of multiple pages. This disrupts the I/O 
+   pattern to become more random in nature, compared to, if we would have let 
+   writeback/flusher do it's job of writing back dirty pages.
+
+   Also many filesystems behave very differently within their ->writepage calls,
+   e.g. ext4 doesn't actually write in ->writepage for DELAYED blocks.
+
+2. Now the other place from where ->writepage can be called from is, writeout()
+   function, which is a fallback function for migration (fallback_migrate_folio()).
+   fallback_migrate_folio() is called from move_to_new_folio() if ->migrate_folio 
+   is not defined for the FS.
+
+So what you are doing here is removing the ->writepage from address_space
+operations of the filesystems which implements ->writepage using
+block_write_full_page() (i.e. those who uses buffer_heads). This is done for 
+those FS who already have ->migrate_folio() implemented (hence no need of
+->writepage).
+...Now this is also a step towards reducing the callers from kernel which uses
+buffer_heads.
+
+[1]: https://lore.kernel.org/all/1310567487-15367-1-git-send-email-mgorman@suse.de/
+[2]: https://lore.kernel.org/all/20181107063127.3902-2-david@fromorbit.com/
+[3]: https://lore.kernel.org/all/1271117878-19274-1-git-send-email-david@fromorbit.com/
+
+Is above a correct understanding?
+
 > 
-> ext2_commit_chunk calls write_one_page for the IS_DIRSYNC case,
-> and write_one_page calls ->writepage.
+> This series removes all ->writepage instances that use
+> block_write_full_page directly and also have a plain mpage_writepages
+> based ->writepages.
 
-Right.
-
-> So I think I need to drop this one for now (none of the other
-> file systems calls write_one_page).  And then think what best
-> to do about write_one_page/write_one_folio.  I suspect just
-> passing a writepage pointer to them might make most sense,
-> as they are only used by a few file systems, and the calling
-> convention with the locked page doesn't lend itself to using
-> ->writepages.
-
-Looking at the code, IMO the write_one_page() looks somewhat premature
-anyway in that place. AFAICS we could handle the writeout using
-filemap_write_and_wait() if we moved it to somewhat later moment. So
-something like attached patch (only basic testing only so far)?
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
-
---p236ichjbcdiibw7
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment;
-	filename="0001-ext2-Don-t-flush-page-immediately-for-DIRSYNC-direct.patch"
-
-From dc36b90da4c23134ac2fd02d7a21a736fe68d598 Mon Sep 17 00:00:00 2001
-From: Jan Kara <jack@suse.cz>
-Date: Wed, 16 Nov 2022 19:08:23 +0100
-Subject: [PATCH] ext2: Don't flush page immediately for DIRSYNC directories
-
-We do not need to writeout modified directory blocks immediately when
-modifying them while the page is locked. It is enough to do the flush
-somewhat later which has the added benefit that inode times can be
-flushed as well. It also allows us to stop depending on
-write_one_page() function.
-
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext2/dir.c | 37 +++++++++++++++++++++----------------
- 1 file changed, 21 insertions(+), 16 deletions(-)
-
-diff --git a/fs/ext2/dir.c b/fs/ext2/dir.c
-index 8f597753ac12..17efc784af53 100644
---- a/fs/ext2/dir.c
-+++ b/fs/ext2/dir.c
-@@ -81,11 +81,10 @@ ext2_last_byte(struct inode *inode, unsigned long page_nr)
- 	return last_byte;
- }
- 
--static int ext2_commit_chunk(struct page *page, loff_t pos, unsigned len)
-+static void ext2_commit_chunk(struct page *page, loff_t pos, unsigned len)
- {
- 	struct address_space *mapping = page->mapping;
- 	struct inode *dir = mapping->host;
--	int err = 0;
- 
- 	inode_inc_iversion(dir);
- 	block_write_end(NULL, mapping, pos, len, len, page, NULL);
-@@ -94,16 +93,7 @@ static int ext2_commit_chunk(struct page *page, loff_t pos, unsigned len)
- 		i_size_write(dir, pos+len);
- 		mark_inode_dirty(dir);
- 	}
--
--	if (IS_DIRSYNC(dir)) {
--		err = write_one_page(page);
--		if (!err)
--			err = sync_inode_metadata(dir, 1);
--	} else {
--		unlock_page(page);
--	}
--
--	return err;
-+	unlock_page(page);
- }
- 
- static bool ext2_check_page(struct page *page, int quiet, char *kaddr)
-@@ -460,6 +450,17 @@ static int ext2_prepare_chunk(struct page *page, loff_t pos, unsigned len)
- 	return __block_write_begin(page, pos, len, ext2_get_block);
- }
- 
-+
-+static int ext2_handle_dirsync(struct inode *dir)
-+{
-+	int err;
-+
-+	err = filemap_write_and_wait(dir->i_mapping);
-+	if (!err)
-+		err = sync_inode_metadata(dir, 1);
-+	return err;
-+}
-+
- void ext2_set_link(struct inode *dir, struct ext2_dir_entry_2 *de,
- 		   struct page *page, void *page_addr, struct inode *inode,
- 		   int update_times)
-@@ -474,11 +475,12 @@ void ext2_set_link(struct inode *dir, struct ext2_dir_entry_2 *de,
- 	BUG_ON(err);
- 	de->inode = cpu_to_le32(inode->i_ino);
- 	ext2_set_de_type(de, inode);
--	err = ext2_commit_chunk(page, pos, len);
-+	ext2_commit_chunk(page, pos, len);
- 	if (update_times)
- 		dir->i_mtime = dir->i_ctime = current_time(dir);
- 	EXT2_I(dir)->i_flags &= ~EXT2_BTREE_FL;
- 	mark_inode_dirty(dir);
-+	ext2_handle_dirsync(dir);
- }
- 
- /*
-@@ -566,10 +568,11 @@ int ext2_add_link (struct dentry *dentry, struct inode *inode)
- 	memcpy(de->name, name, namelen);
- 	de->inode = cpu_to_le32(inode->i_ino);
- 	ext2_set_de_type (de, inode);
--	err = ext2_commit_chunk(page, pos, rec_len);
-+	ext2_commit_chunk(page, pos, rec_len);
- 	dir->i_mtime = dir->i_ctime = current_time(dir);
- 	EXT2_I(dir)->i_flags &= ~EXT2_BTREE_FL;
- 	mark_inode_dirty(dir);
-+	err = ext2_handle_dirsync(dir);
- 	/* OFFSET_CACHE */
- out_put:
- 	ext2_put_page(page, page_addr);
-@@ -615,10 +618,11 @@ int ext2_delete_entry (struct ext2_dir_entry_2 *dir, struct page *page,
- 	if (pde)
- 		pde->rec_len = ext2_rec_len_to_disk(to - from);
- 	dir->inode = 0;
--	err = ext2_commit_chunk(page, pos, to - from);
-+	ext2_commit_chunk(page, pos, to - from);
- 	inode->i_ctime = inode->i_mtime = current_time(inode);
- 	EXT2_I(inode)->i_flags &= ~EXT2_BTREE_FL;
- 	mark_inode_dirty(inode);
-+	err = ext2_handle_dirsync(dir);
- out:
- 	return err;
- }
-@@ -658,7 +662,8 @@ int ext2_make_empty(struct inode *inode, struct inode *parent)
- 	memcpy (de->name, "..\0", 4);
- 	ext2_set_de_type (de, inode);
- 	kunmap_atomic(kaddr);
--	err = ext2_commit_chunk(page, 0, chunk_size);
-+	ext2_commit_chunk(page, 0, chunk_size);
-+	err = ext2_handle_dirsync(inode);
- fail:
- 	put_page(page);
- 	return err;
--- 
-2.35.3
+Ok.
 
 
---p236ichjbcdiibw7--
+> 
+> Diffstat:
+>  fs/exfat/inode.c   |    9 ++-------
+>  fs/ext2/inode.c    |    6 ------
+>  fs/fat/inode.c     |    9 ++-------
+>  fs/hfs/inode.c     |    2 +-
+>  fs/hfsplus/inode.c |    2 +-
+>  fs/hpfs/file.c     |    9 ++-------
+>  fs/jfs/inode.c     |    7 +------
+>  fs/omfs/file.c     |    7 +------
+>  fs/udf/inode.c     |    7 +------
+>  9 files changed, 11 insertions(+), 47 deletions(-)
