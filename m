@@ -2,118 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92EF262C2BF
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Nov 2022 16:36:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B1E62C3B3
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Nov 2022 17:14:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233026AbiKPPgs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Nov 2022 10:36:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51528 "EHLO
+        id S234117AbiKPQOh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Nov 2022 11:14:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232974AbiKPPgs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Nov 2022 10:36:48 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E5914D0C;
-        Wed, 16 Nov 2022 07:36:47 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 50A47336F9;
-        Wed, 16 Nov 2022 15:36:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1668613006; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sLkFAGmODAxxEkX02jVvJl4offD9YV13b3F5VPNgrjo=;
-        b=kpjpxKkatXq3EwXIEV+LmXYPlqGug+rL5rx5o/rJsc933/eJpQbsD/p+rNma92cYKNiNi1
-        YdbC8GzWo43ZCdPFeaihAJ6HjcQHTDA9QISSKxypcBCuyZTXIUE2VVhStpcpCr29l9V9gK
-        NTPHHOb0fLFUwA3NGMDRPUOi0JO3U8I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1668613006;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sLkFAGmODAxxEkX02jVvJl4offD9YV13b3F5VPNgrjo=;
-        b=y2zMGOWs/dn5QvLOUYvocvGltUMPBoQY2jZjWa1CBM1nVurW1yi34qHOJja8krFBYkjmXb
-        4nRfZRBmBobFkTDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2E2A513480;
-        Wed, 16 Nov 2022 15:36:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 7Ro3C44DdWNscgAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 16 Nov 2022 15:36:46 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 46F12A0709; Wed, 16 Nov 2022 16:36:44 +0100 (CET)
-Date:   Wed, 16 Nov 2022 16:36:44 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
-        Mingming Cao <cmm@us.ibm.com>, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        linux-mm@kvack.org
-Subject: Re: generic_writepages & jbd2 and ext4
-Message-ID: <20221116153644.7rqgb6a4nyei3ltz@quack3>
-References: <20221116135016.GA9713@lst.de>
+        with ESMTP id S234122AbiKPQO2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Nov 2022 11:14:28 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB2A8120B1;
+        Wed, 16 Nov 2022 08:14:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=GW/mPvUNa8ycmt36mg7tsVRrtOyrpDhOFXMAIJPJkOE=; b=fv/z8Vq6c3nCHc9j56W7inAPrc
+        0dHcgJhI7otNJASZ17MhPMVxlFeyoYf4kkWas5Eo1Ec3GLZ11u690qlx7P/v7oNDWAqAIH8H8yfAD
+        /1+ntBb76BGes/DskjfMzwy5tnJE3PtJshRQjDhtJe3GdRxa3iYgGlrg4SgbIsOz1xLUVMP3prz4Y
+        CYEDn4nLle2PKtPXe6tjYaTxXNTKPX+uOVZ0Q2NsIXk+iTVqbBXGxNbargAbd+zNmaZW4alJOF63V
+        hcY8gOY7GqI+y48QsSAg6GKHAhI6xNQtvE8qNC021YrYrfXYgoK0+mLFPHkKrKnIUnGGe6t1rneei
+        zCHLsFCw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ovL3H-005l8R-B4; Wed, 16 Nov 2022 16:14:15 +0000
+Date:   Wed, 16 Nov 2022 08:14:15 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Bob Copeland <me@bobcopeland.com>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net,
+        linux-karma-devel@lists.sourceforge.net, linux-mm@kvack.org
+Subject: Re: [PATCH 2/9] ext2: remove ->writepage
+Message-ID: <Y3UMV2mB5BkMM5PY@infradead.org>
+References: <20221113162902.883850-1-hch@lst.de>
+ <20221113162902.883850-3-hch@lst.de>
+ <20221114104927.k5x4i4uanxskfs6m@quack3>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221116135016.GA9713@lst.de>
+In-Reply-To: <20221114104927.k5x4i4uanxskfs6m@quack3>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 16-11-22 14:50:16, Christoph Hellwig wrote:
-> Hi all,
+On Mon, Nov 14, 2022 at 11:49:27AM +0100, Jan Kara wrote:
+> On Sun 13-11-22 17:28:55, Christoph Hellwig wrote:
+> > ->writepage is a very inefficient method to write back data, and only
+> > used through write_cache_pages or a a fallback when no ->migrate_folio
+> > method is present.
+> > 
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > 
-> I've recently started looking into killing off the ->writepage method,
-> and as an initial subproject kill of external uses of generic_writepages.
-> One of the two remaining callers s in jbd2 and I'm a bit confused about
-> it.
-> 
-> jbd2_journal_submit_inode_data_buffers has two comments that explicitly
-> ask for ->writepages as that doesn't allocate data:
-> 
-> /*
->  * write the filemap data using writepage() address_space_operations.
->  * We don't do block allocation here even for delalloc. We don't
->  * use writepages() because with delayed allocation we may be doing
->  * block allocation in writepages().
->  */
-> 
-> 	/*
->          * submit the inode data buffers. We use writepage
-> 	 * instead of writepages. Because writepages can do
-> 	 * block allocation with delalloc. We need to write
-> 	 * only allocated blocks here.
-> 	 */
-> 
-> and these look really stange to me.  ->writepage and ->writepages per
-> their document VM/VFS semantics don't different on what they allocate,
-> so this seems to reverse engineer ext4 internal behavior in some
-> way.  Either way looping over ->writepage just for that is rather
-> inefficient.  If jbd2 really wants a way to skip delalloc conversion
-> can we come up with a flag in struct writeback_control for that?
-> 
-> Is there anyone familiar enough with this code who would be willing
-> to give it a try?
+> Looks good! Feel free to add:
 
-Yes, I've written that code quite a few years ago :) And I agree JBD2 is
-abusing internal knowledge about ext4 here. So yes, writeback_control flag
-so that we can propagate the information to ->writepages method should do
-the trick. I'll have a look into that.
+The testbot found a problem with this:
 
-								Honza
+ext2_commit_chunk calls write_one_page for the IS_DIRSYNC case,
+and write_one_page calls ->writepage.
 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+So I think I need to drop this one for now (none of the other
+file systems calls write_one_page).  And then think what best
+to do about write_one_page/write_one_folio.  I suspect just
+passing a writepage pointer to them might make most sense,
+as they are only used by a few file systems, and the calling
+convention with the locked page doesn't lend itself to using
+->writepages.
