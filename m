@@ -2,72 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 394FA62C7CC
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Nov 2022 19:39:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F1962C937
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Nov 2022 20:50:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233555AbiKPSjL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Nov 2022 13:39:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41952 "EHLO
+        id S230205AbiKPTt6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Nov 2022 14:49:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234560AbiKPSjJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Nov 2022 13:39:09 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A2D2A70E;
-        Wed, 16 Nov 2022 10:39:07 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id b185so18265973pfb.9;
-        Wed, 16 Nov 2022 10:39:07 -0800 (PST)
+        with ESMTP id S234040AbiKPTty (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Nov 2022 14:49:54 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5B656578;
+        Wed, 16 Nov 2022 11:49:52 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id e68so19430066ybh.2;
+        Wed, 16 Nov 2022 11:49:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hYF3Hj9rSyQp4X4qzG1/mtul7nlvlXjBvw9fIIZhTos=;
-        b=X/3VlFQOq/F4K880LRk9TjjvLSZlvu7/kRCnM9p5B3rYiLfewmE7LcvkodiAPiM7DU
-         raLagsEw7CdstzIfRRDQz9Le/ayij3LC1LTJRZHZxZkqIdDJj+AgU3FGWfWpEYNI63hd
-         JHT6SvBQ94N/ok8vRWKDzFTw0PvRImdHoqK9ezlfgiLhWQpzYE91xtGeyNwOlJistHMc
-         UGjhbEzpM/cIjmxjL/mrzcDHpeePSLDv0f7N4d6JVNznieNE4hs4/NJOZBhlox3hzYej
-         zUlZxtCAbtrkFHhBGxuKAuuS96kObNhGGMwm9Pv+FlRMqdlXaO+8r+jE/zxwLpwZYYsk
-         NOPA==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=PLk5Bv9pyzmOmKmpiRdrbFX7MTtlMoGgKbcUXnSuZlI=;
+        b=Mr/rVM5gWvDOXLWlos1ler/CMAMfiIgz4Sml3kFSyjECZnlSPcVBU4y3VfCTu/0aDq
+         2Hx+c24+SP+0/wnV2C0+rZ0YnJMzkJqQZ07KplG/jYFNeJ/AdVuTulsQOta/yskYT4co
+         lO+DYR3t4HZuIy39N3Pc5nd7f8R7UyAmkEcYR6dxKgZ3kO04wSNctDpA5HdAa/nF2Np5
+         iI7sEspYjGhADXPrJaY9jmcKzsMSJwcbVqjhbJhW4py4F4S/B3LAslAjpOlTFVcsVoxC
+         FpqtJGeWYIq5qmN19F7mWs1i+OrcK1voWBxuSePpcTDigFfWwQtwggtf/qd5BZtGSYBH
+         2NxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hYF3Hj9rSyQp4X4qzG1/mtul7nlvlXjBvw9fIIZhTos=;
-        b=JABuWZBbFW69CwWffnn5zErKb4qbKaqWrJDXR6Cmk7QDJvSczkThiYTfcsoJ3Br1rx
-         yiW07bWmIBLEsKieN88VAlSUyA7EhSML06STtmTgMzM7OWGz/8c8Ebu9LBfCSjjdNuD2
-         M28IgoTTuhozg9zjYUCyOnMT/TMR5y6+VG6aZNQFouAwKodhFRVPt+V/Ua4uGUzSphyg
-         6IukrLOdN1l5QMfZoE74uoBrFa1WQ9fsD3gKTLRd4O3n5i97ycaFB/OTDtPEtekGSoE7
-         xXXLeYLhrf1Vt0EpSNKtxyWzHg0VCJOEVBl0jibSI7YJl+oMmk86FNLnPGmwtmNrMgGG
-         aN7g==
-X-Gm-Message-State: ANoB5plSV5mQjnOT61f/31D49pkClKNRcriJEiYnVGlIsyPO6oi1AuID
-        GFaaQS/F7u0uLmTCSKMw7qY=
-X-Google-Smtp-Source: AA0mqf5CWC9cDzSsVhgoM5hzB1p88qRacHWHl2gRD4exiTbTBQYf+GC47C06p+H1E34QifQ+npSGkQ==
-X-Received: by 2002:a62:1ad4:0:b0:56b:add7:fe2f with SMTP id a203-20020a621ad4000000b0056badd7fe2fmr24188517pfa.51.1668623947228;
-        Wed, 16 Nov 2022 10:39:07 -0800 (PST)
-Received: from localhost ([2406:7400:63:f20b:f6ca:e236:f59f:8c18])
-        by smtp.gmail.com with ESMTPSA id a4-20020aa795a4000000b0056d7cc80ea4sm11234366pfk.110.2022.11.16.10.39.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Nov 2022 10:39:06 -0800 (PST)
-Date:   Thu, 17 Nov 2022 00:09:00 +0530
-From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        Bob Copeland <me@bobcopeland.com>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        jfs-discussion@lists.sourceforge.net,
-        linux-karma-devel@lists.sourceforge.net, linux-mm@kvack.org
-Subject: Re: start removing writepage instances
-Message-ID: <20221116183900.yzpcymelnnwppoh7@riteshh-domain>
-References: <20221113162902.883850-1-hch@lst.de>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PLk5Bv9pyzmOmKmpiRdrbFX7MTtlMoGgKbcUXnSuZlI=;
+        b=SAYYHezRpXZfNnz/+3tYxg1fKGHUeW5Z52bb/lDEpV4vFsJYdGgsqT6zKRZ0wXFHWW
+         f/DYZxBFoc9/Qa8IS+8o623B0r16xQ52DjtMbfhLz8j9KgvyzqIFd1SVTluBerdcsKlm
+         Z0RIdEWUZZs/U5BWtKYN3fIeCzgzIsi3PpBkr0bvXC56HPEq/abtvA3tKHbi6+iRmPWG
+         HY0D+X73JQ34JxwNPT4mRE8OZrX/n6JXnzKZ2XtYwp8NJ1TyRkknyDuP46DZH9n1cYPQ
+         vY1og3qXLuSD873NTzuhtEaK3TkVvZbGLpmDkP4LhX66ZFed0aYM3l6qmfsIR4eTn6XS
+         SoDw==
+X-Gm-Message-State: ANoB5pkUt1UFIj4riSU8DzxbUZ7oPDAD9wjqzVs5Tx4QQsSpRqo/Nf3N
+        sMBxr+21M33JG3q+MZBQrAm2/9XHRY+5rbhTC7c=
+X-Google-Smtp-Source: AA0mqf6Yj2bGl28yKEI97oe+OajLC3QX2soh79yTZPgp6unUy7vmMfUDtsTI6pyxXekCj6K0TeOICP3O9Xan+y3YZu4=
+X-Received: by 2002:a25:248a:0:b0:6e6:aa56:f59 with SMTP id
+ k132-20020a25248a000000b006e6aa560f59mr1021192ybk.595.1668628191611; Wed, 16
+ Nov 2022 11:49:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221113162902.883850-1-hch@lst.de>
+References: <20221116021011.54164-1-vishal.moola@gmail.com>
+ <20221116021011.54164-2-vishal.moola@gmail.com> <Y3SaskD7QurUVJFr@casper.infradead.org>
+In-Reply-To: <Y3SaskD7QurUVJFr@casper.infradead.org>
+From:   Vishal Moola <vishal.moola@gmail.com>
+Date:   Wed, 16 Nov 2022 11:49:40 -0800
+Message-ID: <CAOzc2pxAG2-y7eNTbhDzh6X_Aqzj4o7BVkzudmhdkTy6rghU7A@mail.gmail.com>
+Subject: Re: [PATCH 1/4] ext4: Convert move_extent_per_page() to use folios
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        akpm@linux-foundation.org, naoya.horiguchi@nec.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -78,60 +68,29 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22/11/13 05:28PM, Christoph Hellwig wrote:
-> Hi all,
-> 
-> The VM doesn't need or want ->writepage for writeback and is fine with
-> just having ->writepages as long as ->migrate_folio is implemented.
+On Wed, Nov 16, 2022 at 12:09 AM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Tue, Nov 15, 2022 at 06:10:08PM -0800, Vishal Moola (Oracle) wrote:
+> >  {
+> >       struct inode *orig_inode = file_inode(o_filp);
+> >       struct page *pagep[2] = {NULL, NULL};
+> > +     struct folio *folio[2] = {NULL, NULL};
+>
+> I have a feeling that mext_page_double_lock() should also be converted
+> to use folios.  But this makes me nervous:
+>
+>         int blocks_per_page = PAGE_SIZE >> orig_inode->i_blkbits;
+>
+> and I'm not sure what will happen if one or both of the orig_page
+> and donor_page is large -- possibly different sizes of large.
+>
+> Obviously ext4 doesn't allow large folios today, but it would be good to
+> get some reasoning about why this isn't laying a trap for later (or at
+> least assertions that neither folio is large so that there's an obvious
+> scream instead of silent data corruption).
 
-Ok, so here is, (what I think) is the motivation for doing this. 
-Please correct me if this is incorrect... 
-1. writepage is mainly called from pageout, which happens as part of the memory
-   reclaim. Now IIUC from previous discussions [1][2][3], reclaims happens from
-   the tail end of the LRU list which could do an I/O of a single page while 
-   an ongoing writeback was in progress of multiple pages. This disrupts the I/O 
-   pattern to become more random in nature, compared to, if we would have let 
-   writeback/flusher do it's job of writing back dirty pages.
-
-   Also many filesystems behave very differently within their ->writepage calls,
-   e.g. ext4 doesn't actually write in ->writepage for DELAYED blocks.
-
-2. Now the other place from where ->writepage can be called from is, writeout()
-   function, which is a fallback function for migration (fallback_migrate_folio()).
-   fallback_migrate_folio() is called from move_to_new_folio() if ->migrate_folio 
-   is not defined for the FS.
-
-So what you are doing here is removing the ->writepage from address_space
-operations of the filesystems which implements ->writepage using
-block_write_full_page() (i.e. those who uses buffer_heads). This is done for 
-those FS who already have ->migrate_folio() implemented (hence no need of
-->writepage).
-...Now this is also a step towards reducing the callers from kernel which uses
-buffer_heads.
-
-[1]: https://lore.kernel.org/all/1310567487-15367-1-git-send-email-mgorman@suse.de/
-[2]: https://lore.kernel.org/all/20181107063127.3902-2-david@fromorbit.com/
-[3]: https://lore.kernel.org/all/1271117878-19274-1-git-send-email-david@fromorbit.com/
-
-Is above a correct understanding?
-
-> 
-> This series removes all ->writepage instances that use
-> block_write_full_page directly and also have a plain mpage_writepages
-> based ->writepages.
-
-Ok.
-
-
-> 
-> Diffstat:
->  fs/exfat/inode.c   |    9 ++-------
->  fs/ext2/inode.c    |    6 ------
->  fs/fat/inode.c     |    9 ++-------
->  fs/hfs/inode.c     |    2 +-
->  fs/hfsplus/inode.c |    2 +-
->  fs/hpfs/file.c     |    9 ++-------
->  fs/jfs/inode.c     |    7 +------
->  fs/omfs/file.c     |    7 +------
->  fs/udf/inode.c     |    7 +------
->  9 files changed, 11 insertions(+), 47 deletions(-)
+I had thought once mext_page_mkuptodate() and block_commit_write()
+were converted to folios, large folios wouldn't be a problem. I hadn't
+considered
+that the folios may be of different sizes. I can add assertions about both
+folios being large and the same size in v2.
