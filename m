@@ -2,105 +2,117 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B70662DC4F
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Nov 2022 14:10:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD6562DFC6
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Nov 2022 16:26:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234871AbiKQNKP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Nov 2022 08:10:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60176 "EHLO
+        id S234614AbiKQPZg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Nov 2022 10:25:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231911AbiKQNKP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Nov 2022 08:10:15 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67DC16207F
-        for <linux-ext4@vger.kernel.org>; Thu, 17 Nov 2022 05:10:14 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id h132so1800482oif.2
-        for <linux-ext4@vger.kernel.org>; Thu, 17 Nov 2022 05:10:14 -0800 (PST)
+        with ESMTP id S233057AbiKQPZD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Nov 2022 10:25:03 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF937C455
+        for <linux-ext4@vger.kernel.org>; Thu, 17 Nov 2022 07:22:14 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id d123so1579853iof.7
+        for <linux-ext4@vger.kernel.org>; Thu, 17 Nov 2022 07:22:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=LOR6tOZrp0D2QD5xmqX9poJB4IkjPChFJp0U/61A1IM=;
-        b=V6ctnxN3M7Iarjkb1mBa8MfhcBaDRpuTIHvjQqJBJdNb8GsoZdcj342BuO1lsgVirF
-         ZGjjcwuE7+eCKoKQeB4XxrYKZI55bIfD3Qf0qi6CVpkp2IBcdZTF2ntfYkNLp0/Kl+nb
-         TYc1bKjHdpOaJLlpTLiNKSave0gvmT0uY7uqmZd3HMD71kTVZjFO1vq19gSDYHIcJs+F
-         UMjO0ujj+gjd1g9EXff5+rtPIOESXQoAYBEdMv4wEkNftU271FKxD68gRqgU4XJmGeWx
-         1a22REgCoUrwJhfmxmWav+svIRn0gnO5X1zFkHsoSDPyUvzzXZJ6oY3fGgAOS3kKrX37
-         64gw==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0jrJhuhq3KYHNV9wWZHzOxwybZeNy1bqo6hooQqU3yE=;
+        b=NwsQVbItPOz9KbUN8Z1nPovd4MsvYwhUpRm+1LCDaXcVXHvaB6VEAL8QUPLuGU7tvU
+         /oOVp+TB3UXFrbKKVMCWEMbCD0exnaP9c17jhHvT6r5CEEsWeLU/34hoF8LSyYGz8yQ6
+         w4WFFZTmQxqGLvP8lG1iXRP6BvZRXPUloOXROuommGjFty8VruS0RuSNXkXPxkcJj+hg
+         vmomCHsGLM3wjJ8VRG0WCUH33PsA1lhtA3FJTETIpNbrIBn29IqVBarsx/fZo/TFCYpK
+         De4FQEzxKB7vygx9uViMz/f1U1YiCEnTNE5us4G/5eeCgYIweyAx3fOiFBT0XlV+NJh/
+         Sg8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LOR6tOZrp0D2QD5xmqX9poJB4IkjPChFJp0U/61A1IM=;
-        b=lwQRiNkIRBbFSXBUgrjvwywnbo7+u3RZaRckZ222KIvFMWrtxgLh7MdyHqJwhSTDcl
-         R4AtC01kYGK2UE3xEHtP3p0zRq1egWFNxrp6/i5jkw+539i0c4yhRtJwbmVDpc3gGde2
-         Ao8cidvimxNXjBa7J98eTAtS72rEtG+hFgMmEBPDzKRVeLuPlcZ+SUqfw9z6w1KgwqA8
-         t8JjQnUMKn9fPBfKm3LvyYfBUQQKPTbs1Z+pXUFkJfU6j4HDVkVfrTgmzy3Y8zkfQX54
-         Fq5i11uQAUY9xOYQXxW1mRdpLaDeTLL70aPN1B6ZoCEVm6ILRvdwxoV6DcXH+hxCMDOw
-         06rA==
-X-Gm-Message-State: ANoB5pk5t+Ry1FDOnJq/WhUVjaQSZTBFEUE3ZR/Od/+wfg+LGoT/wu8X
-        WmJ3YleMb4p1FF8XZz821iS6tpqxiD7AmHKfgXs=
-X-Google-Smtp-Source: AA0mqf4khaw+bzdj+bPD2C8vqqYbg8AjiVknCN7pwixN9d2XtVrNC2jqPMfofD8BevOb80wc006MOF0kH3NiX0IEke0=
-X-Received: by 2002:a05:6808:2211:b0:354:2c52:51eb with SMTP id
- bd17-20020a056808221100b003542c5251ebmr3771001oib.89.1668690613739; Thu, 17
- Nov 2022 05:10:13 -0800 (PST)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0jrJhuhq3KYHNV9wWZHzOxwybZeNy1bqo6hooQqU3yE=;
+        b=NyjXLzw5rV/vqGGMo5QGsP3P2/GRkJBOD4YpopZLatOu5gJ1fwODFHtV5jeOodkAqM
+         MZCFMx/siril7ii1CQQLSDIdikoVrzgOHTgMEZe8joZg1tEjA/14A6ERkwjmqUuo5v8t
+         Sd5Odt6g/ST801BGeOtsnxWaNrnJSHoSnAcUDePmWENj1ILfNjGBKwzTzj8j60MGsWBu
+         71XbaT6i9KEeSEPm2bRnXNt8mAxzJW2IFcmn5ltfG8Z8zCo76+J3docReJfBfCL9nQmK
+         HbW6capm/gJTwuy8G45jsBBWFJtBevJoqQMCTD9wVLvDCRd5bkRxXI2i27JBzON81bE6
+         oLGA==
+X-Gm-Message-State: ANoB5pmPb4xeEQFff9XBatTezRXSVYgOKl+tAV8JKRAmeFPAdexpct+Q
+        Y+94eGUoTT+8P3o1avs0A2kRixyGfGY=
+X-Google-Smtp-Source: AA0mqf6cj2rR5zJY5S7/cvQIBmmLUestQigj5ovnqZfLDpqrMZvvst+2zMIfegaoXfFWr18e5cMvaA==
+X-Received: by 2002:a5d:9443:0:b0:6cd:c485:2c9e with SMTP id x3-20020a5d9443000000b006cdc4852c9emr1482973ior.138.1668698533761;
+        Thu, 17 Nov 2022 07:22:13 -0800 (PST)
+Received: from localhost.localdomain (h96-61-90-13.cntcnh.broadband.dynamic.tds.net. [96.61.90.13])
+        by smtp.gmail.com with ESMTPSA id y13-20020a92d80d000000b002f8d114ca84sm424084ilm.17.2022.11.17.07.22.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Nov 2022 07:22:13 -0800 (PST)
+From:   Eric Whitney <enwlinux@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, Eric Whitney <enwlinux@gmail.com>
+Subject: [PATCH] ext4: fix delayed allocation bug in ext4_clu_mapped for bigalloc + inline
+Date:   Thu, 17 Nov 2022 10:22:07 -0500
+Message-Id: <20221117152207.2424-1-enwlinux@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Received: by 2002:a05:6358:3801:b0:dd:706e:8c93 with HTTP; Thu, 17 Nov 2022
- 05:10:11 -0800 (PST)
-From:   ryan johnson <bosranjo670@gmail.com>
-Date:   Thu, 17 Nov 2022 05:10:11 -0800
-Message-ID: <CAL-LBhBo9AooKRbmq3oCxUW2uJUZgKtvzQGu8xwe2PihfqFdFg@mail.gmail.com>
-Subject: Good day
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=7.2 required=5.0 tests=ADVANCE_FEE_2_NEW_MONEY,
-        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FREEMAIL_REPLY,LOTS_OF_MONEY,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_MONEY autolearn=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:244 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5459]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [bosranjo670[at]gmail.com]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [bosranjo670[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  1.0 FREEMAIL_REPLY From and body contain different freemails
-        *  3.4 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-        *  2.0 ADVANCE_FEE_2_NEW_MONEY Advance Fee fraud and lots of money
-X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Good day
+When converting files with inline data to extents, delayed allocations
+made on a file system created with both the bigalloc and inline options
+can result in invalid extent status cache content, incorrect reserved
+cluster counts, kernel memory leaks, and potential kernel panics.
 
-I am Mr. Ryan , I am contacting you based on an investment project of
-US$58.7M , so I will be happy to know if you will co operate with me
-for the success of this important project.
+With bigalloc, the code that determines whether a block must be
+delayed allocated searches the extent tree to see if that block maps
+to a previously allocated cluster.  If not, the block is delayed
+allocated, and otherwise, it isn't.  However, if the inline option is
+also used, and if the file containing the block is marked as able to
+store data inline, there isn't a valid extent tree associated with
+the file.  The current code in ext4_clu_mapped() calls
+ext4_find_extent() to search the non-existent tree for a previously
+allocated cluster anyway, which typically finds nothing, as desired.
+However, a side effect of the search can be to cache invalid content
+from the non-existent tree (garbage) in the extent status tree,
+including bogus entries in the pending reservation tree.
 
-If you are ready and willing , kindly inform me so that I will give
-you further details about this.
+To fix this, avoid searching the extent tree when allocating blocks
+for bigalloc + inline files that are being converted from inline to
+extent mapped.
 
-You should reply to me through this email    mr.alfanuru01@gmail.com
+Signed-off-by: Eric Whitney <enwlinux@gmail.com>
+---
+ fs/ext4/extents.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-thanks and waiting to hear from you soon.
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index f1956288307f..a8928d6d47ac 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -5791,6 +5791,14 @@ int ext4_clu_mapped(struct inode *inode, ext4_lblk_t lclu)
+ 	struct ext4_extent *extent;
+ 	ext4_lblk_t first_lblk, first_lclu, last_lclu;
+ 
++	/*
++	 * if data can be stored inline, the logical cluster isn't
++	 * mapped - no physical clusters have been allocated, and the
++	 * file has no extents
++	 */
++	if (ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA))
++		return 0;
++
+ 	/* search for the extent closest to the first block in the cluster */
+ 	path = ext4_find_extent(inode, EXT4_C2B(sbi, lclu), NULL, 0);
+ 	if (IS_ERR(path)) {
+-- 
+2.30.2
 
-Ryan
