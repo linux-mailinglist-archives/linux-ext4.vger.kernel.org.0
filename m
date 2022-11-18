@@ -2,70 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75F7662F2C0
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Nov 2022 11:40:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17F8A62F3D5
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Nov 2022 12:38:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240866AbiKRKkG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 18 Nov 2022 05:40:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60042 "EHLO
+        id S241276AbiKRLha (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 18 Nov 2022 06:37:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbiKRKkF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Nov 2022 05:40:05 -0500
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A541B9DF
-        for <linux-ext4@vger.kernel.org>; Fri, 18 Nov 2022 02:40:03 -0800 (PST)
-Received: by mail-qv1-xf36.google.com with SMTP id j6so3050296qvn.12
-        for <linux-ext4@vger.kernel.org>; Fri, 18 Nov 2022 02:40:03 -0800 (PST)
+        with ESMTP id S241730AbiKRLhT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Nov 2022 06:37:19 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2A6DAE7B
+        for <linux-ext4@vger.kernel.org>; Fri, 18 Nov 2022 03:37:18 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id 130so4611346pfu.8
+        for <linux-ext4@vger.kernel.org>; Fri, 18 Nov 2022 03:37:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20210112.gappssmtp.com; s=20210112;
-        h=to:references:message-id:date:cc:in-reply-to:from:subject
-         :mime-version:content-transfer-encoding:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O556mVNRX4Ifzk9s3lUm/9vXrG/c0w3aNWiePQEwobA=;
-        b=5qYwQzJ1j91596HcGt3FvjI0TlLrxFlr8aeIYfBbiAqA1EeuTS5u783XKlgSUZxgpM
-         hbWFUWIJjuRM9/vh9chYTLslX46CzRY5Bu/dtX1PQ3SLLOtPV5PFGbpRPRv2ZrkmX6LU
-         YRxTrL1Mqeryg/sS2gtlw1vXlMF+U3AS7oqaGng189t89DcGFthjpiMpqp4mlP1FWLXU
-         /GHhp0Abm795FAlvbxmMzSfVHaGZbf6/etclQ2KOI4m10SsdtbXIJAdMUE+Ocf1lbdJv
-         WR32ZMJKc36WBiM/spxRSLvqfIByrQy7tMlxFJUPY2UfcuYs7/ngvtV9kNos0rcIhsed
-         LXjA==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uZiBNoLPXRvZ1XJ2KYx48+OW7RzX0huNQG++aDplHYA=;
+        b=QzIVc7Oym3luFQjnd1GTwO6kPWsKc84wdqmHuU1dftL1HjS2Rxf5rPeg/vw9gEW1Sc
+         BLclygHAIknxKfi1w6bXGRL/OB8XjmxT9i4lcwLDTsADfKYF+5sI0bvEJQmQoZn3n/PX
+         WvwMsBQvtWJS3zeZBW4vE2Rx2IM1kKARaINAGxUyJ682G7nlBLcCUcCWMd34XJ+IZeRj
+         R0LFrT2GW5JIoE1ArQjzWHFwEzybQietrSJnbuhTFagePd+jOElK/bY+LMaCeI9OQavG
+         yjCKA321Sp52xcdTXR54N9E1QmZtr2EE5UmhZoTuSEamh+VFGJ+qFbpZ8vbHy6hWWuKL
+         CbwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:references:message-id:date:cc:in-reply-to:from:subject
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=O556mVNRX4Ifzk9s3lUm/9vXrG/c0w3aNWiePQEwobA=;
-        b=jK7FZAY1WOa4vBiw2e8JYeHpBVlZvsIiXkW4GQJlw0KEzZfkopUl3Ltoqf9nwBn0Cw
-         DU7ah4ZWDqX4Z0/DnWKWbulYSXuuwVxclACbQRqYcC/csits1rVoyI7tZy44I92QwtgE
-         BlYRWzdWAAO7G4EQY8vyC+wsEHElA0X/ZsiGrtH/ciDt3UAy5oh0qnPr1zZnqP8zqZED
-         LvgnomO63E2Nb78/RiU22KX9pPB0ztaJPKwjx90sMdw3v5PoBSz5d8M4n3WkPR4Y5ip8
-         e2EycgWqnchNtkdD2PbV+A2zpblNwaY2UL0C8ZcbdWuMFA8EupcCOxlTj/hGCjc3yD+F
-         craQ==
-X-Gm-Message-State: ANoB5pkcUbuwgXsu4t8iS9aV3QVhoYESGksBERgopXsTOZmGI6sG409q
-        t1k3KGAj0e/TKhIf2YqP4i3hAL8svwURwjVB
-X-Google-Smtp-Source: AA0mqf5qXCwmUe/HLvXEhEaswTEMShj4ak3MFg3yOPHbpKsh2pXtqqJjysMoIn0D53OvSJ+qYMfESg==
-X-Received: by 2002:a05:6214:5d89:b0:4b6:c6ce:f40b with SMTP id mf9-20020a0562145d8900b004b6c6cef40bmr6034245qvb.78.1668768002601;
-        Fri, 18 Nov 2022 02:40:02 -0800 (PST)
-Received: from smtpclient.apple ([12.184.218.19])
-        by smtp.gmail.com with ESMTPSA id bm3-20020a05620a198300b006f474e6a715sm2156270qkb.131.2022.11.18.02.40.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Nov 2022 02:40:02 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (1.0)
-Subject: Re: [RFCv1 03/72] blkmap64_ba: Add common helper for bits size calculation
-From:   Andreas Dilger <adilger@dilger.ca>
-In-Reply-To: <728edcaf0eb7fca7e347183799b5dca743236db0.1667822611.git.ritesh.list@gmail.com>
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uZiBNoLPXRvZ1XJ2KYx48+OW7RzX0huNQG++aDplHYA=;
+        b=yil6rkKYSomkJ9YIrYKCAFo1tvPNfgoL4YqcJ/lA1G6rDg6YKmL4GwoJcFABJNEgOR
+         RGhTKqaw5wFuUrNc5KsRODrKtcP9vpLWhWCWwwlItclvZRz8JYhTrxzS1A8yJyeurIWK
+         POZIWi9B+WzuqbV6ixtc3GduNXIRpZ76N8HlGXc2YSpHva0kr4ELCXU2jCYuXiI8aDOh
+         MKKYxqFoZMfX5MNPyLn8dSRVGy2cM8i0qCfKdLRrm8gsfnNyPkzczOK00R01hxs8QvPS
+         znTF07tp2+rvJg2dZ46IN9GVAhzNxzbGA7C2cgUolsEZ7wFAhJcICEnesO6hqrPt0cDC
+         Hs4Q==
+X-Gm-Message-State: ANoB5pnc7r9GF9BwsFahbhj/I8f8n8ysPT3ptOavfkI8PjzIJGrCGfCb
+        STfFnMM99L91YuRSx71b7Qf8Vp2I1h0=
+X-Google-Smtp-Source: AA0mqf7Q04aTXk3/pxi8LGOBwBRtgZX4YWAfkC7yDAAInLYjZf4OqWlpC+yqvOSNAaM/W9YxA83VUQ==
+X-Received: by 2002:a05:6a00:1893:b0:56b:8282:b165 with SMTP id x19-20020a056a00189300b0056b8282b165mr7483751pfh.69.1668771438069;
+        Fri, 18 Nov 2022 03:37:18 -0800 (PST)
+Received: from localhost ([2406:7400:63:f20b:f6ca:e236:f59f:8c18])
+        by smtp.gmail.com with ESMTPSA id f197-20020a6238ce000000b005629b6a8b53sm3070458pfa.15.2022.11.18.03.37.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Nov 2022 03:37:17 -0800 (PST)
+Date:   Fri, 18 Nov 2022 17:07:11 +0530
+From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+To:     Andreas Dilger <adilger@dilger.ca>
 Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
         Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
         Wang Shilong <wshilong@ddn.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>, Li Xi <lixi@ddn.com>
-Date:   Fri, 18 Nov 2022 04:40:01 -0600
-Message-Id: <83758DE7-4D3D-4AD1-8EC5-5521672072CC@dilger.ca>
-References: <728edcaf0eb7fca7e347183799b5dca743236db0.1667822611.git.ritesh.list@gmail.com>
-To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-X-Mailer: iPhone Mail (19H12)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Subject: Re: [RFCv1 01/72] e2fsck: Fix unbalanced mutex unlock for BOUNCE_MTX
+Message-ID: <20221118113711.qby7gtky5k36f7vd@riteshh-domain>
+References: <febbbd17b3cf4201aaae24e4adb61e4f8a80e9c9.1667822611.git.ritesh.list@gmail.com>
+ <0F4372E0-A232-4DC8-81CE-54D8C0921D1C@dilger.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0F4372E0-A232-4DC8-81CE-54D8C0921D1C@dilger.ca>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,89 +73,47 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Nov 7, 2022, at 06:22, Ritesh Harjani (IBM) <ritesh.list@gmail.com> wrote=
-:
->=20
-> =EF=BB=BFJust a quick common helper for bits size calculation.
->=20
-> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+On 22/11/18 04:34AM, Andreas Dilger wrote:
+> On Nov 7, 2022, at 06:22, Ritesh Harjani (IBM) <ritesh.list@gmail.com> wrote:
+> > 
+> > f_crashdisk test failed with UNIX_IO_FORCE_BOUNCE=yes due to unbalanced
+> > mutex unlock in below path.
+> > 
+> > This patch fixes it.
+> > 
+> > Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> > ---
+> > lib/ext2fs/unix_io.c | 1 -
+> > 1 file changed, 1 deletion(-)
+> > 
+> > diff --git a/lib/ext2fs/unix_io.c b/lib/ext2fs/unix_io.c
+> > index e53db333..5b894826 100644
+> > --- a/lib/ext2fs/unix_io.c
+> > +++ b/lib/ext2fs/unix_io.c
+> > @@ -305,7 +305,6 @@ bounce_read:
+> >    while (size > 0) {
+> >        actual = read(data->dev, data->bounce, align_size);
+> >        if (actual != align_size) {
+> > -            mutex_unlock(data, BOUNCE_MTX);
+> 
+> This patch doesn't show enough context, but AFAIK this is jumping before mutex_down()
+> is called, so this *should* be correct as is?
 
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+Thanks for the review, Andreas.
 
-> ---
-> lib/ext2fs/blkmap64_ba.c | 20 +++++++++++++-------
-> 1 file changed, 13 insertions(+), 7 deletions(-)
->=20
-> diff --git a/lib/ext2fs/blkmap64_ba.c b/lib/ext2fs/blkmap64_ba.c
-> index 5d8f1548..4e7007f0 100644
-> --- a/lib/ext2fs/blkmap64_ba.c
-> +++ b/lib/ext2fs/blkmap64_ba.c
-> @@ -40,6 +40,13 @@ struct ext2fs_ba_private_struct {
->=20
-> typedef struct ext2fs_ba_private_struct *ext2fs_ba_private;
->=20
-> +#define ba_bits_size(start, end) ((((end) - (start)) / 8 + 1))
-> +
-> +static size_t ba_bitmap_size(ext2fs_generic_bitmap_64 bitmap)
-> +{
-> +    return (size_t) ba_bits_size(bitmap->start, bitmap->real_end);
-> +}
-> +
-> static errcode_t ba_alloc_private_data (ext2fs_generic_bitmap_64 bitmap)
-> {
->   ext2fs_ba_private bp;
-> @@ -56,7 +63,7 @@ static errcode_t ba_alloc_private_data (ext2fs_generic_b=
-itmap_64 bitmap)
->   if (retval)
->       return retval;
->=20
-> -    size =3D (size_t) (((bitmap->real_end - bitmap->start) / 8) + 1);
-> +    size =3D ba_bitmap_size(bitmap);
->=20
->   retval =3D ext2fs_get_mem(size, &bp->bitarray);
->   if (retval) {
-> @@ -80,7 +87,7 @@ static errcode_t ba_new_bmap(ext2_filsys fs EXT2FS_ATTR(=
-(unused)),
->       return retval;
->=20
->   bp =3D (ext2fs_ba_private) bitmap->private;
-> -    size =3D (size_t) (((bitmap->real_end - bitmap->start) / 8) + 1);
-> +    size =3D ba_bitmap_size(bitmap);
->   memset(bp->bitarray, 0, size);
->=20
->   return 0;
-> @@ -115,7 +122,7 @@ static errcode_t ba_copy_bmap(ext2fs_generic_bitmap_64=
- src,
->=20
->   dest_bp =3D (ext2fs_ba_private) dest->private;
->=20
-> -    size =3D (size_t) (((src->real_end - src->start) / 8) + 1);
-> +    size =3D ba_bitmap_size(src);
->   memcpy (dest_bp->bitarray, src_bp->bitarray, size);
->=20
->   return 0;
-> @@ -145,8 +152,8 @@ static errcode_t ba_resize_bmap(ext2fs_generic_bitmap_=
-64 bmap,
->       return 0;
->   }
->=20
-> -    size =3D ((bmap->real_end - bmap->start) / 8) + 1;
-> -    new_size =3D ((new_real_end - bmap->start) / 8) + 1;
-> +    size =3D ba_bitmap_size(bmap);
-> +    new_size =3D ba_bits_size(new_real_end, bmap->start);
->=20
->   if (size !=3D new_size) {
->       retval =3D ext2fs_resize_mem(size, new_size, &bp->bitarray);
-> @@ -306,8 +313,7 @@ static void ba_clear_bmap(ext2fs_generic_bitmap_64 bit=
-map)
-> {
->   ext2fs_ba_private bp =3D (ext2fs_ba_private) bitmap->private;
->=20
-> -    memset(bp->bitarray, 0,
-> -           (size_t) (((bitmap->real_end - bitmap->start) / 8) + 1));
-> +    memset(bp->bitarray, 0, ba_bitmap_size(bitmap));
-> }
->=20
-> #ifdef ENABLE_BMAP_STATS
-> --=20
-> 2.37.3
+Yeah, the patch diff above is not sufficient since it doesn't share enuf
+context.
+But essentially when "actual" is not equal to "align_size", then in this if
+condition it goes to label "short_read:", which always goto error_unlock,
+where we anyways call mutex_unlock()
+
+Looking at a lot of labels in this function, this definitely looks like 
+something which can be cleaned up ("raw_read_blk()"). 
+I will add that to my list of todos. 
+
+I have also shared the threadsan warning which detects the unbalanced mutex 
+unlock here [1]
+
+[1]: https://lore.kernel.org/linux-ext4/cover.1667822611.git.ritesh.list@gmail.com/T/#md75b3ccb146e4433653bc2d7dd01329a9757ea26
+
+-ritesh
