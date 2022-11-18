@@ -2,69 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4248A62E729
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Nov 2022 22:42:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E6C762EBBB
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Nov 2022 03:14:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234986AbiKQVma (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Nov 2022 16:42:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55628 "EHLO
+        id S234814AbiKRCOS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Nov 2022 21:14:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234821AbiKQVm2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Nov 2022 16:42:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46AEF697C3
-        for <linux-ext4@vger.kernel.org>; Thu, 17 Nov 2022 13:41:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1668721288;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UuffnjWXo7tMwo00tJbjEU1LHxhg1We6830zDfm1nv8=;
-        b=DIUL0IuDlNddnIFXkE0QyDMQZhbJUYLtHxAbH4DlKcWchvEoC9XlsLcau340162cgqzPdV
-        Akn1/u4Be40L6nhOVr+TNpwb+wnPU66+ulcambjlNYvB9bC8iiT02IBa0+i3oa+qwlWx/J
-        a+LILUWd9oKUE3oIqjimADHeon76Dhg=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-628-2Ct9ZNWvOY2mRvcbD5Qzyg-1; Thu, 17 Nov 2022 16:41:25 -0500
-X-MC-Unique: 2Ct9ZNWvOY2mRvcbD5Qzyg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A8B0329ABA33;
-        Thu, 17 Nov 2022 21:41:24 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 123EF40C6EC3;
-        Thu, 17 Nov 2022 21:41:22 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20221116183900.yzpcymelnnwppoh7@riteshh-domain>
-References: <20221116183900.yzpcymelnnwppoh7@riteshh-domain> <20221113162902.883850-1-hch@lst.de>
-To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Cc:     dhowells@redhat.com, Christoph Hellwig <hch@lst.de>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        Bob Copeland <me@bobcopeland.com>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        jfs-discussion@lists.sourceforge.net,
-        linux-karma-devel@lists.sourceforge.net, linux-mm@kvack.org
-Subject: Re: start removing writepage instances
+        with ESMTP id S230447AbiKRCOR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Nov 2022 21:14:17 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C68716F6;
+        Thu, 17 Nov 2022 18:14:16 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id jn7so1482591plb.13;
+        Thu, 17 Nov 2022 18:14:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lmlhhz9XWW2prk4Er2Fwu9L/09w+F/AZLFvKDDdZ2xU=;
+        b=BhOnf5hYASJ1k2jQ21g03u/O+C5W23GUPfIwZCBYEBwxScirM9HJ+cg9Oxn82HlX+8
+         f69ADnIVv/iQqU+p96aqD6CD5SUmA8BQZMTA5W/CFDaAjSwMDRUC+XGXbcHJpK3Eez4M
+         UrmsJYQsEFG8g7RaO3PcI5gpeFk8VHfNZecc8YrRtI0iBzUTf4iQsWB40D2GFnXJoaSU
+         Pomp9Al/MsmlE7h8/JmAqEr7a7BLL1IwDlxioQos3OOkoB32ZqmiQDgGR4DzPrAvOkFJ
+         9C9jPCw//bCFrh46PhpFvooVeNdosjFT//vFpJKzcez7Qri96ZeKHCbZOb7K3ayPT6zD
+         mMRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lmlhhz9XWW2prk4Er2Fwu9L/09w+F/AZLFvKDDdZ2xU=;
+        b=lG3jPWE8CFE07tNg76MmnDYUjDe2sBsFoDc3MgppxNOvgfuK6lPytJH2KNk1R+fZ3B
+         o7FGjrXpor2Mua9R9VzVJ9/CBtxw1ly0x+9zmaWulhiQRqeyxMg8TvsgK/x0qOx5uRZT
+         1g9TnaIoQuc/QWgN3PBROOqLKPfSuNtmgiPVfELH59wpPvCCHobkwB52aFOLfwqFY8YT
+         k+pFlWdU2VF9dz2yyDTnUjTuI7GCHSt+rAMgiabDBWYCLKPOnKBlIxAzGCrnRnkxTQhY
+         Re+j2N30Kcq0Xf2zNgyjFHd46qENuGE6Zy3Y3kSCiwP6OE4+BUKiluwoZ14WknVh3AW3
+         RaQg==
+X-Gm-Message-State: ANoB5plZzITOLo5FYswxNiPF+WkN8d4HDDdcr3RrEyRggHhkuHsiQQcJ
+        vix8OOeCuns7lIFLVoIV8AY=
+X-Google-Smtp-Source: AA0mqf4IC2hbgO2nlSc/4ATp2d0mvpUbpw/QK0PiKmXONmT9F1FejLlPYTjF7bJJsUTaRws1f3hSIw==
+X-Received: by 2002:a17:90a:d50c:b0:218:722e:cac7 with SMTP id t12-20020a17090ad50c00b00218722ecac7mr5587586pju.47.1668737656225;
+        Thu, 17 Nov 2022 18:14:16 -0800 (PST)
+Received: from fedora.hsd1.ca.comcast.net ([2601:644:8002:1c20::2c6b])
+        by smtp.googlemail.com with ESMTPSA id ip13-20020a17090b314d00b00212cf2fe8c3sm10678445pjb.1.2022.11.17.18.14.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Nov 2022 18:14:15 -0800 (PST)
+From:   "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+To:     linux-mm@kvack.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, akpm@linux-foundation.org,
+        willy@infradead.org, naoya.horiguchi@nec.com, tytso@mit.edu,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Subject: [PATCH v2 0/4] Removing the try_to_release_page() wrapper
+Date:   Thu, 17 Nov 2022 18:14:06 -0800
+Message-Id: <20221118021410.24420-1-vishal.moola@gmail.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4031744.1668721280.1@warthog.procyon.org.uk>
-Date:   Thu, 17 Nov 2022 21:41:20 +0000
-Message-ID: <4031745.1668721280@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,8 +70,29 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Also ->writepage() is called with the page already locked, which is a problem
-if you need to write out a number of surrounding pages with it.
+This patchset replaces the remaining calls of try_to_release_page() with
+the folio equivalent: filemap_release_folio(). This allows us to remove
+the wrapper.
 
-David
+The set passes fstests on ext4 and xfs.
+
+---
+v2:
+  Added VM_BUG_ON_FOLIO to ext4 for catching future data corruption
+
+Vishal Moola (Oracle) (4):
+  ext4: Convert move_extent_per_page() to use folios
+  khugepage: Replace try_to_release_page() with filemap_release_folio()
+  memory-failure: Convert truncate_error_page() to use folio
+  folio-compat: Remove try_to_release_page()
+
+ fs/ext4/move_extent.c   | 52 ++++++++++++++++++++++++-----------------
+ include/linux/pagemap.h |  1 -
+ mm/folio-compat.c       |  6 -----
+ mm/khugepaged.c         | 23 +++++++++---------
+ mm/memory-failure.c     |  5 ++--
+ 5 files changed, 46 insertions(+), 41 deletions(-)
+
+-- 
+2.38.1
 
