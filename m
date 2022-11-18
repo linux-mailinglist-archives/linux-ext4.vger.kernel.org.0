@@ -2,66 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 720B362F671
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Nov 2022 14:40:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3251F62F678
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Nov 2022 14:42:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235182AbiKRNky (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 18 Nov 2022 08:40:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33998 "EHLO
+        id S235301AbiKRNmP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 18 Nov 2022 08:42:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242115AbiKRNkh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Nov 2022 08:40:37 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D986FE62
-        for <linux-ext4@vger.kernel.org>; Fri, 18 Nov 2022 05:40:36 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id t62so5332891oib.12
-        for <linux-ext4@vger.kernel.org>; Fri, 18 Nov 2022 05:40:36 -0800 (PST)
+        with ESMTP id S242226AbiKRNmH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Nov 2022 08:42:07 -0500
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB2776175
+        for <linux-ext4@vger.kernel.org>; Fri, 18 Nov 2022 05:42:06 -0800 (PST)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-13c2cfd1126so5932480fac.10
+        for <linux-ext4@vger.kernel.org>; Fri, 18 Nov 2022 05:42:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dilger-ca.20210112.gappssmtp.com; s=20210112;
         h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
          :from:content-transfer-encoding:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=gfs4Hvhc6PDv9zgalAN6qusgZGl8rFXkaJL8tYQmqWs=;
-        b=pdOozgVgwy1cYjIfYjEhscKFksZb0BqlTGt1XgIJlvnO8HRyYHra1dDJcsc4Z/cDww
-         aORFEUe7XQzpC5fg5V7VTYLnC7ThEXZ+zcovzRgr1jWMl/o+ZTgjZC8hZ+mUkThffuuG
-         VCWEI+k7T9vUtE89ngUjlalxmIHTRA9G0jIfbduTtjK35f3zjkvzsFWPj1BFwhTo/jhV
-         JSWLC+6oHbFCfLcKM1MMxhzztmSRF7kXjF3stwglHOq2Mqk/eFSqasqYRQOs8VAwySQP
-         DqXLUhU7NjDQDC7RkF5Xv4xn5MMsiZmIxFS4bJ64T6ooAnKY54S3dlOome6s+gR+06nl
-         5pnA==
+        bh=hvLcHjOZ0Z9OY9sq4MbAn3vaDCHpHH7Daxh0EhphA3w=;
+        b=nSUbDFW5czDu4UHRWS+aFUOcilc6WJpWSOR+I6anDHoDEfCdm2cc8JCXVqNFAPXe9A
+         IQRSqf729VIeyv0xjGGCh1hXESQ1nzCD/m04iBQACRE4/EC6RdNOryBk2PnN68staAXH
+         PM62nDs/L36Ain8dw3ztyF2I6DB+LBDoztpqcNf+2IayIxVrgCS+BFpoLi4DGTdcU3ff
+         UQjz+tkwkX2Z88u/EBl/VL2TWCm7dQD4LgAuAdLbq2AZKDs+6M///+QHum9slcmJdIDY
+         QEYojEpDmbBOZNLf1HinZMLt2QDVCOEMLXAIuKDzJeWE2WYZgoQAj7KKxEXqr4Qj5jrt
+         b28g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
          :from:content-transfer-encoding:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gfs4Hvhc6PDv9zgalAN6qusgZGl8rFXkaJL8tYQmqWs=;
-        b=iR53wztP96VAwZ4sp6uritxgOhgUhli7z22af/uviXuvtLD58Ml+ac5vslN0KtJZu4
-         RkVpT/mJbGnSGKaDBlaMwsj1I+AMerpTdtDpJGky2wa0dhE7PfAXSJ4GgzCdTqdFgD4O
-         LXC7LbwNKDrgflRnqeO0V/GKDYkRCb+Kdc86j/OtmGMConQTpOxU7I3lbAFKZqUsY4Vh
-         ZAWFpDp5pom9WDtYs7UyDvi0qPUKpOTGbKY9v2n13Cf7bm/6SZZpDsaAkYnpB2R+wvvd
-         TXwRMON+PTHIvNdJPYKuu5laqAnw/ORwF6OoI6GJcZcmAj5xFDpnTNpBGHaHidtirNHe
-         9cOA==
-X-Gm-Message-State: ANoB5pktIgZwxDer2BknfA9ZelnIRcmGMiLjxnCZUtHOp+yMUrU0nztr
-        RpZBenxpNq+/2VprrplIDv58Sye3XmAr1kY6
-X-Google-Smtp-Source: AA0mqf7RLypoJpeLGJDww6uKJXqGbSdxpIBSaFNhnUG3PjnXqq3dPeQQ2F5datw5naAXXwQjwbVi6g==
-X-Received: by 2002:aca:1704:0:b0:359:e535:84a2 with SMTP id j4-20020aca1704000000b00359e53584a2mr3526944oii.59.1668778835852;
-        Fri, 18 Nov 2022 05:40:35 -0800 (PST)
+        bh=hvLcHjOZ0Z9OY9sq4MbAn3vaDCHpHH7Daxh0EhphA3w=;
+        b=24OZqfruBcAvfWaZ3mF9A3K1DKMeUuqfA4K5omqHnMa045gF9+ohOOf91f5h3N199p
+         XJJ33EVO92HniTnNHqvKowr67AK1Ks7Aw9A1kpZhge0NkuT5Oy7NhACPrNvBZre6iYkl
+         Y7K+YCFGrKhD6vAmxS+dkFpR++ZkMF4lmSBlSFnAGFu/gGKaBAik32EOIbfrR07MfnZt
+         6UL8tmPoCNf+9KycQXSJHBtB6rU9MpgMZx8mW5iHWFZxWC1L5d5C9G0m/iuPXnYU2QId
+         H1MqfZmT4CDZkTjKEeFAIOXACte0LAUSqfOeqvSeEFtQ10SOp4uWxc+dkfWvPMCIWEzi
+         SCAA==
+X-Gm-Message-State: ANoB5pnp3hg/8de7bWKZ+VTYOipMAqCC5IHYKDvJCfrqWcPkojemsLLg
+        m+AVtpsOpeyT+b1+WyJsv4u2zOzmmtlyp/Pq
+X-Google-Smtp-Source: AA0mqf5+Uji90HxM8lm4Mrt2QkLw0+WMDFsuqp4V4tBenYJ0sqghe5HEE6RVeWeHu6vHPayYvai4zQ==
+X-Received: by 2002:a05:6870:b48a:b0:136:d212:2e82 with SMTP id y10-20020a056870b48a00b00136d2122e82mr3921777oap.72.1668778925747;
+        Fri, 18 Nov 2022 05:42:05 -0800 (PST)
 Received: from smtpclient.apple ([205.169.26.81])
-        by smtp.gmail.com with ESMTPSA id e35-20020a05687023a300b0013297705e5dsm1992063oap.28.2022.11.18.05.40.35
+        by smtp.gmail.com with ESMTPSA id bg34-20020a05680817a200b003549db40f38sm1413429oib.46.2022.11.18.05.42.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Nov 2022 05:40:35 -0800 (PST)
+        Fri, 18 Nov 2022 05:42:05 -0800 (PST)
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 From:   Andreas Dilger <adilger@dilger.ca>
 Mime-Version: 1.0 (1.0)
-Subject: Re: [RFCv1 10/72] libext2fs: merge icounts after thread finishes
-Date:   Fri, 18 Nov 2022 07:40:34 -0600
-Message-Id: <FF80E002-C71D-437A-86F1-EA4FFB1C486C@dilger.ca>
-References: <817a806b1c7ed161cb76da5f163a9aade60c8dfd.1667822611.git.ritesh.list@gmail.com>
+Subject: Re: [RFCv1 11/72] libext2fs: merge quota context after threads finish
+Date:   Fri, 18 Nov 2022 07:42:04 -0600
+Message-Id: <7B432201-71B8-4569-BAD3-805477B4D226@dilger.ca>
+References: <a318a46cc1439f32c0fb795d8aa0a435bcfb7e04.1667822611.git.ritesh.list@gmail.com>
 Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
         Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
         Wang Shilong <wshilong@ddn.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>, Li Xi <lixi@ddn.com>
-In-Reply-To: <817a806b1c7ed161cb76da5f163a9aade60c8dfd.1667822611.git.ritesh.list@gmail.com>
+In-Reply-To: <a318a46cc1439f32c0fb795d8aa0a435bcfb7e04.1667822611.git.ritesh.list@gmail.com>
 To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
 X-Mailer: iPhone Mail (19H12)
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -73,15 +73,14 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-MOn Nov 7, 2022, at 06:23, Ritesh Harjani (IBM) <ritesh.list@gmail.com> wrot=
-e:
+On Nov 7, 2022, at 06:23, Ritesh Harjani (IBM) <ritesh.list@gmail.com> wrote=
+:
 >=20
-> =EF=BB=BFFrom: Li Xi <lixi@ddn.com>
+> =EF=BB=BFFrom: Wang Shilong <wshilong@ddn.com>
 >=20
-> Merge inode_count and inode_link_info properly after
-> threads finish.
+> Every threads calculate its own quota accounting,
+> merge them after threads finish.
 >=20
-> Signed-off-by: Li Xi <lixi@ddn.com>
 > Signed-off-by: Wang Shilong <wshilong@ddn.com>
 > [Note: splitted the patch to seperate libext2fs changes from e2fsck]
 > Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
@@ -89,148 +88,86 @@ e:
 Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 
 > ---
-> lib/ext2fs/ext2fs.h |   1 +
-> lib/ext2fs/icount.c | 103 ++++++++++++++++++++++++++++++++++++++++++++
-> 2 files changed, 104 insertions(+)
+> lib/support/mkquota.c | 39 +++++++++++++++++++++++++++++++++++++++
+> lib/support/quotaio.h |  3 +++
+> 2 files changed, 42 insertions(+)
 >=20
-> diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
-> index 54aed5d1..139a25fc 100644
-> --- a/lib/ext2fs/ext2fs.h
-> +++ b/lib/ext2fs/ext2fs.h
-> @@ -1546,6 +1546,7 @@ extern errcode_t ext2fs_icount_decrement(ext2_icount=
-_t icount, ext2_ino_t ino,
->                     __u16 *ret);
-> extern errcode_t ext2fs_icount_store(ext2_icount_t icount, ext2_ino_t ino,=
-
->                     __u16 count);
-> +extern errcode_t ext2fs_icount_merge(ext2_icount_t src, ext2_icount_t des=
-t);
-> extern ext2_ino_t ext2fs_get_icount_size(ext2_icount_t icount);
-> errcode_t ext2fs_icount_validate(ext2_icount_t icount, FILE *);
->=20
-> diff --git a/lib/ext2fs/icount.c b/lib/ext2fs/icount.c
-> index 888a90b2..766eccca 100644
-> --- a/lib/ext2fs/icount.c
-> +++ b/lib/ext2fs/icount.c
-> @@ -13,6 +13,7 @@
-> #if HAVE_UNISTD_H
-> #include <unistd.h>
-> #endif
-> +#include <assert.h>
-> #include <string.h>
-> #include <stdio.h>
-> #include <sys/stat.h>
-> @@ -701,6 +702,108 @@ errcode_t ext2fs_icount_store(ext2_icount_t icount, e=
-xt2_ino_t ino,
->    return 0;
+> diff --git a/lib/support/mkquota.c b/lib/support/mkquota.c
+> index 9339c994..ce1ab4cd 100644
+> --- a/lib/support/mkquota.c
+> +++ b/lib/support/mkquota.c
+> @@ -618,6 +618,45 @@ out:
+>    return err;
 > }
 >=20
-> +errcode_t ext2fs_icount_merge_full_map(ext2_icount_t src, ext2_icount_t d=
-est)
+> +static errcode_t merge_usage(dict_t *dest, dict_t *src)
 > +{
-> +    /* TODO: add the support for full map */
-> +    return EOPNOTSUPP;
-> +}
+> +    dnode_t *n;
+> +    struct dquot *src_dq, *dest_dq;
 > +
-> +errcode_t ext2fs_icount_merge_el(ext2_icount_t src, ext2_icount_t dest)
-> +{
-> +    int             src_count =3D src->count;
-> +    int             dest_count =3D dest->count;
-> +    int             size =3D src_count + dest_count;
-> +    int             size_entry =3D sizeof(struct ext2_icount_el);
-> +    struct ext2_icount_el    *array;
-> +    struct ext2_icount_el    *array_ptr;
-> +    struct ext2_icount_el    *src_array =3D src->list;
-> +    struct ext2_icount_el    *dest_array =3D dest->list;
-> +    int             src_index =3D 0;
-> +    int             dest_index =3D 0;
-> +    errcode_t         retval;
-> +
-> +    if (src_count =3D=3D 0)
-> +        return 0;
-> +
-> +    retval =3D ext2fs_get_array(size, size_entry, &array);
-> +    if (retval)
-> +        return retval;
-> +
-> +    array_ptr =3D array;
-> +    /*
-> +     * This can be improved by binary search and memcpy, but codes
-> +     * would be more complex. And if number of bad blocks is small,
-> +     * the optimization won't improve performance a lot.
-> +     */
-> +    while (src_index < src_count || dest_index < dest_count) {
-> +        if (src_index >=3D src_count) {
-> +            memcpy(array_ptr, &dest_array[dest_index],
-> +                   (dest_count - dest_index) * size_entry);
-> +            break;
-> +        }
-> +        if (dest_index >=3D dest_count) {
-> +            memcpy(array_ptr, &src_array[src_index],
-> +                   (src_count - src_index) * size_entry);
-> +            break;
-> +        }
-> +        if (src_array[src_index].ino < dest_array[dest_index].ino) {
-> +            *array_ptr =3D src_array[src_index];
-> +            src_index++;
-> +        } else {
-> +            assert(src_array[src_index].ino >
-> +                   dest_array[dest_index].ino);
-> +            *array_ptr =3D dest_array[dest_index];
-> +            dest_index++;
-> +        }
-> +        array_ptr++;
+> +    for (n =3D dict_first(src); n; n =3D dict_next(src, n)) {
+> +        src_dq =3D dnode_get(n);
+> +        if (!src_dq)
+> +            continue;
+> +        dest_dq =3D get_dq(dest, src_dq->dq_id);
+> +        if (dest_dq =3D=3D NULL)
+> +            return -ENOMEM;
+> +        dest_dq->dq_dqb.dqb_curspace +=3D src_dq->dq_dqb.dqb_curspace;
+> +        dest_dq->dq_dqb.dqb_curinodes +=3D src_dq->dq_dqb.dqb_curinodes;
 > +    }
 > +
-> +    ext2fs_free_mem(&dest->list);
-> +    dest->list =3D array;
-> +    dest->count =3D src_count + dest_count;
-> +    dest->size =3D size;
-> +    dest->last_lookup =3D NULL;
 > +    return 0;
 > +}
 > +
-> +errcode_t ext2fs_icount_merge(ext2_icount_t src, ext2_icount_t dest)
+> +
+> +errcode_t quota_merge_and_update_usage(quota_ctx_t dest_qctx,
+> +                    quota_ctx_t src_qctx)
 > +{
-> +    errcode_t    retval;
+> +    dict_t *dict;
+> +    enum quota_type    qtype;
+> +    errcode_t retval =3D 0;
 > +
-> +    if (src->fullmap && !dest->fullmap)
-> +        return EINVAL;
-> +
-> +    if (!src->fullmap && dest->fullmap)
-> +        return EINVAL;
-> +
-> +    if (src->multiple && !dest->multiple)
-> +        return EINVAL;
-> +
-> +    if (!src->multiple && dest->multiple)
-> +        return EINVAL;
-> +
-> +    if (src->fullmap)
-> +        return ext2fs_icount_merge_full_map(src, dest);
-> +
-> +    retval =3D ext2fs_merge_bitmap(src->single, dest->single, NULL,
-> +                     NULL);
-> +    if (retval)
-> +        return retval;
-> +
-> +    if (src->multiple) {
-> +        retval =3D ext2fs_merge_bitmap(src->multiple, dest->multiple,
-> +                         NULL, NULL);
+> +    for (qtype =3D 0; qtype < MAXQUOTAS; qtype++) {
+> +        dict =3D src_qctx->quota_dict[qtype];
+> +        if (!dict)
+> +            continue;
+> +        retval =3D merge_usage(dest_qctx->quota_dict[qtype], dict);
 > +        if (retval)
-> +            return retval;
+> +            break;
 > +    }
 > +
-> +    retval =3D ext2fs_icount_merge_el(src, dest);
-> +    if (retval)
-> +        return retval;
-> +
-> +    return 0;
+> +    return retval;
 > +}
 > +
-> ext2_ino_t ext2fs_get_icount_size(ext2_icount_t icount)
-> {
->    if (!icount || icount->magic !=3D EXT2_ET_MAGIC_ICOUNT)
+> /*
+>  * Compares the measured quota in qctx->quota_dict with that in the quota i=
+node
+>  * on disk and updates the limits in qctx->quota_dict. 'usage_inconsistent=
+' is
+> diff --git a/lib/support/quotaio.h b/lib/support/quotaio.h
+> index 84fac35d..240a0762 100644
+> --- a/lib/support/quotaio.h
+> +++ b/lib/support/quotaio.h
+> @@ -40,6 +40,7 @@
+> #include "ext2fs/ext2_fs.h"
+> #include "ext2fs/ext2fs.h"
+> #include "dqblk_v2.h"
+> +#include "support/dict.h"
+>=20
+> typedef int64_t qsize_t;    /* Type in which we store size limitations */
+>=20
+> @@ -236,6 +237,8 @@ int quota_file_exists(ext2_filsys fs, enum quota_type q=
+type);
+> void quota_set_sb_inum(ext2_filsys fs, ext2_ino_t ino, enum quota_type qty=
+pe);
+> errcode_t quota_compare_and_update(quota_ctx_t qctx, enum quota_type qtype=
+,
+>                   int *usage_inconsistent);
+> +errcode_t quota_merge_and_update_usage(quota_ctx_t dest_qctx,
+> +                    quota_ctx_t src_qctx);
+> int parse_quota_opts(const char *opts, int (*func)(char *));
+>=20
+> /* parse_qtype.c */
 > --=20
 > 2.37.3
 >=20
