@@ -2,66 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA2562ECD9
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Nov 2022 05:27:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 476B762ED02
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Nov 2022 06:02:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240988AbiKRE1H (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Nov 2022 23:27:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34634 "EHLO
+        id S229476AbiKRFCy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 18 Nov 2022 00:02:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240878AbiKRE1A (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Nov 2022 23:27:00 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D8617C02F
-        for <linux-ext4@vger.kernel.org>; Thu, 17 Nov 2022 20:26:59 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id b3so6331197lfv.2
-        for <linux-ext4@vger.kernel.org>; Thu, 17 Nov 2022 20:26:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ANMjB79Hor/hX7/LfVpi04nyIKj9faCqLB/7gmJOf1E=;
-        b=ZlXMK5P2BDcYxpmLMhrgf4Y8MO0Pql3SbQ+2DFo84VrrkAxtlAx6XpMdtkAClqhO46
-         7yTu6vaqE5Ao7Yg420ER+UatcmRycrP3uPJ7mSElX6wESaLTixSVVabyU10p+SbX1OaB
-         /yeAzq3uYXTtX1q90pu+bapJD6xbQi6/LhKV+eKNTuzFu8DdsVb2hxoDsUFc90ci17ln
-         CKbao+4nUuJw4WqmOGz7EUQ4OsP46D4S10IQwkRFO4cjknKueMSGgMXAVktmCpOX2KhW
-         eRQaSYENnTHmyp52BrCJEKG9R3kn49Olaj+x9rP5cC0RCJn8MNt142Ap9fW819uUCw6s
-         MZIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ANMjB79Hor/hX7/LfVpi04nyIKj9faCqLB/7gmJOf1E=;
-        b=Tx/Gj1emeLj5vcSIGfJvqibYLZq27ikS5i6agzHFdZQV2eq7QSHzlL+V/byiJmpQJo
-         8W70F9LgR8IkUHsuzwP+zA3hZhWnNG434t5s1YMSL/vcirHOp/p0nu3ld3uK3V+TEFAB
-         cHCGwMrlq1jT9OlrsLyy4Q+ZNAIYokk7QsVIerbduP/NIWaBSVZQJTg4xXeGz9SGGPda
-         3s7u2YXX5jVhXquuXtb7R0Pe26DAsJ98gLHxrGcqtz2Bn4QlhBqfksVfFq3Bm8pzaSqJ
-         Te1lEUHXFi3V2nbG52EjVIBCuR1wv93+HYavMQpYPkv3kv0jpwlNHsLZ89yF6flE7kPH
-         xWeQ==
-X-Gm-Message-State: ANoB5pne7GRpX+79LTNYwLRBHHaLh+Wo6GZ/qQO1Cj7+JscEiXYmdvbU
-        XTjPVzaCgeWZXE/tGU1Mp2/VFNwA2lKFHLWxiWJCbw==
-X-Google-Smtp-Source: AA0mqf6W91cYEh0Bc43CazWSbPvfoEzQXALtufiM4OrZ3vzgn00HMZpFEts7hzrIUeZQ8bASxtsHGciLNGJX4fPwLmk=
-X-Received: by 2002:ac2:4341:0:b0:4b1:215b:167d with SMTP id
- o1-20020ac24341000000b004b1215b167dmr1963634lfl.558.1668745617631; Thu, 17
- Nov 2022 20:26:57 -0800 (PST)
-MIME-Version: 1.0
-References: <20221118025036.3380705-1-yebin@huaweicloud.com>
-In-Reply-To: <20221118025036.3380705-1-yebin@huaweicloud.com>
-From:   Jun Nie <jun.nie@linaro.org>
-Date:   Fri, 18 Nov 2022 12:26:49 +0800
-Message-ID: <CABymUCN+NSzkunRqFs8LgqjT6vXz-gyyZYn0hQWf8V9kmcO0Hw@mail.gmail.com>
-Subject: Re: [PATCH] ext4: fix kernel BUG in 'ext4_write_inline_data_end()'
+        with ESMTP id S229441AbiKRFCx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Nov 2022 00:02:53 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 771EF5D68D;
+        Thu, 17 Nov 2022 21:02:52 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1466862324;
+        Fri, 18 Nov 2022 05:02:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34AE9C433C1;
+        Fri, 18 Nov 2022 05:02:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668747771;
+        bh=ZX8ld+jC7zyJN8RKp/NiKUjeKsrkrw250KJAa+bb4Do=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dpkGOrWvYVl4BYRMg3Fofp4yF1iki0Q8LvEYTsJyRroS4aT6ppWuq6UG7EygoGxE4
+         y73ax9bXXnQqp5wzNuWIN4F80b+ad77Jg/TFD++ST+VliFkBfGAKue600y04bUsKEI
+         oj6HDahU4tHlW1LaKfEleJ59lUXuvs8tcpGBGh9ackLQLMbagYndoMPv+BseB+KM5z
+         iPzlicMd2mR2eSa8tCuadOnOjEZVpLZfdZUC3THWSnDdcbSC7hjw1tQ32XVW4RQPe9
+         o5diBg2D/CBBWT+gqWE1sKhKI8l9f6MMQRbfS5+AusB7Gojc5/IELFZDVGacTW8vIX
+         ItA1zlbNqfeZA==
+Date:   Thu, 17 Nov 2022 21:02:49 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
 To:     Ye Bin <yebin@huaweicloud.com>
 Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
         jack@suse.cz, Ye Bin <yebin10@huawei.com>,
-        syzbot+4faa160fa96bfba639f8@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        syzbot+57b25da729eb0b88177d@syzkaller.appspotmail.com
+Subject: Re: [PATCH] ext4: fix uninit-value in 'ext4_evict_inode'
+Message-ID: <Y3cR+Rdr69eMEpjn@sol.localdomain>
+References: <20221117073603.2598882-1-yebin@huaweicloud.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221117073603.2598882-1-yebin@huaweicloud.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,120 +54,92 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Ye Bin <yebin@huaweicloud.com> =E4=BA=8E2022=E5=B9=B411=E6=9C=8818=E6=97=A5=
-=E5=91=A8=E4=BA=94 10:30=E5=86=99=E9=81=93=EF=BC=9A
->
+On Thu, Nov 17, 2022 at 03:36:03PM +0800, Ye Bin wrote:
 > From: Ye Bin <yebin10@huawei.com>
->
-> Syzbot report follow issue:
-> ------------[ cut here ]------------
-> kernel BUG at fs/ext4/inline.c:227!
-> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-> CPU: 1 PID: 3629 Comm: syz-executor212 Not tainted 6.1.0-rc5-syzkaller-00=
-018-g59d0d52c30d4 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
-oogle 10/26/2022
-> RIP: 0010:ext4_write_inline_data+0x344/0x3e0 fs/ext4/inline.c:227
-> RSP: 0018:ffffc90003b3f368 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: ffff8880704e16c0 RCX: 0000000000000000
-> RDX: ffff888021763a80 RSI: ffffffff821e31a4 RDI: 0000000000000006
-> RBP: 000000000006818e R08: 0000000000000006 R09: 0000000000068199
-> R10: 0000000000000079 R11: 0000000000000000 R12: 000000000000000b
-> R13: 0000000000068199 R14: ffffc90003b3f408 R15: ffff8880704e1c82
-> FS:  000055555723e3c0(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000=
-000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007fffe8ac9080 CR3: 0000000079f81000 CR4: 0000000000350ee0
-> Call Trace:
->  <TASK>
->  ext4_write_inline_data_end+0x2a3/0x12f0 fs/ext4/inline.c:768
->  ext4_write_end+0x242/0xdd0 fs/ext4/inode.c:1313
->  ext4_da_write_end+0x3ed/0xa30 fs/ext4/inode.c:3063
->  generic_perform_write+0x316/0x570 mm/filemap.c:3764
->  ext4_buffered_write_iter+0x15b/0x460 fs/ext4/file.c:285
->  ext4_file_write_iter+0x8bc/0x16e0 fs/ext4/file.c:700
->  call_write_iter include/linux/fs.h:2191 [inline]
->  do_iter_readv_writev+0x20b/0x3b0 fs/read_write.c:735
->  do_iter_write+0x182/0x700 fs/read_write.c:861
->  vfs_iter_write+0x74/0xa0 fs/read_write.c:902
->  iter_file_splice_write+0x745/0xc90 fs/splice.c:686
->  do_splice_from fs/splice.c:764 [inline]
->  direct_splice_actor+0x114/0x180 fs/splice.c:931
->  splice_direct_to_actor+0x335/0x8a0 fs/splice.c:886
->  do_splice_direct+0x1ab/0x280 fs/splice.c:974
->  do_sendfile+0xb19/0x1270 fs/read_write.c:1255
->  __do_sys_sendfile64 fs/read_write.c:1323 [inline]
->  __se_sys_sendfile64 fs/read_write.c:1309 [inline]
->  __x64_sys_sendfile64+0x1d0/0x210 fs/read_write.c:1309
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> ---[ end trace 0000000000000000 ]---
->
-> Above issue may happens as follows:
-> ext4_da_write_begin
->   ext4_da_write_inline_data_begin
->     ext4_da_convert_inline_data_to_extent
->       ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
-> ext4_da_write_end
->
-> ext4_run_li_request
->   ext4_mb_prefetch
->     ext4_read_block_bitmap_nowait
->       ext4_validate_block_bitmap
->         ext4_mark_group_bitmap_corrupted(sb, block_group, EXT4_GROUP_INFO=
-_BBITMAP_CORRUPT)
->          percpu_counter_sub(&sbi->s_freeclusters_counter,grp->bb_free);
->           -> sbi->s_freeclusters_counter become zero
-> ext4_da_write_begin
->   if (ext4_nonda_switch(inode->i_sb)) -> As freeclusters_counter is zero =
-will return true
->     *fsdata =3D (void *)FALL_BACK_TO_NONDELALLOC;
->     ext4_write_begin
-> ext4_da_write_end
->   if (write_mode =3D=3D FALL_BACK_TO_NONDELALLOC)
->     ext4_write_end
->       if (inline_data)
->         ext4_write_inline_data_end
->           ext4_write_inline_data
->             BUG_ON(pos + len > EXT4_I(inode)->i_inline_size);
->            -> As inode is already convert to extent, so 'pos + len' > inl=
-ine_size
->            -> then trigger BUG.
->
-> To solve above issue, there's need to judge inode if has EXT4_STATE_MAY_I=
-NLINE_DATA
-> flag in 'ext4_write_end()'. 'ext4_has_inline_data()' flag only cleared af=
-ter do
-> write back, EXT4_STATE_MAY_INLINE_DATA flag indicate that inode has inlin=
-e data,
-> so use this flag in 'ext4_write_end()' is suitable.
->
-> Fixes:f19d5870cbf7("ext4: add normal write support for inline data")
-> Reported-by: syzbot+4faa160fa96bfba639f8@syzkaller.appspotmail.com
-> Reported-by: Jun Nie <jun.nie@linaro.org>
+> 
+> Syzbot found the following issue:
+> =====================================================
+> BUG: KMSAN: uninit-value in ext4_evict_inode+0xdd/0x26b0 fs/ext4/inode.c:180
+>  ext4_evict_inode+0xdd/0x26b0 fs/ext4/inode.c:180
+>  evict+0x365/0x9a0 fs/inode.c:664
+>  iput_final fs/inode.c:1747 [inline]
+>  iput+0x985/0xdd0 fs/inode.c:1773
+>  __ext4_new_inode+0xe54/0x7ec0 fs/ext4/ialloc.c:1361
+>  ext4_mknod+0x376/0x840 fs/ext4/namei.c:2844
+>  vfs_mknod+0x79d/0x830 fs/namei.c:3914
+>  do_mknodat+0x47d/0xaa0
+>  __do_sys_mknodat fs/namei.c:3992 [inline]
+>  __se_sys_mknodat fs/namei.c:3989 [inline]
+>  __ia32_sys_mknodat+0xeb/0x150 fs/namei.c:3989
+>  do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+>  __do_fast_syscall_32+0xa2/0x100 arch/x86/entry/common.c:178
+>  do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
+>  do_SYSENTER_32+0x1b/0x20 arch/x86/entry/common.c:246
+>  entry_SYSENTER_compat_after_hwframe+0x70/0x82
+> 
+> Uninit was created at:
+>  __alloc_pages+0x9f1/0xe80 mm/page_alloc.c:5578
+>  alloc_pages+0xaae/0xd80 mm/mempolicy.c:2285
+>  alloc_slab_page mm/slub.c:1794 [inline]
+>  allocate_slab+0x1b5/0x1010 mm/slub.c:1939
+>  new_slab mm/slub.c:1992 [inline]
+>  ___slab_alloc+0x10c3/0x2d60 mm/slub.c:3180
+>  __slab_alloc mm/slub.c:3279 [inline]
+>  slab_alloc_node mm/slub.c:3364 [inline]
+>  slab_alloc mm/slub.c:3406 [inline]
+>  __kmem_cache_alloc_lru mm/slub.c:3413 [inline]
+>  kmem_cache_alloc_lru+0x6f3/0xb30 mm/slub.c:3429
+>  alloc_inode_sb include/linux/fs.h:3117 [inline]
+>  ext4_alloc_inode+0x5f/0x860 fs/ext4/super.c:1321
+>  alloc_inode+0x83/0x440 fs/inode.c:259
+>  new_inode_pseudo fs/inode.c:1018 [inline]
+>  new_inode+0x3b/0x430 fs/inode.c:1046
+>  __ext4_new_inode+0x2a7/0x7ec0 fs/ext4/ialloc.c:959
+>  ext4_mkdir+0x4d5/0x1560 fs/ext4/namei.c:2992
+>  vfs_mkdir+0x62a/0x870 fs/namei.c:4035
+>  do_mkdirat+0x466/0x7b0 fs/namei.c:4060
+>  __do_sys_mkdirat fs/namei.c:4075 [inline]
+>  __se_sys_mkdirat fs/namei.c:4073 [inline]
+>  __ia32_sys_mkdirat+0xc4/0x120 fs/namei.c:4073
+>  do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+>  __do_fast_syscall_32+0xa2/0x100 arch/x86/entry/common.c:178
+>  do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
+>  do_SYSENTER_32+0x1b/0x20 arch/x86/entry/common.c:246
+>  entry_SYSENTER_compat_after_hwframe+0x70/0x82
+> 
+> CPU: 1 PID: 4625 Comm: syz-executor.2 Not tainted 6.1.0-rc4-syzkaller-62821-gcb231e2f67ec #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+> =====================================================
+> 
+> Now, 'ext4_alloc_inode()' didn't init 'ei->i_flags'. If new inode failed
+> before set 'ei->i_flags' in '__ext4_new_inode()', then do 'iput()'. As after
+> 6bc0d63dad7f commit will access 'ei->i_flags' in 'ext4_evict_inode()' which
+> will lead to access uninit-value.
+> To solve above issue just init 'ei->i_flags' in 'ext4_alloc_inode()'.
+> 
+> Reported-by: syzbot+57b25da729eb0b88177d@syzkaller.appspotmail.com
+> Fixes:6bc0d63dad7f("ext4: remove EA inode entry from mbcache on inode eviction")
 > Signed-off-by: Ye Bin <yebin10@huawei.com>
 > ---
->  fs/ext4/inode.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index fca47470c85a..89404d1aa1d5 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -1309,7 +1309,7 @@ static int ext4_write_end(struct file *file,
->
->         trace_ext4_write_end(inode, pos, len, copied);
->
-> -       if (ext4_has_inline_data(inode))
-> +       if (ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA))
->                 return ext4_write_inline_data_end(inode, pos, len, copied=
-, page);
->
->         copied =3D block_write_end(file, mapping, pos, len, copied, page,=
- fsdata);
-> --
-> 2.31.1
->
+>  fs/ext4/super.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index ae433e1337ed..cd2590489392 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -1323,6 +1323,7 @@ static struct inode *ext4_alloc_inode(struct super_block *sb)
+>  		return NULL;
+>  
+>  	inode_set_iversion(&ei->vfs_inode, 1);
+> +	ei->i_flags = 0;
+>  	spin_lock_init(&ei->i_raw_lock);
+>  	INIT_LIST_HEAD(&ei->i_prealloc_list);
+>  	atomic_set(&ei->i_prealloc_active, 0);
 
-Acked-by: Jun Nie <jun.nie@linaro.org>
+Reviewed-by: Eric Biggers <ebiggers@google.com>
+
+I'm seeing this when running xfstests on a kernel with KMSAN enabled, so it
+would be nice to get this fixed.
+
+- Eric
