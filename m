@@ -2,194 +2,404 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF58D630BF0
-	for <lists+linux-ext4@lfdr.de>; Sat, 19 Nov 2022 05:50:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80665630BFA
+	for <lists+linux-ext4@lfdr.de>; Sat, 19 Nov 2022 06:02:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230058AbiKSEun (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 18 Nov 2022 23:50:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58070 "EHLO
+        id S231189AbiKSFCj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 19 Nov 2022 00:02:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbiKSEul (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Nov 2022 23:50:41 -0500
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7335BB7018
-        for <linux-ext4@vger.kernel.org>; Fri, 18 Nov 2022 20:50:40 -0800 (PST)
-Received: by mail-io1-f72.google.com with SMTP id x23-20020a6b6a17000000b006d9ca4e35edso3575573iog.9
-        for <linux-ext4@vger.kernel.org>; Fri, 18 Nov 2022 20:50:40 -0800 (PST)
+        with ESMTP id S229878AbiKSFCh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 19 Nov 2022 00:02:37 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 071A4BB9D8
+        for <linux-ext4@vger.kernel.org>; Fri, 18 Nov 2022 21:02:36 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id 130so6728009pfu.8
+        for <linux-ext4@vger.kernel.org>; Fri, 18 Nov 2022 21:02:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=bik3QQ6pg/YzH90Q7ZtQejzzR44Y5fFcHJ5XampnQJ4=;
+        b=Gwp8vGRLKz6mSChDqX1wUyEzmRqFxavoy0lEyvuGhw7ZedxZRxpuSSJQOxfaFUAYnA
+         /RAvOICJkevlmDHIe3Ia9snlgbvGkkaGrKtzmz63I4Tg91A7P6jDIkilcDFcgCl6nab/
+         7v+0rvPbmFmIp+Lgq+rrFTJAogvCFzSBoyLoBFB6ayPSaQgo8Djbl+i6HLojxbCbOT/d
+         Y8rBrPTu7nTgJJp5DXgr6IGo9EPD8ubVqX7CE64Z8uc9J8k6lcSUl8fIZFQdTjAclM1c
+         diyFRsjZGQ0/rHdfw4FzRL8QsPTGQj/mTwrRTDmoWqzKIqi60VBxGEVxaVph9Yjua1s9
+         rHRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ykusFFXkV4YV32sh0xr8cRt9KBmXgiJ3md6Pb/tudTA=;
-        b=GosglwI5mSDu6FScBOz8yYLc1c/cJu34TteT6ekAhtHVD5+C0DZ1tE+1JRXux90yLC
-         +nC0vPSVZ8Wv9LxQMDUqd4367dxURfzB/BjewY9kf5CIYFv/BiU1/58jhtSY1/GismWn
-         KawpswOo2MXOOSeOydzpcowx6f629jOsvSDbAr8G81VFCET0wedDWJuGjjV9Ncxo67Pb
-         ff59bQqHz2pwb6P08dyzWorl55N8vWcsyF7eGZqAPm1IFZadgBvYjg4wDUiVCt3S/HMx
-         Lxwc56H9ACAODeSJP/gGndK5kgOgtX/2kdp8nF3CMgTMPXH2EaKCHnUhMGGmi/pzZ99y
-         taoQ==
-X-Gm-Message-State: ANoB5plda9YUlsElJPizAD6oU9Qp6v4d7vBr99VntQWQKESvATzJOL5U
-        8ob/1RC/mLgv1spbvUGvnFDaCHUYUbjqjkjK+m3ONnnGOTrI
-X-Google-Smtp-Source: AA0mqf514LqZR2cFbnr1/myamSoKgsY4ha3jIQfa0Cgt83bI3wgzQby3q1dDCrT+cqUKrgtHad1tbZ9SR2gCs552pecPYnGMhX8c
+        bh=bik3QQ6pg/YzH90Q7ZtQejzzR44Y5fFcHJ5XampnQJ4=;
+        b=56Ls8x322yTXzbqjN7KbneK+YyWshjOw+JbiGkS0iXCi3rEKLw+s6hJaaPAAtbAyLF
+         ofbC7v7E1A2fG5zqcvnMWV9+QZEEDkFiGVorcNfkaBjB9cSQ4MIJVpKlFPOM00K146qB
+         xSibduNnkxEE2wBj/G2ZXuDwKSNe0G/8ycl3B0Nfga2JhTHYnRLnOqjhFmu91MxUXxXS
+         1TrJas/DMVfDvt4WKOxjc/QXZbZWlr9ZKpyjPc0nkwUYkZH/ebRxRAMKnmhoFJRf6ojX
+         P3rbiCSbZXErPiidx9fPGXhIDh6kLpphdfPNoAAzQocDGakJMZhBeoaSYp1hmv9wjEid
+         EqTQ==
+X-Gm-Message-State: ANoB5pnoaa+zMtl0zYH6zeJ0N91xgDPtDYR85NIszxUI+oyTx27bEUC5
+        O7xWhNhcz8VWnU04+sH+v28=
+X-Google-Smtp-Source: AA0mqf7H6wWeO0T4rsivPFMM12fSn1nEfHXROtNVJlaSYsZgf0lbh4Njd6MQ9ccp7elAWySyaRHRow==
+X-Received: by 2002:a63:6645:0:b0:476:cdb8:28fd with SMTP id a66-20020a636645000000b00476cdb828fdmr9602413pgc.358.1668834155376;
+        Fri, 18 Nov 2022 21:02:35 -0800 (PST)
+Received: from localhost ([2406:7400:63:f20b:f6ca:e236:f59f:8c18])
+        by smtp.gmail.com with ESMTPSA id g3-20020a17090a708300b00216df8f03fdsm6172638pjk.50.2022.11.18.21.02.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Nov 2022 21:02:34 -0800 (PST)
+Date:   Sat, 19 Nov 2022 10:32:29 +0530
+From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        Wang Shilong <wshilong@ddn.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Li Xi <lixi@ddn.com>,
+        Saranya Muruganandam <saranyamohan@google.com>
+Subject: Re: [RFCv1 12/72] libext2fs: dupfs: Add fs clone & merge api
+Message-ID: <20221119050229.xznagyl2v6bmqgvt@riteshh-domain>
+References: <e6d1ef1be6dd5a82b223e77d2d6713c1c84aa977.1667822611.git.ritesh.list@gmail.com>
+ <78178FB1-8B01-4956-BDBE-751251E2D58A@dilger.ca>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:f414:0:b0:6d1:88ee:a64f with SMTP id
- i20-20020a6bf414000000b006d188eea64fmr4559935iog.61.1668833439812; Fri, 18
- Nov 2022 20:50:39 -0800 (PST)
-Date:   Fri, 18 Nov 2022 20:50:39 -0800
-In-Reply-To: <000000000000994fbe05e5b5d4d9@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005e924a05edcb905e@google.com>
-Subject: Re: [syzbot] possible deadlock in __jbd2_log_wait_for_space
-From:   syzbot <syzbot+fa1bbda326271b8808c9@syzkaller.appspotmail.com>
-To:     jack@suse.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <78178FB1-8B01-4956-BDBE-751251E2D58A@dilger.ca>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On 22/11/18 12:46PM, Andreas Dilger wrote:
+> On Nov 7, 2022, at 05:23, Ritesh Harjani (IBM) <ritesh.list@gmail.com> wrote:
+> > 
+> > ﻿From: Saranya Muruganandam <saranyamohan@google.com>
+> > 
+> > This patch mainly adds "parent" & "clone_flags" member in ext2_filsys struct
+> > for enabling multi-threading. Based on what CLONE flags will be passed from
+> > the client of libext2fs down to ext2fs_clone_fs(), those structures/bitmaps will
+> > be cloned (thread-aware child copy) and rest will be shared with the parent fs.
+> > 
+> > The same flags will also help to merge those cloned bitmap structures back into
+> > the parent bitmaps when ext2fs_merge_fs() will be called with childfs struct.
+> > 
+> > Signed-off-by: Saranya Muruganandam <saranyamohan@google.com>
+> > Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> > ---
+> > lib/ext2fs/dupfs.c  | 183 ++++++++++++++++++++++++++++++++++++++++++++
+> > lib/ext2fs/ext2fs.h |  23 ++++++
+> > 2 files changed, 206 insertions(+)
+> > 
+> > diff --git a/lib/ext2fs/dupfs.c b/lib/ext2fs/dupfs.c
+> > index 02721e1a..ecc57cf7 100644
+> > --- a/lib/ext2fs/dupfs.c
+> > +++ b/lib/ext2fs/dupfs.c
+> > @@ -14,8 +14,12 @@
+> > #if HAVE_UNISTD_H
+> > #include <unistd.h>
+> > #endif
+> > +#if HAVE_PTHREAD_H
+> > +#include <pthread.h>
+> > +#endif
+> > #include <time.h>
+> > #include <string.h>
+> > +#include <assert.h>
+> > 
+> > #include "ext2_fs.h"
+> > #include "ext2fsP.h"
+> > @@ -120,3 +124,182 @@ errout:
+> > 
+> > }
+> > 
+> > +#ifdef HAVE_PTHREAD
+> > +errcode_t ext2fs_clone_fs(ext2_filsys fs, ext2_filsys *dest, unsigned int flags)
+> > +{
+> > +    errcode_t retval;
+> > +    ext2_filsys childfs;
+> > +
+> > +    EXT2_CHECK_MAGIC(fs, EXT2_ET_MAGIC_EXT2FS_FILSYS);
+> > +
+> > +    retval = ext2fs_get_mem(sizeof(struct struct_ext2_filsys), &childfs);
+> > +    if (retval)
+> > +        return retval;
+> > +
+> > +    /* make an exact copy implying lists and memory structures are shared */
+> > +    memcpy(childfs, fs, sizeof(struct struct_ext2_filsys));
+> > +    childfs->inode_map = NULL;
+> > +    childfs->block_map = NULL;
+> > +    childfs->badblocks = NULL;
+> > +    childfs->dblist = NULL;
+> > +
+> > +    pthread_mutex_lock(&fs->refcount_mutex);
+> > +    fs->refcount++;
+> > +    pthread_mutex_unlock(&fs->refcount_mutex);
+> 
+> The locking her doesn't make sense. Why is the mutex only protecting the "refcount",
+> and not the rest of the fields in fs?
+> 
+> It would make more sense to hold the mutex over the whole copy process, from up before
+> the memcpy(), until down after the last structure is cloned. Otherwise, once fs has
+> been cloned once and given to another thread it would be possible for them to
+> change these structures. 
 
-HEAD commit:    15f3bff12cf6 Add linux-next specific files for 20221116
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1370fb65880000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ec2a1d4f50866178
-dashboard link: https://syzkaller.appspot.com/bug?extid=fa1bbda326271b8808c9
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=114241dd880000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14c2f42d880000
+Ok, so there are two things here. Let's first discuss it from the e2fsck perspective. 
+ext2fs_clone_fs() is called in the thread prepare for each thread
+sequentially. Also what we are really trying to do here is copy the ext2_filsys
+source fs and then all threads will work on their cloned "childfs".
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/b67307c8c3c9/disk-15f3bff1.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/956c7b56c5c1/vmlinux-15f3bff1.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/505ae2f65529/bzImage-15f3bff1.xz
+So we don't require any locking, because even when threads will start running,
+they will only modify their childfs.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+fa1bbda326271b8808c9@syzkaller.appspotmail.com
+Now.. let's see it from the libext2fs API perspective. So will there be any need
+for locking for any other client which might use ext2fs_clone_fs()?
+Because the general pthread programming would be like :
 
-======================================================
-WARNING: possible circular locking dependency detected
-6.1.0-rc5-next-20221116-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor164/5304 is trying to acquire lock:
-ffff88814baea3f8 (&journal->j_checkpoint_mutex){+.+.}-{3:3}, at: __jbd2_log_wait_for_space+0x238/0x460 fs/jbd2/checkpoint.c:110
+start():
+	for (t = 0; t < num_threads; t++) {
+		clone_contexts() -> ext2fs_clone_fs()
+		pthread_run()
+		<..>
+	}
 
-but task is already holding lock:
-ffff888065608e08 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: inode_lock include/linux/fs.h:756 [inline]
-ffff888065608e08 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: vfs_unlink+0xd9/0x930 fs/namei.c:4240
+finish():
+	for (t = 0; t < num_threads; t++) {
+		pthread_join()
+		merge_contexts() -> ext2fs_merge_fs()
+	}
 
-which lock already depends on the new lock.
+So why we don't require any locking here, right? 
+Unless ofcourse start() phase can also be called in parallel. 
+But that won't be true no.
 
+> 
+> > +    if ((flags & EXT2FS_CLONE_INODE) && fs->inode_map) {
+> > +        retval = ext2fs_copy_bitmap(fs->inode_map, &childfs->inode_map);
+> > +        if (retval)
+> > +            return retval;
+> > +        childfs->inode_map->fs = childfs;
+> > +    }
+> > +
+> > +    if ((flags & EXT2FS_CLONE_BLOCK) && fs->block_map) {
+> > +        retval = ext2fs_copy_bitmap(fs->block_map, &childfs->block_map);
+> > +        if (retval)
+> > +            return retval;
+> > +        childfs->block_map->fs = childfs;
+> > +    }
+> > +
+> > +    if ((flags & EXT2FS_CLONE_BADBLOCKS) && fs->badblocks) {
+> > +        retval = ext2fs_badblocks_copy(fs->badblocks, &childfs->badblocks);
+> > +        if (retval)
+> > +            return retval;
+> > +    }
+> > +
+> > +    if ((flags & EXT2FS_CLONE_DBLIST) && fs->dblist) {
+> > +        retval = ext2fs_copy_dblist(fs->dblist, &childfs->dblist);
+> > +        if (retval)
+> > +            return retval;
+> > +        childfs->dblist->fs = childfs;
+> > +    }
+> > +
+> > +    /* icache when NULL will be rebuilt if needed */
+> > +    childfs->icache = NULL;
+> 
+> This should be up where the other NULL values are set. 
 
-the existing dependency chain (in reverse order) is:
+ok.
 
--> #1 (&sb->s_type->i_mutex_key#8){++++}-{3:3}:
-       down_read+0x9c/0x450 kernel/locking/rwsem.c:1509
-       inode_lock_shared include/linux/fs.h:766 [inline]
-       ext4_bmap+0x52/0x470 fs/ext4/inode.c:3164
-       bmap+0xae/0x120 fs/inode.c:1798
-       jbd2_journal_bmap+0xac/0x180 fs/jbd2/journal.c:977
-       __jbd2_journal_erase fs/jbd2/journal.c:1789 [inline]
-       jbd2_journal_flush+0x853/0xc00 fs/jbd2/journal.c:2492
-       ext4_ioctl_checkpoint fs/ext4/ioctl.c:1081 [inline]
-       __ext4_ioctl+0xae8/0x4d60 fs/ext4/ioctl.c:1586
-       vfs_ioctl fs/ioctl.c:51 [inline]
-       __do_sys_ioctl fs/ioctl.c:870 [inline]
-       __se_sys_ioctl fs/ioctl.c:856 [inline]
-       __x64_sys_ioctl+0x197/0x210 fs/ioctl.c:856
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> 
+> > +
+> > +    childfs->clone_flags = flags;
+> > +    childfs->parent = fs;
+> > +    *dest = childfs;
+> > +
+> > +    return 0;
+> > +}
+> > +
+> > +errcode_t ext2fs_merge_fs(ext2_filsys *thread_fs)
+> > +{
+> > +    ext2_filsys fs = *thread_fs;
+> > +    errcode_t retval = 0;
+> > +    ext2_filsys dest = fs->parent;
+> > +    ext2_filsys src = fs;
+> > +    unsigned int flags = fs->clone_flags;
+> > +    struct ext2_inode_cache *icache;
+> > +    io_channel dest_io;
+> > +    io_channel dest_image_io;
+> > +    ext2fs_inode_bitmap inode_map;
+> > +    ext2fs_block_bitmap block_map;
+> > +    ext2_badblocks_list badblocks;
+> > +    ext2_dblist dblist;
+> > +    void *priv_data;
+> > +    int fsflags;
+> > +
+> > +    pthread_mutex_lock(&fs->refcount_mutex);
+> > +    fs->refcount--;
+> > +    assert(fs->refcount >= 0);
+> > +    pthread_mutex_unlock(&fs->refcount_mutex);
+> 
+> Same here. The mutex should be held over the whole copy process. 
 
--> #0 (&journal->j_checkpoint_mutex){+.+.}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3097 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3216 [inline]
-       validate_chain kernel/locking/lockdep.c:3831 [inline]
-       __lock_acquire+0x2a43/0x56d0 kernel/locking/lockdep.c:5055
-       lock_acquire kernel/locking/lockdep.c:5668 [inline]
-       lock_acquire+0x1e3/0x630 kernel/locking/lockdep.c:5633
-       __mutex_lock_common kernel/locking/mutex.c:603 [inline]
-       mutex_lock_io_nested+0x143/0x11a0 kernel/locking/mutex.c:833
-       __jbd2_log_wait_for_space+0x238/0x460 fs/jbd2/checkpoint.c:110
-       add_transaction_credits+0xa2d/0xb70 fs/jbd2/transaction.c:298
-       start_this_handle+0x3ae/0x14a0 fs/jbd2/transaction.c:422
-       jbd2__journal_start+0x39d/0x9b0 fs/jbd2/transaction.c:520
-       __ext4_journal_start_sb+0x421/0x530 fs/ext4/ext4_jbd2.c:105
-       __ext4_journal_start fs/ext4/ext4_jbd2.h:326 [inline]
-       ext4_unlink+0x32b/0xae0 fs/ext4/namei.c:3284
-       vfs_unlink+0x355/0x930 fs/namei.c:4251
-       do_unlinkat+0x3b7/0x640 fs/namei.c:4319
-       __do_sys_unlink fs/namei.c:4367 [inline]
-       __se_sys_unlink fs/namei.c:4365 [inline]
-       __x64_sys_unlink+0xca/0x110 fs/namei.c:4365
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+Again same discussion as above. We don't need to have a lock here, because the
+ext2fs_merge_fs() will happen post pthread_join() for each thread.
 
-other info that might help us debug this:
+-ritesh
 
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&sb->s_type->i_mutex_key#8);
-                               lock(&journal->j_checkpoint_mutex);
-                               lock(&sb->s_type->i_mutex_key#8);
-  lock(&journal->j_checkpoint_mutex);
-
- *** DEADLOCK ***
-
-3 locks held by syz-executor164/5304:
- #0: ffff88814bae6460 (sb_writers#4){.+.+}-{0:0}, at: do_unlinkat+0x183/0x640 fs/namei.c:4298
- #1: ffff888076c1d440 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:791 [inline]
- #1: ffff888076c1d440 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: do_unlinkat+0x270/0x640 fs/namei.c:4302
- #2: ffff888065608e08 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: inode_lock include/linux/fs.h:756 [inline]
- #2: ffff888065608e08 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: vfs_unlink+0xd9/0x930 fs/namei.c:4240
-
-stack backtrace:
-CPU: 1 PID: 5304 Comm: syz-executor164 Not tainted 6.1.0-rc5-next-20221116-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd1/0x138 lib/dump_stack.c:106
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2177
- check_prev_add kernel/locking/lockdep.c:3097 [inline]
- check_prevs_add kernel/locking/lockdep.c:3216 [inline]
- validate_chain kernel/locking/lockdep.c:3831 [inline]
- __lock_acquire+0x2a43/0x56d0 kernel/locking/lockdep.c:5055
- lock_acquire kernel/locking/lockdep.c:5668 [inline]
- lock_acquire+0x1e3/0x630 kernel/locking/lockdep.c:5633
- __mutex_lock_common kernel/locking/mutex.c:603 [inline]
- mutex_lock_io_nested+0x143/0x11a0 kernel/locking/mutex.c:833
- __jbd2_log_wait_for_space+0x238/0x460 fs/jbd2/checkpoint.c:110
- add_transaction_credits+0xa2d/0xb70 fs/jbd2/transaction.c:298
- start_this_handle+0x3ae/0x14a0 fs/jbd2/transaction.c:422
- jbd2__journal_start+0x39d/0x9b0 fs/jbd2/transaction.c:520
- __ext4_journal_start_sb+0x421/0x530 fs/ext4/ext4_jbd2.c:105
- __ext4_journal_start fs/ext4/ext4_jbd2.h:326 [inline]
- ext4_unlink+0x32b/0xae0 fs/ext4/namei.c:3284
- vfs_unlink+0x355/0x930 fs/namei.c:4251
- do_unlinkat+0x3b7/0x640 fs/namei.c:4319
- __do_sys_unlink fs/namei.c:4367 [inline]
- __se_sys_unlink fs/namei.c:4365 [inline]
- __x64_sys_unlink+0xca/0x110 fs/namei.c:4365
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f3a0088bff7
-Code: 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 57 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe6d2c0f28 EFLAGS: 00000206 ORIG_RAX: 0000000000000057
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f3a0088bff7
-RDX: 00007ffe6d2c0f50 RSI: 00007ffe6d2c0f50 RDI: 00007ffe6d2c0fe0
-RBP: 00007ffe6d2c0fe0 R08: 0000000000000001 R09: 00007ffe6d2c0dc0
-R10: 0000555555f9e683 R11: 0000000000000206 R12: 00007ffe6d2c20a0
-R13: 0000555555f9e5f0 R14: 00007ffe6d2c0f50 R15: 431bde82d7b634db
- </TASK>
-
+> 
+> Cheers, Andreas
+> 
+> 
+> > +    icache = dest->icache;
+> > +    dest_io = dest->io;
+> > +    dest_image_io = dest->image_io;
+> > +    inode_map = dest->inode_map;
+> > +    block_map = dest->block_map;
+> > +    badblocks = dest->badblocks;
+> > +    dblist = dest->dblist;
+> > +    priv_data = dest->priv_data;
+> > +    fsflags = dest->flags;
+> > +
+> > +    memcpy(dest, src, sizeof(struct struct_ext2_filsys));
+> > +
+> > +    dest->io = dest_io;
+> > +    dest->image_io = dest_image_io;
+> > +    dest->icache = icache;
+> > +    dest->inode_map = inode_map;
+> > +    dest->block_map = block_map;
+> > +    dest->badblocks = badblocks;
+> > +    dest->dblist = dblist;
+> > +    dest->priv_data = priv_data;
+> > +    if (dest->dblist)
+> > +        dest->dblist->fs = dest;
+> > +    dest->flags = src->flags | fsflags;
+> > +    if (!(src->flags & EXT2_FLAG_VALID) || !(dest->flags & EXT2_FLAG_VALID))
+> > +        ext2fs_unmark_valid(dest);
+> > +
+> > +    if ((flags & EXT2FS_CLONE_INODE) && src->inode_map) {
+> > +        if (dest->inode_map == NULL) {
+> > +            dest->inode_map = src->inode_map;
+> > +            src->inode_map = NULL;
+> > +        } else {
+> > +            retval = ext2fs_merge_bitmap(src->inode_map, dest->inode_map, NULL, NULL);
+> > +            if (retval)
+> > +                goto out;
+> > +        }
+> > +        dest->inode_map->fs = dest;
+> > +    }
+> > +
+> > +    if ((flags & EXT2FS_CLONE_BLOCK) && src->block_map) {
+> > +        if (dest->block_map == NULL) {
+> > +            dest->block_map = src->block_map;
+> > +            src->block_map = NULL;
+> > +        } else {
+> > +            retval = ext2fs_merge_bitmap(src->block_map, dest->block_map, NULL, NULL);
+> > +            if (retval)
+> > +                goto out;
+> > +        }
+> > +        dest->block_map->fs = dest;
+> > +    }
+> > +
+> > +    if ((flags & EXT2FS_CLONE_BADBLOCKS) && src->badblocks) {
+> > +        if (dest->badblocks == NULL)
+> > +            retval = ext2fs_badblocks_copy(src->badblocks, &dest->badblocks);
+> > +        else
+> > +            retval = ext2fs_badblocks_merge(src->badblocks, dest->badblocks);
+> > +        if (retval)
+> > +            goto out;
+> > +    }
+> > +
+> > +    if ((flags & EXT2FS_CLONE_DBLIST) && src->dblist) {
+> > +        if (dest->dblist == NULL) {
+> > +            dest->dblist = src->dblist;
+> > +            src->dblist = NULL;
+> > +        } else {
+> > +            retval = ext2fs_merge_dblist(src->dblist, dest->dblist);
+> > +            if (retval)
+> > +                goto out;
+> > +        }
+> > +        dest->dblist->fs = dest;
+> > +    }
+> > +
+> > +    if (src->icache) {
+> > +        ext2fs_free_inode_cache(src->icache);
+> > +        src->icache = NULL;
+> > +    }
+> > +
+> > +out:
+> > +    if (src->io)
+> > +        io_channel_close(src->io);
+> > +
+> > +    if ((flags & EXT2FS_CLONE_INODE) && src->inode_map)
+> > +        ext2fs_free_generic_bmap(src->inode_map);
+> > +    if ((flags & EXT2FS_CLONE_BLOCK) && src->block_map)
+> > +        ext2fs_free_generic_bmap(src->block_map);
+> > +    if ((flags & EXT2FS_CLONE_BADBLOCKS) && src->badblocks)
+> > +        ext2fs_badblocks_list_free(src->badblocks);
+> > +    if ((flags & EXT2FS_CLONE_DBLIST) && src->dblist) {
+> > +        ext2fs_free_dblist(src->dblist);
+> > +        src->dblist = NULL;
+> > +    }
+> > +
+> > +    ext2fs_free_mem(&src);
+> > +    *thread_fs = NULL;
+> > +
+> > +    return retval;
+> > +}
+> > +#endif
+> > diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
+> > index 139a25fc..b1505f95 100644
+> > --- a/lib/ext2fs/ext2fs.h
+> > +++ b/lib/ext2fs/ext2fs.h
+> > @@ -12,6 +12,10 @@
+> > #ifndef _EXT2FS_EXT2FS_H
+> > #define _EXT2FS_EXT2FS_H
+> > 
+> > +#ifdef HAVE_PTHREAD_H
+> > +#include <pthread.h>
+> > +#endif
+> > +
+> > #ifdef __GNUC__
+> > #define EXT2FS_ATTR(x) __attribute__(x)
+> > #else
+> > @@ -331,6 +335,13 @@ struct struct_ext2_filsys {
+> >    struct ext2fs_hashmap* block_sha_map;
+> > 
+> >    const struct ext2fs_nls_table *encoding;
+> > +
+> > +#ifdef HAVE_PTHREAD
+> > +    struct struct_ext2_filsys *parent;
+> > +    size_t refcount;
+> > +    pthread_mutex_t refcount_mutex;
+> > +    unsigned int clone_flags;
+> > +#endif
+> > };
+> > 
+> > #if EXT2_FLAT_INCLUDES
+> > @@ -1057,6 +1068,18 @@ extern errcode_t ext2fs_move_blocks(ext2_filsys fs,
+> > /* check_desc.c */
+> > extern errcode_t ext2fs_check_desc(ext2_filsys fs);
+> > 
+> > +#ifdef HAVE_PTHREAD
+> > +/* flags for ext2fs_clone_fs */
+> > +#define EXT2FS_CLONE_BLOCK            0x0001
+> > +#define EXT2FS_CLONE_INODE            0x0002
+> > +#define EXT2FS_CLONE_BADBLOCKS        0x0004
+> > +#define EXT2FS_CLONE_DBLIST            0x0008
+> > +
+> > +extern errcode_t ext2fs_clone_fs(ext2_filsys fs, ext2_filsys *dest,
+> > +                                 unsigned int flags);
+> > +extern errcode_t ext2fs_merge_fs(ext2_filsys *fs);
+> > +#endif
+> > +
+> > /* closefs.c */
+> > extern errcode_t ext2fs_close(ext2_filsys fs);
+> > extern errcode_t ext2fs_close2(ext2_filsys fs, int flags);
+> > -- 
+> > 2.37.3
+> > 
