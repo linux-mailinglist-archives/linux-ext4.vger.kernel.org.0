@@ -2,62 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B2663207C
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Nov 2022 12:26:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5954D63207E
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Nov 2022 12:26:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbiKUL0f (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 21 Nov 2022 06:26:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52462 "EHLO
+        id S230520AbiKUL0j (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 21 Nov 2022 06:26:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbiKUL0J (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Nov 2022 06:26:09 -0500
-Received: from mail-ed1-x549.google.com (mail-ed1-x549.google.com [IPv6:2a00:1450:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE647A7C09
-        for <linux-ext4@vger.kernel.org>; Mon, 21 Nov 2022 03:21:39 -0800 (PST)
-Received: by mail-ed1-x549.google.com with SMTP id v18-20020a056402349200b004622e273bbbso6610661edc.14
-        for <linux-ext4@vger.kernel.org>; Mon, 21 Nov 2022 03:21:39 -0800 (PST)
+        with ESMTP id S230293AbiKUL0L (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Nov 2022 06:26:11 -0500
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83063B0418
+        for <linux-ext4@vger.kernel.org>; Mon, 21 Nov 2022 03:21:42 -0800 (PST)
+Received: by mail-wm1-x349.google.com with SMTP id m34-20020a05600c3b2200b003cf549cb32bso9143868wms.1
+        for <linux-ext4@vger.kernel.org>; Mon, 21 Nov 2022 03:21:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Ut094+1HiZ4Cjb1djYz8ZPvCLMxdVr+mJo3AtkrOKCA=;
-        b=PtZTUVznvnflFwUv9SKypxZQqr7i1LRYenCMrhMEOVGiPfxccwpjsY0A4YtFeeVnlF
-         h2lGU/CX2UGfxpSXxpMO1krIzX7InkrGi25tw16FUZGnYRG+48rz3JaSCOEXLpqgE/EM
-         opVGk0Q/rJdXGr0oIG5tziMO7oWC8RwHnTFpjZTCghBdovVeuHaJ0UfGVV+HSRF+Mevy
-         v/vENEx2/1GIDj3F6RVT8uC+lujEgt6uMMFBYmaBcrnbZqaZYAVFDM7x70bVO4+mtAA4
-         t18AcVUc3fi2I1HwUNs+HNibRi0u8zeQUEKGIUhxxWoUi8pcajXw5PvuDm5HDd/vf0M6
-         Dc+A==
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=V66iN5ZNYfCs2IKwl/XWPfYUEeh8Am+8/6YCzEI2D8c=;
+        b=DrqkFhwq+x32T++mKGiLwBwBQlLcPegquOjKmY4DA36Bdlu1UHyvmrWX1hBJRhVkQ6
+         CuCW3GY8rqEftTjZZrLMe7/mkVQz7UfhK+xIE67b7ScIXkJpIv8j5OGL6cLYo9+mckRB
+         K7uXn7jnhwdTz8CKtd1PZLB/aUu4HHTidPyJYgxXX5idXFCZCOZVGyv8hmv6enXEqnwn
+         sySci2PTifGmbTVUqgKzOGBN+JGcWBPg2j+F9wLZjNT18VaSguq8lzh50Et/vzVO1B6Q
+         2Y+EGhsTlaR3AYtHfVR7KGPKNpJOX8E3kDw+u1VmZZUxfQ8uANGRO5Nfw1xQZ/dSm2xH
+         GfuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ut094+1HiZ4Cjb1djYz8ZPvCLMxdVr+mJo3AtkrOKCA=;
-        b=Z3RuMSohrjgwIgrBpslu7Hz9ac3QGVlIiJfy4SWD821QQh+gFdrE6T8DQY6bZW2MzM
-         pLCWUo2rJ9/JWWrTYbnwshZ3xSHJSCQwwhfD14a7ljO7WfvUjBS1iuX8DIMt5Ig6t5Dh
-         Y5i4oTq60HoQxa3aB7D2CAoAG3KGLqSAQcPwOL6juwS+FONdbdHSQsxznUK7AFWcmKbj
-         Mh7Yn7WZ3dtJkYQeMuocJDBIGglHcpsEasrCQgWRBZsy8qxtXxqUYePz3KUIPq4+iAWr
-         qz4c1mpJ8vCHwDdT97n5d7QwNcz+lxsBJt0E0M5HGbbuM0QhRpozl7T3zzHJs7hYBME/
-         GGHQ==
-X-Gm-Message-State: ANoB5pmPzdFtokn23VjP3D5tnQBRV3pU0ke+FNwco5aj+2+OCBiCc5lr
-        /mpdhoejp/jcsVh+bvZVojSbHZD1d6c=
-X-Google-Smtp-Source: AA0mqf6ymM+aPMyFpxcfMJZ6dxw5jBiyJyJ7BqqZjljlNhaC6hbGZmGDYm3fYA/es+nh2vPHSPoyWsXw6P0=
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=V66iN5ZNYfCs2IKwl/XWPfYUEeh8Am+8/6YCzEI2D8c=;
+        b=jFsRmYsyDsJ50lBkbYsuVpSujwFOIhWI4utGMhHqbJHzOGYiGgkc0/5pF7aNHcUJh7
+         Nu+t1DcMdM20o/KM0WFH1iq7bMBvMZmNtST3R90jFb0rHweW1VUQcUbgOoQ7SPh8mLVj
+         LfBD7NVTV8OGVzqaS5cULOG+YCcpx+GTWpP3yGPKDPVlucb0ky6q5aH4DWufASygdlEm
+         T3s0sd96ctw9Jbu1MhmGTN6z405vsE3m54227hnWvht8ml/z0iC/ybtDmICWpPZ5X3um
+         V4xnFY09m8rJ995hCtAQM5eYDqiPT6UybY8fE1uWwFYW3JmMWT1wrL+28IKalpVazclL
+         jpDg==
+X-Gm-Message-State: ANoB5pn04rICCDf/V54LXF0ohjPoeoOhNaoG7/bJ07NVLoastDiasUxI
+        UnmFaXDd+zUZdQdMKp7IiIjs7D0wp7g=
+X-Google-Smtp-Source: AA0mqf5PzJbpaiga2Jzsuv2QBaVRj0ECKQH/8ki+ITevGs4ly1kTH35yKTlXkQW0dHRua5gsG9D3oRFruQ0=
 X-Received: from glider.muc.corp.google.com ([2a00:79e0:9c:201:db68:962:2bf6:6c7])
- (user=glider job=sendgmr) by 2002:aa7:c788:0:b0:458:b9f9:9fba with SMTP id
- n8-20020aa7c788000000b00458b9f99fbamr16132478eds.305.1669029698340; Mon, 21
- Nov 2022 03:21:38 -0800 (PST)
-Date:   Mon, 21 Nov 2022 12:21:30 +0100
+ (user=glider job=sendgmr) by 2002:adf:e50f:0:b0:22c:cc75:5aab with SMTP id
+ j15-20020adfe50f000000b0022ccc755aabmr10402338wrm.143.1669029701044; Mon, 21
+ Nov 2022 03:21:41 -0800 (PST)
+Date:   Mon, 21 Nov 2022 12:21:31 +0100
+In-Reply-To: <20221121112134.407362-1-glider@google.com>
 Mime-Version: 1.0
+References: <20221121112134.407362-1-glider@google.com>
 X-Mailer: git-send-email 2.38.1.584.g0f3c55d4c2-goog
-Message-ID: <20221121112134.407362-1-glider@google.com>
-Subject: [PATCH 1/5] fs: ext4: initialize fsdata in pagecache_write()
+Message-ID: <20221121112134.407362-2-glider@google.com>
+Subject: [PATCH 2/5] fs: affs: initialize fsdata in affs_truncate()
 From:   Alexander Potapenko <glider@google.com>
 To:     glider@google.com
 Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
         tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
         chao@kernel.org, linux-fsdevel@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        Eric Biggers <ebiggers@kernel.org>,
-        syzbot+9767be679ef5016b6082@syzkaller.appspotmail.com
+        Eric Biggers <ebiggers@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
@@ -69,32 +70,31 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-When aops->write_begin() does not initialize fsdata, KMSAN reports
+When aops->write_begin() does not initialize fsdata, KMSAN may report
 an error passing the latter to aops->write_end().
 
 Fix this by unconditionally initializing fsdata.
 
-Cc: Eric Biggers <ebiggers@kernel.org>
-Fixes: c93d8f885809 ("ext4: add basic fs-verity support")
-Reported-by: syzbot+9767be679ef5016b6082@syzkaller.appspotmail.com
+Suggested-by: Eric Biggers <ebiggers@kernel.org>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
 Signed-off-by: Alexander Potapenko <glider@google.com>
 ---
- fs/ext4/verity.c | 2 +-
+ fs/affs/file.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ext4/verity.c b/fs/ext4/verity.c
-index 3c640bd7ecaeb..30e3b65798b50 100644
---- a/fs/ext4/verity.c
-+++ b/fs/ext4/verity.c
-@@ -79,7 +79,7 @@ static int pagecache_write(struct inode *inode, const void *buf, size_t count,
- 		size_t n = min_t(size_t, count,
- 				 PAGE_SIZE - offset_in_page(pos));
+diff --git a/fs/affs/file.c b/fs/affs/file.c
+index cefa222f7881c..8daeed31e1af9 100644
+--- a/fs/affs/file.c
++++ b/fs/affs/file.c
+@@ -880,7 +880,7 @@ affs_truncate(struct inode *inode)
+ 	if (inode->i_size > AFFS_I(inode)->mmu_private) {
+ 		struct address_space *mapping = inode->i_mapping;
  		struct page *page;
 -		void *fsdata;
 +		void *fsdata = NULL;
+ 		loff_t isize = inode->i_size;
  		int res;
  
- 		res = aops->write_begin(NULL, mapping, pos, n, &page, &fsdata);
 -- 
 2.38.1.584.g0f3c55d4c2-goog
 
