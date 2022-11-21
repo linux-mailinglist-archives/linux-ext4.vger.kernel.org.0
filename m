@@ -2,171 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E10631CBC
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Nov 2022 10:21:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C349631CC4
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Nov 2022 10:23:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbiKUJVl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 21 Nov 2022 04:21:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38060 "EHLO
+        id S230105AbiKUJXu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 21 Nov 2022 04:23:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbiKUJVk (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Nov 2022 04:21:40 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C977F31DFC;
-        Mon, 21 Nov 2022 01:21:39 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S229998AbiKUJXt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Nov 2022 04:23:49 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1620D233B9
+        for <linux-ext4@vger.kernel.org>; Mon, 21 Nov 2022 01:23:48 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 5EFC11F37E;
-        Mon, 21 Nov 2022 09:21:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1669022498; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=A4yACmC+2PGRDdbKSwaUXyFJiyXOf7sRs2uPsN7XNjU=;
-        b=Au5xD51WGbcQ5HS0Iy4WNMaa8OHfotyM6x3TLvynhgclp7OyaVkxjZyXJ0jkUrtTE8BVhJ
-        96XB5GIIiPtSk6TdCOFgE3BaZO6Weph+P/b09r3tPdNS7EvzfcT+xf2HCXYzdmF0c3uECp
-        feFFcsvnm8ZE53YdJxkm3vVdF+L0kSM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1669022498;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=A4yACmC+2PGRDdbKSwaUXyFJiyXOf7sRs2uPsN7XNjU=;
-        b=3DzffESZ4wJmwPROhsjNFAtcGmK2nXAUE3mw2GGSkm4Yq6oDj8sQQjcsHmz5W5UqogEMUN
-        TZ06iMWzP/ktoLBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4EA4E1377F;
-        Mon, 21 Nov 2022 09:21:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id hfRHEyJDe2MoaQAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 21 Nov 2022 09:21:38 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id E14D4A070A; Mon, 21 Nov 2022 10:21:37 +0100 (CET)
-Date:   Mon, 21 Nov 2022 10:21:37 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Ye Bin <yebin@huaweicloud.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jack@suse.cz, Ye Bin <yebin10@huawei.com>,
-        syzbot+57b25da729eb0b88177d@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ext4: fix uninit-value in 'ext4_evict_inode'
-Message-ID: <20221121092137.e3c4hhqvcozkakrw@quack3>
-References: <20221117073603.2598882-1-yebin@huaweicloud.com>
+        by ams.source.kernel.org (Postfix) with ESMTPS id C2764B80CC4
+        for <linux-ext4@vger.kernel.org>; Mon, 21 Nov 2022 09:23:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8D93EC433D6
+        for <linux-ext4@vger.kernel.org>; Mon, 21 Nov 2022 09:23:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669022625;
+        bh=LNHgTir3kQDNhoMTIBe0i4yg6wmLA1IZMMqEZvWU8co=;
+        h=From:To:Subject:Date:From;
+        b=aRJwf7lhjXrLlk/sv1tmNCuOYsf7s6me1e4+BM0CFcwMOE4sVvTgs07wLRtLYRZbx
+         jVRV0G8K1b1c/DRSTCzeDSC26Ma6zVmgb7W6A27NadMadpX6Jhb87p2t/ylFe8b/Eq
+         18nwx/GFZD5Z40hkM02F1TG+B1FIpI7wQCjTpPqE3dVaH7jLkNBT77sG2x6k/0aHYn
+         e6ASeQc+U79Q018YPs67KqyBFwQ8mADbOPJJQeR4Zpe5S/z/tkig50ahXnCtE+tomI
+         CosYd3w7q6cwObuNDUcm49FYHCKMapy5I55Pq4GjprwArxyIR7y7jM9kx9wKFrhnGR
+         6qsjCS6NbVwAQ==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+        id 7E6C4C433E7; Mon, 21 Nov 2022 09:23:45 +0000 (UTC)
+From:   bugzilla-daemon@kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 216720] New: [LTP fanotify10] Fanofity10 cases is failed on
+ Intel server
+Date:   Mon, 21 Nov 2022 09:23:45 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: new
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: pengfei.xu@intel.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_id short_desc product version
+ cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
+ priority component assigned_to reporter cf_regression
+Message-ID: <bug-216720-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221117073603.2598882-1-yebin@huaweicloud.com>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 17-11-22 15:36:03, Ye Bin wrote:
-> From: Ye Bin <yebin10@huawei.com>
-> 
-> Syzbot found the following issue:
-> =====================================================
-> BUG: KMSAN: uninit-value in ext4_evict_inode+0xdd/0x26b0 fs/ext4/inode.c:180
->  ext4_evict_inode+0xdd/0x26b0 fs/ext4/inode.c:180
->  evict+0x365/0x9a0 fs/inode.c:664
->  iput_final fs/inode.c:1747 [inline]
->  iput+0x985/0xdd0 fs/inode.c:1773
->  __ext4_new_inode+0xe54/0x7ec0 fs/ext4/ialloc.c:1361
->  ext4_mknod+0x376/0x840 fs/ext4/namei.c:2844
->  vfs_mknod+0x79d/0x830 fs/namei.c:3914
->  do_mknodat+0x47d/0xaa0
->  __do_sys_mknodat fs/namei.c:3992 [inline]
->  __se_sys_mknodat fs/namei.c:3989 [inline]
->  __ia32_sys_mknodat+0xeb/0x150 fs/namei.c:3989
->  do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
->  __do_fast_syscall_32+0xa2/0x100 arch/x86/entry/common.c:178
->  do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
->  do_SYSENTER_32+0x1b/0x20 arch/x86/entry/common.c:246
->  entry_SYSENTER_compat_after_hwframe+0x70/0x82
-> 
-> Uninit was created at:
->  __alloc_pages+0x9f1/0xe80 mm/page_alloc.c:5578
->  alloc_pages+0xaae/0xd80 mm/mempolicy.c:2285
->  alloc_slab_page mm/slub.c:1794 [inline]
->  allocate_slab+0x1b5/0x1010 mm/slub.c:1939
->  new_slab mm/slub.c:1992 [inline]
->  ___slab_alloc+0x10c3/0x2d60 mm/slub.c:3180
->  __slab_alloc mm/slub.c:3279 [inline]
->  slab_alloc_node mm/slub.c:3364 [inline]
->  slab_alloc mm/slub.c:3406 [inline]
->  __kmem_cache_alloc_lru mm/slub.c:3413 [inline]
->  kmem_cache_alloc_lru+0x6f3/0xb30 mm/slub.c:3429
->  alloc_inode_sb include/linux/fs.h:3117 [inline]
->  ext4_alloc_inode+0x5f/0x860 fs/ext4/super.c:1321
->  alloc_inode+0x83/0x440 fs/inode.c:259
->  new_inode_pseudo fs/inode.c:1018 [inline]
->  new_inode+0x3b/0x430 fs/inode.c:1046
->  __ext4_new_inode+0x2a7/0x7ec0 fs/ext4/ialloc.c:959
->  ext4_mkdir+0x4d5/0x1560 fs/ext4/namei.c:2992
->  vfs_mkdir+0x62a/0x870 fs/namei.c:4035
->  do_mkdirat+0x466/0x7b0 fs/namei.c:4060
->  __do_sys_mkdirat fs/namei.c:4075 [inline]
->  __se_sys_mkdirat fs/namei.c:4073 [inline]
->  __ia32_sys_mkdirat+0xc4/0x120 fs/namei.c:4073
->  do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
->  __do_fast_syscall_32+0xa2/0x100 arch/x86/entry/common.c:178
->  do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
->  do_SYSENTER_32+0x1b/0x20 arch/x86/entry/common.c:246
->  entry_SYSENTER_compat_after_hwframe+0x70/0x82
-> 
-> CPU: 1 PID: 4625 Comm: syz-executor.2 Not tainted 6.1.0-rc4-syzkaller-62821-gcb231e2f67ec #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-> =====================================================
-> 
-> Now, 'ext4_alloc_inode()' didn't init 'ei->i_flags'. If new inode failed
-> before set 'ei->i_flags' in '__ext4_new_inode()', then do 'iput()'. As after
-> 6bc0d63dad7f commit will access 'ei->i_flags' in 'ext4_evict_inode()' which
-> will lead to access uninit-value.
-> To solve above issue just init 'ei->i_flags' in 'ext4_alloc_inode()'.
-> 
-> Reported-by: syzbot+57b25da729eb0b88177d@syzkaller.appspotmail.com
-> Fixes:6bc0d63dad7f("ext4: remove EA inode entry from mbcache on inode eviction")
+https://bugzilla.kernel.org/show_bug.cgi?id=3D216720
 
-Some spaces are missing in the above tag. Should be like:
-Fixes: 6bc0d63dad7f ("ext4: remove EA inode entry from mbcache on inode eviction")
+            Bug ID: 216720
+           Summary: [LTP fanotify10] Fanofity10 cases is failed on Intel
+                    server
+           Product: File System
+           Version: 2.5
+    Kernel Version: v6.1-rc5
+          Hardware: All
+                OS: Linux
+              Tree: Mainline
+            Status: NEW
+          Severity: normal
+          Priority: P1
+         Component: ext4
+          Assignee: fs_ext4@kernel-bugs.osdl.org
+          Reporter: pengfei.xu@intel.com
+        Regression: No
 
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
+I worked with Jan Kara for fanofity10 failed case.
 
-Nice catch. Thanks for fixing this! Feel free to add:
+And found this unexpected failure is due to 2 NUMA node,  and drop_caches
+should keep reclaiming on all nodes.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+I reported this issue and narrow down this issue with Jan Kara by email
+commnunication.
 
-								Honza
 
-> ---
->  fs/ext4/super.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index ae433e1337ed..cd2590489392 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -1323,6 +1323,7 @@ static struct inode *ext4_alloc_inode(struct super_block *sb)
->  		return NULL;
->  
->  	inode_set_iversion(&ei->vfs_inode, 1);
-> +	ei->i_flags = 0;
->  	spin_lock_init(&ei->i_raw_lock);
->  	INIT_LIST_HEAD(&ei->i_prealloc_list);
->  	atomic_set(&ei->i_prealloc_active, 0);
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Jan Kara fixed patch link:
+https://lore.kernel.org/linux-mm/20221115123255.12559-1-jack@suse.cz/
+
+Thanks!
+BR.
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
