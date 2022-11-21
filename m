@@ -2,106 +2,85 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A35632868
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Nov 2022 16:40:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D4763292E
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Nov 2022 17:15:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231314AbiKUPkw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 21 Nov 2022 10:40:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43270 "EHLO
+        id S230102AbiKUQPz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 21 Nov 2022 11:15:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230191AbiKUPkv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Nov 2022 10:40:51 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9A84B98C
-        for <linux-ext4@vger.kernel.org>; Mon, 21 Nov 2022 07:40:50 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S229946AbiKUQPy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Nov 2022 11:15:54 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4679D3395
+        for <linux-ext4@vger.kernel.org>; Mon, 21 Nov 2022 08:15:53 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4590921AB1;
-        Mon, 21 Nov 2022 15:40:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1669045249; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PcfepNWTvOXysC6fXh1QuniRbBFvGDhnqa0/pAPOEmM=;
-        b=I1moyzKYxqa7I+rF1PEQm+i74T7vzz3f429x0FZduxIRrqFjV5IZq0+ocehYa71byKhj8F
-        7wi6K6BDsvvJh4SNRv/QuKFwKPMUZMBhDYu886L0hNr4ckTkInMjAy8JaGohbK/qoK005w
-        BnG36AN2Dl5DcDrD7Dlc+6yCnnPRNEw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1669045249;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PcfepNWTvOXysC6fXh1QuniRbBFvGDhnqa0/pAPOEmM=;
-        b=8Wp/z2Psux05Y3bk7hc+b/5cHGO6RgsNwblTAl4FeoqI4hFeEpqAhTLlGB7IOYNeF6iioZ
-        sUvRMDH21PgSTDCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 371521376E;
-        Mon, 21 Nov 2022 15:40:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 7z5oDQGce2MWRwAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 21 Nov 2022 15:40:49 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id C2A36A070A; Mon, 21 Nov 2022 16:40:48 +0100 (CET)
-Date:   Mon, 21 Nov 2022 16:40:48 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Thorsten Leemhuis <regressions@leemhuis.info>
-Cc:     Jan Kara <jack@suse.cz>,
-        Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>,
-        Thilo Fromm <t-lo@linux.microsoft.com>,
-        Ye Bin <yebin10@huawei.com>, jack@suse.com, tytso@mit.edu,
-        linux-ext4@vger.kernel.org, regressions@lists.linux.dev
-Subject: Re: [syzbot] possible deadlock in jbd2_journal_lock_updates
-Message-ID: <20221121154048.iccqmx7zajhxh4aq@quack3>
-References: <20221026101854.k6qgunxexhxthw64@quack3>
- <20221110125758.GA6919@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20221110152637.g64p4hycnd7bfnnr@quack3>
- <20221110192701.GA29083@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20221111142424.vwt4khbtfzd5foiy@quack3>
- <20221111151029.GA27244@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20221111155238.GA32201@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20221121133559.srie6oy47udavj52@quack3>
- <20221121150018.tq63ot6qja3mfhpw@quack3>
- <a98303db-85df-a64d-d672-c16d1e0d8b49@leemhuis.info>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 62B0EB810F1
+        for <linux-ext4@vger.kernel.org>; Mon, 21 Nov 2022 16:15:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0EBF2C433D7
+        for <linux-ext4@vger.kernel.org>; Mon, 21 Nov 2022 16:15:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669047351;
+        bh=WCn5hKIizRIhsIlfVDV1PuDlpSxRV79pn6J+t3IXMXA=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=h+SSwmoLzgFQhPr1V3GeQcKu/2I0A4rWi4+o1PW6anKi4vAoAzS34BP+kLMQUGbMV
+         j3I3+OdRFyhoPvrkD4Cr4ijOQngiWOThjLOSTQ9wgGAEhkhyL/rMuTMsxc50N1o+lm
+         5Vr4Oq8lFbmYT8RfqXolhBFh32VTAHFjsvZSJJyqh54qMhvHLaJpGT/csUITSMLeYV
+         ZY0gtgoN42c7MnrJ+Kj6mc0MCNMBL+1EQjF15+CkAZDP7s1QdS3BXvMOJkJofNHT1S
+         UVOM9DHeAPfxFK8TbBgQiGaAD3Ph4AMrNSGzAAXvtPzoORPiaScEd9zh8Bp+RgDLVL
+         TgOZL++MuzO2g==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+        id F1DE9C433E7; Mon, 21 Nov 2022 16:15:50 +0000 (UTC)
+From:   bugzilla-daemon@kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 216714] Issue with file system image created with mke2fs
+ parameter -E offset
+Date:   Mon, 21 Nov 2022 16:15:50 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: aros@gmx.com
+X-Bugzilla-Status: RESOLVED
+X-Bugzilla-Resolution: INVALID
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_status resolution
+Message-ID: <bug-216714-13602-BafpLJ2bhY@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-216714-13602@https.bugzilla.kernel.org/>
+References: <bug-216714-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a98303db-85df-a64d-d672-c16d1e0d8b49@leemhuis.info>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 21-11-22 16:18:09, Thorsten Leemhuis wrote:
-> On 21.11.22 16:00, Jan Kara wrote:
-> > OK, attached patch fixes the deadlock for me. Can you test whether it fixes
-> > the problem for you as well? Thanks!
-> 
-> Jan, many thx for taking care of this. There is one small thing to
-> improve, please add the following tags to your patch:
-> 
-> Link:
-> https://lore.kernel.org/r/c77bf00f-4618-7149-56f1-b8d1664b9d07@linux.microsoft.com/
- 
-Good point. Thanks, added!
+https://bugzilla.kernel.org/show_bug.cgi?id=3D216714
 
-> Not sure, maybe a reported-by for Syzbot would be good as well, see:
-> https://lore.kernel.org/linux-ext4/000000000000892a3005e5b5d96c@google.com/
+Artem S. Tashkinov (aros@gmx.com) changed:
 
-The syzbot report is actually unrelated. So far I think that the bisection
-that landed guys on the same commit as syzbot was just luck or maybe change
-in timing that made the problem easier to reproduce. 
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+             Status|NEW                         |RESOLVED
+         Resolution|---                         |INVALID
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
