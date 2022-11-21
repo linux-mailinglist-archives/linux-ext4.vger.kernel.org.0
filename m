@@ -2,54 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 897FA632158
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Nov 2022 12:53:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88121632157
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Nov 2022 12:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbiKULxb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 21 Nov 2022 06:53:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53696 "EHLO
+        id S230083AbiKULx2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 21 Nov 2022 06:53:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230124AbiKULxY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Nov 2022 06:53:24 -0500
+        with ESMTP id S229903AbiKULxX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Nov 2022 06:53:23 -0500
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905B9F39;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFDAF165B2;
         Mon, 21 Nov 2022 03:53:22 -0800 (PST)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NG5PS2tllz4f3jHx;
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NG5PS4wjJz4f3jYt;
         Mon, 21 Nov 2022 19:53:16 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.127.227])
-        by APP4 (Coremail) with SMTP id gCh0CgDHONatZntj0uehAw--.51112S5;
+        by APP4 (Coremail) with SMTP id gCh0CgDHONatZntj0uehAw--.51112S6;
         Mon, 21 Nov 2022 19:53:19 +0800 (CST)
 From:   Ye Bin <yebin@huaweicloud.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, jack@suse.cz,
-        Ye Bin <yebin10@huawei.com>,
-        syzbot+05a0f0ccab4a25626e38@syzkaller.appspotmail.com
-Subject: [PATCH v2 1/3] ext4: fix incorrect calculate 'reserved' in '__es_remove_extent' when enable bigalloc feature
-Date:   Mon, 21 Nov 2022 20:14:32 +0800
-Message-Id: <20221121121434.1061725-2-yebin@huaweicloud.com>
+        Ye Bin <yebin10@huawei.com>
+Subject: [PATCH v2 2/3] ext4: record error when detect abnormal 'i_reserved_data_blocks'
+Date:   Mon, 21 Nov 2022 20:14:33 +0800
+Message-Id: <20221121121434.1061725-3-yebin@huaweicloud.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221121121434.1061725-1-yebin@huaweicloud.com>
 References: <20221121121434.1061725-1-yebin@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgDHONatZntj0uehAw--.51112S5
-X-Coremail-Antispam: 1UD129KBjvJXoWxJF1UXr1rXF4UJF45CryrCrg_yoW8Kr48p3
-        y8Ar4UWryfuw1UW3yftw1j9Fn29a4UCrW7WFs3t343uFy5A34Sgr10yFs0vFWYqrWIqw4U
-        XF4rKw1jq3WUXaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvCb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGw
-        A2048vs2IY020Ec7CjxVAFwI0_JFI_Gr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-        Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
-        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
-        17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
-        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY
-        6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2Kf
-        nxnUUI43ZEXa7IU1M7K7UUUUU==
+X-CM-TRANSID: gCh0CgDHONatZntj0uehAw--.51112S6
+X-Coremail-Antispam: 1UD129KBjvdXoW7GF1DXr1UJFW8Zr17uF13XFb_yoWkGrbEqw
+        40yF10v393Xw4xWFs5GrnxJFsYkF4kCr18Ww4rKF15Zr1jvF4DAw4kAry7Zrn5Way8Grn0
+        9rWfJry3GrWrWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbVxYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7IE14v26r15M2
+        8IrcIa0xkI8VCY1x0267AKxVW8JVW5JwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK
+        021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r
+        4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+        GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx
+        0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWU
+        JVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+        1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvE
+        x4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa
+        73UjIFyTuYvjxU2_MaUUUUU
 X-CM-SenderInfo: p1hex046kxt4xhlfz01xgou0bp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
@@ -62,75 +61,34 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Ye Bin <yebin10@huawei.com>
 
-Syzbot report issue as follows:
-EXT4-fs error (device loop0): ext4_validate_block_bitmap:398: comm rep: bg 0: block 5: invalid block bitmap
-EXT4-fs (loop0): Delayed block allocation failed for inode 18 at logical offset 0 with max blocks 32 with error 28
-EXT4-fs (loop0): This should not happen!! Data will be lost
+If 'i_reserved_data_blocks' is not cleared which mean something wrong with
+code, free space accounting is likely wrong, according to Jan Kara's advice
+use ext4_error() to record this abnormal let fsck to repair and also we can
+capture this issue.
 
-EXT4-fs (loop0): Total free blocks count 0
-EXT4-fs (loop0): Free/Dirty block details
-EXT4-fs (loop0): free_blocks=0
-EXT4-fs (loop0): dirty_blocks=32
-EXT4-fs (loop0): Block reservation details
-EXT4-fs (loop0): i_reserved_data_blocks=2
-EXT4-fs (loop0): Inode 18 (00000000845cd634): i_reserved_data_blocks (1) not cleared!
-
-Above issue happens as follows:
-Assume:
-sbi->s_cluster_ratio = 16
-Step1: Insert delay block [0, 31] -> ei->i_reserved_data_blocks=2
-Step2:
-ext4_writepages
-  mpage_map_and_submit_extent -> return failed
-  mpage_release_unused_pages -> to release [0, 30]
-    ext4_es_remove_extent -> remove lblk=0 end=30
-      __es_remove_extent -> len1=0 len2=31-30=1
- __es_remove_extent:
- ...
- if (len2 > 0) {
-  ...
-	  if (len1 > 0) {
-		  ...
-	  } else {
-		es->es_lblk = end + 1;
-		es->es_len = len2;
-		...
-	  }
-  	if (count_reserved)
-		count_rsvd(inode, lblk, orig_es.es_len - len1 - len2, &orig_es, &rc);
-	goto out; -> will return but didn't calculate 'reserved'
- ...
-Step3: ext4_destroy_inode -> trigger "i_reserved_data_blocks (1) not cleared!"
-
-To solve above issue if 'len2>0' call 'get_rsvd()' before goto out.
-
-Reported-by: syzbot+05a0f0ccab4a25626e38@syzkaller.appspotmail.com
 Signed-off-by: Ye Bin <yebin10@huawei.com>
 ---
- fs/ext4/extents_status.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/ext4/super.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
-index cd0a861853e3..4684eaea9471 100644
---- a/fs/ext4/extents_status.c
-+++ b/fs/ext4/extents_status.c
-@@ -1371,7 +1371,7 @@ static int __es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
- 		if (count_reserved)
- 			count_rsvd(inode, lblk, orig_es.es_len - len1 - len2,
- 				   &orig_es, &rc);
--		goto out;
-+		goto count;
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 0690e2e0b74d..3d30007502a4 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1387,10 +1387,9 @@ static void ext4_destroy_inode(struct inode *inode)
  	}
  
- 	if (len1 > 0) {
-@@ -1413,6 +1413,7 @@ static int __es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
- 		}
- 	}
+ 	if (EXT4_I(inode)->i_reserved_data_blocks)
+-		ext4_msg(inode->i_sb, KERN_ERR,
+-			 "Inode %lu (%p): i_reserved_data_blocks (%u) not cleared!",
+-			 inode->i_ino, EXT4_I(inode),
+-			 EXT4_I(inode)->i_reserved_data_blocks);
++		ext4_error(inode->i_sb, "Inode %lu (%p) i_reserved_data_blocks"
++			   " (%u) not cleared!", inode->i_ino, EXT4_I(inode),
++			   EXT4_I(inode)->i_reserved_data_blocks);
+ }
  
-+count:
- 	if (count_reserved)
- 		*reserved = get_rsvd(inode, end, es, &rc);
- out:
+ static void init_once(void *foo)
 -- 
 2.31.1
 
