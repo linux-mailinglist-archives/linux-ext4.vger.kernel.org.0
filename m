@@ -2,122 +2,79 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 811866333FD
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Nov 2022 04:35:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38ACF633403
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Nov 2022 04:40:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231844AbiKVDfL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 21 Nov 2022 22:35:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50840 "EHLO
+        id S231803AbiKVDkc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 21 Nov 2022 22:40:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232242AbiKVDfG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Nov 2022 22:35:06 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34827275D8;
-        Mon, 21 Nov 2022 19:35:03 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id z1so9462195qkl.9;
-        Mon, 21 Nov 2022 19:35:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=z7I/A0iqrxZCljCTmfRtDGpoHSH6u01y29lbjq53MCQ=;
-        b=ohhrabe+FDlS5639l+JpnC2ukjAMdb6bfuAIpTGswwg+DwmaBlvLdh7657mErGy9JW
-         pDXaUaYDFF0QsQYXJCE7pMP+IgxJ8A3MZZiQYTgP9RJsjHQK6+Bc++LrpdpSvlChCBhC
-         +XN97u/oTIhOOfr+ZOIKHpoqtAhqhXZ6lg6Rj/xpP+q/SwosP+uXmB4Qx1SlWilXs64Z
-         26mcqCQmR75sYPEKxq47fGVmrrEoNeo9ezI2rjzo3mAyZXmdbhHBbzsyb/SDRSdUQ+R/
-         QNsyVq3gk0kNjmVnH0Ie/9L+cLx3dCffvr2yYcrAocmd0Vz92yhkgA3PFzC5Kc+CZNa8
-         fajw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z7I/A0iqrxZCljCTmfRtDGpoHSH6u01y29lbjq53MCQ=;
-        b=tlx5lyoWXSwEpEdz6UBY7RC/EvroA9U7iea33dwg6cQsUAOR7VeYrF+sDKKDgc4BmR
-         yIRYMdBdq3MkBnv8yTBeAFcUfoonIVpbm5l4atqBClc2mlc9VRo2pLHL8EFYLKvOX5rR
-         VKvmsMOczpoFdhxQP+V1mEC72GmlHRyw2skLxtJ02SkQ4wGCkqevzVK2dYud3p/mKsOy
-         Qe88caIbeDpU9H3Y3dGy9riPmaDsx6MKUbIx4ms5I9q2gES7ML/3IoareHR6YvRGgjoP
-         44G1exhGWP0s5sn8N4ViLcWebSjlhM9fUb/D+BP+QdQBUtyg0cv7oWaRDExGkwHiWw4h
-         dy6A==
-X-Gm-Message-State: ANoB5pmATExUXtYsQUEskchMTeA3aLYgb8wnvpvitfTIEgVk47RhdCyM
-        yEgGMZbPgMIS2fPR9iEJwW8=
-X-Google-Smtp-Source: AA0mqf7DEZaU8K9xSgLXBQyX0gczNViTgga48HCdIAXxJznceIB20mDBw3Dzm9i1lYIDxTOTzuC8Eg==
-X-Received: by 2002:a37:8883:0:b0:6fa:93b1:8b6f with SMTP id k125-20020a378883000000b006fa93b18b6fmr19496035qkd.357.1669088102328;
-        Mon, 21 Nov 2022 19:35:02 -0800 (PST)
-Received: from debian-BULLSEYE-live-builder-AMD64 (h96-61-90-13.cntcnh.broadband.dynamic.tds.net. [96.61.90.13])
-        by smtp.gmail.com with ESMTPSA id o22-20020ac872d6000000b00399edda03dfsm7537642qtp.67.2022.11.21.19.35.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Nov 2022 19:35:01 -0800 (PST)
-Date:   Mon, 21 Nov 2022 22:34:59 -0500
-From:   Eric Whitney <enwlinux@gmail.com>
-To:     Ye Bin <yebin@huaweicloud.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jack@suse.cz, Ye Bin <yebin10@huawei.com>
-Subject: Re: [PATCH v2 2/3] ext4: record error when detect abnormal
- 'i_reserved_data_blocks'
-Message-ID: <Y3xDY4GVAF+eKAqY@debian-BULLSEYE-live-builder-AMD64>
-References: <20221121121434.1061725-1-yebin@huaweicloud.com>
- <20221121121434.1061725-3-yebin@huaweicloud.com>
+        with ESMTP id S229499AbiKVDkb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Nov 2022 22:40:31 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6AB527CD8;
+        Mon, 21 Nov 2022 19:40:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=VnTub4Y5HXxdbq9kgRXMlJDj14X+1QruDCzpXxBbgMA=; b=jZoeg6TF21XJkuWIBeOBqwSFwR
+        S+XahH3FklBRWzEpYuA5k1nY0SXTXfkBvmBxqXuCWsHLq4Tt3mmRX/yFTLtoqX7JhtzCr4v49jWZS
+        UMTI5vJAY2AkQ06hwM6FO8AD88bQtStfDSZ7R2H1c2kDJrTbbIvhpwgmUrOtqtBTpEfLv51y+8eVN
+        bg8imgaRNgbG3Vyne7YSifIZXRQdfxsih0gA8buipA48uL/ef6WZKGQwmUGt4dMgQWtyT95Kh36jm
+        A3hWIW5kpYnWbTEo1JBRfr2oBaVEyqfcQ0NcU4pvxfdGiFEUL541uK+IJpUQAYXFvC2NJp7DNAfMG
+        7V3SOPsQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1oxK99-005ts8-U9; Tue, 22 Nov 2022 03:40:31 +0000
+Date:   Tue, 22 Nov 2022 03:40:31 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Potapenko <glider@google.com>,
+        linux-kernel@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jaegeuk@kernel.org, chao@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Eric Biggers <ebiggers@kernel.org>,
+        syzbot+9767be679ef5016b6082@syzkaller.appspotmail.com
+Subject: Re: [PATCH 1/5] fs: ext4: initialize fsdata in pagecache_write()
+Message-ID: <Y3xEr3hhbYfdei+k@casper.infradead.org>
+References: <20221121112134.407362-1-glider@google.com>
+ <20221121114840.c407626c13706ff993efabe3@linux-foundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221121121434.1061725-3-yebin@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20221121114840.c407626c13706ff993efabe3@linux-foundation.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-* Ye Bin <yebin@huaweicloud.com>:
-> From: Ye Bin <yebin10@huawei.com>
+On Mon, Nov 21, 2022 at 11:48:40AM -0800, Andrew Morton wrote:
+> On Mon, 21 Nov 2022 12:21:30 +0100 Alexander Potapenko <glider@google.com> wrote:
 > 
-> If 'i_reserved_data_blocks' is not cleared which mean something wrong with
-> code, free space accounting is likely wrong, according to Jan Kara's advice
-> use ext4_error() to record this abnormal let fsck to repair and also we can
-> capture this issue.
+> > When aops->write_begin() does not initialize fsdata, KMSAN reports
+> > an error passing the latter to aops->write_end().
+> > 
+> > Fix this by unconditionally initializing fsdata.
+> > 
+> > ...
+> >
 > 
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
-> ---
->  fs/ext4/super.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 0690e2e0b74d..3d30007502a4 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -1387,10 +1387,9 @@ static void ext4_destroy_inode(struct inode *inode)
->  	}
->  
->  	if (EXT4_I(inode)->i_reserved_data_blocks)
-> -		ext4_msg(inode->i_sb, KERN_ERR,
+> I'm assuming that this is not-a-bug, and that these changes are purely
+> workarounds for a KMSAN shortcoming?
 
-Per the coding standard, IIRC, the string should not be split across lines
-for "greppability", so it should remain as is.  It's always good to run
-checkpatch to catch stuff like this.
+It's a weird one.  It used to be not-a-bug.  Then we changed from
+std=gnu99 to std=gnu11 or something.  And in the intervening years,
+the C standards ctte decided that passing an uninitialised pointer to a
+function was UB.  So we start by passing a pointer to the pointer to
+->write_begin().  Some ->write_begin functions initialise that pointer;
+others don't.  Then we pass the pointer directly to ->write_end.  If
+->write_begin initialised the pointer, that's fine, and if not, it's UB.
+Of course the ->write_end doesn't use it if the ->write_begin didn't
+initialise it, but it's too late because merely calling the function
+was UB.  Thanks, Itanium!
 
-> -			 "Inode %lu (%p): i_reserved_data_blocks (%u) not cleared!",
-> -			 inode->i_ino, EXT4_I(inode),
-> -			 EXT4_I(inode)->i_reserved_data_blocks);
-> +		ext4_error(inode->i_sb, "Inode %lu (%p) i_reserved_data_blocks"
-> +			   " (%u) not cleared!", inode->i_ino, EXT4_I(inode),
-> +			   EXT4_I(inode)->i_reserved_data_blocks);
->  }
->  
->  static void init_once(void *foo)
-
-This is an improvement over the first version.  If i_reserved_data_blocks is
-non-zero, something is definitely broken, but it's perhaps less likely to
-indicate file system damage than if it hits zero while there are still
-outstanding delayed blocks (handled well elsewhere).  So, it's not clear
-we need to escalate handling this case but it doesn't hurt, either.
-
-Eric
-
-> -- 
-> 2.31.1
-> 
