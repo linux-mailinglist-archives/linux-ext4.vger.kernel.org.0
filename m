@@ -2,223 +2,258 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E0A6342FF
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Nov 2022 18:53:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B109F634B56
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Nov 2022 00:45:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233413AbiKVRxI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 22 Nov 2022 12:53:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36086 "EHLO
+        id S230009AbiKVXpX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 22 Nov 2022 18:45:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234827AbiKVRw2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Nov 2022 12:52:28 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 94A15B961A
-        for <linux-ext4@vger.kernel.org>; Tue, 22 Nov 2022 09:48:40 -0800 (PST)
-Received: by linux.microsoft.com (Postfix, from userid 1112)
-        id BA03320B717A; Tue, 22 Nov 2022 09:48:07 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BA03320B717A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1669139287;
-        bh=MdGAdeNQYdvRiHl1oLCKAcHKDmeK9AlUZj2XSrndgQo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ruCLKfD0l5XLSlKrECT+P4aImxvBPduuhiX6rroyCELMOlIQTJY0wtmV+0GbnJR4k
-         M60VveKMyvc27SP34Vq5YpvDUYgkwaQGsg/2ImnIUwQV1APKVZZrSOOxboMRhAWDJ1
-         npGAvBZ0BbXF9SA/X4HLvWfPLdoz963a38N1VDTc=
-Date:   Tue, 22 Nov 2022 09:48:07 -0800
-From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Thilo Fromm <t-lo@linux.microsoft.com>,
-        Ye Bin <yebin10@huawei.com>, jack@suse.com, tytso@mit.edu,
-        linux-ext4@vger.kernel.org, regressions@lists.linux.dev
-Subject: Re: [syzbot] possible deadlock in jbd2_journal_lock_updates
-Message-ID: <20221122174807.GA9658@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <20221110125758.GA6919@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20221110152637.g64p4hycnd7bfnnr@quack3>
- <20221110192701.GA29083@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20221111142424.vwt4khbtfzd5foiy@quack3>
- <20221111151029.GA27244@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20221111155238.GA32201@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20221121133559.srie6oy47udavj52@quack3>
- <20221121150018.tq63ot6qja3mfhpw@quack3>
- <20221121181558.GA9006@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20221122115715.kxqhsk2xs4nrofyb@quack3>
+        with ESMTP id S235058AbiKVXpV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Nov 2022 18:45:21 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 046F9C7239
+        for <linux-ext4@vger.kernel.org>; Tue, 22 Nov 2022 15:45:20 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id y203so15820590pfb.4
+        for <linux-ext4@vger.kernel.org>; Tue, 22 Nov 2022 15:45:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=4Br32V4f5RhJzAJZzqIlTw5MxWMCxMPceRuTf9fFBWs=;
+        b=LMp1DNYW9KAAMAhwIRp13A+UoP5f9oi+tOL9pTcPwVL3Hc6Ia0RKrsPyHf7sk3dYlL
+         v9YR+AZs0izub2IeIbLi9+6o8cIngufh1uDpzVlhQ/ZFDkXxqwXovqRsjKBm6NZFGvv6
+         pSeTyc8+Xrg5pYq9dVwahpyuRyB+A0L7WHBm9FYVIm3CSim0mFWLdFJcXn1W/Cirm8wU
+         4cx6I/5Z9/oLvxF/W/DNvYvSDm5Y1x5ZXSK3G4AXZe853DkbvzdSe2ugzOjJtso17frU
+         aC8o3HsIYiTKdAMhTgI75zsB1Xqbrkav8T2gO/YrQ38GZirJO2OPKZh8DErpWJLFpzvk
+         XPlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4Br32V4f5RhJzAJZzqIlTw5MxWMCxMPceRuTf9fFBWs=;
+        b=6eVVlUCL0pOd3XrxpJ9Q1CU4NmxSJT/rxfoMWKOJuTsK2jdR/iCcyCl5derupKTTey
+         vl0TVQW0AE0Y6YaklWo5rsrD72VsIOlMCseAWKDEo1bTKPydExWjIND9lILlq1lRSJW5
+         mq1mf14rRrDO5vSMQsbBDEFdCyV2Yt4pzrk6SVwkbHZX01HUsX2+hjW3YplNxrQY/XiL
+         ZkWtYG6ICW7NysYJ+jog5yT09sGpj/0yGGBqwELsIAQWzsgcnuPaJT6qIn+LjxJecL9x
+         4UoQ+He4RJBSnYveW2w2RR/LX+NSESCKLtzfqzoj1uSr803XBvY9ZYS9aAaO1/g7BwMg
+         +A2w==
+X-Gm-Message-State: ANoB5pm+WTvfqcy68omHCyVJ2T1r7JYbO6RCPQHRdKKr1lNAeTxzH3YA
+        PuDd62rYp7+GAFVMS2B6DEqVDA==
+X-Google-Smtp-Source: AA0mqf4vEA83Ja+O0Ci0KfXTX8Oj7a0KKnCvRMdSpSJjVAh65PF1JRO/J4lVuOvYHHckcCKBomIqGQ==
+X-Received: by 2002:a63:1626:0:b0:470:2c90:d89f with SMTP id w38-20020a631626000000b004702c90d89fmr7904405pgl.253.1669160719359;
+        Tue, 22 Nov 2022 15:45:19 -0800 (PST)
+Received: from dread.disaster.area (pa49-186-65-106.pa.vic.optusnet.com.au. [49.186.65.106])
+        by smtp.gmail.com with ESMTPSA id e126-20020a621e84000000b00573769811d6sm6800188pfe.44.2022.11.22.15.45.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Nov 2022 15:45:18 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1oxcx1-00HS2f-47; Wed, 23 Nov 2022 10:45:15 +1100
+Date:   Wed, 23 Nov 2022 10:45:15 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Catherine Hoang <catherine.hoang@oracle.com>,
+        linux-xfs@vger.kernel.org, linux-ext4 <linux-ext4@vger.kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-api@vger.kernel.org
+Subject: Re: [PATCH v1] xfs_spaceman: add fsuuid command
+Message-ID: <20221122234515.GT3600936@dread.disaster.area>
+References: <20221109222335.84920-1-catherine.hoang@oracle.com>
+ <Y3abjYmX//CF/ey0@magnolia>
+ <20221117215125.GH3600936@dread.disaster.area>
+ <Y3bKjm2vOwy/jV4Z@magnolia>
+ <20221121233357.GO3600936@dread.disaster.area>
+ <Y3xqhXjJpXosOPPH@magnolia>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="X1bOJ3K7DJ5YkBrT"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20221122115715.kxqhsk2xs4nrofyb@quack3>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Y3xqhXjJpXosOPPH@magnolia>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
---X1bOJ3K7DJ5YkBrT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Nov 22, 2022 at 12:57:15PM +0100, Jan Kara wrote:
-> On Mon 21-11-22 10:15:58, Jeremi Piotrowski wrote:
-> > On Mon, Nov 21, 2022 at 04:00:18PM +0100, Jan Kara wrote:
+On Mon, Nov 21, 2022 at 10:21:57PM -0800, Darrick J. Wong wrote:
+> [adding Ted, the ext4 list, fsdevel, and api, because why not?]
+> 
+> On Tue, Nov 22, 2022 at 10:33:57AM +1100, Dave Chinner wrote:
+> > On Thu, Nov 17, 2022 at 03:58:06PM -0800, Darrick J. Wong wrote:
+> > > On Fri, Nov 18, 2022 at 08:51:25AM +1100, Dave Chinner wrote:
+> > > > On Thu, Nov 17, 2022 at 12:37:33PM -0800, Darrick J. Wong wrote:
+> > > > > On Wed, Nov 09, 2022 at 02:23:35PM -0800, Catherine Hoang wrote:
+> > > > > > Add support for the fsuuid command to retrieve the UUID of a mounted
+> > > > > > filesystem.
+> > > > > > 
+> > > > > > Signed-off-by: Catherine Hoang <catherine.hoang@oracle.com>
+> > > > > > ---
+> 
+> <snip to the good part>
+> > > > > If you're really unlucky, the C compiler will put the fsuuid right
+> > > > > before the call frame, which is how stack smashing attacks work.  It
+> > > > > might also lay out bp[] immediately afterwards, which will give you
+> > > > > weird results as the unparse function overwrites its source buffer.  The
+> > > > > C compiler controls the stack layout, which means this can go bad in
+> > > > > subtle ways.
+> > > > > 
+> > > > > Either way, gcc complains about this (albeit in an opaque manner)...
+> > > > > 
+> > > > > In file included from ../include/xfs.h:9,
+> > > > >                  from ../include/libxfs.h:15,
+> > > > >                  from fsuuid.c:7:
+> > > > > In function ‘platform_uuid_unparse’,
+> > > > >     inlined from ‘fsuuid_f’ at fsuuid.c:45:3:
+> > > > > ../include/xfs/linux.h:100:9: error: ‘uuid_unparse’ reading 16 bytes from a region of size 0 [-Werror=stringop-overread]
+> > > > >   100 |         uuid_unparse(*uu, buffer);
+> > > > >       |         ^~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > > ../include/xfs/linux.h: In function ‘fsuuid_f’:
+> > > > > ../include/xfs/linux.h:100:9: note: referencing argument 1 of type ‘const unsigned char *’
+> > > > > In file included from ../include/xfs/linux.h:13,
+> > > > >                  from ../include/xfs.h:9,
+> > > > >                  from ../include/libxfs.h:15,
+> > > > >                  from fsuuid.c:7:
+> > > > > /usr/include/uuid/uuid.h:107:13: note: in a call to function ‘uuid_unparse’
+> > > > >   107 | extern void uuid_unparse(const uuid_t uu, char *out);
+> > > > >       |             ^~~~~~~~~~~~
+> > > > > cc1: all warnings being treated as errors
+> > > > > 
+> > > > > ...so please allocate the struct fsuuid object dynamically.
+> > > > 
+> > > > So, follow common convention and you'll get it wrong, eh? That a
+> > > > score of -4 on Rusty's API Design scale.
+> > > > 
+> > > > http://sweng.the-davies.net/Home/rustys-api-design-manifesto
+> > > > 
+> > > > Flex arrays in user APIs like this just look plain dangerous to me.
+> > > > 
+> > > > Really, this says that the FSUUID API should have a fixed length
+> > > > buffer size defined in the API and the length used can be anything
+> > > > up to the maximum.
+> > > > 
+> > > > We already have this being added for the ioctl API:
+> > > > 
+> > > > #define UUID_SIZE 16
+> > > > 
+> > > > So why isn't the API definition this:
+> > > > 
+> > > > struct fsuuid {
+> > > >     __u32   fsu_len;
+> > > >     __u32   fsu_flags;
+> > > >     __u8    fsu_uuid[UUID_SIZE];
+> > > > };
+> > > > 
+> > > > Or if we want to support larger ID structures:
+> > > > 
+> > > > #define MAX_FSUUID_SIZE 256
+> > > > 
+> > > > struct fsuuid {
+> > > >     __u32   fsu_len;
+> > > >     __u32   fsu_flags;
+> > > >     __u8    fsu_uuid[MAX_FSUUID_SIZE];
+> > > > };
+> > > > 
+> > > > Then the structure can be safely placed on the stack, which means
+> > > > "the obvious use is (probably) the correct one" (a score of 7 on
+> > > > Rusty's API Design scale). It also gives the kernel a fixed upper
+> > > > bound that it can use to validate the incoming fsu_len variable
+> > > > against...
 > > > 
-> > > OK, attached patch fixes the deadlock for me. Can you test whether it fixes
-> > > the problem for you as well? Thanks!
+> > > Too late now, this already shipped in 6.0.  Changing the struct size
+> > > would change the ioctl number, which is a totally new API.  This was
+> > > already discussed back in July on fsdevel/api.
 > > 
-> > I'll test the fix tomorrow, but I've noticed it doesn't apply cleanly to
-> > 5.15.78, which seems to be missing:
-> > 
-> > - 5fc4cbd9fde5d4630494fd6ffc884148fb618087 mbcache: Avoid nesting of cache->c_list_lock under bit locks
-> >   (this one is marked for stable but not in 5.15?)
-> > - 307af6c879377c1c63e71cbdd978201f9c7ee8df mbcache: automatically delete entries from cache on freeing
-> >   (this one is not marked for stable)
-> > 
-> > So either a special backport is needed or these two would need to be applied as
-> > well.
+> > It is certainly not too late - if we are going to lift this to the
+> > VFS, then we can simply make it a new ioctl. The horrible ext4 ioctl
+> > can ber left to rot in ext4 and nobody else ever needs to care that
+> > it exists.
 > 
-> Right. The fix is against current mainline kernel. Stable tree backports
-> are a second step once the fix is confirmed to work :). Let me know in case
-> you need help with porting to the kernel version you need for testing.
+> You're wrong.  This was discussed **multiple times** this summer on
+> the fsdevel and API lists.  You had plenty of opportunity to make these
+> suggestions about the design, and yet you did not:
 > 
+> https://lore.kernel.org/linux-api/20220701201123.183468-1-bongiojp@gmail.com/
+> https://lore.kernel.org/linux-api/20220719065551.154132-1-bongiojp@gmail.com/
+> https://lore.kernel.org/linux-api/20220719234131.235187-1-bongiojp@gmail.com/
+> https://lore.kernel.org/linux-api/20220721224422.438351-1-bongiojp@gmail.com/
 
-I confirm that this patch fixes things with the more complicated reproducer :)
-Attached is my tweaked version of the patch that applies against 5.15.
 
---X1bOJ3K7DJ5YkBrT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline; filename="0001-ext4-Fix-deadlock-due-to-mbcache-en.patch"
+There's good reason for that: this was posted and reviewed as *an
+EXT4 specific API*.  Why are you expecting XFS developers to closely
+review a patchset that was titled "Add ioctls to get/set the ext4
+superblock uuid."?
 
-From e7ec42e181c6213d1fd71b946196f05af601ba5c Mon Sep 17 00:00:00 2001
-From: Jan Kara <jack@suse.cz>
-Date: Mon, 21 Nov 2022 15:44:10 +0100
-Subject: [PATCH] ext4: Fix deadlock due to mbcache entry corruption
+There was -no reasons- for me to pay attention to it, and I have
+enough to keep up with without having to care about the minutae of
+what ext4 internal information is being exposing to userspace.
 
-When manipulating xattr blocks, we can deadlock infinitely looping
-inside ext4_xattr_block_set() where we constantly keep finding xattr
-block for reuse in mbcache but we are unable to reuse it because its
-reference count is too big. This happens because cache entry for the
-xattr block is marked as reusable (e_reusable set) although its
-reference count is too big. When this inconsistency happens, this
-inconsistent state is kept indefinitely and so ext4_xattr_block_set()
-keeps retrying indefinitely.
+However, now it's being proposed as a *generic VFS API*, and so it's
+now important enough for developers from other filesystems to look
+at this ioctl API.
 
-The inconsistent state is caused by non-atomic update of e_reusable bit.
-e_reusable is part of a bitfield and e_reusable update can race with
-update of e_referenced bit in the same bitfield resulting in loss of one
-of the updates. Fix the problem by using atomic bitops instead.
+> Jeremy built the functionality and followed the customary process,
+> sending four separate revisions for reviews.  He adapted his code based
+> on our feedback about how to future-proof it by adding an explicit
+> length parameter, and got it merged into ext4 in 6.0-rc1.
 
-CC: stable@vger.kernel.org
-Fixes: 6048c64b2609 ("mbcache: add reusable flag to cache entries")
-Reported-by: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-Reported-by: Thilo Fromm <t-lo@linux.microsoft.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/xattr.c         |  4 ++--
- fs/mbcache.c            | 14 ++++++++------
- include/linux/mbcache.h |  9 +++++++--
- 3 files changed, 17 insertions(+), 10 deletions(-)
+*As an EXT4 modification*, not a generic VFS ioctl.
 
-diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index 533216e80fa2..22700812a4d3 100644
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -1281,7 +1281,7 @@ ext4_xattr_release_block(handle_t *handle, struct inode *inode,
- 				ce = mb_cache_entry_get(ea_block_cache, hash,
- 							bh->b_blocknr);
- 				if (ce) {
--					ce->e_reusable = 1;
-+					set_bit(MBE_REUSABLE_B, &ce->e_flags);
- 					mb_cache_entry_put(ea_block_cache, ce);
- 				}
- 			}
-@@ -2042,7 +2042,7 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
- 				}
- 				BHDR(new_bh)->h_refcount = cpu_to_le32(ref);
- 				if (ref == EXT4_XATTR_REFCOUNT_MAX)
--					ce->e_reusable = 0;
-+					clear_bit(MBE_REUSABLE_B, &ce->e_flags);
- 				ea_bdebug(new_bh, "reusing; refcount now=%d",
- 					  ref);
- 				ext4_xattr_block_csum_set(inode, new_bh);
-diff --git a/fs/mbcache.c b/fs/mbcache.c
-index 2010bc80a3f2..ac07b50ea3df 100644
---- a/fs/mbcache.c
-+++ b/fs/mbcache.c
-@@ -94,8 +94,9 @@ int mb_cache_entry_create(struct mb_cache *cache, gfp_t mask, u32 key,
- 	atomic_set(&entry->e_refcnt, 1);
- 	entry->e_key = key;
- 	entry->e_value = value;
--	entry->e_reusable = reusable;
--	entry->e_referenced = 0;
-+	entry->e_flags = 0;
-+	if (reusable)
-+		set_bit(MBE_REUSABLE_B, &entry->e_flags);
- 	head = mb_cache_entry_head(cache, key);
- 	hlist_bl_lock(head);
- 	hlist_bl_for_each_entry(dup, dup_node, head, e_hash_list) {
-@@ -155,7 +156,8 @@ static struct mb_cache_entry *__entry_find(struct mb_cache *cache,
- 	while (node) {
- 		entry = hlist_bl_entry(node, struct mb_cache_entry,
- 				       e_hash_list);
--		if (entry->e_key == key && entry->e_reusable) {
-+		if (entry->e_key == key &&
-+		    test_bit(MBE_REUSABLE_B, &entry->e_flags)) {
- 			atomic_inc(&entry->e_refcnt);
- 			goto out;
- 		}
-@@ -325,7 +327,7 @@ EXPORT_SYMBOL(mb_cache_entry_delete_or_get);
- void mb_cache_entry_touch(struct mb_cache *cache,
- 			  struct mb_cache_entry *entry)
- {
--	entry->e_referenced = 1;
-+	set_bit(MBE_REFERENCED_B, &entry->e_flags);
- }
- EXPORT_SYMBOL(mb_cache_entry_touch);
- 
-@@ -350,8 +352,8 @@ static unsigned long mb_cache_shrink(struct mb_cache *cache,
- 	while (nr_to_scan-- && !list_empty(&cache->c_list)) {
- 		entry = list_first_entry(&cache->c_list,
- 					 struct mb_cache_entry, e_list);
--		if (entry->e_referenced || atomic_read(&entry->e_refcnt) > 2) {
--			entry->e_referenced = 0;
-+		if (test_bit(MBE_REFERENCED_B, &entry->e_flags) || atomic_read(&entry->e_refcnt) > 2) {
-+			clear_bit(MBE_REFERENCED_B, &entry->e_flags);
- 			list_move_tail(&entry->e_list, &cache->c_list);
- 			continue;
- 		}
-diff --git a/include/linux/mbcache.h b/include/linux/mbcache.h
-index 8eca7f25c432..62927f7e2588 100644
---- a/include/linux/mbcache.h
-+++ b/include/linux/mbcache.h
-@@ -10,6 +10,12 @@
- 
- struct mb_cache;
- 
-+/* Cache entry flags */
-+enum {
-+	MBE_REFERENCED_B = 0,
-+	MBE_REUSABLE_B
-+};
-+
- struct mb_cache_entry {
- 	/* List of entries in cache - protected by cache->c_list_lock */
- 	struct list_head	e_list;
-@@ -18,8 +24,7 @@ struct mb_cache_entry {
- 	atomic_t		e_refcnt;
- 	/* Key in hash - stable during lifetime of the entry */
- 	u32			e_key;
--	u32			e_referenced:1;
--	u32			e_reusable:1;
-+	unsigned long		e_flags;
- 	/* User provided value - stable during lifetime of the entry */
- 	u64			e_value;
- };
+> Now you want Catherine and I to tear down his work and initiate a design
+> review of YET ANOTHER NEW IOCTL just so the API can hit this one design
+> point you care about, and then convince Ted to go back and redo all the
+> work that has already been done.  All this to extract 16 bytes from the
+> kernel in a slightly different style than the existing XFS fsgeometry
+> ioctl.
+
+I'm not asking you to tear anything down. Just leave the ext4 ioctl
+as it is currently defined and nothing existing breaks or needs
+reworking.
+
+All I'm asking is that instead of lifting the ext4 ioctl verbatim,
+you lift it with a fixed maximum size for the uuid data array to
+replace the flex array. It's a *trivial change to make*, and yes, I
+know that this means it's not the same as the ext4 ioctl.
+
+But, really, who cares that it will be a different ioctl? Nobody but
+ext4 utilities will be using the ext4 ioctl, and we expect generic
+block/fs utilities and applications to use the VFS definition of the
+ioctl, not the ext4 specific one.
+
+> This was /supposed/ to be a simple way for a less experienced staffer to
+> gain some experience wiring up an existing ioctl.  And, well, I hope she
+> doesn't take away that developing for Linux is institutionally broken
+> and frustrating, because that's what I've taken away from the last 2+
+> years of being here.
+
+When we lift stuff from filesystem specific scope (where few people
+care about API warts) to generic VFS scope that the whole world is
+expected to see, use and understand, you should expect a larger
+number of experienced developers to scrutinise it.  The wider scope
+of the API means the "acceptibility bar" is set higher.
+
+Just because the code change is simple, it doesn't mean the issues
+surrounding the code change are simple or straight forward. Just
+because it went through a review on the ext4 list it doesn't mean
+the API or implementation is flawless.
+
+The point I'm making is that lifting fs ioctl APIs verbatim is a
+*known broken process* that leads to future pain fixing all the
+problems inherited from the original fs specific API and
+implementation.  If we want to lift functionality to be generic VFS
+UAPI and at the time of lifting we find problems with the UAPI
+and/or implementation, then we need to fix the problems before we
+expose the new VFS API to the entire world.
+
+Repeat past mistakes, or learn from them. Your choice...
+
+-Dave.
 -- 
-2.25.1
-
-
---X1bOJ3K7DJ5YkBrT--
+Dave Chinner
+david@fromorbit.com
