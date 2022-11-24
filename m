@@ -2,74 +2,77 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C0763704A
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Nov 2022 03:13:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEE4B637189
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Nov 2022 05:40:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229583AbiKXCNo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 23 Nov 2022 21:13:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37460 "EHLO
+        id S229471AbiKXEkp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 23 Nov 2022 23:40:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbiKXCNn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Nov 2022 21:13:43 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95CC1CB9D6
-        for <linux-ext4@vger.kernel.org>; Wed, 23 Nov 2022 18:13:42 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 544F4B825CD
-        for <linux-ext4@vger.kernel.org>; Thu, 24 Nov 2022 02:13:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07869C433C1;
-        Thu, 24 Nov 2022 02:13:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669256020;
-        bh=5cxyBUETcnNM7OFYIjnqakRaNJpPL7aJIumTpw3ATXw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=eac7ZJxOhFSZrLTCZgVBp7P0n396vKCLhAIKFPpVQX+l2oS7RGWFzLAoG+ydUXADs
-         qn/3ZqJ0VY0zulkDw3QsQVpTVsJgktESBqQgpUNLz3LRPKNcYFqHEpoM4WTgHdMXn0
-         P4A/FtGv6EoubakhnNWyBQAVBoNaaYVEjyQHoUTrOJ1rSSjkxDS+fcUCoQH37vrs3F
-         QgM9WRvZJfGsBklwgVymlXM607p/J3Thii0nTI3ZXmRWDDTz9XnMc4uI4x4Lr0o4Mw
-         GDr53RsJzq8MZG5PFDqC8vD2TmhRW64JA5KZ9OF/lz114Vc8MCR6uY/FUSOBThpwSN
-         ZmNMvJNrBDwVg==
-Date:   Wed, 23 Nov 2022 18:13:39 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     paul kairis <kairis@gmail.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>
-Subject: [PATCH] e2scrub_all: fix typo in manpage
-Message-ID: <Y37TU3KjcTk1B4TU@magnolia>
+        with ESMTP id S229715AbiKXEkm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Nov 2022 23:40:42 -0500
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79014C8CA1;
+        Wed, 23 Nov 2022 20:40:41 -0800 (PST)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2AO4ebmC019502
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Nov 2022 23:40:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1669264838; bh=yTZ1vOjbSao4b6lfEzRlJ5Kl+qDVtDO9/SMu8iMOUeU=;
+        h=Date:From:To:Cc:Subject;
+        b=ELiC+o+o7WaPlhHkkGgWL81mDubQse5JL2iDFdFWiNPyyt9PM77XziI6vV3zWIJlJ
+         h2e/Vll8IxJqctmjou8SJuq0+6F1MM/mCndPY/Q2mC9/Sv2hDGVGNRKOfaYhCoXn04
+         D2zvixmF8KZ+k4dx/lk1UYUwIyTpmh62NBZuEK4ctycUWISk/CDLx9cEh2lDeOr6pQ
+         qhp/Cg5g3cgdNrTjg/Q9k2Nt3JKQ17kspHzuSGgDEWds7jCMTTsOvsF7fPDClCNPZ+
+         MgHpQYUf9ymvQZMrc2RlQG6M5qy75P3UnJz2GolNlKq9CEoipwTYBD7FYKzyyENFrF
+         KvUgpTdsN1oag==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 13D2215C003D; Wed, 23 Nov 2022 23:40:37 -0500 (EST)
+Date:   Wed, 23 Nov 2022 23:40:37 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: GIT PULL] ext4 fixes for 6.1
+Message-ID: <Y371xdJURvBvgGOi@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Darrick J. Wong <djwong@kernel.org>
+The following changes since commit f0c4d9fc9cc9462659728d168387191387e903cc:
 
-Fix this reported typo.
+  Linux 6.1-rc4 (2022-11-06 15:07:11 -0800)
 
-Reported-by: paul kairis <kairis@gmail.com>
-Signed-off-by: Darrick J. Wong <djwong@kernel.org>
----
- scrub/e2scrub_all.8.in |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+are available in the Git repository at:
 
-diff --git a/scrub/e2scrub_all.8.in b/scrub/e2scrub_all.8.in
-index c33c18f6..99bdc0d4 100644
---- a/scrub/e2scrub_all.8.in
-+++ b/scrub/e2scrub_all.8.in
-@@ -1,7 +1,7 @@
- .TH E2SCRUB 8 "@E2FSPROGS_MONTH@ @E2FSPROGS_YEAR@" "E2fsprogs version @E2FSPROGS_VERSION@"
- .SH NAME
- e2scrub_all - check all mounted ext[234] file systems for errors.
--.SH SYNOPSYS
-+.SH SYNOPSIS
- .B
- e2scrub_all [OPTION]
- .SH DESCRIPTION
+  https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable2
+
+for you to fetch changes up to 4e3c51f4e805291b057d12f5dda5aeb50a538dc4:
+
+  fs: do not update freeing inode i_io_list (2022-11-22 17:00:00 -0500)
+
+----------------------------------------------------------------
+Fix a regression in the lazytime code that was introduced in v6.1-rc1,
+and a use-after-free that can be triggered by a maliciously corrupted
+file system.
+
+----------------------------------------------------------------
+Baokun Li (1):
+      ext4: fix use-after-free in ext4_ext_shift_extents
+
+Svyatoslav Feldsherov (1):
+      fs: do not update freeing inode i_io_list
+
+ fs/ext4/extents.c | 18 +++++++++++++-----
+ fs/fs-writeback.c | 30 +++++++++++++++++++-----------
+ 2 files changed, 32 insertions(+), 16 deletions(-)
