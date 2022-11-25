@@ -2,72 +2,88 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC846382C2
-	for <lists+linux-ext4@lfdr.de>; Fri, 25 Nov 2022 04:36:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2315C638B64
+	for <lists+linux-ext4@lfdr.de>; Fri, 25 Nov 2022 14:40:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229646AbiKYDgU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 24 Nov 2022 22:36:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55416 "EHLO
+        id S229717AbiKYNk2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 25 Nov 2022 08:40:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbiKYDgU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Nov 2022 22:36:20 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 920D92AC57;
-        Thu, 24 Nov 2022 19:36:19 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2D732621E1;
-        Fri, 25 Nov 2022 03:36:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1292CC433C1;
-        Fri, 25 Nov 2022 03:36:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669347378;
-        bh=wKWPk4v8fe90jffTIHyQjUbwPtVaGLxqGFEpI0P7wnE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=YTqZbNiRd4JIWn0K8jzRIqEDGOkfDpOe3H7Mh1qixAiAm+8XzeAOmWoqz4YaQxk+L
-         bN0908UoIcr3RNueemlQyVj6OYnR2g0a++qQzBUNzvlypbC/CQDTwawvHAsZmbZy7o
-         eGz8b8YIftg2Jn7zN0Ia872itxFTG+7H4mx1HT6aCaTaLEemm30HaTGMmUnFhdT5OG
-         iBFvoiplRvGL2GTEe1MJAnzmn5X6IKVEcqgnNy3ionyb8mgAN5ov/Ao3YTHpOU3wyn
-         qY7P6trgGmIJofxRtN0esLJNrvLfLE61VfiycElQf94+/xSeFvFjSObSDwQqk9cQ1A
-         Yy1unQXoyXl5g==
-Message-ID: <6bce9afb-2561-7937-caea-8aadaa5a21cd@kernel.org>
-Date:   Fri, 25 Nov 2022 11:36:14 +0800
+        with ESMTP id S229453AbiKYNk1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 25 Nov 2022 08:40:27 -0500
+Received: from out162-62-57-210.mail.qq.com (out162-62-57-210.mail.qq.com [162.62.57.210])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFF4A1928F;
+        Fri, 25 Nov 2022 05:40:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1669383620;
+        bh=ood4vbBiDrQkuZYdST/YJDYyULNFGcAYpukDELQQS2k=;
+        h=From:To:Cc:Subject:Date;
+        b=ZbAzEeBjtmhddTM5vtFHUTDOJszIOqtReLofS+RB2vz1rX1om4FJI5OxCgIaMiI7Y
+         EgBnRVxkUwYjIr+2gpRlm7AQVXMWL5+oywHczaMMXQ0Y/viRKbwdpNNkFmvloFXxyA
+         Gmt13dnNaRtrlgbcly5rQSh/Cw3yv05C4bUOym/8=
+Received: from localhost.localdomain ([221.223.28.123])
+        by newxmesmtplogicsvrszc2-0.qq.com (NewEsmtp) with SMTP
+        id 9A522CC3; Fri, 25 Nov 2022 21:38:37 +0800
+X-QQ-mid: xmsmtpt1669383517tx1rwx6he
+Message-ID: <tencent_EEC5C049082D4BF0724AC5E9956BD41E5105@qq.com>
+X-QQ-XMAILINFO: Ma9u/w5Vb6c03qejOHkqbN0593+fKNt7q/uoQbPqGAiyM7o4iU8RL0Suw7nFq7
+         R6QRtiPIKEBgYMwgOMyToVGqibA9vzpkSNsEfVZ8kmLd0JQYwb3Nxoud5zc1Cmj+LwWz92LZNnxJ
+         nAiN/PEzvgcTQuNHdMDkM0rZhKvB/m5FjNu6oCh0vUjDgapCacbKgmK3XiqqiWBacnhi1pkf6QfP
+         SoiI96RBiJrhXsP6/aqZ80M0pZ96xeHfFJgcItzdnEW4A86BlCsyDW7YxRH7K47NiDrz+fCCe0+S
+         wrP0P/9q4TuT7QC5g5Zxfrhy34OhuptjO+1q1ijPju1RNkmlBxfi5ydB8tPjB8QkBoid0FXzWaAR
+         SGggQgHElTu9qMz7JaEM98VggNV0923IWopuW5arJyr85x8eepLZAwI7PrTuFA3Lot4gRH5iOs4p
+         yn1AYu5oYvXj0GcKHL9H12GMaU1k+Oe2+skz9tVdYj3T46eiYJLuYaD/2JRlwLJtSVN2WVQNNjgg
+         sGU2IOYwjhtKDNBkQ2eQOWSK4+saobgumLNs2zRJRIzkS5Ce4ICo6qbbgi6BAOLyWxG/Kc1NB8Oq
+         vz6Qy7HYeCs1J8I5+jK6Wxs0UP6dcQTggU2p8azUFBuLTyravU05fnhSR/90L9HRa7tcMGT9uCUH
+         8IWHzvKZKqyivxx93ku5Froosp3MQqFERu7FHvq7GuCPyCMHq2uCZxIcp5Sx+ZL9hGGXcQ5yqOMl
+         BJK7LzrUXfFUhhFXMFX3VyAGIYlobBU2z/npHzV9IQvpZ9AEu+NwJXLolic91RO23ah0PbUnqCAR
+         fRL6cHFdO9Sl47uRC5OJV4nC3TXc5lo7DdJ36OH8mipN/fKKa+iszlfbhdcOMTsX8IJd65R9pX8J
+         u4gVJ3b9Mny3yhOQH/qH5g19KNa4jtKLyzb/uvXGo4Vu6/jZzFO0LNzxejUjdPAOLBwOIoD7UASg
+         7L/zQyjbs=
+From:   Rong Tao <rtoax@foxmail.com>
+To:     jack@suse.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rong Tao <rongtao@cestc.cn>
+Subject: [PATCH] fs/ext2: Fix code indentation
+Date:   Fri, 25 Nov 2022 21:38:21 +0800
+X-OQ-MSGID: <20221125133821.643-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.28.0.windows.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [f2fs-dev] [PATCH v3] fsverity: stop using PG_error to track
- error status
-Content-Language: en-US
-To:     Eric Biggers <ebiggers@kernel.org>, linux-fscrypt@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-f2fs-devel@lists.sourceforge.net
-References: <20221028175807.55495-1-ebiggers@kernel.org>
-From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <20221028175807.55495-1-ebiggers@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,RDNS_DYNAMIC,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2022/10/29 1:58, Eric Biggers wrote:
-> @@ -116,43 +116,51 @@ struct bio_post_read_ctx {
->   	struct f2fs_sb_info *sbi;
->   	struct work_struct work;
->   	unsigned int enabled_steps;
-> +	bool decompression_attempted;
+From: Rong Tao <rongtao@cestc.cn>
 
-How about adding some comments for decompression_attempted? Otherwise it
-looks good to me.
+ts=4 can cause misunderstanding in code reading. It is better to replace
+8 spaces with one tab.
 
-Reviewed-by: Chao Yu <chao@kernel.org>
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+---
+ fs/ext2/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
+diff --git a/fs/ext2/super.c b/fs/ext2/super.c
+index 03f2af98b1b4..69c88facfe90 100644
+--- a/fs/ext2/super.c
++++ b/fs/ext2/super.c
+@@ -1648,7 +1648,7 @@ static int __init init_ext2_fs(void)
+ 	err = init_inodecache();
+ 	if (err)
+ 		return err;
+-        err = register_filesystem(&ext2_fs_type);
++	err = register_filesystem(&ext2_fs_type);
+ 	if (err)
+ 		goto out;
+ 	return 0;
+-- 
+2.31.1
+
+
