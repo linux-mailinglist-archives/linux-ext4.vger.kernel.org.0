@@ -2,122 +2,125 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D38F26392E0
-	for <lists+linux-ext4@lfdr.de>; Sat, 26 Nov 2022 01:56:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D66E639437
+	for <lists+linux-ext4@lfdr.de>; Sat, 26 Nov 2022 08:55:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229739AbiKZA4M (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 25 Nov 2022 19:56:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59690 "EHLO
+        id S229450AbiKZHzq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 26 Nov 2022 02:55:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbiKZA4L (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 25 Nov 2022 19:56:11 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 771D55985A
-        for <linux-ext4@vger.kernel.org>; Fri, 25 Nov 2022 16:56:10 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id v7so4599523wmn.0
-        for <linux-ext4@vger.kernel.org>; Fri, 25 Nov 2022 16:56:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=KLS2zcruSlKyOQ1OBKYSyr+7+6zj0YKBqr4fpDhq6DI=;
-        b=IBwyrFi2pBgbI7taSBf2wP9AaMzi2odBiSc1JZovbhDndgOpn5eqDyQJr3KydfglqS
-         dKppRqfSrbTHg8uEd8Wa8j8pMslFYhgD2n7uYDfu+akpr+gr2cbCVMz92K51VRVI4sLS
-         z0eCjQLdCGz9pUDoudFOPI+Gcf/PeWT0sKVsd2yxPt/MXK2msmprpiKTJxnc6A8rMCnQ
-         roYmIonOiRPiOxpcztOZrOUsq/+CEoCeIs1F25bI3W+uQQPPG+s/TWFOSkSu/tOgShGc
-         /sYjdpUYDqJsqYP8uDfTkyZdpCiIFV6GXfTylNJ4hN+M+XmRH7St1oyX4wJvtfH7ihj3
-         ixKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KLS2zcruSlKyOQ1OBKYSyr+7+6zj0YKBqr4fpDhq6DI=;
-        b=Z3PWgnHiVjWvEbWnUErbWSFrh1Vkr02xZ8LE57k6aoWrRqyRvixW5BJTtiMPQh6z1g
-         ohF9kUqdLWjoIJUM7ZGR21WxiiJrRldBkLxafQPRh527W2nKwkg5nRWQliawxTvP9bJr
-         iD3/NM4nkl470KO8T5p+n0zqxqrKzck9T43MnOFUEflF+ouJ35bO3o5fEX1I+c7B+R5N
-         IgltITqRcPt/8vMe2zF8uqc41otr2+H3DesvMWXPSRiJBnfUIVUJ44CgFggUo794NR9J
-         XnGcXy01ATnVhKcKXwuCGY2WgQvCD8ls7v9gtJktiFPlz7qhpTzMA/bLvA+blIgdm0ez
-         hR4Q==
-X-Gm-Message-State: ANoB5pnrf0/8VLjFVMaYhAnzbrsXd/QA/EBWTf5PUgOY8mKhz/LhNeRq
-        EqvqmS2ijGGmyuc690uWJpYwM1ITGxC8F1YshDo=
-X-Google-Smtp-Source: AA0mqf6Jbn2EeTy3eDtJIQBsgeUChdoXCAe8fQW5t2qZyokoEhHGRHXV9Snx9m8FwRJJD78a24lcQdsY8btI5gG2ijU=
-X-Received: by 2002:a7b:ca43:0:b0:3cf:ade4:d529 with SMTP id
- m3-20020a7bca43000000b003cfade4d529mr16736724wml.193.1669424168930; Fri, 25
- Nov 2022 16:56:08 -0800 (PST)
+        with ESMTP id S229436AbiKZHzq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 26 Nov 2022 02:55:46 -0500
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7BE02E6AF
+        for <linux-ext4@vger.kernel.org>; Fri, 25 Nov 2022 23:55:40 -0800 (PST)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4NK3tJ2CGDz15Mt9;
+        Sat, 26 Nov 2022 15:55:04 +0800 (CST)
+Received: from dggpeml500006.china.huawei.com (7.185.36.76) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Sat, 26 Nov 2022 15:55:38 +0800
+Received: from [10.174.178.112] (10.174.178.112) by
+ dggpeml500006.china.huawei.com (7.185.36.76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Sat, 26 Nov 2022 15:55:38 +0800
+Message-ID: <4a40e7be-4c68-3ece-6eb2-9a56a6a9a004@huawei.com>
+Date:   Sat, 26 Nov 2022 15:55:37 +0800
 MIME-Version: 1.0
-Received: by 2002:adf:d1cf:0:0:0:0:0 with HTTP; Fri, 25 Nov 2022 16:56:08
- -0800 (PST)
-Reply-To: samsonvichisunday@gmail.com
-From:   Aminu Bello <aminuadamuvitaform@gmail.com>
-Date:   Sat, 26 Nov 2022 01:56:08 +0100
-Message-ID: <CADwEiStmOu+9QWNSG8dx2E+1gyO0Ob_1gobK7QyovdBwcsx6qQ@mail.gmail.com>
-Subject: INVITATION TO THE GREAT ILLUMINATI SOCIETY.
-To:     undisclosed-recipients:;
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0
+Subject: Re: [PATCH] debugfs:fix repeated output problem with `logdump -O -n
+ <num_trans>`
+Content-Language: en-US
+From:   "lihaoxiang (F)" <lihaoxiang9@huawei.com>
+To:     <tytso@mit.edu>
+CC:     <linux-ext4@vger.kernel.org>,
+        Zhiqiang Liu <liuzhiqiang26@huawei.com>,
+        <linfeilong@huawei.com>, <louhongxiang@huawei.com>
+References: <6ab429c0-6dd0-968f-d4e0-54035d177dbf@huawei.com>
+In-Reply-To: <6ab429c0-6dd0-968f-d4e0-54035d177dbf@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=7.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FILL_THIS_FORM,
-        FILL_THIS_FORM_LONG,FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,T_FILL_THIS_FORM_LOAN,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:343 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5006]
-        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [aminuadamuvitaform[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-        *  0.0 FILL_THIS_FORM Fill in a form with personal information
-        *  2.0 FILL_THIS_FORM_LONG Fill in a form with personal information
-        *  0.0 T_FILL_THIS_FORM_LOAN Answer loan question(s)
-X-Spam-Level: *******
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.112]
+X-ClientProxiedBy: dggpeml500023.china.huawei.com (7.185.36.114) To
+ dggpeml500006.china.huawei.com (7.185.36.76)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
---=20
-INVITATION TO THE GREAT ILLUMINATI SOCIETY
-CONGRATULATIONS TO YOU....
-You have been chosen among the people given the opportunity this
-November to become rich and popular by joining the Great ILLUMINATI.
-This is an open invitation for you to become part of the world's
-biggest conglomerate and reach the peak of your career. a worthy goal
-and motivation to reach those upper layers of the pyramid to become
-one among the most Successful, Richest, Famous, Celebrated, Powerful
-and most decorated Personalities in the World???
-If you are interested, please respond to this message now with =E2=80=9CI
-ACCEPT" and fill the below details to get the step to join the
-Illuminati.
-KINDLY FILL BELOW DETAILS AND RETURN NOW.....
-Full names: ....................
-Your Country: .................
-State/ City: .............
-Age: ....................
-Marital status: ....................
-Occupation: ....................
-Monthly income: ....................
-WhatsApp Number: ......
-Postal Code: .....
-Home / House Address: .....
-NOTE: That you are not forced to join us, it is on your decision to
-become part of the world's biggest conglomerate and reach the peak of
-your career.
-Distance is not a barrier.
+friendly ping...
+
+On 2022/11/15 16:29, lihaoxiang (F) wrote:
+> Previously, patch 6e4cc3d5eeb2dfaa055e652b5390beaa6c3d05da introduces
+> the function of printing the specified number of logs. But there exists
+> a shortage when n is larger than the total number of logs, it dumped the
+> duplicated records circulately.
+> 
+> For example, the disk sda only has three records, but using instruction logdump
+> -On5, it would output the result as follow:
+> ----------------------------------------------------------------------
+> Journal starts at block 1, transaction 6
+> Found expected sequence 6, type 1 (descriptor block) at block 1
+> Found expected sequence 6, type 2 (commit block) at block 4
+> No magic number at block 5: end of journal.
+> Found sequence 2 (not 7) at block 7: end of journal.
+> Found expected sequence 2, type 2 (commit block) at block 7
+> Found sequence 3 (not 8) at block 8: end of journal.
+> Found expected sequence 3, type 1 (descriptor block) at block 8
+> Found sequence 3 (not 8) at block 15: end of journal.
+> Found expected sequence 3, type 2 (commit block) at block 15
+> Found sequence 6 (not 9) at block 1: end of journal.       <---------begin loop
+> Found expected sequence 6, type 1 (descriptor block) at block 1
+> Found sequence 6 (not 9) at block 4: end of journal.
+> Found expected sequence 6, type 2 (commit block) at block 4
+> Found sequence 2 (not 10) at block 7: end of journal.
+> Found expected sequence 2, type 2 (commit block) at block 7
+> logdump: short read (read 0, expected 1024) while reading journal
+> 
+> In this commit, we solve the problem above by exiting dumping if the
+> blocknr had already encountered, displayed the total number of logs
+> that the disk only possessed.
+> 
+> Signed-off-by: lihaoxiang <lihaoxiang9@huawei.com>
+> ---
+>  debugfs/logdump.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/debugfs/logdump.c b/debugfs/logdump.c
+> index 614414e5..036b50ba 100644
+> --- a/debugfs/logdump.c
+> +++ b/debugfs/logdump.c
+> @@ -376,6 +376,7 @@ static void dump_journal(char *cmdname, FILE *out_file,
+>  	journal_header_t	*header;
+>  	tid_t			transaction;
+>  	unsigned int		blocknr = 0;
+> +	unsigned int		first_transaction_blocknr;
+>  	int			fc_done;
+>  	__u64			total_len;
+>  	__u32			maxlen;
+> @@ -470,10 +471,18 @@ static void dump_journal(char *cmdname, FILE *out_file,
+>  			blocknr = 1;
+>  	}
+> 
+> +	first_transaction_blocknr = blocknr;
+> +
+>  	while (1) {
+>  		if (dump_old && (dump_counts != -1) && (cur_counts >= dump_counts))
+>  			break;
+> 
+> +		if ((blocknr == first_transaction_blocknr) &&
+> +		    (cur_counts != 0) && dump_old && (dump_counts != -1)) {
+> +			fprintf(out_file, "Dump all %lld journal records.\n", cur_counts);
+> +			break;
+> +		}
+> +
+>  		retval = read_journal_block(cmdname, source,
+>  				((ext2_loff_t) blocknr) * blocksize,
+>  				buf, blocksize);
