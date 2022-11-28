@@ -2,86 +2,94 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0B863B17E
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Nov 2022 19:39:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E596F63B1D1
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Nov 2022 20:03:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231542AbiK1Sjw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Nov 2022 13:39:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49126 "EHLO
+        id S232512AbiK1TDW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 28 Nov 2022 14:03:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232278AbiK1Sjh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Nov 2022 13:39:37 -0500
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BBD065FA
-        for <linux-ext4@vger.kernel.org>; Mon, 28 Nov 2022 10:39:36 -0800 (PST)
-Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2ASIdVDq005100
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Nov 2022 13:39:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1669660773; bh=9tViFCqaBERlF/W5oHB1lpjBHEsRElfF9BLX7uDgZO4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=YDFPc/0rK6MGpumHB0IQVMdHlABkHWwumvjY5AedBMmfTkVxEz9/1Xf+jcWMkz8EN
-         NpGTGea/xOkHC3kXhHN3eIFHiVcP6bgkg3NN6QHRRHPHD+ldzHhEDUgmCZOF6NHOD5
-         Cj1mfqqbUw3vfG/6Wf8SM0jJ0MwxwL2gjOpptmKO0oX3cXsZi/kXIEvtIxPo8lDkVi
-         hivF9zmU342SYTlwItWsijCM+1T+94wmd2PVTN5n/O4jMhulfDws3PSWKJP+rNbm0u
-         sHuztZW93CrP0M60Ncp17JQfFlmy/KQpxqzLDbX4vTIt2D4n3yBxueDI/YfB4LQXIf
-         yLKj+/P5UkLKA==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id CAE7315C3A9A; Mon, 28 Nov 2022 13:39:31 -0500 (EST)
-Date:   Mon, 28 Nov 2022 13:39:31 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Eric Whitney <enwlinux@gmail.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v2] test-appliance: force 4 KB block size for bigalloc,
- bigalloc_inline
-Message-ID: <Y4UAY2dU799AGm1V@mit.edu>
-References: <20221111230101.135830-1-enwlinux@gmail.com>
+        with ESMTP id S232822AbiK1TDU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Nov 2022 14:03:20 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89AF727FFA;
+        Mon, 28 Nov 2022 11:03:19 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2BA0361372;
+        Mon, 28 Nov 2022 19:03:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EF32C433D6;
+        Mon, 28 Nov 2022 19:03:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669662198;
+        bh=F0+RGrIEwEfbme6pt/5jbjGiLsDseYFGTIlLzhQ4Kl4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZrJ+ewUetTn9qDOZgHo6rtlemBLq8hcCFOa3JVIgTfARoPoNvGnLHKX0fRFsZrsN4
+         x7RQwJ1P/YHf0AlSglEf+vlOBR/cwDWcE1X2gbzKwU/dLlaBJIbL8036vtoQPVphOd
+         rGYyA4Uo3THAcyPN7isIkSvw9rqDUXRDR45hcb7yt6Yfoyf4Qs5WUd80TtZR9WoDkw
+         +3ra3n/Yu0A5jimpTHH2fCpmi4J3XlVp5NtTypmrRYdAMStDP/DNuDDFOMwoSnm3BD
+         /2u0LuF+qVoaZxJ6BSnIiNcWlui8wD9DIb28xxzN+k5ea5UJReTOqgi1Ou6Gd5XNAz
+         yh29Y8Acd84vQ==
+Date:   Mon, 28 Nov 2022 19:03:17 +0000
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-ext4@vger.kernel.org
+Cc:     linux-fscrypt@vger.kernel.org,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: Re: [PATCH 0/7] ext4 fast-commit fixes
+Message-ID: <Y4UF9VntxPnoA+SW@gmail.com>
+References: <20221106224841.279231-1-ebiggers@kernel.org>
+ <Y3Q6U3jd3dI33xdJ@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221111230101.135830-1-enwlinux@gmail.com>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <Y3Q6U3jd3dI33xdJ@sol.localdomain>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Nov 11, 2022 at 06:01:01PM -0500, Eric Whitney wrote:
-> The cfg file for the bigalloc test configuration does not explicitly
-> define the file system block size as is done for the 4k configuration,
-> although the intent is to test a file system with 4 KB blocks and 64 KB
-> clusters.  At least one test, shared/298, runs with a block size of
-> 1 KB instead under bigalloc because it creates a file system image less
-> than 512 MB in size, a result of the mke2fs.conf block size rule
-> for small files.
+On Tue, Nov 15, 2022 at 05:18:11PM -0800, Eric Biggers wrote:
+> On Sun, Nov 06, 2022 at 02:48:34PM -0800, Eric Biggers wrote:
+> > 
+> > This series fixes several bugs in the fast-commit feature.
+> > 
+> > Patch 6 may be the most controversial patch of this series, since it
+> > would make old kernels unable to replay fast-commit journals created by
+> > new kernels.  I'd appreciate any thoughts on whether that's okay.  I can
+> > drop that patch if needed.
+> > 
+> > I've tested that this series doesn't introduce any regressions with
+> > 'gce-xfstests -c ext4/fast_commit -g auto'.  Note that ext4/039,
+> > ext4/053, and generic/475 fail both before and after.
+> > 
+> > Eric Biggers (7):
+> >   ext4: disable fast-commit of encrypted dir operations
+> >   ext4: don't set up encryption key during jbd2 transaction
+> >   ext4: fix leaking uninitialized memory in fast-commit journal
+> >   ext4: add missing validation of fast-commit record lengths
+> >   ext4: fix unaligned memory access in ext4_fc_reserve_space()
+> >   ext4: fix off-by-one errors in fast-commit block filling
+> >   ext4: simplify fast-commit CRC calculation
+> > 
+> >  fs/ext4/ext4.h              |   4 +-
+> >  fs/ext4/fast_commit.c       | 203 ++++++++++++++++++------------------
+> >  fs/ext4/fast_commit.h       |   3 +-
+> >  fs/ext4/namei.c             |  44 ++++----
+> >  include/trace/events/ext4.h |   7 +-
+> >  5 files changed, 132 insertions(+), 129 deletions(-)
+> > 
+> > 
+> > base-commit: 089d1c31224e6b266ece3ee555a3ea2c9acbe5c2
 > 
-> shared/298 currently fails when run under bigalloc with 1 KB blocks.
-> When the block size is set to 4 KB for the test, it passes.
+> Any thoughts on this patch series?
 > 
-> Explicitly defining the bigalloc block size will help avoid similar
-> surprises in current or future tests written to use small test files.
-> Make the same change to the bigalloc_inline config file while we're
-> at it.
-> 
-> v2:  Modify the names of the bigalloc test configurations using 4 KB
-> block sizes to explicitly reflect the block size.  Change the
-> documentation and supporting files to reflect this.  Bring the
-> bigalloc_4k_inline.exclude file up to date (and propagate a change to
-> the other .exclude files).  Add a new test configuration for bigalloc
-> with 64k blocks, but don't add this configuration to the default list
-> of all tests to be run for now.
-> 
-> The bigalloc_64k and huge_bigalloc_4k configurations are untested.  The
-> huge_bigalloc_4k.exclude file will likely need further work if used.
-> 
-> Signed-off-by: Eric Whitney <enwlinux@gmail.com>
+> - Eric
 
-Thanks, applied.
+Ping?
 
-						- Ted
+- Eric
