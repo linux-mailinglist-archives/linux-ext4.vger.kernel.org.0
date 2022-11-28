@@ -2,140 +2,123 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33ABC63AC03
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Nov 2022 16:15:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2C963ACFD
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Nov 2022 16:51:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbiK1PPz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Nov 2022 10:15:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56904 "EHLO
+        id S232328AbiK1PvU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 28 Nov 2022 10:51:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231166AbiK1PPy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Nov 2022 10:15:54 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB8E15A28
-        for <linux-ext4@vger.kernel.org>; Mon, 28 Nov 2022 07:15:53 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S232160AbiK1PvT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Nov 2022 10:51:19 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9181721A8
+        for <linux-ext4@vger.kernel.org>; Mon, 28 Nov 2022 07:51:18 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id F1FE61F8C8;
-        Mon, 28 Nov 2022 15:15:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1669648551; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2QVJSCj+0uRz/FYRihd854hgsDtwwRysXwXI7G+A4gk=;
-        b=1oPrGNOE9L+VHujx37Wh9zEYcAF2GoQVRKlGMD4WutfAlEbtjIiZYjEaHVC0E5h1iUQZf3
-        npZpOa+j/0xJwrKUvJeatr2dkSlLnmHNB/HPfKS+Vg95ndr4VlrDgRzI1H4ZzgOBhP86yO
-        xLTFr7l688jHycdR3zA46V0PJYhcd5A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1669648551;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2QVJSCj+0uRz/FYRihd854hgsDtwwRysXwXI7G+A4gk=;
-        b=Id+PNlVU1L6OX4xnLHMZ+gPWV9j2S7aFnHuTBtsaSGTpBffIuZydOuoAIaAsBggi7+6AUG
-        6BzMXRAAmOBOE+Dw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E299D13273;
-        Mon, 28 Nov 2022 15:15:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 4wRHN6fQhGMHQQAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 28 Nov 2022 15:15:51 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 59569A070F; Mon, 28 Nov 2022 16:15:51 +0100 (CET)
-Date:   Mon, 28 Nov 2022 16:15:51 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Zhang Yi <yi.zhang@huawei.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, yukuai3@huawei.com
-Subject: Re: [PATCH] ext4: add barrier info if journal device write cache is
- not enabled
-Message-ID: <20221128151551.fo6ct7nbozlqjvci@quack3>
-References: <20221124135744.1488959-1-yi.zhang@huawei.com>
- <20221128101108.nslkglhz7pmflyoa@quack3>
- <02ab48e0-27d7-1a59-603a-34bd85bb2b68@huawei.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2F33B6121B
+        for <linux-ext4@vger.kernel.org>; Mon, 28 Nov 2022 15:51:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8C7E0C433C1
+        for <linux-ext4@vger.kernel.org>; Mon, 28 Nov 2022 15:51:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669650677;
+        bh=p6Ijp0HAPQdyygjfGoFEaOCUkyrIMsNaDtBRYY5kofc=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=hYuXSqZi91UU+g7uX9POUmwJBgreDvNGeEzKfxl6r35Fa7uW8jWFvScamb7c5/UJ5
+         5kD4I437blIGrNaLzvP/NTfLjdhJ/WFhdht8jODknSwe4zyyGrbwq3HqTSytiGp9BW
+         jMwf/dHvcGUC3aKsgeqergGEc/dr6qRxe3M2guouh3wiangQnhXWt5a2TMAssio+vf
+         smxKEKoyZOavhvorHLM8Gfks6P9pYjW10LEP0/AHU56lcVrXkVNpV419k8hzfVY0zE
+         u+Gu5XseCoEr8RBz7yP1pHvRGBz3jg4KboUzQlexzNLAq0yc3aKSJmph3xEiVKbM/+
+         9NCNjGYXI9KKg==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+        id 734B9C433E7; Mon, 28 Nov 2022 15:51:17 +0000 (UTC)
+From:   bugzilla-daemon@kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 216714] Issue with file system image created with mke2fs
+ parameter -E offset
+Date:   Mon, 28 Nov 2022 15:51:17 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: tytso@mit.edu
+X-Bugzilla-Status: RESOLVED
+X-Bugzilla-Resolution: INVALID
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: cc
+Message-ID: <bug-216714-13602-UHEoF1jjyZ@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-216714-13602@https.bugzilla.kernel.org/>
+References: <bug-216714-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <02ab48e0-27d7-1a59-603a-34bd85bb2b68@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 28-11-22 21:01:07, Zhang Yi wrote:
-> On 2022/11/28 18:11, Jan Kara wrote:
-> > On Thu 24-11-22 21:57:44, Zhang Yi wrote:
-> >> The block layer will check and suppress flush bio if the device write
-> >> cache is not enabled, so the journal barrier will not go into effect
-> >> even if uer specify 'barrier=1' mount option. It's dangerous if the
-> >> write cache state is false negative, and we cannot distinguish such
-> >> case easily. So just give an info and an inquire interface to let
-> >> sysadmin know the barrier is suppressed for the case of write cache is
-> >> not enabled.
-> >>
-> >> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> > 
-> > Hum, so have you seen a situation when write cache information is incorrect
-> > in the block layer? Does it happen often enough that it warrants extra
-> > sysfs file?
-> > 
-> 
-> Thanks for response. Yes, It often happens on some SCSI devices with RAID
-> card, the disks below the RAID card enabled write cache, but the RAID driver
-> declare the write cache was disabled when probing, and the RAID card seems
-> cannot guarantee data writing back to disk medium on power failure. So the
-> ext4 filesystem will probably be corrupted at the next startup. It's
-> difficult to distinguish it's a hardware or an software problem.
-> I am not familiar with the RAID card. So I don't know why the cache state
-> is incorrect (maybe incorrect configured or firmware bug).
+https://bugzilla.kernel.org/show_bug.cgi?id=3D216714
 
-OK, thanks for info. I believe usually you're expected to disable write
-cache on the disks themselves and leave caching to the RAID card. But I'm
-not an expert here and it's a bit besides the point anyway ;)
+Theodore Tso (tytso@mit.edu) changed:
 
-> > After all you should be able to query what the block layer thinks about the
-> > write cache - you definitely can for SCSI devices, I'm not sure about
-> > others. So you can have a look there. Providing this info in the filesystem
-> > seems like doing it in the wrong layer - I don't see anything jbd2/ext4
-> > specific here...
-> > 
-> 
-> Yes, the best way is to figure out the RAID card problem.
-> This patch is not to aim to fix something in ext4. The reason why I want to add
-> this in ext4 is just give a hint from the fs barrier's point of view, it show the
-> barrier's running state at mount time, could help us to delimit the cache problem
-> more easily when we found ext4 corruption after power failure. Before this patch,
-> we could do that through SCSI probing info and /sys/block/sda/queue/write_cache
-> (maybe some others?), it's not quite clear.
-> 
->   [    2.520176] sd 0:0:0:0: [sda] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
-> 
->   [root@localhost ~]# cat /sys/block/sda/queue/write_cache
->   write back
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+                 CC|                            |tytso@mit.edu
 
-Yes. /sys/block/<device>/queue/write_cache is what you should query to find
-whether barriers will be ignored or not. My point is - you need this for
-ext4, now if you start using XFS filesystem you'd need similar patch for
-XFS and then if you transition to btrfs you'd need this for btrfs as well
-and all this duplication is there because you are querying through the
-filesystem a property of the underlying block device. So why not ask the
-block device directly?
+--- Comment #4 from Theodore Tso (tytso@mit.edu) ---
+I'm curious --- *why* are you wanting to create file systems with an offset=
+ to
+begin with?    The original reason why this feature was added was in a high=
+ly
+specialized case where someone was creating a system image for some embedded
+system or for a virtual machine.  In this use case, the image contained a
+partition table, and the offset feature was used to create a filesystem at =
+the
+appropriate location as specified by the partition table.
 
-I understand it may be more *convenient* to grab the information from the
-filesystem given the infrastructure you have for gathering filesystem
-information. But carrying around various sysfs files has its cost as well.
+A typical use case is as part of an automated build procedure where the sys=
+tem
+image (say, for an Android mobile device, or some ARM development board, su=
+ch
+as a Beaglebone, Arduino, etc., or some Virtual machine), using the mke2fs =
+-d
+option to pre-populate the file system with the root file system, or some d=
+ata
+partition, etc.   Since Best Practices for such automated build systems inv=
+olve
+creating a reproducible build, there is nothing precious on the file system
+that can't be replicated by re-running the the automated build.   So if the
+offset is wrong (which is to say, inconsistent with the partition table whi=
+ch
+was laid down using the same automated build system), the developer will ju=
+st
+curse to themselves, and can determine the offset by looking at the build i=
+mage
+creation script, and then adjust that offset to match with the offset that =
+was
+set in the partition table.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+So I'm a bit perplexed about why you were using a random starting offset for
+the file system, and why you can't seem to figure out the offset afterwards=
+.=20
+The typical approach is to RTFS (Read The Fine Shellscript) to determine the
+offset, and then to fix the perhaps not-so-fine shell script.  :-)
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
