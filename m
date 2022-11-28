@@ -2,54 +2,50 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB4963B39C
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Nov 2022 21:44:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0C263B412
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Nov 2022 22:16:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234228AbiK1Uov (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Nov 2022 15:44:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55162 "EHLO
+        id S233983AbiK1VQk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 28 Nov 2022 16:16:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232635AbiK1Uou (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Nov 2022 15:44:50 -0500
+        with ESMTP id S229929AbiK1VQk (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Nov 2022 16:16:40 -0500
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A69D2E9F3;
-        Mon, 28 Nov 2022 12:44:49 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E22BC1B;
+        Mon, 28 Nov 2022 13:16:38 -0800 (PST)
 Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2ASKiJjA009979
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2ASLGVLU009006
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Nov 2022 15:44:20 -0500
+        Mon, 28 Nov 2022 16:16:32 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1669668263; bh=pnIQNOAY5vhuqXAYNX8YQgNudtCkLfVvMCmZuAp9r0E=;
+        t=1669670193; bh=WWkh15qtsd9kIlSQdW+y9klv9CR+AgVRUGpFO6HDaZM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=Rf19edPnUJx8dTG0/rI9l6bTyJ9U7Mp3PrpNwemXd8yEpzei3qiepButayG8JhYqU
-         AU8WjRGHZ8FIO8ISAtR2g0ZtmHCrN9aQih43O16mDvEGaEvtPStm3x/1kfco4JWhyT
-         K8jGKg2sZ6cntVMV2V87lTon4xuzYR2UZNaXiMtcFGMTkbbkoQ+IW7jDEhNiIEfjjE
-         iCTf4ulX59Hg7CbPP5xV3YRjmmGQOPAnNfSPPVvKcoFON71f6X4oMEv7I3shjW+KE4
-         dYd+5KxxZJfC3PoJ8fBNx/+N3QIWkokZkqLqppGPHSbBqyrLh+Rizdv061V9U0NfWX
-         AYCD60IHa1jCA==
+        b=SZUSLUz5eCUygFHT8Sdy968xKVMfswLa999CwHr6kx3dROjFXxjfLaVxjcEBdowlx
+         VyHzfbbe9k1QhW5LNy3fQLT4lhAKs/op7ETnq5e+XBXv8vSkm57Uz6PrPCKGt19Phm
+         feKDIMw/URrVglp7Df0dT768zbF5GP9NVDdboOsYl6P5AS7Ig3unKQZ5aTihBy/eT7
+         vwYs4tATsTJwekhf8GtsBj6+m9hnV1kIO1eu7cfcttwu43FN6Nn4Op2Ze1HSB3V/Pm
+         Q7wSKnX6CAv6WJJVVqt5bPuEGBhfoxfZBUruXIO/JpG4Is6SimFhNoWR3GFEoYGVxA
+         6yyjF1x5GcRAA==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 1C4DF15C3AA6; Mon, 28 Nov 2022 15:44:19 -0500 (EST)
-Date:   Mon, 28 Nov 2022 15:44:19 -0500
+        id BA29515C3AA6; Mon, 28 Nov 2022 16:16:31 -0500 (EST)
+Date:   Mon, 28 Nov 2022 16:16:31 -0500
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, Baokun Li <libaokun1@huawei.com>,
-        linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca,
-        lczerner@redhat.com, enwlinux@gmail.com,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yebin10@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH 2/2] ext4: add inode table check in __ext4_get_inode_loc
- to aovid possible infinite loop
-Message-ID: <Y4UdoyF6+oDI6w5P@mit.edu>
-References: <20220817132701.3015912-1-libaokun1@huawei.com>
- <20220817132701.3015912-3-libaokun1@huawei.com>
- <20220817143138.7krkxzoa3skruiyx@quack3>
- <20220818144353.q6cq3b7huwkopk5b@riteshh-domain>
+To:     Tadeusz Struk <tadeusz.struk@linaro.org>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        syzbot+a22dc4b0744ac658ed9b@syzkaller.appspotmail.com
+Subject: Re: [PATCH] ext4: Add extend check to prevent BUG() in ext4_es_end
+Message-ID: <Y4UlL1UH1ks1iKOz@mit.edu>
+References: <20220930202536.697396-1-tadeusz.struk@linaro.org>
+ <e1e227a4-4f71-3a01-2bd1-beaf6c52e02a@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220818144353.q6cq3b7huwkopk5b@riteshh-domain>
+In-Reply-To: <e1e227a4-4f71-3a01-2bd1-beaf6c52e02a@linaro.org>
 X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
         DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -59,25 +55,66 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Aug 18, 2022 at 08:13:53PM +0530, Ritesh Harjani (IBM) wrote:
-> Folding a small patch to implement the simple bound check. Is this the right
-> approach?
+On Tue, Oct 11, 2022 at 11:38:37AM -0700, Tadeusz Struk wrote:
+> On 9/30/22 13:25, Tadeusz Struk wrote:
+> > Syzbot reported an issue with ext4 extents. The reproducer creates
+> > a corrupted ext4 fs image in memory, and mounts it as a loop device.
+> > It invokes the ext4_cache_extents() and ext4_find_extent(), which
+> > eventually triggers a BUG() in ext4_es_end() causing a kernel crash.
+> > It triggers on mainline, and every kernel version back to v4.14.
+> > Add a call ext4_ext_check_inode() in ext4_find_extent() to prevent
+> > the crash.
+> > 
+> > To: "Theodore Ts'o"<tytso@mit.edu>
+> > Cc: "Andreas Dilger"<adilger.kernel@dilger.ca>
+> > Cc:<linux-ext4@vger.kernel.org>
+> > Cc:<linux-kernel@vger.kernel.org>
+> > Cc:<stable@vger.kernel.org>
+> > 
+> > Link:https://syzkaller.appspot.com/bug?id=641e7a4b900015c5d7a729d6cc1fba7a928a88f9
+> > Reported-by:syzbot+a22dc4b0744ac658ed9b@syzkaller.appspotmail.com
+> > Signed-off-by: Tadeusz Struk<tadeusz.struk@linaro.org>
 > 
-> From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-> Date: Thu, 18 Aug 2022 07:53:58 -0500
-> Subject: [RFC] ext4: Add ext4_sb_getblk() wrapper for block bounds checking
-> 
-> We might need more bounds checking on the block before calling sb_getblk().
-> This helper does that and if it is not valid then returns ERR_PTR(-EFSCORRUPTED)
-> Later we will need to carefully convert the callers to use ext4_sb_getblk()
-> instead of sb_getblk().
+> Any comments/feedback on this one?
 
-Hey Ritesh,
+Hi, I can't replicate the problem using the syzkaller repro:
 
-I was going through some old patches and came across this RFC patch.
-Have you had a chance to polish this up?  I don't think I've seen a
-newer version of this patch, but maybe I missed it.
+root@kvm-xfstests:/vdc# /vtmp/repro 
+[   14.840406] loop0: detected capacity change from 0 to 1051
+[   14.840965] EXT4-fs (loop0): ext4_check_descriptors: Checksum for group 0 failed (60935!=0)
+[   14.841468] EXT4-fs error (device loop0): ext4_ext_check_inode:520: inode #2: comm repro: pblk 0 bad header/extent: invalid magic - magic 9fe4, entries 42, max 0(0), depth 0(0)
+[   14.842188] EXT4-fs (loop0): get root inode failed
+[   14.842401] EXT4-fs (loop0): mount failed
 
-Thanks,
+And by inspection, if there is a corrupted inode, it should have been
+caught much sooner, in ext4_iget():
 
-					- Ted
+	} else if (!ext4_has_inline_data(inode)) {
+		/* validate the block references in the inode */
+		if (!(EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY) &&
+			(S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode) ||
+			(S_ISLNK(inode->i_mode) &&
+			!ext4_inode_is_fast_symlink(inode)))) {
+			if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
+				ret = ext4_ext_check_inode(inode);
+			else
+				ret = ext4_ind_check_inode(inode);
+		}
+	}
+	if (ret)
+		goto bad_inode;
+
+... and this check has been around for quite some time.
+
+It's much more efficient to check for a corrupted inode data structure
+at the time when the inode is read into memory, as opposed to every
+single time we try to lookup a logical->physical block map, in
+ext4_find_extent().
+
+If you can reproduce a failure on a modern kernel, please let me know,
+but it looks like syzkaller had only reported it on androd-54,
+android-5-10, linux-4.14, and linux-4.19 in any case.
+
+Cheers,
+
+						- Ted
