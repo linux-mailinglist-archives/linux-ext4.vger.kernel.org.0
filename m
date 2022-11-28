@@ -2,53 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95AF063AB1A
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Nov 2022 15:36:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33ABC63AC03
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Nov 2022 16:15:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbiK1OgA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Nov 2022 09:36:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56864 "EHLO
+        id S230399AbiK1PPz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 28 Nov 2022 10:15:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbiK1OgA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Nov 2022 09:36:00 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39EA31DA7D;
-        Mon, 28 Nov 2022 06:35:59 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1669646156;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        with ESMTP id S231166AbiK1PPy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Nov 2022 10:15:54 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB8E15A28
+        for <linux-ext4@vger.kernel.org>; Mon, 28 Nov 2022 07:15:53 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id F1FE61F8C8;
+        Mon, 28 Nov 2022 15:15:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1669648551; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=lf6RK+eqIHb1J2ty81VlA4y2Vc4xkcP9Z5vqkCNM+LU=;
-        b=gFwnuOCpQZBSuLNYLW1cOmKa8cXKKJkubkXZf7S2CgjAm8HaykgXt52jEahhsttbEqC+d6
-        scSto+IoEBs9LTmxCM57PAaW5/G2uTOedvfJ2PRwgx6LTOg82K8KVkgViGbdjArCeQzdLh
-        g2dm7FJtiQwq1sfbfQYPrCHwlq8fqDib03amWRo+Fr73xCqieWconC1Wh2Vu+fn60GWZvC
-        VMPGX7Y1BX8LHLaWFobjUPEqPd+xWnPnbAvG/orZH23WZaoKBhBd9Nea0A7zORRtH3P9/B
-        Obn3eFlJfmyK6YAnH1dzMxqUzFGLBc3oax8Sql5fSbmcMvpOyrkHTDu5MlDcEQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1669646156;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        bh=2QVJSCj+0uRz/FYRihd854hgsDtwwRysXwXI7G+A4gk=;
+        b=1oPrGNOE9L+VHujx37Wh9zEYcAF2GoQVRKlGMD4WutfAlEbtjIiZYjEaHVC0E5h1iUQZf3
+        npZpOa+j/0xJwrKUvJeatr2dkSlLnmHNB/HPfKS+Vg95ndr4VlrDgRzI1H4ZzgOBhP86yO
+        xLTFr7l688jHycdR3zA46V0PJYhcd5A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1669648551;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=lf6RK+eqIHb1J2ty81VlA4y2Vc4xkcP9Z5vqkCNM+LU=;
-        b=rYaUqJdcCD1QSqwfyP8fyBJ9BJPNsbJe405w0GU+QqwQq6JxJEJYNqT20GdihHKgGwsSXG
-        eq12MHRJfhYt9eCA==
-To:     Sanan Hasanov <sanan.hasanov@Knights.ucf.edu>,
-        "john.stultz@linaro.org" <john.stultz@linaro.org>,
-        "sboyd@kernel.org" <sboyd@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "syzkaller@googlegroups.com" <syzkaller@googlegroups.com>,
-        Paul Gazzillo <Paul.Gazzillo@ucf.edu>,
-        linux-ext4@vger.kernel.org, Theodore Tso <tytso@google.com>
-Subject: Re: Syzkaller found a bug: KASAN: slab-out-of-bounds Write in
- enqueue_timer
-In-Reply-To: <BN6PR07MB3185B8E16A4AA1EE384B2375AB0C9@BN6PR07MB3185.namprd07.prod.outlook.com>
-References: <BN6PR07MB3185B8E16A4AA1EE384B2375AB0C9@BN6PR07MB3185.namprd07.prod.outlook.com>
-Date:   Mon, 28 Nov 2022 15:35:56 +0100
-Message-ID: <875yezw3hv.ffs@tglx>
+        bh=2QVJSCj+0uRz/FYRihd854hgsDtwwRysXwXI7G+A4gk=;
+        b=Id+PNlVU1L6OX4xnLHMZ+gPWV9j2S7aFnHuTBtsaSGTpBffIuZydOuoAIaAsBggi7+6AUG
+        6BzMXRAAmOBOE+Dw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E299D13273;
+        Mon, 28 Nov 2022 15:15:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 4wRHN6fQhGMHQQAAMHmgww
+        (envelope-from <jack@suse.cz>); Mon, 28 Nov 2022 15:15:51 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 59569A070F; Mon, 28 Nov 2022 16:15:51 +0100 (CET)
+Date:   Mon, 28 Nov 2022 16:15:51 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Zhang Yi <yi.zhang@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, yukuai3@huawei.com
+Subject: Re: [PATCH] ext4: add barrier info if journal device write cache is
+ not enabled
+Message-ID: <20221128151551.fo6ct7nbozlqjvci@quack3>
+References: <20221124135744.1488959-1-yi.zhang@huawei.com>
+ <20221128101108.nslkglhz7pmflyoa@quack3>
+ <02ab48e0-27d7-1a59-603a-34bd85bb2b68@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <02ab48e0-27d7-1a59-603a-34bd85bb2b68@huawei.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -58,20 +72,70 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Nov 23 2022 at 18:48, Sanan Hasanov wrote:
+On Mon 28-11-22 21:01:07, Zhang Yi wrote:
+> On 2022/11/28 18:11, Jan Kara wrote:
+> > On Thu 24-11-22 21:57:44, Zhang Yi wrote:
+> >> The block layer will check and suppress flush bio if the device write
+> >> cache is not enabled, so the journal barrier will not go into effect
+> >> even if uer specify 'barrier=1' mount option. It's dangerous if the
+> >> write cache state is false negative, and we cannot distinguish such
+> >> case easily. So just give an info and an inquire interface to let
+> >> sysadmin know the barrier is suppressed for the case of write cache is
+> >> not enabled.
+> >>
+> >> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> > 
+> > Hum, so have you seen a situation when write cache information is incorrect
+> > in the block layer? Does it happen often enough that it warrants extra
+> > sysfs file?
+> > 
+> 
+> Thanks for response. Yes, It often happens on some SCSI devices with RAID
+> card, the disks below the RAID card enabled write cache, but the RAID driver
+> declare the write cache was disabled when probing, and the RAID card seems
+> cannot guarantee data writing back to disk medium on power failure. So the
+> ext4 filesystem will probably be corrupted at the next startup. It's
+> difficult to distinguish it's a hardware or an software problem.
+> I am not familiar with the RAID card. So I don't know why the cache state
+> is incorrect (maybe incorrect configured or firmware bug).
 
-> Good day, dear maintainers,
->
-> We found a bug using a modified kernel configuration file used by syzbot.
->
-> We enhanced the coverage of the configuration file using our tool, klocalizer.
->
-> Kernel branch: linux-next 5.11.0+ (HEAD detached at a68aa48d4ed8)
+OK, thanks for info. I believe usually you're expected to disable write
+cache on the disks themselves and leave caching to the RAID card. But I'm
+not an expert here and it's a bit besides the point anyway ;)
 
-This is a random linux-next commit from Feb 26 2021.
+> > After all you should be able to query what the block layer thinks about the
+> > write cache - you definitely can for SCSI devices, I'm not sure about
+> > others. So you can have a look there. Providing this info in the filesystem
+> > seems like doing it in the wrong layer - I don't see anything jbd2/ext4
+> > specific here...
+> > 
+> 
+> Yes, the best way is to figure out the RAID card problem.
+> This patch is not to aim to fix something in ext4. The reason why I want to add
+> this in ext4 is just give a hint from the fs barrier's point of view, it show the
+> barrier's running state at mount time, could help us to delimit the cache problem
+> more easily when we found ext4 corruption after power failure. Before this patch,
+> we could do that through SCSI probing info and /sys/block/sda/queue/write_cache
+> (maybe some others?), it's not quite clear.
+> 
+>   [    2.520176] sd 0:0:0:0: [sda] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
+> 
+>   [root@localhost ~]# cat /sys/block/sda/queue/write_cache
+>   write back
 
-How is this useful and relevant?
+Yes. /sys/block/<device>/queue/write_cache is what you should query to find
+whether barriers will be ignored or not. My point is - you need this for
+ext4, now if you start using XFS filesystem you'd need similar patch for
+XFS and then if you transition to btrfs you'd need this for btrfs as well
+and all this duplication is there because you are querying through the
+filesystem a property of the underlying block device. So why not ask the
+block device directly?
 
-Thanks,
+I understand it may be more *convenient* to grab the information from the
+filesystem given the infrastructure you have for gathering filesystem
+information. But carrying around various sysfs files has its cost as well.
 
-        tglx
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
