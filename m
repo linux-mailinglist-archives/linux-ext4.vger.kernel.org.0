@@ -2,144 +2,76 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F96B63B4BF
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Nov 2022 23:20:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D85263B4D0
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Nov 2022 23:28:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233919AbiK1WUe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Nov 2022 17:20:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58758 "EHLO
+        id S232141AbiK1W2N (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 28 Nov 2022 17:28:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234148AbiK1WUd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Nov 2022 17:20:33 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D7A3122B
-        for <linux-ext4@vger.kernel.org>; Mon, 28 Nov 2022 14:20:32 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 027E1614AC
-        for <linux-ext4@vger.kernel.org>; Mon, 28 Nov 2022 22:20:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 66E0FC433C1
-        for <linux-ext4@vger.kernel.org>; Mon, 28 Nov 2022 22:20:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669674031;
-        bh=wGL+PpmBTLz+Bcdaf+g38b7JzfxOEuNxoZOoq5poqAE=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=doe1rNoq+/cb2WzLcz8d3CX5ZqLb7+9kXA8CaJqW+nC0pzaA/kddYuw1tTKtqrOvS
-         M6A8BfK0mjVVZKvo4O5qZ9FNzxwLbSApFUR9JZzVQvclBLfUYVLBJ+8aliv6gYbtrY
-         Xntun8R1znd0Y9QregueAWqQhENRrfdrGC+Itm4Yh5lzBLmVRiGrcJavYA/a7KJ078
-         PNO34iFdG7HRBzTYZ5zP2Zd6eVdKIB0iPjP0tQktsO5bSVf8iPGtYdKeLwtjXCG0f+
-         QhIcYqvv5ZC9C67rTG6NZSurnnFx5G9iqhPSGhuWz0j92OQ4BIFLas+Im7FSEpdaqU
-         kQJYsgbe7Rj9w==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-        id 49ACBC433E6; Mon, 28 Nov 2022 22:20:31 +0000 (UTC)
-From:   bugzilla-daemon@kernel.org
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 216541] FUZZ: general protection fault, KASAN: null-ptr-deref
- at fs/ext4/ialloc.c:ext4_read_inode_bitmap() when mount a corrupted image
-Date:   Mon, 28 Nov 2022 22:20:31 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: tytso@mit.edu
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: cc
-Message-ID: <bug-216541-13602-xpOUNw0B8F@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-216541-13602@https.bugzilla.kernel.org/>
-References: <bug-216541-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        with ESMTP id S233660AbiK1W2M (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Nov 2022 17:28:12 -0500
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E80EA24B;
+        Mon, 28 Nov 2022 14:28:10 -0800 (PST)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2ASMS3cc017750
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Nov 2022 17:28:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1669674485; bh=93sV9uF9firD2I2yjs8f7J69JyRyRKxsZzFKTMgpo+Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=pwBmEyO3XgD1rsAnMLjxB8wVG7geyPSPxRrNfE517cO/ImMwSo8wZc5Ca/oUVIKTw
+         5Y0AAlgYv43YPCIDnPmLu8I+FGroQijVrpq6VG0mhr75lgbLLQHtQGCdoaUihSrls5
+         KGU8CxwwRLVaQoqwhdG66gZDhdRE5Uh48aIjOt3HhVQwwkiatU8LGRfViX0l8QCyGy
+         ELbAawK9dCLowX8lMWiyMCDRb2Dpr3MsJqB8ufcGF3I01tjF1eBB8G1NNjVdU0AwNg
+         rUlYXFM8/NPONr+zJW0McAH49cZYiR/STAXsWRDpPhTN7RO7uMsIoC1jxkY+qjoW/m
+         2dhe0FDZ4Uypg==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 42D2615C3AA6; Mon, 28 Nov 2022 17:28:03 -0500 (EST)
+Date:   Mon, 28 Nov 2022 17:28:03 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     =?iso-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2] ext4: fix a NULL pointer when validating an inode
+ bitmap
+Message-ID: <Y4U18wly7K87fX9v@mit.edu>
+References: <20221010142035.2051-1-lhenriques@suse.de>
+ <20221011155623.14840-1-lhenriques@suse.de>
+ <Y2cAiLNIIJhm4goP@mit.edu>
+ <Y2piZT22QwSjNso9@suse.de>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Y2piZT22QwSjNso9@suse.de>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D216541
+On Tue, Nov 08, 2022 at 02:06:29PM +0000, Luís Henriques wrote:
+> > What makes you believe that?  Look at how s_group_info is initialized
+> > in ext4_mb_alloc_groupinfo() in fs/ext4/mballoc.c.  It's pretty
+> > careful to make sure this is not the case.
+> 
+> Right.  I may be missing something, but I don't think we get that far.
+> __ext4_fill_super() will first call ext4_setup_system_zone() (which is
+> where this bug occurs) and only after that ext4_mb_init() will be invoked
+> (which is where ext4_mb_alloc_groupinfo() will eventually be called).
 
-Theodore Tso (tytso@mit.edu) changed:
+I finally got around to taking a closer look at this, and I have a
+much better understandign of what is going on.  For more details, and
+a suggested fix, please see:
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-                 CC|                            |tytso@mit.edu
+     https://bugzilla.kernel.org/show_bug.cgi?id=216541#c1
 
---- Comment #1 from Theodore Tso (tytso@mit.edu) ---
-I've done some analysis on this failure and what is going on is the followi=
-ng.
-
-1)   The journal inode in the fuzzed image is the normal journal inode, #8.=
-=20
-HOWEVER, after the journal is replayed, the journal overwrites the superblo=
-ck
-with new one where the journal inode is different; it is now #32.
-
-2)  Next, we set up the set of static metadata blocks ("the system zone") t=
-hat
-should never be used by any data blocks in fs/ext4/block_validity.c.    This
-includes the blocks used by the journal inode (which never change while the
-file system is mounted).  In order to reserve those blocks in the system zo=
-ne,
-ext4_protect_reserved_inode() fetches the journal inode using ext4_iget(), =
-and
-then later releases it using iput().
-
-3)  This would be fine for a valid file system journal, but after the journ=
-al
-replay, the s_journal_inum now has 32.  And inode 32 has an i_links_count o=
-f 0.
-  That's a problem, because now when we call iput(), since the VFS layers s=
-ees
-that the links count is zero, it calls evict() so that the inode can be
-deallocated.   And at this point in the file system mount operation, we're =
-not
-set up to deallocate any blocks or inodes.  And this is what triggers the N=
-ULL
-pointer dereference.
-
-
-Fixes:
-
-FIX A)  In ext4_iget(), if we are getting a special inode, the links count =
-must
-be > 0.  If not, when that special inode (whether it is the root directory,=
- the
-journal inode, or the quota inode) is finally released using iput, the syst=
-em
-will attempt to deallocate the special inode, with the resulting hilarity
-ensuing.   So if i_links_count is 0, we should set the returned inode to be=
- the
-bad inode, and return -EFSCORRUPTED.
-
-FIX B)   In ext4_check_blockref(), we skip all of the checks if the inode in
-question is the journal inode.   We shouldn't check to see if the journal's
-blocks overlaps with the metadata blocks (which include the journal inode, =
-so
-it will always overlap with itself) --- but we should check to make sure the
-block number is valid and does not exceed the file system limits.   This is=
- not
-critical for fixing the bug shown here, but it does add a missing check whi=
-ch
-was unnecessarily exempted by commit 170417c8c7bb2 ("ext4: fix block validi=
-ty
-checks for journal inodes using indirect blocks").
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+						- Ted
