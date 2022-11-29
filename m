@@ -2,48 +2,47 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF6063B8AD
-	for <lists+linux-ext4@lfdr.de>; Tue, 29 Nov 2022 04:18:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2746963B9B6
+	for <lists+linux-ext4@lfdr.de>; Tue, 29 Nov 2022 07:17:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235457AbiK2DSl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Nov 2022 22:18:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44984 "EHLO
+        id S235497AbiK2GQ7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 29 Nov 2022 01:16:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235340AbiK2DSi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Nov 2022 22:18:38 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 339B427920;
-        Mon, 28 Nov 2022 19:18:37 -0800 (PST)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NLnWG0ZxHzqSdp;
-        Tue, 29 Nov 2022 11:14:34 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+        with ESMTP id S235319AbiK2GQx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 29 Nov 2022 01:16:53 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3947E13F2B
+        for <linux-ext4@vger.kernel.org>; Mon, 28 Nov 2022 22:16:51 -0800 (PST)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NLsXn48bkzRpWw;
+        Tue, 29 Nov 2022 14:16:09 +0800 (CST)
+Received: from [10.174.178.134] (10.174.178.134) by
+ canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 29 Nov 2022 11:18:35 +0800
-Message-ID: <d357e15b-e44a-1e3b-41c3-0b732e4685ed@huawei.com>
-Date:   Tue, 29 Nov 2022 11:18:34 +0800
+ 15.1.2375.31; Tue, 29 Nov 2022 14:16:47 +0800
+Subject: Re: [PATCH] ext4: add barrier info if journal device write cache is
+ not enabled
+To:     Jan Kara <jack@suse.cz>
+CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>, <yukuai3@huawei.com>
+References: <20221124135744.1488959-1-yi.zhang@huawei.com>
+ <20221128101108.nslkglhz7pmflyoa@quack3>
+ <02ab48e0-27d7-1a59-603a-34bd85bb2b68@huawei.com>
+ <20221128151551.fo6ct7nbozlqjvci@quack3>
+From:   Zhang Yi <yi.zhang@huawei.com>
+Message-ID: <91aff807-ecde-b37f-444c-010276fd09f7@huawei.com>
+Date:   Tue, 29 Nov 2022 14:16:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH v2] ext4: fix a NULL pointer when validating an inode
- bitmap
+In-Reply-To: <20221128151551.fo6ct7nbozlqjvci@quack3>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-To:     Theodore Ts'o <tytso@mit.edu>,
-        =?UTF-8?Q?Lu=c3=ads_Henriques?= <lhenriques@suse.de>
-CC:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>
-References: <20221010142035.2051-1-lhenriques@suse.de>
- <20221011155623.14840-1-lhenriques@suse.de> <Y2cAiLNIIJhm4goP@mit.edu>
- <Y2piZT22QwSjNso9@suse.de> <Y4U18wly7K87fX9v@mit.edu>
-From:   Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <Y4U18wly7K87fX9v@mit.edu>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500021.china.huawei.com (7.185.36.21)
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.134]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500005.china.huawei.com (7.192.104.229)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -54,47 +53,71 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2022/11/29 6:28, Theodore Ts'o wrote:
-> On Tue, Nov 08, 2022 at 02:06:29PM +0000, Luís Henriques wrote:
->>> What makes you believe that?  Look at how s_group_info is initialized
->>> in ext4_mb_alloc_groupinfo() in fs/ext4/mballoc.c.  It's pretty
->>> careful to make sure this is not the case.
->> Right.  I may be missing something, but I don't think we get that far.
->> __ext4_fill_super() will first call ext4_setup_system_zone() (which is
->> where this bug occurs) and only after that ext4_mb_init() will be invoked
->> (which is where ext4_mb_alloc_groupinfo() will eventually be called).
-> I finally got around to taking a closer look at this, and I have a
-> much better understandign of what is going on.  For more details, and
-> a suggested fix, please see:
->
->       https://bugzilla.kernel.org/show_bug.cgi?id=216541#c1
->
-> 						- Ted
->
->
-Hi Theodore,
+On 2022/11/28 23:15, Jan Kara wrote:
+> On Mon 28-11-22 21:01:07, Zhang Yi wrote:
+>> On 2022/11/28 18:11, Jan Kara wrote:
+>>> On Thu 24-11-22 21:57:44, Zhang Yi wrote:
+>>>> The block layer will check and suppress flush bio if the device write
+>>>> cache is not enabled, so the journal barrier will not go into effect
+>>>> even if uer specify 'barrier=1' mount option. It's dangerous if the
+>>>> write cache state is false negative, and we cannot distinguish such
+>>>> case easily. So just give an info and an inquire interface to let
+>>>> sysadmin know the barrier is suppressed for the case of write cache is
+>>>> not enabled.
+>>>>
+>>>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+>>>
+>>> Hum, so have you seen a situation when write cache information is incorrect
+>>> in the block layer? Does it happen often enough that it warrants extra
+>>> sysfs file?
+>>>
+>>
+>> Thanks for response. Yes, It often happens on some SCSI devices with RAID
+>> card, the disks below the RAID card enabled write cache, but the RAID driver
+>> declare the write cache was disabled when probing, and the RAID card seems
+>> cannot guarantee data writing back to disk medium on power failure. So the
+>> ext4 filesystem will probably be corrupted at the next startup. It's
+>> difficult to distinguish it's a hardware or an software problem.
+>> I am not familiar with the RAID card. So I don't know why the cache state
+>> is incorrect (maybe incorrect configured or firmware bug).
+> 
+> OK, thanks for info. I believe usually you're expected to disable write
+> cache on the disks themselves and leave caching to the RAID card. But I'm
+> not an expert here and it's a bit besides the point anyway ;)
+> 
+>>> After all you should be able to query what the block layer thinks about the
+>>> write cache - you definitely can for SCSI devices, I'm not sure about
+>>> others. So you can have a look there. Providing this info in the filesystem
+>>> seems like doing it in the wrong layer - I don't see anything jbd2/ext4
+>>> specific here...
+>>>
+>>
+>> Yes, the best way is to figure out the RAID card problem.
+>> This patch is not to aim to fix something in ext4. The reason why I want to add
+>> this in ext4 is just give a hint from the fs barrier's point of view, it show the
+>> barrier's running state at mount time, could help us to delimit the cache problem
+>> more easily when we found ext4 corruption after power failure. Before this patch,
+>> we could do that through SCSI probing info and /sys/block/sda/queue/write_cache
+>> (maybe some others?), it's not quite clear.
+>>
+>>   [    2.520176] sd 0:0:0:0: [sda] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
+>>
+>>   [root@localhost ~]# cat /sys/block/sda/queue/write_cache
+>>   write back
+> 
+> Yes. /sys/block/<device>/queue/write_cache is what you should query to find
+> whether barriers will be ignored or not. My point is - you need this for
+> ext4, now if you start using XFS filesystem you'd need similar patch for
+> XFS and then if you transition to btrfs you'd need this for btrfs as well
+> and all this duplication is there because you are querying through the
+> filesystem a property of the underlying block device. So why not ask the
+> block device directly?
+> 
+> I understand it may be more *convenient* to grab the information from the
+> filesystem given the infrastructure you have for gathering filesystem
+> information. But carrying around various sysfs files has its cost as well.
+> 
+OK, it's fine, let's keep querying the block layer.
 
-In my opinion, the s_journal_inum should not be modified when the file 
-system is
-mounted, especially after we have successfully loaded and replayed the 
-journal with
-the current s_journal_inum. Even if the s_journal_inumon the disk is 
-modified, we should
-use the current one. This is how journal_devnum is handled in 
-ext4_load_journal():
-
-          if (!really_read_only && journal_devnum &&
-              journal_devnum != le32_to_cpu(es->s_journal_dev)) {
-                  es->s_journal_dev = cpu_to_le32(journal_devnum);
-
-                  /* Make sure we flush the recovery flag to disk. */
-                  ext4_commit_super(sb);
-          }
-
-We can avoid this problem by adding a similar check for journal_inum in 
-ext4_load_journal().
-
--- 
-With Best Regards,
-Baokun Li
-
+Thanks,
+Yi.
