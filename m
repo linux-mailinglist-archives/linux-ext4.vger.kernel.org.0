@@ -2,44 +2,47 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77DC563CA34
-	for <lists+linux-ext4@lfdr.de>; Tue, 29 Nov 2022 22:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5636163CA3E
+	for <lists+linux-ext4@lfdr.de>; Tue, 29 Nov 2022 22:13:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236995AbiK2VM4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 29 Nov 2022 16:12:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40172 "EHLO
+        id S237133AbiK2VNW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 29 Nov 2022 16:13:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236838AbiK2VMf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 29 Nov 2022 16:12:35 -0500
+        with ESMTP id S236892AbiK2VMo (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 29 Nov 2022 16:12:44 -0500
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA5EE1CFD2
-        for <linux-ext4@vger.kernel.org>; Tue, 29 Nov 2022 13:12:26 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 316FA22BF7;
+        Tue, 29 Nov 2022 13:12:43 -0800 (PST)
 Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2ATLCJg8029730
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2ATLCJwj029735
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Tue, 29 Nov 2022 16:12:20 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1669756340; bh=j8GlUwlYO2vAJkraMvHoDxtIg56U0Q1+a6JWqXTk0so=;
+        t=1669756341; bh=Xc6ScPsRePfO/+1EPTpMGxHkSC8xvx2I060fXoCkgis=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=f6rTX+oIw9gnWGeRS93FAlgzkiXC6HQ2CGuEBZi93KxK92tmh5RH4P1PRnZuKe4Ta
-         c9IavSzeqBHYhJq3PE/fIuBgihoDg/9NYzNXa2LLCuyDWZ/z55rH5uLcs0B1nb6Gz+
-         Db2c4Bo3r/EAYk9yO3jNsyw02RH7r2hRxttwYq1SPP10LL3eNlRBcHmpdcqzobdH+o
-         05pXzNTkBo4FdickHtwHdPo1uZ1WFdvsqbK9IgMTnztojfMVElXtA6gUuTf81ufTsR
-         vkV3t2fqqkOq4jQdsarSj46iCYyjrKlS2U7FV5yFrUVg4n00A/MkzvmTUX3R7R3u5V
-         wBkFxVglKDYCA==
+        b=c9/gQZFfACBuLjbXBQcLfOm8bLZ9TVJ2+WOXYCKn7j7iCUvJIQqOileznQtW221In
+         B8kwm49gmgZ2hKWn7ef3R0mMec/rqbENbSpF2s2eYBmTaXKpK26HqEuFraKnJLLXGC
+         s8ek/VmWjS1LA05FN5Uh1KT7G/LNNPZ3FnmbgP/F/pO2EABzCOsimIj53/yAptS7LQ
+         JY36DE1LAk3d2kVkx9D8T2mM8b5BO/YW/BlScu6jD4tWwH6IUWeUC9ZcHAOBVFUbAp
+         PbX5cW6vhOkYIU7QXzaNBwVLZzR3N7sPN6oVw7fk6GIZihwsmvEMXBI7Im9NDvIfbV
+         m+BCRk+pfbQvg==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 6289015C33FB; Tue, 29 Nov 2022 16:12:19 -0500 (EST)
+        id 6473015C3AA6; Tue, 29 Nov 2022 16:12:19 -0500 (EST)
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     changfengnan <changfengnan@bytedance.com>, adilger.kernel@dilger.ca
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] ext4: split ext4_journal_start trace for debug
-Date:   Tue, 29 Nov 2022 16:12:09 -0500
-Message-Id: <166975630694.2135297.17858278984867747322.b4-ty@mit.edu>
+To:     linux-ext4@vger.kernel.org,
+        Bixuan Cui <cuibixuan@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org, bvanassche@acm.org,
+        rostedt@goodmis.org, axboe@kernel.dk, mhiramat@kernel.org
+Cc:     "Theodore Ts'o" <tytso@mit.edu>
+Subject: Re: [PATCH -next v2] jbd2: use the correct print format
+Date:   Tue, 29 Nov 2022 16:12:10 -0500
+Message-Id: <166975630695.2135297.11708030511108233612.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20221008120518.74870-1-changfengnan@bytedance.com>
-References: <20221008120518.74870-1-changfengnan@bytedance.com>
+In-Reply-To: <1665488024-95172-1-git-send-email-cuibixuan@linux.alibaba.com>
+References: <1665488024-95172-1-git-send-email-cuibixuan@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -52,17 +55,20 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, 8 Oct 2022 20:05:18 +0800, changfengnan wrote:
-> we might want to know why jbd2 thread using high io for detail,
-> split ext4_journal_start trace to ext4_journal_start_sb and
-> ext4_journal_start_inode, show ino and handle type when possible.
+On Tue, 11 Oct 2022 19:33:44 +0800, Bixuan Cui wrote:
+> The print format error was found when using ftrace event:
+>     <...>-1406 [000] .... 23599442.895823: jbd2_end_commit: dev 252,8 transaction -1866216965 sync 0 head -1866217368
+>     <...>-1406 [000] .... 23599442.896299: jbd2_start_commit: dev 252,8 transaction -1866216964 sync 0
+> 
+> Use the correct print format for transaction, head and tid.
 > 
 > 
+> [...]
 
 Applied, thanks!
 
-[1/1] ext4: split ext4_journal_start trace for debug
-      commit: 1767a1f3e91f9cc8e94244cec67a5bb7eac47b16
+[1/1] jbd2: use the correct print format
+      commit: 62734ac752c2f1b8b143a99e19342a5327def328
 
 Best regards,
 -- 
