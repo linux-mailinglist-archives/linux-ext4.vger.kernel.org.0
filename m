@@ -2,50 +2,50 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5D963B9F9
-	for <lists+linux-ext4@lfdr.de>; Tue, 29 Nov 2022 07:49:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 611A363BA0D
+	for <lists+linux-ext4@lfdr.de>; Tue, 29 Nov 2022 07:58:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229678AbiK2Gs5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 29 Nov 2022 01:48:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34010 "EHLO
+        id S229744AbiK2G6Z (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 29 Nov 2022 01:58:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229680AbiK2Gsu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 29 Nov 2022 01:48:50 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B37A27FE9;
-        Mon, 28 Nov 2022 22:48:44 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4920C61580;
-        Tue, 29 Nov 2022 06:48:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EDCAC433C1;
-        Tue, 29 Nov 2022 06:48:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669704523;
-        bh=vGB1xVmyHl45cx3CdfCj9TiDfQQKceMDFQaERyFXiNk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NfZtgkFnLTvN/XsXCQAWmjs6esq4PWudemw+gbRJSSheC/fKG43br4bHT7aWv6gzy
-         0AloVWrbduP+ZRaNJWr1ODZwf0CSlrImfry5KAjAFARyKt2HPpT54RUP5OWmdtYuAn
-         dKFPaI3l7j7abULfgiHhGculQgcqFWvqQwAPIEeZD1VOWP3CmBDYWEbmoHEbZaGtGy
-         eOK9EOhGxKtwcCpmoBDAJ9MOvbI/rCL0l0cWpu74ulBvqQtFa9Xn9zgnVz4kZLBeX6
-         U6oYMSbFDVts5DrtGGcW/soxM3gkVNNaX8zuNwtr8xYTwWuPj7qCqaEp1btWNCALI3
-         vZWEnyEJKf67A==
-Date:   Mon, 28 Nov 2022 22:48:41 -0800
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        Matthew Wilcox <willy@infradead.org>, Chao Yu <chao@kernel.org>
-Subject: Re: [PATCH v4] fsverity: stop using PG_error to track error status
-Message-ID: <Y4WrSeIf+E6+tL1y@google.com>
-References: <20221125190642.12787-1-ebiggers@kernel.org>
+        with ESMTP id S229449AbiK2G6Y (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 29 Nov 2022 01:58:24 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF80123162
+        for <linux-ext4@vger.kernel.org>; Mon, 28 Nov 2022 22:58:22 -0800 (PST)
+Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NLtSk3NQZzRpQQ;
+        Tue, 29 Nov 2022 14:57:42 +0800 (CST)
+Received: from dggpeml500006.china.huawei.com (7.185.36.76) by
+ dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 29 Nov 2022 14:58:21 +0800
+Received: from [10.174.178.112] (10.174.178.112) by
+ dggpeml500006.china.huawei.com (7.185.36.76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 29 Nov 2022 14:58:20 +0800
+Message-ID: <fbe3716b-e8bb-58c0-6c55-a88b6979063c@huawei.com>
+Date:   Tue, 29 Nov 2022 14:58:12 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221125190642.12787-1-ebiggers@kernel.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0
+Content-Language: en-US
+To:     <tytso@mit.edu>
+CC:     <linux-ext4@vger.kernel.org>,
+        Zhiqiang Liu <liuzhiqiang26@huawei.com>,
+        <linfeilong@huawei.com>, <louhongxiang@huawei.com>,
+        "lijinlin (A)" <lijinlin3@huawei.com>
+From:   "lihaoxiang (F)" <lihaoxiang9@huawei.com>
+Subject: [PATCH] tune2fs:check return value of ext2fs_mmp_update2 in
+ rewrite_metadata_checksums
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.112]
+X-ClientProxiedBy: dggpeml100017.china.huawei.com (7.185.36.161) To
+ dggpeml500006.china.huawei.com (7.185.36.76)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,340 +53,68 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 11/25, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> As a step towards freeing the PG_error flag for other uses, change ext4
-> and f2fs to stop using PG_error to track verity errors.  Instead, if a
-> verity error occurs, just mark the whole bio as failed.  The coarser
-> granularity isn't really a problem since it isn't any worse than what
-> the block layer provides, and errors from a multi-page readahead aren't
-> reported to applications unless a single-page read fails too.
-> 
-> f2fs supports compression, which makes the f2fs changes a bit more
-> complicated than desired, but the basic premise still works.
-> 
-> Note: there are still a few uses of PageError in f2fs, but they are on
-> the write path, so they are unrelated and this patch doesn't touch them.
-> 
-> Reviewed-by: Chao Yu <chao@kernel.org>
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
-> 
-> v4: Added a comment for decompression_attempted, added a paragraph to
->     the commit message, and added Chao's Reviewed-by.
-> 
-> v3: made a small simplification to the f2fs changes.  Also dropped the
->     fscrypt patch since it is upstream now.
-> 
->  fs/ext4/readpage.c |  8 ++----
->  fs/f2fs/compress.c | 64 ++++++++++++++++++++++------------------------
->  fs/f2fs/data.c     | 53 +++++++++++++++++++++++---------------
->  fs/verity/verify.c | 12 ++++-----
->  4 files changed, 72 insertions(+), 65 deletions(-)
-> 
-> diff --git a/fs/ext4/readpage.c b/fs/ext4/readpage.c
-> index 3d21eae267fca..e604ea4e102b7 100644
-> --- a/fs/ext4/readpage.c
-> +++ b/fs/ext4/readpage.c
-> @@ -75,14 +75,10 @@ static void __read_end_io(struct bio *bio)
->  	bio_for_each_segment_all(bv, bio, iter_all) {
->  		page = bv->bv_page;
->  
-> -		/* PG_error was set if verity failed. */
-> -		if (bio->bi_status || PageError(page)) {
-> +		if (bio->bi_status)
->  			ClearPageUptodate(page);
-> -			/* will re-read again later */
-> -			ClearPageError(page);
-> -		} else {
-> +		else
->  			SetPageUptodate(page);
-> -		}
->  		unlock_page(page);
->  	}
->  	if (bio->bi_private)
-> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> index d315c2de136f2..2b7a5cc4ed662 100644
-> --- a/fs/f2fs/compress.c
-> +++ b/fs/f2fs/compress.c
-> @@ -1711,50 +1711,27 @@ static void f2fs_put_dic(struct decompress_io_ctx *dic, bool in_task)
->  	}
->  }
->  
-> -/*
-> - * Update and unlock the cluster's pagecache pages, and release the reference to
-> - * the decompress_io_ctx that was being held for I/O completion.
-> - */
-> -static void __f2fs_decompress_end_io(struct decompress_io_ctx *dic, bool failed,
-> -				bool in_task)
-> +static void f2fs_verify_cluster(struct work_struct *work)
->  {
-> +	struct decompress_io_ctx *dic =
-> +		container_of(work, struct decompress_io_ctx, verity_work);
->  	int i;
->  
-> +	/* Verify, update, and unlock the decompressed pages. */
->  	for (i = 0; i < dic->cluster_size; i++) {
->  		struct page *rpage = dic->rpages[i];
->  
->  		if (!rpage)
->  			continue;
->  
-> -		/* PG_error was set if verity failed. */
-> -		if (failed || PageError(rpage)) {
-> -			ClearPageUptodate(rpage);
-> -			/* will re-read again later */
-> -			ClearPageError(rpage);
-> -		} else {
-> +		if (fsverity_verify_page(rpage))
->  			SetPageUptodate(rpage);
-> -		}
-> +		else
-> +			ClearPageUptodate(rpage);
->  		unlock_page(rpage);
->  	}
->  
-> -	f2fs_put_dic(dic, in_task);
-> -}
-> -
-> -static void f2fs_verify_cluster(struct work_struct *work)
-> -{
-> -	struct decompress_io_ctx *dic =
-> -		container_of(work, struct decompress_io_ctx, verity_work);
-> -	int i;
-> -
-> -	/* Verify the cluster's decompressed pages with fs-verity. */
-> -	for (i = 0; i < dic->cluster_size; i++) {
-> -		struct page *rpage = dic->rpages[i];
-> -
-> -		if (rpage && !fsverity_verify_page(rpage))
-> -			SetPageError(rpage);
-> -	}
-> -
-> -	__f2fs_decompress_end_io(dic, false, true);
-> +	f2fs_put_dic(dic, true);
->  }
->  
->  /*
-> @@ -1764,6 +1741,8 @@ static void f2fs_verify_cluster(struct work_struct *work)
->  void f2fs_decompress_end_io(struct decompress_io_ctx *dic, bool failed,
->  				bool in_task)
->  {
-> +	int i;
-> +
->  	if (!failed && dic->need_verity) {
->  		/*
->  		 * Note that to avoid deadlocks, the verity work can't be done
-> @@ -1773,9 +1752,28 @@ void f2fs_decompress_end_io(struct decompress_io_ctx *dic, bool failed,
->  		 */
->  		INIT_WORK(&dic->verity_work, f2fs_verify_cluster);
->  		fsverity_enqueue_verify_work(&dic->verity_work);
-> -	} else {
-> -		__f2fs_decompress_end_io(dic, failed, in_task);
-> +		return;
-> +	}
-> +
-> +	/* Update and unlock the cluster's pagecache pages. */
-> +	for (i = 0; i < dic->cluster_size; i++) {
-> +		struct page *rpage = dic->rpages[i];
-> +
-> +		if (!rpage)
-> +			continue;
-> +
-> +		if (failed)
-> +			ClearPageUptodate(rpage);
-> +		else
-> +			SetPageUptodate(rpage);
-> +		unlock_page(rpage);
->  	}
-> +
-> +	/*
-> +	 * Release the reference to the decompress_io_ctx that was being held
-> +	 * for I/O completion.
-> +	 */
-> +	f2fs_put_dic(dic, in_task);
->  }
->  
->  /*
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index a71e818cd67b4..1ae8da259d6c5 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -116,43 +116,56 @@ struct bio_post_read_ctx {
->  	struct f2fs_sb_info *sbi;
->  	struct work_struct work;
->  	unsigned int enabled_steps;
-> +	/*
-> +	 * decompression_attempted keeps track of whether
-> +	 * f2fs_end_read_compressed_page() has been called on the pages in the
-> +	 * bio that belong to a compressed cluster yet.
-> +	 */
-> +	bool decompression_attempted;
->  	block_t fs_blkaddr;
->  };
->  
-> +/*
-> + * Update and unlock a bio's pages, and free the bio.
-> + *
-> + * This marks pages up-to-date only if there was no error in the bio (I/O error,
-> + * decryption error, or verity error), as indicated by bio->bi_status.
-> + *
-> + * "Compressed pages" (pagecache pages backed by a compressed cluster on-disk)
-> + * aren't marked up-to-date here, as decompression is done on a per-compression-
-> + * cluster basis rather than a per-bio basis.  Instead, we only must do two
-> + * things for each compressed page here: call f2fs_end_read_compressed_page()
-> + * with failed=true if an error occurred before it would have normally gotten
-> + * called (i.e., I/O error or decryption error, but *not* verity error), and
-> + * release the bio's reference to the decompress_io_ctx of the page's cluster.
-> + */
->  static void f2fs_finish_read_bio(struct bio *bio, bool in_task)
->  {
->  	struct bio_vec *bv;
->  	struct bvec_iter_all iter_all;
-> +	struct bio_post_read_ctx *ctx = bio->bi_private;
->  
-> -	/*
-> -	 * Update and unlock the bio's pagecache pages, and put the
-> -	 * decompression context for any compressed pages.
-> -	 */
->  	bio_for_each_segment_all(bv, bio, iter_all) {
->  		struct page *page = bv->bv_page;
->  
->  		if (f2fs_is_compressed_page(page)) {
-> -			if (bio->bi_status)
-> +			if (!ctx->decompression_attempted)
+Tune2fs hasn't consider about the result of executing ext2fs_mmp_update2
+when it try to rewrite_metadata_checksums. If the ext2fs_mmp_update2
+failed, multi-mount protection couldn't guard there has the only node
+(i.e. this program) accessing this device in the meantime.
 
-If seems this causes a panic due to the ctx nullified by f2fs_verify_bio.
+We solve this problem to verify the return value of ext2fs_mmp_update2.
+It terminate rewrite_metadata_checksums and exit immediately if the
+wrong error code returned.
 
->  				f2fs_end_read_compressed_page(page, true, 0,
->  							in_task);
->  			f2fs_put_page_dic(page, in_task);
->  			continue;
->  		}
->  
-> -		/* PG_error was set if verity failed. */
-> -		if (bio->bi_status || PageError(page)) {
-> +		if (bio->bi_status)
->  			ClearPageUptodate(page);
-> -			/* will re-read again later */
-> -			ClearPageError(page);
-> -		} else {
-> +		else
->  			SetPageUptodate(page);
-> -		}
->  		dec_page_count(F2FS_P_SB(page), __read_io_type(page));
->  		unlock_page(page);
->  	}
->  
-> -	if (bio->bi_private)
-> -		mempool_free(bio->bi_private, bio_post_read_ctx_pool);
-> +	if (ctx)
-> +		mempool_free(ctx, bio_post_read_ctx_pool);
->  	bio_put(bio);
->  }
->  
-> @@ -185,8 +198,10 @@ static void f2fs_verify_bio(struct work_struct *work)
->  			struct page *page = bv->bv_page;
->  
->  			if (!f2fs_is_compressed_page(page) &&
-> -			    !fsverity_verify_page(page))
-> -				SetPageError(page);
-> +			    !fsverity_verify_page(page)) {
-> +				bio->bi_status = BLK_STS_IOERR;
-> +				break;
-> +			}
->  		}
->  	} else {
->  		fsverity_verify_bio(bio);
-> @@ -245,6 +260,8 @@ static void f2fs_handle_step_decompress(struct bio_post_read_ctx *ctx,
->  		blkaddr++;
->  	}
->  
-> +	ctx->decompression_attempted = true;
-> +
->  	/*
->  	 * Optimization: if all the bio's pages are compressed, then scheduling
->  	 * the per-bio verity work is unnecessary, as verity will be fully
-> @@ -1062,6 +1079,7 @@ static struct bio *f2fs_grab_read_bio(struct inode *inode, block_t blkaddr,
->  		ctx->sbi = sbi;
->  		ctx->enabled_steps = post_read_steps;
->  		ctx->fs_blkaddr = blkaddr;
-> +		ctx->decompression_attempted = false;
->  		bio->bi_private = ctx;
->  	}
->  	iostat_alloc_and_bind_ctx(sbi, bio, ctx);
-> @@ -1089,7 +1107,6 @@ static int f2fs_submit_page_read(struct inode *inode, struct page *page,
->  		bio_put(bio);
->  		return -EFAULT;
->  	}
-> -	ClearPageError(page);
->  	inc_page_count(sbi, F2FS_RD_DATA);
->  	f2fs_update_iostat(sbi, NULL, FS_DATA_READ_IO, F2FS_BLKSIZE);
->  	__submit_bio(sbi, bio, DATA);
-> @@ -2141,7 +2158,6 @@ static int f2fs_read_single_page(struct inode *inode, struct page *page,
->  	inc_page_count(F2FS_I_SB(inode), F2FS_RD_DATA);
->  	f2fs_update_iostat(F2FS_I_SB(inode), NULL, FS_DATA_READ_IO,
->  							F2FS_BLKSIZE);
-> -	ClearPageError(page);
->  	*last_block_in_bio = block_nr;
->  	goto out;
->  out:
-> @@ -2289,7 +2305,6 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
->  
->  		inc_page_count(sbi, F2FS_RD_DATA);
->  		f2fs_update_iostat(sbi, inode, FS_DATA_READ_IO, F2FS_BLKSIZE);
-> -		ClearPageError(page);
->  		*last_block_in_bio = blkaddr;
->  	}
->  
-> @@ -2306,7 +2321,6 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
->  	for (i = 0; i < cc->cluster_size; i++) {
->  		if (cc->rpages[i]) {
->  			ClearPageUptodate(cc->rpages[i]);
-> -			ClearPageError(cc->rpages[i]);
->  			unlock_page(cc->rpages[i]);
->  		}
->  	}
-> @@ -2403,7 +2417,6 @@ static int f2fs_mpage_readpages(struct inode *inode,
->  #ifdef CONFIG_F2FS_FS_COMPRESSION
->  set_error_page:
->  #endif
-> -			SetPageError(page);
->  			zero_user_segment(page, 0, PAGE_SIZE);
->  			unlock_page(page);
->  		}
-> diff --git a/fs/verity/verify.c b/fs/verity/verify.c
-> index bde8c9b7d25f6..961ba248021f9 100644
-> --- a/fs/verity/verify.c
-> +++ b/fs/verity/verify.c
-> @@ -200,9 +200,8 @@ EXPORT_SYMBOL_GPL(fsverity_verify_page);
->   * @bio: the bio to verify
->   *
->   * Verify a set of pages that have just been read from a verity file.  The pages
-> - * must be pagecache pages that are still locked and not yet uptodate.  Pages
-> - * that fail verification are set to the Error state.  Verification is skipped
-> - * for pages already in the Error state, e.g. due to fscrypt decryption failure.
-> + * must be pagecache pages that are still locked and not yet uptodate.  If a
-> + * page fails verification, then bio->bi_status is set to an error status.
->   *
->   * This is a helper function for use by the ->readahead() method of filesystems
->   * that issue bios to read data directly into the page cache.  Filesystems that
-> @@ -244,9 +243,10 @@ void fsverity_verify_bio(struct bio *bio)
->  		unsigned long level0_ra_pages =
->  			min(max_ra_pages, params->level0_blocks - level0_index);
->  
-> -		if (!PageError(page) &&
-> -		    !verify_page(inode, vi, req, page, level0_ra_pages))
-> -			SetPageError(page);
-> +		if (!verify_page(inode, vi, req, page, level0_ra_pages)) {
-> +			bio->bi_status = BLK_STS_IOERR;
-> +			break;
-> +		}
->  	}
->  
->  	fsverity_free_hash_request(params->hash_alg, req);
-> 
-> base-commit: f0c4d9fc9cc9462659728d168387191387e903cc
-> -- 
-> 2.38.1
+Signed-off-by: lihaoxiang <lihaoxiang9@huawei.com>
+---
+ misc/tune2fs.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
+
+diff --git a/misc/tune2fs.c b/misc/tune2fs.c
+index bed3d95..aa51864 100644
+--- a/misc/tune2fs.c
++++ b/misc/tune2fs.c
+@@ -930,7 +930,7 @@ static void rewrite_inodes(ext2_filsys fs, unsigned int flags)
+ 	ext2fs_free_mem(&ctx.ea_buf);
+ }
+
+-static void rewrite_metadata_checksums(ext2_filsys fs, unsigned int flags)
++static errcode_t rewrite_metadata_checksums(ext2_filsys fs, unsigned int flags)
+ {
+ 	errcode_t retval;
+ 	dgrp_t i;
+@@ -945,7 +945,9 @@ static void rewrite_metadata_checksums(ext2_filsys fs, unsigned int flags)
+ 	rewrite_inodes(fs, flags);
+ 	ext2fs_mark_ib_dirty(fs);
+ 	ext2fs_mark_bb_dirty(fs);
+-	ext2fs_mmp_update2(fs, 1);
++	retval = ext2fs_mmp_update2(fs, 1);
++	if (retval)
++		return retval;
+ 	fs->flags &= ~EXT2_FLAG_SUPER_ONLY;
+ 	fs->flags &= ~EXT2_FLAG_IGNORE_CSUM_ERRORS;
+ 	if (ext2fs_has_feature_metadata_csum(fs->super))
+@@ -953,6 +955,7 @@ static void rewrite_metadata_checksums(ext2_filsys fs, unsigned int flags)
+ 	else
+ 		fs->super->s_checksum_type = 0;
+ 	ext2fs_mark_super_dirty(fs);
++	return 0;
+ }
+
+ static void enable_uninit_bg(ext2_filsys fs)
+@@ -3410,8 +3413,14 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
+ 		}
+ 	}
+
+-	if (rewrite_checksums)
+-		rewrite_metadata_checksums(fs, rewrite_checksums);
++	if (rewrite_checksums) {
++		retval = rewrite_metadata_checksums(fs, rewrite_checksums);
++		if (retval != 0) {
++			printf("Failed to rewrite metadata checksums\n");
++			rc = 1;
++			goto closefs;
++		}
++	}
+
+ 	if (l_flag)
+ 		list_super(sb);
+-- 
+1.8.3.1
