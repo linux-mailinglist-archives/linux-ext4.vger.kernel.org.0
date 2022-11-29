@@ -2,46 +2,44 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8497D63CA38
-	for <lists+linux-ext4@lfdr.de>; Tue, 29 Nov 2022 22:13:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77DC563CA34
+	for <lists+linux-ext4@lfdr.de>; Tue, 29 Nov 2022 22:12:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236838AbiK2VM6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 29 Nov 2022 16:12:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38474 "EHLO
+        id S236995AbiK2VM4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 29 Nov 2022 16:12:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236865AbiK2VMf (ORCPT
+        with ESMTP id S236838AbiK2VMf (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Tue, 29 Nov 2022 16:12:35 -0500
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 862FF2613F;
-        Tue, 29 Nov 2022 13:12:26 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA5EE1CFD2
+        for <linux-ext4@vger.kernel.org>; Tue, 29 Nov 2022 13:12:26 -0800 (PST)
 Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2ATLCJB3029725
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2ATLCJg8029730
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Tue, 29 Nov 2022 16:12:20 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1669756342; bh=NVlHbOGEi8Vb8KhBrHaFFO2qVHyHoncNMDQIH/qVy3w=;
+        t=1669756340; bh=j8GlUwlYO2vAJkraMvHoDxtIg56U0Q1+a6JWqXTk0so=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=WeygZ8mRKmR/BZl1HFfLPtC8TAlzOgRD6poOpU+FxNJG3N/pZC7LHmH5AXCSHKdRy
-         u1lS0nyaNkkOqTyaKStBxZ1HPljxGhHgGWwDq6DbMyb3abL2qid2J0zw+yXer4x7b6
-         XHnCXAa8xsB0nyi1Ojc8VEV76shaXFtR2LSdkMq1uA48KtF+7TMHWPqxnwpCGKbtz9
-         Cs9gla2hqoj5eFOEFdJHEwF4cUgEA1kOu7MnGnJGcyu0TqUA0eeLK/qC9F73mxW1B/
-         MfGoG2A/+DFGe8GvFzrDwCUBixvyIhJBUt6VwLmRTQdzx6iWgLS2VzmtUqb9eENSx2
-         2S2i22mD/vJZA==
+        b=f6rTX+oIw9gnWGeRS93FAlgzkiXC6HQ2CGuEBZi93KxK92tmh5RH4P1PRnZuKe4Ta
+         c9IavSzeqBHYhJq3PE/fIuBgihoDg/9NYzNXa2LLCuyDWZ/z55rH5uLcs0B1nb6Gz+
+         Db2c4Bo3r/EAYk9yO3jNsyw02RH7r2hRxttwYq1SPP10LL3eNlRBcHmpdcqzobdH+o
+         05pXzNTkBo4FdickHtwHdPo1uZ1WFdvsqbK9IgMTnztojfMVElXtA6gUuTf81ufTsR
+         vkV3t2fqqkOq4jQdsarSj46iCYyjrKlS2U7FV5yFrUVg4n00A/MkzvmTUX3R7R3u5V
+         wBkFxVglKDYCA==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 6089F15C33A3; Tue, 29 Nov 2022 16:12:19 -0500 (EST)
+        id 6289015C33FB; Tue, 29 Nov 2022 16:12:19 -0500 (EST)
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     adilger.kernel@dilger.ca, cgel.zte@gmail.com
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, Zeal Robot <zealci@zte.com.cn>,
-        Jinpeng Cui <cui.jinpeng2@zte.com.cn>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH linux-next] ext4: remove redundant variable err
-Date:   Tue, 29 Nov 2022 16:12:08 -0500
-Message-Id: <166975630694.2135297.2012560761216348231.b4-ty@mit.edu>
+To:     changfengnan <changfengnan@bytedance.com>, adilger.kernel@dilger.ca
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] ext4: split ext4_journal_start trace for debug
+Date:   Tue, 29 Nov 2022 16:12:09 -0500
+Message-Id: <166975630694.2135297.17858278984867747322.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20220831160843.305836-1-cui.jinpeng2@zte.com.cn>
-References: <20220831160843.305836-1-cui.jinpeng2@zte.com.cn>
+In-Reply-To: <20221008120518.74870-1-changfengnan@bytedance.com>
+References: <20221008120518.74870-1-changfengnan@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -54,18 +52,17 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 31 Aug 2022 16:08:43 +0000, cgel.zte@gmail.com wrote:
-> From: Jinpeng Cui <cui.jinpeng2@zte.com.cn>
-> 
-> Return value directly from ext4_group_extend_no_check()
-> instead of getting value from redundant variable err.
+On Sat, 8 Oct 2022 20:05:18 +0800, changfengnan wrote:
+> we might want to know why jbd2 thread using high io for detail,
+> split ext4_journal_start trace to ext4_journal_start_sb and
+> ext4_journal_start_inode, show ino and handle type when possible.
 > 
 > 
 
 Applied, thanks!
 
-[1/1] ext4: remove redundant variable err
-      commit: eb46ec409d2d9f2ea72af29428ad3dad754a7362
+[1/1] ext4: split ext4_journal_start trace for debug
+      commit: 1767a1f3e91f9cc8e94244cec67a5bb7eac47b16
 
 Best regards,
 -- 
