@@ -2,31 +2,31 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 743E663E8B0
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Dec 2022 04:58:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B4063E8C7
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Dec 2022 05:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229579AbiLAD6d (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 30 Nov 2022 22:58:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44250 "EHLO
+        id S229736AbiLAELM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 30 Nov 2022 23:11:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229571AbiLAD6c (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Nov 2022 22:58:32 -0500
+        with ESMTP id S229671AbiLAEK6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Nov 2022 23:10:58 -0500
 Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12FED975E1
-        for <linux-ext4@vger.kernel.org>; Wed, 30 Nov 2022 19:58:31 -0800 (PST)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NN2N972T2zHwNK
-        for <linux-ext4@vger.kernel.org>; Thu,  1 Dec 2022 11:57:45 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C7898385
+        for <linux-ext4@vger.kernel.org>; Wed, 30 Nov 2022 20:10:57 -0800 (PST)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NN2fQ5zqYzHwJ8
+        for <linux-ext4@vger.kernel.org>; Thu,  1 Dec 2022 12:10:06 +0800 (CST)
 Received: from dggpeml500006.china.huawei.com (7.185.36.76) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 1 Dec 2022 11:58:24 +0800
+ 15.1.2375.31; Thu, 1 Dec 2022 12:10:50 +0800
 Received: from [10.174.178.112] (10.174.178.112) by
  dggpeml500006.china.huawei.com (7.185.36.76) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 1 Dec 2022 11:58:24 +0800
-Message-ID: <b7810ac5-6b6e-7075-b3a8-92bda853fc8b@huawei.com>
-Date:   Thu, 1 Dec 2022 11:58:24 +0800
+ 15.1.2375.31; Thu, 1 Dec 2022 12:10:49 +0800
+Message-ID: <29fb4747-5162-4e50-2771-570dc8776c26@huawei.com>
+Date:   Thu, 1 Dec 2022 12:10:49 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.0
@@ -41,7 +41,7 @@ Subject: [PATCH] quota-nld: fix open PID file failed when systemd read it
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.174.178.112]
-X-ClientProxiedBy: dggpeml100019.china.huawei.com (7.185.36.175) To
+X-ClientProxiedBy: dggpeml100011.china.huawei.com (7.185.36.193) To
  dggpeml500006.china.huawei.com (7.185.36.76)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
@@ -65,11 +65,11 @@ After that, the above problem would never occur again.
 
 Signed-off-by: lihaoxiang <lihaoxiang9@huawei.com>
 ---
- quota_nld.c | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+ quota_nld.c | 43 +++++++++++++++++++++++++++++++++----------
+ 1 file changed, 33 insertions(+), 10 deletions(-)
 
 diff --git a/quota_nld.c b/quota_nld.c
-index 09c4775..7353e2f 100644
+index 09c4775..4a02eb1 100644
 --- a/quota_nld.c
 +++ b/quota_nld.c
 @@ -413,7 +413,7 @@ static char *build_pid_file_name(void)
@@ -99,7 +99,7 @@ index 09c4775..7353e2f 100644
  {
  	struct sigaction term_action;
 
-@@ -468,8 +468,8 @@ static void use_pid_file(void)
+@@ -468,8 +468,35 @@ static void use_pid_file(void)
  	term_action.sa_flags = 0;
  	if (sigemptyset(&term_action.sa_mask) || sigaction(SIGTERM, &term_action, NULL))
  		errstr(_("Could not register PID file removal on SIGTERM.\n"));
@@ -107,10 +107,37 @@ index 09c4775..7353e2f 100644
 -		errstr(_("Could not store my PID %jd.\n"), (intmax_t )getpid());
 +	if (store_pid(pid))
 +		errstr(_("Could not store my PID %jd.\n"), pid);
++}
++
++static void fork_daemon()
++{
++	pid_t pid = fork();
++	if (pid < 0) {
++		errstr(_("Failed to daemonize: fork error with %s\n"), strerror(errno));
++		exit(1);
++	} else if (pid != 0) {
++		use_pid_file(pid);
++		exit(0);
++	}
++
++	if (setsid() == -1) {
++		errstr(_("Failed to daemonize: setsid error with %s\n"), strerror(errno));
++		exit(1);
++	}
++	if (chdir("/"))
++		errstr(_("Failed to chdir in daemonize \n"));
++	int fd = open("/dev/null", O_RDWR, 0);
++	if (fd >= 0) {
++		(void)dup2(fd, STDIN_FILENO);
++		(void)dup2(fd, STDOUT_FILENO);
++		(void)dup2(fd, STDERR_FILENO);
++
++		(void)close(fd);
++	}
  }
 
  int main(int argc, char **argv)
-@@ -485,11 +485,7 @@ int main(int argc, char **argv)
+@@ -485,11 +512,7 @@ int main(int argc, char **argv)
  		dhandle = init_dbus();
  	if (!(flags & FL_NODAEMON)) {
  		use_syslog();
