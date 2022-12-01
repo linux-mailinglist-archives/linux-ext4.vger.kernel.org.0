@@ -2,65 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E1463F554
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Dec 2022 17:34:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0450463F72E
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Dec 2022 19:11:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232231AbiLAQee (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 1 Dec 2022 11:34:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52706 "EHLO
+        id S229965AbiLASLI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 1 Dec 2022 13:11:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbiLAQed (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Dec 2022 11:34:33 -0500
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C9AA9E83
-        for <linux-ext4@vger.kernel.org>; Thu,  1 Dec 2022 08:34:32 -0800 (PST)
-Received: by mail-io1-f69.google.com with SMTP id r197-20020a6b8fce000000b006c3fc33424dso2029440iod.5
-        for <linux-ext4@vger.kernel.org>; Thu, 01 Dec 2022 08:34:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UKNN3axs1y811QkhsVcYtMf113asLOYvCITq8yCsIOI=;
-        b=UcaRqwxPI02qxvCXLaW2yDxbr3tfkQuwQA+Y2mzUsCq4KRIFRLXCi5EMp8yqglhLzz
-         yEUDs0fPBOzbC5HIKNgQL3JTIQtQuM1RplFM7ijRnd2qvuOEGbhECxKBaLXKqZiZr9d/
-         soly6vKgGPn6LyG4/i2p1pi+MW0q+PNKXgUq3YnBrajkhRUYK9SrayAAV3VMo+pT2YW1
-         F3cMXvpkBsfVpzqfCBrRq85rkQodeU0ld3kexKtd6TrpNdEg8jNen/rM3kL8z05nKf8Z
-         ge0C6UmraYJhaLsKfXSKE0HV7sMrN9v6DPW+Z3lWw1dZkJcWCfYL/CvBcL3jFFwgzWpa
-         3g4g==
-X-Gm-Message-State: ANoB5pmMEeypJUEv91EdqPd9qnJpk9PaExCh4cbD5NsbExgvHSX91k0+
-        vnRe2ujF+/JQHuwXxclbmH86wLPpyMcnGZPM0ApdmRlNA7wP
-X-Google-Smtp-Source: AA0mqf4QsSf1RfaffekqeYnhim3TQSpIXqCXD7AhIKoXzfukEk/NduogwSXw23qNdA3B36SI0rQ3mzU6CxJ96hdkg4dHKHsaUPFE
+        with ESMTP id S229962AbiLASLH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Dec 2022 13:11:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7CECB7DD2
+        for <linux-ext4@vger.kernel.org>; Thu,  1 Dec 2022 10:10:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1669918209;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+zmVq6FIgm1N+PBpIIwnONX7Od2TKKR0G3ALNNt9PAE=;
+        b=OOA2D5xUT/PL9ngZVRK/HvWtaE+2fyCCHZxDcVvulmSJa04aaVeJ2JRJd9JDgfEIr0fHtf
+        GZ9N2P2zj5b3HA6dmrjaC1KS2Yhk1pakvQuZs1Syi5qJ1jryaD4R5S2iVJEphV7O5mPqLy
+        Zj4xG6584Xk5C0Jq0nsthNMjrhUKX2g=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-609-9b7bgpcqPtqM8sAqTbLd_w-1; Thu, 01 Dec 2022 13:10:03 -0500
+X-MC-Unique: 9b7bgpcqPtqM8sAqTbLd_w-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AE2A529AA2FD;
+        Thu,  1 Dec 2022 18:10:00 +0000 (UTC)
+Received: from pasta.redhat.com (ovpn-192-141.brq.redhat.com [10.40.192.141])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6D21EC15BB4;
+        Thu,  1 Dec 2022 18:09:58 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     Christoph Hellwig <hch@infradead.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, cluster-devel@redhat.com
+Subject: [RFC v2 0/3] Turn iomap_page_ops into iomap_folio_ops
+Date:   Thu,  1 Dec 2022 19:09:54 +0100
+Message-Id: <20221201180957.1268079-1-agruenba@redhat.com>
+In-Reply-To: <20221201160619.1247788-1-agruenba@redhat.com>
+References: <20221201160619.1247788-1-agruenba@redhat.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cbcd:0:b0:302:a682:4867 with SMTP id
- s13-20020a92cbcd000000b00302a6824867mr28386527ilq.214.1669912471753; Thu, 01
- Dec 2022 08:34:31 -0800 (PST)
-Date:   Thu, 01 Dec 2022 08:34:31 -0800
-In-Reply-To: <0000000000006c411605e2f127e5@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000af5eb905eec6cb85@google.com>
-Subject: Re: kernel BUG in ext4_free_blocks (2)
-From:   syzbot <syzbot+15cd994e273307bf5cfa@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, gregkh@linuxfoundation.org,
-        lczerner@redhat.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sashal@kernel.org,
-        stable@vger.kernel.org, syzkaller-android-bugs@googlegroups.com,
-        tadeusz.struk@linaro.org, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This bug is marked as fixed by commit:
-ext4: block range must be validated before use in ext4_mb_clear_bb()
-But I can't find it in any tested tree for more than 90 days.
-Is it a correct commit? Please update it by replying:
-#syz fix: exact-commit-title
-Until then the bug is still considered open and
-new crashes with the same signature are ignored.
+Hi again,
+
+[Same thing, but with the patches split correctly this time.]
+
+we're seeing a race between journaled data writes and the shrinker on
+gfs2.  What's happening is that gfs2_iomap_page_done() is called after
+the page has been unlocked, so try_to_free_buffers() can come in and
+free the buffers while gfs2_iomap_page_done() is trying to add them to
+the transaction.  Not good.
+
+This is a proposal to change iomap_page_ops so that page_prepare()
+prepares the write and grabs the locked page, and page_done() unlocks
+and puts that page again.  While at it, this also converts the hooks
+from pages to folios.
+
+To move the pagecache_isize_extended() call in iomap_write_end() out of
+the way, a new folio_may_straddle_isize() helper is introduced that
+takes a locked folio.  That is then used when the inode size is updated,
+before the folio is unlocked.
+
+I've also converted the other applicable folio_may_straddle_isize()
+users, namely generic_write_end(), ext4_write_end(), and
+ext4_journalled_write_end().
+
+Any thoughts?
+
+Thanks,
+Andreas
+
+Andreas Gruenbacher (3):
+  fs: Add folio_may_straddle_isize helper
+  iomap: Turn iomap_page_ops into iomap_folio_ops
+  gfs2: Fix race between shrinker and gfs2_iomap_folio_done
+
+ fs/buffer.c            |  5 ++---
+ fs/ext4/inode.c        | 13 +++++------
+ fs/gfs2/bmap.c         | 39 +++++++++++++++++++++++---------
+ fs/iomap/buffered-io.c | 51 +++++++++++++++++++++---------------------
+ include/linux/iomap.h  | 24 ++++++++++----------
+ include/linux/mm.h     |  2 ++
+ mm/truncate.c          | 34 ++++++++++++++++++++++++++++
+ 7 files changed, 110 insertions(+), 58 deletions(-)
+
+-- 
+2.38.1
+
