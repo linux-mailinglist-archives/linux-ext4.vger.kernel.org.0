@@ -2,117 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F80463EA1E
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Dec 2022 08:07:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1FF563EA8E
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Dec 2022 08:51:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229626AbiLAHHD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 1 Dec 2022 02:07:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58204 "EHLO
+        id S229711AbiLAHvK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 1 Dec 2022 02:51:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbiLAHHD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Dec 2022 02:07:03 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40CD685660
-        for <linux-ext4@vger.kernel.org>; Wed, 30 Nov 2022 23:07:02 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id d3so782026plr.10
-        for <linux-ext4@vger.kernel.org>; Wed, 30 Nov 2022 23:07:02 -0800 (PST)
+        with ESMTP id S229704AbiLAHvJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Dec 2022 02:51:09 -0500
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 307FC45ECD
+        for <linux-ext4@vger.kernel.org>; Wed, 30 Nov 2022 23:51:07 -0800 (PST)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-3bfd998fa53so9087717b3.5
+        for <linux-ext4@vger.kernel.org>; Wed, 30 Nov 2022 23:51:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yUiTV4CLMohxeQaqXSR6njOLhtmUcg91g73uzEJvSLc=;
-        b=DSImRl1mqMp37HIVX/T4QXN0lsm0UPQTC6F2joKrU6aRLc4Ex/ukzZxZWTFxHu6nVm
-         pupEEh8RJbvUXDx6mv5Ef3u0fTMOyjbEHRgDnHip/nIN1PpIlKr6NdAULjEHTXOpsqBD
-         uVteqe3949wQYKWPlPFM04fboDpryrbQd2dh2Rekmp53IzXQJraF+ntR0oc7+afg2Q+4
-         /wNAyS1nCsJ7V/Vq8cSnvxWFsGnhforeSYRT2623W4xVCpoHErdWwjWzp4zB+wOVtDQ+
-         c5DU0a+o8ikmAhngEqRu0t9kukKv2l76eR2FdGy1eCPu5cQIAEiUWsRvgKBZKXITuv8P
-         i7yA==
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=TzsECpQQZWszrfGpCKzDzrw8iWPksBCj12PLooJzSsE=;
+        b=G/ce4IEuZgq9Rlz5haBq2OX6v9fz9Y4T2e+spL9cvfa0ZOH4nsaze+0H0WFMumMN3k
+         5yi1VYORS6oftTw2QB8Cz8MMLxR2VEt/s9B54LVFjjHnlLMZcshBnbXdA6LK0yl+QQpk
+         gsLk0TwPK/J8Ral7GUT/oFJ+J0eGeBJcvd8Y12bezdSwybnXikLGuO9s+Lf1Q0EL5gdu
+         UC7lJucEsu1nW+XDyif8zWVYjuHdqUZpLzwvxBDXj1RKTSrq+9PMokC62KgeJb+03+6S
+         1ib1uFHObmJ37zQC2cN17TMkUKa7gj7/FL4wqWkS3r+YRB4Zlp7c6V9OLDwYUgiXguOe
+         8mKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yUiTV4CLMohxeQaqXSR6njOLhtmUcg91g73uzEJvSLc=;
-        b=AVK1hPVAa8GVjGxLl1si3qUtr/BFkFmRArJFZSw6syynSvElmMNlmsibp0fNLPVkOr
-         GMm95UXdqwwqH5SKAW83VCGmr4Mg088Xvc0eI2D/hxcsdwsQVIfN9an6strp3NFcZOta
-         YcWAkuB8DreOTJCQF2FqL9KBMUU6w7vpNHRbV/YQV06cQfac5n7Tci6TRU/KrtxN09zF
-         hvT7WtcEw+N0TSpIlXp/viyhXgfqAOI7+cgPg3COpkCoZ/m12zFarpnjHUe0fHezWtY0
-         uQ5g8aGJALwxglyqzAc8zR1d0mrhCK0GrPgP/5Y0WoE7GbgyNS+60C7gmuC3312T5rXA
-         wyrA==
-X-Gm-Message-State: ANoB5pkUCY7TrT7umvTZqamvG9pGZitdk6UzLMhdysDkJyZt0BT2284d
-        k4W2qpUScrSTbdYyuLowrwQ=
-X-Google-Smtp-Source: AA0mqf6KtxMOw557vvsDAm9uhMZo2v6L5vXo9yP9c2RsuVWElEG/5ESG9ao3mp5mvZeYQ//ZSxgdJQ==
-X-Received: by 2002:a17:90a:440f:b0:218:9894:62c1 with SMTP id s15-20020a17090a440f00b00218989462c1mr60527733pjg.205.1669878421670;
-        Wed, 30 Nov 2022 23:07:01 -0800 (PST)
-Received: from localhost ([2406:7400:63:f20b:f6ca:e236:f59f:8c18])
-        by smtp.gmail.com with ESMTPSA id x16-20020aa79570000000b00574898527c8sm2492559pfq.74.2022.11.30.23.07.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Nov 2022 23:07:01 -0800 (PST)
-Date:   Thu, 1 Dec 2022 12:36:55 +0530
-From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH 4/9] ext4: Drop pointless IO submission from
- ext4_bio_write_page()
-Message-ID: <20221201070655.cugep2fdrtntp67y@riteshh-domain>
-References: <20221130162435.2324-1-jack@suse.cz>
- <20221130163608.29034-4-jack@suse.cz>
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TzsECpQQZWszrfGpCKzDzrw8iWPksBCj12PLooJzSsE=;
+        b=4cb8b3SZr4+jisqtpmfZG/dlzV0hfVzip46+UWPPDNysSXgTrL6zQ7U5z0d7wVgXty
+         zOOXoSPgFbP5k3cDiL4TzAwZKT+dS5useRK8xcK27DZKi5/snVvIlpLE1cyYME8tiN1A
+         TnW8j9oKOgPIBC7SxQEK904ubt36hHdz/CSZJWXKjXYMIADGYDYggn+ZRF4rnfSxcMbO
+         I4BBCZocbk5Jrlnpn6CKDGvR9srXTioQiRGJp8fAWSOjDs8tjsTp0hyiX+2XZmFXvSy6
+         JPwppUKkn3DpCWAveTlJ51ci9KYQ0DXrXT0SBoIuozBezbmiaIedBVaDHMwf/CjJp3+x
+         3SSQ==
+X-Gm-Message-State: ANoB5pmLrayK/8qgMihMM/lS6lBhlbwKHVHBevuDYb7jkJdl5XlCplTm
+        Afq+8hlQ7kxsz5lWb4itpsi6I3Hwkb8IMUILZBY=
+X-Google-Smtp-Source: AA0mqf5zDm5eqkwLkhcOXy7AK24DfWzHKDrGW6/Cm6gomNfWv3DywyCyihzdJ0G9JlQCz57xOOa+uVqV0e/B09EM4jg=
+X-Received: by 2002:a81:4e58:0:b0:3b7:a71f:66c9 with SMTP id
+ c85-20020a814e58000000b003b7a71f66c9mr31907694ywb.295.1669881066301; Wed, 30
+ Nov 2022 23:51:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221130163608.29034-4-jack@suse.cz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Received: by 2002:a05:7010:29a9:b0:315:e575:23ac with HTTP; Wed, 30 Nov 2022
+ 23:51:05 -0800 (PST)
+Reply-To: garryfoundation2022@gmail.com
+From:   Garry Myles <maryammuhd017@gmail.com>
+Date:   Thu, 1 Dec 2022 10:51:05 +0300
+Message-ID: <CAN+wjN-QzWZA5+b1gYe7T-2F5AWS6NjF+oeZ9oB3Hru+PR5gzg@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=5.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:112e listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5001]
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [maryammuhd017[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [maryammuhd017[at]gmail.com]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [garryfoundation2022[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22/11/30 05:35PM, Jan Kara wrote:
-> We submit outstanding IO in ext4_bio_write_page() if we find a buffer we
-> are not going to write. This is however pointless because we already
-> handle submission of previous IO in case we detect newly added buffer
-> head is discontiguous. So just delete the pointless IO submission call.
+--=20
+Sch=C3=B6nen Tag
+Sie haben eine Spende von 2.000.000,00 =E2=82=AC von der Garry Charity Foun=
+dation.
+Bitte kontaktieren Sie uns =C3=BCber: garryfoundation2022@gmail.com, um
+weitere Informationen zur Forderung dieser Spende zu erhalten.
 
-Agreed. io_submit_add_bh() is anyway called at the end for submitting buffers.
-And io_submit_add_bh() also has the logic to:
-1. submit a discontiguous bio
-2. Also submit a bio if the bio gets full (submit_and_retry label).
-
-Hence calling ext4_io_submit() early is not required.
-
-I guess the same will also hold true for at this place.
-https://elixir.bootlin.com/linux/v6.1-rc7/source/fs/ext4/page-io.c#L524
-
-
-But this patch looks good to me. Feel free to add:
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-
-
-
->
-> Signed-off-by: Jan Kara <jack@suse.cz>
-> ---
->  fs/ext4/page-io.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
-> index 2bdfb8a046d9..beaec6d81074 100644
-> --- a/fs/ext4/page-io.c
-> +++ b/fs/ext4/page-io.c
-> @@ -489,8 +489,6 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
->  					redirty_page_for_writepage(wbc, page);
->  				keep_towrite = true;
->  			}
-> -			if (io->io_bio)
-> -				ext4_io_submit(io);
->  			continue;
->  		}
->  		if (buffer_new(bh))
-> --
-> 2.35.3
->
+Dein
+Garry Myles
