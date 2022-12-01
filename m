@@ -2,102 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C866C63F730
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Dec 2022 19:11:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1177663F7AF
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Dec 2022 19:43:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230110AbiLASLT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 1 Dec 2022 13:11:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35606 "EHLO
+        id S230152AbiLASn4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 1 Dec 2022 13:43:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229951AbiLASLI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Dec 2022 13:11:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34038B7DD8
-        for <linux-ext4@vger.kernel.org>; Thu,  1 Dec 2022 10:10:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1669918210;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qqommci96us+QVDcXaQm47rsizn+sT4z8GqL5KIOQ8U=;
-        b=cpviRqhRh04QvnstFco1vUfdQWhNm0xny3/kBX3kWMdWxqDXPq/O74TGKsikALG42LJW0I
-        RaSioOvuTGzUj3uBats+TIktpgzhn1PKjpm6cjIaFjSV5ahw8Mt7elSXs15O1Y7RacoXwD
-        6MPVbzLzbxFdy2s4q6pXSPxCU6qDylE=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-583-40vpE01EONeRkvjW54PyJg-1; Thu, 01 Dec 2022 13:10:09 -0500
-X-MC-Unique: 40vpE01EONeRkvjW54PyJg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S230354AbiLASn4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Dec 2022 13:43:56 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 038F797923;
+        Thu,  1 Dec 2022 10:43:52 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5EB9E2A59540;
-        Thu,  1 Dec 2022 18:10:08 +0000 (UTC)
-Received: from pasta.redhat.com (ovpn-192-141.brq.redhat.com [10.40.192.141])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 048F0C15BB4;
-        Thu,  1 Dec 2022 18:10:05 +0000 (UTC)
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-To:     Christoph Hellwig <hch@infradead.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, cluster-devel@redhat.com
-Subject: [RFC v2 3/3] gfs2: Fix race between shrinker and gfs2_iomap_folio_done
-Date:   Thu,  1 Dec 2022 19:09:57 +0100
-Message-Id: <20221201180957.1268079-4-agruenba@redhat.com>
-In-Reply-To: <20221201160619.1247788-1-agruenba@redhat.com>
-References: <20221201160619.1247788-1-agruenba@redhat.com>
+        by ams.source.kernel.org (Postfix) with ESMTPS id A599FB81FB7;
+        Thu,  1 Dec 2022 18:43:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32874C433D6;
+        Thu,  1 Dec 2022 18:43:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669920230;
+        bh=b9MKAOU9mBwWc1Xtj0CoQZLAapZGZR8Q9GkPkmawkKM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VQIIwB5sTwPSd9QjcvyUADPXRLM4n5J/PEpx/DBC1by7q6tyvcT1DFmYFHsXfFfhT
+         M4/w5vuijB2arX/On2nsU4eNTlHBRK9KmH0rqR9IK7Mh65kcg74ngg7rMGDF2msNod
+         03a7I9XByIZnUoixyEuxN+pHg1wV44Sz+0yhBqVGWmGF7G2Lr9djKu7WVWfr9Gd8Rw
+         ylwaFwP+WObh+eH/0t3YC25i4FNIpI3SAGAOztichWZpTB891bK64tvK1KUT7w7ubX
+         qTdmgIixwW8mJnmQpOzzFCqg6H9Zozl2ERoRmU0qAINfTqIk2JZ9pUFGL3Qa0jiIg5
+         s0buzKT0jeFHw==
+Date:   Thu, 1 Dec 2022 10:43:47 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     "yebin (H)" <yebin10@huawei.com>, Ye Bin <yebin@huaweicloud.com>,
+        tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+4d99a966fd74bdeeec36@syzkaller.appspotmail.com
+Subject: Re: [PATCH] ext4: fix WARNING in ext4_expand_extra_isize_ea
+Message-ID: <Y4j142NC7u0O8VHt@sol.localdomain>
+References: <20221201084844.2855621-1-yebin@huaweicloud.com>
+ <20221201121928.xk5tte4dj3vmxivs@quack3>
+ <6388AB33.6050302@huawei.com>
+ <20221201142143.yuxnld55qot4jv7b@quack3>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221201142143.yuxnld55qot4jv7b@quack3>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-In gfs2_iomap_folio_done(), add the modified buffer heads to the current
-transaction while the folio is still locked.  Otherwise, the shrinker
-can come in and free them before we get to gfs2_page_add_databufs().
+On Thu, Dec 01, 2022 at 03:21:43PM +0100, Jan Kara wrote:
+> You're right that VFS actually limits xattr size to 64k. So the chances
+> that someone actually has filesystem with larger xattrs are slim. But I
+> know that Lustre guys run with their modified kernels and they were the
+> ones implementing ea_inode feature so maybe they'd bumped the VFS limit as
+> well in their kernels.
 
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
----
- fs/gfs2/bmap.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+Upstream has 64K, so that's all that matters in the context of upstream.  If
+someone changed it downstream, that's their problem.
 
-diff --git a/fs/gfs2/bmap.c b/fs/gfs2/bmap.c
-index 18dcaa95408e..d8d9ee843ac9 100644
---- a/fs/gfs2/bmap.c
-+++ b/fs/gfs2/bmap.c
-@@ -990,18 +990,17 @@ gfs2_iomap_folio_done(struct inode *inode, struct folio *folio,
- 	struct gfs2_inode *ip = GFS2_I(inode);
- 	struct gfs2_sbd *sdp = GFS2_SB(inode);
- 
--	folio_unlock(folio);
--
- 	if (!gfs2_is_stuffed(ip))
- 		gfs2_page_add_databufs(ip, &folio->page, offset_in_page(pos),
- 				       copied);
- 
-+	folio_unlock(folio);
-+	folio_put(folio);
-+
- 	if (tr->tr_num_buf_new)
- 		__mark_inode_dirty(inode, I_DIRTY_DATASYNC);
- 
- 	gfs2_trans_end(sdp);
--
--	folio_put(folio);
- }
- 
- static const struct iomap_folio_ops gfs2_iomap_folio_ops = {
--- 
-2.38.1
-
+- Eric
