@@ -2,144 +2,137 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A693463EFB6
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Dec 2022 12:42:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA94063EFDF
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Dec 2022 12:50:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230446AbiLALmP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 1 Dec 2022 06:42:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56948 "EHLO
+        id S230521AbiLALuY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 1 Dec 2022 06:50:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230280AbiLALmN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Dec 2022 06:42:13 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F2B29368
-        for <linux-ext4@vger.kernel.org>; Thu,  1 Dec 2022 03:42:11 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id o12so1598590pjo.4
-        for <linux-ext4@vger.kernel.org>; Thu, 01 Dec 2022 03:42:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iNBN5XIxc+PY8h6AlBQnd/icHI7IW1N+64b+FwAglJc=;
-        b=GUQiQr5uXeUq8xN/BzgkmEGhYlrZHHxUNQ4IfSsCG+tdoAhFSoRCj76jGIZ0uLA8m0
-         NDsMktEi6F7XzTg+UaGLJ4TyRZmz9Yw4M5qrC7+m32Rx8Z/CA6fZt+nwiNn2NELHo14+
-         iHLxbuP1zd0NkIG68e4GDMVObWaC5H5xg02bVJ7MvgByoGw5C8wYrhPaRi5YBcwPIEli
-         BhCVSWrJxzsX9FrCh72H7lc3q5nW/VLqc8p8h6fRDWeq2Zb3K+Ulz4SoYlGWS3PEOgXv
-         274DXYf7qMMQA1qt/GzZvA2IHApmb4KmOUAuuFJfUEB/RwiEehBJr6GOJb46MHDL0P+j
-         jH5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iNBN5XIxc+PY8h6AlBQnd/icHI7IW1N+64b+FwAglJc=;
-        b=jujMJ7ifAPn/1eU9BskTgsYHKrWI95/lt7LUZCF4/34SL2L3tBMsWtxOx6Z9EJGpnz
-         IMeu9vC91xvAFDx1NYlM6T3i6PHxeonYGIElZtxbHuFJa5DRiLEplnxCvrb8GUh7Qi6T
-         Oxk7I6I4+hOoGRvV+Zuk+jySB2t07gSn8uWuXtzBhvPiSW1tEXb8tqrPFfKT3XGqAOvm
-         Rvfh045H0NEx+9wP6hj5L3xIVvBWoWc2xBHVierCKf48N5h8iD5HH0xiVJCOmk8e1uCe
-         9tzEu6ZXnWgcn2Q4NB9042EnpnR1VQwQuDToyPCVIQwmpNi1Fpl4PR45skdS8aVDu/7O
-         Zz5g==
-X-Gm-Message-State: ANoB5plHNj7Hyp4NUCyNxb+7yMK3qUZv9M8gkDhzqUWI9vkJpZhMK2Te
-        8w9mECfcXMKcXQN36omhWFQ=
-X-Google-Smtp-Source: AA0mqf62zYsK+gU8rS+8QOtZZrob9wVCf+c58FS9ErJkwmCF7JgWhJPSIDXO2CJOahRJjQR2nF6dzw==
-X-Received: by 2002:a17:902:d4c5:b0:189:5e92:d457 with SMTP id o5-20020a170902d4c500b001895e92d457mr33287662plg.166.1669894931323;
-        Thu, 01 Dec 2022 03:42:11 -0800 (PST)
-Received: from localhost ([2406:7400:63:f20b:f6ca:e236:f59f:8c18])
-        by smtp.gmail.com with ESMTPSA id q15-20020a17090311cf00b00176b63535adsm3427702plh.260.2022.12.01.03.42.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Dec 2022 03:42:10 -0800 (PST)
-Date:   Thu, 1 Dec 2022 17:12:05 +0530
-From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH 0/9] ext4: Stop using ext4_writepage() for writeout of
- ordered data
-Message-ID: <20221201114205.mg6song3ulrqvt54@riteshh-domain>
+        with ESMTP id S230175AbiLALuX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Dec 2022 06:50:23 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB29BA13D0
+        for <linux-ext4@vger.kernel.org>; Thu,  1 Dec 2022 03:50:21 -0800 (PST)
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6977A21B6F;
+        Thu,  1 Dec 2022 11:50:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1669895420; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OVLVIuIBGcwg9+g8FjR/F3+y2zc8CVSZBK4L9XOOHkk=;
+        b=OJHTbc2C8UWpSUEU6WnQSO1Vr16lmulU2C2U1IhPGTda86qeT5xtG5x0VIqz1CQnVmKWZS
+        qv8apcwsFxhil2EPZsN0MWRN7aRjtrpIN/Gc/pbA081TGAkVvPJSTgmMaHFBMyfJvVMksY
+        NQ0zSVU4UmQJ5SXZST7WWnNszXKPscc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1669895420;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OVLVIuIBGcwg9+g8FjR/F3+y2zc8CVSZBK4L9XOOHkk=;
+        b=oF1wnJ6SOsluKLLYE4zkm495gaTosjy1cn2HNPWy3UG9PWO8rCtHahYM7Ciusd1udyCpmF
+        JoSgqfzL9gLJjsBA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 5E0A91320E;
+        Thu,  1 Dec 2022 11:50:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id LErqFvyUiGNqWgAAGKfGzw
+        (envelope-from <jack@suse.cz>); Thu, 01 Dec 2022 11:50:20 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id E3713A06E4; Thu,  1 Dec 2022 12:50:19 +0100 (CET)
+Date:   Thu, 1 Dec 2022 12:50:19 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>,
+        linux-ext4@vger.kernel.org, Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH 5/9] ext4: Add support for writepages calls that cannot
+ map blocks
+Message-ID: <20221201115019.jot525ry25gk4ggh@quack3>
 References: <20221130162435.2324-1-jack@suse.cz>
+ <20221130163608.29034-5-jack@suse.cz>
+ <20221201111359.onr5edsaaxcr2ndh@riteshh-domain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221130162435.2324-1-jack@suse.cz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20221201111359.onr5edsaaxcr2ndh@riteshh-domain>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22/11/30 05:35PM, Jan Kara wrote:
-> Hello,
->
-> this patch series modifies ext4 so that we stop using ext4_writepage() for
-> writeout of ordered data during transaction commit (through
-> generic_writepages() from jbd2_journal_submit_inode_data_buffers()). Instead we
-> directly call ext4_writepages() from the
-> ext4_journal_submit_inode_data_buffers().
+On Thu 01-12-22 16:43:59, Ritesh Harjani (IBM) wrote:
+> On 22/11/30 05:35PM, Jan Kara wrote:
+> > Add support for calls to ext4_writepages() than cannot map blocks. These
+> > will be issued from jbd2 transaction commit code.
+> 
+> I guess we should expand the description of mpage_prepare_extent_to_map()
+> function now. Other than that the patch looks good to me.
+> 
+> Please feel free to add:
+> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
-Hello Jan,
+Thanks for review!
 
-Do you think we should add a WARN_ON_ONCE() or something in
-ext4_do_writepages() function where we might try to start a transaction
-at [J]. Since we can now enter into ext4_do_writepages() from two places:
-1. writeback
-2. jbd2_journal_commit_transaction()
-	mpage_submit_page
-	mpage_prepare_extent_to_map
-	ext4_do_writepages
-	ext4_normal_submit_inode_data_buffers
-	ext4_journal_submit_inode_data_buffers
-	journal_submit_data_buffers
-	jbd2_journal_commit_transaction
-	kjournald2
+> >  /*
+> >   * mpage_prepare_extent_to_map - find & lock contiguous range of dirty pages
+> >   * 				 and underlying extent to map
+> 
+> Since we are overloading this function. this can be also called with can_map
+> as 0. Maybe good to add some description around that?
 
-So IIUC, we will call mpage_submit_page() in the first call to
-mpage_prepare_extent_to_map() [1] itself. That may set mpd->scanned_until_end = 1
-at the end of it. So then we should never enter into the while loop where we
-start a journal txn.
+Well, it was somewhat overloaded already before but you're right some
+documentation update is in order :) I'll do that.
 
-But can it ever happen that we ever into this while loop for writing out
-pages for journal_submit_data_buffers()?
+> > @@ -2651,14 +2665,30 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
+> 
+> 
+> adding context of code so that it doesn't get missed in the discussion.
+> 
+> <...>
+> 			/* If we can't merge this page, we are done. */
+> 			if (mpd->map.m_len > 0 && mpd->next_page != page->index)
+> 				goto out;
+> 
+> I guess this also will not hold for us given we will always have m_len to be 0.
+> <...>
 
-ext4_do_writepages()
-{
-<...>
-	mpd->do_map = 0;
-	mpd->scanned_until_end = 0;
-	mpd->io_submit.io_end = ext4_init_io_end(inode, GFP_KERNEL);
-<...>
-[1]	ret = mpage_prepare_extent_to_map(mpd);
-	/* Unlock pages we didn't use */
-	mpage_release_unused_pages(mpd, false);
-	/* Submit prepared bio */
-	ext4_io_submit(&mpd->io_submit);
-	ext4_put_io_end_defer(mpd->io_submit.io_end);
-	mpd->io_submit.io_end = NULL;
-<...>
-	while (!mpd->scanned_until_end && wbc->nr_to_write > 0) {
-		/* For each extent of pages we use new io_end */
-		mpd->io_submit.io_end = ext4_init_io_end(inode, GFP_KERNEL);
-<....>
-		BUG_ON(ext4_should_journal_data(inode));
-		needed_blocks = ext4_da_writepages_trans_blocks(inode);
+Correct.
 
-		/* start a new transaction */
-[J]		handle = ext4_journal_start_with_reserve(inode,
-				EXT4_HT_WRITE_PAGE, needed_blocks, rsv_blocks);
-<...>
-		mpd->do_map = 1;
+> > +			/*
+> > +			 * Writeout for transaction commit where we cannot
+> > +			 * modify metadata is simple. Just submit the page.
+> > +			 */
+> > +			if (!mpd->can_map) {
+> > +				if (ext4_page_nomap_can_writeout(page)) {
+> > +					err = mpage_submit_page(mpd, page);
+> > +					if (err < 0)
+> > +						goto out;
+> > +				} else {
+> > +					unlock_page(page);
+> > +					mpd->first_page++;
+> 
+> We anyway should always have mpd->map.m_len = 0.
+> That means, we always set mpd->first_page = page->index above.
+> So this might not be useful. But I guess for consistency of the code,
+> or to avoid any future bugs, this isn't harmful to keep.
 
-		trace_ext4_da_write_pages(inode, mpd->first_page, wbc);
-[2]		ret = mpage_prepare_extent_to_map(mpd);
-		if (!ret && mpd->map.m_len)
-			ret = mpage_map_and_submit_extent(handle, mpd,
-					&give_up_on_write);
-<...>
-	}
-<...>
-}
+Yes, it is mostly for consistency but it is also needed so that once we
+exit the loop, mpage_release_unused_pages() starts working from a correct
+page.
 
--ritesh
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
