@@ -2,153 +2,84 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B4063E8C7
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Dec 2022 05:11:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A266463E8DA
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Dec 2022 05:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbiLAELM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 30 Nov 2022 23:11:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51462 "EHLO
+        id S229541AbiLAEcg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 30 Nov 2022 23:32:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbiLAEK6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Nov 2022 23:10:58 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C7898385
-        for <linux-ext4@vger.kernel.org>; Wed, 30 Nov 2022 20:10:57 -0800 (PST)
-Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NN2fQ5zqYzHwJ8
-        for <linux-ext4@vger.kernel.org>; Thu,  1 Dec 2022 12:10:06 +0800 (CST)
-Received: from dggpeml500006.china.huawei.com (7.185.36.76) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 1 Dec 2022 12:10:50 +0800
-Received: from [10.174.178.112] (10.174.178.112) by
- dggpeml500006.china.huawei.com (7.185.36.76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 1 Dec 2022 12:10:49 +0800
-Message-ID: <29fb4747-5162-4e50-2771-570dc8776c26@huawei.com>
-Date:   Thu, 1 Dec 2022 12:10:49 +0800
+        with ESMTP id S229445AbiLAEce (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Nov 2022 23:32:34 -0500
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49544BF;
+        Wed, 30 Nov 2022 20:32:32 -0800 (PST)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2B14WAvh006979
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Nov 2022 23:32:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1669869133; bh=+8PpL2oL7G5+ST4DJ/Si97ZADlyYBJEabf3Ac/t18+4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=fj9khsibVbgI8YGUkwi54W1u5va0SiCc1X6KDeIy2loRzt9YAv7TZBJtP+lzmJiv9
+         7WPj4cMd3eIocR+buxFmSzmLr+koq/VEQ+MIK83aalGRuc1gasLQgBDBNkbA8eXdRd
+         QoJNvOkEwhFpwb+lzhXoLWHhsr1DEirSF3EXVK1joxEzm/cOTB6UOKoQ5+ABswc4Gi
+         95WldHAtzrzhV1RgvlYQOocrPcKC5AqrkmFqHVnY54zHirts+kcHur24Ym4i2zW0dw
+         Xygt7Vjb8EFhfZQtLP6+Ef1CizyJPxz9xTb2VMMzdaObXD+pBYEnlZIZuyTNFKyA+A
+         Dwa3c6SaA0EUw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id C49BD15C46FB; Wed, 30 Nov 2022 23:32:10 -0500 (EST)
+Date:   Wed, 30 Nov 2022 23:32:10 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     =?iso-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2] ext4: fix a NULL pointer when validating an inode
+ bitmap
+Message-ID: <Y4guSv6wHI1i+3Cz@mit.edu>
+References: <20221010142035.2051-1-lhenriques@suse.de>
+ <20221011155623.14840-1-lhenriques@suse.de>
+ <Y2cAiLNIIJhm4goP@mit.edu>
+ <Y2piZT22QwSjNso9@suse.de>
+ <Y4U18wly7K87fX9v@mit.edu>
+ <d357e15b-e44a-1e3b-41c3-0b732e4685ed@huawei.com>
+ <Y4Zy2HHOmak3k637@mit.edu>
+ <a448e298-dffd-e2f5-79b9-3997a4f53c92@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.0
-Content-Language: en-US
-To:     <jack@suse.cz>
-CC:     <linux-ext4@vger.kernel.org>,
-        Zhiqiang Liu <liuzhiqiang26@huawei.com>,
-        <linfeilong@huawei.com>, <louhongxiang@huawei.com>,
-        "lijinlin (A)" <lijinlin3@huawei.com>
-From:   "lihaoxiang (F)" <lihaoxiang9@huawei.com>
-Subject: [PATCH] quota-nld: fix open PID file failed when systemd read it
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.112]
-X-ClientProxiedBy: dggpeml100011.china.huawei.com (7.185.36.193) To
- dggpeml500006.china.huawei.com (7.185.36.76)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a448e298-dffd-e2f5-79b9-3997a4f53c92@huawei.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Running quota_nld by systemd might cause the problem that systemd
-couldn't open the PID file generated by quota_nld. In fact, the PID
-file hasn't existed yet because it originates from the child process
-of quota_nld which is a daemon process. As the main process exit,
-systemd try to access the PID file but the daemon hadn't create it
-that time.
+On Wed, Nov 30, 2022 at 11:20:11AM +0800, Baokun Li wrote:
+> > If we can protect against the problem by adding a check that has other
+> > value as well (such as making usre that when ext4_iget fetches a
+> > special inode, we enforce that i_links_couint must be > 0), maybe
+> > that's worth it.
+>
+> Yes, but some special inodes allow i_links_couint to be zero,
+> such as the uninitialized boot load inode.
 
-In this situation, we move the procedure of creating PID file into the
-parent process to ensure the PID file must existed when quota_nld exit.
-After that, the above problem would never occur again.
+That's a good point; but the only time when a special inode can
+validly have a zero i_links_count is when it has no blocks associated
+to it.  Otherwise, when the file system releases the inode using
+iput() when the file system is unmounted, all of the blocks will get
+released when the inode is evicted.  So we can have ext4_iget() allow
+fetching an inode if i_blocks[] is zeros.  But if it has any blocks
+and i_links_count is non-zero, something must be terribly wrong with
+that inode.
 
-Signed-off-by: lihaoxiang <lihaoxiang9@huawei.com>
----
- quota_nld.c | 43 +++++++++++++++++++++++++++++++++----------
- 1 file changed, 33 insertions(+), 10 deletions(-)
+Cheers,
 
-diff --git a/quota_nld.c b/quota_nld.c
-index 09c4775..4a02eb1 100644
---- a/quota_nld.c
-+++ b/quota_nld.c
-@@ -413,7 +413,7 @@ static char *build_pid_file_name(void)
- }
-
- /* Store daemon's PID to file */
--static int store_pid(void)
-+static int store_pid(pid_t pid)
- {
- 	FILE *pid_file;
- 	char *pid_name;
-@@ -429,7 +429,7 @@ static int store_pid(void)
- 		free(pid_name);
- 		return -1;
- 	}
--	if (fprintf(pid_file, "%jd\n", (intmax_t)getpid()) < 0) {
-+	if (fprintf(pid_file, "%jd\n", pid) < 0) {
- 		errstr(_("Could not write daemon's PID into '%s'.\n"),
- 			pid_name);
- 		fclose(pid_file);
-@@ -460,7 +460,7 @@ static void remove_pid(int signal)
- }
-
- /* Store daemon's PID into file and register its removal on SIGTERM */
--static void use_pid_file(void)
-+static void use_pid_file(pid_t pid)
- {
- 	struct sigaction term_action;
-
-@@ -468,8 +468,35 @@ static void use_pid_file(void)
- 	term_action.sa_flags = 0;
- 	if (sigemptyset(&term_action.sa_mask) || sigaction(SIGTERM, &term_action, NULL))
- 		errstr(_("Could not register PID file removal on SIGTERM.\n"));
--	if (store_pid())
--		errstr(_("Could not store my PID %jd.\n"), (intmax_t )getpid());
-+	if (store_pid(pid))
-+		errstr(_("Could not store my PID %jd.\n"), pid);
-+}
-+
-+static void fork_daemon()
-+{
-+	pid_t pid = fork();
-+	if (pid < 0) {
-+		errstr(_("Failed to daemonize: fork error with %s\n"), strerror(errno));
-+		exit(1);
-+	} else if (pid != 0) {
-+		use_pid_file(pid);
-+		exit(0);
-+	}
-+
-+	if (setsid() == -1) {
-+		errstr(_("Failed to daemonize: setsid error with %s\n"), strerror(errno));
-+		exit(1);
-+	}
-+	if (chdir("/"))
-+		errstr(_("Failed to chdir in daemonize \n"));
-+	int fd = open("/dev/null", O_RDWR, 0);
-+	if (fd >= 0) {
-+		(void)dup2(fd, STDIN_FILENO);
-+		(void)dup2(fd, STDOUT_FILENO);
-+		(void)dup2(fd, STDERR_FILENO);
-+
-+		(void)close(fd);
-+	}
- }
-
- int main(int argc, char **argv)
-@@ -485,11 +512,7 @@ int main(int argc, char **argv)
- 		dhandle = init_dbus();
- 	if (!(flags & FL_NODAEMON)) {
- 		use_syslog();
--		if (daemon(0, 0)) {
--			errstr(_("Failed to daemonize: %s\n"), strerror(errno));
--			exit(1);
--		};
--		use_pid_file();
-+		fork_daemon();
- 	}
- 	run(nsock);
- 	return 0;
--- 
-2.37.0.windows.1
+					- Ted
