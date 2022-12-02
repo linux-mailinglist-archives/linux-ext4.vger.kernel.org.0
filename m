@@ -2,74 +2,50 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A321C63FDD9
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 Dec 2022 02:55:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5237640015
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 Dec 2022 07:00:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231682AbiLBBzK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 1 Dec 2022 20:55:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45420 "EHLO
+        id S231744AbiLBGAJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 2 Dec 2022 01:00:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231308AbiLBBzJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Dec 2022 20:55:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF1AAD3DE6
-        for <linux-ext4@vger.kernel.org>; Thu,  1 Dec 2022 17:54:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1669946053;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=COzjxy6Cx/yoL60phqF9Y1iVWuFzG9VgVu3jRR0Ap+U=;
-        b=gWed493kMMgxuuf1FUOH+kRxyXt6sGGHpC42jy7eF3atgfYQ+/lHdhS7l5hpif6WfPPibi
-        6+Ueo+q4PgAmZyCfGGIwEYxvdcQ7iYscMBE7iP/lphH3DoD4K9f9Re9mOIu2Ss6+Ecp69L
-        8J3NkTMZQQIXNuSrzh4q7mOyD4cax5Y=
-Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
- [209.85.219.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-605-xeNVyPFaPqyNCCbdqHvpwA-1; Thu, 01 Dec 2022 20:54:13 -0500
-X-MC-Unique: xeNVyPFaPqyNCCbdqHvpwA-1
-Received: by mail-yb1-f197.google.com with SMTP id t9-20020a5b03c9000000b006cff5077dc9so3656773ybp.3
-        for <linux-ext4@vger.kernel.org>; Thu, 01 Dec 2022 17:54:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=COzjxy6Cx/yoL60phqF9Y1iVWuFzG9VgVu3jRR0Ap+U=;
-        b=xkc4WUy+KtSkvNuICDc3dokcZmF/6MRFi0h9YgpG+HFTcKDfEoCxpjUYZj7mIpOPoz
-         EvMD1lrO7ypODvKgBBhNcRCbV7u0H/GwliZpN7DqSyKxp+sfVLAzOO3xoRpzgbFzL4rV
-         3xdcJfikZVAKAhBp23GqNHfM8ewnFx9msSKR7Ckbqcn0e9c/1HWuePzfy7wOiX0Jbhtf
-         h+TxII9Lw6a1dBAbcZ2O0ce5wOGSdcahdSi5l8dywg34bdgriYEc+fTsisRQXelRpcNo
-         9xZwkERyRTr05VK8GvOz2xlo16mgBdAFW/UpaP56BOcckdx/fnmuhrT+7bA42Ns4FKDq
-         uuRA==
-X-Gm-Message-State: ANoB5pnsbTyu4P3sciIuIkj6ivmsn+qgYacwbWnCpkVWnLMo4D5lPdVg
-        EVRI7ePZmE6rJmGhBWJ//OryqciWLXTLKmfQQHv7oICOgb24weu5WwcRteTX88KYWMbFIeOjg51
-        Ta5q/ns3c4Jtil5OpNfF7MEW512c6YyC3LuUtUw==
-X-Received: by 2002:a81:d92:0:b0:3bd:77de:3652 with SMTP id 140-20020a810d92000000b003bd77de3652mr29752900ywn.147.1669946052363;
-        Thu, 01 Dec 2022 17:54:12 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf4zl5/yw2S0gY5SqLJMEn3kK+Mc23RWKMLXVRNIap4XekIskw7GEsiU1dqL8mTyQsVHGqUk1+lUCQo3JuJVWvY=
-X-Received: by 2002:a81:d92:0:b0:3bd:77de:3652 with SMTP id
- 140-20020a810d92000000b003bd77de3652mr29752883ywn.147.1669946052084; Thu, 01
- Dec 2022 17:54:12 -0800 (PST)
+        with ESMTP id S231367AbiLBGAH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Dec 2022 01:00:07 -0500
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F3327B57F;
+        Thu,  1 Dec 2022 22:00:06 -0800 (PST)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4NNhyt4SPFzJp4n;
+        Fri,  2 Dec 2022 13:56:38 +0800 (CST)
+Received: from [10.174.178.185] (10.174.178.185) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Fri, 2 Dec 2022 14:00:03 +0800
+Subject: Re: [PATCH v2 1/3] ext4: fix incorrect calculate 'reserved' in
+ '__es_remove_extent' when enable bigalloc feature
+To:     Eric Whitney <enwlinux@gmail.com>, Ye Bin <yebin@huaweicloud.com>
+References: <20221121121434.1061725-1-yebin@huaweicloud.com>
+ <20221121121434.1061725-2-yebin@huaweicloud.com>
+ <Y4ko3OL57iyiRC0W@debian-BULLSEYE-live-builder-AMD64>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <jack@suse.cz>,
+        <syzbot+05a0f0ccab4a25626e38@syzkaller.appspotmail.com>
+From:   "yebin (H)" <yebin10@huawei.com>
+Message-ID: <63899462.6030100@huawei.com>
+Date:   Fri, 2 Dec 2022 14:00:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-References: <20221201160619.1247788-1-agruenba@redhat.com> <20221201180957.1268079-1-agruenba@redhat.com>
- <20221201212956.GO3600936@dread.disaster.area>
-In-Reply-To: <20221201212956.GO3600936@dread.disaster.area>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Fri, 2 Dec 2022 02:54:00 +0100
-Message-ID: <CAHc6FU6u9A0S-EwyB6vq89XPj1rucL8U0oqq__OzB1d0evM-yA@mail.gmail.com>
-Subject: Re: [RFC v2 0/3] Turn iomap_page_ops into iomap_folio_ops
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, cluster-devel@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+In-Reply-To: <Y4ko3OL57iyiRC0W@debian-BULLSEYE-live-builder-AMD64>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.185]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,91 +53,104 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Dec 1, 2022 at 10:30 PM Dave Chinner <david@fromorbit.com> wrote:
-> On Thu, Dec 01, 2022 at 07:09:54PM +0100, Andreas Gruenbacher wrote:
-> > Hi again,
-> >
-> > [Same thing, but with the patches split correctly this time.]
-> >
-> > we're seeing a race between journaled data writes and the shrinker on
-> > gfs2.  What's happening is that gfs2_iomap_page_done() is called after
-> > the page has been unlocked, so try_to_free_buffers() can come in and
-> > free the buffers while gfs2_iomap_page_done() is trying to add them to
-> > the transaction.  Not good.
-> >
-> > This is a proposal to change iomap_page_ops so that page_prepare()
-> > prepares the write and grabs the locked page, and page_done() unlocks
-> > and puts that page again.  While at it, this also converts the hooks
-> > from pages to folios.
-> >
-> > To move the pagecache_isize_extended() call in iomap_write_end() out of
-> > the way, a new folio_may_straddle_isize() helper is introduced that
-> > takes a locked folio.  That is then used when the inode size is updated,
-> > before the folio is unlocked.
-> >
-> > I've also converted the other applicable folio_may_straddle_isize()
-> > users, namely generic_write_end(), ext4_write_end(), and
-> > ext4_journalled_write_end().
-> >
-> > Any thoughts?
+
+
+On 2022/12/2 6:21, Eric Whitney wrote:
+> * Ye Bin <yebin@huaweicloud.com>:
+>> From: Ye Bin <yebin10@huawei.com>
+>>
+>> Syzbot report issue as follows:
+>> EXT4-fs error (device loop0): ext4_validate_block_bitmap:398: comm rep: bg 0: block 5: invalid block bitmap
+>> EXT4-fs (loop0): Delayed block allocation failed for inode 18 at logical offset 0 with max blocks 32 with error 28
+>> EXT4-fs (loop0): This should not happen!! Data will be lost
+>>
+>> EXT4-fs (loop0): Total free blocks count 0
+>> EXT4-fs (loop0): Free/Dirty block details
+>> EXT4-fs (loop0): free_blocks=0
+>> EXT4-fs (loop0): dirty_blocks=32
+>> EXT4-fs (loop0): Block reservation details
+>> EXT4-fs (loop0): i_reserved_data_blocks=2
+>> EXT4-fs (loop0): Inode 18 (00000000845cd634): i_reserved_data_blocks (1) not cleared!
+>>
+>> Above issue happens as follows:
+>> Assume:
+>> sbi->s_cluster_ratio = 16
+>> Step1: Insert delay block [0, 31] -> ei->i_reserved_data_blocks=2
+>> Step2:
+>> ext4_writepages
+>>    mpage_map_and_submit_extent -> return failed
+>>    mpage_release_unused_pages -> to release [0, 30]
+>>      ext4_es_remove_extent -> remove lblk=0 end=30
+>>        __es_remove_extent -> len1=0 len2=31-30=1
+>>   __es_remove_extent:
+>>   ...
+>>   if (len2 > 0) {
+>>    ...
+>> 	  if (len1 > 0) {
+>> 		  ...
+>> 	  } else {
+>> 		es->es_lblk = end + 1;
+>> 		es->es_len = len2;
+>> 		...
+>> 	  }
+>>    	if (count_reserved)
+>> 		count_rsvd(inode, lblk, orig_es.es_len - len1 - len2, &orig_es, &rc);
+>> 	goto out; -> will return but didn't calculate 'reserved'
+>>   ...
+>> Step3: ext4_destroy_inode -> trigger "i_reserved_data_blocks (1) not cleared!"
+>>
+>> To solve above issue if 'len2>0' call 'get_rsvd()' before goto out.
+>>
+>> Reported-by: syzbot+05a0f0ccab4a25626e38@syzkaller.appspotmail.com
+>> Signed-off-by: Ye Bin <yebin10@huawei.com>
+>> ---
+>>   fs/ext4/extents_status.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
+>> index cd0a861853e3..4684eaea9471 100644
+>> --- a/fs/ext4/extents_status.c
+>> +++ b/fs/ext4/extents_status.c
+>> @@ -1371,7 +1371,7 @@ static int __es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
+>>   		if (count_reserved)
+>>   			count_rsvd(inode, lblk, orig_es.es_len - len1 - len2,
+>>   				   &orig_es, &rc);
+>> -		goto out;
+>> +		goto count;
+>>   	}
+>>   
+>>   	if (len1 > 0) {
+>> @@ -1413,6 +1413,7 @@ static int __es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
+>>   		}
+>>   	}
+>>   
+>> +count:
+>>   	if (count_reserved)
+>>   		*reserved = get_rsvd(inode, end, es, &rc);
+>>   out:
+>> -- 
+>> 2.31.1
+>>
+> I'm unable to find the sysbot report for this patch, so I can't verify that
+> this fix works.  The more serious problem would be whatever is causing
+> the invalid block bitmap and delayed allocation failure messages before the
+> i_reserved_data_blocks message.  Perhaps that's simply what syzkaller set
+> up, but it's not clear from this posting.  Have you looked for the cause
+> of those first two messages?
 >
-> I doubt that moving page cache operations from the iomap core to
-> filesystem specific callouts will be acceptible. I recently proposed
-> patches that added page cache walking to an XFS iomap callout to fix
-> a data corruption, but they were NAKd on the basis that iomap is
-> supposed to completely abstract away the folio and page cache
-> manipulations from the filesystem.
-
-Right. The resulting code is really quite disgusting, for a
-fundamentalist dream of abstraction.
-
-> This patchset seems to be doing the same thing - moving page cache
-> and folio management directly in filesystem specific callouts. Hence
-> I'm going to assume that the same architectural demarcation is
-> going to apply here, too...
+> However, by inspection this patch should fix an obvious bug causing that last
+> message, introduced by 8fcc3a580651 ("ext4: rework reserved cluster accounting
+> when invalidating pages").  A Fixes tag should be added to the patch.  Also,
+> the readability of the code should be improved by changing the label "count" to
+> the more descriptive "out_get_reserved".
 >
-> FYI, there is already significant change committed to the iomap
-> write path in the current XFS tree as a result of the changes I
-> mention - there is stale IOMAP detection which adds a new page ops
-> method and adds new error paths with a locked folio in
-> iomap_write_begin().
-
-That would have belonged on the iomap-for-next branch rather than in
-the middle of a bunch of xfs commits.
-
-> And this other data corruption (and performance) fix for handling
-> zeroing over unwritten extents properly:
+> With those two changes, feel free to add:
 >
-> https://lore.kernel.org/linux-xfs/20221201005214.3836105-1-david@fromorbit.com/
+> Reviewed-by: Eric Whitney <enwlinux@gmail.com>
 >
-> changes the way folios are looked up and instantiated in the page
-> cache in iomap_write_begin(). It also adds new error conditions that
-> need to be returned to callers so to implement conditional "folio
-> must be present and dirty" page cache zeroing from
-> iomap_zero_iter(). Those semantics would also have to be supported
-> by gfs2, and that greatly complicates modifying and testing iomap
-> core changes.
->
-> To avoid all this, can we simple move the ->page_done() callout in
-> the error path and iomap_write_end() to before we unlock the folio?
-> You've already done that for pagecache_isize_extended(), and I can't
-> see anything obvious in the gfs2 ->page_done callout that
-> would cause issues if it is called with a locked dirty folio...
+> Eric
+> .
 
-Yes, I guess we can do that once pagecache_isize_extended() is
-replaced by folio_may_straddle_isize().
+Thanks for your suggestion. I will send another version.
 
-Can people please scrutinize the math in folio_may_straddle_isize() in
-particular?
-
-Thanks,
-Andreas
-
-> Cheers,
->
-> Dave.
-> --
-> Dave Chinner
-> david@fromorbit.com
->
 
