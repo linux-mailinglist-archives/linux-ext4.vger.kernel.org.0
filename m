@@ -2,121 +2,72 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB22D64017C
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 Dec 2022 09:02:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B902C640480
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 Dec 2022 11:22:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232528AbiLBICw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 2 Dec 2022 03:02:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45742 "EHLO
+        id S233172AbiLBKWw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 2 Dec 2022 05:22:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232583AbiLBICq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Dec 2022 03:02:46 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE0355BD
-        for <linux-ext4@vger.kernel.org>; Fri,  2 Dec 2022 00:02:38 -0800 (PST)
-Received: from dggpeml500006.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NNllP2cJmzmWg6;
-        Fri,  2 Dec 2022 16:01:53 +0800 (CST)
-Received: from [10.174.178.112] (10.174.178.112) by
- dggpeml500006.china.huawei.com (7.185.36.76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 2 Dec 2022 16:02:36 +0800
-Message-ID: <15d1538a-7c47-ca39-960a-ef8e901ecbb9@huawei.com>
-Date:   Fri, 2 Dec 2022 16:02:25 +0800
+        with ESMTP id S233186AbiLBKWv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Dec 2022 05:22:51 -0500
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B1125C6A;
+        Fri,  2 Dec 2022 02:22:50 -0800 (PST)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id D937167373; Fri,  2 Dec 2022 11:22:45 +0100 (CET)
+Date:   Fri, 2 Dec 2022 11:22:45 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Bob Copeland <me@bobcopeland.com>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net,
+        linux-karma-devel@lists.sourceforge.net, linux-mm@kvack.org
+Subject: Re: start removing writepage instances
+Message-ID: <20221202102245.GA17715@lst.de>
+References: <20221113162902.883850-1-hch@lst.de> <20221116183900.yzpcymelnnwppoh7@riteshh-domain>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.0
-Subject: Re: [PATCH] debugfs:fix repeated output problem with `logdump -O -n
- <num_trans>`
-Content-Language: en-US
-From:   "lihaoxiang (F)" <lihaoxiang9@huawei.com>
-To:     <tytso@mit.edu>
-CC:     <linux-ext4@vger.kernel.org>,
-        Zhiqiang Liu <liuzhiqiang26@huawei.com>,
-        <linfeilong@huawei.com>, <louhongxiang@huawei.com>
-References: <6ab429c0-6dd0-968f-d4e0-54035d177dbf@huawei.com>
-In-Reply-To: <6ab429c0-6dd0-968f-d4e0-54035d177dbf@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.112]
-X-ClientProxiedBy: dggpeml100009.china.huawei.com (7.185.36.95) To
- dggpeml500006.china.huawei.com (7.185.36.76)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221116183900.yzpcymelnnwppoh7@riteshh-domain>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-friendly ping...
+On Thu, Nov 17, 2022 at 12:09:00AM +0530, Ritesh Harjani (IBM) wrote:
+>    reclaim. Now IIUC from previous discussions [1][2][3], reclaims happens from
+>    the tail end of the LRU list which could do an I/O of a single page while 
+>    an ongoing writeback was in progress of multiple pages. This disrupts the I/O 
+>    pattern to become more random in nature, compared to, if we would have let 
+>    writeback/flusher do it's job of writing back dirty pages.
 
-On 2022/11/15 16:29, lihaoxiang (F) wrote:
-> Previously, patch 6e4cc3d5eeb2dfaa055e652b5390beaa6c3d05da introduces
-> the function of printing the specified number of logs. But there exists
-> a shortage when n is larger than the total number of logs, it dumped the
-> duplicated records circulately.
-> 
-> For example, the disk sda only has three records, but using instruction logdump
-> -On5, it would output the result as follow:
-> ----------------------------------------------------------------------
-> Journal starts at block 1, transaction 6
-> Found expected sequence 6, type 1 (descriptor block) at block 1
-> Found expected sequence 6, type 2 (commit block) at block 4
-> No magic number at block 5: end of journal.
-> Found sequence 2 (not 7) at block 7: end of journal.
-> Found expected sequence 2, type 2 (commit block) at block 7
-> Found sequence 3 (not 8) at block 8: end of journal.
-> Found expected sequence 3, type 1 (descriptor block) at block 8
-> Found sequence 3 (not 8) at block 15: end of journal.
-> Found expected sequence 3, type 2 (commit block) at block 15
-> Found sequence 6 (not 9) at block 1: end of journal.       <---------begin loop
-> Found expected sequence 6, type 1 (descriptor block) at block 1
-> Found sequence 6 (not 9) at block 4: end of journal.
-> Found expected sequence 6, type 2 (commit block) at block 4
-> Found sequence 2 (not 10) at block 7: end of journal.
-> Found expected sequence 2, type 2 (commit block) at block 7
-> logdump: short read (read 0, expected 1024) while reading journal
-> 
-> In this commit, we solve the problem above by exiting dumping if the
-> blocknr had already encountered, displayed the total number of logs
-> that the disk only possessed.
-> 
-> Signed-off-by: lihaoxiang <lihaoxiang9@huawei.com>
-> ---
->  debugfs/logdump.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/debugfs/logdump.c b/debugfs/logdump.c
-> index 614414e5..036b50ba 100644
-> --- a/debugfs/logdump.c
-> +++ b/debugfs/logdump.c
-> @@ -376,6 +376,7 @@ static void dump_journal(char *cmdname, FILE *out_file,
->  	journal_header_t	*header;
->  	tid_t			transaction;
->  	unsigned int		blocknr = 0;
-> +	unsigned int		first_transaction_blocknr;
->  	int			fc_done;
->  	__u64			total_len;
->  	__u32			maxlen;
-> @@ -470,10 +471,18 @@ static void dump_journal(char *cmdname, FILE *out_file,
->  			blocknr = 1;
->  	}
-> 
-> +	first_transaction_blocknr = blocknr;
-> +
->  	while (1) {
->  		if (dump_old && (dump_counts != -1) && (cur_counts >= dump_counts))
->  			break;
-> 
-> +		if ((blocknr == first_transaction_blocknr) &&
-> +		    (cur_counts != 0) && dump_old && (dump_counts != -1)) {
-> +			fprintf(out_file, "Dump all %lld journal records.\n", cur_counts);
-> +			break;
-> +		}
-> +
->  		retval = read_journal_block(cmdname, source,
->  				((ext2_loff_t) blocknr) * blocksize,
->  				buf, blocksize);
+Yes.
+
+>    Also many filesystems behave very differently within their ->writepage calls,
+>    e.g. ext4 doesn't actually write in ->writepage for DELAYED blocks.
+
+I don't think it's many file systems.  As far as I can tell only ext4
+actually is significantly different.
+
+> 2. Now the other place from where ->writepage can be called from is, writeout()
+>    function, which is a fallback function for migration (fallback_migrate_folio()).
+>    fallback_migrate_folio() is called from move_to_new_folio() if ->migrate_folio 
+>    is not defined for the FS.
+
+Also there is generic_writepages and folio_write_one/write_one_page.
+
+> Is above a correct understanding?
+
+Yes.
