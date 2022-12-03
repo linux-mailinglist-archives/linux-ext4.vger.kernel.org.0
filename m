@@ -2,162 +2,80 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A40B641374
-	for <lists+linux-ext4@lfdr.de>; Sat,  3 Dec 2022 03:34:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D78564138F
+	for <lists+linux-ext4@lfdr.de>; Sat,  3 Dec 2022 03:38:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234928AbiLCCeJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 2 Dec 2022 21:34:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51696 "EHLO
+        id S235201AbiLCCiq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 2 Dec 2022 21:38:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234949AbiLCCeI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Dec 2022 21:34:08 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92C32E177C;
-        Fri,  2 Dec 2022 18:34:06 -0800 (PST)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NPDPq0scJzFqk9;
-        Sat,  3 Dec 2022 10:33:19 +0800 (CST)
-Received: from [10.174.178.185] (10.174.178.185) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sat, 3 Dec 2022 10:34:03 +0800
-Subject: Re: [PATCH v2 1/3] ext4: fix incorrect calculate 'reserved' in
- '__es_remove_extent' when enable bigalloc feature
-To:     Eric Whitney <enwlinux@gmail.com>, Ye Bin <yebin@huaweicloud.com>
-References: <20221121121434.1061725-1-yebin@huaweicloud.com>
- <20221121121434.1061725-2-yebin@huaweicloud.com>
- <Y4ko3OL57iyiRC0W@debian-BULLSEYE-live-builder-AMD64>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <jack@suse.cz>,
-        <syzbot+05a0f0ccab4a25626e38@syzkaller.appspotmail.com>
-From:   "yebin (H)" <yebin10@huawei.com>
-Message-ID: <638AB59B.2030505@huawei.com>
-Date:   Sat, 3 Dec 2022 10:34:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+        with ESMTP id S235070AbiLCCip (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Dec 2022 21:38:45 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DAACEC098;
+        Fri,  2 Dec 2022 18:38:43 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NPDWy102gz4f3jZd;
+        Sat,  3 Dec 2022 10:38:38 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.127.227])
+        by APP4 (Coremail) with SMTP id gCh0CgDXSNavtopjXug+Bg--.58501S4;
+        Sat, 03 Dec 2022 10:38:41 +0800 (CST)
+From:   Ye Bin <yebin@huaweicloud.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, jack@suse.cz,
+        Ye Bin <yebin10@huawei.com>
+Subject: [PATCH v3 0/3] Fix two issues about bigalloc feature
+Date:   Sat,  3 Dec 2022 10:59:38 +0800
+Message-Id: <20221203025941.2661302-1-yebin@huaweicloud.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <Y4ko3OL57iyiRC0W@debian-BULLSEYE-live-builder-AMD64>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.185]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500010.china.huawei.com (7.192.105.118)
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgDXSNavtopjXug+Bg--.58501S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFyfAw43Xry5ur1rtF4kXrb_yoWxurbEvr
+        48A34xXrZ7X3yI9anxKr4kAFyaka1DCr15uwsYvFy5AryYqrW8Gws7AryfZrW5WFWrta4F
+        yr1DJrZakwnrujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbokYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Y
+        z7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zV
+        AF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4l
+        IxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s
+        0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsG
+        vfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: p1hex046kxt4xhlfz01xgou0bp/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+From: Ye Bin <yebin10@huawei.com>
 
+Diff v3 Vs v2:
+1. Add fixes tag and rename label 'out' for first patch.
+2. Do not split string across lines for second patch.
+3. Just check pending tree if empty, drop clear code for third patch.
 
-On 2022/12/2 6:21, Eric Whitney wrote:
-> * Ye Bin <yebin@huaweicloud.com>:
->> From: Ye Bin <yebin10@huawei.com>
->>
->> Syzbot report issue as follows:
->> EXT4-fs error (device loop0): ext4_validate_block_bitmap:398: comm rep: bg 0: block 5: invalid block bitmap
->> EXT4-fs (loop0): Delayed block allocation failed for inode 18 at logical offset 0 with max blocks 32 with error 28
->> EXT4-fs (loop0): This should not happen!! Data will be lost
->>
->> EXT4-fs (loop0): Total free blocks count 0
->> EXT4-fs (loop0): Free/Dirty block details
->> EXT4-fs (loop0): free_blocks=0
->> EXT4-fs (loop0): dirty_blocks=32
->> EXT4-fs (loop0): Block reservation details
->> EXT4-fs (loop0): i_reserved_data_blocks=2
->> EXT4-fs (loop0): Inode 18 (00000000845cd634): i_reserved_data_blocks (1) not cleared!
->>
->> Above issue happens as follows:
->> Assume:
->> sbi->s_cluster_ratio = 16
->> Step1: Insert delay block [0, 31] -> ei->i_reserved_data_blocks=2
->> Step2:
->> ext4_writepages
->>    mpage_map_and_submit_extent -> return failed
->>    mpage_release_unused_pages -> to release [0, 30]
->>      ext4_es_remove_extent -> remove lblk=0 end=30
->>        __es_remove_extent -> len1=0 len2=31-30=1
->>   __es_remove_extent:
->>   ...
->>   if (len2 > 0) {
->>    ...
->> 	  if (len1 > 0) {
->> 		  ...
->> 	  } else {
->> 		es->es_lblk = end + 1;
->> 		es->es_len = len2;
->> 		...
->> 	  }
->>    	if (count_reserved)
->> 		count_rsvd(inode, lblk, orig_es.es_len - len1 - len2, &orig_es, &rc);
->> 	goto out; -> will return but didn't calculate 'reserved'
->>   ...
->> Step3: ext4_destroy_inode -> trigger "i_reserved_data_blocks (1) not cleared!"
->>
->> To solve above issue if 'len2>0' call 'get_rsvd()' before goto out.
->>
->> Reported-by: syzbot+05a0f0ccab4a25626e38@syzkaller.appspotmail.com
->> Signed-off-by: Ye Bin <yebin10@huawei.com>
->> ---
->>   fs/ext4/extents_status.c | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
->> index cd0a861853e3..4684eaea9471 100644
->> --- a/fs/ext4/extents_status.c
->> +++ b/fs/ext4/extents_status.c
->> @@ -1371,7 +1371,7 @@ static int __es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
->>   		if (count_reserved)
->>   			count_rsvd(inode, lblk, orig_es.es_len - len1 - len2,
->>   				   &orig_es, &rc);
->> -		goto out;
->> +		goto count;
->>   	}
->>   
->>   	if (len1 > 0) {
->> @@ -1413,6 +1413,7 @@ static int __es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
->>   		}
->>   	}
->>   
->> +count:
->>   	if (count_reserved)
->>   		*reserved = get_rsvd(inode, end, es, &rc);
->>   out:
->> -- 
->> 2.31.1
->>
-> I'm unable to find the sysbot report for this patch, so I can't verify that
-> this fix works.  The more serious problem would be whatever is causing
-As I reproduce "[syzbot] memory leak in __insert_pending" issue , after 
-merge my previous
-patch 1b8f787ef547 "ext4: fix warning in 'ext4_da_release_space'", I 
-found there is no memleak
-but report  "i_reserved_data_blocks not cleared".
-You can use C  reproducer on linux-next to reproduce this issue.
+Diff V2 vs V1:
+Use ext4_error() when detect 'i_reserved_data_blocks' and pending tree abnormal.
 
-  C reproducer:https://syzkaller.appspot.com/x/repro.c?x=13a9300a880000
+Ye Bin (3):
+  ext4: fix incorrect calculate 'reserved' in '__es_remove_extent' when
+    enable bigalloc feature
+  ext4: record error when detect abnormal 'i_reserved_data_blocks'
+  ext4: add check pending tree when evict inode
 
-> the invalid block bitmap and delayed allocation failure messages before the
-> i_reserved_data_blocks message.  Perhaps that's simply what syzkaller set
-> up, but it's not clear from this posting.  Have you looked for the cause
-> of those first two messages?
->
-> However, by inspection this patch should fix an obvious bug causing that last
-> message, introduced by 8fcc3a580651 ("ext4: rework reserved cluster accounting
-> when invalidating pages").  A Fixes tag should be added to the patch.  Also,
-> the readability of the code should be improved by changing the label "count" to
-> the more descriptive "out_get_reserved".
->
-> With those two changes, feel free to add:
->
-> Reviewed-by: Eric Whitney <enwlinux@gmail.com>
->
-> Eric
-> .
->
+ fs/ext4/extents_status.c |  3 ++-
+ fs/ext4/super.c          | 13 +++++++++----
+ 2 files changed, 11 insertions(+), 5 deletions(-)
+
+-- 
+2.31.1
 
