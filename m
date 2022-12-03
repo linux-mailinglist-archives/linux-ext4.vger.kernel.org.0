@@ -2,68 +2,50 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A44206412D5
-	for <lists+linux-ext4@lfdr.de>; Sat,  3 Dec 2022 01:54:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A40B641374
+	for <lists+linux-ext4@lfdr.de>; Sat,  3 Dec 2022 03:34:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235344AbiLCAyv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 2 Dec 2022 19:54:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43646 "EHLO
+        id S234928AbiLCCeJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 2 Dec 2022 21:34:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235011AbiLCAyT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Dec 2022 19:54:19 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E1289A4E5
-        for <linux-ext4@vger.kernel.org>; Fri,  2 Dec 2022 16:53:03 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id v3so5713392pgh.4
-        for <linux-ext4@vger.kernel.org>; Fri, 02 Dec 2022 16:53:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=H4gE22UEJMKiRLenIWOFZNJhaaD3BRTTXiaPb8E6e3M=;
-        b=Sxj2Ry0hT1/GjLp/66GVQlB3dHL3YjShTaXrFB75CTQzyAu08FxSdrCvg7osZUt0WO
-         H+j2sLam+Y0Al3TpRtupOmwXL65ihABRmGANBeD3zpHjVFSTGAhaCtufDznGQ/Z9Jyd9
-         lyaVoET0oiAsNLlcR7ptWjNuSjmZj9Jv2vcud+Dg+EGkVqc3b7MQPPay7qSSMYRzgc3y
-         qR7RpKNXFcmGATLceRDYYuNIh7LIARK10QrbCTBEkxd8desxX8ib51hWFo/IHYW3//7F
-         luC+RoS+nxUIHbxdjTvP3s75zZuPUpA0iec0FeRrRf0TavxDARPXT+SzTbLGt6rqmwNj
-         NjBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H4gE22UEJMKiRLenIWOFZNJhaaD3BRTTXiaPb8E6e3M=;
-        b=0ZlUKFgCXBwxFu/M+dSR55U38ro/1/PqpKMKc6cZfSm7qMBxCKmFPTu96LZ94cydEE
-         Lmtum8OxZj08oEy1FcEhYNa7K/ekmZ3hfmL69J0w6wkEdMpGCTbXxN6Rb/BZycBy8PGj
-         IATbXvX336eO8cQDqan+fGyqeZ/UP30zvRYgNB92VtOH6fXPk+Sh3lAqPnuTgT9tUdLK
-         LLLqjmp7r1H65nWkb9loP8jWwxg5Y0y8BpqKL1gsHnRDZFeCjfXJQ31yX94zYjbXrHni
-         JCB2QElpfiKjPh1VGGF4rsSi/NWWOW/8Oq4RcHJYmUr3zY9GlK7ocJLMZES15Hlj2JWb
-         v0Nw==
-X-Gm-Message-State: ANoB5pleSNMhOP/jx7QP8uZbx4PlA7exKHgTQOKKwn6duX6Jgg9HVtsW
-        Oezb3f4OtREmMFhy/DaMpxrhDrdr6Qo=
-X-Google-Smtp-Source: AA0mqf4LIPl2KJI6Z83/KEuRUMo6f6FWwOg4CFTQmdw+GwccrEQpbaRlorUw+JvkSj1DZP5pwHwjOw==
-X-Received: by 2002:aa7:9388:0:b0:56d:4c7e:777a with SMTP id t8-20020aa79388000000b0056d4c7e777amr76668197pfe.0.1670028782914;
-        Fri, 02 Dec 2022 16:53:02 -0800 (PST)
-Received: from localhost ([2406:7400:63:f20b:f6ca:e236:f59f:8c18])
-        by smtp.gmail.com with ESMTPSA id w23-20020a1709026f1700b00189667acf19sm6099593plk.95.2022.12.02.16.53.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Dec 2022 16:53:02 -0800 (PST)
-Date:   Sat, 3 Dec 2022 06:22:56 +0530
-From:   Ritesh Harjani <ritesh.list@gmail.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v2 0/11] ext4: Stop using ext4_writepage() for writeout
- of ordered data
-Message-ID: <20221203005256.cqrvojj47blasal7@riteshh-domain>
-References: <20221202163815.22928-1-jack@suse.cz>
+        with ESMTP id S234949AbiLCCeI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Dec 2022 21:34:08 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92C32E177C;
+        Fri,  2 Dec 2022 18:34:06 -0800 (PST)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NPDPq0scJzFqk9;
+        Sat,  3 Dec 2022 10:33:19 +0800 (CST)
+Received: from [10.174.178.185] (10.174.178.185) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Sat, 3 Dec 2022 10:34:03 +0800
+Subject: Re: [PATCH v2 1/3] ext4: fix incorrect calculate 'reserved' in
+ '__es_remove_extent' when enable bigalloc feature
+To:     Eric Whitney <enwlinux@gmail.com>, Ye Bin <yebin@huaweicloud.com>
+References: <20221121121434.1061725-1-yebin@huaweicloud.com>
+ <20221121121434.1061725-2-yebin@huaweicloud.com>
+ <Y4ko3OL57iyiRC0W@debian-BULLSEYE-live-builder-AMD64>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <jack@suse.cz>,
+        <syzbot+05a0f0ccab4a25626e38@syzkaller.appspotmail.com>
+From:   "yebin (H)" <yebin10@huawei.com>
+Message-ID: <638AB59B.2030505@huawei.com>
+Date:   Sat, 3 Dec 2022 10:34:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221202163815.22928-1-jack@suse.cz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <Y4ko3OL57iyiRC0W@debian-BULLSEYE-live-builder-AMD64>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.185]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,63 +53,111 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22/12/02 07:39PM, Jan Kara wrote:
-> Hello,
+
+
+On 2022/12/2 6:21, Eric Whitney wrote:
+> * Ye Bin <yebin@huaweicloud.com>:
+>> From: Ye Bin <yebin10@huawei.com>
+>>
+>> Syzbot report issue as follows:
+>> EXT4-fs error (device loop0): ext4_validate_block_bitmap:398: comm rep: bg 0: block 5: invalid block bitmap
+>> EXT4-fs (loop0): Delayed block allocation failed for inode 18 at logical offset 0 with max blocks 32 with error 28
+>> EXT4-fs (loop0): This should not happen!! Data will be lost
+>>
+>> EXT4-fs (loop0): Total free blocks count 0
+>> EXT4-fs (loop0): Free/Dirty block details
+>> EXT4-fs (loop0): free_blocks=0
+>> EXT4-fs (loop0): dirty_blocks=32
+>> EXT4-fs (loop0): Block reservation details
+>> EXT4-fs (loop0): i_reserved_data_blocks=2
+>> EXT4-fs (loop0): Inode 18 (00000000845cd634): i_reserved_data_blocks (1) not cleared!
+>>
+>> Above issue happens as follows:
+>> Assume:
+>> sbi->s_cluster_ratio = 16
+>> Step1: Insert delay block [0, 31] -> ei->i_reserved_data_blocks=2
+>> Step2:
+>> ext4_writepages
+>>    mpage_map_and_submit_extent -> return failed
+>>    mpage_release_unused_pages -> to release [0, 30]
+>>      ext4_es_remove_extent -> remove lblk=0 end=30
+>>        __es_remove_extent -> len1=0 len2=31-30=1
+>>   __es_remove_extent:
+>>   ...
+>>   if (len2 > 0) {
+>>    ...
+>> 	  if (len1 > 0) {
+>> 		  ...
+>> 	  } else {
+>> 		es->es_lblk = end + 1;
+>> 		es->es_len = len2;
+>> 		...
+>> 	  }
+>>    	if (count_reserved)
+>> 		count_rsvd(inode, lblk, orig_es.es_len - len1 - len2, &orig_es, &rc);
+>> 	goto out; -> will return but didn't calculate 'reserved'
+>>   ...
+>> Step3: ext4_destroy_inode -> trigger "i_reserved_data_blocks (1) not cleared!"
+>>
+>> To solve above issue if 'len2>0' call 'get_rsvd()' before goto out.
+>>
+>> Reported-by: syzbot+05a0f0ccab4a25626e38@syzkaller.appspotmail.com
+>> Signed-off-by: Ye Bin <yebin10@huawei.com>
+>> ---
+>>   fs/ext4/extents_status.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
+>> index cd0a861853e3..4684eaea9471 100644
+>> --- a/fs/ext4/extents_status.c
+>> +++ b/fs/ext4/extents_status.c
+>> @@ -1371,7 +1371,7 @@ static int __es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
+>>   		if (count_reserved)
+>>   			count_rsvd(inode, lblk, orig_es.es_len - len1 - len2,
+>>   				   &orig_es, &rc);
+>> -		goto out;
+>> +		goto count;
+>>   	}
+>>   
+>>   	if (len1 > 0) {
+>> @@ -1413,6 +1413,7 @@ static int __es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
+>>   		}
+>>   	}
+>>   
+>> +count:
+>>   	if (count_reserved)
+>>   		*reserved = get_rsvd(inode, end, es, &rc);
+>>   out:
+>> -- 
+>> 2.31.1
+>>
+> I'm unable to find the sysbot report for this patch, so I can't verify that
+> this fix works.  The more serious problem would be whatever is causing
+As I reproduce "[syzbot] memory leak in __insert_pending" issue , after 
+merge my previous
+patch 1b8f787ef547 "ext4: fix warning in 'ext4_da_release_space'", I 
+found there is no memleak
+but report  "i_reserved_data_blocks not cleared".
+You can use C  reproducer on linux-next to reproduce this issue.
+
+  C reproducer:https://syzkaller.appspot.com/x/repro.c?x=13a9300a880000
+
+> the invalid block bitmap and delayed allocation failure messages before the
+> i_reserved_data_blocks message.  Perhaps that's simply what syzkaller set
+> up, but it's not clear from this posting.  Have you looked for the cause
+> of those first two messages?
 >
-> this patch series modifies ext4 so that we stop using ext4_writepage() for
-> writeout of ordered data during transaction commit (through
-> generic_writepages() from jbd2_journal_submit_inode_data_buffers()). Instead we
-> directly call ext4_writepages() from the
-> ext4_journal_submit_inode_data_buffers(). This is part of Christoph's effort
-> to get rid of the .writepage() callback in all filesystems.
+> However, by inspection this patch should fix an obvious bug causing that last
+> message, introduced by 8fcc3a580651 ("ext4: rework reserved cluster accounting
+> when invalidating pages").  A Fixes tag should be added to the patch.  Also,
+> the readability of the code should be improved by changing the label "count" to
+> the more descriptive "out_get_reserved".
 >
-> I have also modified ext4_writepages() to use write_cache_pages() instead of
-> generic_writepages() so now we don't expose .writepage hook at all. We still
-> keep ext4_writepage() as a callback for write_cache_pages(). We should refactor
-> that path as well and get rid of ext4_writepage() completely but that is for a
-> separate cleanup. Also note that jbd2 still uses generic_writepages() in its
-> jbd2_journal_submit_inode_data_buffers() helper because it is still used from
-> OCFS2. Again, something to be dealt with in a separate patchset.
+> With those two changes, feel free to add:
 >
-> Changes since v1:
-> * Added Reviewed-by tags from Ritesh
-> * Added patch to get rid of generic_writepages() in ext4_writepages()
-> * Added patch to get rid of .writepage hook
-
-Oh! And what about the WARN_ON_ONCE in ext4_writepages() while loop, which we
-were discussing here [1]. Do you think that will help in catching anything nasty?
-
-[1]: https://lore.kernel.org/linux-ext4/20221201115500.kbxtteft3v4pzqqx@quack3/T/#mcf7b6cc301062e52a3600194b03a9fd872ba52c5
-
-
-One thing I guess I missed in my previous review is the fast commit path.
-In my overnight testing of previous patch series I observed this warning.
-
-WARNING: CPU: 1 PID: 1746936 at fs/ext4/inode.c:1994 ext4_writepage+0x4e6/0x5e0
-RIP: 0010:ext4_writepage+0x4e6/0x5e0
-Call Trace:
- <TASK>
- __writepage+0x17/0x70
- write_cache_pages+0x166/0x3c0
- ? dirty_background_bytes_handler+0x30/0x30
- ? finish_task_switch.isra.0+0x8e/0x260
- ? _raw_spin_lock_irqsave+0x19/0x50
- ? finish_wait+0x34/0x70
- ? _raw_spin_unlock_irqrestore+0x1e/0x40
- generic_writepages+0x4f/0x80
- jbd2_journal_submit_inode_data_buffers+0x64/0x90
- ext4_fc_commit+0x2e0/0x830
- ? file_check_and_advance_wb_err+0x2e/0xd0
- ? preempt_count_add+0x70/0xa0
- ext4_sync_file+0x15c/0x380
- __do_sys_msync+0x1c1/0x2a0
- do_syscall_64+0x38/0x90
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
--ritesh
-
-
+> Reviewed-by: Eric Whitney <enwlinux@gmail.com>
 >
-> 								Honza
-> Previous versions:
-> Link: http://lore.kernel.org/r/20221130162435.2324-1-jack@suse.cz # v1
+> Eric
+> .
+>
+
