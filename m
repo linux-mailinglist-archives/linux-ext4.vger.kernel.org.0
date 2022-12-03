@@ -2,119 +2,190 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADDEB641393
-	for <lists+linux-ext4@lfdr.de>; Sat,  3 Dec 2022 03:38:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A9D641601
+	for <lists+linux-ext4@lfdr.de>; Sat,  3 Dec 2022 11:40:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235070AbiLCCiu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 2 Dec 2022 21:38:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56794 "EHLO
+        id S229450AbiLCKk0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 3 Dec 2022 05:40:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235205AbiLCCiq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Dec 2022 21:38:46 -0500
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F00BEC091;
-        Fri,  2 Dec 2022 18:38:45 -0800 (PST)
+        with ESMTP id S229447AbiLCKkZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 3 Dec 2022 05:40:25 -0500
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 239623E0BF
+        for <linux-ext4@vger.kernel.org>; Sat,  3 Dec 2022 02:40:22 -0800 (PST)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NPDWz4GBzz4f3v7B;
-        Sat,  3 Dec 2022 10:38:39 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.127.227])
-        by APP4 (Coremail) with SMTP id gCh0CgDXSNavtopjXug+Bg--.58501S7;
-        Sat, 03 Dec 2022 10:38:42 +0800 (CST)
-From:   Ye Bin <yebin@huaweicloud.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, jack@suse.cz,
-        Ye Bin <yebin10@huawei.com>,
-        syzbot+05a0f0ccab4a25626e38@syzkaller.appspotmail.com
-Subject: [PATCH v3 3/3] ext4: add check pending tree when evict inode
-Date:   Sat,  3 Dec 2022 10:59:41 +0800
-Message-Id: <20221203025941.2661302-4-yebin@huaweicloud.com>
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NPRCh6Tvqz4f3pG1
+        for <linux-ext4@vger.kernel.org>; Sat,  3 Dec 2022 18:40:16 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.170])
+        by APP4 (Coremail) with SMTP id gCh0CgDXSNZ9J4tjGg1SBg--.27102S4;
+        Sat, 03 Dec 2022 18:40:19 +0800 (CST)
+From:   Zhang Yi <yi.zhang@huawei.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+        yi.zhang@huawei.com, yi.zhang@huaweicloud.com, yukuai3@huawei.com
+Subject: [RFC PATCH] ext4: dio take shared inode lock when overwriting preallocated blocks
+Date:   Sat,  3 Dec 2022 18:39:56 +0800
+Message-Id: <20221203103956.3691847-1-yi.zhang@huawei.com>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20221203025941.2661302-1-yebin@huaweicloud.com>
-References: <20221203025941.2661302-1-yebin@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgDXSNavtopjXug+Bg--.58501S7
-X-Coremail-Antispam: 1UD129KBjvJXoW7Cr1xtryUGF48Zr45ZF18Xwb_yoW5JFW7p3
-        45Gw15Gr4kur1DCF43tF15Jr13Wa1vkFWUJrWrKr1jqFy8Ja4xtFnrtr1agF4UJrZxCr1Y
-        qF18Cr9Yqry8J3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvGb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
-        A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-        Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
+X-CM-TRANSID: gCh0CgDXSNZ9J4tjGg1SBg--.27102S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxXrWUZry5tw15Zw43ArWfuFg_yoWrKr43pF
+        y3KF13XrZFgryxWrZ5ta4Ivw1Ygws5ArWxArW3Gw15ZryUWryxtFyUXF1Yya4rJ3yxJ3W2
+        qFs0k34DWF1UtrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0aVACjI8F5VA0II8E6IAqYI8I648v4I1l
+        42xK82IYc2Ij64vIr41l42xK82IY64kExVAvwVAq07x20xyl4I8I3I0E4IkC6x0Yz7v_Jr
         0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
         17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
-        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY
-        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
-        73UjIFyTuYvjxU2PEfUUUUU
-X-CM-SenderInfo: p1hex046kxt4xhlfz01xgou0bp/
+        C0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF
+        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
+        VjvjDU0xZFpf9x07UAnYwUUUUU=
+Sender: yi.zhang@huaweicloud.com
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Ye Bin <yebin10@huawei.com>
+In the dio write path, we only take shared inode lock for the case of
+aligned overwriting initialized blocks inside EOF. But for overwriting
+preallocated blocks, it may only need to split unwritten extents, this
+procedure has been protected under i_data_sem lock, it's safe to
+release the exclusive inode lock and take shared inode lock.
 
-Syzbot found the following issue:
-BUG: memory leak
-unreferenced object 0xffff8881bde17420 (size 32):
-  comm "rep", pid 2327, jiffies 4295381963 (age 32.265s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000ac6d38f8>] __insert_pending+0x13c/0x2d0
-    [<00000000d717de3b>] ext4_es_insert_delayed_block+0x399/0x4e0
-    [<000000004be03913>] ext4_da_map_blocks.constprop.0+0x739/0xfa0
-    [<00000000885a832a>] ext4_da_get_block_prep+0x10c/0x440
-    [<0000000029b7f8ef>] __block_write_begin_int+0x28d/0x860
-    [<00000000e182ebc3>] ext4_da_write_inline_data_begin+0x2d1/0xf30
-    [<00000000ced0c8a2>] ext4_da_write_begin+0x612/0x860
-    [<000000008d5f27fa>] generic_perform_write+0x215/0x4d0
-    [<00000000552c1cde>] ext4_buffered_write_iter+0x101/0x3b0
-    [<0000000052177ae8>] do_iter_readv_writev+0x19f/0x340
-    [<000000004b9de834>] do_iter_write+0x13b/0x650
-    [<00000000e2401b9b>] iter_file_splice_write+0x5a5/0xab0
-    [<0000000023aa5d90>] direct_splice_actor+0x103/0x1e0
-    [<0000000089e00fc1>] splice_direct_to_actor+0x2c9/0x7b0
-    [<000000004386851e>] do_splice_direct+0x159/0x280
-    [<00000000b567e609>] do_sendfile+0x932/0x1200
+This could give a significant speed up for multi-threaded writes. Test
+on Intel Xeon Gold 6140 and nvme SSD with below fio parameters.
 
-Above issue fixed by 1b8f787ef547 "ext4: fix warning in 'ext4_da_release_space'"
-in this scene. To make things better add check pending tree when evit inode.
-According to Eric Whitney's suggestion, bigalloc + inline is still in development
-so we just add test for this situation, there isn't need to add code to free
-pending tree entry.
+ direct=1
+ ioengine=libaio
+ iodepth=10
+ numjobs=10
+ runtime=60
+ rw=randwrite
+ size=100G
 
-Reported-by: syzbot+05a0f0ccab4a25626e38@syzkaller.appspotmail.com
-Signed-off-by: Ye Bin <yebin10@huawei.com>
+And the test result are:
+Before:
+ bs=4k       IOPS=11.1k, BW=43.2MiB/s
+ bs=16k      IOPS=11.1k, BW=173MiB/s
+ bs=64k      IOPS=11.2k, BW=697MiB/s
+
+After:
+ bs=4k       IOPS=41.4k, BW=162MiB/s
+ bs=16k      IOPS=41.3k, BW=646MiB/s
+ bs=64k      IOPS=13.5k, BW=843MiB/s
+
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 ---
- fs/ext4/super.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ It passed xfstests auto mode with 1k and 4k blocksize.
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 41413338c05b..2e2fbc4a832c 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1391,6 +1391,11 @@ static void ext4_destroy_inode(struct inode *inode)
- 			"Inode %lu (%p): i_reserved_data_blocks (%u) not cleared!",
- 			inode->i_ino, EXT4_I(inode),
- 			EXT4_I(inode)->i_reserved_data_blocks);
-+
-+	if (!RB_EMPTY_ROOT(&EXT4_I(inode)->i_pending_tree.root))
-+		ext4_error(inode->i_sb,
-+			"Inode %lu (%p): i_pending_tree not empty!",
-+			inode->i_ino, EXT4_I(inode));
+ fs/ext4/file.c | 34 ++++++++++++++++++++++------------
+ 1 file changed, 22 insertions(+), 12 deletions(-)
+
+diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+index a7a597c727e6..7edac94025ac 100644
+--- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -202,8 +202,9 @@ ext4_extending_io(struct inode *inode, loff_t offset, size_t len)
+ 	return false;
  }
  
- static void init_once(void *foo)
+-/* Is IO overwriting allocated and initialized blocks? */
+-static bool ext4_overwrite_io(struct inode *inode, loff_t pos, loff_t len)
++/* Is IO overwriting allocated or initialized blocks? */
++static bool ext4_overwrite_io(struct inode *inode,
++			      loff_t pos, loff_t len, bool *inited)
+ {
+ 	struct ext4_map_blocks map;
+ 	unsigned int blkbits = inode->i_blkbits;
+@@ -217,12 +218,15 @@ static bool ext4_overwrite_io(struct inode *inode, loff_t pos, loff_t len)
+ 	blklen = map.m_len;
+ 
+ 	err = ext4_map_blocks(NULL, inode, &map, 0);
++	if (err != blklen)
++		return false;
+ 	/*
+ 	 * 'err==len' means that all of the blocks have been preallocated,
+-	 * regardless of whether they have been initialized or not. To exclude
+-	 * unwritten extents, we need to check m_flags.
++	 * regardless of whether they have been initialized or not. We need to
++	 * check m_flags to distinguish the unwritten extents.
+ 	 */
+-	return err == blklen && (map.m_flags & EXT4_MAP_MAPPED);
++	*inited = !!(map.m_flags & EXT4_MAP_MAPPED);
++	return true;
+ }
+ 
+ static ssize_t ext4_generic_write_checks(struct kiocb *iocb,
+@@ -431,11 +435,16 @@ static const struct iomap_dio_ops ext4_dio_write_ops = {
+  * - For extending writes case we don't take the shared lock, since it requires
+  *   updating inode i_disksize and/or orphan handling with exclusive lock.
+  *
+- * - shared locking will only be true mostly with overwrites. Otherwise we will
+- *   switch to exclusive i_rwsem lock.
++ * - shared locking will only be true mostly with overwrites, include
++ *   initialized blocks and unwritten blocks. For overwrite unwritten blocks
++ *   we protects splitting extents by i_data_sem in ext4_inode_info, so we can
++ *   also release exclusive i_rwsem lock.
++ *
++ * - Otherwise we will switch to exclusive i_rwsem lock.
+  */
+ static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
+-				     bool *ilock_shared, bool *extend)
++				     bool *ilock_shared, bool *extend,
++				     bool *overwrite)
+ {
+ 	struct file *file = iocb->ki_filp;
+ 	struct inode *inode = file_inode(file);
+@@ -459,7 +468,7 @@ static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
+ 	 * in file_modified().
+ 	 */
+ 	if (*ilock_shared && (!IS_NOSEC(inode) || *extend ||
+-	     !ext4_overwrite_io(inode, offset, count))) {
++	     !ext4_overwrite_io(inode, offset, count, overwrite))) {
+ 		if (iocb->ki_flags & IOCB_NOWAIT) {
+ 			ret = -EAGAIN;
+ 			goto out;
+@@ -491,7 +500,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 	loff_t offset = iocb->ki_pos;
+ 	size_t count = iov_iter_count(from);
+ 	const struct iomap_ops *iomap_ops = &ext4_iomap_ops;
+-	bool extend = false, unaligned_io = false;
++	bool extend = false, unaligned_io = false, overwrite = false;
+ 	bool ilock_shared = true;
+ 
+ 	/*
+@@ -534,7 +543,8 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 		return ext4_buffered_write_iter(iocb, from);
+ 	}
+ 
+-	ret = ext4_dio_write_checks(iocb, from, &ilock_shared, &extend);
++	ret = ext4_dio_write_checks(iocb, from,
++				    &ilock_shared, &extend, &overwrite);
+ 	if (ret <= 0)
+ 		return ret;
+ 
+@@ -582,7 +592,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 		ext4_journal_stop(handle);
+ 	}
+ 
+-	if (ilock_shared)
++	if (overwrite)
+ 		iomap_ops = &ext4_iomap_overwrite_ops;
+ 	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
+ 			   (unaligned_io || extend) ? IOMAP_DIO_FORCE_WAIT : 0,
 -- 
 2.31.1
 
