@@ -2,190 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4321C642C1B
-	for <lists+linux-ext4@lfdr.de>; Mon,  5 Dec 2022 16:42:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 408F6642D92
+	for <lists+linux-ext4@lfdr.de>; Mon,  5 Dec 2022 17:50:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231160AbiLEPmQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 5 Dec 2022 10:42:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48954 "EHLO
+        id S231810AbiLEQuJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 5 Dec 2022 11:50:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbiLEPlx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 5 Dec 2022 10:41:53 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2E160C7;
-        Mon,  5 Dec 2022 07:41:52 -0800 (PST)
-Received: from [2a02:8108:963f:de38:eca4:7d19:f9a2:22c5]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1p2DbK-0001yr-4U; Mon, 05 Dec 2022 16:41:50 +0100
-Message-ID: <9c414060-989d-55bb-9a7b-0f33bf103c4f@leemhuis.info>
-Date:   Mon, 5 Dec 2022 16:41:49 +0100
+        with ESMTP id S232797AbiLEQtm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 5 Dec 2022 11:49:42 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E01620F7D
+        for <linux-ext4@vger.kernel.org>; Mon,  5 Dec 2022 08:48:54 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id s30-20020a056830439e00b0067052c70922so802740otv.11
+        for <linux-ext4@vger.kernel.org>; Mon, 05 Dec 2022 08:48:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=O4WPtqOs6pYDke8VCfpzwsIX+8zN33o8tLS2XMy/lFU=;
+        b=EvWmzEra/azIE+dhpMGnktmqmSoesb8PSCiM/05QKkVO5anMKEbRHSG7nojCSOyYWk
+         9IDI1UgS5rC+uB5j5uOW4no2X6seMos8u1Uby8q6RKzl1vCALcAn7vpiT6rpclAi8Jt0
+         gPKoEl0xikkT9S+7dg4LTBa5X4VHIsnKU2e6OrEO/j4h9xN1NPllzu29Dg0k3gFH+bOt
+         HMDW+rYw/YqhqvZ6y4oXgIeqTNVodnF9zHtiwgFo2Y0tEc6ReoK23o3+Epe6dWg/8ai1
+         Z4r7fWQ42rAk0Fys+lVH3VBvE+2FTvVvceopyfVxKS8DxJV3KaRTE9M5zTY24mYt1gIO
+         /rEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=O4WPtqOs6pYDke8VCfpzwsIX+8zN33o8tLS2XMy/lFU=;
+        b=TTsnBs7KG+0ln3fkyoUxjDYSDmq89EraCvPMr4VmEkglxNDKjEpnxVIslpLHhOuMBC
+         DS4JajOJFgoORdPmwKpOBIwdHS22UsP056fzjs1hN4/5TpMBx1CRhHqYw8dw3lRSOOW7
+         wMDY8M2idmLY429J6vE/1KoAtEBknVfiOpFeiVp5IHd4ONSDB7T+WIVIvP8rz5+IUETp
+         ZvHp8yjH0y8N13apuX8BX10Wv3i718/B4FtEUuYra160i/ihDBpTiCq0j6QWM5OsyC8R
+         mMoLNgb4SbAJ5KK4MOb2KJi4eYp1VmHRzDzaaD4huP4d91Sf73W6aqlDLmk1w/S5Rgyc
+         gIbw==
+X-Gm-Message-State: ANoB5plIMOwls20Rz8XNXj1VHppTDRni6Llo6oRabgWvNuAasWt0ou5R
+        AsgBFDvDIb2icLQa6UeEOE3+mRRudEeX/CC+H5Y=
+X-Google-Smtp-Source: AA0mqf6rJpockmAlPLGWb5IdXxyZXi5oeB/VlA7nQtTh5mH5GBjbP93nFRUHbmrw3A3v2AKvxeLYo6EVgAyGoUC2980=
+X-Received: by 2002:a05:6830:61ce:b0:66b:e4e2:8d25 with SMTP id
+ cc14-20020a05683061ce00b0066be4e28d25mr41635604otb.152.1670258933537; Mon, 05
+ Dec 2022 08:48:53 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH] ext4: Fix deadlock due to mbcache entry corruption
-Content-Language: en-US, de-DE
-To:     Ted Tso <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
-        stable@vger.kernel.org, Thilo Fromm <t-lo@linux.microsoft.com>,
-        Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>
-References: <20221123193950.16758-1-jack@suse.cz>
- <20221201151021.GA18380@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <20221201151021.GA18380@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1670254912;5bdd3230;
-X-HE-SMSGID: 1p2DbK-0001yr-4U
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Received: by 2002:a05:6358:7211:b0:dd:1fa2:ef73 with HTTP; Mon, 5 Dec 2022
+ 08:48:53 -0800 (PST)
+Reply-To: plml47@hotmail.com
+From:   Philip Manul <lometogo1999@gmail.com>
+Date:   Mon, 5 Dec 2022 08:48:53 -0800
+Message-ID: <CAFtqZGFXDNDSmyfAW1goTwuOjaKBWi=RMxR7avPMnWxdOUFKOg@mail.gmail.com>
+Subject: REP:
+To:     in <in@proposal.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=2.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 01.12.22 16:10, Jeremi Piotrowski wrote:
-> On Wed, Nov 23, 2022 at 08:39:50PM +0100, Jan Kara wrote:
->> When manipulating xattr blocks, we can deadlock infinitely looping
->> inside ext4_xattr_block_set() where we constantly keep finding xattr
->> block for reuse in mbcache but we are unable to reuse it because its
->> reference count is too big. This happens because cache entry for the
->> xattr block is marked as reusable (e_reusable set) although its
->> reference count is too big. When this inconsistency happens, this
->> inconsistent state is kept indefinitely and so ext4_xattr_block_set()
->> keeps retrying indefinitely.
->>
->> The inconsistent state is caused by non-atomic update of e_reusable bit.
->> e_reusable is part of a bitfield and e_reusable update can race with
->> update of e_referenced bit in the same bitfield resulting in loss of one
->> of the updates. Fix the problem by using atomic bitops instead.
->>
->> CC: stable@vger.kernel.org
->> Fixes: 6048c64b2609 ("mbcache: add reusable flag to cache entries")
->> Reported-and-tested-by: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
->> Reported-by: Thilo Fromm <t-lo@linux.microsoft.com>
->> Link: https://lore.kernel.org/r/c77bf00f-4618-7149-56f1-b8d1664b9d07@linux.microsoft.com/
->> Signed-off-by: Jan Kara <jack@suse.cz>
-> 
-> Could it be that you didn't see this email? We have users who are hitting this
-> and are very eager to see this bugfix get merged and backported to stable. 
-
-Andreas, Ted, or any other trusted ext4 reviewer:
-
-Jan's patch to fix the regression is now our 12 days out and afaics
-didn't make any progress (or did I miss something?). Is there are reason
-why or did it simply fall through the cracks? Just asking, because it
-would be good to finally get this resolved.
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
-
-P.S.: As the Linux kernel's regression tracker I deal with a lot of
-reports and sometimes miss something important when writing mails like
-this. If that's the case here, don't hesitate to tell me in a public
-reply, it's in everyone's interest to set the public record straight.
-
->>  fs/ext4/xattr.c         |  4 ++--
->>  fs/mbcache.c            | 14 ++++++++------
->>  include/linux/mbcache.h |  9 +++++++--
->>  3 files changed, 17 insertions(+), 10 deletions(-)
->>
->> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
->> index 800ce5cdb9d2..08043aa72cf1 100644
->> --- a/fs/ext4/xattr.c
->> +++ b/fs/ext4/xattr.c
->> @@ -1281,7 +1281,7 @@ ext4_xattr_release_block(handle_t *handle, struct inode *inode,
->>  				ce = mb_cache_entry_get(ea_block_cache, hash,
->>  							bh->b_blocknr);
->>  				if (ce) {
->> -					ce->e_reusable = 1;
->> +					set_bit(MBE_REUSABLE_B, &ce->e_flags);
->>  					mb_cache_entry_put(ea_block_cache, ce);
->>  				}
->>  			}
->> @@ -2042,7 +2042,7 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
->>  				}
->>  				BHDR(new_bh)->h_refcount = cpu_to_le32(ref);
->>  				if (ref == EXT4_XATTR_REFCOUNT_MAX)
->> -					ce->e_reusable = 0;
->> +					clear_bit(MBE_REUSABLE_B, &ce->e_flags);
->>  				ea_bdebug(new_bh, "reusing; refcount now=%d",
->>  					  ref);
->>  				ext4_xattr_block_csum_set(inode, new_bh);
->> diff --git a/fs/mbcache.c b/fs/mbcache.c
->> index e272ad738faf..2a4b8b549e93 100644
->> --- a/fs/mbcache.c
->> +++ b/fs/mbcache.c
->> @@ -100,8 +100,9 @@ int mb_cache_entry_create(struct mb_cache *cache, gfp_t mask, u32 key,
->>  	atomic_set(&entry->e_refcnt, 2);
->>  	entry->e_key = key;
->>  	entry->e_value = value;
->> -	entry->e_reusable = reusable;
->> -	entry->e_referenced = 0;
->> +	entry->e_flags = 0;
->> +	if (reusable)
->> +		set_bit(MBE_REUSABLE_B, &entry->e_flags);
->>  	head = mb_cache_entry_head(cache, key);
->>  	hlist_bl_lock(head);
->>  	hlist_bl_for_each_entry(dup, dup_node, head, e_hash_list) {
->> @@ -165,7 +166,8 @@ static struct mb_cache_entry *__entry_find(struct mb_cache *cache,
->>  	while (node) {
->>  		entry = hlist_bl_entry(node, struct mb_cache_entry,
->>  				       e_hash_list);
->> -		if (entry->e_key == key && entry->e_reusable &&
->> +		if (entry->e_key == key &&
->> +		    test_bit(MBE_REUSABLE_B, &entry->e_flags) &&
->>  		    atomic_inc_not_zero(&entry->e_refcnt))
->>  			goto out;
->>  		node = node->next;
->> @@ -284,7 +286,7 @@ EXPORT_SYMBOL(mb_cache_entry_delete_or_get);
->>  void mb_cache_entry_touch(struct mb_cache *cache,
->>  			  struct mb_cache_entry *entry)
->>  {
->> -	entry->e_referenced = 1;
->> +	set_bit(MBE_REFERENCED_B, &entry->e_flags);
->>  }
->>  EXPORT_SYMBOL(mb_cache_entry_touch);
->>  
->> @@ -309,9 +311,9 @@ static unsigned long mb_cache_shrink(struct mb_cache *cache,
->>  		entry = list_first_entry(&cache->c_list,
->>  					 struct mb_cache_entry, e_list);
->>  		/* Drop initial hash reference if there is no user */
->> -		if (entry->e_referenced ||
->> +		if (test_bit(MBE_REFERENCED_B, &entry->e_flags) ||
->>  		    atomic_cmpxchg(&entry->e_refcnt, 1, 0) != 1) {
->> -			entry->e_referenced = 0;
->> +			clear_bit(MBE_REFERENCED_B, &entry->e_flags);
->>  			list_move_tail(&entry->e_list, &cache->c_list);
->>  			continue;
->>  		}
->> diff --git a/include/linux/mbcache.h b/include/linux/mbcache.h
->> index 2da63fd7b98f..97e64184767d 100644
->> --- a/include/linux/mbcache.h
->> +++ b/include/linux/mbcache.h
->> @@ -10,6 +10,12 @@
->>  
->>  struct mb_cache;
->>  
->> +/* Cache entry flags */
->> +enum {
->> +	MBE_REFERENCED_B = 0,
->> +	MBE_REUSABLE_B
->> +};
->> +
->>  struct mb_cache_entry {
->>  	/* List of entries in cache - protected by cache->c_list_lock */
->>  	struct list_head	e_list;
->> @@ -26,8 +32,7 @@ struct mb_cache_entry {
->>  	atomic_t		e_refcnt;
->>  	/* Key in hash - stable during lifetime of the entry */
->>  	u32			e_key;
->> -	u32			e_referenced:1;
->> -	u32			e_reusable:1;
->> +	unsigned long		e_flags;
->>  	/* User provided value - stable during lifetime of the entry */
->>  	u64			e_value;
->>  };
->> -- 
->> 2.35.3
+--=20
+Guten tag,
+Mein Name ist Philip Manul. Ich bin von Beruf Rechtsanwalt. Ich habe
+einen verstorbenen Kunden, der zuf=C3=A4llig denselben Namen mit Ihnen
+teilt. Ich habe alle Papierdokumente in meinem Besitz. Ihr Verwandter,
+mein verstorbener Kunde, hat hier in meinem Land einen nicht
+beanspruchten Fonds zur=C3=BCckgelassen. Ich warte auf Ihre Antwort zum
+Verfahren.
+Philip Manul.
