@@ -2,183 +2,190 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63C7D642C07
-	for <lists+linux-ext4@lfdr.de>; Mon,  5 Dec 2022 16:40:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4321C642C1B
+	for <lists+linux-ext4@lfdr.de>; Mon,  5 Dec 2022 16:42:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbiLEPkn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 5 Dec 2022 10:40:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48290 "EHLO
+        id S231160AbiLEPmQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 5 Dec 2022 10:42:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230050AbiLEPkm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 5 Dec 2022 10:40:42 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D6E1BA8
-        for <linux-ext4@vger.kernel.org>; Mon,  5 Dec 2022 07:40:40 -0800 (PST)
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 29FDC1F747;
-        Mon,  5 Dec 2022 15:40:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1670254839; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=af80sJB23JE+1RCXzxLADGzxcTl1jqHmsSi3AWSU52M=;
-        b=hhbGHQZgkrQ6m8h6Ro26CDXXdpxQj1iD2T7L2g7Ncg0WOxSi+onbiMX0JPJm0br16MZE5y
-        Z1OLiQ0AKnD9D5JMdWHunvPab2G4FkuSN2S+fstwJe5dz4wOo6C4cCYyBBKldhqk0K/gSW
-        1e1zapXKdOxhjqt7pGTvKXAj2mV9T1g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1670254839;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=af80sJB23JE+1RCXzxLADGzxcTl1jqHmsSi3AWSU52M=;
-        b=4I07ydAWwMSRr7/qlMlBEgg8vksxw9c7xr7IMdzBNwimO87zo8yhg47h1gL47fDMXWBXrq
-        f/S/NsbwTHgPHnDQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 1C07A13326;
-        Mon,  5 Dec 2022 15:40:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id VW/OBvcQjmOGOwAAGKfGzw
-        (envelope-from <jack@suse.cz>); Mon, 05 Dec 2022 15:40:39 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 9EA74A0720; Mon,  5 Dec 2022 16:40:38 +0100 (CET)
-Date:   Mon, 5 Dec 2022 16:40:38 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     "lihaoxiang (F)" <lihaoxiang9@huawei.com>
-Cc:     jack@suse.cz, linux-ext4@vger.kernel.org,
-        Zhiqiang Liu <liuzhiqiang26@huawei.com>, linfeilong@huawei.com,
-        louhongxiang@huawei.com, "lijinlin (A)" <lijinlin3@huawei.com>
-Subject: Re: [PATCH] quota-nld: fix open PID file failed when systemd read it
-Message-ID: <20221205154038.esy7qsjajmfoxfo5@quack3>
-References: <29fb4747-5162-4e50-2771-570dc8776c26@huawei.com>
+        with ESMTP id S230000AbiLEPlx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 5 Dec 2022 10:41:53 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2E160C7;
+        Mon,  5 Dec 2022 07:41:52 -0800 (PST)
+Received: from [2a02:8108:963f:de38:eca4:7d19:f9a2:22c5]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1p2DbK-0001yr-4U; Mon, 05 Dec 2022 16:41:50 +0100
+Message-ID: <9c414060-989d-55bb-9a7b-0f33bf103c4f@leemhuis.info>
+Date:   Mon, 5 Dec 2022 16:41:49 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <29fb4747-5162-4e50-2771-570dc8776c26@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH] ext4: Fix deadlock due to mbcache entry corruption
+Content-Language: en-US, de-DE
+To:     Ted Tso <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
+        stable@vger.kernel.org, Thilo Fromm <t-lo@linux.microsoft.com>,
+        Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>
+References: <20221123193950.16758-1-jack@suse.cz>
+ <20221201151021.GA18380@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+In-Reply-To: <20221201151021.GA18380@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1670254912;5bdd3230;
+X-HE-SMSGID: 1p2DbK-0001yr-4U
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 01-12-22 12:10:49, lihaoxiang (F) wrote:
-> Running quota_nld by systemd might cause the problem that systemd
-> couldn't open the PID file generated by quota_nld. In fact, the PID
-> file hasn't existed yet because it originates from the child process
-> of quota_nld which is a daemon process. As the main process exit,
-> systemd try to access the PID file but the daemon hadn't create it
-> that time.
+On 01.12.22 16:10, Jeremi Piotrowski wrote:
+> On Wed, Nov 23, 2022 at 08:39:50PM +0100, Jan Kara wrote:
+>> When manipulating xattr blocks, we can deadlock infinitely looping
+>> inside ext4_xattr_block_set() where we constantly keep finding xattr
+>> block for reuse in mbcache but we are unable to reuse it because its
+>> reference count is too big. This happens because cache entry for the
+>> xattr block is marked as reusable (e_reusable set) although its
+>> reference count is too big. When this inconsistency happens, this
+>> inconsistent state is kept indefinitely and so ext4_xattr_block_set()
+>> keeps retrying indefinitely.
+>>
+>> The inconsistent state is caused by non-atomic update of e_reusable bit.
+>> e_reusable is part of a bitfield and e_reusable update can race with
+>> update of e_referenced bit in the same bitfield resulting in loss of one
+>> of the updates. Fix the problem by using atomic bitops instead.
+>>
+>> CC: stable@vger.kernel.org
+>> Fixes: 6048c64b2609 ("mbcache: add reusable flag to cache entries")
+>> Reported-and-tested-by: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+>> Reported-by: Thilo Fromm <t-lo@linux.microsoft.com>
+>> Link: https://lore.kernel.org/r/c77bf00f-4618-7149-56f1-b8d1664b9d07@linux.microsoft.com/
+>> Signed-off-by: Jan Kara <jack@suse.cz>
 > 
-> In this situation, we move the procedure of creating PID file into the
-> parent process to ensure the PID file must existed when quota_nld exit.
-> After that, the above problem would never occur again.
-> 
-> Signed-off-by: lihaoxiang <lihaoxiang9@huawei.com>
+> Could it be that you didn't see this email? We have users who are hitting this
+> and are very eager to see this bugfix get merged and backported to stable. 
 
-Thanks for the fix! In your patch the SIGTERM handling is actually wrong
-(as it now happens in the parent process instead of in the child). Also
-some format strings needed to be fixed up. I've done these changes and
-pushed the patch to my tree.
+Andreas, Ted, or any other trusted ext4 reviewer:
 
-								Honza
+Jan's patch to fix the regression is now our 12 days out and afaics
+didn't make any progress (or did I miss something?). Is there are reason
+why or did it simply fall through the cracks? Just asking, because it
+would be good to finally get this resolved.
 
-> ---
->  quota_nld.c | 43 +++++++++++++++++++++++++++++++++----------
->  1 file changed, 33 insertions(+), 10 deletions(-)
-> 
-> diff --git a/quota_nld.c b/quota_nld.c
-> index 09c4775..4a02eb1 100644
-> --- a/quota_nld.c
-> +++ b/quota_nld.c
-> @@ -413,7 +413,7 @@ static char *build_pid_file_name(void)
->  }
-> 
->  /* Store daemon's PID to file */
-> -static int store_pid(void)
-> +static int store_pid(pid_t pid)
->  {
->  	FILE *pid_file;
->  	char *pid_name;
-> @@ -429,7 +429,7 @@ static int store_pid(void)
->  		free(pid_name);
->  		return -1;
->  	}
-> -	if (fprintf(pid_file, "%jd\n", (intmax_t)getpid()) < 0) {
-> +	if (fprintf(pid_file, "%jd\n", pid) < 0) {
->  		errstr(_("Could not write daemon's PID into '%s'.\n"),
->  			pid_name);
->  		fclose(pid_file);
-> @@ -460,7 +460,7 @@ static void remove_pid(int signal)
->  }
-> 
->  /* Store daemon's PID into file and register its removal on SIGTERM */
-> -static void use_pid_file(void)
-> +static void use_pid_file(pid_t pid)
->  {
->  	struct sigaction term_action;
-> 
-> @@ -468,8 +468,35 @@ static void use_pid_file(void)
->  	term_action.sa_flags = 0;
->  	if (sigemptyset(&term_action.sa_mask) || sigaction(SIGTERM, &term_action, NULL))
->  		errstr(_("Could not register PID file removal on SIGTERM.\n"));
-> -	if (store_pid())
-> -		errstr(_("Could not store my PID %jd.\n"), (intmax_t )getpid());
-> +	if (store_pid(pid))
-> +		errstr(_("Could not store my PID %jd.\n"), pid);
-> +}
-> +
-> +static void fork_daemon()
-> +{
-> +	pid_t pid = fork();
-> +	if (pid < 0) {
-> +		errstr(_("Failed to daemonize: fork error with %s\n"), strerror(errno));
-> +		exit(1);
-> +	} else if (pid != 0) {
-> +		use_pid_file(pid);
-> +		exit(0);
-> +	}
-> +
-> +	if (setsid() == -1) {
-> +		errstr(_("Failed to daemonize: setsid error with %s\n"), strerror(errno));
-> +		exit(1);
-> +	}
-> +	if (chdir("/"))
-> +		errstr(_("Failed to chdir in daemonize \n"));
-> +	int fd = open("/dev/null", O_RDWR, 0);
-> +	if (fd >= 0) {
-> +		(void)dup2(fd, STDIN_FILENO);
-> +		(void)dup2(fd, STDOUT_FILENO);
-> +		(void)dup2(fd, STDERR_FILENO);
-> +
-> +		(void)close(fd);
-> +	}
->  }
-> 
->  int main(int argc, char **argv)
-> @@ -485,11 +512,7 @@ int main(int argc, char **argv)
->  		dhandle = init_dbus();
->  	if (!(flags & FL_NODAEMON)) {
->  		use_syslog();
-> -		if (daemon(0, 0)) {
-> -			errstr(_("Failed to daemonize: %s\n"), strerror(errno));
-> -			exit(1);
-> -		};
-> -		use_pid_file();
-> +		fork_daemon();
->  	}
->  	run(nsock);
->  	return 0;
-> -- 
-> 2.37.0.windows.1
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+
+P.S.: As the Linux kernel's regression tracker I deal with a lot of
+reports and sometimes miss something important when writing mails like
+this. If that's the case here, don't hesitate to tell me in a public
+reply, it's in everyone's interest to set the public record straight.
+
+>>  fs/ext4/xattr.c         |  4 ++--
+>>  fs/mbcache.c            | 14 ++++++++------
+>>  include/linux/mbcache.h |  9 +++++++--
+>>  3 files changed, 17 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+>> index 800ce5cdb9d2..08043aa72cf1 100644
+>> --- a/fs/ext4/xattr.c
+>> +++ b/fs/ext4/xattr.c
+>> @@ -1281,7 +1281,7 @@ ext4_xattr_release_block(handle_t *handle, struct inode *inode,
+>>  				ce = mb_cache_entry_get(ea_block_cache, hash,
+>>  							bh->b_blocknr);
+>>  				if (ce) {
+>> -					ce->e_reusable = 1;
+>> +					set_bit(MBE_REUSABLE_B, &ce->e_flags);
+>>  					mb_cache_entry_put(ea_block_cache, ce);
+>>  				}
+>>  			}
+>> @@ -2042,7 +2042,7 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
+>>  				}
+>>  				BHDR(new_bh)->h_refcount = cpu_to_le32(ref);
+>>  				if (ref == EXT4_XATTR_REFCOUNT_MAX)
+>> -					ce->e_reusable = 0;
+>> +					clear_bit(MBE_REUSABLE_B, &ce->e_flags);
+>>  				ea_bdebug(new_bh, "reusing; refcount now=%d",
+>>  					  ref);
+>>  				ext4_xattr_block_csum_set(inode, new_bh);
+>> diff --git a/fs/mbcache.c b/fs/mbcache.c
+>> index e272ad738faf..2a4b8b549e93 100644
+>> --- a/fs/mbcache.c
+>> +++ b/fs/mbcache.c
+>> @@ -100,8 +100,9 @@ int mb_cache_entry_create(struct mb_cache *cache, gfp_t mask, u32 key,
+>>  	atomic_set(&entry->e_refcnt, 2);
+>>  	entry->e_key = key;
+>>  	entry->e_value = value;
+>> -	entry->e_reusable = reusable;
+>> -	entry->e_referenced = 0;
+>> +	entry->e_flags = 0;
+>> +	if (reusable)
+>> +		set_bit(MBE_REUSABLE_B, &entry->e_flags);
+>>  	head = mb_cache_entry_head(cache, key);
+>>  	hlist_bl_lock(head);
+>>  	hlist_bl_for_each_entry(dup, dup_node, head, e_hash_list) {
+>> @@ -165,7 +166,8 @@ static struct mb_cache_entry *__entry_find(struct mb_cache *cache,
+>>  	while (node) {
+>>  		entry = hlist_bl_entry(node, struct mb_cache_entry,
+>>  				       e_hash_list);
+>> -		if (entry->e_key == key && entry->e_reusable &&
+>> +		if (entry->e_key == key &&
+>> +		    test_bit(MBE_REUSABLE_B, &entry->e_flags) &&
+>>  		    atomic_inc_not_zero(&entry->e_refcnt))
+>>  			goto out;
+>>  		node = node->next;
+>> @@ -284,7 +286,7 @@ EXPORT_SYMBOL(mb_cache_entry_delete_or_get);
+>>  void mb_cache_entry_touch(struct mb_cache *cache,
+>>  			  struct mb_cache_entry *entry)
+>>  {
+>> -	entry->e_referenced = 1;
+>> +	set_bit(MBE_REFERENCED_B, &entry->e_flags);
+>>  }
+>>  EXPORT_SYMBOL(mb_cache_entry_touch);
+>>  
+>> @@ -309,9 +311,9 @@ static unsigned long mb_cache_shrink(struct mb_cache *cache,
+>>  		entry = list_first_entry(&cache->c_list,
+>>  					 struct mb_cache_entry, e_list);
+>>  		/* Drop initial hash reference if there is no user */
+>> -		if (entry->e_referenced ||
+>> +		if (test_bit(MBE_REFERENCED_B, &entry->e_flags) ||
+>>  		    atomic_cmpxchg(&entry->e_refcnt, 1, 0) != 1) {
+>> -			entry->e_referenced = 0;
+>> +			clear_bit(MBE_REFERENCED_B, &entry->e_flags);
+>>  			list_move_tail(&entry->e_list, &cache->c_list);
+>>  			continue;
+>>  		}
+>> diff --git a/include/linux/mbcache.h b/include/linux/mbcache.h
+>> index 2da63fd7b98f..97e64184767d 100644
+>> --- a/include/linux/mbcache.h
+>> +++ b/include/linux/mbcache.h
+>> @@ -10,6 +10,12 @@
+>>  
+>>  struct mb_cache;
+>>  
+>> +/* Cache entry flags */
+>> +enum {
+>> +	MBE_REFERENCED_B = 0,
+>> +	MBE_REUSABLE_B
+>> +};
+>> +
+>>  struct mb_cache_entry {
+>>  	/* List of entries in cache - protected by cache->c_list_lock */
+>>  	struct list_head	e_list;
+>> @@ -26,8 +32,7 @@ struct mb_cache_entry {
+>>  	atomic_t		e_refcnt;
+>>  	/* Key in hash - stable during lifetime of the entry */
+>>  	u32			e_key;
+>> -	u32			e_referenced:1;
+>> -	u32			e_reusable:1;
+>> +	unsigned long		e_flags;
+>>  	/* User provided value - stable during lifetime of the entry */
+>>  	u64			e_value;
+>>  };
+>> -- 
+>> 2.35.3
