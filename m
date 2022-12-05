@@ -2,307 +2,183 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E11A164287D
-	for <lists+linux-ext4@lfdr.de>; Mon,  5 Dec 2022 13:29:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C7D642C07
+	for <lists+linux-ext4@lfdr.de>; Mon,  5 Dec 2022 16:40:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231836AbiLEM3p (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 5 Dec 2022 07:29:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35556 "EHLO
+        id S230228AbiLEPkn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 5 Dec 2022 10:40:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231814AbiLEM3e (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 5 Dec 2022 07:29:34 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F92101E6
-        for <linux-ext4@vger.kernel.org>; Mon,  5 Dec 2022 04:29:33 -0800 (PST)
+        with ESMTP id S230050AbiLEPkm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 5 Dec 2022 10:40:42 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D6E1BA8
+        for <linux-ext4@vger.kernel.org>; Mon,  5 Dec 2022 07:40:40 -0800 (PST)
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 29AA51FEDC;
-        Mon,  5 Dec 2022 12:29:30 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 29FDC1F747;
+        Mon,  5 Dec 2022 15:40:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1670243370; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
+        t=1670254839; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=2kayUqgJ35z0vajr9YkfzmXm72KaEjwV4oKf8bXqics=;
-        b=wuPml2NdaEhQgKxdxwz4LcnquzEy2HA18j8ZrtgqWCatkJaJGzxZi8FZHTj5++6ZjANh34
-        7IrVxh6Pj2Fnr1lxlAkyCValHj0tTYiZUiUl6ch+bHfVWOKPu6yM3VRIWslhj5/Qwa1rSy
-        1qWF/aMd2jyhW1tHnghaFACgC8nO+y0=
+        bh=af80sJB23JE+1RCXzxLADGzxcTl1jqHmsSi3AWSU52M=;
+        b=hhbGHQZgkrQ6m8h6Ro26CDXXdpxQj1iD2T7L2g7Ncg0WOxSi+onbiMX0JPJm0br16MZE5y
+        Z1OLiQ0AKnD9D5JMdWHunvPab2G4FkuSN2S+fstwJe5dz4wOo6C4cCYyBBKldhqk0K/gSW
+        1e1zapXKdOxhjqt7pGTvKXAj2mV9T1g=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1670243370;
+        s=susede2_ed25519; t=1670254839;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=2kayUqgJ35z0vajr9YkfzmXm72KaEjwV4oKf8bXqics=;
-        b=/EGcSvl0e7t9FGhzwPeGwroaV/A9xlmmrQXi5S9vTj8opf5+0DYhpmhvq//xKyFmZEF0S5
-        QH4dfriNaix2e6Dg==
+        bh=af80sJB23JE+1RCXzxLADGzxcTl1jqHmsSi3AWSU52M=;
+        b=4I07ydAWwMSRr7/qlMlBEgg8vksxw9c7xr7IMdzBNwimO87zo8yhg47h1gL47fDMXWBXrq
+        f/S/NsbwTHgPHnDQ==
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 0B7B71369C;
-        Mon,  5 Dec 2022 12:29:30 +0000 (UTC)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 1C07A13326;
+        Mon,  5 Dec 2022 15:40:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap1.suse-dmz.suse.de with ESMTPSA
-        id HKDnAirkjWMcTgAAGKfGzw
-        (envelope-from <jack@suse.cz>); Mon, 05 Dec 2022 12:29:30 +0000
+        id VW/OBvcQjmOGOwAAGKfGzw
+        (envelope-from <jack@suse.cz>); Mon, 05 Dec 2022 15:40:39 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 844CBA073E; Mon,  5 Dec 2022 13:29:28 +0100 (CET)
+        id 9EA74A0720; Mon,  5 Dec 2022 16:40:38 +0100 (CET)
+Date:   Mon, 5 Dec 2022 16:40:38 +0100
 From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-        Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>
-Subject: [PATCH v3 12/12] ext4: Remove ordered data support from ext4_writepage()
-Date:   Mon,  5 Dec 2022 13:29:26 +0100
-Message-Id: <20221205122928.21959-12-jack@suse.cz>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20221205122604.25994-1-jack@suse.cz>
-References: <20221205122604.25994-1-jack@suse.cz>
+To:     "lihaoxiang (F)" <lihaoxiang9@huawei.com>
+Cc:     jack@suse.cz, linux-ext4@vger.kernel.org,
+        Zhiqiang Liu <liuzhiqiang26@huawei.com>, linfeilong@huawei.com,
+        louhongxiang@huawei.com, "lijinlin (A)" <lijinlin3@huawei.com>
+Subject: Re: [PATCH] quota-nld: fix open PID file failed when systemd read it
+Message-ID: <20221205154038.esy7qsjajmfoxfo5@quack3>
+References: <29fb4747-5162-4e50-2771-570dc8776c26@huawei.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=9844; i=jack@suse.cz; h=from:subject; bh=nnYfQ0jdra1N+5U4dvVX1jQrw4g9MhS9mTBLa3rneNY=; b=owGbwMvMwME4Z+4qdvsUh5uMp9WSGJJ7n6hqyzuZ1Gjcmla6gvOTqMizO5duHl73pStQXfPP1oaa 3sy+TkZjFgZGDgZZMUWW1ZEXta/NM+raGqohAzOIlQlkCgMXpwBMREiN/Z9W9eTty7Z/t5EW9PebZp T2qUl/39bvVg2pf9KiDRgbps53YmONjehittmYkNFgMOFS0ydNU12LE5Oe7nP9yDs7XKHLsqNGdKZY yye/+3bG+5wc53nXWWV9L1/j9XGjwsbk0kh71s74Er2kZt9D3hsVv37OviIwdemrax2N0l+Laue9+n 3zp8mVaA/J9MCdEqp8K386f2Xsyeevu2xmcTlG54PtwQPTnLS9Dq47/tPZbVur654/HcxOp7cXX+yw Z6q328OacH5FT9ijaPWuMBmxvqdxRXcCvxVt29endkhyxaWDr7kbH3L8C6hwDud+4LDldJ6tN8uEri mzylVWNfw3FmV+Lhd4xS1cu1oYAA==
-X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <29fb4747-5162-4e50-2771-570dc8776c26@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-ext4_writepage() should not be called for ordered data anymore. Remove
-support for it from the function.
+On Thu 01-12-22 12:10:49, lihaoxiang (F) wrote:
+> Running quota_nld by systemd might cause the problem that systemd
+> couldn't open the PID file generated by quota_nld. In fact, the PID
+> file hasn't existed yet because it originates from the child process
+> of quota_nld which is a daemon process. As the main process exit,
+> systemd try to access the PID file but the daemon hadn't create it
+> that time.
+> 
+> In this situation, we move the procedure of creating PID file into the
+> parent process to ensure the PID file must existed when quota_nld exit.
+> After that, the above problem would never occur again.
+> 
+> Signed-off-by: lihaoxiang <lihaoxiang9@huawei.com>
 
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/inode.c | 150 +++++++++---------------------------------------
- 1 file changed, 26 insertions(+), 124 deletions(-)
+Thanks for the fix! In your patch the SIGTERM handling is actually wrong
+(as it now happens in the parent process instead of in the child). Also
+some format strings needed to be fixed up. I've done these changes and
+pushed the patch to my tree.
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index acf9d23c1cfb..c62614f6eacf 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -1006,11 +1006,6 @@ int ext4_walk_page_buffers(handle_t *handle, struct inode *inode,
-  * and the commit_write().  So doing the jbd2_journal_start at the start of
-  * prepare_write() is the right place.
-  *
-- * Also, this function can nest inside ext4_writepage().  In that case, we
-- * *know* that ext4_writepage() has generated enough buffer credits to do the
-- * whole page.  So we won't block on the journal in that case, which is good,
-- * because the caller may be PF_MEMALLOC.
-- *
-  * By accident, ext4 can be reentered when a transaction is open via
-  * quota file writes.  If we were to commit the transaction while thus
-  * reentered, there can be a deadlock - we would be holding a quota
-@@ -1642,12 +1637,6 @@ static void ext4_print_free_blocks(struct inode *inode)
- 	return;
- }
- 
--static int ext4_bh_delay_or_unwritten(handle_t *handle, struct inode *inode,
--				      struct buffer_head *bh)
--{
--	return (buffer_delay(bh) || buffer_unwritten(bh)) && buffer_dirty(bh);
--}
--
- /*
-  * ext4_insert_delayed_block - adds a delayed block to the extents status
-  *                             tree, incrementing the reserved cluster/block
-@@ -1962,56 +1951,18 @@ static int __ext4_journalled_writepage(struct page *page,
- }
- 
- /*
-- * Note that we don't need to start a transaction unless we're journaling data
-- * because we should have holes filled from ext4_page_mkwrite(). We even don't
-- * need to file the inode to the transaction's list in ordered mode because if
-- * we are writing back data added by write(), the inode is already there and if
-- * we are writing back data modified via mmap(), no one guarantees in which
-- * transaction the data will hit the disk. In case we are journaling data, we
-- * cannot start transaction directly because transaction start ranks above page
-- * lock so we have to do some magic.
-- *
-- * This function can get called via...
-- *   - ext4_writepages after taking page lock (have journal handle)
-- *   - journal_submit_inode_data_buffers (no journal handle)
-- *   - shrink_page_list via the kswapd/direct reclaim (no journal handle)
-- *   - grab_page_cache when doing write_begin (have journal handle)
-- *
-- * We don't do any block allocation in this function. If we have page with
-- * multiple blocks we need to write those buffer_heads that are mapped. This
-- * is important for mmaped based write. So if we do with blocksize 1K
-- * truncate(f, 1024);
-- * a = mmap(f, 0, 4096);
-- * a[0] = 'a';
-- * truncate(f, 4096);
-- * we have in the page first buffer_head mapped via page_mkwrite call back
-- * but other buffer_heads would be unmapped but dirty (dirty done via the
-- * do_wp_page). So writepage should write the first block. If we modify
-- * the mmap area beyond 1024 we will again get a page_fault and the
-- * page_mkwrite callback will do the block allocation and mark the
-- * buffer_heads mapped.
-- *
-- * We redirty the page if we have any buffer_heads that is either delay or
-- * unwritten in the page.
-- *
-- * We can get recursively called as show below.
-- *
-- *	ext4_writepage() -> kmalloc() -> __alloc_pages() -> page_launder() ->
-- *		ext4_writepage()
-- *
-- * But since we don't do any block allocation we should not deadlock.
-- * Page also have the dirty flag cleared so we don't get recurive page_lock.
-+ * This function is now used only when journaling data. We cannot start
-+ * transaction directly because transaction start ranks above page lock so we
-+ * have to do some magic.
-  */
--static int ext4_writepage(struct page *page,
--			  struct writeback_control *wbc)
-+static int ext4_journalled_writepage(struct page *page,
-+				     struct writeback_control *wbc,
-+				     void *data)
- {
- 	struct folio *folio = page_folio(page);
--	int ret = 0;
- 	loff_t size;
- 	unsigned int len;
--	struct buffer_head *page_bufs = NULL;
- 	struct inode *inode = page->mapping->host;
--	struct ext4_io_submit io_submit;
- 
- 	if (unlikely(ext4_forced_shutdown(EXT4_SB(inode->i_sb)))) {
- 		folio_invalidate(folio, 0, folio_size(folio));
-@@ -2036,60 +1987,16 @@ static int ext4_writepage(struct page *page,
- 		return 0;
- 	}
- 
--	page_bufs = page_buffers(page);
--	/*
--	 * We cannot do block allocation or other extent handling in this
--	 * function. If there are buffers needing that, we have to redirty
--	 * the page. But we may reach here when we do a journal commit via
--	 * journal_submit_inode_data_buffers() and in that case we must write
--	 * allocated buffers to achieve data=ordered mode guarantees.
--	 *
--	 * Also, if there is only one buffer per page (the fs block
--	 * size == the page size), if one buffer needs block
--	 * allocation or needs to modify the extent tree to clear the
--	 * unwritten flag, we know that the page can't be written at
--	 * all, so we might as well refuse the write immediately.
--	 * Unfortunately if the block size != page size, we can't as
--	 * easily detect this case using ext4_walk_page_buffers(), but
--	 * for the extremely common case, this is an optimization that
--	 * skips a useless round trip through ext4_bio_write_page().
--	 */
--	if (ext4_walk_page_buffers(NULL, inode, page_bufs, 0, len, NULL,
--				   ext4_bh_delay_or_unwritten)) {
--		redirty_page_for_writepage(wbc, page);
--		if ((current->flags & PF_MEMALLOC) ||
--		    (inode->i_sb->s_blocksize == PAGE_SIZE)) {
--			/*
--			 * For memory cleaning there's no point in writing only
--			 * some buffers. So just bail out. Warn if we came here
--			 * from direct reclaim.
--			 */
--			WARN_ON_ONCE((current->flags & (PF_MEMALLOC|PF_KSWAPD))
--							== PF_MEMALLOC);
--			unlock_page(page);
--			return 0;
--		}
--	}
--
--	if (PageChecked(page) && ext4_should_journal_data(inode))
--		/*
--		 * It's mmapped pagecache.  Add buffers and journal it.  There
--		 * doesn't seem much point in redirtying the page here.
--		 */
--		return __ext4_journalled_writepage(page, len);
--
--	ext4_io_submit_init(&io_submit, wbc);
--	io_submit.io_end = ext4_init_io_end(inode, GFP_NOFS);
--	if (!io_submit.io_end) {
--		redirty_page_for_writepage(wbc, page);
-+	WARN_ON_ONCE(!ext4_should_journal_data(inode));
-+	if (!PageChecked(page)) {
- 		unlock_page(page);
--		return -ENOMEM;
-+		return 0;
- 	}
--	ret = ext4_bio_write_page(&io_submit, page, len);
--	ext4_io_submit(&io_submit);
--	/* Drop io_end reference we got from init */
--	ext4_put_io_end_defer(io_submit.io_end);
--	return ret;
-+	/*
-+	 * It's mmapped pagecache.  Add buffers and journal it.  There
-+	 * doesn't seem much point in redirtying the page here.
-+	 */
-+	return __ext4_journalled_writepage(page, len);
- }
- 
- static int mpage_submit_page(struct mpage_da_data *mpd, struct page *page)
-@@ -2705,12 +2612,6 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
- 	return err;
- }
- 
--static int ext4_writepage_cb(struct page *page, struct writeback_control *wbc,
--			     void *data)
--{
--	return ext4_writepage(page, wbc);
--}
--
- static int ext4_do_writepages(struct mpage_da_data *mpd)
- {
- 	struct writeback_control *wbc = mpd->wbc;
-@@ -2738,7 +2639,8 @@ static int ext4_do_writepages(struct mpage_da_data *mpd)
- 
- 	if (ext4_should_journal_data(inode)) {
- 		blk_start_plug(&plug);
--		ret = write_cache_pages(mapping, wbc, ext4_writepage_cb, NULL);
-+		ret = write_cache_pages(mapping, wbc, ext4_journalled_writepage,
-+					NULL);
- 		blk_finish_plug(&plug);
- 		goto out_writepages;
- 	}
-@@ -3153,9 +3055,8 @@ static int ext4_da_write_end(struct file *file,
- 	 * i_disksize since writeback will push i_disksize upto i_size
- 	 * eventually. If the end of the current write is > i_size and
- 	 * inside an allocated block (ext4_da_should_update_i_disksize()
--	 * check), we need to update i_disksize here as neither
--	 * ext4_writepage() nor certain ext4_writepages() paths not
--	 * allocating blocks update i_disksize.
-+	 * check), we need to update i_disksize here as ext4_writepages() need
-+	 * not do it in this case.
- 	 *
- 	 * Note that we defer inode dirtying to generic_write_end() /
- 	 * ext4_da_write_inline_data_end().
-@@ -5357,13 +5258,14 @@ static void ext4_wait_for_tail_page_commit(struct inode *inode)
- 
- 	offset = inode->i_size & (PAGE_SIZE - 1);
- 	/*
--	 * If the folio is fully truncated, we don't need to wait for any commit
--	 * (and we even should not as __ext4_journalled_invalidate_folio() may
--	 * strip all buffers from the folio but keep the folio dirty which can then
--	 * confuse e.g. concurrent ext4_writepage() seeing dirty folio without
--	 * buffers). Also we don't need to wait for any commit if all buffers in
--	 * the folio remain valid. This is most beneficial for the common case of
--	 * blocksize == PAGESIZE.
-+	 * If the folio is fully truncated, we don't need to wait for any
-+	 * commit (and we even should not as
-+	 * __ext4_journalled_invalidate_folio() may strip all buffers from the
-+	 * folio but keep the folio dirty which can then confuse e.g.
-+	 * concurrent ext4_journalled_writepage() seeing dirty folio without
-+	 * buffers). Also we don't need to wait for any commit if all buffers
-+	 * in the folio remain valid. This is most beneficial for the common
-+	 * case of blocksize == PAGESIZE.
- 	 */
- 	if (!offset || offset > (PAGE_SIZE - i_blocksize(inode)))
- 		return;
+								Honza
+
+> ---
+>  quota_nld.c | 43 +++++++++++++++++++++++++++++++++----------
+>  1 file changed, 33 insertions(+), 10 deletions(-)
+> 
+> diff --git a/quota_nld.c b/quota_nld.c
+> index 09c4775..4a02eb1 100644
+> --- a/quota_nld.c
+> +++ b/quota_nld.c
+> @@ -413,7 +413,7 @@ static char *build_pid_file_name(void)
+>  }
+> 
+>  /* Store daemon's PID to file */
+> -static int store_pid(void)
+> +static int store_pid(pid_t pid)
+>  {
+>  	FILE *pid_file;
+>  	char *pid_name;
+> @@ -429,7 +429,7 @@ static int store_pid(void)
+>  		free(pid_name);
+>  		return -1;
+>  	}
+> -	if (fprintf(pid_file, "%jd\n", (intmax_t)getpid()) < 0) {
+> +	if (fprintf(pid_file, "%jd\n", pid) < 0) {
+>  		errstr(_("Could not write daemon's PID into '%s'.\n"),
+>  			pid_name);
+>  		fclose(pid_file);
+> @@ -460,7 +460,7 @@ static void remove_pid(int signal)
+>  }
+> 
+>  /* Store daemon's PID into file and register its removal on SIGTERM */
+> -static void use_pid_file(void)
+> +static void use_pid_file(pid_t pid)
+>  {
+>  	struct sigaction term_action;
+> 
+> @@ -468,8 +468,35 @@ static void use_pid_file(void)
+>  	term_action.sa_flags = 0;
+>  	if (sigemptyset(&term_action.sa_mask) || sigaction(SIGTERM, &term_action, NULL))
+>  		errstr(_("Could not register PID file removal on SIGTERM.\n"));
+> -	if (store_pid())
+> -		errstr(_("Could not store my PID %jd.\n"), (intmax_t )getpid());
+> +	if (store_pid(pid))
+> +		errstr(_("Could not store my PID %jd.\n"), pid);
+> +}
+> +
+> +static void fork_daemon()
+> +{
+> +	pid_t pid = fork();
+> +	if (pid < 0) {
+> +		errstr(_("Failed to daemonize: fork error with %s\n"), strerror(errno));
+> +		exit(1);
+> +	} else if (pid != 0) {
+> +		use_pid_file(pid);
+> +		exit(0);
+> +	}
+> +
+> +	if (setsid() == -1) {
+> +		errstr(_("Failed to daemonize: setsid error with %s\n"), strerror(errno));
+> +		exit(1);
+> +	}
+> +	if (chdir("/"))
+> +		errstr(_("Failed to chdir in daemonize \n"));
+> +	int fd = open("/dev/null", O_RDWR, 0);
+> +	if (fd >= 0) {
+> +		(void)dup2(fd, STDIN_FILENO);
+> +		(void)dup2(fd, STDOUT_FILENO);
+> +		(void)dup2(fd, STDERR_FILENO);
+> +
+> +		(void)close(fd);
+> +	}
+>  }
+> 
+>  int main(int argc, char **argv)
+> @@ -485,11 +512,7 @@ int main(int argc, char **argv)
+>  		dhandle = init_dbus();
+>  	if (!(flags & FL_NODAEMON)) {
+>  		use_syslog();
+> -		if (daemon(0, 0)) {
+> -			errstr(_("Failed to daemonize: %s\n"), strerror(errno));
+> -			exit(1);
+> -		};
+> -		use_pid_file();
+> +		fork_daemon();
+>  	}
+>  	run(nsock);
+>  	return 0;
+> -- 
+> 2.37.0.windows.1
 -- 
-2.35.3
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
