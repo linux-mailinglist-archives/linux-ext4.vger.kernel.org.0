@@ -2,163 +2,72 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C57F9644197
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 Dec 2022 11:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC1264427A
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 Dec 2022 12:51:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230450AbiLFKw3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 6 Dec 2022 05:52:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44722 "EHLO
+        id S234483AbiLFLva (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 6 Dec 2022 06:51:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234417AbiLFKw2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 6 Dec 2022 05:52:28 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C8064CE
-        for <linux-ext4@vger.kernel.org>; Tue,  6 Dec 2022 02:52:27 -0800 (PST)
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2DD1F21C04;
-        Tue,  6 Dec 2022 10:52:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1670323946; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5sN7XonIHkZPSXUeTVwCYriJf0V+92fbh96cz906ZH4=;
-        b=uPsblBSeKAv+4PgDdzYGGUxaLa3iJiToTW1v5I7XvrGIricIScMgO0IfHI571XowaO1g2g
-        fwwq80XRMZw5ECqXaDOmtfvwNkoAGo7LitzouOm54l2IN6rjkgMTg/0u4gVcUjHSWYT29b
-        WUI76kJrGk1UUY2vLlrcMC5qbIO4AW4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1670323946;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5sN7XonIHkZPSXUeTVwCYriJf0V+92fbh96cz906ZH4=;
-        b=lsYXJ/g7oh+PRG91le+UUGJ4ds/kwFFkMnhsdfvpBY6GUl95iiPlHQaI3MrH/oLnS33pSA
-        GwjuUHIC9U3yniDQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 1F8EF132F3;
-        Tue,  6 Dec 2022 10:52:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id +TivB+oej2O/NwAAGKfGzw
-        (envelope-from <jack@suse.cz>); Tue, 06 Dec 2022 10:52:26 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 583C2A0725; Tue,  6 Dec 2022 11:52:25 +0100 (CET)
-Date:   Tue, 6 Dec 2022 11:52:25 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org
-Subject: Re: [PATCH v3 11/12] ext4: Stop providing .writepage hook
-Message-ID: <20221206105225.nr734teqlkueqdph@quack3>
-References: <20221205122604.25994-1-jack@suse.cz>
- <20221205122928.21959-11-jack@suse.cz>
- <Y460RpKTCDuPKWmN@mit.edu>
+        with ESMTP id S234460AbiLFLv3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 6 Dec 2022 06:51:29 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B4E1D30C
+        for <linux-ext4@vger.kernel.org>; Tue,  6 Dec 2022 03:51:28 -0800 (PST)
+Received: from dggpeml500006.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NRJdT68ZqzRpF7
+        for <linux-ext4@vger.kernel.org>; Tue,  6 Dec 2022 19:50:37 +0800 (CST)
+Received: from [10.174.178.112] (10.174.178.112) by
+ dggpeml500006.china.huawei.com (7.185.36.76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 6 Dec 2022 19:51:26 +0800
+Message-ID: <3f405e2f-b18a-f12d-7b0e-8cb031df37eb@huawei.com>
+Date:   Tue, 6 Dec 2022 19:51:26 +0800
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="ctkz3xut3vy6qate"
-Content-Disposition: inline
-In-Reply-To: <Y460RpKTCDuPKWmN@mit.edu>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0
+Content-Language: en-US
+To:     Jan Kara <jack@suse.cz>
+CC:     <linux-ext4@vger.kernel.org>,
+        Zhiqiang Liu <liuzhiqiang26@huawei.com>,
+        <linfeilong@huawei.com>, "lijinlin (A)" <lijinlin3@huawei.com>,
+        <louhongxiang@huawei.com>
+From:   "lihaoxiang (F)" <lihaoxiang9@huawei.com>
+Subject: [PATCH] quota-nld:remove redundant description after fix
+ setup_sigterm_handler()
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.112]
+X-ClientProxiedBy: dggpeml500017.china.huawei.com (7.185.36.243) To
+ dggpeml500006.china.huawei.com (7.185.36.76)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
---ctkz3xut3vy6qate
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon 05-12-22 22:17:26, Theodore Ts'o wrote:
-> On Mon, Dec 05, 2022 at 01:29:25PM +0100, Jan Kara wrote:
-> > Now we don't need .writepage hook for anything anymore. Reclaim is fine
-> > with relying on .writepages to clean pages and we often couldn't do much
-> > from the .writepage callback anyway. We only need to provide
-> > .migrate_folio callback for the ext4_journalled_aops - let's use
-> > buffer_migrate_page_norefs() there so that buffers cannot be modified
->   ^^^^^^^^^^^^^^^^^^^^^^^^^^  this should be buffer_migrate_folio_norefs, no?
-> > under jdb2's hands.
-> > 
-> > Reviewed-by: Christoph Hellwig <hch@lst.de>
-> > Signed-off-by: Jan Kara <jack@suse.cz>
-> 
-> Could you clarify in the commit how critical it is to use the
-> _norefs() variant?  It's not entirely clear what you mean by "let's
-> use...".  I think what is meant is that we need to use ..._noref() or
-> we can get in trouble if while the page update is getting committed,
-> there is an attempted to migrate the folio containing the page.
-
-Exacly. For example when commit code does writeout of transaction buffers
-in jbd2_journal_write_metadata_buffer(), we don't hold page lock or have
-page writeback bit set or have buffer locked. So page migration code would
-go and happily migrate the page elsewhere while the copy is running thus
-corrupting data.
-
-I've added this to the changelog.
-
-> buffer_migrate_folio_norefs() is currently not exported (although
-> buffer_migrate_folio is).  So if we need it for ext4, we're going to
-> have to EXPORT_SYMBOL buffer_migrate_folio_norefs.
-> 
-> Any objections from the mm folks?
-
-I don't expect any objection. The only reason we didn't export that
-function when I've added it was that only blkdev code was using it and that
-cannot be compiled as a module. Should I send a patch to 
-
-I've added a patch to the series to export this function. It is attached.
-
-I can also repost the whole series if these are the only changes that block
-the inclusion.
-
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
-
---ctkz3xut3vy6qate
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment;
-	filename="0001-mm-Export-buffer_migrate_folio_norefs.patch"
-
-From 69eb9d34de54862f8653a3c2ca4f96891e69f64b Mon Sep 17 00:00:00 2001
-From: Jan Kara <jack@suse.cz>
-Date: Tue, 6 Dec 2022 11:42:29 +0100
-Subject: [PATCH] mm: Export buffer_migrate_folio_norefs()
-
-Ext4 needs this function to allow safe migration for journalled data
-pages.
-
-Signed-off-by: Jan Kara <jack@suse.cz>
+In the commit 06b93e5c1caf5d36d51132cb85c11a96cbdae023, it renamed the
+function `use_pid_file` to `setup_sigterm_handler` and excluded to store
+daemon's pid here. So we need to clean the corresponding note in time.
 ---
- mm/migrate.c | 1 +
- 1 file changed, 1 insertion(+)
+ quota_nld.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index dff333593a8a..f00f5f6607b2 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -820,6 +820,7 @@ int buffer_migrate_folio_norefs(struct address_space *mapping,
- {
- 	return __buffer_migrate_folio(mapping, dst, src, mode, true);
+diff --git a/quota_nld.c b/quota_nld.c
+index 82e60c2..58a62af 100644
+--- a/quota_nld.c
++++ b/quota_nld.c
+@@ -459,7 +459,7 @@ static void remove_pid(int signal)
+ 	exit(EXIT_SUCCESS);
  }
-+EXPORT_SYMBOL(buffer_migrate_folio_norefs);
- #endif
- 
- int filemap_migrate_folio(struct address_space *mapping,
+
+-/* Store daemon's PID into file and register its removal on SIGTERM */
++/* Register daemon's PID file removal on SIGTERM */
+ static void setup_sigterm_handler(void)
+ {
+ 	struct sigaction term_action;
 -- 
-2.35.3
-
-
---ctkz3xut3vy6qate--
+2.37.0.windows.1
