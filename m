@@ -2,76 +2,72 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F4064390B
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 Dec 2022 00:05:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24214643AF9
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 Dec 2022 02:52:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232054AbiLEXEq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 5 Dec 2022 18:04:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55808 "EHLO
+        id S232543AbiLFBwn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 5 Dec 2022 20:52:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233927AbiLEXEN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 5 Dec 2022 18:04:13 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C4C1DDEA
-        for <linux-ext4@vger.kernel.org>; Mon,  5 Dec 2022 15:04:12 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id f9so11800501pgf.7
-        for <linux-ext4@vger.kernel.org>; Mon, 05 Dec 2022 15:04:12 -0800 (PST)
+        with ESMTP id S230036AbiLFBwk (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 5 Dec 2022 20:52:40 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 833E0CDC
+        for <linux-ext4@vger.kernel.org>; Mon,  5 Dec 2022 17:52:38 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id o12so12985232pjo.4
+        for <linux-ext4@vger.kernel.org>; Mon, 05 Dec 2022 17:52:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EMxgvk2yFo8Rbo93eUfFPWH3YMgPyr5c5rnRRAyyLVQ=;
-        b=iOrSXyGTxznYf60vxpgZw1BUGdPVNNnMlULWbDKMC/irJbL/DtCnl3UE6To5r3i0l7
-         cBucxsHbsUsdJdGcFE4d82oijuHcHOqR+xhnFPOq0V2wdAC2GeDLMz/hiHnnM9mqqqtP
-         PLka0Va0yo9KktVSFPbzPYQBWMMSZBgkOu+uWLMI2lxVX83AvcNKwrJuNq02j/0M6Ifq
-         qZwwzMUcXXwV3+yKx0oEYc5qd1ddbGHf3Wpv7XvB4ctfZTc7PmpAu5k1fEG/aL15KyHB
-         cT0wsUcmslmk1OebxljI2vMc9KmCx+lK941ay7frIZgQuyyOclqJqhWcLEm4nH1VbCf5
-         NRYg==
+        d=dilger-ca.20210112.gappssmtp.com; s=20210112;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9wq3sEslTe2wjtzi0HVrmtWkh3tKeKcL922j6vnHc3I=;
+        b=bn7WmcYFiVr1ZBHM12wr1+B13mUX6nYBO+r4drQeTeRvNkzLPDYVxAOOkTRFm/IPZZ
+         d5obdZGAao678P94FkTJehIindN9Va1j0H6lxnwNHRcc0h/nUCRWhFaI2QinVylXZD1y
+         0/FDX+QRcDKC8NvYUgtSnu30AZz3YDL8onyR4hZwJoqzKe4FkUwxRsZcSs3nj16fqQWn
+         E28GLxsh/mhfFDDYHakqJvbDukvTGnosjnhFKyKv9Nxf64qczEGbkZ/rmkSXQHmSADuZ
+         eZvbyPgekU+eInYgrr79Lklsko9rZDT9oizymet1s29bZAgSytuRHjrDuNvvqZ84GhSS
+         MSBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EMxgvk2yFo8Rbo93eUfFPWH3YMgPyr5c5rnRRAyyLVQ=;
-        b=f378wGqqojt1oU0Qrn0cqKnCJxvzydMpnCGoIoDZLPfTvPfhojkP+MjOEdElrlzsiM
-         hBNLqVZTOlXywXmYqFMTIJ4Th5tJX69KX52FVgxrfGJsXVfSHdkgn9zRmdtRarPdDuLE
-         4KT6CgQTZB0Ks6lCsTzsjlUPPZtgPnD7g7BFDR2P1G4l7WAvnapNRypTEOwNeVNkk3d2
-         a/rDLEUwGErK9TzTudOygy3XjDlO3LEivq0SeP1ENcPgb1cy92Ock6D0PAhVTJjc1Z50
-         m/gO5LEsqAFn5HE1w8NFMAqEfzldAHT0pTD0OhtCqa7sbIU3c4q+eQC3JJ0WLjD8+Hhn
-         K9Cw==
-X-Gm-Message-State: ANoB5pmoh6AUjoPacnZlMiV58sTFUMDpvjkSfK+C4QkrtQFqTQDd6VEP
-        SV6olVyT+kbxD7fuvffWPcMKxA==
-X-Google-Smtp-Source: AA0mqf5eDxwr9JDrHbPttLGwszxyGTK5GHFn8edQbmPwIKgeDp4Nde0sxZFhRR/hZfKvOlnUTyuXfw==
-X-Received: by 2002:a63:d48:0:b0:474:6739:6a09 with SMTP id 8-20020a630d48000000b0047467396a09mr66392507pgn.292.1670281452243;
-        Mon, 05 Dec 2022 15:04:12 -0800 (PST)
-Received: from dread.disaster.area (pa49-181-54-199.pa.nsw.optusnet.com.au. [49.181.54.199])
-        by smtp.gmail.com with ESMTPSA id b15-20020a170902d50f00b00174f61a7d09sm11120251plg.247.2022.12.05.15.04.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Dec 2022 15:04:11 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1p2KVM-004y9z-6R; Tue, 06 Dec 2022 10:04:08 +1100
-Date:   Tue, 6 Dec 2022 10:04:08 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, cluster-devel@redhat.com
-Subject: Re: [RFC v2 0/3] Turn iomap_page_ops into iomap_folio_ops
-Message-ID: <20221205230408.GQ3600936@dread.disaster.area>
-References: <20221201160619.1247788-1-agruenba@redhat.com>
- <20221201180957.1268079-1-agruenba@redhat.com>
- <20221201212956.GO3600936@dread.disaster.area>
- <CAHc6FU6u9A0S-EwyB6vq89XPj1rucL8U0oqq__OzB1d0evM-yA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHc6FU6u9A0S-EwyB6vq89XPj1rucL8U0oqq__OzB1d0evM-yA@mail.gmail.com>
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9wq3sEslTe2wjtzi0HVrmtWkh3tKeKcL922j6vnHc3I=;
+        b=06Mud1k6WB6piSGfh3as+PwxK7+BKF+NSrxMYq8j+4fCLd5Ry1cCz3FMnzalOS8UKI
+         gZ+gHcS9wYjgTji4SWFq9PW2XLONsczHuz/emI380E16yD40jvvNKyTghdVpV86hUDxU
+         sTlQ7t2Xdgcy82YvTvuDCjUYn0S5cou2xlGPD99c6CAiAKmP32eqcQlszFlWidi+l4ei
+         Wyc3d9YPms4kimA6dPdWD3zQhSuKhhxnMrQpr9F7jvN+m1tYPsG0wSCsIHIHiI7Vupd0
+         nlZHlH2IBkFixqoiQ9ayxbu79OklDvg013k36vkNb9RisutpcBNmbRwXXZPOIiqyCDrK
+         DnPg==
+X-Gm-Message-State: ANoB5pnfGJjklnH3s/jcQDMLxn9fI3fqlGDe1lC2vKFw7qlKsX6DRQd5
+        +/PgUCV5l41rxnBcMfdtm5Aj0A==
+X-Google-Smtp-Source: AA0mqf6f9RKrNngUJ22MXDTYAzo0a6epnkQqeqO7OciRjYG80O8Ntb5ScXEB8e7y6XGrQ4dZ8yk2fA==
+X-Received: by 2002:a17:90a:ae16:b0:218:fada:57fd with SMTP id t22-20020a17090aae1600b00218fada57fdmr57504410pjq.12.1670291557935;
+        Mon, 05 Dec 2022 17:52:37 -0800 (PST)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id z18-20020aa79492000000b00575b6f8b84esm1761375pfk.26.2022.12.05.17.52.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 05 Dec 2022 17:52:36 -0800 (PST)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <96677D90-C895-4356-83A9-A116A91F199A@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_ABE18D77-661A-4EE8-9B60-6ACD02A2D6FD";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH] ext4: Fix deadlock due to mbcache entry corruption
+Date:   Mon, 5 Dec 2022 18:52:34 -0700
+In-Reply-To: <9c414060-989d-55bb-9a7b-0f33bf103c4f@leemhuis.info>
+Cc:     linux-ext4@vger.kernel.org, stable@vger.kernel.org,
+        Thilo Fromm <t-lo@linux.microsoft.com>,
+        Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Thorsten Leemhuis <regressions@leemhuis.info>
+To:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>
+References: <20221123193950.16758-1-jack@suse.cz>
+ <20221201151021.GA18380@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <9c414060-989d-55bb-9a7b-0f33bf103c4f@leemhuis.info>
+X-Mailer: Apple Mail (2.3273)
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,118 +75,72 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Dec 02, 2022 at 02:54:00AM +0100, Andreas Gruenbacher wrote:
-> On Thu, Dec 1, 2022 at 10:30 PM Dave Chinner <david@fromorbit.com> wrote:
-> > On Thu, Dec 01, 2022 at 07:09:54PM +0100, Andreas Gruenbacher wrote:
-> > > Hi again,
-> > >
-> > > [Same thing, but with the patches split correctly this time.]
-> > >
-> > > we're seeing a race between journaled data writes and the shrinker on
-> > > gfs2.  What's happening is that gfs2_iomap_page_done() is called after
-> > > the page has been unlocked, so try_to_free_buffers() can come in and
-> > > free the buffers while gfs2_iomap_page_done() is trying to add them to
-> > > the transaction.  Not good.
-> > >
-> > > This is a proposal to change iomap_page_ops so that page_prepare()
-> > > prepares the write and grabs the locked page, and page_done() unlocks
-> > > and puts that page again.  While at it, this also converts the hooks
-> > > from pages to folios.
-> > >
-> > > To move the pagecache_isize_extended() call in iomap_write_end() out of
-> > > the way, a new folio_may_straddle_isize() helper is introduced that
-> > > takes a locked folio.  That is then used when the inode size is updated,
-> > > before the folio is unlocked.
-> > >
-> > > I've also converted the other applicable folio_may_straddle_isize()
-> > > users, namely generic_write_end(), ext4_write_end(), and
-> > > ext4_journalled_write_end().
-> > >
-> > > Any thoughts?
-> >
-> > I doubt that moving page cache operations from the iomap core to
-> > filesystem specific callouts will be acceptible. I recently proposed
-> > patches that added page cache walking to an XFS iomap callout to fix
-> > a data corruption, but they were NAKd on the basis that iomap is
-> > supposed to completely abstract away the folio and page cache
-> > manipulations from the filesystem.
-> 
-> Right. The resulting code is really quite disgusting, for a
-> fundamentalist dream of abstraction.
-> 
-> > This patchset seems to be doing the same thing - moving page cache
-> > and folio management directly in filesystem specific callouts. Hence
-> > I'm going to assume that the same architectural demarcation is
-> > going to apply here, too...
-> >
-> > FYI, there is already significant change committed to the iomap
-> > write path in the current XFS tree as a result of the changes I
-> > mention - there is stale IOMAP detection which adds a new page ops
-> > method and adds new error paths with a locked folio in
-> > iomap_write_begin().
-> 
-> That would have belonged on the iomap-for-next branch rather than in
-> the middle of a bunch of xfs commits.
 
-Damned if you do, damned if you don't.
+--Apple-Mail=_ABE18D77-661A-4EE8-9B60-6ACD02A2D6FD
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-There were non-trivial cross dependencies between XFS and iomap in
-that patch set.  The initial IOMAP_F_STALE infrastructure needed XFS
-changes first, otherwise it could deadlock at ENOSPC on write page
-faults. i.e. the iomap change in isolation broke stuff, so we're
-forced to either carry XFs changes in iomap or iomap changes in XFS
-so that there are no regressions in a given tree.
+On Wed, Nov 23, 2022 at 08:39:50PM +0100, Jan Kara wrote:
+> When manipulating xattr blocks, we can deadlock infinitely looping
+> inside ext4_xattr_block_set() where we constantly keep finding xattr
+> block for reuse in mbcache but we are unable to reuse it because its
+> reference count is too big. This happens because cache entry for the
+> xattr block is marked as reusable (e_reusable set) although its
+> reference count is too big. When this inconsistency happens, this
+> inconsistent state is kept indefinitely and so ext4_xattr_block_set()
+> keeps retrying indefinitely.
+>=20
+> The inconsistent state is caused by non-atomic update of e_reusable =
+bit.
+> e_reusable is part of a bitfield and e_reusable update can race with
+> update of e_referenced bit in the same bitfield resulting in loss of =
+one
+> of the updates. Fix the problem by using atomic bitops instead.
+>=20
+> CC: stable@vger.kernel.org
+> Fixes: 6048c64b2609 ("mbcache: add reusable flag to cache entries")
+> Reported-and-tested-by: Jeremi Piotrowski =
+<jpiotrowski@linux.microsoft.com>
+> Reported-by: Thilo Fromm <t-lo@linux.microsoft.com>
+> Link: =
+https://lore.kernel.org/r/c77bf00f-4618-7149-56f1-b8d1664b9d07@linux.micro=
+soft.com/
+> Signed-off-by: Jan Kara <jack@suse.cz>
 
-Then we had to move XFS functionality to iomap to fix another data
-corruption that the IOMAP_F_STALE infrastructure exposed in XFS via
-generic/346. Once the code was moved, then we could build it up into
-the page cache scanning functionality in iomap. And only then could
-we add the XFS IOMAP_F_STALE validation to XFS to solve the original
-data corruption that started all this off.
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 
-IOWs, there were so many cross dependencies between XFs and iomap
-that it was largely impossible to break it up into two separate sets
-of indpendent patches that didn't cause regressions in one or the
-other tree. And in the end, we'd still have to merge the iomap tree
-into XFS or vice versa to actually test that the data corruption fix
-worked.
+Cheers, Andreas
 
-In situations like this, we commonly take the entire series into one
-of the two trees rather than make a whole lot more work for
-ourselves by trying to separate them out. And in this case, because
-it was XFS data corruption and race conditions that needed fixing,
-it made sense to take it through the XFS tree so that it gets
-coverage from all the XFS testing that happens - the iomap tree gets
-a lot less early coverage than the XFS tree...
 
-> > And this other data corruption (and performance) fix for handling
-> > zeroing over unwritten extents properly:
-> >
-> > https://lore.kernel.org/linux-xfs/20221201005214.3836105-1-david@fromorbit.com/
-> >
-> > changes the way folios are looked up and instantiated in the page
-> > cache in iomap_write_begin(). It also adds new error conditions that
-> > need to be returned to callers so to implement conditional "folio
-> > must be present and dirty" page cache zeroing from
-> > iomap_zero_iter(). Those semantics would also have to be supported
-> > by gfs2, and that greatly complicates modifying and testing iomap
-> > core changes.
-> >
-> > To avoid all this, can we simple move the ->page_done() callout in
-> > the error path and iomap_write_end() to before we unlock the folio?
-> > You've already done that for pagecache_isize_extended(), and I can't
-> > see anything obvious in the gfs2 ->page_done callout that
-> > would cause issues if it is called with a locked dirty folio...
-> 
-> Yes, I guess we can do that once pagecache_isize_extended() is
-> replaced by folio_may_straddle_isize().
-> 
-> Can people please scrutinize the math in folio_may_straddle_isize() in
-> particular?
 
-I'll look at it more closely in the next couple of days.
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+
+
+--Apple-Mail=_ABE18D77-661A-4EE8-9B60-6ACD02A2D6FD
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmOOoGIACgkQcqXauRfM
+H+Aqnw//QBW7/HVTLpxi1sTTLZZ552mZq2fqt7p+ukXFA6wyH7cRtVT3Vamqc2T7
+uGAa3OOXt/WDmuHsLdHXzCqPwOF+vp2wAz4CAV7Ki1tbSPazgImVo1uCwAgZiCvw
+IKbwB4ERb4XdxRwyjDr3Fo2VX3m1poju1ex9jqA7MUn+dWlfjfAn95Tz+E1CuXEQ
+7o5E4q74ea3szh6u8tIa7J6Cq6uEqb+kth1/1Y+CBFJF1nCHB43KFEkETeLWVuG0
+klIEXyhaRXGxOfZ3CM5cHbdNwk8qMYKxCgQr9CeAAeB3VR2fJcR7cdfyiggdAL7r
+CGtIRor2N6ZPegDV2CH+BgZaWf+v6onquHoB9/ntmeXq6dh27UaMVh7KGpeaKob4
+U4gdkyedifGHue1tL8QpqZuQzHnUu601450lMeCMhu4OC+p4LgE5Dh1tLDzdDu/z
+5lk1AyBfr251ss/ljoAicOmE4WJaPSSmEshm8TN0mOzxbg/9T5zyXIuKGFwvK3Xq
+8AOpX5epq8wU+uFts1xPwNP8wU8ASnAvA6xbWERt+ac3qqAOSQC21XfXZ0PuVXS9
+pDUgDlQqIQnCp9d+YCiO5w+MNqp6DK0t56aXYtOtwFNa460PhozbDkIWoRrhCLKI
+992VVzuB2x4LXNxhGpyqW5MmJxOU6LD6WUpf/XtlbfQZEGUa0DE=
+=X8gG
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_ABE18D77-661A-4EE8-9B60-6ACD02A2D6FD--
