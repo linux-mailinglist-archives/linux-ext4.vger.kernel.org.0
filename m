@@ -2,46 +2,46 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8162644DAB
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 Dec 2022 22:02:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5446644DAA
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 Dec 2022 22:02:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbiLFVCX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 6 Dec 2022 16:02:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48722 "EHLO
+        id S229761AbiLFVCW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 6 Dec 2022 16:02:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbiLFVCV (ORCPT
+        with ESMTP id S229456AbiLFVCV (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Tue, 6 Dec 2022 16:02:21 -0500
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D8112F028;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5056945A05;
         Tue,  6 Dec 2022 13:02:20 -0800 (PST)
 Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2B6L1sZA001533
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2B6L1tP5001542
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Tue, 6 Dec 2022 16:01:56 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1670360518; bh=CyOJZXp862wNz1EI0vNPEAyGg1jTpjjZbj17oMWn4Ug=;
+        t=1670360518; bh=3M+ItcVZbBCEgkgbGQ2OdnE5NwSqKq3lFYW45HxjIVM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=mqI5aZ//POVzUKsx3gxcCUfJsYvQ8zriS95KFzdUgtg9w9drshsC3DOBWSY50V8z+
-         owWiMPMQ58gX7bQY2l84v67KRnsTD03sgNx9XIW6ks6hqDwHPM6OK7JSt5j+sEzteK
-         C8tz0pZcvLjQTNgQe5GZ8oHDba+tceBrUr/5cBBositeMf3IEfu82juCO/PEB19sw5
-         eNE0PZ1OtiFjcFKHHWTaLt+UcTNNuwzDfdNCY24np58sIel49k//4PI133w4URUZ5U
-         ETLSjQS8gmDsroITw1H0fRP0iPekwDOz6byXaXXnJeV5kqmgw4Vg0X3r3L4eMBwwBx
-         Pw7PjcmEZ5Uag==
+        b=hRo7a+LjJvj/DMl64HDnPmaQGzEfPnSA5dotHbfOrx5R1Z2OrCA0FsPMX7KqzbRfb
+         WXhdummoVO1EN00MmDOTMPeSM42zOzggRWf52JutjLYrMVHZ+InS/Do1W/sr5EKcKe
+         eMkIhPSmwmpaVB+y/KCUmgPIUpV7PxpITYjQNmH7IO5pWQjny/HAU9cSaYuzrxFVIO
+         9ninUEEVZoxU8HozMT2h40CDvqaX+Ncj/7wfDK+2IOverCbMIwxlqYGk+D/bvRTsci
+         YnRnWBWP6qdHiFHTVejK5cFFOoqcba7pDYo0xbUB9W9+LcPjSR5IQFYTmnVHKO3Q0F
+         3R30lxqRMsz+Q==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id D553E15C3A23; Tue,  6 Dec 2022 16:01:54 -0500 (EST)
+        id D70A715C3AE8; Tue,  6 Dec 2022 16:01:54 -0500 (EST)
 From:   "Theodore Ts'o" <tytso@mit.edu>
 To:     Baokun Li <libaokun1@huawei.com>, linux-ext4@vger.kernel.org
 Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-kernel@vger.kernel.org,
-        ritesh.list@gmail.com, yi.zhang@huawei.com,
+        yi.zhang@huawei.com, ritesh.list@gmail.com,
         adilger.kernel@dilger.ca, yukuai3@huawei.com, jack@suse.cz
-Subject: Re: [PATCH] ext4: fix use-after-free in ext4_orphan_cleanup
-Date:   Tue,  6 Dec 2022 16:01:49 -0500
-Message-Id: <167036049593.156498.14515627082959738584.b4-ty@mit.edu>
+Subject: Re: [PATCH v3 0/4] ext4: fix two bug_on in __es_tree_search
+Date:   Tue,  6 Dec 2022 16:01:50 -0500
+Message-Id: <167036049592.156498.14036136511112425546.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20221102080633.1630225-1-libaokun1@huawei.com>
-References: <20221102080633.1630225-1-libaokun1@huawei.com>
+In-Reply-To: <20221026042310.3839669-1-libaokun1@huawei.com>
+References: <20221026042310.3839669-1-libaokun1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -54,41 +54,29 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 2 Nov 2022 16:06:33 +0800, Baokun Li wrote:
-> I caught a issue as follows:
-> ==================================================================
->  BUG: KASAN: use-after-free in __list_add_valid+0x28/0x1a0
->  Read of size 8 at addr ffff88814b13f378 by task mount/710
-> 
->  CPU: 1 PID: 710 Comm: mount Not tainted 6.1.0-rc3-next #370
->  Call Trace:
->   <TASK>
->   dump_stack_lvl+0x73/0x9f
->   print_report+0x25d/0x759
->   kasan_report+0xc0/0x120
->   __asan_load8+0x99/0x140
->   __list_add_valid+0x28/0x1a0
->   ext4_orphan_cleanup+0x564/0x9d0 [ext4]
->   __ext4_fill_super+0x48e2/0x5300 [ext4]
->   ext4_fill_super+0x19f/0x3a0 [ext4]
->   get_tree_bdev+0x27b/0x450
->   ext4_get_tree+0x19/0x30 [ext4]
->   vfs_get_tree+0x49/0x150
->   path_mount+0xaae/0x1350
->   do_mount+0xe2/0x110
->   __x64_sys_mount+0xf0/0x190
->   do_syscall_64+0x35/0x80
->   entry_SYSCALL_64_after_hwframe+0x63/0xcd
->   </TASK>
->  [...]
-> ==================================================================
+On Wed, 26 Oct 2022 12:23:06 +0800, Baokun Li wrote:
+> V1->V2:
+> 	In patch 2, when imode is not set to S_IFREG, the inode also needs
+> 	to be initialized. Otherwise, the check can be bypassed, causing
+> 	the BUG_ON. (found in the review by yangerkun)
+> V2->V3:
+> 	a. add EXT4_IGET_BAD flag to prevent unexpected bad inode.
+> 	b. check bad quota inode in vfs_setup_quota_inode() instead of in
+> 	   ext4_quota_enable() for more generic approach to this problem.
+> 	c. add helper to check quota inums.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] ext4: fix use-after-free in ext4_orphan_cleanup
-      commit: ad7ab3c3f740ce379e230d28c6aa8f9550182841
+[1/4] ext4: fix bug_on in __es_tree_search caused by bad quota inode
+      commit: c7e9666f28ba9bdeeb99fb0c60a27dbb88f452f4
+[2/4] ext4: add helper to check quota inums
+      commit: 9c4883f1b41181f2096e2ee4e98111008b77165c
+[3/4] ext4: add EXT4_IGET_BAD flag to prevent unexpected bad inode
+      commit: 10f525fda2faff81f6cfce2a6bc4b50a5254d9ea
+[4/4] ext4: fix bug_on in __es_tree_search caused by bad boot loader inode
+      commit: db14233edaf579153d8c92bf3a0ba27ceb87eabc
 
 Best regards,
 -- 
