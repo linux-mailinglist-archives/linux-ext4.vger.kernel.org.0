@@ -2,136 +2,161 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB686444CF
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 Dec 2022 14:44:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D356644579
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 Dec 2022 15:20:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231434AbiLFNoz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 6 Dec 2022 08:44:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40438 "EHLO
+        id S234952AbiLFOU4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 6 Dec 2022 09:20:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbiLFNoy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 6 Dec 2022 08:44:54 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B77BC2981E;
-        Tue,  6 Dec 2022 05:44:51 -0800 (PST)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NRM8G6pkgzmWLK;
-        Tue,  6 Dec 2022 21:43:58 +0800 (CST)
-Received: from [10.174.178.185] (10.174.178.185) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 6 Dec 2022 21:44:47 +0800
-Subject: Re: [PATCH -next 1/6] ext4: fix WARNING in ext4_expand_extra_isize_ea
-To:     Jan Kara <jack@suse.cz>, Ye Bin <yebin@huaweicloud.com>
-References: <20221206015806.3420321-1-yebin@huaweicloud.com>
- <20221206015806.3420321-2-yebin@huaweicloud.com>
- <20221206120417.225uxtlg255bzph4@quack3>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <syzbot+4d99a966fd74bdeeec36@syzkaller.appspotmail.com>
-From:   "yebin (H)" <yebin10@huawei.com>
-Message-ID: <638F474E.9070901@huawei.com>
-Date:   Tue, 6 Dec 2022 21:44:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+        with ESMTP id S234910AbiLFOUs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 6 Dec 2022 09:20:48 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D7182DA93;
+        Tue,  6 Dec 2022 06:20:44 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NRMyX6KV9z4f3v58;
+        Tue,  6 Dec 2022 22:20:36 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.127.227])
+        by APP1 (Coremail) with SMTP id cCh0CgD37ay2T49jumSkBg--.19656S4;
+        Tue, 06 Dec 2022 22:20:39 +0800 (CST)
+From:   Ye Bin <yebin@huaweicloud.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, jack@suse.cz,
+        Ye Bin <yebin10@huawei.com>,
+        syzbot+4faa160fa96bfba639f8@syzkaller.appspotmail.com,
+        Jun Nie <jun.nie@linaro.org>
+Subject: [PATCH v2] ext4: fix kernel BUG in 'ext4_write_inline_data_end()'
+Date:   Tue,  6 Dec 2022 22:41:34 +0800
+Message-Id: <20221206144134.1919987-1-yebin@huaweicloud.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20221206120417.225uxtlg255bzph4@quack3>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.185]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500010.china.huawei.com (7.192.105.118)
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgD37ay2T49jumSkBg--.19656S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxXF48ZF4xurWUWw48uF18AFb_yoWrtw1rpr
+        Z8Gr1UGr4Iva4DCFWkAF1UZr1Uuwn8CF47WryIgr4kXa43Cw1UKF1FgF18J3WjyrZ2vrWY
+        qF4DCry8Kw15G3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUgEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCj
+        c4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4
+        CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1x
+        MIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJV
+        Cq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIY
+        CTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
+X-CM-SenderInfo: p1hex046kxt4xhlfz01xgou0bp/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+From: Ye Bin <yebin10@huawei.com>
 
+Syzbot report follow issue:
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inline.c:227!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 3629 Comm: syz-executor212 Not tainted 6.1.0-rc5-syzkaller-00018-g59d0d52c30d4 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+RIP: 0010:ext4_write_inline_data+0x344/0x3e0 fs/ext4/inline.c:227
+RSP: 0018:ffffc90003b3f368 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff8880704e16c0 RCX: 0000000000000000
+RDX: ffff888021763a80 RSI: ffffffff821e31a4 RDI: 0000000000000006
+RBP: 000000000006818e R08: 0000000000000006 R09: 0000000000068199
+R10: 0000000000000079 R11: 0000000000000000 R12: 000000000000000b
+R13: 0000000000068199 R14: ffffc90003b3f408 R15: ffff8880704e1c82
+FS:  000055555723e3c0(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fffe8ac9080 CR3: 0000000079f81000 CR4: 0000000000350ee0
+Call Trace:
+ <TASK>
+ ext4_write_inline_data_end+0x2a3/0x12f0 fs/ext4/inline.c:768
+ ext4_write_end+0x242/0xdd0 fs/ext4/inode.c:1313
+ ext4_da_write_end+0x3ed/0xa30 fs/ext4/inode.c:3063
+ generic_perform_write+0x316/0x570 mm/filemap.c:3764
+ ext4_buffered_write_iter+0x15b/0x460 fs/ext4/file.c:285
+ ext4_file_write_iter+0x8bc/0x16e0 fs/ext4/file.c:700
+ call_write_iter include/linux/fs.h:2191 [inline]
+ do_iter_readv_writev+0x20b/0x3b0 fs/read_write.c:735
+ do_iter_write+0x182/0x700 fs/read_write.c:861
+ vfs_iter_write+0x74/0xa0 fs/read_write.c:902
+ iter_file_splice_write+0x745/0xc90 fs/splice.c:686
+ do_splice_from fs/splice.c:764 [inline]
+ direct_splice_actor+0x114/0x180 fs/splice.c:931
+ splice_direct_to_actor+0x335/0x8a0 fs/splice.c:886
+ do_splice_direct+0x1ab/0x280 fs/splice.c:974
+ do_sendfile+0xb19/0x1270 fs/read_write.c:1255
+ __do_sys_sendfile64 fs/read_write.c:1323 [inline]
+ __se_sys_sendfile64 fs/read_write.c:1309 [inline]
+ __x64_sys_sendfile64+0x1d0/0x210 fs/read_write.c:1309
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+---[ end trace 0000000000000000 ]---
 
-On 2022/12/6 20:04, Jan Kara wrote:
-> On Tue 06-12-22 09:58:01, Ye Bin wrote:
->> From: Ye Bin <yebin10@huawei.com>
->>
->> Syzbot found the following issue:
->> ------------[ cut here ]------------
->> WARNING: CPU: 1 PID: 3631 at mm/page_alloc.c:5534 __alloc_pages+0x30a/0x560 mm/page_alloc.c:5534
->> Modules linked in:
->> CPU: 1 PID: 3631 Comm: syz-executor261 Not tainted 6.1.0-rc6-syzkaller-00308-g644e9524388a #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
->> RIP: 0010:__alloc_pages+0x30a/0x560 mm/page_alloc.c:5534
->> RSP: 0018:ffffc90003ccf080 EFLAGS: 00010246
->> RAX: ffffc90003ccf0e0 RBX: 000000000000000c RCX: 0000000000000000
->> RDX: 0000000000000028 RSI: 0000000000000000 RDI: ffffc90003ccf108
->> RBP: ffffc90003ccf198 R08: dffffc0000000000 R09: ffffc90003ccf0e0
->> R10: fffff52000799e21 R11: 1ffff92000799e1c R12: 0000000000040c40
->> R13: 1ffff92000799e18 R14: dffffc0000000000 R15: 1ffff92000799e14
->> FS:  0000555555c10300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
->> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> CR2: 00007ffc36f70000 CR3: 00000000744ad000 CR4: 00000000003506e0
->> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->> Call Trace:
->>   <TASK>
->>   __alloc_pages_node include/linux/gfp.h:223 [inline]
->>   alloc_pages_node include/linux/gfp.h:246 [inline]
->>   __kmalloc_large_node+0x8a/0x1a0 mm/slab_common.c:1096
->>   __do_kmalloc_node mm/slab_common.c:943 [inline]
->>   __kmalloc+0xfe/0x1a0 mm/slab_common.c:968
->>   kmalloc include/linux/slab.h:558 [inline]
->>   ext4_xattr_move_to_block fs/ext4/xattr.c:2558 [inline]
->>   ext4_xattr_make_inode_space fs/ext4/xattr.c:2673 [inline]
->>   ext4_expand_extra_isize_ea+0xe3f/0x1cd0 fs/ext4/xattr.c:2765
->>   __ext4_expand_extra_isize+0x2b8/0x3f0 fs/ext4/inode.c:5857
->>   ext4_try_to_expand_extra_isize fs/ext4/inode.c:5900 [inline]
->>   __ext4_mark_inode_dirty+0x51a/0x670 fs/ext4/inode.c:5978
->>   ext4_inline_data_truncate+0x548/0xd00 fs/ext4/inline.c:2021
->>   ext4_truncate+0x341/0xeb0 fs/ext4/inode.c:4221
->>   ext4_process_orphan+0x1aa/0x2d0 fs/ext4/orphan.c:339
->>   ext4_orphan_cleanup+0xb60/0x1340 fs/ext4/orphan.c:474
->>   __ext4_fill_super fs/ext4/super.c:5515 [inline]
->>   ext4_fill_super+0x80ed/0x8610 fs/ext4/super.c:5643
->>   get_tree_bdev+0x400/0x620 fs/super.c:1324
->>   vfs_get_tree+0x88/0x270 fs/super.c:1531
->>   do_new_mount+0x289/0xad0 fs/namespace.c:3040
->>   do_mount fs/namespace.c:3383 [inline]
->>   __do_sys_mount fs/namespace.c:3591 [inline]
->>   __se_sys_mount+0x2d3/0x3c0 fs/namespace.c:3568
->>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->>   do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
->>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
->>   </TASK>
->>
->> Reason is allocate 16M memory by kmalloc, but MAX_ORDER is 11, kmalloc
->> can allocate maxium size memory is 4M.
->> XATTR_SIZE_MAX is currently 64k, but EXT4_XATTR_SIZE_MAX is '(1 << 24)',
->> so 'ext4_xattr_check_entries()' regards this length as legal. Then trigger
->> warning in 'ext4_xattr_move_to_block()'.
->> To solve above issue, according to Jan Kara's suggestion use kvmalloc()
->> to allocate memory in ext4_xattr_move_to_block().
->>
->> Reported-by: syzbot+4d99a966fd74bdeeec36@syzkaller.appspotmail.com
->> Fixes: 54dd0e0a1b25 ("ext4: add extra checks to ext4_xattr_block_get()")
->> Signed-off-by: Ye Bin <yebin10@huawei.com>
-> The changelog speak about kvmalloc() while your patch changes
-> EXT4_XATTR_SIZE_MAX. This needs to be fixed. If Ted is find with this
-> change, I have no problem with it either but I remember there were some
-> discussions about what EXT4_XATTR_SIZE_MAX should be when ea_inode feature
-> has been developed. Ted might remember.
+Above issue may happens as follows:
+ext4_da_write_begin
+  ext4_da_write_inline_data_begin
+    ext4_da_convert_inline_data_to_extent
+      ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
+ext4_da_write_end
 
-I'm sorry I forgot to modify the commit message, I will modify the 
-changelog again.
+ext4_run_li_request
+  ext4_mb_prefetch
+    ext4_read_block_bitmap_nowait
+      ext4_validate_block_bitmap
+        ext4_mark_group_bitmap_corrupted(sb, block_group, EXT4_GROUP_INFO_BBITMAP_CORRUPT)
+	 percpu_counter_sub(&sbi->s_freeclusters_counter,grp->bb_free);
+	  -> sbi->s_freeclusters_counter become zero
+ext4_da_write_begin
+  if (ext4_nonda_switch(inode->i_sb)) -> As freeclusters_counter is zero will return true
+    *fsdata = (void *)FALL_BACK_TO_NONDELALLOC;
+    ext4_write_begin
+ext4_da_write_end
+  if (write_mode == FALL_BACK_TO_NONDELALLOC)
+    ext4_write_end
+      if (inline_data)
+        ext4_write_inline_data_end
+	  ext4_write_inline_data
+	    BUG_ON(pos + len > EXT4_I(inode)->i_inline_size);
+           -> As inode is already convert to extent, so 'pos + len' > inline_size
+	   -> then trigger BUG.
 
-> Also the change from kmalloc() to kvmalloc() is a desirable one anyway. It
-> is not always easy to find physically contiguous 64k of memory so
-> kvmalloc() makes the allocation much more likely to succeed.
->
-> 								Honza
+To solve above issue, there's need to judge inode if has EXT4_STATE_MAY_INLINE_DATA
+flag in 'ext4_write_end()'. 'ext4_has_inline_data()' flag only cleared after do
+write back, EXT4_STATE_MAY_INLINE_DATA flag indicate that inode has inline data,
+so add this flag check except 'ext4_has_inline_data()' flag in 'ext4_write_end()'.
 
-A later patch use kvmalloc to allocate  extended attribute value memory.
+Fixes:f19d5870cbf7("ext4: add normal write support for inline data")
+Reported-by: syzbot+4faa160fa96bfba639f8@syzkaller.appspotmail.com
+Reported-by: Jun Nie <jun.nie@linaro.org>
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ fs/ext4/inode.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index f0079835b8a8..25841a878ce9 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -1315,7 +1315,8 @@ static int ext4_write_end(struct file *file,
+ 
+ 	trace_ext4_write_end(inode, pos, len, copied);
+ 
+-	if (ext4_has_inline_data(inode))
++	if (ext4_has_inline_data(inode) &&
++	    ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA))
+ 		return ext4_write_inline_data_end(inode, pos, len, copied, page);
+ 
+ 	copied = block_write_end(file, mapping, pos, len, copied, page, fsdata);
+-- 
+2.31.1
 
