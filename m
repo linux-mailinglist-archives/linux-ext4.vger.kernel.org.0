@@ -2,68 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C476458F7
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Dec 2022 12:27:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F936458FE
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Dec 2022 12:27:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229825AbiLGL1h (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Dec 2022 06:27:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39644 "EHLO
+        id S230018AbiLGL1x (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 7 Dec 2022 06:27:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229834AbiLGL10 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Dec 2022 06:27:26 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F9F11A06
-        for <linux-ext4@vger.kernel.org>; Wed,  7 Dec 2022 03:27:25 -0800 (PST)
+        with ESMTP id S229946AbiLGL12 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Dec 2022 06:27:28 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EE3CB485
+        for <linux-ext4@vger.kernel.org>; Wed,  7 Dec 2022 03:27:27 -0800 (PST)
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CB3741F37E;
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D61F321CA8;
         Wed,  7 Dec 2022 11:27:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1670412443; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vs7hmkx66Fp22yYnmDcVYVxpg8X0jWkoO4ST/ldwM1s=;
-        b=z2LUD/TEYZERLm9bl4SmUZUXRNASBvlv/5ovqxAtroJdUXEZDyi6maHpqgK9cSkqx39hAM
-        MndTjKGES/LdetPhI68zXuRMQESXcLivb4Afq39f+fYO4ogvzAz/BHZ9DGXhm4IDAeje1b
-        69MSjLkWEwMSokLrgFyHOfmB6ktTBmY=
+        bh=5QANUKVuRT8NWBgNyyusoguWy8/KXbVC7l0LNl2PJV0=;
+        b=On4DKZrHnYAkleBsrfII4wyBdCgoUCXx3bnKrfvOITJB+Dela/QHErpq9N67SRkfsAH01N
+        2rDanq2VH2Bkz9hdN13JZZMtku5goy/LPdtZwp57Fss+aXGKTQhVtQw2nemj2nv9QdPMrT
+        HKrxAfLzHhI8166/BMInnsHpvzTOE08=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1670412443;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vs7hmkx66Fp22yYnmDcVYVxpg8X0jWkoO4ST/ldwM1s=;
-        b=o+63YQ4DCIFgHGz4DB4JDU6dMwiEPXCbDA+0El4kA7bWvPzh52NeDq6WCIcZ6YzkT1RftX
-        s77bqd8iEaEgt9Aw==
+        bh=5QANUKVuRT8NWBgNyyusoguWy8/KXbVC7l0LNl2PJV0=;
+        b=IXnmOae+UQoJ64qqJZfDC+fhZ4gApFd3UWZYzgIYiViYm6KPa8WxNns2iWl3stokJLcUW9
+        6ncQN+iSBvKJL7Bg==
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id BE41B1379D;
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id C9F7F1373B;
         Wed,  7 Dec 2022 11:27:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap1.suse-dmz.suse.de with ESMTPSA
-        id mnhzLpt4kGNGLAAAGKfGzw
+        id vW9NMZt4kGNMLAAAGKfGzw
         (envelope-from <jack@suse.cz>); Wed, 07 Dec 2022 11:27:23 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 0F9C6A0736; Wed,  7 Dec 2022 12:27:23 +0100 (CET)
+        id 154A2A0739; Wed,  7 Dec 2022 12:27:23 +0100 (CET)
 From:   Jan Kara <jack@suse.cz>
 To:     Ted Tso <tytso@mit.edu>
 Cc:     <linux-ext4@vger.kernel.org>,
         Christoph Hellwig <hch@infradead.org>,
         "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-        Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>
-Subject: [PATCH v4 10/13] ext4: Switch to using write_cache_pages() for data=journal writeout
-Date:   Wed,  7 Dec 2022 12:27:13 +0100
-Message-Id: <20221207112722.22220-10-jack@suse.cz>
+        Jan Kara <jack@suse.cz>
+Subject: [PATCH v4 11/13] mm: Export buffer_migrate_folio_norefs()
+Date:   Wed,  7 Dec 2022 12:27:14 +0100
+Message-Id: <20221207112722.22220-11-jack@suse.cz>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20221207112259.8143-1-jack@suse.cz>
 References: <20221207112259.8143-1-jack@suse.cz>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1335; i=jack@suse.cz; h=from:subject; bh=23FIs73CR+dJuweXVsJE6NBdy/+rtnMaeWeeUjNcNEQ=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBjkHiRoAynBFFpL2DjlyKvloiLtfeSQIv0y5PT8tMu bcDUS/GJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCY5B4kQAKCRCcnaoHP2RA2aIiB/ 9pU+NPasMc0c+Yy6PKxpwJ3q+ryfZhGeUKMNfhFay8XW6Cj5NM38UDGkF/YDyHRvIg7Gj3p/3buff8 MyAcAHXfEYPslyMXdD+VktUQjrE9p0Nz/uxkzLAroEfpQGcNY2rbvogH7F/ORnS+OQmPIBKNVLnWWW z4j3+WfnNI3cCdWI0YSZ6P2qZhoPD1bpLziWKaQfjUMlrGCfX1ZRjygXn3RIMJU6k44kMHJd1u4NYX dOQeggHntS7J/C1A8+2LjeDRymX3Nwi/9vLf6BtD9ZpvJIezHT/Wax4VDl5Q30nkrpAvuYQR/+QgZQ QHmjiei+PfhiDoePuSkaaHT0/ygNo1
+X-Developer-Signature: v=1; a=openpgp-sha256; l=595; i=jack@suse.cz; h=from:subject; bh=c4DxOium70EyUaDzhldtIkg4QqnSvuPVVl74OaytVcQ=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBjkHiR2cKn0kCv6C1MRoPMYcw2BXsjDABy9pBbep6m DewagrmJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCY5B4kQAKCRCcnaoHP2RA2XgfB/ 9IanIVKkxfSPv+clJSW9XYefuZdGhm/1IgkHi6Nd/TxWRX9MoyAgtpZbKiGWvIXSlVj64glcDGSgmn IVviNDZlF/WryD8kpha8l1wihp8hBiagA+75WyuNsuyoRCoVZuU5dun78MUkm1wiO4Sx4NWpSZL8K9 PHKfYw4tKiPFl4K4W9QEeKWGHCDqF/X6PosLx8H9llLPBE7k35svt6hVQBHecT8irtom0eYIHpmhKl sGJSUoEaLMq0wgcfad5HVi9nMjIBjC+Xdth/391V0et+E+DUWx66E7Udkra0fz2tTCG/9EVt94scyE bcfhElPMml6QvOc2NUvQ4UKYz5Fjbk
 X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,46 +75,26 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Instead of using generic_writepages(), let's use write_cache_pages() for
-writeout of journalled data. It will allow us to stop providing
-.writepage callback. Our data=journal writeback path would benefit from
-a larger cleanup and refactoring but that's for a separate cleanup
-series.
+Ext4 needs this function to allow safe migration for journalled data
+pages.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Jan Kara <jack@suse.cz>
 ---
- fs/ext4/inode.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ mm/migrate.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index b93a436bf5bc..f3b3792c1c96 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -2705,6 +2705,12 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
- 	return err;
- }
- 
-+static int ext4_writepage_cb(struct page *page, struct writeback_control *wbc,
-+			     void *data)
-+{
-+	return ext4_writepage(page, wbc);
-+}
-+
- static int ext4_do_writepages(struct mpage_da_data *mpd)
+diff --git a/mm/migrate.c b/mm/migrate.c
+index dff333593a8a..5e4ca21da712 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -820,6 +820,7 @@ int buffer_migrate_folio_norefs(struct address_space *mapping,
  {
- 	struct writeback_control *wbc = mpd->wbc;
-@@ -2731,7 +2737,9 @@ static int ext4_do_writepages(struct mpage_da_data *mpd)
- 		goto out_writepages;
+ 	return __buffer_migrate_folio(mapping, dst, src, mode, true);
+ }
++EXPORT_SYMBOL_GPL(buffer_migrate_folio_norefs);
+ #endif
  
- 	if (ext4_should_journal_data(inode)) {
--		ret = generic_writepages(mapping, wbc);
-+		blk_start_plug(&plug);
-+		ret = write_cache_pages(mapping, wbc, ext4_writepage_cb, NULL);
-+		blk_finish_plug(&plug);
- 		goto out_writepages;
- 	}
- 
+ int filemap_migrate_folio(struct address_space *mapping,
 -- 
 2.35.3
 
