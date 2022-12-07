@@ -2,67 +2,71 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67DBE6458B3
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Dec 2022 12:15:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F34156458BC
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Dec 2022 12:17:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229560AbiLGLPr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Dec 2022 06:15:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55624 "EHLO
+        id S229489AbiLGLRb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 7 Dec 2022 06:17:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbiLGLPM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Dec 2022 06:15:12 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F919BDD;
-        Wed,  7 Dec 2022 03:14:39 -0800 (PST)
+        with ESMTP id S229774AbiLGLRa (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Dec 2022 06:17:30 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B2332BD9
+        for <linux-ext4@vger.kernel.org>; Wed,  7 Dec 2022 03:17:29 -0800 (PST)
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 5D19D1FD92;
-        Wed,  7 Dec 2022 11:14:38 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1D0C321C7B;
+        Wed,  7 Dec 2022 11:17:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1670411678; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1670411848; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=puX20SheodfWtZCreyQ6wwgI0pSk+gFmZTn3SfkKb+A=;
-        b=0OIQQ+QUqVXj/b0fLMKv8Ti8CKvkvDnw7J/TSG/D2dt3t/d3MZGBsXTDyL3ruQsd8lY5N3
-        rtTahlcVuT7cEGhRmCgD3CK2XC5Wxzq1Dlgfe6rDIpTu/wgZVcKYP/qGKMuMmuNaO5Pvzy
-        9G0znUt6B1sgpapnvigU/Aq7RXVv8T0=
+        bh=Nl3cYnoVvIf50ZKL46F6ecGRdU1pjqEdzszMDzYGKFU=;
+        b=AVDPXKGllvjKAC1hczPdpgK/XRWO8ALsxxugPSrmBfCSMPVkfwHMf9Jq5aihOeOFhUbHZy
+        VZngxlI5hgGv8fa1nICQm/0ffdZwdoUZ0fSCj3wZHFzGuAY+Cajn7aEaEtTKNhTtexCoz0
+        vJo1jR4GmVHkzGzmnxmTTNKVzKhepdY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1670411678;
+        s=susede2_ed25519; t=1670411848;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=puX20SheodfWtZCreyQ6wwgI0pSk+gFmZTn3SfkKb+A=;
-        b=oItqsgzZXb1TzmKH6x8Xl0St6hmx3vmjszWyMKp0j08KDO6IRG9YrjV8fFHmC6ZL9M3U0n
-        DfyrWGFdLJ2DByDw==
+        bh=Nl3cYnoVvIf50ZKL46F6ecGRdU1pjqEdzszMDzYGKFU=;
+        b=DjJzkIYaKfqprPFdDhKAZcdQqebXQMbn+7XbSY2ly00k5SZJLJk/BeAbAV5slJX2iP8ElD
+        sqdCOwrRPL10hNAA==
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 4DD10134CD;
-        Wed,  7 Dec 2022 11:14:38 +0000 (UTC)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 0D2C8134CD;
+        Wed,  7 Dec 2022 11:17:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap1.suse-dmz.suse.de with ESMTPSA
-        id PRT4Ep51kGOAJQAAGKfGzw
-        (envelope-from <jack@suse.cz>); Wed, 07 Dec 2022 11:14:38 +0000
+        id WXopA0h2kGPnJgAAGKfGzw
+        (envelope-from <jack@suse.cz>); Wed, 07 Dec 2022 11:17:28 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id D83ADA0725; Wed,  7 Dec 2022 12:14:37 +0100 (CET)
-Date:   Wed, 7 Dec 2022 12:14:37 +0100
+        id 85784A0725; Wed,  7 Dec 2022 12:17:27 +0100 (CET)
+Date:   Wed, 7 Dec 2022 12:17:27 +0100
 From:   Jan Kara <jack@suse.cz>
-To:     Ye Bin <yebin@huaweicloud.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jack@suse.cz, Ye Bin <yebin10@huawei.com>
-Subject: Re: [PATCH v2 2/6] ext4: add primary check extended attribute inode
- in ext4_xattr_check_entries()
-Message-ID: <20221207111437.birh6zujw4wauvhu@quack3>
-References: <20221207074043.1286731-1-yebin@huaweicloud.com>
- <20221207074043.1286731-3-yebin@huaweicloud.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
+        linux-ext4@vger.kernel.org,
+        "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org
+Subject: Re: [PATCH v3 11/12] ext4: Stop providing .writepage hook
+Message-ID: <20221207111727.d5dbfq4mewm4njth@quack3>
+References: <20221205122604.25994-1-jack@suse.cz>
+ <20221205122928.21959-11-jack@suse.cz>
+ <Y460RpKTCDuPKWmN@mit.edu>
+ <20221206105225.nr734teqlkueqdph@quack3>
+ <Y5BDCtdcZooiMhy5@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221207074043.1286731-3-yebin@huaweicloud.com>
+In-Reply-To: <Y5BDCtdcZooiMhy5@infradead.org>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -72,74 +76,22 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 07-12-22 15:40:39, Ye Bin wrote:
-> From: Ye Bin <yebin10@huawei.com>
+On Tue 06-12-22 23:38:50, Christoph Hellwig wrote:
+> On Tue, Dec 06, 2022 at 11:52:25AM +0100, Jan Kara wrote:
+> > I don't expect any objection. The only reason we didn't export that
+> > function when I've added it was that only blkdev code was using it and that
+> > cannot be compiled as a module. Should I send a patch to 
+> > 
+> > I've added a patch to the series to export this function. It is attached.
+> > 
+> > I can also repost the whole series if these are the only changes that block
+> > the inclusion.
 > 
-> Add primary check for extended attribute inode, only do hash check when read
-> ea_inode's data in ext4_xattr_inode_get().
-> 
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> I'd do an EXPORT_SYMBOL_GPL, but otherwise the export looks fine, and it
+> would be good to get this conversion going!
 
-...
-
-> +static inline int ext4_xattr_check_extra_inode(struct inode *inode,
-> +					       struct ext4_xattr_entry *entry)
-> +{
-> +	int err;
-> +	struct inode *ea_inode;
-> +
-> +	err = ext4_xattr_inode_iget(inode, le32_to_cpu(entry->e_value_inum),
-> +				    le32_to_cpu(entry->e_hash), &ea_inode);
-> +	if (err)
-> +		return err;
-> +
-> +	if (i_size_read(ea_inode) != le32_to_cpu(entry->e_value_size)) {
-> +		ext4_warning_inode(ea_inode,
-> +                           "ea_inode file size=%llu entry size=%u",
-> +                           i_size_read(ea_inode),
-> +			   le32_to_cpu(entry->e_value_size));
-> +		err = -EFSCORRUPTED;
-> +	}
-> +	iput(ea_inode);
-> +
-> +	return err;
-> +}
-> +
->  static int
-> -ext4_xattr_check_entries(struct ext4_xattr_entry *entry, void *end,
-> -			 void *value_start)
-> +ext4_xattr_check_entries(struct inode *inode, struct ext4_xattr_entry *entry,
-> +			 void *end, void *value_start)
->  {
->  	struct ext4_xattr_entry *e = entry;
->  
-> @@ -221,6 +247,10 @@ ext4_xattr_check_entries(struct ext4_xattr_entry *entry, void *end,
->  			    size > end - value ||
->  			    EXT4_XATTR_SIZE(size) > end - value)
->  				return -EFSCORRUPTED;
-> +		} else if (entry->e_value_inum) {
-> +			int err = ext4_xattr_check_extra_inode(inode, entry);
-> +			if (err)
-> +				return err;
->  		}
->  		entry = EXT4_XATTR_NEXT(entry);
->  	}
-
-So I was thinking about this. It is nice to have the inode references
-checked but OTOH this is rather expensive for a filesystem with EA inodes -
-we have to lookup and possibly load EA inodes from the disk although they
-won't be needed for anything else than the check. Also as you have noticed
-we do check whether i_size and xattr size as recorded in xattr entry match
-in ext4_xattr_inode_iget() which gets called once we need to do anything
-with the EA inode.
-
-Also I've checked and we do call ext4_xattr_check_block() and
-xattr_check_inode() in ext4_expand_extra_isize_ea() so Ted's suspicion that
-the problem comes from not checking the xattr entries before moving them
-from the inode was not correct.
-
-So to summarize, I don't think this and the following patch is actually
-needed and brings benefit that would outweight the performance cost.
+OK, I've just copied how buffer_migrate_folio() is exported but I don't
+mind a GPL export. I'll change it and push out new version of the series.
 
 								Honza
 -- 
