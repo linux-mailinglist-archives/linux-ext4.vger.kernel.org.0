@@ -2,64 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A5C6460E5
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Dec 2022 19:10:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A0FC64633A
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Dec 2022 22:26:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229523AbiLGSKP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Dec 2022 13:10:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37166 "EHLO
+        id S229636AbiLGV0L (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 7 Dec 2022 16:26:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbiLGSKP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Dec 2022 13:10:15 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53F6E60B51;
-        Wed,  7 Dec 2022 10:10:14 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id 82so17115800pgc.0;
-        Wed, 07 Dec 2022 10:10:14 -0800 (PST)
+        with ESMTP id S229649AbiLGV0L (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Dec 2022 16:26:11 -0500
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B470781DBE;
+        Wed,  7 Dec 2022 13:26:09 -0800 (PST)
+Received: by mail-qt1-x82b.google.com with SMTP id fz10so17259734qtb.3;
+        Wed, 07 Dec 2022 13:26:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xAXo1CC+DgLv8rsBENeTWCQSP6gxhN9/sRtHellAmI4=;
-        b=V1arU17eo0dro0cMkfZPYd0YHgGtjRfIQwEbUUHPwbn8exlXaQdYGMQYrzdSqb+2hx
-         3kkrZL685pmQA3r0JkmR+ri5O91x3EMDHlIS545Yyh8dfOUNkHEYnMS3Y9m/CeKF8ESo
-         /XBAGOqVRRyxlVsBYnlruFYc/scVRL+VVjrgwO0gPBRXUEsViKzxZ1U8DMHLfzeLiGke
-         5CuHJAF4PSOxoxSfrIiUe8PbJT2DO287MAkU7QVPYtmEFhxViRSNY86iSCc+807w7FMJ
-         iBqNmdrZ7Idc4pzUjL8ZGTLjr0IOLuyOiFVCMBTkrtqCCZ9iIyAZOsBWA6LCZmOmFvGX
-         ieTg==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3iVn5Pq2ve6gBz9rsR6+/e6l3RP2MHL3O878IJfOVfI=;
+        b=QvblP0StWIys6WeKh/O1w1NGcZNvMa5ED4V4ajXq4SqT7fofTIqhHUkLSvI/M1WNVY
+         E1P32rYuly5goAoWiHb/lvsk0zUKuZJxZlPsqNv1x2EBpalFur8kWNUwC1OrIOFHeOJe
+         geWsIF1Rm7M6JAk14VEpAiPsftyBK9VZ6gF0QsqDMwsXtiLiLeDK0N+7qn1bMezRFwhf
+         4wi6PSjNh6zTWTQAKeYzoBy9+9UcT/9BVE6s5yHvIt3XS3kdLgITl8QGc7L5rKLKvbVN
+         PAGqW3cG8jWC4ljxDhUvSUgRACmJJ4Igk7wl6/LEHKK8W3k0DrIyM23W9B5mPdTqAAip
+         fWuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xAXo1CC+DgLv8rsBENeTWCQSP6gxhN9/sRtHellAmI4=;
-        b=8QMwcpwtcUpgvKscdwzpl2+owZHHrv51O9MN/qJA+EiFOZd8G4txAtQ+f3Xd0mR5i7
-         Fq4zI/cNmB/Z8NKt+rEk8F+YGHGHdSnFAAQpSY2b6Rt5saATrGIjUEZgcxk05iSMnv7o
-         JKR8EVwIqBe3DvyG3DOC75mge8fc9PbhiiNm0lw/Vv15HqUKibThcSg6a03Kx1RBcvnm
-         BR7lurzWO1mDSTts6O44L3da6k4rkiq7dYWOddXkBJe4zUJKFewPq/9dSSkWkEmZVkzh
-         7q8EYQ73ClRASBVoDyRDg7R4xCe0xqWFEAQhXK55/hbwGxo86OpPX8XNw0mPqNdsnG2Q
-         b1OQ==
-X-Gm-Message-State: ANoB5pkAgCwLPXTrMIdICgDFHytojqPvw4H3m0bLN2DrU5aVIqWPJY4I
-        bhFPDp7Qig7liQy/cm17irc4i/SERelWsA==
-X-Google-Smtp-Source: AA0mqf7m7wuh4m5rf8Cez3jfVm/OWprGMUX0IVr1hFeuMnIv9fTJVVEUyET0IGPR7pbrif2/9j4saA==
-X-Received: by 2002:a63:1e44:0:b0:478:91e1:ff60 with SMTP id p4-20020a631e44000000b0047891e1ff60mr20669074pgm.206.1670436613596;
-        Wed, 07 Dec 2022 10:10:13 -0800 (PST)
-Received: from fedora.hsd1.ca.comcast.net ([2601:644:8002:1c20::2c6b])
-        by smtp.googlemail.com with ESMTPSA id w2-20020a17090abc0200b00218f9bd50c7sm1468735pjr.50.2022.12.07.10.10.12
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3iVn5Pq2ve6gBz9rsR6+/e6l3RP2MHL3O878IJfOVfI=;
+        b=CFvcZUwO9nNINgqsTky+/z1EMN0DaJ/NCKctFkSAX9aboG0UeUfcSN5VJCIuO6JUtb
+         YyV32dJDK5Q19nlwIr+Cq+5sPTvQhXZMdKFdFrEOJqfBLzRfn3U8tj6UlAbxuddaiEL7
+         WNdALJZEQUj5M0NvYdUf0DBqr3+WQiZLDclQx1qOPeiR0clsGHEdZDM0zzDFFDB6Ct7l
+         8llegq0OVln+KVg+vdReVWdnfUvG4Z0ApwctKP5++2q2IYUz8b1fLQo5T8yriPm60PwV
+         FJ17ibXWjKmAna9Kpxfj8C9j/O3QxGSSGp7XwvoJUiQMok35fujj+V6f3pT2NrDE6Cus
+         un7A==
+X-Gm-Message-State: ANoB5pmLg3x5Zw3m4hgAnbkmlpSfQTFwMOI/X7tJqu3MFrby5lY6GrxF
+        hbdlFGzI5W2VLFCZ52HcDX4=
+X-Google-Smtp-Source: AA0mqf6yo5wCH9D0TexETyqio3e7qF0SO2QPUuN/6AMixl3W+j3K3sD3U2N0okFXjuZMB8ra3WDpGQ==
+X-Received: by 2002:a05:622a:1b89:b0:3a5:63ef:1d48 with SMTP id bp9-20020a05622a1b8900b003a563ef1d48mr84609685qtb.6.1670448368854;
+        Wed, 07 Dec 2022 13:26:08 -0800 (PST)
+Received: from debian-BULLSEYE-live-builder-AMD64 (h96-61-90-13.cntcnh.broadband.dynamic.tds.net. [96.61.90.13])
+        by smtp.gmail.com with ESMTPSA id k26-20020ac8605a000000b0035d08c1da35sm13843485qtm.45.2022.12.07.13.26.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Dec 2022 10:10:13 -0800 (PST)
-From:   "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-To:     linux-mm@kvack.org
-Cc:     tytso@mit.edu, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH mm-unstable v2] ext4: Convert mext_page_double_lock() to mext_folio_double_lock()
-Date:   Wed,  7 Dec 2022 10:10:09 -0800
-Message-Id: <20221207181009.4016-1-vishal.moola@gmail.com>
-X-Mailer: git-send-email 2.38.1
+        Wed, 07 Dec 2022 13:26:08 -0800 (PST)
+Date:   Wed, 7 Dec 2022 16:26:06 -0500
+From:   Eric Whitney <enwlinux@gmail.com>
+To:     Ye Bin <yebin@huaweicloud.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jack@suse.cz, Ye Bin <yebin10@huawei.com>
+Subject: Re: [PATCH v3 2/3] ext4: record error when detect abnormal
+ 'i_reserved_data_blocks'
+Message-ID: <Y5EE7gm66eDNe9Us@debian-BULLSEYE-live-builder-AMD64>
+References: <20221203025941.2661302-1-yebin@huaweicloud.com>
+ <20221203025941.2661302-3-yebin@huaweicloud.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221203025941.2661302-3-yebin@huaweicloud.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -70,121 +73,49 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Converts mext_page_double_lock() to use folios. This change saves
-146 bytes of kernel text. It also removes 6 calls to compound_head()
-and 2 calls to folio_file_page().
+* Ye Bin <yebin@huaweicloud.com>:
+> From: Ye Bin <yebin10@huawei.com>
+> 
+> If 'i_reserved_data_blocks' is not cleared which mean something wrong with
+> code, free space accounting is likely wrong, according to Jan Kara's advice
+> use ext4_error() to record this abnormal let fsck to repair and also we can
+> capture this issue.
+> 
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> ---
+>  fs/ext4/super.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 840e0a614959..41413338c05b 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -1387,10 +1387,10 @@ static void ext4_destroy_inode(struct inode *inode)
+>  	}
+>  
+>  	if (EXT4_I(inode)->i_reserved_data_blocks)
+> -		ext4_msg(inode->i_sb, KERN_ERR,
+> -			 "Inode %lu (%p): i_reserved_data_blocks (%u) not cleared!",
+> -			 inode->i_ino, EXT4_I(inode),
+> -			 EXT4_I(inode)->i_reserved_data_blocks);
+> +		ext4_error(inode->i_sb,
+> +			"Inode %lu (%p): i_reserved_data_blocks (%u) not cleared!",
+> +			inode->i_ino, EXT4_I(inode),
+> +			EXT4_I(inode)->i_reserved_data_blocks);
 
-Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- fs/ext4/move_extent.c | 46 +++++++++++++++++++++----------------------
- 1 file changed, 23 insertions(+), 23 deletions(-)
+It would be better if the arguments to ext4_error after the first were aligned
+under "inode->i_sb", as you had in your first version.  That's typical ext4
+practice as seen earlier in this function, though this does pass checkpatch.
+Otherwise, looks good.
 
-diff --git a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
-index 8dbb87edf24c..2de9829aed63 100644
---- a/fs/ext4/move_extent.c
-+++ b/fs/ext4/move_extent.c
-@@ -110,22 +110,23 @@ mext_check_coverage(struct inode *inode, ext4_lblk_t from, ext4_lblk_t count,
- }
- 
- /**
-- * mext_page_double_lock - Grab and lock pages on both @inode1 and @inode2
-+ * mext_folio_double_lock - Grab and lock folio on both @inode1 and @inode2
-  *
-  * @inode1:	the inode structure
-  * @inode2:	the inode structure
-- * @index1:	page index
-- * @index2:	page index
-- * @page:	result page vector
-+ * @index1:	folio index
-+ * @index2:	folio index
-+ * @folio:	result folio vector
-  *
-- * Grab two locked pages for inode's by inode order
-+ * Grab two locked folio for inode's by inode order
-  */
- static int
--mext_page_double_lock(struct inode *inode1, struct inode *inode2,
--		      pgoff_t index1, pgoff_t index2, struct page *page[2])
-+mext_folio_double_lock(struct inode *inode1, struct inode *inode2,
-+		      pgoff_t index1, pgoff_t index2, struct folio *folio[2])
- {
- 	struct address_space *mapping[2];
- 	unsigned int flags;
-+	unsigned fgp_flags = FGP_LOCK | FGP_WRITE | FGP_CREAT | FGP_STABLE;
- 
- 	BUG_ON(!inode1 || !inode2);
- 	if (inode1 < inode2) {
-@@ -138,28 +139,30 @@ mext_page_double_lock(struct inode *inode1, struct inode *inode2,
- 	}
- 
- 	flags = memalloc_nofs_save();
--	page[0] = grab_cache_page_write_begin(mapping[0], index1);
--	if (!page[0]) {
-+	folio[0] = __filemap_get_folio(mapping[0], index1, fgp_flags,
-+			mapping_gfp_mask(mapping[0]));
-+	if (!folio[0]) {
- 		memalloc_nofs_restore(flags);
- 		return -ENOMEM;
- 	}
- 
--	page[1] = grab_cache_page_write_begin(mapping[1], index2);
-+	folio[1] = __filemap_get_folio(mapping[1], index2, fgp_flags,
-+			mapping_gfp_mask(mapping[1]));
- 	memalloc_nofs_restore(flags);
--	if (!page[1]) {
--		unlock_page(page[0]);
--		put_page(page[0]);
-+	if (!folio[1]) {
-+		folio_unlock(folio[0]);
-+		folio_put(folio[0]);
- 		return -ENOMEM;
- 	}
- 	/*
--	 * grab_cache_page_write_begin() may not wait on page's writeback if
-+	 * __filemap_get_folio() may not wait on folio's writeback if
- 	 * BDI not demand that. But it is reasonable to be very conservative
--	 * here and explicitly wait on page's writeback
-+	 * here and explicitly wait on folio's writeback
- 	 */
--	wait_on_page_writeback(page[0]);
--	wait_on_page_writeback(page[1]);
-+	folio_wait_writeback(folio[0]);
-+	folio_wait_writeback(folio[1]);
- 	if (inode1 > inode2)
--		swap(page[0], page[1]);
-+		swap(folio[0], folio[1]);
- 
- 	return 0;
- }
-@@ -252,7 +255,6 @@ move_extent_per_page(struct file *o_filp, struct inode *donor_inode,
- 		     int block_len_in_page, int unwritten, int *err)
- {
- 	struct inode *orig_inode = file_inode(o_filp);
--	struct page *pagep[2] = {NULL, NULL};
- 	struct folio *folio[2] = {NULL, NULL};
- 	handle_t *handle;
- 	ext4_lblk_t orig_blk_offset, donor_blk_offset;
-@@ -303,8 +305,8 @@ move_extent_per_page(struct file *o_filp, struct inode *donor_inode,
- 
- 	replaced_size = data_size;
- 
--	*err = mext_page_double_lock(orig_inode, donor_inode, orig_page_offset,
--				     donor_page_offset, pagep);
-+	*err = mext_folio_double_lock(orig_inode, donor_inode, orig_page_offset,
-+				     donor_page_offset, folio);
- 	if (unlikely(*err < 0))
- 		goto stop_journal;
- 	/*
-@@ -314,8 +316,6 @@ move_extent_per_page(struct file *o_filp, struct inode *donor_inode,
- 	 * hold page's lock, if it is still the case data copy is not
- 	 * necessary, just swap data blocks between orig and donor.
- 	 */
--	folio[0] = page_folio(pagep[0]);
--	folio[1] = page_folio(pagep[1]);
- 
- 	VM_BUG_ON_FOLIO(folio_test_large(folio[0]), folio[0]);
- 	VM_BUG_ON_FOLIO(folio_test_large(folio[1]), folio[1]);
--- 
-2.38.1
+That said, feel free to add:
 
+Reviewed-by: Eric Whitney <enwlinux@gmail.com>
+
+
+>  }
+>  
+>  static void init_once(void *foo)
+> -- 
+> 2.31.1
+> 
